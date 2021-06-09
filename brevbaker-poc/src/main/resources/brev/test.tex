@@ -1,0 +1,40 @@
+%Document class definerer parametre for dokument klassen, og bør derfor fortsatt ligge i malen
+\documentclass[version=last,
+    foldmarks=false,
+    addrfield=backgroundimage]{scrlttr2}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{times}
+\usepackage[T1]{fontenc}
+\include{params}
+\include{fraser}
+
+
+\pagenumbering{arabic}
+\setlength{\parindent}{0em}
+\setlength{\parskip}{1em}
+\setplength{locwidth}{200pt}
+\setplength{toaddrheight}{170pt}
+\setkomavar{date}{\today}
+\setkomavar{fromname}[description ]{\small Returadresse: NAV Familie- og pensjonsytelser Steinkjer}
+\setkomavar{fromaddress}[description ]{\small Postboks 6600 Etterstad, 0607 OSLO }
+\setkomavar{toaddress}[description ]{
+    \uppercase{\feltgatenavnmottaker \space \felthusnummermottaker
+    \\ \feltpoststedmottaker, \feltpostnummermottaker }}
+\setkomavar{addresseeimage}[description ]{ \includegraphics[width=2cm]{nav} }
+\newcommand{\hentVedlegg}[1]{\par \input{vedlegg/#1}}
+\newcommand{\tittel}[1]{\setkomavar{subject}{#1}\opening{}}
+\newcommand{\infofield}[1]{{\color{gray}\footnotesize #1}}
+\newcommand{\brevseksjon}[1]{\par \textbf{#1} \newline}
+\newcommand{\brevparameter}{
+    \feltfornavnmottaker \space \feltetternavnmottaker \newline
+    \uppercase{\feltgatenavnmottaker \space \felthusnummermottaker}  \newline
+    \feltpostnummermottaker \space \feltpoststedmottaker}
+
+\setkomavar{location}{\noindent
+    \infofield{NAVs saksnummer:} 25305007\\
+    \infofield{Navn:} \feltfornavnmottaker \space \feltetternavnmottaker \\
+    \infofield{Fødselsnummer:} 09015425897}
+
