@@ -1,0 +1,6 @@
+#Used for local testing purposes
+services:
+  pdfbuilder:
+    build: ./pdf-bygger
+    ports:
+      - "8080:8080"

@@ -1,4 +1,4 @@
-package no.nav.pensjon.brevmaker
+package no.nav.pensjon.brev.pdfbygger
 
 open class Field(val type: FieldType, val content: String) {
 

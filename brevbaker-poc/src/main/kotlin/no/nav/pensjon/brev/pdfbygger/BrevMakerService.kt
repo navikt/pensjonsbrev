@@ -1,4 +1,4 @@
-package no.nav.pensjon.brevmaker
+package no.nav.pensjon.brev.pdfbygger
 
 import org.springframework.stereotype.Service
 import java.io.File

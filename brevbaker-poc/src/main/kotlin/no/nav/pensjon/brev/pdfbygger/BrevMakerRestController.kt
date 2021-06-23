@@ -1,4 +1,4 @@
-package no.nav.pensjon.brevmaker
+package no.nav.pensjon.brev.pdfbygger
 
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
