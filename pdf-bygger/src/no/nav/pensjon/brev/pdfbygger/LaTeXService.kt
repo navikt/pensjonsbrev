@@ -6,15 +6,17 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 
 class LaTeXService(private val rootPath: String) {
+    private val decoder = Base64.getDecoder()
+    private val encoder = Base64.getEncoder()
 
-    fun producePDF(latexFiles: Map<String, ByteArray>): PDFCompilationOutput {
+    fun producePDF(latexFiles: Map<String, String>): PDFCompilationOutput {
         val tmpDir = File(rootPath + UUID.randomUUID().toString() + '/')
         tmpDir.mkdirs()
 
         latexFiles.forEach {
             val file = File("""${tmpDir.absolutePath}\${it.key}""")
             file.createNewFile()
-            file.writeBytes(it.value)
+            file.writeBytes(decoder.decode(it.value))
         }
 
         val compiledPDF: PDFCompilationOutput
@@ -37,7 +39,7 @@ class LaTeXService(private val rootPath: String) {
 
         val letterPDF = File("$executionFolder\\letter.pdf")
         return if (letterPDF.exists()) {
-            PDFCompilationOutput(pdf = letterPDF.readBytes())
+            PDFCompilationOutput(pdf = encoder.encodeToString(letterPDF.readBytes()))
         } else {
             val letterCompilerLog = File("$executionFolder\\letter.log")
             if (!letterCompilerLog.exists()) {

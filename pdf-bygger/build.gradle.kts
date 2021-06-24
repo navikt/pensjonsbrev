@@ -39,7 +39,7 @@ dependencies {
     implementation("io.ktor:ktor-client-core-jvm:$ktorVersion")
     implementation("io.ktor:ktor-metrics:$ktorVersion")
     implementation("io.ktor:ktor-server-core:$ktorVersion")
-    implementation("io.ktor:ktor-gson:$ktorVersion")
+    implementation("io.ktor:ktor-jackson:$ktorVersion")
     testImplementation("io.ktor:ktor-server-tests:$ktorVersion")
 }
 sourceSets["main"].resources.srcDirs("resources")

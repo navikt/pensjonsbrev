@@ -6,17 +6,21 @@ RUN apt-get -y install tzdata
 RUN apt-get -y install texlive-latex-base  texlive-pictures
 RUN apt-get -y install texlive-fonts-recommended
 
-FROM latexbase as build
+# Plugin and dependency caching layer
+FROM latexbase as gradle-cache
+RUN mkdir -p /tmp/gradle_cache
+RUN mkdir -p /tmp/code/
+COPY  gradle /tmp/code/gradle
+ENV GRADLE_USER_HOME /tmp/gradle_cache
+COPY build.gradle.kts gradlew gradle.properties settings.gradle /tmp/code/
+RUN (cd /tmp/code && ./gradlew clean build test --info --stacktrace)
+
+FROM gradle-cache as build
 # prepare gradle layer
-RUN mkdir -p /code/gradle
-COPY  /gradlew /settings.gradle /code/
-COPY  gradle /code/gradle
-RUN (cd /code && ls)
-RUN (cd /code && ./gradlew wrapper)
 # prepare layer with code
-COPY . /code
-RUN (cd /code && ./gradlew build)
+COPY . /tmp/code
+RUN (cd /tmp/code && ./gradlew build)
 
 FROM build as brevmaker
-COPY --from=build /code/build/libs/pdf-bygger.jar /app/app.jar
+COPY --from=build /tmp/code/build/libs/pdf-bygger.jar /app/app.jar
 EXPOSE 8080

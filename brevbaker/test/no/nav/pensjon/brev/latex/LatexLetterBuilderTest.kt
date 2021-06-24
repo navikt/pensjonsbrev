@@ -8,11 +8,11 @@ import org.junit.jupiter.api.Test
 import kotlin.test.assertFalse
 
 class LatexLetterBuilderTest {
-//    @Tag("integration")
+    //    @Tag("integration")
     @Test
     fun `basic integration with container`() {
         val latexLetterBuilder = LatexLetterBuilder(LaTeXCompilerService())
-        latexLetterBuilder.buildLatex(
+        val result = latexLetterBuilder.buildLatex(
             Letter(
                 StandardFields(
                     returAdresse = "",
@@ -33,5 +33,6 @@ class LatexLetterBuilderTest {
                 LetterTemplate("test")
             )
         )
+        val test = true
     }
 }
