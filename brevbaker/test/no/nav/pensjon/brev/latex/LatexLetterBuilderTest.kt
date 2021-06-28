@@ -5,10 +5,10 @@ import no.nav.pensjon.brev.dto.LetterTemplate
 import no.nav.pensjon.brev.dto.StandardFields
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
-import kotlin.test.assertFalse
+import kotlin.test.assertNotNull
 
 class LatexLetterBuilderTest {
-    //    @Tag("integration")
+    @Tag("integration")
     @Test
     fun `basic integration with container`() {
         val latexLetterBuilder = LatexLetterBuilder(LaTeXCompilerService())
@@ -33,6 +33,6 @@ class LatexLetterBuilderTest {
                 LetterTemplate("test")
             )
         )
-        val test = true
+        assertNotNull(result.pdf)
     }
 }

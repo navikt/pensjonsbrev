@@ -28,10 +28,10 @@ enum class LetterTemplate(val letterId: String, vararg val fields: FieldType) {
         fun fromId(id: String): LetterTemplate? {
             values().forEach {
                 if(it.letterId == id){
-                    return it;
+                    return it
                 }
             }
-            return null;
+            return null
         }
     }
 

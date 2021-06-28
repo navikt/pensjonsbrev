@@ -1,8 +1,6 @@
 package no.nav.pensjon.brev.pdfbygger
 
-open class Field(val type: FieldType, val content: String) {
-
-}
+open class Field(val type: FieldType, val content: String)
 
 enum class FieldType(val typeKey: String) {
     //It is important that the typekey never changes.

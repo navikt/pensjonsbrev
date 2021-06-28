@@ -10,9 +10,7 @@ import io.ktor.server.netty.*
 import org.slf4j.event.Level
 import java.util.*
 
-const val IN_MEMORY_ROOT_PATH = "/tmp/"
-
-val laTeXService = LaTeXService(IN_MEMORY_ROOT_PATH)
+val laTeXService = LaTeXService()
 fun main(args: Array<String>) {
     EngineMain.main(args)
 }
