@@ -7,15 +7,13 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.io.path.absolutePathString
 import kotlin.io.path.createTempDirectory
-import kotlin.io.path.deleteExisting
-import kotlin.io.path.deleteIfExists
 
 class LaTeXService {
     private val decoder = Base64.getDecoder()
     private val encoder = Base64.getEncoder()
 
     fun producePDF(latexFiles: Map<String, String>): PDFCompilationOutput {
-        val tmpDir = createTempDirectory()
+        val tmpDir = createTempDirectory(Path.of("pdfcompilation").toAbsolutePath())
 
         latexFiles.forEach {
             val file = File(tmpDir.resolve(it.key).absolutePathString())

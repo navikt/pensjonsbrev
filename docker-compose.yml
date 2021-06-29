@@ -2,5 +2,7 @@
 services:
   pdf-bygger:
     build: ./pdf-bygger
+    tmpfs:
+      - /app/pdfcompilation
     ports:
       - "8080:8080"
