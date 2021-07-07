@@ -10,8 +10,10 @@
     subject=left,
     parskip=never,
     DIV=15,
-    draft=true, % TODO remove before production. Used for debugging
+%    visualize, %DEBUG show boxes
+%    draft=true, % DEBUG show overfull boxes, collisions etc.
     addrfield=backgroundimage]{scrlttr2}
+%\showfields{head,address,location,refline,foot} %DEBUG
 \include{params}
 
 % Packages
@@ -44,6 +46,9 @@
 %\setkomavar{fromname}[returadresse]{\onehalfspacing \parskip=0pt \tinyText{ Returadresse: NAV Familie- og pensjonsytelser Steinkjer}}
 %\setkomavar{fromaddress}[returadresse ]{\onehalfspacing \parskip=0pt \tinyText{ Postboks 6600 Etterstad, 0607 OSLO}}
 
+
+% DEBUGGING
+
 % Global variables
 
 
@@ -62,56 +67,58 @@
 \setlength{\parindent}{0em}
 \setlength{\parskip}{1em}
 
-% to address
-\setplength{toaddrheight}{170pt}
-
 % logo
 \setkomavar{location}{\input{nav-logo.pdf_tex}}
-\setplength{locheight}{26mm}
+\setplength{locheight}{17mm}
 \setplength{locwidth}{26mm}
 \setplength{lochpos}{19mm} % distance from right
 \setplength{locvpos}{21mm} % distance from top
 \newcommand{\svgwidth}{25mm} % Nav-logo width
 
 % Date
-\setplength{refwidth}{100mm}
-\setplength{refhpos}{88mm} %distance from left
-\setplength{refvpos}{83.7mm} %distance from top
+\setplength{toaddrheight}{100pt}
+\setplength{refwidth}{50mm}
+\KOMAoption{refline}{dateleft}
+\setplength{refhpos}{159mm} %distance from left
+\setplength{refvpos}{84mm} %distance from top
 \setkomavar{date}{\tinyText{Dato:}\hspace{1pt
 }6. mai 2021}
 %\KOMAoption{refline}{dateleft}
 
 % To address
 \setplength{toaddrhpos}{12mm}
-\setplength{toaddrvpos}{23.5mm}
+\setplength{toaddrvpos}{36mm}
 \newcommand{\brevparameter}{
     \arialFont \fontsize{12pt}{14pt} \selectfont
     \feltfornavnmottaker \space \feltetternavnmottaker \newline
     \feltgatenavnmottaker \space \felthusnummermottaker  \newline
     \feltpostnummermottaker \space \feltpoststedmottaker}
-%\setkomavar{toaddress}[description ]{
-%    \arialFont \fontsize{12pt}{8pt} \selectfont
-%    \feltgatenavnmottaker \space \felthusnummermottaker
-%    \\ \feltpoststedmottaker, \feltpostnummermottaker }
 
 %Content (block starting with letter title)
 \setplength{refaftervskip}{10mm} %vertical distance from reference field (containing date)
-    %Title
-    \setplength{subjectaftervskip}{2mm}
-    \newcommand{\tittel}[1]{ %command for creating title in the document
-        \setkomavar{subject}{
-            \titleText{#1}
-        }\opening{ %case and person information after title
-            \tinyGrayText{NAVs saksnummer:} 25305007 \\
-            \tinyGrayText{Navn:} \feltetternavnmottaker \space \feltfornavnmottaker \\
-            \tinyGrayText{Fødselsnummer:} \feltfoedselsnummer \\
-        }
+
+%Title
+\newlength{\vskipafteropening}
+\setlength{\vskipafteropening}{\dimexpr(-\baselineskip-5)}
+
+\setplength{subjectaftervskip}{2mm}
+\newcommand{\tittel}[1]{ %command for creating title in the document
+    \setkomavar{subject}{
+        \titleText{#1}
+    }\opening{ %case and person information after title
+        \tinyGrayText{NAVs saksnummer:} 25305007 \\
+        \tinyGrayText{Navn:} \feltetternavnmottaker \space \feltfornavnmottaker \\
+        \tinyGrayText{Fødselsnummer:} \feltfoedselsnummer \\
+        \vspace*{\vskipafteropening} %vertical space before letter content
     }
+}
 
-
-
-
-
-\newcommand{\infofield}[1]{{\color{gray}\footnotesize #1}}
-\newcommand{\brevseksjon}[1]{\par \textbf{#1} \newline}
+% brevseksjon
+\newlength{\vskipbeforesection} \setlength{\vskipbeforesection}{\sectionspacing pt}
+\newlength{\vskipaftersectiontitle} \setlength{\vskipaftersectiontitle}{5pt}
+\newcommand{\brevseksjon}[2]{
+    \vspace{\vskipbeforesection}
+    \par \vspace*{\vskipbeforesection} \textbf{#1} \vspace*{\vskipaftersectiontitle} \newline
+    #2
+}
 \newcommand{\hentVedlegg}[1]{\par \input{vedlegg/#1}}
