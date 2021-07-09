@@ -2,21 +2,29 @@
 %! Author = Håkon Heggholmen
 %! Date = 29.06.2021
 
+
+%----------------------------------------
+%            Document class
+%----------------------------------------
+
 \NeedsTeXFormat{LaTeX2e}
 %! suppress = PackageNameDoesNotMatchFileName
 \ProvidesPackage{pensjonsbrev_v2}[Team pensjonsbrev's Document Class]
 \LoadClass[version=last,
     foldmarks=false,
     subject=left,
-    parskip=never,
     DIV=15,
+    parskip=full,
 %    visualize, %DEBUG show boxes
 %    draft=true, % DEBUG show overfull boxes, collisions etc.
     addrfield=backgroundimage]{scrlttr2}
 %\showfields{head,address,location,refline,foot} %DEBUG
-\include{params}
 
-% Packages
+
+
+%----------------------------------------
+%               Imports
+%----------------------------------------
 \usepackage{amsmath}
 \usepackage{graphicx}
 \usepackage{setspace}
@@ -24,15 +32,49 @@
 \usepackage{xcolor}
 \setsansfont{Arial}
 \setmainfont{Times New Roman}
+\usepackage[norwegian]{babel} %TODO bytt avhengig av språk og målform
+\include{params}
+
+%----------------------------------------
+%                Global
+%----------------------------------------
 
 %fonts
 \newfontface{\grayArialFont}{Arial}[Color=888888]
-\newfontface{\arialFont}{Arial}
-\newfontface{\timesNewRomanFont}{Times New Roman}
-\newfontface{\titleFont}[BoldFont={Times New Roman Bold}]{Times New Roman}
+\newfontface{\arialFont}[BoldFont={Arial Bold}]{Arial}
+\newfontface{\timesNewRomanFont}[BoldFont={Times New Roman Bold}]{Times New Roman}
 
 
-%heading / return address
+% Global font commands
+
+\newcommand{\standardtextsize}{12pt}
+\newcommand{\tinytextsize}{8pt}
+\newcommand{\tinyGrayText}[1]{{\grayArialFont \fontsize{8pt}{8pt} \selectfont #1}}
+\newcommand{\tinyText}[1]{{\arialFont \fontsize{8pt}{8pt} \selectfont #1}}
+
+
+% page numbering
+\pagenumbering{arabic}
+
+
+% general distances
+\setparsizes{0pt}{0pt}{0pt plus 1fil}
+
+
+%----------------------------------------
+%                 Logo
+%----------------------------------------
+\setkomavar{location}{\input{nav-logo.pdf_tex}}
+\setplength{locheight}{17mm}
+\setplength{locwidth}{26mm}
+\setplength{lochpos}{19mm} % distance from right
+\setplength{locvpos}{21mm} % distance from top
+\newcommand{\svgwidth}{25mm} % Nav-logo width
+
+
+%----------------------------------------
+%         heading / return address
+%----------------------------------------
 \setplength{firstheadhpos}{20mm}
 \setplength{firstheadvpos}{13mm}
 \setplength{firstheadwidth}{100mm}
@@ -43,49 +85,22 @@
     \tinyText{Returadresse: NAV Familie- og pensjonsytelser Steinkjer}\newline
     \tinyText{Postboks 6600 Etterstad, 0607 OSLO}
 }
-%\setkomavar{fromname}[returadresse]{\onehalfspacing \parskip=0pt \tinyText{ Returadresse: NAV Familie- og pensjonsytelser Steinkjer}}
-%\setkomavar{fromaddress}[returadresse ]{\onehalfspacing \parskip=0pt \tinyText{ Postboks 6600 Etterstad, 0607 OSLO}}
 
 
-% DEBUGGING
-
-% Global variables
-
-
-% Font commands
-\newcommand{\standardtextsize}{12pt}
-\newcommand{\tinytextsize}{8pt}
-\newcommand{\tinyGrayText}[1]{{\grayArialFont \fontsize{8pt}{8pt} \selectfont #1}}
-\newcommand{\tinyText}[1]{{\arialFont \fontsize{8pt}{8pt} \selectfont #1}}
-\newcommand{\titleText}[1]{
-    \newline \titleFont \fontsize{16pt}{16pt} \selectfont \parindent=0pt \textbf{#1 }}
-
-% page numbering
-\pagenumbering{arabic}
-
-% general distances
-\setlength{\parindent}{0em}
-\setlength{\parskip}{1em}
-
-% logo
-\setkomavar{location}{\input{nav-logo.pdf_tex}}
-\setplength{locheight}{17mm}
-\setplength{locwidth}{26mm}
-\setplength{lochpos}{19mm} % distance from right
-\setplength{locvpos}{21mm} % distance from top
-\newcommand{\svgwidth}{25mm} % Nav-logo width
-
-% Date
+%----------------------------------------
+%                  Date
+%----------------------------------------
 \setplength{toaddrheight}{100pt}
 \setplength{refwidth}{50mm}
 \KOMAoption{refline}{dateleft}
 \setplength{refhpos}{159mm} %distance from left
 \setplength{refvpos}{84mm} %distance from top
-\setkomavar{date}{\tinyText{Dato:}\hspace{1pt
-}6. mai 2021}
-%\KOMAoption{refline}{dateleft}
+\setkomavar{date}{\tinyText{Dato:}\hspace{1pt}6. mai 2021}
 
-% To address
+
+%----------------------------------------
+%              To address
+%----------------------------------------
 \setplength{toaddrhpos}{12mm}
 \setplength{toaddrvpos}{36mm}
 \newcommand{\brevparameter}{
@@ -94,12 +109,14 @@
     \feltgatenavnmottaker \space \felthusnummermottaker  \newline
     \feltpostnummermottaker \space \feltpoststedmottaker}
 
-%Content (block starting with letter title)
-\setplength{refaftervskip}{10mm} %vertical distance from reference field (containing date)
 
-%Title
-\newlength{\vskipafteropening}
-\setlength{\vskipafteropening}{\dimexpr(-\baselineskip-5)}
+%----------------------------------------
+%           Title and opening
+%----------------------------------------
+\newfontface{\titleFont}[BoldFont={Times New Roman Bold}]{Times New Roman}
+\newcommand{\titleText}[1]{\newline \titleFont \fontsize{16pt}{16pt} \selectfont \textbf{#1}}
+
+\setplength{refaftervskip}{10mm} %vertical distance between title and reference field (containing date)
 
 \setplength{subjectaftervskip}{2mm}
 \newcommand{\tittel}[1]{ %command for creating title in the document
@@ -113,12 +130,54 @@
     }
 }
 
-% brevseksjon
-\newlength{\vskipbeforesection} \setlength{\vskipbeforesection}{\sectionspacing pt}
+
+%----------------------------------------
+%               Content
+%----------------------------------------
+% distance between opening and letter content in pt's
+\newif\ifaddspaceover
+\addspaceoverfalse
+
+\newlength{\vskipbeforesection} % distance between sections
+\setlength{\vskipbeforesection}{10}
+
+\newlength{\vskipafteropening} % distance between opening and first section title
+\setlength{\vskipafteropening}{\dimexpr(-\baselineskip-5)}
+
 \newlength{\vskipaftersectiontitle} \setlength{\vskipaftersectiontitle}{5pt}
-\newcommand{\brevseksjon}[2]{
-    \vspace{\vskipbeforesection}
-    \par \vspace*{\vskipbeforesection} \textbf{#1} \vspace*{\vskipaftersectiontitle} \newline
-    #2
+\newcommand{\lettersection}[2]{
+
+    % Add space between sections
+    \ifaddspaceover %If not in the first section, add space above.
+        \vspace*{\vskipbeforesection}
+    \fi
+    \addspaceovertrue %toggle on so that all sections following the first one gets space over the title.
+
+    \par\textbf{#1} %title
+    \vspace*{\vskipaftersectiontitle}
+    \newline
+    #2 %section content
 }
-\newcommand{\hentVedlegg}[1]{\par \input{vedlegg/#1}}
+\textwidth=160mm %max width of title, opening and content section(latex may override a little to make text nicer)
+
+
+%----------------------------------------
+%               Footer
+%----------------------------------------
+\setplength{firstfootvpos}{250mm} %absolute vertical posistion from top of page
+%\setplength{firstfoothpos}{200mm} %absolute horizontal posistion from left of page
+
+\newcommand{\footerText}[1]{{\arialFont \fontsize{8pt}{15pt} \selectfont #1}}
+\setkomavar{firstfoot}{%
+    \footerText{
+        \newline\noindent\rule{\textwidth}{0.5pt}
+        \textbf{NAV Familie-og pensjonsytelser Steinkjer} \newline
+        Postadresse: NAV Familie-og pensjonsytelser Steinkjer // Postboks 6600 Etterstad // 0607 Oslo \newline
+        Telefon: 55553334\newline
+        nav.no
+    }
+
+
+}
+
+
