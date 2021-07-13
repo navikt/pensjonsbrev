@@ -30,7 +30,7 @@ class LaTeXService {
                 ${e.message}""".trimMargin()
             )
         } finally {
-//            File(tmpDir.absolutePathString()).deleteRecursively() TODO uncomment
+            File(tmpDir.absolutePathString()).deleteRecursively()
         }
         return compiledPDF
     }
@@ -38,6 +38,8 @@ class LaTeXService {
     private fun createLetter(executionFolder: Path): PDFCompilationOutput {
 
 
+        //Run twice to resolve references such as number of pages
+        """xelatex letter.tex""".runCommand(executionFolder)
         """xelatex letter.tex""".runCommand(executionFolder)
 
         val letterPath = executionFolder.resolve("letter.pdf")

@@ -159,7 +159,7 @@
     #2 %section content
 }
 
-%\textwidth=170mm %max width of title, opening and content section(latex may override a little to make text nicer)
+\textwidth=170mm %max width of title, opening and content section(latex may override a little to make text nicer)
 
 
 %----------------------------------------
@@ -197,7 +197,7 @@
     foreground,
     contents={\parbox{\layerwidth}{
         \vspace*{32mm} %vertical space from footer top
-        \newline\hspace*{\fill}\pagemark %right align
+        \hspace*{\fill}\pagemark %right align
     }}
 ]{secondfoot.fg}
 \DeclarePageStyleByLayers{secondfooter}{secondfoot.fg}
