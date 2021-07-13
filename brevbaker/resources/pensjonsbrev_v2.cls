@@ -12,27 +12,27 @@
 \ProvidesPackage{pensjonsbrev_v2}[Team pensjonsbrev's Document Class]
 \LoadClass[version=last,
     foldmarks=false,
-    subject=left,
+    subject=left, % Left alignment of the title
     DIV=16,
-    parskip=full,
+    parskip=full, %allways have a vertical space between paragraphs(instead of indentation)
+    pagenumber=footright,
 %    visualize, %DEBUG show boxes
 %    draft=true, % DEBUG show overfull boxes, collisions etc.
     addrfield=backgroundimage]{scrlttr2}
 %\showfields{head,address,location,refline,foot} %DEBUG
 
 
-
 %----------------------------------------
 %               Imports
 %----------------------------------------
 \usepackage{amsmath}
-\usepackage{graphicx}
-\usepackage{setspace}
-\usepackage{fontspec}
-\usepackage{xcolor}
+\usepackage{graphicx}   %graphics such as logo
+\usepackage{setspace}   %
+\usepackage{fontspec}   %declare font presets
+\usepackage{xcolor}     %define colors
+\usepackage{scrlayer}   % creating custom layers/custom posistioned fields
 \setsansfont{Arial}
 \setmainfont{Times New Roman}
-\usepackage{babel} %TODO bytt avhengig av språk og målform
 \include{params}
 
 
@@ -48,7 +48,7 @@
 % Global font commands
 \newcommand{\standardtextsize}{12pt}
 \newcommand{\tinytextsize}{8pt}
-\newcommand{\tinyText}[1]{{\arialFont \fontsize{8pt}{8pt} \selectfont #1}}
+\newcommand{\tinyArialText}[1]{{\arialFont \fontsize{8pt}{8pt} \selectfont #1}}
 \setparsizes{0pt}{1em}{0pt plus 1fil}
 
 % page numbering
@@ -76,8 +76,8 @@
     \newline
     \parskip=0pt
     \baselineskip=5pt
-    \tinyText{Returadresse: NAV Familie- og pensjonsytelser Steinkjer}\newline
-    \tinyText{Postboks 6600 Etterstad, 0607 OSLO}
+    \tinyArialText{Returadresse: NAV Familie- og pensjonsytelser Steinkjer}\newline
+    \tinyArialText{Postboks 6600 Etterstad, 0607 OSLO}
 }
 
 
@@ -89,7 +89,7 @@
 \KOMAoption{refline}{dateleft}
 \setplength{refhpos}{159mm} %distance from left
 \setplength{refvpos}{84mm} %distance from top
-\setkomavar{date}{\tinyText{Dato:}\hspace{1pt}6. mai 2021}
+\setkomavar{date}{\tinyArialText{Dato:}\hspace{1pt}6. mai 2021}
 
 
 %----------------------------------------
@@ -148,30 +148,33 @@
 \newlength{\vskipaftersectiontitle} \setlength{\vskipaftersectiontitle}{5pt}
 \newcommand{\lettersection}[2]{
 
-    % Add space between sections
+% Add space between sections
     \ifaddspaceover %If not in the first section, add space above.
         \vspace*{\vskipbeforesection}
     \fi
     \addspaceovertrue %toggle on so that all sections following the first one gets space over the title.
-
     \par\textbf{#1} %title
     \vspace*{\vskipaftersectiontitle}
     \newline
     #2 %section content
 }
 
-\textwidth=160mm %max width of title, opening and content section(latex may override a little to make text nicer)
+%\textwidth=170mm %max width of title, opening and content section(latex may override a little to make text nicer)
 
 
 %----------------------------------------
 %               Footer
 %----------------------------------------
-\setplength{firstfootvpos}{254.5mm} %absolute vertical posistion from top of page
 \setlength{\footskip}{5pt} % space between letter content and footer
 \newcommand{\footerText}[1]{{\arialFont \fontsize{8pt}{8pt} \selectfont #1}} %footer font command
 
-%footer content
-\setkomavar{firstfoot}{%
+%page number
+\renewcommand*\pagemark{\usekomafont{pagenumber}{\tinyArialText{Side~\textbf{\thepage}~av~\textbf{\letterlastpage}}}}
+
+%first footer page
+\setplength{firstfootvpos}{254.5mm} %absolute vertical posistion from top of first page
+
+\setkomavar{firstfoot}{
     \newline\noindent\rule{\textwidth}{0.16mm}\vspace*{3.7mm} % footer top line
     \footerText{
         \textbf{NAV Familie-og pensjonsytelser Steinkjer}
@@ -179,7 +182,26 @@
         \newline Telefon: 55553334
         \newline nav.no
     }
+    \newline\hspace*{\fill}\pagemark
 }
+
+% footer from page 2 onward
+\newlength{\footerlength}
+\setlength{\footerlength}{\dimexpr\paperheight-\useplength{firstfootvpos}}
+\DeclareNewLayer[ %create a format similar to the first page
+    align=tl,
+    hoffset=\dimexpr.5\paperwidth-.5\useplength{firstfootwidth}\relax,
+    voffset=\useplength{firstfootvpos},
+    width=\useplength{firstfootwidth},
+    height=\footerlength,
+    foreground,
+    contents={\parbox{\layerwidth}{
+        \vspace*{32mm} %vertical space from footer top
+        \newline\hspace*{\fill}\pagemark %right align
+    }}
+]{secondfoot.fg}
+\DeclarePageStyleByLayers{secondfooter}{secondfoot.fg}
+\pagestyle{secondfooter}
 
 
 
