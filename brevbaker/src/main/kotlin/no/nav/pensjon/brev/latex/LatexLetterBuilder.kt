@@ -10,22 +10,19 @@ class LatexLetterBuilder(private val laTeXCompilerService: LaTeXCompilerService)
     private val encoder = Base64.getEncoder()
     fun buildLatex(letter: Letter): PDFCompilationOutput {
         val template = letter.letterTemplate.template
-        return runBlocking {
-            laTeXCompilerService.producePDF(
-                PdfCompilationInput(
-                    mapOf(
-                        "letter.tex" to encoder.encodeToString(
-                            """
-                            \documentclass{article}
+        return laTeXCompilerService.producePDF(
+            PdfCompilationInput(
+                mapOf(
+                    "letter.tex" to encoder.encodeToString(
+                        """
+                            \documentclass[12pt]{article}
                             \begin{document}
-                            $template
+                                $template
                             \end{document}
                         """.trimIndent().toByteArray()
-                        )
                     )
                 )
             )
-        }
-
+        )
     }
 }

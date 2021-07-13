@@ -23,6 +23,14 @@ repositories {
     mavenCentral()
 }
 
+sourceSets {
+    test {
+        resources {
+            srcDir("src/main/resources")
+        }
+    }
+}
+
 tasks {
     test {
         useJUnitPlatform()
@@ -47,8 +55,3 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter")
 }
 
-kotlin.sourceSets["main"].kotlin.srcDirs("src")
-kotlin.sourceSets["test"].kotlin.srcDirs("test")
-
-sourceSets["main"].resources.srcDirs("resources")
-sourceSets["test"].resources.srcDirs("testresources")

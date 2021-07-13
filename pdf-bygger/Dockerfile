@@ -1,10 +1,15 @@
 FROM navikt/java:15 as latexbase
 USER root
 ENV DEBIAN_FRONTEND="noninteractive" TZ="Europe/London"
-#TODO no-cache
+RUN apt-get -y install texlive-xetex
 RUN apt-get -y install tzdata
 RUN apt-get -y install texlive-latex-base  texlive-pictures
 RUN apt-get -y install texlive-fonts-recommended
+# allow non-free sources for microsoft fonts
+COPY container/nonfree.sh nonfree.sh
+RUN ./nonfree.sh
+RUN apt-get update
+RUN apt-get -y install ttf-mscorefonts-installer
 
 # Plugin and dependency caching layer
 FROM latexbase as gradle-cache
