@@ -4,9 +4,10 @@ import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import no.nav.pensjon.brev.something.ExperimentTemplates
 import no.nav.pensjon.brev.something.Fagdelen
+import no.nav.pensjon.brev.template.PensjonInnvilget
 import no.nav.pensjon.brev.template.ReturAdresse
 import no.nav.pensjon.brev.template.SaksNr
-import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 
@@ -17,6 +18,7 @@ class LetterResourceTest {
     private val templateArgs: Map<String, JsonNode> = mapOf(
         ReturAdresse.name to jacksonObjectMapper().valueToTree(returAdresse),
         SaksNr.name to jacksonObjectMapper().valueToTree(1234),
+        PensjonInnvilget.name to jacksonObjectMapper().valueToTree(true),
     )
 
     @Test
@@ -49,5 +51,15 @@ class LetterResourceTest {
     fun `create parses arguments`() {
         val letter = LetterResource.create(LetterRequest(template.name, templateArgs))
         assertEquals(returAdresse, letter.requiredArg(ReturAdresse))
+    }
+
+    @Test
+    fun `create parses arguments but does not add null values`() {
+        val argsWithoutPensjonInnvilget = templateArgs.filterKeys { it != PensjonInnvilget.name }
+        val letter = LetterResource.create(LetterRequest(template.name, argsWithoutPensjonInnvilget))
+
+        assertFalse(
+            letter.arguments.containsKey(PensjonInnvilget)
+        )
     }
 }

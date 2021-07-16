@@ -2,7 +2,7 @@ package no.nav.pensjon.brev.template
 
 typealias LetterArguments = Map<Parameter, Any>
 
-data class Letter(val template: LetterTemplate, private val arguments: LetterArguments) {
+data class Letter(val template: LetterTemplate, val arguments: LetterArguments) {
 
     init {
         val missing: List<RequiredParameter> = (template.base.parameters + template.parameters)

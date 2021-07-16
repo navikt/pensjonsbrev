@@ -4,13 +4,13 @@ import no.nav.pensjon.brev.dto.Letter
 import no.nav.pensjon.brev.dto.LetterTemplate
 import no.nav.pensjon.brev.dto.PdfCompilationInput
 import no.nav.pensjon.brev.dto.StandardFields
+import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
-import java.io.File
-import java.lang.IllegalStateException
 import java.util.*
-import kotlin.test.assertNotNull
 
+@Disabled
 class LatexLetterBuilderTest {
     private val laTeXCompilerService = LaTeXCompilerService()
     private val latexLetterBuilder = LatexLetterBuilder(laTeXCompilerService)

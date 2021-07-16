@@ -25,5 +25,6 @@ object LetterResource {
 
     private fun parseArguments(arguments: Map<String, JsonNode>, parameters: Set<TemplateParameter>): Map<Parameter, Any> =
         parameters.associateBy({ it.type }) { objectMapper.treeToValue(arguments[it.type.name], it.type.dataType.java) }
+            .filterValues { it != null }
 
 }
