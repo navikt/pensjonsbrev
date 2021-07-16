@@ -3,19 +3,18 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 val logback_version: String by project
 val ktor_version: String by project
-val kotlin_version: String by project
 val jupiter_version: String by project
 
 plugins {
     application
-    kotlin("jvm") version "1.4.32"
+    kotlin("jvm") version "1.5.20"
 }
 
 group = "no.nav.pensjon.brev"
 version = "0.0.1-SNAPSHOT"
 
 application {
-    mainClassName = "io.ktor.server.netty.EngineMain"
+    mainClass.set("io.ktor.server.netty.EngineMain")
 }
 
 repositories {
@@ -32,14 +31,21 @@ sourceSets {
 }
 
 tasks {
+    compileKotlin {
+        kotlinOptions.jvmTarget = "15"
+    }
+    compileTestKotlin {
+        kotlinOptions.jvmTarget = "15"
+    }
+
     test {
         useJUnitPlatform()
     }
 }
 
 dependencies {
+    implementation(kotlin("stdlib"))
     implementation("io.ktor:ktor-client-cio:$ktor_version")
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version")
     implementation("io.ktor:ktor-server-netty:$ktor_version")
     implementation("ch.qos.logback:logback-classic:$logback_version")
     implementation("io.ktor:ktor-server-core:$ktor_version")
