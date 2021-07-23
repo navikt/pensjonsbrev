@@ -2,11 +2,8 @@ package no.nav.pensjon.brev.api
 
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import no.nav.pensjon.brev.something.ExperimentTemplates
-import no.nav.pensjon.brev.something.Fagdelen
-import no.nav.pensjon.brev.template.PensjonInnvilget
-import no.nav.pensjon.brev.template.ReturAdresse
-import no.nav.pensjon.brev.template.SaksNr
+import no.nav.pensjon.brev.something.*
+import no.nav.pensjon.brev.template.*
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -18,7 +15,15 @@ class LetterResourceTest {
     private val templateArgs: Map<String, JsonNode> = mapOf(
         ReturAdresse.name to jacksonObjectMapper().valueToTree(returAdresse),
         SaksNr.name to jacksonObjectMapper().valueToTree(1234),
+        LetterTitle.name to jacksonObjectMapper().valueToTree("Tittel"),
         PensjonInnvilget.name to jacksonObjectMapper().valueToTree(true),
+        FornavnMottaker.name to jacksonObjectMapper().valueToTree("FornavnMottaker"),
+        EtternavnMottaker.name to jacksonObjectMapper().valueToTree("EtternavnMottaker"),
+        GatenavnMottaker.name to jacksonObjectMapper().valueToTree("GatenavnMottaker"),
+        HusnummerMottaker.name to jacksonObjectMapper().valueToTree(1234),
+        PostnummerMottaker.name to jacksonObjectMapper().valueToTree(1337),
+        PoststedMottaker.name to jacksonObjectMapper().valueToTree("PoststedMottaker"),
+        NorskIdentifikator.name to jacksonObjectMapper().valueToTree(13374212345),
     )
 
     @Test

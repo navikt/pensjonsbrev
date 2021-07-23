@@ -31,6 +31,7 @@
 \usepackage{fontspec}   %declare font presets
 \usepackage{xcolor}     %define colors
 \usepackage{scrlayer}   % creating custom layers/custom posistioned fields
+\usepackage{needspace}
 \setsansfont{Arial}
 \setmainfont{Times New Roman}
 \include{params}
@@ -53,6 +54,10 @@
 
 % page numbering
 \pagenumbering{arabic}
+
+% paragraph formatting
+\sloppy % no word-breaking
+\raggedright
 
 
 %----------------------------------------
@@ -115,7 +120,7 @@
 \setplength{refaftervskip}{10mm} %vertical distance between title and reference field (containing date)
 
 \newlength{\vskipafteropening} % distance between opening and first section title
-\setlength{\vskipafteropening}{\dimexpr(-\baselineskip-3pt)} %removing the baseline skip and 5 pts
+\setlength{\vskipafteropening}{\dimexpr(6pt)} %removing the baseline skip and 5 pts
 
 %opening prefix font
 \newcommand{\tinyGrayText}[1]{{\grayArialFont \fontsize{8pt}{8pt} \selectfont #1}}
@@ -143,23 +148,26 @@
 \addspaceoverfalse
 
 \newlength{\vskipbeforesection} % distance between sections
-\setlength{\vskipbeforesection}{10pt}
+\setlength{\vskipbeforesection}{12pt}
 
-\newlength{\vskipaftersectiontitle} \setlength{\vskipaftersectiontitle}{5pt}
-\newcommand{\lettersection}[2]{
-
+\newlength{\vskipaftersectiontitle} \setlength{\vskipaftersectiontitle}{6pt}
+\newcommand{\lettersectiontitle}[1]{
 % Add space between sections
     \ifaddspaceover %If not in the first section, add space above.
         \vspace*{\vskipbeforesection}
     \fi
     \addspaceovertrue %toggle on so that all sections following the first one gets space over the title.
-    \par\textbf{#1} %title
+    \textbf{#1} %title
     \vspace*{\vskipaftersectiontitle}
     \newline
-    #2 %section content
 }
 
-\textwidth=170mm %max width of title, opening and content section(latex may override a little to make text nicer)
+\newcommand{\letterparagraph}[1]{
+    \samepage %do not break up paragraphs across pages
+    #1\par
+}
+
+\textwidth=165mm %max width of title, opening and content section(latex may override a little to make text nicer)
 
 
 %----------------------------------------

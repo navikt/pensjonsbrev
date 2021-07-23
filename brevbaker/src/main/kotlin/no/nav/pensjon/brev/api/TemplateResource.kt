@@ -6,10 +6,12 @@ import no.nav.pensjon.brev.template.LetterTemplate
 object TemplateResource {
 
     fun getTemplates(): List<String> =
-        listOf(ExperimentTemplates.eksempelBrev.name)
+        listOf(ExperimentTemplates.eksempelBrev.name, ExperimentTemplates.alderspensjon.name)
 
     fun getTemplate(name: String): LetterTemplate? =
-        if (name == ExperimentTemplates.eksempelBrev.name) {
-            ExperimentTemplates.eksempelBrev
-        } else null
+        when(name){
+            ExperimentTemplates.eksempelBrev.name -> ExperimentTemplates.eksempelBrev
+            ExperimentTemplates.alderspensjon.name -> ExperimentTemplates.alderspensjon
+            else -> null
+        }
 }

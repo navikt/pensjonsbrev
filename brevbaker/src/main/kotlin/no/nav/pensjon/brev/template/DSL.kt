@@ -55,18 +55,28 @@ open class TextOnlyBuilder(val children: MutableList<Element> = mutableListOf())
 
 @LetterTemplateMarker
 class ContainerElementBuilder: TextOnlyBuilder() {
-    fun title1(init: TextOnlyBuilder.() -> Element.Text) {
+    fun title1(init: TextOnlyBuilder.() -> Element.Text) =
+        children.add(Element.Title1(renderChildren(init)))
+
+    fun paragraph(init: TextOnlyBuilder.() -> Element.Text) =
+        children.add(Element.Paragraph(renderChildren(init)))
+
+
+    private fun renderChildren(init: TextOnlyBuilder.() -> Element.Text): List<Element> {
         val textBuilder = TextOnlyBuilder().apply { init() }
         val text = if (textBuilder.children.isEmpty()) {
             listOf(textBuilder.let(init))
         } else {
             textBuilder.children
         }
-        children.add(Element.Title1(text))
+        return text
     }
 
     fun title1(str: String) = title1 { text(str) }
     fun title1(phrase: Phrase) = title1 { phrase(phrase) }
+
+    fun paragraph(str: String) = paragraph { text(str) }
+    fun paragraph(phrase: Phrase) = paragraph { phrase(phrase) }
 
     // TODO: Denne må flyttes til et ytre scope slik at man ikke skrive `section { section {  } }`.
     fun section(init: ContainerElementBuilder.() -> Unit) =

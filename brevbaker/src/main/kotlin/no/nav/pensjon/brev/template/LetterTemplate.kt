@@ -36,7 +36,7 @@ sealed class TemplateParameter {
 
     }
 
-    val type: Parameter
+    val parameter: Parameter
         @JsonIgnore
         get() = when (this) {
             is RequiredParameter -> required
@@ -118,6 +118,7 @@ sealed class Element {
     val schema: String = this::class.java.name.removePrefix(this::class.java.`package`.name + '.')
 
     data class Title1(val title1: List<Element>) : Element()
+    data class Paragraph(val title1: List<Element>) : Element()
     data class Section(val section: List<Element>) : Element()
 
     sealed class Text : Element() {

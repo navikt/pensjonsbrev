@@ -8,7 +8,6 @@ import io.ktor.request.*
 import io.ktor.routing.*
 import io.ktor.server.netty.*
 import org.slf4j.event.Level
-import java.util.*
 
 val laTeXService = LaTeXService()
 fun main(args: Array<String>) {
@@ -24,11 +23,6 @@ fun Application.module() {
         level = Level.INFO
     }
 
-//    install(Compression){
-//        gzip {
-//            condition { request.uri == "/compile" }
-//        }
-//    }
     routing {
         post("/compile") {
             try {

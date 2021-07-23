@@ -1,102 +1,111 @@
 package no.nav.pensjon.brev.something
 
+import no.nav.pensjon.brev.dto.PdfCompilationInput
+import no.nav.pensjon.brev.latex.LaTeXCompilerService
 import no.nav.pensjon.brev.template.*
 import java.io.OutputStream
-import java.io.PrintWriter
+import java.util.*
+
 
 object PensjonLatex : BaseTemplate() {
+    private val laTeXCompilerService = LaTeXCompilerService()
     override val parameters: Set<TemplateParameter> = setOf(
-        RequiredParameter(ReturAdresse)
+        RequiredParameter(ReturAdresse),
+        RequiredParameter(FornavnMottaker),
+        RequiredParameter(EtternavnMottaker),
+        RequiredParameter(GatenavnMottaker),
+        RequiredParameter(HusnummerMottaker),
+        RequiredParameter(PostnummerMottaker),
+        RequiredParameter(PoststedMottaker),
+        RequiredParameter(NorskIdentifikator),
+        RequiredParameter(SaksNr),
+        RequiredParameter(LetterTitle),
     )
 
+    private val encoder = Base64.getEncoder()
+
     override fun render(letter: Letter, out: OutputStream) {
-        PrintWriter(out, false, Charsets.UTF_8).use {
-            documentclass(it)
-            letterhead(letter, it)
-            startLetter(letter, it)
-            contents(letter, it)
-            endLetter(it)
-        }
-    }
+        masterTemplateParameters(letter)
 
-    private fun documentclass(printer: PrintWriter) =
-        printer.println(
-            """
-            \documentclass[version=last,
-                foldmarks=false,
-                addrfield=backgroundimage]{scrlttr2}
-            \usepackage[utf8]{inputenc}
-            \usepackage[norsk]{babel}
-            \usepackage{graphicx}
-            \usepackage{listings}
-            \usepackage{xcolor}
-            \usepackage{times}
-            \usepackage[T1]{fontenc}
-
-            \pagenumbering{arabic}
-            \setlength{\parindent}{0em}
-            \setlength{\parskip}{1em}
-            \setplength{locwidth}{200pt}
-            \setplength{toaddrheight}{170pt}
-        """.trimIndent()
-        )
-
-    private fun letterhead(letter: Letter, printer: PrintWriter) {
-        val returAdresse = letter.requiredArg(ReturAdresse)
-
-        printer.println(
-            """
-            \setkomavar{date}{\today}
-            \setkomavar{fromname}[description ]{\small Returadresse: ${returAdresse.navEnhetsNavn}}
-            \setkomavar{fromaddress}[description ]{\small ${returAdresse.adresseLinje1}, ${returAdresse.postNr} ${returAdresse.postNr} }
-            \setkomavar{toaddress}[description ]{
-                \uppercase{\feltgatenavnmottaker \space \felthusnummermottaker
-                \\ \feltpoststedmottaker, \feltpostnummermottaker }}
-            \setkomavar{addresseeimage}[description ]{ \includegraphics[width=2cm]{nav} }
-        """.trimIndent()
+        out.write(
+            laTeXCompilerService.producePDF(
+                PdfCompilationInput(
+                    mapOf(
+                        "letter.tex" to renderLetter(letter),
+                        "pensjonsbrev_v2.cls" to getResource("pensjonsbrev_v2.cls"),
+                        "nav-logo.pdf" to getResource("nav-logo.pdf"),
+                        "params.tex" to masterTemplateParameters(letter),
+                        "nav-logo.pdf_tex" to getResource("nav-logo.pdf_tex"),
+                    )
+                )
+            ).toByteArray()
         )
     }
 
-    private fun startLetter(letter: Letter, printer: PrintWriter) =
-        printer.println(
-            """
+    private fun masterTemplateParameters(letter: Letter) =
+        """
+            \newcommand{\feltfornavnmottaker}{${letter.requiredArg(FornavnMottaker)}}
+            \newcommand{\feltetternavnmottaker}{${letter.requiredArg(EtternavnMottaker)}}
+            \newcommand{\feltgatenavnmottaker}{${letter.requiredArg(GatenavnMottaker)}}
+            \newcommand{\felthusnummermottaker}{${letter.requiredArg(HusnummerMottaker)}}
+            \newcommand{\feltpostnummermottaker}{${letter.requiredArg(PostnummerMottaker)}}
+            \newcommand{\feltpoststedmottaker}{${letter.requiredArg(PoststedMottaker)}}
+            \newcommand{\feltfoedselsnummer}{${letter.requiredArg(NorskIdentifikator)}}
+            \newcommand{\fielddate}{TESTDATO}
+
+        """.encodeTemplate()
+
+    private fun renderLetter(letter: Letter) =
+        """
+            \documentclass[12pt]{pensjonsbrev_v2}
             \begin{document}
-            \begin{letter}{%
-                Alexander Hoem \space Rosbach \newline 
-                \uppercase{Agmund Bolts vei \space 2 } \newline
-                0664 \space Oslo%
-            }
-        """.trimIndent()
-        )
-
-    private fun contents(letter: Letter, printWriter: PrintWriter) =
-        letter.template.outline.forEach { renderElement(letter, it, printWriter) }
-
-    private fun endLetter(printer: PrintWriter) =
-        printer.println(
-            """
-            \end{letter}
+                \begin{letter}{\brevparameter}
+                \tittel{${letter.requiredArg(LetterTitle)}}
+                ${contents(letter)}
+                \end{letter}
             \end{document}
-        """.trimIndent()
-        )
+        """.encodeTemplate()
 
-    private fun renderElement(letter: Letter, element: Element, printWriter: PrintWriter): Unit =
+    private fun contents(letter: Letter): StringBuilder {
+        val stringBuilder = StringBuilder()
+        letter.template.outline.forEach { renderElement(letter, it, stringBuilder) }
+        return stringBuilder
+    }
+
+    private fun renderElement(letter: Letter, element: Element, stringBuilder: StringBuilder) {
         when (element) {
             is Element.Title1 ->
-                with(printWriter) {
-                    println("""{\large """)
-                    element.title1.forEach { child -> renderElement(letter, child, printWriter) }
-                    println("}")
+                with(stringBuilder) {
+                    append("""\lettersectiontitle{""")
+                    element.title1.forEach { child -> renderElement(letter, child, stringBuilder) }
+                    appendLine("}")
                 }
             is Element.Conditional ->
                 with(element) {
                     val toRender = if (predicate.eval(letter)) element.showIf else element.showElse
-                    toRender.forEach { renderElement(letter, it, printWriter) }
+                    toRender.forEach { renderElement(letter, it, stringBuilder) }
                 }
             is Element.Section -> TODO("NOT Implemented rendering of: ${element.schema}")
-            is Element.Text.Literal -> printWriter.println(element.text)
-            is Element.Text.Phrase -> printWriter.println(element.phrase)
-            is Element.Text.Expression -> printWriter.print(element.expression.eval(letter))
+            is Element.Text.Literal -> stringBuilder.append(element.text)
+            is Element.Text.Phrase -> stringBuilder.append(element.phrase.text())
+            is Element.Text.Expression -> stringBuilder.append(element.expression.eval(letter))
+            is Element.Paragraph ->
+                with(stringBuilder) {
+                    append("""\letterparagraph{""")
+                    element.title1.forEach { child -> renderElement(letter, child, stringBuilder) }
+                    appendLine("}")
+                }
         }
+    }
+
+    private fun getResource(fileName: String): String {
+        val classPath = """/$fileName"""
+        val file = this::class.java.getResourceAsStream(classPath)?.readAllBytes()
+            ?: throw IllegalStateException("""Could not find class resource $classPath""")
+        return encoder.encodeToString(file)
+    }
+
+    private fun String.encodeTemplate() = encoder.encodeToString(this.trimIndent().toByteArray())
 
 }
+

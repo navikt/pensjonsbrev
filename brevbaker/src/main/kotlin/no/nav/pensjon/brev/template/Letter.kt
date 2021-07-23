@@ -7,16 +7,16 @@ data class Letter(val template: LetterTemplate, val arguments: LetterArguments) 
     init {
         val missing: List<RequiredParameter> = (template.base.parameters + template.parameters)
             .filterIsInstance<RequiredParameter>()
-            .filter { !arguments.containsKey(it.type) }
+            .filter { !arguments.containsKey(it.parameter) }
 
         if (missing.isNotEmpty()) {
-            val names = missing.joinToString(", ") { it.type.name }
+            val names = missing.joinToString(", ") { it.parameter.name }
             throw IllegalArgumentException("Missing required arguments: $names")
         }
     }
 
     fun untypedArg(type: Parameter): Any? {
-        if (!(template.parameters + template.base.parameters).any { it.type == type }) {
+        if (!(template.parameters + template.base.parameters).any { it.parameter == type }) {
             throw IllegalArgumentException("Template doesn't declare requested parameter: ${type.name}")
         }
 

@@ -1,14 +1,9 @@
 package no.nav.pensjon.brev.template
 
-import no.nav.pensjon.brev.something.Fraser
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.core.IsCollectionContaining
-import org.junit.jupiter.api.Assertions
-import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-import org.junit.matchers.JUnitMatchers
 import java.io.OutputStream
-import kotlin.math.exp
 
 class UtilsTest {
 

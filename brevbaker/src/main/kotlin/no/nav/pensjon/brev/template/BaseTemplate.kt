@@ -3,7 +3,6 @@ package no.nav.pensjon.brev.template
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import java.io.OutputStream
-import java.io.PrintWriter
 
 @JsonIgnoreProperties("parameters")
 abstract class BaseTemplate {

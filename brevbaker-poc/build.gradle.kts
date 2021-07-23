@@ -36,7 +36,7 @@ dependencies {
 
 tasks {
 	withType<KotlinCompile> {
-		kotlinOptions.jvmTarget = "14"
+		kotlinOptions.jvmTarget = "15"
 	}
 	withType<Test> {
 		useJUnitPlatform()

@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import no.nav.pensjon.brev.template.Letter
 import no.nav.pensjon.brev.template.Parameter
-import no.nav.pensjon.brev.template.RequiredParameter
 import no.nav.pensjon.brev.template.TemplateParameter
 
 data class LetterRequest(val template: String, val arguments: Map<String, JsonNode>)
@@ -24,7 +23,7 @@ object LetterResource {
     }
 
     private fun parseArguments(arguments: Map<String, JsonNode>, parameters: Set<TemplateParameter>): Map<Parameter, Any> =
-        parameters.associateBy({ it.type }) { objectMapper.treeToValue(arguments[it.type.name], it.type.dataType.java) }
+        parameters.associateBy({ it.parameter }) { objectMapper.treeToValue(arguments[it.parameter.name], it.parameter.dataType.java) }
             .filterValues { it != null }
 
 }

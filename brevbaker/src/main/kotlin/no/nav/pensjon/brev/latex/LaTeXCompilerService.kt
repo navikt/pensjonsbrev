@@ -2,7 +2,6 @@ package no.nav.pensjon.brev.latex
 
 import io.ktor.client.*
 import io.ktor.client.engine.cio.*
-import io.ktor.client.features.*
 import io.ktor.client.features.json.*
 import io.ktor.client.request.*
 import io.ktor.http.*
@@ -20,10 +19,10 @@ class LaTeXCompilerService {
             requestTimeout = 20_000
         }
     }
-    fun producePDF(compilationInput: PdfCompilationInput): PDFCompilationOutput {
+    fun producePDF(compilationInput: PdfCompilationInput): String {
         var response: PDFCompilationOutput
         runBlocking {
-            response = httpClient.post("http://127.0.0.1:8080/compile") {
+            response = httpClient.post("http://127.0.0.1:8080/compile") { //TODO get url from config
                 contentType(ContentType.Application.Json)
                 body = compilationInput
             }
@@ -31,7 +30,8 @@ class LaTeXCompilerService {
         if(response.buildLog != null) {
             throw IllegalStateException(response.buildLog)
         } else {
-            return response
+            return response.pdf
+                ?:throw IllegalStateException("Pdf compiler service responded without errors or pdf result")
         }
     }
 }

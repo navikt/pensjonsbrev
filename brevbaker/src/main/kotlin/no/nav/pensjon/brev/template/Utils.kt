@@ -11,7 +11,7 @@ fun <T : Any> KClass<out T>.findSealedObjects(): Set<T> =
     }
 
 fun LetterTemplate.validateArgumentExpressions() {
-    val requiredParameters = parameters.filterIsInstance<RequiredParameter>().map { it.type }
+    val requiredParameters = parameters.filterIsInstance<RequiredParameter>().map { it.parameter }
 
     val nonRequiredUsedAsRequired = outline.flatMap { it.findExpressions() }
         .flatMap { it.requiredArguments() }
@@ -65,4 +65,5 @@ internal fun Element.findExpressions(): List<Expression<*>> =
 
         is Element.Title1 ->
             title1.flatMap { it.findExpressions() }
+        is Element.Paragraph -> emptyList()
     }

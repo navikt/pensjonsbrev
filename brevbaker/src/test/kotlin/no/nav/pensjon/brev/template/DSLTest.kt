@@ -3,13 +3,11 @@ package no.nav.pensjon.brev.template
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import no.nav.pensjon.brev.something.PensjonLatex
-import org.junit.Ignore
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import java.lang.IllegalArgumentException
-import java.lang.IllegalStateException
 import kotlin.contracts.ExperimentalContracts
 
 @ExperimentalContracts
