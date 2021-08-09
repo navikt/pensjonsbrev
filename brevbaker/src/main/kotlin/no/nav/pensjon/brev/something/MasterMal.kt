@@ -23,6 +23,7 @@ object PensjonLatex : BaseTemplate() {
     )
 
     private val encoder = Base64.getEncoder()
+    var dict = ResourceBundle.getBundle("mastertemplate", Locale.forLanguageTag("no"))
 
     override fun render(letter: Letter, out: OutputStream) {
         masterTemplateParameters(letter)
@@ -51,9 +52,25 @@ object PensjonLatex : BaseTemplate() {
             \newcommand{\feltpostnummermottaker}{${letter.requiredArg(PostnummerMottaker)}}
             \newcommand{\feltpoststedmottaker}{${letter.requiredArg(PoststedMottaker)}}
             \newcommand{\feltfoedselsnummer}{${letter.requiredArg(NorskIdentifikator)}}
-            \newcommand{\fielddate}{TESTDATO}
-
+            \newcommand{\feltsaksnummer}{${letter.requiredArg(SaksNr)}}
+            ${getTextParameters()}
+            ${generateVedlegg()}
         """.encodeTemplate()
+
+    private fun getTextParameters(): String {
+        val stringBuilder = StringBuilder()
+        dict.keySet().forEach {
+            stringBuilder.append("""\newcommand{\felt${it}}{${dict.getString(it)}}""")
+        }
+        return stringBuilder.toString()
+    }
+
+    private fun generateVedlegg() = """\newcommand{\feltclosingvedlegg}{
+            \begin{itemize}
+                \item test1
+                \item test2
+            \end{itemize}    
+        }""".trimMargin() //TODO generer vedlegg
 
     private fun renderLetter(letter: Letter) =
         """
@@ -62,6 +79,7 @@ object PensjonLatex : BaseTemplate() {
                 \begin{letter}{\brevparameter}
                 \tittel{${letter.requiredArg(LetterTitle)}}
                 ${contents(letter)}
+                \closing
                 \end{letter}
             \end{document}
         """.encodeTemplate()

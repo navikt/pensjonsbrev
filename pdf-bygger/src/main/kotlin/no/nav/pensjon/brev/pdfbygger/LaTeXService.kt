@@ -39,11 +39,11 @@ class LaTeXService {
 
 
         //Run twice to resolve references such as number of pages
-        """xelatex letter.tex""".runCommand(executionFolder)
-        """xelatex letter.tex""".runCommand(executionFolder)
+        """xelatex -interaction=nonstopmode -halt-on-error letter.tex""".runCommand(executionFolder)
+        """xelatex -interaction=nonstopmode -halt-on-error letter.tex""".runCommand(executionFolder)
 
         val letterPath = executionFolder.resolve("letter.pdf")
-        val logPath = executionFolder.resolve("letter.pdf")
+        val logPath = executionFolder.resolve("letter.log")
 
         val letterPDF = File(letterPath.absolutePathString())
         return if (letterPDF.exists()) {
@@ -57,7 +57,7 @@ class LaTeXService {
         }
     }
 
-    fun String.runCommand(directory: Path) {
+    private fun String.runCommand(directory: Path) {
         ProcessBuilder(*split(" ").toTypedArray())
             .directory(File(directory.absolutePathString()))
             .redirectOutput(ProcessBuilder.Redirect.INHERIT)

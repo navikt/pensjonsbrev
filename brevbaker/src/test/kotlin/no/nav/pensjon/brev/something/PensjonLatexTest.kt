@@ -8,7 +8,6 @@ import no.nav.pensjon.brev.something.ExperimentTemplates.alderspensjon
 import no.nav.pensjon.brev.template.*
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
-
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.util.*
