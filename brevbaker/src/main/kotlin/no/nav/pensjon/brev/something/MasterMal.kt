@@ -11,12 +11,7 @@ object PensjonLatex : BaseTemplate() {
     private val laTeXCompilerService = LaTeXCompilerService()
     override val parameters: Set<TemplateParameter> = setOf(
         RequiredParameter(ReturAdresse),
-        RequiredParameter(FornavnMottaker),
-        RequiredParameter(EtternavnMottaker),
-        RequiredParameter(GatenavnMottaker),
-        RequiredParameter(HusnummerMottaker),
-        RequiredParameter(PostnummerMottaker),
-        RequiredParameter(PoststedMottaker),
+        RequiredParameter(Mottaker),
         RequiredParameter(NorskIdentifikator),
         RequiredParameter(SaksNr),
         RequiredParameter(LetterTitle),
@@ -44,18 +39,20 @@ object PensjonLatex : BaseTemplate() {
     }
 
     private fun masterTemplateParameters(letter: Letter) =
-        """
-            \newcommand{\feltfornavnmottaker}{${letter.requiredArg(FornavnMottaker)}}
-            \newcommand{\feltetternavnmottaker}{${letter.requiredArg(EtternavnMottaker)}}
-            \newcommand{\feltgatenavnmottaker}{${letter.requiredArg(GatenavnMottaker)}}
-            \newcommand{\felthusnummermottaker}{${letter.requiredArg(HusnummerMottaker)}}
-            \newcommand{\feltpostnummermottaker}{${letter.requiredArg(PostnummerMottaker)}}
-            \newcommand{\feltpoststedmottaker}{${letter.requiredArg(PoststedMottaker)}}
+        with(letter.requiredArg(Mottaker)) {
+            """
+            \newcommand{\feltfornavnmottaker}{$fornavn}
+            \newcommand{\feltetternavnmottaker}{$etternavn}
+            \newcommand{\feltgatenavnmottaker}{$gatenavn}
+            \newcommand{\felthusnummermottaker}{$husnummer}
+            \newcommand{\feltpostnummermottaker}{$postnummer}
+            \newcommand{\feltpoststedmottaker}{$poststed}
             \newcommand{\feltfoedselsnummer}{${letter.requiredArg(NorskIdentifikator)}}
             \newcommand{\feltsaksnummer}{${letter.requiredArg(SaksNr)}}
             ${getTextParameters()}
             ${generateVedlegg()}
         """.encodeTemplate()
+        }
 
     private fun getTextParameters(): String {
         val stringBuilder = StringBuilder()
