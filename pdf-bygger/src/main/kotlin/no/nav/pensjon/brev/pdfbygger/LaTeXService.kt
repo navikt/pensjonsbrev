@@ -13,7 +13,7 @@ class LaTeXService {
     private val encoder = Base64.getEncoder()
 
     fun producePDF(latexFiles: Map<String, String>): PDFCompilationOutput {
-        val tmpDir = createTempDirectory(Path.of("pdfcompilation").toAbsolutePath())
+        val tmpDir = createTempDirectory()
 
         latexFiles.forEach {
             val file = File(tmpDir.resolve(it.key).absolutePathString())
