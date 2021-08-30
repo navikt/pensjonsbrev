@@ -9,5 +9,3 @@ object Fagdelen {
 
     data class Mottaker(val fornavn: String, val etternavn: String, val gatenavn: String, val husnummer: String, val postnummer: String, val poststed: String)
 }
-
-

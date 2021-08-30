@@ -10,7 +10,7 @@ fun <T : Any> KClass<out T>.findSealedObjects(): Set<T> =
         objectInstance?.let { setOf(it) } ?: emptySet()
     }
 
-fun LetterTemplate.validateArgumentExpressions() {
+fun <Lang : LanguageCombination> LetterTemplate<Lang>.validateArgumentExpressions() {
     val requiredParameters = parameters.filterIsInstance<RequiredParameter>().map { it.parameter }
 
     val nonRequiredUsedAsRequired = outline.flatMap { it.findExpressions() }
@@ -46,13 +46,10 @@ internal fun Expression<*>.requiredArguments(): List<Expression.Argument<*, *>> 
             value.requiredArguments()
     }
 
-internal fun Element.findExpressions(): List<Expression<*>> =
+internal fun <Lang : LanguageCombination> Element<Lang>.findExpressions(): List<Expression<*>> =
     when (this) {
         is Element.Conditional ->
             (showIf + showElse).flatMap { it.findExpressions() } + predicate
-
-        is Element.Section ->
-            section.flatMap { it.findExpressions() }
 
         is Element.Text.Expression ->
             listOf(expression)

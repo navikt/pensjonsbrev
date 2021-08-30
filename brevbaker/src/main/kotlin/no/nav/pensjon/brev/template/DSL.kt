@@ -1,9 +1,23 @@
 package no.nav.pensjon.brev.template
 
-fun createTemplate(name: String, base: BaseTemplate, init: LetterTemplateBuilder.() -> Unit): LetterTemplate =
-    with(LetterTemplateBuilder().apply(init)) {
-        return LetterTemplate(name, base, parameters, outline)
+fun <Lang : LanguageCombination> createTemplate(
+    name: String,
+    base: BaseTemplate,
+    lang: Lang,
+    init: LetterTemplateBuilder<Lang>.() -> Unit
+): LetterTemplate<Lang> =
+    with(LetterTemplateBuilder<Lang>().apply(init)) {
+        return LetterTemplate(name, base, parameters, lang, outline)
     }
+
+fun <Lang1 : Language> languages(lang1: Lang1) =
+    LanguageCombination.Single(lang1)
+
+fun <Lang1 : Language, Lang2 : Language> languages(lang1: Lang1, lang2: Lang2) =
+    LanguageCombination.Double(lang1, lang2)
+
+fun <Lang1 : Language, Lang2 : Language, Lang3 : Language> languages(lang1: Lang1, lang2: Lang2, lang3: Lang3) =
+    LanguageCombination.Triple(lang1, lang2, lang3)
 
 @LetterTemplateMarker
 class ParametersBuilder(val parameters: MutableSet<TemplateParameter> = mutableSetOf()) {
@@ -15,24 +29,24 @@ class ParametersBuilder(val parameters: MutableSet<TemplateParameter> = mutableS
 }
 
 @LetterTemplateMarker
-open class LetterTemplateBuilder(
+open class LetterTemplateBuilder<Lang : LanguageCombination>(
     val parameters: MutableSet<TemplateParameter> = mutableSetOf(),
-    val outline: MutableList<Element> = mutableListOf(),
+    val outline: MutableList<Element<Lang>> = mutableListOf(),
 ) {
     fun parameters(init: ParametersBuilder.() -> Unit) =
         parameters.addAll(ParametersBuilder().apply(init).parameters)
 
-    fun outline(init: ContainerElementBuilder.() -> Unit) =
-        outline.addAll(ContainerElementBuilder().apply(init).children)
+    fun outline(init: ContainerElementBuilder<Lang>.() -> Unit) =
+        outline.addAll(ContainerElementBuilder<Lang>().apply(init).children)
 
 }
 
 fun Expression<Any>.str(): Expression<String> = Expression.UnaryInvoke(this, UnaryOperation.ToString())
 
-infix fun <T: Comparable<T>> Expression<T>.greaterThan(other: Expression<T>) =
+infix fun <T : Comparable<T>> Expression<T>.greaterThan(other: Expression<T>) =
     Expression.BinaryInvoke(this, other, BinaryOperation.GreaterThan())
 
-infix fun <T: Comparable<T>> Expression<T>.greaterThan(other: T) =
+infix fun <T : Comparable<T>> Expression<T>.greaterThan(other: T) =
     Expression.BinaryInvoke(this, Expression.Literal(other), BinaryOperation.GreaterThan())
 
 fun <Param, Out> argument(parameter: Param): Expression<Out>
@@ -41,29 +55,45 @@ fun <Param, Out> argument(parameter: Param): Expression<Out>
     Expression.Argument(parameter)
 
 @LetterTemplateMarker
-open class TextOnlyBuilder(val children: MutableList<Element> = mutableListOf()) {
-    fun text(str: String): Element.Text.Literal =
-        Element.Text.Literal(str).also { children.add(it) }
+open class TextOnlyBuilder<Lang : LanguageCombination>(val children: MutableList<Element<Lang>> = mutableListOf()) {
 
-    fun eval(expression: Expression<String>): Element.Text.Expression =
-        Element.Text.Expression(expression).also { children.add(it) }
+    fun eval(expression: Expression<String>): Element.Text.Expression<Lang> =
+        Element.Text.Expression<Lang>(expression).also { children.add(it) }
 
-    fun phrase(phrase: Phrase): Element.Text.Phrase =
+    fun phrase(phrase: Phrase<Lang>): Element.Text.Phrase<Lang> =
         Element.Text.Phrase(phrase).also { children.add(it) }
 
 }
 
+fun <Lang1 : Language> TextOnlyBuilder<LanguageCombination.Single<Lang1>>.text(lang1: Pair<Lang1, String>): Element.Text.Literal<LanguageCombination.Single<Lang1>> =
+    Element.Text.Literal.create(lang1).also { children.add(it) }
+
+fun <Lang1 : Language, Lang2 : Language> TextOnlyBuilder<LanguageCombination.Double<Lang1, Lang2>>.text(
+    lang1: Pair<Lang1, String>,
+    lang2: Pair<Lang2, String>,
+): Element.Text.Literal<LanguageCombination.Double<Lang1, Lang2>> =
+    Element.Text.Literal.create(lang1, lang2).also { children.add(it) }
+
+fun <Lang1 : Language, Lang2 : Language, Lang3 : Language> TextOnlyBuilder<LanguageCombination.Triple<Lang1, Lang2, Lang3>>.text(
+    lang1: Pair<Lang1, String>,
+    lang2: Pair<Lang2, String>,
+    lang3: Pair<Lang3, String>,
+): Element.Text.Literal<LanguageCombination.Triple<Lang1, Lang2, Lang3>> =
+    Element.Text.Literal.create(lang1, lang2, lang3).also { children.add(it) }
+
+
 @LetterTemplateMarker
-class ContainerElementBuilder: TextOnlyBuilder() {
-    fun title1(init: TextOnlyBuilder.() -> Element.Text) =
-        children.add(Element.Title1(renderChildren(init)))
+class ContainerElementBuilder<Lang : LanguageCombination> : TextOnlyBuilder<Lang>() {
 
-    fun paragraph(init: TextOnlyBuilder.() -> Element.Text) =
-        children.add(Element.Paragraph(renderChildren(init)))
+    fun title1(init: TextOnlyBuilder<Lang>.() -> Element.Text<Lang>) =
+        children.add(Element.Title1(addChildren(init)))
+
+    fun paragraph(init: TextOnlyBuilder<Lang>.() -> Element.Text<Lang>) =
+        children.add(Element.Paragraph(addChildren(init)))
 
 
-    private fun renderChildren(init: TextOnlyBuilder.() -> Element.Text): List<Element> {
-        val textBuilder = TextOnlyBuilder().apply { init() }
+    private fun addChildren(init: TextOnlyBuilder<Lang>.() -> Element<Lang>): List<Element<Lang>> {
+        val textBuilder = TextOnlyBuilder<Lang>().apply { init() }
         val text = if (textBuilder.children.isEmpty()) {
             listOf(textBuilder.let(init))
         } else {
@@ -72,20 +102,13 @@ class ContainerElementBuilder: TextOnlyBuilder() {
         return text
     }
 
-    fun title1(str: String) = title1 { text(str) }
-    fun title1(phrase: Phrase) = title1 { phrase(phrase) }
+    fun showIf(
+        predicate: Expression<Boolean>,
+        showIf: ContainerElementBuilder<Lang>.() -> Unit
+    ): ShowElseBuilder<Lang> {
+        val showElse = mutableListOf<Element<Lang>>()
 
-    fun paragraph(str: String) = paragraph { text(str) }
-    fun paragraph(phrase: Phrase) = paragraph { phrase(phrase) }
-
-    // TODO: Denne må flyttes til et ytre scope slik at man ikke skrive `section { section {  } }`.
-    fun section(init: ContainerElementBuilder.() -> Unit) =
-        children.add(Element.Section(ContainerElementBuilder().apply(init).children))
-
-    fun showIf(predicate: Expression<Boolean>, showIf: ContainerElementBuilder.() -> Unit): ShowElseBuilder {
-        val showElse = mutableListOf<Element>()
-
-        return ContainerElementBuilder().apply { showIf() }
+        return ContainerElementBuilder<Lang>().apply { showIf() }
             .let { Element.Conditional(predicate, it.children, showElse) }
             .also { children.add(it) }
             .let { ShowElseBuilder(showElse) }
@@ -93,11 +116,11 @@ class ContainerElementBuilder: TextOnlyBuilder() {
 
 }
 
-class ShowElseBuilder(
-    val showElse: MutableList<Element> = mutableListOf()
+class ShowElseBuilder<Lang : LanguageCombination>(
+    val showElse: MutableList<Element<Lang>> = mutableListOf()
 ) {
-    infix fun orShow(init: ContainerElementBuilder.() -> Unit) =
-        with(ContainerElementBuilder().apply(init)) {
+    infix fun orShow(init: ContainerElementBuilder<Lang>.() -> Unit) =
+        with(ContainerElementBuilder<Lang>().apply(init)) {
             showElse.addAll(children)
         }
 }

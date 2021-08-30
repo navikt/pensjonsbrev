@@ -2,7 +2,7 @@ package no.nav.pensjon.brev.template
 
 typealias LetterArguments = Map<Parameter, Any>
 
-data class Letter(val template: LetterTemplate, val arguments: LetterArguments) {
+data class Letter(val template: LetterTemplate<*>, val arguments: LetterArguments, val language: Language) {
 
     init {
         val missing: List<RequiredParameter> = (template.base.parameters + template.parameters)
@@ -13,7 +13,14 @@ data class Letter(val template: LetterTemplate, val arguments: LetterArguments) 
             val names = missing.joinToString(", ") { it.parameter.name }
             throw IllegalArgumentException("Missing required arguments: $names")
         }
+
+        if (!template.language.supports(language)) {
+            throw IllegalArgumentException("Language not supported by template: $language")
+        }
     }
+
+    fun render(): RenderedLetter =
+        template.render(this)
 
     fun untypedArg(type: Parameter): Any? {
         if (!(template.parameters + template.base.parameters).any { it.parameter == type }) {

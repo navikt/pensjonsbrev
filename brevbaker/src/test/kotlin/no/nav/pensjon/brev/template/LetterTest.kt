@@ -1,12 +1,11 @@
 package no.nav.pensjon.brev.template
 
 import no.nav.pensjon.brev.something.Fagdelen
+import no.nav.pensjon.brev.something.PensjonLatex
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import java.io.OutputStream
-import java.lang.IllegalArgumentException
-import java.lang.IllegalStateException
 
 class LetterTest {
 
@@ -23,24 +22,37 @@ class LetterTest {
             RequiredParameter(ReturAdresse)
         )
 
-        override fun render(letter: Letter, out: OutputStream) {
+        override fun render(letter: Letter): RenderedLetter {
             TODO("Not yet implemented")
         }
 
     }
 
-    val template = createTemplate("test", TestMaster) { }
+    val template = createTemplate("test", TestMaster, languages(Language.Bokmal)) { }
 
     @Test
     fun `constructor validates required parameters are present`() {
         assertThrows<IllegalArgumentException> {
-            Letter(template, emptyMap())
+            Letter(template, emptyMap(), Language.Bokmal)
+        }
+    }
+
+
+    @Test
+    fun `constructor validates that template supports language`() {
+        assertThrows<IllegalArgumentException> {
+            Letter(template, mapOf(ReturAdresse to returAdresse), Language.Nynorsk)
         }
     }
 
     @Test
+    fun `can construct letter with supported language`() {
+        Letter(template, mapOf(ReturAdresse to returAdresse), Language.Bokmal)
+    }
+
+    @Test
     fun `untypedArg fetching argument that is not part of template throws exception`() {
-        val letter = Letter(template, mapOf(KortNavn to "mitt kort navn", ReturAdresse to returAdresse))
+        val letter = Letter(template, mapOf(KortNavn to "mitt kort navn", ReturAdresse to returAdresse), Language.Bokmal)
 
         assertThrows<IllegalArgumentException> {
             letter.untypedArg(KortNavn)
@@ -49,17 +61,17 @@ class LetterTest {
 
     @Test
     fun `requiredArg fetching argument that is part of base-template is successful`() {
-        val letter = Letter(template, mapOf(ReturAdresse to returAdresse))
+        val letter = Letter(template, mapOf(ReturAdresse to returAdresse), Language.Bokmal)
 
         letter.untypedArg(ReturAdresse)
     }
 
     @Test
     fun `requiredArg fetching argument that is part of template is successful`() {
-        val template = createTemplate("test", TestMaster) {
+        val template = createTemplate("test", TestMaster, languages(Language.Bokmal)) {
             parameters { required { KortNavn } }
         }
-        val letter = Letter(template, mapOf(KortNavn to "mitt navn", ReturAdresse to returAdresse))
+        val letter = Letter(template, mapOf(KortNavn to "mitt navn", ReturAdresse to returAdresse), Language.Bokmal)
 
         letter.untypedArg(KortNavn)
     }
@@ -68,14 +80,14 @@ class LetterTest {
     fun `requiredArg passed arguments can be fetched`() {
 
         val actual: Fagdelen.ReturAdresse =
-            Letter(template, mapOf(ReturAdresse to returAdresse)).requiredArg(ReturAdresse)
+            Letter(template, mapOf(ReturAdresse to returAdresse), Language.Bokmal).requiredArg(ReturAdresse)
 
         assertEquals(returAdresse, actual)
     }
 
     @Test
     fun `requiredArg passed arguments with incorrect type throws exception`() {
-        val letter = Letter(template, mapOf(ReturAdresse to "returAdresse"))
+        val letter = Letter(template, mapOf(ReturAdresse to "returAdresse"), Language.Bokmal)
 
         assertThrows<IllegalStateException> {
             letter.requiredArg(ReturAdresse)
@@ -87,7 +99,7 @@ class LetterTest {
         val args = mutableMapOf<Parameter, Any>(
             ReturAdresse to returAdresse
         )
-        val letter = Letter(template, args)
+        val letter = Letter(template, args, Language.Bokmal)
         args.remove(ReturAdresse)
 
         assertThrows<IllegalStateException> {
@@ -97,32 +109,31 @@ class LetterTest {
 
     @Test
     fun `optionalArg passed arguments can be fetched`() {
-        val template = createTemplate("test", TestMaster) {
+        val template = createTemplate("test", TestMaster, languages(Language.Bokmal)) {
             parameters { optional { KortNavn } }
         }
-        val letter = Letter(template, mapOf(ReturAdresse to returAdresse))
+        val letter = Letter(template, mapOf(ReturAdresse to returAdresse), Language.Bokmal)
 
         assertEquals(returAdresse, letter.optionalArg(ReturAdresse))
     }
 
     @Test
     fun `optionalArg will not fail for missing optional argument`() {
-        val template = createTemplate("test", TestMaster) {
+        val template = createTemplate("test", TestMaster, languages(Language.Bokmal)) {
             parameters { optional { KortNavn } }
         }
-        val letter = Letter(template, mapOf(ReturAdresse to returAdresse))
+        val letter = Letter(template, mapOf(ReturAdresse to returAdresse), Language.Bokmal)
 
         letter.optionalArg(KortNavn)
     }
 
     @Test
     fun `optionalArg passed arguments with incorrect type throws exception`() {
-        val letter = Letter(template, mapOf(ReturAdresse to "returAdresse"))
+        val letter = Letter(template, mapOf(ReturAdresse to "returAdresse"), Language.Bokmal)
 
         assertThrows<IllegalStateException> {
             letter.requiredArg(ReturAdresse)
         }
     }
-
 
 }

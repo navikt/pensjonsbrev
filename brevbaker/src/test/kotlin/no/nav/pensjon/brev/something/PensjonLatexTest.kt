@@ -4,11 +4,12 @@ import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import no.nav.pensjon.brev.api.LetterRequest
 import no.nav.pensjon.brev.api.LetterResource
-import no.nav.pensjon.brev.something.ExperimentTemplates.alderspensjon
+import no.nav.pensjon.brev.latex.LaTeXCompilerService
+import no.nav.pensjon.brev.latex.PdfCompilationInput
+import no.nav.pensjon.brev.maler.Alderspensjon
 import no.nav.pensjon.brev.template.*
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
-import java.io.ByteArrayOutputStream
 import java.io.File
 import java.util.*
 
@@ -38,10 +39,13 @@ internal class PensjonLatexTest {
 
     @Test
     fun render() {
-        val out = ByteArrayOutputStream()
-        LetterResource.create(LetterRequest(alderspensjon.name, templateArgs)).let {
-            it.template.render(it, out)
-        }
-        File("test.pdf").writeBytes(Base64.getDecoder().decode(out.toByteArray()))
+        LetterRequest(Alderspensjon.template.name, templateArgs, Language.Bokmal)
+            .let { LetterResource.create(it) }
+            .render()
+            .let { PdfCompilationInput(it.base64EncodedFiles()) }
+            .let { LaTeXCompilerService().producePDF(it) }
+            .let { Base64.getDecoder().decode(it) }
+            .let { File("test.pdf").writeBytes(it) }
     }
+
 }

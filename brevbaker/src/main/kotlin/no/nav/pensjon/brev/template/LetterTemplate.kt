@@ -6,18 +6,19 @@ import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.annotation.JsonTypeInfo
 import java.io.OutputStream
 
-data class LetterTemplate(
+data class LetterTemplate<Lang : LanguageCombination>(
     val name: String,
     val base: BaseTemplate,
     val parameters: Set<TemplateParameter>,
-    val outline: List<Element>
+    val language: Lang,
+    val outline: List<Element<Lang>>
 ) {
     init {
         validateArgumentExpressions()
     }
 
-    fun render(letter: Letter, out: OutputStream) =
-        base.render(letter, out)
+    fun render(letter: Letter) =
+        base.render(letter)
 }
 
 sealed class TemplateParameter {
@@ -78,7 +79,8 @@ sealed class Expression<out Out> {
             where Param : Parameter,
                   Param : ParameterType<Out> {
         @Suppress("UNCHECKED_CAST")
-        override fun eval(letter: Letter): Out? = letter.untypedArg(parameter).let { it as Out? }
+        override fun eval(letter: Letter): Out? =
+            letter.untypedArg(parameter).let { it as Out? }
     }
 
     data class UnaryInvoke<In, out Out>(
@@ -114,23 +116,48 @@ sealed class Expression<out Out> {
     property = "schema",
     visible = true,
 )
-sealed class Element {
+sealed class Element<Lang : LanguageCombination> {
     val schema: String = this::class.java.name.removePrefix(this::class.java.`package`.name + '.')
 
-    data class Title1(val title1: List<Element>) : Element()
-    data class Paragraph(val title1: List<Element>) : Element()
-    data class Section(val section: List<Element>) : Element()
+    // TODO: Consider if type of  title1 and paragraph should be List<Element.Text<Lang>>.
+    data class Title1<Lang : LanguageCombination>(val title1: List<Element<Lang>>) : Element<Lang>()
+    data class Paragraph<Lang : LanguageCombination>(val paragraph: List<Element<Lang>>) : Element<Lang>()
 
-    sealed class Text : Element() {
-        data class Literal(val text: String) : Text()
-        data class Phrase(val phrase: no.nav.pensjon.brev.template.Phrase) : Text()
-        data class Expression(val expression: no.nav.pensjon.brev.template.Expression<String>) : Text()
+    sealed class Text<Lang : LanguageCombination> : Element<Lang>() {
+        data class Literal<Lang : LanguageCombination> private constructor(private val text: Map<Language, String>) :
+            Text<Lang>() {
+
+            fun text(language: Language): String =
+                text[language] ?: throw IllegalArgumentException("Text.Literal doesn't contain language: ${language::class.qualifiedName}")
+
+            companion object {
+                fun <Lang1 : Language> create(lang1: Pair<Lang1, String>) =
+                    Literal<LanguageCombination.Single<Lang1>>(mapOf(lang1))
+
+                fun <Lang1 : Language, Lang2 : Language> create(
+                    lang1: Pair<Lang1, String>,
+                    lang2: Pair<Lang2, String>,
+                ) = Literal<LanguageCombination.Double<Lang1, Lang2>>(mapOf(lang1, lang2))
+
+                fun <Lang1 : Language, Lang2 : Language, Lang3 : Language> create(
+                    lang1: Pair<Lang1, String>,
+                    lang2: Pair<Lang2, String>,
+                    lang3: Pair<Lang3, String>,
+                ) = Literal<LanguageCombination.Triple<Lang1, Lang2, Lang3>>(mapOf(lang1, lang2, lang3))
+            }
+        }
+
+        data class Phrase<Lang : LanguageCombination>(val phrase: no.nav.pensjon.brev.template.Phrase<Lang>) :
+            Text<Lang>()
+
+        data class Expression<Lang : LanguageCombination>(val expression: no.nav.pensjon.brev.template.Expression<String>) :
+            Text<Lang>()
     }
 
-    data class Conditional(
+    data class Conditional<Lang : LanguageCombination>(
         val predicate: Expression<Boolean>,
-        val showIf: List<Element>,
-        val showElse: List<Element>,
-    ) : Element()
+        val showIf: List<Element<Lang>>,
+        val showElse: List<Element<Lang>>,
+    ) : Element<Lang>()
 
 }

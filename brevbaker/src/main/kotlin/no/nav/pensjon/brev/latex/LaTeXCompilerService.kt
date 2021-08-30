@@ -6,9 +6,10 @@ import io.ktor.client.features.json.*
 import io.ktor.client.request.*
 import io.ktor.http.*
 import kotlinx.coroutines.runBlocking
-import no.nav.pensjon.brev.dto.PDFCompilationOutput
-import no.nav.pensjon.brev.dto.PdfCompilationInput
 import java.lang.IllegalStateException
+
+data class PdfCompilationInput(val files: Map<String, String>)
+data class PDFCompilationOutput(val buildLog: String? = null, val pdf: /*base64*/String? = null)
 
 class LaTeXCompilerService {
     private val httpClient = HttpClient(CIO){
@@ -22,7 +23,7 @@ class LaTeXCompilerService {
     fun producePDF(compilationInput: PdfCompilationInput): String {
         var response: PDFCompilationOutput
         runBlocking {
-            response = httpClient.post("http://127.0.0.1:8080/compile") { //TODO get url from config
+            response = httpClient.post("http://127.0.0.1:8081/compile") { //TODO get url from config
                 contentType(ContentType.Application.Json)
                 body = compilationInput
             }

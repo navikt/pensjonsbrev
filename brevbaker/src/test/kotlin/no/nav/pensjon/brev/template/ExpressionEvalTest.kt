@@ -11,12 +11,12 @@ class ExpressionEvalTest {
             RequiredParameter(SaksNr)
         )
 
-        override fun render(letter: Letter, out: OutputStream) {
+        override fun render(letter: Letter): RenderedLetter {
             TODO("Not yet implemented")
         }
 
     }
-    val template = createTemplate("test", TestMaster) {
+    val template = createTemplate("test", TestMaster, languages(Language.Bokmal)) {
         parameters {
             required { KortNavn }
             optional { Penger }
@@ -26,7 +26,7 @@ class ExpressionEvalTest {
         SaksNr to 123,
         KortNavn to "mitt navn",
         Penger to 1337,
-    ))
+    ), Language.Bokmal)
 
     @Test
     fun `eval Literal returns literal`() {

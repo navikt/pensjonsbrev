@@ -1,14 +1,10 @@
 package no.nav.pensjon.brev.something
 
-import no.nav.pensjon.brev.dto.PdfCompilationInput
-import no.nav.pensjon.brev.latex.LaTeXCompilerService
 import no.nav.pensjon.brev.template.*
-import java.io.OutputStream
-import java.util.*
+import java.io.InputStream
 
 
 object PensjonLatex : BaseTemplate() {
-    private val laTeXCompilerService = LaTeXCompilerService()
     override val parameters: Set<TemplateParameter> = setOf(
         RequiredParameter(ReturAdresse),
         RequiredParameter(Mottaker),
@@ -17,26 +13,21 @@ object PensjonLatex : BaseTemplate() {
         RequiredParameter(LetterTitle),
     )
 
-    private val encoder = Base64.getEncoder()
-    var dict = ResourceBundle.getBundle("mastertemplate", Locale.forLanguageTag("no"))
+    override fun render(letter: Letter): RenderedLetter =
+        RenderedLatexLetter().apply {
+            newFile("params.tex").use { it.write(masterTemplateParameters(letter).toByteArray()) }
+            newFile("letter.tex").use { it.write(renderLetter(letter).toByteArray()) }
+            newFile("nav-logo.pdf").use { getResource("nav-logo.pdf").transferTo(it) }
+            newFile("nav-logo.pdf_tex").use { getResource("nav-logo.pdf_tex").transferTo(it) }
+            newFile("pensjonsbrev_v2.cls").use { getResource("pensjonsbrev_v2.cls").transferTo(it) }
+        }
 
-    override fun render(letter: Letter, out: OutputStream) {
-        masterTemplateParameters(letter)
-
-        out.write(
-            laTeXCompilerService.producePDF(
-                PdfCompilationInput(
-                    mapOf(
-                        "letter.tex" to renderLetter(letter),
-                        "pensjonsbrev_v2.cls" to getResource("pensjonsbrev_v2.cls"),
-                        "nav-logo.pdf" to getResource("nav-logo.pdf"),
-                        "params.tex" to masterTemplateParameters(letter),
-                        "nav-logo.pdf_tex" to getResource("nav-logo.pdf_tex"),
-                    )
-                )
-            ).toByteArray()
-        )
-    }
+    private fun getLanguageSettings(language: Language): PensjonLatexLanguageSettings =
+        when (language) {
+            Language.Bokmal -> PensjonLatexLanguageSettings.bokmal
+            Language.English -> PensjonLatexLanguageSettings.english
+            Language.Nynorsk -> PensjonLatexLanguageSettings.nynorsk
+        }
 
     private fun masterTemplateParameters(letter: Letter) =
         with(letter.requiredArg(Mottaker)) {
@@ -49,27 +40,25 @@ object PensjonLatex : BaseTemplate() {
             \newcommand{\feltpoststedmottaker}{$poststed}
             \newcommand{\feltfoedselsnummer}{${letter.requiredArg(NorskIdentifikator)}}
             \newcommand{\feltsaksnummer}{${letter.requiredArg(SaksNr)}}
-            ${getTextParameters()}
+            ${getTextParameters(letter.language)}
             ${generateVedlegg()}
-        """.encodeTemplate()
+        """.trimIndent()
         }
 
-    private fun getTextParameters(): String {
-        val stringBuilder = StringBuilder()
-        dict.keySet().forEach {
-            stringBuilder.append("""\newcommand{\felt${it}}{${dict.getString(it)}}""")
-        }
-        return stringBuilder.toString()
-    }
+    private fun getTextParameters(language: Language): String =
+        getLanguageSettings(language).toMap()
+            .entries
+            .joinToString("\n") { """\newcommand{\felt${it.key}}{${it.value}}""" }
 
-    private fun generateVedlegg() = """\newcommand{\feltclosingvedlegg}{
+    private fun generateVedlegg(): String =
+        """\newcommand{\feltclosingvedlegg}{
             \begin{itemize}
                 \item test1
                 \item test2
             \end{itemize}    
         }""".trimMargin() //TODO generer vedlegg
 
-    private fun renderLetter(letter: Letter) =
+    private fun renderLetter(letter: Letter): String =
         """
             \documentclass[12pt]{pensjonsbrev_v2}
             \begin{document}
@@ -79,7 +68,7 @@ object PensjonLatex : BaseTemplate() {
                 \closing
                 \end{letter}
             \end{document}
-        """.encodeTemplate()
+        """
 
     private fun contents(letter: Letter): StringBuilder {
         val stringBuilder = StringBuilder()
@@ -87,7 +76,7 @@ object PensjonLatex : BaseTemplate() {
         return stringBuilder
     }
 
-    private fun renderElement(letter: Letter, element: Element, stringBuilder: StringBuilder) {
+    private fun renderElement(letter: Letter, element: Element<*>, stringBuilder: StringBuilder) {
         when (element) {
             is Element.Title1 ->
                 with(stringBuilder) {
@@ -100,27 +89,131 @@ object PensjonLatex : BaseTemplate() {
                     val toRender = if (predicate.eval(letter)) element.showIf else element.showElse
                     toRender.forEach { renderElement(letter, it, stringBuilder) }
                 }
-            is Element.Section -> TODO("NOT Implemented rendering of: ${element.schema}")
-            is Element.Text.Literal -> stringBuilder.append(element.text)
-            is Element.Text.Phrase -> stringBuilder.append(element.phrase.text())
+            is Element.Text.Literal -> stringBuilder.append(element.text(letter.language))
+            is Element.Text.Phrase -> stringBuilder.append(element.phrase.text(letter.language))
             is Element.Text.Expression -> stringBuilder.append(element.expression.eval(letter))
             is Element.Paragraph ->
                 with(stringBuilder) {
                     append("""\letterparagraph{""")
-                    element.title1.forEach { child -> renderElement(letter, child, stringBuilder) }
+                    element.paragraph.forEach { child -> renderElement(letter, child, stringBuilder) }
                     appendLine("}")
                 }
         }
     }
 
-    private fun getResource(fileName: String): String {
-        val classPath = """/$fileName"""
-        val file = this::class.java.getResourceAsStream(classPath)?.readAllBytes()
-            ?: throw IllegalStateException("""Could not find class resource $classPath""")
-        return encoder.encodeToString(file)
+    private fun getResource(fileName: String): InputStream {
+        return this::class.java.getResourceAsStream("/$fileName")
+            ?: throw IllegalStateException("""Could not find class resource /$fileName""")
     }
-
-    private fun String.encodeTemplate() = encoder.encodeToString(this.trimIndent().toByteArray())
 
 }
 
+data class PensjonLatexLanguageSettings(
+    val navnprefix: String,
+    val saksnummerprefix: String,
+    val foedselsnummerprefix: String,
+    val returadresseenhetprefix: String,
+    val navenhet: String,
+    val returadressepostnrsted: String,
+    val returadresse: String,
+    val datoprefix: String,
+    val dato: String,
+    val postadresseprefix: String,
+    val postadressepostnrsted: String,
+    val postadresse: String,
+    val sideprefix: String,
+    val sideinfix: String,
+    val navenhettlfprefix: String,
+    val navenhettlf: String,
+    val navenhetnettside: String,
+    val closingspoersmaal: String,
+    val closingkontaktoss: String,
+    val closinggreeting: String,
+    val closingsaksbehandlerfirst: String,
+    val closingsaksbehandlersecond: String,
+    val closingsaksbehandlersuffix: String,
+    val closingvedleggprefix: String,
+) : LanguageSettings {
+    companion object {
+        val bokmal = PensjonLatexLanguageSettings(
+            navnprefix = "Navn:",
+            saksnummerprefix = "NAVs saksnummer:",
+            foedselsnummerprefix = "Fødselsnummer:",
+            returadresseenhetprefix = "Returadresse:",
+            navenhet = "NAV Familie- og pensjonsytelser Steinkjer",
+            returadressepostnrsted = "0607 OSLO",
+            returadresse = "Postboks 6600 Etterstad,",
+            datoprefix = "Dato:",
+            dato = "6. mai 2021",
+            postadresseprefix = "Postadresse:",
+            postadressepostnrsted = "0607 OSLO",
+            postadresse = "Postboks 6600 Etterstad",
+            sideprefix = "Side",
+            sideinfix = "av",
+            navenhettlfprefix = "Telefon:",
+            navenhettlf = "55553334",
+            navenhetnettside = "nav.no",
+            closingspoersmaal = "Har du spørsmål?",
+            closingkontaktoss = "Kontakt oss gjerne på nav.no eller på telefon 55553334. Hvis du oppgir fødselsnummeret ditt når du tar kontakt med NAV, kan vi lettere gi deg rask og god hjelp.",
+            closinggreeting = "Med vennelig hilsen",
+            closingsaksbehandlerfirst = "Saksbehandler Saksbehandlerson",
+            closingsaksbehandlersecond = "Ola Attesterende Saksbehandlerson",
+            closingsaksbehandlersuffix = "saksbehandler",
+            closingvedleggprefix = "Vedlegg:",
+        )
+
+        val nynorsk = PensjonLatexLanguageSettings(
+            navnprefix = "Namn:",
+            saksnummerprefix = "NAVs saksnummer:",
+            foedselsnummerprefix = "Fødselsnummer:",
+            returadresseenhetprefix = "Returadresse:",
+            navenhet = "NAV Familie- og pensjonsytelser Steinkjer",
+            returadressepostnrsted = "0607 OSLO",
+            returadresse = "Postboks 6600 Etterstad,",
+            datoprefix = "Dato:",
+            dato = "6. mai 2021",
+            postadresseprefix = "Postadresse:",
+            postadressepostnrsted = "0607 OSLO",
+            postadresse = "Postboks 6600 Etterstad",
+            sideprefix = "Side",
+            sideinfix = "av",
+            navenhettlfprefix = "Telefon:",
+            navenhettlf = "55553334",
+            navenhetnettside = "nav.no",
+            closingspoersmaal = "Har du spørsmål?",
+            closingkontaktoss = "Kontakt oss gjerne på nav.no eller på telefon 55553334. Dersom du gir opp fødselsnummeret ditt når du kontaktar NAV, kan vi lettare gi deg rask og god hjelp.",
+            closinggreeting = "Med vennleg helsing",
+            closingsaksbehandlerfirst = "Saksbehandler Saksbehandlerson",
+            closingsaksbehandlersecond = "Ola Attesterende Saksbehandlerson",
+            closingsaksbehandlersuffix = "saksbehandler",
+            closingvedleggprefix = "Vedlegg:",
+        )
+
+        val english = PensjonLatexLanguageSettings(
+            navnprefix = "Name:",
+            saksnummerprefix = "NAV’s case number:",
+            foedselsnummerprefix = "National identity number:",
+            returadresseenhetprefix = "Return address:",
+            navenhet = "NAV Familie- og pensjonsytelser Steinkjer",
+            returadressepostnrsted = "0607 OSLO",
+            returadresse = "Postboks 6600 Etterstad,",
+            datoprefix = "Date:",
+            dato = "6. mai 2021",
+            postadresseprefix = "Mailing address:",
+            postadressepostnrsted = "0607 OSLO",
+            postadresse = "Postboks 6600 Etterstad",
+            sideprefix = "Page",
+            sideinfix = "of",
+            navenhettlfprefix = "Phone number:",
+            navenhettlf = "55553334",
+            navenhetnettside = "nav.no",
+            closingspoersmaal = "Do you have questions?",
+            closingkontaktoss = "You will find further information at nav.no. You can also contact us by phone 55553334",
+            closinggreeting = "Yours sincerely",
+            closingsaksbehandlerfirst = "Saksbehandler Saksbehandlerson",
+            closingsaksbehandlersecond = "Ola Attesterende Saksbehandlerson",
+            closingsaksbehandlersuffix = "saksbehandler",
+            closingvedleggprefix = "Attachments:",
+        )
+    }
+}

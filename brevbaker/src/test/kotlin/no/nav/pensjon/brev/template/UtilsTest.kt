@@ -10,34 +10,35 @@ class UtilsTest {
     object TestMaster : BaseTemplate() {
         override val parameters = emptySet<TemplateParameter>()
 
-        override fun render(letter: Letter, out: OutputStream) {
+        override fun render(letter: Letter): RenderedLetter {
             TODO("Not yet implemented")
         }
+
     }
 
-    val frase1 = Phrase.Static("jadda", "jadda")
-    val frase2 = Phrase.Static("jadda2", "jadda2")
+    val frase1 = Phrase.Static.create("jadda", Language.Bokmal to "jadda")
+    val frase2 = Phrase.Static.create("jadda2", Language.Bokmal to "jadda2")
 
-    val templ = createTemplate("test", TestMaster) {
+    val templ = createTemplate("test", TestMaster, languages(Language.Bokmal)) {
         parameters {
             required { PensjonInnvilget }
             required { KortNavn }
         }
         outline {
             showIf(argument(PensjonInnvilget)) {
-                text("hello1")
+                text(Language.Bokmal to "hello1")
                 phrase(frase1)
             } orShow {
                 title1 {
-                    text("hello2")
+                    text(Language.Bokmal to "hello2")
                     phrase(frase2)
                     eval(argument(KortNavn))
                 }
             }
 
-            section {
-                title1("heisann")
-                text("hello3")
+            title1 { text(Language.Bokmal to "heisann") }
+            paragraph {
+                text(Language.Bokmal to "hello3")
                 phrase(frase2)
 
                 eval(argument(KortNavn))

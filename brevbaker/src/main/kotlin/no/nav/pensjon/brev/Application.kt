@@ -1,19 +1,24 @@
 package no.nav.pensjon.brev
 
+import com.fasterxml.jackson.databind.SerializationFeature
 import io.ktor.application.*
-import io.ktor.routing.*
-import io.ktor.http.*
-import com.fasterxml.jackson.databind.*
-import io.ktor.jackson.*
 import io.ktor.features.*
+import io.ktor.http.*
+import io.ktor.jackson.*
 import io.ktor.request.*
 import io.ktor.response.*
-import io.ktor.utils.io.charsets.Charsets
+import io.ktor.routing.*
 import no.nav.pensjon.brev.api.LetterRequest
 import no.nav.pensjon.brev.api.LetterResource
 import no.nav.pensjon.brev.api.TemplateResource
+import no.nav.pensjon.brev.latex.LaTeXCompilerService
+import no.nav.pensjon.brev.latex.PdfCompilationInput
+import java.util.*
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
+
+private val latexCompilerService = LaTeXCompilerService()
+private val base64Decoder = Base64.getDecoder()
 
 @Suppress("unused") // Referenced in application.conf
 fun Application.module() {
@@ -25,8 +30,8 @@ fun Application.module() {
     }
 
 
-
     routing {
+
         get("/templates") {
             call.respond(TemplateResource.getTemplates())
         }
@@ -41,11 +46,13 @@ fun Application.module() {
         }
 
         post("/letter") {
-            val letter = call.receive<LetterRequest>()
-            call.respondOutputStream(ContentType.Text.Plain.withCharset(Charsets.UTF_8)) {
-                LetterResource.create(letter)
-                    .let { it.template.render(it, this) }
-            }
+            val letterRequest = call.receive<LetterRequest>()
+
+            val pdfBase64 = LetterResource.create(letterRequest).render()
+                .let { PdfCompilationInput(it.base64EncodedFiles()) }
+                .let { latexCompilerService.producePDF(it) }
+
+            call.respondBytes(base64Decoder.decode(pdfBase64), ContentType.Application.Pdf)
         }
     }
 }

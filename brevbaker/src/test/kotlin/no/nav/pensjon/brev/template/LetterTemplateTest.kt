@@ -22,16 +22,17 @@ class LetterTemplateTest {
             RequiredParameter(ReturAdresse)
         )
 
-        override fun render(letter: Letter, out: OutputStream) {
+        override fun render(letter: Letter): RenderedLetter {
             TODO()
         }
+
     }
 
 
     @Test
     fun `constructor validates that outline doesnt use non-required arguments as required`() {
         assertThrows<IllegalArgumentException> {
-            createTemplate("test", MasterMal) {
+            createTemplate("test", MasterMal, languages(Language.Bokmal)) {
                 outline {
                     eval(argument(KortNavn))
                 }
@@ -41,7 +42,7 @@ class LetterTemplateTest {
 
     @Test
     fun `constructor allows use of required arguments`() {
-        createTemplate("test", MasterMal) {
+        createTemplate("test", MasterMal, languages(Language.Bokmal)) {
             parameters { required { KortNavn } }
             outline {
                 eval(argument(KortNavn))
