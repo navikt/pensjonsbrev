@@ -31,11 +31,6 @@ spec:
   requests:
     cpu: "200m"
     memory: "256Mi"
-  vault:
-    enabled: true
-    paths:
-      - kvPath: {{srvuserpath}}
-        mountPath: "/secrets/srvpensjonbrevbaker"
   env:
     {{#each env as |e|}}
        - name: {{e.name }}
