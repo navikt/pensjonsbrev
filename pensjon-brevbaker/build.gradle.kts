@@ -59,6 +59,8 @@ dependencies {
     implementation("io.ktor:ktor-client-jackson:$ktor_version")
     implementation("io.ktor:ktor-metrics:$ktor_version")
     testImplementation("io.ktor:ktor-server-tests:$ktor_version")
+    implementation("io.ktor:ktor-metrics-micrometer:$ktor_version")
+    implementation("io.micrometer:micrometer-registry-prometheus:1.7.0")
 
     // JUnit 5
 //    testImplementation("org.junit.jupiter:junit-jupiter-api:$jupiter_version")
