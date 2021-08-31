@@ -43,9 +43,9 @@ jobs:
         env:
           "APIKEY": "${{ secrets.NAIS_DEPLOY_APIKEY }}"
           "CLUSTER": "dev-fss"
-          "RESOURCE": ".nais/nais.yaml"
+          "RESOURCE": ".pdf-bygger/nais/nais.yaml"
           "VAR": image=${{ env.IMAGE }}
-          "VARS": ".nais/dev.yaml"
+          "VARS": ".pdf-bygger/nais/dev.yaml"
 #  "deployAppToProd":
 #    name: "Deploy to prod"
 #    needs: "deployAppToDev"
