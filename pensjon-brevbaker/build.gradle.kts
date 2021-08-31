@@ -8,6 +8,7 @@ val jupiter_version: String by project
 plugins {
     application
     kotlin("jvm") version "1.5.20"
+    id("com.github.johnrengelman.shadow") version "7.0.0"
 }
 
 group = "no.nav.pensjon.brev"
@@ -33,6 +34,11 @@ sourceSets {
 tasks {
     compileKotlin {
         kotlinOptions.jvmTarget = "15"
+    }
+    shadowJar {
+        archiveBaseName.set(rootProject.name)
+        archiveClassifier.set("")
+        archiveVersion.set("")
     }
     compileTestKotlin {
         kotlinOptions.jvmTarget = "15"

@@ -5,4 +5,8 @@ services:
     tmpfs:
       - /app/pdfcompilation
     ports:
+      - "8081:8080"
+  pensjon-brevbaker:
+    build: ./pensjon-brevbaker
+    ports:
       - "8080:8080"

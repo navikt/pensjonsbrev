@@ -1,0 +1,61 @@
+name: "Build and deploy pensjon-brevbaker"
+on:
+  push:
+    branches:
+      - "main"
+env:
+  "IMAGE": "docker.pkg.github.com/${{ github.repository }}/pensjon-brevbaker:${{\
+    \ github.sha }}"
+jobs:
+  "build":
+    defaults:
+      run:
+        working-directory: pensjon-brevbaker
+    name: "build"
+    runs-on: "ubuntu-18.04"
+    steps:
+      - uses: "actions/checkout@v2"
+      - uses: "gradle/wrapper-validation-action@v1"
+      - uses: "actions/cache@v2"
+        with:
+          "path": "~/.gradle/caches"
+          "key": "${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle.kts') }}"
+          "restore-keys": "${{ runner.os }}-gradle-"
+      - uses: "actions/setup-java@v1"
+        with:
+          "java-version": "15"
+      - name: "compile and run tests"
+        run: "./gradlew build"
+      - name: "Build and publish Docker image"
+        run: "docker build --pull --tag ${IMAGE} . && echo $GITHUB_TOKEN | docker login\
+        \ --username $GITHUB_REPOSITORY --password-stdin https://docker.pkg.github.com\
+        \ && docker push ${IMAGE}"
+        env:
+          "GITHUB_TOKEN": "${{ secrets.GITHUB_TOKEN }}"
+  "deployAppToDev":
+    name: "Deploy to dev"
+    needs: "build"
+    runs-on: "ubuntu-18.04"
+    steps:
+      - uses: "actions/checkout@v2"
+      - name: "Deploy to DEV"
+        uses: "nais/deploy/actions/deploy@v1"
+        env:
+          "APIKEY": "${{ secrets.NAIS_DEPLOY_APIKEY }}"
+          "CLUSTER": "dev-fss"
+          "RESOURCE": ".nais/nais.yaml"
+          "VAR": image=${{ env.IMAGE }}
+          "VARS": ".nais/dev.yaml"
+#  "deployAppToProd":
+#    name: "Deploy to prod"
+#    needs: "deployAppToDev"
+#    runs-on: "ubuntu-18.04"
+#    steps:
+#      - uses: "actions/checkout@v2"
+#      - name: "Deploy to PROD"
+#        uses: "nais/deploy/actions/deploy@v1"
+#        env:
+#          "APIKEY": "${{ secrets.NAIS_DEPLOY_APIKEY }}"
+#          "CLUSTER": "prod-fss"
+#          "RESOURCE": ".nais/nais.yaml"
+#          "VARS": ".nais/prod.yaml"

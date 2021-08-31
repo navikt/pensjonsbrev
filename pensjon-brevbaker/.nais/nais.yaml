@@ -1,0 +1,38 @@
+apiVersion: "nais.io/v1alpha1"
+kind: "Application"
+metadata:
+  name: {{app-name}}
+  namespace: "teampensjon"
+  labels:
+    "team": "teampensjon"
+spec:
+  image: {{image}}
+  liveness:
+    path: "/isAlive"
+    port: 8080
+    initialDelay: 20
+    timeout: 60
+  readiness:
+    path: "/isReady"
+    port: 8080
+    initialDelay: 20
+    timeout: 60
+  replicas:
+    min: 2
+    max: 2
+    cpuThresholdPercentage: 50
+  prometheus:
+    enabled: true
+    path: "/metrics"
+    port: "8080"
+  limits:
+    cpu: "200m"
+    memory: "256Mi"
+  requests:
+    cpu: "200m"
+    memory: "256Mi"
+  env:
+    {{#each env as |e|}}
+       - name: {{e.name }}
+         value: {{{e.value }}}
+    {{/each}}
