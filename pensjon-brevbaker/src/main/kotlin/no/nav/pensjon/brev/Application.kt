@@ -26,7 +26,7 @@ import java.util.*
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
-private val latexCompilerService = LaTeXCompilerService(System.getenv("PDF_BYGGER_URL"))
+private val latexCompilerService = LaTeXCompilerService(System.getenv("PDF_BYGGER_URL") ?: "http://127.0.0.1:8081")
 private val base64Decoder = Base64.getDecoder()
 
 @Suppress("unused") // Referenced in application.conf
