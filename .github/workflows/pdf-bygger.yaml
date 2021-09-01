@@ -43,7 +43,7 @@ jobs:
 
         env:
           "APIKEY": "${{ secrets.NAIS_DEPLOY_APIKEY }}"
-          "CLUSTER": "dev-fss"
+          "CLUSTER": "dev-gcp"
           "RESOURCE": "pdf-bygger/.nais/nais.yaml"
           "VAR": image=${{ env.IMAGE }}
           "VARS": "pdf-bygger/.nais/dev.yaml"
@@ -57,6 +57,6 @@ jobs:
 #        uses: "nais/deploy/actions/deploy@v1"
 #        env:
 #          "APIKEY": "${{ secrets.NAIS_DEPLOY_APIKEY }}"
-#          "CLUSTER": "prod-fss"
+#          "CLUSTER": "prod-gcp"
 #          "RESOURCE": ".nais/nais.yaml"
 #          "VARS": ".nais/prod.yaml"
