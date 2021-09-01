@@ -3,6 +3,9 @@ on:
   push:
     branches:
       - "main"
+    paths:
+      - "pdf-bygger/**"
+      - ".github/workflows/pdf-bygger.yaml"
 env:
   "IMAGE": "docker.pkg.github.com/${{ github.repository }}/pensjon-brevbaker:${{\
     \ github.sha }}"
