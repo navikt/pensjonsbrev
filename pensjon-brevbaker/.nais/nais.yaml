@@ -32,6 +32,10 @@ spec:
   requests:
     cpu: "200m"
     memory: "256Mi"
+  accessPolicy:
+    outbound:
+      rules:
+        - application: {{pdf-bygger-app}}
   env:
     {{#each env as |e|}}
        - name: {{e.name }}
