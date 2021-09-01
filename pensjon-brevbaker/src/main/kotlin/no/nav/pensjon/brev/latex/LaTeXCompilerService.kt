@@ -11,7 +11,7 @@ import java.lang.IllegalStateException
 data class PdfCompilationInput(val files: Map<String, String>)
 data class PDFCompilationOutput(val buildLog: String? = null, val pdf: /*base64*/String? = null)
 
-class LaTeXCompilerService {
+class LaTeXCompilerService(private val pdfByggerUrl: String = "http://127.0.0.1:8081") {
     private val httpClient = HttpClient(CIO){
         install(JsonFeature){
             serializer = JacksonSerializer()
@@ -20,10 +20,11 @@ class LaTeXCompilerService {
             requestTimeout = 20_000
         }
     }
+
     fun producePDF(compilationInput: PdfCompilationInput): String {
         var response: PDFCompilationOutput
         runBlocking {
-            response = httpClient.post("http://127.0.0.1:8081/compile") { //TODO get url from config
+            response = httpClient.post("$pdfByggerUrl/compile") { //TODO get url from config
                 contentType(ContentType.Application.Json)
                 body = compilationInput
             }

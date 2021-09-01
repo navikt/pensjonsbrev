@@ -1,1 +1,4 @@
 app-name: "pensjon-brevbaker-t4"
+env:
+  - name: PDF_BYGGER_URL
+    value: "http://pensjon-pdf-bygger-t4:8080"
