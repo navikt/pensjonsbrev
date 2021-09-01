@@ -32,6 +32,10 @@ spec:
   requests:
     cpu: "200m"
     memory: "256Mi"
+  accessPolicy:
+    inbound:
+      rules:
+        - application: {{brevbaker-app}}
 #  env:
 #    {{#each env as |e|}}
 #       - name: {{e.name }}
