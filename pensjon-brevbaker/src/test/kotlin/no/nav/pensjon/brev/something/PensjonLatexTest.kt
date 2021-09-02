@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test
 import java.io.File
 import java.util.*
 
-//@Disabled //pdf compilation integration test
+@Disabled //pdf compilation integration test
 internal class PensjonLatexTest {
 
     val returAdresse = Fagdelen.ReturAdresse("En NAV enhet", "En adresse 1", "1337", "Et poststed", 22)
