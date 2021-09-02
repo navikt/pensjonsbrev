@@ -49,7 +49,7 @@ Om vi f.eks ønsker å produsere html brev eller noe annet kan vi bare lage ett 
 Ettersom vi har valgt å ha ett logisk skille mellom brevvisning og brevinnhold(se over), så vil vi ikke bli låst til verktøyet vi bruker. LaTeX ble valgt ettersom utviklerne hadde erfaring med LaTeX fra før via skolegangen. LaTeX er ett verktøy for å produsere godt formatterte bøker, forskningsartikler, CV og mye annet. LaTeX er gratis og basert på åpen kildekode med mange støtte-biblioteker, mye brukt og inneholder mye ekstra-funksjonalitet ettersom det har eksistert lenge(litt på samme måte som Linux). Vi antar også at vi ikke kommer til å måtte bytte ut LaTeX om kort tid ettersom det har eksistert lenge og brukes av omtrent alle universitet og høgskoler. Det å bytte verktøy er antatt å ta en utvikler ett par uker, så relativt lav kostnad.
 
 == Arkitektur
-[plantuml, target=diagram-classes, format=svg]
+[plantuml, target=overordnet-arkitektur, format=svg]
 ....
 saksbehandler --> [saksbehandling-frontend]
 [saksbehandling-frontend] --> [Saksbehandling-backend]
