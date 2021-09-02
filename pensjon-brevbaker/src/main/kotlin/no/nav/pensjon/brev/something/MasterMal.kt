@@ -42,7 +42,8 @@ object PensjonLatex : BaseTemplate() {
             \newcommand{\feltsaksnummer}{${letter.requiredArg(SaksNr)}}
             ${getTextParameters(letter.language)}
             ${generateVedlegg()}
-        """.trimIndent()
+            \newcommand{\closingbehandlet}{\closingsaksbehandlet}
+        """.trimIndent() // TODO velg mellom \closingsaksbehandlet velg mellom \closingautomatiskbehandlet
         }
 
     private fun getTextParameters(language: Language): String =

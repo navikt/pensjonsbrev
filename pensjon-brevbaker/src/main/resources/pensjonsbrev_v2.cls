@@ -215,6 +215,18 @@
 %----------------------------------------
 %       Closing/last page of letter
 %----------------------------------------
+\newcommand{\closingsaksbehandlet}{
+    \begin{minipage}{0.45\textwidth}
+        \feltclosingsaksbehandlerfirst \newline \feltclosingsaksbehandlersuffix
+    \end{minipage}
+    \begin{minipage}{0.45\textwidth}
+        \feltclosingsaksbehandlersecond \newline \feltclosingsaksbehandlersuffix
+    \end{minipage}
+}
+
+\newcommand{\closingautomatiskbehandlet}{
+    \feltclosingautomatiskbehandlet
+}
 \renewcommand{\closing}{
     \newpage
     \textbf{\feltclosingspoersmaal}
@@ -225,12 +237,7 @@
     \feltclosinggreeting \par
     \vspace{60pt}
     \noindent
-    \begin{minipage}{0.45\textwidth}
-        \feltclosingsaksbehandlerfirst \newline \feltclosingsaksbehandlersuffix
-    \end{minipage}
-    \begin{minipage}{0.45\textwidth}
-        \feltclosingsaksbehandlersecond \newline \feltclosingsaksbehandlersuffix
-    \end{minipage}
+    \closingbehandlet
     \par
     \feltnavenhet
     \newline
