@@ -5,13 +5,13 @@
 Dagens brevløsning består av to systemer: Metaforce/doksys stack og HP Extreme brev.
 HP Extreme bruker hovedsakelig ESB(Enterprise Service Bus) som har en rekke problemer:
 
-Vanskelig å foreta endringer på grunn av systemets kompleksitet og manglende kompetanse
-Gammelt (manglende kompetanse, manglende vedlikehold av software, dyre lisenser for legacy systemer)
-Lite fleksibelt/lite endringspotensiale
-Avhengig av buss og stormaskin
-For å komme oss vekk fra HP Extreme var det besluttet å ta i bruk MetaForce for å produsere brev.
-Arbeidet med å overføre brev fra HP Extreme til MetaForce har pågått siden 2017.
-Det å overføre brevmaler fra ett system til ett annet er en tung og langvarig prosess, og brevmalene i seg selv er av høy verdi.
+* Vanskelig å foreta endringer på grunn av systemets kompleksitet og manglende kompetanse
+* Gammelt (manglende kompetanse, manglende vedlikehold av software, dyre lisenser for legacy systemer)
+* Lite fleksibelt/lite endringspotensiale
+* Avhengig av buss og stormaskin
+* For å komme oss vekk fra HP Extreme var det besluttet å ta i bruk MetaForce for å produsere brev.
+* Arbeidet med å overføre brev fra HP Extreme til MetaForce har pågått siden 2017.
+* Det å overføre brevmaler fra ett system til ett annet er en tung og langvarig prosess, og brevmalene i seg selv er av høy verdi.
 
 
 *MetaForce ønsker vi også å gå bort ifra fordi:*
