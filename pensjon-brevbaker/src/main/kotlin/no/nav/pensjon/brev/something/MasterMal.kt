@@ -10,7 +10,6 @@ object PensjonLatex : BaseTemplate() {
         RequiredParameter(Mottaker),
         RequiredParameter(NorskIdentifikator),
         RequiredParameter(SaksNr),
-        RequiredParameter(LetterTitle),
     )
 
     override fun render(letter: Letter): RenderedLetter =
@@ -42,9 +41,13 @@ object PensjonLatex : BaseTemplate() {
             \newcommand{\feltsaksnummer}{${letter.requiredArg(SaksNr)}}
             ${getTextParameters(letter.language)}
             ${generateVedlegg()}
-            \newcommand{\closingbehandlet}{\closingsaksbehandlet}
-        """.trimIndent() // TODO velg mellom \closingsaksbehandlet velg mellom \closingautomatiskbehandlet
+            \newcommand{\closingbehandlet}{${closingCommand(letter)}}
+        """.trimIndent()
         }
+
+    // TODO velg mellom \closingsaksbehandlet velg mellom \closingautomatiskbehandlet
+    private fun closingCommand(letter: Letter) =
+        """\closingsaksbehandlet"""
 
     private fun getTextParameters(language: Language): String =
         getLanguageSettings(language).toMap()
@@ -64,7 +67,7 @@ object PensjonLatex : BaseTemplate() {
             \documentclass[12pt]{pensjonsbrev_v2}
             \begin{document}
                 \begin{letter}{\brevparameter}
-                \tittel{${letter.requiredArg(LetterTitle)}}
+                \tittel{${letter.template.title.text(letter.language)}}
                 ${contents(letter)}
                 \closing
                 \end{letter}
@@ -109,6 +112,7 @@ object PensjonLatex : BaseTemplate() {
 
 }
 
+//TODO: Fjern felter som skal komme som argumenter, f.eks navEnhet, navenhettlf osv.
 data class PensjonLatexLanguageSettings(
     val navnprefix: String,
     val saksnummerprefix: String,
@@ -156,7 +160,7 @@ data class PensjonLatexLanguageSettings(
             navenhetnettside = "nav.no",
             closingspoersmaal = "Har du spørsmål?",
             closingkontaktoss = "Kontakt oss gjerne på nav.no eller på telefon 55553334. Hvis du oppgir fødselsnummeret ditt når du tar kontakt med NAV, kan vi lettere gi deg rask og god hjelp.",
-            closinggreeting = "Med vennelig hilsen",
+            closinggreeting = "Med vennlig hilsen",
             closingsaksbehandlerfirst = "Saksbehandler Saksbehandlerson",
             closingsaksbehandlersecond = "Ola Attesterende Saksbehandlerson",
             closingsaksbehandlersuffix = "saksbehandler",

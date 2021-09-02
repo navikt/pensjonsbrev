@@ -5,7 +5,12 @@ import no.nav.pensjon.brev.something.PensjonLatex
 import no.nav.pensjon.brev.template.*
 
 object EksempelBrev : StaticTemplate {
-    override val template = createTemplate("eksempelBrev", PensjonLatex, languages(Language.Bokmal)) {
+    override val template = createTemplate(
+        name = "eksempelBrev",
+        title = title(Language.Bokmal to "Eksempelbrev"),
+        base = PensjonLatex,
+        lang = languages(Language.Bokmal)
+    ) {
         parameters {
             optional { PensjonInnvilget }
         }

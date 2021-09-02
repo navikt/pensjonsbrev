@@ -2,10 +2,11 @@ package no.nav.pensjon.brev.template
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
-import no.nav.pensjon.brev.api.TemplateResource
 import no.nav.pensjon.brev.maler.Alderspensjon
 import no.nav.pensjon.brev.something.Fagdelen
 import no.nav.pensjon.brev.something.PensjonLatex
+import no.nav.pensjon.brev.template.dsl.argument
+import no.nav.pensjon.brev.template.dsl.str
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
@@ -21,9 +22,18 @@ class DSLTest {
             Phrase.Static.create("pensjonInnvilget", Language.Bokmal to "Du har fått innvilget pensjon")
     }
 
+    val bokmalTittel = title(Language.Bokmal to "test brev")
+    val nynorskTittel = title(Language.Nynorsk to "test brev")
+
+
     @Test
     fun `createTemplate can add title1 using text-builder`() {
-        val doc = createTemplate("test", PensjonLatex, languages(Language.Bokmal)) {
+        val doc = createTemplate(
+            name = "test",
+            title = bokmalTittel,
+            base = PensjonLatex,
+            lang = languages(Language.Bokmal)
+        ) {
             outline {
                 title1 {
                     text(Language.Bokmal to "Heisann. ")
@@ -35,6 +45,7 @@ class DSLTest {
         assertEquals(
             LetterTemplate(
                 "test",
+                bokmalTittel,
                 PensjonLatex,
                 emptySet(),
                 languages(Language.Bokmal),
@@ -53,7 +64,7 @@ class DSLTest {
 
     @Test
     fun `createTemplate adds phrase title`() {
-        val doc = createTemplate("test", PensjonLatex, languages(Language.Bokmal)) {
+        val doc = createTemplate("test", bokmalTittel, PensjonLatex, languages(Language.Bokmal)) {
             outline {
                 title1 { phrase(Fraser.pensjonInnvilget) }
             }
@@ -62,6 +73,7 @@ class DSLTest {
         assertEquals(
             LetterTemplate(
                 "test",
+                bokmalTittel,
                 PensjonLatex,
                 emptySet(),
                 languages(Language.Bokmal),
@@ -73,7 +85,7 @@ class DSLTest {
 
     @Test
     fun `createTemplate adds literal title`() {
-        val doc = createTemplate("test", PensjonLatex, languages(Language.Bokmal)) {
+        val doc = createTemplate("test", bokmalTittel, PensjonLatex, languages(Language.Bokmal)) {
             outline {
                 title1 { text(Language.Bokmal to "jadda") }
             }
@@ -82,6 +94,7 @@ class DSLTest {
         assertEquals(
             LetterTemplate(
                 "test",
+                bokmalTittel,
                 PensjonLatex,
                 emptySet(),
                 languages(Language.Bokmal),
@@ -92,7 +105,7 @@ class DSLTest {
 
     @Test
     fun `createTemplate adds parameters`() {
-        val doc = createTemplate("test", PensjonLatex, languages(Language.Nynorsk)) {
+        val doc = createTemplate("test", nynorskTittel, PensjonLatex, languages(Language.Nynorsk)) {
             parameters {
                 required { SaksNr }
                 required { PensjonInnvilget }
@@ -103,6 +116,7 @@ class DSLTest {
         assertEquals(
             LetterTemplate(
                 "test",
+                nynorskTittel,
                 PensjonLatex,
                 setOf(
                     RequiredParameter(SaksNr),
@@ -118,7 +132,7 @@ class DSLTest {
 
     @Test
     fun `createTemplate adds outline`() {
-        val doc = createTemplate("test", PensjonLatex, languages(Language.Bokmal)) {
+        val doc = createTemplate("test", bokmalTittel, PensjonLatex, languages(Language.Bokmal)) {
             outline {
                 title1 { phrase(Fraser.pensjonInnvilget) }
                 paragraph {
@@ -129,7 +143,7 @@ class DSLTest {
 
         assertEquals(
             LetterTemplate(
-                "test", PensjonLatex, emptySet(), languages(Language.Bokmal), listOf(
+                "test", bokmalTittel, PensjonLatex, emptySet(), languages(Language.Bokmal), listOf(
                     Element.Title1(listOf(Element.Text.Phrase(Fraser.pensjonInnvilget))),
                     Element.Paragraph(listOf(Element.Text.Literal.create(Language.Bokmal to "Dette er tekst som kun brukes i dette brevet.")))
                 )
@@ -140,7 +154,7 @@ class DSLTest {
 
     @Test
     fun `createTemplate adds showIf`() {
-        val doc = createTemplate("test", PensjonLatex, languages(Language.Nynorsk)) {
+        val doc = createTemplate("test", nynorskTittel, PensjonLatex, languages(Language.Nynorsk)) {
             parameters { required { PensjonInnvilget } }
             outline {
                 showIf(argument(PensjonInnvilget)) {
@@ -153,7 +167,7 @@ class DSLTest {
 
         assertEquals(
             LetterTemplate(
-                "test", PensjonLatex, setOf(RequiredParameter(PensjonInnvilget)), languages(Language.Nynorsk), listOf(
+                "test", nynorskTittel, PensjonLatex, setOf(RequiredParameter(PensjonInnvilget)), languages(Language.Nynorsk), listOf(
                     Element.Conditional(
                         Expression.Argument(PensjonInnvilget),
                         listOf(Element.Text.Literal.create(Language.Nynorsk to "jadda")),
@@ -169,7 +183,7 @@ class DSLTest {
     @Disabled
     fun `LetterTemplate json roundtrip`() {
 
-        val doc = createTemplate("test", PensjonLatex, languages(Language.Bokmal)) {
+        val doc = createTemplate("test", bokmalTittel, PensjonLatex, languages(Language.Bokmal)) {
             parameters {
                 required { SaksNr }
                 optional { PensjonInnvilget }
@@ -207,7 +221,7 @@ class DSLTest {
     @Test
     fun `createTemplate will fail if using undeclared parameters`() {
         assertThrows<IllegalArgumentException> {
-            createTemplate("test", PensjonLatex, languages(Language.Bokmal)) {
+            createTemplate("test", bokmalTittel, PensjonLatex, languages(Language.Bokmal)) {
                 outline {
                     title1 {
                         eval(argument(KortNavn))
@@ -219,7 +233,7 @@ class DSLTest {
 
     @Test
     fun `createTemplate can add Text$Expression elements`() {
-        val template = createTemplate("test", PensjonLatex, languages(Language.Bokmal)) {
+        val template = createTemplate("test", bokmalTittel, PensjonLatex, languages(Language.Bokmal)) {
             parameters { required { SaksNr } }
             outline {
                 eval(argument(SaksNr).str())
@@ -228,7 +242,7 @@ class DSLTest {
 
         assertEquals(
             LetterTemplate(
-                "test", PensjonLatex, setOf(RequiredParameter(SaksNr)), languages(Language.Bokmal), listOf(
+                "test", bokmalTittel, PensjonLatex, setOf(RequiredParameter(SaksNr)), languages(Language.Bokmal), listOf(
                     Element.Text.Expression(
                         Expression.UnaryInvoke(
                             Expression.Argument(SaksNr),
@@ -279,9 +293,8 @@ class DSLTest {
     fun test() {
         val templateArgs: Map<Parameter, Any> =
             mapOf(
-                ReturAdresse to Fagdelen.ReturAdresse("En NAV enhet", "En adresse 1", "1337", "Et poststed", 22),
+                ReturAdresse to Fagdelen.ReturAdresse("En NAV enhet", "En adresse 1", "1337", "Et poststed"),
                 SaksNr to 1234,
-                LetterTitle to "Vi har innvilget søknaden din om 100 prosent alderspensjon",
                 PensjonInnvilget to true,
                 Mottaker to
                         Fagdelen.Mottaker(
