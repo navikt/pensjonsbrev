@@ -1,0 +1,3 @@
+= Forside
+
+* xref:arkitektur.adoc[arkitektur].
