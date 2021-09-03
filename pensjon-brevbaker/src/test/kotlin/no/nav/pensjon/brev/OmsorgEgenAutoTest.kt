@@ -8,6 +8,7 @@ import no.nav.pensjon.brev.template.*
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import java.io.File
+import java.time.LocalDate
 import java.util.*
 
 class OmsorgEgenAutoTest {
@@ -15,16 +16,29 @@ class OmsorgEgenAutoTest {
     @Disabled
     @Test
     fun test() {
-        val mottaker = Fagdelen.Mottaker("Alexander Hoem", "Rosbach", "Agmund Bolts vei", "2", "0664", "Oslo")
         Letter(
             OmsorgEgenAuto.template,
             mapOf(
-                ReturAdresse to Fagdelen.ReturAdresse("hei", "joda", "jadda", "123"),
-                Mottaker to mottaker,
                 NorskIdentifikator to 12345678911,
                 SaksNr to 1234,
                 ArEgenerklaringOmsorgspoeng to 2021,
-                Felles to Fagdelen.Felles("2021-09-02", "12345", "123456", "NAV jo", "55342596", mottaker, "1234")
+                Felles to Fagdelen.Felles(
+                    dokumentDato = LocalDate.now(),
+                    returAdresse = Fagdelen.ReturAdresse(
+                        navEnhetsNavn = "hei",
+                        adresseLinje1 = "joda",
+                        postNr = "jadda",
+                        postSted = "123"
+                    ),
+                    mottaker = Fagdelen.Mottaker(
+                        fornavn = "Alexander Hoem",
+                        etternavn = "Rosbach",
+                        gatenavn = "Agmund Bolts vei",
+                        husnummer = "2",
+                        postnummer = "0664",
+                        poststed = "Oslo"
+                    )
+                )
             ),
             Language.Bokmal
         ).render()

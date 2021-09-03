@@ -2,19 +2,23 @@ package no.nav.pensjon.brev.something
 
 import no.nav.pensjon.brev.template.*
 import java.io.InputStream
+import java.io.PrintWriter
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
+import java.util.*
 
 
 object PensjonLatex : BaseTemplate() {
     override val parameters: Set<TemplateParameter> = setOf(
-        RequiredParameter(ReturAdresse),
-        RequiredParameter(Mottaker),
         RequiredParameter(NorskIdentifikator),
         RequiredParameter(SaksNr),
+        RequiredParameter(Felles)
     )
 
     override fun render(letter: Letter): RenderedLetter =
         RenderedLatexLetter().apply {
-            newFile("params.tex").use { it.write(masterTemplateParameters(letter).toByteArray()) }
+            newFile("params.tex").use { masterTemplateParameters(letter, PrintWriter(it, true, Charsets.UTF_8)) }
             newFile("letter.tex").use { it.write(renderLetter(letter).toByteArray()) }
             newFile("nav-logo.pdf").use { getResource("nav-logo.pdf").transferTo(it) }
             newFile("nav-logo.pdf_tex").use { getResource("nav-logo.pdf_tex").transferTo(it) }
@@ -28,21 +32,48 @@ object PensjonLatex : BaseTemplate() {
             Language.Nynorsk -> PensjonLatexLanguageSettings.nynorsk
         }
 
-    private fun masterTemplateParameters(letter: Letter) =
-        with(letter.requiredArg(Mottaker)) {
-            """
-            \newcommand{\feltfornavnmottaker}{$fornavn}
-            \newcommand{\feltetternavnmottaker}{$etternavn}
-            \newcommand{\feltgatenavnmottaker}{$gatenavn}
-            \newcommand{\felthusnummermottaker}{$husnummer}
-            \newcommand{\feltpostnummermottaker}{$postnummer}
-            \newcommand{\feltpoststedmottaker}{$poststed}
-            \newcommand{\feltfoedselsnummer}{${letter.requiredArg(NorskIdentifikator)}}
-            \newcommand{\feltsaksnummer}{${letter.requiredArg(SaksNr)}}
-            ${getTextParameters(letter.language)}
-            ${generateVedlegg()}
-            \newcommand{\closingbehandlet}{${closingCommand(letter)}}
-        """.trimIndent()
+    private fun masterTemplateParameters(letter: Letter, printWriter: PrintWriter) {
+        with(printWriter) {
+            println("""\newcommand{\feltfoedselsnummer}{${letter.requiredArg(NorskIdentifikator)}}""")
+            println("""\newcommand{\feltsaksnummer}{${letter.requiredArg(SaksNr)}}""")
+            println("""\newcommand{\closingbehandlet}{${closingCommand(letter)}}""")
+            println(getTextParameters(letter.language))
+            println(generateVedlegg())
+        }
+        with(letter.requiredArg(Felles)) {
+            mottakerCommands(mottaker, printWriter)
+            returAdresseCommands(returAdresse, printWriter)
+            datoCommand(dokumentDato, letter.language, printWriter)
+        }
+    }
+
+    private fun datoCommand(dato: LocalDate, language: Language, printWriter: PrintWriter) {
+        val locale = when(language) {
+            Language.Bokmal -> Locale.forLanguageTag("NO")
+            Language.English -> Locale.UK //TODO: Finn ut om det skal brukes ENGLISH, UK eller US
+            Language.Nynorsk -> Locale.forLanguageTag("NO")
+        }
+        printWriter.println("""\newcommand{\feltdato}{${dato.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM).withLocale(locale))}}""")
+    }
+
+    private fun mottakerCommands(mottaker: Fagdelen.Mottaker, printWriter: PrintWriter) =
+        with(mottaker) {
+            printWriter.println("""\newcommand{\feltfornavnmottaker}{$fornavn}""")
+            printWriter.println("""\newcommand{\feltetternavnmottaker}{$etternavn}""")
+            printWriter.println("""\newcommand{\feltgatenavnmottaker}{$gatenavn}""")
+            printWriter.println("""\newcommand{\felthusnummermottaker}{$husnummer}""")
+            printWriter.println("""\newcommand{\feltpostnummermottaker}{$postnummer}""")
+            printWriter.println("""\newcommand{\feltpoststedmottaker}{$poststed}""")
+        }
+
+
+    private fun returAdresseCommands(returAdresse: Fagdelen.ReturAdresse, printWriter: PrintWriter) =
+        with(returAdresse) {
+            printWriter.println("""\newcommand{\feltnavenhet}{$navEnhetsNavn}""")
+            printWriter.println("""\newcommand{\feltreturadressepostnrsted}{$postNr $postSted}""")
+            printWriter.println("""\newcommand{\feltreturadresse}{$adresseLinje1}""")
+            printWriter.println("""\newcommand{\feltpostadressepostnrsted}{$postNr $postSted}""")
+            printWriter.println("""\newcommand{\feltpostadresse}{$adresseLinje1}""")
         }
 
     // TODO velg mellom \closingsaksbehandlet velg mellom \closingautomatiskbehandlet
@@ -118,14 +149,8 @@ data class PensjonLatexLanguageSettings(
     val saksnummerprefix: String,
     val foedselsnummerprefix: String,
     val returadresseenhetprefix: String,
-    val navenhet: String,
-    val returadressepostnrsted: String,
-    val returadresse: String,
     val datoprefix: String,
-    val dato: String,
     val postadresseprefix: String,
-    val postadressepostnrsted: String,
-    val postadresse: String,
     val sideprefix: String,
     val sideinfix: String,
     val navenhettlfprefix: String,
@@ -145,14 +170,8 @@ data class PensjonLatexLanguageSettings(
             saksnummerprefix = "NAVs saksnummer:",
             foedselsnummerprefix = "Fødselsnummer:",
             returadresseenhetprefix = "Returadresse:",
-            navenhet = "NAV Familie- og pensjonsytelser Steinkjer",
-            returadressepostnrsted = "0607 OSLO",
-            returadresse = "Postboks 6600 Etterstad,",
             datoprefix = "Dato:",
-            dato = "6. mai 2021",
             postadresseprefix = "Postadresse:",
-            postadressepostnrsted = "0607 OSLO",
-            postadresse = "Postboks 6600 Etterstad",
             sideprefix = "Side",
             sideinfix = "av",
             navenhettlfprefix = "Telefon:",
@@ -172,14 +191,8 @@ data class PensjonLatexLanguageSettings(
             saksnummerprefix = "NAVs saksnummer:",
             foedselsnummerprefix = "Fødselsnummer:",
             returadresseenhetprefix = "Returadresse:",
-            navenhet = "NAV Familie- og pensjonsytelser Steinkjer",
-            returadressepostnrsted = "0607 OSLO",
-            returadresse = "Postboks 6600 Etterstad,",
             datoprefix = "Dato:",
-            dato = "6. mai 2021",
             postadresseprefix = "Postadresse:",
-            postadressepostnrsted = "0607 OSLO",
-            postadresse = "Postboks 6600 Etterstad",
             sideprefix = "Side",
             sideinfix = "av",
             navenhettlfprefix = "Telefon:",
@@ -199,14 +212,8 @@ data class PensjonLatexLanguageSettings(
             saksnummerprefix = "NAV’s case number:",
             foedselsnummerprefix = "National identity number:",
             returadresseenhetprefix = "Return address:",
-            navenhet = "NAV Familie- og pensjonsytelser Steinkjer",
-            returadressepostnrsted = "0607 OSLO",
-            returadresse = "Postboks 6600 Etterstad,",
             datoprefix = "Date:",
-            dato = "6. mai 2021",
             postadresseprefix = "Mailing address:",
-            postadressepostnrsted = "0607 OSLO",
-            postadresse = "Postboks 6600 Etterstad",
             sideprefix = "Page",
             sideinfix = "of",
             navenhettlfprefix = "Phone number:",
