@@ -39,6 +39,10 @@ spec:
     inbound:
       rules:
         - application: {{brevbaker-app}}
+  ingresses:
+    {{#each ingresses as |url|}}
+       - {{url}}
+      {{/each}}
 #  env:
 #    {{#each env as |e|}}
 #       - name: {{e.name }}
