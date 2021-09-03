@@ -1,2 +1,4 @@
 app-name: "pensjon-pdf-bygger-t4"
+ingresses:
+  - "http://pensjon-brevbaker-t4.dev.adeo.no"
 brevbaker-app: "pensjon-brevbaker-t4"
