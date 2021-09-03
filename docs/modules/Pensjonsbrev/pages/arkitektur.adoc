@@ -1,0 +1,72 @@
+= Arkitektur ny brevløsning
+
+== Bakgrunn
+
+Dagens brevløsning består av to systemer: Metaforce/doksys stack og HP Extreme brev.
+HP Extreme bruker hovedsakelig ESB(Enterprise Service Bus) som har en rekke problemer:
+
+* Vanskelig å foreta endringer på grunn av systemets kompleksitet og manglende kompetanse
+* Gammelt (manglende kompetanse, manglende vedlikehold av software, dyre lisenser for legacy systemer)
+* Lite fleksibelt/lite endringspotensiale
+* Avhengig av buss og stormaskin
+* For å komme oss vekk fra HP Extreme var det besluttet å ta i bruk MetaForce for å produsere brev.
+* Arbeidet med å overføre brev fra HP Extreme til MetaForce har pågått siden 2017.
+* Det å overføre brevmaler fra ett system til ett annet er en tung og langvarig prosess, og brevmalene i seg selv er av høy verdi.
+
+
+*MetaForce ønsker vi også å gå bort ifra fordi:*
+
+* Team CRM har besluttet at de ikke lengre vil opprettholde MetaForce i NAV
+* Det er ett proprietært verktøy:
+** Kan ikke tilpasses våres behov
+** Vi er ingen garanti at MetaForce ikke stopper å få oppdateringer
+** Brevmaler låses inn i deres løsning og kan ikke automatisk overføres til nye løsninger
+* Det forvaltes ikke av Team Pensjonsbrev, så vi er avhengig av utviklere utenfor teamet hver gang vi skal gjøre endringer i brev.
+
+Se også: https://confluence.adeo.no/pages/viewpage.action?pageId=387091206[Oversikt - Faglige problemstillinger]
+
+== Beslutninger
+
+=== Utvikle brev-løsningen selv:
+Det ble vurdert å ta i bruk hyllevare(OpenText Extream), men da antar vi at vi vil støte på tidligere problemstillinger med MetaForce. OpenText Extream er hyllevare som vi ikke kan tilpasse selv, og vi låser brev-malene inn i ett eksternt CRM verktøy slik som før. Dersom OpenText Extream ikke vedlikeholdes er vi tilbake til samme tilstand som i dag.
+
+Vi valgte å utvikle en egen fullstendig løsning og ikke hyllevare fordi:
+
+Implementasjonen av brev-malene er av høy verdi. Ved å ta i bruk en egen løsning kan vi skrive malene og lagre de i en løsning vi kan vedlikeholde over lang tid.
+Vi ønsker at løsningen skal vare så lenge som mulig. Ved å lage en egen løsning vil vi kunne forvalte den så lenge NAV har utviklerkapasitet.
+
+=== Logisk skille mellom brevvisning og brevinnhold:
+Selv om vi skriver våres egen løsning må vi ha avhengigheter til eksterne verktøy for å produsere PDF dokumenter.
+
+For å ikke knytte oss hardt mot hvordan dokumentet vises, har vi bestemt oss for å skille produksjonen av det tekstlige innholdet i brevet fra verktøyet som produserer den endlige visningen.
+
+Det betyr at alt innholdet i brevet bestemmes av vår egen applikasjon(brevbakeren), også overlates PDF produksjonen til et annet verktøy(LaTeX container i våres tilfelle).
+
+Om vi ønsker å gå bort fra LaTeX i fremtiden slipper vi å skrive alle brevmalene på nytt, og vi trenger kun å lage en ny integrasjon mot ett annet verktøy.
+Om vi f.eks ønsker å produsere html brev eller noe annet kan vi bare lage ett nytt visnings-lag uten å endre på koden som produserer innholdet i brevet.
+
+=== Valg av pdf rendring verktøy:
+Ettersom vi har valgt å ha ett logisk skille mellom brevvisning og brevinnhold(se over), så vil vi ikke bli låst til verktøyet vi bruker. LaTeX ble valgt ettersom utviklerne hadde erfaring med LaTeX fra før via skolegangen. LaTeX er ett verktøy for å produsere godt formatterte bøker, forskningsartikler, CV og mye annet. LaTeX er gratis og basert på åpen kildekode med mange støtte-biblioteker, mye brukt og inneholder mye ekstra-funksjonalitet ettersom det har eksistert lenge(litt på samme måte som Linux). Vi antar også at vi ikke kommer til å måtte bytte ut LaTeX om kort tid ettersom det har eksistert lenge og brukes av omtrent alle universitet og høgskoler. Det å bytte verktøy er antatt å ta en utvikler ett par uker, så relativt lav kostnad.
+
+== Arkitektur
+[plantuml, target=overordnet-arkitektur, format=svg]
+....
+saksbehandler --> [saksbehandling-frontend]
+[saksbehandling-frontend] --> [Saksbehandling-backend]
+[Pesys] --> [Brevbaker]
+[Pesys] --> [Saksbehandling-backend]
+[Pesys] --> [Brev-bestiller]
+[Brev-bestiller] --> [Distribusjon]
+[Brev-bestiller] --> [Arkiv]
+[Brev-bestiller] -->bestillingsKoe
+[Saksbehandling-backend] --> mellomlagretRedigering
+[Saksbehandling-backend] --> [Brev-bestiller]
+[Saksbehandling-backend] --> [Brevbaker]
+database "Mellomlagret redigering" as mellomlagretRedigering{
+}
+database "bestillings-kø" as bestillingsKoe{
+}
+
+[Brevbaker] --> [Pdfbygger]
+[Psak] --> [Pesys]
+....
