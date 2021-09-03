@@ -42,6 +42,8 @@ fun Application.module() {
             try {
                 val pdfCompilationInput = call.receive<PdfCompilationInput>()
                 call.respond(laTeXService.producePDF(pdfCompilationInput.files))
+            } catch (e: PdfCompilationException) {
+                call.respond(PDFCompilationOutput(e.compilationLog))
             } catch (e: Exception) {
                 call.respond(PDFCompilationOutput(e.stackTraceToString()))
             }

@@ -226,6 +226,10 @@
 }
 
 \newcommand{\closingautomatiskbehandlet}{
+    \@ifdefined{foo}
+    {
+        test
+    }
     \feltclosingautomatiskbehandlet
 }
 \renewcommand{\closing}{

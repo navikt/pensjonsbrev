@@ -2,8 +2,6 @@
 services:
   pdf-bygger:
     build: ./pdf-bygger
-    tmpfs:
-      - /app/pdfcompilation
     ports:
       - "8081:8080"
   pensjon-brevbaker:
