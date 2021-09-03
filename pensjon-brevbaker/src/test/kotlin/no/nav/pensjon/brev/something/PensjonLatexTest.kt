@@ -16,12 +16,11 @@ import java.util.*
 @Disabled //pdf compilation integration test
 internal class PensjonLatexTest {
 
-    val returAdresse = Fagdelen.ReturAdresse("En NAV enhet", "En adresse 1", "1337", "Et poststed", 22)
+    val returAdresse = Fagdelen.ReturAdresse("En NAV enhet", "En adresse 1", "1337", "Et poststed")
     private val templateArgs: Map<String, JsonNode> = with(jacksonObjectMapper()) {
         mapOf(
             ReturAdresse.name to valueToTree(returAdresse),
             SaksNr.name to valueToTree(1234),
-            LetterTitle.name to valueToTree("Vi har innvilget søknaden din om 100 prosent alderspensjon"),
             PensjonInnvilget.name to valueToTree(true),
             Mottaker.name to valueToTree(
                 Fagdelen.Mottaker(

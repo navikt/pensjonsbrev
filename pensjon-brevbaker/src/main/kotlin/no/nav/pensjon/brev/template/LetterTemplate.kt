@@ -8,6 +8,7 @@ import java.io.OutputStream
 
 data class LetterTemplate<Lang : LanguageCombination>(
     val name: String,
+    val title: Element.Text.Literal<Lang>,
     val base: BaseTemplate,
     val parameters: Set<TemplateParameter>,
     val language: Lang,

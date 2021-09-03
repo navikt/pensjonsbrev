@@ -12,13 +12,12 @@ import org.junit.jupiter.api.assertThrows
 
 class LetterResourceTest {
 
-    val returAdresse = Fagdelen.ReturAdresse("En NAV enhet", "En adresse 1", "1337", "Et poststed", 22)
+    val returAdresse = Fagdelen.ReturAdresse("En NAV enhet", "En adresse 1", "1337", "Et poststed")
     val template = EksempelBrev.template
     private val templateArgs: Map<String, JsonNode> = with(jacksonObjectMapper()) {
         mapOf(
             ReturAdresse.name to valueToTree(returAdresse),
             SaksNr.name to valueToTree(1234),
-            LetterTitle.name to valueToTree("Tittel"),
             PensjonInnvilget.name to valueToTree(true),
             Mottaker.name to valueToTree(
                 Fagdelen.Mottaker(

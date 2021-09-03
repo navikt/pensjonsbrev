@@ -1,9 +1,9 @@
 package no.nav.pensjon.brev.template
 
 import no.nav.pensjon.brev.something.Fagdelen
+import no.nav.pensjon.brev.template.dsl.argument
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
-import java.io.OutputStream
 import java.lang.IllegalArgumentException
 
 class LetterTemplateTest {
@@ -12,9 +12,10 @@ class LetterTemplateTest {
         "NAV Familie- og pensjonsytelser Steinkjer",
         "Postboks 6600 Etterstad",
         "0607",
-        "OSLO",
-        123
+        "OSLO"
     )
+    val title = title(Language.Bokmal to "test")
+
 
     object MasterMal : BaseTemplate() {
 
@@ -32,7 +33,7 @@ class LetterTemplateTest {
     @Test
     fun `constructor validates that outline doesnt use non-required arguments as required`() {
         assertThrows<IllegalArgumentException> {
-            createTemplate("test", MasterMal, languages(Language.Bokmal)) {
+            createTemplate("test", title, MasterMal, languages(Language.Bokmal)) {
                 outline {
                     eval(argument(KortNavn))
                 }
@@ -42,7 +43,7 @@ class LetterTemplateTest {
 
     @Test
     fun `constructor allows use of required arguments`() {
-        createTemplate("test", MasterMal, languages(Language.Bokmal)) {
+        createTemplate("test", title, MasterMal, languages(Language.Bokmal)) {
             parameters { required { KortNavn } }
             outline {
                 eval(argument(KortNavn))

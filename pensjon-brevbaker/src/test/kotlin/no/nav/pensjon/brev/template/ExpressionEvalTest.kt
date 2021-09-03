@@ -3,7 +3,6 @@ package no.nav.pensjon.brev.template
 import no.nav.pensjon.brev.something.Fagdelen
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-import java.io.OutputStream
 
 class ExpressionEvalTest {
     object TestMaster : BaseTemplate() {
@@ -16,7 +15,7 @@ class ExpressionEvalTest {
         }
 
     }
-    val template = createTemplate("test", TestMaster, languages(Language.Bokmal)) {
+    val template = createTemplate("test", title(Language.Bokmal to "test"), TestMaster, languages(Language.Bokmal)) {
         parameters {
             required { KortNavn }
             optional { Penger }
@@ -72,7 +71,7 @@ class ExpressionEvalTest {
 
     @Test
     fun `eval Select returns field`() {
-        val returAdresse = Fagdelen.ReturAdresse("navn", "addr1", "postnr", "poststed", 2)
+        val returAdresse = Fagdelen.ReturAdresse("navn", "addr1", "postnr", "poststed")
         val evaluated: String = Expression.Select(
             Expression.Literal(returAdresse),
             Fagdelen.ReturAdresse::navEnhetsNavn

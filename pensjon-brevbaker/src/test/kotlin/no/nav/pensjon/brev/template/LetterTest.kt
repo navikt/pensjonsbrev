@@ -1,11 +1,9 @@
 package no.nav.pensjon.brev.template
 
 import no.nav.pensjon.brev.something.Fagdelen
-import no.nav.pensjon.brev.something.PensjonLatex
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
-import java.io.OutputStream
 
 class LetterTest {
 
@@ -13,8 +11,7 @@ class LetterTest {
         "NAV Familie- og pensjonsytelser Steinkjer",
         "Postboks 6600 Etterstad",
         "0607",
-        "OSLO",
-        123
+        "OSLO"
     )
 
     object TestMaster : BaseTemplate() {
@@ -28,7 +25,8 @@ class LetterTest {
 
     }
 
-    val template = createTemplate("test", TestMaster, languages(Language.Bokmal)) { }
+    val title = title(Language.Bokmal to "test")
+    val template = createTemplate("test", title, TestMaster, languages(Language.Bokmal)) { }
 
     @Test
     fun `constructor validates required parameters are present`() {
@@ -68,7 +66,7 @@ class LetterTest {
 
     @Test
     fun `requiredArg fetching argument that is part of template is successful`() {
-        val template = createTemplate("test", TestMaster, languages(Language.Bokmal)) {
+        val template = createTemplate("test", title, TestMaster, languages(Language.Bokmal)) {
             parameters { required { KortNavn } }
         }
         val letter = Letter(template, mapOf(KortNavn to "mitt navn", ReturAdresse to returAdresse), Language.Bokmal)
@@ -109,7 +107,7 @@ class LetterTest {
 
     @Test
     fun `optionalArg passed arguments can be fetched`() {
-        val template = createTemplate("test", TestMaster, languages(Language.Bokmal)) {
+        val template = createTemplate("test", title, TestMaster, languages(Language.Bokmal)) {
             parameters { optional { KortNavn } }
         }
         val letter = Letter(template, mapOf(ReturAdresse to returAdresse), Language.Bokmal)
@@ -119,7 +117,7 @@ class LetterTest {
 
     @Test
     fun `optionalArg will not fail for missing optional argument`() {
-        val template = createTemplate("test", TestMaster, languages(Language.Bokmal)) {
+        val template = createTemplate("test", title, TestMaster, languages(Language.Bokmal)) {
             parameters { optional { KortNavn } }
         }
         val letter = Letter(template, mapOf(ReturAdresse to returAdresse), Language.Bokmal)

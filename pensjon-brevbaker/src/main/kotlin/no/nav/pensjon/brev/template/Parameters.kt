@@ -30,7 +30,6 @@ sealed class EnumParameter<T : Enum<T>>(enum: KClass<T>) : Parameter(enum), Para
 sealed class ComplexParameter<out T: Any>(dataType: KClass<T>) : Parameter(dataType), ParameterType<T>
 
 object SaksNr : NumberParameter()
-object EtHelTall : Parameter(Int::class), ParameterType<Int>
 object PensjonInnvilget : BooleanParameter()
 object KortNavn : StringParameter()
 object Sak : EnumParameter<Fagdelen.SakTypeKode>(Fagdelen.SakTypeKode::class)
@@ -38,4 +37,6 @@ object ReturAdresse : ComplexParameter<Fagdelen.ReturAdresse>(Fagdelen.ReturAdre
 object Mottaker : ComplexParameter<Fagdelen.Mottaker>(Fagdelen.Mottaker::class)
 object Penger : ComplexParameter<Int>(Int::class)
 object NorskIdentifikator : NumberParameter()
-object LetterTitle : StringParameter()
+object Felles : ComplexParameter<Fagdelen.Felles>(Fagdelen.Felles::class)
+
+object ArEgenerklaringOmsorgspoeng : NumberParameter()
