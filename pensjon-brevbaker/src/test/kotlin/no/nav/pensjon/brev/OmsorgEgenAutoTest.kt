@@ -5,12 +5,14 @@ import no.nav.pensjon.brev.latex.PdfCompilationInput
 import no.nav.pensjon.brev.maler.OmsorgEgenAuto
 import no.nav.pensjon.brev.something.Fagdelen
 import no.nav.pensjon.brev.template.*
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import java.io.File
 import java.util.*
 
 class OmsorgEgenAutoTest {
 
+    @Disabled
     @Test
     fun test() {
         val mottaker = Fagdelen.Mottaker("Alexander Hoem", "Rosbach", "Agmund Bolts vei", "2", "0664", "Oslo")
