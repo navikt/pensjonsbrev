@@ -1,3 +1,2 @@
-= Team pensjonsbrev
-
+.Pensjonsbrev
 * xref:arkitektur.adoc[arkitektur ny brevløsning/brevbaker]
