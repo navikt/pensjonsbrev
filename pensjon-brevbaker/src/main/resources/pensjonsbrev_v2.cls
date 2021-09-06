@@ -217,36 +217,35 @@
 %       Closing/last page of letter
 %----------------------------------------
 \newcommand{\closingsaksbehandlet}{
+    \vspace{60pt}
+    \noindent
     \begin{minipage}{0.45\textwidth}
         \feltclosingsaksbehandlerfirst \newline \feltclosingsaksbehandlersuffix
     \end{minipage}
     \begin{minipage}{0.45\textwidth}
         \feltclosingsaksbehandlersecond \newline \feltclosingsaksbehandlersuffix
     \end{minipage}
+    \par
+    \vspace*{2pt}
+    \feltnavenhet
 }
 
 \newcommand{\closingautomatiskbehandlet}{
-    \@ifdefined{foo}
-    {
-        test
-    }
-    \feltclosingautomatiskbehandlet
+    \feltnavenhet
+    \par
+    \feltclosingautomatisktext
 }
 \renewcommand{\closing}{
-    \newpage
     \textbf{\feltclosingspoersmaal}
     \vspace*{\vskipaftersectiontitle}
     \newline
     \letterparagraph{\feltclosingkontaktoss}
     \vspace*{42pt}
-    \feltclosinggreeting \par
-    \vspace{60pt}
-    \noindent
+    \feltclosinggreeting \\
+    \vspace*{3pt}
     \closingbehandlet
-    \par
-    \feltnavenhet
     \newline
-    \vspace{60pt}
+    \vspace{50pt}
     \newline
     \feltclosingvedleggprefix
     \vspace{-\topsep} %Remove space between
