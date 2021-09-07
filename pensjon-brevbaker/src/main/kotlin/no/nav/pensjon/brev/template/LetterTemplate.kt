@@ -12,7 +12,8 @@ data class LetterTemplate<Lang : LanguageCombination>(
     val base: BaseTemplate,
     val parameters: Set<TemplateParameter>,
     val language: Lang,
-    val outline: List<Element<Lang>>
+    val outline: List<Element<Lang>>,
+    val attachments: List<AttachmentTemplate<Lang>> = emptyList(),
 ) {
     init {
         validateArgumentExpressions()
@@ -21,6 +22,12 @@ data class LetterTemplate<Lang : LanguageCombination>(
     fun render(letter: Letter) =
         base.render(letter)
 }
+
+data class AttachmentTemplate<Lang: LanguageCombination>(
+    val title: Element.Text.Literal<Lang>,
+    val outline: List<Element<Lang>>,
+    val includeSakspart: Boolean = false,
+)
 
 sealed class TemplateParameter {
     companion object {

@@ -111,11 +111,22 @@ object PensjonLatex : BaseTemplate() {
 
     override fun render(letter: Letter): RenderedLetter =
         RenderedLatexLetter().apply {
-            newFile("params.tex").use { masterTemplateParameters(letter, PrintWriter(it, true, Charsets.UTF_8)) }
-            newFile("letter.tex").use { it.write(renderLetter(letter).toByteArray()) }
+            newFile("params.tex").use { masterTemplateParameters(letter, it.printWriter()) }
+            newFile("letter.tex").use { renderLetter(letter, it.printWriter()) }
             newFile("nav-logo.pdf").use { getResource("nav-logo.pdf").transferTo(it) }
             newFile("nav-logo.pdf_tex").use { getResource("nav-logo.pdf_tex").transferTo(it) }
             newFile("pensjonsbrev_v2.cls").use { getResource("pensjonsbrev_v2.cls").transferTo(it) }
+            letter.template.attachments.forEachIndexed { index, attachment ->
+                newFile("attachment_$index.tex").use { renderAttachment(letter, attachment, it.printWriter()) }
+            }
+        }
+
+    private fun renderAttachment(letter: Letter, attachment: AttachmentTemplate<*>, printWriter: PrintWriter) =
+        with(printWriter) {
+            println("""\newpage""")
+            println("""\titleText{${attachment.title.text(letter.language)}}""")
+            println("""\par""")
+            attachment.outline.forEach { renderElement(letter, it, printWriter) }
         }
 
 
@@ -188,45 +199,44 @@ object PensjonLatex : BaseTemplate() {
             \end{itemize}    
         }""".trimMargin() //TODO generer vedlegg
 
-    private fun renderLetter(letter: Letter): String =
-        """
-            \documentclass[12pt]{pensjonsbrev_v2}
-            \begin{document}
-                \begin{letter}{\brevparameter}
-                \tittel{${letter.template.title.text(letter.language)}}
-                ${contents(letter)}
-                \closing
-                \end{letter}
-            \end{document}
-        """
+    private fun renderLetter(letter: Letter, printWriter: PrintWriter): Unit =
+        with(printWriter) {
+            println("""\documentclass[12pt]{pensjonsbrev_v2}""")
+            println("""\begin{document}""")
+            println("""    \begin{letter}{\brevparameter}""")
+            println("""    \tittel{${letter.template.title.text(letter.language)}}""")
+            contents(letter, printWriter)
+            println("""    \closing""")
+//            letter.template.attachments.forEach { renderAttachment(letter, it, printWriter) }
+            letter.template.attachments.forEachIndexed { index, _ -> println("""\input{attachment_$index}""") }
+            println("""    \end{letter}""")
+            println("""\end{document}""")
+        }
 
-    private fun contents(letter: Letter): StringBuilder {
-        val stringBuilder = StringBuilder()
-        letter.template.outline.forEach { renderElement(letter, it, stringBuilder) }
-        return stringBuilder
-    }
+    private fun contents(letter: Letter, printWriter: PrintWriter) =
+        letter.template.outline.forEach { renderElement(letter, it, printWriter) }
 
-    private fun renderElement(letter: Letter, element: Element<*>, stringBuilder: StringBuilder) {
+    private fun renderElement(letter: Letter, element: Element<*>, printWriter: PrintWriter) {
         when (element) {
             is Element.Title1 ->
-                with(stringBuilder) {
-                    append("""\lettersectiontitle{""")
-                    element.title1.forEach { child -> renderElement(letter, child, stringBuilder) }
-                    appendLine("}")
+                with(printWriter) {
+                    print("""\lettersectiontitle{""")
+                    element.title1.forEach { child -> renderElement(letter, child, printWriter) }
+                    println("}")
                 }
             is Element.Conditional ->
                 with(element) {
-                    val toRender = if (predicate.eval(letter)) element.showIf else element.showElse
-                    toRender.forEach { renderElement(letter, it, stringBuilder) }
+                    val toRender = if (predicate.eval(letter)) showIf else showElse
+                    toRender.forEach { renderElement(letter, it, printWriter) }
                 }
-            is Element.Text.Literal -> stringBuilder.append(element.text(letter.language))
-            is Element.Text.Phrase -> stringBuilder.append(element.phrase.text(letter.language))
-            is Element.Text.Expression -> stringBuilder.append(element.expression.eval(letter))
+            is Element.Text.Literal -> printWriter.print(element.text(letter.language))
+            is Element.Text.Phrase -> printWriter.print(element.phrase.text(letter.language))
+            is Element.Text.Expression -> printWriter.print(element.expression.eval(letter))
             is Element.Paragraph ->
-                with(stringBuilder) {
-                    append("""\letterparagraph{""")
-                    element.paragraph.forEach { child -> renderElement(letter, child, stringBuilder) }
-                    appendLine("}")
+                with(printWriter) {
+                    println("""\letterparagraph{""")
+                    element.paragraph.forEach { child -> renderElement(letter, child, printWriter) }
+                    println("}")
                 }
         }
     }

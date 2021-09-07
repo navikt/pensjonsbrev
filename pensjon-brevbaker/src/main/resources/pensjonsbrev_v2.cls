@@ -123,7 +123,7 @@
 
 %Title font
 \newfontface{\titleFont}[BoldFont={Times New Roman Bold}]{Times New Roman}
-\newcommand{\titleText}[1]{\newline \titleFont \fontsize{16pt}{16pt} \selectfont \textbf{#1}}
+\newcommand{\titleText}[1]{\textbf{\titleFont \fontsize{16pt}{16pt} \selectfont \newline #1}}
 
 \setplength{refaftervskip}{10mm} %vertical distance between title and reference field (containing date)
 

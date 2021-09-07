@@ -32,6 +32,31 @@ object OmsorgEgenAuto : StaticTemplate {
                 text(Language.Bokmal to ".")
             }
         }
+
+        attachment(
+            title = title(Language.Bokmal to "Egenerklæring om pleie- og omsorgsarbeid"),
+            includeSakspart = true,
+        ) {
+            paragraph {
+                text(Language.Bokmal to "Jeg viser til brev av 2020")
+//                eval(argument(Felles).str())
+                text(Language.Bokmal to ".")
+            }
+
+            paragraph {
+                text(Language.Bokmal to "I ")
+                eval(argument(ArEgenerklaringOmsorgspoeng).str())
+                text(Language.Bokmal to " har jeg utført pleie og omsorgsarbeid på minst 22 timer i uken. (Inkludert opptil en halv time reisetid per besøk.)")
+            }
+
+            paragraph {
+                text(Language.Bokmal to "Navn på pleietrengende: ............................................................")
+            }
+
+            paragraph {
+                text(Language.Bokmal to "Arbeidet har vart i (sett kryss):")
+            }
+        }
     }
 
 }

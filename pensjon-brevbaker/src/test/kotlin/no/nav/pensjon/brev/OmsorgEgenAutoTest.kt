@@ -23,7 +23,7 @@ class OmsorgEgenAutoTest {
             mapOf(
                 NorskIdentifikator to 12345678911,
                 SaksNr to 1234,
-                ArEgenerklaringOmsorgspoeng to 2021,
+                ArEgenerklaringOmsorgspoeng to 2020,
                 Felles to Fagdelen.Felles(
                     dokumentDato = LocalDate.now(),
                     returAdresse = Fagdelen.ReturAdresse(

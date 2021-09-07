@@ -11,7 +11,7 @@ fun <Lang : LanguageCombination> createTemplate(
     init: LetterTemplateBuilder<Lang>.() -> Unit
 ): LetterTemplate<Lang> =
     with(LetterTemplateBuilder<Lang>().apply(init)) {
-        return LetterTemplate(name, title, base, parameters, lang, outline)
+        return LetterTemplate(name, title, base, parameters, lang, outline, attachments)
     }
 
 
@@ -62,12 +62,16 @@ class ParametersBuilder(val parameters: MutableSet<TemplateParameter> = mutableS
 open class LetterTemplateBuilder<Lang : LanguageCombination>(
     val parameters: MutableSet<TemplateParameter> = mutableSetOf(),
     val outline: MutableList<Element<Lang>> = mutableListOf(),
+    val attachments: MutableList<AttachmentTemplate<Lang>> = mutableListOf(),
 ) {
     fun parameters(init: ParametersBuilder.() -> Unit) =
         parameters.addAll(ParametersBuilder().apply(init).parameters)
 
     fun outline(init: ContainerElementBuilder<Lang>.() -> Unit) =
         outline.addAll(ContainerElementBuilder<Lang>().apply(init).children)
+
+    fun attachment(title: Element.Text.Literal<Lang>, includeSakspart: Boolean = false, outline: ContainerElementBuilder<Lang>.() -> Unit) =
+        attachments.add(AttachmentTemplate(title, ContainerElementBuilder<Lang>().apply(outline).children, includeSakspart))
 
 }
 
