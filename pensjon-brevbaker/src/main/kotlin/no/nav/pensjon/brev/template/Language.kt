@@ -1,36 +1,26 @@
 package no.nav.pensjon.brev.template
 
 import com.fasterxml.jackson.annotation.JsonCreator
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties
-import java.io.OutputStream
-import kotlin.contracts.ExperimentalContracts
-import kotlin.contracts.contract
-import kotlin.reflect.full.memberProperties
+import java.io.PrintWriter
 
-@JsonIgnoreProperties("parameters")
-abstract class BaseTemplate {
-    val name: String = this::class.java.name
+//TODO: lag unit test som verifiserer at BaseLanguages inkluderer alle Language
+typealias BaseLanguages = LanguageCombination.Triple<Language.Bokmal, Language.Nynorsk, Language.English>
 
-    abstract val parameters: Set<TemplateParameter>
-    abstract fun render(letter: Letter): RenderedLetter
+abstract class LanguageSettings(val settings: Map<String, Element.Text.Literal<BaseLanguages>>) {
 
-    companion object {
-        @JsonCreator
-        @JvmStatic
-        fun creator(name: String?): BaseTemplate? {
-            return BaseTemplate::class.sealedSubclasses
-                .mapNotNull { it.objectInstance }
-                .firstOrNull { it.name == name }
+    abstract fun asWritableLanguageSetting(key: String, value: String): String
+
+    fun writeLanguageSettings(language: Language, printWriter: PrintWriter): Unit =
+        settings.entries.map { asWritableLanguageSetting(it.key, it.value.text(language)) }
+            .forEach { printWriter.println(it) }
+
+
+    class LatexCommands(vararg settings: Pair<String, Element.Text.Literal<BaseLanguages>>) : LanguageSettings(settings.toMap()) {
+        override fun asWritableLanguageSetting(key: String, value: String): String {
+            return """\newcommand{\felt$key}{$value}"""
         }
     }
-
 }
-
-interface LanguageSettings
-inline fun <reified T : LanguageSettings> T.toMap(): Map<String, String> =
-    T::class.memberProperties
-        .associate { it.name to it.get(this).toString() }
-
 
 sealed class Language {
     val name: String = this::class.java.name

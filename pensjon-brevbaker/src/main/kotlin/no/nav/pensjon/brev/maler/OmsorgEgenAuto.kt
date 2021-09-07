@@ -1,7 +1,8 @@
 package no.nav.pensjon.brev.maler
 
-import no.nav.pensjon.brev.something.PensjonLatex
 import no.nav.pensjon.brev.template.*
+import no.nav.pensjon.brev.template.Language
+import no.nav.pensjon.brev.template.base.PensjonLatex
 import no.nav.pensjon.brev.template.dsl.argument
 import no.nav.pensjon.brev.template.dsl.str
 

@@ -1,6 +1,9 @@
 package no.nav.pensjon.brev.template
 
 import no.nav.pensjon.brev.something.Fagdelen
+import no.nav.pensjon.brev.template.base.BaseTemplate
+import no.nav.pensjon.brev.template.base.DummyBase
+import no.nav.pensjon.brev.template.Language
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -14,15 +17,10 @@ class LetterTest {
         "OSLO"
     )
 
-    object TestMaster : BaseTemplate() {
+    object TestMaster : DummyBase() {
         override val parameters = setOf(
             RequiredParameter(ReturAdresse)
         )
-
-        override fun render(letter: Letter): RenderedLetter {
-            TODO("Not yet implemented")
-        }
-
     }
 
     val title = title(Language.Bokmal to "test")

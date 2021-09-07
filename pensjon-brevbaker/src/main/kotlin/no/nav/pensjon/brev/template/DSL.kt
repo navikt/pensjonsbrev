@@ -1,5 +1,7 @@
 package no.nav.pensjon.brev.template
 
+import no.nav.pensjon.brev.template.base.BaseTemplate
+
 //TODO: endre rekkefølge slik at lang kommer før title - sånn at typefeil blir annotert på title og ikke lang.
 fun <Lang : LanguageCombination> createTemplate(
     name: String,

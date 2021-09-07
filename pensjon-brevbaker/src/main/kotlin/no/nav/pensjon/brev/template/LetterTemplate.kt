@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.annotation.JsonTypeInfo
-import java.io.OutputStream
+import no.nav.pensjon.brev.template.base.BaseTemplate
 
 data class LetterTemplate<Lang : LanguageCombination>(
     val name: String,

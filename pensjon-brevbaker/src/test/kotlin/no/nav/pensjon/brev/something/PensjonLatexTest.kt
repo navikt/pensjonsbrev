@@ -1,13 +1,13 @@
 package no.nav.pensjon.brev.something
 
 import com.fasterxml.jackson.databind.JsonNode
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import no.nav.pensjon.brev.api.LetterRequest
 import no.nav.pensjon.brev.api.LetterResource
 import no.nav.pensjon.brev.latex.LaTeXCompilerService
 import no.nav.pensjon.brev.latex.PdfCompilationInput
 import no.nav.pensjon.brev.maler.Alderspensjon
 import no.nav.pensjon.brev.template.*
+import no.nav.pensjon.brev.template.Language
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import java.io.File

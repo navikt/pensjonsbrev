@@ -1,12 +1,8 @@
 package no.nav.pensjon.brev.api
 
 import com.fasterxml.jackson.databind.JsonNode
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import io.ktor.features.*
-import no.nav.pensjon.brev.template.Language
-import no.nav.pensjon.brev.template.Letter
-import no.nav.pensjon.brev.template.Parameter
-import no.nav.pensjon.brev.template.TemplateParameter
+import no.nav.pensjon.brev.template.*
 
 data class LetterRequest(val template: String, val arguments: Map<String, JsonNode>, val language: Language)
 

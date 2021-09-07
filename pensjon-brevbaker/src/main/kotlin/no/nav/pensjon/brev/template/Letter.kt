@@ -1,5 +1,7 @@
 package no.nav.pensjon.brev.template
 
+import no.nav.pensjon.brev.template.Language
+
 typealias LetterArguments = Map<Parameter, Any>
 
 data class Letter(val template: LetterTemplate<*>, val arguments: LetterArguments, val language: Language) {

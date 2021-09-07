@@ -1,17 +1,16 @@
 package no.nav.pensjon.brev.template
 
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import no.nav.pensjon.brev.maler.Alderspensjon
 import no.nav.pensjon.brev.something.Fagdelen
-import no.nav.pensjon.brev.something.PensjonLatex
+import no.nav.pensjon.brev.template.base.PensjonLatex
 import no.nav.pensjon.brev.template.dsl.argument
 import no.nav.pensjon.brev.template.dsl.str
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
-import java.lang.IllegalArgumentException
+import java.time.LocalDate
 import kotlin.contracts.ExperimentalContracts
 
 @ExperimentalContracts
@@ -167,7 +166,12 @@ class DSLTest {
 
         assertEquals(
             LetterTemplate(
-                "test", nynorskTittel, PensjonLatex, setOf(RequiredParameter(PensjonInnvilget)), languages(Language.Nynorsk), listOf(
+                "test",
+                nynorskTittel,
+                PensjonLatex,
+                setOf(RequiredParameter(PensjonInnvilget)),
+                languages(Language.Nynorsk),
+                listOf(
                     Element.Conditional(
                         Expression.Argument(PensjonInnvilget),
                         listOf(Element.Text.Literal.create(Language.Nynorsk to "jadda")),
@@ -242,7 +246,12 @@ class DSLTest {
 
         assertEquals(
             LetterTemplate(
-                "test", bokmalTittel, PensjonLatex, setOf(RequiredParameter(SaksNr)), languages(Language.Bokmal), listOf(
+                "test",
+                bokmalTittel,
+                PensjonLatex,
+                setOf(RequiredParameter(SaksNr)),
+                languages(Language.Bokmal),
+                listOf(
                     Element.Text.Expression(
                         Expression.UnaryInvoke(
                             Expression.Argument(SaksNr),
@@ -293,19 +302,21 @@ class DSLTest {
     fun test() {
         val templateArgs: Map<Parameter, Any> =
             mapOf(
-                ReturAdresse to Fagdelen.ReturAdresse("En NAV enhet", "En adresse 1", "1337", "Et poststed"),
                 SaksNr to 1234,
                 PensjonInnvilget to true,
-                Mottaker to
-                        Fagdelen.Mottaker(
-                            "FornavnMottaker",
-                            "EtternavnMottaker",
-                            "GatenavnMottaker",
-                            "21 A",
-                            "0123",
-                            "PoststedMottaker"
-                        ),
                 NorskIdentifikator to 13374212345,
+                Felles to Fagdelen.Felles(
+                    dokumentDato = LocalDate.now(),
+                    returAdresse = Fagdelen.ReturAdresse("En NAV enhet", "En adresse 1", "1337", "Et poststed"),
+                    mottaker = Fagdelen.Mottaker(
+                        "FornavnMottaker",
+                        "EtternavnMottaker",
+                        "GatenavnMottaker",
+                        "21 A",
+                        "0123",
+                        "PoststedMottaker"
+                    ),
+                )
             )
         val rendered = Letter(Alderspensjon.template, templateArgs, Language.Bokmal).render()
         println("hei")

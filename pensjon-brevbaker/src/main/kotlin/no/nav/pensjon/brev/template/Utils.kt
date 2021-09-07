@@ -1,7 +1,13 @@
 package no.nav.pensjon.brev.template
 
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import java.lang.IllegalArgumentException
 import kotlin.reflect.KClass
+
+fun jacksonObjectMapper() =
+    com.fasterxml.jackson.module.kotlin.jacksonObjectMapper().apply {
+        registerModule(JavaTimeModule())
+    }
 
 fun <T : Any> KClass<out T>.findSealedObjects(): Set<T> =
     if (isSealed) {

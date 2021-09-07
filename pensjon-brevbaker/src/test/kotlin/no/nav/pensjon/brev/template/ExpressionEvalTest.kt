@@ -1,19 +1,17 @@
 package no.nav.pensjon.brev.template
 
 import no.nav.pensjon.brev.something.Fagdelen
+import no.nav.pensjon.brev.template.base.BaseTemplate
+import no.nav.pensjon.brev.template.base.DummyBase
+import no.nav.pensjon.brev.template.Language
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
 class ExpressionEvalTest {
-    object TestMaster : BaseTemplate() {
+    object TestMaster : DummyBase() {
         override val parameters = setOf(
             RequiredParameter(SaksNr)
         )
-
-        override fun render(letter: Letter): RenderedLetter {
-            TODO("Not yet implemented")
-        }
-
     }
     val template = createTemplate("test", title(Language.Bokmal to "test"), TestMaster, languages(Language.Bokmal)) {
         parameters {

@@ -1,8 +1,9 @@
 package no.nav.pensjon.brev.maler
 
 import no.nav.pensjon.brev.something.Fraser
-import no.nav.pensjon.brev.something.PensjonLatex
 import no.nav.pensjon.brev.template.*
+import no.nav.pensjon.brev.template.Language
+import no.nav.pensjon.brev.template.base.PensjonLatex
 
 object EksempelBrev : StaticTemplate {
     override val template = createTemplate(

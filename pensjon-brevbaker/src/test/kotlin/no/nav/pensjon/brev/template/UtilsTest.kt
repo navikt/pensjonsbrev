@@ -1,20 +1,17 @@
 package no.nav.pensjon.brev.template
 
+import no.nav.pensjon.brev.template.base.BaseTemplate
+import no.nav.pensjon.brev.template.base.DummyBase
+import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.dsl.argument
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.core.IsCollectionContaining
 import org.junit.jupiter.api.Test
-import java.io.OutputStream
 
 class UtilsTest {
 
-    object TestMaster : BaseTemplate() {
+    object TestMaster : DummyBase() {
         override val parameters = emptySet<TemplateParameter>()
-
-        override fun render(letter: Letter): RenderedLetter {
-            TODO("Not yet implemented")
-        }
-
     }
 
     val frase1 = Phrase.Static.create("jadda", Language.Bokmal to "jadda")
