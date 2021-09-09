@@ -16,6 +16,7 @@
     DIV=16,
     parskip=full, %allways have a vertical space between paragraphs(instead of indentation)
     pagenumber=off,
+    twoside,
 %    visualize, %DEBUG show boxes
 %    draft=true, % DEBUG show overfull boxes, collisions etc.
     addrfield=backgroundimage]{scrlttr2}
@@ -194,6 +195,7 @@
         \newline \feltpostadresseprefix \space \feltnavenhet \space//\space \feltpostadresse \space//\space \feltpostadressepostnrsted
         \newline \feltnavenhettlfprefix \space \feltnavenhettlf
         \newline \feltnavenhetnettside
+        \newline
     }
     \newline\hspace*{\fill}\pagemark
 }

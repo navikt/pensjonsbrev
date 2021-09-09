@@ -123,10 +123,12 @@ object PensjonLatex : BaseTemplate() {
 
     private fun renderAttachment(letter: Letter, attachment: AttachmentTemplate<*>, printWriter: PrintWriter) =
         with(printWriter) {
-            println("""\newpage""")
+            println("""\clearpage{\cleardoublepage}""")
+            println("""\begin{letter}{}""")
             println("""\titleText{${attachment.title.text(letter.language)}}""")
             println("""\par""")
             attachment.outline.forEach { renderElement(letter, it, printWriter) }
+            println("""\end{letter}""")
         }
 
 
@@ -158,15 +160,10 @@ object PensjonLatex : BaseTemplate() {
     }
 
     private fun datoCommand(dato: LocalDate, language: Language, printWriter: PrintWriter) {
-        val locale = when (language) {
-            Language.Bokmal -> Locale.forLanguageTag("NB")
-            Language.Nynorsk -> Locale.forLanguageTag("NN")
-            Language.English -> Locale.UK
-        }
         printWriter.println(
             """\newcommand{\feltdato}{${
                 dato.format(
-                    DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM).withLocale(locale)
+                    DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM).withLocale(language.locale())
                 )
             }}"""
         )
@@ -207,9 +204,8 @@ object PensjonLatex : BaseTemplate() {
             println("""    \tittel{${letter.template.title.text(letter.language)}}""")
             contents(letter, printWriter)
             println("""    \closing""")
-//            letter.template.attachments.forEach { renderAttachment(letter, it, printWriter) }
-            letter.template.attachments.forEachIndexed { index, _ -> println("""\input{attachment_$index}""") }
             println("""    \end{letter}""")
+            letter.template.attachments.forEachIndexed { index, _ -> println("""\input{attachment_$index}""") }
             println("""\end{document}""")
         }
 
@@ -229,9 +225,9 @@ object PensjonLatex : BaseTemplate() {
                     val toRender = if (predicate.eval(letter)) showIf else showElse
                     toRender.forEach { renderElement(letter, it, printWriter) }
                 }
-            is Element.Text.Literal -> printWriter.print(element.text(letter.language))
-            is Element.Text.Phrase -> printWriter.print(element.phrase.text(letter.language))
-            is Element.Text.Expression -> printWriter.print(element.expression.eval(letter))
+            is Element.Text.Literal -> printWriter.print(element.text(letter.language).latexEscape())
+            is Element.Text.Phrase -> printWriter.print(element.phrase.text(letter.language).latexEscape())
+            is Element.Text.Expression -> printWriter.print(element.expression.eval(letter).latexEscape())
             is Element.Paragraph ->
                 with(printWriter) {
                     println("""\letterparagraph{""")

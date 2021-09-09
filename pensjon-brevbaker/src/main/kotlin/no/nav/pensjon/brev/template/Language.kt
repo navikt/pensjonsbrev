@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.template
 
 import com.fasterxml.jackson.annotation.JsonCreator
 import java.io.PrintWriter
+import java.util.*
 
 //TODO: lag unit test som verifiserer at BaseLanguages inkluderer alle Language
 typealias BaseLanguages = LanguageCombination.Triple<Language.Bokmal, Language.Nynorsk, Language.English>
@@ -15,7 +16,8 @@ abstract class LanguageSettings(val settings: Map<String, Element.Text.Literal<B
             .forEach { printWriter.println(it) }
 
 
-    class LatexCommands(vararg settings: Pair<String, Element.Text.Literal<BaseLanguages>>) : LanguageSettings(settings.toMap()) {
+    class LatexCommands(vararg settings: Pair<String, Element.Text.Literal<BaseLanguages>>) :
+        LanguageSettings(settings.toMap()) {
         override fun asWritableLanguageSetting(key: String, value: String): String {
             return """\newcommand{\felt$key}{$value}"""
         }
@@ -28,6 +30,13 @@ sealed class Language {
     override fun toString(): String {
         return this::class.qualifiedName!!
     }
+
+    fun locale(): Locale =
+        when (this) {
+            Bokmal -> Locale.forLanguageTag("NB")
+            Nynorsk -> Locale.forLanguageTag("NN")
+            English -> Locale.UK
+        }
 
     companion object {
         @JsonCreator

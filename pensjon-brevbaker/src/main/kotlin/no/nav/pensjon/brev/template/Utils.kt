@@ -21,6 +21,11 @@ fun <T : Any> KClass<out T>.findSealedObjects(): Set<T> =
         objectInstance?.let { setOf(it) } ?: emptySet()
     }
 
+private val latexEscapePattern = Regex("([_^~$%#&{}])")
+fun String.latexEscape(): String =
+    // "_", "^", "~", "$", "%", "#", "&", "{", "}"
+    latexEscapePattern.replace(this, """\\$1""")
+
 fun <Lang : LanguageCombination> LetterTemplate<Lang>.validateArgumentExpressions() {
     val requiredParameters = parameters.filterIsInstance<RequiredParameter>().map { it.parameter }
 
