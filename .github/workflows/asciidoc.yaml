@@ -1,0 +1,13 @@
+on:
+  push:
+    branches:
+      - "main"
+    paths:
+      - "docs/**"
+      - ".github/workflows/asciidoc.yaml"
+jobs:
+  "build":
+    name: "build asciidoc for github pages"
+    runs-on: "ubuntu-18.04"
+
+
