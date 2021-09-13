@@ -1,5 +1,9 @@
 package no.nav.pensjon.brev.template
 
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
+
 abstract class Operation {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -48,6 +52,11 @@ sealed class BinaryOperation<in In1, in In2, out Out> : Operation() {
 
     class LesserThanOrEqual<In : Comparable<In>> : BinaryOperation<In, In, Boolean>() {
         override fun apply(first: In, second: In): Boolean = first <= second
+    }
+
+    object LocalizedDateFormat : BinaryOperation<LocalDate, Language, String>() {
+        override fun apply(first: LocalDate, second: Language): String =
+            first.format(dateFormatter(second))
     }
 
 }

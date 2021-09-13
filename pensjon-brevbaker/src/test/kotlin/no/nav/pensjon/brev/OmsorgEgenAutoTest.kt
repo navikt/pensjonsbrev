@@ -25,7 +25,7 @@ class OmsorgEgenAutoTest {
                 SaksNr to 1234,
                 ArEgenerklaringOmsorgspoeng to 2020,
                 Felles to Fagdelen.Felles(
-                    dokumentDato = LocalDate.now(),
+                    dokumentDato = LocalDate.of(2021,9, 6),
                     returAdresse = Fagdelen.ReturAdresse(
                         navEnhetsNavn = "NAV Familie- og pensjonsytelser Porsgrunn",
                         adresseLinje1 = "Postboks 6600 Etterstad",
@@ -33,12 +33,12 @@ class OmsorgEgenAutoTest {
                         postSted = "Oslo"
                     ),
                     mottaker = Fagdelen.Mottaker(
-                        fornavn = "Alexander Hoem",
-                        etternavn = "Rosbach",
-                        gatenavn = "Agmund Bolts vei",
-                        husnummer = "2",
-                        postnummer = "0664",
-                        poststed = "Oslo"
+                        fornavn = "PERLAKI",
+                        etternavn = "YASIR-MASK",
+                        gatenavn = "JERBANETORGET",
+                        husnummer = "4 F",
+                        postnummer = "1344",
+                        poststed = "HASLUM"
                     ),
 //                    signerendeSaksbehandlere = Fagdelen.SignerendeSaksbehandlere("Jon Gunnar Aasen", "Kjetil Johannesen")
                 )
@@ -46,8 +46,10 @@ class OmsorgEgenAutoTest {
             Language.Bokmal
         ).render()
             .let { PdfCompilationInput(it.base64EncodedFiles()) }
-            .also { File("test-params.tex").writeBytes(Base64.getDecoder().decode(it.files["params.tex"])) }
+            .also { File("test-params.tex").writeBytes(Base64.getDecoder().decode(it.files["letter.tex"])) }
+//            .also { File("test-params.tex").writeBytes(Base64.getDecoder().decode(it.files["params.tex"])) }
             .let { LaTeXCompilerService().producePDF(it) }
             .also { File("test.pdf").writeBytes(Base64.getDecoder().decode(it)) }
     }
+
 }

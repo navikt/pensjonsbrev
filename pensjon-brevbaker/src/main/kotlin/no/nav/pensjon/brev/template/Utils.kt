@@ -4,6 +4,9 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import java.io.OutputStream
 import java.io.PrintWriter
 import java.lang.IllegalArgumentException
+import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
+import java.util.*
 import kotlin.reflect.KClass
 
 fun jacksonObjectMapper() =
@@ -20,6 +23,9 @@ fun <T : Any> KClass<out T>.findSealedObjects(): Set<T> =
     } else {
         objectInstance?.let { setOf(it) } ?: emptySet()
     }
+
+fun dateFormatter(language: Language): DateTimeFormatter =
+    DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG).withLocale(language.locale())
 
 private val latexEscapePattern = Regex("([_^~$%#&{}])")
 fun String.latexEscape(): String =
@@ -60,6 +66,9 @@ internal fun Expression<*>.requiredArguments(): List<Expression.Argument<*, *>> 
 
         is Expression.UnaryInvoke<*, *> ->
             value.requiredArguments()
+
+        is Expression.LetterProperty ->
+            emptyList()
     }
 
 internal fun <Lang : LanguageCombination> Element<Lang>.findExpressions(): List<Expression<*>> =

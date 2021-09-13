@@ -83,6 +83,10 @@ sealed class Expression<out Out> {
                 .let { it as Out }
     }
 
+    data class LetterProperty<out Out>(val select: Letter.() -> Out) : Expression<Out>() {
+        override fun eval(letter: Letter): Out = letter.select()
+    }
+
     data class OptionalArgument<Param, Out>(val parameter: Param) : Expression<Out?>()
             where Param : Parameter,
                   Param : ParameterType<Out> {

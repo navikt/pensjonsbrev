@@ -33,6 +33,7 @@
 \usepackage{xcolor}     %define colors
 \usepackage{scrlayer}   % creating custom layers/custom posistioned fields
 \usepackage{needspace}
+\usepackage{lastpage}
 \usepackage{geometry}   % adjusting margins
 \setsansfont{Arial}
 \setmainfont{Times New Roman}
@@ -134,17 +135,21 @@
 %opening prefix font
 \newcommand{\tinyGrayText}[1]{{\grayArialFont \fontsize{8pt}{8pt} \selectfont #1}}
 
+\newcommand{\sakspart}{
+    \fontsize{12pt}{14pt} \selectfont
+    \tinyGrayText{\feltsaksnummerprefix} \feltsaksnummer \\
+    \tinyGrayText{\feltnavnprefix} \feltetternavnmottaker \space \feltfornavnmottaker \\
+    \tinyGrayText{\feltfoedselsnummerprefix} \feltfoedselsnummer
+    \par
+    \vspace*{\vskipafteropening} %vertical space before letter content
+}
 
 \setplength{subjectaftervskip}{2mm}
 \newcommand{\tittel}[1]{ %command for creating title in the document
     \setkomavar{subject}{
         \titleText{#1}
     }\opening{ %case and person information after title
-        \fontsize{12pt}{14pt} \selectfont
-        \tinyGrayText{\feltsaksnummerprefix} \feltsaksnummer \\
-        \tinyGrayText{\feltnavnprefix} \feltetternavnmottaker \space \feltfornavnmottaker \\
-        \tinyGrayText{\feltfoedselsnummerprefix} \feltfoedselsnummer \\
-        \vspace*{\vskipafteropening} %vertical space before letter content
+        \sakspart
     }
 }
 
@@ -173,7 +178,7 @@
     \newline
 }
 
-\newcommand{\letterparagraph}[1]{
+\newcommand{\paragraph}[1]{
     \samepage %do not break up paragraphs across pages
     #1\par
 }
@@ -240,7 +245,7 @@
         \textbf{\feltclosingspoersmaal}
         \vspace*{\vskipaftersectiontitle}
         \newline
-        \letterparagraph{\feltclosingkontaktoss}
+        \paragraph{\feltclosingkontaktoss}
         \vspace*{42pt}
         \feltclosinggreeting
         \par
@@ -250,4 +255,28 @@
         \feltclosingvedleggprefix
         \feltclosingvedlegg
     \end{minipage}
+}
+
+%----------------------------------------
+%       Attachment environment
+%----------------------------------------
+\newcounter{attachments}
+
+\newcommand{\startvedlegg}[1]{
+    % make sure that the attachment starts on an even page (for printing)
+    \clearpage{\cleardoublepage}
+
+    % setup page counter
+    \setcounter{page}{1}
+    \stepcounter{attachments}
+
+    % renew last page for attachments
+    \renewcommand*\pagemark{\usekomafont{pagenumber}{\tinyArialText{\feltsideprefix~\textbf{\thepage}~\feltsideinfix~\textbf{\pageref{attachment\arabic{attachments}}}}}}
+    \hfill\includegraphics[width=25mm,page=1]{nav-logo.pdf}
+    \par
+    \titleText{#1} \par
+}
+
+\newcommand{\sluttvedlegg}{
+    \label{attachment\arabic{attachments}}
 }

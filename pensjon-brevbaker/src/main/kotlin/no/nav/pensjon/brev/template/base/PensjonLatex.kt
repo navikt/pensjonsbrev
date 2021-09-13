@@ -5,9 +5,6 @@ import no.nav.pensjon.brev.template.*
 import java.io.InputStream
 import java.io.PrintWriter
 import java.time.LocalDate
-import java.time.format.DateTimeFormatter
-import java.time.format.FormatStyle
-import java.util.*
 
 
 object PensjonLatex : BaseTemplate() {
@@ -112,7 +109,7 @@ object PensjonLatex : BaseTemplate() {
     override fun render(letter: Letter): RenderedLetter =
         RenderedLatexLetter().apply {
             newFile("params.tex").use { masterTemplateParameters(letter, it.printWriter()) }
-            newFile("letter.tex").use { renderLetter(letter, it.printWriter()) }
+            newFile("letter.tex").use { renderLetterV2(letter, it.printWriter()) }
             newFile("nav-logo.pdf").use { getResource("nav-logo.pdf").transferTo(it) }
             newFile("nav-logo.pdf_tex").use { getResource("nav-logo.pdf_tex").transferTo(it) }
             newFile("pensjonsbrev_v2.cls").use { getResource("pensjonsbrev_v2.cls").transferTo(it) }
@@ -123,14 +120,26 @@ object PensjonLatex : BaseTemplate() {
 
     private fun renderAttachment(letter: Letter, attachment: AttachmentTemplate<*>, printWriter: PrintWriter) =
         with(printWriter) {
-            println("""\clearpage{\cleardoublepage}""")
-            println("""\begin{letter}{}""")
-            println("""\titleText{${attachment.title.text(letter.language)}}""")
-            println("""\par""")
+            println("""\startvedlegg{${attachment.title.text(letter.language)}}""")
+            if (attachment.includeSakspart) {
+                println("""\sakspart""")
+            }
             attachment.outline.forEach { renderElement(letter, it, printWriter) }
-            println("""\end{letter}""")
+            println("""\sluttvedlegg""")
         }
 
+    private fun renderLetterV2(letter: Letter, printWriter: PrintWriter): Unit =
+        with(printWriter) {
+            println("""\documentclass[12pt]{pensjonsbrev_v2}""")
+            println("""\begin{document}""")
+            println("""\begin{letter}{\brevparameter}""")
+            println("""\tittel{${letter.template.title.text(letter.language)}}""")
+            contents(letter, printWriter)
+            println("""\closing""")
+            println("""\end{letter}""")
+            letter.template.attachments.forEachIndexed { index, _ -> println("""\input{attachment_$index}""") }
+            println("""\end{document}""")
+        }
 
     private fun masterTemplateParameters(letter: Letter, printWriter: PrintWriter) {
         languageSettings.writeLanguageSettings(letter.language, printWriter)
@@ -138,8 +147,8 @@ object PensjonLatex : BaseTemplate() {
         with(printWriter) {
             println("""\newcommand{\feltfoedselsnummer}{${letter.requiredArg(NorskIdentifikator)}}""")
             println("""\newcommand{\feltsaksnummer}{${letter.requiredArg(SaksNr)}}""")
-            println(generateVedlegg())
         }
+        vedleggCommand(letter, printWriter)
 
         with(letter.requiredArg(Felles)) {
             mottakerCommands(mottaker, printWriter)
@@ -162,9 +171,7 @@ object PensjonLatex : BaseTemplate() {
     private fun datoCommand(dato: LocalDate, language: Language, printWriter: PrintWriter) {
         printWriter.println(
             """\newcommand{\feltdato}{${
-                dato.format(
-                    DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM).withLocale(language.locale())
-                )
+                dato.format(dateFormatter(language))
             }}"""
         )
     }
@@ -189,24 +196,14 @@ object PensjonLatex : BaseTemplate() {
             printWriter.println("""\newcommand{\feltpostadresse}{$adresseLinje1}""")
         }
 
-    private fun generateVedlegg(): String =
-        """\newcommand{\feltclosingvedlegg}{
-            \begin{itemize}
-                \item test1
-            \end{itemize}    
-        }""".trimMargin() //TODO generer vedlegg
-
-    private fun renderLetter(letter: Letter, printWriter: PrintWriter): Unit =
+    private fun vedleggCommand(letter: Letter, printWriter: PrintWriter): Unit =
         with(printWriter) {
-            println("""\documentclass[12pt]{pensjonsbrev_v2}""")
-            println("""\begin{document}""")
-            println("""    \begin{letter}{\brevparameter}""")
-            println("""    \tittel{${letter.template.title.text(letter.language)}}""")
-            contents(letter, printWriter)
-            println("""    \closing""")
-            println("""    \end{letter}""")
-            letter.template.attachments.forEachIndexed { index, _ -> println("""\input{attachment_$index}""") }
-            println("""\end{document}""")
+            println("""\newcommand{\feltclosingvedlegg}{""")
+            println("""\begin{itemize}""")
+            letter.template.attachments.map { it.title.text(letter.language) }
+                .forEach { println("""\item $it""") }
+            println("""\end{itemize}""")
+            println("}")
         }
 
     private fun contents(letter: Letter, printWriter: PrintWriter) =
@@ -230,7 +227,7 @@ object PensjonLatex : BaseTemplate() {
             is Element.Text.Expression -> printWriter.print(element.expression.eval(letter).latexEscape())
             is Element.Paragraph ->
                 with(printWriter) {
-                    println("""\letterparagraph{""")
+                    println("""\paragraph{""")
                     element.paragraph.forEach { child -> renderElement(letter, child, printWriter) }
                     println("}")
                 }

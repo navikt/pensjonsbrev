@@ -8,6 +8,8 @@ import kotlin.IllegalStateException
 import kotlin.io.path.absolutePathString
 import kotlin.io.path.createTempDirectory
 
+private const val COMPILATION_RUNS = 2
+
 class LaTeXService {
     private val decoder = Base64.getDecoder()
     private val encoder = Base64.getEncoder()
@@ -40,8 +42,9 @@ class LaTeXService {
         val logPath = executionFolder.resolve("letter.log")
 
         //Run twice to resolve references such as number of pages
-        runCompilationCommand(executionFolder, logPath)
-        runCompilationCommand(executionFolder, logPath)
+        for (run in 1..COMPILATION_RUNS) {
+            runCompilationCommand(executionFolder, logPath)
+        }
 
 
         val letterPDF = File(letterPath.absolutePathString())
