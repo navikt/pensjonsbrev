@@ -9,6 +9,7 @@ spec:
   image: {{image}}
   port: 8080
   service:
+    port: 8080
     protocol: http
   liveness:
     path: "/isAlive"
