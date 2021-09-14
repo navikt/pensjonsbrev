@@ -40,8 +40,8 @@ spec:
       rules:
         - application: {{pdf-bygger-app}}
   ingresses:
-    { { #each ingresses as |url|}}
-        - {{url } }
+    {{#each ingresses as |url|}}
+       - {{url}}
       {{/each}}
   env:
     {{#each env as |e|}}
