@@ -9,5 +9,14 @@ jobs:
   "build":
     name: "build asciidoc for github pages"
     runs-on: "ubuntu-18.04"
+    defaults:
+      run:
+        shell: bash
+        working-directory: "docs"
+    steps:
+      - name: "Install asciidoctor"
+      run: apt-get install asciidoctor
+      - name: "Compile using asciidoctor"
+      run:
 
 
