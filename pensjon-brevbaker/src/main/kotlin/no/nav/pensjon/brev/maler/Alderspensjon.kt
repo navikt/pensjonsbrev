@@ -8,7 +8,7 @@ object Alderspensjon : StaticTemplate {
 
     override val template = createTemplate(
         name = "alderspensjon",
-        title = title(Language.Bokmal to "Vi har innvilget søknaden din om 100 prosent alderspensjon"),
+        title = newText(Language.Bokmal to "Vi har innvilget søknaden din om 100 prosent alderspensjon"),
         base = PensjonLatex,
         lang = languages(Language.Bokmal)
     ) {

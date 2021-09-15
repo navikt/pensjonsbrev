@@ -133,6 +133,7 @@ object PensjonLatex : BaseTemplate() {
             println("""\documentclass[12pt]{pensjonsbrev_v2}""")
             println("""\begin{document}""")
             println("""\begin{letter}{\brevparameter}""")
+            //TODO: utskrift av text på denne måten kan føre til latex meta symboler som må escapes
             println("""\tittel{${letter.template.title.text(letter.language)}}""")
             contents(letter, printWriter)
             println("""\closing""")
@@ -145,6 +146,7 @@ object PensjonLatex : BaseTemplate() {
         languageSettings.writeLanguageSettings(letter.language, printWriter)
 
         with(printWriter) {
+            //TODO: utskrift av arg på denne måten kan føre til latex meta symboler som må escapes
             println("""\newcommand{\feltfoedselsnummer}{${letter.requiredArg(NorskIdentifikator)}}""")
             println("""\newcommand{\feltsaksnummer}{${letter.requiredArg(SaksNr)}}""")
         }
@@ -209,7 +211,7 @@ object PensjonLatex : BaseTemplate() {
     private fun contents(letter: Letter, printWriter: PrintWriter) =
         letter.template.outline.forEach { renderElement(letter, it, printWriter) }
 
-    private fun renderElement(letter: Letter, element: Element<*>, printWriter: PrintWriter) {
+    private fun renderElement(letter: Letter, element: Element<*>, printWriter: PrintWriter): Unit =
         when (element) {
             is Element.Title1 ->
                 with(printWriter) {
@@ -217,22 +219,63 @@ object PensjonLatex : BaseTemplate() {
                     element.title1.forEach { child -> renderElement(letter, child, printWriter) }
                     println("}")
                 }
+
             is Element.Conditional ->
                 with(element) {
                     val toRender = if (predicate.eval(letter)) showIf else showElse
                     toRender.forEach { renderElement(letter, it, printWriter) }
                 }
-            is Element.Text.Literal -> printWriter.print(element.text(letter.language).latexEscape())
-            is Element.Text.Phrase -> printWriter.print(element.phrase.text(letter.language).latexEscape())
-            is Element.Text.Expression -> printWriter.print(element.expression.eval(letter).latexEscape())
+
+            is Element.Text.Literal ->
+                printWriter.print(element.text(letter.language).latexEscape())
+
+            is Element.Text.Phrase ->
+                printWriter.print(element.phrase.text(letter.language).latexEscape())
+
+            is Element.Text.Expression ->
+                printWriter.print(element.expression.eval(letter).latexEscape())
+
             is Element.Paragraph ->
                 with(printWriter) {
                     println("""\paragraph{""")
                     element.paragraph.forEach { child -> renderElement(letter, child, printWriter) }
                     println("}")
                 }
+
+            is Element.Form.Text ->
+                with(printWriter) {
+                    if (element.vspace) {
+                        println("""\formvspace""")
+                    }
+
+                    println("""\formText{""")
+                    renderElement(letter, element.prompt, printWriter)
+                    print(" ${".".repeat(element.size)}")
+                    println("""}""")
+                }
+
+            is Element.Form.MultipleChoice ->
+                with(printWriter) {
+                    if (element.vspace) {
+                        println("""\formvspace""")
+                    }
+
+                    print("""\begin{formChoice}{""")
+                    renderElement(letter, element.prompt, printWriter)
+                    println("""}""")
+
+                    element.choices.forEach {
+                        print("""\item """)
+                        renderElement(letter, it, printWriter)
+                        println()
+                    }
+
+                    println("""\end{formChoice}""")
+                }
+
+            is Element.NewLine ->
+                printWriter.println("""\newline""")
         }
-    }
 
     private fun getResource(fileName: String): InputStream {
         return this::class.java.getResourceAsStream("/$fileName")

@@ -1,9 +1,7 @@
 package no.nav.pensjon.brev.template
 
 import no.nav.pensjon.brev.something.Fagdelen
-import no.nav.pensjon.brev.template.base.BaseTemplate
 import no.nav.pensjon.brev.template.base.DummyBase
-import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.dsl.argument
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -17,7 +15,7 @@ class LetterTemplateTest {
         "0607",
         "OSLO"
     )
-    val title = title(Language.Bokmal to "test")
+    val title = newText(Language.Bokmal to "test")
 
 
     object MasterMal : DummyBase() {

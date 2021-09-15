@@ -1,9 +1,7 @@
 package no.nav.pensjon.brev.template
 
 import no.nav.pensjon.brev.something.Fagdelen
-import no.nav.pensjon.brev.template.base.BaseTemplate
 import no.nav.pensjon.brev.template.base.DummyBase
-import no.nav.pensjon.brev.template.Language
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
@@ -13,7 +11,7 @@ class ExpressionEvalTest {
             RequiredParameter(SaksNr)
         )
     }
-    val template = createTemplate("test", title(Language.Bokmal to "test"), TestMaster, languages(Language.Bokmal)) {
+    val template = createTemplate("test", newText(Language.Bokmal to "test"), TestMaster, languages(Language.Bokmal)) {
         parameters {
             required { KortNavn }
             optional { Penger }

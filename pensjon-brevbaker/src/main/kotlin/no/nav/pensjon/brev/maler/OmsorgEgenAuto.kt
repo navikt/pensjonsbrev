@@ -13,7 +13,7 @@ object OmsorgEgenAuto : StaticTemplate {
 
     override val template: LetterTemplate<*> = createTemplate(
         name = "OMSORG_EGEN_AUTO",
-        title = title(Language.Bokmal to "Du må sende oss egenerklæring om pleie- og omsorgsarbeid"),
+        title = newText(Language.Bokmal to "Du må sende oss egenerklæring om pleie- og omsorgsarbeid"),
         base = PensjonLatex,
         lang = languages(Language.Bokmal)
     ) {
@@ -35,47 +35,10 @@ object OmsorgEgenAuto : StaticTemplate {
                 text(Language.Bokmal to ".")
             }
 
-//            paragraph {
-//                text(Language.Bokmal to "Vi trenger en bekreftelse på at du har utført pleie- og omsorgsarbeid i ")
-//                eval(argument(ArEgenerklaringOmsorgspoeng).str())
-//                text(Language.Bokmal to ". Derfor må du fylle ut det vedlagte skjemaet og sende det til oss innen fire uker.")
-//                text(Language.Bokmal to ". Derfor må du fylle ut det vedlagte skjemaet og sende det til oss innen fire uker.")
-//                text(Language.Bokmal to ". Derfor må du fylle ut det vedlagte skjemaet og sende det til oss innen fire uker.")
-//                text(Language.Bokmal to ". Derfor må du fylle ut det vedlagte skjemaet og sende det til oss innen fire uker.")
-//                text(Language.Bokmal to ". Derfor må du fylle ut det vedlagte skjemaet og sende det til oss innen fire uker.")
-//                text(Language.Bokmal to ". Derfor må du fylle ut det vedlagte skjemaet og sende det til oss innen fire uker.")
-//                text(Language.Bokmal to ". Derfor må du fylle ut det vedlagte skjemaet og sende det til oss innen fire uker.")
-//                text(Language.Bokmal to ". Derfor må du fylle ut det vedlagte skjemaet og sende det til oss innen fire uker.")
-//                text(Language.Bokmal to ". Derfor må du fylle ut det vedlagte skjemaet og sende det til oss innen fire uker.")
-//                text(Language.Bokmal to ". Derfor må du fylle ut det vedlagte skjemaet og sende det til oss innen fire uker.")
-//                text(Language.Bokmal to ". Derfor må du fylle ut det vedlagte skjemaet og sende det til oss innen fire uker.")
-//                text(Language.Bokmal to ". Derfor må du fylle ut det vedlagte skjemaet og sende det til oss innen fire uker.")
-//                text(Language.Bokmal to ". Derfor må du fylle ut det vedlagte skjemaet og sende det til oss innen fire uker.")
-//            }
-//
-//            paragraph {
-//                text(Language.Bokmal to "Vi trenger en bekreftelse på at du har utført pleie- og omsorgsarbeid i ")
-//                eval(argument(ArEgenerklaringOmsorgspoeng).str())
-//                text(Language.Bokmal to ". Derfor må du fylle ut det vedlagte skjemaet og sende det til oss innen fire uker.")
-//                text(Language.Bokmal to ". Derfor må du fylle ut det vedlagte skjemaet og sende det til oss innen fire uker.")
-//                text(Language.Bokmal to ". Derfor må du fylle ut det vedlagte skjemaet og sende det til oss innen fire uker.")
-//                text(Language.Bokmal to ". Derfor må du fylle ut det vedlagte skjemaet og sende det til oss innen fire uker.")
-//                text(Language.Bokmal to ". Derfor må du fylle ut det vedlagte skjemaet og sende det til oss innen fire uker.")
-//                text(Language.Bokmal to ". Derfor må du fylle ut det vedlagte skjemaet og sende det til oss innen fire uker.")
-//                text(Language.Bokmal to ". Derfor må du fylle ut det vedlagte skjemaet og sende det til oss innen fire uker.")
-//                text(Language.Bokmal to ". Derfor må du fylle ut det vedlagte skjemaet og sende det til oss innen fire uker.")
-//                text(Language.Bokmal to ". Derfor må du fylle ut det vedlagte skjemaet og sende det til oss innen fire uker.")
-//                text(Language.Bokmal to ". Derfor må du fylle ut det vedlagte skjemaet og sende det til oss innen fire uker.")
-//                text(Language.Bokmal to ". Derfor må du fylle ut det vedlagte skjemaet og sende det til oss innen fire uker.")
-//                text(Language.Bokmal to ". Derfor må du fylle ut det vedlagte skjemaet og sende det til oss innen fire uker.")
-//                text(Language.Bokmal to ". Derfor må du fylle ut det vedlagte skjemaet og sende det til oss innen fire uker.")
-//            }
-
-
         }
 
         attachment(
-            title = title(Language.Bokmal to "Egenerklæring om pleie- og omsorgsarbeid"),
+            title = newText(Language.Bokmal to "Egenerklæring om pleie- og omsorgsarbeid"),
             includeSakspart = true,
         ) {
             paragraph {
@@ -90,50 +53,39 @@ object OmsorgEgenAuto : StaticTemplate {
                 text(Language.Bokmal to " har jeg utført pleie og omsorgsarbeid på minst 22 timer i uken. (Inkludert opptil en halv time reisetid per besøk.)")
             }
 
-            paragraph {
-                text(Language.Bokmal to "Navn på pleietrengende: ............................................................")
+            formText(60, newText(Language.Bokmal to "Navn på pleietrengende:"))
+
+            formChoice(newText(Language.Bokmal to "Arbeidet har vart i (sett kryss):")) {
+                choice(Language.Bokmal to "minst seks måneder")
+                choice(Language.Bokmal to "under seks måneder")
             }
 
-            paragraph {
-                text(Language.Bokmal to "Arbeidet har vart i (sett kryss):")
-            }
+            formText(size = 0, prompt = newText(Language.Bokmal to "Hvis omsorgsforholdet har opphørt i løpet av året:"))
+            formText(size = 25, vspace = false, prompt = newText(Language.Bokmal to "Oppgi dato for opphøret:"))
+            formText(size = 55, vspace = false, prompt = newText(Language.Bokmal to "Oppgi årsaken til opphøret:"))
+
+            repeat(4) { newline() }
+
+            formText(size = 25, prompt = newText(Language.Bokmal to "Dato:"))
+            formText(size = 55, vspace = false, prompt = newText(Language.Bokmal to "Underskrift:"))
+
+            repeat(3) { newline() }
 
             paragraph {
-                text(Language.Bokmal to "Hvis omsorgsforholdet har opphørt i løpet av året:")
-            }
+                val returAdresse = argument(Felles).select(Fagdelen.Felles::returAdresse)
 
-            paragraph {
-                text(Language.Bokmal to "Oppgi dato for opphøret: _________________________")
-            }
-
-            paragraph {
-                text(Language.Bokmal to "Oppgi årsaken til opphøret: ______________________________________________________")
-            }
-
-            paragraph {
-                text(Language.Bokmal to "Dato: _________________________")
-            }
-
-            paragraph {
-                text(Language.Bokmal to "Underskrift: _________________________________________")
-            }
-
-            paragraph {
                 text(Language.Bokmal to "Du må sende denne egenerklæringen til:")
-            }
+                newline()
 
-            val returAdresse = argument(Felles).select(Fagdelen.Felles::returAdresse)
-            paragraph {
                 eval(returAdresse.select(Fagdelen.ReturAdresse::navEnhetsNavn))
-            }
-            paragraph {
+                newline()
+
                 eval(returAdresse.select(Fagdelen.ReturAdresse::adresseLinje1))
-            }
-            paragraph {
+                newline()
+
                 eval(returAdresse.select(Fagdelen.ReturAdresse::postNr))
                 text(Language.Bokmal to " ")
                 eval(returAdresse.select(Fagdelen.ReturAdresse::postSted))
-
             }
         }
 

@@ -33,8 +33,8 @@
 \usepackage{xcolor}     %define colors
 \usepackage{scrlayer}   % creating custom layers/custom posistioned fields
 \usepackage{needspace}
-\usepackage{lastpage}
 \usepackage{geometry}   % adjusting margins
+\usepackage{enumitem,amssymb} % for formChoice list
 \setsansfont{Arial}
 \setmainfont{Times New Roman}
 %! suppress = FileNotFound
@@ -67,7 +67,6 @@
 % paragraph formatting
 \sloppy % no word-breaking
 \raggedright % no word spacing
-
 
 
 %----------------------------------------
@@ -179,8 +178,25 @@
 }
 
 \newcommand{\paragraph}[1]{
+    \par
     \samepage %do not break up paragraphs across pages
-    #1\par
+    #1
+}
+
+\newcommand{\formvspace}[1][true]{\vspace{0.5cm}}
+
+\newcommand{\formText}[1]{
+    \par #1
+}
+
+% formChoice
+\newlist{checklist}{itemize}{1}
+\setlist[checklist]{label=$\square$}
+\newenvironment{formChoice}[1]{
+    \par #1
+    \begin{checklist}
+} {
+    \end{checklist}
 }
 
 %----------------------------------------
@@ -240,6 +256,7 @@
     \feltclosingautomatisktext
 }
 \renewcommand{\closing}{
+    \par
     \begin{minipage}{\textwidth}
         \vspace{5pt}
         \textbf{\feltclosingspoersmaal}

@@ -8,7 +8,7 @@ import no.nav.pensjon.brev.template.base.PensjonLatex
 object EksempelBrev : StaticTemplate {
     override val template = createTemplate(
         name = "eksempelBrev",
-        title = title(Language.Bokmal to "Eksempelbrev"),
+        title = newText(Language.Bokmal to "Eksempelbrev"),
         base = PensjonLatex,
         lang = languages(Language.Bokmal)
     ) {

@@ -8,6 +8,7 @@ import no.nav.pensjon.brev.template.base.BaseTemplate
 
 data class LetterTemplate<Lang : LanguageCombination>(
     val name: String,
+    //TODO: Lag støtte for kombinert literal og expression
     val title: Element.Text.Literal<Lang>,
     val base: BaseTemplate,
     val parameters: Set<TemplateParameter>,
@@ -23,7 +24,7 @@ data class LetterTemplate<Lang : LanguageCombination>(
         base.render(letter)
 }
 
-data class AttachmentTemplate<Lang: LanguageCombination>(
+data class AttachmentTemplate<Lang : LanguageCombination>(
     val title: Element.Text.Literal<Lang>,
     val outline: List<Element<Lang>>,
     val includeSakspart: Boolean = false,
@@ -131,16 +132,24 @@ sealed class Expression<out Out> {
 sealed class Element<Lang : LanguageCombination> {
     val schema: String = this::class.java.name.removePrefix(this::class.java.`package`.name + '.')
 
-    // TODO: Consider if type of  title1 and paragraph should be List<Element.Text<Lang>>.
+    // TODO: Consider if type of title1 and paragraph should be List<Element.Text<Lang>>.
     data class Title1<Lang : LanguageCombination>(val title1: List<Element<Lang>>) : Element<Lang>()
     data class Paragraph<Lang : LanguageCombination>(val paragraph: List<Element<Lang>>) : Element<Lang>()
+
+    sealed class Form<Lang : LanguageCombination> : Element<Lang>() {
+        data class Text<Lang : LanguageCombination>(val prompt: Element.Text<Lang>, val size: Int, val vspace: Boolean = true) : Form<Lang>()
+        data class MultipleChoice<Lang: LanguageCombination>(val prompt: Element.Text<Lang>, val choices: List<Element.Text<Lang>>, val vspace: Boolean = true) : Element.Form<Lang>()
+    }
+
+    class NewLine<Lang : LanguageCombination>() : Element<Lang>()
 
     sealed class Text<Lang : LanguageCombination> : Element<Lang>() {
         data class Literal<Lang : LanguageCombination> private constructor(private val text: Map<Language, String>) :
             Text<Lang>() {
 
             fun text(language: Language): String =
-                text[language] ?: throw IllegalArgumentException("Text.Literal doesn't contain language: ${language::class.qualifiedName}")
+                text[language]
+                    ?: throw IllegalArgumentException("Text.Literal doesn't contain language: ${language::class.qualifiedName}")
 
             companion object {
                 fun <Lang1 : Language> create(lang1: Pair<Lang1, String>) =

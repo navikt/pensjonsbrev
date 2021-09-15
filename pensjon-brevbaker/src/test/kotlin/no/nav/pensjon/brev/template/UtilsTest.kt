@@ -1,8 +1,6 @@
 package no.nav.pensjon.brev.template
 
-import no.nav.pensjon.brev.template.base.BaseTemplate
 import no.nav.pensjon.brev.template.base.DummyBase
-import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.dsl.argument
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.core.IsCollectionContaining
@@ -17,7 +15,7 @@ class UtilsTest {
     val frase1 = Phrase.Static.create("jadda", Language.Bokmal to "jadda")
     val frase2 = Phrase.Static.create("jadda2", Language.Bokmal to "jadda2")
 
-    val templ = createTemplate("test", title(Language.Bokmal to "test"), TestMaster, languages(Language.Bokmal)) {
+    val templ = createTemplate("test", newText(Language.Bokmal to "test"), TestMaster, languages(Language.Bokmal)) {
         parameters {
             required { PensjonInnvilget }
             required { KortNavn }

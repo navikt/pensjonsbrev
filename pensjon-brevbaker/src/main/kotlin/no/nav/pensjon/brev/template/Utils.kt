@@ -87,5 +87,12 @@ internal fun <Lang : LanguageCombination> Element<Lang>.findExpressions(): List<
 
         is Element.Title1 ->
             title1.flatMap { it.findExpressions() }
-        is Element.Paragraph -> emptyList()
+
+        is Element.Paragraph -> paragraph.flatMap { it.findExpressions() }
+
+        is Element.Form.Text -> prompt.findExpressions()
+
+        is Element.Form.MultipleChoice -> prompt.findExpressions() + choices.flatMap { it.findExpressions() }
+
+        is Element.NewLine -> emptyList()
     }

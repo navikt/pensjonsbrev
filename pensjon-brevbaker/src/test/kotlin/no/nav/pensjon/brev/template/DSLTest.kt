@@ -21,8 +21,8 @@ class DSLTest {
             Phrase.Static.create("pensjonInnvilget", Language.Bokmal to "Du har fått innvilget pensjon")
     }
 
-    val bokmalTittel = title(Language.Bokmal to "test brev")
-    val nynorskTittel = title(Language.Nynorsk to "test brev")
+    val bokmalTittel = newText(Language.Bokmal to "test brev")
+    val nynorskTittel = newText(Language.Nynorsk to "test brev")
 
 
     @Test

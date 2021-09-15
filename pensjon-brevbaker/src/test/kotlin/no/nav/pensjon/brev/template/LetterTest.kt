@@ -1,9 +1,7 @@
 package no.nav.pensjon.brev.template
 
 import no.nav.pensjon.brev.something.Fagdelen
-import no.nav.pensjon.brev.template.base.BaseTemplate
 import no.nav.pensjon.brev.template.base.DummyBase
-import no.nav.pensjon.brev.template.Language
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -23,7 +21,7 @@ class LetterTest {
         )
     }
 
-    val title = title(Language.Bokmal to "test")
+    val title = newText(Language.Bokmal to "test")
     val template = createTemplate("test", title, TestMaster, languages(Language.Bokmal)) { }
 
     @Test
