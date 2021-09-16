@@ -264,6 +264,7 @@
         \newline
         \paragraph{\feltclosingkontaktoss}
         \vspace*{42pt}
+        \par
         \feltclosinggreeting
         \par
         \closingbehandlet
