@@ -19,7 +19,7 @@ abstract class LanguageSettings(val settings: Map<String, Element.Text.Literal<B
     class LatexCommands(vararg settings: Pair<String, Element.Text.Literal<BaseLanguages>>) :
         LanguageSettings(settings.toMap()) {
         override fun asWritableLanguageSetting(key: String, value: String): String {
-            return """\newcommand{\felt$key}{$value}"""
+            return """\newcommand{\felt$key}{${value.latexEscape()}}"""
         }
     }
 }

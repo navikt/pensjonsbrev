@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.template.base
 
+import no.nav.pensjon.brev.latex.LatexPrintWriter
 import no.nav.pensjon.brev.something.Fagdelen
 import no.nav.pensjon.brev.template.*
 import java.io.InputStream
@@ -14,92 +15,92 @@ object PensjonLatex : BaseTemplate() {
         RequiredParameter(Felles)
     )
     override val languageSettings: LanguageSettings = LanguageSettings.LatexCommands(
-        "navnprefix" to Element.Text.Literal.create(
+        "navnprefix" to newText(
             Language.Bokmal to "Navn:",
             Language.Nynorsk to "Namn:",
             Language.English to "Name:",
         ),
-        "saksnummerprefix" to Element.Text.Literal.create(
+        "saksnummerprefix" to newText(
             Language.Bokmal to "NAVs saksnummer:",
             Language.Nynorsk to "NAVs saksnummer:",
             Language.English to "NAV’s case number:",
         ),
-        "foedselsnummerprefix" to Element.Text.Literal.create(
+        "foedselsnummerprefix" to newText(
             Language.Bokmal to "Fødselsnummer:",
             Language.Nynorsk to "Fødselsnummer:",
             Language.English to "National identity number:",
         ),
-        "returadresseenhetprefix" to Element.Text.Literal.create(
+        "returadresseenhetprefix" to newText(
             Language.Bokmal to "Returadresse:",
             Language.Nynorsk to "Returadresse:",
             Language.English to "Return address:",
         ),
-        "datoprefix" to Element.Text.Literal.create(
+        "datoprefix" to newText(
             Language.Bokmal to "Dato:",
             Language.Nynorsk to "Dato:",
             Language.English to "Date:",
         ),
-        "postadresseprefix" to Element.Text.Literal.create(
+        "postadresseprefix" to newText(
             Language.Bokmal to "Postadresse:",
             Language.Nynorsk to "Postadresse:",
             Language.English to "Mailing address:",
         ),
-        "sideprefix" to Element.Text.Literal.create(
+        "sideprefix" to newText(
             Language.Bokmal to "Side",
             Language.Nynorsk to "Side",
             Language.English to "Page",
         ),
-        "sideinfix" to Element.Text.Literal.create(
+        "sideinfix" to newText(
             Language.Bokmal to "av",
             Language.Nynorsk to "av",
             Language.English to "of",
         ),
-        "navenhettlfprefix" to Element.Text.Literal.create(
+        "navenhettlfprefix" to newText(
             Language.Bokmal to "Telefon:",
             Language.Nynorsk to "Telefon:",
             Language.English to "Phone number:",
         ),
         //TODO: Burde enhettlf og nettside komme som argument?
         "navenhettlf" to "55553334".let {
-            Element.Text.Literal.create(
+            newText(
                 Language.Bokmal to it,
                 Language.Nynorsk to it,
                 Language.English to it,
             )
         },
         "navenhetnettside" to "nav.no".let {
-            Element.Text.Literal.create(
+            newText(
                 Language.Bokmal to it,
                 Language.Nynorsk to it,
                 Language.English to it,
             )
         },
-        "closingspoersmaal" to Element.Text.Literal.create(
+        "closingspoersmaal" to newText(
             Language.Bokmal to "Har du spørsmål?",
             Language.Nynorsk to "Har du spørsmål?",
             Language.English to "Do you have questions?",
         ),
-        "closingkontaktoss" to Element.Text.Literal.create(
+        "closingkontaktoss" to newText(
             Language.Bokmal to "Kontakt oss gjerne på nav.no eller på telefon 55553334. Hvis du oppgir fødselsnummeret ditt når du tar kontakt med NAV, kan vi lettere gi deg rask og god hjelp.",
             Language.Nynorsk to "Kontakt oss gjerne på nav.no eller på telefon 55553334. Dersom du gir opp fødselsnummeret ditt når du kontaktar NAV, kan vi lettare gi deg rask og god hjelp.",
             Language.English to "You will find further information at nav.no. You can also contact us by phone 55553334",
         ),
-        "closinggreeting" to Element.Text.Literal.create(
+        "closinggreeting" to newText(
             Language.Bokmal to "Med vennlig hilsen",
             Language.Nynorsk to "Med vennleg helsing",
             Language.English to "Yours sincerely",
         ),
-        "closingsaksbehandlersuffix" to Element.Text.Literal.create(
+        "closingsaksbehandlersuffix" to newText(
             Language.Bokmal to "saksbehandler",
             Language.Nynorsk to "saksbehandlar",
             Language.English to "Executive Officer",
         ),
-        "closingautomatisktext" to Element.Text.Literal.create(
+        "closingautomatisktext" to newText(
             Language.Bokmal to "Brevet er produsert automatisk og derfor ikke underskrevet av saksbehandler.",
             Language.Nynorsk to "Brevet er produsert automatisk og er difor ikkje underskrive av saksbehandler.",
             Language.English to "This letter has been processed automatically and is therefore not signed by an assessor.",
         ),
-        "closingvedleggprefix" to Element.Text.Literal.create(
+        "closingvedleggprefix" to newText(
             Language.Bokmal to "Vedlegg:",
             Language.Nynorsk to "Vedlegg:",
             Language.English to "Attachments:",
@@ -108,47 +109,51 @@ object PensjonLatex : BaseTemplate() {
 
     override fun render(letter: Letter): RenderedLetter =
         RenderedLatexLetter().apply {
-            newFile("params.tex").use { masterTemplateParameters(letter, it.printWriter()) }
-            newFile("letter.tex").use { renderLetterV2(letter, it.printWriter()) }
+            newFile("params.tex").use { masterTemplateParameters(letter, LatexPrintWriter(it)) }
+            newFile("letter.tex").use { renderLetterV2(letter, LatexPrintWriter(it)) }
             newFile("nav-logo.pdf").use { getResource("nav-logo.pdf").transferTo(it) }
             newFile("nav-logo.pdf_tex").use { getResource("nav-logo.pdf_tex").transferTo(it) }
             newFile("pensjonsbrev_v2.cls").use { getResource("pensjonsbrev_v2.cls").transferTo(it) }
             letter.template.attachments.forEachIndexed { index, attachment ->
-                newFile("attachment_$index.tex").use { renderAttachment(letter, attachment, it.printWriter()) }
+                newFile("attachment_$index.tex").use { renderAttachment(letter, attachment, LatexPrintWriter(it)) }
             }
         }
 
-    private fun renderAttachment(letter: Letter, attachment: AttachmentTemplate<*>, printWriter: PrintWriter) =
+    private fun renderAttachment(letter: Letter, attachment: AttachmentTemplate<*>, printWriter: LatexPrintWriter) =
         with(printWriter) {
-            println("""\startvedlegg{${attachment.title.text(letter.language)}}""")
+            printCmd("startvedlegg", attachment.title.text(letter.language))
             if (attachment.includeSakspart) {
-                println("""\sakspart""")
+                printCmd("sakspart")
             }
             attachment.outline.forEach { renderElement(letter, it, printWriter) }
-            println("""\sluttvedlegg""")
+            printCmd("sluttvedlegg")
         }
 
-    private fun renderLetterV2(letter: Letter, printWriter: PrintWriter): Unit =
+    private fun renderLetterV2(letter: Letter, printWriter: LatexPrintWriter): Unit =
         with(printWriter) {
-            println("""\documentclass[12pt]{pensjonsbrev_v2}""")
-            println("""\begin{document}""")
-            println("""\begin{letter}{\brevparameter}""")
-            //TODO: utskrift av text på denne måten kan føre til latex meta symboler som må escapes
-            println("""\tittel{${letter.template.title.text(letter.language)}}""")
+            println("""\documentclass[12pt]{pensjonsbrev_v2}""", escape = false)
+            printCmd("begin", "document")
+            printCmd("begin", "letter", """\brevparameter""")
+            printCmd("tittel", letter.template.title.text(letter.language))
             contents(letter, printWriter)
-            println("""\closing""")
-            println("""\end{letter}""")
-            letter.template.attachments.forEachIndexed { index, _ -> println("""\input{attachment_$index}""") }
-            println("""\end{document}""")
+            printCmd("closing")
+            printCmd("end", "letter")
+            letter.template.attachments.forEachIndexed { index, _ ->
+                printCmd(
+                    "input",
+                    "attachment_$index",
+                    escape = false
+                )
+            }
+            printCmd("end", "document")
         }
 
-    private fun masterTemplateParameters(letter: Letter, printWriter: PrintWriter) {
-        languageSettings.writeLanguageSettings(letter.language, printWriter)
+    private fun masterTemplateParameters(letter: Letter, printWriter: LatexPrintWriter) {
+        languageSettings.writeLanguageSettings(letter.language, printWriter.printWriter)
 
         with(printWriter) {
-            //TODO: utskrift av arg på denne måten kan føre til latex meta symboler som må escapes
-            println("""\newcommand{\feltfoedselsnummer}{${letter.requiredArg(NorskIdentifikator)}}""")
-            println("""\newcommand{\feltsaksnummer}{${letter.requiredArg(SaksNr)}}""")
+            printNewCmd("feltfoedselsnummer", letter.requiredArg(NorskIdentifikator).toString())
+            printNewCmd("feltsaksnummer", letter.requiredArg(SaksNr).toString())
         }
         vedleggCommand(letter, printWriter)
 
@@ -160,64 +165,66 @@ object PensjonLatex : BaseTemplate() {
         }
     }
 
-    private fun saksbehandlerCommands(saksbehandlere: Fagdelen.SignerendeSaksbehandlere?, printWriter: PrintWriter) {
+    private fun saksbehandlerCommands(
+        saksbehandlere: Fagdelen.SignerendeSaksbehandlere?,
+        printWriter: LatexPrintWriter
+    ) {
         if (saksbehandlere != null) {
-            printWriter.println("""\newcommand{\closingbehandlet}{\closingsaksbehandlet}""")
-            printWriter.println("""\newcommand{\feltclosingsaksbehandlerfirst}{${saksbehandlere.saksbehandler}}""")
-            printWriter.println("""\newcommand{\feltclosingsaksbehandlersecond}{${saksbehandlere.attesterendeSaksbehandler}}""")
+            printWriter.printNewCmd("closingbehandlet", """\closingsaksbehandlet""", escape = false)
+            printWriter.printNewCmd("feltclosingsaksbehandlerfirst", saksbehandlere.saksbehandler)
+            printWriter.printNewCmd("feltclosingsaksbehandlersecond", saksbehandlere.attesterendeSaksbehandler)
         } else {
-            printWriter.println("""\newcommand{\closingbehandlet}{\closingautomatiskbehandlet}""")
+            printWriter.printNewCmd("closingbehandlet", """\closingautomatiskbehandlet""")
         }
     }
 
-    private fun datoCommand(dato: LocalDate, language: Language, printWriter: PrintWriter) {
-        printWriter.println(
-            """\newcommand{\feltdato}{${
-                dato.format(dateFormatter(language))
-            }}"""
+    private fun datoCommand(dato: LocalDate, language: Language, printWriter: LatexPrintWriter) {
+        printWriter.printNewCmd("feltdato", dato.format(dateFormatter(language)))
+    }
+
+    private fun mottakerCommands(mottaker: Fagdelen.Mottaker, printWriter: LatexPrintWriter) =
+        with(mottaker) {
+            printWriter.printNewCmd("feltfornavnmottaker", fornavn)
+            printWriter.printNewCmd("feltetternavnmottaker", etternavn)
+            printWriter.printNewCmd("feltgatenavnmottaker", gatenavn)
+            printWriter.printNewCmd("felthusnummermottaker", husnummer)
+            printWriter.printNewCmd("feltpostnummermottaker", postnummer)
+            printWriter.printNewCmd("feltpoststedmottaker", poststed)
+        }
+
+
+    private fun returAdresseCommands(returAdresse: Fagdelen.ReturAdresse, printWriter: LatexPrintWriter) =
+        with(returAdresse) {
+            printWriter.printNewCmd("feltnavenhet", navEnhetsNavn)
+            printWriter.printNewCmd("feltreturadressepostnrsted", "$postNr $postSted")
+            printWriter.printNewCmd("feltreturadresse", adresseLinje1)
+            printWriter.printNewCmd("feltpostadressepostnrsted", "$postNr $postSted")
+            printWriter.printNewCmd("feltpostadresse", adresseLinje1)
+        }
+
+    private fun vedleggCommand(letter: Letter, printWriter: LatexPrintWriter): Unit {
+        val vedleggListe = letter.template.attachments.map { it.title.text(letter.language) }
+            .joinToString("\n") { """\item $it""" }
+
+        printWriter.printNewCmd(
+            "feltclosingvedlegg", escape = false, body = """
+                \begin{itemize}
+                    $vedleggListe
+                 \end{itemize}
+            """.trimIndent()
         )
     }
 
-    private fun mottakerCommands(mottaker: Fagdelen.Mottaker, printWriter: PrintWriter) =
-        with(mottaker) {
-            printWriter.println("""\newcommand{\feltfornavnmottaker}{$fornavn}""")
-            printWriter.println("""\newcommand{\feltetternavnmottaker}{$etternavn}""")
-            printWriter.println("""\newcommand{\feltgatenavnmottaker}{$gatenavn}""")
-            printWriter.println("""\newcommand{\felthusnummermottaker}{$husnummer}""")
-            printWriter.println("""\newcommand{\feltpostnummermottaker}{$postnummer}""")
-            printWriter.println("""\newcommand{\feltpoststedmottaker}{$poststed}""")
-        }
-
-
-    private fun returAdresseCommands(returAdresse: Fagdelen.ReturAdresse, printWriter: PrintWriter) =
-        with(returAdresse) {
-            printWriter.println("""\newcommand{\feltnavenhet}{$navEnhetsNavn}""")
-            printWriter.println("""\newcommand{\feltreturadressepostnrsted}{$postNr $postSted}""")
-            printWriter.println("""\newcommand{\feltreturadresse}{$adresseLinje1}""")
-            printWriter.println("""\newcommand{\feltpostadressepostnrsted}{$postNr $postSted}""")
-            printWriter.println("""\newcommand{\feltpostadresse}{$adresseLinje1}""")
-        }
-
-    private fun vedleggCommand(letter: Letter, printWriter: PrintWriter): Unit =
-        with(printWriter) {
-            println("""\newcommand{\feltclosingvedlegg}{""")
-            println("""\begin{itemize}""")
-            letter.template.attachments.map { it.title.text(letter.language) }
-                .forEach { println("""\item $it""") }
-            println("""\end{itemize}""")
-            println("}")
-        }
-
-    private fun contents(letter: Letter, printWriter: PrintWriter) =
+    private fun contents(letter: Letter, printWriter: LatexPrintWriter) =
         letter.template.outline.forEach { renderElement(letter, it, printWriter) }
 
-    private fun renderElement(letter: Letter, element: Element<*>, printWriter: PrintWriter): Unit =
+    private fun renderElement(letter: Letter, element: Element<*>, printWriter: LatexPrintWriter): Unit =
         when (element) {
             is Element.Title1 ->
                 with(printWriter) {
-                    print("""\lettersectiontitle{""")
-                    element.title1.forEach { child -> renderElement(letter, child, printWriter) }
-                    println("}")
+                    printCmd("lettersectiontitle") {
+                        arg { element.title1.forEach { child -> renderElement(letter, child, it) } }
+                    }
                 }
 
             is Element.Conditional ->
@@ -227,54 +234,54 @@ object PensjonLatex : BaseTemplate() {
                 }
 
             is Element.Text.Literal ->
-                printWriter.print(element.text(letter.language).latexEscape())
+                printWriter.print(element.text(letter.language))
 
             is Element.Text.Phrase ->
-                printWriter.print(element.phrase.text(letter.language).latexEscape())
+                printWriter.print(element.phrase.text(letter.language))
 
             is Element.Text.Expression ->
-                printWriter.print(element.expression.eval(letter).latexEscape())
+                printWriter.print(element.expression.eval(letter))
 
             is Element.Paragraph ->
-                with(printWriter) {
-                    println("""\paragraph{""")
-                    element.paragraph.forEach { child -> renderElement(letter, child, printWriter) }
-                    println("}")
+                printWriter.printCmd("paragraph") {
+                    arg { element.paragraph.forEach { child -> renderElement(letter, child, it) } }
                 }
 
             is Element.Form.Text ->
                 with(printWriter) {
                     if (element.vspace) {
-                        println("""\formvspace""")
+                        printCmd("formvspace")
                     }
 
-                    println("""\formText{""")
-                    renderElement(letter, element.prompt, printWriter)
-                    print(" ${".".repeat(element.size)}")
-                    println("""}""")
+                    printCmd("formText") {
+                        arg {
+                            renderElement(letter, element.prompt, it)
+                            it.print(" ${".".repeat(element.size)}")
+                        }
+                    }
                 }
 
             is Element.Form.MultipleChoice ->
                 with(printWriter) {
                     if (element.vspace) {
-                        println("""\formvspace""")
+                        printCmd("formvspace")
                     }
 
-                    print("""\begin{formChoice}{""")
-                    renderElement(letter, element.prompt, printWriter)
-                    println("""}""")
+                    printCmd("begin") {
+                        arg { it.print("formChoice") }
+                        arg { renderElement(letter, element.prompt, it) }
+                    }
 
                     element.choices.forEach {
-                        print("""\item """)
+                        printCmd("item")
                         renderElement(letter, it, printWriter)
-                        println()
                     }
 
-                    println("""\end{formChoice}""")
+                    printCmd("end", "formChoice")
                 }
 
             is Element.NewLine ->
-                printWriter.println("""\newline""")
+                printWriter.printCmd("newline")
         }
 
     private fun getResource(fileName: String): InputStream {

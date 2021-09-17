@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.template
 
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
+import no.nav.pensjon.brev.latex.LatexPrintWriter
 import java.io.OutputStream
 import java.io.PrintWriter
 import java.lang.IllegalArgumentException
@@ -13,9 +14,6 @@ fun jacksonObjectMapper() =
     com.fasterxml.jackson.module.kotlin.jacksonObjectMapper().apply {
         registerModule(JavaTimeModule())
     }
-
-fun OutputStream.printWriter() =
-    PrintWriter(this, true, Charsets.UTF_8)
 
 fun <T : Any> KClass<out T>.findSealedObjects(): Set<T> =
     if (isSealed) {

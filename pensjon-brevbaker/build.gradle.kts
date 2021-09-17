@@ -62,9 +62,8 @@ dependencies {
     implementation("io.micrometer:micrometer-registry-prometheus:1.7.0")
 
     // JUnit 5
-//    testImplementation("org.junit.jupiter:junit-jupiter-api:$jupiter_version")
-//    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$jupiter_version")
     testImplementation(platform("org.junit:junit-bom:$jupiter_version"))
     testImplementation("org.junit.jupiter:junit-jupiter")
+    testImplementation("com.natpryce:hamkrest:1.8.0.1")
 }
 
