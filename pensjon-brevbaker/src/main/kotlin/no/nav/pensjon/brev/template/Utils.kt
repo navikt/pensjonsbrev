@@ -45,30 +45,6 @@ fun <Lang : LanguageCombination> LetterTemplate<Lang>.validateArgumentExpression
     }
 }
 
-internal fun Expression<*>.requiredArguments(): List<Expression.Argument<*, *>> =
-    when (this) {
-        is Expression.Argument<*, *> ->
-            listOf(this)
-
-        is Expression.BinaryInvoke<*, *, *> ->
-            first.requiredArguments() + second.requiredArguments()
-
-        is Expression.Literal ->
-            emptyList()
-
-        is Expression.OptionalArgument<*, *> ->
-            emptyList()
-
-        is Expression.Select<*, *> ->
-            value.requiredArguments()
-
-        is Expression.UnaryInvoke<*, *> ->
-            value.requiredArguments()
-
-        is Expression.LetterProperty ->
-            emptyList()
-    }
-
 internal fun <Lang : LanguageCombination> Element<Lang>.findExpressions(): List<Expression<*>> =
     when (this) {
         is Element.Conditional ->

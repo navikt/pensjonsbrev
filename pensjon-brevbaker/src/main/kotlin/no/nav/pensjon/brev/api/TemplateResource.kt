@@ -13,7 +13,7 @@ object TemplateResource {
     fun getTemplates(): Set<String> =
         templates.keys
 
-    fun getTemplate(name: String): LetterTemplate<*>? =
+    fun getTemplate(name: String): LetterTemplate<*, *>? =
         templates[name]
 
 }

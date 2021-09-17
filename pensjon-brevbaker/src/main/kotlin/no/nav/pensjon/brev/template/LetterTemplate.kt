@@ -16,9 +16,6 @@ data class LetterTemplate<Lang : LanguageCombination>(
     val outline: List<Element<Lang>>,
     val attachments: List<AttachmentTemplate<Lang>> = emptyList(),
 ) {
-    init {
-        validateArgumentExpressions()
-    }
 
     fun render(letter: Letter) =
         base.render(letter)
@@ -29,34 +26,6 @@ data class AttachmentTemplate<Lang : LanguageCombination>(
     val outline: List<Element<Lang>>,
     val includeSakspart: Boolean = false,
 )
-
-sealed class TemplateParameter {
-    companion object {
-        @JsonCreator
-        @JvmStatic
-        fun creator(
-            @JsonProperty("required") required: Parameter?,
-            @JsonProperty("optional") optional: Parameter?
-        ): TemplateParameter? =
-            if (required != null) {
-                RequiredParameter(required)
-            } else if (optional != null) {
-                OptionalParameter(optional)
-            } else null
-
-    }
-
-    val parameter: Parameter
-        @JsonIgnore
-        get() = when (this) {
-            is RequiredParameter -> required
-            is OptionalParameter -> optional
-        }
-}
-
-data class RequiredParameter(val required: Parameter) : TemplateParameter()
-data class OptionalParameter(val optional: Parameter) : TemplateParameter()
-
 
 @JsonTypeInfo(
     use = JsonTypeInfo.Id.NAME,
@@ -73,28 +42,35 @@ sealed class Expression<out Out> {
         override fun eval(letter: Letter): Out = value
     }
 
-    data class Argument<Param, Out>(val parameter: Param) : Expression<Out>()
-            where Param : Parameter,
-                  Param : ParameterType<Out> {
-
-        @Suppress("UNCHECKED_CAST")
-        override fun eval(letter: Letter): Out =
-            letter.untypedArg(parameter)
-                .takeIf { it != null }
-                .let { it as Out }
-    }
-
     data class LetterProperty<out Out>(val select: Letter.() -> Out) : Expression<Out>() {
         override fun eval(letter: Letter): Out = letter.select()
     }
 
-    data class OptionalArgument<Param, Out>(val parameter: Param) : Expression<Out?>()
-            where Param : Parameter,
-                  Param : ParameterType<Out> {
-        @Suppress("UNCHECKED_CAST")
-        override fun eval(letter: Letter): Out? =
-            letter.untypedArg(parameter).let { it as Out? }
+    data class SelectLetterData<ParameterType: Any, Out>(
+        val selector: ParameterType.() -> Out
+    ) : Expression<Out>() {
+        override fun eval(letter: Letter): Out {
+            @Suppress("UNCHECKED_CAST")
+            return (letter.argument as ParameterType).selector()
+        }
     }
+
+    data class SelectFellesData<Out>(
+        val selector: (felles: Felles) -> Out
+    ) : Expression<Out>() {
+        override fun eval(letter: Letter): Out {
+            @Suppress("UNCHECKED_CAST")
+            return selector.invoke(letter.felles)
+        }
+    }
+
+    data class Select<In : Any, Out>(
+        val value: Expression<In>,
+        val select: In.() -> Out
+    ) : Expression<Out>() {
+        override fun eval(letter: Letter): Out = value.eval(letter).select()
+    }
+
 
     data class UnaryInvoke<In, out Out>(
         val value: Expression<In>,
@@ -113,13 +89,6 @@ sealed class Expression<out Out> {
         }
     }
 
-    // TODO: Dette er egentlig bare en special-case av UnaryInvoke
-    data class Select<In : Any, Out>(
-        val value: Expression<In>,
-        val select: In.() -> Out
-    ) : Expression<Out>() {
-        override fun eval(letter: Letter): Out = value.eval(letter).select()
-    }
 
 }
 

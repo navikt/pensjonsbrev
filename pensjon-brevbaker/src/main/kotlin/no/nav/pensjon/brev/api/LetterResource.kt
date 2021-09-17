@@ -2,7 +2,9 @@ package no.nav.pensjon.brev.api
 
 import com.fasterxml.jackson.databind.JsonNode
 import io.ktor.features.*
+import no.nav.pensjon.brev.api.dto.Felles
 import no.nav.pensjon.brev.template.*
+import kotlin.reflect.KClass
 
 data class LetterRequest(val template: String, val arguments: Map<String, JsonNode>, val language: Language)
 
@@ -17,6 +19,7 @@ object LetterResource {
             throw IllegalArgumentException("Template '${template.name}' doesn't support language: ${letterRequest.language}")
         }
 
+        // TODO: Fix emptymap
         return Letter(
             template = template,
             arguments = parseArguments(letterRequest.arguments, template.parameters + template.base.parameters),
