@@ -57,26 +57,12 @@ object PensjonLatex : BaseTemplate() {
             Language.Nynorsk to "Telefon:",
             Language.English to "Phone number:",
         ),
-        //TODO: Burde enhettlf og nettside komme som argument?
-        "navenhettlf" to "55553334".let {
-            newText(
-                Language.Bokmal to it,
-                Language.Nynorsk to it,
-                Language.English to it,
-            )
-        },
-        "navenhetnettside" to "nav.no".let {
-            newText(
-                Language.Bokmal to it,
-                Language.Nynorsk to it,
-                Language.English to it,
-            )
-        },
         "closingspoersmaal" to newText(
             Language.Bokmal to "Har du spørsmål?",
             Language.Nynorsk to "Har du spørsmål?",
             Language.English to "Do you have questions?",
         ),
+        //TODO: Endre slik at vi kan bruke telefonnummer og nettside fra letter.felles
         "closingkontaktoss" to newText(
             Language.Bokmal to "Kontakt oss gjerne på nav.no eller på telefon 55553334. Hvis du oppgir fødselsnummeret ditt når du tar kontakt med NAV, kan vi lettere gi deg rask og god hjelp.",
             Language.Nynorsk to "Kontakt oss gjerne på nav.no eller på telefon 55553334. Dersom du gir opp fødselsnummeret ditt når du kontaktar NAV, kan vi lettare gi deg rask og god hjelp.",
@@ -190,6 +176,8 @@ object PensjonLatex : BaseTemplate() {
     private fun navEnhetCommands(navEnhet: NAVEnhet, printWriter: LatexPrintWriter) =
         with(navEnhet.returAdresse) {
             printWriter.printNewCmd("feltnavenhet", navEnhet.navn)
+            printWriter.printNewCmd("feltnavenhettlf", navEnhet.telefonnummer)
+            printWriter.printNewCmd("feltnavenhetnettside", navEnhet.nettside)
             printWriter.printNewCmd("feltreturadressepostnrsted", "$postNr $postSted")
             printWriter.printNewCmd("feltreturadresse", adresseLinje1)
             printWriter.printNewCmd("feltpostadressepostnrsted", "$postNr $postSted")

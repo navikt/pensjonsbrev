@@ -13,9 +13,9 @@ var felles =
                 postNr = "0607",
                 postSted = "Oslo",
             ),
-            navenhetnettside = "nav.no",
+            nettside = "nav.no",
             navn = "NAV Familie- og pensjonsytelser Porsgrunn",
-            navTelefonnummer = "55553334",
+            telefonnummer = "55553334",
         ),
         mottaker = Mottaker(
             fornavn = "PERLAKI",

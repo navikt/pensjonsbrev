@@ -35,8 +35,8 @@ data class Adresse(
 
 data class NAVEnhet(
     val returAdresse: ReturAdresse,
-    val navenhetnettside: String,
+    val nettside: String,
     val navn: String,
-    val navTelefonnummer: String,
+    val telefonnummer: String,
 )
 data class LetterResponse(val base64pdf: String)
