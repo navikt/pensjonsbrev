@@ -1,37 +1,33 @@
 package no.nav.pensjon.brev.maler
 
-import no.nav.pensjon.brev.something.Fagdelen
+import no.nav.pensjon.brev.api.dto.Felles
 import no.nav.pensjon.brev.template.*
-import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.base.PensjonLatex
-import no.nav.pensjon.brev.template.dsl.argument
 import no.nav.pensjon.brev.template.dsl.format
-import no.nav.pensjon.brev.template.dsl.select
 import no.nav.pensjon.brev.template.dsl.str
+
+data class OmsorgEgenAutoDto(val arEgenerklaringOmsorgspoeng: Number, val arInnvilgetOmsorgspoeng: Number)
 
 object OmsorgEgenAuto : StaticTemplate {
 
-    override val template: LetterTemplate<*> = createTemplate(
+    override val template: LetterTemplate<*, *> = createTemplate(
         name = "OMSORG_EGEN_AUTO",
         title = newText(Language.Bokmal to "Du må sende oss egenerklæring om pleie- og omsorgsarbeid"),
         base = PensjonLatex,
+        parameterType = OmsorgEgenAutoDto::class,
         lang = languages(Language.Bokmal)
     ) {
-        parameters {
-            required { ArEgenerklaringOmsorgspoeng }
-            required { Felles }
-        }
 
         outline {
             paragraph {
                 text(Language.Bokmal to "Vi trenger en bekreftelse på at du har utført pleie- og omsorgsarbeid i ")
-                eval(argument(ArEgenerklaringOmsorgspoeng).str())
+                selectField(OmsorgEgenAutoDto::arEgenerklaringOmsorgspoeng) { it.str() }
                 text(Language.Bokmal to ". Derfor må du fylle ut det vedlagte skjemaet og sende det til oss innen fire uker.")
             }
 
             paragraph {
                 text(Language.Bokmal to "Du har fått godkjent pensjonsopptjening for ")
-                eval(argument(ArEgenerklaringOmsorgspoeng).str())
+                selectField(OmsorgEgenAutoDto::arInnvilgetOmsorgspoeng) { it.str() }
                 text(Language.Bokmal to ".")
             }
 
@@ -43,13 +39,13 @@ object OmsorgEgenAuto : StaticTemplate {
         ) {
             paragraph {
                 text(Language.Bokmal to "Jeg viser til brev av ")
-                eval(argument(Felles).select(Fagdelen.Felles::dokumentDato).format())
+                selectFelles(Felles::dokumentDato) { it.format() }
                 text(Language.Bokmal to ".")
             }
 
             paragraph {
                 text(Language.Bokmal to "I ")
-                eval(argument(ArEgenerklaringOmsorgspoeng).str())
+                selectField(OmsorgEgenAutoDto::arEgenerklaringOmsorgspoeng) { it.str() }
                 text(Language.Bokmal to " har jeg utført pleie og omsorgsarbeid på minst 22 timer i uken. (Inkludert opptil en halv time reisetid per besøk.)")
             }
 
@@ -60,7 +56,10 @@ object OmsorgEgenAuto : StaticTemplate {
                 choice(Language.Bokmal to "under seks måneder")
             }
 
-            formText(size = 0, prompt = newText(Language.Bokmal to "Hvis omsorgsforholdet har opphørt i løpet av året:"))
+            formText(
+                size = 0,
+                prompt = newText(Language.Bokmal to "Hvis omsorgsforholdet har opphørt i løpet av året:")
+            )
             formText(size = 25, vspace = false, prompt = newText(Language.Bokmal to "Oppgi dato for opphøret:"))
             formText(size = 55, vspace = false, prompt = newText(Language.Bokmal to "Oppgi årsaken til opphøret:"))
 
@@ -72,20 +71,18 @@ object OmsorgEgenAuto : StaticTemplate {
             repeat(3) { newline() }
 
             paragraph {
-                val returAdresse = argument(Felles).select(Fagdelen.Felles::returAdresse)
-
                 text(Language.Bokmal to "Du må sende denne egenerklæringen til:")
                 newline()
 
-                eval(returAdresse.select(Fagdelen.ReturAdresse::navEnhetsNavn))
+                selectFelles { avsenderEnhet.navn }
                 newline()
 
-                eval(returAdresse.select(Fagdelen.ReturAdresse::adresseLinje1))
+                selectFelles { avsenderEnhet.returAdresse.adresseLinje1 }
                 newline()
 
-                eval(returAdresse.select(Fagdelen.ReturAdresse::postNr))
+                selectFelles { avsenderEnhet.returAdresse.postNr }
                 text(Language.Bokmal to " ")
-                eval(returAdresse.select(Fagdelen.ReturAdresse::postSted))
+                selectFelles { avsenderEnhet.returAdresse.postSted }
             }
         }
 

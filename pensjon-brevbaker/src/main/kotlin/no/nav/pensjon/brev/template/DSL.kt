@@ -55,7 +55,7 @@ fun <Lang : LanguageCombination, ParameterType : Any> staticParagraph(
 @LetterTemplateMarker
 open class LetterTemplateBuilder<Lang : LanguageCombination, ParameterType : Any>(
     val outline: MutableList<Element<Lang>> = mutableListOf(),
-    val attachments: MutableList<AttachmentTemplate<Lang>> = mutableListOf(),
+    val attachments: MutableList<AttachmentTemplate<Lang, ParameterType>> = mutableListOf(),
 ) {
 
     fun outline(init: ContainerElementBuilder<Lang, ParameterType>.() -> Unit): Unit {
@@ -65,12 +65,12 @@ open class LetterTemplateBuilder<Lang : LanguageCombination, ParameterType : Any
     fun attachment(
         title: Element.Text.Literal<Lang>,
         includeSakspart: Boolean = false,
-        outline: ContainerElementBuilder<Lang>.() -> Unit
+        outline: ContainerElementBuilder<Lang, ParameterType>.() -> Unit
     ): Unit {
         attachments.add(
             AttachmentTemplate(
                 title,
-                ContainerElementBuilder<Lang>().apply(outline).children,
+                ContainerElementBuilder<Lang, ParameterType>().apply(outline).children,
                 includeSakspart
             )
         )
@@ -81,19 +81,32 @@ open class LetterTemplateBuilder<Lang : LanguageCombination, ParameterType : Any
 @LetterTemplateMarker
 open class TextOnlyBuilder<Lang : LanguageCombination, ParameterType : Any>(val children: MutableList<Element<Lang>> = mutableListOf()) {
 
+    fun selectField(selector: ParameterType.() -> String) {
+        selectField(selector) { it }
+    }
+
     fun <Out> selectField(selector: ParameterType.() -> Out, expressionInit: (Expression<Out>) -> Expression<String>) {
         children.add(
-            Expression.SelectLetterData(selector)
-                .let(expressionInit)
+            Expression.UnaryInvoke(
+                value = Expression.LetterProperty(Letter<ParameterType>::argument),
+                operation = UnaryOperation.Select(selector)
+            ).let(expressionInit)
                 .let { Element.Text.Expression(it) }
         )
     }
 
-    fun <Out> selectFelles(selector: (felles: Felles) -> Out, expressionInit: (Expression<Out>) -> Expression<String>) {
+    fun selectFelles(selector: Felles.() -> String) {
+        selectFelles(selector) { it }
+    }
+
+    fun <Out> selectFelles(selector: Felles.() -> Out, expressionInit: (Expression<Out>) -> Expression<String>) {
         children.add(
-            Expression.SelectFellesData(selector)
-                .let(expressionInit)
-                .let { Element.Text.Expression(it) })
+            Expression.UnaryInvoke(
+                value = Expression.LetterProperty(Letter<ParameterType>::felles),
+                operation = UnaryOperation.Select(selector)
+            ).let(expressionInit)
+                .let { Element.Text.Expression(it) }
+        )
     }
 
     fun eval(expression: Expression<String>): Unit {

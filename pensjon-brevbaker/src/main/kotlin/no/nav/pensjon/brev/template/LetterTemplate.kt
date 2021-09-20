@@ -1,27 +1,26 @@
 package no.nav.pensjon.brev.template
 
-import com.fasterxml.jackson.annotation.JsonCreator
-import com.fasterxml.jackson.annotation.JsonIgnore
-import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.annotation.JsonTypeInfo
+import no.nav.pensjon.brev.api.dto.Felles
 import no.nav.pensjon.brev.template.base.BaseTemplate
+import kotlin.reflect.KClass
 
-data class LetterTemplate<Lang : LanguageCombination>(
+data class LetterTemplate<Lang : LanguageCombination, ParameterType : Any>(
     val name: String,
     //TODO: Lag støtte for kombinert literal og expression
     val title: Element.Text.Literal<Lang>,
     val base: BaseTemplate,
-    val parameters: Set<TemplateParameter>,
+    val parameterType: KClass<ParameterType>,
     val language: Lang,
     val outline: List<Element<Lang>>,
-    val attachments: List<AttachmentTemplate<Lang>> = emptyList(),
+    val attachments: List<AttachmentTemplate<Lang, ParameterType>> = emptyList(),
 ) {
 
-    fun render(letter: Letter) =
+    fun render(letter: Letter<*>) =
         base.render(letter)
 }
 
-data class AttachmentTemplate<Lang : LanguageCombination>(
+data class AttachmentTemplate<Lang : LanguageCombination, ParameterType : Any>(
     val title: Element.Text.Literal<Lang>,
     val outline: List<Element<Lang>>,
     val includeSakspart: Boolean = false,
@@ -36,47 +35,24 @@ data class AttachmentTemplate<Lang : LanguageCombination>(
 sealed class Expression<out Out> {
     val schema: String = this::class.java.name.removePrefix(this::class.java.`package`.name + '.')
 
-    abstract fun eval(letter: Letter): Out
+    abstract fun eval(letter: Letter<*>): Out
 
     data class Literal<out Out>(val value: Out) : Expression<Out>() {
-        override fun eval(letter: Letter): Out = value
+        override fun eval(letter: Letter<*>): Out = value
     }
 
-    data class LetterProperty<out Out>(val select: Letter.() -> Out) : Expression<Out>() {
-        override fun eval(letter: Letter): Out = letter.select()
-    }
-
-    data class SelectLetterData<ParameterType: Any, Out>(
-        val selector: ParameterType.() -> Out
-    ) : Expression<Out>() {
-        override fun eval(letter: Letter): Out {
+    data class LetterProperty<ParameterType : Any, out Out>(val select: Letter<ParameterType>.() -> Out) : Expression<Out>() {
+        override fun eval(letter: Letter<*>): Out {
             @Suppress("UNCHECKED_CAST")
-            return (letter.argument as ParameterType).selector()
+            return (letter as Letter<ParameterType> ).select()
         }
     }
 
-    data class SelectFellesData<Out>(
-        val selector: (felles: Felles) -> Out
-    ) : Expression<Out>() {
-        override fun eval(letter: Letter): Out {
-            @Suppress("UNCHECKED_CAST")
-            return selector.invoke(letter.felles)
-        }
-    }
-
-    data class Select<In : Any, Out>(
-        val value: Expression<In>,
-        val select: In.() -> Out
-    ) : Expression<Out>() {
-        override fun eval(letter: Letter): Out = value.eval(letter).select()
-    }
-
-
-    data class UnaryInvoke<In, out Out>(
+    data class UnaryInvoke<In, Out>(
         val value: Expression<In>,
         val operation: UnaryOperation<In, Out>
     ) : Expression<Out>() {
-        override fun eval(letter: Letter): Out = operation.apply(value.eval(letter))
+        override fun eval(letter: Letter<*>): Out = operation.apply(value.eval(letter))
     }
 
     data class BinaryInvoke<In1, In2, out Out>(
@@ -84,7 +60,7 @@ sealed class Expression<out Out> {
         val second: Expression<In2>,
         val operation: BinaryOperation<In1, In2, Out>
     ) : Expression<Out>() {
-        override fun eval(letter: Letter): Out {
+        override fun eval(letter: Letter<*>): Out {
             return operation.apply(first.eval(letter), second.eval(letter))
         }
     }
@@ -106,8 +82,17 @@ sealed class Element<Lang : LanguageCombination> {
     data class Paragraph<Lang : LanguageCombination>(val paragraph: List<Element<Lang>>) : Element<Lang>()
 
     sealed class Form<Lang : LanguageCombination> : Element<Lang>() {
-        data class Text<Lang : LanguageCombination>(val prompt: Element.Text<Lang>, val size: Int, val vspace: Boolean = true) : Form<Lang>()
-        data class MultipleChoice<Lang: LanguageCombination>(val prompt: Element.Text<Lang>, val choices: List<Element.Text<Lang>>, val vspace: Boolean = true) : Element.Form<Lang>()
+        data class Text<Lang : LanguageCombination>(
+            val prompt: Element.Text<Lang>,
+            val size: Int,
+            val vspace: Boolean = true
+        ) : Form<Lang>()
+
+        data class MultipleChoice<Lang : LanguageCombination>(
+            val prompt: Element.Text<Lang>,
+            val choices: List<Element.Text<Lang>>,
+            val vspace: Boolean = true
+        ) : Element.Form<Lang>()
     }
 
     class NewLine<Lang : LanguageCombination>() : Element<Lang>()

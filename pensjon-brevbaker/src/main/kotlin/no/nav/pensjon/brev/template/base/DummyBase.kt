@@ -5,7 +5,7 @@ import no.nav.pensjon.brev.template.Letter
 import no.nav.pensjon.brev.template.RenderedLetter
 
 abstract class DummyBase : BaseTemplate() {
-    override fun render(letter: Letter): RenderedLetter {
+    override fun render(letter: Letter<*>): RenderedLetter {
         TODO("Not yet implemented")
     }
 

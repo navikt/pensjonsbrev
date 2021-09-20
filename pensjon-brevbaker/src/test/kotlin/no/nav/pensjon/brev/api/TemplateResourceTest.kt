@@ -1,7 +1,7 @@
 package no.nav.pensjon.brev.api
 
-import no.nav.pensjon.brev.maler.Alderspensjon
 import no.nav.pensjon.brev.maler.EksempelBrev
+import no.nav.pensjon.brev.maler.OmsorgEgenAuto
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 
@@ -20,7 +20,7 @@ class TemplateResourceTest {
     @Test
     fun `getTemplates returns list of template names`() {
         val expected = listOf(
-            EksempelBrev, Alderspensjon
+            EksempelBrev, OmsorgEgenAuto
         ).map { it.template.name }.toSet()
 
         assertTrue(TemplateResource.getTemplates().containsAll(expected))

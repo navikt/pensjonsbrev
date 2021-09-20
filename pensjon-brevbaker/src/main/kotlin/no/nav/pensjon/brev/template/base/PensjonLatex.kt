@@ -1,7 +1,9 @@
 package no.nav.pensjon.brev.template.base
 
+import no.nav.pensjon.brev.api.dto.Mottaker
+import no.nav.pensjon.brev.api.dto.NAVEnhet
+import no.nav.pensjon.brev.api.dto.SignerendeSaksbehandlere
 import no.nav.pensjon.brev.latex.LatexPrintWriter
-import no.nav.pensjon.brev.something.Fagdelen
 import no.nav.pensjon.brev.template.*
 import java.io.InputStream
 import java.io.PrintWriter
@@ -9,11 +11,6 @@ import java.time.LocalDate
 
 
 object PensjonLatex : BaseTemplate() {
-    override val parameters: Set<TemplateParameter> = setOf(
-        RequiredParameter(NorskIdentifikator),
-        RequiredParameter(SaksNr),
-        RequiredParameter(Felles)
-    )
     override val languageSettings: LanguageSettings = LanguageSettings.LatexCommands(
         "navnprefix" to newText(
             Language.Bokmal to "Navn:",
@@ -107,7 +104,7 @@ object PensjonLatex : BaseTemplate() {
         ),
     )
 
-    override fun render(letter: Letter): RenderedLetter =
+    override fun render(letter: Letter<*>): RenderedLetter =
         RenderedLatexLetter().apply {
             newFile("params.tex").use { masterTemplateParameters(letter, LatexPrintWriter(it)) }
             newFile("letter.tex").use { renderLetterV2(letter, LatexPrintWriter(it)) }
@@ -119,7 +116,7 @@ object PensjonLatex : BaseTemplate() {
             }
         }
 
-    private fun renderAttachment(letter: Letter, attachment: AttachmentTemplate<*>, printWriter: LatexPrintWriter) =
+    private fun renderAttachment(letter: Letter<*>, attachment: AttachmentTemplate<*, *>, printWriter: LatexPrintWriter) =
         with(printWriter) {
             printCmd("startvedlegg", attachment.title.text(letter.language))
             if (attachment.includeSakspart) {
@@ -129,7 +126,7 @@ object PensjonLatex : BaseTemplate() {
             printCmd("sluttvedlegg")
         }
 
-    private fun renderLetterV2(letter: Letter, printWriter: LatexPrintWriter): Unit =
+    private fun renderLetterV2(letter: Letter<*>, printWriter: LatexPrintWriter): Unit =
         with(printWriter) {
             println("""\documentclass[12pt]{pensjonsbrev_v2}""", escape = false)
             printCmd("begin", "document")
@@ -148,27 +145,24 @@ object PensjonLatex : BaseTemplate() {
             printCmd("end", "document")
         }
 
-    private fun masterTemplateParameters(letter: Letter, printWriter: LatexPrintWriter) {
+    private fun masterTemplateParameters(letter: Letter<*>, printWriter: LatexPrintWriter) {
         languageSettings.writeLanguageSettings(letter.language, printWriter.printWriter)
 
         with(printWriter) {
-            printNewCmd("feltfoedselsnummer", letter.requiredArg(NorskIdentifikator).toString())
-            printNewCmd("feltsaksnummer", letter.requiredArg(SaksNr).toString())
+            printNewCmd("feltfoedselsnummer", letter.felles.mottaker.foedselsnummer)
+            printNewCmd("feltsaksnummer", letter.felles.saksnummer)
         }
         vedleggCommand(letter, printWriter)
 
-        with(letter.requiredArg(Felles)) {
+        with(letter.felles) {
             mottakerCommands(mottaker, printWriter)
-            returAdresseCommands(returAdresse, printWriter)
+            navEnhetCommands(avsenderEnhet, printWriter)
             datoCommand(dokumentDato, letter.language, printWriter)
             saksbehandlerCommands(signerendeSaksbehandlere, printWriter)
         }
     }
 
-    private fun saksbehandlerCommands(
-        saksbehandlere: Fagdelen.SignerendeSaksbehandlere?,
-        printWriter: LatexPrintWriter
-    ) {
+    private fun saksbehandlerCommands(saksbehandlere: SignerendeSaksbehandlere?, printWriter: LatexPrintWriter) {
         if (saksbehandlere != null) {
             printWriter.printNewCmd("closingbehandlet", """\closingsaksbehandlet""", escape = false)
             printWriter.printNewCmd("feltclosingsaksbehandlerfirst", saksbehandlere.saksbehandler)
@@ -182,27 +176,27 @@ object PensjonLatex : BaseTemplate() {
         printWriter.printNewCmd("feltdato", dato.format(dateFormatter(language)))
     }
 
-    private fun mottakerCommands(mottaker: Fagdelen.Mottaker, printWriter: LatexPrintWriter) =
+    private fun mottakerCommands(mottaker: Mottaker, printWriter: LatexPrintWriter) =
         with(mottaker) {
             printWriter.printNewCmd("feltfornavnmottaker", fornavn)
             printWriter.printNewCmd("feltetternavnmottaker", etternavn)
-            printWriter.printNewCmd("feltgatenavnmottaker", gatenavn)
-            printWriter.printNewCmd("felthusnummermottaker", husnummer)
-            printWriter.printNewCmd("feltpostnummermottaker", postnummer)
-            printWriter.printNewCmd("feltpoststedmottaker", poststed)
+            printWriter.printNewCmd("feltmottakeradresselinjeen", adresse.adresselinje1)
+            //TODO: fiks null-case her
+            printWriter.printNewCmd("feltpostnummermottaker", adresse.postnummer ?: "")
+            printWriter.printNewCmd("feltpoststedmottaker", adresse.poststed ?: "")
         }
 
 
-    private fun returAdresseCommands(returAdresse: Fagdelen.ReturAdresse, printWriter: LatexPrintWriter) =
-        with(returAdresse) {
-            printWriter.printNewCmd("feltnavenhet", navEnhetsNavn)
+    private fun navEnhetCommands(navEnhet: NAVEnhet, printWriter: LatexPrintWriter) =
+        with(navEnhet.returAdresse) {
+            printWriter.printNewCmd("feltnavenhet", navEnhet.navn)
             printWriter.printNewCmd("feltreturadressepostnrsted", "$postNr $postSted")
             printWriter.printNewCmd("feltreturadresse", adresseLinje1)
             printWriter.printNewCmd("feltpostadressepostnrsted", "$postNr $postSted")
             printWriter.printNewCmd("feltpostadresse", adresseLinje1)
         }
 
-    private fun vedleggCommand(letter: Letter, printWriter: LatexPrintWriter): Unit {
+    private fun vedleggCommand(letter: Letter<*>, printWriter: LatexPrintWriter): Unit {
         val vedleggListe = letter.template.attachments.map { it.title.text(letter.language) }
             .joinToString("\n") { """\item $it""" }
 
@@ -215,10 +209,10 @@ object PensjonLatex : BaseTemplate() {
         )
     }
 
-    private fun contents(letter: Letter, printWriter: LatexPrintWriter) =
+    private fun contents(letter: Letter<*>, printWriter: LatexPrintWriter) =
         letter.template.outline.forEach { renderElement(letter, it, printWriter) }
 
-    private fun renderElement(letter: Letter, element: Element<*>, printWriter: LatexPrintWriter): Unit =
+    private fun renderElement(letter: Letter<*>, element: Element<*>, printWriter: LatexPrintWriter): Unit =
         when (element) {
             is Element.Title1 ->
                 with(printWriter) {
