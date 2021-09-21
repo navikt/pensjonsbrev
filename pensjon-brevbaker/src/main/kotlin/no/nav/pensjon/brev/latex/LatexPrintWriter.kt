@@ -33,6 +33,12 @@ class LatexPrintWriter(output: OutputStream) : Closeable {
         printWriter.println("""\newcommand{\$name}{${latexString(body, escape)}}""")
     }
 
+    fun printNewCmd(name: String, writeBody: (LatexPrintWriter) -> Unit) {
+        printWriter.print("""\newcommand{\$name}{""")
+        writeBody(this)
+        printWriter.println("}")
+    }
+
     override fun close() {
         printWriter.close()
     }

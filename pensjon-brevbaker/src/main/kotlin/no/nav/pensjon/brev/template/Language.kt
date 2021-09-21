@@ -7,21 +7,11 @@ import java.util.*
 //TODO: lag unit test som verifiserer at BaseLanguages inkluderer alle Language
 typealias BaseLanguages = LanguageCombination.Triple<Language.Bokmal, Language.Nynorsk, Language.English>
 
-abstract class LanguageSettings(val settings: Map<String, Element.Text.Literal<BaseLanguages>>) {
+class LanguageSettings(val settings: Map<String, List<Element<BaseLanguages>>>) {
 
-    abstract fun asWritableLanguageSetting(key: String, value: String): String
+    fun writeLanguageSettings(writeSetting: (name: String, value: List<Element<BaseLanguages>>) -> Unit): Unit =
+        settings.entries.forEach { writeSetting(it.key, it.value) }
 
-    fun writeLanguageSettings(language: Language, printWriter: PrintWriter): Unit =
-        settings.entries.map { asWritableLanguageSetting(it.key, it.value.text(language)) }
-            .forEach { printWriter.println(it) }
-
-
-    class LatexCommands(vararg settings: Pair<String, Element.Text.Literal<BaseLanguages>>) :
-        LanguageSettings(settings.toMap()) {
-        override fun asWritableLanguageSetting(key: String, value: String): String {
-            return """\newcommand{\felt$key}{${value.latexEscape()}}"""
-        }
-    }
 }
 
 sealed class Language {

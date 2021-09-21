@@ -5,90 +5,143 @@ import no.nav.pensjon.brev.api.dto.NAVEnhet
 import no.nav.pensjon.brev.api.dto.SignerendeSaksbehandlere
 import no.nav.pensjon.brev.latex.LatexPrintWriter
 import no.nav.pensjon.brev.template.*
+import no.nav.pensjon.brev.template.dsl.languageSettings
 import java.io.InputStream
-import java.io.PrintWriter
 import java.time.LocalDate
 
 
 object PensjonLatex : BaseTemplate() {
-    override val languageSettings: LanguageSettings = LanguageSettings.LatexCommands(
-        "navnprefix" to newText(
-            Language.Bokmal to "Navn:",
-            Language.Nynorsk to "Namn:",
-            Language.English to "Name:",
-        ),
-        "saksnummerprefix" to newText(
-            Language.Bokmal to "NAVs saksnummer:",
-            Language.Nynorsk to "NAVs saksnummer:",
-            Language.English to "NAV’s case number:",
-        ),
-        "foedselsnummerprefix" to newText(
-            Language.Bokmal to "Fødselsnummer:",
-            Language.Nynorsk to "Fødselsnummer:",
-            Language.English to "National identity number:",
-        ),
-        "returadresseenhetprefix" to newText(
-            Language.Bokmal to "Returadresse:",
-            Language.Nynorsk to "Returadresse:",
-            Language.English to "Return address:",
-        ),
-        "datoprefix" to newText(
-            Language.Bokmal to "Dato:",
-            Language.Nynorsk to "Dato:",
-            Language.English to "Date:",
-        ),
-        "postadresseprefix" to newText(
-            Language.Bokmal to "Postadresse:",
-            Language.Nynorsk to "Postadresse:",
-            Language.English to "Mailing address:",
-        ),
-        "sideprefix" to newText(
-            Language.Bokmal to "Side",
-            Language.Nynorsk to "Side",
-            Language.English to "Page",
-        ),
-        "sideinfix" to newText(
-            Language.Bokmal to "av",
-            Language.Nynorsk to "av",
-            Language.English to "of",
-        ),
-        "navenhettlfprefix" to newText(
-            Language.Bokmal to "Telefon:",
-            Language.Nynorsk to "Telefon:",
-            Language.English to "Phone number:",
-        ),
-        "closingspoersmaal" to newText(
-            Language.Bokmal to "Har du spørsmål?",
-            Language.Nynorsk to "Har du spørsmål?",
-            Language.English to "Do you have questions?",
-        ),
-        //TODO: Endre slik at vi kan bruke telefonnummer og nettside fra letter.felles
-        "closingkontaktoss" to newText(
-            Language.Bokmal to "Kontakt oss gjerne på nav.no eller på telefon 55553334. Hvis du oppgir fødselsnummeret ditt når du tar kontakt med NAV, kan vi lettere gi deg rask og god hjelp.",
-            Language.Nynorsk to "Kontakt oss gjerne på nav.no eller på telefon 55553334. Dersom du gir opp fødselsnummeret ditt når du kontaktar NAV, kan vi lettare gi deg rask og god hjelp.",
-            Language.English to "You will find further information at nav.no. You can also contact us by phone 55553334",
-        ),
-        "closinggreeting" to newText(
-            Language.Bokmal to "Med vennlig hilsen",
-            Language.Nynorsk to "Med vennleg helsing",
-            Language.English to "Yours sincerely",
-        ),
-        "closingsaksbehandlersuffix" to newText(
-            Language.Bokmal to "saksbehandler",
-            Language.Nynorsk to "saksbehandlar",
-            Language.English to "Executive Officer",
-        ),
-        "closingautomatisktext" to newText(
-            Language.Bokmal to "Brevet er produsert automatisk og derfor ikke underskrevet av saksbehandler.",
-            Language.Nynorsk to "Brevet er produsert automatisk og er difor ikkje underskrive av saksbehandler.",
-            Language.English to "This letter has been processed automatically and is therefore not signed by an assessor.",
-        ),
-        "closingvedleggprefix" to newText(
-            Language.Bokmal to "Vedlegg:",
-            Language.Nynorsk to "Vedlegg:",
-            Language.English to "Attachments:",
-        ),
-    )
+    override val languageSettings: LanguageSettings = languageSettings {
+        setting("navnprefix") {
+            text(
+                Language.Bokmal to "Navn:",
+                Language.Nynorsk to "Namn:",
+                Language.English to "Name:",
+            )
+        }
+
+        setting("saksnummerprefix") {
+            text(
+                Language.Bokmal to "NAVs saksnummer:",
+                Language.Nynorsk to "NAVs saksnummer:",
+                Language.English to "NAV’s case number:",
+            )
+        }
+
+        setting("foedselsnummerprefix") {
+            text(
+                Language.Bokmal to "Fødselsnummer:",
+                Language.Nynorsk to "Fødselsnummer:",
+                Language.English to "National identity number:",
+                )
+        }
+
+        setting("returadresseenhetprefix") {
+            text(
+                Language.Bokmal to "Returadresse:",
+                Language.Nynorsk to "Returadresse:",
+                Language.English to "Return address:",
+                )
+        }
+
+        setting("datoprefix") {
+            text(
+                Language.Bokmal to "Dato:",
+                Language.Nynorsk to "Dato:",
+                Language.English to "Date:",
+                )
+        }
+
+        setting("postadresseprefix") {
+            text(
+                Language.Bokmal to "Postadresse:",
+                Language.Nynorsk to "Postadresse:",
+                Language.English to "Mailing address:",
+                )
+        }
+
+        setting("sideprefix") {
+            text(
+                Language.Bokmal to "Side",
+                Language.Nynorsk to "Side",
+                Language.English to "Page",
+                )
+        }
+
+        setting("sideinfix") {
+            text(
+                Language.Bokmal to "av",
+                Language.Nynorsk to "av",
+                Language.English to "of",
+                )
+        }
+
+        setting("navenhettlfprefix") {
+            text(
+                Language.Bokmal to "Telefon:",
+                Language.Nynorsk to "Telefon:",
+                Language.English to "Phone number:",
+                )
+        }
+
+        setting("closingspoersmaal") {
+            text(
+                Language.Bokmal to "Har du spørsmål?",
+                Language.Nynorsk to "Har du spørsmål?",
+                Language.English to "Do you have questions?",
+            )
+        }
+
+        setting("closingkontaktoss") {
+            text(
+                Language.Bokmal to "Kontakt oss gjerne på ",
+                Language.Nynorsk to "Kontakt oss gjerne på ",
+                Language.English to "You will find further information at ",
+            )
+            selectFelles { avsenderEnhet.nettside }
+            text(
+                Language.Bokmal to " eller på telefon ",
+                Language.Nynorsk to " eller på telefon ",
+                Language.English to ". You can also contact us by phone ",
+            )
+            selectFelles { avsenderEnhet.telefonnummer }
+            text(
+                Language.Bokmal to ". Hvis du oppgir fødselsnummeret ditt når du tar kontakt med NAV, kan vi lettere gi deg rask og god hjelp.",
+                Language.Nynorsk to ". Dersom du gir opp fødselsnummeret ditt når du kontaktar NAV, kan vi lettare gi deg rask og god hjelp.",
+                Language.English to ".",
+            )
+        }
+
+        setting("closinggreeting") {
+            newText(
+                Language.Bokmal to "Med vennlig hilsen",
+                Language.Nynorsk to "Med vennleg helsing",
+                Language.English to "Yours sincerely",
+            )
+        }
+
+        setting("closingsaksbehandlersuffix") {
+            newText(
+                Language.Bokmal to "saksbehandler",
+                Language.Nynorsk to "saksbehandlar",
+                Language.English to "Executive Officer",
+            )
+        }
+        setting("closingautomatisktext") {
+            newText(
+                Language.Bokmal to "Brevet er produsert automatisk og derfor ikke underskrevet av saksbehandler.",
+                Language.Nynorsk to "Brevet er produsert automatisk og er difor ikkje underskrive av saksbehandler.",
+                Language.English to "This letter has been processed automatically and is therefore not signed by an assessor.",
+            )
+        }
+        setting("closingvedleggprefix") {
+            newText(
+                Language.Bokmal to "Vedlegg:",
+                Language.Nynorsk to "Vedlegg:",
+                Language.English to "Attachments:",
+            )
+        }
+    }
 
     override fun render(letter: Letter<*>): RenderedLetter =
         RenderedLatexLetter().apply {
@@ -102,7 +155,11 @@ object PensjonLatex : BaseTemplate() {
             }
         }
 
-    private fun renderAttachment(letter: Letter<*>, attachment: AttachmentTemplate<*, *>, printWriter: LatexPrintWriter) =
+    private fun renderAttachment(
+        letter: Letter<*>,
+        attachment: AttachmentTemplate<*, *>,
+        printWriter: LatexPrintWriter
+    ) =
         with(printWriter) {
             printCmd("startvedlegg", attachment.title.text(letter.language))
             if (attachment.includeSakspart) {
@@ -132,7 +189,11 @@ object PensjonLatex : BaseTemplate() {
         }
 
     private fun masterTemplateParameters(letter: Letter<*>, printWriter: LatexPrintWriter) {
-        languageSettings.writeLanguageSettings(letter.language, printWriter.printWriter)
+        languageSettings.writeLanguageSettings { settingName, settingValue ->
+            printWriter.printNewCmd("felt$settingName") { bodyWriter ->
+                settingValue.forEach { renderElement(letter, it, bodyWriter) }
+            }
+        }
 
         with(printWriter) {
             printNewCmd("feltfoedselsnummer", letter.felles.mottaker.foedselsnummer)
