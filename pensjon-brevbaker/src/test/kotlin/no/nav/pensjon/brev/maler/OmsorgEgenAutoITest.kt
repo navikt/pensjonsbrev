@@ -1,16 +1,16 @@
-package no.nav.pensjon.brev
+package no.nav.pensjon.brev.maler
 
+import no.nav.pensjon.brev.Fixtures
+import no.nav.pensjon.brev.TestTags
 import no.nav.pensjon.brev.latex.LaTeXCompilerService
 import no.nav.pensjon.brev.latex.PdfCompilationInput
-import no.nav.pensjon.brev.maler.OmsorgEgenAuto
-import no.nav.pensjon.brev.maler.OmsorgEgenAutoDto
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.Letter
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 
 @Tag(TestTags.PDF_BYGGER)
-class OmsorgEgenAutoTest {
+class OmsorgEgenAutoITest {
 
     @Test
     fun test() {
