@@ -21,10 +21,10 @@ class DSLTest {
     fun `createTemplate can add title1 using text-builder`() {
         val doc = createTemplate(
             name = "test",
-            title = bokmalTittel,
             base = PensjonLatex,
             parameterType = Any::class,
-            lang = languages(Language.Bokmal)
+            lang = languages(Language.Bokmal),
+            title = bokmalTittel
         ) {
             outline {
                 title1 {
@@ -56,7 +56,7 @@ class DSLTest {
 
     @Test
     fun `createTemplate adds phrase title`() {
-        val doc = createTemplate("test", bokmalTittel, PensjonLatex, Any::class, languages(Language.Bokmal)) {
+        val doc = createTemplate("test", PensjonLatex, Any::class, languages(Language.Bokmal), bokmalTittel) {
             outline {
                 title1 { phrase(Fraser.pensjonInnvilget) }
             }
@@ -77,7 +77,7 @@ class DSLTest {
 
     @Test
     fun `createTemplate adds literal title`() {
-        val doc = createTemplate("test", bokmalTittel, PensjonLatex, Any::class, languages(Language.Bokmal)) {
+        val doc = createTemplate("test", PensjonLatex, Any::class, languages(Language.Bokmal), bokmalTittel) {
             outline {
                 title1 { text(Language.Bokmal to "jadda") }
             }
@@ -124,7 +124,7 @@ class DSLTest {
 
     @Test
     fun `createTemplate adds outline`() {
-        val doc = createTemplate("test", bokmalTittel, PensjonLatex, Any::class, languages(Language.Bokmal)) {
+        val doc = createTemplate("test", PensjonLatex, Any::class, languages(Language.Bokmal), bokmalTittel) {
             outline {
                 title1 { phrase(Fraser.pensjonInnvilget) }
                 paragraph {

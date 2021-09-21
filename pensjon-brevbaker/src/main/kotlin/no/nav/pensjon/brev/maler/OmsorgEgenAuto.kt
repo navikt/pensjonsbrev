@@ -12,10 +12,10 @@ object OmsorgEgenAuto : StaticTemplate {
 
     override val template: LetterTemplate<*, *> = createTemplate(
         name = "OMSORG_EGEN_AUTO",
-        title = newText(Language.Bokmal to "Du må sende oss egenerklæring om pleie- og omsorgsarbeid"),
         base = PensjonLatex,
         parameterType = OmsorgEgenAutoDto::class,
-        lang = languages(Language.Bokmal)
+        lang = languages(Language.Bokmal),
+        title = newText(Language.Bokmal to "Du må sende oss egenerklæring om pleie- og omsorgsarbeid")
     ) {
 
         outline {

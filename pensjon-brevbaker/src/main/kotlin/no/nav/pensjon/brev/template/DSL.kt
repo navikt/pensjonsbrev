@@ -7,10 +7,10 @@ import kotlin.reflect.KClass
 //TODO: endre rekkefølge slik at lang kommer før title - sånn at typefeil blir annotert på title og ikke lang.
 fun <Lang : LanguageCombination, ParameterType : Any> createTemplate(
     name: String,
-    title: Element.Text.Literal<Lang>,
     base: BaseTemplate,
     parameterType: KClass<ParameterType>,
     lang: Lang,
+    title: Element.Text.Literal<Lang>,
     init: LetterTemplateBuilder<Lang, ParameterType>.() -> Unit
 ): LetterTemplate<Lang, ParameterType> =
     with(LetterTemplateBuilder<Lang, ParameterType>().apply(init)) {

@@ -11,10 +11,10 @@ data class EksempelBrevDto(val pensjonInnvilget: Boolean, val datoInnvilget: Loc
 object EksempelBrev : StaticTemplate {
     override val template = createTemplate(
         name = "eksempelBrev",
-        title = newText(Language.Bokmal to "Eksempelbrev"),
         base = PensjonLatex,
+        parameterType = EksempelBrevDto::class,
         lang = languages(Language.Bokmal),
-        parameterType = EksempelBrevDto::class
+        title = newText(Language.Bokmal to "Eksempelbrev")
     ) {
 
         outline {
