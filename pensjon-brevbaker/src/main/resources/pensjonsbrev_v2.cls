@@ -199,6 +199,14 @@
     \end{checklist}
 }
 
+% attachmentList
+\newenvironment{attachmentList}{
+    \feltclosingvedleggprefix
+    \begin{itemize}
+} {
+    \end{itemize}
+}
+
 %----------------------------------------
 %               Footer
 %----------------------------------------
@@ -241,8 +249,8 @@
 %----------------------------------------
 \newcommand{\closingsaksbehandlet}{
     \vspace*{60pt}
-    \parbox[t]{0.45\linewidth}{\feltclosingsaksbehandlerfirst \\ \feltclosingsaksbehandlersuffix}
-    \parbox[t]{0.45\linewidth}{\feltclosingsaksbehandlersecond \\ \feltclosingsaksbehandlersuffix}
+    \parbox[t]{0.5\linewidth}{\feltclosingsaksbehandlerfirst \\ \feltclosingsaksbehandlersuffix}
+    \parbox[t]{0.5\linewidth}{\feltclosingsaksbehandlersecond \\ \feltclosingsaksbehandlersuffix}
     \par
     \vspace*{14pt}
     \feltnavenhet
@@ -270,7 +278,6 @@
         \closingbehandlet
         \par
         \vspace{50pt}
-        \feltclosingvedleggprefix
         \feltclosingvedlegg
     \end{minipage}
 }

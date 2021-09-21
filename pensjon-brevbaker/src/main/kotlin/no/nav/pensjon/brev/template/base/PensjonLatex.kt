@@ -11,7 +11,6 @@ import no.nav.pensjon.brev.template.dsl.text
 import java.io.InputStream
 import java.time.LocalDate
 
-
 object PensjonLatex : BaseTemplate() {
     override val languageSettings: LanguageSettings = languageSettings {
         setting("navnprefix") {
@@ -35,7 +34,7 @@ object PensjonLatex : BaseTemplate() {
                 Language.Bokmal to "Fødselsnummer:",
                 Language.Nynorsk to "Fødselsnummer:",
                 Language.English to "National identity number:",
-                )
+            )
         }
 
         setting("returadresseenhetprefix") {
@@ -43,7 +42,7 @@ object PensjonLatex : BaseTemplate() {
                 Language.Bokmal to "Returadresse:",
                 Language.Nynorsk to "Returadresse:",
                 Language.English to "Return address:",
-                )
+            )
         }
 
         setting("datoprefix") {
@@ -51,7 +50,7 @@ object PensjonLatex : BaseTemplate() {
                 Language.Bokmal to "Dato:",
                 Language.Nynorsk to "Dato:",
                 Language.English to "Date:",
-                )
+            )
         }
 
         setting("postadresseprefix") {
@@ -59,7 +58,7 @@ object PensjonLatex : BaseTemplate() {
                 Language.Bokmal to "Postadresse:",
                 Language.Nynorsk to "Postadresse:",
                 Language.English to "Mailing address:",
-                )
+            )
         }
 
         setting("sideprefix") {
@@ -67,7 +66,7 @@ object PensjonLatex : BaseTemplate() {
                 Language.Bokmal to "Side",
                 Language.Nynorsk to "Side",
                 Language.English to "Page",
-                )
+            )
         }
 
         setting("sideinfix") {
@@ -75,7 +74,7 @@ object PensjonLatex : BaseTemplate() {
                 Language.Bokmal to "av",
                 Language.Nynorsk to "av",
                 Language.English to "of",
-                )
+            )
         }
 
         setting("navenhettlfprefix") {
@@ -83,7 +82,7 @@ object PensjonLatex : BaseTemplate() {
                 Language.Bokmal to "Telefon:",
                 Language.Nynorsk to "Telefon:",
                 Language.English to "Phone number:",
-                )
+            )
         }
 
         setting("closingspoersmaal") {
@@ -115,7 +114,7 @@ object PensjonLatex : BaseTemplate() {
         }
 
         setting("closinggreeting") {
-            newText(
+            text(
                 Language.Bokmal to "Med vennlig hilsen",
                 Language.Nynorsk to "Med vennleg helsing",
                 Language.English to "Yours sincerely",
@@ -123,21 +122,21 @@ object PensjonLatex : BaseTemplate() {
         }
 
         setting("closingsaksbehandlersuffix") {
-            newText(
+            text(
                 Language.Bokmal to "saksbehandler",
                 Language.Nynorsk to "saksbehandlar",
                 Language.English to "Executive Officer",
             )
         }
         setting("closingautomatisktext") {
-            newText(
+            text(
                 Language.Bokmal to "Brevet er produsert automatisk og derfor ikke underskrevet av saksbehandler.",
                 Language.Nynorsk to "Brevet er produsert automatisk og er difor ikkje underskrive av saksbehandler.",
                 Language.English to "This letter has been processed automatically and is therefore not signed by an assessor.",
             )
         }
         setting("closingvedleggprefix") {
-            newText(
+            text(
                 Language.Bokmal to "Vedlegg:",
                 Language.Nynorsk to "Vedlegg:",
                 Language.English to "Attachments:",
@@ -248,16 +247,16 @@ object PensjonLatex : BaseTemplate() {
         }
 
     private fun vedleggCommand(letter: Letter<*>, printWriter: LatexPrintWriter): Unit {
-        val vedleggListe = letter.template.attachments.map { it.title.text(letter.language) }
-            .joinToString("\n") { """\item $it""" }
-
-        printWriter.printNewCmd(
-            "feltclosingvedlegg", escape = false, body = """
-                \begin{itemize}
-                    $vedleggListe
-                 \end{itemize}
-            """.trimIndent()
-        )
+        printWriter.printNewCmd("feltclosingvedlegg") { bodyWriter ->
+            if (letter.template.attachments.isNotEmpty()) {
+                bodyWriter.printCmd("begin", "attachmentList")
+                letter.template.attachments.forEach {
+                    bodyWriter.print("""\item """, escape = false)
+                    bodyWriter.println(it.title.text(letter.language))
+                }
+                bodyWriter.printCmd("end", "attachmentList")
+            }
+        }
     }
 
     private fun contents(letter: Letter<*>, printWriter: LatexPrintWriter) =

@@ -30,11 +30,3 @@ fun <Lang1 : Language, Lang2 : Language> languages(lang1: Lang1, lang2: Lang2) =
 
 fun <Lang1 : Language, Lang2 : Language, Lang3 : Language> languages(lang1: Lang1, lang2: Lang2, lang3: Lang3) =
     LanguageCombination.Triple(lang1, lang2, lang3)
-
-fun <Lang : LanguageCombination, ParameterType : Any> staticParagraph(
-    lang: Lang,
-    init: TextOnlyBuilder<Lang, ParameterType>.() -> Element.Text<Lang>
-): Element.Paragraph<Lang> =
-    TextOnlyBuilder<Lang, ParameterType>()
-        .apply { init() }
-        .let { Element.Paragraph(it.children) }

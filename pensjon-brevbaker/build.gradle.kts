@@ -41,9 +41,20 @@ tasks {
         kotlinOptions.jvmTarget = "15"
     }
 
+    val integrationTests = setOf("pdf-bygger")
+
     test {
-        useJUnitPlatform()
+        useJUnitPlatform {
+            excludeTags = integrationTests
+        }
     }
+
+    task<Test>("integrationTest") {
+        useJUnitPlatform {
+            includeTags = integrationTests
+        }
+    }
+
 }
 
 dependencies {

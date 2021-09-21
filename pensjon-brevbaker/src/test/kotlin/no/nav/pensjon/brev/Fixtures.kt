@@ -31,8 +31,8 @@ object Fixtures {
             ),
         ),
         signerendeSaksbehandlere = SignerendeSaksbehandlere(
-            saksbehandler = "saksbehandler saksbehandlerson",
-            attesterendeSaksbehandler = "saksbehandler attesterendeSaksbehandlerson",
+            saksbehandler = "Ole Saksbehandler",
+            attesterendeSaksbehandler = "Per Attesterende",
         ),
     )
 }
