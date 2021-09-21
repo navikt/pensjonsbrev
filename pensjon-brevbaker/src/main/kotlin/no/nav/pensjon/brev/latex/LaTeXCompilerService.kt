@@ -11,6 +11,7 @@ import java.lang.IllegalStateException
 data class PdfCompilationInput(val files: Map<String, String>)
 data class PDFCompilationOutput(val buildLog: String? = null, val pdf: /*base64*/String? = null)
 
+//TODO: Skriv tester
 class LaTeXCompilerService(private val pdfByggerUrl: String = "http://127.0.0.1:8081") {
     private val httpClient = HttpClient(CIO){
         install(JsonFeature){

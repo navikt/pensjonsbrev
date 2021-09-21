@@ -7,7 +7,6 @@ data class Felles(
     val saksnummer: String,
     val avsenderEnhet: NAVEnhet,
     val mottaker: Mottaker,
-    val spraakKode: String,
     val signerendeSaksbehandlere: SignerendeSaksbehandlere? = null
 )
 
@@ -39,4 +38,3 @@ data class NAVEnhet(
     val navn: String,
     val telefonnummer: String,
 )
-data class LetterResponse(val base64pdf: String)

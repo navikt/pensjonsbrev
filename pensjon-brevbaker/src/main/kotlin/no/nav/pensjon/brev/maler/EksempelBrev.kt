@@ -1,8 +1,6 @@
 package no.nav.pensjon.brev.maler
 
-import no.nav.pensjon.brev.something.Fraser
 import no.nav.pensjon.brev.template.*
-import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.base.PensjonLatex
 import no.nav.pensjon.brev.template.dsl.format
 import no.nav.pensjon.brev.template.dsl.str
@@ -21,8 +19,8 @@ object EksempelBrev : StaticTemplate {
 
         outline {
             title1 {
-                text(Language.Bokmal to "Heisann. ")
-                phrase(Fraser.Tittel.pensjonInnvilget)
+                text(Language.Bokmal to "Heisann, ")
+                text(Language.Bokmal to "Du har fått innvilget pensjon")
             }
             selectField(EksempelBrevDto::pensjonInnvilget) {
                 it.str()

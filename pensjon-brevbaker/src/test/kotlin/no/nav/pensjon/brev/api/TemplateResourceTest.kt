@@ -1,5 +1,8 @@
 package no.nav.pensjon.brev.api
 
+import com.natpryce.hamkrest.and
+import com.natpryce.hamkrest.assertion.assertThat
+import com.natpryce.hamkrest.hasElement
 import no.nav.pensjon.brev.maler.EksempelBrev
 import no.nav.pensjon.brev.maler.OmsorgEgenAuto
 import org.junit.jupiter.api.Assertions.*
@@ -19,11 +22,9 @@ class TemplateResourceTest {
 
     @Test
     fun `getTemplates returns list of template names`() {
-        val expected = listOf(
-            EksempelBrev, OmsorgEgenAuto
-        ).map { it.template.name }.toSet()
-
-        assertTrue(TemplateResource.getTemplates().containsAll(expected))
+        assertThat(TemplateResource.getTemplates(), hasElement(EksempelBrev.template.name) and hasElement(OmsorgEgenAuto.template.name))
     }
+
+    //TODO: Test at alle templates kan rendres (krever at alle templates har testdata)
 
 }

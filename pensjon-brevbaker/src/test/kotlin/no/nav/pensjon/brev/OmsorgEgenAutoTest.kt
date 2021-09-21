@@ -20,7 +20,7 @@ class OmsorgEgenAutoTest {
             OmsorgEgenAuto.template,
             OmsorgEgenAutoDto(arEgenerklaringOmsorgspoeng = 2020, arInnvilgetOmsorgspoeng = 2021),
             Language.Bokmal,
-            felles.copy(signerendeSaksbehandlere = null)
+            Fixtures.felles.copy(signerendeSaksbehandlere = null)
         ).render()
             .let { PdfCompilationInput(it.base64EncodedFiles()) }
             .also { File("test-params.tex").writeBytes(Base64.getDecoder().decode(it.files["letter.tex"])) }

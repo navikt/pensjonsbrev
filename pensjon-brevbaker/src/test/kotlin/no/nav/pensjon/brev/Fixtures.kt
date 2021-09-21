@@ -3,8 +3,9 @@ package no.nav.pensjon.brev
 import no.nav.pensjon.brev.api.dto.*
 import java.time.LocalDate
 
-var felles =
-    Felles(
+object Fixtures {
+
+    val felles = Felles(
         dokumentDato = LocalDate.of(2020, 1, 1),
         saksnummer = "1337123",
         avsenderEnhet = NAVEnhet(
@@ -29,9 +30,9 @@ var felles =
                 land = "Norge",
             ),
         ),
-        spraakKode = "TEST",
         signerendeSaksbehandlere = SignerendeSaksbehandlere(
             saksbehandler = "saksbehandler saksbehandlerson",
             attesterendeSaksbehandler = "saksbehandler attesterendeSaksbehandlerson",
         ),
     )
+}

@@ -144,4 +144,29 @@ class LatexPrintWriterTest {
         assertThat(printedString(), endsWith("\n"))
     }
 
+    @Test
+    fun `printNewCmd with bodybuilder prints new command`() {
+        val name = "mycmd"
+        printWriter.printNewCmd(name) {
+            it.println("heisann")
+        }
+        assertThat(printedString(), startsWith("""\newcommand{\$name}"""))
+    }
+
+    @Test
+    fun `printNewCmd with bodybuilder prints body in curly brackets`() {
+        printWriter.printNewCmd("mycmd") {
+            it.println("heisann")
+        }
+        assertThat(printedString().replace("\n", ""), endsWith("{heisann}"))
+    }
+
+    @Test
+    fun `printNewCmd with bodybuilder can have body that invokes other cmd`() {
+        val invoke = "otherCmd"
+        printWriter.printNewCmd("mycmd") {
+            it.printCmd(invoke)
+        }
+        assertThat(printedString().replace("\n", ""), endsWith("""{\$invoke}"""))
+    }
 }
