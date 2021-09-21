@@ -1,12 +1,14 @@
 package no.nav.pensjon.brev.something
 
-import com.fasterxml.jackson.databind.JsonNode
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.databind.node.ObjectNode
 import no.nav.pensjon.brev.api.LetterRequest
 import no.nav.pensjon.brev.api.LetterResource
+import no.nav.pensjon.brev.felles
 import no.nav.pensjon.brev.latex.LaTeXCompilerService
 import no.nav.pensjon.brev.latex.PdfCompilationInput
-import no.nav.pensjon.brev.maler.Alderspensjon
-import no.nav.pensjon.brev.template.*
+import no.nav.pensjon.brev.maler.OmsorgEgenAuto
+import no.nav.pensjon.brev.maler.OmsorgEgenAutoDto
 import no.nav.pensjon.brev.template.Language
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
@@ -16,29 +18,16 @@ import java.util.*
 @Disabled //pdf compilation integration test
 internal class PensjonLatexTest {
 
-    val returAdresse = Fagdelen.ReturAdresse("En NAV enhet", "En adresse 1", "1337", "Et poststed")
-    private val templateArgs: Map<String, JsonNode> = with(jacksonObjectMapper()) {
-        mapOf(
-            ReturAdresse.name to valueToTree(returAdresse),
-            SaksNr.name to valueToTree(1234),
-            PensjonInnvilget.name to valueToTree(true),
-            Mottaker.name to valueToTree(
-                Fagdelen.Mottaker(
-                    "FornavnMottaker",
-                    "EtternavnMottaker",
-                    "GatenavnMottaker",
-                    "21 A",
-                    "0123",
-                    "PoststedMottaker"
-                )
-            ),
-            NorskIdentifikator.name to valueToTree(13374212345),
-        )
-    }
+    val omsorgEgenAutoDto = ObjectMapper().convertValue(
+        OmsorgEgenAutoDto(
+            arEgenerklaringOmsorgspoeng = 2020,
+            arInnvilgetOmsorgspoeng = 2021,
+        ), ObjectNode::class.java
+    )
 
     @Test
     fun render() {
-        LetterRequest(Alderspensjon.template.name, templateArgs, Language.Bokmal)
+        LetterRequest(OmsorgEgenAuto.template.name, omsorgEgenAutoDto, felles, Language.Bokmal)
             .let { LetterResource.create(it) }
             .render()
             .let { PdfCompilationInput(it.base64EncodedFiles()) }

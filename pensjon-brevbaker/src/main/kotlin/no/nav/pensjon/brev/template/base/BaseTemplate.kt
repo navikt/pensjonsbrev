@@ -8,10 +8,9 @@ import no.nav.pensjon.brev.template.*
 sealed class BaseTemplate {
     val name: String = this::class.java.name
 
-    abstract val parameters: Set<TemplateParameter>
     abstract val languageSettings: LanguageSettings
 
-    abstract fun render(letter: Letter): RenderedLetter
+    abstract fun render(letter: Letter<*>): RenderedLetter
 
     companion object {
         @JsonCreator

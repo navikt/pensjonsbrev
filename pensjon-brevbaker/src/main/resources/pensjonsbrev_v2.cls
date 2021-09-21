@@ -114,7 +114,7 @@
 \newcommand{\brevparameter}{
     \arialFont \fontsize{12pt}{12pt} \selectfont
     \feltfornavnmottaker \space \feltetternavnmottaker \newline
-    \feltgatenavnmottaker \space \felthusnummermottaker  \newline
+    \feltmottakeradresselinjeen \newline
     \feltpostnummermottaker \space \feltpoststedmottaker}
 
 

@@ -1,8 +1,6 @@
 package no.nav.pensjon.brev.template
 
 import java.time.LocalDate
-import java.time.format.DateTimeFormatter
-import java.time.format.FormatStyle
 
 abstract class Operation {
     override fun equals(other: Any?): Boolean {
@@ -26,7 +24,10 @@ sealed class UnaryOperation<In, out Out> : Operation() {
     class ToString<T : Any> : UnaryOperation<T, String>() {
         override fun apply(input: T): String = input.toString()
     }
-    
+
+    data class Select<In, Out>(val select: In.() -> Out) : UnaryOperation<In, Out>() {
+        override fun apply(input: In): Out = input.select()
+    }
 }
 
 sealed class BinaryOperation<in In1, in In2, out Out> : Operation() {

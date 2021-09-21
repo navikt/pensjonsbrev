@@ -1,13 +1,10 @@
 package no.nav.pensjon.brev.template
 
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import no.nav.pensjon.brev.latex.LatexPrintWriter
 import java.io.OutputStream
 import java.io.PrintWriter
-import java.lang.IllegalArgumentException
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
-import java.util.*
 import kotlin.reflect.KClass
 
 fun jacksonObjectMapper() =
@@ -30,44 +27,6 @@ fun String.latexEscape(): String =
     // "_", "^", "~", "$", "%", "#", "&", "{", "}"
     latexEscapePattern.replace(this, """\\$1""")
 
-fun <Lang : LanguageCombination> LetterTemplate<Lang>.validateArgumentExpressions() {
-    val requiredParameters = parameters.filterIsInstance<RequiredParameter>().map { it.parameter }
-
-    val nonRequiredUsedAsRequired = outline.flatMap { it.findExpressions() }
-        .flatMap { it.requiredArguments() }
-        .map { it.parameter }
-        .toSet()
-        .filterNot { requiredParameters.contains(it) }
-
-    if (nonRequiredUsedAsRequired.isNotEmpty()) {
-        val names = nonRequiredUsedAsRequired.joinToString(", ") { it.name }
-        throw IllegalArgumentException("Template outline uses optional argument(s) as if it/they were required: $names")
-    }
-}
-
-internal fun Expression<*>.requiredArguments(): List<Expression.Argument<*, *>> =
-    when (this) {
-        is Expression.Argument<*, *> ->
-            listOf(this)
-
-        is Expression.BinaryInvoke<*, *, *> ->
-            first.requiredArguments() + second.requiredArguments()
-
-        is Expression.Literal ->
-            emptyList()
-
-        is Expression.OptionalArgument<*, *> ->
-            emptyList()
-
-        is Expression.Select<*, *> ->
-            value.requiredArguments()
-
-        is Expression.UnaryInvoke<*, *> ->
-            value.requiredArguments()
-
-        is Expression.LetterProperty ->
-            emptyList()
-    }
 
 internal fun <Lang : LanguageCombination> Element<Lang>.findExpressions(): List<Expression<*>> =
     when (this) {
