@@ -3,8 +3,7 @@ package no.nav.pensjon.brev.maler
 import no.nav.pensjon.brev.api.dto.Felles
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.base.PensjonLatex
-import no.nav.pensjon.brev.template.dsl.format
-import no.nav.pensjon.brev.template.dsl.str
+import no.nav.pensjon.brev.template.dsl.*
 
 data class OmsorgEgenAutoDto(val arEgenerklaringOmsorgspoeng: Number, val arInnvilgetOmsorgspoeng: Number)
 

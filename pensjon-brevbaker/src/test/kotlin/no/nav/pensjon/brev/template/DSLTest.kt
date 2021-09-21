@@ -1,6 +1,10 @@
 package no.nav.pensjon.brev.template
 
 import no.nav.pensjon.brev.template.base.PensjonLatex
+import no.nav.pensjon.brev.template.dsl.createTemplate
+import no.nav.pensjon.brev.template.dsl.languages
+import no.nav.pensjon.brev.template.dsl.newText
+import no.nav.pensjon.brev.template.dsl.text
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import kotlin.contracts.ExperimentalContracts

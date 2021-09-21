@@ -1,7 +1,6 @@
 package no.nav.pensjon.brev.template
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo
-import no.nav.pensjon.brev.api.dto.Felles
 import no.nav.pensjon.brev.template.base.BaseTemplate
 import kotlin.reflect.KClass
 

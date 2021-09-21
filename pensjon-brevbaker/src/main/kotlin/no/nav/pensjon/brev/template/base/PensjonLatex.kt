@@ -6,6 +6,8 @@ import no.nav.pensjon.brev.api.dto.SignerendeSaksbehandlere
 import no.nav.pensjon.brev.latex.LatexPrintWriter
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.dsl.languageSettings
+import no.nav.pensjon.brev.template.dsl.newText
+import no.nav.pensjon.brev.template.dsl.text
 import java.io.InputStream
 import java.time.LocalDate
 

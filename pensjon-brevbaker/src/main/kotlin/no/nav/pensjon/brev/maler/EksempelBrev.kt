@@ -2,8 +2,7 @@ package no.nav.pensjon.brev.maler
 
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.base.PensjonLatex
-import no.nav.pensjon.brev.template.dsl.format
-import no.nav.pensjon.brev.template.dsl.str
+import no.nav.pensjon.brev.template.dsl.*
 import java.time.LocalDate
 
 data class EksempelBrevDto(val pensjonInnvilget: Boolean, val datoInnvilget: LocalDate)
