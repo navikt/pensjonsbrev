@@ -1,6 +1,8 @@
 package no.nav.pensjon.brev.maler
 
 import no.nav.pensjon.brev.api.dto.Felles
+import no.nav.pensjon.brev.api.dto.NAVEnhet
+import no.nav.pensjon.brev.api.dto.ReturAdresse
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.base.PensjonLatex
 import no.nav.pensjon.brev.template.dsl.*
@@ -20,13 +22,13 @@ object OmsorgEgenAuto : StaticTemplate {
         outline {
             paragraph {
                 text(Language.Bokmal to "Vi trenger en bekreftelse på at du har utført pleie- og omsorgsarbeid i ")
-                selectField(OmsorgEgenAutoDto::arEgenerklaringOmsorgspoeng) { it.str() }
+                eval { argument().select(OmsorgEgenAutoDto::arEgenerklaringOmsorgspoeng).str() }
                 text(Language.Bokmal to ". Derfor må du fylle ut det vedlagte skjemaet og sende det til oss innen fire uker.")
             }
 
             paragraph {
                 text(Language.Bokmal to "Du har fått godkjent pensjonsopptjening for ")
-                selectField(OmsorgEgenAutoDto::arInnvilgetOmsorgspoeng) { it.str() }
+                eval { argument().select(OmsorgEgenAutoDto::arInnvilgetOmsorgspoeng).str() }
                 text(Language.Bokmal to ".")
             }
 
@@ -38,13 +40,13 @@ object OmsorgEgenAuto : StaticTemplate {
         ) {
             paragraph {
                 text(Language.Bokmal to "Jeg viser til brev av ")
-                selectFelles(Felles::dokumentDato) { it.format() }
+                eval { felles().select(Felles::dokumentDato).format() }
                 text(Language.Bokmal to ".")
             }
 
             paragraph {
                 text(Language.Bokmal to "I ")
-                selectField(OmsorgEgenAutoDto::arEgenerklaringOmsorgspoeng) { it.str() }
+                eval { argument().select(OmsorgEgenAutoDto::arEgenerklaringOmsorgspoeng).str() }
                 text(Language.Bokmal to " har jeg utført pleie og omsorgsarbeid på minst 22 timer i uken. (Inkludert opptil en halv time reisetid per besøk.)")
             }
 
@@ -73,15 +75,16 @@ object OmsorgEgenAuto : StaticTemplate {
                 text(Language.Bokmal to "Du må sende denne egenerklæringen til:")
                 newline()
 
-                selectFelles { avsenderEnhet.navn }
+                val avsender = felles().select(Felles::avsenderEnhet)
+                eval { avsender.select(NAVEnhet::navn) }
                 newline()
 
-                selectFelles { avsenderEnhet.returAdresse.adresseLinje1 }
+                val returAdresse = avsender.select(NAVEnhet::returAdresse)
+                eval { returAdresse.select(ReturAdresse::adresseLinje1) }
                 newline()
-
-                selectFelles { avsenderEnhet.returAdresse.postNr }
+                eval { returAdresse.select(ReturAdresse::postNr) }
                 text(Language.Bokmal to " ")
-                selectFelles { avsenderEnhet.returAdresse.postSted }
+                eval { returAdresse.select(ReturAdresse::postSted) }
             }
         }
 

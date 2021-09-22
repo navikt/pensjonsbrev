@@ -6,10 +6,7 @@ import no.nav.pensjon.brev.latex.LaTeXCompilerService
 import no.nav.pensjon.brev.latex.PdfCompilationInput
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.Letter
-import no.nav.pensjon.brev.template.dsl.createTemplate
-import no.nav.pensjon.brev.template.dsl.languages
-import no.nav.pensjon.brev.template.dsl.newText
-import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.dsl.*
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 import java.util.*
@@ -30,7 +27,7 @@ class PensjonLatexITest {
     ) {
         outline {
             text(Language.Bokmal to "Argumentet etNavn er: ")
-            selectField(TestTemplateDto::etNavn)
+            eval { argument().select(TestTemplateDto::etNavn) }
         }
     }
 

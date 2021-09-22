@@ -44,58 +44,40 @@ open class LetterTemplateBuilder<Lang : LanguageCombination, ParameterType : Any
 }
 
 @LetterTemplateMarker
-open class TextOnlyBuilder<Lang : LanguageCombination, ParameterType : Any>(val children: MutableList<Element<Lang>> = mutableListOf()) {
+open class TextOnlyBuilder<Lang : LanguageCombination, LetterData : Any>(val children: MutableList<Element<Lang>> = mutableListOf()) {
 
-    fun selectField(selector: ParameterType.() -> String) {
-        selectField(selector) { it }
-    }
+    fun argument(): Expression<LetterData> =
+        Expression.LetterProperty(Letter<LetterData>::argument)
 
-    fun <Out> selectField(selector: ParameterType.() -> Out, expressionInit: (Expression<Out>) -> Expression<String>) {
-        children.add(
-            Expression.UnaryInvoke(
-                value = Expression.LetterProperty(Letter<ParameterType>::argument),
-                operation = UnaryOperation.Select(selector)
-            ).let(expressionInit)
-                .let { Element.Text.Expression(it) }
-        )
-    }
+    fun felles(): Expression<Felles> =
+        Expression.LetterProperty(Letter<LetterData>::felles)
 
-    fun selectFelles(selector: Felles.() -> String) {
-        selectFelles(selector) { it }
-    }
-
-    fun <Out> selectFelles(selector: Felles.() -> Out, expressionInit: (Expression<Out>) -> Expression<String>) {
-        children.add(
-            Expression.UnaryInvoke(
-                value = Expression.LetterProperty(Letter<ParameterType>::felles),
-                operation = UnaryOperation.Select(selector)
-            ).let(expressionInit)
-                .let { Element.Text.Expression(it) }
-        )
-    }
-
-    fun eval(expression: Expression<String>): Unit {
+    fun eval(expression: Expression<String>) {
         children.add(Element.Text.Expression(expression))
     }
 
+    fun eval(expressionInit: () -> Expression<String>) {
+        children.add(Element.Text.Expression(expressionInit()))
+    }
+
     //TODO: Kan mest sannsynlig fjerne denne
-    fun phrase(phrase: Phrase<Lang>): Unit {
+    fun phrase(phrase: Phrase<Lang>) {
         children.add(Element.Text.Phrase(phrase))
     }
 
-    fun newline(): Unit {
+    fun newline() {
         children.add(Element.NewLine())
     }
 }
 
-fun <Lang1 : Language, ParameterType : Any> TextOnlyBuilder<LanguageCombination.Single<Lang1>, ParameterType>.text(lang1: Pair<Lang1, String>): Unit {
+fun <Lang1 : Language, ParameterType : Any> TextOnlyBuilder<LanguageCombination.Single<Lang1>, ParameterType>.text(lang1: Pair<Lang1, String>) {
     Element.Text.Literal.create(lang1).also { children.add(it) }
 }
 
 fun <Lang1 : Language, Lang2 : Language, ParameterType : Any> TextOnlyBuilder<LanguageCombination.Double<Lang1, Lang2>, ParameterType>.text(
     lang1: Pair<Lang1, String>,
     lang2: Pair<Lang2, String>,
-): Unit {
+) {
     Element.Text.Literal.create(lang1, lang2).also { children.add(it) }
 }
 
@@ -103,7 +85,7 @@ fun <Lang1 : Language, Lang2 : Language, Lang3 : Language, ParameterType : Any> 
     lang1: Pair<Lang1, String>,
     lang2: Pair<Lang2, String>,
     lang3: Pair<Lang3, String>,
-): Unit {
+) {
     Element.Text.Literal.create(lang1, lang2, lang3).also { children.add(it) }
 }
 
@@ -112,23 +94,19 @@ fun <Lang1 : Language, Lang2 : Language, Lang3 : Language, ParameterType : Any> 
 class ContainerElementBuilder<Lang : LanguageCombination, ParameterType : Any> :
     TextOnlyBuilder<Lang, ParameterType>() {
 
-    fun title1(init: TextOnlyBuilder<Lang, ParameterType>.() -> Unit): Unit {
+    fun title1(init: TextOnlyBuilder<Lang, ParameterType>.() -> Unit) {
         children.add(Element.Title1(TextOnlyBuilder<Lang, ParameterType>().apply(init).children))
     }
 
-    fun paragraph(init: TextOnlyBuilder<Lang, ParameterType>.() -> Unit): Unit {
+    fun paragraph(init: TextOnlyBuilder<Lang, ParameterType>.() -> Unit) {
         children.add(Element.Paragraph(TextOnlyBuilder<Lang, ParameterType>().apply(init).children))
     }
 
-    fun phraseParagraph(phrase: Element.Paragraph<Lang>): Unit {
-        children.add(phrase)
-    }
-
-    fun formText(size: Int, prompt: Element.Text<Lang>, vspace: Boolean = true): Unit {
+    fun formText(size: Int, prompt: Element.Text<Lang>, vspace: Boolean = true) {
         children.add(Element.Form.Text(prompt, size, vspace))
     }
 
-    fun formChoice(prompt: Element.Text<Lang>, vspace: Boolean = true, init: FormChoiceBuilder<Lang>.() -> Unit): Unit {
+    fun formChoice(prompt: Element.Text<Lang>, vspace: Boolean = true, init: FormChoiceBuilder<Lang>.() -> Unit) {
         FormChoiceBuilder<Lang>().apply(init)
             .let { Element.Form.MultipleChoice(prompt, it.choices, vspace) }
             .also { children.add(it) }
@@ -153,14 +131,14 @@ class FormChoiceBuilder<Lang : LanguageCombination>(
     val choices: MutableList<Element.Text<Lang>> = mutableListOf()
 )
 
-fun <Lang1 : Language> FormChoiceBuilder<LanguageCombination.Single<Lang1>>.choice(lang1: Pair<Lang1, String>): Unit {
+fun <Lang1 : Language> FormChoiceBuilder<LanguageCombination.Single<Lang1>>.choice(lang1: Pair<Lang1, String>) {
     Element.Text.Literal.create(lang1).also { choices.add(it) }
 }
 
 fun <Lang1 : Language, Lang2 : Language> FormChoiceBuilder<LanguageCombination.Double<Lang1, Lang2>>.choice(
     lang1: Pair<Lang1, String>,
     lang2: Pair<Lang2, String>,
-): Unit {
+) {
     Element.Text.Literal.create(lang1, lang2).also { choices.add(it) }
 }
 
@@ -168,7 +146,7 @@ fun <Lang1 : Language, Lang2 : Language, Lang3 : Language> FormChoiceBuilder<Lan
     lang1: Pair<Lang1, String>,
     lang2: Pair<Lang2, String>,
     lang3: Pair<Lang3, String>,
-): Unit {
+) {
     Element.Text.Literal.create(lang1, lang2, lang3).also { choices.add(it) }
 }
 

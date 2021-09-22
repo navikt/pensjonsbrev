@@ -17,10 +17,6 @@ abstract class Operation {
 sealed class UnaryOperation<In, out Out> : Operation() {
     abstract fun apply(input: In): Out
 
-    object NumberToString : UnaryOperation<Number, String>() {
-        override fun apply(input: Number): String = input.toString()
-    }
-
     class ToString<T : Any> : UnaryOperation<T, String>() {
         override fun apply(input: T): String = input.toString()
     }

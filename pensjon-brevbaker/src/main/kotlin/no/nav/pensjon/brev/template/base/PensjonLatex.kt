@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.template.base
 
+import no.nav.pensjon.brev.api.dto.Felles
 import no.nav.pensjon.brev.api.dto.Mottaker
 import no.nav.pensjon.brev.api.dto.NAVEnhet
 import no.nav.pensjon.brev.api.dto.SignerendeSaksbehandlere
@@ -7,6 +8,7 @@ import no.nav.pensjon.brev.latex.LatexPrintWriter
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.dsl.languageSettings
 import no.nav.pensjon.brev.template.dsl.newText
+import no.nav.pensjon.brev.template.dsl.select
 import no.nav.pensjon.brev.template.dsl.text
 import java.io.InputStream
 import java.time.LocalDate
@@ -99,13 +101,15 @@ object PensjonLatex : BaseTemplate() {
                 Language.Nynorsk to "Kontakt oss gjerne på ",
                 Language.English to "You will find further information at ",
             )
-            selectFelles { avsenderEnhet.nettside }
+            val avsender = felles().select(Felles::avsenderEnhet)
+
+            eval { avsender.select(NAVEnhet::nettside) }
             text(
                 Language.Bokmal to " eller på telefon ",
                 Language.Nynorsk to " eller på telefon ",
                 Language.English to ". You can also contact us by phone ",
             )
-            selectFelles { avsenderEnhet.telefonnummer }
+            eval { avsender.select(NAVEnhet::telefonnummer) }
             text(
                 Language.Bokmal to ". Hvis du oppgir fødselsnummeret ditt når du tar kontakt med NAV, kan vi lettere gi deg rask og god hjelp.",
                 Language.Nynorsk to ". Dersom du gir opp fødselsnummeret ditt når du kontaktar NAV, kan vi lettare gi deg rask og god hjelp.",

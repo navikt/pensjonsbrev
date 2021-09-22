@@ -1,16 +1,15 @@
-package no.nav.pensjon.brev.template
+package no.nav.pensjon.brev.template.dsl
 
+import com.natpryce.hamkrest.assertion.assertThat
+import com.natpryce.hamkrest.equalTo
+import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.base.PensjonLatex
-import no.nav.pensjon.brev.template.dsl.createTemplate
-import no.nav.pensjon.brev.template.dsl.languages
-import no.nav.pensjon.brev.template.dsl.newText
-import no.nav.pensjon.brev.template.dsl.text
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-import kotlin.contracts.ExperimentalContracts
 
-@ExperimentalContracts
-class DSLTest {
+class TemplateTest {
+
+    private data class SomeDto(val name: String, val pensjonInnvilget: Boolean)
 
     object Fraser {
         val pensjonInnvilget =
@@ -99,33 +98,6 @@ class DSLTest {
         )
     }
 
-//    @Test
-//    fun `createTemplate adds parameters`() {
-//        val doc = createTemplate("test", nynorskTittel, PensjonLatex,Object::class, languages(Language.Nynorsk)) {
-//            parameters {
-//                required { SaksNr }
-//                required { PensjonInnvilget }
-//                optional { KortNavn }
-//            }
-//        }
-//
-//        assertEquals(
-//            LetterTemplate(
-//                "test",
-//                nynorskTittel,
-//                PensjonLatex,
-//                setOf(
-//                    RequiredParameter(SaksNr),
-//                    RequiredParameter(PensjonInnvilget),
-//                    OptionalParameter(KortNavn)
-//                ),
-//                languages(Language.Nynorsk),
-//                emptyList()
-//            ),
-//            doc
-//        )
-//    }
-
     @Test
     fun `createTemplate adds outline`() {
         val doc = createTemplate("test", PensjonLatex, Any::class, languages(Language.Bokmal), bokmalTittel) {
@@ -148,36 +120,35 @@ class DSLTest {
         )
     }
 
-//    @Test
-//    fun `createTemplate adds showIf`() {
-//        val doc = createTemplate("test", nynorskTittel, PensjonLatex, Object::class ,languages(Language.Nynorsk)) {
-//            outline {
-//                showIf(argument(PensjonInnvilget)) {
-//                    text(Language.Nynorsk to "jadda")
-//                } orShow {
-//                    text(Language.Nynorsk to "neida")
-//                }
-//            }
-//        }
-//
-//        assertEquals(
-//            LetterTemplate(
-//                "test",
-//                nynorskTittel,
-//                PensjonLatex,
-//                setOf(RequiredParameter(PensjonInnvilget)),
-//                languages(Language.Nynorsk),
-//                listOf(
-//                    Element.Conditional(
-//                        Expression.Argument(PensjonInnvilget),
-//                        listOf(Element.Text.Literal.create(Language.Nynorsk to "jadda")),
-//                        listOf(Element.Text.Literal.create(Language.Nynorsk to "neida"))
-//                    )
-//                )
-//            ),
-//            doc
-//        )
-//    }
+    @Test
+    fun `createTemplate adds showIf`() {
+        val expected = LetterTemplate(
+            "test",
+            nynorskTittel,
+            PensjonLatex,
+            SomeDto::class,
+            languages(Language.Nynorsk),
+            listOf(
+                Element.Conditional(
+                    Expression.LetterProperty(Letter<SomeDto>::argument).select(SomeDto::pensjonInnvilget),
+                    listOf(newText(Language.Nynorsk to "jadda")),
+                    listOf(newText(Language.Nynorsk to "neida"))
+                )
+            )
+        )
+
+        val actual = createTemplate("test", PensjonLatex, SomeDto::class, languages(Language.Nynorsk), nynorskTittel) {
+            outline {
+                showIf(argument().select(SomeDto::pensjonInnvilget)) {
+                    text(Language.Nynorsk to "jadda")
+                } orShow {
+                    text(Language.Nynorsk to "neida")
+                }
+            }
+        }
+
+        assertThat(expected, equalTo(actual))
+    }
 
 //    @Test
 //    @Disabled

@@ -7,7 +7,7 @@ import java.util.*
 //TODO: lag unit test som verifiserer at BaseLanguages inkluderer alle Language
 typealias BaseLanguages = LanguageCombination.Triple<Language.Bokmal, Language.Nynorsk, Language.English>
 
-class LanguageSettings(val settings: Map<String, List<Element<BaseLanguages>>>) {
+data class LanguageSettings(val settings: Map<String, List<Element<BaseLanguages>>>) {
 
     fun writeLanguageSettings(writeSetting: (name: String, value: List<Element<BaseLanguages>>) -> Unit): Unit =
         settings.entries.forEach { writeSetting(it.key, it.value) }

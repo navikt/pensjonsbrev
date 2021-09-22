@@ -21,13 +21,9 @@ object EksempelBrev : StaticTemplate {
                 text(Language.Bokmal to "Heisann, ")
                 text(Language.Bokmal to "Du har fått innvilget pensjon")
             }
-            selectField(EksempelBrevDto::pensjonInnvilget) {
-                it.str()
-            }
+            eval { argument().select(EksempelBrevDto::pensjonInnvilget).str() }
 
-            selectField(EksempelBrevDto::datoInnvilget) {
-                it.format()
-            }
+            eval { argument().select(EksempelBrevDto::datoInnvilget).format() }
         }
     }
 }

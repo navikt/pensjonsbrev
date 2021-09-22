@@ -9,7 +9,7 @@ fun Expression<Any>.str(): Expression<String> =
 fun Expression<LocalDate>.format() =
     Expression.BinaryInvoke(this, Expression.LetterProperty(Letter<Any>::language), BinaryOperation.LocalizedDateFormat)
 
-fun <Data: Any, Field> Expression<Data>.select(selector: Data.() -> Field): Expression<Field> =
+fun <Data: Any, Field> Expression<Data>.select(selector: Data.() -> Field, discourageLambdas: Nothing? = null): Expression<Field> =
     Expression.UnaryInvoke(
         this,
         UnaryOperation.Select(selector)
