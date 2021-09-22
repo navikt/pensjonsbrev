@@ -36,6 +36,9 @@ internal fun <Lang : LanguageCombination> Element<Lang>.findExpressions(): List<
         is Element.Text.Expression ->
             listOf(expression)
 
+        is Element.Text.Expression.ByLanguage ->
+            expression.values.toList()
+
         is Element.Text.Literal ->
             emptyList()
 

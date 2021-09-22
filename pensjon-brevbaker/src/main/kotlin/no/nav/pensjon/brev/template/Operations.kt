@@ -51,6 +51,10 @@ sealed class BinaryOperation<in In1, in In2, out Out> : Operation() {
         override fun apply(first: In, second: In): Boolean = first <= second
     }
 
+    object Concat : BinaryOperation<String, String, String>() {
+        override fun apply(first: String, second: String): String = first + second
+    }
+
     object LocalizedDateFormat : BinaryOperation<LocalDate, Language, String>() {
         override fun apply(first: LocalDate, second: Language): String =
             first.format(dateFormatter(second))

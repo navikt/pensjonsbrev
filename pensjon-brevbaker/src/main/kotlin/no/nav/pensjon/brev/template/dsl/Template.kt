@@ -18,28 +18,34 @@ fun <Lang : LanguageCombination, ParameterType : Any> createTemplate(
     }
 
 @LetterTemplateMarker
-open class LetterTemplateBuilder<Lang : LanguageCombination, ParameterType : Any>(
+open class LetterTemplateBuilder<Lang : LanguageCombination, LetterData : Any>(
     val outline: MutableList<Element<Lang>> = mutableListOf(),
-    val attachments: MutableList<AttachmentTemplate<Lang, ParameterType>> = mutableListOf(),
+    val attachments: MutableList<AttachmentTemplate<Lang, LetterData>> = mutableListOf(),
 ) {
 
-    fun outline(init: ContainerElementBuilder<Lang, ParameterType>.() -> Unit): Unit {
-        outline.addAll(ContainerElementBuilder<Lang, ParameterType>().apply(init).children)
+    fun outline(init: ContainerElementBuilder<Lang, LetterData>.() -> Unit) {
+        outline.addAll(ContainerElementBuilder<Lang, LetterData>().apply(init).children)
     }
 
     fun attachment(
         title: Element.Text.Literal<Lang>,
         includeSakspart: Boolean = false,
-        outline: ContainerElementBuilder<Lang, ParameterType>.() -> Unit
-    ): Unit {
+        outline: ContainerElementBuilder<Lang, LetterData>.() -> Unit
+    ) {
         attachments.add(
             AttachmentTemplate(
                 title,
-                ContainerElementBuilder<Lang, ParameterType>().apply(outline).children,
+                ContainerElementBuilder<Lang, LetterData>().apply(outline).children,
                 includeSakspart
             )
         )
     }
+
+    fun argument(): Expression<LetterData> =
+        Expression.LetterProperty(Letter<LetterData>::argument)
+
+    fun felles(): Expression<Felles> =
+        Expression.LetterProperty(Letter<LetterData>::felles)
 
 }
 
@@ -52,11 +58,11 @@ open class TextOnlyBuilder<Lang : LanguageCombination, LetterData : Any>(val chi
     fun felles(): Expression<Felles> =
         Expression.LetterProperty(Letter<LetterData>::felles)
 
-    fun eval(expression: Expression<String>) {
+    fun eval(expression: StringExpression) {
         children.add(Element.Text.Expression(expression))
     }
 
-    fun eval(expressionInit: () -> Expression<String>) {
+    fun eval(expressionInit: () -> StringExpression) {
         children.add(Element.Text.Expression(expressionInit()))
     }
 
@@ -70,6 +76,9 @@ open class TextOnlyBuilder<Lang : LanguageCombination, LetterData : Any>(val chi
     }
 }
 
+// TextOnlyBuilder.text()
+//
+//
 fun <Lang1 : Language, ParameterType : Any> TextOnlyBuilder<LanguageCombination.Single<Lang1>, ParameterType>.text(lang1: Pair<Lang1, String>) {
     Element.Text.Literal.create(lang1).also { children.add(it) }
 }
@@ -89,6 +98,27 @@ fun <Lang1 : Language, Lang2 : Language, Lang3 : Language, ParameterType : Any> 
     Element.Text.Literal.create(lang1, lang2, lang3).also { children.add(it) }
 }
 
+// TextOnlyBuilder.textExpr()
+//
+//
+fun <Lang1 : Language, ParameterType : Any> TextOnlyBuilder<LanguageCombination.Single<Lang1>, ParameterType>.textExpr(lang1: Pair<Lang1, StringExpression>) {
+    Element.Text.Expression.ByLanguage.create(lang1).also { children.add(it) }
+}
+
+fun <Lang1 : Language, Lang2 : Language, ParameterType : Any> TextOnlyBuilder<LanguageCombination.Double<Lang1, Lang2>, ParameterType>.textExpr(
+    lang1: Pair<Lang1, StringExpression>,
+    lang2: Pair<Lang2, StringExpression>,
+) {
+    Element.Text.Expression.ByLanguage.create(lang1, lang2).also { children.add(it) }
+}
+
+fun <Lang1 : Language, Lang2 : Language, Lang3 : Language, ParameterType : Any> TextOnlyBuilder<LanguageCombination.Triple<Lang1, Lang2, Lang3>, ParameterType>.textExpr(
+    lang1: Pair<Lang1, StringExpression>,
+    lang2: Pair<Lang2, StringExpression>,
+    lang3: Pair<Lang3, StringExpression>,
+) {
+    Element.Text.Expression.ByLanguage.create(lang1, lang2, lang3).also { children.add(it) }
+}
 
 @LetterTemplateMarker
 class ContainerElementBuilder<Lang : LanguageCombination, ParameterType : Any> :

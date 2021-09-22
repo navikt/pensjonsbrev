@@ -19,17 +19,25 @@ object OmsorgEgenAuto : StaticTemplate {
         title = newText(Language.Bokmal to "Du må sende oss egenerklæring om pleie- og omsorgsarbeid")
     ) {
 
+        val arEgenerklaring = argument().select(OmsorgEgenAutoDto::arEgenerklaringOmsorgspoeng).str()
+
         outline {
             paragraph {
-                text(Language.Bokmal to "Vi trenger en bekreftelse på at du har utført pleie- og omsorgsarbeid i ")
-                eval { argument().select(OmsorgEgenAutoDto::arEgenerklaringOmsorgspoeng).str() }
-                text(Language.Bokmal to ". Derfor må du fylle ut det vedlagte skjemaet og sende det til oss innen fire uker.")
+                textExpr(
+                    Language.Bokmal to
+                            "Vi trenger en bekreftelse på at du har utført pleie- og omsorgsarbeid i ".expr()
+                            + arEgenerklaring
+                            + ". Derfor må du fylle ut det vedlagte skjemaet og sende det til oss innen fire uker."
+                )
             }
 
             paragraph {
-                text(Language.Bokmal to "Du har fått godkjent pensjonsopptjening for ")
-                eval { argument().select(OmsorgEgenAutoDto::arInnvilgetOmsorgspoeng).str() }
-                text(Language.Bokmal to ".")
+                textExpr(
+                    Language.Bokmal to
+                            "Du har fått godkjent pensjonsopptjening for ".expr()
+                            + argument().select(OmsorgEgenAutoDto::arInnvilgetOmsorgspoeng).str()
+                            + "."
+                )
             }
 
         }
@@ -39,15 +47,17 @@ object OmsorgEgenAuto : StaticTemplate {
             includeSakspart = true,
         ) {
             paragraph {
-                text(Language.Bokmal to "Jeg viser til brev av ")
-                eval { felles().select(Felles::dokumentDato).format() }
-                text(Language.Bokmal to ".")
+                val dokDato = felles().select(Felles::dokumentDato).format()
+                textExpr(
+                    Language.Bokmal to "Jeg viser til brev av ".expr() + dokDato + "."
+                )
             }
 
             paragraph {
-                text(Language.Bokmal to "I ")
-                eval { argument().select(OmsorgEgenAutoDto::arEgenerklaringOmsorgspoeng).str() }
-                text(Language.Bokmal to " har jeg utført pleie og omsorgsarbeid på minst 22 timer i uken. (Inkludert opptil en halv time reisetid per besøk.)")
+                textExpr(
+                    Language.Bokmal to
+                            "I ".expr() + arEgenerklaring + " har jeg utført pleie og omsorgsarbeid på minst 22 timer i uken. (Inkludert opptil en halv time reisetid per besøk.)"
+                )
             }
 
             formText(60, newText(Language.Bokmal to "Navn på pleietrengende:"))
@@ -57,10 +67,7 @@ object OmsorgEgenAuto : StaticTemplate {
                 choice(Language.Bokmal to "under seks måneder")
             }
 
-            formText(
-                size = 0,
-                prompt = newText(Language.Bokmal to "Hvis omsorgsforholdet har opphørt i løpet av året:")
-            )
+            formText(size = 0, prompt = newText(Language.Bokmal to "Hvis omsorgsforholdet har opphørt i løpet av året:"))
             formText(size = 25, vspace = false, prompt = newText(Language.Bokmal to "Oppgi dato for opphøret:"))
             formText(size = 55, vspace = false, prompt = newText(Language.Bokmal to "Oppgi årsaken til opphøret:"))
 
@@ -82,9 +89,9 @@ object OmsorgEgenAuto : StaticTemplate {
                 val returAdresse = avsender.select(NAVEnhet::returAdresse)
                 eval { returAdresse.select(ReturAdresse::adresseLinje1) }
                 newline()
-                eval { returAdresse.select(ReturAdresse::postNr) }
-                text(Language.Bokmal to " ")
-                eval { returAdresse.select(ReturAdresse::postSted) }
+                textExpr(
+                    Language.Bokmal to returAdresse.select(ReturAdresse::postNr) + " " + returAdresse.select(ReturAdresse::postSted)
+                )
             }
         }
 

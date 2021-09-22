@@ -6,10 +6,7 @@ import no.nav.pensjon.brev.api.dto.NAVEnhet
 import no.nav.pensjon.brev.api.dto.SignerendeSaksbehandlere
 import no.nav.pensjon.brev.latex.LatexPrintWriter
 import no.nav.pensjon.brev.template.*
-import no.nav.pensjon.brev.template.dsl.languageSettings
-import no.nav.pensjon.brev.template.dsl.newText
-import no.nav.pensjon.brev.template.dsl.select
-import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.dsl.*
 import java.io.InputStream
 import java.time.LocalDate
 
@@ -289,6 +286,9 @@ object PensjonLatex : BaseTemplate() {
 
             is Element.Text.Expression ->
                 printWriter.print(element.expression.eval(letter))
+
+            is Element.Text.Expression.ByLanguage ->
+                printWriter.print(element.expr(letter.language).eval(letter))
 
             is Element.Paragraph ->
                 printWriter.printCmd("paragraph") {

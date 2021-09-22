@@ -2,6 +2,8 @@ package no.nav.pensjon.brev.template.dsl
 
 import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.equalTo
+import no.nav.pensjon.brev.api.dto.Felles
+import no.nav.pensjon.brev.api.dto.Mottaker
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.base.PensjonLatex
 import org.junit.jupiter.api.Assertions.assertEquals

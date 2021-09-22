@@ -40,10 +40,11 @@ sealed class Expression<out Out> {
         override fun eval(letter: Letter<*>): Out = value
     }
 
-    data class LetterProperty<ParameterType : Any, out Out>(val select: Letter<ParameterType>.() -> Out) : Expression<Out>() {
+    data class LetterProperty<ParameterType : Any, out Out>(val select: Letter<ParameterType>.() -> Out) :
+        Expression<Out>() {
         override fun eval(letter: Letter<*>): Out {
             @Suppress("UNCHECKED_CAST")
-            return (letter as Letter<ParameterType> ).select()
+            return (letter as Letter<ParameterType>).select()
         }
     }
 
@@ -64,8 +65,9 @@ sealed class Expression<out Out> {
         }
     }
 
-
 }
+
+typealias StringExpression = Expression<String>
 
 @JsonTypeInfo(
     use = JsonTypeInfo.Id.NAME,
@@ -94,7 +96,7 @@ sealed class Element<Lang : LanguageCombination> {
         ) : Element.Form<Lang>()
     }
 
-    class NewLine<Lang : LanguageCombination>() : Element<Lang>()
+    class NewLine<Lang : LanguageCombination> : Element<Lang>()
 
     sealed class Text<Lang : LanguageCombination> : Element<Lang>() {
         data class Literal<Lang : LanguageCombination> private constructor(private val text: Map<Language, String>) :
@@ -124,8 +126,36 @@ sealed class Element<Lang : LanguageCombination> {
         data class Phrase<Lang : LanguageCombination>(val phrase: no.nav.pensjon.brev.template.Phrase<Lang>) :
             Text<Lang>()
 
-        data class Expression<Lang : LanguageCombination>(val expression: no.nav.pensjon.brev.template.Expression<String>) :
-            Text<Lang>()
+        data class Expression<Lang : LanguageCombination>(val expression: StringExpression) :
+            Text<Lang>() {
+
+            data class ByLanguage<Lang : LanguageCombination> private constructor(
+                val expression: Map<Language, StringExpression>
+            ) : Text<Lang>() {
+
+                fun expr(language: Language): StringExpression =
+                    expression[language]
+                        ?: throw IllegalArgumentException("Text.Expression.ByLanguage doesn't contain language: ${language::class.qualifiedName}")
+
+                companion object {
+                    fun <Lang1 : Language> create(lang1: Pair<Lang1, StringExpression>) =
+                        ByLanguage<LanguageCombination.Single<Lang1>>(mapOf(lang1))
+
+                    fun <Lang1 : Language, Lang2 : Language> create(
+                        lang1: Pair<Lang1, StringExpression>,
+                        lang2: Pair<Lang2, StringExpression>,
+                    ) = ByLanguage<LanguageCombination.Double<Lang1, Lang2>>(mapOf(lang1, lang2))
+
+                    fun <Lang1 : Language, Lang2 : Language, Lang3 : Language> create(
+                        lang1: Pair<Lang1, StringExpression>,
+                        lang2: Pair<Lang2, StringExpression>,
+                        lang3: Pair<Lang3, StringExpression>,
+                    ) = ByLanguage<LanguageCombination.Triple<Lang1, Lang2, Lang3>>(mapOf(lang1, lang2, lang3))
+                }
+            }
+        }
+
+
     }
 
     data class Conditional<Lang : LanguageCombination>(
