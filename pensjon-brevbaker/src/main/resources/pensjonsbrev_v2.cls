@@ -113,7 +113,6 @@
 \setplength{toaddrvpos}{36mm}
 \newcommand{\brevparameter}{
     \arialFont \fontsize{12pt}{12pt} \selectfont
-    \feltfornavnmottaker \space \feltetternavnmottaker \newline
     \feltmottakeradresselineone \newline
     \feltmottakeradresselinetwo \newline
     \feltmottakeradresselinethree \newline

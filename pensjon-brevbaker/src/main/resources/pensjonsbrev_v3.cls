@@ -70,7 +70,6 @@
     \begin{textblock}{150}(\marginleft,50)
         \arialFont \fontsize{12pt}{12pt} \selectfont
         \baselineskip=14pt
-        \feltfornavnmottaker \space \feltetternavnmottaker \newline
         \feltmottakeradresselineone \newline
         \feltmottakeradresselinetwo \newline
         \feltmottakeradresselinethree \newline
