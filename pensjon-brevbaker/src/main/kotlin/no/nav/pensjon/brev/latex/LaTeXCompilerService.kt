@@ -7,6 +7,7 @@ import io.ktor.client.request.*
 import io.ktor.http.*
 import kotlinx.coroutines.runBlocking
 import java.lang.IllegalStateException
+import java.lang.RuntimeException
 
 data class PdfCompilationInput(val files: Map<String, String>)
 data class PDFCompilationOutput(val buildLog: String? = null, val pdf: /*base64*/String? = null)
@@ -25,9 +26,13 @@ class LaTeXCompilerService(private val pdfByggerUrl: String = "http://127.0.0.1:
     fun producePDF(compilationInput: PdfCompilationInput): String {
         var response: PDFCompilationOutput
         runBlocking {
-            response = httpClient.post("$pdfByggerUrl/compile") { //TODO get url from config
-                contentType(ContentType.Application.Json)
-                body = compilationInput
+            try {
+                response = httpClient.post("$pdfByggerUrl/compile") { //TODO get url from config
+                    contentType(ContentType.Application.Json)
+                    body = compilationInput
+                }
+            } catch (e: Exception) {
+                throw RuntimeException(e)
             }
         }
         if(response.buildLog != null) {

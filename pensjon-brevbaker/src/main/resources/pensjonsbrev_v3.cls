@@ -71,8 +71,11 @@
         \arialFont \fontsize{12pt}{12pt} \selectfont
         \baselineskip=14pt
         \feltfornavnmottaker \space \feltetternavnmottaker \newline
-        \feltmottakeradresselinjeen  \newline
-        \feltpostnummermottaker \space \feltpoststedmottaker
+        \feltmottakeradresselineone \newline
+        \feltmottakeradresselinetwo \newline
+        \feltmottakeradresselinethree \newline
+        \feltmottakeradresselinefour \newline
+        \feltmottakeradresselinefive
     \end{textblock}
 }
 

@@ -98,7 +98,7 @@
 %----------------------------------------
 %                  Date
 %----------------------------------------
-\setplength{toaddrheight}{100pt}
+\setplength{toaddrheight}{150pt}
 \setplength{refwidth}{50mm}
 \KOMAoption{refline}{dateleft}
 \setplength{refhpos}{159mm} %distance from left
@@ -114,8 +114,12 @@
 \newcommand{\brevparameter}{
     \arialFont \fontsize{12pt}{12pt} \selectfont
     \feltfornavnmottaker \space \feltetternavnmottaker \newline
-    \feltmottakeradresselinjeen \newline
-    \feltpostnummermottaker \space \feltpoststedmottaker}
+    \feltmottakeradresselineone \newline
+    \feltmottakeradresselinetwo \newline
+    \feltmottakeradresselinethree \newline
+    \feltmottakeradresselinefour \newline
+    \feltmottakeradresselinefive
+}
 
 
 %----------------------------------------

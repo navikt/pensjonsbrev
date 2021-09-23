@@ -24,10 +24,8 @@ object Fixtures {
             foedselsnummer = "12345678910",
             kortnavn = "YASIR-MASK PERLAKI",
             adresse = Adresse(
-                adresselinje1 = "JERNBANETORGET 4 F",
-                postnummer = "1344",
-                poststed = "HASLUM",
-                land = "Norge",
+                linje1 = "JERNBANETORGET 4 F",
+                linje2 = "1344 HASLUM",
             ),
         ),
         signerendeSaksbehandlere = SignerendeSaksbehandlere(

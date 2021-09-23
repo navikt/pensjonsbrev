@@ -24,12 +24,11 @@ data class Mottaker(
 )
 
 data class Adresse(
-    val adresselinje1: String,
-    val adresselinje2: String? = null,
-    val adresselinje3: String? = null,
-    val postnummer: String?,
-    val poststed: String?,
-    val land: String
+    val linje1: String,
+    val linje2: String,
+    val linje3: String? = null,
+    val linje4: String? = null,
+    val linje5: String? = null,
 )
 
 data class NAVEnhet(

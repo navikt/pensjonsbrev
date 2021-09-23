@@ -7,6 +7,7 @@ import com.natpryce.hamkrest.equalTo
 import com.natpryce.hamkrest.startsWith
 import no.nav.pensjon.brev.template.latexEscape
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import java.io.ByteArrayOutputStream
 
@@ -158,7 +159,7 @@ class LatexPrintWriterTest {
         printWriter.printNewCmd("mycmd") {
             it.println("heisann")
         }
-        assertThat(printedString().replace("\n", ""), endsWith("{heisann}"))
+        assertThat(printedString().replace(System.lineSeparator(), ""), endsWith("{heisann}"))
     }
 
     @Test
@@ -167,6 +168,6 @@ class LatexPrintWriterTest {
         printWriter.printNewCmd("mycmd") {
             it.printCmd(invoke)
         }
-        assertThat(printedString().replace("\n", ""), endsWith("""{\$invoke}"""))
+        assertThat(printedString().replace(System.lineSeparator(), ""), endsWith("""{\$invoke}"""))
     }
 }

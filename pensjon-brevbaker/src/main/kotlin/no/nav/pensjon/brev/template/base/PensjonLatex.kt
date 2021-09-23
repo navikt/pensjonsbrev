@@ -229,10 +229,12 @@ object PensjonLatex : BaseTemplate() {
         with(mottaker) {
             printWriter.printNewCmd("feltfornavnmottaker", fornavn)
             printWriter.printNewCmd("feltetternavnmottaker", etternavn)
-            printWriter.printNewCmd("feltmottakeradresselinjeen", adresse.adresselinje1)
+            printWriter.printNewCmd("feltmottakeradresselineone", adresse.linje1)
+            printWriter.printNewCmd("feltmottakeradresselinetwo", adresse.linje2)
+            printWriter.printNewCmd("feltmottakeradresselinethree", adresse.linje3?:"")
+            printWriter.printNewCmd("feltmottakeradresselinefour", adresse.linje4?:"")
+            printWriter.printNewCmd("feltmottakeradresselinefive", adresse.linje5?:"")
             //TODO: fiks null-case her
-            printWriter.printNewCmd("feltpostnummermottaker", adresse.postnummer ?: "")
-            printWriter.printNewCmd("feltpoststedmottaker", adresse.poststed ?: "")
         }
 
 

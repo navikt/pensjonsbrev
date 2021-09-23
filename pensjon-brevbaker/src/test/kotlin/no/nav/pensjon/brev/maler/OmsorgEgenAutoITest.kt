@@ -25,7 +25,7 @@ class OmsorgEgenAutoITest {
             .let { PdfCompilationInput(it.base64EncodedFiles()) }
 //            .also { File("test-params.tex").writeBytes(Base64.getDecoder().decode(it.files["params.tex"])) }
             .let { LaTeXCompilerService().producePDF(it) }
-//            .also { File("test.pdf").writeBytes(Base64.getDecoder().decode(it)) }
+            .also { File("test.pdf").writeBytes(Base64.getDecoder().decode(it)) }
     }
 
 }
