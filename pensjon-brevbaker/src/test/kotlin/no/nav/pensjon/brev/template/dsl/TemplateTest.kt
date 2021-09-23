@@ -45,7 +45,7 @@ class TemplateTest {
                 name = "test",
                 title = bokmalTittel,
                 base = PensjonLatex,
-                parameterType = Object::class,
+                letterDataType = Object::class,
                 language = languages(Language.Bokmal),
                 outline = listOf(
                     Element.Title1(

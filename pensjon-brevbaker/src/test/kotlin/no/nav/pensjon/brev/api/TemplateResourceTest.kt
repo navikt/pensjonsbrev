@@ -5,8 +5,11 @@ import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.hasElement
 import no.nav.pensjon.brev.maler.EksempelBrev
 import no.nav.pensjon.brev.maler.OmsorgEgenAuto
+import no.nav.pensjon.brev.template.LetterTemplate
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
+import kotlin.reflect.KVisibility
+import kotlin.reflect.full.createInstance
 
 class TemplateResourceTest {
 
@@ -25,6 +28,53 @@ class TemplateResourceTest {
         assertThat(TemplateResource.getTemplates(), hasElement(EksempelBrev.template.name) and hasElement(OmsorgEgenAuto.template.name))
     }
 
-    //TODO: Test at alle templates kan rendres (krever at alle templates har testdata)
+    @Test
+    fun `all names returned by getTemplates can be fetched with getTemplate`() {
+        val templateNames = TemplateResource.getTemplates().toSet()
+        val templates = templateNames
+            .map { TemplateResource.getTemplate(it) }
+            .filterNotNull()
+            .map { it.name }
+            .toSet()
 
+        assertEquals(templateNames, templates)
+    }
+
+    @Test
+    fun `all templates have letterDataType which are data class`() {
+        val templatesWithoutDataClass: Map<String, LetterTemplate<*, *>> = TemplateResource.getTemplates()
+            .associateWith { TemplateResource.getTemplate(it)!! }
+            .filterValues { !it.letterDataType.isData }
+
+        assertEquals(emptySet<String>(), templatesWithoutDataClass.keys)
+    }
+
+    @Test
+    fun `all templates have letterDataType with no-arg constructor`() {
+        val templatesWithoutNoArgConstructor = TemplateResource.getTemplates()
+            .associateWith { TemplateResource.getTemplate(it)!! }
+            .mapValues {
+                try {
+                    it.value.letterDataType.createInstance()
+                } catch (e: Exception) {
+                    null
+                }
+            }.filterValues { it == null }
+            .keys
+
+        assertEquals(emptySet<String>(), templatesWithoutNoArgConstructor, "letterDataType classes should have an internal no-arg constructor with valid test data.")
+    }
+
+    @Test
+    fun `all template letterDataType no-arg constructor must be internal`() {
+        val templatesWithNonInternalNoArg = TemplateResource.getTemplates()
+            .associateWith { TemplateResource.getTemplate(it)!! }
+            .mapValues {
+                it.value.letterDataType.constructors
+                    .filter { constr -> constr.parameters.isEmpty() }
+                    .any { noArg -> noArg.visibility != KVisibility.INTERNAL}
+            }.filterValues { it }
+
+        assertEquals(emptySet<String>(), templatesWithNonInternalNoArg.keys, "letterDataType classes should have no-arg constructors that are internal")
+    }
 }
