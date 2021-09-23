@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.template
 
 import com.fasterxml.jackson.annotation.JsonCreator
 
+// TODO: We might not need Phrase, unless we need to store them in a database
 sealed class Phrase<Lang : LanguageCombination> {
     val type: String = this::class.java.name
 

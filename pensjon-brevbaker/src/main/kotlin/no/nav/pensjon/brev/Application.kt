@@ -22,6 +22,7 @@ import no.nav.pensjon.brev.api.LetterResource
 import no.nav.pensjon.brev.api.TemplateResource
 import no.nav.pensjon.brev.latex.LaTeXCompilerService
 import no.nav.pensjon.brev.latex.PdfCompilationInput
+import no.nav.pensjon.brev.template.brevbakerConfig
 import java.io.Writer
 import java.util.*
 
@@ -35,8 +36,7 @@ fun Application.module() {
 
     install(ContentNegotiation) {
         jackson {
-            enable(SerializationFeature.INDENT_OUTPUT)
-            registerModule(JavaTimeModule())
+            brevbakerConfig()
         }
     }
 

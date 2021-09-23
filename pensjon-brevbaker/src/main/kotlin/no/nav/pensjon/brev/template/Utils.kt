@@ -1,5 +1,7 @@
 package no.nav.pensjon.brev.template
 
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import java.io.OutputStream
 import java.io.PrintWriter
@@ -7,10 +9,12 @@ import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 import kotlin.reflect.KClass
 
-fun jacksonObjectMapper() =
-    com.fasterxml.jackson.module.kotlin.jacksonObjectMapper().apply {
-        registerModule(JavaTimeModule())
-    }
+fun ObjectMapper.brevbakerConfig() {
+    registerModule(JavaTimeModule())
+    enable(SerializationFeature.INDENT_OUTPUT)
+}
+
+fun jacksonObjectMapper() = com.fasterxml.jackson.module.kotlin.jacksonObjectMapper().apply { brevbakerConfig() }
 
 fun <T : Any> KClass<out T>.findSealedObjects(): Set<T> =
     if (isSealed) {

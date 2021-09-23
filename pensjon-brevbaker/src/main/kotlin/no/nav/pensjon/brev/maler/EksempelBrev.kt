@@ -11,7 +11,7 @@ object EksempelBrev : StaticTemplate {
     override val template = createTemplate(
         name = "eksempelBrev",
         base = PensjonLatex,
-        parameterType = EksempelBrevDto::class,
+        letterDataType = EksempelBrevDto::class,
         lang = languages(Language.Bokmal),
         title = newText(Language.Bokmal to "Eksempelbrev")
     ) {

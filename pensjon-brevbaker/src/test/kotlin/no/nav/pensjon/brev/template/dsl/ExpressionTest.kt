@@ -45,4 +45,28 @@ class ExpressionTest {
 
         assertEquals(expected, expr.format())
     }
+
+    @Test
+    fun `expr wraps value in ExpressionLiteral`() {
+        val value = "hei"
+        assertEquals(Expression.Literal(value), value.expr())
+    }
+
+    @Test
+    fun `plus creates a concat expression of expression operands`() {
+        val op1 = "hei".expr()
+        val op2 = " du".expr()
+        val expected = Expression.BinaryInvoke(op1, op2, BinaryOperation.Concat)
+
+        assertEquals(expected, op1 + op2)
+    }
+
+    @Test
+    fun `plus creates a concat expression of expression plus string`() {
+        val op1 = "hei".expr()
+        val op2 = " du"
+        val expected = Expression.BinaryInvoke(op1, Expression.Literal(op2), BinaryOperation.Concat)
+
+        assertEquals(expected, op1 + op2)
+    }
 }

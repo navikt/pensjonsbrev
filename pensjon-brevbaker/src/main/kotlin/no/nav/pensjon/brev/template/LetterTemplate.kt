@@ -40,11 +40,11 @@ sealed class Expression<out Out> {
         override fun eval(letter: Letter<*>): Out = value
     }
 
-    data class LetterProperty<ParameterType : Any, out Out>(val select: Letter<ParameterType>.() -> Out) :
+    data class LetterProperty<ParameterType : Any, out Out>(val selector: Letter<ParameterType>.() -> Out) :
         Expression<Out>() {
         override fun eval(letter: Letter<*>): Out {
             @Suppress("UNCHECKED_CAST")
-            return (letter as Letter<ParameterType>).select()
+            return (letter as Letter<ParameterType>).selector()
         }
     }
 
