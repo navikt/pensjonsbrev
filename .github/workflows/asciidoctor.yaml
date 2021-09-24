@@ -1,0 +1,27 @@
+on:
+  push:
+    branches:
+      - "main"
+    paths:
+      - "docs/**"
+      - ".github/workflows/asciidoc.yaml"
+jobs:
+  build_asciidoc:
+    name: "build asciidoc for github pages"
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+        working-directory: "docs"
+    steps:
+      - name: "Install asciidoctor"
+      run: apt-get install asciidoctor
+      - name: "Compile using asciidoctor"
+      run: "mkdir compile && find . -name '*.asciidoc' -exec cp {} compile \; && (cd compile && asciidoctor *.asciidoc")
+      - name: Deploy to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@3.2.1
+        with:
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+          FOLDER: "."
+          BRANCH: 'gh-pages'
+          COMMIT_MESSAGE: "[CI] Publisere dokumentasjon"
