@@ -1,6 +1,5 @@
 package no.nav.pensjon.brev.template
 
-import com.fasterxml.jackson.annotation.JsonTypeInfo
 import no.nav.pensjon.brev.template.base.BaseTemplate
 import kotlin.reflect.KClass
 
@@ -25,12 +24,6 @@ data class AttachmentTemplate<Lang : LanguageCombination, ParameterType : Any>(
     val includeSakspart: Boolean = false,
 )
 
-@JsonTypeInfo(
-    use = JsonTypeInfo.Id.NAME,
-    include = JsonTypeInfo.As.EXISTING_PROPERTY,
-    property = "schema",
-    visible = true,
-)
 sealed class Expression<out Out> {
     val schema: String = this::class.java.name.removePrefix(this::class.java.`package`.name + '.')
 
@@ -69,12 +62,6 @@ sealed class Expression<out Out> {
 
 typealias StringExpression = Expression<String>
 
-@JsonTypeInfo(
-    use = JsonTypeInfo.Id.NAME,
-    include = JsonTypeInfo.As.EXISTING_PROPERTY,
-    property = "schema",
-    visible = true,
-)
 sealed class Element<Lang : LanguageCombination> {
     val schema: String = this::class.java.name.removePrefix(this::class.java.`package`.name + '.')
 
