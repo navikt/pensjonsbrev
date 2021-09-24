@@ -15,7 +15,7 @@ jobs:
         working-directory: "docs"
     steps:
     - name: "Install asciidoctor"
-      run: npm install asciidoctor
+      run: "apt-get install asciidoctor"
     - name: "Compile using asciidoctor"
       run: "./compileToHtml.sh"
     - name: "Upload generated site"
