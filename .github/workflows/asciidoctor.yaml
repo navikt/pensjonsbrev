@@ -7,17 +7,62 @@ on:
       - ".github/workflows/asciidoc.yaml"
 jobs:
   build_site:
-    name: "Build site with Antora"
+    name: "build asciidoc for github pages"
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+        working-directory: "docs"
     steps:
-      - name: Checkout repository
+    - name: "Install asciidoctor"
+      run: apt-get install asciidoctor
+    - name: "Compile using asciidoctor"
+      run: "./compileToHtml.sh"
+    - name: "Upload generated site"
+      uses: actions/upload-artifact@v1.0.0
+      with:
+        name: site
+        path: "${{ github.workspace }}/build/${{ env.SITE_DIR }}"
+
+    - name: Deploy to GitHub Pages
+      uses: JamesIves/github-pages-deploy-action@3.2.1
+      with:
+        GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+        FOLDER: "compile"
+        BRANCH: 'gh-pages'
+        COMMIT_MESSAGE: "[CI] Publisere dokumentasjon"
+  deploy_site:
+    runs-on: ubuntu-latest
+    needs: [ build_site ]
+    name: "Deploy to GitHub Pages"
+    steps:
+      - name: Checkout
         uses: actions/checkout@v2
-      - name: Run Antora
-        uses: kameshsampath/antora-site-action@v0.2.4
+      - name: Download generated site
+        uses: actions/download-artifact@v1
         with:
-          antora_playbook: antora-playbook.yml
-      - name: Publish to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
+          name: site
+          path: "${{ github.workspace }}/${{ env.SITE_DIR }}"
+      - name: Deploy to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@3.2.1
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: build/site
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+          FOLDER: "${{ env.SITE_DIR }}"
+          BRANCH: 'gh-pages'
+          COMMIT_MESSAGE: "[CI] Publisere dokumentasjon for ${{ github.sha }}"
+#jobs:
+#  build_site:
+#    name: "Build site with Antora"
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Checkout repository
+#        uses: actions/checkout@v2
+#      - name: Run Antora
+#        uses: kameshsampath/antora-site-action@v0.2.4
+#        with:
+#          antora_playbook: antora-playbook.yml
+#      - name: Publish to GitHub Pages
+#        uses: peaceiris/actions-gh-pages@v3
+#        with:
+#          github_token: ${{ secrets.GITHUB_TOKEN }}
+#          publish_dir: build/site
