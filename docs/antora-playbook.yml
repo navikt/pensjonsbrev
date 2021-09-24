@@ -1,0 +1,36 @@
+site:
+  title: Team pensjonsbrev
+  url: https://navikt.github.io/pensjonsbrev/
+  start_page: ROOT:index.adoc
+
+content:
+  sources:
+    - url: https://github.com/navikt/pensjonsbrev
+      start_path: docs/
+      branches: main
+
+asciidoc:
+  attributes:
+    toc-title: Innholdsfortegnelse
+    page-toctitle: Innhold
+    important-caption: Viktig
+    warning-caption: Advarsel
+    note-caption: NB!
+    table-caption: Tabell
+    figure-caption: Figur
+    sectnums: true
+    plantuml-server-url: http://www.plantuml.com/plantuml
+  extensions:
+    #- asciidoctor-plantuml
+    - asciidoctor-kroki
+    - '@djencks/asciidoctor-mathjax'
+
+ui:
+  bundle:
+    url: https://gitlab.com/antora/antora-ui-default/-/jobs/artifacts/master/raw/build/ui-bundle.zip?job=bundle-stable
+    snapshot: false
+  # Override default header, css
+  supplemental_files: supplemental_ui
+
+runtime:
+  cache_dir: ./.cache
