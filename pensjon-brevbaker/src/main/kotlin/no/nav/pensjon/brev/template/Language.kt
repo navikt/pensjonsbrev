@@ -1,7 +1,5 @@
 package no.nav.pensjon.brev.template
 
-import com.fasterxml.jackson.annotation.JsonCreator
-import java.io.PrintWriter
 import java.util.*
 
 typealias BaseLanguages = LanguageCombination.Triple<Language.Bokmal, Language.Nynorsk, Language.English>
@@ -26,16 +24,6 @@ sealed class Language {
             Nynorsk -> Locale.forLanguageTag("NN")
             English -> Locale.UK
         }
-
-    companion object {
-        @JsonCreator
-        @JvmStatic
-        fun creator(name: String?): Language? {
-            return Language::class.sealedSubclasses
-                .mapNotNull { it.objectInstance }
-                .firstOrNull { it.name == name }
-        }
-    }
 
     object Bokmal : Language()
     object Nynorsk : Language()
