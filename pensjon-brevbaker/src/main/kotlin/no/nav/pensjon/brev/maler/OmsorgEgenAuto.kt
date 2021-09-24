@@ -7,14 +7,16 @@ import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.base.PensjonLatex
 import no.nav.pensjon.brev.template.dsl.*
 
-data class OmsorgEgenAutoDto(val arEgenerklaringOmsorgspoeng: Number, val arInnvilgetOmsorgspoeng: Number)
+data class OmsorgEgenAutoDto(val arEgenerklaringOmsorgspoeng: Number, val arInnvilgetOmsorgspoeng: Number) {
+    internal constructor(): this(2020, 2021)
+}
 
 object OmsorgEgenAuto : StaticTemplate {
 
     override val template: LetterTemplate<*, *> = createTemplate(
         name = "OMSORG_EGEN_AUTO",
         base = PensjonLatex,
-        parameterType = OmsorgEgenAutoDto::class,
+        letterDataType = OmsorgEgenAutoDto::class,
         lang = languages(Language.Bokmal),
         title = newText(Language.Bokmal to "Du må sende oss egenerklæring om pleie- og omsorgsarbeid")
     ) {

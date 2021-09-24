@@ -30,7 +30,7 @@ object LetterResource {
 
     private fun parseArgument(letterRequest: LetterRequest, template: LetterTemplate<*, *>): Any =
         try {
-            objectMapper.treeToValue(letterRequest.letterData, template.parameterType.java)
+            objectMapper.treeToValue(letterRequest.letterData, template.letterDataType.java)
         } catch (e: JacksonException) {
             throw IllegalArgumentException("Could not parse letterData", e)
         }

@@ -2,16 +2,17 @@ package no.nav.pensjon.brev.template.dsl
 
 import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.equalTo
-import no.nav.pensjon.brev.api.dto.Felles
-import no.nav.pensjon.brev.api.dto.Mottaker
+import com.natpryce.hamkrest.isA
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.base.PensjonLatex
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
+typealias BokmalLang = LanguageCombination.Single<Language.Bokmal>
+
 class TemplateTest {
 
-    private data class SomeDto(val name: String, val pensjonInnvilget: Boolean)
+    private data class SomeDto(val name: String, val pensjonInnvilget: Boolean, val kortNavn: String? = null)
 
     object Fraser {
         val pensjonInnvilget =
@@ -23,11 +24,11 @@ class TemplateTest {
 
 
     @Test
-    fun `createTemplate can add title1 using text-builder`() {
+    fun `createTemplate can add outline with title1 using text-builder`() {
         val doc = createTemplate(
             name = "test",
             base = PensjonLatex,
-            parameterType = Any::class,
+            letterDataType = Any::class,
             lang = languages(Language.Bokmal),
             title = bokmalTittel
         ) {
@@ -44,7 +45,7 @@ class TemplateTest {
                 name = "test",
                 title = bokmalTittel,
                 base = PensjonLatex,
-                parameterType = Object::class,
+                letterDataType = Object::class,
                 language = languages(Language.Bokmal),
                 outline = listOf(
                     Element.Title1(
@@ -57,6 +58,66 @@ class TemplateTest {
             ),
             doc
         )
+    }
+
+    @Test
+    fun `createTemplate adds attachment`() {
+        val doc = createTemplate("test", PensjonLatex, SomeDto::class, languages(Language.Bokmal), bokmalTittel) {
+            attachment(bokmalTittel, false) {
+                text(Language.Bokmal to "hei")
+            }
+        }
+
+        assertEquals(
+            LetterTemplate(
+                "test",
+                bokmalTittel,
+                PensjonLatex,
+                SomeDto::class,
+                languages(Language.Bokmal),
+                emptyList(),
+                listOf(
+                    AttachmentTemplate(
+                        bokmalTittel,
+                        listOf(Element.Text.Literal.create(Language.Bokmal to "hei"))
+                    )
+                )
+            ),
+            doc
+        )
+    }
+
+    @Test
+    fun `TemplateTextOnlyScope_eval adds Expression element`() {
+        val element = TemplateTextOnlyScope<BokmalLang, SomeDto>().apply {
+            eval(argument().select(SomeDto::name))
+        }.children.first()
+
+        val expected = Element.Text.Expression<BokmalLang>(
+            Expression.LetterProperty(Letter<SomeDto>::argument).select(SomeDto::name)
+        )
+
+        assertEquals(expected, element)
+    }
+
+    @Test
+    fun `TemplateTextOnlyScope_newline adds newline element`() {
+        val element = TemplateTextOnlyScope<BokmalLang, SomeDto>().apply {
+            newline()
+        }.children.first()
+
+        assertThat(element, isA<Element.NewLine<BokmalLang>>())
+    }
+
+    @Test
+    fun `TemplateTextOnlyScope_textExpr adds text expr`() {
+        val element = TemplateTextOnlyScope<BokmalLang, SomeDto>().apply {
+            textExpr(Language.Bokmal to "hei".expr())
+        }.children.first()
+
+        val expected = Element.Text.Expression.ByLanguage.create(Language.Bokmal to "hei".expr())
+
+        assertEquals(expected, element)
     }
 
     @Test
@@ -152,143 +213,60 @@ class TemplateTest {
         assertThat(expected, equalTo(actual))
     }
 
-//    @Test
-//    @Disabled
-//    fun `LetterTemplate json roundtrip`() {
-//
-//        val doc = createTemplate("test", bokmalTittel, PensjonLatex, languages(Language.Bokmal)) {
-//            parameters {
-//                required { SaksNr }
-//                optional { PensjonInnvilget }
-//            }
-//
-//            outline {
-//                title1 { phrase(Fraser.pensjonInnvilget) }
-//
-//                title1 { text(Language.Bokmal to "literal title") }
-//                paragraph {
-//                    text(Language.Bokmal to "kun brukes brevet")
-//                    eval(argument(SaksNr).str())
-//                }
-//
-//                showIf(argument(PensjonInnvilget)) {
-//                    text(Language.Bokmal to "joda")
-//                } orShow {
-//                    text(Language.Bokmal to "neida")
-//                }
-//            }
-//        }
-//
-//        val jsonRoundtrip =
-//            jacksonObjectMapper()
-//                .writerWithDefaultPrettyPrinter()
-//                .writeValueAsString(doc)
-//                .let {
-//                    println(it)
-//                    jacksonObjectMapper().readValue<LetterTemplate<*>>(it)
-//                }
-//
-//        assertEquals(doc, jsonRoundtrip)
-//    }
-//
-//    @Test
-//    fun `createTemplate will fail if using undeclared parameters`() {
-//        assertThrows<IllegalArgumentException> {
-//            createTemplate("test", bokmalTittel, PensjonLatex, languages(Language.Bokmal)) {
-//                outline {
-//                    title1 {
-//                        eval(argument(KortNavn))
-//                    }
-//                }
-//            }
-//        }
-//    }
-//
-//    @Test
-//    fun `createTemplate can add Text$Expression elements`() {
-//        val template = createTemplate("test", bokmalTittel, PensjonLatex, languages(Language.Bokmal)) {
-//            parameters { required { SaksNr } }
-//            outline {
-//                eval(argument(SaksNr).str())
-//            }
-//        }
-//
-//        assertEquals(
-//            LetterTemplate(
-//                "test",
-//                bokmalTittel,
-//                PensjonLatex,
-//                setOf(RequiredParameter(SaksNr)),
-//                languages(Language.Bokmal),
-//                listOf(
-//                    Element.Text.Expression(
-//                        Expression.UnaryInvoke(
-//                            Expression.Argument(SaksNr),
-//                            UnaryOperation.ToString()
-//                        )
-//                    )
-//                )
-//            ),
-//            template
-//        )
-//
-//    }
-//
-//    @Test
-//    fun `json deserialization perform type checks`() {
-//        val json = """
-//            {
-//              "name" : "test",
-//              "base" : {
-//                "name" : "no.nav.pensjon.brev.latex.model.PensjonLatex"
-//              },
-//              "parameters" : [ {
-//                "required" : {
-//                  "name" : "no.nav.pensjon.brev.latex.model.SaksNr",
-//                  "schema" : "TODO: add schema description"
-//                }
-//              } ],
-//              "outline" : [ {
-//                "parameter" : {
-//                  "name" : "no.nav.pensjon.brev.latex.model.SaksNr",
-//                  "schema" : "TODO: add schema description"
-//                },
-//                "transformer" : {
-//                  "name" : "no.nav.pensjon.brev.latex.model.ArgumentTransformer${"\$"}ToString${"\$"}Number"
-//                },
-//                "schema" : "Element${"\$"}Text${"\$"}TransformedArgument"
-//              } ]
-//            }
-//        """.trimIndent()
-//
-//        assertThrows<Exception> {
-//            jacksonObjectMapper().readValue<LetterTemplate>(json)
-//        }
-//    }
+    @Test
+    fun `createTemplate can add Text$Expression elements`() {
+        val template = createTemplate("test", PensjonLatex, SomeDto::class, languages(Language.Bokmal), bokmalTittel) {
+            outline {
+                eval(argument().select(SomeDto::name))
+            }
+        }
 
+        assertEquals(
+            LetterTemplate(
+                "test",
+                bokmalTittel,
+                PensjonLatex,
+                SomeDto::class,
+                languages(Language.Bokmal),
+                listOf(
+                    Element.Text.Expression(
+                        Expression.UnaryInvoke(
+                            Expression.LetterProperty(Letter<SomeDto>::argument),
+                            UnaryOperation.Select(SomeDto::name)
+                        )
+                    )
+                )
+            ),
+            template
+        )
 
-//    @Test
-//    fun test() {
-//        val templateArgs: Map<Parameter, Any> =
-//            mapOf(
-//                SaksNr to 1234,
-//                PensjonInnvilget to true,
-//                NorskIdentifikator to 13374212345,
-//                Felles to Fagdelen.Felles(
-//                    dokumentDato = LocalDate.now(),
-//                    returAdresse = Fagdelen.ReturAdresse("En NAV enhet", "En adresse 1", "1337", "Et poststed"),
-//                    mottaker = Fagdelen.Mottaker(
-//                        "FornavnMottaker",
-//                        "EtternavnMottaker",
-//                        "GatenavnMottaker",
-//                        "21 A",
-//                        "0123",
-//                        "PoststedMottaker"
-//                    ),
-//                )
-//            )
-//        val rendered = Letter(Alderspensjon.template, templateArgs, Language.Bokmal).render()
-//        println("hei")
-//    }
+    }
+
+    @Test
+    fun `TemplateContainerScope_formText adds Form$Text element`() {
+        val prompt = newText(Language.Bokmal to "hei")
+        val element = TemplateContainerScope<BokmalLang, SomeDto>().apply {
+            formText(1, prompt)
+        }.children.first()
+
+        val expected = Element.Form.Text(prompt, 1)
+
+        assertEquals(expected, element)
+    }
+
+    @Test
+    fun `TemplateContainerScope_formChoice adds Form$MultipleChoice`() {
+        val prompt = newText(Language.Bokmal to "hei")
+
+        val element = TemplateContainerScope<BokmalLang, SomeDto>().apply {
+            formChoice(prompt) {
+                choice(Language.Bokmal to "velg denne")
+            }
+        }.children.first()
+
+        val expected = Element.Form.MultipleChoice(prompt, listOf(newText(Language.Bokmal to "velg denne")))
+
+        assertEquals(expected, element)
+    }
 
 }

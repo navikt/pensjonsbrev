@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonCreator
 import java.io.PrintWriter
 import java.util.*
 
-//TODO: lag unit test som verifiserer at BaseLanguages inkluderer alle Language
 typealias BaseLanguages = LanguageCombination.Triple<Language.Bokmal, Language.Nynorsk, Language.English>
 
 data class LanguageSettings(val settings: Map<String, List<Element<BaseLanguages>>>) {

@@ -249,7 +249,7 @@ object PensjonLatex : BaseTemplate() {
             printWriter.printNewCmd("feltpostadresse", adresseLinje1)
         }
 
-    private fun vedleggCommand(letter: Letter<*>, printWriter: LatexPrintWriter): Unit {
+    private fun vedleggCommand(letter: Letter<*>, printWriter: LatexPrintWriter) {
         printWriter.printNewCmd("feltclosingvedlegg") { bodyWriter ->
             if (letter.template.attachments.isNotEmpty()) {
                 bodyWriter.printCmd("begin", "attachmentList")

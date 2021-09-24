@@ -5,13 +5,16 @@ import no.nav.pensjon.brev.template.base.PensjonLatex
 import no.nav.pensjon.brev.template.dsl.*
 import java.time.LocalDate
 
-data class EksempelBrevDto(val pensjonInnvilget: Boolean, val datoInnvilget: LocalDate)
+data class EksempelBrevDto(val pensjonInnvilget: Boolean, val datoInnvilget: LocalDate) {
+    // No-arg constructor for integration tests
+    internal constructor() : this(true, LocalDate.now())
+}
 
 object EksempelBrev : StaticTemplate {
     override val template = createTemplate(
         name = "eksempelBrev",
         base = PensjonLatex,
-        parameterType = EksempelBrevDto::class,
+        letterDataType = EksempelBrevDto::class,
         lang = languages(Language.Bokmal),
         title = newText(Language.Bokmal to "Eksempelbrev")
     ) {

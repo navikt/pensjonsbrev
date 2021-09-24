@@ -21,7 +21,7 @@ class PensjonLatexITest {
     val template = createTemplate(
         name = "test-template",
         base = PensjonLatex,
-        parameterType = TestTemplateDto::class,
+        letterDataType = TestTemplateDto::class,
         lang = languages(Language.Bokmal),
         title = newText(Language.Bokmal to "En fin tittel"),
     ) {

@@ -9,21 +9,16 @@ fun Expression<Any>.str(): StringExpression =
 fun Expression<LocalDate>.format() =
     Expression.BinaryInvoke(this, Expression.LetterProperty(Letter<Any>::language), BinaryOperation.LocalizedDateFormat)
 
-fun <Data: Any, Field> Expression<Data>.select(selector: Data.() -> Field, discourageLambdas: Nothing? = null): Expression<Field> =
+fun <Data : Any, Field> Expression<Data>.select(selector: Data.() -> Field, @Suppress("UNUSED_PARAMETER") discourageLambdas: Nothing? = null): Expression<Field> =
     Expression.UnaryInvoke(
         this,
         UnaryOperation.Select(selector)
     )
 
-fun StringExpression.concat(expr: StringExpression): StringExpression =
-    Expression.BinaryInvoke(
-        this,
-        expr,
-        BinaryOperation.Concat
-    )
-
-fun <T> literal(value: T) = Expression.Literal(value)
 fun <T> T.expr() = Expression.Literal(this)
+
+fun <T> Expression<T?>.ifNull(then: T) =
+    Expression.UnaryInvoke(this, UnaryOperation.IfNull(then))
 
 operator fun StringExpression.plus(other: StringExpression) =
     Expression.BinaryInvoke(

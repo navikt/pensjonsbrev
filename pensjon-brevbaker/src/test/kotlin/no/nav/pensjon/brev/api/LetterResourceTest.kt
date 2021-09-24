@@ -1,21 +1,19 @@
 package no.nav.pensjon.brev.api
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.node.ObjectNode
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import com.fasterxml.jackson.module.kotlin.MissingKotlinParameterException
 import com.fasterxml.jackson.module.kotlin.convertValue
 import io.ktor.features.*
 import no.nav.pensjon.brev.Fixtures
 import no.nav.pensjon.brev.maler.EksempelBrev
 import no.nav.pensjon.brev.maler.EksempelBrevDto
 import no.nav.pensjon.brev.template.Language
+import no.nav.pensjon.brev.template.jacksonObjectMapper
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import java.time.LocalDate
 
-val objectMapper = ObjectMapper().registerModule(JavaTimeModule())
+val objectMapper = jacksonObjectMapper()
 
 class LetterResourceTest {
 

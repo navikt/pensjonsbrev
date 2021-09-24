@@ -5,58 +5,55 @@ import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.base.BaseTemplate
 import kotlin.reflect.KClass
 
-fun <Lang : LanguageCombination, ParameterType : Any> createTemplate(
+fun <Lang : LanguageCombination, LetterData : Any> createTemplate(
     name: String,
     base: BaseTemplate,
-    parameterType: KClass<ParameterType>,
+    letterDataType: KClass<LetterData>,
     lang: Lang,
     title: Element.Text.Literal<Lang>,
-    init: LetterTemplateBuilder<Lang, ParameterType>.() -> Unit
-): LetterTemplate<Lang, ParameterType> =
-    with(LetterTemplateBuilder<Lang, ParameterType>().apply(init)) {
-        return LetterTemplate(name, title, base, parameterType, lang, outline, attachments)
+    init: TemplateRootScope<Lang, LetterData>.() -> Unit
+): LetterTemplate<Lang, LetterData> =
+    with(TemplateRootScope<Lang, LetterData>().apply(init)) {
+        return LetterTemplate(name, title, base, letterDataType, lang, outline, attachments)
     }
 
+
+open class TemplateGlobalScope<LetterData : Any> {
+    fun argument(): Expression<LetterData> =
+        Expression.LetterProperty(Letter<LetterData>::argument)
+
+    fun felles(): Expression<Felles> =
+        Expression.LetterProperty(Letter<LetterData>::felles)
+}
+
 @LetterTemplateMarker
-open class LetterTemplateBuilder<Lang : LanguageCombination, LetterData : Any>(
+open class TemplateRootScope<Lang : LanguageCombination, LetterData : Any>(
     val outline: MutableList<Element<Lang>> = mutableListOf(),
     val attachments: MutableList<AttachmentTemplate<Lang, LetterData>> = mutableListOf(),
-) {
+) : TemplateGlobalScope<LetterData>() {
 
-    fun outline(init: ContainerElementBuilder<Lang, LetterData>.() -> Unit) {
-        outline.addAll(ContainerElementBuilder<Lang, LetterData>().apply(init).children)
+    fun outline(init: TemplateContainerScope<Lang, LetterData>.() -> Unit) {
+        outline.addAll(TemplateContainerScope<Lang, LetterData>().apply(init).children)
     }
 
     fun attachment(
         title: Element.Text.Literal<Lang>,
         includeSakspart: Boolean = false,
-        outline: ContainerElementBuilder<Lang, LetterData>.() -> Unit
+        outline: TemplateContainerScope<Lang, LetterData>.() -> Unit
     ) {
         attachments.add(
             AttachmentTemplate(
                 title,
-                ContainerElementBuilder<Lang, LetterData>().apply(outline).children,
+                TemplateContainerScope<Lang, LetterData>().apply(outline).children,
                 includeSakspart
             )
         )
     }
 
-    fun argument(): Expression<LetterData> =
-        Expression.LetterProperty(Letter<LetterData>::argument)
-
-    fun felles(): Expression<Felles> =
-        Expression.LetterProperty(Letter<LetterData>::felles)
-
 }
 
 @LetterTemplateMarker
-open class TextOnlyBuilder<Lang : LanguageCombination, LetterData : Any>(val children: MutableList<Element<Lang>> = mutableListOf()) {
-
-    fun argument(): Expression<LetterData> =
-        Expression.LetterProperty(Letter<LetterData>::argument)
-
-    fun felles(): Expression<Felles> =
-        Expression.LetterProperty(Letter<LetterData>::felles)
+open class TemplateTextOnlyScope<Lang : LanguageCombination, LetterData : Any>(val children: MutableList<Element<Lang>> = mutableListOf()) : TemplateGlobalScope<LetterData>() {
 
     fun eval(expression: StringExpression) {
         children.add(Element.Text.Expression(expression))
@@ -79,18 +76,18 @@ open class TextOnlyBuilder<Lang : LanguageCombination, LetterData : Any>(val chi
 // TextOnlyBuilder.text()
 //
 //
-fun <Lang1 : Language, ParameterType : Any> TextOnlyBuilder<LanguageCombination.Single<Lang1>, ParameterType>.text(lang1: Pair<Lang1, String>) {
+fun <Lang1 : Language, ParameterType : Any> TemplateTextOnlyScope<LanguageCombination.Single<Lang1>, ParameterType>.text(lang1: Pair<Lang1, String>) {
     Element.Text.Literal.create(lang1).also { children.add(it) }
 }
 
-fun <Lang1 : Language, Lang2 : Language, ParameterType : Any> TextOnlyBuilder<LanguageCombination.Double<Lang1, Lang2>, ParameterType>.text(
+fun <Lang1 : Language, Lang2 : Language, ParameterType : Any> TemplateTextOnlyScope<LanguageCombination.Double<Lang1, Lang2>, ParameterType>.text(
     lang1: Pair<Lang1, String>,
     lang2: Pair<Lang2, String>,
 ) {
     Element.Text.Literal.create(lang1, lang2).also { children.add(it) }
 }
 
-fun <Lang1 : Language, Lang2 : Language, Lang3 : Language, ParameterType : Any> TextOnlyBuilder<LanguageCombination.Triple<Lang1, Lang2, Lang3>, ParameterType>.text(
+fun <Lang1 : Language, Lang2 : Language, Lang3 : Language, ParameterType : Any> TemplateTextOnlyScope<LanguageCombination.Triple<Lang1, Lang2, Lang3>, ParameterType>.text(
     lang1: Pair<Lang1, String>,
     lang2: Pair<Lang2, String>,
     lang3: Pair<Lang3, String>,
@@ -101,18 +98,18 @@ fun <Lang1 : Language, Lang2 : Language, Lang3 : Language, ParameterType : Any> 
 // TextOnlyBuilder.textExpr()
 //
 //
-fun <Lang1 : Language, ParameterType : Any> TextOnlyBuilder<LanguageCombination.Single<Lang1>, ParameterType>.textExpr(lang1: Pair<Lang1, StringExpression>) {
+fun <Lang1 : Language, ParameterType : Any> TemplateTextOnlyScope<LanguageCombination.Single<Lang1>, ParameterType>.textExpr(lang1: Pair<Lang1, StringExpression>) {
     Element.Text.Expression.ByLanguage.create(lang1).also { children.add(it) }
 }
 
-fun <Lang1 : Language, Lang2 : Language, ParameterType : Any> TextOnlyBuilder<LanguageCombination.Double<Lang1, Lang2>, ParameterType>.textExpr(
+fun <Lang1 : Language, Lang2 : Language, ParameterType : Any> TemplateTextOnlyScope<LanguageCombination.Double<Lang1, Lang2>, ParameterType>.textExpr(
     lang1: Pair<Lang1, StringExpression>,
     lang2: Pair<Lang2, StringExpression>,
 ) {
     Element.Text.Expression.ByLanguage.create(lang1, lang2).also { children.add(it) }
 }
 
-fun <Lang1 : Language, Lang2 : Language, Lang3 : Language, ParameterType : Any> TextOnlyBuilder<LanguageCombination.Triple<Lang1, Lang2, Lang3>, ParameterType>.textExpr(
+fun <Lang1 : Language, Lang2 : Language, Lang3 : Language, ParameterType : Any> TemplateTextOnlyScope<LanguageCombination.Triple<Lang1, Lang2, Lang3>, ParameterType>.textExpr(
     lang1: Pair<Lang1, StringExpression>,
     lang2: Pair<Lang2, StringExpression>,
     lang3: Pair<Lang3, StringExpression>,
@@ -121,34 +118,34 @@ fun <Lang1 : Language, Lang2 : Language, Lang3 : Language, ParameterType : Any> 
 }
 
 @LetterTemplateMarker
-class ContainerElementBuilder<Lang : LanguageCombination, ParameterType : Any> :
-    TextOnlyBuilder<Lang, ParameterType>() {
+class TemplateContainerScope<Lang : LanguageCombination, LetterData : Any> :
+    TemplateTextOnlyScope<Lang, LetterData>() {
 
-    fun title1(init: TextOnlyBuilder<Lang, ParameterType>.() -> Unit) {
-        children.add(Element.Title1(TextOnlyBuilder<Lang, ParameterType>().apply(init).children))
+    fun title1(init: TemplateTextOnlyScope<Lang, LetterData>.() -> Unit) {
+        children.add(Element.Title1(TemplateTextOnlyScope<Lang, LetterData>().apply(init).children))
     }
 
-    fun paragraph(init: TextOnlyBuilder<Lang, ParameterType>.() -> Unit) {
-        children.add(Element.Paragraph(TextOnlyBuilder<Lang, ParameterType>().apply(init).children))
+    fun paragraph(init: TemplateTextOnlyScope<Lang, LetterData>.() -> Unit) {
+        children.add(Element.Paragraph(TemplateTextOnlyScope<Lang, LetterData>().apply(init).children))
     }
 
     fun formText(size: Int, prompt: Element.Text<Lang>, vspace: Boolean = true) {
         children.add(Element.Form.Text(prompt, size, vspace))
     }
 
-    fun formChoice(prompt: Element.Text<Lang>, vspace: Boolean = true, init: FormChoiceBuilder<Lang>.() -> Unit) {
-        FormChoiceBuilder<Lang>().apply(init)
+    fun formChoice(prompt: Element.Text<Lang>, vspace: Boolean = true, init: TemplateFormChoiceScope<Lang, LetterData>.() -> Unit) {
+        TemplateFormChoiceScope<Lang, LetterData>().apply(init)
             .let { Element.Form.MultipleChoice(prompt, it.choices, vspace) }
             .also { children.add(it) }
     }
 
     fun showIf(
         predicate: Expression<Boolean>,
-        showIf: ContainerElementBuilder<Lang, ParameterType>.() -> Unit
-    ): ShowElseBuilder<Lang, ParameterType> {
+        showIf: TemplateContainerScope<Lang, LetterData>.() -> Unit
+    ): ShowElseBuilder<Lang, LetterData> {
         val showElse = mutableListOf<Element<Lang>>()
 
-        return ContainerElementBuilder<Lang, ParameterType>().apply { showIf() }
+        return TemplateContainerScope<Lang, LetterData>().apply { showIf() }
             .let { Element.Conditional(predicate, it.children, showElse) }
             .also { children.add(it) }
             .let { ShowElseBuilder(showElse) }
@@ -157,22 +154,22 @@ class ContainerElementBuilder<Lang : LanguageCombination, ParameterType : Any> :
 }
 
 @LetterTemplateMarker
-class FormChoiceBuilder<Lang : LanguageCombination>(
+class TemplateFormChoiceScope<Lang : LanguageCombination, LetterData : Any>(
     val choices: MutableList<Element.Text<Lang>> = mutableListOf()
-)
+) : TemplateGlobalScope<LetterData>()
 
-fun <Lang1 : Language> FormChoiceBuilder<LanguageCombination.Single<Lang1>>.choice(lang1: Pair<Lang1, String>) {
+fun <Lang1 : Language, LetterData : Any> TemplateFormChoiceScope<LanguageCombination.Single<Lang1>, LetterData>.choice(lang1: Pair<Lang1, String>) {
     Element.Text.Literal.create(lang1).also { choices.add(it) }
 }
 
-fun <Lang1 : Language, Lang2 : Language> FormChoiceBuilder<LanguageCombination.Double<Lang1, Lang2>>.choice(
+fun <Lang1 : Language, Lang2 : Language, LetterData : Any> TemplateFormChoiceScope<LanguageCombination.Double<Lang1, Lang2>, LetterData>.choice(
     lang1: Pair<Lang1, String>,
     lang2: Pair<Lang2, String>,
 ) {
     Element.Text.Literal.create(lang1, lang2).also { choices.add(it) }
 }
 
-fun <Lang1 : Language, Lang2 : Language, Lang3 : Language> FormChoiceBuilder<LanguageCombination.Triple<Lang1, Lang2, Lang3>>.choice(
+fun <Lang1 : Language, Lang2 : Language, Lang3 : Language, LetterData : Any> TemplateFormChoiceScope<LanguageCombination.Triple<Lang1, Lang2, Lang3>, LetterData>.choice(
     lang1: Pair<Lang1, String>,
     lang2: Pair<Lang2, String>,
     lang3: Pair<Lang3, String>,
@@ -184,8 +181,8 @@ fun <Lang1 : Language, Lang2 : Language, Lang3 : Language> FormChoiceBuilder<Lan
 class ShowElseBuilder<Lang : LanguageCombination, ParameterType : Any>(
     val showElse: MutableList<Element<Lang>> = mutableListOf()
 ) {
-    infix fun orShow(init: ContainerElementBuilder<Lang, ParameterType>.() -> Unit): Unit =
-        with(ContainerElementBuilder<Lang, ParameterType>().apply(init)) {
+    infix fun orShow(init: TemplateContainerScope<Lang, ParameterType>.() -> Unit): Unit =
+        with(TemplateContainerScope<Lang, ParameterType>().apply(init)) {
             showElse.addAll(children)
         }
 }

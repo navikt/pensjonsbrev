@@ -11,8 +11,8 @@ fun languageSettings(init: LanguageSettingsBuilder.() -> Unit) =
 
 @LetterTemplateMarker
 class LanguageSettingsBuilder(val settings: MutableMap<String, List<Element<BaseLanguages>>> = mutableMapOf()) {
-    fun setting(name: String, valueBuilder: TextOnlyBuilder<BaseLanguages, Nothing>.() -> Unit) {
-        settings[name] = TextOnlyBuilder<BaseLanguages, Nothing>().apply(valueBuilder).children
+    fun setting(name: String, valueBuilder: TemplateTextOnlyScope<BaseLanguages, Nothing>.() -> Unit) {
+        settings[name] = TemplateTextOnlyScope<BaseLanguages, Nothing>().apply(valueBuilder).children
     }
 
     fun setting(name: String, value: Element<BaseLanguages>) {
