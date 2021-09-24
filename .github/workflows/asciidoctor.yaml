@@ -37,6 +37,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
+      - run: npm install asciidoctor-kroki
+      - run: npm install @djencks/asciidoctor-mathjax
       - name: Run Antora
         uses: kameshsampath/antora-site-action@v0.2.4
         with:
