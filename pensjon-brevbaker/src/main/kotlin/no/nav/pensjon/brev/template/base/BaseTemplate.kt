@@ -1,8 +1,9 @@
 package no.nav.pensjon.brev.template.base
 
-import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
-import no.nav.pensjon.brev.template.*
+import no.nav.pensjon.brev.template.LanguageSettings
+import no.nav.pensjon.brev.template.Letter
+import no.nav.pensjon.brev.template.RenderedLetter
 
 @JsonIgnoreProperties("parameters")
 sealed class BaseTemplate {
@@ -11,15 +12,5 @@ sealed class BaseTemplate {
     abstract val languageSettings: LanguageSettings
 
     abstract fun render(letter: Letter<*>): RenderedLetter
-
-    companion object {
-        @JsonCreator
-        @JvmStatic
-        fun creator(name: String?): BaseTemplate? {
-            return BaseTemplate::class.sealedSubclasses
-                .mapNotNull { it.objectInstance }
-                .firstOrNull { it.name == name }
-        }
-    }
 
 }

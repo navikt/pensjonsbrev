@@ -1,19 +1,10 @@
 package no.nav.pensjon.brev.template
 
-import com.fasterxml.jackson.annotation.JsonCreator
-
 // TODO: We might not need Phrase, unless we need to store them in a database
 sealed class Phrase<Lang : LanguageCombination> {
     val type: String = this::class.java.name
 
     abstract fun text(language: Language): String
-
-    companion object {
-        @JsonCreator
-        @JvmStatic
-        fun creator(type: String): Phrase<*>? =
-            Phrase::class.findSealedObjects().firstOrNull { it.type == type }
-    }
 
     data class Static<Lang : LanguageCombination> private constructor(val name: String, private val text: Map<Language, String>) : Phrase<Lang>() {
 
