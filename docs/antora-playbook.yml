@@ -3,12 +3,6 @@ site:
   url: https://navikt.github.io/pensjonsbrev/
   start_page: ROOT:index.adoc
 
-content:
-  sources:
-    - url: https://github.com/navikt/pensjonsbrev
-      start_path: docs/
-      branches: main
-
 asciidoc:
   attributes:
     toc-title: Innholdsfortegnelse
