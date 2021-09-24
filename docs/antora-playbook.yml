@@ -1,7 +1,7 @@
 site:
   title: Team pensjonsbrev
   url: https://navikt.github.io/pensjonsbrev/
-  start_page: ROOT::index.adoc
+  start_page: xref:arkitektur.adoc[arkitektur ny brevløsning/brevbaker]
 
 asciidoc:
   attributes:
