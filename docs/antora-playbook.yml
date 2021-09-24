@@ -30,7 +30,7 @@ ui:
     url: https://gitlab.com/antora/antora-ui-default/-/jobs/artifacts/master/raw/build/ui-bundle.zip?job=bundle-stable
     snapshot: false
   # Override default header, css
-  supplemental_files: supplemental_ui
+  supplemental_files: docs/supplemental_ui
 
 runtime:
   cache_dir: ./.cache

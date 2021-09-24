@@ -1,0 +1,36 @@
+/* Somewhat wider main view */
+@media screen and (min-width: 1024px) {
+    .doc {
+        max-width: 1080px;
+    }
+}
+
+/* These are default not that easily distuingished from paragraphs */
+.doc h4, .doc h5, .doc h6 {
+    font-weight: bold;
+}
+
+/* Left menu - scale down slightly */
+.nav-list .nav-item .nav-list .nav-item {
+    font-size: .8rem;
+}
+
+/* Scale code snippets a bit down in size */
+.doc pre {
+    font-size: .7rem  !important;
+}
+
+.doc table.tableblock th  {
+    background-color: #fafafa;
+}
+
+/*
+.doc table.tableblock {
+    border: 1px solid #e1e1e1;
+}
+ */
+
+.navbar-brand img {
+    height: 48px;
+    margin: 12px;
+}

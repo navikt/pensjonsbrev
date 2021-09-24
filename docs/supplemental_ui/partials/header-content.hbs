@@ -1,0 +1,33 @@
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="{{{or site.url (or siteRootUrl siteRootPath)}}}">
+          <img src="{{{uiRootPath}}}/img/nav-logo.svg" alt="NAV" />
+          {{site.title}}
+      </a>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="#">Home</a>
+        <div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-link" href="#">Lenker</a>
+          <div class="navbar-dropdown">
+            <a class="navbar-item" href="https://confluence.adeo.no/x/5oz0Ew" target=”_blank”>Pensjon confluence</a>
+            <a class="navbar-item" href="https://navno.sharepoint.com/sites/fag-og-ytelser-pensjon" target=”_blank”>Pensjon på Navet</a>
+            <a class="navbar-item" href="https://teamkatalog.nais.adeo.no/area/686e93e9-0fab-46d3-9a9c-975a8b502bed" target=”_blank”>Teamkatalogen</a>
+          </div>
+        </div>
+        <div class="navbar-item">
+          <span class="control">
+            <a class="button is-primary" href="#">Download</a>
+          </span>
+        </div>
+      </div>
+    </div>
+  </nav>
+</header>
