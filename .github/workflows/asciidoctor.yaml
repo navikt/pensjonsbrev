@@ -4,7 +4,7 @@ on:
       - "main"
     paths:
       - "docs/**"
-      - ".github/workflows/asciidoc.yaml"
+      - ".github/workflows/asciidoctor.yaml"
 #jobs:
 #  build_site:
 #    name: "build asciidoc for github pages"
