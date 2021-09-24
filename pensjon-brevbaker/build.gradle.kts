@@ -64,10 +64,12 @@ dependencies {
     implementation("ch.qos.logback:logback-classic:$logback_version")
     implementation("io.ktor:ktor-server-core:$ktor_version")
     implementation("io.ktor:ktor-jackson:$ktor_version")
-    // Necessary for java.time.LocalDate
-    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.12.3")
     implementation("io.ktor:ktor-client-jackson:$ktor_version")
     implementation("io.ktor:ktor-metrics:$ktor_version")
+    // Necessary for java.time.LocalDate
+    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.12.3")
+    // Necessary to generate schema for letterDataType
+    implementation("com.fasterxml.jackson.module:jackson-module-jsonSchema:2.12.5")
     testImplementation("io.ktor:ktor-server-tests:$ktor_version")
     implementation("io.ktor:ktor-metrics-micrometer:$ktor_version")
     implementation("io.micrometer:micrometer-registry-prometheus:1.7.0")

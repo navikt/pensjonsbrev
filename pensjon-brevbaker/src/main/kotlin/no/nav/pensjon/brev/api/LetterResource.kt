@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JacksonException
 import com.fasterxml.jackson.databind.node.ObjectNode
 import io.ktor.features.*
 import no.nav.pensjon.brev.api.dto.Felles
+import no.nav.pensjon.brev.api.dto.LanguageCode
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.Letter
 import no.nav.pensjon.brev.template.LetterTemplate
@@ -16,14 +17,15 @@ object LetterResource {
         val template: LetterTemplate<*, *> = TemplateResource.getTemplate(letterRequest.template)
             ?: throw NotFoundException("Template '${letterRequest.template}' doesn't exist")
 
-        if (!template.language.supports(letterRequest.language)) {
+        val language = letterRequest.language.toLanguage()
+        if (!template.language.supports(language)) {
             throw IllegalArgumentException("Template '${template.name}' doesn't support language: ${letterRequest.language}")
         }
 
         return Letter(
             template = template,
             argument = parseArgument(letterRequest, template),
-            language = letterRequest.language,
+            language = language,
             felles = letterRequest.felles
         )
     }
@@ -37,4 +39,4 @@ object LetterResource {
 
 }
 
-data class LetterRequest(val template: String, val letterData: ObjectNode, val felles: Felles, val language: Language)
+data class LetterRequest(val template: String, val letterData: ObjectNode, val felles: Felles, val language: LanguageCode)

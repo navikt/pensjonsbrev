@@ -20,6 +20,7 @@ import kotlinx.coroutines.withContext
 import no.nav.pensjon.brev.api.LetterRequest
 import no.nav.pensjon.brev.api.LetterResource
 import no.nav.pensjon.brev.api.TemplateResource
+import no.nav.pensjon.brev.api.dto.description
 import no.nav.pensjon.brev.latex.LaTeXCompilerService
 import no.nav.pensjon.brev.latex.PdfCompilationInput
 import no.nav.pensjon.brev.template.brevbakerConfig
@@ -51,7 +52,7 @@ fun Application.module() {
         }
 
         get("/templates/{name}") {
-            val template = TemplateResource.getTemplate(call.parameters["name"]!!)
+            val template = TemplateResource.getTemplate(call.parameters["name"]!!)?.description()
             if (template == null) {
                 call.respond(HttpStatusCode.NotFound)
             } else {
