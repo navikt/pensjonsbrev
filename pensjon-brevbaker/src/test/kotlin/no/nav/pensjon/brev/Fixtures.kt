@@ -24,8 +24,9 @@ object Fixtures {
             foedselsnummer = "12345678910",
             kortnavn = "YASIR-MASK PERLAKI",
             adresse = Adresse(
-                linje1 = "JERNBANETORGET 4 F",
-                linje2 = "1344 HASLUM",
+                linje1 = "PERLAKI YASIR-MASK",
+                linje2 = "JERNBANETORGET 4 F",
+                linje3 = "1344 HASLUM",
             ),
         ),
         signerendeSaksbehandlere = SignerendeSaksbehandlere(
@@ -33,4 +34,6 @@ object Fixtures {
             attesterendeSaksbehandler = "Per Attesterende",
         ),
     )
+
+    val fellesAuto = felles.copy(signerendeSaksbehandlere = null)
 }

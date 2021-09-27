@@ -18,14 +18,14 @@ class OmsorgEgenAutoITest {
     fun test() {
         Letter(
             OmsorgEgenAuto.template,
-            OmsorgEgenAutoDto(arEgenerklaringOmsorgspoeng = 2020, arInnvilgetOmsorgspoeng = 2021),
-            Language.Bokmal,
-            Fixtures.felles.copy(signerendeSaksbehandlere = null)
+            OmsorgEgenAutoDto(),
+            Language.English,
+            Fixtures.fellesAuto
         ).render()
             .let { PdfCompilationInput(it.base64EncodedFiles()) }
 //            .also { File("test-params.tex").writeBytes(Base64.getDecoder().decode(it.files["params.tex"])) }
             .let { LaTeXCompilerService().producePDF(it) }
-//            .also { File("test.pdf").writeBytes(Base64.getDecoder().decode(it)) }
+//            .also { File("000104-english.pdf").writeBytes(Base64.getDecoder().decode(it)) }
     }
 
 }
