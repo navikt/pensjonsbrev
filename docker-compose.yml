@@ -2,18 +2,11 @@
 services:
   pdf-bygger:
     build: ./pdf-bygger
-    networks:
-      - localtest
     ports:
       - "8081:8080"
   pensjon-brevbaker:
     environment:
       - PDF_BYGGER_URL=http://pdf-bygger:8080
     build: ./pensjon-brevbaker
-    networks:
-      - localtest
     ports:
       - "8080:8080"
-networks:
-  localtest:
-    driver: bridge
