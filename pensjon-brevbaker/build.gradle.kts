@@ -77,7 +77,7 @@ dependencies {
     implementation("io.ktor:ktor-jackson:$ktor_version")
     implementation("io.ktor:ktor-client-jackson:$ktor_version")
     implementation("io.ktor:ktor-metrics:$ktor_version")
-    implementation("no.nav.pensjon.brev:pensjon-brevbaker-api-model:1.0-SNAPSHOT")
+    implementation("no.nav.pensjon.brev:pensjon-brevbaker-api-model:1.0")
     // Necessary for java.time.LocalDate
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.12.3")
     // Necessary to generate schema for letterDataType
