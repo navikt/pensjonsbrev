@@ -30,5 +30,4 @@ jobs:
       - name: "Release maven artifact"
         run: "./gradlew publish"
         env:
-          GPR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
-          GPR_USER: "${{ env.GITHUB_ACTOR }}"
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
