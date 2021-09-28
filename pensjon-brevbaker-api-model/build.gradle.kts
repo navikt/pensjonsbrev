@@ -37,3 +37,12 @@ publishing {
         }
     }
 }
+
+tasks {
+    compileKotlin {
+        kotlinOptions.jvmTarget = "15"
+    }
+    compileTestKotlin {
+        kotlinOptions.jvmTarget = "15"
+    }
+}
