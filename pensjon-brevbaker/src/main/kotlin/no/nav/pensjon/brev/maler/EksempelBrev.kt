@@ -1,14 +1,10 @@
 package no.nav.pensjon.brev.maler
 
-import no.nav.pensjon.brev.template.*
+import no.nav.pensjon.brev.api.model.maler.EksempelBrevDto
+import no.nav.pensjon.brev.template.Language
+import no.nav.pensjon.brev.template.StaticTemplate
 import no.nav.pensjon.brev.template.base.PensjonLatex
 import no.nav.pensjon.brev.template.dsl.*
-import java.time.LocalDate
-
-data class EksempelBrevDto(val pensjonInnvilget: Boolean, val datoInnvilget: LocalDate) {
-    // No-arg constructor for integration tests
-    internal constructor() : this(true, LocalDate.now())
-}
 
 object EksempelBrev : StaticTemplate {
     override val template = createTemplate(

@@ -18,6 +18,17 @@ application {
 repositories {
     mavenLocal()
     mavenCentral()
+    maven {
+        // Create a token at https://github.com/settings/tokens/new with package.read
+        // Then create a gradle.properties file in $HOME/.gradle with the following:
+        // gpr.user=<your github username>
+        // gpr.token=<the token>
+        url = uri("https://maven.pkg.github.com/navikt/pensjonsbrev")
+        credentials {
+            username = project.findProperty("gpr.user") as String? ?: System.getenv("GPR_USERNAME")
+            password = project.findProperty("gpr.token") as String? ?: System.getenv("GPR_TOKEN")
+        }
+    }
 }
 
 sourceSets {
@@ -66,6 +77,7 @@ dependencies {
     implementation("io.ktor:ktor-jackson:$ktor_version")
     implementation("io.ktor:ktor-client-jackson:$ktor_version")
     implementation("io.ktor:ktor-metrics:$ktor_version")
+    implementation("no.nav.pensjon.brev:pensjon-brevbaker-api-model:1.0-SNAPSHOT")
     // Necessary for java.time.LocalDate
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.12.3")
     // Necessary to generate schema for letterDataType

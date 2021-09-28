@@ -65,16 +65,4 @@ class TemplateResourceTest {
         assertEquals(emptySet<String>(), templatesWithoutNoArgConstructor, "letterDataType classes should have an internal no-arg constructor with valid test data.")
     }
 
-    @Test
-    fun `all template letterDataType no-arg constructor must be internal`() {
-        val templatesWithNonInternalNoArg = TemplateResource.getTemplates()
-            .associateWith { TemplateResource.getTemplate(it)!! }
-            .mapValues {
-                it.value.letterDataType.constructors
-                    .filter { constr -> constr.parameters.isEmpty() }
-                    .any { noArg -> noArg.visibility != KVisibility.INTERNAL}
-            }.filterValues { it }
-
-        assertEquals(emptySet<String>(), templatesWithNonInternalNoArg.keys, "letterDataType classes should have no-arg constructors that are internal")
-    }
 }

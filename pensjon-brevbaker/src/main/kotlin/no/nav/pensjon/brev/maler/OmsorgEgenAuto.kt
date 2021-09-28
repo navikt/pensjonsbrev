@@ -1,16 +1,13 @@
 package no.nav.pensjon.brev.maler
 
-import no.nav.pensjon.brev.api.dto.Felles
-import no.nav.pensjon.brev.api.dto.NAVEnhet
-import no.nav.pensjon.brev.api.dto.ReturAdresse
+import no.nav.pensjon.brev.api.model.Felles
+import no.nav.pensjon.brev.api.model.NAVEnhet
+import no.nav.pensjon.brev.api.model.ReturAdresse
+import no.nav.pensjon.brev.api.model.maler.OmsorgEgenAutoDto
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.base.PensjonLatex
 import no.nav.pensjon.brev.template.dsl.*
-
-data class OmsorgEgenAutoDto(val arEgenerklaringOmsorgspoeng: Number, val arInnvilgetOmsorgspoeng: Number) {
-    internal constructor() : this(2020, 2021)
-}
 
 object OmsorgEgenAuto : StaticTemplate {
 

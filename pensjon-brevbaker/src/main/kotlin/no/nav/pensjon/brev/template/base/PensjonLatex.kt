@@ -1,9 +1,9 @@
 package no.nav.pensjon.brev.template.base
 
-import no.nav.pensjon.brev.api.dto.Felles
-import no.nav.pensjon.brev.api.dto.Mottaker
-import no.nav.pensjon.brev.api.dto.NAVEnhet
-import no.nav.pensjon.brev.api.dto.SignerendeSaksbehandlere
+import no.nav.pensjon.brev.api.model.Felles
+import no.nav.pensjon.brev.api.model.Mottaker
+import no.nav.pensjon.brev.api.model.NAVEnhet
+import no.nav.pensjon.brev.api.model.SignerendeSaksbehandlere
 import no.nav.pensjon.brev.latex.LatexPrintWriter
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.dsl.*

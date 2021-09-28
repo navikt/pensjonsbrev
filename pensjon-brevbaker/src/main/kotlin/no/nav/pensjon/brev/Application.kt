@@ -15,10 +15,10 @@ import io.prometheus.client.CollectorRegistry
 import io.prometheus.client.exporter.common.TextFormat
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import no.nav.pensjon.brev.api.LetterRequest
 import no.nav.pensjon.brev.api.LetterResource
 import no.nav.pensjon.brev.api.TemplateResource
 import no.nav.pensjon.brev.api.dto.description
+import no.nav.pensjon.brev.api.model.LetterRequest
 import no.nav.pensjon.brev.latex.LaTeXCompilerService
 import no.nav.pensjon.brev.latex.PdfCompilationInput
 import no.nav.pensjon.brev.template.brevbakerConfig

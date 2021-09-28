@@ -4,10 +4,10 @@ import com.fasterxml.jackson.databind.node.ObjectNode
 import com.fasterxml.jackson.module.kotlin.convertValue
 import io.ktor.features.*
 import no.nav.pensjon.brev.Fixtures
-import no.nav.pensjon.brev.api.dto.LanguageCode
+import no.nav.pensjon.brev.api.model.LanguageCode
+import no.nav.pensjon.brev.api.model.LetterRequest
+import no.nav.pensjon.brev.api.model.maler.EksempelBrevDto
 import no.nav.pensjon.brev.maler.EksempelBrev
-import no.nav.pensjon.brev.maler.EksempelBrevDto
-import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.jacksonObjectMapper
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test

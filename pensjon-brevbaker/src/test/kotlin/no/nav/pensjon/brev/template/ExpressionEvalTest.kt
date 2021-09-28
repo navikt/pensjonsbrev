@@ -1,7 +1,7 @@
 package no.nav.pensjon.brev.template
 
 import no.nav.pensjon.brev.Fixtures
-import no.nav.pensjon.brev.api.dto.Felles
+import no.nav.pensjon.brev.api.model.Felles
 import no.nav.pensjon.brev.template.base.DummyBase
 import no.nav.pensjon.brev.template.dsl.*
 import org.junit.jupiter.api.Assertions.assertEquals

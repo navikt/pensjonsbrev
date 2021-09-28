@@ -3,9 +3,10 @@ package no.nav.pensjon.brev.api
 import com.fasterxml.jackson.core.JacksonException
 import com.fasterxml.jackson.databind.node.ObjectNode
 import io.ktor.features.*
-import no.nav.pensjon.brev.api.dto.Felles
-import no.nav.pensjon.brev.api.dto.LanguageCode
-import no.nav.pensjon.brev.template.Language
+import no.nav.pensjon.brev.api.dto.toLanguage
+import no.nav.pensjon.brev.api.model.Felles
+import no.nav.pensjon.brev.api.model.LanguageCode
+import no.nav.pensjon.brev.api.model.LetterRequest
 import no.nav.pensjon.brev.template.Letter
 import no.nav.pensjon.brev.template.LetterTemplate
 import no.nav.pensjon.brev.template.jacksonObjectMapper
@@ -38,5 +39,3 @@ object LetterResource {
         }
 
 }
-
-data class LetterRequest(val template: String, val letterData: ObjectNode, val felles: Felles, val language: LanguageCode)

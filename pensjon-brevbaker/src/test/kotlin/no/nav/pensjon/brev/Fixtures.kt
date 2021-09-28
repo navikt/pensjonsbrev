@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev
 
-import no.nav.pensjon.brev.api.dto.*
+import no.nav.pensjon.brev.api.model.*
 import java.time.LocalDate
 
 object Fixtures {
