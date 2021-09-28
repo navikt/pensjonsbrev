@@ -1,0 +1,34 @@
+name: "Build and release pensjon-brevbaker-api-model"
+on:
+  push:
+    branches:
+      - "main"
+    paths:
+      - "pensjon-brevbaker-api-model/**"
+      - ".github/workflows/brevbaker-api-modelr.yaml"
+
+jobs:
+  "release":
+    defaults:
+      run:
+        working-directory: pensjon-brevbaker-api-model
+    name: "build"
+    runs-on: "ubuntu-18.04"
+    steps:
+      - uses: "actions/checkout@v2"
+      - uses: "gradle/wrapper-validation-action@v1"
+      - uses: "actions/cache@v2"
+        with:
+          "path": "~/.gradle/caches"
+          "key": "${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle.kts') }}"
+          "restore-keys": "${{ runner.os }}-gradle-"
+      - uses: "actions/setup-java@v1"
+        with:
+          "java-version": "15"
+      - name: "compile and run tests"
+        run: "./gradlew build"
+      - name: "Release maven artifact"
+        run: "./gradlew publish"
+        env:
+          GPR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+          GPR_USER: "${{ env.GITHUB_ACTOR }}"
