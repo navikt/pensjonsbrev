@@ -2,9 +2,9 @@ apiVersion: "nais.io/v1alpha1"
 kind: "Application"
 metadata:
   name: {{app-name}}
-  namespace: "teampensjon"
+  namespace: "pensjonsbrev"
   labels:
-    "team": "teampensjon"
+    "team": "pensjonsbrev"
 spec:
   image: {{image}}
   port: 8080
