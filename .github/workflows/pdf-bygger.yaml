@@ -7,7 +7,7 @@ on:
       - "pdf-bygger/**"
       - ".github/workflows/pdf-bygger.yaml"
 env:
-  "IMAGE": "docker.pkg.github.com/${{ github.repository }}/pensjon-brevbaker:${{\
+  "IMAGE": "docker.pkg.github.com/${{ github.repository }}/pensjon-pdf-bygger:${{\
     \ github.sha }}"
 jobs:
   "build":
