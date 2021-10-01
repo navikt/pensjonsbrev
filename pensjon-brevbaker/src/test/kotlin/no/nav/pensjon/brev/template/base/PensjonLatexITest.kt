@@ -37,7 +37,7 @@ class PensjonLatexITest {
             .render()
             .let { PdfCompilationInput(it.base64EncodedFiles()) }
             .let { LaTeXCompilerService().producePDF(it) }
-            .let { Base64.getDecoder().decode(it) }
+            .let { Base64.getDecoder().decode(it.base64PDF) }
 //            .also { File("test.pdf").writeBytes(it) }
     }
 

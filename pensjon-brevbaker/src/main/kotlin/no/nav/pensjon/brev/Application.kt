@@ -64,8 +64,9 @@ fun Application.module() {
             val pdfBase64 = LetterResource.create(letterRequest).render()
                 .let { PdfCompilationInput(it.base64EncodedFiles()) }
                 .let { latexCompilerService.producePDF(it) }
+                .let { base64Decoder.decode(it.base64PDF) }
 
-            call.respondBytes(base64Decoder.decode(pdfBase64), ContentType.Application.Pdf)
+            call.respondBytes(pdfBase64, ContentType.Application.Pdf)
         }
 
         get("/isAlive") {

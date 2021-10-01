@@ -1,8 +1,8 @@
-val ktorVersion = "1.6.0"
-val kotlinVersion = "1.5.10"
+val ktorVersion: String by project
+val logbackVersion: String by project
 
 plugins {
-    kotlin("jvm") version "1.5.10"
+    kotlin("jvm") version "1.5.20"
     application
     id("com.github.johnrengelman.shadow") version "7.0.0"
 }
@@ -12,7 +12,7 @@ repositories {
     mavenCentral()
 }
 
-group="no.nav.pensjon.brev.pdfbygger"
+group="no.nav.pensjon.brev"
 version="0.0.1-SNAPSHOT"
 
 tasks {
@@ -24,7 +24,7 @@ tasks {
 }
 
 dependencies {
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion")
+    implementation(kotlin("stdlib"))
     implementation("io.ktor:ktor-server-netty:$ktorVersion")
     implementation("io.ktor:ktor-client-core:$ktorVersion")
     implementation("io.ktor:ktor-client-core-jvm:$ktorVersion")

@@ -4,9 +4,9 @@ import java.io.File
 import java.nio.file.Path
 import java.util.*
 import java.util.concurrent.TimeUnit
-import kotlin.IllegalStateException
 import kotlin.io.path.absolutePathString
 import kotlin.io.path.createTempDirectory
+import kotlin.io.path.nameWithoutExtension
 
 private const val COMPILATION_RUNS = 2
 
@@ -14,71 +14,81 @@ class LaTeXService {
     private val decoder = Base64.getDecoder()
     private val encoder = Base64.getEncoder()
 
-    fun producePDF(latexFiles: Map<String, String>): PDFCompilationOutput {
+    fun producePDF(latexFiles: Map<String, String>): PDFCompilationResponse {
         val tmpDir = createTempDirectory()
 
         latexFiles.forEach {
-            val file = File(tmpDir.resolve(it.key).absolutePathString())
-            file.createNewFile()
-            file.writeBytes(decoder.decode(it.value))
+            tmpDir.resolve(it.key).toFile().apply {
+                createNewFile()
+                writeBytes(decoder.decode(it.value))
+            }
         }
 
-        val compiledPDF: PDFCompilationOutput
-        try {
-            compiledPDF = createLetter(tmpDir)
-        } catch (e: Exception) {
-            return PDFCompilationOutput(buildLog =
-            """Exception while trying to compile letter:
-                ${e.message}""".trimMargin()
-            )
+        return try {
+            createLetter(tmpDir)
         } finally {
-            File(tmpDir.absolutePathString()).deleteRecursively()
+            tmpDir.toFile().deleteRecursively()
         }
-        return compiledPDF
     }
 
-    private fun createLetter(executionFolder: Path): PDFCompilationOutput {
-        val letterPath = executionFolder.resolve("letter.pdf")
-        val logPath = executionFolder.resolve("letter.log")
+    private fun createLetter(executionFolder: Path): PDFCompilationResponse {
 
-        //Run twice to resolve references such as number of pages
-        for (run in 1..COMPILATION_RUNS) {
-            runCompilationCommand(executionFolder, logPath)
-        }
+        //Compile multiple times to resolve references such as number of pages
+        val result = (1..COMPILATION_RUNS)
+            .map { executeCompileProcess(executionFolder) }
+            .lastOrNull() ?: throw IllegalStateException("Did not attempt to compile pdf from latex, compilation runs: ${1..COMPILATION_RUNS}")
 
+        return when (result) {
+            is Execution.Success ->
+                result.pdf.toFile().readBytes()
+                    .let { encoder.encodeToString(it) }
+                    .let { PDFCompilationResponse.Base64PDF(it) }
 
-        val letterPDF = File(letterPath.absolutePathString())
-        return if (letterPDF.exists()) {
-            PDFCompilationOutput(pdf = encoder.encodeToString(letterPDF.readBytes()))
-        } else {
-            val letterCompilerLog = File(logPath.absolutePathString())
-            if (!letterCompilerLog.exists()) {
-                throw IllegalStateException("pdflatex compilation did not return log file or letter file")
+            is Execution.Failure.Compilation ->
+                PDFCompilationResponse.Failure.Client(reason = "PDF compilation failed", output = result.output, error = result.error)
+
+            is Execution.Failure.Execution -> {
+                //TODO: log exception
+                PDFCompilationResponse.Failure.Server(reason = "Compilation process execution failed: see logs")
             }
-            throw PdfCompilationException( letterCompilerLog.readText())
+
+            is Execution.Failure.Timeout ->
+                PDFCompilationResponse.Failure.Server(reason = "Compilation timed out - spent more than: ${result.timeout} ${result.unit}")
         }
     }
 
-    private fun runCompilationCommand(executionFolder: Path, logPath: Path) {
-        val process =
-            ProcessBuilder(*"xelatex -interaction=nonstopmode -halt-on-error letter.tex".split(" ").toTypedArray())
-                .directory(File(executionFolder.absolutePathString()))
-                .redirectOutput(ProcessBuilder.Redirect.INHERIT)
-                .redirectError(ProcessBuilder.Redirect.INHERIT)
+    private fun executeCompileProcess(
+        workingDir: Path,
+        texFilename: String = "letter.tex",
+        timeout: Long = 30,
+        timeoutUnit: TimeUnit = TimeUnit.SECONDS,
+        output: Path = workingDir.resolve("process.out"),
+        error: Path = workingDir.resolve("process.err"),
+    ): Execution =
+        runCatching {
+            ProcessBuilder(*"xelatex -interaction=nonstopmode -halt-on-error $texFilename".split(" ").toTypedArray())
+                .directory(workingDir.toFile())
+                .redirectOutput(output.toFile())
+                .redirectError(error.toFile())
                 .start()
+                .let {
+                    if (!it.waitFor(timeout, timeoutUnit)) {
+                        it.destroy()
+                        Execution.Failure.Timeout(timeout, timeoutUnit)
+                    } else if (it.exitValue() == 0) {
+                        Execution.Success(pdf = workingDir.resolve("${File(texFilename).nameWithoutExtension}.pdf"))
+                    } else {
+                        Execution.Failure.Compilation(output = output.toFile().readText(), error = error.toFile().readText())
+                    }
+                }
+        }.getOrElse { Execution.Failure.Execution(it) }
+}
 
-        val timedOut = !process.waitFor(30, TimeUnit.SECONDS)
-        if (timedOut) {
-            throw IllegalStateException("pdf compilation timed out")
-        }
-
-        if (process.exitValue() != 0) {
-            val letterCompilerLog = File(logPath.absolutePathString())
-            if (!letterCompilerLog.exists()) {
-                throw IllegalStateException("pdflatex compilation did not return log file or letter file")
-            }
-            throw PdfCompilationException( letterCompilerLog.readText())
-        }
+private sealed class Execution {
+    data class Success(val pdf: Path) : Execution()
+    sealed class Failure : Execution() {
+        data class Timeout(val timeout: Long, val unit: TimeUnit) : Failure()
+        data class Compilation(val output: String, val error: String) : Failure()
+        data class Execution(val cause: Throwable) : Failure()
     }
-
 }

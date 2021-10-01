@@ -6,16 +6,14 @@ import io.ktor.client.features.json.*
 import io.ktor.client.request.*
 import io.ktor.http.*
 import kotlinx.coroutines.runBlocking
-import java.lang.IllegalStateException
-import java.lang.RuntimeException
 
 data class PdfCompilationInput(val files: Map<String, String>)
-data class PDFCompilationOutput(val buildLog: String? = null, val pdf: /*base64*/String? = null)
+data class PDFCompilationOutput(val base64PDF: String)
 
 //TODO: Skriv tester
 class LaTeXCompilerService(private val pdfByggerUrl: String = "http://127.0.0.1:8081") {
-    private val httpClient = HttpClient(CIO){
-        install(JsonFeature){
+    private val httpClient = HttpClient(CIO) {
+        install(JsonFeature) {
             serializer = JacksonSerializer()
         }
         engine {
@@ -23,23 +21,11 @@ class LaTeXCompilerService(private val pdfByggerUrl: String = "http://127.0.0.1:
         }
     }
 
-    fun producePDF(compilationInput: PdfCompilationInput): String {
-        var response: PDFCompilationOutput
+    fun producePDF(compilationInput: PdfCompilationInput): PDFCompilationOutput =
         runBlocking {
-            try {
-                response = httpClient.post("$pdfByggerUrl/compile") { //TODO get url from config
-                    contentType(ContentType.Application.Json)
-                    body = compilationInput
-                }
-            } catch (e: Exception) {
-                throw RuntimeException(e)
+            httpClient.post("$pdfByggerUrl/compile") {
+                contentType(ContentType.Application.Json)
+                body = compilationInput
             }
         }
-        if(response.buildLog != null) {
-            throw IllegalStateException(response.buildLog)
-        } else {
-            return response.pdf
-                ?:throw IllegalStateException("Pdf compiler service responded without errors or pdf result")
-        }
-    }
 }
