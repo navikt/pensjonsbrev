@@ -10,7 +10,7 @@ spec:
   port: 8080
   service:
     port: 8080
-    protocol: https
+    protocol: http
   liveness:
     path: "/isAlive"
     port: 8080
