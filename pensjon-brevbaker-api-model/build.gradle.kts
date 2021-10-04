@@ -1,10 +1,10 @@
 plugins {
-    kotlin("jvm") version "1.5.20"
+    kotlin("jvm") version "1.3.72"
     `maven-publish`
 }
 
 group = "no.nav.pensjon.brev"
-version = "1.0"
+version = "1.1"
 
 java {
     withSourcesJar()
@@ -40,9 +40,9 @@ publishing {
 
 tasks {
     compileKotlin {
-        kotlinOptions.jvmTarget = "15"
+        kotlinOptions.jvmTarget = "1.8"
     }
     compileTestKotlin {
-        kotlinOptions.jvmTarget = "15"
+        kotlinOptions.jvmTarget = "1.8"
     }
 }
