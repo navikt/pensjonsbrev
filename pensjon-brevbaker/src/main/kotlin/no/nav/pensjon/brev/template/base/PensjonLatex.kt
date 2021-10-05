@@ -149,7 +149,7 @@ object PensjonLatex : BaseTemplate() {
     override fun render(letter: Letter<*>): RenderedLetter =
         RenderedLatexLetter().apply {
             newFile("params.tex").use { masterTemplateParameters(letter, LatexPrintWriter(it)) }
-            newFile("letter.xmpdata").use { archivalPdfParameters(letter, LatexPrintWriter(it)) }
+//            newFile("letter.xmpdata").use { archivalPdfMetadata(letter, LatexPrintWriter(it)) }
             newFile("letter.tex").use { renderLetterV2(letter, LatexPrintWriter(it)) }
             newFile("nav-logo.pdf").use { getResource("nav-logo.pdf").transferTo(it) }
             newFile("nav-logo.pdf_tex").use { getResource("nav-logo.pdf_tex").transferTo(it) }
@@ -159,7 +159,7 @@ object PensjonLatex : BaseTemplate() {
             }
         }
 
-    private fun archivalPdfParameters(letter: Letter<*>, latexPrintWriter: LatexPrintWriter) =
+    private fun archivalPdfMetadata(letter: Letter<*>, latexPrintWriter: LatexPrintWriter) =
         with(latexPrintWriter) {
             printCmd("Title", letter.template.title.text(letter.language))
             printCmd("Publisher", letter.felles.avsenderEnhet.navn)

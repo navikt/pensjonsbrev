@@ -34,7 +34,7 @@
 \usepackage{scrlayer}   % creating custom layers/custom posistioned fields
 \usepackage{needspace}
 \usepackage{geometry}   % adjusting margins
-\usepackage{pdfx}       % create pdf/A compliant pdf's
+%\usepackage{pdfx}       % create pdf/A compliant pdf's
 \usepackage{enumitem,amssymb} % for formChoice list
 \setsansfont{Source Sans Pro}
 \setmainfont{Source Sans Pro}
