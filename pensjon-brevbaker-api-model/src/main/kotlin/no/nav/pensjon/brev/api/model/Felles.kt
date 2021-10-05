@@ -28,12 +28,12 @@ data class Adresse(
     val linje2: String,
     val linje3: String? = null,
     val linje4: String? = null,
-    val linje5: String? = null,
+    val linje5: String? = null
 )
 
 data class NAVEnhet(
     val returAdresse: ReturAdresse,
     val nettside: String,
     val navn: String,
-    val telefonnummer: String,
+    val telefonnummer: String
 )
