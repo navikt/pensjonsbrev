@@ -34,7 +34,11 @@
 \usepackage{scrlayer}   % creating custom layers/custom posistioned fields
 \usepackage{needspace}
 \usepackage{geometry}   % adjusting margins
-%\usepackage{pdfx}       % create pdf/A compliant pdf's
+\ifdefined\pdfcreationdate\else
+    \def\pdfcreationdate{\string D:20181028075445+10’00’}% TODO generate this
+\fi
+
+\usepackage{pdfx}       % create pdf/A compliant pdf's
 \usepackage{enumitem,amssymb} % for formChoice list
 \setsansfont{Source Sans Pro}
 \setmainfont{Source Sans Pro}
@@ -47,14 +51,14 @@
 %----------------------------------------
 
 %fonts
-\newfontface{\grayFont}{Arial}[Color=888888]
-\newfontface{\arialFont}[BoldFont={Arial Bold}]{Arial}
-\newfontface{\timesNewRomanFont}[BoldFont={Times New Roman Bold}]{Times New Roman}
+\newfontface{\grayFont}{Source Sans Pro}[Color=888888]
+\newfontface{\secondaryFont}[BoldFont={Source Sans Pro Bold}]{Source Sans Pro}
+\newfontface{\primaryFont}[BoldFont={Source Sans Pro Bold}]{Source Sans Pro}
 
 % Global font commands
 \newcommand{\standardtextsize}{12pt}
 \newcommand{\tinytextsize}{8pt}
-\newcommand{\tinyArialText}[1]{{\arialFont \fontsize{8pt}{8pt} \selectfont #1}}
+\newcommand{\tinyText}[1]{{\secondaryFont \fontsize{8pt}{8pt} \selectfont #1}}
 \setparsizes{0pt}{1em}{0pt plus 1fil}
 
 %itemize / lists spacing
@@ -91,8 +95,8 @@
     \newline
     \parskip=0pt
     \baselineskip=5pt
-    \tinyArialText{\feltreturadresseenhetprefix \space \feltnavenhet}\newline
-    \tinyArialText{\feltreturadresse \space \feltreturadressepostnrsted}
+    \tinyText{\feltreturadresseenhetprefix \space \feltnavenhet}\newline
+    \tinyText{\feltreturadresse \space \feltreturadressepostnrsted}
 }
 
 
@@ -104,7 +108,7 @@
 \KOMAoption{refline}{dateleft}
 \setplength{refhpos}{159mm} %distance from left
 \setplength{refvpos}{84mm} %distance from top
-\setkomavar{date}{\tinyArialText{\feltdatoprefix}\hspace{1pt}\feltdato}
+\setkomavar{date}{\tinyText{\feltdatoprefix}\hspace{1pt}\feltdato}
 
 
 %----------------------------------------
@@ -113,7 +117,7 @@
 \setplength{toaddrhpos}{12mm}
 \setplength{toaddrvpos}{36mm}
 \newcommand{\brevparameter}{
-    \arialFont \fontsize{12pt}{12pt} \selectfont
+    \secondaryFont \fontsize{12pt}{12pt} \selectfont
     \feltmottakeradresselineone \newline
     \feltmottakeradresselinetwo \newline
     \feltmottakeradresselinethree \newline
@@ -127,7 +131,7 @@
 %----------------------------------------
 
 %Title font
-\newfontface{\titleFont}[BoldFont={Times New Roman Bold}]{Times New Roman}
+\newfontface{\titleFont}[BoldFont={Source Sans Pro Bold}]{Source Sans Pro}
 \newcommand{\titleText}[1]{\textbf{\titleFont \fontsize{16pt}{16pt} \selectfont \newline #1}}
 
 \setplength{refaftervskip}{10mm} %vertical distance between title and reference field (containing date)
@@ -215,9 +219,9 @@
 %               Footer
 %----------------------------------------
 \setlength{\footskip}{6pt} % space between letter content and footer
-\newcommand{\footerText}[1]{{\arialFont \fontsize{8pt}{8pt} \selectfont #1}} %footer font command
+\newcommand{\footerText}[1]{{\secondaryFont \fontsize{8pt}{8pt} \selectfont #1}} %footer font command
 %page number
-\renewcommand*\pagemark{\usekomafont{pagenumber}{\tinyArialText{\feltsideprefix~\textbf{\thepage}~\feltsideinfix~\textbf{\letterlastpage}}}}
+\renewcommand*\pagemark{\usekomafont{pagenumber}{\tinyText{\feltsideprefix~\textbf{\thepage}~\feltsideinfix~\textbf{\letterlastpage}}}}
 
 %first footer page
 \setplength{firstfootvpos}{254.5mm} %absolute vertical posistion from top of first page
@@ -300,7 +304,7 @@
     \stepcounter{attachments}
 
     % renew last page for attachments
-    \renewcommand*\pagemark{\usekomafont{pagenumber}{\tinyArialText{\feltsideprefix~\textbf{\thepage}~\feltsideinfix~\textbf{\pageref{attachment\arabic{attachments}}}}}}
+    \renewcommand*\pagemark{\usekomafont{pagenumber}{\tinyText{\feltsideprefix~\textbf{\thepage}~\feltsideinfix~\textbf{\pageref{attachment\arabic{attachments}}}}}}
     \hfill\includegraphics[width=25mm,page=1]{nav-logo.pdf}
     \par
     \titleText{#1} \par

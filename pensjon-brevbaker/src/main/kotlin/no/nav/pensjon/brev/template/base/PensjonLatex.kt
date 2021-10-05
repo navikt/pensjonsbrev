@@ -10,6 +10,7 @@ import no.nav.pensjon.brev.template.dsl.*
 import java.io.InputStream
 import java.text.SimpleDateFormat
 import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 object PensjonLatex : BaseTemplate() {
     override val languageSettings: LanguageSettings = languageSettings {
@@ -149,7 +150,7 @@ object PensjonLatex : BaseTemplate() {
     override fun render(letter: Letter<*>): RenderedLetter =
         RenderedLatexLetter().apply {
             newFile("params.tex").use { masterTemplateParameters(letter, LatexPrintWriter(it)) }
-//            newFile("letter.xmpdata").use { archivalPdfMetadata(letter, LatexPrintWriter(it)) }
+            newFile("letter.xmpdata").use { archivalPdfMetadata(letter, LatexPrintWriter(it)) }
             newFile("letter.tex").use { renderLetterV2(letter, LatexPrintWriter(it)) }
             newFile("nav-logo.pdf").use { getResource("nav-logo.pdf").transferTo(it) }
             newFile("nav-logo.pdf_tex").use { getResource("nav-logo.pdf_tex").transferTo(it) }
@@ -163,7 +164,7 @@ object PensjonLatex : BaseTemplate() {
         with(latexPrintWriter) {
             printCmd("Title", letter.template.title.text(letter.language))
             printCmd("Publisher", letter.felles.avsenderEnhet.navn)
-            printCmd("Date", SimpleDateFormat("YYYY-MM-DD").format(letter.felles.dokumentDato))
+            printCmd("Date", letter.felles.dokumentDato.format(DateTimeFormatter.ofPattern("YYYY-MM-DD")))
             printCmd("Language", letter.language.locale().toLanguageTag())
         }
 
@@ -241,9 +242,9 @@ object PensjonLatex : BaseTemplate() {
             printWriter.printNewCmd("feltetternavnmottaker", etternavn)
             printWriter.printNewCmd("feltmottakeradresselineone", adresse.linje1)
             printWriter.printNewCmd("feltmottakeradresselinetwo", adresse.linje2)
-            printWriter.printNewCmd("feltmottakeradresselinethree", adresse.linje3?:"")
-            printWriter.printNewCmd("feltmottakeradresselinefour", adresse.linje4?:"")
-            printWriter.printNewCmd("feltmottakeradresselinefive", adresse.linje5?:"")
+            printWriter.printNewCmd("feltmottakeradresselinethree", adresse.linje3 ?: "")
+            printWriter.printNewCmd("feltmottakeradresselinefour", adresse.linje4 ?: "")
+            printWriter.printNewCmd("feltmottakeradresselinefive", adresse.linje5 ?: "")
             //TODO: fiks null-case her
         }
 
