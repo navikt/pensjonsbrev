@@ -19,12 +19,12 @@ object Fixtures {
             telefonnummer = "55553334",
         ),
         mottaker = Mottaker(
-            fornavn = "PERLAKI",
-            etternavn = "YASIR-MASK",
+            fornavn = "TEST",
+            etternavn = "TESTERSON",
             foedselsnummer = "12345678910",
-            kortnavn = "YASIR-MASK PERLAKI",
+            kortnavn = "TESTERSON TEST",
             adresse = Adresse(
-                linje1 = "PERLAKI YASIR-MASK",
+                linje1 = "TEST TESTERSON",
                 linje2 = "JERNBANETORGET 4 F",
                 linje3 = "1344 HASLUM",
             ),

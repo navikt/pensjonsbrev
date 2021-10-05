@@ -9,6 +9,8 @@ import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.Letter
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
+import java.io.File
+import java.util.*
 
 @Tag(TestTags.PDF_BYGGER)
 class OmsorgEgenAutoITest {

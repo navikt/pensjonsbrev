@@ -59,14 +59,15 @@ class LaTeXService {
 
     private fun executeCompileProcess(
         workingDir: Path,
-        texFilename: String = "letter.tex",
+        texFilename: String = "letter",
         timeout: Long = 30,
         timeoutUnit: TimeUnit = TimeUnit.SECONDS,
         output: Path = workingDir.resolve("process.out"),
         error: Path = workingDir.resolve("process.err"),
     ): Execution =
         runCatching {
-            ProcessBuilder(*"xelatex -interaction=nonstopmode -halt-on-error $texFilename".split(" ").toTypedArray())
+            ProcessBuilder(*("xelatex --interaction=nonstopmode -halt-on-error $texFilename.tex --no-pdf" +
+                    " && xdvipdfmx -E $texFilename.pdf").split(" ").toTypedArray())
                 .directory(workingDir.toFile())
                 .redirectOutput(output.toFile())
                 .redirectError(error.toFile())

@@ -34,9 +34,10 @@
 \usepackage{scrlayer}   % creating custom layers/custom posistioned fields
 \usepackage{needspace}
 \usepackage{geometry}   % adjusting margins
+\usepackage{pdfx}       % create pdf/A compliant pdf's
 \usepackage{enumitem,amssymb} % for formChoice list
-\setsansfont{Arial}
-\setmainfont{Times New Roman}
+\setsansfont{Source Sans Pro}
+\setmainfont{Source Sans Pro}
 %! suppress = FileNotFound
 \include{params}
 
@@ -46,7 +47,7 @@
 %----------------------------------------
 
 %fonts
-\newfontface{\grayArialFont}{Arial}[Color=888888]
+\newfontface{\grayFont}{Arial}[Color=888888]
 \newfontface{\arialFont}[BoldFont={Arial Bold}]{Arial}
 \newfontface{\timesNewRomanFont}[BoldFont={Times New Roman Bold}]{Times New Roman}
 
@@ -135,7 +136,7 @@
 \setlength{\vskipafteropening}{\dimexpr(6pt)} %removing the baseline skip and 5 pts
 
 %opening prefix font
-\newcommand{\tinyGrayText}[1]{{\grayArialFont \fontsize{8pt}{8pt} \selectfont #1}}
+\newcommand{\tinyGrayText}[1]{{\grayFont \fontsize{8pt}{8pt} \selectfont #1}}
 
 \newcommand{\sakspart}{
     \fontsize{12pt}{14pt} \selectfont
