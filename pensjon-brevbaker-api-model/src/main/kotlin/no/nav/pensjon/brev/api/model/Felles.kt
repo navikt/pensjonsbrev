@@ -18,7 +18,7 @@ data class Mottaker(
     val fornavn: String,
     val mellomnavn: String? = null,
     val etternavn: String,
-    val foedselsnummer: String,
+    val foedselsnummer: Foedselsnummer,
     val kortnavn: String,
     val adresse: Adresse
 )
@@ -35,5 +35,5 @@ data class NAVEnhet(
     val returAdresse: ReturAdresse,
     val nettside: String,
     val navn: String,
-    val telefonnummer: String
+    val telefonnummer: Telefonnummer
 )
