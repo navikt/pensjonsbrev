@@ -219,7 +219,7 @@
 \setlength{\footskip}{6pt} % space between letter content and footer
 \newcommand{\footerText}[1]{{\secondaryFont \fontsize{8pt}{8pt} \selectfont #1}} %footer font command
 %page number
-\renewcommand*\pagemark{\usekomafont{pagenumber}{\tinyText{\feltsideprefix~\textbf{\thepage}~\feltsideinfix~\textbf{\letterlastpage}}}}
+\renewcommand*\pagemark{\usekomafont{pagenumber}{\tinyText{\feltsideprefix~\textbf{\thepage}~\feltsideinfix~\textbf{\pageref*{\thisletter.lastpage}}}}}
 
 %first footer page
 \setplength{firstfootvpos}{254.5mm} %absolute vertical posistion from top of first page
@@ -266,24 +266,23 @@
     \vspace*{4pt}
     \feltnavenhet
     \par
-    \vspace*{8pt}
+    \vspace*{12pt}
     \feltclosingautomatisktext
 }
 \renewcommand{\closing}{
     \par
     \begin{minipage}{\textwidth}
-        \vspace{5pt}
+        \vspace{24pt}
         \textbf{\feltclosingspoersmaal}
         \vspace*{\vskipaftersectiontitle}
-        \newline
         \paragraph{\feltclosingkontaktoss}
-        \vspace*{42pt}
         \par
+        \vspace*{42pt}
         \feltclosinggreeting
         \par
         \closingbehandlet
         \par
-        \vspace{50pt}
+        \vspace{60pt}
         \feltclosingvedlegg
     \end{minipage}
 }
@@ -291,23 +290,30 @@
 %----------------------------------------
 %       Attachment environment
 %----------------------------------------
+
+% setup a counter to uniquely identify attachments (used for labeling the last page of attachments)
 \newcounter{attachments}
+
+% produces a label for the current attachment
+\newcommand{\currentattachmentlastpage}{attachment\arabic{attachments}}
 
 \newcommand{\startvedlegg}[1]{
     % make sure that the attachment starts on an even page (for printing)
     \clearpage{\cleardoublepage}
 
-    % setup page counter
+    % reset the page counter for this attachment
     \setcounter{page}{1}
+    % increase the attachment counter to identify this attachment
     \stepcounter{attachments}
 
-    % renew last page for attachments
-    \renewcommand*\pagemark{\usekomafont{pagenumber}{\tinyText{\feltsideprefix~\textbf{\thepage}~\feltsideinfix~\textbf{\pageref{attachment\arabic{attachments}}}}}}
+    % renew pagemark with pageref to the last page of this attachment
+    \renewcommand*\pagemark{\usekomafont{pagenumber}{\tinyText{\feltsideprefix~\textbf{\thepage}~\feltsideinfix~\textbf{\pageref*{\currentattachmentlastpage}}}}}
     \hfill\includegraphics[width=25mm,page=1]{nav-logo.pdf}
     \par
     \titleText{#1} \par
 }
 
 \newcommand{\sluttvedlegg}{
-    \label{attachment\arabic{attachments}}
+    % create a label on the last page of this attachment (used by \pagemark for attachments)
+    \label{\currentattachmentlastpage}
 }
