@@ -34,16 +34,14 @@
 \usepackage{scrlayer}   % creating custom layers/custom posistioned fields
 \usepackage{needspace}
 \usepackage{geometry}   % adjusting margins
-\ifdefined\pdfcreationdate\else
-    \def\pdfcreationdate{\string D:20181028075445+10’00’}% TODO generate this
-\fi
+\usepackage{enumitem,amssymb} % for formChoice list
+
+%! suppress = FileNotFound
+\include{params}  % Must be done before pdfx is imported
 
 \usepackage{pdfx}       % create pdf/A compliant pdf's
-\usepackage{enumitem,amssymb} % for formChoice list
 \setsansfont{Source Sans Pro}
 \setmainfont{Source Sans Pro}
-%! suppress = FileNotFound
-\include{params}
 
 
 %----------------------------------------

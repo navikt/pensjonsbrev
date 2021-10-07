@@ -10,6 +10,7 @@ import no.nav.pensjon.brev.template.dsl.*
 import java.io.InputStream
 import java.text.SimpleDateFormat
 import java.time.LocalDate
+import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
 object PensjonLatex : BaseTemplate() {
@@ -150,7 +151,7 @@ object PensjonLatex : BaseTemplate() {
     override fun render(letter: Letter<*>): RenderedLetter =
         RenderedLatexLetter().apply {
             newFile("params.tex").use { masterTemplateParameters(letter, LatexPrintWriter(it)) }
-            newFile("letter.xmpdata").use { archivalPdfMetadata(letter, LatexPrintWriter(it)) }
+            newFile("letter.xmpdata").use { xmpData(letter, LatexPrintWriter(it)) }
             newFile("letter.tex").use { renderLetterV2(letter, LatexPrintWriter(it)) }
             newFile("nav-logo.pdf").use { getResource("nav-logo.pdf").transferTo(it) }
             newFile("nav-logo.pdf_tex").use { getResource("nav-logo.pdf_tex").transferTo(it) }
@@ -160,13 +161,24 @@ object PensjonLatex : BaseTemplate() {
             }
         }
 
-    private fun archivalPdfMetadata(letter: Letter<*>, latexPrintWriter: LatexPrintWriter) =
+    private fun xmpData(letter: Letter<*>, latexPrintWriter: LatexPrintWriter) {
         with(latexPrintWriter) {
-            printCmd("Title", letter.template.title.text(letter.language))
-            printCmd("Publisher", letter.felles.avsenderEnhet.navn)
-            printCmd("Date", letter.felles.dokumentDato.format(DateTimeFormatter.ofPattern("YYYY-MM-DD")))
+            printCmd("Title" , letter.template.title.text(letter.language))
             printCmd("Language", letter.language.locale().toLanguageTag())
+            printCmd("Publisher", letter.felles.avsenderEnhet.navn)
+            printCmd("Date", letter.felles.dokumentDato.format(DateTimeFormatter.ISO_LOCAL_DATE))
         }
+    }
+
+    private fun pdfMetadata(letter: Letter<*>, latexPrintWriter: LatexPrintWriter) =
+        latexPrintWriter.print("""
+               \pdfinfo{
+                    /Creator (${letter.felles.avsenderEnhet.navn.latexEscape()})
+                    /Title  (${letter.template.title.text(letter.language).latexEscape()})
+                    /Language (${letter.language.locale().toLanguageTag().latexEscape()})
+                    /Producer (${letter.felles.avsenderEnhet.navn.latexEscape()})
+                }
+            """.trimIndent(), escape = false)
 
     private fun renderAttachment(
         letter: Letter<*>,
@@ -185,6 +197,7 @@ object PensjonLatex : BaseTemplate() {
     private fun renderLetterV2(letter: Letter<*>, printWriter: LatexPrintWriter): Unit =
         with(printWriter) {
             println("""\documentclass[12pt]{pensjonsbrev_v2}""", escape = false)
+            pdfMetadata(letter, printWriter )
             printCmd("begin", "document")
             printCmd("begin", "letter", """\brevparameter""")
             printCmd("tittel", letter.template.title.text(letter.language))
@@ -209,6 +222,7 @@ object PensjonLatex : BaseTemplate() {
         }
 
         with(printWriter) {
+            println("\\def\\pdfcreationdate{\\string ${pdfCreationTime()}}", escape = false)
             printNewCmd("feltfoedselsnummer", letter.felles.mottaker.foedselsnummer)
             printNewCmd("feltsaksnummer", letter.felles.saksnummer)
         }
@@ -220,6 +234,12 @@ object PensjonLatex : BaseTemplate() {
             datoCommand(dokumentDato, letter.language, printWriter)
             saksbehandlerCommands(signerendeSaksbehandlere, printWriter)
         }
+    }
+
+    private fun pdfCreationTime(): String {
+        val now = ZonedDateTime.now()
+        val formattedTime = now.format(DateTimeFormatter.ofPattern("YYYYMMddHHmmss"))
+        return "D:$formattedTime${now.offset.toString().replace(":","’")}’"
     }
 
     private fun saksbehandlerCommands(saksbehandlere: SignerendeSaksbehandlere?, printWriter: LatexPrintWriter) {

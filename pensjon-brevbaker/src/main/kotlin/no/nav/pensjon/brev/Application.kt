@@ -27,7 +27,10 @@ import java.util.*
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
-private val latexCompilerService = LaTeXCompilerService(System.getenv("PDF_BYGGER_URL") ?: "http://127.0.0.1:8081")
+fun requireEnv(key: String) =
+    System.getenv(key)?: throw IllegalStateException("The environment variable $key is missing.")
+
+private val latexCompilerService = LaTeXCompilerService(requireEnv("PDF_BYGGER_URL"))
 private val base64Decoder = Base64.getDecoder()
 
 @Suppress("unused") // Referenced in application.conf
@@ -96,4 +99,3 @@ suspend fun writeMetrics004(writer: Writer, registry: PrometheusMeterRegistry) {
 
 val prometheusMeterRegistry =
     PrometheusMeterRegistry(PrometheusConfig.DEFAULT, CollectorRegistry.defaultRegistry, Clock.SYSTEM)
-
