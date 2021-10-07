@@ -1,10 +1,8 @@
 package no.nav.pensjon.brev.template.base
 
-import no.nav.pensjon.brev.api.model.Felles
-import no.nav.pensjon.brev.api.model.Mottaker
-import no.nav.pensjon.brev.api.model.NAVEnhet
-import no.nav.pensjon.brev.api.model.SignerendeSaksbehandlere
+import no.nav.pensjon.brev.api.model.*
 import no.nav.pensjon.brev.latex.LatexPrintWriter
+import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.dsl.*
 import java.io.InputStream
@@ -109,7 +107,7 @@ object PensjonLatex : BaseTemplate() {
                 Language.Nynorsk to " eller på telefon ",
                 Language.English to ". You can also contact us by phone ",
             )
-            eval { avsender.select(NAVEnhet::telefonnummer) }
+            eval { avsender.select(NAVEnhet::telefonnummer).select(Telefonnummer::format) }
             text(
                 Language.Bokmal to ". Hvis du oppgir fødselsnummeret ditt når du tar kontakt med NAV, kan vi lettere gi deg rask og god hjelp.",
                 Language.Nynorsk to ". Dersom du gir opp fødselsnummeret ditt når du kontaktar NAV, kan vi lettare gi deg rask og god hjelp.",
@@ -223,7 +221,7 @@ object PensjonLatex : BaseTemplate() {
 
         with(printWriter) {
             println("\\def\\pdfcreationdate{\\string ${pdfCreationTime()}}", escape = false)
-            printNewCmd("feltfoedselsnummer", letter.felles.mottaker.foedselsnummer)
+            printNewCmd("feltfoedselsnummer", letter.felles.mottaker.foedselsnummer.format())
             printNewCmd("feltsaksnummer", letter.felles.saksnummer)
         }
         vedleggCommand(letter, printWriter)
@@ -272,7 +270,7 @@ object PensjonLatex : BaseTemplate() {
     private fun navEnhetCommands(navEnhet: NAVEnhet, printWriter: LatexPrintWriter) =
         with(navEnhet.returAdresse) {
             printWriter.printNewCmd("feltnavenhet", navEnhet.navn)
-            printWriter.printNewCmd("feltnavenhettlf", navEnhet.telefonnummer)
+            printWriter.printNewCmd("feltnavenhettlf", navEnhet.telefonnummer.format())
             printWriter.printNewCmd("feltnavenhetnettside", navEnhet.nettside)
             printWriter.printNewCmd("feltreturadressepostnrsted", "$postNr $postSted")
             printWriter.printNewCmd("feltreturadresse", adresseLinje1)
