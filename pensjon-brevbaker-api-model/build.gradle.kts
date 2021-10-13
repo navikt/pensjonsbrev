@@ -2,12 +2,12 @@ val jupiterVersion: String by project
 val jacksonVersion: String by project
 
 plugins {
-    kotlin("jvm") version "1.3.72"
+    kotlin("jvm") version "1.5.31"
     `maven-publish`
 }
 
 group = "no.nav.pensjon.brev"
-version = "1.2.1"
+version = "1.2.2"
 
 java {
     withSourcesJar()
@@ -19,15 +19,7 @@ repositories {
 }
 
 dependencies {
-    implementation(kotlin("stdlib"))
-    implementation("com.fasterxml.jackson.core:jackson-annotations:$jacksonVersion")
-
-    // JUnit 5
-    testImplementation(platform("org.junit:junit-bom:$jupiterVersion"))
-    testImplementation("org.junit.jupiter:junit-jupiter")
-    testImplementation("com.natpryce:hamkrest:1.8.0.1")
-
-    testImplementation("com.fasterxml.jackson.module:jackson-module-kotlin:$jacksonVersion")
+    compileOnly(kotlin("stdlib"))
 }
 
 publishing {
@@ -51,11 +43,5 @@ publishing {
 tasks {
     compileKotlin {
         kotlinOptions.jvmTarget = "1.8"
-    }
-    compileTestKotlin {
-        kotlinOptions.jvmTarget = "1.8"
-    }
-    test {
-        useJUnitPlatform()
     }
 }

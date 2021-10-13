@@ -1,4 +1,4 @@
 package no.nav.pensjon.brev.api.model
 
-data class Telefonnummer(override val value: String): JsonInlineValue<String>
-data class Foedselsnummer(override val value: String): JsonInlineValue<String>
+data class Telefonnummer(val value: String)
+data class Foedselsnummer(val value: String)
