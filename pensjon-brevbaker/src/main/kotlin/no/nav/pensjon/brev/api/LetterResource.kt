@@ -1,11 +1,7 @@
 package no.nav.pensjon.brev.api
 
 import com.fasterxml.jackson.core.JacksonException
-import com.fasterxml.jackson.databind.node.ObjectNode
 import io.ktor.features.*
-import no.nav.pensjon.brev.api.dto.toLanguage
-import no.nav.pensjon.brev.api.model.Felles
-import no.nav.pensjon.brev.api.model.LanguageCode
 import no.nav.pensjon.brev.api.model.LetterRequest
 import no.nav.pensjon.brev.template.Letter
 import no.nav.pensjon.brev.template.LetterTemplate
@@ -33,7 +29,7 @@ object LetterResource {
 
     private fun parseArgument(letterRequest: LetterRequest, template: LetterTemplate<*, *>): Any =
         try {
-            objectMapper.treeToValue(letterRequest.letterData, template.letterDataType.java)
+            objectMapper.convertValue(letterRequest.letterData, template.letterDataType.java)
         } catch (e: JacksonException) {
             throw IllegalArgumentException("Could not parse letterData", e)
         }
