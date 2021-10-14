@@ -19,7 +19,7 @@ val objectMapper = jacksonObjectMapper()
 class LetterResourceTest {
 
     val template = EksempelBrev.template
-    val eksempelBrevDto = objectMapper.convertValue<ObjectNode>(
+    val eksempelBrevDto = objectMapper.convertValue<Map<String, Any>>(
         EksempelBrevDto(
             pensjonInnvilget = true,
             datoInnvilget = LocalDate.of(2020, 1, 1)

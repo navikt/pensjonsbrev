@@ -1,20 +1,16 @@
-package no.nav.pensjon.brev.api.dto
+package no.nav.pensjon.brev.api
 
-import com.fasterxml.jackson.module.jsonSchema.JsonSchemaGenerator
 import no.nav.pensjon.brev.api.model.LanguageCode
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.LanguageCombination
 import no.nav.pensjon.brev.template.LetterTemplate
-import no.nav.pensjon.brev.template.jacksonObjectMapper
-
-private val schemaGenerator = JsonSchemaGenerator(jacksonObjectMapper())
 
 fun LetterTemplate<*, *>.description() =
     TemplateDescription(
         name = name,
         base = base::class.qualifiedName!!,
-        letterDataSchema = schemaGenerator.generateSchema(letterDataType.java).asObjectSchema(),
+        letterDataClass = letterDataType.java.name,
         languages = language.all().map { it.toCode() },
     )
 

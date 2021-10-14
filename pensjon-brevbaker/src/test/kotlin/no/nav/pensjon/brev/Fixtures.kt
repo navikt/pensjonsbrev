@@ -16,12 +16,12 @@ object Fixtures {
             ),
             nettside = "nav.no",
             navn = "NAV Familie- og pensjonsytelser Porsgrunn",
-            telefonnummer = "55553334",
+            telefonnummer = Telefonnummer("55553334"),
         ),
         mottaker = Mottaker(
             fornavn = "TEST",
             etternavn = "TESTERSON",
-            foedselsnummer = "12345678910",
+            foedselsnummer = Foedselsnummer("01019878910"),
             kortnavn = "TESTERSON TEST",
             adresse = Adresse(
                 linje1 = "TEST TESTERSON",
