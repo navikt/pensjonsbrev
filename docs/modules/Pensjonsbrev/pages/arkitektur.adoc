@@ -16,7 +16,7 @@ HP Extreme bruker hovedsakelig ESB(Enterprise Service Bus) som har en rekke prob
 
 *MetaForce ønsker vi også å gå bort ifra fordi:*
 
-* Team CRM har besluttet at de ikke lengre vil opprettholde MetaForce i NAV
+* Team CCM har besluttet at de ikke lengre vil opprettholde MetaForce i NAV
 * Det er ett proprietært verktøy:
 ** Kan ikke tilpasses våres behov
 ** Vi er ingen garanti at MetaForce ikke stopper å få oppdateringer
