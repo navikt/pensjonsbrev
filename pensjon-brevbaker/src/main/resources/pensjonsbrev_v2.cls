@@ -145,7 +145,7 @@
     \tinyGrayText{\feltsaksnummerprefix} \feltsaksnummer \\
     \tinyGrayText{\feltnavnprefix} \feltetternavnmottaker \space \feltfornavnmottaker \\
     \tinyGrayText{\feltfoedselsnummerprefix} \feltfoedselsnummer
-    \par
+    \\*
     \vspace*{\vskipafteropening} %vertical space before letter content
 }
 
@@ -180,13 +180,13 @@
     \addspaceovertrue %toggle on so that all sections following the first one gets space over the title.
     \textbf{#1} %title
     \vspace*{\vskipaftersectiontitle}
-    \newline
+    \\*
 }
 
 \newcommand{\paragraph}[1]{
-    \par
-    \samepage %do not break up paragraphs across pages
     #1
+    \pagebreak[3] %suggest pagebreak to the LaTeX compiler if it needs to
+    \par
 }
 
 \newcommand{\formvspace}[1][true]{\vspace{0.5cm}}
@@ -273,8 +273,7 @@
     \par
     \begin{minipage}{\textwidth}
         \vspace{24pt}
-        \textbf{\feltclosingspoersmaal}
-        \vspace*{\vskipaftersectiontitle}
+        \lettersectiontitle{\feltclosingspoersmaal}
         \paragraph{\feltclosingkontaktoss}
         \par
         \vspace*{42pt}
