@@ -1,0 +1,19 @@
+= Brevbaker og pdfbygger
+
+Brevbaker er en mikrotjeneste uten state som tar inn informasjon som kreves for ett brev (navn, adresse, saksnummer osv)
+, og gir tilbake en PDF via REST grensesnitt. Brevbakeren bestemmer selve tekstlige innholdet i ett brev basert på brevbestillingen.
+
+
+Datagrunnlaget vil variere pr brev og svarer med en pdf. Brevene vil inneholde ulik informasjon som f.eks
+Verken PDF dokumentet eller informasjonen som brukes til å generere dokumentet lagres i brevbaker/pdf-bygger
+
+Pdf-bygger er en tjeneste som mottar en liste med filer, og kompilerer de som ett LaTeX prosjekt.
+
+== Prosess / Brukstilfelle
+[plantuml, target=img/sekvens-diagram, format=svg]
+....
+BestillerSystem -> Brevbaker: LetterRequest
+Brevbaker -> PDFbygger: Tekstlig innhold for brev med data
+PDFbygger -> Brevbaker: PDF
+Brevbaker -> BestillerSystem: PDF (base64 string)
+....
