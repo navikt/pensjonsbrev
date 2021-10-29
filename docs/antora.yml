@@ -3,4 +3,4 @@ title: Pensjonsbrev
 version: main
 start_page: ROOT:index.adoc
 nav:
-    - ./index.adoc
+    - ./antora-menyvalg.adoc

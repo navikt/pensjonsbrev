@@ -23,17 +23,17 @@ jobs:
     - uses: actions/setup-ruby@v1
       with:
         ruby-version: '2.6'
-    - name: "Install plantuml"
+    - name: Install plantuml
       run: "sudo gem install asciidoctor-diagram"
-    - name: "Install asciidoctor"
+    - name: Install asciidoctor
       run: "sudo apt-get install asciidoctor"
-    - name: "Install graphviz"
+    - name: Install graphviz
       run: "sudo apt-get install graphviz"
-    - name: "Compile using asciidoctor"
+    - name: Compile using asciidoctor
       run: "asciidoctor -D ${{ github.workspace }}/build -r asciidoctor-diagram index.adoc"
-    - name: "Print working directory for test"
+    - name: Print working directory for test
       run: "pwd"
-    - name: "Upload generated site"
+    - name: Upload generated site
       uses: actions/upload-artifact@v1.0.0
       with:
         name: site
