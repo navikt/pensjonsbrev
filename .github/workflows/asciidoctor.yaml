@@ -1,3 +1,4 @@
+name: "Build and deploy asciidoc to github pages"
 on:
   push:
     branches:
