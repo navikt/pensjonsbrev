@@ -160,7 +160,7 @@ object PensjonLatex : BaseTemplate() {
 
     private fun xmpData(letter: Letter<*>, latexPrintWriter: LatexPrintWriter) {
         with(latexPrintWriter) {
-            printCmd("Title" , letter.template.title.text(letter.language))
+            printCmd("Title", letter.template.title.text(letter.language))
             printCmd("Language", letter.language.locale().toLanguageTag())
             printCmd("Publisher", letter.felles.avsenderEnhet.navn)
             printCmd("Date", letter.felles.dokumentDato.format(DateTimeFormatter.ISO_LOCAL_DATE))
@@ -168,14 +168,16 @@ object PensjonLatex : BaseTemplate() {
     }
 
     private fun pdfMetadata(letter: Letter<*>, latexPrintWriter: LatexPrintWriter) =
-        latexPrintWriter.print("""
+        latexPrintWriter.print(
+            """
                \pdfinfo{
                     /Creator (${letter.felles.avsenderEnhet.navn.latexEscape()})
                     /Title  (${letter.template.title.text(letter.language).latexEscape()})
                     /Language (${letter.language.locale().toLanguageTag().latexEscape()})
                     /Producer (${letter.felles.avsenderEnhet.navn.latexEscape()})
                 }
-            """.trimIndent(), escape = false)
+            """.trimIndent(), escape = false
+        )
 
     private fun renderAttachment(
         letter: Letter<*>,
@@ -194,7 +196,7 @@ object PensjonLatex : BaseTemplate() {
     private fun renderLetterV2(letter: Letter<*>, printWriter: LatexPrintWriter): Unit =
         with(printWriter) {
             println("""\documentclass[12pt]{pensjonsbrev_v2}""", escape = false)
-            pdfMetadata(letter, printWriter )
+            pdfMetadata(letter, printWriter)
             printCmd("begin", "document")
             printCmd("begin", "letter", """\brevparameter""")
             printCmd("tittel", letter.template.title.text(letter.language))
@@ -236,7 +238,7 @@ object PensjonLatex : BaseTemplate() {
     private fun pdfCreationTime(): String {
         val now = ZonedDateTime.now()
         val formattedTime = now.format(DateTimeFormatter.ofPattern("YYYYMMddHHmmss"))
-        return "D:$formattedTime${now.offset.toString().replace(":","’")}’"
+        return "D:$formattedTime${now.offset.toString().replace(":", "’")}’"
     }
 
     private fun saksbehandlerCommands(saksbehandlere: SignerendeSaksbehandlere?, printWriter: LatexPrintWriter) {
@@ -280,6 +282,7 @@ object PensjonLatex : BaseTemplate() {
     private fun vedleggCommand(letter: Letter<*>, printWriter: LatexPrintWriter) {
         printWriter.printNewCmd("feltclosingvedlegg") { bodyWriter ->
             if (letter.template.attachments.isNotEmpty()) {
+                bodyWriter.printCmd("closingvedleggspace")
                 bodyWriter.printCmd("begin", "attachmentList")
                 letter.template.attachments.forEach {
                     bodyWriter.print("""\item """, escape = false)

@@ -37,9 +37,13 @@ class PensjonLatexITest {
         Letter(template, brevData, Bokmal, Fixtures.felles)
             .render()
             .let { PdfCompilationInput(it.base64EncodedFiles()) }
-            .let { LaTeXCompilerService().producePDF(it) }
-            .let { Base64.getDecoder().decode(it.base64PDF) }
-            .also { File("test.pdf").writeBytes(it) }
+            .let { LaTeXCompilerService().producePDF(it).base64PDF }
+            .also {
+                val file = File("build/test_pdf/pensjonLatexITest_canRender.pdf")
+                file.parentFile.mkdirs()
+                file.writeBytes(Base64.getDecoder().decode(it))
+                println("Test-file written to: ${file.path}")
+            }
     }
 
 }

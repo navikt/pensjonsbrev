@@ -60,7 +60,6 @@
 \setparsizes{0pt}{1em}{0pt plus 1fil}
 
 %itemize / lists spacing
-\usepackage{enumitem}
 \setlist{nolistsep}
 
 
@@ -269,6 +268,12 @@
     \vspace*{12pt}
     \feltclosingautomatisktext
 }
+
+\newcommand{\closingvedleggspace}{ % Should be used if there is any attachments.
+    \par
+    \vspace{60pt}
+}
+
 \renewcommand{\closing}{
     \par
     \begin{minipage}{\textwidth}
@@ -280,8 +285,6 @@
         \feltclosinggreeting
         \par
         \closingbehandlet
-        \par
-        \vspace{60pt}
         \feltclosingvedlegg
     \end{minipage}
 }
@@ -295,7 +298,6 @@
 
 % produces a label for the current attachment
 \newcommand{\currentattachmentlastpage}{attachment\arabic{attachments}}
-
 \newcommand{\startvedlegg}[1]{
     % make sure that the attachment starts on an even page (for printing)
     \clearpage{\cleardoublepage}

@@ -26,7 +26,12 @@ class OmsorgEgenAutoITest {
             .let { PdfCompilationInput(it.base64EncodedFiles()) }
 //            .also { File("test-params.tex").writeBytes(Base64.getDecoder().decode(it.files["params.tex"])) }
             .let { LaTeXCompilerService().producePDF(it).base64PDF }
-            .also { File("000104-english.pdf").writeBytes(Base64.getDecoder().decode(it)) }
+            .also {
+                val file = File("build/test_pdf/000104-english.pdf")
+                file.parentFile.mkdirs()
+                file.writeBytes(Base64.getDecoder().decode(it))
+                println("Test-file written to: ${file.path}")
+            }
     }
 
 }
