@@ -9,19 +9,6 @@ import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.base.PensjonLatex
 import no.nav.pensjon.brev.template.dsl.*
 
-data class PhraseInputDto(val test: String)
-
-val x = miniLetter(PhraseInputDto::class, languages(Bokmal, Nynorsk, English)) {
-    paragraph {
-        val test = argument().select(PhraseInputDto::test)
-        textExpr(
-            Bokmal to "Hei på deg".expr() + test,
-            Nynorsk to "Hei på deg".expr() + test,
-            English to "Hei på deg".expr() + test
-        )
-    }
-}
-
 object OmsorgEgenAuto : StaticTemplate {
 
     override val template: LetterTemplate<*, *> = createTemplate(
@@ -39,8 +26,6 @@ object OmsorgEgenAuto : StaticTemplate {
         val arEgenerklaring = argument().select(OmsorgEgenAutoDto::arEgenerklaringOmsorgspoeng).str()
 
         outline {
-            usePhrase(PhraseInputDto("test"), x)
-            title1 { text(Bokmal to "test", Nynorsk to "test", English to "test") }
             paragraph {
                 textExpr(
                     Bokmal to

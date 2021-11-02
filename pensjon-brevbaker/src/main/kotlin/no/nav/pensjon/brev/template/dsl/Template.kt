@@ -30,10 +30,10 @@ fun <Lang : LanguageCombination, LetterData : Any> miniLetter(
 
 open class TemplateGlobalScope<LetterData : Any> {
     fun argument(): Expression<LetterData> =
-        Expression.LetterProperty(Letter<LetterData>::argument)
+        Expression.LetterProperty(ExpressionScope<LetterData, *>::argument)
 
     fun felles(): Expression<Felles> =
-        Expression.LetterProperty(Letter<LetterData>::felles)
+        Expression.LetterProperty(ExpressionScope<LetterData, *>::felles)
 }
 
 @LetterTemplateMarker
@@ -135,8 +135,8 @@ class TemplateContainerScope<Lang : LanguageCombination, LetterData : Any> :
         children.add(Element.Title1(TemplateTextOnlyScope<Lang, LetterData>().apply(init).children))
     }
 
-    fun <PhraseData : Any> usePhrase(argument: PhraseData, miniLetter: MiniLetter<Lang, PhraseData>) {
-        children.add(Element.NewArgumentScope(argument, miniLetter.children))
+    fun <PhraseData : Any> usePhrase(argument: Expression<PhraseData>, miniLetter: MiniLetter<Lang, PhraseData>) {
+        children.add(Element.NewArgumentScope(argument, miniLetter.elements))
     }
 
     fun paragraph(init: TemplateTextOnlyScope<Lang, LetterData>.() -> Unit) {

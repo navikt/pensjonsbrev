@@ -189,7 +189,8 @@ object PensjonLatex : BaseTemplate() {
             if (attachment.includeSakspart) {
                 printCmd("sakspart")
             }
-            attachment.outline.forEach { renderElement(letter, it, printWriter) }
+            val scope = letter.toScope()
+            attachment.outline.forEach { renderElement(scope, it, printWriter) }
             printCmd("sluttvedlegg")
         }
 
@@ -216,7 +217,8 @@ object PensjonLatex : BaseTemplate() {
     private fun masterTemplateParameters(letter: Letter<*>, printWriter: LatexPrintWriter) {
         languageSettings.writeLanguageSettings { settingName, settingValue ->
             printWriter.printNewCmd("felt$settingName") { bodyWriter ->
-                settingValue.forEach { renderElement(letter, it, bodyWriter) }
+                val scope = letter.toScope()
+                settingValue.forEach { renderElement(scope, it, bodyWriter) }
             }
         }
 
@@ -293,39 +295,46 @@ object PensjonLatex : BaseTemplate() {
         }
     }
 
-    private fun contents(letter: Letter<*>, printWriter: LatexPrintWriter) =
-        letter.template.outline.forEach { renderElement(letter, it, printWriter) }
+    private fun contents(letter: Letter<*>, printWriter: LatexPrintWriter) {
+        val scope = letter.toScope()
+        letter.template.outline.forEach { renderElement(scope, it, printWriter) }
+    }
 
-    private fun renderElement(letter: Letter<*>, element: Element<*>, printWriter: LatexPrintWriter): Unit =
+    private fun renderElement(scope: ExpressionScope<*, *>, element: Element<*>, printWriter: LatexPrintWriter): Unit =
         when (element) {
             is Element.Title1 ->
                 with(printWriter) {
                     printCmd("lettersectiontitle") {
-                        arg { element.title1.forEach { child -> renderElement(letter, child, it) } }
+                        arg { element.title1.forEach { child -> renderElement(scope, child, it) } }
                     }
                 }
 
+            is Element.NewArgumentScope<*,*> -> {
+                val newScope = ExpressionScope(element.argument.eval(scope), scope.felles, scope.language)
+                element.children.forEach { renderElement(newScope, it, printWriter) }
+            }
+
             is Element.Conditional ->
                 with(element) {
-                    val toRender = if (predicate.eval(letter)) showIf else showElse
-                    toRender.forEach { renderElement(letter, it, printWriter) }
+                    val toRender = if (predicate.eval(scope)) showIf else showElse
+                    toRender.forEach { renderElement(scope, it, printWriter) }
                 }
 
             is Element.Text.Literal ->
-                printWriter.print(element.text(letter.language))
+                printWriter.print(element.text(scope.language))
 
             is Element.Text.Phrase ->
-                printWriter.print(element.phrase.text(letter.language))
+                printWriter.print(element.phrase.text(scope.language))
 
             is Element.Text.Expression ->
-                printWriter.print(element.expression.eval(letter))
+                printWriter.print(element.expression.eval(scope))
 
             is Element.Text.Expression.ByLanguage ->
-                printWriter.print(element.expr(letter.language).eval(letter))
+                printWriter.print(element.expr(scope.language).eval(scope))
 
             is Element.Paragraph ->
                 printWriter.printCmd("paragraph") {
-                    arg { element.paragraph.forEach { child -> renderElement(letter, child, it) } }
+                    arg { element.paragraph.forEach { child -> renderElement(scope, child, it) } }
                 }
 
             is Element.Form.Text ->
@@ -336,7 +345,7 @@ object PensjonLatex : BaseTemplate() {
 
                     printCmd("formText") {
                         arg {
-                            renderElement(letter, element.prompt, it)
+                            renderElement(scope, element.prompt, it)
                             it.print(" ${".".repeat(element.size)}")
                         }
                     }
@@ -350,12 +359,12 @@ object PensjonLatex : BaseTemplate() {
 
                     printCmd("begin") {
                         arg { it.print("formChoice") }
-                        arg { renderElement(letter, element.prompt, it) }
+                        arg { renderElement(scope, element.prompt, it) }
                     }
 
                     element.choices.forEach {
                         printCmd("item")
-                        renderElement(letter, it, printWriter)
+                        renderElement(scope, it, printWriter)
                     }
 
                     printCmd("end", "formChoice")

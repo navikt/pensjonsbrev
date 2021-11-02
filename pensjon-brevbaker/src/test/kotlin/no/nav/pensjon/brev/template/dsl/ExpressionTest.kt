@@ -1,9 +1,6 @@
 package no.nav.pensjon.brev.template.dsl
 
-import no.nav.pensjon.brev.template.BinaryOperation
-import no.nav.pensjon.brev.template.Expression
-import no.nav.pensjon.brev.template.Letter
-import no.nav.pensjon.brev.template.UnaryOperation
+import no.nav.pensjon.brev.template.*
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
@@ -14,7 +11,7 @@ class ExpressionTest {
 
     @Test
     fun `select creates a unaryinvoke with select`() {
-        val argument = Expression.LetterProperty(Letter<SomeDto>::argument)
+        val argument = Expression.LetterProperty(ExpressionScope<SomeDto, *>::argument)
         val expected = Expression.UnaryInvoke(
             value = argument,
             operation = UnaryOperation.Select(SomeDto::name)
@@ -39,7 +36,7 @@ class ExpressionTest {
         val expr = Expression.Literal(LocalDate.now())
         val expected = Expression.BinaryInvoke(
             first = expr,
-            second = Expression.LetterProperty(Letter<Nothing>::language),
+            second = Expression.LetterProperty(ExpressionScope<Nothing, *>::language),
             operation = BinaryOperation.LocalizedDateFormat
         )
 

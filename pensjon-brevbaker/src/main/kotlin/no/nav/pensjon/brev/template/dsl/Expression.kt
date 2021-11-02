@@ -7,7 +7,7 @@ fun Expression<Any>.str(): StringExpression =
     Expression.UnaryInvoke(this, UnaryOperation.ToString())
 
 fun Expression<LocalDate>.format() =
-    Expression.BinaryInvoke(this, Expression.LetterProperty(Letter<Any>::language), BinaryOperation.LocalizedDateFormat)
+    Expression.BinaryInvoke(this, Expression.LetterProperty(ExpressionScope<Any, *>::language), BinaryOperation.LocalizedDateFormat)
 
 fun <Data : Any, Field> Expression<Data>.select(selector: Data.() -> Field, @Suppress("UNUSED_PARAMETER") discourageLambdas: Nothing? = null): Expression<Field> =
     Expression.UnaryInvoke(

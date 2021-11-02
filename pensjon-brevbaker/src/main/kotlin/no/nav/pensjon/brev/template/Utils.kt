@@ -52,6 +52,10 @@ internal fun <Lang : LanguageCombination> Element<Lang>.findExpressions(): List<
         is Element.Title1 ->
             title1.flatMap { it.findExpressions() }
 
+        // TODO will return expressions with another letter data type
+        is Element.NewArgumentScope<*,*> ->
+            children.flatMap { it.findExpressions() }
+
         is Element.Paragraph -> paragraph.flatMap { it.findExpressions() }
 
         is Element.Form.Text -> prompt.findExpressions()

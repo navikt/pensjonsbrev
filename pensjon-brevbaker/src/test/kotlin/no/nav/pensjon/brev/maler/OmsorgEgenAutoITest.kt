@@ -20,7 +20,7 @@ class OmsorgEgenAutoITest {
         Letter(
             OmsorgEgenAuto.template,
             OmsorgEgenAutoDto(),
-            Language.Bokmal,
+            Language.English,
             Fixtures.fellesAuto
         ).render()
             .let { PdfCompilationInput(it.base64EncodedFiles()) }

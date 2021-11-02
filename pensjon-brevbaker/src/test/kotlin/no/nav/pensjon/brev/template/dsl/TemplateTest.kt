@@ -14,11 +14,6 @@ class TemplateTest {
 
     private data class SomeDto(val name: String, val pensjonInnvilget: Boolean, val kortNavn: String? = null)
 
-    object Fraser {
-        val pensjonInnvilget =
-            Phrase.Static.create("pensjonInnvilget", Language.Bokmal to "Du har fått innvilget pensjon")
-    }
-
     val bokmalTittel = newText(Language.Bokmal to "test brev")
     val nynorskTittel = newText(Language.Nynorsk to "test brev")
 
@@ -92,7 +87,7 @@ class TemplateTest {
         }.children.first()
 
         val expected = Element.Text.Expression<BokmalLang>(
-            Expression.LetterProperty(Letter<SomeDto>::argument).select(SomeDto::name)
+            Expression.LetterProperty(ExpressionScope<SomeDto, *>::argument).select(SomeDto::name)
         )
 
         assertEquals(expected, element)
@@ -171,7 +166,7 @@ class TemplateTest {
             languages(Language.Nynorsk),
             listOf(
                 Element.Conditional(
-                    Expression.LetterProperty(Letter<SomeDto>::argument).select(SomeDto::pensjonInnvilget),
+                    Expression.LetterProperty(ExpressionScope<SomeDto, *>::argument).select(SomeDto::pensjonInnvilget),
                     listOf(newText(Language.Nynorsk to "jadda")),
                     listOf(newText(Language.Nynorsk to "neida"))
                 )
@@ -209,7 +204,7 @@ class TemplateTest {
                 listOf(
                     Element.Text.Expression(
                         Expression.UnaryInvoke(
-                            Expression.LetterProperty(Letter<SomeDto>::argument),
+                            Expression.LetterProperty(ExpressionScope<SomeDto, *>::argument),
                             UnaryOperation.Select(SomeDto::name)
                         )
                     )

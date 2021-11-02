@@ -27,17 +27,17 @@ data class AttachmentTemplate<Lang : LanguageCombination, ParameterType : Any>(
 sealed class Expression<out Out> {
     val schema: String = this::class.java.name.removePrefix(this::class.java.`package`.name + '.')
 
-    abstract fun eval(letter: Letter<*>): Out
+    abstract fun eval(scope: ExpressionScope<*, *>): Out
 
     data class Literal<out Out>(val value: Out) : Expression<Out>() {
-        override fun eval(letter: Letter<*>): Out = value
+        override fun eval(scope: ExpressionScope<*, *>): Out = value
     }
 
-    data class LetterProperty<ParameterType : Any, out Out>(val selector: Letter<ParameterType>.() -> Out) :
+    data class LetterProperty<ParameterType : Any, out Out>(val selector: ExpressionScope<ParameterType, *>.() -> Out) :
         Expression<Out>() {
-        override fun eval(letter: Letter<*>): Out {
+        override fun eval(scope: ExpressionScope<*, *>): Out {
             @Suppress("UNCHECKED_CAST")
-            return (letter as Letter<ParameterType>).selector()
+            return (scope as ExpressionScope<ParameterType, *>).selector()
         }
     }
 
@@ -45,7 +45,7 @@ sealed class Expression<out Out> {
         val value: Expression<In>,
         val operation: UnaryOperation<In, Out>
     ) : Expression<Out>() {
-        override fun eval(letter: Letter<*>): Out = operation.apply(value.eval(letter))
+        override fun eval(scope: ExpressionScope<*, *>): Out = operation.apply(value.eval(scope))
     }
 
     data class BinaryInvoke<In1, In2, out Out>(
@@ -53,8 +53,8 @@ sealed class Expression<out Out> {
         val second: Expression<In2>,
         val operation: BinaryOperation<In1, In2, Out>
     ) : Expression<Out>() {
-        override fun eval(letter: Letter<*>): Out {
-            return operation.apply(first.eval(letter), second.eval(letter))
+        override fun eval(scope: ExpressionScope<*, *>): Out {
+            return operation.apply(first.eval(scope), second.eval(scope))
         }
     }
 
@@ -89,8 +89,8 @@ sealed class Element<Lang : LanguageCombination> {
         ) : Element.Form<Lang>()
     }
 
-    data class NewArgumentScope<Lang : LanguageCombination>(
-        val argument: Any,
+    data class NewArgumentScope<Lang : LanguageCombination, ScopeType: Any>(
+        val argument: Expression<ScopeType>,
         val children: List<Element<Lang>>
     ): Element<Lang>()
 
