@@ -35,7 +35,6 @@ class TemplateTest {
             outline {
                 title1 {
                     text(Language.Bokmal to "Heisann. ")
-                    phrase(Fraser.pensjonInnvilget)
                 }
             }
         }
@@ -51,7 +50,6 @@ class TemplateTest {
                     Element.Title1(
                         listOf(
                             Element.Text.Literal.create(Language.Bokmal to "Heisann. "),
-                            Element.Text.Phrase(Fraser.pensjonInnvilget)
                         )
                     )
                 )
@@ -120,26 +118,6 @@ class TemplateTest {
         assertEquals(expected, element)
     }
 
-    @Test
-    fun `createTemplate adds phrase title`() {
-        val doc = createTemplate("test", PensjonLatex, Any::class, languages(Language.Bokmal), bokmalTittel) {
-            outline {
-                title1 { phrase(Fraser.pensjonInnvilget) }
-            }
-        }
-
-        assertEquals(
-            LetterTemplate(
-                "test",
-                bokmalTittel,
-                PensjonLatex,
-                Any::class,
-                languages(Language.Bokmal),
-                listOf(Element.Title1(listOf(Element.Text.Phrase(Fraser.pensjonInnvilget))))
-            ),
-            doc
-        )
-    }
 
     @Test
     fun `createTemplate adds literal title`() {
@@ -165,7 +143,7 @@ class TemplateTest {
     fun `createTemplate adds outline`() {
         val doc = createTemplate("test", PensjonLatex, Any::class, languages(Language.Bokmal), bokmalTittel) {
             outline {
-                title1 { phrase(Fraser.pensjonInnvilget) }
+                title1 { text(Language.Bokmal to "Tittel") }
                 paragraph {
                     text(Language.Bokmal to "Dette er tekst som kun brukes i dette brevet.")
                 }
@@ -175,7 +153,7 @@ class TemplateTest {
         assertEquals(
             LetterTemplate(
                 "test", bokmalTittel, PensjonLatex, Any::class, languages(Language.Bokmal), listOf(
-                    Element.Title1(listOf(Element.Text.Phrase(Fraser.pensjonInnvilget))),
+                    Element.Title1(listOf(Element.Text.Literal.create(Language.Bokmal to "Tittel"))),
                     Element.Paragraph(listOf(Element.Text.Literal.create(Language.Bokmal to "Dette er tekst som kun brukes i dette brevet.")))
                 )
             ),

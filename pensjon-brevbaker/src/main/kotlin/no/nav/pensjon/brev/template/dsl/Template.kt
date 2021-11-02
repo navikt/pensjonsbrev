@@ -17,6 +17,16 @@ fun <Lang : LanguageCombination, LetterData : Any> createTemplate(
         return LetterTemplate(name, title, base, letterDataType, lang, outline, attachments)
     }
 
+fun <Lang : LanguageCombination, LetterData : Any> miniLetter(
+    letterDataType: KClass<LetterData>,
+    lang: Lang,
+    init: TemplateContainerScope<Lang, LetterData>.() -> Unit
+): MiniLetter<Lang, LetterData> =
+    MiniLetter(
+        letterDataType,
+        lang,
+        TemplateContainerScope<Lang, LetterData>().apply(init).children
+    )
 
 open class TemplateGlobalScope<LetterData : Any> {
     fun argument(): Expression<LetterData> =
@@ -53,7 +63,8 @@ open class TemplateRootScope<Lang : LanguageCombination, LetterData : Any>(
 }
 
 @LetterTemplateMarker
-open class TemplateTextOnlyScope<Lang : LanguageCombination, LetterData : Any>(val children: MutableList<Element<Lang>> = mutableListOf()) : TemplateGlobalScope<LetterData>() {
+open class TemplateTextOnlyScope<Lang : LanguageCombination, LetterData : Any>(val children: MutableList<Element<Lang>> = mutableListOf()) :
+    TemplateGlobalScope<LetterData>() {
 
     fun eval(expression: StringExpression) {
         children.add(Element.Text.Expression(expression))
@@ -61,11 +72,6 @@ open class TemplateTextOnlyScope<Lang : LanguageCombination, LetterData : Any>(v
 
     fun eval(expressionInit: () -> StringExpression) {
         children.add(Element.Text.Expression(expressionInit()))
-    }
-
-    //TODO: Kan mest sannsynlig fjerne denne
-    fun phrase(phrase: Phrase<Lang>) {
-        children.add(Element.Text.Phrase(phrase))
     }
 
     fun newline() {
@@ -76,7 +82,9 @@ open class TemplateTextOnlyScope<Lang : LanguageCombination, LetterData : Any>(v
 // TextOnlyBuilder.text()
 //
 //
-fun <Lang1 : Language, ParameterType : Any> TemplateTextOnlyScope<LanguageCombination.Single<Lang1>, ParameterType>.text(lang1: Pair<Lang1, String>) {
+fun <Lang1 : Language, ParameterType : Any> TemplateTextOnlyScope<LanguageCombination.Single<Lang1>, ParameterType>.text(
+    lang1: Pair<Lang1, String>
+) {
     Element.Text.Literal.create(lang1).also { children.add(it) }
 }
 
@@ -98,7 +106,9 @@ fun <Lang1 : Language, Lang2 : Language, Lang3 : Language, ParameterType : Any> 
 // TextOnlyBuilder.textExpr()
 //
 //
-fun <Lang1 : Language, ParameterType : Any> TemplateTextOnlyScope<LanguageCombination.Single<Lang1>, ParameterType>.textExpr(lang1: Pair<Lang1, StringExpression>) {
+fun <Lang1 : Language, ParameterType : Any> TemplateTextOnlyScope<LanguageCombination.Single<Lang1>, ParameterType>.textExpr(
+    lang1: Pair<Lang1, StringExpression>
+) {
     Element.Text.Expression.ByLanguage.create(lang1).also { children.add(it) }
 }
 
@@ -125,6 +135,10 @@ class TemplateContainerScope<Lang : LanguageCombination, LetterData : Any> :
         children.add(Element.Title1(TemplateTextOnlyScope<Lang, LetterData>().apply(init).children))
     }
 
+    fun <PhraseData : Any> usePhrase(argument: PhraseData, miniLetter: MiniLetter<Lang, PhraseData>) {
+        children.add(Element.NewArgumentScope(argument, miniLetter.children))
+    }
+
     fun paragraph(init: TemplateTextOnlyScope<Lang, LetterData>.() -> Unit) {
         children.add(Element.Paragraph(TemplateTextOnlyScope<Lang, LetterData>().apply(init).children))
     }
@@ -133,7 +147,11 @@ class TemplateContainerScope<Lang : LanguageCombination, LetterData : Any> :
         children.add(Element.Form.Text(prompt, size, vspace))
     }
 
-    fun formChoice(prompt: Element.Text<Lang>, vspace: Boolean = true, init: TemplateFormChoiceScope<Lang, LetterData>.() -> Unit) {
+    fun formChoice(
+        prompt: Element.Text<Lang>,
+        vspace: Boolean = true,
+        init: TemplateFormChoiceScope<Lang, LetterData>.() -> Unit
+    ) {
         TemplateFormChoiceScope<Lang, LetterData>().apply(init)
             .let { Element.Form.MultipleChoice(prompt, it.choices, vspace) }
             .also { children.add(it) }
@@ -158,7 +176,9 @@ class TemplateFormChoiceScope<Lang : LanguageCombination, LetterData : Any>(
     val choices: MutableList<Element.Text<Lang>> = mutableListOf()
 ) : TemplateGlobalScope<LetterData>()
 
-fun <Lang1 : Language, LetterData : Any> TemplateFormChoiceScope<LanguageCombination.Single<Lang1>, LetterData>.choice(lang1: Pair<Lang1, String>) {
+fun <Lang1 : Language, LetterData : Any> TemplateFormChoiceScope<LanguageCombination.Single<Lang1>, LetterData>.choice(
+    lang1: Pair<Lang1, String>
+) {
     Element.Text.Literal.create(lang1).also { choices.add(it) }
 }
 

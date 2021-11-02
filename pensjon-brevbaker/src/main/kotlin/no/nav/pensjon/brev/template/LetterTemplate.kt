@@ -3,15 +3,15 @@ package no.nav.pensjon.brev.template
 import no.nav.pensjon.brev.template.base.BaseTemplate
 import kotlin.reflect.KClass
 
-data class LetterTemplate<Lang : LanguageCombination, ParameterType : Any>(
+data class LetterTemplate<Lang : LanguageCombination, LetterData : Any>(
     val name: String,
     //TODO: Lag støtte for kombinert literal og expression
     val title: Element.Text.Literal<Lang>,
     val base: BaseTemplate,
-    val letterDataType: KClass<ParameterType>,
+    val letterDataType: KClass<LetterData>,
     val language: Lang,
     val outline: List<Element<Lang>>,
-    val attachments: List<AttachmentTemplate<Lang, ParameterType>> = emptyList(),
+    val attachments: List<AttachmentTemplate<Lang, LetterData>> = emptyList(),
 ) {
 
     fun render(letter: Letter<*>) =
@@ -62,6 +62,12 @@ sealed class Expression<out Out> {
 
 typealias StringExpression = Expression<String>
 
+data class MiniLetter<Lang: LanguageCombination, LetterData: Any>(
+    val letterData: KClass<LetterData>,
+    val lang: Lang,
+    val elements: List<Element<Lang>>
+)
+
 sealed class Element<Lang : LanguageCombination> {
     val schema: String = this::class.java.name.removePrefix(this::class.java.`package`.name + '.')
 
@@ -82,6 +88,11 @@ sealed class Element<Lang : LanguageCombination> {
             val vspace: Boolean = true
         ) : Element.Form<Lang>()
     }
+
+    data class NewArgumentScope<Lang : LanguageCombination>(
+        val argument: Any,
+        val children: List<Element<Lang>>
+    ): Element<Lang>()
 
     class NewLine<Lang : LanguageCombination> : Element<Lang>()
 

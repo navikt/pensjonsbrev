@@ -9,6 +9,19 @@ import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.base.PensjonLatex
 import no.nav.pensjon.brev.template.dsl.*
 
+data class PhraseInputDto(val test: String)
+
+val x = miniLetter(PhraseInputDto::class, languages(Bokmal, Nynorsk, English)) {
+    paragraph {
+        val test = argument().select(PhraseInputDto::test)
+        textExpr(
+            Bokmal to "Hei på deg".expr() + test,
+            Nynorsk to "Hei på deg".expr() + test,
+            English to "Hei på deg".expr() + test
+        )
+    }
+}
+
 object OmsorgEgenAuto : StaticTemplate {
 
     override val template: LetterTemplate<*, *> = createTemplate(
@@ -26,6 +39,8 @@ object OmsorgEgenAuto : StaticTemplate {
         val arEgenerklaring = argument().select(OmsorgEgenAutoDto::arEgenerklaringOmsorgspoeng).str()
 
         outline {
+            usePhrase(PhraseInputDto("test"), x)
+            title1 { text(Bokmal to "test", Nynorsk to "test", English to "test") }
             paragraph {
                 textExpr(
                     Bokmal to
@@ -81,38 +96,76 @@ object OmsorgEgenAuto : StaticTemplate {
                 )
             }
 
-            formText(60, newText(
-                Bokmal to "Navn på pleietrengende:",
-                Nynorsk to "Navn på pleietrengende:",
-                English to "I have provided care work for:",
-            ))
+            formText(
+                60, newText(
+                    Bokmal to "Navn på pleietrengende:",
+                    Nynorsk to "Navn på pleietrengende:",
+                    English to "I have provided care work for:",
+                )
+            )
 
-            formChoice(newText(
-                Bokmal to "Arbeidet har vart i (sett kryss):",
-                Nynorsk to "Arbeidet har vart i (set kryss):",
-                English to "The work has lasted for (insert X):"
-            )) {
-                choice(Bokmal to "minst seks måneder", Nynorsk to "minst seks månader", English to "at least six months")
-                choice(Bokmal to "under seks måneder", Nynorsk to "under seks månader", English to "less than six months")
+            formChoice(
+                newText(
+                    Bokmal to "Arbeidet har vart i (sett kryss):",
+                    Nynorsk to "Arbeidet har vart i (set kryss):",
+                    English to "The work has lasted for (insert X):"
+                )
+            ) {
+                choice(
+                    Bokmal to "minst seks måneder",
+                    Nynorsk to "minst seks månader",
+                    English to "at least six months"
+                )
+                choice(
+                    Bokmal to "under seks måneder",
+                    Nynorsk to "under seks månader",
+                    English to "less than six months"
+                )
             }
 
-            formText(size = 0, prompt = newText(
-                Bokmal to "Hvis omsorgsforholdet har opphørt i løpet av året:",
-                Nynorsk to "Om omsorgsforholdet er blitt avslutta under året:",
-                English to "If care work has ceased during the year:",
-            ))
-            formText(size = 25, vspace = false, prompt = newText(Bokmal to "Oppgi dato for opphøret:", Nynorsk to "Dato for opphøyr:", English to "State date if ceased:"))
-            formText(size = 55, vspace = false, prompt = newText(Bokmal to "Oppgi årsaken til opphøret:", Nynorsk to "Grunnen til opphøyr: ", English to "State reason if ceased"))
+            formText(
+                size = 0, prompt = newText(
+                    Bokmal to "Hvis omsorgsforholdet har opphørt i løpet av året:",
+                    Nynorsk to "Om omsorgsforholdet er blitt avslutta under året:",
+                    English to "If care work has ceased during the year:",
+                )
+            )
+            formText(
+                size = 25,
+                vspace = false,
+                prompt = newText(
+                    Bokmal to "Oppgi dato for opphøret:",
+                    Nynorsk to "Dato for opphøyr:",
+                    English to "State date if ceased:"
+                )
+            )
+            formText(
+                size = 55,
+                vspace = false,
+                prompt = newText(
+                    Bokmal to "Oppgi årsaken til opphøret:",
+                    Nynorsk to "Grunnen til opphøyr: ",
+                    English to "State reason if ceased"
+                )
+            )
 
             repeat(4) { newline() }
 
             formText(size = 25, prompt = newText(Bokmal to "Dato:", Nynorsk to "Dato:", English to "Date"))
-            formText(size = 55, vspace = false, prompt = newText(Bokmal to "Underskrift:", Nynorsk to "Underskrift:", English to "Signature:"))
+            formText(
+                size = 55,
+                vspace = false,
+                prompt = newText(Bokmal to "Underskrift:", Nynorsk to "Underskrift:", English to "Signature:")
+            )
 
             repeat(3) { newline() }
 
             paragraph {
-                text(Bokmal to "Du må sende denne egenerklæringen til:", Nynorsk to "Du må sende denne eigenmeldinga til:", English to "Please return the form to:")
+                text(
+                    Bokmal to "Du må sende denne egenerklæringen til:",
+                    Nynorsk to "Du må sende denne eigenmeldinga til:",
+                    English to "Please return the form to:"
+                )
                 newline()
 
                 val avsender = felles().select(Felles::avsenderEnhet)
