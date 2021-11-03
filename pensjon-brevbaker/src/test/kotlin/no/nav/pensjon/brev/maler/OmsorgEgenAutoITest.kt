@@ -24,7 +24,6 @@ class OmsorgEgenAutoITest {
             Fixtures.fellesAuto
         ).render()
             .let { PdfCompilationInput(it.base64EncodedFiles()) }
-//            .also { File("test-params.tex").writeBytes(Base64.getDecoder().decode(it.files["params.tex"])) }
             .let { LaTeXCompilerService().producePDF(it).base64PDF }
             .also {
                 val file = File("build/test_pdf/000104-english.pdf")

@@ -3,6 +3,8 @@ package no.nav.pensjon.brev.template.dsl
 import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.equalTo
 import com.natpryce.hamkrest.isA
+import no.nav.pensjon.brev.maler.fraser.TestFraseDto
+import no.nav.pensjon.brev.maler.fraser.TestFrase
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.base.PensjonLatex
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -87,7 +89,7 @@ class TemplateTest {
         }.children.first()
 
         val expected = Element.Text.Expression<BokmalLang>(
-            Expression.LetterProperty(ExpressionScope<SomeDto, *>::argument).select(SomeDto::name)
+            Expression.FromScope(ExpressionScope<SomeDto, *>::argument).select(SomeDto::name)
         )
 
         assertEquals(expected, element)
@@ -166,7 +168,7 @@ class TemplateTest {
             languages(Language.Nynorsk),
             listOf(
                 Element.Conditional(
-                    Expression.LetterProperty(ExpressionScope<SomeDto, *>::argument).select(SomeDto::pensjonInnvilget),
+                    Expression.FromScope(ExpressionScope<SomeDto, *>::argument).select(SomeDto::pensjonInnvilget),
                     listOf(newText(Language.Nynorsk to "jadda")),
                     listOf(newText(Language.Nynorsk to "neida"))
                 )
@@ -204,7 +206,7 @@ class TemplateTest {
                 listOf(
                     Element.Text.Expression(
                         Expression.UnaryInvoke(
-                            Expression.LetterProperty(ExpressionScope<SomeDto, *>::argument),
+                            Expression.FromScope(ExpressionScope<SomeDto, *>::argument),
                             UnaryOperation.Select(SomeDto::name)
                         )
                     )
@@ -242,4 +244,15 @@ class TemplateTest {
         assertEquals(expected, element)
     }
 
+    @Test
+    fun `TemplateContainerScope_includePhrase adds phrase`() {
+        val argument = Expression.Literal(TestFraseDto("jadda"))
+        val element = TemplateContainerScope<BokmalLang, SomeDto>().apply {
+            includePhrase(argument, TestFrase)
+        }.children.first()
+
+        val expected = Element.IncludePhrase<BokmalLang, TestFraseDto>(argument, TestFrase)
+
+        assertEquals(expected, element)
+    }
 }

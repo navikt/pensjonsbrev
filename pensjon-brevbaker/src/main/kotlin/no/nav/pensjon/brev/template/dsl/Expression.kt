@@ -7,12 +7,18 @@ fun Expression<Any>.str(): StringExpression =
     Expression.UnaryInvoke(this, UnaryOperation.ToString())
 
 fun Expression<LocalDate>.format() =
-    Expression.BinaryInvoke(this, Expression.LetterProperty(ExpressionScope<Any, *>::language), BinaryOperation.LocalizedDateFormat)
+    Expression.BinaryInvoke(this, Expression.FromScope(ExpressionScope<Any, *>::language), BinaryOperation.LocalizedDateFormat)
 
 fun <Data : Any, Field> Expression<Data>.select(selector: Data.() -> Field, @Suppress("UNUSED_PARAMETER") discourageLambdas: Nothing? = null): Expression<Field> =
     Expression.UnaryInvoke(
         this,
         UnaryOperation.Select(selector)
+    )
+
+fun <T, R> Expression<T>.map(transform: (T) -> R): Expression<R> =
+    Expression.UnaryInvoke(
+        this,
+        UnaryOperation.Select(transform)
     )
 
 fun <T> T.expr() = Expression.Literal(this)

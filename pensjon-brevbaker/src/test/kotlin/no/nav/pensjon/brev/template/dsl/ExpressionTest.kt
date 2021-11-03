@@ -11,7 +11,7 @@ class ExpressionTest {
 
     @Test
     fun `select creates a unaryinvoke with select`() {
-        val argument = Expression.LetterProperty(ExpressionScope<SomeDto, *>::argument)
+        val argument = Expression.FromScope(ExpressionScope<SomeDto, *>::argument)
         val expected = Expression.UnaryInvoke(
             value = argument,
             operation = UnaryOperation.Select(SomeDto::name)
@@ -36,7 +36,7 @@ class ExpressionTest {
         val expr = Expression.Literal(LocalDate.now())
         val expected = Expression.BinaryInvoke(
             first = expr,
-            second = Expression.LetterProperty(ExpressionScope<Nothing, *>::language),
+            second = Expression.FromScope(ExpressionScope<Nothing, *>::language),
             operation = BinaryOperation.LocalizedDateFormat
         )
 

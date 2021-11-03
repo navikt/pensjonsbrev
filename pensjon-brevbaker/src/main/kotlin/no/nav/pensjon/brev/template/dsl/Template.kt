@@ -17,23 +17,13 @@ fun <Lang : LanguageCombination, LetterData : Any> createTemplate(
         return LetterTemplate(name, title, base, letterDataType, lang, outline, attachments)
     }
 
-fun <Lang : LanguageCombination, LetterData : Any> miniLetter(
-    letterDataType: KClass<LetterData>,
-    lang: Lang,
-    init: TemplateContainerScope<Lang, LetterData>.() -> Unit
-): MiniLetter<Lang, LetterData> =
-    MiniLetter(
-        letterDataType,
-        lang,
-        TemplateContainerScope<Lang, LetterData>().apply(init).children
-    )
 
 open class TemplateGlobalScope<LetterData : Any> {
     fun argument(): Expression<LetterData> =
-        Expression.LetterProperty(ExpressionScope<LetterData, *>::argument)
+        Expression.FromScope(ExpressionScope<LetterData, *>::argument)
 
     fun felles(): Expression<Felles> =
-        Expression.LetterProperty(ExpressionScope<LetterData, *>::felles)
+        Expression.FromScope(ExpressionScope<LetterData, *>::felles)
 }
 
 @LetterTemplateMarker
@@ -135,8 +125,8 @@ class TemplateContainerScope<Lang : LanguageCombination, LetterData : Any> :
         children.add(Element.Title1(TemplateTextOnlyScope<Lang, LetterData>().apply(init).children))
     }
 
-    fun <PhraseData : Any> usePhrase(argument: Expression<PhraseData>, miniLetter: MiniLetter<Lang, PhraseData>) {
-        children.add(Element.NewArgumentScope(argument, miniLetter.elements))
+    fun <PhraseData : Any> includePhrase(argument: Expression<PhraseData>, phrase: Phrase<PhraseData>) {
+        children.add(Element.IncludePhrase(argument, phrase))
     }
 
     fun paragraph(init: TemplateTextOnlyScope<Lang, LetterData>.() -> Unit) {

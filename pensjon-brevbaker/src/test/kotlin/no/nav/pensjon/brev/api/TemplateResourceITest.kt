@@ -3,16 +3,20 @@ package no.nav.pensjon.brev.api
 import no.nav.pensjon.brev.Fixtures
 import no.nav.pensjon.brev.TestTags
 import no.nav.pensjon.brev.latex.LaTeXCompilerService
+import no.nav.pensjon.brev.latex.PDFCompilationOutput
 import no.nav.pensjon.brev.latex.PdfCompilationInput
 import no.nav.pensjon.brev.template.*
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.fail
+import java.io.File
+import java.util.*
 import kotlin.reflect.KClass
 import kotlin.reflect.full.createInstance
 
 @Tag(TestTags.PDF_BYGGER)
 class TemplateResourceITest {
+    private val compileService = LaTeXCompilerService()
 
     @Test
     fun `all templates can render and compile`() {
@@ -28,16 +32,15 @@ class TemplateResourceITest {
         val letter = createLetter(template)
         val rendered = render(letter)
         try {
-            compile(rendered)
+            writePdf(name, compile(rendered))
         } catch (failedCompile: Exception) {
             fail("Failed to compile template($name) with argument: ${letter.argument}", failedCompile)
         }
     }
 
-    private fun compile(rendered: RenderedLetter) {
-        val input = PdfCompilationInput(rendered.base64EncodedFiles())
-        LaTeXCompilerService().producePDF(input)
-    }
+    private fun compile(rendered: RenderedLetter): PDFCompilationOutput =
+        PdfCompilationInput(rendered.base64EncodedFiles())
+            .let { compileService.producePDF(it) }
 
     private fun render(letter: Letter<Any>): RenderedLetter =
         try {
@@ -67,4 +70,10 @@ class TemplateResourceITest {
         is LanguageCombination.Triple<*, *, *> -> lang.first
     }
 
+    fun writePdf(name: String, output: PDFCompilationOutput) =
+        with(File("build/test_pdf/$name.pdf")) {
+            parentFile.mkdirs()
+            writeBytes(Base64.getDecoder().decode(output.base64PDF))
+            println("Test-file written to: $path")
+        }
 }

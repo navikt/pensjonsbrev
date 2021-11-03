@@ -12,8 +12,8 @@ class ExpressionEvalTest {
     data class SomeDto(val name: String, val kortNavn: String?)
 
     val scope = ExpressionScope(SomeDto("Ole", null), Fixtures.felles, Language.Bokmal)
-    val argumentExpr = Expression.LetterProperty(ExpressionScope<SomeDto, *>::argument)
-    val fellesExpr = Expression.LetterProperty(ExpressionScope<SomeDto, *>::felles)
+    val argumentExpr = Expression.FromScope(ExpressionScope<SomeDto, *>::argument)
+    val fellesExpr = Expression.FromScope(ExpressionScope<SomeDto, *>::felles)
 
     @Test
     fun `eval Literal returns literal`() {
@@ -78,4 +78,11 @@ class ExpressionEvalTest {
         val evaluated = fellesExpr.select(Felles::saksnummer).eval(scope)
         assertEquals(Fixtures.felles.saksnummer, evaluated)
     }
+
+    @Test
+    fun `eval FromScope will select a value from scope`() {
+        val evaluated: Language = Expression.FromScope(ExpressionScope<SomeDto, *>::language).eval(scope)
+        assertEquals(scope.language, evaluated)
+    }
+
 }

@@ -33,7 +33,7 @@ sealed class Expression<out Out> {
         override fun eval(scope: ExpressionScope<*, *>): Out = value
     }
 
-    data class LetterProperty<ParameterType : Any, out Out>(val selector: ExpressionScope<ParameterType, *>.() -> Out) :
+    data class FromScope<ParameterType : Any, out Out>(val selector: ExpressionScope<ParameterType, *>.() -> Out) :
         Expression<Out>() {
         override fun eval(scope: ExpressionScope<*, *>): Out {
             @Suppress("UNCHECKED_CAST")
@@ -62,16 +62,9 @@ sealed class Expression<out Out> {
 
 typealias StringExpression = Expression<String>
 
-data class MiniLetter<Lang: LanguageCombination, LetterData: Any>(
-    val letterData: KClass<LetterData>,
-    val lang: Lang,
-    val elements: List<Element<Lang>>
-)
-
 sealed class Element<Lang : LanguageCombination> {
     val schema: String = this::class.java.name.removePrefix(this::class.java.`package`.name + '.')
 
-    // TODO: Consider if type of title1 and paragraph should be List<Element.Text<Lang>>.
     data class Title1<Lang : LanguageCombination>(val title1: List<Element<Lang>>) : Element<Lang>()
     data class Paragraph<Lang : LanguageCombination>(val paragraph: List<Element<Lang>>) : Element<Lang>()
 
@@ -89,9 +82,9 @@ sealed class Element<Lang : LanguageCombination> {
         ) : Element.Form<Lang>()
     }
 
-    data class NewArgumentScope<Lang : LanguageCombination, ScopeType: Any>(
-        val argument: Expression<ScopeType>,
-        val children: List<Element<Lang>>
+    data class IncludePhrase<Lang : LanguageCombination, PhraseData: Any>(
+        val data: Expression<PhraseData>,
+        val phrase: Phrase<PhraseData>
     ): Element<Lang>()
 
     class NewLine<Lang : LanguageCombination> : Element<Lang>()
@@ -120,9 +113,6 @@ sealed class Element<Lang : LanguageCombination> {
                 ) = Literal<LanguageCombination.Triple<Lang1, Lang2, Lang3>>(mapOf(lang1, lang2, lang3))
             }
         }
-
-        data class Phrase<Lang : LanguageCombination>(val phrase: no.nav.pensjon.brev.template.Phrase<Lang>) :
-            Text<Lang>()
 
         data class Expression<Lang : LanguageCombination>(val expression: StringExpression) :
             Text<Lang>() {

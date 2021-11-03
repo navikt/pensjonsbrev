@@ -3,8 +3,6 @@ package no.nav.pensjon.brev.template
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import java.io.OutputStream
-import java.io.PrintWriter
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 import kotlin.reflect.KClass
@@ -46,15 +44,12 @@ internal fun <Lang : LanguageCombination> Element<Lang>.findExpressions(): List<
         is Element.Text.Literal ->
             emptyList()
 
-        is Element.Text.Phrase ->
-            emptyList()
-
         is Element.Title1 ->
             title1.flatMap { it.findExpressions() }
 
-        // TODO will return expressions with another letter data type
-        is Element.NewArgumentScope<*,*> ->
-            children.flatMap { it.findExpressions() }
+        // TODO will return expressions which operates in another scope.
+        is Element.IncludePhrase<*,*> ->
+            phrase.elements.flatMap { it.findExpressions() }
 
         is Element.Paragraph -> paragraph.flatMap { it.findExpressions() }
 

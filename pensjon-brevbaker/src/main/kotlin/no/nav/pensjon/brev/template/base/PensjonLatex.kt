@@ -309,9 +309,9 @@ object PensjonLatex : BaseTemplate() {
                     }
                 }
 
-            is Element.NewArgumentScope<*,*> -> {
-                val newScope = ExpressionScope(element.argument.eval(scope), scope.felles, scope.language)
-                element.children.forEach { renderElement(newScope, it, printWriter) }
+            is Element.IncludePhrase<*,*> -> {
+                val newScope = ExpressionScope(element.data.eval(scope), scope.felles, scope.language)
+                element.phrase.elements.forEach { renderElement(newScope, it, printWriter) }
             }
 
             is Element.Conditional ->
@@ -322,9 +322,6 @@ object PensjonLatex : BaseTemplate() {
 
             is Element.Text.Literal ->
                 printWriter.print(element.text(scope.language))
-
-            is Element.Text.Phrase ->
-                printWriter.print(element.phrase.text(scope.language))
 
             is Element.Text.Expression ->
                 printWriter.print(element.expression.eval(scope))

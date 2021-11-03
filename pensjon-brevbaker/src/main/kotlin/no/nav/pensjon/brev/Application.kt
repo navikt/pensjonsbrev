@@ -42,6 +42,8 @@ fun Application.module() {
         }
     }
 
+    // TODO: handle Nav-Call-Id
+
     install(MicrometerMetrics) {
         registry = prometheusMeterRegistry
     }
