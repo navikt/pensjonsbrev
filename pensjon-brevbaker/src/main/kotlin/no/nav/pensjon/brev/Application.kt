@@ -19,6 +19,7 @@ import no.nav.pensjon.brev.api.LetterResource
 import no.nav.pensjon.brev.api.TemplateResource
 import no.nav.pensjon.brev.api.description
 import no.nav.pensjon.brev.api.model.LetterRequest
+import no.nav.pensjon.brev.api.model.LetterResponse
 import no.nav.pensjon.brev.latex.LaTeXCompilerService
 import no.nav.pensjon.brev.latex.PdfCompilationInput
 import no.nav.pensjon.brev.template.brevbakerConfig
@@ -66,12 +67,11 @@ fun Application.module() {
         post("/letter") {
             val letterRequest = call.receive<LetterRequest>()
 
-            val pdfBase64 = LetterResource.create(letterRequest).render()
+            val letterResource = LetterResource.create(letterRequest)
+            val pdfBase64 = letterResource.render()
                 .let { PdfCompilationInput(it.base64EncodedFiles()) }
                 .let { latexCompilerService.producePDF(it) }
-                .let { base64Decoder.decode(it.base64PDF) }
-
-            call.respondBytes(pdfBase64, ContentType.Application.Pdf)
+            call.respond(LetterResponse(pdfBase64.base64PDF, letterResource.template.letterMetadata))
         }
 
         get("/isAlive") {

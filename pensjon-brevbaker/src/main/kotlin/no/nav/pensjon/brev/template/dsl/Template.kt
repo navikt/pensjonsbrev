@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.template.dsl
 
 import no.nav.pensjon.brev.api.model.Felles
+import no.nav.pensjon.brev.api.model.LetterMetadata
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.base.BaseTemplate
 import kotlin.reflect.KClass
@@ -11,10 +12,11 @@ fun <Lang : LanguageCombination, LetterData : Any> createTemplate(
     letterDataType: KClass<LetterData>,
     lang: Lang,
     title: Element.Text.Literal<Lang>,
+    letterMetadata: LetterMetadata,
     init: TemplateRootScope<Lang, LetterData>.() -> Unit
 ): LetterTemplate<Lang, LetterData> =
     with(TemplateRootScope<Lang, LetterData>().apply(init)) {
-        return LetterTemplate(name, title, base, letterDataType, lang, outline, attachments)
+        return LetterTemplate(name, title, base, letterDataType, lang, outline, attachments, letterMetadata)
     }
 
 

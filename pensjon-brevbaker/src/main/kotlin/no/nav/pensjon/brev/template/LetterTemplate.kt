@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.template
 
+import no.nav.pensjon.brev.api.model.LetterMetadata
 import no.nav.pensjon.brev.template.base.BaseTemplate
 import kotlin.reflect.KClass
 
@@ -12,6 +13,7 @@ data class LetterTemplate<Lang : LanguageCombination, LetterData : Any>(
     val language: Lang,
     val outline: List<Element<Lang>>,
     val attachments: List<AttachmentTemplate<Lang, LetterData>> = emptyList(),
+    val letterMetadata: LetterMetadata,
 ) {
 
     fun render(letter: Letter<*>) =

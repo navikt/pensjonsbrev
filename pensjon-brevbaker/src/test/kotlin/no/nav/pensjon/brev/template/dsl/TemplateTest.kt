@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.template.dsl
 import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.equalTo
 import com.natpryce.hamkrest.isA
+import no.nav.pensjon.brev.api.model.LetterMetadata
 import no.nav.pensjon.brev.maler.fraser.TestFraseDto
 import no.nav.pensjon.brev.maler.fraser.TestFrase
 import no.nav.pensjon.brev.template.*
@@ -27,7 +28,8 @@ class TemplateTest {
             base = PensjonLatex,
             letterDataType = Any::class,
             lang = languages(Language.Bokmal),
-            title = bokmalTittel
+            title = bokmalTittel,
+            letterMetadata = LetterMetadata("En fin display tittel"),
         ) {
             outline {
                 title1 {
@@ -43,6 +45,7 @@ class TemplateTest {
                 base = PensjonLatex,
                 letterDataType = Object::class,
                 language = languages(Language.Bokmal),
+                letterMetadata = LetterMetadata("En fin display tittel"),
                 outline = listOf(
                     Element.Title1(
                         listOf(
@@ -57,7 +60,14 @@ class TemplateTest {
 
     @Test
     fun `createTemplate adds attachment`() {
-        val doc = createTemplate("test", PensjonLatex, SomeDto::class, languages(Language.Bokmal), bokmalTittel) {
+        val doc = createTemplate(
+            name = "test",
+            base = PensjonLatex,
+            letterDataType = SomeDto::class,
+            lang = languages(Language.Bokmal),
+            title = bokmalTittel,
+            letterMetadata = LetterMetadata("En fin display tittel"),
+        ) {
             attachment(bokmalTittel, false) {
                 text(Language.Bokmal to "hei")
             }
@@ -65,13 +75,14 @@ class TemplateTest {
 
         assertEquals(
             LetterTemplate(
-                "test",
-                bokmalTittel,
-                PensjonLatex,
-                SomeDto::class,
-                languages(Language.Bokmal),
-                emptyList(),
-                listOf(
+                name = "test",
+                title = bokmalTittel,
+                base = PensjonLatex,
+                letterDataType = SomeDto::class,
+                language = languages(Language.Bokmal),
+                letterMetadata = LetterMetadata("En fin display tittel"),
+                outline = emptyList(),
+                attachments = listOf(
                     AttachmentTemplate(
                         bokmalTittel,
                         listOf(Element.Text.Literal.create(Language.Bokmal to "hei"))
@@ -118,7 +129,14 @@ class TemplateTest {
 
     @Test
     fun `createTemplate adds literal title`() {
-        val doc = createTemplate("test", PensjonLatex, Any::class, languages(Language.Bokmal), bokmalTittel) {
+        val doc = createTemplate(
+            name = "test",
+            base = PensjonLatex,
+            letterDataType = Any::class,
+            lang = languages(Language.Bokmal),
+            title = bokmalTittel,
+            letterMetadata = LetterMetadata("En fin display tittel"),
+        ) {
             outline {
                 title1 { text(Language.Bokmal to "jadda") }
             }
@@ -126,19 +144,27 @@ class TemplateTest {
 
         assertEquals(
             LetterTemplate(
-                "test",
-                bokmalTittel,
-                PensjonLatex,
-                Any::class,
-                languages(Language.Bokmal),
-                listOf(Element.Title1(listOf(Element.Text.Literal.create(Language.Bokmal to "jadda"))))
+                name = "test",
+                title = bokmalTittel,
+                base = PensjonLatex,
+                letterDataType = Any::class,
+                letterMetadata = LetterMetadata("En fin display tittel"),
+                language = languages(Language.Bokmal),
+                outline = listOf(Element.Title1(listOf(Element.Text.Literal.create(Language.Bokmal to "jadda"))))
             ), doc
         )
     }
 
     @Test
     fun `createTemplate adds outline`() {
-        val doc = createTemplate("test", PensjonLatex, Any::class, languages(Language.Bokmal), bokmalTittel) {
+        val doc = createTemplate(
+            name = "test",
+            base = PensjonLatex,
+            letterDataType = Any::class,
+            lang = languages(Language.Bokmal),
+            title = bokmalTittel,
+            letterMetadata = LetterMetadata("testDisplayTitle"),
+        ) {
             outline {
                 title1 { text(Language.Bokmal to "Tittel") }
                 paragraph {
@@ -149,7 +175,13 @@ class TemplateTest {
 
         assertEquals(
             LetterTemplate(
-                "test", bokmalTittel, PensjonLatex, Any::class, languages(Language.Bokmal), listOf(
+                name = "test",
+                title = bokmalTittel,
+                base = PensjonLatex,
+                letterDataType = Any::class,
+                language = languages(Language.Bokmal),
+                letterMetadata = LetterMetadata("testDisplayTitle"),
+                outline = listOf(
                     Element.Title1(listOf(Element.Text.Literal.create(Language.Bokmal to "Tittel"))),
                     Element.Paragraph(listOf(Element.Text.Literal.create(Language.Bokmal to "Dette er tekst som kun brukes i dette brevet.")))
                 )
@@ -161,12 +193,13 @@ class TemplateTest {
     @Test
     fun `createTemplate adds showIf`() {
         val expected = LetterTemplate(
-            "test",
-            nynorskTittel,
-            PensjonLatex,
-            SomeDto::class,
-            languages(Language.Nynorsk),
-            listOf(
+            name = "test",
+            title = nynorskTittel,
+            base = PensjonLatex,
+            letterDataType = SomeDto::class,
+            language = languages(Language.Nynorsk),
+            letterMetadata = LetterMetadata("testDisplayTitle"),
+            outline = listOf(
                 Element.Conditional(
                     Expression.FromScope(ExpressionScope<SomeDto, *>::argument).select(SomeDto::pensjonInnvilget),
                     listOf(newText(Language.Nynorsk to "jadda")),
@@ -175,7 +208,14 @@ class TemplateTest {
             )
         )
 
-        val actual = createTemplate("test", PensjonLatex, SomeDto::class, languages(Language.Nynorsk), nynorskTittel) {
+        val actual = createTemplate(
+            name = "test",
+            base = PensjonLatex,
+            letterDataType = SomeDto::class,
+            lang = languages(Language.Nynorsk),
+            title = nynorskTittel,
+            letterMetadata = LetterMetadata("testDisplayTitle"),
+        ) {
             outline {
                 showIf(argument().select(SomeDto::pensjonInnvilget)) {
                     text(Language.Nynorsk to "jadda")
@@ -190,7 +230,14 @@ class TemplateTest {
 
     @Test
     fun `createTemplate can add Text$Expression elements`() {
-        val template = createTemplate("test", PensjonLatex, SomeDto::class, languages(Language.Bokmal), bokmalTittel) {
+        val template = createTemplate(
+            name = "test",
+            base = PensjonLatex,
+            letterDataType = SomeDto::class,
+            lang = languages(Language.Bokmal),
+            title = bokmalTittel,
+            letterMetadata = LetterMetadata("testDisplayTitle"),
+        ) {
             outline {
                 eval(argument().select(SomeDto::name))
             }
@@ -198,12 +245,13 @@ class TemplateTest {
 
         assertEquals(
             LetterTemplate(
-                "test",
-                bokmalTittel,
-                PensjonLatex,
-                SomeDto::class,
-                languages(Language.Bokmal),
-                listOf(
+                name = "test",
+                title = bokmalTittel,
+                base = PensjonLatex,
+                letterDataType = SomeDto::class,
+                language = languages(Language.Bokmal),
+                letterMetadata = LetterMetadata("testDisplayTitle"),
+                outline = listOf(
                     Element.Text.Expression(
                         Expression.UnaryInvoke(
                             Expression.FromScope(ExpressionScope<SomeDto, *>::argument),

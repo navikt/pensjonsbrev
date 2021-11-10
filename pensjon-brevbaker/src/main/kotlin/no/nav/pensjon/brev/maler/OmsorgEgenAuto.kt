@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.maler
 
 import no.nav.pensjon.brev.api.model.Felles
+import no.nav.pensjon.brev.api.model.LetterMetadata
 import no.nav.pensjon.brev.api.model.NAVEnhet
 import no.nav.pensjon.brev.api.model.ReturAdresse
 import no.nav.pensjon.brev.api.model.maler.OmsorgEgenAutoDto
@@ -20,6 +21,9 @@ object OmsorgEgenAuto : StaticTemplate {
             Bokmal to "Du må sende oss egenerklæring om pleie- og omsorgsarbeid",
             Nynorsk to "Du må sende oss eigenmelding om pleie- og omsorgsarbeid",
             English to "Personal declaration about the circumstances of care",
+        ),
+        letterMetadata = LetterMetadata(
+            "Egenerklæring godskriving omsorgspoeng"
         )
     ) {
 
