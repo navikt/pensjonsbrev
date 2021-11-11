@@ -5,7 +5,7 @@ on:
       - "main"
     paths:
       - "pensjon-brevbaker-api-model/**"
-      - ".github/workflows/brevbaker-api-modelr.yaml"
+      - ".github/workflows/brevbaker-api-model.yaml"
 
 jobs:
   "release":
