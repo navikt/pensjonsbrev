@@ -26,7 +26,10 @@ class PensjonLatexITest {
         letterDataType = TestTemplateDto::class,
         lang = languages(Bokmal),
         title = newText(Bokmal to "En fin tittel"),
-        letterMetadata = LetterMetadata("En fin display tittel")
+        letterMetadata = LetterMetadata(
+            displayTitle = "En fin display tittel",
+            isSensitiv = false,
+        )
     ) {
         outline {
             text(Bokmal to "Argumentet etNavn er: ")

@@ -23,7 +23,8 @@ object OmsorgEgenAuto : StaticTemplate {
             English to "Personal declaration about the circumstances of care",
         ),
         letterMetadata = LetterMetadata(
-            "Egenerklæring godskriving omsorgspoeng"
+            "Egenerklæring godskriving omsorgspoeng",
+            false,
         )
     ) {
 

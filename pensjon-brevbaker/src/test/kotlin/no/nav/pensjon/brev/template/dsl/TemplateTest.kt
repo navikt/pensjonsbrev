@@ -21,6 +21,11 @@ class TemplateTest {
     val nynorskTittel = newText(Language.Nynorsk to "test brev")
 
 
+    private val testLetterMetadata = LetterMetadata(
+        displayTitle = "En fin display tittel",
+        isSensitiv = false,
+    )
+
     @Test
     fun `createTemplate can add outline with title1 using text-builder`() {
         val doc = createTemplate(
@@ -29,7 +34,7 @@ class TemplateTest {
             letterDataType = Any::class,
             lang = languages(Language.Bokmal),
             title = bokmalTittel,
-            letterMetadata = LetterMetadata("En fin display tittel"),
+            letterMetadata = testLetterMetadata,
         ) {
             outline {
                 title1 {
@@ -45,7 +50,7 @@ class TemplateTest {
                 base = PensjonLatex,
                 letterDataType = Object::class,
                 language = languages(Language.Bokmal),
-                letterMetadata = LetterMetadata("En fin display tittel"),
+                letterMetadata = testLetterMetadata,
                 outline = listOf(
                     Element.Title1(
                         listOf(
@@ -66,7 +71,7 @@ class TemplateTest {
             letterDataType = SomeDto::class,
             lang = languages(Language.Bokmal),
             title = bokmalTittel,
-            letterMetadata = LetterMetadata("En fin display tittel"),
+            letterMetadata = testLetterMetadata,
         ) {
             attachment(bokmalTittel, false) {
                 text(Language.Bokmal to "hei")
@@ -80,7 +85,7 @@ class TemplateTest {
                 base = PensjonLatex,
                 letterDataType = SomeDto::class,
                 language = languages(Language.Bokmal),
-                letterMetadata = LetterMetadata("En fin display tittel"),
+                letterMetadata = testLetterMetadata,
                 outline = emptyList(),
                 attachments = listOf(
                     AttachmentTemplate(
@@ -135,7 +140,7 @@ class TemplateTest {
             letterDataType = Any::class,
             lang = languages(Language.Bokmal),
             title = bokmalTittel,
-            letterMetadata = LetterMetadata("En fin display tittel"),
+            letterMetadata = testLetterMetadata,
         ) {
             outline {
                 title1 { text(Language.Bokmal to "jadda") }
@@ -148,7 +153,7 @@ class TemplateTest {
                 title = bokmalTittel,
                 base = PensjonLatex,
                 letterDataType = Any::class,
-                letterMetadata = LetterMetadata("En fin display tittel"),
+                letterMetadata = testLetterMetadata,
                 language = languages(Language.Bokmal),
                 outline = listOf(Element.Title1(listOf(Element.Text.Literal.create(Language.Bokmal to "jadda"))))
             ), doc
@@ -163,7 +168,7 @@ class TemplateTest {
             letterDataType = Any::class,
             lang = languages(Language.Bokmal),
             title = bokmalTittel,
-            letterMetadata = LetterMetadata("testDisplayTitle"),
+            letterMetadata = testLetterMetadata,
         ) {
             outline {
                 title1 { text(Language.Bokmal to "Tittel") }
@@ -180,7 +185,7 @@ class TemplateTest {
                 base = PensjonLatex,
                 letterDataType = Any::class,
                 language = languages(Language.Bokmal),
-                letterMetadata = LetterMetadata("testDisplayTitle"),
+                letterMetadata = testLetterMetadata,
                 outline = listOf(
                     Element.Title1(listOf(Element.Text.Literal.create(Language.Bokmal to "Tittel"))),
                     Element.Paragraph(listOf(Element.Text.Literal.create(Language.Bokmal to "Dette er tekst som kun brukes i dette brevet.")))
@@ -198,7 +203,7 @@ class TemplateTest {
             base = PensjonLatex,
             letterDataType = SomeDto::class,
             language = languages(Language.Nynorsk),
-            letterMetadata = LetterMetadata("testDisplayTitle"),
+            letterMetadata = testLetterMetadata,
             outline = listOf(
                 Element.Conditional(
                     Expression.FromScope(ExpressionScope<SomeDto, *>::argument).select(SomeDto::pensjonInnvilget),
@@ -214,7 +219,7 @@ class TemplateTest {
             letterDataType = SomeDto::class,
             lang = languages(Language.Nynorsk),
             title = nynorskTittel,
-            letterMetadata = LetterMetadata("testDisplayTitle"),
+            letterMetadata = testLetterMetadata,
         ) {
             outline {
                 showIf(argument().select(SomeDto::pensjonInnvilget)) {
@@ -236,7 +241,7 @@ class TemplateTest {
             letterDataType = SomeDto::class,
             lang = languages(Language.Bokmal),
             title = bokmalTittel,
-            letterMetadata = LetterMetadata("testDisplayTitle"),
+            letterMetadata = testLetterMetadata,
         ) {
             outline {
                 eval(argument().select(SomeDto::name))
@@ -250,7 +255,7 @@ class TemplateTest {
                 base = PensjonLatex,
                 letterDataType = SomeDto::class,
                 language = languages(Language.Bokmal),
-                letterMetadata = LetterMetadata("testDisplayTitle"),
+                letterMetadata = testLetterMetadata,
                 outline = listOf(
                     Element.Text.Expression(
                         Expression.UnaryInvoke(

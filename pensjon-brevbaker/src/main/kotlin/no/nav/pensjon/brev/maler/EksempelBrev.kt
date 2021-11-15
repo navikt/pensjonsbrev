@@ -17,7 +17,8 @@ object EksempelBrev : StaticTemplate {
         lang = languages(Language.Bokmal),
         title = newText(Language.Bokmal to "Eksempelbrev"),
         letterMetadata = LetterMetadata(
-            "Dette er ett eksempel-brev"
+            "Dette er ett eksempel-brev",
+            false,
         )
     ) {
 
