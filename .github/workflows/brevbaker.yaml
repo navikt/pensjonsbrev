@@ -42,7 +42,8 @@ jobs:
     needs: "build"
     services:
       pdf-bygger:
-        image: ghcr.io/navikt/pensjonsbrev/pensjon-pdf-bygger:latest
+        #TODO tag pdf-bygger with latest
+        image: ghcr.io/navikt/pensjonsbrev/pensjon-pdf-bygger:28951c0a6124d3433ab725b3c2aac99891eb8016
         credentials:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
