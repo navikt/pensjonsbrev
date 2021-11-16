@@ -73,7 +73,7 @@ jobs:
         with:
           fail_if_no_tests: true
           fail_on_test_failures: true
-          report_paths: '**/build/test-results/test/TEST-*.xml'
+          report_paths: '**/build/test-results/integrationTest/TEST-*.xml'
 
 
   "deployAppToDev":
