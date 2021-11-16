@@ -76,7 +76,7 @@ jobs:
 
   "deployAppToDev":
     name: "Deploy to dev"
-    needs: "build"
+    needs: "runIntegrationTests"
     runs-on: "ubuntu-latest"
     steps:
       - uses: "actions/checkout@v2"
