@@ -15,7 +15,7 @@ jobs:
       run:
         working-directory: pensjon-brevbaker
     name: "build"
-    runs-on: "ubuntu-18.04"
+    runs-on: "ubuntu-latest"
     steps:
       - uses: "actions/checkout@v2"
       - uses: "gradle/wrapper-validation-action@v1"
@@ -37,10 +37,33 @@ jobs:
         \ && docker push ${IMAGE}"
         env:
           "GITHUB_TOKEN": "${{ secrets.GITHUB_TOKEN }}"
+  runIntegrationTests:
+    name: "Integration tests"
+    needs: "build"
+    services:
+      pdf-bygger:
+        image: ghcr.io/navikt/pensjonsbrev/pensjon-pdf-bygger:latest
+        credentials:
+          username: ${{ env.GITHUB_REPOSITORY }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: "actions/checkout@v2"
+      - uses: "actions/cache@v2"
+        with:
+          "path": "~/.gradle/caches"
+          "key": "${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle.kts') }}"
+          "restore-keys": "${{ runner.os }}-gradle-"
+      - uses: "actions/setup-java@v1"
+        with:
+          "java-version": "15"
+      - name: "run integration tests"
+        run: "./gradlew integrationTest"
+
   "deployAppToDev":
     name: "Deploy to dev"
     needs: "build"
-    runs-on: "ubuntu-18.04"
+    runs-on: "ubuntu-latest"
     steps:
       - uses: "actions/checkout@v2"
       - name: "Deploy to DEV"
