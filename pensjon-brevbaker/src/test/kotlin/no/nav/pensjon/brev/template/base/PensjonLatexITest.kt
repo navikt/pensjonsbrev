@@ -55,12 +55,6 @@ class PensjonLatexITest {
     }
 
     @Test
-    fun `PDF creation time is set on the host system`() {
-        val pdfCreationTime = PensjonLatex.pdfCreationTime()
-        throw AssertionError(pdfCreationTime)
-    }
-
-    @Test
     fun `Ping pdf builder`() {
         LaTeXCompilerService(pdfBuilderURL).ping()
     }
