@@ -46,7 +46,7 @@ jobs:
     services:
       pdf-bygger:
         ports:
-          - 8081:8080
+          - 8080:8080
         #TODO tag pdf-bygger with latest
         image: ghcr.io/navikt/pensjonsbrev/pensjon-pdf-bygger:28951c0a6124d3433ab725b3c2aac99891eb8016
         credentials:
@@ -66,11 +66,11 @@ jobs:
       - name: "run integration tests"
         run: "./gradlew integrationTest"
         env:
-          "PDF_BYGGER_URL": http://pdf-bygger:8081
+          "PDF_BYGGER_URL": http://pdf-bygger:8080
 
   "deployAppToDev":
     name: "Deploy to dev"
-    needs: "runIntegrationTests"
+    needs: "build"
     runs-on: "ubuntu-latest"
     steps:
       - uses: "actions/checkout@v2"
