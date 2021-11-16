@@ -239,8 +239,8 @@ object PensjonLatex : BaseTemplate() {
 
     fun pdfCreationTime(): String {
         val now = ZonedDateTime.now()
-        val formattedTime = now.format(DateTimeFormatter.ofPattern("YYYYMMddHHmmss"))
-        return "D:$formattedTime${now.offset.toString().replace(":", "’")}’"
+        val formattedTime = now.format(DateTimeFormatter.ofPattern("YYYYMMddHHmmssxxx"))
+        return "D:${formattedTime.replace(":", "’")}’"
     }
 
     private fun saksbehandlerCommands(saksbehandlere: SignerendeSaksbehandlere?, printWriter: LatexPrintWriter) {
