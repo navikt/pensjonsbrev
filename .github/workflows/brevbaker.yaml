@@ -63,6 +63,8 @@ jobs:
           "java-version": "15"
       - name: "run integration tests"
         run: "./gradlew integrationTest"
+        env:
+          "PDF_BYGGER_URL": http://pdf-bygger:8080
 
   "deployAppToDev":
     name: "Deploy to dev"
