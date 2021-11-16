@@ -38,6 +38,9 @@ jobs:
         env:
           "GITHUB_TOKEN": "${{ secrets.GITHUB_TOKEN }}"
   runIntegrationTests:
+    defaults:
+      run:
+        working-directory: pensjon-brevbaker
     name: "Integration tests"
     needs: "build"
     services:
@@ -63,7 +66,7 @@ jobs:
 
   "deployAppToDev":
     name: "Deploy to dev"
-    needs: "build"
+    needs: "runIntegrationTests"
     runs-on: "ubuntu-latest"
     steps:
       - uses: "actions/checkout@v2"
