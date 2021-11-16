@@ -1,5 +1,7 @@
 package no.nav.pensjon.brev.template.base
 
+import com.natpryce.hamkrest.assertion.assertThat
+import com.natpryce.hamkrest.isNullOrBlank
 import no.nav.pensjon.brev.Fixtures
 import no.nav.pensjon.brev.TestTags
 import no.nav.pensjon.brev.api.model.LetterMetadata
@@ -17,6 +19,7 @@ data class TestTemplateDto(val etNavn: String)
 
 @Tag(TestTags.PDF_BYGGER)
 class PensjonLatexITest {
+    val pdfBuilderURL = System.getenv("PDF_BYGGER_URL")?: "http://localhost:8081"
 
     val brevData = TestTemplateDto("Ole")
 
@@ -42,7 +45,7 @@ class PensjonLatexITest {
         Letter(template, brevData, Bokmal, Fixtures.felles)
             .render()
             .let { PdfCompilationInput(it.base64EncodedFiles()) }
-            .let { LaTeXCompilerService().producePDF(it).base64PDF }
+            .let { LaTeXCompilerService(pdfBuilderURL).producePDF(it).base64PDF }
             .also {
                 val file = File("build/test_pdf/pensjonLatexITest_canRender.pdf")
                 file.parentFile.mkdirs()
@@ -51,4 +54,15 @@ class PensjonLatexITest {
             }
     }
 
+    @Test
+    fun `PDF creation time is set on the host system`() {
+        val pdfCreationTime = PensjonLatex.pdfCreationTime()
+        println(pdfCreationTime)
+        assertThat(pdfCreationTime, !isNullOrBlank)
+    }
+
+    @Test
+    fun `Ping pdf builder`() {
+        LaTeXCompilerService(pdfBuilderURL).ping()
+    }
 }

@@ -14,7 +14,7 @@ import java.util.*
 
 @Tag(TestTags.PDF_BYGGER)
 class OmsorgEgenAutoITest {
-
+    val pdfBuilderURL = System.getenv("PDF_BYGGER_URL")?: "http://localhost:8081"
     @Test
     fun test() {
         Letter(
@@ -24,7 +24,7 @@ class OmsorgEgenAutoITest {
             Fixtures.fellesAuto
         ).render()
             .let { PdfCompilationInput(it.base64EncodedFiles()) }
-            .let { LaTeXCompilerService().producePDF(it).base64PDF }
+            .let { LaTeXCompilerService(pdfBuilderURL).producePDF(it).base64PDF }
             .also {
                 val file = File("build/test_pdf/000104-english.pdf")
                 file.parentFile.mkdirs()

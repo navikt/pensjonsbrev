@@ -11,7 +11,7 @@ data class PdfCompilationInput(val files: Map<String, String>)
 data class PDFCompilationOutput(val base64PDF: String)
 
 //TODO: Skriv tester
-class LaTeXCompilerService(private val pdfByggerUrl: String = "http://127.0.0.1:8081") {
+class LaTeXCompilerService(private val pdfByggerUrl: String) {
     private val httpClient = HttpClient(CIO) {
         install(JsonFeature) {
             serializer = JacksonSerializer()
@@ -28,4 +28,10 @@ class LaTeXCompilerService(private val pdfByggerUrl: String = "http://127.0.0.1:
                 body = compilationInput
             }
         }
+
+    fun ping() {
+        runBlocking {
+            httpClient.get<String>("$pdfByggerUrl/isAlive")
+        }
+    }
 }

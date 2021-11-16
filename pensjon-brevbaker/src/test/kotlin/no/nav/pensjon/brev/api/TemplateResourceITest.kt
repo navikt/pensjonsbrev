@@ -16,7 +16,8 @@ import kotlin.reflect.full.createInstance
 
 @Tag(TestTags.PDF_BYGGER)
 class TemplateResourceITest {
-    private val compileService = LaTeXCompilerService()
+    val pdfBuilderURL = System.getenv("PDF_BYGGER_URL")?: "http://localhost:8081"
+    private val compileService = LaTeXCompilerService(pdfBuilderURL)
 
     @Test
     fun `all templates can render and compile`() {

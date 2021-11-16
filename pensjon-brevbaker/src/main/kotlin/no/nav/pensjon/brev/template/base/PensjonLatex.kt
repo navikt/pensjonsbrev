@@ -237,7 +237,7 @@ object PensjonLatex : BaseTemplate() {
         }
     }
 
-    private fun pdfCreationTime(): String {
+    fun pdfCreationTime(): String {
         val now = ZonedDateTime.now()
         val formattedTime = now.format(DateTimeFormatter.ofPattern("YYYYMMddHHmmss"))
         return "D:$formattedTime${now.offset.toString().replace(":", "’")}’"
