@@ -19,7 +19,7 @@ data class TestTemplateDto(val etNavn: String)
 
 @Tag(TestTags.PDF_BYGGER)
 class PensjonLatexITest {
-    val pdfBuilderURL = System.getenv("PDF_BYGGER_URL")?: "http://localhost:8081"
+    val pdfBuilderURL = "http://localhost:8081"
 
     val brevData = TestTemplateDto("Ole")
 

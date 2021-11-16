@@ -14,7 +14,7 @@ import java.util.*
 
 @Tag(TestTags.PDF_BYGGER)
 class OmsorgEgenAutoITest {
-    val pdfBuilderURL = System.getenv("PDF_BYGGER_URL")?: "http://localhost:8081"
+    val pdfBuilderURL = "http://localhost:8081"
     @Test
     fun test() {
         Letter(
