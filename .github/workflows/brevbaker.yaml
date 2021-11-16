@@ -44,8 +44,8 @@ jobs:
       pdf-bygger:
         image: ghcr.io/navikt/pensjonsbrev/pensjon-pdf-bygger:latest
         credentials:
-          username: ${{ env.GITHUB_REPOSITORY }}
-          password: ${{ env.GITHUB_TOKEN }}
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
     runs-on: ubuntu-latest
     steps:
       - uses: "actions/checkout@v2"
