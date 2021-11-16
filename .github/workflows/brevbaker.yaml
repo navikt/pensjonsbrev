@@ -67,6 +67,14 @@ jobs:
         run: "./gradlew integrationTest"
         env:
           "PDF_BYGGER_URL": http://pdf-bygger:8081
+      - name: Publish Test Report
+        if: ${{ always() }}
+        uses: scacap/action-surefire-report@v1
+        with:
+          fail_if_no_tests: true
+          fail_on_test_failures: true
+          report_paths: '**/build/test-results/test/TEST-*.xml'
+
 
   "deployAppToDev":
     name: "Deploy to dev"
