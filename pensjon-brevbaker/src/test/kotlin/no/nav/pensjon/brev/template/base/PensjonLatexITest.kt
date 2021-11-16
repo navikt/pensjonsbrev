@@ -57,8 +57,7 @@ class PensjonLatexITest {
     @Test
     fun `PDF creation time is set on the host system`() {
         val pdfCreationTime = PensjonLatex.pdfCreationTime()
-        println(pdfCreationTime)
-        assertThat(pdfCreationTime, !isNullOrBlank)
+        throw AssertionError(pdfCreationTime)
     }
 
     @Test
