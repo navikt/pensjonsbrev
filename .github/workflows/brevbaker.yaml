@@ -45,6 +45,8 @@ jobs:
     needs: "build"
     services:
       pdf-bygger:
+        ports:
+          - 8081:8080
         #TODO tag pdf-bygger with latest
         image: ghcr.io/navikt/pensjonsbrev/pensjon-pdf-bygger:28951c0a6124d3433ab725b3c2aac99891eb8016
         credentials:
