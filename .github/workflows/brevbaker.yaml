@@ -45,7 +45,7 @@ jobs:
         image: ghcr.io/navikt/pensjonsbrev/pensjon-pdf-bygger:latest
         credentials:
           username: ${{ env.GITHUB_REPOSITORY }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          password: ${{ env.GITHUB_TOKEN }}
     runs-on: ubuntu-latest
     steps:
       - uses: "actions/checkout@v2"
