@@ -1,0 +1,133 @@
+name: "Build and deploy brevbaker and pdf-bygger"
+on:
+  push:
+    branches:
+      - "main"
+    paths:
+      - "pensjon-brevbaker/**"
+      - "pdf-bygger/**"
+      - ".github/workflows/pdfbygger-brevbaker.yml"
+env:
+  "IMAGE_BREVBAKER": "docker.pkg.github.com/${{ github.repository }}/pensjon-brevbaker:${{ github.sha }}"
+  "IMAGE_PDF_BUILDER": "docker.pkg.github.com/${{ github.repository }}/pensjon-pdf-bygger:${{ github.sha }}"
+jobs:
+  "build-brevbaker":
+    defaults:
+      run:
+        working-directory: pensjon-brevbaker
+    name: "build brevbaker"
+    runs-on: "ubuntu-latest"
+    steps:
+      - uses: "actions/checkout@v2"
+      - uses: "gradle/wrapper-validation-action@v1"
+      - uses: "actions/cache@v2"
+        with:
+          "path": "~/.gradle/caches"
+          "key": "${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle.kts') }}"
+          "restore-keys": "${{ runner.os }}-gradle-"
+      - uses: "actions/setup-java@v1"
+        with:
+          "java-version": "15"
+      - name: "compile and run tests"
+        run: "./gradlew build"
+        env:
+          "GITHUB_TOKEN": "${{ secrets.GITHUB_TOKEN }}"
+      - name: "Build and publish Docker image"
+        run: "docker build --pull --tag ${IMAGE_BREVBAKER} . && echo $GITHUB_TOKEN | docker login\
+        \ --username $GITHUB_REPOSITORY --password-stdin https://docker.pkg.github.com\
+        \ && docker push ${IMAGE_BREVBAKER}"
+        env:
+          "GITHUB_TOKEN": "${{ secrets.GITHUB_TOKEN }}"
+
+  "build-pdfbygger":
+    defaults:
+      run:
+        working-directory: pdf-bygger
+    name: "build pdfbygger"
+    runs-on: "ubuntu-latest"
+    steps:
+      - uses: "actions/checkout@v2"
+      - uses: "gradle/wrapper-validation-action@v1"
+      - uses: "actions/cache@v2"
+        with:
+          "path": "~/.gradle/caches"
+          "key": "${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle.kts') }}"
+          "restore-keys": "${{ runner.os }}-gradle-"
+      - uses: "actions/setup-java@v1"
+        with:
+          "java-version": "15"
+      - name: "compile and run tests"
+        run: "./gradlew build"
+      - name: "Build and publish Docker image"
+        run: "docker build --pull --tag ${IMAGE_PDF_BUILDER} . && echo $GITHUB_TOKEN | docker login\
+        \ --username $GITHUB_REPOSITORY --password-stdin https://docker.pkg.github.com\
+        \ && docker push ${IMAGE_PDF_BUILDER}"
+        env:
+          "GITHUB_TOKEN": "${{ secrets.GITHUB_TOKEN }}"
+
+  runIntegrationTests:
+    defaults:
+      run:
+        working-directory: pensjon-brevbaker
+    name: "Integration tests"
+    needs: [build-brevbaker, build-pdfbygger]
+    services:
+      pdf-bygger:
+        ports:
+          - 8081:8080
+        image: ${{ env.IMAGE_PDF_BUILDER }}
+        credentials:
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: "actions/checkout@v2"
+      - uses: "actions/cache@v2"
+        with:
+          "path": "~/.gradle/caches"
+          "key": "${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle.kts') }}"
+          "restore-keys": "${{ runner.os }}-gradle-"
+      - uses: "actions/setup-java@v1"
+        with:
+          "java-version": "15"
+      - name: "run integration tests"
+        run: "./gradlew integrationTest"
+      - name: Publish Test Report
+        if: ${{ always() }}
+        uses: scacap/action-surefire-report@v1
+        with:
+          fail_if_no_tests: true
+          fail_on_test_failures: true
+          report_paths: '**/build/test-results/integrationTest/TEST-*.xml'
+
+  "deployBrevbakerToDev":
+    name: "Deploy brevbaker to dev"
+    needs: "runIntegrationTests"
+    runs-on: "ubuntu-latest"
+    steps:
+      - uses: "actions/checkout@v2"
+      - name: "Deploy to DEV"
+        uses: "nais/deploy/actions/deploy@v1"
+
+        env:
+          "APIKEY": "${{ secrets.NAIS_DEPLOY_APIKEY }}"
+          "CLUSTER": "dev-gcp"
+          "RESOURCE": "pensjon-brevbaker/.nais/nais.yaml"
+          "VAR": image=${{ env.IMAGE_BREVBAKER }}
+          "VARS": "pensjon-brevbaker/.nais/dev.yaml"
+
+  "deployPdfByggerToDev":
+    name: "Deploy pdf-bygger to dev"
+    needs: "runIntegrationTests"
+    runs-on: "ubuntu-latest"
+    steps:
+      - uses: "actions/checkout@v2"
+      - name: "Deploy to DEV"
+        uses: "nais/deploy/actions/deploy@v1"
+
+        env:
+          "APIKEY": "${{ secrets.NAIS_DEPLOY_APIKEY }}"
+          "CLUSTER": "dev-gcp"
+          "RESOURCE": "pdf-bygger/.nais/nais.yaml"
+          "VAR": image=${{ env.IMAGE_PDF_BUILDER }}
+          "VARS": "pdf-bygger/.nais/dev.yaml"
