@@ -75,7 +75,7 @@ jobs:
       pdf-bygger:
         ports:
           - 8081:8080
-        image: $IMAGE_PDF_BUILDER
+        image: ${IMAGE_PDF_BUILDER}
         credentials:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
