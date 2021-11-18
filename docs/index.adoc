@@ -3,9 +3,6 @@
 :toclevels: 2
 
 include::arkitektur.adoc[]
-
-== Tjenester
-
 include::løsningsbeskrivelse.adoc[]
 
 

@@ -1,4 +1,4 @@
-= Brevbaker og pdfbygger
+= Løsningsbeskrivelse av Brevbaker og pdfbygger
 
 Brevbaker er en mikrotjeneste uten state som tar inn informasjon som kreves for ett brev (navn, adresse, saksnummer osv)
 , og gir tilbake en PDF via REST grensesnitt. Brevbakeren bestemmer selve tekstlige innholdet i ett brev basert på brevbestillingen.
@@ -10,10 +10,182 @@ Verken PDF dokumentet eller informasjonen som brukes til å generere dokumentet 
 Pdf-bygger er en tjeneste som mottar en liste med filer, og kompilerer de som ett LaTeX prosjekt.
 
 == Prosess / Brukstilfelle
+Overordnet vil en bestilling gå slik:
 [plantuml, target=img/sekvens-diagram, format=svg]
 ....
-BestillerSystem -> Brevbaker: LetterRequest
-Brevbaker -> PDFbygger: Tekstlig innhold for brev med data
-PDFbygger -> Brevbaker: PDF
-Brevbaker -> BestillerSystem: PDF (base64 string)
+BestillerSystem -> Brevbaker: LetterRequest (1)
+Brevbaker -> PDFbygger: LaTeX filer til pdf-rendring(2)
+PDFbygger -> Brevbaker: PDF (3)
+Brevbaker -> BestillerSystem: PDF + mal-metadata (4)
 ....
+=== 1. Besillersystemet fyller ut en LetterRequest med informasjon som skrives i brevet.
+
+(modell kan være utdatert)
+
+[plantuml, target=img/datagrunnlag-letterrequest, format=svg]
+....
+class LetterRequest{
+    template: String
+    letterData: Datagrunnlag for valgt mal med egen klasse
+    felles: Felles
+    language: LanguageCode
+}
+LetterRequest --* Felles
+LetterRequest --* LanguageCode
+
+class LanguageCode {
+    BOKMAL, NYNORSK, ENGLISH
+}
+
+class Felles{
+    dokumentDato: LocalDate
+    saksnummer: String
+    avsenderEnhet: NAVEnhet
+    mottaker: Mottaker
+    signerendeSaksbehandlere: SignerendeSaksbehandlere? = null
+}
+
+Felles --* NAVEnhet
+Felles --* SignerendeSaksbehandlere
+Felles --* Mottaker
+
+class ReturAdresse{
+    adresseLinje1: String
+    postNr: String
+    postSted: String
+}
+
+class SignerendeSaksbehandlere{
+    saksbehandler: String
+    attesterendeSaksbehandler: String
+}
+
+class Mottaker{
+    fornavn: String
+    mellomnavn: String? = null
+    etternavn: String
+    foedselsnummer: String
+    kortnavn: String
+    adresse: Adresse
+}
+Mottaker --* Adresse
+
+class Adresse{
+    linje1: String
+    linje2: String
+    linje3: String? = null
+    linje4: String? = null
+    linje5: String? = null
+}
+
+class NAVEnhet{
+    returAdresse: ReturAdresse
+    nettside: String
+    navn: String
+    telefonnummer: String
+}
+
+NAVEnhet --* ReturAdresse
+....
+
+
+Felles-feltet inneholder data som kreves for bestilling av alle brev. Feltene der det står "? = null" er valgfrie.
+letterData feltet inneholder ulik datastruktur avhengig av hvilket brev som bestilles.
+For eksempel ved bestilling av brevet "Egenerklæring godskriving omsorgspoeng" krever at letterData er inneholder malens unike grunnlag som ser slik ut:
+
+[plantuml, target=img/brevDtoEksempel, format=svg]
+....
+class LetterRequest{
+    template: String
+    letterData: OmsorgEgenAuto
+    felles: Felles
+    language: LanguageCode
+}
+LetterRequest --* OmsorgEgenAuto
+class OmsorgEgenAuto{
+    årEgenerklaringOmsorgspoeng: Number
+    årInnvilgetOmsorgspoeng: Number
+}
+
+
+
+....
+=== 2. Brevbakeren bruker input data sammen med malen for å bestemme innholdet i brevet
+For å bestemme det tekstlige innholdet og elementer i brevet kombinerer vi malen med dataene. Malen er definert ved hjelp av kotlin DSL.
+Malen kan se for eksempel slik ut:
+
+.Eksempel
+[%collapsible]
+====
+
+
+[source, kotlin]
+....
+object EksempelBrev : StaticTemplate {
+    override val template = createTemplate(
+        //ID på brevet
+        name = "EKSEMPEL_BREV",
+
+        //Master-mal for brevet.
+        base = PensjonLatex,
+
+        // Unik datagrunnlag/DTO for brevet
+        letterDataType = EksempelBrevDto::class,
+
+        // Hvilke språk brevet støtter
+        lang = languages(Language.Bokmal),
+
+        // Hovedtittel inne i brevet
+        title = newText(Language.Bokmal to "Eksempelbrev"),
+
+        // Metadata knyttet til en brevmal som ikke påvirker innholdet
+        letterMetadata = LetterMetadata(
+
+            // Visningstittel for ulike systemer.
+            // F.eks saksbehandling brev oversikt, brukerens brev oversikt osv
+            displayTitle = "Dette er ett eksempel-brev",
+
+            // Krever brevet bankid/ nivå 4 pålogging for å vises
+            isSensitiv = false,
+        )
+    ) {
+        // Tekst-innholdet i malen
+        outline {
+
+            // Undertittel
+            title1 {
+
+                // Tekst
+                text(Language.Bokmal to "Du har fått innvilget pensjon")
+            }
+
+            // Inkluder data fra datagrunnlaget til malen inn i brevet som tekst
+            eval { argument().select(EksempelBrevDto::pensjonInnvilget).str() }
+
+            // Inkludering av eksisterende frase/mini-mal for gjenbruk av elementer
+            includePhrase(
+                argument().select(EksempelBrevDto::pensjonInnvilget)
+                    .map { TestFraseDto(it.toString()) },
+                TestFrase
+            )
+        }
+    }
+}
+....
+====
+
+Ved bruk av PensjonLatex master-malen vil det genereres en rekke filer som sendes til pdf-byggeren:
+
+1. `params.tex` inkluderer alle felles-elementer som kreves i master-malen.
+2. `letter.xmpdata` inneholder metadata for pdf-dokumentet
+3. `letter.tex` inneholder hoveddelen av brevet med tekst og data fra brevmalen
+4. `nav-logo.pdf` logo for master-malen
+5. `nav-logo.pdf_tex` tex kode for å bruke nav logoen
+6. `pensjonsbrev_v2.cls` fil som beskriver plassering av innhold og utforming av brevet. Fungerer noe likt css.
+
+
+=== 3. PDF-byggeren bygger pdf fra inngående filer
+Pdf-byggeren kjører XeTeX på letter.tex filen og returnerer resulterende PDF til brevbakeren.
+
+=== 4. Brevbaker svarer med brev-metadata og pdf
+Brevbakeren svarer bestillende system med PDF og metadata som hører til brevmalen som produserte brevet definert i LetterMetadata.
