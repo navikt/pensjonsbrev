@@ -10,11 +10,9 @@ import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.Letter
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
-import java.io.File
-import java.util.*
 
+@Tag(TestTags.PDF_BYGGER)
 class OmsorgEgenAutoITest {
-    @Tag(TestTags.PDF_BYGGER)
     @Test
     fun test() {
         Letter(
@@ -28,7 +26,6 @@ class OmsorgEgenAutoITest {
             .also { writeTestPDF("000104-english" ,it) }
     }
 
-    @Tag(TestTags.PDF_BYGGER)
     @Test
     fun `end to end test`() {
         requestLetter(
