@@ -83,7 +83,7 @@ jobs:
         env:
           PDF_BUILDER_URL: "http://pdf-bygger:8080"
         ports:
-          - 8080:8080
+          - 8082:8080
         image: "docker.pkg.github.com/${{ github.repository }}/pensjon-brevbaker:${{ github.sha }}"
         credentials:
           username: ${{ github.repository_owner }}
