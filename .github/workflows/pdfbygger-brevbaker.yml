@@ -79,6 +79,15 @@ jobs:
         credentials:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
+      brevbaker:
+        env:
+          PDF_BUILDER_URL: "http://pdf-bygger:8080"
+        ports:
+          - 8080:8080
+        image: "docker.pkg.github.com/${{ github.repository }}/pensjon-brevbaker:${{ github.sha }}"
+        credentials:
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
     runs-on: ubuntu-latest
     steps:
       - uses: "actions/checkout@v2"

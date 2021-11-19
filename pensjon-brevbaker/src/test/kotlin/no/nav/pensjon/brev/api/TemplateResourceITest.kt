@@ -1,11 +1,13 @@
 package no.nav.pensjon.brev.api
 
 import no.nav.pensjon.brev.Fixtures
+import no.nav.pensjon.brev.PDF_BUILDER_URL
 import no.nav.pensjon.brev.TestTags
 import no.nav.pensjon.brev.latex.LaTeXCompilerService
 import no.nav.pensjon.brev.latex.PDFCompilationOutput
 import no.nav.pensjon.brev.latex.PdfCompilationInput
 import no.nav.pensjon.brev.template.*
+import no.nav.pensjon.brev.writeTestPDF
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.fail
@@ -16,8 +18,7 @@ import kotlin.reflect.full.createInstance
 
 @Tag(TestTags.PDF_BYGGER)
 class TemplateResourceITest {
-    val pdfBuilderURL = "http://localhost:8081"
-    private val compileService = LaTeXCompilerService(pdfBuilderURL)
+    private val compileService = LaTeXCompilerService(PDF_BUILDER_URL)
 
     @Test
     fun `all templates can render and compile`() {
@@ -33,7 +34,7 @@ class TemplateResourceITest {
         val letter = createLetter(template)
         val rendered = render(letter)
         try {
-            writePdf(name, compile(rendered))
+            writeTestPDF(name, compile(rendered).base64PDF)
         } catch (failedCompile: Exception) {
             fail("Failed to compile template($name) with argument: ${letter.argument}", failedCompile)
         }

@@ -35,6 +35,7 @@
 \usepackage{needspace}
 \usepackage{geometry}   % adjusting margins
 \usepackage{enumitem,amssymb} % for formChoice list
+\usepackage[utf8]{inputenc} % support for utf-8 characters
 
 %! suppress = FileNotFound
 \include{params}  % Must be done before pdfx is imported

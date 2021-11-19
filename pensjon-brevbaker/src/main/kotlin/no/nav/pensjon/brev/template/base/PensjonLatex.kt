@@ -199,7 +199,7 @@ object PensjonLatex : BaseTemplate() {
             println("""\documentclass[12pt]{pensjonsbrev_v2}""", escape = false)
             pdfMetadata(letter, printWriter)
             printCmd("begin", "document")
-            printCmd("begin", "letter", """\brevparameter""")
+            printCmd("begin", "letter", """\brevparameter""", escape = false)
             printCmd("tittel", letter.template.title.text(letter.language))
             contents(letter, printWriter)
             printCmd("closing")
@@ -249,7 +249,7 @@ object PensjonLatex : BaseTemplate() {
             printWriter.printNewCmd("feltclosingsaksbehandlerfirst", saksbehandlere.saksbehandler)
             printWriter.printNewCmd("feltclosingsaksbehandlersecond", saksbehandlere.attesterendeSaksbehandler)
         } else {
-            printWriter.printNewCmd("closingbehandlet", """\closingautomatiskbehandlet""")
+            printWriter.printNewCmd("closingbehandlet", """\closingautomatiskbehandlet""", escape = false)
         }
     }
 

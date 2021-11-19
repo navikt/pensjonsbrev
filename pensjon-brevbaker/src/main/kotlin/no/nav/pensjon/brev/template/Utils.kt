@@ -24,10 +24,29 @@ fun <T : Any> KClass<out T>.findSealedObjects(): Set<T> =
 fun dateFormatter(language: Language): DateTimeFormatter =
     DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG).withLocale(language.locale())
 
-private val latexEscapePattern = Regex("([_^~$%#&{}])")
+val CHARACTER_BLACKLIST =
+    listOf(0, 1, 2, 3, 4, 5, 6, 7, 8, 11, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 127)
+
 fun String.latexEscape(): String =
-    // "_", "^", "~", "$", "%", "#", "&", "{", "}"
-    latexEscapePattern.replace(this, """\\$1""")
+    this.map {
+        if (CHARACTER_BLACKLIST.contains(it.code)) {
+            ""
+        } else {
+            when (it) {
+                '#' -> """\#"""
+                '$' -> """\$"""
+                '%' -> """\%"""
+                '&' -> """\&"""
+                '\\' -> """\textbackslash{}"""
+                '^' -> """\textasciicircum{}"""
+                '_' -> """\_"""
+                '{' -> """\{"""
+                '}' -> """\}"""
+                '~' -> """\textasciitilde{}"""
+                else -> it.toString()
+            }
+        }
+    }.joinToString(separator = "")
 
 
 internal fun <Lang : LanguageCombination> Element<Lang>.findExpressions(): List<Expression<*>> =
@@ -48,7 +67,7 @@ internal fun <Lang : LanguageCombination> Element<Lang>.findExpressions(): List<
             title1.flatMap { it.findExpressions() }
 
         // TODO will return expressions which operates in another scope.
-        is Element.IncludePhrase<*,*> ->
+        is Element.IncludePhrase<*, *> ->
             phrase.elements.flatMap { it.findExpressions() }
 
         is Element.Paragraph -> paragraph.flatMap { it.findExpressions() }
