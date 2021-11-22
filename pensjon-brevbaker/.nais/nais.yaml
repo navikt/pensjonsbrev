@@ -23,17 +23,17 @@ spec:
     timeout: 60
   replicas:
     min: 2
-    max: 2
+    max: 10
     cpuThresholdPercentage: 50
   prometheus:
     enabled: true
     path: "/metrics"
     port: "8080"
   limits:
-    cpu: "2000m"
+    cpu: "250m"
     memory: "256Mi"
   requests:
-    cpu: "2000m"
+    cpu: "500m"
     memory: "256Mi"
   accessPolicy:
     outbound:
