@@ -31,10 +31,10 @@ spec:
     port: "8080"
   limits:
     cpu: "250m"
-    memory: "256Mi"
+    memory: "512Mi"
   requests:
     cpu: "500m"
-    memory: "256Mi"
+    memory: "512Mi"
   accessPolicy:
     outbound:
       rules:
