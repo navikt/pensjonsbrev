@@ -30,11 +30,11 @@ spec:
     path: "/metrics"
     port: "8080"
   limits:
-    cpu: "200m"
-    memory: "256Mi"
+    cpu: "1000m"
+    memory: "512Mi"
   requests:
-    cpu: "200m"
-    memory: "256Mi"
+    cpu: "1000m"
+    memory: "512Mi"
   accessPolicy:
     inbound:
       rules:
