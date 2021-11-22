@@ -1,3 +1,3 @@
 FROM navikt/java:15
 COPY build/libs/pensjon-brevbaker.jar app.jar
-EXPOSE 8082
+EXPOSE 8080

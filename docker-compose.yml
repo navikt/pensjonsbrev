@@ -9,4 +9,4 @@ services:
       - PDF_BYGGER_URL=http://pdf-bygger:8080
     build: ./pensjon-brevbaker
     ports:
-      - "8082:8080"
+      - "8080:8080"
