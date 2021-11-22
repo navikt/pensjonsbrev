@@ -31,7 +31,7 @@ fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 fun requireEnv(key: String) =
     System.getenv(key)?: throw IllegalStateException("The environment variable $key is missing.")
 
-private val latexCompilerService = LaTeXCompilerService(requireEnv("PDF_BYGGER_URL"))
+private val latexCompilerService = LaTeXCompilerService(requireEnv("PDF_BUILDER_URL"))
 private val base64Decoder = Base64.getDecoder()
 
 @Suppress("unused") // Referenced in application.conf

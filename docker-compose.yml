@@ -6,7 +6,7 @@ services:
       - "8081:8080"
   pensjon-brevbaker:
     environment:
-      - PDF_BYGGER_URL=http://pdf-bygger:8080
+      - PDF_BUILDER_URL=http://pdf-bygger:8080
     build: ./pensjon-brevbaker
     ports:
       - "8080:8080"
