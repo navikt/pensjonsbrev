@@ -29,12 +29,12 @@ spec:
     enabled: true
     path: "/metrics"
     port: "8080"
-  limits:
-    cpu: "4"
-    memory: "512Mi"
   requests:
     cpu: "1"
-    memory: "512Mi"
+    memory: "1024Mi"
+  limits:
+    cpu: "1"
+    memory: "2048Mi"
   accessPolicy:
     inbound:
       rules:

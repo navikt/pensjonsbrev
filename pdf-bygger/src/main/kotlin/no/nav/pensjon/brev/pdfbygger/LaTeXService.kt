@@ -66,8 +66,7 @@ class LaTeXService {
         error: Path = workingDir.resolve("process.err"),
     ): Execution =
         runCatching {
-            ProcessBuilder(*("xelatex --interaction=nonstopmode -halt-on-error $texFilename.tex --no-pdf" +
-                    " && xdvipdfmx -E $texFilename.pdf").split(" ").toTypedArray())
+            ProcessBuilder(*("xelatex --interaction=nonstopmode -halt-on-error $texFilename.tex").split(" ").toTypedArray())
                 .directory(workingDir.toFile())
                 .redirectOutput(output.toFile())
                 .redirectError(error.toFile())
