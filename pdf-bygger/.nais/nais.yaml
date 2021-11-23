@@ -31,10 +31,10 @@ spec:
     port: "8080"
   resources:
     requests:
-      cpu: "1"
+      cpu: "500m"
       memory: "1024Mi"
     limits:
-      cpu: "2"
+      cpu: "1000m"
       memory: "2048Mi"
   accessPolicy:
     inbound:
