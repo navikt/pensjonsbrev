@@ -23,7 +23,7 @@ spec:
     timeout: 60
   replicas:
     min: 2
-    max: 100
+    max: 20
     cpuThresholdPercentage: 50
   prometheus:
     enabled: true
@@ -31,11 +31,11 @@ spec:
     port: "8080"
   resources:
     requests:
-      cpu: "500m"
-      memory: "256Mi"
+      cpu: "12"
+      memory: "1024Mi"
     limits:
-      cpu: "1000m"
-      memory: "512Mi"
+      cpu: "12"
+      memory: "2048Mi"
   accessPolicy:
     inbound:
       rules:
