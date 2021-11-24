@@ -9,6 +9,8 @@ import io.ktor.http.*
 import kotlinx.coroutines.runBlocking
 import no.nav.pensjon.brev.api.model.LetterRequest
 import no.nav.pensjon.brev.api.model.LetterResponse
+import no.nav.pensjon.brev.latex.LaTeXCompilerService
+import no.nav.pensjon.brev.latex.PdfCompilationInput
 import java.io.File
 import java.util.*
 
@@ -40,3 +42,6 @@ fun writeTestPDF(pdfFileName: String, pdf: String) {
     file.writeBytes(Base64.getDecoder().decode(pdf))
     println("Test-file written to file:${"\\".repeat(3)}${file.absolutePath}".replace('\\', '/'))
 }
+
+fun LaTeXCompilerService.producePdfSync(pdfCompilationInput: PdfCompilationInput) =
+    runBlocking { producePDF(pdfCompilationInput) }

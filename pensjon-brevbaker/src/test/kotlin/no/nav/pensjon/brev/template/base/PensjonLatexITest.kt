@@ -2,9 +2,8 @@ package no.nav.pensjon.brev.template.base
 
 import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.isEmpty
-import no.nav.pensjon.brev.Fixtures
-import no.nav.pensjon.brev.PDF_BUILDER_URL
-import no.nav.pensjon.brev.TestTags
+import kotlinx.coroutines.runBlocking
+import no.nav.pensjon.brev.*
 import no.nav.pensjon.brev.api.model.LetterMetadata
 import no.nav.pensjon.brev.latex.LaTeXCompilerService
 import no.nav.pensjon.brev.latex.PdfCompilationInput
@@ -12,7 +11,6 @@ import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Letter
 import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brev.template.latexEscape
-import no.nav.pensjon.brev.writeTestPDF
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 import org.opentest4j.AssertionFailedError
@@ -47,13 +45,13 @@ class PensjonLatexITest {
         Letter(template, brevData, Bokmal, Fixtures.felles)
             .render()
             .let { PdfCompilationInput(it.base64EncodedFiles()) }
-            .let { LaTeXCompilerService(PDF_BUILDER_URL).producePDF(it).base64PDF }
+            .let { LaTeXCompilerService(PDF_BUILDER_URL).producePdfSync(it).base64PDF }
             .also { writeTestPDF("pensjonLatexITest_canRender" ,it) }
     }
 
     @Test
     fun `Ping pdf builder`() {
-        LaTeXCompilerService(PDF_BUILDER_URL).ping()
+        runBlocking { LaTeXCompilerService(PDF_BUILDER_URL).ping()}
     }
 
     @Test
@@ -113,7 +111,7 @@ class PensjonLatexITest {
             Letter(testTemplate, brevData, Bokmal, Fixtures.felles)
                 .render()
                 .let { PdfCompilationInput(it.base64EncodedFiles()) }
-                .let { LaTeXCompilerService(PDF_BUILDER_URL).producePDF(it).base64PDF }
+                .let { LaTeXCompilerService(PDF_BUILDER_URL).producePdfSync(it).base64PDF }
             return true
         } catch (e: Throwable) {
             return false

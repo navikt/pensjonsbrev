@@ -10,3 +10,20 @@ services:
     build: ./pensjon-brevbaker
     ports:
       - "8080:8080"
+  locust-master:
+    profiles:
+      - locust
+    image: locustio/locust
+    ports:
+      - "8089:8089"
+    volumes:
+      - ./:/mnt/locust
+    command: -f /mnt/locust/locustfile.py --master -H http://master:8089
+
+  locust-worker:
+    profiles:
+      - locust
+    image: locustio/locust
+    volumes:
+      - ./:/mnt/locust
+    command: -f /mnt/locust/locustfile.py --worker --master-host master

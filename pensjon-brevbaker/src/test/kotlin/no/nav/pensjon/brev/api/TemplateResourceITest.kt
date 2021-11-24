@@ -1,13 +1,10 @@
 package no.nav.pensjon.brev.api
 
-import no.nav.pensjon.brev.Fixtures
-import no.nav.pensjon.brev.PDF_BUILDER_URL
-import no.nav.pensjon.brev.TestTags
+import no.nav.pensjon.brev.*
 import no.nav.pensjon.brev.latex.LaTeXCompilerService
 import no.nav.pensjon.brev.latex.PDFCompilationOutput
 import no.nav.pensjon.brev.latex.PdfCompilationInput
 import no.nav.pensjon.brev.template.*
-import no.nav.pensjon.brev.writeTestPDF
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.fail
@@ -42,7 +39,7 @@ class TemplateResourceITest {
 
     private fun compile(rendered: RenderedLetter): PDFCompilationOutput =
         PdfCompilationInput(rendered.base64EncodedFiles())
-            .let { compileService.producePDF(it) }
+            .let { compileService.producePdfSync(it) }
 
     private fun render(letter: Letter<Any>): RenderedLetter =
         try {
@@ -71,11 +68,4 @@ class TemplateResourceITest {
         is LanguageCombination.Double<*, *> -> lang.first
         is LanguageCombination.Triple<*, *, *> -> lang.first
     }
-
-    fun writePdf(name: String, output: PDFCompilationOutput) =
-        with(File("build/test_pdf/$name.pdf")) {
-            parentFile.mkdirs()
-            writeBytes(Base64.getDecoder().decode(output.base64PDF))
-            println("Test-file written to: $path")
-        }
 }

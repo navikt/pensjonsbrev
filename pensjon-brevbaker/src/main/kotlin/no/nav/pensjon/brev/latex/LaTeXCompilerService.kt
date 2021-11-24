@@ -21,17 +21,13 @@ class LaTeXCompilerService(private val pdfByggerUrl: String) {
         }
     }
 
-    fun producePDF(compilationInput: PdfCompilationInput): PDFCompilationOutput =
-        runBlocking {
-            httpClient.post("$pdfByggerUrl/compile") {
-                contentType(ContentType.Application.Json)
-                body = compilationInput
-            }
+    suspend fun producePDF(compilationInput: PdfCompilationInput): PDFCompilationOutput =
+        httpClient.post("$pdfByggerUrl/compile") {
+            contentType(ContentType.Application.Json)
+            body = compilationInput
         }
 
-    fun ping() {
-        runBlocking {
-            httpClient.get<String>("$pdfByggerUrl/isAlive")
-        }
+    suspend fun ping() {
+        httpClient.get<String>("$pdfByggerUrl/isAlive")
     }
 }

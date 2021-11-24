@@ -22,7 +22,7 @@ class OmsorgEgenAutoITest {
             Fixtures.fellesAuto
         ).render()
             .let { PdfCompilationInput(it.base64EncodedFiles()) }
-            .let { LaTeXCompilerService(PDF_BUILDER_URL).producePDF(it).base64PDF }
+            .let { LaTeXCompilerService(PDF_BUILDER_URL).producePdfSync(it).base64PDF }
             .also { writeTestPDF("000104-english" ,it) }
     }
 
