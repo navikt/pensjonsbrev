@@ -32,10 +32,10 @@ spec:
   resources:
     requests:
       cpu: "12"
-      memory: "1024Mi"
+      memory: "2048Mi"
     limits:
       cpu: "12"
-      memory: "2048Mi"
+      memory: "8196Mi"
   accessPolicy:
     inbound:
       rules:
