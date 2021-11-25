@@ -22,26 +22,24 @@ data class TestTemplateDto(val etNavn: String)
 class PensjonLatexITest {
 
     val brevData = TestTemplateDto("Ole")
-
-    val template = createTemplate(
-        name = "test-template",
-        base = PensjonLatex,
-        letterDataType = TestTemplateDto::class,
-        lang = languages(Bokmal),
-        title = newText(Bokmal to "En fin tittel"),
-        letterMetadata = LetterMetadata(
-            displayTitle = "En fin display tittel",
-            isSensitiv = false,
-        )
-    ) {
-        outline {
-            text(Bokmal to "Argumentet etNavn er: ")
-            eval { argument().select(TestTemplateDto::etNavn) }
-        }
-    }
-
     @Test
     fun canRender() {
+        val template = createTemplate(
+            name = "test-template",
+            base = PensjonLatex,
+            letterDataType = TestTemplateDto::class,
+            lang = languages(Bokmal),
+            title = newText(Bokmal to "En fin tittel"),
+            letterMetadata = LetterMetadata(
+                displayTitle = "En fin display tittel",
+                isSensitiv = false,
+            )
+        ) {
+            outline {
+                text(Bokmal to "Argumentet etNavn er: ")
+                eval { argument().select(TestTemplateDto::etNavn) }
+            }
+        }
         Letter(template, brevData, Bokmal, Fixtures.felles)
             .render()
             .let { PdfCompilationInput(it.base64EncodedFiles()) }

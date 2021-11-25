@@ -13,10 +13,10 @@ Pdf-bygger er en tjeneste som mottar en liste med filer, og kompilerer de som et
 Overordnet vil en bestilling gå slik:
 [plantuml, target=img/sekvens-diagram, format=svg]
 ....
-BestillerSystem -> Brevbaker: LetterRequest (1)
+BestillendeSystem -> Brevbaker: LetterRequest (1)
 Brevbaker -> PDFbygger: LaTeX filer til pdf-rendring(2)
 PDFbygger -> Brevbaker: PDF (3)
-Brevbaker -> BestillerSystem: PDF + mal-metadata (4)
+Brevbaker -> BestillendeSystem: PDF + mal-metadata (4)
 ....
 === 1. Besillersystemet fyller ut en LetterRequest med informasjon som skrives i brevet.
 

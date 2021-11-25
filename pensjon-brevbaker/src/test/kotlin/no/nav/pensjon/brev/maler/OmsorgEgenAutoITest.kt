@@ -13,18 +13,6 @@ import org.junit.jupiter.api.Test
 
 @Tag(TestTags.PDF_BYGGER)
 class OmsorgEgenAutoITest {
-    @Test
-    fun test() {
-        Letter(
-            OmsorgEgenAuto.template,
-            OmsorgEgenAutoDto(),
-            Language.English,
-            Fixtures.fellesAuto
-        ).render()
-            .let { PdfCompilationInput(it.base64EncodedFiles()) }
-            .let { LaTeXCompilerService(PDF_BUILDER_URL).producePdfSync(it).base64PDF }
-            .also { writeTestPDF("000104-english" ,it) }
-    }
 
     @Test
     fun `end to end test`() {
@@ -33,9 +21,8 @@ class OmsorgEgenAutoITest {
                 "OMSORG_EGEN_AUTO",
                 OmsorgEgenAutoDto(),
                 felles = Fixtures.felles,
-                LanguageCode.BOKMAL
+                LanguageCode.ENGLISH
             )
-        )
-
+        ).also { writeTestPDF("000104-english" ,it.base64pdf) }
     }
 }
