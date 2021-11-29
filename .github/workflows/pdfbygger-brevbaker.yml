@@ -146,7 +146,7 @@ jobs:
 
   "deployBrevbakerToProduction": #TODO deploying to dev for test-purposes. Change this to production when ready
     name: "Deploy brevbaker to dev"
-    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     needs: "runIntegrationTests"
     runs-on: "ubuntu-latest"
     steps:
@@ -162,7 +162,7 @@ jobs:
           "VARS": "pensjon-brevbaker/.nais/dev.yaml"
   "deployPdfByggerToProduction": #TODO deploying to dev for test-purposes. Change this to production when ready
     name: "Deploy pdf-bygger to dev"
-    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     needs: "runIntegrationTests"
     runs-on: "ubuntu-latest"
     steps:
