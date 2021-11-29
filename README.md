@@ -20,3 +20,31 @@ For å debugge pdf-byggeren må man derfor sette opp remote debug mot applikasjo
 2. Lag en ny run configuration av typen remote jvm debug. Under before launch legg til "Run another configuration" og velg
     docker compose konfigurasjonen vi lagde i forrige steg. 
 3. Kjør remote jvm debug konfigurasjonen.
+
+
+### Ytelsestesting med locust
+
+1. Lag en locustfile.py i rot-katalogen(sammen med docker-compose.yml) og legg inn requesten du ønsker å bruke i ytelses-testen.
+
+
+<details>
+<summary>Locustfile.py eksempel</summary>
+
+```
+from locust import HttpUser, task, between
+
+
+class HelloWorldUser(HttpUser):
+    wait_time = between(1, 60) #vent mellom 1 og 60 sekunder på respons
+    @task
+    def hello_world(self):
+        payload = 'JSON string' #erstatt med json string som settes som body i request
+
+        headers = {'content-type': 'application/json'}
+        r = self.client.post("/letter", payload, headers={'content-type': 'application/json'})
+```
+</details>
+
+2. Start docker compose med locust profil `docker compose --profile locust up`
+3. Gå inn på locust grensesnittet via http://localhost:8089/ og skriv inn url til endepunktet du ønsker å ytelses-teste.
+[Se dokumentasjon fra locust for mer info om bruk.](http://docs.locust.io/en/stable/quickstart.html#locust-s-web-interface)
