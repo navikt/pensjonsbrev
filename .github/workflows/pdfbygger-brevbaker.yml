@@ -1,5 +1,6 @@
 name: "Build and deploy brevbaker and pdf-bygger"
 on:
+  workflow_dispatch:
   push:
     branches:
       - "main"
@@ -111,6 +112,7 @@ jobs:
 
   "deployBrevbakerToDev":
     name: "Deploy brevbaker to dev"
+    if: github.event_name == 'workflow_dispatch'
     needs: "runIntegrationTests"
     runs-on: "ubuntu-latest"
     steps:
@@ -127,6 +129,40 @@ jobs:
 
   "deployPdfByggerToDev":
     name: "Deploy pdf-bygger to dev"
+    if: github.event_name == 'workflow_dispatch'
+    needs: "runIntegrationTests"
+    runs-on: "ubuntu-latest"
+    steps:
+      - uses: "actions/checkout@v2"
+      - name: "Deploy to DEV"
+        uses: "nais/deploy/actions/deploy@v1"
+
+        env:
+          "APIKEY": "${{ secrets.NAIS_DEPLOY_APIKEY }}"
+          "CLUSTER": "dev-gcp"
+          "RESOURCE": "pdf-bygger/.nais/nais.yaml"
+          "VAR": image=${{ env.IMAGE_PDF_BUILDER }}
+          "VARS": "pdf-bygger/.nais/dev.yaml"
+
+  "deployBrevbakerToProduction": #TODO deploying to dev for test-purposes. Change this to production when ready
+    name: "Deploy brevbaker to dev"
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    needs: "runIntegrationTests"
+    runs-on: "ubuntu-latest"
+    steps:
+      - uses: "actions/checkout@v2"
+      - name: "Deploy to DEV"
+        uses: "nais/deploy/actions/deploy@v1"
+
+        env:
+          "APIKEY": "${{ secrets.NAIS_DEPLOY_APIKEY }}"
+          "CLUSTER": "dev-gcp"
+          "RESOURCE": "pensjon-brevbaker/.nais/nais.yaml"
+          "VAR": image=${{ env.IMAGE_BREVBAKER }}
+          "VARS": "pensjon-brevbaker/.nais/dev.yaml"
+  "deployPdfByggerToProduction": #TODO deploying to dev for test-purposes. Change this to production when ready
+    name: "Deploy pdf-bygger to dev"
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
     needs: "runIntegrationTests"
     runs-on: "ubuntu-latest"
     steps:
