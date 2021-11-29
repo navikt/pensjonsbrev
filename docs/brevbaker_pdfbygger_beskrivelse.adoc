@@ -176,12 +176,12 @@ object EksempelBrev : StaticTemplate {
 
 Ved bruk av PensjonLatex master-malen vil det genereres en rekke filer som sendes til pdf-byggeren:
 
-1. `params.tex` inkluderer alle felles-elementer som kreves i master-malen.
-2. `letter.xmpdata` inneholder metadata for pdf-dokumentet
-3. `letter.tex` inneholder hoveddelen av brevet med tekst og data fra brevmalen
-4. `nav-logo.pdf` logo for master-malen
-5. `nav-logo.pdf_tex` tex kode for å bruke nav logoen
-6. `pensjonsbrev_v2.cls` fil som beskriver plassering av innhold og utforming av brevet. Fungerer noe likt css.
+. `params.tex` inkluderer alle felles-elementer som kreves i master-malen.
+. `letter.xmpdata` inneholder metadata for pdf-dokumentet
+. `letter.tex` inneholder hoveddelen av brevet med tekst og data fra brevmalen
+. `nav-logo.pdf` logo for master-malen
+. `nav-logo.pdf_tex` tex kode for å bruke nav logoen
+. `pensjonsbrev_v2.cls` fil som beskriver plassering av innhold og utforming av brevet. Fungerer noe likt css.
 
 
 === 3. PDF-byggeren bygger pdf fra inngående filer
@@ -189,3 +189,35 @@ Pdf-byggeren kjører XeTeX på letter.tex filen og returnerer resulterende PDF t
 
 === 4. Brevbaker svarer med brev-metadata og pdf
 Brevbakeren svarer bestillende system med PDF og metadata som hører til brevmalen som produserte brevet definert i LetterMetadata.
+
+== Teknologivalg
+
+=== Github actions
+For CI/CD pipeline (kontinuerlig leveranse/integrasjon) har vi valgt github actions siden det er ett bra verktøy som mange på huset bruker.
+NAIS-plattformen har også tilrettelagt for at vi lett skal kunne bruke github actions for å deploye applikasjoner til ulike miljø.
+
+Vi bruker Github actions for å automatisere en rekke oppgaver:
+
+* Bygge applikasjoner og container images.
+* Unit testing, integrasjonstester og ende til ende tester.
+* Deploye til produksjon ved push til master.
+* Deploye til development ved manuell trigging av action mot branch.
+* Bygge asciidoc til html og deploye automatisk til github pages ved endringer i dokumentasjonen.
+
+=== Ktor
+Ktor er ett moderne og lettvektet rammeverk for å lage http tjenester som fungerer godt sammen med Kotlin.
+Vi valgte Ktor ettersom vi ønsket å bruke Kotlin og ikke har behov for tyngre rammeverk som f.eks Spring.
+
+=== Asciidoc
+Asciidoc er brukt mye i NAV og gir oss muligheten til å legge dokumentasjon nær koden. Dette gjør det lettere å legge ut endringer sammen med dokumentasjon.
+Asciidoc kan også kompileres til HTML på github pages som også gjøres mange andre steder i NAV.
+
+=== LaTeX
+Vi  har valgt LaTeX for å produsere brev/pdf-dokumenter.
+LaTeX er ett typesettingssystem for produksjon av dokumenter. LaTeX er vel-etablert, Open-source, gratis og forbedret over lang tid(lansert i 1980).
+Ettersom LaTeX brukes av de fleste akademiske institusjoner kan man også anta at de fleste utviklere har noe erfaring med eller kjennskap til LaTeX.
+Det er viktig å understreke at vi ikke har sterke knytninger til valget av LaTeX. Vi bruker kun LaTeX for å bestemme hvordan innholdet til ett brev presenteres/vises i en pdf, ikke for å bestemme det tekstlige innholdet.
+Dette gjør det mulig å bytte ut LaTeX med andre representasjoner av det tekstlige innholdet i brevet med f.eks HTML.
+
+=== Kotlin
+Kotlin er ett moderne kodespråk basert på Java som kjører i JVM. Vi bruker Kotlin ettersom det er god støtte og erfaring med Kotlin i NAV. Vi på teamet har også god erfaring med Kotlin.
