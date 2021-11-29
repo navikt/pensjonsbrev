@@ -144,35 +144,34 @@ jobs:
           "VAR": image=${{ env.IMAGE_PDF_BUILDER }}
           "VARS": "pdf-bygger/.nais/dev.yaml"
 
-  "deployBrevbakerToProduction": #TODO deploying to dev for test-purposes. Change this to production when ready
-    name: "Deploy brevbaker to dev"
+  "deployBrevbakerToProduction":
+    name: "Deploy brevbaker to production"
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     needs: "runIntegrationTests"
     runs-on: "ubuntu-latest"
     steps:
       - uses: "actions/checkout@v2"
-      - name: "Deploy to DEV"
+      - name: "Deploy to production"
         uses: "nais/deploy/actions/deploy@v1"
-
         env:
           "APIKEY": "${{ secrets.NAIS_DEPLOY_APIKEY }}"
-          "CLUSTER": "dev-gcp"
+          "CLUSTER": "prod-gcp"
           "RESOURCE": "pensjon-brevbaker/.nais/nais.yaml"
           "VAR": image=${{ env.IMAGE_BREVBAKER }}
-          "VARS": "pensjon-brevbaker/.nais/dev.yaml"
-  "deployPdfByggerToProduction": #TODO deploying to dev for test-purposes. Change this to production when ready
-    name: "Deploy pdf-bygger to dev"
+          "VARS": "pensjon-brevbaker/.nais/prod.yaml"
+  "deployPdfByggerToProduction":
+    name: "Deploy pdf-bygger to production"
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     needs: "runIntegrationTests"
     runs-on: "ubuntu-latest"
     steps:
       - uses: "actions/checkout@v2"
-      - name: "Deploy to DEV"
+      - name: "Deploy to production"
         uses: "nais/deploy/actions/deploy@v1"
 
         env:
           "APIKEY": "${{ secrets.NAIS_DEPLOY_APIKEY }}"
-          "CLUSTER": "dev-gcp"
+          "CLUSTER": "prod-gcp"
           "RESOURCE": "pdf-bygger/.nais/nais.yaml"
           "VAR": image=${{ env.IMAGE_PDF_BUILDER }}
-          "VARS": "pdf-bygger/.nais/dev.yaml"
+          "VARS": "pdf-bygger/.nais/prod.yaml"
