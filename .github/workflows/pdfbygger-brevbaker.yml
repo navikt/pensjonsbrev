@@ -71,7 +71,7 @@ jobs:
       run:
         working-directory: pensjon-brevbaker
     name: "Integration tests"
-    needs: [build-brevbaker, build-pdfbygger]
+    needs: [ build-brevbaker, build-pdfbygger ]
     services:
       pdf-bygger:
         ports:
@@ -168,7 +168,6 @@ jobs:
       - uses: "actions/checkout@v2"
       - name: "Deploy to production"
         uses: "nais/deploy/actions/deploy@v1"
-
         env:
           "APIKEY": "${{ secrets.NAIS_DEPLOY_APIKEY }}"
           "CLUSTER": "prod-gcp"
