@@ -5,3 +5,29 @@ ingresses:
 env:
   - name: PDF_BUILDER_URL
     value: "http://pensjon-pdf-bygger:8080"
+
+preAuthorized:
+  - app: pensjon-pen-q0
+    namespace: teampensjon
+    cluster: dev-fss
+  - app: pensjon-pen-q1
+    namespace: teampensjon
+    cluster: dev-fss
+  - app: pensjon-pen-q2
+    namespace: teampensjon
+    cluster: dev-fss
+  - app: pensjon-pen-q4
+    namespace: teampensjon
+    cluster: dev-fss
+  - app: pensjon-pen-q5
+    namespace: teampensjon
+    cluster: dev-fss
+  - app: pensjon-pen-t0
+    namespace: teampensjon
+    cluster: dev-fss
+  - app: pensjon-pen-t2
+    namespace: teampensjon
+    cluster: dev-fss
+  - app: pensjon-pen-t4
+    namespace: teampensjon
+    cluster: dev-fss

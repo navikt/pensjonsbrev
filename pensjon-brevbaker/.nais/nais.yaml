@@ -36,10 +36,23 @@ spec:
     cpu: "300m"
     memory: "512Mi"
 
+  azure:
+    application:
+      enabled: true
+      claims:
+        extra:
+          - azp_name
   accessPolicy:
     outbound:
       rules:
         - application: {{pdf-bygger-app}}
+    inbound:
+      rules:
+        {{#each preAuthorized as |app|}}
+           - application: {{app.name}}
+             namespace: {{app.namespace}}
+             cluster: {{app.cluster}}
+        {{/each}}
   ingresses:
     {{#each ingresses as |url|}}
        - {{url}}
