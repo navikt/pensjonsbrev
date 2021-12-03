@@ -28,34 +28,34 @@ object OmsorgEgenAuto : StaticTemplate {
         )
     ) {
 
-        val arEgenerklaring = argument().select(OmsorgEgenAutoDto::arEgenerklaringOmsorgspoeng).str()
+        val aarEgenerklaring = argument().select(OmsorgEgenAutoDto::aarEgenerklaringOmsorgspoeng).str()
 
         outline {
             paragraph {
                 textExpr(
                     Bokmal to
                             "Vi trenger en bekreftelse på at du har utført pleie- og omsorgsarbeid i ".expr()
-                            + arEgenerklaring
+                            + aarEgenerklaring
                             + ". Derfor må du fylle ut det vedlagte skjemaet og sende det til oss innen fire uker.",
 
                     Nynorsk to
                             "Vi treng ei stadfesting på at du har utført pleie- og omsorgsarbeid i ".expr()
-                            + arEgenerklaring
+                            + aarEgenerklaring
                             + ". Du må difor nytte det vedlagde skjemaet og sende til oss innan fire veker.",
 
                     English to
                             "We need you to confirm that you have provided nursing and care work in ".expr()
-                            + arEgenerklaring
+                            + aarEgenerklaring
                             + ". Therefore, it is required that you complete the enclosed form and return it to NAV within four weeks."
                 )
             }
 
             paragraph {
-                val arInnvilget = argument().select(OmsorgEgenAutoDto::arInnvilgetOmsorgspoeng).str()
+                val aarInnvilget = argument().select(OmsorgEgenAutoDto::aarInnvilgetOmsorgspoeng).str()
                 textExpr(
-                    Bokmal to "Du har fått godkjent pensjonsopptjening for ".expr() + arInnvilget + ".",
-                    Nynorsk to "Du har fått godkjend pensjonsopptening for ".expr() + arInnvilget + ".",
-                    English to "You have accumulated pensionable earnings for ".expr() + arInnvilget + "."
+                    Bokmal to "Du har fått godkjent pensjonsopptjening for ".expr() + aarInnvilget + ".",
+                    Nynorsk to "Du har fått godkjend pensjonsopptening for ".expr() + aarInnvilget + ".",
+                    English to "You have accumulated pensionable earnings for ".expr() + aarInnvilget + "."
                 )
             }
 
@@ -80,9 +80,9 @@ object OmsorgEgenAuto : StaticTemplate {
 
             paragraph {
                 textExpr(
-                    Bokmal to "I ".expr() + arEgenerklaring + " har jeg utført pleie og omsorgsarbeid på minst 22 timer i uken. (Inkludert opptil en halv time reisetid per besøk.)",
-                    Nynorsk to "I ".expr() + arEgenerklaring + " har eg utført pleie- og omsorgsarbeid på minst 22 timar i veka. (Inkludert opptil ein halv time reisetid per besøk.)",
-                    English to "In ".expr() + arEgenerklaring + " I have provided care work that has amounted to at least 22 hours per week. (Travelling time up to 30 minutes per visit may be included.)",
+                    Bokmal to "I ".expr() + aarEgenerklaring + " har jeg utført pleie og omsorgsarbeid på minst 22 timer i uken. (Inkludert opptil en halv time reisetid per besøk.)",
+                    Nynorsk to "I ".expr() + aarEgenerklaring + " har eg utført pleie- og omsorgsarbeid på minst 22 timar i veka. (Inkludert opptil ein halv time reisetid per besøk.)",
+                    English to "In ".expr() + aarEgenerklaring + " I have provided care work that has amounted to at least 22 hours per week. (Travelling time up to 30 minutes per visit may be included.)",
                 )
             }
 
