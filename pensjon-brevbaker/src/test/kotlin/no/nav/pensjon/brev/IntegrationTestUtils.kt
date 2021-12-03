@@ -36,6 +36,10 @@ fun requestLetter(letterRequest: LetterRequest): LetterResponse {
     }
 }
 
+fun requestTemplates(): Set<String> = runBlocking {
+    httpClient.get("$BREVBAKER_URL/templates")
+}
+
 fun writeTestPDF(pdfFileName: String, pdf: String) {
     val file = File("build/test_pdf/$pdfFileName.pdf")
     file.parentFile.mkdirs()
