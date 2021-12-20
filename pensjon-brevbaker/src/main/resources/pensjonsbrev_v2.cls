@@ -16,7 +16,9 @@
     DIV=16,
     parskip=full, %allways have a vertical space between paragraphs(instead of indentation)
     pagenumber=off,
-    twoside,
+    %two-sided printing(for blank page between attachments).
+    %toside is usually used with books, so the semi option is needed to avoid margin adjustments like binding correction
+    twoside=semi,
 %    visualize, %DEBUG show boxes
 %    draft=true, % DEBUG show overfull boxes, collisions etc.
     addrfield=backgroundimage]{scrlttr2}
@@ -62,13 +64,14 @@
 %itemize / lists spacing
 \setlist{nolistsep}
 
-
 % margins of the letter content
-\geometry{left=2cm, right=2.5cm, top=2cm, bottom=3.5cm}
+\geometry{left=2cm, right=2.5cm, top=2cm, bottom=2.5cm}
 
 % paragraph formatting
+\widowpenalties 1 1000 %penalty score for breaking a paragraph
 \sloppy % no word-breaking
 \raggedright % no word spacing
+\raggedbottom
 
 
 %----------------------------------------
@@ -169,23 +172,13 @@
 \newlength{\vskipbeforesection}
 \setlength{\vskipbeforesection}{12pt}
 
-% section title
-\newlength{\vskipaftersectiontitle} \setlength{\vskipaftersectiontitle}{6pt}
+
 \newcommand{\lettersectiontitle}[1]{
-% Add space between sections
-    \ifaddspaceover %If not in the first section, add space above.
-        \vspace*{\vskipbeforesection}
-    \fi
-    \addspaceovertrue %toggle on so that all sections following the first one gets space over the title.
-    \textbf{#1} %title
-    \vspace*{\vskipaftersectiontitle}
-    \\*
+    \textbf{#1} \\*[6pt]
 }
 
-\newcommand{\paragraph}[1]{
-    #1
-    \pagebreak[3] %suggest pagebreak to the LaTeX compiler if it needs to
-    \par
+\newcommand{\templateparagraph}[1] {
+    #1 \par
 }
 
 \newcommand{\formvspace}[1][true]{\vspace{0.5cm}}
@@ -233,12 +226,14 @@
     }
     \newline\hspace*{\fill}\pagemark
 }
+\newplength{secondfootvpos}
+\setplength{secondfootvpos}{290.5mm} %absolute vertical posistion from top of first page
 
 % footer from page 2 onward
 \DeclareNewLayer[ %create a format similar to the first page
     align=tl,
     hoffset=\dimexpr.5\paperwidth-.5\useplength{firstfootwidth}\relax,
-    voffset=\useplength{firstfootvpos}+7em,
+    voffset=\useplength{secondfootvpos},
     width=\useplength{firstfootwidth},
     foreground,
     contents={\parbox{\layerwidth}{
@@ -279,7 +274,7 @@
     \begin{minipage}{\textwidth}
         \vspace{24pt}
         \lettersectiontitle{\feltclosingspoersmaal}
-        \paragraph{\feltclosingkontaktoss}
+        \templateparagraph{\feltclosingkontaktoss}
         \par
         \vspace*{42pt}
         \feltclosinggreeting

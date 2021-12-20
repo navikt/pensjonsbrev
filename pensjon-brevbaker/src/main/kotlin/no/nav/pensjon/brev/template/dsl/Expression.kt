@@ -26,6 +26,9 @@ fun <T> T.expr() = Expression.Literal(this)
 fun <T> Expression<T?>.ifNull(then: T) =
     Expression.UnaryInvoke(this, UnaryOperation.IfNull(then))
 
+fun not(expr: Expression<Boolean>): Expression<Boolean> =
+    Expression.UnaryInvoke(expr, UnaryOperation.Not)
+
 operator fun StringExpression.plus(other: StringExpression) =
     Expression.BinaryInvoke(
         this,
@@ -38,4 +41,16 @@ operator fun StringExpression.plus(other: String) =
         this,
         Expression.Literal(other),
         BinaryOperation.Concat
+    )
+infix fun Expression<Boolean>.or(other: Expression<Boolean>) =
+    Expression.BinaryInvoke(
+        this,
+        other,
+        BinaryOperation.Or
+    )
+infix fun Expression<Boolean>.and(other: Expression<Boolean>) =
+    Expression.BinaryInvoke(
+        this,
+        other,
+        BinaryOperation.And
     )

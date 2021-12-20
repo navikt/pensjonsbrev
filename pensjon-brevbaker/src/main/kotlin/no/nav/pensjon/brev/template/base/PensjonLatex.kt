@@ -330,7 +330,7 @@ object PensjonLatex : BaseTemplate() {
                 printWriter.print(element.expr(scope.language).eval(scope))
 
             is Element.Paragraph ->
-                printWriter.printCmd("paragraph") {
+                printWriter.printCmd("templateparagraph") {
                     arg { element.paragraph.forEach { child -> renderElement(scope, child, it) } }
                 }
 

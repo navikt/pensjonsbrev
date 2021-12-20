@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.template
 
+import no.nav.pensjon.brev.template.dsl.expr
 import java.time.LocalDate
 
 abstract class Operation {
@@ -30,6 +31,10 @@ sealed class UnaryOperation<In, out Out> : Operation() {
     data class IfNull<In>(val then: In) : UnaryOperation<In?, In>() {
         override fun apply(input: In?): In = input ?: then
     }
+
+    object Not : UnaryOperation<Boolean, Boolean>() {
+        override fun apply(input: Boolean): Boolean = input.not()
+    }
 }
 
 sealed class BinaryOperation<in In1, in In2, out Out> : Operation() {
@@ -38,6 +43,14 @@ sealed class BinaryOperation<in In1, in In2, out Out> : Operation() {
 
     class Equal<In : Comparable<In>> : BinaryOperation<In, In, Boolean>() {
         override fun apply(first: In, second: In): Boolean = first == second
+    }
+
+    object Or : BinaryOperation<Boolean, Boolean, Boolean>() {
+        override fun apply(first: Boolean, second: Boolean): Boolean = first || second
+    }
+
+    object And : BinaryOperation<Boolean, Boolean, Boolean>() {
+        override fun apply(first: Boolean, second: Boolean): Boolean = first && second
     }
 
     object Concat : BinaryOperation<String, String, String>() {
