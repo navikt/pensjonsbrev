@@ -174,7 +174,7 @@
 
 
 \newcommand{\lettersectiontitle}[1]{
-    \textbf{#1} \\*[6pt]
+    \vspace{6pt} \textbf{#1} \\*[6pt]
 }
 
 \newcommand{\templateparagraph}[1] {

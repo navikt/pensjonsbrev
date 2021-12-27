@@ -4,6 +4,7 @@ import kotlinx.coroutines.runBlocking
 import no.nav.pensjon.brev.Fixtures
 import no.nav.pensjon.brev.PDF_BUILDER_URL
 import no.nav.pensjon.brev.TestTags
+import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDto
 import no.nav.pensjon.brev.latex.LaTeXCompilerService
 import no.nav.pensjon.brev.latex.PdfCompilationInput
 import no.nav.pensjon.brev.template.Language
@@ -18,11 +19,13 @@ class UfoerOmregningEnsligITest {
     @Test
     fun test() {
         val test = UfoerOmregningEnsligDto().copy(
-            HAR_MINSTEYT_VEDVIRK = false,
-                    INNTEKT_UFOERE_ENDRET = true,
-                    EKTEFELLETILLEGG_OPPHOERT = true,
-                    HAR_BARNETILLEGG_FOR_SAERKULLSBARN = true,
-                    BARN_OVERFOERT_TIL_SAERKULLSBARN = true,
+            har_minsteytelse_vedvirk = true,
+                    inntekt_ufoere_endret = true,
+                    ektefelletillegg_opphoert = true,
+                    har_barnetillegg_for_saerkullsbarn = true,
+                    barn_overfoert_til_saerkullsbarn = true,
+                    i_fengsel_ved_virk = true,
+                    er_eps_ikke_paragraf_3_2_samboer = true,
         )
         Letter(
             UfoerOmregningEnslig.template,

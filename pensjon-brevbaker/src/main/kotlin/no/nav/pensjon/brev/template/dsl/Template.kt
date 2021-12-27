@@ -131,8 +131,8 @@ class TemplateContainerScope<Lang : LanguageCombination, LetterData : Any> :
         children.add(Element.IncludePhrase(argument, phrase))
     }
 
-    fun paragraph(init: TemplateTextOnlyScope<Lang, LetterData>.() -> Unit) {
-        children.add(Element.Paragraph(TemplateTextOnlyScope<Lang, LetterData>().apply(init).children))
+    fun paragraph(init: ParagraphScope<Lang, LetterData>.() -> Unit) {
+        children.add(Element.Paragraph(ParagraphScope<Lang, LetterData>().apply(init).children))
     }
 
     fun formText(size: Int, prompt: Element.Text<Lang>, vspace: Boolean = true) {
@@ -162,6 +162,14 @@ class TemplateContainerScope<Lang : LanguageCombination, LetterData : Any> :
     }
 
 }
+
+@LetterTemplateMarker
+class ParagraphScope<Lang : LanguageCombination, LetterData : Any> :
+    TemplateTextOnlyScope<Lang, LetterData>() {
+        fun list(init: TemplateTextOnlyScope<Lang, LetterData>.() -> Unit) {
+            children.add(Element.ItemList(TemplateTextOnlyScope<Lang, LetterData>().apply(init).children))
+        }
+    }
 
 @LetterTemplateMarker
 class TemplateFormChoiceScope<Lang : LanguageCombination, LetterData : Any>(

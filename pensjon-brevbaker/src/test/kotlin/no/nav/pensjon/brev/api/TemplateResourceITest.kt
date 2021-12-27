@@ -1,13 +1,9 @@
 package no.nav.pensjon.brev.api
 
-import kotlinx.coroutines.runBlocking
 import no.nav.pensjon.brev.*
-import no.nav.pensjon.brev.api.model.Felles
 import no.nav.pensjon.brev.api.model.LanguageCode
 import no.nav.pensjon.brev.api.model.LetterRequest
-import no.nav.pensjon.brev.latex.LaTeXCompilerService
-import no.nav.pensjon.brev.latex.PdfCompilationInput
-import no.nav.pensjon.brev.template.*
+import no.nav.pensjon.brev.template.LetterTemplate
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.fail

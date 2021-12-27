@@ -69,6 +69,7 @@ sealed class Element<Lang : LanguageCombination> {
 
     data class Title1<Lang : LanguageCombination>(val title1: List<Element<Lang>>) : Element<Lang>()
     data class Paragraph<Lang : LanguageCombination>(val paragraph: List<Element<Lang>>) : Element<Lang>()
+    data class ItemList<Lang : LanguageCombination>(val itemList: List<Element<Lang>>) : Element<Lang>()
 
     sealed class Form<Lang : LanguageCombination> : Element<Lang>() {
         data class Text<Lang : LanguageCombination>(

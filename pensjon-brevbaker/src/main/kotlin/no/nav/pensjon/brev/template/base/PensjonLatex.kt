@@ -329,6 +329,23 @@ object PensjonLatex : BaseTemplate() {
             is Element.Text.Expression.ByLanguage ->
                 printWriter.print(element.expr(scope.language).eval(scope))
 
+            is Element.ItemList ->
+                with(printWriter) {
+
+                    printWriter.printCmd("begin") {
+                        arg{printWriter.print("itemize")}
+                    }
+
+                    element.itemList.forEach {
+                        printWriter.print("""\item """, escape = false)
+                        renderElement(scope, it, printWriter)
+                    }
+
+                    printWriter.printCmd("end") {
+                        arg{printWriter.print("itemize")}
+                    }
+                }
+
             is Element.Paragraph ->
                 printWriter.printCmd("templateparagraph") {
                     arg { element.paragraph.forEach { child -> renderElement(scope, child, it) } }
