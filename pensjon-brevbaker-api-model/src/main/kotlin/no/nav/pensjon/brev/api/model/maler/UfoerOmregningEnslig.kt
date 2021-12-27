@@ -1,10 +1,12 @@
 package no.nav.pensjon.brev.api.model.maler
 
+import java.time.LocalDate
+
 data class UfoerOmregningEnsligDto(
     val barnetillegg_er_redusert_mot_tak: Boolean,
     val barnetillegg_ikke_utbetalt_pga_tak: Boolean,
     val barnetillegg_saerkullsbarn_er_redusert_mot_inntekt_vedvirk: Boolean,
-    val barn_overfoert_til_saerkullsbarn: Boolean,
+    val har_barn_overfoert_til_saerkullsbarn: Boolean,
     val bor_i_avtaleland: Boolean,
     val bor_i_norge: Boolean,
     val ektefelletillegg_opphoert: Boolean,
@@ -27,13 +29,29 @@ data class UfoerOmregningEnsligDto(
     val inntekt_ufoere_endret: Boolean,
     val i_fengsel_ved_virk: Boolean,
     val ufoeretrygd_med_barnetillegg_er_over_95_prosent_av_inntekt_foer_ufoerhet: Boolean,
-    val ufoeretrygd_vedvirk_er_inntektsavkortet: Boolean
+    val ufoeretrygd_vedvirk_er_inntektsavkortet: Boolean,
+    val avdod_navn: String,
+    val krav_virkedato_fom: LocalDate,
+    val total_ufoeremaaneder: Number,
+    val minsteytelse_sats_vedvirk: Number,
+    val kompensasjonsgrad_ufoeretrygd_vedvirk: Number,
+    val inntekt_foer_ufoerhet_vedvirk: Number,
+    val oppjustert_inntekt_foer_ufoerhet_vedvirk: Number,
+    val tidligere_saerkullsbarn: List<String>,
+    val barn_overfoert_til_saerkullsbarn: List<String>,
+    val barnetillegg_prosentsats_gradert_over_inntekt_foer_ufoer_vedvirk: Number,
+    val barnetillegg_gradert_over_inntekt_foer_ufoer_vedvirk: Number,
+    val barnetillegg_beloep_foer_reduksjon_vedvirk: Number,
+    val barnetillegg_saerkullsbarn_beloep_etter_reduksjon_vedvirk: Number,
+    val barnetillegg_saerkullsbarn_inntekt_brukt_i_avkortning_vedvirk: Number,
+    val barnetillegg_saerkullsbarn_fribeloep_vedvirk: Number,
+    val barnetillegg_saerkullsbarn_inntektstak_vedvirk: Number
 ) {
     constructor() : this(
         barnetillegg_er_redusert_mot_tak = false,
         barnetillegg_ikke_utbetalt_pga_tak = false,
         barnetillegg_saerkullsbarn_er_redusert_mot_inntekt_vedvirk = false,
-        barn_overfoert_til_saerkullsbarn = false,
+        har_barn_overfoert_til_saerkullsbarn = false,
         bor_i_avtaleland = false,
         bor_i_norge = false,
         ektefelletillegg_opphoert = false,
@@ -56,6 +74,22 @@ data class UfoerOmregningEnsligDto(
         inntekt_ufoere_endret = false,
         i_fengsel_ved_virk = false,
         ufoeretrygd_med_barnetillegg_er_over_95_prosent_av_inntekt_foer_ufoerhet = false,
-        ufoeretrygd_vedvirk_er_inntektsavkortet = false
+        ufoeretrygd_vedvirk_er_inntektsavkortet = false,
+        avdod_navn = "Avdod Test",
+        krav_virkedato_fom = LocalDate.of(2020, 1, 1),
+        total_ufoeremaaneder = 2,
+        minsteytelse_sats_vedvirk = 123,
+        kompensasjonsgrad_ufoeretrygd_vedvirk = 123,
+        inntekt_foer_ufoerhet_vedvirk = 123,
+        oppjustert_inntekt_foer_ufoerhet_vedvirk = 123,
+        tidligere_saerkullsbarn = listOf("barn1", "barn2", "barn3"),
+        barn_overfoert_til_saerkullsbarn = listOf("barn1", "barn2", "barn3"),
+        barnetillegg_prosentsats_gradert_over_inntekt_foer_ufoer_vedvirk = 123,
+        barnetillegg_gradert_over_inntekt_foer_ufoer_vedvirk = 123,
+        barnetillegg_beloep_foer_reduksjon_vedvirk = 123,
+        barnetillegg_saerkullsbarn_beloep_etter_reduksjon_vedvirk = 123,
+        barnetillegg_saerkullsbarn_inntekt_brukt_i_avkortning_vedvirk = 123,
+        barnetillegg_saerkullsbarn_fribeloep_vedvirk = 123,
+        barnetillegg_saerkullsbarn_inntektstak_vedvirk = 123
     )
 }
