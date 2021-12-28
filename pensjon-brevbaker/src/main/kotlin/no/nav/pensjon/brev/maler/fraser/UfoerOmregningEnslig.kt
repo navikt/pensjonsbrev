@@ -788,23 +788,23 @@ object HvemUTGJTVilkar_001 : Phrase<Unit> {
                 text(
                     Bokmal to "være medlem i folketrygden, og avdøde må ha vært medlem i folketrygden de siste fem årene fram til dødsfallet",
                     Nynorsk to "vere medlem i folketrygda, og avdøde må ha vore medlem i folketrygda dei siste fem åra fram til dødsfallet",
-                    English to "test3"
+                    English to "be a member of the National Insurance Scheme, and the deceased must have been a member of the National Insurance Scheme for the last five years prior to death "
                 )
 
                 text(
                     Bokmal to "ha vært gift med den avdøde i minst fem år, eller",
                     Nynorsk to "ha vore gift med den avdøde i minst fem år, eller",
-                    English to "test3"
+                    English to "have been married to the deceased for at least five years, or "
                 )
                 text(
                     Bokmal to "ha vært gift eller vært samboer med den avdøde og har eller ha hatt barn med den avdøde, eller",
                     Nynorsk to "ha vore gift eller vore sambuar med den avdøde og ha eller ha hatt barn med den avdøde, eller",
-                    English to "test3"
+                    English to "have been married to or a cohabitant with the deceased, and have/had children together, or "
                 )
                 text(
                     Bokmal to "ha hatt omsorgen for den avdødes barn på dødsfallstidspunktet. Ekteskapet og omsorgen for barnet etter dødsfallet må til sammen ha vart minst fem år.",
                     Nynorsk to "ha hatt omsorga for barna til den avdøde på dødsfallstidspunktet. Ekteskapet og omsorga for barnet etter dødsfallet må til saman ha vart minst fem år.",
-                    English to "test3"
+                    English to "have had care of the children of the deceased at the time of the death. The marriage and care of the child after the death must have lasted for at least five years."
                 )
             }
 
