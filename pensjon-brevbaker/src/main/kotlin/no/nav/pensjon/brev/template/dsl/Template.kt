@@ -131,6 +131,10 @@ class TemplateContainerScope<Lang : LanguageCombination, LetterData : Any> :
         children.add(Element.IncludePhrase(argument, phrase))
     }
 
+    fun includePhrase(phrase: Phrase<Unit>) {
+        children.add(Element.IncludePhrase(Unit.expr(), phrase))
+    }
+
     fun paragraph(init: ParagraphScope<Lang, LetterData>.() -> Unit) {
         children.add(Element.Paragraph(ParagraphScope<Lang, LetterData>().apply(init).children))
     }
