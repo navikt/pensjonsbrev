@@ -1,5 +1,7 @@
 package no.nav.pensjon.brev.template
 
+import no.nav.pensjon.brev.api.model.Telefonnummer
+import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.dsl.expr
 import java.time.LocalDate
 
@@ -22,6 +24,10 @@ sealed class UnaryOperation<In, out Out> : Operation() {
 
     class ToString<T : Any> : UnaryOperation<T, String>() {
         override fun apply(input: T): String = input.toString()
+    }
+
+    object FormatPhoneNumber : UnaryOperation<Telefonnummer, String>() {
+        override fun apply(input: Telefonnummer): String = input.format()
     }
 
     data class Select<In, Out>(val select: In.() -> Out) : UnaryOperation<In, Out>() {
