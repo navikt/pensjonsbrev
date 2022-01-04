@@ -12,7 +12,7 @@ data class LetterTemplate<Lang : LanguageCombination, LetterData : Any>(
     val letterDataType: KClass<LetterData>,
     val language: Lang,
     val outline: List<Element<Lang>>,
-    val attachments: List<AttachmentTemplate<Lang, LetterData>> = emptyList(),
+    val attachments: List<IncludeAttachment<*>> = emptyList(),
     val letterMetadata: LetterMetadata,
 ) {
 
@@ -20,9 +20,9 @@ data class LetterTemplate<Lang : LanguageCombination, LetterData : Any>(
         base.render(letter)
 }
 
-data class AttachmentTemplate<Lang : LanguageCombination, ParameterType : Any>(
-    val title: Element.Text.Literal<Lang>,
-    val outline: List<Element<Lang>>,
+data class AttachmentTemplate<ParameterType : Any>(
+    val title: Element.Text.Literal<BaseLanguages>,
+    val outline: List<Element<BaseLanguages>>,
     val includeSakspart: Boolean = false,
 )
 
@@ -69,9 +69,9 @@ sealed class Element<Lang : LanguageCombination> {
 
     data class Title1<Lang : LanguageCombination>(val title1: List<Element<Lang>>) : Element<Lang>()
     data class Paragraph<Lang : LanguageCombination>(val paragraph: List<Element<Lang>>) : Element<Lang>()
-    sealed class ItemList<Lang : LanguageCombination> : Element<Lang>(){
-        data class Dynamic<Lang: LanguageCombination>(val items: Expression<List<String>>): ItemList<Lang>()
-        data class Static<Lang: LanguageCombination>(val items: List<Element<Lang>>): ItemList<Lang>()
+    sealed class ItemList<Lang : LanguageCombination> : Element<Lang>() {
+        data class Dynamic<Lang : LanguageCombination>(val items: Expression<List<String>>) : ItemList<Lang>()
+        data class Static<Lang : LanguageCombination>(val items: List<Element<Lang>>) : ItemList<Lang>()
     }
 
     sealed class Form<Lang : LanguageCombination> : Element<Lang>() {
@@ -88,10 +88,10 @@ sealed class Element<Lang : LanguageCombination> {
         ) : Element.Form<Lang>()
     }
 
-    data class IncludePhrase<Lang : LanguageCombination, PhraseData: Any>(
+    data class IncludePhrase<Lang : LanguageCombination, PhraseData : Any>(
         val data: Expression<PhraseData>,
         val phrase: Phrase<PhraseData>
-    ): Element<Lang>()
+    ) : Element<Lang>()
 
     class NewLine<Lang : LanguageCombination> : Element<Lang>()
 

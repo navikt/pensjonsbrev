@@ -181,17 +181,20 @@ object PensjonLatex : BaseTemplate() {
 
     private fun renderAttachment(
         letter: Letter<*>,
-        attachment: AttachmentTemplate<*, *>,
+        attachment: IncludeAttachment<*>,
         printWriter: LatexPrintWriter
     ) =
         with(printWriter) {
-            printCmd("startvedlegg", attachment.title.text(letter.language))
-            if (attachment.includeSakspart) {
+            printCmd("startvedlegg", attachment.template.title.text(letter.language))
+            if (attachment.template.includeSakspart) {
                 printCmd("sakspart")
             }
-            val scope = letter.toScope()
-            attachment.outline.forEach { renderElement(scope, it, printWriter) }
+            val scope = with(letter.toScope()) {
+                ExpressionScope(attachment.data.eval(this), this.felles, this.language)
+            }
+            attachment.template.outline.forEach { renderElement(scope, it, printWriter) }
             printCmd("sluttvedlegg")
+
         }
 
     private fun renderLetterV2(letter: Letter<*>, printWriter: LatexPrintWriter): Unit =
@@ -288,7 +291,7 @@ object PensjonLatex : BaseTemplate() {
                 bodyWriter.printCmd("begin", "attachmentList")
                 letter.template.attachments.forEach {
                     bodyWriter.print("""\item """, escape = false)
-                    bodyWriter.println(it.title.text(letter.language))
+                    bodyWriter.println(it.template.title.text(letter.language))
                 }
                 bodyWriter.printCmd("end", "attachmentList")
             }

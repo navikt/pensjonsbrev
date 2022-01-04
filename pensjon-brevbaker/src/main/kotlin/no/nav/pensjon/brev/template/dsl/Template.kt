@@ -6,6 +6,7 @@ import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.base.BaseTemplate
 import kotlin.reflect.KClass
 
+
 fun <Lang : LanguageCombination, LetterData : Any> createTemplate(
     name: String,
     base: BaseTemplate,
@@ -31,25 +32,18 @@ open class TemplateGlobalScope<LetterData : Any> {
 @LetterTemplateMarker
 open class TemplateRootScope<Lang : LanguageCombination, LetterData : Any>(
     val outline: MutableList<Element<Lang>> = mutableListOf(),
-    val attachments: MutableList<AttachmentTemplate<Lang, LetterData>> = mutableListOf(),
+    val attachments: MutableList<IncludeAttachment<*>> = mutableListOf(),
 ) : TemplateGlobalScope<LetterData>() {
 
     fun outline(init: TemplateContainerScope<Lang, LetterData>.() -> Unit) {
         outline.addAll(TemplateContainerScope<Lang, LetterData>().apply(init).children)
     }
 
-    fun attachment(
-        title: Element.Text.Literal<Lang>,
-        includeSakspart: Boolean = false,
-        outline: TemplateContainerScope<Lang, LetterData>.() -> Unit
+    fun <AttachmentData : Any> includeAttachment(
+        template: AttachmentTemplate<AttachmentData>,
+        attachmentData: Expression<AttachmentData>
     ) {
-        attachments.add(
-            AttachmentTemplate(
-                title,
-                TemplateContainerScope<Lang, LetterData>().apply(outline).children,
-                includeSakspart
-            )
-        )
+        attachments.add(IncludeAttachment(attachmentData, template))
     }
 
 }

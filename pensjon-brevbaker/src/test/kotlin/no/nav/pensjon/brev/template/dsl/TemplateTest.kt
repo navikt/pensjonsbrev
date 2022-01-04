@@ -63,8 +63,23 @@ class TemplateTest {
         )
     }
 
+
     @Test
     fun `createTemplate adds attachment`() {
+        val attachment = createAttachment<Unit>(
+            newText(
+                Language.Bokmal to "asdf",
+                Language.Nynorsk to "asdf",
+                Language.English to "asdf",
+            )
+        ){
+            text(
+                Language.Bokmal to "hei",
+                Language.Nynorsk to "hei",
+                Language.English to "Hello",
+            )
+        }
+
         val doc = createTemplate(
             name = "test",
             base = PensjonLatex,
@@ -73,9 +88,7 @@ class TemplateTest {
             title = bokmalTittel,
             letterMetadata = testLetterMetadata,
         ) {
-            attachment(bokmalTittel, false) {
-                text(Language.Bokmal to "hei")
-            }
+            includeAttachment(attachment, Expression.Literal(Unit))
         }
 
         assertEquals(
@@ -88,9 +101,9 @@ class TemplateTest {
                 letterMetadata = testLetterMetadata,
                 outline = emptyList(),
                 attachments = listOf(
-                    AttachmentTemplate(
-                        bokmalTittel,
-                        listOf(Element.Text.Literal.create(Language.Bokmal to "hei"))
+                    IncludeAttachment(
+                        Expression.Literal(Unit),
+                        attachment
                     )
                 )
             ),
