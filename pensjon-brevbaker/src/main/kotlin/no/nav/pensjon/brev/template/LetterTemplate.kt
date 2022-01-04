@@ -69,7 +69,10 @@ sealed class Element<Lang : LanguageCombination> {
 
     data class Title1<Lang : LanguageCombination>(val title1: List<Element<Lang>>) : Element<Lang>()
     data class Paragraph<Lang : LanguageCombination>(val paragraph: List<Element<Lang>>) : Element<Lang>()
-    data class ItemList<Lang : LanguageCombination>(val itemList: List<Element<Lang>>) : Element<Lang>()
+    sealed class ItemList<Lang : LanguageCombination> : Element<Lang>(){
+        data class Dynamic<Lang: LanguageCombination>(val items: Expression<List<String>>): ItemList<Lang>()
+        data class Static<Lang: LanguageCombination>(val items: List<Element<Lang>>): ItemList<Lang>()
+    }
 
     sealed class Form<Lang : LanguageCombination> : Element<Lang>() {
         data class Text<Lang : LanguageCombination>(

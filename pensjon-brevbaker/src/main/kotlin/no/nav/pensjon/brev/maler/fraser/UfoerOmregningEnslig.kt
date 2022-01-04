@@ -19,10 +19,10 @@ object VedtakOverskriftPesys_001 : Phrase<Unit> {
     }
 }
 
-object OmregnUTDodEPSInnledn1_001 : Phrase<OmregnUTDodEPSInnledn1_001.Dto> {
+object OmregnUTDodEPSInnledn1_001 : Phrase<OmregnUTDodEPSInnledn1_001.Param> {
     override val elements = phrase {
-        val avdod_navn = argument().select(Dto::avdod_navn)
-        val krav_virkedato_fom = argument().select(Dto::krav_virkedato_fom)
+        val avdod_navn = argument().select(Param::avdod_navn)
+        val krav_virkedato_fom = argument().select(Param::krav_virkedato_fom)
         paragraph {
             textExpr(
                 Bokmal to "Vi har mottatt melding om at ".expr() + avdod_navn + " er død, og vi har regnet om uføretrygden din fra ".expr() + krav_virkedato_fom.format() + " fordi sivilstanden din er endret. Vi vil også informere deg om rettigheter du kan ha etter avdøde.".expr(),
@@ -32,12 +32,12 @@ object OmregnUTDodEPSInnledn1_001 : Phrase<OmregnUTDodEPSInnledn1_001.Dto> {
         }
     }
 
-    data class Dto(val avdod_navn: String, val krav_virkedato_fom: LocalDate)
+    data class Param(val avdod_navn: String, val krav_virkedato_fom: LocalDate)
 }
 
-object OmregnUTDodEPSInnledn2_001 : Phrase<OmregnUTDodEPSInnledn2_001.Dto> {
+object OmregnUTDodEPSInnledn2_001 : Phrase<OmregnUTDodEPSInnledn2_001.Param> {
     override val elements = phrase {
-        val avdod_navn = argument().select(Dto::avdod_navn)
+        val avdod_navn = argument().select(Param::avdod_navn)
         paragraph {
             textExpr(
                 Bokmal to "Vi har mottatt melding om at ".expr() + avdod_navn + " er død. Uføretrygden din endres ikke, men vi vil informere deg om rettigheter du kan ha etter avdøde.".expr(),
@@ -47,13 +47,13 @@ object OmregnUTDodEPSInnledn2_001 : Phrase<OmregnUTDodEPSInnledn2_001.Dto> {
         }
     }
 
-    data class Dto(val avdod_navn: String)
+    data class Param(val avdod_navn: String)
 }
 
-object OmregnUTBTDodEPSInnledn_001 : Phrase<OmregnUTBTDodEPSInnledn_001.Dto> {
+object OmregnUTBTDodEPSInnledn_001 : Phrase<OmregnUTBTDodEPSInnledn_001.Param> {
     override val elements = phrase {
-        val avdod_navn = argument().select(Dto::avdod_navn)
-        val krav_virkedato_fom = argument().select(Dto::krav_virkedato_fom)
+        val avdod_navn = argument().select(Param::avdod_navn)
+        val krav_virkedato_fom = argument().select(Param::krav_virkedato_fom)
         paragraph {
             textExpr(
                 Bokmal to "Vi har mottatt melding om at ".expr() + avdod_navn + " er død, og vi har regnet om uføretrygden og barnetillegget ditt fra ".expr() + krav_virkedato_fom.format() + " fordi sivilstanden din er endret. Vi vil også informere deg om rettigheter du kan ha etter avdøde.".expr(),
@@ -63,12 +63,12 @@ object OmregnUTBTDodEPSInnledn_001 : Phrase<OmregnUTBTDodEPSInnledn_001.Dto> {
         }
     }
 
-    data class Dto(val avdod_navn: String, val krav_virkedato_fom: LocalDate)
+    data class Param(val avdod_navn: String, val krav_virkedato_fom: LocalDate)
 }
 
-object OmregnUTBTSBDodEPSInnledn_001 : Phrase<OmregnUTBTSBDodEPSInnledn_001.Dto> {
+object OmregnUTBTSBDodEPSInnledn_001 : Phrase<OmregnUTBTSBDodEPSInnledn_001.Param> {
     override val elements = phrase {
-        val avdod_navn = argument().select(Dto::avdod_navn)
+        val avdod_navn = argument().select(Param::avdod_navn)
         paragraph {
             textExpr(
                 Bokmal to "Vi har mottatt melding om at ".expr() + avdod_navn + " er død. Uføretrygden og barnetillegget ditt endres ikke, men vi vil informere deg om rettigheter du kan ha etter avdøde.".expr(),
@@ -78,13 +78,13 @@ object OmregnUTBTSBDodEPSInnledn_001 : Phrase<OmregnUTBTSBDodEPSInnledn_001.Dto>
         }
     }
 
-    data class Dto(val avdod_navn: String)
+    data class Param(val avdod_navn: String)
 }
 
-object OmregnBTDodEPSInnledn_001 : Phrase<OmregnBTDodEPSInnledn_001.Dto> {
+object OmregnBTDodEPSInnledn_001 : Phrase<OmregnBTDodEPSInnledn_001.Param> {
     override val elements = phrase {
-        val avdod_navn = argument().select(Dto::avdod_navn)
-        val krav_virkedato_fom = argument().select(Dto::krav_virkedato_fom)
+        val avdod_navn = argument().select(Param::avdod_navn)
+        val krav_virkedato_fom = argument().select(Param::krav_virkedato_fom)
         paragraph {
             textExpr(
                 Bokmal to "Vi har mottatt melding om at ".expr() + avdod_navn + " er død, og vi har regnet om barnetillegget ditt fra ".expr() + krav_virkedato_fom.format() + " fordi sivilstanden din er endret. Vi vil også informere deg om rettigheter du kan ha etter avdøde.".expr(),
@@ -94,12 +94,12 @@ object OmregnBTDodEPSInnledn_001 : Phrase<OmregnBTDodEPSInnledn_001.Dto> {
         }
     }
 
-    data class Dto(val avdod_navn: String, val krav_virkedato_fom: LocalDate)
+    data class Param(val avdod_navn: String, val krav_virkedato_fom: LocalDate)
 }
 
-object BelopUT_001 : Phrase<BelopUT_001.Dto> {
+object BelopUT_001 : Phrase<BelopUT_001.Param> {
     override val elements = phrase {
-        val total_ufoeremaaneder = argument().select(Dto::total_ufoeremaaneder)
+        val total_ufoeremaaneder = argument().select(Param::total_ufoeremaaneder)
         paragraph {
             textExpr(
                 Bokmal to "Du får ".expr() + total_ufoeremaaneder.str() + " kroner i uføretrygd per måned før skatt.".expr(),
@@ -110,12 +110,12 @@ object BelopUT_001 : Phrase<BelopUT_001.Dto> {
 
     }
 
-    data class Dto(val total_ufoeremaaneder: Number)
+    data class Param(val total_ufoeremaaneder: Number)
 }
 
-object BelopUTVedlegg_001 : Phrase<BelopUTVedlegg_001.Dto> {
+object BelopUTVedlegg_001 : Phrase<BelopUTVedlegg_001.Param> {
     override val elements = phrase {
-        val total_ufoeremaaneder = argument().select(Dto::total_ufoeremaaneder)
+        val total_ufoeremaaneder = argument().select(Param::total_ufoeremaaneder)
         paragraph {
             textExpr(
                 Bokmal to "Du får ".expr() + total_ufoeremaaneder.str() + " kroner i uføretrygd per måned før skatt. Du kan lese mer om andre beregningsperioder i vedlegget.".expr(),
@@ -125,12 +125,12 @@ object BelopUTVedlegg_001 : Phrase<BelopUTVedlegg_001.Dto> {
         }
     }
 
-    data class Dto(val total_ufoeremaaneder: Number)
+    data class Param(val total_ufoeremaaneder: Number)
 }
 
-object BelopUTBT_001 : Phrase<BelopUTBT_001.Dto> {
+object BelopUTBT_001 : Phrase<BelopUTBT_001.Param> {
     override val elements = phrase {
-        val total_ufoeremaaneder = argument().select(Dto::total_ufoeremaaneder)
+        val total_ufoeremaaneder = argument().select(Param::total_ufoeremaaneder)
         paragraph {
             textExpr(
                 Bokmal to "Du får ".expr() + total_ufoeremaaneder.str() + " kroner i uføretrygd per måned før skatt. Du kan lese mer om andre beregningsperioder i vedlegget.".expr(),
@@ -140,12 +140,12 @@ object BelopUTBT_001 : Phrase<BelopUTBT_001.Dto> {
         }
     }
 
-    data class Dto(val total_ufoeremaaneder: Number)
+    data class Param(val total_ufoeremaaneder: Number)
 }
 
-object BelopUTBTVedlegg_001 : Phrase<BelopUTBTVedlegg_001.Dto> {
+object BelopUTBTVedlegg_001 : Phrase<BelopUTBTVedlegg_001.Param> {
     override val elements = phrase {
-        val total_ufoeremaaneder = argument().select(Dto::total_ufoeremaaneder)
+        val total_ufoeremaaneder = argument().select(Param::total_ufoeremaaneder)
         paragraph {
             textExpr(
                 Bokmal to "Du får ".expr() + total_ufoeremaaneder.str() + " kroner i uføretrygd og barnetillegg per måned før skatt. Du kan lese mer om andre beregningsperioder i vedlegget.".expr(),
@@ -155,7 +155,7 @@ object BelopUTBTVedlegg_001 : Phrase<BelopUTBTVedlegg_001.Dto> {
         }
     }
 
-    data class Dto(val total_ufoeremaaneder: Number)
+    data class Param(val total_ufoeremaaneder: Number)
 }
 
 object BelopUTIngenUtbetaling_001 : Phrase<Unit> {
@@ -242,10 +242,10 @@ object BegrunnOverskrift_001 : Phrase<Unit> {
     }
 }
 
-object EndrMYDodEPS2_001 : Phrase<EndrMYDodEPS2_001.Dto> {
+object EndrMYDodEPS2_001 : Phrase<EndrMYDodEPS2_001.Param> {
     override val elements = phrase {
-        val minsteytelse_sats_vedvirk = argument().select(Dto::minsteytelse_sats_vedvirk)
-        val kompensasjonsgrad_ufoeretrygd_vedvirk = argument().select(Dto::kompensasjonsgrad_ufoeretrygd_vedvirk)
+        val minsteytelse_sats_vedvirk = argument().select(Param::minsteytelse_sats_vedvirk)
+        val kompensasjonsgrad_ufoeretrygd_vedvirk = argument().select(Param::kompensasjonsgrad_ufoeretrygd_vedvirk)
         paragraph {
             textExpr(
                 Bokmal to "Du er sikret minsteytelse fordi beregningen ut fra din egenopptjente inntekt er lavere enn minstenivået for uføretrygd. Satsen på minsteytelsen avhenger av sivilstand. For deg utgjør minsteytelsen ".expr() + minsteytelse_sats_vedvirk.str() + " ganger folketrygdens grunnbeløp. Du kan lese mer om grunnbeløp på nav.no.".expr(),
@@ -262,15 +262,15 @@ object EndrMYDodEPS2_001 : Phrase<EndrMYDodEPS2_001.Dto> {
         }
     }
 
-    data class Dto(val minsteytelse_sats_vedvirk: Number, val kompensasjonsgrad_ufoeretrygd_vedvirk: Number)
+    data class Param(val minsteytelse_sats_vedvirk: Number, val kompensasjonsgrad_ufoeretrygd_vedvirk: Number)
 }
 
-object EndrMYOgMinstIFUDodEPS2_001 : Phrase<EndrMYOgMinstIFUDodEPS2_001.Dto> {
+object EndrMYOgMinstIFUDodEPS2_001 : Phrase<EndrMYOgMinstIFUDodEPS2_001.Param> {
     override val elements = phrase {
-        val minsteytelse_sats_vedvirk = argument().select(Dto::minsteytelse_sats_vedvirk)
-        val inntekt_foer_ufoerhet_vedvirk = argument().select(Dto::inntekt_foer_ufoerhet_vedvirk)
-        val oppjustert_inntekt_foer_ufoerhet_vedvirk = argument().select(Dto::oppjustert_inntekt_foer_ufoerhet_vedvirk)
-        val kompensasjonsgrad_ufoeretrygd_vedvirk = argument().select(Dto::kompensasjonsgrad_ufoeretrygd_vedvirk)
+        val minsteytelse_sats_vedvirk = argument().select(Param::minsteytelse_sats_vedvirk)
+        val inntekt_foer_ufoerhet_vedvirk = argument().select(Param::inntekt_foer_ufoerhet_vedvirk)
+        val oppjustert_inntekt_foer_ufoerhet_vedvirk = argument().select(Param::oppjustert_inntekt_foer_ufoerhet_vedvirk)
+        val kompensasjonsgrad_ufoeretrygd_vedvirk = argument().select(Param::kompensasjonsgrad_ufoeretrygd_vedvirk)
         paragraph {
             textExpr(
                 Bokmal to "Du er sikret minsteytelse fordi beregningen ut fra din egenopptjente inntekt er lavere enn minstenivået for uføretrygd. Satsen på minsteytelsen avhenger av sivilstand. For deg utgjør minsteytelsen ".expr() + minsteytelse_sats_vedvirk.str() + " ganger folketrygdens grunnbeløp. Du kan lese mer om grunnbeløp på nav.no.".expr(),
@@ -287,7 +287,7 @@ object EndrMYOgMinstIFUDodEPS2_001 : Phrase<EndrMYOgMinstIFUDodEPS2_001.Dto> {
         }
     }
 
-    data class Dto(
+    data class Param(
         val minsteytelse_sats_vedvirk: Number,
         val inntekt_foer_ufoerhet_vedvirk: Number,
         val oppjustert_inntekt_foer_ufoerhet_vedvirk: Number,
@@ -295,11 +295,11 @@ object EndrMYOgMinstIFUDodEPS2_001 : Phrase<EndrMYOgMinstIFUDodEPS2_001.Dto> {
     )
 }
 
-object EndrMinstIFUDodEPS2_001 : Phrase<EndrMinstIFUDodEPS2_001.Dto> {
+object EndrMinstIFUDodEPS2_001 : Phrase<EndrMinstIFUDodEPS2_001.Param> {
     override val elements = phrase {
-        val inntekt_foer_ufoerhet_vedvirk = argument().select(Dto::inntekt_foer_ufoerhet_vedvirk)
-        val oppjustert_inntekt_foer_ufoerhet_vedvirk = argument().select(Dto::oppjustert_inntekt_foer_ufoerhet_vedvirk)
-        val kompensasjonsgrad_ufoeretrygd_vedvirk = argument().select(Dto::kompensasjonsgrad_ufoeretrygd_vedvirk)
+        val inntekt_foer_ufoerhet_vedvirk = argument().select(Param::inntekt_foer_ufoerhet_vedvirk)
+        val oppjustert_inntekt_foer_ufoerhet_vedvirk = argument().select(Param::oppjustert_inntekt_foer_ufoerhet_vedvirk)
+        val kompensasjonsgrad_ufoeretrygd_vedvirk = argument().select(Param::kompensasjonsgrad_ufoeretrygd_vedvirk)
         paragraph {
             textExpr(
                 Bokmal to "Inntekten din før du ble ufør er fastsatt til minstenivå som er avhengig av sivilstand. For deg er inntekten din før du ble ufør satt til ".expr() + inntekt_foer_ufoerhet_vedvirk.str() + " kroner som oppjustert til virkningstidspunktet tilsvarer en inntekt på ".expr() + oppjustert_inntekt_foer_ufoerhet_vedvirk.str() + " kroner. Dette kan ha betydning for kompensasjonsgraden din som er satt til ".expr() + kompensasjonsgrad_ufoeretrygd_vedvirk.str() + " prosent. Du kan lese mer om dette i vedlegget.".expr(),
@@ -309,7 +309,7 @@ object EndrMinstIFUDodEPS2_001 : Phrase<EndrMinstIFUDodEPS2_001.Dto> {
         }
     }
 
-    data class Dto(
+    data class Param(
         val inntekt_foer_ufoerhet_vedvirk: Number,
         val oppjustert_inntekt_foer_ufoerhet_vedvirk: Number,
         val kompensasjonsgrad_ufoeretrygd_vedvirk: Number,
@@ -436,50 +436,47 @@ object OmregningFBOverskrift_001 : Phrase<Unit> {
     }
 }
 
-object InfoFBTilSB_001 : Phrase<InfoFBTilSB_001.Dto> {
+object InfoFBTilSB_001 : Phrase<InfoFBTilSB_001.Param> {
     override val elements = phrase {
-        val barn_overfoert_til_saerkullsbarn = argument().select(Dto::barn_overfoert_til_saerkullsbarn)
         paragraph {
             text(
                 Bokmal to "Vi har regnet om barnetillegget for barn som ikke lenger bor sammen med begge foreldre. Dette gjelder:",
                 Nynorsk to "Vi har rekna om barnetillegget for barn som ikkje lenger bur saman med begge foreldre. Dette gjeld:",
                 English to "We have recalculated your child supplement for the child/children who no longer lives/live together with both parents. This applies to:"
             )
-            //TODO vis liste med barn_overfoert_til_saerkullsbarn
+            list(argument().select(Param::barn_overfoert_til_saerkullsbarn))
         }
 
     }
-    data class Dto(val barn_overfoert_til_saerkullsbarn: List<String>)
+    data class Param(val barn_overfoert_til_saerkullsbarn: List<String>)
 }
 
-object InfoTidligereSB_001 : Phrase<InfoTidligereSB_001.Dto> {
+object InfoTidligereSB_001 : Phrase<InfoTidligereSB_001.Param> {
     override val elements = phrase {
-        val tidligere_saerkullsbarn = argument().select(Dto::tidligere_saerkullsbarn)
         paragraph {
             text(
                 Bokmal to "Denne omregningen har også betydning for barnetillegget for:",
                 Nynorsk to "Denne omrekninga har også noko å seie for barnetillegget for:",
                 English to "This recalculation also affects your child supplement for:"
             )
-            //TODO vis liste med tidligere_saerkullsbarn
+            list(argument().select(Param::tidligere_saerkullsbarn))
         }
     }
-    data class Dto(val tidligere_saerkullsbarn: List<String>)
+    data class Param(val tidligere_saerkullsbarn: List<String>)
 }
 
-object InfoTidligereSBOgEndretUT_001 : Phrase<InfoTidligereSBOgEndretUT_001.Dto> {
+object InfoTidligereSBOgEndretUT_001 : Phrase<InfoTidligereSBOgEndretUT_001.Param> {
     override val elements = phrase {
-        val tidligere_saerkullsbarn = argument().select(Dto::tidligere_saerkullsbarn)
         paragraph {
             text(
                 Bokmal to "Omregningen av barnetillegg og endring i uføretrygden din har også betydning for barnetillegget for:",
                 Nynorsk to "Omrekninga av barnetillegget og endring i uføretrygda di har også noko å seie for barnetillegget for:",
                 English to "Recalculation of your child supplement and change in your disability benefit also affects your child supplement for:"
             )
-            //TODO vis liste med tidligere_saerkullsbarn
+            list(argument().select(Param::tidligere_saerkullsbarn))
         }
     }
-    data class Dto(val tidligere_saerkullsbarn: List<String>)
+    data class Param(val tidligere_saerkullsbarn: List<String>)
 }
 
 object EndringUTpavirkerBTOverskrift_001 : Phrase<Unit> {
@@ -494,12 +491,12 @@ object EndringUTpavirkerBTOverskrift_001 : Phrase<Unit> {
     }
 }
 
-object IkkeRedusBTPgaTak_001 : Phrase<IkkeRedusBTPgaTak_001.Dto> {
+object IkkeRedusBTPgaTak_001 : Phrase<IkkeRedusBTPgaTak_001.Param> {
     override val elements = phrase {
         val barnetillegg_prosentsats_gradert_over_inntekt_foer_ufoer_vedvirk =
-            argument().select(Dto::barnetillegg_prosentsats_gradert_over_inntekt_foer_ufoer_vedvirk)
+            argument().select(Param::barnetillegg_prosentsats_gradert_over_inntekt_foer_ufoer_vedvirk)
         val barnetillegg_gradert_over_inntekt_foer_ufoer_vedvirk =
-            argument().select(Dto::barnetillegg_gradert_over_inntekt_foer_ufoer_vedvirk)
+            argument().select(Param::barnetillegg_gradert_over_inntekt_foer_ufoer_vedvirk)
         paragraph {
             textExpr(
                 Bokmal to "Uføretrygden og barnetillegget ditt kan til sammen ikke utgjøre mer enn ".expr() + barnetillegg_prosentsats_gradert_over_inntekt_foer_ufoer_vedvirk.str() + " prosent av inntekten din før du ble ufør. ".expr() + barnetillegg_prosentsats_gradert_over_inntekt_foer_ufoer_vedvirk.str() + " prosent av den inntekten du hadde før du ble ufør tilsvarer i dag ".expr() + barnetillegg_gradert_over_inntekt_foer_ufoer_vedvirk.str() + " kroner. Uføretrygden og barnetillegget ditt er til sammen lavere enn dette. Derfor er barnetillegget fastsatt til 40 prosent av folketrygdens grunnbeløp for hvert barn.".expr(),
@@ -509,22 +506,22 @@ object IkkeRedusBTPgaTak_001 : Phrase<IkkeRedusBTPgaTak_001.Dto> {
         }
     }
 
-    data class Dto(
+    data class Param(
         val barnetillegg_prosentsats_gradert_over_inntekt_foer_ufoer_vedvirk: Number,
         val barnetillegg_gradert_over_inntekt_foer_ufoer_vedvirk: Number,
     )
 }
 
-object RedusBTPgaTak_001 : Phrase<RedusBTPgaTak_001.Dto> {
+object RedusBTPgaTak_001 : Phrase<RedusBTPgaTak_001.Param> {
     override val elements = phrase {
         val barnetillegg_prosentsats_gradert_over_inntekt_foer_ufoer_vedvirk =
-            argument().select(Dto::barnetillegg_prosentsats_gradert_over_inntekt_foer_ufoer_vedvirk)
+            argument().select(Param::barnetillegg_prosentsats_gradert_over_inntekt_foer_ufoer_vedvirk)
         val barnetillegg_gradert_over_inntekt_foer_ufoer_vedvirk =
-            argument().select(Dto::barnetillegg_gradert_over_inntekt_foer_ufoer_vedvirk)
+            argument().select(Param::barnetillegg_gradert_over_inntekt_foer_ufoer_vedvirk)
         val barnetillegg_beloep_foer_reduksjon_vedvirk =
-            argument().select(Dto::barnetillegg_beloep_foer_reduksjon_vedvirk)
+            argument().select(Param::barnetillegg_beloep_foer_reduksjon_vedvirk)
         val barnetillegg_saerkullsbarn_beloep_etter_reduksjon_vedvirk =
-            argument().select(Dto::barnetillegg_saerkullsbarn_beloep_etter_reduksjon_vedvirk)
+            argument().select(Param::barnetillegg_saerkullsbarn_beloep_etter_reduksjon_vedvirk)
         paragraph {
             textExpr(
                 Bokmal to "Uføretrygden og barnetillegget ditt kan til sammen ikke utgjøre mer enn ".expr() + barnetillegg_prosentsats_gradert_over_inntekt_foer_ufoer_vedvirk.str() + " prosent av inntekten din før du ble ufør. ".expr() + barnetillegg_prosentsats_gradert_over_inntekt_foer_ufoer_vedvirk.str() + " prosent av den inntekten du hadde før du ble ufør tilsvarer i dag ".expr() + barnetillegg_gradert_over_inntekt_foer_ufoer_vedvirk.str() + " kroner. Uføretrygden og barnetillegget ditt er til sammen høyere enn dette. Derfor er barnetillegget redusert fra ".expr() + barnetillegg_beloep_foer_reduksjon_vedvirk.str() + " kroner til ".expr() + barnetillegg_saerkullsbarn_beloep_etter_reduksjon_vedvirk.str() + " kroner.".expr(),
@@ -534,7 +531,7 @@ object RedusBTPgaTak_001 : Phrase<RedusBTPgaTak_001.Dto> {
         }
     }
 
-    data class Dto(
+    data class Param(
         val barnetillegg_prosentsats_gradert_over_inntekt_foer_ufoer_vedvirk: Number,
         val barnetillegg_gradert_over_inntekt_foer_ufoer_vedvirk: Number,
         val barnetillegg_beloep_foer_reduksjon_vedvirk: Number,
@@ -542,12 +539,12 @@ object RedusBTPgaTak_001 : Phrase<RedusBTPgaTak_001.Dto> {
     )
 }
 
-object IkkeUtbetaltBTPgaTak_001 : Phrase<IkkeUtbetaltBTPgaTak_001.Dto> {
+object IkkeUtbetaltBTPgaTak_001 : Phrase<IkkeUtbetaltBTPgaTak_001.Param> {
     override val elements = phrase {
         val barnetillegg_prosentsats_gradert_over_inntekt_foer_ufoer_vedvirk =
-            argument().select(Dto::barnetillegg_prosentsats_gradert_over_inntekt_foer_ufoer_vedvirk)
+            argument().select(Param::barnetillegg_prosentsats_gradert_over_inntekt_foer_ufoer_vedvirk)
         val barnetillegg_gradert_over_inntekt_foer_ufoer_vedvirk =
-            argument().select(Dto::barnetillegg_gradert_over_inntekt_foer_ufoer_vedvirk)
+            argument().select(Param::barnetillegg_gradert_over_inntekt_foer_ufoer_vedvirk)
         paragraph {
             textExpr(
                 Bokmal to "Uføretrygden og barnetillegget ditt kan til sammen ikke utgjøre mer enn ".expr() + barnetillegg_prosentsats_gradert_over_inntekt_foer_ufoer_vedvirk.str() + " prosent av inntekten din før du ble ufør. ".expr() + barnetillegg_prosentsats_gradert_over_inntekt_foer_ufoer_vedvirk.str() + " prosent av den inntekten du hadde før du ble ufør tilsvarer i dag ".expr() + barnetillegg_gradert_over_inntekt_foer_ufoer_vedvirk.str() + " kroner. Uføretrygden og barnetillegget ditt er til sammen høyere enn dette. Derfor får du ikke utbetalt barnetillegg.".expr(),
@@ -557,7 +554,7 @@ object IkkeUtbetaltBTPgaTak_001 : Phrase<IkkeUtbetaltBTPgaTak_001.Dto> {
         }
     }
 
-    data class Dto(
+    data class Param(
         val barnetillegg_prosentsats_gradert_over_inntekt_foer_ufoer_vedvirk: Number,
         val barnetillegg_gradert_over_inntekt_foer_ufoer_vedvirk: Number,
     )
@@ -587,12 +584,12 @@ object InfoBTOverfortTilSBInntekt_001 : Phrase<Unit> {
     }
 }
 
-object IkkeRedusBTSBPgaInntekt_001 : Phrase<IkkeRedusBTSBPgaInntekt_001.Dto> {
+object IkkeRedusBTSBPgaInntekt_001 : Phrase<IkkeRedusBTSBPgaInntekt_001.Param> {
     override val elements = phrase {
         val barnetillegg_saerkullsbarn_inntekt_brukt_i_avkortning_vedvirk =
-            argument().select(Dto::barnetillegg_saerkullsbarn_inntekt_brukt_i_avkortning_vedvirk)
+            argument().select(Param::barnetillegg_saerkullsbarn_inntekt_brukt_i_avkortning_vedvirk)
         val barnetillegg_saerkullsbarn_fribeloep_vedvirk =
-            argument().select(Dto::barnetillegg_saerkullsbarn_fribeloep_vedvirk)
+            argument().select(Param::barnetillegg_saerkullsbarn_fribeloep_vedvirk)
         paragraph {
             textExpr(
                 Bokmal to "Inntekten din på ".expr() + barnetillegg_saerkullsbarn_inntekt_brukt_i_avkortning_vedvirk.str() + " kroner er lavere enn fribeløpet ditt på ".expr() + barnetillegg_saerkullsbarn_fribeloep_vedvirk.str() + " kroner. Derfor er barnetillegget ikke redusert ut fra inntekt.".expr(),
@@ -603,18 +600,18 @@ object IkkeRedusBTSBPgaInntekt_001 : Phrase<IkkeRedusBTSBPgaInntekt_001.Dto> {
 
     }
 
-    data class Dto(
+    data class Param(
         val barnetillegg_saerkullsbarn_inntekt_brukt_i_avkortning_vedvirk: Number,
         val barnetillegg_saerkullsbarn_fribeloep_vedvirk: Number,
     )
 }
 
-object RedusBTSBPgaInntekt_001 : Phrase<RedusBTSBPgaInntekt_001.Dto> {
+object RedusBTSBPgaInntekt_001 : Phrase<RedusBTSBPgaInntekt_001.Param> {
     override val elements = phrase {
         val barnetillegg_saerkullsbarn_inntekt_brukt_i_avkortning_vedvirk =
-            argument().select(Dto::barnetillegg_saerkullsbarn_inntekt_brukt_i_avkortning_vedvirk)
+            argument().select(Param::barnetillegg_saerkullsbarn_inntekt_brukt_i_avkortning_vedvirk)
         val barnetillegg_saerkullsbarn_fribeloep_vedvirk =
-            argument().select(Dto::barnetillegg_saerkullsbarn_fribeloep_vedvirk)
+            argument().select(Param::barnetillegg_saerkullsbarn_fribeloep_vedvirk)
         paragraph {
             textExpr(
                 Bokmal to "Inntekten din på ".expr() + barnetillegg_saerkullsbarn_inntekt_brukt_i_avkortning_vedvirk.str() + " kroner er høyere enn fribeløpet ditt på ".expr() + barnetillegg_saerkullsbarn_fribeloep_vedvirk.str() + " kroner. Derfor er barnetillegget redusert ut fra inntekt.".expr(),
@@ -625,7 +622,7 @@ object RedusBTSBPgaInntekt_001 : Phrase<RedusBTSBPgaInntekt_001.Dto> {
 
     }
 
-    data class Dto(
+    data class Param(
         val barnetillegg_saerkullsbarn_inntekt_brukt_i_avkortning_vedvirk: Number,
         val barnetillegg_saerkullsbarn_fribeloep_vedvirk: Number,
     )
@@ -655,12 +652,12 @@ object JusterBelopIkkeUtbetaltBTPgaInntekt_001 : Phrase<Unit> {
     }
 }
 
-object IkkeUtbetaltBTSBPgaInntekt_001 : Phrase<IkkeUtbetaltBTSBPgaInntekt_001.Dto> {
+object IkkeUtbetaltBTSBPgaInntekt_001 : Phrase<IkkeUtbetaltBTSBPgaInntekt_001.Param> {
     override val elements = phrase {
         val barnetillegg_saerkullsbarn_inntekt_brukt_i_avkortning_vedvirk =
-            argument().select(Dto::barnetillegg_saerkullsbarn_inntekt_brukt_i_avkortning_vedvirk)
+            argument().select(Param::barnetillegg_saerkullsbarn_inntekt_brukt_i_avkortning_vedvirk)
         val barnetillegg_saerkullsbarn_inntektstak_vedvirk =
-            argument().select(Dto::barnetillegg_saerkullsbarn_inntektstak_vedvirk)
+            argument().select(Param::barnetillegg_saerkullsbarn_inntektstak_vedvirk)
         paragraph {
             textExpr(
                 Bokmal to "Inntekten din på ".expr() + barnetillegg_saerkullsbarn_inntekt_brukt_i_avkortning_vedvirk.str() + " kroner er over ".expr() + barnetillegg_saerkullsbarn_inntektstak_vedvirk.str() + " kroner som er grensen for å få utbetalt barnetillegg. Derfor får du ikke utbetalt barnetillegg.".expr(),
@@ -671,7 +668,7 @@ object IkkeUtbetaltBTSBPgaInntekt_001 : Phrase<IkkeUtbetaltBTSBPgaInntekt_001.Dt
 
     }
 
-    data class Dto(
+    data class Param(
         val barnetillegg_saerkullsbarn_inntekt_brukt_i_avkortning_vedvirk: Number,
         val barnetillegg_saerkullsbarn_inntektstak_vedvirk: Number,
     )
@@ -737,9 +734,9 @@ object MerInfoBT_001 : Phrase<Unit> {
     }
 }
 
-object GjRettSamboerOverskrift : Phrase<GjRettSamboerOverskrift.Dto> {
+object GjRettSamboerOverskrift : Phrase<GjRettSamboerOverskrift.Param> {
     override val elements = phrase {
-        val avdod_navn = argument().select(Dto::avdod_navn)
+        val avdod_navn = argument().select(Param::avdod_navn)
         title1 {
             textExpr(
                 Bokmal to "Rettigheter du kan ha som tidligere samboer med ".expr() + avdod_navn,
@@ -749,7 +746,7 @@ object GjRettSamboerOverskrift : Phrase<GjRettSamboerOverskrift.Dto> {
         }
     }
 
-    data class Dto(val avdod_navn: String)
+    data class Param(val avdod_navn: String)
 }
 
 object GjRettUTSamboer_001 : Phrase<Unit> {
@@ -952,9 +949,9 @@ object VirknTdsPktOverskrift_001 : Phrase<Unit> {
     }
 }
 
-object VirkTdsPktUT_001 : Phrase<VirkTdsPktUT_001.Dto> {
+object VirkTdsPktUT_001 : Phrase<VirkTdsPktUT_001.Param> {
     override val elements = phrase {
-        val krav_virkedato_fom = argument().select(Dto::krav_virkedato_fom)
+        val krav_virkedato_fom = argument().select(Param::krav_virkedato_fom)
         paragraph {
             textExpr(
                 Bokmal to "Uføretrygden din er omregnet fra ".expr() + krav_virkedato_fom.format() + ".".expr(),
@@ -964,12 +961,12 @@ object VirkTdsPktUT_001 : Phrase<VirkTdsPktUT_001.Dto> {
         }
     }
 
-    data class Dto(val krav_virkedato_fom: LocalDate)
+    data class Param(val krav_virkedato_fom: LocalDate)
 }
 
-object VirkTdsPktUTIkkeEndring_001 : Phrase<VirkTdsPktUTIkkeEndring_001.Dto> {
+object VirkTdsPktUTIkkeEndring_001 : Phrase<VirkTdsPktUTIkkeEndring_001.Param> {
     override val elements = phrase {
-        val krav_virkedato_fom = argument().select(Dto::krav_virkedato_fom)
+        val krav_virkedato_fom = argument().select(Param::krav_virkedato_fom)
         paragraph {
             textExpr(
                 Bokmal to "Uføretrygden din er omregnet fra ".expr() + krav_virkedato_fom.format() + ", men dette fører ikke til endring i utbetalingen.".expr(),
@@ -979,12 +976,12 @@ object VirkTdsPktUTIkkeEndring_001 : Phrase<VirkTdsPktUTIkkeEndring_001.Dto> {
         }
     }
 
-    data class Dto(val krav_virkedato_fom: LocalDate)
+    data class Param(val krav_virkedato_fom: LocalDate)
 }
 
-object VirkTdsPktUTBTOmregn_001 : Phrase<VirkTdsPktUTBTOmregn_001.Dto> {
+object VirkTdsPktUTBTOmregn_001 : Phrase<VirkTdsPktUTBTOmregn_001.Param> {
     override val elements = phrase {
-        val krav_virkedato_fom = argument().select(Dto::krav_virkedato_fom)
+        val krav_virkedato_fom = argument().select(Param::krav_virkedato_fom)
         paragraph {
             textExpr(
                 Bokmal to "Barnetillegget i uføretrygden din er omregnet fra ".expr() + krav_virkedato_fom.format() + ".".expr(),
@@ -994,12 +991,12 @@ object VirkTdsPktUTBTOmregn_001 : Phrase<VirkTdsPktUTBTOmregn_001.Dto> {
         }
     }
 
-    data class Dto(val krav_virkedato_fom: LocalDate)
+    data class Param(val krav_virkedato_fom: LocalDate)
 }
 
-object VirkTdsPktUTAvkortetTil0_001 : Phrase<VirkTdsPktUTAvkortetTil0_001.Dto> {
+object VirkTdsPktUTAvkortetTil0_001 : Phrase<VirkTdsPktUTAvkortetTil0_001.Param> {
     override val elements = phrase {
-        val krav_virkedato_fom = argument().select(Dto::krav_virkedato_fom)
+        val krav_virkedato_fom = argument().select(Param::krav_virkedato_fom)
         paragraph {
             textExpr(
                 Bokmal to "Uføretrygden din er omregnet fra ".expr() + krav_virkedato_fom.format() + ", men dette fører ikke til endring i utbetalingen da uføretrygden er redusert til 0 kr.".expr(),
@@ -1009,7 +1006,7 @@ object VirkTdsPktUTAvkortetTil0_001 : Phrase<VirkTdsPktUTAvkortetTil0_001.Dto> {
         }
     }
 
-    data class Dto(val krav_virkedato_fom: LocalDate)
+    data class Param(val krav_virkedato_fom: LocalDate)
 }
 
 object MeldInntektUTOverskrift_001 : Phrase<Unit> {

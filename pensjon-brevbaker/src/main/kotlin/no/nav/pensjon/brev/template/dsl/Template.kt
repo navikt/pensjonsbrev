@@ -136,7 +136,11 @@ class TemplateContainerScope<Lang : LanguageCombination, LetterData : Any> :
     }
 
     fun list(init: TemplateContainerScope<Lang, LetterData>.() -> Unit) {
-        children.add(Element.ItemList(TemplateContainerScope<Lang, LetterData>().apply(init).children))
+        children.add(Element.ItemList.Static(TemplateContainerScope<Lang, LetterData>().apply(init).children))
+    }
+
+    fun list(items: Expression<List<String>>) {
+        children.add(Element.ItemList.Dynamic(items))
     }
 
     fun paragraph(init: TemplateContainerScope<Lang, LetterData>.() -> Unit) {
