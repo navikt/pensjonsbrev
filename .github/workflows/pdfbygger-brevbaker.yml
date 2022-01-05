@@ -105,7 +105,6 @@ jobs:
         run: "./gradlew integrationTest"
         env:
           "GITHUB_TOKEN": "${{ secrets.GITHUB_TOKEN }}"
-          "BREVBAKER_URL": "http://brevbaker:8080"
       - name: Publish Test Report
         if: ${{ always() }}
         uses: scacap/action-surefire-report@v1
