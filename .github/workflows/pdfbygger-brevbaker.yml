@@ -103,6 +103,8 @@ jobs:
           "java-version": "17"
       - name: "run integration tests"
         run: "./gradlew integrationTest"
+        env:
+          "GITHUB_TOKEN": "${{ secrets.GITHUB_TOKEN }}"
       - name: Publish Test Report
         if: ${{ always() }}
         uses: scacap/action-surefire-report@v1
