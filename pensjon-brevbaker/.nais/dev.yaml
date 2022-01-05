@@ -7,27 +7,27 @@ env:
     value: "http://pensjon-pdf-bygger:8080"
 
 preAuthorized:
-  - app: pensjon-pen-q0
+  - name: pensjon-pen-q0
     namespace: teampensjon
     cluster: dev-fss
-  - app: pensjon-pen-q1
+  - name: pensjon-pen-q1
     namespace: teampensjon
     cluster: dev-fss
-  - app: pensjon-pen-q2
+  - name: pensjon-pen-q2
     namespace: teampensjon
     cluster: dev-fss
-  - app: pensjon-pen-q4
+  - name: pensjon-pen-q4
     namespace: teampensjon
     cluster: dev-fss
-  - app: pensjon-pen-q5
+  - name: pensjon-pen-q5
     namespace: teampensjon
     cluster: dev-fss
-  - app: pensjon-pen-t0
+  - name: pensjon-pen-t0
     namespace: teampensjon
     cluster: dev-fss
-  - app: pensjon-pen-t2
+  - name: pensjon-pen-t2
     namespace: teampensjon
     cluster: dev-fss
-  - app: pensjon-pen-t4
+  - name: pensjon-pen-t4
     namespace: teampensjon
     cluster: dev-fss
