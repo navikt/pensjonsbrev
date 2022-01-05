@@ -7,30 +7,34 @@ services:
   pensjon-brevbaker:
     environment:
       - PDF_BUILDER_URL=http://pdf-bygger:8080
-      - JWT_JWKS_URL_STS=http://localhost:8060/rest/isso/oauth2/connect/jwk_uri
-      - JWT_ISSUER_STS=http://vtp-pensjon:8060
-      - JWT_AUDIENCE_STS=brevbaker-123
-      - JWT_JWKS_URL_AZURE_AD=http://localhost:8060/rest/isso/oauth2/connect/jwk_uri
-      - JWT_ISSUER_AZURE_AD=https://login.microsoftonline.com/966ac572-f5b7-4bbe-aa88-c76419c0f851/v2.0
-      - JWT_AUDIENCE_AZURE_AD=brevbaker-123
-      - JAVA_OPTS=-Dio.ktor.development=true
+      - AZURE_OPENID_CONFIG_JWKS_URI=http://vtp-pensjon:8060/rest/isso/oauth2/connect/jwk_uri
+      - AZURE_OPENID_CONFIG_ISSUER=https://login.microsoftonline.com/966ac572-f5b7-4bbe-aa88-c76419c0f851/v2.0
+      - AZURE_APP_CLIENT_ID=brevbaker-123
+      - AZURE_APP_PRE_AUTHORIZED_APPS=[{"name":"pen","clientId":"123-456-789"}]
+      - JAVA_OPTS=-Dio.ktor.development=true # Allows requests without auth-header
+#      - JAVA_OPTS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
     build: ./pensjon-brevbaker
     ports:
       - "8080:8080"
-  master:
+#      - "5005:5005" # debug port
+  locust-master:
     profiles:
       - locust
     image: locustio/locust
     ports:
-      - "8089:8089"
+      - "20080:20080"
     volumes:
       - ./:/mnt/locust
-    command: -f /mnt/locust/locustfile.py --master -H http://master:8089
+    command: -f /mnt/locust/locustfile.py --master -H http://locust-master:20080
 
-  worker:
+  locust-worker:
     profiles:
       - locust
     image: locustio/locust
     volumes:
       - ./:/mnt/locust
-    command: -f /mnt/locust/locustfile.py --worker --master-host master
+    command: -f /mnt/locust/locustfile.py --worker --master-host locust-master
+
+networks:
+  default:
+    name: pensjon-local

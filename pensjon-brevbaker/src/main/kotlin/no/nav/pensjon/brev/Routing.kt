@@ -17,7 +17,7 @@ import no.nav.pensjon.brev.latex.PdfCompilationInput
 
 private val latexCompilerService = LaTeXCompilerService(requireEnv("PDF_BUILDER_URL"))
 
-fun Application.brevbakerRouting(authenticationNames: Array<String>, deploymentEnvironment: String) =
+fun Application.brevbakerRouting(authenticationNames: Array<String>) =
     routing {
 
         get("/templates") {
