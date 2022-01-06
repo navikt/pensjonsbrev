@@ -11,12 +11,15 @@ services:
       - AZURE_OPENID_CONFIG_ISSUER=https://login.microsoftonline.com/966ac572-f5b7-4bbe-aa88-c76419c0f851/v2.0
       - AZURE_APP_CLIENT_ID=brevbaker-123
       - AZURE_APP_PRE_AUTHORIZED_APPS=[{"name":"pen","clientId":"123-456-789"}]
-      - JAVA_OPTS=-Dio.ktor.development=true # Allows requests without auth-header
-#      - JAVA_OPTS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
+      - STS_ISSUER=http://vtp-pensjon:8060
+      - STS_JWKS_URI=http://vtp-pensjon:8060/rest/isso/oauth2/connect/jwk_uri
+      - STS_ACCEPTED_AUDIENCE=srvpensjon-local
+#      - JAVA_OPTS=-Dio.ktor.development=true # Allows requests without auth-header
+      - JAVA_OPTS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
     build: ./pensjon-brevbaker
     ports:
       - "8080:8080"
-#      - "5005:5005" # debug port
+      - "5005:5005" # debug port
   locust-master:
     profiles:
       - locust
