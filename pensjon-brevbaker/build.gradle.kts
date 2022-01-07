@@ -1,10 +1,11 @@
 val logback_version: String by project
 val ktor_version: String by project
 val jupiter_version: String by project
+val logstash_version: String by project
 
 plugins {
     application
-    kotlin("jvm") version "1.5.20"
+    kotlin("jvm") version "1.6.10"
     id("com.github.johnrengelman.shadow") version "7.0.0"
 }
 
@@ -41,7 +42,7 @@ sourceSets {
 
 tasks {
     compileKotlin {
-        kotlinOptions.jvmTarget = "15"
+        kotlinOptions.jvmTarget = "17"
     }
     shadowJar {
         archiveBaseName.set(rootProject.name)
@@ -49,7 +50,7 @@ tasks {
         archiveVersion.set("")
     }
     compileTestKotlin {
-        kotlinOptions.jvmTarget = "15"
+        kotlinOptions.jvmTarget = "17"
     }
 
     val integrationTests = setOf("pdf-bygger")
@@ -70,20 +71,23 @@ tasks {
 
 dependencies {
     implementation(kotlin("stdlib"))
+    implementation("ch.qos.logback:logback-classic:$logback_version")
+    implementation("net.logstash.logback:logstash-logback-encoder:$logstash_version")
     implementation("io.ktor:ktor-client-cio:$ktor_version")
     implementation("io.ktor:ktor-server-netty:$ktor_version")
-    implementation("ch.qos.logback:logback-classic:$logback_version")
     implementation("io.ktor:ktor-server-core:$ktor_version")
     implementation("io.ktor:ktor-jackson:$ktor_version")
     implementation("io.ktor:ktor-client-jackson:$ktor_version")
     implementation("io.ktor:ktor-metrics:$ktor_version")
+    implementation("io.ktor:ktor-auth:$ktor_version")
+    implementation("io.ktor:ktor-auth-jwt:$ktor_version")
     implementation("no.nav.pensjon.brev:pensjon-brevbaker-api-model:1.2.6")
     // Necessary for java.time.LocalDate
-    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.12.3")
-    testImplementation("io.ktor:ktor-server-tests:$ktor_version")
+    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.13.1")
     implementation("io.ktor:ktor-metrics-micrometer:$ktor_version")
-    implementation("io.micrometer:micrometer-registry-prometheus:1.7.0")
+    implementation("io.micrometer:micrometer-registry-prometheus:1.8.1")
 
+    testImplementation("io.ktor:ktor-server-tests:$ktor_version")
     // JUnit 5
     testImplementation(platform("org.junit:junit-bom:$jupiter_version"))
     testImplementation("org.junit.jupiter:junit-jupiter")
