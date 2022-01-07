@@ -9,9 +9,10 @@ import no.nav.pensjon.brev.template.jacksonObjectMapper
 import org.slf4j.LoggerFactory
 import java.net.URL
 
+private val logger = LoggerFactory.getLogger("no.nav.pensjon.brev.Authorization")
+
 data class JwtConfig(val name: String, val issuer: String, val jwksUrl: String, val audience: List<String>, val preAuthorizedApps: List<PreAuthorizedApp>?, val requireAzureAdClaims: Boolean) {
     companion object {
-        private val logger = LoggerFactory.getLogger(JwtConfig::class.java)
 
         const val jwtStsName = "STS"
         const val jwtAzureAdName = "AZURE_AD"
@@ -65,6 +66,13 @@ fun Authentication.Configuration.brevbakerJwt(config: JwtConfig) =
             }
         }
         validate {
-            JWTPrincipal(it.payload)
+            val azp = it["azp"]
+
+            if (config.preAuthorizedApps == null || config.preAuthorizedApps.any { app -> app.clientId == azp }) {
+                JWTPrincipal(it.payload)
+            } else {
+                logger.info("Invalid authorization - claim 'azp' is not a preAuthorizedApp: $azp")
+                null
+            }
         }
     }
