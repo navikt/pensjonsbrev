@@ -1,13 +1,14 @@
 package no.nav.pensjon.brev.maler
 
+import no.nav.pensjon.brev.api.model.Institusjon
 import no.nav.pensjon.brev.api.model.LetterMetadata
+import no.nav.pensjon.brev.api.model.Sivilstand.*
 import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDto
 import no.nav.pensjon.brev.maler.fraser.*
 import no.nav.pensjon.brev.maler.vedlegg.OrienteringOmRettigheterParam
-import no.nav.pensjon.brev.maler.vedlegg.test
+import no.nav.pensjon.brev.maler.vedlegg.orienteringOmRettigheterOgPlikter
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.StaticTemplate
-import no.nav.pensjon.brev.template.UnaryOperation
 import no.nav.pensjon.brev.template.base.PensjonLatex
 import no.nav.pensjon.brev.template.dsl.*
 
@@ -28,25 +29,24 @@ object UfoerOmregningEnslig : StaticTemplate {
         )
     ) {
 
+        val avdod_sivilstand = argument().select(UfoerOmregningEnsligDto::avdod_sivilstand)
         val barnetillegg_er_redusert_mot_tak =
             argument().select(UfoerOmregningEnsligDto::barnetillegg_er_redusert_mot_tak)
         val barnetillegg_ikke_utbetalt_pga_tak =
             argument().select(UfoerOmregningEnsligDto::barnetillegg_ikke_utbetalt_pga_tak)
         val barnetillegg_saerkullsbarn_er_redusert_mot_inntekt_vedvirk =
             argument().select(UfoerOmregningEnsligDto::barnetillegg_saerkullsbarn_er_redusert_mot_inntekt_vedvirk)
-        val har_barn_overfoert_til_saerkullsbarn =
-            argument().select(UfoerOmregningEnsligDto::har_barn_overfoert_til_saerkullsbarn)
         val bor_i_avtaleland = argument().select(UfoerOmregningEnsligDto::bor_i_avtaleland)
         val bor_i_norge = argument().select(UfoerOmregningEnsligDto::bor_i_norge)
         val ektefelletillegg_opphoert = argument().select(UfoerOmregningEnsligDto::ektefelletillegg_opphoert)
-        val er_eps_ikke_paragraf_3_2_samboer =
-            argument().select(UfoerOmregningEnsligDto::er_eps_ikke_paragraf_3_2_samboer)
-        val er_paa_helseinstitusjon = argument().select(UfoerOmregningEnsligDto::er_paa_helseinstitusjon)
-        val er_paragraf_3_2_samboer = argument().select(UfoerOmregningEnsligDto::er_paragraf_3_2_samboer)
         val gjeldende_barnetillegg_saerkullsbarn_er_redusert_mot_inntekt =
             argument().select(UfoerOmregningEnsligDto::gjeldende_barnetillegg_saerkullsbarn_er_redusert_mot_inntekt)
         val gjeldende_ufoeretrygd_per_maaned_er_inntektsavkortet =
             argument().select(UfoerOmregningEnsligDto::gjeldende_ufoeretrygd_per_maaned_er_inntektsavkortet)
+        val har_barn_overfoert_til_saerkullsbarn =
+            argument().select(UfoerOmregningEnsligDto::har_barn_overfoert_til_saerkullsbarn)
+        val har_barn_som_tidligere_var_saerkullsbarn =
+            argument().select(UfoerOmregningEnsligDto::har_barn_som_tidligere_var_saerkullsbarn)
         val har_barnetillegg_for_saerkullsbarn =
             argument().select(UfoerOmregningEnsligDto::har_barnetillegg_for_saerkullsbarn)
         val har_barnetillegg_saerkullsbarn_justeringsbeloep_ar_vedvirk =
@@ -54,19 +54,17 @@ object UfoerOmregningEnslig : StaticTemplate {
         val har_barnetillegg_saerkullsbarn_nettobeloep_vedvirk =
             argument().select(UfoerOmregningEnsligDto::har_barnetillegg_saerkullsbarn_nettobeloep_vedvirk)
         val har_barnetillegg_vedvirk = argument().select(UfoerOmregningEnsligDto::har_barnetillegg_vedvirk)
-        val har_barn_som_tidligere_var_saerkullsbarn =
-            argument().select(UfoerOmregningEnsligDto::har_barn_som_tidligere_var_saerkullsbarn)
         val har_felles_barn_uten_barnetillegg_med_avdod =
             argument().select(UfoerOmregningEnsligDto::har_felles_barn_uten_barnetillegg_med_avdod)
         val har_flere_delytelser_i_tillegg_til_ordinaer_ufoeretrygd =
             argument().select(UfoerOmregningEnsligDto::har_flere_delytelser_i_tillegg_til_ordinaer_ufoeretrygd)
         val har_flere_ufoeretrygd_perioder = argument().select(UfoerOmregningEnsligDto::har_flere_ufoeretrygd_perioder)
-        val har_minsteytelse_vedvirk = argument().select(UfoerOmregningEnsligDto::har_minsteytelse_vedvirk)
         val har_minste_inntektsnivaa_foer_ufoeretrygd =
             argument().select(UfoerOmregningEnsligDto::har_minste_inntektsnivaa_foer_ufoeretrygd)
+        val har_minsteytelse_vedvirk = argument().select(UfoerOmregningEnsligDto::har_minsteytelse_vedvirk)
         val har_ufoeremaaned_vedvirk = argument().select(UfoerOmregningEnsligDto::har_ufoeremaaned_vedvirk)
         val inntekt_ufoere_endret = argument().select(UfoerOmregningEnsligDto::inntekt_ufoere_endret)
-        val i_fengsel_ved_virk = argument().select(UfoerOmregningEnsligDto::i_fengsel_ved_virk)
+        val institusjon_vedvirk = argument().select(UfoerOmregningEnsligDto::institusjon_vedvirk)
         val ufoeretrygd_med_barnetillegg_er_over_95_prosent_av_inntekt_foer_ufoerhet =
             argument().select(UfoerOmregningEnsligDto::ufoeretrygd_med_barnetillegg_er_over_95_prosent_av_inntekt_foer_ufoerhet)
         val ufoeretrygd_vedvirk_er_inntektsavkortet =
@@ -174,7 +172,7 @@ object UfoerOmregningEnslig : StaticTemplate {
                 not(har_ufoeremaaned_vedvirk)
                         and not(har_barnetillegg_for_saerkullsbarn)
                         and not(har_flere_ufoeretrygd_perioder)
-                        and not(i_fengsel_ved_virk)
+                        and institusjon_vedvirk.isOneOf(Institusjon.FENGSEL)
             ) {
                 includePhrase(BelopUTIngenUtbetaling_001)
             }
@@ -183,7 +181,7 @@ object UfoerOmregningEnslig : StaticTemplate {
                 not(har_ufoeremaaned_vedvirk)
                         and not(har_barnetillegg_for_saerkullsbarn)
                         and har_flere_ufoeretrygd_perioder
-                        and not(i_fengsel_ved_virk)
+                        and not(institusjon_vedvirk.isOneOf(Institusjon.FENGSEL))
             ) {
                 includePhrase(BelopUTIngenUtbetalingVedlegg_001)
             }
@@ -208,7 +206,7 @@ object UfoerOmregningEnslig : StaticTemplate {
                 not(har_ufoeremaaned_vedvirk)
                         and not(har_barnetillegg_for_saerkullsbarn)
                         and not(har_flere_ufoeretrygd_perioder)
-                        and i_fengsel_ved_virk
+                        and institusjon_vedvirk.isOneOf(Institusjon.FENGSEL)
             ) {
                 includePhrase(BelopUTIngenUtbetalingFengsel_001)
             }
@@ -217,7 +215,7 @@ object UfoerOmregningEnslig : StaticTemplate {
                 not(har_ufoeremaaned_vedvirk)
                         and not(har_barnetillegg_for_saerkullsbarn)
                         and har_flere_ufoeretrygd_perioder
-                        and i_fengsel_ved_virk
+                        and institusjon_vedvirk.isOneOf(Institusjon.FENGSEL)
             ) {
                 includePhrase(BelopUTIngenUtbetalingFengselVedlegg_001)
             }
@@ -285,11 +283,11 @@ object UfoerOmregningEnslig : StaticTemplate {
                 includePhrase(HjemmelSivilstandUTMinsteIFUAvkortet_001)
             }
 
-            showIf(er_paa_helseinstitusjon) {
+            showIf(institusjon_vedvirk.isOneOf(Institusjon.HELSE)) {
                 includePhrase(HjemmelEPSDodUTInstitusjon_001)
             }
 
-            showIf(i_fengsel_ved_virk) {
+            showIf(institusjon_vedvirk.isOneOf(Institusjon.FENGSEL)) {
                 includePhrase(HjemmelEPSDodUTFengsel_001)
             }
 
@@ -463,11 +461,11 @@ object UfoerOmregningEnslig : StaticTemplate {
             }
 
 
-            showIf(er_paragraf_3_2_samboer) {
+            showIf(avdod_sivilstand.isOneOf(SAMBOER3_2)) {
                 includePhrase(argument().map { GjRettSamboerOverskrift.Param(it.avdod_navn) }, GjRettSamboerOverskrift)
                 includePhrase(GjRettUTSamboer_001)
             }
-            showIf(er_eps_ikke_paragraf_3_2_samboer) {
+            showIf(avdod_sivilstand.isOneOf(GIFT, PARTNER, SAMBOER1_5)) {
                 includePhrase(RettTilUTGJTOverskrift_001)
                 includePhrase(HvemUTGJTVilkar_001)
                 includePhrase(HvordanSoekerDuOverskrift_001)
@@ -554,6 +552,17 @@ object UfoerOmregningEnslig : StaticTemplate {
             }
         }
 
-        includeAttachment(test, argument().map { OrienteringOmRettigheterParam(it.avdod_navn) })
+        includeAttachment(orienteringOmRettigheterOgPlikter, argument().map {
+            OrienteringOmRettigheterParam(
+                it.bor_i_norge,
+                it.eps_bor_sammen_med_bruker_gjeldende,
+                it.eps_institusjon_gjeldende,
+                it.har_barnetillegg_felles_barn_vedvirk,
+                it.har_barnetillegg_saerkullsbarn_vedvirk,
+                it.institusjon_gjeldende,
+                it.saktype,
+                it.sivilstand,
+            )
+        })
     }
 }

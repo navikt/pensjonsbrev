@@ -787,7 +787,6 @@ object HvemUTGJTVilkar_001 : Phrase<Unit> {
                     Nynorsk to "vere medlem i folketrygda, og avdøde må ha vore medlem i folketrygda dei siste fem åra fram til dødsfallet",
                     English to "be a member of the National Insurance Scheme, and the deceased must have been a member of the National Insurance Scheme for the last five years prior to death "
                 )
-
                 text(
                     Bokmal to "ha vært gift med den avdøde i minst fem år, eller",
                     Nynorsk to "ha vore gift med den avdøde i minst fem år, eller",

@@ -1,14 +1,26 @@
 package no.nav.pensjon.brev.maler.vedlegg
 
+import no.nav.pensjon.brev.api.model.Institusjon
+import no.nav.pensjon.brev.api.model.Sakstype
+import no.nav.pensjon.brev.api.model.Sivilstand
 import no.nav.pensjon.brev.maler.fraser.*
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.createAttachment
-import no.nav.pensjon.brev.template.dsl.map
-import no.nav.pensjon.brev.template.dsl.newText
+import no.nav.pensjon.brev.template.dsl.*
 
-data class OrienteringOmRettigheterParam(val test: String)
-val test = createAttachment<OrienteringOmRettigheterParam>(
+
+data class OrienteringOmRettigheterParam(
+    val bor_i_norge: Boolean,
+    val eps_bor_sammen_med_bruker_gjeldende: Boolean,
+    val eps_institusjon_gjeldende: Institusjon,
+    val har_barnetillegg_felles_barn_vedvirk: Boolean,
+    val har_barnetillegg_saerkullsbarn_vedvirk: Boolean,
+    val institusjon_gjeldende: Institusjon,
+    val saktype: Sakstype,
+    val sivilstand: Sivilstand,
+)
+val orienteringOmRettigheterOgPlikter = createAttachment<OrienteringOmRettigheterParam>(
     title = newText(
         Bokmal to "Orientering om rettigheter og plikter",
         Language.Nynorsk to "",
@@ -16,12 +28,26 @@ val test = createAttachment<OrienteringOmRettigheterParam>(
     ),
     includeSakspart = true,
 ) {
+    val bor_i_norge = argument().select(OrienteringOmRettigheterParam::bor_i_norge)
+    val sivilstand = argument().select(OrienteringOmRettigheterParam::sivilstand)
+    val eps_bor_sammen_med_bruker_gjeldende = argument().select(OrienteringOmRettigheterParam::eps_bor_sammen_med_bruker_gjeldende)
+    val institusjon_gjeldende = argument().select(OrienteringOmRettigheterParam::institusjon_gjeldende)
+    val eps_institusjon_gjeldende = argument().select(OrienteringOmRettigheterParam::eps_institusjon_gjeldende)
+    val saktype = argument().select(OrienteringOmRettigheterParam::saktype)
+    val har_barnetillegg_felles_barn_vedvirk = argument().select(OrienteringOmRettigheterParam::har_barnetillegg_felles_barn_vedvirk)
+    val har_barnetillegg_saerkullsbarn_vedvirk = argument().select(OrienteringOmRettigheterParam::har_barnetillegg_saerkullsbarn_vedvirk)
+
+
     includePhrase(VedleggPlikterOgRettigheterOverskriftPesys_001)
     includePhrase(VedleggPlikter_001)
     paragraph {
         list {
-            includePhrase(VedleggPlikterAP2_001)
-            includePhrase(VedleggPlikterAP3_001)
+            showIf(bor_i_norge and institusjon_gjeldende.isOneOf(Institusjon.INGEN)) {
+                includePhrase(VedleggPlikterAP2_001)
+            }
+            showIf(not(bor_i_norge) and institusjon_gjeldende.isOneOf(Institusjon.INGEN)) {
+                includePhrase(VedleggPlikterAP3_001)
+            }
             includePhrase(VedleggPlikterAP1_001)
             includePhrase(VedleggPlikterAP4_002)
             includePhrase(VedleggPlikterAP13_002)
@@ -49,9 +75,7 @@ val test = createAttachment<OrienteringOmRettigheterParam>(
     includePhrase(VedleggPlikterRettTilEktefelletilleggAP_001)
     includePhrase(VedleggPlikterRettTilEktefelletilleggOgBarnetilleggAP_001)
     includePhrase(argument().map {
-        VedleggPlikterinntektsproevingBTFellesBarnSaerkullsbarnAP_001.Param(
-            true // TODO kan vi gjenbruke sivilstatus til å toggle ektefelle her?
-        )
+        VedleggPlikterinntektsproevingBTFellesBarnSaerkullsbarnAP_001.Param(it.sivilstand)
     }, VedleggPlikterinntektsproevingBTFellesBarnSaerkullsbarnAP_001)
 
     includePhrase(VedleggPlikterinntektsprovingBTOgETAP_001)

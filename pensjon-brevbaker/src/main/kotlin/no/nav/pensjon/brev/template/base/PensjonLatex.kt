@@ -333,38 +333,43 @@ object PensjonLatex : BaseTemplate() {
                 printWriter.print(element.expr(scope.language).eval(scope))
 
             is Element.ItemList.Static ->
-                with(printWriter) {
-
+                if (element.items.any { it !is Element.Conditional || it.predicate.eval(scope) }) {
                     printWriter.printCmd("begin") {
-                        arg{printWriter.print("itemize")}
+                        arg { printWriter.print("itemize") }
                     }
 
-                    element.items.forEach {
-                        printWriter.print("""\item """, escape = false)
-                        renderElement(scope, it, printWriter)
-                    }
+                    element.items.filter {it !is Element.Conditional || it.predicate.eval(scope)}
+                        .forEach{
+                            printWriter.print("""\item """, escape = false)
+                            renderElement(scope, it, printWriter)
+                        }
 
                     printWriter.printCmd("end") {
-                        arg{printWriter.print("itemize")}
+                        arg { printWriter.print("itemize") }
                     }
-                }
+                } else Unit
+            is Element.ItemList.Dynamic -> {
+                val items = element.items.eval(scope)
+                if (items.isNotEmpty() && items.any{it.isNotBlank()}){
+                    with(printWriter) {
 
-            is Element.ItemList.Dynamic ->
-                with(printWriter) {
+                        printWriter.printCmd("begin") {
+                            arg { printWriter.print("itemize") }
+                        }
 
-                    printWriter.printCmd("begin") {
-                        arg{printWriter.print("itemize")}
+                        items.forEach {
+                            if (it.isNotBlank()) {
+                                printWriter.print("""\item """, escape = false)
+                                printWriter.print(it)
+                            }
+                        }
+
+                        printWriter.printCmd("end") {
+                            arg { printWriter.print("itemize") }
+                        }
                     }
-
-                    element.items.eval(scope).forEach {
-                        printWriter.print("""\item """, escape = false)
-                        printWriter.print(it)
-                    }
-
-                    printWriter.printCmd("end") {
-                        arg{printWriter.print("itemize")}
-                    }
-                }
+                }else Unit
+            }
 
             is Element.Paragraph ->
                 printWriter.printCmd("templateparagraph") {

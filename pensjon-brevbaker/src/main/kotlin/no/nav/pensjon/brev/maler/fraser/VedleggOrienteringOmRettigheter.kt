@@ -1,5 +1,8 @@
 package no.nav.pensjon.brev.maler.fraser
 
+import no.nav.pensjon.brev.api.model.Sivilstand
+import no.nav.pensjon.brev.api.model.Sivilstand.GIFT
+import no.nav.pensjon.brev.api.model.Sivilstand.GIFT_LEVER_ADSKILT
 import no.nav.pensjon.brev.api.model.Telefonnummer
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.Phrase
@@ -378,9 +381,9 @@ object VedleggPlikterRettTilEktefelletilleggOgBarnetilleggAP_001 : Phrase<Unit> 
 object VedleggPlikterinntektsproevingBTFellesBarnSaerkullsbarnAP_001 :
     Phrase<VedleggPlikterinntektsproevingBTFellesBarnSaerkullsbarnAP_001.Param> {
     override val elements = phrase {
-        // TODO kan vi gjenbruke sivilstatus til å toggle ektefelle her?
         paragraph {
-            showIf(argument().select(Param::har_ektefelle)) {
+            // TODO spør ingrid om dette blir riktig ved bruk av sivilstand
+            showIf(argument().select(Param::sivilstand).isOneOf(GIFT, GIFT_LEVER_ADSKILT)) {
                 text(
                     Bokmal to "Hvor mye du får utbetalt i barnetillegg avhenger av den samlede inntekten du og ektefellen har. Du må derfor også gi beskjed hvis",
                     Nynorsk to "Kor mykje du får utbetalt i barnetillegg er avhengig av den samla inntekta du og ektefellen har. Du må derfor også gi beskjed om",
@@ -427,7 +430,7 @@ object VedleggPlikterinntektsproevingBTFellesBarnSaerkullsbarnAP_001 :
 
     }
 
-    data class Param(val har_ektefelle: Boolean)
+    data class Param(val sivilstand: Sivilstand)
 }
 
 object VedleggPlikterinntektsprovingBTOgETAP_001 : Phrase<Unit> {
@@ -681,6 +684,7 @@ object VedleggKlagePensjon_001 : Phrase<VedleggKlagePensjon_001.Param> {
         }
 
     }
+
     data class Param(val kontaktinfo_telefonnummer: Telefonnummer)
 }
 

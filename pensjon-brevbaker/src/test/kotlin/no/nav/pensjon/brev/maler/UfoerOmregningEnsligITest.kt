@@ -20,12 +20,11 @@ class UfoerOmregningEnsligITest {
     fun test() {
         val test = UfoerOmregningEnsligDto().copy(
             har_minsteytelse_vedvirk = true,
-                    inntekt_ufoere_endret = true,
-                    ektefelletillegg_opphoert = true,
-                    har_barnetillegg_for_saerkullsbarn = true,
-                    har_barn_overfoert_til_saerkullsbarn = true,
-                    i_fengsel_ved_virk = true,
-                    er_eps_ikke_paragraf_3_2_samboer = true,
+            inntekt_ufoere_endret = true,
+            ektefelletillegg_opphoert = true,
+            har_barnetillegg_for_saerkullsbarn = true,
+            har_barn_overfoert_til_saerkullsbarn = true,
+            bor_i_norge = true,
         )
         Letter(
             UfoerOmregningEnslig.template,

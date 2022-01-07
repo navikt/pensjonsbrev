@@ -30,6 +30,14 @@ fun <T> T.expr() = Expression.Literal(this)
 fun <T> Expression<T?>.ifNull(then: T) =
     Expression.UnaryInvoke(this, UnaryOperation.IfNull(then))
 
+
+fun <T:Enum<T>> Expression<Enum<T>>.isOneOf(vararg enums: Enum<T>):Expression<Boolean>
+= Expression.BinaryInvoke(
+    this,
+    enums.asList().expr(),
+    BinaryOperation.EnumInList()
+)
+
 fun not(expr: Expression<Boolean>): Expression<Boolean> =
     Expression.UnaryInvoke(expr, UnaryOperation.Not)
 

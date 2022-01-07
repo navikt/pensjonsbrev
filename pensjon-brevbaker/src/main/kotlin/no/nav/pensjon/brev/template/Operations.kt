@@ -2,7 +2,6 @@ package no.nav.pensjon.brev.template
 
 import no.nav.pensjon.brev.api.model.Telefonnummer
 import no.nav.pensjon.brev.model.format
-import no.nav.pensjon.brev.template.dsl.expr
 import java.time.LocalDate
 
 abstract class Operation {
@@ -68,4 +67,7 @@ sealed class BinaryOperation<in In1, in In2, out Out> : Operation() {
             first.format(dateFormatter(second))
     }
 
+    class EnumInList<EnumType : Enum<*>> : BinaryOperation<EnumType, List<EnumType>, Boolean>() {
+        override fun apply(first: EnumType, second: List<EnumType>): Boolean = second.contains(first)
+    }
 }
