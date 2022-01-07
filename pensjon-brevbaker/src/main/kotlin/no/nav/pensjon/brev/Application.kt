@@ -5,7 +5,9 @@ import io.ktor.auth.*
 import io.ktor.features.*
 import io.ktor.jackson.*
 import io.ktor.metrics.micrometer.*
+import io.ktor.request.*
 import no.nav.pensjon.brev.template.brevbakerConfig
+import org.slf4j.event.*
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
@@ -14,6 +16,16 @@ fun requireEnv(key: String) =
 
 @Suppress("unused") // Referenced in application.conf
 fun Application.module() {
+
+    install(CallLogging) {
+        callIdMdc("x_correlationId")
+    }
+
+    install(CallId) {
+        retrieveFromHeader("Nav-Call-Id")
+        generate()
+        verify { it.isNotEmpty() }
+    }
 
     install(ContentNegotiation) {
         jackson {
@@ -27,8 +39,6 @@ fun Application.module() {
             brevbakerJwt(it)
         }
     }
-
-    // TODO: handle Nav-Call-Id
 
     install(MicrometerMetrics) {
         registry = Metrics.prometheusRegistry
