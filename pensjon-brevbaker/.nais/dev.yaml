@@ -28,12 +28,3 @@ preAuthorized:
   - name: pensjon-pen-q5
     namespace: teampensjon
     cluster: dev-fss
-  - name: pensjon-pen-t0
-    namespace: teampensjon
-    cluster: dev-fss
-  - name: pensjon-pen-t2
-    namespace: teampensjon
-    cluster: dev-fss
-  - name: pensjon-pen-t4
-    namespace: teampensjon
-    cluster: dev-fss
