@@ -10,7 +10,11 @@ class ApplicationITest {
     @Test
     fun `ping brevbaker container`() {
         runBlocking {
-            httpClient.get<String>("$BREVBAKER_URL/isAlive")
+            try {
+                httpClient.get<String>("$BREVBAKER_URL/isAlive")
+            } catch (e: Exception) {
+                throw Exception("Failed to ping brevbaker at: $BREVBAKER_URL", e)
+            }
         }
     }
 
