@@ -57,7 +57,7 @@ jobs:
           "restore-keys": "${{ runner.os }}-gradle-"
       - uses: "actions/setup-java@v1"
         with:
-          "java-version": "15"
+          "java-version": "17"
       - name: "compile and run tests"
         run: "./gradlew build"
       - name: "Build and publish Docker image"

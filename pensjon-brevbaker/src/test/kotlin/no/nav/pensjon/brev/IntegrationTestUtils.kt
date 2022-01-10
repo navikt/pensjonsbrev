@@ -48,4 +48,4 @@ fun writeTestPDF(pdfFileName: String, pdf: String) {
 }
 
 fun LaTeXCompilerService.producePdfSync(pdfCompilationInput: PdfCompilationInput) =
-    runBlocking { producePDF(pdfCompilationInput) }
+    runBlocking { producePDF(pdfCompilationInput, "fra-tester") }

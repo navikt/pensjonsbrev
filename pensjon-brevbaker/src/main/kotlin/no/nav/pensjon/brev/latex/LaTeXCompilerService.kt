@@ -16,14 +16,16 @@ class LaTeXCompilerService(private val pdfByggerUrl: String) {
         install(JsonFeature) {
             serializer = JacksonSerializer()
         }
+
         engine {
             requestTimeout = 20_000
         }
     }
 
-    suspend fun producePDF(compilationInput: PdfCompilationInput): PDFCompilationOutput =
+    suspend fun producePDF(compilationInput: PdfCompilationInput, callId: String?): PDFCompilationOutput =
         httpClient.post("$pdfByggerUrl/compile") {
             contentType(ContentType.Application.Json)
+            header("Nav-Call-Id", callId)
             body = compilationInput
         }
 

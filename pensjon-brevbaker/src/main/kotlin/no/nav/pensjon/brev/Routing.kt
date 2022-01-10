@@ -2,6 +2,7 @@ package no.nav.pensjon.brev
 
 import io.ktor.application.*
 import io.ktor.auth.*
+import io.ktor.features.*
 import io.ktor.http.*
 import io.ktor.request.*
 import io.ktor.response.*
@@ -38,9 +39,9 @@ fun Application.brevbakerRouting(authenticationNames: Array<String>) =
                 val letterRequest = call.receive<LetterRequest>()
 
                 val letterResource = LetterResource.create(letterRequest)
-                val pdfBase64 = letterResource.render()
-                    .let { PdfCompilationInput(it.base64EncodedFiles()) }
-                    .let { latexCompilerService.producePDF(it) }
+                val pdfBase64 = PdfCompilationInput(letterResource.render().base64EncodedFiles())
+                    .let { latexCompilerService.producePDF(it, call.callId) }
+
                 call.respond(LetterResponse(pdfBase64.base64PDF, letterResource.template.letterMetadata))
             }
         }

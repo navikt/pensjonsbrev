@@ -44,11 +44,13 @@ tasks {
     compileKotlin {
         kotlinOptions.jvmTarget = "17"
     }
+
     shadowJar {
         archiveBaseName.set(rootProject.name)
         archiveClassifier.set("")
         archiveVersion.set("")
     }
+
     compileTestKotlin {
         kotlinOptions.jvmTarget = "17"
     }
@@ -78,7 +80,6 @@ dependencies {
     implementation("io.ktor:ktor-server-core:$ktor_version")
     implementation("io.ktor:ktor-jackson:$ktor_version")
     implementation("io.ktor:ktor-client-jackson:$ktor_version")
-    implementation("io.ktor:ktor-metrics:$ktor_version")
     implementation("io.ktor:ktor-auth:$ktor_version")
     implementation("io.ktor:ktor-auth-jwt:$ktor_version")
     implementation("no.nav.pensjon.brev:pensjon-brevbaker-api-model:1.2.7")
@@ -86,6 +87,8 @@ dependencies {
     implementation("io.ktor:ktor-auth-jwt:$ktor_version")
     // Necessary for java.time.LocalDate
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.13.1")
+    // Metrics
+    implementation("io.ktor:ktor-metrics:$ktor_version")
     implementation("io.ktor:ktor-metrics-micrometer:$ktor_version")
     implementation("io.micrometer:micrometer-registry-prometheus:1.8.1")
 
