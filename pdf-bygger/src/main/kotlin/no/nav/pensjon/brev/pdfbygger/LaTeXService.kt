@@ -1,20 +1,22 @@
 package no.nav.pensjon.brev.pdfbygger
 
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import org.slf4j.LoggerFactory
 import java.io.File
 import java.nio.file.Path
 import java.util.*
 import java.util.concurrent.TimeUnit
-import kotlin.io.path.absolutePathString
 import kotlin.io.path.createTempDirectory
-import kotlin.io.path.nameWithoutExtension
 
 private const val COMPILATION_RUNS = 2
+private val logger = LoggerFactory.getLogger(LaTeXService::class.java)
 
 class LaTeXService {
     private val decoder = Base64.getDecoder()
     private val encoder = Base64.getEncoder()
 
-    fun producePDF(latexFiles: Map<String, String>): PDFCompilationResponse {
+    suspend fun producePDF(latexFiles: Map<String, String>): PDFCompilationResponse {
         val tmpDir = createTempDirectory()
 
         latexFiles.forEach {
@@ -31,7 +33,7 @@ class LaTeXService {
         }
     }
 
-    private fun createLetter(executionFolder: Path): PDFCompilationResponse {
+    private suspend fun createLetter(executionFolder: Path): PDFCompilationResponse {
 
         //Compile multiple times to resolve references such as number of pages
         val result = (1..COMPILATION_RUNS)
@@ -48,7 +50,7 @@ class LaTeXService {
                 PDFCompilationResponse.Failure.Client(reason = "PDF compilation failed", output = result.output, error = result.error)
 
             is Execution.Failure.Execution -> {
-                //TODO: log exception
+                logger.error("Compilation process execution failed", result.cause)
                 PDFCompilationResponse.Failure.Server(reason = "Compilation process execution failed: see logs")
             }
 
@@ -57,7 +59,7 @@ class LaTeXService {
         }
     }
 
-    private fun executeCompileProcess(
+    private suspend fun executeCompileProcess(
         workingDir: Path,
         texFilename: String = "letter",
         timeout: Long = 30,
@@ -65,23 +67,26 @@ class LaTeXService {
         output: Path = workingDir.resolve("process.out"),
         error: Path = workingDir.resolve("process.err"),
     ): Execution =
-        runCatching {
-            ProcessBuilder(*("xelatex --interaction=nonstopmode -halt-on-error $texFilename.tex").split(" ").toTypedArray())
-                .directory(workingDir.toFile())
-                .redirectOutput(output.toFile())
-                .redirectError(error.toFile())
-                .start()
-                .let {
-                    if (!it.waitFor(timeout, timeoutUnit)) {
-                        it.destroy()
-                        Execution.Failure.Timeout(timeout, timeoutUnit)
-                    } else if (it.exitValue() == 0) {
-                        Execution.Success(pdf = workingDir.resolve("${File(texFilename).nameWithoutExtension}.pdf"))
-                    } else {
-                        Execution.Failure.Compilation(output = output.toFile().readText(), error = error.toFile().readText())
-                    }
+        withContext(Dispatchers.IO) {
+            try {
+                val process = ProcessBuilder(*("xelatex --interaction=nonstopmode -halt-on-error $texFilename.tex").split(" ").toTypedArray())
+                    .directory(workingDir.toFile())
+                    .redirectOutput(output.toFile())
+                    .redirectError(error.toFile())
+                    .start()
+
+                if (!process.waitFor(timeout, timeoutUnit)) {
+                    process.destroy()
+                    Execution.Failure.Timeout(timeout, timeoutUnit)
+                } else if (process.exitValue() == 0) {
+                    Execution.Success(pdf = workingDir.resolve("${File(texFilename).nameWithoutExtension}.pdf"))
+                } else {
+                    Execution.Failure.Compilation(output = output.toFile().readText(), error = error.toFile().readText())
                 }
-        }.getOrElse { Execution.Failure.Execution(it) }
+            } catch (e: Exception) {
+                Execution.Failure.Execution(e)
+            }
+        }
 }
 
 private sealed class Execution {
