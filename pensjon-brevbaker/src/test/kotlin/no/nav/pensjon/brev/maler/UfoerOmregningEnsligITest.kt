@@ -33,7 +33,7 @@ class UfoerOmregningEnsligITest {
             Fixtures.fellesAuto
         ).render()
             .let { PdfCompilationInput(it.base64EncodedFiles()) }
-            .let { runBlocking { LaTeXCompilerService(PDF_BUILDER_URL).producePDF(it).base64PDF } }
+            .let { runBlocking { LaTeXCompilerService(PDF_BUILDER_URL).producePDF(it, "test").base64PDF } }
             .also { writeTestPDF("UT_DOD_ENSLIG_AUTO_BOKMAL", it) }
     }
 }
