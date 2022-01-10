@@ -1,4 +1,4 @@
-FROM navikt/java:15
+FROM navikt/java:17
 USER root
 ENV DEBIAN_FRONTEND="noninteractive" TZ="Europe/London"
 

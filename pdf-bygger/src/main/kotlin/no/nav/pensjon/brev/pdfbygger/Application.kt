@@ -20,10 +20,9 @@ import org.slf4j.event.Level
 import java.io.Writer
 
 val laTeXService = LaTeXService()
-fun main(args: Array<String>) {
-    EngineMain.main(args)
-}
+fun main(args: Array<String>) = EngineMain.main(args)
 
+@Suppress("unused")
 fun Application.module() {
     install(ContentNegotiation) {
         jackson()
@@ -34,7 +33,13 @@ fun Application.module() {
     }
 
     install(CallLogging) {
-        level = Level.INFO
+        callIdMdc("x_correlationId")
+    }
+
+    install(CallId) {
+        retrieveFromHeader("Nav-Call-Id")
+        generate()
+        verify { it.isNotEmpty() }
     }
 
     routing {
