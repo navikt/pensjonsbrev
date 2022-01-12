@@ -47,34 +47,3 @@ fun String.latexEscape(): String =
             }
         }
     }.joinToString(separator = "")
-
-
-internal fun <Lang : LanguageCombination> Element<Lang>.findExpressions(): List<Expression<*>> =
-    when (this) {
-        is Element.Conditional ->
-            (showIf + showElse).flatMap { it.findExpressions() } + predicate
-
-        is Element.Text.Expression ->
-            listOf(expression)
-
-        is Element.Text.Expression.ByLanguage ->
-            expression.values.toList()
-
-        is Element.Text.Literal ->
-            emptyList()
-
-        is Element.Title1 ->
-            title1.flatMap { it.findExpressions() }
-
-        // TODO will return expressions which operates in another scope.
-        is Element.IncludePhrase<*, *> ->
-            phrase.elements.flatMap { it.findExpressions() }
-
-        is Element.Paragraph -> paragraph.flatMap { it.findExpressions() }
-
-        is Element.Form.Text -> prompt.findExpressions()
-
-        is Element.Form.MultipleChoice -> prompt.findExpressions() + choices.flatMap { it.findExpressions() }
-
-        is Element.NewLine -> emptyList()
-    }

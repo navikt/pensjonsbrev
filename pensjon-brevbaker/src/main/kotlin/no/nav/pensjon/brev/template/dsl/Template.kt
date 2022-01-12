@@ -6,6 +6,7 @@ import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.base.BaseTemplate
 import kotlin.reflect.KClass
 
+
 fun <Lang : LanguageCombination, LetterData : Any> createTemplate(
     name: String,
     base: BaseTemplate,
@@ -31,25 +32,18 @@ open class TemplateGlobalScope<LetterData : Any> {
 @LetterTemplateMarker
 open class TemplateRootScope<Lang : LanguageCombination, LetterData : Any>(
     val outline: MutableList<Element<Lang>> = mutableListOf(),
-    val attachments: MutableList<AttachmentTemplate<Lang, LetterData>> = mutableListOf(),
+    val attachments: MutableList<IncludeAttachment<*>> = mutableListOf(),
 ) : TemplateGlobalScope<LetterData>() {
 
     fun outline(init: TemplateContainerScope<Lang, LetterData>.() -> Unit) {
         outline.addAll(TemplateContainerScope<Lang, LetterData>().apply(init).children)
     }
 
-    fun attachment(
-        title: Element.Text.Literal<Lang>,
-        includeSakspart: Boolean = false,
-        outline: TemplateContainerScope<Lang, LetterData>.() -> Unit
+    fun <AttachmentData : Any> includeAttachment(
+        template: AttachmentTemplate<AttachmentData>,
+        attachmentData: Expression<AttachmentData>
     ) {
-        attachments.add(
-            AttachmentTemplate(
-                title,
-                TemplateContainerScope<Lang, LetterData>().apply(outline).children,
-                includeSakspart
-            )
-        )
+        attachments.add(IncludeAttachment(attachmentData, template))
     }
 
 }
@@ -131,8 +125,20 @@ class TemplateContainerScope<Lang : LanguageCombination, LetterData : Any> :
         children.add(Element.IncludePhrase(argument, phrase))
     }
 
-    fun paragraph(init: TemplateTextOnlyScope<Lang, LetterData>.() -> Unit) {
-        children.add(Element.Paragraph(TemplateTextOnlyScope<Lang, LetterData>().apply(init).children))
+    fun includePhrase(phrase: Phrase<Unit>) {
+        children.add(Element.IncludePhrase(Unit.expr(), phrase))
+    }
+
+    fun list(init: TemplateContainerScope<Lang, LetterData>.() -> Unit) {
+        children.add(Element.ItemList.Static(TemplateContainerScope<Lang, LetterData>().apply(init).children))
+    }
+
+    fun list(items: Expression<List<String>>) {
+        children.add(Element.ItemList.Dynamic(items))
+    }
+
+    fun paragraph(init: TemplateContainerScope<Lang, LetterData>.() -> Unit) {
+        children.add(Element.Paragraph(TemplateContainerScope<Lang, LetterData>().apply(init).children))
     }
 
     fun formText(size: Int, prompt: Element.Text<Lang>, vspace: Boolean = true) {

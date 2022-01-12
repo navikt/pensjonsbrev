@@ -4,7 +4,9 @@ import no.nav.pensjon.brev.api.model.*
 import no.nav.pensjon.brev.latex.LatexPrintWriter
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.*
-import no.nav.pensjon.brev.template.dsl.*
+import no.nav.pensjon.brev.template.dsl.languageSettings
+import no.nav.pensjon.brev.template.dsl.select
+import no.nav.pensjon.brev.template.dsl.text
 import java.io.InputStream
 import java.time.LocalDate
 import java.time.ZonedDateTime
@@ -181,17 +183,20 @@ object PensjonLatex : BaseTemplate() {
 
     private fun renderAttachment(
         letter: Letter<*>,
-        attachment: AttachmentTemplate<*, *>,
+        attachment: IncludeAttachment<*>,
         printWriter: LatexPrintWriter
     ) =
         with(printWriter) {
-            printCmd("startvedlegg", attachment.title.text(letter.language))
-            if (attachment.includeSakspart) {
+            printCmd("startvedlegg", attachment.template.title.text(letter.language))
+            if (attachment.template.includeSakspart) {
                 printCmd("sakspart")
             }
-            val scope = letter.toScope()
-            attachment.outline.forEach { renderElement(scope, it, printWriter) }
+            val scope = letter.toScope().let {
+                ExpressionScope(attachment.data.eval(it), it.felles, it.language)
+            }
+            attachment.template.outline.forEach { renderElement(scope, it, printWriter) }
             printCmd("sluttvedlegg")
+
         }
 
     private fun renderLetterV2(letter: Letter<*>, printWriter: LatexPrintWriter): Unit =
@@ -288,7 +293,7 @@ object PensjonLatex : BaseTemplate() {
                 bodyWriter.printCmd("begin", "attachmentList")
                 letter.template.attachments.forEach {
                     bodyWriter.print("""\item """, escape = false)
-                    bodyWriter.println(it.title.text(letter.language))
+                    bodyWriter.println(it.template.title.text(letter.language))
                 }
                 bodyWriter.printCmd("end", "attachmentList")
             }
@@ -309,7 +314,7 @@ object PensjonLatex : BaseTemplate() {
                     }
                 }
 
-            is Element.IncludePhrase<*,*> -> {
+            is Element.IncludePhrase<*, *> -> {
                 val newScope = ExpressionScope(element.data.eval(scope), scope.felles, scope.language)
                 element.phrase.elements.forEach { renderElement(newScope, it, printWriter) }
             }
@@ -329,8 +334,51 @@ object PensjonLatex : BaseTemplate() {
             is Element.Text.Expression.ByLanguage ->
                 printWriter.print(element.expr(scope.language).eval(scope))
 
+            is Element.ItemList.Static ->
+                if (element.items.any { it !is Element.Conditional || it.predicate.eval(scope) }) {
+                    with(printWriter) {
+                        printCmd("begin") {
+                            arg { print("itemize") }
+                        }
+
+                        element.items.filter { it !is Element.Conditional || it.predicate.eval(scope) }
+                            .forEach {
+                                print("""\item """, escape = false)
+                                renderElement(scope, it, this)
+                            }
+
+                        printCmd("end") {
+                            arg { print("itemize") }
+                        }
+                    }
+
+                } else Unit
+
+            is Element.ItemList.Dynamic -> {
+                val items = element.items.eval(scope)
+                if (items.any { it.isNotBlank() }) {
+                    with(printWriter) {
+
+                        printCmd("begin") {
+                            arg { print("itemize") }
+                        }
+
+                        items.forEach {
+                            if (it.isNotBlank()) {
+                                print("""\item """, escape = false)
+                                print(it)
+                            }
+                        }
+
+                        printCmd("end") {
+                            arg { print("itemize") }
+                        }
+                    }
+                } else Unit
+            }
+
             is Element.Paragraph ->
-                printWriter.printCmd("paragraph") {
+                printWriter.printCmd("templateparagraph") {
                     arg { element.paragraph.forEach { child -> renderElement(scope, child, it) } }
                 }
 

@@ -1,5 +1,7 @@
 package no.nav.pensjon.brev.template
 
+import no.nav.pensjon.brev.api.model.Telefonnummer
+import no.nav.pensjon.brev.model.format
 import java.time.LocalDate
 
 abstract class Operation {
@@ -23,12 +25,20 @@ sealed class UnaryOperation<In, out Out> : Operation() {
         override fun apply(input: T): String = input.toString()
     }
 
+    object FormatPhoneNumber : UnaryOperation<Telefonnummer, String>() {
+        override fun apply(input: Telefonnummer): String = input.format()
+    }
+
     data class Select<In, Out>(val select: In.() -> Out) : UnaryOperation<In, Out>() {
         override fun apply(input: In): Out = input.select()
     }
 
     data class IfNull<In>(val then: In) : UnaryOperation<In?, In>() {
         override fun apply(input: In?): In = input ?: then
+    }
+
+    object Not : UnaryOperation<Boolean, Boolean>() {
+        override fun apply(input: Boolean): Boolean = input.not()
     }
 }
 
@@ -40,6 +50,14 @@ sealed class BinaryOperation<in In1, in In2, out Out> : Operation() {
         override fun apply(first: In, second: In): Boolean = first == second
     }
 
+    object Or : BinaryOperation<Boolean, Boolean, Boolean>() {
+        override fun apply(first: Boolean, second: Boolean): Boolean = first || second
+    }
+
+    object And : BinaryOperation<Boolean, Boolean, Boolean>() {
+        override fun apply(first: Boolean, second: Boolean): Boolean = first && second
+    }
+
     object Concat : BinaryOperation<String, String, String>() {
         override fun apply(first: String, second: String): String = first + second
     }
@@ -49,4 +67,7 @@ sealed class BinaryOperation<in In1, in In2, out Out> : Operation() {
             first.format(dateFormatter(second))
     }
 
+    class EnumInList<EnumType : Enum<*>> : BinaryOperation<EnumType, List<EnumType>, Boolean>() {
+        override fun apply(first: EnumType, second: List<EnumType>): Boolean = second.contains(first)
+    }
 }

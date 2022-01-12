@@ -18,7 +18,7 @@ Brevbaker -> PDFbygger: LaTeX filer til pdf-rendring(2)
 PDFbygger -> Brevbaker: PDF (3)
 Brevbaker -> BestillendeSystem: PDF + mal-metadata (4)
 ....
-=== 1. Besillersystemet fyller ut en LetterRequest med informasjon som skrives i brevet.
+=== 1. Bestillersystemet fyller ut en LetterRequest med informasjon som skrives i brevet.
 
 (modell kan være utdatert)
 
