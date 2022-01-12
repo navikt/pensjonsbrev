@@ -8,12 +8,19 @@ fun Expression<Any>.str(): StringExpression =
     Expression.UnaryInvoke(this, UnaryOperation.ToString())
 
 fun Expression<LocalDate>.format() =
-    Expression.BinaryInvoke(this, Expression.FromScope(ExpressionScope<Any, *>::language), BinaryOperation.LocalizedDateFormat)
+    Expression.BinaryInvoke(
+        this,
+        Expression.FromScope(ExpressionScope<Any, *>::language),
+        BinaryOperation.LocalizedDateFormat
+    )
 
 fun Expression<Telefonnummer>.format() =
     Expression.UnaryInvoke(this, UnaryOperation.FormatPhoneNumber)
 
-fun <Data : Any, Field> Expression<Data>.select(selector: Data.() -> Field, @Suppress("UNUSED_PARAMETER") discourageLambdas: Nothing? = null): Expression<Field> =
+fun <Data : Any, Field> Expression<Data>.select(
+    selector: Data.() -> Field,
+    @Suppress("UNUSED_PARAMETER") discourageLambdas: Nothing? = null
+): Expression<Field> =
     Expression.UnaryInvoke(
         this,
         UnaryOperation.Select(selector)
@@ -31,8 +38,7 @@ fun <T> Expression<T?>.ifNull(then: T) =
     Expression.UnaryInvoke(this, UnaryOperation.IfNull(then))
 
 
-fun <T:Enum<T>> Expression<Enum<T>>.isOneOf(vararg enums: Enum<T>):Expression<Boolean>
-= Expression.BinaryInvoke(
+fun <T : Enum<T>> Expression<Enum<T>>.isOneOf(vararg enums: Enum<T>): Expression<Boolean> = Expression.BinaryInvoke(
     this,
     enums.asList().expr(),
     BinaryOperation.EnumInList()
@@ -54,12 +60,14 @@ operator fun StringExpression.plus(other: String) =
         Expression.Literal(other),
         BinaryOperation.Concat
     )
+
 infix fun Expression<Boolean>.or(other: Expression<Boolean>) =
     Expression.BinaryInvoke(
         this,
         other,
         BinaryOperation.Or
     )
+
 infix fun Expression<Boolean>.and(other: Expression<Boolean>) =
     Expression.BinaryInvoke(
         this,

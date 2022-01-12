@@ -2,14 +2,12 @@ package no.nav.pensjon.brev.api
 
 import no.nav.pensjon.brev.maler.EksempelBrev
 import no.nav.pensjon.brev.maler.OmsorgEgenAuto
-import no.nav.pensjon.brev.maler.UfoerOmregningEnslig
 import no.nav.pensjon.brev.template.LetterTemplate
 
 object TemplateResource {
     private val templates: Map<String, LetterTemplate<*, *>> = setOf(
         EksempelBrev,
         OmsorgEgenAuto,
-        UfoerOmregningEnslig
     ).associate { it.template.name to it.template }
 
     fun getTemplates(): Set<String> =

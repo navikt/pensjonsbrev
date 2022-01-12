@@ -20,12 +20,6 @@ data class LetterTemplate<Lang : LanguageCombination, LetterData : Any>(
         base.render(letter)
 }
 
-data class AttachmentTemplate<ParameterType : Any>(
-    val title: Element.Text.Literal<BaseLanguages>,
-    val outline: List<Element<BaseLanguages>>,
-    val includeSakspart: Boolean = false,
-)
-
 sealed class Expression<out Out> {
     val schema: String = this::class.java.name.removePrefix(this::class.java.`package`.name + '.')
 

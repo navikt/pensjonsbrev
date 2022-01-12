@@ -19,3 +19,8 @@ data class IncludeAttachment<AttachmentData : Any>(
     val template: AttachmentTemplate<AttachmentData>
 )
 
+data class AttachmentTemplate<ParameterType : Any>(
+    val title: Element.Text.Literal<BaseLanguages>,
+    val outline: List<Element<BaseLanguages>>,
+    val includeSakspart: Boolean = false,
+)

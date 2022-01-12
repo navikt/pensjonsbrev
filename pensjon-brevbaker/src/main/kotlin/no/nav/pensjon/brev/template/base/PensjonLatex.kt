@@ -4,7 +4,9 @@ import no.nav.pensjon.brev.api.model.*
 import no.nav.pensjon.brev.latex.LatexPrintWriter
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.*
-import no.nav.pensjon.brev.template.dsl.*
+import no.nav.pensjon.brev.template.dsl.languageSettings
+import no.nav.pensjon.brev.template.dsl.select
+import no.nav.pensjon.brev.template.dsl.text
 import java.io.InputStream
 import java.time.LocalDate
 import java.time.ZonedDateTime
@@ -189,8 +191,8 @@ object PensjonLatex : BaseTemplate() {
             if (attachment.template.includeSakspart) {
                 printCmd("sakspart")
             }
-            val scope = with(letter.toScope()) {
-                ExpressionScope(attachment.data.eval(this), this.felles, this.language)
+            val scope = letter.toScope().let {
+                ExpressionScope(attachment.data.eval(it), it.felles, it.language)
             }
             attachment.template.outline.forEach { renderElement(scope, it, printWriter) }
             printCmd("sluttvedlegg")
@@ -312,7 +314,7 @@ object PensjonLatex : BaseTemplate() {
                     }
                 }
 
-            is Element.IncludePhrase<*,*> -> {
+            is Element.IncludePhrase<*, *> -> {
                 val newScope = ExpressionScope(element.data.eval(scope), scope.felles, scope.language)
                 element.phrase.elements.forEach { renderElement(newScope, it, printWriter) }
             }
@@ -334,41 +336,45 @@ object PensjonLatex : BaseTemplate() {
 
             is Element.ItemList.Static ->
                 if (element.items.any { it !is Element.Conditional || it.predicate.eval(scope) }) {
-                    printWriter.printCmd("begin") {
-                        arg { printWriter.print("itemize") }
-                    }
-
-                    element.items.filter {it !is Element.Conditional || it.predicate.eval(scope)}
-                        .forEach{
-                            printWriter.print("""\item """, escape = false)
-                            renderElement(scope, it, printWriter)
+                    with(printWriter) {
+                        printCmd("begin") {
+                            arg { print("itemize") }
                         }
 
-                    printWriter.printCmd("end") {
-                        arg { printWriter.print("itemize") }
+                        element.items.filter { it !is Element.Conditional || it.predicate.eval(scope) }
+                            .forEach {
+                                print("""\item """, escape = false)
+                                renderElement(scope, it, this)
+                            }
+
+                        printCmd("end") {
+                            arg { print("itemize") }
+                        }
                     }
+
                 } else Unit
+
             is Element.ItemList.Dynamic -> {
                 val items = element.items.eval(scope)
-                if (items.isNotEmpty() && items.any{it.isNotBlank()}){
+                if (items.any { it.isNotBlank() }) {
                     with(printWriter) {
 
-                        printWriter.printCmd("begin") {
-                            arg { printWriter.print("itemize") }
+                        printCmd("begin") {
+                            arg { print("itemize") }
                         }
 
                         items.forEach {
                             if (it.isNotBlank()) {
-                                printWriter.print("""\item """, escape = false)
-                                printWriter.print(it)
+                                print("""\item """, escape = false)
+                                print(it)
                             }
                         }
 
-                        printWriter.printCmd("end") {
-                            arg { printWriter.print("itemize") }
+                        printCmd("end") {
+                            arg { print("itemize") }
                         }
                     }
-                }else Unit
+                } else Unit
             }
 
             is Element.Paragraph ->
