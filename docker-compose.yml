@@ -14,9 +14,8 @@ services:
       - STS_ISSUER=http://vtp-pensjon:8060
       - STS_JWKS_URI=http://vtp-pensjon:8060/rest/isso/oauth2/connect/jwk_uri
       - STS_ACCEPTED_AUDIENCE=srvpensjon-local
-      - JAVA_OPTS=
-        -Dio.ktor.development=true # Allows requests without auth-header
-        -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005 #opens up debug port
+      # Allows requests without auth-header #opens up debug port
+      - JAVA_OPTS=-Dio.ktor.development=true -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
 
     build: ./pensjon-brevbaker
     ports:
