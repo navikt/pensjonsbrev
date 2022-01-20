@@ -5,7 +5,7 @@ import com.natpryce.hamkrest.equalTo
 import com.natpryce.hamkrest.isA
 import no.nav.pensjon.brev.api.model.LetterMetadata
 import no.nav.pensjon.brev.maler.fraser.TestFraseDto
-import no.nav.pensjon.brev.maler.fraser.TestFrase
+import no.nav.pensjon.brev.maler.fraser.testFrase
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.base.PensjonLatex
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -31,7 +31,7 @@ class TemplateTest {
         val doc = createTemplate(
             name = "test",
             base = PensjonLatex,
-            letterDataType = Any::class,
+            letterDataType = Unit::class,
             lang = languages(Language.Bokmal),
             title = bokmalTittel,
             letterMetadata = testLetterMetadata,
@@ -48,7 +48,7 @@ class TemplateTest {
                 name = "test",
                 title = bokmalTittel,
                 base = PensjonLatex,
-                letterDataType = Object::class,
+                letterDataType = Unit::class,
                 language = languages(Language.Bokmal),
                 letterMetadata = testLetterMetadata,
                 outline = listOf(
@@ -66,13 +66,12 @@ class TemplateTest {
 
     @Test
     fun `createTemplate adds attachment`() {
-        val attachment = createAttachment(
+        val attachment = createAttachment<LangBokmalNynorskEnglish, Unit>(
             title = newText(
                 Language.Bokmal to "asdf",
                 Language.Nynorsk to "asdf",
                 Language.English to "asdf",
             ),
-            attachmentDataType = Unit::class
         ){
             text(
                 Language.Bokmal to "hei",
@@ -151,7 +150,7 @@ class TemplateTest {
         val doc = createTemplate(
             name = "test",
             base = PensjonLatex,
-            letterDataType = Any::class,
+            letterDataType = Unit::class,
             lang = languages(Language.Bokmal),
             title = bokmalTittel,
             letterMetadata = testLetterMetadata,
@@ -166,7 +165,7 @@ class TemplateTest {
                 name = "test",
                 title = bokmalTittel,
                 base = PensjonLatex,
-                letterDataType = Any::class,
+                letterDataType = Unit::class,
                 letterMetadata = testLetterMetadata,
                 language = languages(Language.Bokmal),
                 outline = listOf(Element.Title1(listOf(Element.Text.Literal.create(Language.Bokmal to "jadda"))))
@@ -179,7 +178,7 @@ class TemplateTest {
         val doc = createTemplate(
             name = "test",
             base = PensjonLatex,
-            letterDataType = Any::class,
+            letterDataType = Unit::class,
             lang = languages(Language.Bokmal),
             title = bokmalTittel,
             letterMetadata = testLetterMetadata,
@@ -197,7 +196,7 @@ class TemplateTest {
                 name = "test",
                 title = bokmalTittel,
                 base = PensjonLatex,
-                letterDataType = Any::class,
+                letterDataType = Unit::class,
                 language = languages(Language.Bokmal),
                 letterMetadata = testLetterMetadata,
                 outline = listOf(
@@ -315,10 +314,10 @@ class TemplateTest {
     fun `TemplateContainerScope_includePhrase adds phrase`() {
         val argument = Expression.Literal(TestFraseDto("jadda"))
         val element = TemplateContainerScope<BokmalLang, SomeDto>().apply {
-            includePhrase(argument, TestFrase)
+            includePhrase(argument, testFrase)
         }.children.first()
 
-        val expected = Element.IncludePhrase<BokmalLang, TestFraseDto>(argument, TestFrase)
+        val expected = Element.IncludePhrase<BokmalLang, TestFraseDto>(argument, testFrase)
 
         assertEquals(expected, element)
     }

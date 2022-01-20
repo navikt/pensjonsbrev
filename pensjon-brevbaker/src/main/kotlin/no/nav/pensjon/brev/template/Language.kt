@@ -2,7 +2,12 @@ package no.nav.pensjon.brev.template
 
 import java.util.*
 
-typealias BaseLanguages = LanguageSupport.Triple<Language.Bokmal, Language.Nynorsk, Language.English>
+typealias BaseLanguages = LangBokmalNynorskEnglish
+typealias LangBokmal = LanguageSupport.Single<Language.Bokmal>
+typealias LangNynorsk = LanguageSupport.Single<Language.Nynorsk>
+typealias LangEnglish = LanguageSupport.Single<Language.English>
+typealias LangBokmalNynorsk = LanguageSupport.Double<Language.Bokmal, Language.Nynorsk>
+typealias LangBokmalNynorskEnglish = LanguageSupport.Triple<Language.Bokmal, Language.Nynorsk, Language.English>
 
 data class LanguageSettings(val settings: Map<String, List<Element<BaseLanguages>>>) {
 

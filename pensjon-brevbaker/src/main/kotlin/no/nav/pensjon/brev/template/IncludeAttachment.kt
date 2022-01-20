@@ -4,9 +4,9 @@ import no.nav.pensjon.brev.template.dsl.TemplateContainerScope
 import kotlin.reflect.KClass
 
 
-fun <Lang : LanguageSupport, LetterData : Any> createAttachment(
+inline fun <Lang : LanguageSupport, reified LetterData : Any> createAttachment(
     title: Element.Text.Literal<Lang>,
-    attachmentDataType: KClass<LetterData>,
+    attachmentDataType: KClass<LetterData> = LetterData::class,
     includeSakspart: Boolean = false,
     outline: TemplateContainerScope<Lang, LetterData>.() -> Unit
 ) = AttachmentTemplate<Lang, LetterData>(
