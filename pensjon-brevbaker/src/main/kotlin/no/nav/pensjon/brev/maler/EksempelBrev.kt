@@ -2,9 +2,14 @@ package no.nav.pensjon.brev.maler
 
 import no.nav.pensjon.brev.api.model.LetterMetadata
 import no.nav.pensjon.brev.api.model.maler.EksempelBrevDto
-import no.nav.pensjon.brev.maler.fraser.TestFraseDto
 import no.nav.pensjon.brev.maler.fraser.TestFrase
-import no.nav.pensjon.brev.template.Language
+import no.nav.pensjon.brev.maler.fraser.TestFraseDto
+import no.nav.pensjon.brev.template.Element
+import no.nav.pensjon.brev.template.Element.Table.Colour.GRAY
+import no.nav.pensjon.brev.template.Element.Text.FontType
+import no.nav.pensjon.brev.template.Element.Text.FontType.BOLD
+import no.nav.pensjon.brev.template.Element.Text.FontType.ITALIC
+import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.StaticTemplate
 import no.nav.pensjon.brev.template.base.PensjonLatex
 import no.nav.pensjon.brev.template.dsl.*
@@ -21,10 +26,10 @@ object EksempelBrev : StaticTemplate {
         letterDataType = EksempelBrevDto::class,
 
         // Hvilke språk brevet støtter
-        lang = languages(Language.Bokmal),
+        lang = languages(Bokmal),
 
         // Hovedtittel inne i brevet
-        title = newText(Language.Bokmal to "Eksempelbrev"),
+        title = newText(Bokmal to "Eksempelbrev"),
 
         // Metadata knyttet til en brevmal som ikke påvirker innholdet
         letterMetadata = LetterMetadata(
@@ -44,7 +49,7 @@ object EksempelBrev : StaticTemplate {
             title1 {
 
                 // Tekst
-                text(Language.Bokmal to "Du har fått innvilget pensjon")
+                text(Bokmal to "Du har fått innvilget pensjon")
             }
 
             // Inkluder data fra datagrunnlaget til malen inn i brevet som tekst
@@ -56,6 +61,53 @@ object EksempelBrev : StaticTemplate {
                     .map { TestFraseDto(it.toString()) },
                 TestFrase
             )
+
+            table {
+                row(GRAY) {
+                    cell(4) {
+                        text(Bokmal to "1111111111111", BOLD)
+                        text(Bokmal to "1234567890", ITALIC)
+                    }
+                }
+                row(GRAY) {
+                    cell(3) {
+                        text(Bokmal to "1111111111111", BOLD)
+                        text(Bokmal to "1234567890", ITALIC)
+                    }
+                    cell(1) {
+                        text(Bokmal to "2222222222222", BOLD)
+                        text(Bokmal to "1234567890", ITALIC)
+                    }
+                }
+                row(GRAY) {
+                    cell(1) {
+                        text(Bokmal to "1111111111111", BOLD)
+                        text(Bokmal to "1234567890", ITALIC)
+                    }
+                    cell(2) {
+                        text(Bokmal to "2222222222222", BOLD)
+                        text(Bokmal to "1234567890", ITALIC)
+                    }
+                    cell(1) {
+                        text(Bokmal to "2222222222222", BOLD)
+                        text(Bokmal to "1234567890", ITALIC)
+                    }
+                }
+
+
+                row {
+                    cell { text(Bokmal to "Dette er en eksempeltekst eller noe sånnt", ITALIC) }
+                    cell { text(Bokmal to "2", BOLD) }
+                    cell { text(Bokmal to "3") }
+                    cell { text(Bokmal to "4") }
+                }
+                row {
+                    cell { text(Bokmal to "Dette er noe", ITALIC) }
+                    cell { text(Bokmal to "53513513", BOLD) }
+                    cell { text(Bokmal to "5") }
+                    cell { text(Bokmal to "4gdagdagad gdagdagda") }
+                }
+            }
         }
     }
 }

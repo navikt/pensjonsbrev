@@ -4,6 +4,8 @@ import no.nav.pensjon.brev.api.model.*
 import no.nav.pensjon.brev.latex.LatexPrintWriter
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.*
+import no.nav.pensjon.brev.template.Element.Table.Colour.GRAY
+import no.nav.pensjon.brev.template.Element.Table.Colour.WHITE
 import no.nav.pensjon.brev.template.dsl.languageSettings
 import no.nav.pensjon.brev.template.dsl.select
 import no.nav.pensjon.brev.template.dsl.text
@@ -326,7 +328,15 @@ object PensjonLatex : BaseTemplate() {
                 }
 
             is Element.Text.Literal ->
-                printWriter.print(element.text(scope.language))
+                when (element.fontType) {
+                    Element.Text.FontType.PLAIN -> printWriter.print(element.text(scope.language))
+                    Element.Text.FontType.BOLD -> printWriter.printCmd("textbf") {
+                        arg { printWriter.print(element.text(scope.language)) }
+                    }
+                    Element.Text.FontType.ITALIC -> printWriter.printCmd("textit") {
+                        arg { printWriter.print(element.text(scope.language)) }
+                    }
+                }
 
             is Element.Text.Expression ->
                 printWriter.print(element.expression.eval(scope))
@@ -417,11 +427,71 @@ object PensjonLatex : BaseTemplate() {
 
             is Element.NewLine ->
                 printWriter.printCmd("newline")
+            is Element.Table ->
+                with(printWriter) {
+
+                    printCmd("begin") {
+                        arg { print("tblr") }
+                        arg { print(columnFormat(element.rows.maxOf { it.cells.size }), escape = false) }
+                    }
+                    printCmd("hline")
+                    element.rows.forEach { row ->
+                        when (row.colour) {
+                            GRAY -> print("\\rowcolor{Gray}", escape = false)
+                            WHITE -> {}
+                        }
+
+                        row.cells.forEachIndexed { index, cell ->
+                            printCmd("multicolumn") {
+                                arg { print(cell.cellColumns.toString(), escape = false) }
+                                arg { print(cellSize(cell.cellColumns), escape = false) }
+                                arg {
+                                    cell.elements.forEach { cellElement ->
+                                        renderElement(scope, cellElement, printWriter)
+                                    }
+                                }
+                            }
+
+
+                            if (index == row.cells.lastIndex) {
+                                print(""" \\""", escape = false)
+                            } else {
+                                print(" & ", escape = false)
+                            }
+                        }
+                        printCmd("hline")
+                    }
+
+                    printCmd("end") {
+                        arg { print("tblr") }
+                    }
+                }
         }
 
     private fun getResource(fileName: String): InputStream {
         return this::class.java.getResourceAsStream("/$fileName")
             ?: throw IllegalStateException("""Could not find class resource /$fileName""")
     }
+
+    fun columnFormat(columns: Int): String =
+        if (columns > 0) {
+            "|" + "X|".repeat(columns)
+        } else {
+            ""
+        }
+
+    fun cellSize(columns: Int) =
+        "|>{\\hsize=" + //horizontal size
+                "\\dimexpr" + //dimensional expression
+                "$columns\\hsize+" + //columns of cell * horizontal size of a cell
+                "${(columns - 1) * 2}\\tabcolsep+" + //factor in space on each side of the column separator
+                "${columns - 1}\\arrayrulewidth" + //factor in the width of the column separator line
+                "\\relax}X|"
+//    "|>{\\hsize=" + //horizontal size
+//    "\\dimexpr" + //dimensional expression
+//    "$columns\\hsize+" + //columns of cell * horizontal size of a cell
+//    "${(columns - 1) * 2}\\tabcolsep+" + //factor in space on each side of the column separator
+//    "${columns - 1}\\arrayrulewidth" + //factor in the width of the column separator line
+//    "\\relax}X|"
 
 }

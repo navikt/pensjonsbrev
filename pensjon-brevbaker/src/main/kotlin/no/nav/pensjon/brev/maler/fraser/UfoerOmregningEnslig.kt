@@ -101,6 +101,12 @@ object BelopUT_001 : Phrase<BelopUT_001.Param> {
     override val elements = phrase {
         val total_ufoeremaaneder = argument().select(Param::total_ufoeremaaneder)
         paragraph {
+            text(
+                Bokmal to "",
+                Nynorsk to "",
+                English to ""
+            )
+
             textExpr(
                 Bokmal to "Du får ".expr() + total_ufoeremaaneder.str() + " kroner i uføretrygd per måned før skatt.".expr(),
                 Nynorsk to "Du får ".expr() + total_ufoeremaaneder.str() + " kroner i uføretrygd kvar månad før skatt.".expr(),
@@ -112,7 +118,6 @@ object BelopUT_001 : Phrase<BelopUT_001.Param> {
 
     data class Param(val total_ufoeremaaneder: Number)
 }
-
 object BelopUTVedlegg_001 : Phrase<BelopUTVedlegg_001.Param> {
     override val elements = phrase {
         val total_ufoeremaaneder = argument().select(Param::total_ufoeremaaneder)

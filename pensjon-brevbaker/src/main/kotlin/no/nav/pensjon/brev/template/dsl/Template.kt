@@ -3,6 +3,9 @@ package no.nav.pensjon.brev.template.dsl
 import no.nav.pensjon.brev.api.model.Felles
 import no.nav.pensjon.brev.api.model.LetterMetadata
 import no.nav.pensjon.brev.template.*
+import no.nav.pensjon.brev.template.Element.Table.Colour
+import no.nav.pensjon.brev.template.Element.Table.Colour.WHITE
+import no.nav.pensjon.brev.template.Element.Text.FontType
 import no.nav.pensjon.brev.template.base.BaseTemplate
 import kotlin.reflect.KClass
 
@@ -65,28 +68,67 @@ open class TemplateTextOnlyScope<Lang : LanguageCombination, LetterData : Any>(v
     }
 }
 
+@LetterTemplateMarker
+open class TemplateTableScope<Lang : LanguageCombination, LetterData : Any>(val children: MutableList<Element.Table.TableRow<Lang>> = mutableListOf()) :
+    TemplateGlobalScope<LetterData>() {
+
+    fun row(colour: Colour = WHITE, init: TemplateTableRowScope<Lang, LetterData>.() -> Unit) {
+        children.add(Element.Table.TableRow(TemplateTableRowScope<Lang, LetterData>().apply(init).children, colour))
+    }
+
+//    fun showIf(
+//        predicate: Expression<Boolean>,
+//        showIf: TemplateTableRowScope<Lang, LetterData>.() -> Unit
+//    ): ShowElseBuilder<Lang, LetterData> {
+//        val showElse = mutableListOf<Element<Lang>>()
+//
+//        return TemplateContainerScope<Lang, LetterData>().apply { showIf() }
+//            .let { Element.Conditional(predicate, it.children, showElse) }
+//            .also { children.add(it) }
+//            .let { ShowElseBuilder(showElse) }
+//    }
+
+
+}
+
+@LetterTemplateMarker
+open class TemplateTableRowScope<Lang : LanguageCombination, LetterData : Any>(val children: MutableList<Element.Table.Cell<Lang>> = mutableListOf()) :
+    TemplateGlobalScope<LetterData>() {
+    fun cell(cellColumns: Int = 1, init: TemplateTextOnlyScope<Lang, LetterData>.() -> Unit) {
+        children.add(
+            Element.Table.Cell(
+                TemplateTextOnlyScope<Lang, LetterData>().apply(init).children,
+                cellColumns
+            )
+        )
+    }
+}
+
+
 // TextOnlyBuilder.text()
 //
 //
 fun <Lang1 : Language, ParameterType : Any> TemplateTextOnlyScope<LanguageCombination.Single<Lang1>, ParameterType>.text(
-    lang1: Pair<Lang1, String>
+    lang1: Pair<Lang1, String>, fontType: FontType = FontType.PLAIN
 ) {
-    Element.Text.Literal.create(lang1).also { children.add(it) }
+    Element.Text.Literal.create(lang1, fontType).also { children.add(it) }
 }
 
 fun <Lang1 : Language, Lang2 : Language, ParameterType : Any> TemplateTextOnlyScope<LanguageCombination.Double<Lang1, Lang2>, ParameterType>.text(
     lang1: Pair<Lang1, String>,
     lang2: Pair<Lang2, String>,
+    fontType: FontType = FontType.PLAIN,
 ) {
-    Element.Text.Literal.create(lang1, lang2).also { children.add(it) }
+    Element.Text.Literal.create(lang1, lang2, fontType).also { children.add(it) }
 }
 
 fun <Lang1 : Language, Lang2 : Language, Lang3 : Language, ParameterType : Any> TemplateTextOnlyScope<LanguageCombination.Triple<Lang1, Lang2, Lang3>, ParameterType>.text(
     lang1: Pair<Lang1, String>,
     lang2: Pair<Lang2, String>,
     lang3: Pair<Lang3, String>,
+    fontType: FontType = FontType.PLAIN,
 ) {
-    Element.Text.Literal.create(lang1, lang2, lang3).also { children.add(it) }
+    Element.Text.Literal.create(lang1, lang2, lang3, fontType).also { children.add(it) }
 }
 
 // TextOnlyBuilder.textExpr()
@@ -137,6 +179,10 @@ class TemplateContainerScope<Lang : LanguageCombination, LetterData : Any> :
         children.add(Element.ItemList.Dynamic(items))
     }
 
+    fun table(init: TemplateTableScope<Lang, LetterData>.() -> Unit) {
+        children.add(Element.Table(TemplateTableScope<Lang, LetterData>().apply(init).children))
+    }
+
     fun paragraph(init: TemplateContainerScope<Lang, LetterData>.() -> Unit) {
         children.add(Element.Paragraph(TemplateContainerScope<Lang, LetterData>().apply(init).children))
     }
@@ -175,24 +221,27 @@ class TemplateFormChoiceScope<Lang : LanguageCombination, LetterData : Any>(
 ) : TemplateGlobalScope<LetterData>()
 
 fun <Lang1 : Language, LetterData : Any> TemplateFormChoiceScope<LanguageCombination.Single<Lang1>, LetterData>.choice(
-    lang1: Pair<Lang1, String>
+    lang1: Pair<Lang1, String>,
+    fontType: FontType = FontType.PLAIN
 ) {
-    Element.Text.Literal.create(lang1).also { choices.add(it) }
+    Element.Text.Literal.create(lang1 = lang1, fontType).also { choices.add(it) }
 }
 
 fun <Lang1 : Language, Lang2 : Language, LetterData : Any> TemplateFormChoiceScope<LanguageCombination.Double<Lang1, Lang2>, LetterData>.choice(
     lang1: Pair<Lang1, String>,
     lang2: Pair<Lang2, String>,
+    fontType: FontType = FontType.PLAIN,
 ) {
-    Element.Text.Literal.create(lang1, lang2).also { choices.add(it) }
+    Element.Text.Literal.create(lang1, lang2, fontType).also { choices.add(it) }
 }
 
 fun <Lang1 : Language, Lang2 : Language, Lang3 : Language, LetterData : Any> TemplateFormChoiceScope<LanguageCombination.Triple<Lang1, Lang2, Lang3>, LetterData>.choice(
     lang1: Pair<Lang1, String>,
     lang2: Pair<Lang2, String>,
     lang3: Pair<Lang3, String>,
+    fontType: FontType = FontType.PLAIN,
 ) {
-    Element.Text.Literal.create(lang1, lang2, lang3).also { choices.add(it) }
+    Element.Text.Literal.create(lang1, lang2, lang3, fontType).also { choices.add(it) }
 }
 
 
