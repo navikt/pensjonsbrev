@@ -1,26 +1,28 @@
 package no.nav.pensjon.brev.template
 
 import no.nav.pensjon.brev.template.dsl.TemplateContainerScope
+import kotlin.reflect.KClass
 
 
-fun <LetterData : Any> createAttachment(
-    title: Element.Text.Literal<BaseLanguages>,
+fun <Lang : LanguageSupport, LetterData : Any> createAttachment(
+    title: Element.Text.Literal<Lang>,
+    attachmentDataType: KClass<LetterData>,
     includeSakspart: Boolean = false,
-    outline: TemplateContainerScope<BaseLanguages, LetterData>.() -> Unit
-) = AttachmentTemplate<LetterData>(
+    outline: TemplateContainerScope<Lang, LetterData>.() -> Unit
+) = AttachmentTemplate<Lang, LetterData>(
     title,
-    TemplateContainerScope<BaseLanguages, LetterData>().apply(outline).children,
+    TemplateContainerScope<Lang, LetterData>().apply(outline).children,
     includeSakspart
 )
 
 
-data class IncludeAttachment<AttachmentData : Any>(
+data class IncludeAttachment<out Lang : LanguageSupport, AttachmentData : Any>(
     val data: Expression<AttachmentData>,
-    val template: AttachmentTemplate<AttachmentData>
+    val template: AttachmentTemplate<Lang, AttachmentData>
 )
 
-data class AttachmentTemplate<ParameterType : Any>(
-    val title: Element.Text.Literal<BaseLanguages>,
-    val outline: List<Element<BaseLanguages>>,
+data class AttachmentTemplate<out Lang : LanguageSupport, AttachmentData : Any>(
+    val title: Element.Text.Literal<Lang>,
+    val outline: List<Element<Lang>>,
     val includeSakspart: Boolean = false,
 )

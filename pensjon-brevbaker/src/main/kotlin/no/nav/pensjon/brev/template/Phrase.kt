@@ -2,12 +2,12 @@ package no.nav.pensjon.brev.template
 
 import no.nav.pensjon.brev.template.dsl.TemplateContainerScope
 
-interface Phrase<Data: Any> {
-    val elements: List<Element<BaseLanguages>>
+interface Phrase<out Lang : LanguageSupport, Data: Any> {
+    val elements: List<Element<Lang>>
 }
 
 // Though code analysis states otherwise, receiver parameter is actually used to bind the parametric type Data.
-fun <Data : Any> Phrase<Data>.phrase(
-    init: TemplateContainerScope<BaseLanguages, Data>.() -> Unit
-): List<Element<BaseLanguages>> =
-    TemplateContainerScope<BaseLanguages, Data>().apply(init).children
+fun <Lang : LanguageSupport, Data : Any> Phrase<Lang, Data>.phrase(
+    init: TemplateContainerScope<Lang, Data>.() -> Unit
+): List<Element<Lang>> =
+    TemplateContainerScope<Lang, Data>().apply(init).children

@@ -1,8 +1,7 @@
 package no.nav.pensjon.brev.maler.vedlegg
 
 import no.nav.pensjon.brev.maler.fraser.*
-import no.nav.pensjon.brev.template.Language
-import no.nav.pensjon.brev.template.Language.Bokmal
+import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.*
 
@@ -10,13 +9,14 @@ import no.nav.pensjon.brev.template.dsl.*
 data class OrienteringOmRettigheterParam(
     val test: String
 )
-val orienteringOmRettigheterOgPlikter = createAttachment<OrienteringOmRettigheterParam>(
+val orienteringOmRettigheterOgPlikter = createAttachment(
     title = newText(
             Bokmal to "Dine rettigheter og plikter",
-            Language.Nynorsk to "Dine rettar og plikter",
-            Language.English to "Your rights and obligations"
+            Nynorsk to "Dine rettar og plikter",
+            English to "Your rights and obligations"
     ),
-    includeSakspart = true,
+    attachmentDataType = OrienteringOmRettigheterParam::class,
+    includeSakspart = true
 ) {
     includePhrase(vedleggPlikterOgRettigheterOverskriftPesys_001)
     includePhrase(vedleggPlikter_001)

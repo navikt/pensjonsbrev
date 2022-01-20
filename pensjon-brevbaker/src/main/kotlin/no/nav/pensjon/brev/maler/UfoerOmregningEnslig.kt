@@ -17,7 +17,7 @@ object UfoerOmregningEnslig : StaticTemplate {
         name = "UT_DOD_ENSLIG_AUTO",
         base = PensjonLatex,
         letterDataType = UfoerOmregningEnsligDto::class,
-        lang = languages(Bokmal, Nynorsk, English),
+        lang = languages(Bokmal, Nynorsk),
         title = newText(
             Bokmal to "NAV har regnet om uføretrygden din",
             Nynorsk to "NAV har rekna om uføretrygda di",
