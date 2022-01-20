@@ -7,8 +7,10 @@ class LanguageTest {
 
     @Test
     fun `BaseLanguages contains all languages`() {
-        // Verifies that BaseLanguages contains all supported languages
-        val baseLang: BaseLanguages = LanguageCombination.Triple(Language.Bokmal, Language.Nynorsk, Language.English)
+        val baseLang = LanguageCombination.Triple(Language.Bokmal, Language.Nynorsk, Language.English)
+
+        // Verifies that BaseLanguages contains all supported languages (won't compile)
+        val verify: BaseLanguages = baseLang
 
         assertEquals(Language::class.findSealedObjects(), with(baseLang) { setOf(first, second, third) })
     }

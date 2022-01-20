@@ -64,6 +64,7 @@ tasks {
     }
 
     task<Test>("integrationTest") {
+        group = LifecycleBasePlugin.VERIFICATION_GROUP
         useJUnitPlatform {
             includeTags = integrationTests
         }

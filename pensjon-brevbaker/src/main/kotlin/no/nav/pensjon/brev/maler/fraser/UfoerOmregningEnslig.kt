@@ -1,13 +1,14 @@
 package no.nav.pensjon.brev.maler.fraser
 
+import no.nav.pensjon.brev.template.Element
 import no.nav.pensjon.brev.template.Language.*
+import no.nav.pensjon.brev.template.LanguageSupport
 import no.nav.pensjon.brev.template.Phrase
 import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brev.template.phrase
 import java.time.LocalDate
 
-
-object VedtakOverskriftPesys_001 : Phrase<Unit> {
+object VedtakOverskriftPesys_001 : Phrase<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Unit> {
     override val elements = phrase {
         title1 {
             text(
@@ -19,7 +20,7 @@ object VedtakOverskriftPesys_001 : Phrase<Unit> {
     }
 }
 
-object OmregnUTDodEPSInnledn1_001 : Phrase<OmregnUTDodEPSInnledn1_001.Param> {
+object OmregnUTDodEPSInnledn1_001 : Phrase<LanguageSupport.Triple<Bokmal, Nynorsk, English>, OmregnUTDodEPSInnledn1_001.Param> {
     override val elements = phrase {
         val avdod_navn = argument().select(Param::avdod_navn)
         val krav_virkedato_fom = argument().select(Param::krav_virkedato_fom)
@@ -35,7 +36,7 @@ object OmregnUTDodEPSInnledn1_001 : Phrase<OmregnUTDodEPSInnledn1_001.Param> {
     data class Param(val avdod_navn: String, val krav_virkedato_fom: LocalDate)
 }
 
-object OmregnUTDodEPSInnledn2_001 : Phrase<OmregnUTDodEPSInnledn2_001.Param> {
+object OmregnUTDodEPSInnledn2_001 : Phrase<LanguageSupport.Triple<Bokmal, Nynorsk, English>, OmregnUTDodEPSInnledn2_001.Param> {
     override val elements = phrase {
         val avdod_navn = argument().select(Param::avdod_navn)
         paragraph {
@@ -50,7 +51,7 @@ object OmregnUTDodEPSInnledn2_001 : Phrase<OmregnUTDodEPSInnledn2_001.Param> {
     data class Param(val avdod_navn: String)
 }
 
-object OmregnUTBTDodEPSInnledn_001 : Phrase<OmregnUTBTDodEPSInnledn_001.Param> {
+object OmregnUTBTDodEPSInnledn_001 : Phrase<LanguageSupport.Triple<Bokmal, Nynorsk, English>, OmregnUTBTDodEPSInnledn_001.Param> {
     override val elements = phrase {
         val avdod_navn = argument().select(Param::avdod_navn)
         val krav_virkedato_fom = argument().select(Param::krav_virkedato_fom)
@@ -66,7 +67,7 @@ object OmregnUTBTDodEPSInnledn_001 : Phrase<OmregnUTBTDodEPSInnledn_001.Param> {
     data class Param(val avdod_navn: String, val krav_virkedato_fom: LocalDate)
 }
 
-object OmregnUTBTSBDodEPSInnledn_001 : Phrase<OmregnUTBTSBDodEPSInnledn_001.Param> {
+object OmregnUTBTSBDodEPSInnledn_001 : Phrase<LanguageSupport.Triple<Bokmal, Nynorsk, English>, OmregnUTBTSBDodEPSInnledn_001.Param> {
     override val elements = phrase {
         val avdod_navn = argument().select(Param::avdod_navn)
         paragraph {
@@ -81,7 +82,7 @@ object OmregnUTBTSBDodEPSInnledn_001 : Phrase<OmregnUTBTSBDodEPSInnledn_001.Para
     data class Param(val avdod_navn: String)
 }
 
-object OmregnBTDodEPSInnledn_001 : Phrase<OmregnBTDodEPSInnledn_001.Param> {
+object OmregnBTDodEPSInnledn_001 : Phrase<LanguageSupport.Triple<Bokmal, Nynorsk, English>, OmregnBTDodEPSInnledn_001.Param> {
     override val elements = phrase {
         val avdod_navn = argument().select(Param::avdod_navn)
         val krav_virkedato_fom = argument().select(Param::krav_virkedato_fom)
@@ -97,7 +98,7 @@ object OmregnBTDodEPSInnledn_001 : Phrase<OmregnBTDodEPSInnledn_001.Param> {
     data class Param(val avdod_navn: String, val krav_virkedato_fom: LocalDate)
 }
 
-object BelopUT_001 : Phrase<BelopUT_001.Param> {
+object BelopUT_001 : Phrase<LanguageSupport.Triple<Bokmal, Nynorsk, English>, BelopUT_001.Param> {
     override val elements = phrase {
         val total_ufoeremaaneder = argument().select(Param::total_ufoeremaaneder)
         paragraph {
@@ -113,7 +114,7 @@ object BelopUT_001 : Phrase<BelopUT_001.Param> {
     data class Param(val total_ufoeremaaneder: Number)
 }
 
-object BelopUTVedlegg_001 : Phrase<BelopUTVedlegg_001.Param> {
+object BelopUTVedlegg_001 : Phrase<LanguageSupport.Triple<Bokmal, Nynorsk, English>, BelopUTVedlegg_001.Param> {
     override val elements = phrase {
         val total_ufoeremaaneder = argument().select(Param::total_ufoeremaaneder)
         paragraph {
@@ -128,7 +129,7 @@ object BelopUTVedlegg_001 : Phrase<BelopUTVedlegg_001.Param> {
     data class Param(val total_ufoeremaaneder: Number)
 }
 
-object BelopUTBT_001 : Phrase<BelopUTBT_001.Param> {
+object BelopUTBT_001 : Phrase<LanguageSupport.Triple<Bokmal, Nynorsk, English>, BelopUTBT_001.Param> {
     override val elements = phrase {
         val total_ufoeremaaneder = argument().select(Param::total_ufoeremaaneder)
         paragraph {
@@ -143,7 +144,7 @@ object BelopUTBT_001 : Phrase<BelopUTBT_001.Param> {
     data class Param(val total_ufoeremaaneder: Number)
 }
 
-object BelopUTBTVedlegg_001 : Phrase<BelopUTBTVedlegg_001.Param> {
+object BelopUTBTVedlegg_001 : Phrase<LanguageSupport.Triple<Bokmal, Nynorsk, English>, BelopUTBTVedlegg_001.Param> {
     override val elements = phrase {
         val total_ufoeremaaneder = argument().select(Param::total_ufoeremaaneder)
         paragraph {
@@ -158,7 +159,7 @@ object BelopUTBTVedlegg_001 : Phrase<BelopUTBTVedlegg_001.Param> {
     data class Param(val total_ufoeremaaneder: Number)
 }
 
-object BelopUTIngenUtbetaling_001 : Phrase<Unit> {
+object BelopUTIngenUtbetaling_001 : Phrase<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Unit> {
     override val elements = phrase {
         paragraph {
             text(
@@ -170,7 +171,7 @@ object BelopUTIngenUtbetaling_001 : Phrase<Unit> {
     }
 }
 
-object BelopUTIngenUtbetalingVedlegg_001 : Phrase<Unit> {
+object BelopUTIngenUtbetalingVedlegg_001 : Phrase<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Unit> {
     override val elements = phrase {
         paragraph {
             text(
@@ -182,7 +183,7 @@ object BelopUTIngenUtbetalingVedlegg_001 : Phrase<Unit> {
     }
 }
 
-object BelopUTBTIngenUtbetaling_001 : Phrase<Unit> {
+object BelopUTBTIngenUtbetaling_001 : Phrase<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Unit> {
     override val elements = phrase {
         paragraph {
             text(
@@ -194,7 +195,7 @@ object BelopUTBTIngenUtbetaling_001 : Phrase<Unit> {
     }
 }
 
-object BelopUTBTIngenUtbetalingVedlegg_001 : Phrase<Unit> {
+object BelopUTBTIngenUtbetalingVedlegg_001 : Phrase<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Unit> {
     override val elements = phrase {
         paragraph {
             text(
@@ -206,7 +207,7 @@ object BelopUTBTIngenUtbetalingVedlegg_001 : Phrase<Unit> {
     }
 }
 
-object BelopUTIngenUtbetalingFengsel_001 : Phrase<Unit> {
+object BelopUTIngenUtbetalingFengsel_001 : Phrase<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Unit> {
     override val elements = phrase {
         paragraph {
             text(
@@ -218,7 +219,7 @@ object BelopUTIngenUtbetalingFengsel_001 : Phrase<Unit> {
     }
 }
 
-object BelopUTIngenUtbetalingFengselVedlegg_001 : Phrase<Unit> {
+object BelopUTIngenUtbetalingFengselVedlegg_001 : Phrase<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Unit> {
     override val elements = phrase {
         paragraph {
             text(
@@ -230,7 +231,7 @@ object BelopUTIngenUtbetalingFengselVedlegg_001 : Phrase<Unit> {
     }
 }
 
-object BegrunnOverskrift_001 : Phrase<Unit> {
+object BegrunnOverskrift_001 : Phrase<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Unit> {
     override val elements = phrase {
         title1 {
             text(
@@ -242,7 +243,7 @@ object BegrunnOverskrift_001 : Phrase<Unit> {
     }
 }
 
-object EndrMYDodEPS2_001 : Phrase<EndrMYDodEPS2_001.Param> {
+object EndrMYDodEPS2_001 : Phrase<LanguageSupport.Triple<Bokmal, Nynorsk, English>, EndrMYDodEPS2_001.Param> {
     override val elements = phrase {
         val minsteytelse_sats_vedvirk = argument().select(Param::minsteytelse_sats_vedvirk)
         val kompensasjonsgrad_ufoeretrygd_vedvirk = argument().select(Param::kompensasjonsgrad_ufoeretrygd_vedvirk)
@@ -265,7 +266,7 @@ object EndrMYDodEPS2_001 : Phrase<EndrMYDodEPS2_001.Param> {
     data class Param(val minsteytelse_sats_vedvirk: Number, val kompensasjonsgrad_ufoeretrygd_vedvirk: Number)
 }
 
-object EndrMYOgMinstIFUDodEPS2_001 : Phrase<EndrMYOgMinstIFUDodEPS2_001.Param> {
+object EndrMYOgMinstIFUDodEPS2_001 : Phrase<LanguageSupport.Triple<Bokmal, Nynorsk, English>, EndrMYOgMinstIFUDodEPS2_001.Param> {
     override val elements = phrase {
         val minsteytelse_sats_vedvirk = argument().select(Param::minsteytelse_sats_vedvirk)
         val inntekt_foer_ufoerhet_vedvirk = argument().select(Param::inntekt_foer_ufoerhet_vedvirk)
@@ -295,7 +296,7 @@ object EndrMYOgMinstIFUDodEPS2_001 : Phrase<EndrMYOgMinstIFUDodEPS2_001.Param> {
     )
 }
 
-object EndrMinstIFUDodEPS2_001 : Phrase<EndrMinstIFUDodEPS2_001.Param> {
+object EndrMinstIFUDodEPS2_001 : Phrase<LanguageSupport.Triple<Bokmal, Nynorsk, English>, EndrMinstIFUDodEPS2_001.Param> {
     override val elements = phrase {
         val inntekt_foer_ufoerhet_vedvirk = argument().select(Param::inntekt_foer_ufoerhet_vedvirk)
         val oppjustert_inntekt_foer_ufoerhet_vedvirk = argument().select(Param::oppjustert_inntekt_foer_ufoerhet_vedvirk)
@@ -316,7 +317,7 @@ object EndrMinstIFUDodEPS2_001 : Phrase<EndrMinstIFUDodEPS2_001.Param> {
     )
 }
 
-object HjemmelSivilstandUT_001 : Phrase<Unit> {
+object HjemmelSivilstandUT_001 : Phrase<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Unit> {
     override val elements = phrase {
         paragraph {
             text(
@@ -328,7 +329,7 @@ object HjemmelSivilstandUT_001 : Phrase<Unit> {
     }
 }
 
-object HjemmelSivilstandUTMinsteIFU_001 : Phrase<Unit> {
+object HjemmelSivilstandUTMinsteIFU_001 : Phrase<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Unit> {
     override val elements = phrase {
         paragraph {
             text(
@@ -340,7 +341,7 @@ object HjemmelSivilstandUTMinsteIFU_001 : Phrase<Unit> {
     }
 }
 
-object HjemmelSivilstandUTAvkortet_001 : Phrase<Unit> {
+object HjemmelSivilstandUTAvkortet_001 : Phrase<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Unit> {
     override val elements = phrase {
         paragraph {
             text(
@@ -352,7 +353,7 @@ object HjemmelSivilstandUTAvkortet_001 : Phrase<Unit> {
     }
 }
 
-object HjemmelSivilstandUTMinsteIFUAvkortet_001 : Phrase<Unit> {
+object HjemmelSivilstandUTMinsteIFUAvkortet_001 : Phrase<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Unit> {
     override val elements = phrase {
         paragraph {
             text(
@@ -364,7 +365,7 @@ object HjemmelSivilstandUTMinsteIFUAvkortet_001 : Phrase<Unit> {
     }
 }
 
-object HjemmelEPSDodUTInstitusjon_001 : Phrase<Unit> {
+object HjemmelEPSDodUTInstitusjon_001 : Phrase<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Unit> {
     override val elements = phrase {
         paragraph {
             text(
@@ -376,7 +377,7 @@ object HjemmelEPSDodUTInstitusjon_001 : Phrase<Unit> {
     }
 }
 
-object HjemmelEPSDodUTFengsel_001 : Phrase<Unit> {
+object HjemmelEPSDodUTFengsel_001 : Phrase<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Unit> {
     override val elements = phrase {
         paragraph {
             text(
@@ -388,7 +389,7 @@ object HjemmelEPSDodUTFengsel_001 : Phrase<Unit> {
     }
 }
 
-object OpphorETOverskrift_001 : Phrase<Unit> {
+object OpphorETOverskrift_001 : Phrase<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Unit> {
     override val elements = phrase {
         title1 {
             text(
@@ -400,7 +401,7 @@ object OpphorETOverskrift_001 : Phrase<Unit> {
     }
 }
 
-object OpphorET_001 : Phrase<Unit> {
+object OpphorET_001 : Phrase<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Unit> {
     override val elements = phrase {
         paragraph {
             text(
@@ -412,7 +413,7 @@ object OpphorET_001 : Phrase<Unit> {
     }
 }
 
-object HjemmelET_001 : Phrase<Unit> {
+object HjemmelET_001 : Phrase<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Unit> {
     override val elements = phrase {
         paragraph {
             text(
@@ -424,7 +425,7 @@ object HjemmelET_001 : Phrase<Unit> {
     }
 }
 
-object OmregningFBOverskrift_001 : Phrase<Unit> {
+object OmregningFBOverskrift_001 : Phrase<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Unit> {
     override val elements = phrase {
         title1 {
             text(
@@ -436,7 +437,7 @@ object OmregningFBOverskrift_001 : Phrase<Unit> {
     }
 }
 
-object InfoFBTilSB_001 : Phrase<InfoFBTilSB_001.Param> {
+object InfoFBTilSB_001 : Phrase<LanguageSupport.Triple<Bokmal, Nynorsk, English>, InfoFBTilSB_001.Param> {
     override val elements = phrase {
         paragraph {
             text(
@@ -451,7 +452,7 @@ object InfoFBTilSB_001 : Phrase<InfoFBTilSB_001.Param> {
     data class Param(val barn_overfoert_til_saerkullsbarn: List<String>)
 }
 
-object InfoTidligereSB_001 : Phrase<InfoTidligereSB_001.Param> {
+object InfoTidligereSB_001 : Phrase<LanguageSupport.Triple<Bokmal, Nynorsk, English>, InfoTidligereSB_001.Param> {
     override val elements = phrase {
         paragraph {
             text(
@@ -465,7 +466,7 @@ object InfoTidligereSB_001 : Phrase<InfoTidligereSB_001.Param> {
     data class Param(val tidligere_saerkullsbarn: List<String>)
 }
 
-object InfoTidligereSBOgEndretUT_001 : Phrase<InfoTidligereSBOgEndretUT_001.Param> {
+object InfoTidligereSBOgEndretUT_001 : Phrase<LanguageSupport.Triple<Bokmal, Nynorsk, English>, InfoTidligereSBOgEndretUT_001.Param> {
     override val elements = phrase {
         paragraph {
             text(
@@ -479,7 +480,7 @@ object InfoTidligereSBOgEndretUT_001 : Phrase<InfoTidligereSBOgEndretUT_001.Para
     data class Param(val tidligere_saerkullsbarn: List<String>)
 }
 
-object EndringUTpavirkerBTOverskrift_001 : Phrase<Unit> {
+object EndringUTpavirkerBTOverskrift_001 : Phrase<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Unit> {
     override val elements = phrase {
         title1 {
             text(
@@ -491,7 +492,7 @@ object EndringUTpavirkerBTOverskrift_001 : Phrase<Unit> {
     }
 }
 
-object IkkeRedusBTPgaTak_001 : Phrase<IkkeRedusBTPgaTak_001.Param> {
+object IkkeRedusBTPgaTak_001 : Phrase<LanguageSupport.Triple<Bokmal, Nynorsk, English>, IkkeRedusBTPgaTak_001.Param> {
     override val elements = phrase {
         val barnetillegg_prosentsats_gradert_over_inntekt_foer_ufoer_vedvirk =
             argument().select(Param::barnetillegg_prosentsats_gradert_over_inntekt_foer_ufoer_vedvirk)
@@ -512,7 +513,7 @@ object IkkeRedusBTPgaTak_001 : Phrase<IkkeRedusBTPgaTak_001.Param> {
     )
 }
 
-object RedusBTPgaTak_001 : Phrase<RedusBTPgaTak_001.Param> {
+object RedusBTPgaTak_001 : Phrase<LanguageSupport.Triple<Bokmal, Nynorsk, English>, RedusBTPgaTak_001.Param> {
     override val elements = phrase {
         val barnetillegg_prosentsats_gradert_over_inntekt_foer_ufoer_vedvirk =
             argument().select(Param::barnetillegg_prosentsats_gradert_over_inntekt_foer_ufoer_vedvirk)
@@ -539,7 +540,7 @@ object RedusBTPgaTak_001 : Phrase<RedusBTPgaTak_001.Param> {
     )
 }
 
-object IkkeUtbetaltBTPgaTak_001 : Phrase<IkkeUtbetaltBTPgaTak_001.Param> {
+object IkkeUtbetaltBTPgaTak_001 : Phrase<LanguageSupport.Triple<Bokmal, Nynorsk, English>, IkkeUtbetaltBTPgaTak_001.Param> {
     override val elements = phrase {
         val barnetillegg_prosentsats_gradert_over_inntekt_foer_ufoer_vedvirk =
             argument().select(Param::barnetillegg_prosentsats_gradert_over_inntekt_foer_ufoer_vedvirk)
@@ -560,7 +561,7 @@ object IkkeUtbetaltBTPgaTak_001 : Phrase<IkkeUtbetaltBTPgaTak_001.Param> {
     )
 }
 
-object InfoBTSBInntekt_001 : Phrase<Unit> {
+object InfoBTSBInntekt_001 : Phrase<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Unit> {
     override val elements = phrase {
         paragraph {
             text(
@@ -572,7 +573,7 @@ object InfoBTSBInntekt_001 : Phrase<Unit> {
     }
 }
 
-object InfoBTOverfortTilSBInntekt_001 : Phrase<Unit> {
+object InfoBTOverfortTilSBInntekt_001 : Phrase<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Unit> {
     override val elements = phrase {
         paragraph {
             text(
@@ -584,7 +585,7 @@ object InfoBTOverfortTilSBInntekt_001 : Phrase<Unit> {
     }
 }
 
-object IkkeRedusBTSBPgaInntekt_001 : Phrase<IkkeRedusBTSBPgaInntekt_001.Param> {
+object IkkeRedusBTSBPgaInntekt_001 : Phrase<LanguageSupport.Triple<Bokmal, Nynorsk, English>, IkkeRedusBTSBPgaInntekt_001.Param> {
     override val elements = phrase {
         val barnetillegg_saerkullsbarn_inntekt_brukt_i_avkortning_vedvirk =
             argument().select(Param::barnetillegg_saerkullsbarn_inntekt_brukt_i_avkortning_vedvirk)
@@ -606,7 +607,7 @@ object IkkeRedusBTSBPgaInntekt_001 : Phrase<IkkeRedusBTSBPgaInntekt_001.Param> {
     )
 }
 
-object RedusBTSBPgaInntekt_001 : Phrase<RedusBTSBPgaInntekt_001.Param> {
+object RedusBTSBPgaInntekt_001 : Phrase<LanguageSupport.Triple<Bokmal, Nynorsk, English>, RedusBTSBPgaInntekt_001.Param> {
     override val elements = phrase {
         val barnetillegg_saerkullsbarn_inntekt_brukt_i_avkortning_vedvirk =
             argument().select(Param::barnetillegg_saerkullsbarn_inntekt_brukt_i_avkortning_vedvirk)
@@ -628,7 +629,7 @@ object RedusBTSBPgaInntekt_001 : Phrase<RedusBTSBPgaInntekt_001.Param> {
     )
 }
 
-object JusterBelopRedusBTPgaInntekt_001 : Phrase<Unit> {
+object JusterBelopRedusBTPgaInntekt_001 : Phrase<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Unit> {
     override val elements = phrase {
         paragraph {
             text(
@@ -640,7 +641,7 @@ object JusterBelopRedusBTPgaInntekt_001 : Phrase<Unit> {
     }
 }
 
-object JusterBelopIkkeUtbetaltBTPgaInntekt_001 : Phrase<Unit> {
+object JusterBelopIkkeUtbetaltBTPgaInntekt_001 : Phrase<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Unit> {
     override val elements = phrase {
         paragraph {
             text(
@@ -652,7 +653,7 @@ object JusterBelopIkkeUtbetaltBTPgaInntekt_001 : Phrase<Unit> {
     }
 }
 
-object IkkeUtbetaltBTSBPgaInntekt_001 : Phrase<IkkeUtbetaltBTSBPgaInntekt_001.Param> {
+object IkkeUtbetaltBTSBPgaInntekt_001 : Phrase<LanguageSupport.Triple<Bokmal, Nynorsk, English>, IkkeUtbetaltBTSBPgaInntekt_001.Param> {
     override val elements = phrase {
         val barnetillegg_saerkullsbarn_inntekt_brukt_i_avkortning_vedvirk =
             argument().select(Param::barnetillegg_saerkullsbarn_inntekt_brukt_i_avkortning_vedvirk)
@@ -674,7 +675,7 @@ object IkkeUtbetaltBTSBPgaInntekt_001 : Phrase<IkkeUtbetaltBTSBPgaInntekt_001.Pa
     )
 }
 
-object HjemmelBT_001 : Phrase<Unit> {
+object HjemmelBT_001 : Phrase<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Unit> {
     override val elements = phrase {
         paragraph {
             text(
@@ -686,7 +687,7 @@ object HjemmelBT_001 : Phrase<Unit> {
     }
 }
 
-object HjemmelBTOvergangsregler_001 : Phrase<Unit> {
+object HjemmelBTOvergangsregler_001 : Phrase<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Unit> {
     override val elements = phrase {
         paragraph {
             text(
@@ -698,7 +699,7 @@ object HjemmelBTOvergangsregler_001 : Phrase<Unit> {
     }
 }
 
-object HjemmelBTRedus_001 : Phrase<Unit> {
+object HjemmelBTRedus_001 : Phrase<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Unit> {
     override val elements = phrase {
         paragraph {
             text(
@@ -710,7 +711,7 @@ object HjemmelBTRedus_001 : Phrase<Unit> {
     }
 }
 
-object HjemmelBTRedusOvergangsregler_001 : Phrase<Unit> {
+object HjemmelBTRedusOvergangsregler_001 : Phrase<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Unit> {
     override val elements = phrase {
         paragraph {
             text(
@@ -722,7 +723,7 @@ object HjemmelBTRedusOvergangsregler_001 : Phrase<Unit> {
     }
 }
 
-object MerInfoBT_001 : Phrase<Unit> {
+object MerInfoBT_001 : Phrase<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Unit> {
     override val elements = phrase {
         paragraph {
             text(
@@ -734,7 +735,7 @@ object MerInfoBT_001 : Phrase<Unit> {
     }
 }
 
-object GjRettSamboerOverskrift : Phrase<GjRettSamboerOverskrift.Param> {
+object GjRettSamboerOverskrift : Phrase<LanguageSupport.Triple<Bokmal, Nynorsk, English>, GjRettSamboerOverskrift.Param> {
     override val elements = phrase {
         val avdod_navn = argument().select(Param::avdod_navn)
         title1 {
@@ -749,7 +750,7 @@ object GjRettSamboerOverskrift : Phrase<GjRettSamboerOverskrift.Param> {
     data class Param(val avdod_navn: String)
 }
 
-object GjRettUTSamboer_001 : Phrase<Unit> {
+object GjRettUTSamboer_001 : Phrase<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Unit> {
     override val elements = phrase {
         paragraph {
             text(
@@ -761,7 +762,7 @@ object GjRettUTSamboer_001 : Phrase<Unit> {
     }
 }
 
-object RettTilUTGJTOverskrift_001 : Phrase<Unit> {
+object RettTilUTGJTOverskrift_001 : Phrase<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Unit> {
     override val elements = phrase {
         title1 {
             text(
@@ -773,7 +774,7 @@ object RettTilUTGJTOverskrift_001 : Phrase<Unit> {
     }
 }
 
-object HvemUTGJTVilkar_001 : Phrase<Unit> {
+object HvemUTGJTVilkar_001 : Phrase<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Unit> {
     override val elements = phrase {
         paragraph {
             text(
@@ -815,7 +816,7 @@ object HvemUTGJTVilkar_001 : Phrase<Unit> {
     }
 }
 
-object HvordanSoekerDuOverskrift_001 : Phrase<Unit> {
+object HvordanSoekerDuOverskrift_001 : Phrase<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Unit> {
     override val elements = phrase {
         title1 {
             text(
@@ -827,7 +828,7 @@ object HvordanSoekerDuOverskrift_001 : Phrase<Unit> {
     }
 }
 
-object SoekUTGJT_001 : Phrase<Unit> {
+object SoekUTGJT_001 : Phrase<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Unit> {
     override val elements = phrase {
         paragraph {
             text(
@@ -840,7 +841,7 @@ object SoekUTGJT_001 : Phrase<Unit> {
     }
 }
 
-object SoekAvtaleLandUT_001 : Phrase<Unit> {
+object SoekAvtaleLandUT_001 : Phrase<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Unit> {
     override val elements = phrase {
         paragraph {
             text(
@@ -852,7 +853,7 @@ object SoekAvtaleLandUT_001 : Phrase<Unit> {
     }
 }
 
-object AvdodBoddArbUtlandOverskrift_001 : Phrase<Unit> {
+object AvdodBoddArbUtlandOverskrift_001 : Phrase<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Unit> {
     override val elements = phrase {
         title1 {
             text(
@@ -864,7 +865,7 @@ object AvdodBoddArbUtlandOverskrift_001 : Phrase<Unit> {
     }
 }
 
-object AvdodBoddArbUtland2_001 : Phrase<Unit> {
+object AvdodBoddArbUtland2_001 : Phrase<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Unit> {
     override val elements = phrase {
         paragraph {
             text(
@@ -876,7 +877,7 @@ object AvdodBoddArbUtland2_001 : Phrase<Unit> {
     }
 }
 
-object PensjonFraAndreOverskrift_001 : Phrase<Unit> {
+object PensjonFraAndreOverskrift_001 : Phrase<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Unit> {
     override val elements = phrase {
         paragraph {
             text(
@@ -888,7 +889,7 @@ object PensjonFraAndreOverskrift_001 : Phrase<Unit> {
     }
 }
 
-object InfoAvdodPenFraAndre_001 : Phrase<Unit> {
+object InfoAvdodPenFraAndre_001 : Phrase<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Unit> {
     override val elements = phrase {
         paragraph {
             text(
@@ -900,7 +901,7 @@ object InfoAvdodPenFraAndre_001 : Phrase<Unit> {
     }
 }
 
-object HarBarnUnder18Overskrift_001 : Phrase<Unit> {
+object HarBarnUnder18Overskrift_001 : Phrase<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Unit> {
     override val elements = phrase {
         title1 {
             text(
@@ -912,7 +913,7 @@ object HarBarnUnder18Overskrift_001 : Phrase<Unit> {
     }
 }
 
-object HarBarnUtenBT_001 : Phrase<Unit> {
+object HarBarnUtenBT_001 : Phrase<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Unit> {
     override val elements = phrase {
         paragraph {
             text(
@@ -924,7 +925,7 @@ object HarBarnUtenBT_001 : Phrase<Unit> {
     }
 }
 
-object HarBarnUnder18_001 : Phrase<Unit> {
+object HarBarnUnder18_001 : Phrase<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Unit> {
     override val elements = phrase {
         paragraph {
             text(
@@ -936,7 +937,7 @@ object HarBarnUnder18_001 : Phrase<Unit> {
     }
 }
 
-object VirknTdsPktOverskrift_001 : Phrase<Unit> {
+object VirknTdsPktOverskrift_001 : Phrase<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Unit> {
     override val elements = phrase {
         title1 {
             text(
@@ -948,7 +949,7 @@ object VirknTdsPktOverskrift_001 : Phrase<Unit> {
     }
 }
 
-object VirkTdsPktUT_001 : Phrase<VirkTdsPktUT_001.Param> {
+object VirkTdsPktUT_001 : Phrase<LanguageSupport.Triple<Bokmal, Nynorsk, English>, VirkTdsPktUT_001.Param> {
     override val elements = phrase {
         val krav_virkedato_fom = argument().select(Param::krav_virkedato_fom)
         paragraph {
@@ -963,7 +964,7 @@ object VirkTdsPktUT_001 : Phrase<VirkTdsPktUT_001.Param> {
     data class Param(val krav_virkedato_fom: LocalDate)
 }
 
-object VirkTdsPktUTIkkeEndring_001 : Phrase<VirkTdsPktUTIkkeEndring_001.Param> {
+object VirkTdsPktUTIkkeEndring_001 : Phrase<LanguageSupport.Triple<Bokmal, Nynorsk, English>, VirkTdsPktUTIkkeEndring_001.Param> {
     override val elements = phrase {
         val krav_virkedato_fom = argument().select(Param::krav_virkedato_fom)
         paragraph {
@@ -978,7 +979,7 @@ object VirkTdsPktUTIkkeEndring_001 : Phrase<VirkTdsPktUTIkkeEndring_001.Param> {
     data class Param(val krav_virkedato_fom: LocalDate)
 }
 
-object VirkTdsPktUTBTOmregn_001 : Phrase<VirkTdsPktUTBTOmregn_001.Param> {
+object VirkTdsPktUTBTOmregn_001 : Phrase<LanguageSupport.Triple<Bokmal, Nynorsk, English>, VirkTdsPktUTBTOmregn_001.Param> {
     override val elements = phrase {
         val krav_virkedato_fom = argument().select(Param::krav_virkedato_fom)
         paragraph {
@@ -993,7 +994,7 @@ object VirkTdsPktUTBTOmregn_001 : Phrase<VirkTdsPktUTBTOmregn_001.Param> {
     data class Param(val krav_virkedato_fom: LocalDate)
 }
 
-object VirkTdsPktUTAvkortetTil0_001 : Phrase<VirkTdsPktUTAvkortetTil0_001.Param> {
+object VirkTdsPktUTAvkortetTil0_001 : Phrase<LanguageSupport.Triple<Bokmal, Nynorsk, English>, VirkTdsPktUTAvkortetTil0_001.Param> {
     override val elements = phrase {
         val krav_virkedato_fom = argument().select(Param::krav_virkedato_fom)
         paragraph {
@@ -1008,7 +1009,7 @@ object VirkTdsPktUTAvkortetTil0_001 : Phrase<VirkTdsPktUTAvkortetTil0_001.Param>
     data class Param(val krav_virkedato_fom: LocalDate)
 }
 
-object MeldInntektUTOverskrift_001 : Phrase<Unit> {
+object MeldInntektUTOverskrift_001 : Phrase<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Unit> {
     override val elements = phrase {
         title1 {
             text(
@@ -1020,7 +1021,7 @@ object MeldInntektUTOverskrift_001 : Phrase<Unit> {
     }
 }
 
-object MeldInntektUT_001 : Phrase<Unit> {
+object MeldInntektUT_001 : Phrase<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Unit> {
     override val elements = phrase {
         paragraph {
             text(
@@ -1032,7 +1033,7 @@ object MeldInntektUT_001 : Phrase<Unit> {
     }
 }
 
-object MeldInntektUTBT_001 : Phrase<Unit> {
+object MeldInntektUTBT_001 : Phrase<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Unit> {
     override val elements = phrase {
         paragraph {
             text(
@@ -1044,7 +1045,7 @@ object MeldInntektUTBT_001 : Phrase<Unit> {
     }
 }
 
-object MeldEndringerPesys_001 : Phrase<Unit> {
+object MeldEndringerPesys_001 : Phrase<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Unit> {
     override val elements = phrase {
         title1 {
             text(
@@ -1070,7 +1071,7 @@ object MeldEndringerPesys_001 : Phrase<Unit> {
     }
 }
 
-object RettTilKlagePesys_001 : Phrase<Unit> {
+object RettTilKlagePesys_001 : Phrase<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Unit> {
     override val elements = phrase {
         title1 {
             text(
@@ -1096,7 +1097,7 @@ object RettTilKlagePesys_001 : Phrase<Unit> {
     }
 }
 
-object RettTilInnsynPesys_001 : Phrase<Unit> {
+object RettTilInnsynPesys_001 : Phrase<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Unit> {
     override val elements = phrase {
         title1 {
             text(
@@ -1115,7 +1116,7 @@ object RettTilInnsynPesys_001 : Phrase<Unit> {
     }
 }
 
-object SjekkUtbetalingeneOverskrift_001 : Phrase<Unit> {
+object SjekkUtbetalingeneOverskrift_001 : Phrase<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Unit> {
     override val elements = phrase {
         title1 {
             text(
@@ -1127,7 +1128,7 @@ object SjekkUtbetalingeneOverskrift_001 : Phrase<Unit> {
     }
 }
 
-object SjekkUtbetalingeneUT_001 : Phrase<Unit> {
+object SjekkUtbetalingeneUT_001 : Phrase<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Unit> {
     override val elements = phrase {
         paragraph {
             text(
@@ -1139,7 +1140,7 @@ object SjekkUtbetalingeneUT_001 : Phrase<Unit> {
     }
 }
 
-object SkattekortOverskrift_001 : Phrase<Unit> {
+object SkattekortOverskrift_001 : Phrase<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Unit> {
     override val elements = phrase {
         title1 {
             text(
@@ -1151,7 +1152,7 @@ object SkattekortOverskrift_001 : Phrase<Unit> {
     }
 }
 
-object SkattekortUT_001 : Phrase<Unit> {
+object SkattekortUT_001 : Phrase<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Unit> {
     override val elements = phrase {
         paragraph {
             text(
@@ -1163,7 +1164,7 @@ object SkattekortUT_001 : Phrase<Unit> {
     }
 }
 
-object SkattBorIUtlandPesys_001 : Phrase<Unit> {
+object SkattBorIUtlandPesys_001 : Phrase<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Unit> {
     override val elements = phrase {
         title1 {
             text(

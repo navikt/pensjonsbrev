@@ -183,7 +183,7 @@ object PensjonLatex : BaseTemplate() {
 
     private fun renderAttachment(
         letter: Letter<*>,
-        attachment: IncludeAttachment<*>,
+        attachment: IncludeAttachment<*, *>,
         printWriter: LatexPrintWriter
     ) =
         with(printWriter) {
