@@ -11,7 +11,7 @@ import no.nav.pensjon.brev.template.base.PensjonLatex
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
-typealias BokmalLang = LanguageCombination.Single<Language.Bokmal>
+typealias BokmalLang = LanguageSupport.Single<Language.Bokmal>
 
 class TemplateTest {
 
@@ -66,12 +66,13 @@ class TemplateTest {
 
     @Test
     fun `createTemplate adds attachment`() {
-        val attachment = createAttachment<Unit>(
-            newText(
+        val attachment = createAttachment(
+            title = newText(
                 Language.Bokmal to "asdf",
                 Language.Nynorsk to "asdf",
                 Language.English to "asdf",
-            )
+            ),
+            attachmentDataType = Unit::class
         ){
             text(
                 Language.Bokmal to "hei",

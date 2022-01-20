@@ -4,8 +4,7 @@ import no.nav.pensjon.brev.api.model.Institusjon
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.Sivilstand
 import no.nav.pensjon.brev.maler.fraser.*
-import no.nav.pensjon.brev.template.Language
-import no.nav.pensjon.brev.template.Language.Bokmal
+import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.*
 
@@ -20,13 +19,13 @@ data class OrienteringOmRettigheterParam(
     val saktype: Sakstype,
     val sivilstand: Sivilstand,
 )
-val orienteringOmRettigheterOgPlikter = createAttachment<OrienteringOmRettigheterParam>(
+val orienteringOmRettigheterOgPlikter = createAttachment(
     title = newText(
         Bokmal to "Orientering om rettigheter og plikter",
-        Language.Nynorsk to "",
-        Language.English to "",
+        Nynorsk to "Orientering om rettar og plikter",
     ),
-    includeSakspart = true,
+    attachmentDataType = OrienteringOmRettigheterParam::class,
+    includeSakspart = true
 ) {
     val bor_i_norge = argument().select(OrienteringOmRettigheterParam::bor_i_norge)
     val sivilstand = argument().select(OrienteringOmRettigheterParam::sivilstand)
