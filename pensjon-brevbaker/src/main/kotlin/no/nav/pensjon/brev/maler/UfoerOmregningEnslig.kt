@@ -554,14 +554,7 @@ object UfoerOmregningEnslig : StaticTemplate {
 
         includeAttachment(orienteringOmRettigheterOgPlikter, argument().map {
             OrienteringOmRettigheterParam(
-                it.bor_i_norge,
-                it.eps_bor_sammen_med_bruker_gjeldende,
-                it.eps_institusjon_gjeldende,
-                it.har_barnetillegg_felles_barn_vedvirk,
-                it.har_barnetillegg_saerkullsbarn_vedvirk,
-                it.institusjon_gjeldende,
-                it.saktype,
-                it.sivilstand,
+               "test"
             )
         })
     }
