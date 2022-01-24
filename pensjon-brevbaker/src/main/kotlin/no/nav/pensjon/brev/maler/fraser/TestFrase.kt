@@ -5,7 +5,7 @@ import no.nav.pensjon.brev.template.dsl.*
 
 data class TestFraseDto(val test: String)
 
-object TestFrase : Phrase<TestFraseDto> {
+object TestFrase : Phrase<LanguageSupport.Triple<Language.Bokmal, Language.Nynorsk, Language.English>, TestFraseDto> {
     override val elements = phrase {
         paragraph {
             val input = argument().select(TestFraseDto::test)
