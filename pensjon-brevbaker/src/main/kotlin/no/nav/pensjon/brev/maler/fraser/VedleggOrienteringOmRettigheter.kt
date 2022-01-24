@@ -632,8 +632,8 @@ object vedleggPlikterAFP_001 : Phrase<LanguageSupport.Triple<Bokmal, Nynorsk, En
     }
 }
 
-object vedleggPlikterAFP1_001 : Phrase<Unit> {
-    override val elements = phrase {
+object vedleggPlikterAFP1_001 : Phrase<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Unit> {
+    override val elements = phrase{
         text(
                 Bokmal to "inntekten din endrer seg",
                 Nynorsk to "inntekta di endrar seg",
