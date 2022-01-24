@@ -67,6 +67,7 @@ val orienteringOmRettigheterOgPlikter = createAttachment<OrienteringOmRettighete
     }
     includePhrase(vedleggPlikterAFP_001)
     list {
+        includePhrase(vedleggPlikterAFP1_001)
         includePhrase(vedleggPlikterAFP2_001)
         includePhrase(vedleggPlikterAFP3_001)
         includePhrase(vedleggPlikterAFP4_001)

@@ -23,19 +23,21 @@ object vedleggPlikterOgRettigheterOverskriftPesys_001 : Phrase<Unit> {
 
 object vedleggPlikter_001 : Phrase<Unit> {
     override val elements = phrase {
-        title1 {
-            text(
-                    Bokmal to "Plikt til å opplyse om endringer - folketrygdloven § 21-3",
-                    Nynorsk to "Plikt til å opplyse om endringar  - folketrygdlova § 21-3",
-                    English to "Duty to inform of changes  - Section 21-3 of the National Insurance Act"
-            )
-        }
         paragraph {
-            text(
-                    Bokmal to "Du må gi oss beskjed hvis",
-                    Nynorsk to "Du må gi oss beskjed hvis",
-                    English to "You must inform us if"
-            )
+            title1 {
+                text(
+                        Bokmal to "Plikt til å opplyse om endringer - folketrygdloven § 21-3",
+                        Nynorsk to "Plikt til å opplyse om endringar  - folketrygdlova § 21-3",
+                        English to "Duty to inform of changes  - Section 21-3 of the National Insurance Act"
+                )
+            }
+            paragraph {
+                text(
+                        Bokmal to "Du må gi oss beskjed hvis",
+                        Nynorsk to "Du må gi oss beskjed hvis",
+                        English to "You must inform us if"
+                )
+            }
         }
     }
 }
@@ -477,13 +479,17 @@ object vedleggPlikterinntektsprovingETAP_001 : Phrase<Unit> {
 object vedleggPlikterUT_001 : Phrase<Unit> {
     override val elements = phrase {
         paragraph {
+            title1 {
+                text(
+                        Bokmal to "Plikt til å opplyse om endringer - folketrygdloven § 21-3",
+                        Nynorsk to "Plikt til å opplyse om endringar - folketrygdlova § 21-3",
+                        English to "Duty to inform of changes - Section 21-3 of the National Insurance Act"
+                )
+            }
             text(
-                    Bokmal to "Plikt til å opplyse om endringer - folketrygdloven § 21-3\n" +
-                            "Du må melde fra til NAV hvis",
-                    Nynorsk to "Plikt til å opplyse om endringar - folketrygdlova § 21-3\n" +
-                            "Du må melde frå til NAV om",
-                    English to "Duty to inform of changes - Section 21-3 of the National Insurance Act\n" +
-                            "You must notify NAV if"
+                    Bokmal to "Du må melde fra til NAV hvis",
+                    Nynorsk to "Du må melde frå til NAV om",
+                    English to "You must notify NAV if"
             )
         }
     }
@@ -492,10 +498,10 @@ object vedleggPlikterUT_001 : Phrase<Unit> {
 object vedleggPlikterUT1_001 : Phrase<Unit> {
     override val elements = phrase {
         text(
-                Bokmal to "inntekten din endrer seg. Du kan informere NAV om endret inntekt ved å bruke selvbetjeningsløsningen på nav.no",
-                Nynorsk to "inntekta di endrar seg. Du kan informere NAV om endra inntekt ved å bruke sjølvbeteningsløysninga på nav.no",
-                English to "your income changes. You can notify NAV of changes in your income by using the online service at nav.no"
-        )
+                    Bokmal to "inntekten din endrer seg. Du kan informere NAV om endret inntekt ved å bruke selvbetjeningsløsningen på nav.no",
+                    Nynorsk to "inntekta di endrar seg. Du kan informere NAV om endra inntekt ved å bruke sjølvbeteningsløysninga på nav.no",
+                    English to "your income changes. You can notify NAV of changes in your income by using the online service at nav.no"
+            )
     }
 }
 
@@ -624,16 +630,20 @@ object vedleggPlikterAFP_001 : Phrase<Unit> {
                     Nynorsk to "Du må melde frå til NAV om endringar som har noko å seie for storleiken på pensjonen din. Du må alltid melde frå dersom",
                     English to "You must notify NAV of changes that may be important for your pension. You must always notify us if"
             )
-            list {
-                text(
-                        Bokmal to "inntekten din endrer seg",
-                        Nynorsk to "inntekta di endrar seg",
-                        English to "your income changes"
-                )
-            }
         }
     }
 }
+
+object vedleggPlikterAFP1_001 : Phrase<Unit> {
+    override val elements = phrase {
+        text(
+                Bokmal to "inntekten din endrer seg",
+                Nynorsk to "inntekta di endrar seg",
+                English to "your income changes"
+        )
+    }
+}
+
 object vedleggPlikterAFP2_001 : Phrase<Unit> {
     override val elements = phrase {
         text(
@@ -769,21 +779,29 @@ object vedleggKlagePensjon_001 : Phrase<Unit> {
                         English to "Appealing a decision - Section 21-12 of the National Insurance Act"
                 )
             }
+        }
+        paragraph {
             text(
                     Bokmal to "Du kan klage på vedtaket innen seks uker fra du mottok det. Kontoret som har fattet vedtaket vil da vurdere saken din på nytt.",
                     Nynorsk to "Du kan klage på vedtaket innan seks veker frå du fekk det. Kontoret som har gjort vedtaket, vurderer då saka di på nytt.",
                     English to "You may appeal the decision within six weeks of receiving it. The department that made the decision will then review your case."
             )
+        }
+        paragraph {
             text(
                     Bokmal to "Hvis du ikke får gjennomslag for klagen din, blir den sendt videre til NAV Klageinstans for ny vurdering og avgjørelse. Dersom du heller ikke får gjennomslag hos klageinstansen, kan du anke saken inn for Trygderetten.",
                     Nynorsk to "Dersom du ikkje får gjennomslag for klaga di, blir ho send vidare til NAV Klageinstans for ny vurdering og avgjerd. Dersom du heller ikkje får gjennomslag hos klageinstansen, kan du anke saka inn for Trygderetten.",
                     English to "If your complaint is declined, it will be forwarded to NAV Appeals for a new review and decision. If this review is also unsuccessful, you may appeal to The National Insurance Court."
             )
+        }
+        paragraph {
             text(
                     Bokmal to "Klagen må være skriftlig og inneholde navn, fødselsnummer og adresse. Bruk gjerne skjemaet som du finner på nav.no/klage. Trenger du hjelp, er du velkommen til å ringe oss på telefon [_Script return_kontaktTelefonnummer_].",
                     Nynorsk to "Klaga må vere skriftleg og innehalde namn, fødselsnummer og adresse. Bruk gjerne skjemaet som du finn på nav.no/klage. Treng du hjelp, er du velkomen til å ringje oss på telefon [_Script return_kontaktTelefonnummer_].",
                     English to "Your appeal must be made in writing and include your name, national identity number and address. Feel free to use the form found at nav.no/klage. Should you need assistance in writing the appeal, please call us at tel.: [_Script return_kontaktTelefonnummer_]."
             )
+        }
+        paragraph {
             text(
                     Bokmal to "Du må skrive",
                     Nynorsk to "Du må skrive",
@@ -801,33 +819,41 @@ object vedleggKlagePensjon_001 : Phrase<Unit> {
                         English to "how you believe the decision should be amended"
                 )
             }
+        }
+        paragraph {
+            text(
+                    Bokmal to "Du bør også",
+                    Nynorsk to "Du bør også",
+                    English to "You should also"
+            )
+            list {
                 text(
-                        Bokmal to "Du bør også",
-                        Nynorsk to "Du bør også",
-                        English to "You should also"
+                        Bokmal to "skrive hvorfor du mener vedtaket er feil",
+                        Nynorsk to "skrive kvifor du meiner vedtaket er feil",
+                        English to "specify why you believe the decision is wrong"
                 )
-                list {
-                    text(
-                            Bokmal to "skrive hvorfor du mener vedtaket er feil",
-                            Nynorsk to "skrive kvifor du meiner vedtaket er feil",
-                            English to "specify why you believe the decision is wrong"
-                    )
-                    text(
-                            Bokmal to "nevne erklæringer og andre dokumenter som du legger ved klagen",
-                            Nynorsk to "nemne erklæringar og andre dokument som du legg ved klaga",
-                            English to "list statements and other documents attached to the appeal"
-                    )
-                }
-                    text(
-                            Bokmal to "Husk å undertegne klagen, ellers må vi sende den i retur til deg.",
-                            Nynorsk to "Hugs å skrive under klaga, elles må vi sende henne i retur til deg.",
-                            English to "Please remember to sign the appeal, otherwise it will be returned to you."
-                    )
-                    text(
-                            Bokmal to "Får du medhold, kan du få dekket vesentlige utgifter som har vært nødvendige for å få endret vedtaket. Du kan ha krav på fri rettshjelp etter rettshjelploven. Informasjon om denne ordningen kan du få hos fylkesmannen, advokater eller NAV.",
-                            Nynorsk to "Får du medhald, kan du få dekt vesentlege utgifter som har vore nødvendige for å få endra vedtaket. Du kan ha krav på fri rettshjelp etter rettshjelplova. Informasjon om denne ordninga kan du få hos fylkesmannen, advokatar eller NAV.",
-                            English to "If your appeal is successful, you may be eligible for compensation for costs incurred to have the decision overturned. You may also be eligible for free legal aid, pursuant to the Legal Aid Act. Information about the legal aid scheme can be obtained from the county governor, lawyers or NAV."
-                    )
+                text(
+                        Bokmal to "nevne erklæringer og andre dokumenter som du legger ved klagen",
+                        Nynorsk to "nemne erklæringar og andre dokument som du legg ved klaga",
+                        English to "list statements and other documents attached to the appeal"
+                )
+            }
+        }
+        paragraph {
+            text(
+                    Bokmal to "Husk å undertegne klagen, ellers må vi sende den i retur til deg.",
+                    Nynorsk to "Hugs å skrive under klaga, elles må vi sende henne i retur til deg.",
+                    English to "Please remember to sign the appeal, otherwise it will be returned to you."
+            )
+        }
+        paragraph {
+            text(
+                    Bokmal to "Får du medhold, kan du få dekket vesentlige utgifter som har vært nødvendige for å få endret vedtaket. Du kan ha krav på fri rettshjelp etter rettshjelploven. Informasjon om denne ordningen kan du få hos fylkesmannen, advokater eller NAV.",
+                    Nynorsk to "Får du medhald, kan du få dekt vesentlege utgifter som har vore nødvendige for å få endra vedtaket. Du kan ha krav på fri rettshjelp etter rettshjelplova. Informasjon om denne ordninga kan du få hos fylkesmannen, advokatar eller NAV.",
+                    English to "If your appeal is successful, you may be eligible for compensation for costs incurred to have the decision overturned. You may also be eligible for free legal aid, pursuant to the Legal Aid Act. Information about the legal aid scheme can be obtained from the county governor, lawyers or NAV."
+            )
+        }
+        paragraph {
                     text(
                             Bokmal to "Du kan lese om saksomkostninger i forvaltningsloven § 36.",
                             Nynorsk to "Du kan lese om saksomkostningar i forvaltningslova § 36.",
@@ -847,16 +873,22 @@ object vedleggKlagePesys_001 : Phrase<Unit> {
                         English to "Appealing a decision - Section 21-12 of the National Insurance Act"
                 )
             }
+        }
+        paragraph {
             text(
                     Bokmal to "Du kan klage på vedtaket innen seks uker fra du mottok det. Kontoret som har fattet vedtaket, vil da vurdere saken din på nytt.",
                     Nynorsk to "Du kan klage på vedtaket innan seks veker frå du fekk det. Kontoret som har gjort vedtaket, vurderer då saka di på nytt.",
                     English to "You may appeal the decision within six weeks of receiving it. The NAV office that made the decision will reconsider your case."
             )
+        }
+        paragraph {
             text(
                     Bokmal to "Klagen må være skriftlig og inneholde",
                     Nynorsk to "Klaga må vere skriftleg og innehalde",
                     English to "Your appeal must be made in writing and include"
             )
+        }
+        paragraph {
             list {
                 text(
                         Bokmal to "navn, fødselsnummer og adresse",
@@ -879,43 +911,55 @@ object vedleggKlagePesys_001 : Phrase<Unit> {
                         English to "your signature"
                 )
             }
-            text(
-                    Bokmal to "Du bør også",
-                    Nynorsk to "Du bør også",
-                    English to "Your appeal should also spesify"
-            )
-            list {
+            paragraph {
                 text(
-                        Bokmal to "skrive hvorfor du mener vedtaket er feil",
-                        Nynorsk to "skrive kvifor du meiner vedtaket er feil",
-                        English to "why you believe the decision is wrong"
-                )
-                text(
-                        Bokmal to "nødvendige erklæringer og andre dokumenter",
-                        Nynorsk to "nemne erklæringar og andre dokument som du legg ved klaga",
-                        English to "a list of statements and other documents attached to the appeal"
+                        Bokmal to "Du bør også",
+                        Nynorsk to "Du bør også",
+                        English to "Your appeal should also spesify"
                 )
             }
-            text(
-                    Bokmal to "Bruk gjerne skjemaet du finner på nav.no/klage. NAV kan hjelpe deg med å skrive klagen.",
-                    Nynorsk to "Bruk gjerne skjemaet som du finn på nav.no/klage. NAV kan hjelpe deg med å skrive klaga.",
-                    English to "You can use the form found on nav.no/klage. NAV can assist you in writing the appeal."
-            )
-            text(
-                    Bokmal to "Hvis du ikke får gjennomslag for klagen din, blir den sendt videre til NAV Klageinstans for ny vurdering og avgjørelse. Dersom du heller ikke får gjennomslag hos klageinstansen, kan du anke saken inn for Trygderetten.",
-                    Nynorsk to "Dersom du ikkje får gjennomslag for klaga di, blir ho send vidare til NAV Klageinstans for ny vurdering og avgjerd. Dersom du heller ikkje får gjennomslag hos klageinstansen, kan du anke saka inn for Trygderetten.",
-                    English to "If your appeal is not successful, it will be sent to NAV Klageinstans for a new evaluation and final decision. If then you are not successful with your appeal, you can appeal the case in The National Insurance Court."
-            )
-            text(
-                    Bokmal to "Får du medhold, kan du få dekket vesentlige utgifter som har vært nødvendige for å få endret vedtaket. Du kan ha krav på fri rettshjelp etter rettshjelploven. Informasjon om denne ordningen kan du få hos fylkesmannen, advokater eller NAV.",
-                    Nynorsk to "Får du medhald, kan du få dekt vesentlege utgifter som har vore nødvendige for å få endra vedtaket. Du kan ha krav på fri rettshjelp etter rettshjelplova. Informasjon om denne ordninga kan du få hos fylkesmannen, advokatar eller NAV.",
-                    English to "If your appeal is successful, you may be eligible for compensation for the costs incurred to have the decision overturned. You may also be eligible for free legal aid, pursuant to the Legal Aid Act. Information about the legal aid scheme can be obtained from the county governor, lawyers of NAV."
-            )
-            text(
-                    Bokmal to "Du kan lese om saksomkostninger i forvaltningsloven § 36.",
-                    Nynorsk to "Du kan lese om saksomkostningar i forvaltningslova § 36.",
-                    English to "You can read more about the costs of appeal in section 36 of the Public Administration Act."
-            )
+            paragraph {
+                list {
+                    text(
+                            Bokmal to "skrive hvorfor du mener vedtaket er feil",
+                            Nynorsk to "skrive kvifor du meiner vedtaket er feil",
+                            English to "why you believe the decision is wrong"
+                    )
+                    text(
+                            Bokmal to "nødvendige erklæringer og andre dokumenter",
+                            Nynorsk to "nemne erklæringar og andre dokument som du legg ved klaga",
+                            English to "a list of statements and other documents attached to the appeal"
+                    )
+                }
+            }
+            paragraph {
+                text(
+                        Bokmal to "Bruk gjerne skjemaet du finner på nav.no/klage. NAV kan hjelpe deg med å skrive klagen.",
+                        Nynorsk to "Bruk gjerne skjemaet som du finn på nav.no/klage. NAV kan hjelpe deg med å skrive klaga.",
+                        English to "You can use the form found on nav.no/klage. NAV can assist you in writing the appeal."
+                )
+            }
+            paragraph {
+                text(
+                        Bokmal to "Hvis du ikke får gjennomslag for klagen din, blir den sendt videre til NAV Klageinstans for ny vurdering og avgjørelse. Dersom du heller ikke får gjennomslag hos klageinstansen, kan du anke saken inn for Trygderetten.",
+                        Nynorsk to "Dersom du ikkje får gjennomslag for klaga di, blir ho send vidare til NAV Klageinstans for ny vurdering og avgjerd. Dersom du heller ikkje får gjennomslag hos klageinstansen, kan du anke saka inn for Trygderetten.",
+                        English to "If your appeal is not successful, it will be sent to NAV Klageinstans for a new evaluation and final decision. If then you are not successful with your appeal, you can appeal the case in The National Insurance Court."
+                )
+            }
+            paragraph {
+                text(
+                        Bokmal to "Får du medhold, kan du få dekket vesentlige utgifter som har vært nødvendige for å få endret vedtaket. Du kan ha krav på fri rettshjelp etter rettshjelploven. Informasjon om denne ordningen kan du få hos fylkesmannen, advokater eller NAV.",
+                        Nynorsk to "Får du medhald, kan du få dekt vesentlege utgifter som har vore nødvendige for å få endra vedtaket. Du kan ha krav på fri rettshjelp etter rettshjelplova. Informasjon om denne ordninga kan du få hos fylkesmannen, advokatar eller NAV.",
+                        English to "If your appeal is successful, you may be eligible for compensation for the costs incurred to have the decision overturned. You may also be eligible for free legal aid, pursuant to the Legal Aid Act. Information about the legal aid scheme can be obtained from the county governor, lawyers of NAV."
+                )
+            }
+            paragraph {
+                text(
+                        Bokmal to "Du kan lese om saksomkostninger i forvaltningsloven § 36.",
+                        Nynorsk to "Du kan lese om saksomkostningar i forvaltningslova § 36.",
+                        English to "You can read more about the costs of appeal in section 36 of the Public Administration Act."
+                )
+            }
         }
     }
 }

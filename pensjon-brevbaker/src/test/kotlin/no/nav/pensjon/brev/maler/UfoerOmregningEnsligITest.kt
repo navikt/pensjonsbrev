@@ -29,7 +29,7 @@ class UfoerOmregningEnsligITest {
         Letter(
             UfoerOmregningEnslig.template,
             test,
-            Language.English,
+            Language.Bokmal,
             Fixtures.fellesAuto
         ).render()
             .let { PdfCompilationInput(it.base64EncodedFiles()) }
