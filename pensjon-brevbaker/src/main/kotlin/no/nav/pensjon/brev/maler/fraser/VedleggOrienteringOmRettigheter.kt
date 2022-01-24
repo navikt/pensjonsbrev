@@ -5,23 +5,23 @@ import no.nav.pensjon.brev.api.model.Sivilstand.GIFT
 import no.nav.pensjon.brev.api.model.Sivilstand.GIFT_LEVER_ADSKILT
 import no.nav.pensjon.brev.api.model.Telefonnummer
 import no.nav.pensjon.brev.template.Language.*
+import no.nav.pensjon.brev.template.LanguageSupport
 import no.nav.pensjon.brev.template.Phrase
 import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brev.template.phrase
 
-object VedleggPlikterOgRettigheterOverskriftPesys_001 : Phrase<Unit> {
+object VedleggPlikterOgRettigheterOverskriftPesys_001 : Phrase<LanguageSupport.Double<Bokmal, Nynorsk>, Unit> {
     override val elements = phrase {
         title1 {
             text(
                 Bokmal to "Dine rettigheter og plikter",
                 Nynorsk to "Dine rettar og plikter",
-                English to ""
             )
         }
     }
 }
 
-object VedleggPlikter_001 : Phrase<Unit> {
+object VedleggPlikter_001 : Phrase<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Unit> {
     override val elements = phrase {
         title1 {
             //TODO support italic and bold text
@@ -41,7 +41,7 @@ object VedleggPlikter_001 : Phrase<Unit> {
     }
 }
 
-object VedleggPlikterAP2_001 : Phrase<Unit> {
+object VedleggPlikterAP2_001 : Phrase<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Unit> {
     override val elements = phrase {
         text(
             Bokmal to "du skal oppholde deg utenfor Norge i en lengre periode eller skal flytte til et annet land",
@@ -51,7 +51,7 @@ object VedleggPlikterAP2_001 : Phrase<Unit> {
     }
 }
 
-object VedleggPlikterAP3_001 : Phrase<Unit> {
+object VedleggPlikterAP3_001 : Phrase<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Unit> {
     override val elements = phrase {
         text(
             Bokmal to "du flytter til et annet land, tilbake til Norge eller du endrer adresse i ditt nåværende bostedsland",
@@ -61,7 +61,7 @@ object VedleggPlikterAP3_001 : Phrase<Unit> {
     }
 }
 
-object VedleggPlikterAP1_001 : Phrase<Unit> {
+object VedleggPlikterAP1_001 : Phrase<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Unit> {
     override val elements = phrase {
         text(
             Bokmal to "du gifter deg eller inngår samboerskap",
@@ -71,7 +71,7 @@ object VedleggPlikterAP1_001 : Phrase<Unit> {
     }
 }
 
-object VedleggPlikterAP4_002 : Phrase<Unit> {
+object VedleggPlikterAP4_002 : Phrase<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Unit> {
     override val elements = phrase {
         text(
             Bokmal to "arbeidsinntekten, pensjonsinntekten, uføreinntekten eller kapitalinntekten endrer seg for ektefellen din",
@@ -81,7 +81,7 @@ object VedleggPlikterAP4_002 : Phrase<Unit> {
     }
 }
 
-object VedleggPlikterAP13_002 : Phrase<Unit> {
+object VedleggPlikterAP13_002 : Phrase<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Unit> {
     override val elements = phrase {
         text(
             Bokmal to "arbeidsinntekten, pensjonsinntekten, uføreinntekten eller kapitalinntekten endrer seg for partneren din",
@@ -91,7 +91,7 @@ object VedleggPlikterAP13_002 : Phrase<Unit> {
     }
 }
 
-object VedleggPlikterAP15_002 : Phrase<Unit> {
+object VedleggPlikterAP15_002 : Phrase<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Unit> {
     override val elements = phrase {
         text(
             Bokmal to "arbeidsinntekten, pensjonsinntekten, uføreinntekten eller kapitalinntekent endrer seg for samboeren din",
@@ -101,7 +101,7 @@ object VedleggPlikterAP15_002 : Phrase<Unit> {
     }
 }
 
-object VedleggPlikterAP6_002 : Phrase<Unit> {
+object VedleggPlikterAP6_002 : Phrase<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Unit> {
     override val elements = phrase {
         text(
             Bokmal to "du og ektefellen din flytter fra hverandre ",
@@ -111,7 +111,7 @@ object VedleggPlikterAP6_002 : Phrase<Unit> {
     }
 }
 
-object VedleggPlikterAP14_002 : Phrase<Unit> {
+object VedleggPlikterAP14_002 : Phrase<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Unit> {
     override val elements = phrase {
         text(
             Bokmal to "du og partneren din flytter fra hverandre ",
@@ -121,7 +121,7 @@ object VedleggPlikterAP14_002 : Phrase<Unit> {
     }
 }
 
-object VedleggPlikterAP18_001 : Phrase<Unit> {
+object VedleggPlikterAP18_001 : Phrase<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Unit> {
     override val elements = phrase {
         text(
             Bokmal to "du og samboeren din flytter fra hverandre",
@@ -131,7 +131,7 @@ object VedleggPlikterAP18_001 : Phrase<Unit> {
     }
 }
 
-object VedleggPlikterAP16_001 : Phrase<Unit> {
+object VedleggPlikterAP16_001 : Phrase<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Unit> {
     override val elements = phrase {
         text(
             Bokmal to "du gifter deg",
@@ -141,7 +141,7 @@ object VedleggPlikterAP16_001 : Phrase<Unit> {
     }
 }
 
-object VedleggPlikterAP17_001 : Phrase<Unit> {
+object VedleggPlikterAP17_001 : Phrase<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Unit> {
     override val elements = phrase {
         text(
             Bokmal to "du får barn med samboeren din",
@@ -151,7 +151,7 @@ object VedleggPlikterAP17_001 : Phrase<Unit> {
     }
 }
 
-object VedleggPlikterAP19_001 : Phrase<Unit> {
+object VedleggPlikterAP19_001 : Phrase<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Unit> {
     override val elements = phrase {
         text(
             Bokmal to "samboeren din dør",
@@ -161,7 +161,7 @@ object VedleggPlikterAP19_001 : Phrase<Unit> {
     }
 }
 
-object VedleggPlikterAP8_001 : Phrase<Unit> {
+object VedleggPlikterAP8_001 : Phrase<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Unit> {
     override val elements = phrase {
         text(
             Bokmal to "du og ektefellen din flytter sammen igjen",
@@ -171,7 +171,7 @@ object VedleggPlikterAP8_001 : Phrase<Unit> {
     }
 }
 
-object VedleggPlikterAP11_001 : Phrase<Unit> {
+object VedleggPlikterAP11_001 : Phrase<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Unit> {
     override val elements = phrase {
         text(
             Bokmal to "du og partneren din flytter sammen igjen",
@@ -181,7 +181,7 @@ object VedleggPlikterAP11_001 : Phrase<Unit> {
     }
 }
 
-object VedleggPlikterAP9_001 : Phrase<Unit> {
+object VedleggPlikterAP9_001 : Phrase<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Unit> {
     override val elements = phrase {
         text(
             Bokmal to "du blir skilt",
@@ -191,7 +191,7 @@ object VedleggPlikterAP9_001 : Phrase<Unit> {
     }
 }
 
-object VedleggPlikterAP7_001 : Phrase<Unit> {
+object VedleggPlikterAP7_001 : Phrase<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Unit> {
     override val elements = phrase {
         text(
             Bokmal to "ektefellen din dør",
@@ -201,7 +201,7 @@ object VedleggPlikterAP7_001 : Phrase<Unit> {
     }
 }
 
-object VedleggPlikterAP12_001 : Phrase<Unit> {
+object VedleggPlikterAP12_001 : Phrase<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Unit> {
     override val elements = phrase {
         text(
             Bokmal to "partneren din dør",
@@ -211,7 +211,7 @@ object VedleggPlikterAP12_001 : Phrase<Unit> {
     }
 }
 
-object VedleggPlikterAP10_001 : Phrase<Unit> {
+object VedleggPlikterAP10_001 : Phrase<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Unit> {
     override val elements = phrase {
         text(
             Bokmal to "du får ny samboer",
@@ -221,7 +221,7 @@ object VedleggPlikterAP10_001 : Phrase<Unit> {
     }
 }
 
-object VedleggPlikterAP5_001 : Phrase<Unit> {
+object VedleggPlikterAP5_001 : Phrase<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Unit> {
     override val elements = phrase {
         text(
             Bokmal to "en av dere får et varig opphold i institusjon",
@@ -231,7 +231,7 @@ object VedleggPlikterAP5_001 : Phrase<Unit> {
     }
 }
 
-object VedleggPlikterAP26_001 : Phrase<Unit> {
+object VedleggPlikterAP26_001 : Phrase<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Unit> {
     override val elements = phrase {
         text(
             Bokmal to "du får et varig opphold i institusjon",
@@ -241,7 +241,7 @@ object VedleggPlikterAP26_001 : Phrase<Unit> {
     }
 }
 
-object VedleggPlikterAP27_001 : Phrase<Unit> {
+object VedleggPlikterAP27_001 : Phrase<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Unit> {
     override val elements = phrase {
         text(
             Bokmal to "du sitter i varetekt, soner straff eller er under forvaring",
@@ -251,7 +251,7 @@ object VedleggPlikterAP27_001 : Phrase<Unit> {
     }
 }
 
-object VedleggPlikterHvorforMeldeAP_001 : Phrase<Unit> {
+object VedleggPlikterHvorforMeldeAP_001 : Phrase<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Unit> {
     override val elements = phrase {
         paragraph {
             text(
@@ -263,7 +263,7 @@ object VedleggPlikterHvorforMeldeAP_001 : Phrase<Unit> {
     }
 }
 
-object VedleggPlikterRettTilBarnetilleggAP_001 : Phrase<Unit> {
+object VedleggPlikterRettTilBarnetilleggAP_001 : Phrase<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Unit> {
     override val elements = phrase {
         paragraph {
             text(
@@ -303,7 +303,7 @@ object VedleggPlikterRettTilBarnetilleggAP_001 : Phrase<Unit> {
     }
 }
 
-object VedleggPlikterRettTilEktefelletilleggAP_001 : Phrase<Unit> {
+object VedleggPlikterRettTilEktefelletilleggAP_001 : Phrase<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Unit> {
     override val elements = phrase {
         paragraph {
             text(
@@ -338,7 +338,7 @@ object VedleggPlikterRettTilEktefelletilleggAP_001 : Phrase<Unit> {
     }
 }
 
-object VedleggPlikterRettTilEktefelletilleggOgBarnetilleggAP_001 : Phrase<Unit> {
+object VedleggPlikterRettTilEktefelletilleggOgBarnetilleggAP_001 : Phrase<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Unit> {
     override val elements = phrase {
         paragraph {
             text(
@@ -379,7 +379,7 @@ object VedleggPlikterRettTilEktefelletilleggOgBarnetilleggAP_001 : Phrase<Unit> 
 }
 
 object VedleggPlikterinntektsproevingBTFellesBarnSaerkullsbarnAP_001 :
-    Phrase<VedleggPlikterinntektsproevingBTFellesBarnSaerkullsbarnAP_001.Param> {
+    Phrase<LanguageSupport.Triple<Bokmal, Nynorsk, English>, VedleggPlikterinntektsproevingBTFellesBarnSaerkullsbarnAP_001.Param> {
     override val elements = phrase {
         paragraph {
             // TODO spør ingrid om dette blir riktig ved bruk av sivilstand
@@ -433,7 +433,7 @@ object VedleggPlikterinntektsproevingBTFellesBarnSaerkullsbarnAP_001 :
     data class Param(val sivilstand: Sivilstand)
 }
 
-object VedleggPlikterinntektsprovingBTOgETAP_001 : Phrase<Unit> {
+object VedleggPlikterinntektsprovingBTOgETAP_001 : Phrase<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Unit> {
     override val elements = phrase {
         paragraph {
             text(
@@ -473,7 +473,7 @@ object VedleggPlikterinntektsprovingBTOgETAP_001 : Phrase<Unit> {
 }
 
 //TODO avklar hvorfor malen til vedlegget er så forskjellig på nynorsk
-object VedleggPlikterinntektsprovingETAP_001 : Phrase<Unit> {
+object VedleggPlikterinntektsprovingETAP_001 : Phrase<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Unit> {
     override val elements = phrase {
         paragraph {
             text(
@@ -512,7 +512,7 @@ object VedleggPlikterinntektsprovingETAP_001 : Phrase<Unit> {
     }
 }
 
-object InfoAPBeskjed_001 : Phrase<Unit> {
+object InfoAPBeskjed_001 : Phrase<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Unit> {
     override val elements = phrase {
         title1 {
             text(
@@ -532,7 +532,7 @@ object InfoAPBeskjed_001 : Phrase<Unit> {
     }
 }
 
-object VedleggVeiledning_001 : Phrase<Unit> {
+object VedleggVeiledning_001 : Phrase<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Unit> {
     override val elements = phrase {
         title1 { //TODO italic font support
             text(
@@ -551,7 +551,7 @@ object VedleggVeiledning_001 : Phrase<Unit> {
     }
 }
 
-object VedleggInnsynSakPensjon_001 : Phrase<VedleggInnsynSakPensjon_001.Param> {
+object VedleggInnsynSakPensjon_001 : Phrase<LanguageSupport.Triple<Bokmal, Nynorsk, English>, VedleggInnsynSakPensjon_001.Param> {
     override val elements = phrase {
         val kontaktinfo_nettsted = argument().select(Param::kontaktinfo_nettsted)
         val kontaktinfo_telefonnummer = argument().select(Param::kontaktinfo_telefonnummer)
@@ -577,7 +577,7 @@ object VedleggInnsynSakPensjon_001 : Phrase<VedleggInnsynSakPensjon_001.Param> {
     )
 }
 
-object VedleggHjelpFraAndre_001 : Phrase<Unit> {
+object VedleggHjelpFraAndre_001 : Phrase<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Unit> {
     override val elements = phrase {
         title1 {
             text(
@@ -596,7 +596,7 @@ object VedleggHjelpFraAndre_001 : Phrase<Unit> {
     }
 }
 
-object VedleggKlagePensjon_001 : Phrase<VedleggKlagePensjon_001.Param> {
+object VedleggKlagePensjon_001 : Phrase<LanguageSupport.Triple<Bokmal, Nynorsk, English>, VedleggKlagePensjon_001.Param> {
     override val elements = phrase {
         val kontaktinfo_telefonnummer = argument().select(Param::kontaktinfo_telefonnummer)
         title1 {
@@ -688,7 +688,7 @@ object VedleggKlagePensjon_001 : Phrase<VedleggKlagePensjon_001.Param> {
     data class Param(val kontaktinfo_telefonnummer: Telefonnummer)
 }
 
-object VedleggKlagePesys_001 : Phrase<Unit> {
+object VedleggKlagePesys_001 : Phrase<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Unit> {
     override val elements = phrase {
         paragraph {
             text(
