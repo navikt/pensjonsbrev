@@ -3,19 +3,19 @@ package no.nav.pensjon.brev.maler.vedlegg
 import no.nav.pensjon.brev.api.model.Felles
 import no.nav.pensjon.brev.api.model.NAVEnhet
 import no.nav.pensjon.brev.api.model.ReturAdresse
+import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.*
 
 data class EgenerklaeringPleieOgOmsorgsarbeid(val aarEgenerklaring: Number)
 
-val egenerklaeringPleieOgOmsorgsarbeid = createAttachment(
+val egenerklaeringPleieOgOmsorgsarbeid = createAttachment<LangBokmalNynorskEnglish, EgenerklaeringPleieOgOmsorgsarbeid>(
     title = newText(
         Bokmal to "Egenerklæring om pleie- og omsorgsarbeid",
         Nynorsk to "Eigenmelding om pleie- og omsorgsarbeid",
         English to "Personal declaration that nursing and care work has been provided",
     ),
-    attachmentDataType = EgenerklaeringPleieOgOmsorgsarbeid::class,
     includeSakspart = true
 ) {
     val aarEgenerklaring = argument().select(EgenerklaeringPleieOgOmsorgsarbeid::aarEgenerklaring).str()
