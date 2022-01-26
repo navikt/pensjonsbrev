@@ -4,12 +4,13 @@ import no.nav.pensjon.brev.api.model.Felles
 import no.nav.pensjon.brev.api.model.NAVEnhet
 import no.nav.pensjon.brev.api.model.ReturAdresse
 import no.nav.pensjon.brev.template.Language.*
+import no.nav.pensjon.brev.template.LanguageSupport
 import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.*
 
 data class EgenerklaeringPleieOgOmsorgsarbeid(val aarEgenerklaring: Number)
 
-val egenerklaeringPleieOgOmsorgsarbeid = createAttachment(
+val egenerklaeringPleieOgOmsorgsarbeid = createAttachment<LanguageSupport.Triple<Bokmal,Nynorsk,English>,EgenerklaeringPleieOgOmsorgsarbeid>(
         title = newText(
             Bokmal to "Egenerklæring om pleie- og omsorgsarbeid",
             Nynorsk to "Eigenmelding om pleie- og omsorgsarbeid",

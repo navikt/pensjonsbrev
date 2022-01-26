@@ -6,6 +6,7 @@ import com.natpryce.hamkrest.isA
 import no.nav.pensjon.brev.api.model.LetterMetadata
 import no.nav.pensjon.brev.maler.fraser.TestFraseDto
 import no.nav.pensjon.brev.maler.fraser.TestFrase
+import no.nav.pensjon.brev.maler.vedlegg.OrienteringOmRettigheterParam
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.base.PensjonLatex
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -66,7 +67,7 @@ class TemplateTest {
 
     @Test
     fun `createTemplate adds attachment`() {
-        val attachment = createAttachment(
+        val attachment = createAttachment<LanguageSupport.Triple<Language.Bokmal, Language.Nynorsk, Language.English>, Unit>(
                 title = newText(
                     Language.Bokmal to "asdf",
                     Language.Nynorsk to "asdf",
