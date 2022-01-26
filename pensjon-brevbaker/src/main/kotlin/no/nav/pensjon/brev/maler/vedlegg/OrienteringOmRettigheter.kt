@@ -1,19 +1,18 @@
 package no.nav.pensjon.brev.maler.vedlegg
 
-import io.ktor.http.content.*
 import no.nav.pensjon.brev.api.model.Telefonnummer
 import no.nav.pensjon.brev.maler.fraser.*
+import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.*
-import no.nav.pensjon.brev.template.LanguageSupport
 import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.*
 
-data class OrienteringOmRettigheterParam(
+data class OrienteringOmRettigheterParamDto(
     val kontaktTelefonnummer: Telefonnummer,
     val kontaktinformasjonNettsted: String
     )
 
-val orienteringOmRettigheterOgPlikter = createAttachment<LanguageSupport.Triple<Bokmal,Nynorsk,English>,OrienteringOmRettigheterParam>(
+val orienteringOmRettigheterOgPlikter = createAttachment<LangBokmalNynorskEnglish,OrienteringOmRettigheterParamDto>(
         title = newText(
                 lang1 = Bokmal to "Dine rettigheter og plikter",
                 lang2 = Nynorsk to "Dine rettar og plikter",
@@ -76,12 +75,12 @@ val orienteringOmRettigheterOgPlikter = createAttachment<LanguageSupport.Triple<
     }
     includePhrase(infoAPBeskjed_001)
     includePhrase(vedleggVeiledning_001)
-    includePhrase(argument().map { vedleggInnsynSakPensjon_001.Param(
+    includePhrase(argument().map { vedleggInnsynSakPensjon_001Dto(
             it.kontaktTelefonnummer,
             it.kontaktinformasjonNettsted) },vedleggInnsynSakPensjon_001)
-    includePhrase(argument().map { vedleggInnsynSakUTPesys_001.Param(it.kontaktTelefonnummer) },vedleggInnsynSakUTPesys_001)
+    includePhrase(argument().map { vedleggInnsynSakUTPesys_001Dto(it.kontaktTelefonnummer) },vedleggInnsynSakUTPesys_001)
     includePhrase(vedleggHjelpFraAndre_001)
-    includePhrase(argument().map { vedleggKlagePensjon_001.Param(it.kontaktTelefonnummer) },vedleggKlagePensjon_001)
+    includePhrase(argument().map { vedleggKlagePensjon_001Dto(it.kontaktTelefonnummer) },vedleggKlagePensjon_001)
     includePhrase(vedleggKlagePesys_001)
 }
 

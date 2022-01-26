@@ -5,7 +5,6 @@ import com.natpryce.hamkrest.equalTo
 import com.natpryce.hamkrest.isA
 import no.nav.pensjon.brev.api.model.LetterMetadata
 import no.nav.pensjon.brev.maler.fraser.TestFraseDto
-import no.nav.pensjon.brev.maler.vedlegg.OrienteringOmRettigheterParam
 import no.nav.pensjon.brev.maler.fraser.testFrase
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.base.PensjonLatex
