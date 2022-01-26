@@ -31,12 +31,15 @@
 \usepackage{amsmath}
 \usepackage{graphicx}   %graphics such as logo
 \usepackage{fontspec}   %declare font presets
-\usepackage{xcolor}     %define colors
 \usepackage{scrlayer}   % creating custom layers/custom posistioned fields
 \usepackage{geometry}   % adjusting margins
 \usepackage{multirow}   % Table cells spanning multiple columns
-\usepackage{color, colortbl} %Table color
 \usepackage{enumitem,amssymb} % for formChoice list
+%\usepackage{xltabular}   % Extension of table that allows for automatically expanding columns.
+\usepackage[rgb]{xcolor}
+\selectcolormodel{natural}
+\usepackage{ninecolors}
+\selectcolormodel{rgb}
 \usepackage{tabularray}   % Extension of table that allows for automatically expanding columns.
 
 %! suppress = FileNotFound
@@ -212,7 +215,7 @@
 }
 
 % table
-\definecolor{Gray}{gray}{0.9}
+%\definecolor{Gray}{gray}{0.9}
 
 %----------------------------------------
 %               Footer

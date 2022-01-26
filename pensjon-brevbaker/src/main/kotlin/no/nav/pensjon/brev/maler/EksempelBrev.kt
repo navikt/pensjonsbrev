@@ -4,9 +4,7 @@ import no.nav.pensjon.brev.api.model.LetterMetadata
 import no.nav.pensjon.brev.api.model.maler.EksempelBrevDto
 import no.nav.pensjon.brev.maler.fraser.TestFrase
 import no.nav.pensjon.brev.maler.fraser.TestFraseDto
-import no.nav.pensjon.brev.template.Element
-import no.nav.pensjon.brev.template.Element.Table.Colour.GRAY
-import no.nav.pensjon.brev.template.Element.Text.FontType
+import no.nav.pensjon.brev.template.Element.Table.RowColour.GRAY
 import no.nav.pensjon.brev.template.Element.Text.FontType.BOLD
 import no.nav.pensjon.brev.template.Element.Text.FontType.ITALIC
 import no.nav.pensjon.brev.template.Language.Bokmal
@@ -65,22 +63,22 @@ object EksempelBrev : StaticTemplate {
             table {
                 row(GRAY) {
                     cell(4) {
-                        text(Bokmal to "1111111111111", BOLD)
-                        text(Bokmal to "1234567890", ITALIC)
+                        text(Bokmal to "1", BOLD)
+                        text(Bokmal to "2", ITALIC)
                     }
                 }
                 row(GRAY) {
                     cell(3) {
-                        text(Bokmal to "1111111111111", BOLD)
-                        text(Bokmal to "1234567890", ITALIC)
+                        text(Bokmal to "3", BOLD)
+                        text(Bokmal to "4", ITALIC)
                     }
-                    cell(1) {
-                        text(Bokmal to "2222222222222", BOLD)
-                        text(Bokmal to "1234567890", ITALIC)
+                    cell {
+                        text(Bokmal to "555555555555", BOLD)
+                        text(Bokmal to "666666666", ITALIC)
                     }
                 }
                 row(GRAY) {
-                    cell(1) {
+                    cell {
                         text(Bokmal to "1111111111111", BOLD)
                         text(Bokmal to "1234567890", ITALIC)
                     }
@@ -88,7 +86,7 @@ object EksempelBrev : StaticTemplate {
                         text(Bokmal to "2222222222222", BOLD)
                         text(Bokmal to "1234567890", ITALIC)
                     }
-                    cell(1) {
+                    cell {
                         text(Bokmal to "2222222222222", BOLD)
                         text(Bokmal to "1234567890", ITALIC)
                     }
@@ -103,7 +101,7 @@ object EksempelBrev : StaticTemplate {
                 }
                 row {
                     cell { text(Bokmal to "Dette er noe", ITALIC) }
-                    cell { text(Bokmal to "53513513", BOLD) }
+                    cell { text(Bokmal to "535135135351", BOLD) }
                     cell { text(Bokmal to "5") }
                     cell { text(Bokmal to "4gdagdagad gdagdagda") }
                 }

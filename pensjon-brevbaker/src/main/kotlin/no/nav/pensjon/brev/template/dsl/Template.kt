@@ -3,8 +3,6 @@ package no.nav.pensjon.brev.template.dsl
 import no.nav.pensjon.brev.api.model.Felles
 import no.nav.pensjon.brev.api.model.LetterMetadata
 import no.nav.pensjon.brev.template.*
-import no.nav.pensjon.brev.template.Element.Table.Colour
-import no.nav.pensjon.brev.template.Element.Table.Colour.WHITE
 import no.nav.pensjon.brev.template.Element.Text.FontType
 import no.nav.pensjon.brev.template.base.BaseTemplate
 import kotlin.reflect.KClass
@@ -65,42 +63,6 @@ open class TemplateTextOnlyScope<Lang : LanguageSupport, LetterData : Any>(val c
 
     fun newline() {
         children.add(Element.NewLine())
-    }
-}
-
-@LetterTemplateMarker
-open class TemplateTableScope<Lang : LanguageCombination, LetterData : Any>(val children: MutableList<Element.Table.TableRow<Lang>> = mutableListOf()) :
-    TemplateGlobalScope<LetterData>() {
-
-    fun row(colour: Colour = WHITE, init: TemplateTableRowScope<Lang, LetterData>.() -> Unit) {
-        children.add(Element.Table.TableRow(TemplateTableRowScope<Lang, LetterData>().apply(init).children, colour))
-    }
-
-//    fun showIf(
-//        predicate: Expression<Boolean>,
-//        showIf: TemplateTableRowScope<Lang, LetterData>.() -> Unit
-//    ): ShowElseBuilder<Lang, LetterData> {
-//        val showElse = mutableListOf<Element<Lang>>()
-//
-//        return TemplateContainerScope<Lang, LetterData>().apply { showIf() }
-//            .let { Element.Conditional(predicate, it.children, showElse) }
-//            .also { children.add(it) }
-//            .let { ShowElseBuilder(showElse) }
-//    }
-
-
-}
-
-@LetterTemplateMarker
-open class TemplateTableRowScope<Lang : LanguageCombination, LetterData : Any>(val children: MutableList<Element.Table.Cell<Lang>> = mutableListOf()) :
-    TemplateGlobalScope<LetterData>() {
-    fun cell(cellColumns: Int = 1, init: TemplateTextOnlyScope<Lang, LetterData>.() -> Unit) {
-        children.add(
-            Element.Table.Cell(
-                TemplateTextOnlyScope<Lang, LetterData>().apply(init).children,
-                cellColumns
-            )
-        )
     }
 }
 

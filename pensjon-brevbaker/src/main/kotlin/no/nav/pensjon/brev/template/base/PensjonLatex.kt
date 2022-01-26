@@ -4,8 +4,8 @@ import no.nav.pensjon.brev.api.model.*
 import no.nav.pensjon.brev.latex.LatexPrintWriter
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.*
-import no.nav.pensjon.brev.template.Element.Table.Colour.GRAY
-import no.nav.pensjon.brev.template.Element.Table.Colour.WHITE
+import no.nav.pensjon.brev.template.Element.Table.RowColour.GRAY
+import no.nav.pensjon.brev.template.Element.Table.RowColour.WHITE
 import no.nav.pensjon.brev.template.dsl.languageSettings
 import no.nav.pensjon.brev.template.dsl.select
 import no.nav.pensjon.brev.template.dsl.text
@@ -437,28 +437,25 @@ object PensjonLatex : BaseTemplate() {
                     printCmd("hline")
                     element.rows.forEach { row ->
                         when (row.colour) {
-                            GRAY -> print("\\rowcolor{Gray}", escape = false)
+                            GRAY -> print("\\SetRow{gray9}", escape = false)
                             WHITE -> {}
                         }
 
                         row.cells.forEachIndexed { index, cell ->
-                            printCmd("multicolumn") {
-                                arg { print(cell.cellColumns.toString(), escape = false) }
-                                arg { print(cellSize(cell.cellColumns), escape = false) }
-                                arg {
-                                    cell.elements.forEach { cellElement ->
-                                        renderElement(scope, cellElement, printWriter)
-                                    }
-                                }
+                            if (cell.cellColumns > 1) {
+                                print("\\SetCell[c=${cell.cellColumns}]{l}", escape = false)
+                            }
+                            cell.elements.forEach { cellElement ->
+                                renderElement(scope, cellElement, printWriter)
                             }
 
-
-                            if (index == row.cells.lastIndex) {
-                                print(""" \\""", escape = false)
-                            } else {
-                                print(" & ", escape = false)
+                            if (index < row.cells.lastIndex) {
+                                // Because all columns must have a value even if it is overridden by
+                                // setting the columns > 1, the & needs to repeat.
+                                print(" ${"&".repeat(cell.cellColumns)} ", escape = false)
                             }
                         }
+                        print(""" \\""", escape = false)
                         printCmd("hline")
                     }
 
@@ -479,19 +476,4 @@ object PensjonLatex : BaseTemplate() {
         } else {
             ""
         }
-
-    fun cellSize(columns: Int) =
-        "|>{\\hsize=" + //horizontal size
-                "\\dimexpr" + //dimensional expression
-                "$columns\\hsize+" + //columns of cell * horizontal size of a cell
-                "${(columns - 1) * 2}\\tabcolsep+" + //factor in space on each side of the column separator
-                "${columns - 1}\\arrayrulewidth" + //factor in the width of the column separator line
-                "\\relax}X|"
-//    "|>{\\hsize=" + //horizontal size
-//    "\\dimexpr" + //dimensional expression
-//    "$columns\\hsize+" + //columns of cell * horizontal size of a cell
-//    "${(columns - 1) * 2}\\tabcolsep+" + //factor in space on each side of the column separator
-//    "${columns - 1}\\arrayrulewidth" + //factor in the width of the column separator line
-//    "\\relax}X|"
-
 }
