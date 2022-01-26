@@ -1,23 +1,12 @@
 package no.nav.pensjon.brev.maler.fraser
 
+import no.nav.pensjon.brev.api.model.Telefonnummer
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.LanguageSupport
 import no.nav.pensjon.brev.template.Phrase
-import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brev.template.phrase
 
-object vedleggPlikterOgRettigheterOverskriftPesys_001 : Phrase<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Unit> {
-    override val elements = phrase {
-        title1 {
-            text(
-                    Bokmal to "Dine rettigheter og plikter",
-                    Nynorsk to "Dine rettar og plikter",
-                    English to "Your rights and obligations"
-            )
-
-        }
-    }
-}
 
 object vedleggPlikter_001 : Phrase<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Unit> {
     override val elements = phrase {
@@ -266,27 +255,34 @@ object vedleggPlikterRettTilBarnetilleggAP_001 : Phrase<LanguageSupport.Triple<B
     override val elements = phrase {
         paragraph {
             text(
-                    Bokmal to "Fordi du får barnetillegg må du også melde fra om endringer som kan ha betydning for dette tillegget.\n" + "Du må gi oss beskjed hvis barn du forsørger ",
-                    Nynorsk to "Fordi du får barnetillegg må du også melde frå om endringar som kan ha betydning for dette tillegget.\n" + "Du må gi oss beskjed om barn du forsørgjer ",
-                    English to "Because you receive child supplement, you must notify us if there are any changes in circumstances that can have an influence on the assessment of the supplement.\n" + "You must notify us if the child(ren) you provide for will"
+                    Bokmal to "Fordi du får barnetillegg må du også melde fra om endringer som kan ha betydning for dette tillegget.",
+                    Nynorsk to "Fordi du får barnetillegg må du også melde frå om endringar som kan ha betydning for dette tillegget.",
+                    English to "Because you receive child supplement, you must notify us if there are any changes in circumstances that can have an influence on the assessment of the supplement."
             )
-            list {
-                text(
+        }
+        paragraph {
+            text(
+                        Bokmal to "Du må gi oss beskjed hvis barn du forsørger",
+                        Nynorsk to "Du må gi oss beskjed om barn du forsørgjer",
+                        English to "You must notify us if the child(ren) you provide for will"
+            )
+        }
+        list {
+            text(
                         Bokmal to "får egen inntekt som er mer enn  folketrygden grunnbeløp omsorgssituasjonen for barnet endrer seg",
                         Nynorsk to "får eiga inntekt som er meir enn grunnbeløpet i folketrygda skjer endringar av omsorgsituasjonen",
                         English to "earn an income exceeding the National Insurance basic amount have parental care provision changes"
-                )
-                text(
+            )
+            text(
                         Bokmal to "skal flytte til et annet land",
                         Nynorsk to "skal flytte til eit anna land",
                         English to "move to another country"
-                )
-                text(
+            )
+            text(
                         Bokmal to "skal oppholde seg i et annet land i mer enn 90 dager i løpet av en tolvmånedersperiode",
                         Nynorsk to "skal opphalde seg i eit anna land i meir enn 90 dagar i løpet av ein tolv månedars periode",
                         English to "stay in another country for more than 90 days in a 12 month period"
-                )
-            }
+            )
         }
     }
 }
@@ -295,10 +291,18 @@ object vedleggPlikterRettTilEktefelletilleggAP_001 : Phrase<LanguageSupport.Trip
     override val elements = phrase {
         paragraph {
             text(
-                    Bokmal to "Fordi du får ektefelletillegg må du også melde fra om endringer som kan ha betydning for dette tillegget.\n" + "Du må gi oss beskjed hvis [_Script Script_bruker_sivilstand_bestemtForm_] du forsørger",
-                    Nynorsk to "Fordi du får ektefelletillegg må du også melde frå om endringar som kan ha betydning for dette tillegget.\n" + "Du må gi oss beskjed hvis",
-                    English to "Because you receive spouse supplement, you must notify us if there are any changes in circumstances that can have an influence on the assessment of the supplement.\n" + "You must notify us if the"
+                    Bokmal to "Fordi du får ektefelletillegg må du også melde fra om endringer som kan ha betydning for dette tillegget.",
+                    Nynorsk to "Fordi du får ektefelletillegg må du også melde frå om endringar som kan ha betydning for dette tillegget.",
+                    English to "Because you receive spouse supplement, you must notify us if there are any changes in circumstances that can have an influence on the assessment of the supplement."
             )
+        }
+        paragraph {
+            text(
+                    Bokmal to "Du må gi oss beskjed hvis [_Script Script_bruker_sivilstand_bestemtForm_] du forsørger",
+                    Nynorsk to "Du må gi oss beskjed hvis [_Script Script_bruker_sivilstand_bestemtForm_] du forsørgjar",
+                    English to "You must notify us if the [_Script Script_bruker_sivilstand_ubestemtForm_] you provide for will"
+            )
+        }
             list {
                 text(
                         Bokmal to "får egen inntekt som er mer enn  folketrygden grunnbeløp",
@@ -318,19 +322,23 @@ object vedleggPlikterRettTilEktefelletilleggAP_001 : Phrase<LanguageSupport.Trip
             }
         }
     }
-}
 
 object vedleggPlikterRettTilEktefelletilleggOgBarnetilleggAP_001 : Phrase<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Unit> {
     override val elements = phrase {
         paragraph {
             text(
-                    Bokmal to "Fordi du får ektefelletillegg og barnetillegg må du også melde fra om endringer som kan ha betydning for disse tilleggene.\n" +
-                            "Du må gi oss beskjed hvis barn eller [_Script Script_bruker_sivilstand_bestemtForm_] du forsørger ",
-                    Nynorsk to "Fordi du får ektefelletillegg og barnetillegg må du også melde frå om endringar som kan ha betydning for desse tillegga.\n" +
-                            "Du må gi oss beskjed om barn eller [_Script Script_bruker_sivilstand_bestemtForm_] du forsørgjer",
-                    English to "Because you receive both spouse supplement and child supplement, you must notify us if there are any changes in circumstances that can have an influence on the assessment of these supplements.\n" +
-                            "You must notify us if the child/children or the [_Script Script_bruker_sivilstand_ubestemtForm_] you provide for will"
+                    Bokmal to "Fordi du får ektefelletillegg og barnetillegg må du også melde fra om endringer som kan ha betydning for disse tilleggene.",
+                    Nynorsk to "Fordi du får ektefelletillegg og barnetillegg må du også melde frå om endringar som kan ha betydning for desse tillegga.",
+                    English to "Because you receive both spouse supplement and child supplement, you must notify us if there are any changes in circumstances that can have an influence on the assessment of these supplements."
             )
+        }
+        paragraph {
+            text(
+                    Bokmal to "Du må gi oss beskjed hvis barn eller [_Script Script_bruker_sivilstand_bestemtForm_] du forsørger",
+                    Nynorsk to "Du må gi oss beskjed om barn eller [_Script Script_bruker_sivilstand_bestemtForm_] du forsørgjer",
+                    English to "You must notify us if the child/children or the [_Script Script_bruker_sivilstand_ubestemtForm_] you provide for will"
+            )
+        }
             list {
                 text(
                         Bokmal to "får egen inntekt som er mer enn  folketrygden grunnbeløp",
@@ -355,7 +363,6 @@ object vedleggPlikterRettTilEktefelletilleggOgBarnetilleggAP_001 : Phrase<Langua
             }
         }
     }
-}
 
 object vedleggPlikterinntektsprøvingBTFellesBarnSaerkullsbarnAP_001 : Phrase<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Unit> {
     override val elements = phrase {
@@ -710,8 +717,11 @@ object vedleggVeiledning_001 : Phrase<LanguageSupport.Triple<Bokmal, Nynorsk, En
     }
 }
 
-object vedleggInnsynSakPensjon_001 : Phrase<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Unit> {
+object vedleggInnsynSakPensjon_001 : Phrase<LanguageSupport.Triple<Bokmal, Nynorsk, English>, vedleggInnsynSakPensjon_001.Param> {
+    data class Param (val kontaktTelefonnummer: Telefonnummer, val kontaktinformasjonNettsted: String)
     override val elements = phrase {
+        val telefonNummer = argument().select(Param::kontaktTelefonnummer)
+        val kontaktinformasjonNettsted = argument().select(Param::kontaktinformasjonNettsted)
         paragraph {
             title1 {
                 text(
@@ -720,17 +730,19 @@ object vedleggInnsynSakPensjon_001 : Phrase<LanguageSupport.Triple<Bokmal, Nynor
                         English to "Access to your case - Section 18 of the Public Administration Act"
                 )
             }
-            text(
-                    Bokmal to "Med få unntak har du rett til å se dokumentene i saken din. Du kan logge deg inn på [_Value felles=kontaktinformasjon=nettsted_] for å se all kommunikasjon som har vært mellom deg og NAV i saken din. Du kan også ringe oss på telefon [_Script return_kontaktTelefonnummer_].",
-                    Nynorsk to "Med få unntak har du rett til å sjå dokumenta i saka di. Du kan logge deg inn på [_Value felles=kontaktinformasjon=nettsted_] for å sjå all kommunikasjon som har vore mellom deg og NAV i saka di. Du kan også ringje oss på telefon [_Script return_kontaktTelefonnummer_].",
-                    English to "With some exceptions, you are entitled to access all the documents relating to your case. Log on to [_Value felles=kontaktinformasjon=nettsted_] to review the communication between you and NAV in connection with your case. You can also call us at tel.: [_Script return_kontaktTelefonnummer_]."
+            textExpr(
+                    Bokmal to "Med få unntak har du rett til å se dokumentene i saken din. Du kan logge deg inn på ".expr() + kontaktinformasjonNettsted +" for å se all kommunikasjon som har vært mellom deg og NAV i saken din. Du kan også ringe oss på telefon ".expr() + telefonNummer.format() +".".expr(),
+                    Nynorsk to "Med få unntak har du rett til å sjå dokumenta i saka di. Du kan logge deg inn på ".expr() + kontaktinformasjonNettsted +" for å sjå all kommunikasjon som har vore mellom deg og NAV i saka di. Du kan også ringje oss på telefon ".expr() + telefonNummer.format() +".".expr(),
+                    English to "With some exceptions, you are entitled to access all the documents relating to your case. Log on to ".expr() + kontaktinformasjonNettsted +" to review the communication between you and NAV in connection with your case. You can also call us at tel.: ".expr() + telefonNummer.format() +".".expr()
             )
         }
     }
 }
 
-object vedleggInnsynSakUTPesys_001 : Phrase<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Unit> {
+object vedleggInnsynSakUTPesys_001 : Phrase<LanguageSupport.Triple<Bokmal, Nynorsk, English>, vedleggInnsynSakUTPesys_001.Param> {
+    data class Param (val kontaktTelefonnummer: Telefonnummer)
     override val elements = phrase {
+        val telefonNummer = argument().select(Param::kontaktTelefonnummer)
         paragraph {
             title1 {
                 text(
@@ -739,10 +751,10 @@ object vedleggInnsynSakUTPesys_001 : Phrase<LanguageSupport.Triple<Bokmal, Nynor
                         English to "Access to your case - Section 18 of the Public Administration Act"
                 )
             }
-            text(
-                    Bokmal to "Med få unntak har du rett til å se dokumentene i saken din. Du kan se noen dokumenter på nav.no/dittnav. Du kan også ringe oss på telefon [_Script return_kontaktTelefonnummer_].",
-                    Nynorsk to "Med få unntak har du rett til å sjå dokumenta i saka di. Du kan sjå nokre dokument på nav.no/dittnav. Du kan også ringe oss på telefon [_Script return_kontaktTelefonnummer_].",
-                    English to "With some exceptions, you are entitled to access all the documents pertaining to your case. You can read some of the documents at nav.no/dittnav. You can also call us at tel.: [_Script return_kontaktTelefonnummer_]."
+            textExpr(
+                    Bokmal to "Med få unntak har du rett til å se dokumentene i saken din. Du kan se noen dokumenter på nav.no/dittnav. Du kan også ringe oss på telefon ".expr()+telefonNummer.format()+".".expr(),
+                    Nynorsk to "Med få unntak har du rett til å sjå dokumenta i saka di. Du kan sjå nokre dokument på nav.no/dittnav. Du kan også ringe oss på telefon ".expr()+telefonNummer.format()+".".expr(),
+                    English to "With some exceptions, you are entitled to access all the documents pertaining to your case. You can read some of the documents at nav.no/dittnav. You can also call us at tel.: ".expr()+telefonNummer.format()+".".expr()
             )
         }
     }
@@ -767,8 +779,10 @@ object vedleggHjelpFraAndre_001 : Phrase<LanguageSupport.Triple<Bokmal, Nynorsk,
     }
 }
 
-object vedleggKlagePensjon_001 : Phrase<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Unit> {
+object vedleggKlagePensjon_001 : Phrase<LanguageSupport.Triple<Bokmal, Nynorsk, English>, vedleggKlagePensjon_001.Param> {
+    data class Param (val kontaktTelefonnummer: Telefonnummer)
     override val elements = phrase {
+        val telefonNummer = argument().select(Param::kontaktTelefonnummer)
         paragraph {
             title1 {
                 text(
@@ -793,10 +807,10 @@ object vedleggKlagePensjon_001 : Phrase<LanguageSupport.Triple<Bokmal, Nynorsk, 
             )
         }
         paragraph {
-            text(
-                    Bokmal to "Klagen må være skriftlig og inneholde navn, fødselsnummer og adresse. Bruk gjerne skjemaet som du finner på nav.no/klage. Trenger du hjelp, er du velkommen til å ringe oss på telefon [_Script return_kontaktTelefonnummer_].",
-                    Nynorsk to "Klaga må vere skriftleg og innehalde namn, fødselsnummer og adresse. Bruk gjerne skjemaet som du finn på nav.no/klage. Treng du hjelp, er du velkomen til å ringje oss på telefon [_Script return_kontaktTelefonnummer_].",
-                    English to "Your appeal must be made in writing and include your name, national identity number and address. Feel free to use the form found at nav.no/klage. Should you need assistance in writing the appeal, please call us at tel.: [_Script return_kontaktTelefonnummer_]."
+            textExpr(
+                    Bokmal to "Klagen må være skriftlig og inneholde navn, fødselsnummer og adresse. Bruk gjerne skjemaet som du finner på nav.no/klage. Trenger du hjelp, er du velkommen til å ringe oss på telefon ".expr()+telefonNummer.format()+".".expr(),
+                    Nynorsk to "Klaga må vere skriftleg og innehalde namn, fødselsnummer og adresse. Bruk gjerne skjemaet som du finn på nav.no/klage. Treng du hjelp, er du velkomen til å ringje oss på telefon ".expr()+telefonNummer.format()+".".expr(),
+                    English to "Your appeal must be made in writing and include your name, national identity number and address. Feel free to use the form found at nav.no/klage. Should you need assistance in writing the appeal, please call us at tel.: ".expr()+telefonNummer.format()+".".expr()
             )
         }
         paragraph {

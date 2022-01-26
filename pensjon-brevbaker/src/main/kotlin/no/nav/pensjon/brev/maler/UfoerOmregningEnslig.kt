@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.maler
 import no.nav.pensjon.brev.api.model.Institusjon
 import no.nav.pensjon.brev.api.model.LetterMetadata
 import no.nav.pensjon.brev.api.model.Sivilstand.*
+import no.nav.pensjon.brev.api.model.Telefonnummer
 import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDto
 import no.nav.pensjon.brev.maler.fraser.*
 import no.nav.pensjon.brev.maler.vedlegg.OrienteringOmRettigheterParam
@@ -28,7 +29,6 @@ object UfoerOmregningEnslig : StaticTemplate {
             isSensitiv = true
         )
     ) {
-
         val avdod_sivilstand = argument().select(UfoerOmregningEnsligDto::avdod_sivilstand)
         val barnetillegg_er_redusert_mot_tak =
             argument().select(UfoerOmregningEnsligDto::barnetillegg_er_redusert_mot_tak)
@@ -554,7 +554,11 @@ object UfoerOmregningEnslig : StaticTemplate {
 
         includeAttachment(orienteringOmRettigheterOgPlikter, argument().map {
             OrienteringOmRettigheterParam(
-               "test"
+              Telefonnummer ("22225555"),
+                    kontaktinformasjonNettsted = "nav.no/kontaktinformasjon"
+
+
+            // TODO add support for mapping both argument and felles at the same time
             )
         })
     }

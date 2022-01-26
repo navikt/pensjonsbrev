@@ -10,13 +10,12 @@ import no.nav.pensjon.brev.template.dsl.*
 data class EgenerklaeringPleieOgOmsorgsarbeid(val aarEgenerklaring: Number)
 
 val egenerklaeringPleieOgOmsorgsarbeid = createAttachment(
-    title = newText(
-        Bokmal to "Egenerklæring om pleie- og omsorgsarbeid",
-        Nynorsk to "Eigenmelding om pleie- og omsorgsarbeid",
-        English to "Personal declaration that nursing and care work has been provided",
-    ),
-    attachmentDataType = EgenerklaeringPleieOgOmsorgsarbeid::class,
-    includeSakspart = true
+        title = newText(
+            Bokmal to "Egenerklæring om pleie- og omsorgsarbeid",
+            Nynorsk to "Eigenmelding om pleie- og omsorgsarbeid",
+            English to "Personal declaration that nursing and care work has been provided",
+        ),
+        includeSakspart = true
 ) {
     val aarEgenerklaring = argument().select(EgenerklaeringPleieOgOmsorgsarbeid::aarEgenerklaring).str()
     paragraph {

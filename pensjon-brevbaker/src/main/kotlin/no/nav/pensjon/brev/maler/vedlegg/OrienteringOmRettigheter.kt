@@ -1,24 +1,26 @@
 package no.nav.pensjon.brev.maler.vedlegg
 
+import io.ktor.http.content.*
+import no.nav.pensjon.brev.api.model.Telefonnummer
 import no.nav.pensjon.brev.maler.fraser.*
 import no.nav.pensjon.brev.template.Language.*
+import no.nav.pensjon.brev.template.LanguageSupport
 import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.*
 
-
 data class OrienteringOmRettigheterParam(
-    val test: String
-)
-val orienteringOmRettigheterOgPlikter = createAttachment(
-    title = newText(
-            Bokmal to "Dine rettigheter og plikter",
-            Nynorsk to "Dine rettar og plikter",
-            English to "Your rights and obligations"
-    ),
-    attachmentDataType = OrienteringOmRettigheterParam::class,
-    includeSakspart = true
+    val kontaktTelefonnummer: Telefonnummer,
+    val kontaktinformasjonNettsted: String
+    )
+
+val orienteringOmRettigheterOgPlikter = createAttachment<LanguageSupport.Triple<Bokmal,Nynorsk,English>,OrienteringOmRettigheterParam>(
+        title = newText(
+                lang1 = Bokmal to "Dine rettigheter og plikter",
+                lang2 = Nynorsk to "Dine rettar og plikter",
+                lang3 = English to "Your rights and obligations"
+        ),
+        includeSakspart = true,
 ) {
-    includePhrase(vedleggPlikterOgRettigheterOverskriftPesys_001)
     includePhrase(vedleggPlikter_001)
     list {
         includePhrase(vedleggPlikterAP2_001)
@@ -74,10 +76,12 @@ val orienteringOmRettigheterOgPlikter = createAttachment(
     }
     includePhrase(infoAPBeskjed_001)
     includePhrase(vedleggVeiledning_001)
-    includePhrase(vedleggInnsynSakPensjon_001)
-    includePhrase(vedleggInnsynSakUTPesys_001)
+    includePhrase(argument().map { vedleggInnsynSakPensjon_001.Param(
+            it.kontaktTelefonnummer,
+            it.kontaktinformasjonNettsted) },vedleggInnsynSakPensjon_001)
+    includePhrase(argument().map { vedleggInnsynSakUTPesys_001.Param(it.kontaktTelefonnummer) },vedleggInnsynSakUTPesys_001)
     includePhrase(vedleggHjelpFraAndre_001)
-    includePhrase(vedleggKlagePensjon_001)
+    includePhrase(argument().map { vedleggKlagePensjon_001.Param(it.kontaktTelefonnummer) },vedleggKlagePensjon_001)
     includePhrase(vedleggKlagePesys_001)
 }
 

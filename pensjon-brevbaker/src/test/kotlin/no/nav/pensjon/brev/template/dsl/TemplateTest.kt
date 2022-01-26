@@ -67,12 +67,11 @@ class TemplateTest {
     @Test
     fun `createTemplate adds attachment`() {
         val attachment = createAttachment(
-            title = newText(
-                Language.Bokmal to "asdf",
-                Language.Nynorsk to "asdf",
-                Language.English to "asdf",
-            ),
-            attachmentDataType = Unit::class
+                title = newText(
+                    Language.Bokmal to "asdf",
+                    Language.Nynorsk to "asdf",
+                    Language.English to "asdf",
+                )
         ){
             text(
                 Language.Bokmal to "hei",

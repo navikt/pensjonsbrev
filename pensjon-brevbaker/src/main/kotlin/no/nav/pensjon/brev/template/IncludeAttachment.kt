@@ -5,10 +5,9 @@ import kotlin.reflect.KClass
 
 
 fun <Lang : LanguageSupport, LetterData : Any> createAttachment(
-    title: Element.Text.Literal<Lang>,
-    attachmentDataType: KClass<LetterData>,
-    includeSakspart: Boolean = false,
-    outline: TemplateContainerScope<Lang, LetterData>.() -> Unit
+        title: Element.Text.Literal<Lang>,
+        includeSakspart: Boolean = false,
+        outline: TemplateContainerScope<Lang, LetterData>.() -> Unit
 ) = AttachmentTemplate<Lang, LetterData>(
     title,
     TemplateContainerScope<Lang, LetterData>().apply(outline).children,
