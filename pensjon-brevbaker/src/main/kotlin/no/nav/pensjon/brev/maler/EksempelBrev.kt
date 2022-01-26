@@ -2,13 +2,10 @@ package no.nav.pensjon.brev.maler
 
 import no.nav.pensjon.brev.api.model.LetterMetadata
 import no.nav.pensjon.brev.api.model.maler.EksempelBrevDto
-import no.nav.pensjon.brev.maler.fraser.TestFrase
-import no.nav.pensjon.brev.maler.fraser.TestFraseDto
 import no.nav.pensjon.brev.template.Element.Table.RowColour.GRAY
 import no.nav.pensjon.brev.template.Element.Text.FontType.BOLD
 import no.nav.pensjon.brev.template.Element.Text.FontType.ITALIC
 import no.nav.pensjon.brev.template.Language.Bokmal
-import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.StaticTemplate
 import no.nav.pensjon.brev.template.base.PensjonLatex
 import no.nav.pensjon.brev.template.dsl.*
@@ -53,14 +50,7 @@ object EksempelBrev : StaticTemplate {
 
             // Inkluder data fra datagrunnlaget til malen inn i brevet som tekst
             eval { argument().select(EksempelBrevDto::pensjonInnvilget).str() }
-
-            // Inkludering av eksisterende frase/mini-mal for gjenbruk av elementer
-            includePhrase(
-                argument().select(EksempelBrevDto::pensjonInnvilget)
-                    .map { TestFraseDto(it.toString()) },
-                testFrase
-            )
-
+            text(Bokmal to "test")
             table {
                 row(GRAY) {
                     cell(4) {
@@ -92,6 +82,7 @@ object EksempelBrev : StaticTemplate {
                         text(Bokmal to "1234567890", ITALIC)
                     }
                 }
+
 
 
                 row {

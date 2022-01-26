@@ -429,10 +429,16 @@ object PensjonLatex : BaseTemplate() {
                 printWriter.printCmd("newline")
             is Element.Table ->
                 with(printWriter) {
-
+                    val numberOfColumns = element.rows.maxOf { it.cells.size }
+                    print("\\\\", escape = false)
                     printCmd("begin") {
                         arg { print("tblr") }
-                        arg { print(columnFormat(element.rows.maxOf { it.cells.size }), escape = false) }
+                        arg {
+                            print(
+                                "colspec={${columnFormat(numberOfColumns)}},"
+                                        + "width=\\textwidth", escape = false
+                            )
+                        }
                     }
                     printCmd("hline")
                     element.rows.forEach { row ->
@@ -442,9 +448,7 @@ object PensjonLatex : BaseTemplate() {
                         }
 
                         row.cells.forEachIndexed { index, cell ->
-                            if (cell.cellColumns > 1) {
-                                print("\\SetCell[c=${cell.cellColumns}]{l}", escape = false)
-                            }
+                            print("\\SetCell[c=${cell.cellColumns}]{${decideAlignment(index, row.cells.lastIndex)}}", escape = false)
                             cell.elements.forEach { cellElement ->
                                 renderElement(scope, cellElement, printWriter)
                             }
@@ -463,6 +467,13 @@ object PensjonLatex : BaseTemplate() {
                         arg { print("tblr") }
                     }
                 }
+        }
+
+    private fun decideAlignment(index: Int, lastIndex: Int): String =
+        when (index) {
+            0 -> "l"
+            lastIndex -> "r"
+            else -> "c"
         }
 
     private fun getResource(fileName: String): InputStream {
