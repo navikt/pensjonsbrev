@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.maler.fraser
 
+import no.nav.pensjon.brev.api.model.Sivilstand
 import no.nav.pensjon.brev.api.model.Telefonnummer
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.*
@@ -271,46 +272,110 @@ val vedleggPlikterRettTilEktefelletilleggAP_001 = createPhrase<LangBokmalNynorsk
     }
 }
 
-val vedleggPlikterRettTilEktefelletilleggOgBarnetilleggAP_001 = createPhrase<LangBokmalNynorskEnglish, Unit>{
-    paragraph {
+data class scriptSivilstandBestemtFormDto(val sivilstand: Sivilstand)
+val scriptSivilstandBestemtForm = createPhrase<LangBokmalNynorskEnglish, scriptSivilstandBestemtFormDto> {
+    val sivilstand = argument().select(scriptSivilstandBestemtFormDto::sivilstand)
+    showIf(sivilstand.isOneOf(Sivilstand.GIFT)) {
         text(
-            Bokmal to "Fordi du får ektefelletillegg og barnetillegg må du også melde fra om endringer som kan ha betydning for disse tilleggene.",
-            Nynorsk to "Fordi du får ektefelletillegg og barnetillegg må du også melde frå om endringar som kan ha betydning for desse tillegga.",
-            English to "Because you receive both spouse supplement and child supplement, you must notify us if there are any changes in circumstances that can have an influence on the assessment of these supplements."
+            Bokmal to "ektefellen",
+            Nynorsk to "ektefellen",
+            English to "your spouse"
         )
     }
-    paragraph {
+    showIf(sivilstand.isOneOf(Sivilstand.SAMBOER1_5, Sivilstand.SAMBOER3_2)) {
         text(
-            Bokmal to "Du må gi oss beskjed hvis barn eller [_Script Script_bruker_sivilstand_bestemtForm_] du forsørger",
-            Nynorsk to "Du må gi oss beskjed om barn eller [_Script Script_bruker_sivilstand_bestemtForm_] du forsørgjer",
-            English to "You must notify us if the child/children or the [_Script Script_bruker_sivilstand_ubestemtForm_] you provide for will"
+            Bokmal to "samboeren",
+            Nynorsk to "samboeren",
+            English to "your partner"
         )
     }
-    list {
+
+    showIf(sivilstand.isOneOf(Sivilstand.PARTNER)) {
         text(
-            Bokmal to "får egen inntekt som er mer enn  folketrygden grunnbeløp",
-            Nynorsk to "får eiga inntekt som er meir enn grunnbeløpet i folketrygda",
-            English to "earn an income exceeding the National Insurance basic amount"
-        )
-        text(
-            Bokmal to "omsorgssituasjonen for barnet endrer seg",
-            Nynorsk to "omsorgssituasjonen for barnet endrar seg",
-            English to "have parental care provision changes"
-        )
-        text(
-            Bokmal to "skal flytte til et annet land",
-            Nynorsk to "skal flytte til eit anna land",
-            English to "move to another country"
-        )
-        text(
-            Bokmal to "skal oppholde seg i et annet land i mer enn 90 dager i løpet av en tolvmånedersperiode",
-            Nynorsk to "skal opphalde seg i eit anna land i meir enn 90 dager i løpet av ein tolv månedars periode",
-            English to "stay in another country for more than 90 days in a 12 month period"
+            Bokmal to "partneren",
+            Nynorsk to "partneren",
+            English to "your partner"
         )
     }
 }
 
-val vedleggPlikterinntektsprøvingBTFellesBarnSaerkullsbarnAP_001 = createPhrase<LangBokmalNynorskEnglish, Unit>{
+data class vedleggPlikterRettTilEktefelletilleggOgBarnetilleggAP_001Dto(val sivilstand: Sivilstand)
+val vedleggPlikterRettTilEktefelletilleggOgBarnetilleggAP_001 =
+    createPhrase<LangBokmalNynorskEnglish, vedleggPlikterRettTilEktefelletilleggOgBarnetilleggAP_001Dto> {
+        val sivilstand = argument().select(vedleggPlikterRettTilEktefelletilleggOgBarnetilleggAP_001Dto::sivilstand)
+        paragraph {
+            text(
+                Bokmal to "Fordi du får ektefelletillegg og barnetillegg må du også melde fra om endringer som kan ha betydning for disse tilleggene.",
+                Nynorsk to "Fordi du får ektefelletillegg og barnetillegg må du også melde frå om endringar som kan ha betydning for desse tillegga.",
+                English to "Because you receive both spouse supplement and child supplement, you must notify us if there are any changes in circumstances that can have an influence on the assessment of these supplements."
+            )
+        }
+
+        //TODO decide between this solution or the one under
+        paragraph {
+            showIf(sivilstand.isOneOf(Sivilstand.GIFT)) {
+                text(
+                    Bokmal to "Du må gi oss beskjed hvis barn eller ektefellen du forsørger",
+                    Nynorsk to "Du må gi oss beskjed om barn eller ektefellen du forsørgjer",
+                    English to "You must notify us if the child/children or your spouse you provide for will"
+                )
+            }
+            showIf(sivilstand.isOneOf(Sivilstand.SAMBOER1_5, Sivilstand.SAMBOER3_2)) {
+                text(
+                    Bokmal to "Du må gi oss beskjed hvis barn eller samboeren du forsørger",
+                    Nynorsk to "Du må gi oss beskjed om barn eller samboeren du forsørgjer",
+                    English to "You must notify us if the child/children or your partner you provide for will"
+                )
+            }
+            showIf(sivilstand.isOneOf(Sivilstand.PARTNER)) {
+                text(
+                    Bokmal to "Du må gi oss beskjed hvis barn eller partneren du forsørger",
+                    Nynorsk to "Du må gi oss beskjed om barn eller partneren du forsørgjer",
+                    English to "You must notify us if the child/children or your partner you provide for will"
+                )
+            }
+        }
+
+        // Optionally do it this way:
+        paragraph {
+            text(
+                Bokmal to "Du må gi oss beskjed hvis barn eller ",
+                Nynorsk to "Du må gi oss beskjed om barn eller ",
+                English to "You must notify us if the child/children or "
+            )
+            includePhrase(argument().map { scriptSivilstandBestemtFormDto(it.sivilstand) },scriptSivilstandBestemtForm)
+            text(
+                Bokmal to " du forsørger",
+                Nynorsk to " du forsørgjer",
+                English to " you provide for will"
+            )
+        }
+
+        list {
+            text(
+                Bokmal to "får egen inntekt som er mer enn  folketrygden grunnbeløp",
+                Nynorsk to "får eiga inntekt som er meir enn grunnbeløpet i folketrygda",
+                English to "earn an income exceeding the National Insurance basic amount"
+            )
+            text(
+                Bokmal to "omsorgssituasjonen for barnet endrer seg",
+                Nynorsk to "omsorgssituasjonen for barnet endrar seg",
+                English to "have parental care provision changes"
+            )
+            text(
+                Bokmal to "skal flytte til et annet land",
+                Nynorsk to "skal flytte til eit anna land",
+                English to "move to another country"
+            )
+            text(
+                Bokmal to "skal oppholde seg i et annet land i mer enn 90 dager i løpet av en tolvmånedersperiode",
+                Nynorsk to "skal opphalde seg i eit anna land i meir enn 90 dager i løpet av ein tolv månedars periode",
+                English to "stay in another country for more than 90 days in a 12 month period"
+            )
+        }
+    }
+
+val vedleggPlikterinntektsprøvingBTFellesBarnSaerkullsbarnAP_001 = createPhrase<LangBokmalNynorskEnglish, Unit> {
     paragraph {
         text(
             Bokmal to "Hvor mye du får utbetalt i barnetillegg avhenger av den samlede inntekten du[_Script fellesbarn_] har. Du må derfor også gi beskjed hvis",
@@ -617,8 +682,12 @@ val vedleggVeiledning_001 = createPhrase<LangBokmalNynorskEnglish, Unit> {
     }
 }
 
-data class vedleggInnsynSakPensjon_001Dto(val kontaktTelefonnummer: Telefonnummer, val kontaktinformasjonNettsted: String)
-val vedleggInnsynSakPensjon_001 = createPhrase<LangBokmalNynorskEnglish, vedleggInnsynSakPensjon_001Dto>{
+data class vedleggInnsynSakPensjon_001Dto(
+    val kontaktTelefonnummer: Telefonnummer,
+    val kontaktinformasjonNettsted: String
+)
+
+val vedleggInnsynSakPensjon_001 = createPhrase<LangBokmalNynorskEnglish, vedleggInnsynSakPensjon_001Dto> {
     val telefonNummer = argument().select(vedleggInnsynSakPensjon_001Dto::kontaktTelefonnummer)
     val kontaktinformasjonNettsted = argument().select(vedleggInnsynSakPensjon_001Dto::kontaktinformasjonNettsted)
     paragraph {
@@ -638,7 +707,8 @@ val vedleggInnsynSakPensjon_001 = createPhrase<LangBokmalNynorskEnglish, vedlegg
 }
 
 data class vedleggInnsynSakUTPesys_001Dto(val kontaktTelefonnummer: Telefonnummer)
-val vedleggInnsynSakUTPesys_001 = createPhrase<LangBokmalNynorskEnglish, vedleggInnsynSakUTPesys_001Dto>{
+
+val vedleggInnsynSakUTPesys_001 = createPhrase<LangBokmalNynorskEnglish, vedleggInnsynSakUTPesys_001Dto> {
 
 
     val telefonNummer = argument().select(vedleggInnsynSakUTPesys_001Dto::kontaktTelefonnummer)
@@ -676,7 +746,8 @@ val vedleggHjelpFraAndre_001 = createPhrase<LangBokmalNynorskEnglish, Unit> {
 }
 
 data class vedleggKlagePensjon_001Dto(val kontaktTelefonnummer: Telefonnummer)
-val vedleggKlagePensjon_001 = createPhrase<LangBokmalNynorskEnglish, vedleggKlagePensjon_001Dto>{
+
+val vedleggKlagePensjon_001 = createPhrase<LangBokmalNynorskEnglish, vedleggKlagePensjon_001Dto> {
     val telefonNummer = argument().select(vedleggKlagePensjon_001Dto::kontaktTelefonnummer)
     paragraph {
         title1 {

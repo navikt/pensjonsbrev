@@ -4,7 +4,6 @@ import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.dsl.*
 
 data class TestFraseDto(val test: String)
-
 val testFrase = createPhrase<LangBokmalNynorskEnglish, TestFraseDto> {
     paragraph {
         val input = argument().select(TestFraseDto::test)
