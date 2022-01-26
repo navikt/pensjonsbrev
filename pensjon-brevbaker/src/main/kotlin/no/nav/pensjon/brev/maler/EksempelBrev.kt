@@ -8,6 +8,7 @@ import no.nav.pensjon.brev.template.Element.Table.RowColour.GRAY
 import no.nav.pensjon.brev.template.Element.Text.FontType.BOLD
 import no.nav.pensjon.brev.template.Element.Text.FontType.ITALIC
 import no.nav.pensjon.brev.template.Language.Bokmal
+import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.StaticTemplate
 import no.nav.pensjon.brev.template.base.PensjonLatex
 import no.nav.pensjon.brev.template.dsl.*
@@ -57,7 +58,7 @@ object EksempelBrev : StaticTemplate {
             includePhrase(
                 argument().select(EksempelBrevDto::pensjonInnvilget)
                     .map { TestFraseDto(it.toString()) },
-                TestFrase
+                testFrase
             )
 
             table {
