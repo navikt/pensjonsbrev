@@ -46,7 +46,7 @@ sealed class BinaryOperation<in In1, in In2, out Out> : Operation() {
 
     abstract fun apply(first: In1, second: In2): Out
 
-    class Equal<In : Comparable<In>> : BinaryOperation<In, In, Boolean>() {
+    class Equal<In> : BinaryOperation<In, In, Boolean>() {
         override fun apply(first: In, second: In): Boolean = first == second
     }
 
@@ -69,5 +69,13 @@ sealed class BinaryOperation<in In1, in In2, out Out> : Operation() {
 
     class EnumInList<EnumType : Enum<*>> : BinaryOperation<EnumType, List<EnumType>, Boolean>() {
         override fun apply(first: EnumType, second: List<EnumType>): Boolean = second.contains(first)
+    }
+
+    class IfElse<Out> : BinaryOperation<Boolean, Pair<Out, Out>, Out>() {
+        override fun apply(first: Boolean, second: Pair<Out, Out>): Out = if (first) second.first else second.second
+    }
+
+    class Tuple<Out> : BinaryOperation<Out, Out, Pair<Out, Out>>() {
+        override fun apply(first: Out, second: Out): Pair<Out, Out> = first to second
     }
 }
