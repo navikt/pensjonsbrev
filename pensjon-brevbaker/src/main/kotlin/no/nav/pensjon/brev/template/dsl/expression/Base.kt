@@ -1,9 +1,7 @@
 package no.nav.pensjon.brev.template.dsl.expression
 
 import no.nav.pensjon.brev.api.model.Telefonnummer
-import no.nav.pensjon.brev.maler.fraser.common.LocalDateValue
 import no.nav.pensjon.brev.template.*
-import java.time.LocalDate
 
 fun Expression<Any>.str(): StringExpression =
     Expression.UnaryInvoke(this, UnaryOperation.ToString())
