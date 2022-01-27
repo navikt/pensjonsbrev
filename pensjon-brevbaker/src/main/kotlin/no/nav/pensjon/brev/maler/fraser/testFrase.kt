@@ -1,7 +1,8 @@
 package no.nav.pensjon.brev.maler.fraser
 
 import no.nav.pensjon.brev.template.*
-import no.nav.pensjon.brev.template.dsl.*
+import no.nav.pensjon.brev.template.dsl.expression.*
+import no.nav.pensjon.brev.template.dsl.textExpr
 
 data class TestFraseDto(val test: String)
 

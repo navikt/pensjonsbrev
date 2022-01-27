@@ -1,18 +1,12 @@
-package no.nav.pensjon.brev.template.dsl
+package no.nav.pensjon.brev.template.dsl.expression
 
 import no.nav.pensjon.brev.api.model.Telefonnummer
+import no.nav.pensjon.brev.maler.fraser.common.LocalDateValue
 import no.nav.pensjon.brev.template.*
 import java.time.LocalDate
 
 fun Expression<Any>.str(): StringExpression =
     Expression.UnaryInvoke(this, UnaryOperation.ToString())
-
-fun Expression<LocalDate>.format() =
-    Expression.BinaryInvoke(
-        this,
-        Expression.FromScope(ExpressionScope<Any, *>::language),
-        BinaryOperation.LocalizedDateFormat
-    )
 
 fun Expression<Telefonnummer>.format() =
     Expression.UnaryInvoke(this, UnaryOperation.FormatPhoneNumber)
@@ -73,4 +67,39 @@ infix fun Expression<Boolean>.and(other: Expression<Boolean>) =
         this,
         other,
         BinaryOperation.And
+    )
+
+fun <T> ifElse(condition: Expression<Boolean>, ifTrue: T, ifFalse: T): Expression<T> =
+    Expression.BinaryInvoke(
+        first = condition,
+        second = (ifTrue to ifFalse).expr(),
+        operation = BinaryOperation.IfElse()
+    )
+
+fun <T> ifElse(condition: Expression<Boolean>, ifTrue: Expression<T>, ifFalse: Expression<T>): Expression<T> =
+    Expression.BinaryInvoke(
+        first = condition,
+        second = (ifTrue to ifFalse).tuple(),
+        operation = BinaryOperation.IfElse(),
+    )
+
+fun <T> Pair<Expression<T>, Expression<T>>.tuple() =
+    Expression.BinaryInvoke(
+        first = first,
+        second = second,
+        operation = BinaryOperation.Tuple()
+    )
+
+infix fun <T> Expression<T>.equalTo(other: T) =
+    Expression.BinaryInvoke(
+        first = this,
+        second = other.expr(),
+        operation = BinaryOperation.Equal()
+    )
+
+infix fun <T> Expression<T>.equalTo(other: Expression<T>) =
+    Expression.BinaryInvoke(
+        first = this,
+        second = other,
+        operation = BinaryOperation.Equal()
     )

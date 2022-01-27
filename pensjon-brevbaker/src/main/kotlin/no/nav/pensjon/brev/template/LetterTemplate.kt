@@ -49,9 +49,7 @@ sealed class Expression<out Out> {
         val second: Expression<In2>,
         val operation: BinaryOperation<In1, In2, Out>
     ) : Expression<Out>() {
-        override fun eval(scope: ExpressionScope<*, *>): Out {
-            return operation.apply(first.eval(scope), second.eval(scope))
-        }
+        override fun eval(scope: ExpressionScope<*, *>): Out = operation.apply(first.eval(scope), second.eval(scope))
     }
 
 }

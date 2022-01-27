@@ -4,12 +4,10 @@ import no.nav.pensjon.brev.api.model.*
 import no.nav.pensjon.brev.latex.LatexPrintWriter
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.*
-import no.nav.pensjon.brev.template.dsl.languageSettings
-import no.nav.pensjon.brev.template.dsl.select
-import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.dsl.*
+import no.nav.pensjon.brev.template.dsl.expression.select
 import java.io.InputStream
-import java.time.LocalDate
-import java.time.ZonedDateTime
+import java.time.*
 import java.time.format.DateTimeFormatter
 
 object PensjonLatex : BaseTemplate() {

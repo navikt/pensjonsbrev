@@ -3,8 +3,8 @@ package no.nav.pensjon.brev.template
 import no.nav.pensjon.brev.Fixtures
 import no.nav.pensjon.brev.api.model.Felles
 import no.nav.pensjon.brev.template.dsl.*
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertNull
+import no.nav.pensjon.brev.template.dsl.expression.*
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 
 class ExpressionEvalTest {

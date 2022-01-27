@@ -1,4 +1,4 @@
-package no.nav.pensjon.brev.template.dsl
+package no.nav.pensjon.brev.template.dsl.expression
 
 import no.nav.pensjon.brev.template.*
 import org.junit.jupiter.api.Assertions.assertEquals
