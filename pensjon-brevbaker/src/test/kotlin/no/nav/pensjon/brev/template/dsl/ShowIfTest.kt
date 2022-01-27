@@ -2,7 +2,6 @@ package no.nav.pensjon.brev.template.dsl
 
 import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.equalTo
-import no.nav.pensjon.brev.maler.fraser.omregning.ufoeretrygd.Ufoeretrygd
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.base.PensjonLatex
 import no.nav.pensjon.brev.template.dsl.expression.*
@@ -140,8 +139,4 @@ class ShowIfTest {
         assertThat(expected, equalTo(actual))
     }
 
-    @Test
-    fun bla() {
-        Assertions.assertTrue(listOf(Ufoeretrygd.Tillegg.FELLESBARN, Ufoeretrygd.Tillegg.EKTEFELLE).containsAll(listOf(Ufoeretrygd.Tillegg.FELLESBARN)))
-    }
 }
