@@ -429,8 +429,20 @@ object PensjonLatex : BaseTemplate() {
                 printWriter.printCmd("newline")
             is Element.Table ->
                 with(printWriter) {
-                    val numberOfColumns = element.rows.maxOf { it.cells.size }
-                    print("\\\\", escape = false)
+                    val cellWidths = element.rows.map { it.cells.sumOf { cell -> cell.cellColumns } }.distinct()
+
+                    if (cellWidths.size > 1) {
+                        throw IllegalArgumentException("rows in the table needs to have the same number of columns")
+                    }
+                    if (cellWidths.isEmpty()) {
+                        throw IllegalArgumentException("rows in the table needs to have cells/columns")
+                    }
+                    if (element.rows.isEmpty()) {
+                        throw IllegalArgumentException("rows in the table needs to have cells/columns")
+                    }
+                    val numberOfColumns = cellWidths[0]
+
+                    print("\\FloatBarrier", escape = false)
                     printCmd("begin") {
                         arg { print("tblr") }
                         arg {
@@ -448,7 +460,7 @@ object PensjonLatex : BaseTemplate() {
                         }
 
                         row.cells.forEachIndexed { index, cell ->
-                            print("\\SetCell[c=${cell.cellColumns}]{${decideAlignment(index, row.cells.lastIndex)}}", escape = false)
+                            print("\\SetCell[c=${cell.cellColumns}]{l}", escape = false)
                             cell.elements.forEach { cellElement ->
                                 renderElement(scope, cellElement, printWriter)
                             }
@@ -459,21 +471,14 @@ object PensjonLatex : BaseTemplate() {
                                 print(" ${"&".repeat(cell.cellColumns)} ", escape = false)
                             }
                         }
-                        print(""" \\""", escape = false)
-                        printCmd("hline")
+                        print(""" \\\hline""", escape = false)
                     }
 
                     printCmd("end") {
                         arg { print("tblr") }
                     }
+                    print("\\FloatBarrier", escape = false)
                 }
-        }
-
-    private fun decideAlignment(index: Int, lastIndex: Int): String =
-        when (index) {
-            0 -> "l"
-            lastIndex -> "r"
-            else -> "c"
         }
 
     private fun getResource(fileName: String): InputStream {

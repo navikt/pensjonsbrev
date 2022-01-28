@@ -33,14 +33,15 @@
 \usepackage{fontspec}   %declare font presets
 \usepackage{scrlayer}   % creating custom layers/custom posistioned fields
 \usepackage{geometry}   % adjusting margins
-\usepackage{multirow}   % Table cells spanning multiple columns
 \usepackage{enumitem,amssymb} % for formChoice list
-%\usepackage{xltabular}   % Extension of table that allows for automatically expanding columns.
+\usepackage{placeins} % Float barrier to make elements between barrier not float.
+
+% tables and colors
 \usepackage[rgb]{xcolor}
 \selectcolormodel{natural}
 \usepackage{ninecolors}
 \selectcolormodel{rgb}
-\usepackage{tabularray}   % Extension of table that allows for automatically expanding columns.
+\usepackage{tabularray} % better tables(tblr, longtblr)
 
 %! suppress = FileNotFound
 \include{params}  % Must be done before pdfx is imported
@@ -213,9 +214,6 @@
 } {
     \end{itemize}
 }
-
-% table
-%\definecolor{Gray}{gray}{0.9}
 
 %----------------------------------------
 %               Footer

@@ -51,51 +51,43 @@ object EksempelBrev : StaticTemplate {
             // Inkluder data fra datagrunnlaget til malen inn i brevet som tekst
             eval { argument().select(EksempelBrevDto::pensjonInnvilget).str() }
             text(Bokmal to "test")
-            table {
-                row(GRAY) {
-                    cell(4) {
-                        text(Bokmal to "1", BOLD)
-                        text(Bokmal to "2", ITALIC)
+            paragraph {
+                table {
+                    row(GRAY) {
+                        cell(4) {
+                            text(Bokmal to "Dette er en 4 kolonner brei celle", ITALIC)
+                        }
                     }
-                }
-                row(GRAY) {
-                    cell(3) {
-                        text(Bokmal to "3", BOLD)
-                        text(Bokmal to "4", ITALIC)
+                    row {
+                        cell(3) {
+                            text(Bokmal to "Dette er en 3 kolonner brei celle", BOLD)
+                        }
+                        cell {
+                            text(Bokmal to "Dette er en 1 kolonne brei celle")
+                        }
                     }
-                    cell {
-                        text(Bokmal to "555555555555", BOLD)
-                        text(Bokmal to "666666666", ITALIC)
+                    row {
+                        cell(3) {
+                            text(Bokmal to "Dette er en 3 kolonner brei celle")
+                        }
+                        cell {
+                            text(Bokmal to "Dette er en 1 kolonne brei celle")
+                        }
                     }
-                }
-                row(GRAY) {
-                    cell {
-                        text(Bokmal to "1111111111111", BOLD)
-                        text(Bokmal to "1234567890", ITALIC)
+                    row {
+                        cell {
+                            text(Bokmal to "Dette er en 3 kolonner brei celle")
+                        }
+                        cell {
+                            text(Bokmal to "Dette er en 1 kolonne brei celle")
+                        }
+                        cell {
+                            text(Bokmal to "Dette er en 1 kolonne brei celle")
+                        }
+                        cell {
+                            text(Bokmal to "Dette er en 1 kolonne brei celle")
+                        }
                     }
-                    cell(2) {
-                        text(Bokmal to "2222222222222", BOLD)
-                        text(Bokmal to "1234567890", ITALIC)
-                    }
-                    cell {
-                        text(Bokmal to "2222222222222", BOLD)
-                        text(Bokmal to "1234567890", ITALIC)
-                    }
-                }
-
-
-
-                row {
-                    cell { text(Bokmal to "Dette er en eksempeltekst eller noe sånnt", ITALIC) }
-                    cell { text(Bokmal to "2", BOLD) }
-                    cell { text(Bokmal to "3") }
-                    cell { text(Bokmal to "4") }
-                }
-                row {
-                    cell { text(Bokmal to "Dette er noe", ITALIC) }
-                    cell { text(Bokmal to "535135135351", BOLD) }
-                    cell { text(Bokmal to "5") }
-                    cell { text(Bokmal to "4gdagdagad gdagdagda") }
                 }
             }
         }
