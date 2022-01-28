@@ -432,13 +432,7 @@ object PensjonLatex : BaseTemplate() {
             is Element.Table ->
                 with(printWriter) {
                     val cellWidths = element.rows.map { it.cells.sumOf { cell -> cell.cellColumns } }.distinct()
-
-                    if (cellWidths.size > 1) {
-                        throw IllegalArgumentException("rows in the table needs to have the same number of columns")
-                    }
-                    if (cellWidths.isEmpty()) {
-                        throw IllegalArgumentException("rows in the table needs to have cells/columns")
-                    }
+                    verifyCells(cellWidths)
 
                     val numberOfColumns = cellWidths[0]
 
@@ -480,6 +474,18 @@ object PensjonLatex : BaseTemplate() {
                     print("\\FloatBarrier", escape = false)
                 }
         }
+
+    private fun verifyCells(cellWidths: List<Int>) {
+        if (cellWidths.size > 1) {
+            throw IllegalArgumentException("rows in the table needs to have the same number of columns")
+        }
+        if (cellWidths.isEmpty()) {
+            throw IllegalArgumentException("rows in the table needs to have cells/columns")
+        }
+        if(cellWidths[0] == 0) {
+            throw IllegalArgumentException("the row(s) are empty")
+        }
+    }
 
     private fun getResource(fileName: String): InputStream {
         return this::class.java.getResourceAsStream("/$fileName")
