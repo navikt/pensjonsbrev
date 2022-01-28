@@ -6,6 +6,7 @@ import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Element.Table.RowColour.GRAY
 import no.nav.pensjon.brev.template.Element.Table.RowColour.WHITE
+import no.nav.pensjon.brev.template.Element.Text.FontType.*
 import no.nav.pensjon.brev.template.dsl.languageSettings
 import no.nav.pensjon.brev.template.dsl.select
 import no.nav.pensjon.brev.template.dsl.text
@@ -327,16 +328,17 @@ object PensjonLatex : BaseTemplate() {
                     toRender.forEach { renderElement(scope, it, printWriter) }
                 }
 
-            is Element.Text.Literal ->
-                when (element.fontType) {
-                    Element.Text.FontType.PLAIN -> printWriter.print(element.text(scope.language))
-                    Element.Text.FontType.BOLD -> printWriter.printCmd("textbf") {
-                        arg { printWriter.print(element.text(scope.language)) }
-                    }
-                    Element.Text.FontType.ITALIC -> printWriter.printCmd("textit") {
-                        arg { printWriter.print(element.text(scope.language)) }
+            is Element.Text.Literal -> {
+                val textLiteral = element.text(scope.language)
+                with(printWriter) {
+                    when (element.fontType) {
+                        PLAIN -> print(textLiteral)
+                        BOLD -> printCmd("textbf") { arg { print(textLiteral) } }
+                        ITALIC -> printCmd("textit") { arg { print(textLiteral) } }
                     }
                 }
+
+            }
 
             is Element.Text.Expression ->
                 printWriter.print(element.expression.eval(scope))
@@ -437,9 +439,7 @@ object PensjonLatex : BaseTemplate() {
                     if (cellWidths.isEmpty()) {
                         throw IllegalArgumentException("rows in the table needs to have cells/columns")
                     }
-                    if (element.rows.isEmpty()) {
-                        throw IllegalArgumentException("rows in the table needs to have cells/columns")
-                    }
+
                     val numberOfColumns = cellWidths[0]
 
                     print("\\FloatBarrier", escape = false)
