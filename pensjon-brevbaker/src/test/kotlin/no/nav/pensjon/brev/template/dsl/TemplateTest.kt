@@ -41,7 +41,7 @@ class TemplateTest {
                 outline = listOf(
                     Element.Title1(
                         listOf(
-                            Element.Text.Literal.create(lang1 = Language.Bokmal to "Heisann. "),
+                            Element.Text.Literal.create(Language.Bokmal to "Heisann. "),
                         )
                     )
                 )
@@ -155,7 +155,7 @@ class TemplateTest {
                 letterDataType = Unit::class,
                 letterMetadata = testLetterMetadata,
                 language = languages(Language.Bokmal),
-                outline = listOf(Element.Title1(listOf(Element.Text.Literal.create(lang1 = Language.Bokmal to "jadda"))))
+                outline = listOf(Element.Title1(listOf(Element.Text.Literal.create(Language.Bokmal to "jadda"))))
             ), doc
         )
     }
@@ -187,8 +187,8 @@ class TemplateTest {
                 language = languages(Language.Bokmal),
                 letterMetadata = testLetterMetadata,
                 outline = listOf(
-                    Element.Title1(listOf(Element.Text.Literal.create(lang1 = Language.Bokmal to "Tittel"))),
-                    Element.Paragraph(listOf(Element.Text.Literal.create(lang1 = Language.Bokmal to "Dette er tekst som kun brukes i dette brevet.")))
+                    Element.Title1(listOf(Element.Text.Literal.create(Language.Bokmal to "Tittel"))),
+                    Element.Paragraph(listOf(Element.Text.Literal.create(Language.Bokmal to "Dette er tekst som kun brukes i dette brevet.")))
                 )
             ),
             doc
