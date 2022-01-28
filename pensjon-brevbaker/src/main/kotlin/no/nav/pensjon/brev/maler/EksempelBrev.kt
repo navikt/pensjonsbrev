@@ -8,7 +8,13 @@ import no.nav.pensjon.brev.template.Element.Text.FontType.ITALIC
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.StaticTemplate
 import no.nav.pensjon.brev.template.base.PensjonLatex
-import no.nav.pensjon.brev.template.dsl.*
+import no.nav.pensjon.brev.template.dsl.createTemplate
+import no.nav.pensjon.brev.template.dsl.expression.map
+import no.nav.pensjon.brev.template.dsl.expression.select
+import no.nav.pensjon.brev.template.dsl.expression.str
+import no.nav.pensjon.brev.template.dsl.languages
+import no.nav.pensjon.brev.template.dsl.newText
+import no.nav.pensjon.brev.template.dsl.text
 
 object EksempelBrev : StaticTemplate {
     override val template = createTemplate(

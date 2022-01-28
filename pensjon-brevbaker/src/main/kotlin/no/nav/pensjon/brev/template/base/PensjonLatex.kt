@@ -7,12 +7,9 @@ import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Element.Table.RowColour.GRAY
 import no.nav.pensjon.brev.template.Element.Table.RowColour.WHITE
 import no.nav.pensjon.brev.template.Element.Text.FontType.*
-import no.nav.pensjon.brev.template.dsl.languageSettings
-import no.nav.pensjon.brev.template.dsl.select
-import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.dsl.*
 import java.io.InputStream
-import java.time.LocalDate
-import java.time.ZonedDateTime
+import java.time.*
 import java.time.format.DateTimeFormatter
 
 object PensjonLatex : BaseTemplate() {

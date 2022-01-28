@@ -5,8 +5,8 @@ import no.nav.pensjon.brev.api.model.LetterMetadata
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Element.Text.FontType
 import no.nav.pensjon.brev.template.base.BaseTemplate
+import no.nav.pensjon.brev.template.dsl.expression.expr
 import kotlin.reflect.KClass
-
 
 fun <Lang : LanguageSupport, LetterData : Any> createTemplate(
     name: String,
@@ -166,14 +166,8 @@ class TemplateContainerScope<Lang : LanguageSupport, LetterData : Any> :
     fun showIf(
         predicate: Expression<Boolean>,
         showIf: TemplateContainerScope<Lang, LetterData>.() -> Unit
-    ): ShowElseBuilder<Lang, LetterData> {
-        val showElse = mutableListOf<Element<Lang>>()
-
-        return TemplateContainerScope<Lang, LetterData>().apply { showIf() }
-            .let { Element.Conditional(predicate, it.children, showElse) }
-            .also { children.add(it) }
-            .let { ShowElseBuilder(showElse) }
-    }
+    ): ShowElseBuilder<Lang, LetterData> =
+        ShowElseBuilder.chainShowIfElse(children, predicate, showIf)
 
 }
 
@@ -214,6 +208,32 @@ class ShowElseBuilder<Lang : LanguageSupport, ParameterType : Any>(
         with(TemplateContainerScope<Lang, ParameterType>().apply(init)) {
             showElse.addAll(children)
         }
+
+    fun orShowIf(
+        predicate: Expression<Boolean>,
+        body: TemplateContainerScope<Lang, ParameterType>.() -> Unit
+    ): ShowElseBuilder<Lang, ParameterType> =
+        chainShowIfElse(showElse, predicate, body)
+
+    companion object {
+        fun <Lang : LanguageSupport, ParameterType : Any> chainShowIfElse(
+            outer: MutableList<Element<Lang>>,
+            predicate: Expression<Boolean>,
+            showIf: TemplateContainerScope<Lang, ParameterType>.() -> Unit
+        ): ShowElseBuilder<Lang, ParameterType> {
+            val nextOr = mutableListOf<Element<Lang>>()
+
+            outer.add(
+                Element.Conditional(
+                    predicate = predicate,
+                    showIf = TemplateContainerScope<Lang, ParameterType>().apply(showIf).children,
+                    showElse = nextOr,
+                )
+            )
+
+            return ShowElseBuilder(nextOr)
+        }
+    }
 }
 
 @DslMarker
