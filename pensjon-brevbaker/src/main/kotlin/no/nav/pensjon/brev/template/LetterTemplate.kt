@@ -67,7 +67,22 @@ sealed class Element<out Lang : LanguageSupport> {
     }
 
     data class Table<Lang : LanguageSupport>(val rows: List<Row<Lang>>) : Element<Lang>() {
+        val width: Int
+        init {
+            val cellWidths = rows.map { it.cells.sumOf { cell -> cell.cellColumns } }.distinct()
+            if (cellWidths.size > 1) {
+                throw IllegalArgumentException("rows in the table needs to have the same number of columns")
+            }
+            width = cellWidths.firstOrNull()
+                ?: throw IllegalArgumentException("rows in the table needs to have cells/columns")
+
+            if (width == 0) {
+                throw IllegalArgumentException("the row(s) are empty")
+            }
+        }
+
         data class Row<Lang : LanguageSupport>(val cells: List<Cell<Lang>>, val colour: RowColour)
+
         data class Cell<Lang : LanguageSupport>(
             val elements: List<Element<Lang>>,
             val cellColumns: Int

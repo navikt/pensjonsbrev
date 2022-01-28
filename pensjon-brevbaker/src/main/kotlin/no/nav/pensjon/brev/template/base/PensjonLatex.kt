@@ -431,17 +431,15 @@ object PensjonLatex : BaseTemplate() {
                 printWriter.printCmd("newline")
             is Element.Table ->
                 with(printWriter) {
-                    val cellWidths = element.rows.map { it.cells.sumOf { cell -> cell.cellColumns } }.distinct()
-                    verifyCells(cellWidths)
 
-                    val numberOfColumns = cellWidths[0]
+                    val tableWidth = element.width
 
                     print("\\FloatBarrier", escape = false)
                     printCmd("begin") {
                         arg { print("tblr") }
                         arg {
                             print(
-                                "colspec={${columnFormat(numberOfColumns)}},"
+                                "colspec={${columnFormat(tableWidth)}},"
                                         + "width=\\textwidth", escape = false
                             )
                         }
@@ -475,17 +473,6 @@ object PensjonLatex : BaseTemplate() {
                 }
         }
 
-    private fun verifyCells(cellWidths: List<Int>) {
-        if (cellWidths.size > 1) {
-            throw IllegalArgumentException("rows in the table needs to have the same number of columns")
-        }
-        if (cellWidths.isEmpty()) {
-            throw IllegalArgumentException("rows in the table needs to have cells/columns")
-        }
-        if(cellWidths[0] == 0) {
-            throw IllegalArgumentException("the row(s) are empty")
-        }
-    }
 
     private fun getResource(fileName: String): InputStream {
         return this::class.java.getResourceAsStream("/$fileName")
