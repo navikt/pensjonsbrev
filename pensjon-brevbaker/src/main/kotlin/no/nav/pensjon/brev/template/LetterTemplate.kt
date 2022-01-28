@@ -66,8 +66,8 @@ sealed class Element<out Lang : LanguageSupport> {
         data class Static<out Lang : LanguageSupport>(val items: List<Element<Lang>>) : ItemList<Lang>()
     }
 
-    data class Table<Lang : LanguageSupport>(val rows: List<TableRow<Lang>>) : Element<Lang>() {
-        data class TableRow<Lang : LanguageSupport>(val cells: List<Cell<Lang>>, val colour: RowColour)
+    data class Table<Lang : LanguageSupport>(val rows: List<Row<Lang>>) : Element<Lang>() {
+        data class Row<Lang : LanguageSupport>(val cells: List<Cell<Lang>>, val colour: RowColour)
         data class Cell<Lang : LanguageSupport>(
             val elements: List<Element<Lang>>,
             val cellColumns: Int
