@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.template.dsl
 import no.nav.pensjon.brev.api.model.Felles
 import no.nav.pensjon.brev.api.model.LetterMetadata
 import no.nav.pensjon.brev.template.*
+import no.nav.pensjon.brev.template.Element.Text.FontType
 import no.nav.pensjon.brev.template.base.BaseTemplate
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import kotlin.reflect.KClass
@@ -65,28 +66,31 @@ open class TemplateTextOnlyScope<Lang : LanguageSupport, LetterData : Any>(val c
     }
 }
 
+
 // TextOnlyBuilder.text()
 //
 //
 fun <Lang1 : Language, ParameterType : Any> TemplateTextOnlyScope<LanguageSupport.Single<Lang1>, ParameterType>.text(
-    lang1: Pair<Lang1, String>
+    lang1: Pair<Lang1, String>, fontType: FontType = FontType.PLAIN
 ) {
-    Element.Text.Literal.create(lang1).also { children.add(it) }
+    Element.Text.Literal.create(lang1, fontType).also { children.add(it) }
 }
 
 fun <Lang1 : Language, Lang2 : Language, ParameterType : Any> TemplateTextOnlyScope<LanguageSupport.Double<Lang1, Lang2>, ParameterType>.text(
     lang1: Pair<Lang1, String>,
     lang2: Pair<Lang2, String>,
+    fontType: FontType = FontType.PLAIN,
 ) {
-    Element.Text.Literal.create(lang1, lang2).also { children.add(it) }
+    Element.Text.Literal.create(lang1, lang2, fontType).also { children.add(it) }
 }
 
 fun <Lang1 : Language, Lang2 : Language, Lang3 : Language, ParameterType : Any> TemplateTextOnlyScope<LanguageSupport.Triple<Lang1, Lang2, Lang3>, ParameterType>.text(
     lang1: Pair<Lang1, String>,
     lang2: Pair<Lang2, String>,
     lang3: Pair<Lang3, String>,
+    fontType: FontType = FontType.PLAIN,
 ) {
-    Element.Text.Literal.create(lang1, lang2, lang3).also { children.add(it) }
+    Element.Text.Literal.create(lang1, lang2, lang3, fontType).also { children.add(it) }
 }
 
 // TextOnlyBuilder.textExpr()
@@ -137,6 +141,10 @@ class TemplateContainerScope<Lang : LanguageSupport, LetterData : Any> :
         children.add(Element.ItemList.Dynamic(items))
     }
 
+    fun table(init: TemplateTableScope<Lang, LetterData>.() -> Unit) {
+        children.add(Element.Table(TemplateTableScope<Lang, LetterData>().apply(init).children))
+    }
+
     fun paragraph(init: TemplateContainerScope<Lang, LetterData>.() -> Unit) {
         children.add(Element.Paragraph(TemplateContainerScope<Lang, LetterData>().apply(init).children))
     }
@@ -169,24 +177,27 @@ class TemplateFormChoiceScope<Lang : LanguageSupport, LetterData : Any>(
 ) : TemplateGlobalScope<LetterData>()
 
 fun <Lang1 : Language, LetterData : Any> TemplateFormChoiceScope<LanguageSupport.Single<Lang1>, LetterData>.choice(
-    lang1: Pair<Lang1, String>
+    lang1: Pair<Lang1, String>,
+    fontType: FontType = FontType.PLAIN
 ) {
-    Element.Text.Literal.create(lang1).also { choices.add(it) }
+    Element.Text.Literal.create(lang1 = lang1, fontType).also { choices.add(it) }
 }
 
 fun <Lang1 : Language, Lang2 : Language, LetterData : Any> TemplateFormChoiceScope<LanguageSupport.Double<Lang1, Lang2>, LetterData>.choice(
     lang1: Pair<Lang1, String>,
     lang2: Pair<Lang2, String>,
+    fontType: FontType = FontType.PLAIN,
 ) {
-    Element.Text.Literal.create(lang1, lang2).also { choices.add(it) }
+    Element.Text.Literal.create(lang1, lang2, fontType).also { choices.add(it) }
 }
 
 fun <Lang1 : Language, Lang2 : Language, Lang3 : Language, LetterData : Any> TemplateFormChoiceScope<LanguageSupport.Triple<Lang1, Lang2, Lang3>, LetterData>.choice(
     lang1: Pair<Lang1, String>,
     lang2: Pair<Lang2, String>,
     lang3: Pair<Lang3, String>,
+    fontType: FontType = FontType.PLAIN,
 ) {
-    Element.Text.Literal.create(lang1, lang2, lang3).also { choices.add(it) }
+    Element.Text.Literal.create(lang1, lang2, lang3, fontType).also { choices.add(it) }
 }
 
 

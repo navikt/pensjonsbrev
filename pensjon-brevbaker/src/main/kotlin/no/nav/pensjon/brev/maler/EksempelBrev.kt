@@ -2,9 +2,10 @@ package no.nav.pensjon.brev.maler
 
 import no.nav.pensjon.brev.api.model.LetterMetadata
 import no.nav.pensjon.brev.api.model.maler.EksempelBrevDto
-import no.nav.pensjon.brev.maler.fraser.TestFraseDto
-import no.nav.pensjon.brev.maler.fraser.testFrase
-import no.nav.pensjon.brev.template.Language
+import no.nav.pensjon.brev.template.Element.Table.RowColour.GRAY
+import no.nav.pensjon.brev.template.Element.Text.FontType.BOLD
+import no.nav.pensjon.brev.template.Element.Text.FontType.ITALIC
+import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.StaticTemplate
 import no.nav.pensjon.brev.template.base.PensjonLatex
 import no.nav.pensjon.brev.template.dsl.createTemplate
@@ -27,10 +28,10 @@ object EksempelBrev : StaticTemplate {
         letterDataType = EksempelBrevDto::class,
 
         // Hvilke språk brevet støtter
-        lang = languages(Language.Bokmal),
+        lang = languages(Bokmal),
 
         // Hovedtittel inne i brevet
-        title = newText(Language.Bokmal to "Eksempelbrev"),
+        title = newText(Bokmal to "Eksempelbrev"),
 
         // Metadata knyttet til en brevmal som ikke påvirker innholdet
         letterMetadata = LetterMetadata(
@@ -50,18 +51,51 @@ object EksempelBrev : StaticTemplate {
             title1 {
 
                 // Tekst
-                text(Language.Bokmal to "Du har fått innvilget pensjon")
+                text(Bokmal to "Du har fått innvilget pensjon")
             }
 
             // Inkluder data fra datagrunnlaget til malen inn i brevet som tekst
             eval { argument().select(EksempelBrevDto::pensjonInnvilget).str() }
-
-            // Inkludering av eksisterende frase/mini-mal for gjenbruk av elementer
-            includePhrase(
-                argument().select(EksempelBrevDto::pensjonInnvilget)
-                    .map { TestFraseDto(it.toString()) },
-                testFrase
-            )
+            text(Bokmal to "test")
+            paragraph {
+                table {
+                    row(GRAY) {
+                        cell(4) {
+                            text(Bokmal to "Dette er en 4 kolonner brei celle", ITALIC)
+                        }
+                    }
+                    row {
+                        cell(3) {
+                            text(Bokmal to "Dette er en 3 kolonner brei celle", BOLD)
+                        }
+                        cell {
+                            text(Bokmal to "Dette er en 1 kolonne brei celle")
+                        }
+                    }
+                    row {
+                        cell(3) {
+                            text(Bokmal to "Dette er en 3 kolonner brei celle")
+                        }
+                        cell {
+                            text(Bokmal to "Dette er en 1 kolonne brei celle")
+                        }
+                    }
+                    row {
+                        cell {
+                            text(Bokmal to "Dette er en 3 kolonner brei celle")
+                        }
+                        cell {
+                            text(Bokmal to "Dette er en 1 kolonne brei celle")
+                        }
+                        cell {
+                            text(Bokmal to "Dette er en 1 kolonne brei celle")
+                        }
+                        cell {
+                            text(Bokmal to "Dette er en 1 kolonne brei celle")
+                        }
+                    }
+                }
+            }
         }
     }
 }

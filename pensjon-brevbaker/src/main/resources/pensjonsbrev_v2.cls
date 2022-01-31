@@ -30,13 +30,18 @@
 %----------------------------------------
 \usepackage{amsmath}
 \usepackage{graphicx}   %graphics such as logo
-\usepackage{setspace}   %
 \usepackage{fontspec}   %declare font presets
-\usepackage{xcolor}     %define colors
 \usepackage{scrlayer}   % creating custom layers/custom posistioned fields
-\usepackage{needspace}
 \usepackage{geometry}   % adjusting margins
 \usepackage{enumitem,amssymb} % for formChoice list
+\usepackage{placeins} % Float barrier to make elements between barrier not float.
+
+% tables and colors
+\usepackage[rgb]{xcolor}
+\selectcolormodel{natural}
+\usepackage{ninecolors}
+\selectcolormodel{rgb}
+\usepackage{tabularray} % better tables(tblr, longtblr)
 
 %! suppress = FileNotFound
 \include{params}  % Must be done before pdfx is imported
@@ -52,8 +57,14 @@
 
 %fonts
 \newfontface{\grayFont}{Source Sans Pro}[Color=888888]
-\newfontface{\secondaryFont}[BoldFont={Source Sans Pro Bold}]{Source Sans Pro}
-\newfontface{\primaryFont}[BoldFont={Source Sans Pro Bold}]{Source Sans Pro}
+\newfontface{\primaryFont}[
+    BoldFont={Source Sans Pro Bold},
+    ItalicFont={Source Sans Pro Italic},
+    BoldItalicFont={Source Sans Pro Bold Italic}]{Source Sans Pro}
+\newfontface{\secondaryFont}[
+    BoldFont={Source Sans Pro Bold},
+    ItalicFont={Source Sans Pro Italic},
+    BoldItalicFont={Source Sans Pro Bold Italic}]{Source Sans Pro}
 
 % Global font commands
 \newcommand{\standardtextsize}{12pt}
@@ -131,8 +142,7 @@
 %----------------------------------------
 
 %Title font
-\newfontface{\titleFont}[BoldFont={Source Sans Pro Bold}]{Source Sans Pro}
-\newcommand{\titleText}[1]{\textbf{\titleFont \fontsize{16pt}{16pt} \selectfont \newline #1}}
+\newcommand{\titleText}[1]{\textbf{\primaryFont \fontsize{16pt}{16pt} \selectfont \newline #1}}
 
 \setplength{refaftervskip}{10mm} %vertical distance between title and reference field (containing date)
 

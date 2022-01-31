@@ -66,6 +66,35 @@ sealed class Element<out Lang : LanguageSupport> {
         data class Static<out Lang : LanguageSupport>(val items: List<Element<Lang>>) : ItemList<Lang>()
     }
 
+    data class Table<Lang : LanguageSupport>(val rows: List<Row<Lang>>) : Element<Lang>() {
+        val width: Int
+        init {
+            val cellWidths = rows.map { it.cells.sumOf { cell -> cell.cellColumns } }.distinct()
+            if (cellWidths.size > 1) {
+                throw IllegalArgumentException("rows in the table needs to have the same number of columns")
+            }
+            width = cellWidths.firstOrNull()
+                ?: throw IllegalArgumentException("rows in the table needs to have cells/columns")
+
+            if (width == 0) {
+                throw IllegalArgumentException("the row(s) are empty")
+            }
+        }
+
+        data class Row<Lang : LanguageSupport>(val cells: List<Cell<Lang>>, val colour: RowColour)
+
+        data class Cell<Lang : LanguageSupport>(
+            val elements: List<Element<Lang>>,
+            val cellColumns: Int
+        )
+
+        enum class RowColour {
+            GRAY,
+            WHITE
+        }
+    }
+
+
     sealed class Form<out Lang : LanguageSupport> : Element<Lang>() {
         data class Text<out Lang : LanguageSupport>(
             val prompt: Element.Text<Lang>,
@@ -88,28 +117,40 @@ sealed class Element<out Lang : LanguageSupport> {
     class NewLine<out Lang : LanguageSupport> : Element<Lang>()
 
     sealed class Text<out Lang : LanguageSupport> : Element<Lang>() {
-        data class Literal<out Lang : LanguageSupport> private constructor(private val text: Map<Language, String>) :
-            Text<Lang>() {
+        data class Literal<out Lang : LanguageSupport> private constructor(
+            private val text: Map<Language, String>,
+            val fontType: FontType
+        ) : Text<Lang>() {
 
             fun text(language: Language): String =
                 text[language]
                     ?: throw IllegalArgumentException("Text.Literal doesn't contain language: ${language::class.qualifiedName}")
 
             companion object {
-                fun <Lang1 : Language> create(lang1: Pair<Lang1, String>) =
-                    Literal<LanguageSupport.Single<Lang1>>(mapOf(lang1))
+                fun <Lang1 : Language> create(
+                    lang1: Pair<Lang1, String>,
+                    fontType: FontType = FontType.PLAIN
+                ) = Literal<LanguageSupport.Single<Lang1>>(mapOf(lang1), fontType)
 
                 fun <Lang1 : Language, Lang2 : Language> create(
                     lang1: Pair<Lang1, String>,
                     lang2: Pair<Lang2, String>,
-                ) = Literal<LanguageSupport.Double<Lang1, Lang2>>(mapOf(lang1, lang2))
+                    fontType: FontType = FontType.PLAIN,
+                ) = Literal<LanguageSupport.Double<Lang1, Lang2>>(mapOf(lang1, lang2), fontType)
 
                 fun <Lang1 : Language, Lang2 : Language, Lang3 : Language> create(
                     lang1: Pair<Lang1, String>,
                     lang2: Pair<Lang2, String>,
                     lang3: Pair<Lang3, String>,
-                ) = Literal<LanguageSupport.Triple<Lang1, Lang2, Lang3>>(mapOf(lang1, lang2, lang3))
+                    fontType: FontType = FontType.PLAIN,
+                ) = Literal<LanguageSupport.Triple<Lang1, Lang2, Lang3>>(mapOf(lang1, lang2, lang3), fontType)
             }
+        }
+
+        enum class FontType {
+            PLAIN,
+            BOLD,
+            ITALIC
         }
 
         data class Expression<out Lang : LanguageSupport>(val expression: StringExpression) :
@@ -140,8 +181,6 @@ sealed class Element<out Lang : LanguageSupport> {
                 }
             }
         }
-
-
     }
 
     data class Conditional<out Lang : LanguageSupport>(

@@ -4,10 +4,15 @@ import no.nav.pensjon.brev.api.model.*
 import no.nav.pensjon.brev.latex.LatexPrintWriter
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.*
-import no.nav.pensjon.brev.template.dsl.*
+import no.nav.pensjon.brev.template.Element.Table.RowColour.GRAY
+import no.nav.pensjon.brev.template.Element.Table.RowColour.WHITE
+import no.nav.pensjon.brev.template.Element.Text.FontType.*
 import no.nav.pensjon.brev.template.dsl.expression.select
+import no.nav.pensjon.brev.template.dsl.languageSettings
+import no.nav.pensjon.brev.template.dsl.text
 import java.io.InputStream
-import java.time.*
+import java.time.LocalDate
+import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
 object PensjonLatex : BaseTemplate() {
@@ -323,8 +328,17 @@ object PensjonLatex : BaseTemplate() {
                     toRender.forEach { renderElement(scope, it, printWriter) }
                 }
 
-            is Element.Text.Literal ->
-                printWriter.print(element.text(scope.language))
+            is Element.Text.Literal -> {
+                val textLiteral = element.text(scope.language)
+                with(printWriter) {
+                    when (element.fontType) {
+                        PLAIN -> print(textLiteral)
+                        BOLD -> printCmd("textbf") { arg { print(textLiteral) } }
+                        ITALIC -> printCmd("textit") { arg { print(textLiteral) } }
+                    }
+                }
+
+            }
 
             is Element.Text.Expression ->
                 printWriter.print(element.expression.eval(scope))
@@ -415,11 +429,60 @@ object PensjonLatex : BaseTemplate() {
 
             is Element.NewLine ->
                 printWriter.printCmd("newline")
+            is Element.Table ->
+                with(printWriter) {
+
+                    val tableWidth = element.width
+
+                    print("\\FloatBarrier", escape = false)
+                    printCmd("begin") {
+                        arg { print("tblr") }
+                        arg {
+                            print(
+                                "colspec={${columnFormat(tableWidth)}},"
+                                        + "width=\\textwidth", escape = false
+                            )
+                        }
+                    }
+                    printCmd("hline")
+                    element.rows.forEach { row ->
+                        when (row.colour) {
+                            GRAY -> print("\\SetRow{gray9}", escape = false)
+                            WHITE -> {}
+                        }
+
+                        row.cells.forEachIndexed { index, cell ->
+                            print("\\SetCell[c=${cell.cellColumns}]{l}", escape = false)
+                            cell.elements.forEach { cellElement ->
+                                renderElement(scope, cellElement, printWriter)
+                            }
+
+                            if (index < row.cells.lastIndex) {
+                                // Because all columns must have a value even if it is overridden by
+                                // setting the columns > 1, the & needs to repeat.
+                                print(" ${"&".repeat(cell.cellColumns)} ", escape = false)
+                            }
+                        }
+                        print(""" \\\hline""", escape = false)
+                    }
+
+                    printCmd("end") {
+                        arg { print("tblr") }
+                    }
+                    print("\\FloatBarrier", escape = false)
+                }
         }
+
 
     private fun getResource(fileName: String): InputStream {
         return this::class.java.getResourceAsStream("/$fileName")
             ?: throw IllegalStateException("""Could not find class resource /$fileName""")
     }
 
+    fun columnFormat(columns: Int): String =
+        if (columns > 0) {
+            "|" + "X|".repeat(columns)
+        } else {
+            ""
+        }
 }
