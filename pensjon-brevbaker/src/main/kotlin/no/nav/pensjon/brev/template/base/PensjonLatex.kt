@@ -155,9 +155,12 @@ object PensjonLatex : BaseTemplate() {
             newFile("params.tex").use { masterTemplateParameters(letter, LatexPrintWriter(it)) }
             newFile("letter.xmpdata").use { xmpData(letter, LatexPrintWriter(it)) }
             newFile("letter.tex").use { renderLetterV2(letter, LatexPrintWriter(it)) }
-            newFile("nav-logo.pdf").use { getResource("nav-logo.pdf").transferTo(it) }
-            newFile("nav-logo.pdf_tex").use { getResource("nav-logo.pdf_tex").transferTo(it) }
-            newFile("pensjonsbrev_v2.cls").use { getResource("pensjonsbrev_v2.cls").transferTo(it) }
+            newFile("nav-logo.pdf").use { getResource("latex/nav-logo.pdf").transferTo(it) }
+            newFile("nav-logo.pdf_tex").use { getResource("latex/nav-logo.pdf_tex").transferTo(it) }
+            newFile("pensjonsbrev_v3.cls").use { getResource("latex/pensjonsbrev_v3.cls").transferTo(it) }
+            newFile("firstpage.tex").use { getResource("latex/firstpage.tex").transferTo(it) }
+            newFile("attachment.tex").use { getResource("latex/attachment.tex").transferTo(it) }
+            newFile("closing.tex").use { getResource("latex/closing.tex").transferTo(it) }
             letter.template.attachments.forEachIndexed { index, attachment ->
                 newFile("attachment_$index.tex").use { renderAttachment(letter, attachment, LatexPrintWriter(it)) }
             }
@@ -204,14 +207,14 @@ object PensjonLatex : BaseTemplate() {
 
     private fun renderLetterV2(letter: Letter<*>, printWriter: LatexPrintWriter): Unit =
         with(printWriter) {
-            println("""\documentclass[12pt]{pensjonsbrev_v2}""", escape = false)
+            println("""\documentclass[12pt]{pensjonsbrev_v3}""", escape = false)
             pdfMetadata(letter, printWriter)
             printCmd("begin", "document")
-            printCmd("begin", "letter", """\brevparameter""", escape = false)
+            printCmd("firstpage")
             printCmd("tittel", letter.template.title.text(letter.language))
             contents(letter, printWriter)
             printCmd("closing")
-            printCmd("end", "letter")
+//            printCmd("end", "letter")
             letter.template.attachments.forEachIndexed { index, _ ->
                 printCmd(
                     "input",
@@ -436,7 +439,7 @@ object PensjonLatex : BaseTemplate() {
 
                     print("\\FloatBarrier", escape = false)
                     printCmd("begin") {
-                        arg { print("tblr") }
+                        arg { print("longtblr") }
                         arg {
                             print(
                                 "colspec={${columnFormat(tableWidth)}},"
@@ -467,7 +470,7 @@ object PensjonLatex : BaseTemplate() {
                     }
 
                     printCmd("end") {
-                        arg { print("tblr") }
+                        arg { print("longtblr") }
                     }
                     print("\\FloatBarrier", escape = false)
                 }

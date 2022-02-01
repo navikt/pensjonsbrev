@@ -54,6 +54,14 @@ object EksempelBrev : StaticTemplate {
                 text(Bokmal to "Du har fått innvilget pensjon")
             }
 
+            for (i in 1..60) {
+                paragraph {
+                    text(
+                        Bokmal to "Test dette er en test. Test dette er en test. Test dette er en test. Test dette er en test. Test dette er en test. Test dette er en test. ",
+                    )
+                }
+            }
+
             // Inkluder data fra datagrunnlaget til malen inn i brevet som tekst
             eval { argument().select(EksempelBrevDto::pensjonInnvilget).str() }
             text(Bokmal to "test")

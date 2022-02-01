@@ -314,7 +314,7 @@
 
     % renew pagemark with pageref to the last page of this attachment
     \renewcommand*\pagemark{\usekomafont{pagenumber}{\tinyText{\feltsideprefix~\textbf{\thepage}~\feltsideinfix~\textbf{\pageref*{\currentattachmentlastpage}}}}}
-    \hfill\includegraphics[width=25mm,page=1]{nav-logo.pdf}
+    \hfill\includegraphics[width=25mm,page=1]{nav-logo}
     \par
     \titleText{#1} \par
 }
