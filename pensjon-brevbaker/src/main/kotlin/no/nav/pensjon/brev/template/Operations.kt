@@ -16,6 +16,8 @@ abstract class Operation {
     override fun hashCode(): Int {
         return javaClass.hashCode()
     }
+
+    override fun toString(): String = "${this::class.simpleName}"
 }
 
 sealed class UnaryOperation<In, out Out> : Operation() {
@@ -65,6 +67,11 @@ sealed class BinaryOperation<in In1, in In2, out Out> : Operation() {
     object LocalizedDateFormat : BinaryOperation<LocalDate, Language, String>() {
         override fun apply(first: LocalDate, second: Language): String =
             first.format(dateFormatter(second))
+    }
+
+    object LocalizedDoubleFormat : BinaryOperation<Double, Language, String>() {
+        override fun apply(first: Double, second: Language): String =
+            String.format(second.locale(), "%.2f", first)
     }
 
     class EnumInList<EnumType : Enum<*>> : BinaryOperation<EnumType, List<EnumType>, Boolean>() {

@@ -39,9 +39,10 @@ sealed class Expression<out Out> {
 
     data class UnaryInvoke<In, Out>(
         val value: Expression<In>,
-        val operation: UnaryOperation<In, Out>
+        val operation: UnaryOperation<In, Out>,
     ) : Expression<Out>() {
         override fun eval(scope: ExpressionScope<*, *>): Out = operation.apply(value.eval(scope))
+        override fun toString(): String ="$operation($value)"
     }
 
     data class BinaryInvoke<In1, In2, out Out>(
@@ -50,6 +51,7 @@ sealed class Expression<out Out> {
         val operation: BinaryOperation<In1, In2, Out>
     ) : Expression<Out>() {
         override fun eval(scope: ExpressionScope<*, *>): Out = operation.apply(first.eval(scope), second.eval(scope))
+        override fun toString(): String = "$operation($first, $second)"
     }
 
 }

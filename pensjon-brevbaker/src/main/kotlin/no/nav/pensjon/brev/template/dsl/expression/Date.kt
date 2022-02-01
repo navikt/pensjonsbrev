@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.template.dsl.expression
 
+import no.nav.pensjon.brev.maler.fraser.common.LocalDateValue
 import no.nav.pensjon.brev.template.BinaryOperation
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.ExpressionScope
@@ -11,3 +12,7 @@ fun Expression<LocalDate>.format() =
         Expression.FromScope(ExpressionScope<Any, *>::language),
         BinaryOperation.LocalizedDateFormat
     )
+
+@JvmName("formatLocalDateValue")
+fun Expression<LocalDateValue>.format() =
+    select(LocalDateValue::date).format()
