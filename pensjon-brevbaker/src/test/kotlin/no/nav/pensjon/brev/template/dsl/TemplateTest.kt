@@ -19,7 +19,6 @@ class TemplateTest {
             name = "test",
             base = PensjonLatex,
             letterDataType = Unit::class,
-            lang = languages(Language.Bokmal),
             title = bokmalTittel,
             letterMetadata = testLetterMetadata,
         ) {
@@ -71,7 +70,6 @@ class TemplateTest {
             name = "test",
             base = PensjonLatex,
             letterDataType = SomeDto::class,
-            lang = languages(Language.Bokmal),
             title = bokmalTittel,
             letterMetadata = testLetterMetadata,
         ) {
@@ -138,7 +136,6 @@ class TemplateTest {
             name = "test",
             base = PensjonLatex,
             letterDataType = Unit::class,
-            lang = languages(Language.Bokmal),
             title = bokmalTittel,
             letterMetadata = testLetterMetadata,
         ) {
@@ -166,7 +163,6 @@ class TemplateTest {
             name = "test",
             base = PensjonLatex,
             letterDataType = Unit::class,
-            lang = languages(Language.Bokmal),
             title = bokmalTittel,
             letterMetadata = testLetterMetadata,
         ) {
@@ -201,7 +197,6 @@ class TemplateTest {
             name = "test",
             base = PensjonLatex,
             letterDataType = SomeDto::class,
-            lang = languages(Language.Bokmal),
             title = bokmalTittel,
             letterMetadata = testLetterMetadata,
         ) {

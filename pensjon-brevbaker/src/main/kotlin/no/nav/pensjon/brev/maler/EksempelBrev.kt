@@ -2,11 +2,11 @@ package no.nav.pensjon.brev.maler
 
 import no.nav.pensjon.brev.api.model.LetterMetadata
 import no.nav.pensjon.brev.api.model.maler.EksempelBrevDto
+import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Element.Table.RowColour.GRAY
 import no.nav.pensjon.brev.template.Element.Text.FontType.BOLD
 import no.nav.pensjon.brev.template.Element.Text.FontType.ITALIC
 import no.nav.pensjon.brev.template.Language.Bokmal
-import no.nav.pensjon.brev.template.StaticTemplate
 import no.nav.pensjon.brev.template.base.PensjonLatex
 import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.map
@@ -26,9 +26,6 @@ object EksempelBrev : StaticTemplate {
 
         // Unik datagrunnlag/DTO for brevet
         letterDataType = EksempelBrevDto::class,
-
-        // Hvilke språk brevet støtter
-        lang = languages(Bokmal),
 
         // Hovedtittel inne i brevet
         title = newText(Bokmal to "Eksempelbrev"),

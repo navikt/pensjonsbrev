@@ -16,7 +16,6 @@ object OmsorgEgenAuto : StaticTemplate {
         name = "OMSORG_EGEN_AUTO",
         base = PensjonLatex,
         letterDataType = OmsorgEgenAutoDto::class,
-        lang = languages(Bokmal, Nynorsk, English),
         title = newText(
             Bokmal to "Du må sende oss egenerklæring om pleie- og omsorgsarbeid",
             Nynorsk to "Du må sende oss eigenmelding om pleie- og omsorgsarbeid",

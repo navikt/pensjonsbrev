@@ -119,6 +119,7 @@ sealed class Element<out Lang : LanguageSupport> {
     sealed class Text<out Lang : LanguageSupport> : Element<Lang>() {
         data class Literal<out Lang : LanguageSupport> private constructor(
             private val text: Map<Language, String>,
+            val languages: Lang,
             val fontType: FontType
         ) : Text<Lang>() {
 
@@ -130,20 +131,32 @@ sealed class Element<out Lang : LanguageSupport> {
                 fun <Lang1 : Language> create(
                     lang1: Pair<Lang1, String>,
                     fontType: FontType = FontType.PLAIN
-                ) = Literal<LanguageSupport.Single<Lang1>>(mapOf(lang1), fontType)
+                ) = Literal<LanguageSupport.Single<Lang1>>(
+                    text = mapOf(lang1),
+                    languages = LanguageCombination.Single(lang1.first),
+                    fontType = fontType
+                )
 
                 fun <Lang1 : Language, Lang2 : Language> create(
                     lang1: Pair<Lang1, String>,
                     lang2: Pair<Lang2, String>,
                     fontType: FontType = FontType.PLAIN,
-                ) = Literal<LanguageSupport.Double<Lang1, Lang2>>(mapOf(lang1, lang2), fontType)
+                ) = Literal<LanguageSupport.Double<Lang1, Lang2>>(
+                    text = mapOf(lang1, lang2),
+                    languages = LanguageCombination.Double(lang1.first, lang2.first),
+                    fontType = fontType
+                )
 
                 fun <Lang1 : Language, Lang2 : Language, Lang3 : Language> create(
                     lang1: Pair<Lang1, String>,
                     lang2: Pair<Lang2, String>,
                     lang3: Pair<Lang3, String>,
                     fontType: FontType = FontType.PLAIN,
-                ) = Literal<LanguageSupport.Triple<Lang1, Lang2, Lang3>>(mapOf(lang1, lang2, lang3), fontType)
+                ) = Literal<LanguageSupport.Triple<Lang1, Lang2, Lang3>>(
+                    text = mapOf(lang1, lang2, lang3),
+                    languages = LanguageCombination.Triple(lang1.first, lang2.first, lang3.first),
+                    fontType = fontType
+                )
             }
         }
 

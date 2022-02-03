@@ -12,13 +12,12 @@ fun <Lang : LanguageSupport, LetterData : Any> createTemplate(
     name: String,
     base: BaseTemplate,
     letterDataType: KClass<LetterData>,
-    lang: Lang,
     title: Element.Text.Literal<Lang>,
     letterMetadata: LetterMetadata,
     init: TemplateRootScope<Lang, LetterData>.() -> Unit
 ): LetterTemplate<Lang, LetterData> =
     with(TemplateRootScope<Lang, LetterData>().apply(init)) {
-        return LetterTemplate(name, title, base, letterDataType, lang, outline, attachments, letterMetadata)
+        return LetterTemplate(name, title, base, letterDataType, title.languages, outline, attachments, letterMetadata)
     }
 
 
