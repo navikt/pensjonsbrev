@@ -28,7 +28,6 @@ object UngUfoerAuto : StaticTemplate {
         name = "PE_BA_04_505",
         base = PensjonLatex,
         letterDataType = UngUfoerAutoDto::class,
-        lang = languages(Bokmal, Nynorsk),
         title = newText(
             Bokmal to "NAV har regnet om uføretrygden din",
             Nynorsk to "NAV har endra uføretrygda di",
