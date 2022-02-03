@@ -4,9 +4,9 @@ import no.nav.pensjon.brev.api.model.LetterMetadata
 import no.nav.pensjon.brev.template.base.BaseTemplate
 import kotlin.reflect.KClass
 
-data class LetterTemplate<out Lang : LanguageSupport, LetterData : Any>(
+data class LetterTemplate<Lang : LanguageSupport, LetterData : Any>(
     val name: String,
-    //TODO: Lag støtte for kombinert literal og expression
+    //TODO: Lag støtte for kombinert literal og expression for title
     val title: Element.Text.Literal<Lang>,
     val base: BaseTemplate,
     val letterDataType: KClass<LetterData>,

@@ -20,6 +20,17 @@ fun <Lang : LanguageSupport, LetterData : Any> createTemplate(
         return LetterTemplate(name, title, base, letterDataType, title.languages, outline, attachments, letterMetadata)
     }
 
+//inline fun <reified Lang : LanguageSupport, reified LetterData : Any> createTemplate2(
+//    name: String,
+//    base: BaseTemplate,
+//    title: Element.Text.Literal<Lang>,
+//    letterMetadata: LetterMetadata,
+//    init: TemplateRootScope<Lang, LetterData>.() -> Unit
+//): LetterTemplate<Lang, LetterData> =
+//    with(TemplateRootScope<Lang, LetterData>().apply(init)) {
+//
+//        LetterTemplate(name, title, base, LetterData::class, lang, outline, attachments, letterMetadata)
+//    }
 
 open class TemplateGlobalScope<LetterData : Any> {
     fun argument(): Expression<LetterData> =

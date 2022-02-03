@@ -4,8 +4,8 @@ import no.nav.pensjon.brev.api.model.LetterMetadata
 import no.nav.pensjon.brev.maler.fraser.common.*
 import no.nav.pensjon.brev.maler.fraser.omregning.ufoeretrygd.Ufoeretrygd
 import no.nav.pensjon.brev.maler.fraser.vedtak.Vedtak
-import no.nav.pensjon.brev.template.Language.Bokmal
-import no.nav.pensjon.brev.template.StaticTemplate
+import no.nav.pensjon.brev.template.*
+import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.base.PensjonLatex
 import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brev.template.dsl.expression.*
@@ -28,9 +28,10 @@ object UngUfoerAuto : StaticTemplate {
         name = "PE_BA_04_505",
         base = PensjonLatex,
         letterDataType = UngUfoerAutoDto::class,
-        lang = languages(Bokmal),
+        lang = languages(Bokmal, Nynorsk),
         title = newText(
-            Bokmal to "NAV har regnet om uføretrygden din"
+            Bokmal to "NAV har regnet om uføretrygden din",
+            Nynorsk to "NAV har endra uføretrygda di",
         ),
         letterMetadata = LetterMetadata(
             "Vedtak – ung ufør ved 20 år",
