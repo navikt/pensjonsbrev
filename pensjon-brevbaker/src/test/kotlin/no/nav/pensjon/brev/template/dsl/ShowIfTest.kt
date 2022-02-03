@@ -31,7 +31,6 @@ class ShowIfTest {
             name = "test",
             base = PensjonLatex,
             letterDataType = SomeDto::class,
-            lang = languages(Language.Nynorsk),
             title = nynorskTittel,
             letterMetadata = testLetterMetadata,
         ) {
@@ -76,7 +75,6 @@ class ShowIfTest {
             name = "test",
             base = PensjonLatex,
             letterDataType = SomeDto::class,
-            lang = languages(Language.Nynorsk),
             title = nynorskTittel,
             letterMetadata = testLetterMetadata,
         ) {
@@ -121,7 +119,6 @@ class ShowIfTest {
             name = "test",
             base = PensjonLatex,
             letterDataType = SomeDto::class,
-            lang = languages(Language.Nynorsk),
             title = nynorskTittel,
             letterMetadata = testLetterMetadata,
         ) {
