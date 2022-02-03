@@ -29,7 +29,6 @@ class PensjonLatexITest {
             name = "test-template",
             base = PensjonLatex,
             letterDataType = TestTemplateDto::class,
-            lang = languages(Bokmal),
             title = newText(Bokmal to "En fin tittel"),
             letterMetadata = LetterMetadata(
                 displayTitle = "En fin display tittel",
@@ -94,7 +93,6 @@ class PensjonLatexITest {
                 name = "test-template",
                 base = PensjonLatex,
                 letterDataType = TestTemplateDto::class,
-                lang = languages(Bokmal),
                 title = newText(Bokmal to "En fin tittel"),
                 letterMetadata = LetterMetadata(
                     displayTitle = "En fin display tittel",
