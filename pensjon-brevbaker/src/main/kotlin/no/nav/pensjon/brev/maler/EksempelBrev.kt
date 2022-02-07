@@ -54,9 +54,7 @@ object EksempelBrev : StaticTemplate {
 
             // Avsnitt
             paragraph {
-                for(i in 1..2) {
-                    text(Bokmal to "Test dette er en test")
-                }
+                text(Bokmal to "Test dette er en test")
             }
 
             // Inkluder data fra datagrunnlaget til malen inn i brevet som tekst
@@ -85,20 +83,18 @@ object EksempelBrev : StaticTemplate {
                             text(Bokmal to "Dette er en 1 kolonne brei celle")
                         }
                     }
-                    for(i in 1..10) {
-                        row {
-                            cell {
-                                text(Bokmal to "Dette er en 1 kolonner brei celle")
-                            }
-                            cell {
-                                text(Bokmal to "Dette er en 1 kolonne brei celle")
-                            }
-                            cell {
-                                text(Bokmal to "Dette er en 1 kolonne brei celle")
-                            }
-                            cell {
-                                text(Bokmal to "Dette er en 1 kolonne brei celle")
-                            }
+                    row {
+                        cell {
+                            text(Bokmal to "Dette er en 1 kolonner brei celle")
+                        }
+                        cell {
+                            text(Bokmal to "Dette er en 1 kolonne brei celle")
+                        }
+                        cell {
+                            text(Bokmal to "Dette er en 1 kolonne brei celle")
+                        }
+                        cell {
+                            text(Bokmal to "Dette er en 1 kolonne brei celle")
                         }
                     }
                 }

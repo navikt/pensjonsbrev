@@ -10,7 +10,6 @@ import no.nav.pensjon.brev.template.Element.Text.FontType.*
 import no.nav.pensjon.brev.template.dsl.expression.select
 import no.nav.pensjon.brev.template.dsl.languageSettings
 import no.nav.pensjon.brev.template.dsl.text
-import java.io.InputStream
 import java.time.LocalDate
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
@@ -431,8 +430,7 @@ object PensjonLatex : BaseTemplate() {
                 with(printWriter) {
 
                     val tableWidth = element.width
-
-//                    print("\\FloatBarrier", escape = false)
+                    print("\\FloatBarrier", escape = false)
                     printCmd("begin") {
                         arg { print("longtblr") }
                         arg {
@@ -467,7 +465,7 @@ object PensjonLatex : BaseTemplate() {
                     printCmd("end") {
                         arg { print("longtblr") }
                     }
-//                    print("\\FloatBarrier", escape = false)
+                    print("\\FloatBarrier", escape = false)
                 }
         }
 

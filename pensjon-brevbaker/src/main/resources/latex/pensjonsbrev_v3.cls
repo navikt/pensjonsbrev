@@ -16,11 +16,6 @@
 %----------------------------------------
 \usepackage{graphicx}   %graphics such as logo
 \usepackage{fontspec}   %declare font presets
-\usepackage[paper=a4paper,
-%    driver=xetex,
-%    includeheadfoot,
-%    showframe %debug margin lines and other geometry
-    ]{geometry}
 \usepackage{lastpage}   % last page counter
 \usepackage{fancyhdr}   % custom page styles
 % tables and colors
@@ -29,17 +24,12 @@
 \usepackage{ninecolors}
 \selectcolormodel{rgb}
 \usepackage{tabularray} % better tables(tblr, longtblr)
-%\usepackage{afterpage}
-%\usepackage{everypage}   % run something on the beginning of the next page. Used to restore geometry
 \usepackage{enumitem,amssymb} % for formChoice list
 
 \usepackage{placeins} % Float barrier to make elements between barrier not float.
 \usepackage[absolute
-    %, overlay
 %    ,showboxes %show boxes around textblocks for debugging
     ]{textpos} %first page absolute posistioned elements
-
-
 
 %! suppress = FileNotFound
 \input{params}  % Must be done before pdfx is imported
@@ -72,7 +62,6 @@
 %itemize / lists spacing
 \setlist{nolistsep}
 
-
 % paragraph formatting
 \widowpenalties 1 1000 %penalty score for breaking a paragraph
 \sloppy % no word-breaking
@@ -80,32 +69,19 @@
 \raggedbottom % no line stretching to fit page
 
 
-% page formatting
+% page text area formatting
+\setlength{\textwidth}{165 mm} % total text width
+% margin adjustments (adjusting relative to original standard article margins):
+\setlength{\oddsidemargin}{-5.4 mm}
+\setlength{\evensidemargin}{-5.4 mm}
+\setlength{\topmargin}{-12 mm}
+\setlength{\textheight}{247 mm} % standard text height
 
-%\afterpage{\globaldefs=1\newgeometry{margin=0mm}\globaldefs=0}
-\newgeometry{left=2cm, right=2.5cm, top=2.5cm, bottom=2.5cm}
-\newgeometry{left=2cm, right=2.5cm, top=102.3mm, bottom=4cm} % First page geometry
-\AddToHookNext{shipout/before}{\globaldefs=1\newgeometry{left=2cm, right=2.5cm, top=2.5cm, bottom=2.5cm}\globaldefs=0}
-%\AddToHookNext{shipout/firstpage}{\geometry{left=2cm, right=2.5cm, top=2.5cm, bottom=2.5cm} % First page geometry}
-
-%\newgeometry{left=2cm, right=2.5cm, top=2.5cm, bottom=2.5cm} % First page geometry
-%\AddEverypageHook{
-%    \ifnum\pageref*{LastPage}=\pageref*{LastPage} test
-%    \else test
-%    \fi
-%}
-%\AtBeginPage{
-%    \globaldefs=1
-%    \newgeometry{left=2cm, right=2.5cm, top=2.5cm, bottom=2.5cm} % normal page geometry
-%    \globaldefs=0
-
-%}
-%\newcommand{\Shipout}{\shipout}
-%\renewcommand{\shipout}{test \Shipout}
-%\newgeometry{left=2cm, right=2.5cm, top=102.3mm, bottom=4cm} % First page geometry
-%\savegeometry{firstpage}
-
-%\savegeometry{normalpage}
+\fancypagestyle{normalpage}{
+    \renewcommand{\headrulewidth}{0pt}%
+    \fancyhf{}%
+    \fancyfoot[C]{\letterpagenumber}
+}
 
 %----------------------------------------
 %                 Logo

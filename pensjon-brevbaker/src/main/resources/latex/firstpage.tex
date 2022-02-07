@@ -5,32 +5,22 @@
     \logo
     \toaddress
     \letterdate
-    \firstfoot
     \fancyfoot[C]{\letterpagenumber}
-
-}
-
-\fancypagestyle{normalpage}{
-    \renewcommand{\headrulewidth}{0pt}%
-    \fancyhf{}%
-    \fancyfoot[C]{\letterpagenumber}
+    \fancyfoot[L]{\firstfooter}
 }
 
 \newcommand{\firstpage}{
-    \thispagestyle{firstpage}
-    \pagestyle{normalpage}
+    \enlargethispage{-2cm} % reduce textheight to not overlap with footer on the first page.
+    \thispagestyle{firstpage} %set pagestyle for this page
+    \pagestyle{normalpage} % set default pagestyle
 }
-
-%----------------------------------------
-%                 Following pages
-%----------------------------------------
 
 
 %----------------------------------------
 %         heading / return address
 %----------------------------------------
 \newcommand{\returnaddress}{
-    \begin{textblock*}{140mm}(19mm,18.5mm)
+    \begin{textblock*}{140mm}(20mm,18.5mm)
         \parskip=0pt
         \baselineskip=5pt
         \tinyText{\feltreturadresseenhetprefix \space \feltnavenhet}\newline
@@ -81,6 +71,7 @@
 
 % main letter title
 \newcommand{\tittel}[1]{
+    \vspace*{68mm} % space between top margin and title.
     \titleText{#1}
     \\[8pt]
     \sakspart
@@ -90,7 +81,7 @@
 \newcommand{\footerText}[1]{{\secondaryFont \fontsize{8pt}{8pt} \selectfont #1}} %footer font command
 
 %first footer page
-\newcommand{\firstfoot}{
+\newcommand{\firstfooter}{
     \begin{textblock*}{\textwidth}(20mm,260mm)
         \rule{\textwidth}{0.16mm}\vspace*{3.7mm} % footer top line
         \footerText{
