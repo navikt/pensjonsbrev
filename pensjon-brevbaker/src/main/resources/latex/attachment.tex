@@ -6,24 +6,17 @@
 \newcounter{attachments}
 
 % produces a label for the current attachment
-\newcommand{\currentattachmentlastpage}{attachment\arabic{attachments}}
 \newcommand{\startvedlegg}[1]{
 % make sure that the attachment starts on an even page (for printing)
-    \clearpage{\cleardoublepage}
+% set pagestyle to empty to not print page number
+    \clearpage\ifodd\value{page}\else\null\thispagestyle{empty}\clearpage\fi
 
     % reset the page counter for this attachment
     \setcounter{page}{1}
+
     % increase the attachment counter to identify this attachment
     \stepcounter{attachments}
-
-    % renew pagemark with pageref to the last page of this attachment
-    %\renewcommand*\pagemark{\usekomafont{pagenumber}{\tinyText{\feltsideprefix~\textbf{\thepage}~\feltsideinfix~\textbf{\pageref*{\currentattachmentlastpage}}}}}
-    \hfill\includegraphics[width=25mm,page=1]{nav-logo}
-    \par
+    \logo
+    \vspace*{28pt}
     \titleText{#1} \par
-}
-
-\newcommand{\sluttvedlegg}{
-% create a label on the last page of this attachment (used by \pagemark for attachments)
-    \label{\currentattachmentlastpage}
 }

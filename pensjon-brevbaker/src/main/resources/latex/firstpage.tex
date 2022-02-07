@@ -1,40 +1,36 @@
-\fancypagestyle{firstpagestyle}{
-    \renewcommand{\headrulewidth}{0pt}%
+\fancypagestyle{firstpage}{
     \fancyhf{}%
-
-    \fancyfoot[R]{}%
-    \fancyfoot[LC]{test}%
-}
-\newcommand{\firstpage}{
-    % First page geometry
-    \newgeometry{left=2cm, right=2.5cm, top=10.5cm, bottom=2.5cm}
-
+    \renewcommand{\headrulewidth}{0pt}%
     \returnaddress
     \logo
     \toaddress
-    \date
-    \thispagestyle{firstpagestyle}
+    \letterdate
+    \firstfoot
+    \fancyfoot[C]{\letterpagenumber}
 
+}
 
+\fancypagestyle{normalpage}{
+    \renewcommand{\headrulewidth}{0pt}%
+    \fancyhf{}%
+    \fancyfoot[C]{\letterpagenumber}
+}
 
-    % After first page geometry
-    \afterpage{\globaldefs=1 \newgeometry{margin=1mm}}
+\newcommand{\firstpage}{
+    \thispagestyle{firstpage}
+    \pagestyle{normalpage}
 }
 
 %----------------------------------------
-%                 Logo
+%                 Following pages
 %----------------------------------------
-\newcommand{\logo}{
-    \begin{textblock*}{25mm}(165mm,21mm)
-        \hfill\includegraphics[width=25mm,page=1]{nav-logo}
-    \end{textblock*}
-}
+
 
 %----------------------------------------
 %         heading / return address
 %----------------------------------------
 \newcommand{\returnaddress}{
-    \begin{textblock*}{140mm}(19mm,18mm)
+    \begin{textblock*}{140mm}(19mm,18.5mm)
         \parskip=0pt
         \baselineskip=5pt
         \tinyText{\feltreturadresseenhetprefix \space \feltnavenhet}\newline
@@ -46,10 +42,8 @@
 %----------------------------------------
 %              To address
 %----------------------------------------
-%\setplength{toaddrhpos}{12mm}
-%\setplength{toaddrvpos}{36mm}
 \newcommand{\toaddress}{
-    \begin{textblock*}{100mm}(20mm,55mm)
+    \begin{textblock*}{100mm}(20mm,55.7mm)
         \secondaryFont \fontsize{12pt}{12pt} \selectfont
         \feltmottakeradresselineone \newline
         \feltmottakeradresselinetwo \newline
@@ -63,16 +57,9 @@
 %----------------------------------------
 %                  Date
 %----------------------------------------
-%\setplength{toaddrheight}{150pt}
-%\setplength{refwidth}{50mm}
-%\KOMAoption{refline}{dateleft}
-%\setplength{refhpos}{159mm} %distance from left
-%\setplength{refvpos}{84mm} %distance from top
-\renewcommand{\date}{
-    \begin{textblock*}{40mm}(165mm,61mm)
-        \tinyText{\feltdatoprefix}\hspace{1pt}\feltdato
-    \end{textblock*}
 
+\newcommand{\letterdate}{
+    \begin{textblock*}{40mm}(160mm,86mm)\tinyText{\feltdatoprefix}\primaryFont\fontsize{12pt}{12pt}\selectfont~\feltdato\end{textblock*}
 }
 
 %----------------------------------------
@@ -82,46 +69,36 @@
 %Title font
 \newcommand{\titleText}[1]{\textbf{\primaryFont \fontsize{16pt}{16pt} \selectfont \newline #1}}
 
-%\setplength{refaftervskip}{10mm} %vertical distance between title and reference field (containing date)
-
-\newlength{\vskipafteropening} % distance between opening and first section title
-\setlength{\vskipafteropening}{\dimexpr(6pt)} %removing the baseline skip and 5 pts
-
 %opening prefix font
 \newcommand{\tinyGrayText}[1]{{\grayFont \fontsize{8pt}{8pt} \selectfont #1}}
 
 \newcommand{\sakspart}{
-    \fontsize{12pt}{14pt} \selectfont
-    \tinyGrayText{\feltsaksnummerprefix} \feltsaksnummer \\
-    \tinyGrayText{\feltnavnprefix} \feltetternavnmottaker \space \feltfornavnmottaker \\
-    \tinyGrayText{\feltfoedselsnummerprefix} \feltfoedselsnummer
-    \\*
-    \vspace*{\vskipafteropening} %vertical space before letter content
+    \fontsize{12pt}{12pt} \selectfont
+    \tinyGrayText{\feltsaksnummerprefix} \feltsaksnummer \\[2pt]
+    \tinyGrayText{\feltnavnprefix} \feltetternavnmottaker \space \feltfornavnmottaker \\[2pt]
+    \tinyGrayText{\feltfoedselsnummerprefix} \feltfoedselsnummer \\[22pt]
 }
 
-%\setplength{subjectaftervskip}{2mm}
-\newcommand{\tittel}[1]{ %command for creating title in the document
+% main letter title
+\newcommand{\tittel}[1]{
     \titleText{#1}
-    \newline
+    \\[8pt]
     \sakspart
 }
 
-\setlength{\footskip}{6pt} % space between letter content and footer
+%\setlength{\footskip}{6pt} % space between letter content.tex and footer
 \newcommand{\footerText}[1]{{\secondaryFont \fontsize{8pt}{8pt} \selectfont #1}} %footer font command
-%page number
-%\renewcommand{\thepage}{A-\arabic{page}}
-
 
 %first footer page
-%\setplength{firstfootvpos}{254.5mm} %absolute vertical posistion from top of first page
 \newcommand{\firstfoot}{
-    \newline\noindent\rule{\textwidth}{0.16mm}\vspace*{3.7mm} % footer top line
-    \footerText{
-        \textbf{\feltnavenhet}
-        \newline \feltpostadresseprefix \space \feltnavenhet \space//\space \feltpostadresse \space//\space \feltpostadressepostnrsted
-        \newline \feltnavenhettlfprefix \space \feltnavenhettlf
-        \newline \feltnavenhetnettside
-        \newline
-    }
-    \newline\hspace*{\fill}\pagemark
+    \begin{textblock*}{\textwidth}(20mm,260mm)
+        \rule{\textwidth}{0.16mm}\vspace*{3.7mm} % footer top line
+        \footerText{
+            \textbf{\feltnavenhet}
+            \newline \feltpostadresseprefix \space \feltnavenhet \space//\space \feltpostadresse \space//\space \feltpostadressepostnrsted
+            \newline \feltnavenhettlfprefix \space \feltnavenhettlf
+            \newline \feltnavenhetnettside
+        }
+    \end{textblock*}
+
 }

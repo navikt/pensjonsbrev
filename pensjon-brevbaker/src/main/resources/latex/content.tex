@@ -1,0 +1,36 @@
+%----------------------------------------
+%               Content
+%----------------------------------------
+
+%Letter section title
+\newcommand{\lettersectiontitle}[1]{
+    \vspace{6pt} \textbf{#1} \\*[6pt]
+}
+
+%Normal paragraphs
+\newcommand{\templateparagraph}[1] {#1 \par}
+
+
+%----------------------------------------
+%                Forms
+%----------------------------------------
+\newcommand{\formvspace}[1][true]{\vspace{0.5cm}}
+
+\newcommand{\formText}[1]{
+    \par #1
+}
+
+% formChoice
+\newlist{checklist}{itemize}{1}
+\setlist[checklist]{label=$\square$}
+\newenvironment{formChoice}[1]{
+    \par #1
+    \begin{checklist}
+    } {
+    \end{checklist}
+}
+
+%----------------------------------------
+%                 Tables
+%----------------------------------------
+

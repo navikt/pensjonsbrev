@@ -9,7 +9,6 @@ import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.StaticTemplate
 import no.nav.pensjon.brev.template.base.PensjonLatex
 import no.nav.pensjon.brev.template.dsl.createTemplate
-import no.nav.pensjon.brev.template.dsl.expression.map
 import no.nav.pensjon.brev.template.dsl.expression.select
 import no.nav.pensjon.brev.template.dsl.expression.str
 import no.nav.pensjon.brev.template.dsl.languages
@@ -49,16 +48,14 @@ object EksempelBrev : StaticTemplate {
 
             // Undertittel
             title1 {
-
                 // Tekst
                 text(Bokmal to "Du har fått innvilget pensjon")
             }
 
-            for (i in 1..60) {
-                paragraph {
-                    text(
-                        Bokmal to "Test dette er en test. Test dette er en test. Test dette er en test. Test dette er en test. Test dette er en test. Test dette er en test. ",
-                    )
+            // Avsnitt
+            paragraph {
+                for(i in 1..2) {
+                    text(Bokmal to "Test dette er en test")
                 }
             }
 
@@ -88,18 +85,20 @@ object EksempelBrev : StaticTemplate {
                             text(Bokmal to "Dette er en 1 kolonne brei celle")
                         }
                     }
-                    row {
-                        cell {
-                            text(Bokmal to "Dette er en 3 kolonner brei celle")
-                        }
-                        cell {
-                            text(Bokmal to "Dette er en 1 kolonne brei celle")
-                        }
-                        cell {
-                            text(Bokmal to "Dette er en 1 kolonne brei celle")
-                        }
-                        cell {
-                            text(Bokmal to "Dette er en 1 kolonne brei celle")
+                    for(i in 1..10) {
+                        row {
+                            cell {
+                                text(Bokmal to "Dette er en 1 kolonner brei celle")
+                            }
+                            cell {
+                                text(Bokmal to "Dette er en 1 kolonne brei celle")
+                            }
+                            cell {
+                                text(Bokmal to "Dette er en 1 kolonne brei celle")
+                            }
+                            cell {
+                                text(Bokmal to "Dette er en 1 kolonne brei celle")
+                            }
                         }
                     }
                 }

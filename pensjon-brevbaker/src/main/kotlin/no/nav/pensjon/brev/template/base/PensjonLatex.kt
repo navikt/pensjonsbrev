@@ -155,12 +155,7 @@ object PensjonLatex : BaseTemplate() {
             newFile("params.tex").use { masterTemplateParameters(letter, LatexPrintWriter(it)) }
             newFile("letter.xmpdata").use { xmpData(letter, LatexPrintWriter(it)) }
             newFile("letter.tex").use { renderLetterV2(letter, LatexPrintWriter(it)) }
-            newFile("nav-logo.pdf").use { getResource("latex/nav-logo.pdf").transferTo(it) }
-            newFile("nav-logo.pdf_tex").use { getResource("latex/nav-logo.pdf_tex").transferTo(it) }
-            newFile("pensjonsbrev_v3.cls").use { getResource("latex/pensjonsbrev_v3.cls").transferTo(it) }
-            newFile("firstpage.tex").use { getResource("latex/firstpage.tex").transferTo(it) }
-            newFile("attachment.tex").use { getResource("latex/attachment.tex").transferTo(it) }
-            newFile("closing.tex").use { getResource("latex/closing.tex").transferTo(it) }
+            loadResourceFiles("latex")
             letter.template.attachments.forEachIndexed { index, attachment ->
                 newFile("attachment_$index.tex").use { renderAttachment(letter, attachment, LatexPrintWriter(it)) }
             }
@@ -201,7 +196,7 @@ object PensjonLatex : BaseTemplate() {
                 ExpressionScope(attachment.data.eval(it), it.felles, it.language)
             }
             attachment.template.outline.forEach { renderElement(scope, it, printWriter) }
-            printCmd("sluttvedlegg")
+//            printCmd("sluttvedlegg")
 
         }
 
@@ -437,7 +432,7 @@ object PensjonLatex : BaseTemplate() {
 
                     val tableWidth = element.width
 
-                    print("\\FloatBarrier", escape = false)
+//                    print("\\FloatBarrier", escape = false)
                     printCmd("begin") {
                         arg { print("longtblr") }
                         arg {
@@ -472,15 +467,9 @@ object PensjonLatex : BaseTemplate() {
                     printCmd("end") {
                         arg { print("longtblr") }
                     }
-                    print("\\FloatBarrier", escape = false)
+//                    print("\\FloatBarrier", escape = false)
                 }
         }
-
-
-    private fun getResource(fileName: String): InputStream {
-        return this::class.java.getResourceAsStream("/$fileName")
-            ?: throw IllegalStateException("""Could not find class resource /$fileName""")
-    }
 
     fun columnFormat(columns: Int): String =
         if (columns > 0) {
