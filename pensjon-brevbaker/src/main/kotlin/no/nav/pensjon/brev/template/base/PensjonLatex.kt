@@ -195,8 +195,6 @@ object PensjonLatex : BaseTemplate() {
                 ExpressionScope(attachment.data.eval(it), it.felles, it.language)
             }
             attachment.template.outline.forEach { renderElement(scope, it, printWriter) }
-//            printCmd("sluttvedlegg")
-
         }
 
     private fun renderLetterV2(letter: Letter<*>, printWriter: LatexPrintWriter): Unit =
@@ -208,7 +206,6 @@ object PensjonLatex : BaseTemplate() {
             printCmd("tittel", letter.template.title.text(letter.language))
             contents(letter, printWriter)
             printCmd("closing")
-//            printCmd("end", "letter")
             letter.template.attachments.forEachIndexed { index, _ ->
                 printCmd(
                     "input",
@@ -242,7 +239,7 @@ object PensjonLatex : BaseTemplate() {
         }
     }
 
-    fun pdfCreationTime(): String {
+    private fun pdfCreationTime(): String {
         val now = ZonedDateTime.now()
         val formattedTime = now.format(DateTimeFormatter.ofPattern("YYYYMMddHHmmssxxx"))
         return "D:${formattedTime.replace(":", "’")}’"
@@ -469,7 +466,7 @@ object PensjonLatex : BaseTemplate() {
                 }
         }
 
-    fun columnFormat(columns: Int): String =
+    private fun columnFormat(columns: Int): String =
         if (columns > 0) {
             "|" + "X|".repeat(columns)
         } else {
