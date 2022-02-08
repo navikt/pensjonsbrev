@@ -15,8 +15,9 @@ enum class Sivilstand{
 }
 
 enum class Sakstype{
-    UFOEREP,
+    AFP,
     ALDER,
+    UFOEREP
 }
 
 enum class Institusjon{

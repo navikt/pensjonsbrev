@@ -34,6 +34,7 @@ data class UfoerOmregningEnsligDto(
     val har_barnetillegg_saerkullsbarn_nettobeloep_vedvirk: Boolean,
     val har_barnetillegg_saerkullsbarn_vedvirk: Boolean,
     val har_barnetillegg_vedvirk: Boolean,
+    val har_ektefelletillegg_vedvirk: Boolean,
     val har_felles_barn_uten_barnetillegg_med_avdod: Boolean,
     val har_flere_delytelser_i_tillegg_til_ordinaer_ufoeretrygd: Boolean,
     val har_flere_ufoeretrygd_perioder: Boolean,
@@ -54,6 +55,7 @@ data class UfoerOmregningEnsligDto(
     val total_ufoeremaaneder: Number,
     val ufoeretrygd_med_barnetillegg_er_over_95_prosent_av_inntekt_foer_ufoerhet: Boolean,
     val ufoeretrygd_vedvirk_er_inntektsavkortet: Boolean
+
 ) {
     constructor() : this(
         avdod_navn = "Avdød Navn",
@@ -84,6 +86,7 @@ data class UfoerOmregningEnsligDto(
         har_barnetillegg_saerkullsbarn_nettobeloep_vedvirk = false,
         har_barnetillegg_saerkullsbarn_vedvirk = false,
         har_barnetillegg_vedvirk = false,
+        har_ektefelletillegg_vedvirk = false,
         har_felles_barn_uten_barnetillegg_med_avdod = false,
         har_flere_delytelser_i_tillegg_til_ordinaer_ufoeretrygd = false,
         har_flere_ufoeretrygd_perioder = false,
