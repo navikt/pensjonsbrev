@@ -15,6 +15,16 @@ import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
 object PensjonLatex : BaseTemplate() {
+    val letterResourceFiles: Map<String, ByteArray> = hashMapOf(
+        "nav-logo.pdf" to getResource("latex/nav-logo.pdf"),
+        "nav-logo.pdf_tex" to getResource("latex/nav-logo.pdf_tex"),
+        "pensjonsbrev_v3.cls" to getResource("latex/pensjonsbrev_v3.cls"),
+        "firstpage.tex" to getResource("latex/firstpage.tex"),
+        "attachment.tex" to getResource("latex/attachment.tex"),
+        "closing.tex" to getResource("latex/closing.tex"),
+        "content.tex" to getResource("latex/content.tex"),
+    )
+
     override val languageSettings: LanguageSettings = languageSettings {
         setting("navnprefix") {
             text(
@@ -154,10 +164,10 @@ object PensjonLatex : BaseTemplate() {
             newFile("params.tex").use { masterTemplateParameters(letter, LatexPrintWriter(it)) }
             newFile("letter.xmpdata").use { xmpData(letter, LatexPrintWriter(it)) }
             newFile("letter.tex").use { renderLetterV2(letter, LatexPrintWriter(it)) }
-            loadResourceFiles("latex")
             letter.template.attachments.forEachIndexed { index, attachment ->
                 newFile("attachment_$index.tex").use { renderAttachment(letter, attachment, LatexPrintWriter(it)) }
             }
+            addFiles(letterResourceFiles)
         }
 
     private fun xmpData(letter: Letter<*>, latexPrintWriter: LatexPrintWriter) {
@@ -465,6 +475,14 @@ object PensjonLatex : BaseTemplate() {
                     print("\\FloatBarrier", escape = false)
                 }
         }
+
+    private fun getResource(fileName: String): ByteArray {
+        val stream = this::class.java.getResourceAsStream("/$fileName")
+            ?: throw IllegalStateException("""Could not find class resource /$fileName""")
+        val bytearray = stream.readAllBytes()
+        stream.close()
+        return bytearray
+    }
 
     private fun columnFormat(columns: Int): String =
         if (columns > 0) {

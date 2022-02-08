@@ -20,14 +20,14 @@ class RenderedLatexLetter : RenderedLetter {
     }
 
     fun newFile(name: String): OutputStream =
-        ByteArrayOutputStream().also { files[name] = it }
+        ByteArrayOutputStream()
+            .also { files[name] = it }
 
-    fun loadResourceFiles(folder: String) {
-        this::class.java.getResourceAsStream("/$folder")?.reader()?.readLines()?.forEach {
-            files[it] = ByteArrayOutputStream()
-            this::class.java.getResourceAsStream("/$folder/$it")?.transferTo(files[it])
-                ?: throw IllegalStateException("""Could not find class resource /$folder/$it""")
-        }?: throw IllegalStateException("""Could not get resources in $folder""")
+    fun addFiles(newFiles: Map<String, ByteArray>) {
+        files.putAll(newFiles.mapValues { pair ->
+            ByteArrayOutputStream().also {
+                pair.value.inputStream().transferTo(it)
+            }
+        })
     }
-
 }
