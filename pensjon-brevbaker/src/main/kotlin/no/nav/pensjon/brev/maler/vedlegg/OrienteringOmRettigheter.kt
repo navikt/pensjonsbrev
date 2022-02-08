@@ -255,9 +255,7 @@ val orienteringOmRettigheterOgPlikter = createAttachment<LangBokmalNynorskEnglis
                     and har_ektefelletillegg_vedvirk
                     and saktype.isOneOf(Sakstype.ALDER)
     ) {
-        includePhrase(argument().map {
-            vedleggPlikterRettTilEktefelletilleggOgBarnetilleggAP_001Dto(it.sivilstand)
-        }, vedleggPlikterRettTilEktefelletilleggOgBarnetilleggAP_001)
+        includePhrase(argument().map {it.sivilstand}, vedleggPlikterRettTilEktefelletilleggOgBarnetilleggAP_001)
     }
     showIf(
             har_barnetillegg_felles_barn_vedvirk
@@ -330,13 +328,13 @@ val orienteringOmRettigheterOgPlikter = createAttachment<LangBokmalNynorskEnglis
         ) {
             includePhrase(vedleggPlikterUT6_001)
         }
-        /* If barnetillegg_beloep_gjeldendeBeregnetUTPerManed > 0
-       showIf(
-               (barnetillegg_beloep_gjeldendeBeregnetUTPerManed > 0)
-                and saktype.isOneOf(Sakstype.UFOEREP)
-        ) {
-               includePhrase(vedleggPlikterUT7_001)
-        } */
+//        If barnetillegg_beloep_gjeldendeBeregnetUTPerManed > 0
+//        showIf(
+//               (barnetillegg_beloep_gjeldendeBeregnetUTPerManed > 0)
+//                and saktype.isOneOf(Sakstype.UFOEREP)
+//        ) {
+//               includePhrase(vedleggPlikterUT7_001)
+//        }
         // Mandatory phrase vedleggPlikterUT8_001
         showIf(
                 saktype.isOneOf(Sakstype.UFOEREP)

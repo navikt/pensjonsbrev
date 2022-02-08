@@ -4,7 +4,6 @@ import kotlinx.coroutines.runBlocking
 import no.nav.pensjon.brev.Fixtures
 import no.nav.pensjon.brev.PDF_BUILDER_URL
 import no.nav.pensjon.brev.TestTags
-import no.nav.pensjon.brev.api.model.maler.OmsorgEgenAutoDto
 import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDto
 import no.nav.pensjon.brev.latex.LaTeXCompilerService
 import no.nav.pensjon.brev.latex.PdfCompilationInput

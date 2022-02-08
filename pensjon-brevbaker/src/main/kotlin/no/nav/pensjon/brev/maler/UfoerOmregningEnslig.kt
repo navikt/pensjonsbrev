@@ -3,7 +3,6 @@ package no.nav.pensjon.brev.maler
 import no.nav.pensjon.brev.api.model.Institusjon
 import no.nav.pensjon.brev.api.model.LetterMetadata
 import no.nav.pensjon.brev.api.model.Sivilstand.*
-import no.nav.pensjon.brev.api.model.Telefonnummer
 import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDto
 import no.nav.pensjon.brev.maler.fraser.*
 import no.nav.pensjon.brev.maler.vedlegg.OrienteringOmRettigheterParamDto
@@ -565,8 +564,6 @@ object UfoerOmregningEnslig : StaticTemplate {
                     har_barnetillegg_for_saerkullsbarn_vedvirk = true,
                     har_ektefelletillegg_vedvirk = true,
                     saktype = it.saktype,
-
-
             )
         }
         )

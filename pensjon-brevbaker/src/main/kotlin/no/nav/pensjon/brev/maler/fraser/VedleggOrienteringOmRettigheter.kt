@@ -320,11 +320,9 @@ val vedleggPlikterRettTilEktefelletilleggAP_001 = createPhrase<LangBokmalNynorsk
     }
 }
 
-data class vedleggPlikterRettTilEktefelletilleggOgBarnetilleggAP_001Dto(val sivilstand: Sivilstand)
-
 val vedleggPlikterRettTilEktefelletilleggOgBarnetilleggAP_001 =
-        createPhrase<LangBokmalNynorskEnglish, vedleggPlikterRettTilEktefelletilleggOgBarnetilleggAP_001Dto> {
-            val sivilstand = argument().select(vedleggPlikterRettTilEktefelletilleggOgBarnetilleggAP_001Dto::sivilstand)
+        createPhrase<LangBokmalNynorskEnglish, Sivilstand> {
+            val sivilstand = argument()
             paragraph {
                 text(
                         Bokmal to "Fordi du får ektefelletillegg og barnetillegg må du også melde fra om endringer som kan ha betydning for disse tilleggene.",
