@@ -205,6 +205,7 @@ object PensjonLatex : BaseTemplate() {
                 ExpressionScope(attachment.data.eval(it), it.felles, it.language)
             }
             attachment.template.outline.forEach { renderElement(scope, it, printWriter) }
+            printCmd("sluttvedlegg")
         }
 
     private fun renderLetterV2(letter: Letter<*>, printWriter: LatexPrintWriter): Unit =

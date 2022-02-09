@@ -16,7 +16,6 @@
 %----------------------------------------
 \usepackage{graphicx}   %graphics such as logo
 \usepackage{fontspec}   %declare font presets
-\usepackage{lastpage}   % last page counter
 \usepackage{fancyhdr}   % custom page styles
 % tables and colors
 \usepackage[rgb]{xcolor}
@@ -95,9 +94,10 @@
 %----------------------------------------
 %               Page number
 %----------------------------------------
+\newcommand{\currentSectionName}{mainletter} %name of the current section of the letter. Used for lastpage label at the end of this section
 \newcommand{\letterpagenumber}{ %general page number formatting
     \begin{textblock*}{25mm}(177mm,292mm)
-        \tinyText{\feltsideprefix~\textbf{\thepage}~\feltsideinfix~\textbf{\pageref*{LastPage}}}
+        \tinyText{\feltsideprefix~\textbf{\thepage}~\feltsideinfix~\textbf{\pageref*{\currentSectionName}}}
     \end{textblock*}
 }
 
