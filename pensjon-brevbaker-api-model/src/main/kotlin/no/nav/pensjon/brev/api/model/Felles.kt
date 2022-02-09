@@ -19,7 +19,8 @@ data class Mottaker(
     val mellomnavn: String? = null,
     val etternavn: String,
     val foedselsnummer: Foedselsnummer,
-    val kortnavn: String,
+    @Deprecated("Kortnavn settes nå inn som linje1 i Adresse og brukes ikke lenger. Kan fjernes herfra når Pesys ikke fyller inn feltet lenger.")
+    val kortnavn: String?,
     val adresse: Adresse
 )
 
