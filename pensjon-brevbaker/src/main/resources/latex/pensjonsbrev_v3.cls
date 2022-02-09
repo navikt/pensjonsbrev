@@ -101,6 +101,17 @@
     \end{textblock*}
 }
 
+%----------------------------------------
+%             Case details
+%----------------------------------------
+\newcommand{\sakspart}{
+    \fontsize{12pt}{12pt} \selectfont
+    \tinyGrayText{\feltsaksnummerprefix} \feltsaksnummer \\[2pt]
+    \tinyGrayText{\feltnavnprefix} \feltetternavnmottaker \space \feltfornavnmottaker \\[2pt]
+    \tinyGrayText{\feltfoedselsnummerprefix} \feltfoedselsnummer \\[22pt]
+}
+
+
 \input{content}     %Code related to the letter content, not the page layout
 \input{attachment}  %Elements related to the letter content, not the page layout
 \input{firstpage}
