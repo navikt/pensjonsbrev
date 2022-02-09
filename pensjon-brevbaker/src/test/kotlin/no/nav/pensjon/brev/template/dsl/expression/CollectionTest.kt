@@ -31,18 +31,18 @@ class CollectionTest {
     }
 
     @Test
-    fun `containsOnly returns true when input has items`() {
-        assertTrue(listOf(1, 2).expr().containsOnly(1, 2).eval(emptyScope))
+    fun `containsExclusively_required returns true when input has items`() {
+        assertTrue(listOf(1, 2).expr().containsExclusively { required(1, 2) }.eval(emptyScope))
     }
 
     @Test
-    fun `containsOnly returns false when input has more than expected items`() {
-        assertFalse(listOf(1, 2, 3).expr().containsOnly(1, 2).eval(emptyScope))
+    fun `containsExclusively_required returns false when input has more than expected items`() {
+        assertFalse(listOf(1, 2, 3).expr().containsExclusively { required(1, 2) }.eval(emptyScope))
     }
 
     @Test
-    fun `containsOnly ignores order`() {
-        assertTrue(listOf(3, 2, 1).expr().containsOnly(1, 2, 3).eval(emptyScope))
+    fun `containsExclusively_required ignores order`() {
+        assertTrue(listOf(3, 2, 1).expr().containsExclusively { required(1, 2, 3) }.eval(emptyScope))
     }
 
     @Test
@@ -57,47 +57,67 @@ class CollectionTest {
 
     @Test
     fun `exclusivelyContainsAny returns true when input has the listed items`() {
-        assertTrue(listOf(1, 2, 3).expr().exclusivelyContainsAny(3, 2, 1).eval(emptyScope))
+        assertTrue(listOf(1, 2, 3).expr().containsExclusively { anyOf(3, 2, 1) }.eval(emptyScope))
     }
 
     @Test
-    fun `exclusivelyContainsAny returns false when input has element not listed`() {
-        assertFalse(listOf(1, 2, 3, 4).expr().exclusivelyContainsAny(3, 2, 1).eval(emptyScope))
+    fun `containsExclusively_anyOf returns false when input has element not listed`() {
+        assertFalse(listOf(1, 2, 3, 4).expr().containsExclusively { anyOf(3, 2, 1) }.eval(emptyScope))
     }
 
     @Test
-    fun `exclusivelyContainsAny returns true when input doesnt have all listed items`() {
-        assertTrue(listOf(1, 2).expr().exclusivelyContainsAny(3, 2, 1).eval(emptyScope))
+    fun `containsExclusively_anyOf returns true when input doesnt have all listed items`() {
+        assertTrue(listOf(1, 2).expr().containsExclusively { anyOf(3, 2, 1) }.eval(emptyScope))
     }
 
     @Test
-    fun `exclusivelyContainsAny returns false when input is empty`() {
-        assertFalse(emptyList<Int>().expr().exclusivelyContainsAny(3, 2, 1).eval(emptyScope))
+    fun `containsExclusively_anyOf returns false when input is empty`() {
+        assertFalse(emptyList<Int>().expr().containsExclusively { anyOf(3, 2, 1) }.eval(emptyScope))
     }
 
     @Test
-    fun `exclusivelyContainsRequiredAndAnyOf returns true when input has all required and all anyOf`() {
-        assertTrue(listOf(1, 2, 3, 4).expr().exclusivelyContainsRequiredAndAnyOf(setOf(1, 2), setOf(3, 4)).eval(emptyScope))
+    fun `containsExclusively_anyOf_and_required returns true when input has all required and all anyOf`() {
+        val containsExclusively = listOf(1, 2, 3, 4).expr().containsExclusively {
+            required(1, 2)
+            anyOf(3, 4)
+        }
+        assertTrue(containsExclusively.eval(emptyScope))
     }
 
     @Test
-    fun `exclusivelyContainsRequiredAndAnyOf returns false when input has all required and all anyOf but also additional items`() {
-        assertFalse(listOf(1, 2, 3, 4, 5).expr().exclusivelyContainsRequiredAndAnyOf(setOf(1, 2), setOf(3, 4)).eval(emptyScope))
+    fun `containsExclusively_anyOf_and_required returns false when input has all required and all anyOf but also additional items`() {
+        val containsExclusively = listOf(1, 2, 3, 4, 5).expr().containsExclusively {
+            required(1, 2)
+            anyOf(3, 4)
+        }
+        assertFalse(containsExclusively.eval(emptyScope))
     }
 
     @Test
-    fun `exclusivelyContainsRequiredAndAnyOf returns true when input has all required and some anyOf`() {
-        assertTrue(listOf(1, 2, 3).expr().exclusivelyContainsRequiredAndAnyOf(setOf(1, 2), setOf(3, 4)).eval(emptyScope))
+    fun `containsExclusively_anyOf_and_required returns true when input has all required and some anyOf`() {
+        val containsExclusively = listOf(1, 2, 3).expr().containsExclusively {
+            required(1, 2)
+            anyOf(3, 4)
+        }
+        assertTrue(containsExclusively.eval(emptyScope))
     }
 
     @Test
-    fun `exclusivelyContainsRequiredAndAnyOf returns false when input has all required and none anyOf`() {
-        assertFalse(listOf(1, 2).expr().exclusivelyContainsRequiredAndAnyOf(setOf(1, 2), setOf(3, 4)).eval(emptyScope))
+    fun `containsExclusively_anyOf_and_required returns false when input has all required and none anyOf`() {
+        val containsExclusively = listOf(1, 2).expr().containsExclusively {
+            required(1, 2)
+            anyOf(3, 4)
+        }
+        assertFalse(containsExclusively.eval(emptyScope))
     }
 
     @Test
-    fun `exclusivelyContainsRequiredAndAnyOf returns false when input has some required and some anyOf`() {
-        assertFalse(listOf(1, 2, 4).expr().exclusivelyContainsRequiredAndAnyOf(setOf(1, 2, 3), setOf(4, 5)).eval(emptyScope))
+    fun `containsExclusively_anyOf_and_required returns false when input has some required and some anyOf`() {
+        val containsExclusively = listOf(1, 2, 4).expr().containsExclusively {
+            required(1, 2, 3)
+            anyOf(4, 5)
+        }
+        assertFalse(containsExclusively.eval(emptyScope))
     }
 
 }

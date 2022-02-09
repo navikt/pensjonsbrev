@@ -40,31 +40,39 @@ object Ufoeretrygd {
                     Bokmal to "Du får ".expr() + perMaaned + " kroner i uføretrygd per måned før skatt.",
                     Nynorsk to "Du får ".expr() + perMaaned + " kroner i uføretrygd per månad før skatt.",
                 )
-            }.orShowIf(tillegg.exclusivelyContainsAny(Tillegg.SAERKULLSBARN, Tillegg.FELLESBARN)) {
+            }.orShowIf(tillegg.containsExclusively { anyOf(Tillegg.SAERKULLSBARN, Tillegg.FELLESBARN) }) {
                 textExpr(
                     Bokmal to "Du får ".expr() + perMaaned + " kroner i uføretrygd og barnetillegg per måned før skatt.",
                     Nynorsk to "Du får ".expr() + perMaaned + " kroner i uføretrygd og barnetillegg per månad før skatt.",
                 )
-            }.orShowIf(tillegg.containsOnly(Tillegg.GJENLEVENDE)) {
+            }.orShowIf(tillegg.containsExclusively { required(Tillegg.GJENLEVENDE) }) {
                 textExpr(
                     Bokmal to "Du får ".expr() + perMaaned + " kroner i uføretrygd og gjenlevendetillegg per måned før skatt.",
                     Nynorsk to "Du får ".expr() + perMaaned + " kroner i uføretrygd og attlevandetillegg per månad før skatt.",
                 )
-            }.orShowIf(tillegg.containsOnly(Tillegg.EKTEFELLE)) {
+            }.orShowIf(tillegg.containsExclusively { required(Tillegg.EKTEFELLE) }) {
                 textExpr(
                     Bokmal to "Du får ".expr() + perMaaned + " kroner i uføretrygd og ektefelletillegg per måned før skatt.",
                     Nynorsk to "Du får ".expr() + perMaaned + " kroner i uføretrygd og ektefelletillegg per månad før skatt.",
                 )
 
-                // EKTEFELLE og (SAERKULLSBARN eller FELLESBARN)
-            }.orShowIf(tillegg.exclusivelyContainsRequiredAndAnyOf(setOf(Tillegg.EKTEFELLE), setOf(Tillegg.SAERKULLSBARN, Tillegg.FELLESBARN))) {
+            }.orShowIf(
+                tillegg.containsExclusively {
+                    required(Tillegg.EKTEFELLE)
+                    anyOf(Tillegg.SAERKULLSBARN, Tillegg.FELLESBARN)
+                }
+            ) {
                 textExpr(
                     Bokmal to "Du får ".expr() + perMaaned + " kroner i uføretrygd, barne- og ektefelletillegg per måned før skatt.",
                     Nynorsk to "Du får ".expr() + perMaaned + " kroner i uføretrygd, barne- og ektefelletillegg per månad før skatt.",
                 )
 
-                // GJENLEVENDE og (SAERKULLSBARN eller FELLESBARN)
-            }.orShowIf(tillegg.exclusivelyContainsRequiredAndAnyOf(setOf(Tillegg.GJENLEVENDE), setOf(Tillegg.SAERKULLSBARN, Tillegg.FELLESBARN))) {
+            }.orShowIf(
+                tillegg.containsExclusively {
+                    required(Tillegg.GJENLEVENDE)
+                    anyOf(Tillegg.SAERKULLSBARN, Tillegg.FELLESBARN)
+                }
+            ) {
                 textExpr(
                     Bokmal to "Du får ".expr() + perMaaned + " kroner i uføretrygd, barne- og gjenlevendetillegg per måned før skatt.",
                     Nynorsk to "Du får ".expr() + perMaaned + " kroner i uføretrygd, barne- og attlevandetillegg per månad før skatt.",

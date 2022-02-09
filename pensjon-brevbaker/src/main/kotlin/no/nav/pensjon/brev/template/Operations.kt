@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.template
 
 import no.nav.pensjon.brev.api.model.Telefonnummer
 import no.nav.pensjon.brev.model.format
+import no.nav.pensjon.brev.template.expression.Predicate
 import java.time.LocalDate
 
 abstract class Operation {
@@ -84,5 +85,9 @@ sealed class BinaryOperation<in In1, in In2, out Out> : Operation() {
 
     class Tuple<Out> : BinaryOperation<Out, Out, Pair<Out, Out>>() {
         override fun apply(first: Out, second: Out): Pair<Out, Out> = first to second
+    }
+
+    class ValidatePredicate<T> : BinaryOperation<Predicate<T>, T, Boolean>() {
+        override fun apply(first: Predicate<T>, second: T): Boolean = first.validate(second)
     }
 }

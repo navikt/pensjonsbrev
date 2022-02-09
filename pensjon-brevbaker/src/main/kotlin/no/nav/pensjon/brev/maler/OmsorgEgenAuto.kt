@@ -12,7 +12,7 @@ import no.nav.pensjon.brev.template.dsl.expression.*
 
 object OmsorgEgenAuto : StaticTemplate {
 
-    override val template: LetterTemplate<*, *> = createTemplate(
+    override val template = createTemplate(
         name = "OMSORG_EGEN_AUTO",
         base = PensjonLatex,
         letterDataType = OmsorgEgenAutoDto::class,
@@ -45,7 +45,7 @@ object OmsorgEgenAuto : StaticTemplate {
                     English to
                             "We need you to confirm that you have provided nursing and care work in ".expr()
                             + aarEgenerklaringOmsorgspoeng
-                            + ". Therefore, it is required that you complete the enclosed form and return it to NAV within four weeks."
+                            + ". Therefore, it is required that you complete the enclosed form and return it to NAV within four weeks.",
                 )
             }
 
@@ -54,7 +54,7 @@ object OmsorgEgenAuto : StaticTemplate {
                 textExpr(
                     Bokmal to "Du har fått godkjent pensjonsopptjening for ".expr() + aarInnvilgetOmsorgspoeng + ".",
                     Nynorsk to "Du har fått godkjend pensjonsopptening for ".expr() + aarInnvilgetOmsorgspoeng + ".",
-                    English to "You have accumulated pensionable earnings for ".expr() + aarInnvilgetOmsorgspoeng + "."
+                    English to "You have accumulated pensionable earnings for ".expr() + aarInnvilgetOmsorgspoeng + ".",
                 )
             }
 
