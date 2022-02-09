@@ -21,7 +21,7 @@ fun <Data : Any, Field> Expression<Data>.select(
 fun <T, R> Expression<T>.map(transform: (T) -> R): Expression<R> =
     Expression.UnaryInvoke(
         this,
-        UnaryOperation.Select(transform)
+        UnaryOperation.Select(transform),
     )
 
 fun <T> T.expr() = Expression.Literal(this)

@@ -20,7 +20,6 @@ fun <Lang : LanguageSupport, LetterData : Any> createTemplate(
         return LetterTemplate(name, title, base, letterDataType, title.languages, outline, attachments, letterMetadata)
     }
 
-
 open class TemplateGlobalScope<LetterData : Any> {
     fun argument(): Expression<LetterData> =
         Expression.FromScope(ExpressionScope<LetterData, *>::argument)
@@ -179,7 +178,7 @@ fun <Lang1 : Language, LetterData : Any> TemplateFormChoiceScope<LanguageSupport
     lang1: Pair<Lang1, String>,
     fontType: FontType = FontType.PLAIN
 ) {
-    Element.Text.Literal.create(lang1 = lang1, fontType).also { choices.add(it) }
+    Element.Text.Literal.create(lang1, fontType).also { choices.add(it) }
 }
 
 fun <Lang1 : Language, Lang2 : Language, LetterData : Any> TemplateFormChoiceScope<LanguageSupport.Double<Lang1, Lang2>, LetterData>.choice(

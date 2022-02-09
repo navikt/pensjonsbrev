@@ -4,9 +4,9 @@ import no.nav.pensjon.brev.api.model.LetterMetadata
 import no.nav.pensjon.brev.template.base.BaseTemplate
 import kotlin.reflect.KClass
 
-data class LetterTemplate<out Lang : LanguageSupport, LetterData : Any>(
+data class LetterTemplate<Lang : LanguageSupport, LetterData : Any>(
     val name: String,
-    //TODO: Lag støtte for kombinert literal og expression
+    //TODO: Lag støtte for kombinert literal og expression for title
     val title: Element.Text.Literal<Lang>,
     val base: BaseTemplate,
     val letterDataType: KClass<LetterData>,
@@ -39,9 +39,10 @@ sealed class Expression<out Out> {
 
     data class UnaryInvoke<In, Out>(
         val value: Expression<In>,
-        val operation: UnaryOperation<In, Out>
+        val operation: UnaryOperation<In, Out>,
     ) : Expression<Out>() {
         override fun eval(scope: ExpressionScope<*, *>): Out = operation.apply(value.eval(scope))
+        override fun toString(): String ="$operation($value)"
     }
 
     data class BinaryInvoke<In1, In2, out Out>(
@@ -50,6 +51,7 @@ sealed class Expression<out Out> {
         val operation: BinaryOperation<In1, In2, Out>
     ) : Expression<Out>() {
         override fun eval(scope: ExpressionScope<*, *>): Out = operation.apply(first.eval(scope), second.eval(scope))
+        override fun toString(): String = "$operation($first, $second)"
     }
 
 }
