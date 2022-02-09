@@ -25,6 +25,11 @@ object PensjonLatex : BaseTemplate() {
         "content.tex" to getResource("latex/content.tex"),
     )
 
+    private fun getResource(fileName: String): ByteArray =
+        this::class.java.getResourceAsStream("/$fileName")
+            ?.use { it.readAllBytes() }
+            ?: throw IllegalStateException("""Could not find latex resource /$fileName""")
+
     override val languageSettings: LanguageSettings = languageSettings {
         setting("navnprefix") {
             text(
@@ -476,14 +481,6 @@ object PensjonLatex : BaseTemplate() {
                     print("\\FloatBarrier", escape = false)
                 }
         }
-
-    private fun getResource(fileName: String): ByteArray {
-        val stream = this::class.java.getResourceAsStream("/$fileName")
-            ?: throw IllegalStateException("""Could not find class resource /$fileName""")
-        val bytearray = stream.readAllBytes()
-        stream.close()
-        return bytearray
-    }
 
     private fun columnFormat(columns: Int): String =
         if (columns > 0) {
