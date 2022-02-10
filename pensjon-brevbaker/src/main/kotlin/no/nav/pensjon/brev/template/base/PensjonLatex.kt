@@ -163,6 +163,20 @@ object PensjonLatex : BaseTemplate() {
                 Language.English to "Attachments:",
             )
         }
+        setting("tablenextpagecontinuation") {
+            text(
+                Language.Bokmal to "Fortsettelse på neste side",
+                Language.Nynorsk to "Fortsettelse på neste side",
+                Language.English to "Continued on the next page",
+            )
+        }
+        setting("tablecontinuedfrompreviouspage") {
+            text(
+                Language.Bokmal to "(Fortsettelse)",
+                Language.Nynorsk to "(Fortsettelse)",
+                Language.English to "(Continuation)",
+            )
+        }
     }
 
     override fun render(letter: Letter<*>): RenderedLetter =
@@ -447,34 +461,48 @@ object PensjonLatex : BaseTemplate() {
                     print("\\FloatBarrier", escape = false)
                     printCmd("begin") {
                         arg { print("longtblr") }
+                        element.title?.let {
+                            print("[caption={", escape = false)
+                            it.forEach {titleElem -> renderElement(scope, titleElem, printWriter) }
+                            print("}]", escape = false)
+                        }
+
                         arg {
                             print(
-                                "colspec={${columnFormat(tableWidth)}},"
-                                        + "width=\\textwidth", escape = false
+                                "colspec={${columnFormat(tableWidth)}}," +
+                                        "rowhead=1," +
+                                        "width=\\textwidth," +
+                                        "hlines={1pt,linecolor}," +
+                                        "vlines={1pt,linecolor}," +
+                                        "row{odd}={row1color}," +
+                                        "row{even}={row2color},",
+                                escape = false
                             )
                         }
                     }
-                    printCmd("hline")
-                    element.rows.forEach { row ->
-                        when (row.colour) {
-                            GRAY -> print("\\SetRow{gray9}", escape = false)
-                            WHITE -> {}
-                        }
-
-                        row.cells.forEachIndexed { index, cell ->
-                            print("\\SetCell[c=${cell.cellColumns}]{l}", escape = false)
-                            cell.elements.forEach { cellElement ->
-                                renderElement(scope, cellElement, printWriter)
+//                    printCmd("hline")
+                    listOfNotNull(element.columnHeader)
+                        .plus(element.rows)
+                        .forEach { row ->
+                            when (row.colour) {
+                                GRAY -> print("\\SetRow{gray9}", escape = false)
+                                WHITE -> {}
                             }
 
-                            if (index < row.cells.lastIndex) {
-                                // Because all columns must have a value even if it is overridden by
-                                // setting the columns > 1, the & needs to repeat.
-                                print(" ${"&".repeat(cell.cellColumns)} ", escape = false)
+                            row.cells.forEachIndexed { index, cell ->
+                                print("\\SetCell[c=${cell.cellColumns}]{l}", escape = false)
+                                cell.elements.forEach { cellElement ->
+                                    renderElement(scope, cellElement, printWriter)
+                                }
+
+                                if (index < row.cells.lastIndex) {
+                                    // Because all columns must have a value even if it is overridden by
+                                    // setting the columns > 1, the & needs to repeat.
+                                    print(" ${"&".repeat(cell.cellColumns)} ", escape = false)
+                                }
                             }
+                            print(""" \\""", escape = false)
                         }
-                        print(""" \\\hline""", escape = false)
-                    }
 
                     printCmd("end") {
                         arg { print("longtblr") }

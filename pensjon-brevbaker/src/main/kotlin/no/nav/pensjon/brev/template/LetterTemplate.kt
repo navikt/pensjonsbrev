@@ -71,7 +71,8 @@ sealed class Element<out Lang : LanguageSupport> {
 
     data class Table<Lang : LanguageSupport>(
         val title: List<Element<Lang>>?,
-        val rows: List<Row<Lang>>
+        val rows: List<Row<Lang>>,
+        val columnHeader: Row<Lang>? = null,
     ) : Element<Lang>() {
         val width: Int
         init {

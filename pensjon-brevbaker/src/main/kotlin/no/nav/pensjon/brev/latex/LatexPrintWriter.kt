@@ -43,7 +43,7 @@ class LatexPrintWriter(output: OutputStream) : Closeable {
         printWriter.close()
     }
 
-    private fun latexString(s: String, escape: Boolean) =
+    fun latexString(s: String, escape: Boolean) =
         if (escape)
             s.latexEscape()
         else

@@ -141,7 +141,7 @@ class TemplateContainerScope<Lang : LanguageSupport, LetterData : Any> :
 
     fun table(init: TemplateTableScope<Lang, LetterData>.() -> Unit) {
         TemplateTableScope<Lang, LetterData>().apply(init)
-            .let { children.add(Element.Table(title = it.title, rows = it.children)) }
+            .let { children.add(Element.Table(title = it.title, rows = it.children, columnHeader = it.columnHeader)) }
 
     }
 

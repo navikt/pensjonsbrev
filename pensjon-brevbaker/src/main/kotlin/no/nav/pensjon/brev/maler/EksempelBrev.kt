@@ -2,16 +2,16 @@ package no.nav.pensjon.brev.maler
 
 import no.nav.pensjon.brev.api.model.LetterMetadata
 import no.nav.pensjon.brev.api.model.maler.EksempelBrevDto
-import no.nav.pensjon.brev.template.*
+import no.nav.pensjon.brev.maler.fraser.common.Kroner
 import no.nav.pensjon.brev.template.Element.Table.RowColour.GRAY
 import no.nav.pensjon.brev.template.Element.Text.FontType.BOLD
 import no.nav.pensjon.brev.template.Element.Text.FontType.ITALIC
 import no.nav.pensjon.brev.template.Language.Bokmal
+import no.nav.pensjon.brev.template.StaticTemplate
 import no.nav.pensjon.brev.template.base.PensjonLatex
 import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.select
 import no.nav.pensjon.brev.template.dsl.expression.str
-import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.dsl.text
 
@@ -59,39 +59,34 @@ object EksempelBrev : StaticTemplate {
             text(Bokmal to "test")
             paragraph {
                 table {
-                    row(GRAY) {
-                        cell(4) {
-                            text(Bokmal to "Dette er en 4 kolonner brei celle", ITALIC)
+                    columnHeader {
+                        cell {
+                            text(Bokmal to "Kolonne 1")
+                        }
+                        cell {
+                            text(Bokmal to "Kolonne 2")
+                        }
+                        cell {
+                            text(Bokmal to "Kolonne 3")
+                        }
+                        cell {
+                            text(Bokmal to "Kolonne 4")
                         }
                     }
-                    row {
-                        cell(3) {
-                            text(Bokmal to "Dette er en 3 kolonner brei celle", BOLD)
-                        }
-                        cell {
-                            text(Bokmal to "Dette er en 1 kolonne brei celle")
-                        }
-                    }
-                    row {
-                        cell(3) {
-                            text(Bokmal to "Dette er en 3 kolonner brei celle")
-                        }
-                        cell {
-                            text(Bokmal to "Dette er en 1 kolonne brei celle")
-                        }
-                    }
-                    row {
-                        cell {
-                            text(Bokmal to "Dette er en 1 kolonner brei celle")
-                        }
-                        cell {
-                            text(Bokmal to "Dette er en 1 kolonne brei celle")
-                        }
-                        cell {
-                            text(Bokmal to "Dette er en 1 kolonne brei celle")
-                        }
-                        cell {
-                            text(Bokmal to "Dette er en 1 kolonne brei celle")
+                    for (i in 1..50) {
+                        row {
+                            cell {
+                                text(Bokmal to "$i Kr")
+                            }
+                            cell {
+                                text(Bokmal to "$i Kr")
+                            }
+                            cell {
+                                text(Bokmal to "$i Kr")
+                            }
+                            cell {
+                                text(Bokmal to "$i Kr")
+                            }
                         }
                     }
                 }

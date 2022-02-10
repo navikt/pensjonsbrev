@@ -29,3 +29,18 @@
     } {
     \end{checklist}
 }
+
+%----------------------------------------
+%                Table
+%----------------------------------------
+%default table settings
+%table continuation text on page break mid table
+
+\definecolor{columnheadercolor}{rgb}{0.9,0.9,0.9}
+\definecolor{linecolor}{rgb}{0.95,0.95,0.95}
+\definecolor{row1color}{rgb}{0.95,0.95,0.95}
+\definecolor{row2color}{rgb}{1.0,1.0,1.0}
+
+\DefTblrTemplate{contfoot-text}{default}{\felttablenextpagecontinuation}
+\DefTblrTemplate{caption}{default}{\InsertTblrText{caption}}
+\DefTblrTemplate{capcont}{default}{\InsertTblrText{caption}\felttablecontinuedfrompreviouspage}
