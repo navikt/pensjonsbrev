@@ -10,12 +10,26 @@ import no.nav.pensjon.brev.template.Element.Text.FontType.*
 import no.nav.pensjon.brev.template.dsl.expression.select
 import no.nav.pensjon.brev.template.dsl.languageSettings
 import no.nav.pensjon.brev.template.dsl.text
-import java.io.InputStream
 import java.time.LocalDate
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
 object PensjonLatex : BaseTemplate() {
+    val letterResourceFiles: Map<String, ByteArray> = hashMapOf(
+        "nav-logo.pdf" to getResource("latex/nav-logo.pdf"),
+        "nav-logo.pdf_tex" to getResource("latex/nav-logo.pdf_tex"),
+        "pensjonsbrev_v3.cls" to getResource("latex/pensjonsbrev_v3.cls"),
+        "firstpage.tex" to getResource("latex/firstpage.tex"),
+        "attachment.tex" to getResource("latex/attachment.tex"),
+        "closing.tex" to getResource("latex/closing.tex"),
+        "content.tex" to getResource("latex/content.tex"),
+    )
+
+    private fun getResource(fileName: String): ByteArray =
+        this::class.java.getResourceAsStream("/$fileName")
+            ?.use { it.readAllBytes() }
+            ?: throw IllegalStateException("""Could not find latex resource /$fileName""")
+
     override val languageSettings: LanguageSettings = languageSettings {
         setting("navnprefix") {
             text(
@@ -155,12 +169,10 @@ object PensjonLatex : BaseTemplate() {
             newFile("params.tex").use { masterTemplateParameters(letter, LatexPrintWriter(it)) }
             newFile("letter.xmpdata").use { xmpData(letter, LatexPrintWriter(it)) }
             newFile("letter.tex").use { renderLetterV2(letter, LatexPrintWriter(it)) }
-            newFile("nav-logo.pdf").use { getResource("nav-logo.pdf").transferTo(it) }
-            newFile("nav-logo.pdf_tex").use { getResource("nav-logo.pdf_tex").transferTo(it) }
-            newFile("pensjonsbrev_v2.cls").use { getResource("pensjonsbrev_v2.cls").transferTo(it) }
             letter.template.attachments.forEachIndexed { index, attachment ->
                 newFile("attachment_$index.tex").use { renderAttachment(letter, attachment, LatexPrintWriter(it)) }
             }
+            addFiles(letterResourceFiles)
         }
 
     private fun xmpData(letter: Letter<*>, latexPrintWriter: LatexPrintWriter) {
@@ -199,19 +211,17 @@ object PensjonLatex : BaseTemplate() {
             }
             attachment.template.outline.forEach { renderElement(scope, it, printWriter) }
             printCmd("sluttvedlegg")
-
         }
 
     private fun renderLetterV2(letter: Letter<*>, printWriter: LatexPrintWriter): Unit =
         with(printWriter) {
-            println("""\documentclass[12pt]{pensjonsbrev_v2}""", escape = false)
+            println("""\documentclass[12pt]{pensjonsbrev_v3}""", escape = false)
             pdfMetadata(letter, printWriter)
             printCmd("begin", "document")
-            printCmd("begin", "letter", """\brevparameter""", escape = false)
+            printCmd("firstpage")
             printCmd("tittel", letter.template.title.text(letter.language))
             contents(letter, printWriter)
             printCmd("closing")
-            printCmd("end", "letter")
             letter.template.attachments.forEachIndexed { index, _ ->
                 printCmd(
                     "input",
@@ -245,7 +255,7 @@ object PensjonLatex : BaseTemplate() {
         }
     }
 
-    fun pdfCreationTime(): String {
+    private fun pdfCreationTime(): String {
         val now = ZonedDateTime.now()
         val formattedTime = now.format(DateTimeFormatter.ofPattern("YYYYMMddHHmmssxxx"))
         return "D:${formattedTime.replace(":", "’")}’"
@@ -433,10 +443,9 @@ object PensjonLatex : BaseTemplate() {
                 with(printWriter) {
 
                     val tableWidth = element.width
-
                     print("\\FloatBarrier", escape = false)
                     printCmd("begin") {
-                        arg { print("tblr") }
+                        arg { print("longtblr") }
                         arg {
                             print(
                                 "colspec={${columnFormat(tableWidth)}},"
@@ -467,19 +476,13 @@ object PensjonLatex : BaseTemplate() {
                     }
 
                     printCmd("end") {
-                        arg { print("tblr") }
+                        arg { print("longtblr") }
                     }
                     print("\\FloatBarrier", escape = false)
                 }
         }
 
-
-    private fun getResource(fileName: String): InputStream {
-        return this::class.java.getResourceAsStream("/$fileName")
-            ?: throw IllegalStateException("""Could not find class resource /$fileName""")
-    }
-
-    fun columnFormat(columns: Int): String =
+    private fun columnFormat(columns: Int): String =
         if (columns > 0) {
             "|" + "X|".repeat(columns)
         } else {

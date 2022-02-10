@@ -20,6 +20,14 @@ class RenderedLatexLetter : RenderedLetter {
     }
 
     fun newFile(name: String): OutputStream =
-        ByteArrayOutputStream().also { files[name] = it }
+        ByteArrayOutputStream()
+            .also { files[name] = it }
 
+    fun addFiles(newFiles: Map<String, ByteArray>) {
+        files.putAll(newFiles.mapValues { pair ->
+            ByteArrayOutputStream().also {
+                pair.value.inputStream().transferTo(it)
+            }
+        })
+    }
 }

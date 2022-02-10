@@ -1,0 +1,52 @@
+%----------------------------------------
+%       Closing/last page of letter
+%----------------------------------------
+\newcommand{\closingsaksbehandlet}{
+    \vspace*{60pt}
+    \parbox[t]{0.5\linewidth}{\feltclosingsaksbehandlerfirst \\ \feltclosingsaksbehandlersuffix}
+    \parbox[t]{0.5\linewidth}{\feltclosingsaksbehandlersecond \\ \feltclosingsaksbehandlersuffix}
+    \par
+    \vspace*{14pt}
+    \feltnavenhet
+}
+
+% Closing page text with no signatures
+\newcommand{\closingautomatiskbehandlet}{
+    \vspace*{4pt}
+    \feltnavenhet
+    \par
+    \vspace*{12pt}
+    \feltclosingautomatisktext
+}
+
+% Closing page text
+\newcommand{\closing}{
+    \par
+    \begin{minipage}{\textwidth}
+        \vspace{24pt}
+        \lettersectiontitle{\feltclosingspoersmaal}
+        \templateparagraph{\feltclosingkontaktoss}
+        \par
+        \vspace*{42pt}
+        \feltclosinggreeting
+        \par
+        \closingbehandlet
+        \feltclosingvedlegg
+        \label{\currentSectionName} %set label for the last page before attachments
+    \end{minipage}
+}
+
+% space between closing text and attachments
+\newcommand{\closingvedleggspace}{ % Should be used if there is any attachments.
+    \par
+    \vspace{60pt}
+}
+
+
+% attachmentList
+\newenvironment{attachmentList}{
+    \feltclosingvedleggprefix
+    \begin{itemize}
+    } {
+    \end{itemize}
+}
