@@ -1,7 +1,6 @@
 package no.nav.pensjon.brev.template
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.databind.SerializationFeature
+import com.fasterxml.jackson.databind.*
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
@@ -10,6 +9,7 @@ import kotlin.reflect.KClass
 fun ObjectMapper.brevbakerConfig() {
     registerModule(JavaTimeModule())
     enable(SerializationFeature.INDENT_OUTPUT)
+    disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
 }
 
 fun jacksonObjectMapper() = com.fasterxml.jackson.module.kotlin.jacksonObjectMapper().apply { brevbakerConfig() }

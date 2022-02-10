@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.pdfbygger
 
+import com.fasterxml.jackson.core.JacksonException
 import io.ktor.application.*
 import io.ktor.features.*
 import io.ktor.http.*
@@ -34,6 +35,17 @@ fun Application.module() {
 
     install(CallLogging) {
         callIdMdc("x_correlationId")
+        disableDefaultColors()
+        val ignorePaths = setOf("/isAlive", "/isReady", "/metrics")
+        filter {
+            !ignorePaths.contains(it.request.path())
+        }
+    }
+
+    install(StatusPages) {
+        exception<JacksonException> { cause ->
+            call.respond(HttpStatusCode.BadRequest, cause.message ?: "Failed to deserialize json body: unknown reason")
+        }
     }
 
     install(CallId) {
