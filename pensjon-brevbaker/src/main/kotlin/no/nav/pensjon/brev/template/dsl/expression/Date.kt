@@ -6,11 +6,11 @@ import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.ExpressionScope
 import java.time.LocalDate
 
-fun Expression<LocalDate>.format() =
+fun Expression<LocalDate>.format(short: Boolean = false) =
     Expression.BinaryInvoke(
         this,
         Expression.FromScope(ExpressionScope<Any, *>::language),
-        BinaryOperation.LocalizedDateFormat
+        if(short) BinaryOperation.LocalizedShortDateFormat else BinaryOperation.LocalizedDateFormat
     )
 
 @JvmName("formatLocalDateValue")

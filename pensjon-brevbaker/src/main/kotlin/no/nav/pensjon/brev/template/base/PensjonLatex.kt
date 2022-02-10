@@ -13,6 +13,7 @@ import no.nav.pensjon.brev.template.dsl.text
 import java.time.LocalDate
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
 
 object PensjonLatex : BaseTemplate() {
     val letterResourceFiles: Map<String, ByteArray> = hashMapOf(
@@ -272,7 +273,7 @@ object PensjonLatex : BaseTemplate() {
     }
 
     private fun datoCommand(dato: LocalDate, language: Language, printWriter: LatexPrintWriter) {
-        printWriter.printNewCmd("feltdato", dato.format(dateFormatter(language)))
+        printWriter.printNewCmd("feltdato", dato.format(dateFormatter(language, FormatStyle.LONG)))
     }
 
     private fun mottakerCommands(mottaker: Mottaker, printWriter: LatexPrintWriter) =

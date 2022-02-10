@@ -140,7 +140,9 @@ class TemplateContainerScope<Lang : LanguageSupport, LetterData : Any> :
     }
 
     fun table(init: TemplateTableScope<Lang, LetterData>.() -> Unit) {
-        children.add(Element.Table(TemplateTableScope<Lang, LetterData>().apply(init).children))
+        TemplateTableScope<Lang, LetterData>().apply(init)
+            .let { children.add(Element.Table(title = it.title, rows = it.children)) }
+
     }
 
     fun paragraph(init: TemplateContainerScope<Lang, LetterData>.() -> Unit) {

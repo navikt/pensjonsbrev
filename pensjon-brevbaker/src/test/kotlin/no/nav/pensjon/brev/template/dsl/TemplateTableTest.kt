@@ -20,6 +20,9 @@ class TemplateTableTest {
         ) {
             outline {
                 table {
+                    title {
+                        text(Language.Bokmal to "tittel")
+                    }
                     row {
                         cell {
                             text(Language.Bokmal to "joda")
@@ -38,6 +41,7 @@ class TemplateTableTest {
             letterMetadata = testLetterMetadata,
             outline = listOf(
                 Element.Table(
+                    listOf(newText(Language.Bokmal to "tittel")),
                     listOf(
                         Element.Table.Row(
                             listOf(
