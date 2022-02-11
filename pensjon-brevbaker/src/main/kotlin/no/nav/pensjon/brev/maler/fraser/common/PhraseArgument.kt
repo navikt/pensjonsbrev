@@ -9,8 +9,12 @@ interface LocalDateValue {
 @JvmInline
 value class KravVirkningFraOgMed(override val date: LocalDate): LocalDateValue
 
+interface IntValue {
+    val value: Int
+}
+
 @JvmInline
-value class Kroner(val value: Int) {
+value class Kroner(override val value: Int): IntValue {
     override fun toString(): String {
         return value.toString()
     }

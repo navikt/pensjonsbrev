@@ -10,7 +10,10 @@ fun Expression<LocalDate>.format(short: Boolean = false) =
     Expression.BinaryInvoke(
         this,
         Expression.FromScope(ExpressionScope<Any, *>::language),
-        if(short) BinaryOperation.LocalizedShortDateFormat else BinaryOperation.LocalizedDateFormat
+        when(short) {
+                true -> BinaryOperation.LocalizedShortDateFormat
+                false -> BinaryOperation.LocalizedDateFormat
+        }//.let { BinaryOperation.NullSafe(it) }
     )
 
 @JvmName("formatLocalDateValue")

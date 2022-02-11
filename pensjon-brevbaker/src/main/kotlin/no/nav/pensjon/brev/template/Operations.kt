@@ -81,6 +81,21 @@ sealed class BinaryOperation<in In1, in In2, out Out> : Operation() {
             String.format(second.locale(), "%.2f", first)
     }
 
+    object LocalizedIntFormat : BinaryOperation<Int, Language, String>() {
+        override fun apply(first: Int, second: Language): String =
+            String.format(second.locale(), "%d", first)
+    }
+
+    class NullSafe<In1 : Any, In2 : Any, Out : Any>(private val operation: BinaryOperation<In1, In2, Out>) :
+        BinaryOperation<In1?, In2?, Out?>() {
+        override fun apply(first: In1?, second: In2?): Out? =
+            if (first != null && second != null) {
+                operation.apply(first, second)
+            } else {
+                null
+            }
+    }
+
     class EnumInList<EnumType : Enum<*>> : BinaryOperation<EnumType, List<EnumType>, Boolean>() {
         override fun apply(first: EnumType, second: List<EnumType>): Boolean = second.contains(first)
     }
