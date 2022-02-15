@@ -72,7 +72,7 @@ sealed class Element<out Lang : LanguageSupport> {
     data class Table<Lang : LanguageSupport>(
         val title: List<Element<Lang>>?,
         val rows: List<Row<Lang>>,
-        val columnHeader: Row<Lang>? = null,
+        val columnHeaders: List<Row<Lang>>,
     ) : Element<Lang>() {
         val width: Int
         init {
@@ -88,17 +88,12 @@ sealed class Element<out Lang : LanguageSupport> {
             }
         }
 
-        data class Row<Lang : LanguageSupport>(val cells: List<Cell<Lang>>, val colour: RowColour)
+        data class Row<Lang : LanguageSupport>(val cells: List<Cell<Lang>>)
 
         data class Cell<Lang : LanguageSupport>(
             val elements: List<Element<Lang>>,
             val cellColumns: Int
         )
-
-        enum class RowColour {
-            GRAY,
-            WHITE
-        }
     }
 
 

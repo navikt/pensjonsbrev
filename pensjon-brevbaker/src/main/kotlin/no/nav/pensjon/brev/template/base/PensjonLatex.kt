@@ -4,8 +4,6 @@ import no.nav.pensjon.brev.api.model.*
 import no.nav.pensjon.brev.latex.LatexPrintWriter
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.*
-import no.nav.pensjon.brev.template.Element.Table.RowColour.GRAY
-import no.nav.pensjon.brev.template.Element.Table.RowColour.WHITE
 import no.nav.pensjon.brev.template.Element.Text.FontType.*
 import no.nav.pensjon.brev.template.dsl.expression.select
 import no.nav.pensjon.brev.template.dsl.languageSettings
@@ -24,6 +22,7 @@ object PensjonLatex : BaseTemplate() {
         "attachment.tex" to getResource("latex/attachment.tex"),
         "closing.tex" to getResource("latex/closing.tex"),
         "content.tex" to getResource("latex/content.tex"),
+        "tabularray.sty" to getResource("latex/tabularray.sty"),
     )
 
     private fun getResource(fileName: String): ByteArray =
@@ -458,56 +457,56 @@ object PensjonLatex : BaseTemplate() {
                 with(printWriter) {
 
                     val tableWidth = element.width
-                    print("\\FloatBarrier", escape = false)
+                    val colHeaders = element.columnHeaders
                     printCmd("begin") {
                         arg { print("longtblr") }
+
                         element.title?.let {
                             print("[caption={", escape = false)
-                            it.forEach {titleElem -> renderElement(scope, titleElem, printWriter) }
+                            it.forEach { titleElem -> renderElement(scope, titleElem, printWriter) }
                             print("}]", escape = false)
                         }
 
                         arg {
                             print(
                                 "colspec={${columnFormat(tableWidth)}}," +
-                                        "rowhead=1," +
+                                        (if (colHeaders.isNotEmpty()) "rowhead=${colHeaders.size}," else "") +
                                         "width=\\textwidth," +
+                                        "hspan=minimal," + //wrap instead of widening table over limit
                                         "hlines={1pt,linecolor}," +
                                         "vlines={1pt,linecolor}," +
                                         "row{odd}={row1color}," +
-                                        "row{even}={row2color},",
+                                        "row{even}={row2color}," +
+                                        (if (colHeaders.isNotEmpty()) "row{1-${colHeaders.size}}={columnheadercolor}," else ""),
                                 escape = false
                             )
                         }
                     }
-//                    printCmd("hline")
-                    listOfNotNull(element.columnHeader)
+
+                    colHeaders
                         .plus(element.rows)
                         .forEach { row ->
-                            when (row.colour) {
-                                GRAY -> print("\\SetRow{gray9}", escape = false)
-                                WHITE -> {}
-                            }
-
                             row.cells.forEachIndexed { index, cell ->
-                                print("\\SetCell[c=${cell.cellColumns}]{l}", escape = false)
+                                if (cell.cellColumns > 1) {
+                                    print("\\SetCell[c=${cell.cellColumns}]{}", escape = false)
+                                }
                                 cell.elements.forEach { cellElement ->
                                     renderElement(scope, cellElement, printWriter)
                                 }
-
+                                if (cell.cellColumns > 1) {
+                                    print(" ${"& ".repeat(cell.cellColumns - 1)}", escape = false)
+                                }
                                 if (index < row.cells.lastIndex) {
-                                    // Because all columns must have a value even if it is overridden by
-                                    // setting the columns > 1, the & needs to repeat.
-                                    print(" ${"&".repeat(cell.cellColumns)} ", escape = false)
+                                    print("&", escape = false)
                                 }
                             }
-                            print(""" \\""", escape = false)
+                            print("""\\""", escape = false)
                         }
 
                     printCmd("end") {
                         arg { print("longtblr") }
                     }
-                    print("\\FloatBarrier", escape = false)
+
                 }
         }
 

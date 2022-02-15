@@ -2,10 +2,7 @@ package no.nav.pensjon.brev.maler
 
 import no.nav.pensjon.brev.api.model.LetterMetadata
 import no.nav.pensjon.brev.api.model.maler.EksempelBrevDto
-import no.nav.pensjon.brev.maler.fraser.common.Kroner
-import no.nav.pensjon.brev.template.Element.Table.RowColour.GRAY
-import no.nav.pensjon.brev.template.Element.Text.FontType.BOLD
-import no.nav.pensjon.brev.template.Element.Text.FontType.ITALIC
+import no.nav.pensjon.brev.template.Element.Text.FontType
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.StaticTemplate
 import no.nav.pensjon.brev.template.base.PensjonLatex
@@ -59,18 +56,31 @@ object EksempelBrev : StaticTemplate {
             text(Bokmal to "test")
             paragraph {
                 table {
-                    columnHeader {
-                        cell {
-                            text(Bokmal to "Kolonne 1")
+                    title{
+                        text(Bokmal to "Eksempeltabell")
+                    }
+                    columnHeaderRow {
+                        cell(4) {
+                            text(
+                                Bokmal to "Dette er en lang lang tittel. Dette er en lang lang tittel. Dette er en lang lang tittel. Dette er en lang lang tittel.",
+                                FontType.BOLD
+                            )
                         }
-                        cell {
-                            text(Bokmal to "Kolonne 2")
+                    }
+                    columnHeaderRow {
+                        cell(2) {
+                            text(Bokmal to "Blabla 2 kolonner brei")
                         }
-                        cell {
-                            text(Bokmal to "Kolonne 3")
+                        cell(2) {
+                            text(Bokmal to "Blabla 2 kolonner brei")
                         }
-                        cell {
-                            text(Bokmal to "Kolonne 4")
+                    }
+                    columnHeaderRow {
+                        cell(1) {
+                            text(Bokmal to "Blabla 1 kolonne brei")
+                        }
+                        cell(3) {
+                            text(Bokmal to "Blabla 3 kolonner breiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii")
                         }
                     }
                     for (i in 1..50) {

@@ -5,7 +5,6 @@ import io.ktor.client.engine.cio.*
 import io.ktor.client.features.json.*
 import io.ktor.client.request.*
 import io.ktor.http.*
-import kotlinx.coroutines.runBlocking
 
 data class PdfCompilationInput(val files: Map<String, String>)
 data class PDFCompilationOutput(val base64PDF: String)

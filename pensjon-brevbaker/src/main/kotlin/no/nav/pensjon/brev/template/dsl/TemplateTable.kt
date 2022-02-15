@@ -6,7 +6,7 @@ import no.nav.pensjon.brev.template.LanguageSupport
 @LetterTemplateMarker
 open class TemplateTableScope<Lang : LanguageSupport, LetterData : Any>(
     var title: List<Element<Lang>>? = null,
-    var columnHeader: Element.Table.Row<Lang>? = null,
+    val columnHeaders: MutableList<Element.Table.Row<Lang>> = mutableListOf(),
     val children: MutableList<Element.Table.Row<Lang>> = mutableListOf()
 ) :
     TemplateGlobalScope<LetterData>() {
@@ -17,20 +17,16 @@ open class TemplateTableScope<Lang : LanguageSupport, LetterData : Any>(
         title = TemplateTextOnlyScope<Lang, LetterData>().apply(init).children
     }
 
-    fun columnHeader(
+    fun columnHeaderRow(
         init: TemplateTableRowScope<Lang, LetterData>.() -> Unit
     ){
-        columnHeader = Element.Table.Row(
-            TemplateTableRowScope<Lang, LetterData>().apply(init).children,
-            Element.Table.RowColour.GRAY
-        )
+        columnHeaders.add(Element.Table.Row(TemplateTableRowScope<Lang, LetterData>().apply(init).children))
     }
 
     fun row(
-        colour: Element.Table.RowColour = Element.Table.RowColour.WHITE,
         init: TemplateTableRowScope<Lang, LetterData>.() -> Unit
     ) {
-        children.add(Element.Table.Row(TemplateTableRowScope<Lang, LetterData>().apply(init).children, colour))
+        children.add(Element.Table.Row(TemplateTableRowScope<Lang, LetterData>().apply(init).children))
     }
 }
 

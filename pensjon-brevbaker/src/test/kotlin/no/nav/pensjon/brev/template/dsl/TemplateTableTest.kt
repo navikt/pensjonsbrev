@@ -23,6 +23,11 @@ class TemplateTableTest {
                     title {
                         text(Language.Bokmal to "tittel")
                     }
+                    columnHeaderRow{
+                        cell {
+                            Language.Bokmal to "header"
+                        }
+                    }
                     row {
                         cell {
                             text(Language.Bokmal to "joda")
@@ -41,16 +46,26 @@ class TemplateTableTest {
             letterMetadata = testLetterMetadata,
             outline = listOf(
                 Element.Table(
-                    listOf(newText(Language.Bokmal to "tittel")),
-                    listOf(
+                    title = listOf(newText(Language.Bokmal to "tittel")),
+                    columnHeaders = listOf(
+                        Element.Table.Row(
+                            listOf(
+                                Element.Table.Cell(
+                                    listOf(newText(Language.Bokmal to "tittel")), 1
+                                )
+                            )
+                        )
+                    ),
+                    rows = listOf(
                         Element.Table.Row(
                             listOf(
                                 Element.Table.Cell(
                                     listOf(newText(Language.Bokmal to "joda")), 1
                                 )
-                            ), Element.Table.RowColour.WHITE
+                            )
                         )
                     )
+
                 )
             )
         )

@@ -8,7 +8,7 @@
 
 %! suppress = PackageNameDoesNotMatchFileName
 \ProvidesPackage{pensjonsbrev_v3}[2022/01/31 Team pensjonsbrev's Document Class]
-
+\NeedsTeXFormat{LaTeX2e}
 \LoadClass[a4paper]{article}
 
 %----------------------------------------
