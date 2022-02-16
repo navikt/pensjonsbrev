@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.template
 
 import no.nav.pensjon.brev.api.model.LetterMetadata
 import no.nav.pensjon.brev.template.base.BaseTemplate
+import javax.lang.model.util.Elements
 import kotlin.reflect.KClass
 
 data class LetterTemplate<Lang : LanguageSupport, LetterData : Any>(
@@ -68,7 +69,11 @@ sealed class Element<out Lang : LanguageSupport> {
         data class Static<out Lang : LanguageSupport>(val items: List<Element<Lang>>) : ItemList<Lang>()
     }
 
-    data class Table<Lang : LanguageSupport>(val rows: List<Row<Lang>>) : Element<Lang>() {
+    data class Table<Lang : LanguageSupport>(
+        val title: List<Element<Lang>>?,
+        val rows: List<Row<Lang>>,
+        val columnHeaders: List<Row<Lang>>,
+    ) : Element<Lang>() {
         val width: Int
         init {
             val cellWidths = rows.map { it.cells.sumOf { cell -> cell.cellColumns } }.distinct()
@@ -83,17 +88,12 @@ sealed class Element<out Lang : LanguageSupport> {
             }
         }
 
-        data class Row<Lang : LanguageSupport>(val cells: List<Cell<Lang>>, val colour: RowColour)
+        data class Row<Lang : LanguageSupport>(val cells: List<Cell<Lang>>)
 
         data class Cell<Lang : LanguageSupport>(
             val elements: List<Element<Lang>>,
             val cellColumns: Int
         )
-
-        enum class RowColour {
-            GRAY,
-            WHITE
-        }
     }
 
 

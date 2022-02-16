@@ -4,6 +4,7 @@ import no.nav.pensjon.brev.api.model.Telefonnummer
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.expression.Predicate
 import java.time.LocalDate
+import java.time.format.FormatStyle
 
 abstract class Operation {
     // Since most operations don't have fields, and hence can't be data classes,
@@ -65,9 +66,14 @@ sealed class BinaryOperation<in In1, in In2, out Out> : Operation() {
         override fun apply(first: String, second: String): String = first + second
     }
 
+    object LocalizedShortDateFormat : BinaryOperation<LocalDate, Language, String>() {
+        override fun apply(first: LocalDate, second: Language): String =
+            first.format(dateFormatter(second, FormatStyle.SHORT))
+    }
+
     object LocalizedDateFormat : BinaryOperation<LocalDate, Language, String>() {
         override fun apply(first: LocalDate, second: Language): String =
-            first.format(dateFormatter(second))
+            first.format(dateFormatter(second, FormatStyle.LONG))
     }
 
     object LocalizedDoubleFormat : BinaryOperation<Double, Language, String>() {
