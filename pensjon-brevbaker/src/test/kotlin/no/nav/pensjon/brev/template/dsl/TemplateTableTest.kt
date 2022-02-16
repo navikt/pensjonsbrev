@@ -25,7 +25,7 @@ class TemplateTableTest {
                     }
                     columnHeaderRow{
                         cell {
-                            Language.Bokmal to "header"
+                            text(Language.Bokmal to "header")
                         }
                     }
                     row {
@@ -51,7 +51,7 @@ class TemplateTableTest {
                         Element.Table.Row(
                             listOf(
                                 Element.Table.Cell(
-                                    listOf(newText(Language.Bokmal to "tittel")), 1
+                                    listOf(newText(Language.Bokmal to "header")), 1
                                 )
                             )
                         )
