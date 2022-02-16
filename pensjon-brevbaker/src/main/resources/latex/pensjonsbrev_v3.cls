@@ -59,10 +59,10 @@
 \setlength{\parskip}{1em} % space between paragraphs
 
 %itemize / lists spacing
-%\setlist{nolistsep}
+\setlist{nolistsep}
 
 % paragraph formatting
-%\widowpenalties 1 1000 %penalty score for breaking a paragraph
+\widowpenalties 1 1000 %penalty score for breaking a paragraph
 \sloppy % no word-breaking
 \raggedright % no word spacing
 \raggedbottom % no line stretching to fit page

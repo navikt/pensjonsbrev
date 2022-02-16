@@ -506,7 +506,6 @@ object PensjonLatex : BaseTemplate() {
                     printCmd("end") {
                         arg { print("longtblr") }
                     }
-
                 }
         }
 
