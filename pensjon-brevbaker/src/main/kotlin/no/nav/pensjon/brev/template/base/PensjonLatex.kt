@@ -455,9 +455,7 @@ object PensjonLatex : BaseTemplate() {
                 printWriter.printCmd("newline")
             is Element.Table ->
                 with(printWriter) {
-                    val rows = element.rows.filter {
-                        it.condition?.eval(scope) ?: true
-                    }
+                    val rows = element.rows.filter { it.condition == null || it.condition.eval(scope) }
                     if (rows.isEmpty()) return
 
                     val columnHeaders = element.columnHeaders.filter {
