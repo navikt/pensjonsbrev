@@ -139,8 +139,8 @@ class TemplateContainerScope<Lang : LanguageSupport, LetterData : Any> :
         children.add(Element.ItemList.Dynamic(items))
     }
 
-    fun table(init: TemplateTableScope<Lang, LetterData>.() -> Unit) {
-        TemplateTableScope<Lang, LetterData>().apply(init)
+    fun table(init: TableRootScope<Lang, LetterData>.() -> Unit) {
+        TableRootScope<Lang, LetterData>().apply(init)
             .let { children.add(Element.Table(title = it.title, rows = it.children, columnHeaders = it.columnHeaders)) }
 
     }
