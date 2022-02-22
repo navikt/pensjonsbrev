@@ -458,9 +458,8 @@ object PensjonLatex : BaseTemplate() {
                     val rows = element.rows.filter { it.condition == null || it.condition.eval(scope) }
                     if (rows.isEmpty()) return
 
-                    val columnHeaders = element.columnHeaders.filter {
-                        it.condition?.eval(scope) ?: true
-                    }
+                    val columnHeaders =
+                        element.columnHeaders.filter { it.condition == null || it.condition.eval(scope) }
 
                     val tableWidth = element.width
                     printCmd("begin") {
