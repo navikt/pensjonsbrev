@@ -58,6 +58,47 @@ class PensjonLatexTest {
             .assertRenderedLetterContainsAllOf("THIS TEXT SHOULD RENDER")
     }
 
+    @Test
+    fun `all table elements is rendered to LaTeX`() {
+        val doc = createTemplate(
+            name = "TEST",
+            base = PensjonLatex,
+            letterDataType = Unit::class,
+            title = newText(Language.Bokmal to "This text should render 0"),
+            letterMetadata = testLetterMetadata,
+        ) {
+            outline {
+                table {
+                    title { text(Language.Bokmal to "This text should render 1") }
+                    columnHeaderRow {
+                        cell {
+                            text(
+                                Language.Bokmal to "This text should render 2",
+                            )
+                        }
+                    }
+                    showIf(true.expr()) {
+                        row {
+                            cell {
+                                text(
+                                    Language.Bokmal to "This text should render 3",
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        Letter(doc, Unit, Language.Bokmal, Fixtures.felles)
+            .assertRenderedLetterContainsAllOf(
+                "This text should render 0",
+                "This text should render 1",
+                "This text should render 2",
+                "This text should render 3",
+            )
+    }
+
     fun <Param : Any> Letter<Param>.assertRenderedLetterDoesNotContainAnyOf(vararg searchText: String): Letter<Param> {
         val letterString = this.render().base64EncodedFiles()["letter.tex"]
         searchText.forEach {
