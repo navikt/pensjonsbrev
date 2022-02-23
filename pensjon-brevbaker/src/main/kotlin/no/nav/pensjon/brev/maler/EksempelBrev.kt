@@ -56,7 +56,7 @@ object EksempelBrev : StaticTemplate {
             text(Bokmal to "test")
             paragraph {
                 table {
-                    title{
+                    title {
                         text(Bokmal to "Eksempeltabell")
                     }
                     columnHeaderRow {

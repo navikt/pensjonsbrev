@@ -455,9 +455,13 @@ object PensjonLatex : BaseTemplate() {
                 printWriter.printCmd("newline")
             is Element.Table ->
                 with(printWriter) {
+                    val rows = element.rows.filter { it.condition == null || it.condition.eval(scope) }
+                    if (rows.isEmpty()) return
+
+                    val columnHeaders =
+                        element.columnHeaders.filter { it.condition == null || it.condition.eval(scope) }
 
                     val tableWidth = element.width
-                    val colHeaders = element.columnHeaders
                     printCmd("begin") {
                         arg { print("longtblr") }
 
@@ -470,21 +474,21 @@ object PensjonLatex : BaseTemplate() {
                         arg {
                             print(
                                 "colspec={${columnFormat(tableWidth)}}," +
-                                        (if (colHeaders.isNotEmpty()) "rowhead=${colHeaders.size}," else "") +
+                                        (if (columnHeaders.isNotEmpty()) "rowhead=${columnHeaders.size}," else "") +
                                         "width=\\textwidth," +
                                         "hspan=minimal," + //wrap instead of widening table over limit
                                         "hlines={1pt,linecolor}," +
                                         "vlines={1pt,linecolor}," +
                                         "row{odd}={row1color}," +
                                         "row{even}={row2color}," +
-                                        (if (colHeaders.isNotEmpty()) "row{1-${colHeaders.size}}={columnheadercolor}," else ""),
+                                        (if (columnHeaders.isNotEmpty()) "row{1-${columnHeaders.size}}={columnheadercolor}," else ""),
                                 escape = false
                             )
                         }
                     }
 
-                    colHeaders
-                        .plus(element.rows)
+                    columnHeaders
+                        .plus(rows)
                         .forEach { row ->
                             row.cells.forEachIndexed { index, cell ->
                                 if (cell.cellColumns > 1) {

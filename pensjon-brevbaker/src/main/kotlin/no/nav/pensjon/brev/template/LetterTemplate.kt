@@ -2,7 +2,6 @@ package no.nav.pensjon.brev.template
 
 import no.nav.pensjon.brev.api.model.LetterMetadata
 import no.nav.pensjon.brev.template.base.BaseTemplate
-import javax.lang.model.util.Elements
 import kotlin.reflect.KClass
 
 data class LetterTemplate<Lang : LanguageSupport, LetterData : Any>(
@@ -43,7 +42,7 @@ sealed class Expression<out Out> {
         val operation: UnaryOperation<In, Out>,
     ) : Expression<Out>() {
         override fun eval(scope: ExpressionScope<*, *>): Out = operation.apply(value.eval(scope))
-        override fun toString(): String ="$operation($value)"
+        override fun toString(): String = "$operation($value)"
     }
 
     data class BinaryInvoke<In1, In2, out Out>(
@@ -75,6 +74,7 @@ sealed class Element<out Lang : LanguageSupport> {
         val columnHeaders: List<Row<Lang>>,
     ) : Element<Lang>() {
         val width: Int
+
         init {
             val cellWidths = rows.map { it.cells.sumOf { cell -> cell.cellColumns } }.distinct()
             if (cellWidths.size > 1) {
@@ -86,9 +86,12 @@ sealed class Element<out Lang : LanguageSupport> {
             if (width == 0) {
                 throw IllegalArgumentException("the row(s) are empty")
             }
+            if (title?.isEmpty() ?: throw IllegalArgumentException("Missing table title")) {
+                throw IllegalArgumentException("Table title is empty")
+            }
         }
 
-        data class Row<Lang : LanguageSupport>(val cells: List<Cell<Lang>>)
+        data class Row<Lang : LanguageSupport>(val cells: List<Cell<Lang>>, val condition: Expression<Boolean>? = null)
 
         data class Cell<Lang : LanguageSupport>(
             val elements: List<Element<Lang>>,
