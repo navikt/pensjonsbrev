@@ -4,8 +4,6 @@ import no.nav.pensjon.brev.api.model.*
 import no.nav.pensjon.brev.latex.LatexPrintWriter
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.*
-import no.nav.pensjon.brev.template.Element.Table.RowColour.GRAY
-import no.nav.pensjon.brev.template.Element.Table.RowColour.WHITE
 import no.nav.pensjon.brev.template.Element.Text.FontType.*
 import no.nav.pensjon.brev.template.dsl.expression.select
 import no.nav.pensjon.brev.template.dsl.languageSettings
@@ -24,6 +22,7 @@ object PensjonLatex : BaseTemplate() {
         "attachment.tex" to getResource("latex/attachment.tex"),
         "closing.tex" to getResource("latex/closing.tex"),
         "content.tex" to getResource("latex/content.tex"),
+        "tabularray.sty" to getResource("latex/tabularray.sty"),
     )
 
     private fun getResource(fileName: String): ByteArray =
@@ -161,6 +160,20 @@ object PensjonLatex : BaseTemplate() {
                 Language.Bokmal to "Vedlegg:",
                 Language.Nynorsk to "Vedlegg:",
                 Language.English to "Attachments:",
+            )
+        }
+        setting("tablenextpagecontinuation") {
+            text(
+                Language.Bokmal to "Fortsettelse på neste side",
+                Language.Nynorsk to "Fortsettelse på neste side",
+                Language.English to "Continued on the next page",
+            )
+        }
+        setting("tablecontinuedfrompreviouspage") {
+            text(
+                Language.Bokmal to "(Fortsettelse)",
+                Language.Nynorsk to "(Fortsettelse)",
+                Language.English to "(Continuation)",
             )
         }
     }
@@ -442,44 +455,61 @@ object PensjonLatex : BaseTemplate() {
                 printWriter.printCmd("newline")
             is Element.Table ->
                 with(printWriter) {
+                    val rows = element.rows.filter { it.condition == null || it.condition.eval(scope) }
+                    if (rows.isEmpty()) return
+
+                    val columnHeaders =
+                        element.columnHeaders.filter { it.condition == null || it.condition.eval(scope) }
 
                     val tableWidth = element.width
-                    print("\\FloatBarrier", escape = false)
                     printCmd("begin") {
                         arg { print("longtblr") }
+
+                        element.title?.let {
+                            print("[caption={", escape = false)
+                            it.forEach { titleElem -> renderElement(scope, titleElem, printWriter) }
+                            print("}]", escape = false)
+                        }
+
                         arg {
                             print(
-                                "colspec={${columnFormat(tableWidth)}},"
-                                        + "width=\\textwidth", escape = false
+                                "colspec={${columnFormat(tableWidth)}}," +
+                                        (if (columnHeaders.isNotEmpty()) "rowhead=${columnHeaders.size}," else "") +
+                                        "width=\\textwidth," +
+                                        "hspan=minimal," + //wrap instead of widening table over limit
+                                        "hlines={1pt,linecolor}," +
+                                        "vlines={1pt,linecolor}," +
+                                        "row{odd}={row1color}," +
+                                        "row{even}={row2color}," +
+                                        (if (columnHeaders.isNotEmpty()) "row{1-${columnHeaders.size}}={columnheadercolor}," else ""),
+                                escape = false
                             )
                         }
                     }
-                    printCmd("hline")
-                    element.rows.forEach { row ->
-                        when (row.colour) {
-                            GRAY -> print("\\SetRow{gray9}", escape = false)
-                            WHITE -> {}
-                        }
 
-                        row.cells.forEachIndexed { index, cell ->
-                            print("\\SetCell[c=${cell.cellColumns}]{l}", escape = false)
-                            cell.elements.forEach { cellElement ->
-                                renderElement(scope, cellElement, printWriter)
+                    columnHeaders
+                        .plus(rows)
+                        .forEach { row ->
+                            row.cells.forEachIndexed { index, cell ->
+                                if (cell.cellColumns > 1) {
+                                    print("\\SetCell[c=${cell.cellColumns}]{}", escape = false)
+                                }
+                                cell.elements.forEach { cellElement ->
+                                    renderElement(scope, cellElement, printWriter)
+                                }
+                                if (cell.cellColumns > 1) {
+                                    print(" ${"& ".repeat(cell.cellColumns - 1)}", escape = false)
+                                }
+                                if (index < row.cells.lastIndex) {
+                                    print("&", escape = false)
+                                }
                             }
-
-                            if (index < row.cells.lastIndex) {
-                                // Because all columns must have a value even if it is overridden by
-                                // setting the columns > 1, the & needs to repeat.
-                                print(" ${"&".repeat(cell.cellColumns)} ", escape = false)
-                            }
+                            print("""\\""", escape = false)
                         }
-                        print(""" \\\hline""", escape = false)
-                    }
 
                     printCmd("end") {
                         arg { print("longtblr") }
                     }
-                    print("\\FloatBarrier", escape = false)
                 }
         }
 

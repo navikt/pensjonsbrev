@@ -2,16 +2,13 @@ package no.nav.pensjon.brev.maler
 
 import no.nav.pensjon.brev.api.model.LetterMetadata
 import no.nav.pensjon.brev.api.model.maler.EksempelBrevDto
-import no.nav.pensjon.brev.template.*
-import no.nav.pensjon.brev.template.Element.Table.RowColour.GRAY
-import no.nav.pensjon.brev.template.Element.Text.FontType.BOLD
-import no.nav.pensjon.brev.template.Element.Text.FontType.ITALIC
+import no.nav.pensjon.brev.template.Element.Text.FontType
 import no.nav.pensjon.brev.template.Language.Bokmal
+import no.nav.pensjon.brev.template.StaticTemplate
 import no.nav.pensjon.brev.template.base.PensjonLatex
 import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.select
 import no.nav.pensjon.brev.template.dsl.expression.str
-import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.dsl.text
 
@@ -59,39 +56,47 @@ object EksempelBrev : StaticTemplate {
             text(Bokmal to "test")
             paragraph {
                 table {
-                    row(GRAY) {
+                    title {
+                        text(Bokmal to "Eksempeltabell")
+                    }
+                    columnHeaderRow {
                         cell(4) {
-                            text(Bokmal to "Dette er en 4 kolonner brei celle", ITALIC)
+                            text(
+                                Bokmal to "Dette er en lang lang tittel. Dette er en lang lang tittel. Dette er en lang lang tittel. Dette er en lang lang tittel.",
+                                FontType.BOLD
+                            )
                         }
                     }
-                    row {
+                    columnHeaderRow {
+                        cell(2) {
+                            text(Bokmal to "Blabla 2 kolonner brei")
+                        }
+                        cell(2) {
+                            text(Bokmal to "Blabla 2 kolonner brei")
+                        }
+                    }
+                    columnHeaderRow {
+                        cell(1) {
+                            text(Bokmal to "Blabla 1 kolonne brei")
+                        }
                         cell(3) {
-                            text(Bokmal to "Dette er en 3 kolonner brei celle", BOLD)
-                        }
-                        cell {
-                            text(Bokmal to "Dette er en 1 kolonne brei celle")
+                            text(Bokmal to "Blabla 3 kolonner breiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii")
                         }
                     }
-                    row {
-                        cell(3) {
-                            text(Bokmal to "Dette er en 3 kolonner brei celle")
-                        }
-                        cell {
-                            text(Bokmal to "Dette er en 1 kolonne brei celle")
-                        }
-                    }
-                    row {
-                        cell {
-                            text(Bokmal to "Dette er en 1 kolonner brei celle")
-                        }
-                        cell {
-                            text(Bokmal to "Dette er en 1 kolonne brei celle")
-                        }
-                        cell {
-                            text(Bokmal to "Dette er en 1 kolonne brei celle")
-                        }
-                        cell {
-                            text(Bokmal to "Dette er en 1 kolonne brei celle")
+                    for (i in 1..50) {
+                        row {
+                            cell {
+                                text(Bokmal to "$i Kr")
+                            }
+                            cell {
+                                text(Bokmal to "$i Kr")
+                            }
+                            cell {
+                                text(Bokmal to "$i Kr")
+                            }
+                            cell {
+                                text(Bokmal to "$i Kr")
+                            }
                         }
                     }
                 }
