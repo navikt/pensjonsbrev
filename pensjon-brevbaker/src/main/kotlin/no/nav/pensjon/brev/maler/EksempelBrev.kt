@@ -7,10 +7,13 @@ import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.StaticTemplate
 import no.nav.pensjon.brev.template.base.PensjonLatex
 import no.nav.pensjon.brev.template.dsl.createTemplate
+import no.nav.pensjon.brev.template.dsl.expression.expr
+import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.expression.select
 import no.nav.pensjon.brev.template.dsl.expression.str
 import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.dsl.textExpr
 
 object EksempelBrev : StaticTemplate {
     override val template = createTemplate(
@@ -49,6 +52,31 @@ object EksempelBrev : StaticTemplate {
             // Avsnitt
             paragraph {
                 text(Bokmal to "Test dette er en test")
+                list {
+                    item {
+                        text(Bokmal to "Hello world!")
+                    }
+                }
+                list {
+                    showIf(true.expr()) {
+                        item {
+                            text(Bokmal to "Test1")
+                        }
+                    }
+                    showIf(false.expr()) {
+                        item {
+                            text(Bokmal to "Test2")
+                        }
+                    }
+                    showIf(true.expr()) {
+                        item {
+                            text(Bokmal to "Test3")
+                        }
+                    }
+                    item{
+                        textExpr(Bokmal to "Hello".expr() + "world".expr())
+                    }
+                }
             }
 
             // Inkluder data fra datagrunnlaget til malen inn i brevet som tekst

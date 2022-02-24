@@ -131,12 +131,8 @@ class TemplateContainerScope<Lang : LanguageSupport, LetterData : Any> :
         children.add(Element.IncludePhrase(Unit.expr(), phrase))
     }
 
-    fun list(init: TemplateContainerScope<Lang, LetterData>.() -> Unit) {
-        children.add(Element.ItemList.Static(TemplateContainerScope<Lang, LetterData>().apply(init).children))
-    }
-
-    fun list(items: Expression<List<String>>) {
-        children.add(Element.ItemList.Dynamic(items))
+    fun list(init: ListRootScope<Lang, LetterData>.() -> Unit) {
+        children.add(Element.ItemList(ListRootScope<Lang, LetterData>().apply(init).children))
     }
 
     fun table(init: TableRootScope<Lang, LetterData>.() -> Unit) {
