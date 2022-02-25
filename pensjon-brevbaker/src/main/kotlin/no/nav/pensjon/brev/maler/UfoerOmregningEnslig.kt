@@ -38,6 +38,7 @@ object UfoerOmregningEnslig : StaticTemplate {
         val bor_i_avtaleland = argument().select(UfoerOmregningEnsligDto::bor_i_avtaleland)
         val bor_i_norge = argument().select(UfoerOmregningEnsligDto::bor_i_norge)
         val ektefelletillegg_opphoert = argument().select(UfoerOmregningEnsligDto::ektefelletillegg_opphoert)
+        val eps_bor_sammen_med_bruker_gjeldende = argument().select(UfoerOmregningEnsligDto::eps_bor_sammen_med_bruker_gjeldende)
         val gjeldende_barnetillegg_saerkullsbarn_er_redusert_mot_inntekt =
                 argument().select(UfoerOmregningEnsligDto::gjeldende_barnetillegg_saerkullsbarn_er_redusert_mot_inntekt)
         val gjeldende_ufoeretrygd_per_maaned_er_inntektsavkortet =
@@ -46,8 +47,8 @@ object UfoerOmregningEnslig : StaticTemplate {
                 argument().select(UfoerOmregningEnsligDto::har_barn_overfoert_til_saerkullsbarn)
         val har_barn_som_tidligere_var_saerkullsbarn =
                 argument().select(UfoerOmregningEnsligDto::har_barn_som_tidligere_var_saerkullsbarn)
-        val har_barnetillegg_for_saerkullsbarn =
-                argument().select(UfoerOmregningEnsligDto::har_barnetillegg_for_saerkullsbarn)
+        val har_barnetillegg_for_saerkullsbarn_vedvirk =
+                argument().select(UfoerOmregningEnsligDto::har_barnetillegg_for_saerkullsbarn_vedvirk)
         val har_barnetillegg_saerkullsbarn_justeringsbeloep_ar_vedvirk =
                 argument().select(UfoerOmregningEnsligDto::har_barnetillegg_saerkullsbarn_justeringsbeloep_ar_vedvirk)
         val har_barnetillegg_saerkullsbarn_nettobeloep_vedvirk =
@@ -76,7 +77,7 @@ object UfoerOmregningEnslig : StaticTemplate {
                     (har_minsteytelse_vedvirk
                             or inntekt_ufoere_endret
                             or ektefelletillegg_opphoert)
-                            and not(har_barnetillegg_for_saerkullsbarn)
+                            and not(har_barnetillegg_for_saerkullsbarn_vedvirk)
             ) {
                 includePhrase(
                         argument().map { OmregnUTDodEPSInnledn1_001Dto(it.avdod_navn, it.krav_virkedato_fom) },
@@ -88,7 +89,7 @@ object UfoerOmregningEnslig : StaticTemplate {
                     not(har_minsteytelse_vedvirk)
                             and not(inntekt_ufoere_endret)
                             and not(ektefelletillegg_opphoert)
-                            and not(har_barnetillegg_for_saerkullsbarn)
+                            and not(har_barnetillegg_for_saerkullsbarn_vedvirk)
             ) {
                 includePhrase(
                         argument().map { OmregnUTDodEPSInnledn2_001Dto(it.avdod_navn) },
@@ -100,7 +101,7 @@ object UfoerOmregningEnslig : StaticTemplate {
                     (har_minsteytelse_vedvirk
                             or inntekt_ufoere_endret
                             or ektefelletillegg_opphoert)
-                            and har_barnetillegg_for_saerkullsbarn
+                            and har_barnetillegg_for_saerkullsbarn_vedvirk
             ) {
                 includePhrase(
                         argument().map { OmregnUTBTDodEPSInnledn_001Dto(it.avdod_navn, it.krav_virkedato_fom) },
@@ -112,7 +113,7 @@ object UfoerOmregningEnslig : StaticTemplate {
                     not(har_minsteytelse_vedvirk)
                             and not(inntekt_ufoere_endret)
                             and not(ektefelletillegg_opphoert)
-                            and har_barnetillegg_for_saerkullsbarn
+                            and har_barnetillegg_for_saerkullsbarn_vedvirk
                             and not(har_barn_overfoert_til_saerkullsbarn)
             ) {
                 includePhrase(
@@ -135,7 +136,7 @@ object UfoerOmregningEnslig : StaticTemplate {
 
             showIf(
                     har_ufoeremaaned_vedvirk
-                            and not(har_barnetillegg_for_saerkullsbarn)
+                            and not(har_barnetillegg_for_saerkullsbarn_vedvirk)
                             and not(har_flere_ufoeretrygd_perioder)
             ) {
                 includePhrase(argument().map { BelopUT_001Dto(it.total_ufoeremaaneder) }, BelopUT_001)
@@ -143,7 +144,7 @@ object UfoerOmregningEnslig : StaticTemplate {
 
             showIf(
                     har_ufoeremaaned_vedvirk
-                            and not(har_barnetillegg_for_saerkullsbarn)
+                            and not(har_barnetillegg_for_saerkullsbarn_vedvirk)
                             and har_flere_ufoeretrygd_perioder
             ) {
                 includePhrase(argument().map { BelopUTVedlegg_001Dto(it.total_ufoeremaaneder) }, BelopUTVedlegg_001)
@@ -151,7 +152,7 @@ object UfoerOmregningEnslig : StaticTemplate {
 
             showIf(
                     har_ufoeremaaned_vedvirk
-                            and har_barnetillegg_for_saerkullsbarn
+                            and har_barnetillegg_for_saerkullsbarn_vedvirk
                             and not(har_flere_ufoeretrygd_perioder)
             ) {
                 includePhrase(argument().map { BelopUTBT_001Dto(it.total_ufoeremaaneder) }, BelopUTBT_001)
@@ -159,7 +160,7 @@ object UfoerOmregningEnslig : StaticTemplate {
 
             showIf(
                     har_ufoeremaaned_vedvirk
-                            and har_barnetillegg_for_saerkullsbarn
+                            and har_barnetillegg_for_saerkullsbarn_vedvirk
                             and har_flere_ufoeretrygd_perioder
             ) {
                 includePhrase(
@@ -170,7 +171,7 @@ object UfoerOmregningEnslig : StaticTemplate {
 
             showIf(
                     not(har_ufoeremaaned_vedvirk)
-                            and not(har_barnetillegg_for_saerkullsbarn)
+                            and not(har_barnetillegg_for_saerkullsbarn_vedvirk)
                             and not(har_flere_ufoeretrygd_perioder)
                             and institusjon_vedvirk.isOneOf(Institusjon.FENGSEL)
             ) {
@@ -179,7 +180,7 @@ object UfoerOmregningEnslig : StaticTemplate {
 
             showIf(
                     not(har_ufoeremaaned_vedvirk)
-                            and not(har_barnetillegg_for_saerkullsbarn)
+                            and not(har_barnetillegg_for_saerkullsbarn_vedvirk)
                             and har_flere_ufoeretrygd_perioder
                             and not(institusjon_vedvirk.isOneOf(Institusjon.FENGSEL))
             ) {
@@ -204,7 +205,7 @@ object UfoerOmregningEnslig : StaticTemplate {
 
             showIf(
                     not(har_ufoeremaaned_vedvirk)
-                            and not(har_barnetillegg_for_saerkullsbarn)
+                            and not(har_barnetillegg_for_saerkullsbarn_vedvirk)
                             and not(har_flere_ufoeretrygd_perioder)
                             and institusjon_vedvirk.isOneOf(Institusjon.FENGSEL)
             ) {
@@ -213,7 +214,7 @@ object UfoerOmregningEnslig : StaticTemplate {
 
             showIf(
                     not(har_ufoeremaaned_vedvirk)
-                            and not(har_barnetillegg_for_saerkullsbarn)
+                            and not(har_barnetillegg_for_saerkullsbarn_vedvirk)
                             and har_flere_ufoeretrygd_perioder
                             and institusjon_vedvirk.isOneOf(Institusjon.FENGSEL)
             ) {
@@ -328,7 +329,7 @@ object UfoerOmregningEnslig : StaticTemplate {
 
 
             showIf(
-                    har_barnetillegg_for_saerkullsbarn
+                    har_barnetillegg_for_saerkullsbarn_vedvirk
                             and (
                             har_minsteytelse_vedvirk
                                     or inntekt_ufoere_endret
@@ -555,15 +556,15 @@ object UfoerOmregningEnslig : StaticTemplate {
         includeAttachment(orienteringOmRettigheterOgPlikter, argument().map {
             OrienteringOmRettigheterParamDto(
                     sivilstand = it.sivilstand,
-                    bor_i_norge = true,
+                    bor_i_norge = it.bor_i_norge,
                     institusjon_gjeldende = it.institusjon_gjeldende,
-                    epsBorSammenMedBruker_epsGjeldende = true,
-                    epsPaaInstitusjon_epsGjeldende = true,
+                    eps_bor_sammen_med_bruker_gjeldende = it.eps_bor_sammen_med_bruker_gjeldende,
                     eps_institusjon_gjeldende = it.eps_institusjon_gjeldende,
-                    har_barnetillegg_felles_barn_vedvirk = true,
-                    har_barnetillegg_for_saerkullsbarn_vedvirk = true,
-                    har_ektefelletillegg_vedvirk = true,
+                    har_barnetillegg_felles_barn_vedvirk = it.har_barnetillegg_felles_barn_vedvirk,
+                    har_barnetillegg_for_saerkullsbarn_vedvirk = it.har_barnetillegg_for_saerkullsbarn_vedvirk,
+                    har_ektefelletillegg_vedvirk = it.har_ektefelletillegg_vedvirk,
                     saktype = it.saktype,
+
             )
         }
         )

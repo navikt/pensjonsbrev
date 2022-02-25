@@ -15,8 +15,7 @@ data class OrienteringOmRettigheterParamDto(
         val sivilstand: Sivilstand,
         val bor_i_norge: Boolean,
         val institusjon_gjeldende: Institusjon,
-        val epsBorSammenMedBruker_epsGjeldende: Boolean,
-        val epsPaaInstitusjon_epsGjeldende: Boolean,
+        val eps_bor_sammen_med_bruker_gjeldende: Boolean,
         val eps_institusjon_gjeldende: Institusjon,
         val har_barnetillegg_felles_barn_vedvirk: Boolean,
         val har_barnetillegg_for_saerkullsbarn_vedvirk: Boolean,
@@ -37,8 +36,7 @@ val orienteringOmRettigheterOgPlikter = createAttachment<LangBokmalNynorskEnglis
     val bor_i_norge = argument().select(OrienteringOmRettigheterParamDto::bor_i_norge)
     val institusjon_gjeldende = argument().select(OrienteringOmRettigheterParamDto::institusjon_gjeldende)
     val sivilstand = argument().select(OrienteringOmRettigheterParamDto::sivilstand)
-    val epsBorSammenMedBruker_epsGjeldende = argument().select(OrienteringOmRettigheterParamDto::epsBorSammenMedBruker_epsGjeldende)
-    val epsPaaInstitusjon_epsGjeldende = argument().select(OrienteringOmRettigheterParamDto::epsPaaInstitusjon_epsGjeldende)
+    val eps_bor_sammen_med_bruker_eps_gjeldende = argument().select(OrienteringOmRettigheterParamDto::eps_bor_sammen_med_bruker_gjeldende)
     val eps_institusjon_gjeldende = argument().select(OrienteringOmRettigheterParamDto::eps_institusjon_gjeldende)
     val har_barnetillegg_felles_barn_vedvirk = argument().select(OrienteringOmRettigheterParamDto::har_barnetillegg_felles_barn_vedvirk)
     val har_barnetillegg_for_saerkullsbarn_vedvirk = argument().select(OrienteringOmRettigheterParamDto::har_barnetillegg_for_saerkullsbarn_vedvirk)
@@ -77,85 +75,85 @@ val orienteringOmRettigheterOgPlikter = createAttachment<LangBokmalNynorskEnglis
         }
         showIf(
                 sivilstand.isOneOf(GIFT)
-                        and epsBorSammenMedBruker_epsGjeldende
-                        and not(epsPaaInstitusjon_epsGjeldende)
+                        and eps_bor_sammen_med_bruker_eps_gjeldende
+                        and not(eps_institusjon_gjeldende.isOneOf(Institusjon.INGEN))
                         and saktype.isOneOf(Sakstype.ALDER)
         ) {
             includePhrase(vedleggPlikterAP4_002)
         }
         showIf(
                 sivilstand.isOneOf(PARTNER)
-                        and epsBorSammenMedBruker_epsGjeldende
-                        and not(epsPaaInstitusjon_epsGjeldende)
+                        and eps_bor_sammen_med_bruker_eps_gjeldende
+                        and not(eps_institusjon_gjeldende.isOneOf(Institusjon.INGEN))
                         and saktype.isOneOf(Sakstype.ALDER)
         ) {
             includePhrase(vedleggPlikterAP13_002)
         }
         showIf(
                 sivilstand.isOneOf(SAMBOER1_5, SAMBOER3_2)
-                        and epsBorSammenMedBruker_epsGjeldende
-                        and not(epsPaaInstitusjon_epsGjeldende)
+                        and eps_bor_sammen_med_bruker_eps_gjeldende
+                        and not(eps_institusjon_gjeldende.isOneOf(Institusjon.INGEN))
                         and saktype.isOneOf(Sakstype.ALDER)
         ) {
             includePhrase(vedleggPlikterAP15_002)
         }
         showIf(
                 sivilstand.isOneOf(GIFT)
-                        and epsBorSammenMedBruker_epsGjeldende
+                        and eps_bor_sammen_med_bruker_eps_gjeldende
                         and not(institusjon_gjeldende.isOneOf(FENGSEL, HELSE, SYKEHJEM))
-                        and not(epsPaaInstitusjon_epsGjeldende)
+                        and not(eps_institusjon_gjeldende.isOneOf(Institusjon.INGEN))
                         and saktype.isOneOf(Sakstype.ALDER)
         ) {
             includePhrase(vedleggPlikterAP6_002)
         }
         showIf(
                 sivilstand.isOneOf(PARTNER)
-                        and epsBorSammenMedBruker_epsGjeldende
+                        and eps_bor_sammen_med_bruker_eps_gjeldende
                         and not(institusjon_gjeldende.isOneOf(FENGSEL, HELSE, SYKEHJEM))
-                        and not(epsPaaInstitusjon_epsGjeldende)
+                        and not(eps_institusjon_gjeldende.isOneOf(Institusjon.INGEN))
                         and saktype.isOneOf(Sakstype.ALDER)
         ) {
             includePhrase(vedleggPlikterAP14_002)
         }
         showIf(
                 sivilstand.isOneOf(SAMBOER1_5, SAMBOER3_2)
-                        and epsBorSammenMedBruker_epsGjeldende
+                        and eps_bor_sammen_med_bruker_eps_gjeldende
                         and not(institusjon_gjeldende.isOneOf(FENGSEL, HELSE, SYKEHJEM))
-                        and not(epsPaaInstitusjon_epsGjeldende)
+                        and not(eps_institusjon_gjeldende.isOneOf(Institusjon.INGEN))
                         and saktype.isOneOf(Sakstype.ALDER)
         ) {
             includePhrase(vedleggPlikterAP18_001)
         }
         showIf(
                 sivilstand.isOneOf(SAMBOER1_5, SAMBOER3_2)
-                        and epsBorSammenMedBruker_epsGjeldende
+                        and eps_bor_sammen_med_bruker_eps_gjeldende
                         and not(institusjon_gjeldende.isOneOf(FENGSEL, HELSE, SYKEHJEM))
-                        and not(epsPaaInstitusjon_epsGjeldende)
+                        and not(eps_institusjon_gjeldende.isOneOf(Institusjon.INGEN))
                         and saktype.isOneOf(Sakstype.ALDER)
         ) {
             includePhrase(vedleggPlikterAP16_001)
         }
         showIf(
                 sivilstand.isOneOf(SAMBOER1_5, SAMBOER3_2)
-                        and epsBorSammenMedBruker_epsGjeldende
+                        and eps_bor_sammen_med_bruker_eps_gjeldende
                         and not(institusjon_gjeldende.isOneOf(FENGSEL, HELSE, SYKEHJEM))
-                        and not(epsPaaInstitusjon_epsGjeldende)
+                        and not(eps_institusjon_gjeldende.isOneOf(Institusjon.INGEN))
                         and saktype.isOneOf(Sakstype.ALDER)
         ) {
             includePhrase(vedleggPlikterAP17_001)
         }
         showIf(
                 sivilstand.isOneOf(SAMBOER1_5, SAMBOER3_2)
-                        and epsBorSammenMedBruker_epsGjeldende
+                        and eps_bor_sammen_med_bruker_eps_gjeldende
                         and not(institusjon_gjeldende.isOneOf(FENGSEL, HELSE, SYKEHJEM))
-                        and not(epsPaaInstitusjon_epsGjeldende)
+                        and not(eps_institusjon_gjeldende.isOneOf(Institusjon.INGEN))
                         and saktype.isOneOf(Sakstype.ALDER)
         ) {
             includePhrase(vedleggPlikterAP19_001)
         }
         showIf(
                 sivilstand.isOneOf(GIFT_LEVER_ADSKILT, GIFT)
-                        and not(epsBorSammenMedBruker_epsGjeldende)
+                        and not(eps_bor_sammen_med_bruker_eps_gjeldende)
                         and not(institusjon_gjeldende.isOneOf(SYKEHJEM))
                         and not(eps_institusjon_gjeldende.isOneOf(SYKEHJEM))
                         and saktype.isOneOf(Sakstype.ALDER)
@@ -164,7 +162,7 @@ val orienteringOmRettigheterOgPlikter = createAttachment<LangBokmalNynorskEnglis
         }
         showIf(
                 sivilstand.isOneOf(PARTNER, PARTNER_LEVER_ADSKILT)
-                        and not(epsBorSammenMedBruker_epsGjeldende)
+                        and not(eps_bor_sammen_med_bruker_eps_gjeldende)
                         and not(institusjon_gjeldende.isOneOf(SYKEHJEM))
                         and not(eps_institusjon_gjeldende.isOneOf(SYKEHJEM))
                         and saktype.isOneOf(Sakstype.ALDER)
@@ -191,18 +189,18 @@ val orienteringOmRettigheterOgPlikter = createAttachment<LangBokmalNynorskEnglis
         }
         showIf(
                 sivilstand.isOneOf(GIFT, GIFT_LEVER_ADSKILT, PARTNER, PARTNER_LEVER_ADSKILT)
-                        and not(epsBorSammenMedBruker_epsGjeldende)
+                        and not(eps_bor_sammen_med_bruker_eps_gjeldende)
                         and not(institusjon_gjeldende.isOneOf(FENGSEL, HELSE, SYKEHJEM))
-                        and not(epsPaaInstitusjon_epsGjeldende)
+                        and not(eps_institusjon_gjeldende.isOneOf(Institusjon.INGEN))
                         and saktype.isOneOf(Sakstype.ALDER)
         ) {
             includePhrase(vedleggPlikterAP10_001)
         }
         showIf(
                 not(sivilstand.isOneOf(ENSLIG, ENKE, Sivilstand.INGEN))
-                        and (epsBorSammenMedBruker_epsGjeldende)
+                        and (eps_bor_sammen_med_bruker_eps_gjeldende)
                         and not(institusjon_gjeldende.isOneOf(FENGSEL, HELSE, SYKEHJEM))
-                        and not(epsPaaInstitusjon_epsGjeldende)
+                        and not(eps_institusjon_gjeldende.isOneOf(Institusjon.INGEN))
                         and saktype.isOneOf(Sakstype.ALDER)
         ) {
             includePhrase(argument().map {
