@@ -22,7 +22,6 @@ object Fixtures {
             fornavn = "TEST",
             etternavn = "TESTERSON",
             foedselsnummer = Foedselsnummer("01019878910"),
-            kortnavn = "TESTERSON TEST",
             adresse = Adresse(
                 linje1 = "TEST TESTERSON",
                 linje2 = "JERNBANETORGET 4 F",

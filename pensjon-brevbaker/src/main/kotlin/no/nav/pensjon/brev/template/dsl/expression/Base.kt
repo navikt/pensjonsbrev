@@ -26,9 +26,11 @@ fun <T, R> Expression<T>.map(transform: (T) -> R): Expression<R> =
 
 fun <T> T.expr() = Expression.Literal(this)
 
-fun <T> Expression<T?>.ifNull(then: T) =
+fun <T: Any> Expression<T?>.ifNull(then: T) =
     Expression.UnaryInvoke(this, UnaryOperation.IfNull(then))
 
+fun <T: Any> Expression<T?>.notNull() =
+    map { it != null }
 
 fun <T : Enum<T>> Expression<Enum<T>>.isOneOf(vararg enums: Enum<T>): Expression<Boolean> = Expression.BinaryInvoke(
     this,
