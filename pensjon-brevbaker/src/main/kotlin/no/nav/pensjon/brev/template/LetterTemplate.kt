@@ -63,9 +63,18 @@ sealed class Element<out Lang : LanguageSupport> {
 
     data class Title1<out Lang : LanguageSupport>(val title1: List<Element<Lang>>) : Element<Lang>()
     data class Paragraph<out Lang : LanguageSupport>(val paragraph: List<Element<Lang>>) : Element<Lang>()
-    sealed class ItemList<out Lang : LanguageSupport> : Element<Lang>() {
-        data class Dynamic<out Lang : LanguageSupport>(val items: Expression<List<String>>) : ItemList<Lang>()
-        data class Static<out Lang : LanguageSupport>(val items: List<Element<Lang>>) : ItemList<Lang>()
+
+    data class ItemList<Lang : LanguageSupport>(
+        val items: List<Item<Lang>>
+    ) : Element<Lang>() {
+        init {
+            if (items.isEmpty()) throw IllegalArgumentException("List has no items")
+        }
+
+        data class Item<Lang : LanguageSupport>(
+            val elements: List<Element<Lang>>,
+            val condition: Expression<Boolean>? = null
+        )
     }
 
     data class Table<Lang : LanguageSupport>(

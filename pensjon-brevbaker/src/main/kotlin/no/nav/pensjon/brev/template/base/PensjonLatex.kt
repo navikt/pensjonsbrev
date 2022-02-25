@@ -370,49 +370,23 @@ object PensjonLatex : BaseTemplate() {
             is Element.Text.Expression.ByLanguage ->
                 printWriter.print(element.expr(scope.language).eval(scope))
 
-            is Element.ItemList.Static ->
-                if (element.items.any { it !is Element.Conditional || it.predicate.eval(scope) }) {
-                    with(printWriter) {
-                        printCmd("begin") {
-                            arg { print("itemize") }
-                        }
-
-                        element.items.filter { it !is Element.Conditional || it.predicate.eval(scope) }
-                            .forEach {
-                                print("""\item """, escape = false)
-                                renderElement(scope, it, this)
-                            }
-
-                        printCmd("end") {
-                            arg { print("itemize") }
+            is Element.ItemList ->
+                with(printWriter) {
+                    val items = element.items.filter { it.condition == null || it.condition.eval(scope) }
+                    if (items.isEmpty()) return
+                    printCmd("begin") {
+                        arg { print("itemize") }
+                    }
+                    items.forEach { item ->
+                        print("""\item """, escape = false)
+                        item.elements.forEach {
+                            renderElement(scope, it, this)
                         }
                     }
-
-                } else Unit
-
-            is Element.ItemList.Dynamic -> {
-                val items = element.items.eval(scope)
-                if (items.any { it.isNotBlank() }) {
-                    with(printWriter) {
-
-                        printCmd("begin") {
-                            arg { print("itemize") }
-                        }
-
-                        items.forEach {
-                            if (it.isNotBlank()) {
-                                print("""\item """, escape = false)
-                                print(it)
-                            }
-                        }
-
-                        printCmd("end") {
-                            arg { print("itemize") }
-                        }
+                    printCmd("end") {
+                        arg { print("itemize") }
                     }
-                } else Unit
-            }
-
+                }
             is Element.Paragraph ->
                 printWriter.printCmd("templateparagraph") {
                     arg { element.paragraph.forEach { child -> renderElement(scope, child, it) } }
@@ -457,6 +431,11 @@ object PensjonLatex : BaseTemplate() {
                 with(printWriter) {
                     val rows = element.rows.filter { it.condition == null || it.condition.eval(scope) }
                     if (rows.isEmpty()) return
+
+                    printCmd("setlength") {
+                        arg{printCmd("parskip")}
+                        arg { print("0pt") }
+                    }
 
                     val columnHeaders =
                         element.columnHeaders.filter { it.condition == null || it.condition.eval(scope) }
@@ -510,10 +489,16 @@ object PensjonLatex : BaseTemplate() {
                     printCmd("end") {
                         arg { print("longtblr") }
                     }
+
+                    printCmd("setlength") {
+                        arg{printCmd("parskip")}
+                        arg { print("1em") }
+                    }
                 }
         }
 
-    private fun columnFormat(columns: Int): String =
+    private fun columnFormat(columns: Int)
+            : String =
         if (columns > 0) {
             "|" + "X|".repeat(columns)
         } else {
