@@ -444,23 +444,29 @@ object PensjonLatex : BaseTemplate() {
                     printCmd("begin") {
                         arg { print("longtblr") }
 
+                        print("[", escape = false)
                         element.title?.let {
-                            print("[caption={", escape = false)
+                            print("caption={", escape = false)
                             it.forEach { titleElem -> renderElement(scope, titleElem, printWriter) }
-                            print("}]", escape = false)
+                            print("},", escape = false)
                         }
+                        print("presep={10.16mm},", escape=false)
+                        print("postsep={3.979333349mm},", escape=false)
+                        print("]", escape = false)
 
                         arg {
                             print(
                                 "colspec={${columnFormat(tableWidth)}}," +
                                         (if (columnHeaders.isNotEmpty()) "rowhead=${columnHeaders.size}," else "") +
                                         "width=\\textwidth," +
+                                        "colsep = 1.947333341 mm," +
                                         "hspan=minimal," + //wrap instead of widening table over limit
-                                        "hlines={1pt,linecolor}," +
-                                        "vlines={1pt,linecolor}," +
-                                        "row{odd}={row1color}," +
-                                        "row{even}={row2color}," +
-                                        (if (columnHeaders.isNotEmpty()) "row{1-${columnHeaders.size}}={columnheadercolor}," else ""),
+                                        "hlines={0pt,linecolor}," +
+//                                        \DefTblrTemplate{presep}{default}{20 mm}
+                                        "vlines={0pt,linecolor}," +
+                                        "row{odd}={row1color,rowsep=1.27mm}," +
+                                        "row{even}={row2color,rowsep=1.27mm}," +
+                                        (if (columnHeaders.isNotEmpty()) "row{1-${columnHeaders.size}}={columnheadercolor,rowsep=2.54mm}," else ""),
                                 escape = false
                             )
                         }

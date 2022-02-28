@@ -29,7 +29,7 @@
 \usepackage[absolute
 %    ,showboxes %show boxes around textblocks for debugging
     ]{textpos} %first page absolute posistioned elements
-
+%\usepackage{showframe} %show frames of page geometry
 %! suppress = FileNotFound
 \input{params}  % Must be done before pdfx is imported
 
@@ -105,10 +105,10 @@
 %             Case details
 %----------------------------------------
 \newcommand{\sakspart}{
-    \fontsize{12pt}{12pt} \selectfont
-    \tinyGrayText{\feltsaksnummerprefix} \feltsaksnummer \\[2pt]
-    \tinyGrayText{\feltnavnprefix} \feltetternavnmottaker \space \feltfornavnmottaker \\[2pt]
-    \tinyGrayText{\feltfoedselsnummerprefix} \feltfoedselsnummer \\[22pt]
+    {\fontsize{12pt}{12pt} \grayFont \selectfont
+    \feltsaksnummerprefix \feltsaksnummer \\[2pt]
+    \feltnavnprefix \feltetternavnmottaker \space \feltfornavnmottaker \\[2pt]
+    \feltfoedselsnummerprefix \feltfoedselsnummer \\[22pt]}
 }
 
 
