@@ -14,6 +14,7 @@ fun <Param : Any> Letter<Param>.assertRenderedLetterDoesNotContainAnyOf(vararg s
     }
     return this
 }
+
 fun <Param : Any> Letter<Param>.assertRenderedLetterContainsAllOf(vararg searchText: String): Letter<Param> {
     val letterString = this.render().base64EncodedFiles()["letter.tex"]
     searchText.forEach {

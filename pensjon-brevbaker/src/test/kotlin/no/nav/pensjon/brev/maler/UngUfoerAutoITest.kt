@@ -18,15 +18,7 @@ class UngUfoerAutoITest {
     fun test() {
         Letter(
             UngUfoerAuto.template,
-            UngUfoerAutoDto(
-                kravVirkningFraOgMed = LocalDate.of(2022, 1, 1),
-                totaltUfoerePerMnd = 9000,
-                ektefelle = UngUfoerAutoDto.InnvilgetTillegg(true),
-                gjenlevende = null,
-                saerkullsbarn = null, //UngUfoerAutoDto.InnvilgetBarnetillegg(true, 2, 10_000),
-                fellesbarn = null, //UngUfoerAutoDto.InnvilgetBarnetillegg(false, 1, 10_000),
-                minsteytelseVedVirkSats = 2.91,
-            ),
+            UngUfoerAutoDto(),
             Language.Bokmal,
             Fixtures.fellesAuto
         ).render()
