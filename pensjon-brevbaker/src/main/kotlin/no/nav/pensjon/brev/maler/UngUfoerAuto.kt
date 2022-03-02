@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.maler
 
 import no.nav.pensjon.brev.api.model.LetterMetadata
+import no.nav.pensjon.brev.api.model.maler.UngUfoerAutoDto
 import no.nav.pensjon.brev.maler.fraser.common.*
 import no.nav.pensjon.brev.maler.fraser.omregning.ufoeretrygd.Ufoeretrygd
 import no.nav.pensjon.brev.maler.fraser.vedtak.Vedtak
@@ -9,23 +10,11 @@ import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.base.PensjonLatex
 import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brev.template.dsl.expression.*
-import java.time.LocalDate
 
-data class UngUfoerAutoDto(
-    val kravVirkningFraOgMed: LocalDate,
-    val totaltUfoerePerMnd: Int,
-    val utbetalt: Set<Ufoeretrygd.Tillegg>,
-    val innvilget: Set<Ufoeretrygd.Tillegg>,
-    val antallFellesbarn: Int,
-    val antallSaerkullsbarn: Int,
-    val inntektstakFellesbarn: Int,
-    val inntektstakSaerkullsbarn: Int,
-    val minsteytelseVedVirkSats: Double,
-)
-
+// BrevTypeKode: PE_BA_04_505
 object UngUfoerAuto : StaticTemplate {
     override val template = createTemplate(
-        name = "PE_BA_04_505",
+        name = "UP_FULLTT_BELOPENDR",
         base = PensjonLatex,
         letterDataType = UngUfoerAutoDto::class,
         title = newText(
@@ -42,16 +31,22 @@ object UngUfoerAuto : StaticTemplate {
 
             includePhrase(Vedtak.overskrift)
             includePhrase(virkningsDato, Ufoeretrygd.ungUfoer20aar_001)
-            includePhrase(argument().map { Ufoeretrygd.BeloepPerMaaned(Kroner(it.totaltUfoerePerMnd), it.utbetalt) }, Ufoeretrygd.beloep)
+
+            includePhrase(argument().map {
+                Ufoeretrygd.BeloepPerMaaned(
+                    perMaaned = Kroner(it.totaltUfoerePerMnd),
+                    ektefelle = it.ektefelle?.utbetalt ?: false,
+                    gjenlevende = it.gjenlevende?.utbetalt ?: false,
+                    fellesbarn = it.fellesbarn?.utbetalt ?: false,
+                    saerkullsbarn = it.saerkullsbarn?.utbetalt ?: false
+                )
+            }, Ufoeretrygd.beloep)
+
             includePhrase(
                 argument().map {
                     Ufoeretrygd.BarnetilleggIkkeUtbetaltDto(
-                        antallFellesbarn = it.antallFellesbarn,
-                        antallSaerkullsbarn = it.antallSaerkullsbarn,
-                        inntektstakFellesbarn = Kroner(it.inntektstakFellesbarn),
-                        inntektstakSaerkullsbarn = Kroner(it.inntektstakSaerkullsbarn),
-                        utbetalt = it.utbetalt,
-                        innvilget = it.innvilget
+                        saerkullsbarn = it.saerkullsbarn,
+                        fellesbarn = it.fellesbarn,
                     )
                 },
                 Ufoeretrygd.barnetileggIkkeUtbetalt
@@ -70,5 +65,8 @@ object UngUfoerAuto : StaticTemplate {
             includePhrase(Ufoeretrygd.sjekkUtbetalingene)
 
         }
+
+        // TODO: Inkluder vedlegg "Dette er din månedlige uføretrygd før skatt"
+        // TODO: Inkluder vedlegg "Orientering om rettigheter og plikter"
     }
 }

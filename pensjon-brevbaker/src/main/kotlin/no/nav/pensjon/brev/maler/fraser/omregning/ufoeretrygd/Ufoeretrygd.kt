@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.maler.fraser.omregning.ufoeretrygd
 
+import no.nav.pensjon.brev.api.model.maler.UngUfoerAutoDto
 import no.nav.pensjon.brev.maler.fraser.Constants
 import no.nav.pensjon.brev.maler.fraser.common.*
 import no.nav.pensjon.brev.template.*
@@ -22,57 +23,49 @@ object Ufoeretrygd {
         }
     }
 
-    enum class Tillegg { FELLESBARN, SAERKULLSBARN, EKTEFELLE, GJENLEVENDE }
-
-
     /**
      * TBU1120, TBU1121, TBU1122, TBU1254, TBU1253, TBU1123
      */
-    data class BeloepPerMaaned(val perMaaned: Kroner, val utbetalteTillegg: Set<Tillegg>)
+    data class BeloepPerMaaned(
+        val perMaaned: Kroner,
+        val ektefelle: Boolean,
+        val gjenlevende: Boolean,
+        val fellesbarn: Boolean,
+        val saerkullsbarn: Boolean,
+    )
 
     val beloep = createPhrase<LangBokmalNynorsk, BeloepPerMaaned> {
         val perMaaned = argument().select(BeloepPerMaaned::perMaaned).str()
-        val tillegg = argument().select(BeloepPerMaaned::utbetalteTillegg)
 
         paragraph {
-            showIf(tillegg.isEmpty()) {
+            showIf(argument().map { !it.fellesbarn && !it.saerkullsbarn && !it.ektefelle && !it.gjenlevende }) {
                 textExpr(
                     Bokmal to "Du får ".expr() + perMaaned + " kroner i uføretrygd per måned før skatt.",
                     Nynorsk to "Du får ".expr() + perMaaned + " kroner i uføretrygd per månad før skatt.",
                 )
-            }.orShowIf(tillegg.containsExclusively { anyOf(Tillegg.SAERKULLSBARN, Tillegg.FELLESBARN) }) {
+            }.orShowIf(argument().map { (it.fellesbarn || it.saerkullsbarn) && !it.gjenlevende && !it.ektefelle }) {
                 textExpr(
                     Bokmal to "Du får ".expr() + perMaaned + " kroner i uføretrygd og barnetillegg per måned før skatt.",
                     Nynorsk to "Du får ".expr() + perMaaned + " kroner i uføretrygd og barnetillegg per månad før skatt.",
                 )
-            }.orShowIf(tillegg.containsExclusively { required(Tillegg.GJENLEVENDE) }) {
+            }.orShowIf(argument().map { !it.fellesbarn && !it.saerkullsbarn && !it.ektefelle && it.gjenlevende }) {
                 textExpr(
                     Bokmal to "Du får ".expr() + perMaaned + " kroner i uføretrygd og gjenlevendetillegg per måned før skatt.",
                     Nynorsk to "Du får ".expr() + perMaaned + " kroner i uføretrygd og attlevandetillegg per månad før skatt.",
                 )
-            }.orShowIf(tillegg.containsExclusively { required(Tillegg.EKTEFELLE) }) {
+            }.orShowIf(argument().map { !it.fellesbarn && !it.saerkullsbarn && it.ektefelle && !it.gjenlevende }) {
                 textExpr(
                     Bokmal to "Du får ".expr() + perMaaned + " kroner i uføretrygd og ektefelletillegg per måned før skatt.",
                     Nynorsk to "Du får ".expr() + perMaaned + " kroner i uføretrygd og ektefelletillegg per månad før skatt.",
                 )
 
-            }.orShowIf(
-                tillegg.containsExclusively {
-                    required(Tillegg.EKTEFELLE)
-                    anyOf(Tillegg.SAERKULLSBARN, Tillegg.FELLESBARN)
-                }
-            ) {
+            }.orShowIf(argument().map { (it.fellesbarn || it.saerkullsbarn) && it.ektefelle && !it.gjenlevende }) {
                 textExpr(
                     Bokmal to "Du får ".expr() + perMaaned + " kroner i uføretrygd, barne- og ektefelletillegg per måned før skatt.",
                     Nynorsk to "Du får ".expr() + perMaaned + " kroner i uføretrygd, barne- og ektefelletillegg per månad før skatt.",
                 )
 
-            }.orShowIf(
-                tillegg.containsExclusively {
-                    required(Tillegg.GJENLEVENDE)
-                    anyOf(Tillegg.SAERKULLSBARN, Tillegg.FELLESBARN)
-                }
-            ) {
+            }.orShowIf(argument().map { (it.fellesbarn || it.saerkullsbarn) && !it.ektefelle && it.gjenlevende }) {
                 textExpr(
                     Bokmal to "Du får ".expr() + perMaaned + " kroner i uføretrygd, barne- og gjenlevendetillegg per måned før skatt.",
                     Nynorsk to "Du får ".expr() + perMaaned + " kroner i uføretrygd, barne- og attlevandetillegg per månad før skatt.",
@@ -84,61 +77,70 @@ object Ufoeretrygd {
     /**
      * TBU1286.1, TBU1286.2
      */
-    data class BarnetilleggIkkeUtbetaltDto(val antallFellesbarn: Int, val antallSaerkullsbarn: Int, val inntektstakFellesbarn: Kroner, val inntektstakSaerkullsbarn: Kroner, val utbetalt: Set<Tillegg>, val innvilget: Set<Tillegg>)
+    data class BarnetilleggIkkeUtbetaltDto(
+        val fellesbarn: UngUfoerAutoDto.InnvilgetBarnetillegg?,
+        val saerkullsbarn: UngUfoerAutoDto.InnvilgetBarnetillegg?,
+    ) {
+        fun fellesInnvilget(): Boolean = fellesbarn != null
+        fun saerkullInnvilget(): Boolean = saerkullsbarn != null
+        fun fellesUtbetalt(): Boolean = fellesbarn?.utbetalt ?: false
+        fun saerkullsbarnUtbetalt(): Boolean = saerkullsbarn?.utbetalt ?: false
+    }
 
     val barnetileggIkkeUtbetalt = createPhrase<LangBokmalNynorsk, BarnetilleggIkkeUtbetaltDto> {
-        val innvilget = argument().select(BarnetilleggIkkeUtbetaltDto::innvilget)
-        val utbetalt = argument().select(BarnetilleggIkkeUtbetaltDto::utbetalt)
-
-        val saerkullInnvilget = innvilget.containsAny(Tillegg.SAERKULLSBARN)
-        val saerkullUtbetalt = utbetalt.containsAny(Tillegg.SAERKULLSBARN)
-        val saerkullInntektstak = argument().map { it.inntektstakFellesbarn }.str()
-
-        val fellesInnvilget = innvilget.containsAny(Tillegg.FELLESBARN)
-        val fellesUtbetalt = utbetalt.containsAny(Tillegg.FELLESBARN)
-        val fellesInntektstak = argument().map { it.inntektstakSaerkullsbarn }.str()
-
         paragraph {
-            showIf(saerkullInnvilget and not(saerkullUtbetalt) and fellesUtbetalt and fellesInnvilget) {
 
-                val barnFlertall = argument().map { it.antallSaerkullsbarn > 1 }
-                textExpr(
-                    Bokmal to "Barnetillegget for ".expr() + ifElse(barnFlertall, "barna", "barnet") + " som ikke bor sammen med begge foreldrene, blir ikke utbetalt fordi du alene har en samlet inntekt som er høyere enn " +
-                            saerkullInntektstak + " kroner. Inntekten din er over grensen for å få utbetalt barnetillegg.",
+            val saerkullInnvilget = argument().select(BarnetilleggIkkeUtbetaltDto::saerkullInnvilget)
+            val saerkullUtbetalt = argument().select(BarnetilleggIkkeUtbetaltDto::saerkullsbarnUtbetalt)
+            val fellesInnvilget = argument().select(BarnetilleggIkkeUtbetaltDto::fellesInnvilget)
+            val fellesUtbetalt = argument().select(BarnetilleggIkkeUtbetaltDto::fellesUtbetalt)
 
-                    Nynorsk to "Barnetillegget for ".expr() + ifElse(barnFlertall, "barna", "barnet") + "som ikkje bur saman med begge foreldra sine, blir ikkje utbetalt fordi du åleine har ei samla inntekt som er høgare enn " +
-                            saerkullInntektstak + " kroner. Inntekta di er over grensa for å få utbetalt barnetillegg.",
-                )
+            ifNotNull(argument().select(BarnetilleggIkkeUtbetaltDto::saerkullsbarn)) { saerkullsbarn ->
+                val barnFlertall = saerkullsbarn.map { it.antallBarn > 1 }
+                val inntektstak = saerkullsbarn.select(UngUfoerAutoDto.InnvilgetBarnetillegg::inntektstak).str()
 
-            }.orShowIf(saerkullInnvilget and not(saerkullUtbetalt) and not(fellesInnvilget)) {
+                showIf(saerkullInnvilget and not(saerkullUtbetalt) and fellesUtbetalt and fellesInnvilget) {
+                    textExpr(
+                        Bokmal to "Barnetillegget for ".expr() + ifElse(barnFlertall, "barna", "barnet") + " som ikke bor sammen med begge foreldrene, blir ikke utbetalt fordi du alene har en samlet inntekt som er høyere enn " +
+                                inntektstak + " kroner. Inntekten din er over grensen for å få utbetalt barnetillegg.",
 
-                textExpr(
-                    Bokmal to "Barnetillegget blir ikke utbetalt fordi du har en samlet inntekt som er høyere enn ".expr() +
-                            saerkullInntektstak + " kroner. Inntekten din er over grensen for å få utbetalt barnetillegg.",
+                        Nynorsk to "Barnetillegget for ".expr() + ifElse(barnFlertall, "barna", "barnet") + "som ikkje bur saman med begge foreldra sine, blir ikkje utbetalt fordi du åleine har ei samla inntekt som er høgare enn " +
+                                inntektstak + " kroner. Inntekta di er over grensa for å få utbetalt barnetillegg.",
+                    )
 
-                    Nynorsk to "Barnetillegget blir ikkje utbetalt fordi du åleine har ei samla inntekt som er høgare enn ".expr() +
-                            saerkullInntektstak + " kroner. Inntekten din er over grensen for å få utbetalt barnetillegg.",
-                )
+                }.orShowIf(saerkullInnvilget and not(saerkullUtbetalt) and not(fellesInnvilget)) {
+                    textExpr(
+                        Bokmal to "Barnetillegget blir ikke utbetalt fordi du har en samlet inntekt som er høyere enn ".expr() +
+                                inntektstak + " kroner. Inntekten din er over grensen for å få utbetalt barnetillegg.",
 
-            }.orShowIf(fellesInnvilget and not(fellesUtbetalt) and saerkullUtbetalt and saerkullInnvilget) {
+                        Nynorsk to "Barnetillegget blir ikkje utbetalt fordi du åleine har ei samla inntekt som er høgare enn ".expr() +
+                                inntektstak + " kroner. Inntekten din er over grensen for å få utbetalt barnetillegg.",
+                    )
+                }
+            }
 
-                val barnFlertall = argument().map { it.antallFellesbarn > 1 }
-                textExpr(
-                    Bokmal to "Barnetillegget for ".expr() + ifElse(barnFlertall, "barna", "barnet") + " som bor med begge sine foreldre, blir ikke utbetalt fordi dere har en samlet inntekt som er høyere enn " +
-                            fellesInntektstak + " kroner. De samlede inntektene er over grensen for å få utbetalt barnetillegg.",
+            ifNotNull(argument().select(BarnetilleggIkkeUtbetaltDto::fellesbarn)) { fellesbarn ->
+                val barnFlertall = fellesbarn.map { it.antallBarn > 1 }
+                val inntektstak = fellesbarn.select(UngUfoerAutoDto.InnvilgetBarnetillegg::inntektstak).str()
 
-                    Nynorsk to "Barnetillegget for ".expr() + ifElse(barnFlertall, "barna", "barnet") + " som bur saman med begge foreldra sine, blir ikkje utbetalt fordi dei har ei samla inntekt som er høgare enn " +
-                            fellesInntektstak + " kroner. Dei samla inntektene er over grensa for å få utbetalt barnetillegg.",
-                )
+                showIf(fellesInnvilget and not(fellesUtbetalt) and saerkullUtbetalt and saerkullInnvilget) {
+                    textExpr(
+                        Bokmal to "Barnetillegget for ".expr() + ifElse(barnFlertall, "barna", "barnet") + " som bor med begge sine foreldre, blir ikke utbetalt fordi dere har en samlet inntekt som er høyere enn " +
+                                inntektstak + " kroner. De samlede inntektene er over grensen for å få utbetalt barnetillegg.",
 
-            }.orShowIf(fellesInnvilget and not(fellesUtbetalt) and not(saerkullInnvilget)) {
-                textExpr(
-                    Bokmal to "Barnetillegget blir ikke utbetalt fordi dere har en samlet inntekt som er høyere enn ".expr() +
-                            fellesInntektstak + " kroner. De samlede inntektene er over grensen for å få utbetalt barnetillegg.",
+                        Nynorsk to "Barnetillegget for ".expr() + ifElse(barnFlertall, "barna", "barnet") + " som bur saman med begge foreldra sine, blir ikkje utbetalt fordi dei har ei samla inntekt som er høgare enn " +
+                                inntektstak + " kroner. Dei samla inntektene er over grensa for å få utbetalt barnetillegg.",
+                    )
 
-                    Nynorsk to "Barnetillegget blir ikkje utbetalt fordi dei har ei samla inntekt som er høgare enn ".expr() +
-                            fellesInntektstak + " kroner. Dei samla inntektene er over grensa for å få utbetalt barnetillegg.",
-                )
+                }.orShowIf(fellesInnvilget and not(fellesUtbetalt) and not(saerkullInnvilget)) {
+                    textExpr(
+                        Bokmal to "Barnetillegget blir ikke utbetalt fordi dere har en samlet inntekt som er høyere enn ".expr() +
+                                inntektstak + " kroner. De samlede inntektene er over grensen for å få utbetalt barnetillegg.",
+
+                        Nynorsk to "Barnetillegget blir ikkje utbetalt fordi dei har ei samla inntekt som er høgare enn ".expr() +
+                                inntektstak + " kroner. Dei samla inntektene er over grensa for å få utbetalt barnetillegg.",
+                    )
+                }
             }
         }
     }

@@ -5,7 +5,7 @@ import no.nav.pensjon.brev.api.model.LetterMetadata
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Element.Text.FontType
 import no.nav.pensjon.brev.template.base.BaseTemplate
-import no.nav.pensjon.brev.template.dsl.expression.expr
+import no.nav.pensjon.brev.template.dsl.expression.*
 import kotlin.reflect.KClass
 
 fun <Lang : LanguageSupport, LetterData : Any> createTemplate(
@@ -26,6 +26,7 @@ open class TemplateGlobalScope<LetterData : Any> {
 
     fun felles(): Expression<Felles> =
         Expression.FromScope(ExpressionScope<LetterData, *>::felles)
+
 }
 
 @LetterTemplateMarker
@@ -165,6 +166,36 @@ class TemplateContainerScope<Lang : LanguageSupport, LetterData : Any> :
     ): ShowElseBuilder<Lang, LetterData> =
         ShowElseBuilder.chainShowIfElse(children, predicate, showIf)
 
+
+    fun <E1: Any> ifNotNull(expr1: Expression<E1?>, block: TemplateContainerScope<Lang, LetterData>.(Expression<E1>) -> Unit) {
+        children.add(
+            Element.Conditional(expr1.notNull(), TemplateContainerScope<Lang, LetterData>().apply {
+                // Følgende er en trygg cast fordi `children` blir kun brukt om `expr1.notNull()` evaluerer til true.
+                @Suppress("UNCHECKED_CAST")
+                block(this, expr1 as Expression<E1>)
+            }.children, emptyList())
+        )
+    }
+
+    fun <E1: Any, E2: Any> ifNotNull(expr1: Expression<E1?>, expr2: Expression<E2?>, block: TemplateContainerScope<Lang, LetterData>.(Expression<E1>, Expression<E2>) -> Unit) {
+        children.add(
+            Element.Conditional(expr1.notNull() and expr2.notNull(), TemplateContainerScope<Lang, LetterData>().apply {
+                // Følgende er en trygg cast fordi `children` blir kun brukt om `expr1.notNull() and expr2.notNull()` evaluerer til true.
+                @Suppress("UNCHECKED_CAST")
+                block(this, expr1 as Expression<E1>, expr2 as Expression<E2>)
+            }.children, emptyList())
+        )
+    }
+
+    fun <E1: Any, E2: Any, E3: Any> ifNotNull(expr1: Expression<E1?>, expr2: Expression<E2?>, expr3: Expression<E3?>, block: TemplateContainerScope<Lang, LetterData>.(Expression<E1>, Expression<E2>, Expression<E3>) -> Unit) {
+        children.add(
+            Element.Conditional(expr1.notNull() and expr2.notNull() and expr3.notNull(), TemplateContainerScope<Lang, LetterData>().apply {
+                // Følgende er en trygg cast fordi `children` blir kun brukt om `expr1.notNull() and expr2.notNull() and expr3.notNull()` evaluerer til true.
+                @Suppress("UNCHECKED_CAST")
+                block(this, expr1 as Expression<E1>, expr2 as Expression<E2>, expr3 as Expression<E3>)
+            }.children, emptyList())
+        )
+    }
 }
 
 @LetterTemplateMarker
