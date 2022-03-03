@@ -3,9 +3,9 @@
 %----------------------------------------
 
 %Letter section title
-\newcommand{\lettersectiontitle}[1]{
-    \vspace{6pt} \textbf{#1} \\*[6pt]
-}
+\newcommand{\lettersectiontitle}[1]{{
+    \primaryFont \fontsize{14pt}{14pt} \selectfont \vspace{6pt} \textbf{#1} \\*[6pt]
+}}
 
 %Normal paragraphs
 \newcommand{\templateparagraph}[1] {#1 \par}
@@ -35,12 +35,12 @@
 %----------------------------------------
 %default table settings
 
-\newcommand{\footerText}[1]{{\secondaryFont \fontsize{8pt}{8pt} \selectfont #1}} %footer font command
+\newcommand{\tableHeaderText}[1]{{\primaryFont \fontsize{14pt}{14pt} \selectfont \textbf{#1}}} %footer font command
 \definecolor{columnheadercolor}{rgb}{0.796875,0.87890625,0.99609375} % #CCE1FF
-\definecolor{linecolor}{rgb}{0.95,0.95,0.95}
+\definecolor{linecolor}{rgb}{0.625, 0.625, 0.625} % #A0A0A0
 \definecolor{row1color}{rgb}{0.95,0.95,0.95}
 \definecolor{row2color}{rgb}{1.0,1.0,1.0}
 
-\DefTblrTemplate{contfoot-text}{default}{\felttablenextpagecontinuation}
-\DefTblrTemplate{caption}{default}{\InsertTblrText{caption}}
+\DefTblrTemplate{contfoot-text}{default}{\felttablenextpagecontinuation\hfill\space }
+\DefTblrTemplate{caption}{default}{\tableHeaderText{\InsertTblrText{caption}}}
 \DefTblrTemplate{capcont}{default}{\InsertTblrText{caption}\felttablecontinuedfrompreviouspage}

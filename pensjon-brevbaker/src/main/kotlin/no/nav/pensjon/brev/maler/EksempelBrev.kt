@@ -53,11 +53,6 @@ object EksempelBrev : StaticTemplate {
             paragraph {
                 text(Bokmal to "Test dette er en test")
                 list {
-                    item {
-                        text(Bokmal to "Hello world!")
-                    }
-                }
-                list {
                     showIf(true.expr()) {
                         item {
                             text(Bokmal to "Test1")
@@ -83,7 +78,7 @@ object EksempelBrev : StaticTemplate {
                 text(Bokmal to "test")
                 table {
                     title {
-                        text(Bokmal to "Eksempeltabell", FontType.BOLD)
+                        text(Bokmal to "Eksempeltabell")
                     }
                     columnHeaderRow {
                         cell(1) {text(Bokmal to "Kolonne 1",FontType.BOLD)}

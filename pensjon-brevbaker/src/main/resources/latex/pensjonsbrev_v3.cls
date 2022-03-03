@@ -41,6 +41,7 @@
 %fonts
 \setsansfont{Source Sans Pro}
 \setmainfont{Source Sans Pro}
+\addfontfeature{VerticalPosition = Inferior }
 \newfontface{\grayFont}{Source Sans Pro}[Color=888888]
 \newfontface{\primaryFont}[
     BoldFont={Source Sans Pro Bold},
@@ -57,9 +58,10 @@
 \newcommand{\tinyText}[1]{{\secondaryFont \fontsize{8pt}{8pt} \selectfont #1}}
 \setlength{\parindent}{0em} % indentations before first line in paragraph
 \setlength{\parskip}{1em} % space between paragraphs
-
 %itemize / lists spacing
 \setlist{nolistsep}
+\renewcommand{\baselinestretch}{1.2}
+\primaryFont \fontsize{12pt}{12pt} \selectfont
 
 % paragraph formatting
 \widowpenalties 1 1000 %penalty score for breaking a paragraph
@@ -96,8 +98,8 @@
 %----------------------------------------
 \newcommand{\currentSectionName}{mainletter} %name of the current section of the letter. Used for lastpage label at the end of this section
 \newcommand{\letterpagenumber}{ %general page number formatting
-    \begin{textblock*}{25mm}(177mm,292mm)
-        \tinyText{\feltsideprefix~\textbf{\thepage}~\feltsideinfix~\textbf{\pageref*{\currentSectionName}}}
+    \begin{textblock*}{25mm}(160mm,292mm)
+        \tinyText{\hfill\feltsideprefix~\textbf{\thepage}~\feltsideinfix~\textbf{\pageref*{\currentSectionName}}}
     \end{textblock*}
 }
 
@@ -105,10 +107,16 @@
 %             Case details
 %----------------------------------------
 \newcommand{\sakspart}{
-    {\fontsize{12pt}{12pt} \grayFont \selectfont
-    \feltsaksnummerprefix \feltsaksnummer \\[2pt]
-    \feltnavnprefix \feltetternavnmottaker \space \feltfornavnmottaker \\[2pt]
-    \feltfoedselsnummerprefix \feltfoedselsnummer \\[22pt]}
+    {
+        \setlength{\tabcolsep}{3.5mm}
+        \grayFont \selectfont
+        \begin{tabular}{@{}ll}
+            \feltnavnprefix & \feltetternavnmottaker \space \feltfornavnmottaker \\
+            \feltfoedselsnummerprefix & \feltfoedselsnummer \\
+            \feltsaksnummerprefix & \feltsaksnummer
+        \end{tabular}
+        \\[22pt]
+    }
 }
 
 

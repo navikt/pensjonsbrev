@@ -41,9 +41,9 @@ object PensjonLatex : BaseTemplate() {
 
         setting("saksnummerprefix") {
             text(
-                Language.Bokmal to "NAVs saksnummer:",
-                Language.Nynorsk to "NAVs saksnummer:",
-                Language.English to "NAV’s case number:",
+                Language.Bokmal to "Saksnummer:",
+                Language.Nynorsk to "Saksnummer:",
+                Language.English to "Case number:",
             )
         }
 
@@ -60,14 +60,6 @@ object PensjonLatex : BaseTemplate() {
                 Language.Bokmal to "Returadresse:",
                 Language.Nynorsk to "Returadresse:",
                 Language.English to "Return address:",
-            )
-        }
-
-        setting("datoprefix") {
-            text(
-                Language.Bokmal to "Dato:",
-                Language.Nynorsk to "Dato:",
-                Language.English to "Date:",
             )
         }
 
@@ -460,12 +452,12 @@ object PensjonLatex : BaseTemplate() {
                                         (if (columnHeaders.isNotEmpty()) "rowhead=${columnHeaders.size}," else "") +
                                         "width=\\textwidth," +
                                         "colsep = 1.947333341 mm," +
+                                        "stretch = 0 mm," +
                                         "hspan=minimal," + //wrap instead of widening table over limit
-                                        "hlines={0pt,linecolor}," +
-//                                        \DefTblrTemplate{presep}{default}{20 mm}
-                                        "vlines={0pt,linecolor}," +
-                                        "row{odd}={row1color,rowsep=1.27mm}," +
-                                        "row{even}={row2color,rowsep=1.27mm}," +
+                                        "hlines={0.084666667mm,linecolor}," +
+                                        (if (columnHeaders.isNotEmpty()) "hline{1-${columnHeaders.size}}={0pt,linecolor}," else "") +
+                                        "row{odd}={row1color,rowsep=1.5mm}," +
+                                        "row{even}={row2color,rowsep=1.5mm}," +
                                         (if (columnHeaders.isNotEmpty()) "row{1-${columnHeaders.size}}={columnheadercolor,rowsep=2.54mm}," else ""),
                                 escape = false
                             )
@@ -479,6 +471,7 @@ object PensjonLatex : BaseTemplate() {
                                 if (cell.cellColumns > 1) {
                                     print("\\SetCell[c=${cell.cellColumns}]{}", escape = false)
                                 }
+//                                print("\\rule{1cm}{1cm}", escape = false)
                                 cell.elements.forEach { cellElement ->
                                     renderElement(scope, cellElement, printWriter)
                                 }
@@ -506,7 +499,7 @@ object PensjonLatex : BaseTemplate() {
     private fun columnFormat(columns: Int)
             : String =
         if (columns > 0) {
-            "|" + "X|".repeat(columns)
+            "X".repeat(columns)
         } else {
             ""
         }
