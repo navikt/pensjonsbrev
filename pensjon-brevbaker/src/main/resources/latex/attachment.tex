@@ -1,0 +1,27 @@
+%----------------------------------------
+%       Attachment environment
+%----------------------------------------
+
+% setup a counter to uniquely identify attachments (used for labeling the last page of attachments)
+\newcounter{attachments}
+
+% produces a label for the current attachment
+\newcommand{\startvedlegg}[1]{
+    % make sure that the attachment starts on an even page (for printing)
+    % set pagestyle to empty to not print page number
+    \clearpage\ifodd\value{page}\else\null\thispagestyle{empty}\clearpage\fi
+    %name of the current section of the letter. Used for lastpage label at the end of this section
+    \renewcommand{\currentSectionName}{attachment\arabic{attachments}}
+    % reset the page counter for this attachment
+    \setcounter{page}{1}
+    \stepcounter{attachments}
+    % increase the attachment counter to identify this attachment
+    \logo
+    \vspace*{28pt}
+    \titleText{#1} \par
+}
+
+\newcommand{\sluttvedlegg}{
+% create a label on the last page of this attachment (used by \pagemark for attachments)
+    \label{\currentSectionName }%label for the last page in this section
+}

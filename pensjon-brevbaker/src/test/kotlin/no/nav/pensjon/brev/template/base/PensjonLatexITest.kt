@@ -10,6 +10,7 @@ import no.nav.pensjon.brev.latex.PdfCompilationInput
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Letter
 import no.nav.pensjon.brev.template.dsl.*
+import no.nav.pensjon.brev.template.dsl.expression.select
 import no.nav.pensjon.brev.template.latexEscape
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
@@ -28,7 +29,6 @@ class PensjonLatexITest {
             name = "test-template",
             base = PensjonLatex,
             letterDataType = TestTemplateDto::class,
-            lang = languages(Bokmal),
             title = newText(Bokmal to "En fin tittel"),
             letterMetadata = LetterMetadata(
                 displayTitle = "En fin display tittel",
@@ -93,7 +93,6 @@ class PensjonLatexITest {
                 name = "test-template",
                 base = PensjonLatex,
                 letterDataType = TestTemplateDto::class,
-                lang = languages(Bokmal),
                 title = newText(Bokmal to "En fin tittel"),
                 letterMetadata = LetterMetadata(
                     displayTitle = "En fin display tittel",

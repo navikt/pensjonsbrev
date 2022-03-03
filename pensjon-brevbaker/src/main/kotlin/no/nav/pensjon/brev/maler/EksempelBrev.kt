@@ -2,12 +2,18 @@ package no.nav.pensjon.brev.maler
 
 import no.nav.pensjon.brev.api.model.LetterMetadata
 import no.nav.pensjon.brev.api.model.maler.EksempelBrevDto
-import no.nav.pensjon.brev.maler.fraser.TestFraseDto
-import no.nav.pensjon.brev.maler.fraser.testFrase
-import no.nav.pensjon.brev.template.Language
+import no.nav.pensjon.brev.template.Element.Text.FontType
+import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.StaticTemplate
 import no.nav.pensjon.brev.template.base.PensjonLatex
-import no.nav.pensjon.brev.template.dsl.*
+import no.nav.pensjon.brev.template.dsl.createTemplate
+import no.nav.pensjon.brev.template.dsl.expression.expr
+import no.nav.pensjon.brev.template.dsl.expression.plus
+import no.nav.pensjon.brev.template.dsl.expression.select
+import no.nav.pensjon.brev.template.dsl.expression.str
+import no.nav.pensjon.brev.template.dsl.newText
+import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.dsl.textExpr
 
 object EksempelBrev : StaticTemplate {
     override val template = createTemplate(
@@ -20,11 +26,8 @@ object EksempelBrev : StaticTemplate {
         // Unik datagrunnlag/DTO for brevet
         letterDataType = EksempelBrevDto::class,
 
-        // Hvilke språk brevet støtter
-        lang = languages(Language.Bokmal),
-
         // Hovedtittel inne i brevet
-        title = newText(Language.Bokmal to "Eksempelbrev"),
+        title = newText(Bokmal to "Eksempelbrev"),
 
         // Metadata knyttet til en brevmal som ikke påvirker innholdet
         letterMetadata = LetterMetadata(
@@ -42,20 +45,90 @@ object EksempelBrev : StaticTemplate {
 
             // Undertittel
             title1 {
-
                 // Tekst
-                text(Language.Bokmal to "Du har fått innvilget pensjon")
+                text(Bokmal to "Du har fått innvilget pensjon")
+            }
+
+            // Avsnitt
+            paragraph {
+                text(Bokmal to "Test dette er en test")
+                list {
+                    item {
+                        text(Bokmal to "Hello world!")
+                    }
+                }
+                list {
+                    showIf(true.expr()) {
+                        item {
+                            text(Bokmal to "Test1")
+                        }
+                    }
+                    showIf(false.expr()) {
+                        item {
+                            text(Bokmal to "Test2")
+                        }
+                    }
+                    showIf(true.expr()) {
+                        item {
+                            text(Bokmal to "Test3")
+                        }
+                    }
+                    item{
+                        textExpr(Bokmal to "Hello".expr() + "world".expr())
+                    }
+                }
             }
 
             // Inkluder data fra datagrunnlaget til malen inn i brevet som tekst
             eval { argument().select(EksempelBrevDto::pensjonInnvilget).str() }
-
-            // Inkludering av eksisterende frase/mini-mal for gjenbruk av elementer
-            includePhrase(
-                argument().select(EksempelBrevDto::pensjonInnvilget)
-                    .map { TestFraseDto(it.toString()) },
-                testFrase
-            )
+            text(Bokmal to "test")
+            paragraph {
+                table {
+                    title {
+                        text(Bokmal to "Eksempeltabell")
+                    }
+                    columnHeaderRow {
+                        cell(4) {
+                            text(
+                                Bokmal to "Dette er en lang lang tittel. Dette er en lang lang tittel. Dette er en lang lang tittel. Dette er en lang lang tittel.",
+                                FontType.BOLD
+                            )
+                        }
+                    }
+                    columnHeaderRow {
+                        cell(2) {
+                            text(Bokmal to "Blabla 2 kolonner brei")
+                        }
+                        cell(2) {
+                            text(Bokmal to "Blabla 2 kolonner brei")
+                        }
+                    }
+                    columnHeaderRow {
+                        cell(1) {
+                            text(Bokmal to "Blabla 1 kolonne brei")
+                        }
+                        cell(3) {
+                            text(Bokmal to "Blabla 3 kolonner breiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii")
+                        }
+                    }
+                    for (i in 1..50) {
+                        row {
+                            cell {
+                                text(Bokmal to "$i Kr")
+                            }
+                            cell {
+                                text(Bokmal to "$i Kr")
+                            }
+                            cell {
+                                text(Bokmal to "$i Kr")
+                            }
+                            cell {
+                                text(Bokmal to "$i Kr")
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }

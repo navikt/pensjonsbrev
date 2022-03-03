@@ -4,9 +4,9 @@ import no.nav.pensjon.brev.api.model.LetterMetadata
 import no.nav.pensjon.brev.template.base.BaseTemplate
 import kotlin.reflect.KClass
 
-data class LetterTemplate<out Lang : LanguageSupport, LetterData : Any>(
+data class LetterTemplate<Lang : LanguageSupport, LetterData : Any>(
     val name: String,
-    //TODO: Lag støtte for kombinert literal og expression
+    //TODO: Lag støtte for kombinert literal og expression for title
     val title: Element.Text.Literal<Lang>,
     val base: BaseTemplate,
     val letterDataType: KClass<LetterData>,
@@ -39,9 +39,10 @@ sealed class Expression<out Out> {
 
     data class UnaryInvoke<In, Out>(
         val value: Expression<In>,
-        val operation: UnaryOperation<In, Out>
+        val operation: UnaryOperation<In, Out>,
     ) : Expression<Out>() {
         override fun eval(scope: ExpressionScope<*, *>): Out = operation.apply(value.eval(scope))
+        override fun toString(): String = "$operation($value)"
     }
 
     data class BinaryInvoke<In1, In2, out Out>(
@@ -49,9 +50,8 @@ sealed class Expression<out Out> {
         val second: Expression<In2>,
         val operation: BinaryOperation<In1, In2, Out>
     ) : Expression<Out>() {
-        override fun eval(scope: ExpressionScope<*, *>): Out {
-            return operation.apply(first.eval(scope), second.eval(scope))
-        }
+        override fun eval(scope: ExpressionScope<*, *>): Out = operation.apply(first.eval(scope), second.eval(scope))
+        override fun toString(): String = "$operation($first, $second)"
     }
 
 }
@@ -63,10 +63,51 @@ sealed class Element<out Lang : LanguageSupport> {
 
     data class Title1<out Lang : LanguageSupport>(val title1: List<Element<Lang>>) : Element<Lang>()
     data class Paragraph<out Lang : LanguageSupport>(val paragraph: List<Element<Lang>>) : Element<Lang>()
-    sealed class ItemList<out Lang : LanguageSupport> : Element<Lang>() {
-        data class Dynamic<out Lang : LanguageSupport>(val items: Expression<List<String>>) : ItemList<Lang>()
-        data class Static<out Lang : LanguageSupport>(val items: List<Element<Lang>>) : ItemList<Lang>()
+
+    data class ItemList<Lang : LanguageSupport>(
+        val items: List<Item<Lang>>
+    ) : Element<Lang>() {
+        init {
+            if (items.isEmpty()) throw IllegalArgumentException("List has no items")
+        }
+
+        data class Item<Lang : LanguageSupport>(
+            val elements: List<Element<Lang>>,
+            val condition: Expression<Boolean>? = null
+        )
     }
+
+    data class Table<Lang : LanguageSupport>(
+        val title: List<Element<Lang>>?,
+        val rows: List<Row<Lang>>,
+        val columnHeaders: List<Row<Lang>>,
+    ) : Element<Lang>() {
+        val width: Int
+
+        init {
+            val cellWidths = rows.map { it.cells.sumOf { cell -> cell.cellColumns } }.distinct()
+            if (cellWidths.size > 1) {
+                throw IllegalArgumentException("rows in the table needs to have the same number of columns")
+            }
+            width = cellWidths.firstOrNull()
+                ?: throw IllegalArgumentException("rows in the table needs to have cells/columns")
+
+            if (width == 0) {
+                throw IllegalArgumentException("the row(s) are empty")
+            }
+            if (title?.isEmpty() ?: throw IllegalArgumentException("Missing table title")) {
+                throw IllegalArgumentException("Table title is empty")
+            }
+        }
+
+        data class Row<Lang : LanguageSupport>(val cells: List<Cell<Lang>>, val condition: Expression<Boolean>? = null)
+
+        data class Cell<Lang : LanguageSupport>(
+            val elements: List<Element<Lang>>,
+            val cellColumns: Int
+        )
+    }
+
 
     sealed class Form<out Lang : LanguageSupport> : Element<Lang>() {
         data class Text<out Lang : LanguageSupport>(
@@ -90,28 +131,53 @@ sealed class Element<out Lang : LanguageSupport> {
     class NewLine<out Lang : LanguageSupport> : Element<Lang>()
 
     sealed class Text<out Lang : LanguageSupport> : Element<Lang>() {
-        data class Literal<out Lang : LanguageSupport> private constructor(private val text: Map<Language, String>) :
-            Text<Lang>() {
+        data class Literal<out Lang : LanguageSupport> private constructor(
+            private val text: Map<Language, String>,
+            val languages: Lang,
+            val fontType: FontType
+        ) : Text<Lang>() {
 
             fun text(language: Language): String =
                 text[language]
                     ?: throw IllegalArgumentException("Text.Literal doesn't contain language: ${language::class.qualifiedName}")
 
             companion object {
-                fun <Lang1 : Language> create(lang1: Pair<Lang1, String>) =
-                    Literal<LanguageSupport.Single<Lang1>>(mapOf(lang1))
+                fun <Lang1 : Language> create(
+                    lang1: Pair<Lang1, String>,
+                    fontType: FontType = FontType.PLAIN
+                ) = Literal<LanguageSupport.Single<Lang1>>(
+                    text = mapOf(lang1),
+                    languages = LanguageCombination.Single(lang1.first),
+                    fontType = fontType
+                )
 
                 fun <Lang1 : Language, Lang2 : Language> create(
                     lang1: Pair<Lang1, String>,
                     lang2: Pair<Lang2, String>,
-                ) = Literal<LanguageSupport.Double<Lang1, Lang2>>(mapOf(lang1, lang2))
+                    fontType: FontType = FontType.PLAIN,
+                ) = Literal<LanguageSupport.Double<Lang1, Lang2>>(
+                    text = mapOf(lang1, lang2),
+                    languages = LanguageCombination.Double(lang1.first, lang2.first),
+                    fontType = fontType
+                )
 
                 fun <Lang1 : Language, Lang2 : Language, Lang3 : Language> create(
                     lang1: Pair<Lang1, String>,
                     lang2: Pair<Lang2, String>,
                     lang3: Pair<Lang3, String>,
-                ) = Literal<LanguageSupport.Triple<Lang1, Lang2, Lang3>>(mapOf(lang1, lang2, lang3))
+                    fontType: FontType = FontType.PLAIN,
+                ) = Literal<LanguageSupport.Triple<Lang1, Lang2, Lang3>>(
+                    text = mapOf(lang1, lang2, lang3),
+                    languages = LanguageCombination.Triple(lang1.first, lang2.first, lang3.first),
+                    fontType = fontType
+                )
             }
+        }
+
+        enum class FontType {
+            PLAIN,
+            BOLD,
+            ITALIC
         }
 
         data class Expression<out Lang : LanguageSupport>(val expression: StringExpression) :
@@ -142,8 +208,6 @@ sealed class Element<out Lang : LanguageSupport> {
                 }
             }
         }
-
-
     }
 
     data class Conditional<out Lang : LanguageSupport>(

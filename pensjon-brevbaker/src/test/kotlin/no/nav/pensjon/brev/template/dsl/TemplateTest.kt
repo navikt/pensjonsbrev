@@ -1,13 +1,11 @@
 package no.nav.pensjon.brev.template.dsl
 
 import com.natpryce.hamkrest.assertion.assertThat
-import com.natpryce.hamkrest.equalTo
 import com.natpryce.hamkrest.isA
-import no.nav.pensjon.brev.api.model.LetterMetadata
-import no.nav.pensjon.brev.maler.fraser.TestFraseDto
-import no.nav.pensjon.brev.maler.fraser.testFrase
+import no.nav.pensjon.brev.maler.fraser.*
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.base.PensjonLatex
+import no.nav.pensjon.brev.template.dsl.expression.*
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
@@ -15,24 +13,12 @@ typealias BokmalLang = LanguageSupport.Single<Language.Bokmal>
 
 class TemplateTest {
 
-    private data class SomeDto(val name: String, val pensjonInnvilget: Boolean, val kortNavn: String? = null)
-
-    val bokmalTittel = newText(Language.Bokmal to "test brev")
-    val nynorskTittel = newText(Language.Nynorsk to "test brev")
-
-
-    private val testLetterMetadata = LetterMetadata(
-        displayTitle = "En fin display tittel",
-        isSensitiv = false,
-    )
-
     @Test
     fun `createTemplate can add outline with title1 using text-builder`() {
         val doc = createTemplate(
             name = "test",
             base = PensjonLatex,
             letterDataType = Unit::class,
-            lang = languages(Language.Bokmal),
             title = bokmalTittel,
             letterMetadata = testLetterMetadata,
         ) {
@@ -84,7 +70,6 @@ class TemplateTest {
             name = "test",
             base = PensjonLatex,
             letterDataType = SomeDto::class,
-            lang = languages(Language.Bokmal),
             title = bokmalTittel,
             letterMetadata = testLetterMetadata,
         ) {
@@ -151,7 +136,6 @@ class TemplateTest {
             name = "test",
             base = PensjonLatex,
             letterDataType = Unit::class,
-            lang = languages(Language.Bokmal),
             title = bokmalTittel,
             letterMetadata = testLetterMetadata,
         ) {
@@ -179,7 +163,6 @@ class TemplateTest {
             name = "test",
             base = PensjonLatex,
             letterDataType = Unit::class,
-            lang = languages(Language.Bokmal),
             title = bokmalTittel,
             letterMetadata = testLetterMetadata,
         ) {
@@ -209,50 +192,11 @@ class TemplateTest {
     }
 
     @Test
-    fun `createTemplate adds showIf`() {
-        val expected = LetterTemplate(
-            name = "test",
-            title = nynorskTittel,
-            base = PensjonLatex,
-            letterDataType = SomeDto::class,
-            language = languages(Language.Nynorsk),
-            letterMetadata = testLetterMetadata,
-            outline = listOf(
-                Element.Conditional(
-                    Expression.FromScope(ExpressionScope<SomeDto, *>::argument).select(SomeDto::pensjonInnvilget),
-                    listOf(newText(Language.Nynorsk to "jadda")),
-                    listOf(newText(Language.Nynorsk to "neida"))
-                )
-            )
-        )
-
-        val actual = createTemplate(
-            name = "test",
-            base = PensjonLatex,
-            letterDataType = SomeDto::class,
-            lang = languages(Language.Nynorsk),
-            title = nynorskTittel,
-            letterMetadata = testLetterMetadata,
-        ) {
-            outline {
-                showIf(argument().select(SomeDto::pensjonInnvilget)) {
-                    text(Language.Nynorsk to "jadda")
-                } orShow {
-                    text(Language.Nynorsk to "neida")
-                }
-            }
-        }
-
-        assertThat(expected, equalTo(actual))
-    }
-
-    @Test
     fun `createTemplate can add Text$Expression elements`() {
         val template = createTemplate(
             name = "test",
             base = PensjonLatex,
             letterDataType = SomeDto::class,
-            lang = languages(Language.Bokmal),
             title = bokmalTittel,
             letterMetadata = testLetterMetadata,
         ) {

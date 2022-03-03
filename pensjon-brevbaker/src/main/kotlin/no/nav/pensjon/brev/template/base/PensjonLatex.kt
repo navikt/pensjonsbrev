@@ -4,160 +4,44 @@ import no.nav.pensjon.brev.api.model.*
 import no.nav.pensjon.brev.latex.LatexPrintWriter
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.*
+import no.nav.pensjon.brev.template.Element.Text.FontType.*
+import no.nav.pensjon.brev.template.base.pensjonlatex.pensjonLatexSettings
+import no.nav.pensjon.brev.template.dsl.expression.select
 import no.nav.pensjon.brev.template.dsl.languageSettings
-import no.nav.pensjon.brev.template.dsl.select
 import no.nav.pensjon.brev.template.dsl.text
-import java.io.InputStream
 import java.time.LocalDate
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
 
 object PensjonLatex : BaseTemplate() {
-    override val languageSettings: LanguageSettings = languageSettings {
-        setting("navnprefix") {
-            text(
-                Language.Bokmal to "Navn:",
-                Language.Nynorsk to "Namn:",
-                Language.English to "Name:",
-            )
-        }
+    val letterResourceFiles: Map<String, ByteArray> = hashMapOf(
+        "nav-logo.pdf" to getResource("latex/nav-logo.pdf"),
+        "nav-logo.pdf_tex" to getResource("latex/nav-logo.pdf_tex"),
+        "pensjonsbrev_v3.cls" to getResource("latex/pensjonsbrev_v3.cls"),
+        "firstpage.tex" to getResource("latex/firstpage.tex"),
+        "attachment.tex" to getResource("latex/attachment.tex"),
+        "closing.tex" to getResource("latex/closing.tex"),
+        "content.tex" to getResource("latex/content.tex"),
+        "tabularray.sty" to getResource("latex/tabularray.sty"),
+    )
 
-        setting("saksnummerprefix") {
-            text(
-                Language.Bokmal to "NAVs saksnummer:",
-                Language.Nynorsk to "NAVs saksnummer:",
-                Language.English to "NAV’s case number:",
-            )
-        }
+    private fun getResource(fileName: String): ByteArray =
+        this::class.java.getResourceAsStream("/$fileName")
+            ?.use { it.readAllBytes() }
+            ?: throw IllegalStateException("""Could not find latex resource /$fileName""")
 
-        setting("foedselsnummerprefix") {
-            text(
-                Language.Bokmal to "Fødselsnummer:",
-                Language.Nynorsk to "Fødselsnummer:",
-                Language.English to "National identity number:",
-            )
-        }
-
-        setting("returadresseenhetprefix") {
-            text(
-                Language.Bokmal to "Returadresse:",
-                Language.Nynorsk to "Returadresse:",
-                Language.English to "Return address:",
-            )
-        }
-
-        setting("datoprefix") {
-            text(
-                Language.Bokmal to "Dato:",
-                Language.Nynorsk to "Dato:",
-                Language.English to "Date:",
-            )
-        }
-
-        setting("postadresseprefix") {
-            text(
-                Language.Bokmal to "Postadresse:",
-                Language.Nynorsk to "Postadresse:",
-                Language.English to "Mailing address:",
-            )
-        }
-
-        setting("sideprefix") {
-            text(
-                Language.Bokmal to "Side",
-                Language.Nynorsk to "Side",
-                Language.English to "Page",
-            )
-        }
-
-        setting("sideinfix") {
-            text(
-                Language.Bokmal to "av",
-                Language.Nynorsk to "av",
-                Language.English to "of",
-            )
-        }
-
-        setting("navenhettlfprefix") {
-            text(
-                Language.Bokmal to "Telefon:",
-                Language.Nynorsk to "Telefon:",
-                Language.English to "Phone number:",
-            )
-        }
-
-        setting("closingspoersmaal") {
-            text(
-                Language.Bokmal to "Har du spørsmål?",
-                Language.Nynorsk to "Har du spørsmål?",
-                Language.English to "Do you have questions?",
-            )
-        }
-
-        setting("closingkontaktoss") {
-            text(
-                Language.Bokmal to "Kontakt oss gjerne på ",
-                Language.Nynorsk to "Kontakt oss gjerne på ",
-                Language.English to "You will find further information at ",
-            )
-            val avsender = felles().select(Felles::avsenderEnhet)
-
-            eval { avsender.select(NAVEnhet::nettside) }
-            text(
-                Language.Bokmal to " eller på telefon ",
-                Language.Nynorsk to " eller på telefon ",
-                Language.English to ". You can also contact us by phone ",
-            )
-            eval { avsender.select(NAVEnhet::telefonnummer).select(Telefonnummer::format) }
-            text(
-                Language.Bokmal to ". Hvis du oppgir fødselsnummeret ditt når du tar kontakt med NAV, kan vi lettere gi deg rask og god hjelp.",
-                Language.Nynorsk to ". Dersom du gir opp fødselsnummeret ditt når du kontaktar NAV, kan vi lettare gi deg rask og god hjelp.",
-                Language.English to ".",
-            )
-        }
-
-        setting("closinggreeting") {
-            text(
-                Language.Bokmal to "Med vennlig hilsen",
-                Language.Nynorsk to "Med vennleg helsing",
-                Language.English to "Yours sincerely",
-            )
-        }
-
-        setting("closingsaksbehandlersuffix") {
-            text(
-                Language.Bokmal to "saksbehandler",
-                Language.Nynorsk to "saksbehandlar",
-                Language.English to "Executive Officer",
-            )
-        }
-        setting("closingautomatisktext") {
-            text(
-                Language.Bokmal to "Brevet er produsert automatisk og derfor ikke underskrevet av saksbehandler.",
-                Language.Nynorsk to "Brevet er produsert automatisk og er difor ikkje underskrive av saksbehandler.",
-                Language.English to "This letter has been processed automatically and is therefore not signed by an assessor.",
-            )
-        }
-        setting("closingvedleggprefix") {
-            text(
-                Language.Bokmal to "Vedlegg:",
-                Language.Nynorsk to "Vedlegg:",
-                Language.English to "Attachments:",
-            )
-        }
-    }
+    override val languageSettings: LanguageSettings = pensjonLatexSettings
 
     override fun render(letter: Letter<*>): RenderedLetter =
         RenderedLatexLetter().apply {
             newFile("params.tex").use { masterTemplateParameters(letter, LatexPrintWriter(it)) }
             newFile("letter.xmpdata").use { xmpData(letter, LatexPrintWriter(it)) }
             newFile("letter.tex").use { renderLetterV2(letter, LatexPrintWriter(it)) }
-            newFile("nav-logo.pdf").use { getResource("nav-logo.pdf").transferTo(it) }
-            newFile("nav-logo.pdf_tex").use { getResource("nav-logo.pdf_tex").transferTo(it) }
-            newFile("pensjonsbrev_v2.cls").use { getResource("pensjonsbrev_v2.cls").transferTo(it) }
             letter.template.attachments.forEachIndexed { index, attachment ->
                 newFile("attachment_$index.tex").use { renderAttachment(letter, attachment, LatexPrintWriter(it)) }
             }
+            addFiles(letterResourceFiles)
         }
 
     private fun xmpData(letter: Letter<*>, latexPrintWriter: LatexPrintWriter) {
@@ -196,19 +80,17 @@ object PensjonLatex : BaseTemplate() {
             }
             attachment.template.outline.forEach { renderElement(scope, it, printWriter) }
             printCmd("sluttvedlegg")
-
         }
 
     private fun renderLetterV2(letter: Letter<*>, printWriter: LatexPrintWriter): Unit =
         with(printWriter) {
-            println("""\documentclass[12pt]{pensjonsbrev_v2}""", escape = false)
+            println("""\documentclass[12pt]{pensjonsbrev_v3}""", escape = false)
             pdfMetadata(letter, printWriter)
             printCmd("begin", "document")
-            printCmd("begin", "letter", """\brevparameter""", escape = false)
+            printCmd("firstpage")
             printCmd("tittel", letter.template.title.text(letter.language))
             contents(letter, printWriter)
             printCmd("closing")
-            printCmd("end", "letter")
             letter.template.attachments.forEachIndexed { index, _ ->
                 printCmd(
                     "input",
@@ -242,7 +124,7 @@ object PensjonLatex : BaseTemplate() {
         }
     }
 
-    fun pdfCreationTime(): String {
+    private fun pdfCreationTime(): String {
         val now = ZonedDateTime.now()
         val formattedTime = now.format(DateTimeFormatter.ofPattern("YYYYMMddHHmmssxxx"))
         return "D:${formattedTime.replace(":", "’")}’"
@@ -259,7 +141,7 @@ object PensjonLatex : BaseTemplate() {
     }
 
     private fun datoCommand(dato: LocalDate, language: Language, printWriter: LatexPrintWriter) {
-        printWriter.printNewCmd("feltdato", dato.format(dateFormatter(language)))
+        printWriter.printNewCmd("feltdato", dato.format(dateFormatter(language, FormatStyle.LONG)))
     }
 
     private fun mottakerCommands(mottaker: Mottaker, printWriter: LatexPrintWriter) =
@@ -325,8 +207,17 @@ object PensjonLatex : BaseTemplate() {
                     toRender.forEach { renderElement(scope, it, printWriter) }
                 }
 
-            is Element.Text.Literal ->
-                printWriter.print(element.text(scope.language))
+            is Element.Text.Literal -> {
+                val textLiteral = element.text(scope.language)
+                with(printWriter) {
+                    when (element.fontType) {
+                        PLAIN -> print(textLiteral)
+                        BOLD -> printCmd("textbf") { arg { print(textLiteral) } }
+                        ITALIC -> printCmd("textit") { arg { print(textLiteral) } }
+                    }
+                }
+
+            }
 
             is Element.Text.Expression ->
                 printWriter.print(element.expression.eval(scope))
@@ -334,49 +225,23 @@ object PensjonLatex : BaseTemplate() {
             is Element.Text.Expression.ByLanguage ->
                 printWriter.print(element.expr(scope.language).eval(scope))
 
-            is Element.ItemList.Static ->
-                if (element.items.any { it !is Element.Conditional || it.predicate.eval(scope) }) {
-                    with(printWriter) {
-                        printCmd("begin") {
-                            arg { print("itemize") }
-                        }
-
-                        element.items.filter { it !is Element.Conditional || it.predicate.eval(scope) }
-                            .forEach {
-                                print("""\item """, escape = false)
-                                renderElement(scope, it, this)
-                            }
-
-                        printCmd("end") {
-                            arg { print("itemize") }
+            is Element.ItemList ->
+                with(printWriter) {
+                    val items = element.items.filter { it.condition == null || it.condition.eval(scope) }
+                    if (items.isEmpty()) return
+                    printCmd("begin") {
+                        arg { print("itemize") }
+                    }
+                    items.forEach { item ->
+                        print("""\item """, escape = false)
+                        item.elements.forEach {
+                            renderElement(scope, it, this)
                         }
                     }
-
-                } else Unit
-
-            is Element.ItemList.Dynamic -> {
-                val items = element.items.eval(scope)
-                if (items.any { it.isNotBlank() }) {
-                    with(printWriter) {
-
-                        printCmd("begin") {
-                            arg { print("itemize") }
-                        }
-
-                        items.forEach {
-                            if (it.isNotBlank()) {
-                                print("""\item """, escape = false)
-                                print(it)
-                            }
-                        }
-
-                        printCmd("end") {
-                            arg { print("itemize") }
-                        }
+                    printCmd("end") {
+                        arg { print("itemize") }
                     }
-                } else Unit
-            }
-
+                }
             is Element.Paragraph ->
                 printWriter.printCmd("templateparagraph") {
                     arg { element.paragraph.forEach { child -> renderElement(scope, child, it) } }
@@ -417,11 +282,81 @@ object PensjonLatex : BaseTemplate() {
 
             is Element.NewLine ->
                 printWriter.printCmd("newline")
+            is Element.Table ->
+                with(printWriter) {
+                    val rows = element.rows.filter { it.condition == null || it.condition.eval(scope) }
+                    if (rows.isEmpty()) return
+
+                    printCmd("setlength") {
+                        arg{printCmd("parskip")}
+                        arg { print("0pt") }
+                    }
+
+                    val columnHeaders =
+                        element.columnHeaders.filter { it.condition == null || it.condition.eval(scope) }
+
+                    val tableWidth = element.width
+                    printCmd("begin") {
+                        arg { print("longtblr") }
+
+                        element.title?.let {
+                            print("[caption={", escape = false)
+                            it.forEach { titleElem -> renderElement(scope, titleElem, printWriter) }
+                            print("}]", escape = false)
+                        }
+
+                        arg {
+                            print(
+                                "colspec={${columnFormat(tableWidth)}}," +
+                                        (if (columnHeaders.isNotEmpty()) "rowhead=${columnHeaders.size}," else "") +
+                                        "width=\\textwidth," +
+                                        "hspan=minimal," + //wrap instead of widening table over limit
+                                        "hlines={1pt,linecolor}," +
+                                        "vlines={1pt,linecolor}," +
+                                        "row{odd}={row1color}," +
+                                        "row{even}={row2color}," +
+                                        (if (columnHeaders.isNotEmpty()) "row{1-${columnHeaders.size}}={columnheadercolor}," else ""),
+                                escape = false
+                            )
+                        }
+                    }
+
+                    columnHeaders
+                        .plus(rows)
+                        .forEach { row ->
+                            row.cells.forEachIndexed { index, cell ->
+                                if (cell.cellColumns > 1) {
+                                    print("\\SetCell[c=${cell.cellColumns}]{}", escape = false)
+                                }
+                                cell.elements.forEach { cellElement ->
+                                    renderElement(scope, cellElement, printWriter)
+                                }
+                                if (cell.cellColumns > 1) {
+                                    print(" ${"& ".repeat(cell.cellColumns - 1)}", escape = false)
+                                }
+                                if (index < row.cells.lastIndex) {
+                                    print("&", escape = false)
+                                }
+                            }
+                            print("""\\""", escape = false)
+                        }
+
+                    printCmd("end") {
+                        arg { print("longtblr") }
+                    }
+
+                    printCmd("setlength") {
+                        arg{printCmd("parskip")}
+                        arg { print("1em") }
+                    }
+                }
         }
 
-    private fun getResource(fileName: String): InputStream {
-        return this::class.java.getResourceAsStream("/$fileName")
-            ?: throw IllegalStateException("""Could not find class resource /$fileName""")
-    }
-
+    private fun columnFormat(columns: Int)
+            : String =
+        if (columns > 0) {
+            "|" + "X|".repeat(columns)
+        } else {
+            ""
+        }
 }

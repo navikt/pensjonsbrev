@@ -19,7 +19,6 @@ data class Mottaker(
     val mellomnavn: String? = null,
     val etternavn: String,
     val foedselsnummer: Foedselsnummer,
-    val kortnavn: String,
     val adresse: Adresse
 )
 

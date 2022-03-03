@@ -2,7 +2,9 @@ package no.nav.pensjon.brev.template
 
 import no.nav.pensjon.brev.api.model.Telefonnummer
 import no.nav.pensjon.brev.model.format
+import no.nav.pensjon.brev.template.expression.Predicate
 import java.time.LocalDate
+import java.time.format.FormatStyle
 
 abstract class Operation {
     // Since most operations don't have fields, and hence can't be data classes,
@@ -16,6 +18,8 @@ abstract class Operation {
     override fun hashCode(): Int {
         return javaClass.hashCode()
     }
+
+    override fun toString(): String = "${this::class.simpleName}"
 }
 
 sealed class UnaryOperation<In, out Out> : Operation() {
@@ -46,7 +50,7 @@ sealed class BinaryOperation<in In1, in In2, out Out> : Operation() {
 
     abstract fun apply(first: In1, second: In2): Out
 
-    class Equal<In : Comparable<In>> : BinaryOperation<In, In, Boolean>() {
+    class Equal<In> : BinaryOperation<In, In, Boolean>() {
         override fun apply(first: In, second: In): Boolean = first == second
     }
 
@@ -62,12 +66,34 @@ sealed class BinaryOperation<in In1, in In2, out Out> : Operation() {
         override fun apply(first: String, second: String): String = first + second
     }
 
+    object LocalizedShortDateFormat : BinaryOperation<LocalDate, Language, String>() {
+        override fun apply(first: LocalDate, second: Language): String =
+            first.format(dateFormatter(second, FormatStyle.SHORT))
+    }
+
     object LocalizedDateFormat : BinaryOperation<LocalDate, Language, String>() {
         override fun apply(first: LocalDate, second: Language): String =
-            first.format(dateFormatter(second))
+            first.format(dateFormatter(second, FormatStyle.LONG))
+    }
+
+    object LocalizedDoubleFormat : BinaryOperation<Double, Language, String>() {
+        override fun apply(first: Double, second: Language): String =
+            String.format(second.locale(), "%.2f", first)
     }
 
     class EnumInList<EnumType : Enum<*>> : BinaryOperation<EnumType, List<EnumType>, Boolean>() {
         override fun apply(first: EnumType, second: List<EnumType>): Boolean = second.contains(first)
+    }
+
+    class IfElse<Out> : BinaryOperation<Boolean, Pair<Out, Out>, Out>() {
+        override fun apply(first: Boolean, second: Pair<Out, Out>): Out = if (first) second.first else second.second
+    }
+
+    class Tuple<Out> : BinaryOperation<Out, Out, Pair<Out, Out>>() {
+        override fun apply(first: Out, second: Out): Pair<Out, Out> = first to second
+    }
+
+    class ValidatePredicate<T> : BinaryOperation<Predicate<T>, T, Boolean>() {
+        override fun apply(first: Predicate<T>, second: T): Boolean = first.validate(second)
     }
 }
