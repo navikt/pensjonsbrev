@@ -1,11 +1,10 @@
 package no.nav.pensjon.brev.template.base
 
 import no.nav.pensjon.brev.Fixtures
+import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Language.Bokmal
-import no.nav.pensjon.brev.template.Letter
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.template.outlineTestTemplate
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import java.nio.charset.Charset
@@ -99,25 +98,4 @@ class PensjonLatexTest {
             .assertRenderedLetterContainsAllOf("this text should render")
     }
 
-    fun <Param : Any> Letter<Param>.assertRenderedLetterDoesNotContainAnyOf(vararg searchText: String): Letter<Param> {
-        val letterString = this.render().base64EncodedFiles()["letter.tex"]
-        searchText.forEach {
-            Assertions.assertFalse(
-                Base64.getDecoder().decode(letterString).toString(Charset.defaultCharset()).contains(it),
-                """Letter should not contain "$it""""
-            )
-        }
-        return this
-    }
-
-    fun <Param : Any> Letter<Param>.assertRenderedLetterContainsAllOf(vararg searchText: String): Letter<Param> {
-        val letterString = this.render().base64EncodedFiles()["letter.tex"]
-        searchText.forEach {
-            Assertions.assertTrue(
-                Base64.getDecoder().decode(letterString).toString(Charset.defaultCharset()).contains(it),
-                """Letter should contain "$it""""
-            )
-        }
-        return this
-    }
 }

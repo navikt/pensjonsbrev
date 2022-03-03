@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.maler
 
 import kotlinx.coroutines.runBlocking
 import no.nav.pensjon.brev.*
+import no.nav.pensjon.brev.api.model.maler.UngUfoerAutoDto
 import no.nav.pensjon.brev.latex.*
 import no.nav.pensjon.brev.maler.fraser.omregning.ufoeretrygd.Ufoeretrygd
 import no.nav.pensjon.brev.template.*
@@ -17,17 +18,7 @@ class UngUfoerAutoITest {
     fun test() {
         Letter(
             UngUfoerAuto.template,
-            UngUfoerAutoDto(
-                kravVirkningFraOgMed = LocalDate.of(2022, 1, 1),
-                totaltUfoerePerMnd = 9000,
-                utbetalt = setOf(Ufoeretrygd.Tillegg.EKTEFELLE, Ufoeretrygd.Tillegg.SAERKULLSBARN),
-                innvilget = setOf(Ufoeretrygd.Tillegg.EKTEFELLE, Ufoeretrygd.Tillegg.SAERKULLSBARN, Ufoeretrygd.Tillegg.FELLESBARN),
-                antallFellesbarn = 2,
-                antallSaerkullsbarn = 1,
-                inntektstakFellesbarn = 10_000,
-                inntektstakSaerkullsbarn = 10_000,
-                minsteytelseVedVirkSats = 2.91,
-            ),
+            UngUfoerAutoDto(),
             Language.Bokmal,
             Fixtures.fellesAuto
         ).render()
