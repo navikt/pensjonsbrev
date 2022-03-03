@@ -6,9 +6,6 @@ import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Element.Text.FontType.*
 import no.nav.pensjon.brev.template.base.pensjonlatex.pensjonLatexSettings
-import no.nav.pensjon.brev.template.dsl.expression.select
-import no.nav.pensjon.brev.template.dsl.languageSettings
-import no.nav.pensjon.brev.template.dsl.text
 import java.time.LocalDate
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
@@ -312,16 +309,14 @@ object PensjonLatex : BaseTemplate() {
                         arg {
                             print(
                                 "colspec={${columnFormat(tableWidth)}}," +
-                                        (if (columnHeaders.isNotEmpty()) "rowhead=${columnHeaders.size}," else "") +
-                                        "width=\\textwidth," +
                                         "colsep = 1.947333341 mm," +
                                         "stretch = 0 mm," +
                                         "hspan=minimal," + //wrap instead of widening table over limit
                                         "hlines={0.084666667mm,linecolor}," +
-                                        (if (columnHeaders.isNotEmpty()) "hline{1-${columnHeaders.size}}={0pt,linecolor}," else "") +
                                         "row{odd}={row1color,rowsep=1.5mm}," +
                                         "row{even}={row2color,rowsep=1.5mm}," +
-                                        (if (columnHeaders.isNotEmpty()) "row{1-${columnHeaders.size}}={columnheadercolor,rowsep=2.54mm}," else ""),
+                                        columnHeaderParams(columnHeaders.size) +
+                                        "width=\\textwidth,",
                                 escape = false
                             )
                         }
@@ -334,7 +329,6 @@ object PensjonLatex : BaseTemplate() {
                                 if (cell.cellColumns > 1) {
                                     print("\\SetCell[c=${cell.cellColumns}]{}", escape = false)
                                 }
-//                                print("\\rule{1cm}{1cm}", escape = false)
                                 cell.elements.forEach { cellElement ->
                                     renderElement(scope, cellElement, printWriter)
                                 }
@@ -358,6 +352,13 @@ object PensjonLatex : BaseTemplate() {
                     }
                 }
         }
+
+    private fun columnHeaderParams(columnHeaderCount: Int) =
+        if (columnHeaderCount > 0)
+            "rowhead=${columnHeaderCount}," +
+                    "hline{1-${columnHeaderCount}}={0pt,linecolor}," +
+                    "row{1-${columnHeaderCount}}={columnheadercolor,rowsep=2.54mm},"
+        else ""
 
     private fun columnFormat(columns: Int)
             : String =
