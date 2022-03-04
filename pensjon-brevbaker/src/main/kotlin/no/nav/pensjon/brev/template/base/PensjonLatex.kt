@@ -308,7 +308,7 @@ object PensjonLatex : BaseTemplate() {
 
                         arg {
                             print(
-                                "colspec={${columnFormat(tableWidth)}}," +
+                                "colspec={${"X".repeat(tableWidth)}}," +
                                         "colsep = 1.947333341 mm," +
                                         "stretch = 0 mm," +
                                         "hspan=minimal," + //wrap instead of widening table over limit
@@ -359,12 +359,4 @@ object PensjonLatex : BaseTemplate() {
                     "hline{1-${columnHeaderCount}}={0pt,linecolor}," +
                     "row{1-${columnHeaderCount}}={columnheadercolor,rowsep=2.54mm},"
         else ""
-
-    private fun columnFormat(columns: Int)
-            : String =
-        if (columns > 0) {
-            "X".repeat(columns)
-        } else {
-            ""
-        }
 }
