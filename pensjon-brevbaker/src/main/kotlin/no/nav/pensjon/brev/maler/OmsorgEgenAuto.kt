@@ -63,12 +63,6 @@ object OmsorgEgenAuto : StaticTemplate {
         includeAttachment(egenerklaeringPleieOgOmsorgsarbeid, argument().map {
             EgenerklaeringPleieOgOmsorgsarbeid(it.aarEgenerklaringOmsorgspoeng)
         })
-        includeAttachment(egenerklaeringPleieOgOmsorgsarbeid, argument().map {
-            EgenerklaeringPleieOgOmsorgsarbeid(it.aarEgenerklaringOmsorgspoeng)
-        })
-        includeAttachment(egenerklaeringPleieOgOmsorgsarbeid, argument().map {
-            EgenerklaeringPleieOgOmsorgsarbeid(it.aarEgenerklaringOmsorgspoeng)
-        })
     }
 
 }
