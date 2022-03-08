@@ -6,9 +6,6 @@ import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Element.Text.FontType.*
 import no.nav.pensjon.brev.template.base.pensjonlatex.pensjonLatexSettings
-import no.nav.pensjon.brev.template.dsl.expression.select
-import no.nav.pensjon.brev.template.dsl.languageSettings
-import no.nav.pensjon.brev.template.dsl.text
 import java.time.LocalDate
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
@@ -299,23 +296,27 @@ object PensjonLatex : BaseTemplate() {
                     printCmd("begin") {
                         arg { print("longtblr") }
 
+                        print("[", escape = false)
                         element.title?.let {
-                            print("[caption={", escape = false)
+                            print("caption={", escape = false)
                             it.forEach { titleElem -> renderElement(scope, titleElem, printWriter) }
-                            print("}]", escape = false)
+                            print("},", escape = false)
                         }
+                        print("presep={10.16mm},", escape=false)
+                        print("postsep={3.979333349mm},", escape=false)
+                        print("]", escape = false)
 
                         arg {
                             print(
-                                "colspec={${columnFormat(tableWidth)}}," +
-                                        (if (columnHeaders.isNotEmpty()) "rowhead=${columnHeaders.size}," else "") +
-                                        "width=\\textwidth," +
+                                "colspec={${"X".repeat(tableWidth)}}," +
+                                        "colsep = 1.947333341 mm," +
+                                        "stretch = 0 mm," +
                                         "hspan=minimal," + //wrap instead of widening table over limit
-                                        "hlines={1pt,linecolor}," +
-                                        "vlines={1pt,linecolor}," +
-                                        "row{odd}={row1color}," +
-                                        "row{even}={row2color}," +
-                                        (if (columnHeaders.isNotEmpty()) "row{1-${columnHeaders.size}}={columnheadercolor}," else ""),
+                                        "hlines={0.084666667mm,linecolor}," +
+                                        "row{odd}={row1color,rowsep=1.5mm}," +
+                                        "row{even}={row2color,rowsep=1.5mm}," +
+                                        columnHeaderParams(columnHeaders.size) +
+                                        "width=\\textwidth,",
                                 escape = false
                             )
                         }
@@ -352,11 +353,10 @@ object PensjonLatex : BaseTemplate() {
                 }
         }
 
-    private fun columnFormat(columns: Int)
-            : String =
-        if (columns > 0) {
-            "|" + "X|".repeat(columns)
-        } else {
-            ""
-        }
+    private fun columnHeaderParams(columnHeaderCount: Int) =
+        if (columnHeaderCount > 0)
+            "rowhead=${columnHeaderCount}," +
+                    "hline{1-${columnHeaderCount}}={0pt,linecolor}," +
+                    "row{1-${columnHeaderCount}}={columnheadercolor,rowsep=2.54mm},"
+        else ""
 }

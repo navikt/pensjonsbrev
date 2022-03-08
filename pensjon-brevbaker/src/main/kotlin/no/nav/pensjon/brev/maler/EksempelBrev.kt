@@ -53,11 +53,6 @@ object EksempelBrev : StaticTemplate {
             paragraph {
                 text(Bokmal to "Test dette er en test")
                 list {
-                    item {
-                        text(Bokmal to "Hello world!")
-                    }
-                }
-                list {
                     showIf(true.expr()) {
                         item {
                             text(Bokmal to "Test1")
@@ -79,37 +74,17 @@ object EksempelBrev : StaticTemplate {
                 }
             }
 
-            // Inkluder data fra datagrunnlaget til malen inn i brevet som tekst
-            eval { argument().select(EksempelBrevDto::pensjonInnvilget).str() }
-            text(Bokmal to "test")
             paragraph {
+                text(Bokmal to "test")
                 table {
                     title {
                         text(Bokmal to "Eksempeltabell")
                     }
                     columnHeaderRow {
-                        cell(4) {
-                            text(
-                                Bokmal to "Dette er en lang lang tittel. Dette er en lang lang tittel. Dette er en lang lang tittel. Dette er en lang lang tittel.",
-                                FontType.BOLD
-                            )
-                        }
-                    }
-                    columnHeaderRow {
-                        cell(2) {
-                            text(Bokmal to "Blabla 2 kolonner brei")
-                        }
-                        cell(2) {
-                            text(Bokmal to "Blabla 2 kolonner brei")
-                        }
-                    }
-                    columnHeaderRow {
-                        cell(1) {
-                            text(Bokmal to "Blabla 1 kolonne brei")
-                        }
-                        cell(3) {
-                            text(Bokmal to "Blabla 3 kolonner breiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii")
-                        }
+                        cell(1) {text(Bokmal to "Kolonne 1",FontType.BOLD)}
+                        cell(1) {text(Bokmal to "Kolonne 2",FontType.BOLD)}
+                        cell(1) {text(Bokmal to "Kolonne 3",FontType.BOLD)}
+                        cell(1) {text(Bokmal to "Kolonne 4",FontType.BOLD)}
                     }
                     for (i in 1..50) {
                         row {

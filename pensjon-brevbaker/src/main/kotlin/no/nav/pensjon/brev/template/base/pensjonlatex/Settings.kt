@@ -1,10 +1,13 @@
 package no.nav.pensjon.brev.template.base.pensjonlatex
 
-import no.nav.pensjon.brev.api.model.*
+import no.nav.pensjon.brev.api.model.Felles
+import no.nav.pensjon.brev.api.model.NAVEnhet
+import no.nav.pensjon.brev.api.model.Telefonnummer
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Language
-import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brev.template.dsl.expression.select
+import no.nav.pensjon.brev.template.dsl.languageSettings
+import no.nav.pensjon.brev.template.dsl.text
 
 val pensjonLatexSettings = languageSettings {
     setting("navnprefix") {
@@ -17,9 +20,9 @@ val pensjonLatexSettings = languageSettings {
 
     setting("saksnummerprefix") {
         text(
-            Language.Bokmal to "NAVs saksnummer:",
-            Language.Nynorsk to "NAVs saksnummer:",
-            Language.English to "NAV’s case number:",
+            Language.Bokmal to "Saksnummer:",
+            Language.Nynorsk to "Saksnummer:",
+            Language.English to "Case number:",
         )
     }
 
@@ -36,14 +39,6 @@ val pensjonLatexSettings = languageSettings {
             Language.Bokmal to "Returadresse:",
             Language.Nynorsk to "Returadresse:",
             Language.English to "Return address:",
-        )
-    }
-
-    setting("datoprefix") {
-        text(
-            Language.Bokmal to "Dato:",
-            Language.Nynorsk to "Dato:",
-            Language.English to "Date:",
         )
     }
 

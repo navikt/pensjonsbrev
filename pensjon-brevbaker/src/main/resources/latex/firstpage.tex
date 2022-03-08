@@ -21,10 +21,9 @@
 %----------------------------------------
 \newcommand{\returnaddress}{
     \begin{textblock*}{140mm}(20mm,18.5mm)
-        \parskip=0pt
-        \baselineskip=5pt
-        \tinyText{\feltreturadresseenhetprefix \space \feltnavenhet}\newline
-        \tinyText{\feltreturadresse \space \feltreturadressepostnrsted}
+        \primaryFont \fontsize{8pt}{8pt} \selectfont
+        \feltreturadresseenhetprefix \space \feltnavenhet\\[3pt]
+        \feltreturadresse \space \feltreturadressepostnrsted
     \end{textblock*}
 }
 
@@ -49,7 +48,7 @@
 %----------------------------------------
 
 \newcommand{\letterdate}{
-    \begin{textblock*}{40mm}(160mm,86mm)\tinyText{\feltdatoprefix}\primaryFont\fontsize{12pt}{12pt}\selectfont~\feltdato\end{textblock*}
+    \begin{textblock*}{40mm}(145mm,55.7mm)\hfill\primaryFont\fontsize{12pt}{12pt}\selectfont~\feltdato\end{textblock*}
 }
 
 %----------------------------------------
@@ -58,9 +57,6 @@
 
 %Title font
 \newcommand{\titleText}[1]{\textbf{\primaryFont \fontsize{16pt}{16pt} \selectfont \newline #1}}
-
-%opening prefix font
-\newcommand{\tinyGrayText}[1]{{\grayFont \fontsize{8pt}{8pt} \selectfont #1}}
 
 % main letter title
 \newcommand{\tittel}[1]{
@@ -76,13 +72,12 @@
 %first footer page
 \newcommand{\firstfooter}{
     \begin{textblock*}{\textwidth}(20mm,260mm)
-        \rule{\textwidth}{0.16mm}\vspace*{3.7mm} % footer top line
-        \footerText{
-            \textbf{\feltnavenhet}
-            \newline \feltpostadresseprefix \space \feltnavenhet \space//\space \feltpostadresse \space//\space \feltpostadressepostnrsted
-            \newline \feltnavenhettlfprefix \space \feltnavenhettlf
-            \newline \feltnavenhetnettside
-        }
+        \primaryFont\fontsize{8pt}{8pt}\selectfont
+        \rule{\textwidth}{0.16mm}\\[3.7mm]
+        \textbf{\feltnavenhet} \\[3pt]
+        \feltpostadresseprefix \space \feltnavenhet \space//\space \feltpostadresse \space//\space \feltpostadressepostnrsted \\[3pt]
+        \feltnavenhettlfprefix \space \feltnavenhettlf \\[3pt]
+        \feltnavenhetnettside
     \end{textblock*}
 
 }
