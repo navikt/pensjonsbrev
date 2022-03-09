@@ -284,42 +284,13 @@ object PensjonLatex : BaseTemplate() {
                     val rows = element.rows.filter { it.condition == null || it.condition.eval(scope) }
                     if (rows.isEmpty()) return
 
-                    printCmd("setlength") {
-                        arg{printCmd("parskip")}
-                        arg { print("0pt") }
-                    }
-
                     val columnHeaders =
                         element.columnHeaders.filter { it.condition == null || it.condition.eval(scope) }
 
                     val tableWidth = element.width
                     printCmd("begin") {
-                        arg { print("longtblr") }
-
-                        print("[", escape = false)
-                        element.title?.let {
-                            print("caption={", escape = false)
-                            it.forEach { titleElem -> renderElement(scope, titleElem, printWriter) }
-                            print("},", escape = false)
-                        }
-                        print("presep={10.16mm},", escape=false)
-                        print("postsep={3.979333349mm},", escape=false)
-                        print("]", escape = false)
-
-                        arg {
-                            print(
-                                "colspec={${"X".repeat(tableWidth)}}," +
-                                        "colsep = 1.947333341 mm," +
-                                        "stretch = 0 mm," +
-                                        "hspan=minimal," + //wrap instead of widening table over limit
-                                        "hlines={0.084666667mm,linecolor}," +
-                                        "row{odd}={row1color,rowsep=1.5mm}," +
-                                        "row{even}={row2color,rowsep=1.5mm}," +
-                                        columnHeaderParams(columnHeaders.size) +
-                                        "width=\\textwidth,",
-                                escape = false
-                            )
-                        }
+                        arg { print("letterTable") }
+                        arg { print("X".repeat(tableWidth))}
                     }
 
                     columnHeaders
@@ -341,14 +312,8 @@ object PensjonLatex : BaseTemplate() {
                             }
                             print("""\\""", escape = false)
                         }
-
                     printCmd("end") {
-                        arg { print("longtblr") }
-                    }
-
-                    printCmd("setlength") {
-                        arg{printCmd("parskip")}
-                        arg { print("1em") }
+                        arg { print("letterTable") }
                     }
                 }
         }

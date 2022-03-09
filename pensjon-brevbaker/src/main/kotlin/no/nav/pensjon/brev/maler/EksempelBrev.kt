@@ -9,8 +9,6 @@ import no.nav.pensjon.brev.template.base.PensjonLatex
 import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.plus
-import no.nav.pensjon.brev.template.dsl.expression.select
-import no.nav.pensjon.brev.template.dsl.expression.str
 import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
@@ -74,6 +72,9 @@ object EksempelBrev : StaticTemplate {
                 }
             }
 
+            title1{
+                Bokmal to "Utbetalingsoversikt"
+            }
             paragraph {
                 text(Bokmal to "test")
                 table {
