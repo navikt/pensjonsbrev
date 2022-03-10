@@ -138,8 +138,15 @@ class TemplateContainerScope<Lang : LanguageSupport, LetterData : Any> :
 
     fun table(init: TableRootScope<Lang, LetterData>.() -> Unit) {
         TableRootScope<Lang, LetterData>().apply(init)
-            .let { children.add(Element.Table(title = it.title, rows = it.children, columnHeaders = it.columnHeaders)) }
-
+            .let {
+                children.add(
+                    Element.Table(
+                        rows = it.rows,
+                        columnHeader = it.columnHeader
+                            ?: throw IllegalArgumentException("Table is missing column header row")
+                    )
+                )
+            }
     }
 
     fun paragraph(init: TemplateContainerScope<Lang, LetterData>.() -> Unit) {
@@ -167,7 +174,10 @@ class TemplateContainerScope<Lang : LanguageSupport, LetterData : Any> :
         ShowElseBuilder.chainShowIfElse(children, predicate, showIf)
 
 
-    fun <E1: Any> ifNotNull(expr1: Expression<E1?>, block: TemplateContainerScope<Lang, LetterData>.(Expression<E1>) -> Unit) {
+    fun <E1 : Any> ifNotNull(
+        expr1: Expression<E1?>,
+        block: TemplateContainerScope<Lang, LetterData>.(Expression<E1>) -> Unit
+    ) {
         children.add(
             Element.Conditional(expr1.notNull(), TemplateContainerScope<Lang, LetterData>().apply {
                 // Følgende er en trygg cast fordi `children` blir kun brukt om `expr1.notNull()` evaluerer til true.
@@ -177,7 +187,11 @@ class TemplateContainerScope<Lang : LanguageSupport, LetterData : Any> :
         )
     }
 
-    fun <E1: Any, E2: Any> ifNotNull(expr1: Expression<E1?>, expr2: Expression<E2?>, block: TemplateContainerScope<Lang, LetterData>.(Expression<E1>, Expression<E2>) -> Unit) {
+    fun <E1 : Any, E2 : Any> ifNotNull(
+        expr1: Expression<E1?>,
+        expr2: Expression<E2?>,
+        block: TemplateContainerScope<Lang, LetterData>.(Expression<E1>, Expression<E2>) -> Unit
+    ) {
         children.add(
             Element.Conditional(expr1.notNull() and expr2.notNull(), TemplateContainerScope<Lang, LetterData>().apply {
                 // Følgende er en trygg cast fordi `children` blir kun brukt om `expr1.notNull() and expr2.notNull()` evaluerer til true.
@@ -187,13 +201,22 @@ class TemplateContainerScope<Lang : LanguageSupport, LetterData : Any> :
         )
     }
 
-    fun <E1: Any, E2: Any, E3: Any> ifNotNull(expr1: Expression<E1?>, expr2: Expression<E2?>, expr3: Expression<E3?>, block: TemplateContainerScope<Lang, LetterData>.(Expression<E1>, Expression<E2>, Expression<E3>) -> Unit) {
+    fun <E1 : Any, E2 : Any, E3 : Any> ifNotNull(
+        expr1: Expression<E1?>,
+        expr2: Expression<E2?>,
+        expr3: Expression<E3?>,
+        block: TemplateContainerScope<Lang, LetterData>.(Expression<E1>, Expression<E2>, Expression<E3>) -> Unit
+    ) {
         children.add(
-            Element.Conditional(expr1.notNull() and expr2.notNull() and expr3.notNull(), TemplateContainerScope<Lang, LetterData>().apply {
-                // Følgende er en trygg cast fordi `children` blir kun brukt om `expr1.notNull() and expr2.notNull() and expr3.notNull()` evaluerer til true.
-                @Suppress("UNCHECKED_CAST")
-                block(this, expr1 as Expression<E1>, expr2 as Expression<E2>, expr3 as Expression<E3>)
-            }.children, emptyList())
+            Element.Conditional(
+                expr1.notNull() and expr2.notNull() and expr3.notNull(),
+                TemplateContainerScope<Lang, LetterData>().apply {
+                    // Følgende er en trygg cast fordi `children` blir kun brukt om `expr1.notNull() and expr2.notNull() and expr3.notNull()` evaluerer til true.
+                    @Suppress("UNCHECKED_CAST")
+                    block(this, expr1 as Expression<E1>, expr2 as Expression<E2>, expr3 as Expression<E3>)
+                }.children,
+                emptyList()
+            )
         )
     }
 }

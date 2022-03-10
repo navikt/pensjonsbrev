@@ -8,22 +8,12 @@ import no.nav.pensjon.brev.template.LanguageSupport
 open class TableRootScope<Lang : LanguageSupport, LetterData : Any>
     : TableBaseScope<Lang, LetterData>() {
 
-    fun title(
-        init: TemplateTextOnlyScope<Lang, LetterData>.() -> Unit
-    ) {
-        title = TemplateTextOnlyScope<Lang, LetterData>().apply(init).children
-    }
-
     fun showIf(
         predicate: Expression<Boolean>,
         showIf: TableBaseScope<Lang, LetterData>.() -> Unit
     ) {
         TableBaseScope<Lang, LetterData>().apply(showIf).also { builder ->
-            children.addAll(builder.children.map {
-                it.copy(condition = predicate)
-            })
-
-            columnHeaders.addAll(builder.columnHeaders.map {
+            rows.addAll(builder.rows.map {
                 it.copy(condition = predicate)
             })
         }
@@ -32,21 +22,21 @@ open class TableRootScope<Lang : LanguageSupport, LetterData : Any>
 
 @LetterTemplateMarker
 open class TableBaseScope<Lang : LanguageSupport, LetterData : Any>(
-    var title: List<Element<Lang>>? = null,
-    val columnHeaders: MutableList<Element.Table.Row<Lang>> = mutableListOf(),
-    val children: MutableList<Element.Table.Row<Lang>> = mutableListOf()
+    var columnHeader: Element.Table.Header<Lang>? = null,
+    val rows: MutableList<Element.Table.Row<Lang>> = mutableListOf()
 ) : TemplateGlobalScope<LetterData>() {
 
     fun columnHeaderRow(
-        init: TableRowScope<Lang, LetterData>.() -> Unit
+        init: TableHeaderScope<Lang, LetterData>.() -> Unit
     ) {
-        columnHeaders.add(Element.Table.Row(TableRowScope<Lang, LetterData>().apply(init).children))
+        val headerScope = TableHeaderScope<Lang, LetterData>().apply(init)
+        columnHeader = Element.Table.Header(headerScope.children, headerScope.columnAlignment)
     }
 
     fun row(
         init: TableRowScope<Lang, LetterData>.() -> Unit
     ) {
-        children.add(Element.Table.Row(TableRowScope<Lang, LetterData>().apply(init).children))
+        rows.add(Element.Table.Row(TableRowScope<Lang, LetterData>().apply(init).children))
     }
 }
 
@@ -54,12 +44,34 @@ open class TableBaseScope<Lang : LanguageSupport, LetterData : Any>(
 @LetterTemplateMarker
 open class TableRowScope<Lang : LanguageSupport, LetterData : Any>(val children: MutableList<Element.Table.Cell<Lang>> = mutableListOf()) :
     TemplateGlobalScope<LetterData>() {
-    fun cell(cellColumns: Int = 1, init: TemplateTextOnlyScope<Lang, LetterData>.() -> Unit) {
+    fun cell(columns: Int = 1, init: TemplateTextOnlyScope<Lang, LetterData>.() -> Unit) {
         children.add(
             Element.Table.Cell(
                 TemplateTextOnlyScope<Lang, LetterData>().apply(init).children,
-                cellColumns
+                columns
             )
         )
+    }
+}
+
+@LetterTemplateMarker
+open class TableHeaderScope<Lang : LanguageSupport, LetterData : Any>(
+    val children: MutableList<Element.Table.Cell<Lang>> = mutableListOf(),
+    val columnAlignment: MutableList<Element.Table.ColumnAlignment> = mutableListOf()
+) :
+    TemplateGlobalScope<LetterData>() {
+    fun cell(
+        columns: Int = 1,
+        alignment: Element.Table.ColumnAlignment = Element.Table.ColumnAlignment.LEFT,
+        init: TemplateTextOnlyScope<Lang, LetterData>.() -> Unit
+    ) {
+
+        children.add(
+            Element.Table.Cell(
+                TemplateTextOnlyScope<Lang, LetterData>().apply(init).children,
+                columns
+            )
+        )
+        columnAlignment.add(alignment)
     }
 }

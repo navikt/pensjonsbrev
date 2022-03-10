@@ -78,9 +78,8 @@ sealed class Element<out Lang : LanguageSupport> {
     }
 
     data class Table<Lang : LanguageSupport>(
-        val title: List<Element<Lang>>?,
         val rows: List<Row<Lang>>,
-        val columnHeaders: List<Row<Lang>>,
+        val columnHeader: Header<Lang>,
     ) : Element<Lang>() {
         val width: Int
 
@@ -95,17 +94,18 @@ sealed class Element<out Lang : LanguageSupport> {
             if (width == 0) {
                 throw IllegalArgumentException("the row(s) are empty")
             }
-            if (title?.isEmpty() ?: throw IllegalArgumentException("Missing table title")) {
-                throw IllegalArgumentException("Table title is empty")
-            }
         }
-
         data class Row<Lang : LanguageSupport>(val cells: List<Cell<Lang>>, val condition: Expression<Boolean>? = null)
+        data class Header<Lang : LanguageSupport>(val cells: List<Cell<Lang>>, val alignment: List<ColumnAlignment> = mutableListOf())
 
         data class Cell<Lang : LanguageSupport>(
             val elements: List<Element<Lang>>,
             val cellColumns: Int
         )
+
+        enum class ColumnAlignment{
+            LEFT, RIGHT
+        }
     }
 
 
