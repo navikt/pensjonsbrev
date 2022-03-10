@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.maler.fraser
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.dsl.*
+import no.nav.pensjon.brev.template.dsl.expression.*
 import java.time.LocalDate
 
 val VedtakOverskriftPesys_001 = createPhrase<LangBokmalNynorskEnglish, Unit> {
@@ -30,6 +31,7 @@ val OmregnUTDodEPSInnledn1_001 = createPhrase<LangBokmalNynorskEnglish, OmregnUT
 }
 
 data class OmregnUTDodEPSInnledn2_001Dto(val avdod_navn: String)
+
 val OmregnUTDodEPSInnledn2_001 = createPhrase<LangBokmalNynorskEnglish, OmregnUTDodEPSInnledn2_001Dto> {
     val avdod_navn = argument().select(OmregnUTDodEPSInnledn2_001Dto::avdod_navn)
     paragraph {
@@ -43,6 +45,7 @@ val OmregnUTDodEPSInnledn2_001 = createPhrase<LangBokmalNynorskEnglish, OmregnUT
 
 
 data class OmregnUTBTDodEPSInnledn_001Dto(val avdod_navn: String, val krav_virkedato_fom: LocalDate)
+
 val OmregnUTBTDodEPSInnledn_001 = createPhrase<LangBokmalNynorskEnglish, OmregnUTBTDodEPSInnledn_001Dto> {
     val avdod_navn = argument().select(OmregnUTBTDodEPSInnledn_001Dto::avdod_navn)
     val krav_virkedato_fom = argument().select(OmregnUTBTDodEPSInnledn_001Dto::krav_virkedato_fom)
@@ -58,6 +61,7 @@ val OmregnUTBTDodEPSInnledn_001 = createPhrase<LangBokmalNynorskEnglish, OmregnU
 }
 
 data class OmregnUTBTSBDodEPSInnledn_001Dto(val avdod_navn: String)
+
 val OmregnUTBTSBDodEPSInnledn_001 = createPhrase<LangBokmalNynorskEnglish, OmregnUTBTSBDodEPSInnledn_001Dto> {
     val avdod_navn = argument().select(OmregnUTBTSBDodEPSInnledn_001Dto::avdod_navn)
     paragraph {
@@ -72,6 +76,7 @@ val OmregnUTBTSBDodEPSInnledn_001 = createPhrase<LangBokmalNynorskEnglish, Omreg
 }
 
 data class OmregnBTDodEPSInnledn_001Dto(val avdod_navn: String, val krav_virkedato_fom: LocalDate)
+
 val OmregnBTDodEPSInnledn_001 = createPhrase<LangBokmalNynorskEnglish, OmregnBTDodEPSInnledn_001Dto> {
     val avdod_navn = argument().select(OmregnBTDodEPSInnledn_001Dto::avdod_navn)
     val krav_virkedato_fom = argument().select(OmregnBTDodEPSInnledn_001Dto::krav_virkedato_fom)
@@ -85,6 +90,7 @@ val OmregnBTDodEPSInnledn_001 = createPhrase<LangBokmalNynorskEnglish, OmregnBTD
 }
 
 data class BelopUT_001Dto(val total_ufoeremaaneder: Number)
+
 val BelopUT_001 = createPhrase<LangBokmalNynorskEnglish, BelopUT_001Dto> {
     val total_ufoeremaaneder = argument().select(BelopUT_001Dto::total_ufoeremaaneder)
     paragraph {
@@ -98,6 +104,7 @@ val BelopUT_001 = createPhrase<LangBokmalNynorskEnglish, BelopUT_001Dto> {
 }
 
 data class BelopUTVedlegg_001Dto(val total_ufoeremaaneder: Number)
+
 val BelopUTVedlegg_001 = createPhrase<LangBokmalNynorskEnglish, BelopUTVedlegg_001Dto> {
     val total_ufoeremaaneder = argument().select(BelopUTVedlegg_001Dto::total_ufoeremaaneder)
     paragraph {
@@ -112,7 +119,8 @@ val BelopUTVedlegg_001 = createPhrase<LangBokmalNynorskEnglish, BelopUTVedlegg_0
 }
 
 data class BelopUTBT_001Dto(val total_ufoeremaaneder: Number)
-val BelopUTBT_001 = createPhrase<LangBokmalNynorskEnglish,BelopUTBT_001Dto> {
+
+val BelopUTBT_001 = createPhrase<LangBokmalNynorskEnglish, BelopUTBT_001Dto> {
     val total_ufoeremaaneder = argument().select(BelopUTBT_001Dto::total_ufoeremaaneder)
     paragraph {
         textExpr(
@@ -124,6 +132,7 @@ val BelopUTBT_001 = createPhrase<LangBokmalNynorskEnglish,BelopUTBT_001Dto> {
 }
 
 data class BelopUTBTVedlegg_001Dto(val total_ufoeremaaneder: Number)
+
 val BelopUTBTVedlegg_001 = createPhrase<LangBokmalNynorskEnglish, BelopUTBTVedlegg_001Dto> {
     val total_ufoeremaaneder = argument().select(BelopUTBTVedlegg_001Dto::total_ufoeremaaneder)
     paragraph {
@@ -206,6 +215,7 @@ val BegrunnOverskrift_001 = createPhrase<LangBokmalNynorskEnglish, Unit> {
 }
 
 data class EndrMYDodEPS2_001Dto(val minsteytelse_sats_vedvirk: Number, val kompensasjonsgrad_ufoeretrygd_vedvirk: Number)
+
 val EndrMYDodEPS2_001 = createPhrase<LangBokmalNynorskEnglish, EndrMYDodEPS2_001Dto> {
     val minsteytelse_sats_vedvirk = argument().select(EndrMYDodEPS2_001Dto::minsteytelse_sats_vedvirk)
     val kompensasjonsgrad_ufoeretrygd_vedvirk = argument().select(EndrMYDodEPS2_001Dto::kompensasjonsgrad_ufoeretrygd_vedvirk)
@@ -232,6 +242,7 @@ data class EndrMYOgMinstIFUDodEPS2_001Dto(
     val oppjustert_inntekt_foer_ufoerhet_vedvirk: Number,
     val kompensasjonsgrad_ufoeretrygd_vedvirk: Number
 )
+
 val EndrMYOgMinstIFUDodEPS2_001 = createPhrase<LangBokmalNynorskEnglish, EndrMYOgMinstIFUDodEPS2_001Dto> {
     val minsteytelse_sats_vedvirk = argument().select(EndrMYOgMinstIFUDodEPS2_001Dto::minsteytelse_sats_vedvirk)
     val inntekt_foer_ufoerhet_vedvirk = argument().select(EndrMYOgMinstIFUDodEPS2_001Dto::inntekt_foer_ufoerhet_vedvirk)
@@ -258,6 +269,7 @@ data class EndrMinstIFUDodEPS2_001Dto(
     val oppjustert_inntekt_foer_ufoerhet_vedvirk: Number,
     val kompensasjonsgrad_ufoeretrygd_vedvirk: Number,
 )
+
 val EndrMinstIFUDodEPS2_001 = createPhrase<LangBokmalNynorskEnglish, EndrMinstIFUDodEPS2_001Dto> {
     val inntekt_foer_ufoerhet_vedvirk = argument().select(EndrMinstIFUDodEPS2_001Dto::inntekt_foer_ufoerhet_vedvirk)
     val oppjustert_inntekt_foer_ufoerhet_vedvirk = argument().select(EndrMinstIFUDodEPS2_001Dto::oppjustert_inntekt_foer_ufoerhet_vedvirk)
@@ -372,6 +384,7 @@ val OmregningFBOverskrift_001 = createPhrase<LangBokmalNynorskEnglish, Unit> {
 }
 
 data class InfoFBTilSB_001Dto(val barn_overfoert_til_saerkullsbarn: List<String>)
+
 val InfoFBTilSB_001 = createPhrase<LangBokmalNynorskEnglish, InfoFBTilSB_001Dto> {
     paragraph {
         text(
@@ -386,6 +399,7 @@ val InfoFBTilSB_001 = createPhrase<LangBokmalNynorskEnglish, InfoFBTilSB_001Dto>
 }
 
 data class InfoTidligereSB_001Dto(val tidligere_saerkullsbarn: List<String>)
+
 val InfoTidligereSB_001 = createPhrase<LangBokmalNynorskEnglish, InfoTidligereSB_001Dto> {
     paragraph {
         text(
@@ -398,6 +412,7 @@ val InfoTidligereSB_001 = createPhrase<LangBokmalNynorskEnglish, InfoTidligereSB
 }
 
 data class InfoTidligereSBOgEndretUT_001Dto(val tidligere_saerkullsbarn: List<String>)
+
 val InfoTidligereSBOgEndretUT_001 = createPhrase<LangBokmalNynorskEnglish, InfoTidligereSBOgEndretUT_001Dto> {
     paragraph {
         text(
@@ -423,6 +438,7 @@ data class IkkeRedusBTPgaTak_001Dto(
     val barnetillegg_prosentsats_gradert_over_inntekt_foer_ufoer_vedvirk: Number,
     val barnetillegg_gradert_over_inntekt_foer_ufoer_vedvirk: Number,
 )
+
 val IkkeRedusBTPgaTak_001 = createPhrase<LangBokmalNynorskEnglish, IkkeRedusBTPgaTak_001Dto> {
     val barnetillegg_prosentsats_gradert_over_inntekt_foer_ufoer_vedvirk =
         argument().select(IkkeRedusBTPgaTak_001Dto::barnetillegg_prosentsats_gradert_over_inntekt_foer_ufoer_vedvirk)
@@ -445,6 +461,7 @@ data class RedusBTPgaTak_001Dto(
     val barnetillegg_beloep_foer_reduksjon_vedvirk: Number,
     val barnetillegg_saerkullsbarn_beloep_etter_reduksjon_vedvirk: Number,
 )
+
 val RedusBTPgaTak_001 = createPhrase<LangBokmalNynorskEnglish, RedusBTPgaTak_001Dto> {
     val barnetillegg_prosentsats_gradert_over_inntekt_foer_ufoer_vedvirk =
         argument().select(RedusBTPgaTak_001Dto::barnetillegg_prosentsats_gradert_over_inntekt_foer_ufoer_vedvirk)
@@ -469,6 +486,7 @@ data class IkkeUtbetaltBTPgaTak_001Dto(
     val barnetillegg_prosentsats_gradert_over_inntekt_foer_ufoer_vedvirk: Number,
     val barnetillegg_gradert_over_inntekt_foer_ufoer_vedvirk: Number,
 )
+
 val IkkeUtbetaltBTPgaTak_001 = createPhrase<LangBokmalNynorskEnglish, IkkeUtbetaltBTPgaTak_001Dto> {
     val barnetillegg_prosentsats_gradert_over_inntekt_foer_ufoer_vedvirk =
         argument().select(IkkeUtbetaltBTPgaTak_001Dto::barnetillegg_prosentsats_gradert_over_inntekt_foer_ufoer_vedvirk)
@@ -507,6 +525,7 @@ data class IkkeRedusBTSBPgaInntekt_001Dto(
     val barnetillegg_saerkullsbarn_inntekt_brukt_i_avkortning_vedvirk: Number,
     val barnetillegg_saerkullsbarn_fribeloep_vedvirk: Number,
 )
+
 val IkkeRedusBTSBPgaInntekt_001 = createPhrase<LangBokmalNynorskEnglish, IkkeRedusBTSBPgaInntekt_001Dto> {
     val barnetillegg_saerkullsbarn_inntekt_brukt_i_avkortning_vedvirk =
         argument().select(IkkeRedusBTSBPgaInntekt_001Dto::barnetillegg_saerkullsbarn_inntekt_brukt_i_avkortning_vedvirk)
@@ -525,6 +544,7 @@ data class RedusBTSBPgaInntekt_001Dto(
     val barnetillegg_saerkullsbarn_inntekt_brukt_i_avkortning_vedvirk: Number,
     val barnetillegg_saerkullsbarn_fribeloep_vedvirk: Number,
 )
+
 val RedusBTSBPgaInntekt_001 = createPhrase<LangBokmalNynorskEnglish, RedusBTSBPgaInntekt_001Dto> {
     val barnetillegg_saerkullsbarn_inntekt_brukt_i_avkortning_vedvirk =
         argument().select(RedusBTSBPgaInntekt_001Dto::barnetillegg_saerkullsbarn_inntekt_brukt_i_avkortning_vedvirk)
@@ -563,6 +583,7 @@ data class IkkeUtbetaltBTSBPgaInntekt_001Dto(
     val barnetillegg_saerkullsbarn_inntekt_brukt_i_avkortning_vedvirk: Number,
     val barnetillegg_saerkullsbarn_inntektstak_vedvirk: Number,
 )
+
 val IkkeUtbetaltBTSBPgaInntekt_001 = createPhrase<LangBokmalNynorskEnglish, IkkeUtbetaltBTSBPgaInntekt_001Dto> {
     val barnetillegg_saerkullsbarn_inntekt_brukt_i_avkortning_vedvirk =
         argument().select(IkkeUtbetaltBTSBPgaInntekt_001Dto::barnetillegg_saerkullsbarn_inntekt_brukt_i_avkortning_vedvirk)
@@ -628,6 +649,7 @@ val MerInfoBT_001 = createPhrase<LangBokmalNynorskEnglish, Unit> {
 }
 
 data class GjRettSamboerOverskriftDto(val avdod_navn: String)
+
 val GjRettSamboerOverskrift = createPhrase<LangBokmalNynorskEnglish, GjRettSamboerOverskriftDto> {
     val avdod_navn = argument().select(GjRettSamboerOverskriftDto::avdod_navn)
     title1 {
@@ -668,26 +690,34 @@ val HvemUTGJTVilkar_001 = createPhrase<LangBokmalNynorskEnglish, Unit> {
             English to "To be entitled to a survivor's supplement to disability benefit, you must as a rule:",
         )
         list {
-            text(
-                Bokmal to "være medlem i folketrygden, og avdøde må ha vært medlem i folketrygden de siste fem årene fram til dødsfallet",
-                Nynorsk to "vere medlem i folketrygda, og avdøde må ha vore medlem i folketrygda dei siste fem åra fram til dødsfallet",
-                English to "be a member of the National Insurance Scheme, and the deceased must have been a member of the National Insurance Scheme for the last five years prior to death "
-            )
-            text(
-                Bokmal to "ha vært gift med den avdøde i minst fem år, eller",
-                Nynorsk to "ha vore gift med den avdøde i minst fem år, eller",
-                English to "have been married to the deceased for at least five years, or "
-            )
-            text(
-                Bokmal to "ha vært gift eller vært samboer med den avdøde og har eller ha hatt barn med den avdøde, eller",
-                Nynorsk to "ha vore gift eller vore sambuar med den avdøde og ha eller ha hatt barn med den avdøde, eller",
-                English to "have been married to or a cohabitant with the deceased, and have/had children together, or "
-            )
-            text(
-                Bokmal to "ha hatt omsorgen for den avdødes barn på dødsfallstidspunktet. Ekteskapet og omsorgen for barnet etter dødsfallet må til sammen ha vart minst fem år.",
-                Nynorsk to "ha hatt omsorga for barna til den avdøde på dødsfallstidspunktet. Ekteskapet og omsorga for barnet etter dødsfallet må til saman ha vart minst fem år.",
-                English to "have had care of the children of the deceased at the time of the death. The marriage and care of the child after the death must have lasted for at least five years."
-            )
+            item {
+                text(
+                    Bokmal to "være medlem i folketrygden, og avdøde må ha vært medlem i folketrygden de siste fem årene fram til dødsfallet",
+                    Nynorsk to "vere medlem i folketrygda, og avdøde må ha vore medlem i folketrygda dei siste fem åra fram til dødsfallet",
+                    English to "be a member of the National Insurance Scheme, and the deceased must have been a member of the National Insurance Scheme for the last five years prior to death "
+                )
+            }
+            item {
+                text(
+                    Bokmal to "ha vært gift med den avdøde i minst fem år, eller",
+                    Nynorsk to "ha vore gift med den avdøde i minst fem år, eller",
+                    English to "have been married to the deceased for at least five years, or "
+                )
+            }
+            item {
+                text(
+                    Bokmal to "ha vært gift eller vært samboer med den avdøde og har eller ha hatt barn med den avdøde, eller",
+                    Nynorsk to "ha vore gift eller vore sambuar med den avdøde og ha eller ha hatt barn med den avdøde, eller",
+                    English to "have been married to or a cohabitant with the deceased, and have/had children together, or "
+                )
+            }
+            item {
+                text(
+                    Bokmal to "ha hatt omsorgen for den avdødes barn på dødsfallstidspunktet. Ekteskapet og omsorgen for barnet etter dødsfallet må til sammen ha vart minst fem år.",
+                    Nynorsk to "ha hatt omsorga for barna til den avdøde på dødsfallstidspunktet. Ekteskapet og omsorga for barnet etter dødsfallet må til saman ha vart minst fem år.",
+                    English to "have had care of the children of the deceased at the time of the death. The marriage and care of the child after the death must have lasted for at least five years."
+                )
+            }
         }
 
     }
@@ -812,6 +842,7 @@ val VirknTdsPktOverskrift_001 = createPhrase<LangBokmalNynorskEnglish, Unit> {
 }
 
 data class VirkTdsPktUT_001Dto(val krav_virkedato_fom: LocalDate)
+
 val VirkTdsPktUT_001 = createPhrase<LangBokmalNynorskEnglish, VirkTdsPktUT_001Dto> {
     val krav_virkedato_fom = argument().select(VirkTdsPktUT_001Dto::krav_virkedato_fom)
     paragraph {
@@ -824,6 +855,7 @@ val VirkTdsPktUT_001 = createPhrase<LangBokmalNynorskEnglish, VirkTdsPktUT_001Dt
 }
 
 data class VirkTdsPktUTIkkeEndring_001Dto(val krav_virkedato_fom: LocalDate)
+
 val VirkTdsPktUTIkkeEndring_001 = createPhrase<LangBokmalNynorskEnglish, VirkTdsPktUTIkkeEndring_001Dto> {
     val krav_virkedato_fom = argument().select(VirkTdsPktUTIkkeEndring_001Dto::krav_virkedato_fom)
     paragraph {
@@ -836,6 +868,7 @@ val VirkTdsPktUTIkkeEndring_001 = createPhrase<LangBokmalNynorskEnglish, VirkTds
 }
 
 data class VirkTdsPktUTBTOmregn_001Dto(val krav_virkedato_fom: LocalDate)
+
 val VirkTdsPktUTBTOmregn_001 = createPhrase<LangBokmalNynorskEnglish, VirkTdsPktUTBTOmregn_001Dto> {
     val krav_virkedato_fom = argument().select(VirkTdsPktUTBTOmregn_001Dto::krav_virkedato_fom)
     paragraph {
@@ -848,6 +881,7 @@ val VirkTdsPktUTBTOmregn_001 = createPhrase<LangBokmalNynorskEnglish, VirkTdsPkt
 }
 
 data class VirkTdsPktUTAvkortetTil0_001Dto(val krav_virkedato_fom: LocalDate)
+
 val VirkTdsPktUTAvkortetTil0_001 = createPhrase<LangBokmalNynorskEnglish, VirkTdsPktUTAvkortetTil0_001Dto> {
     val krav_virkedato_fom = argument().select(VirkTdsPktUTAvkortetTil0_001Dto::krav_virkedato_fom)
     paragraph {

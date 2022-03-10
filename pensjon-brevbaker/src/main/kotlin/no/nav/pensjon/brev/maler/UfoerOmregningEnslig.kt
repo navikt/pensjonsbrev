@@ -11,13 +11,13 @@ import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.StaticTemplate
 import no.nav.pensjon.brev.template.base.PensjonLatex
 import no.nav.pensjon.brev.template.dsl.*
+import no.nav.pensjon.brev.template.dsl.expression.*
 
 object UfoerOmregningEnslig : StaticTemplate {
     override val template = createTemplate(
             name = "UT_DOD_ENSLIG_AUTO",
             base = PensjonLatex,
             letterDataType = UfoerOmregningEnsligDto::class,
-            lang = languages(Bokmal, Nynorsk, English),
             title = newText(
                     Bokmal to "NAV har regnet om uføretrygden din",
                     Nynorsk to "NAV har rekna om uføretrygda di",
