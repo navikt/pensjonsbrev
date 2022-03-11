@@ -19,17 +19,21 @@ data class OpplysningerBruktIBeregningUTDto(
     val belopsgrense_uforetrygdGjeldende: Kroner,
     val beregningsgrunnlagBelopAr_uforetrygdGjeldende: Kroner,
     val beregningsgrunnlagBelopAr_yrkesskadeGjeldende: Kroner,
+    val brukersSivilstand_gjeldendeBeregnetUTPerManed: String,
     val forventetInntektAr_inntektsAvkortingGjeldende: Kroner,
     val grunnbelop_gjeldendeBeregnetUTPerManed: Kroner,
     val ifuInntekt_inntektForUforeGjeldende: Kroner,
     val inntektBruktIAvkortning: Kroner,
     val inntektsgrenseAr_inntektsAvkortingGjeldende: Kroner,
     val inntektstak_inntektsAvkortingGjeldende: Kroner,
+    val inntektVedSkadetidspunkt_yrkesskadeGjeldende: Kroner,
     val justeringsbelopAr: Kroner,
     val kompensasjonsgrad_uforetrygdGjeldende: Double,
+    val skadetidspunkt_yrkesskadeGjeldende: LocalDate,
     val uforegrad_uforetrygdGjeldende: Int,
     val uforetidspunkt_uforetrygdGjeldende: LocalDate,
     val virkDatoFom_gjeldendeBeregnetUTPerManed: LocalDate,
+    val yrkesskadegrad_yrkesskadeGjeldende: Int
 
 )
 
@@ -279,9 +283,84 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
         row {
             cell {
                 text(
-                    Bokmal to "",
-                    Nynorsk to "",
-                    English to ""
+                    Bokmal to "Sivilstatus lagt til grunn i beregningen",
+                    Nynorsk to "Sivilstatus lagt til grunn i utrekninga",
+                    English to "Marital status applied to calculation"
+                )
+            }
+            cell {
+                val brukersSivilstand = argument().select(OpplysningerBruktIBeregningUTDto::brukersSivilstand_gjeldendeBeregnetUTPerManed).str()
+                textExpr(
+                    Bokmal to brukersSivilstand,
+                    Nynorsk to brukersSivilstand,
+                    English to brukersSivilstand
+                )
+            }
+        }
+        row {
+            cell {
+                text(
+                    Bokmal to "Ung ufør",
+                    Nynorsk to "Ung ufør",
+                    English to "Young disabled"
+                )
+            }
+            cell {
+                text(
+                    Bokmal to "Ja",
+                    Nynorsk to "Ja",
+                    English to "Yes"
+                )
+            }
+        }
+        row {
+            cell {
+                text(
+                    Bokmal to "Yrkesskadegrad",
+                    Nynorsk to "Yrkesskadegrad",
+                    English to "Degree of disability due to occupational injury"
+                )
+            }
+            cell {
+                val yrkesskadegrad = argument().select(OpplysningerBruktIBeregningUTDto::yrkesskadegrad_yrkesskadeGjeldende).str()
+                textExpr(
+                    Bokmal to yrkesskadegrad + " %",
+                    Nynorsk to yrkesskadegrad + " %",
+                    English to yrkesskadegrad + " %"
+                )
+            }
+        }
+        row {
+            cell {
+                text(
+                    Bokmal to "Skadetidspunktet for yrkesskaden",
+                    Nynorsk to "Skadetidspunktet for yrkesskaden",
+                    English to "Date of injury"
+                )
+            }
+            cell {
+                val skadetidspunkt = argument().select(OpplysningerBruktIBeregningUTDto::skadetidspunkt_yrkesskadeGjeldende).format()
+                textExpr(
+                    Bokmal to skadetidspunkt,
+                    Nynorsk to skadetidspunkt,
+                    English to skadetidspunkt
+                )
+            }
+        }
+        row {
+            cell {
+                text(
+                    Bokmal to "Årlig arbeidsinntekt på skadetidspunktet",
+                    Nynorsk to "Årleg arbeidsinntekt på skadetidspunktet",
+                    English to "Annual income at the date of injury"
+                )
+            }
+            cell {
+                val inntektVedSkadetidspunkt = argument().select(OpplysningerBruktIBeregningUTDto::inntektVedSkadetidspunkt_yrkesskadeGjeldende).format()
+                textExpr(
+                    Bokmal to inntektVedSkadetidspunkt + " kr",
+                    Nynorsk to inntektVedSkadetidspunkt + " kr",
+                    English to inntektVedSkadetidspunkt + " NOK"
                 )
             }
         }
