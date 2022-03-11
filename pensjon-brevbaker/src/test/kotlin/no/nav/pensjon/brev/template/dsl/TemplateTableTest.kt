@@ -16,8 +16,8 @@ class TemplateTableTest {
 
         val doc = outlineTestTemplate {
             table {
-                columnHeaderRow {
-                    cell {
+                columnSpec {
+                    column {
                         text(Language.Bokmal to "header")
                     }
                 }
@@ -32,18 +32,22 @@ class TemplateTableTest {
         val expected = outlineTestLetter(
             Element.Table(
                 columnHeader =
-                Element.Table.Row(
+                Element.Table.Header(
                     listOf(
-                        Element.Table.Cell(
-                            listOf(newText(Language.Bokmal to "header")), 1
+                        Element.Table.ColumnSpec(
+                            Element.Table.Cell(
+                                listOf(newText(Language.Bokmal to "header"))
+                            ),
+                            Element.Table.ColumnAlignment.LEFT
                         )
+
                     )
                 ),
                 rows = listOf(
                     Element.Table.Row(
                         listOf(
                             Element.Table.Cell(
-                                listOf(newText(Language.Bokmal to "joda")), 1
+                                listOf(newText(Language.Bokmal to "joda"))
                             )
                         )
                     )
@@ -59,8 +63,8 @@ class TemplateTableTest {
         assertThrows(IllegalArgumentException::class.java) {
             outlineTestTemplate {
                 table {
-                    columnHeaderRow {
-                        cell {
+                    columnSpec {
+                        column {
                             text(Language.Bokmal to "header")
                         }
                     }
@@ -87,8 +91,8 @@ class TemplateTableTest {
         assertThrows(IllegalArgumentException::class.java) {
             outlineTestTemplate {
                 table {
-                    columnHeaderRow {
-                        cell {
+                    columnSpec {
+                        column {
                             text(Language.Bokmal to "header")
                         }
                     }
@@ -132,8 +136,8 @@ class TemplateTableTest {
     fun `showif adds rows with predicates`() {
         val doc = outlineTestTemplate {
             table {
-                columnHeaderRow {
-                    cell {
+                columnSpec {
+                    column {
                         text(Language.Bokmal to "header")
                     }
                 }
@@ -157,31 +161,34 @@ class TemplateTableTest {
         }
         val expected = outlineTestLetter(
             Element.Table(
-
                 rows = listOf(
                     Element.Table.Row(
                         listOf(
                             Element.Table.Cell(
-                                listOf(newText(Language.Bokmal to "hei")), 1
+                                listOf(newText(Language.Bokmal to "hei"))
                             )
                         ), true.expr()
                     ),
                     Element.Table.Row(
                         listOf(
                             Element.Table.Cell(
-                                listOf(newText(Language.Bokmal to "heihå")), 1
+                                listOf(newText(Language.Bokmal to "heihå"))
                             )
                         ), true.expr()
                     )
                 ),
-                columnHeader = Element.Table.Row(
+                columnHeader =
+                Element.Table.Header(
                     listOf(
-                        Element.Table.Cell(
-                            listOf(newText(Language.Bokmal to "header")), 1,
+                        Element.Table.ColumnSpec(
+                            Element.Table.Cell(
+                                listOf(newText(Language.Bokmal to "header"))
+                            ),
+                            Element.Table.ColumnAlignment.LEFT
                         )
-                    ), null
-                )
-            )
+
+                    )
+                )            )
         )
         assertEquals(expected, doc)
     }

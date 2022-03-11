@@ -6,6 +6,8 @@ import no.nav.pensjon.brev.api.model.SignerendeSaksbehandlere
 import no.nav.pensjon.brev.latex.LatexPrintWriter
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.*
+import no.nav.pensjon.brev.template.Element.Table.ColumnAlignment.LEFT
+import no.nav.pensjon.brev.template.Element.Table.ColumnAlignment.RIGHT
 import no.nav.pensjon.brev.template.Element.Text.FontType.*
 import no.nav.pensjon.brev.template.base.pensjonlatex.pensjonLatexSettings
 import java.time.LocalDate
@@ -285,43 +287,51 @@ object PensjonLatex : BaseTemplate() {
                 with(printWriter) {
                     val rows = element.rows.filter { it.condition == null || it.condition.eval(scope) }
                     if (rows.isEmpty()) return
-
-                    val tableWidth = element.width
+                    val columnSpec = element.columnHeader.colSpec
                     printCmd("begin") {
                         arg { print("letterTable") }
-                        arg { print("X".repeat(tableWidth)) }
+                        arg { print(columnHeadersLatexString(columnSpec)) }
                     }
 
-                    val header = element.columnHeader
-                    listOf(header)
-                    rows.forEach { row ->
-                        printCells(row.cells, scope, printWriter)
-                        print("""\\""", escape = false)
-                    }
-                    printCmd("end") {
-                        arg { print("letterTable") }
-                    }
+                    printCells(columnSpec.map { it.headerContent }, scope, printWriter, columnSpec)
+                    rows.forEach { printCells(it.cells, scope, printWriter, columnSpec) }
+
+                    printCmd("end") { arg { print("letterTable") } }
                 }
         }
 
-    private fun LatexPrintWriter.printCells(
+    private fun columnHeadersLatexString(columnSpec: List<Element.Table.ColumnSpec<out LanguageSupport>>) =
+        columnSpec.map {
+            ("X" +
+                    when (it.alignment) {
+                        LEFT -> "[l]"
+                        RIGHT -> "[r]"
+                    }).repeat(it.columnSpan)
+        }.joinToString("")
+
+    private fun printCells(
         cells: List<Element.Table.Cell<out LanguageSupport>>,
         scope: ExpressionScope<*, *>,
-        printWriter: LatexPrintWriter
+        printWriter: LatexPrintWriter,
+        colSpec: List<Element.Table.ColumnSpec<out LanguageSupport>>
     ) {
-        cells.forEachIndexed { index, cell ->
-            if (cell.cellColumns > 1) {
-                print("\\SetCell[c=${cell.cellColumns}]{}", escape = false)
+        with(printWriter) {
+            cells.forEachIndexed { index, cell ->
+                val columnSpan = colSpec[index].columnSpan
+                if (columnSpan > 1) {
+                    print("\\SetCell[c=$columnSpan]{}", escape = false)
+                }
+                cell.elements.forEach { cellElement ->
+                    renderElement(scope, cellElement, printWriter)
+                }
+                if (columnSpan > 1) {
+                    print(" ${"& ".repeat(columnSpan - 1)}", escape = false)
+                }
+                if (index < cells.lastIndex) {
+                    print("&", escape = false)
+                }
             }
-            cell.elements.forEach { cellElement ->
-                renderElement(scope, cellElement, printWriter)
-            }
-            if (cell.cellColumns > 1) {
-                print(" ${"& ".repeat(cell.cellColumns - 1)}", escape = false)
-            }
-            if (index < cells.lastIndex) {
-                print("&", escape = false)
-            }
+            print("""\\""", escape = false)
         }
     }
 }

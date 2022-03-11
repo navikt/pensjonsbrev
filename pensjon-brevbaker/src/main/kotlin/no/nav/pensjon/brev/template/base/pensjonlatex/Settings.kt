@@ -34,14 +34,6 @@ val pensjonLatexSettings = languageSettings {
         )
     }
 
-    setting("returadresseenhetprefix") {
-        text(
-            Language.Bokmal to "Returadresse:",
-            Language.Nynorsk to "Returadresse:",
-            Language.English to "Return address:",
-        )
-    }
-
     setting("postadresseprefix") {
         text(
             Language.Bokmal to "Postadresse:",

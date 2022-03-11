@@ -14,16 +14,16 @@ class PensjonLatexTest {
             title1 { text(Bokmal to "THIS TEXT SHOULD RENDER") }
             table {
                 showIf(true.expr()) {
-                    columnHeaderRow {
-                        cell {
+                    columnSpec {
+                        column {
                             text(
                                 Bokmal to "This text should not render",
                             )
                         }
                     }
                 }
-                columnHeaderRow {
-                    cell {
+                columnSpec {
+                    column {
                         text(
                             Bokmal to "This text should not render",
                         )
@@ -50,8 +50,8 @@ class PensjonLatexTest {
     fun `all table elements is rendered to LaTeX`() {
         val doc = outlineTestTemplate {
             table {
-                columnHeaderRow {
-                    cell {
+                columnSpec {
+                    column {
                         text(
                             Bokmal to "This text should render 1",
                         )

@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.maler
 
 import no.nav.pensjon.brev.api.model.LetterMetadata
 import no.nav.pensjon.brev.api.model.maler.EksempelBrevDto
+import no.nav.pensjon.brev.template.Element.Table.ColumnAlignment.RIGHT
 import no.nav.pensjon.brev.template.Element.Text.FontType
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.StaticTemplate
@@ -78,36 +79,36 @@ object EksempelBrev : StaticTemplate {
                 }
             }
 
-//            title1{
-//                text(Bokmal to "Utbetalingsoversikt")
-//            }
-//            paragraph {
-//                text(Bokmal to "Dette er din inntekt fra 01.01.2020 til 01.05.2020")
-//                table {
-//                    columnHeaderRow {
-//                        cell(1) {text(Bokmal to "Kolonne 1",FontType.BOLD)}
-//                        cell(1) {text(Bokmal to "Kolonne 2",FontType.BOLD)}
-//                        cell(1) {text(Bokmal to "Kolonne 3",FontType.BOLD)}
-//                        cell(1) {text(Bokmal to "Kolonne 4",FontType.BOLD)}
-//                    }
-//                    for (i in 1..50) {
-//                        row {
-//                            cell {
-//                                text(Bokmal to "$i Kr")
-//                            }
-//                            cell {
-//                                text(Bokmal to "$i Kr")
-//                            }
-//                            cell {
-//                                text(Bokmal to "$i Kr")
-//                            }
-//                            cell {
-//                                text(Bokmal to "$i Kr")
-//                            }
-//                        }
-//                    }
-//                }
-//            }
+            title1{
+                text(Bokmal to "Utbetalingsoversikt")
+            }
+            paragraph {
+                text(Bokmal to "Dette er din inntekt fra 01.01.2020 til 01.05.2020")
+                table {
+                    columnSpec {
+                        column(3) {text(Bokmal to "Kolonne 1", FontType.BOLD)}
+                        column(1, RIGHT) {text(Bokmal to "Kolonne 2", FontType.BOLD)}
+                        column(1, RIGHT) {text(Bokmal to "Kolonne 3", FontType.BOLD)}
+                        column(1, RIGHT) {text(Bokmal to "Kolonne 4", FontType.BOLD)}
+                    }
+                    for (i in 1..50) {
+                        row {
+                            cell {
+                                text(Bokmal to "Dette er ditt beløp av noe test test test test test test test test")
+                            }
+                            cell {
+                                text(Bokmal to "$i Kr")
+                            }
+                            cell {
+                                text(Bokmal to "$i Kr")
+                            }
+                            cell {
+                                text(Bokmal to "$i Kr")
+                            }
+                        }
+                    }
+                }
+            }
             paragraph {text(Bokmal to "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque porttitor condimentum lorem, at commodo libero iaculis ut. Pellentesque vulputate gravida bibendum. Etiam non ante augue. Etiam vehicula at massa eget consectetur. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Sed ornare nulla quis purus tempor, eget hendrerit lorem feugiat. Nulla tincidunt eu ipsum et rutrum. Donec non leo laoreet, molestie lectus non, dictum ipsum. Maecenas in dui tincidunt, fermentum felis ut, volutpat dui. Phasellus eu fermentum dui. Suspendisse feugiat mauris eros, sed dapibus enim eleifend a.")}
             paragraph {text(Bokmal to "Etiam porta turpis et eros ullamcorper sodales. Cras et eleifend leo. Aenean vehicula nunc sit amet quam tincidunt, id aliquam arcu cursus. Morbi non imperdiet augue, nec placerat tellus. Aenean imperdiet auctor porta. Morbi in lacus nec purus commodo sodales non in ligula. Praesent euismod mollis elit, mollis finibus massa pretium eget. Fusce mollis tempus nisl vitae suscipit. Morbi in elementum tortor. Aenean varius odio non sem convallis, at venenatis arcu ullamcorper. Duis porttitor nulla facilisis mattis porttitor. Quisque pharetra hendrerit tellus, id consequat sapien maximus sit amet. Vestibulum vehicula pellentesque nulla, sit amet egestas felis pellentesque ac. Ut viverra vel magna eget mollis. Aliquam dictum aliquet tortor vitae efficitur. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.")}
             paragraph {text(Bokmal to "Fusce sed diam ac dui luctus venenatis sit amet sit amet sapien. Praesent non congue metus. Morbi rutrum pellentesque rhoncus. Duis semper dictum rutrum. Curabitur iaculis, magna sit amet varius dignissim, sapien augue pellentesque mi, id malesuada arcu risus et justo. Vivamus fermentum neque ac purus faucibus, non viverra massa pulvinar. Suspendisse ornare erat hendrerit, condimentum lorem vel, fringilla dui. Donec non tortor dignissim, ornare metus nec, malesuada nulla. Nulla convallis arcu ultricies augue consectetur, eu mattis neque tristique. Sed suscipit lacus vel risus lobortis, sed dignissim orci posuere. Aenean ut magna eget tellus viverra tincidunt non quis lectus. Donec elementum molestie tellus, tincidunt tincidunt urna tincidunt in. Nunc eget lorem non enim rhoncus consequat. Vivamus laoreet semper facilisis.")}

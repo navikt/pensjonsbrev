@@ -81,26 +81,30 @@ sealed class Element<out Lang : LanguageSupport> {
         val rows: List<Row<Lang>>,
         val columnHeader: Header<Lang>,
     ) : Element<Lang>() {
-        val width: Int
 
         init {
-            val cellWidths = rows.map { it.cells.sumOf { cell -> cell.cellColumns } }.distinct()
-            if (cellWidths.size > 1) {
-                throw IllegalArgumentException("rows in the table needs to have the same number of columns")
+            val cellCounts = rows.map { it.cells.size }.distinct()
+            if (cellCounts.size > 1) {
+                throw IllegalArgumentException("rows in the table needs to have the same number of cells")
             }
-            width = cellWidths.firstOrNull()
+            val cellcount = cellCounts.firstOrNull()
                 ?: throw IllegalArgumentException("rows in the table needs to have cells/columns")
 
-            if (width == 0) {
+            if (cellcount == 0) {
                 throw IllegalArgumentException("the row(s) are empty")
             }
         }
         data class Row<Lang : LanguageSupport>(val cells: List<Cell<Lang>>, val condition: Expression<Boolean>? = null)
-        data class Header<Lang : LanguageSupport>(val cells: List<Cell<Lang>>, val alignment: List<ColumnAlignment> = mutableListOf())
+        data class Header<Lang : LanguageSupport>(val colSpec: List<ColumnSpec<Lang>>)
 
         data class Cell<Lang : LanguageSupport>(
-            val elements: List<Element<Lang>>,
-            val cellColumns: Int
+            val elements: List<Element<Lang>>
+        )
+
+        data class ColumnSpec<Lang : LanguageSupport>(
+            val headerContent: Cell<Lang>,
+            val alignment: ColumnAlignment,
+            val columnSpan: Int = 1
         )
 
         enum class ColumnAlignment{

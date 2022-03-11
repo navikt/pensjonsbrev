@@ -53,7 +53,7 @@
     BoldItalicFont={Source Sans Pro Bold Italic}]{Source Sans Pro}
 
 % Global font commands
-\newcommand{\standardtextsize}{16pt}
+\newcommand{\standardtextsize}{12pt}
 \newcommand{\tinytextsize}{8pt}
 \newcommand{\tinyText}[1]{{\secondaryFont \fontsize{8pt}{8pt} \selectfont #1}}
 \setlength{\parindent}{0em} % indentations before first line in paragraph
@@ -61,7 +61,6 @@
 %itemize / lists spacing
 \setlist{nolistsep}
 \renewcommand{\baselinestretch}{1.2}
-\primaryFont \fontsize{\standardtextsize}{\standardtextsize} \selectfont
 
 % paragraph formatting
 \widowpenalties 1 1000 %penalty score for breaking a paragraph

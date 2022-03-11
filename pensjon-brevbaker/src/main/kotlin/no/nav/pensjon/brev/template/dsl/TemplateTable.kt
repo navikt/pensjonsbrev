@@ -26,11 +26,11 @@ open class TableBaseScope<Lang : LanguageSupport, LetterData : Any>(
     val rows: MutableList<Element.Table.Row<Lang>> = mutableListOf()
 ) : TemplateGlobalScope<LetterData>() {
 
-    fun columnHeaderRow(
+    fun columnSpec(
         init: TableHeaderScope<Lang, LetterData>.() -> Unit
     ) {
         val headerScope = TableHeaderScope<Lang, LetterData>().apply(init)
-        columnHeader = Element.Table.Header(headerScope.children, headerScope.columnAlignment)
+        columnHeader = Element.Table.Header(headerScope.children)
     }
 
     fun row(
@@ -44,11 +44,10 @@ open class TableBaseScope<Lang : LanguageSupport, LetterData : Any>(
 @LetterTemplateMarker
 open class TableRowScope<Lang : LanguageSupport, LetterData : Any>(val children: MutableList<Element.Table.Cell<Lang>> = mutableListOf()) :
     TemplateGlobalScope<LetterData>() {
-    fun cell(columns: Int = 1, init: TemplateTextOnlyScope<Lang, LetterData>.() -> Unit) {
+    fun cell(init: TemplateTextOnlyScope<Lang, LetterData>.() -> Unit) {
         children.add(
             Element.Table.Cell(
-                TemplateTextOnlyScope<Lang, LetterData>().apply(init).children,
-                columns
+                TemplateTextOnlyScope<Lang, LetterData>().apply(init).children
             )
         )
     }
@@ -56,22 +55,21 @@ open class TableRowScope<Lang : LanguageSupport, LetterData : Any>(val children:
 
 @LetterTemplateMarker
 open class TableHeaderScope<Lang : LanguageSupport, LetterData : Any>(
-    val children: MutableList<Element.Table.Cell<Lang>> = mutableListOf(),
-    val columnAlignment: MutableList<Element.Table.ColumnAlignment> = mutableListOf()
+    val children: MutableList<Element.Table.ColumnSpec<Lang>> = mutableListOf()
 ) :
     TemplateGlobalScope<LetterData>() {
-    fun cell(
-        columns: Int = 1,
+    fun column(
+        columnSpan: Int = 1,
         alignment: Element.Table.ColumnAlignment = Element.Table.ColumnAlignment.LEFT,
-        init: TemplateTextOnlyScope<Lang, LetterData>.() -> Unit
+        init: TemplateTextOnlyScope<Lang, LetterData>.() -> Unit,
     ) {
 
         children.add(
-            Element.Table.Cell(
-                TemplateTextOnlyScope<Lang, LetterData>().apply(init).children,
-                columns
+            Element.Table.ColumnSpec(
+                Element.Table.Cell(TemplateTextOnlyScope<Lang, LetterData>().apply(init).children),
+                alignment,
+                columnSpan
             )
         )
-        columnAlignment.add(alignment)
     }
 }
