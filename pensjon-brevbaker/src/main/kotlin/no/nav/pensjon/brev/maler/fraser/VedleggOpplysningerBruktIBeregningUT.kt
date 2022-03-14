@@ -241,11 +241,11 @@ val reduksjonBTSBOverskrift_001 = createPhrase<LangBokmalNynorskEnglish, Unit> {
 }
 
 data class ReduksjonBTSBTabell1_001Dto(
-    val inntektBruktIAvkortning: Kroner
+    val inntektBruktIAvkortning_barnetilleggSBGjeldende: Kroner
 )
 
 val reduksjonBTSBTabell1_001 = createPhrase<LangBokmalNynorskEnglish, ReduksjonBTSBTabell1_001Dto> {
-    val inntektBruktIAvkortning = argument().select(ReduksjonBTSBTabell1_001Dto::inntektBruktIAvkortning)
+    val inntektBruktIAvkortning = argument().select(ReduksjonBTSBTabell1_001Dto::inntektBruktIAvkortning_barnetilleggSBGjeldende)
     paragraph {
         textExpr(
             Bokmal to "Samlet inntekt brukt i fastsettelse av barnetillegget er ".expr() + inntektBruktIAvkortning.str() + " kroner.",
@@ -256,11 +256,11 @@ val reduksjonBTSBTabell1_001 = createPhrase<LangBokmalNynorskEnglish, ReduksjonB
 }
 
 data class ReduksjonBTSBTabell2_001Dto(
-    val fribelop: Kroner
+    val fribelop_barnetilleggSBGjeldende: Kroner
 )
 
 val reduksjonBTSBTabell2_001 = createPhrase<LangBokmalNynorskEnglish, ReduksjonBTSBTabell2_001Dto> {
-    val fribelop = argument().select(ReduksjonBTSBTabell2_001Dto::fribelop)
+    val fribelop = argument().select(ReduksjonBTSBTabell2_001Dto::fribelop_barnetilleggSBGjeldende)
     paragraph {
         textExpr(
             Bokmal to "Fribeløp brukt i fastsettelsen av barnetillegget er ".expr() + fribelop.str() + " kroner.",
@@ -271,11 +271,11 @@ val reduksjonBTSBTabell2_001 = createPhrase<LangBokmalNynorskEnglish, ReduksjonB
 }
 
 data class ReduksjonBTSBTabell3_001Dto(
-    val inntektOverFribelop: Kroner
+    val inntektOverFribelop_barnetilleggSBGjeldende: Kroner
 )
 
 val reduksjonBTSBTabell3_001 = createPhrase<LangBokmalNynorskEnglish, ReduksjonBTSBTabell3_001Dto> {
-    val inntektOverFribelop = argument().select(ReduksjonBTSBTabell3_001Dto::inntektOverFribelop)
+    val inntektOverFribelop = argument().select(ReduksjonBTSBTabell3_001Dto::inntektOverFribelop_barnetilleggSBGjeldende)
     paragraph {
         textExpr(
             Bokmal to "Inntekt over fribeløpet er ".expr() + inntektOverFribelop.str() + " kroner.",
@@ -286,11 +286,11 @@ val reduksjonBTSBTabell3_001 = createPhrase<LangBokmalNynorskEnglish, ReduksjonB
 }
 
 data class ReduksjonBTSBTabell19_001Dto(
-    val inntektstak: Kroner
+    val inntektstak_barnetilleggSBGjeldende: Kroner
 )
 
 val reduksjonbtsbtabell19_001 = createPhrase<LangBokmalNynorskEnglish, ReduksjonBTSBTabell19_001Dto> {
-    val inntektstak = argument().select(ReduksjonBTSBTabell19_001Dto::inntektstak)
+    val inntektstak = argument().select(ReduksjonBTSBTabell19_001Dto::inntektstak_barnetilleggSBGjeldende)
     paragraph {
         title1 {
             textExpr(
@@ -303,11 +303,11 @@ val reduksjonbtsbtabell19_001 = createPhrase<LangBokmalNynorskEnglish, Reduksjon
 }
 
 data class VedleggBeregnUTredusBTSBPgaInntekt_001Dto(
-    val belop: Kroner
+    val belop_barnetilleggSBGjeldende: Kroner
 )
 
 val vedleggBeregnUTredusBTSBPgaInntekt_001 = createPhrase<LangBokmalNynorskEnglish, VedleggBeregnUTredusBTSBPgaInntekt_001Dto> {
-    val belop = argument().select(VedleggBeregnUTredusBTSBPgaInntekt_001Dto::belop)
+    val belop = argument().select(VedleggBeregnUTredusBTSBPgaInntekt_001Dto::belop_barnetilleggSBGjeldende)
     paragraph {
         textExpr(
             Bokmal to "Du vil få utbetalt ".expr() + belop.str() + " kroner i måneden før skatt i barnetillegg.",

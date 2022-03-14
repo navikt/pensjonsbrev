@@ -787,7 +787,6 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
                 )
             }
             cell {
-                // TODO: Lag gjenbrukbar formattering av Kroner med språkstøtte og enhet (kr/NOK)
                 val avkortningsbelopAr = argument().select(OpplysningerBruktIBeregningUTDto::avkortningsbelopAr_barnetilleggSBGjeldende).format()
                 textExpr(
                     Bokmal to avkortningsbelopAr + " kr",
@@ -822,7 +821,6 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
                 )
             }
             cell {
-                // TODO: Lag gjenbrukbar formattering av Kroner med språkstøtte og enhet (kr/NOK)
                 val justeringsbelopAr = argument().select(OpplysningerBruktIBeregningUTDto::justeringsbelopAr_barnetilleggSBGjeldende).format()
                 textExpr(
                     Bokmal to justeringsbelopAr + " kr",
