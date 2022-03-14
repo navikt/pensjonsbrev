@@ -293,8 +293,8 @@ object PensjonLatex : BaseTemplate() {
                         arg { print(columnHeadersLatexString(columnSpec)) }
                     }
 
-                    printCells(columnSpec.map { it.headerContent }, scope, printWriter, columnSpec)
-                    rows.forEach { printCells(it.cells, scope, printWriter, columnSpec) }
+                    renderTableCells(columnSpec.map { it.headerContent }, scope, printWriter, columnSpec)
+                    rows.forEach { renderTableCells(it.cells, scope, printWriter, columnSpec) }
 
                     printCmd("end") { arg { print("letterTable") } }
                 }
@@ -309,7 +309,7 @@ object PensjonLatex : BaseTemplate() {
                     }).repeat(it.columnSpan)
         }.joinToString("")
 
-    private fun printCells(
+    private fun renderTableCells(
         cells: List<Element.Table.Cell<out LanguageSupport>>,
         scope: ExpressionScope<*, *>,
         printWriter: LatexPrintWriter,
