@@ -55,10 +55,11 @@
         stretch = 0 mm, %Don't add extra space under each cell to fit the table exactly to page.
         hspan=minimal, %wrap instead of widening table over limit
         hlines={0.084666667mm,linecolor},
-        row{odd}={gray9,rowsep=1.5mm},
+        row{odd}={row1color,rowsep=1.5mm},
         row{even}={row2color,rowsep=1.5mm},
         width=\textwidth,
         rowhead=1,
+        cells={b}, % bottom align cell content
         hline{1}={0pt,linecolor}, %remove first horizontal line over the column header
         row{1-1}={columnheadercolor,rowsep=2.54mm}
     }
