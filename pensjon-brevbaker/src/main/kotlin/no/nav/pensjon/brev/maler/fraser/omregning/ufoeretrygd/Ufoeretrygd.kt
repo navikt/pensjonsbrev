@@ -12,13 +12,12 @@ object Ufoeretrygd {
     /**
      * TBU3007
      */
-    val ungUfoer20aar_001 = createPhrase<LangBokmalNynorsk, KravVirkningFraOgMed> {
-        val virkningsdato = argument().format()
-
+    val ungUfoer20aar_001 = OutlinePhrase<LangBokmalNynorsk, KravVirkningFraOgMed> {
+        val formatertDato = it.format()
         paragraph {
             textExpr(
-                Bokmal to "Vi har økt uføretrygden din fra ".expr() + virkningsdato + " fordi du fyller 20 år. Du vil nå få utbetalt uføretrygd med rettighet som ung ufør.",
-                Nynorsk to "Vi har auka uføretrygda di frå ".expr() + virkningsdato + " fordi du fyller 20 år. Du får no utbetalt uføretrygd med rett som ung ufør.",
+                Bokmal to "Vi har økt uføretrygden din fra ".expr() + formatertDato + " fordi du fyller 20 år. Du vil nå få utbetalt uføretrygd med rettighet som ung ufør.",
+                Nynorsk to "Vi har auka uføretrygda di frå ".expr() + formatertDato + " fordi du fyller 20 år. Du får no utbetalt uføretrygd med rett som ung ufør.",
             )
         }
     }
@@ -34,41 +33,41 @@ object Ufoeretrygd {
         val saerkullsbarn: Boolean,
     )
 
-    val beloep = createPhrase<LangBokmalNynorsk, BeloepPerMaaned> {
-        val perMaaned = argument().select(BeloepPerMaaned::perMaaned).str()
+    val beloep = OutlinePhrase<LangBokmalNynorsk, BeloepPerMaaned> { beloepPerMaaned ->
+        val kroner = beloepPerMaaned.select(BeloepPerMaaned::perMaaned).str()
 
         paragraph {
-            showIf(argument().map { !it.fellesbarn && !it.saerkullsbarn && !it.ektefelle && !it.gjenlevende }) {
+            showIf(beloepPerMaaned.map { !it.fellesbarn && !it.saerkullsbarn && !it.ektefelle && !it.gjenlevende }) {
                 textExpr(
-                    Bokmal to "Du får ".expr() + perMaaned + " kroner i uføretrygd per måned før skatt.",
-                    Nynorsk to "Du får ".expr() + perMaaned + " kroner i uføretrygd per månad før skatt.",
+                    Bokmal to "Du får ".expr() + kroner + " kroner i uføretrygd per måned før skatt.",
+                    Nynorsk to "Du får ".expr() + kroner + " kroner i uføretrygd per månad før skatt.",
                 )
-            }.orShowIf(argument().map { (it.fellesbarn || it.saerkullsbarn) && !it.gjenlevende && !it.ektefelle }) {
+            }.orShowIf(beloepPerMaaned.map { (it.fellesbarn || it.saerkullsbarn) && !it.gjenlevende && !it.ektefelle }) {
                 textExpr(
-                    Bokmal to "Du får ".expr() + perMaaned + " kroner i uføretrygd og barnetillegg per måned før skatt.",
-                    Nynorsk to "Du får ".expr() + perMaaned + " kroner i uføretrygd og barnetillegg per månad før skatt.",
+                    Bokmal to "Du får ".expr() + kroner + " kroner i uføretrygd og barnetillegg per måned før skatt.",
+                    Nynorsk to "Du får ".expr() + kroner + " kroner i uføretrygd og barnetillegg per månad før skatt.",
                 )
-            }.orShowIf(argument().map { !it.fellesbarn && !it.saerkullsbarn && !it.ektefelle && it.gjenlevende }) {
+            }.orShowIf(beloepPerMaaned.map { !it.fellesbarn && !it.saerkullsbarn && !it.ektefelle && it.gjenlevende }) {
                 textExpr(
-                    Bokmal to "Du får ".expr() + perMaaned + " kroner i uføretrygd og gjenlevendetillegg per måned før skatt.",
-                    Nynorsk to "Du får ".expr() + perMaaned + " kroner i uføretrygd og attlevandetillegg per månad før skatt.",
+                    Bokmal to "Du får ".expr() + kroner + " kroner i uføretrygd og gjenlevendetillegg per måned før skatt.",
+                    Nynorsk to "Du får ".expr() + kroner + " kroner i uføretrygd og attlevandetillegg per månad før skatt.",
                 )
-            }.orShowIf(argument().map { !it.fellesbarn && !it.saerkullsbarn && it.ektefelle && !it.gjenlevende }) {
+            }.orShowIf(beloepPerMaaned.map { !it.fellesbarn && !it.saerkullsbarn && it.ektefelle && !it.gjenlevende }) {
                 textExpr(
-                    Bokmal to "Du får ".expr() + perMaaned + " kroner i uføretrygd og ektefelletillegg per måned før skatt.",
-                    Nynorsk to "Du får ".expr() + perMaaned + " kroner i uføretrygd og ektefelletillegg per månad før skatt.",
-                )
-
-            }.orShowIf(argument().map { (it.fellesbarn || it.saerkullsbarn) && it.ektefelle && !it.gjenlevende }) {
-                textExpr(
-                    Bokmal to "Du får ".expr() + perMaaned + " kroner i uføretrygd, barne- og ektefelletillegg per måned før skatt.",
-                    Nynorsk to "Du får ".expr() + perMaaned + " kroner i uføretrygd, barne- og ektefelletillegg per månad før skatt.",
+                    Bokmal to "Du får ".expr() + kroner + " kroner i uføretrygd og ektefelletillegg per måned før skatt.",
+                    Nynorsk to "Du får ".expr() + kroner + " kroner i uføretrygd og ektefelletillegg per månad før skatt.",
                 )
 
-            }.orShowIf(argument().map { (it.fellesbarn || it.saerkullsbarn) && !it.ektefelle && it.gjenlevende }) {
+            }.orShowIf(beloepPerMaaned.map { (it.fellesbarn || it.saerkullsbarn) && it.ektefelle && !it.gjenlevende }) {
                 textExpr(
-                    Bokmal to "Du får ".expr() + perMaaned + " kroner i uføretrygd, barne- og gjenlevendetillegg per måned før skatt.",
-                    Nynorsk to "Du får ".expr() + perMaaned + " kroner i uføretrygd, barne- og attlevandetillegg per månad før skatt.",
+                    Bokmal to "Du får ".expr() + kroner + " kroner i uføretrygd, barne- og ektefelletillegg per måned før skatt.",
+                    Nynorsk to "Du får ".expr() + kroner + " kroner i uføretrygd, barne- og ektefelletillegg per månad før skatt.",
+                )
+
+            }.orShowIf(beloepPerMaaned.map { (it.fellesbarn || it.saerkullsbarn) && !it.ektefelle && it.gjenlevende }) {
+                textExpr(
+                    Bokmal to "Du får ".expr() + kroner + " kroner i uføretrygd, barne- og gjenlevendetillegg per måned før skatt.",
+                    Nynorsk to "Du får ".expr() + kroner + " kroner i uføretrygd, barne- og attlevandetillegg per månad før skatt.",
                 )
             }
         }
@@ -87,15 +86,15 @@ object Ufoeretrygd {
         fun saerkullsbarnUtbetalt(): Boolean = saerkullsbarn?.utbetalt ?: false
     }
 
-    val barnetileggIkkeUtbetalt = createPhrase<LangBokmalNynorsk, BarnetilleggIkkeUtbetaltDto> {
+    val barnetileggIkkeUtbetalt = OutlinePhrase<LangBokmalNynorsk, BarnetilleggIkkeUtbetaltDto> {
         paragraph {
 
-            val saerkullInnvilget = argument().select(BarnetilleggIkkeUtbetaltDto::saerkullInnvilget)
-            val saerkullUtbetalt = argument().select(BarnetilleggIkkeUtbetaltDto::saerkullsbarnUtbetalt)
-            val fellesInnvilget = argument().select(BarnetilleggIkkeUtbetaltDto::fellesInnvilget)
-            val fellesUtbetalt = argument().select(BarnetilleggIkkeUtbetaltDto::fellesUtbetalt)
+            val saerkullInnvilget = it.select(BarnetilleggIkkeUtbetaltDto::saerkullInnvilget)
+            val saerkullUtbetalt = it.select(BarnetilleggIkkeUtbetaltDto::saerkullsbarnUtbetalt)
+            val fellesInnvilget = it.select(BarnetilleggIkkeUtbetaltDto::fellesInnvilget)
+            val fellesUtbetalt = it.select(BarnetilleggIkkeUtbetaltDto::fellesUtbetalt)
 
-            ifNotNull(argument().select(BarnetilleggIkkeUtbetaltDto::saerkullsbarn)) { saerkullsbarn ->
+            ifNotNull(it.select(BarnetilleggIkkeUtbetaltDto::saerkullsbarn)) { saerkullsbarn ->
                 val barnFlertall = saerkullsbarn.map { it.antallBarn > 1 }
                 val inntektstak = saerkullsbarn.select(UngUfoerAutoDto.InnvilgetBarnetillegg::inntektstak).str()
 
@@ -119,7 +118,7 @@ object Ufoeretrygd {
                 }
             }
 
-            ifNotNull(argument().select(BarnetilleggIkkeUtbetaltDto::fellesbarn)) { fellesbarn ->
+            ifNotNull(it.select(BarnetilleggIkkeUtbetaltDto::fellesbarn)) { fellesbarn ->
                 val barnFlertall = fellesbarn.map { it.antallBarn > 1 }
                 val inntektstak = fellesbarn.select(UngUfoerAutoDto.InnvilgetBarnetillegg::inntektstak).str()
 
@@ -148,7 +147,7 @@ object Ufoeretrygd {
     /**
      * TBU1092
      */
-    val vedtakBegrunnelseOverskrift = createPhrase<LangBokmalNynorsk, Unit> {
+    val vedtakBegrunnelseOverskrift = OutlinePhrase<LangBokmalNynorsk, Unit> {
         title1 {
             text(
                 Bokmal to "Begrunnelse for vedtaket",
@@ -160,7 +159,7 @@ object Ufoeretrygd {
     /**
      * TBU3008, TBU3009, TBU3010
      */
-    val ungUfoerHoeyereVed20aar = createPhrase<LangBokmalNynorsk, GrunnbeloepSats> {
+    val ungUfoerHoeyereVed20aar = OutlinePhrase<LangBokmalNynorsk, GrunnbeloepSats> {
         paragraph {
             text(
                 Bokmal to "Du er tidligere innvilget rettighet som ung ufør i uføretrygden din. Denne rettigheten gir deg høyere utbetaling fra og med den måneden du fyller 20 år.",
@@ -169,7 +168,7 @@ object Ufoeretrygd {
         }
 
         paragraph {
-            val minsteytelseVedVirkSats = argument().format()
+            val minsteytelseVedVirkSats = it.format()
             textExpr(
                 Bokmal to "Sivilstanden påvirker størrelsen på den årlige uføretrygden og du får derfor en årlig ytelse som utgjør ".expr()
                         + minsteytelseVedVirkSats + " ganger grunnbeløpet.",
@@ -183,7 +182,7 @@ object Ufoeretrygd {
     /**
      * TBU3011
      */
-    val hjemmelSivilstand = createPhrase<LangBokmalNynorsk, Unit> {
+    val hjemmelSivilstand = OutlinePhrase<LangBokmalNynorsk, Unit> {
         paragraph {
             text(
                 Bokmal to "Vedtaket er gjort etter folketrygdloven § 12-13 og § 22-12.",
@@ -195,7 +194,7 @@ object Ufoeretrygd {
     /**
      * TBU1174
      */
-    val virkningFomOverskrift = createPhrase<LangBokmalNynorsk, Unit> {
+    val virkningFomOverskrift = OutlinePhrase<LangBokmalNynorsk, Unit> {
         title1 {
             text(
                 Bokmal to "Dette er virkningstidspunktet ditt",
@@ -207,8 +206,8 @@ object Ufoeretrygd {
     /**
      * TBU2529x
      */
-    val virkningFraOgMed = createPhrase<LangBokmalNynorsk, KravVirkningFraOgMed> {
-        val dato = argument().format()
+    val virkningFraOgMed = OutlinePhrase<LangBokmalNynorsk, KravVirkningFraOgMed> {
+        val dato = it.format()
         paragraph {
             textExpr(
                 Bokmal to "Uføretrygden din er endret fra ".expr() + dato + ". Dette kaller vi virkningstidspunktet. Du vil derfor få en ny utbetaling fra og med måneden vilkåret er oppfylt.",
@@ -220,7 +219,7 @@ object Ufoeretrygd {
     /**
      * TBU1227
      */
-    val sjekkUtbetalingene = createPhrase<LangBokmalNynorsk, Unit> {
+    val sjekkUtbetalingene = OutlinePhrase<LangBokmalNynorsk, Unit> {
         title1 {
             text(
                 Bokmal to "Sjekk utbetalingene dine",

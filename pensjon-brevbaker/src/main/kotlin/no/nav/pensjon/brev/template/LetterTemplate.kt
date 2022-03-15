@@ -108,7 +108,6 @@ sealed class Element<out Lang : LanguageSupport> {
         )
     }
 
-
     sealed class Form<out Lang : LanguageSupport> : Element<Lang>() {
         data class Text<out Lang : LanguageSupport>(
             val prompt: Element.Text<Lang>,

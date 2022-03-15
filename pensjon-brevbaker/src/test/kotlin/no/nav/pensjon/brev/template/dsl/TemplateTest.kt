@@ -98,7 +98,7 @@ class TemplateTest {
 
     @Test
     fun `TemplateTextOnlyScope_eval adds Expression element`() {
-        val element = TemplateTextOnlyScope<BokmalLang, SomeDto>().apply {
+        val element = TextOnlyScope<BokmalLang, SomeDto>().apply {
             eval(argument().select(SomeDto::name))
         }.children.first()
 
@@ -108,27 +108,6 @@ class TemplateTest {
 
         assertEquals(expected, element)
     }
-
-    @Test
-    fun `TemplateTextOnlyScope_newline adds newline element`() {
-        val element = TemplateTextOnlyScope<BokmalLang, SomeDto>().apply {
-            newline()
-        }.children.first()
-
-        assertThat(element, isA<Element.NewLine<BokmalLang>>())
-    }
-
-    @Test
-    fun `TemplateTextOnlyScope_textExpr adds text expr`() {
-        val element = TemplateTextOnlyScope<BokmalLang, SomeDto>().apply {
-            textExpr(Language.Bokmal to "hei".expr())
-        }.children.first()
-
-        val expected = Element.Text.Expression.ByLanguage.create(Language.Bokmal to "hei".expr())
-
-        assertEquals(expected, element)
-    }
-
 
     @Test
     fun `createTemplate adds literal title`() {
@@ -192,45 +171,9 @@ class TemplateTest {
     }
 
     @Test
-    fun `createTemplate can add Text$Expression elements`() {
-        val template = createTemplate(
-            name = "test",
-            base = PensjonLatex,
-            letterDataType = SomeDto::class,
-            title = bokmalTittel,
-            letterMetadata = testLetterMetadata,
-        ) {
-            outline {
-                eval(argument().select(SomeDto::name))
-            }
-        }
-
-        assertEquals(
-            LetterTemplate(
-                name = "test",
-                title = bokmalTittel,
-                base = PensjonLatex,
-                letterDataType = SomeDto::class,
-                language = languages(Language.Bokmal),
-                letterMetadata = testLetterMetadata,
-                outline = listOf(
-                    Element.Text.Expression(
-                        Expression.UnaryInvoke(
-                            Expression.FromScope(ExpressionScope<SomeDto, *>::argument),
-                            UnaryOperation.Select(SomeDto::name)
-                        )
-                    )
-                )
-            ),
-            template
-        )
-
-    }
-
-    @Test
     fun `TemplateContainerScope_formText adds Form$Text element`() {
         val prompt = newText(Language.Bokmal to "hei")
-        val element = TemplateContainerScope<BokmalLang, SomeDto>().apply {
+        val element = ParagraphScope<BokmalLang, SomeDto>().apply {
             formText(1, prompt)
         }.children.first()
 
@@ -243,7 +186,7 @@ class TemplateTest {
     fun `TemplateContainerScope_formChoice adds Form$MultipleChoice`() {
         val prompt = newText(Language.Bokmal to "hei")
 
-        val element = TemplateContainerScope<BokmalLang, SomeDto>().apply {
+        val element = ParagraphScope<BokmalLang, SomeDto>().apply {
             formChoice(prompt) {
                 choice(Language.Bokmal to "velg denne")
             }
@@ -257,7 +200,7 @@ class TemplateTest {
     @Test
     fun `TemplateContainerScope_includePhrase adds phrase`() {
         val argument = Expression.Literal(TestFraseDto("jadda"))
-        val element = TemplateContainerScope<BokmalLang, SomeDto>().apply {
+        val element = ParagraphScope<BokmalLang, SomeDto>().apply {
             includePhrase(argument, testFrase)
         }.children.first()
 

@@ -30,34 +30,43 @@ object UngUfoerAuto : StaticTemplate {
             val virkningsDato = argument().select(UngUfoerAutoDto::kravVirkningFraOgMed).map(::KravVirkningFraOgMed)
 
             includePhrase(Vedtak.overskrift)
-            includePhrase(virkningsDato, Ufoeretrygd.ungUfoer20aar_001)
-
-            includePhrase(argument().map {
-                Ufoeretrygd.BeloepPerMaaned(
-                    perMaaned = Kroner(it.totaltUfoerePerMnd),
-                    ektefelle = it.ektefelle?.utbetalt ?: false,
-                    gjenlevende = it.gjenlevende?.utbetalt ?: false,
-                    fellesbarn = it.fellesbarn?.utbetalt ?: false,
-                    saerkullsbarn = it.saerkullsbarn?.utbetalt ?: false
-                )
-            }, Ufoeretrygd.beloep)
+            includePhrase(Ufoeretrygd.ungUfoer20aar_001, virkningsDato)
 
             includePhrase(
+                Ufoeretrygd.beloep,
+                argument().map {
+                    Ufoeretrygd.BeloepPerMaaned(
+                        perMaaned = Kroner(it.totaltUfoerePerMnd),
+                        ektefelle = it.ektefelle?.utbetalt ?: false,
+                        gjenlevende = it.gjenlevende?.utbetalt ?: false,
+                        fellesbarn = it.fellesbarn?.utbetalt ?: false,
+                        saerkullsbarn = it.saerkullsbarn?.utbetalt ?: false
+                    )
+                }
+            )
+
+            paragraph {
+                showIf(true.expr()) {
+
+                }
+            }
+
+            includePhrase(
+                Ufoeretrygd.barnetileggIkkeUtbetalt,
                 argument().map {
                     Ufoeretrygd.BarnetilleggIkkeUtbetaltDto(
                         saerkullsbarn = it.saerkullsbarn,
                         fellesbarn = it.fellesbarn,
                     )
-                },
-                Ufoeretrygd.barnetileggIkkeUtbetalt
+                }
             )
 
             includePhrase(Ufoeretrygd.vedtakBegrunnelseOverskrift)
-            includePhrase(argument().map { GrunnbeloepSats(it.minsteytelseVedVirkSats) }, Ufoeretrygd.ungUfoerHoeyereVed20aar)
+            includePhrase(Ufoeretrygd.ungUfoerHoeyereVed20aar, argument().map { GrunnbeloepSats(it.minsteytelseVedVirkSats) })
             includePhrase(Ufoeretrygd.hjemmelSivilstand)
 
             includePhrase(Ufoeretrygd.virkningFomOverskrift)
-            includePhrase(virkningsDato, Ufoeretrygd.virkningFraOgMed)
+            includePhrase(Ufoeretrygd.virkningFraOgMed, virkningsDato)
 
             includePhrase(Felles.meldEndringerPesys_001)
             includePhrase(Felles.rettTilKlagePesys_001)

@@ -9,9 +9,9 @@ open class TableRootScope<Lang : LanguageSupport, LetterData : Any>
     : TableBaseScope<Lang, LetterData>() {
 
     fun title(
-        init: TemplateTextOnlyScope<Lang, LetterData>.() -> Unit
+        init: TextOnlyScope<Lang, LetterData>.() -> Unit
     ) {
-        title = TemplateTextOnlyScope<Lang, LetterData>().apply(init).children
+        title = TextOnlyScope<Lang, LetterData>().apply(init).children
     }
 
     fun showIf(
@@ -54,10 +54,10 @@ open class TableBaseScope<Lang : LanguageSupport, LetterData : Any>(
 @LetterTemplateMarker
 open class TableRowScope<Lang : LanguageSupport, LetterData : Any>(val children: MutableList<Element.Table.Cell<Lang>> = mutableListOf()) :
     TemplateGlobalScope<LetterData>() {
-    fun cell(cellColumns: Int = 1, init: TemplateTextOnlyScope<Lang, LetterData>.() -> Unit) {
+    fun cell(cellColumns: Int = 1, init: TextOnlyScope<Lang, LetterData>.() -> Unit) {
         children.add(
             Element.Table.Cell(
-                TemplateTextOnlyScope<Lang, LetterData>().apply(init).children,
+                TextOnlyScope<Lang, LetterData>().apply(init).children,
                 cellColumns
             )
         )

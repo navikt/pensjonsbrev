@@ -5,7 +5,7 @@ import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brev.template.dsl.bokmalTittel
 import no.nav.pensjon.brev.template.dsl.testLetterMetadata
 
-fun outlineTestTemplate(function: TemplateContainerScope<BokmalLang, Unit>.() -> Unit) =
+fun outlineTestTemplate(function: OutlineScope<BokmalLang, Unit>.() -> Unit) =
     createTemplate(
         name = "test",
         base = PensjonLatex,
