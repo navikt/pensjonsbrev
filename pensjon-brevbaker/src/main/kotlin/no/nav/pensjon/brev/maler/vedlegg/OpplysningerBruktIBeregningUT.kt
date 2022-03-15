@@ -51,7 +51,7 @@ data class OpplysningerBruktIBeregningUTDto(
     val uforegrad_uforetrygdGjeldende: Int,
     val uforetidspunkt_uforetrygdGjeldende: LocalDate,
     val virkDatoFom_gjeldendeBeregnetUTPerManed: LocalDate,
-    val yrkesskadegrad_yrkesskadeGjeldende: Int
+    val yrkesskadegrad_yrkesskadeGjeldende: Int,
     )
 
 val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, OpplysningerBruktIBeregningUTDto>(
@@ -77,7 +77,7 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
                 English to "The National Insurance basic amount (G) used in the calculation is NOK ".expr() + grunnbelop.str() + "."
             )
         }
-        columnHeaderRow {
+        columnHeaderRow { //TODO avventer tabell-header endringer
             cell {
                 text(
                     Bokmal to "?????",
