@@ -1,7 +1,5 @@
 package no.nav.pensjon.brev.template.dsl
 
-import com.natpryce.hamkrest.assertion.assertThat
-import com.natpryce.hamkrest.isA
 import no.nav.pensjon.brev.maler.fraser.*
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.base.PensjonLatex
@@ -200,12 +198,12 @@ class TemplateTest {
     @Test
     fun `TemplateContainerScope_includePhrase adds phrase`() {
         val argument = Expression.Literal(TestFraseDto("jadda"))
-        val element = ParagraphScope<BokmalLang, SomeDto>().apply {
-            includePhrase(argument, testFrase)
-        }.children.first()
+        val actual = OutlineScope<BokmalLang, SomeDto>().apply {
+            includePhrase(testFrase, argument)
+        }.children
 
-        val expected = Element.IncludePhrase<BokmalLang, TestFraseDto>(argument, testFrase)
+        val expected = OutlineScope<BokmalLang, SomeDto>().apply { testFrase.apply(this, argument) }.children
 
-        assertEquals(expected, element)
+        assertEquals(expected, actual)
     }
 }
