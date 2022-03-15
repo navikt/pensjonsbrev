@@ -85,13 +85,13 @@ sealed class Element<out Lang : LanguageSupport> {
         init {
             val cellCounts = rows.map { it.cells.size }.distinct()
             if (cellCounts.size > 1) {
-                throw IllegalArgumentException("rows in the table needs to have the same number of cells")
+                throw InvalidTableDeclarationException("rows in the table needs to have the same number of cells")
             }
             val cellcount = cellCounts.firstOrNull()
-                ?: throw IllegalArgumentException("rows in the table needs to have cells/columns")
+                ?: throw InvalidTableDeclarationException("A table must have at least one row")
 
             if (cellcount == 0) {
-                throw IllegalArgumentException("the row(s) are empty")
+                throw InvalidTableDeclarationException("The table rows must have at least one cell/column")
             }
         }
         data class Row<Lang : LanguageSupport>(val cells: List<Cell<Lang>>, val condition: Expression<Boolean>? = null)
@@ -221,3 +221,5 @@ sealed class Element<out Lang : LanguageSupport> {
     ) : Element<Lang>()
 
 }
+
+class InvalidTableDeclarationException(private val msg: String): Exception(msg)

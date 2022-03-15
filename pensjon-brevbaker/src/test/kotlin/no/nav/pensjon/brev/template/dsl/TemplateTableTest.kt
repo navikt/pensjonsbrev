@@ -1,10 +1,7 @@
 package no.nav.pensjon.brev.template.dsl
 
-import no.nav.pensjon.brev.template.Element
-import no.nav.pensjon.brev.template.Language
+import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.dsl.expression.expr
-import no.nav.pensjon.brev.template.outlineTestLetter
-import no.nav.pensjon.brev.template.outlineTestTemplate
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
@@ -60,7 +57,7 @@ class TemplateTableTest {
 
     @Test
     fun `table creation fails when rows have uneven amount of cells`() {
-        assertThrows(IllegalArgumentException::class.java) {
+        assertThrows(InvalidTableDeclarationException::class.java) {
             outlineTestTemplate {
                 table {
                     columnSpec {
@@ -88,7 +85,7 @@ class TemplateTableTest {
 
     @Test
     fun `table creation fails when rows are missing cells`() {
-        assertThrows(IllegalArgumentException::class.java) {
+        assertThrows(InvalidTableDeclarationException::class.java) {
             outlineTestTemplate {
                 table {
                     columnSpec {
@@ -106,7 +103,7 @@ class TemplateTableTest {
 
     @Test
     fun `table creation fails when columnHeaderRow is not set`() {
-        assertThrows(IllegalArgumentException::class.java) {
+        assertThrows(InvalidTableDeclarationException::class.java) {
             outlineTestTemplate {
                 table {
                     row {
@@ -121,7 +118,7 @@ class TemplateTableTest {
 
     @Test
     fun `table creation fails when column header is missing`() {
-        assertThrows(IllegalArgumentException::class.java) {
+        assertThrows(InvalidTableDeclarationException::class.java) {
             outlineTestTemplate {
                 table {
                     row {
