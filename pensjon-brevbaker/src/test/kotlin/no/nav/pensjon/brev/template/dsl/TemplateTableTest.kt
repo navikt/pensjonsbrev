@@ -12,12 +12,11 @@ class TemplateTableTest {
 
 
         val doc = outlineTestTemplate {
-            table {
-                columnSpec {
-                    column {
-                        text(Language.Bokmal to "header")
-                    }
+            table(header = {
+                column {
+                    text(Language.Bokmal to "header")
                 }
+            }) {
                 row {
                     cell {
                         text(Language.Bokmal to "joda")
@@ -28,7 +27,7 @@ class TemplateTableTest {
 
         val expected = outlineTestLetter(
             Element.Table(
-                columnHeader =
+                header =
                 Element.Table.Header(
                     listOf(
                         Element.Table.ColumnSpec(
@@ -59,12 +58,11 @@ class TemplateTableTest {
     fun `table creation fails when rows have uneven amount of cells`() {
         assertThrows(InvalidTableDeclarationException::class.java) {
             outlineTestTemplate {
-                table {
-                    columnSpec {
-                        column {
-                            text(Language.Bokmal to "header")
-                        }
+                table(header = {
+                    column {
+                        text(Language.Bokmal to "header")
                     }
+                }) {
                     row {
                         cell {
                             text(Language.Bokmal to "en enkel celle")
@@ -87,12 +85,11 @@ class TemplateTableTest {
     fun `table creation fails when rows are missing cells`() {
         assertThrows(InvalidTableDeclarationException::class.java) {
             outlineTestTemplate {
-                table {
-                    columnSpec {
-                        column {
-                            text(Language.Bokmal to "header")
-                        }
+                table(header = {
+                    column {
+                        text(Language.Bokmal to "header")
                     }
+                }) {
                     row {
 
                     }
@@ -101,43 +98,15 @@ class TemplateTableTest {
         }
     }
 
-    @Test
-    fun `table creation fails when columnHeaderRow is not set`() {
-        assertThrows(InvalidTableDeclarationException::class.java) {
-            outlineTestTemplate {
-                table {
-                    row {
-                        cell {
-                            text(Language.Bokmal to "Tekst")
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    @Test
-    fun `table creation fails when column header is missing`() {
-        assertThrows(InvalidTableDeclarationException::class.java) {
-            outlineTestTemplate {
-                table {
-                    row {
-                        Language.Bokmal to "Hello world!"
-                    }
-                }
-            }
-        }
-    }
 
     @Test
     fun `showif adds rows with predicates`() {
         val doc = outlineTestTemplate {
-            table {
-                columnSpec {
-                    column {
-                        text(Language.Bokmal to "header")
-                    }
+            table(header = {
+                column {
+                    text(Language.Bokmal to "header")
                 }
+            }) {
                 showIf(true.expr()) {
                     row {
                         cell {
@@ -174,7 +143,7 @@ class TemplateTableTest {
                         ), true.expr()
                     )
                 ),
-                columnHeader =
+                header =
                 Element.Table.Header(
                     listOf(
                         Element.Table.ColumnSpec(
@@ -185,7 +154,8 @@ class TemplateTableTest {
                         )
 
                     )
-                )            )
+                )
+            )
         )
         assertEquals(expected, doc)
     }

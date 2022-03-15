@@ -79,7 +79,7 @@ sealed class Element<out Lang : LanguageSupport> {
 
     data class Table<Lang : LanguageSupport>(
         val rows: List<Row<Lang>>,
-        val columnHeader: Header<Lang>,
+        val header: Header<Lang>,
     ) : Element<Lang>() {
 
         init {

@@ -287,7 +287,7 @@ object PensjonLatex : BaseTemplate() {
                 with(printWriter) {
                     val rows = element.rows.filter { it.condition == null || it.condition.eval(scope) }
                     if (rows.isEmpty()) return
-                    val columnSpec = element.columnHeader.colSpec
+                    val columnSpec = element.header.colSpec
                     printCmd("begin") {
                         arg { print("letterTable") }
                         arg { print(columnHeadersLatexString(columnSpec)) }

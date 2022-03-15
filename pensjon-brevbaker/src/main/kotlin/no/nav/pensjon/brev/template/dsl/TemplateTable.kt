@@ -22,17 +22,8 @@ open class TableRootScope<Lang : LanguageSupport, LetterData : Any>
 
 @LetterTemplateMarker
 open class TableBaseScope<Lang : LanguageSupport, LetterData : Any>(
-    var columnHeader: Element.Table.Header<Lang>? = null,
     val rows: MutableList<Element.Table.Row<Lang>> = mutableListOf()
 ) : TemplateGlobalScope<LetterData>() {
-
-    fun columnSpec(
-        init: TableHeaderScope<Lang, LetterData>.() -> Unit
-    ) {
-        val headerScope = TableHeaderScope<Lang, LetterData>().apply(init)
-        columnHeader = Element.Table.Header(headerScope.children)
-    }
-
     fun row(
         init: TableRowScope<Lang, LetterData>.() -> Unit
     ) {

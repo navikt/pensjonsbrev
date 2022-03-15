@@ -84,13 +84,14 @@ object EksempelBrev : StaticTemplate {
             }
             paragraph {
                 text(Bokmal to "Dette er din inntekt fra 01.01.2020 til 01.05.2020")
-                table {
-                    columnSpec {
+                table(
+                    header = {
                         column(3) {text(Bokmal to "Kolonne 1", FontType.BOLD)}
                         column(1, RIGHT) {text(Bokmal to "Kolonne 2", FontType.BOLD)}
                         column(1, RIGHT) {text(Bokmal to "Kolonne 3", FontType.BOLD)}
                         column(1, RIGHT) {text(Bokmal to "Kolonne 4", FontType.BOLD)}
                     }
+                ) {
                     for (i in 1..50) {
                         row {
                             cell {

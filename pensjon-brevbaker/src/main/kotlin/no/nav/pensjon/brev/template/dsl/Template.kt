@@ -136,17 +136,14 @@ class TemplateContainerScope<Lang : LanguageSupport, LetterData : Any> :
         children.add(Element.ItemList(ListRootScope<Lang, LetterData>().apply(init).children))
     }
 
-    fun table(init: TableRootScope<Lang, LetterData>.() -> Unit) {
-        TableRootScope<Lang, LetterData>().apply(init)
-            .let {
-                children.add(
-                    Element.Table(
-                        rows = it.rows,
-                        columnHeader = it.columnHeader
-                            ?: throw InvalidTableDeclarationException("Table is missing column header row")
-                    )
-                )
-            }
+    fun table(header: TableHeaderScope<Lang, LetterData>.() -> Unit,
+              init: TableRootScope<Lang, LetterData>.() -> Unit) {
+        children.add(
+            Element.Table(
+                rows = TableRootScope<Lang, LetterData>().apply(init).rows,
+                header = Element.Table.Header(TableHeaderScope<Lang, LetterData>().apply(header).children)
+            )
+        )
     }
 
     fun paragraph(init: TemplateContainerScope<Lang, LetterData>.() -> Unit) {

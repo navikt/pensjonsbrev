@@ -12,23 +12,15 @@ class PensjonLatexTest {
     fun `table is not rendered when all the rows are filtered out`() {
         val doc = outlineTestTemplate {
             title1 { text(Bokmal to "THIS TEXT SHOULD RENDER") }
-            table {
-                showIf(true.expr()) {
-                    columnSpec {
-                        column {
-                            text(
-                                Bokmal to "This text should not render",
-                            )
-                        }
-                    }
-                }
-                columnSpec {
+            table(
+                header = {
                     column {
                         text(
                             Bokmal to "This text should not render",
                         )
                     }
                 }
+            ) {
                 showIf(false.expr()) {
                     row {
                         cell {
@@ -49,14 +41,15 @@ class PensjonLatexTest {
     @Test
     fun `all table elements is rendered to LaTeX`() {
         val doc = outlineTestTemplate {
-            table {
-                columnSpec {
+            table(
+                header = {
                     column {
                         text(
                             Bokmal to "This text should render 1",
                         )
                     }
                 }
+            ){
                 showIf(true.expr()) {
                     row {
                         cell {
