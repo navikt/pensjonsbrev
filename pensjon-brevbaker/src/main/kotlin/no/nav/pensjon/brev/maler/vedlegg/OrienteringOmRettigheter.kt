@@ -49,31 +49,32 @@ val orienteringOmRettigheterOgPlikter = createAttachment<LangBokmalNynorskEnglis
     // Mandatory phrase: vedleggPlikter_001
     showIf(
             saktype.isOneOf(Sakstype.ALDER)
-    
+
     ) {
         includePhrase(vedleggPlikter_001)
     }
+    includePhrase(vedleggPlikterAP2_001)
     list {
         showIf(
                 bor_i_norge
                         and not(institusjon_gjeldende.isOneOf(FENGSEL, HELSE, SYKEHJEM))
                         and saktype.isOneOf(Sakstype.ALDER)
         ) {
-            includePhrase(vedleggPlikterAP2_001)
+           item { includePhrase(vedleggPlikterAP2_001) }
         }
         showIf(
                 not(bor_i_norge)
                         and not(institusjon_gjeldende.isOneOf(FENGSEL, HELSE, SYKEHJEM))
                         and saktype.isOneOf(Sakstype.ALDER)
         ) {
-            includePhrase(vedleggPlikterAP3_001)
+           item { includePhrase(vedleggPlikterAP3_001) }
         }
         showIf(
                 sivilstand.isOneOf(ENSLIG, ENKE, Sivilstand.INGEN)
                         and not(institusjon_gjeldende.isOneOf(FENGSEL, HELSE, SYKEHJEM))
                         and saktype.isOneOf(Sakstype.ALDER)
         ) {
-            includePhrase(vedleggPlikterAP1_001)
+           item { includePhrase(vedleggPlikterAP1_001) }
         }
         showIf(
                 sivilstand.isOneOf(GIFT)
@@ -81,7 +82,7 @@ val orienteringOmRettigheterOgPlikter = createAttachment<LangBokmalNynorskEnglis
                         and not(eps_institusjon_gjeldende.isOneOf(Institusjon.INGEN))
                         and saktype.isOneOf(Sakstype.ALDER)
         ) {
-            includePhrase(vedleggPlikterAP4_002)
+           item { includePhrase(vedleggPlikterAP4_002) }
         }
         showIf(
                 sivilstand.isOneOf(PARTNER)
@@ -89,7 +90,7 @@ val orienteringOmRettigheterOgPlikter = createAttachment<LangBokmalNynorskEnglis
                         and not(eps_institusjon_gjeldende.isOneOf(Institusjon.INGEN))
                         and saktype.isOneOf(Sakstype.ALDER)
         ) {
-            includePhrase(vedleggPlikterAP13_002)
+           item { includePhrase(vedleggPlikterAP13_002) }
         }
         showIf(
                 sivilstand.isOneOf(SAMBOER1_5, SAMBOER3_2)
@@ -97,7 +98,7 @@ val orienteringOmRettigheterOgPlikter = createAttachment<LangBokmalNynorskEnglis
                         and not(eps_institusjon_gjeldende.isOneOf(Institusjon.INGEN))
                         and saktype.isOneOf(Sakstype.ALDER)
         ) {
-            includePhrase(vedleggPlikterAP15_002)
+           item { includePhrase(vedleggPlikterAP15_002) }
         }
         showIf(
                 sivilstand.isOneOf(GIFT)
@@ -106,7 +107,7 @@ val orienteringOmRettigheterOgPlikter = createAttachment<LangBokmalNynorskEnglis
                         and not(eps_institusjon_gjeldende.isOneOf(Institusjon.INGEN))
                         and saktype.isOneOf(Sakstype.ALDER)
         ) {
-            includePhrase(vedleggPlikterAP6_002)
+           item { includePhrase(vedleggPlikterAP6_002) }
         }
         showIf(
                 sivilstand.isOneOf(PARTNER)
@@ -115,7 +116,7 @@ val orienteringOmRettigheterOgPlikter = createAttachment<LangBokmalNynorskEnglis
                         and not(eps_institusjon_gjeldende.isOneOf(Institusjon.INGEN))
                         and saktype.isOneOf(Sakstype.ALDER)
         ) {
-            includePhrase(vedleggPlikterAP14_002)
+           item { includePhrase(vedleggPlikterAP14_002) }
         }
         showIf(
                 sivilstand.isOneOf(SAMBOER1_5, SAMBOER3_2)
@@ -124,7 +125,7 @@ val orienteringOmRettigheterOgPlikter = createAttachment<LangBokmalNynorskEnglis
                         and not(eps_institusjon_gjeldende.isOneOf(Institusjon.INGEN))
                         and saktype.isOneOf(Sakstype.ALDER)
         ) {
-            includePhrase(vedleggPlikterAP18_001)
+           item { includePhrase(vedleggPlikterAP18_001) }
         }
         showIf(
                 sivilstand.isOneOf(SAMBOER1_5, SAMBOER3_2)
@@ -133,7 +134,7 @@ val orienteringOmRettigheterOgPlikter = createAttachment<LangBokmalNynorskEnglis
                         and not(eps_institusjon_gjeldende.isOneOf(Institusjon.INGEN))
                         and saktype.isOneOf(Sakstype.ALDER)
         ) {
-            includePhrase(vedleggPlikterAP16_001)
+           item { includePhrase(vedleggPlikterAP16_001) }
         }
         showIf(
                 sivilstand.isOneOf(SAMBOER1_5, SAMBOER3_2)
@@ -142,7 +143,7 @@ val orienteringOmRettigheterOgPlikter = createAttachment<LangBokmalNynorskEnglis
                         and not(eps_institusjon_gjeldende.isOneOf(Institusjon.INGEN))
                         and saktype.isOneOf(Sakstype.ALDER)
         ) {
-            includePhrase(vedleggPlikterAP17_001)
+           item { includePhrase(vedleggPlikterAP17_001) }
         }
         showIf(
                 sivilstand.isOneOf(SAMBOER1_5, SAMBOER3_2)
@@ -151,7 +152,7 @@ val orienteringOmRettigheterOgPlikter = createAttachment<LangBokmalNynorskEnglis
                         and not(eps_institusjon_gjeldende.isOneOf(Institusjon.INGEN))
                         and saktype.isOneOf(Sakstype.ALDER)
         ) {
-            includePhrase(vedleggPlikterAP19_001)
+           item { includePhrase(vedleggPlikterAP19_001) }
         }
         showIf(
                 sivilstand.isOneOf(GIFT_LEVER_ADSKILT, GIFT)
@@ -160,7 +161,7 @@ val orienteringOmRettigheterOgPlikter = createAttachment<LangBokmalNynorskEnglis
                         and not(eps_institusjon_gjeldende.isOneOf(SYKEHJEM))
                         and saktype.isOneOf(Sakstype.ALDER)
         ) {
-            includePhrase(vedleggPlikterAP8_001)
+           item { includePhrase(vedleggPlikterAP8_001) }
         }
         showIf(
                 sivilstand.isOneOf(PARTNER, PARTNER_LEVER_ADSKILT)
@@ -169,25 +170,25 @@ val orienteringOmRettigheterOgPlikter = createAttachment<LangBokmalNynorskEnglis
                         and not(eps_institusjon_gjeldende.isOneOf(SYKEHJEM))
                         and saktype.isOneOf(Sakstype.ALDER)
         ) {
-            includePhrase(vedleggPlikterAP11_001)
+           item { includePhrase(vedleggPlikterAP11_001) }
         }
         showIf(
                 sivilstand.isOneOf(GIFT, GIFT_LEVER_ADSKILT, PARTNER, PARTNER_LEVER_ADSKILT)
                         and saktype.isOneOf(Sakstype.ALDER)
         ) {
-            includePhrase(vedleggPlikterAP9_001)
+           item { includePhrase(vedleggPlikterAP9_001) }
         }
         showIf(
                 sivilstand.isOneOf(GIFT)
                         and saktype.isOneOf(Sakstype.ALDER)
         ) {
-            includePhrase(vedleggPlikterAP7_001)
+           item { includePhrase(vedleggPlikterAP7_001) }
         }
         showIf(
                 sivilstand.isOneOf(PARTNER, PARTNER_LEVER_ADSKILT)
                         and saktype.isOneOf(Sakstype.ALDER)
         ) {
-            includePhrase(vedleggPlikterAP12_001)
+           item { includePhrase(vedleggPlikterAP12_001) }
         }
         showIf(
                 sivilstand.isOneOf(GIFT, GIFT_LEVER_ADSKILT, PARTNER, PARTNER_LEVER_ADSKILT)
@@ -196,7 +197,7 @@ val orienteringOmRettigheterOgPlikter = createAttachment<LangBokmalNynorskEnglis
                         and not(eps_institusjon_gjeldende.isOneOf(Institusjon.INGEN))
                         and saktype.isOneOf(Sakstype.ALDER)
         ) {
-            includePhrase(vedleggPlikterAP10_001)
+           item { includePhrase(vedleggPlikterAP10_001) }
         }
         showIf(
                 not(sivilstand.isOneOf(ENSLIG, ENKE, Sivilstand.INGEN))
@@ -205,10 +206,11 @@ val orienteringOmRettigheterOgPlikter = createAttachment<LangBokmalNynorskEnglis
                         and not(eps_institusjon_gjeldende.isOneOf(Institusjon.INGEN))
                         and saktype.isOneOf(Sakstype.ALDER)
         ) {
-            includePhrase(argument().map {
-                vedleggPlikterAP5_001Dto(it.sivilstand)
-            }, vedleggPlikterAP5_001)
-        }
+            item{
+                includePhrase(argument().map {
+                    vedleggPlikterAP5_001Dto(it.sivilstand)
+                }, vedleggPlikterAP5_001)
+            }        }
         showIf(
                 sivilstand.isOneOf(ENSLIG, ENKE, Sivilstand.INGEN)
                         and not(institusjon_gjeldende.isOneOf(FENGSEL, HELSE, SYKEHJEM))
