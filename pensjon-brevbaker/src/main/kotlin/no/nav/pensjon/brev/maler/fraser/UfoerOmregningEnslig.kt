@@ -382,7 +382,7 @@ val OmregningFBOverskrift_001 = createPhrase<LangBokmalNynorskEnglish, Unit> {
         )
     }
 }
-
+/*
 data class InfoFBTilSB_001Dto(val barn_overfoert_til_saerkullsbarn: List<String>)
 
 val InfoFBTilSB_001 = createPhrase<LangBokmalNynorskEnglish, InfoFBTilSB_001Dto> {
@@ -423,7 +423,7 @@ val InfoTidligereSBOgEndretUT_001 = createPhrase<LangBokmalNynorskEnglish, InfoT
         list(argument().select(InfoTidligereSBOgEndretUT_001Dto::tidligere_saerkullsbarn))
     }
 }
-
+*/
 val EndringUTpavirkerBTOverskrift_001 = createPhrase<LangBokmalNynorskEnglish, Unit> {
     title1 {
         text(

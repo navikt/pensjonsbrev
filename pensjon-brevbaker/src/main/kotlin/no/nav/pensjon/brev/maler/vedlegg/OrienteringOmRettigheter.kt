@@ -10,6 +10,7 @@ import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.*
+import no.nav.pensjon.brev.template.dsl.expression.*
 
 data class OrienteringOmRettigheterParamDto(
         val sivilstand: Sivilstand,
@@ -48,6 +49,7 @@ val orienteringOmRettigheterOgPlikter = createAttachment<LangBokmalNynorskEnglis
     // Mandatory phrase: vedleggPlikter_001
     showIf(
             saktype.isOneOf(Sakstype.ALDER)
+    
     ) {
         includePhrase(vedleggPlikter_001)
     }
@@ -433,5 +435,9 @@ val orienteringOmRettigheterOgPlikter = createAttachment<LangBokmalNynorskEnglis
     ) {
         includePhrase(vedleggKlagePesys_001)
     }
+}
+
+fun vedleggPlikterRettTilEktefelletilleggAP_001Dto(sivilstand: Sivilstand) {
+
 }
 

@@ -6,6 +6,7 @@ import no.nav.pensjon.brev.api.model.Sivilstand
 import java.time.LocalDate
 
 data class UfoerOmregningEnsligDto(
+        val anvendtTT_trygdetidsdetaljerGjeldende: Int,
         val avdod_navn: String,
         val avdod_sivilstand: Sivilstand,
         val barn_overfoert_til_saerkullsbarn: List<String>,
@@ -58,6 +59,7 @@ data class UfoerOmregningEnsligDto(
 
 ) {
     constructor() : this(
+        anvendtTT_trygdetidsdetaljerGjeldende = 123,
         avdod_navn = "Avdød Navn",
         avdod_sivilstand = Sivilstand.ENSLIG,
         barn_overfoert_til_saerkullsbarn = listOf("barn1", "barn2", "barn3"),
