@@ -5,7 +5,7 @@ import no.nav.pensjon.brev.api.model.LetterMetadata
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Element.Text.FontType
 import no.nav.pensjon.brev.template.base.BaseTemplate
-import no.nav.pensjon.brev.template.dsl.expression.expr
+import no.nav.pensjon.brev.template.dsl.expression.*
 import kotlin.reflect.KClass
 
 fun <Lang : LanguageSupport, LetterData : Any> createTemplate(
@@ -26,6 +26,7 @@ open class TemplateGlobalScope<LetterData : Any> {
 
     fun felles(): Expression<Felles> =
         Expression.FromScope(ExpressionScope<LetterData, *>::felles)
+
 }
 
 @LetterTemplateMarker
@@ -131,18 +132,18 @@ class TemplateContainerScope<Lang : LanguageSupport, LetterData : Any> :
         children.add(Element.IncludePhrase(Unit.expr(), phrase))
     }
 
-    fun list(init: TemplateContainerScope<Lang, LetterData>.() -> Unit) {
-        children.add(Element.ItemList.Static(TemplateContainerScope<Lang, LetterData>().apply(init).children))
+    fun list(init: ListRootScope<Lang, LetterData>.() -> Unit) {
+        children.add(Element.ItemList(ListRootScope<Lang, LetterData>().apply(init).children))
     }
 
-    fun list(items: Expression<List<String>>) {
-        children.add(Element.ItemList.Dynamic(items))
-    }
-
-    fun table(init: TableRootScope<Lang, LetterData>.() -> Unit) {
-        TableRootScope<Lang, LetterData>().apply(init)
-            .let { children.add(Element.Table(title = it.title, rows = it.children, columnHeaders = it.columnHeaders)) }
-
+    fun table(header: TableHeaderScope<Lang, LetterData>.() -> Unit,
+              init: TableRootScope<Lang, LetterData>.() -> Unit) {
+        children.add(
+            Element.Table(
+                rows = TableRootScope<Lang, LetterData>().apply(init).rows,
+                header = Element.Table.Header(TableHeaderScope<Lang, LetterData>().apply(header).children)
+            )
+        )
     }
 
     fun paragraph(init: TemplateContainerScope<Lang, LetterData>.() -> Unit) {
@@ -169,6 +170,36 @@ class TemplateContainerScope<Lang : LanguageSupport, LetterData : Any> :
     ): ShowElseBuilder<Lang, LetterData> =
         ShowElseBuilder.chainShowIfElse(children, predicate, showIf)
 
+
+    fun <E1: Any> ifNotNull(expr1: Expression<E1?>, block: TemplateContainerScope<Lang, LetterData>.(Expression<E1>) -> Unit) {
+        children.add(
+            Element.Conditional(expr1.notNull(), TemplateContainerScope<Lang, LetterData>().apply {
+                // Følgende er en trygg cast fordi `children` blir kun brukt om `expr1.notNull()` evaluerer til true.
+                @Suppress("UNCHECKED_CAST")
+                block(this, expr1 as Expression<E1>)
+            }.children, emptyList())
+        )
+    }
+
+    fun <E1: Any, E2: Any> ifNotNull(expr1: Expression<E1?>, expr2: Expression<E2?>, block: TemplateContainerScope<Lang, LetterData>.(Expression<E1>, Expression<E2>) -> Unit) {
+        children.add(
+            Element.Conditional(expr1.notNull() and expr2.notNull(), TemplateContainerScope<Lang, LetterData>().apply {
+                // Følgende er en trygg cast fordi `children` blir kun brukt om `expr1.notNull() and expr2.notNull()` evaluerer til true.
+                @Suppress("UNCHECKED_CAST")
+                block(this, expr1 as Expression<E1>, expr2 as Expression<E2>)
+            }.children, emptyList())
+        )
+    }
+
+    fun <E1: Any, E2: Any, E3: Any> ifNotNull(expr1: Expression<E1?>, expr2: Expression<E2?>, expr3: Expression<E3?>, block: TemplateContainerScope<Lang, LetterData>.(Expression<E1>, Expression<E2>, Expression<E3>) -> Unit) {
+        children.add(
+            Element.Conditional(expr1.notNull() and expr2.notNull() and expr3.notNull(), TemplateContainerScope<Lang, LetterData>().apply {
+                // Følgende er en trygg cast fordi `children` blir kun brukt om `expr1.notNull() and expr2.notNull() and expr3.notNull()` evaluerer til true.
+                @Suppress("UNCHECKED_CAST")
+                block(this, expr1 as Expression<E1>, expr2 as Expression<E2>, expr3 as Expression<E3>)
+            }.children, emptyList())
+        )
+    }
 }
 
 @LetterTemplateMarker

@@ -1,13 +1,15 @@
 package no.nav.pensjon.brev.template.base
 
-import no.nav.pensjon.brev.api.model.*
+import no.nav.pensjon.brev.api.model.Mottaker
+import no.nav.pensjon.brev.api.model.NAVEnhet
+import no.nav.pensjon.brev.api.model.SignerendeSaksbehandlere
 import no.nav.pensjon.brev.latex.LatexPrintWriter
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.*
+import no.nav.pensjon.brev.template.Element.Table.ColumnAlignment.LEFT
+import no.nav.pensjon.brev.template.Element.Table.ColumnAlignment.RIGHT
 import no.nav.pensjon.brev.template.Element.Text.FontType.*
-import no.nav.pensjon.brev.template.dsl.expression.select
-import no.nav.pensjon.brev.template.dsl.languageSettings
-import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.base.pensjonlatex.pensjonLatexSettings
 import java.time.LocalDate
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
@@ -30,153 +32,7 @@ object PensjonLatex : BaseTemplate() {
             ?.use { it.readAllBytes() }
             ?: throw IllegalStateException("""Could not find latex resource /$fileName""")
 
-    override val languageSettings: LanguageSettings = languageSettings {
-        setting("navnprefix") {
-            text(
-                Language.Bokmal to "Navn:",
-                Language.Nynorsk to "Namn:",
-                Language.English to "Name:",
-            )
-        }
-
-        setting("saksnummerprefix") {
-            text(
-                Language.Bokmal to "NAVs saksnummer:",
-                Language.Nynorsk to "NAVs saksnummer:",
-                Language.English to "NAV’s case number:",
-            )
-        }
-
-        setting("foedselsnummerprefix") {
-            text(
-                Language.Bokmal to "Fødselsnummer:",
-                Language.Nynorsk to "Fødselsnummer:",
-                Language.English to "National identity number:",
-            )
-        }
-
-        setting("returadresseenhetprefix") {
-            text(
-                Language.Bokmal to "Returadresse:",
-                Language.Nynorsk to "Returadresse:",
-                Language.English to "Return address:",
-            )
-        }
-
-        setting("datoprefix") {
-            text(
-                Language.Bokmal to "Dato:",
-                Language.Nynorsk to "Dato:",
-                Language.English to "Date:",
-            )
-        }
-
-        setting("postadresseprefix") {
-            text(
-                Language.Bokmal to "Postadresse:",
-                Language.Nynorsk to "Postadresse:",
-                Language.English to "Mailing address:",
-            )
-        }
-
-        setting("sideprefix") {
-            text(
-                Language.Bokmal to "Side",
-                Language.Nynorsk to "Side",
-                Language.English to "Page",
-            )
-        }
-
-        setting("sideinfix") {
-            text(
-                Language.Bokmal to "av",
-                Language.Nynorsk to "av",
-                Language.English to "of",
-            )
-        }
-
-        setting("navenhettlfprefix") {
-            text(
-                Language.Bokmal to "Telefon:",
-                Language.Nynorsk to "Telefon:",
-                Language.English to "Phone number:",
-            )
-        }
-
-        setting("closingspoersmaal") {
-            text(
-                Language.Bokmal to "Har du spørsmål?",
-                Language.Nynorsk to "Har du spørsmål?",
-                Language.English to "Do you have questions?",
-            )
-        }
-
-        setting("closingkontaktoss") {
-            text(
-                Language.Bokmal to "Kontakt oss gjerne på ",
-                Language.Nynorsk to "Kontakt oss gjerne på ",
-                Language.English to "You will find further information at ",
-            )
-            val avsender = felles().select(Felles::avsenderEnhet)
-
-            eval { avsender.select(NAVEnhet::nettside) }
-            text(
-                Language.Bokmal to " eller på telefon ",
-                Language.Nynorsk to " eller på telefon ",
-                Language.English to ". You can also contact us by phone ",
-            )
-            eval { avsender.select(NAVEnhet::telefonnummer).select(Telefonnummer::format) }
-            text(
-                Language.Bokmal to ". Hvis du oppgir fødselsnummeret ditt når du tar kontakt med NAV, kan vi lettere gi deg rask og god hjelp.",
-                Language.Nynorsk to ". Dersom du gir opp fødselsnummeret ditt når du kontaktar NAV, kan vi lettare gi deg rask og god hjelp.",
-                Language.English to ".",
-            )
-        }
-
-        setting("closinggreeting") {
-            text(
-                Language.Bokmal to "Med vennlig hilsen",
-                Language.Nynorsk to "Med vennleg helsing",
-                Language.English to "Yours sincerely",
-            )
-        }
-
-        setting("closingsaksbehandlersuffix") {
-            text(
-                Language.Bokmal to "saksbehandler",
-                Language.Nynorsk to "saksbehandlar",
-                Language.English to "Executive Officer",
-            )
-        }
-        setting("closingautomatisktext") {
-            text(
-                Language.Bokmal to "Brevet er produsert automatisk og derfor ikke underskrevet av saksbehandler.",
-                Language.Nynorsk to "Brevet er produsert automatisk og er difor ikkje underskrive av saksbehandler.",
-                Language.English to "This letter has been processed automatically and is therefore not signed by an assessor.",
-            )
-        }
-        setting("closingvedleggprefix") {
-            text(
-                Language.Bokmal to "Vedlegg:",
-                Language.Nynorsk to "Vedlegg:",
-                Language.English to "Attachments:",
-            )
-        }
-        setting("tablenextpagecontinuation") {
-            text(
-                Language.Bokmal to "Fortsettelse på neste side",
-                Language.Nynorsk to "Fortsettelse på neste side",
-                Language.English to "Continued on the next page",
-            )
-        }
-        setting("tablecontinuedfrompreviouspage") {
-            text(
-                Language.Bokmal to "(Fortsettelse)",
-                Language.Nynorsk to "(Fortsettelse)",
-                Language.English to "(Continuation)",
-            )
-        }
-    }
+    override val languageSettings: LanguageSettings = pensjonLatexSettings
 
     override fun render(letter: Letter<*>): RenderedLetter =
         RenderedLatexLetter().apply {
@@ -229,7 +85,7 @@ object PensjonLatex : BaseTemplate() {
 
     private fun renderLetterV2(letter: Letter<*>, printWriter: LatexPrintWriter): Unit =
         with(printWriter) {
-            println("""\documentclass[12pt]{pensjonsbrev_v3}""", escape = false)
+            println("""\documentclass{pensjonsbrev_v3}""", escape = false)
             pdfMetadata(letter, printWriter)
             printCmd("begin", "document")
             printCmd("firstpage")
@@ -370,49 +226,23 @@ object PensjonLatex : BaseTemplate() {
             is Element.Text.Expression.ByLanguage ->
                 printWriter.print(element.expr(scope.language).eval(scope))
 
-            is Element.ItemList.Static ->
-                if (element.items.any { it !is Element.Conditional || it.predicate.eval(scope) }) {
-                    with(printWriter) {
-                        printCmd("begin") {
-                            arg { print("itemize") }
-                        }
-
-                        element.items.filter { it !is Element.Conditional || it.predicate.eval(scope) }
-                            .forEach {
-                                print("""\item """, escape = false)
-                                renderElement(scope, it, this)
-                            }
-
-                        printCmd("end") {
-                            arg { print("itemize") }
+            is Element.ItemList ->
+                with(printWriter) {
+                    val items = element.items.filter { it.condition == null || it.condition.eval(scope) }
+                    if (items.isEmpty()) return
+                    printCmd("begin") {
+                        arg { print("itemize") }
+                    }
+                    items.forEach { item ->
+                        print("""\item """, escape = false)
+                        item.elements.forEach {
+                            renderElement(scope, it, this)
                         }
                     }
-
-                } else Unit
-
-            is Element.ItemList.Dynamic -> {
-                val items = element.items.eval(scope)
-                if (items.any { it.isNotBlank() }) {
-                    with(printWriter) {
-
-                        printCmd("begin") {
-                            arg { print("itemize") }
-                        }
-
-                        items.forEach {
-                            if (it.isNotBlank()) {
-                                print("""\item """, escape = false)
-                                print(it)
-                            }
-                        }
-
-                        printCmd("end") {
-                            arg { print("itemize") }
-                        }
+                    printCmd("end") {
+                        arg { print("itemize") }
                     }
-                } else Unit
-            }
-
+                }
             is Element.Paragraph ->
                 printWriter.printCmd("templateparagraph") {
                     arg { element.paragraph.forEach { child -> renderElement(scope, child, it) } }
@@ -457,66 +287,51 @@ object PensjonLatex : BaseTemplate() {
                 with(printWriter) {
                     val rows = element.rows.filter { it.condition == null || it.condition.eval(scope) }
                     if (rows.isEmpty()) return
-
-                    val columnHeaders =
-                        element.columnHeaders.filter { it.condition == null || it.condition.eval(scope) }
-
-                    val tableWidth = element.width
+                    val columnSpec = element.header.colSpec
                     printCmd("begin") {
-                        arg { print("longtblr") }
-
-                        element.title?.let {
-                            print("[caption={", escape = false)
-                            it.forEach { titleElem -> renderElement(scope, titleElem, printWriter) }
-                            print("}]", escape = false)
-                        }
-
-                        arg {
-                            print(
-                                "colspec={${columnFormat(tableWidth)}}," +
-                                        (if (columnHeaders.isNotEmpty()) "rowhead=${columnHeaders.size}," else "") +
-                                        "width=\\textwidth," +
-                                        "hspan=minimal," + //wrap instead of widening table over limit
-                                        "hlines={1pt,linecolor}," +
-                                        "vlines={1pt,linecolor}," +
-                                        "row{odd}={row1color}," +
-                                        "row{even}={row2color}," +
-                                        (if (columnHeaders.isNotEmpty()) "row{1-${columnHeaders.size}}={columnheadercolor}," else ""),
-                                escape = false
-                            )
-                        }
+                        arg { print("letterTable") }
+                        arg { print(columnHeadersLatexString(columnSpec)) }
                     }
 
-                    columnHeaders
-                        .plus(rows)
-                        .forEach { row ->
-                            row.cells.forEachIndexed { index, cell ->
-                                if (cell.cellColumns > 1) {
-                                    print("\\SetCell[c=${cell.cellColumns}]{}", escape = false)
-                                }
-                                cell.elements.forEach { cellElement ->
-                                    renderElement(scope, cellElement, printWriter)
-                                }
-                                if (cell.cellColumns > 1) {
-                                    print(" ${"& ".repeat(cell.cellColumns - 1)}", escape = false)
-                                }
-                                if (index < row.cells.lastIndex) {
-                                    print("&", escape = false)
-                                }
-                            }
-                            print("""\\""", escape = false)
-                        }
+                    renderTableCells(columnSpec.map { it.headerContent }, scope, printWriter, columnSpec)
+                    rows.forEach { renderTableCells(it.cells, scope, printWriter, columnSpec) }
 
-                    printCmd("end") {
-                        arg { print("longtblr") }
-                    }
+                    printCmd("end") { arg { print("letterTable") } }
                 }
         }
 
-    private fun columnFormat(columns: Int): String =
-        if (columns > 0) {
-            "|" + "X|".repeat(columns)
-        } else {
-            ""
+    private fun columnHeadersLatexString(columnSpec: List<Element.Table.ColumnSpec<out LanguageSupport>>) =
+        columnSpec.map {
+            ("X" +
+                    when (it.alignment) {
+                        LEFT -> "[l]"
+                        RIGHT -> "[r]"
+                    }).repeat(it.columnSpan)
+        }.joinToString("")
+
+    private fun renderTableCells(
+        cells: List<Element.Table.Cell<out LanguageSupport>>,
+        scope: ExpressionScope<*, *>,
+        printWriter: LatexPrintWriter,
+        colSpec: List<Element.Table.ColumnSpec<out LanguageSupport>>
+    ) {
+        with(printWriter) {
+            cells.forEachIndexed { index, cell ->
+                val columnSpan = colSpec[index].columnSpan
+                if (columnSpan > 1) {
+                    print("\\SetCell[c=$columnSpan]{}", escape = false)
+                }
+                cell.elements.forEach { cellElement ->
+                    renderElement(scope, cellElement, printWriter)
+                }
+                if (columnSpan > 1) {
+                    print(" ${"& ".repeat(columnSpan - 1)}", escape = false)
+                }
+                if (index < cells.lastIndex) {
+                    print("&", escape = false)
+                }
+            }
+            print("""\\""", escape = false)
         }
+    }
 }
