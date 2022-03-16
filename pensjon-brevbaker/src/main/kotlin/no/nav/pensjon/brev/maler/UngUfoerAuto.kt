@@ -45,12 +45,6 @@ object UngUfoerAuto : StaticTemplate {
                 }
             )
 
-            paragraph {
-                showIf(true.expr()) {
-
-                }
-            }
-
             includePhrase(
                 Ufoeretrygd.barnetileggIkkeUtbetalt,
                 argument().map {
