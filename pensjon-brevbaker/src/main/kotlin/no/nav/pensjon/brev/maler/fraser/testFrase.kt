@@ -6,9 +6,9 @@ import no.nav.pensjon.brev.template.dsl.textExpr
 
 data class TestFraseDto(val test: String)
 
-val testFrase = createPhrase<LangBokmalNynorskEnglish, TestFraseDto> {
+val testFrase = OutlinePhrase<LangBokmalNynorskEnglish, TestFraseDto> {
     paragraph {
-        val input = argument().select(TestFraseDto::test)
+        val input = it.select(TestFraseDto::test)
         textExpr(
             Language.Bokmal to "Hei på deg fra TestFrase: ".expr() + input,
             Language.Nynorsk to "Hei på deg frå TestFrase: ".expr() + input,
