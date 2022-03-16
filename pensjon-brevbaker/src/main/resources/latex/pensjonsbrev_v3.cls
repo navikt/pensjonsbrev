@@ -18,10 +18,8 @@
 \usepackage{fontspec}   %declare font presets
 \usepackage{fancyhdr}   % custom page styles
 % tables and colors
-\usepackage[rgb]{xcolor}
-\selectcolormodel{natural}
+\usepackage{xcolor}
 \usepackage{ninecolors}
-\selectcolormodel{rgb}
 \usepackage{tabularray} % better tables(tblr, longtblr)
 \usepackage{enumitem,amssymb} % for formChoice list
 
@@ -61,7 +59,6 @@
 %itemize / lists spacing
 \setlist{nolistsep}
 \renewcommand{\baselinestretch}{1.2}
-\primaryFont \fontsize{12pt}{12pt} \selectfont
 
 % paragraph formatting
 \widowpenalties 1 1000 %penalty score for breaking a paragraph
@@ -109,7 +106,7 @@
 \newcommand{\sakspart}{
     {
         \setlength{\tabcolsep}{3.5mm}
-        \grayFont \selectfont
+        \primaryFont \fontsize{\standardtextsize}{\standardtextsize} \selectfont
         \begin{tabular}{@{}ll}
             \feltnavnprefix & \feltetternavnmottaker \space \feltfornavnmottaker \\
             \feltfoedselsnummerprefix & \feltfoedselsnummer \\

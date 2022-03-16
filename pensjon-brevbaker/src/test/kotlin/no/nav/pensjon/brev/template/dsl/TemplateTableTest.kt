@@ -1,10 +1,7 @@
 package no.nav.pensjon.brev.template.dsl
 
-import no.nav.pensjon.brev.template.Element
-import no.nav.pensjon.brev.template.Language
+import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.dsl.expression.expr
-import no.nav.pensjon.brev.template.outlineTestLetter
-import no.nav.pensjon.brev.template.outlineTestTemplate
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
@@ -15,15 +12,11 @@ class TemplateTableTest {
 
 
         val doc = outlineTestTemplate {
-            table {
-                title {
-                    text(Language.Bokmal to "tittel")
+            table(header = {
+                column {
+                    text(Language.Bokmal to "header")
                 }
-                columnHeaderRow {
-                    cell {
-                        text(Language.Bokmal to "header")
-                    }
-                }
+            }) {
                 row {
                     cell {
                         text(Language.Bokmal to "joda")
@@ -34,21 +27,23 @@ class TemplateTableTest {
 
         val expected = outlineTestLetter(
             Element.Table(
-                title = listOf(newText(Language.Bokmal to "tittel")),
-                columnHeaders = listOf(
-                    Element.Table.Row(
-                        listOf(
+                header =
+                Element.Table.Header(
+                    listOf(
+                        Element.Table.ColumnSpec(
                             Element.Table.Cell(
-                                listOf(newText(Language.Bokmal to "header")), 1
-                            )
+                                listOf(newText(Language.Bokmal to "header"))
+                            ),
+                            Element.Table.ColumnAlignment.LEFT
                         )
+
                     )
                 ),
                 rows = listOf(
                     Element.Table.Row(
                         listOf(
                             Element.Table.Cell(
-                                listOf(newText(Language.Bokmal to "joda")), 1
+                                listOf(newText(Language.Bokmal to "joda"))
                             )
                         )
                     )
@@ -61,9 +56,13 @@ class TemplateTableTest {
 
     @Test
     fun `table creation fails when rows have uneven amount of cells`() {
-        assertThrows(IllegalArgumentException::class.java) {
+        assertThrows(InvalidTableDeclarationException::class.java) {
             outlineTestTemplate {
-                table {
+                table(header = {
+                    column {
+                        text(Language.Bokmal to "header")
+                    }
+                }) {
                     row {
                         cell {
                             text(Language.Bokmal to "en enkel celle")
@@ -84,15 +83,13 @@ class TemplateTableTest {
 
     @Test
     fun `table creation fails when rows are missing cells`() {
-        assertThrows(IllegalArgumentException::class.java) {
+        assertThrows(InvalidTableDeclarationException::class.java) {
             outlineTestTemplate {
-                table {
-                    title {
-                        Language.Bokmal to "Hello world!"
+                table(header = {
+                    column {
+                        text(Language.Bokmal to "header")
                     }
-                    row {
-
-                    }
+                }) {
                     row {
 
                     }
@@ -101,40 +98,15 @@ class TemplateTableTest {
         }
     }
 
-    @Test
-    fun `table creation fails when title is missing`() {
-        assertThrows(IllegalArgumentException::class.java) {
-            outlineTestTemplate {
-                table {
-                    row {
-                        Language.Bokmal to "Hello world!"
-                    }
-                }
-            }
-        }
-    }
-
-    @Test
-    fun `table creation fails when title is empty`() {
-        assertThrows(IllegalArgumentException::class.java) {
-            outlineTestTemplate {
-                table {
-                    title {
-
-                    }
-                    row {
-                        Language.Bokmal to "Hello world!"
-                    }
-                }
-            }
-        }
-    }
 
     @Test
     fun `showif adds rows with predicates`() {
         val doc = outlineTestTemplate {
-            table {
-                title { text(Language.Bokmal to "tittel") }
+            table(header = {
+                column {
+                    text(Language.Bokmal to "header")
+                }
+            }) {
                 showIf(true.expr()) {
                     row {
                         cell {
@@ -159,68 +131,28 @@ class TemplateTableTest {
                     Element.Table.Row(
                         listOf(
                             Element.Table.Cell(
-                                listOf(newText(Language.Bokmal to "hei")), 1
+                                listOf(newText(Language.Bokmal to "hei"))
                             )
                         ), true.expr()
                     ),
                     Element.Table.Row(
                         listOf(
                             Element.Table.Cell(
-                                listOf(newText(Language.Bokmal to "heihå")), 1
+                                listOf(newText(Language.Bokmal to "heihå"))
                             )
                         ), true.expr()
                     )
                 ),
-                title = listOf(newText(Language.Bokmal to "tittel")),
-                columnHeaders = emptyList()
-            )
-        )
-        assertEquals(expected, doc)
-    }
-
-
-    @Test
-    fun `showif adds column headers with predicates`() {
-        val doc = outlineTestTemplate {
-            table {
-                title { text(Language.Bokmal to "tittel") }
-                row {
-                    cell {
-                        text(
-                            Language.Bokmal to "Dette er en rad",
-                        )
-                    }
-                }
-                showIf(true.expr()) {
-                    columnHeaderRow {
-                        cell {
-                            text(
-                                Language.Bokmal to "heihå",
-                            )
-                        }
-                    }
-                }
-            }
-        }
-        val expected = outlineTestLetter(
-            Element.Table(
-                columnHeaders = listOf(
-                    Element.Table.Row(
-                        listOf(
+                header =
+                Element.Table.Header(
+                    listOf(
+                        Element.Table.ColumnSpec(
                             Element.Table.Cell(
-                                listOf(newText(Language.Bokmal to "heihå")), 1
-                            )
-                        ), true.expr()
-                    )
-                ),
-                title = listOf(newText(Language.Bokmal to "tittel")),
-                rows = listOf(
-                    Element.Table.Row(
-                        listOf(
-                            Element.Table.Cell(
-                                listOf(newText(Language.Bokmal to "Dette er en rad")), 1
-                            )
+                                listOf(newText(Language.Bokmal to "header"))
+                            ),
+                            Element.Table.ColumnAlignment.LEFT
                         )
+
                     )
                 )
             )

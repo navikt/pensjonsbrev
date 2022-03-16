@@ -5,34 +5,22 @@ import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.text
-import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
-import java.nio.charset.Charset
-import java.util.*
 
 class PensjonLatexTest {
     @Test
     fun `table is not rendered when all the rows are filtered out`() {
         val doc = outlineTestTemplate {
             title1 { text(Bokmal to "THIS TEXT SHOULD RENDER") }
-            table {
-                title { text(Bokmal to "This text should not render") }
-                showIf(true.expr()) {
-                    columnHeaderRow {
-                        cell {
-                            text(
-                                Bokmal to "This text should not render",
-                            )
-                        }
-                    }
-                }
-                columnHeaderRow {
-                    cell {
+            table(
+                header = {
+                    column {
                         text(
                             Bokmal to "This text should not render",
                         )
                     }
                 }
+            ) {
                 showIf(false.expr()) {
                     row {
                         cell {
@@ -53,20 +41,20 @@ class PensjonLatexTest {
     @Test
     fun `all table elements is rendered to LaTeX`() {
         val doc = outlineTestTemplate {
-            table {
-                title { text(Bokmal to "This text should render 1") }
-                columnHeaderRow {
-                    cell {
+            table(
+                header = {
+                    column {
                         text(
-                            Bokmal to "This text should render 2",
+                            Bokmal to "This text should render 1",
                         )
                     }
                 }
+            ){
                 showIf(true.expr()) {
                     row {
                         cell {
                             text(
-                                Bokmal to "This text should render 3",
+                                Bokmal to "This text should render 2",
                             )
                         }
                     }
@@ -78,7 +66,6 @@ class PensjonLatexTest {
             .assertRenderedLetterContainsAllOf(
                 "This text should render 1",
                 "This text should render 2",
-                "This text should render 3",
             )
     }
 

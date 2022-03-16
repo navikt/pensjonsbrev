@@ -78,34 +78,38 @@ sealed class Element<out Lang : LanguageSupport> {
     }
 
     data class Table<Lang : LanguageSupport>(
-        val title: List<Element<Lang>>?,
         val rows: List<Row<Lang>>,
-        val columnHeaders: List<Row<Lang>>,
+        val header: Header<Lang>,
     ) : Element<Lang>() {
-        val width: Int
 
         init {
-            val cellWidths = rows.map { it.cells.sumOf { cell -> cell.cellColumns } }.distinct()
-            if (cellWidths.size > 1) {
-                throw IllegalArgumentException("rows in the table needs to have the same number of columns")
+            val cellCounts = rows.map { it.cells.size }.distinct()
+            if (cellCounts.size > 1) {
+                throw InvalidTableDeclarationException("rows in the table needs to have the same number of cells")
             }
-            width = cellWidths.firstOrNull()
-                ?: throw IllegalArgumentException("rows in the table needs to have cells/columns")
+            val cellcount = cellCounts.firstOrNull()
+                ?: throw InvalidTableDeclarationException("A table must have at least one row")
 
-            if (width == 0) {
-                throw IllegalArgumentException("the row(s) are empty")
-            }
-            if (title?.isEmpty() ?: throw IllegalArgumentException("Missing table title")) {
-                throw IllegalArgumentException("Table title is empty")
+            if (cellcount == 0) {
+                throw InvalidTableDeclarationException("The table rows must have at least one cell/column")
             }
         }
-
         data class Row<Lang : LanguageSupport>(val cells: List<Cell<Lang>>, val condition: Expression<Boolean>? = null)
+        data class Header<Lang : LanguageSupport>(val colSpec: List<ColumnSpec<Lang>>)
 
         data class Cell<Lang : LanguageSupport>(
-            val elements: List<Element<Lang>>,
-            val cellColumns: Int
+            val elements: List<Element<Lang>>
         )
+
+        data class ColumnSpec<Lang : LanguageSupport>(
+            val headerContent: Cell<Lang>,
+            val alignment: ColumnAlignment,
+            val columnSpan: Int = 1
+        )
+
+        enum class ColumnAlignment{
+            LEFT, RIGHT
+        }
     }
 
     sealed class Form<out Lang : LanguageSupport> : Element<Lang>() {
@@ -217,3 +221,5 @@ sealed class Element<out Lang : LanguageSupport> {
     ) : Element<Lang>()
 
 }
+
+class InvalidTableDeclarationException(private val msg: String): Exception(msg)
