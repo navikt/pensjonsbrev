@@ -222,4 +222,4 @@ sealed class Element<out Lang : LanguageSupport> {
 
 }
 
-class InvalidTableDeclarationException(private val msg: String): Exception(msg)
+class InvalidTableDeclarationException(msg: String): Exception(msg)
