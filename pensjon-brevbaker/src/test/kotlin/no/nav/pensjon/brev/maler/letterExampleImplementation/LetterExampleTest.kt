@@ -1,4 +1,4 @@
-package no.nav.pensjon.brev.maler
+package no.nav.pensjon.brev.maler.letterExampleImplementation
 
 import kotlinx.coroutines.runBlocking
 import no.nav.pensjon.brev.Fixtures
@@ -14,13 +14,13 @@ import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 
 @Tag(TestTags.PDF_BYGGER)
-class EksempelBrevITest {
+class LetterExampleTest {
 
     @Test
     fun test() {
         Letter(
-            EksempelBrev.template,
-            EksempelBrevDto(),
+            LetterExample.template,
+            LetterExampleDto(),
             Language.Bokmal,
             Fixtures.fellesAuto
         ).render()

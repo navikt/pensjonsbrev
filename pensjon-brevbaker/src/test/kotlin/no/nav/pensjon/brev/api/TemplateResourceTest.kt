@@ -3,19 +3,18 @@ package no.nav.pensjon.brev.api
 import com.natpryce.hamkrest.and
 import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.hasElement
-import no.nav.pensjon.brev.maler.EksempelBrev
+import no.nav.pensjon.brev.maler.letterExampleImplementation.LetterExample
 import no.nav.pensjon.brev.maler.OmsorgEgenAuto
 import no.nav.pensjon.brev.template.LetterTemplate
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
-import kotlin.reflect.KVisibility
 import kotlin.reflect.full.createInstance
 
 class TemplateResourceTest {
 
     @Test
     fun `getTemplate fetches template`() {
-        assertEquals(EksempelBrev.template, TemplateResource.getTemplate(EksempelBrev.template.name))
+        assertEquals(LetterExample.template, TemplateResource.getTemplate(LetterExample.template.name))
     }
 
     @Test
@@ -25,7 +24,7 @@ class TemplateResourceTest {
 
     @Test
     fun `getTemplates returns list of template names`() {
-        assertThat(TemplateResource.getTemplates(), hasElement(EksempelBrev.template.name) and hasElement(OmsorgEgenAuto.template.name))
+        assertThat(TemplateResource.getTemplates(), hasElement(LetterExample.template.name) and hasElement(OmsorgEgenAuto.template.name))
     }
 
     @Test
