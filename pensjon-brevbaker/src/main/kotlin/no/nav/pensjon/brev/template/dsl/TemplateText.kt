@@ -1,7 +1,7 @@
 package no.nav.pensjon.brev.template.dsl
 
 import no.nav.pensjon.brev.template.*
-import no.nav.pensjon.brev.template.dsl.expression.expr
+import no.nav.pensjon.brev.template.dsl.expression.*
 
 
 @LetterTemplateMarker
@@ -28,6 +28,10 @@ abstract class TextOnlyScopeBase<Lang : LanguageSupport, LetterData : Any, Scope
         ShowElseScope(::scopeFactory).also { elseScope ->
             children.add(Element.Conditional(predicate, scopeFactory().apply(showIf).children, elseScope.scope.children))
         }
+
+    fun <Item : Any> forEach(items: Expression<List<Item>>, body: Scope.(item: Expression<Item>) -> Unit) {
+        children.add(Element.ForEachView.create(items) { expr -> scopeFactory().apply { body(expr) }.children })
+    }
 
     fun addAll(items: List<Element<Lang>>) {
         children.addAll(items)

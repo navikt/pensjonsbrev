@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test
 class TemplateListTest {
     @Test
     fun `list can be created with default values`() {
-        val doc = outlineTestTemplate {
+        val doc = outlineTestTemplate<Unit> {
             list {
                 item {
                     text(Language.Bokmal to "Test")
@@ -30,7 +30,7 @@ class TemplateListTest {
     @Test
     fun `list creation fails when list has no item definitions`() {
         Assertions.assertThrows(IllegalArgumentException::class.java) {
-            outlineTestTemplate {
+            outlineTestTemplate<Unit> {
                 list {}
             }
         }
@@ -38,7 +38,7 @@ class TemplateListTest {
 
     @Test
     fun `item conditions are added`() {
-        val doc = outlineTestTemplate {
+        val doc = outlineTestTemplate<Unit> {
             list {
                 showIf(true.expr()) {
                     item {
