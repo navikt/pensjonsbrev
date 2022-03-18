@@ -28,7 +28,7 @@ class BaseTest {
         val scope = ExpressionScope(2, Fixtures.felles, Language.Bokmal)
 
         assertEquals("hei", expr.eval(scope))
-        assertEquals("hade bra", expr.eval(scope.copy(argument = 3)))
+        assertEquals("hade bra", expr.eval(ExpressionScope(3, scope.felles, scope.language)))
     }
 
 }

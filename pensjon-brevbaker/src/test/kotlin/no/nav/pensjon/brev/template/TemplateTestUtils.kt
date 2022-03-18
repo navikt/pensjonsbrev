@@ -5,11 +5,11 @@ import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brev.template.dsl.bokmalTittel
 import no.nav.pensjon.brev.template.dsl.testLetterMetadata
 
-fun outlineTestTemplate(function: OutlineScope<BokmalLang, Unit>.() -> Unit) =
+internal inline fun <reified LetterData : Any> outlineTestTemplate(noinline function: OutlineScope<BokmalLang, LetterData>.() -> Unit) =
     createTemplate(
         name = "test",
         base = PensjonLatex,
-        letterDataType = Unit::class,
+        letterDataType = LetterData::class,
         title = bokmalTittel,
         letterMetadata = testLetterMetadata,
     ) {

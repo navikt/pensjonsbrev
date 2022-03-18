@@ -31,7 +31,7 @@ class ExpressionEvalTest {
 
     @Test
     fun `eval optional argument field returns argument value`() {
-        val evaluated: String? = argumentExpr.select(SomeDto::kortNavn).eval(scope.copy(argument = scope.argument.copy(kortNavn = "O")))
+        val evaluated: String? = argumentExpr.select(SomeDto::kortNavn).eval(ExpressionScope(scope.argument.copy(kortNavn = "O"), scope.felles, scope.language))
 
         assertEquals("O", evaluated)
     }

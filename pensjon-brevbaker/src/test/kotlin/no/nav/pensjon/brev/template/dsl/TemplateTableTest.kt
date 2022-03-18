@@ -11,7 +11,7 @@ class TemplateTableTest {
     fun `table can be created with default values`() {
 
 
-        val doc = outlineTestTemplate {
+        val doc = outlineTestTemplate<Unit> {
             table(header = {
                 column {
                     text(Language.Bokmal to "header")
@@ -57,7 +57,7 @@ class TemplateTableTest {
     @Test
     fun `table creation fails when rows have uneven amount of cells`() {
         assertThrows(InvalidTableDeclarationException::class.java) {
-            outlineTestTemplate {
+            outlineTestTemplate<Unit> {
                 table(header = {
                     column {
                         text(Language.Bokmal to "header")
@@ -84,7 +84,7 @@ class TemplateTableTest {
     @Test
     fun `table creation fails when rows are missing cells`() {
         assertThrows(InvalidTableDeclarationException::class.java) {
-            outlineTestTemplate {
+            outlineTestTemplate<Unit> {
                 table(header = {
                     column {
                         text(Language.Bokmal to "header")
@@ -101,7 +101,7 @@ class TemplateTableTest {
 
     @Test
     fun `showif adds rows with predicates`() {
-        val doc = outlineTestTemplate {
+        val doc = outlineTestTemplate<Unit> {
             table(header = {
                 column {
                     text(Language.Bokmal to "header")
