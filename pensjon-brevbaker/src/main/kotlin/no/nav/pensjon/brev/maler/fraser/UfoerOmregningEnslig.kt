@@ -6,7 +6,7 @@ import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brev.template.dsl.expression.*
 import java.time.LocalDate
 
-val VedtakOverskriftPesys_001 = createPhrase<LangBokmalNynorskEnglish, Unit> {
+val VedtakOverskriftPesys_001 = OutlinePhrase<LangBokmalNynorskEnglish, Unit> {
     title1 {
         text(
             Bokmal to "Vedtak",
@@ -16,11 +16,11 @@ val VedtakOverskriftPesys_001 = createPhrase<LangBokmalNynorskEnglish, Unit> {
     }
 }
 
-data class OmregnUTDodEPSInnledn1_001Dto(val avdod_navn: String, val krav_virkedato_fom: LocalDate)
+data class OmregnUTDodEPSInnledn1001Dto(val avdod_navn: String, val krav_virkedato_fom: LocalDate)
 
-val OmregnUTDodEPSInnledn1_001 = createPhrase<LangBokmalNynorskEnglish, OmregnUTDodEPSInnledn1_001Dto> {
-    val avdod_navn = argument().select(OmregnUTDodEPSInnledn1_001Dto::avdod_navn)
-    val krav_virkedato_fom = argument().select(OmregnUTDodEPSInnledn1_001Dto::krav_virkedato_fom)
+val OmregnUTDodEPSInnledn1_001 = OutlinePhrase<LangBokmalNynorskEnglish, OmregnUTDodEPSInnledn1001Dto> {
+    val avdod_navn = it.select(OmregnUTDodEPSInnledn1001Dto::avdod_navn)
+    val krav_virkedato_fom = it.select(OmregnUTDodEPSInnledn1001Dto::krav_virkedato_fom)
     paragraph {
         textExpr(
             Bokmal to "Vi har mottatt melding om at ".expr() + avdod_navn + " er død, og vi har regnet om uføretrygden din fra ".expr() + krav_virkedato_fom.format() + " fordi sivilstanden din er endret. Vi vil også informere deg om rettigheter du kan ha etter avdøde.".expr(),
@@ -32,8 +32,8 @@ val OmregnUTDodEPSInnledn1_001 = createPhrase<LangBokmalNynorskEnglish, OmregnUT
 
 data class OmregnUTDodEPSInnledn2_001Dto(val avdod_navn: String)
 
-val OmregnUTDodEPSInnledn2_001 = createPhrase<LangBokmalNynorskEnglish, OmregnUTDodEPSInnledn2_001Dto> {
-    val avdod_navn = argument().select(OmregnUTDodEPSInnledn2_001Dto::avdod_navn)
+val OmregnUTDodEPSInnledn2_001 = OutlinePhrase<LangBokmalNynorskEnglish, OmregnUTDodEPSInnledn2_001Dto> {
+    val avdod_navn = it.select(OmregnUTDodEPSInnledn2_001Dto::avdod_navn)
     paragraph {
         textExpr(
             Bokmal to "Vi har mottatt melding om at ".expr() + avdod_navn + " er død. Uføretrygden din endres ikke, men vi vil informere deg om rettigheter du kan ha etter avdøde.".expr(),
@@ -46,9 +46,9 @@ val OmregnUTDodEPSInnledn2_001 = createPhrase<LangBokmalNynorskEnglish, OmregnUT
 
 data class OmregnUTBTDodEPSInnledn_001Dto(val avdod_navn: String, val krav_virkedato_fom: LocalDate)
 
-val OmregnUTBTDodEPSInnledn_001 = createPhrase<LangBokmalNynorskEnglish, OmregnUTBTDodEPSInnledn_001Dto> {
-    val avdod_navn = argument().select(OmregnUTBTDodEPSInnledn_001Dto::avdod_navn)
-    val krav_virkedato_fom = argument().select(OmregnUTBTDodEPSInnledn_001Dto::krav_virkedato_fom)
+val OmregnUTBTDodEPSInnledn_001 = OutlinePhrase<LangBokmalNynorskEnglish, OmregnUTBTDodEPSInnledn_001Dto> {
+    val avdod_navn = it.select(OmregnUTBTDodEPSInnledn_001Dto::avdod_navn)
+    val krav_virkedato_fom = it.select(OmregnUTBTDodEPSInnledn_001Dto::krav_virkedato_fom)
     paragraph {
         textExpr(
             Bokmal to "Vi har mottatt melding om at ".expr() + avdod_navn + " er død, og vi har regnet om uføretrygden og barnetillegget ditt fra ".expr() + krav_virkedato_fom.format() + " fordi sivilstanden din er endret. Vi vil også informere deg om rettigheter du kan ha etter avdøde.".expr(),
@@ -62,8 +62,8 @@ val OmregnUTBTDodEPSInnledn_001 = createPhrase<LangBokmalNynorskEnglish, OmregnU
 
 data class OmregnUTBTSBDodEPSInnledn_001Dto(val avdod_navn: String)
 
-val OmregnUTBTSBDodEPSInnledn_001 = createPhrase<LangBokmalNynorskEnglish, OmregnUTBTSBDodEPSInnledn_001Dto> {
-    val avdod_navn = argument().select(OmregnUTBTSBDodEPSInnledn_001Dto::avdod_navn)
+val OmregnUTBTSBDodEPSInnledn_001 = OutlinePhrase<LangBokmalNynorskEnglish, OmregnUTBTSBDodEPSInnledn_001Dto> {
+    val avdod_navn = it.select(OmregnUTBTSBDodEPSInnledn_001Dto::avdod_navn)
     paragraph {
         textExpr(
             Bokmal to "Vi har mottatt melding om at ".expr() + avdod_navn + " er død. Uføretrygden og barnetillegget ditt endres ikke, men vi vil informere deg om rettigheter du kan ha etter avdøde.".expr(),
@@ -77,9 +77,9 @@ val OmregnUTBTSBDodEPSInnledn_001 = createPhrase<LangBokmalNynorskEnglish, Omreg
 
 data class OmregnBTDodEPSInnledn_001Dto(val avdod_navn: String, val krav_virkedato_fom: LocalDate)
 
-val OmregnBTDodEPSInnledn_001 = createPhrase<LangBokmalNynorskEnglish, OmregnBTDodEPSInnledn_001Dto> {
-    val avdod_navn = argument().select(OmregnBTDodEPSInnledn_001Dto::avdod_navn)
-    val krav_virkedato_fom = argument().select(OmregnBTDodEPSInnledn_001Dto::krav_virkedato_fom)
+val OmregnBTDodEPSInnledn_001 = OutlinePhrase<LangBokmalNynorskEnglish, OmregnBTDodEPSInnledn_001Dto> {
+    val avdod_navn = it.select(OmregnBTDodEPSInnledn_001Dto::avdod_navn)
+    val krav_virkedato_fom = it.select(OmregnBTDodEPSInnledn_001Dto::krav_virkedato_fom)
     paragraph {
         textExpr(
             Bokmal to "Vi har mottatt melding om at ".expr() + avdod_navn + " er død, og vi har regnet om barnetillegget ditt fra ".expr() + krav_virkedato_fom.format() + " fordi sivilstanden din er endret. Vi vil også informere deg om rettigheter du kan ha etter avdøde.".expr(),
@@ -91,8 +91,8 @@ val OmregnBTDodEPSInnledn_001 = createPhrase<LangBokmalNynorskEnglish, OmregnBTD
 
 data class BelopUT_001Dto(val total_ufoeremaaneder: Number)
 
-val BelopUT_001 = createPhrase<LangBokmalNynorskEnglish, BelopUT_001Dto> {
-    val total_ufoeremaaneder = argument().select(BelopUT_001Dto::total_ufoeremaaneder)
+val BelopUT_001 = OutlinePhrase<LangBokmalNynorskEnglish, BelopUT_001Dto> {
+    val total_ufoeremaaneder = it.select(BelopUT_001Dto::total_ufoeremaaneder)
     paragraph {
         textExpr(
             Bokmal to "Du får ".expr() + total_ufoeremaaneder.str() + " kroner i uføretrygd per måned før skatt.".expr(),
@@ -105,8 +105,8 @@ val BelopUT_001 = createPhrase<LangBokmalNynorskEnglish, BelopUT_001Dto> {
 
 data class BelopUTVedlegg_001Dto(val total_ufoeremaaneder: Number)
 
-val BelopUTVedlegg_001 = createPhrase<LangBokmalNynorskEnglish, BelopUTVedlegg_001Dto> {
-    val total_ufoeremaaneder = argument().select(BelopUTVedlegg_001Dto::total_ufoeremaaneder)
+val BelopUTVedlegg_001 = OutlinePhrase<LangBokmalNynorskEnglish, BelopUTVedlegg_001Dto> {
+    val total_ufoeremaaneder = it.select(BelopUTVedlegg_001Dto::total_ufoeremaaneder)
     paragraph {
         textExpr(
             Bokmal to "Du får ".expr() + total_ufoeremaaneder.str() + " kroner i uføretrygd per måned før skatt. Du kan lese mer om andre beregningsperioder i vedlegget.".expr(),
@@ -120,8 +120,8 @@ val BelopUTVedlegg_001 = createPhrase<LangBokmalNynorskEnglish, BelopUTVedlegg_0
 
 data class BelopUTBT_001Dto(val total_ufoeremaaneder: Number)
 
-val BelopUTBT_001 = createPhrase<LangBokmalNynorskEnglish, BelopUTBT_001Dto> {
-    val total_ufoeremaaneder = argument().select(BelopUTBT_001Dto::total_ufoeremaaneder)
+val BelopUTBT_001 = OutlinePhrase<LangBokmalNynorskEnglish, BelopUTBT_001Dto> {
+    val total_ufoeremaaneder = it.select(BelopUTBT_001Dto::total_ufoeremaaneder)
     paragraph {
         textExpr(
             Bokmal to "Du får ".expr() + total_ufoeremaaneder.str() + " kroner i uføretrygd per måned før skatt. Du kan lese mer om andre beregningsperioder i vedlegget.".expr(),
@@ -133,8 +133,8 @@ val BelopUTBT_001 = createPhrase<LangBokmalNynorskEnglish, BelopUTBT_001Dto> {
 
 data class BelopUTBTVedlegg_001Dto(val total_ufoeremaaneder: Number)
 
-val BelopUTBTVedlegg_001 = createPhrase<LangBokmalNynorskEnglish, BelopUTBTVedlegg_001Dto> {
-    val total_ufoeremaaneder = argument().select(BelopUTBTVedlegg_001Dto::total_ufoeremaaneder)
+val BelopUTBTVedlegg_001 = OutlinePhrase<LangBokmalNynorskEnglish, BelopUTBTVedlegg_001Dto> {
+    val total_ufoeremaaneder = it.select(BelopUTBTVedlegg_001Dto::total_ufoeremaaneder)
     paragraph {
         textExpr(
             Bokmal to "Du får ".expr() + total_ufoeremaaneder.str() + " kroner i uføretrygd og barnetillegg per måned før skatt. Du kan lese mer om andre beregningsperioder i vedlegget.".expr(),
@@ -144,7 +144,7 @@ val BelopUTBTVedlegg_001 = createPhrase<LangBokmalNynorskEnglish, BelopUTBTVedle
     }
 }
 
-val BelopUTIngenUtbetaling_001 = createPhrase<LangBokmalNynorskEnglish, Unit> {
+val BelopUTIngenUtbetaling_001 = OutlinePhrase<LangBokmalNynorskEnglish, Unit> {
     paragraph {
         text(
             Bokmal to "Du får ikke utbetalt uføretrygd på grunn av høy inntekt.",
@@ -154,7 +154,7 @@ val BelopUTIngenUtbetaling_001 = createPhrase<LangBokmalNynorskEnglish, Unit> {
     }
 }
 
-val BelopUTIngenUtbetalingVedlegg_001 = createPhrase<LangBokmalNynorskEnglish, Unit> {
+val BelopUTIngenUtbetalingVedlegg_001 = OutlinePhrase<LangBokmalNynorskEnglish, Unit> {
     paragraph {
         text(
             Bokmal to "Du får ikke utbetalt uføretrygd på grunn av høy inntekt. Du kan lese mer om andre beregningsperioder i vedlegget.",
@@ -164,7 +164,7 @@ val BelopUTIngenUtbetalingVedlegg_001 = createPhrase<LangBokmalNynorskEnglish, U
     }
 }
 
-val BelopUTBTIngenUtbetaling_001 = createPhrase<LangBokmalNynorskEnglish, Unit> {
+val BelopUTBTIngenUtbetaling_001 = OutlinePhrase<LangBokmalNynorskEnglish, Unit> {
     paragraph {
         text(
             Bokmal to "Du får ikke utbetalt uføretrygd og barnetillegg på grunn av høy inntekt.",
@@ -174,7 +174,7 @@ val BelopUTBTIngenUtbetaling_001 = createPhrase<LangBokmalNynorskEnglish, Unit> 
     }
 }
 
-val BelopUTBTIngenUtbetalingVedlegg_001 = createPhrase<LangBokmalNynorskEnglish, Unit> {
+val BelopUTBTIngenUtbetalingVedlegg_001 = OutlinePhrase<LangBokmalNynorskEnglish, Unit> {
     paragraph {
         text(
             Bokmal to "Du får ikke utbetalt uføretrygd og barnetillegg på grunn av høy inntekt. Du kan lese mer om andre beregningsperioder i vedlegget.",
@@ -184,7 +184,7 @@ val BelopUTBTIngenUtbetalingVedlegg_001 = createPhrase<LangBokmalNynorskEnglish,
     }
 }
 
-val BelopUTIngenUtbetalingFengsel_001 = createPhrase<LangBokmalNynorskEnglish, Unit> {
+val BelopUTIngenUtbetalingFengsel_001 = OutlinePhrase<LangBokmalNynorskEnglish, Unit> {
     paragraph {
         text(
             Bokmal to "Du får ikke utbetalt uføretrygd fordi du er under straffegjennomføring.",
@@ -194,7 +194,7 @@ val BelopUTIngenUtbetalingFengsel_001 = createPhrase<LangBokmalNynorskEnglish, U
     }
 }
 
-val BelopUTIngenUtbetalingFengselVedlegg_001 = createPhrase<LangBokmalNynorskEnglish, Unit> {
+val BelopUTIngenUtbetalingFengselVedlegg_001 = OutlinePhrase<LangBokmalNynorskEnglish, Unit> {
     paragraph {
         text(
             Bokmal to "Du får ikke utbetalt uføretrygd fordi du er under straffegjennomføring. Du kan lese mer om andre beregningsperioder i vedlegget.",
@@ -204,7 +204,7 @@ val BelopUTIngenUtbetalingFengselVedlegg_001 = createPhrase<LangBokmalNynorskEng
     }
 }
 
-val BegrunnOverskrift_001 = createPhrase<LangBokmalNynorskEnglish, Unit> {
+val BegrunnOverskrift_001 = OutlinePhrase<LangBokmalNynorskEnglish, Unit> {
     title1 {
         text(
             Bokmal to "Begrunnelse for vedtaket",
@@ -216,9 +216,9 @@ val BegrunnOverskrift_001 = createPhrase<LangBokmalNynorskEnglish, Unit> {
 
 data class EndrMYDodEPS2_001Dto(val minsteytelse_sats_vedvirk: Number, val kompensasjonsgrad_ufoeretrygd_vedvirk: Number)
 
-val EndrMYDodEPS2_001 = createPhrase<LangBokmalNynorskEnglish, EndrMYDodEPS2_001Dto> {
-    val minsteytelse_sats_vedvirk = argument().select(EndrMYDodEPS2_001Dto::minsteytelse_sats_vedvirk)
-    val kompensasjonsgrad_ufoeretrygd_vedvirk = argument().select(EndrMYDodEPS2_001Dto::kompensasjonsgrad_ufoeretrygd_vedvirk)
+val EndrMYDodEPS2_001 = OutlinePhrase<LangBokmalNynorskEnglish, EndrMYDodEPS2_001Dto> {
+    val minsteytelse_sats_vedvirk = it.select(EndrMYDodEPS2_001Dto::minsteytelse_sats_vedvirk)
+    val kompensasjonsgrad_ufoeretrygd_vedvirk = it.select(EndrMYDodEPS2_001Dto::kompensasjonsgrad_ufoeretrygd_vedvirk)
     paragraph {
         textExpr(
             Bokmal to "Du er sikret minsteytelse fordi beregningen ut fra din egenopptjente inntekt er lavere enn minstenivået for uføretrygd. Satsen på minsteytelsen avhenger av sivilstand. For deg utgjør minsteytelsen ".expr() + minsteytelse_sats_vedvirk.str() + " ganger folketrygdens grunnbeløp. Du kan lese mer om grunnbeløp på nav.no.".expr(),
@@ -243,11 +243,11 @@ data class EndrMYOgMinstIFUDodEPS2_001Dto(
     val kompensasjonsgrad_ufoeretrygd_vedvirk: Number
 )
 
-val EndrMYOgMinstIFUDodEPS2_001 = createPhrase<LangBokmalNynorskEnglish, EndrMYOgMinstIFUDodEPS2_001Dto> {
-    val minsteytelse_sats_vedvirk = argument().select(EndrMYOgMinstIFUDodEPS2_001Dto::minsteytelse_sats_vedvirk)
-    val inntekt_foer_ufoerhet_vedvirk = argument().select(EndrMYOgMinstIFUDodEPS2_001Dto::inntekt_foer_ufoerhet_vedvirk)
-    val oppjustert_inntekt_foer_ufoerhet_vedvirk = argument().select(EndrMYOgMinstIFUDodEPS2_001Dto::oppjustert_inntekt_foer_ufoerhet_vedvirk)
-    val kompensasjonsgrad_ufoeretrygd_vedvirk = argument().select(EndrMYOgMinstIFUDodEPS2_001Dto::kompensasjonsgrad_ufoeretrygd_vedvirk)
+val EndrMYOgMinstIFUDodEPS2_001 = OutlinePhrase<LangBokmalNynorskEnglish, EndrMYOgMinstIFUDodEPS2_001Dto> {
+    val minsteytelse_sats_vedvirk = it.select(EndrMYOgMinstIFUDodEPS2_001Dto::minsteytelse_sats_vedvirk)
+    val inntekt_foer_ufoerhet_vedvirk = it.select(EndrMYOgMinstIFUDodEPS2_001Dto::inntekt_foer_ufoerhet_vedvirk)
+    val oppjustert_inntekt_foer_ufoerhet_vedvirk = it.select(EndrMYOgMinstIFUDodEPS2_001Dto::oppjustert_inntekt_foer_ufoerhet_vedvirk)
+    val kompensasjonsgrad_ufoeretrygd_vedvirk = it.select(EndrMYOgMinstIFUDodEPS2_001Dto::kompensasjonsgrad_ufoeretrygd_vedvirk)
     paragraph {
         textExpr(
             Bokmal to "Du er sikret minsteytelse fordi beregningen ut fra din egenopptjente inntekt er lavere enn minstenivået for uføretrygd. Satsen på minsteytelsen avhenger av sivilstand. For deg utgjør minsteytelsen ".expr() + minsteytelse_sats_vedvirk.str() + " ganger folketrygdens grunnbeløp. Du kan lese mer om grunnbeløp på nav.no.".expr(),
@@ -270,10 +270,10 @@ data class EndrMinstIFUDodEPS2_001Dto(
     val kompensasjonsgrad_ufoeretrygd_vedvirk: Number,
 )
 
-val EndrMinstIFUDodEPS2_001 = createPhrase<LangBokmalNynorskEnglish, EndrMinstIFUDodEPS2_001Dto> {
-    val inntekt_foer_ufoerhet_vedvirk = argument().select(EndrMinstIFUDodEPS2_001Dto::inntekt_foer_ufoerhet_vedvirk)
-    val oppjustert_inntekt_foer_ufoerhet_vedvirk = argument().select(EndrMinstIFUDodEPS2_001Dto::oppjustert_inntekt_foer_ufoerhet_vedvirk)
-    val kompensasjonsgrad_ufoeretrygd_vedvirk = argument().select(EndrMinstIFUDodEPS2_001Dto::kompensasjonsgrad_ufoeretrygd_vedvirk)
+val EndrMinstIFUDodEPS2_001 = OutlinePhrase<LangBokmalNynorskEnglish, EndrMinstIFUDodEPS2_001Dto> {
+    val inntekt_foer_ufoerhet_vedvirk = it.select(EndrMinstIFUDodEPS2_001Dto::inntekt_foer_ufoerhet_vedvirk)
+    val oppjustert_inntekt_foer_ufoerhet_vedvirk = it.select(EndrMinstIFUDodEPS2_001Dto::oppjustert_inntekt_foer_ufoerhet_vedvirk)
+    val kompensasjonsgrad_ufoeretrygd_vedvirk = it.select(EndrMinstIFUDodEPS2_001Dto::kompensasjonsgrad_ufoeretrygd_vedvirk)
     paragraph {
         textExpr(
             Bokmal to "Inntekten din før du ble ufør er fastsatt til minstenivå som er avhengig av sivilstand. For deg er inntekten din før du ble ufør satt til ".expr() + inntekt_foer_ufoerhet_vedvirk.str() + " kroner som oppjustert til virkningstidspunktet tilsvarer en inntekt på ".expr() + oppjustert_inntekt_foer_ufoerhet_vedvirk.str() + " kroner. Dette kan ha betydning for kompensasjonsgraden din som er satt til ".expr() + kompensasjonsgrad_ufoeretrygd_vedvirk.str() + " prosent. Du kan lese mer om dette i vedlegget.".expr(),
@@ -283,7 +283,7 @@ val EndrMinstIFUDodEPS2_001 = createPhrase<LangBokmalNynorskEnglish, EndrMinstIF
     }
 }
 
-val HjemmelSivilstandUT_001 = createPhrase<LangBokmalNynorskEnglish, Unit> {
+val HjemmelSivilstandUT_001 = OutlinePhrase<LangBokmalNynorskEnglish, Unit> {
     paragraph {
         text(
             Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 12-13 og 22-12.",
@@ -293,7 +293,7 @@ val HjemmelSivilstandUT_001 = createPhrase<LangBokmalNynorskEnglish, Unit> {
     }
 }
 
-val HjemmelSivilstandUTMinsteIFU_001 = createPhrase<LangBokmalNynorskEnglish, Unit> {
+val HjemmelSivilstandUTMinsteIFU_001 = OutlinePhrase<LangBokmalNynorskEnglish, Unit> {
     paragraph {
         text(
             Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 12-9, 12-13 og 22-12.",
@@ -303,7 +303,7 @@ val HjemmelSivilstandUTMinsteIFU_001 = createPhrase<LangBokmalNynorskEnglish, Un
     }
 }
 
-val HjemmelSivilstandUTAvkortet_001 = createPhrase<LangBokmalNynorskEnglish, Unit> {
+val HjemmelSivilstandUTAvkortet_001 = OutlinePhrase<LangBokmalNynorskEnglish, Unit> {
     paragraph {
         text(
             Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 12-13, 12-14 og 22-12.",
@@ -313,7 +313,7 @@ val HjemmelSivilstandUTAvkortet_001 = createPhrase<LangBokmalNynorskEnglish, Uni
     }
 }
 
-val HjemmelSivilstandUTMinsteIFUAvkortet_001 = createPhrase<LangBokmalNynorskEnglish, Unit> {
+val HjemmelSivilstandUTMinsteIFUAvkortet_001 = OutlinePhrase<LangBokmalNynorskEnglish, Unit> {
     paragraph {
         text(
             Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 12-9, 12-13, 12-14 og 22-12.",
@@ -323,7 +323,7 @@ val HjemmelSivilstandUTMinsteIFUAvkortet_001 = createPhrase<LangBokmalNynorskEng
     }
 }
 
-val HjemmelEPSDodUTInstitusjon_001 = createPhrase<LangBokmalNynorskEnglish, Unit> {
+val HjemmelEPSDodUTInstitusjon_001 = OutlinePhrase<LangBokmalNynorskEnglish, Unit> {
     paragraph {
         text(
             Bokmal to "Uføretrygden din beregnes etter folketrygdloven § 12-19 så lenge du er på institusjon.",
@@ -333,7 +333,7 @@ val HjemmelEPSDodUTInstitusjon_001 = createPhrase<LangBokmalNynorskEnglish, Unit
     }
 }
 
-val HjemmelEPSDodUTFengsel_001 = createPhrase<LangBokmalNynorskEnglish, Unit> {
+val HjemmelEPSDodUTFengsel_001 = OutlinePhrase<LangBokmalNynorskEnglish, Unit> {
     paragraph {
         text(
             Bokmal to "Uføretrygden din beregnes etter folketrygdloven § 12-20 så lenge du er under straffegjennomføring.",
@@ -343,7 +343,7 @@ val HjemmelEPSDodUTFengsel_001 = createPhrase<LangBokmalNynorskEnglish, Unit> {
     }
 }
 
-val OpphorETOverskrift_001 = createPhrase<LangBokmalNynorskEnglish, Unit> {
+val OpphorETOverskrift_001 = OutlinePhrase<LangBokmalNynorskEnglish, Unit> {
     title1 {
         text(
             Bokmal to "Ektefelletillegget ditt opphører",
@@ -353,7 +353,7 @@ val OpphorETOverskrift_001 = createPhrase<LangBokmalNynorskEnglish, Unit> {
     }
 }
 
-val OpphorET_001 = createPhrase<LangBokmalNynorskEnglish, Unit> {
+val OpphorET_001 = OutlinePhrase<LangBokmalNynorskEnglish, Unit> {
     paragraph {
         text(
             Bokmal to "Du forsørger ikke lenger en ektefellepartnersamboer. Derfor opphører ektefelletillegget ditt.",
@@ -363,7 +363,7 @@ val OpphorET_001 = createPhrase<LangBokmalNynorskEnglish, Unit> {
     }
 }
 
-val HjemmelET_001 = createPhrase<LangBokmalNynorskEnglish, Unit> {
+val HjemmelET_001 = OutlinePhrase<LangBokmalNynorskEnglish, Unit> {
     paragraph {
         text(
             Bokmal to "Vedtaket er gjort etter forskrift om omregning av uførepensjon til uføretrygd § 8.",
@@ -373,7 +373,7 @@ val HjemmelET_001 = createPhrase<LangBokmalNynorskEnglish, Unit> {
     }
 }
 
-val OmregningFBOverskrift_001 = createPhrase<LangBokmalNynorskEnglish, Unit> {
+val OmregningFBOverskrift_001 = OutlinePhrase<LangBokmalNynorskEnglish, Unit> {
     title1 {
         text(
             Bokmal to "Barnetillegg for fellesbarn er regnet om",
@@ -385,14 +385,14 @@ val OmregningFBOverskrift_001 = createPhrase<LangBokmalNynorskEnglish, Unit> {
 /*
 data class InfoFBTilSB_001Dto(val barn_overfoert_til_saerkullsbarn: List<String>)
 
-val InfoFBTilSB_001 = createPhrase<LangBokmalNynorskEnglish, InfoFBTilSB_001Dto> {
+val InfoFBTilSB_001 = OutlinePhrase<LangBokmalNynorskEnglish, InfoFBTilSB_001Dto> {
     paragraph {
         text(
             Bokmal to "Vi har regnet om barnetillegget for barn som ikke lenger bor sammen med begge foreldre. Dette gjelder:",
             Nynorsk to "Vi har rekna om barnetillegget for barn som ikkje lenger bur saman med begge foreldre. Dette gjeld:",
             English to "We have recalculated your child supplement for the child/children who no longer lives/live together with both parents. This applies to:"
         )
-        list(argument().select(InfoFBTilSB_001Dto::barn_overfoert_til_saerkullsbarn))
+        list(it.select(InfoFBTilSB_001Dto::barn_overfoert_til_saerkullsbarn))
     }
 
 
@@ -400,31 +400,31 @@ val InfoFBTilSB_001 = createPhrase<LangBokmalNynorskEnglish, InfoFBTilSB_001Dto>
 
 data class InfoTidligereSB_001Dto(val tidligere_saerkullsbarn: List<String>)
 
-val InfoTidligereSB_001 = createPhrase<LangBokmalNynorskEnglish, InfoTidligereSB_001Dto> {
+val InfoTidligereSB_001 = OutlinePhrase<LangBokmalNynorskEnglish, InfoTidligereSB_001Dto> {
     paragraph {
         text(
             Bokmal to "Denne omregningen har også betydning for barnetillegget for:",
             Nynorsk to "Denne omrekninga har også noko å seie for barnetillegget for:",
             English to "This recalculation also affects your child supplement for:"
         )
-        list(argument().select(InfoTidligereSB_001Dto::tidligere_saerkullsbarn))
+        list(it.select(InfoTidligereSB_001Dto::tidligere_saerkullsbarn))
     }
 }
 
 data class InfoTidligereSBOgEndretUT_001Dto(val tidligere_saerkullsbarn: List<String>)
 
-val InfoTidligereSBOgEndretUT_001 = createPhrase<LangBokmalNynorskEnglish, InfoTidligereSBOgEndretUT_001Dto> {
+val InfoTidligereSBOgEndretUT_001 = OutlinePhrase<LangBokmalNynorskEnglish, InfoTidligereSBOgEndretUT_001Dto> {
     paragraph {
         text(
             Bokmal to "Omregningen av barnetillegg og endring i uføretrygden din har også betydning for barnetillegget for:",
             Nynorsk to "Omrekninga av barnetillegget og endring i uføretrygda di har også noko å seie for barnetillegget for:",
             English to "Recalculation of your child supplement and change in your disability benefit also affects your child supplement for:"
         )
-        list(argument().select(InfoTidligereSBOgEndretUT_001Dto::tidligere_saerkullsbarn))
+        list(it.select(InfoTidligereSBOgEndretUT_001Dto::tidligere_saerkullsbarn))
     }
 }
 */
-val EndringUTpavirkerBTOverskrift_001 = createPhrase<LangBokmalNynorskEnglish, Unit> {
+val EndringUTpavirkerBTOverskrift_001 = OutlinePhrase<LangBokmalNynorskEnglish, Unit> {
     title1 {
         text(
             Bokmal to "Slik påvirker endring av uføretrygden barnetillegget ditt",
@@ -439,11 +439,11 @@ data class IkkeRedusBTPgaTak_001Dto(
     val barnetillegg_gradert_over_inntekt_foer_ufoer_vedvirk: Number,
 )
 
-val IkkeRedusBTPgaTak_001 = createPhrase<LangBokmalNynorskEnglish, IkkeRedusBTPgaTak_001Dto> {
+val IkkeRedusBTPgaTak_001 = OutlinePhrase<LangBokmalNynorskEnglish, IkkeRedusBTPgaTak_001Dto> {
     val barnetillegg_prosentsats_gradert_over_inntekt_foer_ufoer_vedvirk =
-        argument().select(IkkeRedusBTPgaTak_001Dto::barnetillegg_prosentsats_gradert_over_inntekt_foer_ufoer_vedvirk)
+        it.select(IkkeRedusBTPgaTak_001Dto::barnetillegg_prosentsats_gradert_over_inntekt_foer_ufoer_vedvirk)
     val barnetillegg_gradert_over_inntekt_foer_ufoer_vedvirk =
-        argument().select(IkkeRedusBTPgaTak_001Dto::barnetillegg_gradert_over_inntekt_foer_ufoer_vedvirk)
+        it.select(IkkeRedusBTPgaTak_001Dto::barnetillegg_gradert_over_inntekt_foer_ufoer_vedvirk)
     paragraph {
         textExpr(
             Bokmal to "Uføretrygden og barnetillegget ditt kan til sammen ikke utgjøre mer enn ".expr() + barnetillegg_prosentsats_gradert_over_inntekt_foer_ufoer_vedvirk.str() + " prosent av inntekten din før du ble ufør. ".expr() + barnetillegg_prosentsats_gradert_over_inntekt_foer_ufoer_vedvirk.str() + " prosent av den inntekten du hadde før du ble ufør tilsvarer i dag ".expr() + barnetillegg_gradert_over_inntekt_foer_ufoer_vedvirk.str() + " kroner. Uføretrygden og barnetillegget ditt er til sammen lavere enn dette. Derfor er barnetillegget fastsatt til 40 prosent av folketrygdens grunnbeløp for hvert barn.".expr(),
@@ -462,15 +462,15 @@ data class RedusBTPgaTak_001Dto(
     val barnetillegg_saerkullsbarn_beloep_etter_reduksjon_vedvirk: Number,
 )
 
-val RedusBTPgaTak_001 = createPhrase<LangBokmalNynorskEnglish, RedusBTPgaTak_001Dto> {
+val RedusBTPgaTak_001 = OutlinePhrase<LangBokmalNynorskEnglish, RedusBTPgaTak_001Dto> {
     val barnetillegg_prosentsats_gradert_over_inntekt_foer_ufoer_vedvirk =
-        argument().select(RedusBTPgaTak_001Dto::barnetillegg_prosentsats_gradert_over_inntekt_foer_ufoer_vedvirk)
+        it.select(RedusBTPgaTak_001Dto::barnetillegg_prosentsats_gradert_over_inntekt_foer_ufoer_vedvirk)
     val barnetillegg_gradert_over_inntekt_foer_ufoer_vedvirk =
-        argument().select(RedusBTPgaTak_001Dto::barnetillegg_gradert_over_inntekt_foer_ufoer_vedvirk)
+        it.select(RedusBTPgaTak_001Dto::barnetillegg_gradert_over_inntekt_foer_ufoer_vedvirk)
     val barnetillegg_beloep_foer_reduksjon_vedvirk =
-        argument().select(RedusBTPgaTak_001Dto::barnetillegg_beloep_foer_reduksjon_vedvirk)
+        it.select(RedusBTPgaTak_001Dto::barnetillegg_beloep_foer_reduksjon_vedvirk)
     val barnetillegg_saerkullsbarn_beloep_etter_reduksjon_vedvirk =
-        argument().select(RedusBTPgaTak_001Dto::barnetillegg_saerkullsbarn_beloep_etter_reduksjon_vedvirk)
+        it.select(RedusBTPgaTak_001Dto::barnetillegg_saerkullsbarn_beloep_etter_reduksjon_vedvirk)
     paragraph {
         textExpr(
             Bokmal to "Uføretrygden og barnetillegget ditt kan til sammen ikke utgjøre mer enn ".expr() + barnetillegg_prosentsats_gradert_over_inntekt_foer_ufoer_vedvirk.str() + " prosent av inntekten din før du ble ufør. ".expr() + barnetillegg_prosentsats_gradert_over_inntekt_foer_ufoer_vedvirk.str() + " prosent av den inntekten du hadde før du ble ufør tilsvarer i dag ".expr() + barnetillegg_gradert_over_inntekt_foer_ufoer_vedvirk.str() + " kroner. Uføretrygden og barnetillegget ditt er til sammen høyere enn dette. Derfor er barnetillegget redusert fra ".expr() + barnetillegg_beloep_foer_reduksjon_vedvirk.str() + " kroner til ".expr() + barnetillegg_saerkullsbarn_beloep_etter_reduksjon_vedvirk.str() + " kroner.".expr(),
@@ -487,11 +487,11 @@ data class IkkeUtbetaltBTPgaTak_001Dto(
     val barnetillegg_gradert_over_inntekt_foer_ufoer_vedvirk: Number,
 )
 
-val IkkeUtbetaltBTPgaTak_001 = createPhrase<LangBokmalNynorskEnglish, IkkeUtbetaltBTPgaTak_001Dto> {
+val IkkeUtbetaltBTPgaTak_001 = OutlinePhrase<LangBokmalNynorskEnglish, IkkeUtbetaltBTPgaTak_001Dto> {
     val barnetillegg_prosentsats_gradert_over_inntekt_foer_ufoer_vedvirk =
-        argument().select(IkkeUtbetaltBTPgaTak_001Dto::barnetillegg_prosentsats_gradert_over_inntekt_foer_ufoer_vedvirk)
+        it.select(IkkeUtbetaltBTPgaTak_001Dto::barnetillegg_prosentsats_gradert_over_inntekt_foer_ufoer_vedvirk)
     val barnetillegg_gradert_over_inntekt_foer_ufoer_vedvirk =
-        argument().select(IkkeUtbetaltBTPgaTak_001Dto::barnetillegg_gradert_over_inntekt_foer_ufoer_vedvirk)
+        it.select(IkkeUtbetaltBTPgaTak_001Dto::barnetillegg_gradert_over_inntekt_foer_ufoer_vedvirk)
     paragraph {
         textExpr(
             Bokmal to "Uføretrygden og barnetillegget ditt kan til sammen ikke utgjøre mer enn ".expr() + barnetillegg_prosentsats_gradert_over_inntekt_foer_ufoer_vedvirk.str() + " prosent av inntekten din før du ble ufør. ".expr() + barnetillegg_prosentsats_gradert_over_inntekt_foer_ufoer_vedvirk.str() + " prosent av den inntekten du hadde før du ble ufør tilsvarer i dag ".expr() + barnetillegg_gradert_over_inntekt_foer_ufoer_vedvirk.str() + " kroner. Uføretrygden og barnetillegget ditt er til sammen høyere enn dette. Derfor får du ikke utbetalt barnetillegg.".expr(),
@@ -501,7 +501,7 @@ val IkkeUtbetaltBTPgaTak_001 = createPhrase<LangBokmalNynorskEnglish, IkkeUtbeta
     }
 }
 
-val InfoBTSBInntekt_001 = createPhrase<LangBokmalNynorskEnglish, Unit> {
+val InfoBTSBInntekt_001 = OutlinePhrase<LangBokmalNynorskEnglish, Unit> {
     paragraph {
         text(
             Bokmal to "Inntekten din har betydning for hva du får i barnetillegg. Er inntekten din over grensen for å få utbetalt fullt barnetillegg, blir tillegget redusert. Denne grensen kaller vi for fribeløp. Du kan enkelt melde fra om inntektsendringer på nav.no.",
@@ -511,7 +511,7 @@ val InfoBTSBInntekt_001 = createPhrase<LangBokmalNynorskEnglish, Unit> {
     }
 }
 
-val InfoBTOverfortTilSBInntekt_001 = createPhrase<LangBokmalNynorskEnglish, Unit> {
+val InfoBTOverfortTilSBInntekt_001 = OutlinePhrase<LangBokmalNynorskEnglish, Unit> {
     paragraph {
         text(
             Bokmal to "Inntekten din har betydning for hva du får i barnetillegg. Er inntekten din over grensen for å få utbetalt fullt barnetillegg, blir tillegget redusert. Denne grensen kaller vi for fribeløp. Fribeløpet for ett barn er 3,1 ganger folketrygdens grunnbeløp og det øker med 40 prosent av folketrygdens grunnbeløp for hvert ekstra barn. Du kan enkelt melde fra om inntektsendringer på nav.no.",
@@ -526,11 +526,11 @@ data class IkkeRedusBTSBPgaInntekt_001Dto(
     val barnetillegg_saerkullsbarn_fribeloep_vedvirk: Number,
 )
 
-val IkkeRedusBTSBPgaInntekt_001 = createPhrase<LangBokmalNynorskEnglish, IkkeRedusBTSBPgaInntekt_001Dto> {
+val IkkeRedusBTSBPgaInntekt_001 = OutlinePhrase<LangBokmalNynorskEnglish, IkkeRedusBTSBPgaInntekt_001Dto> {
     val barnetillegg_saerkullsbarn_inntekt_brukt_i_avkortning_vedvirk =
-        argument().select(IkkeRedusBTSBPgaInntekt_001Dto::barnetillegg_saerkullsbarn_inntekt_brukt_i_avkortning_vedvirk)
+        it.select(IkkeRedusBTSBPgaInntekt_001Dto::barnetillegg_saerkullsbarn_inntekt_brukt_i_avkortning_vedvirk)
     val barnetillegg_saerkullsbarn_fribeloep_vedvirk =
-        argument().select(IkkeRedusBTSBPgaInntekt_001Dto::barnetillegg_saerkullsbarn_fribeloep_vedvirk)
+        it.select(IkkeRedusBTSBPgaInntekt_001Dto::barnetillegg_saerkullsbarn_fribeloep_vedvirk)
     paragraph {
         textExpr(
             Bokmal to "Inntekten din på ".expr() + barnetillegg_saerkullsbarn_inntekt_brukt_i_avkortning_vedvirk.str() + " kroner er lavere enn fribeløpet ditt på ".expr() + barnetillegg_saerkullsbarn_fribeloep_vedvirk.str() + " kroner. Derfor er barnetillegget ikke redusert ut fra inntekt.".expr(),
@@ -545,11 +545,11 @@ data class RedusBTSBPgaInntekt_001Dto(
     val barnetillegg_saerkullsbarn_fribeloep_vedvirk: Number,
 )
 
-val RedusBTSBPgaInntekt_001 = createPhrase<LangBokmalNynorskEnglish, RedusBTSBPgaInntekt_001Dto> {
+val RedusBTSBPgaInntekt_001 = OutlinePhrase<LangBokmalNynorskEnglish, RedusBTSBPgaInntekt_001Dto> {
     val barnetillegg_saerkullsbarn_inntekt_brukt_i_avkortning_vedvirk =
-        argument().select(RedusBTSBPgaInntekt_001Dto::barnetillegg_saerkullsbarn_inntekt_brukt_i_avkortning_vedvirk)
+        it.select(RedusBTSBPgaInntekt_001Dto::barnetillegg_saerkullsbarn_inntekt_brukt_i_avkortning_vedvirk)
     val barnetillegg_saerkullsbarn_fribeloep_vedvirk =
-        argument().select(RedusBTSBPgaInntekt_001Dto::barnetillegg_saerkullsbarn_fribeloep_vedvirk)
+        it.select(RedusBTSBPgaInntekt_001Dto::barnetillegg_saerkullsbarn_fribeloep_vedvirk)
     paragraph {
         textExpr(
             Bokmal to "Inntekten din på ".expr() + barnetillegg_saerkullsbarn_inntekt_brukt_i_avkortning_vedvirk.str() + " kroner er høyere enn fribeløpet ditt på ".expr() + barnetillegg_saerkullsbarn_fribeloep_vedvirk.str() + " kroner. Derfor er barnetillegget redusert ut fra inntekt.".expr(),
@@ -559,7 +559,7 @@ val RedusBTSBPgaInntekt_001 = createPhrase<LangBokmalNynorskEnglish, RedusBTSBPg
     }
 }
 
-val JusterBelopRedusBTPgaInntekt_001 = createPhrase<LangBokmalNynorskEnglish, Unit> {
+val JusterBelopRedusBTPgaInntekt_001 = OutlinePhrase<LangBokmalNynorskEnglish, Unit> {
     paragraph {
         text(
             Bokmal to "Det du har fått utbetalt i barnetillegg tidligere i år har også betydning for hva du får i barnetillegg framover. Dette ble tatt hensyn til da vi endret barnetillegget.",
@@ -569,7 +569,7 @@ val JusterBelopRedusBTPgaInntekt_001 = createPhrase<LangBokmalNynorskEnglish, Un
     }
 }
 
-val JusterBelopIkkeUtbetaltBTPgaInntekt_001 = createPhrase<LangBokmalNynorskEnglish, Unit> {
+val JusterBelopIkkeUtbetaltBTPgaInntekt_001 = OutlinePhrase<LangBokmalNynorskEnglish, Unit> {
     paragraph {
         text(
             Bokmal to "Det du har fått utbetalt i barnetillegg tidligere i år har også betydning for hva du får i barnetillegg framover. Du har allerede fått utbetalt det du har rett til i år, og får derfor ikke utbetalt barnetillegg for resten av året.",
@@ -584,11 +584,11 @@ data class IkkeUtbetaltBTSBPgaInntekt_001Dto(
     val barnetillegg_saerkullsbarn_inntektstak_vedvirk: Number,
 )
 
-val IkkeUtbetaltBTSBPgaInntekt_001 = createPhrase<LangBokmalNynorskEnglish, IkkeUtbetaltBTSBPgaInntekt_001Dto> {
+val IkkeUtbetaltBTSBPgaInntekt_001 = OutlinePhrase<LangBokmalNynorskEnglish, IkkeUtbetaltBTSBPgaInntekt_001Dto> {
     val barnetillegg_saerkullsbarn_inntekt_brukt_i_avkortning_vedvirk =
-        argument().select(IkkeUtbetaltBTSBPgaInntekt_001Dto::barnetillegg_saerkullsbarn_inntekt_brukt_i_avkortning_vedvirk)
+        it.select(IkkeUtbetaltBTSBPgaInntekt_001Dto::barnetillegg_saerkullsbarn_inntekt_brukt_i_avkortning_vedvirk)
     val barnetillegg_saerkullsbarn_inntektstak_vedvirk =
-        argument().select(IkkeUtbetaltBTSBPgaInntekt_001Dto::barnetillegg_saerkullsbarn_inntektstak_vedvirk)
+        it.select(IkkeUtbetaltBTSBPgaInntekt_001Dto::barnetillegg_saerkullsbarn_inntektstak_vedvirk)
     paragraph {
         textExpr(
             Bokmal to "Inntekten din på ".expr() + barnetillegg_saerkullsbarn_inntekt_brukt_i_avkortning_vedvirk.str() + " kroner er over ".expr() + barnetillegg_saerkullsbarn_inntektstak_vedvirk.str() + " kroner som er grensen for å få utbetalt barnetillegg. Derfor får du ikke utbetalt barnetillegg.".expr(),
@@ -598,7 +598,7 @@ val IkkeUtbetaltBTSBPgaInntekt_001 = createPhrase<LangBokmalNynorskEnglish, Ikke
     }
 }
 
-val HjemmelBT_001 = createPhrase<LangBokmalNynorskEnglish, Unit> {
+val HjemmelBT_001 = OutlinePhrase<LangBokmalNynorskEnglish, Unit> {
     paragraph {
         text(
             Bokmal to "Vedtaket er gjort etter folketrygdloven § 12-15.",
@@ -608,7 +608,7 @@ val HjemmelBT_001 = createPhrase<LangBokmalNynorskEnglish, Unit> {
     }
 }
 
-val HjemmelBTOvergangsregler_001 = createPhrase<LangBokmalNynorskEnglish, Unit> {
+val HjemmelBTOvergangsregler_001 = OutlinePhrase<LangBokmalNynorskEnglish, Unit> {
     paragraph {
         text(
             Bokmal to "Vedtaket er gjort etter folketrygdloven § 12-15 og forskrift om overgangsregler for barnetillegg i uføretrygden.",
@@ -618,7 +618,7 @@ val HjemmelBTOvergangsregler_001 = createPhrase<LangBokmalNynorskEnglish, Unit> 
     }
 }
 
-val HjemmelBTRedus_001 = createPhrase<LangBokmalNynorskEnglish, Unit> {
+val HjemmelBTRedus_001 = OutlinePhrase<LangBokmalNynorskEnglish, Unit> {
     paragraph {
         text(
             Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 12-15 og 12-16.",
@@ -628,7 +628,7 @@ val HjemmelBTRedus_001 = createPhrase<LangBokmalNynorskEnglish, Unit> {
     }
 }
 
-val HjemmelBTRedusOvergangsregler_001 = createPhrase<LangBokmalNynorskEnglish, Unit> {
+val HjemmelBTRedusOvergangsregler_001 = OutlinePhrase<LangBokmalNynorskEnglish, Unit> {
     paragraph {
         text(
             Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 12-15 og 12-16 og forskrift om overgangsregler for barnetillegg i uføretrygden.",
@@ -638,7 +638,7 @@ val HjemmelBTRedusOvergangsregler_001 = createPhrase<LangBokmalNynorskEnglish, U
     }
 }
 
-val MerInfoBT_001 = createPhrase<LangBokmalNynorskEnglish, Unit> {
+val MerInfoBT_001 = OutlinePhrase<LangBokmalNynorskEnglish, Unit> {
     paragraph {
         text(
             Bokmal to "Du kan lese mer om beregningen av barnetillegg i vedlegget.",
@@ -650,8 +650,8 @@ val MerInfoBT_001 = createPhrase<LangBokmalNynorskEnglish, Unit> {
 
 data class GjRettSamboerOverskriftDto(val avdod_navn: String)
 
-val GjRettSamboerOverskrift = createPhrase<LangBokmalNynorskEnglish, GjRettSamboerOverskriftDto> {
-    val avdod_navn = argument().select(GjRettSamboerOverskriftDto::avdod_navn)
+val GjRettSamboerOverskrift = OutlinePhrase<LangBokmalNynorskEnglish, GjRettSamboerOverskriftDto> {
+    val avdod_navn = it.select(GjRettSamboerOverskriftDto::avdod_navn)
     title1 {
         textExpr(
             Bokmal to "Rettigheter du kan ha som tidligere samboer med ".expr() + avdod_navn,
@@ -662,7 +662,7 @@ val GjRettSamboerOverskrift = createPhrase<LangBokmalNynorskEnglish, GjRettSambo
 
 }
 
-val GjRettUTSamboer_001 = createPhrase<LangBokmalNynorskEnglish, Unit> {
+val GjRettUTSamboer_001 = OutlinePhrase<LangBokmalNynorskEnglish, Unit> {
     paragraph {
         text(
             Bokmal to "Samboere som tidligere har vært gift, eller som har eller har hatt felles barn, kan ha rett til gjenlevendetillegg i uføretrygden. Du finner mer informasjon og søknadsskjema for gjenlevende ektefelle, partner eller samboer på nav.no.",
@@ -672,7 +672,7 @@ val GjRettUTSamboer_001 = createPhrase<LangBokmalNynorskEnglish, Unit> {
     }
 }
 
-val RettTilUTGJTOverskrift_001 = createPhrase<LangBokmalNynorskEnglish, Unit> {
+val RettTilUTGJTOverskrift_001 = OutlinePhrase<LangBokmalNynorskEnglish, Unit> {
     title1 {
         text(
             Bokmal to "Du kan ha rett til gjenlevendetillegg i uføretrygden",
@@ -682,7 +682,7 @@ val RettTilUTGJTOverskrift_001 = createPhrase<LangBokmalNynorskEnglish, Unit> {
     }
 }
 
-val HvemUTGJTVilkar_001 = createPhrase<LangBokmalNynorskEnglish, Unit> {
+val HvemUTGJTVilkar_001 = OutlinePhrase<LangBokmalNynorskEnglish, Unit> {
     paragraph {
         text(
             Bokmal to "For å ha rett til gjenlevendetillegg i uføretrygden, må du som hovedregel:",
@@ -730,7 +730,7 @@ val HvemUTGJTVilkar_001 = createPhrase<LangBokmalNynorskEnglish, Unit> {
     }
 }
 
-val HvordanSoekerDuOverskrift_001 = createPhrase<LangBokmalNynorskEnglish, Unit> {
+val HvordanSoekerDuOverskrift_001 = OutlinePhrase<LangBokmalNynorskEnglish, Unit> {
     title1 {
         text(
             Bokmal to "Hvordan søker du?",
@@ -740,7 +740,7 @@ val HvordanSoekerDuOverskrift_001 = createPhrase<LangBokmalNynorskEnglish, Unit>
     }
 }
 
-val SoekUTGJT_001 = createPhrase<LangBokmalNynorskEnglish, Unit> {
+val SoekUTGJT_001 = OutlinePhrase<LangBokmalNynorskEnglish, Unit> {
     paragraph {
         text(
             Bokmal to "Vi oppfordrer deg til å søke om gjenlevendetillegg i uføretrygden så snart som mulig fordi vi vanligvis kun etterbetaler for tre måneder. Du finner informasjon og søknadsskjemaet for gjenlevende ektefelle, partner eller samboer på nav.no/gjenlevendeektefelle",
@@ -751,7 +751,7 @@ val SoekUTGJT_001 = createPhrase<LangBokmalNynorskEnglish, Unit> {
 
 }
 
-val SoekAvtaleLandUT_001 = createPhrase<LangBokmalNynorskEnglish, Unit> {
+val SoekAvtaleLandUT_001 = OutlinePhrase<LangBokmalNynorskEnglish, Unit> {
     paragraph {
         text(
             Bokmal to "Dersom du bor i utlandet, må du kontakte trygdemyndigheter i bostedslandet ditt og søke om ytelser etter avdøde.",
@@ -761,7 +761,7 @@ val SoekAvtaleLandUT_001 = createPhrase<LangBokmalNynorskEnglish, Unit> {
     }
 }
 
-val AvdodBoddArbUtlandOverskrift_001 = createPhrase<LangBokmalNynorskEnglish, Unit> {
+val AvdodBoddArbUtlandOverskrift_001 = OutlinePhrase<LangBokmalNynorskEnglish, Unit> {
     title1 {
         text(
             Bokmal to "Rettigheter hvis avdøde har bodd eller arbeidet i utlandet",
@@ -771,7 +771,7 @@ val AvdodBoddArbUtlandOverskrift_001 = createPhrase<LangBokmalNynorskEnglish, Un
     }
 }
 
-val AvdodBoddArbUtland2_001 = createPhrase<LangBokmalNynorskEnglish, Unit> {
+val AvdodBoddArbUtland2_001 = OutlinePhrase<LangBokmalNynorskEnglish, Unit> {
     paragraph {
         text(
             Bokmal to "Hvis avdøde har bodd eller arbeidet i utlandet kan dette få betydning for hvor mye du får ubetalt i gjenlevendetillegg. Norge har trygdesamarbeid med en rekke land gjennom EØS-avtalen og andre avtaler. Derfor kan du også ha rett til pensjon fra andre land. Vi kan hjelpe deg med søknad til land Norge har trygdeavtale med.",
@@ -781,7 +781,7 @@ val AvdodBoddArbUtland2_001 = createPhrase<LangBokmalNynorskEnglish, Unit> {
     }
 }
 
-val PensjonFraAndreOverskrift_001 = createPhrase<LangBokmalNynorskEnglish, Unit> {
+val PensjonFraAndreOverskrift_001 = OutlinePhrase<LangBokmalNynorskEnglish, Unit> {
     paragraph {
         text(
             Bokmal to "Andre pensjonsordninger",
@@ -791,7 +791,7 @@ val PensjonFraAndreOverskrift_001 = createPhrase<LangBokmalNynorskEnglish, Unit>
     }
 }
 
-val InfoAvdodPenFraAndre_001 = createPhrase<LangBokmalNynorskEnglish, Unit> {
+val InfoAvdodPenFraAndre_001 = OutlinePhrase<LangBokmalNynorskEnglish, Unit> {
     paragraph {
         text(
             Bokmal to "Dersom avdøde hadde en privat eller offentlig pensjonsordning og du har spørsmål om dette, må du kontakte avdødes arbeidsgiver. Du kan også ta kontakt med pensjonsordningen eller forsikringsselskapet.",
@@ -801,7 +801,7 @@ val InfoAvdodPenFraAndre_001 = createPhrase<LangBokmalNynorskEnglish, Unit> {
     }
 }
 
-val HarBarnUnder18Overskrift_001 = createPhrase<LangBokmalNynorskEnglish, Unit> {
+val HarBarnUnder18Overskrift_001 = OutlinePhrase<LangBokmalNynorskEnglish, Unit> {
     title1 {
         text(
             Bokmal to "For deg som har barn under 18 år",
@@ -811,7 +811,7 @@ val HarBarnUnder18Overskrift_001 = createPhrase<LangBokmalNynorskEnglish, Unit> 
     }
 }
 
-val HarBarnUtenBT_001 = createPhrase<LangBokmalNynorskEnglish, Unit> {
+val HarBarnUtenBT_001 = OutlinePhrase<LangBokmalNynorskEnglish, Unit> {
     paragraph {
         text(
             Bokmal to "Har du barn under 18 år, og ikke er innvilget barnetillegg, kan du søke om dette.",
@@ -821,7 +821,7 @@ val HarBarnUtenBT_001 = createPhrase<LangBokmalNynorskEnglish, Unit> {
     }
 }
 
-val HarBarnUnder18_001 = createPhrase<LangBokmalNynorskEnglish, Unit> {
+val HarBarnUnder18_001 = OutlinePhrase<LangBokmalNynorskEnglish, Unit> {
     paragraph {
         text(
             Bokmal to "Forsørger du barn under 18 år, kan du ha rett til utvidet barnetrygd. I tillegg kan barn ha rett til barnepensjon. Du finner søknadsskjema og mer informasjon om dette på nav.no.",
@@ -831,7 +831,7 @@ val HarBarnUnder18_001 = createPhrase<LangBokmalNynorskEnglish, Unit> {
     }
 }
 
-val VirknTdsPktOverskrift_001 = createPhrase<LangBokmalNynorskEnglish, Unit> {
+val VirknTdsPktOverskrift_001 = OutlinePhrase<LangBokmalNynorskEnglish, Unit> {
     title1 {
         text(
             Bokmal to "Dette er virkningstidspunktet ditt",
@@ -843,8 +843,8 @@ val VirknTdsPktOverskrift_001 = createPhrase<LangBokmalNynorskEnglish, Unit> {
 
 data class VirkTdsPktUT_001Dto(val krav_virkedato_fom: LocalDate)
 
-val VirkTdsPktUT_001 = createPhrase<LangBokmalNynorskEnglish, VirkTdsPktUT_001Dto> {
-    val krav_virkedato_fom = argument().select(VirkTdsPktUT_001Dto::krav_virkedato_fom)
+val VirkTdsPktUT_001 = OutlinePhrase<LangBokmalNynorskEnglish, VirkTdsPktUT_001Dto> {
+    val krav_virkedato_fom = it.select(VirkTdsPktUT_001Dto::krav_virkedato_fom)
     paragraph {
         textExpr(
             Bokmal to "Uføretrygden din er omregnet fra ".expr() + krav_virkedato_fom.format() + ".".expr(),
@@ -856,8 +856,8 @@ val VirkTdsPktUT_001 = createPhrase<LangBokmalNynorskEnglish, VirkTdsPktUT_001Dt
 
 data class VirkTdsPktUTIkkeEndring_001Dto(val krav_virkedato_fom: LocalDate)
 
-val VirkTdsPktUTIkkeEndring_001 = createPhrase<LangBokmalNynorskEnglish, VirkTdsPktUTIkkeEndring_001Dto> {
-    val krav_virkedato_fom = argument().select(VirkTdsPktUTIkkeEndring_001Dto::krav_virkedato_fom)
+val VirkTdsPktUTIkkeEndring_001 = OutlinePhrase<LangBokmalNynorskEnglish, VirkTdsPktUTIkkeEndring_001Dto> {
+    val krav_virkedato_fom = it.select(VirkTdsPktUTIkkeEndring_001Dto::krav_virkedato_fom)
     paragraph {
         textExpr(
             Bokmal to "Uføretrygden din er omregnet fra ".expr() + krav_virkedato_fom.format() + ", men dette fører ikke til endring i utbetalingen.".expr(),
@@ -869,8 +869,8 @@ val VirkTdsPktUTIkkeEndring_001 = createPhrase<LangBokmalNynorskEnglish, VirkTds
 
 data class VirkTdsPktUTBTOmregn_001Dto(val krav_virkedato_fom: LocalDate)
 
-val VirkTdsPktUTBTOmregn_001 = createPhrase<LangBokmalNynorskEnglish, VirkTdsPktUTBTOmregn_001Dto> {
-    val krav_virkedato_fom = argument().select(VirkTdsPktUTBTOmregn_001Dto::krav_virkedato_fom)
+val VirkTdsPktUTBTOmregn_001 = OutlinePhrase<LangBokmalNynorskEnglish, VirkTdsPktUTBTOmregn_001Dto> {
+    val krav_virkedato_fom = it.select(VirkTdsPktUTBTOmregn_001Dto::krav_virkedato_fom)
     paragraph {
         textExpr(
             Bokmal to "Barnetillegget i uføretrygden din er omregnet fra ".expr() + krav_virkedato_fom.format() + ".".expr(),
@@ -882,8 +882,8 @@ val VirkTdsPktUTBTOmregn_001 = createPhrase<LangBokmalNynorskEnglish, VirkTdsPkt
 
 data class VirkTdsPktUTAvkortetTil0_001Dto(val krav_virkedato_fom: LocalDate)
 
-val VirkTdsPktUTAvkortetTil0_001 = createPhrase<LangBokmalNynorskEnglish, VirkTdsPktUTAvkortetTil0_001Dto> {
-    val krav_virkedato_fom = argument().select(VirkTdsPktUTAvkortetTil0_001Dto::krav_virkedato_fom)
+val VirkTdsPktUTAvkortetTil0_001 = OutlinePhrase<LangBokmalNynorskEnglish, VirkTdsPktUTAvkortetTil0_001Dto> {
+    val krav_virkedato_fom = it.select(VirkTdsPktUTAvkortetTil0_001Dto::krav_virkedato_fom)
     paragraph {
         textExpr(
             Bokmal to "Uføretrygden din er omregnet fra ".expr() + krav_virkedato_fom.format() + ", men dette fører ikke til endring i utbetalingen da uføretrygden er redusert til 0 kr.".expr(),
@@ -893,7 +893,7 @@ val VirkTdsPktUTAvkortetTil0_001 = createPhrase<LangBokmalNynorskEnglish, VirkTd
     }
 }
 
-val MeldInntektUTOverskrift_001 = createPhrase<LangBokmalNynorskEnglish, Unit> {
+val MeldInntektUTOverskrift_001 = OutlinePhrase<LangBokmalNynorskEnglish, Unit> {
     title1 {
         text(
             Bokmal to "Du må melde fra om eventuell inntekt",
@@ -903,7 +903,7 @@ val MeldInntektUTOverskrift_001 = createPhrase<LangBokmalNynorskEnglish, Unit> {
     }
 }
 
-val MeldInntektUT_001 = createPhrase<LangBokmalNynorskEnglish, Unit> {
+val MeldInntektUT_001 = OutlinePhrase<LangBokmalNynorskEnglish, Unit> {
     paragraph {
         text(
             Bokmal to "Dersom du er i jobb eller har planer om å jobbe, må du melde fra om eventuelle endringer i inntekten din. Det er viktig at du melder fra så tidlig som mulig, slik at du får riktig utbetaling av uføretrygd. Dette kan du gjøre under menyvalget «uføretrygd» når du logger deg inn på nav.no. Her kan du legge inn hvor mye du forventer å tjene i løpet av året. Du vil da kunne se hvor mye du vil få utbetalt i uføretrygd.",
@@ -913,7 +913,7 @@ val MeldInntektUT_001 = createPhrase<LangBokmalNynorskEnglish, Unit> {
     }
 }
 
-val MeldInntektUTBT_001 = createPhrase<LangBokmalNynorskEnglish, Unit> {
+val MeldInntektUTBT_001 = OutlinePhrase<LangBokmalNynorskEnglish, Unit> {
     paragraph {
         text(
             Bokmal to "Dersom du er i jobb eller har planer om å jobbe, må du melde fra om eventuelle endringer i inntekten din. Det er viktig at du melder fra så tidlig som mulig, slik at du får riktig utbetaling av uføretrygd og barnetillegg. Dette kan du gjøre under menyvalget «uføretrygd» når du logger deg inn på nav.no. Her kan du legge inn hvor mye du forventer å tjene i løpet av året. Du vil da kunne se hvor mye du vil få utbetalt i uføretrygd og barnetillegg.",
@@ -923,7 +923,7 @@ val MeldInntektUTBT_001 = createPhrase<LangBokmalNynorskEnglish, Unit> {
     }
 }
 
-val MeldEndringerPesys_001 = createPhrase<LangBokmalNynorskEnglish, Unit> {
+val MeldEndringerPesys_001 = OutlinePhrase<LangBokmalNynorskEnglish, Unit> {
     title1 {
         text(
             Bokmal to "Du må melde fra om endringer",
@@ -947,7 +947,7 @@ val MeldEndringerPesys_001 = createPhrase<LangBokmalNynorskEnglish, Unit> {
     }
 }
 
-val RettTilKlagePesys_001 = createPhrase<LangBokmalNynorskEnglish, Unit> {
+val RettTilKlagePesys_001 = OutlinePhrase<LangBokmalNynorskEnglish, Unit> {
     title1 {
         text(
             Bokmal to "Du har rett til å klage",
@@ -971,7 +971,7 @@ val RettTilKlagePesys_001 = createPhrase<LangBokmalNynorskEnglish, Unit> {
     }
 }
 
-val RettTilInnsynPesys_001 = createPhrase<LangBokmalNynorskEnglish, Unit> {
+val RettTilInnsynPesys_001 = OutlinePhrase<LangBokmalNynorskEnglish, Unit> {
     title1 {
         text(
             Bokmal to "Du har rett til innsyn",
@@ -988,7 +988,7 @@ val RettTilInnsynPesys_001 = createPhrase<LangBokmalNynorskEnglish, Unit> {
     }
 }
 
-val SjekkUtbetalingeneOverskrift_001 = createPhrase<LangBokmalNynorskEnglish, Unit> {
+val SjekkUtbetalingeneOverskrift_001 = OutlinePhrase<LangBokmalNynorskEnglish, Unit> {
     title1 {
         text(
             Bokmal to "Sjekk utbetalingene dine",
@@ -998,7 +998,7 @@ val SjekkUtbetalingeneOverskrift_001 = createPhrase<LangBokmalNynorskEnglish, Un
     }
 }
 
-val SjekkUtbetalingeneUT_001 = createPhrase<LangBokmalNynorskEnglish, Unit> {
+val SjekkUtbetalingeneUT_001 = OutlinePhrase<LangBokmalNynorskEnglish, Unit> {
     paragraph {
         text(
             Bokmal to "Du får uføretrygd utbetalt den 20. hver måned, eller senest siste virkedag før denne datoen. Du kan se alle utbetalingene du har mottatt på nav.no/dittnav. Her kan du også endre kontonummeret ditt.",
@@ -1008,7 +1008,7 @@ val SjekkUtbetalingeneUT_001 = createPhrase<LangBokmalNynorskEnglish, Unit> {
     }
 }
 
-val SkattekortOverskrift_001 = createPhrase<LangBokmalNynorskEnglish, Unit> {
+val SkattekortOverskrift_001 = OutlinePhrase<LangBokmalNynorskEnglish, Unit> {
     title1 {
         text(
             Bokmal to "Skattekort",
@@ -1018,7 +1018,7 @@ val SkattekortOverskrift_001 = createPhrase<LangBokmalNynorskEnglish, Unit> {
     }
 }
 
-val SkattekortUT_001 = createPhrase<LangBokmalNynorskEnglish, Unit> {
+val SkattekortUT_001 = OutlinePhrase<LangBokmalNynorskEnglish, Unit> {
     paragraph {
         text(
             Bokmal to "Uføretrygd skattlegges som lønnsinntekt. Du trenger ikke levere skattekortet til NAV fordi skatteopplysningene dine sendes elektronisk fra Skatteetaten. Skattekortet kan du endre på skatteetaten.no. På nettjenesten Ditt NAV på nav.no kan du se hvilket skattetrekk som er registrert hos NAV og legge inn tilleggstrekk om du ønsker det.",
@@ -1028,7 +1028,7 @@ val SkattekortUT_001 = createPhrase<LangBokmalNynorskEnglish, Unit> {
     }
 }
 
-val SkattBorIUtlandPesys_001 = createPhrase<LangBokmalNynorskEnglish, Unit> {
+val SkattBorIUtlandPesys_001 = OutlinePhrase<LangBokmalNynorskEnglish, Unit> {
     title1 {
         text(
             Bokmal to "Skatt for deg som bor i utlandet",

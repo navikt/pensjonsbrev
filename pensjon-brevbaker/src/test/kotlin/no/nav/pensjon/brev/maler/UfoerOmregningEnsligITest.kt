@@ -12,8 +12,6 @@ import no.nav.pensjon.brev.latex.LaTeXCompilerService
 import no.nav.pensjon.brev.latex.PdfCompilationInput
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.Letter
-import no.nav.pensjon.brev.template.dsl.not
-import no.nav.pensjon.brev.template.dsl.or
 import no.nav.pensjon.brev.writeTestPDF
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test

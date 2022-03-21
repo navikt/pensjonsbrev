@@ -85,8 +85,8 @@ object UfoerOmregningEnslig : StaticTemplate {
                         and not(har_barnetillegg_for_saerkullsbarn_vedvirk)
             ) {
                 includePhrase(
-                    argument().map { OmregnUTDodEPSInnledn1_001Dto(it.avdod_navn, it.krav_virkedato_fom) },
-                    OmregnUTDodEPSInnledn1_001
+                    OmregnUTDodEPSInnledn1_001,
+                    argument().map { OmregnUTDodEPSInnledn1001Dto(it.avdod_navn, it.krav_virkedato_fom) }
                 )
             }
 
@@ -96,9 +96,8 @@ object UfoerOmregningEnslig : StaticTemplate {
                         and not(ektefelletillegg_opphoert)
                         and not(har_barnetillegg_for_saerkullsbarn_vedvirk)
             ) {
-                includePhrase(
-                    argument().map { OmregnUTDodEPSInnledn2_001Dto(it.avdod_navn) },
-                    OmregnUTDodEPSInnledn2_001
+                includePhrase(OmregnUTDodEPSInnledn2_001,
+                    argument().map { OmregnUTDodEPSInnledn2_001Dto(it.avdod_navn) }
                 )
             }
 
@@ -109,8 +108,8 @@ object UfoerOmregningEnslig : StaticTemplate {
                         and har_barnetillegg_for_saerkullsbarn_vedvirk
             ) {
                 includePhrase(
-                    argument().map { OmregnUTBTDodEPSInnledn_001Dto(it.avdod_navn, it.krav_virkedato_fom) },
-                    OmregnUTBTDodEPSInnledn_001
+                    OmregnUTBTDodEPSInnledn_001,
+                    argument().map { OmregnUTBTDodEPSInnledn_001Dto(it.avdod_navn, it.krav_virkedato_fom) }
                 )
             }
 
@@ -122,8 +121,7 @@ object UfoerOmregningEnslig : StaticTemplate {
                         and not(har_barn_overfoert_til_saerkullsbarn)
             ) {
                 includePhrase(
-                    argument().map { OmregnUTBTSBDodEPSInnledn_001Dto(it.avdod_navn) },
-                    OmregnUTBTSBDodEPSInnledn_001
+                    OmregnUTBTSBDodEPSInnledn_001, argument().map { OmregnUTBTSBDodEPSInnledn_001Dto(it.avdod_navn) }
                 )
             }
 
@@ -134,8 +132,8 @@ object UfoerOmregningEnslig : StaticTemplate {
                         and har_barn_overfoert_til_saerkullsbarn
             ) {
                 includePhrase(
-                    argument().map { OmregnBTDodEPSInnledn_001Dto(it.avdod_navn, it.krav_virkedato_fom) },
-                    OmregnBTDodEPSInnledn_001
+                    OmregnBTDodEPSInnledn_001,
+                    argument().map { OmregnBTDodEPSInnledn_001Dto(it.avdod_navn, it.krav_virkedato_fom) }
                 )
             }
 
@@ -144,7 +142,7 @@ object UfoerOmregningEnslig : StaticTemplate {
                         and not(har_barnetillegg_for_saerkullsbarn_vedvirk)
                         and not(har_flere_ufoeretrygd_perioder)
             ) {
-                includePhrase(argument().map { BelopUT_001Dto(it.total_ufoeremaaneder) }, BelopUT_001)
+                includePhrase(BelopUT_001, argument().map { BelopUT_001Dto(it.total_ufoeremaaneder) })
             }
 
             showIf(
@@ -152,7 +150,7 @@ object UfoerOmregningEnslig : StaticTemplate {
                         and not(har_barnetillegg_for_saerkullsbarn_vedvirk)
                         and har_flere_ufoeretrygd_perioder
             ) {
-                includePhrase(argument().map { BelopUTVedlegg_001Dto(it.total_ufoeremaaneder) }, BelopUTVedlegg_001)
+                includePhrase(BelopUTVedlegg_001, argument().map { BelopUTVedlegg_001Dto(it.total_ufoeremaaneder) })
             }
 
             showIf(
@@ -160,7 +158,7 @@ object UfoerOmregningEnslig : StaticTemplate {
                         and har_barnetillegg_for_saerkullsbarn_vedvirk
                         and not(har_flere_ufoeretrygd_perioder)
             ) {
-                includePhrase(argument().map { BelopUTBT_001Dto(it.total_ufoeremaaneder) }, BelopUTBT_001)
+                includePhrase(BelopUTBT_001, argument().map { BelopUTBT_001Dto(it.total_ufoeremaaneder) })
             }
 
             showIf(
@@ -169,8 +167,8 @@ object UfoerOmregningEnslig : StaticTemplate {
                         and har_flere_ufoeretrygd_perioder
             ) {
                 includePhrase(
-                    argument().map { BelopUTBTVedlegg_001Dto(it.total_ufoeremaaneder) },
-                    BelopUTBTVedlegg_001
+                    BelopUTBTVedlegg_001,
+                    argument().map { BelopUTBTVedlegg_001Dto(it.total_ufoeremaaneder) }
                 )
             }
 
@@ -231,33 +229,33 @@ object UfoerOmregningEnslig : StaticTemplate {
             }
 
             showIf(har_minsteytelse_vedvirk and not(inntekt_ufoere_endret)) {
-                includePhrase(argument().map {
+                includePhrase(EndrMYDodEPS2_001, argument().map {
                     EndrMYDodEPS2_001Dto(
                         it.minsteytelse_sats_vedvirk,
                         it.kompensasjonsgrad_ufoeretrygd_vedvirk
                     )
-                }, EndrMYDodEPS2_001)
+                })
             }
 
             showIf(har_minsteytelse_vedvirk and inntekt_ufoere_endret) {
-                includePhrase(argument().map {
+                includePhrase(EndrMYOgMinstIFUDodEPS2_001, argument().map {
                     EndrMYOgMinstIFUDodEPS2_001Dto(
                         it.minsteytelse_sats_vedvirk,
                         it.inntekt_foer_ufoerhet_vedvirk,
                         it.oppjustert_inntekt_foer_ufoerhet_vedvirk,
                         it.kompensasjonsgrad_ufoeretrygd_vedvirk
                     )
-                }, EndrMYOgMinstIFUDodEPS2_001)
+                })
             }
 
             showIf(not(har_minsteytelse_vedvirk) and inntekt_ufoere_endret) {
-                includePhrase(argument().map {
+                includePhrase(EndrMinstIFUDodEPS2_001, argument().map {
                     EndrMinstIFUDodEPS2_001Dto(
                         it.inntekt_foer_ufoerhet_vedvirk,
                         it.oppjustert_inntekt_foer_ufoerhet_vedvirk,
                         it.kompensasjonsgrad_ufoeretrygd_vedvirk
                     )
-                }, EndrMinstIFUDodEPS2_001)
+                })
             }
 
 
@@ -344,32 +342,32 @@ object UfoerOmregningEnslig : StaticTemplate {
                 includePhrase(EndringUTpavirkerBTOverskrift_001)
 
                 showIf(not(barnetillegg_er_redusert_mot_tak)) {
-                    includePhrase(argument().map {
+                    includePhrase(IkkeRedusBTPgaTak_001, argument().map {
                         IkkeRedusBTPgaTak_001Dto(
                             it.barnetillegg_prosentsats_gradert_over_inntekt_foer_ufoer_vedvirk,
                             it.barnetillegg_gradert_over_inntekt_foer_ufoer_vedvirk,
                         )
-                    }, IkkeRedusBTPgaTak_001)
+                    })
                 }
 
                 showIf(barnetillegg_er_redusert_mot_tak and not(barnetillegg_ikke_utbetalt_pga_tak)) {
-                    includePhrase(argument().map {
+                    includePhrase(RedusBTPgaTak_001, argument().map {
                         RedusBTPgaTak_001Dto(
                             it.barnetillegg_prosentsats_gradert_over_inntekt_foer_ufoer_vedvirk,
                             it.barnetillegg_gradert_over_inntekt_foer_ufoer_vedvirk,
                             it.barnetillegg_beloep_foer_reduksjon_vedvirk,
                             it.barnetillegg_saerkullsbarn_beloep_etter_reduksjon_vedvirk,
                         )
-                    }, RedusBTPgaTak_001)
+                    })
                 }
 
                 showIf(barnetillegg_ikke_utbetalt_pga_tak) {
-                    includePhrase(argument().map {
+                    includePhrase(IkkeUtbetaltBTPgaTak_001, argument().map {
                         IkkeUtbetaltBTPgaTak_001Dto(
                             it.barnetillegg_prosentsats_gradert_over_inntekt_foer_ufoer_vedvirk,
                             it.barnetillegg_gradert_over_inntekt_foer_ufoer_vedvirk,
                         )
-                    }, IkkeUtbetaltBTPgaTak_001)
+                    })
                 }
 
                 showIf(not(har_barn_overfoert_til_saerkullsbarn) and not(barnetillegg_ikke_utbetalt_pga_tak)) {
@@ -384,12 +382,12 @@ object UfoerOmregningEnslig : StaticTemplate {
                     not(barnetillegg_saerkullsbarn_er_redusert_mot_inntekt_vedvirk)
                             and not(barnetillegg_ikke_utbetalt_pga_tak)
                 ) {
-                    includePhrase(argument().map {
+                    includePhrase(IkkeRedusBTSBPgaInntekt_001, argument().map {
                         IkkeRedusBTSBPgaInntekt_001Dto(
                             it.barnetillegg_saerkullsbarn_inntekt_brukt_i_avkortning_vedvirk,
                             it.barnetillegg_saerkullsbarn_inntekt_brukt_i_avkortning_vedvirk,
                         )
-                    }, IkkeRedusBTSBPgaInntekt_001)
+                    })
                 }
 
                 showIf(
@@ -397,12 +395,12 @@ object UfoerOmregningEnslig : StaticTemplate {
                             and (har_barnetillegg_saerkullsbarn_nettobeloep_vedvirk
                             or (not(har_barnetillegg_saerkullsbarn_nettobeloep_vedvirk) and har_barnetillegg_saerkullsbarn_justeringsbeloep_ar_vedvirk))
                 ) {
-                    includePhrase(argument().map {
+                    includePhrase(RedusBTSBPgaInntekt_001, argument().map {
                         RedusBTSBPgaInntekt_001Dto(
                             it.barnetillegg_saerkullsbarn_inntekt_brukt_i_avkortning_vedvirk,
                             it.barnetillegg_saerkullsbarn_inntekt_brukt_i_avkortning_vedvirk
                         )
-                    }, RedusBTSBPgaInntekt_001)
+                    })
                 }
 
 
@@ -425,12 +423,12 @@ object UfoerOmregningEnslig : StaticTemplate {
                             and not(har_barnetillegg_saerkullsbarn_nettobeloep_vedvirk)
                             and not(har_barnetillegg_saerkullsbarn_justeringsbeloep_ar_vedvirk)
                 ) {
-                    includePhrase(argument().map {
+                    includePhrase(IkkeUtbetaltBTSBPgaInntekt_001, argument().map {
                         IkkeUtbetaltBTSBPgaInntekt_001Dto(
                             it.barnetillegg_saerkullsbarn_inntekt_brukt_i_avkortning_vedvirk,
                             it.barnetillegg_saerkullsbarn_inntektstak_vedvirk
                         )
-                    }, IkkeUtbetaltBTSBPgaInntekt_001)
+                    })
                 }
 
                 showIf(
@@ -468,7 +466,7 @@ object UfoerOmregningEnslig : StaticTemplate {
 
 
             showIf(avdod_sivilstand.isOneOf(SAMBOER3_2)) {
-                includePhrase(argument().map { GjRettSamboerOverskriftDto(it.avdod_navn) }, GjRettSamboerOverskrift)
+                includePhrase(GjRettSamboerOverskrift, argument().map { GjRettSamboerOverskriftDto(it.avdod_navn) })
                 includePhrase(GjRettUTSamboer_001)
             }
             showIf(avdod_sivilstand.isOneOf(GIFT, PARTNER, SAMBOER1_5)) {
@@ -499,7 +497,7 @@ object UfoerOmregningEnslig : StaticTemplate {
                 har_ufoeremaaned_vedvirk
                         and (har_minsteytelse_vedvirk or inntekt_ufoere_endret or ektefelletillegg_opphoert)
             ) {
-                includePhrase(argument().map { VirkTdsPktUT_001Dto(it.krav_virkedato_fom) }, VirkTdsPktUT_001)
+                includePhrase(VirkTdsPktUT_001, argument().map { VirkTdsPktUT_001Dto(it.krav_virkedato_fom) })
             }
 
             showIf(
@@ -510,8 +508,7 @@ object UfoerOmregningEnslig : StaticTemplate {
                         and not(har_barn_overfoert_til_saerkullsbarn)
             ) {
                 includePhrase(
-                    argument().map { VirkTdsPktUTIkkeEndring_001Dto(it.krav_virkedato_fom) },
-                    VirkTdsPktUTIkkeEndring_001
+                    VirkTdsPktUTIkkeEndring_001, argument().map { VirkTdsPktUTIkkeEndring_001Dto(it.krav_virkedato_fom) }
                 )
             }
 
@@ -523,15 +520,13 @@ object UfoerOmregningEnslig : StaticTemplate {
                         and har_barn_overfoert_til_saerkullsbarn
             ) {
                 includePhrase(
-                    argument().map { VirkTdsPktUTBTOmregn_001Dto(it.krav_virkedato_fom) },
-                    VirkTdsPktUTBTOmregn_001
+                    VirkTdsPktUTBTOmregn_001, argument().map { VirkTdsPktUTBTOmregn_001Dto(it.krav_virkedato_fom) }
                 )
             }
 
             showIf(not(har_ufoeremaaned_vedvirk)) {
                 includePhrase(
-                    argument().map { VirkTdsPktUTAvkortetTil0_001Dto(it.krav_virkedato_fom) },
-                    VirkTdsPktUTAvkortetTil0_001
+                    VirkTdsPktUTAvkortetTil0_001, argument().map { VirkTdsPktUTAvkortetTil0_001Dto(it.krav_virkedato_fom) }
                 )
             }
 
