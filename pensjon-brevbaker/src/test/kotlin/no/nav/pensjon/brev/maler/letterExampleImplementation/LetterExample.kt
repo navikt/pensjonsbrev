@@ -74,6 +74,7 @@ object LetterExample : StaticTemplate {
                     item {
                         text(Bokmal to "Test3", Nynorsk to "Test3", English to "Test 3")
                     }
+
                     item {
                         //textOnlyPhrase can be included anywhere you write text.
                         includePhrase(textOnlyPhraseTest)
@@ -148,6 +149,22 @@ val outlinePhraseTest = OutlinePhrase<LangBokmalNynorskEnglish, OutlinePhraseDto
                 Nynorsk to "Ditt navn er ".expr() + phraseParameter.map { it.datoInnvilget }.format() + " og du har fått innvilget pensjon.",
                 English to "Your name is ".expr() + phraseParameter.map { it.datoInnvilget }.format() + " and you have been granted a pension."
             )
+        }
+    }
+}
+
+val paragraphPhraseTest = ParagraphPhrase<LangBokmalNynorskEnglish, Unit> { phraseParameter ->
+    list {
+        item {
+            text(Bokmal to "Test 1", Nynorsk to "Test 1", English to "Test 1")
+        }
+
+        item {
+            text(Bokmal to "Test 2", Nynorsk to "Test 2", English to "Test 2")
+        }
+
+        item {
+            text(Bokmal to "Test 3", Nynorsk to "Test 3", English to "Test 3")
         }
     }
 }
