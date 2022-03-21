@@ -8,6 +8,7 @@ import no.nav.pensjon.brev.api.model.LanguageCode
 import no.nav.pensjon.brev.api.model.LetterRequest
 import no.nav.pensjon.brev.api.model.maler.EksempelBrevDto
 import no.nav.pensjon.brev.maler.letterExampleImplementation.LetterExample
+import no.nav.pensjon.brev.maler.letterExampleImplementation.LetterExampleDto
 import no.nav.pensjon.brev.template.jacksonObjectMapper
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -40,10 +41,7 @@ class LetterResourceTest {
 
     val template = LetterExample.template
     val eksempelBrevDto = objectMapper.convertValue<Map<String, Any>>(
-        EksempelBrevDto(
-            pensjonInnvilget = true,
-            datoInnvilget = LocalDate.of(2020, 1, 1)
-        )
+        LetterExampleDto()
     )
 
     @Test
