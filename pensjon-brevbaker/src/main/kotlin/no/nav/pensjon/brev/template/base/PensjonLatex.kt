@@ -1,14 +1,15 @@
 package no.nav.pensjon.brev.template.base
 
-import no.nav.pensjon.brev.api.model.*
+import no.nav.pensjon.brev.api.model.Mottaker
+import no.nav.pensjon.brev.api.model.NAVEnhet
+import no.nav.pensjon.brev.api.model.SignerendeSaksbehandlere
 import no.nav.pensjon.brev.latex.LatexPrintWriter
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.*
+import no.nav.pensjon.brev.template.Element.Table.ColumnAlignment.LEFT
+import no.nav.pensjon.brev.template.Element.Table.ColumnAlignment.RIGHT
 import no.nav.pensjon.brev.template.Element.Text.FontType.*
 import no.nav.pensjon.brev.template.base.pensjonlatex.pensjonLatexSettings
-import no.nav.pensjon.brev.template.dsl.expression.select
-import no.nav.pensjon.brev.template.dsl.languageSettings
-import no.nav.pensjon.brev.template.dsl.text
 import java.time.LocalDate
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
@@ -84,7 +85,7 @@ object PensjonLatex : BaseTemplate() {
 
     private fun renderLetterV2(letter: Letter<*>, printWriter: LatexPrintWriter): Unit =
         with(printWriter) {
-            println("""\documentclass[12pt]{pensjonsbrev_v3}""", escape = false)
+            println("""\documentclass{pensjonsbrev_v3}""", escape = false)
             pdfMetadata(letter, printWriter)
             printCmd("begin", "document")
             printCmd("firstpage")
@@ -282,81 +283,60 @@ object PensjonLatex : BaseTemplate() {
 
             is Element.NewLine ->
                 printWriter.printCmd("newline")
+
             is Element.Table ->
                 with(printWriter) {
                     val rows = element.rows.filter { it.condition == null || it.condition.eval(scope) }
                     if (rows.isEmpty()) return
-
-                    printCmd("setlength") {
-                        arg{printCmd("parskip")}
-                        arg { print("0pt") }
-                    }
-
-                    val columnHeaders =
-                        element.columnHeaders.filter { it.condition == null || it.condition.eval(scope) }
-
-                    val tableWidth = element.width
+                    val columnSpec = element.header.colSpec
                     printCmd("begin") {
-                        arg { print("longtblr") }
-
-                        element.title?.let {
-                            print("[caption={", escape = false)
-                            it.forEach { titleElem -> renderElement(scope, titleElem, printWriter) }
-                            print("}]", escape = false)
-                        }
-
-                        arg {
-                            print(
-                                "colspec={${columnFormat(tableWidth)}}," +
-                                        (if (columnHeaders.isNotEmpty()) "rowhead=${columnHeaders.size}," else "") +
-                                        "width=\\textwidth," +
-                                        "hspan=minimal," + //wrap instead of widening table over limit
-                                        "hlines={1pt,linecolor}," +
-                                        "vlines={1pt,linecolor}," +
-                                        "row{odd}={row1color}," +
-                                        "row{even}={row2color}," +
-                                        (if (columnHeaders.isNotEmpty()) "row{1-${columnHeaders.size}}={columnheadercolor}," else ""),
-                                escape = false
-                            )
-                        }
+                        arg { print("letterTable") }
+                        arg { print(columnHeadersLatexString(columnSpec)) }
                     }
 
-                    columnHeaders
-                        .plus(rows)
-                        .forEach { row ->
-                            row.cells.forEachIndexed { index, cell ->
-                                if (cell.cellColumns > 1) {
-                                    print("\\SetCell[c=${cell.cellColumns}]{}", escape = false)
-                                }
-                                cell.elements.forEach { cellElement ->
-                                    renderElement(scope, cellElement, printWriter)
-                                }
-                                if (cell.cellColumns > 1) {
-                                    print(" ${"& ".repeat(cell.cellColumns - 1)}", escape = false)
-                                }
-                                if (index < row.cells.lastIndex) {
-                                    print("&", escape = false)
-                                }
-                            }
-                            print("""\\""", escape = false)
-                        }
+                    renderTableCells(columnSpec.map { it.headerContent }, scope, printWriter, columnSpec)
+                    rows.forEach { renderTableCells(it.cells, scope, printWriter, columnSpec) }
 
-                    printCmd("end") {
-                        arg { print("longtblr") }
-                    }
-
-                    printCmd("setlength") {
-                        arg{printCmd("parskip")}
-                        arg { print("1em") }
-                    }
+                    printCmd("end") { arg { print("letterTable") } }
                 }
+
+            is Element.ForEachView<*, *> ->
+                element.render(scope) { s, e -> renderElement(s, e, printWriter) }
+
         }
 
-    private fun columnFormat(columns: Int)
-            : String =
-        if (columns > 0) {
-            "|" + "X|".repeat(columns)
-        } else {
-            ""
+    private fun columnHeadersLatexString(columnSpec: List<Element.Table.ColumnSpec<out LanguageSupport>>) =
+        columnSpec.map {
+            ("X" +
+                    when (it.alignment) {
+                        LEFT -> "[l]"
+                        RIGHT -> "[r]"
+                    }).repeat(it.columnSpan)
+        }.joinToString("")
+
+    private fun renderTableCells(
+        cells: List<Element.Table.Cell<out LanguageSupport>>,
+        scope: ExpressionScope<*, *>,
+        printWriter: LatexPrintWriter,
+        colSpec: List<Element.Table.ColumnSpec<out LanguageSupport>>
+    ) {
+        with(printWriter) {
+            cells.forEachIndexed { index, cell ->
+                val columnSpan = colSpec[index].columnSpan
+                if (columnSpan > 1) {
+                    print("\\SetCell[c=$columnSpan]{}", escape = false)
+                }
+                cell.elements.forEach { cellElement ->
+                    renderElement(scope, cellElement, printWriter)
+                }
+                if (columnSpan > 1) {
+                    print(" ${"& ".repeat(columnSpan - 1)}", escape = false)
+                }
+                if (index < cells.lastIndex) {
+                    print("&", escape = false)
+                }
+            }
+            print("""\\""", escape = false)
         }
+    }
 }

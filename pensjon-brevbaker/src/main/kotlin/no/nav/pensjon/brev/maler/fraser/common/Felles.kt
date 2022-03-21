@@ -3,14 +3,14 @@ package no.nav.pensjon.brev.maler.fraser.common
 import no.nav.pensjon.brev.maler.fraser.Constants
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Language.*
-import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.dsl.*
 
 object Felles {
 
     /**
      * TBU1223, TBU1224
      */
-    val meldEndringerPesys_001 = createPhrase<LangBokmalNynorsk, Unit> {
+    val meldEndringerPesys_001 = OutlinePhrase<LangBokmalNynorsk, Unit> {
         title1 {
             text(
                 Bokmal to "Du må melde fra om endringer",
@@ -38,7 +38,7 @@ object Felles {
     /**
      * TBU1100
      */
-    val rettTilKlagePesys_001 = createPhrase<LangBokmalNynorsk, Unit> {
+    val rettTilKlagePesys_001 = OutlinePhrase<LangBokmalNynorsk, Unit> {
         title1 {
             text(
                 Bokmal to "Du har rett til å klage",
@@ -64,7 +64,7 @@ object Felles {
     /**
      * TBU1074, TBU1075
      */
-    val rettTilInnsynPesys_001 = createPhrase<LangBokmalNynorsk, Unit> {
+    val rettTilInnsynPesys_001 = OutlinePhrase<LangBokmalNynorsk, Unit> {
         title1 {
             text(
                 Bokmal to "Du har rett til innsyn",
