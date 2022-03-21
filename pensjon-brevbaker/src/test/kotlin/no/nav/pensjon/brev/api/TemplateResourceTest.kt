@@ -4,13 +4,29 @@ import com.natpryce.hamkrest.and
 import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.hasElement
 import no.nav.pensjon.brev.maler.letterExampleImplementation.LetterExample
-import no.nav.pensjon.brev.maler.OmsorgEgenAuto
 import no.nav.pensjon.brev.template.LetterTemplate
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.AfterAll
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNull
+import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import kotlin.reflect.full.createInstance
 
 class TemplateResourceTest {
+    //Add test template to template resources before test.
+    companion object {
+        val oldTemplates = TemplateResource.templates;
+        @BeforeAll
+        @JvmStatic
+        internal fun init() {
+            TemplateResource.templates = setOf(LetterExample).associate { it.template.name to it.template }
+        }
+        @AfterAll
+        @JvmStatic
+        internal fun reset() {
+            TemplateResource.templates = oldTemplates
+        }
+    }
 
     @Test
     fun `getTemplate fetches template`() {
@@ -24,7 +40,10 @@ class TemplateResourceTest {
 
     @Test
     fun `getTemplates returns list of template names`() {
-        assertThat(TemplateResource.getTemplates(), hasElement(LetterExample.template.name) and hasElement(OmsorgEgenAuto.template.name))
+        assertThat(
+            TemplateResource.getTemplates(),
+            hasElement(LetterExample.template.name) and hasElement(LetterExample.template.name)
+        )
     }
 
     @Test
@@ -61,7 +80,11 @@ class TemplateResourceTest {
             }.filterValues { it == null }
             .keys
 
-        assertEquals(emptySet<String>(), templatesWithoutNoArgConstructor, "letterDataType classes should have an internal no-arg constructor with valid test data.")
+        assertEquals(
+            emptySet<String>(),
+            templatesWithoutNoArgConstructor,
+            "letterDataType classes should have an internal no-arg constructor with valid test data."
+        )
     }
 
 }

@@ -21,10 +21,12 @@ fun renderElement(
         is Element.NewLine<*> -> printWriter.printCmd("newline")
         is Element.Paragraph<*> -> paragraph(printWriter, element, scope)
         is Element.Table<*> -> table(printWriter, element, scope)
-        is Element.Text.Expression.ByLanguage<*> -> printWriter.print(element.expr(scope.language).eval(scope))
-        is Element.Text.Expression<*> -> printWriter.print(element.expression.eval(scope))
-        is Element.Text.Literal<*> -> textLiteral(element, scope, printWriter)
+        is Element.Text.Expression.ByLanguage<*> ->
+            printText(printWriter, element, element.expr(scope.language).eval(scope))
+        is Element.Text.Expression<*> -> printText(printWriter, element, element.expression.eval(scope))
+        is Element.Text.Literal<*> -> printText(printWriter, element, element.text(scope.language))
         is Element.Title1<*> -> title1(printWriter, element, scope)
+        is Element.ForEachView<*, *> -> element.render(scope) { s, e -> renderElement(s, e, printWriter) }
     }
 
 private fun table(
@@ -135,12 +137,11 @@ private fun conditional(
     }
 }
 
-private fun textLiteral(
-    element: Element.Text.Literal<*>,
-    scope: ExpressionScope<*, *>,
-    printWriter: LatexPrintWriter
+private fun printText(
+    printWriter: LatexPrintWriter,
+    element: Element.Text<*>,
+    textLiteral: String
 ) {
-    val textLiteral = element.text(scope.language)
     with(printWriter) {
         when (element.fontType) {
             FontType.PLAIN -> print(textLiteral)
@@ -180,28 +181,28 @@ private fun columnHeadersLatexString(columnSpec: List<Element.Table.ColumnSpec<o
                 }).repeat(it.columnSpan)
     }.joinToString("")
 
-    private fun renderTableCells(
-        cells: List<Element.Table.Cell<out LanguageSupport>>,
-        scope: ExpressionScope<*, *>,
-        printWriter: LatexPrintWriter,
-        colSpec: List<Element.Table.ColumnSpec<out LanguageSupport>>
-    ) {
-        with(printWriter) {
-            cells.forEachIndexed { index, cell ->
-                val columnSpan = colSpec[index].columnSpan
-                if (columnSpan > 1) {
-                    print("\\SetCell[c=$columnSpan]{}", escape = false)
-                }
-                cell.elements.forEach { cellElement ->
-                    renderElement(scope, cellElement, printWriter)
-                }
-                if (columnSpan > 1) {
-                    print(" ${"& ".repeat(columnSpan - 1)}", escape = false)
-                }
-                if (index < cells.lastIndex) {
-                    print("&", escape = false)
-                }
+private fun renderTableCells(
+    cells: List<Element.Table.Cell<out LanguageSupport>>,
+    scope: ExpressionScope<*, *>,
+    printWriter: LatexPrintWriter,
+    colSpec: List<Element.Table.ColumnSpec<out LanguageSupport>>
+) {
+    with(printWriter) {
+        cells.forEachIndexed { index, cell ->
+            val columnSpan = colSpec[index].columnSpan
+            if (columnSpan > 1) {
+                print("\\SetCell[c=$columnSpan]{}", escape = false)
             }
-            print("""\\""", escape = false)
+            cell.elements.forEach { cellElement ->
+                renderElement(scope, cellElement, printWriter)
+            }
+            if (columnSpan > 1) {
+                print(" ${"& ".repeat(columnSpan - 1)}", escape = false)
+            }
+            if (index < cells.lastIndex) {
+                print("&", escape = false)
+            }
         }
+        print("""\\""", escape = false)
     }
+}

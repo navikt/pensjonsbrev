@@ -2,16 +2,17 @@ package no.nav.pensjon.brev.maler.letterExampleImplementation
 
 import no.nav.pensjon.brev.api.model.Felles
 import no.nav.pensjon.brev.api.model.LetterMetadata
-import no.nav.pensjon.brev.api.model.NAVEnhet
-import no.nav.pensjon.brev.api.model.ReturAdresse
-import no.nav.pensjon.brev.maler.vedlegg.EgenerklaeringPleieOgOmsorgsarbeid
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Element.Table.ColumnAlignment.RIGHT
 import no.nav.pensjon.brev.template.Element.Text.FontType
-import no.nav.pensjon.brev.template.Language.*
+import no.nav.pensjon.brev.template.Language.Bokmal
+import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.base.PensjonLatex
-import no.nav.pensjon.brev.template.dsl.*
+import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.*
+import no.nav.pensjon.brev.template.dsl.newText
+import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.dsl.textExpr
 import java.time.LocalDate
 
 object LetterExample : StaticTemplate {
@@ -19,10 +20,10 @@ object LetterExample : StaticTemplate {
         name = "EKSEMPEL_BREV", //Letter ID
         base = PensjonLatex, //Master-template
         letterDataType = LetterExampleDto::class, // Data class containing the required data of this letter
-        title = newText( // Main letter title
+        title = newText(
+            // Main letter title
             Bokmal to "Eksempelbrev",    // Letter title will determine what languages this letter should support
             Nynorsk to "Eksempelbrev",    // Letter title will determine what languages this letter should support
-            English to "Example letter"
         ),
         letterMetadata = LetterMetadata(
             displayTitle = "Dette er ett eksempel-brev", // Display title for external systems
@@ -39,14 +40,13 @@ object LetterExample : StaticTemplate {
 
             // section title
             title1 {
-                text(Bokmal to "Du har fått innvilget pensjon",Nynorsk to "Du har fått innvilget pensjon", English to "You have been granted pension")
+                text(Bokmal to "Du har fått innvilget pensjon", Nynorsk to "Du har fått innvilget pensjon")
             }
 
             paragraph {
                 text(
                     Bokmal to "Du kan klage på vedtaket innen seks uker fra du mottok det. Kontoret som har fattet vedtaket, vil da vurdere saken din på nytt.",
-                    Nynorsk to "Du kan klage på vedtaket innen seks uker fra du mottok det. Kontoret som har fattet vedtaket, vil da vurdere saken din på nytt.",
-                    English to "You can appeal the decision within six weeks of receiving it. The office that made the decision will then reconsider your case."
+                    Nynorsk to "Du kan klage på vedtaket innen seks uker fra du mottok det. Kontoret som har fattet vedtaket, vil da vurdere saken din på nytt."
                 )
             }
 
@@ -58,21 +58,20 @@ object LetterExample : StaticTemplate {
                         // Text expressions can use variables as expressions, but the text literals also need to be expressions
                         Bokmal to "Hei ".expr() + firstName.str() + ". Du har fått innvilget pensjon.".expr(),
                         Nynorsk to "Hei ".expr() + firstName.str() + ". Du har fått innvilget pensjon.".expr(),
-                        English to "Hello ".expr() + firstName.str() + ". You have been granted pension.".expr(),
                     )
                 }
 
                 list {
                     item {
-                        text(Bokmal to "Test1", Nynorsk to "Test1", English to "Test 1")
+                        text(Bokmal to "Test1", Nynorsk to "Test1")
                     }
 
                     item {
-                        text(Bokmal to "Test2", Nynorsk to "Test2", English to "Test 2")
+                        text(Bokmal to "Test2", Nynorsk to "Test2")
                     }
 
                     item {
-                        text(Bokmal to "Test3", Nynorsk to "Test3", English to "Test 3")
+                        text(Bokmal to "Test3", Nynorsk to "Test3")
                     }
 
                     item {
@@ -84,48 +83,69 @@ object LetterExample : StaticTemplate {
                         includePhrase(textOnlyPhraseTestWithParams, argument().select(LetterExampleDto::datoInnvilget))
                     }
                 }
-                text(Bokmal to lipsums[0], Nynorsk to lipsums[0], English to lipsums[0])
+                text(Bokmal to lipsums[0], Nynorsk to lipsums[0])
             }
 
             title1 {
-                text(Bokmal to "Utbetalingsoversikt", Nynorsk to "Utbetalingsoversikt", English to "Payment overview")
+                text(Bokmal to "Utbetalingsoversikt", Nynorsk to "Utbetalingsoversikt")
             }
 
             paragraph {
                 text(
                     Bokmal to "Dette er din inntekt fra 01.01.2020 til 01.05.2020",
-                    Nynorsk to "Dette er din inntekt fra 01.01.2020 til 01.05.2020",
-                    English to "This is your income from 01.01.2020 to 01.05.2020"
+                    Nynorsk to "Dette er din inntekt fra 01.01.2020 til 01.05.2020"
                 )
                 table(
                     header = {
-                        column(3) { text(Bokmal to "Kolonne 1", Nynorsk to "Kolonne 1", English to "Column 1", FontType.BOLD) }
-                        column(1, RIGHT) { text(Bokmal to "Kolonne 2", Nynorsk to "Kolonne 2", English to "Column 2", FontType.BOLD) }
-                        column(1, RIGHT) { text(Bokmal to "Kolonne 3", Nynorsk to "Kolonne 3", English to "Column 3", FontType.BOLD) }
-                        column(1, RIGHT) { text(Bokmal to "Kolonne 4", Nynorsk to "Kolonne 4", English to "Column 4", FontType.BOLD) }
+                        column(3) { text(Bokmal to "Kolonne 1", Nynorsk to "Kolonne 1", FontType.BOLD) }
+                        column(1, RIGHT) { text(Bokmal to "Kolonne 2", Nynorsk to "Kolonne 2", FontType.BOLD) }
+                        column(1, RIGHT) { text(Bokmal to "Kolonne 3", Nynorsk to "Kolonne 3", FontType.BOLD) }
+                        column(1, RIGHT) { text(Bokmal to "Kolonne 4", Nynorsk to "Kolonne 4", FontType.BOLD) }
                     }
                 ) {
                     row {
-                        cell { text(Bokmal to "Din inntekt før skatt i måned 1", Nynorsk to "Din inntekt før skatt i måned 1", English to "Your income in month 1") }
-                        cell { text(Bokmal to "100 Kr", Nynorsk to "100 Kr", English to "100 kr") }
-                        cell { text(Bokmal to "200 Kr", Nynorsk to "200 Kr", English to "200 kr") }
-                        cell { text(Bokmal to "300 Kr", Nynorsk to "300 Kr", English to "300 kr") }
+                        cell {
+                            text(
+                                Bokmal to "Din inntekt før skatt i måned 1",
+                                Nynorsk to "Din inntekt før skatt i måned 1"
+                            )
+                        }
+                        cell { text(Bokmal to "100 Kr", Nynorsk to "100 Kr") }
+                        cell { text(Bokmal to "200 Kr", Nynorsk to "200 Kr") }
+                        cell { text(Bokmal to "300 Kr", Nynorsk to "300 Kr") }
                     }
                     row {
-                        cell { text(Bokmal to "Din inntekt før skatt i måned 1", Nynorsk to "Din inntekt før skatt i måned 1", English to "Your income in month 1") }
-                        cell { text(Bokmal to "400 Kr", Nynorsk to "400 Kr", English to "400 kr") }
-                        cell { text(Bokmal to "500 Kr", Nynorsk to "500 Kr", English to "500 kr") }
-                        cell { text(Bokmal to "600 Kr", Nynorsk to "600 Kr", English to "600 kr") }
+                        cell {
+                            text(
+                                Bokmal to "Din inntekt før skatt i måned 1",
+                                Nynorsk to "Din inntekt før skatt i måned 1"
+                            )
+                        }
+                        cell { text(Bokmal to "400 Kr", Nynorsk to "400 Kr") }
+                        cell { text(Bokmal to "500 Kr", Nynorsk to "500 Kr") }
+                        cell { text(Bokmal to "600 Kr", Nynorsk to "600 Kr") }
                     }
+                }
+            }
+            // Repeat content for each element in list
+            forEach(argument().select(LetterExampleDto::navneliste)) {
+                title1 {
+                    textExpr(Bokmal to it, Nynorsk to it)
+                }
+                paragraph {
+                    textExpr(
+                        Bokmal to "En liste med navn har elementet: ".expr() + it,
+                        Nynorsk to "En liste med navn har elementet: ".expr() + it
+                    )
                 }
             }
 
             //Include outline phrase
-            includePhrase(outlinePhraseTest, argument().map{OutlinePhraseDto(it.datoInnvilget, it.pensjonInnvilget)})
+            includePhrase(outlinePhraseTest, argument().map { OutlinePhraseDto(it.datoInnvilget, it.pensjonInnvilget) })
 
             //Print some lipsum paragraphs.
             for (lipsum in lipsums) {
-                paragraph { text(Bokmal to lipsum, Nynorsk to lipsum, English to lipsum) }
+                paragraph { text(Bokmal to lipsum, Nynorsk to lipsum) }
             }
         }
         includeAttachment(testVedlegg, TestVedleggDto("test1", "test2").expr())
@@ -133,60 +153,61 @@ object LetterExample : StaticTemplate {
 }
 
 // This data class should normally be in the api-model. Placed here for test-purposes.
-data class LetterExampleDto(val pensjonInnvilget: Boolean, val datoInnvilget: LocalDate) {
+data class LetterExampleDto(val pensjonInnvilget: Boolean, val datoInnvilget: LocalDate, val navneliste: List<String>) {
     // No-arg constructor for integration tests
-    constructor() : this(true, LocalDate.now())
+    constructor() : this(true, LocalDate.now(), listOf("test testerson1", "test testerson2", "test testerson3"))
 }
-data class OutlinePhraseDto (val datoInnvilget: LocalDate, val pensjonInnvilget: Boolean)
-val outlinePhraseTest = OutlinePhrase<LangBokmalNynorskEnglish, OutlinePhraseDto> { phraseParameter ->
+
+data class OutlinePhraseDto(val datoInnvilget: LocalDate, val pensjonInnvilget: Boolean)
+
+val outlinePhraseTest = OutlinePhrase<LangBokmalNynorsk, OutlinePhraseDto> { phraseParameter ->
     //The elements used in outline can also be used in outline phrases.
     //This is intended for use in the top-level outline scope
 
     paragraph {
         showIf(phraseParameter.map { it.pensjonInnvilget }) {
+            val dato = phraseParameter.map { it.datoInnvilget }.format()
             textExpr(
-                Bokmal to "Ditt navn er ".expr() + phraseParameter.map { it.datoInnvilget }.format() + " og du har fått innvilget pensjon.",
-                Nynorsk to "Ditt navn er ".expr() + phraseParameter.map { it.datoInnvilget }.format() + " og du har fått innvilget pensjon.",
-                English to "Your name is ".expr() + phraseParameter.map { it.datoInnvilget }.format() + " and you have been granted a pension."
+                Bokmal to "Du har fått innvilget pensjon fra ".expr() + dato + ".",
+                Nynorsk to "Du har fått innvilget pensjon fra ".expr() + dato + ".",
             )
         }
     }
 }
 
-val paragraphPhraseTest = ParagraphPhrase<LangBokmalNynorskEnglish, Unit> { phraseParameter ->
+val paragraphPhraseTest = ParagraphPhrase<LangBokmalNynorsk, Unit> { phraseParameter ->
     list {
         item {
-            text(Bokmal to "Test 1", Nynorsk to "Test 1", English to "Test 1")
+            text(Bokmal to "Test 1", Nynorsk to "Test 1")
         }
 
         item {
-            text(Bokmal to "Test 2", Nynorsk to "Test 2", English to "Test 2")
+            text(Bokmal to "Test 2", Nynorsk to "Test 2")
         }
 
         item {
-            text(Bokmal to "Test 3", Nynorsk to "Test 3", English to "Test 3")
+            text(Bokmal to "Test 3", Nynorsk to "Test 3")
         }
     }
 }
 
-val textOnlyPhraseTest = TextOnlyPhrase<LangBokmalNynorskEnglish, Unit> {
-    text(Bokmal to "Dette er en tekstfrase", Nynorsk to "Dette er en tekstfrase", English to "This is a text only phrase")
+val textOnlyPhraseTest = TextOnlyPhrase<LangBokmalNynorsk, Unit> {
+    text(Bokmal to "Dette er en tekstfrase", Nynorsk to "Dette er en tekstfrase")
 }
 
-val textOnlyPhraseTestWithParams = TextOnlyPhrase<LangBokmalNynorskEnglish, LocalDate> { param ->
+val textOnlyPhraseTestWithParams = TextOnlyPhrase<LangBokmalNynorsk, LocalDate> { param ->
     textExpr(
         Bokmal to "Dette er en tekstfrase med datoen: ".expr() + param.format(),
         Nynorsk to "Dette er en tekstfrase med datoen: ".expr() + param.format(),
-        English to "This is a text only phrase with the date: ".expr() + param.format(),
     )
 }
 
 data class TestVedleggDto(val testVerdi1: String, val testVerdi2: String)
-val testVedlegg = createAttachment<LangBokmalNynorskEnglish, TestVedleggDto>(
+
+val testVedlegg = createAttachment<LangBokmalNynorsk, TestVedleggDto>(
     title = newText(
         Bokmal to "Test vedlegg",
         Nynorsk to "Test vedlegg",
-        English to "Test attachment",
     ),
     includeSakspart = true
 ) {
@@ -196,13 +217,11 @@ val testVedlegg = createAttachment<LangBokmalNynorskEnglish, TestVedleggDto>(
         val testVerdi1 = argument().select(TestVedleggDto::testVerdi1)
         val testVerdi2 = argument().select(TestVedleggDto::testVerdi2)
         textExpr(
-            Bokmal to "Test verdi 1: ".expr() + testVerdi1 + " Test verdi 2: " + testVerdi2 + " Document dato: " + dokDato,
-            Nynorsk to "Test verdi 1: ".expr() + testVerdi1 + " Test verdi 2: " + testVerdi2 + " Document dato: " + dokDato,
-            English to "Test value 1: ".expr() + testVerdi1 + " Test value 2: " + testVerdi2 + " Document date: " + dokDato,
+            Bokmal to "Test verdi 1: ".expr() + testVerdi1 + " Test verdi 2: " + testVerdi2 + " dokument dato: " + dokDato,
+            Nynorsk to "Test verdi 1: ".expr() + testVerdi1 + " Test verdi 2: " + testVerdi2 + " dokument dato: " + dokDato,
         )
     }
 }
-
 
 
 val lipsums = listOf(

@@ -82,23 +82,26 @@ fun <Lang1 : Language, Lang2 : Language, Lang3 : Language, ParameterType : Any, 
 //
 //
 fun <Lang1 : Language, ParameterType : Any, Scope : TextOnlyScopeBase<LanguageSupport.Single<Lang1>, ParameterType, Scope>> Scope.textExpr(
-    lang1: Pair<Lang1, StringExpression>
+    lang1: Pair<Lang1, StringExpression>,
+    fontType: Element.Text.FontType = Element.Text.FontType.PLAIN,
 ) {
-    Element.Text.Expression.ByLanguage.create(lang1).also { children.add(it) }
+    Element.Text.Expression.ByLanguage.create(lang1, fontType).also { children.add(it) }
 }
 
 fun <Lang1 : Language, Lang2 : Language, ParameterType : Any, Scope : TextOnlyScopeBase<LanguageSupport.Double<Lang1, Lang2>, ParameterType, Scope>> Scope.textExpr(
     lang1: Pair<Lang1, StringExpression>,
     lang2: Pair<Lang2, StringExpression>,
+    fontType: Element.Text.FontType = Element.Text.FontType.PLAIN,
 ) {
-    Element.Text.Expression.ByLanguage.create(lang1, lang2).also { children.add(it) }
+    Element.Text.Expression.ByLanguage.create(lang1, lang2, fontType).also { children.add(it) }
 }
 
 fun <Lang1 : Language, Lang2 : Language, Lang3 : Language, ParameterType : Any, Scope : TextOnlyScopeBase<LanguageSupport.Triple<Lang1, Lang2, Lang3>, ParameterType, Scope>> Scope.textExpr(
     lang1: Pair<Lang1, StringExpression>,
     lang2: Pair<Lang2, StringExpression>,
     lang3: Pair<Lang3, StringExpression>,
+    fontType: Element.Text.FontType = Element.Text.FontType.PLAIN,
 ) {
-    Element.Text.Expression.ByLanguage.create(lang1, lang2, lang3).also { children.add(it) }
+    Element.Text.Expression.ByLanguage.create(lang1, lang2, lang3, fontType).also { children.add(it) }
 }
 

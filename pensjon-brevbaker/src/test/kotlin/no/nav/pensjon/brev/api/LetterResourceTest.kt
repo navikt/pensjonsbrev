@@ -9,14 +9,34 @@ import no.nav.pensjon.brev.api.model.LetterRequest
 import no.nav.pensjon.brev.api.model.maler.EksempelBrevDto
 import no.nav.pensjon.brev.maler.letterExampleImplementation.LetterExample
 import no.nav.pensjon.brev.template.jacksonObjectMapper
+import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import java.time.LocalDate
 
 val objectMapper = jacksonObjectMapper()
 
+//Answer with test template when getting templates.
 class LetterResourceTest {
+
+    //Add test template to template resources before test.
+    companion object {
+        val oldTemplates = TemplateResource.templates
+
+        @BeforeAll
+        @JvmStatic
+        internal fun init() {
+            TemplateResource.templates = setOf(LetterExample).associate { it.template.name to it.template }
+        }
+
+        @AfterAll
+        @JvmStatic
+        internal fun reset() {
+            TemplateResource.templates = oldTemplates
+        }
+    }
 
     val template = LetterExample.template
     val eksempelBrevDto = objectMapper.convertValue<Map<String, Any>>(
@@ -67,7 +87,7 @@ class LetterResourceTest {
     @Test
     fun `create fails for unsupported language`() {
         assertThrows<IllegalArgumentException> {
-            LetterResource.create(LetterRequest(template.name, eksempelBrevDto, Fixtures.felles, LanguageCode.NYNORSK))
+            LetterResource.create(LetterRequest(template.name, eksempelBrevDto, Fixtures.felles, LanguageCode.ENGLISH))
         }
     }
 
