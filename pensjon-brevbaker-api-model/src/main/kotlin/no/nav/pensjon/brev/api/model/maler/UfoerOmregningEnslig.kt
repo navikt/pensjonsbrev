@@ -6,7 +6,6 @@ import no.nav.pensjon.brev.api.model.Sivilstand
 import java.time.LocalDate
 
 data class UfoerOmregningEnsligDto(
-        val anvendtTT_trygdetidsdetaljerGjeldende: Int,
         val avdod_navn: String,
         val avdod_sivilstand: Sivilstand,
         val barn_overfoert_til_saerkullsbarn: List<String>,
@@ -55,8 +54,9 @@ data class UfoerOmregningEnsligDto(
         val tidligere_saerkullsbarn: List<String>,
         val total_ufoeremaaneder: Number,
         val ufoeretrygd_med_barnetillegg_er_over_95_prosent_av_inntekt_foer_ufoerhet: Boolean,
-        // Vedlegg Opplysninger brukt i beregningen
         val ufoeretrygd_vedvirk_er_inntektsavkortet: Boolean,
+        // Vedlegg Opplysninger brukt i beregningen
+        val anvendtTT_trygdetidsdetaljerGjeldende: Int,
         val avkortningsbelopAr_barnetilleggSBGjeldende: Int,
         val belop_barnetilleggSBGjeldende: Int,
         val belopAr_barnetilleggSBGjeldende: Int,
