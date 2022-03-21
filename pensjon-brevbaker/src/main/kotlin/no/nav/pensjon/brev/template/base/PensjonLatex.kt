@@ -283,6 +283,7 @@ object PensjonLatex : BaseTemplate() {
 
             is Element.NewLine ->
                 printWriter.printCmd("newline")
+
             is Element.Table ->
                 with(printWriter) {
                     val rows = element.rows.filter { it.condition == null || it.condition.eval(scope) }
@@ -298,6 +299,10 @@ object PensjonLatex : BaseTemplate() {
 
                     printCmd("end") { arg { print("letterTable") } }
                 }
+
+            is Element.ForEachView<*, *> ->
+                element.render(scope) { s, e -> renderElement(s, e, printWriter) }
+
         }
 
     private fun columnHeadersLatexString(columnSpec: List<Element.Table.ColumnSpec<out LanguageSupport>>) =

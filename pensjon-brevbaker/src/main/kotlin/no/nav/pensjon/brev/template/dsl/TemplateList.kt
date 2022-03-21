@@ -25,9 +25,9 @@ open class ListBaseScope<Lang : LanguageSupport, LetterData : Any>(
     val children: MutableList<Element.ItemList.Item<Lang>> = mutableListOf()
 ) : TemplateGlobalScope<LetterData>() {
     fun item(
-        init: TemplateTextOnlyScope<Lang, LetterData>.() -> Unit
+        init: TextOnlyScope<Lang, LetterData>.() -> Unit
     ) {
-        children.add(Element.ItemList.Item(TemplateTextOnlyScope<Lang, LetterData>().apply(init).children))
+        children.add(Element.ItemList.Item(TextOnlyScope<Lang, LetterData>().apply(init).children))
     }
 }
 

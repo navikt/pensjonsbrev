@@ -35,10 +35,10 @@ open class TableBaseScope<Lang : LanguageSupport, LetterData : Any>(
 @LetterTemplateMarker
 open class TableRowScope<Lang : LanguageSupport, LetterData : Any>(val children: MutableList<Element.Table.Cell<Lang>> = mutableListOf()) :
     TemplateGlobalScope<LetterData>() {
-    fun cell(init: TemplateTextOnlyScope<Lang, LetterData>.() -> Unit) {
+    fun cell(init: TextOnlyScope<Lang, LetterData>.() -> Unit) {
         children.add(
             Element.Table.Cell(
-                TemplateTextOnlyScope<Lang, LetterData>().apply(init).children
+                TextOnlyScope<Lang, LetterData>().apply(init).children
             )
         )
     }
@@ -52,12 +52,12 @@ open class TableHeaderScope<Lang : LanguageSupport, LetterData : Any>(
     fun column(
         columnSpan: Int = 1,
         alignment: Element.Table.ColumnAlignment = Element.Table.ColumnAlignment.LEFT,
-        init: TemplateTextOnlyScope<Lang, LetterData>.() -> Unit,
+        init: TextOnlyScope<Lang, LetterData>.() -> Unit,
     ) {
 
         children.add(
             Element.Table.ColumnSpec(
-                Element.Table.Cell(TemplateTextOnlyScope<Lang, LetterData>().apply(init).children),
+                Element.Table.Cell(TextOnlyScope<Lang, LetterData>().apply(init).children),
                 alignment,
                 columnSpan
             )

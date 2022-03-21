@@ -1,7 +1,8 @@
 package no.nav.pensjon.brev.template
 
-import no.nav.pensjon.brev.api.model.LetterMetadata
+import no.nav.pensjon.brev.api.model.*
 import no.nav.pensjon.brev.template.base.BaseTemplate
+import no.nav.pensjon.brev.template.dsl.expression.expr
 import kotlin.reflect.KClass
 
 data class LetterTemplate<Lang : LanguageSupport, LetterData : Any>(
@@ -94,6 +95,7 @@ sealed class Element<out Lang : LanguageSupport> {
                 throw InvalidTableDeclarationException("The table rows must have at least one cell/column")
             }
         }
+
         data class Row<Lang : LanguageSupport>(val cells: List<Cell<Lang>>, val condition: Expression<Boolean>? = null)
         data class Header<Lang : LanguageSupport>(val colSpec: List<ColumnSpec<Lang>>)
 
@@ -107,11 +109,10 @@ sealed class Element<out Lang : LanguageSupport> {
             val columnSpan: Int = 1
         )
 
-        enum class ColumnAlignment{
+        enum class ColumnAlignment {
             LEFT, RIGHT
         }
     }
-
 
     sealed class Form<out Lang : LanguageSupport> : Element<Lang>() {
         data class Text<out Lang : LanguageSupport>(
@@ -127,6 +128,7 @@ sealed class Element<out Lang : LanguageSupport> {
         ) : Form<Lang>()
     }
 
+    @Deprecated("Deprekert til fordel for 'scope-modyfing' fraser TextOnlyPhrase, ParagraphPhrase og OutlinePhrase")
     data class IncludePhrase<out Lang : LanguageSupport, PhraseData : Any>(
         val data: Expression<PhraseData>,
         val phrase: Phrase<Lang, PhraseData>,
@@ -135,6 +137,7 @@ sealed class Element<out Lang : LanguageSupport> {
     class NewLine<out Lang : LanguageSupport> : Element<Lang>()
 
     sealed class Text<out Lang : LanguageSupport> : Element<Lang>() {
+        @Suppress("DataClassPrivateConstructor")
         data class Literal<out Lang : LanguageSupport> private constructor(
             private val text: Map<Language, String>,
             val languages: Lang,
@@ -187,6 +190,7 @@ sealed class Element<out Lang : LanguageSupport> {
         data class Expression<out Lang : LanguageSupport>(val expression: StringExpression) :
             Text<Lang>() {
 
+            @Suppress("DataClassPrivateConstructor")
             data class ByLanguage<out Lang : LanguageSupport> private constructor(
                 val expression: Map<Language, StringExpression>
             ) : Text<Lang>() {
@@ -220,6 +224,47 @@ sealed class Element<out Lang : LanguageSupport> {
         val showElse: List<Element<Lang>>,
     ) : Element<Lang>()
 
+    @Suppress("DataClassPrivateConstructor")
+    data class ForEachView<out Lang : LanguageSupport, Item : Any> private constructor(val items: Expression<List<Item>>, val body: List<Element<Lang>>, private val next: NextExpression<Item>) : Element<Lang>() {
+
+        fun render(scope: ExpressionScope<*, *>, renderElement: (scope: ExpressionScope<*, *>, element: Element<*>) -> Unit) {
+            items.eval(scope).forEach { item ->
+                val iteratorScope = ForEachExpressionScope(item to next, scope)
+                body.forEach { element ->
+                    renderElement(iteratorScope, element)
+                }
+            }
+        }
+
+        companion object {
+            fun <Lang : LanguageSupport, Item : Any> create(items: Expression<List<Item>>, createView: (item: Expression<Item>) -> List<Element<Lang>>): ForEachView<Lang, Item> =
+                NextExpression<Item>().let { ForEachView(items, createView(it), it) }
+        }
+
+        private class NextExpression<Item : Any> : Expression<Item>() {
+            override fun eval(scope: ExpressionScope<*, *>): Item =
+                if (scope is ForEachExpressionScope<*>) {
+                    @Suppress("UNCHECKED_CAST")
+                    (scope as ForEachExpressionScope<Item>).evalNext(this)
+                } else {
+                    throw InvalidScopeTypeException("Requires scope to be ForEachExpressionScope, but was: ${scope::class.qualifiedName}")
+                }
+        }
+
+        private class ForEachExpressionScope<Item : Any>(val next: Pair<Item, NextExpression<Item>>, val parent: ExpressionScope<*, *>) : ExpressionScope<Any, Language>(parent.argument, parent.felles, parent.language) {
+            fun evalNext(expr: NextExpression<Item>): Item =
+                if (expr == next.second) {
+                    next.first
+                } else if(parent is ForEachExpressionScope<*>) {
+                    @Suppress("UNCHECKED_CAST")
+                    (parent as ForEachExpressionScope<Item>).evalNext(expr)
+                } else {
+                    throw MissingScopeForNextItemEvaluationException("Could not find scope matching: $expr")
+                }
+        }
+    }
 }
 
+class MissingScopeForNextItemEvaluationException(msg: String) : Exception(msg)
+class InvalidScopeTypeException(msg: String) : Exception(msg)
 class InvalidTableDeclarationException(private val msg: String): Exception(msg)
