@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test
 class PensjonLatexTest {
     @Test
     fun `table is not rendered when all the rows are filtered out`() {
-        val doc = outlineTestTemplate {
+        val doc = outlineTestTemplate<Unit> {
             title1 { text(Bokmal to "THIS TEXT SHOULD RENDER") }
             table(
                 header = {
@@ -40,7 +40,7 @@ class PensjonLatexTest {
 
     @Test
     fun `all table elements is rendered to LaTeX`() {
-        val doc = outlineTestTemplate {
+        val doc = outlineTestTemplate<Unit> {
             table(
                 header = {
                     column {
@@ -71,7 +71,7 @@ class PensjonLatexTest {
 
     @Test
     fun `list is not rendered when items are filtered out`() {
-        val doc = outlineTestTemplate {
+        val doc = outlineTestTemplate<Unit> {
             title1 { text(Bokmal to "this text should render") }
             list {
                 showIf(false.expr()) {
