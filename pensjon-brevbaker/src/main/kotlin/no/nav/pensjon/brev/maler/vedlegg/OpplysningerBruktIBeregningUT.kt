@@ -1,7 +1,6 @@
 package no.nav.pensjon.brev.maler.vedlegg
 
 import no.nav.pensjon.brev.maler.fraser.common.Kroner
-import no.nav.pensjon.brev.template.Element
 import no.nav.pensjon.brev.template.Element.Table.ColumnAlignment.RIGHT
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.*
@@ -14,31 +13,31 @@ import java.time.LocalDate
 
 data class OpplysningerBruktIBeregningUTDto(
     val anvendtTT_trygdetidsdetaljerGjeldende: Int,
-    val avkortningsbelopAr_barnetilleggSBGjeldende: Kroner,
-    val belop_barnetilleggSBGjeldende: Kroner,
-    val belopAr_barnetilleggSBGjeldende: Kroner,
-    val belopArForAvkort_barnetilleggSBGjeldende: Kroner,
-    val belopIEU_inntektEtterUforeGjeldende: Kroner,
-    val belopsgrense_uforetrygdGjeldende: Kroner,
-    val beregningsgrunnlagBelopAr_uforetrygdGjeldende: Kroner,
-    val beregningsgrunnlagBelopAr_yrkesskadeGjeldende: Kroner,
+    val avkortningsbelopAr_barnetilleggSBGjeldende: Int,
+    val belop_barnetilleggSBGjeldende: Int,
+    val belopAr_barnetilleggSBGjeldende: Int,
+    val belopArForAvkort_barnetilleggSBGjeldende: Int,
+    val belopIEU_inntektEtterUforeGjeldende: Int,
+    val belopsgrense_uforetrygdGjeldende: Int,
+    val beregningsgrunnlagBelopAr_uforetrygdGjeldende: Int,
+    val beregningsgrunnlagBelopAr_yrkesskadeGjeldende: Int,
     val brukersSivilstand_gjeldendeBeregnetUTPerManed: String,
     val faktiskTTBilateral_trygdetidsdetaljerGjeldende: Int,
     val faktiskTTEOS_trygdetidsdetaljerGjeldende: Int,
     val faktiskTTNordiskKonv_trygdetidsdetaljerGjeldende: Int,
     val faktiskTTNorge_trygdetidsdetaljerGjeldende: Int,
-    val forventetInntektAr_inntektsAvkortingGjeldende: Kroner,
+    val forventetInntektAr_inntektsAvkortingGjeldende: Int,
     val framtidigTTNorsk_trygdetidsdetaljerGjeldende: Int,
-    val fribelop_barnetilleggSBGjeldende: Kroner,
-    val gradertOIFU_barnetilleggGrunnlagGjeldende: Kroner,
-    val grunnbelop_gjeldendeBeregnetUTPerManed: Kroner,
-    val ifuInntekt_inntektForUforeGjeldende: Kroner,
-    val inntektBruktIAvkortning_barnetilleggSBGjeldende: Kroner,
-    val inntektstak_barnetilleggSBGjeldende: Kroner,
-    val inntektsgrenseAr_inntektsAvkortingGjeldende: Kroner,
-    val inntektstak_inntektsAvkortingGjeldende: Kroner,
-    val inntektVedSkadetidspunkt_yrkesskadeGjeldende: Kroner,
-    val justeringsbelopAr_barnetilleggSBGjeldende: Kroner,
+    val fribelop_barnetilleggSBGjeldende: Int,
+    val gradertOIFU_barnetilleggGrunnlagGjeldende: Int,
+    val grunnbelop_gjeldendeBeregnetUTPerManed: Int,
+    val ifuInntekt_inntektForUforeGjeldende: Int,
+    val inntektBruktIAvkortning_barnetilleggSBGjeldende: Int,
+    val inntektstak_barnetilleggSBGjeldende: Int,
+    val inntektsgrenseAr_inntektsAvkortingGjeldende: Int,
+    val inntektstak_inntektsAvkortingGjeldende: Int,
+    val inntektVedSkadetidspunkt_yrkesskadeGjeldende: Int,
+    val justeringsbelopAr_barnetilleggSBGjeldende: Int,
     val kompensasjonsgrad_uforetrygdGjeldende: Double,
     val nevnerProRata_trygdetidsdetaljerGjeldende: Int,
     val nevnerTTEOS_trygdetidsdetaljerGjeldende: Int,
@@ -66,9 +65,8 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
 ) {
     paragraph {
         val virkDatoFom =
-            argument().select(OpplysningerBruktIBeregningUTDto::virkDatoFom_gjeldendeBeregnetUTPerManed).format()
-        val grunnbelop =
-            argument().select(OpplysningerBruktIBeregningUTDto::grunnbelop_gjeldendeBeregnetUTPerManed).format()
+            argument().map { it.virkDatoFom_gjeldendeBeregnetUTPerManed }.format()
+        val grunnbelop = argument().map { Kroner(it.grunnbelop_gjeldendeBeregnetUTPerManed) }.format()
         textExpr(
             Bokmal to "Opplysninger vi har brukt i beregningen fra ".expr() + virkDatoFom.str() + " Folketrygdens grunnbeløp (G) benyttet i beregningen er ".expr() + grunnbelop.str() + " kroner",
             Nynorsk to "Opplysningar vi har brukt i utrekninga frå ".expr() + virkDatoFom.str() + " Grunnbeløpet i folketrygda (G) nytta i utrekninga er ".expr() + grunnbelop.str() + " kroner",
@@ -104,7 +102,7 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
             }
             cell {
                 val uforetidspunkt =
-                    argument().select(OpplysningerBruktIBeregningUTDto::uforetidspunkt_uforetrygdGjeldende).format()
+                    argument().map { it.uforetidspunkt_uforetrygdGjeldende }.format()
                 textExpr(
                     Bokmal to uforetidspunkt,
                     Nynorsk to uforetidspunkt,
@@ -122,8 +120,7 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
             }
             cell {
                 val beregningsgrunnlagBelopAr =
-                    argument().select(OpplysningerBruktIBeregningUTDto::beregningsgrunnlagBelopAr_uforetrygdGjeldende)
-                        .format()
+                    argument().map { Kroner(it.beregningsgrunnlagBelopAr_uforetrygdGjeldende) }.format()
                 textExpr(
                     Bokmal to beregningsgrunnlagBelopAr + " kr",
                     Nynorsk to beregningsgrunnlagBelopAr + " kr",
@@ -141,8 +138,7 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
             }
             cell {
                 val beregningsgrunnlagBelopAr =
-                    argument().select(OpplysningerBruktIBeregningUTDto::beregningsgrunnlagBelopAr_yrkesskadeGjeldende)
-                        .format()
+                    argument().map { Kroner(it.beregningsgrunnlagBelopAr_yrkesskadeGjeldende) }.format()
                 textExpr(
                     Bokmal to beregningsgrunnlagBelopAr + " kr",
                     Nynorsk to beregningsgrunnlagBelopAr + " kr",
@@ -160,7 +156,7 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
             }
             cell {
                 val ifuInntekt =
-                    argument().select(OpplysningerBruktIBeregningUTDto::ifuInntekt_inntektForUforeGjeldende).format()
+                    argument().map { Kroner(it.ifuInntekt_inntektForUforeGjeldende) }.format()
                 textExpr(
                     Bokmal to ifuInntekt + " kr",
                     Nynorsk to ifuInntekt + " kr",
@@ -178,7 +174,7 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
             }
             cell {
                 val belopIEU =
-                    argument().select(OpplysningerBruktIBeregningUTDto::belopIEU_inntektEtterUforeGjeldende).format()
+                    argument().map { Kroner(it.belopIEU_inntektEtterUforeGjeldende) }.format()
                 textExpr(
                     Bokmal to belopIEU + " kr",
                     Nynorsk to belopIEU + " kr",
@@ -195,7 +191,7 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
                 )
             }
             cell {
-                val uforegrad = argument().select(OpplysningerBruktIBeregningUTDto::uforegrad_uforetrygdGjeldende).str()
+                val uforegrad = argument().map { it.uforegrad_uforetrygdGjeldende }.str()
                 textExpr(
                     Bokmal to uforegrad + " %",
                     Nynorsk to uforegrad + " %",
@@ -213,7 +209,7 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
             }
             cell {
                 val belopsgrense =
-                    argument().select(OpplysningerBruktIBeregningUTDto::belopsgrense_uforetrygdGjeldende).format()
+                    argument().map { Kroner(it.belopsgrense_uforetrygdGjeldende) }.format()
                 textExpr(
                     Bokmal to belopsgrense + " kr",
                     Nynorsk to belopsgrense + " kr",
@@ -231,7 +227,7 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
             }
             cell {
                 val inntektsgrenseAr =
-                    argument().select(OpplysningerBruktIBeregningUTDto::inntektsgrenseAr_inntektsAvkortingGjeldende)
+                    argument().map { Kroner(it.inntektsgrenseAr_inntektsAvkortingGjeldende) }
                         .format()
                 textExpr(
                     Bokmal to inntektsgrenseAr + " kr",
@@ -250,7 +246,7 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
             }
             cell {
                 val forventetInntektAr =
-                    argument().select(OpplysningerBruktIBeregningUTDto::forventetInntektAr_inntektsAvkortingGjeldende)
+                    argument().map { Kroner(it.forventetInntektAr_inntektsAvkortingGjeldende) }
                         .format()
                 textExpr(
                     Bokmal to forventetInntektAr + " kr",
@@ -269,7 +265,7 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
             }
             cell {
                 val kompensasjonsgrad =
-                    argument().select(OpplysningerBruktIBeregningUTDto::kompensasjonsgrad_uforetrygdGjeldende).format()
+                    argument().map { it.kompensasjonsgrad_uforetrygdGjeldende }.format()
                 textExpr(
                     Bokmal to kompensasjonsgrad + " %",
                     Nynorsk to kompensasjonsgrad + " %",
@@ -287,7 +283,7 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
             }
             cell {
                 val inntektstak =
-                    argument().select(OpplysningerBruktIBeregningUTDto::inntektstak_inntektsAvkortingGjeldende).format()
+                    argument().map { Kroner(it.inntektstak_inntektsAvkortingGjeldende) }.format()
                 textExpr(
                     Bokmal to inntektstak + " kr",
                     Nynorsk to inntektstak + " kr",
@@ -305,7 +301,7 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
             }
             cell {
                 val inntektsgrenseAr =
-                    argument().select(OpplysningerBruktIBeregningUTDto::inntektsgrenseAr_inntektsAvkortingGjeldende)
+                    argument().map { Kroner(it.inntektsgrenseAr_inntektsAvkortingGjeldende) }
                         .format()
                 textExpr(
                     Bokmal to inntektsgrenseAr + " kr",
@@ -324,7 +320,7 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
             }
             cell {
                 val brukersSivilstand =
-                    argument().select(OpplysningerBruktIBeregningUTDto::brukersSivilstand_gjeldendeBeregnetUTPerManed)
+                    argument().map { it.brukersSivilstand_gjeldendeBeregnetUTPerManed }
                         .str()
                 textExpr(
                     Bokmal to brukersSivilstand,
@@ -359,7 +355,7 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
             }
             cell {
                 val yrkesskadegrad =
-                    argument().select(OpplysningerBruktIBeregningUTDto::yrkesskadegrad_yrkesskadeGjeldende).str()
+                    argument().map { it.yrkesskadegrad_yrkesskadeGjeldende }.str()
                 textExpr(
                     Bokmal to yrkesskadegrad + " %",
                     Nynorsk to yrkesskadegrad + " %",
@@ -377,7 +373,7 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
             }
             cell {
                 val skadetidspunkt =
-                    argument().select(OpplysningerBruktIBeregningUTDto::skadetidspunkt_yrkesskadeGjeldende).format()
+                    argument().map { it.skadetidspunkt_yrkesskadeGjeldende }.format()
                 textExpr(
                     Bokmal to skadetidspunkt,
                     Nynorsk to skadetidspunkt,
@@ -395,7 +391,7 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
             }
             cell {
                 val inntektVedSkadetidspunkt =
-                    argument().select(OpplysningerBruktIBeregningUTDto::inntektVedSkadetidspunkt_yrkesskadeGjeldende)
+                    argument().map { Kroner(it.inntektVedSkadetidspunkt_yrkesskadeGjeldende) }
                         .format()
                 textExpr(
                     Bokmal to inntektVedSkadetidspunkt + " kr",
@@ -431,7 +427,7 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
             // Implement logic for year/years
             cell {
                 val anvendtTT =
-                    argument().select(OpplysningerBruktIBeregningUTDto::anvendtTT_trygdetidsdetaljerGjeldende).str()
+                    argument().map { it.anvendtTT_trygdetidsdetaljerGjeldende }.str()
                 textExpr(
                     Bokmal to anvendtTT + " år",
                     Nynorsk to anvendtTT + " år",
@@ -450,7 +446,7 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
             // Implement logic for year/years
             cell {
                 val anvendtTT =
-                    argument().select(OpplysningerBruktIBeregningUTDto::anvendtTT_trygdetidsdetaljerGjeldende).str()
+                    argument().map { it.anvendtTT_trygdetidsdetaljerGjeldende }.str()
                 textExpr(
                     Bokmal to anvendtTT + " år",
                     Nynorsk to anvendtTT + " år",
@@ -468,7 +464,7 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
             }
             cell {
                 val anvendtTT =
-                    argument().select(OpplysningerBruktIBeregningUTDto::anvendtTT_trygdetidsdetaljerGjeldende).str()
+                    argument().map { it.anvendtTT_trygdetidsdetaljerGjeldende }.str()
                 textExpr(
                     Bokmal to anvendtTT + " år",
                     Nynorsk to anvendtTT + " år",
@@ -486,7 +482,7 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
             }
             cell {
                 val faktiskTTNorge =
-                    argument().select(OpplysningerBruktIBeregningUTDto::faktiskTTNorge_trygdetidsdetaljerGjeldende)
+                    argument().map { it.faktiskTTNorge_trygdetidsdetaljerGjeldende }
                         .str()
                 textExpr(
                     Bokmal to faktiskTTNorge + " måneder",
@@ -505,7 +501,7 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
             }
             cell {
                 val faktiskTTEOS =
-                    argument().select(OpplysningerBruktIBeregningUTDto::faktiskTTEOS_trygdetidsdetaljerGjeldende).str()
+                    argument().map { it.faktiskTTEOS_trygdetidsdetaljerGjeldende }.str()
                 textExpr(
                     Bokmal to faktiskTTEOS + " måneder",
                     Nynorsk to faktiskTTEOS + " måneder",
@@ -523,7 +519,7 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
             }
             cell {
                 val nevnerTTEOS =
-                    argument().select(OpplysningerBruktIBeregningUTDto::nevnerTTEOS_trygdetidsdetaljerGjeldende).str()
+                    argument().map { it.nevnerTTEOS_trygdetidsdetaljerGjeldende }.str()
                 textExpr(
                     Bokmal to nevnerTTEOS + " måneder",
                     Nynorsk to nevnerTTEOS + " måneder",
@@ -541,9 +537,9 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
             }
             cell {
                 val tellerTTEOS =
-                    argument().select(OpplysningerBruktIBeregningUTDto::tellerTTEOS_trygdetidsdetaljerGjeldende).str()
+                    argument().map { it.tellerTTEOS_trygdetidsdetaljerGjeldende }.str()
                 val nevnerTTEOS =
-                    argument().select(OpplysningerBruktIBeregningUTDto::nevnerTTEOS_trygdetidsdetaljerGjeldende).str()
+                    argument().map { it.nevnerTTEOS_trygdetidsdetaljerGjeldende }.str()
                 textExpr(
                     Bokmal to tellerTTEOS + " / " + nevnerTTEOS,
                     Nynorsk to tellerTTEOS + " / " + nevnerTTEOS,
@@ -561,7 +557,7 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
             }
             cell {
                 val faktiskTTNordiskKonv =
-                    argument().select(OpplysningerBruktIBeregningUTDto::faktiskTTNordiskKonv_trygdetidsdetaljerGjeldende)
+                    argument().map { it.faktiskTTNordiskKonv_trygdetidsdetaljerGjeldende }
                         .str()
                 textExpr(
                     Bokmal to faktiskTTNordiskKonv + " måneder",
@@ -580,7 +576,7 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
             }
             cell {
                 val framtidigTTNorsk =
-                    argument().select(OpplysningerBruktIBeregningUTDto::framtidigTTNorsk_trygdetidsdetaljerGjeldende)
+                    argument().map { it.framtidigTTNorsk_trygdetidsdetaljerGjeldende }
                         .str()
                 textExpr(
                     Bokmal to framtidigTTNorsk + " måneder",
@@ -599,10 +595,10 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
             }
             cell {
                 val tellerTTNordiskKonv =
-                    argument().select(OpplysningerBruktIBeregningUTDto::tellerTTNordiskKonv_trygdetidsdetaljerGjeldende)
+                    argument().map { it.tellerTTNordiskKonv_trygdetidsdetaljerGjeldende }
                         .str()
                 val nevnerTTNordiskKonv_trygdetidsdetaljerGjeldende =
-                    argument().select(OpplysningerBruktIBeregningUTDto::nevnerTTNordiskKonv_trygdetidsdetaljerGjeldende)
+                    argument().map { it.nevnerTTNordiskKonv_trygdetidsdetaljerGjeldende }
                         .str()
                 textExpr(
                     Bokmal to tellerTTNordiskKonv + " / " + nevnerTTNordiskKonv_trygdetidsdetaljerGjeldende,
@@ -621,7 +617,7 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
             }
             cell {
                 val samletTTNordiskKonv =
-                    argument().select(OpplysningerBruktIBeregningUTDto::samletTTNordiskKonv_trygdetidsdetaljerGjeldende)
+                    argument().map { it.samletTTNordiskKonv_trygdetidsdetaljerGjeldende }
                         .str()
                 textExpr(
                     Bokmal to samletTTNordiskKonv + " måneder",
@@ -640,7 +636,7 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
             }
             cell {
                 val faktiskTTBilateral =
-                    argument().select(OpplysningerBruktIBeregningUTDto::faktiskTTBilateral_trygdetidsdetaljerGjeldende)
+                    argument().map { it.faktiskTTBilateral_trygdetidsdetaljerGjeldende }
                         .str()
                 textExpr(
                     Bokmal to faktiskTTBilateral + " måneder",
@@ -659,7 +655,7 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
             }
             cell {
                 val nevnerProRata =
-                    argument().select(OpplysningerBruktIBeregningUTDto::nevnerProRata_trygdetidsdetaljerGjeldende).str()
+                    argument().map { it.nevnerProRata_trygdetidsdetaljerGjeldende }.str()
                 textExpr(
                     Bokmal to nevnerProRata + " måneder",
                     Nynorsk to nevnerProRata + " måneder",
@@ -677,9 +673,9 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
             }
             cell {
                 val tellerProRata =
-                    argument().select(OpplysningerBruktIBeregningUTDto::tellerProRata_trygdetidsdetaljerGjeldende).str()
+                    argument().map { it.tellerProRata_trygdetidsdetaljerGjeldende }.str()
                 val nevnerProRata =
-                    argument().select(OpplysningerBruktIBeregningUTDto::nevnerProRata_trygdetidsdetaljerGjeldende).str()
+                    argument().map { it.nevnerProRata_trygdetidsdetaljerGjeldende }.str()
                 textExpr(
                     Bokmal to tellerProRata + " / " + nevnerProRata,
                     Nynorsk to tellerProRata + " / " + nevnerProRata,
@@ -697,7 +693,7 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
             }
             cell {
                 val totaltAntallBarn =
-                    argument().select(OpplysningerBruktIBeregningUTDto::totaltAntallBarn_barnetilleggGrunnlagGjeldende)
+                    argument().map { it.totaltAntallBarn_barnetilleggGrunnlagGjeldende }
                         .str()
                 textExpr(
                     Bokmal to totaltAntallBarn,
@@ -709,7 +705,7 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
         row {
             cell {
                 val prosentsatsGradertOIFU =
-                    argument().select(OpplysningerBruktIBeregningUTDto::prosentsatsGradertOIFU_barnetilleggGrunnlagGjeldende)
+                    argument().map { it.prosentsatsGradertOIFU_barnetilleggGrunnlagGjeldende }
                         .str()
                 textExpr(
                     Bokmal to prosentsatsGradertOIFU + " % av inntekt før uførhet (justert for endringer i grunnbeløpet)",
@@ -719,7 +715,7 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
             }
             cell {
                 val gradertOIFU =
-                    argument().select(OpplysningerBruktIBeregningUTDto::gradertOIFU_barnetilleggGrunnlagGjeldende)
+                    argument().map { Kroner(it.gradertOIFU_barnetilleggGrunnlagGjeldende) }
                         .format()
                 textExpr(
                     Bokmal to gradertOIFU + " kr",
@@ -738,7 +734,7 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
             }
             cell {
                 val fribelop =
-                    argument().select(OpplysningerBruktIBeregningUTDto::fribelop_barnetilleggSBGjeldende).format()
+                    argument().map { Kroner(it.fribelop_barnetilleggSBGjeldende) }.format()
                 textExpr(
                     Bokmal to fribelop + " kr",
                     Nynorsk to fribelop + " kr",
@@ -756,7 +752,7 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
             }
             cell {
                 val inntektBruktIAvkortning =
-                    argument().select(OpplysningerBruktIBeregningUTDto::inntektBruktIAvkortning_barnetilleggSBGjeldende)
+                    argument().map { Kroner(it.inntektBruktIAvkortning_barnetilleggSBGjeldende) }
                         .format()
                 textExpr(
                     Bokmal to inntektBruktIAvkortning + " kr",
@@ -775,7 +771,7 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
             }
             cell {
                 val inntektstak =
-                    argument().select(OpplysningerBruktIBeregningUTDto::inntektstak_barnetilleggSBGjeldende).format()
+                    argument().map { Kroner(it.inntektstak_barnetilleggSBGjeldende) }.format()
                 textExpr(
                     Bokmal to inntektstak + " kr",
                     Nynorsk to inntektstak + " kr",
@@ -819,7 +815,7 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
             }
             cell {
                 val belopArForAvkort =
-                    argument().select(OpplysningerBruktIBeregningUTDto::belopArForAvkort_barnetilleggSBGjeldende)
+                    argument().map { Kroner(it.belopArForAvkort_barnetilleggSBGjeldende) }
                         .format()
                 textExpr(
                     Bokmal to belopArForAvkort + " kr",
@@ -838,7 +834,7 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
             }
             cell {
                 val inntektBruktIAvkortning =
-                    argument().select(OpplysningerBruktIBeregningUTDto::inntektBruktIAvkortning_barnetilleggSBGjeldende)
+                    argument().map { Kroner(it.inntektBruktIAvkortning_barnetilleggSBGjeldende) }
                         .format()
                 textExpr(
                     Bokmal to inntektBruktIAvkortning + " kr",
@@ -866,7 +862,7 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
             }
             cell {
                 val avkortningsbelopAr =
-                    argument().select(OpplysningerBruktIBeregningUTDto::avkortningsbelopAr_barnetilleggSBGjeldende)
+                    argument().map { Kroner(it.avkortningsbelopAr_barnetilleggSBGjeldende) }
                         .format()
                 textExpr(
                     Bokmal to avkortningsbelopAr + " kr",
@@ -885,7 +881,7 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
             }
             cell {
                 val avkortningsbelopAr =
-                    argument().select(OpplysningerBruktIBeregningUTDto::avkortningsbelopAr_barnetilleggSBGjeldende)
+                    argument().map { Kroner(it.avkortningsbelopAr_barnetilleggSBGjeldende) }
                         .format()
                 textExpr(
                     Bokmal to avkortningsbelopAr + " kr",
@@ -904,7 +900,7 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
             }
             cell {
                 val justeringsbelopAr =
-                    argument().select(OpplysningerBruktIBeregningUTDto::justeringsbelopAr_barnetilleggSBGjeldende)
+                    argument().map { Kroner(it.justeringsbelopAr_barnetilleggSBGjeldende) }
                         .format()
                 textExpr(
                     Bokmal to justeringsbelopAr + " kr",
@@ -923,7 +919,7 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
             }
             cell {
                 val belopAr =
-                    argument().select(OpplysningerBruktIBeregningUTDto::belopAr_barnetilleggSBGjeldende).format()
+                    argument().map { Kroner(it.belopAr_barnetilleggSBGjeldende) }.format()
                 textExpr(
                     Bokmal to belopAr + " kr",
                     Nynorsk to belopAr + " kr",
@@ -940,7 +936,7 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
                 )
             }
             cell {
-                val belop = argument().select(OpplysningerBruktIBeregningUTDto::belop_barnetilleggSBGjeldende).format()
+                val belop = argument().map { Kroner(it.belop_barnetilleggSBGjeldende) }.format()
                 textExpr(
                     Bokmal to belop + " kr",
                     Nynorsk to belop + " kr",

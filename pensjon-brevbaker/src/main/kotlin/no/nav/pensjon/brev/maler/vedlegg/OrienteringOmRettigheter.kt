@@ -9,8 +9,8 @@ import no.nav.pensjon.brev.maler.fraser.*
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.createAttachment
-import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brev.template.dsl.expression.*
+import no.nav.pensjon.brev.template.dsl.newText
 
 data class OrienteringOmRettigheterParamDto(
     val sivilstand: Sivilstand,
@@ -22,7 +22,7 @@ data class OrienteringOmRettigheterParamDto(
     val har_barnetillegg_for_saerkullsbarn_vedvirk: Boolean,
     val har_ektefelletillegg_vedvirk: Boolean,
     val saktype: Sakstype,
-
+    val barnetillegg_beloep_gjeldendeBeregnetUTPerManed: Int,
     )
 
 
@@ -46,6 +46,8 @@ val orienteringOmRettigheterOgPlikter = createAttachment<LangBokmalNynorskEnglis
         argument().select(OrienteringOmRettigheterParamDto::har_barnetillegg_for_saerkullsbarn_vedvirk)
     val har_ektefelletillegg_vedvirk = argument().select(OrienteringOmRettigheterParamDto::har_ektefelletillegg_vedvirk)
     val saktype = argument().select(OrienteringOmRettigheterParamDto::saktype)
+    val barnetillegg_beloep_gjeldendeBeregnetUTPerManed =
+        argument().select(OrienteringOmRettigheterParamDto::barnetillegg_beloep_gjeldendeBeregnetUTPerManed)
 
 
     // START val saktype = ALDER, include phrase
@@ -217,14 +219,14 @@ val orienteringOmRettigheterOgPlikter = createAttachment<LangBokmalNynorskEnglis
                     and bor_i_norge
                     and saktype.isOneOf(Sakstype.ALDER)
         ) {
-            item{includePhrase(vedleggPlikterAP26_001)}
+            item { includePhrase(vedleggPlikterAP26_001) }
         }
         showIf(
             not(institusjon_gjeldende.isOneOf(FENGSEL, HELSE, SYKEHJEM))
                     and bor_i_norge
                     and saktype.isOneOf(Sakstype.ALDER)
         ) {
-            item{includePhrase(vedleggPlikterAP27_001)}
+            item { includePhrase(vedleggPlikterAP27_001) }
         }
     }
     // Mandatory phrase: vedleggPlikterHvorforMeldeAP_001
@@ -247,7 +249,7 @@ val orienteringOmRettigheterOgPlikter = createAttachment<LangBokmalNynorskEnglis
                 and not(har_barnetillegg_for_saerkullsbarn_vedvirk)
                 and saktype.isOneOf(Sakstype.ALDER)
     ) {
-        includePhrase(vedleggPlikterRettTilEktefelletilleggAP_001,argument().map { it.sivilstand })
+        includePhrase(vedleggPlikterRettTilEktefelletilleggAP_001, argument().map { it.sivilstand })
     }
     showIf(
         har_barnetillegg_felles_barn_vedvirk
@@ -294,79 +296,78 @@ val orienteringOmRettigheterOgPlikter = createAttachment<LangBokmalNynorskEnglis
         showIf(
             saktype.isOneOf(Sakstype.UFOEREP)
         ) {
-            item{includePhrase(vedleggPlikterUT1_001)}
+            item { includePhrase(vedleggPlikterUT1_001) }
         }
         // Mandatory phrase vedleggPlikterUT2_001
         showIf(
             saktype.isOneOf(Sakstype.UFOEREP)
         ) {
-            item{includePhrase(vedleggPlikterUT2_001)}
+            item { includePhrase(vedleggPlikterUT2_001) }
         }
         showIf(
             bor_i_norge
                     and not(institusjon_gjeldende.isOneOf(FENGSEL, HELSE, SYKEHJEM))
                     and saktype.isOneOf(Sakstype.UFOEREP)
         ) {
-            item{includePhrase(vedleggPlikterUT3_001)}
+            item { includePhrase(vedleggPlikterUT3_001) }
         }
         showIf(
             bor_i_norge
                     and not(institusjon_gjeldende.isOneOf(FENGSEL, HELSE, SYKEHJEM))
                     and saktype.isOneOf(Sakstype.UFOEREP)
         ) {
-            item{includePhrase(vedleggPlikterUT4_001)}
+            item { includePhrase(vedleggPlikterUT4_001) }
         }
         // Mandatory phrase vedleggPlikterUT5_001
         showIf(
             saktype.isOneOf(Sakstype.UFOEREP)
         ) {
-            item{includePhrase(vedleggPlikterUT5_001)}
+            item { includePhrase(vedleggPlikterUT5_001) }
         }
         showIf(
             sivilstand.isOneOf(ENSLIG, ENKE, Sivilstand.INGEN)
                     and saktype.isOneOf(Sakstype.UFOEREP)
         ) {
-            item{includePhrase(vedleggPlikterUT6_001)}
+            item { includePhrase(vedleggPlikterUT6_001) }
         }
 //        If barnetillegg_beloep_gjeldendeBeregnetUTPerManed > 0
-//        showIf(
-//               (barnetillegg_beloep_gjeldendeBeregnetUTPerManed > 0)
-//                and saktype.isOneOf(Sakstype.UFOEREP)
-//        ) {
-//               includePhrase(vedleggPlikterUT7_001)
-//        }
+        showIf(barnetillegg_beloep_gjeldendeBeregnetUTPerManed.map { it > 0 }
+                and saktype.isOneOf(Sakstype.UFOEREP)
+        ) {
+            item { includePhrase(vedleggPlikterUT7_001) }
+        }
         // Mandatory phrase vedleggPlikterUT8_001
         showIf(
             saktype.isOneOf(Sakstype.UFOEREP)
         ) {
-            item{includePhrase(vedleggPlikterUT8_001)}
+            item { includePhrase(vedleggPlikterUT8_001) }
         }
         // Mandatory phrase vedleggPlikterUT9_001
         showIf(
             saktype.isOneOf(Sakstype.UFOEREP)
         ) {
-            item{includePhrase(vedleggPlikterUT9_001)}
+            item { includePhrase(vedleggPlikterUT9_001) }
         }
 
         // Mandatory phrase vedleggPlikterUT10_001
         showIf(
             saktype.isOneOf(Sakstype.UFOEREP)
         ) {
-            item{includePhrase(vedleggPlikterUT10_001)}
+            item { includePhrase(vedleggPlikterUT10_001) }
         }
 
         // Mandatory phrase vedleggPlikterUT11_001
         showIf(
             saktype.isOneOf(Sakstype.UFOEREP)
         ) {
-            item{includePhrase(vedleggPlikterUT11_001)}
+            item { includePhrase(vedleggPlikterUT11_001) }
         }
 
         // Mandatory phrase vedleggPlikterUT12_001
         showIf(
             saktype.isOneOf(Sakstype.UFOEREP)
         ) {
-            item{includePhrase(vedleggPlikterUT12_001)}
+            item { includePhrase(vedleggPlikterUT12_001) }
         }
     }
     /* END val saktype = UFOEREP
@@ -382,27 +383,27 @@ val orienteringOmRettigheterOgPlikter = createAttachment<LangBokmalNynorskEnglis
         showIf(
             saktype.isOneOf(Sakstype.AFP)
         ) {
-            item {includePhrase(vedleggPlikterAFP1_001)}
+            item { includePhrase(vedleggPlikterAFP1_001) }
         }
         showIf(
             sivilstand.isOneOf(ENSLIG, ENKE, Sivilstand.INGEN)
                     and saktype.isOneOf(Sakstype.AFP)
         ) {
-            item {includePhrase(vedleggPlikterAFP2_001)}
+            item { includePhrase(vedleggPlikterAFP2_001) }
         }
         showIf(
             bor_i_norge
                     and not(institusjon_gjeldende.isOneOf(FENGSEL, HELSE, SYKEHJEM))
                     and saktype.isOneOf(Sakstype.AFP)
         ) {
-            item {includePhrase(vedleggPlikterAFP3_001)}
+            item { includePhrase(vedleggPlikterAFP3_001) }
         }
         showIf(
             not(bor_i_norge)
                     and not(institusjon_gjeldende.isOneOf(FENGSEL, HELSE, SYKEHJEM))
                     and saktype.isOneOf(Sakstype.AFP)
         ) {
-            item {includePhrase(vedleggPlikterAFP4_001)}
+            item { includePhrase(vedleggPlikterAFP4_001) }
         }
     }
     // END val saktype = AFP

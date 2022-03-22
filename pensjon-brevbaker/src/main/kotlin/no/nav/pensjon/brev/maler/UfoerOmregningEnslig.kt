@@ -2,10 +2,10 @@ package no.nav.pensjon.brev.maler
 
 import no.nav.pensjon.brev.api.model.Institusjon
 import no.nav.pensjon.brev.api.model.LetterMetadata
+import no.nav.pensjon.brev.api.model.Sakstype
+import no.nav.pensjon.brev.api.model.Sivilstand
 import no.nav.pensjon.brev.api.model.Sivilstand.*
-import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDto
 import no.nav.pensjon.brev.maler.fraser.*
-import no.nav.pensjon.brev.maler.fraser.common.Kroner
 import no.nav.pensjon.brev.maler.vedlegg.OpplysningerBruktIBeregningUTDto
 import no.nav.pensjon.brev.maler.vedlegg.OrienteringOmRettigheterParamDto
 import no.nav.pensjon.brev.maler.vedlegg.opplysningerBruktIBeregningUT
@@ -16,6 +16,7 @@ import no.nav.pensjon.brev.template.base.PensjonLatex
 import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.newText
+import java.time.LocalDate
 
 object UfoerOmregningEnslig : StaticTemplate {
     override val template = createTemplate(
@@ -508,7 +509,8 @@ object UfoerOmregningEnslig : StaticTemplate {
                         and not(har_barn_overfoert_til_saerkullsbarn)
             ) {
                 includePhrase(
-                    VirkTdsPktUTIkkeEndring_001, argument().map { VirkTdsPktUTIkkeEndring_001Dto(it.krav_virkedato_fom) }
+                    VirkTdsPktUTIkkeEndring_001,
+                    argument().map { VirkTdsPktUTIkkeEndring_001Dto(it.krav_virkedato_fom) }
                 )
             }
 
@@ -526,7 +528,8 @@ object UfoerOmregningEnslig : StaticTemplate {
 
             showIf(not(har_ufoeremaaned_vedvirk)) {
                 includePhrase(
-                    VirkTdsPktUTAvkortetTil0_001, argument().map { VirkTdsPktUTAvkortetTil0_001Dto(it.krav_virkedato_fom) }
+                    VirkTdsPktUTAvkortetTil0_001,
+                    argument().map { VirkTdsPktUTAvkortetTil0_001Dto(it.krav_virkedato_fom) }
                 )
             }
 
@@ -554,65 +557,175 @@ object UfoerOmregningEnslig : StaticTemplate {
         }
 
         includeAttachment(orienteringOmRettigheterOgPlikter, argument().map {
-            OrienteringOmRettigheterParamDto(
-                sivilstand = it.sivilstand,
-                bor_i_norge = it.bor_i_norge,
-                institusjon_gjeldende = it.institusjon_gjeldende,
-                eps_bor_sammen_med_bruker_gjeldende = it.eps_bor_sammen_med_bruker_gjeldende,
-                eps_institusjon_gjeldende = it.eps_institusjon_gjeldende,
-                har_barnetillegg_felles_barn_vedvirk = it.har_barnetillegg_felles_barn_vedvirk,
-                har_barnetillegg_for_saerkullsbarn_vedvirk = it.har_barnetillegg_for_saerkullsbarn_vedvirk,
-                har_ektefelletillegg_vedvirk = it.har_ektefelletillegg_vedvirk,
-                saktype = it.saktype,
-            )
+            it.orienteringOmRettigheterOgPlikter
         }
         )
         includeAttachment(opplysningerBruktIBeregningUT, argument().map {
-            OpplysningerBruktIBeregningUTDto(
-                //TODO skal kroner flyttes inn i api-model?
-                anvendtTT_trygdetidsdetaljerGjeldende = it.anvendtTT_trygdetidsdetaljerGjeldende,
-                avkortningsbelopAr_barnetilleggSBGjeldende = Kroner(it.avkortningsbelopAr_barnetilleggSBGjeldende),
-                belop_barnetilleggSBGjeldende = Kroner(it.belop_barnetilleggSBGjeldende),
-                belopAr_barnetilleggSBGjeldende = Kroner(it.belopAr_barnetilleggSBGjeldende),
-                belopArForAvkort_barnetilleggSBGjeldende = Kroner(it.belopArForAvkort_barnetilleggSBGjeldende),
-                belopIEU_inntektEtterUforeGjeldende = Kroner(it.belopIEU_inntektEtterUforeGjeldende),
-                belopsgrense_uforetrygdGjeldende = Kroner(it.belopsgrense_uforetrygdGjeldende),
-                beregningsgrunnlagBelopAr_uforetrygdGjeldende = Kroner(it.beregningsgrunnlagBelopAr_uforetrygdGjeldende),
-                beregningsgrunnlagBelopAr_yrkesskadeGjeldende = Kroner(it.beregningsgrunnlagBelopAr_yrkesskadeGjeldende),
-                brukersSivilstand_gjeldendeBeregnetUTPerManed = it.brukersSivilstand_gjeldendeBeregnetUTPerManed,
-                faktiskTTBilateral_trygdetidsdetaljerGjeldende = it.faktiskTTBilateral_trygdetidsdetaljerGjeldende,
-                faktiskTTEOS_trygdetidsdetaljerGjeldende = it.faktiskTTEOS_trygdetidsdetaljerGjeldende,
-                faktiskTTNordiskKonv_trygdetidsdetaljerGjeldende = it.faktiskTTNordiskKonv_trygdetidsdetaljerGjeldende,
-                faktiskTTNorge_trygdetidsdetaljerGjeldende = it.faktiskTTNorge_trygdetidsdetaljerGjeldende,
-                forventetInntektAr_inntektsAvkortingGjeldende = Kroner(it.forventetInntektAr_inntektsAvkortingGjeldende),
-                framtidigTTNorsk_trygdetidsdetaljerGjeldende = it.framtidigTTNorsk_trygdetidsdetaljerGjeldende,
-                fribelop_barnetilleggSBGjeldende = Kroner(it.fribelop_barnetilleggSBGjeldende),
-                gradertOIFU_barnetilleggGrunnlagGjeldende = Kroner(it.gradertOIFU_barnetilleggGrunnlagGjeldende),
-                grunnbelop_gjeldendeBeregnetUTPerManed = Kroner(it.grunnbelop_gjeldendeBeregnetUTPerManed),
-                ifuInntekt_inntektForUforeGjeldende = Kroner(it.ifuInntekt_inntektForUforeGjeldende),
-                inntektBruktIAvkortning_barnetilleggSBGjeldende = Kroner(it.inntektBruktIAvkortning_barnetilleggSBGjeldende),
-                inntektstak_barnetilleggSBGjeldende = Kroner(it.inntektstak_barnetilleggSBGjeldende),
-                inntektsgrenseAr_inntektsAvkortingGjeldende = Kroner(it.inntektsgrenseAr_inntektsAvkortingGjeldende),
-                inntektstak_inntektsAvkortingGjeldende = Kroner(it.inntektstak_inntektsAvkortingGjeldende),
-                inntektVedSkadetidspunkt_yrkesskadeGjeldende = Kroner(it.inntektVedSkadetidspunkt_yrkesskadeGjeldende),
-                justeringsbelopAr_barnetilleggSBGjeldende = Kroner(it.justeringsbelopAr_barnetilleggSBGjeldende),
-                kompensasjonsgrad_uforetrygdGjeldende = it.kompensasjonsgrad_uforetrygdGjeldende,
-                nevnerProRata_trygdetidsdetaljerGjeldende = it.nevnerProRata_trygdetidsdetaljerGjeldende,
-                nevnerTTEOS_trygdetidsdetaljerGjeldende = it.nevnerTTEOS_trygdetidsdetaljerGjeldende,
-                nevnerTTNordiskKonv_trygdetidsdetaljerGjeldende = it.nevnerTTNordiskKonv_trygdetidsdetaljerGjeldende,
-                prosentsatsGradertOIFU_barnetilleggGrunnlagGjeldende = it.prosentsatsGradertOIFU_barnetilleggGrunnlagGjeldende,
-                samletTTNordiskKonv_trygdetidsdetaljerGjeldende = it.samletTTNordiskKonv_trygdetidsdetaljerGjeldende,
-                skadetidspunkt_yrkesskadeGjeldende = it.skadetidspunkt_yrkesskadeGjeldende,
-                tellerProRata_trygdetidsdetaljerGjeldende = it.tellerProRata_trygdetidsdetaljerGjeldende,
-                tellerTTEOS_trygdetidsdetaljerGjeldende = it.tellerTTEOS_trygdetidsdetaljerGjeldende,
-                tellerTTNordiskKonv_trygdetidsdetaljerGjeldende = it.tellerTTNordiskKonv_trygdetidsdetaljerGjeldende,
-                totaltAntallBarn_barnetilleggGrunnlagGjeldende = it.totaltAntallBarn_barnetilleggGrunnlagGjeldende,
-                uforegrad_uforetrygdGjeldende = it.uforegrad_uforetrygdGjeldende,
-                uforetidspunkt_uforetrygdGjeldende = it.uforetidspunkt_uforetrygdGjeldende,
-                virkDatoFom_gjeldendeBeregnetUTPerManed = it.virkDatoFom_gjeldendeBeregnetUTPerManed,
-                yrkesskadegrad_yrkesskadeGjeldende = it.yrkesskadegrad_yrkesskadeGjeldende,
-            )
+            it.opplysningerBruktIBeregningUT
         }
         )
     }
+}
+
+data class UfoerOmregningEnsligDto(
+    val opplysningerBruktIBeregningUT: OpplysningerBruktIBeregningUTDto,
+    val orienteringOmRettigheterOgPlikter: OrienteringOmRettigheterParamDto,
+    val avdod_navn: String,
+    val avdod_sivilstand: Sivilstand,
+    val barn_overfoert_til_saerkullsbarn: List<String>,
+    val barnetillegg_beloep_foer_reduksjon_vedvirk: Number,
+    val barnetillegg_er_redusert_mot_tak: Boolean,
+    val barnetillegg_gradert_over_inntekt_foer_ufoer_vedvirk: Number,
+    val barnetillegg_ikke_utbetalt_pga_tak: Boolean,
+    val barnetillegg_prosentsats_gradert_over_inntekt_foer_ufoer_vedvirk: Number,
+    val barnetillegg_saerkullsbarn_beloep_etter_reduksjon_vedvirk: Number,
+    val barnetillegg_saerkullsbarn_er_redusert_mot_inntekt_vedvirk: Boolean,
+    val barnetillegg_saerkullsbarn_fribeloep_vedvirk: Number,
+    val barnetillegg_saerkullsbarn_inntekt_brukt_i_avkortning_vedvirk: Number,
+    val barnetillegg_saerkullsbarn_inntektstak_vedvirk: Number,
+    val bor_i_avtaleland: Boolean,
+    val bor_i_norge: Boolean,
+    val ektefelletillegg_opphoert: Boolean,
+    val eps_bor_sammen_med_bruker_gjeldende: Boolean,
+    val eps_institusjon_gjeldende: Institusjon,
+    val gjeldende_barnetillegg_saerkullsbarn_er_redusert_mot_inntekt: Boolean,
+    val gjeldende_ufoeretrygd_per_maaned_er_inntektsavkortet: Boolean,
+    val har_barn_overfoert_til_saerkullsbarn: Boolean,
+    val har_barn_som_tidligere_var_saerkullsbarn: Boolean,
+    val har_barnetillegg_felles_barn_vedvirk: Boolean,
+    val har_barnetillegg_for_saerkullsbarn: Boolean,
+    val har_barnetillegg_for_saerkullsbarn_vedvirk: Boolean,
+    val har_barnetillegg_saerkullsbarn_justeringsbeloep_ar_vedvirk: Boolean,
+    val har_barnetillegg_saerkullsbarn_nettobeloep_vedvirk: Boolean,
+    val har_barnetillegg_saerkullsbarn_vedvirk: Boolean,
+    val har_barnetillegg_vedvirk: Boolean,
+    val har_ektefelletillegg_vedvirk: Boolean,
+    val har_felles_barn_uten_barnetillegg_med_avdod: Boolean,
+    val har_flere_delytelser_i_tillegg_til_ordinaer_ufoeretrygd: Boolean,
+    val har_flere_ufoeretrygd_perioder: Boolean,
+    val har_minste_inntektsnivaa_foer_ufoeretrygd: Boolean,
+    val har_minsteytelse_vedvirk: Boolean,
+    val har_ufoeremaaned_vedvirk: Boolean,
+    val inntekt_foer_ufoerhet_vedvirk: Number,
+    val inntekt_ufoere_endret: Boolean,
+    val institusjon_gjeldende: Institusjon,
+    val institusjon_vedvirk: Institusjon,
+    val kompensasjonsgrad_ufoeretrygd_vedvirk: Number,
+    val krav_virkedato_fom: LocalDate,
+    val minsteytelse_sats_vedvirk: Number,
+    val oppjustert_inntekt_foer_ufoerhet_vedvirk: Number,
+    val saktype: Sakstype,
+    val sivilstand: Sivilstand,
+    val tidligere_saerkullsbarn: List<String>,
+    val total_ufoeremaaneder: Number,
+    val ufoeretrygd_med_barnetillegg_er_over_95_prosent_av_inntekt_foer_ufoerhet: Boolean,
+    val ufoeretrygd_vedvirk_er_inntektsavkortet: Boolean,
+) {
+    constructor() : this(
+        opplysningerBruktIBeregningUT = OpplysningerBruktIBeregningUTDto(
+            anvendtTT_trygdetidsdetaljerGjeldende = 0,
+            avkortningsbelopAr_barnetilleggSBGjeldende = 0,
+            belop_barnetilleggSBGjeldende = 0,
+            belopAr_barnetilleggSBGjeldende = 0,
+            belopArForAvkort_barnetilleggSBGjeldende = 0,
+            belopIEU_inntektEtterUforeGjeldende = 0,
+            belopsgrense_uforetrygdGjeldende = 0,
+            beregningsgrunnlagBelopAr_uforetrygdGjeldende = 0,
+            beregningsgrunnlagBelopAr_yrkesskadeGjeldende = 0,
+            brukersSivilstand_gjeldendeBeregnetUTPerManed = "",
+            faktiskTTBilateral_trygdetidsdetaljerGjeldende = 0,
+            faktiskTTEOS_trygdetidsdetaljerGjeldende = 0,
+            faktiskTTNordiskKonv_trygdetidsdetaljerGjeldende = 0,
+            faktiskTTNorge_trygdetidsdetaljerGjeldende = 0,
+            forventetInntektAr_inntektsAvkortingGjeldende = 0,
+            framtidigTTNorsk_trygdetidsdetaljerGjeldende = 0,
+            fribelop_barnetilleggSBGjeldende = 0,
+            gradertOIFU_barnetilleggGrunnlagGjeldende = 0,
+            grunnbelop_gjeldendeBeregnetUTPerManed = 0,
+            ifuInntekt_inntektForUforeGjeldende = 0,
+            inntektBruktIAvkortning_barnetilleggSBGjeldende = 0,
+            inntektstak_barnetilleggSBGjeldende = 0,
+            inntektsgrenseAr_inntektsAvkortingGjeldende = 0,
+            inntektstak_inntektsAvkortingGjeldende = 0,
+            inntektVedSkadetidspunkt_yrkesskadeGjeldende = 0,
+            justeringsbelopAr_barnetilleggSBGjeldende = 0,
+            kompensasjonsgrad_uforetrygdGjeldende = 0.0,
+            nevnerProRata_trygdetidsdetaljerGjeldende = 0,
+            nevnerTTEOS_trygdetidsdetaljerGjeldende = 0,
+            nevnerTTNordiskKonv_trygdetidsdetaljerGjeldende = 0,
+            prosentsatsGradertOIFU_barnetilleggGrunnlagGjeldende = 0,
+            samletTTNordiskKonv_trygdetidsdetaljerGjeldende = 0,
+            skadetidspunkt_yrkesskadeGjeldende = LocalDate.of(2020, 1, 1),
+            tellerProRata_trygdetidsdetaljerGjeldende = 0,
+            tellerTTEOS_trygdetidsdetaljerGjeldende = 0,
+            tellerTTNordiskKonv_trygdetidsdetaljerGjeldende = 0,
+            totaltAntallBarn_barnetilleggGrunnlagGjeldende = 0,
+            uforegrad_uforetrygdGjeldende = 0,
+            uforetidspunkt_uforetrygdGjeldende = LocalDate.of(2020, 1, 1),
+            virkDatoFom_gjeldendeBeregnetUTPerManed = LocalDate.of(2020, 1, 1),
+            yrkesskadegrad_yrkesskadeGjeldende = 0,
+        ),
+        orienteringOmRettigheterOgPlikter = OrienteringOmRettigheterParamDto(
+            sivilstand = ENSLIG,
+            bor_i_norge = false,
+            institusjon_gjeldende = Institusjon.INGEN,
+            eps_bor_sammen_med_bruker_gjeldende = false,
+            eps_institusjon_gjeldende = Institusjon.INGEN,
+            har_barnetillegg_felles_barn_vedvirk = false,
+            har_barnetillegg_for_saerkullsbarn_vedvirk = false,
+            har_ektefelletillegg_vedvirk = false,
+            saktype = Sakstype.UFOEREP,
+            barnetillegg_beloep_gjeldendeBeregnetUTPerManed = 0,
+        ),
+        avdod_navn = "Avdød Navn",
+        avdod_sivilstand = ENSLIG,
+        barn_overfoert_til_saerkullsbarn = listOf("barn1", "barn2", "barn3"),
+        barnetillegg_beloep_foer_reduksjon_vedvirk = 123,
+        barnetillegg_er_redusert_mot_tak = false,
+        barnetillegg_gradert_over_inntekt_foer_ufoer_vedvirk = 123,
+        barnetillegg_ikke_utbetalt_pga_tak = false,
+        barnetillegg_prosentsats_gradert_over_inntekt_foer_ufoer_vedvirk = 123,
+        barnetillegg_saerkullsbarn_beloep_etter_reduksjon_vedvirk = 123,
+        barnetillegg_saerkullsbarn_er_redusert_mot_inntekt_vedvirk = false,
+        barnetillegg_saerkullsbarn_fribeloep_vedvirk = 123,
+        barnetillegg_saerkullsbarn_inntekt_brukt_i_avkortning_vedvirk = 123,
+        barnetillegg_saerkullsbarn_inntektstak_vedvirk = 123,
+        bor_i_avtaleland = false,
+        bor_i_norge = false,
+        ektefelletillegg_opphoert = false,
+        eps_bor_sammen_med_bruker_gjeldende = false,
+        eps_institusjon_gjeldende = Institusjon.INGEN,
+        gjeldende_barnetillegg_saerkullsbarn_er_redusert_mot_inntekt = false,
+        gjeldende_ufoeretrygd_per_maaned_er_inntektsavkortet = false,
+        har_barn_overfoert_til_saerkullsbarn = false,
+        har_barn_som_tidligere_var_saerkullsbarn = false,
+        har_barnetillegg_felles_barn_vedvirk = false,
+        har_barnetillegg_for_saerkullsbarn = false,
+        har_barnetillegg_for_saerkullsbarn_vedvirk = false,
+        har_barnetillegg_saerkullsbarn_justeringsbeloep_ar_vedvirk = false,
+        har_barnetillegg_saerkullsbarn_nettobeloep_vedvirk = false,
+        har_barnetillegg_saerkullsbarn_vedvirk = false,
+        har_barnetillegg_vedvirk = false,
+        har_ektefelletillegg_vedvirk = false,
+        har_felles_barn_uten_barnetillegg_med_avdod = false,
+        har_flere_delytelser_i_tillegg_til_ordinaer_ufoeretrygd = false,
+        har_flere_ufoeretrygd_perioder = false,
+        har_minste_inntektsnivaa_foer_ufoeretrygd = false,
+        har_minsteytelse_vedvirk = false,
+        har_ufoeremaaned_vedvirk = false,
+        inntekt_foer_ufoerhet_vedvirk = 123,
+        inntekt_ufoere_endret = false,
+        institusjon_gjeldende = Institusjon.INGEN,
+        institusjon_vedvirk = Institusjon.INGEN,
+        kompensasjonsgrad_ufoeretrygd_vedvirk = 123,
+        krav_virkedato_fom = LocalDate.of(2020, 1, 1),
+        minsteytelse_sats_vedvirk = 123,
+        oppjustert_inntekt_foer_ufoerhet_vedvirk = 123,
+        saktype = Sakstype.UFOEREP,
+        sivilstand = ENSLIG,
+        tidligere_saerkullsbarn = listOf("saerkullsbarn1", "saerkullsbarn2", "saerkullsbarn3"),
+        total_ufoeremaaneder = 123,
+        ufoeretrygd_med_barnetillegg_er_over_95_prosent_av_inntekt_foer_ufoerhet = false,
+        ufoeretrygd_vedvirk_er_inntektsavkortet = false
+    )
 }

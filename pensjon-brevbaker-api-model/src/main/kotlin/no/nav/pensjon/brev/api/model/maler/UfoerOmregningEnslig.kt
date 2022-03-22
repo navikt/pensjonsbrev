@@ -55,7 +55,8 @@ data class UfoerOmregningEnsligDto(
         val total_ufoeremaaneder: Number,
         val ufoeretrygd_med_barnetillegg_er_over_95_prosent_av_inntekt_foer_ufoerhet: Boolean,
         val ufoeretrygd_vedvirk_er_inntektsavkortet: Boolean,
-        // Vedlegg Opplysninger brukt i beregningen
+        // Vedlegg
+        val barnetillegg_beloep_gjeldendeBeregnetUTPerManed: Int,
         val anvendtTT_trygdetidsdetaljerGjeldende: Int,
         val avkortningsbelopAr_barnetilleggSBGjeldende: Int,
         val belop_barnetilleggSBGjeldende: Int,
@@ -149,6 +150,7 @@ data class UfoerOmregningEnsligDto(
         total_ufoeremaaneder = 123,
         ufoeretrygd_med_barnetillegg_er_over_95_prosent_av_inntekt_foer_ufoerhet = false,
         ufoeretrygd_vedvirk_er_inntektsavkortet = false,
+        barnetillegg_beloep_gjeldendeBeregnetUTPerManed = 0,
         avkortningsbelopAr_barnetilleggSBGjeldende = 0,
         belop_barnetilleggSBGjeldende = 0,
         belopAr_barnetilleggSBGjeldende = 0,
