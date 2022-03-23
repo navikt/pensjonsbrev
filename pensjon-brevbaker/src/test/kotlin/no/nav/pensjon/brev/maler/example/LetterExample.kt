@@ -1,4 +1,4 @@
-package no.nav.pensjon.brev.maler.letterExampleImplementation
+package no.nav.pensjon.brev.maler.example
 
 import no.nav.pensjon.brev.api.model.Felles
 import no.nav.pensjon.brev.api.model.LetterMetadata

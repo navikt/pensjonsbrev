@@ -12,11 +12,12 @@ import kotlin.reflect.full.createInstance
 
 @Tag(TestTags.PDF_BYGGER)
 class TemplateResourceITest {
+    private val templateResource = TemplateResource()
 
     @Test
     fun `all templates can render and compile`() {
         requestTemplates()
-            .associateWith { TemplateResource.getTemplate(it) }
+            .associateWith { templateResource.getTemplate(it) }
             .forEach { testTemplate(it.key, it.value) }
     }
 

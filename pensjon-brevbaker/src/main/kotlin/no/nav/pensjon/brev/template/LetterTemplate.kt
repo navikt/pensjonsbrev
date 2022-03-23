@@ -135,13 +135,14 @@ sealed class Element<out Lang : LanguageSupport> {
 
     class NewLine<out Lang : LanguageSupport> : Element<Lang>()
 
-    sealed class Text<out Lang : LanguageSupport>(open val fontType: FontType) : Element<Lang>() {
+    sealed class Text<out Lang : LanguageSupport> : Element<Lang>() {
+        abstract val fontType: FontType
         @Suppress("DataClassPrivateConstructor")
         data class Literal<out Lang : LanguageSupport> private constructor(
             private val text: Map<Language, String>,
             val languages: Lang,
-            override val fontType: FontType,
-        ) : Text<Lang>(fontType) {
+            override var fontType: FontType,
+        ) : Text<Lang>() {
 
             fun text(language: Language): String =
                 text[language]
@@ -190,13 +191,13 @@ sealed class Element<out Lang : LanguageSupport> {
             val expression: StringExpression,
             override val fontType: FontType = FontType.PLAIN
         ) :
-            Text<Lang>(fontType) {
+            Text<Lang>() {
 
             @Suppress("DataClassPrivateConstructor")
             data class ByLanguage<out Lang : LanguageSupport> private constructor(
                 val expression: Map<Language, StringExpression>,
                 override val fontType: FontType
-            ) : Text<Lang>(fontType) {
+            ) : Text<Lang>() {
 
                 fun expr(language: Language): StringExpression =
                     expression[language]
