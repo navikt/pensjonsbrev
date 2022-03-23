@@ -11,7 +11,7 @@ private val productionTemplates = setOf(
 )
 
 class TemplateResource(templates: Set<StaticTemplate> = productionTemplates) {
-    var templateMap: Map<String, LetterTemplate<*, *>> =
+    private var templateMap: Map<String, LetterTemplate<*, *>> =
         templates.associate { it.template.name to it.template }
 
     fun getTemplates(): Set<String> =
