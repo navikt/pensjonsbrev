@@ -2,7 +2,6 @@ package no.nav.pensjon.brev.template
 
 import no.nav.pensjon.brev.api.model.*
 import no.nav.pensjon.brev.template.base.BaseTemplate
-import no.nav.pensjon.brev.template.dsl.expression.expr
 import kotlin.reflect.KClass
 
 data class LetterTemplate<Lang : LanguageSupport, LetterData : Any>(
@@ -137,11 +136,12 @@ sealed class Element<out Lang : LanguageSupport> {
     class NewLine<out Lang : LanguageSupport> : Element<Lang>()
 
     sealed class Text<out Lang : LanguageSupport> : Element<Lang>() {
+        abstract val fontType: FontType
         @Suppress("DataClassPrivateConstructor")
         data class Literal<out Lang : LanguageSupport> private constructor(
             private val text: Map<Language, String>,
             val languages: Lang,
-            val fontType: FontType
+            override var fontType: FontType,
         ) : Text<Lang>() {
 
             fun text(language: Language): String =
@@ -187,12 +187,16 @@ sealed class Element<out Lang : LanguageSupport> {
             ITALIC
         }
 
-        data class Expression<out Lang : LanguageSupport>(val expression: StringExpression) :
+        data class Expression<out Lang : LanguageSupport>(
+            val expression: StringExpression,
+            override val fontType: FontType = FontType.PLAIN
+        ) :
             Text<Lang>() {
 
             @Suppress("DataClassPrivateConstructor")
             data class ByLanguage<out Lang : LanguageSupport> private constructor(
-                val expression: Map<Language, StringExpression>
+                val expression: Map<Language, StringExpression>,
+                override val fontType: FontType
             ) : Text<Lang>() {
 
                 fun expr(language: Language): StringExpression =
@@ -200,19 +204,23 @@ sealed class Element<out Lang : LanguageSupport> {
                         ?: throw IllegalArgumentException("Text.Expression.ByLanguage doesn't contain language: ${language::class.qualifiedName}")
 
                 companion object {
-                    fun <Lang1 : Language> create(lang1: Pair<Lang1, StringExpression>) =
-                        ByLanguage<LanguageSupport.Single<Lang1>>(mapOf(lang1))
+                    fun <Lang1 : Language> create(
+                        lang1: Pair<Lang1, StringExpression>,
+                        fontType: FontType = FontType.PLAIN
+                    ) = ByLanguage<LanguageSupport.Single<Lang1>>(mapOf(lang1), fontType)
 
                     fun <Lang1 : Language, Lang2 : Language> create(
                         lang1: Pair<Lang1, StringExpression>,
                         lang2: Pair<Lang2, StringExpression>,
-                    ) = ByLanguage<LanguageSupport.Double<Lang1, Lang2>>(mapOf(lang1, lang2))
+                        fontType: FontType = FontType.PLAIN,
+                    ) = ByLanguage<LanguageSupport.Double<Lang1, Lang2>>(mapOf(lang1, lang2), fontType)
 
                     fun <Lang1 : Language, Lang2 : Language, Lang3 : Language> create(
                         lang1: Pair<Lang1, StringExpression>,
                         lang2: Pair<Lang2, StringExpression>,
                         lang3: Pair<Lang3, StringExpression>,
-                    ) = ByLanguage<LanguageSupport.Triple<Lang1, Lang2, Lang3>>(mapOf(lang1, lang2, lang3))
+                        fontType: FontType = FontType.PLAIN,
+                    ) = ByLanguage<LanguageSupport.Triple<Lang1, Lang2, Lang3>>(mapOf(lang1, lang2, lang3), fontType)
                 }
             }
         }
@@ -267,4 +275,4 @@ sealed class Element<out Lang : LanguageSupport> {
 
 class MissingScopeForNextItemEvaluationException(msg: String) : Exception(msg)
 class InvalidScopeTypeException(msg: String) : Exception(msg)
-class InvalidTableDeclarationException(private val msg: String): Exception(msg)
+class InvalidTableDeclarationException(msg: String) : Exception(msg)

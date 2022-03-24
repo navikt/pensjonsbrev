@@ -1,19 +1,22 @@
 package no.nav.pensjon.brev.api
 
-import no.nav.pensjon.brev.maler.*
+import no.nav.pensjon.brev.maler.OmsorgEgenAuto
+import no.nav.pensjon.brev.maler.UngUfoerAuto
 import no.nav.pensjon.brev.template.LetterTemplate
+import no.nav.pensjon.brev.template.StaticTemplate
 
-object TemplateResource {
-    private val templates: Map<String, LetterTemplate<*, *>> = setOf(
-        EksempelBrev,
-        OmsorgEgenAuto,
-        UngUfoerAuto,
-    ).associate { it.template.name to it.template }
+private val productionTemplates = setOf(
+    OmsorgEgenAuto,
+    UngUfoerAuto,
+)
+
+class TemplateResource(templates: Set<StaticTemplate> = productionTemplates) {
+    private var templateMap: Map<String, LetterTemplate<*, *>> =
+        templates.associate { it.template.name to it.template }
 
     fun getTemplates(): Set<String> =
-        templates.keys
+        templateMap.keys
 
     fun getTemplate(name: String): LetterTemplate<*, *>? =
-        templates[name]
-
+        templateMap[name]
 }

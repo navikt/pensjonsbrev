@@ -7,11 +7,11 @@ import no.nav.pensjon.brev.template.Letter
 import no.nav.pensjon.brev.template.LetterTemplate
 import no.nav.pensjon.brev.template.jacksonObjectMapper
 
-object LetterResource {
+class LetterResource(val templateResource: TemplateResource = TemplateResource()) {
     private val objectMapper = jacksonObjectMapper()
 
     fun create(letterRequest: LetterRequest): Letter<*> {
-        val template: LetterTemplate<*, *> = TemplateResource.getTemplate(letterRequest.template)
+        val template: LetterTemplate<*, *> = templateResource.getTemplate(letterRequest.template)
             ?: throw NotFoundException("Template '${letterRequest.template}' doesn't exist")
 
         val language = letterRequest.language.toLanguage()
