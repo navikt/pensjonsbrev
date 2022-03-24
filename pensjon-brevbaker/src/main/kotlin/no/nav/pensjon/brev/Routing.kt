@@ -43,6 +43,11 @@ fun Application.brevbakerRouting(authenticationNames: Array<String>) =
 
                 call.respond(LetterResponse(pdfBase64.base64PDF, letter.template.letterMetadata))
             }
+
+            get("/ping_authorized") {
+                call.respondText("Authorized as: ${call.authentication.principal}")
+            }
+
         }
 
         get("/isAlive") {
