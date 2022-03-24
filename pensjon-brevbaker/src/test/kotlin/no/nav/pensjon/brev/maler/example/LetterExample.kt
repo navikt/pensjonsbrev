@@ -31,9 +31,13 @@ object LetterExample : StaticTemplate {
         )
     ) {
         // Main letter content
+        val datoInnvilget = argument().select(LetterExampleDto::datoInnvilget)
+        val pensjonBeloep = argument().select(LetterExampleDto::pensjonBeloep)
+        val pensjonInnvilget = argument().select(LetterExampleDto::pensjonInnvilget)
+        val datoAvslaatt = argument().select(LetterExampleDto::datoAvslaatt)
         outline {
             //Select boolean expression from this letters argument
-            val pensjonInnvilget = argument().select(LetterExampleDto::pensjonInnvilget)
+
 
             // Data from the felles(common) argument can also be used. Both felles and argument supports map and select.
             val firstName = felles().map { it.mottaker.fornavn }
@@ -64,6 +68,14 @@ object LetterExample : StaticTemplate {
                 list {
                     item {
                         text(Bokmal to "Test1", Nynorsk to "Test1")
+                    }
+                    ifNotNull(datoAvslaatt) { dato ->
+                        item {
+                            textExpr(
+                                Bokmal to "Du har fått avslag på noe ".expr() + dato.format(),
+                                Nynorsk to "Du har fått avslag på noe ".expr() + dato.format()
+                            )
+                        }
                     }
 
                     item {
@@ -125,6 +137,19 @@ object LetterExample : StaticTemplate {
                         cell { text(Bokmal to "500 Kr", Nynorsk to "500 Kr") }
                         cell { text(Bokmal to "600 Kr", Nynorsk to "600 Kr") }
                     }
+                    ifNotNull(datoAvslaatt) { dato ->
+                        row {
+                            cell {
+                                textExpr(
+                                    Bokmal to "Du har en dato satt! ".expr() + dato.format(),
+                                    Nynorsk to "Du har en dato satt! ".expr() + dato.format()
+                                )
+                            }
+                            cell { text(Bokmal to "400 Kr", Nynorsk to "400 Kr") }
+                            cell { text(Bokmal to "500 Kr", Nynorsk to "500 Kr") }
+                            cell { text(Bokmal to "600 Kr", Nynorsk to "600 Kr") }
+                        }
+                    }
                 }
             }
             // Repeat content for each element in list
@@ -153,9 +178,21 @@ object LetterExample : StaticTemplate {
 }
 
 // This data class should normally be in the api-model. Placed here for test-purposes.
-data class LetterExampleDto(val pensjonInnvilget: Boolean, val datoInnvilget: LocalDate, val navneliste: List<String>) {
+data class LetterExampleDto(
+    val pensjonInnvilget: Boolean,
+    val datoInnvilget: LocalDate,
+    val navneliste: List<String>,
+    val datoAvslaatt: LocalDate?,
+    val pensjonBeloep: Int?,
+) {
     // No-arg constructor for integration tests
-    constructor() : this(true, LocalDate.now(), listOf("test testerson1", "test testerson2", "test testerson3"))
+    constructor() : this(
+        true,
+        LocalDate.now(),
+        listOf("test testerson1", "test testerson2", "test testerson3"),
+        LocalDate.of(2020, 1, 1),
+        100
+    )
 }
 
 data class OutlinePhraseDto(val datoInnvilget: LocalDate, val pensjonInnvilget: Boolean)

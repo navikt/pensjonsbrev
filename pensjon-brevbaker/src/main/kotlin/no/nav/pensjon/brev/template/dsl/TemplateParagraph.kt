@@ -33,7 +33,7 @@ abstract class ParagraphScopeBase<Lang : LanguageSupport, LetterData : Any, Scop
     }
 
     fun list(init: ListRootScope<Lang, LetterData>.() -> Unit) {
-        children.add(Element.ItemList(ListRootScope<Lang, LetterData>().apply(init).children))
+        children.add(Element.ItemList(ListRootScope<Lang, LetterData>().apply(init).items))
     }
 
     fun table(header: TableHeaderScope<Lang, LetterData>.() -> Unit,
@@ -58,35 +58,5 @@ abstract class ParagraphScopeBase<Lang : LanguageSupport, LetterData : Any, Scop
         TemplateFormChoiceScope<Lang, LetterData>().apply(init)
             .let { Element.Form.MultipleChoice(prompt, it.choices, vspace) }
             .also { children.add(it) }
-    }
-
-    fun <E1: Any> ifNotNull(expr1: Expression<E1?>, block: ParagraphScope<Lang, LetterData>.(Expression<E1>) -> Unit) {
-        children.add(
-            Element.Conditional(expr1.notNull(), ParagraphScope<Lang, LetterData>().apply {
-                // Følgende er en trygg cast fordi `children` blir kun brukt om `expr1.notNull()` evaluerer til true.
-                @Suppress("UNCHECKED_CAST")
-                block(this, expr1 as Expression<E1>)
-            }.children, emptyList())
-        )
-    }
-
-    fun <E1: Any, E2: Any> ifNotNull(expr1: Expression<E1?>, expr2: Expression<E2?>, block: ParagraphScope<Lang, LetterData>.(Expression<E1>, Expression<E2>) -> Unit) {
-        children.add(
-            Element.Conditional(expr1.notNull() and expr2.notNull(), ParagraphScope<Lang, LetterData>().apply {
-                // Følgende er en trygg cast fordi `children` blir kun brukt om `expr1.notNull() and expr2.notNull()` evaluerer til true.
-                @Suppress("UNCHECKED_CAST")
-                block(this, expr1 as Expression<E1>, expr2 as Expression<E2>)
-            }.children, emptyList())
-        )
-    }
-
-    fun <E1: Any, E2: Any, E3: Any> ifNotNull(expr1: Expression<E1?>, expr2: Expression<E2?>, expr3: Expression<E3?>, block: ParagraphScope<Lang, LetterData>.(Expression<E1>, Expression<E2>, Expression<E3>) -> Unit) {
-        children.add(
-            Element.Conditional(expr1.notNull() and expr2.notNull() and expr3.notNull(), ParagraphScope<Lang, LetterData>().apply {
-                // Følgende er en trygg cast fordi `children` blir kun brukt om `expr1.notNull() and expr2.notNull() and expr3.notNull()` evaluerer til true.
-                @Suppress("UNCHECKED_CAST")
-                block(this, expr1 as Expression<E1>, expr2 as Expression<E2>, expr3 as Expression<E3>)
-            }.children, emptyList())
-        )
     }
 }

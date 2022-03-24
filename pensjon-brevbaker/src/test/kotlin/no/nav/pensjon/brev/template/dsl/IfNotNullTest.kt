@@ -8,8 +8,9 @@ import no.nav.pensjon.brev.template.base.PensjonLatex
 import no.nav.pensjon.brev.template.dsl.expression.*
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
+import java.time.LocalDate
 
-data class NullBrevDto(val navn: String?)
+data class NullBrevDto(val navn: String?, val penger: Int?, val dato: LocalDate?)
 
 class IfNotNullTest {
 
@@ -27,10 +28,22 @@ class IfNotNullTest {
     ) {
         outline {
             text(Bokmal to "alltid med")
-            val nullTing = argument().select(NullBrevDto::navn)
-            ifNotNull(nullTing) { ting ->
+            val nullTing1 = argument().select(NullBrevDto::navn)
+            val nullTing2 = argument().select(NullBrevDto::penger)
+            val nullTing3 = argument().select(NullBrevDto::dato)
+            ifNotNull(nullTing1) { ting ->
                 textExpr(
                     Bokmal to "hei: ".expr() + ting
+                )
+            }
+            ifNotNull(nullTing1, nullTing2) { navn, penger ->
+                textExpr(
+                    Bokmal to "hei ".expr() + navn + " du har fått penger ".expr() + penger.str()
+                )
+            }
+            ifNotNull(nullTing1, nullTing2, nullTing3) { navn, penger, dato ->
+                textExpr(
+                    Bokmal to "hei ".expr() + navn + " du har fått penger ".expr() + penger.str() + " og de fikk du den ".expr() + dato.format()
                 )
             }
         }
@@ -42,31 +55,33 @@ class IfNotNullTest {
         val navn = Expression.FromScope(ExpressionScope<NullBrevDto, *>::argument).select(NullBrevDto::navn)
 
         @Suppress("UNCHECKED_CAST") // (navn as Expression<String>)
-        val expected = template.copy(outline = listOf(
-            newText(Bokmal to "alltid med"),
-            Element.Conditional(
-                predicate = navn.notNull(),
-                showIf = listOf(
-                    Element.Text.Expression.ByLanguage.create(
-                        Bokmal to "hei: ".expr() + (navn as Expression<String>)
-                    )
-                ),
-                showElse = emptyList(),
+        val expected = template.copy(
+            outline = listOf(
+                newText(Bokmal to "alltid med"),
+                Element.Conditional(
+                    predicate = navn.notNull(),
+                    showIf = listOf(
+                        Element.Text.Expression.ByLanguage.create(
+                            Bokmal to "hei: ".expr() + (navn as Expression<String>)
+                        )
+                    ),
+                    showElse = emptyList(),
+                )
             )
-        ))
+        )
 
         assertEquals(expected, template)
     }
 
     @Test
     fun `ifNotNull renders successfully for non-null value`() {
-        Letter(template, NullBrevDto("Ole"), Bokmal, felles)
+        Letter(template, NullBrevDto("Ole", 1234, LocalDate.of(2020,1,1)), Bokmal, felles)
             .assertRenderedLetterContainsAllOf("alltid med", "hei: Ole")
     }
 
     @Test
     fun `ifNotNull renders successfully but without null-block`() {
-        Letter(template, NullBrevDto(null), Bokmal, felles)
+        Letter(template, NullBrevDto(null, null, null), Bokmal, felles)
             .assertRenderedLetterContainsAllOf("alltid med")
             .assertRenderedLetterDoesNotContainAnyOf("hei:")
     }
