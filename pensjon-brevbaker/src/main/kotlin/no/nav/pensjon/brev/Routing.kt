@@ -2,6 +2,7 @@ package no.nav.pensjon.brev
 
 import io.ktor.application.*
 import io.ktor.auth.*
+import io.ktor.auth.jwt.*
 import io.ktor.features.*
 import io.ktor.http.*
 import io.ktor.request.*
@@ -45,7 +46,8 @@ fun Application.brevbakerRouting(authenticationNames: Array<String>) =
             }
 
             get("/ping_authorized") {
-                call.respondText("Authorized as: ${call.authentication.principal}")
+                val principal = call.authentication.principal as JWTPrincipal
+                call.respondText("Authorized as: ${principal.subject}")
             }
 
         }

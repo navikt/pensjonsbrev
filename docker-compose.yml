@@ -6,14 +6,14 @@ services:
       - JAVA_OPTS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5006 -Djdk.lang.Process.launchMechanism=vfork #used for Apple M1 compatability
     ports:
       - "8081:8080"
-      - "5006:5006"
+      - "5016:5006"
   pensjon-brevbaker:
     environment:
       - PDF_BUILDER_URL=http://pdf-bygger:8080
       - AZURE_OPENID_CONFIG_JWKS_URI=http://vtp-pensjon:8060/rest/isso/oauth2/connect/jwk_uri
       - AZURE_OPENID_CONFIG_ISSUER=https://login.microsoftonline.com/966ac572-f5b7-4bbe-aa88-c76419c0f851/v2.0
       - AZURE_APP_CLIENT_ID=brevbaker-123
-      - AZURE_APP_PRE_AUTHORIZED_APPS=[{"name":"pen","clientId":"123-456-789"}]
+      - AZURE_APP_PRE_AUTHORIZED_APPS=[{"name":"pen","clientId":"pen-AzureClientId"}]
       - STS_ISSUER=http://vtp-pensjon:8060
       - STS_JWKS_URI=http://vtp-pensjon:8060/rest/isso/oauth2/connect/jwk_uri
       - STS_ACCEPTED_AUDIENCE=srvpensjon-local
@@ -23,7 +23,8 @@ services:
     build: ./pensjon-brevbaker
     ports:
       - "8080:8080"
-      - "5005:5005" # debug port
+      - "5015:5005" # debug port
+
   locust-master:
     profiles:
       - locust
