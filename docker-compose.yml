@@ -14,12 +14,8 @@ services:
       - AZURE_OPENID_CONFIG_ISSUER=https://login.microsoftonline.com/966ac572-f5b7-4bbe-aa88-c76419c0f851/v2.0
       - AZURE_APP_CLIENT_ID=brevbaker-123
       - AZURE_APP_PRE_AUTHORIZED_APPS=[{"name":"pen","clientId":"pen-AzureClientId"}]
-      - STS_ISSUER=http://vtp-pensjon:8060
-      - STS_JWKS_URI=http://vtp-pensjon:8060/rest/isso/oauth2/connect/jwk_uri
-      - STS_ACCEPTED_AUDIENCE=srvpensjon-local
       # Allows requests without auth-header #opens up debug port
       - JAVA_OPTS=-Dio.ktor.development=true -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
-
     build: ./pensjon-brevbaker
     ports:
       - "8080:8080"

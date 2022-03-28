@@ -5,12 +5,6 @@ ingresses:
 env:
   - name: PDF_BUILDER_URL
     value: "http://pensjon-pdf-bygger:8080"
-  - name: STS_ISSUER
-    value: "https://security-token-service.nais.preprod.local"
-  - name: STS_JWKS_URI
-    value: "https://security-token-service.nais.preprod.local/rest/v1/sts/jwks"
-  - name: STS_ACCEPTED_AUDIENCE
-    value: "srvpensjon"
 
 preAuthorized:
   - name: pensjon-pen
