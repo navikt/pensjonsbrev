@@ -14,7 +14,6 @@ private val logger = LoggerFactory.getLogger("no.nav.pensjon.brev.Authorization"
 data class JwtConfig(val name: String, val issuer: String, val jwksUrl: String, val audience: List<String>, val preAuthorizedApps: List<PreAuthorizedApp>?, val requireAzureAdClaims: Boolean) {
     companion object {
 
-        const val jwtStsName = "STS"
         const val jwtAzureAdName = "AZURE_AD"
 
         fun requireAzureADConfig() =
@@ -26,16 +25,6 @@ data class JwtConfig(val name: String, val issuer: String, val jwksUrl: String, 
                 preAuthorizedApps = getPreAuthorizedApps(),
                 requireAzureAdClaims = true,
             ).also { logger.info("AzureAD: $it") }
-
-        fun requireStsConfig() =
-            JwtConfig(
-                name = jwtStsName,
-                issuer = requireEnv("${jwtStsName}_ISSUER"),
-                jwksUrl = requireEnv("${jwtStsName}_JWKS_URI"),
-                audience = requireEnv("${jwtStsName}_ACCEPTED_AUDIENCE").split(","),
-                preAuthorizedApps = null,
-                requireAzureAdClaims = false,
-            ).also { logger.info("STS: $it") }
 
         private fun getPreAuthorizedApps(): List<PreAuthorizedApp>? =
             System.getenv("AZURE_APP_PRE_AUTHORIZED_APPS")?.let {
