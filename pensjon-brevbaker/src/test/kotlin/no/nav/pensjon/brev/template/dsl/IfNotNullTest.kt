@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
 
-data class NullBrevDto(val navn: String?, val penger: Int?, val dato: LocalDate?)
+data class NullBrevDto(val test1: String?, val test2: Int?, val test3: LocalDate?)
 
 class IfNotNullTest {
 
@@ -28,9 +28,9 @@ class IfNotNullTest {
     ) {
         outline {
             text(Bokmal to "alltid med")
-            val nullTing1 = argument().select(NullBrevDto::navn)
-            val nullTing2 = argument().select(NullBrevDto::penger)
-            val nullTing3 = argument().select(NullBrevDto::dato)
+            val nullTing1 = argument().select(NullBrevDto::test1)
+            val nullTing2 = argument().select(NullBrevDto::test2)
+            val nullTing3 = argument().select(NullBrevDto::test3)
             ifNotNull(nullTing1) { ting ->
                 textExpr(
                     Bokmal to "hei: ".expr() + ting
@@ -51,8 +51,7 @@ class IfNotNullTest {
 
     @Test
     fun `ifNotNull adds a conditional with null check for navn`() {
-
-        val navn = Expression.FromScope(ExpressionScope<NullBrevDto, *>::argument).select(NullBrevDto::navn)
+        val navn = Expression.FromScope(ExpressionScope<NullBrevDto, *>::argument).select(NullBrevDto::test1)
 
         @Suppress("UNCHECKED_CAST") // (navn as Expression<String>)
         val expected = template.copy(

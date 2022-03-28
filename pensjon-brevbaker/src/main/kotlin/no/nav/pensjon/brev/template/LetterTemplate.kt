@@ -95,7 +95,7 @@ sealed class Element<out Lang : LanguageSupport> {
             }
         }
 
-        data class Row<Lang : LanguageSupport>(val cells: List<Cell<Lang>>, val condition: Expression<Boolean>? = null)
+        data class Row<Lang : LanguageSupport>(val cells: List<Cell<Lang>>, val condition: Expression<Boolean>? = null): Element<Lang>()
         data class Header<Lang : LanguageSupport>(val colSpec: List<ColumnSpec<Lang>>)
 
         data class Cell<Lang : LanguageSupport>(
