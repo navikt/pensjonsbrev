@@ -6,7 +6,7 @@ import no.nav.pensjon.brev.template.LanguageSupport
 import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.expression.notNull
 
-abstract class TemplateManipulationScope<Lang : LanguageSupport, LetterData : Any, Scope : TemplateManipulationScope<Lang, LetterData, Scope>>(
+abstract class BaseControlStructureScope<Lang : LanguageSupport, LetterData : Any, Scope : BaseControlStructureScope<Lang, LetterData, Scope>>(
     val children: MutableList<Element<Lang>> = mutableListOf()
 ) : TemplateGlobalScope<LetterData>() {
     protected abstract fun scopeFactory(): Scope

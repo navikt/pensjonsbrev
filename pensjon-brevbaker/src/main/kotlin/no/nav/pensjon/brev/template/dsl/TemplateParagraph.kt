@@ -32,15 +32,15 @@ abstract class ParagraphScopeBase<Lang : LanguageSupport, LetterData : Any, Scop
         children.add(Element.IncludePhrase(Unit.expr(), phrase))
     }
 
-    fun list(init: ListRootScope<Lang, LetterData>.() -> Unit) {
-        children.add(Element.ItemList(ListRootScope<Lang, LetterData>().apply(init).items))
+    fun list(init: ListScope<Lang, LetterData>.() -> Unit) {
+        children.add(Element.ItemList(ListScope<Lang, LetterData>().apply(init).children))
     }
 
     fun table(header: TableHeaderScope<Lang, LetterData>.() -> Unit,
-              init: TableBaseScope<Lang, LetterData>.() -> Unit) {
+              init: TableScope<Lang, LetterData>.() -> Unit) {
         children.add(
             Element.Table(
-                rows = TableBaseScope<Lang, LetterData>().apply(init).rows,
+                children = TableScope<Lang, LetterData>().apply(init).children,
                 header = Element.Table.Header(TableHeaderScope<Lang, LetterData>().apply(header).children)
             )
         )

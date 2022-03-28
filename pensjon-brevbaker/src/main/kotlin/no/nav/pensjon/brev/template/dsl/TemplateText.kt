@@ -1,9 +1,7 @@
 package no.nav.pensjon.brev.template.dsl
 
 import no.nav.pensjon.brev.template.*
-import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.expression.expr
-import no.nav.pensjon.brev.template.dsl.expression.notNull
 
 
 @LetterTemplateMarker
@@ -24,7 +22,7 @@ class TextOnlyScope<Lang : LanguageSupport, LetterData : Any>(children: MutableL
 
 abstract class TextOnlyScopeBase<Lang : LanguageSupport, LetterData : Any, Scope : TextOnlyScopeBase<Lang, LetterData, Scope>>(
     children: MutableList<Element<Lang>> = mutableListOf()
-) : TemplateManipulationScope<Lang, LetterData, Scope>(children) {
+) : BaseControlStructureScope<Lang, LetterData, Scope>(children) {
 
     fun addAll(items: List<Element<Lang>>) {
         children.addAll(items)

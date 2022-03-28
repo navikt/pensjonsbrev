@@ -29,21 +29,9 @@ class IfNotNullTest {
         outline {
             text(Bokmal to "alltid med")
             val nullTing1 = argument().select(NullBrevDto::test1)
-            val nullTing2 = argument().select(NullBrevDto::test2)
-            val nullTing3 = argument().select(NullBrevDto::test3)
             ifNotNull(nullTing1) { ting ->
                 textExpr(
                     Bokmal to "hei: ".expr() + ting
-                )
-            }
-            ifNotNull(nullTing1, nullTing2) { navn, penger ->
-                textExpr(
-                    Bokmal to "hei ".expr() + navn + " du har fått penger ".expr() + penger.str()
-                )
-            }
-            ifNotNull(nullTing1, nullTing2, nullTing3) { navn, penger, dato ->
-                textExpr(
-                    Bokmal to "hei ".expr() + navn + " du har fått penger ".expr() + penger.str() + " og de fikk du den ".expr() + dato.format()
                 )
             }
         }

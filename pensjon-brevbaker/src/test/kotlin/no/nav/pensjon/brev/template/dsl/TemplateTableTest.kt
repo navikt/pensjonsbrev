@@ -10,7 +10,6 @@ class TemplateTableTest {
     @Test
     fun `table can be created with default values`() {
 
-
         val doc = outlineTestTemplate<Unit> {
             table(header = {
                 column {
@@ -39,7 +38,7 @@ class TemplateTableTest {
 
                     )
                 ),
-                rows = listOf(
+                children = listOf(
                     Element.Table.Row(
                         listOf(
                             Element.Table.Cell(
@@ -127,21 +126,26 @@ class TemplateTableTest {
         }
         val expected = outlineTestLetter(
             Element.Table(
-                rows = listOf(
-                    Element.Table.Row(
+                children = listOf(
+                    Element.Conditional(
+                        true.expr(),
                         listOf(
-                            Element.Table.Cell(
-                                listOf(newText(Language.Bokmal to "hei"))
+                            Element.Table.Row(
+                                listOf(
+                                    Element.Table.Cell(
+                                        listOf(newText(Language.Bokmal to "hei"))
+                                    )
+                                )
+                            ),
+                            Element.Table.Row(
+                                listOf(
+                                    Element.Table.Cell(
+                                        listOf(newText(Language.Bokmal to "heihå"))
+                                    )
+                                )
                             )
-                        ), true.expr()
-                    ),
-                    Element.Table.Row(
-                        listOf(
-                            Element.Table.Cell(
-                                listOf(newText(Language.Bokmal to "heihå"))
-                            )
-                        ), true.expr()
-                    )
+                        )
+                    , emptyList())
                 ),
                 header =
                 Element.Table.Header(

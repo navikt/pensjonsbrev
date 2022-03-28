@@ -35,6 +35,7 @@ object LetterExample : StaticTemplate {
         val pensjonBeloep = argument().select(LetterExampleDto::pensjonBeloep)
         val pensjonInnvilget = argument().select(LetterExampleDto::pensjonInnvilget)
         val datoAvslaatt = argument().select(LetterExampleDto::datoAvslaatt)
+        val tillegg = argument().select(LetterExampleDto::tilleggEksempel)
         outline {
             //Select boolean expression from this letters argument
 
@@ -66,6 +67,18 @@ object LetterExample : StaticTemplate {
                 }
 
                 list {
+                    forEach(tillegg) { tillegg ->
+                        val navn = tillegg.select(ExampleTilleggDto::navn)
+                        val tillegg1 = tillegg.select(ExampleTilleggDto::tillegg1)
+                        ifNotNull(tillegg1) {
+                            item {
+                                textExpr(
+                                    Bokmal to "Du har fått tilleg1 for ".expr() + navn + " på ".expr() + it.str() + " Kr",
+                                    Nynorsk to "Du har fått tilleg1 for ".expr() + navn + " på ".expr() + it.str() + " Kr",
+                                )
+                            }
+                        }
+                    }
                     item {
                         text(Bokmal to "Test1", Nynorsk to "Test1")
                     }
@@ -115,6 +128,44 @@ object LetterExample : StaticTemplate {
                         column(1, RIGHT) { text(Bokmal to "Kolonne 4", Nynorsk to "Kolonne 4", FontType.BOLD) }
                     }
                 ) {
+                    forEach(tillegg) { tillegg ->
+                        val navn = tillegg.select(ExampleTilleggDto::navn)
+                        val tillegg1 = tillegg.select(ExampleTilleggDto::tillegg1)
+                        val tillegg2 = tillegg.select(ExampleTilleggDto::tillegg2)
+                        val tillegg3 = tillegg.select(ExampleTilleggDto::tillegg3)
+                        row {
+                            cell {
+                                textExpr(
+                                    Bokmal to "Du får tillegg for ".expr() + navn,
+                                    Nynorsk to "Du får tillegg for ".expr() + navn
+                                )
+                            }
+                            cell {
+                                ifNotNull(tillegg1) { tillegg ->
+                                    textExpr(
+                                        Bokmal to tillegg.str() + " Kr".expr(),
+                                        Nynorsk to tillegg.str() + " Kr".expr()
+                                    )
+                                }
+                            }
+                            cell {
+                                ifNotNull(tillegg2) { tillegg ->
+                                    textExpr(
+                                        Bokmal to tillegg.str() + " Kr".expr(),
+                                        Nynorsk to tillegg.str() + " Kr".expr()
+                                    )
+                                }
+                            }
+                            cell {
+                                ifNotNull(tillegg3) { tillegg ->
+                                    textExpr(
+                                        Bokmal to tillegg.str() + " Kr".expr(),
+                                        Nynorsk to tillegg.str() + " Kr".expr()
+                                    )
+                                }
+                            }
+                        }
+                    }
                     row {
                         cell {
                             text(
@@ -182,6 +233,7 @@ data class LetterExampleDto(
     val pensjonInnvilget: Boolean,
     val datoInnvilget: LocalDate,
     val navneliste: List<String>,
+    val tilleggEksempel: List<ExampleTilleggDto>,
     val datoAvslaatt: LocalDate?,
     val pensjonBeloep: Int?,
 ) {
@@ -190,10 +242,30 @@ data class LetterExampleDto(
         true,
         LocalDate.now(),
         listOf("test testerson1", "test testerson2", "test testerson3"),
-        LocalDate.of(2020, 1, 1),
+        listOf(
+            ExampleTilleggDto(
+                navn = "Test testerson 1",
+                tillegg1 = 300,
+                tillegg3 = 500,
+            ), ExampleTilleggDto(
+                navn = "Test testerson 2",
+                tillegg1 = 100,
+                tillegg2 = 600,
+            ), ExampleTilleggDto(
+                navn = "Test testerson 3",
+                tillegg2 = 300,
+            )
+        ), LocalDate.of(2020, 1, 1),
         100
     )
 }
+
+data class ExampleTilleggDto(
+    val navn: String,
+    val tillegg1: Int? = null,
+    val tillegg2: Int? = null,
+    val tillegg3: Int? = null,
+)
 
 data class OutlinePhraseDto(val datoInnvilget: LocalDate, val pensjonInnvilget: Boolean)
 

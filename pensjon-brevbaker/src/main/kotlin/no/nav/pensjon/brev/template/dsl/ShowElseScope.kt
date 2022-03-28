@@ -2,7 +2,7 @@ package no.nav.pensjon.brev.template.dsl
 
 import no.nav.pensjon.brev.template.*
 
-class ShowElseScope<Lang : LanguageSupport, LetterData : Any, Scope : TemplateManipulationScope<Lang, LetterData, Scope>>(
+class ShowElseScope<Lang : LanguageSupport, LetterData : Any, Scope : BaseControlStructureScope<Lang, LetterData, Scope>>(
     private val scopeFactory: () -> Scope,
 ) {
     val scope: Scope = scopeFactory()

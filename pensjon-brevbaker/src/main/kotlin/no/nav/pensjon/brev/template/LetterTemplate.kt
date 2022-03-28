@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.template
 
-import no.nav.pensjon.brev.api.model.*
+import no.nav.pensjon.brev.api.model.LetterMetadata
 import no.nav.pensjon.brev.template.base.BaseTemplate
 import kotlin.reflect.KClass
 
@@ -65,24 +65,27 @@ sealed class Element<out Lang : LanguageSupport> {
     data class Paragraph<out Lang : LanguageSupport>(val paragraph: List<Element<Lang>>) : Element<Lang>()
 
     data class ItemList<Lang : LanguageSupport>(
-        val items: List<Item<Lang>>
+        val items: List<Element<Lang>>
     ) : Element<Lang>() {
         init {
             if (items.isEmpty()) throw IllegalArgumentException("List has no items")
         }
 
         data class Item<Lang : LanguageSupport>(
-            val elements: List<Element<Lang>>,
-            val condition: Expression<Boolean>? = null
-        )
+            val elements: List<Element<Lang>>
+        ): Element<Lang>()
     }
 
     data class Table<Lang : LanguageSupport>(
-        val rows: List<Row<Lang>>,
+        val children: List<Element<Lang>>,
         val header: Header<Lang>,
     ) : Element<Lang>() {
 
         init {
+            val rows = children.flatMap { getRows(it) }
+
+            rows.forEach { it.colSpec.addAll(header.colSpec) }
+
             val cellCounts = rows.map { it.cells.size }.distinct()
             if (cellCounts.size > 1) {
                 throw InvalidTableDeclarationException("rows in the table needs to have the same number of cells")
@@ -95,7 +98,22 @@ sealed class Element<out Lang : LanguageSupport> {
             }
         }
 
-        data class Row<Lang : LanguageSupport>(val cells: List<Cell<Lang>>, val condition: Expression<Boolean>? = null): Element<Lang>()
+        private fun getRows(element: Element<Lang>): MutableList<Row<Lang>> {
+            val rows = mutableListOf<Row<Lang>>()
+            when (element) {
+                is Conditional<Lang> -> element.showIf.plus(element.showElse).forEach { rows.addAll(getRows(it)) }
+                is ForEachView<Lang, *> -> element.body.forEach { rows.addAll(getRows(it)) }
+                is Row<Lang> -> rows.add(element)
+                else -> throw InvalidTableDeclarationException("Unhandled element type within table " + element.javaClass.toString())
+            }
+            return rows
+        }
+
+        data class Row<Lang : LanguageSupport>(
+            val cells: List<Cell<Lang>>,
+            val colSpec: MutableList<ColumnSpec<Lang>> = mutableListOf()
+        ) : Element<Lang>()
+
         data class Header<Lang : LanguageSupport>(val colSpec: List<ColumnSpec<Lang>>)
 
         data class Cell<Lang : LanguageSupport>(
@@ -137,6 +155,7 @@ sealed class Element<out Lang : LanguageSupport> {
 
     sealed class Text<out Lang : LanguageSupport> : Element<Lang>() {
         abstract val fontType: FontType
+
         @Suppress("DataClassPrivateConstructor")
         data class Literal<out Lang : LanguageSupport> private constructor(
             private val text: Map<Language, String>,
@@ -233,9 +252,16 @@ sealed class Element<out Lang : LanguageSupport> {
     ) : Element<Lang>()
 
     @Suppress("DataClassPrivateConstructor")
-    data class ForEachView<out Lang : LanguageSupport, Item : Any> private constructor(val items: Expression<List<Item>>, val body: List<Element<Lang>>, private val next: NextExpression<Item>) : Element<Lang>() {
+    data class ForEachView<out Lang : LanguageSupport, Item : Any> private constructor(
+        val items: Expression<List<Item>>,
+        val body: List<Element<Lang>>,
+        private val next: NextExpression<Item>
+    ) : Element<Lang>() {
 
-        fun render(scope: ExpressionScope<*, *>, renderElement: (scope: ExpressionScope<*, *>, element: Element<*>) -> Unit) {
+        fun render(
+            scope: ExpressionScope<*, *>,
+            renderElement: (scope: ExpressionScope<*, *>, element: Element<*>) -> Unit
+        ) {
             items.eval(scope).forEach { item ->
                 val iteratorScope = ForEachExpressionScope(item to next, scope)
                 body.forEach { element ->
@@ -245,7 +271,10 @@ sealed class Element<out Lang : LanguageSupport> {
         }
 
         companion object {
-            fun <Lang : LanguageSupport, Item : Any> create(items: Expression<List<Item>>, createView: (item: Expression<Item>) -> List<Element<Lang>>): ForEachView<Lang, Item> =
+            fun <Lang : LanguageSupport, Item : Any> create(
+                items: Expression<List<Item>>,
+                createView: (item: Expression<Item>) -> List<Element<Lang>>
+            ): ForEachView<Lang, Item> =
                 NextExpression<Item>().let { ForEachView(items, createView(it), it) }
         }
 
@@ -259,11 +288,14 @@ sealed class Element<out Lang : LanguageSupport> {
                 }
         }
 
-        private class ForEachExpressionScope<Item : Any>(val next: Pair<Item, NextExpression<Item>>, val parent: ExpressionScope<*, *>) : ExpressionScope<Any, Language>(parent.argument, parent.felles, parent.language) {
+        private class ForEachExpressionScope<Item : Any>(
+            val next: Pair<Item, NextExpression<Item>>,
+            val parent: ExpressionScope<*, *>
+        ) : ExpressionScope<Any, Language>(parent.argument, parent.felles, parent.language) {
             fun evalNext(expr: NextExpression<Item>): Item =
                 if (expr == next.second) {
                     next.first
-                } else if(parent is ForEachExpressionScope<*>) {
+                } else if (parent is ForEachExpressionScope<*>) {
                     @Suppress("UNCHECKED_CAST")
                     (parent as ForEachExpressionScope<Item>).evalNext(expr)
                 } else {
