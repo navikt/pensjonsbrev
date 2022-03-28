@@ -8,9 +8,8 @@ import no.nav.pensjon.brev.template.base.PensjonLatex
 import no.nav.pensjon.brev.template.dsl.expression.*
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-import java.time.LocalDate
 
-data class NullBrevDto(val test1: String?, val test2: Int?, val test3: LocalDate?)
+data class NullBrevDto(val test1: String?)
 
 class IfNotNullTest {
 
@@ -62,13 +61,13 @@ class IfNotNullTest {
 
     @Test
     fun `ifNotNull renders successfully for non-null value`() {
-        Letter(template, NullBrevDto("Ole", 1234, LocalDate.of(2020,1,1)), Bokmal, felles)
+        Letter(template, NullBrevDto("Ole"), Bokmal, felles)
             .assertRenderedLetterContainsAllOf("alltid med", "hei: Ole")
     }
 
     @Test
     fun `ifNotNull renders successfully but without null-block`() {
-        Letter(template, NullBrevDto(null, null, null), Bokmal, felles)
+        Letter(template, NullBrevDto(null), Bokmal, felles)
             .assertRenderedLetterContainsAllOf("alltid med")
             .assertRenderedLetterDoesNotContainAnyOf("hei:")
     }
