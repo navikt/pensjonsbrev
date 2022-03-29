@@ -7,7 +7,7 @@ data class Felles(
     val saksnummer: String,
     val avsenderEnhet: NAVEnhet,
     val mottaker: Mottaker,
-    val signerendeSaksbehandlere: SignerendeSaksbehandlere? = null
+    val signerendeSaksbehandlere: SignerendeSaksbehandlere? = null,
 )
 
 data class ReturAdresse(val adresseLinje1: String, val postNr: String, val postSted: String)
@@ -19,7 +19,7 @@ data class Mottaker(
     val mellomnavn: String? = null,
     val etternavn: String,
     val foedselsnummer: Foedselsnummer,
-    val adresse: Adresse
+    val adresse: Adresse,
 )
 
 data class Adresse(
@@ -27,12 +27,12 @@ data class Adresse(
     val linje2: String,
     val linje3: String? = null,
     val linje4: String? = null,
-    val linje5: String? = null
+    val linje5: String? = null,
 )
 
 data class NAVEnhet(
     val returAdresse: ReturAdresse,
     val nettside: String,
     val navn: String,
-    val telefonnummer: Telefonnummer
+    val telefonnummer: Telefonnummer,
 )
