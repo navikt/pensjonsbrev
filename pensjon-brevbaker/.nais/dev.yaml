@@ -7,6 +7,9 @@ env:
     value: "http://pensjon-pdf-bygger:8080"
 
 preAuthorized:
+  - name: pensjon-pen-q0
+    namespace: teampensjon
+    cluster: dev-fss
   - name: pensjon-pen-t0
     namespace: teampensjon
     cluster: dev-fss

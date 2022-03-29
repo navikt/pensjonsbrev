@@ -10,6 +10,3 @@ preAuthorized:
   - name: pensjon-pen
     namespace: teampensjon
     cluster: prod-fss
-  - name: pensjon-pen-q0
-    namespace: teampensjon
-    cluster: dev-fss
