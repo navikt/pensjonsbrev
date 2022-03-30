@@ -91,7 +91,7 @@ class LetterResourceTest {
 
     @Test
     fun `create fails for unsupported language`() {
-        assertThrows<IllegalArgumentException> {
+        assertThrows<BadRequestException> {
             testLetterResource.create(
                 LetterRequest(
                     template.name,
