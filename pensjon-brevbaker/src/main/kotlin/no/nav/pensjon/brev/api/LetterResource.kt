@@ -11,14 +11,12 @@ class LetterResource(val templateResource: TemplateResource = TemplateResource()
     private val objectMapper = jacksonObjectMapper()
 
     fun create(letterRequest: LetterRequest): Letter<*> {
-        // TODO: Should probably be 400 exception since it is a reference in the body that dont exists
         val template: LetterTemplate<*, *> = templateResource.getTemplate(letterRequest.template)
             ?: throw NotFoundException("Template '${letterRequest.template}' doesn't exist")
 
         val language = letterRequest.language.toLanguage()
         if (!template.language.supports(language)) {
-            // TODO: Should be 400 response
-            throw IllegalArgumentException("Template '${template.name}' doesn't support language: ${letterRequest.language}")
+            throw BadRequestException("Template '${template.name}' doesn't support language: ${letterRequest.language}")
         }
 
         return Letter(
@@ -33,8 +31,7 @@ class LetterResource(val templateResource: TemplateResource = TemplateResource()
         try {
             objectMapper.convertValue(letterRequest.letterData, template.letterDataType.java)
         } catch (e: JacksonException) {
-            // TODO: Should be 400 response
-            throw IllegalArgumentException("Could not parse letterData", e)
+            throw BadRequestException("Could not parse letterData", e)
         }
 
 }
