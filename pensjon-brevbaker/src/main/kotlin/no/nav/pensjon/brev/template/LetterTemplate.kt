@@ -90,16 +90,8 @@ sealed class Element<out Lang : LanguageSupport> {
     ) : Element<Lang>() {
 
         init {
-            val rows = children.flatMap { getRows(it) }
-            val cellCounts = rows.map { it.cells.size }.distinct()
-            if (cellCounts.size > 1) {
-                throw InvalidTableDeclarationException("rows in the table needs to have the same number of cells")
-            }
-            val cellcount = cellCounts.firstOrNull()
-                ?: throw InvalidTableDeclarationException("A table must have at least one row")
-
-            if (cellcount == 0) {
-                throw InvalidTableDeclarationException("The table rows must have at least one cell/column")
+            if (children.flatMap { getRows(it) }.isEmpty()) {
+                throw InvalidTableDeclarationException("A table must have at least one row")
             }
         }
 
@@ -113,8 +105,17 @@ sealed class Element<out Lang : LanguageSupport> {
 
         data class Row<Lang : LanguageSupport>(
             val cells: List<Cell<Lang>>,
-            val colSpec: List<ColumnSpec<Lang>> = mutableListOf()
-        ) : Element<Lang>()
+            val colSpec: List<ColumnSpec<Lang>>
+        ) : Element<Lang>() {
+            init {
+                if (cells.isEmpty()) {
+                    throw InvalidTableDeclarationException("Rows need at least one cell")
+                }
+                if (cells.size != colSpec.size) {
+                    throw InvalidTableDeclarationException("The number of cells in the row(${cells.size}) does match the number of columns in the specification(${colSpec.size})")
+                }
+            }
+        }
 
         data class Header<Lang : LanguageSupport>(val colSpec: List<ColumnSpec<Lang>>)
 
@@ -126,7 +127,13 @@ sealed class Element<out Lang : LanguageSupport> {
             val headerContent: Cell<Lang>,
             val alignment: ColumnAlignment,
             val columnSpan: Int = 1
-        )
+        ){
+            init {
+                if (headerContent.elements.isEmpty()) {
+                    throw InvalidTableDeclarationException("Column specification needs at least one column")
+                }
+            }
+        }
 
         enum class ColumnAlignment {
             LEFT, RIGHT
