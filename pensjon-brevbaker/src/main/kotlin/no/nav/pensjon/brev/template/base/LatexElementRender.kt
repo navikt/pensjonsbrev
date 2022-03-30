@@ -1,11 +1,8 @@
 package no.nav.pensjon.brev.template.base
 
 import no.nav.pensjon.brev.latex.LatexPrintWriter
-import no.nav.pensjon.brev.template.Element
+import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Element.Text.FontType
-import no.nav.pensjon.brev.template.ExpressionScope
-import no.nav.pensjon.brev.template.InvalidTableDeclarationException
-import no.nav.pensjon.brev.template.LanguageSupport
 
 
 fun renderElement(
@@ -76,7 +73,7 @@ private fun willRenderRow(element: Element<*>, scope: ExpressionScope<*, *>): Bo
             hasRow
         }
         is Element.Table.Row<*> -> true
-        else -> throw InvalidTableDeclarationException("Unhandled element type within table " + element.javaClass.toString())
+        else -> throw InvalidTableDeclarationException("Unsupported element-kind within table: ${element.javaClass.name}")
     }
 }
 
