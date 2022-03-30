@@ -38,10 +38,11 @@ abstract class ParagraphScopeBase<Lang : LanguageSupport, LetterData : Any, Scop
 
     fun table(header: TableHeaderScope<Lang, LetterData>.() -> Unit,
               init: TableScope<Lang, LetterData>.() -> Unit) {
+        val colSpec = TableHeaderScope<Lang, LetterData>().apply(header).children
         children.add(
             Element.Table(
-                children = TableScope<Lang, LetterData>().apply(init).children,
-                header = Element.Table.Header(TableHeaderScope<Lang, LetterData>().apply(header).children)
+                children = TableScope<Lang, LetterData>(colSpec).apply(init).children,
+                header = Element.Table.Header(colSpec)
             )
         )
     }

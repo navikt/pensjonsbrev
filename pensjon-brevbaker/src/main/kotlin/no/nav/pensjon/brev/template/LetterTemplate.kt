@@ -65,15 +65,23 @@ sealed class Element<out Lang : LanguageSupport> {
     data class Paragraph<out Lang : LanguageSupport>(val paragraph: List<Element<Lang>>) : Element<Lang>()
 
     data class ItemList<Lang : LanguageSupport>(
-        val items: List<Element<Lang>>
+        val elements: List<Element<Lang>>
     ) : Element<Lang>() {
         init {
-            if (items.isEmpty()) throw IllegalArgumentException("List has no items")
+            if (elements.flatMap { getItems(it) }.isEmpty()) throw InvalidListDeclarationException("List has no items")
         }
 
         data class Item<Lang : LanguageSupport>(
             val elements: List<Element<Lang>>
-        ): Element<Lang>()
+        ) : Element<Lang>()
+
+        private fun getItems(element: Element<Lang>): List<Item<Lang>> =
+            when (element) {
+                is Conditional<Lang> -> element.showIf.plus(element.showElse).flatMap { getItems(it) }
+                is ForEachView<Lang, *> -> element.body.flatMap { getItems(it) }
+                is Item -> listOf(element)
+                else -> throw InvalidListDeclarationException("Unsupported element-kind within list: ${element.javaClass.name}")
+            }
     }
 
     data class Table<Lang : LanguageSupport>(
@@ -83,9 +91,6 @@ sealed class Element<out Lang : LanguageSupport> {
 
         init {
             val rows = children.flatMap { getRows(it) }
-
-            rows.forEach { it.colSpec.addAll(header.colSpec) }
-
             val cellCounts = rows.map { it.cells.size }.distinct()
             if (cellCounts.size > 1) {
                 throw InvalidTableDeclarationException("rows in the table needs to have the same number of cells")
@@ -98,20 +103,17 @@ sealed class Element<out Lang : LanguageSupport> {
             }
         }
 
-        private fun getRows(element: Element<Lang>): MutableList<Row<Lang>> {
-            val rows = mutableListOf<Row<Lang>>()
+        private fun getRows(element: Element<Lang>): List<Row<Lang>> =
             when (element) {
-                is Conditional<Lang> -> element.showIf.plus(element.showElse).forEach { rows.addAll(getRows(it)) }
-                is ForEachView<Lang, *> -> element.body.forEach { rows.addAll(getRows(it)) }
-                is Row<Lang> -> rows.add(element)
+                is Conditional<Lang> -> element.showIf.plus(element.showElse).flatMap { getRows(it) }
+                is ForEachView<Lang, *> -> element.body.flatMap { getRows(it) }
+                is Row<Lang> -> listOf(element)
                 else -> throw InvalidTableDeclarationException("Unhandled element type within table " + element.javaClass.toString())
             }
-            return rows
-        }
 
         data class Row<Lang : LanguageSupport>(
             val cells: List<Cell<Lang>>,
-            val colSpec: MutableList<ColumnSpec<Lang>> = mutableListOf()
+            val colSpec: List<ColumnSpec<Lang>> = mutableListOf()
         ) : Element<Lang>()
 
         data class Header<Lang : LanguageSupport>(val colSpec: List<ColumnSpec<Lang>>)
@@ -308,3 +310,4 @@ sealed class Element<out Lang : LanguageSupport> {
 class MissingScopeForNextItemEvaluationException(msg: String) : Exception(msg)
 class InvalidScopeTypeException(msg: String) : Exception(msg)
 class InvalidTableDeclarationException(msg: String) : Exception(msg)
+class InvalidListDeclarationException(msg: String) : Exception(msg)

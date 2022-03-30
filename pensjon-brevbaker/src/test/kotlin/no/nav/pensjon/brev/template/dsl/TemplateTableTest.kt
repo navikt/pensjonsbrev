@@ -24,27 +24,24 @@ class TemplateTableTest {
             }
         }
 
+        val colSpec = listOf(
+            Element.Table.ColumnSpec(
+                Element.Table.Cell(
+                    listOf(newText(Language.Bokmal to "header"))
+                ), Element.Table.ColumnAlignment.LEFT
+            )
+        )
         val expected = outlineTestLetter(
             Element.Table(
                 header =
-                Element.Table.Header(
-                    listOf(
-                        Element.Table.ColumnSpec(
-                            Element.Table.Cell(
-                                listOf(newText(Language.Bokmal to "header"))
-                            ),
-                            Element.Table.ColumnAlignment.LEFT
-                        )
-
-                    )
-                ),
+                Element.Table.Header(colSpec),
                 children = listOf(
                     Element.Table.Row(
                         listOf(
                             Element.Table.Cell(
                                 listOf(newText(Language.Bokmal to "joda"))
                             )
-                        )
+                        ), colSpec
                     )
                 )
             )
@@ -124,6 +121,13 @@ class TemplateTableTest {
                 }
             }
         }
+        val colSpec = listOf(
+            Element.Table.ColumnSpec(
+                Element.Table.Cell(
+                    listOf(newText(Language.Bokmal to "header"))
+                ), Element.Table.ColumnAlignment.LEFT
+            )
+        )
         val expected = outlineTestLetter(
             Element.Table(
                 children = listOf(
@@ -135,30 +139,20 @@ class TemplateTableTest {
                                     Element.Table.Cell(
                                         listOf(newText(Language.Bokmal to "hei"))
                                     )
-                                )
+                                ),
+                                colSpec = colSpec
                             ),
                             Element.Table.Row(
                                 listOf(
                                     Element.Table.Cell(
                                         listOf(newText(Language.Bokmal to "heihå"))
                                     )
-                                )
+                                ), colSpec = colSpec
                             )
-                        )
-                    , emptyList())
-                ),
-                header =
-                Element.Table.Header(
-                    listOf(
-                        Element.Table.ColumnSpec(
-                            Element.Table.Cell(
-                                listOf(newText(Language.Bokmal to "header"))
-                            ),
-                            Element.Table.ColumnAlignment.LEFT
-                        )
-
+                        ), emptyList()
                     )
-                )
+                ),
+                header = Element.Table.Header(colSpec)
             )
         )
         assertEquals(expected, doc)

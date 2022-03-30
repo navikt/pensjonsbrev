@@ -6,7 +6,7 @@ import no.nav.pensjon.brev.template.LanguageSupport
 
 @LetterTemplateMarker
 class ListScope<Lang : LanguageSupport, LetterData : Any>
-    : BaseControlStructureScope<Lang, LetterData, ListScope<Lang, LetterData>>() {
+    : ControlStructureScopeBase<Lang, LetterData, ListScope<Lang, LetterData>>() {
     fun item(
         init: TextOnlyScope<Lang, LetterData>.() -> Unit
     ) {

@@ -15,21 +15,21 @@ fun renderElement(
 ): Unit =
     when (element) {
         is Element.Conditional<*> -> conditional(element, scope, printWriter)
+        is Element.ForEachView<*, *> -> element.render(scope) { s, e -> renderElement(s, e, printWriter) }
         is Element.Form.MultipleChoice<*> -> formMultipleChoice(printWriter, element, scope)
         is Element.Form.Text<*> -> formText(printWriter, element, scope)
         is Element.IncludePhrase<*, *> -> includePhrase(element, scope, printWriter)
-        is Element.ItemList<*> -> itemList(printWriter, element, scope)
+        is Element.ItemList<*> -> list(printWriter, element, scope)
         is Element.ItemList.Item<*> -> listItem(printWriter, element, scope)
         is Element.NewLine<*> -> printWriter.printCmd("newline")
         is Element.Paragraph<*> -> paragraph(printWriter, element, scope)
         is Element.Table<*> -> table(printWriter, element, scope)
+        is Element.Table.Row<*> -> renderTableCells(element.cells, scope, printWriter, element.colSpec)
         is Element.Text.Expression.ByLanguage<*> ->
             printText(printWriter, element, element.expr(scope.language).eval(scope))
         is Element.Text.Expression<*> -> printText(printWriter, element, element.expression.eval(scope))
         is Element.Text.Literal<*> -> printText(printWriter, element, element.text(scope.language))
         is Element.Title1<*> -> title1(printWriter, element, scope)
-        is Element.ForEachView<*, *> -> element.render(scope) { s, e -> renderElement(s, e, printWriter) }
-        is Element.Table.Row<*> -> renderTableCells(element.cells, scope, printWriter, element.colSpec)
     }
 
 private fun listItem(
@@ -48,32 +48,31 @@ private fun table(
 ) {
     with(printWriter) {
         val tableElements = element.children
-        if (tableElements.isEmpty()) return
-        val atLeastOneRow = element.children.any { willRenderRow(it, scope) }
-        if(!atLeastOneRow) return
-        val columnSpec = element.header.colSpec
+        if (tableElements.isNotEmpty() && tableElements.any { willRenderRow(it, scope) }) {
+            val columnSpec = element.header.colSpec
 
-        printCmd("begin") {
-            arg { print("letterTable") }
-            arg { print(columnHeadersLatexString(columnSpec)) }
+            printCmd("begin") {
+                arg { print("letterTable") }
+                arg { print(columnHeadersLatexString(columnSpec)) }
+            }
+
+            renderTableCells(columnSpec.map { it.headerContent }, scope, printWriter, columnSpec)
+            tableElements.forEach { renderElement(scope, it, printWriter) }
+
+            printCmd("end") { arg { print("letterTable") } }
         }
-
-        renderTableCells(columnSpec.map { it.headerContent }, scope, printWriter, columnSpec)
-        tableElements.forEach { renderElement(scope, it, printWriter) }
-
-        printCmd("end") { arg { print("letterTable") } }
     }
 }
 
 private fun willRenderRow(element: Element<*>, scope: ExpressionScope<*, *>): Boolean {
-    return when(element) {
+    return when (element) {
         is Element.Conditional<*> -> {
             val toRender = if (element.predicate.eval(scope)) element.showIf else element.showElse
-            return toRender.any{ willRenderRow(it, scope)}
+            return toRender.any { willRenderRow(it, scope) }
         }
         is Element.ForEachView<*, *> -> {
             var hasRow = false
-            element.render(scope) { s, e -> hasRow = willRenderRow(e, s)}
+            element.render(scope) { s, e -> hasRow = willRenderRow(e, s) }
             hasRow
         }
         is Element.Table.Row<*> -> true
@@ -134,29 +133,29 @@ private fun paragraph(
     }
 }
 
-private fun itemList(
+private fun list(
     printWriter: LatexPrintWriter,
     element: Element.ItemList<*>,
     scope: ExpressionScope<*, *>
 ) {
-    val atLeastOneItem = element.items.any { willRenderItem(it, scope) }
-    if (!atLeastOneItem) return
-    with(printWriter) {
-        printCmd("begin") { arg { print("itemize") } }
-        element.items.forEach { renderElement(scope, it, printWriter) }
-        printCmd("end") { arg { print("itemize") } }
+    if (element.elements.any { willRenderItem(it, scope) }) {
+        with(printWriter) {
+            printCmd("begin") { arg { print("itemize") } }
+            element.elements.forEach { renderElement(scope, it, printWriter) }
+            printCmd("end") { arg { print("itemize") } }
+        }
     }
 }
 
 private fun willRenderItem(element: Element<*>, scope: ExpressionScope<*, *>): Boolean {
-    return when(element) {
+    return when (element) {
         is Element.Conditional<*> -> {
             val toRender = if (element.predicate.eval(scope)) element.showIf else element.showElse
-            return toRender.any{ willRenderItem(it, scope)}
+            return toRender.any { willRenderItem(it, scope) }
         }
         is Element.ForEachView<*, *> -> {
             var hasItem = false
-            element.render(scope) { s, e -> hasItem = willRenderItem(e, s)}
+            element.render(scope) { s, e -> hasItem = willRenderItem(e, s) }
             hasItem
         }
         is Element.ItemList.Item<*> -> true

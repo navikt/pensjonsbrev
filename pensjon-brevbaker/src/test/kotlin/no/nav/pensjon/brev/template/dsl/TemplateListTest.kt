@@ -1,9 +1,7 @@
 package no.nav.pensjon.brev.template.dsl
 
-import no.nav.pensjon.brev.template.Element
-import no.nav.pensjon.brev.template.Language
+import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.dsl.expression.expr
-import no.nav.pensjon.brev.template.outlineTestLetter
 import no.nav.pensjon.brev.template.outlineTestTemplate
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
@@ -32,7 +30,7 @@ class TemplateListTest {
 
     @Test
     fun `list creation fails when list has no item definitions`() {
-        Assertions.assertThrows(IllegalArgumentException::class.java) {
+        Assertions.assertThrows(InvalidListDeclarationException::class.java) {
             outlineTestTemplate<Unit> {
                 list {}
             }

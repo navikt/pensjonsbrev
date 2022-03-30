@@ -22,7 +22,7 @@ class TextOnlyScope<Lang : LanguageSupport, LetterData : Any>(children: MutableL
 
 abstract class TextOnlyScopeBase<Lang : LanguageSupport, LetterData : Any, Scope : TextOnlyScopeBase<Lang, LetterData, Scope>>(
     children: MutableList<Element<Lang>> = mutableListOf()
-) : BaseControlStructureScope<Lang, LetterData, Scope>(children) {
+) : ControlStructureScopeBase<Lang, LetterData, Scope>(children) {
 
     fun addAll(items: List<Element<Lang>>) {
         children.addAll(items)
