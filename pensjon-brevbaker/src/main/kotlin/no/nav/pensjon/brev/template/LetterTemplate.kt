@@ -112,7 +112,7 @@ sealed class Element<out Lang : LanguageSupport> {
                     throw InvalidTableDeclarationException("Rows need at least one cell")
                 }
                 if (cells.size != colSpec.size) {
-                    throw InvalidTableDeclarationException("The number of cells in the row(${cells.size}) does match the number of columns in the specification(${colSpec.size})")
+                    throw InvalidTableDeclarationException("The number of cells in the row(${cells.size}) does not match the number of columns in the specification(${colSpec.size})")
                 }
             }
         }
