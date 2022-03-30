@@ -85,13 +85,12 @@ dependencies {
     implementation("io.ktor:ktor-auth-jwt:$ktor_version")
     implementation("no.nav.pensjon.brev:pensjon-brevbaker-api-model:1.3.1")
     // Necessary for java.time.LocalDate
-    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.13.1")
+    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.13.2")
     // Metrics
     implementation("io.ktor:ktor-metrics:$ktor_version")
     implementation("io.ktor:ktor-metrics-micrometer:$ktor_version")
-    implementation("io.micrometer:micrometer-registry-prometheus:1.8.2")
+    implementation("io.micrometer:micrometer-registry-prometheus:1.8.3")
 
-    testImplementation("io.ktor:ktor-server-tests:$ktor_version")
     // JUnit 5
     testImplementation(platform("org.junit:junit-bom:$jupiter_version"))
     testImplementation("org.junit.jupiter:junit-jupiter")

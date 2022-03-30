@@ -53,7 +53,7 @@ data class UfoerOmregningEnsligDto(
     val tidligere_saerkullsbarn: List<String>,
     val total_ufoeremaaneder: Number,
     val ufoeretrygd_med_barnetillegg_er_over_95_prosent_av_inntekt_foer_ufoerhet: Boolean,
-    val ufoeretrygd_vedvirk_er_inntektsavkortet: Boolean
+    val ufoeretrygd_vedvirk_er_inntektsavkortet: Boolean,
 ) {
     constructor() : this(
         avdod_navn = "Avdød Navn",
@@ -103,6 +103,6 @@ data class UfoerOmregningEnsligDto(
         tidligere_saerkullsbarn = listOf("saerkullsbarn1", "saerkullsbarn2", "saerkullsbarn3"),
         total_ufoeremaaneder = 123,
         ufoeretrygd_med_barnetillegg_er_over_95_prosent_av_inntekt_foer_ufoerhet = false,
-        ufoeretrygd_vedvirk_er_inntektsavkortet = false
+        ufoeretrygd_vedvirk_er_inntektsavkortet = false,
     )
 }

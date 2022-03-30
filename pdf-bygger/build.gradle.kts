@@ -46,9 +46,7 @@ dependencies {
     // Metrics
     implementation("io.ktor:ktor-metrics:$ktorVersion")
     implementation("io.ktor:ktor-metrics-micrometer:$ktorVersion")
-    implementation("io.micrometer:micrometer-registry-prometheus:1.8.1")
-
-    testImplementation("io.ktor:ktor-server-tests:$ktorVersion")
+    implementation("io.micrometer:micrometer-registry-prometheus:1.8.3")
 }
 
 application {
