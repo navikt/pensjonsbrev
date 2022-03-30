@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.template
 
-import no.nav.pensjon.brev.api.model.*
+import no.nav.pensjon.brev.api.model.LetterMetadata
 import no.nav.pensjon.brev.template.base.BaseTemplate
 import kotlin.reflect.KClass
 
@@ -65,37 +65,58 @@ sealed class Element<out Lang : LanguageSupport> {
     data class Paragraph<out Lang : LanguageSupport>(val paragraph: List<Element<Lang>>) : Element<Lang>()
 
     data class ItemList<Lang : LanguageSupport>(
-        val items: List<Item<Lang>>
+        val elements: List<Element<Lang>>
     ) : Element<Lang>() {
         init {
-            if (items.isEmpty()) throw IllegalArgumentException("List has no items")
+            if (elements.flatMap { getItems(it) }.isEmpty()) throw InvalidListDeclarationException("List has no items")
         }
 
         data class Item<Lang : LanguageSupport>(
-            val elements: List<Element<Lang>>,
-            val condition: Expression<Boolean>? = null
-        )
+            val elements: List<Element<Lang>>
+        ) : Element<Lang>()
+
+        private fun getItems(element: Element<Lang>): List<Item<Lang>> =
+            when (element) {
+                is Conditional<Lang> -> element.showIf.plus(element.showElse).flatMap { getItems(it) }
+                is ForEachView<Lang, *> -> element.body.flatMap { getItems(it) }
+                is Item -> listOf(element)
+                else -> throw InvalidListDeclarationException("Unsupported element-kind within list: ${element.javaClass.name}")
+            }
     }
 
     data class Table<Lang : LanguageSupport>(
-        val rows: List<Row<Lang>>,
+        val children: List<Element<Lang>>,
         val header: Header<Lang>,
     ) : Element<Lang>() {
 
         init {
-            val cellCounts = rows.map { it.cells.size }.distinct()
-            if (cellCounts.size > 1) {
-                throw InvalidTableDeclarationException("rows in the table needs to have the same number of cells")
-            }
-            val cellcount = cellCounts.firstOrNull()
-                ?: throw InvalidTableDeclarationException("A table must have at least one row")
-
-            if (cellcount == 0) {
-                throw InvalidTableDeclarationException("The table rows must have at least one cell/column")
+            if (children.flatMap { getRows(it) }.isEmpty()) {
+                throw InvalidTableDeclarationException("A table must have at least one row")
             }
         }
 
-        data class Row<Lang : LanguageSupport>(val cells: List<Cell<Lang>>, val condition: Expression<Boolean>? = null)
+        private fun getRows(element: Element<Lang>): List<Row<Lang>> =
+            when (element) {
+                is Conditional<Lang> -> element.showIf.plus(element.showElse).flatMap { getRows(it) }
+                is ForEachView<Lang, *> -> element.body.flatMap { getRows(it) }
+                is Row<Lang> -> listOf(element)
+                else -> throw InvalidTableDeclarationException("Unhandled element type within table " + element.javaClass.toString())
+            }
+
+        data class Row<Lang : LanguageSupport>(
+            val cells: List<Cell<Lang>>,
+            val colSpec: List<ColumnSpec<Lang>>
+        ) : Element<Lang>() {
+            init {
+                if (cells.isEmpty()) {
+                    throw InvalidTableDeclarationException("Rows need at least one cell")
+                }
+                if (cells.size != colSpec.size) {
+                    throw InvalidTableDeclarationException("The number of cells in the row(${cells.size}) does not match the number of columns in the specification(${colSpec.size})")
+                }
+            }
+        }
+
         data class Header<Lang : LanguageSupport>(val colSpec: List<ColumnSpec<Lang>>)
 
         data class Cell<Lang : LanguageSupport>(
@@ -106,7 +127,13 @@ sealed class Element<out Lang : LanguageSupport> {
             val headerContent: Cell<Lang>,
             val alignment: ColumnAlignment,
             val columnSpan: Int = 1
-        )
+        ){
+            init {
+                if (headerContent.elements.isEmpty()) {
+                    throw InvalidTableDeclarationException("Column specification needs at least one column")
+                }
+            }
+        }
 
         enum class ColumnAlignment {
             LEFT, RIGHT
@@ -137,6 +164,7 @@ sealed class Element<out Lang : LanguageSupport> {
 
     sealed class Text<out Lang : LanguageSupport> : Element<Lang>() {
         abstract val fontType: FontType
+
         @Suppress("DataClassPrivateConstructor")
         data class Literal<out Lang : LanguageSupport> private constructor(
             private val text: Map<Language, String>,
@@ -233,9 +261,16 @@ sealed class Element<out Lang : LanguageSupport> {
     ) : Element<Lang>()
 
     @Suppress("DataClassPrivateConstructor")
-    data class ForEachView<out Lang : LanguageSupport, Item : Any> private constructor(val items: Expression<List<Item>>, val body: List<Element<Lang>>, private val next: NextExpression<Item>) : Element<Lang>() {
+    data class ForEachView<out Lang : LanguageSupport, Item : Any> private constructor(
+        val items: Expression<List<Item>>,
+        val body: List<Element<Lang>>,
+        private val next: NextExpression<Item>
+    ) : Element<Lang>() {
 
-        fun render(scope: ExpressionScope<*, *>, renderElement: (scope: ExpressionScope<*, *>, element: Element<*>) -> Unit) {
+        fun render(
+            scope: ExpressionScope<*, *>,
+            renderElement: (scope: ExpressionScope<*, *>, element: Element<*>) -> Unit
+        ) {
             items.eval(scope).forEach { item ->
                 val iteratorScope = ForEachExpressionScope(item to next, scope)
                 body.forEach { element ->
@@ -245,7 +280,10 @@ sealed class Element<out Lang : LanguageSupport> {
         }
 
         companion object {
-            fun <Lang : LanguageSupport, Item : Any> create(items: Expression<List<Item>>, createView: (item: Expression<Item>) -> List<Element<Lang>>): ForEachView<Lang, Item> =
+            fun <Lang : LanguageSupport, Item : Any> create(
+                items: Expression<List<Item>>,
+                createView: (item: Expression<Item>) -> List<Element<Lang>>
+            ): ForEachView<Lang, Item> =
                 NextExpression<Item>().let { ForEachView(items, createView(it), it) }
         }
 
@@ -259,11 +297,14 @@ sealed class Element<out Lang : LanguageSupport> {
                 }
         }
 
-        private class ForEachExpressionScope<Item : Any>(val next: Pair<Item, NextExpression<Item>>, val parent: ExpressionScope<*, *>) : ExpressionScope<Any, Language>(parent.argument, parent.felles, parent.language) {
+        private class ForEachExpressionScope<Item : Any>(
+            val next: Pair<Item, NextExpression<Item>>,
+            val parent: ExpressionScope<*, *>
+        ) : ExpressionScope<Any, Language>(parent.argument, parent.felles, parent.language) {
             fun evalNext(expr: NextExpression<Item>): Item =
                 if (expr == next.second) {
                     next.first
-                } else if(parent is ForEachExpressionScope<*>) {
+                } else if (parent is ForEachExpressionScope<*>) {
                     @Suppress("UNCHECKED_CAST")
                     (parent as ForEachExpressionScope<Item>).evalNext(expr)
                 } else {
@@ -276,3 +317,4 @@ sealed class Element<out Lang : LanguageSupport> {
 class MissingScopeForNextItemEvaluationException(msg: String) : Exception(msg)
 class InvalidScopeTypeException(msg: String) : Exception(msg)
 class InvalidTableDeclarationException(msg: String) : Exception(msg)
+class InvalidListDeclarationException(msg: String) : Exception(msg)

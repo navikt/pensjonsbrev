@@ -1,10 +1,13 @@
 package no.nav.pensjon.brev.template.base
 
 import no.nav.pensjon.brev.Fixtures
-import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Language.Bokmal
+import no.nav.pensjon.brev.template.Letter
+import no.nav.pensjon.brev.template.assertRenderedLetterContainsAllOf
+import no.nav.pensjon.brev.template.assertRenderedLetterDoesNotContainAnyOf
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.outlineTestTemplate
 import org.junit.jupiter.api.Test
 
 class PensjonLatexTest {
@@ -16,7 +19,7 @@ class PensjonLatexTest {
                 header = {
                     column {
                         text(
-                            Bokmal to "This text should not render",
+                            Bokmal to "This text should not render1",
                         )
                     }
                 }
@@ -25,7 +28,7 @@ class PensjonLatexTest {
                     row {
                         cell {
                             text(
-                                Bokmal to "This text should not render",
+                                Bokmal to "This text should not render2",
                             )
                         }
                     }
@@ -34,7 +37,11 @@ class PensjonLatexTest {
         }
 
         Letter(doc, Unit, Bokmal, Fixtures.felles)
-            .assertRenderedLetterDoesNotContainAnyOf("longtblr", "This text should not render")
+            .assertRenderedLetterDoesNotContainAnyOf(
+                "longtblr",
+                "This text should not render1",
+                "This text should not render2"
+            )
             .assertRenderedLetterContainsAllOf("THIS TEXT SHOULD RENDER")
     }
 
@@ -49,7 +56,7 @@ class PensjonLatexTest {
                         )
                     }
                 }
-            ){
+            ) {
                 showIf(true.expr()) {
                     row {
                         cell {

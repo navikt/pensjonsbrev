@@ -9,7 +9,7 @@ import no.nav.pensjon.brev.template.dsl.expression.*
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
-data class NullBrevDto(val navn: String?)
+data class NullBrevDto(val test1: String?)
 
 class IfNotNullTest {
 
@@ -27,8 +27,8 @@ class IfNotNullTest {
     ) {
         outline {
             text(Bokmal to "alltid med")
-            val nullTing = argument().select(NullBrevDto::navn)
-            ifNotNull(nullTing) { ting ->
+            val nullTing1 = argument().select(NullBrevDto::test1)
+            ifNotNull(nullTing1) { ting ->
                 textExpr(
                     Bokmal to "hei: ".expr() + ting
                 )
@@ -38,22 +38,23 @@ class IfNotNullTest {
 
     @Test
     fun `ifNotNull adds a conditional with null check for navn`() {
-
-        val navn = Expression.FromScope(ExpressionScope<NullBrevDto, *>::argument).select(NullBrevDto::navn)
+        val navn = Expression.FromScope(ExpressionScope<NullBrevDto, *>::argument).select(NullBrevDto::test1)
 
         @Suppress("UNCHECKED_CAST") // (navn as Expression<String>)
-        val expected = template.copy(outline = listOf(
-            newText(Bokmal to "alltid med"),
-            Element.Conditional(
-                predicate = navn.notNull(),
-                showIf = listOf(
-                    Element.Text.Expression.ByLanguage.create(
-                        Bokmal to "hei: ".expr() + (navn as Expression<String>)
-                    )
-                ),
-                showElse = emptyList(),
+        val expected = template.copy(
+            outline = listOf(
+                newText(Bokmal to "alltid med"),
+                Element.Conditional(
+                    predicate = navn.notNull(),
+                    showIf = listOf(
+                        Element.Text.Expression.ByLanguage.create(
+                            Bokmal to "hei: ".expr() + (navn as Expression<String>)
+                        )
+                    ),
+                    showElse = emptyList(),
+                )
             )
-        ))
+        )
 
         assertEquals(expected, template)
     }

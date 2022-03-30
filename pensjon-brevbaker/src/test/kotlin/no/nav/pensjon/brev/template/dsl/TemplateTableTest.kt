@@ -10,7 +10,6 @@ class TemplateTableTest {
     @Test
     fun `table can be created with default values`() {
 
-
         val doc = outlineTestTemplate<Unit> {
             table(header = {
                 column {
@@ -25,27 +24,24 @@ class TemplateTableTest {
             }
         }
 
+        val colSpec = listOf(
+            Element.Table.ColumnSpec(
+                Element.Table.Cell(
+                    listOf(newText(Language.Bokmal to "header"))
+                ), Element.Table.ColumnAlignment.LEFT
+            )
+        )
         val expected = outlineTestLetter(
             Element.Table(
                 header =
-                Element.Table.Header(
-                    listOf(
-                        Element.Table.ColumnSpec(
-                            Element.Table.Cell(
-                                listOf(newText(Language.Bokmal to "header"))
-                            ),
-                            Element.Table.ColumnAlignment.LEFT
-                        )
-
-                    )
-                ),
-                rows = listOf(
+                Element.Table.Header(colSpec),
+                children = listOf(
                     Element.Table.Row(
                         listOf(
                             Element.Table.Cell(
                                 listOf(newText(Language.Bokmal to "joda"))
                             )
-                        )
+                        ), colSpec
                     )
                 )
             )
@@ -125,36 +121,38 @@ class TemplateTableTest {
                 }
             }
         }
+        val colSpec = listOf(
+            Element.Table.ColumnSpec(
+                Element.Table.Cell(
+                    listOf(newText(Language.Bokmal to "header"))
+                ), Element.Table.ColumnAlignment.LEFT
+            )
+        )
         val expected = outlineTestLetter(
             Element.Table(
-                rows = listOf(
-                    Element.Table.Row(
+                children = listOf(
+                    Element.Conditional(
+                        true.expr(),
                         listOf(
-                            Element.Table.Cell(
-                                listOf(newText(Language.Bokmal to "hei"))
+                            Element.Table.Row(
+                                listOf(
+                                    Element.Table.Cell(
+                                        listOf(newText(Language.Bokmal to "hei"))
+                                    )
+                                ),
+                                colSpec = colSpec
+                            ),
+                            Element.Table.Row(
+                                listOf(
+                                    Element.Table.Cell(
+                                        listOf(newText(Language.Bokmal to "heihå"))
+                                    )
+                                ), colSpec = colSpec
                             )
-                        ), true.expr()
-                    ),
-                    Element.Table.Row(
-                        listOf(
-                            Element.Table.Cell(
-                                listOf(newText(Language.Bokmal to "heihå"))
-                            )
-                        ), true.expr()
+                        ), emptyList()
                     )
                 ),
-                header =
-                Element.Table.Header(
-                    listOf(
-                        Element.Table.ColumnSpec(
-                            Element.Table.Cell(
-                                listOf(newText(Language.Bokmal to "header"))
-                            ),
-                            Element.Table.ColumnAlignment.LEFT
-                        )
-
-                    )
-                )
+                header = Element.Table.Header(colSpec)
             )
         )
         assertEquals(expected, doc)
