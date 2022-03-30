@@ -31,8 +31,24 @@ class TemplateListTest {
     @Test
     fun `list creation fails when list has no item definitions`() {
         Assertions.assertThrows(InvalidListDeclarationException::class.java) {
+            val nullStr: String? = null
             outlineTestTemplate<Unit> {
-                list {}
+                list {
+                    showIf(true.expr()) {
+
+                    }
+                    ifNotNull(nullStr.expr()) {
+
+                    }
+                    forEach(listOf<String>().expr()) {
+                        showIf(true.expr()) {
+
+                        }
+                        ifNotNull(nullStr.expr()) {
+
+                        }
+                    }
+                }
             }
         }
     }
