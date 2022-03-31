@@ -26,3 +26,18 @@ enum class Institusjon{
     SYKEHJEM,
     INGEN
 }
+
+enum class BeregningsMetode{
+    AUSTRALIA,
+    CANADA,
+    CHILE,
+    EOS,
+    FOLKETRYGD,
+    INDIA,
+    ISRAEL,
+    NORDISK,
+    PRORATA,
+    SOR_KOREA,
+    SVEITS,
+    USA
+}

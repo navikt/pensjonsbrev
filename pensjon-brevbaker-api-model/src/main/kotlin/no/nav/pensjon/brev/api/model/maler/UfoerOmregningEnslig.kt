@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.api.model.maler
 import no.nav.pensjon.brev.api.model.Institusjon
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.Sivilstand
+import no.nav.pensjon.brev.api.model.BeregningsMetode
 import java.time.LocalDate
 
 data class UfoerOmregningEnsligDto(
@@ -64,9 +65,11 @@ data class UfoerOmregningEnsligDto(
         val belopArForAvkort_barnetilleggSBGjeldende: Int,
         val belopIEU_inntektEtterUforeGjeldende: Int,
         val belopsgrense_uforetrygdGjeldende: Int,
+        val beregningsMetode_trygdetidsdetaljerGjeldende: BeregningsMetode,
         val beregningsgrunnlagBelopAr_uforetrygdGjeldende: Int,
         val beregningsgrunnlagBelopAr_yrkesskadeGjeldende: Int,
         val brukersSivilstand_gjeldendeBeregnetUTPerManed: String,
+        val erUnder20Ar_ungUforGjeldende: Boolean,
         val faktiskTTBilateral_trygdetidsdetaljerGjeldende: Int,
         val faktiskTTEOS_trygdetidsdetaljerGjeldende: Int,
         val faktiskTTNordiskKonv_trygdetidsdetaljerGjeldende: Int,
@@ -119,6 +122,7 @@ data class UfoerOmregningEnsligDto(
         ektefelletillegg_opphoert = false,
         eps_bor_sammen_med_bruker_gjeldende = false,
         eps_institusjon_gjeldende = Institusjon.INGEN,
+        erUnder20Ar_ungUforGjeldende = false,
         gjeldende_barnetillegg_saerkullsbarn_er_redusert_mot_inntekt = false,
         gjeldende_ufoeretrygd_per_maaned_er_inntektsavkortet = false,
         har_barn_overfoert_til_saerkullsbarn = false,
@@ -159,6 +163,7 @@ data class UfoerOmregningEnsligDto(
         belopsgrense_uforetrygdGjeldende = 0,
         beregningsgrunnlagBelopAr_uforetrygdGjeldende = 0,
         beregningsgrunnlagBelopAr_yrkesskadeGjeldende = 0,
+        beregningsMetode_trygdetidsdetaljerGjeldende = BeregningsMetode.FOLKETRYGD,
         brukersSivilstand_gjeldendeBeregnetUTPerManed = "" ,//TODO bruk sivilstand?
         faktiskTTBilateral_trygdetidsdetaljerGjeldende = 0,
         faktiskTTEOS_trygdetidsdetaljerGjeldende = 0,

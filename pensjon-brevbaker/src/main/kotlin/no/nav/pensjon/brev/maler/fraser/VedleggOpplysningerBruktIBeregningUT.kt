@@ -153,6 +153,8 @@ val slikBeregnBTOverskrift_001 = OutlinePhrase<LangBokmalNynorskEnglish, Unit> {
     }
 }
 
+// val vedleggBeregnUTInnlednBT_001
+
 val vedleggBeregnUTInfoBTSB_001 = OutlinePhrase<LangBokmalNynorskEnglish, Unit> {
     paragraph {
         text(
@@ -189,6 +191,16 @@ val vedleggBeregnUTIkkePeriodisertFriBOgInntektBTSBJusterBelop0_001 = OutlinePhr
             Bokmal to "[_Script Tallformatering_071_] kroner er 50 prosent av den inntekten som overstiger fribeløpet for barn som ikke bor sammen med begge foreldrene. Dette beløpet bruker vi til å redusere barnetillegget for hele året.",
             Nynorsk to "[_Script Tallformatering_071_] kroner er 50 prosent av den inntekta som overstig fribeløpet for barn som ikkje bur saman med begge foreldra. Dette beløpet bruker vi til å redusera barnetillegget for heile året.",
             English to "NOK [_Script Tallformatering_071_] is 50 percent of the income that exceeds the exemption amount for a child/children that does/do not live with both parents. This amount will be used to reduce this child supplement during the calendar year."
+        )
+    }
+}
+
+val vedleggBeregnUTPeridisertFriBOgInntektBTSB_001 = OutlinePhrase<LangBokmalNynorskEnglish, Unit> {
+    paragraph {
+        text(
+            Bokmal to "For barn som ikke bor sammen med begge foreldrene blir 50 prosent av den inntekten som overstiger fribeløpet omregnet til et årlig beløp som tilsvarer [_Script Tallformatering_071_] kroner.",
+            Nynorsk to "For barn som ikkje bur saman med begge foreldra vert 50 prosent av den inntekta som overstig fribeløpet omrekna til eit årleg beløp som svarar til [_Script Tallformatering_071_] kroner.",
+            English to "For a child/children that does/do not live with both parents 50 percent of the income that exceeds the exemption amount is recalculated to an annual amount of NOK [_Script Tallformatering_071_]."
         )
     }
 }
