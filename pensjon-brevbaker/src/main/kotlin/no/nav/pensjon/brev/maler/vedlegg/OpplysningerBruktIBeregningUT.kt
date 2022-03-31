@@ -1083,9 +1083,10 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
     }) {
         includePhrase(vedleggBeregnUTKompGradGjsnttKonvUT_001)
     }
-    showIf(argument().map {
+    val erRedusertMotInntektOgUtbetalt = argument().map {
         it.erRedusertMotinntekt_barnetilleggSBGjeldende && !it.erIkkeUtbetaltpgaTak_barnetilleggGrunnlagGjeldende
-    }) {
+    }
+    showIf(erRedusertMotInntektOgUtbetalt) {
         includePhrase(slikBeregnBTOverskrift_001)
     }
     /* TODO phrase
@@ -1094,9 +1095,7 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
     })  {
         includePhrase(vedleggBeregnUTInnlednBT_001)
     } */
-    showIf(argument().map {
-        it.erRedusertMotinntekt_barnetilleggSBGjeldende && !it.erIkkeUtbetaltpgaTak_barnetilleggGrunnlagGjeldende
-    }) {
+    showIf(erRedusertMotInntektOgUtbetalt) {
         includePhrase(vedleggBeregnUTInfoBTSB_001)
     }
     showIf(argument().map {
@@ -1156,9 +1155,7 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
     }
 
 
-    showIf(argument().map {
-        it.erEndret_barnetilleggSBGjeldende
-    }) {
+    showIf(erRedusertMotInntektOgUtbetalt) {
         title1 {
             text(
                 Bokmal to "Reduksjon av barnetillegg for særkullsbarn før skatt",
@@ -1184,42 +1181,48 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
                 }
             }
         ) {
-            row {
-                cell {
-                    text(
-                        Bokmal to "Årlig barnetillegg før reduksjon ut fra inntektbelopArForAvkort",
-                        Nynorsk to "Årleg barnetillegg før reduksjon ut frå inntekt",
-                        English to "Yearly child supplement before income reduction"
-                    )
-                }
-                cell {
-                    val belopArForAvkort =
-                        argument().map { Kroner(it.belopArForAvkort_barnetilleggSBGjeldende) }
-                            .format()
-                    textExpr(
-                        Bokmal to belopArForAvkort + " kr",
-                        Nynorsk to belopArForAvkort + " kr",
-                        English to belopArForAvkort + " NOK"
-                    )
+            showIf(argument().map {
+                it.belop_barnetilleggSBGjeldende > 0 && it.justeringsbelopAr_barnetilleggSBGjeldende != 0
+            }) {
+                row {
+                    cell {
+                        text(
+                            Bokmal to "Årlig barnetillegg før reduksjon ut fra inntektbelopArForAvkort",
+                            Nynorsk to "Årleg barnetillegg før reduksjon ut frå inntekt",
+                            English to "Yearly child supplement before income reduction"
+                        )
+                    }
+                    cell {
+                        val belopArForAvkort =
+                            argument().map { Kroner(it.belopArForAvkort_barnetilleggSBGjeldende) }
+                                .format()
+                        textExpr(
+                            Bokmal to belopArForAvkort + " kr",
+                            Nynorsk to belopArForAvkort + " kr",
+                            English to belopArForAvkort + " NOK"
+                        )
+                    }
                 }
             }
-            row {
-                cell {
-                    val inntektBruktIAvkortning =
-                        argument().map { Kroner(it.inntektBruktIAvkortning_barnetilleggSBGjeldende) }
-                            .format()
-                    textExpr(
-                        Bokmal to "Samlet inntekt brukt i fastsettelse av barnetillegget er".expr() + inntektBruktIAvkortning.str() + " kr",
-                        Nynorsk to "Samla inntekt brukt i fastsetjinga av barnetillegget er".expr() + inntektBruktIAvkortning.str() + " kr",
-                        English to "Total income applied in calculation of reduction in child supplement is".expr() + inntektBruktIAvkortning.str() + " NOK"
-                    )
-                }
-                cell {
-                    text(
-                        Bokmal to "",
-                        Nynorsk to "",
-                        English to ""
-                    )
+            showIf(erRedusertMotInntektOgUtbetalt) {
+                row {
+                    cell {
+                        val inntektBruktIAvkortning =
+                            argument().map { Kroner(it.inntektBruktIAvkortning_barnetilleggSBGjeldende) }
+                                .format()
+                        textExpr(
+                            Bokmal to "Samlet inntekt brukt i fastsettelse av barnetillegget er".expr() + inntektBruktIAvkortning.str() + " kr",
+                            Nynorsk to "Samla inntekt brukt i fastsetjinga av barnetillegget er".expr() + inntektBruktIAvkortning.str() + " kr",
+                            English to "Total income applied in calculation of reduction in child supplement is".expr() + inntektBruktIAvkortning.str() + " NOK"
+                        )
+                    }
+                    cell {
+                        text(
+                            Bokmal to "",
+                            Nynorsk to "",
+                            English to ""
+                        )
+                    }
                 }
             }
             /* IF (
@@ -1231,96 +1234,114 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
         && barnetilleggSBGjeldende.avkortingsbelopAr > 0
         )
         */
-            row {
-                cell {
-                    text(
-                        Bokmal to "- 50 prosent av inntekt som overstiger fribeløpet",
-                        Nynorsk to "- 50 prosent av inntekt som overstig fribeløpet",
-                        English to "- 50 percent of income exceeding the allowance amount"
-                    )
-                }
-                cell {
-                    val avkortningsbelopAr =
-                        argument().map { Kroner(it.avkortningsbelopAr_barnetilleggSBGjeldende) }
-                            .format()
-                    textExpr(
-                        Bokmal to avkortningsbelopAr + " kr",
-                        Nynorsk to avkortningsbelopAr + " kr",
-                        English to avkortningsbelopAr + " NOK"
-                    )
-                }
-            }
-            row {
-                cell {
-                    text(
-                        Bokmal to "- 50 prosent av inntekt som overstiger fribeløpet (oppgitt som et årlig beløp)",
-                        Nynorsk to "- 50 prosent av inntekt som overstig fribeløpet (oppgitt som eit årleg beløp)",
-                        English to "- 50 percent of income exceeding the allowance amount (calculated to an annual amount)"
-                    )
-                }
-                cell {
-                    val avkortningsbelopAr =
-                        argument().map { Kroner(it.avkortningsbelopAr_barnetilleggSBGjeldende) }
-                            .format()
-                    textExpr(
-                        Bokmal to avkortningsbelopAr + " kr",
-                        Nynorsk to avkortningsbelopAr + " kr",
-                        English to avkortningsbelopAr + " NOK"
-                    )
+            showIf(argument().map {
+                !it.fribelopEllerInntektErPeriodisert_barnetilleggSBGjeldende &&
+                    (it.belop_barnetilleggSBGjeldende != 0 || (it.belop_barnetilleggSBGjeldende == 0 && it.belopAr_barnetilleggSBGjeldende != 0)) &&
+                    it.avkortningsbelopAr_barnetilleggSBGjeldende > 0
+            }) {
+                row {
+                    cell {
+                        text(
+                            Bokmal to "- 50 prosent av inntekt som overstiger fribeløpet",
+                            Nynorsk to "- 50 prosent av inntekt som overstig fribeløpet",
+                            English to "- 50 percent of income exceeding the allowance amount"
+                        )
+                    }
+                    cell {
+                        val avkortningsbelopAr =
+                            argument().map { Kroner(it.avkortningsbelopAr_barnetilleggSBGjeldende) }
+                                .format()
+                        textExpr(
+                            Bokmal to avkortningsbelopAr + " kr",
+                            Nynorsk to avkortningsbelopAr + " kr",
+                            English to avkortningsbelopAr + " NOK"
+                        )
+                    }
                 }
             }
-            row {
-                cell {
-                    text(
-                        Bokmal to "+ Beløp som er brukt for å justere reduksjonen av barnetillegget",
-                        Nynorsk to "+ Beløp som er brukt for å justera reduksjonen av barnetillegget",
-                        English to "+ Amount which is used to adjust the reduction of child supplement"
-                    )
-                }
-                cell {
-                    val justeringsbelopAr =
-                        argument().map { Kroner(it.justeringsbelopAr_barnetilleggSBGjeldende) }
-                            .format()
-                    textExpr(
-                        Bokmal to justeringsbelopAr + " kr",
-                        Nynorsk to justeringsbelopAr + " kr",
-                        English to justeringsbelopAr + " NOK"
-                    )
-                }
-            }
-            row {
-                cell {
-                    text(
-                        Bokmal to "= Årlig barnetillegg etter reduksjon ut fra inntekt",
-                        Nynorsk to "Årleg barnetillegg etter reduksjon ut frå inntekt",
-                        English to "Yearly child supplement after income reduction"
-                    )
-                }
-                cell {
-                    val belopAr =
-                        argument().map { Kroner(it.belopAr_barnetilleggSBGjeldende) }.format()
-                    textExpr(
-                        Bokmal to belopAr + " kr",
-                        Nynorsk to belopAr + " kr",
-                        English to belopAr + " NOK"
-                    )
+
+            showIf(argument().map {
+                it.fribelopEllerInntektErPeriodisert_barnetilleggSBGjeldende &&
+                    (it.belop_barnetilleggSBGjeldende != 0 || (it.belop_barnetilleggSBGjeldende == 0 && it.belopAr_barnetilleggSBGjeldende != 0)) &&
+                    it.avkortningsbelopAr_barnetilleggSBGjeldende > 0
+            }) {
+                row {
+                    cell {
+                        text(
+                            Bokmal to "- 50 prosent av inntekt som overstiger fribeløpet (oppgitt som et årlig beløp)",
+                            Nynorsk to "- 50 prosent av inntekt som overstig fribeløpet (oppgitt som eit årleg beløp)",
+                            English to "- 50 percent of income exceeding the allowance amount (calculated to an annual amount)"
+                        )
+                    }
+                    cell {
+                        val avkortningsbelopAr =
+                            argument().map { Kroner(it.avkortningsbelopAr_barnetilleggSBGjeldende) }
+                                .format()
+                        textExpr(
+                            Bokmal to avkortningsbelopAr + " kr",
+                            Nynorsk to avkortningsbelopAr + " kr",
+                            English to avkortningsbelopAr + " NOK"
+                        )
+                    }
                 }
             }
-            row {
-                cell {
-                    text(
-                        Bokmal to "Utbetaling av barnetillegg per måned",
-                        Nynorsk to "Utbetaling av barnetillegg per månad",
-                        English to "Child supplement payment for the remaining months of the year"
-                    )
+            showIf(argument().map{it.justeringsbelopAr_barnetilleggSBGjeldende != 0}) {
+                row {
+                    cell {
+                        text(
+                            Bokmal to "+ Beløp som er brukt for å justere reduksjonen av barnetillegget",
+                            Nynorsk to "+ Beløp som er brukt for å justera reduksjonen av barnetillegget",
+                            English to "+ Amount which is used to adjust the reduction of child supplement"
+                        )
+                    }
+                    cell {
+                        val justeringsbelopAr =
+                            argument().map { Kroner(it.justeringsbelopAr_barnetilleggSBGjeldende) }
+                                .format()
+                        textExpr(
+                            Bokmal to justeringsbelopAr + " kr",
+                            Nynorsk to justeringsbelopAr + " kr",
+                            English to justeringsbelopAr + " NOK"
+                        )
+                    }
                 }
-                cell {
-                    val belop = argument().map { Kroner(it.belop_barnetilleggSBGjeldende) }.format()
-                    textExpr(
-                        Bokmal to belop + " kr",
-                        Nynorsk to belop + " kr",
-                        English to belop + " NOK"
-                    )
+            }
+            showIf(argument().map{it.belop_barnetilleggSBGjeldende != 0
+                || (it.belop_barnetilleggSBGjeldende == 0 && it.belopAr_barnetilleggSBGjeldende != 0)}) {
+                row {
+                    cell {
+                        text(
+                            Bokmal to "= Årlig barnetillegg etter reduksjon ut fra inntekt",
+                            Nynorsk to "Årleg barnetillegg etter reduksjon ut frå inntekt",
+                            English to "Yearly child supplement after income reduction"
+                        )
+                    }
+                    cell {
+                        val belopAr =
+                            argument().map { Kroner(it.belopAr_barnetilleggSBGjeldende) }.format()
+                        textExpr(
+                            Bokmal to belopAr + " kr",
+                            Nynorsk to belopAr + " kr",
+                            English to belopAr + " NOK"
+                        )
+                    }
+                }
+                row {
+                    cell {
+                        text(
+                            Bokmal to "Utbetaling av barnetillegg per måned",
+                            Nynorsk to "Utbetaling av barnetillegg per månad",
+                            English to "Child supplement payment for the remaining months of the year"
+                        )
+                    }
+                    cell {
+                        val belop = argument().map { Kroner(it.belop_barnetilleggSBGjeldende) }.format()
+                        textExpr(
+                            Bokmal to belop + " kr",
+                            Nynorsk to belop + " kr",
+                            English to belop + " NOK"
+                        )
+                    }
                 }
             }
         }
