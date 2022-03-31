@@ -46,7 +46,7 @@ fun Application.module() {
         }
     }
 
-    val jwtConfigs = listOf(JwtConfig.requireAzureADConfig(), JwtConfig.requireStsConfig())
+    val jwtConfigs = listOf(JwtConfig.requireAzureADConfig())
     install(Authentication) {
         jwtConfigs.forEach {
             brevbakerJwt(it)

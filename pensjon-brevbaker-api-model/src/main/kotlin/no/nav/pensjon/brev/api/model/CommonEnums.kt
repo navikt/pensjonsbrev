@@ -11,7 +11,7 @@ enum class Sivilstand{
     SEPARERT_PARTNER,
     SAMBOER1_5,
     SAMBOER3_2,
-    INGEN
+    INGEN,
 }
 
 enum class Sakstype{
@@ -24,7 +24,7 @@ enum class Institusjon{
     FENGSEL,
     HELSE,
     SYKEHJEM,
-    INGEN
+    INGEN,
 }
 
 enum class BeregningsMetode{

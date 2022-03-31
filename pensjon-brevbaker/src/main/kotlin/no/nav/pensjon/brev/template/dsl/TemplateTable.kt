@@ -1,34 +1,18 @@
 package no.nav.pensjon.brev.template.dsl
 
 import no.nav.pensjon.brev.template.Element
-import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LanguageSupport
 
 @LetterTemplateMarker
-open class TableRootScope<Lang : LanguageSupport, LetterData : Any>
-    : TableBaseScope<Lang, LetterData>() {
-
-    fun showIf(
-        predicate: Expression<Boolean>,
-        showIf: TableBaseScope<Lang, LetterData>.() -> Unit
-    ) {
-        TableBaseScope<Lang, LetterData>().apply(showIf).also { builder ->
-            rows.addAll(builder.rows.map {
-                it.copy(condition = predicate)
-            })
-        }
-    }
-}
-
-@LetterTemplateMarker
-open class TableBaseScope<Lang : LanguageSupport, LetterData : Any>(
-    val rows: MutableList<Element.Table.Row<Lang>> = mutableListOf()
-) : TemplateGlobalScope<LetterData>() {
+class TableScope<Lang : LanguageSupport, LetterData : Any>(val colSpec: List<Element.Table.ColumnSpec<Lang>>) :
+    ControlStructureScopeBase<Lang, LetterData, TableScope<Lang,LetterData>>(){
     fun row(
         init: TableRowScope<Lang, LetterData>.() -> Unit
     ) {
-        rows.add(Element.Table.Row(TableRowScope<Lang, LetterData>().apply(init).children))
+        children.add(Element.Table.Row(TableRowScope<Lang, LetterData>().apply(init).children, colSpec))
     }
+
+    override fun scopeFactory(): TableScope<Lang, LetterData> = TableScope(colSpec)
 }
 
 
