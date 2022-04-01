@@ -17,7 +17,7 @@ class LaTeXCompilerService(private val pdfByggerUrl: String) {
         }
 
         engine {
-            requestTimeout = 20_000
+            requestTimeout = 120_000
         }
     }
 

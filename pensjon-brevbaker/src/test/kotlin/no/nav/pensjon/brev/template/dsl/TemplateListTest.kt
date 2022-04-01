@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.template.dsl
 
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.dsl.expression.expr
+import no.nav.pensjon.brev.template.outlineTestTemplate
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 
@@ -29,9 +30,25 @@ class TemplateListTest {
 
     @Test
     fun `list creation fails when list has no item definitions`() {
-        Assertions.assertThrows(IllegalArgumentException::class.java) {
+        Assertions.assertThrows(InvalidListDeclarationException::class.java) {
+            val nullStr: String? = null
             outlineTestTemplate<Unit> {
-                list {}
+                list {
+                    showIf(true.expr()) {
+
+                    }
+                    ifNotNull(nullStr.expr()) {
+
+                    }
+                    forEach(listOf<String>().expr()) {
+                        showIf(true.expr()) {
+
+                        }
+                        ifNotNull(nullStr.expr()) {
+
+                        }
+                    }
+                }
             }
         }
     }
@@ -51,8 +68,13 @@ class TemplateListTest {
         val expected = outlineTestLetter(
             Element.ItemList(
                 listOf(
-                    Element.ItemList.Item(
-                        listOf(newText(Language.Bokmal to "Test")), true.expr()
+                    Element.Conditional(
+                        true.expr(),
+                        listOf(
+                            Element.ItemList.Item(
+                                listOf(newText(Language.Bokmal to "Test"))
+                            )
+                        ), emptyList()
                     )
                 )
             )

@@ -5,11 +5,9 @@
 - Krever følgende miljøvariabler:
   ```shell
   PDF_BUILDER_URL=http://localhost:8081
-  JWT_JWKS_URL_STS=http://localhost:8060/rest/isso/oauth2/connect/jwk_uri
-  JWT_ISSUER_STS=http://vtp-pensjon:8060
-  JWT_AUDIENCE_STS=brevbaker-123
-  JWT_JWKS_URL_AZURE_AD=http://localhost:8060/rest/isso/oauth2/connect/jwk_uri
-  JWT_ISSUER_AZURE_AD=https://login.microsoftonline.com/966ac572-f5b7-4bbe-aa88-c76419c0f851/v2.0
-  JWT_AUDIENCE_AZURE_AD=brevbaker-123
+  AZURE_OPENID_CONFIG_JWKS_URI=http://vtp-pensjon:8060/rest/isso/oauth2/connect/jwk_uri
+  AZURE_OPENID_CONFIG_ISSUER=https://login.microsoftonline.com/966ac572-f5b7-4bbe-aa88-c76419c0f851/v2.0
+  AZURE_APP_CLIENT_ID=brevbaker-123
+  AZURE_APP_PRE_AUTHORIZED_APPS=[{"name":"pen","clientId":"pen-AzureClientId"}]
   ```
 - -Dio.ktor.development=true
