@@ -602,7 +602,10 @@ val vedleggPlikterAFP_001 = OutlinePhrase<LangBokmalNynorskEnglish, Unit> {
 }
 
 val vedleggPlikterAFP1_001 = TextOnlyPhrase<LangBokmalNynorskEnglish, Unit> {
-    text(Bokmal to "inntekten din endrer seg", Nynorsk to "inntekta di endrar seg", English to "your income changes")
+    text(
+        Bokmal to "inntekten din endrer seg",
+        Nynorsk to "inntekta di endrar seg",
+        English to "your income changes")
 }
 
 val vedleggPlikterAFP2_001 = TextOnlyPhrase<LangBokmalNynorskEnglish, Unit> {

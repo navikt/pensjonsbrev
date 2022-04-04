@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.maler.vedlegg
 
+import kotlinx.coroutines.awaitCancellation
 import no.nav.pensjon.brev.api.model.BeregningsMetode
 import no.nav.pensjon.brev.maler.fraser.*
 import no.nav.pensjon.brev.maler.fraser.common.Kroner
@@ -48,6 +49,7 @@ data class OpplysningerBruktIBeregningUTDto(
     val grunnbelop_gjeldendeBeregnetUTPerManed: Int,
     val ifuInntekt_inntektForUforeGjeldende: Int,
     val inntektBruktIAvkortning_barnetilleggSBGjeldende: Int,
+    val inntektOverFribelop_barnetilleggSBGjeldende: Int,
     val inntektstak_barnetilleggSBGjeldende: Int,
     val inntektsgrenseAr_inntektsAvkortingGjeldende: Int,
     val inntektstak_inntektsAvkortingGjeldende: Int,
@@ -101,6 +103,7 @@ data class OpplysningerBruktIBeregningUTDto(
         grunnbelop_gjeldendeBeregnetUTPerManed = 0,
         ifuInntekt_inntektForUforeGjeldende = 0,
         inntektBruktIAvkortning_barnetilleggSBGjeldende = 0,
+        inntektOverFribelop_barnetilleggSBGjeldende = 0,
         inntektstak_barnetilleggSBGjeldende = 0,
         inntektsgrenseAr_inntektsAvkortingGjeldende = 0,
         inntektstak_inntektsAvkortingGjeldende = 0,
@@ -126,7 +129,14 @@ data class OpplysningerBruktIBeregningUTDto(
         yrkesskadegrad_yrkesskadeGjeldende = 0,
     )
 }
-
+/*
+The condition for the showing of the attachement is:
+var erRedusertMotInntekt= GetValue("fag=barnetilleggSBGjeldende=erRedusertMotInntekt").toLowerCase();
+var erSannsynligEndret = GetValue("fag=inntektForUforeVedVirk=erSannsynligEndret").toLowerCase();
+if(	g.finnesNode("fag=minsteytelseVedVirk")
+||	erSannsynligEndret == "true"
+||	erRedusertMotInntekt == "true")
+ */
 val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, OpplysningerBruktIBeregningUTDto>(
     title = newText(
         Bokmal to "Opplysninger om beregningen",
@@ -150,22 +160,21 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
         header = {
             column(3) {
                 text(
-                    Bokmal to "Opplysning", // TODO
-                    Nynorsk to "Opplysning", // TODO
-                    English to "Information" // TODO
+                    Bokmal to "Opplysning",
+                    Nynorsk to "Opplysning",
+                    English to "Information"
                 )
             }
             column(alignment = RIGHT) {
                 text(
-                    Bokmal to "Verdi", // TODO
-                    Nynorsk to "Verdi", // TODO
-                    English to "Value" // TODO
+                    Bokmal to "Verdi",
+                    Nynorsk to "Verdi",
+                    English to "Value"
                 )
             }
         }
     ) {
-        // Trenger støtte for hvis ikke tom
-        // Hvis uforetidspunkt != tom, include
+        // Hvis uforetidspunkt_uforetrygdGjeldende != tom, include
         row {
             cell {
                 text(
@@ -286,6 +295,7 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
                 )
             }
         }
+        // Mandatory
         showIf(argument().map { it.belopsgrense_uforetrygdGjeldende > 0 })
         {
             row {
@@ -1046,7 +1056,9 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
     showIf(argument().map {
         it.sats_minsteytelseGjeldende > 0
     }) {
-        includePhrase(vedleggBeregnUTDinMY_001)
+        includePhrase(vedleggBeregnUTDinMY_001, argument().map {
+            VedleggBeregnUTDinMY_001Dto(it.sats_minsteytelseGjeldende)
+        })
     }
     showIf(argument().map {
         it.erSannsynligEndret_inntektForUforeVedVirk
@@ -1089,12 +1101,12 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
     showIf(erRedusertMotInntektOgUtbetalt) {
         includePhrase(slikBeregnBTOverskrift_001)
     }
-    /* TODO phrase
     showIf(argument().map {
-        it.erRedusertMotinntekt_barnetilleggSBGjeldende && !it.erIkkeUtbetaltpgaTak_barnetilleggGrunnlagGjeldende
+        !it.erIkkeUtbetaltpgaTak_barnetilleggGrunnlagGjeldende
+            && it.erRedusertMotinntekt_barnetilleggSBGjeldende
     })  {
         includePhrase(vedleggBeregnUTInnlednBT_001)
-    } */
+    }
     showIf(erRedusertMotInntektOgUtbetalt) {
         includePhrase(vedleggBeregnUTInfoBTSB_001)
     }
@@ -1112,7 +1124,9 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
             !it.fribelopEllerInntektErPeriodisert_barnetilleggSBGjeldende &&
             it.justeringsbelopAr_barnetilleggSBGjeldende > 0
     }) {
-        includePhrase(vedleggBeregnUTIkkePeriodisertFriBOgInntektBTSB_001)
+        includePhrase(vedleggBeregnUTIkkePeriodisertFriBOgInntektBTSB_001, argument().map {
+            VedleggBeregnUTIkkePeriodisertFriBOgInntektBTSB_001Dto(it.avkortningsbelopAr_barnetilleggSBGjeldende)
+        })
     }
     showIf(argument().map {
         it.erRedusertMotinntekt_barnetilleggSBGjeldende &&
@@ -1120,7 +1134,9 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
             !it.fribelopEllerInntektErPeriodisert_barnetilleggSBGjeldende &&
             it.justeringsbelopAr_barnetilleggSBGjeldende > 0
     }) {
-        includePhrase(vedleggBeregnUTIkkePeriodisertFriBOgInntektBTSBJusterBelop0_001)
+        includePhrase(vedleggBeregnUTIkkePeriodisertFriBOgInntektBTSBJusterBelop_001, argument().map {
+            VedleggBeregnUTkkePeriodisertFriBOgInntektBTSBJusterBelop_001Dto(it.avkortningsbelopAr_barnetilleggSBGjeldende)
+        })
     }
     showIf(argument().map {
         it.erRedusertMotinntekt_barnetilleggSBGjeldende &&
@@ -1128,7 +1144,9 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
             it.fribelopEllerInntektErPeriodisert_barnetilleggSBGjeldende &&
             it.justeringsbelopAr_barnetilleggSBGjeldende > 0
     }) {
-        includePhrase(vedleggBeregnUTPeridisertFriBOgInntektBTSB_001)
+        includePhrase(vedleggBeregnUTPeridisertFriBOgInntektBTSB_001, argument().map {
+            VedleggBeregnUTPeriodisertFriBOgInntektBTSB_001Dto(it.avkortningsbelopAr_barnetilleggSBGjeldende)
+        })
     }
     showIf(argument().map {
         it.erRedusertMotinntekt_barnetilleggSBGjeldende &&
@@ -1136,14 +1154,18 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
             it.fribelopEllerInntektErPeriodisert_barnetilleggSBGjeldende &&
             it.justeringsbelopAr_barnetilleggSBGjeldende == 0
     }) {
-        includePhrase(vedleggBeregnUTPeriodisertFriBOgInntektBTSBJusterBelop0_001)
+        includePhrase(vedleggBeregnUTPeriodisertFriBOgInntektBTSBJusterBelop_001, argument().map {
+            VedleggBeregnUTPeriodisertFriBOgInntektBTSBJusterBelop_001Dto(it.avkortningsbelopAr_barnetilleggSBGjeldende)
+        })
     }
     showIf(argument().map {
         it.erRedusertMotinntekt_barnetilleggSBGjeldende &&
             !it.erIkkeUtbetaltpgaTak_barnetilleggGrunnlagGjeldende &&
             it.justeringsbelopAr_barnetilleggSBGjeldende > 0
     }) {
-        includePhrase(vedleggBeregnUTJusterBelopOver0BTSB_001)
+        includePhrase(vedleggBeregnUTJusterBelopOver0BTSB_001, argument().map {
+            VedleggBeregnUTJusterBelopOver0BTSB_001Dto(it.justeringsbelopAr_barnetilleggSBGjeldende)
+        })
     }
     showIf(argument().map {
         it.erRedusertMotinntekt_barnetilleggSBGjeldende &&
@@ -1151,10 +1173,11 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
             it.justeringsbelopAr_barnetilleggSBGjeldende < 0
         // < 0? Is there a minus operator from Pesys?
     }) {
-        includePhrase(vedleggBeregnUTJusterBelopUnder0BTSB_001)
+        includePhrase(vedleggBeregnUTJusterBelopUnder0BTSB_001, argument().map {
+            VedleggBeregnUTJusterBelopUnder0BTSB_001Dto(it.justeringsbelopAr_barnetilleggSBGjeldende)
+        })
     }
-
-
+    // TABLE 2 - start
     showIf(erRedusertMotInntektOgUtbetalt) {
         title1 {
             text(
@@ -1167,23 +1190,21 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
             header = {
                 column(2) {
                     text(
-                        Bokmal to "Beskrivelse", //TODO
-                        Nynorsk to "Beskrivelse", //TODO
-                        English to "Description" //TODO
+                        Bokmal to "Beskrivelse",
+                        Nynorsk to "Beskrivelse",
+                        English to "Description"
                     )
                 }
                 column(alignment = RIGHT) {
                     text(
-                        Bokmal to "Beløp", //TODO
-                        Nynorsk to "Beløp", //TODO
-                        English to "Amount" //TODO
+                        Bokmal to "Beløp",
+                        Nynorsk to "Beløp",
+                        English to "Amount"
                     )
                 }
             }
         ) {
-            showIf(argument().map {
-                it.belop_barnetilleggSBGjeldende > 0 && it.justeringsbelopAr_barnetilleggSBGjeldende != 0
-            }) {
+            showIf(argument().map { it.belop_barnetilleggSBGjeldende > 0 && it.justeringsbelopAr_barnetilleggSBGjeldende != 0 }) {
                 row {
                     cell {
                         text(
@@ -1193,9 +1214,7 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
                         )
                     }
                     cell {
-                        val belopArForAvkort =
-                            argument().map { Kroner(it.belopArForAvkort_barnetilleggSBGjeldende) }
-                                .format()
+                        val belopArForAvkort = argument().map { Kroner(it.belopArForAvkort_barnetilleggSBGjeldende) }.format()
                         textExpr(
                             Bokmal to belopArForAvkort + " kr",
                             Nynorsk to belopArForAvkort + " kr",
@@ -1211,9 +1230,9 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
                             argument().map { Kroner(it.inntektBruktIAvkortning_barnetilleggSBGjeldende) }
                                 .format()
                         textExpr(
-                            Bokmal to "Samlet inntekt brukt i fastsettelse av barnetillegget er".expr() + inntektBruktIAvkortning.str() + " kr",
-                            Nynorsk to "Samla inntekt brukt i fastsetjinga av barnetillegget er".expr() + inntektBruktIAvkortning.str() + " kr",
-                            English to "Total income applied in calculation of reduction in child supplement is".expr() + inntektBruktIAvkortning.str() + " NOK"
+                            Bokmal to "Samlet inntekt brukt i fastsettelse av barnetillegget er\n".expr() + inntektBruktIAvkortning.str() + " kr",
+                            Nynorsk to "Samla inntekt brukt i fastsetjinga av barnetillegget er\n".expr() + inntektBruktIAvkortning.str() + " kr",
+                            English to "Total income applied in calculation of reduction in child supplement is\n".expr() + inntektBruktIAvkortning.str() + " NOK"
                         )
                     }
                     cell {
@@ -1225,19 +1244,48 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
                     }
                 }
             }
-            /* IF (
-        barnetilleggSBGjeldende.fribelopEllerInntektErPeriodisert == false
-        && (
-        barnetilleggSBGjeldende.belop != 0
-        || barnetilleggSBGjeldende.belop == 0 && barnetilleggSBGjeldende.justeringsbelopAr != 0
-        )
-        && barnetilleggSBGjeldende.avkortingsbelopAr > 0
-        )
-        */
+            showIf(argument().map { (it.belop_barnetilleggSBGjeldende > 0 || (it.belop_barnetilleggSBGjeldende < 0 && it.justeringsbelopAr_barnetilleggSBGjeldende != 0)) }) {
+                row {
+                    cell {
+                        val fribelop = argument().map { Kroner(it.fribelop_barnetilleggSBGjeldende) }.format()
+                        textExpr(
+                            Bokmal to "Fribeløp brukt i fastsettelsen av barnetillegget er\n".expr() + fribelop.str() + " kr",
+                            Nynorsk to "Fribeløp brukt i fastsetjinga av barnetillegget er\n".expr() + fribelop.str() + " kr",
+                            English to "Exemption amount applied in calculation of reduction in child supplement is\n".expr() + fribelop.str() + " NOK"
+                        )
+                    }
+                    cell {
+                        text(
+                            Bokmal to "",
+                            Nynorsk to "",
+                            English to ""
+                        )
+                    }
+                }
+            }
+            showIf(argument().map { (it.belop_barnetilleggSBGjeldende != 0 || (it.belop_barnetilleggSBGjeldende == 0 && it.justeringsbelopAr_barnetilleggSBGjeldende != 0)) }) {
+                row {
+                    cell {
+                        val inntektOverFribelop = argument().map { Kroner(it.inntektOverFribelop_barnetilleggSBGjeldende) }.format()
+                        textExpr(
+                            Bokmal to "Inntekt over fribeløpet er\n".expr() + inntektOverFribelop.str() + " kr",
+                            Nynorsk to "Inntekt over fribeløpet er\n".expr() + inntektOverFribelop.str() + " kr",
+                            English to "Income exceeding the exemption amount is\n".expr() + inntektOverFribelop.str() + " NOK"
+                        )
+                    }
+                    cell {
+                        text(
+                            Bokmal to "",
+                            Nynorsk to "",
+                            English to ""
+                        )
+                    }
+                }
+            }
             showIf(argument().map {
-                !it.fribelopEllerInntektErPeriodisert_barnetilleggSBGjeldende &&
-                    (it.belop_barnetilleggSBGjeldende != 0 || (it.belop_barnetilleggSBGjeldende == 0 && it.belopAr_barnetilleggSBGjeldende != 0)) &&
-                    it.avkortningsbelopAr_barnetilleggSBGjeldende > 0
+                !it.fribelopEllerInntektErPeriodisert_barnetilleggSBGjeldende
+                    && (it.belop_barnetilleggSBGjeldende != 0 || (it.belop_barnetilleggSBGjeldende == 0 && it.belopAr_barnetilleggSBGjeldende != 0))
+                    && it.avkortningsbelopAr_barnetilleggSBGjeldende > 0
             }) {
                 row {
                     cell {
@@ -1248,9 +1296,7 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
                         )
                     }
                     cell {
-                        val avkortningsbelopAr =
-                            argument().map { Kroner(it.avkortningsbelopAr_barnetilleggSBGjeldende) }
-                                .format()
+                        val avkortningsbelopAr = argument().map { Kroner(it.avkortningsbelopAr_barnetilleggSBGjeldende) }.format()
                         textExpr(
                             Bokmal to avkortningsbelopAr + " kr",
                             Nynorsk to avkortningsbelopAr + " kr",
@@ -1259,11 +1305,10 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
                     }
                 }
             }
-
             showIf(argument().map {
-                it.fribelopEllerInntektErPeriodisert_barnetilleggSBGjeldende &&
-                    (it.belop_barnetilleggSBGjeldende != 0 || (it.belop_barnetilleggSBGjeldende == 0 && it.belopAr_barnetilleggSBGjeldende != 0)) &&
-                    it.avkortningsbelopAr_barnetilleggSBGjeldende > 0
+                it.fribelopEllerInntektErPeriodisert_barnetilleggSBGjeldende
+                    && (it.belop_barnetilleggSBGjeldende != 0 || (it.belop_barnetilleggSBGjeldende == 0 && it.belopAr_barnetilleggSBGjeldende != 0))
+                    && it.avkortningsbelopAr_barnetilleggSBGjeldende > 0
             }) {
                 row {
                     cell {
@@ -1274,9 +1319,8 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
                         )
                     }
                     cell {
-                        val avkortningsbelopAr =
-                            argument().map { Kroner(it.avkortningsbelopAr_barnetilleggSBGjeldende) }
-                                .format()
+                        val avkortningsbelopAr = argument().map { Kroner(it.avkortningsbelopAr_barnetilleggSBGjeldende) }
+                            .format()
                         textExpr(
                             Bokmal to avkortningsbelopAr + " kr",
                             Nynorsk to avkortningsbelopAr + " kr",
@@ -1285,7 +1329,7 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
                     }
                 }
             }
-            showIf(argument().map{it.justeringsbelopAr_barnetilleggSBGjeldende != 0}) {
+            showIf(argument().map { it.justeringsbelopAr_barnetilleggSBGjeldende != 0 }) {
                 row {
                     cell {
                         text(
@@ -1295,9 +1339,8 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
                         )
                     }
                     cell {
-                        val justeringsbelopAr =
-                            argument().map { Kroner(it.justeringsbelopAr_barnetilleggSBGjeldende) }
-                                .format()
+                        val justeringsbelopAr = argument().map { Kroner(it.justeringsbelopAr_barnetilleggSBGjeldende) }
+                            .format()
                         textExpr(
                             Bokmal to justeringsbelopAr + " kr",
                             Nynorsk to justeringsbelopAr + " kr",
@@ -1306,8 +1349,7 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
                     }
                 }
             }
-            showIf(argument().map{it.belop_barnetilleggSBGjeldende != 0
-                || (it.belop_barnetilleggSBGjeldende == 0 && it.belopAr_barnetilleggSBGjeldende != 0)}) {
+            showIf(argument().map { it.belop_barnetilleggSBGjeldende != 0 || (it.belop_barnetilleggSBGjeldende == 0 && it.belopAr_barnetilleggSBGjeldende != 0) }) {
                 row {
                     cell {
                         text(
@@ -1326,6 +1368,8 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
                         )
                     }
                 }
+            }
+            showIf(argument().map { (it.belop_barnetilleggSBGjeldende != 0 || (it.belop_barnetilleggSBGjeldende == 0 && it.justeringsbelopAr_barnetilleggSBGjeldende != 0)) }) {
                 row {
                     cell {
                         text(
@@ -1344,7 +1388,41 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
                     }
                 }
             }
+            showIf(argument().map { it.belop_barnetilleggSBGjeldende == 0 && it.belopAr_barnetilleggSBGjeldende == 0 }) {
+                row {
+                    cell {
+                        text(
+                            Bokmal to "Grensen for å få utbetalt barnetillegg",
+                            Nynorsk to "Grensa for å få utbetalt barnetillegg",
+                            English to "The income limit for receiving child supplement"
+                        )
+                    }
+                    cell {
+                        val inntektstak = argument().map { Kroner(it.inntektstak_barnetilleggSBGjeldende) }.format()
+                        textExpr(
+                            Bokmal to inntektstak + " kr",
+                            Nynorsk to inntektstak + " kr",
+                            English to inntektstak + " NOK"
+                        )
+                    }
+                }
+            }
         }
     }
+    // TABLE 2 - end
+    showIf(argument().map { it.belop_barnetilleggSBGjeldende > 0 }) {
+        includePhrase(vedleggBeregnUTredusBTSBPgaInntekt_001, argument().map {
+            VedleggBeregnUTredusBTSBPgaInntekt_001Dto(it.belop_barnetilleggSBGjeldende)
+        })
+    }
+    showIf(argument().map { it.belop_barnetilleggSBGjeldende == 0 && it.justeringsbelopAr_barnetilleggSBGjeldende == 0 }) {
+        includePhrase(vedleggBeregnUTIkkeUtbetaltBTSBPgaInntekt_001)
+    }
+    showIf(argument().map { it.belop_barnetilleggSBGjeldende == 0 && it.justeringsbelopAr_barnetilleggSBGjeldende != 0 }) {
+        includePhrase(vedleggBeregnUTJusterBelopIkkeUtbetalt_001)
+    }
 }
+
+
+
 
