@@ -8,5 +8,5 @@ env:
 
 preAuthorized:
   - name: pensjon-pen
-    namespace: teampensjon
+    namespace: pensjondeployer
     cluster: prod-fss
