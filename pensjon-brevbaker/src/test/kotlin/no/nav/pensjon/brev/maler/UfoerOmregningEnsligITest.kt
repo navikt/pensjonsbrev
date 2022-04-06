@@ -10,6 +10,9 @@ import no.nav.pensjon.brev.api.model.Sivilstand
 import no.nav.pensjon.brev.latex.LaTeXCompilerService
 import no.nav.pensjon.brev.latex.PdfCompilationInput
 import no.nav.pensjon.brev.maler.vedlegg.OpplysningerBruktIBeregningUTDto
+import no.nav.pensjon.brev.maler.vedlegg.OrienteringOmRettigheterParamDto
+import no.nav.pensjon.brev.maler.vedlegg.opplysningerBruktIBeregningUT
+import no.nav.pensjon.brev.maler.vedlegg.orienteringOmRettigheterOgPlikter
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.Letter
 import no.nav.pensjon.brev.writeTestPDF
@@ -24,21 +27,30 @@ class UfoerOmregningEnsligITest {
         Letter(
             UfoerOmregningEnslig.template,
             UfoerOmregningEnsligDto().copy(
-                sivilstand = Sivilstand.PARTNER,
-                bor_i_norge = true,
-                eps_bor_sammen_med_bruker_gjeldende = true,
-                eps_institusjon_gjeldende = Institusjon.INGEN,
-                har_barnetillegg_felles_barn_vedvirk = false,
-                har_barnetillegg_for_saerkullsbarn_vedvirk = false,
-                har_ektefelletillegg_vedvirk = true,
-                saktype = Sakstype.ALDER,
                 opplysningerBruktIBeregningUT = OpplysningerBruktIBeregningUTDto().copy(
                     erRedusertMotinntekt_barnetilleggSBGjeldende = true,
                     sats_minsteytelseGjeldende = 10.00,
                     erUnder20Ar_ungUforGjeldende = true,
-                erEndret_barnetilleggSBGjeldende = true,
-
-                )
+                    erEndret_barnetilleggSBGjeldende = true,
+                ),
+                orienteringOmRettigheterOgPlikter = OrienteringOmRettigheterParamDto().copy(
+                    eps_bor_sammen_med_bruker_gjeldende = true,
+                    eps_institusjon_gjeldende = Institusjon.INGEN,
+                    har_barnetillegg_felles_barn_vedvirk = false,
+                    har_barnetillegg_for_saerkullsbarn_vedvirk = false,
+                    har_ektefelletillegg_vedvirk = true,
+                    saktype = Sakstype.ALDER,
+                ),
+                avdod = UfoerOmregningEnsligDto.Avdod(
+                    sivilstand = Sivilstand.PARTNER,
+                    navn = "Avdod person",
+                    ektefelletilleggOpphoert = false,
+                    harFellesBarnUtenBarnetillegg = false,
+                ),
+                bruker = UfoerOmregningEnsligDto.Bruker(
+                    borINorge = true,
+                    borIAvtaleLand = false,
+                ),
             ),
             Language.Bokmal,
             Fixtures.fellesAuto,

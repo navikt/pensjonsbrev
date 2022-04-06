@@ -1,7 +1,8 @@
 package no.nav.pensjon.brev.maler
 
-import no.nav.pensjon.brev.api.model.*
-import no.nav.pensjon.brev.api.model.Sivilstand.*
+import no.nav.pensjon.brev.api.model.Institusjon
+import no.nav.pensjon.brev.api.model.LetterMetadata
+import no.nav.pensjon.brev.api.model.Sivilstand
 import no.nav.pensjon.brev.maler.fraser.*
 import no.nav.pensjon.brev.maler.vedlegg.OpplysningerBruktIBeregningUTDto
 import no.nav.pensjon.brev.maler.vedlegg.OrienteringOmRettigheterParamDto
@@ -26,454 +27,386 @@ object UfoerOmregningEnslig : StaticTemplate {
             English to "NAV has altered your disability benefit"
         ),
         letterMetadata = LetterMetadata(
-            "Vedtak – omregning til enslig uføretrygdet (automatisk)",
-            isSensitiv = true
+            "Vedtak – omregning til enslig uføretrygdet (automatisk)", isSensitiv = true
         )
     ) {
-        val avdod_sivilstand = argument().select(UfoerOmregningEnsligDto::avdod_sivilstand)
-        val barnetillegg_er_redusert_mot_tak =
-            argument().select(UfoerOmregningEnsligDto::barnetillegg_er_redusert_mot_tak)
-        val barnetillegg_ikke_utbetalt_pga_tak =
-            argument().select(UfoerOmregningEnsligDto::barnetillegg_ikke_utbetalt_pga_tak)
-        val barnetillegg_saerkullsbarn_er_redusert_mot_inntekt_vedvirk =
-            argument().select(UfoerOmregningEnsligDto::barnetillegg_saerkullsbarn_er_redusert_mot_inntekt_vedvirk)
-        val bor_i_avtaleland = argument().select(UfoerOmregningEnsligDto::bor_i_avtaleland)
-        val bor_i_norge = argument().select(UfoerOmregningEnsligDto::bor_i_norge)
-        val ektefelletillegg_opphoert = argument().select(UfoerOmregningEnsligDto::ektefelletillegg_opphoert)
-        val eps_bor_sammen_med_bruker_gjeldende =
-            argument().select(UfoerOmregningEnsligDto::eps_bor_sammen_med_bruker_gjeldende)
-        val gjeldende_barnetillegg_saerkullsbarn_er_redusert_mot_inntekt =
-            argument().select(UfoerOmregningEnsligDto::gjeldende_barnetillegg_saerkullsbarn_er_redusert_mot_inntekt)
-        val gjeldende_ufoeretrygd_per_maaned_er_inntektsavkortet =
-            argument().select(UfoerOmregningEnsligDto::gjeldende_ufoeretrygd_per_maaned_er_inntektsavkortet)
-        val har_barn_overfoert_til_saerkullsbarn =
-            argument().select(UfoerOmregningEnsligDto::har_barn_overfoert_til_saerkullsbarn)
-        val har_barn_som_tidligere_var_saerkullsbarn =
-            argument().select(UfoerOmregningEnsligDto::har_barn_som_tidligere_var_saerkullsbarn)
-        val har_barnetillegg_for_saerkullsbarn_vedvirk =
-            argument().select(UfoerOmregningEnsligDto::har_barnetillegg_for_saerkullsbarn_vedvirk)
-        val har_barnetillegg_saerkullsbarn_justeringsbeloep_ar_vedvirk =
-            argument().select(UfoerOmregningEnsligDto::har_barnetillegg_saerkullsbarn_justeringsbeloep_ar_vedvirk)
-        val har_barnetillegg_saerkullsbarn_nettobeloep_vedvirk =
-            argument().select(UfoerOmregningEnsligDto::har_barnetillegg_saerkullsbarn_nettobeloep_vedvirk)
-        val har_barnetillegg_vedvirk = argument().select(UfoerOmregningEnsligDto::har_barnetillegg_vedvirk)
-        val har_felles_barn_uten_barnetillegg_med_avdod =
-            argument().select(UfoerOmregningEnsligDto::har_felles_barn_uten_barnetillegg_med_avdod)
-        val har_flere_delytelser_i_tillegg_til_ordinaer_ufoeretrygd =
-            argument().select(UfoerOmregningEnsligDto::har_flere_delytelser_i_tillegg_til_ordinaer_ufoeretrygd)
-        val har_flere_ufoeretrygd_perioder = argument().select(UfoerOmregningEnsligDto::har_flere_ufoeretrygd_perioder)
-        val har_minste_inntektsnivaa_foer_ufoeretrygd =
-            argument().select(UfoerOmregningEnsligDto::har_minste_inntektsnivaa_foer_ufoeretrygd)
-        val har_minsteytelse_vedvirk = argument().select(UfoerOmregningEnsligDto::har_minsteytelse_vedvirk)
-        val har_ufoeremaaned_vedvirk = argument().select(UfoerOmregningEnsligDto::har_ufoeremaaned_vedvirk)
-        val inntekt_ufoere_endret = argument().select(UfoerOmregningEnsligDto::inntekt_ufoere_endret)
-        val institusjon_vedvirk = argument().select(UfoerOmregningEnsligDto::institusjon_vedvirk)
-        val ufoeretrygd_med_barnetillegg_er_over_95_prosent_av_inntekt_foer_ufoerhet =
-            argument().select(UfoerOmregningEnsligDto::ufoeretrygd_med_barnetillegg_er_over_95_prosent_av_inntekt_foer_ufoerhet)
-        val ufoeretrygd_vedvirk_er_inntektsavkortet =
-            argument().select(UfoerOmregningEnsligDto::ufoeretrygd_vedvirk_er_inntektsavkortet)
-
-
         outline {
+
+            val harMinsteytelseVedVirk = argument().map { it.minsteytelseVedvirk != null }
+            val inntektFoerUfoereErSannsynligEndret =
+                argument().select(UfoerOmregningEnsligDto::erSannsynligEndret_inntektForUfoereVedVirk)
+            val ektefelleTilleggOpphoert = argument().map { it.avdod.ektefelletilleggOpphoert }
+
+            val harBarnetilleggVedVirk = argument().map { it.barnetilleggVedVirk != null }
+            val harBarnetilleggForSaerkullsbarnVedVirk =
+                argument().map { it.barnetilleggVedVirk?.barnetilleggSaerkullsbarnVedVirk != null }
+
+            val harBarnOverfoertTilSaerkullsbarn =
+                argument().map {
+                    it.barnetilleggVedVirk
+                        ?.barnetilleggSaerkullsbarnVedVirk
+                        ?.barnOverfoertTilSaerkullsbarn
+                        ?.isNotEmpty() ?: false
+                }
+            val harbarnSomTidligerVarSaerkullsbarn = argument().map {
+                it.barnetilleggVedVirk
+                    ?.barnetilleggSaerkullsbarnVedVirk
+                    ?.barnTidligereSaerkullsbarn
+                    ?.isNotEmpty() ?: false
+            }
+            val harUfoereMaanedligBeloepVedvirk = argument().map { it.ufoeretrygdVedVirk.totalUforeMaanedligBeloep > 0 }
+            val harFlereUfoeretrygdPerioder =
+                argument().map { it.beregnetUTPerManed_antallBeregningsperioderPaVedtak > 1 }
+            val institusjonsoppholdVedVirk = argument().select(UfoerOmregningEnsligDto::institusjonsoppholdVedVirk)
+            val barnetilleggForSaerkullsbarnGjeldende_ErRedusertMotInntekt =
+                argument().map { it.barnetilleggSaerkullsbarnGjeldende_erRedusertMotInntekt }
+            val brukerBorINorge = not(argument().map { it.bruker.borINorge })
+
+
             includePhrase(VedtakOverskriftPesys_001)
             showIf(
-                (har_minsteytelse_vedvirk
-                        or inntekt_ufoere_endret
-                        or ektefelletillegg_opphoert)
-                        and not(har_barnetillegg_for_saerkullsbarn_vedvirk)
+                (harMinsteytelseVedVirk or inntektFoerUfoereErSannsynligEndret or ektefelleTilleggOpphoert)
+                        and not(harBarnetilleggForSaerkullsbarnVedVirk)
             ) {
-                includePhrase(
-                    OmregnUTDodEPSInnledn1_001,
-                    argument().map { OmregnUTDodEPSInnledn1001Dto(it.avdod_navn, it.krav_virkedato_fom) }
+                includePhrase(OmregnUTDodEPSInnledn1_001,
+                    argument().map { OmregnUTDodEPSInnledn1001Dto(it.avdod.navn, it.krav.virkedatoFraOgMed) })
+            }
+
+            showIf(
+                not(harMinsteytelseVedVirk)
+                        and not(inntektFoerUfoereErSannsynligEndret)
+                        and not(ektefelleTilleggOpphoert)
+                        and not(harBarnetilleggForSaerkullsbarnVedVirk)
+            ) {
+                includePhrase(OmregnUTDodEPSInnledn2_001, argument().map { it.avdod.navn })
+            }
+
+            showIf(
+                (harMinsteytelseVedVirk or inntektFoerUfoereErSannsynligEndret or ektefelleTilleggOpphoert)
+                        and harBarnetilleggForSaerkullsbarnVedVirk
+            ) {
+                includePhrase(OmregnUTBTDodEPSInnledn_001,
+                    argument().map { OmregnUTBTDodEPSInnledn_001Dto(it.avdod.navn, it.krav.virkedatoFraOgMed) })
+            }
+
+            showIf(
+                not(harMinsteytelseVedVirk)
+                        and not(inntektFoerUfoereErSannsynligEndret)
+                        and not(ektefelleTilleggOpphoert)
+                        and harBarnetilleggForSaerkullsbarnVedVirk
+                        and not(harBarnOverfoertTilSaerkullsbarn)
+            ) {
+                includePhrase(OmregnUTBTSBDodEPSInnledn_001, argument().map { it.avdod.navn })
+            }
+
+            showIf(
+                not(harMinsteytelseVedVirk)
+                        and not(inntektFoerUfoereErSannsynligEndret)
+                        and not(ektefelleTilleggOpphoert)
+                        and harBarnOverfoertTilSaerkullsbarn
+            ) {
+                includePhrase(OmregnBTDodEPSInnledn_001,
+                    argument().map { OmregnBTDodEPSInnledn_001Dto(it.avdod.navn, it.krav.virkedatoFraOgMed) })
+            }
+
+            includePhrase(BeloepUT, argument().map {
+                BeloepUTDto(
+                    totalUforeMaanedligBeloep = it.ufoeretrygdVedVirk.totalUforeMaanedligBeloep,
+                    harBarnetilleggForSaerkullsbarnVedVirk = it.barnetilleggVedVirk?.barnetilleggSaerkullsbarnVedVirk != null,
+                    harFlereUfoeretrygdPerioder = it.beregnetUTPerManed_antallBeregningsperioderPaVedtak > 1,
                 )
-            }
+            })
 
             showIf(
-                not(har_minsteytelse_vedvirk)
-                        and not(inntekt_ufoere_endret)
-                        and not(ektefelletillegg_opphoert)
-                        and not(har_barnetillegg_for_saerkullsbarn_vedvirk)
-            ) {
-                includePhrase(OmregnUTDodEPSInnledn2_001,
-                    argument().map { OmregnUTDodEPSInnledn2_001Dto(it.avdod_navn) }
-                )
-            }
-
-            showIf(
-                (har_minsteytelse_vedvirk
-                        or inntekt_ufoere_endret
-                        or ektefelletillegg_opphoert)
-                        and har_barnetillegg_for_saerkullsbarn_vedvirk
-            ) {
-                includePhrase(
-                    OmregnUTBTDodEPSInnledn_001,
-                    argument().map { OmregnUTBTDodEPSInnledn_001Dto(it.avdod_navn, it.krav_virkedato_fom) }
-                )
-            }
-
-            showIf(
-                not(har_minsteytelse_vedvirk)
-                        and not(inntekt_ufoere_endret)
-                        and not(ektefelletillegg_opphoert)
-                        and har_barnetillegg_for_saerkullsbarn_vedvirk
-                        and not(har_barn_overfoert_til_saerkullsbarn)
-            ) {
-                includePhrase(
-                    OmregnUTBTSBDodEPSInnledn_001, argument().map { OmregnUTBTSBDodEPSInnledn_001Dto(it.avdod_navn) }
-                )
-            }
-
-            showIf(
-                not(har_minsteytelse_vedvirk)
-                        and not(inntekt_ufoere_endret)
-                        and not(ektefelletillegg_opphoert)
-                        and har_barn_overfoert_til_saerkullsbarn
-            ) {
-                includePhrase(
-                    OmregnBTDodEPSInnledn_001,
-                    argument().map { OmregnBTDodEPSInnledn_001Dto(it.avdod_navn, it.krav_virkedato_fom) }
-                )
-            }
-
-            showIf(
-                har_ufoeremaaned_vedvirk
-                        and not(har_barnetillegg_for_saerkullsbarn_vedvirk)
-                        and not(har_flere_ufoeretrygd_perioder)
-            ) {
-                includePhrase(BelopUT_001, argument().map { BelopUT_001Dto(it.total_ufoeremaaneder) })
-            }
-
-            showIf(
-                har_ufoeremaaned_vedvirk
-                        and not(har_barnetillegg_for_saerkullsbarn_vedvirk)
-                        and har_flere_ufoeretrygd_perioder
-            ) {
-                includePhrase(BelopUTVedlegg_001, argument().map { BelopUTVedlegg_001Dto(it.total_ufoeremaaneder) })
-            }
-
-            showIf(
-                har_ufoeremaaned_vedvirk
-                        and har_barnetillegg_for_saerkullsbarn_vedvirk
-                        and not(har_flere_ufoeretrygd_perioder)
-            ) {
-                includePhrase(BelopUTBT_001, argument().map { BelopUTBT_001Dto(it.total_ufoeremaaneder) })
-            }
-
-            showIf(
-                har_ufoeremaaned_vedvirk
-                        and har_barnetillegg_for_saerkullsbarn_vedvirk
-                        and har_flere_ufoeretrygd_perioder
-            ) {
-                includePhrase(
-                    BelopUTBTVedlegg_001,
-                    argument().map { BelopUTBTVedlegg_001Dto(it.total_ufoeremaaneder) }
-                )
-            }
-
-            showIf(
-                not(har_ufoeremaaned_vedvirk)
-                        and not(har_barnetillegg_for_saerkullsbarn_vedvirk)
-                        and not(har_flere_ufoeretrygd_perioder)
-                        and institusjon_vedvirk.isOneOf(Institusjon.FENGSEL)
+                not(harUfoereMaanedligBeloepVedvirk)
+                        and not(harBarnetilleggForSaerkullsbarnVedVirk)
+                        and not(harFlereUfoeretrygdPerioder)
+                        and institusjonsoppholdVedVirk.isOneOf(Institusjon.FENGSEL)
             ) {
                 includePhrase(BelopUTIngenUtbetaling_001)
             }
 
             showIf(
-                not(har_ufoeremaaned_vedvirk)
-                        and not(har_barnetillegg_for_saerkullsbarn_vedvirk)
-                        and har_flere_ufoeretrygd_perioder
-                        and not(institusjon_vedvirk.isOneOf(Institusjon.FENGSEL))
+                not(harUfoereMaanedligBeloepVedvirk)
+                        and not(harBarnetilleggForSaerkullsbarnVedVirk)
+                        and harFlereUfoeretrygdPerioder
+                        and not(institusjonsoppholdVedVirk.isOneOf(Institusjon.FENGSEL))
             ) {
                 includePhrase(BelopUTIngenUtbetalingVedlegg_001)
             }
 
-            showIf(
-                not(har_ufoeremaaned_vedvirk)
-                        and har_barnetillegg_saerkullsbarn_nettobeloep_vedvirk
-                        and not(har_flere_ufoeretrygd_perioder)
-            ) {
-                includePhrase(BelopUTBTIngenUtbetaling_001)
+            ifNotNull(argument().map { it.barnetilleggVedVirk?.barnetilleggSaerkullsbarnVedVirk }) { barnetillegg ->
+                showIf(
+                    not(harUfoereMaanedligBeloepVedvirk)
+                            and barnetillegg.map { it.belop == 0 }) {
+                    showIf(harFlereUfoeretrygdPerioder) {
+                        includePhrase(BelopUTBTIngenUtbetalingVedlegg_001)
+                    }.orShow {
+                        includePhrase(BelopUTBTIngenUtbetaling_001)
+                    }
+                }
             }
 
             showIf(
-                not(har_ufoeremaaned_vedvirk)
-                        and har_barnetillegg_saerkullsbarn_nettobeloep_vedvirk
-                        and har_flere_ufoeretrygd_perioder
-            ) {
-                includePhrase(BelopUTBTIngenUtbetalingVedlegg_001)
-            }
-
-            showIf(
-                not(har_ufoeremaaned_vedvirk)
-                        and not(har_barnetillegg_for_saerkullsbarn_vedvirk)
-                        and not(har_flere_ufoeretrygd_perioder)
-                        and institusjon_vedvirk.isOneOf(Institusjon.FENGSEL)
+                not(harUfoereMaanedligBeloepVedvirk)
+                        and not(harBarnetilleggForSaerkullsbarnVedVirk)
+                        and not(harFlereUfoeretrygdPerioder)
+                        and institusjonsoppholdVedVirk.isOneOf(Institusjon.FENGSEL)
             ) {
                 includePhrase(BelopUTIngenUtbetalingFengsel_001)
             }
 
             showIf(
-                not(har_ufoeremaaned_vedvirk)
-                        and not(har_barnetillegg_for_saerkullsbarn_vedvirk)
-                        and har_flere_ufoeretrygd_perioder
-                        and institusjon_vedvirk.isOneOf(Institusjon.FENGSEL)
+                not(harUfoereMaanedligBeloepVedvirk)
+                        and not(harBarnetilleggForSaerkullsbarnVedVirk)
+                        and harFlereUfoeretrygdPerioder
+                        and institusjonsoppholdVedVirk.isOneOf(Institusjon.FENGSEL)
             ) {
                 includePhrase(BelopUTIngenUtbetalingFengselVedlegg_001)
             }
 
-            showIf(har_minsteytelse_vedvirk or inntekt_ufoere_endret) {
+            showIf(harMinsteytelseVedVirk or inntektFoerUfoereErSannsynligEndret) {
                 includePhrase(BegrunnOverskrift_001)
             }
 
-            showIf(har_minsteytelse_vedvirk and not(inntekt_ufoere_endret)) {
-                includePhrase(EndrMYDodEPS2_001, argument().map {
-                    EndrMYDodEPS2_001Dto(
-                        it.minsteytelse_sats_vedvirk,
-                        it.kompensasjonsgrad_ufoeretrygd_vedvirk
-                    )
-                })
+            ifNotNull(argument().map { arg ->
+                arg.minsteytelseVedvirk?.let { EndrMYDodEPS2_001Dto(it.sats, arg.ufoeretrygdVedVirk.kompensasjonsgrad) }
+            }) {
+                showIf(not(inntektFoerUfoereErSannsynligEndret)) {
+                    includePhrase(EndrMYDodEPS2_001, it)
+                }
             }
 
-            showIf(har_minsteytelse_vedvirk and inntekt_ufoere_endret) {
-                includePhrase(EndrMYOgMinstIFUDodEPS2_001, argument().map {
+            ifNotNull(argument().map { arg ->
+                arg.minsteytelseVedvirk?.let {
                     EndrMYOgMinstIFUDodEPS2_001Dto(
-                        it.minsteytelse_sats_vedvirk,
-                        it.inntekt_foer_ufoerhet_vedvirk,
-                        it.oppjustert_inntekt_foer_ufoerhet_vedvirk,
-                        it.kompensasjonsgrad_ufoeretrygd_vedvirk
+                        it.sats,
+                        arg.inntektFoerUfoerhetVedVirk.beloep,
+                        arg.inntektFoerUfoerhetVedVirk.oppjustertBeloep,
+                        arg.ufoeretrygdVedVirk.kompensasjonsgrad
                     )
-                })
+                }
+            }) {
+                showIf(inntektFoerUfoereErSannsynligEndret) {
+                    includePhrase(EndrMYOgMinstIFUDodEPS2_001, it)
+                }
             }
 
-            showIf(not(har_minsteytelse_vedvirk) and inntekt_ufoere_endret) {
+
+            showIf(not(harMinsteytelseVedVirk) and inntektFoerUfoereErSannsynligEndret) {
                 includePhrase(EndrMinstIFUDodEPS2_001, argument().map {
                     EndrMinstIFUDodEPS2_001Dto(
-                        it.inntekt_foer_ufoerhet_vedvirk,
-                        it.oppjustert_inntekt_foer_ufoerhet_vedvirk,
-                        it.kompensasjonsgrad_ufoeretrygd_vedvirk
+                        it.inntektFoerUfoerhetVedVirk.beloep,
+                        it.inntektFoerUfoerhetVedVirk.oppjustertBeloep,
+                        it.ufoeretrygdVedVirk.kompensasjonsgrad
                     )
                 })
             }
 
 
-            showIf(
-                not(har_minste_inntektsnivaa_foer_ufoeretrygd)
-                        and not(ufoeretrygd_vedvirk_er_inntektsavkortet)
-            ) {
-                includePhrase(HjemmelSivilstandUT_001)
-            }
+            includePhrase(HjemmelSivilstandUfoeretrygd, argument().map {
+                HjemmelSivilstandUfoeretrygdDto(
+                    it.inntektFoerUfoerhetVedVirk.erMinsteinntekt, it.ufoeretrygdVedVirk.erInntektsavkortet
+                )
+            })
 
-            showIf(
-                har_minste_inntektsnivaa_foer_ufoeretrygd
-                        and not(ufoeretrygd_vedvirk_er_inntektsavkortet)
-            ) {
-                includePhrase(HjemmelSivilstandUTMinsteIFU_001)
-            }
-
-            showIf(
-                not(har_minste_inntektsnivaa_foer_ufoeretrygd)
-                        and ufoeretrygd_vedvirk_er_inntektsavkortet
-            ) {
-                includePhrase(HjemmelSivilstandUTAvkortet_001)
-            }
-
-            showIf(
-                har_minste_inntektsnivaa_foer_ufoeretrygd
-                        and ufoeretrygd_vedvirk_er_inntektsavkortet
-            ) {
-                includePhrase(HjemmelSivilstandUTMinsteIFUAvkortet_001)
-            }
-
-            showIf(institusjon_vedvirk.isOneOf(Institusjon.HELSE)) {
+            showIf(institusjonsoppholdVedVirk.isOneOf(Institusjon.HELSE)) {
                 includePhrase(HjemmelEPSDodUTInstitusjon_001)
-            }
-
-            showIf(institusjon_vedvirk.isOneOf(Institusjon.FENGSEL)) {
+            }.orShowIf(institusjonsoppholdVedVirk.isOneOf(Institusjon.FENGSEL)) {
                 includePhrase(HjemmelEPSDodUTFengsel_001)
             }
 
-            showIf(ektefelletillegg_opphoert) {
+            showIf(ektefelleTilleggOpphoert) {
                 includePhrase(OpphorETOverskrift_001)
                 includePhrase(OpphorET_001)
                 includePhrase(HjemmelET_001)
             }
-/*
-            showIf(har_barn_overfoert_til_saerkullsbarn) {
-                includePhrase(OmregningFBOverskrift_001)
-                includePhrase(
-                        argument().map { InfoFBTilSB_001Dto(it.barn_overfoert_til_saerkullsbarn) },
-                        InfoFBTilSB_001
-                )
-                showIf(
-                        barnetillegg_saerkullsbarn_er_redusert_mot_inntekt_vedvirk
-                                and har_barn_som_tidligere_var_saerkullsbarn
-                                and not(inntekt_ufoere_endret and har_minsteytelse_vedvirk)
-                ) {
-                    includePhrase(
-                            argument().map { InfoTidligereSB_001Dto(it.tidligere_saerkullsbarn) },
-                            InfoTidligereSB_001
-                    )
+
+            ifNotNull(
+                argument().map { it.barnetilleggVedVirk?.barnetilleggSaerkullsbarnVedVirk },
+                argument().map { it.barnetilleggVedVirk?.barnetilleggGrunnlag },
+            ) { tillegg, grunnlag ->
+
+                val barnetilleggForSaerkullsbarnVedvirkErRedusertMotInntekt =
+                    tillegg.map { it.erRedusertMotInntekt }
+                val barnetilleggErRedusertMotTak = grunnlag.map { it.erRedusertMotTak }
+                val barnetilleggErIkkeUtbetPgaTak = grunnlag.map { it.erIkkeUtbetPgaTak }
+                val harNettoBeloep = tillegg.map { it.belop > 0 }
+                val barnetilleggForSaerkullsbarnVedvirk_HarjusteringsBeloepAr =
+                    tillegg.map { it.justeringsbeloepAr != 0 }
+
+                showIf(harBarnOverfoertTilSaerkullsbarn) {
+                    includePhrase(OmregningFBOverskrift_001)
+                    includePhrase(InfoFBTilSB_001, tillegg.map { it.barnOverfoertTilSaerkullsbarn })
+
+                    showIf(
+                        barnetilleggForSaerkullsbarnVedvirkErRedusertMotInntekt
+                                and harbarnSomTidligerVarSaerkullsbarn
+                                and not(inntektFoerUfoereErSannsynligEndret)
+                                and/*TODO Denne bør gjøres om til and i metaforce også*/ not(harMinsteytelseVedVirk)
+                    ) {
+                        includePhrase(
+                            InfoTidligereSB_001,
+                            tillegg.map { it.barnTidligereSaerkullsbarn }
+                        )
+                    }
+
+                    showIf(
+                        harbarnSomTidligerVarSaerkullsbarn
+                                and (inntektFoerUfoereErSannsynligEndret or harMinsteytelseVedVirk)
+                                and (barnetilleggForSaerkullsbarnVedvirkErRedusertMotInntekt or barnetilleggErRedusertMotTak)
+                    ) {
+                        includePhrase(
+                            InfoTidligereSBOgEndretUT_001,
+                            tillegg.map { it.barnTidligereSaerkullsbarn }
+                        )
+                    }
                 }
 
                 showIf(
-                        barnetillegg_saerkullsbarn_er_redusert_mot_inntekt_vedvirk
-                                and (inntekt_ufoere_endret or har_minsteytelse_vedvirk)
-                                and (barnetillegg_saerkullsbarn_er_redusert_mot_inntekt_vedvirk or barnetillegg_er_redusert_mot_tak)
+                    harBarnetilleggForSaerkullsbarnVedVirk
+                            and (harMinsteytelseVedVirk or inntektFoerUfoereErSannsynligEndret or ektefelleTilleggOpphoert)
                 ) {
-                    includePhrase(
-                            argument().map { InfoTidligereSBOgEndretUT_001Dto(it.tidligere_saerkullsbarn) },
-                            InfoTidligereSBOgEndretUT_001
-                    )
+                    includePhrase(EndringUTpavirkerBTOverskrift_001)
+                }
+
+                showIf(
+                    harBarnOverfoertTilSaerkullsbarn or (
+                            harBarnetilleggForSaerkullsbarnVedVirk
+                                    and (harMinsteytelseVedVirk or inntektFoerUfoereErSannsynligEndret or ektefelleTilleggOpphoert))
+                ) {
+
+                    showIf(not(barnetilleggErRedusertMotTak)) {
+                        includePhrase(IkkeRedusBTPgaTak_001, grunnlag.map {
+                            IkkeRedusBTPgaTak_001Dto(
+                                it.prosentsatsGradertOverInntektFoerUfoer,
+                                it.gradertOverInntektFoerUfoer,
+                            )
+                        })
+                    }
+
+                    showIf(barnetilleggErRedusertMotTak and not(barnetilleggErIkkeUtbetPgaTak)) {
+                        includePhrase(RedusBTPgaTak_001, grunnlag.map {
+                            RedusBTPgaTak_001Dto(
+                                it.prosentsatsGradertOverInntektFoerUfoer,
+                                it.gradertOverInntektFoerUfoer,
+                                it.belopFoerReduksjon,
+                                it.belopEtterReduksjon,
+                            )
+                        })
+                    }
+
+                    showIf(barnetilleggErIkkeUtbetPgaTak) {
+                        includePhrase(IkkeUtbetaltBTPgaTak_001, grunnlag.map {
+                            IkkeUtbetaltBTPgaTak_001Dto(
+                                it.prosentsatsGradertOverInntektFoerUfoer,
+                                it.gradertOverInntektFoerUfoer,
+                            )
+                        })
+                    }
+
+
+                    showIf(not(harBarnOverfoertTilSaerkullsbarn) and not(barnetilleggErIkkeUtbetPgaTak)) {
+                        includePhrase(InfoBTSBInntekt_001)
+                    }
+
+                    showIf(harBarnOverfoertTilSaerkullsbarn and not(barnetilleggErIkkeUtbetPgaTak)) {
+                        includePhrase(InfoBTOverfortTilSBInntekt_001)
+                    }
+
+                    showIf(
+                        not(barnetilleggForSaerkullsbarnVedvirkErRedusertMotInntekt)
+                                and not(barnetilleggErIkkeUtbetPgaTak)
+                    ) {
+                        includePhrase(IkkeRedusBTSBPgaInntekt_001, tillegg.map { tillegg ->
+                            IkkeRedusBTSBPgaInntekt_001Dto(
+                                tillegg.inntektBruktIAvkortning, tillegg.fribeloepVedvirk
+                            )
+                        })
+                    }
+
+                    showIf(
+                        barnetilleggForSaerkullsbarnVedvirkErRedusertMotInntekt
+                                and harNettoBeloep
+                                or (not(harNettoBeloep) and barnetilleggForSaerkullsbarnVedvirk_HarjusteringsBeloepAr)
+                    ) {
+                        includePhrase(RedusBTSBPgaInntekt_001, tillegg.map { tillegg ->
+                            RedusBTSBPgaInntekt_001Dto(
+                                tillegg.inntektBruktIAvkortning, tillegg.fribeloepVedvirk
+                            )
+                        })
+                    }
+
+                    showIf(barnetilleggForSaerkullsbarnVedvirk_HarjusteringsBeloepAr and harNettoBeloep) {
+                        includePhrase(JusterBelopRedusBTPgaInntekt_001)
+                    }
+
+                    showIf(barnetilleggForSaerkullsbarnVedvirk_HarjusteringsBeloepAr and not(harNettoBeloep)) {
+                        includePhrase(JusterBelopIkkeUtbetaltBTPgaInntekt_001)
+                    }
+
+                    showIf(
+                        barnetilleggForSaerkullsbarnVedvirkErRedusertMotInntekt
+                                and not(harNettoBeloep)
+                                and not(barnetilleggForSaerkullsbarnVedvirk_HarjusteringsBeloepAr)
+                    ) {
+                        includePhrase(IkkeUtbetaltBTSBPgaInntekt_001, tillegg.map {
+                            IkkeUtbetaltBTSBPgaInntekt_001Dto(
+                                it.inntektBruktIAvkortning,
+                                it.inntektstak,
+                            )
+                        })
+                    }
+
+                    showIf(
+                        not(barnetilleggForSaerkullsbarnVedvirkErRedusertMotInntekt)
+                                and not(grunnlag.map { it.prosentsatsGradertOverInntektFoerUfoer <= 95 }
+                        )
+                    ) {
+                        includePhrase(HjemmelBT_001)
+                    }
+
+
+                    showIf(
+                        not(barnetilleggForSaerkullsbarnVedvirkErRedusertMotInntekt)
+                                and grunnlag.map { it.prosentsatsGradertOverInntektFoerUfoer <= 95 }
+                    ) {
+                        includePhrase(HjemmelBTOvergangsregler_001)
+                    }
+
+                    showIf(
+                        barnetilleggForSaerkullsbarnVedvirkErRedusertMotInntekt
+                                and not(grunnlag.map { it.prosentsatsGradertOverInntektFoerUfoer <= 95 })
+                    ) {
+                        includePhrase(HjemmelBTRedus_001)
+                    }
+
+                    showIf(
+                        barnetilleggForSaerkullsbarnVedvirkErRedusertMotInntekt
+                                and grunnlag.map { it.prosentsatsGradertOverInntektFoerUfoer <= 95 }
+                    ) {
+                        includePhrase(HjemmelBTRedusOvergangsregler_001)
+                    }
+
+                    showIf(barnetilleggForSaerkullsbarnGjeldende_ErRedusertMotInntekt) {
+                        includePhrase(MerInfoBT_001)
+                    }
                 }
             }
-*/
-
-            showIf(
-                har_barnetillegg_for_saerkullsbarn_vedvirk
-                        and (
-                        har_minsteytelse_vedvirk
-                                or inntekt_ufoere_endret
-                                or ektefelletillegg_opphoert
-                        )
-            ) {
-                includePhrase(EndringUTpavirkerBTOverskrift_001)
-
-                showIf(not(barnetillegg_er_redusert_mot_tak)) {
-                    includePhrase(IkkeRedusBTPgaTak_001, argument().map {
-                        IkkeRedusBTPgaTak_001Dto(
-                            it.barnetillegg_prosentsats_gradert_over_inntekt_foer_ufoer_vedvirk,
-                            it.barnetillegg_gradert_over_inntekt_foer_ufoer_vedvirk,
-                        )
-                    })
-                }
-
-                showIf(barnetillegg_er_redusert_mot_tak and not(barnetillegg_ikke_utbetalt_pga_tak)) {
-                    includePhrase(RedusBTPgaTak_001, argument().map {
-                        RedusBTPgaTak_001Dto(
-                            it.barnetillegg_prosentsats_gradert_over_inntekt_foer_ufoer_vedvirk,
-                            it.barnetillegg_gradert_over_inntekt_foer_ufoer_vedvirk,
-                            it.barnetillegg_beloep_foer_reduksjon_vedvirk,
-                            it.barnetillegg_saerkullsbarn_beloep_etter_reduksjon_vedvirk,
-                        )
-                    })
-                }
-
-                showIf(barnetillegg_ikke_utbetalt_pga_tak) {
-                    includePhrase(IkkeUtbetaltBTPgaTak_001, argument().map {
-                        IkkeUtbetaltBTPgaTak_001Dto(
-                            it.barnetillegg_prosentsats_gradert_over_inntekt_foer_ufoer_vedvirk,
-                            it.barnetillegg_gradert_over_inntekt_foer_ufoer_vedvirk,
-                        )
-                    })
-                }
-
-                showIf(not(har_barn_overfoert_til_saerkullsbarn) and not(barnetillegg_ikke_utbetalt_pga_tak)) {
-                    includePhrase(InfoBTSBInntekt_001)
-                }
-
-                showIf(har_barn_overfoert_til_saerkullsbarn and not(barnetillegg_ikke_utbetalt_pga_tak)) {
-                    includePhrase(InfoBTOverfortTilSBInntekt_001)
-                }
-
-                showIf(
-                    not(barnetillegg_saerkullsbarn_er_redusert_mot_inntekt_vedvirk)
-                            and not(barnetillegg_ikke_utbetalt_pga_tak)
-                ) {
-                    includePhrase(IkkeRedusBTSBPgaInntekt_001, argument().map {
-                        IkkeRedusBTSBPgaInntekt_001Dto(
-                            it.barnetillegg_saerkullsbarn_inntekt_brukt_i_avkortning_vedvirk,
-                            it.barnetillegg_saerkullsbarn_inntekt_brukt_i_avkortning_vedvirk,
-                        )
-                    })
-                }
-
-                showIf(
-                    barnetillegg_saerkullsbarn_er_redusert_mot_inntekt_vedvirk
-                            and (har_barnetillegg_saerkullsbarn_nettobeloep_vedvirk
-                            or (not(har_barnetillegg_saerkullsbarn_nettobeloep_vedvirk) and har_barnetillegg_saerkullsbarn_justeringsbeloep_ar_vedvirk))
-                ) {
-                    includePhrase(RedusBTSBPgaInntekt_001, argument().map {
-                        RedusBTSBPgaInntekt_001Dto(
-                            it.barnetillegg_saerkullsbarn_inntekt_brukt_i_avkortning_vedvirk,
-                            it.barnetillegg_saerkullsbarn_inntekt_brukt_i_avkortning_vedvirk
-                        )
-                    })
-                }
 
 
-                showIf(
-                    har_barnetillegg_saerkullsbarn_justeringsbeloep_ar_vedvirk
-                            and har_barnetillegg_saerkullsbarn_nettobeloep_vedvirk
-                ) {
-                    includePhrase(JusterBelopRedusBTPgaInntekt_001)
-                }
-
-                showIf(
-                    har_barnetillegg_saerkullsbarn_justeringsbeloep_ar_vedvirk
-                            and not(har_barnetillegg_saerkullsbarn_nettobeloep_vedvirk)
-                ) {
-                    includePhrase(JusterBelopIkkeUtbetaltBTPgaInntekt_001)
-                }
-
-                showIf(
-                    barnetillegg_saerkullsbarn_er_redusert_mot_inntekt_vedvirk
-                            and not(har_barnetillegg_saerkullsbarn_nettobeloep_vedvirk)
-                            and not(har_barnetillegg_saerkullsbarn_justeringsbeloep_ar_vedvirk)
-                ) {
-                    includePhrase(IkkeUtbetaltBTSBPgaInntekt_001, argument().map {
-                        IkkeUtbetaltBTSBPgaInntekt_001Dto(
-                            it.barnetillegg_saerkullsbarn_inntekt_brukt_i_avkortning_vedvirk,
-                            it.barnetillegg_saerkullsbarn_inntektstak_vedvirk
-                        )
-                    })
-                }
-
-                showIf(
-                    not(barnetillegg_saerkullsbarn_er_redusert_mot_inntekt_vedvirk)
-                            and not(ufoeretrygd_med_barnetillegg_er_over_95_prosent_av_inntekt_foer_ufoerhet)
-                ) {
-                    includePhrase(HjemmelBT_001)
-                }
-
-                showIf(
-                    not(barnetillegg_saerkullsbarn_er_redusert_mot_inntekt_vedvirk)
-                            and ufoeretrygd_med_barnetillegg_er_over_95_prosent_av_inntekt_foer_ufoerhet
-                ) {
-                    includePhrase(HjemmelBTOvergangsregler_001)
-                }
-
-                showIf(
-                    barnetillegg_saerkullsbarn_er_redusert_mot_inntekt_vedvirk
-                            and not(ufoeretrygd_med_barnetillegg_er_over_95_prosent_av_inntekt_foer_ufoerhet)
-                ) {
-                    includePhrase(HjemmelBTRedus_001)
-                }
-
-                showIf(
-                    barnetillegg_saerkullsbarn_er_redusert_mot_inntekt_vedvirk
-                            and ufoeretrygd_med_barnetillegg_er_over_95_prosent_av_inntekt_foer_ufoerhet
-                ) {
-                    includePhrase(HjemmelBTRedusOvergangsregler_001)
-                }
-
-                showIf(gjeldende_barnetillegg_saerkullsbarn_er_redusert_mot_inntekt) {
-                    includePhrase(MerInfoBT_001)
-                }
-            }
-
-
-            showIf(avdod_sivilstand.isOneOf(SAMBOER3_2)) {
-                includePhrase(GjRettSamboerOverskrift, argument().map { GjRettSamboerOverskriftDto(it.avdod_navn) })
+            val avdod_sivilstand = argument().map { it.avdod.sivilstand }
+            showIf(avdod_sivilstand.isOneOf(Sivilstand.SAMBOER3_2)) {
+                includePhrase(GjRettSamboerOverskrift, argument().map { it.avdod.navn })
                 includePhrase(GjRettUTSamboer_001)
             }
-            showIf(avdod_sivilstand.isOneOf(GIFT, PARTNER, SAMBOER1_5)) {
+            showIf(avdod_sivilstand.isOneOf(Sivilstand.GIFT, Sivilstand.PARTNER, Sivilstand.SAMBOER1_5)) {
                 includePhrase(RettTilUTGJTOverskrift_001)
                 includePhrase(HvemUTGJTVilkar_001)
                 includePhrase(HvordanSoekerDuOverskrift_001)
                 includePhrase(SoekUTGJT_001)
 
-                showIf(bor_i_avtaleland) {
+                showIf(argument().map { it.bruker.borIAvtaleLand }) {
                     includePhrase(SoekAvtaleLandUT_001)
                 }
 
@@ -483,7 +416,7 @@ object UfoerOmregningEnslig : StaticTemplate {
                 includePhrase(InfoAvdodPenFraAndre_001)
             }
 
-            showIf(har_felles_barn_uten_barnetillegg_med_avdod) {
+            showIf(argument().map { it.avdod.harFellesBarnUtenBarnetillegg }) {
                 includePhrase(HarBarnUnder18Overskrift_001)
                 includePhrase(HarBarnUtenBT_001)
                 includePhrase(HarBarnUnder18_001)
@@ -492,52 +425,45 @@ object UfoerOmregningEnslig : StaticTemplate {
             includePhrase(VirknTdsPktOverskrift_001)
 
             showIf(
-                har_ufoeremaaned_vedvirk
-                        and (har_minsteytelse_vedvirk or inntekt_ufoere_endret or ektefelletillegg_opphoert)
+                harUfoereMaanedligBeloepVedvirk
+                        and (harMinsteytelseVedVirk or inntektFoerUfoereErSannsynligEndret or ektefelleTilleggOpphoert)
             ) {
-                includePhrase(VirkTdsPktUT_001, argument().map { VirkTdsPktUT_001Dto(it.krav_virkedato_fom) })
+                includePhrase(VirkTdsPktUT_001, argument().map { VirkTdsPktUT_001Dto(it.krav.virkedatoFraOgMed) })
             }
 
             showIf(
-                har_ufoeremaaned_vedvirk
-                        and not(har_minsteytelse_vedvirk)
-                        and not(inntekt_ufoere_endret)
-                        and not(ektefelletillegg_opphoert)
-                        and not(har_barn_overfoert_til_saerkullsbarn)
+                harUfoereMaanedligBeloepVedvirk
+                        and not(harMinsteytelseVedVirk)
+                        and not(inntektFoerUfoereErSannsynligEndret)
+                        and not(ektefelleTilleggOpphoert)
+                        and not(harBarnOverfoertTilSaerkullsbarn)
             ) {
-                includePhrase(
-                    VirkTdsPktUTIkkeEndring_001,
-                    argument().map { VirkTdsPktUTIkkeEndring_001Dto(it.krav_virkedato_fom) }
-                )
+                includePhrase(VirkTdsPktUTIkkeEndring_001,
+                    argument().map { VirkTdsPktUTIkkeEndring_001Dto(it.krav.virkedatoFraOgMed) })
             }
 
             showIf(
-                har_ufoeremaaned_vedvirk
-                        and not(har_minsteytelse_vedvirk)
-                        and not(inntekt_ufoere_endret)
-                        and not(ektefelletillegg_opphoert)
-                        and har_barn_overfoert_til_saerkullsbarn
+                harUfoereMaanedligBeloepVedvirk
+                        and not(harMinsteytelseVedVirk)
+                        and not(inntektFoerUfoereErSannsynligEndret)
+                        and not(ektefelleTilleggOpphoert)
+                        and harBarnOverfoertTilSaerkullsbarn
             ) {
-                includePhrase(
-                    VirkTdsPktUTBTOmregn_001, argument().map { VirkTdsPktUTBTOmregn_001Dto(it.krav_virkedato_fom) }
-                )
+                includePhrase(VirkTdsPktUTBTOmregn_001,
+                    argument().map { VirkTdsPktUTBTOmregn_001Dto(it.krav.virkedatoFraOgMed) })
             }
 
-            showIf(not(har_ufoeremaaned_vedvirk)) {
-                includePhrase(
-                    VirkTdsPktUTAvkortetTil0_001,
-                    argument().map { VirkTdsPktUTAvkortetTil0_001Dto(it.krav_virkedato_fom) }
-                )
+            showIf(not(harUfoereMaanedligBeloepVedvirk)) {
+                includePhrase(VirkTdsPktUTAvkortetTil0_001,
+                    argument().map { VirkTdsPktUTAvkortetTil0_001Dto(it.krav.virkedatoFraOgMed) })
             }
 
             includePhrase(MeldInntektUTOverskrift_001)
 
-            showIf(not(har_barnetillegg_vedvirk)) {
-                includePhrase(MeldInntektUT_001)
-            }
-
-            showIf(har_barnetillegg_vedvirk) {
+            showIf(harBarnetilleggVedVirk) {
                 includePhrase(MeldInntektUTBT_001)
+            }.orShow {
+                includePhrase(MeldInntektUT_001)
             }
 
             includePhrase(MeldEndringerPesys_001)
@@ -548,126 +474,135 @@ object UfoerOmregningEnslig : StaticTemplate {
             includePhrase(SkattekortOverskrift_001)
             includePhrase(SkattekortUT_001)
 
-            showIf(not(bor_i_norge)) {
+            showIf(brukerBorINorge) {
                 includePhrase(SkattBorIUtlandPesys_001)
             }
         }
 
-        includeAttachment(orienteringOmRettigheterOgPlikter, argument().map {
-            it.orienteringOmRettigheterOgPlikter
-        }
-        )
-        includeAttachment(opplysningerBruktIBeregningUT, argument().map {
-            it.opplysningerBruktIBeregningUT
-        }
-        )
+        includeAttachment(orienteringOmRettigheterOgPlikter, argument().map { it.orienteringOmRettigheterOgPlikter })
+        includeAttachment(opplysningerBruktIBeregningUT, argument().map { it.opplysningerBruktIBeregningUT })
     }
 }
 
 data class UfoerOmregningEnsligDto(
     val opplysningerBruktIBeregningUT: OpplysningerBruktIBeregningUTDto,
     val orienteringOmRettigheterOgPlikter: OrienteringOmRettigheterParamDto,
-    val avdod_navn: String,
-    val avdod_sivilstand: Sivilstand,
-    val barn_overfoert_til_saerkullsbarn: List<String>,
-    val barnetillegg_beloep_foer_reduksjon_vedvirk: Number,
-    val barnetillegg_er_redusert_mot_tak: Boolean,
-    val barnetillegg_gradert_over_inntekt_foer_ufoer_vedvirk: Number,
-    val barnetillegg_ikke_utbetalt_pga_tak: Boolean,
-    val barnetillegg_prosentsats_gradert_over_inntekt_foer_ufoer_vedvirk: Number,
-    val barnetillegg_saerkullsbarn_beloep_etter_reduksjon_vedvirk: Number,
-    val barnetillegg_saerkullsbarn_er_redusert_mot_inntekt_vedvirk: Boolean,
-    val barnetillegg_saerkullsbarn_fribeloep_vedvirk: Number,
-    val barnetillegg_saerkullsbarn_inntekt_brukt_i_avkortning_vedvirk: Number,
-    val barnetillegg_saerkullsbarn_inntektstak_vedvirk: Number,
-    val bor_i_avtaleland: Boolean,
-    val bor_i_norge: Boolean,
-    val ektefelletillegg_opphoert: Boolean,
-    val eps_bor_sammen_med_bruker_gjeldende: Boolean,
-    val eps_institusjon_gjeldende: Institusjon,
-    val gjeldende_barnetillegg_saerkullsbarn_er_redusert_mot_inntekt: Boolean,
-    val gjeldende_ufoeretrygd_per_maaned_er_inntektsavkortet: Boolean,
-    val har_barn_overfoert_til_saerkullsbarn: Boolean,
-    val har_barn_som_tidligere_var_saerkullsbarn: Boolean,
-    val har_barnetillegg_felles_barn_vedvirk: Boolean,
-    val har_barnetillegg_for_saerkullsbarn: Boolean,
-    val har_barnetillegg_for_saerkullsbarn_vedvirk: Boolean,
-    val har_barnetillegg_saerkullsbarn_justeringsbeloep_ar_vedvirk: Boolean,
-    val har_barnetillegg_saerkullsbarn_nettobeloep_vedvirk: Boolean,
-    val har_barnetillegg_saerkullsbarn_vedvirk: Boolean,
-    val har_barnetillegg_vedvirk: Boolean,
-    val har_ektefelletillegg_vedvirk: Boolean,
-    val har_felles_barn_uten_barnetillegg_med_avdod: Boolean,
-    val har_flere_delytelser_i_tillegg_til_ordinaer_ufoeretrygd: Boolean,
-    val har_flere_ufoeretrygd_perioder: Boolean,
-    val har_minste_inntektsnivaa_foer_ufoeretrygd: Boolean,
-    val har_minsteytelse_vedvirk: Boolean,
-    val har_ufoeremaaned_vedvirk: Boolean,
-    val inntekt_foer_ufoerhet_vedvirk: Number,
-    val inntekt_ufoere_endret: Boolean,
-    val institusjon_vedvirk: Institusjon,
-    val kompensasjonsgrad_ufoeretrygd_vedvirk: Number,
-    val krav_virkedato_fom: LocalDate,
-    val minsteytelse_sats_vedvirk: Number,
-    val oppjustert_inntekt_foer_ufoerhet_vedvirk: Number,
-    val saktype: Sakstype,
-    val sivilstand: Sivilstand,
-    val tidligere_saerkullsbarn: List<String>,
-    val total_ufoeremaaneder: Number,
-    val ufoeretrygd_med_barnetillegg_er_over_95_prosent_av_inntekt_foer_ufoerhet: Boolean,
-    val ufoeretrygd_vedvirk_er_inntektsavkortet: Boolean,
+    val avdod: Avdod,
+    val minsteytelseVedvirk: MinsteytelseVedvirk?,
+    val ufoeretrygdVedVirk: UfoeretrygdVedVirk,
+    val beregnetUTPerManed_antallBeregningsperioderPaVedtak: Int,
+    val institusjonsoppholdVedVirk: Institusjon,
+    val erSannsynligEndret_inntektForUfoereVedVirk: Boolean,
+    val krav: Krav,
+    val barnetilleggSaerkullsbarnGjeldende_erRedusertMotInntekt: Boolean,
+    val inntektFoerUfoerhetVedVirk: InntektFoerUfoerhetVedVirk,
+    val bruker: Bruker,
+    val barnetilleggVedVirk: BarnetilleggVedVirk?,
 ) {
     constructor() : this(
         opplysningerBruktIBeregningUT = OpplysningerBruktIBeregningUTDto(),
         orienteringOmRettigheterOgPlikter = OrienteringOmRettigheterParamDto(),
-        avdod_navn = "Avdød Navn",
-        avdod_sivilstand = ENSLIG,
-        barn_overfoert_til_saerkullsbarn = listOf("barn1", "barn2", "barn3"),
-        barnetillegg_beloep_foer_reduksjon_vedvirk = 123,
-        barnetillegg_er_redusert_mot_tak = false,
-        barnetillegg_gradert_over_inntekt_foer_ufoer_vedvirk = 123,
-        barnetillegg_ikke_utbetalt_pga_tak = false,
-        barnetillegg_prosentsats_gradert_over_inntekt_foer_ufoer_vedvirk = 123,
-        barnetillegg_saerkullsbarn_beloep_etter_reduksjon_vedvirk = 123,
-        barnetillegg_saerkullsbarn_er_redusert_mot_inntekt_vedvirk = false,
-        barnetillegg_saerkullsbarn_fribeloep_vedvirk = 123,
-        barnetillegg_saerkullsbarn_inntekt_brukt_i_avkortning_vedvirk = 123,
-        barnetillegg_saerkullsbarn_inntektstak_vedvirk = 123,
-        bor_i_avtaleland = false,
-        bor_i_norge = false,
-        ektefelletillegg_opphoert = false,
-        eps_bor_sammen_med_bruker_gjeldende = false,
-        eps_institusjon_gjeldende = Institusjon.INGEN,
-        gjeldende_barnetillegg_saerkullsbarn_er_redusert_mot_inntekt = false,
-        gjeldende_ufoeretrygd_per_maaned_er_inntektsavkortet = false,
-        har_barn_overfoert_til_saerkullsbarn = false,
-        har_barn_som_tidligere_var_saerkullsbarn = false,
-        har_barnetillegg_felles_barn_vedvirk = false,
-        har_barnetillegg_for_saerkullsbarn = false,
-        har_barnetillegg_for_saerkullsbarn_vedvirk = false,
-        har_barnetillegg_saerkullsbarn_justeringsbeloep_ar_vedvirk = false,
-        har_barnetillegg_saerkullsbarn_nettobeloep_vedvirk = false,
-        har_barnetillegg_saerkullsbarn_vedvirk = false,
-        har_barnetillegg_vedvirk = false,
-        har_ektefelletillegg_vedvirk = false,
-        har_felles_barn_uten_barnetillegg_med_avdod = false,
-        har_flere_delytelser_i_tillegg_til_ordinaer_ufoeretrygd = false,
-        har_flere_ufoeretrygd_perioder = false,
-        har_minste_inntektsnivaa_foer_ufoeretrygd = false,
-        har_minsteytelse_vedvirk = false,
-        har_ufoeremaaned_vedvirk = false,
-        inntekt_foer_ufoerhet_vedvirk = 123,
-        inntekt_ufoere_endret = false,
-        institusjon_vedvirk = Institusjon.INGEN,
-        kompensasjonsgrad_ufoeretrygd_vedvirk = 123,
-        krav_virkedato_fom = LocalDate.of(2020, 1, 1),
-        minsteytelse_sats_vedvirk = 123,
-        oppjustert_inntekt_foer_ufoerhet_vedvirk = 123,
-        saktype = Sakstype.UFOEREP,
-        sivilstand = ENSLIG,
-        tidligere_saerkullsbarn = listOf("saerkullsbarn1", "saerkullsbarn2", "saerkullsbarn3"),
-        total_ufoeremaaneder = 123,
-        ufoeretrygd_med_barnetillegg_er_over_95_prosent_av_inntekt_foer_ufoerhet = false,
-        ufoeretrygd_vedvirk_er_inntektsavkortet = false
+        erSannsynligEndret_inntektForUfoereVedVirk = false,
+        minsteytelseVedvirk = MinsteytelseVedvirk(sats = 0.0),
+        avdod = Avdod(
+            navn = "Avdod Person",
+            ektefelletilleggOpphoert = false,
+            sivilstand = Sivilstand.SAMBOER3_2,
+            harFellesBarnUtenBarnetillegg = false,
+        ),
+        krav = Krav(
+            virkedatoFraOgMed = LocalDate.of(2020, 1, 1)
+        ),
+        beregnetUTPerManed_antallBeregningsperioderPaVedtak = 0,
+        institusjonsoppholdVedVirk = Institusjon.INGEN,
+        ufoeretrygdVedVirk = UfoeretrygdVedVirk(
+            kompensasjonsgrad = 0.5,
+            totalUforeMaanedligBeloep = 5,
+            erInntektsavkortet = false
+        ),
+        inntektFoerUfoerhetVedVirk = InntektFoerUfoerhetVedVirk(
+            oppjustertBeloep = 0, beloep = 0, erMinsteinntekt = false
+        ),
+        barnetilleggSaerkullsbarnGjeldende_erRedusertMotInntekt = false,
+        bruker = Bruker(
+            borIAvtaleLand = false,
+            borINorge = true,
+        ),
+        barnetilleggVedVirk = BarnetilleggVedVirk(
+            barnetilleggSaerkullsbarnVedVirk = BarnetilleggSaerkullsbarnVedvirk(
+                belop = 0,
+                erRedusertMotInntekt = false,
+                inntektBruktIAvkortning = 0,
+                fribeloepVedvirk = 0,
+                justeringsbeloepAr = 0,
+                inntektstak = 0,
+                barnTidligereSaerkullsbarn = listOf(
+                    "Tidligere saerkullsbarn 1",
+                    "Tidligere saerkullsbarn 2",
+                    "Tidligere saerkullsbarn 3",
+                ),
+                barnOverfoertTilSaerkullsbarn = listOf(
+                    "Overfoert til saerkullsbarn 1",
+                    "Overfoert til saerkullsbarn 2",
+                    "Overfoert til saerkullsbarn 3",
+                ),
+            ),
+            barnetilleggGrunnlag = BarnetilleggGrunnlagVedVirk(
+                erRedusertMotTak = false,
+                prosentsatsGradertOverInntektFoerUfoer = 0.0,
+                gradertOverInntektFoerUfoer = 0,
+                erIkkeUtbetPgaTak = false,
+                belopFoerReduksjon = 0,
+                belopEtterReduksjon = 0,
+            )
+        )
+
+    )
+
+    data class MinsteytelseVedvirk(val sats: Double)
+    data class Avdod(
+        val navn: String,
+        val ektefelletilleggOpphoert: Boolean,
+        val sivilstand: Sivilstand,
+        val harFellesBarnUtenBarnetillegg: Boolean,
+    )
+
+    data class Krav(val virkedatoFraOgMed: LocalDate)
+    data class UfoeretrygdVedVirk(
+        val kompensasjonsgrad: Double,
+        val totalUforeMaanedligBeloep: Int,
+        val erInntektsavkortet: Boolean,
+    )
+
+    data class InntektFoerUfoerhetVedVirk(val oppjustertBeloep: Int, val beloep: Int, val erMinsteinntekt: Boolean)
+
+    data class Bruker(
+        val borIAvtaleLand: Boolean,
+        val borINorge: Boolean,
+    )
+
+    data class BarnetilleggVedVirk(
+        val barnetilleggGrunnlag: BarnetilleggGrunnlagVedVirk,
+        val barnetilleggSaerkullsbarnVedVirk: BarnetilleggSaerkullsbarnVedvirk?,
+    )
+
+    data class BarnetilleggGrunnlagVedVirk(
+        val erRedusertMotTak: Boolean,
+        val prosentsatsGradertOverInntektFoerUfoer: Double,
+        val gradertOverInntektFoerUfoer: Int,
+        val erIkkeUtbetPgaTak: Boolean,
+        val belopFoerReduksjon: Int,
+        val belopEtterReduksjon: Int,
+    )
+
+    data class BarnetilleggSaerkullsbarnVedvirk(
+        val barnTidligereSaerkullsbarn: List<String>,
+        val barnOverfoertTilSaerkullsbarn: List<String>,
+        val belop: Int,
+        val erRedusertMotInntekt: Boolean,
+        val inntektBruktIAvkortning: Int,
+        val fribeloepVedvirk: Int,
+        val justeringsbeloepAr: Int,
+        val inntektstak: Int,
     )
 }

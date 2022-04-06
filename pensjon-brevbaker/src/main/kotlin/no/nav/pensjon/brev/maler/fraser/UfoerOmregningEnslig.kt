@@ -1,9 +1,11 @@
 package no.nav.pensjon.brev.maler.fraser
 
-import no.nav.pensjon.brev.template.*
+import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.*
-import no.nav.pensjon.brev.template.dsl.*
+import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.expression.*
+import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.dsl.textExpr
 import java.time.LocalDate
 
 val VedtakOverskriftPesys_001 = OutlinePhrase<LangBokmalNynorskEnglish, Unit> {
@@ -30,10 +32,7 @@ val OmregnUTDodEPSInnledn1_001 = OutlinePhrase<LangBokmalNynorskEnglish, OmregnU
     }
 }
 
-data class OmregnUTDodEPSInnledn2_001Dto(val avdod_navn: String)
-
-val OmregnUTDodEPSInnledn2_001 = OutlinePhrase<LangBokmalNynorskEnglish, OmregnUTDodEPSInnledn2_001Dto> {
-    val avdod_navn = it.select(OmregnUTDodEPSInnledn2_001Dto::avdod_navn)
+val OmregnUTDodEPSInnledn2_001 = OutlinePhrase<LangBokmalNynorskEnglish, String> { avdod_navn ->
     paragraph {
         textExpr(
             Bokmal to "Vi har mottatt melding om at ".expr() + avdod_navn + " er død. Uføretrygden din endres ikke, men vi vil informere deg om rettigheter du kan ha etter avdøde.".expr(),
@@ -60,10 +59,7 @@ val OmregnUTBTDodEPSInnledn_001 = OutlinePhrase<LangBokmalNynorskEnglish, Omregn
 
 }
 
-data class OmregnUTBTSBDodEPSInnledn_001Dto(val avdod_navn: String)
-
-val OmregnUTBTSBDodEPSInnledn_001 = OutlinePhrase<LangBokmalNynorskEnglish, OmregnUTBTSBDodEPSInnledn_001Dto> {
-    val avdod_navn = it.select(OmregnUTBTSBDodEPSInnledn_001Dto::avdod_navn)
+val OmregnUTBTSBDodEPSInnledn_001 = OutlinePhrase<LangBokmalNynorskEnglish, String> { avdod_navn ->
     paragraph {
         textExpr(
             Bokmal to "Vi har mottatt melding om at ".expr() + avdod_navn + " er død. Uføretrygden og barnetillegget ditt endres ikke, men vi vil informere deg om rettigheter du kan ha etter avdøde.".expr(),
@@ -89,59 +85,72 @@ val OmregnBTDodEPSInnledn_001 = OutlinePhrase<LangBokmalNynorskEnglish, OmregnBT
     }
 }
 
-data class BelopUT_001Dto(val total_ufoeremaaneder: Number)
+data class BeloepUTDto(
+    val totalUforeMaanedligBeloep: Int,
+    val harBarnetilleggForSaerkullsbarnVedVirk: Boolean,
+    val harFlereUfoeretrygdPerioder: Boolean,
+)
 
-val BelopUT_001 = OutlinePhrase<LangBokmalNynorskEnglish, BelopUT_001Dto> {
-    val total_ufoeremaaneder = it.select(BelopUT_001Dto::total_ufoeremaaneder)
-    paragraph {
-        textExpr(
-            Bokmal to "Du får ".expr() + total_ufoeremaaneder.str() + " kroner i uføretrygd per måned før skatt.".expr(),
-            Nynorsk to "Du får ".expr() + total_ufoeremaaneder.str() + " kroner i uføretrygd kvar månad før skatt.".expr(),
-            English to "Your monthly disability benefit payment will be NOK ".expr() + total_ufoeremaaneder.str() + " before tax.".expr()
-        )
+// BelopUT_001, BelopUTVedlegg_001, BelopUTBT_001, BelopUTBTVedlegg_001
+val BeloepUT = OutlinePhrase<LangBokmalNynorskEnglish, BeloepUTDto> {
+    val totalUforeMaanedligBeloep = it.map { it.totalUforeMaanedligBeloep }
+    val harBarnetilleggForSaerkullsbarnVedVirk = it.map { it.harBarnetilleggForSaerkullsbarnVedVirk }
+    val harFlereUfoeretrygdPerioder = it.map { it.harFlereUfoeretrygdPerioder }
+
+    showIf(harBarnetilleggForSaerkullsbarnVedVirk) {
+        showIf(harFlereUfoeretrygdPerioder) {
+            paragraph {
+                textExpr(
+                    Bokmal to "Du får ".expr() + totalUforeMaanedligBeloep.str() + " kroner i uføretrygd og barnetillegg per måned før skatt. Du kan lese mer om andre beregningsperioder i vedlegget.".expr(),
+                    Nynorsk to "Du får ".expr() + totalUforeMaanedligBeloep.str() + " kroner i uføretrygd og barnetillegg kvar månad før skatt. Du kan lese meir om andre utrekningsperiodar i vedlegget.".expr(),
+                    English to "Your monthly disability benefit and child supplement payment will be NOK ".expr() + totalUforeMaanedligBeloep.str() + " before tax. You can read more about other calculation periods in the appendix.".expr()
+                )
+            }
+        }.orShow {
+            paragraph {
+                textExpr(
+                    Bokmal to "Du får ".expr() + totalUforeMaanedligBeloep.str() + " kroner i uføretrygd per måned før skatt. Du kan lese mer om andre beregningsperioder i vedlegget.".expr(),
+                    Nynorsk to "Du får ".expr() + totalUforeMaanedligBeloep.str() + " kroner i uføretrygd og barnetillegg kvar månad før skatt.".expr(),
+                    English to "Your monthly disability benefit and child supplement payment will be NOK ".expr() + totalUforeMaanedligBeloep.str() + " before tax.".expr()
+                )
+            }
+        }
+    }.orShow {
+        showIf(harFlereUfoeretrygdPerioder) {
+            paragraph {
+                textExpr(
+                    Bokmal to "Du får ".expr() + totalUforeMaanedligBeloep.str() + " kroner i uføretrygd per måned før skatt. Du kan lese mer om andre beregningsperioder i vedlegget.".expr(),
+                    Nynorsk to "Du får ".expr() + totalUforeMaanedligBeloep.str() + " kroner i uføretrygd kvar månad før skatt. Du kan lese meir om andre utrekningsperiodar i vedlegget.".expr(),
+                    English to "Your monthly disability benefit payment will be NOK ".expr() + totalUforeMaanedligBeloep.str() + " before tax. You can read more about other calculation periods in the appendix.".expr()
+                )
+            }
+        }.orShow {
+            paragraph {
+                textExpr(
+                    Bokmal to "Du får ".expr() + totalUforeMaanedligBeloep.str() + " kroner i uføretrygd per måned før skatt.".expr(),
+                    Nynorsk to "Du får ".expr() + totalUforeMaanedligBeloep.str() + " kroner i uføretrygd kvar månad før skatt.".expr(),
+                    English to "Your monthly disability benefit payment will be NOK ".expr() + totalUforeMaanedligBeloep.str() + " before tax.".expr()
+                )
+            }
+        }
     }
+}
+
+val BelopUT_001 = OutlinePhrase<LangBokmalNynorskEnglish, Number> { totalUforeMaanedligBeloep ->
+
 
 }
 
-data class BelopUTVedlegg_001Dto(val total_ufoeremaaneder: Number)
-
-val BelopUTVedlegg_001 = OutlinePhrase<LangBokmalNynorskEnglish, BelopUTVedlegg_001Dto> {
-    val total_ufoeremaaneder = it.select(BelopUTVedlegg_001Dto::total_ufoeremaaneder)
-    paragraph {
-        textExpr(
-            Bokmal to "Du får ".expr() + total_ufoeremaaneder.str() + " kroner i uføretrygd per måned før skatt. Du kan lese mer om andre beregningsperioder i vedlegget.".expr(),
-            Nynorsk to "Du får ".expr() + total_ufoeremaaneder.str() + " kroner i uføretrygd kvar månad før skatt. Du kan lese meir om andre utrekningsperiodar i vedlegget.".expr(),
-            English to "Your monthly disability benefit payment will be NOK ".expr() + total_ufoeremaaneder.str() + " before tax. You can read more about other calculation periods in the appendix.".expr()
-        )
-    }
+val BelopUTVedlegg_001 = OutlinePhrase<LangBokmalNynorskEnglish, Number> { totalUforeMaanedligBeloep ->
 
 
 }
 
-data class BelopUTBT_001Dto(val total_ufoeremaaneder: Number)
+val BelopUTBT_001 = OutlinePhrase<LangBokmalNynorskEnglish, Number> { totalUforeMaanedligBeloep ->
 
-val BelopUTBT_001 = OutlinePhrase<LangBokmalNynorskEnglish, BelopUTBT_001Dto> {
-    val total_ufoeremaaneder = it.select(BelopUTBT_001Dto::total_ufoeremaaneder)
-    paragraph {
-        textExpr(
-            Bokmal to "Du får ".expr() + total_ufoeremaaneder.str() + " kroner i uføretrygd per måned før skatt. Du kan lese mer om andre beregningsperioder i vedlegget.".expr(),
-            Nynorsk to "Du får ".expr() + total_ufoeremaaneder.str() + " kroner i uføretrygd og barnetillegg kvar månad før skatt.".expr(),
-            English to "Your monthly disability benefit and child supplement payment will be NOK ".expr() + total_ufoeremaaneder.str() + " before tax.".expr()
-        )
-    }
 }
 
-data class BelopUTBTVedlegg_001Dto(val total_ufoeremaaneder: Number)
-
-val BelopUTBTVedlegg_001 = OutlinePhrase<LangBokmalNynorskEnglish, BelopUTBTVedlegg_001Dto> {
-    val total_ufoeremaaneder = it.select(BelopUTBTVedlegg_001Dto::total_ufoeremaaneder)
-    paragraph {
-        textExpr(
-            Bokmal to "Du får ".expr() + total_ufoeremaaneder.str() + " kroner i uføretrygd og barnetillegg per måned før skatt. Du kan lese mer om andre beregningsperioder i vedlegget.".expr(),
-            Nynorsk to "Du får ".expr() + total_ufoeremaaneder.str() + " kroner i uføretrygd og barnetillegg kvar månad før skatt. Du kan lese meir om andre utrekningsperiodar i vedlegget.".expr(),
-            English to "Your monthly disability benefit and child supplement payment will be NOK ".expr() + total_ufoeremaaneder.str() + " before tax. You can read more about other calculation periods in the appendix.".expr()
-        )
-    }
+val BelopUTBTVedlegg_001 = OutlinePhrase<LangBokmalNynorskEnglish, Number> { totalUforeMaanedligBeloep ->
 }
 
 val BelopUTIngenUtbetaling_001 = OutlinePhrase<LangBokmalNynorskEnglish, Unit> {
@@ -214,7 +223,10 @@ val BegrunnOverskrift_001 = OutlinePhrase<LangBokmalNynorskEnglish, Unit> {
     }
 }
 
-data class EndrMYDodEPS2_001Dto(val minsteytelse_sats_vedvirk: Number, val kompensasjonsgrad_ufoeretrygd_vedvirk: Number)
+data class EndrMYDodEPS2_001Dto(
+    val minsteytelse_sats_vedvirk: Double,
+    val kompensasjonsgrad_ufoeretrygd_vedvirk: Number
+)
 
 val EndrMYDodEPS2_001 = OutlinePhrase<LangBokmalNynorskEnglish, EndrMYDodEPS2_001Dto> {
     val minsteytelse_sats_vedvirk = it.select(EndrMYDodEPS2_001Dto::minsteytelse_sats_vedvirk)
@@ -246,8 +258,10 @@ data class EndrMYOgMinstIFUDodEPS2_001Dto(
 val EndrMYOgMinstIFUDodEPS2_001 = OutlinePhrase<LangBokmalNynorskEnglish, EndrMYOgMinstIFUDodEPS2_001Dto> {
     val minsteytelse_sats_vedvirk = it.select(EndrMYOgMinstIFUDodEPS2_001Dto::minsteytelse_sats_vedvirk)
     val inntekt_foer_ufoerhet_vedvirk = it.select(EndrMYOgMinstIFUDodEPS2_001Dto::inntekt_foer_ufoerhet_vedvirk)
-    val oppjustert_inntekt_foer_ufoerhet_vedvirk = it.select(EndrMYOgMinstIFUDodEPS2_001Dto::oppjustert_inntekt_foer_ufoerhet_vedvirk)
-    val kompensasjonsgrad_ufoeretrygd_vedvirk = it.select(EndrMYOgMinstIFUDodEPS2_001Dto::kompensasjonsgrad_ufoeretrygd_vedvirk)
+    val oppjustert_inntekt_foer_ufoerhet_vedvirk =
+        it.select(EndrMYOgMinstIFUDodEPS2_001Dto::oppjustert_inntekt_foer_ufoerhet_vedvirk)
+    val kompensasjonsgrad_ufoeretrygd_vedvirk =
+        it.select(EndrMYOgMinstIFUDodEPS2_001Dto::kompensasjonsgrad_ufoeretrygd_vedvirk)
     paragraph {
         textExpr(
             Bokmal to "Du er sikret minsteytelse fordi beregningen ut fra din egenopptjente inntekt er lavere enn minstenivået for uføretrygd. Satsen på minsteytelsen avhenger av sivilstand. For deg utgjør minsteytelsen ".expr() + minsteytelse_sats_vedvirk.str() + " ganger folketrygdens grunnbeløp. Du kan lese mer om grunnbeløp på nav.no.".expr(),
@@ -272,8 +286,10 @@ data class EndrMinstIFUDodEPS2_001Dto(
 
 val EndrMinstIFUDodEPS2_001 = OutlinePhrase<LangBokmalNynorskEnglish, EndrMinstIFUDodEPS2_001Dto> {
     val inntekt_foer_ufoerhet_vedvirk = it.select(EndrMinstIFUDodEPS2_001Dto::inntekt_foer_ufoerhet_vedvirk)
-    val oppjustert_inntekt_foer_ufoerhet_vedvirk = it.select(EndrMinstIFUDodEPS2_001Dto::oppjustert_inntekt_foer_ufoerhet_vedvirk)
-    val kompensasjonsgrad_ufoeretrygd_vedvirk = it.select(EndrMinstIFUDodEPS2_001Dto::kompensasjonsgrad_ufoeretrygd_vedvirk)
+    val oppjustert_inntekt_foer_ufoerhet_vedvirk =
+        it.select(EndrMinstIFUDodEPS2_001Dto::oppjustert_inntekt_foer_ufoerhet_vedvirk)
+    val kompensasjonsgrad_ufoeretrygd_vedvirk =
+        it.select(EndrMinstIFUDodEPS2_001Dto::kompensasjonsgrad_ufoeretrygd_vedvirk)
     paragraph {
         textExpr(
             Bokmal to "Inntekten din før du ble ufør er fastsatt til minstenivå som er avhengig av sivilstand. For deg er inntekten din før du ble ufør satt til ".expr() + inntekt_foer_ufoerhet_vedvirk.str() + " kroner som oppjustert til virkningstidspunktet tilsvarer en inntekt på ".expr() + oppjustert_inntekt_foer_ufoerhet_vedvirk.str() + " kroner. Dette kan ha betydning for kompensasjonsgraden din som er satt til ".expr() + kompensasjonsgrad_ufoeretrygd_vedvirk.str() + " prosent. Du kan lese mer om dette i vedlegget.".expr(),
@@ -283,43 +299,57 @@ val EndrMinstIFUDodEPS2_001 = OutlinePhrase<LangBokmalNynorskEnglish, EndrMinstI
     }
 }
 
-val HjemmelSivilstandUT_001 = OutlinePhrase<LangBokmalNynorskEnglish, Unit> {
-    paragraph {
-        text(
-            Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 12-13 og 22-12.",
-            Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 12-13 og 22-12.",
-            English to "This decision was made pursuant to the provisions of §§ 12-13 and 22-12 of the National Insurance Act."
-        )
-    }
-}
+data class HjemmelSivilstandUfoeretrygdDto(
+    val harMinsteinntektFoerUfoerhet: Boolean,
+    val ufoeretrygdVedvirkErInntektsavkortet: Boolean
+)
 
-val HjemmelSivilstandUTMinsteIFU_001 = OutlinePhrase<LangBokmalNynorskEnglish, Unit> {
-    paragraph {
-        text(
-            Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 12-9, 12-13 og 22-12.",
-            Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 12-9, 12-13 og 22-12.",
-            English to "This decision was made pursuant to the provisions of §§ 12-9, 12-13 and 22-12 of the National Insurance Act."
-        )
-    }
-}
+val HjemmelSivilstandUfoeretrygd = OutlinePhrase<LangBokmalNynorskEnglish, HjemmelSivilstandUfoeretrygdDto> {
+    val harMinsteinntektFoerUfoerhet = it.select(HjemmelSivilstandUfoeretrygdDto::harMinsteinntektFoerUfoerhet)
+    val ufoeretrygdVedvirkErInntektsavkortet =
+        it.select(HjemmelSivilstandUfoeretrygdDto::ufoeretrygdVedvirkErInntektsavkortet)
 
-val HjemmelSivilstandUTAvkortet_001 = OutlinePhrase<LangBokmalNynorskEnglish, Unit> {
-    paragraph {
-        text(
-            Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 12-13, 12-14 og 22-12.",
-            Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 12-13, 12-14 og 22-12.",
-            English to "This decision was made pursuant to the provisions of §§ 12-13, 12-14 and 22-12 of the National Insurance Act."
-        )
-    }
-}
 
-val HjemmelSivilstandUTMinsteIFUAvkortet_001 = OutlinePhrase<LangBokmalNynorskEnglish, Unit> {
-    paragraph {
-        text(
-            Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 12-9, 12-13, 12-14 og 22-12.",
-            Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 12-9, 12-13, 12-14 og 22-12.",
-            English to "This decision was made pursuant to the provisions of §§ 12-9, 12-13, 12-14 and 22-12 of the National Insurance Act."
-        )
+    showIf(harMinsteinntektFoerUfoerhet) {
+        showIf(ufoeretrygdVedvirkErInntektsavkortet) {
+            //HjemmelSivilstandUTMinsteIFUAvkortet_001
+            paragraph {
+                text(
+                    Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 12-9, 12-13, 12-14 og 22-12.",
+                    Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 12-9, 12-13, 12-14 og 22-12.",
+                    English to "This decision was made pursuant to the provisions of §§ 12-9, 12-13, 12-14 and 22-12 of the National Insurance Act."
+                )
+            }
+        }.orShow {
+            //HjemmelSivilstandUTMinsteIFU_001
+            paragraph {
+                text(
+                    Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 12-9, 12-13 og 22-12.",
+                    Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 12-9, 12-13 og 22-12.",
+                    English to "This decision was made pursuant to the provisions of §§ 12-9, 12-13 and 22-12 of the National Insurance Act."
+                )
+            }
+        }
+    }.orShow {
+        showIf(ufoeretrygdVedvirkErInntektsavkortet) {
+            //HjemmelSivilstandUTAvkortet_001
+            paragraph {
+                text(
+                    Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 12-13, 12-14 og 22-12.",
+                    Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 12-13, 12-14 og 22-12.",
+                    English to "This decision was made pursuant to the provisions of §§ 12-13, 12-14 and 22-12 of the National Insurance Act."
+                )
+            }
+        }.orShow {
+            //HjemmelSivilstandUT_001
+            paragraph {
+                text(
+                    Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 12-13 og 22-12.",
+                    Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 12-13 og 22-12.",
+                    English to "This decision was made pursuant to the provisions of §§ 12-13 and 22-12 of the National Insurance Act."
+                )
+            }
+        }
     }
 }
 
@@ -382,48 +412,72 @@ val OmregningFBOverskrift_001 = OutlinePhrase<LangBokmalNynorskEnglish, Unit> {
         )
     }
 }
-/*
-data class InfoFBTilSB_001Dto(val barn_overfoert_til_saerkullsbarn: List<String>)
 
-val InfoFBTilSB_001 = OutlinePhrase<LangBokmalNynorskEnglish, InfoFBTilSB_001Dto> {
+val InfoFBTilSB_001 = OutlinePhrase<LangBokmalNynorskEnglish, List<String>> { barnOverfoertTilSaerkullsbarn ->
     paragraph {
         text(
             Bokmal to "Vi har regnet om barnetillegget for barn som ikke lenger bor sammen med begge foreldre. Dette gjelder:",
             Nynorsk to "Vi har rekna om barnetillegget for barn som ikkje lenger bur saman med begge foreldre. Dette gjeld:",
             English to "We have recalculated your child supplement for the child/children who no longer lives/live together with both parents. This applies to:"
         )
-        list(it.select(InfoFBTilSB_001Dto::barn_overfoert_til_saerkullsbarn))
+        list {
+            forEach(barnOverfoertTilSaerkullsbarn) { navn ->
+                item {
+                    textExpr(
+                        Bokmal to navn,
+                        Nynorsk to navn,
+                        English to navn,
+                    )
+                }
+            }
+        }
     }
 
 
 }
 
-data class InfoTidligereSB_001Dto(val tidligere_saerkullsbarn: List<String>)
-
-val InfoTidligereSB_001 = OutlinePhrase<LangBokmalNynorskEnglish, InfoTidligereSB_001Dto> {
+val InfoTidligereSB_001 = OutlinePhrase<LangBokmalNynorskEnglish, List<String>> { tidligereSaerkullsbarn ->
     paragraph {
         text(
             Bokmal to "Denne omregningen har også betydning for barnetillegget for:",
             Nynorsk to "Denne omrekninga har også noko å seie for barnetillegget for:",
             English to "This recalculation also affects your child supplement for:"
         )
-        list(it.select(InfoTidligereSB_001Dto::tidligere_saerkullsbarn))
+        list {
+            forEach(tidligereSaerkullsbarn) { barn ->
+                item {
+                    textExpr(
+                        Bokmal to barn,
+                        Nynorsk to barn,
+                        English to barn,
+                    )
+                }
+            }
+        }
     }
 }
 
-data class InfoTidligereSBOgEndretUT_001Dto(val tidligere_saerkullsbarn: List<String>)
-
-val InfoTidligereSBOgEndretUT_001 = OutlinePhrase<LangBokmalNynorskEnglish, InfoTidligereSBOgEndretUT_001Dto> {
+val InfoTidligereSBOgEndretUT_001 = OutlinePhrase<LangBokmalNynorskEnglish, List<String>> { tidligereSaerkullsbarn ->
     paragraph {
         text(
             Bokmal to "Omregningen av barnetillegg og endring i uføretrygden din har også betydning for barnetillegget for:",
             Nynorsk to "Omrekninga av barnetillegget og endring i uføretrygda di har også noko å seie for barnetillegget for:",
             English to "Recalculation of your child supplement and change in your disability benefit also affects your child supplement for:"
         )
-        list(it.select(InfoTidligereSBOgEndretUT_001Dto::tidligere_saerkullsbarn))
+        list {
+            forEach(tidligereSaerkullsbarn) { element ->
+                item {
+                    textExpr(
+                        Bokmal to element,
+                        Nynorsk to element,
+                        English to element,
+                    )
+                }
+            }
+        }
     }
 }
-*/
+
 val EndringUTpavirkerBTOverskrift_001 = OutlinePhrase<LangBokmalNynorskEnglish, Unit> {
     title1 {
         text(
@@ -648,10 +702,7 @@ val MerInfoBT_001 = OutlinePhrase<LangBokmalNynorskEnglish, Unit> {
     }
 }
 
-data class GjRettSamboerOverskriftDto(val avdod_navn: String)
-
-val GjRettSamboerOverskrift = OutlinePhrase<LangBokmalNynorskEnglish, GjRettSamboerOverskriftDto> {
-    val avdod_navn = it.select(GjRettSamboerOverskriftDto::avdod_navn)
+val GjRettSamboerOverskrift = OutlinePhrase<LangBokmalNynorskEnglish, String> { avdod_navn ->
     title1 {
         textExpr(
             Bokmal to "Rettigheter du kan ha som tidligere samboer med ".expr() + avdod_navn,

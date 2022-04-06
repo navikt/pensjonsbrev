@@ -11,7 +11,6 @@ import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brev.template.dsl.expression.*
 import java.lang.Boolean.FALSE
 import java.time.LocalDate
-import kotlin.contracts.ReturnsNotNull
 
 // TODO: Lag gjenbrukbar formattering av Kroner(1000) med språkstøtte og enhet (kr/NOK)
 

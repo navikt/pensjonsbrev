@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.template
 
+import io.ktor.features.*
 import no.nav.pensjon.brev.template.dsl.*
 import kotlin.reflect.KClass
 
