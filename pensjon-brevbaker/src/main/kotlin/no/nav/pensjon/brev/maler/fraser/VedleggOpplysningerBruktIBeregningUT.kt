@@ -77,7 +77,7 @@ val vedleggBeregnUTDinMY_001 = OutlinePhrase<LangBokmalNynorskEnglish, VedleggBe
     }
 }
 
-val vedleggBeregnUTMinsteIFU_001 = OutlinePhrase<LangBokmalNynorskEnglish, Unit> {
+val vedleggBeregnUTMinsteIFU_002 = OutlinePhrase<LangBokmalNynorskEnglish, Unit> {
     title1 {
         text(
             Bokmal to "Slik fastsetter vi inntekten din før du ble ufør",
