@@ -4,6 +4,9 @@ import no.nav.pensjon.brev.maler.fraser.Constants
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.dsl.*
+import no.nav.pensjon.brev.template.dsl.expression.format
+import no.nav.pensjon.brev.template.dsl.expression.map
+import no.nav.pensjon.brev.template.dsl.expression.plus
 
 object Felles {
 
@@ -78,5 +81,14 @@ object Felles {
                 Nynorsk to "Du har rett til å sjå dokumenta i saka di. I vedlegget får du vite korleis du går fram.",
             )
         }
+    }
+
+    val kroner = TextOnlyPhrase<LangBokmalNynorskEnglish, Int> { beloep ->
+        val kroner = beloep.map{Kroner(it)}
+        textExpr(
+            Bokmal to kroner.format() + " kr",
+            Nynorsk to kroner.format() + " kr",
+            English to kroner.format() + " NOK"
+        )
     }
 }

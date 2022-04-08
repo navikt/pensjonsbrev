@@ -38,6 +38,12 @@ fun <T : Enum<T>> Expression<Enum<T>>.isOneOf(vararg enums: Enum<T>): Expression
     BinaryOperation.EnumInList()
 )
 
+fun <T : Enum<T>> Expression<Enum<T>>.isNotAnyOf(vararg enums: Enum<T>): Expression<Boolean> = Expression.BinaryInvoke( //TODO write tests
+    this,
+    enums.asList().expr(),
+    BinaryOperation.EnumNotInList()
+)
+
 fun not(expr: Expression<Boolean>): Expression<Boolean> =
     Expression.UnaryInvoke(expr, UnaryOperation.Not)
 

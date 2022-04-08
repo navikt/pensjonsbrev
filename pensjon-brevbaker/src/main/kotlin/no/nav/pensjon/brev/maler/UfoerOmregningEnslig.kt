@@ -136,9 +136,7 @@ object UfoerOmregningEnslig : StaticTemplate {
             }
 
             ifNotNull(argument().map { it.barnetilleggVedVirk?.barnetilleggSaerkullsbarnVedVirk }) { barnetillegg ->
-                showIf(
-                    not(harUfoereMaanedligBeloepVedvirk)
-                            and barnetillegg.map { it.belop == 0 }) {
+                showIf(not(harUfoereMaanedligBeloepVedvirk) and barnetillegg.map { it.belop == 0 }) {
                     showIf(harFlereUfoeretrygdPerioder) {
                         includePhrase(BelopUTBTIngenUtbetalingVedlegg_001)
                     }.orShow {
@@ -484,6 +482,7 @@ object UfoerOmregningEnslig : StaticTemplate {
     }
 }
 
+//TODO flytt inn i api-model.
 data class UfoerOmregningEnsligDto(
     val opplysningerBruktIBeregningUT: OpplysningerBruktIBeregningUTDto,
     val orienteringOmRettigheterOgPlikter: OrienteringOmRettigheterParamDto,
@@ -558,6 +557,7 @@ data class UfoerOmregningEnsligDto(
         )
 
     )
+
 
     data class MinsteytelseVedvirk(val sats: Double)
     data class Avdod(

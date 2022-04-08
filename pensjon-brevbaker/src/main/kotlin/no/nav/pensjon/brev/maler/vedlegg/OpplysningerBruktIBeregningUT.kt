@@ -1,130 +1,202 @@
 package no.nav.pensjon.brev.maler.vedlegg
 
-import kotlinx.coroutines.awaitCancellation
 import no.nav.pensjon.brev.api.model.BeregningsMetode
 import no.nav.pensjon.brev.maler.fraser.*
+import no.nav.pensjon.brev.maler.fraser.common.Felles.kroner
 import no.nav.pensjon.brev.maler.fraser.common.Kroner
-import no.nav.pensjon.brev.template.Element.Table.ColumnAlignment.RIGHT
+import no.nav.pensjon.brev.template.Element
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.createAttachment
-import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brev.template.dsl.expression.*
-import java.lang.Boolean.FALSE
+import no.nav.pensjon.brev.template.dsl.newText
+import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.dsl.textExpr
 import java.time.LocalDate
 
 // TODO: Lag gjenbrukbar formattering av Kroner(1000) med språkstøtte og enhet (kr/NOK)
 
 data class OpplysningerBruktIBeregningUTDto(
-    val anvendtTT_trygdetidsdetaljerGjeldende: Int,
-    val avkortningsbelopAr_barnetilleggSBGjeldende: Int,
-    val belop_barnetilleggSBGjeldende: Int,
-    val belopAr_barnetilleggSBGjeldende: Int,
-    val belopArForAvkort_barnetilleggSBGjeldende: Int,
-    val belopIEU_inntektEtterUforeGjeldende: Int,
-    val belopsgrense_uforetrygdGjeldende: Int,
-    val beregningsgrunnlagBelopAr_uforetrygdGjeldende: Int,
-    val beregningsgrunnlagBelopAr_yrkesskadeGjeldende: Int,
-    val beregningsMetode_trygdetidsdetaljergjeldende: BeregningsMetode,
-    val brukerErFlyktning_gjeldendeBeregnetUTPerManed: Boolean,
-    val brukersSivilstand_gjeldendeBeregnetUTPerManed: String,
-    val erEndret_barnetilleggSBGjeldende: Boolean,
-    val erIkkeUtbetaltpgaTak_barnetilleggGrunnlagGjeldende: Boolean,
-    val erKonvertert_uforetrygdGjeldende: Boolean,
-    val erUnder20Ar_ungUforGjeldende: Boolean,
-    val erRedusertMotinntekt_barnetilleggSBGjeldende: Boolean,
-    val erRedusertMotTak_barnetilleggGrunnlagGjeldende: Boolean,
-    val erSannsynligEndret_inntektForUforeGjeldende: Boolean,
-    val faktiskTTBilateral_trygdetidsdetaljerGjeldende: Int,
-    val faktiskTTEOS_trygdetidsdetaljerGjeldende: Int,
-    val faktiskTTNordiskKonv_trygdetidsdetaljerGjeldende: Int,
-    val faktiskTTNorge_trygdetidsdetaljerGjeldende: Int,
-    val forventetInntektAr_inntektsAvkortingGjeldende: Int,
-    val framtidigTTNorsk_trygdetidsdetaljerGjeldende: Int,
-    val fribelop_barnetilleggSBGjeldende: Int,
-    val fribelopEllerInntektErPeriodisert_barnetilleggSBGjeldende: Boolean,
-    val gradertOIFU_barnetilleggGrunnlagGjeldende: Int,
-    val grunnbelop_gjeldendeBeregnetUTPerManed: Int,
-    val ifuInntekt_inntektForUforeGjeldende: Int,
-    val inntektBruktIAvkortning_barnetilleggSBGjeldende: Int,
-    val inntektOverFribelop_barnetilleggSBGjeldende: Int,
-    val inntektstak_barnetilleggSBGjeldende: Int,
-    val inntektsgrenseAr_inntektsAvkortingGjeldende: Int,
-    val inntektstak_inntektsAvkortingGjeldende: Int,
-    val inntektVedSkadetidspunkt_yrkesskadeGjeldende: Int,
-    val justeringsbelopAr_barnetilleggSBGjeldende: Int,
-    val kompensasjonsgrad_uforetrygdGjeldende: Double,
-    val nevnerProRata_trygdetidsdetaljerGjeldende: Int,
-    val nevnerTTEOS_trygdetidsdetaljerGjeldende: Int,
-    val nevnerTTNordiskKonv_trygdetidsdetaljerGjeldende: Int,
-    val prosentsatsGradertOIFU_barnetilleggGrunnlagGjeldende: Int,
-    val samletTTNordiskKonv_trygdetidsdetaljerGjeldende: Int,
-    val sats_minsteytelseGjeldende: Double,
-    val skadetidspunkt_yrkesskadeGjeldende: LocalDate,
-    val tellerProRata_trygdetidsdetaljerGjeldende: Int,
-    val tellerTTEOS_trygdetidsdetaljerGjeldende: Int,
-    val tellerTTNordiskKonv_trygdetidsdetaljerGjeldende: Int,
-    val totaltAntallBarn_barnetilleggGrunnlagGjeldende: Int,
-    val uforegrad_uforetrygdGjeldende: Int,
-    val uforetidspunkt_uforetrygdGjeldende: LocalDate,
-    val virkDatoFom_gjeldendeBeregnetUTPerManed: LocalDate,
-    val yrkesskadegrad_yrkesskadeGjeldende: Int,
+    val barnetilleggGjeldende: BarnetilleggGjeldende?,
+    val beregnetUTPerManedGjeldende: BeregnetUTPerManedGjeldende,
+    val inntektEtterUforeGjeldende_belopIEU: Int,
+    val inntektForUforeGjeldende: InntektForUforeGjeldende,
+    val inntektsAvkortingGjeldende: InntektsAvkortingGjeldende,
+    val minsteytelseGjeldende_sats: Double,
+    val trygdetidsdetaljerGjeldende: TrygdetidsdetaljerGjeldende,
+    val uforetrygdGjeldende: UforetrygdGjeldende,
+    val ungUforGjeldende_erUnder20Ar: Boolean,
+    val yrkesskadeGjeldende: YrkesskadeGjeldende?,
 ) {
     constructor() : this(
-        anvendtTT_trygdetidsdetaljerGjeldende = 0,
-        avkortningsbelopAr_barnetilleggSBGjeldende = 0,
-        belop_barnetilleggSBGjeldende = 0,
-        belopAr_barnetilleggSBGjeldende = 0,
-        belopArForAvkort_barnetilleggSBGjeldende = 0,
-        belopIEU_inntektEtterUforeGjeldende = 0,
-        belopsgrense_uforetrygdGjeldende = 0,
-        beregningsgrunnlagBelopAr_uforetrygdGjeldende = 0,
-        beregningsgrunnlagBelopAr_yrkesskadeGjeldende = 0,
-        beregningsMetode_trygdetidsdetaljergjeldende = BeregningsMetode.FOLKETRYGD,
-        brukerErFlyktning_gjeldendeBeregnetUTPerManed = false,
-        brukersSivilstand_gjeldendeBeregnetUTPerManed = "",
-        erEndret_barnetilleggSBGjeldende = false,
-        erIkkeUtbetaltpgaTak_barnetilleggGrunnlagGjeldende = false,
-        erKonvertert_uforetrygdGjeldende = false,
-        erRedusertMotinntekt_barnetilleggSBGjeldende = false,
-        erRedusertMotTak_barnetilleggGrunnlagGjeldende = false,
-        erSannsynligEndret_inntektForUforeGjeldende = false,
-        erUnder20Ar_ungUforGjeldende = false,
-        faktiskTTBilateral_trygdetidsdetaljerGjeldende = 0,
-        faktiskTTEOS_trygdetidsdetaljerGjeldende = 0,
-        faktiskTTNordiskKonv_trygdetidsdetaljerGjeldende = 0,
-        faktiskTTNorge_trygdetidsdetaljerGjeldende = 0,
-        forventetInntektAr_inntektsAvkortingGjeldende = 0,
-        framtidigTTNorsk_trygdetidsdetaljerGjeldende = 0,
-        fribelop_barnetilleggSBGjeldende = 0,
-        fribelopEllerInntektErPeriodisert_barnetilleggSBGjeldende = false,
-        gradertOIFU_barnetilleggGrunnlagGjeldende = 0,
-        grunnbelop_gjeldendeBeregnetUTPerManed = 0,
-        ifuInntekt_inntektForUforeGjeldende = 0,
-        inntektBruktIAvkortning_barnetilleggSBGjeldende = 0,
-        inntektOverFribelop_barnetilleggSBGjeldende = 0,
-        inntektstak_barnetilleggSBGjeldende = 0,
-        inntektsgrenseAr_inntektsAvkortingGjeldende = 0,
-        inntektstak_inntektsAvkortingGjeldende = 0,
-        inntektVedSkadetidspunkt_yrkesskadeGjeldende = 0,
-        justeringsbelopAr_barnetilleggSBGjeldende = 0,
-        kompensasjonsgrad_uforetrygdGjeldende = 0.0,
-        nevnerProRata_trygdetidsdetaljerGjeldende = 0,
-        nevnerTTEOS_trygdetidsdetaljerGjeldende = 0,
-        nevnerTTNordiskKonv_trygdetidsdetaljerGjeldende = 0,
-        prosentsatsGradertOIFU_barnetilleggGrunnlagGjeldende = 0,
-        samletTTNordiskKonv_trygdetidsdetaljerGjeldende = 0,
-        sats_minsteytelseGjeldende = 0.0,
-        skadetidspunkt_yrkesskadeGjeldende = LocalDate.of(2020, 1, 1),
-        tellerProRata_trygdetidsdetaljerGjeldende = 0,
-        tellerTTEOS_trygdetidsdetaljerGjeldende = 0,
-        tellerTTNordiskKonv_trygdetidsdetaljerGjeldende = 0,
-        totaltAntallBarn_barnetilleggGrunnlagGjeldende = 0,
-        uforegrad_uforetrygdGjeldende = 0,
-        uforetidspunkt_uforetrygdGjeldende = LocalDate.of(2020, 1, 1),
-        virkDatoFom_gjeldendeBeregnetUTPerManed = LocalDate.of(2020, 1, 1),
-        yrkesskadegrad_yrkesskadeGjeldende = 0,
+        barnetilleggGjeldende = BarnetilleggGjeldende(),
+        beregnetUTPerManedGjeldende = BeregnetUTPerManedGjeldende(),
+        inntektEtterUforeGjeldende_belopIEU = 0,
+        inntektForUforeGjeldende = InntektForUforeGjeldende(),
+        inntektsAvkortingGjeldende = InntektsAvkortingGjeldende(),
+        minsteytelseGjeldende_sats = 0.0,
+        trygdetidsdetaljerGjeldende = TrygdetidsdetaljerGjeldende(),
+        uforetrygdGjeldende = UforetrygdGjeldende(),
+        ungUforGjeldende_erUnder20Ar = false,
+        yrkesskadeGjeldende = YrkesskadeGjeldende(),
     )
+}
+
+data class YrkesskadeGjeldende(
+    val beregningsgrunnlagBelopAr: Int,
+    val inntektVedSkadetidspunkt: Int,
+    val skadetidspunkt: LocalDate,
+    val yrkesskadegrad: Int,
+) {
+    constructor() : this(
+        beregningsgrunnlagBelopAr = 0,
+        inntektVedSkadetidspunkt = 0,
+        skadetidspunkt = LocalDate.of(2020, 1, 1),
+        yrkesskadegrad = 0,
+        )
+}
+
+data class BarnetilleggGjeldende(
+    val grunnlag: Grunnlag,
+    val saerkullsbarn: Saerkullsbarn?
+) {
+    constructor() : this(
+        saerkullsbarn = Saerkullsbarn(),
+        grunnlag = Grunnlag()
+    )
+    data class Grunnlag(
+        val erIkkeUtbetaltpgaTak: Boolean,
+        val erRedusertMotTak: Boolean,
+        val gradertOIFU: Int,
+        val prosentsatsGradertOIFU: Int,
+        val totaltAntallBarn: Int,
+    ){
+        constructor() : this(
+            erIkkeUtbetaltpgaTak = false,
+            erRedusertMotTak = false,
+            gradertOIFU = 0,
+            prosentsatsGradertOIFU = 0,
+            totaltAntallBarn = 0,
+        )
+    }
+
+    data class Saerkullsbarn(
+        val avkortningsbelopAr: Int,
+        val belop: Int,
+        val belopAr: Int,
+        val belopArForAvkort: Int,
+        val erEndret: Boolean,
+        val erRedusertMotinntekt: Boolean,
+        val fribelop: Int,
+        val fribelopEllerInntektErPeriodisert: Boolean,
+        val inntektBruktIAvkortning: Int,
+        val inntektOverFribelop: Int,
+        val inntektstak: Int,
+        val justeringsbelopAr: Int,
+    ){
+        constructor() : this(
+            avkortningsbelopAr = 0,
+            belop = 0,
+            belopAr = 0,
+            belopArForAvkort = 0,
+            erEndret = false,
+            erRedusertMotinntekt = false,
+            fribelop = 0,
+            fribelopEllerInntektErPeriodisert = false,
+            inntektBruktIAvkortning = 0,
+            inntektOverFribelop = 0,
+            inntektstak = 0,
+            justeringsbelopAr = 0,
+        )
+    }
+}
+
+data class TrygdetidsdetaljerGjeldende(
+    val anvendtTT: Int,
+    val beregningsMetode: BeregningsMetode,
+    val faktiskTTBilateral: Int,
+    val faktiskTTEOS: Int,
+    val nevnerTTEOS: Int,
+    val tellerTTEOS: Int,
+    val faktiskTTNordiskKonv: Int,
+    val faktiskTTNorge: Int,
+    val framtidigTTNorsk: Int,
+    val nevnerProRata: Int,
+    val nevnerTTNordiskKonv: Int,
+    val samletTTNordiskKonv: Int,
+    val tellerProRata: Int,
+    val tellerTTNordiskKonv: Int,
+){
+    constructor() : this(
+        anvendtTT = 0,
+        beregningsMetode = BeregningsMetode.FOLKETRYGD,
+        faktiskTTBilateral = 0,
+        faktiskTTEOS = 0,
+        faktiskTTNordiskKonv = 0,
+        faktiskTTNorge = 0,
+        framtidigTTNorsk = 0,
+        nevnerProRata = 0,
+        nevnerTTEOS = 0,
+        nevnerTTNordiskKonv = 0,
+        samletTTNordiskKonv = 0,
+        tellerProRata = 0,
+        tellerTTEOS = 0,
+        tellerTTNordiskKonv = 0,
+        )
+}
+
+data class BeregnetUTPerManedGjeldende(
+    val brukerErFlyktning: Boolean,
+    val brukersSivilstand: String,
+    val grunnbelop: Int,
+    val virkDatoFom: LocalDate,
+){
+    constructor() : this(
+        brukerErFlyktning = false,
+        brukersSivilstand = "",
+        grunnbelop = 0,
+        virkDatoFom = LocalDate.of(2020, 1, 1),
+        )
+}
+
+data class UforetrygdGjeldende(
+    val belopsgrense: Int,
+    val beregningsgrunnlagBelopAr: Int,
+    val erKonvertert: Boolean,
+    val kompensasjonsgrad: Double,
+    val uforegrad: Int,
+    val uforetidspunkt: LocalDate,
+){
+    constructor() : this(
+        belopsgrense = 0,
+        beregningsgrunnlagBelopAr = 0,
+        erKonvertert = false,
+        kompensasjonsgrad = 0.0,
+        uforegrad = 0,
+        uforetidspunkt = LocalDate.of(2020, 1, 1),
+        )
+}
+
+data class InntektsAvkortingGjeldende(
+    val forventetInntektAr: Int,
+    val inntektsgrenseAr: Int,
+    val inntektstak: Int,
+){
+    constructor() : this(
+        forventetInntektAr = 0,
+        inntektsgrenseAr = 0,
+        inntektstak = 0,
+        )
+}
+
+data class InntektForUforeGjeldende(
+    val erSannsynligEndret: Boolean,
+    val ifuInntekt: Int,
+){
+    constructor() : this(
+        erSannsynligEndret = false,
+        ifuInntekt = 0,
+        )
 }
 
 /*
@@ -145,8 +217,8 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
 ) {
     paragraph {
         val virkDatoFom =
-            argument().map { it.virkDatoFom_gjeldendeBeregnetUTPerManed }.format()
-        val grunnbelop = argument().map { Kroner(it.grunnbelop_gjeldendeBeregnetUTPerManed) }.format()
+            argument().map { it.beregnetUTPerManedGjeldende.virkDatoFom }.format()
+        val grunnbelop = argument().map { Kroner(it.beregnetUTPerManedGjeldende.grunnbelop) }
         textExpr(
             Bokmal to "Opplysninger vi har brukt i beregningen fra ".expr() + virkDatoFom.str() + " Folketrygdens grunnbeløp (G) benyttet i beregningen er ".expr() + grunnbelop.str() + " kroner",
             Nynorsk to "Opplysningar vi har brukt i utrekninga frå ".expr() + virkDatoFom.str() + " Grunnbeløpet i folketrygda (G) nytta i utrekninga er ".expr() + grunnbelop.str() + " kroner",
@@ -163,7 +235,7 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
                     English to "Information"
                 )
             }
-            column(alignment = RIGHT) {
+            column(alignment = Element.Table.ColumnAlignment.RIGHT) {
                 text(
                     Bokmal to "Verdi",
                     Nynorsk to "Verdi",
@@ -172,7 +244,7 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
             }
         }
     ) {
-        // Hvis uforetidspunkt_uforetrygdGjeldende != tom, include
+        // Hvis uforetrygdGjeldende.uforetidspunkt != tom, include
         row {
             cell {
                 text(
@@ -183,7 +255,7 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
             }
             cell {
                 val uforetidspunkt =
-                    argument().map { it.uforetidspunkt_uforetrygdGjeldende }.format()
+                    argument().map { it.uforetrygdGjeldende.uforetidspunkt }.format()
                 textExpr(
                     Bokmal to uforetidspunkt,
                     Nynorsk to uforetidspunkt,
@@ -191,7 +263,7 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
                 )
             }
         }
-        showIf(argument().map { it.beregningsgrunnlagBelopAr_uforetrygdGjeldende > 0 })
+        showIf(argument().map { it.uforetrygdGjeldende.beregningsgrunnlagBelopAr > 0 })
         {
             row {
                 cell {
@@ -202,38 +274,28 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
                     )
                 }
                 cell {
-                    val beregningsgrunnlagBelopAr =
-                        argument().map { Kroner(it.beregningsgrunnlagBelopAr_uforetrygdGjeldende) }.format()
-                    textExpr(
-                        Bokmal to beregningsgrunnlagBelopAr + " kr",
-                        Nynorsk to beregningsgrunnlagBelopAr + " kr",
-                        English to beregningsgrunnlagBelopAr + " NOK"
-                    )
+                    includePhrase( kroner, argument().map { it.uforetrygdGjeldende.beregningsgrunnlagBelopAr })
                 }
             }
         }
-        showIf(argument().map { it.beregningsgrunnlagBelopAr_yrkesskadeGjeldende > 0 })
-        {
-            row {
-                cell {
-                    text(
-                        Bokmal to "Beregningsgrunnlag yrkesskade",
-                        Nynorsk to "Utrekningsgrunnlag yrkesskade",
-                        English to "Basis for calculation due to occupational injury"
-                    )
-                }
-                cell {
-                    val beregningsgrunnlagBelopAr =
-                        argument().map { Kroner(it.beregningsgrunnlagBelopAr_yrkesskadeGjeldende) }.format()
-                    textExpr(
-                        Bokmal to beregningsgrunnlagBelopAr + " kr",
-                        Nynorsk to beregningsgrunnlagBelopAr + " kr",
-                        English to beregningsgrunnlagBelopAr + " NOK"
-                    )
+        ifNotNull(argument().map { it.yrkesskadeGjeldende?.beregningsgrunnlagBelopAr }) { beloep ->
+            showIf(beloep.map { it > 0 })
+            {
+                row {
+                    cell {
+                        text(
+                            Bokmal to "Beregningsgrunnlag yrkesskade",
+                            Nynorsk to "Utrekningsgrunnlag yrkesskade",
+                            English to "Basis for calculation due to occupational injury"
+                        )
+                    }
+                    cell {
+                        includePhrase(kroner, beloep)
+                    }
                 }
             }
         }
-        showIf(argument().map { it.ifuInntekt_inntektForUforeGjeldende > 0 })
+        showIf(argument().map { it.inntektForUforeGjeldende.ifuInntekt > 0 })
         {
             row {
                 cell {
@@ -244,17 +306,11 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
                     )
                 }
                 cell {
-                    val ifuInntekt =
-                        argument().map { Kroner(it.ifuInntekt_inntektForUforeGjeldende) }.format()
-                    textExpr(
-                        Bokmal to ifuInntekt + " kr",
-                        Nynorsk to ifuInntekt + " kr",
-                        English to ifuInntekt + " NOK"
-                    )
+                    includePhrase(kroner, argument().map { it.inntektForUforeGjeldende.ifuInntekt })
                 }
             }
         }
-        showIf(argument().map { it.belopIEU_inntektEtterUforeGjeldende > 0 })
+        showIf(argument().map { it.inntektEtterUforeGjeldende_belopIEU > 0 })
         {
             row {
                 cell {
@@ -265,13 +321,7 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
                     )
                 }
                 cell {
-                    val belopIEU =
-                        argument().map { Kroner(it.belopIEU_inntektEtterUforeGjeldende) }.format()
-                    textExpr(
-                        Bokmal to belopIEU + " kr",
-                        Nynorsk to belopIEU + " kr",
-                        English to belopIEU + " NOK"
-                    )
+                    includePhrase(kroner, argument().map { it.inntektEtterUforeGjeldende_belopIEU })
                 }
             }
         }
@@ -285,7 +335,7 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
                 )
             }
             cell {
-                val uforegrad = argument().map { it.uforegrad_uforetrygdGjeldende }.str()
+                val uforegrad = argument().map { it.uforetrygdGjeldende.uforegrad }.str()
                 textExpr(
                     Bokmal to uforegrad + " %",
                     Nynorsk to uforegrad + " %",
@@ -294,7 +344,7 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
             }
         }
         // Mandatory
-        showIf(argument().map { it.belopsgrense_uforetrygdGjeldende > 0 })
+        showIf(argument().map { it.uforetrygdGjeldende.belopsgrense > 0 })
         {
             row {
                 cell {
@@ -305,17 +355,11 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
                     )
                 }
                 cell {
-                    val belopsgrense =
-                        argument().map { Kroner(it.belopsgrense_uforetrygdGjeldende) }.format()
-                    textExpr(
-                        Bokmal to belopsgrense + " kr",
-                        Nynorsk to belopsgrense + " kr",
-                        English to belopsgrense + " NOK"
-                    )
+                    includePhrase(kroner, argument().map { it.uforetrygdGjeldende.belopsgrense })
                 }
             }
         }
-        showIf(argument().map { it.inntektsgrenseAr_inntektsAvkortingGjeldende > 0 })
+        showIf(argument().map { it.inntektsAvkortingGjeldende.inntektsgrenseAr > 0 })
         {
             row {
                 cell {
@@ -326,18 +370,11 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
                     )
                 }
                 cell {
-                    val inntektsgrenseAr =
-                        argument().map { Kroner(it.inntektsgrenseAr_inntektsAvkortingGjeldende) }
-                            .format()
-                    textExpr(
-                        Bokmal to inntektsgrenseAr + " kr",
-                        Nynorsk to inntektsgrenseAr + " kr",
-                        English to inntektsgrenseAr + " NOK"
-                    )
+                    includePhrase( kroner, argument().map { it.inntektsAvkortingGjeldende.inntektsgrenseAr })
                 }
             }
         }
-        showIf(argument().map { it.forventetInntektAr_inntektsAvkortingGjeldende > 0 })
+        showIf(argument().map { it.inntektsAvkortingGjeldende.forventetInntektAr > 0 })
         {
             row {
                 cell {
@@ -348,20 +385,13 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
                     )
                 }
                 cell {
-                    val forventetInntektAr =
-                        argument().map { Kroner(it.forventetInntektAr_inntektsAvkortingGjeldende) }
-                            .format()
-                    textExpr(
-                        Bokmal to forventetInntektAr + " kr",
-                        Nynorsk to forventetInntektAr + " kr",
-                        English to forventetInntektAr + " NOK"
-                    )
+                    includePhrase(kroner,argument().map { it.inntektsAvkortingGjeldende.forventetInntektAr })
                 }
             }
         }
         showIf(argument().map {
-            (it.kompensasjonsgrad_uforetrygdGjeldende > 0
-                && (it.inntektsgrenseAr_inntektsAvkortingGjeldende < it.inntektstak_inntektsAvkortingGjeldende))
+            (it.uforetrygdGjeldende.kompensasjonsgrad > 0
+                    && (it.inntektsAvkortingGjeldende.inntektsgrenseAr < it.inntektsAvkortingGjeldende.inntektstak))
         }
         ) {
             row {
@@ -374,7 +404,7 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
                 }
                 cell {
                     val kompensasjonsgrad =
-                        argument().map { it.kompensasjonsgrad_uforetrygdGjeldende }.format()
+                        argument().map { it.uforetrygdGjeldende.kompensasjonsgrad }.format()
                     textExpr(
                         Bokmal to kompensasjonsgrad + " %",
                         Nynorsk to kompensasjonsgrad + " %",
@@ -384,7 +414,7 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
             }
         }
         showIf(argument().map {
-            (it.inntektsgrenseAr_inntektsAvkortingGjeldende < it.inntektstak_inntektsAvkortingGjeldende)
+            (it.inntektsAvkortingGjeldende.inntektsgrenseAr < it.inntektsAvkortingGjeldende.inntektstak)
         }
         ) {
             row {
@@ -396,18 +426,12 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
                     )
                 }
                 cell {
-                    val inntektstak =
-                        argument().map { Kroner(it.inntektstak_inntektsAvkortingGjeldende) }.format()
-                    textExpr(
-                        Bokmal to inntektstak + " kr",
-                        Nynorsk to inntektstak + " kr",
-                        English to inntektstak + " NOK"
-                    )
+                    includePhrase(kroner, argument().map { it.inntektsAvkortingGjeldende.inntektstak })
                 }
             }
         }
         showIf(argument().map {
-            (it.inntektsgrenseAr_inntektsAvkortingGjeldende > it.inntektstak_inntektsAvkortingGjeldende)
+            (it.inntektsAvkortingGjeldende.inntektsgrenseAr > it.inntektsAvkortingGjeldende.inntektstak)
         }
         ) {
             row {
@@ -419,14 +443,7 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
                     )
                 }
                 cell {
-                    val inntektsgrenseAr =
-                        argument().map { Kroner(it.inntektsgrenseAr_inntektsAvkortingGjeldende) }
-                            .format()
-                    textExpr(
-                        Bokmal to inntektsgrenseAr + " kr",
-                        Nynorsk to inntektsgrenseAr + " kr",
-                        English to inntektsgrenseAr + " NOK"
-                    )
+                    includePhrase(kroner, argument().map { it.inntektsAvkortingGjeldende.inntektsgrenseAr })
                 }
             }
         }
@@ -441,7 +458,7 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
             }
             cell {
                 val brukersSivilstand =
-                    argument().map { it.brukersSivilstand_gjeldendeBeregnetUTPerManed }
+                    argument().map { it.beregnetUTPerManedGjeldende.brukersSivilstand }
                         .str()
                 textExpr(
                     Bokmal to brukersSivilstand,
@@ -450,9 +467,7 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
                 )
             }
         }
-        showIf(argument().map {
-            it.erUnder20Ar_ungUforGjeldende
-        }) {
+        showIf(argument().map { it.ungUforGjeldende_erUnder20Ar }) {
             row {
                 cell {
                     text(
@@ -470,73 +485,63 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
                 }
             }
         }
-// Hvis !=
-        showIf(argument().map { it.yrkesskadegrad_yrkesskadeGjeldende > 0 })
-        {
+
+        ifNotNull(argument().map { it.yrkesskadeGjeldende }) { yrkesskade ->
+            showIf(yrkesskade.map { it.yrkesskadegrad > 0 }) {
+                row {
+                    cell {
+                        text(
+                            Bokmal to "Yrkesskadegrad",
+                            Nynorsk to "Yrkesskadegrad",
+                            English to "Degree of disability due to occupational injury"
+                        )
+                    }
+                    cell {
+                        val yrkesskadegrad = yrkesskade.map { it.yrkesskadegrad }.str()
+                        textExpr(
+                            Bokmal to yrkesskadegrad + " %",
+                            Nynorsk to yrkesskadegrad + " %",
+                            English to yrkesskadegrad + " %"
+                        )
+                    }
+                }
+            }
             row {
                 cell {
                     text(
-                        Bokmal to "Yrkesskadegrad",
-                        Nynorsk to "Yrkesskadegrad",
-                        English to "Degree of disability due to occupational injury"
+                        Bokmal to "Skadetidspunktet for yrkesskaden",
+                        Nynorsk to "Skadetidspunktet for yrkesskaden",
+                        English to "Date of injury"
                     )
                 }
                 cell {
-                    val yrkesskadegrad =
-                        argument().map { it.yrkesskadegrad_yrkesskadeGjeldende }.str()
+                    val skadetidspunkt = yrkesskade.map { it.skadetidspunkt }.format()
                     textExpr(
-                        Bokmal to yrkesskadegrad + " %",
-                        Nynorsk to yrkesskadegrad + " %",
-                        English to yrkesskadegrad + " %"
+                        Bokmal to skadetidspunkt,
+                        Nynorsk to skadetidspunkt,
+                        English to skadetidspunkt
                     )
+                }
+            }
+            showIf(yrkesskade.map { it.inntektVedSkadetidspunkt > 0 })
+            {
+                row {
+                    cell {
+                        text(
+                            Bokmal to "Årlig arbeidsinntekt på skadetidspunktet",
+                            Nynorsk to "Årleg arbeidsinntekt på skadetidspunktet",
+                            English to "Annual income at the date of injury"
+                        )
+                    }
+                    cell {
+                        includePhrase(kroner, yrkesskade.map { it.inntektVedSkadetidspunkt })
+                    }
                 }
             }
         }
-/* Hvis !=
-        showIf(argument().map { it.skadetidspunkt_yrkesskadeGjeldende != })
-        row {
-            cell {
-                text(
-                    Bokmal to "Skadetidspunktet for yrkesskaden",
-                    Nynorsk to "Skadetidspunktet for yrkesskaden",
-                    English to "Date of injury"
-                )
-            }
-            cell {
-                val skadetidspunkt =
-                    argument().map { it.skadetidspunkt_yrkesskadeGjeldende }.format()
-                textExpr(
-                    Bokmal to skadetidspunkt,
-                    Nynorsk to skadetidspunkt,
-                    English to skadetidspunkt
-                )
-            }
-        }  */
-// Hvis !=
-        showIf(argument().map { it.inntektVedSkadetidspunkt_yrkesskadeGjeldende > 0 })
-        {
-            row {
-                cell {
-                    text(
-                        Bokmal to "Årlig arbeidsinntekt på skadetidspunktet",
-                        Nynorsk to "Årleg arbeidsinntekt på skadetidspunktet",
-                        English to "Annual income at the date of injury"
-                    )
-                }
-                cell {
-                    val inntektVedSkadetidspunkt =
-                        argument().map { Kroner(it.inntektVedSkadetidspunkt_yrkesskadeGjeldende) }
-                            .format()
-                    textExpr(
-                        Bokmal to inntektVedSkadetidspunkt + " kr",
-                        Nynorsk to inntektVedSkadetidspunkt + " kr",
-                        English to inntektVedSkadetidspunkt + " NOK"
-                    )
-                }
-            }
-        }
+
         showIf(argument().map {
-            (it.brukerErFlyktning_gjeldendeBeregnetUTPerManed && (it.beregningsMetode_trygdetidsdetaljergjeldende == BeregningsMetode.FOLKETRYGD))
+            (it.beregnetUTPerManedGjeldende.brukerErFlyktning && (it.trygdetidsdetaljerGjeldende.beregningsMetode == BeregningsMetode.FOLKETRYGD))
         })
         {
             row {
@@ -557,7 +562,8 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
             }
         }
         showIf(argument().map {
-            (it.brukerErFlyktning_gjeldendeBeregnetUTPerManed == FALSE && (it.beregningsMetode_trygdetidsdetaljergjeldende == BeregningsMetode.FOLKETRYGD))
+            (it.beregnetUTPerManedGjeldende.brukerErFlyktning
+                    && (it.trygdetidsdetaljerGjeldende.beregningsMetode == BeregningsMetode.FOLKETRYGD))
         })
         {
             row {
@@ -570,7 +576,7 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
                 }
                 cell {
                     val anvendtTT =
-                        argument().map { it.anvendtTT_trygdetidsdetaljerGjeldende }.str()
+                        argument().map { it.trygdetidsdetaljerGjeldende.anvendtTT }.str()
                     textExpr(
                         Bokmal to anvendtTT + " år",
                         Nynorsk to anvendtTT + " år",
@@ -580,7 +586,7 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
             }
         }
         showIf(argument().map {
-            (it.beregningsMetode_trygdetidsdetaljergjeldende == BeregningsMetode.EOS || it.beregningsMetode_trygdetidsdetaljergjeldende == BeregningsMetode.NORDISK)
+            (it.trygdetidsdetaljerGjeldende.beregningsMetode == BeregningsMetode.EOS || it.trygdetidsdetaljerGjeldende.beregningsMetode == BeregningsMetode.NORDISK)
         })
         {
             row {
@@ -594,7 +600,7 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
                 // Implement logic for year/years
                 cell {
                     val anvendtTT =
-                        argument().map { it.anvendtTT_trygdetidsdetaljerGjeldende }.str()
+                        argument().map { it.trygdetidsdetaljerGjeldende.anvendtTT }.str()
                     textExpr(
                         Bokmal to anvendtTT + " år",
                         Nynorsk to anvendtTT + " år",
@@ -604,9 +610,9 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
             }
         }
         showIf(argument().map {
-            (it.beregningsMetode_trygdetidsdetaljergjeldende != BeregningsMetode.FOLKETRYGD
-                && it.beregningsMetode_trygdetidsdetaljergjeldende != BeregningsMetode.NORDISK
-                && it.beregningsMetode_trygdetidsdetaljergjeldende != BeregningsMetode.EOS)
+            (it.trygdetidsdetaljerGjeldende.beregningsMetode != BeregningsMetode.FOLKETRYGD
+                    && it.trygdetidsdetaljerGjeldende.beregningsMetode != BeregningsMetode.NORDISK
+                    && it.trygdetidsdetaljerGjeldende.beregningsMetode != BeregningsMetode.EOS)
         })
         {
             row {
@@ -619,7 +625,7 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
                 }
                 cell {
                     val anvendtTT =
-                        argument().map { it.anvendtTT_trygdetidsdetaljerGjeldende }.str()
+                        argument().map { it.trygdetidsdetaljerGjeldende.anvendtTT }.str()
                     textExpr(
                         Bokmal to anvendtTT + " år",
                         Nynorsk to anvendtTT + " år",
@@ -629,7 +635,7 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
             }
         }
         showIf(argument().map {
-            it.beregningsMetode_trygdetidsdetaljergjeldende != BeregningsMetode.FOLKETRYGD
+            it.trygdetidsdetaljerGjeldende.beregningsMetode != BeregningsMetode.FOLKETRYGD
         })
         {
             row {
@@ -642,7 +648,7 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
                 }
                 cell {
                     val faktiskTTNorge =
-                        argument().map { it.faktiskTTNorge_trygdetidsdetaljerGjeldende }
+                        argument().map { it.trygdetidsdetaljerGjeldende.faktiskTTNorge }
                             .str()
                     textExpr(
                         Bokmal to faktiskTTNorge + " måneder",
@@ -653,7 +659,7 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
             }
         }
         showIf(argument().map {
-            it.beregningsMetode_trygdetidsdetaljergjeldende == BeregningsMetode.EOS
+            it.trygdetidsdetaljerGjeldende.beregningsMetode == BeregningsMetode.EOS
         })
         {
             row {
@@ -666,7 +672,7 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
                 }
                 cell {
                     val faktiskTTEOS =
-                        argument().map { it.faktiskTTEOS_trygdetidsdetaljerGjeldende }.str()
+                        argument().map { it.trygdetidsdetaljerGjeldende.faktiskTTEOS }.str()
                     textExpr(
                         Bokmal to faktiskTTEOS + " måneder",
                         Nynorsk to faktiskTTEOS + " måneder",
@@ -676,7 +682,7 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
             }
         }
         showIf(argument().map {
-            it.beregningsMetode_trygdetidsdetaljergjeldende == BeregningsMetode.EOS
+            it.trygdetidsdetaljerGjeldende.beregningsMetode == BeregningsMetode.EOS
         })
         {
             row {
@@ -689,7 +695,7 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
                 }
                 cell {
                     val nevnerTTEOS =
-                        argument().map { it.nevnerTTEOS_trygdetidsdetaljerGjeldende }.str()
+                        argument().map { it.trygdetidsdetaljerGjeldende.nevnerTTEOS }.str()
                     textExpr(
                         Bokmal to nevnerTTEOS + " måneder",
                         Nynorsk to nevnerTTEOS + " måneder",
@@ -699,7 +705,7 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
             }
         }
         showIf(argument().map {
-            it.beregningsMetode_trygdetidsdetaljergjeldende == BeregningsMetode.EOS
+            it.trygdetidsdetaljerGjeldende.beregningsMetode == BeregningsMetode.EOS
         })
         {
             row {
@@ -712,9 +718,9 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
                 }
                 cell {
                     val tellerTTEOS =
-                        argument().map { it.tellerTTEOS_trygdetidsdetaljerGjeldende }.str()
+                        argument().map { it.trygdetidsdetaljerGjeldende.tellerTTEOS }.str()
                     val nevnerTTEOS =
-                        argument().map { it.nevnerTTEOS_trygdetidsdetaljerGjeldende }.str()
+                        argument().map { it.trygdetidsdetaljerGjeldende.nevnerTTEOS }.str()
                     textExpr(
                         Bokmal to tellerTTEOS + " / " + nevnerTTEOS,
                         Nynorsk to tellerTTEOS + " / " + nevnerTTEOS,
@@ -724,7 +730,7 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
             }
         }
         showIf(argument().map {
-            it.beregningsMetode_trygdetidsdetaljergjeldende == BeregningsMetode.NORDISK
+            it.trygdetidsdetaljerGjeldende.beregningsMetode == BeregningsMetode.NORDISK
         })
         {
             row {
@@ -737,7 +743,7 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
                 }
                 cell {
                     val faktiskTTNordiskKonv =
-                        argument().map { it.faktiskTTNordiskKonv_trygdetidsdetaljerGjeldende }
+                        argument().map { it.trygdetidsdetaljerGjeldende.faktiskTTNordiskKonv }
                             .str()
                     textExpr(
                         Bokmal to faktiskTTNordiskKonv + " måneder",
@@ -749,8 +755,8 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
         }
 // Calculation!! (framtidigTTNorsk / 12) < 40)
         showIf(argument().map {
-            ((it.beregningsMetode_trygdetidsdetaljergjeldende == BeregningsMetode.FOLKETRYGD || it.beregningsMetode_trygdetidsdetaljergjeldende == BeregningsMetode.NORDISK)
-                && ((it.framtidigTTNorsk_trygdetidsdetaljerGjeldende / 12) < 40))
+            ((it.trygdetidsdetaljerGjeldende.beregningsMetode == BeregningsMetode.FOLKETRYGD || it.trygdetidsdetaljerGjeldende.beregningsMetode == BeregningsMetode.NORDISK)
+                    && ((it.trygdetidsdetaljerGjeldende.framtidigTTNorsk / 12) < 40))
         })
         {
             row {
@@ -763,7 +769,7 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
                 }
                 cell {
                     val framtidigTTNorsk =
-                        argument().map { it.framtidigTTNorsk_trygdetidsdetaljerGjeldende }
+                        argument().map { it.trygdetidsdetaljerGjeldende.framtidigTTNorsk }
                             .str()
                     textExpr(
                         Bokmal to framtidigTTNorsk + " måneder",
@@ -774,7 +780,7 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
             }
         }
         showIf(argument().map {
-            it.beregningsMetode_trygdetidsdetaljergjeldende == BeregningsMetode.NORDISK
+            it.trygdetidsdetaljerGjeldende.beregningsMetode == BeregningsMetode.NORDISK
         })
         {
             row {
@@ -787,21 +793,19 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
                 }
                 cell {
                     val tellerTTNordiskKonv =
-                        argument().map { it.tellerTTNordiskKonv_trygdetidsdetaljerGjeldende }
-                            .str()
-                    val nevnerTTNordiskKonv_trygdetidsdetaljerGjeldende =
-                        argument().map { it.nevnerTTNordiskKonv_trygdetidsdetaljerGjeldende }
-                            .str()
+                        argument().map { it.trygdetidsdetaljerGjeldende.tellerTTNordiskKonv }.str()
+                    val nevnerTTNordiskKonv =
+                        argument().map { it.trygdetidsdetaljerGjeldende.nevnerTTNordiskKonv }.str()
                     textExpr(
-                        Bokmal to tellerTTNordiskKonv + " / " + nevnerTTNordiskKonv_trygdetidsdetaljerGjeldende,
-                        Nynorsk to tellerTTNordiskKonv + " / " + nevnerTTNordiskKonv_trygdetidsdetaljerGjeldende,
-                        English to tellerTTNordiskKonv + " / " + nevnerTTNordiskKonv_trygdetidsdetaljerGjeldende
+                        Bokmal to tellerTTNordiskKonv + " / " + nevnerTTNordiskKonv,
+                        Nynorsk to tellerTTNordiskKonv + " / " + nevnerTTNordiskKonv,
+                        English to tellerTTNordiskKonv + " / " + nevnerTTNordiskKonv
                     )
                 }
             }
         }
         showIf(argument().map {
-            it.beregningsMetode_trygdetidsdetaljergjeldende == BeregningsMetode.NORDISK
+            it.trygdetidsdetaljerGjeldende.beregningsMetode == BeregningsMetode.NORDISK
         })
         {
             row {
@@ -814,7 +818,7 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
                 }
                 cell {
                     val samletTTNordiskKonv =
-                        argument().map { it.samletTTNordiskKonv_trygdetidsdetaljerGjeldende }
+                        argument().map { it.trygdetidsdetaljerGjeldende.samletTTNordiskKonv }
                             .str()
                     textExpr(
                         Bokmal to samletTTNordiskKonv + " måneder",
@@ -824,11 +828,15 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
                 }
             }
         }
-        showIf(argument().map {
-            (it.beregningsMetode_trygdetidsdetaljergjeldende != BeregningsMetode.FOLKETRYGD
-                && it.beregningsMetode_trygdetidsdetaljergjeldende != BeregningsMetode.NORDISK
-                && it.beregningsMetode_trygdetidsdetaljergjeldende != BeregningsMetode.EOS)
-        })
+
+        val beregningsmetode_trygdetidsdetaljer = argument().map { (it.trygdetidsdetaljerGjeldende.beregningsMetode) }
+        showIf(
+            beregningsmetode_trygdetidsdetaljer.isNotAnyOf(
+                BeregningsMetode.FOLKETRYGD,
+                BeregningsMetode.NORDISK,
+                BeregningsMetode.EOS
+            )
+        )
         {
             row {
                 cell {
@@ -840,7 +848,7 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
                 }
                 cell {
                     val faktiskTTBilateral =
-                        argument().map { it.faktiskTTBilateral_trygdetidsdetaljerGjeldende }
+                        argument().map { it.trygdetidsdetaljerGjeldende.faktiskTTBilateral }
                             .str()
                     textExpr(
                         Bokmal to faktiskTTBilateral + " måneder",
@@ -849,14 +857,6 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
                     )
                 }
             }
-        }
-// Need new logic!!
-        showIf(argument().map {
-            (it.beregningsMetode_trygdetidsdetaljergjeldende != BeregningsMetode.FOLKETRYGD
-                && it.beregningsMetode_trygdetidsdetaljergjeldende != BeregningsMetode.NORDISK
-                && it.beregningsMetode_trygdetidsdetaljergjeldende != BeregningsMetode.EOS)
-        })
-        {
             row {
                 cell {
                     text(
@@ -867,7 +867,7 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
                 }
                 cell {
                     val nevnerProRata =
-                        argument().map { it.nevnerProRata_trygdetidsdetaljerGjeldende }.str()
+                        argument().map { it.trygdetidsdetaljerGjeldende.nevnerProRata }.str()
                     textExpr(
                         Bokmal to nevnerProRata + " måneder",
                         Nynorsk to nevnerProRata + " måneder",
@@ -875,14 +875,7 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
                     )
                 }
             }
-        }
-// Need new logic!!
-        showIf(argument().map {
-            (it.beregningsMetode_trygdetidsdetaljergjeldende != BeregningsMetode.FOLKETRYGD
-                && it.beregningsMetode_trygdetidsdetaljergjeldende != BeregningsMetode.NORDISK
-                && it.beregningsMetode_trygdetidsdetaljergjeldende != BeregningsMetode.EOS)
-        })
-        {
+
             row {
                 cell {
                     text(
@@ -893,9 +886,9 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
                 }
                 cell {
                     val tellerProRata =
-                        argument().map { it.tellerProRata_trygdetidsdetaljerGjeldende }.str()
+                        argument().map { it.trygdetidsdetaljerGjeldende.tellerProRata }.str()
                     val nevnerProRata =
-                        argument().map { it.nevnerProRata_trygdetidsdetaljerGjeldende }.str()
+                        argument().map { it.trygdetidsdetaljerGjeldende.nevnerProRata }.str()
                     textExpr(
                         Bokmal to tellerProRata + " / " + nevnerProRata,
                         Nynorsk to tellerProRata + " / " + nevnerProRata,
@@ -904,525 +897,429 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
                 }
             }
         }
-        showIf(argument().map {
-            it.belop_barnetilleggSBGjeldende > 0
-        })
-        {
-            row {
-                cell {
-                    text(
-                        Bokmal to "Totalt antall barn du har barnetillegg for",
-                        Nynorsk to "Totalt tal barn du har barnetillegg for",
-                        English to "Total number of children for whom you receive child supplement"
-                    )
-                }
-                cell {
-                    val totaltAntallBarn =
-                        argument().map { it.totaltAntallBarn_barnetilleggGrunnlagGjeldende }
-                            .str()
-                    textExpr(
-                        Bokmal to totaltAntallBarn,
-                        Nynorsk to totaltAntallBarn,
-                        English to totaltAntallBarn
-                    )
-                }
-            }
-        }
-        showIf(argument().map {
-            it.erRedusertMotTak_barnetilleggGrunnlagGjeldende
-        })
-        {
-            row {
-                cell {
-                    val prosentsatsGradertOIFU =
-                        argument().map { it.prosentsatsGradertOIFU_barnetilleggGrunnlagGjeldende }
-                            .str()
-                    textExpr(
-                        Bokmal to prosentsatsGradertOIFU + " % av inntekt før uførhet (justert for endringer i grunnbeløpet)",
-                        Nynorsk to prosentsatsGradertOIFU + " % av inntekt før uførleik (justert for endringar i grunnbeløpet)",
-                        English to prosentsatsGradertOIFU + " % of income before disability, adjusted for changes in the basic amount"
-                    )
-                }
-                cell {
-                    val gradertOIFU =
-                        argument().map { Kroner(it.gradertOIFU_barnetilleggGrunnlagGjeldende) }
-                            .format()
-                    textExpr(
-                        Bokmal to gradertOIFU + " kr",
-                        Nynorsk to gradertOIFU + " kr",
-                        English to gradertOIFU + " NOK"
-                    )
+        ifNotNull(argument().map { it.barnetilleggGjeldende }) { barnetillegg ->
+            ifNotNull(barnetillegg.map { it.saerkullsbarn }) { saerkullsbarn ->
+                showIf(saerkullsbarn.map { it.belop > 0 })
+                {
+                    row {
+                        cell {
+                            text(
+                                Bokmal to "Totalt antall barn du har barnetillegg for",
+                                Nynorsk to "Totalt tal barn du har barnetillegg for",
+                                English to "Total number of children for whom you receive child supplement"
+                            )
+                        }
+                        cell {
+                            val totaltAntallBarn =
+                                barnetillegg.map { it.grunnlag.totaltAntallBarn }.str()
+                            textExpr(
+                                Bokmal to totaltAntallBarn,
+                                Nynorsk to totaltAntallBarn,
+                                English to totaltAntallBarn
+                            )
+                        }
+                    }
                 }
             }
-        }
-        showIf(argument().map {
-            it.belop_barnetilleggSBGjeldende > 0
-        })
-        {
-            row {
-                cell {
-                    text(
-                        Bokmal to "Fribeløp for særkullsbarn",
-                        Nynorsk to "Fribeløp for særkullsbarn",
-                        English to "Exemption amount for children from a previous relationship"
-                    )
-                }
-                cell {
-                    val fribelop =
-                        argument().map { Kroner(it.fribelop_barnetilleggSBGjeldende) }.format()
-                    textExpr(
-                        Bokmal to fribelop + " kr",
-                        Nynorsk to fribelop + " kr",
-                        English to fribelop + " NOK"
-                    )
+
+            showIf(barnetillegg.map {it.grunnlag.erRedusertMotTak}){
+                row {
+                    cell {
+                        val prosentsatsGradertOIFU =
+                            barnetillegg.map { it.grunnlag.prosentsatsGradertOIFU }
+                                .str()
+                        textExpr(
+                            Bokmal to prosentsatsGradertOIFU + " % av inntekt før uførhet (justert for endringer i grunnbeløpet)",
+                            Nynorsk to prosentsatsGradertOIFU + " % av inntekt før uførleik (justert for endringar i grunnbeløpet)",
+                            English to prosentsatsGradertOIFU + " % of income before disability, adjusted for changes in the basic amount"
+                        )
+                    }
+                    cell {
+                        includePhrase(kroner, barnetillegg.map { it.grunnlag.gradertOIFU })
+                    }
                 }
             }
-        }
-        showIf(argument().map {
-            it.belop_barnetilleggSBGjeldende > 0
-        })
-        {
-            row {
-                cell {
-                    text(
-                        Bokmal to "Samlet inntekt som er brukt i fastsettelse av barnetillegg",
-                        Nynorsk to "Samla inntekt som er brukt i fastsetjinga av barnetillegg",
-                        English to "Your income, which is used to calculate child supplement"
-                    )
+
+            ifNotNull(barnetillegg.map { it.saerkullsbarn }) { saerkullsbarn ->
+                showIf(saerkullsbarn.map {it.belop > 0}){ //TODO fribeloep?
+                    row {
+                        cell {
+                            text(
+                                Bokmal to "Fribeløp for særkullsbarn",
+                                Nynorsk to "Fribeløp for særkullsbarn",
+                                English to "Exemption amount for children from a previous relationship"
+                            )
+                        }
+                        cell {
+                            includePhrase(kroner, saerkullsbarn.map { it.fribelop })
+                        }
+                    }
                 }
-                cell {
-                    val inntektBruktIAvkortning =
-                        argument().map { Kroner(it.inntektBruktIAvkortning_barnetilleggSBGjeldende) }
-                            .format()
-                    textExpr(
-                        Bokmal to inntektBruktIAvkortning + " kr",
-                        Nynorsk to inntektBruktIAvkortning + " kr",
-                        English to inntektBruktIAvkortning + " NOK"
-                    )
+
+                showIf(saerkullsbarn.map {it.belop > 0}){//TODO inntektBruktIAvkortning?
+                    row {
+                        cell {
+                            text(
+                                Bokmal to "Samlet inntekt som er brukt i fastsettelse av barnetillegg",
+                                Nynorsk to "Samla inntekt som er brukt i fastsetjinga av barnetillegg",
+                                English to "Your income, which is used to calculate child supplement"
+                            )
+                        }
+                        cell {
+                            includePhrase(kroner, saerkullsbarn.map { it.inntektBruktIAvkortning })
+                        }
+                    }
                 }
-            }
-        }
-        showIf(argument().map {
-            it.belop_barnetilleggSBGjeldende > 0
-        })
-        {
-            row {
-                cell {
-                    text(
-                        Bokmal to "Samlet inntekt for deg som gjør at barnetillegget ikke blir utbetalt",
-                        Nynorsk to "Samla inntekt for deg som gjer at barnetillegget ikkje blir utbetalt",
-                        English to "Your income which means that no child supplement is received"
-                    )
-                }
-                cell {
-                    val inntektstak =
-                        argument().map { Kroner(it.inntektstak_barnetilleggSBGjeldende) }.format()
-                    textExpr(
-                        Bokmal to inntektstak + " kr",
-                        Nynorsk to inntektstak + " kr",
-                        English to inntektstak + " NOK"
-                    )
+
+                showIf(saerkullsbarn.map {it.belop > 0}){//TODO inntektstak?
+                    row {
+                        cell {
+                            text(
+                                Bokmal to "Samlet inntekt for deg som gjør at barnetillegget ikke blir utbetalt",
+                                Nynorsk to "Samla inntekt for deg som gjer at barnetillegget ikkje blir utbetalt",
+                                English to "Your income which means that no child supplement is received"
+                            )
+                        }
+                        cell {
+                            includePhrase(kroner, saerkullsbarn.map { it.inntektstak })
+                        }
+                    }
                 }
             }
         }
     }
-//End of table 1
-// Start of phrases
-    showIf(argument().map {
-        it.sats_minsteytelseGjeldende > 0
-    }) {
+
+    //End of table 1
+    // Start of phrases
+    showIf(argument().map {it.minsteytelseGjeldende_sats > 0}) {
         includePhrase(rettTilMYOverskrift_001)
     }
-// If no node for erUnder20Ar_ungUforGjeldende
-    showIf(argument().map {
-        (!it.erKonvertert_uforetrygdGjeldende && it.sats_minsteytelseGjeldende > 0)
-    }) {
+// If no node for ungUforGjeldende_erUnder20Ar
+    showIf(argument().map {(!it.uforetrygdGjeldende.erKonvertert && it.minsteytelseGjeldende_sats > 0)}) {
         includePhrase(vedleggBeregnUTInfoMY_001)
     }
-// If no node for erUnder20Ar_ungUforGjeldende
-    showIf(argument().map {
-        (it.sats_minsteytelseGjeldende > 0 && it.erKonvertert_uforetrygdGjeldende)
-    }) {
+// If no node for ungUforGjeldende_erUnder20Ar
+    showIf(argument().map {(it.minsteytelseGjeldende_sats > 0 && it.uforetrygdGjeldende.erKonvertert)}) {
         includePhrase(vedleggBeregnUTInfoMY2_001)
     }
-    showIf(argument().map {
-        (!it.erUnder20Ar_ungUforGjeldende && it.sats_minsteytelseGjeldende > 0)
-    }) {
+    showIf(argument().map {(!it.ungUforGjeldende_erUnder20Ar && it.minsteytelseGjeldende_sats > 0)}) {
         includePhrase(vedleggBeregnUTInfoMYUngUfor_001)
     }
-    showIf(argument().map {
-        it.erUnder20Ar_ungUforGjeldende && it.sats_minsteytelseGjeldende > 0
-    }) {
+    showIf(argument().map {it.ungUforGjeldende_erUnder20Ar && it.minsteytelseGjeldende_sats > 0}) {
         includePhrase(vedleggBeregnUTInfoMYUngUforUnder20_001)
     }
-    showIf(argument().map {
-        it.sats_minsteytelseGjeldende > 0
-    }) {
+    showIf(argument().map {it.minsteytelseGjeldende_sats > 0}) {
         includePhrase(vedleggBeregnUTDinMY_001, argument().map {
-            VedleggBeregnUTDinMY_001Dto(it.sats_minsteytelseGjeldende)
+            VedleggBeregnUTDinMY_001Dto(it.minsteytelseGjeldende_sats)
         })
     }
     showIf(argument().map {
-        it.erSannsynligEndret_inntektForUforeGjeldende
+        it.inntektForUforeGjeldende.erSannsynligEndret
     }) {
         includePhrase(vedleggBeregnUTMinsteIFU_002)
     }
     showIf(argument().map {
-        it.sats_minsteytelseGjeldende > 0 &&
-            it.erSannsynligEndret_inntektForUforeGjeldende &&
-            (it.inntektsgrenseAr_inntektsAvkortingGjeldende < it.inntektstak_inntektsAvkortingGjeldende)
+        it.minsteytelseGjeldende_sats > 0 &&
+                it.inntektForUforeGjeldende.erSannsynligEndret &&
+                (it.inntektsAvkortingGjeldende.inntektsgrenseAr < it.inntektsAvkortingGjeldende.inntektstak)
     }) {
         includePhrase(slikFastsettesKompGradOverskrift_001)
     }
     showIf(argument().map {
-        it.sats_minsteytelseGjeldende > 0 &&
-            it.erSannsynligEndret_inntektForUforeGjeldende &&
-            (it.inntektsgrenseAr_inntektsAvkortingGjeldende < it.inntektstak_inntektsAvkortingGjeldende)
+        it.minsteytelseGjeldende_sats > 0 &&
+                it.inntektForUforeGjeldende.erSannsynligEndret &&
+                (it.inntektsAvkortingGjeldende.inntektsgrenseAr < it.inntektsAvkortingGjeldende.inntektstak)
     }) {
         includePhrase(vedleggBeregnUTKompGrad_001)
     }
     showIf(argument().map {
-        it.sats_minsteytelseGjeldende > 0 &&
-            it.erSannsynligEndret_inntektForUforeGjeldende &&
-            (it.inntektsgrenseAr_inntektsAvkortingGjeldende < it.inntektstak_inntektsAvkortingGjeldende) &&
-            !it.erKonvertert_uforetrygdGjeldende
+        it.minsteytelseGjeldende_sats > 0 &&
+                it.inntektForUforeGjeldende.erSannsynligEndret &&
+                (it.inntektsAvkortingGjeldende.inntektsgrenseAr < it.inntektsAvkortingGjeldende.inntektstak) &&
+                !it.uforetrygdGjeldende.erKonvertert
     }) {
         includePhrase(vedleggBeregnUTKompGradGjsntt_001)
     }
     showIf(argument().map {
-        it.sats_minsteytelseGjeldende > 0 &&
-            it.erSannsynligEndret_inntektForUforeGjeldende &&
-            (it.inntektsgrenseAr_inntektsAvkortingGjeldende < it.inntektstak_inntektsAvkortingGjeldende) &&
-            it.erKonvertert_uforetrygdGjeldende
+        it.minsteytelseGjeldende_sats > 0 &&
+                it.inntektForUforeGjeldende.erSannsynligEndret &&
+                (it.inntektsAvkortingGjeldende.inntektsgrenseAr < it.inntektsAvkortingGjeldende.inntektstak) &&
+                it.uforetrygdGjeldende.erKonvertert
     }) {
         includePhrase(vedleggBeregnUTKompGradGjsnttKonvUT_001)
     }
 
-    val erRedusertMotInntektOgUtbetalt = argument().map {
-        it.erRedusertMotinntekt_barnetilleggSBGjeldende && !it.erIkkeUtbetaltpgaTak_barnetilleggGrunnlagGjeldende
-    }
-    showIf(erRedusertMotInntektOgUtbetalt) {
-        includePhrase(slikBeregnBTOverskrift_001)
-    }
-    showIf(argument().map {
-        !it.erIkkeUtbetaltpgaTak_barnetilleggGrunnlagGjeldende
-            && it.erRedusertMotinntekt_barnetilleggSBGjeldende
-    }) {
-        includePhrase(vedleggBeregnUTInnlednBT_001)
-    }
-    showIf(erRedusertMotInntektOgUtbetalt) {
-        includePhrase(vedleggBeregnUTInfoBTSB_001)
-    }
-    showIf(argument().map {
-        it.erRedusertMotinntekt_barnetilleggSBGjeldende &&
-            !it.erIkkeUtbetaltpgaTak_barnetilleggGrunnlagGjeldende &&
-            it.anvendtTT_trygdetidsdetaljerGjeldende < 40 &&
-            it.yrkesskadegrad_yrkesskadeGjeldende > 0
-    }) {
-        includePhrase(vedleggBeregnUTredusTTBTSB_001)
-    }
-    showIf(argument().map {
-        it.erRedusertMotinntekt_barnetilleggSBGjeldende &&
-            !it.erIkkeUtbetaltpgaTak_barnetilleggGrunnlagGjeldende &&
-            !it.fribelopEllerInntektErPeriodisert_barnetilleggSBGjeldende &&
-            it.justeringsbelopAr_barnetilleggSBGjeldende > 0
-    }) {
-        includePhrase(vedleggBeregnUTIkkePeriodisertFriBOgInntektBTSB_001, argument().map {
-            VedleggBeregnUTIkkePeriodisertFriBOgInntektBTSB_001Dto(it.avkortningsbelopAr_barnetilleggSBGjeldende)
-        })
-    }
-    showIf(argument().map {
-        it.erRedusertMotinntekt_barnetilleggSBGjeldende &&
-            !it.erIkkeUtbetaltpgaTak_barnetilleggGrunnlagGjeldende &&
-            !it.fribelopEllerInntektErPeriodisert_barnetilleggSBGjeldende &&
-            it.justeringsbelopAr_barnetilleggSBGjeldende > 0
-    }) {
-        includePhrase(vedleggBeregnUTIkkePeriodisertFriBOgInntektBTSBJusterBelop_001, argument().map {
-            VedleggBeregnUTkkePeriodisertFriBOgInntektBTSBJusterBelop_001Dto(it.avkortningsbelopAr_barnetilleggSBGjeldende)
-        })
-    }
-    showIf(argument().map {
-        it.erRedusertMotinntekt_barnetilleggSBGjeldende &&
-            !it.erIkkeUtbetaltpgaTak_barnetilleggGrunnlagGjeldende &&
-            it.fribelopEllerInntektErPeriodisert_barnetilleggSBGjeldende &&
-            it.justeringsbelopAr_barnetilleggSBGjeldende > 0
-    }) {
-        includePhrase(vedleggBeregnUTPeridisertFriBOgInntektBTSB_001, argument().map {
-            VedleggBeregnUTPeriodisertFriBOgInntektBTSB_001Dto(it.avkortningsbelopAr_barnetilleggSBGjeldende)
-        })
-    }
-    showIf(argument().map {
-        it.erRedusertMotinntekt_barnetilleggSBGjeldende &&
-            !it.erIkkeUtbetaltpgaTak_barnetilleggGrunnlagGjeldende &&
-            it.fribelopEllerInntektErPeriodisert_barnetilleggSBGjeldende &&
-            it.justeringsbelopAr_barnetilleggSBGjeldende == 0
-    }) {
-        includePhrase(vedleggBeregnUTPeriodisertFriBOgInntektBTSBJusterBelop_001, argument().map {
-            VedleggBeregnUTPeriodisertFriBOgInntektBTSBJusterBelop_001Dto(it.avkortningsbelopAr_barnetilleggSBGjeldende)
-        })
-    }
-    showIf(argument().map {
-        it.erRedusertMotinntekt_barnetilleggSBGjeldende &&
-            !it.erIkkeUtbetaltpgaTak_barnetilleggGrunnlagGjeldende &&
-            it.justeringsbelopAr_barnetilleggSBGjeldende > 0
-    }) {
-        includePhrase(vedleggBeregnUTJusterBelopOver0BTSB_001, argument().map {
-            VedleggBeregnUTJusterBelopOver0BTSB_001Dto(it.justeringsbelopAr_barnetilleggSBGjeldende)
-        })
-    }
-    showIf(argument().map {
-        it.erRedusertMotinntekt_barnetilleggSBGjeldende &&
-            !it.erIkkeUtbetaltpgaTak_barnetilleggGrunnlagGjeldende &&
-            it.justeringsbelopAr_barnetilleggSBGjeldende < 0
-        // < 0? Is there a minus operator from Pesys?
-    }) {
-        includePhrase(vedleggBeregnUTJusterBelopUnder0BTSB_001, argument().map {
-            VedleggBeregnUTJusterBelopUnder0BTSB_001Dto(it.justeringsbelopAr_barnetilleggSBGjeldende)
-        })
-    }
+
+    ifNotNull(
+        argument().map{it.barnetilleggGjeldende?.grunnlag},
+        argument().map{it.barnetilleggGjeldende?.saerkullsbarn}
+    ){ grunnlag, saerkullTillegg ->
+        val erRedusertMotInntekt = saerkullTillegg.map { it.erRedusertMotinntekt }
+        val erIkkeUtbetaltPgaTak = grunnlag.map{ it.erIkkeUtbetaltpgaTak}
+        val harYrkesskadeGrad = argument().map{it.yrkesskadeGjeldende?.let { it.yrkesskadegrad > 0 } ?: false}
+        val harAnvendtTrygdetidUnder40 = argument().map{it.trygdetidsdetaljerGjeldende.anvendtTT < 40}
+        val fribelopEllerInntektErPeriodisert = saerkullTillegg.map{ it.fribelopEllerInntektErPeriodisert}
+        val justeringsBeloepAr = saerkullTillegg.map{ it.justeringsbelopAr}
+        showIf(saerkullTillegg.map { it.erRedusertMotinntekt }){
+
+            showIf(erIkkeUtbetaltPgaTak){
+                includePhrase(slikBeregnBTOverskrift_001)
+                includePhrase(vedleggBeregnUTInfoBTSB_001)
+            }.orShow{
+                includePhrase(vedleggBeregnUTInnlednBT_001)
+            }
+
+            showIf(harAnvendtTrygdetidUnder40 and harYrkesskadeGrad) {
+                includePhrase(vedleggBeregnUTredusTTBTSB_001)
+            }
+
+            showIf(fribelopEllerInntektErPeriodisert and justeringsBeloepAr.map{ it > 0}) {
+                includePhrase(vedleggBeregnUTIkkePeriodisertFriBOgInntektBTSB_001, saerkullTillegg.map {
+                    VedleggBeregnUTIkkePeriodisertFriBOgInntektBTSB_001Dto(it.avkortningsbelopAr)
+                })
+            }
+
+            showIf(not(fribelopEllerInntektErPeriodisert) and justeringsBeloepAr.map{ it > 0}) {
+                includePhrase(vedleggBeregnUTIkkePeriodisertFriBOgInntektBTSBJusterBelop_001, saerkullTillegg.map {
+                    VedleggBeregnUTkkePeriodisertFriBOgInntektBTSBJusterBelop_001Dto(it.avkortningsbelopAr)
+                })
+            }
+
+            showIf(fribelopEllerInntektErPeriodisert and justeringsBeloepAr.map{ it > 0}) {
+                includePhrase(vedleggBeregnUTPeridisertFriBOgInntektBTSB_001, saerkullTillegg.map {
+                    VedleggBeregnUTPeriodisertFriBOgInntektBTSB_001Dto(it.avkortningsbelopAr)
+                })
+            }
+
+            showIf(fribelopEllerInntektErPeriodisert and not(justeringsBeloepAr.map{ it > 0})) {
+                includePhrase(vedleggBeregnUTPeriodisertFriBOgInntektBTSBJusterBelop_001, saerkullTillegg.map {
+                    VedleggBeregnUTPeriodisertFriBOgInntektBTSBJusterBelop_001Dto(it.avkortningsbelopAr)
+                })
+            }
+
+            showIf(justeringsBeloepAr.map{ it > 0}) {
+                includePhrase(vedleggBeregnUTJusterBelopOver0BTSB_001, saerkullTillegg.map {
+                    VedleggBeregnUTJusterBelopOver0BTSB_001Dto(it.justeringsbelopAr)
+                })
+            }
+            showIf(justeringsBeloepAr.map{ it < 0}) {// < 0? Is there a minus operator from Pesys?
+                includePhrase(vedleggBeregnUTJusterBelopUnder0BTSB_001, saerkullTillegg.map {
+                    VedleggBeregnUTJusterBelopUnder0BTSB_001Dto(it.justeringsbelopAr)
+                })
+            }
+        }
+
+
+
 // TABLE 2 - start
-    showIf(erRedusertMotInntektOgUtbetalt) {
-        title1 {
-            text(
-                Bokmal to "Reduksjon av barnetillegg for særkullsbarn før skatt",
-                Nynorsk to "Reduksjon av barnetillegg for særkullsbarn før skatt",
-                English to "Reduction of child supplement payment for children from a previous relationship before tax"
-            )
-        }
-        table(
-            header = {
-                column(2) {
-                    text(
-                        Bokmal to "Beskrivelse",
-                        Nynorsk to "Beskrivelse",
-                        English to "Description"
-                    )
-                }
-                column(alignment = RIGHT) {
-                    text(
-                        Bokmal to "Beløp",
-                        Nynorsk to "Beløp",
-                        English to "Amount"
-                    )
-                }
+        showIf(erRedusertMotInntekt and erIkkeUtbetaltPgaTak) {
+            title1 {
+                text(
+                    Bokmal to "Reduksjon av barnetillegg for særkullsbarn før skatt",
+                    Nynorsk to "Reduksjon av barnetillegg for særkullsbarn før skatt",
+                    English to "Reduction of child supplement payment for children from a previous relationship before tax"
+                )
             }
-        ) {
-            showIf(argument().map { it.belop_barnetilleggSBGjeldende > 0 && it.justeringsbelopAr_barnetilleggSBGjeldende != 0 }) {
-                row {
-                    cell {
+            table(
+                header = {
+                    column(2) {
                         text(
-                            Bokmal to "Årlig barnetillegg før reduksjon ut fra inntektbelopArForAvkort",
-                            Nynorsk to "Årleg barnetillegg før reduksjon ut frå inntekt",
-                            English to "Yearly child supplement before income reduction"
+                            Bokmal to "Beskrivelse",
+                            Nynorsk to "Beskrivelse",
+                            English to "Description"
                         )
                     }
-                    cell {
-                        val belopArForAvkort = argument().map { Kroner(it.belopArForAvkort_barnetilleggSBGjeldende) }.format()
-                        textExpr(
-                            Bokmal to belopArForAvkort + " kr",
-                            Nynorsk to belopArForAvkort + " kr",
-                            English to belopArForAvkort + " NOK"
+                    column(alignment = Element.Table.ColumnAlignment.RIGHT) {
+                        text(
+                            Bokmal to "Beløp",
+                            Nynorsk to "Beløp",
+                            English to "Amount"
                         )
                     }
                 }
-            }
-            showIf(erRedusertMotInntektOgUtbetalt) {
-                row {
-                    cell {
-                        val inntektBruktIAvkortning =
-                            argument().map { Kroner(it.inntektBruktIAvkortning_barnetilleggSBGjeldende) }
-                                .format()
-                        textExpr(
-                            Bokmal to "Samlet inntekt brukt i fastsettelse av barnetillegget er\n".expr() + inntektBruktIAvkortning.str() + " kr",
-                            Nynorsk to "Samla inntekt brukt i fastsetjinga av barnetillegget er\n".expr() + inntektBruktIAvkortning.str() + " kr",
-                            English to "Total income applied in calculation of reduction in child supplement is\n".expr() + inntektBruktIAvkortning.str() + " NOK"
-                        )
-                    }
-                    cell {
-                        text(
-                            Bokmal to "",
-                            Nynorsk to "",
-                            English to ""
-                        )
+            ) {
+                showIf(saerkullTillegg.map { it.belop > 0 && it.justeringsbelopAr != 0 }) {
+                    row {
+                        cell {
+                            text(
+                                Bokmal to "Årlig barnetillegg før reduksjon ut fra inntektbelopArForAvkort",
+                                Nynorsk to "Årleg barnetillegg før reduksjon ut frå inntekt",
+                                English to "Yearly child supplement before income reduction"
+                            )
+                        }
+                        cell {
+                            includePhrase( kroner, saerkullTillegg.map { it.belopArForAvkort })
+                        }
                     }
                 }
-            }
-            showIf(argument().map { (it.belop_barnetilleggSBGjeldende > 0 || (it.belop_barnetilleggSBGjeldende < 0 && it.justeringsbelopAr_barnetilleggSBGjeldende != 0)) }) {
-                row {
-                    cell {
-                        val fribelop = argument().map { Kroner(it.fribelop_barnetilleggSBGjeldende) }.format()
-                        textExpr(
-                            Bokmal to "Fribeløp brukt i fastsettelsen av barnetillegget er\n".expr() + fribelop.str() + " kr",
-                            Nynorsk to "Fribeløp brukt i fastsetjinga av barnetillegget er\n".expr() + fribelop.str() + " kr",
-                            English to "Exemption amount applied in calculation of reduction in child supplement is\n".expr() + fribelop.str() + " NOK"
-                        )
-                    }
-                    cell {
-                        text(
-                            Bokmal to "",
-                            Nynorsk to "",
-                            English to ""
-                        )
-                    }
-                }
-            }
-            showIf(argument().map { (it.belop_barnetilleggSBGjeldende != 0 || (it.belop_barnetilleggSBGjeldende == 0 && it.justeringsbelopAr_barnetilleggSBGjeldende != 0)) }) {
-                row {
-                    cell {
-                        val inntektOverFribelop = argument().map { Kroner(it.inntektOverFribelop_barnetilleggSBGjeldende) }.format()
-                        textExpr(
-                            Bokmal to "Inntekt over fribeløpet er\n".expr() + inntektOverFribelop.str() + " kr",
-                            Nynorsk to "Inntekt over fribeløpet er\n".expr() + inntektOverFribelop.str() + " kr",
-                            English to "Income exceeding the exemption amount is\n".expr() + inntektOverFribelop.str() + " NOK"
-                        )
-                    }
-                    cell {
-                        text(
-                            Bokmal to "",
-                            Nynorsk to "",
-                            English to ""
-                        )
+                showIf(erRedusertMotInntekt and erIkkeUtbetaltPgaTak) {
+                    row {
+                        cell {
+                            val inntektBruktIAvkortning =
+                                saerkullTillegg.map { Kroner(it.inntektBruktIAvkortning) }
+                                    .format()
+                            textExpr(
+                                Bokmal to "Samlet inntekt brukt i fastsettelse av barnetillegget er\n".expr() + inntektBruktIAvkortning.str() + " kr",
+                                Nynorsk to "Samla inntekt brukt i fastsetjinga av barnetillegget er\n".expr() + inntektBruktIAvkortning.str() + " kr",
+                                English to "Total income applied in calculation of reduction in child supplement is\n".expr() + inntektBruktIAvkortning.str() + " NOK"
+                            )
+                        }
+
+                        //TODO why is this empty?
+                        cell {
+                            text(
+                                Bokmal to "", //TODO Empty
+                                Nynorsk to "",
+                                English to ""
+                            )
+                        }
                     }
                 }
-            }
-            showIf(argument().map {
-                !it.fribelopEllerInntektErPeriodisert_barnetilleggSBGjeldende
-                    && (it.belop_barnetilleggSBGjeldende != 0 || (it.belop_barnetilleggSBGjeldende == 0 && it.belopAr_barnetilleggSBGjeldende != 0))
-                    && it.avkortningsbelopAr_barnetilleggSBGjeldende > 0
-            }) {
-                row {
-                    cell {
-                        text(
-                            Bokmal to "- 50 prosent av inntekt som overstiger fribeløpet",
-                            Nynorsk to "- 50 prosent av inntekt som overstig fribeløpet",
-                            English to "- 50 percent of income exceeding the allowance amount"
-                        )
-                    }
-                    cell {
-                        val avkortningsbelopAr = argument().map { Kroner(it.avkortningsbelopAr_barnetilleggSBGjeldende) }.format()
-                        textExpr(
-                            Bokmal to avkortningsbelopAr + " kr",
-                            Nynorsk to avkortningsbelopAr + " kr",
-                            English to avkortningsbelopAr + " NOK"
-                        )
+                showIf(saerkullTillegg.map { (it.belop > 0 || (it.belop < 0 && it.justeringsbelopAr != 0)) }) {
+                    row {
+                        cell {
+                            val fribelop = saerkullTillegg.map { Kroner(it.fribelop) }
+                            textExpr(
+                                Bokmal to "Fribeløp brukt i fastsettelsen av barnetillegget er\n".expr() + fribelop.str() + " kr",
+                                Nynorsk to "Fribeløp brukt i fastsetjinga av barnetillegget er\n".expr() + fribelop.str() + " kr",
+                                English to "Exemption amount applied in calculation of reduction in child supplement is\n".expr() + fribelop.str() + " NOK"
+                            )
+                        }
+                        cell {
+                            text(
+                                Bokmal to "", //TODO Empty
+                                Nynorsk to "",
+                                English to ""
+                            )
+                        }
                     }
                 }
-            }
-            showIf(argument().map {
-                it.fribelopEllerInntektErPeriodisert_barnetilleggSBGjeldende
-                    && (it.belop_barnetilleggSBGjeldende != 0 || (it.belop_barnetilleggSBGjeldende == 0 && it.belopAr_barnetilleggSBGjeldende != 0))
-                    && it.avkortningsbelopAr_barnetilleggSBGjeldende > 0
-            }) {
-                row {
-                    cell {
-                        text(
-                            Bokmal to "- 50 prosent av inntekt som overstiger fribeløpet (oppgitt som et årlig beløp)",
-                            Nynorsk to "- 50 prosent av inntekt som overstig fribeløpet (oppgitt som eit årleg beløp)",
-                            English to "- 50 percent of income exceeding the allowance amount (calculated to an annual amount)"
-                        )
-                    }
-                    cell {
-                        val avkortningsbelopAr = argument().map { Kroner(it.avkortningsbelopAr_barnetilleggSBGjeldende) }
-                            .format()
-                        textExpr(
-                            Bokmal to avkortningsbelopAr + " kr",
-                            Nynorsk to avkortningsbelopAr + " kr",
-                            English to avkortningsbelopAr + " NOK"
-                        )
+                showIf(saerkullTillegg.map { (it.belop != 0 || (it.belop == 0 && it.justeringsbelopAr != 0)) }) {
+                    row {
+                        cell {
+                            val inntektOverFribelop = saerkullTillegg.map { Kroner(it.inntektOverFribelop) }
+                                    .format()
+                            textExpr(
+                                Bokmal to "Inntekt over fribeløpet er\n".expr() + inntektOverFribelop.str() + " kr",
+                                Nynorsk to "Inntekt over fribeløpet er\n".expr() + inntektOverFribelop.str() + " kr",
+                                English to "Income exceeding the exemption amount is\n".expr() + inntektOverFribelop.str() + " NOK"
+                            )
+                        }
+                        cell {
+                            text(
+                                Bokmal to "", //TODO Empty
+                                Nynorsk to "",
+                                English to ""
+                            )
+                        }
                     }
                 }
-            }
-            showIf(argument().map { it.justeringsbelopAr_barnetilleggSBGjeldende != 0 }) {
-                row {
-                    cell {
-                        text(
-                            Bokmal to "+ Beløp som er brukt for å justere reduksjonen av barnetillegget",
-                            Nynorsk to "+ Beløp som er brukt for å justera reduksjonen av barnetillegget",
-                            English to "+ Amount which is used to adjust the reduction of child supplement"
-                        )
-                    }
-                    cell {
-                        val justeringsbelopAr = argument().map { Kroner(it.justeringsbelopAr_barnetilleggSBGjeldende) }
-                            .format()
-                        textExpr(
-                            Bokmal to justeringsbelopAr + " kr",
-                            Nynorsk to justeringsbelopAr + " kr",
-                            English to justeringsbelopAr + " NOK"
-                        )
+                showIf(saerkullTillegg.map {
+                    !it.fribelopEllerInntektErPeriodisert
+                            && (it.belop != 0 || (it.belop == 0 && it.belopAr != 0))
+                            && it.avkortningsbelopAr > 0
+                }) {
+                    row {
+                        cell {
+                            text(
+                                Bokmal to "- 50 prosent av inntekt som overstiger fribeløpet",
+                                Nynorsk to "- 50 prosent av inntekt som overstig fribeløpet",
+                                English to "- 50 percent of income exceeding the allowance amount"
+                            )
+                        }
+                        cell {
+                            includePhrase(kroner, saerkullTillegg.map { it.avkortningsbelopAr })
+                        }
                     }
                 }
-            }
-            showIf(argument().map { it.belop_barnetilleggSBGjeldende != 0 || (it.belop_barnetilleggSBGjeldende == 0 && it.belopAr_barnetilleggSBGjeldende != 0) }) {
-                row {
-                    cell {
-                        text(
-                            Bokmal to "= Årlig barnetillegg etter reduksjon ut fra inntekt",
-                            Nynorsk to "Årleg barnetillegg etter reduksjon ut frå inntekt",
-                            English to "Yearly child supplement after income reduction"
-                        )
-                    }
-                    cell {
-                        val belopAr =
-                            argument().map { Kroner(it.belopAr_barnetilleggSBGjeldende) }.format()
-                        textExpr(
-                            Bokmal to belopAr + " kr",
-                            Nynorsk to belopAr + " kr",
-                            English to belopAr + " NOK"
-                        )
+                showIf(saerkullTillegg.map {
+                    it.fribelopEllerInntektErPeriodisert
+                            && (it.belop != 0 || (it.belop == 0 && it.belopAr != 0))
+                            && it.avkortningsbelopAr > 0
+                }) {
+                    row {
+                        cell {
+                            text(
+                                Bokmal to "- 50 prosent av inntekt som overstiger fribeløpet (oppgitt som et årlig beløp)",
+                                Nynorsk to "- 50 prosent av inntekt som overstig fribeløpet (oppgitt som eit årleg beløp)",
+                                English to "- 50 percent of income exceeding the allowance amount (calculated to an annual amount)"
+                            )
+                        }
+                        cell {
+                            includePhrase( kroner, saerkullTillegg.map { it.avkortningsbelopAr })
+                        }
                     }
                 }
-            }
-            showIf(argument().map { (it.belop_barnetilleggSBGjeldende != 0 || (it.belop_barnetilleggSBGjeldende == 0 && it.justeringsbelopAr_barnetilleggSBGjeldende != 0)) }) {
-                row {
-                    cell {
-                        text(
-                            Bokmal to "Utbetaling av barnetillegg per måned",
-                            Nynorsk to "Utbetaling av barnetillegg per månad",
-                            English to "Child supplement payment for the remaining months of the year"
-                        )
-                    }
-                    cell {
-                        val belop = argument().map { Kroner(it.belop_barnetilleggSBGjeldende) }.format()
-                        textExpr(
-                            Bokmal to belop + " kr",
-                            Nynorsk to belop + " kr",
-                            English to belop + " NOK"
-                        )
+                showIf(saerkullTillegg.map { it.justeringsbelopAr != 0 }) {
+                    row {
+                        cell {
+                            text(
+                                Bokmal to "+ Beløp som er brukt for å justere reduksjonen av barnetillegget",
+                                Nynorsk to "+ Beløp som er brukt for å justera reduksjonen av barnetillegget",
+                                English to "+ Amount which is used to adjust the reduction of child supplement"
+                            )
+                        }
+                        cell {
+                            includePhrase(kroner, saerkullTillegg.map { it.justeringsbelopAr })
+                        }
                     }
                 }
-            }
-            showIf(argument().map { it.belop_barnetilleggSBGjeldende == 0 && it.belopAr_barnetilleggSBGjeldende == 0 }) {
-                row {
-                    cell {
-                        text(
-                            Bokmal to "Grensen for å få utbetalt barnetillegg",
-                            Nynorsk to "Grensa for å få utbetalt barnetillegg",
-                            English to "The income limit for receiving child supplement"
-                        )
+                showIf(saerkullTillegg.map { it.belop != 0 || (it.belop == 0 && it.belopAr != 0) }) {
+                    row {
+                        cell {
+                            text(
+                                Bokmal to "= Årlig barnetillegg etter reduksjon ut fra inntekt",
+                                Nynorsk to "Årleg barnetillegg etter reduksjon ut frå inntekt",
+                                English to "Yearly child supplement after income reduction"
+                            )
+                        }
+                        cell {
+                            includePhrase(kroner, saerkullTillegg.map { it.belopAr })
+                        }
                     }
-                    cell {
-                        val inntektstak = argument().map { Kroner(it.inntektstak_barnetilleggSBGjeldende) }.format()
-                        textExpr(
-                            Bokmal to inntektstak + " kr",
-                            Nynorsk to inntektstak + " kr",
-                            English to inntektstak + " NOK"
-                        )
+                }
+                showIf(saerkullTillegg.map { (it.belop != 0 || (it.belop == 0 && it.justeringsbelopAr != 0)) }) {
+                    row {
+                        cell {
+                            text(
+                                Bokmal to "Utbetaling av barnetillegg per måned",
+                                Nynorsk to "Utbetaling av barnetillegg per månad",
+                                English to "Child supplement payment for the remaining months of the year"
+                            )
+                        }
+                        cell {
+                            includePhrase(kroner, saerkullTillegg.map { it.belop })
+                        }
+                    }
+                }
+                showIf(saerkullTillegg.map { it.belop == 0 && it.belopAr == 0 }) {
+                    row {
+                        cell {
+                            text(
+                                Bokmal to "Grensen for å få utbetalt barnetillegg",
+                                Nynorsk to "Grensa for å få utbetalt barnetillegg",
+                                English to "The income limit for receiving child supplement"
+                            )
+                        }
+                        cell {
+                            includePhrase(kroner, saerkullTillegg.map { it.inntektstak })
+                        }
                     }
                 }
             }
         }
-    }
-// TABLE 2 - end
-    showIf(argument().map { it.belop_barnetilleggSBGjeldende > 0 }) {
-        includePhrase(vedleggBeregnUTredusBTSBPgaInntekt_001, argument().map {
-            VedleggBeregnUTredusBTSBPgaInntekt_001Dto(it.belop_barnetilleggSBGjeldende)
-        })
-    }
-    showIf(argument().map { it.belop_barnetilleggSBGjeldende == 0 && it.justeringsbelopAr_barnetilleggSBGjeldende == 0 }) {
-        includePhrase(vedleggBeregnUTIkkeUtbetaltBTSBPgaInntekt_001)
-    }
-    showIf(argument().map { it.belop_barnetilleggSBGjeldende == 0 && it.justeringsbelopAr_barnetilleggSBGjeldende != 0 }) {
-        includePhrase(vedleggBeregnUTJusterBelopIkkeUtbetalt_001)
+    // TABLE 2 - end
+        showIf(saerkullTillegg.map { it.belop > 0 }) {
+            includePhrase(vedleggBeregnUTredusBTSBPgaInntekt_001, saerkullTillegg.map {
+                VedleggBeregnUTredusBTSBPgaInntekt_001Dto(it.belop)
+            })
+        }
+        showIf(saerkullTillegg.map { it.belop == 0 && it.justeringsbelopAr == 0 }) {
+            includePhrase(vedleggBeregnUTIkkeUtbetaltBTSBPgaInntekt_001)
+        }
+        showIf(saerkullTillegg.map { it.belop == 0 && it.justeringsbelopAr != 0 }) {
+            includePhrase(vedleggBeregnUTJusterBelopIkkeUtbetalt_001)
+        }
     }
 }
 

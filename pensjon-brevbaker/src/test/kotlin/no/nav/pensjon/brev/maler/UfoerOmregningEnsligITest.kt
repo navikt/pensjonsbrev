@@ -9,10 +9,7 @@ import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.Sivilstand
 import no.nav.pensjon.brev.latex.LaTeXCompilerService
 import no.nav.pensjon.brev.latex.PdfCompilationInput
-import no.nav.pensjon.brev.maler.vedlegg.OpplysningerBruktIBeregningUTDto
-import no.nav.pensjon.brev.maler.vedlegg.OrienteringOmRettigheterParamDto
-import no.nav.pensjon.brev.maler.vedlegg.opplysningerBruktIBeregningUT
-import no.nav.pensjon.brev.maler.vedlegg.orienteringOmRettigheterOgPlikter
+import no.nav.pensjon.brev.maler.vedlegg.*
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.Letter
 import no.nav.pensjon.brev.writeTestPDF
@@ -28,10 +25,14 @@ class UfoerOmregningEnsligITest {
             UfoerOmregningEnslig.template,
             UfoerOmregningEnsligDto().copy(
                 opplysningerBruktIBeregningUT = OpplysningerBruktIBeregningUTDto().copy(
-                    erRedusertMotinntekt_barnetilleggSBGjeldende = true,
-                    sats_minsteytelseGjeldende = 10.00,
-                    erUnder20Ar_ungUforGjeldende = true,
-                    erEndret_barnetilleggSBGjeldende = true,
+                    barnetilleggGjeldende =  BarnetilleggGjeldende().copy(
+                        saerkullsbarn = BarnetilleggGjeldende.Saerkullsbarn().copy(
+                            erRedusertMotinntekt = true,
+                            erEndret = true
+                        )
+                    ),
+                    minsteytelseGjeldende_sats = 10.00,
+                    ungUforGjeldende_erUnder20Ar = true,
                 ),
                 orienteringOmRettigheterOgPlikter = OrienteringOmRettigheterParamDto().copy(
                     eps_bor_sammen_med_bruker_gjeldende = true,

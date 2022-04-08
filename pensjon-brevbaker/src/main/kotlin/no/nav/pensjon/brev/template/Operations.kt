@@ -90,6 +90,10 @@ sealed class BinaryOperation<in In1, in In2, out Out> : Operation() {
         override fun apply(first: EnumType, second: List<EnumType>): Boolean = second.contains(first)
     }
 
+    class EnumNotInList<EnumType : Enum<*>> : BinaryOperation<EnumType, List<EnumType>, Boolean>() {
+        override fun apply(first: EnumType, second: List<EnumType>): Boolean = !second.contains(first)
+    }
+
     class IfElse<Out> : BinaryOperation<Boolean, Pair<Out, Out>, Out>() {
         override fun apply(first: Boolean, second: Pair<Out, Out>): Out = if (first) second.first else second.second
     }
