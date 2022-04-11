@@ -4,8 +4,8 @@ import no.nav.pensjon.brev.api.model.Institusjon
 import no.nav.pensjon.brev.api.model.LetterMetadata
 import no.nav.pensjon.brev.api.model.Sivilstand
 import no.nav.pensjon.brev.maler.fraser.*
-import no.nav.pensjon.brev.maler.vedlegg.OpplysningerBruktIBeregningUTDto
 import no.nav.pensjon.brev.maler.vedlegg.OrienteringOmRettigheterParamDto
+import no.nav.pensjon.brev.maler.vedlegg.opplysningerBruktIBeregning.OpplysningerBruktIBeregningUTDto
 import no.nav.pensjon.brev.maler.vedlegg.opplysningerBruktIBeregningUT
 import no.nav.pensjon.brev.maler.vedlegg.orienteringOmRettigheterOgPlikter
 import no.nav.pensjon.brev.template.Language.*

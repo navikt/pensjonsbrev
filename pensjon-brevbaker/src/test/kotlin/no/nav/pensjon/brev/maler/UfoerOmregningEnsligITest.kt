@@ -9,7 +9,9 @@ import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.Sivilstand
 import no.nav.pensjon.brev.latex.LaTeXCompilerService
 import no.nav.pensjon.brev.latex.PdfCompilationInput
-import no.nav.pensjon.brev.maler.vedlegg.*
+import no.nav.pensjon.brev.maler.vedlegg.OrienteringOmRettigheterParamDto
+import no.nav.pensjon.brev.maler.vedlegg.opplysningerBruktIBeregning.BarnetilleggGjeldende
+import no.nav.pensjon.brev.maler.vedlegg.opplysningerBruktIBeregning.OpplysningerBruktIBeregningUTDto
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.Letter
 import no.nav.pensjon.brev.writeTestPDF
@@ -25,7 +27,7 @@ class UfoerOmregningEnsligITest {
             UfoerOmregningEnslig.template,
             UfoerOmregningEnsligDto().copy(
                 opplysningerBruktIBeregningUT = OpplysningerBruktIBeregningUTDto().copy(
-                    barnetilleggGjeldende =  BarnetilleggGjeldende().copy(
+                    barnetilleggGjeldende = BarnetilleggGjeldende().copy(
                         saerkullsbarn = BarnetilleggGjeldende.Saerkullsbarn().copy(
                             erRedusertMotinntekt = true,
                             erEndret = true
