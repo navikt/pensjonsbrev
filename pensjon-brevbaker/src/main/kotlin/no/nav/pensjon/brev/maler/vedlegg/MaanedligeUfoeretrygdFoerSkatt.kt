@@ -1,10 +1,14 @@
 package no.nav.pensjon.brev.no.nav.pensjon.brev.maler.vedlegg
 
-import no.nav.pensjon.brev.maler.fraser.*
+import no.nav.pensjon.brev.maler.fraser.tabellBeregnetUTHele
+import no.nav.pensjon.brev.maler.fraser.vedleggBelopUT_001
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.createAttachment
-import no.nav.pensjon.brev.template.dsl.expression.*
+import no.nav.pensjon.brev.template.dsl.expression.expr
+import no.nav.pensjon.brev.template.dsl.expression.format
+import no.nav.pensjon.brev.template.dsl.expression.map
+import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
@@ -22,22 +26,38 @@ data class UfoeretrygdPerMaaned(
     val virkningTilOgMed: LocalDate?,
     val avkortning: Avkortning?,
 ) {
-  data class Avkortning(
-      val barnetilleggFoerAvkort: Int,
-      val garantitilleggNordisk27FoerAvkort: Int,
-      val ordinaerUTBeloepFoerAvkort: Int,
-      val totalUTBeloepFoerAvkort: Int,
-  )
+    data class Avkortning(
+        val barnetilleggFoerAvkort: Int,
+        val garantitilleggNordisk27FoerAvkort: Int,
+        val ordinaerUTBeloepFoerAvkort: Int,
+        val totalUTBeloepFoerAvkort: Int,
+    )
 }
+
 data class MaanedligeUfoeretrygdFoerSkattDto(
     val gjeldendeBeregnetUTPerMaaned: UfoeretrygdPerMaaned,
-
     val virkningDatoFraOgMed_krav: LocalDate,
-
     val antallBeregningsperioderPaaVedtak: Int,
     val ufoeretrygdPerioder: List<UfoeretrygdPerMaaned>,
-
+) {
+    constructor() : this(
+        gjeldendeBeregnetUTPerMaaned = UfoeretrygdPerMaaned(
+            annetBelop = 0,
+            barnetillegg = 0,
+            dekningFasteUtgifter = 0,
+            garantitilleggNordisk27 = 0,
+            grunnbeloep = 0,
+            ordinaerUTBeloep = 0,
+            totalUTBeloep = 0,
+            virkningFraOgMed = LocalDate.of(2020, 1, 1),
+            virkningTilOgMed = LocalDate.of(2020, 1, 2),
+            avkortning = null,
+        ),
+        virkningDatoFraOgMed_krav = LocalDate.of(2020,1,1),
+        antallBeregningsperioderPaaVedtak = 4,
+        ufoeretrygdPerioder = emptyList(),
     )
+}
 
 val maanedligeUfoeretrygdFoerSkatt = createAttachment<LangBokmalNynorskEnglish, MaanedligeUfoeretrygdFoerSkattDto>(
     //tekst099 tittel Obligatorisk
@@ -76,7 +96,7 @@ val maanedligeUfoeretrygdFoerSkatt = createAttachment<LangBokmalNynorskEnglish, 
             )
         }
 
-        forEach(argument().map { it.ufoeretrygdPerioder }){
+        forEach(argument().map { it.ufoeretrygdPerioder }) {
             includePhrase(tabellBeregnetUTHele, it)
         }
     }

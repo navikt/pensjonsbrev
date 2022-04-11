@@ -12,17 +12,39 @@ import no.nav.pensjon.brev.latex.PdfCompilationInput
 import no.nav.pensjon.brev.maler.vedlegg.OrienteringOmRettigheterParamDto
 import no.nav.pensjon.brev.maler.vedlegg.opplysningerBruktIBeregning.BarnetilleggGjeldende
 import no.nav.pensjon.brev.maler.vedlegg.opplysningerBruktIBeregning.OpplysningerBruktIBeregningUTDto
+import no.nav.pensjon.brev.no.nav.pensjon.brev.maler.vedlegg.MaanedligeUfoeretrygdFoerSkattDto
+import no.nav.pensjon.brev.no.nav.pensjon.brev.maler.vedlegg.UfoeretrygdPerMaaned
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.Letter
 import no.nav.pensjon.brev.writeTestPDF
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
+import java.time.LocalDate
 
 @Tag(TestTags.PDF_BYGGER)
 class UfoerOmregningEnsligITest {
 
     @Test
     fun test() {
+        val avkortetUfoeretrygdPeriode =
+            UfoeretrygdPerMaaned(
+                annetBelop = 1500,
+                barnetillegg = 2500,
+                dekningFasteUtgifter = 1500,
+                garantitilleggNordisk27 = 9000,
+                grunnbeloep = 91540,
+                ordinaerUTBeloep = 15000,
+                totalUTBeloep = 5500,
+                virkningFraOgMed = LocalDate.of(2017, 2, 3),
+                virkningTilOgMed = LocalDate.of(2017, 5, 5),
+                avkortning = UfoeretrygdPerMaaned.Avkortning(
+                    barnetilleggFoerAvkort = 2800,
+                    garantitilleggNordisk27FoerAvkort = 9999,
+                    ordinaerUTBeloepFoerAvkort = 12000,
+                    totalUTBeloepFoerAvkort = 6600,
+                )
+            )
+
         Letter(
             UfoerOmregningEnslig.template,
             UfoerOmregningEnsligDto().copy(
@@ -35,6 +57,12 @@ class UfoerOmregningEnsligITest {
                     ),
                     minsteytelseGjeldende_sats = 10.00,
                     ungUforGjeldende_erUnder20Ar = true,
+                ),
+                maanedligeUfoeretrygdFoerSkattDto = MaanedligeUfoeretrygdFoerSkattDto().copy(
+                    ufoeretrygdPerioder = listOf(
+                        avkortetUfoeretrygdPeriode,
+                        avkortetUfoeretrygdPeriode.copy(avkortning = null)
+                    )
                 ),
                 orienteringOmRettigheterOgPlikter = OrienteringOmRettigheterParamDto().copy(
                     eps_bor_sammen_med_bruker_gjeldende = true,

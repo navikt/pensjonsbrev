@@ -8,6 +8,8 @@ import no.nav.pensjon.brev.maler.vedlegg.OrienteringOmRettigheterParamDto
 import no.nav.pensjon.brev.maler.vedlegg.opplysningerBruktIBeregning.OpplysningerBruktIBeregningUTDto
 import no.nav.pensjon.brev.maler.vedlegg.opplysningerBruktIBeregningUT
 import no.nav.pensjon.brev.maler.vedlegg.orienteringOmRettigheterOgPlikter
+import no.nav.pensjon.brev.no.nav.pensjon.brev.maler.vedlegg.MaanedligeUfoeretrygdFoerSkattDto
+import no.nav.pensjon.brev.no.nav.pensjon.brev.maler.vedlegg.maanedligeUfoeretrygdFoerSkatt
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.StaticTemplate
 import no.nav.pensjon.brev.template.base.PensjonLatex
@@ -479,6 +481,7 @@ object UfoerOmregningEnslig : StaticTemplate {
 
         includeAttachment(orienteringOmRettigheterOgPlikter, argument().map { it.orienteringOmRettigheterOgPlikter })
         includeAttachment(opplysningerBruktIBeregningUT, argument().map { it.opplysningerBruktIBeregningUT })
+        includeAttachment(maanedligeUfoeretrygdFoerSkatt, argument().map{ it.maanedligeUfoeretrygdFoerSkattDto})
     }
 }
 
@@ -486,6 +489,7 @@ object UfoerOmregningEnslig : StaticTemplate {
 data class UfoerOmregningEnsligDto(
     val opplysningerBruktIBeregningUT: OpplysningerBruktIBeregningUTDto,
     val orienteringOmRettigheterOgPlikter: OrienteringOmRettigheterParamDto,
+    val maanedligeUfoeretrygdFoerSkattDto: MaanedligeUfoeretrygdFoerSkattDto,
     val avdod: Avdod,
     val minsteytelseVedvirk: MinsteytelseVedvirk?,
     val ufoeretrygdVedVirk: UfoeretrygdVedVirk,
@@ -501,6 +505,7 @@ data class UfoerOmregningEnsligDto(
     constructor() : this(
         opplysningerBruktIBeregningUT = OpplysningerBruktIBeregningUTDto(),
         orienteringOmRettigheterOgPlikter = OrienteringOmRettigheterParamDto(),
+        maanedligeUfoeretrygdFoerSkattDto = MaanedligeUfoeretrygdFoerSkattDto(),
         erSannsynligEndret_inntektForUfoereVedVirk = false,
         minsteytelseVedvirk = MinsteytelseVedvirk(sats = 0.0),
         avdod = Avdod(
