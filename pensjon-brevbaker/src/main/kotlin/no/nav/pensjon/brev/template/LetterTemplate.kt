@@ -117,7 +117,13 @@ sealed class Element<out Lang : LanguageSupport> {
             }
         }
 
-        data class Header<Lang : LanguageSupport>(val colSpec: List<ColumnSpec<Lang>>)
+        data class Header<Lang : LanguageSupport>(val colSpec: List<ColumnSpec<Lang>>){
+            init {
+                if (colSpec.isEmpty()) {
+                    throw InvalidTableDeclarationException("Table column specification needs at least one column")
+                }
+            }
+        }
 
         data class Cell<Lang : LanguageSupport>(
             val elements: List<Element<Lang>>
@@ -127,13 +133,7 @@ sealed class Element<out Lang : LanguageSupport> {
             val headerContent: Cell<Lang>,
             val alignment: ColumnAlignment,
             val columnSpan: Int = 1
-        ){
-            init {
-                if (headerContent.elements.isEmpty()) {
-                    throw InvalidTableDeclarationException("Column specification needs at least one column")
-                }
-            }
-        }
+        )
 
         enum class ColumnAlignment {
             LEFT, RIGHT

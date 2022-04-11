@@ -10,6 +10,14 @@ fun Expression<Double>.format() =
         BinaryOperation.LocalizedDoubleFormat,
     )
 
+@JvmName("formatInt")
+fun Expression<Int>.format() =
+    Expression.BinaryInvoke(
+        this,
+        Expression.FromScope(ExpressionScope<Any, *>::language),
+        BinaryOperation.LocalizedIntFormat,
+    )
+
 @JvmName("formatDoubleValue")
 fun Expression<DoubleValue>.format() =
     select(DoubleValue::value).format()
@@ -22,3 +30,6 @@ fun Expression<Kroner>.format() =
         BinaryOperation.LocalizedIntFormat
     )
 
+@JvmName("formatIntValue")
+fun Expression<IntValue>.format() =
+    select(IntValue::value).format()

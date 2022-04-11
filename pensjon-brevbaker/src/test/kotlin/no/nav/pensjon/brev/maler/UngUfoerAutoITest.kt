@@ -6,6 +6,7 @@ import no.nav.pensjon.brev.api.model.maler.UngUfoerAutoDto
 import no.nav.pensjon.brev.latex.*
 import no.nav.pensjon.brev.maler.fraser.omregning.ufoeretrygd.Ufoeretrygd
 import no.nav.pensjon.brev.template.*
+import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.dsl.newText
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.*
