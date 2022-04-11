@@ -4,6 +4,7 @@ package no.nav.pensjon.brev.maler.vedlegg
 import no.nav.pensjon.brev.api.model.BeregningsMetode
 import no.nav.pensjon.brev.maler.fraser.*
 import no.nav.pensjon.brev.maler.fraser.common.Felles.kroner
+import no.nav.pensjon.brev.maler.fraser.common.Felles.maaneder
 import no.nav.pensjon.brev.maler.fraser.common.Kroner
 import no.nav.pensjon.brev.maler.vedlegg.opplysningerBruktIBeregning.OpplysningerBruktIBeregningUTDto
 import no.nav.pensjon.brev.template.Element
@@ -32,6 +33,9 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
     ),
     includeSakspart = false,
 ) {
+    val harMinsteytelseSats = argument().map{it.minsteytelseGjeldende_sats > 0}
+    val ufoeretrygdGjeldendeErKonvertert = argument().map{it.uforetrygdGjeldende.erKonvertert}
+
     paragraph {
         val virkDatoFom = argument().map { it.beregnetUTPerManedGjeldende.virkDatoFom }.format()
         val grunnbelop = argument().map { Kroner(it.beregnetUTPerManedGjeldende.grunnbelop) }
@@ -90,7 +94,7 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
                     )
                 }
                 cell {
-                    includePhrase( kroner, argument().map { it.uforetrygdGjeldende.beregningsgrunnlagBelopAr })
+                    includePhrase(kroner, argument().map { it.uforetrygdGjeldende.beregningsgrunnlagBelopAr })
                 }
             }
         }
@@ -186,7 +190,7 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
                     )
                 }
                 cell {
-                    includePhrase( kroner, argument().map { it.inntektsAvkortingGjeldende.inntektsgrenseAr })
+                    includePhrase(kroner, argument().map { it.inntektsAvkortingGjeldende.inntektsgrenseAr })
                 }
             }
         }
@@ -201,7 +205,7 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
                     )
                 }
                 cell {
-                    includePhrase(kroner,argument().map { it.inntektsAvkortingGjeldende.forventetInntektAr })
+                    includePhrase(kroner, argument().map { it.inntektsAvkortingGjeldende.forventetInntektAr })
                 }
             }
         }
@@ -462,14 +466,8 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
                     )
                 }
                 cell {
-                    val faktiskTTNorge =
-                        argument().map { it.trygdetidsdetaljerGjeldende.faktiskTTNorge }
-                            .str()
-                    textExpr(
-                        Bokmal to faktiskTTNorge + " måneder",
-                        Nynorsk to faktiskTTNorge + " måneder",
-                        English to faktiskTTNorge + " months"
-                    )
+                    includePhrase(maaneder, argument().map { it.trygdetidsdetaljerGjeldende.faktiskTTNorge })
+
                 }
             }
         }
@@ -486,13 +484,8 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
                     )
                 }
                 cell {
-                    val faktiskTTEOS =
-                        argument().map { it.trygdetidsdetaljerGjeldende.faktiskTTEOS }.str()
-                    textExpr(
-                        Bokmal to faktiskTTEOS + " måneder",
-                        Nynorsk to faktiskTTEOS + " måneder",
-                        English to faktiskTTEOS + " months"
-                    )
+                    includePhrase(maaneder, argument().map { it.trygdetidsdetaljerGjeldende.faktiskTTEOS })
+
                 }
             }
         }
@@ -509,13 +502,8 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
                     )
                 }
                 cell {
-                    val nevnerTTEOS =
-                        argument().map { it.trygdetidsdetaljerGjeldende.nevnerTTEOS }.str()
-                    textExpr(
-                        Bokmal to nevnerTTEOS + " måneder",
-                        Nynorsk to nevnerTTEOS + " måneder",
-                        English to nevnerTTEOS + " months"
-                    )
+                    includePhrase(maaneder, argument().map { it.trygdetidsdetaljerGjeldende.nevnerTTEOS })
+
                 }
             }
         }
@@ -557,13 +545,7 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
                     )
                 }
                 cell {
-                    val faktiskTTNordiskKonv =
-                        argument().map { it.trygdetidsdetaljerGjeldende.faktiskTTNordiskKonv }.str()
-                    textExpr(
-                        Bokmal to faktiskTTNordiskKonv + " måneder",
-                        Nynorsk to faktiskTTNordiskKonv + " måneder",
-                        English to faktiskTTNordiskKonv + " months"
-                    )
+                    includePhrase(maaneder, argument().map { it.trygdetidsdetaljerGjeldende.faktiskTTNordiskKonv })
                 }
             }
         }
@@ -582,16 +564,11 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
                     )
                 }
                 cell {
-                    val framtidigTTNorsk = argument().map { it.trygdetidsdetaljerGjeldende.framtidigTTNorsk }.str()
-                    textExpr(
-                        Bokmal to framtidigTTNorsk + " måneder",
-                        Nynorsk to framtidigTTNorsk + " måneder",
-                        English to framtidigTTNorsk + " months"
-                    )
+                    includePhrase(maaneder, argument().map { it.trygdetidsdetaljerGjeldende.framtidigTTNorsk })
                 }
             }
         }
-        showIf(argument().map {it.trygdetidsdetaljerGjeldende.beregningsMetode == BeregningsMetode.NORDISK}){
+        showIf(argument().map { it.trygdetidsdetaljerGjeldende.beregningsMetode == BeregningsMetode.NORDISK }) {
             row {
                 cell {
                     text(
@@ -626,13 +603,7 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
                     )
                 }
                 cell {
-                    val samletTTNordiskKonv =
-                        argument().map { it.trygdetidsdetaljerGjeldende.samletTTNordiskKonv }.str()
-                    textExpr(
-                        Bokmal to samletTTNordiskKonv + " måneder",
-                        Nynorsk to samletTTNordiskKonv + " måneder",
-                        English to samletTTNordiskKonv + " months"
-                    )
+                    includePhrase(maaneder, argument().map { it.trygdetidsdetaljerGjeldende.samletTTNordiskKonv })
                 }
             }
         }
@@ -655,12 +626,8 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
                     )
                 }
                 cell {
-                    val faktiskTTBilateral = argument().map { it.trygdetidsdetaljerGjeldende.faktiskTTBilateral }.str()
-                    textExpr(
-                        Bokmal to faktiskTTBilateral + " måneder",
-                        Nynorsk to faktiskTTBilateral + " måneder",
-                        English to faktiskTTBilateral + " months"
-                    )
+                    includePhrase(maaneder, argument().map { it.trygdetidsdetaljerGjeldende.faktiskTTBilateral })
+
                 }
             }
             row {
@@ -672,12 +639,7 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
                     )
                 }
                 cell {
-                    val nevnerProRata = argument().map { it.trygdetidsdetaljerGjeldende.nevnerProRata }.str()
-                    textExpr(
-                        Bokmal to nevnerProRata + " måneder",
-                        Nynorsk to nevnerProRata + " måneder",
-                        English to nevnerProRata + " months"
-                    )
+                    includePhrase(maaneder, argument().map { it.trygdetidsdetaljerGjeldende.nevnerProRata })
                 }
             }
 
@@ -725,12 +687,10 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
                 }
             }
 
-            showIf(barnetillegg.map {it.grunnlag.erRedusertMotTak}){
+            showIf(barnetillegg.map { it.grunnlag.erRedusertMotTak }) {
                 row {
                     cell {
-                        val prosentsatsGradertOIFU =
-                            barnetillegg.map { it.grunnlag.prosentsatsGradertOIFU }
-                                .str()
+                        val prosentsatsGradertOIFU = barnetillegg.map { it.grunnlag.prosentsatsGradertOIFU }.str()
                         textExpr(
                             Bokmal to prosentsatsGradertOIFU + " % av inntekt før uførhet (justert for endringer i grunnbeløpet)",
                             Nynorsk to prosentsatsGradertOIFU + " % av inntekt før uførleik (justert for endringar i grunnbeløpet)",
@@ -744,7 +704,7 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
             }
 
             ifNotNull(barnetillegg.map { it.saerkullsbarn }) { saerkullsbarn ->
-                showIf(saerkullsbarn.map {it.belop > 0}){
+                showIf(saerkullsbarn.map { it.belop > 0 }) {
                     row {
                         cell {
                             text(
@@ -788,33 +748,33 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
 
     //End of table 1
     // Start of phrases
-    showIf(argument().map {it.minsteytelseGjeldende_sats > 0}) {
+    showIf(harMinsteytelseSats) {
         includePhrase(rettTilMYOverskrift_001)
     }
 // If no node for ungUforGjeldende_erUnder20Ar
-    showIf(argument().map {(!it.uforetrygdGjeldende.erKonvertert && it.minsteytelseGjeldende_sats > 0)}) {
+    showIf(not(ufoeretrygdGjeldendeErKonvertert) and harMinsteytelseSats) {
         includePhrase(vedleggBeregnUTInfoMY_001)
     }
 // If no node for ungUforGjeldende_erUnder20Ar
-    showIf(argument().map {(it.minsteytelseGjeldende_sats > 0 && it.uforetrygdGjeldende.erKonvertert)}) {
+    showIf(ufoeretrygdGjeldendeErKonvertert and harMinsteytelseSats) {
         includePhrase(vedleggBeregnUTInfoMY2_001)
     }
 
-    showIf(argument().map {(!it.ungUforGjeldende_erUnder20Ar && it.minsteytelseGjeldende_sats > 0)}) {
+    showIf(argument().map { (!it.ungUforGjeldende_erUnder20Ar && it.minsteytelseGjeldende_sats > 0) }) {
         includePhrase(vedleggBeregnUTInfoMYUngUfor_001)
     }
 
-    showIf(argument().map {it.ungUforGjeldende_erUnder20Ar && it.minsteytelseGjeldende_sats > 0}) {
+    showIf(argument().map { it.ungUforGjeldende_erUnder20Ar && it.minsteytelseGjeldende_sats > 0 }) {
         includePhrase(vedleggBeregnUTInfoMYUngUforUnder20_001)
     }
 
-    showIf(argument().map {it.minsteytelseGjeldende_sats > 0}) {
+    showIf(argument().map { it.minsteytelseGjeldende_sats > 0 }) {
         includePhrase(vedleggBeregnUTDinMY_001, argument().map {
             VedleggBeregnUTDinMY_001Dto(it.minsteytelseGjeldende_sats)
         })
     }
 
-    showIf(argument().map {it.inntektForUforeGjeldende.erSannsynligEndret}) {
+    showIf(argument().map { it.inntektForUforeGjeldende.erSannsynligEndret }) {
         includePhrase(vedleggBeregnUTMinsteIFU_002)
     }
 
@@ -854,21 +814,22 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
 
 
     ifNotNull(
-        argument().map{it.barnetilleggGjeldende?.grunnlag},
-        argument().map{it.barnetilleggGjeldende?.saerkullsbarn}
-    ){ grunnlag, saerkullTillegg ->
+        argument().map { it.barnetilleggGjeldende?.grunnlag },
+        argument().map { it.barnetilleggGjeldende?.saerkullsbarn }
+    ) { grunnlag, saerkullTillegg ->
         val erRedusertMotInntekt = saerkullTillegg.map { it.erRedusertMotinntekt }
-        val erIkkeUtbetaltPgaTak = grunnlag.map{ it.erIkkeUtbetaltpgaTak}
-        val harYrkesskadeGrad = argument().map{it.yrkesskadeGjeldende?.let { skade -> skade.yrkesskadegrad > 0 } ?: false}
-        val harAnvendtTrygdetidUnder40 = argument().map{it.trygdetidsdetaljerGjeldende.anvendtTT < 40}
-        val fribelopEllerInntektErPeriodisert = saerkullTillegg.map{ it.fribelopEllerInntektErPeriodisert}
-        val justeringsBeloepAr = saerkullTillegg.map{ it.justeringsbelopAr}
-        showIf(saerkullTillegg.map { it.erRedusertMotinntekt }){
+        val erIkkeUtbetaltPgaTak = grunnlag.map { it.erIkkeUtbetaltpgaTak }
+        val harYrkesskadeGrad =
+            argument().map { it.yrkesskadeGjeldende?.let { skade -> skade.yrkesskadegrad > 0 } ?: false }
+        val harAnvendtTrygdetidUnder40 = argument().map { it.trygdetidsdetaljerGjeldende.anvendtTT < 40 }
+        val fribelopEllerInntektErPeriodisert = saerkullTillegg.map { it.fribelopEllerInntektErPeriodisert }
+        val justeringsBeloepAr = saerkullTillegg.map { it.justeringsbelopAr }
+        showIf(saerkullTillegg.map { it.erRedusertMotinntekt }) {
 
-            showIf(erIkkeUtbetaltPgaTak){
+            showIf(erIkkeUtbetaltPgaTak) {
                 includePhrase(slikBeregnBTOverskrift_001)
                 includePhrase(vedleggBeregnUTInfoBTSB_001)
-            }.orShow{
+            }.orShow {
                 includePhrase(vedleggBeregnUTInnlednBT_001)
             }
 
@@ -876,42 +837,41 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
                 includePhrase(vedleggBeregnUTredusTTBTSB_001)
             }
 
-            showIf(fribelopEllerInntektErPeriodisert and justeringsBeloepAr.map{ it > 0}) {
+            showIf(fribelopEllerInntektErPeriodisert and justeringsBeloepAr.map { it > 0 }) {
                 includePhrase(vedleggBeregnUTIkkePeriodisertFriBOgInntektBTSB_001, saerkullTillegg.map {
                     VedleggBeregnUTIkkePeriodisertFriBOgInntektBTSB_001Dto(it.avkortningsbelopAr)
                 })
             }
 
-            showIf(not(fribelopEllerInntektErPeriodisert) and justeringsBeloepAr.map{ it > 0}) {
+            showIf(not(fribelopEllerInntektErPeriodisert) and justeringsBeloepAr.map { it > 0 }) {
                 includePhrase(vedleggBeregnUTIkkePeriodisertFriBOgInntektBTSBJusterBelop_001, saerkullTillegg.map {
                     VedleggBeregnUTkkePeriodisertFriBOgInntektBTSBJusterBelop_001Dto(it.avkortningsbelopAr)
                 })
             }
 
-            showIf(fribelopEllerInntektErPeriodisert and justeringsBeloepAr.map{ it > 0}) {
+            showIf(fribelopEllerInntektErPeriodisert and justeringsBeloepAr.map { it > 0 }) {
                 includePhrase(vedleggBeregnUTPeridisertFriBOgInntektBTSB_001, saerkullTillegg.map {
                     VedleggBeregnUTPeriodisertFriBOgInntektBTSB_001Dto(it.avkortningsbelopAr)
                 })
             }
 
-            showIf(fribelopEllerInntektErPeriodisert and not(justeringsBeloepAr.map{ it > 0})) {
+            showIf(fribelopEllerInntektErPeriodisert and not(justeringsBeloepAr.map { it > 0 })) {
                 includePhrase(vedleggBeregnUTPeriodisertFriBOgInntektBTSBJusterBelop_001, saerkullTillegg.map {
                     VedleggBeregnUTPeriodisertFriBOgInntektBTSBJusterBelop_001Dto(it.avkortningsbelopAr)
                 })
             }
 
-            showIf(justeringsBeloepAr.map{ it > 0}) {
+            showIf(justeringsBeloepAr.map { it > 0 }) {
                 includePhrase(vedleggBeregnUTJusterBelopOver0BTSB_001, saerkullTillegg.map {
                     VedleggBeregnUTJusterBelopOver0BTSB_001Dto(it.justeringsbelopAr)
                 })
             }
-            showIf(justeringsBeloepAr.map{ it < 0}) {// < 0? Is there a minus operator from Pesys?
+            showIf(justeringsBeloepAr.map { it < 0 }) {// < 0? Is there a minus operator from Pesys?
                 includePhrase(vedleggBeregnUTJusterBelopUnder0BTSB_001, saerkullTillegg.map {
                     VedleggBeregnUTJusterBelopUnder0BTSB_001Dto(it.justeringsbelopAr)
                 })
             }
         }
-
 
 
 // TABLE 2 - start
@@ -951,7 +911,7 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
                             )
                         }
                         cell {
-                            includePhrase( kroner, saerkullTillegg.map { it.belopArForAvkort })
+                            includePhrase(kroner, saerkullTillegg.map { it.belopArForAvkort })
                         }
                     }
                 }
@@ -1000,7 +960,7 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
                     row {
                         cell {
                             val inntektOverFribelop = saerkullTillegg.map { Kroner(it.inntektOverFribelop) }
-                                    .format()
+                                .format()
                             textExpr(
                                 Bokmal to "Inntekt over fribeløpet er\n".expr() + inntektOverFribelop.str() + " kr",
                                 Nynorsk to "Inntekt over fribeløpet er\n".expr() + inntektOverFribelop.str() + " kr",
@@ -1048,7 +1008,7 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
                             )
                         }
                         cell {
-                            includePhrase( kroner, saerkullTillegg.map { it.avkortningsbelopAr })
+                            includePhrase(kroner, saerkullTillegg.map { it.avkortningsbelopAr })
                         }
                     }
                 }
@@ -1110,7 +1070,7 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
                 }
             }
         }
-    // TABLE 2 - end
+        // TABLE 2 - end
         showIf(saerkullTillegg.map { it.belop > 0 }) {
             includePhrase(vedleggBeregnUTredusBTSBPgaInntekt_001, saerkullTillegg.map {
                 VedleggBeregnUTredusBTSBPgaInntekt_001Dto(it.belop)

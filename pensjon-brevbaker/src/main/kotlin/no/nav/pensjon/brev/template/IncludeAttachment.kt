@@ -1,6 +1,8 @@
 package no.nav.pensjon.brev.template
 
-import no.nav.pensjon.brev.template.dsl.*
+import no.nav.pensjon.brev.api.model.Felles
+import no.nav.pensjon.brev.template.dsl.OutlineScope
+import no.nav.pensjon.brev.template.dsl.expression.expr
 import kotlin.reflect.KClass
 
 

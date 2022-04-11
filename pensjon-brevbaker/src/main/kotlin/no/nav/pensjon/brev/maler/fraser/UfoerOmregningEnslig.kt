@@ -136,23 +136,6 @@ val BeloepUT = OutlinePhrase<LangBokmalNynorskEnglish, BeloepUTDto> {
     }
 }
 
-val BelopUT_001 = OutlinePhrase<LangBokmalNynorskEnglish, Number> { totalUforeMaanedligBeloep ->
-
-
-}
-
-val BelopUTVedlegg_001 = OutlinePhrase<LangBokmalNynorskEnglish, Number> { totalUforeMaanedligBeloep ->
-
-
-}
-
-val BelopUTBT_001 = OutlinePhrase<LangBokmalNynorskEnglish, Number> { totalUforeMaanedligBeloep ->
-
-}
-
-val BelopUTBTVedlegg_001 = OutlinePhrase<LangBokmalNynorskEnglish, Number> { totalUforeMaanedligBeloep ->
-}
-
 val BelopUTIngenUtbetaling_001 = OutlinePhrase<LangBokmalNynorskEnglish, Unit> {
     paragraph {
         text(
@@ -833,7 +816,7 @@ val AvdodBoddArbUtland2_001 = OutlinePhrase<LangBokmalNynorskEnglish, Unit> {
 }
 
 val PensjonFraAndreOverskrift_001 = OutlinePhrase<LangBokmalNynorskEnglish, Unit> {
-    paragraph {
+    title1 {
         text(
             Bokmal to "Andre pensjonsordninger",
             Nynorsk to "Andre pensjonsordningar",

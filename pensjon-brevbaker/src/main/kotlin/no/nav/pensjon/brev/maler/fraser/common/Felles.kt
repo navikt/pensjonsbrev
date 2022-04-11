@@ -7,6 +7,7 @@ import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.map
 import no.nav.pensjon.brev.template.dsl.expression.plus
+import no.nav.pensjon.brev.template.dsl.expression.str
 
 object Felles {
 
@@ -89,6 +90,14 @@ object Felles {
             Bokmal to kroner.format() + " kr",
             Nynorsk to kroner.format() + " kr",
             English to kroner.format() + " NOK"
+        )
+    }
+
+    val maaneder = TextOnlyPhrase<LangBokmalNynorskEnglish, Int> { maaned ->
+        textExpr(
+            Bokmal to maaned.str() + " måneder",
+            Nynorsk to maaned.str() + " måneder",
+            English to maaned.str() + " months"
         )
     }
 }

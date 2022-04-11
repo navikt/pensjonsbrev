@@ -4,7 +4,7 @@ import no.nav.pensjon.brev.api.model.BeregningsMetode
 import java.time.LocalDate
 
 // TODO: Lag gjenbrukbar formattering av Kroner(1000) med språkstøtte og enhet (kr/NOK)
-
+//TODO flytt inn i api-model når denne er ferdig.
 data class OpplysningerBruktIBeregningUTDto(
     val barnetilleggGjeldende: BarnetilleggGjeldende?,
     val beregnetUTPerManedGjeldende: BeregnetUTPerManedGjeldende,
