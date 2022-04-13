@@ -83,7 +83,7 @@ dependencies {
     implementation("io.ktor:ktor-client-jackson:$ktor_version")
     implementation("io.ktor:ktor-auth:$ktor_version")
     implementation("io.ktor:ktor-auth-jwt:$ktor_version")
-    implementation("no.nav.pensjon.brev:pensjon-brevbaker-api-model:1.3.1")
+    implementation("no.nav.pensjon.brev:pensjon-brevbaker-api-model:1.3.3-SNAPSHOT")
     // Necessary for java.time.LocalDate
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.13.2")
     // Metrics

@@ -5,10 +5,10 @@ import no.nav.pensjon.brev.Fixtures
 import no.nav.pensjon.brev.PDF_BUILDER_URL
 import no.nav.pensjon.brev.TestTags
 import no.nav.pensjon.brev.api.model.LetterMetadata
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligeUfoeretrygdFoerSkattDto
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligeUfoeretrygdFoerSkattDto.UfoeretrygdPerMaaned
 import no.nav.pensjon.brev.latex.LaTeXCompilerService
 import no.nav.pensjon.brev.latex.PdfCompilationInput
-import no.nav.pensjon.brev.no.nav.pensjon.brev.maler.vedlegg.MaanedligeUfoeretrygdFoerSkattDto
-import no.nav.pensjon.brev.no.nav.pensjon.brev.maler.vedlegg.UfoeretrygdPerMaaned
 import no.nav.pensjon.brev.no.nav.pensjon.brev.maler.vedlegg.maanedligeUfoeretrygdFoerSkatt
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Letter

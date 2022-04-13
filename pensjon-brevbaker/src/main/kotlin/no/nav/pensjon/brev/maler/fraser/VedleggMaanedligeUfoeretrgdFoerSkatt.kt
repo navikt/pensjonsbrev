@@ -1,10 +1,14 @@
 package no.nav.pensjon.brev.maler.fraser
 
-import no.nav.pensjon.brev.no.nav.pensjon.brev.maler.vedlegg.UfoeretrygdPerMaaned
-import no.nav.pensjon.brev.template.*
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligeUfoeretrygdFoerSkattDto
+import no.nav.pensjon.brev.template.Element
+import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.*
-import no.nav.pensjon.brev.template.dsl.*
+import no.nav.pensjon.brev.template.OutlinePhrase
+import no.nav.pensjon.brev.template.ParagraphPhrase
 import no.nav.pensjon.brev.template.dsl.expression.*
+import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.dsl.textExpr
 import java.time.LocalDate
 
 
@@ -23,7 +27,7 @@ data class TabellUTTittelGjeldende_001Dto(
     val virkningsDatoTilOgMed: LocalDate?,
 )
 
-val tabellBeregnetUTHele = OutlinePhrase<LangBokmalNynorskEnglish, UfoeretrygdPerMaaned> { ufoeretrygd ->
+val tabellBeregnetUTHele = OutlinePhrase<LangBokmalNynorskEnglish, MaanedligeUfoeretrygdFoerSkattDto.UfoeretrygdPerMaaned> { ufoeretrygd ->
     //tekst101 tittel gjeldende (obligatorisk)
     includePhrase(tabellUfoeretrygtTittel, ufoeretrygd.map {
         TabellUTTittelGjeldende_001Dto(it.virkningFraOgMed, it.virkningTilOgMed)

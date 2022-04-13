@@ -3,12 +3,10 @@ package no.nav.pensjon.brev.maler
 import no.nav.pensjon.brev.api.model.Institusjon
 import no.nav.pensjon.brev.api.model.LetterMetadata
 import no.nav.pensjon.brev.api.model.Sivilstand
+import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDto
 import no.nav.pensjon.brev.maler.fraser.*
-import no.nav.pensjon.brev.maler.vedlegg.OrienteringOmRettigheterParamDto
-import no.nav.pensjon.brev.maler.vedlegg.opplysningerBruktIBeregning.OpplysningerBruktIBeregningUTDto
 import no.nav.pensjon.brev.maler.vedlegg.opplysningerBruktIBeregningUT
 import no.nav.pensjon.brev.maler.vedlegg.orienteringOmRettigheterOgPlikter
-import no.nav.pensjon.brev.no.nav.pensjon.brev.maler.vedlegg.MaanedligeUfoeretrygdFoerSkattDto
 import no.nav.pensjon.brev.no.nav.pensjon.brev.maler.vedlegg.maanedligeUfoeretrygdFoerSkatt
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.StaticTemplate
@@ -16,7 +14,6 @@ import no.nav.pensjon.brev.template.base.PensjonLatex
 import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.newText
-import java.time.LocalDate
 
 object UfoerOmregningEnslig : StaticTemplate {
     override val template = createTemplate(
@@ -481,133 +478,6 @@ object UfoerOmregningEnslig : StaticTemplate {
 
         includeAttachment(orienteringOmRettigheterOgPlikter, argument().map { it.orienteringOmRettigheterOgPlikter })
         includeAttachment(opplysningerBruktIBeregningUT, argument().map { it.opplysningerBruktIBeregningUT })
-        includeAttachment(maanedligeUfoeretrygdFoerSkatt, argument().map{ it.maanedligeUfoeretrygdFoerSkattDto})
+        includeAttachment(maanedligeUfoeretrygdFoerSkatt, argument().map { it.maanedligeUfoeretrygdFoerSkattDto })
     }
-}
-
-//TODO flytt inn i api-model.
-data class UfoerOmregningEnsligDto(
-    val opplysningerBruktIBeregningUT: OpplysningerBruktIBeregningUTDto,
-    val orienteringOmRettigheterOgPlikter: OrienteringOmRettigheterParamDto,
-    val maanedligeUfoeretrygdFoerSkattDto: MaanedligeUfoeretrygdFoerSkattDto,
-    val avdod: Avdod,
-    val minsteytelseVedvirk: MinsteytelseVedvirk?,
-    val ufoeretrygdVedVirk: UfoeretrygdVedVirk,
-    val beregnetUTPerManed_antallBeregningsperioderPaVedtak: Int,
-    val institusjonsoppholdVedVirk: Institusjon,
-    val erSannsynligEndret_inntektForUfoereVedVirk: Boolean,
-    val krav: Krav,
-    val barnetilleggSaerkullsbarnGjeldende_erRedusertMotInntekt: Boolean,
-    val inntektFoerUfoerhetVedVirk: InntektFoerUfoerhetVedVirk,
-    val bruker: Bruker,
-    val barnetilleggVedVirk: BarnetilleggVedVirk?,
-) {
-    constructor() : this(
-        opplysningerBruktIBeregningUT = OpplysningerBruktIBeregningUTDto(),
-        orienteringOmRettigheterOgPlikter = OrienteringOmRettigheterParamDto(),
-        maanedligeUfoeretrygdFoerSkattDto = MaanedligeUfoeretrygdFoerSkattDto(),
-        erSannsynligEndret_inntektForUfoereVedVirk = false,
-        minsteytelseVedvirk = MinsteytelseVedvirk(sats = 0.0),
-        avdod = Avdod(
-            navn = "Avdod Person",
-            ektefelletilleggOpphoert = false,
-            sivilstand = Sivilstand.SAMBOER3_2,
-            harFellesBarnUtenBarnetillegg = false,
-        ),
-        krav = Krav(
-            virkedatoFraOgMed = LocalDate.of(2020, 1, 1)
-        ),
-        beregnetUTPerManed_antallBeregningsperioderPaVedtak = 0,
-        institusjonsoppholdVedVirk = Institusjon.INGEN,
-        ufoeretrygdVedVirk = UfoeretrygdVedVirk(
-            kompensasjonsgrad = 0.5,
-            totalUforeMaanedligBeloep = 5,
-            erInntektsavkortet = false
-        ),
-        inntektFoerUfoerhetVedVirk = InntektFoerUfoerhetVedVirk(
-            oppjustertBeloep = 0, beloep = 0, erMinsteinntekt = false
-        ),
-        barnetilleggSaerkullsbarnGjeldende_erRedusertMotInntekt = false,
-        bruker = Bruker(
-            borIAvtaleLand = false,
-            borINorge = true,
-        ),
-        barnetilleggVedVirk = BarnetilleggVedVirk(
-            barnetilleggSaerkullsbarnVedVirk = BarnetilleggSaerkullsbarnVedvirk(
-                belop = 0,
-                erRedusertMotInntekt = false,
-                inntektBruktIAvkortning = 0,
-                fribeloepVedvirk = 0,
-                justeringsbeloepAr = 0,
-                inntektstak = 0,
-                barnTidligereSaerkullsbarn = listOf(
-                    "Tidligere saerkullsbarn 1",
-                    "Tidligere saerkullsbarn 2",
-                    "Tidligere saerkullsbarn 3",
-                ),
-                barnOverfoertTilSaerkullsbarn = listOf(
-                    "Overfoert til saerkullsbarn 1",
-                    "Overfoert til saerkullsbarn 2",
-                    "Overfoert til saerkullsbarn 3",
-                ),
-            ),
-            barnetilleggGrunnlag = BarnetilleggGrunnlagVedVirk(
-                erRedusertMotTak = false,
-                prosentsatsGradertOverInntektFoerUfoer = 0.0,
-                gradertOverInntektFoerUfoer = 0,
-                erIkkeUtbetPgaTak = false,
-                belopFoerReduksjon = 0,
-                belopEtterReduksjon = 0,
-            )
-        )
-
-    )
-
-
-    data class MinsteytelseVedvirk(val sats: Double)
-    data class Avdod(
-        val navn: String,
-        val ektefelletilleggOpphoert: Boolean,
-        val sivilstand: Sivilstand,
-        val harFellesBarnUtenBarnetillegg: Boolean,
-    )
-
-    data class Krav(val virkedatoFraOgMed: LocalDate)
-    data class UfoeretrygdVedVirk(
-        val kompensasjonsgrad: Double,
-        val totalUforeMaanedligBeloep: Int,
-        val erInntektsavkortet: Boolean,
-    )
-
-    data class InntektFoerUfoerhetVedVirk(val oppjustertBeloep: Int, val beloep: Int, val erMinsteinntekt: Boolean)
-
-    data class Bruker(
-        val borIAvtaleLand: Boolean,
-        val borINorge: Boolean,
-    )
-
-    data class BarnetilleggVedVirk(
-        val barnetilleggGrunnlag: BarnetilleggGrunnlagVedVirk,
-        val barnetilleggSaerkullsbarnVedVirk: BarnetilleggSaerkullsbarnVedvirk?,
-    )
-
-    data class BarnetilleggGrunnlagVedVirk(
-        val erRedusertMotTak: Boolean,
-        val prosentsatsGradertOverInntektFoerUfoer: Double,
-        val gradertOverInntektFoerUfoer: Int,
-        val erIkkeUtbetPgaTak: Boolean,
-        val belopFoerReduksjon: Int,
-        val belopEtterReduksjon: Int,
-    )
-
-    data class BarnetilleggSaerkullsbarnVedvirk(
-        val barnTidligereSaerkullsbarn: List<String>,
-        val barnOverfoertTilSaerkullsbarn: List<String>,
-        val belop: Int,
-        val erRedusertMotInntekt: Boolean,
-        val inntektBruktIAvkortning: Int,
-        val fribeloepVedvirk: Int,
-        val justeringsbeloepAr: Int,
-        val inntektstak: Int,
-    )
 }

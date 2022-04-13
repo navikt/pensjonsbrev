@@ -7,13 +7,14 @@ import no.nav.pensjon.brev.TestTags
 import no.nav.pensjon.brev.api.model.Institusjon
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.Sivilstand
+import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDto
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligeUfoeretrygdFoerSkattDto
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligeUfoeretrygdFoerSkattDto.UfoeretrygdPerMaaned
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDto
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDto.BarnetilleggGjeldende
+import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterDto
 import no.nav.pensjon.brev.latex.LaTeXCompilerService
 import no.nav.pensjon.brev.latex.PdfCompilationInput
-import no.nav.pensjon.brev.maler.vedlegg.OrienteringOmRettigheterParamDto
-import no.nav.pensjon.brev.maler.vedlegg.opplysningerBruktIBeregning.BarnetilleggGjeldende
-import no.nav.pensjon.brev.maler.vedlegg.opplysningerBruktIBeregning.OpplysningerBruktIBeregningUTDto
-import no.nav.pensjon.brev.no.nav.pensjon.brev.maler.vedlegg.MaanedligeUfoeretrygdFoerSkattDto
-import no.nav.pensjon.brev.no.nav.pensjon.brev.maler.vedlegg.UfoeretrygdPerMaaned
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.Letter
 import no.nav.pensjon.brev.writeTestPDF
@@ -64,7 +65,7 @@ class UfoerOmregningEnsligITest {
                         avkortetUfoeretrygdPeriode.copy(avkortning = null)
                     )
                 ),
-                orienteringOmRettigheterOgPlikter = OrienteringOmRettigheterParamDto().copy(
+                orienteringOmRettigheterOgPlikter = OrienteringOmRettigheterDto().copy(
                     eps_bor_sammen_med_bruker_gjeldende = true,
                     eps_institusjon_gjeldende = Institusjon.INGEN,
                     har_barnetillegg_felles_barn_vedvirk = false,

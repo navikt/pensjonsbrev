@@ -2,11 +2,11 @@ package no.nav.pensjon.brev.maler.vedlegg
 
 
 import no.nav.pensjon.brev.api.model.BeregningsMetode
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDto
 import no.nav.pensjon.brev.maler.fraser.*
 import no.nav.pensjon.brev.maler.fraser.common.Felles.kroner
 import no.nav.pensjon.brev.maler.fraser.common.Felles.maaneder
 import no.nav.pensjon.brev.maler.fraser.common.Kroner
-import no.nav.pensjon.brev.maler.vedlegg.opplysningerBruktIBeregning.OpplysningerBruktIBeregningUTDto
 import no.nav.pensjon.brev.template.Element
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.*
