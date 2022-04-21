@@ -5,11 +5,11 @@ import no.nav.pensjon.brev.Fixtures
 import no.nav.pensjon.brev.PDF_BUILDER_URL
 import no.nav.pensjon.brev.TestTags
 import no.nav.pensjon.brev.api.model.LetterMetadata
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligeUfoeretrygdFoerSkattDto
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligeUfoeretrygdFoerSkattDto.UfoeretrygdPerMaaned
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligUfoeretrygdFoerSkattDto
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligUfoeretrygdFoerSkattDto.UfoeretrygdPerMaaned
 import no.nav.pensjon.brev.latex.LaTeXCompilerService
 import no.nav.pensjon.brev.latex.PdfCompilationInput
-import no.nav.pensjon.brev.no.nav.pensjon.brev.maler.vedlegg.maanedligeUfoeretrygdFoerSkatt
+import no.nav.pensjon.brev.no.nav.pensjon.brev.maler.vedlegg.maanedligUfoeretrygdFoerSkatt
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Letter
 import no.nav.pensjon.brev.template.base.PensjonLatex
@@ -22,7 +22,7 @@ import org.junit.jupiter.api.Test
 import java.time.LocalDate
 
 @Tag(TestTags.PDF_BYGGER)
-class MaanedligeUfoeretrygdFoerSkatt {
+class MaanedligUfoeretrygdFoerSkatt {
 
     @Test
     fun testVedlegg() {
@@ -40,46 +40,29 @@ class MaanedligeUfoeretrygdFoerSkatt {
 
             }
 
-            val ufoeretrygdGjeldende = UfoeretrygdPerMaaned(
-                annetBelop = 1503,
-                barnetillegg = 2503,
-                dekningFasteUtgifter = 1503,
-                garantitilleggNordisk27 = 9003,
-                grunnbeloep = 91543,
-                ordinaerUTBeloep = 15003,
-                totalUTBeloep = 5503,
-                virkningFraOgMed = LocalDate.of(2017, 2, 3),
-                virkningTilOgMed = LocalDate.of(2017, 5, 5),
-                avkortning = null
-            )
-
-            val ufoeretrygdPerMaaned = UfoeretrygdPerMaaned(
-                annetBelop = 1500,
-                barnetillegg = 2500,
-                dekningFasteUtgifter = 1500,
-                garantitilleggNordisk27 = 9000,
-                grunnbeloep = 91540,
-                ordinaerUTBeloep = 15000,
-                totalUTBeloep = 5500,
-                virkningFraOgMed = LocalDate.of(2017, 2, 3),
-                virkningTilOgMed = LocalDate.of(2017, 5, 5),
-                avkortning = UfoeretrygdPerMaaned.Avkortning(
-                    barnetilleggFoerAvkort = 2800,
-                    garantitilleggNordisk27FoerAvkort = 9999,
-                    ordinaerUTBeloepFoerAvkort = 12000,
-                    totalUTBeloepFoerAvkort = 6600,
+            val ufoeretrygdPerMaaned =
+                UfoeretrygdPerMaaned(
+                    annetBelop = 1500,
+                    barnetillegg = UfoeretrygdPerMaaned.Beloep(2500, 2800),
+                    dekningFasteUtgifter = 1500,
+                    garantitilleggNordisk27 = UfoeretrygdPerMaaned.Beloep(9000, 9999),
+                    grunnbeloep = 91540,
+                    ordinaerUTBeloep = UfoeretrygdPerMaaned.Beloep(15000, 12000),
+                    totalUTBeloep = UfoeretrygdPerMaaned.Beloep(5500, 6600),
+                    virkningFraOgMed = LocalDate.of(2017, 2, 3),
+                    virkningTilOgMed = LocalDate.of(2017, 5, 5),
+                    erAvkortet = true
                 )
-            )
 
             includeAttachment(
-                maanedligeUfoeretrygdFoerSkatt,
-                MaanedligeUfoeretrygdFoerSkattDto(
-                    ufoeretrygdGjeldende,
-                    LocalDate.now(),
+                maanedligUfoeretrygdFoerSkatt,
+                MaanedligUfoeretrygdFoerSkattDto(
+                    ufoeretrygdPerMaaned,
+                    LocalDate.of(2020,1,1),
                     2,
                     listOf(
                         ufoeretrygdPerMaaned,
-                        ufoeretrygdPerMaaned.copy(avkortning = null),
+                        ufoeretrygdPerMaaned.copy(erAvkortet = false),
                     )
                 ).expr()
             )
@@ -93,6 +76,6 @@ class MaanedligeUfoeretrygdFoerSkatt {
         ).render()
             .let { PdfCompilationInput(it.base64EncodedFiles()) }
             .let { runBlocking { LaTeXCompilerService(PDF_BUILDER_URL).producePDF(it, "test").base64PDF } }
-            .also { writeTestPDF("UT_DOD_ENSLIG_AUTO", it) }
+            .also { writeTestPDF("MaanedligUfoeretrygdFoerSkatt", it) }
     }
 }

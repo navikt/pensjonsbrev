@@ -2,7 +2,7 @@ package no.nav.pensjon.brev.api.model.maler
 
 import no.nav.pensjon.brev.api.model.Institusjon
 import no.nav.pensjon.brev.api.model.Sivilstand
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligeUfoeretrygdFoerSkattDto
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligUfoeretrygdFoerSkattDto
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDto
 import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterDto
 import java.time.LocalDate
@@ -11,7 +11,7 @@ import java.time.LocalDate
 data class UfoerOmregningEnsligDto(
     val opplysningerBruktIBeregningUT: OpplysningerBruktIBeregningUTDto,
     val orienteringOmRettigheterOgPlikter: OrienteringOmRettigheterDto,
-    val maanedligeUfoeretrygdFoerSkattDto: MaanedligeUfoeretrygdFoerSkattDto,
+    val maanedligUfoeretrygdFoerSkattDto: MaanedligUfoeretrygdFoerSkattDto,
     val avdod: Avdod,
     val minsteytelseVedvirk: MinsteytelseVedvirk?,
     val ufoeretrygdVedVirk: UfoeretrygdVedVirk,
@@ -27,7 +27,7 @@ data class UfoerOmregningEnsligDto(
     constructor() : this(
         opplysningerBruktIBeregningUT = OpplysningerBruktIBeregningUTDto(),
         orienteringOmRettigheterOgPlikter = OrienteringOmRettigheterDto(),
-        maanedligeUfoeretrygdFoerSkattDto = MaanedligeUfoeretrygdFoerSkattDto(),
+        maanedligUfoeretrygdFoerSkattDto = MaanedligUfoeretrygdFoerSkattDto(),
         erSannsynligEndret_inntektForUfoereVedVirk = false,
         minsteytelseVedvirk = MinsteytelseVedvirk(sats = 0.0),
         avdod = Avdod(

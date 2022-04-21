@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.no.nav.pensjon.brev.maler.vedlegg
 
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligeUfoeretrygdFoerSkattDto
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligUfoeretrygdFoerSkattDto
 import no.nav.pensjon.brev.maler.fraser.tabellBeregnetUTHele
 import no.nav.pensjon.brev.maler.fraser.vedleggBelopUT_001
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
@@ -14,7 +14,7 @@ import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 
-val maanedligeUfoeretrygdFoerSkatt = createAttachment<LangBokmalNynorskEnglish, MaanedligeUfoeretrygdFoerSkattDto>(
+val maanedligUfoeretrygdFoerSkatt = createAttachment<LangBokmalNynorskEnglish, MaanedligUfoeretrygdFoerSkattDto>(
     //tekst099 tittel Obligatorisk
     title = newText(
         Bokmal to "Dette er din månedlige uføretrygd før skatt",

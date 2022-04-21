@@ -7,7 +7,7 @@ import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDto
 import no.nav.pensjon.brev.maler.fraser.*
 import no.nav.pensjon.brev.maler.vedlegg.opplysningerBruktIBeregningUT
 import no.nav.pensjon.brev.maler.vedlegg.orienteringOmRettigheterOgPlikter
-import no.nav.pensjon.brev.no.nav.pensjon.brev.maler.vedlegg.maanedligeUfoeretrygdFoerSkatt
+import no.nav.pensjon.brev.no.nav.pensjon.brev.maler.vedlegg.maanedligUfoeretrygdFoerSkatt
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.StaticTemplate
 import no.nav.pensjon.brev.template.base.PensjonLatex
@@ -478,6 +478,6 @@ object UfoerOmregningEnslig : StaticTemplate {
 
         includeAttachment(orienteringOmRettigheterOgPlikter, argument().map { it.orienteringOmRettigheterOgPlikter })
         includeAttachment(opplysningerBruktIBeregningUT, argument().map { it.opplysningerBruktIBeregningUT })
-        includeAttachment(maanedligeUfoeretrygdFoerSkatt, argument().map { it.maanedligeUfoeretrygdFoerSkattDto })
+        includeAttachment(maanedligUfoeretrygdFoerSkatt, argument().map { it.maanedligUfoeretrygdFoerSkattDto })
     }
 }

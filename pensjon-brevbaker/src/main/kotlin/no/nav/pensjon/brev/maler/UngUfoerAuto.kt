@@ -46,7 +46,7 @@ object UngUfoerAuto : StaticTemplate {
             )
 
             includePhrase(
-                Ufoeretrygd.barnetileggIkkeUtbetalt,
+                Ufoeretrygd.barnetilleggIkkeUtbetalt,
                 argument().map {
                     Ufoeretrygd.BarnetilleggIkkeUtbetaltDto(
                         saerkullsbarn = it.saerkullsbarn,

@@ -86,7 +86,7 @@ object Ufoeretrygd {
         fun saerkullsbarnUtbetalt(): Boolean = saerkullsbarn?.utbetalt ?: false
     }
 
-    val barnetileggIkkeUtbetalt = OutlinePhrase<LangBokmalNynorsk, BarnetilleggIkkeUtbetaltDto> {
+    val barnetilleggIkkeUtbetalt = OutlinePhrase<LangBokmalNynorsk, BarnetilleggIkkeUtbetaltDto> {
         paragraph {
 
             val saerkullInnvilget = it.select(BarnetilleggIkkeUtbetaltDto::saerkullInnvilget)

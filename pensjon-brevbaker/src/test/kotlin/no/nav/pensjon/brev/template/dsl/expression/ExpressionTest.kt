@@ -33,7 +33,7 @@ class ExpressionTest {
 
     @Test
     fun `format creates a binaryinvoke with dateformatting by letter language`() {
-        val expr = Expression.Literal(LocalDate.now())
+        val expr = Expression.Literal(LocalDate.of(2020,1,1))
         val expected = Expression.BinaryInvoke(
             first = expr,
             second = Expression.FromScope(ExpressionScope<Nothing, *>::language),

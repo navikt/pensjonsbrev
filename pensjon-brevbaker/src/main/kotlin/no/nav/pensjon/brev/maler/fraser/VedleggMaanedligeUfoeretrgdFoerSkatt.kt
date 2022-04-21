@@ -1,6 +1,8 @@
 package no.nav.pensjon.brev.maler.fraser
 
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligeUfoeretrygdFoerSkattDto
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligUfoeretrygdFoerSkattDto
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligUfoeretrygdFoerSkattDto.UfoeretrygdPerMaaned.Beloep
+import no.nav.pensjon.brev.maler.fraser.common.Felles.kroner
 import no.nav.pensjon.brev.template.Element
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.*
@@ -27,51 +29,48 @@ data class TabellUTTittelGjeldende_001Dto(
     val virkningsDatoTilOgMed: LocalDate?,
 )
 
-val tabellBeregnetUTHele = OutlinePhrase<LangBokmalNynorskEnglish, MaanedligeUfoeretrygdFoerSkattDto.UfoeretrygdPerMaaned> { ufoeretrygd ->
-    //tekst101 tittel gjeldende (obligatorisk)
-    includePhrase(tabellUfoeretrygtTittel, ufoeretrygd.map {
-        TabellUTTittelGjeldende_001Dto(it.virkningFraOgMed, it.virkningTilOgMed)
-    })
-
-    paragraph {
-
-        includePhrase(tabellUfoeretrygdTittel_broedtekst, ufoeretrygd.map {
-            TabellUTTittelGjeldende_001_broedtekst_Dto(it.grunnbeloep)
+val tabellBeregnetUTHele =
+    OutlinePhrase<LangBokmalNynorskEnglish, MaanedligUfoeretrygdFoerSkattDto.UfoeretrygdPerMaaned> { ufoeretrygd ->
+        //tekst101 tittel gjeldende (obligatorisk)
+        includePhrase(tabellUfoeretrygtTittel, ufoeretrygd.map {
+            TabellUTTittelGjeldende_001Dto(it.virkningFraOgMed, it.virkningTilOgMed)
         })
 
-        showIf(
-            ufoeretrygd.map { it.avkortning == null }
-        ) {
-            includePhrase(tabellBeregnetUT, ufoeretrygd.map {
-                TabellBeregnetUTDto(
-                    it.annetBelop,
-                    it.barnetillegg,
-                    it.dekningFasteUtgifter,
-                    it.garantitilleggNordisk27,
-                    it.ordinaerUTBeloep,
-                    it.totalUTBeloep,
-                )
-            })
-        }
+        paragraph {
 
-        ifNotNull(ufoeretrygd.map {
-            it.avkortning?.let { avkortning ->
-                TabellBeregnetUTAvkortetDto(
-                    it.barnetillegg,
-                    avkortning.barnetilleggFoerAvkort,
-                    it.garantitilleggNordisk27,
-                    avkortning.garantitilleggNordisk27FoerAvkort,
-                    it.ordinaerUTBeloep,
-                    avkortning.ordinaerUTBeloepFoerAvkort,
-                    it.totalUTBeloep,
-                    avkortning.totalUTBeloepFoerAvkort,
+            includePhrase(tabellUfoeretrygdTittel_broedtekst, ufoeretrygd.map {
+                TabellUTTittelGjeldende_001_broedtekst_Dto(it.grunnbeloep)
+            })
+
+            showIf(
+                ufoeretrygd.map { !it.erAvkortet }
+            ) {
+                includePhrase(tabellBeregnetUT, ufoeretrygd.map {
+                    TabellBeregnetUTDto(
+                        it.annetBelop,
+                        it.barnetillegg?.netto,
+                        it.dekningFasteUtgifter,
+                        it.garantitilleggNordisk27?.netto,
+                        it.ordinaerUTBeloep.netto,
+                        it.totalUTBeloep.netto,
+                    )
+                })
+            }
+
+            showIf(ufoeretrygd.map { it.erAvkortet }) {
+                includePhrase(tabellBeregnetUTAvkortet,
+                    ufoeretrygd.map {
+                        TabellBeregnetUTAvkortetDto(
+                            it.barnetillegg,
+                            it.garantitilleggNordisk27,
+                            it.ordinaerUTBeloep,
+                            it.totalUTBeloep,
+                        )
+                    }
                 )
             }
-        }) {
-            includePhrase(tabellBeregnetUTAvkortet, it)
         }
     }
-}
 
 val tabellUfoeretrygtTittel = OutlinePhrase<LangBokmalNynorskEnglish, TabellUTTittelGjeldende_001Dto> {
     title1 {
@@ -121,14 +120,7 @@ data class TabellBeregnetUTDto(
 val tabellBeregnetUT = ParagraphPhrase<LangBokmalNynorskEnglish, TabellBeregnetUTDto> { beregnetUT ->
     table(
         header = {
-            column(1) {
-                //TODO: kan ikke lenger ha tom kollonne?
-                text(
-                    Bokmal to "",
-                    Nynorsk to "",
-                    English to "",
-                )
-            }
+            column(1) {} //TODO skal det stå noe her?
             column(1, alignment = Element.Table.ColumnAlignment.RIGHT) {
                 //tekst102 BruttoPerManed obligatorisk
                 text(
@@ -150,19 +142,13 @@ val tabellBeregnetUT = ParagraphPhrase<LangBokmalNynorskEnglish, TabellBeregnetU
                 )
             }
             cell {
-                val ordinaerUfoeretrygd = beregnetUT.select(TabellBeregnetUTDto::ordinaerUTBeloep).format()
-                textExpr(
-                    Bokmal to ordinaerUfoeretrygd + " kr",
-                    Nynorsk to ordinaerUfoeretrygd + " kr",
-                    English to ordinaerUfoeretrygd + " NOK",
-                )
+                includePhrase(kroner, beregnetUT.select(TabellBeregnetUTDto::ordinaerUTBeloep))
             }
         }
 
         //if barnetillegg != "" tekst104
         ifNotNull(beregnetUT.map { it.barnetillegg }) {
             row {
-                val barnetilegg = it.format()
                 cell {
                     text(
                         Bokmal to "Barnetillegg for særkullsbarn",
@@ -171,18 +157,13 @@ val tabellBeregnetUT = ParagraphPhrase<LangBokmalNynorskEnglish, TabellBeregnetU
                     )
                 }
                 cell {
-                    textExpr(
-                        Bokmal to barnetilegg + " kr",
-                        Nynorsk to barnetilegg + " kr",
-                        English to barnetilegg + " NOK",
-                    )
+                    includePhrase(kroner, it)
                 }
             }
         }
 
         //if garatitilleggNordisk27 !="" tekst105
         ifNotNull(beregnetUT.map { it.garantitilleggNordisk27 }) {
-            val garantitilegg = it.format()
             row {
                 cell {
                     text(
@@ -192,16 +173,10 @@ val tabellBeregnetUT = ParagraphPhrase<LangBokmalNynorskEnglish, TabellBeregnetU
                     )
                 }
                 cell {
-                    textExpr(
-                        Bokmal to garantitilegg + " kr",
-                        Nynorsk to garantitilegg + " kr",
-                        English to garantitilegg + " NOK",
-                    )
+                    includePhrase(kroner, it)
                 }
             }
         }
-
-        val annetBelop = beregnetUT.map { it.annetBelop }.format()
 
         //if dekningFasteUtgifter =0 and annetBeloep >0 tekst106
         showIf(beregnetUT.map {
@@ -216,11 +191,7 @@ val tabellBeregnetUT = ParagraphPhrase<LangBokmalNynorskEnglish, TabellBeregnetU
                     )
                 }
                 cell {
-                    textExpr(
-                        Bokmal to annetBelop + " kr",
-                        Nynorsk to annetBelop + " kr",
-                        English to annetBelop + " NOK",
-                    )
+                    includePhrase(kroner, beregnetUT.map { it.annetBelop })
                 }
             }
         }
@@ -238,11 +209,7 @@ val tabellBeregnetUT = ParagraphPhrase<LangBokmalNynorskEnglish, TabellBeregnetU
                     )
                 }
                 cell {
-                    textExpr(
-                        Bokmal to annetBelop + " kr",
-                        Nynorsk to annetBelop + " kr",
-                        English to annetBelop + " NOK",
-                    )
+                    includePhrase(kroner, beregnetUT.map { it.annetBelop })
                 }
             }
         }
@@ -257,40 +224,24 @@ val tabellBeregnetUT = ParagraphPhrase<LangBokmalNynorskEnglish, TabellBeregnetU
                 )
             }
             cell {
-                val totalBeloep = beregnetUT.map { it.totalUTBeloep }.format()
-                textExpr(
-                    Bokmal to totalBeloep + " kr",
-                    Nynorsk to totalBeloep + " kr",
-                    English to totalBeloep + " NOK",
-                )
+                includePhrase(kroner, beregnetUT.map { it.totalUTBeloep })
             }
         }
     }
 }
 
 data class TabellBeregnetUTAvkortetDto(
-    val barnetillegg: Int?,
-    val barnetilleggFoerAvkort: Int,
-    val garantitilleggNordisk27: Int?,
-    val garantitilleggNordisk27FoerAvkorting: Int,
-    val ordinaerUTBeloep: Int,
-    val ordinaerUTBeloepFoerAvkort: Int,
-    val totalUTBeloep: Int,
-    val totalUTBeloepFoerAvkort: Int,
+    val barnetillegg: Beloep?,
+    val garantitilleggNordisk27: Beloep?,
+    val ordinaerUTBeloep: Beloep,
+    val totalUTBeloep: Beloep,
 )
 
 val tabellBeregnetUTAvkortet = ParagraphPhrase<LangBokmalNynorskEnglish, TabellBeregnetUTAvkortetDto> { beregnetUT ->
     table(
         //tekst109 ufoeretrygd foer og etter fradrag (obligatorisk)
         header = {
-            column {
-                //TODO: kan ikke lenger ha tom kollonne?
-                text(
-                    Bokmal to "",
-                    Nynorsk to "",
-                    English to "",
-                )
-            }
+            column {} //TODO skal det stå noe her?
             column(alignment = Element.Table.ColumnAlignment.RIGHT) {
                 text(
                     Bokmal to "Uføretrygd per måned før fradrag for inntekt",
@@ -319,34 +270,16 @@ val tabellBeregnetUTAvkortet = ParagraphPhrase<LangBokmalNynorskEnglish, TabellB
                 )
             }
             cell {
-                val ordinaerUfoeretrygdFoerAvkorting =
-                    beregnetUT.map { it.ordinaerUTBeloepFoerAvkort }
-                        .format()
-                textExpr(
-                    Bokmal to ordinaerUfoeretrygdFoerAvkorting + " kr",
-                    Nynorsk to ordinaerUfoeretrygdFoerAvkorting + " kr",
-                    English to ordinaerUfoeretrygdFoerAvkorting + " NOK",
-                )
+                includePhrase(kroner, beregnetUT.map { it.ordinaerUTBeloep.brutto })
             }
             cell {
-                val ordinaerUfoeretrygd =
-                    beregnetUT.map { it.ordinaerUTBeloep }
-                        .format()
-                textExpr(
-                    Bokmal to ordinaerUfoeretrygd + " kr",
-                    Nynorsk to ordinaerUfoeretrygd + " kr",
-                    English to ordinaerUfoeretrygd + " NOK",
-                )
+                includePhrase(kroner, beregnetUT.map { it.ordinaerUTBeloep.netto })
             }
         }
 
         //if barnetillegg != "" tekst111
-        ifNotNull(beregnetUT.map { it.barnetillegg }) {
+        ifNotNull(beregnetUT.map { it.barnetillegg }) { barnetillegg ->
             row {
-                val barnetilegg = it.format()
-                val barnetileggFoerAvkorting =
-                    beregnetUT.map { it.barnetilleggFoerAvkort }
-                        .format()
                 cell {
                     text(
                         Bokmal to "Barnetillegg for særkullsbarn",
@@ -356,27 +289,18 @@ val tabellBeregnetUTAvkortet = ParagraphPhrase<LangBokmalNynorskEnglish, TabellB
                 }
 
                 cell {
-                    textExpr(
-                        Bokmal to barnetileggFoerAvkorting + " kr",
-                        Nynorsk to barnetileggFoerAvkorting + " kr",
-                        English to barnetileggFoerAvkorting + " NOK",
-                    )
+                    includePhrase(kroner, barnetillegg.map { it.brutto })
                 }
 
                 cell {
-                    textExpr(
-                        Bokmal to barnetilegg + " kr",
-                        Nynorsk to barnetilegg + " kr",
-                        English to barnetilegg + " NOK",
-                    )
+                    includePhrase(kroner, barnetillegg.map { it.netto })
                 }
             }
         }
 
         //if garatitilleggNordisk27 !="" tekst112
 
-        ifNotNull(beregnetUT.map { it.garantitilleggNordisk27 }) {
-            val garantitillegg = it.format()
+        ifNotNull(beregnetUT.map { it.garantitilleggNordisk27 }) { garantitillegg ->
             row {
                 cell {
                     text(
@@ -385,22 +309,13 @@ val tabellBeregnetUTAvkortet = ParagraphPhrase<LangBokmalNynorskEnglish, TabellB
                         English to "Nordic guarantee supplement",
                     )
                 }
+
                 cell {
-                    val garantitileggFoerAvkorting =
-                        beregnetUT.map { it.garantitilleggNordisk27FoerAvkorting }
-                            .format()
-                    textExpr(
-                        Bokmal to garantitileggFoerAvkorting + " kr",
-                        Nynorsk to garantitileggFoerAvkorting + " kr",
-                        English to garantitileggFoerAvkorting + " NOK",
-                    )
+                    includePhrase(kroner, garantitillegg.map { it.brutto })
                 }
+
                 cell {
-                    textExpr(
-                        Bokmal to garantitillegg + " kr",
-                        Nynorsk to garantitillegg + " kr",
-                        English to garantitillegg + " NOK",
-                    )
+                    includePhrase(kroner, garantitillegg.map { it.netto })
                 }
             }
         }
@@ -414,25 +329,13 @@ val tabellBeregnetUTAvkortet = ParagraphPhrase<LangBokmalNynorskEnglish, TabellB
                     English to "Total before tax",
                 )
             }
+
             cell {
-                val totalBeloepFoerAvkorting =
-                    beregnetUT.map { it.totalUTBeloepFoerAvkort }
-                        .format()
-                textExpr(
-                    Bokmal to totalBeloepFoerAvkorting + " kr",
-                    Nynorsk to totalBeloepFoerAvkorting + " kr",
-                    English to totalBeloepFoerAvkorting + " NOK",
-                )
+                includePhrase(kroner, beregnetUT.map { it.totalUTBeloep.brutto })
             }
+
             cell {
-                val totalBeloep =
-                    beregnetUT.map { it.totalUTBeloep }
-                        .format()
-                textExpr(
-                    Bokmal to totalBeloep + " kr",
-                    Nynorsk to totalBeloep + " kr",
-                    English to totalBeloep + " NOK",
-                )
+                includePhrase(kroner, beregnetUT.map { it.totalUTBeloep.netto })
             }
         }
     }

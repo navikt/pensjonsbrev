@@ -240,7 +240,7 @@ data class LetterExampleDto(
     // No-arg constructor for integration tests
     constructor() : this(
         true,
-        LocalDate.now(),
+        LocalDate.of(2020,1,1),
         listOf("test testerson1", "test testerson2", "test testerson3"),
         listOf(
             ExampleTilleggDto(

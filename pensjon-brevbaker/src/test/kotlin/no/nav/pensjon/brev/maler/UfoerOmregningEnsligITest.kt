@@ -8,8 +8,7 @@ import no.nav.pensjon.brev.api.model.Institusjon
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.Sivilstand
 import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDto
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligeUfoeretrygdFoerSkattDto
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligeUfoeretrygdFoerSkattDto.UfoeretrygdPerMaaned
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligUfoeretrygdFoerSkattDto
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDto
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDto.BarnetilleggGjeldende
 import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterDto
@@ -27,25 +26,6 @@ class UfoerOmregningEnsligITest {
 
     @Test
     fun test() {
-        val avkortetUfoeretrygdPeriode =
-            UfoeretrygdPerMaaned(
-                annetBelop = 1500,
-                barnetillegg = 2500,
-                dekningFasteUtgifter = 1500,
-                garantitilleggNordisk27 = 9000,
-                grunnbeloep = 91540,
-                ordinaerUTBeloep = 15000,
-                totalUTBeloep = 5500,
-                virkningFraOgMed = LocalDate.of(2017, 2, 3),
-                virkningTilOgMed = LocalDate.of(2017, 5, 5),
-                avkortning = UfoeretrygdPerMaaned.Avkortning(
-                    barnetilleggFoerAvkort = 2800,
-                    garantitilleggNordisk27FoerAvkort = 9999,
-                    ordinaerUTBeloepFoerAvkort = 12000,
-                    totalUTBeloepFoerAvkort = 6600,
-                )
-            )
-
         Letter(
             UfoerOmregningEnslig.template,
             UfoerOmregningEnsligDto().copy(
@@ -59,12 +39,7 @@ class UfoerOmregningEnsligITest {
                     minsteytelseGjeldende_sats = 10.00,
                     ungUforGjeldende_erUnder20Ar = true,
                 ),
-                maanedligeUfoeretrygdFoerSkattDto = MaanedligeUfoeretrygdFoerSkattDto().copy(
-                    ufoeretrygdPerioder = listOf(
-                        avkortetUfoeretrygdPeriode,
-                        avkortetUfoeretrygdPeriode.copy(avkortning = null)
-                    )
-                ),
+                maanedligUfoeretrygdFoerSkattDto = MaanedligUfoeretrygdFoerSkattDto(),
                 orienteringOmRettigheterOgPlikter = OrienteringOmRettigheterDto().copy(
                     eps_bor_sammen_med_bruker_gjeldende = true,
                     eps_institusjon_gjeldende = Institusjon.INGEN,
