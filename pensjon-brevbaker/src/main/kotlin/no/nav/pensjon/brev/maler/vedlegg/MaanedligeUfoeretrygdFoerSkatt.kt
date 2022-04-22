@@ -15,7 +15,6 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 
 val maanedligUfoeretrygdFoerSkatt = createAttachment<LangBokmalNynorskEnglish, MaanedligUfoeretrygdFoerSkattDto>(
-    //tekst099 tittel Obligatorisk
     title = newText(
         Bokmal to "Dette er din månedlige uføretrygd før skatt",
         Nynorsk to "Dette er den månadlege uføretrygda di før skatt",
@@ -24,15 +23,11 @@ val maanedligUfoeretrygdFoerSkatt = createAttachment<LangBokmalNynorskEnglish, M
 ) {
     val gjeldendeUfoeretrygd = argument().map { it.gjeldendeBeregnetUTPerMaaned }
 
-    //tekst100 beskrivelse tabell 1 og 2 obligatorisk
     includePhrase(vedleggBelopUT_001)
 
     includePhrase(tabellBeregnetUTHele, gjeldendeUfoeretrygd)
 
-    showIf(argument().map {
-        it.antallBeregningsperioderPaaVedtak > 1
-    }) {
-        //tekst114 tittel flere perioder
+    showIf(argument().map { it.tidligereUfoeretrygdPerioder.isNotEmpty()}) {
         val virkDato = argument().map { it.virkningDatoFraOgMed_krav }
         title1 {
             textExpr(
@@ -42,7 +37,6 @@ val maanedligUfoeretrygdFoerSkatt = createAttachment<LangBokmalNynorskEnglish, M
             )
         }
 
-        //tekst115 beskrivelse tabell flere perioder (obligatorisk)
         paragraph {
             text(
                 Bokmal to "Nedenfor ser du den månedlige uføretrygden din for tidligere perioder.",
@@ -51,7 +45,7 @@ val maanedligUfoeretrygdFoerSkatt = createAttachment<LangBokmalNynorskEnglish, M
             )
         }
 
-        forEach(argument().map { it.ufoeretrygdPerioder }) {
+        forEach(argument().map { it.tidligereUfoeretrygdPerioder }) {
             includePhrase(tabellBeregnetUTHele, it)
         }
     }

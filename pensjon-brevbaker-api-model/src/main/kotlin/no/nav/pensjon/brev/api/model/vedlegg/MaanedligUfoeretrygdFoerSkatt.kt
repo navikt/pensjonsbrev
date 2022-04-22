@@ -6,7 +6,7 @@ import java.time.LocalDate
 data class MaanedligUfoeretrygdFoerSkattDto(
     val gjeldendeBeregnetUTPerMaaned: UfoeretrygdPerMaaned,
     val virkningDatoFraOgMed_krav: LocalDate,
-    val ufoeretrygdPerioder: List<UfoeretrygdPerMaaned>,
+    val tidligereUfoeretrygdPerioder: List<UfoeretrygdPerMaaned>,
 ) {
     constructor() : this(
         gjeldendeBeregnetUTPerMaaned = UfoeretrygdPerMaaned(
@@ -22,7 +22,7 @@ data class MaanedligUfoeretrygdFoerSkattDto(
             erAvkortet = true,
         ),
         virkningDatoFraOgMed_krav = LocalDate.of(2020, 1, 1),
-        ufoeretrygdPerioder = emptyList(),
+        tidligereUfoeretrygdPerioder = emptyList(),
     )
 
     data class UfoeretrygdPerMaaned(
