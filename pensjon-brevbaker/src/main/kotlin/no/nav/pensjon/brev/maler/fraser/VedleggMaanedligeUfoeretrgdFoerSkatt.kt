@@ -24,14 +24,13 @@ val vedleggBelopUT_001 = OutlinePhrase<LangBokmalNynorskEnglish, Unit> {
     }
 }
 
-data class TabellUTTittelGjeldende_001Dto(
+data class  TabellUTTittelGjeldende_001Dto(
     val virkningsDatoFraOgMed: LocalDate,
     val virkningsDatoTilOgMed: LocalDate?,
 )
 
 val tabellBeregnetUTHele =
     OutlinePhrase<LangBokmalNynorskEnglish, MaanedligUfoeretrygdFoerSkattDto.UfoeretrygdPerMaaned> { ufoeretrygd ->
-        //tekst101 tittel gjeldende (obligatorisk)
         includePhrase(tabellUfoeretrygtTittel, ufoeretrygd.map {
             TabellUTTittelGjeldende_001Dto(it.virkningFraOgMed, it.virkningTilOgMed)
         })
@@ -111,7 +110,7 @@ val tabellUfoeretrygdTittel_broedtekst =
 data class TabellBeregnetUTDto(
     val annetBelop: Int,
     val barnetillegg: Int?,
-    val dekningFasteUtgifter: Int,
+    val dekningFasteUtgifter: Int?,
     val garantitilleggNordisk27: Int?,
     val ordinaerUTBeloep: Int,
     val totalUTBeloep: Int,
@@ -132,7 +131,6 @@ val tabellBeregnetUT = ParagraphPhrase<LangBokmalNynorskEnglish, TabellBeregnetU
             }
         }
     ) {
-        //tekst103 Uføretrygd obligatorisk
         row {
             cell {
                 text(
@@ -146,7 +144,6 @@ val tabellBeregnetUT = ParagraphPhrase<LangBokmalNynorskEnglish, TabellBeregnetU
             }
         }
 
-        //if barnetillegg != "" tekst104
         ifNotNull(beregnetUT.map { it.barnetillegg }) {
             row {
                 cell {
@@ -162,7 +159,6 @@ val tabellBeregnetUT = ParagraphPhrase<LangBokmalNynorskEnglish, TabellBeregnetU
             }
         }
 
-        //if garatitilleggNordisk27 !="" tekst105
         ifNotNull(beregnetUT.map { it.garantitilleggNordisk27 }) {
             row {
                 cell {
@@ -178,43 +174,38 @@ val tabellBeregnetUT = ParagraphPhrase<LangBokmalNynorskEnglish, TabellBeregnetU
             }
         }
 
-        //if dekningFasteUtgifter =0 and annetBeloep >0 tekst106
-        showIf(beregnetUT.map {
-            it.dekningFasteUtgifter == 0 && it.annetBelop > 0
-        }) {
-            row {
-                cell {
-                    text(
-                        Bokmal to "Fratrukket beløp",
-                        Nynorsk to "Fråtrekt beløp",
-                        English to "Deducted amount",
-                    )
+        showIf(beregnetUT.map { it.annetBelop > 0 }) {
+            showIf(beregnetUT.map { beregnetUT ->
+                beregnetUT.dekningFasteUtgifter?.let { it > 0 }?: false
+            }) {
+                row {
+                    cell {
+                        text(
+                            Bokmal to "Fratrukket faste og nødvendige utgifter",
+                            Nynorsk to "Fråtrekt faste og nødvendige utgifter",
+                            English to "Deducted amount for fixed and necessary housing expenses",
+                        )
+                    }
+                    cell {
+                        includePhrase(kroner, beregnetUT.map { it.annetBelop })
+                    }
                 }
-                cell {
-                    includePhrase(kroner, beregnetUT.map { it.annetBelop })
-                }
-            }
-        }
-
-        //if dekningFasteUtgifter >0 and annetBeloep >0 tekst 107
-        showIf(beregnetUT.map {
-            it.dekningFasteUtgifter > 0 && it.annetBelop > 0
-        }) {
-            row {
-                cell {
-                    text(
-                        Bokmal to "Fratrukket faste og nødvendige utgifter",
-                        Nynorsk to "Fråtrekt faste og nødvendige utgifter",
-                        English to "Deducted amount for fixed and necessary housing expenses",
-                    )
-                }
-                cell {
-                    includePhrase(kroner, beregnetUT.map { it.annetBelop })
+            }.orShow {
+                row {
+                    cell {
+                        text(
+                            Bokmal to "Fratrukket beløp",
+                            Nynorsk to "Fråtrekt beløp",
+                            English to "Deducted amount",
+                        )
+                    }
+                    cell {
+                        includePhrase(kroner, beregnetUT.map { it.annetBelop })
+                    }
                 }
             }
         }
 
-        //tekst108 sum skatt (obligatorisk)
         row {
             cell {
                 text(
@@ -239,7 +230,6 @@ data class TabellBeregnetUTAvkortetDto(
 
 val tabellBeregnetUTAvkortet = ParagraphPhrase<LangBokmalNynorskEnglish, TabellBeregnetUTAvkortetDto> { beregnetUT ->
     table(
-        //tekst109 ufoeretrygd foer og etter fradrag (obligatorisk)
         header = {
             column {} //TODO skal det stå noe her?
             column(alignment = Element.Table.ColumnAlignment.RIGHT) {
@@ -260,7 +250,6 @@ val tabellBeregnetUTAvkortet = ParagraphPhrase<LangBokmalNynorskEnglish, TabellB
             }
         }
     ) {
-        //tektst110 ufoeretrygd foer og etter fradrag (obligatorisk)
         row {
             cell {
                 text(
@@ -277,7 +266,6 @@ val tabellBeregnetUTAvkortet = ParagraphPhrase<LangBokmalNynorskEnglish, TabellB
             }
         }
 
-        //if barnetillegg != "" tekst111
         ifNotNull(beregnetUT.map { it.barnetillegg }) { barnetillegg ->
             row {
                 cell {
@@ -297,8 +285,6 @@ val tabellBeregnetUTAvkortet = ParagraphPhrase<LangBokmalNynorskEnglish, TabellB
                 }
             }
         }
-
-        //if garatitilleggNordisk27 !="" tekst112
 
         ifNotNull(beregnetUT.map { it.garantitilleggNordisk27 }) { garantitillegg ->
             row {
@@ -320,7 +306,6 @@ val tabellBeregnetUTAvkortet = ParagraphPhrase<LangBokmalNynorskEnglish, TabellB
             }
         }
 
-        //tekst113 sum skatt (obligatorisk)
         row {
             cell {
                 text(

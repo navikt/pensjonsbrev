@@ -415,8 +415,6 @@ val InfoFBTilSB_001 = OutlinePhrase<LangBokmalNynorskEnglish, List<String>> { ba
             }
         }
     }
-
-
 }
 
 val InfoTidligereSB_001 = OutlinePhrase<LangBokmalNynorskEnglish, List<String>> { tidligereSaerkullsbarn ->
