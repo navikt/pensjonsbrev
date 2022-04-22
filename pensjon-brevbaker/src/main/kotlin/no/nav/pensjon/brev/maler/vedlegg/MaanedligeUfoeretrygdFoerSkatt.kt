@@ -1,4 +1,4 @@
-package no.nav.pensjon.brev.no.nav.pensjon.brev.maler.vedlegg
+package no.nav.pensjon.brev.maler.vedlegg
 
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligUfoeretrygdFoerSkattDto
 import no.nav.pensjon.brev.maler.fraser.tabellBeregnetUTHele
@@ -28,7 +28,7 @@ val maanedligUfoeretrygdFoerSkatt = createAttachment<LangBokmalNynorskEnglish, M
     includePhrase(tabellBeregnetUTHele, gjeldendeUfoeretrygd)
 
     showIf(argument().map { it.tidligereUfoeretrygdPerioder.isNotEmpty()}) {
-        val virkDato = argument().map { it.virkningDatoFraOgMed_krav }
+        val virkDato = argument().map { it.krav_virkningsDatoFraOgMed }
         title1 {
             textExpr(
                 Bokmal to "Oversikt over uføretrygdens størrelse fra ".expr() + virkDato.format(),

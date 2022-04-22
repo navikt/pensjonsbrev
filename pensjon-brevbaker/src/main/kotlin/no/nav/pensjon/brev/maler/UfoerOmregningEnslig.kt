@@ -7,7 +7,7 @@ import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDto
 import no.nav.pensjon.brev.maler.fraser.*
 import no.nav.pensjon.brev.maler.vedlegg.opplysningerBruktIBeregningUT
 import no.nav.pensjon.brev.maler.vedlegg.orienteringOmRettigheterOgPlikter
-import no.nav.pensjon.brev.no.nav.pensjon.brev.maler.vedlegg.maanedligUfoeretrygdFoerSkatt
+import no.nav.pensjon.brev.maler.vedlegg.maanedligUfoeretrygdFoerSkatt
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.StaticTemplate
 import no.nav.pensjon.brev.template.base.PensjonLatex
@@ -31,9 +31,9 @@ object UfoerOmregningEnslig : StaticTemplate {
     ) {
         outline {
 
-            val harMinsteytelseVedVirk = argument().map { it.minsteytelseVedvirk != null }
+            val harMinsteytelseVedVirk = argument().map { it.minsteytelseVedvirk_sats != null }
             val inntektFoerUfoereErSannsynligEndret =
-                argument().select(UfoerOmregningEnsligDto::erSannsynligEndret_inntektForUfoereVedVirk)
+                argument().select(UfoerOmregningEnsligDto::inntektForUfoereVedVirk_erSannsynligEndret)
             val ektefelleTilleggOpphoert = argument().map { it.avdod.ektefelletilleggOpphoert }
 
             val harBarnetilleggVedVirk = argument().map { it.barnetilleggVedVirk != null }
@@ -68,7 +68,7 @@ object UfoerOmregningEnslig : StaticTemplate {
                         and not(harBarnetilleggForSaerkullsbarnVedVirk)
             ) {
                 includePhrase(OmregnUTDodEPSInnledn1_001,
-                    argument().map { OmregnUTDodEPSInnledn1001Dto(it.avdod.navn, it.krav.virkedatoFraOgMed) })
+                    argument().map { OmregnUTDodEPSInnledn1001Dto(it.avdod.navn, it.krav_virkningsDatoFraOgMed) })
             }
 
             showIf(
@@ -85,7 +85,7 @@ object UfoerOmregningEnslig : StaticTemplate {
                         and harBarnetilleggForSaerkullsbarnVedVirk
             ) {
                 includePhrase(OmregnUTBTDodEPSInnledn_001,
-                    argument().map { OmregnUTBTDodEPSInnledn_001Dto(it.avdod.navn, it.krav.virkedatoFraOgMed) })
+                    argument().map { OmregnUTBTDodEPSInnledn_001Dto(it.avdod.navn, it.krav_virkningsDatoFraOgMed) })
             }
 
             showIf(
@@ -105,7 +105,7 @@ object UfoerOmregningEnslig : StaticTemplate {
                         and harBarnOverfoertTilSaerkullsbarn
             ) {
                 includePhrase(OmregnBTDodEPSInnledn_001,
-                    argument().map { OmregnBTDodEPSInnledn_001Dto(it.avdod.navn, it.krav.virkedatoFraOgMed) })
+                    argument().map { OmregnBTDodEPSInnledn_001Dto(it.avdod.navn, it.krav_virkningsDatoFraOgMed) })
             }
 
             includePhrase(BeloepUT, argument().map {
@@ -167,7 +167,7 @@ object UfoerOmregningEnslig : StaticTemplate {
             }
 
             ifNotNull(argument().map { arg ->
-                arg.minsteytelseVedvirk?.let { EndrMYDodEPS2_001Dto(it.sats, arg.ufoeretrygdVedVirk.kompensasjonsgrad) }
+                arg.minsteytelseVedvirk_sats?.let { EndrMYDodEPS2_001Dto(it, arg.ufoeretrygdVedVirk.kompensasjonsgrad) }
             }) {
                 showIf(not(inntektFoerUfoereErSannsynligEndret)) {
                     includePhrase(EndrMYDodEPS2_001, it)
@@ -175,9 +175,9 @@ object UfoerOmregningEnslig : StaticTemplate {
             }
 
             ifNotNull(argument().map { arg ->
-                arg.minsteytelseVedvirk?.let {
+                arg.minsteytelseVedvirk_sats?.let {
                     EndrMYOgMinstIFUDodEPS2_001Dto(
-                        it.sats,
+                        it,
                         arg.inntektFoerUfoerhetVedVirk.beloep,
                         arg.inntektFoerUfoerhetVedVirk.oppjustertBeloep,
                         arg.ufoeretrygdVedVirk.kompensasjonsgrad
@@ -425,7 +425,7 @@ object UfoerOmregningEnslig : StaticTemplate {
                 harUfoereMaanedligBeloepVedvirk
                         and (harMinsteytelseVedVirk or inntektFoerUfoereErSannsynligEndret or ektefelleTilleggOpphoert)
             ) {
-                includePhrase(VirkTdsPktUT_001, argument().map { VirkTdsPktUT_001Dto(it.krav.virkedatoFraOgMed) })
+                includePhrase(VirkTdsPktUT_001, argument().map { VirkTdsPktUT_001Dto(it.krav_virkningsDatoFraOgMed) })
             }
 
             showIf(
@@ -436,7 +436,7 @@ object UfoerOmregningEnslig : StaticTemplate {
                         and not(harBarnOverfoertTilSaerkullsbarn)
             ) {
                 includePhrase(VirkTdsPktUTIkkeEndring_001,
-                    argument().map { VirkTdsPktUTIkkeEndring_001Dto(it.krav.virkedatoFraOgMed) })
+                    argument().map { VirkTdsPktUTIkkeEndring_001Dto(it.krav_virkningsDatoFraOgMed) })
             }
 
             showIf(
@@ -447,12 +447,12 @@ object UfoerOmregningEnslig : StaticTemplate {
                         and harBarnOverfoertTilSaerkullsbarn
             ) {
                 includePhrase(VirkTdsPktUTBTOmregn_001,
-                    argument().map { VirkTdsPktUTBTOmregn_001Dto(it.krav.virkedatoFraOgMed) })
+                    argument().map { VirkTdsPktUTBTOmregn_001Dto(it.krav_virkningsDatoFraOgMed) })
             }
 
             showIf(not(harUfoereMaanedligBeloepVedvirk)) {
                 includePhrase(VirkTdsPktUTAvkortetTil0_001,
-                    argument().map { VirkTdsPktUTAvkortetTil0_001Dto(it.krav.virkedatoFraOgMed) })
+                    argument().map { VirkTdsPktUTAvkortetTil0_001Dto(it.krav_virkningsDatoFraOgMed) })
             }
 
             includePhrase(MeldInntektUTOverskrift_001)
@@ -478,6 +478,6 @@ object UfoerOmregningEnslig : StaticTemplate {
 
         includeAttachment(orienteringOmRettigheterOgPlikter, argument().map { it.orienteringOmRettigheterOgPlikter })
         includeAttachment(opplysningerBruktIBeregningUT, argument().map { it.opplysningerBruktIBeregningUT })
-        includeAttachment(maanedligUfoeretrygdFoerSkatt, argument().map { it.maanedligUfoeretrygdFoerSkattDto })
+        includeAttachment(maanedligUfoeretrygdFoerSkatt, argument().map { it.maanedligUfoeretrygdFoerSkatt })
     }
 }

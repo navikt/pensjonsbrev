@@ -11,14 +11,14 @@ import java.time.LocalDate
 data class UfoerOmregningEnsligDto(
     val opplysningerBruktIBeregningUT: OpplysningerBruktIBeregningUTDto,
     val orienteringOmRettigheterOgPlikter: OrienteringOmRettigheterDto,
-    val maanedligUfoeretrygdFoerSkattDto: MaanedligUfoeretrygdFoerSkattDto,
+    val maanedligUfoeretrygdFoerSkatt: MaanedligUfoeretrygdFoerSkattDto,
     val avdod: Avdod,
-    val minsteytelseVedvirk: MinsteytelseVedvirk?,
+    val minsteytelseVedvirk_sats: Double?,
     val ufoeretrygdVedVirk: UfoeretrygdVedVirk,
     val beregnetUTPerManed_antallBeregningsperioderPaVedtak: Int,
     val institusjonsoppholdVedVirk: Institusjon,
-    val erSannsynligEndret_inntektForUfoereVedVirk: Boolean,
-    val krav: Krav,
+    val inntektForUfoereVedVirk_erSannsynligEndret: Boolean,
+    val krav_virkningsDatoFraOgMed: LocalDate,
     val barnetilleggSaerkullsbarnGjeldende_erRedusertMotInntekt: Boolean,
     val inntektFoerUfoerhetVedVirk: InntektFoerUfoerhetVedVirk,
     val bruker: Bruker,
@@ -27,18 +27,16 @@ data class UfoerOmregningEnsligDto(
     constructor() : this(
         opplysningerBruktIBeregningUT = OpplysningerBruktIBeregningUTDto(),
         orienteringOmRettigheterOgPlikter = OrienteringOmRettigheterDto(),
-        maanedligUfoeretrygdFoerSkattDto = MaanedligUfoeretrygdFoerSkattDto(),
-        erSannsynligEndret_inntektForUfoereVedVirk = false,
-        minsteytelseVedvirk = MinsteytelseVedvirk(sats = 0.0),
+        maanedligUfoeretrygdFoerSkatt = MaanedligUfoeretrygdFoerSkattDto(),
+        inntektForUfoereVedVirk_erSannsynligEndret = false,
+        minsteytelseVedvirk_sats = 0.0,
         avdod = Avdod(
             navn = "Avdod Person",
             ektefelletilleggOpphoert = false,
             sivilstand = Sivilstand.SAMBOER3_2,
             harFellesBarnUtenBarnetillegg = false,
         ),
-        krav = Krav(
-            virkedatoFraOgMed = LocalDate.of(2020, 1, 1)
-        ),
+        krav_virkningsDatoFraOgMed = LocalDate.of(2020, 1, 1),
         beregnetUTPerManed_antallBeregningsperioderPaVedtak = 0,
         institusjonsoppholdVedVirk = Institusjon.INGEN,
         ufoeretrygdVedVirk = UfoeretrygdVedVirk(
@@ -82,7 +80,6 @@ data class UfoerOmregningEnsligDto(
                 belopEtterReduksjon = 0,
             )
         )
-
     )
 
 

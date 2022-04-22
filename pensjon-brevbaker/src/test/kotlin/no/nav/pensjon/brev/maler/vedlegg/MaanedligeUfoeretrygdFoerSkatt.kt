@@ -9,7 +9,6 @@ import no.nav.pensjon.brev.api.model.vedlegg.MaanedligUfoeretrygdFoerSkattDto
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligUfoeretrygdFoerSkattDto.UfoeretrygdPerMaaned
 import no.nav.pensjon.brev.latex.LaTeXCompilerService
 import no.nav.pensjon.brev.latex.PdfCompilationInput
-import no.nav.pensjon.brev.no.nav.pensjon.brev.maler.vedlegg.maanedligUfoeretrygdFoerSkatt
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Letter
 import no.nav.pensjon.brev.template.base.PensjonLatex
@@ -59,7 +58,6 @@ class MaanedligUfoeretrygdFoerSkatt {
                 MaanedligUfoeretrygdFoerSkattDto(
                     ufoeretrygdPerMaaned,
                     LocalDate.of(2020,1,1),
-                    2,
                     listOf(
                         ufoeretrygdPerMaaned,
                         ufoeretrygdPerMaaned.copy(erAvkortet = false),

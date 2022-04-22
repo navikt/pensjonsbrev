@@ -19,7 +19,6 @@ import no.nav.pensjon.brev.template.Letter
 import no.nav.pensjon.brev.writeTestPDF
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
-import java.time.LocalDate
 
 @Tag(TestTags.PDF_BYGGER)
 class UfoerOmregningEnsligITest {
@@ -39,7 +38,7 @@ class UfoerOmregningEnsligITest {
                     minsteytelseGjeldende_sats = 10.00,
                     ungUforGjeldende_erUnder20Ar = true,
                 ),
-                maanedligUfoeretrygdFoerSkattDto = MaanedligUfoeretrygdFoerSkattDto(),
+                maanedligUfoeretrygdFoerSkatt = MaanedligUfoeretrygdFoerSkattDto(),
                 orienteringOmRettigheterOgPlikter = OrienteringOmRettigheterDto().copy(
                     eps_bor_sammen_med_bruker_gjeldende = true,
                     eps_institusjon_gjeldende = Institusjon.INGEN,
