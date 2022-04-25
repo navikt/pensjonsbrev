@@ -33,7 +33,7 @@ object UfoerOmregningEnslig : StaticTemplate {
 
             val harMinsteytelseVedVirk = argument().map { it.minsteytelseVedvirk_sats != null }
             val inntektFoerUfoereErSannsynligEndret =
-                argument().select(UfoerOmregningEnsligDto::inntektForUfoereVedVirk_erSannsynligEndret)
+                argument().map {it.inntektFoerUfoerhetVedVirk.erSannsynligEndret}
             val ektefelleTilleggOpphoert = argument().map { it.avdod.ektefelletilleggOpphoert }
 
             val harBarnetilleggVedVirk = argument().map { it.barnetilleggVedVirk != null }

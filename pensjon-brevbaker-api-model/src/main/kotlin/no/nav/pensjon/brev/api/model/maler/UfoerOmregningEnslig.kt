@@ -17,7 +17,6 @@ data class UfoerOmregningEnsligDto(
     val ufoeretrygdVedVirk: UfoeretrygdVedVirk,
     val beregnetUTPerManed_antallBeregningsperioderPaVedtak: Int,
     val institusjonsoppholdVedVirk: Institusjon,
-    val inntektForUfoereVedVirk_erSannsynligEndret: Boolean,
     val krav_virkningsDatoFraOgMed: LocalDate,
     val barnetilleggSaerkullsbarnGjeldende_erRedusertMotInntekt: Boolean,
     val inntektFoerUfoerhetVedVirk: InntektFoerUfoerhetVedVirk,
@@ -28,7 +27,6 @@ data class UfoerOmregningEnsligDto(
         opplysningerBruktIBeregningUT = OpplysningerBruktIBeregningUTDto(),
         orienteringOmRettigheterOgPlikter = OrienteringOmRettigheterDto(),
         maanedligUfoeretrygdFoerSkatt = MaanedligUfoeretrygdFoerSkattDto(),
-        inntektForUfoereVedVirk_erSannsynligEndret = false,
         minsteytelseVedvirk_sats = 0.0,
         avdod = Avdod(
             navn = "Avdod Person",
@@ -45,7 +43,7 @@ data class UfoerOmregningEnsligDto(
             erInntektsavkortet = false
         ),
         inntektFoerUfoerhetVedVirk = InntektFoerUfoerhetVedVirk(
-            oppjustertBeloep = 0, beloep = 0, erMinsteinntekt = false
+            oppjustertBeloep = 0, beloep = 0, erMinsteinntekt = false, erSannsynligEndret = false
         ),
         barnetilleggSaerkullsbarnGjeldende_erRedusertMotInntekt = false,
         bruker = Bruker(
@@ -98,7 +96,12 @@ data class UfoerOmregningEnsligDto(
         val erInntektsavkortet: Boolean,
     )
 
-    data class InntektFoerUfoerhetVedVirk(val oppjustertBeloep: Int, val beloep: Int, val erMinsteinntekt: Boolean)
+    data class InntektFoerUfoerhetVedVirk(
+        val oppjustertBeloep: Int,
+        val beloep: Int,
+        val erMinsteinntekt: Boolean,
+        val erSannsynligEndret: Boolean
+    )
 
     data class Bruker(
         val borIAvtaleLand: Boolean,
