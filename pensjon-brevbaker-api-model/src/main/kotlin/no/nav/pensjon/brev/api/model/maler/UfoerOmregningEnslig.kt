@@ -71,7 +71,7 @@ data class UfoerOmregningEnsligDto(
             ),
             barnetilleggGrunnlag = BarnetilleggGrunnlagVedVirk(
                 erRedusertMotTak = false,
-                prosentsatsGradertOverInntektFoerUfoer = 0.0,
+                prosentsatsGradertOverInntektFoerUfoer = 0,
                 gradertOverInntektFoerUfoer = 0,
                 erIkkeUtbetPgaTak = false,
                 belopFoerReduksjon = 0,
@@ -115,7 +115,7 @@ data class UfoerOmregningEnsligDto(
 
     data class BarnetilleggGrunnlagVedVirk(
         val erRedusertMotTak: Boolean,
-        val prosentsatsGradertOverInntektFoerUfoer: Double,
+        val prosentsatsGradertOverInntektFoerUfoer: Int,
         val gradertOverInntektFoerUfoer: Int,
         val erIkkeUtbetPgaTak: Boolean,
         val belopFoerReduksjon: Int,
