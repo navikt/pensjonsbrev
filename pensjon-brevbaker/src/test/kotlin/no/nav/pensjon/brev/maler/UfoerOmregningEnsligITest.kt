@@ -32,7 +32,6 @@ class UfoerOmregningEnsligITest {
                     barnetilleggGjeldende = BarnetilleggGjeldende().copy(
                         saerkullsbarn = BarnetilleggGjeldende.Saerkullsbarn().copy(
                             erRedusertMotinntekt = true,
-                            erEndret = true
                         )
                     ),
                     minsteytelseGjeldende_sats = 10.00,

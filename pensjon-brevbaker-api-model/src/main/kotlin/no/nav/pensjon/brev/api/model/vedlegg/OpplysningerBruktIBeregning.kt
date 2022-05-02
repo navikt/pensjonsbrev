@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.api.model.vedlegg
 
 import no.nav.pensjon.brev.api.model.BeregningsMetode
+import no.nav.pensjon.brev.api.model.Sivilstand
 import java.time.LocalDate
 
 data class OpplysningerBruktIBeregningUTDto(
@@ -70,7 +71,6 @@ data class OpplysningerBruktIBeregningUTDto(
             val belop: Int,
             val belopAr: Int,
             val belopArForAvkort: Int,
-            val erEndret: Boolean,
             val erRedusertMotinntekt: Boolean,
             val fribelop: Int,
             val fribelopEllerInntektErPeriodisert: Boolean,
@@ -84,7 +84,6 @@ data class OpplysningerBruktIBeregningUTDto(
                 belop = 0,
                 belopAr = 0,
                 belopArForAvkort = 0,
-                erEndret = false,
                 erRedusertMotinntekt = false,
                 fribelop = 0,
                 fribelopEllerInntektErPeriodisert = false,
@@ -132,13 +131,13 @@ data class OpplysningerBruktIBeregningUTDto(
 
     data class BeregnetUTPerManedGjeldende(
         val brukerErFlyktning: Boolean,
-        val brukersSivilstand: String,
+        val brukersSivilstand: Sivilstand,
         val grunnbelop: Int,
         val virkDatoFom: LocalDate,
     ){
         constructor() : this(
             brukerErFlyktning = false,
-            brukersSivilstand = "",
+            brukersSivilstand = Sivilstand.ENSLIG,
             grunnbelop = 0,
             virkDatoFom = LocalDate.of(2020, 1, 1),
         )
