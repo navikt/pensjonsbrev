@@ -55,7 +55,7 @@ val orienteringOmRettigheterOgPlikter = createAttachment<LangBokmalNynorskEnglis
                 item { includePhrase(vedleggPlikterAP3_001) }
             }
             showIf(
-                sivilstand.isOneOf(ENSLIG, ENKE, Sivilstand.INGEN)
+                sivilstand.isOneOf(ENSLIG, ENKE)
                     and not(institusjon_gjeldende.isOneOf(FENGSEL, HELSE, SYKEHJEM))
             ) {
                 item { includePhrase(vedleggPlikterAP1_001) }
@@ -170,7 +170,7 @@ val orienteringOmRettigheterOgPlikter = createAttachment<LangBokmalNynorskEnglis
                 item { includePhrase(vedleggPlikterAP10_001) }
             }
             showIf(
-                not(sivilstand.isOneOf(ENSLIG, ENKE, Sivilstand.INGEN))
+                not(sivilstand.isOneOf(ENSLIG, ENKE))
                     and (eps_bor_sammen_med_bruker_eps_gjeldende)
                     and not(institusjon_gjeldende.isOneOf(FENGSEL, HELSE, SYKEHJEM))
                     and not(eps_institusjon_gjeldende.isOneOf(Institusjon.INGEN))
@@ -182,7 +182,7 @@ val orienteringOmRettigheterOgPlikter = createAttachment<LangBokmalNynorskEnglis
                 }
             }
             showIf(
-                sivilstand.isOneOf(ENSLIG, ENKE, Sivilstand.INGEN)
+                sivilstand.isOneOf(ENSLIG, ENKE)
                     and not(institusjon_gjeldende.isOneOf(FENGSEL, HELSE, SYKEHJEM))
                     and bor_i_norge
             ) {
@@ -266,7 +266,7 @@ val orienteringOmRettigheterOgPlikter = createAttachment<LangBokmalNynorskEnglis
             // Mandatory phrase
             item { includePhrase(vedleggPlikterUT5_001) }
             showIf(
-                sivilstand.isOneOf(ENSLIG, ENKE, Sivilstand.INGEN)
+                sivilstand.isOneOf(ENSLIG, ENKE)
             ) {
                 item { includePhrase(vedleggPlikterUT6_001) }
             }
@@ -293,7 +293,7 @@ val orienteringOmRettigheterOgPlikter = createAttachment<LangBokmalNynorskEnglis
             // Mandatory phrase
             item { includePhrase(vedleggPlikterAFP1_001) }
             showIf(
-                sivilstand.isOneOf(ENSLIG, ENKE, Sivilstand.INGEN)
+                sivilstand.isOneOf(ENSLIG, ENKE)
             ) {
                 item { includePhrase(vedleggPlikterAFP2_001) }
             }
