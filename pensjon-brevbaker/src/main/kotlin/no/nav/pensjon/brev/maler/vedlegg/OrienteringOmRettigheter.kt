@@ -241,8 +241,8 @@ val orienteringOmRettigheterOgPlikter = createAttachment<LangBokmalNynorskEnglis
             includePhrase(vedleggPlikterinntektsprovingETAP_001)
         }
     }
-    // END of Saktype = ALDER
-    // START of Saktype = UFOEREP, include phrases
+    // END of Sakstype = ALDER
+    // START of Sakstype = UFOEREP, include phrases
     // Mandatory phrase vedleggPlikterUT_001
     showIf(saktype.isOneOf(Sakstype.UFOEREP)
     ) {
