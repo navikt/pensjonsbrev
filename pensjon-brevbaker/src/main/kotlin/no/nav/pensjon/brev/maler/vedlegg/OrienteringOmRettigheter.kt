@@ -37,7 +37,7 @@ val orienteringOmRettigheterOgPlikter = createAttachment<LangBokmalNynorskEnglis
         argument().select(OrienteringOmRettigheterDto::barnetillegg_beloep_gjeldendeBeregnetUTPerManed)
 
 
-    // START of saktype = ALDER, include phrases
+    // START of Sakstype = ALDER, include phrases
     // Mandatory phrase: vedleggPlikter_001
     showIf(saktype.isOneOf(Sakstype.ALDER)) {
         includePhrase(vedleggPlikter_001)
@@ -241,8 +241,8 @@ val orienteringOmRettigheterOgPlikter = createAttachment<LangBokmalNynorskEnglis
             includePhrase(vedleggPlikterinntektsprovingETAP_001)
         }
     }
-    // END of saktype = ALDER
-    // START of saktype = UFOEREP, include phrases
+    // END of Saktype = ALDER
+    // START of Saktype = UFOEREP, include phrases
     // Mandatory phrase vedleggPlikterUT_001
     showIf(saktype.isOneOf(Sakstype.UFOEREP)
     ) {
@@ -283,8 +283,8 @@ val orienteringOmRettigheterOgPlikter = createAttachment<LangBokmalNynorskEnglis
             item { includePhrase(vedleggPlikterUT12_001) }
         }
     }
-    //END of saktype = UFOEREP
-    // START of saktype = AFP, include phraser
+    //END of Sakstype = UFOEREP
+    // START of Sakstype = AFP, include phraser
     // Mandatory phrase vedleggPlikterAFP_001
     showIf(saktype.isOneOf(Sakstype.AFP)
     ) {
@@ -311,7 +311,7 @@ val orienteringOmRettigheterOgPlikter = createAttachment<LangBokmalNynorskEnglis
             }
         }
     }
-    // END of saktype = AFP
+    // END of Sakstype = AFP
     showIf(
         saktype.isOneOf(Sakstype.ALDER)
     ) {
