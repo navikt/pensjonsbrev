@@ -5,27 +5,27 @@ import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.Sivilstand
 
 data class OrienteringOmRettigheterDto(
-    val sivilstand: Sivilstand,
-    val bor_i_norge: Boolean,
+    val bruker_sivilstand: Sivilstand,
+    val bruker_borINorge: Boolean,
     val institusjon_gjeldende: Institusjon,
-    val eps_bor_sammen_med_bruker_gjeldende: Boolean,
-    val eps_institusjon_gjeldende: Institusjon,
-    val har_barnetillegg_felles_barn_vedvirk: Boolean,
-    val har_barnetillegg_for_saerkullsbarn_vedvirk: Boolean,
-    val har_ektefelletillegg_vedvirk: Boolean,
+    val eps_borSammenMedBrukerGjeldende: Boolean,
+    val instutisjon_epsInstitusjonGjeldende: Institusjon,
+    val barnetilleggVedvirk_innvilgetBarnetillegFellesbarn: Boolean,
+    val barnetilleggVedvirk_innvilgetBarnetilleggSaerkullsbarn: Boolean,
+    val ektefelletilleggVedvirk_innvilgetEktefelletillegg: Boolean,
     val saktype: Sakstype,
-    val barnetillegg_beloep_gjeldendeBeregnetUTPerManed: Int,
+    val ufoeretrygdPerMaaned_barnetilleggGjeldende: Int,
 ) {
     constructor() : this(
-        sivilstand = Sivilstand.ENSLIG,
-        bor_i_norge = false,
+        bruker_sivilstand = Sivilstand.ENSLIG,
+        bruker_borINorge = false,
         institusjon_gjeldende = Institusjon.INGEN,
-        eps_bor_sammen_med_bruker_gjeldende = false,
-        eps_institusjon_gjeldende = Institusjon.INGEN,
-        har_barnetillegg_felles_barn_vedvirk = false,
-        har_barnetillegg_for_saerkullsbarn_vedvirk = false,
-        har_ektefelletillegg_vedvirk = false,
+        eps_borSammenMedBrukerGjeldende = false,
+        instutisjon_epsInstitusjonGjeldende = Institusjon.INGEN,
+        barnetilleggVedvirk_innvilgetBarnetillegFellesbarn = false,
+        barnetilleggVedvirk_innvilgetBarnetilleggSaerkullsbarn = false,
+        ektefelletilleggVedvirk_innvilgetEktefelletillegg = false,
         saktype = Sakstype.UFOEREP,
-        barnetillegg_beloep_gjeldendeBeregnetUTPerManed = 0,
+        ufoeretrygdPerMaaned_barnetilleggGjeldende = 0,
     )
 }

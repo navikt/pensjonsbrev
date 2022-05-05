@@ -40,11 +40,11 @@ class UfoerOmregningEnsligITest {
                 ),
                 maanedligUfoeretrygdFoerSkatt = MaanedligUfoeretrygdFoerSkattDto(),
                 orienteringOmRettigheterOgPlikter = OrienteringOmRettigheterDto().copy(
-                    eps_bor_sammen_med_bruker_gjeldende = true,
-                    eps_institusjon_gjeldende = Institusjon.INGEN,
-                    har_barnetillegg_felles_barn_vedvirk = false,
-                    har_barnetillegg_for_saerkullsbarn_vedvirk = false,
-                    har_ektefelletillegg_vedvirk = true,
+                    eps_borSammenMedBrukerGjeldende = true,
+                    instutisjon_epsInstitusjonGjeldende = Institusjon.INGEN,
+                    barnetilleggVedvirk_innvilgetBarnetillegFellesbarn = false,
+                    barnetilleggVedvirk_innvilgetBarnetilleggSaerkullsbarn = false,
+                    ektefelletilleggVedvirk_innvilgetEktefelletillegg = true,
                     saktype = Sakstype.ALDER,
                 ),
                 avdod = UfoerOmregningEnsligDto.Avdod(

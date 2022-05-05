@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.api.model.vedlegg
 
-import no.nav.pensjon.brev.api.model.BeregningsMetode
+import no.nav.pensjon.brev.api.model.Beregningsmetode
 import java.time.LocalDate
 
 data class OpplysningerBruktIBeregningUTDto(
@@ -98,7 +98,7 @@ data class OpplysningerBruktIBeregningUTDto(
 
     data class TrygdetidsdetaljerGjeldende(
         val anvendtTT: Int,
-        val beregningsMetode: BeregningsMetode,
+        val beregningsmetode: Beregningsmetode,
         val faktiskTTBilateral: Int,
         val faktiskTTEOS: Int,
         val nevnerTTEOS: Int,
@@ -114,7 +114,7 @@ data class OpplysningerBruktIBeregningUTDto(
     ){
         constructor() : this(
             anvendtTT = 0,
-            beregningsMetode = BeregningsMetode.FOLKETRYGD,
+            beregningsmetode = Beregningsmetode.FOLKETRYGD,
             faktiskTTBilateral = 0,
             faktiskTTEOS = 0,
             faktiskTTNordiskKonv = 0,

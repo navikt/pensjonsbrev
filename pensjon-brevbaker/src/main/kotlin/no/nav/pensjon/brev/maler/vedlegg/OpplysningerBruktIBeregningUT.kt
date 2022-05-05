@@ -1,7 +1,7 @@
 package no.nav.pensjon.brev.maler.vedlegg
 
 
-import no.nav.pensjon.brev.api.model.BeregningsMetode
+import no.nav.pensjon.brev.api.model.Beregningsmetode
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDto
 import no.nav.pensjon.brev.maler.fraser.*
 import no.nav.pensjon.brev.maler.fraser.common.Felles.kroner
@@ -361,7 +361,7 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
         }
 
         showIf(argument().map {
-            (it.beregnetUTPerManedGjeldende.brukerErFlyktning && (it.trygdetidsdetaljerGjeldende.beregningsMetode == BeregningsMetode.FOLKETRYGD))
+            (it.beregnetUTPerManedGjeldende.brukerErFlyktning && (it.trygdetidsdetaljerGjeldende.beregningsmetode == Beregningsmetode.FOLKETRYGD))
         })
         {
             row {
@@ -383,7 +383,7 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
         }
         showIf(argument().map {
             (it.beregnetUTPerManedGjeldende.brukerErFlyktning
-                    && (it.trygdetidsdetaljerGjeldende.beregningsMetode == BeregningsMetode.FOLKETRYGD))
+                    && (it.trygdetidsdetaljerGjeldende.beregningsmetode == Beregningsmetode.FOLKETRYGD))
         })
         {
             row {
@@ -405,7 +405,7 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
             }
         }
         showIf(argument().map {
-            (it.trygdetidsdetaljerGjeldende.beregningsMetode == BeregningsMetode.EOS || it.trygdetidsdetaljerGjeldende.beregningsMetode == BeregningsMetode.NORDISK)
+            (it.trygdetidsdetaljerGjeldende.beregningsmetode == Beregningsmetode.EOS || it.trygdetidsdetaljerGjeldende.beregningsmetode == Beregningsmetode.NORDISK)
         })
         {
             row {
@@ -429,9 +429,9 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
             }
         }
         showIf(argument().map {
-            (it.trygdetidsdetaljerGjeldende.beregningsMetode != BeregningsMetode.FOLKETRYGD
-                    && it.trygdetidsdetaljerGjeldende.beregningsMetode != BeregningsMetode.NORDISK
-                    && it.trygdetidsdetaljerGjeldende.beregningsMetode != BeregningsMetode.EOS)
+            (it.trygdetidsdetaljerGjeldende.beregningsmetode != Beregningsmetode.FOLKETRYGD
+                    && it.trygdetidsdetaljerGjeldende.beregningsmetode != Beregningsmetode.NORDISK
+                    && it.trygdetidsdetaljerGjeldende.beregningsmetode != Beregningsmetode.EOS)
         })
         {
             row {
@@ -454,7 +454,7 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
             }
         }
         showIf(argument().map {
-            it.trygdetidsdetaljerGjeldende.beregningsMetode != BeregningsMetode.FOLKETRYGD
+            it.trygdetidsdetaljerGjeldende.beregningsmetode != Beregningsmetode.FOLKETRYGD
         })
         {
             row {
@@ -472,7 +472,7 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
             }
         }
         showIf(argument().map {
-            it.trygdetidsdetaljerGjeldende.beregningsMetode == BeregningsMetode.EOS
+            it.trygdetidsdetaljerGjeldende.beregningsmetode == Beregningsmetode.EOS
         })
         {
             row {
@@ -490,7 +490,7 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
             }
         }
         showIf(argument().map {
-            it.trygdetidsdetaljerGjeldende.beregningsMetode == BeregningsMetode.EOS
+            it.trygdetidsdetaljerGjeldende.beregningsmetode == Beregningsmetode.EOS
         })
         {
             row {
@@ -508,7 +508,7 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
             }
         }
         showIf(argument().map {
-            it.trygdetidsdetaljerGjeldende.beregningsMetode == BeregningsMetode.EOS
+            it.trygdetidsdetaljerGjeldende.beregningsmetode == Beregningsmetode.EOS
         })
         {
             row {
@@ -533,7 +533,7 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
             }
         }
         showIf(argument().map {
-            it.trygdetidsdetaljerGjeldende.beregningsMetode == BeregningsMetode.NORDISK
+            it.trygdetidsdetaljerGjeldende.beregningsmetode == Beregningsmetode.NORDISK
         })
         {
             row {
@@ -551,7 +551,7 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
         }
 // TODO Calculation!! (framtidigTTNorsk / 12) < 40)
         showIf(argument().map {
-            ((it.trygdetidsdetaljerGjeldende.beregningsMetode == BeregningsMetode.FOLKETRYGD || it.trygdetidsdetaljerGjeldende.beregningsMetode == BeregningsMetode.NORDISK)
+            ((it.trygdetidsdetaljerGjeldende.beregningsmetode == Beregningsmetode.FOLKETRYGD || it.trygdetidsdetaljerGjeldende.beregningsmetode == Beregningsmetode.NORDISK)
                     && ((it.trygdetidsdetaljerGjeldende.framtidigTTNorsk / 12) < 40))
         })
         {
@@ -568,7 +568,7 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
                 }
             }
         }
-        showIf(argument().map { it.trygdetidsdetaljerGjeldende.beregningsMetode == BeregningsMetode.NORDISK }) {
+        showIf(argument().map { it.trygdetidsdetaljerGjeldende.beregningsmetode == Beregningsmetode.NORDISK }) {
             row {
                 cell {
                     text(
@@ -591,7 +591,7 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
             }
         }
         showIf(argument().map {
-            it.trygdetidsdetaljerGjeldende.beregningsMetode == BeregningsMetode.NORDISK
+            it.trygdetidsdetaljerGjeldende.beregningsmetode == Beregningsmetode.NORDISK
         })
         {
             row {
@@ -608,12 +608,12 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
             }
         }
 
-        val beregningsmetode_trygdetidsdetaljer = argument().map { (it.trygdetidsdetaljerGjeldende.beregningsMetode) }
+        val beregningsmetode_trygdetidsdetaljer = argument().map { (it.trygdetidsdetaljerGjeldende.beregningsmetode) }
         showIf(
             beregningsmetode_trygdetidsdetaljer.isNotAnyOf(
-                BeregningsMetode.FOLKETRYGD,
-                BeregningsMetode.NORDISK,
-                BeregningsMetode.EOS
+                Beregningsmetode.FOLKETRYGD,
+                Beregningsmetode.NORDISK,
+                Beregningsmetode.EOS
             )
         )
         {

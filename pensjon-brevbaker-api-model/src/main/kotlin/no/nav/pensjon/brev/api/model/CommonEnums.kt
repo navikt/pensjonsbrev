@@ -26,7 +26,7 @@ enum class Institusjon{
     INGEN,
 }
 
-enum class BeregningsMetode{
+enum class Beregningsmetode{
     AUSTRALIA,
     CANADA,
     CHILE,
