@@ -4,14 +4,12 @@ import kotlinx.coroutines.runBlocking
 import no.nav.pensjon.brev.Fixtures
 import no.nav.pensjon.brev.PDF_BUILDER_URL
 import no.nav.pensjon.brev.TestTags
-import no.nav.pensjon.brev.api.model.Institusjon
-import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.Sivilstand
 import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDto
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligUfoeretrygdFoerSkattDto
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDto
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDto.BarnetilleggGjeldende
-import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterDto
+import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterUfoereDto
 import no.nav.pensjon.brev.latex.LaTeXCompilerService
 import no.nav.pensjon.brev.latex.PdfCompilationInput
 import no.nav.pensjon.brev.template.Language
@@ -32,21 +30,13 @@ class UfoerOmregningEnsligITest {
                     barnetilleggGjeldende = BarnetilleggGjeldende().copy(
                         saerkullsbarn = BarnetilleggGjeldende.Saerkullsbarn().copy(
                             erRedusertMotinntekt = true,
-                            erEndret = true
                         )
                     ),
                     minsteytelseGjeldende_sats = 10.00,
                     ungUforGjeldende_erUnder20Ar = true,
                 ),
                 maanedligUfoeretrygdFoerSkatt = MaanedligUfoeretrygdFoerSkattDto(),
-                orienteringOmRettigheterOgPlikter = OrienteringOmRettigheterDto().copy(
-                    eps_borSammenMedBrukerGjeldende = true,
-                    instutisjon_epsInstitusjonGjeldende = Institusjon.INGEN,
-                    barnetilleggVedvirk_innvilgetBarnetillegFellesbarn = false,
-                    barnetilleggVedvirk_innvilgetBarnetilleggSaerkullsbarn = false,
-                    ektefelletilleggVedvirk_innvilgetEktefelletillegg = true,
-                    saktype = Sakstype.ALDER,
-                ),
+                orienteringOmRettigheterOgPlikter = OrienteringOmRettigheterUfoereDto(),
                 avdod = UfoerOmregningEnsligDto.Avdod(
                     sivilstand = Sivilstand.PARTNER,
                     navn = "Avdod person",

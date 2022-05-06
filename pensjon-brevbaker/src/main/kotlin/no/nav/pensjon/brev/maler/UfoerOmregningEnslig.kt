@@ -5,9 +5,9 @@ import no.nav.pensjon.brev.api.model.LetterMetadata
 import no.nav.pensjon.brev.api.model.Sivilstand
 import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDto
 import no.nav.pensjon.brev.maler.fraser.*
-import no.nav.pensjon.brev.maler.vedlegg.opplysningerBruktIBeregningUT
-import no.nav.pensjon.brev.maler.vedlegg.orienteringOmRettigheterOgPlikter
 import no.nav.pensjon.brev.maler.vedlegg.maanedligUfoeretrygdFoerSkatt
+import no.nav.pensjon.brev.maler.vedlegg.opplysningerBruktIBeregningUT
+import no.nav.pensjon.brev.maler.vedlegg.orienteringOmRettigheterOgPlikterUfoere
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.StaticTemplate
 import no.nav.pensjon.brev.template.base.PensjonLatex
@@ -33,7 +33,7 @@ object UfoerOmregningEnslig : StaticTemplate {
 
             val harMinsteytelseVedVirk = argument().map { it.minsteytelseVedvirk_sats != null }
             val inntektFoerUfoereErSannsynligEndret =
-                argument().map {it.inntektFoerUfoerhetVedVirk.erSannsynligEndret}
+                argument().map { it.inntektFoerUfoerhetVedVirk.erSannsynligEndret }
             val ektefelleTilleggOpphoert = argument().map { it.avdod.ektefelletilleggOpphoert }
 
             val harBarnetilleggVedVirk = argument().map { it.barnetilleggVedVirk != null }
@@ -224,8 +224,7 @@ object UfoerOmregningEnslig : StaticTemplate {
                 argument().map { it.barnetilleggVedVirk?.barnetilleggGrunnlag },
             ) { tillegg, grunnlag ->
 
-                val barnetilleggForSaerkullsbarnVedvirkErRedusertMotInntekt =
-                    tillegg.map { it.erRedusertMotInntekt }
+                val barnetilleggForSaerkullsbarnVedvirkErRedusertMotInntekt = tillegg.map { it.erRedusertMotInntekt }
                 val barnetilleggErRedusertMotTak = grunnlag.map { it.erRedusertMotTak }
                 val barnetilleggErIkkeUtbetPgaTak = grunnlag.map { it.erIkkeUtbetPgaTak }
                 val harNettoBeloep = tillegg.map { it.belop > 0 }
@@ -476,7 +475,9 @@ object UfoerOmregningEnslig : StaticTemplate {
             }
         }
 
-        includeAttachment(orienteringOmRettigheterOgPlikter, argument().map { it.orienteringOmRettigheterOgPlikter })
+        includeAttachment(
+            orienteringOmRettigheterOgPlikterUfoere,
+            argument().map { it.orienteringOmRettigheterOgPlikter })
         includeAttachment(opplysningerBruktIBeregningUT, argument().map { it.opplysningerBruktIBeregningUT })
         includeAttachment(maanedligUfoeretrygdFoerSkatt, argument().map { it.maanedligUfoeretrygdFoerSkatt })
     }

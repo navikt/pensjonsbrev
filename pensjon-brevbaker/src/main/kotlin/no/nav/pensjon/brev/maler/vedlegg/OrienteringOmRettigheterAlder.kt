@@ -1,9 +1,9 @@
 package no.nav.pensjon.brev.maler.vedlegg
 
+import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterAlderDto
 import no.nav.pensjon.brev.api.model.Institusjon.*
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.Sivilstand.*
-import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterDto
 import no.nav.pensjon.brev.maler.fraser.*
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.*
@@ -11,7 +11,7 @@ import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.newText
 
-val orienteringOmRettigheterOgPlikter = createAttachment<LangBokmalNynorskEnglish, OrienteringOmRettigheterDto>(
+val orienteringOmRettigheterOgPlikterAlder = createAttachment<LangBokmalNynorskEnglish, OrienteringOmRettigheterAlderDto>(
     title = newText(
         Bokmal to "Dine rettigheter og plikter",
         Nynorsk to "Dine rettar og plikter",
@@ -19,21 +19,19 @@ val orienteringOmRettigheterOgPlikter = createAttachment<LangBokmalNynorskEnglis
     ),
     includeSakspart = true,
 ) {
-    val bor_i_norge = argument().select(OrienteringOmRettigheterDto::bruker_borINorge)
-    val institusjon_gjeldende = argument().select(OrienteringOmRettigheterDto::institusjon_gjeldende)
-    val sivilstand = argument().select(OrienteringOmRettigheterDto::bruker_sivilstand)
+    val bor_i_norge = argument().select(OrienteringOmRettigheterAlderDto::bruker_borINorge)
+    val institusjon_gjeldende = argument().select(OrienteringOmRettigheterAlderDto::institusjon_gjeldende)
+    val sivilstand = argument().select(OrienteringOmRettigheterAlderDto::bruker_sivilstand)
     val eps_bor_sammen_med_bruker_eps_gjeldende =
-        argument().select(OrienteringOmRettigheterDto::eps_borSammenMedBrukerGjeldende)
-    val eps_institusjon_gjeldende = argument().select(OrienteringOmRettigheterDto::instutisjon_epsInstitusjonGjeldende)
+        argument().select(OrienteringOmRettigheterAlderDto::eps_borSammenMedBrukerGjeldende)
+    val eps_institusjon_gjeldende = argument().select(OrienteringOmRettigheterAlderDto::instutisjon_epsInstitusjonGjeldende)
     val har_barnetillegg_felles_barn_vedvirk =
-        argument().select(OrienteringOmRettigheterDto::barnetilleggVedvirk_innvilgetBarnetillegFellesbarn)
+        argument().select(OrienteringOmRettigheterAlderDto::barnetilleggVedvirk_innvilgetBarnetillegFellesbarn)
     val har_barnetillegg_for_saerkullsbarn_vedvirk =
-        argument().select(OrienteringOmRettigheterDto::barnetilleggVedvirk_innvilgetBarnetilleggSaerkullsbarn)
+        argument().select(OrienteringOmRettigheterAlderDto::barnetilleggVedvirk_innvilgetBarnetilleggSaerkullsbarn)
     val har_ektefelletillegg_vedvirk =
-        argument().select(OrienteringOmRettigheterDto::ektefelletilleggVedvirk_innvilgetEktefelletillegg)
-    val saktype = argument().select(OrienteringOmRettigheterDto::saktype)
-    val barnetillegg_beloep_gjeldendeBeregnetUTPerManed =
-        argument().select(OrienteringOmRettigheterDto::ufoeretrygdPerMaaned_barnetilleggGjeldende)
+        argument().select(OrienteringOmRettigheterAlderDto::ektefelletilleggVedvirk_innvilgetEktefelletillegg)
+    val saktype = argument().select(OrienteringOmRettigheterAlderDto::saktype)
 
 
     showIf(saktype.isOneOf(Sakstype.ALDER)) {
@@ -144,7 +142,6 @@ val orienteringOmRettigheterOgPlikter = createAttachment<LangBokmalNynorskEnglis
             }
             showIf(
                 sivilstand.isOneOf(GIFT, GIFT_LEVER_ADSKILT, PARTNER, PARTNER_LEVER_ADSKILT)
-
             ) {
                 item { includePhrase(vedleggPlikterAP9_001) }
             }
@@ -240,47 +237,7 @@ val orienteringOmRettigheterOgPlikter = createAttachment<LangBokmalNynorskEnglis
         }
     }
 
-
-    showIf(saktype.isOneOf(Sakstype.UFOEREP)) {
-        includePhrase(vedleggPlikterUT_001)
-
-        list {
-            // Mandatory phraser
-            item { includePhrase(vedleggPlikterUT1_001) }
-            item { includePhrase(vedleggPlikterUT2_001) }
-            showIf(
-                bor_i_norge
-                        and not(institusjon_gjeldende.isOneOf(FENGSEL, HELSE, SYKEHJEM))
-            ) {
-                item { includePhrase(vedleggPlikterUT3_001) }
-            }
-            showIf(
-                bor_i_norge
-                        and not(institusjon_gjeldende.isOneOf(FENGSEL, HELSE, SYKEHJEM))
-            ) {
-                item { includePhrase(vedleggPlikterUT4_001) }
-            }
-            item { includePhrase(vedleggPlikterUT5_001) }
-            showIf(
-                sivilstand.isOneOf(ENSLIG, ENKE)
-            ) {
-                item { includePhrase(vedleggPlikterUT6_001) }
-            }
-            showIf(barnetillegg_beloep_gjeldendeBeregnetUTPerManed.map { it > 0 }
-            ) {
-                item { includePhrase(vedleggPlikterUT7_001) }
-            }
-            item { includePhrase(vedleggPlikterUT8_001) }
-            item { includePhrase(vedleggPlikterUT9_001) }
-            item { includePhrase(vedleggPlikterUT10_001) }
-            item { includePhrase(vedleggPlikterUT11_001) }
-            item { includePhrase(vedleggPlikterUT12_001) }
-        }
-    }
-
-    showIf(
-        saktype.isOneOf(Sakstype.AFP)
-    ) {
+    showIf(saktype.isOneOf(Sakstype.AFP)) {
         includePhrase(vedleggPlikterAFP_001)
         list {
             // Mandatory phrase
@@ -310,13 +267,6 @@ val orienteringOmRettigheterOgPlikter = createAttachment<LangBokmalNynorskEnglis
     }
 
     includePhrase(vedleggVeiledning_001)
-
-    showIf(saktype.isOneOf(Sakstype.UFOEREP)) {
-        includePhrase(vedleggInnsynSakUTPesys_001)
-    }.orShow {
-        includePhrase(vedleggInnsynSakPensjon_001)
-    }
-
     includePhrase(vedleggHjelpFraAndre_001)
 
     showIf(saktype.isOneOf(Sakstype.ALDER)) {

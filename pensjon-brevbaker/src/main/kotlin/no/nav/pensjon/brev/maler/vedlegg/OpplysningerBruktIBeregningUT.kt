@@ -33,8 +33,8 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
     ),
     includeSakspart = false,
 ) {
-    val harMinsteytelseSats = argument().map{it.minsteytelseGjeldende_sats > 0}
-    val ufoeretrygdGjeldendeErKonvertert = argument().map{it.uforetrygdGjeldende.erKonvertert}
+    val harMinsteytelseSats = argument().map { it.minsteytelseGjeldende_sats > 0 }
+    val ufoeretrygdGjeldendeErKonvertert = argument().map { it.uforetrygdGjeldende.erKonvertert }
 
     paragraph {
         val virkDatoFom = argument().map { it.beregnetUTPerManedGjeldende.virkDatoFom }.format()
@@ -921,20 +921,13 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
                             val inntektBruktIAvkortning =
                                 saerkullTillegg.map { Kroner(it.inntektBruktIAvkortning) }.format()
                             textExpr(
-                                Bokmal to "Samlet inntekt brukt i fastsettelse av barnetillegget er\n".expr() + inntektBruktIAvkortning.str() + " kr",
-                                Nynorsk to "Samla inntekt brukt i fastsetjinga av barnetillegget er\n".expr() + inntektBruktIAvkortning.str() + " kr",
-                                English to "Total income applied in calculation of reduction in child supplement is\n".expr() + inntektBruktIAvkortning.str() + " NOK"
+                                Bokmal to "Samlet inntekt brukt i fastsettelse av barnetillegget er".expr() + inntektBruktIAvkortning.str() + " kr",
+                                Nynorsk to "Samla inntekt brukt i fastsetjinga av barnetillegget er".expr() + inntektBruktIAvkortning.str() + " kr",
+                                English to "Total income applied in calculation of reduction in child supplement is".expr() + inntektBruktIAvkortning.str() + " NOK"
                             )
                         }
 
-                        //TODO why is this empty?
-                        cell {
-                            text(
-                                Bokmal to "", //TODO Empty
-                                Nynorsk to "",
-                                English to ""
-                            )
-                        }
+                        cell {}
                     }
                 }
                 showIf(saerkullTillegg.map { (it.belop > 0 || (it.belop < 0 && it.justeringsbelopAr != 0)) }) {
@@ -942,38 +935,25 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
                         cell {
                             val fribelop = saerkullTillegg.map { Kroner(it.fribelop) }
                             textExpr(
-                                Bokmal to "Fribeløp brukt i fastsettelsen av barnetillegget er\n".expr() + fribelop.str() + " kr",
-                                Nynorsk to "Fribeløp brukt i fastsetjinga av barnetillegget er\n".expr() + fribelop.str() + " kr",
-                                English to "Exemption amount applied in calculation of reduction in child supplement is\n".expr() + fribelop.str() + " NOK"
+                                Bokmal to "Fribeløp brukt i fastsettelsen av barnetillegget er".expr() + fribelop.str() + " kr",
+                                Nynorsk to "Fribeløp brukt i fastsetjinga av barnetillegget er".expr() + fribelop.str() + " kr",
+                                English to "Exemption amount applied in calculation of reduction in child supplement is".expr() + fribelop.str() + " NOK"
                             )
                         }
-                        cell {
-                            text(
-                                Bokmal to "", //TODO Empty
-                                Nynorsk to "",
-                                English to ""
-                            )
-                        }
+                        cell {}
                     }
                 }
                 showIf(saerkullTillegg.map { (it.belop != 0 || (it.belop == 0 && it.justeringsbelopAr != 0)) }) {
                     row {
                         cell {
-                            val inntektOverFribelop = saerkullTillegg.map { Kroner(it.inntektOverFribelop) }
-                                .format()
+                            val inntektOverFribelop = saerkullTillegg.map { Kroner(it.inntektOverFribelop) }.format()
                             textExpr(
-                                Bokmal to "Inntekt over fribeløpet er\n".expr() + inntektOverFribelop.str() + " kr",
-                                Nynorsk to "Inntekt over fribeløpet er\n".expr() + inntektOverFribelop.str() + " kr",
-                                English to "Income exceeding the exemption amount is\n".expr() + inntektOverFribelop.str() + " NOK"
+                                Bokmal to "Inntekt over fribeløpet er".expr() + inntektOverFribelop.str() + " kr",
+                                Nynorsk to "Inntekt over fribeløpet er".expr() + inntektOverFribelop.str() + " kr",
+                                English to "Income exceeding the exemption amount is".expr() + inntektOverFribelop.str() + " NOK"
                             )
                         }
-                        cell {
-                            text(
-                                Bokmal to "", //TODO Empty
-                                Nynorsk to "",
-                                English to ""
-                            )
-                        }
+                        cell {}
                     }
                 }
                 showIf(saerkullTillegg.map {

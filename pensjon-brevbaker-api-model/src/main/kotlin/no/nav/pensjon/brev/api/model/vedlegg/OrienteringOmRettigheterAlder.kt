@@ -4,7 +4,7 @@ import no.nav.pensjon.brev.api.model.Institusjon
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.Sivilstand
 
-data class OrienteringOmRettigheterDto(
+data class OrienteringOmRettigheterAlderDto(
     val bruker_sivilstand: Sivilstand,
     val bruker_borINorge: Boolean,
     val institusjon_gjeldende: Institusjon,
@@ -14,7 +14,6 @@ data class OrienteringOmRettigheterDto(
     val barnetilleggVedvirk_innvilgetBarnetilleggSaerkullsbarn: Boolean,
     val ektefelletilleggVedvirk_innvilgetEktefelletillegg: Boolean,
     val saktype: Sakstype,
-    val ufoeretrygdPerMaaned_barnetilleggGjeldende: Int,
 ) {
     constructor() : this(
         bruker_sivilstand = Sivilstand.ENSLIG,
@@ -26,6 +25,5 @@ data class OrienteringOmRettigheterDto(
         barnetilleggVedvirk_innvilgetBarnetilleggSaerkullsbarn = false,
         ektefelletilleggVedvirk_innvilgetEktefelletillegg = false,
         saktype = Sakstype.UFOEREP,
-        ufoeretrygdPerMaaned_barnetilleggGjeldende = 0,
     )
 }
