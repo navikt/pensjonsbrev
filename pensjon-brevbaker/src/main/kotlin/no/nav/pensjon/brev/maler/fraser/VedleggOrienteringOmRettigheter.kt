@@ -361,8 +361,8 @@ val vedleggPlikterRettTilEktefelletilleggOgBarnetilleggAP_001 = OutlinePhrase<La
 val vedleggPlikterinntektsprøvingBTFellesBarnSaerkullsbarnAP_001 = OutlinePhrase<LangBokmalNynorskEnglish, Unit> {
     paragraph {
         text(
-            Bokmal to "Hvor mye du får utbetalt i barnetillegg avhenger av den samlede inntekten du[_Script fellesbarn_] har. Du må derfor også gi beskjed hvis",
-            Nynorsk to "Kor mykje du får utbetalt i barnetillegg er avhengig av den samla inntekta du[_Script fellesbarn_] har. Du må derfor også gi beskjed om",
+            Bokmal to "Hvor mye du får utbetalt i barnetillegg avhenger av den samlede inntekten du og ektefellen har. Du må derfor også gi beskjed hvis",
+            Nynorsk to "Kor mykje du får utbetalt i barnetillegg er avhengig av den samla inntekta du og ektefellen har. Du må derfor også gi beskjed om",
             English to "How much you receive in child supplement depends on the total combined income of you and your spouse. You must therefore also notify us if your"
         )
         list {
