@@ -9,7 +9,7 @@ import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.newText
 
-// Conditional for production of the attchment is: vedtak_resultat = AVSLG
+// Conditional for showing of the attachment is: vedtak_resultat = AVSLG
 
 val dineRettigheterOgMulighetTilAaKlage = createAttachment<LangBokmalNynorskEnglish, DineRettigheterOgMulighetTilAaKlageDto>(
     title = newText(

@@ -11,7 +11,7 @@ import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 
-// Conditional for production of the attachement is: vedtak_resultat = INNVL
+// Conditional for showing of the attachment is: vedtak_resultat = INNVL
 
 val vedleggPlikter_001 = OutlinePhrase<LangBokmalNynorskEnglish, Unit> {
     title1 {
