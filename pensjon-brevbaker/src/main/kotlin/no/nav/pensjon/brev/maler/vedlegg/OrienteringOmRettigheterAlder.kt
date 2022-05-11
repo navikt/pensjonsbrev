@@ -219,7 +219,7 @@ val orienteringOmRettigheterOgPlikterAlder = createAttachment<LangBokmalNynorskE
                     or har_barnetillegg_for_saerkullsbarn_vedvirk
                     and not(har_ektefelletillegg_vedvirk)
         ) {
-            includePhrase(vedleggPlikterinntektsprøvingBTFellesBarnSaerkullsbarnAP_001)
+            includePhrase(vedleggPlikterinntektsprovingBTFellesBarnSaerkullsbarnAP_001)
         }
         showIf(
             har_barnetillegg_felles_barn_vedvirk

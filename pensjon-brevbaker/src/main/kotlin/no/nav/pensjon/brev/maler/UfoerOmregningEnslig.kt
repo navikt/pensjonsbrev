@@ -8,6 +8,7 @@ import no.nav.pensjon.brev.maler.fraser.*
 import no.nav.pensjon.brev.maler.vedlegg.maanedligUfoeretrygdFoerSkatt
 import no.nav.pensjon.brev.maler.vedlegg.opplysningerBruktIBeregningUT
 import no.nav.pensjon.brev.maler.vedlegg.orienteringOmRettigheterOgPlikterUfoere
+import no.nav.pensjon.brev.maler.vedlegg.dineRettigheterOgMulighetTilAaKlage
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.StaticTemplate
 import no.nav.pensjon.brev.template.base.PensjonLatex

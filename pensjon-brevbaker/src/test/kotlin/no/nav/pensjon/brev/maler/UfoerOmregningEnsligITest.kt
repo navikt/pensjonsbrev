@@ -11,7 +11,7 @@ import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDto
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligUfoeretrygdFoerSkattDto
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDto
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDto.BarnetilleggGjeldende
-import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterDto
+import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterUfoereDto
 import no.nav.pensjon.brev.latex.LaTeXCompilerService
 import no.nav.pensjon.brev.latex.PdfCompilationInput
 import no.nav.pensjon.brev.template.Language
@@ -39,7 +39,7 @@ class UfoerOmregningEnsligITest {
                     ungUforGjeldende_erUnder20Ar = true,
                 ),
                 maanedligUfoeretrygdFoerSkatt = MaanedligUfoeretrygdFoerSkattDto(),
-                orienteringOmRettigheterOgPlikter = OrienteringOmRettigheterDto().copy(
+                orienteringOmRettigheterOgPlikter = OrienteringOmRettigheterUfoereDto().copy(
                     eps_borSammenMedBrukerGjeldende = true,
                     instutisjon_epsInstitusjonGjeldende = Institusjon.INGEN,
                     barnetilleggVedvirk_innvilgetBarnetillegFellesbarn = false,

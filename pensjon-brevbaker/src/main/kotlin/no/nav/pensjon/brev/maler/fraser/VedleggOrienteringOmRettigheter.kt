@@ -11,6 +11,8 @@ import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 
+// Conditional for production of the attachement is: vedtak_resultat = INNVL
+
 val vedleggPlikter_001 = OutlinePhrase<LangBokmalNynorskEnglish, Unit> {
     title1 {
         text(
@@ -358,7 +360,7 @@ val vedleggPlikterRettTilEktefelletilleggOgBarnetilleggAP_001 = OutlinePhrase<La
     }
 }
 
-val vedleggPlikterinntektsprøvingBTFellesBarnSaerkullsbarnAP_001 = OutlinePhrase<LangBokmalNynorskEnglish, Unit> {
+val vedleggPlikterinntektsprovingBTFellesBarnSaerkullsbarnAP_001 = OutlinePhrase<LangBokmalNynorskEnglish, Unit> {
     paragraph {
         text(
             Bokmal to "Hvor mye du får utbetalt i barnetillegg avhenger av den samlede inntekten du og ektefellen har. Du må derfor også gi beskjed hvis",
