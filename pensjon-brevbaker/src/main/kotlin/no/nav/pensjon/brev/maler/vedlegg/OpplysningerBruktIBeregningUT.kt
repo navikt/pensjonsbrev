@@ -1,7 +1,7 @@
 package no.nav.pensjon.brev.maler.vedlegg
 
 
-import no.nav.pensjon.brev.api.model.Beregningsmetode
+import no.nav.pensjon.brev.api.model.Beregningsmetode.*
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDto
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDto.TrygdetidsdetaljerGjeldende.UtenforEOSogNorden
 import no.nav.pensjon.brev.maler.fraser.*
@@ -34,8 +34,14 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
     ),
     includeSakspart = false,
 ) {
-    val harMinsteytelseSats = argument().map{it.minsteytelseGjeldende_sats > 0}
-    val ufoeretrygdGjeldendeErKonvertert = argument().map{it.uforetrygdGjeldende.erKonvertert}
+    val harMinsteytelseSats = argument().map { it.minsteytelseGjeldende_sats > 0 }
+    val ufoeretrygdGjeldendeErKonvertert = argument().map { it.uforetrygdGjeldende.erKonvertert }
+    val erUnder20Aar = argument().map { it.ungUforGjeldende_erUnder20Ar }
+    val `inntekt foer ufoere er sannsynlig endret` = argument().map { it.inntektForUforeGjeldende.erSannsynligEndret }
+    //TODO kvalitetssjekk navnet på denne.
+    val inntektsgrenseErUnderTak =
+        argument().map { it.inntektsAvkortingGjeldende.inntektsgrenseAr < it.inntektsAvkortingGjeldende.inntektstak }
+    val ufoeretrygdErKonvertert = argument().map { it.uforetrygdGjeldende.erKonvertert }
 
     paragraph {
         val virkDatoFom = argument().map { it.beregnetUTPerManedGjeldende.virkDatoFom }.format()
@@ -210,10 +216,8 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
                 }
             }
         }
-        showIf(argument().map {
-            (it.uforetrygdGjeldende.kompensasjonsgrad > 0
-                    && (it.inntektsAvkortingGjeldende.inntektsgrenseAr < it.inntektsAvkortingGjeldende.inntektstak))
-        }
+        showIf(inntektsgrenseErUnderTak
+                and argument().map { it.uforetrygdGjeldende.kompensasjonsgrad > 0 }
         ) {
             row {
                 cell {
@@ -234,10 +238,7 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
                 }
             }
         }
-        showIf(argument().map {
-            (it.inntektsAvkortingGjeldende.inntektsgrenseAr < it.inntektsAvkortingGjeldende.inntektstak)
-        }
-        ) {
+        showIf(inntektsgrenseErUnderTak) {
             row {
                 cell {
                     text(
@@ -250,11 +251,7 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
                     includePhrase(kroner, argument().map { it.inntektsAvkortingGjeldende.inntektstak })
                 }
             }
-        }
-        showIf(argument().map {
-            (it.inntektsAvkortingGjeldende.inntektsgrenseAr > it.inntektsAvkortingGjeldende.inntektstak)
-        }
-        ) {
+        }.orShow {
             row {
                 cell {
                     text(
@@ -361,10 +358,10 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
             }
         }
 
-        showIf(argument().map {
-            (it.beregnetUTPerManedGjeldende.brukerErFlyktning && (it.trygdetidsdetaljerGjeldende.beregningsmetode == Beregningsmetode.FOLKETRYGD))
-        })
-        {
+        val beregningsmetode = argument().map { it.trygdetidsdetaljerGjeldende.beregningsmetode }
+        val brukerErFlyktning = argument().map { it.beregnetUTPerManedGjeldende.brukerErFlyktning }
+
+        showIf(brukerErFlyktning and beregningsmetode.isOneOf(FOLKETRYGD)) {
             row {
                 cell {
                     text(
@@ -381,12 +378,6 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
                     )
                 }
             }
-        }
-        showIf(argument().map {
-            (it.beregnetUTPerManedGjeldende.brukerErFlyktning
-                    && (it.trygdetidsdetaljerGjeldende.beregningsmetode == Beregningsmetode.FOLKETRYGD))
-        })
-        {
             row {
                 cell {
                     text(
@@ -404,11 +395,10 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
                     )
                 }
             }
+
         }
-        showIf(argument().map {
-            (it.trygdetidsdetaljerGjeldende.beregningsmetode == Beregningsmetode.EOS || it.trygdetidsdetaljerGjeldende.beregningsmetode == Beregningsmetode.NORDISK)
-        })
-        {
+
+        showIf(beregningsmetode.isOneOf(EOS, NORDISK)) {
             row {
                 cell {
                     text(
@@ -429,12 +419,7 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
                 }
             }
         }
-        showIf(argument().map {
-            (it.trygdetidsdetaljerGjeldende.beregningsmetode != Beregningsmetode.FOLKETRYGD
-                    && it.trygdetidsdetaljerGjeldende.beregningsmetode != Beregningsmetode.NORDISK
-                    && it.trygdetidsdetaljerGjeldende.beregningsmetode != Beregningsmetode.EOS)
-        })
-        {
+        showIf(not(beregningsmetode.isOneOf(EOS, NORDISK, FOLKETRYGD))) {
             row {
                 cell {
                     text(
@@ -454,10 +439,7 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
                 }
             }
         }
-        showIf(argument().map {
-            it.trygdetidsdetaljerGjeldende.beregningsmetode != Beregningsmetode.FOLKETRYGD
-        })
-        {
+        showIf(beregningsmetode.isOneOf(FOLKETRYGD)) {
             row {
                 cell {
                     text(
@@ -472,10 +454,7 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
                 }
             }
         }
-        showIf(argument().map {
-            it.trygdetidsdetaljerGjeldende.beregningsmetode == Beregningsmetode.EOS
-        })
-        {
+        showIf(beregningsmetode.isOneOf(EOS)) {
             row {
                 cell {
                     text(
@@ -489,11 +468,6 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
 
                 }
             }
-        }
-        showIf(argument().map {
-            it.trygdetidsdetaljerGjeldende.beregningsmetode == Beregningsmetode.EOS
-        })
-        {
             row {
                 cell {
                     text(
@@ -507,11 +481,6 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
 
                 }
             }
-        }
-        showIf(argument().map {
-            it.trygdetidsdetaljerGjeldende.beregningsmetode == Beregningsmetode.EOS
-        })
-        {
             row {
                 cell {
                     text(
@@ -533,10 +502,7 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
                 }
             }
         }
-        showIf(argument().map {
-            it.trygdetidsdetaljerGjeldende.beregningsmetode == Beregningsmetode.NORDISK
-        })
-        {
+        showIf(beregningsmetode.isOneOf(NORDISK)) {
             row {
                 cell {
                     text(
@@ -550,12 +516,10 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
                 }
             }
         }
-// TODO Calculation!! (framtidigTTNorsk / 12) < 40)
-        showIf(argument().map {
-            ((it.trygdetidsdetaljerGjeldende.beregningsmetode == Beregningsmetode.FOLKETRYGD || it.trygdetidsdetaljerGjeldende.beregningsmetode == Beregningsmetode.NORDISK)
-                    && ((it.trygdetidsdetaljerGjeldende.framtidigTTNorsk / 12) < 40))
-        })
-        {
+
+        // TODO Calculation!! (framtidigTTNorsk / 12) < 40)
+        showIf(beregningsmetode.isOneOf(NORDISK, FOLKETRYGD)
+                and argument().map { (it.trygdetidsdetaljerGjeldende.framtidigTTNorsk / 12) < 40 }) {
             row {
                 cell {
                     text(
@@ -569,7 +533,7 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
                 }
             }
         }
-        showIf(argument().map { it.trygdetidsdetaljerGjeldende.beregningsmetode == Beregningsmetode.NORDISK }) {
+        showIf(beregningsmetode.isOneOf(NORDISK)) {
             row {
                 cell {
                     text(
@@ -590,11 +554,6 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
                     )
                 }
             }
-        }
-        showIf(argument().map {
-            it.trygdetidsdetaljerGjeldende.beregningsmetode == Beregningsmetode.NORDISK
-        })
-        {
             row {
                 cell {
                     text(
@@ -609,20 +568,13 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
             }
         }
 
-        val beregningsmetode_trygdetidsdetaljer = argument().map { (it.trygdetidsdetaljerGjeldende.beregningsmetode) }
-        ifNotNull(argument().map { it.trygdetidsdetaljerGjeldende.utenforEOSogNorden }){
+        ifNotNull(argument().map { it.trygdetidsdetaljerGjeldende.utenforEOSogNorden }) {
 
             val faktiskTTBilateral = it.select(UtenforEOSogNorden::faktiskTTBilateral)
             val nevnerProRata = it.select(UtenforEOSogNorden::nevnerProRata)
             val tellerProRata = it.select(UtenforEOSogNorden::tellerProRata)
 
-            showIf(
-                beregningsmetode_trygdetidsdetaljer.isNotAnyOf(
-                    Beregningsmetode.FOLKETRYGD,
-                    Beregningsmetode.NORDISK,
-                    Beregningsmetode.EOS
-                )
-            ){
+            showIf(beregningsmetode.isNotAnyOf(FOLKETRYGD, NORDISK, EOS)) {
                 row {
                     cell {
                         text(
@@ -647,7 +599,6 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
                         includePhrase(maaneder, nevnerProRata)
                     }
                 }
-
                 row {
                     cell {
                         text(
@@ -750,84 +701,69 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
         }
     }
 
-    //End of table 1
-    // Start of phrases
+
     showIf(harMinsteytelseSats) {
         includePhrase(rettTilMYOverskrift_001)
     }
+    //TODO if or else depending on optional erUnder20Aar boolean
 // If no node for ungUforGjeldende_erUnder20Ar
     showIf(not(ufoeretrygdGjeldendeErKonvertert) and harMinsteytelseSats) {
         includePhrase(vedleggBeregnUTInfoMY_001)
     }
+    //TODO if or else depending on optional erUnder20Aar boolean
 // If no node for ungUforGjeldende_erUnder20Ar
     showIf(ufoeretrygdGjeldendeErKonvertert and harMinsteytelseSats) {
         includePhrase(vedleggBeregnUTInfoMY2_001)
     }
-
-    showIf(argument().map { (!it.ungUforGjeldende_erUnder20Ar && it.minsteytelseGjeldende_sats > 0) }) {
+    //TODO if or else depending on optional erUnder20Aar boolean
+    showIf(not(erUnder20Aar) and harMinsteytelseSats) {
         includePhrase(vedleggBeregnUTInfoMYUngUfor_001)
     }
 
-    showIf(argument().map { it.ungUforGjeldende_erUnder20Ar && it.minsteytelseGjeldende_sats > 0 }) {
+    //TODO if or else depending on optional erUnder20Aar boolean
+    showIf(erUnder20Aar and harMinsteytelseSats) {
         includePhrase(vedleggBeregnUTInfoMYUngUforUnder20_001)
     }
 
-    showIf(argument().map { it.minsteytelseGjeldende_sats > 0 }) {
+    showIf(harMinsteytelseSats) {
         includePhrase(vedleggBeregnUTDinMY_001, argument().map {
             VedleggBeregnUTDinMY_001Dto(it.minsteytelseGjeldende_sats)
         })
     }
 
-    showIf(argument().map { it.inntektForUforeGjeldende.erSannsynligEndret }) {
+    showIf(`inntekt foer ufoere er sannsynlig endret`) {
         includePhrase(vedleggBeregnUTMinsteIFU_002)
     }
 
-    showIf(argument().map {
-        it.minsteytelseGjeldende_sats > 0 &&
-                it.inntektForUforeGjeldende.erSannsynligEndret &&
-                (it.inntektsAvkortingGjeldende.inntektsgrenseAr < it.inntektsAvkortingGjeldende.inntektstak)
-    }) {
+    showIf(
+        harMinsteytelseSats
+                and `inntekt foer ufoere er sannsynlig endret`
+                and inntektsgrenseErUnderTak
+    ) {
+
         includePhrase(slikFastsettesKompGradOverskrift_001)
-    }
-
-    showIf(argument().map {
-        it.minsteytelseGjeldende_sats > 0 &&
-                it.inntektForUforeGjeldende.erSannsynligEndret &&
-                (it.inntektsAvkortingGjeldende.inntektsgrenseAr < it.inntektsAvkortingGjeldende.inntektstak)
-    }) {
         includePhrase(vedleggBeregnUTKompGrad_001)
-    }
 
-    showIf(argument().map {
-        it.minsteytelseGjeldende_sats > 0 &&
-                it.inntektForUforeGjeldende.erSannsynligEndret &&
-                (it.inntektsAvkortingGjeldende.inntektsgrenseAr < it.inntektsAvkortingGjeldende.inntektstak) &&
-                !it.uforetrygdGjeldende.erKonvertert
-    }) {
-        includePhrase(vedleggBeregnUTKompGradGjsntt_001)
+        showIf(ufoeretrygdErKonvertert) {
+            includePhrase(vedleggBeregnUTKompGradGjsnttKonvUT_001)
+        }.orShow {
+            includePhrase(vedleggBeregnUTKompGradGjsntt_001)
+        }
     }
-
-    showIf(argument().map {
-        it.minsteytelseGjeldende_sats > 0 &&
-                it.inntektForUforeGjeldende.erSannsynligEndret &&
-                (it.inntektsAvkortingGjeldende.inntektsgrenseAr < it.inntektsAvkortingGjeldende.inntektstak) &&
-                it.uforetrygdGjeldende.erKonvertert
-    }) {
-        includePhrase(vedleggBeregnUTKompGradGjsnttKonvUT_001)
-    }
-
 
     ifNotNull(
         argument().map { it.barnetilleggGjeldende?.grunnlag },
         argument().map { it.barnetilleggGjeldende?.saerkullsbarn }
     ) { grunnlag, saerkullTillegg ->
         val erRedusertMotInntekt = saerkullTillegg.map { it.erRedusertMotinntekt }
-        val erIkkeUtbetaltPgaTak = grunnlag.map { it.erIkkeUtbetaltpgaTak }
-        val harYrkesskadeGrad =
-            argument().map { it.yrkesskadeGjeldende?.let { skade -> skade.yrkesskadegrad > 0 } ?: false }
-        val harAnvendtTrygdetidUnder40 = argument().map { it.trygdetidsdetaljerGjeldende.anvendtTT < 40 }
         val fribelopEllerInntektErPeriodisert = saerkullTillegg.map { it.fribelopEllerInntektErPeriodisert }
+        val erIkkeUtbetaltPgaTak = grunnlag.map { it.erIkkeUtbetaltpgaTak }
+        val harYrkesskadeGrad = argument().map {
+            it.yrkesskadeGjeldende?.let { skade -> skade.yrkesskadegrad > 0 } ?: false
+        }
+        val harAnvendtTrygdetidUnder40 = argument().map { it.trygdetidsdetaljerGjeldende.anvendtTT < 40 }
         val justeringsBeloepAr = saerkullTillegg.map { it.justeringsbelopAr }
+
         showIf(saerkullTillegg.map { it.erRedusertMotinntekt }) {
 
             showIf(erIkkeUtbetaltPgaTak) {
