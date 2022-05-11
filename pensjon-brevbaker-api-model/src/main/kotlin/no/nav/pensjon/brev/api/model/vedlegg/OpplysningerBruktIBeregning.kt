@@ -28,6 +28,7 @@ data class OpplysningerBruktIBeregningUTDto(
         ungUforGjeldende_erUnder20Ar = false,
         yrkesskadeGjeldende = YrkesskadeGjeldende(),
     )
+
     data class YrkesskadeGjeldende(
         val beregningsgrunnlagBelopAr: Int,
         val inntektVedSkadetidspunkt: Int,
@@ -50,13 +51,14 @@ data class OpplysningerBruktIBeregningUTDto(
             saerkullsbarn = Saerkullsbarn(),
             grunnlag = Grunnlag()
         )
+
         data class Grunnlag(
             val erIkkeUtbetaltpgaTak: Boolean,
             val erRedusertMotTak: Boolean,
             val gradertOIFU: Int,
             val prosentsatsGradertOIFU: Int,
             val totaltAntallBarn: Int,
-        ){
+        ) {
             constructor() : this(
                 erIkkeUtbetaltpgaTak = false,
                 erRedusertMotTak = false,
@@ -78,7 +80,7 @@ data class OpplysningerBruktIBeregningUTDto(
             val inntektOverFribelop: Int,
             val inntektstak: Int,
             val justeringsbelopAr: Int,
-        ){
+        ) {
             constructor() : this(
                 avkortningsbelopAr = 0,
                 belop = 0,
@@ -96,37 +98,45 @@ data class OpplysningerBruktIBeregningUTDto(
     }
 
     data class TrygdetidsdetaljerGjeldende(
+        val utenforEOSogNorden: UtenforEOSogNorden?,
         val anvendtTT: Int,
         val beregningsmetode: Beregningsmetode,
-        val faktiskTTBilateral: Int,
         val faktiskTTEOS: Int,
         val nevnerTTEOS: Int,
         val tellerTTEOS: Int,
         val faktiskTTNordiskKonv: Int,
         val faktiskTTNorge: Int,
         val framtidigTTNorsk: Int,
-        val nevnerProRata: Int,
         val nevnerTTNordiskKonv: Int,
         val samletTTNordiskKonv: Int,
-        val tellerProRata: Int,
         val tellerTTNordiskKonv: Int,
-    ){
+    ) {
         constructor() : this(
             anvendtTT = 0,
             beregningsmetode = Beregningsmetode.FOLKETRYGD,
-            faktiskTTBilateral = 0,
             faktiskTTEOS = 0,
             faktiskTTNordiskKonv = 0,
             faktiskTTNorge = 0,
             framtidigTTNorsk = 0,
-            nevnerProRata = 0,
             nevnerTTEOS = 0,
             nevnerTTNordiskKonv = 0,
             samletTTNordiskKonv = 0,
-            tellerProRata = 0,
             tellerTTEOS = 0,
             tellerTTNordiskKonv = 0,
+            utenforEOSogNorden = UtenforEOSogNorden()
         )
+
+        data class UtenforEOSogNorden(
+            val faktiskTTBilateral: Int,
+            val tellerProRata: Int,
+            val nevnerProRata: Int,
+        ) {
+            constructor() : this(
+                faktiskTTBilateral = 0,
+                nevnerProRata = 0,
+                tellerProRata = 0,
+            )
+        }
     }
 
     data class BeregnetUTPerManedGjeldende(
@@ -134,7 +144,7 @@ data class OpplysningerBruktIBeregningUTDto(
         val brukersSivilstand: Sivilstand,
         val grunnbelop: Int,
         val virkDatoFom: LocalDate,
-    ){
+    ) {
         constructor() : this(
             brukerErFlyktning = false,
             brukersSivilstand = Sivilstand.ENSLIG,
@@ -150,7 +160,7 @@ data class OpplysningerBruktIBeregningUTDto(
         val kompensasjonsgrad: Double,
         val uforegrad: Int,
         val uforetidspunkt: LocalDate,
-    ){
+    ) {
         constructor() : this(
             belopsgrense = 0,
             beregningsgrunnlagBelopAr = 0,
@@ -165,7 +175,7 @@ data class OpplysningerBruktIBeregningUTDto(
         val forventetInntektAr: Int,
         val inntektsgrenseAr: Int,
         val inntektstak: Int,
-    ){
+    ) {
         constructor() : this(
             forventetInntektAr = 0,
             inntektsgrenseAr = 0,
@@ -176,7 +186,7 @@ data class OpplysningerBruktIBeregningUTDto(
     data class InntektForUforeGjeldende(
         val erSannsynligEndret: Boolean,
         val ifuInntekt: Int,
-    ){
+    ) {
         constructor() : this(
             erSannsynligEndret = false,
             ifuInntekt = 0,

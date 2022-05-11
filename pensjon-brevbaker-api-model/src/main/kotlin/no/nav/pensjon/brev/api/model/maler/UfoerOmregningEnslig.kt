@@ -7,7 +7,6 @@ import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDto
 import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterUfoereDto
 import java.time.LocalDate
 
-//TODO flytt inn i api-model.
 data class UfoerOmregningEnsligDto(
     val opplysningerBruktIBeregningUT: OpplysningerBruktIBeregningUTDto,
     val orienteringOmRettigheterOgPlikter: OrienteringOmRettigheterUfoereDto,
@@ -81,7 +80,6 @@ data class UfoerOmregningEnsligDto(
     )
 
 
-    data class MinsteytelseVedvirk(val sats: Double)
     data class Avdod(
         val navn: String,
         val ektefelletilleggOpphoert: Boolean,
@@ -89,7 +87,6 @@ data class UfoerOmregningEnsligDto(
         val harFellesBarnUtenBarnetillegg: Boolean,
     )
 
-    data class Krav(val virkedatoFraOgMed: LocalDate)
     data class UfoeretrygdVedVirk(
         val kompensasjonsgrad: Double,
         val totalUforeMaanedligBeloep: Int,

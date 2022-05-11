@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.maler.vedlegg
 
 import no.nav.pensjon.brev.api.model.Beregningsmetode
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDto
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDto.TrygdetidsdetaljerGjeldende.UtenforEOSogNorden
 import no.nav.pensjon.brev.maler.fraser.*
 import no.nav.pensjon.brev.maler.fraser.common.Felles.kroner
 import no.nav.pensjon.brev.maler.fraser.common.Felles.maaneder
@@ -609,56 +610,59 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
         }
 
         val beregningsmetode_trygdetidsdetaljer = argument().map { (it.trygdetidsdetaljerGjeldende.beregningsmetode) }
-        showIf(
-            beregningsmetode_trygdetidsdetaljer.isNotAnyOf(
-                Beregningsmetode.FOLKETRYGD,
-                Beregningsmetode.NORDISK,
-                Beregningsmetode.EOS
-            )
-        )
-        {
-            row {
-                cell {
-                    text(
-                        Bokmal to "Faktisk trygdetid i annet avtaleland",
-                        Nynorsk to "Faktisk trygdetid i anna avtaleland",
-                        English to "Actual insurance period(s) in another partner country"
-                    )
-                }
-                cell {
-                    includePhrase(maaneder, argument().map { it.trygdetidsdetaljerGjeldende.faktiskTTBilateral })
+        ifNotNull(argument().map { it.trygdetidsdetaljerGjeldende.utenforEOSogNorden }){
 
-                }
-            }
-            row {
-                cell {
-                    text(
-                        Bokmal to "Faktisk trygdetid i Norge og avtaleland (maksimalt 40 år)",
-                        Nynorsk to "Faktisk trygdetid i Noreg og avtaleland (maksimalt 40 år)",
-                        English to "Actual insurance period in Norway and partner countries (maximum 40 years)"
-                    )
-                }
-                cell {
-                    includePhrase(maaneder, argument().map { it.trygdetidsdetaljerGjeldende.nevnerProRata })
-                }
-            }
+            val faktiskTTBilateral = it.select(UtenforEOSogNorden::faktiskTTBilateral)
+            val nevnerProRata = it.select(UtenforEOSogNorden::nevnerProRata)
+            val tellerProRata = it.select(UtenforEOSogNorden::tellerProRata)
 
-            row {
-                cell {
-                    text(
-                        Bokmal to "Forholdstallet brukt i beregning av uføretrygd",
-                        Nynorsk to "Forholdstalet brukt i utrekning av uføretrygd",
-                        English to "Ratio applied in calculation of insurance period"
-                    )
+            showIf(
+                beregningsmetode_trygdetidsdetaljer.isNotAnyOf(
+                    Beregningsmetode.FOLKETRYGD,
+                    Beregningsmetode.NORDISK,
+                    Beregningsmetode.EOS
+                )
+            ){
+                row {
+                    cell {
+                        text(
+                            Bokmal to "Faktisk trygdetid i annet avtaleland",
+                            Nynorsk to "Faktisk trygdetid i anna avtaleland",
+                            English to "Actual insurance period(s) in another partner country"
+                        )
+                    }
+                    cell {
+                        includePhrase(maaneder, faktiskTTBilateral)
+                    }
                 }
-                cell {
-                    val tellerProRata = argument().map { it.trygdetidsdetaljerGjeldende.tellerProRata }.str()
-                    val nevnerProRata = argument().map { it.trygdetidsdetaljerGjeldende.nevnerProRata }.str()
-                    textExpr(
-                        Bokmal to tellerProRata + " / " + nevnerProRata,
-                        Nynorsk to tellerProRata + " / " + nevnerProRata,
-                        English to tellerProRata + " / " + nevnerProRata
-                    )
+                row {
+                    cell {
+                        text(
+                            Bokmal to "Faktisk trygdetid i Norge og avtaleland (maksimalt 40 år)",
+                            Nynorsk to "Faktisk trygdetid i Noreg og avtaleland (maksimalt 40 år)",
+                            English to "Actual insurance period in Norway and partner countries (maximum 40 years)"
+                        )
+                    }
+                    cell {
+                        includePhrase(maaneder, nevnerProRata)
+                    }
+                }
+
+                row {
+                    cell {
+                        text(
+                            Bokmal to "Forholdstallet brukt i beregning av uføretrygd",
+                            Nynorsk to "Forholdstalet brukt i utrekning av uføretrygd",
+                            English to "Ratio applied in calculation of insurance period"
+                        )
+                    }
+                    cell {
+                        textExpr(
+                            Bokmal to tellerProRata.str() + " / " + nevnerProRata.str(),
+                            Nynorsk to tellerProRata.str() + " / " + nevnerProRata.str(),
+                            English to tellerProRata.str() + " / " + nevnerProRata.str()
+                        )
+                    }
                 }
             }
         }
