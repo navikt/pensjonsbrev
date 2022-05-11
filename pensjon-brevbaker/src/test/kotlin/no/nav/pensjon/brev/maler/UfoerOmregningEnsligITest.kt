@@ -32,21 +32,13 @@ class UfoerOmregningEnsligITest {
                     barnetilleggGjeldende = BarnetilleggGjeldende().copy(
                         saerkullsbarn = BarnetilleggGjeldende.Saerkullsbarn().copy(
                             erRedusertMotinntekt = true,
-                            erEndret = true
                         )
                     ),
                     minsteytelseGjeldende_sats = 10.00,
                     ungUforGjeldende_erUnder20Ar = true,
                 ),
                 maanedligUfoeretrygdFoerSkatt = MaanedligUfoeretrygdFoerSkattDto(),
-                orienteringOmRettigheterOgPlikter = OrienteringOmRettigheterUfoereDto().copy(
-                    eps_borSammenMedBrukerGjeldende = true,
-                    instutisjon_epsInstitusjonGjeldende = Institusjon.INGEN,
-                    barnetilleggVedvirk_innvilgetBarnetillegFellesbarn = false,
-                    barnetilleggVedvirk_innvilgetBarnetilleggSaerkullsbarn = false,
-                    ektefelletilleggVedvirk_innvilgetEktefelletillegg = true,
-                    saktype = Sakstype.ALDER,
-                ),
+                orienteringOmRettigheterOgPlikter = OrienteringOmRettigheterUfoereDto(),
                 avdod = UfoerOmregningEnsligDto.Avdod(
                     sivilstand = Sivilstand.PARTNER,
                     navn = "Avdod person",
