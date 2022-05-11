@@ -2,12 +2,14 @@ package no.nav.pensjon.brev.api.model.maler
 
 import no.nav.pensjon.brev.api.model.Institusjon
 import no.nav.pensjon.brev.api.model.Sivilstand
+import no.nav.pensjon.brev.api.model.vedlegg.DineRettigheterOgMulighetTilAaKlageDto
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligUfoeretrygdFoerSkattDto
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDto
 import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterUfoereDto
 import java.time.LocalDate
 
 data class UfoerOmregningEnsligDto(
+    val dineRettigheterOgMulighetTilAaKlage: DineRettigheterOgMulighetTilAaKlageDto,
     val opplysningerBruktIBeregningUT: OpplysningerBruktIBeregningUTDto,
     val orienteringOmRettigheterOgPlikter: OrienteringOmRettigheterUfoereDto,
     val maanedligUfoeretrygdFoerSkatt: MaanedligUfoeretrygdFoerSkattDto,
@@ -23,6 +25,7 @@ data class UfoerOmregningEnsligDto(
     val barnetilleggVedVirk: BarnetilleggVedVirk?,
 ) {
     constructor() : this(
+        dineRettigheterOgMulighetTilAaKlage = DineRettigheterOgMulighetTilAaKlageDto(),
         opplysningerBruktIBeregningUT = OpplysningerBruktIBeregningUTDto(),
         orienteringOmRettigheterOgPlikter = OrienteringOmRettigheterUfoereDto(),
         maanedligUfoeretrygdFoerSkatt = MaanedligUfoeretrygdFoerSkattDto(),
