@@ -17,7 +17,7 @@ val dineRettigheterOgMulighetTilAaKlage = createAttachment<LangBokmalNynorskEngl
         Nynorsk to "Rettane dine og høve til å klage",
         English to "Your rights and how to appeal"
     ),
-    includeSakspart = true,
+    includeSakspart = false,
 ) {
     val saktype = argument().select(DineRettigheterOgMulighetTilAaKlageDto::saktype)
     val brukerUnder18Ar = argument().select((DineRettigheterOgMulighetTilAaKlageDto::bruker_brukerUnder18Ar))

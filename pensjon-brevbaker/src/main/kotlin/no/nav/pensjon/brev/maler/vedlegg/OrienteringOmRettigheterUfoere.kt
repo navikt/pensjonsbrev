@@ -16,7 +16,7 @@ val orienteringOmRettigheterOgPlikterUfoere = createAttachment<LangBokmalNynorsk
         Nynorsk to "Dine rettar og plikter",
         English to "Your rights and obligations"
     ),
-    includeSakspart = true,
+    includeSakspart = false,
 ) {
     val bor_i_norge = argument().select(OrienteringOmRettigheterUfoereDto::bruker_borINorge)
     val institusjon_gjeldende = argument().select(OrienteringOmRettigheterUfoereDto::institusjon_gjeldende)
