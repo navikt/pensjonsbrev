@@ -13,7 +13,7 @@ data class OpplysningerBruktIBeregningUTDto(
     val minsteytelseGjeldende_sats: Double,
     val trygdetidsdetaljerGjeldende: TrygdetidsdetaljerGjeldende,
     val uforetrygdGjeldende: UforetrygdGjeldende,
-    val ungUforGjeldende_erUnder20Ar: Boolean,
+    val ungUforGjeldende_erUnder20Ar: Boolean?,
     val yrkesskadeGjeldende: YrkesskadeGjeldende?,
 ) {
     constructor() : this(

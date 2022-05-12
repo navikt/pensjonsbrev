@@ -36,8 +36,8 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
 ) {
     val harMinsteytelseSats = argument().map { it.minsteytelseGjeldende_sats > 0 }
     val ufoeretrygdGjeldendeErKonvertert = argument().map { it.uforetrygdGjeldende.erKonvertert }
-    val erUnder20Aar = argument().map { it.ungUforGjeldende_erUnder20Ar }
-    val `inntekt foer ufoere er sannsynlig endret` = argument().map { it.inntektForUforeGjeldende.erSannsynligEndret }
+    val erUnder20AarVedUngUfoere = argument().map { it.ungUforGjeldende_erUnder20Ar }
+    val inntektFoerUfoereErSannsynligEndret = argument().map { it.inntektForUforeGjeldende.erSannsynligEndret }
     //TODO kvalitetssjekk navnet på denne.
     val inntektsgrenseErUnderTak =
         argument().map { it.inntektsAvkortingGjeldende.inntektsgrenseAr < it.inntektsAvkortingGjeldende.inntektstak }
@@ -285,7 +285,7 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
                 )
             }
         }
-        showIf(argument().map { it.ungUforGjeldende_erUnder20Ar }) {
+        showIf(argument().map { it.ungUforGjeldende_erUnder20Ar ?: false }) {
             row {
                 cell {
                     text(
@@ -712,24 +712,22 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
     showIf(harMinsteytelseSats) {
         includePhrase(rettTilMYOverskrift_001)
     }
-    //TODO if or else depending on optional erUnder20Aar boolean
-// If no node for ungUforGjeldende_erUnder20Ar
-    showIf(not(ufoeretrygdGjeldendeErKonvertert) and harMinsteytelseSats) {
-        includePhrase(vedleggBeregnUTInfoMY_001)
-    }
-    //TODO if or else depending on optional erUnder20Aar boolean
-// If no node for ungUforGjeldende_erUnder20Ar
-    showIf(ufoeretrygdGjeldendeErKonvertert and harMinsteytelseSats) {
-        includePhrase(vedleggBeregnUTInfoMY2_001)
-    }
-    //TODO if or else depending on optional erUnder20Aar boolean
-    showIf(not(erUnder20Aar) and harMinsteytelseSats) {
-        includePhrase(vedleggBeregnUTInfoMYUngUfor_001)
-    }
 
-    //TODO if or else depending on optional erUnder20Aar boolean
-    showIf(erUnder20Aar and harMinsteytelseSats) {
-        includePhrase(vedleggBeregnUTInfoMYUngUforUnder20_001)
+    showIf(harMinsteytelseSats) {
+        ifNotNull(erUnder20AarVedUngUfoere) { erUnder20Aar ->
+            showIf(erUnder20Aar) {
+                includePhrase(vedleggBeregnUTInfoMYUngUforUnder20_001)
+            }.orShow{
+                includePhrase(vedleggBeregnUTInfoMYUngUfor_001)
+            }
+        }
+        showIf(erUnder20AarVedUngUfoere.map { it == null }) {
+            showIf(ufoeretrygdGjeldendeErKonvertert) {
+                includePhrase(vedleggBeregnUTInfoMY2_001)
+            }.orShow{
+                includePhrase(vedleggBeregnUTInfoMY_001)
+            }
+        }
     }
 
     showIf(harMinsteytelseSats) {
@@ -738,13 +736,13 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
         })
     }
 
-    showIf(`inntekt foer ufoere er sannsynlig endret`) {
+    showIf(inntektFoerUfoereErSannsynligEndret) {
         includePhrase(vedleggBeregnUTMinsteIFU_002)
     }
 
     showIf(
         harMinsteytelseSats
-                and `inntekt foer ufoere er sannsynlig endret`
+                and inntektFoerUfoereErSannsynligEndret
                 and inntektsgrenseErUnderTak
     ) {
 
