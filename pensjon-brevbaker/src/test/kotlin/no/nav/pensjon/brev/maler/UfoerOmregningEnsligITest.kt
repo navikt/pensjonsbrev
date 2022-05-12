@@ -8,12 +8,14 @@ import no.nav.pensjon.brev.api.model.Institusjon
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.Sivilstand
 import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDto
+import no.nav.pensjon.brev.api.model.vedlegg.DineRettigheterOgMulighetTilAaKlageDto
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligUfoeretrygdFoerSkattDto
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDto
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDto.BarnetilleggGjeldende
 import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterUfoereDto
 import no.nav.pensjon.brev.latex.LaTeXCompilerService
 import no.nav.pensjon.brev.latex.PdfCompilationInput
+import no.nav.pensjon.brev.maler.vedlegg.dineRettigheterOgMulighetTilAaKlage
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.Letter
 import no.nav.pensjon.brev.writeTestPDF
@@ -39,6 +41,7 @@ class UfoerOmregningEnsligITest {
                 ),
                 maanedligUfoeretrygdFoerSkatt = MaanedligUfoeretrygdFoerSkattDto(),
                 orienteringOmRettigheterOgPlikter = OrienteringOmRettigheterUfoereDto(),
+                dineRettigheterOgMulighetTilAaKlage = DineRettigheterOgMulighetTilAaKlageDto(),
                 avdod = UfoerOmregningEnsligDto.Avdod(
                     sivilstand = Sivilstand.PARTNER,
                     navn = "Avdod person",

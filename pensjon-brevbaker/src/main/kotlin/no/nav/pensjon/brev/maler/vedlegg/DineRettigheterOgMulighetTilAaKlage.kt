@@ -9,7 +9,7 @@ import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.newText
 
-// Conditional for production of the attchment is: vedtak_resultat = AVSLG
+// Conditional for showing the attachment is: vedtak_resultat = AVSLG
 
 val dineRettigheterOgMulighetTilAaKlage = createAttachment<LangBokmalNynorskEnglish, DineRettigheterOgMulighetTilAaKlageDto>(
     title = newText(
@@ -17,7 +17,7 @@ val dineRettigheterOgMulighetTilAaKlage = createAttachment<LangBokmalNynorskEngl
         Nynorsk to "Rettane dine og høve til å klage",
         English to "Your rights and how to appeal"
     ),
-    includeSakspart = true,
+    includeSakspart = false,
 ) {
     val saktype = argument().select(DineRettigheterOgMulighetTilAaKlageDto::saktype)
     val brukerUnder18Ar = argument().select((DineRettigheterOgMulighetTilAaKlageDto::bruker_brukerUnder18Ar))

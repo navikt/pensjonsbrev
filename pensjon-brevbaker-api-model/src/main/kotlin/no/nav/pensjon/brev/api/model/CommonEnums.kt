@@ -1,5 +1,10 @@
 package no.nav.pensjon.brev.api.model
 
+enum class VedtakResultat{
+    AVSLG,
+    INNVL,
+}
+
 enum class Sivilstand{
     ENSLIG,
     ENKE,
