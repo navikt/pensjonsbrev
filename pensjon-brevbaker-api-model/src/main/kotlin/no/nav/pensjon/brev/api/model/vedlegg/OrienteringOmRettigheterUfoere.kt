@@ -7,7 +7,7 @@ data class OrienteringOmRettigheterUfoereDto(
     val bruker_borINorge: Boolean,
     val institusjon_gjeldende: Institusjon,
     val bruker_sivilstand: Sivilstand,
-    val ufoeretrygdPerMaaned_barnetilleggGjeldende: Int,
+    val ufoeretrygdPerMaaned_barnetilleggGjeldende: Int?,
 ) {
     constructor() : this(
         bruker_borINorge = false,

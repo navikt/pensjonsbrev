@@ -21,7 +21,7 @@ val orienteringOmRettigheterOgPlikterUfoere = createAttachment<LangBokmalNynorsk
     val bor_i_norge = argument().select(OrienteringOmRettigheterUfoereDto::bruker_borINorge)
     val institusjon_gjeldende = argument().select(OrienteringOmRettigheterUfoereDto::institusjon_gjeldende)
     val sivilstand = argument().select(OrienteringOmRettigheterUfoereDto::bruker_sivilstand)
-    val barnetillegg_beloep_gjeldendeBeregnetUTPerManed =
+    val barnetilleggSaerkullsbarn =
         argument().select(OrienteringOmRettigheterUfoereDto::ufoeretrygdPerMaaned_barnetilleggGjeldende)
 
     includePhrase(vedleggPlikterUT_001)
@@ -46,10 +46,12 @@ val orienteringOmRettigheterOgPlikterUfoere = createAttachment<LangBokmalNynorsk
         showIf(sivilstand.isOneOf(ENSLIG, ENKE)) {
             item { includePhrase(vedleggPlikterUT6_001) }
         }
-        showIf(barnetillegg_beloep_gjeldendeBeregnetUTPerManed.map { it > 0 }
-        ) {
-            item { includePhrase(vedleggPlikterUT7_001) }
+        ifNotNull(barnetilleggSaerkullsbarn) { tillegg ->
+            showIf(tillegg.map { it > 0 }) {
+                item { includePhrase(vedleggPlikterUT7_001) }
+            }
         }
+
         item { includePhrase(vedleggPlikterUT8_001) }
         item { includePhrase(vedleggPlikterUT9_001) }
         item { includePhrase(vedleggPlikterUT10_001) }
