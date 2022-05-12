@@ -439,131 +439,138 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
                 }
             }
         }
-        showIf(beregningsmetode.isOneOf(FOLKETRYGD)) {
-            row {
-                cell {
-                    text(
-                        Bokmal to "Faktisk trygdetid i Norge",
-                        Nynorsk to "Faktisk trygdetid i Noreg",
-                        English to "Actual insurance period in Norway"
-                    )
-                }
-                cell {
-                    includePhrase(maaneder, argument().map { it.trygdetidsdetaljerGjeldende.faktiskTTNorge })
+        ifNotNull(argument().map { it.trygdetidsdetaljerGjeldende.faktiskTTNorge }) {
+            showIf(beregningsmetode.isOneOf(FOLKETRYGD)) {
+                row {
+                    cell {
+                        text(
+                            Bokmal to "Faktisk trygdetid i Norge",
+                            Nynorsk to "Faktisk trygdetid i Noreg",
+                            English to "Actual insurance period in Norway"
+                        )
+                    }
+                    cell {
+                        includePhrase(maaneder, it)
 
+                    }
                 }
             }
         }
+
+
         showIf(beregningsmetode.isOneOf(EOS)) {
-            row {
-                cell {
-                    text(
-                        Bokmal to "Faktisk trygdetid i andre EØS-land",
-                        Nynorsk to "Faktisk trygdetid i andre EØS-land",
-                        English to "Actual insurance period(s) in other EEA countries"
-                    )
-                }
-                cell {
-                    includePhrase(maaneder, argument().map { it.trygdetidsdetaljerGjeldende.faktiskTTEOS })
-
-                }
-            }
-            row {
-                cell {
-                    text(
-                        Bokmal to "Faktisk trygdetid i Norge og EØS-land (maksimalt 40 år)",
-                        Nynorsk to "Faktisk trygdetid i Noreg og EØS-land (maksimalt 40 år)",
-                        English to "Actual insurance period in Norway and EEA countries (maximum 40 years)"
-                    )
-                }
-                cell {
-                    includePhrase(maaneder, argument().map { it.trygdetidsdetaljerGjeldende.nevnerTTEOS })
-
+            ifNotNull(argument().map { it.trygdetidsdetaljerGjeldende.faktiskTTEOS }) { faktiskTTEOS ->
+                row {
+                    cell {
+                        text(
+                            Bokmal to "Faktisk trygdetid i andre EØS-land",
+                            Nynorsk to "Faktisk trygdetid i andre EØS-land",
+                            English to "Actual insurance period(s) in other EEA countries"
+                        )
+                    }
+                    cell {
+                        includePhrase(maaneder, faktiskTTEOS)
+                    }
                 }
             }
-            row {
-                cell {
-                    text(
-                        Bokmal to "Forholdstallet brukt i beregning av trygdetid",
-                        Nynorsk to "Forholdstalet brukt i utrekning av trygdetid",
-                        English to "Ratio applied in calculation of insurance period"
-                    )
+
+            ifNotNull(argument().map { it.trygdetidsdetaljerGjeldende.nevnerTTEOS }) { nevnerTTEOS ->
+                row {
+                    cell {
+                        text(
+                            Bokmal to "Faktisk trygdetid i Norge og EØS-land (maksimalt 40 år)",
+                            Nynorsk to "Faktisk trygdetid i Noreg og EØS-land (maksimalt 40 år)",
+                            English to "Actual insurance period in Norway and EEA countries (maximum 40 years)"
+                        )
+                    }
+                    cell { includePhrase(maaneder, nevnerTTEOS) }
                 }
-                cell {
-                    val tellerTTEOS =
-                        argument().map { it.trygdetidsdetaljerGjeldende.tellerTTEOS }.str()
-                    val nevnerTTEOS =
-                        argument().map { it.trygdetidsdetaljerGjeldende.nevnerTTEOS }.str()
-                    textExpr(
-                        Bokmal to tellerTTEOS + " / " + nevnerTTEOS,
-                        Nynorsk to tellerTTEOS + " / " + nevnerTTEOS,
-                        English to tellerTTEOS + " / " + nevnerTTEOS
-                    )
+            }
+
+            ifNotNull(argument().map { it.trygdetidsdetaljerGjeldende.tellerTTEOS },
+                argument().map { it.trygdetidsdetaljerGjeldende.nevnerTTEOS }) { tellerTTEOS, nevnerTTEOS ->
+                row {
+                    cell {
+                        text(
+                            Bokmal to "Forholdstallet brukt i beregning av trygdetid",
+                            Nynorsk to "Forholdstalet brukt i utrekning av trygdetid",
+                            English to "Ratio applied in calculation of insurance period"
+                        )
+                    }
+                    cell {
+                        textExpr(
+                            Bokmal to tellerTTEOS.str() + " / " + nevnerTTEOS.str(),
+                            Nynorsk to tellerTTEOS.str() + " / " + nevnerTTEOS.str(),
+                            English to tellerTTEOS.str() + " / " + nevnerTTEOS.str()
+                        )
+                    }
                 }
             }
         }
+
         showIf(beregningsmetode.isOneOf(NORDISK)) {
-            row {
-                cell {
-                    text(
-                        Bokmal to "Faktisk trygdetid i annet nordisk land som brukes i beregning av framtidig trygdetid",
-                        Nynorsk to "Faktisk trygdetid i anna nordisk land som blir brukt i utrekning av framtidig trygdetid",
-                        English to "Actual insurance period in another Nordic country, applied in calculation of future insurance period(s)"
-                    )
-                }
-                cell {
-                    includePhrase(maaneder, argument().map { it.trygdetidsdetaljerGjeldende.faktiskTTNordiskKonv })
+            ifNotNull(argument().map { it.trygdetidsdetaljerGjeldende.faktiskTTNordiskKonv }) { faktiskTTNordiskKonv ->
+                row {
+                    cell {
+                        text(
+                            Bokmal to "Faktisk trygdetid i annet nordisk land som brukes i beregning av framtidig trygdetid",
+                            Nynorsk to "Faktisk trygdetid i anna nordisk land som blir brukt i utrekning av framtidig trygdetid",
+                            English to "Actual insurance period in another Nordic country, applied in calculation of future insurance period(s)"
+                        )
+                    }
+                    cell { includePhrase(maaneder, faktiskTTNordiskKonv) }
                 }
             }
         }
 
         // TODO Calculation!! (framtidigTTNorsk / 12) < 40)
-        showIf(beregningsmetode.isOneOf(NORDISK, FOLKETRYGD)
-                and argument().map { (it.trygdetidsdetaljerGjeldende.framtidigTTNorsk / 12) < 40 }) {
-            row {
-                cell {
-                    text(
-                        Bokmal to "Norsk framtidig trygdetid",
-                        Nynorsk to "Norsk framtidig trygdetid",
-                        English to "Future insurance period in Norway"
-                    )
-                }
-                cell {
-                    includePhrase(maaneder, argument().map { it.trygdetidsdetaljerGjeldende.framtidigTTNorsk })
+        ifNotNull(argument().map { it.trygdetidsdetaljerGjeldende.framtidigTTNorsk }) { framtidigTTNorsk ->
+            showIf(beregningsmetode.isOneOf(NORDISK, FOLKETRYGD) and framtidigTTNorsk.map { (it / 12) < 40 }) {
+                row {
+                    cell {
+                        text(
+                            Bokmal to "Norsk framtidig trygdetid",
+                            Nynorsk to "Norsk framtidig trygdetid",
+                            English to "Future insurance period in Norway"
+                        )
+                    }
+                    cell {
+                        includePhrase(maaneder, framtidigTTNorsk)
+                    }
                 }
             }
         }
         showIf(beregningsmetode.isOneOf(NORDISK)) {
-            row {
-                cell {
-                    text(
-                        Bokmal to "Forholdstallet brukt i reduksjon av norsk framtidig trygdetid",
-                        Nynorsk to "Forholdstalet brukt i reduksjon av norsk framtidig trygdetid",
-                        English to "Ratio applied in reduction of future Norwegian insurance period"
-                    )
-                }
-                cell {
-                    val tellerTTNordiskKonv =
-                        argument().map { it.trygdetidsdetaljerGjeldende.tellerTTNordiskKonv }.str()
-                    val nevnerTTNordiskKonv =
-                        argument().map { it.trygdetidsdetaljerGjeldende.nevnerTTNordiskKonv }.str()
-                    textExpr(
-                        Bokmal to tellerTTNordiskKonv + " / " + nevnerTTNordiskKonv,
-                        Nynorsk to tellerTTNordiskKonv + " / " + nevnerTTNordiskKonv,
-                        English to tellerTTNordiskKonv + " / " + nevnerTTNordiskKonv
-                    )
+            ifNotNull(argument().map { it.trygdetidsdetaljerGjeldende.tellerTTNordiskKonv },
+                argument().map { it.trygdetidsdetaljerGjeldende.nevnerTTNordiskKonv }) { tellerTTNordiskKonv, nevnerTTNordiskKonv ->
+                row {
+                    cell {
+                        text(
+                            Bokmal to "Forholdstallet brukt i reduksjon av norsk framtidig trygdetid",
+                            Nynorsk to "Forholdstalet brukt i reduksjon av norsk framtidig trygdetid",
+                            English to "Ratio applied in reduction of future Norwegian insurance period"
+                        )
+                    }
+                    cell {
+                        textExpr(
+                            Bokmal to tellerTTNordiskKonv.str() + " / " + nevnerTTNordiskKonv.str(),
+                            Nynorsk to tellerTTNordiskKonv.str() + " / " + nevnerTTNordiskKonv.str(),
+                            English to tellerTTNordiskKonv.str() + " / " + nevnerTTNordiskKonv.str()
+                        )
+                    }
                 }
             }
-            row {
-                cell {
-                    text(
-                        Bokmal to "Samlet trygdetid brukt i beregning av uføretrygd etter reduksjon av framtidig trygdetid",
-                        Nynorsk to "Samla trygdetid brukt i utrekning av uføretrygd etter reduksjon av framtidig trygdetid",
-                        English to "Total insurance period applied in calculating disability benefit after reduction of future insurance period(s"
-                    )
-                }
-                cell {
-                    includePhrase(maaneder, argument().map { it.trygdetidsdetaljerGjeldende.samletTTNordiskKonv })
+
+            ifNotNull(argument().map { it.trygdetidsdetaljerGjeldende.samletTTNordiskKonv }) { samletTTNordiskKonv ->
+                row {
+                    cell {
+                        text(
+                            Bokmal to "Samlet trygdetid brukt i beregning av uføretrygd etter reduksjon av framtidig trygdetid",
+                            Nynorsk to "Samla trygdetid brukt i utrekning av uføretrygd etter reduksjon av framtidig trygdetid",
+                            English to "Total insurance period applied in calculating disability benefit after reduction of future insurance period(s"
+                        )
+                    }
+                    cell { includePhrase(maaneder, samletTTNordiskKonv) }
                 }
             }
         }

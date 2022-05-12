@@ -98,18 +98,18 @@ data class OpplysningerBruktIBeregningUTDto(
     }
 
     data class TrygdetidsdetaljerGjeldende(
-        val utenforEOSogNorden: UtenforEOSogNorden?,
         val anvendtTT: Int,
         val beregningsmetode: Beregningsmetode,
-        val faktiskTTEOS: Int,
-        val nevnerTTEOS: Int,
-        val tellerTTEOS: Int,
-        val faktiskTTNordiskKonv: Int,
-        val faktiskTTNorge: Int,
-        val framtidigTTNorsk: Int,
-        val nevnerTTNordiskKonv: Int,
-        val samletTTNordiskKonv: Int,
-        val tellerTTNordiskKonv: Int,
+        val faktiskTTEOS: Int?,
+        val faktiskTTNordiskKonv: Int?,
+        val faktiskTTNorge: Int?,
+        val framtidigTTNorsk: Int?,
+        val nevnerTTEOS: Int?,
+        val nevnerTTNordiskKonv: Int?,
+        val samletTTNordiskKonv: Int?,
+        val tellerTTEOS: Int?,
+        val tellerTTNordiskKonv: Int?,
+        val utenforEOSogNorden: UtenforEOSogNorden?,
     ) {
         constructor() : this(
             anvendtTT = 0,
