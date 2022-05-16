@@ -20,7 +20,7 @@ val orienteringOmRettigheterOgPlikterUfoere = createAttachment<LangBokmalNynorsk
 ) {
     val bor_i_norge = argument().select(OrienteringOmRettigheterUfoereDto::bruker_borINorge)
     val institusjon_gjeldende = argument().select(OrienteringOmRettigheterUfoereDto::institusjon_gjeldende)
-    val sivilstand = argument().select(OrienteringOmRettigheterUfoereDto::bruker_sivilstand)
+    val sivilstand = argument().select(OrienteringOmRettigheterUfoereDto::avdoed_sivilstand)
     val barnetilleggSaerkullsbarn =
         argument().select(OrienteringOmRettigheterUfoereDto::ufoeretrygdPerMaaned_barnetilleggGjeldende)
 
@@ -42,7 +42,7 @@ val orienteringOmRettigheterOgPlikterUfoere = createAttachment<LangBokmalNynorsk
             item { includePhrase(vedleggPlikterUT4_001) }
         }
         item { includePhrase(vedleggPlikterUT5_001) }
-        //TODO denne sivilstanden sattes feilaktig til avdød sivilstand. er det uføretrygd per måned sivilstand vi skal bruke?
+
         showIf(sivilstand.isOneOf(ENSLIG, ENKE)) {
             item { includePhrase(vedleggPlikterUT6_001) }
         }

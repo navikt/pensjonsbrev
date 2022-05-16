@@ -26,14 +26,11 @@ val dineRettigheterOgMulighetTilAaKlage = createAttachment<LangBokmalNynorskEngl
 
     showIf(saktype.isNotAnyOf(Sakstype.UFOEREP)) {
         includePhrase(vedleggInnsynSakPensjon_001)
+        includePhrase(vedleggInnsynSakUTPesys_001)
     }
 
     showIf(saktype.isOneOf(Sakstype.BARNEP) and brukerUnder18Ar) {
         includePhrase(vedleggInnsynSakUnder18_001)
-    }
-
-    showIf(saktype.isOneOf(Sakstype.UFOEREP)) {
-        includePhrase(vedleggInnsynSakUTPesys_001)
     }
 
     includePhrase(vedleggHjelpFraAndre_001)

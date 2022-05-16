@@ -240,7 +240,7 @@ object UfoerOmregningEnslig : StaticTemplate {
                         barnetilleggForSaerkullsbarnVedvirkErRedusertMotInntekt
                             and harbarnSomTidligerVarSaerkullsbarn
                             and not(inntektFoerUfoereErSannsynligEndret)
-                            and/*TODO Denne bør gjøres om til and i metaforce også*/ not(harMinsteytelseVedVirk)
+                            and not(harMinsteytelseVedVirk)
                     ) {
                         includePhrase(
                             InfoTidligereSB_001,

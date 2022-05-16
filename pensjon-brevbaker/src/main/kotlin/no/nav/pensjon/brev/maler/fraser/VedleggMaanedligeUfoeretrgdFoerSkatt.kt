@@ -121,7 +121,6 @@ val tabellBeregnetUT = ParagraphPhrase<LangBokmalNynorskEnglish, TabellBeregnetU
         header = {
             column(1) {} //TODO skal det stå noe her?
             column(1, alignment = Element.Table.ColumnAlignment.RIGHT) {
-                //tekst102 BruttoPerManed obligatorisk
                 text(
                     Bokmal to "Bruttobeløp per måned",
                     Nynorsk to "Bruttobeløp per månad",

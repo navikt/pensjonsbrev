@@ -525,7 +525,7 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
 
         // TODO Calculation!! (framtidigTTNorsk / 12) < 40)
         ifNotNull(argument().map { it.trygdetidsdetaljerGjeldende.framtidigTTNorsk }) { framtidigTTNorsk ->
-            showIf(beregningsmetode.isOneOf(NORDISK, FOLKETRYGD) and framtidigTTNorsk.map { (it / 12) < 40 }) {
+            showIf(beregningsmetode.isOneOf(NORDISK, FOLKETRYGD) and framtidigTTNorsk.map { it < 480 }) {
                 row {
                     cell {
                         text(
