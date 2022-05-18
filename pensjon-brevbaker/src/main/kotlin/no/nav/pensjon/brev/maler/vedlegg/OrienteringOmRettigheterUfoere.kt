@@ -10,6 +10,8 @@ import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.newText
 
+// Conditional for showing the attachment is: vedtak_resultat = AVSLG
+
 val orienteringOmRettigheterOgPlikterUfoere = createAttachment<LangBokmalNynorskEnglish, OrienteringOmRettigheterUfoereDto>(
     title = newText(
         Bokmal to "Dine rettigheter og plikter",
