@@ -10,7 +10,7 @@ import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.newText
 
-// Conditional for showing the attachment is: vedtak_resultat = AVSLG
+// Conditional for showing the attachment is: sakstype = UFOEREP && vedtakResultat = AVSLG
 
 val orienteringOmRettigheterOgPlikterUfoere = createAttachment<LangBokmalNynorskEnglish, OrienteringOmRettigheterUfoereDto>(
     title = newText(
