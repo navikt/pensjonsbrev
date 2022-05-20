@@ -119,7 +119,7 @@ data class TabellBeregnetUTDto(
 val tabellBeregnetUT = ParagraphPhrase<LangBokmalNynorskEnglish, TabellBeregnetUTDto> { beregnetUT ->
     table(
         header = {
-            column(1) {} //TODO skal det stå noe her?
+            column(1) {}
             column(1, alignment = Element.Table.ColumnAlignment.RIGHT) {
                 text(
                     Bokmal to "Bruttobeløp per måned",
@@ -230,7 +230,7 @@ data class TabellBeregnetUTAvkortetDto(
 val tabellBeregnetUTAvkortet = ParagraphPhrase<LangBokmalNynorskEnglish, TabellBeregnetUTAvkortetDto> { beregnetUT ->
     table(
         header = {
-            column {} //TODO skal det stå noe her?
+            column {}
             column(alignment = Element.Table.ColumnAlignment.RIGHT) {
                 text(
                     Bokmal to "Uføretrygd per måned før fradrag for inntekt",

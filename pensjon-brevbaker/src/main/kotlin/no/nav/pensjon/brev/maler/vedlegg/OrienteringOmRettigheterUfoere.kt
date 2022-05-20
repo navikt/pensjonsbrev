@@ -10,6 +10,8 @@ import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.newText
 
+// Conditional for showing the attachment is: sakstype = UFOEREP && vedtakResultat = AVSLG
+
 val orienteringOmRettigheterOgPlikterUfoere = createAttachment<LangBokmalNynorskEnglish, OrienteringOmRettigheterUfoereDto>(
     title = newText(
         Bokmal to "Dine rettigheter og plikter",
@@ -29,23 +31,21 @@ val orienteringOmRettigheterOgPlikterUfoere = createAttachment<LangBokmalNynorsk
     list {
         item { includePhrase(vedleggPlikterUT1_001) }
         item { includePhrase(vedleggPlikterUT2_001) }
+
         showIf(
             bor_i_norge
-                    and not(institusjon_gjeldende.isOneOf(FENGSEL, HELSE, SYKEHJEM))
+                and not(institusjon_gjeldende.isOneOf(FENGSEL, HELSE, SYKEHJEM))
         ) {
             item { includePhrase(vedleggPlikterUT3_001) }
-        }
-        showIf(
-            bor_i_norge
-                    and not(institusjon_gjeldende.isOneOf(FENGSEL, HELSE, SYKEHJEM))
-        ) {
             item { includePhrase(vedleggPlikterUT4_001) }
         }
+
         item { includePhrase(vedleggPlikterUT5_001) }
 
         showIf(sivilstand.isOneOf(ENSLIG, ENKE)) {
             item { includePhrase(vedleggPlikterUT6_001) }
         }
+
         ifNotNull(barnetilleggSaerkullsbarn) { tillegg ->
             showIf(tillegg.map { it > 0 }) {
                 item { includePhrase(vedleggPlikterUT7_001) }

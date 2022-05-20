@@ -24,6 +24,6 @@ data class OrienteringOmRettigheterAlderDto(
         barnetilleggVedvirk_innvilgetBarnetillegFellesbarn = false,
         barnetilleggVedvirk_innvilgetBarnetilleggSaerkullsbarn = false,
         ektefelletilleggVedvirk_innvilgetEktefelletillegg = false,
-        saktype = Sakstype.UFOEREP,
+        saktype = Sakstype.ALDER,
     )
 }

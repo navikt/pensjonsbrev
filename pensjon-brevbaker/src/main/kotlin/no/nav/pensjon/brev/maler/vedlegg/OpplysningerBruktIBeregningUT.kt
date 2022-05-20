@@ -30,7 +30,6 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
     val ufoeretrygdGjeldendeErKonvertert = argument().map { it.uforetrygdGjeldende.erKonvertert }
     val erUnder20AarVedUngUfoere = argument().map { it.ungUforGjeldende_erUnder20Ar }
     val inntektFoerUfoereErSannsynligEndret = argument().map { it.inntektForUforeGjeldende.erSannsynligEndret }
-    //TODO kvalitetssjekk navnet på denne.
     val inntektsgrenseErUnderTak =
         argument().map { it.inntektsAvkortingGjeldende.inntektsgrenseAr < it.inntektsAvkortingGjeldende.inntektstak }
     val ufoeretrygdErKonvertert = argument().map { it.uforetrygdGjeldende.erKonvertert }
@@ -514,8 +513,6 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
                 }
             }
         }
-
-        // TODO Calculation!! (framtidigTTNorsk / 12) < 40)
         ifNotNull(argument().map { it.trygdetidsdetaljerGjeldende.framtidigTTNorsk }) { framtidigTTNorsk ->
             showIf(beregningsmetode.isOneOf(NORDISK, FOLKETRYGD) and framtidigTTNorsk.map { it < 480 }) {
                 row {

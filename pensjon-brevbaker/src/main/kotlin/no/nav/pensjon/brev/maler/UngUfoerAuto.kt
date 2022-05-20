@@ -70,6 +70,7 @@ object UngUfoerAuto : StaticTemplate {
         }
 
         // TODO: Inkluder vedlegg "Dette er din månedlige uføretrygd før skatt"
-        // TODO: Inkluder vedlegg "Orientering om rettigheter og plikter"
+        // TODO: Inkluder vedlegg OrienteringOmRettigheterUfoere.kt, conditional for showing the attachment is: Sakstype = Uføretrygd? and UngUforResultat = "oppfylt"?
+        // TODO: Inkluder vedlegg DineRettigheterOgMulighetTilAaKlage.kt, conditional for showing the attachment is: Sakstype = "Uføretrygd"? and UngUforResultat = "ikke_oppfylt"?
     }
 }
