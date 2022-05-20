@@ -18,14 +18,6 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 
 
-/*
-The condition for the showing of the attachement is:
-var erRedusertMotInntekt= GetValue("fag=barnetilleggSBGjeldende=erRedusertMotInntekt").toLowerCase();
-var erSannsynligEndret = GetValue("fag=inntektForUforeVedVirk=erSannsynligEndret").toLowerCase();
-if(	g.finnesNode("fag=minsteytelseVedVirk")
-||	erSannsynligEndret == "true"
-||	erRedusertMotInntekt == "true")
- */
 val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, OpplysningerBruktIBeregningUTDto>(
     title = newText(
         Bokmal to "Opplysninger om beregningen",
@@ -47,9 +39,9 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
         val virkDatoFom = argument().map { it.beregnetUTPerManedGjeldende.virkDatoFom }.format()
         val grunnbelop = argument().map { Kroner(it.beregnetUTPerManedGjeldende.grunnbelop) }
         textExpr(
-            Bokmal to "Opplysninger vi har brukt i beregningen fra ".expr() + virkDatoFom.str() + " Folketrygdens grunnbeløp (G) benyttet i beregningen er ".expr() + grunnbelop.str() + " kroner",
-            Nynorsk to "Opplysningar vi har brukt i utrekninga frå ".expr() + virkDatoFom.str() + " Grunnbeløpet i folketrygda (G) nytta i utrekninga er ".expr() + grunnbelop.str() + " kroner",
-            English to "Data we have used in the calculations as of ".expr() + virkDatoFom.str() + " The National Insurance basic amount (G) used in the calculation is NOK ".expr() + grunnbelop.str() + "."
+            Bokmal to "Opplysninger vi har brukt i beregningen fra ".expr() + virkDatoFom.str() + " Folketrygdens grunnbeløp (G) benyttet i beregningen er ".expr() + grunnbelop.format() + " kroner",
+            Nynorsk to "Opplysningar vi har brukt i utrekninga frå ".expr() + virkDatoFom.str() + " Grunnbeløpet i folketrygda (G) nytta i utrekninga er ".expr() + grunnbelop.format() + " kroner",
+            English to "Data we have used in the calculations as of ".expr() + virkDatoFom.str() + " The National Insurance basic amount (G) used in the calculation is NOK ".expr() + grunnbelop.format() + "."
         )
     }
 // Start of table 1
@@ -717,14 +709,14 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
         ifNotNull(erUnder20AarVedUngUfoere) { erUnder20Aar ->
             showIf(erUnder20Aar) {
                 includePhrase(vedleggBeregnUTInfoMYUngUforUnder20_001)
-            }.orShow{
+            }.orShow {
                 includePhrase(vedleggBeregnUTInfoMYUngUfor_001)
             }
         }
         showIf(erUnder20AarVedUngUfoere.map { it == null }) {
             showIf(ufoeretrygdGjeldendeErKonvertert) {
                 includePhrase(vedleggBeregnUTInfoMY2_001)
-            }.orShow{
+            }.orShow {
                 includePhrase(vedleggBeregnUTInfoMY_001)
             }
         }
@@ -863,61 +855,43 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
                 showIf(erRedusertMotInntekt and erIkkeUtbetaltPgaTak) {
                     row {
                         cell {
-                            val inntektBruktIAvkortning =
-                                saerkullTillegg.map { Kroner(it.inntektBruktIAvkortning) }.format()
-                            textExpr(
-                                Bokmal to "Samlet inntekt brukt i fastsettelse av barnetillegget er\n".expr() + inntektBruktIAvkortning.str() + " kr",
-                                Nynorsk to "Samla inntekt brukt i fastsetjinga av barnetillegget er\n".expr() + inntektBruktIAvkortning.str() + " kr",
-                                English to "Total income applied in calculation of reduction in child supplement is\n".expr() + inntektBruktIAvkortning.str() + " NOK"
+                            text(
+                                Bokmal to "Samlet inntekt brukt i fastsettelse av barnetillegget er ",
+                                Nynorsk to "Samla inntekt brukt i fastsetjinga av barnetillegget er ",
+                                English to "Total income applied in calculation of reduction in child supplement is ",
                             )
                         }
 
-                        //TODO why is this empty?
                         cell {
-                            text(
-                                Bokmal to "", //TODO Empty
-                                Nynorsk to "",
-                                English to ""
-                            )
+                            includePhrase(kroner, saerkullTillegg.map { it.inntektBruktIAvkortning })
                         }
                     }
                 }
                 showIf(saerkullTillegg.map { (it.belop > 0 || (it.belop < 0 && it.justeringsbelopAr != 0)) }) {
                     row {
                         cell {
-                            val fribelop = saerkullTillegg.map { Kroner(it.fribelop) }
-                            textExpr(
-                                Bokmal to "Fribeløp brukt i fastsettelsen av barnetillegget er\n".expr() + fribelop.str() + " kr",
-                                Nynorsk to "Fribeløp brukt i fastsetjinga av barnetillegget er\n".expr() + fribelop.str() + " kr",
-                                English to "Exemption amount applied in calculation of reduction in child supplement is\n".expr() + fribelop.str() + " NOK"
+                            text(
+                                Bokmal to "Fribeløp brukt i fastsettelsen av barnetillegget er",
+                                Nynorsk to "Fribeløp brukt i fastsetjinga av barnetillegget er",
+                                English to "Exemption amount applied in calculation of reduction in child supplement is",
                             )
                         }
                         cell {
-                            text(
-                                Bokmal to "", //TODO Empty
-                                Nynorsk to "",
-                                English to ""
-                            )
+                            includePhrase(kroner, saerkullTillegg.map { it.fribelop })
                         }
                     }
                 }
                 showIf(saerkullTillegg.map { (it.belop != 0 || (it.belop == 0 && it.justeringsbelopAr != 0)) }) {
                     row {
                         cell {
-                            val inntektOverFribelop = saerkullTillegg.map { Kroner(it.inntektOverFribelop) }
-                                .format()
-                            textExpr(
-                                Bokmal to "Inntekt over fribeløpet er\n".expr() + inntektOverFribelop.str() + " kr",
-                                Nynorsk to "Inntekt over fribeløpet er\n".expr() + inntektOverFribelop.str() + " kr",
-                                English to "Income exceeding the exemption amount is\n".expr() + inntektOverFribelop.str() + " NOK"
+                            text(
+                                Bokmal to "Inntekt over fribeløpet er",
+                                Nynorsk to "Inntekt over fribeløpet er",
+                                English to "Income exceeding the exemption amount is",
                             )
                         }
                         cell {
-                            text(
-                                Bokmal to "", //TODO Empty
-                                Nynorsk to "",
-                                English to ""
-                            )
+                            includePhrase(kroner, saerkullTillegg.map { it.inntektOverFribelop })
                         }
                     }
                 }
@@ -928,7 +902,7 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
                 }) {
                     row {
                         cell {
-                            text(
+                            text( // TODO finn en fornuftig måte å vise regnestykket på
                                 Bokmal to "- 50 prosent av inntekt som overstiger fribeløpet",
                                 Nynorsk to "- 50 prosent av inntekt som overstig fribeløpet",
                                 English to "- 50 percent of income exceeding the allowance amount"

@@ -89,7 +89,7 @@ object Felles {
         textExpr(
             Bokmal to kroner.format() + " kr",
             Nynorsk to kroner.format() + " kr",
-            English to kroner.format() + " NOK"
+            English to kroner.format() + " NOK",
         )
     }
 

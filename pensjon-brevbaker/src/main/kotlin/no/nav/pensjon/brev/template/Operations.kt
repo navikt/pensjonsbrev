@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.template
 import no.nav.pensjon.brev.api.model.Telefonnummer
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.expression.Predicate
+import java.text.NumberFormat
 import java.time.LocalDate
 import java.time.format.FormatStyle
 
@@ -83,8 +84,11 @@ sealed class BinaryOperation<in In1, in In2, out Out> : Operation() {
 
     object LocalizedIntFormat : BinaryOperation<Int, Language, String>() {
         override fun apply(first: Int, second: Language): String =
-                String.format(second.locale(), "%d", first)
+            NumberFormat.getNumberInstance(second.locale())
+                .also { it.maximumFractionDigits = 0 }
+                .format(first)
     }
+
     class NullSafe<In1 : Any, In2 : Any, Out : Any>(private val operation: BinaryOperation<In1, In2, Out>) :
         BinaryOperation<In1?, In2?, Out?>() {
         override fun apply(first: In1?, second: In2?): Out? =
@@ -94,6 +98,7 @@ sealed class BinaryOperation<in In1, in In2, out Out> : Operation() {
                 null
             }
     }
+
     class EnumInList<EnumType : Enum<*>> : BinaryOperation<EnumType, List<EnumType>, Boolean>() {
         override fun apply(first: EnumType, second: List<EnumType>): Boolean = second.contains(first)
     }
