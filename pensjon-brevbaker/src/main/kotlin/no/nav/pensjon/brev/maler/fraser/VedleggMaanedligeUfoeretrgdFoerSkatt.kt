@@ -24,7 +24,7 @@ val vedleggBelopUT_001 = OutlinePhrase<LangBokmalNynorskEnglish, Unit> {
     }
 }
 
-data class  TabellUTTittelGjeldende_001Dto(
+data class TabellUTTittelGjeldende_001Dto(
     val virkningsDatoFraOgMed: LocalDate,
     val virkningsDatoTilOgMed: LocalDate?,
 )
@@ -37,9 +37,10 @@ val tabellBeregnetUTHele =
 
         paragraph {
 
-            includePhrase(tabellUfoeretrygdTittel_broedtekst, ufoeretrygd.map {
-                TabellUTTittelGjeldende_001_broedtekst_Dto(it.grunnbeloep)
-            })
+            includePhrase(
+                tabellUfoeretrygdTittel_broedtekst,
+                ufoeretrygd.map {it.grunnbeloep}
+            )
 
             showIf(
                 ufoeretrygd.map { !it.erAvkortet }
@@ -92,20 +93,14 @@ val tabellUfoeretrygtTittel = OutlinePhrase<LangBokmalNynorskEnglish, TabellUTTi
     }
 }
 
-data class TabellUTTittelGjeldende_001_broedtekst_Dto(
-    val grunnbeloep: Int,
-)
 
-val tabellUfoeretrygdTittel_broedtekst =
-    ParagraphPhrase<LangBokmalNynorskEnglish, TabellUTTittelGjeldende_001_broedtekst_Dto> {
-        val grunnbeloep = it.select(TabellUTTittelGjeldende_001_broedtekst_Dto::grunnbeloep).format()
-
-        textExpr(
-            Bokmal to "Folketrygdens grunnbeløp (G) benyttet i beregningen er ".expr() + grunnbeloep + " kroner.",
-            Nynorsk to "Grunnbeløpet i folketrygda (G) nytta i utrekninga er ".expr() + grunnbeloep + " kroner.",
-            English to "The National Insurance basic amount (G) applied in the calculation is NOK ".expr() + grunnbeloep + ".",
-        )
-    }
+val tabellUfoeretrygdTittel_broedtekst = ParagraphPhrase<LangBokmalNynorskEnglish, Int> { grunnbeloep ->
+    textExpr(
+        Bokmal to "Folketrygdens grunnbeløp (G) benyttet i beregningen er ".expr() + grunnbeloep.format() + " kroner.",
+        Nynorsk to "Grunnbeløpet i folketrygda (G) nytta i utrekninga er ".expr() + grunnbeloep.format() + " kroner.",
+        English to "The National Insurance basic amount (G) applied in the calculation is NOK ".expr() + grunnbeloep.format() + ".",
+    )
+}
 
 data class TabellBeregnetUTDto(
     val annetBelop: Int,
@@ -175,7 +170,7 @@ val tabellBeregnetUT = ParagraphPhrase<LangBokmalNynorskEnglish, TabellBeregnetU
 
         showIf(beregnetUT.map { it.annetBelop > 0 }) {
             showIf(beregnetUT.map { beregnetUT ->
-                beregnetUT.dekningFasteUtgifter?.let { it > 0 }?: false
+                beregnetUT.dekningFasteUtgifter?.let { it > 0 } ?: false
             }) {
                 row {
                     cell {

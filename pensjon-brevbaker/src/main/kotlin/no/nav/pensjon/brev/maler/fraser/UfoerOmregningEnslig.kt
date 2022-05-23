@@ -253,8 +253,8 @@ val EndrMYOgMinstIFUDodEPS2_001 = OutlinePhrase<LangBokmalNynorskEnglish, EndrMY
         )
     }
 
-    val oppjustert_inntekt_foer_ufoerhet_vedvirk = dto.map{Kroner(it.oppjustert_inntekt_foer_ufoerhet_vedvirk)}
-    val inntekt_foer_ufoerhet_vedvirk = dto.map{Kroner(it.inntekt_foer_ufoerhet_vedvirk)}
+    val oppjustert_inntekt_foer_ufoerhet_vedvirk = dto.map { Kroner(it.oppjustert_inntekt_foer_ufoerhet_vedvirk) }
+    val inntekt_foer_ufoerhet_vedvirk = dto.map { Kroner(it.inntekt_foer_ufoerhet_vedvirk) }
     paragraph {
         textExpr(
             Bokmal to "Sivilstandsendring har også betydning for inntekten din før du ble ufør. Denne utgjør ".expr() + inntekt_foer_ufoerhet_vedvirk.format() + " kroner som oppjustert til virkningstidspunktet tilsvarer en inntekt på ".expr() + oppjustert_inntekt_foer_ufoerhet_vedvirk.format() + " kroner. Kompensasjonsgraden din er satt til ".expr() + kompensasjonsgrad_ufoeretrygd_vedvirk.format() + " prosent. Du kan lese mer om dette i vedlegget.".expr(),
@@ -502,13 +502,13 @@ data class RedusBTPgaTak_001Dto(
 
 val RedusBTPgaTak_001 = OutlinePhrase<LangBokmalNynorskEnglish, RedusBTPgaTak_001Dto> { dto ->
     val barnetillegg_prosentsats_gradert_over_inntekt_foer_ufoer_vedvirk =
-        dto.map{it.barnetillegg_prosentsats_gradert_over_inntekt_foer_ufoer_vedvirk}
+        dto.map { it.barnetillegg_prosentsats_gradert_over_inntekt_foer_ufoer_vedvirk }
     val barnetillegg_gradert_over_inntekt_foer_ufoer_vedvirk =
-        dto.map{it.barnetillegg_gradert_over_inntekt_foer_ufoer_vedvirk}
+        dto.map { it.barnetillegg_gradert_over_inntekt_foer_ufoer_vedvirk }
     val barnetillegg_beloep_foer_reduksjon_vedvirk =
-        dto.map{it.barnetillegg_beloep_foer_reduksjon_vedvirk}
+        dto.map { it.barnetillegg_beloep_foer_reduksjon_vedvirk }
     val barnetillegg_saerkullsbarn_beloep_etter_reduksjon_vedvirk =
-        dto.map{it.barnetillegg_saerkullsbarn_beloep_etter_reduksjon_vedvirk}
+        dto.map { it.barnetillegg_saerkullsbarn_beloep_etter_reduksjon_vedvirk }
     paragraph {
         textExpr(
             Bokmal to "Uføretrygden og barnetillegget ditt kan til sammen ikke utgjøre mer enn ".expr() + barnetillegg_prosentsats_gradert_over_inntekt_foer_ufoer_vedvirk.str() + " prosent av inntekten din før du ble ufør. ".expr() + barnetillegg_prosentsats_gradert_over_inntekt_foer_ufoer_vedvirk.str() + " prosent av den inntekten du hadde før du ble ufør tilsvarer i dag ".expr() + barnetillegg_gradert_over_inntekt_foer_ufoer_vedvirk.str() + " kroner. Uføretrygden og barnetillegget ditt er til sammen høyere enn dette. Derfor er barnetillegget redusert fra ".expr() + barnetillegg_beloep_foer_reduksjon_vedvirk.str() + " kroner til ".expr() + barnetillegg_saerkullsbarn_beloep_etter_reduksjon_vedvirk.format() + " kroner.".expr(),
@@ -876,10 +876,7 @@ val VirknTdsPktOverskrift_001 = OutlinePhrase<LangBokmalNynorskEnglish, Unit> {
     }
 }
 
-data class VirkTdsPktUT_001Dto(val krav_virkedato_fom: LocalDate)
-
-val VirkTdsPktUT_001 = OutlinePhrase<LangBokmalNynorskEnglish, VirkTdsPktUT_001Dto> {
-    val krav_virkedato_fom = it.select(VirkTdsPktUT_001Dto::krav_virkedato_fom)
+val VirkTdsPktUT_001 = OutlinePhrase<LangBokmalNynorskEnglish, LocalDate> { krav_virkedato_fom ->
     paragraph {
         textExpr(
             Bokmal to "Uføretrygden din er omregnet fra ".expr() + krav_virkedato_fom.format() + ".".expr(),
@@ -889,10 +886,7 @@ val VirkTdsPktUT_001 = OutlinePhrase<LangBokmalNynorskEnglish, VirkTdsPktUT_001D
     }
 }
 
-data class VirkTdsPktUTIkkeEndring_001Dto(val krav_virkedato_fom: LocalDate)
-
-val VirkTdsPktUTIkkeEndring_001 = OutlinePhrase<LangBokmalNynorskEnglish, VirkTdsPktUTIkkeEndring_001Dto> {
-    val krav_virkedato_fom = it.select(VirkTdsPktUTIkkeEndring_001Dto::krav_virkedato_fom)
+val VirkTdsPktUTIkkeEndring_001 = OutlinePhrase<LangBokmalNynorskEnglish, LocalDate> { krav_virkedato_fom ->
     paragraph {
         textExpr(
             Bokmal to "Uføretrygden din er omregnet fra ".expr() + krav_virkedato_fom.format() + ", men dette fører ikke til endring i utbetalingen.".expr(),
@@ -902,10 +896,7 @@ val VirkTdsPktUTIkkeEndring_001 = OutlinePhrase<LangBokmalNynorskEnglish, VirkTd
     }
 }
 
-data class VirkTdsPktUTBTOmregn_001Dto(val krav_virkedato_fom: LocalDate)
-
-val VirkTdsPktUTBTOmregn_001 = OutlinePhrase<LangBokmalNynorskEnglish, VirkTdsPktUTBTOmregn_001Dto> {
-    val krav_virkedato_fom = it.select(VirkTdsPktUTBTOmregn_001Dto::krav_virkedato_fom)
+val VirkTdsPktUTBTOmregn_001 = OutlinePhrase<LangBokmalNynorskEnglish, LocalDate> { krav_virkedato_fom ->
     paragraph {
         textExpr(
             Bokmal to "Barnetillegget i uføretrygden din er omregnet fra ".expr() + krav_virkedato_fom.format() + ".".expr(),
@@ -915,10 +906,7 @@ val VirkTdsPktUTBTOmregn_001 = OutlinePhrase<LangBokmalNynorskEnglish, VirkTdsPk
     }
 }
 
-data class VirkTdsPktUTAvkortetTil0_001Dto(val krav_virkedato_fom: LocalDate)
-
-val VirkTdsPktUTAvkortetTil0_001 = OutlinePhrase<LangBokmalNynorskEnglish, VirkTdsPktUTAvkortetTil0_001Dto> {
-    val krav_virkedato_fom = it.select(VirkTdsPktUTAvkortetTil0_001Dto::krav_virkedato_fom)
+val VirkTdsPktUTAvkortetTil0_001 = OutlinePhrase<LangBokmalNynorskEnglish, LocalDate> { krav_virkedato_fom ->
     paragraph {
         textExpr(
             Bokmal to "Uføretrygden din er omregnet fra ".expr() + krav_virkedato_fom.format() + ", men dette fører ikke til endring i utbetalingen da uføretrygden er redusert til 0 kr.".expr(),

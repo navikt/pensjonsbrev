@@ -5,7 +5,6 @@ import no.nav.pensjon.brev.api.model.LetterMetadata
 import no.nav.pensjon.brev.api.model.Sivilstand
 import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDto
 import no.nav.pensjon.brev.maler.fraser.*
-import no.nav.pensjon.brev.maler.vedlegg.dineRettigheterOgMulighetTilAaKlage
 import no.nav.pensjon.brev.maler.vedlegg.maanedligUfoeretrygdFoerSkatt
 import no.nav.pensjon.brev.maler.vedlegg.opplysningerBruktIBeregningUT
 import no.nav.pensjon.brev.maler.vedlegg.orienteringOmRettigheterOgPlikterUfoere
@@ -425,7 +424,7 @@ object UfoerOmregningEnslig : StaticTemplate {
                 harUfoereMaanedligBeloepVedvirk
                         and (harMinsteytelseVedVirk or inntektFoerUfoereErSannsynligEndret or ektefelleTilleggOpphoert)
             ) {
-                includePhrase(VirkTdsPktUT_001, argument().map { VirkTdsPktUT_001Dto(it.krav_virkningsDatoFraOgMed) })
+                includePhrase(VirkTdsPktUT_001, argument().map { it.krav_virkningsDatoFraOgMed })
             }
 
             showIf(
@@ -435,8 +434,7 @@ object UfoerOmregningEnslig : StaticTemplate {
                         and not(ektefelleTilleggOpphoert)
                         and not(harBarnOverfoertTilSaerkullsbarn)
             ) {
-                includePhrase(VirkTdsPktUTIkkeEndring_001,
-                    argument().map { VirkTdsPktUTIkkeEndring_001Dto(it.krav_virkningsDatoFraOgMed) })
+                includePhrase(VirkTdsPktUTIkkeEndring_001, argument().map { it.krav_virkningsDatoFraOgMed })
             }
 
             showIf(
@@ -446,13 +444,11 @@ object UfoerOmregningEnslig : StaticTemplate {
                         and not(ektefelleTilleggOpphoert)
                         and harBarnOverfoertTilSaerkullsbarn
             ) {
-                includePhrase(VirkTdsPktUTBTOmregn_001,
-                    argument().map { VirkTdsPktUTBTOmregn_001Dto(it.krav_virkningsDatoFraOgMed) })
+                includePhrase(VirkTdsPktUTBTOmregn_001, argument().map { it.krav_virkningsDatoFraOgMed })
             }
 
             showIf(not(harUfoereMaanedligBeloepVedvirk)) {
-                includePhrase(VirkTdsPktUTAvkortetTil0_001,
-                    argument().map { VirkTdsPktUTAvkortetTil0_001Dto(it.krav_virkningsDatoFraOgMed) })
+                includePhrase(VirkTdsPktUTAvkortetTil0_001, argument().map { it.krav_virkningsDatoFraOgMed })
             }
 
             includePhrase(MeldInntektUTOverskrift_001)
@@ -475,6 +471,7 @@ object UfoerOmregningEnslig : StaticTemplate {
                 includePhrase(SkattBorIUtlandPesys_001)
             }
         }
+
         includeAttachment(maanedligUfoeretrygdFoerSkatt, argument().map { it.maanedligUfoeretrygdFoerSkatt })
 
         includeAttachment(opplysningerBruktIBeregningUT, argument().map { it.opplysningerBruktIBeregningUT },

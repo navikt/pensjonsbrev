@@ -149,10 +149,7 @@ val vedleggPlikterAP10_001 = TextOnlyPhrase<LangBokmalNynorskEnglish, Unit> {
     text(Bokmal to "du får ny samboer", Nynorsk to "du får ny sambuar", English to "you get a new cohabiting partner")
 }
 
-data class vedleggPlikterAP5_001Dto(val sivilstand: Sivilstand)
-
-val vedleggPlikterAP5_001 = TextOnlyPhrase<LangBokmalNynorskEnglish, vedleggPlikterAP5_001Dto> {
-    val sivilstand = it.select(vedleggPlikterAP5_001Dto::sivilstand)
+val vedleggPlikterAP5_001 = TextOnlyPhrase<LangBokmalNynorskEnglish, Sivilstand> { sivilstand ->
     showIf(sivilstand.isOneOf(Sivilstand.GIFT, Sivilstand.GIFT_LEVER_ADSKILT)) {
         text(
             Bokmal to "en av dere får et varig opphold i institusjon",
@@ -606,7 +603,8 @@ val vedleggPlikterAFP1_001 = TextOnlyPhrase<LangBokmalNynorskEnglish, Unit> {
     text(
         Bokmal to "inntekten din endrer seg",
         Nynorsk to "inntekta di endrar seg",
-        English to "your income changes")
+        English to "your income changes"
+    )
 }
 
 val vedleggPlikterAFP2_001 = TextOnlyPhrase<LangBokmalNynorskEnglish, Unit> {
