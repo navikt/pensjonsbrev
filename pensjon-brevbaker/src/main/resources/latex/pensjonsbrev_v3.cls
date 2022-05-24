@@ -108,8 +108,8 @@
         \setlength{\tabcolsep}{3.5mm}
         \primaryFont \fontsize{\standardtextsize}{\standardtextsize} \selectfont
         \begin{tabular}{@{}ll}
-            \feltnavnprefix & \feltetternavnmottaker \space \feltfornavnmottaker \\
-            \feltfoedselsnummerprefix & \feltfoedselsnummer \\
+            \feltnavnprefix & \feltetternavnbruker \space \feltfornavnbruker \\
+            \feltfoedselsnummerprefix & \feltfoedselsnummerbruker \\
             \feltsaksnummerprefix & \feltsaksnummer
         \end{tabular}
         \\[22pt]
