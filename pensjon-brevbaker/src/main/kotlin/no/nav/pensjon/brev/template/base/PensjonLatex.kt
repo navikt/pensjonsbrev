@@ -112,6 +112,7 @@ object PensjonLatex : BaseTemplate() {
         vedleggCommand(letter, printWriter)
 
         with(letter.felles) {
+            brukerCommands(bruker, printWriter)
             mottakerCommands(mottaker, printWriter)
             navEnhetCommands(avsenderEnhet, printWriter)
             datoCommand(dokumentDato, letter.language, printWriter)
