@@ -41,7 +41,7 @@ object LetterExample : StaticTemplate {
 
 
             // Data from the felles(common) argument can also be used. Both felles and argument supports map and select.
-            val firstName = felles().map { it.mottaker.fornavn }
+            val firstName = felles().map { it.bruker.fornavn }
 
             // section title
             title1 {
