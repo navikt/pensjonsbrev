@@ -1,8 +1,6 @@
 package no.nav.pensjon.brev.template.base
 
-import no.nav.pensjon.brev.api.model.Mottaker
-import no.nav.pensjon.brev.api.model.NAVEnhet
-import no.nav.pensjon.brev.api.model.SignerendeSaksbehandlere
+import no.nav.pensjon.brev.api.model.*
 import no.nav.pensjon.brev.latex.LatexPrintWriter
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.*
@@ -113,12 +111,12 @@ object PensjonLatex : BaseTemplate() {
 
         with(printWriter) {
             println("\\def\\pdfcreationdate{\\string ${pdfCreationTime()}}", escape = false)
-            printNewCmd("feltfoedselsnummer", letter.felles.mottaker.foedselsnummer.format())
             printNewCmd("feltsaksnummer", letter.felles.saksnummer)
         }
         vedleggCommand(letter, printWriter)
 
         with(letter.felles) {
+            brukerCommands(bruker, printWriter)
             mottakerCommands(mottaker, printWriter)
             navEnhetCommands(avsenderEnhet, printWriter)
             datoCommand(dokumentDato, letter.language, printWriter)
@@ -146,16 +144,20 @@ object PensjonLatex : BaseTemplate() {
         printWriter.printNewCmd("feltdato", dato.format(dateFormatter(language, FormatStyle.LONG)))
     }
 
-    private fun mottakerCommands(mottaker: Mottaker, printWriter: LatexPrintWriter) =
+    private fun brukerCommands(bruker: Bruker, printWriter: LatexPrintWriter) =
+        with(bruker) {
+            printWriter.printNewCmd("feltfoedselsnummerbruker", foedselsnummer.format())
+            printWriter.printNewCmd("feltfornavnbruker", fornavn)
+            printWriter.printNewCmd("feltetternavnbruker", etternavn)
+        }
+
+    private fun mottakerCommands(mottaker: Adresse, printWriter: LatexPrintWriter) =
         with(mottaker) {
-            printWriter.printNewCmd("feltfornavnmottaker", fornavn)
-            printWriter.printNewCmd("feltetternavnmottaker", etternavn)
-            printWriter.printNewCmd("feltmottakeradresselineone", adresse.linje1)
-            printWriter.printNewCmd("feltmottakeradresselinetwo", adresse.linje2)
-            printWriter.printNewCmd("feltmottakeradresselinethree", adresse.linje3 ?: "")
-            printWriter.printNewCmd("feltmottakeradresselinefour", adresse.linje4 ?: "")
-            printWriter.printNewCmd("feltmottakeradresselinefive", adresse.linje5 ?: "")
-            //TODO: fiks null-case her
+            printWriter.printNewCmd("feltmottakeradresselineone", linje1)
+            printWriter.printNewCmd("feltmottakeradresselinetwo", linje2)
+            printWriter.printNewCmd("feltmottakeradresselinethree", linje3 ?: "")
+            printWriter.printNewCmd("feltmottakeradresselinefour", linje4 ?: "")
+            printWriter.printNewCmd("feltmottakeradresselinefive", linje5 ?: "")
         }
 
 

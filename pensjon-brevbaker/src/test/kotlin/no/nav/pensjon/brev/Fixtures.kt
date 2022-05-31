@@ -18,15 +18,16 @@ object Fixtures {
             navn = "NAV Familie- og pensjonsytelser Porsgrunn",
             telefonnummer = Telefonnummer("55553334"),
         ),
-        mottaker = Mottaker(
+        bruker = Bruker(
             fornavn = "TEST",
+            mellomnavn = "\"bruker\"",
             etternavn = "TESTERSON",
             foedselsnummer = Foedselsnummer("01019878910"),
-            adresse = Adresse(
+        ),
+        mottaker = Adresse(
                 linje1 = "TEST TESTERSON",
                 linje2 = "JERNBANETORGET 4 F",
                 linje3 = "1344 HASLUM",
-            ),
         ),
         signerendeSaksbehandlere = SignerendeSaksbehandlere(
             saksbehandler = "Ole Saksbehandler",

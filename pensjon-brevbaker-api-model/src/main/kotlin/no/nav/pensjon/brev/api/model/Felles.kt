@@ -6,7 +6,8 @@ data class Felles(
     val dokumentDato: LocalDate,
     val saksnummer: String,
     val avsenderEnhet: NAVEnhet,
-    val mottaker: Mottaker,
+    val bruker: Bruker,
+    val mottaker: Adresse,
     val signerendeSaksbehandlere: SignerendeSaksbehandlere? = null,
 )
 
@@ -14,12 +15,11 @@ data class ReturAdresse(val adresseLinje1: String, val postNr: String, val postS
 
 data class SignerendeSaksbehandlere(val saksbehandler: String, val attesterendeSaksbehandler: String)
 
-data class Mottaker(
-    val fornavn: String,
-    val mellomnavn: String? = null,
-    val etternavn: String,
+data class Bruker(
     val foedselsnummer: Foedselsnummer,
-    val adresse: Adresse,
+    val fornavn: String,
+    val mellomnavn: String?,
+    val etternavn: String,
 )
 
 data class Adresse(
