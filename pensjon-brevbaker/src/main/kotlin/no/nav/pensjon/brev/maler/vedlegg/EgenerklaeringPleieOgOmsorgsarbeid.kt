@@ -3,6 +3,8 @@ package no.nav.pensjon.brev.maler.vedlegg
 import no.nav.pensjon.brev.api.model.Felles
 import no.nav.pensjon.brev.api.model.NAVEnhet
 import no.nav.pensjon.brev.api.model.ReturAdresse
+import no.nav.pensjon.brev.api.model.Year
+import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.createAttachment
@@ -12,7 +14,7 @@ import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 
-data class EgenerklaeringPleieOgOmsorgsarbeid(val aarEgenerklaring: Number)
+data class EgenerklaeringPleieOgOmsorgsarbeid(val aarEgenerklaring: Year)
 
 val egenerklaeringPleieOgOmsorgsarbeid = createAttachment<LangBokmalNynorskEnglish, EgenerklaeringPleieOgOmsorgsarbeid>(
     title = newText(
@@ -22,7 +24,7 @@ val egenerklaeringPleieOgOmsorgsarbeid = createAttachment<LangBokmalNynorskEngli
     ),
     includeSakspart = true
 ) {
-    val aarEgenerklaring = argument().select(EgenerklaeringPleieOgOmsorgsarbeid::aarEgenerklaring).str()
+    val aarEgenerklaring = argument().select(EgenerklaeringPleieOgOmsorgsarbeid::aarEgenerklaring).format()
     paragraph {
         val dokDato = felles().select(Felles::dokumentDato).format()
         textExpr(

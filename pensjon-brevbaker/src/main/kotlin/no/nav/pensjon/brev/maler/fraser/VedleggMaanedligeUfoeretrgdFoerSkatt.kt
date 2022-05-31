@@ -1,8 +1,10 @@
 package no.nav.pensjon.brev.maler.fraser
 
+import no.nav.pensjon.brev.api.model.Kroner
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligUfoeretrygdFoerSkattDto
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligUfoeretrygdFoerSkattDto.UfoeretrygdPerMaaned.Beloep
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligUfoeretrygdFoerSkattDto.UfoeretrygdPerMaaned.BeloepMedAvkortning
 import no.nav.pensjon.brev.maler.fraser.common.Felles.kroner
+import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Element
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.*
@@ -24,8 +26,7 @@ val vedleggBelopUT_001 = OutlinePhrase<LangBokmalNynorskEnglish, Unit> {
     }
 }
 
-data class TabellUTTittelGjeldende_001Dto(
-    val virkningsDatoFraOgMed: LocalDate,
+data class TabellUTTittelGjeldende_001Dto(    val virkningsDatoFraOgMed: LocalDate,
     val virkningsDatoTilOgMed: LocalDate?,
 )
 
@@ -94,7 +95,7 @@ val tabellUfoeretrygtTittel = OutlinePhrase<LangBokmalNynorskEnglish, TabellUTTi
 }
 
 
-val tabellUfoeretrygdTittel_broedtekst = ParagraphPhrase<LangBokmalNynorskEnglish, Int> { grunnbeloep ->
+val tabellUfoeretrygdTittel_broedtekst = ParagraphPhrase<LangBokmalNynorskEnglish, Kroner> { grunnbeloep ->
     textExpr(
         Bokmal to "Folketrygdens grunnbeløp (G) benyttet i beregningen er ".expr() + grunnbeloep.format() + " kroner.",
         Nynorsk to "Grunnbeløpet i folketrygda (G) nytta i utrekninga er ".expr() + grunnbeloep.format() + " kroner.",
@@ -103,12 +104,12 @@ val tabellUfoeretrygdTittel_broedtekst = ParagraphPhrase<LangBokmalNynorskEnglis
 }
 
 data class TabellBeregnetUTDto(
-    val annetBelop: Int,
-    val barnetillegg: Int?,
-    val dekningFasteUtgifter: Int?,
-    val garantitilleggNordisk27: Int?,
-    val ordinaerUTBeloep: Int,
-    val totalUTBeloep: Int,
+    val annetBelop: Kroner,
+    val barnetillegg: Kroner?,
+    val dekningFasteUtgifter: Kroner?,
+    val garantitilleggNordisk27: Kroner?,
+    val ordinaerUTBeloep: Kroner,
+    val totalUTBeloep: Kroner,
 )
 
 val tabellBeregnetUT = ParagraphPhrase<LangBokmalNynorskEnglish, TabellBeregnetUTDto> { beregnetUT ->
@@ -168,9 +169,9 @@ val tabellBeregnetUT = ParagraphPhrase<LangBokmalNynorskEnglish, TabellBeregnetU
             }
         }
 
-        showIf(beregnetUT.map { it.annetBelop > 0 }) {
+        showIf(beregnetUT.map { it.annetBelop.value > 0 }) {
             showIf(beregnetUT.map { beregnetUT ->
-                beregnetUT.dekningFasteUtgifter?.let { it > 0 } ?: false
+                beregnetUT.dekningFasteUtgifter?.let { it.value > 0 } ?: false
             }) {
                 row {
                     cell {
@@ -216,10 +217,10 @@ val tabellBeregnetUT = ParagraphPhrase<LangBokmalNynorskEnglish, TabellBeregnetU
 }
 
 data class TabellBeregnetUTAvkortetDto(
-    val barnetillegg: Beloep?,
-    val garantitilleggNordisk27: Beloep?,
-    val ordinaerUTBeloep: Beloep,
-    val totalUTBeloep: Beloep,
+    val barnetillegg: BeloepMedAvkortning?,
+    val garantitilleggNordisk27: BeloepMedAvkortning?,
+    val ordinaerUTBeloep: BeloepMedAvkortning,
+    val totalUTBeloep: BeloepMedAvkortning,
 )
 
 val tabellBeregnetUTAvkortet = ParagraphPhrase<LangBokmalNynorskEnglish, TabellBeregnetUTAvkortetDto> { beregnetUT ->

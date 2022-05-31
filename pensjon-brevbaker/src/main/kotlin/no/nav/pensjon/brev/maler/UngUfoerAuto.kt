@@ -2,14 +2,19 @@ package no.nav.pensjon.brev.maler
 
 import no.nav.pensjon.brev.api.model.LetterMetadata
 import no.nav.pensjon.brev.api.model.maler.UngUfoerAutoDto
-import no.nav.pensjon.brev.maler.fraser.common.*
+import no.nav.pensjon.brev.maler.fraser.common.Felles
+import no.nav.pensjon.brev.maler.fraser.common.GrunnbeloepSats
+import no.nav.pensjon.brev.maler.fraser.common.KravVirkningFraOgMed
 import no.nav.pensjon.brev.maler.fraser.omregning.ufoeretrygd.Ufoeretrygd
 import no.nav.pensjon.brev.maler.fraser.vedtak.Vedtak
-import no.nav.pensjon.brev.template.*
-import no.nav.pensjon.brev.template.Language.*
+import no.nav.pensjon.brev.template.Language.Bokmal
+import no.nav.pensjon.brev.template.Language.Nynorsk
+import no.nav.pensjon.brev.template.StaticTemplate
 import no.nav.pensjon.brev.template.base.PensjonLatex
-import no.nav.pensjon.brev.template.dsl.*
-import no.nav.pensjon.brev.template.dsl.expression.*
+import no.nav.pensjon.brev.template.dsl.createTemplate
+import no.nav.pensjon.brev.template.dsl.expression.map
+import no.nav.pensjon.brev.template.dsl.expression.select
+import no.nav.pensjon.brev.template.dsl.newText
 
 // BrevTypeKode: PE_BA_04_505
 object UngUfoerAuto : StaticTemplate {
@@ -36,7 +41,7 @@ object UngUfoerAuto : StaticTemplate {
                 Ufoeretrygd.beloep,
                 argument().map {
                     Ufoeretrygd.BeloepPerMaaned(
-                        perMaaned = Kroner(it.totaltUfoerePerMnd),
+                        perMaaned = it.totaltUfoerePerMnd,
                         ektefelle = it.ektefelle?.utbetalt ?: false,
                         gjenlevende = it.gjenlevende?.utbetalt ?: false,
                         fellesbarn = it.fellesbarn?.utbetalt ?: false,

@@ -4,6 +4,7 @@ import kotlinx.coroutines.runBlocking
 import no.nav.pensjon.brev.Fixtures
 import no.nav.pensjon.brev.PDF_BUILDER_URL
 import no.nav.pensjon.brev.TestTags
+import no.nav.pensjon.brev.api.model.Kroner
 import no.nav.pensjon.brev.api.model.LetterMetadata
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligUfoeretrygdFoerSkattDto
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligUfoeretrygdFoerSkattDto.UfoeretrygdPerMaaned
@@ -41,13 +42,13 @@ class MaanedligUfoeretrygdFoerSkatt {
 
             val ufoeretrygdPerMaaned =
                 UfoeretrygdPerMaaned(
-                    annetBelop = 1500,
-                    barnetillegg = UfoeretrygdPerMaaned.Beloep(2500, 2800),
-                    dekningFasteUtgifter = 1500,
-                    garantitilleggNordisk27 = UfoeretrygdPerMaaned.Beloep(9000, 9999),
-                    grunnbeloep = 91540,
-                    ordinaerUTBeloep = UfoeretrygdPerMaaned.Beloep(15000, 12000),
-                    totalUTBeloep = UfoeretrygdPerMaaned.Beloep(5500, 6600),
+                    annetBelop = Kroner(1500),
+                    barnetillegg = UfoeretrygdPerMaaned.BeloepMedAvkortning(Kroner(2500), Kroner(2800)),
+                    dekningFasteUtgifter = Kroner(1500),
+                    garantitilleggNordisk27 = UfoeretrygdPerMaaned.BeloepMedAvkortning(Kroner(9000), Kroner(9999)),
+                    grunnbeloep = Kroner(91540),
+                    ordinaerUTBeloep = UfoeretrygdPerMaaned.BeloepMedAvkortning(Kroner(15000), Kroner(12000)),
+                    totalUTBeloep = UfoeretrygdPerMaaned.BeloepMedAvkortning(Kroner(5500), Kroner(6600)),
                     virkningFraOgMed = LocalDate.of(2017, 2, 3),
                     virkningTilOgMed = LocalDate.of(2017, 5, 5),
                     erAvkortet = true

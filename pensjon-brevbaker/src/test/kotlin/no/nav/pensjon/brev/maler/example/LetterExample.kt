@@ -61,8 +61,8 @@ object LetterExample : StaticTemplate {
                 showIf(pensjonInnvilget) {
                     textExpr(
                         // Text expressions can use variables as expressions, but the text literals also need to be expressions
-                        Bokmal to "Hei ".expr() + firstName.str() + ". Du har fått innvilget pensjon.".expr(),
-                        Nynorsk to "Hei ".expr() + firstName.str() + ". Du har fått innvilget pensjon.".expr(),
+                        Bokmal to "Hei ".expr() + firstName + ". Du har fått innvilget pensjon.".expr(),
+                        Nynorsk to "Hei ".expr() + firstName + ". Du har fått innvilget pensjon.".expr(),
                     )
                 }
 
@@ -73,8 +73,8 @@ object LetterExample : StaticTemplate {
                         ifNotNull(tillegg1) {
                             item {
                                 textExpr(
-                                    Bokmal to "Du har fått tilleg1 for ".expr() + navn + " på ".expr() + it.str() + " Kr",
-                                    Nynorsk to "Du har fått tilleg1 for ".expr() + navn + " på ".expr() + it.str() + " Kr",
+                                    Bokmal to "Du har fått tilleg1 for ".expr() + navn + " på ".expr() + it.format() + " Kr",
+                                    Nynorsk to "Du har fått tilleg1 for ".expr() + navn + " på ".expr() + it.format() + " Kr",
                                 )
                             }
                         }
@@ -143,24 +143,24 @@ object LetterExample : StaticTemplate {
                             cell {
                                 ifNotNull(tillegg1) { tillegg ->
                                     textExpr(
-                                        Bokmal to tillegg.str() + " Kr".expr(),
-                                        Nynorsk to tillegg.str() + " Kr".expr()
+                                        Bokmal to tillegg.format() + " Kr".expr(),
+                                        Nynorsk to tillegg.format() + " Kr".expr()
                                     )
                                 }
                             }
                             cell {
                                 ifNotNull(tillegg2) { tillegg ->
                                     textExpr(
-                                        Bokmal to tillegg.str() + " Kr".expr(),
-                                        Nynorsk to tillegg.str() + " Kr".expr()
+                                        Bokmal to tillegg.format() + " Kr".expr(),
+                                        Nynorsk to tillegg.format() + " Kr".expr()
                                     )
                                 }
                             }
                             cell {
                                 ifNotNull(tillegg3) { tillegg ->
                                     textExpr(
-                                        Bokmal to tillegg.str() + " Kr".expr(),
-                                        Nynorsk to tillegg.str() + " Kr".expr()
+                                        Bokmal to tillegg.format() + " Kr".expr(),
+                                        Nynorsk to tillegg.format() + " Kr".expr()
                                     )
                                 }
                             }

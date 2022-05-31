@@ -1,13 +1,14 @@
 package no.nav.pensjon.brev.api.model.vedlegg
 
 import no.nav.pensjon.brev.api.model.Beregningsmetode
+import no.nav.pensjon.brev.api.model.Kroner
 import no.nav.pensjon.brev.api.model.Sivilstand
 import java.time.LocalDate
 
 data class OpplysningerBruktIBeregningUTDto(
     val barnetilleggGjeldende: BarnetilleggGjeldende?,
     val beregnetUTPerManedGjeldende: BeregnetUTPerManedGjeldende,
-    val inntektEtterUforeGjeldende_belopIEU: Int,
+    val inntektEtterUforeGjeldende_belopIEU: Kroner,
     val inntektForUforeGjeldende: InntektForUforeGjeldende,
     val inntektsAvkortingGjeldende: InntektsAvkortingGjeldende,
     val minsteytelseGjeldende_sats: Double,
@@ -19,7 +20,7 @@ data class OpplysningerBruktIBeregningUTDto(
     constructor() : this(
         barnetilleggGjeldende = BarnetilleggGjeldende(),
         beregnetUTPerManedGjeldende = BeregnetUTPerManedGjeldende(),
-        inntektEtterUforeGjeldende_belopIEU = 0,
+        inntektEtterUforeGjeldende_belopIEU = Kroner(0),
         inntektForUforeGjeldende = InntektForUforeGjeldende(),
         inntektsAvkortingGjeldende = InntektsAvkortingGjeldende(),
         minsteytelseGjeldende_sats = 0.0,
@@ -30,14 +31,14 @@ data class OpplysningerBruktIBeregningUTDto(
     )
 
     data class YrkesskadeGjeldende(
-        val beregningsgrunnlagBelopAr: Int,
-        val inntektVedSkadetidspunkt: Int,
+        val beregningsgrunnlagBelopAr: Kroner,
+        val inntektVedSkadetidspunkt: Kroner,
         val skadetidspunkt: LocalDate,
         val yrkesskadegrad: Int,
     ) {
         constructor() : this(
-            beregningsgrunnlagBelopAr = 0,
-            inntektVedSkadetidspunkt = 0,
+            beregningsgrunnlagBelopAr = Kroner(0),
+            inntektVedSkadetidspunkt = Kroner(0),
             skadetidspunkt = LocalDate.of(2020, 1, 1),
             yrkesskadegrad = 0,
         )
@@ -55,44 +56,44 @@ data class OpplysningerBruktIBeregningUTDto(
         data class Grunnlag(
             val erIkkeUtbetaltpgaTak: Boolean,
             val erRedusertMotTak: Boolean,
-            val gradertOIFU: Int,
+            val gradertOIFU: Kroner,
             val prosentsatsGradertOIFU: Int,
             val totaltAntallBarn: Int,
         ) {
             constructor() : this(
                 erIkkeUtbetaltpgaTak = false,
                 erRedusertMotTak = false,
-                gradertOIFU = 0,
+                gradertOIFU = Kroner(0),
                 prosentsatsGradertOIFU = 0,
                 totaltAntallBarn = 0,
             )
         }
 
         data class Saerkullsbarn(
-            val avkortningsbelopAr: Int,
-            val belop: Int,
-            val belopAr: Int,
-            val belopArForAvkort: Int,
+            val avkortningsbelopAr: Kroner,
+            val belop: Kroner,
+            val belopAr: Kroner,
+            val belopArForAvkort: Kroner,
             val erRedusertMotinntekt: Boolean,
-            val fribelop: Int,
+            val fribelop: Kroner,
             val fribelopEllerInntektErPeriodisert: Boolean,
-            val inntektBruktIAvkortning: Int,
-            val inntektOverFribelop: Int,
-            val inntektstak: Int,
-            val justeringsbelopAr: Int,
+            val inntektBruktIAvkortning: Kroner,
+            val inntektOverFribelop: Kroner,
+            val inntektstak: Kroner,
+            val justeringsbelopAr: Kroner,
         ) {
             constructor() : this(
-                avkortningsbelopAr = 0,
-                belop = 0,
-                belopAr = 0,
-                belopArForAvkort = 0,
+                avkortningsbelopAr = Kroner(0),
+                belop = Kroner(0),
+                belopAr = Kroner(0),
+                belopArForAvkort = Kroner(0),
                 erRedusertMotinntekt = false,
-                fribelop = 0,
+                fribelop = Kroner(0),
                 fribelopEllerInntektErPeriodisert = false,
-                inntektBruktIAvkortning = 0,
-                inntektOverFribelop = 0,
-                inntektstak = 0,
-                justeringsbelopAr = 0,
+                inntektBruktIAvkortning = Kroner(0),
+                inntektOverFribelop = Kroner(0),
+                inntektstak = Kroner(0),
+                justeringsbelopAr = Kroner(0),
             )
         }
     }
@@ -142,28 +143,28 @@ data class OpplysningerBruktIBeregningUTDto(
     data class BeregnetUTPerManedGjeldende(
         val brukerErFlyktning: Boolean,
         val brukersSivilstand: Sivilstand,
-        val grunnbelop: Int,
+        val grunnbelop: Kroner,
         val virkDatoFom: LocalDate,
     ) {
         constructor() : this(
             brukerErFlyktning = false,
             brukersSivilstand = Sivilstand.ENSLIG,
-            grunnbelop = 0,
+            grunnbelop = Kroner(0),
             virkDatoFom = LocalDate.of(2020, 1, 1),
         )
     }
 
     data class UforetrygdGjeldende(
-        val belopsgrense: Int,
-        val beregningsgrunnlagBelopAr: Int,
+        val belopsgrense: Kroner,
+        val beregningsgrunnlagBelopAr: Kroner,
         val erKonvertert: Boolean,
         val kompensasjonsgrad: Double,
         val uforegrad: Int,
         val uforetidspunkt: LocalDate,
     ) {
         constructor() : this(
-            belopsgrense = 0,
-            beregningsgrunnlagBelopAr = 0,
+            belopsgrense = Kroner(0),
+            beregningsgrunnlagBelopAr = Kroner(0),
             erKonvertert = false,
             kompensasjonsgrad = 0.0,
             uforegrad = 0,
@@ -172,24 +173,24 @@ data class OpplysningerBruktIBeregningUTDto(
     }
 
     data class InntektsAvkortingGjeldende(
-        val forventetInntektAr: Int,
-        val inntektsgrenseAr: Int,
-        val inntektstak: Int,
+        val forventetInntektAr: Kroner,
+        val inntektsgrenseAr: Kroner,
+        val inntektstak: Kroner,
     ) {
         constructor() : this(
-            forventetInntektAr = 0,
-            inntektsgrenseAr = 0,
-            inntektstak = 0,
+            forventetInntektAr = Kroner(0),
+            inntektsgrenseAr = Kroner(0),
+            inntektstak = Kroner(0),
         )
     }
 
     data class InntektForUforeGjeldende(
         val erSannsynligEndret: Boolean,
-        val ifuInntekt: Int,
+        val ifuInntekt: Kroner,
     ) {
         constructor() : this(
             erSannsynligEndret = false,
-            ifuInntekt = 0,
+            ifuInntekt = Kroner(0),
         )
     }
 }

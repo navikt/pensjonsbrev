@@ -4,9 +4,9 @@ import kotlinx.coroutines.runBlocking
 import no.nav.pensjon.brev.Fixtures
 import no.nav.pensjon.brev.PDF_BUILDER_URL
 import no.nav.pensjon.brev.TestTags
+import no.nav.pensjon.brev.api.model.Kroner
 import no.nav.pensjon.brev.api.model.Sivilstand
 import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDto
-import no.nav.pensjon.brev.api.model.vedlegg.DineRettigheterOgMulighetTilAaKlageDto
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligUfoeretrygdFoerSkattDto
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDto
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDto.BarnetilleggGjeldende
@@ -34,17 +34,17 @@ class UfoerOmregningEnsligITest {
                             erRedusertMotTak = true,
                         ),
                         saerkullsbarn = BarnetilleggGjeldende.Saerkullsbarn().copy(
-                            avkortningsbelopAr = 1000,
-                            belop = 1001,
-                            belopAr = 1002,
-                            belopArForAvkort = 1003,
+                            avkortningsbelopAr = Kroner(1000),
+                            belop = Kroner(1001),
+                            belopAr = Kroner(1002),
+                            belopArForAvkort = Kroner(1003),
                             erRedusertMotinntekt = true,
-                            fribelop = 1005,
+                            fribelop = Kroner(1005),
                             fribelopEllerInntektErPeriodisert = false,
-                            inntektBruktIAvkortning = 1007,
-                            inntektOverFribelop = 1008,
-                            inntektstak = 1009,
-                            justeringsbelopAr = 10010,
+                            inntektBruktIAvkortning = Kroner(1007),
+                            inntektOverFribelop = Kroner(1008),
+                            inntektstak = Kroner(1009),
+                            justeringsbelopAr = Kroner(10010),
                         )
                     ),
                     minsteytelseGjeldende_sats = 10.00,
@@ -53,7 +53,6 @@ class UfoerOmregningEnsligITest {
                 maanedligUfoeretrygdFoerSkatt = MaanedligUfoeretrygdFoerSkattDto(),
                 minsteytelseVedvirk_sats = null,
                 orienteringOmRettigheterOgPlikter = OrienteringOmRettigheterUfoereDto(),
-                dineRettigheterOgMulighetTilAaKlage = DineRettigheterOgMulighetTilAaKlageDto(),
                 avdod = UfoerOmregningEnsligDto.Avdod(
                     sivilstand = Sivilstand.PARTNER,
                     navn = "Avdod person",
@@ -66,12 +65,12 @@ class UfoerOmregningEnsligITest {
                 ),
                 ufoeretrygdVedVirk = UfoerOmregningEnsligDto.UfoeretrygdVedVirk(
                     kompensasjonsgrad = 50.5,
-                    totalUforeMaanedligBeloep = 100000,
+                    totalUforeMaanedligBeloep = Kroner(100000),
                     erInntektsavkortet = true,
                 ),
                 inntektFoerUfoerhetVedVirk = UfoerOmregningEnsligDto.InntektFoerUfoerhetVedVirk(
-                    oppjustertBeloep = 100000,
-                    beloep = 200000,
+                    oppjustertBeloep = Kroner(100000),
+                    beloep = Kroner(200000),
                     erMinsteinntekt = false,
                     erSannsynligEndret = true
                 ),

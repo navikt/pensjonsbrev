@@ -1,11 +1,9 @@
 package no.nav.pensjon.brev.template.dsl.expression
 
 import no.nav.pensjon.brev.Fixtures
-import no.nav.pensjon.brev.api.model.Felles
 import no.nav.pensjon.brev.template.*
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.assertEquals
-import kotlin.math.exp
 
 class BaseTest {
 

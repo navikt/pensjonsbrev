@@ -1,13 +1,17 @@
 package no.nav.pensjon.brev.maler.fraser.common
 
+import no.nav.pensjon.brev.api.model.Kroner
 import no.nav.pensjon.brev.maler.fraser.Constants
-import no.nav.pensjon.brev.template.*
+import no.nav.pensjon.brev.model.format
+import no.nav.pensjon.brev.template.LangBokmalNynorsk
+import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.*
-import no.nav.pensjon.brev.template.dsl.*
+import no.nav.pensjon.brev.template.OutlinePhrase
+import no.nav.pensjon.brev.template.TextOnlyPhrase
 import no.nav.pensjon.brev.template.dsl.expression.format
-import no.nav.pensjon.brev.template.dsl.expression.map
 import no.nav.pensjon.brev.template.dsl.expression.plus
-import no.nav.pensjon.brev.template.dsl.expression.str
+import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.dsl.textExpr
 
 object Felles {
 
@@ -84,8 +88,7 @@ object Felles {
         }
     }
 
-    val kroner = TextOnlyPhrase<LangBokmalNynorskEnglish, Int> { beloep ->
-        val kroner = beloep.map{Kroner(it)}
+    val kroner = TextOnlyPhrase<LangBokmalNynorskEnglish, Kroner> { kroner ->
         textExpr(
             Bokmal to kroner.format() + " kr",
             Nynorsk to kroner.format() + " kr",
@@ -95,9 +98,9 @@ object Felles {
 
     val maaneder = TextOnlyPhrase<LangBokmalNynorskEnglish, Int> { maaned ->
         textExpr(
-            Bokmal to maaned.str() + " måneder",
-            Nynorsk to maaned.str() + " måneder",
-            English to maaned.str() + " months"
+            Bokmal to maaned.format() + " måneder",
+            Nynorsk to maaned.format() + " måneder",
+            English to maaned.format() + " months"
         )
     }
 }

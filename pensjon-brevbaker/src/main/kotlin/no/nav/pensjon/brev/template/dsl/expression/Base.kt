@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.template.dsl.expression
 import no.nav.pensjon.brev.api.model.Telefonnummer
 import no.nav.pensjon.brev.template.*
 
+@Deprecated("Use format instead. Depricated to ensure control of formatted string for different types")
 fun Expression<Any>.str(): StringExpression =
     Expression.UnaryInvoke(this, UnaryOperation.ToString())
 

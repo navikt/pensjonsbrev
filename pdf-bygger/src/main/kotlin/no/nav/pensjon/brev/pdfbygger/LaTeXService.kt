@@ -4,9 +4,7 @@ import java.io.File
 import java.nio.file.Path
 import java.util.*
 import java.util.concurrent.TimeUnit
-import kotlin.io.path.absolutePathString
 import kotlin.io.path.createTempDirectory
-import kotlin.io.path.nameWithoutExtension
 
 private const val COMPILATION_RUNS = 2
 

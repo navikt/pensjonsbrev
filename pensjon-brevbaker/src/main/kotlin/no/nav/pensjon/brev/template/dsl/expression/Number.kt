@@ -21,15 +21,3 @@ fun Expression<Int>.format() =
 @JvmName("formatDoubleValue")
 fun Expression<DoubleValue>.format() =
     select(DoubleValue::value).format()
-
-@JvmName("formatKroner")
-fun Expression<Kroner>.format() =
-    Expression.BinaryInvoke(
-        select(Kroner::value),
-        Expression.FromScope(ExpressionScope<Any, *>::language),
-        BinaryOperation.LocalizedIntFormat
-    )
-
-@JvmName("formatIntValue")
-fun Expression<IntValue>.format() =
-    select(IntValue::value).format()

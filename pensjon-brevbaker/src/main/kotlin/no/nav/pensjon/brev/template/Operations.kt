@@ -47,7 +47,7 @@ sealed class UnaryOperation<In, out Out> : Operation() {
     }
 }
 
-sealed class BinaryOperation<in In1, in In2, out Out> : Operation() {
+abstract class BinaryOperation<in In1, in In2, out Out> : Operation() {
 
     abstract fun apply(first: In1, second: In2): Out
 
@@ -83,6 +83,11 @@ sealed class BinaryOperation<in In1, in In2, out Out> : Operation() {
     }
 
     object LocalizedIntFormat : BinaryOperation<Int, Language, String>() {
+        override fun apply(first: Int, second: Language): String =
+            String.format(second.locale(), "%d", first)
+    }
+
+    object LocalizedCurrencyFormat : BinaryOperation<Int, Language, String>() {
         override fun apply(first: Int, second: Language): String =
             NumberFormat.getNumberInstance(second.locale())
                 .also { it.maximumFractionDigits = 0 }

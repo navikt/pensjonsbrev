@@ -53,7 +53,7 @@ object UfoerOmregningEnslig : StaticTemplate {
                     ?.barnTidligereSaerkullsbarn
                     ?.isNotEmpty() ?: false
             }
-            val harUfoereMaanedligBeloepVedvirk = argument().map { it.ufoeretrygdVedVirk.totalUforeMaanedligBeloep > 0 }
+            val harUfoereMaanedligBeloepVedvirk = argument().map { it.ufoeretrygdVedVirk.totalUforeMaanedligBeloep.value > 0 }
             val harFlereUfoeretrygdPerioder =
                 argument().map { it.beregnetUTPerManed_antallBeregningsperioderPaVedtak > 1 }
             val institusjonsoppholdVedVirk = argument().select(UfoerOmregningEnsligDto::institusjonsoppholdVedVirk)
@@ -135,7 +135,7 @@ object UfoerOmregningEnslig : StaticTemplate {
             }
 
             ifNotNull(argument().map { it.barnetilleggVedVirk?.barnetilleggSaerkullsbarnVedVirk }) { barnetillegg ->
-                showIf(not(harUfoereMaanedligBeloepVedvirk) and barnetillegg.map { it.belop == 0 }) {
+                showIf(not(harUfoereMaanedligBeloepVedvirk) and barnetillegg.map { it.belop.value == 0 }) {
                     showIf(harFlereUfoeretrygdPerioder) {
                         includePhrase(BelopUTBTIngenUtbetalingVedlegg_001)
                     }.orShow {
@@ -227,9 +227,9 @@ object UfoerOmregningEnslig : StaticTemplate {
                 val barnetilleggForSaerkullsbarnVedvirkErRedusertMotInntekt = tillegg.map { it.erRedusertMotInntekt }
                 val barnetilleggErRedusertMotTak = grunnlag.map { it.erRedusertMotTak }
                 val barnetilleggErIkkeUtbetPgaTak = grunnlag.map { it.erIkkeUtbetPgaTak }
-                val harNettoBeloep = tillegg.map { it.belop > 0 }
+                val harNettoBeloep = tillegg.map { it.belop.value > 0 }
                 val barnetilleggForSaerkullsbarnVedvirk_HarjusteringsBeloepAr =
-                    tillegg.map { it.justeringsbeloepAr != 0 }
+                    tillegg.map { it.justeringsbeloepAr.value != 0 }
 
                 showIf(harBarnOverfoertTilSaerkullsbarn) {
                     includePhrase(OmregningFBOverskrift_001)
@@ -316,7 +316,8 @@ object UfoerOmregningEnslig : StaticTemplate {
                     ) {
                         includePhrase(IkkeRedusBTSBPgaInntekt_001, tillegg.map { tillegg ->
                             IkkeRedusBTSBPgaInntekt_001Dto(
-                                tillegg.inntektBruktIAvkortning, tillegg.fribeloepVedvirk
+                                tillegg.inntektBruktIAvkortning,
+                                tillegg.fribeloepVedvirk
                             )
                         })
                     }
@@ -328,7 +329,8 @@ object UfoerOmregningEnslig : StaticTemplate {
                     ) {
                         includePhrase(RedusBTSBPgaInntekt_001, tillegg.map { tillegg ->
                             RedusBTSBPgaInntekt_001Dto(
-                                tillegg.inntektBruktIAvkortning, tillegg.fribeloepVedvirk
+                                tillegg.inntektBruktIAvkortning,
+                                tillegg.fribeloepVedvirk
                             )
                         })
                     }

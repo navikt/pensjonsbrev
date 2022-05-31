@@ -47,7 +47,7 @@ val orienteringOmRettigheterOgPlikterUfoere = createAttachment<LangBokmalNynorsk
         }
 
         ifNotNull(barnetilleggSaerkullsbarn) { tillegg ->
-            showIf(tillegg.map { it > 0 }) {
+            showIf(tillegg.map { it.value > 0 }) {
                 item { includePhrase(vedleggPlikterUT7_001) }
             }
         }

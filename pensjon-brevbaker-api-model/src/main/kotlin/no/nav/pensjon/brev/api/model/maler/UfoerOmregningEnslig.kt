@@ -1,15 +1,14 @@
 package no.nav.pensjon.brev.api.model.maler
 
 import no.nav.pensjon.brev.api.model.Institusjon
+import no.nav.pensjon.brev.api.model.Kroner
 import no.nav.pensjon.brev.api.model.Sivilstand
-import no.nav.pensjon.brev.api.model.vedlegg.DineRettigheterOgMulighetTilAaKlageDto
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligUfoeretrygdFoerSkattDto
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDto
 import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterUfoereDto
 import java.time.LocalDate
 
 data class UfoerOmregningEnsligDto(
-    val dineRettigheterOgMulighetTilAaKlage: DineRettigheterOgMulighetTilAaKlageDto,
     val opplysningerBruktIBeregningUT: OpplysningerBruktIBeregningUTDto,
     val orienteringOmRettigheterOgPlikter: OrienteringOmRettigheterUfoereDto,
     val maanedligUfoeretrygdFoerSkatt: MaanedligUfoeretrygdFoerSkattDto,
@@ -25,7 +24,6 @@ data class UfoerOmregningEnsligDto(
     val barnetilleggVedVirk: BarnetilleggVedVirk?,
 ) {
     constructor() : this(
-        dineRettigheterOgMulighetTilAaKlage = DineRettigheterOgMulighetTilAaKlageDto(),
         opplysningerBruktIBeregningUT = OpplysningerBruktIBeregningUTDto(),
         orienteringOmRettigheterOgPlikter = OrienteringOmRettigheterUfoereDto(),
         maanedligUfoeretrygdFoerSkatt = MaanedligUfoeretrygdFoerSkattDto(),
@@ -41,11 +39,14 @@ data class UfoerOmregningEnsligDto(
         institusjonsoppholdVedVirk = Institusjon.INGEN,
         ufoeretrygdVedVirk = UfoeretrygdVedVirk(
             kompensasjonsgrad = 0.5,
-            totalUforeMaanedligBeloep = 5,
+            totalUforeMaanedligBeloep = Kroner(5),
             erInntektsavkortet = false
         ),
         inntektFoerUfoerhetVedVirk = InntektFoerUfoerhetVedVirk(
-            oppjustertBeloep = 0, beloep = 0, erMinsteinntekt = false, erSannsynligEndret = false
+            oppjustertBeloep = Kroner(0),
+            beloep = Kroner(0),
+            erMinsteinntekt = false,
+            erSannsynligEndret = false
         ),
         barnetilleggSaerkullsbarnGjeldende_erRedusertMotInntekt = false,
         bruker = Bruker(
@@ -54,12 +55,12 @@ data class UfoerOmregningEnsligDto(
         ),
         barnetilleggVedVirk = BarnetilleggVedVirk(
             barnetilleggSaerkullsbarnVedVirk = BarnetilleggSaerkullsbarnVedvirk(
-                belop = 0,
+                belop = Kroner(0),
                 erRedusertMotInntekt = false,
-                inntektBruktIAvkortning = 0,
-                fribeloepVedvirk = 0,
-                justeringsbeloepAr = 0,
-                inntektstak = 0,
+                inntektBruktIAvkortning = Kroner(0),
+                fribeloepVedvirk = Kroner(0),
+                justeringsbeloepAr = Kroner(0),
+                inntektstak = Kroner(0),
                 barnTidligereSaerkullsbarn = listOf(
                     "Tidligere saerkullsbarn 1",
                     "Tidligere saerkullsbarn 2",
@@ -74,10 +75,10 @@ data class UfoerOmregningEnsligDto(
             barnetilleggGrunnlag = BarnetilleggGrunnlagVedVirk(
                 erRedusertMotTak = false,
                 prosentsatsGradertOverInntektFoerUfoer = 0,
-                gradertOverInntektFoerUfoer = 0,
+                gradertOverInntektFoerUfoer = Kroner(0),
                 erIkkeUtbetPgaTak = false,
-                belopFoerReduksjon = 0,
-                belopEtterReduksjon = 0,
+                belopFoerReduksjon = Kroner(0),
+                belopEtterReduksjon = Kroner(0),
             )
         )
     )
@@ -92,13 +93,13 @@ data class UfoerOmregningEnsligDto(
 
     data class UfoeretrygdVedVirk(
         val kompensasjonsgrad: Double,
-        val totalUforeMaanedligBeloep: Int,
+        val totalUforeMaanedligBeloep: Kroner,
         val erInntektsavkortet: Boolean,
     )
 
     data class InntektFoerUfoerhetVedVirk(
-        val oppjustertBeloep: Int,
-        val beloep: Int,
+        val oppjustertBeloep: Kroner,
+        val beloep: Kroner,
         val erMinsteinntekt: Boolean,
         val erSannsynligEndret: Boolean
     )
@@ -116,20 +117,20 @@ data class UfoerOmregningEnsligDto(
     data class BarnetilleggGrunnlagVedVirk(
         val erRedusertMotTak: Boolean,
         val prosentsatsGradertOverInntektFoerUfoer: Int,
-        val gradertOverInntektFoerUfoer: Int,
+        val gradertOverInntektFoerUfoer: Kroner,
         val erIkkeUtbetPgaTak: Boolean,
-        val belopFoerReduksjon: Int,
-        val belopEtterReduksjon: Int,
+        val belopFoerReduksjon: Kroner,
+        val belopEtterReduksjon: Kroner,
     )
 
     data class BarnetilleggSaerkullsbarnVedvirk(
         val barnTidligereSaerkullsbarn: List<String>,
         val barnOverfoertTilSaerkullsbarn: List<String>,
-        val belop: Int,
+        val belop: Kroner,
         val erRedusertMotInntekt: Boolean,
-        val inntektBruktIAvkortning: Int,
-        val fribeloepVedvirk: Int,
-        val justeringsbeloepAr: Int,
-        val inntektstak: Int,
+        val inntektBruktIAvkortning: Kroner,
+        val fribeloepVedvirk: Kroner,
+        val justeringsbeloepAr: Kroner,
+        val inntektstak: Kroner,
     )
 }

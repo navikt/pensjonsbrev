@@ -174,7 +174,6 @@ object PensjonLatex : BaseTemplate() {
         printWriter.printNewCmd("feltclosingvedlegg") { bodyWriter ->
             val attachments = letter.template.attachments.filter { it.predicate.eval(letter.toScope()) }
             if (attachments.isNotEmpty()) {
-                bodyWriter.printCmd("closingvedleggspace")
                 bodyWriter.printCmd("begin", "attachmentList")
                 attachments.forEach {
                     bodyWriter.print("""\item """, escape = false)

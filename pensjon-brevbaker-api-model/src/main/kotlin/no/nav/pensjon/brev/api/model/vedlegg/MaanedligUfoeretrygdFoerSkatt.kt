@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.api.model.vedlegg
 
+import no.nav.pensjon.brev.api.model.Kroner
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligUfoeretrygdFoerSkattDto.UfoeretrygdPerMaaned.*
 import java.time.LocalDate
 
@@ -10,13 +11,13 @@ data class MaanedligUfoeretrygdFoerSkattDto(
 ) {
     constructor() : this(
         gjeldendeBeregnetUTPerMaaned = UfoeretrygdPerMaaned(
-            annetBelop = 0,
-            barnetillegg = Beloep(75, 100),
-            dekningFasteUtgifter = 0,
-            garantitilleggNordisk27 = Beloep(75, 100),
-            grunnbeloep = 0,
-            ordinaerUTBeloep = Beloep(75, 100),
-            totalUTBeloep = Beloep(75, 100),
+            annetBelop = Kroner(0),
+            barnetillegg = BeloepMedAvkortning(Kroner(75), Kroner(100)),
+            dekningFasteUtgifter = Kroner(0),
+            garantitilleggNordisk27 = BeloepMedAvkortning(Kroner(75), Kroner(100)),
+            grunnbeloep = Kroner(0),
+            ordinaerUTBeloep = BeloepMedAvkortning(Kroner(75), Kroner(100)),
+            totalUTBeloep = BeloepMedAvkortning(Kroner(75), Kroner(100)),
             virkningFraOgMed = LocalDate.of(2020, 1, 1),
             virkningTilOgMed = LocalDate.of(2020, 1, 2),
             erAvkortet = true,
@@ -26,20 +27,20 @@ data class MaanedligUfoeretrygdFoerSkattDto(
     )
 
     data class UfoeretrygdPerMaaned(
-        val annetBelop: Int,
-        val barnetillegg: Beloep?,
-        val dekningFasteUtgifter: Int?,
-        val garantitilleggNordisk27: Beloep?,
-        val grunnbeloep: Int,
-        val ordinaerUTBeloep: Beloep,
-        val totalUTBeloep: Beloep,
+        val annetBelop: Kroner,
+        val barnetillegg: BeloepMedAvkortning?,
+        val dekningFasteUtgifter: Kroner?,
+        val garantitilleggNordisk27: BeloepMedAvkortning?,
+        val grunnbeloep: Kroner,
+        val ordinaerUTBeloep: BeloepMedAvkortning,
+        val totalUTBeloep: BeloepMedAvkortning,
         val virkningFraOgMed: LocalDate,
         val virkningTilOgMed: LocalDate?,
         val erAvkortet: Boolean,
     ) {
-        data class Beloep(
-            val netto: Int,
-            val brutto: Int,
+        data class BeloepMedAvkortning(
+            val netto: Kroner,
+            val brutto: Kroner,
         )
     }
 }
