@@ -6,8 +6,7 @@ import kotlin.reflect.KClass
 
 data class LetterTemplate<Lang : LanguageSupport, LetterData : Any>(
     val name: String,
-    //TODO: Lag støtte for kombinert literal og expression for title
-    val title: Element.Text.Literal<Lang>,
+    val title: List<Element<Lang>>,
     val base: BaseTemplate,
     val letterDataType: KClass<LetterData>,
     val language: Lang,
@@ -15,6 +14,12 @@ data class LetterTemplate<Lang : LanguageSupport, LetterData : Any>(
     val attachments: List<IncludeAttachment<Lang, *>> = emptyList(),
     val letterMetadata: LetterMetadata,
 ) {
+
+    init {
+        if (title.isEmpty()) {
+            throw MissingTitleInTemplateException("Missing title in template: $name")
+        }
+    }
 
     fun render(letter: Letter<*>) =
         base.render(letter)
@@ -218,12 +223,12 @@ sealed class Element<out Lang : LanguageSupport> {
         data class Expression<out Lang : LanguageSupport>(
             val expression: StringExpression,
             override val fontType: FontType = FontType.PLAIN
-        ) :
-            Text<Lang>() {
+        ) : Text<Lang>() {
 
             @Suppress("DataClassPrivateConstructor")
             data class ByLanguage<out Lang : LanguageSupport> private constructor(
                 val expression: Map<Language, StringExpression>,
+                val languages: Lang,
                 override val fontType: FontType
             ) : Text<Lang>() {
 
@@ -235,20 +240,20 @@ sealed class Element<out Lang : LanguageSupport> {
                     fun <Lang1 : Language> create(
                         lang1: Pair<Lang1, StringExpression>,
                         fontType: FontType = FontType.PLAIN
-                    ) = ByLanguage<LanguageSupport.Single<Lang1>>(mapOf(lang1), fontType)
+                    ) = ByLanguage<LanguageSupport.Single<Lang1>>(mapOf(lang1), LanguageCombination.Single(lang1.first), fontType)
 
                     fun <Lang1 : Language, Lang2 : Language> create(
                         lang1: Pair<Lang1, StringExpression>,
                         lang2: Pair<Lang2, StringExpression>,
                         fontType: FontType = FontType.PLAIN,
-                    ) = ByLanguage<LanguageSupport.Double<Lang1, Lang2>>(mapOf(lang1, lang2), fontType)
+                    ) = ByLanguage<LanguageSupport.Double<Lang1, Lang2>>(mapOf(lang1, lang2), LanguageCombination.Double(lang1.first, lang2.first), fontType)
 
                     fun <Lang1 : Language, Lang2 : Language, Lang3 : Language> create(
                         lang1: Pair<Lang1, StringExpression>,
                         lang2: Pair<Lang2, StringExpression>,
                         lang3: Pair<Lang3, StringExpression>,
                         fontType: FontType = FontType.PLAIN,
-                    ) = ByLanguage<LanguageSupport.Triple<Lang1, Lang2, Lang3>>(mapOf(lang1, lang2, lang3), fontType)
+                    ) = ByLanguage<LanguageSupport.Triple<Lang1, Lang2, Lang3>>(mapOf(lang1, lang2, lang3), LanguageCombination.Triple(lang1.first, lang2.first, lang3.first), fontType)
                 }
             }
         }
@@ -318,3 +323,4 @@ class MissingScopeForNextItemEvaluationException(msg: String) : Exception(msg)
 class InvalidScopeTypeException(msg: String) : Exception(msg)
 class InvalidTableDeclarationException(msg: String) : Exception(msg)
 class InvalidListDeclarationException(msg: String) : Exception(msg)
+class MissingTitleInTemplateException(msg: String) : Exception(msg)

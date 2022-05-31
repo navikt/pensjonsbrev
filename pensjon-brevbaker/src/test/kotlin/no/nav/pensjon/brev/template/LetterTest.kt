@@ -11,14 +11,17 @@ class LetterTest {
     object TestMaster : DummyBase()
     data class TestData(val s: String)
 
-    val title = newText(Language.Bokmal to "test")
     val template = createTemplate(
         name = "test",
         base = TestMaster,
         letterDataType = TestData::class,
-        title = title,
+        languages = languages(Language.Bokmal),
         letterMetadata = LetterMetadata("Test", false),
-    ) { }
+    ) {
+        title {
+            text(Language.Bokmal to "test")
+        }
+    }
 
     @Test
     fun `constructor validates that template supports language`() {
