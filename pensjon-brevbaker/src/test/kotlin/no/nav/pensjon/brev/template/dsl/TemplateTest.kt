@@ -17,9 +17,10 @@ class TemplateTest {
             name = "test",
             base = PensjonLatex,
             letterDataType = Unit::class,
-            title = bokmalTittel,
+            languages = bokmalTittel.languages,
             letterMetadata = testLetterMetadata,
         ) {
+            title.add(bokmalTittel)
             outline {
                 title1 {
                     text(Language.Bokmal to "Heisann. ")
@@ -30,7 +31,7 @@ class TemplateTest {
         assertEquals(
             LetterTemplate(
                 name = "test",
-                title = bokmalTittel,
+                title = listOf(bokmalTittel),
                 base = PensjonLatex,
                 letterDataType = Unit::class,
                 language = languages(Language.Bokmal),
@@ -68,16 +69,17 @@ class TemplateTest {
             name = "test",
             base = PensjonLatex,
             letterDataType = SomeDto::class,
-            title = bokmalTittel,
+            languages = bokmalTittel.languages,
             letterMetadata = testLetterMetadata,
         ) {
+            title.add(bokmalTittel)
             includeAttachment(attachment, Expression.Literal(Unit))
         }
 
         assertEquals(
             LetterTemplate(
                 name = "test",
-                title = bokmalTittel,
+                title = listOf(bokmalTittel),
                 base = PensjonLatex,
                 letterDataType = SomeDto::class,
                 language = languages(Language.Bokmal),
@@ -113,9 +115,10 @@ class TemplateTest {
             name = "test",
             base = PensjonLatex,
             letterDataType = Unit::class,
-            title = bokmalTittel,
+            languages = bokmalTittel.languages,
             letterMetadata = testLetterMetadata,
         ) {
+            title.add(bokmalTittel)
             outline {
                 title1 { text(Language.Bokmal to "jadda") }
             }
@@ -124,7 +127,7 @@ class TemplateTest {
         assertEquals(
             LetterTemplate(
                 name = "test",
-                title = bokmalTittel,
+                title = listOf(bokmalTittel),
                 base = PensjonLatex,
                 letterDataType = Unit::class,
                 letterMetadata = testLetterMetadata,
@@ -140,9 +143,10 @@ class TemplateTest {
             name = "test",
             base = PensjonLatex,
             letterDataType = Unit::class,
-            title = bokmalTittel,
+            languages = bokmalTittel.languages,
             letterMetadata = testLetterMetadata,
         ) {
+            title.add(bokmalTittel)
             outline {
                 title1 { text(Language.Bokmal to "Tittel") }
                 paragraph {
@@ -154,7 +158,7 @@ class TemplateTest {
         assertEquals(
             LetterTemplate(
                 name = "test",
-                title = bokmalTittel,
+                title = listOf(bokmalTittel),
                 base = PensjonLatex,
                 letterDataType = Unit::class,
                 language = languages(Language.Bokmal),

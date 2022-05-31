@@ -5,6 +5,7 @@ import no.nav.pensjon.brev.latex.LatexPrintWriter
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.base.pensjonlatex.pensjonLatexSettings
+import java.io.ByteArrayOutputStream
 import java.time.LocalDate
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
@@ -42,7 +43,7 @@ object PensjonLatex : BaseTemplate() {
 
     private fun xmpData(letter: Letter<*>, latexPrintWriter: LatexPrintWriter) {
         with(latexPrintWriter) {
-            printCmd("Title", letter.template.title.text(letter.language))
+            printCmd("Title", renderTitle(letter))
             printCmd("Language", letter.language.locale().toLanguageTag())
             printCmd("Publisher", letter.felles.avsenderEnhet.navn)
             printCmd("Date", letter.felles.dokumentDato.format(DateTimeFormatter.ISO_LOCAL_DATE))
@@ -54,7 +55,7 @@ object PensjonLatex : BaseTemplate() {
             """
                \pdfinfo{
                     /Creator (${letter.felles.avsenderEnhet.navn.latexEscape()})
-                    /Title  (${letter.template.title.text(letter.language).latexEscape()})
+                    /Title  (${renderTitle(letter)})
                     /Language (${letter.language.locale().toLanguageTag().latexEscape()})
                     /Producer (${letter.felles.avsenderEnhet.navn.latexEscape()})
                 }
@@ -84,7 +85,7 @@ object PensjonLatex : BaseTemplate() {
             pdfMetadata(letter, printWriter)
             printCmd("begin", "document")
             printCmd("firstpage")
-            printCmd("tittel", letter.template.title.text(letter.language))
+            printCmd("tittel", renderTitle(letter))
             contents(letter, printWriter)
             printCmd("closing")
             letter.template.attachments.forEachIndexed { index, _ ->
@@ -180,6 +181,17 @@ object PensjonLatex : BaseTemplate() {
                 bodyWriter.printCmd("end", "attachmentList")
             }
         }
+    }
+
+    private fun renderTitle(letter: Letter<*>): String {
+        val output = ByteArrayOutputStream()
+
+        LatexPrintWriter(output).use { printWriter ->
+            val scope = letter.toScope()
+            letter.template.title.forEach { renderElement(scope, it, printWriter) }
+        }
+
+        return output.toString(Charsets.UTF_8)
     }
 
     private fun contents(letter: Letter<*>, printWriter: LatexPrintWriter) {

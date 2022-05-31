@@ -8,11 +8,8 @@ import no.nav.pensjon.brev.template.Element.Text.FontType
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.base.PensjonLatex
-import no.nav.pensjon.brev.template.dsl.createTemplate
+import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brev.template.dsl.expression.*
-import no.nav.pensjon.brev.template.dsl.newText
-import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.template.dsl.textExpr
 import java.time.LocalDate
 
 object LetterExample : StaticTemplate {
@@ -20,16 +17,19 @@ object LetterExample : StaticTemplate {
         name = "EKSEMPEL_BREV", //Letter ID
         base = PensjonLatex, //Master-template
         letterDataType = LetterExampleDto::class, // Data class containing the required data of this letter
-        title = newText(
-            // Main letter title
-            Bokmal to "Eksempelbrev",    // Letter title will determine what languages this letter should support
-            Nynorsk to "Eksempelbrev",    // Letter title will determine what languages this letter should support
-        ),
+        languages = languages(Bokmal, Nynorsk),
         letterMetadata = LetterMetadata(
             displayTitle = "Dette er ett eksempel-brev", // Display title for external systems
             isSensitiv = false, // If this letter contains sensitive information requiring level 4 log-in
         )
     ) {
+        title {
+            text(
+                Bokmal to "Eksempelbrev",
+                Nynorsk to "Eksempelbrev"
+            )
+        }
+
         // Main letter content
         val datoInnvilget = argument().select(LetterExampleDto::datoInnvilget)
         val pensjonBeloep = argument().select(LetterExampleDto::pensjonBeloep)

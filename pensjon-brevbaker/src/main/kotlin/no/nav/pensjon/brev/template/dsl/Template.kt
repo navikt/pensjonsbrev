@@ -12,12 +12,12 @@ fun <Lang : LanguageSupport, LetterData : Any> createTemplate(
     name: String,
     base: BaseTemplate,
     letterDataType: KClass<LetterData>,
-    title: Element.Text.Literal<Lang>,
+    languages: Lang,
     letterMetadata: LetterMetadata,
     init: TemplateRootScope<Lang, LetterData>.() -> Unit
 ): LetterTemplate<Lang, LetterData> =
     with(TemplateRootScope<Lang, LetterData>().apply(init)) {
-        return LetterTemplate(name, title, base, letterDataType, title.languages, outline, attachments, letterMetadata)
+        return LetterTemplate(name, title, base, letterDataType, languages, outline, attachments, letterMetadata)
     }
 
 open class TemplateGlobalScope<LetterData : Any> {
@@ -31,9 +31,14 @@ open class TemplateGlobalScope<LetterData : Any> {
 
 @LetterTemplateMarker
 open class TemplateRootScope<Lang : LanguageSupport, LetterData : Any>(
+    val title: MutableList<Element<Lang>> = mutableListOf(),
     val outline: MutableList<Element<Lang>> = mutableListOf(),
     val attachments: MutableList<IncludeAttachment<Lang, *>> = mutableListOf(),
 ) : TemplateGlobalScope<LetterData>() {
+
+    fun title(init: TextOnlyScope<Lang, LetterData>.() -> Unit) {
+        title.addAll(TextOnlyScope<Lang, LetterData>().apply(init).children)
+    }
 
     fun outline(init: OutlineScope<Lang, LetterData>.() -> Unit) {
         outline.addAll(OutlineScope<Lang, LetterData>().apply(init).children)

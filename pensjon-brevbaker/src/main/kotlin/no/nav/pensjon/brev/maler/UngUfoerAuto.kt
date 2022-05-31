@@ -17,15 +17,19 @@ object UngUfoerAuto : StaticTemplate {
         name = "UP_FULLTT_BELOPENDR",
         base = PensjonLatex,
         letterDataType = UngUfoerAutoDto::class,
-        title = newText(
-            Bokmal to "NAV har regnet om uføretrygden din",
-            Nynorsk to "NAV har endra uføretrygda di",
-        ),
+        languages = languages(Bokmal, Nynorsk),
         letterMetadata = LetterMetadata(
             "Vedtak – ung ufør ved 20 år",
             isSensitiv = true,
         )
     ) {
+        title {
+            text(
+                Bokmal to "NAV har regnet om uføretrygden din",
+                Nynorsk to "NAV har endra uføretrygda di",
+            )
+        }
+
         outline {
             val virkningsDato = argument().select(UngUfoerAutoDto::kravVirkningFraOgMed).map(::KravVirkningFraOgMed)
 
