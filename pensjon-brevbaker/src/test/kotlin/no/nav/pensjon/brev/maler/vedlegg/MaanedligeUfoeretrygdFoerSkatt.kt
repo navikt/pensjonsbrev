@@ -15,6 +15,7 @@ import no.nav.pensjon.brev.template.Letter
 import no.nav.pensjon.brev.template.base.PensjonLatex
 import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.expr
+import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.writeTestPDF
 import org.junit.jupiter.api.Tag
@@ -30,12 +31,15 @@ class MaanedligUfoeretrygdFoerSkatt {
             name = "test-template",
             base = PensjonLatex,
             letterDataType = Unit::class,
-            title = newText(Bokmal to ""),
+            languages = languages(Bokmal),
             letterMetadata = LetterMetadata(
                 "test mal",
                 isSensitiv = false
             ),
         ) {
+            title{
+                Bokmal to ""
+            }
             outline {
 
             }

@@ -8,29 +8,32 @@ import no.nav.pensjon.brev.maler.fraser.*
 import no.nav.pensjon.brev.maler.vedlegg.maanedligUfoeretrygdFoerSkatt
 import no.nav.pensjon.brev.maler.vedlegg.opplysningerBruktIBeregningUT
 import no.nav.pensjon.brev.maler.vedlegg.orienteringOmRettigheterOgPlikterUfoere
+import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Language.*
-import no.nav.pensjon.brev.template.StaticTemplate
 import no.nav.pensjon.brev.template.base.PensjonLatex
-import no.nav.pensjon.brev.template.dsl.createTemplate
+import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brev.template.dsl.expression.*
-import no.nav.pensjon.brev.template.dsl.newText
 
 object UfoerOmregningEnslig : StaticTemplate {
     override val template = createTemplate(
         name = "UT_DOD_ENSLIG_AUTO",
         base = PensjonLatex,
         letterDataType = UfoerOmregningEnsligDto::class,
-        title = newText(
-            Bokmal to "NAV har regnet om uføretrygden din",
-            Nynorsk to "NAV har rekna om uføretrygda di",
-            English to "NAV has altered your disability benefit"
-        ),
+        languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(
             "Vedtak – omregning til enslig uføretrygdet (automatisk)", isSensitiv = true
         )
     ) {
         val harMinsteytelseVedVirk = argument().map { it.minsteytelseVedvirk_sats != null }
         val inntektFoerUfoereErSannsynligEndret = argument().map { it.inntektFoerUfoerhetVedVirk.erSannsynligEndret }
+
+        title {
+            text(
+                Bokmal to "NAV har regnet om uføretrygden din",
+                Nynorsk to "NAV har rekna om uføretrygda di",
+                English to "NAV has altered your disability benefit"
+            )
+        }
 
         outline {
 
@@ -53,7 +56,8 @@ object UfoerOmregningEnslig : StaticTemplate {
                     ?.barnTidligereSaerkullsbarn
                     ?.isNotEmpty() ?: false
             }
-            val harUfoereMaanedligBeloepVedvirk = argument().map { it.ufoeretrygdVedVirk.totalUforeMaanedligBeloep.value > 0 }
+            val harUfoereMaanedligBeloepVedvirk =
+                argument().map { it.ufoeretrygdVedVirk.totalUforeMaanedligBeloep.value > 0 }
             val harFlereUfoeretrygdPerioder =
                 argument().map { it.beregnetUTPerManed_antallBeregningsperioderPaVedtak > 1 }
             val institusjonsoppholdVedVirk = argument().select(UfoerOmregningEnsligDto::institusjonsoppholdVedVirk)

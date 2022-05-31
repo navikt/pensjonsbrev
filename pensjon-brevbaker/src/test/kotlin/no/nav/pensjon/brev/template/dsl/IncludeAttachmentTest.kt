@@ -24,7 +24,7 @@ class IncludeAttachmentTest {
     fun `attachment is included in template`() {
         val expected = LetterTemplate(
             name = "test",
-            title = nynorskTittel,
+            title = listOf(newText(Language.Nynorsk to "tittel")),
             base = PensjonLatex,
             letterDataType = SomeDto::class,
             language = languages(Language.Nynorsk),
@@ -38,10 +38,11 @@ class IncludeAttachmentTest {
         val actual = createTemplate(
             name = "test",
             base = PensjonLatex,
+            languages = languages(Language.Nynorsk),
             letterDataType = SomeDto::class,
-            title = nynorskTittel,
             letterMetadata = testLetterMetadata,
         ) {
+            title { text(Language.Nynorsk to "tittel") }
             outline {}
             includeAttachment(testVedlegg, Unit.expr(), false.expr())
         }
