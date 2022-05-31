@@ -8,6 +8,7 @@ import no.nav.pensjon.brev.maler.fraser.*
 import no.nav.pensjon.brev.maler.fraser.common.Felles.kroner
 import no.nav.pensjon.brev.maler.fraser.common.Felles.maaneder
 import no.nav.pensjon.brev.model.format
+import no.nav.pensjon.brev.model.tableFormat
 import no.nav.pensjon.brev.template.Element
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.*
@@ -267,7 +268,7 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
             }
             cell {
                 val brukersSivilstand =
-                    argument().map { it.beregnetUTPerManedGjeldende.brukersSivilstand }.format()
+                    argument().map { it.beregnetUTPerManedGjeldende.brukersSivilstand }.tableFormat()
                 textExpr(
                     Bokmal to brukersSivilstand,
                     Nynorsk to brukersSivilstand,

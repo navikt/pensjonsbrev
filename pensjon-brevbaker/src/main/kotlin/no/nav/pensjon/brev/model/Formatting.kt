@@ -29,7 +29,7 @@ fun Expression<IntValue>.format() =
     select(IntValue::value).format()
 
 @JvmName("formatSivilstand")
-fun Expression<Sivilstand>.format() =
+fun Expression<Sivilstand>.tableFormat() =
     Expression.BinaryInvoke(
         this,
         Expression.FromScope(ExpressionScope<Any, *>::language),
