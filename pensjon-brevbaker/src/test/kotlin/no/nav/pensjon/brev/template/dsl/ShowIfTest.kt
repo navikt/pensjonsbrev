@@ -13,7 +13,7 @@ class ShowIfTest {
     fun `createTemplate adds showIf`() {
         val expected = LetterTemplate(
             name = "test",
-            title = nynorskTittel,
+            title = listOf(nynorskTittel),
             base = PensjonLatex,
             letterDataType = SomeDto::class,
             language = languages(Language.Nynorsk),
@@ -31,9 +31,11 @@ class ShowIfTest {
             name = "test",
             base = PensjonLatex,
             letterDataType = SomeDto::class,
-            title = nynorskTittel,
+            languages = nynorskTittel.languages,
             letterMetadata = testLetterMetadata,
         ) {
+            title.add(nynorskTittel)
+
             outline {
                 showIf(argument().select(SomeDto::pensjonInnvilget)) {
                     text(Language.Nynorsk to "jadda")
@@ -51,7 +53,7 @@ class ShowIfTest {
         val exprScope = Expression.FromScope(ExpressionScope<SomeDto, *>::argument)
         val expected = LetterTemplate(
             name = "test",
-            title = nynorskTittel,
+            title = listOf(nynorskTittel),
             base = PensjonLatex,
             letterDataType = SomeDto::class,
             language = languages(Language.Nynorsk),
@@ -75,9 +77,10 @@ class ShowIfTest {
             name = "test",
             base = PensjonLatex,
             letterDataType = SomeDto::class,
-            title = nynorskTittel,
+            languages = nynorskTittel.languages,
             letterMetadata = testLetterMetadata,
         ) {
+            title.add(nynorskTittel)
             outline {
                 showIf(argument().select(SomeDto::pensjonInnvilget)) {
                     text(Language.Nynorsk to "jadda")
@@ -95,7 +98,7 @@ class ShowIfTest {
         val exprScope = Expression.FromScope(ExpressionScope<SomeDto, *>::argument)
         val expected = LetterTemplate(
             name = "test",
-            title = nynorskTittel,
+            title = listOf(nynorskTittel),
             base = PensjonLatex,
             letterDataType = SomeDto::class,
             language = languages(Language.Nynorsk),
@@ -119,9 +122,10 @@ class ShowIfTest {
             name = "test",
             base = PensjonLatex,
             letterDataType = SomeDto::class,
-            title = nynorskTittel,
+            languages = nynorskTittel.languages,
             letterMetadata = testLetterMetadata,
         ) {
+            title.add(nynorskTittel)
             outline {
                 showIf(argument().select(SomeDto::pensjonInnvilget)) {
                     text(Language.Nynorsk to "jadda")

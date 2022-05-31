@@ -16,11 +16,7 @@ object OmsorgEgenAuto : StaticTemplate {
         name = "OMSORG_EGEN_AUTO",
         base = PensjonLatex,
         letterDataType = OmsorgEgenAutoDto::class,
-        title = newText(
-            Bokmal to "Du må sende oss egenerklæring om pleie- og omsorgsarbeid",
-            Nynorsk to "Du må sende oss eigenmelding om pleie- og omsorgsarbeid",
-            English to "Personal declaration about the circumstances of care",
-        ),
+        languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(
             "Egenerklæring godskriving omsorgspoeng",
             false,
@@ -28,6 +24,14 @@ object OmsorgEgenAuto : StaticTemplate {
     ) {
 
         val aarEgenerklaringOmsorgspoeng = argument().select(OmsorgEgenAutoDto::aarEgenerklaringOmsorgspoeng).str()
+
+        title {
+            text(
+                Bokmal to "Du må sende oss egenerklæring om pleie- og omsorgsarbeid",
+                Nynorsk to "Du må sende oss eigenmelding om pleie- og omsorgsarbeid",
+                English to "Personal declaration about the circumstances of care",
+            )
+        }
 
         outline {
             paragraph {

@@ -29,12 +29,13 @@ class PensjonLatexITest {
             name = "test-template",
             base = PensjonLatex,
             letterDataType = TestTemplateDto::class,
-            title = newText(Bokmal to "En fin tittel"),
+            languages = languages(Bokmal),
             letterMetadata = LetterMetadata(
                 displayTitle = "En fin display tittel",
                 isSensitiv = false,
             )
         ) {
+            title { text(Bokmal to "En fin tittel") }
             outline {
                 text(Bokmal to "Argumentet etNavn er: ")
                 eval { argument().select(TestTemplateDto::etNavn) }
@@ -73,7 +74,7 @@ class PensjonLatexITest {
         if (testCharacters(addChars(begin, end))) {
             //All characters are valid
             return
-        }else {
+        } else {
             if (begin - end == 0) {
                 //Failed at single character
                 invalidCharacters.add(begin)
@@ -93,12 +94,13 @@ class PensjonLatexITest {
                 name = "test-template",
                 base = PensjonLatex,
                 letterDataType = TestTemplateDto::class,
-                title = newText(Bokmal to "En fin tittel"),
+                languages = languages(Bokmal),
                 letterMetadata = LetterMetadata(
                     displayTitle = "En fin display tittel",
                     isSensitiv = false,
                 )
             ) {
+                title { text(Bokmal to "En fin tittel") }
                 outline {
                     text(Bokmal to addChars.latexEscape() + "test")
                     eval { argument().select(TestTemplateDto::etNavn) }

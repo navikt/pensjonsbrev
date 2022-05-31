@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.template
 
+import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.base.PensjonLatex
 import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brev.template.dsl.bokmalTittel
@@ -10,17 +11,18 @@ internal inline fun <reified LetterData : Any> outlineTestTemplate(noinline func
         name = "test",
         base = PensjonLatex,
         letterDataType = LetterData::class,
-        title = bokmalTittel,
+        languages = bokmalTittel.languages,
         letterMetadata = testLetterMetadata,
     ) {
+        title.add(bokmalTittel)
         outline(function)
     }
 
 fun outlineTestLetter(vararg elements: Element<BokmalLang>) = LetterTemplate(
     name = "test",
-    title = bokmalTittel,
+    title = listOf(bokmalTittel),
     base = PensjonLatex,
     letterDataType = Unit::class,
-    language = languages(Language.Bokmal),
+    language = languages(Bokmal),
     letterMetadata = testLetterMetadata,
     outline = elements.asList())

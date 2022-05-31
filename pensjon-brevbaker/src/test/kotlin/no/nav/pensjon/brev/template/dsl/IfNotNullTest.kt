@@ -17,14 +17,14 @@ class IfNotNullTest {
         name = "NULL_BREV",
         base = PensjonLatex,
         letterDataType = NullBrevDto::class,
-        title = newText(
-            Bokmal to "Heisann"
-        ),
+        languages = languages(Bokmal),
         letterMetadata = LetterMetadata(
             "Jadda",
             isSensitiv = true,
         )
     ) {
+        title { text(Bokmal to "Heisann") }
+
         outline {
             text(Bokmal to "alltid med")
             val nullTing1 = argument().select(NullBrevDto::test1)
