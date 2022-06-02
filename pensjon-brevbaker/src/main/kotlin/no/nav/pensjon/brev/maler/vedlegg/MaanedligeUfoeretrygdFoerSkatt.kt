@@ -18,7 +18,7 @@ val maanedligUfoeretrygdFoerSkatt = createAttachment<LangBokmalNynorskEnglish, M
         English to "This is your monthly disability benefit before tax",
     ),
 ) {
-    val gjeldendeUfoeretrygd = argument().map { it.gjeldendeBeregnetUTPerMaaned }
+    val gjeldendeUfoeretrygd = argument().select(MaanedligUfoeretrygdFoerSkattDto::gjeldendeBeregnetUTPerMaaned)
 
     includePhrase(vedleggBelopUT_001)
 

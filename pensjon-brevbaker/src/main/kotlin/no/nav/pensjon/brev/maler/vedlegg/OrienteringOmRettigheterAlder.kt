@@ -38,54 +38,40 @@ val orienteringOmRettigheterOgPlikterAlder =
 
         includePhrase(vedleggPlikter_001)
         list {
-            showIf(
-                bor_i_norge
-                        and not(institusjon_gjeldende.isOneOf(FENGSEL, HELSE, SYKEHJEM))
-            ) {
-                item { includePhrase(vedleggPlikterAP2_001) }
+
+            showIf(not(institusjon_gjeldende.isOneOf(FENGSEL, HELSE, SYKEHJEM))) {
+                showIf(bor_i_norge) {
+                    item { includePhrase(vedleggPlikterAP2_001) }
+                }.orShow {
+                    item { includePhrase(vedleggPlikterAP3_001) }
+                }
+                showIf(sivilstand.isOneOf(ENSLIG, ENKE)) {
+                    item { includePhrase(vedleggPlikterAP1_001) }
+                }
             }
-            showIf(
-                not(bor_i_norge)
-                        and not(institusjon_gjeldende.isOneOf(FENGSEL, HELSE, SYKEHJEM))
-            ) {
-                item { includePhrase(vedleggPlikterAP3_001) }
-            }
-            showIf(
-                sivilstand.isOneOf(ENSLIG, ENKE)
-                        and not(institusjon_gjeldende.isOneOf(FENGSEL, HELSE, SYKEHJEM))
-            ) {
-                item { includePhrase(vedleggPlikterAP1_001) }
-            }
-            showIf(
-                sivilstand.isOneOf(GIFT)
-                        and eps_bor_sammen_med_bruker_eps_gjeldende
-                        and not(eps_institusjon_gjeldende.isOneOf(INGEN))
-            ) {
-                item { includePhrase(vedleggPlikterAP4_002) }
-            }
-            showIf(
-                sivilstand.isOneOf(PARTNER)
-                        and eps_bor_sammen_med_bruker_eps_gjeldende
-                        and not(eps_institusjon_gjeldende.isOneOf(INGEN))
-            ) {
-                item { includePhrase(vedleggPlikterAP13_002) }
-            }
-            showIf(
-                sivilstand.isOneOf(SAMBOER1_5, SAMBOER3_2)
-                        and eps_bor_sammen_med_bruker_eps_gjeldende
-                        and not(eps_institusjon_gjeldende.isOneOf(INGEN))
-            ) {
-                item { includePhrase(vedleggPlikterAP15_002) }
-            }
+
             showIf(eps_bor_sammen_med_bruker_eps_gjeldende
+                    and not(eps_institusjon_gjeldende.isOneOf(INGEN))){
+
+                showIf(sivilstand.isOneOf(GIFT)) {
+                    item { includePhrase(vedleggPlikterAP4_002) }
+                }.orShowIf(sivilstand.isOneOf(PARTNER)) {
+                    item { includePhrase(vedleggPlikterAP13_002) }
+                }.orShowIf(sivilstand.isOneOf(SAMBOER1_5, SAMBOER3_2)) {
+                    item { includePhrase(vedleggPlikterAP15_002) }
+                }
+            }
+
+            showIf(
+                eps_bor_sammen_med_bruker_eps_gjeldende
                         and not(institusjon_gjeldende.isOneOf(FENGSEL, HELSE, SYKEHJEM))
                         and not(eps_institusjon_gjeldende.isOneOf(INGEN))
             ) {
                 showIf(sivilstand.isOneOf(GIFT)) {
                     item { includePhrase(vedleggPlikterAP6_002) }
-                }.orShowIf(sivilstand.isOneOf(PARTNER)){
+                }.orShowIf(sivilstand.isOneOf(PARTNER)) {
                     item { includePhrase(vedleggPlikterAP14_002) }
-                }.orShowIf(sivilstand.isOneOf(SAMBOER1_5, SAMBOER3_2)){
+                }.orShowIf(sivilstand.isOneOf(SAMBOER1_5, SAMBOER3_2)) {
                     item { includePhrase(vedleggPlikterAP18_001) }
                     item { includePhrase(vedleggPlikterAP16_001) }
                     item { includePhrase(vedleggPlikterAP17_001) }
@@ -93,22 +79,17 @@ val orienteringOmRettigheterOgPlikterAlder =
                 }
             }
 
-            showIf(
-                sivilstand.isOneOf(GIFT_LEVER_ADSKILT, GIFT)
-                        and not(eps_bor_sammen_med_bruker_eps_gjeldende)
-                        and not(institusjon_gjeldende.isOneOf(SYKEHJEM))
-                        and not(eps_institusjon_gjeldende.isOneOf(SYKEHJEM))
-            ) {
-                item { includePhrase(vedleggPlikterAP8_001) }
+            showIf(not(eps_bor_sammen_med_bruker_eps_gjeldende)
+                    and not(institusjon_gjeldende.isOneOf(SYKEHJEM))
+                    and not(eps_institusjon_gjeldende.isOneOf(SYKEHJEM))){
+
+                showIf(sivilstand.isOneOf(GIFT_LEVER_ADSKILT, GIFT)){
+                    item { includePhrase(vedleggPlikterAP8_001) }
+                }.orShowIf(sivilstand.isOneOf(PARTNER, PARTNER_LEVER_ADSKILT)){
+                    item { includePhrase(vedleggPlikterAP11_001) }
+                }
             }
-            showIf(
-                sivilstand.isOneOf(PARTNER, PARTNER_LEVER_ADSKILT)
-                        and not(eps_bor_sammen_med_bruker_eps_gjeldende)
-                        and not(institusjon_gjeldende.isOneOf(SYKEHJEM))
-                        and not(eps_institusjon_gjeldende.isOneOf(SYKEHJEM))
-            ) {
-                item { includePhrase(vedleggPlikterAP11_001) }
-            }
+
             showIf(
                 sivilstand.isOneOf(GIFT, GIFT_LEVER_ADSKILT, PARTNER, PARTNER_LEVER_ADSKILT)
             ) {
@@ -132,6 +113,7 @@ val orienteringOmRettigheterOgPlikterAlder =
             ) {
                 item { includePhrase(vedleggPlikterAP10_001) }
             }
+
             showIf(
                 not(sivilstand.isOneOf(ENSLIG, ENKE))
                         and (eps_bor_sammen_med_bruker_eps_gjeldende)
@@ -145,6 +127,7 @@ val orienteringOmRettigheterOgPlikterAlder =
                     )
                 }
             }
+
             showIf(
                 sivilstand.isOneOf(ENSLIG, ENKE)
                         and not(institusjon_gjeldende.isOneOf(FENGSEL, HELSE, SYKEHJEM))
@@ -152,6 +135,7 @@ val orienteringOmRettigheterOgPlikterAlder =
             ) {
                 item { includePhrase(vedleggPlikterAP26_001) }
             }
+
             showIf(
                 not(institusjon_gjeldende.isOneOf(FENGSEL, HELSE, SYKEHJEM))
                         and bor_i_norge
@@ -177,7 +161,7 @@ val orienteringOmRettigheterOgPlikterAlder =
         }
         showIf(
             har_barnetillegg_felles_barn_vedvirk
-                    or har_barnetillegg_for_saerkullsbarn_vedvirk
+                    or har_barnetillegg_for_saerkullsbarn_vedvirk //TODO hva henger denne or egentlig sammen med?
                     and har_ektefelletillegg_vedvirk
         ) {
             includePhrase(
@@ -186,14 +170,14 @@ val orienteringOmRettigheterOgPlikterAlder =
         }
         showIf(
             har_barnetillegg_felles_barn_vedvirk
-                    or har_barnetillegg_for_saerkullsbarn_vedvirk
+                    or har_barnetillegg_for_saerkullsbarn_vedvirk //TODO hva henger denne or egentlig sammen med?
                     and not(har_ektefelletillegg_vedvirk)
         ) {
             includePhrase(vedleggPlikterinntektsprovingBTFellesBarnSaerkullsbarnAP_001)
         }
         showIf(
             har_barnetillegg_felles_barn_vedvirk
-                    or har_barnetillegg_for_saerkullsbarn_vedvirk
+                    or har_barnetillegg_for_saerkullsbarn_vedvirk //TODO hva henger denne or egentlig sammen med?
                     and har_ektefelletillegg_vedvirk
         ) {
             includePhrase(vedleggPlikterinntektsprovingBTOgETAP_001)
