@@ -68,12 +68,12 @@ object UfoerOmregningEnslig : StaticTemplate {
             val brukerBorINorge = not(argument().map { it.bruker.borINorge })
 
 
-            includePhrase(VedtakOverskriftPesys_001)
+            includePhrase(vedtakOverskriftPesys_001)
             showIf(
                 (harMinsteytelseVedVirk or inntektFoerUfoereErSannsynligEndret or ektefelleTilleggOpphoert)
                         and not(harBarnetilleggForSaerkullsbarnVedVirk)
             ) {
-                includePhrase(OmregnUTDodEPSInnledn1_001,
+                includePhrase(omregnUTDodEPSInnledn1_001,
                     argument().map { OmregnUTDodEPSInnledn1001Dto(it.avdoed.navn, it.krav_virkningsDatoFraOgMed) })
             }
 
@@ -83,14 +83,14 @@ object UfoerOmregningEnslig : StaticTemplate {
                         and not(ektefelleTilleggOpphoert)
                         and not(harBarnetilleggForSaerkullsbarnVedVirk)
             ) {
-                includePhrase(OmregnUTDodEPSInnledn2_001, argument().map { it.avdoed.navn })
+                includePhrase(omregnUTDodEPSInnledn2_001, argument().map { it.avdoed.navn })
             }
 
             showIf(
                 (harMinsteytelseVedVirk or inntektFoerUfoereErSannsynligEndret or ektefelleTilleggOpphoert)
                         and harBarnetilleggForSaerkullsbarnVedVirk
             ) {
-                includePhrase(OmregnUTBTDodEPSInnledn_001,
+                includePhrase(omregnUTBTDodEPSInnledn_001,
                     argument().map { OmregnUTBTDodEPSInnledn_001Dto(it.avdoed.navn, it.krav_virkningsDatoFraOgMed) })
             }
 
@@ -101,7 +101,7 @@ object UfoerOmregningEnslig : StaticTemplate {
                         and harBarnetilleggForSaerkullsbarnVedVirk
                         and not(harBarnOverfoertTilSaerkullsbarn)
             ) {
-                includePhrase(OmregnUTBTSBDodEPSInnledn_001, argument().map { it.avdoed.navn })
+                includePhrase(omregnUTBTSBDodEPSInnledn_001, argument().map { it.avdoed.navn })
             }
 
             showIf(
@@ -110,11 +110,11 @@ object UfoerOmregningEnslig : StaticTemplate {
                         and not(ektefelleTilleggOpphoert)
                         and harBarnOverfoertTilSaerkullsbarn
             ) {
-                includePhrase(OmregnBTDodEPSInnledn_001,
+                includePhrase(omregnBTDodEPSInnledn_001,
                     argument().map { OmregnBTDodEPSInnledn_001Dto(it.avdoed.navn, it.krav_virkningsDatoFraOgMed) })
             }
 
-            includePhrase(BeloepUT, argument().map {
+            includePhrase(beloepUT, argument().map {
                 BeloepUTDto(
                     totalUfoereMaanedligBeloep = it.ufoeretrygdVedVirk.totalUfoereMaanedligBeloep,
                     harBarnetilleggForSaerkullsbarnVedVirk = it.barnetilleggVedVirk?.barnetilleggSaerkullsbarnVedVirk != null,
@@ -128,7 +128,7 @@ object UfoerOmregningEnslig : StaticTemplate {
                         and not(harFlereUfoeretrygdPerioder)
                         and institusjonsoppholdVedVirk.isOneOf(Institusjon.FENGSEL)
             ) {
-                includePhrase(BelopUTIngenUtbetaling_001)
+                includePhrase(belopUTIngenUtbetaling_001)
             }
 
             showIf(
@@ -137,15 +137,15 @@ object UfoerOmregningEnslig : StaticTemplate {
                         and harFlereUfoeretrygdPerioder
                         and not(institusjonsoppholdVedVirk.isOneOf(Institusjon.FENGSEL))
             ) {
-                includePhrase(BelopUTIngenUtbetalingVedlegg_001)
+                includePhrase(belopUTIngenUtbetalingVedlegg_001)
             }
 
             ifNotNull(argument().map { it.barnetilleggVedVirk?.barnetilleggSaerkullsbarnVedVirk }) { barnetillegg ->
                 showIf(not(harUfoereMaanedligBeloepVedvirk) and barnetillegg.map { it.beloep.value == 0 }) {
                     showIf(harFlereUfoeretrygdPerioder) {
-                        includePhrase(BelopUTBTIngenUtbetalingVedlegg_001)
+                        includePhrase(belopUTBTIngenUtbetalingVedlegg_001)
                     }.orShow {
-                        includePhrase(BelopUTBTIngenUtbetaling_001)
+                        includePhrase(belopUTBTIngenUtbetaling_001)
                     }
                 }
             }
@@ -156,7 +156,7 @@ object UfoerOmregningEnslig : StaticTemplate {
                         and not(harFlereUfoeretrygdPerioder)
                         and institusjonsoppholdVedVirk.isOneOf(Institusjon.FENGSEL)
             ) {
-                includePhrase(BelopUTIngenUtbetalingFengsel_001)
+                includePhrase(belopUTIngenUtbetalingFengsel_001)
             }
 
             showIf(
@@ -165,18 +165,18 @@ object UfoerOmregningEnslig : StaticTemplate {
                         and harFlereUfoeretrygdPerioder
                         and institusjonsoppholdVedVirk.isOneOf(Institusjon.FENGSEL)
             ) {
-                includePhrase(BelopUTIngenUtbetalingFengselVedlegg_001)
+                includePhrase(belopUTIngenUtbetalingFengselVedlegg_001)
             }
 
             showIf(harMinsteytelseVedVirk or inntektFoerUfoereErSannsynligEndret) {
-                includePhrase(BegrunnOverskrift_001)
+                includePhrase(begrunnOverskrift_001)
             }
 
             ifNotNull(argument().map { arg ->
                 arg.minsteytelseVedvirk_sats?.let { EndrMYDodEPS2_001Dto(it, arg.ufoeretrygdVedVirk.kompensasjonsgrad) }
             }) {
                 showIf(not(inntektFoerUfoereErSannsynligEndret)) {
-                    includePhrase(EndrMYDodEPS2_001, it)
+                    includePhrase(endrMYDodEPS2_001, it)
                 }
             }
 
@@ -191,13 +191,13 @@ object UfoerOmregningEnslig : StaticTemplate {
                 }
             }) {
                 showIf(inntektFoerUfoereErSannsynligEndret) {
-                    includePhrase(EndrMYOgMinstIFUDodEPS2_001, it)
+                    includePhrase(endrMYOgMinstIFUDodEPS2_001, it)
                 }
             }
 
 
             showIf(not(harMinsteytelseVedVirk) and inntektFoerUfoereErSannsynligEndret) {
-                includePhrase(EndrMinstIFUDodEPS2_001, argument().map {
+                includePhrase(endrMinstIFUDodEPS2_001, argument().map {
                     EndrMinstIFUDodEPS2_001Dto(
                         it.inntektFoerUfoerhetVedVirk.beloep,
                         it.inntektFoerUfoerhetVedVirk.oppjustertBeloep,
@@ -207,22 +207,22 @@ object UfoerOmregningEnslig : StaticTemplate {
             }
 
 
-            includePhrase(HjemmelSivilstandUfoeretrygd, argument().map {
+            includePhrase(hjemmelSivilstandUfoeretrygd, argument().map {
                 HjemmelSivilstandUfoeretrygdDto(
                     it.inntektFoerUfoerhetVedVirk.erMinsteinntekt, it.ufoeretrygdVedVirk.erInntektsavkortet
                 )
             })
 
             showIf(institusjonsoppholdVedVirk.isOneOf(Institusjon.HELSE)) {
-                includePhrase(HjemmelEPSDodUTInstitusjon_001)
+                includePhrase(hjemmelEPSDodUTInstitusjon_001)
             }.orShowIf(institusjonsoppholdVedVirk.isOneOf(Institusjon.FENGSEL)) {
-                includePhrase(HjemmelEPSDodUTFengsel_001)
+                includePhrase(hjemmelEPSDodUTFengsel_001)
             }
 
             showIf(ektefelleTilleggOpphoert) {
-                includePhrase(OpphorETOverskrift_001)
-                includePhrase(OpphorET_001)
-                includePhrase(HjemmelET_001)
+                includePhrase(opphorETOverskrift_001)
+                includePhrase(opphorET_001)
+                includePhrase(hjemmelET_001)
             }
 
             ifNotNull(
@@ -238,8 +238,8 @@ object UfoerOmregningEnslig : StaticTemplate {
                     tillegg.map { it.justeringsbeloepAar.value != 0 }
 
                 showIf(harBarnOverfoertTilSaerkullsbarn) {
-                    includePhrase(OmregningFBOverskrift_001)
-                    includePhrase(InfoFBTilSB_001, tillegg.map { it.barnOverfoertTilSaerkullsbarn })
+                    includePhrase(omregningFBOverskrift_001)
+                    includePhrase(infoFBTilSB_001, tillegg.map { it.barnOverfoertTilSaerkullsbarn })
 
                     showIf(
                         barnetilleggForSaerkullsbarnVedvirkErRedusertMotInntekt
@@ -248,7 +248,7 @@ object UfoerOmregningEnslig : StaticTemplate {
                                 and not(harMinsteytelseVedVirk)
                     ) {
                         includePhrase(
-                            InfoTidligereSB_001,
+                            infoTidligereSB_001,
                             tillegg.map { it.barnTidligereSaerkullsbarn }
                         )
                     }
@@ -259,7 +259,7 @@ object UfoerOmregningEnslig : StaticTemplate {
                                 and (barnetilleggForSaerkullsbarnVedvirkErRedusertMotInntekt or barnetilleggErRedusertMotTak)
                     ) {
                         includePhrase(
-                            InfoTidligereSBOgEndretUT_001,
+                            infoTidligereSBOgEndretUT_001,
                             tillegg.map { it.barnTidligereSaerkullsbarn }
                         )
                     }
@@ -269,7 +269,7 @@ object UfoerOmregningEnslig : StaticTemplate {
                     harBarnetilleggForSaerkullsbarnVedVirk
                             and (harMinsteytelseVedVirk or inntektFoerUfoereErSannsynligEndret or ektefelleTilleggOpphoert)
                 ) {
-                    includePhrase(EndringUTpavirkerBTOverskrift_001)
+                    includePhrase(endringUTpavirkerBTOverskrift_001)
                 }
 
                 showIf(
@@ -279,7 +279,7 @@ object UfoerOmregningEnslig : StaticTemplate {
                 ) {
 
                     showIf(not(barnetilleggErRedusertMotTak)) {
-                        includePhrase(IkkeRedusBTPgaTak_001, grunnlag.map {
+                        includePhrase(ikkeRedusBTPgaTak_001, grunnlag.map {
                             IkkeRedusBTPgaTak_001Dto(
                                 it.prosentsatsGradertOverInntektFoerUfoer,
                                 it.gradertOverInntektFoerUfoer,
@@ -288,7 +288,7 @@ object UfoerOmregningEnslig : StaticTemplate {
                     }
 
                     showIf(barnetilleggErRedusertMotTak and not(barnetilleggErIkkeUtbetPgaTak)) {
-                        includePhrase(RedusBTPgaTak_001, grunnlag.map {
+                        includePhrase(redusBTPgaTak_001, grunnlag.map {
                             RedusBTPgaTak_001Dto(
                                 it.prosentsatsGradertOverInntektFoerUfoer,
                                 it.gradertOverInntektFoerUfoer,
@@ -299,7 +299,7 @@ object UfoerOmregningEnslig : StaticTemplate {
                     }
 
                     showIf(barnetilleggErIkkeUtbetPgaTak) {
-                        includePhrase(IkkeUtbetaltBTPgaTak_001, grunnlag.map {
+                        includePhrase(ikkeUtbetaltBTPgaTak_001, grunnlag.map {
                             IkkeUtbetaltBTPgaTak_001Dto(
                                 it.prosentsatsGradertOverInntektFoerUfoer,
                                 it.gradertOverInntektFoerUfoer,
@@ -309,18 +309,18 @@ object UfoerOmregningEnslig : StaticTemplate {
 
 
                     showIf(not(harBarnOverfoertTilSaerkullsbarn) and not(barnetilleggErIkkeUtbetPgaTak)) {
-                        includePhrase(InfoBTSBInntekt_001)
+                        includePhrase(infoBTSBInntekt_001)
                     }
 
                     showIf(harBarnOverfoertTilSaerkullsbarn and not(barnetilleggErIkkeUtbetPgaTak)) {
-                        includePhrase(InfoBTOverfortTilSBInntekt_001)
+                        includePhrase(infoBTOverfortTilSBInntekt_001)
                     }
 
                     showIf(
                         not(barnetilleggForSaerkullsbarnVedvirkErRedusertMotInntekt)
                                 and not(barnetilleggErIkkeUtbetPgaTak)
                     ) {
-                        includePhrase(IkkeRedusBTSBPgaInntekt_001, tillegg.map { tillegg ->
+                        includePhrase(ikkeRedusBTSBPgaInntekt_001, tillegg.map { tillegg ->
                             IkkeRedusBTSBPgaInntekt_001Dto(
                                 tillegg.inntektBruktIAvkortning,
                                 tillegg.fribeloepVedvirk
@@ -333,7 +333,7 @@ object UfoerOmregningEnslig : StaticTemplate {
                                 and harNettoBeloep
                                 or (not(harNettoBeloep) and barnetilleggForSaerkullsbarnVedvirk_HarjusteringsBeloepAr)
                     ) {
-                        includePhrase(RedusBTSBPgaInntekt_001, tillegg.map { tillegg ->
+                        includePhrase(redusBTSBPgaInntekt_001, tillegg.map { tillegg ->
                             RedusBTSBPgaInntekt_001Dto(
                                 tillegg.inntektBruktIAvkortning,
                                 tillegg.fribeloepVedvirk
@@ -342,11 +342,11 @@ object UfoerOmregningEnslig : StaticTemplate {
                     }
 
                     showIf(barnetilleggForSaerkullsbarnVedvirk_HarjusteringsBeloepAr and harNettoBeloep) {
-                        includePhrase(JusterBelopRedusBTPgaInntekt_001)
+                        includePhrase(justerBelopRedusBTPgaInntekt_001)
                     }
 
                     showIf(barnetilleggForSaerkullsbarnVedvirk_HarjusteringsBeloepAr and not(harNettoBeloep)) {
-                        includePhrase(JusterBelopIkkeUtbetaltBTPgaInntekt_001)
+                        includePhrase(justerBelopIkkeUtbetaltBTPgaInntekt_001)
                     }
 
                     showIf(
@@ -354,7 +354,7 @@ object UfoerOmregningEnslig : StaticTemplate {
                                 and not(harNettoBeloep)
                                 and not(barnetilleggForSaerkullsbarnVedvirk_HarjusteringsBeloepAr)
                     ) {
-                        includePhrase(IkkeUtbetaltBTSBPgaInntekt_001, tillegg.map {
+                        includePhrase(ikkeUtbetaltBTSBPgaInntekt_001, tillegg.map {
                             IkkeUtbetaltBTSBPgaInntekt_001Dto(
                                 it.inntektBruktIAvkortning,
                                 it.inntektstak,
@@ -367,7 +367,7 @@ object UfoerOmregningEnslig : StaticTemplate {
                                 and not(grunnlag.map { it.prosentsatsGradertOverInntektFoerUfoer <= 95 }
                         )
                     ) {
-                        includePhrase(HjemmelBT_001)
+                        includePhrase(hjemmelBT_001)
                     }
 
 
@@ -375,25 +375,25 @@ object UfoerOmregningEnslig : StaticTemplate {
                         not(barnetilleggForSaerkullsbarnVedvirkErRedusertMotInntekt)
                                 and grunnlag.map { it.prosentsatsGradertOverInntektFoerUfoer <= 95 }
                     ) {
-                        includePhrase(HjemmelBTOvergangsregler_001)
+                        includePhrase(hjemmelBTOvergangsregler_001)
                     }
 
                     showIf(
                         barnetilleggForSaerkullsbarnVedvirkErRedusertMotInntekt
                                 and not(grunnlag.map { it.prosentsatsGradertOverInntektFoerUfoer <= 95 })
                     ) {
-                        includePhrase(HjemmelBTRedus_001)
+                        includePhrase(hjemmelBTRedus_001)
                     }
 
                     showIf(
                         barnetilleggForSaerkullsbarnVedvirkErRedusertMotInntekt
                                 and grunnlag.map { it.prosentsatsGradertOverInntektFoerUfoer <= 95 }
                     ) {
-                        includePhrase(HjemmelBTRedusOvergangsregler_001)
+                        includePhrase(hjemmelBTRedusOvergangsregler_001)
                     }
 
                     showIf(barnetilleggForSaerkullsbarnGjeldende_ErRedusertMotInntekt) {
-                        includePhrase(MerInfoBT_001)
+                        includePhrase(merInfoBT_001)
                     }
                 }
             }
@@ -401,38 +401,38 @@ object UfoerOmregningEnslig : StaticTemplate {
 
             val avdod_sivilstand = argument().map { it.avdoed.sivilstand }
             showIf(avdod_sivilstand.isOneOf(Sivilstand.SAMBOER3_2)) {
-                includePhrase(GjRettSamboerOverskrift, argument().map { it.avdoed.navn })
-                includePhrase(GjRettUTSamboer_001)
+                includePhrase(gjRettSamboerOverskrift, argument().map { it.avdoed.navn })
+                includePhrase(gjRettUTSamboer_001)
             }
             showIf(avdod_sivilstand.isOneOf(Sivilstand.GIFT, Sivilstand.PARTNER, Sivilstand.SAMBOER1_5)) {
-                includePhrase(RettTilUTGJTOverskrift_001)
-                includePhrase(HvemUTGJTVilkar_001)
-                includePhrase(HvordanSoekerDuOverskrift_001)
-                includePhrase(SoekUTGJT_001)
+                includePhrase(rettTilUTGJTOverskrift_001)
+                includePhrase(hvemUTGJTVilkar_001)
+                includePhrase(hvordanSoekerDuOverskrift_001)
+                includePhrase(soekUTGJT_001)
 
                 showIf(argument().map { it.bruker.borIAvtaleLand }) {
-                    includePhrase(SoekAvtaleLandUT_001)
+                    includePhrase(soekAvtaleLandUT_001)
                 }
 
-                includePhrase(AvdodBoddArbUtlandOverskrift_001)
-                includePhrase(AvdodBoddArbUtland2_001)
-                includePhrase(PensjonFraAndreOverskrift_001)
-                includePhrase(InfoAvdodPenFraAndre_001)
+                includePhrase(avdodBoddArbUtlandOverskrift_001)
+                includePhrase(avdodBoddArbUtland2_001)
+                includePhrase(pensjonFraAndreOverskrift_001)
+                includePhrase(infoAvdodPenFraAndre_001)
             }
 
             showIf(argument().map { it.avdoed.harFellesBarnUtenBarnetillegg }) {
-                includePhrase(HarBarnUnder18Overskrift_001)
-                includePhrase(HarBarnUtenBT_001)
-                includePhrase(HarBarnUnder18_001)
+                includePhrase(harBarnUnder18Overskrift_001)
+                includePhrase(harBarnUtenBT_001)
+                includePhrase(harBarnUnder18_001)
             }
 
-            includePhrase(VirknTdsPktOverskrift_001)
+            includePhrase(virknTdsPktOverskrift_001)
 
             showIf(
                 harUfoereMaanedligBeloepVedvirk
                         and (harMinsteytelseVedVirk or inntektFoerUfoereErSannsynligEndret or ektefelleTilleggOpphoert)
             ) {
-                includePhrase(VirkTdsPktUT_001, argument().map { it.krav_virkningsDatoFraOgMed })
+                includePhrase(virkTdsPktUT_001, argument().map { it.krav_virkningsDatoFraOgMed })
             }
 
             showIf(
@@ -442,7 +442,7 @@ object UfoerOmregningEnslig : StaticTemplate {
                         and not(ektefelleTilleggOpphoert)
                         and not(harBarnOverfoertTilSaerkullsbarn)
             ) {
-                includePhrase(VirkTdsPktUTIkkeEndring_001, argument().map { it.krav_virkningsDatoFraOgMed })
+                includePhrase(virkTdsPktUTIkkeEndring_001, argument().map { it.krav_virkningsDatoFraOgMed })
             }
 
             showIf(
@@ -452,31 +452,31 @@ object UfoerOmregningEnslig : StaticTemplate {
                         and not(ektefelleTilleggOpphoert)
                         and harBarnOverfoertTilSaerkullsbarn
             ) {
-                includePhrase(VirkTdsPktUTBTOmregn_001, argument().map { it.krav_virkningsDatoFraOgMed })
+                includePhrase(virkTdsPktUTBTOmregn_001, argument().map { it.krav_virkningsDatoFraOgMed })
             }
 
             showIf(not(harUfoereMaanedligBeloepVedvirk)) {
-                includePhrase(VirkTdsPktUTAvkortetTil0_001, argument().map { it.krav_virkningsDatoFraOgMed })
+                includePhrase(virkTdsPktUTAvkortetTil0_001, argument().map { it.krav_virkningsDatoFraOgMed })
             }
 
-            includePhrase(MeldInntektUTOverskrift_001)
+            includePhrase(meldInntektUTOverskrift_001)
 
             showIf(harBarnetilleggVedVirk) {
-                includePhrase(MeldInntektUTBT_001)
+                includePhrase(meldInntektUTBT_001)
             }.orShow {
-                includePhrase(MeldInntektUT_001)
+                includePhrase(meldInntektUT_001)
             }
 
-            includePhrase(MeldEndringerPesys_001)
-            includePhrase(RettTilKlagePesys_001)
-            includePhrase(RettTilInnsynPesys_001)
-            includePhrase(SjekkUtbetalingeneOverskrift_001)
-            includePhrase(SjekkUtbetalingeneUT_001)
-            includePhrase(SkattekortOverskrift_001)
-            includePhrase(SkattekortUT_001)
+            includePhrase(meldEndringerPesys_001)
+            includePhrase(rettTilKlagePesys_001)
+            includePhrase(rettTilInnsynPesys_001)
+            includePhrase(sjekkUtbetalingeneOverskrift_001)
+            includePhrase(sjekkUtbetalingeneUT_001)
+            includePhrase(skattekortOverskrift_001)
+            includePhrase(skattekortUT_001)
 
             showIf(brukerBorINorge) {
-                includePhrase(SkattBorIUtlandPesys_001)
+                includePhrase(skattBorIUtlandPesys_001)
             }
         }
 

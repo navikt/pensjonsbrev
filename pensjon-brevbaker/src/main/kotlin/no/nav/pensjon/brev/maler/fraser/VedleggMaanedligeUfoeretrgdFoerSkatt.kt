@@ -26,7 +26,8 @@ val vedleggBelopUT_001 = OutlinePhrase<LangBokmalNynorskEnglish, Unit> {
     }
 }
 
-data class TabellUTTittelGjeldende_001Dto(    val virkningsDatoFraOgMed: LocalDate,
+data class TabellUTTittelGjeldende_001Dto(
+    val virkningsDatoFraOgMed: LocalDate,
     val virkningsDatoTilOgMed: LocalDate?,
 )
 
@@ -37,26 +38,10 @@ val tabellBeregnetUTHele =
         })
 
         paragraph {
-
             includePhrase(
                 tabellUfoeretrygdTittel_broedtekst,
-                ufoeretrygd.map {it.grunnbeloep}
+                ufoeretrygd.map { it.grunnbeloep }
             )
-
-            showIf(
-                ufoeretrygd.map { !it.erAvkortet }
-            ) {
-                includePhrase(tabellBeregnetUT, ufoeretrygd.map {
-                    TabellBeregnetUTDto(
-                        it.annetBelop,
-                        it.barnetillegg?.netto,
-                        it.dekningFasteUtgifter,
-                        it.garantitilleggNordisk27?.netto,
-                        it.ordinaerUTBeloep.netto,
-                        it.totalUTBeloep.netto,
-                    )
-                })
-            }
 
             showIf(ufoeretrygd.map { it.erAvkortet }) {
                 includePhrase(tabellBeregnetUTAvkortet,
@@ -69,6 +54,17 @@ val tabellBeregnetUTHele =
                         )
                     }
                 )
+            }.orShow {
+                includePhrase(tabellBeregnetUT, ufoeretrygd.map {
+                    TabellBeregnetUTDto(
+                        it.annetBelop,
+                        it.barnetillegg?.netto,
+                        it.dekningFasteUtgifter,
+                        it.garantitilleggNordisk27?.netto,
+                        it.ordinaerUTBeloep.netto,
+                        it.totalUTBeloep.netto,
+                    )
+                })
             }
         }
     }
