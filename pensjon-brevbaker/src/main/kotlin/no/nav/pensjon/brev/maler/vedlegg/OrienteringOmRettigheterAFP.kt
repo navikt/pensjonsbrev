@@ -8,7 +8,6 @@ import no.nav.pensjon.brev.maler.fraser.*
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.createAttachment
-import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.expression.isOneOf
 import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.expression.select
@@ -32,22 +31,16 @@ val orienteringOmRettigheterOgPlikterAFP = createAttachment<LangBokmalNynorskEng
     includePhrase(vedleggPlikterAFP_001)
     list {
         item { includePhrase(vedleggPlikterAFP1_001) }
-        showIf(
-            sivilstand.isOneOf(ENSLIG, ENKE)
-        ) {
+        showIf(sivilstand.isOneOf(ENSLIG, ENKE)) {
             item { includePhrase(vedleggPlikterAFP2_001) }
         }
-        showIf(
-            bor_i_norge
-                    and not(institusjon_gjeldende.isOneOf(FENGSEL, HELSE, SYKEHJEM))
-        ) {
-            item { includePhrase(vedleggPlikterAFP3_001) }
-        }
-        showIf(
-            not(bor_i_norge)
-                    and not(institusjon_gjeldende.isOneOf(FENGSEL, HELSE, SYKEHJEM))
-        ) {
-            item { includePhrase(vedleggPlikterAFP4_001) }
+
+        showIf(not(institusjon_gjeldende.isOneOf(FENGSEL, HELSE, SYKEHJEM))) {
+            showIf(bor_i_norge) {
+                item { includePhrase(vedleggPlikterAFP3_001) }
+            }.orShow {
+                item { includePhrase(vedleggPlikterAFP4_001) }
+            }
         }
     }
 
