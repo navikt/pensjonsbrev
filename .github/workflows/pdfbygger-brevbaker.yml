@@ -42,7 +42,9 @@ jobs:
         with:
           "java-version": "17"
       - name: "compile and run tests"
-        run: "./gradlew build"
+        run: |
+          ../pensjon-brevbaker-api-model/gradlew --project-dir ../pensjon-brevbaker-api-model publishToMavenLocal
+          ./gradlew build
         env:
           "GITHUB_TOKEN": "${{ secrets.GITHUB_TOKEN }}"
       - name: "Build and publish Docker image"
