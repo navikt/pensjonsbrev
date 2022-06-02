@@ -4,7 +4,7 @@ import com.natpryce.hamkrest.and
 import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.hasElement
 import no.nav.pensjon.brev.maler.example.LetterExample
-import no.nav.pensjon.brev.template.LetterTemplate
+import no.nav.pensjon.brev.template.*
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Test
@@ -12,7 +12,8 @@ import kotlin.reflect.full.createInstance
 
 class TemplateResourceTest {
 
-    val templateResource = TemplateResource(setOf(LetterExample))
+    val templateResource = TemplateResource(productionTemplates + LetterExample)
+
     @Test
     fun `getTemplate fetches template`() {
         assertEquals(LetterExample.template, templateResource.getTemplate(LetterExample.template.name))
@@ -70,6 +71,21 @@ class TemplateResourceTest {
             templatesWithoutNoArgConstructor,
             "letterDataType classes should have an internal no-arg constructor with valid test data."
         )
+    }
+
+    @Test
+    fun `all template letterDataType can be serialized and deserialized`() {
+        val jackson = jacksonObjectMapper()
+        templateResource.getTemplates()
+            .map { templateResource.getTemplate(it)!! }
+            .forEach {
+                val data = it.letterDataType.createInstance()
+                val json = jackson.writeValueAsString(data)
+                val deserialized = jackson.readValue(json, it.letterDataType.java)
+
+                println(json)
+                assertEquals(data, deserialized)
+            }
     }
 
 }
