@@ -6,10 +6,7 @@ import no.nav.pensjon.brev.maler.fraser.vedleggBelopUT_001
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.createAttachment
-import no.nav.pensjon.brev.template.dsl.expression.expr
-import no.nav.pensjon.brev.template.dsl.expression.format
-import no.nav.pensjon.brev.template.dsl.expression.map
-import no.nav.pensjon.brev.template.dsl.expression.plus
+import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
@@ -28,7 +25,7 @@ val maanedligUfoeretrygdFoerSkatt = createAttachment<LangBokmalNynorskEnglish, M
     includePhrase(tabellBeregnetUTHele, gjeldendeUfoeretrygd)
 
     showIf(argument().map { it.tidligereUfoeretrygdPerioder.isNotEmpty()}) {
-        val virkDato = argument().map { it.krav_virkningsDatoFraOgMed }
+        val virkDato = argument().select(MaanedligUfoeretrygdFoerSkattDto::krav_virkningsDatoFraOgMed )
         title1 {
             textExpr(
                 Bokmal to "Oversikt over uføretrygdens størrelse fra ".expr() + virkDato.format(),
