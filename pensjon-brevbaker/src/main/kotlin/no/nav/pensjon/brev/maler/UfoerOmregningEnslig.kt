@@ -399,12 +399,12 @@ object UfoerOmregningEnslig : StaticTemplate {
             }
 
 
-            val avdod_sivilstand = argument().map { it.avdoed.sivilstand }
-            showIf(avdod_sivilstand.isOneOf(Sivilstand.SAMBOER3_2)) {
+            val avdoed_sivilstand = argument().map { it.avdoed.sivilstand }
+            showIf(avdoed_sivilstand.isOneOf(Sivilstand.SAMBOER3_2)) {
                 includePhrase(gjRettSamboerOverskrift, argument().map { it.avdoed.navn })
                 includePhrase(gjRettUTSamboer_001)
             }
-            showIf(avdod_sivilstand.isOneOf(Sivilstand.GIFT, Sivilstand.PARTNER, Sivilstand.SAMBOER1_5)) {
+            showIf(avdoed_sivilstand.isOneOf(Sivilstand.GIFT, Sivilstand.PARTNER, Sivilstand.SAMBOER1_5)) {
                 includePhrase(rettTilUTGJTOverskrift_001)
                 includePhrase(hvemUTGJTVilkar_001)
                 includePhrase(hvordanSoekerDuOverskrift_001)

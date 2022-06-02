@@ -20,54 +20,54 @@ val vedtakOverskriftPesys_001 = OutlinePhrase<LangBokmalNynorskEnglish, Unit> {
     }
 }
 
-data class OmregnUTDodEPSInnledn1001Dto(val avdod_navn: String, val krav_virkedato_fom: LocalDate)
+data class OmregnUTDodEPSInnledn1001Dto(val avdoed_navn: String, val krav_virkedato_fom: LocalDate)
 
 val omregnUTDodEPSInnledn1_001 = OutlinePhrase<LangBokmalNynorskEnglish, OmregnUTDodEPSInnledn1001Dto> {
-    val avdod_navn = it.select(OmregnUTDodEPSInnledn1001Dto::avdod_navn)
+    val avdoed_navn = it.select(OmregnUTDodEPSInnledn1001Dto::avdoed_navn)
     val krav_virkedato_fom = it.select(OmregnUTDodEPSInnledn1001Dto::krav_virkedato_fom)
     paragraph {
         textExpr(
             Bokmal to "Vi har mottatt melding om at ".expr()
-                    + avdod_navn + " er død, og vi har regnet om uføretrygden din fra ".expr()
+                    + avdoed_navn + " er død, og vi har regnet om uføretrygden din fra ".expr()
                     + krav_virkedato_fom.format() + " fordi sivilstanden din er endret. Vi vil også informere deg om rettigheter du kan ha etter avdøde.".expr(),
             Nynorsk to "Vi har mottatt melding om at ".expr()
-                    + avdod_navn + " er død, og vi har rekna om uføretrygda di frå ".expr()
+                    + avdoed_navn + " er død, og vi har rekna om uføretrygda di frå ".expr()
                     + krav_virkedato_fom.format() + " fordi sivilstanden din er endra. Vi vil også informere deg om kva rettar du kan ha etter avdøde.".expr(),
             English to "We have received notice that ".expr()
-                    + avdod_navn + " has died, and we have recalculated your disability benefit from ".expr()
+                    + avdoed_navn + " has died, and we have recalculated your disability benefit from ".expr()
                     + krav_virkedato_fom.format() + ", because your marital status has changed. We would also like to inform you about rights you may have as a surviving spouse.".expr()
         )
     }
 }
 
-val omregnUTDodEPSInnledn2_001 = OutlinePhrase<LangBokmalNynorskEnglish, String> { avdod_navn ->
+val omregnUTDodEPSInnledn2_001 = OutlinePhrase<LangBokmalNynorskEnglish, String> { avdoed_navn ->
     paragraph {
         textExpr(
             Bokmal to "Vi har mottatt melding om at ".expr()
-                    + avdod_navn + " er død. Uføretrygden din endres ikke, men vi vil informere deg om rettigheter du kan ha etter avdøde.".expr(),
+                    + avdoed_navn + " er død. Uføretrygden din endres ikke, men vi vil informere deg om rettigheter du kan ha etter avdøde.".expr(),
             Nynorsk to "Vi har mottatt melding om at ".expr()
-                    + avdod_navn + " er død. Uføretrygda di blir ikkje endra, men vi vil informere deg om kva rettar du kan ha etter avdøde.".expr(),
+                    + avdoed_navn + " er død. Uføretrygda di blir ikkje endra, men vi vil informere deg om kva rettar du kan ha etter avdøde.".expr(),
             English to "We have received notice that ".expr()
-                    + avdod_navn + " has died. This will not affect your disability benefit, but we would like to inform you about rights you may have as a surviving spouse.".expr()
+                    + avdoed_navn + " has died. This will not affect your disability benefit, but we would like to inform you about rights you may have as a surviving spouse.".expr()
         )
     }
 }
 
-data class OmregnUTBTDodEPSInnledn_001Dto(val avdod_navn: String, val krav_virkedato_fom: LocalDate)
+data class OmregnUTBTDodEPSInnledn_001Dto(val avdoed_navn: String, val krav_virkedato_fom: LocalDate)
 
 val omregnUTBTDodEPSInnledn_001 = OutlinePhrase<LangBokmalNynorskEnglish, OmregnUTBTDodEPSInnledn_001Dto> {
-    val avdod_navn = it.select(OmregnUTBTDodEPSInnledn_001Dto::avdod_navn)
+    val avdoed_navn = it.select(OmregnUTBTDodEPSInnledn_001Dto::avdoed_navn)
     val krav_virkedato_fom = it.select(OmregnUTBTDodEPSInnledn_001Dto::krav_virkedato_fom)
     paragraph {
         textExpr(
             Bokmal to "Vi har mottatt melding om at ".expr()
-                    + avdod_navn + " er død, og vi har regnet om uføretrygden og barnetillegget ditt fra ".expr()
+                    + avdoed_navn + " er død, og vi har regnet om uføretrygden og barnetillegget ditt fra ".expr()
                     + krav_virkedato_fom.format() + " fordi sivilstanden din er endret. Vi vil også informere deg om rettigheter du kan ha etter avdøde.".expr(),
             Nynorsk to "Vi har mottatt melding om at ".expr()
-                    + avdod_navn + " er død, og vi har rekna om uføretrygda di og barnetillegget ditt frå ".expr()
+                    + avdoed_navn + " er død, og vi har rekna om uføretrygda di og barnetillegget ditt frå ".expr()
                     + krav_virkedato_fom.format() + " fordi sivilstanden din har blitt endra. Vi vil også informere deg om kva rettar du kan ha etter avdøde.".expr(),
             English to "We have received notice that ".expr()
-                    + avdod_navn + " has died, and we have recalculated your disability benefit and child supplement from ".expr()
+                    + avdoed_navn + " has died, and we have recalculated your disability benefit and child supplement from ".expr()
                     + krav_virkedato_fom.format() + " because your marital status has changed. We would also like to inform you about rights you may have as a surviving spouse.".expr()
         )
     }
@@ -75,36 +75,36 @@ val omregnUTBTDodEPSInnledn_001 = OutlinePhrase<LangBokmalNynorskEnglish, Omregn
 
 }
 
-val omregnUTBTSBDodEPSInnledn_001 = OutlinePhrase<LangBokmalNynorskEnglish, String> { avdod_navn ->
+val omregnUTBTSBDodEPSInnledn_001 = OutlinePhrase<LangBokmalNynorskEnglish, String> { avdoed_navn ->
     paragraph {
         textExpr(
             Bokmal to "Vi har mottatt melding om at ".expr()
-                    + avdod_navn + " er død. Uføretrygden og barnetillegget ditt endres ikke, men vi vil informere deg om rettigheter du kan ha etter avdøde.".expr(),
+                    + avdoed_navn + " er død. Uføretrygden og barnetillegget ditt endres ikke, men vi vil informere deg om rettigheter du kan ha etter avdøde.".expr(),
             Nynorsk to "Vi har mottatt melding om at ".expr()
-                    + avdod_navn + " er død. Uføretrygda di og barnetillegget ditt blir ikkje endra, men vi vil informere deg om kva rettar du kan ha etter avdøde.".expr(),
+                    + avdoed_navn + " er død. Uføretrygda di og barnetillegget ditt blir ikkje endra, men vi vil informere deg om kva rettar du kan ha etter avdøde.".expr(),
             English to "We have received notice that ".expr()
-                    + avdod_navn + " has died. This will not affect your disability benefit or child supplement, but we would like to inform you about rights you may have as a surviving spouse.".expr()
+                    + avdoed_navn + " has died. This will not affect your disability benefit or child supplement, but we would like to inform you about rights you may have as a surviving spouse.".expr()
         )
     }
 
 
 }
 
-data class OmregnBTDodEPSInnledn_001Dto(val avdod_navn: String, val krav_virkedato_fom: LocalDate)
+data class OmregnBTDodEPSInnledn_001Dto(val avdoed_navn: String, val krav_virkedato_fom: LocalDate)
 
 val omregnBTDodEPSInnledn_001 = OutlinePhrase<LangBokmalNynorskEnglish, OmregnBTDodEPSInnledn_001Dto> {
-    val avdod_navn = it.select(OmregnBTDodEPSInnledn_001Dto::avdod_navn)
+    val avdoed_navn = it.select(OmregnBTDodEPSInnledn_001Dto::avdoed_navn)
     val krav_virkedato_fom = it.select(OmregnBTDodEPSInnledn_001Dto::krav_virkedato_fom)
     paragraph {
         textExpr(
             Bokmal to "Vi har mottatt melding om at ".expr()
-                    + avdod_navn + " er død, og vi har regnet om barnetillegget ditt fra ".expr()
+                    + avdoed_navn + " er død, og vi har regnet om barnetillegget ditt fra ".expr()
                     + krav_virkedato_fom.format() + " fordi sivilstanden din er endret. Vi vil også informere deg om rettigheter du kan ha etter avdøde.".expr(),
             Nynorsk to "Vi har mottatt melding om at ".expr()
-                    + avdod_navn + " er død, og vi har rekna om barnetillegget ditt frå ".expr()
+                    + avdoed_navn + " er død, og vi har rekna om barnetillegget ditt frå ".expr()
                     + krav_virkedato_fom.format() + " fordi sivilstanden din er endra. Vi vil også informere deg om kva rettar du kan ha etter avdøde.".expr(),
             English to "We have received notice that ".expr()
-                    + avdod_navn + " has died, and we have recalculated your child supplement from ".expr()
+                    + avdoed_navn + " has died, and we have recalculated your child supplement from ".expr()
                     + krav_virkedato_fom.format() + " because your marital status has changed. We would also like to inform you about rights you may have as a surviving spouse.".expr()
         )
     }
@@ -827,15 +827,15 @@ val merInfoBT_001 = OutlinePhrase<LangBokmalNynorskEnglish, Unit> {
     }
 }
 
-val gjRettSamboerOverskrift = OutlinePhrase<LangBokmalNynorskEnglish, String> { avdod_navn ->
+val gjRettSamboerOverskrift = OutlinePhrase<LangBokmalNynorskEnglish, String> { avdoed_navn ->
     title1 {
         textExpr(
             Bokmal to "Rettigheter du kan ha som tidligere samboer med ".expr()
-                    + avdod_navn,
+                    + avdoed_navn,
             Nynorsk to "Rettar du kan ha som tidlegare sambuar med ".expr()
-                    + avdod_navn,
+                    + avdoed_navn,
             English to "Rights you may be entitled to as a former cohabitant with ".expr()
-                    + avdod_navn
+                    + avdoed_navn
         )
     }
 
