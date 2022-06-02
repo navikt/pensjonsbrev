@@ -28,20 +28,20 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
     includeSakspart = false,
 ) {
     val harMinsteytelseSats = argument().map { it.minsteytelseGjeldende_sats > 0 }
-    val ufoeretrygdGjeldendeErKonvertert = argument().map { it.uforetrygdGjeldende.erKonvertert }
-    val erUnder20AarVedUngUfoere = argument().map { it.ungUforGjeldende_erUnder20Ar }
-    val inntektFoerUfoereErSannsynligEndret = argument().map { it.inntektForUforeGjeldende.erSannsynligEndret }
+    val ufoeretrygdGjeldendeErKonvertert = argument().map { it.ufoeretrygdGjeldende.erKonvertert }
+    val erUnder20AarVedUngUfoere = argument().map { it.ungUfoerGjeldende_erUnder20Ar }
+    val inntektFoerUfoereErSannsynligEndret = argument().map { it.inntektFoerUfoereGjeldende.erSannsynligEndret }
     val inntektsgrenseErUnderTak =
         argument().map { it.inntektsAvkortingGjeldende.inntektsgrenseAr.value < it.inntektsAvkortingGjeldende.inntektstak.value }
-    val ufoeretrygdErKonvertert = argument().map { it.uforetrygdGjeldende.erKonvertert }
+    val ufoeretrygdErKonvertert = argument().map { it.ufoeretrygdGjeldende.erKonvertert }
 
     paragraph {
         val virkDatoFom = argument().map { it.beregnetUTPerManedGjeldende.virkDatoFom }.format()
-        val grunnbelop = argument().map { it.beregnetUTPerManedGjeldende.grunnbelop }.format()
+        val grunnbeloep = argument().map { it.beregnetUTPerManedGjeldende.grunnbeloep }.format()
         textExpr(
-            Bokmal to "Opplysninger vi har brukt i beregningen fra ".expr() + virkDatoFom + " Folketrygdens grunnbeløp (G) benyttet i beregningen er ".expr() + grunnbelop + " kroner",
-            Nynorsk to "Opplysningar vi har brukt i utrekninga frå ".expr() + virkDatoFom + " Grunnbeløpet i folketrygda (G) nytta i utrekninga er ".expr() + grunnbelop + " kroner",
-            English to "Data we have used in the calculations as of ".expr() + virkDatoFom + " The National Insurance basic amount (G) used in the calculation is NOK ".expr() + grunnbelop + "."
+            Bokmal to "Opplysninger vi har brukt i beregningen fra ".expr() + virkDatoFom + " Folketrygdens grunnbeløp (G) benyttet i beregningen er ".expr() + grunnbeloep + " kroner",
+            Nynorsk to "Opplysningar vi har brukt i utrekninga frå ".expr() + virkDatoFom + " Grunnbeløpet i folketrygda (G) nytta i utrekninga er ".expr() + grunnbeloep + " kroner",
+            English to "Data we have used in the calculations as of ".expr() + virkDatoFom + " The National Insurance basic amount (G) used in the calculation is NOK ".expr() + grunnbeloep + "."
         )
     }
 // Start of table 1
@@ -63,7 +63,7 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
             }
         }
     ) {
-        // Hvis uforetrygdGjeldende.uforetidspunkt != tom, include
+        // Hvis ufoeretrygdGjeldende.uforetidspunkt != tom, include
         row {
             cell {
                 text(
@@ -73,16 +73,16 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
                 )
             }
             cell {
-                val uforetidspunkt =
-                    argument().map { it.uforetrygdGjeldende.uforetidspunkt }.format()
+                val ufoeretidspunkt =
+                    argument().map { it.ufoeretrygdGjeldende.ufoeretidspunkt }.format()
                 textExpr(
-                    Bokmal to uforetidspunkt,
-                    Nynorsk to uforetidspunkt,
-                    English to uforetidspunkt
+                    Bokmal to ufoeretidspunkt,
+                    Nynorsk to ufoeretidspunkt,
+                    English to ufoeretidspunkt
                 )
             }
         }
-        showIf(argument().map { it.uforetrygdGjeldende.beregningsgrunnlagBelopAr.value > 0 })
+        showIf(argument().map { it.ufoeretrygdGjeldende.beregningsgrunnlagBeloepAar.value > 0 })
         {
             row {
                 cell {
@@ -93,11 +93,11 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
                     )
                 }
                 cell {
-                    includePhrase(kroner, argument().map { it.uforetrygdGjeldende.beregningsgrunnlagBelopAr })
+                    includePhrase(kroner, argument().map { it.ufoeretrygdGjeldende.beregningsgrunnlagBeloepAar })
                 }
             }
         }
-        ifNotNull(argument().map { it.yrkesskadeGjeldende?.beregningsgrunnlagBelopAr }) { beloep ->
+        ifNotNull(argument().map { it.yrkesskadeGjeldende?.beregningsgrunnlagBeloepAar }) { beloep ->
             showIf(beloep.map { it.value > 0 })
             {
                 row {
@@ -114,7 +114,7 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
                 }
             }
         }
-        showIf(argument().map { it.inntektForUforeGjeldende.ifuInntekt.value > 0 })
+        showIf(argument().map { it.inntektFoerUfoereGjeldende.ifuInntekt.value > 0 })
         {
             row {
                 cell {
@@ -125,11 +125,11 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
                     )
                 }
                 cell {
-                    includePhrase(kroner, argument().map { it.inntektForUforeGjeldende.ifuInntekt })
+                    includePhrase(kroner, argument().map { it.inntektFoerUfoereGjeldende.ifuInntekt })
                 }
             }
         }
-        showIf(argument().map { it.inntektEtterUforeGjeldende_belopIEU.value > 0 })
+        showIf(argument().map { it.inntektEtterUfoereGjeldende_beloepIEU.value > 0 })
         {
             row {
                 cell {
@@ -140,7 +140,7 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
                     )
                 }
                 cell {
-                    includePhrase(kroner, argument().map { it.inntektEtterUforeGjeldende_belopIEU })
+                    includePhrase(kroner, argument().map { it.inntektEtterUfoereGjeldende_beloepIEU })
                 }
             }
         }
@@ -154,16 +154,16 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
                 )
             }
             cell {
-                val uforegrad = argument().map { it.uforetrygdGjeldende.uforegrad }.format()
+                val ufoeregrad = argument().map { it.ufoeretrygdGjeldende.ufoeregrad }.format()
                 textExpr(
-                    Bokmal to uforegrad + " %",
-                    Nynorsk to uforegrad + " %",
-                    English to uforegrad + " %"
+                    Bokmal to ufoeregrad + " %",
+                    Nynorsk to ufoeregrad + " %",
+                    English to ufoeregrad + " %"
                 )
             }
         }
         // Mandatory
-        showIf(argument().map { it.uforetrygdGjeldende.belopsgrense.value > 0 })
+        showIf(argument().map { it.ufoeretrygdGjeldende.beloepsgrense.value > 0 })
         {
             row {
                 cell {
@@ -174,7 +174,7 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
                     )
                 }
                 cell {
-                    includePhrase(kroner, argument().map { it.uforetrygdGjeldende.belopsgrense })
+                    includePhrase(kroner, argument().map { it.ufoeretrygdGjeldende.beloepsgrense })
                 }
             }
         }
@@ -209,7 +209,7 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
             }
         }
         showIf(inntektsgrenseErUnderTak
-                and argument().map { it.uforetrygdGjeldende.kompensasjonsgrad > 0 }
+                and argument().map { it.ufoeretrygdGjeldende.kompensasjonsgrad > 0 }
         ) {
             row {
                 cell {
@@ -221,7 +221,7 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
                 }
                 cell {
                     val kompensasjonsgrad =
-                        argument().map { it.uforetrygdGjeldende.kompensasjonsgrad }.format()
+                        argument().map { it.ufoeretrygdGjeldende.kompensasjonsgrad }.format()
                     textExpr(
                         Bokmal to kompensasjonsgrad + " %",
                         Nynorsk to kompensasjonsgrad + " %",
@@ -276,7 +276,7 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
                 )
             }
         }
-        showIf(argument().map { it.ungUforGjeldende_erUnder20Ar ?: false }) {
+        showIf(argument().map { it.ungUfoerGjeldende_erUnder20Ar ?: false }) {
             row {
                 cell {
                     text(
@@ -616,7 +616,7 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
         ifNotNull(argument().map { it.barnetilleggGjeldende }) { barnetillegg ->
 
             ifNotNull(barnetillegg.map { it.saerkullsbarn }) { saerkullsbarn ->
-                showIf(saerkullsbarn.map { it.belop.value > 0 })
+                showIf(saerkullsbarn.map { it.beloep.value > 0 })
                 {
                     row {
                         cell {
@@ -655,7 +655,7 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
             }
 
             ifNotNull(barnetillegg.map { it.saerkullsbarn }) { saerkullsbarn ->
-                showIf(saerkullsbarn.map { it.belop.value > 0 }) {
+                showIf(saerkullsbarn.map { it.beloep.value > 0 }) {
                     row {
                         cell {
                             text(
@@ -665,7 +665,7 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
                             )
                         }
                         cell {
-                            includePhrase(kroner, saerkullsbarn.map { it.fribelop })
+                            includePhrase(kroner, saerkullsbarn.map { it.fribeloep })
                         }
                     }
                     row {
@@ -748,13 +748,13 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
         argument().map { it.barnetilleggGjeldende?.saerkullsbarn }
     ) { grunnlag, saerkullTillegg ->
         val erRedusertMotInntekt = saerkullTillegg.map { it.erRedusertMotinntekt }
-        val fribelopEllerInntektErPeriodisert = saerkullTillegg.map { it.fribelopEllerInntektErPeriodisert }
+        val fribeloepEllerInntektErPeriodisert = saerkullTillegg.map { it.fribeloepEllerInntektErPeriodisert }
         val erIkkeUtbetaltPgaTak = grunnlag.map { it.erIkkeUtbetaltpgaTak }
         val harYrkesskadeGrad = argument().map {
             it.yrkesskadeGjeldende?.let { skade -> skade.yrkesskadegrad > 0 } ?: false
         }
         val harAnvendtTrygdetidUnder40 = argument().map { it.trygdetidsdetaljerGjeldende.anvendtTT < 40 }
-        val justeringsBeloepAr = saerkullTillegg.map { it.justeringsbelopAr }
+        val justeringsBeloepAr = saerkullTillegg.map { it.justeringsbeloepAar }
 
         showIf(saerkullTillegg.map { it.erRedusertMotinntekt }) {
 
@@ -769,40 +769,40 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
                 includePhrase(vedleggBeregnUTredusTTBTSB_001)
             }
 
-            showIf(fribelopEllerInntektErPeriodisert and justeringsBeloepAr.map { it.value > 0 }) {
+            showIf(fribeloepEllerInntektErPeriodisert and justeringsBeloepAr.map { it.value > 0 }) {
                 includePhrase(
                     vedleggBeregnUTIkkePeriodisertFriBOgInntektBTSB_001,
-                    saerkullTillegg.map { it.avkortningsbelopAr }
+                    saerkullTillegg.map { it.avkortningsbeloepAar }
                 )
             }
 
-            showIf(not(fribelopEllerInntektErPeriodisert) and justeringsBeloepAr.map { it.value > 0 }) {
+            showIf(not(fribeloepEllerInntektErPeriodisert) and justeringsBeloepAr.map { it.value > 0 }) {
                 includePhrase(
                     vedleggBeregnUTIkkePeriodisertFriBOgInntektBTSBJusterBelop_001,
-                    saerkullTillegg.map { it.avkortningsbelopAr })
+                    saerkullTillegg.map { it.avkortningsbeloepAar })
             }
 
-            showIf(fribelopEllerInntektErPeriodisert and justeringsBeloepAr.map { it.value > 0 }) {
+            showIf(fribeloepEllerInntektErPeriodisert and justeringsBeloepAr.map { it.value > 0 }) {
                 includePhrase(vedleggBeregnUTPeridisertFriBOgInntektBTSB_001,
-                    saerkullTillegg.map { it.avkortningsbelopAr })
+                    saerkullTillegg.map { it.avkortningsbeloepAar })
             }
 
-            showIf(fribelopEllerInntektErPeriodisert and not(justeringsBeloepAr.map { it.value > 0 })) {
+            showIf(fribeloepEllerInntektErPeriodisert and not(justeringsBeloepAr.map { it.value > 0 })) {
                 includePhrase(
                     vedleggBeregnUTPeriodisertFriBOgInntektBTSBJusterBelop_001,
-                    saerkullTillegg.map { it.avkortningsbelopAr })
+                    saerkullTillegg.map { it.avkortningsbeloepAar })
             }
 
             showIf(justeringsBeloepAr.map { it.value > 0 }) {
                 includePhrase(
                     vedleggBeregnUTJusterBelopOver0BTSB_001,
-                    saerkullTillegg.map { it.justeringsbelopAr }
+                    saerkullTillegg.map { it.justeringsbeloepAar }
                 )
             }
             showIf(justeringsBeloepAr.map { it.value < 0 }) {// < 0? Is there a minus operator from Pesys?
                 includePhrase(
                     vedleggBeregnUTJusterBelopUnder0BTSB_001,
-                    saerkullTillegg.map { it.justeringsbelopAr }
+                    saerkullTillegg.map { it.justeringsbeloepAar }
                 )
             }
         }
@@ -835,17 +835,17 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
                         }
                     }
                 ) {
-                    showIf(saerkullTillegg.map { it.belop.value > 0 && it.justeringsbelopAr.value != 0 }) {
+                    showIf(saerkullTillegg.map { it.beloep.value > 0 && it.justeringsbeloepAar.value != 0 }) {
                         row {
                             cell {
                                 text(
-                                    Bokmal to "Årlig barnetillegg før reduksjon ut fra inntektbelopArForAvkort",
+                                    Bokmal to "Årlig barnetillegg før reduksjon ut fra inntekt",
                                     Nynorsk to "Årleg barnetillegg før reduksjon ut frå inntekt",
                                     English to "Yearly child supplement before income reduction"
                                 )
                             }
                             cell {
-                                includePhrase(kroner, saerkullTillegg.map { it.belopArForAvkort })
+                                includePhrase(kroner, saerkullTillegg.map { it.beloepAarFoerAvkort })
                             }
                         }
                     }
@@ -864,7 +864,7 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
                             }
                         }
                     }
-                    showIf(saerkullTillegg.map { (it.belop.value > 0 || (it.belop.value < 0 && it.justeringsbelopAr.value != 0)) }) {
+                    showIf(saerkullTillegg.map { (it.beloep.value > 0 || (it.beloep.value < 0 && it.justeringsbeloepAar.value != 0)) }) {
                         row {
                             cell {
                                 text(
@@ -874,11 +874,11 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
                                 )
                             }
                             cell {
-                                includePhrase(kroner, saerkullTillegg.map { it.fribelop })
+                                includePhrase(kroner, saerkullTillegg.map { it.fribeloep })
                             }
                         }
                     }
-                    showIf(saerkullTillegg.map { (it.belop.value != 0 || (it.belop.value == 0 && it.justeringsbelopAr.value != 0)) }) {
+                    showIf(saerkullTillegg.map { (it.beloep.value != 0 || (it.beloep.value == 0 && it.justeringsbeloepAar.value != 0)) }) {
                         row {
                             cell {
                                 text(
@@ -888,14 +888,14 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
                                 )
                             }
                             cell {
-                                includePhrase(kroner, saerkullTillegg.map { it.inntektOverFribelop })
+                                includePhrase(kroner, saerkullTillegg.map { it.inntektOverFribeloep })
                             }
                         }
                     }
                     showIf(saerkullTillegg.map {
-                        !it.fribelopEllerInntektErPeriodisert
-                                && (it.belop.value != 0 || (it.belop.value == 0 && it.belopAr.value != 0))
-                                && it.avkortningsbelopAr.value > 0
+                        !it.fribeloepEllerInntektErPeriodisert
+                                && (it.beloep.value != 0 || (it.beloep.value == 0 && it.beloepAar.value != 0))
+                                && it.avkortningsbeloepAar.value > 0
                     }) {
                         row {
                             cell {
@@ -906,14 +906,14 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
                                 )
                             }
                             cell {
-                                includePhrase(kroner, saerkullTillegg.map { it.avkortningsbelopAr })
+                                includePhrase(kroner, saerkullTillegg.map { it.avkortningsbeloepAar })
                             }
                         }
                     }
                     showIf(saerkullTillegg.map {
-                        it.fribelopEllerInntektErPeriodisert
-                                && (it.belop.value != 0 || (it.belop.value == 0 && it.belopAr.value != 0))
-                                && it.avkortningsbelopAr.value > 0
+                        it.fribeloepEllerInntektErPeriodisert
+                                && (it.beloep.value != 0 || (it.beloep.value == 0 && it.beloepAar.value != 0))
+                                && it.avkortningsbeloepAar.value > 0
                     }) {
                         row {
                             cell {
@@ -924,11 +924,11 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
                                 )
                             }
                             cell {
-                                includePhrase(kroner, saerkullTillegg.map { it.avkortningsbelopAr })
+                                includePhrase(kroner, saerkullTillegg.map { it.avkortningsbeloepAar })
                             }
                         }
                     }
-                    showIf(saerkullTillegg.map { it.justeringsbelopAr.value != 0 }) {
+                    showIf(saerkullTillegg.map { it.justeringsbeloepAar.value != 0 }) {
                         row {
                             cell {
                                 text(
@@ -938,11 +938,11 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
                                 )
                             }
                             cell {
-                                includePhrase(kroner, saerkullTillegg.map { it.justeringsbelopAr })
+                                includePhrase(kroner, saerkullTillegg.map { it.justeringsbeloepAar })
                             }
                         }
                     }
-                    showIf(saerkullTillegg.map { it.belop.value != 0 || (it.belop.value == 0 && it.belopAr.value != 0) }) {
+                    showIf(saerkullTillegg.map { it.beloep.value != 0 || (it.beloep.value == 0 && it.beloepAar.value != 0) }) {
                         row {
                             cell {
                                 text(
@@ -952,11 +952,11 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
                                 )
                             }
                             cell {
-                                includePhrase(kroner, saerkullTillegg.map { it.belopAr })
+                                includePhrase(kroner, saerkullTillegg.map { it.beloepAar })
                             }
                         }
                     }
-                    showIf(saerkullTillegg.map { (it.belop.value != 0 || (it.belop.value == 0 && it.justeringsbelopAr.value != 0)) }) {
+                    showIf(saerkullTillegg.map { (it.beloep.value != 0 || (it.beloep.value == 0 && it.justeringsbeloepAar.value != 0)) }) {
                         row {
                             cell {
                                 text(
@@ -966,11 +966,11 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
                                 )
                             }
                             cell {
-                                includePhrase(kroner, saerkullTillegg.map { it.belop })
+                                includePhrase(kroner, saerkullTillegg.map { it.beloep })
                             }
                         }
                     }
-                    showIf(saerkullTillegg.map { it.belop.value == 0 && it.belopAr.value == 0 }) {
+                    showIf(saerkullTillegg.map { it.beloep.value == 0 && it.beloepAar.value == 0 }) {
                         row {
                             cell {
                                 text(
@@ -987,16 +987,16 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
                 }
             }
             // TABLE 2 - end
-            showIf(saerkullTillegg.map { it.belop.value > 0 }) {
+            showIf(saerkullTillegg.map { it.beloep.value > 0 }) {
                 includePhrase(
                     vedleggBeregnUTredusBTSBPgaInntekt_001,
-                    saerkullTillegg.map { it.belop }
+                    saerkullTillegg.map { it.beloep }
                 )
             }
-            showIf(saerkullTillegg.map { it.belop.value == 0 && it.justeringsbelopAr.value == 0 }) {
+            showIf(saerkullTillegg.map { it.beloep.value == 0 && it.justeringsbeloepAar.value == 0 }) {
                 includePhrase(vedleggBeregnUTIkkeUtbetaltBTSBPgaInntekt_001)
             }
-            showIf(saerkullTillegg.map { it.belop.value == 0 && it.justeringsbelopAr.value != 0 }) {
+            showIf(saerkullTillegg.map { it.beloep.value == 0 && it.justeringsbeloepAar.value != 0 }) {
                 includePhrase(vedleggBeregnUTJusterBelopIkkeUtbetalt_001)
             }
         }

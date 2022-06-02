@@ -225,69 +225,69 @@ val vedleggBeregnUTredusTTBTSB_001 = OutlinePhrase<LangBokmalNynorskEnglish, Uni
 
 
 val vedleggBeregnUTIkkePeriodisertFriBOgInntektBTSB_001 =
-    OutlinePhrase<LangBokmalNynorskEnglish, Kroner> { avkortningsbelopAr_barnetilleggSBGjeldende ->
+    OutlinePhrase<LangBokmalNynorskEnglish, Kroner> { avkortningsbeloepAar_barnetilleggSBGjeldende ->
         paragraph {
             textExpr(
-                Bokmal to avkortningsbelopAr_barnetilleggSBGjeldende.format() + " kroner er 50 prosent av den inntekten som overstiger fribeløpet for barn som ikke bor sammen med begge foreldrene.",
-                Nynorsk to avkortningsbelopAr_barnetilleggSBGjeldende.format() + " kroner er 50 prosent av den inntekta som overstig fribeløpet for barn som ikkje bur saman med begge foreldra.",
-                English to "50 percent of the income that exceeds the exemption amount is NOK ".expr() + avkortningsbelopAr_barnetilleggSBGjeldende.format() + " for a child/children that does/do not live with both parents."
+                Bokmal to avkortningsbeloepAar_barnetilleggSBGjeldende.format() + " kroner er 50 prosent av den inntekten som overstiger fribeløpet for barn som ikke bor sammen med begge foreldrene.",
+                Nynorsk to avkortningsbeloepAar_barnetilleggSBGjeldende.format() + " kroner er 50 prosent av den inntekta som overstig fribeløpet for barn som ikkje bur saman med begge foreldra.",
+                English to "50 percent of the income that exceeds the exemption amount is NOK ".expr() + avkortningsbeloepAar_barnetilleggSBGjeldende.format() + " for a child/children that does/do not live with both parents."
             )
         }
     }
 
 
 val vedleggBeregnUTIkkePeriodisertFriBOgInntektBTSBJusterBelop_001 =
-    OutlinePhrase<LangBokmalNynorskEnglish, Kroner> { avkortningsbelopAr_barnetilleggSBGjeldende ->
+    OutlinePhrase<LangBokmalNynorskEnglish, Kroner> { avkortningsbeloepAar_barnetilleggSBGjeldende ->
         paragraph {
             textExpr(
-                Bokmal to avkortningsbelopAr_barnetilleggSBGjeldende.format() + " kroner er 50 prosent av den inntekten som overstiger fribeløpet for barn som ikke bor sammen med begge foreldrene. Dette beløpet bruker vi til å redusere barnetillegget for hele året.",
-                Nynorsk to avkortningsbelopAr_barnetilleggSBGjeldende.format() + " kroner er 50 prosent av den inntekta som overstig fribeløpet for barn som ikkje bur saman med begge foreldra. Dette beløpet bruker vi til å redusera barnetillegget for heile året.",
-                English to "50 percent of the income that exceeds the exemption amount is NOK ".expr() + avkortningsbelopAr_barnetilleggSBGjeldende.format() + " for a child/children that does/do not live with both parents. This amount will be used to reduce this child supplement during the calendar year."
+                Bokmal to avkortningsbeloepAar_barnetilleggSBGjeldende.format() + " kroner er 50 prosent av den inntekten som overstiger fribeløpet for barn som ikke bor sammen med begge foreldrene. Dette beløpet bruker vi til å redusere barnetillegget for hele året.",
+                Nynorsk to avkortningsbeloepAar_barnetilleggSBGjeldende.format() + " kroner er 50 prosent av den inntekta som overstig fribeløpet for barn som ikkje bur saman med begge foreldra. Dette beløpet bruker vi til å redusera barnetillegget for heile året.",
+                English to "50 percent of the income that exceeds the exemption amount is NOK ".expr() + avkortningsbeloepAar_barnetilleggSBGjeldende.format() + " for a child/children that does/do not live with both parents. This amount will be used to reduce this child supplement during the calendar year."
             )
         }
     }
 
 val vedleggBeregnUTPeridisertFriBOgInntektBTSB_001 =
-    OutlinePhrase<LangBokmalNynorskEnglish, Kroner> { avkortningsbelopAr_barnetilleggSBGjeldende ->
+    OutlinePhrase<LangBokmalNynorskEnglish, Kroner> { avkortningsbeloepAar_barnetilleggSBGjeldende ->
         paragraph {
             textExpr(
-                Bokmal to "For barn som ikke bor sammen med begge foreldrene blir 50 prosent av den inntekten som overstiger fribeløpet omregnet til et årlig beløp som tilsvarer ".expr() + avkortningsbelopAr_barnetilleggSBGjeldende.format() + " kroner.",
-                Nynorsk to "For barn som ikkje bur saman med begge foreldra vert 50 prosent av den inntekta som overstig fribeløpet omrekna til eit årleg beløp som svarar til ".expr() + avkortningsbelopAr_barnetilleggSBGjeldende.format() + " kroner.",
-                English to "For a child/children that does/do not live with both parents 50 percent of the income that exceeds the exemption amount is recalculated to an annual amount of NOK ".expr() + avkortningsbelopAr_barnetilleggSBGjeldende.format() + "."
+                Bokmal to "For barn som ikke bor sammen med begge foreldrene blir 50 prosent av den inntekten som overstiger fribeløpet omregnet til et årlig beløp som tilsvarer ".expr() + avkortningsbeloepAar_barnetilleggSBGjeldende.format() + " kroner.",
+                Nynorsk to "For barn som ikkje bur saman med begge foreldra vert 50 prosent av den inntekta som overstig fribeløpet omrekna til eit årleg beløp som svarar til ".expr() + avkortningsbeloepAar_barnetilleggSBGjeldende.format() + " kroner.",
+                English to "For a child/children that does/do not live with both parents 50 percent of the income that exceeds the exemption amount is recalculated to an annual amount of NOK ".expr() + avkortningsbeloepAar_barnetilleggSBGjeldende.format() + "."
             )
         }
     }
 
 val vedleggBeregnUTPeriodisertFriBOgInntektBTSBJusterBelop_001 =
-    OutlinePhrase<LangBokmalNynorskEnglish, Kroner> { avkortningsbelopAr_barnetilleggSBGjeldende ->
+    OutlinePhrase<LangBokmalNynorskEnglish, Kroner> { avkortningsbeloepAar_barnetilleggSBGjeldende ->
         paragraph {
             textExpr(
-                Bokmal to "For barn som ikke bor sammen med begge foreldrene blir 50 prosent av den inntekten som overstiger fribeløpet omregnet til et årlig beløp som tilsvarer ".expr() + avkortningsbelopAr_barnetilleggSBGjeldende.format() + " kroner. Dette beløpet bruker vi til å redusere barnetillegget for hele året.",
-                Nynorsk to "For barn som ikkje bur saman med begge foreldra vert 50 prosent av den inntekta som overstig fribeløpet omrekna til eit årleg beløp som svarar til ".expr() + avkortningsbelopAr_barnetilleggSBGjeldende.format() + " kroner. Dette beløpet bruker vi til å redusera barnetillegget for heile året.",
-                English to "For a child/children that does/do not live with both parents 50 percent of the income that exceeds the exemption amount is recalculated to an annual amount of NOK ".expr() + avkortningsbelopAr_barnetilleggSBGjeldende.format() + ". This amount will be used to reduce this child supplement during the calendar year."
+                Bokmal to "For barn som ikke bor sammen med begge foreldrene blir 50 prosent av den inntekten som overstiger fribeløpet omregnet til et årlig beløp som tilsvarer ".expr() + avkortningsbeloepAar_barnetilleggSBGjeldende.format() + " kroner. Dette beløpet bruker vi til å redusere barnetillegget for hele året.",
+                Nynorsk to "For barn som ikkje bur saman med begge foreldra vert 50 prosent av den inntekta som overstig fribeløpet omrekna til eit årleg beløp som svarar til ".expr() + avkortningsbeloepAar_barnetilleggSBGjeldende.format() + " kroner. Dette beløpet bruker vi til å redusera barnetillegget for heile året.",
+                English to "For a child/children that does/do not live with both parents 50 percent of the income that exceeds the exemption amount is recalculated to an annual amount of NOK ".expr() + avkortningsbeloepAar_barnetilleggSBGjeldende.format() + ". This amount will be used to reduce this child supplement during the calendar year."
             )
         }
     }
 
 val vedleggBeregnUTJusterBelopOver0BTSB_001 =
-    OutlinePhrase<LangBokmalNynorskEnglish, Kroner> { justeringsbelopAr_barnetilleggSBGjeldende ->
+    OutlinePhrase<LangBokmalNynorskEnglish, Kroner> { justeringsbeloepAar_barnetilleggSBGjeldende ->
         paragraph {
             textExpr(
-                Bokmal to "Vi tar hensyn til hvordan barnetillegget eventuelt har vært redusert tidligere, og vi har derfor lagt til ".expr() + justeringsbelopAr_barnetilleggSBGjeldende.format() + " kroner i beløpet vi reduserer barnetillegget med for resten av året.",
-                Nynorsk to "Vi tek omsyn til korleis barnetillegget eventuelt har vore redusert tidligare, og vi har difor lagt til ".expr() + justeringsbelopAr_barnetilleggSBGjeldende.format() + " kroner i beløpet vi reduserer barnetillegget med for resten av året.",
-                English to "We take into account how the child supplement has been reduced earlier this year. The amount with which your child supplement will be reduced for the rest of the year has therefore been reduced with NOK ".expr() + justeringsbelopAr_barnetilleggSBGjeldende.format() + "."
+                Bokmal to "Vi tar hensyn til hvordan barnetillegget eventuelt har vært redusert tidligere, og vi har derfor lagt til ".expr() + justeringsbeloepAar_barnetilleggSBGjeldende.format() + " kroner i beløpet vi reduserer barnetillegget med for resten av året.",
+                Nynorsk to "Vi tek omsyn til korleis barnetillegget eventuelt har vore redusert tidligare, og vi har difor lagt til ".expr() + justeringsbeloepAar_barnetilleggSBGjeldende.format() + " kroner i beløpet vi reduserer barnetillegget med for resten av året.",
+                English to "We take into account how the child supplement has been reduced earlier this year. The amount with which your child supplement will be reduced for the rest of the year has therefore been reduced with NOK ".expr() + justeringsbeloepAar_barnetilleggSBGjeldende.format() + "."
             )
         }
     }
 
 
 val vedleggBeregnUTJusterBelopUnder0BTSB_001 =
-    OutlinePhrase<LangBokmalNynorskEnglish, Kroner> { justeringsbelopAr_barnetilleggSBGjeldende ->
+    OutlinePhrase<LangBokmalNynorskEnglish, Kroner> { justeringsbeloepAar_barnetilleggSBGjeldende ->
         paragraph {
             textExpr(
-                Bokmal to "Vi tar hensyn til hvordan barnetillegget eventuelt har vært redusert tidligere, og vi har derfor trukket fra ".expr() + justeringsbelopAr_barnetilleggSBGjeldende.format() + " kroner i beløpet vi reduserer barnetillegget med for resten av året.",
-                Nynorsk to "Vi tek omsyn til korleis barnetillegget eventuelt har vore redusert tidligare, og vi har difor trekt frå ".expr() + justeringsbelopAr_barnetilleggSBGjeldende.format() + " kroner i beløpet vi reduserer barnetillegget med for resten av året.",
-                English to "We take into account how the child supplement has been reduced earlier this year. The amount with which your child supplement will be reduced for the rest of the year has therefore been reduced with NOK ".expr() + justeringsbelopAr_barnetilleggSBGjeldende.format() + "."
+                Bokmal to "Vi tar hensyn til hvordan barnetillegget eventuelt har vært redusert tidligere, og vi har derfor trukket fra ".expr() + justeringsbeloepAar_barnetilleggSBGjeldende.format() + " kroner i beløpet vi reduserer barnetillegget med for resten av året.",
+                Nynorsk to "Vi tek omsyn til korleis barnetillegget eventuelt har vore redusert tidligare, og vi har difor trekt frå ".expr() + justeringsbeloepAar_barnetilleggSBGjeldende.format() + " kroner i beløpet vi reduserer barnetillegget med for resten av året.",
+                English to "We take into account how the child supplement has been reduced earlier this year. The amount with which your child supplement will be reduced for the rest of the year has therefore been reduced with NOK ".expr() + justeringsbeloepAar_barnetilleggSBGjeldende.format() + "."
             )
         }
     }
@@ -313,23 +313,23 @@ val reduksjonBTSBTabell1_001 =
         }
     }
 
-val reduksjonBTSBTabell2_001 = OutlinePhrase<LangBokmalNynorskEnglish, Kroner> { fribelop_barnetilleggSBGjeldende ->
+val reduksjonBTSBTabell2_001 = OutlinePhrase<LangBokmalNynorskEnglish, Kroner> { fribeloep_barnetilleggSBGjeldende ->
     paragraph {
         textExpr(
-            Bokmal to "Fribeløp brukt i fastsettelsen av barnetillegget er ".expr() + fribelop_barnetilleggSBGjeldende.format() + " kroner.",
-            Nynorsk to "Fribeløp brukt i fastsetjinga av barnetillegget er ".expr() + fribelop_barnetilleggSBGjeldende.format() + " kroner.",
-            English to "Exemption amount applied in calculation of reduction in child supplement is NOK ".expr() + fribelop_barnetilleggSBGjeldende.format() + "."
+            Bokmal to "Fribeløp brukt i fastsettelsen av barnetillegget er ".expr() + fribeloep_barnetilleggSBGjeldende.format() + " kroner.",
+            Nynorsk to "Fribeløp brukt i fastsetjinga av barnetillegget er ".expr() + fribeloep_barnetilleggSBGjeldende.format() + " kroner.",
+            English to "Exemption amount applied in calculation of reduction in child supplement is NOK ".expr() + fribeloep_barnetilleggSBGjeldende.format() + "."
         )
     }
 }
 
 val reduksjonBTSBTabell3_001 =
-    OutlinePhrase<LangBokmalNynorskEnglish, Kroner> { inntektOverFribelop_barnetilleggSBGjeldende ->
+    OutlinePhrase<LangBokmalNynorskEnglish, Kroner> { inntektOverFribeloep_barnetilleggSBGjeldende ->
         paragraph {
             textExpr(
-                Bokmal to "Inntekt over fribeløpet er ".expr() + inntektOverFribelop_barnetilleggSBGjeldende.format() + " kroner.",
-                Nynorsk to "Inntekt over fribeløpet er ".expr() + inntektOverFribelop_barnetilleggSBGjeldende.format() + " kroner.",
-                English to "Income exceeding the exemption amount is NOK ".expr() + inntektOverFribelop_barnetilleggSBGjeldende.format() + "."
+                Bokmal to "Inntekt over fribeløpet er ".expr() + inntektOverFribeloep_barnetilleggSBGjeldende.format() + " kroner.",
+                Nynorsk to "Inntekt over fribeløpet er ".expr() + inntektOverFribeloep_barnetilleggSBGjeldende.format() + " kroner.",
+                English to "Income exceeding the exemption amount is NOK ".expr() + inntektOverFribeloep_barnetilleggSBGjeldende.format() + "."
             )
         }
     }
@@ -345,12 +345,12 @@ val reduksjonbtsbtabell19_001 = OutlinePhrase<LangBokmalNynorskEnglish, Kroner> 
 }
 
 val vedleggBeregnUTredusBTSBPgaInntekt_001 =
-    OutlinePhrase<LangBokmalNynorskEnglish, Kroner> { belop_barnetilleggSBGjeldende ->
+    OutlinePhrase<LangBokmalNynorskEnglish, Kroner> { beloep_barnetilleggSBGjeldende ->
         paragraph {
             textExpr(
-                Bokmal to "Du vil få utbetalt ".expr() + belop_barnetilleggSBGjeldende.format() + " kroner i måneden før skatt i barnetillegg.",
-                Nynorsk to "Du vil få utbetalt ".expr() + belop_barnetilleggSBGjeldende.format() + " kroner i månaden før skatt i barnetillegg.",
-                English to "You will receive a monthly child supplement payment of NOK ".expr() + belop_barnetilleggSBGjeldende.format() + " before tax."
+                Bokmal to "Du vil få utbetalt ".expr() + beloep_barnetilleggSBGjeldende.format() + " kroner i måneden før skatt i barnetillegg.",
+                Nynorsk to "Du vil få utbetalt ".expr() + beloep_barnetilleggSBGjeldende.format() + " kroner i månaden før skatt i barnetillegg.",
+                English to "You will receive a monthly child supplement payment of NOK ".expr() + beloep_barnetilleggSBGjeldende.format() + " before tax."
             )
         }
     }
