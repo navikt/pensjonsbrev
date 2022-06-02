@@ -12,10 +12,10 @@ data class UfoerOmregningEnsligDto(
     val opplysningerBruktIBeregningUT: OpplysningerBruktIBeregningUTDto,
     val orienteringOmRettigheterOgPlikter: OrienteringOmRettigheterUfoereDto,
     val maanedligUfoeretrygdFoerSkatt: MaanedligUfoeretrygdFoerSkattDto,
-    val avdod: Avdod,
+    val avdoed: Avdoed,
     val minsteytelseVedvirk_sats: Double?,
     val ufoeretrygdVedVirk: UfoeretrygdVedVirk,
-    val beregnetUTPerManed_antallBeregningsperioderPaVedtak: Int,
+    val beregnetUTPerMaaned_antallBeregningsperioderPaaVedtak: Int,
     val institusjonsoppholdVedVirk: Institusjon,
     val krav_virkningsDatoFraOgMed: LocalDate,
     val barnetilleggSaerkullsbarnGjeldende_erRedusertMotInntekt: Boolean,
@@ -28,18 +28,18 @@ data class UfoerOmregningEnsligDto(
         orienteringOmRettigheterOgPlikter = OrienteringOmRettigheterUfoereDto(),
         maanedligUfoeretrygdFoerSkatt = MaanedligUfoeretrygdFoerSkattDto(),
         minsteytelseVedvirk_sats = 0.0,
-        avdod = Avdod(
+        avdoed = Avdoed(
             navn = "Avdod Person",
             ektefelletilleggOpphoert = false,
             sivilstand = Sivilstand.SAMBOER3_2,
             harFellesBarnUtenBarnetillegg = false,
         ),
         krav_virkningsDatoFraOgMed = LocalDate.of(2020, 1, 1),
-        beregnetUTPerManed_antallBeregningsperioderPaVedtak = 0,
+        beregnetUTPerMaaned_antallBeregningsperioderPaaVedtak = 0,
         institusjonsoppholdVedVirk = Institusjon.INGEN,
         ufoeretrygdVedVirk = UfoeretrygdVedVirk(
             kompensasjonsgrad = 0.5,
-            totalUforeMaanedligBeloep = Kroner(5),
+            totalUfoereMaanedligBeloep = Kroner(5),
             erInntektsavkortet = false
         ),
         inntektFoerUfoerhetVedVirk = InntektFoerUfoerhetVedVirk(
@@ -55,11 +55,11 @@ data class UfoerOmregningEnsligDto(
         ),
         barnetilleggVedVirk = BarnetilleggVedVirk(
             barnetilleggSaerkullsbarnVedVirk = BarnetilleggSaerkullsbarnVedvirk(
-                belop = Kroner(0),
+                beloep = Kroner(0),
                 erRedusertMotInntekt = false,
                 inntektBruktIAvkortning = Kroner(0),
                 fribeloepVedvirk = Kroner(0),
-                justeringsbeloepAr = Kroner(0),
+                justeringsbeloepAar = Kroner(0),
                 inntektstak = Kroner(0),
                 barnTidligereSaerkullsbarn = listOf(
                     "Tidligere saerkullsbarn 1",
@@ -76,15 +76,15 @@ data class UfoerOmregningEnsligDto(
                 erRedusertMotTak = false,
                 prosentsatsGradertOverInntektFoerUfoer = 0,
                 gradertOverInntektFoerUfoer = Kroner(0),
-                erIkkeUtbetPgaTak = false,
-                belopFoerReduksjon = Kroner(0),
-                belopEtterReduksjon = Kroner(0),
+                erIkkeUtbetaltPgaTak = false,
+                beloepFoerReduksjon = Kroner(0),
+                beloepEtterReduksjon = Kroner(0),
             )
         )
     )
 
 
-    data class Avdod(
+    data class Avdoed(
         val navn: String,
         val ektefelletilleggOpphoert: Boolean,
         val sivilstand: Sivilstand,
@@ -93,7 +93,7 @@ data class UfoerOmregningEnsligDto(
 
     data class UfoeretrygdVedVirk(
         val kompensasjonsgrad: Double,
-        val totalUforeMaanedligBeloep: Kroner,
+        val totalUfoereMaanedligBeloep: Kroner,
         val erInntektsavkortet: Boolean,
     )
 
@@ -118,19 +118,19 @@ data class UfoerOmregningEnsligDto(
         val erRedusertMotTak: Boolean,
         val prosentsatsGradertOverInntektFoerUfoer: Int,
         val gradertOverInntektFoerUfoer: Kroner,
-        val erIkkeUtbetPgaTak: Boolean,
-        val belopFoerReduksjon: Kroner,
-        val belopEtterReduksjon: Kroner,
+        val erIkkeUtbetaltPgaTak: Boolean,
+        val beloepFoerReduksjon: Kroner,
+        val beloepEtterReduksjon: Kroner,
     )
 
     data class BarnetilleggSaerkullsbarnVedvirk(
         val barnTidligereSaerkullsbarn: List<String>,
         val barnOverfoertTilSaerkullsbarn: List<String>,
-        val belop: Kroner,
+        val beloep: Kroner,
         val erRedusertMotInntekt: Boolean,
         val inntektBruktIAvkortning: Kroner,
         val fribeloepVedvirk: Kroner,
-        val justeringsbeloepAr: Kroner,
+        val justeringsbeloepAar: Kroner,
         val inntektstak: Kroner,
     )
 }

@@ -88,14 +88,14 @@ val OmregnBTDodEPSInnledn_001 = OutlinePhrase<LangBokmalNynorskEnglish, OmregnBT
 }
 
 data class BeloepUTDto(
-    val totalUforeMaanedligBeloep: Kroner,
+    val totalUfoereMaanedligBeloep: Kroner,
     val harBarnetilleggForSaerkullsbarnVedVirk: Boolean,
     val harFlereUfoeretrygdPerioder: Boolean,
 )
 
 // BelopUT_001, BelopUTVedlegg_001, BelopUTBT_001, BelopUTBTVedlegg_001
 val BeloepUT = OutlinePhrase<LangBokmalNynorskEnglish, BeloepUTDto> {
-    val totalUforeMaanedligBeloep = it.map { it.totalUforeMaanedligBeloep }
+    val totalUforeMaanedligBeloep = it.map { it.totalUfoereMaanedligBeloep }
     val harBarnetilleggForSaerkullsbarnVedVirk = it.map { it.harBarnetilleggForSaerkullsbarnVedVirk }
     val harFlereUfoeretrygdPerioder = it.map { it.harFlereUfoeretrygdPerioder }
 

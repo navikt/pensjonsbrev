@@ -53,7 +53,7 @@ class UfoerOmregningEnsligITest {
                 maanedligUfoeretrygdFoerSkatt = MaanedligUfoeretrygdFoerSkattDto(),
                 minsteytelseVedvirk_sats = null,
                 orienteringOmRettigheterOgPlikter = OrienteringOmRettigheterUfoereDto(),
-                avdod = UfoerOmregningEnsligDto.Avdod(
+                avdoed = UfoerOmregningEnsligDto.Avdoed(
                     sivilstand = Sivilstand.PARTNER,
                     navn = "Avdod person",
                     ektefelletilleggOpphoert = false,
@@ -65,7 +65,7 @@ class UfoerOmregningEnsligITest {
                 ),
                 ufoeretrygdVedVirk = UfoerOmregningEnsligDto.UfoeretrygdVedVirk(
                     kompensasjonsgrad = 50.5,
-                    totalUforeMaanedligBeloep = Kroner(100000),
+                    totalUfoereMaanedligBeloep = Kroner(100000),
                     erInntektsavkortet = true,
                 ),
                 inntektFoerUfoerhetVedVirk = UfoerOmregningEnsligDto.InntektFoerUfoerhetVedVirk(

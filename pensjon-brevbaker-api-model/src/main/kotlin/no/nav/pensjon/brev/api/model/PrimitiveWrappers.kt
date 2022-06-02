@@ -8,36 +8,16 @@ interface IntValue{
 }
 
 @JvmInline
-value class Kroner(val value: Int){
-    override fun toString(): String {
-        return value.toString()
-    }
-}
+value class Kroner(val value: Int)
 
 @JvmInline
-value class Year(override val value: Int): IntValue{
-    override fun toString(): String {
-        return value.toString()
-    }
-}
+value class Year(override val value: Int): IntValue
 
 @JvmInline
-value class Months(override val value: Int): IntValue{
-    override fun toString(): String {
-        return value.toString()
-    }
-}
+value class Months(override val value: Int): IntValue
 
 @JvmInline
-value class Days(override val value: Int): IntValue{
-    override fun toString(): String {
-        return value.toString()
-    }
-}
+value class Days(override val value: Int): IntValue
 
 @JvmInline
-value class Percent(override val value: Int): IntValue{
-    override fun toString(): String {
-        return value.toString()
-    }
-}
+value class Percent(override val value: Int): IntValue
