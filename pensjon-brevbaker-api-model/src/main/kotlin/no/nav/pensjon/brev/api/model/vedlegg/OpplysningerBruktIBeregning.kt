@@ -14,7 +14,7 @@ data class OpplysningerBruktIBeregningUTDto(
     val minsteytelseGjeldende_sats: Double,
     val trygdetidsdetaljerGjeldende: TrygdetidsdetaljerGjeldende,
     val ufoeretrygdGjeldende: UfoeretrygdGjeldende,
-    val ungUfoerGjeldende_erUnder20Ar: Boolean?,
+    val ungUfoerGjeldende_erUnder20Aar: Boolean?,
     val yrkesskadeGjeldende: YrkesskadeGjeldende?,
 ) {
     constructor() : this(
@@ -26,7 +26,7 @@ data class OpplysningerBruktIBeregningUTDto(
         minsteytelseGjeldende_sats = 0.0,
         trygdetidsdetaljerGjeldende = TrygdetidsdetaljerGjeldende(),
         ufoeretrygdGjeldende = UfoeretrygdGjeldende(),
-        ungUfoerGjeldende_erUnder20Ar = false,
+        ungUfoerGjeldende_erUnder20Aar = false,
         yrkesskadeGjeldende = YrkesskadeGjeldende(),
     )
 
@@ -173,13 +173,13 @@ data class OpplysningerBruktIBeregningUTDto(
     }
 
     data class InntektsAvkortingGjeldende(
-        val forventetInntektAr: Kroner,
-        val inntektsgrenseAr: Kroner,
+        val forventetInntektAar: Kroner,
+        val inntektsgrenseAar: Kroner,
         val inntektstak: Kroner,
     ) {
         constructor() : this(
-            forventetInntektAr = Kroner(0),
-            inntektsgrenseAr = Kroner(0),
+            forventetInntektAar = Kroner(0),
+            inntektsgrenseAar = Kroner(0),
             inntektstak = Kroner(0),
         )
     }

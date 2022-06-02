@@ -48,7 +48,7 @@ class UfoerOmregningEnsligITest {
                         )
                     ),
                     minsteytelseGjeldende_sats = 10.00,
-                    ungUfoerGjeldende_erUnder20Ar = true,
+                    ungUfoerGjeldende_erUnder20Aar = true,
                 ),
                 maanedligUfoeretrygdFoerSkatt = MaanedligUfoeretrygdFoerSkattDto(),
                 minsteytelseVedvirk_sats = null,

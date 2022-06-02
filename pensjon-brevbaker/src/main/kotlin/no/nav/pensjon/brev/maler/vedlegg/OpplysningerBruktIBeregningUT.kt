@@ -29,10 +29,10 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
 ) {
     val harMinsteytelseSats = argument().map { it.minsteytelseGjeldende_sats > 0 }
     val ufoeretrygdGjeldendeErKonvertert = argument().map { it.ufoeretrygdGjeldende.erKonvertert }
-    val erUnder20AarVedUngUfoere = argument().map { it.ungUfoerGjeldende_erUnder20Ar }
+    val erUnder20AarVedUngUfoere = argument().map { it.ungUfoerGjeldende_erUnder20Aar }
     val inntektFoerUfoereErSannsynligEndret = argument().map { it.inntektFoerUfoereGjeldende.erSannsynligEndret }
     val inntektsgrenseErUnderTak =
-        argument().map { it.inntektsAvkortingGjeldende.inntektsgrenseAr.value < it.inntektsAvkortingGjeldende.inntektstak.value }
+        argument().map { it.inntektsAvkortingGjeldende.inntektsgrenseAar.value < it.inntektsAvkortingGjeldende.inntektstak.value }
     val ufoeretrygdErKonvertert = argument().map { it.ufoeretrygdGjeldende.erKonvertert }
 
     paragraph {
@@ -178,7 +178,7 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
                 }
             }
         }
-        showIf(argument().map { it.inntektsAvkortingGjeldende.inntektsgrenseAr.value > 0 })
+        showIf(argument().map { it.inntektsAvkortingGjeldende.inntektsgrenseAar.value > 0 })
         {
             row {
                 cell {
@@ -189,11 +189,11 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
                     )
                 }
                 cell {
-                    includePhrase(kroner, argument().map { it.inntektsAvkortingGjeldende.inntektsgrenseAr })
+                    includePhrase(kroner, argument().map { it.inntektsAvkortingGjeldende.inntektsgrenseAar })
                 }
             }
         }
-        showIf(argument().map { it.inntektsAvkortingGjeldende.forventetInntektAr.value > 0 })
+        showIf(argument().map { it.inntektsAvkortingGjeldende.forventetInntektAar.value > 0 })
         {
             row {
                 cell {
@@ -204,7 +204,7 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
                     )
                 }
                 cell {
-                    includePhrase(kroner, argument().map { it.inntektsAvkortingGjeldende.forventetInntektAr })
+                    includePhrase(kroner, argument().map { it.inntektsAvkortingGjeldende.forventetInntektAar })
                 }
             }
         }
@@ -253,7 +253,7 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
                     )
                 }
                 cell {
-                    includePhrase(kroner, argument().map { it.inntektsAvkortingGjeldende.inntektsgrenseAr })
+                    includePhrase(kroner, argument().map { it.inntektsAvkortingGjeldende.inntektsgrenseAar })
                 }
             }
         }
@@ -276,7 +276,7 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
                 )
             }
         }
-        showIf(argument().map { it.ungUfoerGjeldende_erUnder20Ar ?: false }) {
+        showIf(argument().map { it.ungUfoerGjeldende_erUnder20Aar ?: false }) {
             row {
                 cell {
                     text(
