@@ -67,49 +67,28 @@ object UfoerOmregningEnslig : StaticTemplate {
 
 
             includePhrase(vedtakOverskriftPesys_001)
-            showIf(
-                (harMinsteytelseVedVirk or inntektFoerUfoereErSannsynligEndret or ektefelleTilleggOpphoert)
-                        and not(harBarnetilleggForSaerkullsbarnVedVirk)
-            ) {
-                includePhrase(omregnUTDodEPSInnledn1_001,
-                    argument().map { OmregnUTDodEPSInnledn1001Dto(it.avdoed.navn, it.krav_virkningsDatoFraOgMed) })
-            }
 
-            showIf(
-                not(harMinsteytelseVedVirk)
-                        and not(inntektFoerUfoereErSannsynligEndret)
-                        and not(ektefelleTilleggOpphoert)
-                        and not(harBarnetilleggForSaerkullsbarnVedVirk)
-            ) {
-                includePhrase(omregnUTDodEPSInnledn2_001, argument().map { it.avdoed.navn })
-            }
+            showIf(harMinsteytelseVedVirk or inntektFoerUfoereErSannsynligEndret or ektefelleTilleggOpphoert){
 
-            showIf(
-                (harMinsteytelseVedVirk or inntektFoerUfoereErSannsynligEndret or ektefelleTilleggOpphoert)
-                        and harBarnetilleggForSaerkullsbarnVedVirk
-            ) {
-                includePhrase(omregnUTBTDodEPSInnledn_001,
-                    argument().map { OmregnUTBTDodEPSInnledn_001Dto(it.avdoed.navn, it.krav_virkningsDatoFraOgMed) })
-            }
+                showIf(harBarnetilleggForSaerkullsbarnVedVirk) {
+                    includePhrase(omregnUTBTDodEPSInnledn_001, argument().map { OmregnUTBTDodEPSInnledn_001Dto(it.avdoed.navn, it.krav_virkningsDatoFraOgMed) })
+                }.orShow {
+                    includePhrase(omregnUTDodEPSInnledn1_001, argument().map { OmregnUTDodEPSInnledn1001Dto(it.avdoed.navn, it.krav_virkningsDatoFraOgMed) })
+                }
 
-            showIf(
-                not(harMinsteytelseVedVirk)
-                        and not(inntektFoerUfoereErSannsynligEndret)
-                        and not(ektefelleTilleggOpphoert)
-                        and harBarnetilleggForSaerkullsbarnVedVirk
-                        and not(harBarnOverfoertTilSaerkullsbarn)
-            ) {
-                includePhrase(omregnUTBTSBDodEPSInnledn_001, argument().map { it.avdoed.navn })
-            }
+            }.orShow{
 
-            showIf(
-                not(harMinsteytelseVedVirk)
-                        and not(inntektFoerUfoereErSannsynligEndret)
-                        and not(ektefelleTilleggOpphoert)
-                        and harBarnOverfoertTilSaerkullsbarn
-            ) {
-                includePhrase(omregnBTDodEPSInnledn_001,
-                    argument().map { OmregnBTDodEPSInnledn_001Dto(it.avdoed.navn, it.krav_virkningsDatoFraOgMed) })
+                showIf(harBarnetilleggForSaerkullsbarnVedVirk) {
+
+                    showIf(harBarnOverfoertTilSaerkullsbarn){
+                        includePhrase(omregnBTDodEPSInnledn_001, argument().map { OmregnBTDodEPSInnledn_001Dto(it.avdoed.navn, it.krav_virkningsDatoFraOgMed) })
+                    }.orShow{
+                        includePhrase(omregnUTBTSBDodEPSInnledn_001, argument().map { it.avdoed.navn })
+                    }
+
+                }.orShow{
+                    includePhrase(omregnUTDodEPSInnledn2_001, argument().map { it.avdoed.navn })
+                }
             }
 
             includePhrase(utbetalingUfoeretrygd, argument().map {
