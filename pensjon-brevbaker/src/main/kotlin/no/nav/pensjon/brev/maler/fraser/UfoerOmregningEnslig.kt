@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.maler.fraser
 
+import no.nav.pensjon.brev.api.model.Institusjon
 import no.nav.pensjon.brev.api.model.Kroner
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
@@ -114,123 +115,85 @@ data class BeloepUTDto(
     val totalUfoereMaanedligBeloep: Kroner,
     val harBarnetilleggForSaerkullsbarnVedVirk: Boolean,
     val harFlereUfoeretrygdPerioder: Boolean,
+    val institusjonsoppholdVedVirk: Institusjon,
 )
 
-// BelopUT_001, BelopUTVedlegg_001, BelopUTBT_001, BelopUTBTVedlegg_001
-val beloepUT = OutlinePhrase<LangBokmalNynorskEnglish, BeloepUTDto> {
-    val totalUforeMaanedligBeloep = it.map { it.totalUfoereMaanedligBeloep }
-    val harBarnetilleggForSaerkullsbarnVedVirk = it.map { it.harBarnetilleggForSaerkullsbarnVedVirk }
-    val harFlereUfoeretrygdPerioder = it.map { it.harFlereUfoeretrygdPerioder }
+// BelopUT_001, BelopUTVedlegg_001, BelopUTBT_001, BelopUTBTVedlegg_001, belopUTIngenUtbetaling_001 ,belopUTIngenUtbetalingVedlegg_001 ,belopUTBTIngenUtbetaling_001 ,belopUTBTIngenUtbetalingVedlegg_001 ,belopUTIngenUtbetalingFengsel_001 ,belopUTIngenUtbetalingFengselVedlegg_001
+val utbetalingUfoeretrygd = OutlinePhrase<LangBokmalNynorskEnglish, BeloepUTDto> { arg ->
 
-    showIf(harBarnetilleggForSaerkullsbarnVedVirk) {
-        showIf(harFlereUfoeretrygdPerioder) {
-            paragraph {
-                textExpr(
-                    Bokmal to "Du får ".expr()
-                            + totalUforeMaanedligBeloep.format() + " kroner i uføretrygd og barnetillegg per måned før skatt. Du kan lese mer om andre beregningsperioder i vedlegget.".expr(),
-                    Nynorsk to "Du får ".expr()
-                            + totalUforeMaanedligBeloep.format() + " kroner i uføretrygd og barnetillegg kvar månad før skatt. Du kan lese meir om andre utrekningsperiodar i vedlegget.".expr(),
-                    English to "Your monthly disability benefit and child supplement payment will be NOK ".expr()
-                            + totalUforeMaanedligBeloep.format() + " before tax. You can read more about other calculation periods in the appendix.".expr()
+    val totalUfoereMaanedligBeloep = arg.select(BeloepUTDto::totalUfoereMaanedligBeloep)
+    val harBarnetilleggForSaerkullsbarnVedVirk = arg.select(BeloepUTDto::harBarnetilleggForSaerkullsbarnVedVirk)
+    val harFlereUfoeretrygdPerioder = arg.select(BeloepUTDto::harFlereUfoeretrygdPerioder)
+    val institusjonsoppholdVedVirk = arg.select(BeloepUTDto::institusjonsoppholdVedVirk)
+    val faarUtbetaltUfoeretrygd = totalUfoereMaanedligBeloep.map{it.value > 0}
+
+    showIf(faarUtbetaltUfoeretrygd){
+        paragraph {
+            textExpr(
+                Bokmal to "Du får ".expr() + totalUfoereMaanedligBeloep.format() + " kroner i uføretrygd".expr(),
+                Nynorsk to "Du får ".expr() + totalUfoereMaanedligBeloep.format() + " kroner i uføretrygd".expr(),
+                English to "Your monthly disability benefit".expr(),
+            )
+            showIf(harBarnetilleggForSaerkullsbarnVedVirk) {
+                text(
+                    Bokmal to " og barnetillegg",
+                    Nynorsk to " og barnetillegg",
+                    English to " and child supplement payment"
                 )
             }
-        }.orShow {
-            paragraph {
-                textExpr(
-                    Bokmal to "Du får ".expr()
-                            + totalUforeMaanedligBeloep.format() + " kroner i uføretrygd per måned før skatt. Du kan lese mer om andre beregningsperioder i vedlegget.".expr(),
-                    Nynorsk to "Du får ".expr()
-                            + totalUforeMaanedligBeloep.format() + " kroner i uføretrygd og barnetillegg kvar månad før skatt.".expr(),
-                    English to "Your monthly disability benefit and child supplement payment will be NOK ".expr()
-                            + totalUforeMaanedligBeloep.format() + " before tax.".expr()
-                )
-            }
-        }
-    }.orShow {
-        showIf(harFlereUfoeretrygdPerioder) {
-            paragraph {
-                textExpr(
-                    Bokmal to "Du får ".expr()
-                            + totalUforeMaanedligBeloep.format() + " kroner i uføretrygd per måned før skatt. Du kan lese mer om andre beregningsperioder i vedlegget.".expr(),
-                    Nynorsk to "Du får ".expr()
-                            + totalUforeMaanedligBeloep.format() + " kroner i uføretrygd kvar månad før skatt. Du kan lese meir om andre utrekningsperiodar i vedlegget.".expr(),
-                    English to "Your monthly disability benefit payment will be NOK ".expr()
-                            + totalUforeMaanedligBeloep.format() + " before tax. You can read more about other calculation periods in the appendix.".expr()
-                )
-            }
-        }.orShow {
-            paragraph {
-                textExpr(
-                    Bokmal to "Du får ".expr()
-                            + totalUforeMaanedligBeloep.format() + " kroner i uføretrygd per måned før skatt.".expr(),
-                    Nynorsk to "Du får ".expr()
-                            + totalUforeMaanedligBeloep.format() + " kroner i uføretrygd kvar månad før skatt.".expr(),
-                    English to "Your monthly disability benefit payment will be NOK ".expr()
-                            + totalUforeMaanedligBeloep.format() + " before tax.".expr()
+            textExpr(
+                Bokmal to " per måned før skatt.".expr(),
+                Nynorsk to " kvar månad før skatt.".expr(),
+                English to " will be NOK ".expr() + totalUfoereMaanedligBeloep.format() + " before tax.".expr()
+            )
+            showIf(harFlereUfoeretrygdPerioder) {
+                text(
+                    Bokmal to " Du kan lese mer om andre beregningsperioder i vedlegget.",
+                    Nynorsk to " Du kan lese meir om andre utrekningsperiodar i vedlegget.",
+                    English to " You can read more about other calculation periods in the appendix."
                 )
             }
         }
-    }
-}
+    }.orShow{
+        paragraph {
+            text(
+                Bokmal to "Du får ikke utbetalt uføretrygd " ,
+                Nynorsk to "Du får ikkje utbetalt uføretrygd ",
+                English to "You will not receive disability benefit ",
+            )
 
-val belopUTIngenUtbetaling_001 = OutlinePhrase<LangBokmalNynorskEnglish, Unit> {
-    paragraph {
-        text(
-            Bokmal to "Du får ikke utbetalt uføretrygd på grunn av høy inntekt.",
-            Nynorsk to "Du får ikkje utbetalt uføretrygd på grunn av høg inntekt.",
-            English to "You will not receive disability benefit payment because of your reported income."
-        )
-    }
-}
+            showIf(harBarnetilleggForSaerkullsbarnVedVirk) {
+                text(
+                    Bokmal to "og barnetillegg ",
+                    Nynorsk to "og barnetillegg ",
+                    English to "and child supplement payment "
+                )
+            }
 
-val belopUTIngenUtbetalingVedlegg_001 = OutlinePhrase<LangBokmalNynorskEnglish, Unit> {
-    paragraph {
-        text(
-            Bokmal to "Du får ikke utbetalt uføretrygd på grunn av høy inntekt. Du kan lese mer om andre beregningsperioder i vedlegget.",
-            Nynorsk to "Du får ikkje utbetalt uføretrygd på grunn av høg inntekt. Du kan lese meir om andre utrekningsperiodar i vedlegget.",
-            English to "You will not receive disability benefit payment because of your reported income. You can read more about other calculation periods in the appendix."
-        )
-    }
-}
+            showIf(institusjonsoppholdVedVirk.isOneOf(Institusjon.FENGSEL)) {
+                text(
+                    Bokmal to "fordi du er under straffegjennomføring.",
+                    Nynorsk to "fordi du er under straffegjennomføring.",
+                    English to "because you are serving a criminal sentence."
+                )
+            }.orShow {
+                text(
+                    Bokmal to "på grunn av høy inntekt.",
+                    Nynorsk to "på grunn av høg inntekt.",
+                    English to "because of your reported income."
+                )
+            }
 
-val belopUTBTIngenUtbetaling_001 = OutlinePhrase<LangBokmalNynorskEnglish, Unit> {
-    paragraph {
-        text(
-            Bokmal to "Du får ikke utbetalt uføretrygd og barnetillegg på grunn av høy inntekt.",
-            Nynorsk to "Du får ikkje utbetalt uføretrygd og barnetillegg på grunn av høg inntekt.",
-            English to "You will not receive disability benefit and child supplement payment because of your reported income."
-        )
+            showIf(harFlereUfoeretrygdPerioder) {
+                text(
+                    Bokmal to " Du kan lese mer om andre beregningsperioder i vedlegget.",
+                    Nynorsk to " Du kan lese meir om andre utrekningsperiodar i vedlegget.",
+                    English to " You can read more about other calculation periods in the appendix."
+                )
+            }
+        }
     }
-}
 
-val belopUTBTIngenUtbetalingVedlegg_001 = OutlinePhrase<LangBokmalNynorskEnglish, Unit> {
-    paragraph {
-        text(
-            Bokmal to "Du får ikke utbetalt uføretrygd og barnetillegg på grunn av høy inntekt. Du kan lese mer om andre beregningsperioder i vedlegget.",
-            Nynorsk to "Du får ikkje utbetalt uføretrygd og barnetillegg på grunn av høg inntekt. Du kan lese meir om andre utrekningsperiodar i vedlegget.",
-            English to "You will not receive disability benefit and child supplement payment because of your reported income. You can read more about other calculation periods in the appendix."
-        )
-    }
-}
-
-val belopUTIngenUtbetalingFengsel_001 = OutlinePhrase<LangBokmalNynorskEnglish, Unit> {
-    paragraph {
-        text(
-            Bokmal to "Du får ikke utbetalt uføretrygd fordi du er under straffegjennomføring.",
-            Nynorsk to "Du får ikkje utbetalt uføretrygd fordi du er under straffegjennomføring.",
-            English to "You will not receive disability benefit because you are serving a criminal sentence."
-        )
-    }
-}
-
-val belopUTIngenUtbetalingFengselVedlegg_001 = OutlinePhrase<LangBokmalNynorskEnglish, Unit> {
-    paragraph {
-        text(
-            Bokmal to "Du får ikke utbetalt uføretrygd fordi du er under straffegjennomføring. Du kan lese mer om andre beregningsperioder i vedlegget.",
-            Nynorsk to "Du får ikkje utbetalt uføretrygd fordi du er under straffegjennomføring. Du kan lese meir om andre utrekningsperiodar i vedlegget.",
-            English to "You will not receive disability benefit because you are serving a criminal sentence. You can read more about other calculation periods in the appendix."
-        )
-    }
 }
 
 val begrunnOverskrift_001 = OutlinePhrase<LangBokmalNynorskEnglish, Unit> {

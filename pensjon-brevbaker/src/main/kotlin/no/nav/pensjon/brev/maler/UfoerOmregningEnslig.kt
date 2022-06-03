@@ -60,8 +60,6 @@ object UfoerOmregningEnslig : StaticTemplate {
             }
             val harUfoereMaanedligBeloepVedvirk =
                 argument().map { it.ufoeretrygdVedVirk.totalUfoereMaanedligBeloep.value > 0 }
-            val harFlereUfoeretrygdPerioder =
-                argument().map { it.beregnetUTPerMaaned_antallBeregningsperioderPaaVedtak > 1 }
             val institusjonsoppholdVedVirk = argument().select(UfoerOmregningEnsligDto::institusjonsoppholdVedVirk)
             val barnetilleggForSaerkullsbarnGjeldende_ErRedusertMotInntekt =
                 argument().map { it.barnetilleggSaerkullsbarnGjeldende_erRedusertMotInntekt }
@@ -114,59 +112,14 @@ object UfoerOmregningEnslig : StaticTemplate {
                     argument().map { OmregnBTDodEPSInnledn_001Dto(it.avdoed.navn, it.krav_virkningsDatoFraOgMed) })
             }
 
-            includePhrase(beloepUT, argument().map {
+            includePhrase(utbetalingUfoeretrygd, argument().map {
                 BeloepUTDto(
                     totalUfoereMaanedligBeloep = it.ufoeretrygdVedVirk.totalUfoereMaanedligBeloep,
                     harBarnetilleggForSaerkullsbarnVedVirk = it.barnetilleggVedVirk?.barnetilleggSaerkullsbarnVedVirk != null,
+                    institusjonsoppholdVedVirk = it.institusjonsoppholdVedVirk,
                     harFlereUfoeretrygdPerioder = it.beregnetUTPerMaaned_antallBeregningsperioderPaaVedtak > 1,
                 )
             })
-
-            showIf(
-                not(harUfoereMaanedligBeloepVedvirk)
-                        and not(harBarnetilleggForSaerkullsbarnVedVirk)
-                        and not(harFlereUfoeretrygdPerioder)
-                        and institusjonsoppholdVedVirk.isOneOf(Institusjon.FENGSEL)
-            ) {
-                includePhrase(belopUTIngenUtbetaling_001)
-            }
-
-            showIf(
-                not(harUfoereMaanedligBeloepVedvirk)
-                        and not(harBarnetilleggForSaerkullsbarnVedVirk)
-                        and harFlereUfoeretrygdPerioder
-                        and not(institusjonsoppholdVedVirk.isOneOf(Institusjon.FENGSEL))
-            ) {
-                includePhrase(belopUTIngenUtbetalingVedlegg_001)
-            }
-
-            ifNotNull(argument().map { it.barnetilleggVedVirk?.barnetilleggSaerkullsbarnVedVirk }) { barnetillegg ->
-                showIf(not(harUfoereMaanedligBeloepVedvirk) and barnetillegg.map { it.beloep.value == 0 }) {
-                    showIf(harFlereUfoeretrygdPerioder) {
-                        includePhrase(belopUTBTIngenUtbetalingVedlegg_001)
-                    }.orShow {
-                        includePhrase(belopUTBTIngenUtbetaling_001)
-                    }
-                }
-            }
-
-            showIf(
-                not(harUfoereMaanedligBeloepVedvirk)
-                        and not(harBarnetilleggForSaerkullsbarnVedVirk)
-                        and not(harFlereUfoeretrygdPerioder)
-                        and institusjonsoppholdVedVirk.isOneOf(Institusjon.FENGSEL)
-            ) {
-                includePhrase(belopUTIngenUtbetalingFengsel_001)
-            }
-
-            showIf(
-                not(harUfoereMaanedligBeloepVedvirk)
-                        and not(harBarnetilleggForSaerkullsbarnVedVirk)
-                        and harFlereUfoeretrygdPerioder
-                        and institusjonsoppholdVedVirk.isOneOf(Institusjon.FENGSEL)
-            ) {
-                includePhrase(belopUTIngenUtbetalingFengselVedlegg_001)
-            }
 
             showIf(harMinsteytelseVedVirk or inntektFoerUfoereErSannsynligEndret) {
                 includePhrase(begrunnOverskrift_001)
