@@ -77,27 +77,24 @@ val vedleggPlikterAP15_002 = TextOnlyPhrase<LangBokmalNynorskEnglish, Unit> {
     )
 }
 
-val vedleggPlikterAP6_002 = TextOnlyPhrase<LangBokmalNynorskEnglish, Unit> {
+//vedleggPlikterAP6_002, vedleggPlikterAP14_002, vedleggPlikterAP18_001
+val vedleggPlikterAPFlytterFraHverandre = TextOnlyPhrase<LangBokmalNynorskEnglish, Sivilstand> { sivilstand ->
     text(
-        Bokmal to "du og ektefellen din flytter fra hverandre",
-        Nynorsk to "du og ektefellen din flyttar frå kvarandre",
-        English to "you and your spouse separate"
+        Bokmal to "du og ",
+        Nynorsk to "du og ",
+        English to "you and your "
     )
-}
-
-val vedleggPlikterAP14_002 = TextOnlyPhrase<LangBokmalNynorskEnglish, Unit> {
+    showIf(sivilstand.isOneOf(Sivilstand.GIFT)){
+        text(Bokmal to "ektefellen",Nynorsk to "ektefellen",English to "spouse")
+    }.orShowIf(sivilstand.isOneOf(Sivilstand.PARTNER)){
+        text(Bokmal to "partneren",Nynorsk to "partnaren",English to "partner")
+    }.orShowIf(sivilstand.isOneOf(Sivilstand.SAMBOER1_5, Sivilstand.SAMBOER3_2)){
+        text(Bokmal to "samboeren",Nynorsk to "sambuaren",English to "cohabiting partner")
+    }
     text(
-        Bokmal to "du og partneren din flytter fra hverandre",
-        Nynorsk to "du og partnaren din flyttar frå kvarandre",
-        English to "you and your partner separate"
-    )
-}
-
-val vedleggPlikterAP18_001 = TextOnlyPhrase<LangBokmalNynorskEnglish, Unit> {
-    text(
-        Bokmal to "du og samboeren din flytter fra hverandre",
-        Nynorsk to "du og sambuaren din flyttar frå kvarandre",
-        English to "you and your cohabiting partner separate"
+        Bokmal to " din flytter fra hverandre",
+        Nynorsk to " din flyttar frå kvarandre",
+        English to " separate"
     )
 }
 

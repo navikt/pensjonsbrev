@@ -67,12 +67,8 @@ val orienteringOmRettigheterOgPlikterAlder =
                         and not(institusjon_gjeldende.isOneOf(FENGSEL, HELSE, SYKEHJEM))
                         and not(eps_institusjon_gjeldende.isOneOf(INGEN))
             ) {
-                showIf(sivilstand.isOneOf(GIFT)) {
-                    item { includePhrase(vedleggPlikterAP6_002) }
-                }.orShowIf(sivilstand.isOneOf(PARTNER)) {
-                    item { includePhrase(vedleggPlikterAP14_002) }
-                }.orShowIf(sivilstand.isOneOf(SAMBOER1_5, SAMBOER3_2)) {
-                    item { includePhrase(vedleggPlikterAP18_001) }
+                item { includePhrase(vedleggPlikterAPFlytterFraHverandre, sivilstand) }
+                showIf(sivilstand.isOneOf(SAMBOER1_5, SAMBOER3_2)) {
                     item { includePhrase(vedleggPlikterAP16_001) }
                     item { includePhrase(vedleggPlikterAP17_001) }
                     item { includePhrase(vedleggPlikterAP19_001) }
