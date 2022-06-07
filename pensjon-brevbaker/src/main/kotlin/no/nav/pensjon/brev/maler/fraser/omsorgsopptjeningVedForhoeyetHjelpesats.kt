@@ -19,7 +19,7 @@ val omsorgsopptjen_Tittel_001 = OutlinePhrase<LangBokmalNynorskEnglish, Unit> {
 }
 
 val omsorgsopptjenHjelpestoenadInnledn_001 = OutlinePhrase<LangBokmalNynorskEnglish, Unit>  {
-    title1 {
+    paragraph {
         text(
             Bokmal to "Du har fått godkjent pensjonsopptjening for <omsorgGodskrGrunnlagAr.arInnvilgetOmrsorgspoeng> fordi du utfører omsorgsarbeid for barn som har rett til forhøyet hjelpestønad etter sats 3 eller 4.",
             Nynorsk to "Du har fått godkjent pensjonsopptening for <omsorgGodskrGrunnlagAr.arInnvilgetOmrsorgspoeng> fordi du utfører omsorgsarbeid for barn som har rett til forhøgd hjelpestønad etter sats 3 eller 4.",
@@ -29,7 +29,7 @@ val omsorgsopptjenHjelpestoenadInnledn_001 = OutlinePhrase<LangBokmalNynorskEngl
 }
 
 val omsorgsopptjenHjelpestKap20Hjemmel_001 = OutlinePhrase<LangBokmalNynorskEnglish, Unit> {
-    title1 {
+    paragraph {
         text(
             Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 3-16 første ledd bokstav b, 20-8 første ledd bokstav b og 20-21.",
             Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 3-16 første ledd bokstav b, 20-8 første ledd bokstav b og 20-21.",
@@ -39,5 +39,11 @@ val omsorgsopptjenHjelpestKap20Hjemmel_001 = OutlinePhrase<LangBokmalNynorskEngl
 }
 
 val omsorgsopptjenHjelpestønadHjemmel2_001 = OutlinePhrase<LangBokmalNynorskEnglish, Unit> {
-
+    paragraph {
+        text(
+            Bokmal to "",
+            Nynorsk to "",
+            English to ""
+        )
+    }
 }
