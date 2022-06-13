@@ -3,7 +3,7 @@ package no.nav.pensjon.brev.maler
 import no.nav.pensjon.brev.api.model.LetterMetadata
 import no.nav.pensjon.brev.api.model.maler.OmsorggsopptjeningVedForhoeyetHjelpesats
 import no.nav.pensjon.brev.maler.fraser.common.*
-import no.nav.pensjon.brev.maler.fraser.omregning.ufoeretrygd.Ufoeretrygd
+import no.nav.pensjon.brev.maler.fraser.omsorgsopptjeningVedForhoeyetHjelpesats
 import no.nav.pensjon.brev.maler.fraser.vedtak.Vedtak
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Language.*
@@ -16,7 +16,7 @@ object UfoerOmregningEnslig : StaticTemplate {
     override val template = createTemplate(
         name = "MF_000094",
         base = PensjonLatex,
-        letterDataType = UfoerOmregningEnsligDto::class,
+        letterDataType = OpptjeningVedForhoeyetHjelpesatsDto::class,
         languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(
             "Vedtak – omregning til enslig uføretrygdet (automatisk)", isSensitiv = true
@@ -27,9 +27,9 @@ object UfoerOmregningEnslig : StaticTemplate {
 
         title {
             text(
-                Bokmal to "NAV har regnet om uføretrygden din",
-                Nynorsk to "NAV har rekna om uføretrygda di",
-                English to "NAV has altered your disability benefit"
+                Bokmal to "Du får pensjonsopptjening for omsorgsarbeid for <omsorgGodskrGrunnlagAr.arInnvilgetOmrsorgspoeng>",
+                Nynorsk to "Du får pensjonsopptening for omsorgsarbeid for <omsorgGodskrGrunnlagAr.arInnvilgetOmrsorgspoeng>",
+                English to "Earned pension savings for unpaid care work for <omsorgGodskrGrunnlagAr.arInnvilgetOmrsorgspoeng>"
             )
         }
 
