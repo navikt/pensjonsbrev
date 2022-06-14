@@ -19,11 +19,9 @@ object UfoerOmregningEnslig : StaticTemplate {
         letterDataType = OpptjeningVedForhoeyetHjelpesatsDto::class,
         languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(
-            "Vedtak – omregning til enslig uføretrygdet (automatisk)", isSensitiv = true
+            "Vedtak – omregning til enslig uføretrygdet (automatisk)", isSensitiv = false
         )
     ) {
-        val harMinsteytelseVedVirk = argument().map { it.minsteytelseVedvirk_sats != null }
-        val inntektFoerUfoereErSannsynligEndret = argument().map { it.inntektFoerUfoerhetVedVirk.erSannsynligEndret }
 
         title {
             text(
@@ -34,3 +32,4 @@ object UfoerOmregningEnslig : StaticTemplate {
         }
 
         outline {
+            includePhrase(vedtakOverskriftPesys_001)
