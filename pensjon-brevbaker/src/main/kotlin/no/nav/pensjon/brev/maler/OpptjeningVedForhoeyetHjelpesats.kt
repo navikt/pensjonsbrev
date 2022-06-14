@@ -12,17 +12,16 @@ import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brev.template.dsl.expression.*
 
 // BrevTypeKode: MF_000094
-object UfoerOmregningEnslig : StaticTemplate {
+object OpptjeningVedForhoeyetHjelpesats : StaticTemplate {
     override val template = createTemplate(
         name = "MF_000094",
         base = PensjonLatex,
         letterDataType = OpptjeningVedForhoeyetHjelpesatsDto::class,
         languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(
-            "Vedtak – omregning til enslig uføretrygdet (automatisk)", isSensitiv = false
+            "Vedtak – innvilgelse av omsorgsopptjening ved forhøyet hjelpestønad sats 3 eller 4", isSensitiv = false
         )
     ) {
-
         title {
             text(
                 Bokmal to "Du får pensjonsopptjening for omsorgsarbeid for <omsorgGodskrGrunnlagAr.arInnvilgetOmrsorgspoeng>",
@@ -31,5 +30,21 @@ object UfoerOmregningEnslig : StaticTemplate {
             )
         }
 
-        outline {
-            includePhrase(vedtakOverskriftPesys_001)
+        Outline {
+
+        }
+
+    }
+
+    omsorgsopptjenHjelpestInnledn_001
+    omsorgsopptjenHjelpestKap20Hjemmel_001
+    omsorgsopptjenHjelpestKap3Hjemmel_001
+    title1 omsorgsopptjenInfoOverskrift_001
+    omsorgsopptjenInfo_001
+    title1 omsorgsopptjenOverforingInfoOverskrift_001
+    omsorgsopptjenOverforingInfo_001
+    title1 omsorgsopptjenHjelpestAutoInfoOverskrift_001
+    omsorgsopptjenHjelpestAutoInfo_001
+    harSpørsmålPesys_001
+    mvhInfoAutoPesys_001
+}
