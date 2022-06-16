@@ -21,17 +21,6 @@ class ExpressionTest {
     }
 
     @Test
-    fun `str creates a unaryinvoke with tostring`() {
-        val expr = Expression.Literal(22)
-        val expected = Expression.UnaryInvoke(
-            value = expr,
-            operation = UnaryOperation.ToString()
-        )
-
-        assertEquals(expected, expr.str())
-    }
-
-    @Test
     fun `format creates a binaryinvoke with dateformatting by letter language`() {
         val expr = Expression.Literal(LocalDate.of(2020,1,1))
         val expected = Expression.BinaryInvoke(

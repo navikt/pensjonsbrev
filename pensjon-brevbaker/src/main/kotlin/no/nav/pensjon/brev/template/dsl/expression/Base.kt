@@ -1,14 +1,9 @@
 package no.nav.pensjon.brev.template.dsl.expression
 
-import no.nav.pensjon.brev.api.model.Telefonnummer
-import no.nav.pensjon.brev.template.*
-
-@Deprecated("Use format instead. Depricated to ensure control of formatted string for different types")
-fun Expression<Any>.str(): StringExpression =
-    Expression.UnaryInvoke(this, UnaryOperation.ToString())
-
-fun Expression<Telefonnummer>.format() =
-    Expression.UnaryInvoke(this, UnaryOperation.FormatPhoneNumber)
+import no.nav.pensjon.brev.template.BinaryOperation
+import no.nav.pensjon.brev.template.Expression
+import no.nav.pensjon.brev.template.StringExpression
+import no.nav.pensjon.brev.template.UnaryOperation
 
 fun <Data : Any, Field> Expression<Data>.select(
     selector: Data.() -> Field,
@@ -39,7 +34,7 @@ fun <T : Enum<T>> Expression<Enum<T>>.isOneOf(vararg enums: Enum<T>): Expression
     BinaryOperation.EnumInList()
 )
 
-fun <T : Enum<T>> Expression<Enum<T>>.isNotAnyOf(vararg enums: Enum<T>): Expression<Boolean> = Expression.BinaryInvoke( //TODO write tests
+fun <T : Enum<T>> Expression<Enum<T>>.isNotAnyOf(vararg enums: Enum<T>): Expression<Boolean> = Expression.BinaryInvoke(
     this,
     enums.asList().expr(),
     BinaryOperation.EnumNotInList()
