@@ -4,6 +4,7 @@ import no.nav.pensjon.brev.api.model.LetterMetadata
 import no.nav.pensjon.brev.api.model.maler.OmsorgEgenAutoDto
 import no.nav.pensjon.brev.maler.vedlegg.EgenerklaeringPleieOgOmsorgsarbeid
 import no.nav.pensjon.brev.maler.vedlegg.egenerklaeringPleieOgOmsorgsarbeid
+import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.base.PensjonLatex
@@ -23,7 +24,7 @@ object OmsorgEgenAuto : StaticTemplate {
         )
     ) {
 
-        val aarEgenerklaringOmsorgspoeng = argument().select(OmsorgEgenAutoDto::aarEgenerklaringOmsorgspoeng).str()
+        val aarEgenerklaringOmsorgspoeng = argument().select(OmsorgEgenAutoDto::aarEgenerklaringOmsorgspoeng).format()
 
         title {
             text(
@@ -54,7 +55,7 @@ object OmsorgEgenAuto : StaticTemplate {
             }
 
             paragraph {
-                val aarInnvilgetOmsorgspoeng = argument().select(OmsorgEgenAutoDto::aarInnvilgetOmsorgspoeng).str()
+                val aarInnvilgetOmsorgspoeng = argument().select(OmsorgEgenAutoDto::aarInnvilgetOmsorgspoeng).format()
                 textExpr(
                     Bokmal to "Du har fått godkjent pensjonsopptjening for ".expr() + aarInnvilgetOmsorgspoeng + ".",
                     Nynorsk to "Du har fått godkjend pensjonsopptening for ".expr() + aarInnvilgetOmsorgspoeng + ".",

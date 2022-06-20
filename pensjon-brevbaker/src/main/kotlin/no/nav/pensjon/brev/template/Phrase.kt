@@ -1,6 +1,8 @@
 package no.nav.pensjon.brev.template
 
-import no.nav.pensjon.brev.template.dsl.*
+import no.nav.pensjon.brev.template.dsl.OutlineScope
+import no.nav.pensjon.brev.template.dsl.ParagraphScope
+import no.nav.pensjon.brev.template.dsl.TextOnlyScope
 import kotlin.reflect.KClass
 
 data class Phrase<out Lang : LanguageSupport, PhraseData: Any>(

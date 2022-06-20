@@ -25,8 +25,8 @@ sealed class Language {
 
     fun locale(): Locale =
         when (this) {
-            Bokmal -> Locale.forLanguageTag("NB")
-            Nynorsk -> Locale.forLanguageTag("NN")
+            Bokmal -> Locale.forLanguageTag("no")
+            Nynorsk -> Locale.forLanguageTag("no")
             English -> Locale.UK
         }
 

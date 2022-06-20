@@ -1,7 +1,10 @@
 package no.nav.pensjon.brev.maler.example
 
 import no.nav.pensjon.brev.api.model.Felles
+import no.nav.pensjon.brev.api.model.Kroner
 import no.nav.pensjon.brev.api.model.LetterMetadata
+import no.nav.pensjon.brev.maler.fraser.common.Felles.kroner
+import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Element.Table.ColumnAlignment.RIGHT
 import no.nav.pensjon.brev.template.Element.Text.FontType
@@ -61,8 +64,8 @@ object LetterExample : StaticTemplate {
                 showIf(pensjonInnvilget) {
                     textExpr(
                         // Text expressions can use variables as expressions, but the text literals also need to be expressions
-                        Bokmal to "Hei ".expr() + firstName.str() + ". Du har fått innvilget pensjon.".expr(),
-                        Nynorsk to "Hei ".expr() + firstName.str() + ". Du har fått innvilget pensjon.".expr(),
+                        Bokmal to "Hei ".expr() + firstName + ". Du har fått innvilget pensjon.".expr(),
+                        Nynorsk to "Hei ".expr() + firstName + ". Du har fått innvilget pensjon.".expr(),
                     )
                 }
 
@@ -73,8 +76,8 @@ object LetterExample : StaticTemplate {
                         ifNotNull(tillegg1) {
                             item {
                                 textExpr(
-                                    Bokmal to "Du har fått tilleg1 for ".expr() + navn + " på ".expr() + it.str() + " Kr",
-                                    Nynorsk to "Du har fått tilleg1 for ".expr() + navn + " på ".expr() + it.str() + " Kr",
+                                    Bokmal to "Du har fått tilleg1 for ".expr() + navn + " på ".expr() + it.format() + " Kr",
+                                    Nynorsk to "Du har fått tilleg1 for ".expr() + navn + " på ".expr() + it.format() + " Kr",
                                 )
                             }
                         }
@@ -142,25 +145,22 @@ object LetterExample : StaticTemplate {
                             }
                             cell {
                                 ifNotNull(tillegg1) { tillegg ->
-                                    textExpr(
-                                        Bokmal to tillegg.str() + " Kr".expr(),
-                                        Nynorsk to tillegg.str() + " Kr".expr()
-                                    )
+                                    includePhrase(kroner, tillegg)
                                 }
                             }
                             cell {
                                 ifNotNull(tillegg2) { tillegg ->
                                     textExpr(
-                                        Bokmal to tillegg.str() + " Kr".expr(),
-                                        Nynorsk to tillegg.str() + " Kr".expr()
+                                        Bokmal to tillegg.format() + " Kr".expr(),
+                                        Nynorsk to tillegg.format() + " Kr".expr()
                                     )
                                 }
                             }
                             cell {
                                 ifNotNull(tillegg3) { tillegg ->
                                     textExpr(
-                                        Bokmal to tillegg.str() + " Kr".expr(),
-                                        Nynorsk to tillegg.str() + " Kr".expr()
+                                        Bokmal to tillegg.format() + " Kr".expr(),
+                                        Nynorsk to tillegg.format() + " Kr".expr()
                                     )
                                 }
                             }
@@ -240,20 +240,20 @@ data class LetterExampleDto(
     // No-arg constructor for integration tests
     constructor() : this(
         true,
-        LocalDate.now(),
+        LocalDate.of(2020, 1, 1),
         listOf("test testerson1", "test testerson2", "test testerson3"),
         listOf(
             ExampleTilleggDto(
                 navn = "Test testerson 1",
-                tillegg1 = 300,
-                tillegg3 = 500,
+                tillegg1 = Kroner(300),
+                tillegg3 = Kroner(500),
             ), ExampleTilleggDto(
                 navn = "Test testerson 2",
-                tillegg1 = 100,
-                tillegg2 = 600,
+                tillegg1 = Kroner(100),
+                tillegg2 = Kroner(600),
             ), ExampleTilleggDto(
                 navn = "Test testerson 3",
-                tillegg2 = 300,
+                tillegg2 = Kroner(300),
             )
         ), LocalDate.of(2020, 1, 1),
         100
@@ -262,10 +262,17 @@ data class LetterExampleDto(
 
 data class ExampleTilleggDto(
     val navn: String,
-    val tillegg1: Int? = null,
-    val tillegg2: Int? = null,
-    val tillegg3: Int? = null,
-)
+    val tillegg1: Kroner? = null,
+    val tillegg2: Kroner? = null,
+    val tillegg3: Kroner? = null,
+) {
+    constructor() : this(
+        navn = "Navn",
+        tillegg1 = Kroner(1234),
+        tillegg2 = Kroner(1234),
+        tillegg3 = Kroner(1234),
+    )
+}
 
 data class OutlinePhraseDto(val datoInnvilget: LocalDate, val pensjonInnvilget: Boolean)
 

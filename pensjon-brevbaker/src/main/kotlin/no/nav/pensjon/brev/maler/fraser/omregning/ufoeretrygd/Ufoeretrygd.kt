@@ -1,8 +1,10 @@
 package no.nav.pensjon.brev.maler.fraser.omregning.ufoeretrygd
 
+import no.nav.pensjon.brev.api.model.Kroner
 import no.nav.pensjon.brev.api.model.maler.UngUfoerAutoDto
 import no.nav.pensjon.brev.maler.fraser.Constants
 import no.nav.pensjon.brev.maler.fraser.common.*
+import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.dsl.*
@@ -34,7 +36,7 @@ object Ufoeretrygd {
     )
 
     val beloep = OutlinePhrase<LangBokmalNynorsk, BeloepPerMaaned> { beloepPerMaaned ->
-        val kroner = beloepPerMaaned.select(BeloepPerMaaned::perMaaned).str()
+        val kroner = beloepPerMaaned.select(BeloepPerMaaned::perMaaned).format()
 
         paragraph {
             showIf(beloepPerMaaned.map { !it.fellesbarn && !it.saerkullsbarn && !it.ektefelle && !it.gjenlevende }) {
@@ -86,7 +88,7 @@ object Ufoeretrygd {
         fun saerkullsbarnUtbetalt(): Boolean = saerkullsbarn?.utbetalt ?: false
     }
 
-    val barnetileggIkkeUtbetalt = OutlinePhrase<LangBokmalNynorsk, BarnetilleggIkkeUtbetaltDto> {
+    val barnetilleggIkkeUtbetalt = OutlinePhrase<LangBokmalNynorsk, BarnetilleggIkkeUtbetaltDto> {
         paragraph {
 
             val saerkullInnvilget = it.select(BarnetilleggIkkeUtbetaltDto::saerkullInnvilget)
@@ -96,7 +98,7 @@ object Ufoeretrygd {
 
             ifNotNull(it.select(BarnetilleggIkkeUtbetaltDto::saerkullsbarn)) { saerkullsbarn ->
                 val barnFlertall = saerkullsbarn.map { it.antallBarn > 1 }
-                val inntektstak = saerkullsbarn.select(UngUfoerAutoDto.InnvilgetBarnetillegg::inntektstak).str()
+                val inntektstak = saerkullsbarn.select(UngUfoerAutoDto.InnvilgetBarnetillegg::inntektstak).format()
 
                 showIf(saerkullInnvilget and not(saerkullUtbetalt) and fellesUtbetalt and fellesInnvilget) {
                     textExpr(
@@ -120,7 +122,7 @@ object Ufoeretrygd {
 
             ifNotNull(it.select(BarnetilleggIkkeUtbetaltDto::fellesbarn)) { fellesbarn ->
                 val barnFlertall = fellesbarn.map { it.antallBarn > 1 }
-                val inntektstak = fellesbarn.select(UngUfoerAutoDto.InnvilgetBarnetillegg::inntektstak).str()
+                val inntektstak = fellesbarn.select(UngUfoerAutoDto.InnvilgetBarnetillegg::inntektstak).format()
 
                 showIf(fellesInnvilget and not(fellesUtbetalt) and saerkullUtbetalt and saerkullInnvilget) {
                     textExpr(

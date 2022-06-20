@@ -15,12 +15,12 @@ class OmsorgEgenAutoITest {
         Letter(
             OmsorgEgenAuto.template,
             OmsorgEgenAutoDto(),
-            Language.English,
+            Language.Bokmal,
             Fixtures.fellesAuto
         ).render()
             .let { PdfCompilationInput(it.base64EncodedFiles()) }
             .let { runBlocking { LaTeXCompilerService(PDF_BUILDER_URL).producePDF(it, "test").base64PDF } }
-            .also { writeTestPDF("OMSORG_EGEN_AUTO_ENGLISH", it) }
+            .also { writeTestPDF("OMSORG_EGEN_AUTO_BOKMAL", it) }
     }
 
 }

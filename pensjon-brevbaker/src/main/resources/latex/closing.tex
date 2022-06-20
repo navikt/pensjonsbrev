@@ -36,17 +36,9 @@
     \end{minipage}
 }
 
-% space between closing text and attachments
-\newcommand{\closingvedleggspace}{ % Should be used if there is any attachments.
-    \par
-    \vspace{60pt}
-}
-
-
 % attachmentList
-\newenvironment{attachmentList}{
-    \feltclosingvedleggprefix
-    \begin{itemize}
-    } {
-    \end{itemize}
-}
+\newenvironment{attachmentList}
+    {\par
+    \lettersectiontitle{\feltclosingvedleggprefix}
+    \begin{itemize}}
+    {\end{itemize}}

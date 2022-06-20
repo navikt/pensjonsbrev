@@ -26,15 +26,15 @@ class TemplateResourceITest {
             fail { "TemplateResource.getTemplates() returned a template name that doesnt exist: $name" }
         }
         val argument = createArgument(template.letterDataType)
-        val rendered = requestLetter(
-            LetterRequest(
-                template = name,
-                letterData = argument,
-                felles = Fixtures.felles,
-                language = LanguageCode.BOKMAL
-            )
-        )
         try {
+            val rendered = requestLetter(
+                LetterRequest(
+                    template = name,
+                    letterData = argument,
+                    felles = Fixtures.felles,
+                    language = LanguageCode.BOKMAL
+                )
+            )
             writeTestPDF(name, rendered.base64pdf)
         } catch (failedCompile: Exception) {
             fail("Failed to compile template($name) with argument: $argument", failedCompile)

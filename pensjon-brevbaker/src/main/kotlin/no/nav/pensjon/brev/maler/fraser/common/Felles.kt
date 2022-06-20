@@ -1,9 +1,17 @@
 package no.nav.pensjon.brev.maler.fraser.common
 
+import no.nav.pensjon.brev.api.model.Kroner
 import no.nav.pensjon.brev.maler.fraser.Constants
-import no.nav.pensjon.brev.template.*
+import no.nav.pensjon.brev.model.format
+import no.nav.pensjon.brev.template.LangBokmalNynorsk
+import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.*
-import no.nav.pensjon.brev.template.dsl.*
+import no.nav.pensjon.brev.template.OutlinePhrase
+import no.nav.pensjon.brev.template.TextOnlyPhrase
+import no.nav.pensjon.brev.template.dsl.expression.format
+import no.nav.pensjon.brev.template.dsl.expression.plus
+import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.dsl.textExpr
 
 object Felles {
 
@@ -78,5 +86,21 @@ object Felles {
                 Nynorsk to "Du har rett til å sjå dokumenta i saka di. I vedlegget får du vite korleis du går fram.",
             )
         }
+    }
+
+    val kroner = TextOnlyPhrase<LangBokmalNynorskEnglish, Kroner> { kroner ->
+        textExpr(
+            Bokmal to kroner.format() + " kr",
+            Nynorsk to kroner.format() + " kr",
+            English to kroner.format() + " NOK",
+        )
+    }
+
+    val maaneder = TextOnlyPhrase<LangBokmalNynorskEnglish, Int> { maaned ->
+        textExpr(
+            Bokmal to maaned.format() + " måneder",
+            Nynorsk to maaned.format() + " måneder",
+            English to maaned.format() + " months"
+        )
     }
 }

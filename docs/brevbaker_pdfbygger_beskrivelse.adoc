@@ -160,7 +160,7 @@ object EksempelBrev : StaticTemplate {
             }
 
             // Inkluder data fra datagrunnlaget til malen inn i brevet som tekst
-            eval { argument().select(EksempelBrevDto::pensjonInnvilget).str() }
+            eval { argument().select(EksempelBrevDto::pensjonInnvilget).format() }
 
             // Inkludering av eksisterende frase/mini-mal for gjenbruk av elementer
             includePhrase(
