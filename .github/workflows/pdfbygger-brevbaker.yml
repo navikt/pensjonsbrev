@@ -10,8 +10,8 @@ on:
       - "pdf-bygger/**"
       - ".github/workflows/pdfbygger-brevbaker.yml"
 env:
-  "IMAGE_BREVBAKER": "docker.pkg.github.com/${{ github.repository }}/pensjon-brevbaker:${{ github.sha }}"
-  "IMAGE_PDF_BUILDER": "docker.pkg.github.com/${{ github.repository }}/pensjon-pdf-bygger:${{ github.sha }}"
+  "IMAGE_BREVBAKER": "ghcr.io/${{ github.repository }}/pensjon-brevbaker:${{ github.sha }}"
+  "IMAGE_PDF_BUILDER": "ghcr.io/${{ github.repository }}/pensjon-pdf-bygger:${{ github.sha }}"
 jobs:
   snyk:
     runs-on: "ubuntu-latest"
@@ -49,7 +49,7 @@ jobs:
           "GITHUB_TOKEN": "${{ secrets.GITHUB_TOKEN }}"
       - name: "Build and publish Docker image"
         run: "docker build --pull --tag ${IMAGE_BREVBAKER} . && echo $GITHUB_TOKEN | docker login\
-        \ --username $GITHUB_REPOSITORY --password-stdin https://docker.pkg.github.com\
+        \ --username $GITHUB_REPOSITORY --password-stdin https://ghcr.io\
         \ && docker push ${IMAGE_BREVBAKER}"
         env:
           "GITHUB_TOKEN": "${{ secrets.GITHUB_TOKEN }}"
@@ -75,7 +75,7 @@ jobs:
         run: "./gradlew build"
       - name: "Build and publish Docker image"
         run: "docker build --pull --tag ${IMAGE_PDF_BUILDER} . && echo $GITHUB_TOKEN | docker login\
-        \ --username $GITHUB_REPOSITORY --password-stdin https://docker.pkg.github.com\
+        \ --username $GITHUB_REPOSITORY --password-stdin https://ghcr.io\
         \ && docker push ${IMAGE_PDF_BUILDER}"
         env:
           "GITHUB_TOKEN": "${{ secrets.GITHUB_TOKEN }}"
@@ -90,7 +90,7 @@ jobs:
       pdf-bygger:
         ports:
           - 8081:8080
-        image: "docker.pkg.github.com/${{ github.repository }}/pensjon-pdf-bygger:${{ github.sha }}"
+        image: "ghcr.io/${{ github.repository }}/pensjon-pdf-bygger:${{ github.sha }}"
         credentials:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
@@ -103,7 +103,7 @@ jobs:
           JAVA_OPTS: "-Dio.ktor.development=true"
         ports:
           - 8080:8080
-        image: "docker.pkg.github.com/${{ github.repository }}/pensjon-brevbaker:${{ github.sha }}"
+        image: "ghcr.io/${{ github.repository }}/pensjon-brevbaker:${{ github.sha }}"
         credentials:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
