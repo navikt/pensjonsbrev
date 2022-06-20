@@ -2,8 +2,8 @@ package no.nav.pensjon.brev.maler
 
 import no.nav.pensjon.brev.api.model.LetterMetadata
 import no.nav.pensjon.brev.api.model.maler.OmsorggsopptjeningVedForhoeyetHjelpesats
+import no.nav.pensjon.brev.maler.fraser.*
 import no.nav.pensjon.brev.maler.fraser.common.*
-import no.nav.pensjon.brev.maler.fraser.omsorgsopptjeningVedForhoeyetHjelpesats
 import no.nav.pensjon.brev.maler.fraser.vedtak.Vedtak
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Language.*
@@ -30,21 +30,40 @@ object OpptjeningVedForhoeyetHjelpesats : StaticTemplate {
             )
         }
 
-        Outline {
+        outline {
+            includePhrase(vedtakOverskriftPesys_001)
+
+            includePhrase(omsorgsopptjenHjelpestoenadInnledn_001)
+
+            // fodselsdato format:  1953-12-12
+            // var date= GetValue("fag=bruker=fodselsdato");
+            // var aar = date.substr(0,4); -substring function that exstracts the first 4 digits
+            // if(aar > 1953) include
+            showIf(
+                includePhrase(omsorgsopptjenHjelpestKap20Hjemmel_001)
+            )
+
+            // if(aar < 1954) include
+            showIf(
+                includePhrase(omsorgsopptjenHjelpestKap3Hjemmel_001)
+            )
+
+            includePhrase(omsorgsopptjenInfoOverskrift_001)
+
+            includePhrase(omsorgsopptjenInfo_001)
+
+            includePhrase(omsorgsopptjenOverforingInfoOverskrift_001)
+
+            includePhrase(omsorgsopptjenOverforingInfo_001)
+
+            includePhrase(omsorgsopptjenHjelpestonadAutoGodkjennInfoTittel_001)
+
+            includePhrase(omsorgsopptjenHjelpestonadAutoGodkjennInfo_001)
+            
 
         }
 
     }
-
-    omsorgsopptjenHjelpestInnledn_001
-    omsorgsopptjenHjelpestKap20Hjemmel_001
-    omsorgsopptjenHjelpestKap3Hjemmel_001
-    title1 omsorgsopptjenInfoOverskrift_001
-    omsorgsopptjenInfo_001
-    title1 omsorgsopptjenOverforingInfoOverskrift_001
-    omsorgsopptjenOverforingInfo_001
-    title1 omsorgsopptjenHjelpestAutoInfoOverskrift_001
-    omsorgsopptjenHjelpestAutoInfo_001
     harSpørsmålPesys_001
     mvhInfoAutoPesys_001
 }
