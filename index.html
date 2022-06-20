@@ -577,7 +577,7 @@ Om vi f.eks ønsker å produsere html brev eller noe annet kan vi bare lage ett 
 <h3 id="_dagens_arkitektur_for_bestilling_av_automatiske_brev">Dagens arkitektur for bestilling av automatiske brev</h3>
 <div class="imageblock">
 <div class="content">
-<img src="img/dagens-arkitektur.svg" alt="dagens arkitektur" width="395" height="279">
+<img src="img/dagens-arkitektur.svg" alt="dagens arkitektur" width="387" height="271">
 </div>
 </div>
 </div>
@@ -585,7 +585,7 @@ Om vi f.eks ønsker å produsere html brev eller noe annet kan vi bare lage ett 
 <h3 id="_antatt_fremtidig_arkitektur_for_løsningen">Antatt fremtidig arkitektur for løsningen</h3>
 <div class="imageblock">
 <div class="content">
-<img src="img/planlagt-arkitektur.svg" alt="planlagt arkitektur" width="590" height="497">
+<img src="img/planlagt-arkitektur.svg" alt="planlagt arkitektur" width="582" height="499">
 </div>
 </div>
 </div>
@@ -611,7 +611,7 @@ Verken PDF dokumentet eller informasjonen som brukes til å generere dokumentet 
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="img/sekvens-diagram.svg" alt="sekvens diagram" width="521" height="220">
+<img src="img/sekvens-diagram.svg" alt="sekvens diagram" width="513" height="208">
 </div>
 </div>
 <div class="sect2">
@@ -621,7 +621,7 @@ Verken PDF dokumentet eller informasjonen som brukes til å generere dokumentet 
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="img/datagrunnlag-letterrequest.svg" alt="datagrunnlag letterrequest" width="734" height="649">
+<img src="img/datagrunnlag-letterrequest.svg" alt="datagrunnlag letterrequest" width="857" height="711">
 </div>
 </div>
 <div class="paragraph">
@@ -631,7 +631,7 @@ For eksempel ved bestilling av brevet "Egenerklæring godskriving omsorgspoeng" 
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="img/brevDtoEksempel.svg" alt="brevDtoEksempel" width="264" height="253">
+<img src="img/brevDtoEksempel.svg" alt="brevDtoEksempel" width="306" height="267">
 </div>
 </div>
 </div>
@@ -685,7 +685,7 @@ Malen kan se for eksempel slik ut:</p>
             }
 
             // Inkluder data fra datagrunnlaget til malen inn i brevet som tekst
-            eval { argument().select(EksempelBrevDto::pensjonInnvilget).str() }
+            eval { argument().select(EksempelBrevDto::pensjonInnvilget).format() }
 
             // Inkludering av eksisterende frase/mini-mal for gjenbruk av elementer
             includePhrase(
@@ -807,7 +807,7 @@ Dette gjør det mulig å bytte ut LaTeX med andre representasjoner av det tekstl
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2022-01-12 09:35:34 UTC
+Last updated 2022-06-20 07:43:28 UTC
 </div>
 </div>
 </body>
