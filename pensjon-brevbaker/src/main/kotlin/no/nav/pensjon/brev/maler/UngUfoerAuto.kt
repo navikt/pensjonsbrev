@@ -7,6 +7,7 @@ import no.nav.pensjon.brev.maler.fraser.common.GrunnbeloepSats
 import no.nav.pensjon.brev.maler.fraser.common.KravVirkningFraOgMed
 import no.nav.pensjon.brev.maler.fraser.omregning.ufoeretrygd.Ufoeretrygd
 import no.nav.pensjon.brev.maler.fraser.vedtak.Vedtak
+import no.nav.pensjon.brev.maler.vedlegg.*
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.StaticTemplate
@@ -79,8 +80,12 @@ object UngUfoerAuto : StaticTemplate {
 
         }
 
-        // TODO: Inkluder vedlegg "Dette er din månedlige uføretrygd før skatt"
-        // TODO: Inkluder vedlegg OrienteringOmRettigheterUfoere.kt, conditional for showing the attachment is: Sakstype = Uføretrygd? and UngUforResultat = "oppfylt"?
-        // TODO: Inkluder vedlegg DineRettigheterOgMulighetTilAaKlage.kt, conditional for showing the attachment is: Sakstype = "Uføretrygd"? and UngUforResultat = "ikke_oppfylt"?
+        // TODO: PL-4948 - Erstatt følgende
+        includeAttachment(maanedligUfoeretrygdFoerSkatt, argument().map { it.maanedligUfoeretrygdFoerSkatt!! }, argument().map { it.maanedligUfoeretrygdFoerSkatt != null })
+        includeAttachment(orienteringOmRettigheterOgPlikterUfoere, argument().map { it.orienteringOmRettigheterUfoere!! }, argument().map { it.orienteringOmRettigheterUfoere != null })
+
+        // TODO: PL-4948: Med dette
+//        includeAttachment(maanedligUfoeretrygdFoerSkatt, argument().select(UngUfoerAutoDto::maanedligUfoeretrygdFoerSkatt))
+//        includeAttachment(orienteringOmRettigheterOgPlikterUfoere, argument().select(UngUfoerAutoDto::orienteringOmRettigheterUfoere))
     }
 }

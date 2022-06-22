@@ -412,17 +412,15 @@ object UfoerOmregningEnslig : StaticTemplate {
             }
         }
 
-        includeAttachment(maanedligUfoeretrygdFoerSkatt, argument().map { it.maanedligUfoeretrygdFoerSkatt })
+        includeAttachment(maanedligUfoeretrygdFoerSkatt, argument().select(UfoerOmregningEnsligDto::maanedligUfoeretrygdFoerSkatt))
 
-        includeAttachment(opplysningerBruktIBeregningUT, argument().map { it.opplysningerBruktIBeregningUT },
+        includeAttachment(opplysningerBruktIBeregningUT, argument().select(UfoerOmregningEnsligDto::opplysningerBruktIBeregningUT),
             argument().map { it.barnetilleggVedVirk?.barnetilleggSaerkullsbarnVedVirk?.erRedusertMotInntekt == true }
                     or harMinsteytelseVedVirk
                     or inntektFoerUfoereErSannsynligEndret
         )
 
-        includeAttachment(
-            orienteringOmRettigheterOgPlikterUfoere,
-            argument().map { it.orienteringOmRettigheterOgPlikter })
+        includeAttachment(orienteringOmRettigheterOgPlikterUfoere, argument().select(UfoerOmregningEnsligDto::orienteringOmRettigheterOgPlikter))
 
     }
 }
