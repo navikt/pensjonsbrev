@@ -1,13 +1,13 @@
 package no.nav.pensjon.brev
 
-import io.ktor.application.*
-import io.ktor.auth.*
-import io.ktor.auth.jwt.*
-import io.ktor.features.*
 import io.ktor.http.*
-import io.ktor.request.*
-import io.ktor.response.*
-import io.ktor.routing.*
+import io.ktor.server.application.*
+import io.ktor.server.auth.*
+import io.ktor.server.auth.jwt.*
+import io.ktor.server.plugins.callid.*
+import io.ktor.server.request.*
+import io.ktor.server.response.*
+import io.ktor.server.routing.*
 import io.prometheus.client.exporter.common.TextFormat
 import no.nav.pensjon.brev.api.LetterResource
 import no.nav.pensjon.brev.api.description
@@ -34,7 +34,7 @@ fun Application.brevbakerRouting(authenticationNames: Array<String>) =
             }
         }
 
-        authenticate(*authenticationNames, optional = environment.developmentMode) {
+        authenticate(*authenticationNames, optional = environment?.developmentMode ?: false) {
             post("/letter") {
                 val letterRequest = call.receive<LetterRequest>()
 
