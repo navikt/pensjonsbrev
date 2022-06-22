@@ -22,16 +22,6 @@ class ParagraphScope<Lang : LanguageSupport, LetterData : Any> : ParagraphScopeB
 abstract class ParagraphScopeBase<Lang : LanguageSupport, LetterData : Any, Scope : ParagraphScopeBase<Lang, LetterData, Scope>> :
     TextOnlyScopeBase<Lang, LetterData, Scope>() {
 
-    @Deprecated(message = "Phrase klassen er erstattet med TextOnlyPhrase, ParagraphPhrase, OutlinePhrase klassene for å støtte fraser i forskjellige scopes", replaceWith = ReplaceWith("includePhrase(phrase, argument)"))
-    fun <PhraseData : Any> includePhrase(argument: Expression<PhraseData>, phrase: Phrase<Lang, PhraseData>) {
-        children.add(Element.IncludePhrase(argument, phrase))
-    }
-
-    @Deprecated(message = "Phrase klassen er erstattet med TextOnlyPhrase, ParagraphPhrase, OutlinePhrase klassene for å støtte fraser i forskjellige scopes", replaceWith = ReplaceWith("includePhrase(phrase)"))
-    fun includePhrase(phrase: Phrase<Lang, Unit>) {
-        children.add(Element.IncludePhrase(Unit.expr(), phrase))
-    }
-
     fun list(init: ListScope<Lang, LetterData>.() -> Unit) {
         children.add(Element.ItemList(ListScope<Lang, LetterData>().apply(init).children))
     }

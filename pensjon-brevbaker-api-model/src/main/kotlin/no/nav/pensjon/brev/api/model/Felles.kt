@@ -10,6 +10,7 @@ data class Felles(
     val mottaker: Adresse,
     val signerendeSaksbehandlere: SignerendeSaksbehandlere? = null,
 ) {
+    @Suppress("unused")
     constructor() : this(
         dokumentDato = LocalDate.of(2020, 1, 1),
         saksnummer = "1234",

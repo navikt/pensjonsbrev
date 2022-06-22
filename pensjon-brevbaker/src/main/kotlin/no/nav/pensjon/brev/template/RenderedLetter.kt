@@ -12,7 +12,7 @@ class RenderedLatexLetter : RenderedLetter {
     private val files: MutableMap<String, ByteArrayOutputStream> = mutableMapOf()
 
     companion object {
-        val base64Encoder = Base64.getEncoder()
+        val base64Encoder: Base64.Encoder = Base64.getEncoder()
     }
 
     override fun base64EncodedFiles(): Map<String, String> {

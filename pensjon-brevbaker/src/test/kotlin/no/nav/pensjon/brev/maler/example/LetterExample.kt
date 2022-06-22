@@ -34,8 +34,6 @@ object LetterExample : StaticTemplate {
         }
 
         // Main letter content
-        val datoInnvilget = argument().select(LetterExampleDto::datoInnvilget)
-        val pensjonBeloep = argument().select(LetterExampleDto::pensjonBeloep)
         val pensjonInnvilget = argument().select(LetterExampleDto::pensjonInnvilget)
         val datoAvslaatt = argument().select(LetterExampleDto::datoAvslaatt)
         val tillegg = argument().select(LetterExampleDto::tilleggEksempel)
@@ -266,6 +264,7 @@ data class ExampleTilleggDto(
     val tillegg2: Kroner? = null,
     val tillegg3: Kroner? = null,
 ) {
+    @Suppress("unused")
     constructor() : this(
         navn = "Navn",
         tillegg1 = Kroner(1234),
@@ -291,6 +290,7 @@ val outlinePhraseTest = OutlinePhrase<LangBokmalNynorsk, OutlinePhraseDto> { phr
     }
 }
 
+@Suppress("unused")
 val paragraphPhraseTest = ParagraphPhrase<LangBokmalNynorsk, Unit> { phraseParameter ->
     list {
         item {

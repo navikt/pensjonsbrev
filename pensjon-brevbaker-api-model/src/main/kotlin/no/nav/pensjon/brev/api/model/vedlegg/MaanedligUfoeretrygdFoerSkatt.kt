@@ -1,7 +1,6 @@
 package no.nav.pensjon.brev.api.model.vedlegg
 
 import no.nav.pensjon.brev.api.model.Kroner
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligUfoeretrygdFoerSkattDto.UfoeretrygdPerMaaned.*
 import java.time.LocalDate
 
 data class MaanedligUfoeretrygdFoerSkattDto(
@@ -44,6 +43,7 @@ data class MaanedligUfoeretrygdFoerSkattDto(
             val netto: Kroner,
             val brutto: Kroner,
         ) {
+            @Suppress("unused")
             constructor(): this(Kroner(1), Kroner(10))
         }
     }

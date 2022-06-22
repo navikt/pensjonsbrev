@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package no.nav.pensjon.brev.api.model
 
 data class TemplateDescription(
