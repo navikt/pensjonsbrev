@@ -39,15 +39,15 @@ object OpptjeningVedForhoeyetHjelpesats : StaticTemplate {
             // var date= GetValue("fag=bruker=fodselsdato");
             // var aar = date.substr(0,4); -substring function that exstracts the first 4 digits
             // if(aar > 1953) include
-            showIf(
+            /*showIf(
                 includePhrase(omsorgsopptjenHjelpestKap20Hjemmel_001)
             )
 
-            // if(aar < 1954) include
+            if(aar < 1954) include
             showIf(
                 includePhrase(omsorgsopptjenHjelpestKap3Hjemmel_001)
             )
-
+            */
             includePhrase(omsorgsopptjenInfoOverskrift_001)
 
             includePhrase(omsorgsopptjenInfo_001)
@@ -64,6 +64,6 @@ object OpptjeningVedForhoeyetHjelpesats : StaticTemplate {
         }
 
     }
-    harSpørsmålPesys_001
-    mvhInfoAutoPesys_001
+    //harSpørsmålPesys_001
+    //mvhInfoAutoPesys_001
 }
