@@ -11,7 +11,6 @@ import io.ktor.serialization.jackson.*
 data class PdfCompilationInput(val files: Map<String, String>)
 data class PDFCompilationOutput(val base64PDF: String)
 
-//TODO: Skriv tester
 class LaTeXCompilerService(private val pdfByggerUrl: String) {
     private val httpClient = HttpClient(CIO) {
         install(ContentNegotiation) {
