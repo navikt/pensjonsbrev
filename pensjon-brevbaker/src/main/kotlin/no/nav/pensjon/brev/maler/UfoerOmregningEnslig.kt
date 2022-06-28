@@ -5,6 +5,9 @@ import no.nav.pensjon.brev.api.model.LetterMetadata
 import no.nav.pensjon.brev.api.model.Sivilstand
 import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDto
 import no.nav.pensjon.brev.maler.fraser.*
+import no.nav.pensjon.brev.maler.fraser.common.Felles
+import no.nav.pensjon.brev.maler.fraser.omregning.ufoeretrygd.Ufoeretrygd
+import no.nav.pensjon.brev.maler.fraser.vedtak.Vedtak
 import no.nav.pensjon.brev.maler.vedlegg.maanedligUfoeretrygdFoerSkatt
 import no.nav.pensjon.brev.maler.vedlegg.opplysningerBruktIBeregningUT
 import no.nav.pensjon.brev.maler.vedlegg.orienteringOmRettigheterOgPlikterUfoere
@@ -66,7 +69,7 @@ object UfoerOmregningEnslig : StaticTemplate {
             val brukerBorINorge = not(argument().map { it.bruker.borINorge })
 
 
-            includePhrase(vedtakOverskriftPesys_001)
+            includePhrase(Vedtak.overskrift)
 
             showIf(harMinsteytelseVedVirk or inntektFoerUfoereErSannsynligEndret or ektefelleTilleggOpphoert){
 
@@ -101,7 +104,7 @@ object UfoerOmregningEnslig : StaticTemplate {
             })
 
             showIf(harMinsteytelseVedVirk or inntektFoerUfoereErSannsynligEndret) {
-                includePhrase(begrunnOverskrift_001)
+                includePhrase(Vedtak.begrunnelseOverskrift)
             }
 
             ifNotNull(argument().map { arg ->
@@ -399,11 +402,10 @@ object UfoerOmregningEnslig : StaticTemplate {
                 includePhrase(meldInntektUT_001)
             }
 
-            includePhrase(meldEndringerPesys_001)
-            includePhrase(rettTilKlagePesys_001)
-            includePhrase(rettTilInnsynPesys_001)
-            includePhrase(sjekkUtbetalingeneOverskrift_001)
-            includePhrase(sjekkUtbetalingeneUT_001)
+            includePhrase(Felles.meldEndringerPesys_001)
+            includePhrase(Felles.rettTilKlagePesys_001)
+            includePhrase(Felles.rettTilInnsynPesys_001)
+            includePhrase(Ufoeretrygd.sjekkUtbetalingene)
             includePhrase(skattekortOverskrift_001)
             includePhrase(skattekortUT_001)
 

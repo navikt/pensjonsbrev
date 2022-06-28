@@ -66,7 +66,7 @@ object UngUfoerAuto : StaticTemplate {
                 }
             )
 
-            includePhrase(Ufoeretrygd.vedtakBegrunnelseOverskrift)
+            includePhrase(Vedtak.begrunnelseOverskrift)
             includePhrase(Ufoeretrygd.ungUfoerHoeyereVed20aar, argument().map { GrunnbeloepSats(it.minsteytelseVedVirkSats) })
             includePhrase(Ufoeretrygd.hjemmelSivilstand)
 

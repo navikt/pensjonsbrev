@@ -11,16 +11,6 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 import java.time.LocalDate
 
-val vedtakOverskriftPesys_001 = OutlinePhrase<LangBokmalNynorskEnglish, Unit> {
-    title1 {
-        text(
-            Bokmal to "Vedtak",
-            Nynorsk to "Vedtak",
-            English to "Decision"
-        )
-    }
-}
-
 data class OmregnUTDodEPSInnledn1001Dto(val avdoed_navn: String, val krav_virkedato_fom: LocalDate)
 
 val omregnUTDodEPSInnledn1_001 = OutlinePhrase<LangBokmalNynorskEnglish, OmregnUTDodEPSInnledn1001Dto> {
@@ -72,8 +62,6 @@ val omregnUTBTDodEPSInnledn_001 = OutlinePhrase<LangBokmalNynorskEnglish, Omregn
                     + krav_virkedato_fom.format() + " because your marital status has changed. We would also like to inform you about rights you may have as a surviving spouse.".expr()
         )
     }
-
-
 }
 
 val omregnUTBTSBDodEPSInnledn_001 = OutlinePhrase<LangBokmalNynorskEnglish, String> { avdoed_navn ->
@@ -87,8 +75,6 @@ val omregnUTBTSBDodEPSInnledn_001 = OutlinePhrase<LangBokmalNynorskEnglish, Stri
                     + avdoed_navn + " has died. This will not affect your disability benefit or child supplement, but we would like to inform you about rights you may have as a surviving spouse.".expr()
         )
     }
-
-
 }
 
 data class OmregnBTDodEPSInnledn_001Dto(val avdoed_navn: String, val krav_virkedato_fom: LocalDate)
@@ -118,6 +104,7 @@ data class BeloepUTDto(
     val institusjonsoppholdVedVirk: Institusjon,
 )
 
+// TODO: Slå sammen med Ufoeretrygd.beloep
 // BelopUT_001, BelopUTVedlegg_001, BelopUTBT_001, BelopUTBTVedlegg_001, belopUTIngenUtbetaling_001 ,belopUTIngenUtbetalingVedlegg_001 ,belopUTBTIngenUtbetaling_001 ,belopUTBTIngenUtbetalingVedlegg_001 ,belopUTIngenUtbetalingFengsel_001 ,belopUTIngenUtbetalingFengselVedlegg_001
 val utbetalingUfoeretrygd = OutlinePhrase<LangBokmalNynorskEnglish, BeloepUTDto> { arg ->
 
@@ -194,16 +181,6 @@ val utbetalingUfoeretrygd = OutlinePhrase<LangBokmalNynorskEnglish, BeloepUTDto>
         }
     }
 
-}
-
-val begrunnOverskrift_001 = OutlinePhrase<LangBokmalNynorskEnglish, Unit> {
-    title1 {
-        text(
-            Bokmal to "Begrunnelse for vedtaket",
-            Nynorsk to "Grunngiving for vedtaket",
-            English to "Grounds for the decision"
-        )
-    }
 }
 
 data class EndrMYDodEPS2_001Dto(
@@ -1122,100 +1099,6 @@ val meldInntektUTBT_001 = OutlinePhrase<LangBokmalNynorskEnglish, Unit> {
                     "You can register your change in income under the option “uføretrygd” at nav.no. " +
                     "You can register how much you expect to earn in the calendar year. " +
                     "You will then be able to see how much disability benefit and child supplement you will receive."
-        )
-    }
-}
-
-val meldEndringerPesys_001 = OutlinePhrase<LangBokmalNynorskEnglish, Unit> {
-    title1 {
-        text(
-            Bokmal to "Du må melde fra om endringer",
-            Nynorsk to "Du må melde frå om endringar",
-            English to "You must notify NAV if anything changes"
-        )
-    }
-    paragraph {
-        text(
-            Bokmal to "Skjer det endringer, må du melde fra til oss med en gang. I vedlegget ser du hvilke endringer du må si fra om.",
-            Nynorsk to "Skjer det endringar, må du melde frå til oss med ein gong. I vedlegget ser du kva endringar du må seie frå om.",
-            English to "If your circumstances change, you must inform NAV immediately. The appendix includes information on how to proceed."
-        )
-    }
-    paragraph {
-        text(
-            Bokmal to "Hvis du har fått utbetalt for mye fordi du ikke har gitt oss beskjed, må du vanligvis betale tilbake pengene. " +
-                    "Du er selv ansvarlig for å holde deg orientert om bevegelser på kontoen din, og du må melde fra om eventuelle feil til NAV.",
-            Nynorsk to "Dersom du har fått utbetalt for mykje fordi du ikkje har gitt oss beskjed, må du vanlegvis betale tilbake pengane. " +
-                    "Du er sjølv ansvarleg for å halde deg orientert om rørsler på kontoen din, og du må melde frå om eventuelle feil til NAV.",
-            English to "If your payments have been too high as a result of you failing to notify us of a change, the incorrect payment must normally be repaid. " +
-                    "It is your responsibility to keep yourself informed of movements in your account, and you are obligated to report any and all errors to NAV."
-        )
-    }
-}
-
-val rettTilKlagePesys_001 = OutlinePhrase<LangBokmalNynorskEnglish, Unit> {
-    title1 {
-        text(
-            Bokmal to "Du har rett til å klage",
-            Nynorsk to "Du har rett til å klage",
-            English to "You have the right to appeal"
-        )
-    }
-    paragraph {
-        text(
-            Bokmal to "Hvis du mener vedtaket er feil, kan du klage innen seks uker fra den datoen du mottok vedtaket. " +
-                    "Klagen skal være skriftlig. Du finner skjema og informasjon på nav.no/klage.",
-            Nynorsk to "Dersom du meiner at vedtaket er feil, kan du klage innan seks veker frå den datoen du fekk vedtaket. " +
-                    "Klagen skal vera skriftleg. Du finn skjema og informasjon på nav.no/klage.",
-            English to "If you think the decision is wrong, you may appeal the decision within six weeks of the date on which you received notice of the decision. " +
-                    "Your appeal must be made in writing. You will find a form you can use and more information about appeals at nav.no."
-        )
-    }
-    paragraph {
-        text(
-            Bokmal to "I vedlegget får du vite mer om hvordan du går fram.",
-            Nynorsk to "I vedlegget får du vite meir om korleis du går fram.",
-            English to "The appendix includes information on how to proceed."
-        )
-    }
-}
-
-val rettTilInnsynPesys_001 = OutlinePhrase<LangBokmalNynorskEnglish, Unit> {
-    title1 {
-        text(
-            Bokmal to "Du har rett til innsyn",
-            Nynorsk to "Du har rett til innsyn",
-            English to "You have the right to access your file"
-        )
-    }
-    paragraph {
-        text(
-            Bokmal to "Du har rett til å se dokumentene i saken din. I vedlegget får du vite hvordan du går fram.",
-            Nynorsk to "Du har rett til å sjå dokumenta i saka di. I vedlegget får du vite korleis du går fram.",
-            English to "You have the right to access all documents pertaining to your case. The appendix includes information on how to proceed."
-        )
-    }
-}
-
-val sjekkUtbetalingeneOverskrift_001 = OutlinePhrase<LangBokmalNynorskEnglish, Unit> {
-    title1 {
-        text(
-            Bokmal to "Sjekk utbetalingene dine",
-            Nynorsk to "Sjekk utbetalingane dine",
-            English to "Information about your payments"
-        )
-    }
-}
-
-val sjekkUtbetalingeneUT_001 = OutlinePhrase<LangBokmalNynorskEnglish, Unit> {
-    paragraph {
-        text(
-            Bokmal to "Du får uføretrygd utbetalt den 20. hver måned, eller senest siste virkedag før denne datoen. " +
-                    "Du kan se alle utbetalingene du har mottatt på nav.no/dittnav. Her kan du også endre kontonummeret ditt.",
-            Nynorsk to "Du får uføretrygd utbetalt den 20. kvar månad, eller seinast siste yrkedag før denne datoen. " +
-                    "Du kan sjå alle utbetalingar du har fått på nav.no/dittnav. Her kan du også endre kontonummeret ditt.",
-            English to "Your disability benefit will be paid on the 20th of each month or no later than the last business day before this date. " +
-                    "To see all the payments you have received, go to: nav.no/ dittnav. You may also change your account number here."
         )
     }
 }
