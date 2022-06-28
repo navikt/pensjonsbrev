@@ -15,7 +15,6 @@ fun renderElement(
         is Element.ForEachView<*, *> -> element.render(scope) { s, e -> renderElement(s, e, printWriter) }
         is Element.Form.MultipleChoice<*> -> formMultipleChoice(printWriter, element, scope)
         is Element.Form.Text<*> -> formText(printWriter, element, scope)
-        is Element.IncludePhrase<*, *> -> includePhrase(element, scope, printWriter)
         is Element.ItemList<*> -> list(printWriter, element, scope)
         is Element.ItemList.Item<*> -> listItem(printWriter, element, scope)
         is Element.NewLine<*> -> printWriter.printCmd("newline")
@@ -184,15 +183,6 @@ private fun printText(
             FontType.ITALIC -> printCmd("textit") { arg { print(textLiteral) } }
         }
     }
-}
-
-private fun includePhrase(
-    element: Element.IncludePhrase<*, *>,
-    scope: ExpressionScope<*, *>,
-    printWriter: LatexPrintWriter
-) {
-    val newScope = ExpressionScope(element.data.eval(scope), scope.felles, scope.language)
-    element.phrase.elements.forEach { renderElement(newScope, it, printWriter) }
 }
 
 private fun title1(

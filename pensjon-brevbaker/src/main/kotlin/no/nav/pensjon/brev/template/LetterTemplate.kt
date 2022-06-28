@@ -159,12 +159,6 @@ sealed class Element<out Lang : LanguageSupport> {
         ) : Form<Lang>()
     }
 
-    @Deprecated("Deprekert til fordel for 'scope-modyfing' fraser TextOnlyPhrase, ParagraphPhrase og OutlinePhrase")
-    data class IncludePhrase<out Lang : LanguageSupport, PhraseData : Any>(
-        val data: Expression<PhraseData>,
-        val phrase: Phrase<Lang, PhraseData>,
-    ) : Element<Lang>()
-
     class NewLine<out Lang : LanguageSupport> : Element<Lang>()
 
     sealed class Text<out Lang : LanguageSupport> : Element<Lang>() {
