@@ -80,12 +80,7 @@ object UngUfoerAuto : StaticTemplate {
 
         }
 
-        // TODO: PL-4948 - Erstatt følgende
-        includeAttachment(maanedligUfoeretrygdFoerSkatt, argument().map { it.maanedligUfoeretrygdFoerSkatt!! }, argument().map { it.maanedligUfoeretrygdFoerSkatt != null })
-        includeAttachment(orienteringOmRettigheterOgPlikterUfoere, argument().map { it.orienteringOmRettigheterUfoere!! }, argument().map { it.orienteringOmRettigheterUfoere != null })
-
-        // TODO: PL-4948: Med dette
-//        includeAttachment(maanedligUfoeretrygdFoerSkatt, argument().select(UngUfoerAutoDto::maanedligUfoeretrygdFoerSkatt))
-//        includeAttachment(orienteringOmRettigheterOgPlikterUfoere, argument().select(UngUfoerAutoDto::orienteringOmRettigheterUfoere))
+        includeAttachment(maanedligUfoeretrygdFoerSkatt, argument().select(UngUfoerAutoDto::maanedligUfoeretrygdFoerSkatt))
+        includeAttachment(orienteringOmRettigheterOgPlikterUfoere, argument().select(UngUfoerAutoDto::orienteringOmRettigheterUfoere))
     }
 }
