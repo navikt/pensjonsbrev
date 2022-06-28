@@ -2,10 +2,12 @@ package no.nav.pensjon.brev
 
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import io.ktor.client.*
+import io.ktor.client.call.*
 import io.ktor.client.engine.cio.*
-import io.ktor.client.features.json.*
+import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
 import io.ktor.http.*
+import io.ktor.serialization.jackson.*
 import kotlinx.coroutines.runBlocking
 import no.nav.pensjon.brev.api.model.LetterRequest
 import no.nav.pensjon.brev.api.model.LetterResponse
@@ -20,8 +22,8 @@ object TestTags {
     const val PDF_BYGGER = "pdf-bygger"
 }
 val httpClient = HttpClient(CIO) {
-    install(JsonFeature) {
-        serializer = JacksonSerializer{
+    install(ContentNegotiation) {
+        jackson {
             registerModule(JavaTimeModule())
         }
     }
@@ -31,13 +33,13 @@ fun requestLetter(letterRequest: LetterRequest): LetterResponse {
     return runBlocking {
         httpClient.post("$BREVBAKER_URL/letter") {
             contentType(ContentType.Application.Json)
-            body = letterRequest
-        }
+            setBody(letterRequest)
+        }.body()
     }
 }
 
 fun requestTemplates(): Set<String> = runBlocking {
-    httpClient.get("$BREVBAKER_URL/templates")
+    httpClient.get("$BREVBAKER_URL/templates").body()
 }
 
 fun writeTestPDF(pdfFileName: String, pdf: String) {

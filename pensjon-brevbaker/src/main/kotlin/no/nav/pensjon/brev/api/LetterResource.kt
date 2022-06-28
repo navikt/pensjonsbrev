@@ -1,7 +1,7 @@
 package no.nav.pensjon.brev.api
 
 import com.fasterxml.jackson.core.JacksonException
-import io.ktor.features.*
+import io.ktor.server.plugins.*
 import no.nav.pensjon.brev.api.model.LetterRequest
 import no.nav.pensjon.brev.template.Letter
 import no.nav.pensjon.brev.template.LetterTemplate

@@ -2,7 +2,7 @@ package no.nav.pensjon.brev.api
 
 import com.fasterxml.jackson.databind.node.ObjectNode
 import com.fasterxml.jackson.module.kotlin.convertValue
-import io.ktor.features.*
+import io.ktor.server.plugins.*
 import no.nav.pensjon.brev.Fixtures
 import no.nav.pensjon.brev.api.model.LanguageCode
 import no.nav.pensjon.brev.api.model.LetterRequest

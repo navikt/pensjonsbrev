@@ -3,8 +3,8 @@ package no.nav.pensjon.brev
 import com.auth0.jwk.JwkProviderBuilder
 import com.fasterxml.jackson.core.JacksonException
 import com.fasterxml.jackson.module.kotlin.readValue
-import io.ktor.auth.*
-import io.ktor.auth.jwt.*
+import io.ktor.server.auth.*
+import io.ktor.server.auth.jwt.*
 import no.nav.pensjon.brev.template.jacksonObjectMapper
 import org.slf4j.LoggerFactory
 import java.net.URL
@@ -40,7 +40,7 @@ data class JwtConfig(val name: String, val issuer: String, val jwksUrl: String, 
 
 data class PreAuthorizedApp(val name: String, val clientId: String)
 
-fun Authentication.Configuration.brevbakerJwt(config: JwtConfig) =
+fun AuthenticationConfig.brevbakerJwt(config: JwtConfig) =
     jwt(config.name) {
         realm = "brevbaker-latex-$name"
         verifier(JwkProviderBuilder(URL(config.jwksUrl)).build(), config.issuer) {
