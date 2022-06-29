@@ -20,6 +20,13 @@ fun <T, R> Expression<T>.map(transform: (T) -> R): Expression<R> =
         UnaryOperation.Select(transform),
     )
 
+fun <T1, T2, R> map2(t1: Expression<T1>, t2: Expression<T2>, transform: (T1, T2) -> R): Expression<R> =
+    Expression.BinaryInvoke(
+        t1,
+        t2,
+        BinaryOperation.Select(transform),
+    )
+
 fun <T> T.expr() = Expression.Literal(this)
 
 fun <T: Any> Expression<T?>.ifNull(then: T) =
