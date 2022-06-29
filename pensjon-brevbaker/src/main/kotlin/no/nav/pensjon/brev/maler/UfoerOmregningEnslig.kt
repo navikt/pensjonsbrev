@@ -20,6 +20,14 @@ import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 
 object UfoerOmregningEnslig : StaticTemplate {
+    private fun harMinstytelseVedVirk(dto: UfoerOmregningEnsligDto) = dto.minsteytelseVedvirk_sats != null
+    private fun harBarnetilleggForSaerkullsbarnVedVirk(dto: UfoerOmregningEnsligDto) = dto.barnetilleggVedVirk?.barnetilleggSaerkullsbarnVedVirk != null
+    private fun harBarnOverfoertTilSaerkullsbarn(dto: UfoerOmregningEnsligDto) =
+        dto.barnetilleggVedVirk
+            ?.barnetilleggSaerkullsbarnVedVirk
+            ?.barnOverfoertTilSaerkullsbarn
+            ?.isNotEmpty() ?: false
+
     override val template = createTemplate(
         name = "UT_DOD_ENSLIG_AUTO",
         base = PensjonLatex,
@@ -29,7 +37,7 @@ object UfoerOmregningEnslig : StaticTemplate {
             "Vedtak – omregning til enslig uføretrygdet (automatisk)", isSensitiv = true
         )
     ) {
-        val harMinsteytelseVedVirk = argument().map { it.minsteytelseVedvirk_sats != null }
+        val harMinsteytelseVedVirk = argument().select(UfoerOmregningEnslig::harMinstytelseVedVirk)
         val inntektFoerUfoereErSannsynligEndret = argument().map { it.inntektFoerUfoerhetVedVirk.erSannsynligEndret }
 
         title {
@@ -43,56 +51,33 @@ object UfoerOmregningEnslig : StaticTemplate {
         outline {
 
             val ektefelleTilleggOpphoert = argument().map { it.avdoed.ektefelletilleggOpphoert }
-
             val harBarnetilleggVedVirk = argument().map { it.barnetilleggVedVirk != null }
-            val harBarnetilleggForSaerkullsbarnVedVirk =
-                argument().map { it.barnetilleggVedVirk?.barnetilleggSaerkullsbarnVedVirk != null }
-
-            val harBarnOverfoertTilSaerkullsbarn =
-                argument().map {
-                    it.barnetilleggVedVirk
-                        ?.barnetilleggSaerkullsbarnVedVirk
-                        ?.barnOverfoertTilSaerkullsbarn
-                        ?.isNotEmpty() ?: false
-                }
+            val harBarnetilleggForSaerkullsbarnVedVirk = argument().select(UfoerOmregningEnslig::harBarnetilleggForSaerkullsbarnVedVirk)
+            val harBarnOverfoertTilSaerkullsbarn = argument().select(UfoerOmregningEnslig::harBarnOverfoertTilSaerkullsbarn)
             val harbarnSomTidligerVarSaerkullsbarn = argument().map {
                 it.barnetilleggVedVirk
                     ?.barnetilleggSaerkullsbarnVedVirk
                     ?.barnTidligereSaerkullsbarn
                     ?.isNotEmpty() ?: false
             }
-            val harUfoereMaanedligBeloepVedvirk =
-                argument().map { it.ufoeretrygdVedVirk.totalUfoereMaanedligBeloep.value > 0 }
+            val harUfoereMaanedligBeloepVedvirk = argument().map { it.ufoeretrygdVedVirk.totalUfoereMaanedligBeloep.value > 0 }
             val institusjonsoppholdVedVirk = argument().select(UfoerOmregningEnsligDto::institusjonsoppholdVedVirk)
-            val barnetilleggForSaerkullsbarnGjeldende_ErRedusertMotInntekt =
-                argument().map { it.barnetilleggSaerkullsbarnGjeldende_erRedusertMotInntekt }
+            val barnetilleggForSaerkullsbarnGjeldende_ErRedusertMotInntekt = argument().select(UfoerOmregningEnsligDto::barnetilleggSaerkullsbarnGjeldende_erRedusertMotInntekt)
             val brukerBorINorge = not(argument().map { it.bruker.borINorge })
-
 
             includePhrase(Vedtak.overskrift)
 
-            showIf(harMinsteytelseVedVirk or inntektFoerUfoereErSannsynligEndret or ektefelleTilleggOpphoert){
-
-                showIf(harBarnetilleggForSaerkullsbarnVedVirk) {
-                    includePhrase(omregnUTBTDodEPSInnledn_001, argument().map { OmregnUTBTDodEPSInnledn_001Dto(it.avdoed.navn, it.krav_virkningsDatoFraOgMed) })
-                }.orShow {
-                    includePhrase(omregnUTDodEPSInnledn1_001, argument().map { OmregnUTDodEPSInnledn1001Dto(it.avdoed.navn, it.krav_virkningsDatoFraOgMed) })
-                }
-
-            }.orShow{
-
-                showIf(harBarnetilleggForSaerkullsbarnVedVirk) {
-
-                    showIf(harBarnOverfoertTilSaerkullsbarn){
-                        includePhrase(omregnBTDodEPSInnledn_001, argument().map { OmregnBTDodEPSInnledn_001Dto(it.avdoed.navn, it.krav_virkningsDatoFraOgMed) })
-                    }.orShow{
-                        includePhrase(omregnUTBTSBDodEPSInnledn_001, argument().map { it.avdoed.navn })
-                    }
-
-                }.orShow{
-                    includePhrase(omregnUTDodEPSInnledn2_001, argument().map { it.avdoed.navn })
-                }
-            }
+            includePhrase(omregnEPSInnledning, argument().map {
+                OmregnEPSInnledningDto(
+                    harMinsteytelseVedVirk = harMinstytelseVedVirk(it),
+                    inntektFoerUfoereErSannsynligEndret = it.inntektFoerUfoerhetVedVirk.erSannsynligEndret,
+                    ektefelletilleggOpphoert = it.avdoed.ektefelletilleggOpphoert,
+                    harBarnetilleggForSaerkullsbarnVedVirk = harBarnetilleggForSaerkullsbarnVedVirk(it),
+                    harBarnOverfoertTilSaerkullsbarn = harBarnOverfoertTilSaerkullsbarn(it),
+                    avdoedNavn = it.avdoed.navn,
+                    krav_virkningsDatoFraOgMed = it.krav_virkningsDatoFraOgMed,
+                )
+            })
 
             includePhrase(utbetalingUfoeretrygd, argument().map {
                 BeloepUTDto(
