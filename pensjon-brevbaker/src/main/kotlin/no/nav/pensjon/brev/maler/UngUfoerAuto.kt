@@ -26,8 +26,9 @@ object UngUfoerAuto : StaticTemplate {
         letterDataType = UngUfoerAutoDto::class,
         languages = languages(Bokmal, Nynorsk),
         letterMetadata = LetterMetadata(
-            "Vedtak – ung ufør ved 20 år",
+            displayTitle = "Vedtak – ung ufør ved 20 år",
             isSensitiv = true,
+            distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
         )
     ) {
         title {

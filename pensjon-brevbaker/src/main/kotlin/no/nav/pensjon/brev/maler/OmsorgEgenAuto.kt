@@ -19,8 +19,9 @@ object OmsorgEgenAuto : StaticTemplate {
         letterDataType = OmsorgEgenAutoDto::class,
         languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(
-            "Egenerklæring godskriving omsorgspoeng",
-            false,
+            displayTitle = "Egenerklæring godskriving omsorgspoeng",
+            isSensitiv = false,
+            distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
         )
     ) {
 

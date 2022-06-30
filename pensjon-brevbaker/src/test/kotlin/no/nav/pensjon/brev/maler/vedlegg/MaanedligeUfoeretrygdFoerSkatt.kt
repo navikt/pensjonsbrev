@@ -34,7 +34,8 @@ class MaanedligUfoeretrygdFoerSkattITest {
             languages = languages(Bokmal),
             letterMetadata = LetterMetadata(
                 "test mal",
-                isSensitiv = false
+                isSensitiv = false,
+                distribusjonstype = LetterMetadata.Distribusjonstype.ANNET,
             ),
         ) {
             title{
