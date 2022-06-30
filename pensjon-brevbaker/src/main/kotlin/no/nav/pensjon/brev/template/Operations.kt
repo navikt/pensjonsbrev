@@ -113,4 +113,8 @@ abstract class BinaryOperation<in In1, in In2, out Out> : Operation() {
     class ValidatePredicate<T> : BinaryOperation<Predicate<T>, T, Boolean>() {
         override fun apply(first: Predicate<T>, second: T): Boolean = first.validate(second)
     }
+
+    data class Select<In1, In2, Out>(val select: (In1, In2) -> Out) : BinaryOperation<In1, In2, Out>() {
+        override fun apply(first: In1, second: In2): Out = select(first, second)
+    }
 }

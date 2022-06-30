@@ -147,18 +147,6 @@ object Ufoeretrygd {
     }
 
     /**
-     * TBU1092
-     */
-    val vedtakBegrunnelseOverskrift = OutlinePhrase<LangBokmalNynorsk, Unit> {
-        title1 {
-            text(
-                Bokmal to "Begrunnelse for vedtaket",
-                Nynorsk to "Grunngiving for vedtaket",
-            )
-        }
-    }
-
-    /**
      * TBU3008, TBU3009, TBU3010
      */
     val ungUfoerHoeyereVed20aar = OutlinePhrase<LangBokmalNynorsk, GrunnbeloepSats> {
@@ -219,13 +207,14 @@ object Ufoeretrygd {
     }
 
     /**
-     * TBU1227
+     * TBU1227, sjekkUtbetalingeneOverskrift_001, sjekkUtbetalingeneUT_001
      */
-    val sjekkUtbetalingene = OutlinePhrase<LangBokmalNynorsk, Unit> {
+    val sjekkUtbetalingene = OutlinePhrase<LangBokmalNynorskEnglish, Unit> {
         title1 {
             text(
                 Bokmal to "Sjekk utbetalingene dine",
                 Nynorsk to "Sjekk utbetalingane dine",
+                English to "Information about your payments",
             )
         }
 
@@ -236,6 +225,9 @@ object Ufoeretrygd {
 
                 Nynorsk to "Du får uføretrygd utbetalt den 20. kvar månad, eller seinast siste yrkedag før denne datoen. " +
                         "Du kan sjå alle utbetalingar du har fått på ${Constants.DITT_NAV}. Her kan du også endre kontonummeret ditt.",
+
+                English to "Your disability benefit will be paid on the 20th of each month or no later than the last business day before this date. " +
+                        "To see all the payments you have received, go to: ${Constants.DITT_NAV}. You may also change your account number here.",
             )
         }
     }
