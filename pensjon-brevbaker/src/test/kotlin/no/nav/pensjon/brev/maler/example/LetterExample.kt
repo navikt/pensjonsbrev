@@ -24,6 +24,7 @@ object LetterExample : StaticTemplate {
         letterMetadata = LetterMetadata(
             displayTitle = "Dette er ett eksempel-brev", // Display title for external systems
             isSensitiv = false, // If this letter contains sensitive information requiring level 4 log-in
+            distribusjonstype = LetterMetadata.Distribusjonstype.ANNET, // Brukes ved distribusjon av brevet
         )
     ) {
         title {
@@ -290,7 +291,7 @@ val outlinePhraseTest = OutlinePhrase<LangBokmalNynorsk, OutlinePhraseDto> { phr
     }
 }
 
-@Suppress("unused")
+@Suppress("unused", "UNUSED_ANONYMOUS_PARAMETER")
 val paragraphPhraseTest = ParagraphPhrase<LangBokmalNynorsk, Unit> { phraseParameter ->
     list {
         item {

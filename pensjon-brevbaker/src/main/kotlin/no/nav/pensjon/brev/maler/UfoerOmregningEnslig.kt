@@ -33,6 +33,7 @@ object UfoerOmregningEnslig : StaticTemplate {
         letterMetadata = LetterMetadata(
             displayTitle = "Vedtak – omregning til enslig uføretrygdet (automatisk)",
             isSensitiv = true,
+            distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK
         ),
     ) {
         val harMinsteytelseVedVirk = argument().select(UfoerOmregningEnslig::harMinstytelseVedVirk)
