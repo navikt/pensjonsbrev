@@ -6,7 +6,8 @@ data class TemplateDescription(
     val name: String,
     val base: String,
     val letterDataClass: String,
-    val languages: List<LanguageCode>
+    val languages: List<LanguageCode>,
+    val metadata: LetterMetadata,
 )
 
 enum class LanguageCode {

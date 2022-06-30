@@ -11,6 +11,7 @@ fun LetterTemplate<*, *>.description() =
         base = base::class.qualifiedName!!,
         letterDataClass = letterDataType.java.name,
         languages = language.all().map { it.toCode() },
+        metadata = letterMetadata,
     )
 
 fun LanguageCode.toLanguage(): Language =
