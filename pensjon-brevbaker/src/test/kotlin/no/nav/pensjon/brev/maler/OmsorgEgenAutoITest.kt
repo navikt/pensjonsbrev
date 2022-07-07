@@ -14,7 +14,7 @@ class OmsorgEgenAutoITest {
     fun test() {
         Letter(
             OmsorgEgenAuto.template,
-            OmsorgEgenAutoDto(),
+            Fixtures.create(OmsorgEgenAutoDto::class),
             Language.Bokmal,
             Fixtures.fellesAuto
         ).render()

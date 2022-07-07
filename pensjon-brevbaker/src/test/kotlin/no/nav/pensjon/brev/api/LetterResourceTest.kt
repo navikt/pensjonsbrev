@@ -20,7 +20,7 @@ class LetterResourceTest {
     val testLetterResource = LetterResource(TemplateResource(setOf(LetterExample)))
     val template = LetterExample.template
     val eksempelBrevDto = objectMapper.convertValue<Map<String, Any>>(
-        LetterExampleDto()
+        Fixtures.create(LetterExampleDto::class)
     )
 
     @Test
@@ -54,12 +54,11 @@ class LetterResourceTest {
 
     @Test
     fun `create requires arguments`() {
-        val emptyObjectNode = objectMapper.convertValue<ObjectNode>(emptyMap<String, String>())
-        assertThrows<IllegalArgumentException> {
+        assertThrows<ParseLetterDataException> {
             testLetterResource.create(
                 LetterRequest(
                     template.name,
-                    emptyObjectNode,
+                    emptyMap<String, String>(),
                     Fixtures.felles,
                     LanguageCode.BOKMAL
                 )
@@ -83,9 +82,8 @@ class LetterResourceTest {
 
     @Test
     fun `create fails when letterData is invalid`() {
-        val invalidData = objectMapper.convertValue<ObjectNode>(mapOf("pensjonInnvilget" to true))
-        assertThrows<IllegalArgumentException> {
-            testLetterResource.create(LetterRequest(template.name, invalidData, Fixtures.felles, LanguageCode.BOKMAL))
+        assertThrows<ParseLetterDataException> {
+            testLetterResource.create(LetterRequest(template.name, mapOf("pensjonInnvilget" to true), Fixtures.felles, LanguageCode.BOKMAL))
         }
     }
 

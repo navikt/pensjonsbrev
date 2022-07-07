@@ -47,7 +47,6 @@ sealed class Expression<out Out> {
         val operation: UnaryOperation<In, Out>,
     ) : Expression<Out>() {
         override fun eval(scope: ExpressionScope<*, *>): Out = operation.apply(value.eval(scope))
-        override fun toString(): String = "$operation($value)"
     }
 
     data class BinaryInvoke<In1, In2, out Out>(
@@ -56,7 +55,6 @@ sealed class Expression<out Out> {
         val operation: BinaryOperation<In1, In2, Out>
     ) : Expression<Out>() {
         override fun eval(scope: ExpressionScope<*, *>): Out = operation.apply(first.eval(scope), second.eval(scope))
-        override fun toString(): String = "$operation($first, $second)"
     }
 
 }
@@ -313,8 +311,9 @@ sealed class Element<out Lang : LanguageSupport> {
     }
 }
 
-class MissingScopeForNextItemEvaluationException(msg: String) : Exception(msg)
-class InvalidScopeTypeException(msg: String) : Exception(msg)
-class InvalidTableDeclarationException(msg: String) : Exception(msg)
-class InvalidListDeclarationException(msg: String) : Exception(msg)
-class MissingTitleInTemplateException(msg: String) : Exception(msg)
+abstract class TemplateValidationException(msg: String) : Exception(msg)
+class MissingScopeForNextItemEvaluationException(msg: String) : TemplateValidationException(msg)
+class InvalidScopeTypeException(msg: String) : TemplateValidationException(msg)
+class InvalidTableDeclarationException(msg: String) : TemplateValidationException(msg)
+class InvalidListDeclarationException(msg: String) : TemplateValidationException(msg)
+class MissingTitleInTemplateException(msg: String) : TemplateValidationException(msg)

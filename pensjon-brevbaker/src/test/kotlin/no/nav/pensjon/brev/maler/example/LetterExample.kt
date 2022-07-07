@@ -235,30 +235,7 @@ data class LetterExampleDto(
     val tilleggEksempel: List<ExampleTilleggDto>,
     val datoAvslaatt: LocalDate?,
     val pensjonBeloep: Int?,
-) {
-    // No-arg constructor for integration tests
-    constructor() : this(
-        true,
-        LocalDate.of(2020, 1, 1),
-        listOf("test testerson1", "test testerson2", "test testerson3"),
-        listOf(
-            ExampleTilleggDto(
-                navn = "Test testerson 1",
-                tillegg1 = Kroner(300),
-                tillegg3 = Kroner(500),
-            ), ExampleTilleggDto(
-                navn = "Test testerson 2",
-                tillegg1 = Kroner(100),
-                tillegg2 = Kroner(600),
-            ), ExampleTilleggDto(
-                navn = "Test testerson 3",
-                tillegg2 = Kroner(300),
-            )
-        ), LocalDate.of(2020, 1, 1),
-        100
-    )
-}
-
+)
 data class ExampleTilleggDto(
     val navn: String,
     val tillegg1: Kroner? = null,

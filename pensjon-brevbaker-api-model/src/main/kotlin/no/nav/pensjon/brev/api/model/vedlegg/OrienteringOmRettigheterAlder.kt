@@ -13,15 +13,4 @@ data class OrienteringOmRettigheterAlderDto(
     val barnetilleggVedvirk_innvilgetBarnetillegFellesbarn: Boolean,
     val barnetilleggVedvirk_innvilgetBarnetilleggSaerkullsbarn: Boolean,
     val ektefelletilleggVedvirk_innvilgetEktefelletillegg: Boolean,
-) {
-    constructor() : this(
-        bruker_sivilstand = Sivilstand.ENSLIG,
-        bruker_borINorge = false,
-        institusjon_gjeldende = Institusjon.INGEN,
-        eps_borSammenMedBrukerGjeldende = false,
-        instutisjon_epsInstitusjonGjeldende = Institusjon.INGEN,
-        barnetilleggVedvirk_innvilgetBarnetillegFellesbarn = false,
-        barnetilleggVedvirk_innvilgetBarnetilleggSaerkullsbarn = false,
-        ektefelletilleggVedvirk_innvilgetEktefelletillegg = false,
-    )
-}
+)

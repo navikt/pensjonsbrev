@@ -8,7 +8,6 @@ import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.fail
 import kotlin.reflect.KClass
-import kotlin.reflect.full.createInstance
 
 @Tag(TestTags.PDF_BYGGER)
 class TemplateResourceITest {
@@ -42,14 +41,7 @@ class TemplateResourceITest {
     }
 
     private fun createArgument(letterDataType: KClass<out Any>): Any {
-        try {
-            return letterDataType.createInstance()
-        } catch (noDefaultConstruct: IllegalArgumentException) {
-            fail(
-                "LetterData data class doesn't have no-arg constructor for test data: ${letterDataType.qualifiedName}",
-                noDefaultConstruct
-            )
-        }
+        return Fixtures.create(letterDataType)
     }
 
 }

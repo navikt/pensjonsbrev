@@ -8,12 +8,6 @@ data class MaanedligUfoeretrygdFoerSkattDto(
     val krav_virkningsDatoFraOgMed: LocalDate,
     val tidligereUfoeretrygdPerioder: List<UfoeretrygdPerMaaned>,
 ) {
-    constructor() : this(
-        gjeldendeBeregnetUTPerMaaned = UfoeretrygdPerMaaned(),
-        krav_virkningsDatoFraOgMed = LocalDate.of(2020, 1, 1),
-        tidligereUfoeretrygdPerioder = emptyList(),
-    )
-
     data class UfoeretrygdPerMaaned(
         val annetBelop: Kroner,
         val barnetillegg: BeloepMedAvkortning?,
@@ -26,25 +20,10 @@ data class MaanedligUfoeretrygdFoerSkattDto(
         val virkningTilOgMed: LocalDate?,
         val erAvkortet: Boolean,
     ) {
-        constructor() : this(
-            annetBelop = Kroner(0),
-            barnetillegg = BeloepMedAvkortning(Kroner(75), Kroner(100)),
-            dekningFasteUtgifter = Kroner(0),
-            garantitilleggNordisk27 = BeloepMedAvkortning(Kroner(75), Kroner(100)),
-            grunnbeloep = Kroner(0),
-            ordinaerUTBeloep = BeloepMedAvkortning(Kroner(75), Kroner(100)),
-            totalUTBeloep = BeloepMedAvkortning(Kroner(75), Kroner(100)),
-            virkningFraOgMed = LocalDate.of(2020, 1, 1),
-            virkningTilOgMed = LocalDate.of(2020, 1, 2),
-            erAvkortet = true,
-        )
 
         data class BeloepMedAvkortning(
             val netto: Kroner,
             val brutto: Kroner,
-        ) {
-            @Suppress("unused")
-            constructor(): this(Kroner(1), Kroner(10))
-        }
+        )
     }
 }
