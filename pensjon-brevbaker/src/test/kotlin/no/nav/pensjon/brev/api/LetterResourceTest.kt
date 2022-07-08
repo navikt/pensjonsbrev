@@ -13,7 +13,6 @@ import org.junit.jupiter.api.Assertions.assertEquals
 val objectMapper = jacksonObjectMapper()
 
 class LetterResourceTest {
-
     private val testLetterResource = LetterResource()
     private val template = OmsorgEgenAuto
     private val omsorgEgenAutoDto = objectMapper.convertValue<Map<String, Any>>(Fixtures.create<OmsorgEgenAutoDto>())
