@@ -20,7 +20,7 @@ class UfoerOmregningEnsligITest {
     fun test() {
         Letter(
             UfoerOmregningEnslig.template,
-            Fixtures.create(UfoerOmregningEnsligDto::class),
+            Fixtures.create<UfoerOmregningEnsligDto>(),
             Language.Bokmal,
             Fixtures.fellesAuto,
         ).render()

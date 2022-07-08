@@ -14,7 +14,7 @@ class UngUfoerAutoITest {
     fun test() {
         Letter(
             UngUfoerAuto.template,
-            Fixtures.create(UngUfoerAutoDto::class),
+            Fixtures.create<UngUfoerAutoDto>(),
             Language.Bokmal,
             Fixtures.fellesAuto
         ).render()

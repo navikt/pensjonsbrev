@@ -1,6 +1,5 @@
 package no.nav.pensjon.brev.api
 
-import com.fasterxml.jackson.databind.node.ObjectNode
 import com.fasterxml.jackson.module.kotlin.convertValue
 import io.ktor.server.plugins.*
 import no.nav.pensjon.brev.Fixtures
@@ -20,7 +19,7 @@ class LetterResourceTest {
     val testLetterResource = LetterResource(TemplateResource(setOf(LetterExample)))
     val template = LetterExample.template
     val eksempelBrevDto = objectMapper.convertValue<Map<String, Any>>(
-        Fixtures.create(LetterExampleDto::class)
+        Fixtures.create<LetterExampleDto>()
     )
 
     @Test
