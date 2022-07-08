@@ -1,11 +1,12 @@
 package no.nav.pensjon.brev.api
 
-import com.fasterxml.jackson.core.JacksonException
 import io.ktor.server.plugins.*
 import no.nav.pensjon.brev.api.model.LetterRequest
 import no.nav.pensjon.brev.template.Letter
 import no.nav.pensjon.brev.template.LetterTemplate
 import no.nav.pensjon.brev.template.jacksonObjectMapper
+
+class ParseLetterDataException(msg: String, cause: Exception): Exception(msg, cause)
 
 class LetterResource(val templateResource: TemplateResource = TemplateResource()) {
     private val objectMapper = jacksonObjectMapper()
@@ -21,17 +22,17 @@ class LetterResource(val templateResource: TemplateResource = TemplateResource()
 
         return Letter(
             template = template,
-            argument = parseArgument(letterRequest, template),
+            argument = parseArgument(letterRequest.letterData, template),
             language = language,
             felles = letterRequest.felles
         )
     }
 
-    private fun parseArgument(letterRequest: LetterRequest, template: LetterTemplate<*, *>): Any =
+    private fun parseArgument(letterData: Any, template: LetterTemplate<*, *>): Any =
         try {
-            objectMapper.convertValue(letterRequest.letterData, template.letterDataType.java)
-        } catch (e: JacksonException) {
-            throw BadRequestException("Could not parse letterData", e)
+            objectMapper.convertValue(letterData, template.letterDataType.java)
+        } catch (e: IllegalArgumentException) {
+            throw ParseLetterDataException("Could not parse letterData: ${e.message}", e)
         }
 
 }

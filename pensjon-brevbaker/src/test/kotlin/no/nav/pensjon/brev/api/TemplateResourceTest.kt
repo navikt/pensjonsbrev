@@ -2,13 +2,13 @@ package no.nav.pensjon.brev.api
 
 import com.natpryce.hamkrest.and
 import com.natpryce.hamkrest.assertion.assertThat
+import no.nav.pensjon.brev.Fixtures
 import com.natpryce.hamkrest.hasElement
 import no.nav.pensjon.brev.maler.example.LetterExample
 import no.nav.pensjon.brev.template.*
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Test
-import kotlin.reflect.full.createInstance
 
 class TemplateResourceTest {
 
@@ -54,22 +54,22 @@ class TemplateResourceTest {
     }
 
     @Test
-    fun `all templates have letterDataType with no-arg constructor`() {
-        val templatesWithoutNoArgConstructor = templateResource.getTemplates()
+    fun `all templates have letterDataType that can be created`() {
+        val templatesWithoutSampleData = templateResource.getTemplates()
             .associateWith { templateResource.getTemplate(it)!! }
             .mapValues {
                 try {
-                    it.value.letterDataType.createInstance()
-                } catch (e: Exception) {
+                    Fixtures.create(it.value.letterDataType)
                     null
+                } catch (e: IllegalArgumentException) {
+                    e.message
                 }
-            }.filterValues { it == null }
-            .keys
+            }.filterValues { it != null }
 
         assertEquals(
-            emptySet<String>(),
-            templatesWithoutNoArgConstructor,
-            "letterDataType classes should have an internal no-arg constructor with valid test data."
+            emptyMap<String, String>(),
+            templatesWithoutSampleData,
+            "letterDataType classes must be constructable by Fixtures.create."
         )
     }
 
@@ -79,11 +79,10 @@ class TemplateResourceTest {
         templateResource.getTemplates()
             .map { templateResource.getTemplate(it)!! }
             .forEach {
-                val data = it.letterDataType.createInstance()
+                val data = Fixtures.create(it.letterDataType)
                 val json = jackson.writeValueAsString(data)
                 val deserialized = jackson.readValue(json, it.letterDataType.java)
 
-                println(json)
                 assertEquals(data, deserialized)
             }
     }

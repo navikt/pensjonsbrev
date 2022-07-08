@@ -16,21 +16,7 @@ data class UngUfoerAutoDto(
     val maanedligUfoeretrygdFoerSkatt: MaanedligUfoeretrygdFoerSkattDto,
     val orienteringOmRettigheterUfoere: OrienteringOmRettigheterUfoereDto,
 ) {
-    constructor(): this(
-        kravVirkningFraOgMed = LocalDate.now(),
-        totaltUfoerePerMnd = Kroner(9000),
-        ektefelle = null,
-        gjenlevende = InnvilgetTillegg(true),
-        fellesbarn = InnvilgetBarnetillegg(false, 1, Kroner(10_000)),
-        saerkullsbarn = InnvilgetBarnetillegg(true, 2, Kroner(10_000)),
-        minsteytelseVedVirkSats = 2.91,
-        maanedligUfoeretrygdFoerSkatt = MaanedligUfoeretrygdFoerSkattDto(),
-        orienteringOmRettigheterUfoere = OrienteringOmRettigheterUfoereDto(),
-    )
-    data class InnvilgetTillegg(val utbetalt: Boolean) {
-        constructor(): this(false)
-    }
-    data class InnvilgetBarnetillegg(val utbetalt: Boolean, val antallBarn: Int, val inntektstak: Kroner) {
-        constructor(): this(false, 1, Kroner(10))
-    }
+    data class InnvilgetTillegg(val utbetalt: Boolean)
+    data class InnvilgetBarnetillegg(val utbetalt: Boolean, val antallBarn: Int, val inntektstak: Kroner)
+
 }
