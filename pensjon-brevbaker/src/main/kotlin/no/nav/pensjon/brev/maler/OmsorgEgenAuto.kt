@@ -1,7 +1,7 @@
 package no.nav.pensjon.brev.maler
 
-import no.nav.pensjon.brev.api.model.LetterMetadata
-import no.nav.pensjon.brev.api.model.maler.OmsorgEgenAutoDto
+import no.nav.pensjon.brev.api.model.*
+import no.nav.pensjon.brev.api.model.maler.*
 import no.nav.pensjon.brev.maler.vedlegg.EgenerklaeringPleieOgOmsorgsarbeid
 import no.nav.pensjon.brev.maler.vedlegg.egenerklaeringPleieOgOmsorgsarbeid
 import no.nav.pensjon.brev.model.format
@@ -11,10 +11,12 @@ import no.nav.pensjon.brev.template.base.PensjonLatex
 import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brev.template.dsl.expression.*
 
-object OmsorgEgenAuto : StaticTemplate {
+object OmsorgEgenAuto : VedtaksbrevTemplate {
+
+    override val kode: Brevkode.Vedtak = Brevkode.Vedtak.OMSORG_EGEN_AUTO
 
     override val template = createTemplate(
-        name = "OMSORG_EGEN_AUTO",
+        name = kode.name,
         base = PensjonLatex,
         letterDataType = OmsorgEgenAutoDto::class,
         languages = languages(Bokmal, Nynorsk, English),

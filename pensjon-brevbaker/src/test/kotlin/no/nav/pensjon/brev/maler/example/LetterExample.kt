@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.maler.example
 import no.nav.pensjon.brev.api.model.Felles
 import no.nav.pensjon.brev.api.model.Kroner
 import no.nav.pensjon.brev.api.model.LetterMetadata
+import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.maler.fraser.common.Felles.kroner
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.*
@@ -15,7 +16,10 @@ import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brev.template.dsl.expression.*
 import java.time.LocalDate
 
-object LetterExample : StaticTemplate {
+object LetterExample : VedtaksbrevTemplate {
+
+    override val kode: Brevkode.Vedtak = Brevkode.Vedtak.OMSORG_EGEN_AUTO
+
     override val template = createTemplate(
         name = "EKSEMPEL_BREV", //Letter ID
         base = PensjonLatex, //Master-template

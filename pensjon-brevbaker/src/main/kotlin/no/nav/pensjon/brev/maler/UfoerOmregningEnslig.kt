@@ -3,7 +3,7 @@ package no.nav.pensjon.brev.maler
 import no.nav.pensjon.brev.api.model.Institusjon
 import no.nav.pensjon.brev.api.model.LetterMetadata
 import no.nav.pensjon.brev.api.model.Sivilstand
-import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDto
+import no.nav.pensjon.brev.api.model.maler.*
 import no.nav.pensjon.brev.maler.fraser.*
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.fraser.omregning.ufoeretrygd.Ufoeretrygd
@@ -12,7 +12,7 @@ import no.nav.pensjon.brev.maler.vedlegg.maanedligUfoeretrygdFoerSkatt
 import no.nav.pensjon.brev.maler.vedlegg.opplysningerBruktIBeregningUT
 import no.nav.pensjon.brev.maler.vedlegg.orienteringOmRettigheterOgPlikterUfoere
 import no.nav.pensjon.brev.template.Language.*
-import no.nav.pensjon.brev.template.StaticTemplate
+import no.nav.pensjon.brev.template.VedtaksbrevTemplate
 import no.nav.pensjon.brev.template.base.PensjonLatex
 import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.*
@@ -20,13 +20,15 @@ import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 
 // 000073
-object UfoerOmregningEnslig : StaticTemplate {
+object UfoerOmregningEnslig : VedtaksbrevTemplate {
     private fun harMinstytelseVedVirk(dto: UfoerOmregningEnsligDto) = dto.minsteytelseVedvirk_sats != null
     private fun harBarnetilleggForSaerkullsbarnVedVirk(dto: UfoerOmregningEnsligDto) = dto.barnetilleggVedVirk?.barnetilleggSaerkullsbarnVedVirk != null
     private fun harBarnOverfoertTilSaerkullsbarn(dto: UfoerOmregningEnsligDto) = dto.barnetilleggVedVirk?.barnetilleggSaerkullsbarnVedVirk?.barnOverfoertTilSaerkullsbarn?.isNotEmpty() ?: false
 
+    override val kode: Brevkode.Vedtak = Brevkode.Vedtak.UFOER_OMREGNING_ENSLIG
+
     override val template = createTemplate(
-        name = "UT_DOD_ENSLIG_AUTO",
+        name = kode.name,
         base = PensjonLatex,
         letterDataType = UfoerOmregningEnsligDto::class,
         languages = languages(Bokmal, Nynorsk, English),
