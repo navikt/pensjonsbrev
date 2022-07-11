@@ -2,33 +2,28 @@ package no.nav.pensjon.brev.api
 
 import com.natpryce.hamkrest.and
 import com.natpryce.hamkrest.assertion.assertThat
-import no.nav.pensjon.brev.Fixtures
 import com.natpryce.hamkrest.hasElement
-import no.nav.pensjon.brev.maler.example.LetterExample
+import no.nav.pensjon.brev.Fixtures
+import no.nav.pensjon.brev.api.model.maler.Brevkode
+import no.nav.pensjon.brev.maler.*
 import no.nav.pensjon.brev.template.*
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Test
 
 class TemplateResourceTest {
 
-    val templateResource = TemplateResource(productionTemplates + LetterExample)
+    val templateResource = TemplateResource(productionTemplates)
 
     @Test
     fun `getTemplate fetches template`() {
-        assertEquals(LetterExample.template, templateResource.getTemplate(LetterExample.template.name))
-    }
-
-    @Test
-    fun `getTemplate returns null for non-existing template`() {
-        assertNull(templateResource.getTemplate("non_existing"))
+        assertEquals(OmsorgEgenAuto.template, templateResource.getTemplate(OmsorgEgenAuto.kode))
     }
 
     @Test
     fun `getTemplates returns list of template names`() {
         assertThat(
             templateResource.getTemplates(),
-            hasElement(LetterExample.template.name) and hasElement(LetterExample.template.name)
+            hasElement(OmsorgEgenAuto.kode) and hasElement(UngUfoerAuto.kode)
         )
     }
 
@@ -38,7 +33,7 @@ class TemplateResourceTest {
         val templates = templateNames
             .map { templateResource.getTemplate(it) }
             .filterNotNull()
-            .map { it.name }
+            .map { Brevkode.Vedtak.valueOf(it.name) }
             .toSet()
 
         assertEquals(templateNames, templates)
@@ -46,7 +41,7 @@ class TemplateResourceTest {
 
     @Test
     fun `all templates have letterDataType which are data class`() {
-        val templatesWithoutDataClass: Map<String, LetterTemplate<*, *>> = templateResource.getTemplates()
+        val templatesWithoutDataClass: Map<Brevkode.Vedtak, LetterTemplate<*, *>> = templateResource.getTemplates()
             .associateWith { templateResource.getTemplate(it)!! }
             .filterValues { !it.letterDataType.isData }
 

@@ -1,7 +1,7 @@
 package no.nav.pensjon.brev.maler
 
 import no.nav.pensjon.brev.api.model.LetterMetadata
-import no.nav.pensjon.brev.api.model.maler.UngUfoerAutoDto
+import no.nav.pensjon.brev.api.model.maler.*
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.fraser.common.GrunnbeloepSats
 import no.nav.pensjon.brev.maler.fraser.common.KravVirkningFraOgMed
@@ -10,7 +10,7 @@ import no.nav.pensjon.brev.maler.fraser.vedtak.Vedtak
 import no.nav.pensjon.brev.maler.vedlegg.*
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.Nynorsk
-import no.nav.pensjon.brev.template.StaticTemplate
+import no.nav.pensjon.brev.template.VedtaksbrevTemplate
 import no.nav.pensjon.brev.template.base.PensjonLatex
 import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.map
@@ -19,9 +19,12 @@ import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 
 // BrevTypeKode: PE_BA_04_505
-object UngUfoerAuto : StaticTemplate {
+object UngUfoerAuto : VedtaksbrevTemplate {
+
+    override val kode: Brevkode.Vedtak = Brevkode.Vedtak.UNG_UFOER_AUTO
+
     override val template = createTemplate(
-        name = "UP_FULLTT_BELOPENDR",
+        name = kode.name,
         base = PensjonLatex,
         letterDataType = UngUfoerAutoDto::class,
         languages = languages(Bokmal, Nynorsk),

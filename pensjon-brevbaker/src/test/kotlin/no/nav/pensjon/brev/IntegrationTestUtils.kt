@@ -9,8 +9,8 @@ import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.serialization.jackson.*
 import kotlinx.coroutines.runBlocking
-import no.nav.pensjon.brev.api.model.LetterRequest
-import no.nav.pensjon.brev.api.model.LetterResponse
+import no.nav.pensjon.brev.api.model.*
+import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.latex.LaTeXCompilerService
 import no.nav.pensjon.brev.latex.PdfCompilationInput
 import java.io.File
@@ -29,6 +29,15 @@ val httpClient = HttpClient(CIO) {
     }
 }
 
+fun requestLetter(letterRequest: VedtaksbrevRequest): LetterResponse =
+    runBlocking {
+        httpClient.post("$BREVBAKER_URL/letter/vedtak") {
+            contentType(ContentType.Application.Json)
+            setBody(letterRequest)
+        }.body()
+    }
+
+@Deprecated("Erstattet med requestLetter(letterRequest: VedtaksbrevRequest")
 fun requestLetter(letterRequest: LetterRequest): LetterResponse {
     return runBlocking {
         httpClient.post("$BREVBAKER_URL/letter") {
@@ -38,7 +47,7 @@ fun requestLetter(letterRequest: LetterRequest): LetterResponse {
     }
 }
 
-fun requestTemplates(): Set<String> = runBlocking {
+fun requestTemplates(): Set<Brevkode.Vedtak> = runBlocking {
     httpClient.get("$BREVBAKER_URL/templates").body()
 }
 
