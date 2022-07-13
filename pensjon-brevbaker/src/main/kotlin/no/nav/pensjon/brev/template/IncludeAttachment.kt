@@ -2,12 +2,10 @@ package no.nav.pensjon.brev.template
 
 import no.nav.pensjon.brev.template.dsl.OutlineScope
 import no.nav.pensjon.brev.template.dsl.expression.expr
-import kotlin.reflect.KClass
 
 
-inline fun <Lang : LanguageSupport, reified LetterData : Any> createAttachment(
+fun <Lang : LanguageSupport, LetterData : Any> createAttachment(
     title: Element.Text.Literal<Lang>,
-    attachmentDataType: KClass<LetterData> = LetterData::class,
     includeSakspart: Boolean = false,
     outline: OutlineScope<Lang, LetterData>.() -> Unit
 ) = AttachmentTemplate<Lang, LetterData>(

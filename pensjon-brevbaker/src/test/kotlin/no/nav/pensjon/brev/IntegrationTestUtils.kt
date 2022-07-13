@@ -37,16 +37,6 @@ fun requestLetter(letterRequest: VedtaksbrevRequest): LetterResponse =
         }.body()
     }
 
-@Deprecated("Erstattet med requestLetter(letterRequest: VedtaksbrevRequest")
-fun requestLetter(letterRequest: LetterRequest): LetterResponse {
-    return runBlocking {
-        httpClient.post("$BREVBAKER_URL/letter") {
-            contentType(ContentType.Application.Json)
-            setBody(letterRequest)
-        }.body()
-    }
-}
-
 fun requestTemplates(): Set<Brevkode.Vedtak> = runBlocking {
     httpClient.get("$BREVBAKER_URL/templates").body()
 }
