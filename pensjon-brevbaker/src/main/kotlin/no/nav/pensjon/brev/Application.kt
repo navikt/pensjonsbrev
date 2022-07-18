@@ -1,14 +1,19 @@
 package no.nav.pensjon.brev
 
 import com.fasterxml.jackson.core.JacksonException
-import io.ktor.application.*
-import io.ktor.auth.*
-import io.ktor.features.*
+import io.ktor.server.application.*
+import io.ktor.server.auth.*
 import io.ktor.http.*
-import io.ktor.jackson.*
-import io.ktor.metrics.micrometer.*
-import io.ktor.request.*
-import io.ktor.response.*
+import io.ktor.serialization.jackson.*
+import io.ktor.server.metrics.micrometer.*
+import io.ktor.server.plugins.*
+import io.ktor.server.plugins.callid.*
+import io.ktor.server.plugins.callloging.*
+import io.ktor.server.plugins.contentnegotiation.*
+import io.ktor.server.plugins.statuspages.*
+import io.ktor.server.request.*
+import io.ktor.server.response.*
+import no.nav.pensjon.brev.api.ParseLetterDataException
 import no.nav.pensjon.brev.template.brevbakerConfig
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
@@ -29,8 +34,22 @@ fun Application.module() {
     }
 
     install(StatusPages) {
-        exception<JacksonException> { cause ->
-            call.respond(HttpStatusCode.BadRequest, cause.message ?: "Failed to deserialize json body: unknown reason")
+        exception<JacksonException> { call, cause ->
+            call.respond(HttpStatusCode.BadRequest, cause.message ?: "Failed to deserialize json body: unknown cause")
+        }
+        // Work-around to print proper error message when call.receive<T> fails.
+        exception<BadRequestException> { call, cause ->
+            if (cause.cause is JacksonException) {
+                call.respond(HttpStatusCode.BadRequest, cause.cause?.message ?: "Failed to deserialize json body: unknown reason")
+            } else {
+                call.respond(HttpStatusCode.BadRequest, cause.message ?: "Unknown failure")
+            }
+        }
+        exception<ParameterConversionException> { call, cause ->
+            call.respond(HttpStatusCode.BadRequest, cause.message?: "Failed to convert path parameter to required type: unknown cause")
+        }
+        exception<ParseLetterDataException> { call, cause ->
+            call.respond(HttpStatusCode.BadRequest, cause.message ?: "Failed to deserialize letterData: Unknown cause")
         }
     }
 

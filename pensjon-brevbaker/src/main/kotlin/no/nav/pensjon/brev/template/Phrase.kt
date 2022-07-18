@@ -1,23 +1,8 @@
 package no.nav.pensjon.brev.template
 
-import no.nav.pensjon.brev.template.dsl.*
-import kotlin.reflect.KClass
-
-data class Phrase<out Lang : LanguageSupport, PhraseData: Any>(
-    val elements: List<Element<Lang>>,
-    val phraseDataType: KClass<PhraseData>,
-)
-
-@Deprecated(
-    "Erstattet av TextOnlyPhrase, ParagraphPhrase og OutlinePhrase",
-)
-inline fun <Lang : LanguageSupport, reified PhraseData : Any> createPhrase(
-    phraseDataType: KClass<PhraseData> = PhraseData::class,
-    init: OutlineScope<Lang, PhraseData>.() -> Unit
-): Phrase<Lang, PhraseData> =
-    with(OutlineScope<Lang, PhraseData>().apply(init)) {
-        Phrase(children, phraseDataType)
-    }
+import no.nav.pensjon.brev.template.dsl.OutlineScope
+import no.nav.pensjon.brev.template.dsl.ParagraphScope
+import no.nav.pensjon.brev.template.dsl.TextOnlyScope
 
 class TextOnlyPhrase<Lang : LanguageSupport, PhraseData>(private val phraseBody: TextOnlyScope<Lang, Unit>.(arg: Expression<PhraseData>) -> Unit) {
     fun apply(scope: TextOnlyScope<in Lang, *>, data: Expression<PhraseData>) {

@@ -2,13 +2,15 @@ package no.nav.pensjon.brev
 
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import io.ktor.client.*
+import io.ktor.client.call.*
 import io.ktor.client.engine.cio.*
-import io.ktor.client.features.json.*
+import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
 import io.ktor.http.*
+import io.ktor.serialization.jackson.*
 import kotlinx.coroutines.runBlocking
-import no.nav.pensjon.brev.api.model.LetterRequest
-import no.nav.pensjon.brev.api.model.LetterResponse
+import no.nav.pensjon.brev.api.model.*
+import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.latex.LaTeXCompilerService
 import no.nav.pensjon.brev.latex.PdfCompilationInput
 import java.io.File
@@ -20,24 +22,33 @@ object TestTags {
     const val PDF_BYGGER = "pdf-bygger"
 }
 val httpClient = HttpClient(CIO) {
-    install(JsonFeature) {
-        serializer = JacksonSerializer{
+    install(ContentNegotiation) {
+        jackson {
             registerModule(JavaTimeModule())
         }
     }
 }
 
+fun requestLetter(letterRequest: VedtaksbrevRequest): LetterResponse =
+    runBlocking {
+        httpClient.post("$BREVBAKER_URL/letter/vedtak") {
+            contentType(ContentType.Application.Json)
+            setBody(letterRequest)
+        }.body()
+    }
+
+@Deprecated("Erstattet med requestLetter(letterRequest: VedtaksbrevRequest")
 fun requestLetter(letterRequest: LetterRequest): LetterResponse {
     return runBlocking {
         httpClient.post("$BREVBAKER_URL/letter") {
             contentType(ContentType.Application.Json)
-            body = letterRequest
-        }
+            setBody(letterRequest)
+        }.body()
     }
 }
 
-fun requestTemplates(): Set<String> = runBlocking {
-    httpClient.get("$BREVBAKER_URL/templates")
+fun requestTemplates(): Set<Brevkode.Vedtak> = runBlocking {
+    httpClient.get("$BREVBAKER_URL/templates").body()
 }
 
 fun writeTestPDF(pdfFileName: String, pdf: String) {

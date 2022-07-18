@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.template
 
-import no.nav.pensjon.brev.template.dsl.*
+import no.nav.pensjon.brev.template.dsl.OutlineScope
+import no.nav.pensjon.brev.template.dsl.expression.expr
 import kotlin.reflect.KClass
 
 
@@ -18,7 +19,8 @@ inline fun <Lang : LanguageSupport, reified LetterData : Any> createAttachment(
 
 data class IncludeAttachment<out Lang : LanguageSupport, AttachmentData : Any>(
     val data: Expression<AttachmentData>,
-    val template: AttachmentTemplate<Lang, AttachmentData>
+    val template: AttachmentTemplate<Lang, AttachmentData>,
+    val predicate: Expression<Boolean> = true.expr(),
 )
 
 data class AttachmentTemplate<out Lang : LanguageSupport, AttachmentData : Any>(

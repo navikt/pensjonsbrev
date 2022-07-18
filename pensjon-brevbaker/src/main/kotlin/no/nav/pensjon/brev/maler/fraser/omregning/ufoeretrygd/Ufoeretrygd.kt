@@ -1,8 +1,10 @@
 package no.nav.pensjon.brev.maler.fraser.omregning.ufoeretrygd
 
+import no.nav.pensjon.brev.api.model.Kroner
 import no.nav.pensjon.brev.api.model.maler.UngUfoerAutoDto
 import no.nav.pensjon.brev.maler.fraser.Constants
 import no.nav.pensjon.brev.maler.fraser.common.*
+import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.dsl.*
@@ -34,7 +36,7 @@ object Ufoeretrygd {
     )
 
     val beloep = OutlinePhrase<LangBokmalNynorsk, BeloepPerMaaned> { beloepPerMaaned ->
-        val kroner = beloepPerMaaned.select(BeloepPerMaaned::perMaaned).str()
+        val kroner = beloepPerMaaned.select(BeloepPerMaaned::perMaaned).format()
 
         paragraph {
             showIf(beloepPerMaaned.map { !it.fellesbarn && !it.saerkullsbarn && !it.ektefelle && !it.gjenlevende }) {
@@ -86,7 +88,7 @@ object Ufoeretrygd {
         fun saerkullsbarnUtbetalt(): Boolean = saerkullsbarn?.utbetalt ?: false
     }
 
-    val barnetileggIkkeUtbetalt = OutlinePhrase<LangBokmalNynorsk, BarnetilleggIkkeUtbetaltDto> {
+    val barnetilleggIkkeUtbetalt = OutlinePhrase<LangBokmalNynorsk, BarnetilleggIkkeUtbetaltDto> {
         paragraph {
 
             val saerkullInnvilget = it.select(BarnetilleggIkkeUtbetaltDto::saerkullInnvilget)
@@ -96,7 +98,7 @@ object Ufoeretrygd {
 
             ifNotNull(it.select(BarnetilleggIkkeUtbetaltDto::saerkullsbarn)) { saerkullsbarn ->
                 val barnFlertall = saerkullsbarn.map { it.antallBarn > 1 }
-                val inntektstak = saerkullsbarn.select(UngUfoerAutoDto.InnvilgetBarnetillegg::inntektstak).str()
+                val inntektstak = saerkullsbarn.select(UngUfoerAutoDto.InnvilgetBarnetillegg::inntektstak).format()
 
                 showIf(saerkullInnvilget and not(saerkullUtbetalt) and fellesUtbetalt and fellesInnvilget) {
                     textExpr(
@@ -120,7 +122,7 @@ object Ufoeretrygd {
 
             ifNotNull(it.select(BarnetilleggIkkeUtbetaltDto::fellesbarn)) { fellesbarn ->
                 val barnFlertall = fellesbarn.map { it.antallBarn > 1 }
-                val inntektstak = fellesbarn.select(UngUfoerAutoDto.InnvilgetBarnetillegg::inntektstak).str()
+                val inntektstak = fellesbarn.select(UngUfoerAutoDto.InnvilgetBarnetillegg::inntektstak).format()
 
                 showIf(fellesInnvilget and not(fellesUtbetalt) and saerkullUtbetalt and saerkullInnvilget) {
                     textExpr(
@@ -141,18 +143,6 @@ object Ufoeretrygd {
                     )
                 }
             }
-        }
-    }
-
-    /**
-     * TBU1092
-     */
-    val vedtakBegrunnelseOverskrift = OutlinePhrase<LangBokmalNynorsk, Unit> {
-        title1 {
-            text(
-                Bokmal to "Begrunnelse for vedtaket",
-                Nynorsk to "Grunngiving for vedtaket",
-            )
         }
     }
 
@@ -217,13 +207,14 @@ object Ufoeretrygd {
     }
 
     /**
-     * TBU1227
+     * TBU1227, sjekkUtbetalingeneOverskrift_001, sjekkUtbetalingeneUT_001
      */
-    val sjekkUtbetalingene = OutlinePhrase<LangBokmalNynorsk, Unit> {
+    val sjekkUtbetalingene = OutlinePhrase<LangBokmalNynorskEnglish, Unit> {
         title1 {
             text(
                 Bokmal to "Sjekk utbetalingene dine",
                 Nynorsk to "Sjekk utbetalingane dine",
+                English to "Information about your payments",
             )
         }
 
@@ -234,6 +225,9 @@ object Ufoeretrygd {
 
                 Nynorsk to "Du får uføretrygd utbetalt den 20. kvar månad, eller seinast siste yrkedag før denne datoen. " +
                         "Du kan sjå alle utbetalingar du har fått på ${Constants.DITT_NAV}. Her kan du også endre kontonummeret ditt.",
+
+                English to "Your disability benefit will be paid on the 20th of each month or no later than the last business day before this date. " +
+                        "To see all the payments you have received, go to: ${Constants.DITT_NAV}. You may also change your account number here.",
             )
         }
     }

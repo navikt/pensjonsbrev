@@ -3,31 +3,27 @@ package no.nav.pensjon.brev.api
 import com.natpryce.hamkrest.and
 import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.hasElement
-import no.nav.pensjon.brev.maler.example.LetterExample
-import no.nav.pensjon.brev.template.LetterTemplate
+import no.nav.pensjon.brev.Fixtures
+import no.nav.pensjon.brev.api.model.maler.Brevkode
+import no.nav.pensjon.brev.maler.*
+import no.nav.pensjon.brev.template.*
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Test
-import kotlin.reflect.full.createInstance
 
 class TemplateResourceTest {
 
-    val templateResource = TemplateResource(setOf(LetterExample))
-    @Test
-    fun `getTemplate fetches template`() {
-        assertEquals(LetterExample.template, templateResource.getTemplate(LetterExample.template.name))
-    }
+    val templateResource = TemplateResource(productionTemplates)
 
     @Test
-    fun `getTemplate returns null for non-existing template`() {
-        assertNull(templateResource.getTemplate("non_existing"))
+    fun `getTemplate fetches template`() {
+        assertEquals(OmsorgEgenAuto.template, templateResource.getTemplate(OmsorgEgenAuto.kode))
     }
 
     @Test
     fun `getTemplates returns list of template names`() {
         assertThat(
             templateResource.getTemplates(),
-            hasElement(LetterExample.template.name) and hasElement(LetterExample.template.name)
+            hasElement(OmsorgEgenAuto.kode) and hasElement(UngUfoerAuto.kode)
         )
     }
 
@@ -37,7 +33,7 @@ class TemplateResourceTest {
         val templates = templateNames
             .map { templateResource.getTemplate(it) }
             .filterNotNull()
-            .map { it.name }
+            .map { Brevkode.Vedtak.valueOf(it.name) }
             .toSet()
 
         assertEquals(templateNames, templates)
@@ -45,7 +41,7 @@ class TemplateResourceTest {
 
     @Test
     fun `all templates have letterDataType which are data class`() {
-        val templatesWithoutDataClass: Map<String, LetterTemplate<*, *>> = templateResource.getTemplates()
+        val templatesWithoutDataClass: Map<Brevkode.Vedtak, LetterTemplate<*, *>> = templateResource.getTemplates()
             .associateWith { templateResource.getTemplate(it)!! }
             .filterValues { !it.letterDataType.isData }
 
@@ -53,23 +49,37 @@ class TemplateResourceTest {
     }
 
     @Test
-    fun `all templates have letterDataType with no-arg constructor`() {
-        val templatesWithoutNoArgConstructor = templateResource.getTemplates()
+    fun `all templates have letterDataType that can be created`() {
+        val templatesWithoutSampleData = templateResource.getTemplates()
             .associateWith { templateResource.getTemplate(it)!! }
             .mapValues {
                 try {
-                    it.value.letterDataType.createInstance()
-                } catch (e: Exception) {
+                    Fixtures.create(it.value.letterDataType)
                     null
+                } catch (e: IllegalArgumentException) {
+                    e.message
                 }
-            }.filterValues { it == null }
-            .keys
+            }.filterValues { it != null }
 
         assertEquals(
-            emptySet<String>(),
-            templatesWithoutNoArgConstructor,
-            "letterDataType classes should have an internal no-arg constructor with valid test data."
+            emptyMap<String, String>(),
+            templatesWithoutSampleData,
+            "letterDataType classes must be constructable by Fixtures.create."
         )
+    }
+
+    @Test
+    fun `all template letterDataType can be serialized and deserialized`() {
+        val jackson = jacksonObjectMapper()
+        templateResource.getTemplates()
+            .map { templateResource.getTemplate(it)!! }
+            .forEach {
+                val data = Fixtures.create(it.letterDataType)
+                val json = jackson.writeValueAsString(data)
+                val deserialized = jackson.readValue(json, it.letterDataType.java)
+
+                assertEquals(data, deserialized)
+            }
     }
 
 }

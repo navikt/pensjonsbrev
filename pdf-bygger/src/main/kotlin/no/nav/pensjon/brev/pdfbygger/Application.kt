@@ -1,23 +1,25 @@
 package no.nav.pensjon.brev.pdfbygger
 
 import com.fasterxml.jackson.core.JacksonException
-import io.ktor.application.*
-import io.ktor.features.*
 import io.ktor.http.*
+import io.ktor.serialization.jackson.*
+import io.ktor.server.application.*
+import io.ktor.server.metrics.micrometer.*
+import io.ktor.server.netty.*
+import io.ktor.server.plugins.callid.*
+import io.ktor.server.plugins.callloging.*
+import io.ktor.server.plugins.contentnegotiation.*
+import io.ktor.server.plugins.statuspages.*
+import io.ktor.server.request.*
+import io.ktor.server.response.*
+import io.ktor.server.routing.*
 import io.micrometer.core.instrument.Clock
 import io.micrometer.prometheus.PrometheusConfig
 import io.micrometer.prometheus.PrometheusMeterRegistry
 import io.prometheus.client.CollectorRegistry
 import io.prometheus.client.exporter.common.TextFormat
-import io.ktor.jackson.*
-import io.ktor.metrics.micrometer.*
-import io.ktor.response.*
-import io.ktor.request.*
-import io.ktor.routing.*
-import io.ktor.server.netty.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import org.slf4j.event.Level
 import java.io.Writer
 
 val laTeXService = LaTeXService()
@@ -43,7 +45,7 @@ fun Application.module() {
     }
 
     install(StatusPages) {
-        exception<JacksonException> { cause ->
+        exception<JacksonException> { call, cause ->
             call.respond(HttpStatusCode.BadRequest, cause.message ?: "Failed to deserialize json body: unknown reason")
         }
     }

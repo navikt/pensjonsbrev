@@ -95,8 +95,8 @@
 %----------------------------------------
 \newcommand{\currentSectionName}{mainletter} %name of the current section of the letter. Used for lastpage label at the end of this section
 \newcommand{\letterpagenumber}{ %general page number formatting
-    \begin{textblock*}{25mm}(160mm,292mm)
-        \tinyText{\hfill\feltsideprefix~\textbf{\thepage}~\feltsideinfix~\textbf{\pageref*{\currentSectionName}}}
+    \begin{textblock*}{25mm}(160mm,287mm)
+        \tinyText{\hfill\feltsideprefix~\thepage~\feltsideinfix~\pageref*{\currentSectionName}}
     \end{textblock*}
 }
 

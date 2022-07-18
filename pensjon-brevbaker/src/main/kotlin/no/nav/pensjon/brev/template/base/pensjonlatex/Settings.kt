@@ -5,9 +5,8 @@ import no.nav.pensjon.brev.api.model.NAVEnhet
 import no.nav.pensjon.brev.api.model.Telefonnummer
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Language
-import no.nav.pensjon.brev.template.dsl.expression.select
-import no.nav.pensjon.brev.template.dsl.languageSettings
-import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.dsl.*
+import no.nav.pensjon.brev.template.dsl.expression.*
 
 val pensjonLatexSettings = languageSettings {
     setting("navnprefix") {
@@ -75,24 +74,17 @@ val pensjonLatexSettings = languageSettings {
     }
 
     setting("closingkontaktoss") {
-        text(
-            Language.Bokmal to "Kontakt oss gjerne på ",
-            Language.Nynorsk to "Kontakt oss gjerne på ",
-            Language.English to "You will find further information at ",
-        )
         val avsender = felles().select(Felles::avsenderEnhet)
+        val nettside = avsender.select(NAVEnhet::nettside)
+        val telefonnummer = avsender.select(NAVEnhet::telefonnummer).format()
 
-        eval { avsender.select(NAVEnhet::nettside) }
-        text(
-            Language.Bokmal to " eller på telefon ",
-            Language.Nynorsk to " eller på telefon ",
-            Language.English to ". You can also contact us by phone ",
-        )
-        eval { avsender.select(NAVEnhet::telefonnummer).select(Telefonnummer::format) }
-        text(
-            Language.Bokmal to ". Hvis du oppgir fødselsnummeret ditt når du tar kontakt med NAV, kan vi lettere gi deg rask og god hjelp.",
-            Language.Nynorsk to ". Dersom du gir opp fødselsnummeret ditt når du kontaktar NAV, kan vi lettare gi deg rask og god hjelp.",
-            Language.English to ".",
+        textExpr(
+            Language.Bokmal to "Kontakt oss gjerne på ".expr() + nettside + " eller på telefon " + telefonnummer
+                    + ". Hvis du oppgir fødselsnummeret ditt når du tar kontakt med NAV, kan vi lettere gi deg rask og god hjelp.",
+            Language.Nynorsk to "Kontakt oss gjerne på ".expr() + nettside + " eller på telefon " + telefonnummer
+                    + ". Dersom du gir opp fødselsnummeret ditt når du kontaktar NAV, kan vi lettare gi deg rask og god hjelp.",
+            Language.English to "You will find further information at ".expr() + nettside
+                    + ". You can also contact us by phone " + telefonnummer + ".",
         )
     }
 

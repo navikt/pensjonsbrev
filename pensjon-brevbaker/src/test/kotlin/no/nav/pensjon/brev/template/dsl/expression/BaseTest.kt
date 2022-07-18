@@ -1,11 +1,9 @@
 package no.nav.pensjon.brev.template.dsl.expression
 
 import no.nav.pensjon.brev.Fixtures
-import no.nav.pensjon.brev.api.model.Felles
 import no.nav.pensjon.brev.template.*
 import org.junit.jupiter.api.*
-import org.junit.jupiter.api.Assertions.assertEquals
-import kotlin.math.exp
+import org.junit.jupiter.api.Assertions.*
 
 class BaseTest {
 
@@ -29,6 +27,58 @@ class BaseTest {
 
         assertEquals("hei", expr.eval(scope))
         assertEquals("hade bra", expr.eval(ExpressionScope(3, scope.felles, scope.language)))
+    }
+
+    enum class TestEnum{
+        YES, NO, MAYBE
+    }
+
+    @Test
+    fun `isOneOf positive match`() {
+        val expr = TestEnum.YES.expr().isOneOf(TestEnum.YES)
+        val scope = ExpressionScope(2, Fixtures.felles, Language.Bokmal)
+
+        assertTrue(expr.eval(ExpressionScope(3, scope.felles, scope.language)))
+    }
+
+    @Test
+    fun `isOneOf positive match with multiple values`() {
+        val expr = TestEnum.YES.expr().isOneOf(TestEnum.NO, TestEnum.YES, TestEnum.MAYBE)
+        val scope = ExpressionScope(2, Fixtures.felles, Language.Bokmal)
+
+        assertTrue(expr.eval(ExpressionScope(3, scope.felles, scope.language)))
+    }
+
+    @Test
+    fun `isOneOf negative match`() {
+        val expr = TestEnum.YES.expr().isOneOf(TestEnum.NO)
+        val scope = ExpressionScope(2, Fixtures.felles, Language.Bokmal)
+
+        assertFalse(expr.eval(ExpressionScope(3, scope.felles, scope.language)))
+    }
+
+    @Test
+    fun `isNotAnyOf positive match`() {
+        val expr = TestEnum.YES.expr().isNotAnyOf(TestEnum.NO)
+        val scope = ExpressionScope(2, Fixtures.felles, Language.Bokmal)
+
+        assertTrue(expr.eval(ExpressionScope(3, scope.felles, scope.language)))
+    }
+
+    @Test
+    fun `isNotAnyOf positive match with multiple values`() {
+        val expr = TestEnum.YES.expr().isNotAnyOf(TestEnum.NO, TestEnum.MAYBE)
+        val scope = ExpressionScope(2, Fixtures.felles, Language.Bokmal)
+
+        assertTrue(expr.eval(ExpressionScope(3, scope.felles, scope.language)))
+    }
+
+    @Test
+    fun `isNotAnyOf negative match`() {
+        val expr = TestEnum.YES.expr().isNotAnyOf(TestEnum.YES)
+        val scope = ExpressionScope(2, Fixtures.felles, Language.Bokmal)
+
+        assertFalse(expr.eval(ExpressionScope(3, scope.felles, scope.language)))
     }
 
 }

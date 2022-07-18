@@ -21,6 +21,7 @@ class IfNotNullTest {
         letterMetadata = LetterMetadata(
             "Jadda",
             isSensitiv = true,
+            distribusjonstype = LetterMetadata.Distribusjonstype.ANNET,
         )
     ) {
         title { text(Bokmal to "Heisann") }

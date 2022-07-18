@@ -34,10 +34,12 @@ object PensjonLatex : BaseTemplate() {
         RenderedLatexLetter().apply {
             newFile("params.tex").use { masterTemplateParameters(letter, LatexPrintWriter(it)) }
             newFile("letter.xmpdata").use { xmpData(letter, LatexPrintWriter(it)) }
-            newFile("letter.tex").use { renderLetterV2(letter, LatexPrintWriter(it)) }
-            letter.template.attachments.forEachIndexed { index, attachment ->
-                newFile("attachment_$index.tex").use { renderAttachment(letter, attachment, LatexPrintWriter(it)) }
-            }
+            newFile("letter.tex").use { renderLetter(letter, LatexPrintWriter(it)) }
+            letter.template.attachments
+                .filter { it.predicate.eval(letter.toScope()) }
+                .forEachIndexed { index, attachment ->
+                    newFile("attachment_$index.tex").use { renderAttachment(letter, attachment, LatexPrintWriter(it)) }
+                }
             addFiles(letterResourceFiles)
         }
 
@@ -79,7 +81,7 @@ object PensjonLatex : BaseTemplate() {
             printCmd("sluttvedlegg")
         }
 
-    private fun renderLetterV2(letter: Letter<*>, printWriter: LatexPrintWriter): Unit =
+    private fun renderLetter(letter: Letter<*>, printWriter: LatexPrintWriter): Unit =
         with(printWriter) {
             println("""\documentclass{pensjonsbrev_v3}""", escape = false)
             pdfMetadata(letter, printWriter)
@@ -88,13 +90,15 @@ object PensjonLatex : BaseTemplate() {
             printCmd("tittel", renderTitle(letter))
             contents(letter, printWriter)
             printCmd("closing")
-            letter.template.attachments.forEachIndexed { index, _ ->
-                printCmd(
-                    "input",
-                    "attachment_$index",
-                    escape = false
-                )
-            }
+            letter.template.attachments
+                .filter { it.predicate.eval(letter.toScope()) }
+                .forEachIndexed { index, _ ->
+                    printCmd(
+                        "input",
+                        "attachment_$index",
+                        escape = false
+                    )
+                }
             printCmd("end", "document")
         }
 
@@ -171,10 +175,10 @@ object PensjonLatex : BaseTemplate() {
 
     private fun vedleggCommand(letter: Letter<*>, printWriter: LatexPrintWriter) {
         printWriter.printNewCmd("feltclosingvedlegg") { bodyWriter ->
-            if (letter.template.attachments.isNotEmpty()) {
-                bodyWriter.printCmd("closingvedleggspace")
+            val attachments = letter.template.attachments.filter { it.predicate.eval(letter.toScope()) }
+            if (attachments.isNotEmpty()) {
                 bodyWriter.printCmd("begin", "attachmentList")
-                letter.template.attachments.forEach {
+                attachments.forEach {
                     bodyWriter.print("""\item """, escape = false)
                     bodyWriter.println(it.template.title.text(letter.language))
                 }

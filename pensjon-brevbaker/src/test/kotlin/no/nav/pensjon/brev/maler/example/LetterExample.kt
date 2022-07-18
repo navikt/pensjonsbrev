@@ -1,7 +1,11 @@
 package no.nav.pensjon.brev.maler.example
 
 import no.nav.pensjon.brev.api.model.Felles
+import no.nav.pensjon.brev.api.model.Kroner
 import no.nav.pensjon.brev.api.model.LetterMetadata
+import no.nav.pensjon.brev.api.model.maler.Brevkode
+import no.nav.pensjon.brev.maler.fraser.common.Felles.kroner
+import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Element.Table.ColumnAlignment.RIGHT
 import no.nav.pensjon.brev.template.Element.Text.FontType
@@ -12,7 +16,10 @@ import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brev.template.dsl.expression.*
 import java.time.LocalDate
 
-object LetterExample : StaticTemplate {
+object LetterExample : VedtaksbrevTemplate {
+
+    override val kode: Brevkode.Vedtak = Brevkode.Vedtak.OMSORG_EGEN_AUTO
+
     override val template = createTemplate(
         name = "EKSEMPEL_BREV", //Letter ID
         base = PensjonLatex, //Master-template
@@ -21,6 +28,7 @@ object LetterExample : StaticTemplate {
         letterMetadata = LetterMetadata(
             displayTitle = "Dette er ett eksempel-brev", // Display title for external systems
             isSensitiv = false, // If this letter contains sensitive information requiring level 4 log-in
+            distribusjonstype = LetterMetadata.Distribusjonstype.ANNET, // Brukes ved distribusjon av brevet
         )
     ) {
         title {
@@ -31,8 +39,6 @@ object LetterExample : StaticTemplate {
         }
 
         // Main letter content
-        val datoInnvilget = argument().select(LetterExampleDto::datoInnvilget)
-        val pensjonBeloep = argument().select(LetterExampleDto::pensjonBeloep)
         val pensjonInnvilget = argument().select(LetterExampleDto::pensjonInnvilget)
         val datoAvslaatt = argument().select(LetterExampleDto::datoAvslaatt)
         val tillegg = argument().select(LetterExampleDto::tilleggEksempel)
@@ -61,8 +67,8 @@ object LetterExample : StaticTemplate {
                 showIf(pensjonInnvilget) {
                     textExpr(
                         // Text expressions can use variables as expressions, but the text literals also need to be expressions
-                        Bokmal to "Hei ".expr() + firstName.str() + ". Du har fått innvilget pensjon.".expr(),
-                        Nynorsk to "Hei ".expr() + firstName.str() + ". Du har fått innvilget pensjon.".expr(),
+                        Bokmal to "Hei ".expr() + firstName + ". Du har fått innvilget pensjon.".expr(),
+                        Nynorsk to "Hei ".expr() + firstName + ". Du har fått innvilget pensjon.".expr(),
                     )
                 }
 
@@ -73,8 +79,8 @@ object LetterExample : StaticTemplate {
                         ifNotNull(tillegg1) {
                             item {
                                 textExpr(
-                                    Bokmal to "Du har fått tilleg1 for ".expr() + navn + " på ".expr() + it.str() + " Kr",
-                                    Nynorsk to "Du har fått tilleg1 for ".expr() + navn + " på ".expr() + it.str() + " Kr",
+                                    Bokmal to "Du har fått tilleg1 for ".expr() + navn + " på ".expr() + it.format() + " Kr",
+                                    Nynorsk to "Du har fått tilleg1 for ".expr() + navn + " på ".expr() + it.format() + " Kr",
                                 )
                             }
                         }
@@ -142,25 +148,22 @@ object LetterExample : StaticTemplate {
                             }
                             cell {
                                 ifNotNull(tillegg1) { tillegg ->
-                                    textExpr(
-                                        Bokmal to tillegg.str() + " Kr".expr(),
-                                        Nynorsk to tillegg.str() + " Kr".expr()
-                                    )
+                                    includePhrase(kroner, tillegg)
                                 }
                             }
                             cell {
                                 ifNotNull(tillegg2) { tillegg ->
                                     textExpr(
-                                        Bokmal to tillegg.str() + " Kr".expr(),
-                                        Nynorsk to tillegg.str() + " Kr".expr()
+                                        Bokmal to tillegg.format() + " Kr".expr(),
+                                        Nynorsk to tillegg.format() + " Kr".expr()
                                     )
                                 }
                             }
                             cell {
                                 ifNotNull(tillegg3) { tillegg ->
                                     textExpr(
-                                        Bokmal to tillegg.str() + " Kr".expr(),
-                                        Nynorsk to tillegg.str() + " Kr".expr()
+                                        Bokmal to tillegg.format() + " Kr".expr(),
+                                        Nynorsk to tillegg.format() + " Kr".expr()
                                     )
                                 }
                             }
@@ -236,36 +239,21 @@ data class LetterExampleDto(
     val tilleggEksempel: List<ExampleTilleggDto>,
     val datoAvslaatt: LocalDate?,
     val pensjonBeloep: Int?,
-) {
-    // No-arg constructor for integration tests
-    constructor() : this(
-        true,
-        LocalDate.now(),
-        listOf("test testerson1", "test testerson2", "test testerson3"),
-        listOf(
-            ExampleTilleggDto(
-                navn = "Test testerson 1",
-                tillegg1 = 300,
-                tillegg3 = 500,
-            ), ExampleTilleggDto(
-                navn = "Test testerson 2",
-                tillegg1 = 100,
-                tillegg2 = 600,
-            ), ExampleTilleggDto(
-                navn = "Test testerson 3",
-                tillegg2 = 300,
-            )
-        ), LocalDate.of(2020, 1, 1),
-        100
-    )
-}
-
+)
 data class ExampleTilleggDto(
     val navn: String,
-    val tillegg1: Int? = null,
-    val tillegg2: Int? = null,
-    val tillegg3: Int? = null,
-)
+    val tillegg1: Kroner? = null,
+    val tillegg2: Kroner? = null,
+    val tillegg3: Kroner? = null,
+) {
+    @Suppress("unused")
+    constructor() : this(
+        navn = "Navn",
+        tillegg1 = Kroner(1234),
+        tillegg2 = Kroner(1234),
+        tillegg3 = Kroner(1234),
+    )
+}
 
 data class OutlinePhraseDto(val datoInnvilget: LocalDate, val pensjonInnvilget: Boolean)
 
@@ -284,6 +272,7 @@ val outlinePhraseTest = OutlinePhrase<LangBokmalNynorsk, OutlinePhraseDto> { phr
     }
 }
 
+@Suppress("unused", "UNUSED_ANONYMOUS_PARAMETER")
 val paragraphPhraseTest = ParagraphPhrase<LangBokmalNynorsk, Unit> { phraseParameter ->
     list {
         item {

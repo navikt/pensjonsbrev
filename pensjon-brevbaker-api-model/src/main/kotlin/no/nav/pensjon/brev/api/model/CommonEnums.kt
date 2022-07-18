@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package no.nav.pensjon.brev.api.model
 
 enum class Sivilstand{
@@ -11,12 +13,13 @@ enum class Sivilstand{
     SEPARERT_PARTNER,
     SAMBOER1_5,
     SAMBOER3_2,
-    INGEN,
 }
 
 enum class Sakstype{
-    UFOEREP,
+    AFP,
     ALDER,
+    UFOEREP,
+    BARNEP,
 }
 
 enum class Institusjon{
@@ -24,4 +27,19 @@ enum class Institusjon{
     HELSE,
     SYKEHJEM,
     INGEN,
+}
+
+enum class Beregningsmetode{
+    AUSTRALIA,
+    CANADA,
+    CHILE,
+    EOS,
+    FOLKETRYGD,
+    INDIA,
+    ISRAEL,
+    NORDISK,
+    PRORATA,
+    SOR_KOREA,
+    SVEITS,
+    USA
 }

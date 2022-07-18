@@ -1,29 +1,33 @@
 package no.nav.pensjon.brev.maler
 
-import no.nav.pensjon.brev.api.model.LetterMetadata
-import no.nav.pensjon.brev.api.model.maler.OmsorgEgenAutoDto
+import no.nav.pensjon.brev.api.model.*
+import no.nav.pensjon.brev.api.model.maler.*
 import no.nav.pensjon.brev.maler.vedlegg.EgenerklaeringPleieOgOmsorgsarbeid
 import no.nav.pensjon.brev.maler.vedlegg.egenerklaeringPleieOgOmsorgsarbeid
+import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.base.PensjonLatex
 import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brev.template.dsl.expression.*
 
-object OmsorgEgenAuto : StaticTemplate {
+object OmsorgEgenAuto : VedtaksbrevTemplate {
+
+    override val kode: Brevkode.Vedtak = Brevkode.Vedtak.OMSORG_EGEN_AUTO
 
     override val template = createTemplate(
-        name = "OMSORG_EGEN_AUTO",
+        name = kode.name,
         base = PensjonLatex,
         letterDataType = OmsorgEgenAutoDto::class,
         languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(
-            "Egenerklæring godskriving omsorgspoeng",
-            false,
+            displayTitle = "Egenerklæring godskriving omsorgspoeng",
+            isSensitiv = false,
+            distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
         )
     ) {
 
-        val aarEgenerklaringOmsorgspoeng = argument().select(OmsorgEgenAutoDto::aarEgenerklaringOmsorgspoeng).str()
+        val aarEgenerklaringOmsorgspoeng = argument().select(OmsorgEgenAutoDto::aarEgenerklaringOmsorgspoeng).format()
 
         title {
             text(
@@ -54,7 +58,7 @@ object OmsorgEgenAuto : StaticTemplate {
             }
 
             paragraph {
-                val aarInnvilgetOmsorgspoeng = argument().select(OmsorgEgenAutoDto::aarInnvilgetOmsorgspoeng).str()
+                val aarInnvilgetOmsorgspoeng = argument().select(OmsorgEgenAutoDto::aarInnvilgetOmsorgspoeng).format()
                 textExpr(
                     Bokmal to "Du har fått godkjent pensjonsopptjening for ".expr() + aarInnvilgetOmsorgspoeng + ".",
                     Nynorsk to "Du har fått godkjend pensjonsopptening for ".expr() + aarInnvilgetOmsorgspoeng + ".",

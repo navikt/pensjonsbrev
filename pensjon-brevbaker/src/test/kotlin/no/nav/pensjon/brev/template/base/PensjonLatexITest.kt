@@ -33,6 +33,7 @@ class PensjonLatexITest {
             letterMetadata = LetterMetadata(
                 displayTitle = "En fin display tittel",
                 isSensitiv = false,
+                distribusjonstype = LetterMetadata.Distribusjonstype.ANNET,
             )
         ) {
             title { text(Bokmal to "En fin tittel") }
@@ -98,6 +99,7 @@ class PensjonLatexITest {
                 letterMetadata = LetterMetadata(
                     displayTitle = "En fin display tittel",
                     isSensitiv = false,
+                    distribusjonstype = LetterMetadata.Distribusjonstype.ANNET,
                 )
             ) {
                 title { text(Bokmal to "En fin tittel") }

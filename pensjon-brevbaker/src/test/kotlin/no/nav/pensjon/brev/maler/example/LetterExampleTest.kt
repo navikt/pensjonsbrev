@@ -19,7 +19,7 @@ class LetterExampleTest {
     fun test() {
         Letter(
             LetterExample.template,
-            LetterExampleDto(),
+            Fixtures.create<LetterExampleDto>(),
             Language.Bokmal,
             Fixtures.fellesAuto
         ).render()

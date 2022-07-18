@@ -1,11 +1,11 @@
-val logback_version: String by project
-val ktor_version: String by project
-val jupiter_version: String by project
-val logstash_version: String by project
+val logbackVersion="1.2.11"
+val ktorVersion="2.0.2"
+val jupiterVersion="5.7.1"
+val logstashVersion="7.2"
 
 plugins {
     application
-    kotlin("jvm") version "1.6.10"
+    kotlin("jvm") version "1.7.0"
     id("com.github.johnrengelman.shadow") version "7.0.0"
 }
 
@@ -74,25 +74,29 @@ tasks {
 
 dependencies {
     implementation(kotlin("stdlib"))
-    implementation("ch.qos.logback:logback-classic:$logback_version")
-    implementation("net.logstash.logback:logstash-logback-encoder:$logstash_version")
-    implementation("io.ktor:ktor-client-cio:$ktor_version")
-    implementation("io.ktor:ktor-server-netty:$ktor_version")
-    implementation("io.ktor:ktor-server-core:$ktor_version")
-    implementation("io.ktor:ktor-jackson:$ktor_version")
-    implementation("io.ktor:ktor-client-jackson:$ktor_version")
-    implementation("io.ktor:ktor-auth:$ktor_version")
-    implementation("io.ktor:ktor-auth-jwt:$ktor_version")
-    implementation("no.nav.pensjon.brev:pensjon-brevbaker-api-model:2.0.0")
+    implementation("ch.qos.logback:logback-classic:$logbackVersion")
+    implementation("io.ktor:ktor-client-cio:$ktorVersion")
+    implementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
+    implementation("io.ktor:ktor-serialization-jackson:$ktorVersion")
+    implementation("io.ktor:ktor-server-auth:$ktorVersion")
+    implementation("io.ktor:ktor-server-auth-jwt:$ktorVersion")
+    implementation("io.ktor:ktor-server-call-id:$ktorVersion")
+    implementation("io.ktor:ktor-server-call-logging:$ktorVersion")
+    implementation("io.ktor:ktor-server-content-negotiation:$ktorVersion")
+    implementation("io.ktor:ktor-server-core:$ktorVersion")
+    implementation("io.ktor:ktor-server-netty:$ktorVersion")
+    implementation("io.ktor:ktor-server-status-pages:$ktorVersion")
+    implementation("net.logstash.logback:logstash-logback-encoder:$logstashVersion")
+    implementation("no.nav.pensjon.brev:pensjon-brevbaker-api-model:3.5.0")
     // Necessary for java.time.LocalDate
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.13.3")
     // Metrics
-    implementation("io.ktor:ktor-metrics:$ktor_version")
-    implementation("io.ktor:ktor-metrics-micrometer:$ktor_version")
+    implementation("io.ktor:ktor-server-metrics:$ktorVersion")
+    implementation("io.ktor:ktor-server-metrics-micrometer:$ktorVersion")
     implementation("io.micrometer:micrometer-registry-prometheus:1.9.0")
 
     // JUnit 5
-    testImplementation(platform("org.junit:junit-bom:$jupiter_version"))
+    testImplementation(platform("org.junit:junit-bom:$jupiterVersion"))
     testImplementation("org.junit.jupiter:junit-jupiter")
     testImplementation("com.natpryce:hamkrest:1.8.0.1")
 }

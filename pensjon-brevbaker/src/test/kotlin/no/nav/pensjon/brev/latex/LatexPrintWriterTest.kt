@@ -7,7 +7,6 @@ import com.natpryce.hamkrest.equalTo
 import com.natpryce.hamkrest.startsWith
 import no.nav.pensjon.brev.template.latexEscape
 import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import java.io.ByteArrayOutputStream
 

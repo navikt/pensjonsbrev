@@ -1,18 +1,19 @@
 package no.nav.pensjon.brev
 
-import io.ktor.application.*
-import io.ktor.auth.*
-import io.ktor.auth.jwt.*
-import io.ktor.features.*
 import io.ktor.http.*
-import io.ktor.request.*
-import io.ktor.response.*
-import io.ktor.routing.*
+import io.ktor.server.application.*
+import io.ktor.server.auth.*
+import io.ktor.server.auth.jwt.*
+import io.ktor.server.plugins.callid.*
+import io.ktor.server.request.*
+import io.ktor.server.response.*
+import io.ktor.server.routing.*
+import io.ktor.server.util.*
 import io.prometheus.client.exporter.common.TextFormat
 import no.nav.pensjon.brev.api.LetterResource
 import no.nav.pensjon.brev.api.description
-import no.nav.pensjon.brev.api.model.LetterRequest
-import no.nav.pensjon.brev.api.model.LetterResponse
+import no.nav.pensjon.brev.api.model.*
+import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.latex.LaTeXCompilerService
 import no.nav.pensjon.brev.latex.PdfCompilationInput
 
@@ -25,8 +26,12 @@ fun Application.brevbakerRouting(authenticationNames: Array<String>) =
             call.respond(letterResource.templateResource.getTemplates())
         }
 
-        get("/templates/{name}") {
-            val template = letterResource.templateResource.getTemplate(call.parameters["name"]!!)?.description()
+        get("/templates/vedtaksbrev/{kode}") {
+            val template = call.parameters
+                .getOrFail<Brevkode.Vedtak>("kode")
+                .let { letterResource.templateResource.getTemplate(it) }
+                ?.description()
+
             if (template == null) {
                 call.respond(HttpStatusCode.NotFound)
             } else {
@@ -34,10 +39,33 @@ fun Application.brevbakerRouting(authenticationNames: Array<String>) =
             }
         }
 
-        authenticate(*authenticationNames, optional = environment.developmentMode) {
+        // TODO: fjernes når pesys er oppdatert
+        get("/templates/{kode}") {
+            val template = call.parameters.getOrFail<String>("name")
+                .let { Brevkode.Vedtak.findByKode(it) }
+                ?.let { letterResource.templateResource.getTemplate(it)?.description() }
+
+            if (template == null) {
+                call.respond(HttpStatusCode.NotFound)
+            } else {
+                call.respond(template)
+            }
+        }
+
+        authenticate(*authenticationNames, optional = environment?.developmentMode ?: false) {
+            post("/letter/vedtak") {
+                val letterRequest = call.receive<VedtaksbrevRequest>()
+
+                val letter = letterResource.create(letterRequest)
+                val pdfBase64 = PdfCompilationInput(letter.render().base64EncodedFiles())
+                    .let { latexCompilerService.producePDF(it, call.callId) }
+
+                call.respond(LetterResponse(pdfBase64.base64PDF, letter.template.letterMetadata))
+            }
+
+            // TODO: Fjernes når pesys er oppdatert
             post("/letter") {
                 val letterRequest = call.receive<LetterRequest>()
-
                 val letter = letterResource.create(letterRequest)
                 val pdfBase64 = PdfCompilationInput(letter.render().base64EncodedFiles())
                     .let { latexCompilerService.producePDF(it, call.callId) }

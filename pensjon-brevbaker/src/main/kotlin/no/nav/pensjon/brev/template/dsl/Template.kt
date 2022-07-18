@@ -46,9 +46,10 @@ open class TemplateRootScope<Lang : LanguageSupport, LetterData : Any>(
 
     fun <AttachmentData : Any> includeAttachment(
         template: AttachmentTemplate<Lang, AttachmentData>,
-        attachmentData: Expression<AttachmentData>
+        attachmentData: Expression<AttachmentData>,
+        predicate: Expression<Boolean> = true.expr(),
     ) {
-        attachments.add(IncludeAttachment(attachmentData, template))
+        attachments.add(IncludeAttachment(attachmentData, template, predicate))
     }
 
 }

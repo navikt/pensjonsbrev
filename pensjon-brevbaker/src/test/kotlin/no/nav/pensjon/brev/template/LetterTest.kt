@@ -16,7 +16,7 @@ class LetterTest {
         base = TestMaster,
         letterDataType = TestData::class,
         languages = languages(Language.Bokmal),
-        letterMetadata = LetterMetadata("Test", false),
+        letterMetadata = LetterMetadata("Test", false, LetterMetadata.Distribusjonstype.ANNET),
     ) {
         title {
             text(Language.Bokmal to "test")

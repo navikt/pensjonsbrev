@@ -1,13 +1,9 @@
 package no.nav.pensjon.brev.template.dsl.expression
 
-import no.nav.pensjon.brev.api.model.Telefonnummer
-import no.nav.pensjon.brev.template.*
-
-fun Expression<Any>.str(): StringExpression =
-    Expression.UnaryInvoke(this, UnaryOperation.ToString())
-
-fun Expression<Telefonnummer>.format() =
-    Expression.UnaryInvoke(this, UnaryOperation.FormatPhoneNumber)
+import no.nav.pensjon.brev.template.BinaryOperation
+import no.nav.pensjon.brev.template.Expression
+import no.nav.pensjon.brev.template.StringExpression
+import no.nav.pensjon.brev.template.UnaryOperation
 
 fun <Data : Any, Field> Expression<Data>.select(
     selector: Data.() -> Field,
@@ -24,6 +20,13 @@ fun <T, R> Expression<T>.map(transform: (T) -> R): Expression<R> =
         UnaryOperation.Select(transform),
     )
 
+fun <T1, T2, R> map2(t1: Expression<T1>, t2: Expression<T2>, transform: (T1, T2) -> R): Expression<R> =
+    Expression.BinaryInvoke(
+        t1,
+        t2,
+        BinaryOperation.Select(transform),
+    )
+
 fun <T> T.expr() = Expression.Literal(this)
 
 fun <T: Any> Expression<T?>.ifNull(then: T) =
@@ -36,6 +39,12 @@ fun <T : Enum<T>> Expression<Enum<T>>.isOneOf(vararg enums: Enum<T>): Expression
     this,
     enums.asList().expr(),
     BinaryOperation.EnumInList()
+)
+
+fun <T : Enum<T>> Expression<Enum<T>>.isNotAnyOf(vararg enums: Enum<T>): Expression<Boolean> = Expression.BinaryInvoke(
+    this,
+    enums.asList().expr(),
+    BinaryOperation.EnumNotInList()
 )
 
 fun not(expr: Expression<Boolean>): Expression<Boolean> =
