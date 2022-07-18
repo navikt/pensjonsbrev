@@ -39,33 +39,10 @@ fun Application.brevbakerRouting(authenticationNames: Array<String>) =
             }
         }
 
-        // TODO: fjernes når pesys er oppdatert
-        get("/templates/{kode}") {
-            val template = call.parameters.getOrFail<String>("name")
-                .let { Brevkode.Vedtak.findByKode(it) }
-                ?.let { letterResource.templateResource.getTemplate(it)?.description() }
-
-            if (template == null) {
-                call.respond(HttpStatusCode.NotFound)
-            } else {
-                call.respond(template)
-            }
-        }
-
         authenticate(*authenticationNames, optional = environment?.developmentMode ?: false) {
             post("/letter/vedtak") {
                 val letterRequest = call.receive<VedtaksbrevRequest>()
 
-                val letter = letterResource.create(letterRequest)
-                val pdfBase64 = PdfCompilationInput(letter.render().base64EncodedFiles())
-                    .let { latexCompilerService.producePDF(it, call.callId) }
-
-                call.respond(LetterResponse(pdfBase64.base64PDF, letter.template.letterMetadata))
-            }
-
-            // TODO: Fjernes når pesys er oppdatert
-            post("/letter") {
-                val letterRequest = call.receive<LetterRequest>()
                 val letter = letterResource.create(letterRequest)
                 val pdfBase64 = PdfCompilationInput(letter.render().base64EncodedFiles())
                     .let { latexCompilerService.producePDF(it, call.callId) }
