@@ -40,35 +40,6 @@ class TemplateResourceITest {
         }
     }
 
-    // TODO: Fjern disse når pesys støtter nytt endepunkt
-    @Test
-    fun `deprecated all templates can render and compile`() {
-        requestTemplates()
-            .associateWith { templateResource.getTemplate(it) }
-            .forEach { deprekertTestTemplate(it.key, it.value) }
-    }
-
-    @Deprecated("Erstattet med testTemplate som bruker letter/vedtak")
-    private fun deprekertTestTemplate(kode: Brevkode.Vedtak, template: LetterTemplate<*, *>?) {
-        if (template == null) {
-            fail { "TemplateResource.getTemplates() returned a template name that doesnt exist: $kode" }
-        }
-        val argument = createArgument(template.letterDataType)
-        try {
-            val rendered = requestLetter(
-                LetterRequest(
-                    template = kode.brevkoder.first(),
-                    letterData = argument,
-                    felles = Fixtures.felles,
-                    language = LanguageCode.BOKMAL
-                )
-            )
-            writeTestPDF(kode.name, rendered.base64pdf)
-        } catch (failedCompile: Exception) {
-            fail("Failed to compile template($kode) with argument: $argument", failedCompile)
-        }
-    }
-
     private fun createArgument(letterDataType: KClass<out Any>): Any {
         return Fixtures.create(letterDataType)
     }
