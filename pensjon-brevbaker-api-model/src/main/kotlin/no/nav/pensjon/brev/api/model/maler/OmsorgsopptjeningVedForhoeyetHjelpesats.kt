@@ -1,6 +1,5 @@
 package no.nav.pensjon.brev.api.model.maler
 
-import java.time.LocalDate
+import no.nav.pensjon.brev.api.model.Year
 
-data class OmsorgsopptjeningVedForhoeyetHjelpesatsDto(
-)
+data class OpptjeningVedForhoeyetHjelpesatsDto(val aarInnvilgetOmrsorgspoeng: Year)
