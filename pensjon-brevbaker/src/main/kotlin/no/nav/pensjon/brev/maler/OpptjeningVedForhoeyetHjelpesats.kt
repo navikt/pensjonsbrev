@@ -1,69 +1,61 @@
 package no.nav.pensjon.brev.maler
 
-import no.nav.pensjon.brev.api.model.LetterMetadata
-import no.nav.pensjon.brev.api.model.maler.OmsorggsopptjeningVedForhoeyetHjelpesats
+import no.nav.pensjon.brev.api.model.*
+import no.nav.pensjon.brev.api.model.maler.*
 import no.nav.pensjon.brev.maler.fraser.*
-import no.nav.pensjon.brev.maler.fraser.common.*
 import no.nav.pensjon.brev.maler.fraser.vedtak.Vedtak
-import no.nav.pensjon.brev.template.*
+import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Language.*
+import no.nav.pensjon.brev.template.VedtaksbrevTemplate
 import no.nav.pensjon.brev.template.base.PensjonLatex
 import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brev.template.dsl.expression.*
+import java.time.LocalDate
 
 // BrevTypeKode: MF_000094
-object OpptjeningVedForhoeyetHjelpesats : StaticTemplate {
+object OpptjeningVedForhoeyetHjelpesats : VedtaksbrevTemplate {
+
+    override val kode = Brevkode.Vedtak.OMSORGP_GODSKRIVING
+
     override val template = createTemplate(
-        name = "MF_000094",
+        name = kode.name,
         base = PensjonLatex,
         letterDataType = OpptjeningVedForhoeyetHjelpesatsDto::class,
         languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(
-            "Vedtak – innvilgelse av omsorgsopptjening ved forhøyet hjelpestønad sats 3 eller 4", isSensitiv = false
+            displayTitle = "Vedtak – innvilgelse av omsorgsopptjening ved forhøyet hjelpestønad sats 3 eller 4",
+            isSensitiv = false,
+            distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
         )
     ) {
+        val aarInnvilget = argument().select(OpptjeningVedForhoeyetHjelpesatsDto::aarInnvilgetOmrsorgspoeng)
+
         title {
-            text(
-                Bokmal to "Du får pensjonsopptjening for omsorgsarbeid for <omsorgGodskrGrunnlagAr.arInnvilgetOmrsorgspoeng>",
-                Nynorsk to "Du får pensjonsopptening for omsorgsarbeid for <omsorgGodskrGrunnlagAr.arInnvilgetOmrsorgspoeng>",
-                English to "Earned pension savings for unpaid care work for <omsorgGodskrGrunnlagAr.arInnvilgetOmrsorgspoeng>"
+            textExpr(
+                Bokmal to "Du får pensjonsopptjening for omsorgsarbeid for ".expr() + aarInnvilget.format(),
+                Nynorsk to "Du får pensjonsopptening for omsorgsarbeid for ".expr() + aarInnvilget.format(),
+                English to "Earned pension savings for unpaid care work for ".expr() + aarInnvilget.format(),
             )
         }
 
         outline {
-            includePhrase(vedtakOverskriftPesys_001)
+            includePhrase(Vedtak.overskrift)
 
-            includePhrase(omsorgsopptjenHjelpestoenadInnledn_001)
+            includePhrase(Omsorgsopptjening.hjelpestoenadInnledn, aarInnvilget)
 
-            // fodselsdato format:  1953-12-12
-            // var date= GetValue("fag=bruker=fodselsdato");
-            // var aar = date.substr(0,4); -substring function that exstracts the first 4 digits
-            // if(aar > 1953) include
-            /*showIf(
-                includePhrase(omsorgsopptjenHjelpestKap20Hjemmel_001)
-            )
+            val foedtEtter1953 = felles().select(Felles::bruker).select(Bruker::foedselsdato).select(LocalDate::getYear).greaterThan(1953)
+            showIf(foedtEtter1953) {
+                includePhrase(Omsorgsopptjening.hjelpestKap20Hjemmel)
+            } orShow {
+                includePhrase(Omsorgsopptjening.hjelpestKap3Hjemmel)
+            }
 
-            if(aar < 1954) include
-            showIf(
-                includePhrase(omsorgsopptjenHjelpestKap3Hjemmel_001)
-            )
-            */
-            includePhrase(omsorgsopptjenInfoOverskrift_001)
+            includePhrase(Omsorgsopptjening.info)
 
-            includePhrase(omsorgsopptjenInfo_001)
+            includePhrase(Omsorgsopptjening.overforingInfo)
 
-            includePhrase(omsorgsopptjenOverforingInfoOverskrift_001)
-
-            includePhrase(omsorgsopptjenOverforingInfo_001)
-
-            includePhrase(omsorgsopptjenHjelpestonadAutoGodkjennInfoTittel_001)
-
-            includePhrase(omsorgsopptjenHjelpestonadAutoGodkjennInfo_001)
-            
-
+            includePhrase(Omsorgsopptjening.hjelpestonadAutoGodkjennInfo)
         }
 
     }
-    //harSpørsmålPesys_001
-    //mvhInfoAutoPesys_001
 }

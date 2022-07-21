@@ -4,6 +4,12 @@ interface Predicate<T> {
     fun validate(input: T): Boolean
 }
 
+object Comparison {
+    data class GreaterThan<T: Comparable<T>>(val compareTo: T): Predicate<T> {
+        override fun validate(input: T): Boolean = input > compareTo
+    }
+}
+
 object Collections {
     data class ContainsExclusively<T>(val required: Set<T>, val anyOfs: List<Set<T>>): Predicate<Collection<T>> {
 

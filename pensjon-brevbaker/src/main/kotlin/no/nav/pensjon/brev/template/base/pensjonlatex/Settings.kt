@@ -2,7 +2,6 @@ package no.nav.pensjon.brev.template.base.pensjonlatex
 
 import no.nav.pensjon.brev.api.model.Felles
 import no.nav.pensjon.brev.api.model.NAVEnhet
-import no.nav.pensjon.brev.api.model.Telefonnummer
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.dsl.*
@@ -33,6 +32,7 @@ val pensjonLatexSettings = languageSettings {
         )
     }
 
+// TODO: Denne er kun i bruk i footer, som ikke ser ut til å være i bruk lenger.
     setting("postadresseprefix") {
         text(
             Language.Bokmal to "Postadresse:",
@@ -57,6 +57,7 @@ val pensjonLatexSettings = languageSettings {
         )
     }
 
+    // TODO: Denne er kun i bruk i footer, som ikke ser ut til å være i bruk lenger.
     setting("navenhettlfprefix") {
         text(
             Language.Bokmal to "Telefon:",
