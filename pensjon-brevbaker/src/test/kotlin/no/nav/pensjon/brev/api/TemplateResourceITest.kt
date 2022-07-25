@@ -30,7 +30,7 @@ class TemplateResourceITest {
                 VedtaksbrevRequest(
                     kode = kode,
                     letterData = argument,
-                    felles = Fixtures.felles,
+                    felles = Fixtures.felles.copy(signerendeSaksbehandlere = null),
                     language = LanguageCode.BOKMAL
                 )
             )

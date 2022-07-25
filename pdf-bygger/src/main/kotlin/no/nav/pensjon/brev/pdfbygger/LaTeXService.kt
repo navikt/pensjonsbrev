@@ -46,7 +46,6 @@ class LaTeXService {
                 PDFCompilationResponse.Failure.Client(reason = "PDF compilation failed", output = result.output, error = result.error)
 
             is Execution.Failure.Execution -> {
-                //TODO: log exception
                 PDFCompilationResponse.Failure.Server(reason = "Compilation process execution failed: see logs")
             }
 
