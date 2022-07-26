@@ -32,15 +32,6 @@ val pensjonLatexSettings = languageSettings {
         )
     }
 
-// TODO: Denne er kun i bruk i footer, som ikke ser ut til å være i bruk lenger.
-    setting("postadresseprefix") {
-        text(
-            Language.Bokmal to "Postadresse:",
-            Language.Nynorsk to "Postadresse:",
-            Language.English to "Mailing address:",
-        )
-    }
-
     setting("sideprefix") {
         text(
             Language.Bokmal to "Side",
@@ -54,15 +45,6 @@ val pensjonLatexSettings = languageSettings {
             Language.Bokmal to "av",
             Language.Nynorsk to "av",
             Language.English to "of",
-        )
-    }
-
-    // TODO: Denne er kun i bruk i footer, som ikke ser ut til å være i bruk lenger.
-    setting("navenhettlfprefix") {
-        text(
-            Language.Bokmal to "Telefon:",
-            Language.Nynorsk to "Telefon:",
-            Language.English to "Phone number:",
         )
     }
 
