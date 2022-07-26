@@ -93,7 +93,7 @@ jobs:
         with:
           context: "{{defaultContext}}:pensjon-brevbaker"
           push: true
-          tags: ${IMAGE_PDF_BUILDER}
+          tags: ${{ env.IMAGE_PDF_BUILDER }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new
         #fix to not grow cache infinitely
