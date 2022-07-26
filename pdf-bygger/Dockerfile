@@ -5,7 +5,7 @@ COPY containerFiles/fonts /usr/share/fonts
 COPY containerFiles/preferences.d /etc/apt/preferences.d
 COPY containerFiles/sources.list.d /etc/apt/sources.list.d
 RUN mv /etc/apt/sources.list /etc/apt/sources.list.old \
-    && cp /etc/apt/sources.list.old /etc/apt/sources.list.d/stable.list \
+    && cp /etc/apt/sources.list.old /etc/apt/sources.list.d/stable.list
 RUN apt -y --allow-releaseinfo-change -o Acquire::Check-Valid-Until=false update
 RUN apt -y install tzdata
 RUN apt install  -y -t testing\
