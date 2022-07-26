@@ -1,2 +1,2 @@
-deb http://deb.debian.org/debian testing main
-deb http://deb.debian.org/debian testing-updates main
+deb http://snapshot.debian.org/archive/debian/20220501T085721Z testing main
+deb http://snapshot.debian.org/archive/debian/20220501T085721Z testing-updates main
