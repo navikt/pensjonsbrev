@@ -10,18 +10,27 @@ data class MaanedligUfoeretrygdFoerSkattDto(
 ) {
     data class UfoeretrygdPerMaaned(
         val annetBelop: Kroner,
-        val barnetillegg: BeloepMedAvkortning?,
+        @Deprecated("Use separate brutto/netto values") val barnetillegg: BeloepMedAvkortning?, // TODO remove in next version
+        val barnetilleggBrutto: Kroner?,
+        val barnetilleggNetto: Kroner?,
         val dekningFasteUtgifter: Kroner?,
-        val garantitilleggNordisk27: BeloepMedAvkortning?,
+        val erAvkortet: Boolean,
+        @Deprecated("Use separate brutto/netto values") val garantitilleggNordisk27: BeloepMedAvkortning?, // TODO remove in next version
+        val garantitilleggNordisk27Brutto: Kroner?,
+        val garantitilleggNordisk27Netto: Kroner?,
         val grunnbeloep: Kroner,
-        val ordinaerUTBeloep: BeloepMedAvkortning,
-        val totalUTBeloep: BeloepMedAvkortning,
+        @Deprecated("Use separate brutto/netto values") val ordinaerUTBeloep: BeloepMedAvkortning, // TODO remove in next version
+        val ordinaerUTBeloepBrutto: Kroner,
+        val ordinaerUTBeloepNetto: Kroner,
+        @Deprecated("Use separate brutto/netto values") val totalUTBeloep: BeloepMedAvkortning, // TODO remove in next version
+        val totalUTBeloepBrutto: Kroner?, //TODO make mandatory in next version
+        val totalUTBeloepNetto: Kroner?, //TODO make mandatory in next version
         val virkningFraOgMed: LocalDate,
         val virkningTilOgMed: LocalDate?,
-        val erAvkortet: Boolean,
     ) {
 
-        data class BeloepMedAvkortning(
+        @Deprecated("Use separate brutto/netto values")
+        data class BeloepMedAvkortning(// TODO remove in next version
             val netto: Kroner,
             val brutto: Kroner,
         )
