@@ -4,11 +4,8 @@ import no.nav.pensjon.brev.api.model.Kroner
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligUfoeretrygdFoerSkattDto
 import no.nav.pensjon.brev.maler.fraser.common.Felles.kroner
 import no.nav.pensjon.brev.model.format
-import no.nav.pensjon.brev.template.Element
-import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
+import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Language.*
-import no.nav.pensjon.brev.template.OutlinePhrase
-import no.nav.pensjon.brev.template.ParagraphPhrase
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
@@ -25,7 +22,7 @@ val vedleggBelopUT_001 = OutlinePhrase<LangBokmalNynorskEnglish, Unit> {
     }
 }
 
-data class tabellBeregnetUTHeleDto(
+data class TabellBeregnetUTHeleDto(
     val virkningsDatoFraOgMed: LocalDate,
     val virkningsDatoTilOgMed: LocalDate?,
 )
@@ -33,7 +30,7 @@ data class tabellBeregnetUTHeleDto(
 val tabellBeregnetUTHele =
     OutlinePhrase<LangBokmalNynorskEnglish, MaanedligUfoeretrygdFoerSkattDto.UfoeretrygdPerMaaned> { ufoeretrygd ->
         includePhrase(tabellUfoeretrygtTittel, ufoeretrygd.map {
-            tabellBeregnetUTHeleDto(it.virkningFraOgMed, it.virkningTilOgMed)
+            TabellBeregnetUTHeleDto(it.virkningFraOgMed, it.virkningTilOgMed)
         })
 
         paragraph {
@@ -72,17 +69,16 @@ val tabellBeregnetUTHele =
         }
     }
 
-val tabellUfoeretrygtTittel = OutlinePhrase {
+val tabellUfoeretrygtTittel = OutlinePhrase<LangBokmalNynorskEnglish, TabellBeregnetUTHeleDto> {
     title1 {
-        val virkningsDatoFraOgMed =
-            it.select(tabellBeregnetUTHeleDto::virkningsDatoFraOgMed).format(short = true)
+        val virkningsDatoFraOgMed = it.select(TabellBeregnetUTHeleDto::virkningsDatoFraOgMed).format(short = true)
         textExpr(
             Bokmal to "Den månedlige uføretrygden fra ".expr() + virkningsDatoFraOgMed,
             Nynorsk to "Den månadlege uføretrygda frå ".expr() + virkningsDatoFraOgMed,
             English to "Your monthly disability benefit from ".expr() + virkningsDatoFraOgMed,
         )
 
-        ifNotNull(it.select(tabellBeregnetUTHeleDto::virkningsDatoTilOgMed)) {
+        ifNotNull(it.select(TabellBeregnetUTHeleDto::virkningsDatoTilOgMed)) {
             val virkningsDatoTilOgMed = it.format(short = true)
             textExpr(
                 Bokmal to " til ".expr() + virkningsDatoTilOgMed,
