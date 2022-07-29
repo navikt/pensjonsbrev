@@ -15,13 +15,17 @@ fun createMaanedligUfoeretrygdFoerSkattDto() =
 fun createMaanedligUfoeretrygdFoerSkattDtoUfoeretrygdPerMaaned() =
     MaanedligUfoeretrygdFoerSkattDto.UfoeretrygdPerMaaned(
         annetBelop = Kroner(0),
-        barnetillegg = MaanedligUfoeretrygdFoerSkattDto.UfoeretrygdPerMaaned.BeloepMedAvkortning(Kroner(75), Kroner(100)),
         dekningFasteUtgifter = Kroner(0),
-        garantitilleggNordisk27 = MaanedligUfoeretrygdFoerSkattDto.UfoeretrygdPerMaaned.BeloepMedAvkortning(Kroner(75), Kroner(100)),
         grunnbeloep = Kroner(0),
-        ordinaerUTBeloep = MaanedligUfoeretrygdFoerSkattDto.UfoeretrygdPerMaaned.BeloepMedAvkortning(Kroner(75), Kroner(100)),
-        totalUTBeloep = MaanedligUfoeretrygdFoerSkattDto.UfoeretrygdPerMaaned.BeloepMedAvkortning(Kroner(75), Kroner(100)),
         virkningFraOgMed = LocalDate.of(2020, 1, 1),
         virkningTilOgMed = LocalDate.of(2020, 1, 2),
         erAvkortet = true,
+        barnetilleggBrutto = Kroner(0),
+        barnetilleggNetto = Kroner(0),
+        garantitilleggNordisk27Brutto = Kroner(0),
+        garantitilleggNordisk27Netto = Kroner(0),
+        ordinaerUTBeloepBrutto = Kroner(0),
+        ordinaerUTBeloepNetto = Kroner(0),
+        totalUTBeloepBrutto = Kroner(0),
+        totalUTBeloepNetto = Kroner(0),
     )

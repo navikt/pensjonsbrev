@@ -38,7 +38,7 @@ class MaanedligUfoeretrygdFoerSkattITest {
                 distribusjonstype = LetterMetadata.Distribusjonstype.ANNET,
             ),
         ) {
-            title{
+            title {
                 text(Bokmal to "tittel")
             }
             outline {
@@ -48,22 +48,26 @@ class MaanedligUfoeretrygdFoerSkattITest {
             val ufoeretrygdPerMaaned =
                 UfoeretrygdPerMaaned(
                     annetBelop = Kroner(1500),
-                    barnetillegg = UfoeretrygdPerMaaned.BeloepMedAvkortning(Kroner(2500), Kroner(2800)),
                     dekningFasteUtgifter = Kroner(1500),
-                    garantitilleggNordisk27 = UfoeretrygdPerMaaned.BeloepMedAvkortning(Kroner(9000), Kroner(9999)),
                     grunnbeloep = Kroner(91540),
-                    ordinaerUTBeloep = UfoeretrygdPerMaaned.BeloepMedAvkortning(Kroner(15000), Kroner(12000)),
-                    totalUTBeloep = UfoeretrygdPerMaaned.BeloepMedAvkortning(Kroner(5500), Kroner(6600)),
                     virkningFraOgMed = LocalDate.of(2017, 2, 3),
                     virkningTilOgMed = LocalDate.of(2017, 5, 5),
-                    erAvkortet = true
+                    erAvkortet = true,
+                    barnetilleggBrutto = Kroner(1),
+                    barnetilleggNetto = Kroner(2),
+                    garantitilleggNordisk27Brutto = Kroner(3),
+                    garantitilleggNordisk27Netto = Kroner(4),
+                    ordinaerUTBeloepBrutto = Kroner(5),
+                    ordinaerUTBeloepNetto = Kroner(6),
+                    totalUTBeloepBrutto = Kroner(7),
+                    totalUTBeloepNetto = Kroner(8),
                 )
 
             includeAttachment(
                 maanedligUfoeretrygdFoerSkatt,
                 MaanedligUfoeretrygdFoerSkattDto(
                     ufoeretrygdPerMaaned,
-                    LocalDate.of(2020,1,1),
+                    LocalDate.of(2020, 1, 1),
                     listOf(
                         ufoeretrygdPerMaaned,
                         ufoeretrygdPerMaaned.copy(erAvkortet = false),
