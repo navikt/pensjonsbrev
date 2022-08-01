@@ -53,17 +53,3 @@
 
 %\setlength{\footskip}{6pt} % space between letter content.tex and footer
 \newcommand{\footerText}[1]{{\secondaryFont \fontsize{8pt}{8pt} \selectfont #1}} %footer font command
-
-% TODO: Denne ser ikke ut til å være i bruk lenger.
-%first footer page
-\newcommand{\firstfooter}{
-    \begin{textblock*}{\textwidth}(20mm,260mm)
-        \primaryFont\fontsize{8pt}{8pt}\selectfont
-        \rule{\textwidth}{0.16mm}\\[3.7mm]
-        \textbf{\feltnavenhet} \\[3pt]
-        \feltpostadresseprefix \space \feltnavenhet \space//\space \feltpostadresse \space//\space \feltpostadressepostnrsted \\[3pt]
-        \feltnavenhettlfprefix \space \feltnavenhettlf \\[3pt]
-        \feltnavenhetnettside
-    \end{textblock*}
-
-}
