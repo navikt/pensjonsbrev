@@ -173,16 +173,15 @@ object UfoerOmregningEnslig : VedtaksbrevTemplate {
                     harBarnOverfoertTilSaerkullsbarn or (harBarnetilleggForSaerkullsbarnVedVirk and (harMinsteytelseVedVirk or inntektFoerUfoereErSannsynligEndret or ektefelleTilleggOpphoert))
                 ) {
 
-                    showIf(not(harBarnOverfoertTilSaerkullsbarn) and not(barnetilleggErIkkeUtbetPgaTak)) {
-                        includePhrase(infoBTSBInntekt_001)
+                    showIf(not(harBarnOverfoertTilSaerkullsbarn)) { includePhrase(infoBTSBInntekt_001)
                     }
 
-                    showIf(harBarnOverfoertTilSaerkullsbarn and not(barnetilleggErIkkeUtbetPgaTak)) {
+                    showIf(harBarnOverfoertTilSaerkullsbarn) {
                         includePhrase(infoBTOverfortTilSBInntekt_001)
                     }
 
                     showIf(
-                        not(barnetilleggForSaerkullsbarnVedvirkErRedusertMotInntekt) and not(barnetilleggErIkkeUtbetPgaTak)
+                        not(barnetilleggForSaerkullsbarnVedvirkErRedusertMotInntekt)
                     ) {
                         includePhrase(ikkeRedusBTSBPgaInntekt_001, tillegg.map { tillegg ->
                             IkkeRedusBTSBPgaInntekt_001Dto(
