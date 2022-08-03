@@ -58,7 +58,6 @@ data class UfoerOmregningEnsligDto(
         val erRedusertMotTak: Boolean,
         val prosentsatsGradertOverInntektFoerUfoer: Int,
         val gradertOverInntektFoerUfoer: Kroner,
-        val erIkkeUtbetaltPgaTak: Boolean,
         val beloepFoerReduksjon: Kroner,
         val beloepEtterReduksjon: Kroner,
     )
