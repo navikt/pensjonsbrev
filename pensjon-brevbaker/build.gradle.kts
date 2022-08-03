@@ -1,12 +1,13 @@
-val logbackVersion="1.2.11"
-val ktorVersion="2.0.2"
-val jupiterVersion="5.7.1"
-val logstashVersion="7.2"
+val logbackVersion: String by project
+val ktorVersion: String by project
+val jupiterVersion: String by project
+val logstashVersion: String by project
+val micrometerVersion: String by project
 
 plugins {
     application
-    kotlin("jvm") version "1.7.0"
-    id("com.github.johnrengelman.shadow") version "7.0.0"
+    kotlin("jvm")
+    id("com.github.johnrengelman.shadow")
 }
 
 group = "no.nav.pensjon.brev"
@@ -32,13 +33,6 @@ repositories {
     }
 }
 
-sourceSets {
-    test {
-        resources {
-            srcDir("src/main/resources")
-        }
-    }
-}
 
 tasks {
     compileKotlin {
@@ -46,7 +40,7 @@ tasks {
     }
 
     shadowJar {
-        archiveBaseName.set(rootProject.name)
+        archiveBaseName.set(project.name)
         archiveClassifier.set("")
         archiveVersion.set("")
     }
@@ -90,10 +84,11 @@ dependencies {
     implementation("no.nav.pensjon.brev:pensjon-brevbaker-api-model:3.5.4")
     // Necessary for java.time.LocalDate
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.13.3")
+
     // Metrics
     implementation("io.ktor:ktor-server-metrics:$ktorVersion")
     implementation("io.ktor:ktor-server-metrics-micrometer:$ktorVersion")
-    implementation("io.micrometer:micrometer-registry-prometheus:1.9.0")
+    implementation("io.micrometer:micrometer-registry-prometheus:$micrometerVersion")
 
     // JUnit 5
     testImplementation(platform("org.junit:junit-bom:$jupiterVersion"))

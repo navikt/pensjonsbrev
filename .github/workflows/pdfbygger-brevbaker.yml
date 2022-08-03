@@ -25,9 +25,6 @@ jobs:
           command: "monitor"
           args: "--org=pensjonsbrev --all-projects"
   "build-brevbaker":
-    defaults:
-      run:
-        working-directory: pensjon-brevbaker
     name: "build brevbaker"
     runs-on: "ubuntu-latest"
     steps:
@@ -42,22 +39,17 @@ jobs:
         with:
           "java-version": "17"
       - name: "compile and run tests"
-        run: |
-          ../pensjon-brevbaker-api-model/gradlew --project-dir ../pensjon-brevbaker-api-model publishToMavenLocal
-          ./gradlew build
+        run: "./gradlew :pensjon-brevbaker-api-model:publishToMavenLocal :pensjon-brevbaker:build"
         env:
           "GITHUB_TOKEN": "${{ secrets.GITHUB_TOKEN }}"
       - name: "Build and publish Docker image"
-        run: "docker build --pull --tag ${IMAGE_BREVBAKER} . && echo $GITHUB_TOKEN | docker login\
+        run: "docker build --pull --tag ${IMAGE_BREVBAKER} pensjon-brevbaker && echo $GITHUB_TOKEN | docker login\
         \ --username $GITHUB_REPOSITORY --password-stdin https://ghcr.io\
         \ && docker push ${IMAGE_BREVBAKER}"
         env:
           "GITHUB_TOKEN": "${{ secrets.GITHUB_TOKEN }}"
 
   "build-pdfbygger":
-    defaults:
-      run:
-        working-directory: pdf-bygger
     name: "build pdfbygger"
     runs-on: "ubuntu-latest"
     steps:
@@ -86,7 +78,7 @@ jobs:
         with:
           "java-version": "17"
       - name: "compile and run tests"
-        run: "./gradlew build"
+        run: "./gradlew :pdf-bygger:build"
 
       - name: Build container image and push image and layers
         uses: docker/build-push-action@v2
@@ -145,9 +137,7 @@ jobs:
         with:
           "java-version": "17"
       - name: "run integration tests"
-        run: |
-          ../pensjon-brevbaker-api-model/gradlew --project-dir ../pensjon-brevbaker-api-model publishToMavenLocal
-          ./gradlew integrationTest
+        run: "./gradlew :pensjon-brevbaker-api-model:publishToMavenLocal :pensjon-brevbaker:integrationTest"
         env:
           "GITHUB_TOKEN": "${{ secrets.GITHUB_TOKEN }}"
       - name: Publish Test Report

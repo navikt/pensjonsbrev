@@ -9,9 +9,6 @@ on:
 
 jobs:
   "release":
-    defaults:
-      run:
-        working-directory: pensjon-brevbaker-api-model
     name: "build"
     runs-on: "ubuntu-18.04"
     steps:
@@ -24,10 +21,10 @@ jobs:
           "restore-keys": "${{ runner.os }}-gradle-"
       - uses: "actions/setup-java@v1"
         with:
-          "java-version": "15"
+          "java-version": "17"
       - name: "compile and run tests"
-        run: "./gradlew build"
+        run: "./gradlew :pensjon-brevbaker-api-model:build"
       - name: "Release maven artifact"
-        run: "./gradlew publish"
+        run: "./gradlew :pensjon-brevbaker-api-model:publish"
         env:
           GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
