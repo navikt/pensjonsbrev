@@ -1,9 +1,6 @@
 package no.nav.pensjon.brev.template.dsl.expression
 
-import no.nav.pensjon.brev.template.BinaryOperation
-import no.nav.pensjon.brev.template.Expression
-import no.nav.pensjon.brev.template.StringExpression
-import no.nav.pensjon.brev.template.UnaryOperation
+import no.nav.pensjon.brev.template.*
 
 fun <Data : Any, Field> Expression<Data>.select(
     selector: Data.() -> Field,
@@ -12,6 +9,14 @@ fun <Data : Any, Field> Expression<Data>.select(
     Expression.UnaryInvoke(
         this,
         UnaryOperation.Select(selector)
+    )
+
+fun <Data : Any, Field> Expression<Data>.select(
+    selector: TemplateModelSelector<Data, Field>
+): Expression<Field> =
+    Expression.UnaryInvoke(
+        this,
+        UnaryOperation.Select2(selector)
     )
 
 fun <T, R> Expression<T>.map(transform: (T) -> R): Expression<R> =

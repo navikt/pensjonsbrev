@@ -4,11 +4,13 @@ import no.nav.pensjon.brev.api.model.Institusjon
 import no.nav.pensjon.brev.api.model.LetterMetadata
 import no.nav.pensjon.brev.api.model.Sivilstand
 import no.nav.pensjon.brev.api.model.maler.*
+import no.nav.pensjon.brev.api.model.maler.AvdoedSelectors.ektefelletilleggOpphoert
+import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDtoSelectors.avdoed
 import no.nav.pensjon.brev.maler.fraser.*
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.fraser.omregning.ufoeretrygd.Ufoeretrygd
 import no.nav.pensjon.brev.maler.fraser.vedtak.Vedtak
-import no.nav.pensjon.brev.maler.vedlegg.maanedligUfoeretrygdFoerSkatt
+import no.nav.pensjon.brev.maler.vedlegg.vedleggMaanedligUfoeretrygdFoerSkatt
 import no.nav.pensjon.brev.maler.vedlegg.opplysningerBruktIBeregningUT
 import no.nav.pensjon.brev.maler.vedlegg.orienteringOmRettigheterOgPlikterUfoere
 import no.nav.pensjon.brev.template.Language.*
@@ -16,11 +18,13 @@ import no.nav.pensjon.brev.template.VedtaksbrevTemplate
 import no.nav.pensjon.brev.template.base.PensjonLatex
 import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.*
+import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 
 // 000073
-object UfoerOmregningEnslig : VedtaksbrevTemplate {
+@TemplateModelHelpers
+object UfoerOmregningEnslig : VedtaksbrevTemplate<UfoerOmregningEnsligDto> {
     private fun harMinstytelseVedVirk(dto: UfoerOmregningEnsligDto) = dto.minsteytelseVedvirk_sats != null
     private fun harBarnetilleggForSaerkullsbarnVedVirk(dto: UfoerOmregningEnsligDto) = dto.barnetilleggVedVirk?.barnetilleggSaerkullsbarnVedVirk != null
     private fun harBarnOverfoertTilSaerkullsbarn(dto: UfoerOmregningEnsligDto) = dto.barnetilleggVedVirk?.barnetilleggSaerkullsbarnVedVirk?.barnOverfoertTilSaerkullsbarn?.isNotEmpty() ?: false
@@ -50,7 +54,6 @@ object UfoerOmregningEnslig : VedtaksbrevTemplate {
         }
 
         outline {
-            val ektefelleTilleggOpphoert = argument().map { it.avdoed.ektefelletilleggOpphoert }
             val harBarnetilleggVedVirk = argument().map { it.barnetilleggVedVirk != null }
             val harBarnetilleggForSaerkullsbarnVedVirk = argument().select(UfoerOmregningEnslig::harBarnetilleggForSaerkullsbarnVedVirk)
             val harBarnOverfoertTilSaerkullsbarn = argument().select(UfoerOmregningEnslig::harBarnOverfoertTilSaerkullsbarn)
@@ -129,7 +132,7 @@ object UfoerOmregningEnslig : VedtaksbrevTemplate {
                 includePhrase(hjemmelEPSDodUTFengsel_001)
             }
 
-            showIf(ektefelleTilleggOpphoert) {
+            showIf(avdoed.ektefelletilleggOpphoert) {
                 includePhrase(opphorETOverskrift_001)
                 includePhrase(opphorET_001)
                 includePhrase(hjemmelET_001)
@@ -164,13 +167,13 @@ object UfoerOmregningEnslig : VedtaksbrevTemplate {
                 }
 
                 showIf(
-                    harBarnetilleggForSaerkullsbarnVedVirk and (harMinsteytelseVedVirk or inntektFoerUfoereErSannsynligEndret or ektefelleTilleggOpphoert)
+                    harBarnetilleggForSaerkullsbarnVedVirk and (harMinsteytelseVedVirk or inntektFoerUfoereErSannsynligEndret or avdoed.ektefelletilleggOpphoert)
                 ) {
                     includePhrase(endringUTpavirkerBTOverskrift_001)
                 }
 
                 showIf(
-                    harBarnOverfoertTilSaerkullsbarn or (harBarnetilleggForSaerkullsbarnVedVirk and (harMinsteytelseVedVirk or inntektFoerUfoereErSannsynligEndret or ektefelleTilleggOpphoert))
+                    harBarnOverfoertTilSaerkullsbarn or (harBarnetilleggForSaerkullsbarnVedVirk and (harMinsteytelseVedVirk or inntektFoerUfoereErSannsynligEndret or avdoed.ektefelletilleggOpphoert))
                 ) {
 
                     showIf(not(barnetilleggErRedusertMotTak)) {
@@ -306,19 +309,19 @@ object UfoerOmregningEnslig : VedtaksbrevTemplate {
             includePhrase(virknTdsPktOverskrift_001)
 
             showIf(
-                harUfoereMaanedligBeloepVedvirk and (harMinsteytelseVedVirk or inntektFoerUfoereErSannsynligEndret or ektefelleTilleggOpphoert)
+                harUfoereMaanedligBeloepVedvirk and (harMinsteytelseVedVirk or inntektFoerUfoereErSannsynligEndret or avdoed.ektefelletilleggOpphoert)
             ) {
                 includePhrase(virkTdsPktUT_001, argument().map { it.krav_virkningsDatoFraOgMed })
             }
 
             showIf(
-                harUfoereMaanedligBeloepVedvirk and not(harMinsteytelseVedVirk) and not(inntektFoerUfoereErSannsynligEndret) and not(ektefelleTilleggOpphoert) and not(harBarnOverfoertTilSaerkullsbarn)
+                harUfoereMaanedligBeloepVedvirk and not(harMinsteytelseVedVirk) and not(inntektFoerUfoereErSannsynligEndret) and not(avdoed.ektefelletilleggOpphoert) and not(harBarnOverfoertTilSaerkullsbarn)
             ) {
                 includePhrase(virkTdsPktUTIkkeEndring_001, argument().map { it.krav_virkningsDatoFraOgMed })
             }
 
             showIf(
-                harUfoereMaanedligBeloepVedvirk and not(harMinsteytelseVedVirk) and not(inntektFoerUfoereErSannsynligEndret) and not(ektefelleTilleggOpphoert) and harBarnOverfoertTilSaerkullsbarn
+                harUfoereMaanedligBeloepVedvirk and not(harMinsteytelseVedVirk) and not(inntektFoerUfoereErSannsynligEndret) and not(avdoed.ektefelletilleggOpphoert) and harBarnOverfoertTilSaerkullsbarn
             ) {
                 includePhrase(virkTdsPktUTBTOmregn_001, argument().map { it.krav_virkningsDatoFraOgMed })
             }
@@ -347,7 +350,7 @@ object UfoerOmregningEnslig : VedtaksbrevTemplate {
             }
         }
 
-        includeAttachment(maanedligUfoeretrygdFoerSkatt, argument().select(UfoerOmregningEnsligDto::maanedligUfoeretrygdFoerSkatt))
+        includeAttachment(vedleggMaanedligUfoeretrygdFoerSkatt, argument().select(UfoerOmregningEnsligDto::maanedligUfoeretrygdFoerSkatt))
 
         includeAttachment(
             opplysningerBruktIBeregningUT,

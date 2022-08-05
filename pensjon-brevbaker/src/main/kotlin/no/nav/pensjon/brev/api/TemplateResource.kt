@@ -5,15 +5,15 @@ import no.nav.pensjon.brev.maler.*
 import no.nav.pensjon.brev.template.LetterTemplate
 import no.nav.pensjon.brev.template.VedtaksbrevTemplate
 
-val productionTemplates = setOf(
+val productionTemplates: Set<VedtaksbrevTemplate<*>> = setOf<VedtaksbrevTemplate<*>>(
     OmsorgEgenAuto,
     UngUfoerAuto,
     UfoerOmregningEnslig,
     OpptjeningVedForhoeyetHjelpesats,
 )
 
-class TemplateResource(templates: Set<VedtaksbrevTemplate> = productionTemplates) {
-    private var templateMap: Map<Brevkode.Vedtak, VedtaksbrevTemplate> =
+class TemplateResource(templates: Set<VedtaksbrevTemplate<*>> = productionTemplates) {
+    private var templateMap: Map<Brevkode.Vedtak, VedtaksbrevTemplate<*>> =
         templates.associateBy { it.kode }
 
     fun getTemplates(): Set<Brevkode.Vedtak> =

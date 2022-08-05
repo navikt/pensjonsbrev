@@ -64,7 +64,7 @@ class MaanedligUfoeretrygdFoerSkattITest {
                 )
 
             includeAttachment(
-                maanedligUfoeretrygdFoerSkatt,
+                vedleggMaanedligUfoeretrygdFoerSkatt,
                 MaanedligUfoeretrygdFoerSkattDto(
                     ufoeretrygdPerMaaned,
                     LocalDate.of(2020, 1, 1),

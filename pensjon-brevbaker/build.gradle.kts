@@ -1,12 +1,14 @@
 val logbackVersion: String by project
 val ktorVersion: String by project
 val jupiterVersion: String by project
+val hamkrestVersion: String by project
 val logstashVersion: String by project
 val micrometerVersion: String by project
 
 plugins {
     application
     kotlin("jvm")
+    id("com.google.devtools.ksp")
     id("com.github.johnrengelman.shadow")
 }
 
@@ -20,6 +22,7 @@ application {
 repositories {
     mavenLocal()
     mavenCentral()
+    maven { url = uri("https://maven.pkg.jetbrains.space/public/p/kotlinx-html/maven") }
     maven {
         // Create a token at https://github.com/settings/tokens/new with package.read
         // Then create a gradle.properties file in $HOME/.gradle with the following:
@@ -66,6 +69,14 @@ tasks {
 
 }
 
+kotlin {
+    sourceSets {
+        main {
+            kotlin.srcDir("build/generated/ksp/main/kotlin")
+        }
+    }
+}
+
 dependencies {
     implementation(kotlin("stdlib"))
     implementation("ch.qos.logback:logback-classic:$logbackVersion")
@@ -82,6 +93,12 @@ dependencies {
     implementation("io.ktor:ktor-server-status-pages:$ktorVersion")
     implementation("net.logstash.logback:logstash-logback-encoder:$logstashVersion")
     implementation("no.nav.pensjon.brev:pensjon-brevbaker-api-model:3.5.4")
+
+    // Necessary for auto-doc
+//    implementation("org.jetbrains.kotlinx:kotlinx-html-jvm:0.8.0")
+    implementation(project(":template-model-generator"))
+    ksp(project(":template-model-generator"))
+
     // Necessary for java.time.LocalDate
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.13.3")
 
@@ -93,6 +110,6 @@ dependencies {
     // JUnit 5
     testImplementation(platform("org.junit:junit-bom:$jupiterVersion"))
     testImplementation("org.junit.jupiter:junit-jupiter")
-    testImplementation("com.natpryce:hamkrest:1.8.0.1")
+    testImplementation("com.natpryce:hamkrest:$hamkrestVersion")
 }
 
