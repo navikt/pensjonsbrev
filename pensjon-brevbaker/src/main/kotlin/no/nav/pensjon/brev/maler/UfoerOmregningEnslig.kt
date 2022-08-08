@@ -142,7 +142,6 @@ object UfoerOmregningEnslig : VedtaksbrevTemplate {
 
                 val barnetilleggForSaerkullsbarnVedvirkErRedusertMotInntekt = tillegg.map { it.erRedusertMotInntekt }
                 val barnetilleggErRedusertMotTak = grunnlag.map { it.erRedusertMotTak }
-                val barnetilleggErIkkeUtbetPgaTak = grunnlag.map { it.erIkkeUtbetaltPgaTak }
                 val harNettoBeloep = tillegg.map { it.beloep.value > 0 }
                 val barnetilleggForSaerkullsbarnVedvirk_HarjusteringsBeloepAr = tillegg.map { it.justeringsbeloepAar.value != 0 }
 
