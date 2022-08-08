@@ -59,7 +59,6 @@ fun createUfoerOmregningEnsligDto() =
                 erRedusertMotTak = false,
                 prosentsatsGradertOverInntektFoerUfoer = 0,
                 gradertOverInntektFoerUfoer = Kroner(0),
-                erIkkeUtbetaltPgaTak = false,
                 beloepFoerReduksjon = Kroner(0),
                 beloepEtterReduksjon = Kroner(0),
             )
