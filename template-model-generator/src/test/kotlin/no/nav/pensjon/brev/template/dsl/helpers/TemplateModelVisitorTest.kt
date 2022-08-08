@@ -142,13 +142,13 @@ class TemplateModelVisitorTest {
                     import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpersAnnotationProcessorTest
 
                     @TemplateModelHelpers
-                    object MyClass : HasModel<List<TemplateModelHelpersAnnotationProcessorTest.AModel>> {}
+                    object MyClass : HasModel<List<String>> {}
                     """.trimIndent()
         ).compile()
 
         assertThat(result.exitCode, equalTo(KotlinCompilation.ExitCode.OK))
         // If the processor didn't generate code, then we should have two files (MyClass and module file)
-        assertThat(result.generatedFiles, hasSize(equalTo(2)) and anyElement(has(File::getName, containsSubstring("AModelSelectors").not())))
+        assertThat(result.generatedFiles, hasSize(equalTo(2)) and anyElement(has(File::getName, containsSubstring("ListSelectors").not())))
     }
 
 }

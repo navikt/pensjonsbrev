@@ -260,4 +260,27 @@ class TemplateModelHelpersAnnotationProcessorTest {
         assertThat(result.generatedFiles, hasSize(greaterThan(2)) and anyElement(has(File::getName, containsSubstring("SimpleModelSelectors"))))
     }
 
+    @Test
+    fun `generates helper for data class type argument of List`() {
+        val result = SourceFile.kotlin(
+            "MyClass.kt", """
+                    import no.nav.pensjon.brev.template.HasModel
+                    import no.nav.pensjon.brev.template.Expression
+                    import no.nav.pensjon.brev.template.dsl.TemplateGlobalScope
+                    import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
+                    import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpersAnnotationProcessorTest
+                    import no.nav.pensjon.brev.template.thirdpkg.SimpleModel
+                    import no.nav.pensjon.brev.template.thirdpkg.SimpleModelSelectors.name
+
+                    @TemplateModelHelpers
+                    object MyClass : HasModel<List<SimpleModel>> {
+                        val x: Expression<String> = Expression.Literal(SimpleModel("et navn")).name
+                    }
+                    """.trimIndent()
+        ).compile()
+
+        assertThat(result.exitCode, equalTo(KotlinCompilation.ExitCode.OK))
+        assertThat(result.generatedFiles, hasSize(greaterThan(2)) and anyElement(has(File::getName, containsSubstring("SimpleModelSelectors"))))
+    }
+
 }

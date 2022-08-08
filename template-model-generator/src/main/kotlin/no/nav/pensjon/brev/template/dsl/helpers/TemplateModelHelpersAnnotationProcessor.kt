@@ -56,7 +56,7 @@ internal class TemplateModelHelpersAnnotationProcessor(private val codeGenerator
             if (classDeclaration.classKind == ClassKind.OBJECT) {
                 classDeclaration.findModelTypeFromHasModelInterface().generateModels()
             } else {
-                throw UnsupportedAnnotationTarget("Annotation $ANNOTATION_NAME does not support target class kind ${classDeclaration.classKind} (only supports ${ClassKind.OBJECT}): $className")
+                throw UnsupportedAnnotationTarget("Annotation $ANNOTATION_NAME does not support target class kind ${classDeclaration.classKind} (only supports ${ClassKind.OBJECT}): $className at ${classDeclaration.location}")
             }
         }
 
@@ -70,6 +70,11 @@ internal class TemplateModelHelpersAnnotationProcessor(private val codeGenerator
 
         private fun KSType.generateModels() {
             visitModel(declaration).forEach { visitModel(it) }
+
+            // Also process type arguments and any "sub-models", e.g. Model of HasModel<List<Model>>
+            arguments.mapNotNull { it.type?.resolve() }
+                .flatMap { visitModel(it.declaration) }
+                .forEach { visitModel(it) }
         }
 
         private fun visitModel(model: KSDeclaration): List<KSClassDeclaration> =

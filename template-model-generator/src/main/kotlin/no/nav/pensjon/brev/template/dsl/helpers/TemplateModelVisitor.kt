@@ -59,7 +59,7 @@ internal class TemplateModelVisitor(private val codeGenerator: CodeGenerator) : 
                 return@createFile nextClasses
             }
         } else {
-            logger.warn("Skipping $classDeclaration: can only generate helpers for data class")
+            logger.warn("Skipping $classDeclaration: can only generate helpers for data classes")
             return emptyList()
         }
     }
