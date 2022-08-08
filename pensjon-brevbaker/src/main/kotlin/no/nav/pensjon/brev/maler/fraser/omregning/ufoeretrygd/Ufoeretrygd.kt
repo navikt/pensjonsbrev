@@ -1,14 +1,20 @@
 package no.nav.pensjon.brev.maler.fraser.omregning.ufoeretrygd
 
 import no.nav.pensjon.brev.api.model.Kroner
+import no.nav.pensjon.brev.api.model.maler.InnvilgetBarnetilleggSelectors.antallBarn
+import no.nav.pensjon.brev.api.model.maler.InnvilgetBarnetilleggSelectors.inntektstak
+import no.nav.pensjon.brev.api.model.maler.InnvilgetBarnetilleggSelectors.utbetalt_safe
 import no.nav.pensjon.brev.api.model.maler.UngUfoerAutoDto
 import no.nav.pensjon.brev.maler.fraser.Constants
 import no.nav.pensjon.brev.maler.fraser.common.*
+import no.nav.pensjon.brev.maler.fraser.omregning.ufoeretrygd.BarnetilleggIkkeUtbetaltDtoSelectors.fellesbarn
+import no.nav.pensjon.brev.maler.fraser.omregning.ufoeretrygd.BarnetilleggIkkeUtbetaltDtoSelectors.saerkullsbarn
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brev.template.dsl.expression.*
+import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 
 object Ufoeretrygd {
     /**
@@ -81,24 +87,21 @@ object Ufoeretrygd {
     data class BarnetilleggIkkeUtbetaltDto(
         val fellesbarn: UngUfoerAutoDto.InnvilgetBarnetillegg?,
         val saerkullsbarn: UngUfoerAutoDto.InnvilgetBarnetillegg?,
-    ) {
-        fun fellesInnvilget(): Boolean = fellesbarn != null
-        fun saerkullInnvilget(): Boolean = saerkullsbarn != null
-        fun fellesUtbetalt(): Boolean = fellesbarn?.utbetalt ?: false
-        fun saerkullsbarnUtbetalt(): Boolean = saerkullsbarn?.utbetalt ?: false
-    }
+    )
 
+    @TemplateModelHelpers
     val barnetilleggIkkeUtbetalt = OutlinePhrase<LangBokmalNynorsk, BarnetilleggIkkeUtbetaltDto> {
         paragraph {
 
-            val saerkullInnvilget = it.select(BarnetilleggIkkeUtbetaltDto::saerkullInnvilget)
-            val saerkullUtbetalt = it.select(BarnetilleggIkkeUtbetaltDto::saerkullsbarnUtbetalt)
-            val fellesInnvilget = it.select(BarnetilleggIkkeUtbetaltDto::fellesInnvilget)
-            val fellesUtbetalt = it.select(BarnetilleggIkkeUtbetaltDto::fellesUtbetalt)
+            val saerkullInnvilget = it.saerkullsbarn.notNull()
+            val saerkullUtbetalt = it.saerkullsbarn.utbetalt_safe.ifNull(false)
+            val fellesInnvilget = it.fellesbarn.notNull()
+            val fellesUtbetalt = it.fellesbarn.utbetalt_safe.ifNull(false)
 
-            ifNotNull(it.select(BarnetilleggIkkeUtbetaltDto::saerkullsbarn)) { saerkullsbarn ->
-                val barnFlertall = saerkullsbarn.map { it.antallBarn > 1 }
-                val inntektstak = saerkullsbarn.select(UngUfoerAutoDto.InnvilgetBarnetillegg::inntektstak).format()
+
+            ifNotNull(it.saerkullsbarn) { saerkullsbarn ->
+                val barnFlertall = saerkullsbarn.antallBarn.greaterThan(1)
+                val inntektstak = saerkullsbarn.inntektstak.format()
 
                 showIf(saerkullInnvilget and not(saerkullUtbetalt) and fellesUtbetalt and fellesInnvilget) {
                     textExpr(
@@ -120,9 +123,9 @@ object Ufoeretrygd {
                 }
             }
 
-            ifNotNull(it.select(BarnetilleggIkkeUtbetaltDto::fellesbarn)) { fellesbarn ->
-                val barnFlertall = fellesbarn.map { it.antallBarn > 1 }
-                val inntektstak = fellesbarn.select(UngUfoerAutoDto.InnvilgetBarnetillegg::inntektstak).format()
+            ifNotNull(it.fellesbarn) { fellesbarn ->
+                val barnFlertall = fellesbarn.antallBarn.greaterThan(1)
+                val inntektstak = fellesbarn.inntektstak.format()
 
                 showIf(fellesInnvilget and not(fellesUtbetalt) and saerkullUtbetalt and saerkullInnvilget) {
                     textExpr(

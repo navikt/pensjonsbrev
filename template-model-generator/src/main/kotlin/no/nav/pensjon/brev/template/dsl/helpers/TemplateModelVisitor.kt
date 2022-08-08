@@ -113,6 +113,12 @@ internal class TemplateModelVisitor(private val codeGenerator: CodeGenerator) : 
             |       UnaryOperation.Select2($selectorName)
             |   )
             |
+            |val Expression<$dataClassName?>.${propertyName}_safe: Expression<${nullable(type)}>
+            |   get() = Expression.UnaryInvoke(
+            |       this,
+            |       UnaryOperation.SafeCall($selectorName)
+            |   )
+            |
             """.replaceIndentByMargin(data.indent)
         )
 
@@ -141,5 +147,7 @@ internal class TemplateModelVisitor(private val codeGenerator: CodeGenerator) : 
     override fun defaultHandler(node: KSNode, data: Data): List<KSClassDeclaration> {
         throw MissingImplementation("Couldn't process node $node at: ${node.location}")
     }
+
+    private fun nullable(type: String): String = if (type.endsWith('?')) type else "$type?"
 
 }

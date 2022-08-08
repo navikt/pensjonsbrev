@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.template.dsl.expression
 
 import no.nav.pensjon.brev.template.*
 
+@Deprecated("Erstatt med generte helpers ved å annotere template/frase med @TemplateModelHelpers")
 fun <Data : Any, Field> Expression<Data>.select(
     selector: Data.() -> Field,
     @Suppress("UNUSED_PARAMETER") discourageLambdas: Nothing? = null
@@ -19,6 +20,7 @@ fun <Data : Any, Field> Expression<Data>.select(
         UnaryOperation.Select2(selector)
     )
 
+@Deprecated("Erstatt med andre alternativ fra genererte helpers eller fra dsl-biblioteket")
 fun <T, R> Expression<T>.map(transform: (T) -> R): Expression<R> =
     Expression.UnaryInvoke(
         this,

@@ -151,4 +151,56 @@ class TemplateModelVisitorTest {
         assertThat(result.generatedFiles, hasSize(equalTo(2)) and anyElement(has(File::getName, containsSubstring("ListSelectors").not())))
     }
 
+    @Test
+    fun `generates helpers for nullable fields`() {
+        val result = SourceFile.kotlin(
+            "MyClass.kt", """
+                    import no.nav.pensjon.brev.template.HasModel
+                    import no.nav.pensjon.brev.template.Expression
+                    import no.nav.pensjon.brev.template.dsl.TemplateGlobalScope
+                    import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
+                    import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpersAnnotationProcessorTest
+                    import no.nav.pensjon.brev.template.thirdpkg.SimpleModel
+                    import no.nav.pensjon.brev.template.thirdpkg.ModelWithNullable
+                    import no.nav.pensjon.brev.template.thirdpkg.ModelWithNullableSelectors.simpleModel
+                    import no.nav.pensjon.brev.template.thirdpkg.SimpleModelSelectors.name_safe
+
+                    @TemplateModelHelpers
+                    object MyClass : HasModel<ModelWithNullable> {
+                        val x: Expression<String?> = Expression.Literal(ModelWithNullable(SimpleModel("et navn"), 28)).simpleModel.name_safe
+                    }
+                    """.trimIndent()
+        ).compile()
+
+        assertThat(result.exitCode, equalTo(KotlinCompilation.ExitCode.OK))
+        assertThat(result.generatedFiles, hasSize(greaterThan(2)) and anyElement(has(File::getName, containsSubstring("SimpleModelSelectors"))))
+    }
+
+//    @Test
+//    fun `generates helpers for constructing model classes from expressions`() {
+//        val result = SourceFile.kotlin(
+//            "MyClass.kt", """
+//                    import no.nav.pensjon.brev.template.HasModel
+//                    import no.nav.pensjon.brev.template.Expression
+//                    import no.nav.pensjon.brev.template.dsl.TemplateGlobalScope
+//                    import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
+//                    import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpersAnnotationProcessorTest
+//                    import no.nav.pensjon.brev.template.thirdpkg.SimpleModel
+//                    import no.nav.pensjon.brev.template.thirdpkg.ModelWithNullable
+//                    import no.nav.pensjon.brev.template.thirdpkg.ModelWithNullableSelectors.simpleModel
+//                    import no.nav.pensjon.brev.template.thirdpkg.SimpleModelSelectors.name_safe
+//
+//                    @TemplateModelHelpers
+//                    object MyClass : HasModel<ModelWithNullable> {
+//                        val x: Expression<SimpleModel> = Expression.Literal(SimpleModel("et navn"))
+//                        val y: Expression<Int> = Expression.Literal(28)
+//                        val z: Expression<ModelWithNullable> = ModelWithNullable(x, y)
+//                    }
+//                    """.trimIndent()
+//        ).compile()
+//
+//        assertThat(result.exitCode, equalTo(KotlinCompilation.ExitCode.OK))
+//        assertThat(result.generatedFiles, hasSize(greaterThan(2)) and anyElement(has(File::getName, containsSubstring("SimpleModelSelectors"))))
+//    }
+
 }

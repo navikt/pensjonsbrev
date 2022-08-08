@@ -34,6 +34,7 @@ sealed class UnaryOperation<In, out Out> : Operation() {
         override fun apply(input: Telefonnummer): String = input.format()
     }
 
+    @Deprecated("Erstatt med UnaryOperation.Select2")
     data class Select<In, Out>(val select: In.() -> Out) : UnaryOperation<In, Out>() {
         override fun apply(input: In): Out = input.select()
     }
@@ -41,6 +42,10 @@ sealed class UnaryOperation<In, out Out> : Operation() {
     // TODO: Replace Select with Select2, or give better name
     data class Select2<In: Any, Out>(val selector: TemplateModelSelector<In, Out>) : UnaryOperation<In, Out>() {
         override fun apply(input: In): Out = selector.selector(input)
+    }
+
+    data class SafeCall<In: Any, Out>(val selector: TemplateModelSelector<In, Out>) : UnaryOperation<In?, Out?>() {
+        override fun apply(input: In?): Out? = input?.let { selector.selector(it) }
     }
 
     data class IfNull<In>(val then: In) : UnaryOperation<In?, In>() {
