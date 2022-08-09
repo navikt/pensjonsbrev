@@ -141,7 +141,6 @@ object UfoerOmregningEnslig : VedtaksbrevTemplate {
             ) { tillegg, grunnlag ->
 
                 val barnetilleggForSaerkullsbarnVedvirkErRedusertMotInntekt = tillegg.map { it.erRedusertMotInntekt }
-                val barnetilleggErRedusertMotTak = grunnlag.map { it.erRedusertMotTak }
                 val harNettoBeloep = tillegg.map { it.beloep.value > 0 }
                 val barnetilleggForSaerkullsbarnVedvirk_HarjusteringsBeloepAr = tillegg.map { it.justeringsbeloepAar.value != 0 }
 
@@ -156,7 +155,7 @@ object UfoerOmregningEnslig : VedtaksbrevTemplate {
                     }
 
                     showIf(
-                        harbarnSomTidligerVarSaerkullsbarn and (inntektFoerUfoereErSannsynligEndret or harMinsteytelseVedVirk) and (barnetilleggForSaerkullsbarnVedvirkErRedusertMotInntekt or barnetilleggErRedusertMotTak)
+                        harbarnSomTidligerVarSaerkullsbarn and (inntektFoerUfoereErSannsynligEndret or harMinsteytelseVedVirk) and barnetilleggForSaerkullsbarnVedvirkErRedusertMotInntekt
                     ) {
                         includePhrase(infoTidligereSBOgEndretUT_001, tillegg.map { it.barnTidligereSaerkullsbarn })
                     }

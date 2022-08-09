@@ -56,7 +56,6 @@ fun createUfoerOmregningEnsligDto() =
                 ),
             ),
             barnetilleggGrunnlag = UfoerOmregningEnsligDto.BarnetilleggGrunnlagVedVirk(
-                erRedusertMotTak = false,
                 prosentsatsGradertOverInntektFoerUfoer = 0,
                 gradertOverInntektFoerUfoer = Kroner(0),
                 beloepFoerReduksjon = Kroner(0),
