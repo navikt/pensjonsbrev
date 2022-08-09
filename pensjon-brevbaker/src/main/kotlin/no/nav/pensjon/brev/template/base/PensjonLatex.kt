@@ -142,7 +142,7 @@ object PensjonLatex : BaseTemplate() {
     }
 
     private fun datoCommand(dato: LocalDate, language: Language, printWriter: LatexPrintWriter) {
-        printWriter.printNewCmd("feltdato", dato.format(dateFormatter(language, FormatStyle.LONG)))
+        printWriter.printNewCmd("feltdato", dato.format(dateFormatter(language, FormatStyle.SHORT)))
     }
 
     private fun brukerCommands(bruker: Bruker, printWriter: LatexPrintWriter) =

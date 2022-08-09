@@ -34,9 +34,9 @@ val pensjonLatexSettings = languageSettings {
 
     setting("sideprefix") {
         text(
-            Language.Bokmal to "Side",
-            Language.Nynorsk to "Side",
-            Language.English to "Page",
+            Language.Bokmal to "side",
+            Language.Nynorsk to "side",
+            Language.English to "page",
         )
     }
 
@@ -109,9 +109,9 @@ val pensjonLatexSettings = languageSettings {
     }
     setting("tablecontinuedfrompreviouspage") {
         text(
-            Language.Bokmal to "(Fortsettelse)",
-            Language.Nynorsk to "(Fortsettelse)",
-            Language.English to "(Continuation)",
+            Language.Bokmal to "Fortsettelse fra forrige side",
+            Language.Nynorsk to "Fortsettelse fra forrige side",
+            Language.English to "Continuation from previous page",
         )
     }
 }

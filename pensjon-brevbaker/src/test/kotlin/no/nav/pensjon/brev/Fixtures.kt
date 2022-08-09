@@ -24,14 +24,14 @@ object Fixtures {
             telefonnummer = Telefonnummer("55553334"),
         ),
         bruker = Bruker(
-            fornavn = "TEST",
+            fornavn = "Testerson",
             mellomnavn = "\"bruker\"",
-            etternavn = "TESTERSON",
+            etternavn = "Test",
             foedselsnummer = Foedselsnummer("01019878910"),
             foedselsdato = LocalDate.of(1998, 1, 1),
         ),
         mottaker = Adresse(
-            linje1 = "TEST TESTERSON",
+            linje1 = "Test Testerson",
             linje2 = "JERNBANETORGET 4 F",
             linje3 = "1344 HASLUM",
         ),

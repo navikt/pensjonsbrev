@@ -28,4 +28,17 @@ class LetterExampleTest {
             .also { writeTestPDF("EKSEMPELBREV_BOKMAL", it) }
     }
 
+    @Test
+    fun test2() {
+        Letter(
+            LetterExample2.template,
+            Fixtures.create<LetterExampleDto>(),
+            Language.Bokmal,
+            Fixtures.fellesAuto
+        ).render()
+            .let { PdfCompilationInput(it.base64EncodedFiles()) }
+            .let { runBlocking { LaTeXCompilerService(PDF_BUILDER_URL).producePDF(it, "test").base64PDF } }
+            .also { writeTestPDF("EKSEMPELBREV2_BOKMAL", it) }
+    }
+
 }
