@@ -17,7 +17,13 @@
 %----------------------------------------
 
 \newcommand{\letterdate}{
-    \begin{textblock*}{40mm}(150mm,80mm)\primaryFont\fontsize{\standardtextsize}{\standardtextspacing}\selectfont\hfill~\feltdato\end{textblock*}
+    \newlength{\letterdatewidth}
+    \setlength{\letterdatewidth}{40mm}
+    \newlength{\letterdatexpos}
+    \setlength{\letterdatexpos}{\dimexpr(\lettermargin+\textwidth-\letterdatewidth)}
+    \begin{textblock*}{\letterdatewidth}(\letterdatexpos,80mm)
+        \primaryFont\fontsize{\standardtextsize}{\standardtextspacing}\selectfont\hfill~\feltdato
+    \end{textblock*}
 }
 
 %----------------------------------------
@@ -29,7 +35,7 @@
 
 % main letter title
 \newcommand{\tittel}[1]{
-    \vspace*{14mm} % space between top margin and title.
+    \vspace*{20mm} % space between top margin and title.
     \titleText{#1}
     \\[2.7mm]
     \sakspart

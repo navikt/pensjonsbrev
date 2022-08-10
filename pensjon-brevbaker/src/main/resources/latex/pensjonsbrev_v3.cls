@@ -22,7 +22,6 @@
 \usepackage{ninecolors}
 \usepackage{tabularray} % better tables(tblr, longtblr)
 \usepackage{enumitem,amssymb} % for formChoice list
-
 \usepackage{placeins} % Float barrier to make elements between barrier not float.
 \usepackage[absolute
 %    ,showboxes %show boxes around textblocks for debugging
@@ -70,13 +69,10 @@
 \raggedbottom % no line stretching to fit page
 
 
-% page text area formatting
-\setlength{\textwidth}{170 mm} % total text width
-% margin adjustments (adjusting relative to original standard article margins):
-\setlength{\oddsidemargin}{-5.4 mm}
-\setlength{\evensidemargin}{-5.4 mm}
-\setlength{\topmargin}{-12 mm}
-\setlength{\textheight}{247 mm} % standard text height
+%% page text area formatting
+\newlength{\lettermargin}
+\setlength{\lettermargin}{20mm}
+\usepackage[margin=\lettermargin]{geometry}
 
 \fancypagestyle{normalpage}{
     \renewcommand{\headrulewidth}{0pt}%
@@ -98,8 +94,8 @@
 %----------------------------------------
 \newcommand{\currentSectionName}{mainletter} %name of the current section of the letter. Used for lastpage label at the end of this section
 \newcommand{\letterpagenumber}{ %general page number formatting
-    \begin{textblock*}{25mm}(165mm,276mm)
-        \pagenumbertext{\hfill\feltsideprefix~\thepage~\feltsideinfix~\pageref*{\currentSectionName}}
+    \begin{textblock*}{\textwidth}(\lettermargin,276mm)
+        \pagenumbertext{\feltsaksnummerprefix~\feltsaksnummer\hfill\feltsideprefix~\thepage~\feltsideinfix~\pageref*{\currentSectionName}}
     \end{textblock*}
 }
 
