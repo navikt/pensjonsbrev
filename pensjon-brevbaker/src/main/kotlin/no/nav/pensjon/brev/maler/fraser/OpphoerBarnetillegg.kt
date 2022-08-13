@@ -14,6 +14,7 @@ data class OpphoerBarnetilleggDto(
 )
 
 object OpphoerBarnetillegg {
+
     val TBU2290 = OutlinePhrase<LangBokmalNynorskEnglish, Date> {onsketVirkningsDato ->
         paragraph {
             val fdatoPaaBarnetilleggOpphoert = it.select(OpphoerBarnetilleggDto::fdatoPaaBarnetilleggOpphoert)
