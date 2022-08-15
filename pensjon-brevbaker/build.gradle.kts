@@ -92,13 +92,11 @@ dependencies {
     implementation("io.ktor:ktor-server-netty:$ktorVersion")
     implementation("io.ktor:ktor-server-status-pages:$ktorVersion")
     implementation("net.logstash.logback:logstash-logback-encoder:$logstashVersion")
-    implementation("no.nav.pensjon.brev:pensjon-brevbaker-api-model:3.5.4")
+    implementation("no.nav.pensjon.brev:pensjon-brevbaker-api-model:3.5.5")
 
-    // Necessary for auto-doc
-//    implementation("org.jetbrains.kotlinx:kotlinx-html-jvm:0.8.0")
     implementation(project(":template-model-generator"))
     ksp(project(":template-model-generator"))
-
+    
     // Necessary for java.time.LocalDate
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.13.3")
 

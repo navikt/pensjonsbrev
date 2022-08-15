@@ -55,10 +55,8 @@ data class UfoerOmregningEnsligDto(
     )
 
     data class BarnetilleggGrunnlagVedVirk(
-        val erRedusertMotTak: Boolean,
         val prosentsatsGradertOverInntektFoerUfoer: Int,
         val gradertOverInntektFoerUfoer: Kroner,
-        val erIkkeUtbetaltPgaTak: Boolean,
         val beloepFoerReduksjon: Kroner,
         val beloepEtterReduksjon: Kroner,
     )

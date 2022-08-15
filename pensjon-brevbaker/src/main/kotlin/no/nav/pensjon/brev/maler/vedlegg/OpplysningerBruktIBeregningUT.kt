@@ -638,22 +638,6 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
                 }
             }
 
-            showIf(barnetillegg.map { it.grunnlag.erRedusertMotTak }) {
-                row {
-                    cell {
-                        val prosentsatsGradertOIFU = barnetillegg.map { it.grunnlag.prosentsatsGradertOIFU }.format()
-                        textExpr(
-                            Bokmal to prosentsatsGradertOIFU + " % av inntekt før uførhet (justert for endringer i grunnbeløpet)",
-                            Nynorsk to prosentsatsGradertOIFU + " % av inntekt før uførleik (justert for endringar i grunnbeløpet)",
-                            English to prosentsatsGradertOIFU + " % of income before disability, adjusted for changes in the basic amount"
-                        )
-                    }
-                    cell {
-                        includePhrase(kroner, barnetillegg.map { it.grunnlag.gradertOIFU })
-                    }
-                }
-            }
-
             ifNotNull(barnetillegg.map { it.saerkullsbarn }) { saerkullsbarn ->
                 showIf(saerkullsbarn.map { it.beloep.value > 0 }) {
                     row {
@@ -749,7 +733,6 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
     ) { grunnlag, saerkullTillegg ->
         val erRedusertMotInntekt = saerkullTillegg.map { it.erRedusertMotinntekt }
         val fribeloepEllerInntektErPeriodisert = saerkullTillegg.map { it.fribeloepEllerInntektErPeriodisert }
-        val erIkkeUtbetaltPgaTak = grunnlag.map { it.erIkkeUtbetaltpgaTak }
         val harYrkesskadeGrad = argument().map {
             it.yrkesskadeGjeldende?.let { skade -> skade.yrkesskadegrad > 0 } ?: false
         }
@@ -757,11 +740,8 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
         val justeringsBeloepAr = saerkullTillegg.map { it.justeringsbeloepAar }
 
         showIf(saerkullTillegg.map { it.erRedusertMotinntekt }) {
-
-            showIf(erIkkeUtbetaltPgaTak) {
                 includePhrase(slikBeregnBTOverskrift_001)
                 includePhrase(vedleggBeregnUTInfoBTSB_001)
-            }.orShow {
                 includePhrase(vedleggBeregnUTInnlednBT_001)
             }
 
@@ -805,11 +785,12 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
                     saerkullTillegg.map { it.justeringsbeloepAar }
                 )
             }
-        }
+
 
 
 // TABLE 2 - start
-            showIf(erRedusertMotInntekt and erIkkeUtbetaltPgaTak) {
+
+    showIf(erRedusertMotInntekt) {
                 title1 {
                     text(
                         Bokmal to "Reduksjon av barnetillegg for særkullsbarn før skatt",
@@ -849,7 +830,7 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
                             }
                         }
                     }
-                    showIf(erRedusertMotInntekt and erIkkeUtbetaltPgaTak) {
+                    showIf(erRedusertMotInntekt) {
                         row {
                             cell {
                                 text(
