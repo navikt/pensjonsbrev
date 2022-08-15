@@ -20,6 +20,7 @@ data class OmregnEPSInnledningDto(
     val avdoedNavn: String,
     val krav_virkningsDatoFraOgMed: LocalDate,
 )
+
 // omregnUTBTDodEPSInnledn_001, omregnUTDodEPSInnledn1_001, omregnBTDodEPSInnledn_001, omregnUTBTSBDodEPSInnledn_001, omregnUTDodEPSInnledn2_001
 val omregnEPSInnledning = OutlinePhrase<LangBokmalNynorskEnglish, OmregnEPSInnledningDto> { data ->
     val harMinsteytelseVedVirk = data.select(OmregnEPSInnledningDto::harMinsteytelseVedVirk)
@@ -101,9 +102,9 @@ val utbetalingUfoeretrygd = OutlinePhrase<LangBokmalNynorskEnglish, BeloepUTDto>
     val harBarnetilleggForSaerkullsbarnVedVirk = arg.select(BeloepUTDto::harBarnetilleggForSaerkullsbarnVedVirk)
     val harFlereUfoeretrygdPerioder = arg.select(BeloepUTDto::harFlereUfoeretrygdPerioder)
     val institusjonsoppholdVedVirk = arg.select(BeloepUTDto::institusjonsoppholdVedVirk)
-    val faarUtbetaltUfoeretrygd = totalUfoereMaanedligBeloep.map{it.value > 0}
+    val faarUtbetaltUfoeretrygd = totalUfoereMaanedligBeloep.map { it.value > 0 }
 
-    showIf(faarUtbetaltUfoeretrygd){
+    showIf(faarUtbetaltUfoeretrygd) {
         paragraph {
             textExpr(
                 Bokmal to "Du får ".expr() + totalUfoereMaanedligBeloep.format() + " kroner i uføretrygd".expr(),
@@ -130,10 +131,10 @@ val utbetalingUfoeretrygd = OutlinePhrase<LangBokmalNynorskEnglish, BeloepUTDto>
                 )
             }
         }
-    }.orShow{
+    }.orShow {
         paragraph {
             text(
-                Bokmal to "Du får ikke utbetalt uføretrygd " ,
+                Bokmal to "Du får ikke utbetalt uføretrygd ",
                 Nynorsk to "Du får ikkje utbetalt uføretrygd ",
                 English to "You will not receive disability benefit ",
             )
