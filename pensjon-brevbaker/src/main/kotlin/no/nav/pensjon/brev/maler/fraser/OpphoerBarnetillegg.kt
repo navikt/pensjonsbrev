@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.maler.fraser
 
 import no.nav.pensjon.brev.api.model.*
+import no.nav.pensjon.brev.api.model.Kroner
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.*
@@ -8,6 +9,11 @@ import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brev.template.dsl.expression.*
 import java.util.Date
+
+data class BarnetilleggUtbetaltDto(
+    val barnetilleggFellesbarnUtbetaltNetto: Kroner,
+    val barnetilleggSaerkullsbarnUtbetaltNetto: Kroner
+)
 
 data class OpphoerBarnetilleggDto(
     val fdatoPaaBarnetilleggOpphoert: Number
@@ -27,6 +33,7 @@ object OpphoerBarnetillegg {
     }
 
     val TBU1120 = OutlinePhrase<LangBokmalNynorskEnglish, Unit> {
+      val barnetilleggFellesbarnUtbetaltNetto = arg.sel
         paragraph {
             text(
                 Bokmal to "Du får <TotalNetto> kroner i uføretrygd per måned før skatt.",
