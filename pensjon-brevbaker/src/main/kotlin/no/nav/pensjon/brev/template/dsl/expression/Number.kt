@@ -5,25 +5,6 @@ import no.nav.pensjon.brev.maler.fraser.common.*
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.expression.*
 
-fun Expression<Double>.format() =
-    Expression.BinaryInvoke(
-        this,
-        Expression.FromScope(ExpressionScope<Any, *>::language),
-        BinaryOperation.LocalizedDoubleFormat,
-    )
-
-@JvmName("formatInt")
-fun Expression<Int>.format() =
-    Expression.BinaryInvoke(
-        this,
-        Expression.FromScope(ExpressionScope<Any, *>::language),
-        BinaryOperation.LocalizedIntFormat,
-    )
-
-@JvmName("formatDoubleValue")
-fun Expression<DoubleValue>.format() =
-    select(DoubleValue::value).format()
-
 private val intValueSelector = object : TemplateModelSelector<IntValue, Int> {
     override val className: String = "no.nav.pensjon.brev.api.model.IntValue"
     override val propertyName: String = "value"
@@ -31,54 +12,88 @@ private val intValueSelector = object : TemplateModelSelector<IntValue, Int> {
     override val selector = IntValue::value
 }
 
-val Expression<IntValue>.value: Expression<Int>
+private val doubleValueSelector = object : TemplateModelSelector<DoubleValue, Double> {
+    override val className: String = "no.nav.pensjon.brev.maler.fraser.common.DoubleValue"
+    override val propertyName: String = "value"
+    override val propertyType: String = "kotlin.Double"
+    override val selector = DoubleValue::value
+}
+
+private val Expression<IntValue>.value: Expression<Int>
     get() = Expression.UnaryInvoke(
         this,
         UnaryOperation.Select2(intValueSelector)
     )
 
-fun <T: Comparable<T>> Expression<T>.greaterThan(compareTo: T): Expression<Boolean> =
+fun Expression<Double>.format(): Expression<String> =
     Expression.BinaryInvoke(
-        first = Comparison.GreaterThan(compareTo).expr(),
-        second = this,
-        operation = BinaryOperation.ValidatePredicate(),
+        this,
+        Expression.FromScope(ExpressionScope<Any, *>::language),
+        BinaryOperation.LocalizedDoubleFormat,
     )
 
-fun <T: Comparable<T>> Expression<T>.greaterThanOrEqual(compareTo: T): Expression<Boolean> =
+@JvmName("formatInt")
+fun Expression<Int>.format(): Expression<String> =
     Expression.BinaryInvoke(
-        first = Comparison.GreaterThanOrEqual(compareTo).expr(),
-        second = this,
-        operation = BinaryOperation.ValidatePredicate(),
+        this,
+        Expression.FromScope(ExpressionScope<Any, *>::language),
+        BinaryOperation.LocalizedIntFormat,
     )
 
-fun <T: Comparable<T>> Expression<T>.lessThanOrEqual(compareTo: T): Expression<Boolean> =
+@JvmName("formatDoubleValue")
+fun Expression<DoubleValue>.format(): Expression<String> =
+    Expression.UnaryInvoke(this, UnaryOperation.Select2(doubleValueSelector)).format()
+
+
+// TODO: Skriv tester på disse
+fun <T: Comparable<T>> Expression<T>.greaterThan(compareTo: Expression<T>): Expression<Boolean> =
     Expression.BinaryInvoke(
-        first = Comparison.LessThanOrEqual(compareTo).expr(),
-        second = this,
-        operation = BinaryOperation.ValidatePredicate(),
+        first = this,
+        second = compareTo,
+        operation = BinaryOperation.GreaterThan(),
     )
 
-fun <T: Comparable<T>> Expression<T>.lessThan(compareTo: T): Expression<Boolean> =
+fun <T: Comparable<T>> Expression<T>.greaterThanOrEqual(compareTo: Expression<T>): Expression<Boolean> =
     Expression.BinaryInvoke(
-        first = Comparison.LessThan(compareTo).expr(),
-        second = this,
-        operation = BinaryOperation.ValidatePredicate(),
+        first = this,
+        second = compareTo,
+        operation = BinaryOperation.GreaterThanOrEqual(),
     )
 
-fun <T : IntValue> Expression<T>.greaterThan(compareTo: Int): Expression<Boolean> =
-    this.value.greaterThan(compareTo)
+fun <T: Comparable<T>> Expression<T>.lessThanOrEqual(compareTo: Expression<T>): Expression<Boolean> =
+    Expression.BinaryInvoke(
+        first = this,
+        second = compareTo,
+        operation = BinaryOperation.LessThanOrEqual(),
+    )
 
-fun <T : IntValue> Expression<T>.greaterThanOrEqual(compareTo: Int): Expression<Boolean> =
-    this.value.greaterThanOrEqual(compareTo)
+fun <T: Comparable<T>> Expression<T>.lessThan(compareTo: Expression<T>): Expression<Boolean> =
+    Expression.BinaryInvoke(
+        first = this,
+        second = compareTo,
+        operation = BinaryOperation.LessThan(),
+    )
 
-fun <T : IntValue> Expression<T>.lessThan(compareTo: Int): Expression<Boolean> =
-    this.value.lessThan(compareTo)
+// Literal compareTo value
+fun <T: Comparable<T>> Expression<T>.greaterThan(compareTo: T): Expression<Boolean> = greaterThan(compareTo.expr())
+fun <T: Comparable<T>> Expression<T>.greaterThanOrEqual(compareTo: T): Expression<Boolean> = greaterThanOrEqual(compareTo.expr())
+fun <T: Comparable<T>> Expression<T>.lessThanOrEqual(compareTo: T): Expression<Boolean> = lessThanOrEqual(compareTo.expr())
+fun <T: Comparable<T>> Expression<T>.lessThan(compareTo: T): Expression<Boolean> = lessThan(compareTo.expr())
+// IntValue compareTo literal
+fun Expression<IntValue>.greaterThan(compareTo: Int): Expression<Boolean> = value.greaterThan(compareTo)
+fun Expression<IntValue>.greaterThanOrEqual(compareTo: Int): Expression<Boolean> = value.greaterThanOrEqual(compareTo)
+fun Expression<IntValue>.lessThan(compareTo: Int): Expression<Boolean> = value.lessThan(compareTo)
+fun Expression<IntValue>.lessThanOrEqual(compareTo: Int): Expression<Boolean> = value.lessThanOrEqual(compareTo)
+// IntValue compareTo expression
+@JvmName("greaterThanIntValue")
+fun Expression<IntValue>.greaterThan(compareTo: Expression<IntValue>): Expression<Boolean> = value.greaterThan(compareTo.value)
+@JvmName("greaterThanOrEqualIntValue")
+fun Expression<IntValue>.greaterThanOrEqual(compareTo: Expression<IntValue>): Expression<Boolean> = value.greaterThanOrEqual(compareTo.value)
+@JvmName("lessThanIntValue")
+fun Expression<IntValue>.lessThan(compareTo: Expression<IntValue>): Expression<Boolean> = value.lessThan(compareTo.value)
+@JvmName("lessThanOrEqualIntValue")
+fun Expression<IntValue>.lessThanOrEqual(compareTo: Expression<IntValue>): Expression<Boolean> = value.lessThanOrEqual(compareTo.value)
 
-fun <T : IntValue> Expression<T>.lessThanOrEqual(compareTo: Int): Expression<Boolean> =
-    this.value.lessThanOrEqual(compareTo)
-
-fun <T : IntValue> Expression<T>.equalTo(compareTo: Int): Expression<Boolean> =
-    this.value.equalTo(compareTo)
-
-fun <T : IntValue> Expression<T>.notEqualTo(compareTo: Int): Expression<Boolean> =
-    this.value.notEqualTo(compareTo)
+// IntValue equals literal
+fun Expression<IntValue>.equalTo(compareTo: Int): Expression<Boolean> = value.equalTo(compareTo)
+fun Expression<IntValue>.notEqualTo(compareTo: Int): Expression<Boolean> = value.notEqualTo(compareTo)

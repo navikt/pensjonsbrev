@@ -65,6 +65,22 @@ abstract class BinaryOperation<in In1, in In2, out Out> : Operation() {
         override fun apply(first: In, second: In): Boolean = first == second
     }
 
+    class GreaterThan<in T : Comparable<T>> : BinaryOperation<T, T, Boolean>() {
+        override fun apply(first: T, second: T): Boolean = first > second
+    }
+
+    class GreaterThanOrEqual<in T : Comparable<T>> : BinaryOperation<T, T, Boolean>() {
+        override fun apply(first: T, second: T): Boolean = first >= second
+    }
+
+    class LessThanOrEqual<in T : Comparable<T>> : BinaryOperation<T, T, Boolean>() {
+        override fun apply(first: T, second: T): Boolean = first <= second
+    }
+
+    class LessThan<in T : Comparable<T>> : BinaryOperation<T, T, Boolean>() {
+        override fun apply(first: T, second: T): Boolean = first < second
+    }
+
     object Or : BinaryOperation<Boolean, Boolean, Boolean>() {
         override fun apply(first: Boolean, second: Boolean): Boolean = first || second
     }
@@ -108,10 +124,6 @@ abstract class BinaryOperation<in In1, in In2, out Out> : Operation() {
         override fun apply(first: EnumType, second: List<EnumType>): Boolean = second.contains(first)
     }
 
-    class EnumNotInList<EnumType : Enum<*>> : BinaryOperation<EnumType, List<EnumType>, Boolean>() {
-        override fun apply(first: EnumType, second: List<EnumType>): Boolean = !second.contains(first)
-    }
-
     class IfElse<Out> : BinaryOperation<Boolean, Pair<Out, Out>, Out>() {
         override fun apply(first: Boolean, second: Pair<Out, Out>): Out = if (first) second.first else second.second
     }
@@ -124,7 +136,4 @@ abstract class BinaryOperation<in In1, in In2, out Out> : Operation() {
         override fun apply(first: Predicate<T>, second: T): Boolean = first.validate(second)
     }
 
-    data class Select<In1, In2, Out>(val select: (In1, In2) -> Out) : BinaryOperation<In1, In2, Out>() {
-        override fun apply(first: In1, second: In2): Out = select(first, second)
-    }
 }

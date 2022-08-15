@@ -1,7 +1,6 @@
 package no.nav.pensjon.brev.maler
 
 import no.nav.pensjon.brev.api.model.*
-import no.nav.pensjon.brev.api.model.KronerSelectors.value
 import no.nav.pensjon.brev.api.model.maler.*
 import no.nav.pensjon.brev.api.model.maler.AvdoedSelectors.ektefelletilleggOpphoert
 import no.nav.pensjon.brev.api.model.maler.AvdoedSelectors.harFellesBarnUtenBarnetillegg
@@ -86,7 +85,7 @@ object UfoerOmregningEnslig : VedtaksbrevTemplate<UfoerOmregningEnsligDto> {
             val harBarnetilleggForSaerkullsbarnVedVirk = barnetilleggVedVirk.barnetilleggSaerkullsbarnVedVirk_safe.notNull()
             val harBarnOverfoertTilSaerkullsbarn = barnetilleggVedVirk.barnetilleggSaerkullsbarnVedVirk_safe.barnOverfoertTilSaerkullsbarn_safe.ifNull(emptyList()).isNotEmpty()
             val harbarnSomTidligerVarSaerkullsbarn = barnetilleggVedVirk.barnetilleggSaerkullsbarnVedVirk_safe.barnTidligereSaerkullsbarn_safe.ifNull(emptyList()).isNotEmpty()
-            val harUfoereMaanedligBeloepVedvirk = ufoeretrygdVedVirk.totalUfoereMaanedligBeloep.value.greaterThan(0)
+            val harUfoereMaanedligBeloepVedvirk = ufoeretrygdVedVirk.totalUfoereMaanedligBeloep.greaterThan(0)
 
             includePhrase(Vedtak.Overskrift)
 
@@ -170,8 +169,8 @@ object UfoerOmregningEnslig : VedtaksbrevTemplate<UfoerOmregningEnsligDto> {
                 barnetilleggVedVirk.barnetilleggGrunnlag_safe,
             ) { barnetilleggSaerkullsbarnVedVirk, barnetilleggGrunnlag ->
 
-                val harNettoBeloep = barnetilleggSaerkullsbarnVedVirk.beloep.value.greaterThan(0)
-                val barnetilleggForSaerkullsbarnVedvirk_HarjusteringsBeloepAr = barnetilleggSaerkullsbarnVedVirk.justeringsbeloepAar.value.notEqualTo(0)
+                val harNettoBeloep = barnetilleggSaerkullsbarnVedVirk.beloep.greaterThan(0)
+                val barnetilleggForSaerkullsbarnVedvirk_HarjusteringsBeloepAr = barnetilleggSaerkullsbarnVedVirk.justeringsbeloepAar.notEqualTo(0)
 
                 showIf(harBarnOverfoertTilSaerkullsbarn) {
                     includePhrase(OmregningFBOverskrift_001)

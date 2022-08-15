@@ -4,28 +4,8 @@ interface Predicate<T> {
     fun validate(input: T): Boolean
 }
 
-object Comparison {
-    data class GreaterThan<T: Comparable<T>>(val compareTo: T): Predicate<T> {
-        override fun validate(input: T): Boolean = input > compareTo
-    }
-
-    data class GreaterThanOrEqual<T: Comparable<T>>(val compareTo: T): Predicate<T> {
-        override fun validate(input: T): Boolean = input >= compareTo
-    }
-
-    data class LessThanOrEqual<T: Comparable<T>>(val compareTo: T): Predicate<T> {
-        override fun validate(input: T): Boolean = input <= compareTo
-
-    }
-
-    data class LessThan<T: Comparable<T>>(val compareTo: T): Predicate<T> {
-        override fun validate(input: T): Boolean = input < compareTo
-
-    }
-}
-
 object Collections {
-    data class ContainsExclusively<T>(val required: Set<T>, val anyOfs: List<Set<T>>): Predicate<Collection<T>> {
+    data class ContainsExclusively<T>(val required: Set<T>, val anyOfs: List<Set<T>>) : Predicate<Collection<T>> {
 
         override fun validate(input: Collection<T>): Boolean =
             (required union anyOfs.flatten()).containsAll(input)
@@ -45,16 +25,16 @@ object Collections {
         }
     }
 
-    data class ContainsAny<T>(val anyOf: Set<T>): Predicate<Collection<T>> {
+    data class ContainsAny<T>(val anyOf: Set<T>) : Predicate<Collection<T>> {
         override fun validate(input: Collection<T>): Boolean =
             anyOf.any { input.contains(it) }
     }
 
-    object IsEmpty: Predicate<Collection<*>> {
+    object IsEmpty : Predicate<Collection<*>> {
         override fun validate(input: Collection<*>): Boolean = input.isEmpty()
     }
 
-    data class ContainsAll<T>(val anyOf: Set<T>): Predicate<Collection<T>> {
+    data class ContainsAll<T>(val anyOf: Set<T>) : Predicate<Collection<T>> {
         override fun validate(input: Collection<T>): Boolean = input.containsAll(anyOf)
     }
 }

@@ -27,20 +27,12 @@ fun <T, R> Expression<T>.map(transform: (T) -> R): Expression<R> =
         UnaryOperation.Select(transform),
     )
 
-fun <T1, T2, R> map2(t1: Expression<T1>, t2: Expression<T2>, transform: (T1, T2) -> R): Expression<R> =
-    Expression.BinaryInvoke(
-        t1,
-        t2,
-        BinaryOperation.Select(transform),
-    )
+fun <T> T.expr(): Expression<T> = Expression.Literal(this)
 
-fun <T> T.expr() = Expression.Literal(this)
-
-fun <T: Any> Expression<T?>.ifNull(then: T) =
+fun <T: Any> Expression<T?>.ifNull(then: T): Expression<T> =
     Expression.UnaryInvoke(this, UnaryOperation.IfNull(then))
 
-fun <T: Any> Expression<T?>.notNull() =
-    map { it != null }
+fun <T: Any> Expression<T?>.notNull(): Expression<Boolean> = notEqualTo(null)
 
 fun <T : Enum<T>> Expression<Enum<T>>.isOneOf(vararg enums: Enum<T>): Expression<Boolean> = Expression.BinaryInvoke(
     this,
@@ -48,11 +40,7 @@ fun <T : Enum<T>> Expression<Enum<T>>.isOneOf(vararg enums: Enum<T>): Expression
     BinaryOperation.EnumInList()
 )
 
-fun <T : Enum<T>> Expression<Enum<T>>.isNotAnyOf(vararg enums: Enum<T>): Expression<Boolean> = Expression.BinaryInvoke(
-    this,
-    enums.asList().expr(),
-    BinaryOperation.EnumNotInList()
-)
+fun <T : Enum<T>> Expression<Enum<T>>.isNotAnyOf(vararg enums: Enum<T>): Expression<Boolean> = not(isOneOf(*enums))
 
 fun not(expr: Expression<Boolean>): Expression<Boolean> =
     Expression.UnaryInvoke(expr, UnaryOperation.Not)

@@ -1,7 +1,6 @@
 package no.nav.pensjon.brev.maler.fraser
 
 import no.nav.pensjon.brev.api.model.*
-import no.nav.pensjon.brev.api.model.KronerSelectors.value
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Language.*
@@ -88,7 +87,7 @@ data class UtbetalingUfoeretrygd(
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
 
     override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() {
-        val faarUtbetaltUfoeretrygd = totalUfoereMaanedligBeloep.value.greaterThan(0)
+        val faarUtbetaltUfoeretrygd = totalUfoereMaanedligBeloep.greaterThan(0)
 
         showIf(faarUtbetaltUfoeretrygd) {
             paragraph {
