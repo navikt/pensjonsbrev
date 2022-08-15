@@ -7,11 +7,6 @@ import no.nav.pensjon.brev.api.model.maler.AvdoedSelectors.ektefelletilleggOppho
 import no.nav.pensjon.brev.api.model.maler.AvdoedSelectors.harFellesBarnUtenBarnetillegg
 import no.nav.pensjon.brev.api.model.maler.AvdoedSelectors.navn
 import no.nav.pensjon.brev.api.model.maler.AvdoedSelectors.sivilstand
-import no.nav.pensjon.brev.api.model.maler.BarnetilleggGrunnlagVedVirkSelectors.beloepEtterReduksjon
-import no.nav.pensjon.brev.api.model.maler.BarnetilleggGrunnlagVedVirkSelectors.beloepFoerReduksjon
-import no.nav.pensjon.brev.api.model.maler.BarnetilleggGrunnlagVedVirkSelectors.erIkkeUtbetaltPgaTak
-import no.nav.pensjon.brev.api.model.maler.BarnetilleggGrunnlagVedVirkSelectors.erRedusertMotTak
-import no.nav.pensjon.brev.api.model.maler.BarnetilleggGrunnlagVedVirkSelectors.gradertOverInntektFoerUfoer
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggGrunnlagVedVirkSelectors.prosentsatsGradertOverInntektFoerUfoer
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarnVedvirkSelectors.barnOverfoertTilSaerkullsbarn
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarnVedvirkSelectors.barnOverfoertTilSaerkullsbarn_safe
@@ -33,7 +28,6 @@ import no.nav.pensjon.brev.api.model.maler.InntektFoerUfoerhetVedVirkSelectors.e
 import no.nav.pensjon.brev.api.model.maler.InntektFoerUfoerhetVedVirkSelectors.erSannsynligEndret
 import no.nav.pensjon.brev.api.model.maler.InntektFoerUfoerhetVedVirkSelectors.oppjustertBeloep
 import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDtoSelectors.avdoed
-import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDtoSelectors.barnetilleggSaerkullsbarnGjeldende_erRedusertMotInntekt
 import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDtoSelectors.barnetilleggVedVirk
 import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDtoSelectors.beregnetUTPerMaaned_antallBeregningsperioderPaaVedtak
 import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDtoSelectors.bruker
@@ -190,7 +184,7 @@ object UfoerOmregningEnslig : VedtaksbrevTemplate<UfoerOmregningEnsligDto> {
                     }
 
                     showIf(
-                        harbarnSomTidligerVarSaerkullsbarn and (inntektFoerUfoerhetVedVirk.erSannsynligEndret or harMinsteytelseVedVirk) and (barnetilleggSaerkullsbarnVedVirk.erRedusertMotInntekt or barnetilleggGrunnlag.erRedusertMotTak)
+                        harbarnSomTidligerVarSaerkullsbarn and (inntektFoerUfoerhetVedVirk.erSannsynligEndret or harMinsteytelseVedVirk) and barnetilleggSaerkullsbarnVedVirk.erRedusertMotInntekt
                     ) {
                         includePhrase(InfoTidligereSBOgEndretUT_001(barnetilleggSaerkullsbarnVedVirk.barnTidligereSaerkullsbarn))
                     }
@@ -206,46 +200,16 @@ object UfoerOmregningEnslig : VedtaksbrevTemplate<UfoerOmregningEnsligDto> {
                     harBarnOverfoertTilSaerkullsbarn or (harBarnetilleggForSaerkullsbarnVedVirk and (harMinsteytelseVedVirk or inntektFoerUfoerhetVedVirk.erSannsynligEndret or avdoed.ektefelletilleggOpphoert))
                 ) {
 
-                    showIf(not(barnetilleggGrunnlag.erRedusertMotTak)) {
-                        includePhrase(
-                            IkkeRedusBTPgaTak_001(
-                                barnetillegg_prosentsats_gradert_over_inntekt_foer_ufoer_vedvirk = barnetilleggGrunnlag.prosentsatsGradertOverInntektFoerUfoer,
-                                barnetillegg_gradert_over_inntekt_foer_ufoer_vedvirk = barnetilleggGrunnlag.gradertOverInntektFoerUfoer,
-                            )
-                        )
-                    }
-
-                    showIf(barnetilleggGrunnlag.erRedusertMotTak and not(barnetilleggGrunnlag.erIkkeUtbetaltPgaTak)) {
-                        includePhrase(
-                            RedusBTPgaTak_001(
-                                barnetillegg_prosentsats_gradert_over_inntekt_foer_ufoer_vedvirk = barnetilleggGrunnlag.prosentsatsGradertOverInntektFoerUfoer,
-                                barnetillegg_gradert_over_inntekt_foer_ufoer_vedvirk = barnetilleggGrunnlag.gradertOverInntektFoerUfoer,
-                                barnetillegg_beloep_foer_reduksjon_vedvirk = barnetilleggGrunnlag.beloepFoerReduksjon,
-                                barnetillegg_saerkullsbarn_beloep_etter_reduksjon_vedvirk = barnetilleggGrunnlag.beloepEtterReduksjon,
-                            )
-                        )
-                    }
-
-                    showIf(barnetilleggGrunnlag.erIkkeUtbetaltPgaTak) {
-                        includePhrase(
-                            IkkeUtbetaltBTPgaTak_001(
-                                barnetillegg_prosentsats_gradert_over_inntekt_foer_ufoer_vedvirk = barnetilleggGrunnlag.prosentsatsGradertOverInntektFoerUfoer,
-                                barnetillegg_gradert_over_inntekt_foer_ufoer_vedvirk = barnetilleggGrunnlag.gradertOverInntektFoerUfoer,
-                            )
-                        )
-                    }
-
-
-                    showIf(not(harBarnOverfoertTilSaerkullsbarn) and not(barnetilleggGrunnlag.erIkkeUtbetaltPgaTak)) {
+                    showIf(not(harBarnOverfoertTilSaerkullsbarn)) {
                         includePhrase(InfoBTSBInntekt_001)
                     }
 
-                    showIf(harBarnOverfoertTilSaerkullsbarn and not(barnetilleggGrunnlag.erIkkeUtbetaltPgaTak)) {
+                    showIf(harBarnOverfoertTilSaerkullsbarn) {
                         includePhrase(InfoBTOverfortTilSBInntekt_001)
                     }
 
                     showIf(
-                        not(barnetilleggSaerkullsbarnVedVirk.erRedusertMotInntekt) and not(barnetilleggGrunnlag.erIkkeUtbetaltPgaTak)
+                        not(barnetilleggSaerkullsbarnVedVirk.erRedusertMotInntekt)
                     ) {
                         includePhrase(
                             IkkeRedusBTSBPgaInntekt_001(
@@ -290,24 +254,15 @@ object UfoerOmregningEnslig : VedtaksbrevTemplate<UfoerOmregningEnsligDto> {
                     }
 
 
-                    showIf(not(barnetilleggSaerkullsbarnVedVirk.erRedusertMotInntekt) and barnetilleggGrunnlag.prosentsatsGradertOverInntektFoerUfoer.lessThanOrEqual(95)) {
-                        includePhrase(HjemmelBTOvergangsregler_001)
-                    }
-
                     showIf(barnetilleggSaerkullsbarnVedVirk.erRedusertMotInntekt and barnetilleggGrunnlag.prosentsatsGradertOverInntektFoerUfoer.greaterThan(95)) {
                         includePhrase(HjemmelBTRedus_001)
                     }
 
-                    showIf(barnetilleggSaerkullsbarnVedVirk.erRedusertMotInntekt and barnetilleggGrunnlag.prosentsatsGradertOverInntektFoerUfoer.lessThanOrEqual(95)) {
-                        includePhrase(HjemmelBTRedusOvergangsregler_001)
-                    }
-
-                    showIf(barnetilleggSaerkullsbarnGjeldende_erRedusertMotInntekt) {
+                    showIf(barnetilleggSaerkullsbarnVedVirk.erRedusertMotInntekt) {
                         includePhrase(MerInfoBT_001)
                     }
                 }
             }
-
 
             showIf(avdoed.sivilstand.isOneOf(Sivilstand.SAMBOER3_2)) {
                 includePhrase(GjRettSamboerOverskrift(avdoed.navn))
@@ -389,6 +344,5 @@ object UfoerOmregningEnslig : VedtaksbrevTemplate<UfoerOmregningEnsligDto> {
         )
 
         includeAttachment(vedleggOrienteringOmRettigheterOgPlikterUfoere, orienteringOmRettigheterOgPlikter)
-
     }
 }

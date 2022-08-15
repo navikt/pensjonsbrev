@@ -448,84 +448,6 @@ object EndringUTpavirkerBTOverskrift_001 : OutlinePhrase<LangBokmalNynorskEnglis
         }
 }
 
-data class IkkeRedusBTPgaTak_001(
-    val barnetillegg_prosentsats_gradert_over_inntekt_foer_ufoer_vedvirk: Expression<Int>,
-    val barnetillegg_gradert_over_inntekt_foer_ufoer_vedvirk: Expression<Kroner>,
-) : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() =
-        paragraph {
-            textExpr(
-                Bokmal to "Uføretrygden og barnetillegget ditt kan til sammen ikke utgjøre mer enn ".expr()
-                        + barnetillegg_prosentsats_gradert_over_inntekt_foer_ufoer_vedvirk.format() + " prosent av inntekten din før du ble ufør. ".expr()
-                        + barnetillegg_prosentsats_gradert_over_inntekt_foer_ufoer_vedvirk.format() + " prosent av den inntekten du hadde før du ble ufør tilsvarer i dag ".expr()
-                        + barnetillegg_gradert_over_inntekt_foer_ufoer_vedvirk.format() + " kroner. Uføretrygden og barnetillegget ditt er til sammen lavere enn dette. Derfor er barnetillegget fastsatt til 40 prosent av folketrygdens grunnbeløp for hvert barn.".expr(),
-                Nynorsk to "Uføretrygda di og barnetillegget ditt kan til saman ikkje utgjere meir enn ".expr()
-                        + barnetillegg_prosentsats_gradert_over_inntekt_foer_ufoer_vedvirk.format() + " prosent av inntekta di før du blei ufør. ".expr()
-                        + barnetillegg_prosentsats_gradert_over_inntekt_foer_ufoer_vedvirk.format() + " prosent av den inntekta du hadde før du blei ufør, svarer i dag til ".expr()
-                        + barnetillegg_gradert_over_inntekt_foer_ufoer_vedvirk.format() + " kroner. Uføretrygda di og barnetillegget ditt er til saman lågare enn dette. Derfor er barnetillegget fastsett til 40 prosent av grunnbeløpet i folketrygda for kvart barn.".expr(),
-                English to "Your disability benefit and child supplement together cannot exceed more than ".expr()
-                        + barnetillegg_prosentsats_gradert_over_inntekt_foer_ufoer_vedvirk.format() + " percent of your income before you became disabled. ".expr()
-                        + barnetillegg_prosentsats_gradert_over_inntekt_foer_ufoer_vedvirk.format() + " percent of the income you had before you became disabled is equivalent today to an income of NOK ".expr()
-                        + barnetillegg_gradert_over_inntekt_foer_ufoer_vedvirk.format() + ". Your disability benefit and child supplement together are lower than this. Therefore, your child supplement has been determined to be 40 percent of the National Insurance basic amount for each child.".expr()
-            )
-        }
-
-}
-
-data class RedusBTPgaTak_001(
-    val barnetillegg_prosentsats_gradert_over_inntekt_foer_ufoer_vedvirk: Expression<Int>,
-    val barnetillegg_gradert_over_inntekt_foer_ufoer_vedvirk: Expression<Kroner>,
-    val barnetillegg_beloep_foer_reduksjon_vedvirk: Expression<Kroner>,
-    val barnetillegg_saerkullsbarn_beloep_etter_reduksjon_vedvirk: Expression<Kroner>,
-) : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() =
-        paragraph {
-            textExpr(
-                Bokmal to "Uføretrygden og barnetillegget ditt kan til sammen ikke utgjøre mer enn ".expr()
-                        + barnetillegg_prosentsats_gradert_over_inntekt_foer_ufoer_vedvirk.format() + " prosent av inntekten din før du ble ufør. ".expr()
-                        + barnetillegg_prosentsats_gradert_over_inntekt_foer_ufoer_vedvirk.format() + " prosent av den inntekten du hadde før du ble ufør tilsvarer i dag ".expr()
-                        + barnetillegg_gradert_over_inntekt_foer_ufoer_vedvirk.format() + " kroner. Uføretrygden og barnetillegget ditt er til sammen høyere enn dette. Derfor er barnetillegget redusert fra ".expr()
-                        + barnetillegg_beloep_foer_reduksjon_vedvirk.format() + " kroner til ".expr()
-                        + barnetillegg_saerkullsbarn_beloep_etter_reduksjon_vedvirk.format() + " kroner.".expr(),
-                Nynorsk to "Uføretrygda di og barnetillegget ditt kan til saman ikkje utgjere meir enn ".expr()
-                        + barnetillegg_prosentsats_gradert_over_inntekt_foer_ufoer_vedvirk.format() + " prosent av inntekta di før du blei ufør. ".expr()
-                        + barnetillegg_prosentsats_gradert_over_inntekt_foer_ufoer_vedvirk.format() + " prosent av den inntekta du hadde før du blei ufør, svarer i dag til ".expr()
-                        + barnetillegg_gradert_over_inntekt_foer_ufoer_vedvirk.format() + " kroner. Uføretrygda og barnetillegget ditt er til saman høgare enn dette. Derfor er barnetillegget redusert frå ".expr()
-                        + barnetillegg_beloep_foer_reduksjon_vedvirk.format() + " kroner til ".expr()
-                        + barnetillegg_saerkullsbarn_beloep_etter_reduksjon_vedvirk.format() + " kroner.".expr(),
-                English to "Your disability benefit and child supplement together cannot exceed more than ".expr()
-                        + barnetillegg_prosentsats_gradert_over_inntekt_foer_ufoer_vedvirk.format() + " percent of your income before you became disabled. ".expr()
-                        + barnetillegg_prosentsats_gradert_over_inntekt_foer_ufoer_vedvirk.format() + " percent of the income you had prior to disability is equivalent today to an income of NOK ".expr()
-                        + barnetillegg_gradert_over_inntekt_foer_ufoer_vedvirk.format() + ". Your disability benefit and child supplement together are higher than this. Therefore, your child supplement has been reduced from NOK ".expr()
-                        + barnetillegg_beloep_foer_reduksjon_vedvirk.format() + " to NOK ".expr()
-                        + barnetillegg_saerkullsbarn_beloep_etter_reduksjon_vedvirk.format() + ".".expr()
-            )
-        }
-}
-
-data class IkkeUtbetaltBTPgaTak_001(
-    val barnetillegg_prosentsats_gradert_over_inntekt_foer_ufoer_vedvirk: Expression<Int>,
-    val barnetillegg_gradert_over_inntekt_foer_ufoer_vedvirk: Expression<Kroner>,
-) : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() =
-        paragraph {
-            textExpr(
-                Bokmal to "Uføretrygden og barnetillegget ditt kan til sammen ikke utgjøre mer enn ".expr()
-                        + barnetillegg_prosentsats_gradert_over_inntekt_foer_ufoer_vedvirk.format() + " prosent av inntekten din før du ble ufør. ".expr()
-                        + barnetillegg_prosentsats_gradert_over_inntekt_foer_ufoer_vedvirk.format() + " prosent av den inntekten du hadde før du ble ufør tilsvarer i dag ".expr()
-                        + barnetillegg_gradert_over_inntekt_foer_ufoer_vedvirk.format() + " kroner. Uføretrygden og barnetillegget ditt er til sammen høyere enn dette. Derfor får du ikke utbetalt barnetillegg.".expr(),
-                Nynorsk to "Uføretrygda di og barnetillegget ditt kan til saman ikkje utgjere meir enn ".expr()
-                        + barnetillegg_prosentsats_gradert_over_inntekt_foer_ufoer_vedvirk.format() + " prosent av inntekta di før du blei ufør. ".expr()
-                        + barnetillegg_prosentsats_gradert_over_inntekt_foer_ufoer_vedvirk.format() + " prosent av den inntekta du hadde før du blei ufør, svarer i dag til ".expr()
-                        + barnetillegg_gradert_over_inntekt_foer_ufoer_vedvirk.format() + " kroner. Uføretrygda og barnetillegget ditt er til saman høgare enn dette. Derfor får du ikkje utbetalt barnetillegg.".expr(),
-                English to "Your disability benefit and child supplement together cannot exceed more than ".expr()
-                        + barnetillegg_prosentsats_gradert_over_inntekt_foer_ufoer_vedvirk.format() + " percent of your income before you became disabled. ".expr()
-                        + barnetillegg_prosentsats_gradert_over_inntekt_foer_ufoer_vedvirk.format() + " percent of the income you had prior to disability is equivalent today to an income of NOK ".expr()
-                        + barnetillegg_gradert_over_inntekt_foer_ufoer_vedvirk.format() + ". Your disability benefit and child supplement together are higher than this. Therefore, you will not receive child supplement.".expr()
-            )
-        }
-}
-
 object InfoBTSBInntekt_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() =
         paragraph {
@@ -668,17 +590,6 @@ object HjemmelBT_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
         }
 }
 
-object HjemmelBTOvergangsregler_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() =
-        paragraph {
-            text(
-                Bokmal to "Vedtaket er gjort etter folketrygdloven § 12-15 og forskrift om overgangsregler for barnetillegg i uføretrygden.",
-                Nynorsk to "Vedtaket er gjort etter folketrygdlova § 12-15 og forskrift om overgangsreglar for barnetillegg i uføretrygda.",
-                English to "This decision was made pursuant to the provisions of § 12-15 of the National Insurance Act and of the Regulation on transitional rules for child supplement in disability benefit."
-            )
-        }
-}
-
 object HjemmelBTRedus_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() =
         paragraph {
@@ -686,17 +597,6 @@ object HjemmelBTRedus_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
                 Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 12-15 og 12-16.",
                 Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 12-15 og 12-16.",
                 English to "This decision was made pursuant to the provisions of §§ 12-15 and 12-16 of the National Insurance Act."
-            )
-        }
-}
-
-object HjemmelBTRedusOvergangsregler_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() =
-        paragraph {
-            text(
-                Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 12-15 og 12-16 og forskrift om overgangsregler for barnetillegg i uføretrygden.",
-                Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 12-15 og 12-16 og forskrift om overgangsreglar for barnetillegg i uføretrygda.",
-                English to "This decision was made pursuant to the provisions of §§ 12-15 and 12-16 of the National Insurance Act and of the Regulation on transitional rules for child supplement in disability benefit."
             )
         }
 }
@@ -712,16 +612,16 @@ object MerInfoBT_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
         }
 }
 
-data class GjRettSamboerOverskrift(val avdoed_navn: Expression<String>) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+data class GjRettSamboerOverskrift(val avdoedNavn: Expression<String>) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() =
         title1 {
             textExpr(
                 Bokmal to "Rettigheter du kan ha som tidligere samboer med ".expr()
-                        + avdoed_navn,
+                        + avdoedNavn,
                 Nynorsk to "Rettar du kan ha som tidlegare sambuar med ".expr()
-                        + avdoed_navn,
+                        + avdoedNavn,
                 English to "Rights you may be entitled to as a former cohabitant with ".expr()
-                        + avdoed_navn
+                        + avdoedNavn
             )
         }
 

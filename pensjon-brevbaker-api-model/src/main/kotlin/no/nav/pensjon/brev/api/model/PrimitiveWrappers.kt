@@ -8,7 +8,7 @@ data class Telefonnummer(val value: String)
 
 data class Foedselsnummer(val value: String)
 
-data class Kroner(val value: Int)
+data class Kroner(override val value: Int) : IntValue
 
 data class Year(override val value: Int) : IntValue
 
