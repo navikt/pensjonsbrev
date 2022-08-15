@@ -36,7 +36,7 @@ val orienteringOmRettigheterOgPlikterAlder =
             argument().select(OrienteringOmRettigheterAlderDto::ektefelletilleggVedvirk_innvilgetEktefelletillegg)
 
 
-        includePhrase(vedleggPlikter_001)
+        includePhrase(VedleggPlikter_001)
         list {
 
             showIf(not(institusjon_gjeldende.isOneOf(FENGSEL, HELSE, SYKEHJEM))) {
@@ -140,55 +140,53 @@ val orienteringOmRettigheterOgPlikterAlder =
             }
         }
 
-        includePhrase(vedleggPlikterHvorforMeldeAP_001)
+        includePhrase(VedleggPlikterHvorforMeldeAP_001)
         showIf(
             har_barnetillegg_felles_barn_vedvirk
                     and har_barnetillegg_for_saerkullsbarn_vedvirk
                     and not(har_ektefelletillegg_vedvirk)
         ) {
-            includePhrase(vedleggPlikterRettTilBarnetilleggAP_001)
+            includePhrase(VedleggPlikterRettTilBarnetilleggAP_001)
         }
         showIf(
             har_ektefelletillegg_vedvirk
                     and not(har_barnetillegg_felles_barn_vedvirk)
                     and not(har_barnetillegg_for_saerkullsbarn_vedvirk)
         ) {
-            includePhrase(vedleggPlikterRettTilEktefelletilleggAP_001, argument().map { it.bruker_sivilstand })
+            includePhrase(VedleggPlikterRettTilEktefelletilleggAP_001(argument().map { it.bruker_sivilstand }))
         }
         showIf(
             har_barnetillegg_felles_barn_vedvirk
                     or har_barnetillegg_for_saerkullsbarn_vedvirk //TODO hva henger denne or egentlig sammen med?
                     and har_ektefelletillegg_vedvirk
         ) {
-            includePhrase(
-                vedleggPlikterRettTilEktefelletilleggOgBarnetilleggAP_001,
-                argument().map { it.bruker_sivilstand })
+            includePhrase(VedleggPlikterRettTilEktefelletilleggOgBarnetilleggAP_001(argument().map { it.bruker_sivilstand }))
         }
         showIf(
             har_barnetillegg_felles_barn_vedvirk
                     or har_barnetillegg_for_saerkullsbarn_vedvirk //TODO hva henger denne or egentlig sammen med?
                     and not(har_ektefelletillegg_vedvirk)
         ) {
-            includePhrase(vedleggPlikterinntektsprovingBTFellesBarnSaerkullsbarnAP_001)
+            includePhrase(VedleggPlikterinntektsprovingBTFellesBarnSaerkullsbarnAP_001)
         }
         showIf(
             har_barnetillegg_felles_barn_vedvirk
                     or har_barnetillegg_for_saerkullsbarn_vedvirk //TODO hva henger denne or egentlig sammen med?
                     and har_ektefelletillegg_vedvirk
         ) {
-            includePhrase(vedleggPlikterinntektsprovingBTOgETAP_001)
+            includePhrase(VedleggPlikterinntektsprovingBTOgETAP_001)
         }
         showIf(
             not(har_barnetillegg_felles_barn_vedvirk)
                     and not(har_barnetillegg_for_saerkullsbarn_vedvirk)
                     and har_ektefelletillegg_vedvirk
         ) {
-            includePhrase(vedleggPlikterinntektsprovingETAP_001)
+            includePhrase(VedleggPlikterinntektsprovingETAP_001)
         }
 
-        includePhrase(infoAPBeskjed_001)
-        includePhrase(vedleggVeiledning_001)
-        includePhrase(vedleggInnsynSakPensjon_001)
-        includePhrase(vedleggHjelpFraAndre_001)
-        includePhrase(vedleggKlagePesys_001)
+        includePhrase(InfoAPBeskjed_001)
+        includePhrase(VedleggVeiledning_001)
+        includePhrase(VedleggInnsynSakPensjon_001)
+        includePhrase(VedleggHjelpFraAndre_001)
+        includePhrase(VedleggKlagePesys_001)
     }

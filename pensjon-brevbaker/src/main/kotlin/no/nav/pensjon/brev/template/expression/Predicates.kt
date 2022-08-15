@@ -8,6 +8,20 @@ object Comparison {
     data class GreaterThan<T: Comparable<T>>(val compareTo: T): Predicate<T> {
         override fun validate(input: T): Boolean = input > compareTo
     }
+
+    data class GreaterThanOrEqual<T: Comparable<T>>(val compareTo: T): Predicate<T> {
+        override fun validate(input: T): Boolean = input >= compareTo
+    }
+
+    data class LessThanOrEqual<T: Comparable<T>>(val compareTo: T): Predicate<T> {
+        override fun validate(input: T): Boolean = input <= compareTo
+
+    }
+
+    data class LessThan<T: Comparable<T>>(val compareTo: T): Predicate<T> {
+        override fun validate(input: T): Boolean = input < compareTo
+
+    }
 }
 
 object Collections {

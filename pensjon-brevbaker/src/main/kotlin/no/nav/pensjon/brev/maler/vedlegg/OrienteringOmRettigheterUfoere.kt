@@ -12,7 +12,7 @@ import no.nav.pensjon.brev.template.dsl.newText
 
 // Conditional for showing the attachment is: sakstype = UFOEREP && vedtakResultat = AVSLG
 
-val orienteringOmRettigheterOgPlikterUfoere = createAttachment<LangBokmalNynorskEnglish, OrienteringOmRettigheterUfoereDto>(
+val vedleggOrienteringOmRettigheterOgPlikterUfoere = createAttachment<LangBokmalNynorskEnglish, OrienteringOmRettigheterUfoereDto>(
     title = newText(
         Bokmal to "Dine rettigheter og plikter",
         Nynorsk to "Dine rettar og plikter",
@@ -26,7 +26,7 @@ val orienteringOmRettigheterOgPlikterUfoere = createAttachment<LangBokmalNynorsk
     val barnetilleggSaerkullsbarn =
         argument().select(OrienteringOmRettigheterUfoereDto::ufoeretrygdPerMaaned_barnetilleggGjeldende)
 
-    includePhrase(vedleggPlikterUT_001)
+    includePhrase(VedleggPlikterUT_001)
 
     list {
         item { includePhrase(vedleggPlikterUT1_001) }
@@ -59,8 +59,8 @@ val orienteringOmRettigheterOgPlikterUfoere = createAttachment<LangBokmalNynorsk
         item { includePhrase(vedleggPlikterUT12_001) }
     }
 
-    includePhrase(vedleggVeiledning_001)
-    includePhrase(vedleggInnsynSakUTPesys_001)
-    includePhrase(vedleggHjelpFraAndre_001)
-    includePhrase(vedleggKlagePensjon_001)
+    includePhrase(VedleggVeiledning_001)
+    includePhrase(VedleggInnsynSakUTPesys_001)
+    includePhrase(VedleggHjelpFraAndre_001)
+    includePhrase(VedleggKlagePensjon_001)
 }

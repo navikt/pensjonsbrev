@@ -1,8 +1,9 @@
 package no.nav.pensjon.brev.maler.vedlegg
 
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligUfoeretrygdFoerSkattDto
-import no.nav.pensjon.brev.maler.fraser.tabellBeregnetUTHele
-import no.nav.pensjon.brev.maler.fraser.vedleggBelopUT_001
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligUfoeretrygdFoerSkattDtoSelectors.tidligereUfoeretrygdPerioder
+import no.nav.pensjon.brev.maler.fraser.TabellBeregnetUTHele
+import no.nav.pensjon.brev.maler.fraser.VedleggBelopUT_001
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.createAttachment
@@ -20,9 +21,9 @@ val vedleggMaanedligUfoeretrygdFoerSkatt = createAttachment<LangBokmalNynorskEng
 ) {
     val gjeldendeUfoeretrygd = argument().select(MaanedligUfoeretrygdFoerSkattDto::gjeldendeBeregnetUTPerMaaned)
 
-    includePhrase(vedleggBelopUT_001)
+    includePhrase(VedleggBelopUT_001)
 
-    includePhrase(tabellBeregnetUTHele, gjeldendeUfoeretrygd)
+    includePhrase(TabellBeregnetUTHele(gjeldendeUfoeretrygd))
 
     showIf(argument().map { it.tidligereUfoeretrygdPerioder.isNotEmpty()}) {
         val virkDato = argument().select(MaanedligUfoeretrygdFoerSkattDto::krav_virkningsDatoFraOgMed )
@@ -42,8 +43,8 @@ val vedleggMaanedligUfoeretrygdFoerSkatt = createAttachment<LangBokmalNynorskEng
             )
         }
 
-        forEach(argument().map { it.tidligereUfoeretrygdPerioder }) {
-            includePhrase(tabellBeregnetUTHele, it)
+        forEach(tidligereUfoeretrygdPerioder) {
+            includePhrase(TabellBeregnetUTHele(it))
         }
     }
 }

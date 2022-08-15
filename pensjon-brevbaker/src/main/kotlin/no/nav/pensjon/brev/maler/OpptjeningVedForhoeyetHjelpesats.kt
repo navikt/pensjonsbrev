@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.maler
 
 import no.nav.pensjon.brev.api.model.*
 import no.nav.pensjon.brev.api.model.maler.*
+import no.nav.pensjon.brev.api.model.maler.OpptjeningVedForhoeyetHjelpesatsDtoSelectors.aarInnvilgetOmrsorgspoeng
 import no.nav.pensjon.brev.maler.fraser.*
 import no.nav.pensjon.brev.maler.fraser.vedtak.Vedtak
 import no.nav.pensjon.brev.model.format
@@ -10,9 +11,11 @@ import no.nav.pensjon.brev.template.VedtaksbrevTemplate
 import no.nav.pensjon.brev.template.base.PensjonLatex
 import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brev.template.dsl.expression.*
+import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import java.time.LocalDate
 
 // BrevTypeKode: MF_000094
+@TemplateModelHelpers
 object OpptjeningVedForhoeyetHjelpesats : VedtaksbrevTemplate<OpptjeningVedForhoeyetHjelpesatsDto> {
 
     override val kode = Brevkode.Vedtak.OMSORGP_GODSKRIVING
@@ -28,33 +31,31 @@ object OpptjeningVedForhoeyetHjelpesats : VedtaksbrevTemplate<OpptjeningVedForho
             distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
         )
     ) {
-        val aarInnvilget = argument().select(OpptjeningVedForhoeyetHjelpesatsDto::aarInnvilgetOmrsorgspoeng)
-
         title {
             textExpr(
-                Bokmal to "Du får pensjonsopptjening for omsorgsarbeid for ".expr() + aarInnvilget.format(),
-                Nynorsk to "Du får pensjonsopptening for omsorgsarbeid for ".expr() + aarInnvilget.format(),
-                English to "Earned pension savings for unpaid care work for ".expr() + aarInnvilget.format(),
+                Bokmal to "Du får pensjonsopptjening for omsorgsarbeid for ".expr() + aarInnvilgetOmrsorgspoeng.format(),
+                Nynorsk to "Du får pensjonsopptening for omsorgsarbeid for ".expr() + aarInnvilgetOmrsorgspoeng.format(),
+                English to "Earned pension savings for unpaid care work for ".expr() + aarInnvilgetOmrsorgspoeng.format(),
             )
         }
 
         outline {
-            includePhrase(Vedtak.overskrift)
+            includePhrase(Vedtak.Overskrift)
 
-            includePhrase(Omsorgsopptjening.hjelpestoenadInnledn, aarInnvilget)
+            includePhrase(Omsorgsopptjening.HjelpestoenadInnledn(aarInnvilgetOmrsorgspoeng))
 
             val foedtEtter1953 = felles().select(Felles::bruker).select(Bruker::foedselsdato).select(LocalDate::getYear).greaterThan(1953)
             showIf(foedtEtter1953) {
-                includePhrase(Omsorgsopptjening.hjelpestKap20Hjemmel)
+                includePhrase(Omsorgsopptjening.HjelpestKap20Hjemmel)
             } orShow {
-                includePhrase(Omsorgsopptjening.hjelpestKap3Hjemmel)
+                includePhrase(Omsorgsopptjening.HjelpestKap3Hjemmel)
             }
 
-            includePhrase(Omsorgsopptjening.info)
+            includePhrase(Omsorgsopptjening.Info)
 
-            includePhrase(Omsorgsopptjening.overforingInfo)
+            includePhrase(Omsorgsopptjening.OverforingInfo)
 
-            includePhrase(Omsorgsopptjening.hjelpestonadAutoGodkjennInfo)
+            includePhrase(Omsorgsopptjening.HjelpestonadAutoGodkjennInfo)
         }
 
     }

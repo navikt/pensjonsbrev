@@ -28,7 +28,7 @@ val orienteringOmRettigheterOgPlikterAFP = createAttachment<LangBokmalNynorskEng
     val sivilstand = argument().select(OrienteringOmRettigheterAfpDto::bruker_sivilstand)
 
 
-    includePhrase(vedleggPlikterAFP_001)
+    includePhrase(VedleggPlikterAFP_001)
     list {
         item { includePhrase(vedleggPlikterAFP1_001) }
         showIf(sivilstand.isOneOf(ENSLIG, ENKE)) {
@@ -44,8 +44,8 @@ val orienteringOmRettigheterOgPlikterAFP = createAttachment<LangBokmalNynorskEng
         }
     }
 
-    includePhrase(vedleggVeiledning_001)
-    includePhrase(vedleggInnsynSakPensjon_001)
-    includePhrase(vedleggHjelpFraAndre_001)
-    includePhrase(vedleggKlagePensjon_001)
+    includePhrase(VedleggVeiledning_001)
+    includePhrase(VedleggInnsynSakPensjon_001)
+    includePhrase(VedleggHjelpFraAndre_001)
+    includePhrase(VedleggKlagePensjon_001)
 }

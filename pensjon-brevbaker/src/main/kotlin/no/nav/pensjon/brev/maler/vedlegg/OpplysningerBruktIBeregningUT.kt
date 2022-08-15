@@ -2,8 +2,23 @@ package no.nav.pensjon.brev.maler.vedlegg
 
 
 import no.nav.pensjon.brev.api.model.Beregningsmetode.*
+import no.nav.pensjon.brev.api.model.KronerSelectors.value
+import no.nav.pensjon.brev.api.model.vedlegg.BarnetilleggGjeldendeSelectors.grunnlag_safe
+import no.nav.pensjon.brev.api.model.vedlegg.BarnetilleggGjeldendeSelectors.saerkullsbarn_safe
+import no.nav.pensjon.brev.api.model.vedlegg.GrunnlagSelectors.erIkkeUtbetaltpgaTak
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDto
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDto.TrygdetidsdetaljerGjeldende.UtenforEOSogNorden
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.barnetilleggGjeldende
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.minsteytelseGjeldende_sats
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.trygdetidsdetaljerGjeldende
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.yrkesskadeGjeldende
+import no.nav.pensjon.brev.api.model.vedlegg.SaerkullsbarnSelectors.avkortningsbeloepAar
+import no.nav.pensjon.brev.api.model.vedlegg.SaerkullsbarnSelectors.beloep
+import no.nav.pensjon.brev.api.model.vedlegg.SaerkullsbarnSelectors.erRedusertMotinntekt
+import no.nav.pensjon.brev.api.model.vedlegg.SaerkullsbarnSelectors.fribeloepEllerInntektErPeriodisert
+import no.nav.pensjon.brev.api.model.vedlegg.SaerkullsbarnSelectors.justeringsbeloepAar
+import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidsdetaljerGjeldendeSelectors.anvendtTT
+import no.nav.pensjon.brev.api.model.vedlegg.YrkesskadeGjeldendeSelectors.yrkesskadegrad_safe
 import no.nav.pensjon.brev.maler.fraser.*
 import no.nav.pensjon.brev.maler.fraser.common.Felles.kroner
 import no.nav.pensjon.brev.maler.fraser.common.Felles.maaneder
@@ -19,7 +34,7 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 
 
-val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, OpplysningerBruktIBeregningUTDto>(
+val vedleggOpplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, OpplysningerBruktIBeregningUTDto>(
     title = newText(
         Bokmal to "Opplysninger om beregningen",
         Nynorsk to "Opplysningar om utrekninga",
@@ -699,32 +714,32 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
 
 
     showIf(harMinsteytelseSats) {
-        includePhrase(rettTilMYOverskrift_001)
+        includePhrase(RettTilMYOverskrift_001)
     }
 
     showIf(harMinsteytelseSats) {
         ifNotNull(erUnder20AarVedUngUfoere) { erUnder20Aar ->
             showIf(erUnder20Aar) {
-                includePhrase(vedleggBeregnUTInfoMYUngUforUnder20_001)
+                includePhrase(VedleggBeregnUTInfoMYUngUforUnder20_001)
             }.orShow {
-                includePhrase(vedleggBeregnUTInfoMYUngUfor_001)
+                includePhrase(VedleggBeregnUTInfoMYUngUfor_001)
             }
         }
         showIf(erUnder20AarVedUngUfoere.map { it == null }) {
             showIf(ufoeretrygdGjeldendeErKonvertert) {
-                includePhrase(vedleggBeregnUTInfoMY2_001)
+                includePhrase(VedleggBeregnUTInfoMY2_001)
             }.orShow {
-                includePhrase(vedleggBeregnUTInfoMY_001)
+                includePhrase(VedleggBeregnUTInfoMY_001)
             }
         }
     }
 
     showIf(harMinsteytelseSats) {
-        includePhrase(vedleggBeregnUTDinMY_001, argument().map { it.minsteytelseGjeldende_sats })
+        includePhrase(VedleggBeregnUTDinMY_001(minsteytelseGjeldende_sats))
     }
 
     showIf(inntektFoerUfoereErSannsynligEndret) {
-        includePhrase(vedleggBeregnUTMinsteIFU_002)
+        includePhrase(VedleggBeregnUTMinsteIFU_002)
     }
 
     showIf(
@@ -733,83 +748,64 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
                 and inntektsgrenseErUnderTak
     ) {
 
-        includePhrase(slikFastsettesKompGradOverskrift_001)
-        includePhrase(vedleggBeregnUTKompGrad_001)
+        includePhrase(SlikFastsettesKompGradOverskrift_001)
+        includePhrase(VedleggBeregnUTKompGrad_001)
 
         showIf(ufoeretrygdErKonvertert) {
-            includePhrase(vedleggBeregnUTKompGradGjsnttKonvUT_001)
+            includePhrase(VedleggBeregnUTKompGradGjsnttKonvUT_001)
         }.orShow {
-            includePhrase(vedleggBeregnUTKompGradGjsntt_001)
+            includePhrase(VedleggBeregnUTKompGradGjsntt_001)
         }
     }
 
     ifNotNull(
-        argument().map { it.barnetilleggGjeldende?.grunnlag },
-        argument().map { it.barnetilleggGjeldende?.saerkullsbarn }
+        barnetilleggGjeldende.grunnlag_safe,
+        barnetilleggGjeldende.saerkullsbarn_safe,
     ) { grunnlag, saerkullTillegg ->
-        val erRedusertMotInntekt = saerkullTillegg.map { it.erRedusertMotinntekt }
-        val fribeloepEllerInntektErPeriodisert = saerkullTillegg.map { it.fribeloepEllerInntektErPeriodisert }
-        val erIkkeUtbetaltPgaTak = grunnlag.map { it.erIkkeUtbetaltpgaTak }
-        val harYrkesskadeGrad = argument().map {
-            it.yrkesskadeGjeldende?.let { skade -> skade.yrkesskadegrad > 0 } ?: false
-        }
-        val harAnvendtTrygdetidUnder40 = argument().map { it.trygdetidsdetaljerGjeldende.anvendtTT < 40 }
-        val justeringsBeloepAr = saerkullTillegg.map { it.justeringsbeloepAar }
+        val harYrkesskadeGrad = yrkesskadeGjeldende.yrkesskadegrad_safe.ifNull(0).greaterThan(0)
+        val harAnvendtTrygdetidUnder40 = trygdetidsdetaljerGjeldende.anvendtTT.lessThan(40)
+        val justeringsBeloepAr = saerkullTillegg.justeringsbeloepAar
 
-        showIf(saerkullTillegg.map { it.erRedusertMotinntekt }) {
+        showIf(saerkullTillegg.erRedusertMotinntekt) {
 
-            showIf(erIkkeUtbetaltPgaTak) {
-                includePhrase(slikBeregnBTOverskrift_001)
-                includePhrase(vedleggBeregnUTInfoBTSB_001)
+            showIf(grunnlag.erIkkeUtbetaltpgaTak) {
+                includePhrase(SlikBeregnBTOverskrift_001)
+                includePhrase(VedleggBeregnUTInfoBTSB_001)
             }.orShow {
-                includePhrase(vedleggBeregnUTInnlednBT_001)
+                includePhrase(VedleggBeregnUTInnlednBT_001)
             }
 
             showIf(harAnvendtTrygdetidUnder40 and harYrkesskadeGrad) {
-                includePhrase(vedleggBeregnUTredusTTBTSB_001)
+                includePhrase(VedleggBeregnUTredusTTBTSB_001)
             }
 
-            showIf(fribeloepEllerInntektErPeriodisert and justeringsBeloepAr.map { it.value > 0 }) {
-                includePhrase(
-                    vedleggBeregnUTIkkePeriodisertFriBOgInntektBTSB_001,
-                    saerkullTillegg.map { it.avkortningsbeloepAar }
-                )
+            showIf(saerkullTillegg.fribeloepEllerInntektErPeriodisert and justeringsBeloepAr.value.greaterThan(0)) {
+                includePhrase(VedleggBeregnUTIkkePeriodisertFriBOgInntektBTSB_001(saerkullTillegg.avkortningsbeloepAar))
             }
 
-            showIf(not(fribeloepEllerInntektErPeriodisert) and justeringsBeloepAr.map { it.value > 0 }) {
-                includePhrase(
-                    vedleggBeregnUTIkkePeriodisertFriBOgInntektBTSBJusterBelop_001,
-                    saerkullTillegg.map { it.avkortningsbeloepAar })
+            showIf(not(saerkullTillegg.fribeloepEllerInntektErPeriodisert) and justeringsBeloepAr.value.greaterThan(0)) {
+                includePhrase(VedleggBeregnUTIkkePeriodisertFriBOgInntektBTSBJusterBelop_001(saerkullTillegg.avkortningsbeloepAar))
             }
 
-            showIf(fribeloepEllerInntektErPeriodisert and justeringsBeloepAr.map { it.value > 0 }) {
-                includePhrase(vedleggBeregnUTPeridisertFriBOgInntektBTSB_001,
-                    saerkullTillegg.map { it.avkortningsbeloepAar })
+            showIf(saerkullTillegg.fribeloepEllerInntektErPeriodisert and justeringsBeloepAr.value.greaterThan(0)) {
+                includePhrase(VedleggBeregnUTPeridisertFriBOgInntektBTSB_001(saerkullTillegg.avkortningsbeloepAar))
             }
 
-            showIf(fribeloepEllerInntektErPeriodisert and not(justeringsBeloepAr.map { it.value > 0 })) {
-                includePhrase(
-                    vedleggBeregnUTPeriodisertFriBOgInntektBTSBJusterBelop_001,
-                    saerkullTillegg.map { it.avkortningsbeloepAar })
+            showIf(saerkullTillegg.fribeloepEllerInntektErPeriodisert and not(justeringsBeloepAr.value.greaterThan(0))) {
+                includePhrase(VedleggBeregnUTPeriodisertFriBOgInntektBTSBJusterBelop_001(saerkullTillegg.avkortningsbeloepAar))
             }
 
-            showIf(justeringsBeloepAr.map { it.value > 0 }) {
-                includePhrase(
-                    vedleggBeregnUTJusterBelopOver0BTSB_001,
-                    saerkullTillegg.map { it.justeringsbeloepAar }
-                )
+            showIf(justeringsBeloepAr.value.greaterThan(0)) {
+                includePhrase(VedleggBeregnUTJusterBelopOver0BTSB_001(saerkullTillegg.justeringsbeloepAar))
             }
             showIf(justeringsBeloepAr.map { it.value < 0 }) {// < 0? Is there a minus operator from Pesys?
-                includePhrase(
-                    vedleggBeregnUTJusterBelopUnder0BTSB_001,
-                    saerkullTillegg.map { it.justeringsbeloepAar }
-                )
+                includePhrase(VedleggBeregnUTJusterBelopUnder0BTSB_001(saerkullTillegg.justeringsbeloepAar))
             }
         }
 
 
 // TABLE 2 - start
-            showIf(erRedusertMotInntekt and erIkkeUtbetaltPgaTak) {
+            showIf(saerkullTillegg.erRedusertMotinntekt and grunnlag.erIkkeUtbetaltpgaTak) {
                 title1 {
                     text(
                         Bokmal to "Reduksjon av barnetillegg for særkullsbarn før skatt",
@@ -849,7 +845,7 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
                             }
                         }
                     }
-                    showIf(erRedusertMotInntekt and erIkkeUtbetaltPgaTak) {
+                    showIf(saerkullTillegg.erRedusertMotinntekt and grunnlag.erIkkeUtbetaltpgaTak) {
                         row {
                             cell {
                                 text(
@@ -988,16 +984,13 @@ val opplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, O
             }
             // TABLE 2 - end
             showIf(saerkullTillegg.map { it.beloep.value > 0 }) {
-                includePhrase(
-                    vedleggBeregnUTredusBTSBPgaInntekt_001,
-                    saerkullTillegg.map { it.beloep }
-                )
+                includePhrase(VedleggBeregnUTredusBTSBPgaInntekt_001(saerkullTillegg.beloep))
             }
             showIf(saerkullTillegg.map { it.beloep.value == 0 && it.justeringsbeloepAar.value == 0 }) {
-                includePhrase(vedleggBeregnUTIkkeUtbetaltBTSBPgaInntekt_001)
+                includePhrase(VedleggBeregnUTIkkeUtbetaltBTSBPgaInntekt_001)
             }
             showIf(saerkullTillegg.map { it.beloep.value == 0 && it.justeringsbeloepAar.value != 0 }) {
-                includePhrase(vedleggBeregnUTJusterBelopIkkeUtbetalt_001)
+                includePhrase(VedleggBeregnUTJusterBelopIkkeUtbetalt_001)
             }
         }
     }

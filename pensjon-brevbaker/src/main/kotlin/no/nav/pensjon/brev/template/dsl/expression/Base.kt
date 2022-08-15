@@ -106,6 +106,9 @@ fun <T> Pair<Expression<T>, Expression<T>>.tuple() =
         operation = BinaryOperation.Tuple()
     )
 
+fun <T> Expression<T>.notEqualTo(other: T) =
+    not(equalTo(other))
+
 infix fun <T> Expression<T>.equalTo(other: T) =
     Expression.BinaryInvoke(
         first = this,

@@ -23,9 +23,30 @@ fun Expression<Int>.format() =
 fun Expression<DoubleValue>.format() =
     select(DoubleValue::value).format()
 
-fun Expression<Int>.greaterThan(compareTo: Int): Expression<Boolean> =
+fun <T: Comparable<T>> Expression<T>.greaterThan(compareTo: T): Expression<Boolean> =
     Expression.BinaryInvoke(
         first = Comparison.GreaterThan(compareTo).expr(),
+        second = this,
+        operation = BinaryOperation.ValidatePredicate(),
+    )
+
+fun <T: Comparable<T>> Expression<T>.greaterThanOrEqual(compareTo: T): Expression<Boolean> =
+    Expression.BinaryInvoke(
+        first = Comparison.GreaterThanOrEqual(compareTo).expr(),
+        second = this,
+        operation = BinaryOperation.ValidatePredicate(),
+    )
+
+fun <T: Comparable<T>> Expression<T>.lessThanOrEqual(compareTo: T): Expression<Boolean> =
+    Expression.BinaryInvoke(
+        first = Comparison.LessThanOrEqual(compareTo).expr(),
+        second = this,
+        operation = BinaryOperation.ValidatePredicate(),
+    )
+
+fun <T: Comparable<T>> Expression<T>.lessThan(compareTo: T): Expression<Boolean> =
+    Expression.BinaryInvoke(
+        first = Comparison.LessThan(compareTo).expr(),
         second = this,
         operation = BinaryOperation.ValidatePredicate(),
     )
