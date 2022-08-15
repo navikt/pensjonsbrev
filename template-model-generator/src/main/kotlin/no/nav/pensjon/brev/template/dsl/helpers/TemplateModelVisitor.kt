@@ -15,7 +15,10 @@ private val templateModelSelectorName = TemplateModelSelector::class.qualifiedNa
 private val logger = LoggerFactory.getLogger(TemplateModelVisitor::class.java)
 private const val INDENT = "    "
 
-internal class TemplateModelVisitor(private val codeGenerator: CodeGenerator) : KSDefaultVisitor<Data, List<KSClassDeclaration>>() {
+internal class TemplateModelVisitor(
+    private val codeGenerator: CodeGenerator,
+    private val iterableDeclaration: KSType
+) : KSDefaultVisitor<Data, List<KSClassDeclaration>>() {
 
     data class Data(val indent: String, val writer: PrintWriter? = null)
 
@@ -122,24 +125,32 @@ internal class TemplateModelVisitor(private val codeGenerator: CodeGenerator) : 
             """.replaceIndentByMargin(data.indent)
         )
 
+        return findSubModels(resolvedType)
+    }
+
+    private fun findSubModels(resolvedType: KSType): List<KSClassDeclaration> {
         return when (val typeDeclaration = resolvedType.declaration) {
             is KSClassDeclaration -> {
                 if (typeDeclaration.typeParameters.isEmpty()) {
-                    logger.info("Type of $dataClassName.$propertyName is a class, we may need a generator for it: $typeDeclaration")
+                    logger.info("Processed type $typeDeclaration: it's a class, we may need a generator for it")
                     listOf(typeDeclaration)
+                } else if(iterableDeclaration.isAssignableFrom(resolvedType)) {
+                    val elementType = resolvedType.arguments.firstOrNull()?.type?.resolve()
+                    logger.info("Processed type $typeDeclaration: it's an Iterable, we may need a generator for the element type $elementType")
+                    elementType?.let { findSubModels(it) } ?: emptyList()
                 } else {
-                    logger.warn("Type of $dataClassName.$propertyName is a class that has type parameter(s): selectors with type parameters is not supported ")
+                    logger.warn("Processed type $typeDeclaration: cannot generate selectors for class with type parameters")
                     emptyList()
                 }
             }
 
             is KSTypeParameter -> {
-                logger.warn("Cannot generate helpers for property type $typeDeclaration of $dataClassName.$propertyName: generic type parameters not supported")
+                logger.warn("Processed type $typeDeclaration: cannot generate helpers for generic type parameters")
                 emptyList()
             }
 
             else -> {
-                throw MissingImplementation("Unsupported property type kind ${typeDeclaration::class}: for $dataClassName.$property")
+                throw MissingImplementation("Processed type $typeDeclaration: property type kind ${typeDeclaration::class} is not supported")
             }
         }
     }

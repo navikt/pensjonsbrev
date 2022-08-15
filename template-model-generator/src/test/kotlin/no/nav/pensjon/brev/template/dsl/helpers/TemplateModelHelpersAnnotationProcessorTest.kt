@@ -283,4 +283,43 @@ class TemplateModelHelpersAnnotationProcessorTest {
         assertThat(result.generatedFiles, hasSize(greaterThan(2)) and anyElement(has(File::getName, containsSubstring("SimpleModelSelectors"))))
     }
 
+    @Test
+    fun `generates helpers for multiple nested levels of models`() {
+        val result = SourceFile.kotlin(
+            "MyClass.kt", """
+                    import no.nav.pensjon.brev.template.HasModel
+                    import no.nav.pensjon.brev.template.Expression
+                    import no.nav.pensjon.brev.template.dsl.TemplateGlobalScope
+                    import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
+                    import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpersAnnotationProcessorTest
+                    import FirstSelectors.second
+                    import SecondSelectors.third
+                    import ThirdSelectors.fourth
+                    import FourthSelectors.value
+    
+                    data class First(val second: Second)
+                    data class Second(val third: Third)
+                    data class Third(val fourth: Fourth)
+                    data class Fourth(val value: Int)
+
+                    @TemplateModelHelpers
+                    object MyClass : HasModel<First> {
+                        val expr: Expression<First> = Expression.Literal(First(Second(Third(Fourth(99)))))
+                        val value: Expression<Int> = expr.second.third.fourth.value
+                    }
+                    """.trimIndent()
+        ).compile()
+
+        assertThat(result.exitCode, equalTo(KotlinCompilation.ExitCode.OK))
+        assertThat(result.generatedFiles, hasSize(greaterThan(6)))
+        assertThat(
+            result.generatedFiles, allOf(
+                anyElement(has(File::getName, containsSubstring("FirstSelectors"))),
+                anyElement(has(File::getName, containsSubstring("SecondSelectors"))),
+                anyElement(has(File::getName, containsSubstring("ThirdSelectors"))),
+                anyElement(has(File::getName, containsSubstring("FourthSelectors"))),
+            )
+        )
+    }
+
 }

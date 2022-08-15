@@ -25,12 +25,15 @@ internal class TemplateModelHelpersAnnotationProcessor(private val codeGenerator
         val hasModelDeclaration = resolver.getClassDeclarationByName<HasModel<*>>()?.asStarProjectedType()
             ?: throw InitializationError("Couldn't resolve $HAS_MODEL_INTERFACE_NAME")
 
+        val iterableDeclaration = resolver.getClassDeclarationByName<Iterable<*>>()?.asStarProjectedType()
+            ?: throw InitializationError("Couldn't resove Iterable<*>")
+
         val symbols = resolver.getSymbolsWithAnnotation(ANNOTATION_NAME)
         logger.info("Processing annotated symbols: ${symbols.toList()}")
 
         try {
             symbols.filter { it.validate() }
-                .forEach { it.accept(TemplateModelHelpersVisitor(hasModelDeclaration), Unit) }
+                .forEach { it.accept(TemplateModelHelpersVisitor(hasModelDeclaration, iterableDeclaration), Unit) }
         } catch (e: TemplateModelGeneratorException) {
             logger.error(e.message, e)
             throw e
@@ -44,7 +47,10 @@ internal class TemplateModelHelpersAnnotationProcessor(private val codeGenerator
         return invalidSymbols
     }
 
-    inner class TemplateModelHelpersVisitor(private val hasModelType: KSType) : KSDefaultVisitor<Unit, Unit>() {
+    inner class TemplateModelHelpersVisitor(
+        private val hasModelType: KSType,
+        private val iterableDeclaration: KSType
+    ) : KSDefaultVisitor<Unit, Unit>() {
         private val hasModelTypeParameter = hasModelType.declaration.typeParameters.first { it.simpleName.asString() == HAS_MODEL_TYPE_PARAMETER_NAME }
 
         override fun defaultHandler(node: KSNode, data: Unit) {
@@ -69,18 +75,24 @@ internal class TemplateModelHelpersAnnotationProcessor(private val codeGenerator
         }
 
         private fun KSType.generateModels() {
-            visitModel(declaration).forEach { visitModel(it) }
+            visitModelAndSubModels(declaration)
 
             // Also process type arguments and any "sub-models", e.g. Model of HasModel<List<Model>>
             arguments.mapNotNull { it.type?.resolve() }
-                .flatMap { visitModel(it.declaration) }
-                .forEach { visitModel(it) }
+                .forEach { visitModelAndSubModels(it.declaration) }
+        }
+
+        private fun visitModelAndSubModels(model: KSDeclaration) {
+            var subModels = visitModel(model)
+            while (subModels.isNotEmpty()) {
+                subModels = subModels.flatMap { visitModel(it) }
+            }
         }
 
         private fun visitModel(model: KSDeclaration): List<KSClassDeclaration> =
             if (!visitedModels.contains(model)) {
                 visitedModels.add(model)
-                model.accept(TemplateModelVisitor(codeGenerator), TemplateModelVisitor.Data(""))
+                model.accept(TemplateModelVisitor(codeGenerator, iterableDeclaration), TemplateModelVisitor.Data(""))
             } else {
                 emptyList()
             }

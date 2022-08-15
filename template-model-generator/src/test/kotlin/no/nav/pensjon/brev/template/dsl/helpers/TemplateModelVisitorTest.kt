@@ -101,7 +101,7 @@ class TemplateModelVisitorTest {
         // If the processor didn't generate code, then we should have two files (MyClass and module file)
         assertThat(result.generatedFiles, hasSize(greaterThan(2)))
         assertThat(result.generatedFiles, anyElement(has(File::getName, containsSubstring("ModelWithTypeParametersSelectors"))))
-//        assertThat(result.generatedFiles, anyElement(has(File::getName, containsSubstring("NestedModelSelectors"))))
+        assertThat(result.generatedFiles, anyElement(has(File::getName, containsSubstring("NestedModelSelectors"))))
     }
 
     @Test
@@ -176,31 +176,33 @@ class TemplateModelVisitorTest {
         assertThat(result.generatedFiles, hasSize(greaterThan(2)) and anyElement(has(File::getName, containsSubstring("SimpleModelSelectors"))))
     }
 
-//    @Test
-//    fun `generates helpers for constructing model classes from expressions`() {
-//        val result = SourceFile.kotlin(
-//            "MyClass.kt", """
-//                    import no.nav.pensjon.brev.template.HasModel
-//                    import no.nav.pensjon.brev.template.Expression
-//                    import no.nav.pensjon.brev.template.dsl.TemplateGlobalScope
-//                    import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
-//                    import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpersAnnotationProcessorTest
-//                    import no.nav.pensjon.brev.template.thirdpkg.SimpleModel
-//                    import no.nav.pensjon.brev.template.thirdpkg.ModelWithNullable
-//                    import no.nav.pensjon.brev.template.thirdpkg.ModelWithNullableSelectors.simpleModel
-//                    import no.nav.pensjon.brev.template.thirdpkg.SimpleModelSelectors.name_safe
-//
-//                    @TemplateModelHelpers
-//                    object MyClass : HasModel<ModelWithNullable> {
-//                        val x: Expression<SimpleModel> = Expression.Literal(SimpleModel("et navn"))
-//                        val y: Expression<Int> = Expression.Literal(28)
-//                        val z: Expression<ModelWithNullable> = ModelWithNullable(x, y)
-//                    }
-//                    """.trimIndent()
-//        ).compile()
-//
-//        assertThat(result.exitCode, equalTo(KotlinCompilation.ExitCode.OK))
-//        assertThat(result.generatedFiles, hasSize(greaterThan(2)) and anyElement(has(File::getName, containsSubstring("SimpleModelSelectors"))))
-//    }
+    @Test
+    fun `generates helpers for collection element types`() {
+        val result = SourceFile.kotlin(
+            "MyClass.kt", """
+                    import no.nav.pensjon.brev.template.HasModel
+                    import no.nav.pensjon.brev.template.Expression
+                    import no.nav.pensjon.brev.template.dsl.TemplateGlobalScope
+                    import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
+                    import no.nav.pensjon.brev.template.thirdpkg.SimpleModel
+                    import ANameSelectors.first
+                    import no.nav.pensjon.brev.template.thirdpkg.SimpleModelSelectors.name
+                    
+            
+                    data class AName(val first: String, val second: String)
+                    data class ModelWithList(val theList: List<SimpleModel>, val theCollection: Collection<AName>)
 
+                    @TemplateModelHelpers
+                    object MyClass : HasModel<ModelWithList> {
+                        val aName: Expression<String> = Expression.Literal(AName("firstname", "secondname")).first
+                        val simple: Expression<String> = Expression.Literal(SimpleModel("hello")).name
+                    }
+                    """.trimIndent()
+        ).compile()
+
+        assertThat(result.exitCode, equalTo(KotlinCompilation.ExitCode.OK))
+        assertThat(result.generatedFiles, hasSize(greaterThan(2)))
+        assertThat(result.generatedFiles, anyElement(has(File::getName, containsSubstring("SimpleModelSelectors"))))
+        assertThat(result.generatedFiles, anyElement(has(File::getName, containsSubstring("ANameSelectors"))))
+    }
 }
