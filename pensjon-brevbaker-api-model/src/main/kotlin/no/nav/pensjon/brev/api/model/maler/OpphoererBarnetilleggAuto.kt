@@ -1,17 +1,19 @@
 package no.nav.pensjon.brev.api.model.maler
 
 import no.nav.pensjon.brev.api.model.Kroner
+import java.time.LocalDate
 
 @Suppress("unused")
 
-data class BarnetilleggUtbetaltDto(
-//  Vedtaksdata.BeregningsData.BeregningYtelsesKomp.BarnetilleggFelles.BTFBnetto
-    val barnetilleggFellesbarnUtbetaltNetto: Kroner,
-//  Vedtaksdata.BeregningsData.BeregningYtelsesKomp.BarnetilleggFelles.BTSBnetto
-    val barnetilleggSaerkullsbarnUtbetaltNetto: Kroner
-)
 
 data class OpphoererBarnetilleggAutoDto(
+    val oensketVirkningsDato: LocalDate,
+// Vedtaksdata.Kravhode.onsketVirkningsDato
+    val fdatoPaaBarnetilleggOpphoert: Number,
+// UT.FodselsdatoBarn
+    val totalNettoMaanedligUfoertrygdUtbetalt: Kroner,
+// Vedtaksdata.BeregningsData.BeregningUfore.TotalNetto
+
     val barnetilleggFellesbarnInnvilget: Boolean,
     val barnetilleggSaerkullsbarnInnvilget: Boolean,
 )
