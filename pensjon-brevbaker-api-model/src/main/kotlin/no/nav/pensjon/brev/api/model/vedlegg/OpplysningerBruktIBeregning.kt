@@ -29,8 +29,6 @@ data class OpplysningerBruktIBeregningUTDto(
         val saerkullsbarn: Saerkullsbarn?
     ) {
         data class Grunnlag(
-            val erIkkeUtbetaltpgaTak: Boolean,
-            val erRedusertMotTak: Boolean,
             val gradertOIFU: Kroner,
             val prosentsatsGradertOIFU: Int,
             val totaltAntallBarn: Int,
