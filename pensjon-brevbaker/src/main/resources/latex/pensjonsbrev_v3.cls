@@ -20,9 +20,9 @@
 % tables and colors
 \usepackage{xcolor}
 \usepackage{ninecolors}
+\usepackage[all]{nowidow} % prevent widowed paragraphs
 \usepackage{tabularray} % better tables(tblr, longtblr)
 \usepackage{enumitem,amssymb} % for formChoice list
-\usepackage{placeins} % Float barrier to make elements between barrier not float.
 \usepackage[absolute
 %    ,showboxes %show boxes around textblocks for debugging
     ]{textpos} %first page absolute posistioned elements
@@ -63,7 +63,6 @@
 
 
 % paragraph formatting
-\widowpenalties 1 10000 %penalty score for breaking a paragraph
 \sloppy % no word-breaking
 \raggedright % no word spacing
 \raggedbottom % no line stretching to fit page

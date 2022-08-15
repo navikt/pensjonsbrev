@@ -29,9 +29,9 @@ class LetterExampleTest {
     }
 
     @Test
-    fun test2() {
+    fun `test design reference letter`() {
         Letter(
-            LetterExample2.template,
+            DesignReferenceLetter.template,
             Fixtures.create<LetterExampleDto>(),
             Language.Bokmal,
             Fixtures.fellesAuto
