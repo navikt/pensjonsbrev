@@ -63,7 +63,7 @@
 
 
 % paragraph formatting
-\widowpenalties 1 1000 %penalty score for breaking a paragraph
+\widowpenalties 1 10000 %penalty score for breaking a paragraph
 \sloppy % no word-breaking
 \raggedright % no word spacing
 \raggedbottom % no line stretching to fit page
@@ -72,7 +72,13 @@
 %% page text area formatting
 \newlength{\lettermargin}
 \setlength{\lettermargin}{20mm}
-\usepackage[margin=\lettermargin]{geometry}
+\usepackage[
+%    showframe, %used to show and debug margins
+    top=\lettermargin,
+    left=\lettermargin,
+    right=\lettermargin,
+    bottom=25mm
+]{geometry}
 
 \fancypagestyle{normalpage}{
     \renewcommand{\headrulewidth}{0pt}%
@@ -94,7 +100,7 @@
 %----------------------------------------
 \newcommand{\currentSectionName}{mainletter} %name of the current section of the letter. Used for lastpage label at the end of this section
 \newcommand{\letterpagenumber}{ %general page number formatting
-    \begin{textblock*}{\textwidth}(\lettermargin,276mm)
+    \begin{textblock*}{\textwidth}(\lettermargin,280mm)
         \pagenumbertext{\feltsaksnummerprefix~\feltsaksnummer\hfill\feltsideprefix~\thepage~\feltsideinfix~\pageref*{\currentSectionName}}
     \end{textblock*}
 }

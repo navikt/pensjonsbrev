@@ -30,11 +30,6 @@ object Fixtures {
             foedselsnummer = Foedselsnummer("01019878910"),
             foedselsdato = LocalDate.of(1998, 1, 1),
         ),
-        mottaker = Adresse(
-            linje1 = "Test Testerson",
-            linje2 = "JERNBANETORGET 4 F",
-            linje3 = "1344 HASLUM",
-        ),
         signerendeSaksbehandlere = SignerendeSaksbehandlere(
             saksbehandler = "Ole Saksbehandler",
             attesterendeSaksbehandler = "Per Attesterende",
