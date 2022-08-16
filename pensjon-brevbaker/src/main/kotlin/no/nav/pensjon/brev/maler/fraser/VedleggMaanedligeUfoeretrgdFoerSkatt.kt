@@ -119,8 +119,7 @@ data class TabellBeregnetUT(
     val garantitilleggNordisk27: Expression<Kroner?>,
     val ordinaerUTBeloep: Expression<Kroner>,
     val totalUTBeloep: Expression<Kroner>,
-
-    ) : ParagraphPhrase<LangBokmalNynorskEnglish>() {
+) : ParagraphPhrase<LangBokmalNynorskEnglish>() {
     override fun ParagraphScope<LangBokmalNynorskEnglish, Unit>.template() {
         table(
             header = {
