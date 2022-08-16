@@ -13,6 +13,8 @@ import no.nav.pensjon.brev.maler.example.LetterExampleDtoSelectors.datoInnvilget
 import no.nav.pensjon.brev.maler.example.LetterExampleDtoSelectors.navneliste
 import no.nav.pensjon.brev.maler.example.LetterExampleDtoSelectors.pensjonInnvilget
 import no.nav.pensjon.brev.maler.example.LetterExampleDtoSelectors.tilleggEksempel
+import no.nav.pensjon.brev.maler.example.TestVedleggDtoSelectors.testVerdi1
+import no.nav.pensjon.brev.maler.example.TestVedleggDtoSelectors.testVerdi2
 import no.nav.pensjon.brev.maler.fraser.common.Felles.kroner
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.*
@@ -82,13 +84,11 @@ object LetterExample : VedtaksbrevTemplate<LetterExampleDto> {
 
                 list {
                     forEach(tilleggEksempel) { tillegg ->
-                        val navn = tillegg.select(ExampleTilleggDto::navn)
-                        val tillegg1 = tillegg.select(ExampleTilleggDto::tillegg1)
-                        ifNotNull(tillegg1) {
+                        ifNotNull(tillegg.tillegg1) {
                             item {
                                 textExpr(
-                                    Bokmal to "Du har fått tilleg1 for ".expr() + navn + " på ".expr() + it.format() + " Kr",
-                                    Nynorsk to "Du har fått tilleg1 for ".expr() + navn + " på ".expr() + it.format() + " Kr",
+                                    Bokmal to "Du har fått tilleg1 for ".expr() + tillegg.navn + " på ".expr() + it.format() + " Kr",
+                                    Nynorsk to "Du har fått tilleg1 for ".expr() + tillegg.navn + " på ".expr() + it.format() + " Kr",
                                 )
                             }
                         }
@@ -264,8 +264,6 @@ data class ExampleTilleggDto(
     )
 }
 
-data class OutlinePhraseDto(val datoInnvilget: LocalDate, val pensjonInnvilget: Boolean)
-
 data class OutlinePhraseTest(val datoInnvilget: Expression<LocalDate>, val pensjonInnvilget: Expression<Boolean>) : OutlinePhrase<LangBokmalNynorsk>() {
     //The elements used in outline can also be used in outline phrases.
     //This is intended for use in the top-level outline scope
@@ -312,6 +310,7 @@ val textOnlyPhraseTestWithParams = TextOnlyPhrase<LangBokmalNynorsk, LocalDate> 
 
 data class TestVedleggDto(val testVerdi1: String, val testVerdi2: String)
 
+@TemplateModelHelpers
 val testVedlegg = createAttachment<LangBokmalNynorsk, TestVedleggDto>(
     title = newText(
         Bokmal to "Test vedlegg",
@@ -322,8 +321,6 @@ val testVedlegg = createAttachment<LangBokmalNynorsk, TestVedleggDto>(
     paragraph {
         //felles can also be used in phrases and attachment even if it wasn't explicitly sent in
         val dokDato = felles().select(Felles::dokumentDato).format()
-        val testVerdi1 = argument().select(TestVedleggDto::testVerdi1)
-        val testVerdi2 = argument().select(TestVedleggDto::testVerdi2)
         textExpr(
             Bokmal to "Test verdi 1: ".expr() + testVerdi1 + " Test verdi 2: " + testVerdi2 + " dokument dato: " + dokDato,
             Nynorsk to "Test verdi 1: ".expr() + testVerdi1 + " Test verdi 2: " + testVerdi2 + " dokument dato: " + dokDato,
