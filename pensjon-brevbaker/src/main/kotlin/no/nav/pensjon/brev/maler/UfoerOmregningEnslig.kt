@@ -141,8 +141,6 @@ object UfoerOmregningEnslig : VedtaksbrevTemplate {
             ) { tillegg, grunnlag ->
 
                 val barnetilleggForSaerkullsbarnVedvirkErRedusertMotInntekt = tillegg.map { it.erRedusertMotInntekt }
-                val barnetilleggErRedusertMotTak = grunnlag.map { it.erRedusertMotTak }
-                val barnetilleggErIkkeUtbetPgaTak = grunnlag.map { it.erIkkeUtbetaltPgaTak }
                 val harNettoBeloep = tillegg.map { it.beloep.value > 0 }
                 val barnetilleggForSaerkullsbarnVedvirk_HarjusteringsBeloepAr = tillegg.map { it.justeringsbeloepAar.value != 0 }
 
@@ -157,7 +155,7 @@ object UfoerOmregningEnslig : VedtaksbrevTemplate {
                     }
 
                     showIf(
-                        harbarnSomTidligerVarSaerkullsbarn and (inntektFoerUfoereErSannsynligEndret or harMinsteytelseVedVirk) and (barnetilleggForSaerkullsbarnVedvirkErRedusertMotInntekt or barnetilleggErRedusertMotTak)
+                        harbarnSomTidligerVarSaerkullsbarn and (inntektFoerUfoereErSannsynligEndret or harMinsteytelseVedVirk) and barnetilleggForSaerkullsbarnVedvirkErRedusertMotInntekt
                     ) {
                         includePhrase(infoTidligereSBOgEndretUT_001, tillegg.map { it.barnTidligereSaerkullsbarn })
                     }
@@ -173,46 +171,16 @@ object UfoerOmregningEnslig : VedtaksbrevTemplate {
                     harBarnOverfoertTilSaerkullsbarn or (harBarnetilleggForSaerkullsbarnVedVirk and (harMinsteytelseVedVirk or inntektFoerUfoereErSannsynligEndret or ektefelleTilleggOpphoert))
                 ) {
 
-                    showIf(not(barnetilleggErRedusertMotTak)) {
-                        includePhrase(ikkeRedusBTPgaTak_001, grunnlag.map {
-                            IkkeRedusBTPgaTak_001Dto(
-                                it.prosentsatsGradertOverInntektFoerUfoer,
-                                it.gradertOverInntektFoerUfoer,
-                            )
-                        })
-                    }
-
-                    showIf(barnetilleggErRedusertMotTak and not(barnetilleggErIkkeUtbetPgaTak)) {
-                        includePhrase(redusBTPgaTak_001, grunnlag.map {
-                            RedusBTPgaTak_001Dto(
-                                it.prosentsatsGradertOverInntektFoerUfoer,
-                                it.gradertOverInntektFoerUfoer,
-                                it.beloepFoerReduksjon,
-                                it.beloepEtterReduksjon,
-                            )
-                        })
-                    }
-
-                    showIf(barnetilleggErIkkeUtbetPgaTak) {
-                        includePhrase(ikkeUtbetaltBTPgaTak_001, grunnlag.map {
-                            IkkeUtbetaltBTPgaTak_001Dto(
-                                it.prosentsatsGradertOverInntektFoerUfoer,
-                                it.gradertOverInntektFoerUfoer,
-                            )
-                        })
-                    }
-
-
-                    showIf(not(harBarnOverfoertTilSaerkullsbarn) and not(barnetilleggErIkkeUtbetPgaTak)) {
+                    showIf(not(harBarnOverfoertTilSaerkullsbarn)) {
                         includePhrase(infoBTSBInntekt_001)
                     }
 
-                    showIf(harBarnOverfoertTilSaerkullsbarn and not(barnetilleggErIkkeUtbetPgaTak)) {
+                    showIf(harBarnOverfoertTilSaerkullsbarn) {
                         includePhrase(infoBTOverfortTilSBInntekt_001)
                     }
 
                     showIf(
-                        not(barnetilleggForSaerkullsbarnVedvirkErRedusertMotInntekt) and not(barnetilleggErIkkeUtbetPgaTak)
+                        not(barnetilleggForSaerkullsbarnVedvirkErRedusertMotInntekt)
                     ) {
                         includePhrase(ikkeRedusBTSBPgaInntekt_001, tillegg.map { tillegg ->
                             IkkeRedusBTSBPgaInntekt_001Dto(
@@ -254,19 +222,10 @@ object UfoerOmregningEnslig : VedtaksbrevTemplate {
                         includePhrase(hjemmelBT_001)
                     }
 
-
-                    showIf(not(barnetilleggForSaerkullsbarnVedvirkErRedusertMotInntekt) and grunnlag.map { it.prosentsatsGradertOverInntektFoerUfoer <= 95 }) {
-                        includePhrase(hjemmelBTOvergangsregler_001)
-                    }
-
                     showIf(
                         barnetilleggForSaerkullsbarnVedvirkErRedusertMotInntekt and not(grunnlag.map { it.prosentsatsGradertOverInntektFoerUfoer <= 95 })
                     ) {
                         includePhrase(hjemmelBTRedus_001)
-                    }
-
-                    showIf(barnetilleggForSaerkullsbarnVedvirkErRedusertMotInntekt and grunnlag.map { it.prosentsatsGradertOverInntektFoerUfoer <= 95 }) {
-                        includePhrase(hjemmelBTRedusOvergangsregler_001)
                     }
 
                     showIf(barnetilleggForSaerkullsbarnGjeldende_ErRedusertMotInntekt) {
