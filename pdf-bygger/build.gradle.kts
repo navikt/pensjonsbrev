@@ -1,11 +1,12 @@
-val ktorVersion = "2.0.2"
-val logbackVersion = "1.2.11"
-val logstashVersion = "7.2"
+val ktorVersion: String by project
+val logbackVersion: String by project
+val logstashVersion: String by project
+val micrometerVersion: String by project
 
 plugins {
-    kotlin("jvm") version "1.6.10"
+    kotlin("jvm")
     application
-    id("com.github.johnrengelman.shadow") version "7.0.0"
+    id("com.github.johnrengelman.shadow")
 }
 
 repositories {
@@ -26,7 +27,7 @@ tasks {
     }
 
     shadowJar {
-        archiveBaseName.set(rootProject.name)
+        archiveBaseName.set(project.name)
         archiveClassifier.set("")
         archiveVersion.set("")
     }
@@ -47,7 +48,7 @@ dependencies {
     // Metrics
     implementation("io.ktor:ktor-server-metrics:$ktorVersion")
     implementation("io.ktor:ktor-server-metrics-micrometer:$ktorVersion")
-    implementation("io.micrometer:micrometer-registry-prometheus:1.9.0")
+    implementation("io.micrometer:micrometer-registry-prometheus:$micrometerVersion")
 }
 
 application {

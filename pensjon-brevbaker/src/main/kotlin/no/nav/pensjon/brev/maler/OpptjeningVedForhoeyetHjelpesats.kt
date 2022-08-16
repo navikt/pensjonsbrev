@@ -13,7 +13,7 @@ import no.nav.pensjon.brev.template.dsl.expression.*
 import java.time.LocalDate
 
 // BrevTypeKode: MF_000094
-object OpptjeningVedForhoeyetHjelpesats : VedtaksbrevTemplate {
+object OpptjeningVedForhoeyetHjelpesats : VedtaksbrevTemplate<OpptjeningVedForhoeyetHjelpesatsDto> {
 
     override val kode = Brevkode.Vedtak.OMSORGP_GODSKRIVING
 

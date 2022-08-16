@@ -4,8 +4,7 @@ import no.nav.pensjon.brev.api.model.*
 import no.nav.pensjon.brev.api.model.Sivilstand.*
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Language.*
-import no.nav.pensjon.brev.template.dsl.expression.format
-import no.nav.pensjon.brev.template.dsl.expression.select
+import no.nav.pensjon.brev.template.dsl.expression.*
 
 fun Telefonnummer.format() =
     "([0-9][0-9])".toRegex().replace(value, "$1 ").trim()
@@ -26,7 +25,12 @@ fun Expression<Kroner>.format() =
 
 @JvmName("formatIntValue")
 fun Expression<IntValue>.format() =
-    select(IntValue::value).format()
+    select(object : TemplateModelSelector<IntValue, Int> {
+        override val className = "no.nav.pensjon.brev.api.model.IntValue"
+        override val propertyName = "value"
+        override val propertyType = "Int"
+        override val selector = IntValue::value
+    }).format()
 
 @JvmName("formatSivilstand")
 fun Expression<Sivilstand>.tableFormat() =

@@ -2,6 +2,8 @@ package no.nav.pensjon.brev.maler.vedlegg
 
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.vedlegg.DineRettigheterOgMulighetTilAaKlageDto
+import no.nav.pensjon.brev.api.model.vedlegg.DineRettigheterOgMulighetTilAaKlageDtoSelectors.brukerUnder18Ar
+import no.nav.pensjon.brev.api.model.vedlegg.DineRettigheterOgMulighetTilAaKlageDtoSelectors.saktype
 import no.nav.pensjon.brev.maler.fraser.*
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.*
@@ -9,11 +11,11 @@ import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.expression.isNotAnyOf
 import no.nav.pensjon.brev.template.dsl.expression.isOneOf
-import no.nav.pensjon.brev.template.dsl.expression.select
+import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.newText
 
 // Conditional for showing the attachment is: vedtakResultat = AVSLG
-
+@TemplateModelHelpers
 val dineRettigheterOgMulighetTilAaKlage = createAttachment<LangBokmalNynorskEnglish, DineRettigheterOgMulighetTilAaKlageDto>(
     title = newText(
         Bokmal to "Dine rettigheter og mulighet til å klage",
@@ -22,9 +24,6 @@ val dineRettigheterOgMulighetTilAaKlage = createAttachment<LangBokmalNynorskEngl
     ),
     includeSakspart = false,
 ) {
-    val saktype = argument().select(DineRettigheterOgMulighetTilAaKlageDto::saktype)
-    val brukerUnder18Ar = argument().select((DineRettigheterOgMulighetTilAaKlageDto::brukerUnder18Ar))
-
     includePhrase(vedleggVeiledning_001)
 
     showIf(saktype.isNotAnyOf(Sakstype.UFOEREP)) {

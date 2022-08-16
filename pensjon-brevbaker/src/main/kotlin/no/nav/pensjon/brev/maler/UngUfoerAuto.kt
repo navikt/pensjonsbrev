@@ -2,24 +2,29 @@ package no.nav.pensjon.brev.maler
 
 import no.nav.pensjon.brev.api.model.LetterMetadata
 import no.nav.pensjon.brev.api.model.maler.*
+import no.nav.pensjon.brev.api.model.maler.UngUfoerAutoDtoSelectors.kravVirkningFraOgMed
+import no.nav.pensjon.brev.api.model.maler.UngUfoerAutoDtoSelectors.maanedligUfoeretrygdFoerSkatt
+import no.nav.pensjon.brev.api.model.maler.UngUfoerAutoDtoSelectors.minsteytelseVedVirkSats
+import no.nav.pensjon.brev.api.model.maler.UngUfoerAutoDtoSelectors.orienteringOmRettigheterUfoere
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.fraser.common.GrunnbeloepSats
 import no.nav.pensjon.brev.maler.fraser.common.KravVirkningFraOgMed
 import no.nav.pensjon.brev.maler.fraser.omregning.ufoeretrygd.Ufoeretrygd
 import no.nav.pensjon.brev.maler.fraser.vedtak.Vedtak
 import no.nav.pensjon.brev.maler.vedlegg.*
+import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.Nynorsk
-import no.nav.pensjon.brev.template.VedtaksbrevTemplate
 import no.nav.pensjon.brev.template.base.PensjonLatex
 import no.nav.pensjon.brev.template.dsl.createTemplate
-import no.nav.pensjon.brev.template.dsl.expression.map
-import no.nav.pensjon.brev.template.dsl.expression.select
+import no.nav.pensjon.brev.template.dsl.expression.*
+import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 
 // BrevTypeKode: PE_BA_04_505
-object UngUfoerAuto : VedtaksbrevTemplate {
+@TemplateModelHelpers
+object UngUfoerAuto : VedtaksbrevTemplate<UngUfoerAutoDto> {
 
     override val kode: Brevkode.Vedtak = Brevkode.Vedtak.UNG_UFOER_AUTO
 
@@ -42,7 +47,7 @@ object UngUfoerAuto : VedtaksbrevTemplate {
         }
 
         outline {
-            val virkningsDato = argument().select(UngUfoerAutoDto::kravVirkningFraOgMed).map(::KravVirkningFraOgMed)
+            val virkningsDato = kravVirkningFraOgMed.select(::KravVirkningFraOgMed)
 
             includePhrase(Vedtak.overskrift)
             includePhrase(Ufoeretrygd.ungUfoer20aar_001, virkningsDato)
@@ -71,7 +76,7 @@ object UngUfoerAuto : VedtaksbrevTemplate {
             )
 
             includePhrase(Vedtak.begrunnelseOverskrift)
-            includePhrase(Ufoeretrygd.ungUfoerHoeyereVed20aar, argument().map { GrunnbeloepSats(it.minsteytelseVedVirkSats) })
+            includePhrase(Ufoeretrygd.ungUfoerHoeyereVed20aar, minsteytelseVedVirkSats.select(::GrunnbeloepSats))
             includePhrase(Ufoeretrygd.hjemmelSivilstand)
 
             includePhrase(Ufoeretrygd.virkningFomOverskrift)
@@ -84,7 +89,7 @@ object UngUfoerAuto : VedtaksbrevTemplate {
 
         }
 
-        includeAttachment(maanedligUfoeretrygdFoerSkatt, argument().select(UngUfoerAutoDto::maanedligUfoeretrygdFoerSkatt))
-        includeAttachment(orienteringOmRettigheterOgPlikterUfoere, argument().select(UngUfoerAutoDto::orienteringOmRettigheterUfoere))
+        includeAttachment(vedleggMaanedligUfoeretrygdFoerSkatt, maanedligUfoeretrygdFoerSkatt)
+        includeAttachment(orienteringOmRettigheterOgPlikterUfoere, orienteringOmRettigheterUfoere)
     }
 }
