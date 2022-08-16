@@ -28,23 +28,23 @@ internal class TemplateModelHelpersAnnotationProcessor(private val codeGenerator
         val iterableDeclaration = resolver.getClassDeclarationByName<Iterable<*>>()?.asStarProjectedType()
             ?: throw InitializationError("Couldn't resove Iterable<*>")
 
-        val symbols = resolver.getSymbolsWithAnnotation(ANNOTATION_NAME)
-        logger.info("Processing annotated symbols: ${symbols.toList()}")
 
-        try {
-            symbols.filter { it.validate() }
-                .forEach { it.accept(TemplateModelHelpersVisitor(hasModelDeclaration, iterableDeclaration), Unit) }
+        return try {
+            val (validSymbols, invalidSymbols) = resolver.getSymbolsWithAnnotation(ANNOTATION_NAME).toList()
+                .also { logger.info("Processing annotated symbols: $it") }
+                .partition { it.validate() }
+
+            validSymbols.forEach { it.accept(TemplateModelHelpersVisitor(hasModelDeclaration, iterableDeclaration), Unit) }
+
+            if (invalidSymbols.isNotEmpty()) {
+                logger.info("Some annotated symbols does not validate: $invalidSymbols")
+            }
+
+            invalidSymbols
         } catch (e: TemplateModelGeneratorException) {
             logger.error(e.message, e)
             throw e
         }
-
-
-        val invalidSymbols = symbols.filter { !it.validate() }.toList()
-        if (invalidSymbols.isNotEmpty()) {
-            logger.info("Some annotated symbols does not validate: $invalidSymbols")
-        }
-        return invalidSymbols
     }
 
     inner class TemplateModelHelpersVisitor(
@@ -121,7 +121,7 @@ internal class TemplateModelHelpersAnnotationProcessor(private val codeGenerator
                 type.getTypeArgument(hasModelTypeParameter)?.type
                     ?: throw InvalidObjectTarget("Could not resolve type argument of $HAS_MODEL_TYPE_PARAMETER_NAME type parameter for $hasModelType in declaration of $targetName")
             } else {
-                when(val typeDeclaration = type.resolve().declaration) {
+                when (val typeDeclaration = type.resolve().declaration) {
                     is KSClassDeclaration -> {
                         val superTypeModel = searchTypeHierarchyForModelType(targetName, typeDeclaration.superTypeThatExtendsHasModel())
 
@@ -138,16 +138,16 @@ internal class TemplateModelHelpersAnnotationProcessor(private val codeGenerator
                             else -> throw MissingImplementation("Don't know how to handle a superType model of type ${superTypeModelDeclaration::class}: $superTypeModel")
                         }
                     }
+
                     else -> throw MissingImplementation("Don't know how to handle a model of type ${typeDeclaration::class}: $type")
                 }
             }
         }
 
-        private fun KSTypeReference.getTypeArgument(typeParameter: KSTypeParameter): KSTypeArgument? {
-            return resolve().let {
+        private fun KSTypeReference.getTypeArgument(typeParameter: KSTypeParameter): KSTypeArgument? =
+            resolve().let {
                 it.arguments.getOrNull(it.declaration.indexOfTypeParameter(typeParameter.simpleName))
             }
-        }
 
         private fun KSDeclaration.indexOfTypeParameter(argumentName: KSName): Int {
             val index = typeParameters.indexOfFirst { it.simpleName == argumentName }

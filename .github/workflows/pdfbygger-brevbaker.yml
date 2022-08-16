@@ -6,6 +6,7 @@ on:
     branches:
       - "main"
     paths:
+      - "template-model-generator/**"
       - "pensjon-brevbaker/**"
       - "pdf-bygger/**"
       - ".github/workflows/pdfbygger-brevbaker.yml"
@@ -39,7 +40,9 @@ jobs:
         with:
           "java-version": "17"
       - name: "compile and run tests"
-        run: "./gradlew :pensjon-brevbaker-api-model:publishToMavenLocal :pensjon-brevbaker:build"
+        run: |
+          ./gradlew :pensjon-brevbaker-api-model:publishToMavenLocal 
+          ./gradlew :pensjon-brevbaker:build
         env:
           "GITHUB_TOKEN": "${{ secrets.GITHUB_TOKEN }}"
       - name: "Build and publish Docker image"
@@ -99,9 +102,6 @@ jobs:
           "GITHUB_TOKEN": "${{ secrets.GITHUB_TOKEN }}"
 
   runIntegrationTests:
-    defaults:
-      run:
-        working-directory: pensjon-brevbaker
     name: "Integration tests"
     needs: [ build-brevbaker, build-pdfbygger ]
     services:
@@ -137,7 +137,9 @@ jobs:
         with:
           "java-version": "17"
       - name: "run integration tests"
-        run: "./gradlew :pensjon-brevbaker-api-model:publishToMavenLocal :pensjon-brevbaker:integrationTest"
+        run: |
+          ./gradlew :pensjon-brevbaker-api-model:publishToMavenLocal 
+          ./gradlew :pensjon-brevbaker:integrationTest
         env:
           "GITHUB_TOKEN": "${{ secrets.GITHUB_TOKEN }}"
       - name: Publish Test Report

@@ -84,13 +84,11 @@ object LetterExample : VedtaksbrevTemplate<LetterExampleDto> {
 
                 list {
                     forEach(tilleggEksempel) { tillegg ->
-                        val navn = tillegg.navn
-                        val tillegg1 = tillegg.tillegg1
-                        ifNotNull(tillegg1) {
+                        ifNotNull(tillegg.tillegg1) {
                             item {
                                 textExpr(
-                                    Bokmal to "Du har fått tilleg1 for ".expr() + navn + " på ".expr() + it.format() + " Kr",
-                                    Nynorsk to "Du har fått tilleg1 for ".expr() + navn + " på ".expr() + it.format() + " Kr",
+                                    Bokmal to "Du har fått tilleg1 for ".expr() + tillegg.navn + " på ".expr() + it.format() + " Kr",
+                                    Nynorsk to "Du har fått tilleg1 for ".expr() + tillegg.navn + " på ".expr() + it.format() + " Kr",
                                 )
                             }
                         }
@@ -324,8 +322,6 @@ val testVedlegg = createAttachment<LangBokmalNynorsk, TestVedleggDto>(
     paragraph {
         //felles can also be used in phrases and attachment even if it wasn't explicitly sent in
         val dokDato = felles().select(Felles::dokumentDato).format()
-        val testVerdi1 = testVerdi1
-        val testVerdi2 = testVerdi2
         textExpr(
             Bokmal to "Test verdi 1: ".expr() + testVerdi1 + " Test verdi 2: " + testVerdi2 + " dokument dato: " + dokDato,
             Nynorsk to "Test verdi 1: ".expr() + testVerdi1 + " Test verdi 2: " + testVerdi2 + " dokument dato: " + dokDato,
