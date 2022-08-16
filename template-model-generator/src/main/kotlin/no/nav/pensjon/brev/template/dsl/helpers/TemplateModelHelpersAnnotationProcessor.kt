@@ -39,7 +39,7 @@ internal class TemplateModelHelpersAnnotationProcessor(private val codeGenerator
             if (invalidSymbols.isNotEmpty()) {
                 logger.info("Some annotated symbols does not validate: $invalidSymbols")
             }
-            
+
             invalidSymbols
         } catch (e: TemplateModelGeneratorException) {
             logger.error(e.message, e)

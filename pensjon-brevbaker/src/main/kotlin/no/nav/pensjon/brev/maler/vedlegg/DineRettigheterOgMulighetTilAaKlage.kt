@@ -24,17 +24,17 @@ val dineRettigheterOgMulighetTilAaKlage = createAttachment<LangBokmalNynorskEngl
     ),
     includeSakspart = false,
 ) {
-    includePhrase(vedleggVeiledning_001)
+    includePhrase(VedleggVeiledning_001)
 
     showIf(saktype.isNotAnyOf(Sakstype.UFOEREP)) {
-        includePhrase(vedleggInnsynSakPensjon_001)
-        includePhrase(vedleggInnsynSakUTPesys_001)
+        includePhrase(VedleggInnsynSakPensjon_001)
+        includePhrase(VedleggInnsynSakUTPesys_001)
     }
 
     showIf(saktype.isOneOf(Sakstype.BARNEP) and brukerUnder18Ar) {
-        includePhrase(vedleggInnsynSakUnder18_001)
+        includePhrase(VedleggInnsynSakUnder18_001)
     }
 
-    includePhrase(vedleggHjelpFraAndre_001)
-    includePhrase(vedleggKlagePensjon_001)
+    includePhrase(VedleggHjelpFraAndre_001)
+    includePhrase(VedleggKlagePensjon_001)
 }

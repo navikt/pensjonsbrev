@@ -57,7 +57,7 @@ class TemplateTest {
                 Language.Nynorsk to "asdf",
                 Language.English to "asdf",
             ),
-        ){
+        ) {
             text(
                 Language.Bokmal to "hei",
                 Language.Nynorsk to "hei",
@@ -201,12 +201,12 @@ class TemplateTest {
 
     @Test
     fun `TemplateContainerScope_includePhrase adds phrase`() {
-        val argument = Expression.Literal(TestFraseDto("jadda"))
+        val argument = Expression.Literal("jadda")
         val actual = OutlineScope<BokmalLang, SomeDto>().apply {
-            includePhrase(testFrase, argument)
+            includePhrase(TestFrase(argument))
         }.children
 
-        val expected = OutlineScope<BokmalLang, SomeDto>().apply { testFrase.apply(this, argument) }.children
+        val expected = OutlineScope<BokmalLang, SomeDto>().apply { TestFrase(argument).apply(this) }.children
 
         assertEquals(expected, actual)
     }
@@ -214,13 +214,13 @@ class TemplateTest {
 
 data class TestFraseDto(val test: String)
 
-val testFrase = OutlinePhrase<LangBokmalNynorskEnglish, TestFraseDto> {
-    paragraph {
-        val input = it.select(TestFraseDto::test)
-        textExpr(
-            Language.Bokmal to "Hei på deg fra TestFrase: ".expr() + input,
-            Language.Nynorsk to "Hei på deg frå TestFrase: ".expr() + input,
-            Language.English to "Hey you, from TestFrase: ".expr() + input,
-        )
-    }
+data class TestFrase(val test: Expression<String>) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() =
+        paragraph {
+            textExpr(
+                Language.Bokmal to "Hei på deg fra TestFrase: ".expr() + test,
+                Language.Nynorsk to "Hei på deg frå TestFrase: ".expr() + test,
+                Language.English to "Hey you, from TestFrase: ".expr() + test,
+            )
+        }
 }

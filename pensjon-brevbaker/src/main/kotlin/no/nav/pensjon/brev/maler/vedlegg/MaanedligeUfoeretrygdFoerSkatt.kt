@@ -1,8 +1,11 @@
 package no.nav.pensjon.brev.maler.vedlegg
 
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligUfoeretrygdFoerSkattDto
-import no.nav.pensjon.brev.maler.fraser.tabellBeregnetUTHele
-import no.nav.pensjon.brev.maler.fraser.vedleggBelopUT_001
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligUfoeretrygdFoerSkattDtoSelectors.gjeldendeBeregnetUTPerMaaned
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligUfoeretrygdFoerSkattDtoSelectors.krav_virkningsDatoFraOgMed
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligUfoeretrygdFoerSkattDtoSelectors.tidligereUfoeretrygdPerioder
+import no.nav.pensjon.brev.maler.fraser.TabellBeregnetUTHele
+import no.nav.pensjon.brev.maler.fraser.VedleggBelopUT_001
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.createAttachment
@@ -18,19 +21,17 @@ val vedleggMaanedligUfoeretrygdFoerSkatt = createAttachment<LangBokmalNynorskEng
         English to "This is your monthly disability benefit before tax",
     ),
 ) {
-    val gjeldendeUfoeretrygd = argument().select(MaanedligUfoeretrygdFoerSkattDto::gjeldendeBeregnetUTPerMaaned)
 
-    includePhrase(vedleggBelopUT_001)
+    includePhrase(VedleggBelopUT_001)
 
-    includePhrase(tabellBeregnetUTHele, gjeldendeUfoeretrygd)
+    includePhrase(TabellBeregnetUTHele(gjeldendeBeregnetUTPerMaaned))
 
-    showIf(argument().map { it.tidligereUfoeretrygdPerioder.isNotEmpty()}) {
-        val virkDato = argument().select(MaanedligUfoeretrygdFoerSkattDto::krav_virkningsDatoFraOgMed )
+    showIf(tidligereUfoeretrygdPerioder.isNotEmpty()) {
         title1 {
             textExpr(
-                Bokmal to "Oversikt over uføretrygdens størrelse fra ".expr() + virkDato.format(),
-                Nynorsk to "Oversikt over storleik på uføretrygda frå ".expr() + virkDato.format(),
-                English to "Disability benefit payment specifications as of ".expr() + virkDato.format(),
+                Bokmal to "Oversikt over uføretrygdens størrelse fra ".expr() + krav_virkningsDatoFraOgMed.format(),
+                Nynorsk to "Oversikt over storleik på uføretrygda frå ".expr() + krav_virkningsDatoFraOgMed.format(),
+                English to "Disability benefit payment specifications as of ".expr() + krav_virkningsDatoFraOgMed.format(),
             )
         }
 
@@ -42,8 +43,8 @@ val vedleggMaanedligUfoeretrygdFoerSkatt = createAttachment<LangBokmalNynorskEng
             )
         }
 
-        forEach(argument().map { it.tidligereUfoeretrygdPerioder }) {
-            includePhrase(tabellBeregnetUTHele, it)
+        forEach(tidligereUfoeretrygdPerioder) {
+            includePhrase(TabellBeregnetUTHele(it))
         }
     }
 }

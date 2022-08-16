@@ -3,6 +3,10 @@ package no.nav.pensjon.brev.maler.vedlegg
 import no.nav.pensjon.brev.api.model.Institusjon.*
 import no.nav.pensjon.brev.api.model.Sivilstand.*
 import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterUfoereDto
+import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterUfoereDtoSelectors.avdoed_sivilstand
+import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterUfoereDtoSelectors.bruker_borINorge
+import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterUfoereDtoSelectors.institusjon_gjeldende
+import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterUfoereDtoSelectors.ufoeretrygdPerMaaned_barnetilleggGjeldende
 import no.nav.pensjon.brev.maler.fraser.*
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.*
@@ -12,7 +16,7 @@ import no.nav.pensjon.brev.template.dsl.newText
 
 // Conditional for showing the attachment is: sakstype = UFOEREP && vedtakResultat = AVSLG
 
-val orienteringOmRettigheterOgPlikterUfoere = createAttachment<LangBokmalNynorskEnglish, OrienteringOmRettigheterUfoereDto>(
+val vedleggOrienteringOmRettigheterOgPlikterUfoere = createAttachment<LangBokmalNynorskEnglish, OrienteringOmRettigheterUfoereDto>(
     title = newText(
         Bokmal to "Dine rettigheter og plikter",
         Nynorsk to "Dine rettar og plikter",
@@ -20,21 +24,15 @@ val orienteringOmRettigheterOgPlikterUfoere = createAttachment<LangBokmalNynorsk
     ),
     includeSakspart = false,
 ) {
-    val bor_i_norge = argument().select(OrienteringOmRettigheterUfoereDto::bruker_borINorge)
-    val institusjon_gjeldende = argument().select(OrienteringOmRettigheterUfoereDto::institusjon_gjeldende)
-    val sivilstand = argument().select(OrienteringOmRettigheterUfoereDto::avdoed_sivilstand)
-    val barnetilleggSaerkullsbarn =
-        argument().select(OrienteringOmRettigheterUfoereDto::ufoeretrygdPerMaaned_barnetilleggGjeldende)
-
-    includePhrase(vedleggPlikterUT_001)
+    includePhrase(VedleggPlikterUT_001)
 
     list {
         item { includePhrase(vedleggPlikterUT1_001) }
         item { includePhrase(vedleggPlikterUT2_001) }
 
         showIf(
-            bor_i_norge
-                and not(institusjon_gjeldende.isOneOf(FENGSEL, HELSE, SYKEHJEM))
+            bruker_borINorge
+                    and institusjon_gjeldende.isNotAnyOf(FENGSEL, HELSE, SYKEHJEM)
         ) {
             item { includePhrase(vedleggPlikterUT3_001) }
             item { includePhrase(vedleggPlikterUT4_001) }
@@ -42,12 +40,12 @@ val orienteringOmRettigheterOgPlikterUfoere = createAttachment<LangBokmalNynorsk
 
         item { includePhrase(vedleggPlikterUT5_001) }
 
-        showIf(sivilstand.isOneOf(ENSLIG, ENKE)) {
+        showIf(avdoed_sivilstand.isOneOf(ENSLIG, ENKE)) {
             item { includePhrase(vedleggPlikterUT6_001) }
         }
 
-        ifNotNull(barnetilleggSaerkullsbarn) { tillegg ->
-            showIf(tillegg.map { it.value > 0 }) {
+        ifNotNull(ufoeretrygdPerMaaned_barnetilleggGjeldende) { tillegg ->
+            showIf(tillegg.greaterThan(0)) {
                 item { includePhrase(vedleggPlikterUT7_001) }
             }
         }
@@ -59,8 +57,8 @@ val orienteringOmRettigheterOgPlikterUfoere = createAttachment<LangBokmalNynorsk
         item { includePhrase(vedleggPlikterUT12_001) }
     }
 
-    includePhrase(vedleggVeiledning_001)
-    includePhrase(vedleggInnsynSakUTPesys_001)
-    includePhrase(vedleggHjelpFraAndre_001)
-    includePhrase(vedleggKlagePensjon_001)
+    includePhrase(VedleggVeiledning_001)
+    includePhrase(VedleggInnsynSakUTPesys_001)
+    includePhrase(VedleggHjelpFraAndre_001)
+    includePhrase(VedleggKlagePensjon_001)
 }
