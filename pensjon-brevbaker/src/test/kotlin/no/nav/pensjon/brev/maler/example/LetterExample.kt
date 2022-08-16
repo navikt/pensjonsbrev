@@ -16,7 +16,7 @@ import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brev.template.dsl.expression.*
 import java.time.LocalDate
 
-object LetterExample : VedtaksbrevTemplate {
+object LetterExample : VedtaksbrevTemplate<LetterExampleDto> {
 
     override val kode: Brevkode.Vedtak = Brevkode.Vedtak.OMSORG_EGEN_AUTO
 

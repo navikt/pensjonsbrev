@@ -1,8 +1,7 @@
 val jupiterVersion: String by project
-val jacksonVersion: String by project
 
 plugins {
-    kotlin("jvm") version "1.6.10"
+    kotlin("jvm")
     `maven-publish`
 }
 

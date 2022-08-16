@@ -11,7 +11,7 @@ class OutlineScope<Lang : LanguageSupport, LetterData : Any> : OutlineScopeBase<
         phrase.apply(this, Unit.expr())
     }
 
-    fun <PhraseData> includePhrase(phrase: OutlinePhrase<out Lang, PhraseData>, data: Expression<PhraseData>) {
+    fun <PhraseData : Any> includePhrase(phrase: OutlinePhrase<out Lang, PhraseData>, data: Expression<PhraseData>) {
         phrase.apply(this, data)
     }
 

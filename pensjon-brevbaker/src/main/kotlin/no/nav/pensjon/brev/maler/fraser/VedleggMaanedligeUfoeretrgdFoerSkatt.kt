@@ -9,6 +9,7 @@ import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
+import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import java.time.LocalDate
 
 
@@ -27,6 +28,7 @@ data class TabellBeregnetUTHeleDto(
     val virkningsDatoTilOgMed: LocalDate?,
 )
 
+@TemplateModelHelpers
 val tabellBeregnetUTHele =
     OutlinePhrase<LangBokmalNynorskEnglish, MaanedligUfoeretrygdFoerSkattDto.UfoeretrygdPerMaaned> { ufoeretrygd ->
         includePhrase(tabellUfoeretrygtTittel, ufoeretrygd.map {

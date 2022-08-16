@@ -25,4 +25,4 @@ data class AttachmentTemplate<out Lang : LanguageSupport, AttachmentData : Any>(
     val title: Element.Text.Literal<Lang>,
     val outline: List<Element<Lang>>,
     val includeSakspart: Boolean = false,
-)
+): HasModel<AttachmentData>

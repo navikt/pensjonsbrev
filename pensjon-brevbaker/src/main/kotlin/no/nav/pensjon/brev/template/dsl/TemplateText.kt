@@ -12,7 +12,7 @@ class TextOnlyScope<Lang : LanguageSupport, LetterData : Any>(children: MutableL
         phrase.apply(this, Unit.expr())
     }
 
-    fun <PhraseData> includePhrase(phrase: TextOnlyPhrase<out Lang, PhraseData>, data: Expression<PhraseData>) {
+    fun <PhraseData : Any> includePhrase(phrase: TextOnlyPhrase<out Lang, PhraseData>, data: Expression<PhraseData>) {
         phrase.apply(this, data)
     }
 

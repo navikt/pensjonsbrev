@@ -1,12 +1,15 @@
-val logbackVersion="1.2.11"
-val ktorVersion="2.0.2"
-val jupiterVersion="5.7.1"
-val logstashVersion="7.2"
+val logbackVersion: String by project
+val ktorVersion: String by project
+val jupiterVersion: String by project
+val hamkrestVersion: String by project
+val logstashVersion: String by project
+val micrometerVersion: String by project
 
 plugins {
     application
-    kotlin("jvm") version "1.7.0"
-    id("com.github.johnrengelman.shadow") version "7.0.0"
+    kotlin("jvm")
+    id("com.google.devtools.ksp")
+    id("com.github.johnrengelman.shadow")
 }
 
 group = "no.nav.pensjon.brev"
@@ -19,6 +22,7 @@ application {
 repositories {
     mavenLocal()
     mavenCentral()
+    maven { url = uri("https://maven.pkg.jetbrains.space/public/p/kotlinx-html/maven") }
     maven {
         // Create a token at https://github.com/settings/tokens/new with package.read
         // Then create a gradle.properties file in $HOME/.gradle with the following:
@@ -32,13 +36,6 @@ repositories {
     }
 }
 
-sourceSets {
-    test {
-        resources {
-            srcDir("src/main/resources")
-        }
-    }
-}
 
 tasks {
     compileKotlin {
@@ -46,7 +43,7 @@ tasks {
     }
 
     shadowJar {
-        archiveBaseName.set(rootProject.name)
+        archiveBaseName.set(project.name)
         archiveClassifier.set("")
         archiveVersion.set("")
     }
@@ -72,6 +69,14 @@ tasks {
 
 }
 
+kotlin {
+    sourceSets {
+        main {
+            kotlin.srcDir("build/generated/ksp/main/kotlin")
+        }
+    }
+}
+
 dependencies {
     implementation(kotlin("stdlib"))
     implementation("ch.qos.logback:logback-classic:$logbackVersion")
@@ -88,16 +93,21 @@ dependencies {
     implementation("io.ktor:ktor-server-status-pages:$ktorVersion")
     implementation("net.logstash.logback:logstash-logback-encoder:$logstashVersion")
     implementation("no.nav.pensjon.brev:pensjon-brevbaker-api-model:3.6.0")
+
+    implementation(project(":template-model-generator"))
+    ksp(project(":template-model-generator"))
+
     // Necessary for java.time.LocalDate
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.13.3")
+
     // Metrics
     implementation("io.ktor:ktor-server-metrics:$ktorVersion")
     implementation("io.ktor:ktor-server-metrics-micrometer:$ktorVersion")
-    implementation("io.micrometer:micrometer-registry-prometheus:1.9.0")
+    implementation("io.micrometer:micrometer-registry-prometheus:$micrometerVersion")
 
     // JUnit 5
     testImplementation(platform("org.junit:junit-bom:$jupiterVersion"))
     testImplementation("org.junit.jupiter:junit-jupiter")
-    testImplementation("com.natpryce:hamkrest:1.8.0.1")
+    testImplementation("com.natpryce:hamkrest:$hamkrestVersion")
 }
 
