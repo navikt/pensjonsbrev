@@ -137,7 +137,9 @@ jobs:
         with:
           "java-version": "17"
       - name: "run integration tests"
-        run: "./gradlew :pensjon-brevbaker-api-model:publishToMavenLocal :pensjon-brevbaker:integrationTest"
+        run: |
+          ./gradlew :pensjon-brevbaker-api-model:publishToMavenLocal 
+          ./gradlew :pensjon-brevbaker:integrationTest
         env:
           "GITHUB_TOKEN": "${{ secrets.GITHUB_TOKEN }}"
       - name: Publish Test Report
