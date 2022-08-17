@@ -386,6 +386,39 @@ data class VedleggPlikterRettTilEktefelletilleggOgBarnetilleggAP_001(
     }
 }
 
+object InntektsProevingPliktListe : ParagraphPhrase<LangBokmalNynorskEnglish>() {
+    override fun ParagraphScope<LangBokmalNynorskEnglish, Unit>.template() =
+        list {
+            item {
+                text(
+                    Bokmal to "arbeidsinntekten endres",
+                    Nynorsk to "arbeidsinntekta di endrer seg",
+                    English to "employment income changes"
+                )
+                text(
+                    Bokmal to "tjenestepensjonen fra offentlig eller private ordninger endres",
+                    Nynorsk to "tenestepensjon frå offentlege eller private ordningar endrar seg",
+                    English to "occupational pension from public or private schemes changes"
+                )
+                text(
+                    Bokmal to "den individuelle pensjonsordningen, livrente og gavepensjonen endres",
+                    Nynorsk to "individuelle pensjonsordningar, livrente og gåvepensjon endrar seg",
+                    English to "individual pension scheme, annuity and gratuity payments changes"
+                )
+                text(
+                    Bokmal to "andre ytelser fra folketrygden endres",
+                    Nynorsk to "andre ytingar frå folketrygda endrar seg",
+                    English to "other income supplements from the National Insurance Scheme changes"
+                )
+                text(
+                    Bokmal to "ytelser og pensjon fra andre land endres",
+                    Nynorsk to "ytingar og pensjon frå andre land endrar seg",
+                    English to "other income supplements and pension from other countries changes"
+                )
+            }
+        }
+}
+
 object VedleggPlikterinntektsprovingBTFellesBarnSaerkullsbarnAP_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() =
         paragraph {
@@ -394,37 +427,10 @@ object VedleggPlikterinntektsprovingBTFellesBarnSaerkullsbarnAP_001 : OutlinePhr
                 Nynorsk to "Kor mykje du får utbetalt i barnetillegg er avhengig av den samla inntekta du og ektefellen har. Du må derfor også gi beskjed om",
                 English to "How much you receive in child supplement depends on the total combined income of you and your spouse. You must therefore also notify us if your"
             )
-            list {
-                item {
-                    text(
-                        Bokmal to "arbeidsinntekten endres",
-                        Nynorsk to "arbeidsinntekta di endrer seg",
-                        English to "employment income changes"
-                    )
-                    text(
-                        Bokmal to "tjenestepensjonen fra offentlig eller private ordninger endres",
-                        Nynorsk to "tenestepensjon frå offentlege eller private ordningar endrar seg",
-                        English to "occupational pension from public or private schemes changes"
-                    )
-                    text(
-                        Bokmal to "den individuelle pensjonsordningen, livrente og gavepensjonen endres",
-                        Nynorsk to "den individuelle pensjonsordningen, livrente og gavepensjonen endres",
-                        English to "individual pension scheme, annuity and gratuity payments changes"
-                    )
-                    text(
-                        Bokmal to "andre ytelser fra folketrygden endres",
-                        Nynorsk to "andre ytingar frå folketrygda endrar seg",
-                        English to "other income supplements from the National Insurance Scheme changes"
-                    )
-                    text(
-                        Bokmal to "ytelser og pensjon fra andre land endres",
-                        Nynorsk to "ytingar og pensjon frå andre land endrar seg",
-                        English to "other income supplements and pension from other countries changes"
-                    )
-                }
-            }
+            includePhrase(InntektsProevingPliktListe)
         }
 }
+
 
 object VedleggPlikterinntektsprovingBTOgETAP_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() =
@@ -434,35 +440,7 @@ object VedleggPlikterinntektsprovingBTOgETAP_001 : OutlinePhrase<LangBokmalNynor
                 Nynorsk to "Kor mykje du får utbetalt i barnetillegg og ektefelletillegg er avhengig av den samla inntekta du har. Du må derfor også gi beskjed om",
                 English to "How much you receive in child and spouse supplements depends on your total income. You must therefore notify us if your"
             )
-            list {
-                item {
-                    text(
-                        Bokmal to "arbeidsinntekten endres",
-                        Nynorsk to "arbeidsinntekta di endrer seg",
-                        English to "employment income changes"
-                    )
-                    text(
-                        Bokmal to "tjenestepensjonen fra offentlig eller private ordninger endre",
-                        Nynorsk to "tenestepensjon frå offentlege eller private ordningar endrar seg",
-                        English to "occupational pension from public or private schemes changes"
-                    )
-                    text(
-                        Bokmal to "den individuelle pensjonsordningen, livrente og gavepensjonen endres",
-                        Nynorsk to "individuelle pensjonsordningar, livrente og gåvepensjon endrar seg",
-                        English to "individual pension scheme, annuity and gratuity payments changes"
-                    )
-                    text(
-                        Bokmal to "andre ytelser fra folketrygden endres",
-                        Nynorsk to "andre ytingar frå folketrygda endrar seg",
-                        English to "other income supplements from the National Insurance Scheme changes"
-                    )
-                    text(
-                        Bokmal to "ytelser og pensjon fra andre land endres",
-                        Nynorsk to "ytingar og pensjon frå andre land endrar seg",
-                        English to "other income supplements and pension from other countries changes"
-                    )
-                }
-            }
+            includePhrase(InntektsProevingPliktListe)
         }
 }
 
@@ -474,35 +452,7 @@ object VedleggPlikterinntektsprovingETAP_001 : OutlinePhrase<LangBokmalNynorskEn
                 Nynorsk to "Kor mykje du får utbetalt i ektefelletillegg avhenger av den samla inntekta du har. Du må derfor også gi beskjed om",
                 English to "How much you receive in spouse supplement depends on your total income. You must therefore notify us if your"
             )
-            list {
-                item {
-                    text(
-                        Bokmal to "arbeidsinntekten endres",
-                        Nynorsk to "arbeidsinntekta di endrer seg",
-                        English to "employment income changes"
-                    )
-                    text(
-                        Bokmal to "tjenestepensjonen fra offentlig eller private ordninger endres",
-                        Nynorsk to "tenestepensjon frå offentlege eller private ordningar endrar seg",
-                        English to "occupational pension from public or private schemes changes"
-                    )
-                    text(
-                        Bokmal to "den individuelle pensjonsordningen, livrente og gavepensjonen endres",
-                        Nynorsk to "individuelle pensjonsordningar, livrente og gåvepensjon endrar seg",
-                        English to "individual pension scheme, annuity and gratuity payments changes"
-                    )
-                    text(
-                        Bokmal to "andre ytelser fra folketrygden endres",
-                        Nynorsk to "andre ytingar frå folketrygda endrar seg",
-                        English to "other income supplements from the National Insurance Scheme changes"
-                    )
-                    text(
-                        Bokmal to "ytelser og pensjon fra andre land endres",
-                        Nynorsk to "ytingar og pensjon frå andre land endrar seg",
-                        English to "other income supplements and pension from other countries changes"
-                    )
-                }
-            }
+            includePhrase(InntektsProevingPliktListe)
         }
 }
 
