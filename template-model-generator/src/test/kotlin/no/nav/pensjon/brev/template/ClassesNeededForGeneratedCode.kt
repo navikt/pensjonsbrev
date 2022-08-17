@@ -11,7 +11,7 @@ abstract class Expression<T> {
 }
 
 abstract class UnaryOperation<In, T> {
-    class Select2<In: Any, T>(selector: TemplateModelSelector<In, T>): UnaryOperation<In, T>()
+    class Select<In: Any, T>(selector: TemplateModelSelector<In, T>): UnaryOperation<In, T>()
     class SafeCall<In: Any, Out>(selector: TemplateModelSelector<In, Out>) : UnaryOperation<In?, Out?>()
 }
 
