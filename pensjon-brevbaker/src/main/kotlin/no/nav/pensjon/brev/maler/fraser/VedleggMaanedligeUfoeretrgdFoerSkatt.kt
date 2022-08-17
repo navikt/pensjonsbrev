@@ -2,46 +2,44 @@ package no.nav.pensjon.brev.maler.fraser
 
 import no.nav.pensjon.brev.api.model.Kroner
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligUfoeretrygdFoerSkattDto
+import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdPerMaanedSelectors.erAvkortet
+import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdPerMaanedSelectors.grunnbeloep
+import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdPerMaanedSelectors.virkningFraOgMed
+import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdPerMaanedSelectors.virkningTilOgMed
 import no.nav.pensjon.brev.maler.fraser.common.Felles.kroner
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Language.*
+import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brev.template.dsl.expression.*
-import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.template.dsl.textExpr
-import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import java.time.LocalDate
 
 
-val vedleggBelopUT_001 = OutlinePhrase<LangBokmalNynorskEnglish, Unit> {
-    paragraph {
-        text(
-            Bokmal to "Nedenfor ser du den månedlige uføretrygden din.",
-            Nynorsk to "Nedanfor ser du den månadlege uføretrygda di.",
-            English to "Below is a presentation of your monthly disability benefit.",
-        )
-    }
+object VedleggBelopUT_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() =
+        paragraph {
+            text(
+                Bokmal to "Nedenfor ser du den månedlige uføretrygden din.",
+                Nynorsk to "Nedanfor ser du den månadlege uføretrygda di.",
+                English to "Below is a presentation of your monthly disability benefit.",
+            )
+        }
 }
 
-data class TabellBeregnetUTHeleDto(
-    val virkningsDatoFraOgMed: LocalDate,
-    val virkningsDatoTilOgMed: LocalDate?,
-)
+data class TabellBeregnetUTHele(
+    val ufoeretrygd: Expression<MaanedligUfoeretrygdFoerSkattDto.UfoeretrygdPerMaaned>,
+) : OutlinePhrase<LangBokmalNynorskEnglish>() {
 
-@TemplateModelHelpers
-val tabellBeregnetUTHele =
-    OutlinePhrase<LangBokmalNynorskEnglish, MaanedligUfoeretrygdFoerSkattDto.UfoeretrygdPerMaaned> { ufoeretrygd ->
-        includePhrase(tabellUfoeretrygtTittel, ufoeretrygd.map {
-            TabellBeregnetUTHeleDto(it.virkningFraOgMed, it.virkningTilOgMed)
-        })
+    override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() {
+        includePhrase(TabellUfoeretrygtTittel(ufoeretrygd.virkningFraOgMed, ufoeretrygd.virkningTilOgMed))
 
         paragraph {
             includePhrase(
                 tabellUfoeretrygdTittel_broedtekst,
-                ufoeretrygd.map { it.grunnbeloep }
+                ufoeretrygd.grunnbeloep
             )
 
-            showIf(ufoeretrygd.map { it.erAvkortet }) {
+            showIf(ufoeretrygd.erAvkortet) {
                 includePhrase(tabellBeregnetUTAvkortet,
                     ufoeretrygd.map {
                         TabellBeregnetUTAvkortetDto(
@@ -70,25 +68,31 @@ val tabellBeregnetUTHele =
             }
         }
     }
+}
 
-val tabellUfoeretrygtTittel = OutlinePhrase<LangBokmalNynorskEnglish, TabellBeregnetUTHeleDto> {
-    title1 {
-        val virkningsDatoFraOgMed = it.select(TabellBeregnetUTHeleDto::virkningsDatoFraOgMed).format(short = true)
-        textExpr(
-            Bokmal to "Den månedlige uføretrygden fra ".expr() + virkningsDatoFraOgMed,
-            Nynorsk to "Den månadlege uføretrygda frå ".expr() + virkningsDatoFraOgMed,
-            English to "Your monthly disability benefit from ".expr() + virkningsDatoFraOgMed,
-        )
+data class TabellUfoeretrygtTittel(
+    val virkningsDatoFraOgMed: Expression<LocalDate>,
+    val virkningsDatoTilOgMed: Expression<LocalDate?>,
+) : OutlinePhrase<LangBokmalNynorskEnglish>() {
 
-        ifNotNull(it.select(TabellBeregnetUTHeleDto::virkningsDatoTilOgMed)) {
-            val virkningsDatoTilOgMed = it.format(short = true)
+    override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() =
+        title1 {
+            val virkningsDatoFraOgMed = virkningsDatoFraOgMed.format(short = true)
             textExpr(
-                Bokmal to " til ".expr() + virkningsDatoTilOgMed,
-                Nynorsk to " til ".expr() + virkningsDatoTilOgMed,
-                English to " to ".expr() + virkningsDatoTilOgMed,
+                Bokmal to "Den månedlige uføretrygden fra ".expr() + virkningsDatoFraOgMed,
+                Nynorsk to "Den månadlege uføretrygda frå ".expr() + virkningsDatoFraOgMed,
+                English to "Your monthly disability benefit from ".expr() + virkningsDatoFraOgMed,
             )
+
+            ifNotNull(virkningsDatoTilOgMed) {
+                val virkningsDatoTilOgMed = it.format(short = true)
+                textExpr(
+                    Bokmal to " til ".expr() + virkningsDatoTilOgMed,
+                    Nynorsk to " til ".expr() + virkningsDatoTilOgMed,
+                    English to " to ".expr() + virkningsDatoTilOgMed,
+                )
+            }
         }
-    }
 }
 
 

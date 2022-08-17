@@ -20,10 +20,9 @@ class ParagraphPhrase<Lang : LanguageSupport, PhraseData : Any>(private val phra
     }
 }
 
-class OutlinePhrase<Lang : LanguageSupport, PhraseData : Any>(private val phraseBody: OutlineScope<Lang, Unit>.(arg: Expression<PhraseData>) -> Unit) : HasModel<PhraseData> {
-    fun apply(scope: OutlineScope<in Lang, *>, data: Expression<PhraseData>) {
-        OutlineScope<Lang, Unit>().apply {
-            phraseBody(data)
-        }.also { scope.addAll(it.children) }
+abstract class OutlinePhrase<Lang : LanguageSupport> {
+    abstract fun OutlineScope<Lang, Unit>.template()
+    fun apply(scope: OutlineScope<in Lang, *>) {
+        OutlineScope<Lang, Unit>().apply { template() }.also { scope.addAll(it.children) }
     }
 }
