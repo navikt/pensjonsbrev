@@ -1,7 +1,8 @@
 package no.nav.pensjon.brev.template.base.pensjonlatex
 
-import no.nav.pensjon.brev.api.model.Felles
-import no.nav.pensjon.brev.api.model.NAVEnhet
+import no.nav.pensjon.brev.api.model.FellesSelectors.avsenderEnhet
+import no.nav.pensjon.brev.api.model.NAVEnhetSelectors.nettside
+import no.nav.pensjon.brev.api.model.NAVEnhetSelectors.telefonnummer
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.dsl.*
@@ -57,9 +58,8 @@ val pensjonLatexSettings = languageSettings {
     }
 
     setting("closingkontaktoss") {
-        val avsender = felles().select(Felles::avsenderEnhet)
-        val nettside = avsender.select(NAVEnhet::nettside)
-        val telefonnummer = avsender.select(NAVEnhet::telefonnummer).format()
+        val nettside = felles.avsenderEnhet.nettside
+        val telefonnummer = felles.avsenderEnhet.telefonnummer.format()
 
         textExpr(
             Language.Bokmal to "Kontakt oss gjerne på ".expr() + nettside + " eller på telefon " + telefonnummer

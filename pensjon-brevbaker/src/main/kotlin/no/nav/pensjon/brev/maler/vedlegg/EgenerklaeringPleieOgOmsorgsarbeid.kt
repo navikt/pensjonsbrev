@@ -1,10 +1,14 @@
 package no.nav.pensjon.brev.maler.vedlegg
 
-import no.nav.pensjon.brev.api.model.Felles
-import no.nav.pensjon.brev.api.model.NAVEnhet
-import no.nav.pensjon.brev.api.model.ReturAdresse
-import no.nav.pensjon.brev.api.model.Year
-import no.nav.pensjon.brev.maler.vedlegg.EgenerklaeringPleieOgOmsorgsarbeidSelectors.aarEgenerklaring
+import no.nav.pensjon.brev.api.model.FellesSelectors.avsenderEnhet
+import no.nav.pensjon.brev.api.model.FellesSelectors.dokumentDato
+import no.nav.pensjon.brev.api.model.NAVEnhetSelectors.navn
+import no.nav.pensjon.brev.api.model.NAVEnhetSelectors.returAdresse
+import no.nav.pensjon.brev.api.model.ReturAdresseSelectors.adresseLinje1
+import no.nav.pensjon.brev.api.model.ReturAdresseSelectors.postNr
+import no.nav.pensjon.brev.api.model.ReturAdresseSelectors.postSted
+import no.nav.pensjon.brev.api.model.maler.OmsorgEgenAutoDto
+import no.nav.pensjon.brev.api.model.maler.OmsorgEgenAutoDtoSelectors.aarEgenerklaringOmsorgspoeng
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.*
@@ -16,10 +20,9 @@ import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 
-data class EgenerklaeringPleieOgOmsorgsarbeid(val aarEgenerklaring: Year)
 
 @TemplateModelHelpers
-val egenerklaeringPleieOgOmsorgsarbeid = createAttachment<LangBokmalNynorskEnglish, EgenerklaeringPleieOgOmsorgsarbeid>(
+val egenerklaeringPleieOgOmsorgsarbeid = createAttachment<LangBokmalNynorskEnglish, OmsorgEgenAutoDto>(
     title = newText(
         Bokmal to "Egenerklæring om pleie- og omsorgsarbeid",
         Nynorsk to "Eigenmelding om pleie- og omsorgsarbeid",
@@ -28,7 +31,7 @@ val egenerklaeringPleieOgOmsorgsarbeid = createAttachment<LangBokmalNynorskEngli
     includeSakspart = true
 ) {
     paragraph {
-        val dokDato = felles().select(Felles::dokumentDato).format()
+        val dokDato = felles.dokumentDato.format()
         textExpr(
             Bokmal to "Jeg viser til brev av ".expr() + dokDato + ".",
             Nynorsk to "Eg viser til brev datert ".expr() + dokDato + ".",
@@ -38,9 +41,9 @@ val egenerklaeringPleieOgOmsorgsarbeid = createAttachment<LangBokmalNynorskEngli
 
     paragraph {
         textExpr(
-            Bokmal to "I ".expr() + aarEgenerklaring.format() + " har jeg utført pleie og omsorgsarbeid på minst 22 timer i uken. (Inkludert opptil en halv time reisetid per besøk.)",
-            Nynorsk to "I ".expr() + aarEgenerklaring.format() + " har eg utført pleie- og omsorgsarbeid på minst 22 timar i veka. (Inkludert opptil ein halv time reisetid per besøk.)",
-            English to "In ".expr() + aarEgenerklaring.format() + " I have provided care work that has amounted to at least 22 hours per week. (Travelling time up to 30 minutes per visit may be included.)",
+            Bokmal to "I ".expr() + aarEgenerklaringOmsorgspoeng.format() + " har jeg utført pleie og omsorgsarbeid på minst 22 timer i uken. (Inkludert opptil en halv time reisetid per besøk.)",
+            Nynorsk to "I ".expr() + aarEgenerklaringOmsorgspoeng.format() + " har eg utført pleie- og omsorgsarbeid på minst 22 timar i veka. (Inkludert opptil ein halv time reisetid per besøk.)",
+            English to "In ".expr() + aarEgenerklaringOmsorgspoeng.format() + " I have provided care work that has amounted to at least 22 hours per week. (Travelling time up to 30 minutes per visit may be included.)",
         )
     }
 
@@ -116,14 +119,13 @@ val egenerklaeringPleieOgOmsorgsarbeid = createAttachment<LangBokmalNynorskEngli
         )
         newline()
 
-        val avsender = felles().select(Felles::avsenderEnhet)
-        eval { avsender.select(NAVEnhet::navn) }
+        eval { felles.avsenderEnhet.navn }
         newline()
 
-        val returAdresse = avsender.select(NAVEnhet::returAdresse)
-        eval { returAdresse.select(ReturAdresse::adresseLinje1) }
-        newline()
-
-        eval(returAdresse.select(ReturAdresse::postNr) + " " + returAdresse.select(ReturAdresse::postSted))
+        with(felles.avsenderEnhet.returAdresse) {
+            eval { adresseLinje1 }
+            newline()
+            eval(postNr + " " + postSted)
+        }
     }
 }

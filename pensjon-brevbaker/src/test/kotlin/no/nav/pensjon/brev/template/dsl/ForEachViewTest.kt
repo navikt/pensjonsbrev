@@ -23,18 +23,17 @@ class ForEachViewTest {
 
     @Test
     fun `ForEachView works for nested forEach`() {
-        val listen = listOf("greetings" to listOf("hei", "hello", "bonjour"), "goodbyes" to listOf("ha det bra", "goodbye", "au revoir"))
+        val listen = listOf(listOf("hei", "hello", "bonjour"), listOf("ha det bra", "goodbye", "au revoir"))
         val actual = outlineTestTemplate<Unit> {
             val myList = listen.expr()
 
             forEach(myList) { subList ->
-                val outer = subList.map { it.first }
-                forEach(subList.map { it.second }) {
-                    eval(outer + it)
+                forEach(subList) {
+                    eval(it)
                 }
             }
         }
-        val allWords = listen.map { it.first } + listen.flatMap { it.second }
+        val allWords = listen.flatten()
         Letter(actual, Unit, Language.Bokmal, felles).assertRenderedLetterContainsAllOf(*allWords.toTypedArray())
     }
 
@@ -45,7 +44,7 @@ class ForEachViewTest {
             val myList = listen.expr()
 
             forEach(myList) { x ->
-                eval(argument() + x)
+                eval(argument + x)
             }
         }
 

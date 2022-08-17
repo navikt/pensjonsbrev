@@ -1,6 +1,8 @@
 package no.nav.pensjon.brev.maler.example
 
-import no.nav.pensjon.brev.api.model.Felles
+import no.nav.pensjon.brev.api.model.BrukerSelectors.fornavn
+import no.nav.pensjon.brev.api.model.FellesSelectors.bruker
+import no.nav.pensjon.brev.api.model.FellesSelectors.dokumentDato
 import no.nav.pensjon.brev.api.model.Kroner
 import no.nav.pensjon.brev.api.model.LetterMetadata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
@@ -57,7 +59,7 @@ object LetterExample : VedtaksbrevTemplate<LetterExampleDto> {
 
 
             // Data from the felles(common) argument can also be used. Both felles and argument supports map and select.
-            val firstName = felles().map { it.bruker.fornavn }
+            val firstName = felles.bruker.fornavn
 
             // section title
             title1 {
@@ -323,7 +325,7 @@ val testVedlegg = createAttachment<LangBokmalNynorsk, TestVedleggDto>(
 ) {
     paragraph {
         //felles can also be used in phrases and attachment even if it wasn't explicitly sent in
-        val dokDato = felles().select(Felles::dokumentDato).format()
+        val dokDato = felles.dokumentDato.format()
         textExpr(
             Bokmal to "Test verdi 1: ".expr() + testVerdi1 + " Test verdi 2: " + testVerdi2 + " dokument dato: " + dokDato,
             Nynorsk to "Test verdi 1: ".expr() + testVerdi1 + " Test verdi 2: " + testVerdi2 + " dokument dato: " + dokDato,

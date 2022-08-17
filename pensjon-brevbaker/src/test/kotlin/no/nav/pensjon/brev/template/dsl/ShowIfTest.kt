@@ -4,6 +4,8 @@ import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.equalTo
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.base.PensjonLatex
+import no.nav.pensjon.brev.template.dsl.SomeDtoSelectors.name
+import no.nav.pensjon.brev.template.dsl.SomeDtoSelectors.pensjonInnvilget
 import no.nav.pensjon.brev.template.dsl.expression.*
 import org.junit.jupiter.api.*
 
@@ -20,7 +22,7 @@ class ShowIfTest {
             letterMetadata = testLetterMetadata,
             outline = listOf(
                 Element.Conditional(
-                    predicate = Expression.FromScope(ExpressionScope<SomeDto, *>::argument).select(SomeDto::pensjonInnvilget),
+                    predicate = Expression.FromScope(ExpressionScope<SomeDto, *>::argument).pensjonInnvilget,
                     showIf = listOf(newText(Language.Nynorsk to "jadda")),
                     showElse = listOf(newText(Language.Nynorsk to "neida"))
                 )
@@ -37,7 +39,7 @@ class ShowIfTest {
             title.add(nynorskTittel)
 
             outline {
-                showIf(argument().select(SomeDto::pensjonInnvilget)) {
+                showIf(pensjonInnvilget) {
                     text(Language.Nynorsk to "jadda")
                 } orShow {
                     text(Language.Nynorsk to "neida")
@@ -60,11 +62,11 @@ class ShowIfTest {
             letterMetadata = testLetterMetadata,
             outline = listOf(
                 Element.Conditional(
-                    predicate = exprScope.select(SomeDto::pensjonInnvilget),
+                    predicate = exprScope.pensjonInnvilget,
                     showIf = listOf(newText(Language.Nynorsk to "jadda")),
                     showElse = listOf(
                         Element.Conditional(
-                            predicate = exprScope.select(SomeDto::name) equalTo "Test",
+                            predicate = exprScope.name equalTo "Test",
                             showIf = listOf(newText(Language.Nynorsk to "neidaJoda")),
                             showElse = emptyList()
                         )
@@ -82,9 +84,9 @@ class ShowIfTest {
         ) {
             title.add(nynorskTittel)
             outline {
-                showIf(argument().select(SomeDto::pensjonInnvilget)) {
+                showIf(pensjonInnvilget) {
                     text(Language.Nynorsk to "jadda")
-                }.orShowIf(argument().select(SomeDto::name) equalTo "Test") {
+                }.orShowIf(name equalTo "Test") {
                     text(Language.Nynorsk to "neidaJoda")
                 }
             }
@@ -105,11 +107,11 @@ class ShowIfTest {
             letterMetadata = testLetterMetadata,
             outline = listOf(
                 Element.Conditional(
-                    predicate = exprScope.select(SomeDto::pensjonInnvilget),
+                    predicate = exprScope.pensjonInnvilget,
                     showIf = listOf(newText(Language.Nynorsk to "jadda")),
                     showElse = listOf(
                         Element.Conditional(
-                            predicate = exprScope.select(SomeDto::name) equalTo "Test",
+                            predicate = exprScope.name equalTo "Test",
                             showIf = listOf(newText(Language.Nynorsk to "neidaJoda")),
                             showElse = listOf(newText(Language.Nynorsk to "neida")),
                         )
@@ -127,9 +129,9 @@ class ShowIfTest {
         ) {
             title.add(nynorskTittel)
             outline {
-                showIf(argument().select(SomeDto::pensjonInnvilget)) {
+                showIf(pensjonInnvilget) {
                     text(Language.Nynorsk to "jadda")
-                }.orShowIf(argument().select(SomeDto::name) equalTo "Test") {
+                }.orShowIf(name equalTo "Test") {
                     text(Language.Nynorsk to "neidaJoda")
                 } orShow {
                     text(Language.Nynorsk to "neida")

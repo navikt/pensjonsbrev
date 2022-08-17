@@ -1,7 +1,7 @@
 package no.nav.pensjon.brev.template
 
 import no.nav.pensjon.brev.Fixtures
-import no.nav.pensjon.brev.api.model.Felles
+import no.nav.pensjon.brev.api.model.FellesSelectors.saksnummer
 import no.nav.pensjon.brev.template.SomeDtoSelectors.kortNavn
 import no.nav.pensjon.brev.template.SomeDtoSelectors.name
 import no.nav.pensjon.brev.template.dsl.*
@@ -81,7 +81,7 @@ class ExpressionEvalTest {
 
     @Test
     fun `eval can select fields from felles`() {
-        val evaluated = fellesExpr.select(Felles::saksnummer).eval(scope)
+        val evaluated = fellesExpr.saksnummer.eval(scope)
         assertEquals(Fixtures.felles.saksnummer, evaluated)
     }
 

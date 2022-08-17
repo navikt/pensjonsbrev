@@ -1,16 +1,14 @@
 package no.nav.pensjon.brev.maler.fraser
 
-import no.nav.pensjon.brev.api.model.Felles
-import no.nav.pensjon.brev.api.model.NAVEnhet
+import no.nav.pensjon.brev.api.model.FellesSelectors.avsenderEnhet
+import no.nav.pensjon.brev.api.model.NAVEnhetSelectors.nettside
+import no.nav.pensjon.brev.api.model.NAVEnhetSelectors.telefonnummer
 import no.nav.pensjon.brev.api.model.Sivilstand
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.dsl.*
-import no.nav.pensjon.brev.template.dsl.expression.expr
-import no.nav.pensjon.brev.template.dsl.expression.isOneOf
-import no.nav.pensjon.brev.template.dsl.expression.plus
-import no.nav.pensjon.brev.template.dsl.expression.select
+import no.nav.pensjon.brev.template.dsl.expression.*
 
 
 object VedleggPlikter_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
@@ -671,8 +669,8 @@ object VedleggVeiledning_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
 
 object VedleggInnsynSakPensjon_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() {
-        val telefonNummer = felles().select(Felles::avsenderEnhet).select(NAVEnhet::telefonnummer)
-        val kontaktinformasjonNettsted = felles().select(Felles::avsenderEnhet).select(NAVEnhet::nettside)
+        val telefonNummer = felles.avsenderEnhet.telefonnummer
+        val kontaktinformasjonNettsted = felles.avsenderEnhet.nettside
         title1 {
             text(
                 Bokmal to "Innsyn i saken din - forvaltningsloven § 18",
@@ -693,7 +691,7 @@ object VedleggInnsynSakPensjon_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
 
 object VedleggInnsynSakUTPesys_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() {
-        val telefonNummer = felles().select(Felles::avsenderEnhet).select(NAVEnhet::telefonnummer)
+        val telefonNummer = felles.avsenderEnhet.telefonnummer
         title1 {
             text(
                 Bokmal to "Innsyn i saken din - forvaltningsloven § 18",
@@ -733,7 +731,7 @@ object VedleggHjelpFraAndre_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
 
 object VedleggKlagePensjon_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() {
-        val telefonNummer = felles().select(Felles::avsenderEnhet).select(NAVEnhet::telefonnummer)
+        val telefonNummer = felles.avsenderEnhet.telefonnummer
         title1 {
             text(
                 Bokmal to "Klage på vedtaket - folketrygdloven § 21-12",

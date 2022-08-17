@@ -1,6 +1,8 @@
 package no.nav.pensjon.brev.maler.fraser
 
 import no.nav.pensjon.brev.api.model.*
+import no.nav.pensjon.brev.api.model.FellesSelectors.avsenderEnhet
+import no.nav.pensjon.brev.api.model.NAVEnhetSelectors.nettside
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Language.*
@@ -56,7 +58,7 @@ object Omsorgsopptjening {
                 )
             }
             paragraph {
-                val nettside = felles().select(Felles::avsenderEnhet).select(NAVEnhet::nettside)
+                val nettside = felles.avsenderEnhet.nettside
                 textExpr(
                     Bokmal to "Pensjonsopptjeningen fra omsorgsarbeidet tilsvarer det du ville fått av en inntekt på 4,5 ganger grunnbeløpet for det aktuelle året. Du kan lese mer om dette på nav.no, og få oversikt over pensjonsopptjeningen din på ".expr() +
                             nettside + ". Her finner du også omsorgsopptjening som du har fått godkjent.",
