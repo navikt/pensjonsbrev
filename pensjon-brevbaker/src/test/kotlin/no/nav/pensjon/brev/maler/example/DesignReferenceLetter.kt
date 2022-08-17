@@ -12,7 +12,7 @@ import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 
-object DesignReferenceLetter : VedtaksbrevTemplate {
+object DesignReferenceLetter : VedtaksbrevTemplate<LetterExampleDto> {
 
     override val kode: Brevkode.Vedtak = Brevkode.Vedtak.OMSORG_EGEN_AUTO
 
