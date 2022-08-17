@@ -271,10 +271,7 @@ data class TabellBeregnetUTAvkortet(
                 }
             }
 
-            ifNotNull(
-                barnetilleggBrutto,
-                barnetilleggNetto,
-            ) { brutto, netto ->
+            ifNotNull(barnetilleggBrutto,barnetilleggNetto) { brutto, netto ->
                 row {
                     cell {
                         text(
@@ -294,10 +291,7 @@ data class TabellBeregnetUTAvkortet(
                 }
             }
 
-            ifNotNull(
-                garantitilleggNordisk27Brutto,
-                garantitilleggNordisk27Netto,
-            ) { brutto, netto ->
+            ifNotNull(garantitilleggNordisk27Brutto, garantitilleggNordisk27Netto) { brutto, netto ->
                 row {
                     cell {
                         text(
