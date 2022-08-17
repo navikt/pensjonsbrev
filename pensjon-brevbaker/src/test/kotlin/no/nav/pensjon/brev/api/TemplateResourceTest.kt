@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test
 
 class TemplateResourceTest {
 
-    val templateResource = TemplateResource(productionTemplates)
+    private val templateResource = TemplateResource(productionTemplates)
 
     @Test
     fun `getTemplate fetches template`() {
@@ -45,7 +45,7 @@ class TemplateResourceTest {
             .associateWith { templateResource.getTemplate(it)!! }
             .filterValues { !it.letterDataType.isData }
 
-        assertEquals(emptySet<String>(), templatesWithoutDataClass.keys)
+        assertEquals(emptySet<Brevkode.Vedtak>(), templatesWithoutDataClass.keys)
     }
 
     @Test
@@ -62,7 +62,7 @@ class TemplateResourceTest {
             }.filterValues { it != null }
 
         assertEquals(
-            emptyMap<String, String>(),
+            emptyMap<Brevkode.Vedtak, String>(),
             templatesWithoutSampleData,
             "letterDataType classes must be constructable by Fixtures.create."
         )

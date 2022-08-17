@@ -30,4 +30,8 @@ hs_err_pid*
 ##asciidoc
 docs/.asciidoctor
 
-secrets
+
+build
+# Gradle
+.gradle
+!gradle/wrapper/gradle-wrapper.jar

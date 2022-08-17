@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.template
 
-import no.nav.pensjon.brev.api.model.Telefonnummer
+import no.nav.pensjon.brev.api.model.*
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.expression.Predicate
 import java.text.NumberFormat
@@ -34,8 +34,18 @@ sealed class UnaryOperation<In, out Out> : Operation() {
         override fun apply(input: Telefonnummer): String = input.format()
     }
 
+    @Deprecated("Erstatt med UnaryOperation.Select2")
     data class Select<In, Out>(val select: In.() -> Out) : UnaryOperation<In, Out>() {
         override fun apply(input: In): Out = input.select()
+    }
+
+    // TODO: Replace Select with Select2, or give better name
+    data class Select2<In: Any, Out>(val selector: TemplateModelSelector<In, Out>) : UnaryOperation<In, Out>() {
+        override fun apply(input: In): Out = selector.selector(input)
+    }
+
+    data class SafeCall<In: Any, Out>(val selector: TemplateModelSelector<In, Out>) : UnaryOperation<In?, Out?>() {
+        override fun apply(input: In?): Out? = input?.let { selector.selector(it) }
     }
 
     data class IfNull<In>(val then: In) : UnaryOperation<In?, In>() {
@@ -53,6 +63,22 @@ abstract class BinaryOperation<in In1, in In2, out Out> : Operation() {
 
     class Equal<In> : BinaryOperation<In, In, Boolean>() {
         override fun apply(first: In, second: In): Boolean = first == second
+    }
+
+    class GreaterThan<in T : Comparable<T>> : BinaryOperation<T, T, Boolean>() {
+        override fun apply(first: T, second: T): Boolean = first > second
+    }
+
+    class GreaterThanOrEqual<in T : Comparable<T>> : BinaryOperation<T, T, Boolean>() {
+        override fun apply(first: T, second: T): Boolean = first >= second
+    }
+
+    class LessThanOrEqual<in T : Comparable<T>> : BinaryOperation<T, T, Boolean>() {
+        override fun apply(first: T, second: T): Boolean = first <= second
+    }
+
+    class LessThan<in T : Comparable<T>> : BinaryOperation<T, T, Boolean>() {
+        override fun apply(first: T, second: T): Boolean = first < second
     }
 
     object Or : BinaryOperation<Boolean, Boolean, Boolean>() {
@@ -98,10 +124,6 @@ abstract class BinaryOperation<in In1, in In2, out Out> : Operation() {
         override fun apply(first: EnumType, second: List<EnumType>): Boolean = second.contains(first)
     }
 
-    class EnumNotInList<EnumType : Enum<*>> : BinaryOperation<EnumType, List<EnumType>, Boolean>() {
-        override fun apply(first: EnumType, second: List<EnumType>): Boolean = !second.contains(first)
-    }
-
     class IfElse<Out> : BinaryOperation<Boolean, Pair<Out, Out>, Out>() {
         override fun apply(first: Boolean, second: Pair<Out, Out>): Out = if (first) second.first else second.second
     }
@@ -114,7 +136,4 @@ abstract class BinaryOperation<in In1, in In2, out Out> : Operation() {
         override fun apply(first: Predicate<T>, second: T): Boolean = first.validate(second)
     }
 
-    data class Select<In1, In2, Out>(val select: (In1, In2) -> Out) : BinaryOperation<In1, In2, Out>() {
-        override fun apply(first: In1, second: In2): Out = select(first, second)
-    }
 }

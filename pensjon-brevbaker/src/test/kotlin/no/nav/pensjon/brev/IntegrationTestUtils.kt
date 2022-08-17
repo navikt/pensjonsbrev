@@ -4,6 +4,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.engine.cio.*
+import io.ktor.client.plugins.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
 import io.ktor.http.*
@@ -22,6 +23,9 @@ object TestTags {
     const val PDF_BYGGER = "pdf-bygger"
 }
 val httpClient = HttpClient(CIO) {
+    install(HttpTimeout){
+        requestTimeoutMillis = 40000
+    }
     install(ContentNegotiation) {
         jackson {
             registerModule(JavaTimeModule())

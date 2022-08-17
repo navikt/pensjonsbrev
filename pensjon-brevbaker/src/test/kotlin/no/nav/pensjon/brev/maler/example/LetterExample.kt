@@ -4,6 +4,17 @@ import no.nav.pensjon.brev.api.model.Felles
 import no.nav.pensjon.brev.api.model.Kroner
 import no.nav.pensjon.brev.api.model.LetterMetadata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
+import no.nav.pensjon.brev.maler.example.ExampleTilleggDtoSelectors.navn
+import no.nav.pensjon.brev.maler.example.ExampleTilleggDtoSelectors.tillegg1
+import no.nav.pensjon.brev.maler.example.ExampleTilleggDtoSelectors.tillegg2
+import no.nav.pensjon.brev.maler.example.ExampleTilleggDtoSelectors.tillegg3
+import no.nav.pensjon.brev.maler.example.LetterExampleDtoSelectors.datoAvslaatt
+import no.nav.pensjon.brev.maler.example.LetterExampleDtoSelectors.datoInnvilget
+import no.nav.pensjon.brev.maler.example.LetterExampleDtoSelectors.navneliste
+import no.nav.pensjon.brev.maler.example.LetterExampleDtoSelectors.pensjonInnvilget
+import no.nav.pensjon.brev.maler.example.LetterExampleDtoSelectors.tilleggEksempel
+import no.nav.pensjon.brev.maler.example.TestVedleggDtoSelectors.testVerdi1
+import no.nav.pensjon.brev.maler.example.TestVedleggDtoSelectors.testVerdi2
 import no.nav.pensjon.brev.maler.fraser.common.Felles.kroner
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.*
@@ -14,9 +25,11 @@ import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.base.PensjonLatex
 import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brev.template.dsl.expression.*
+import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import java.time.LocalDate
 
-object LetterExample : VedtaksbrevTemplate {
+@TemplateModelHelpers
+object LetterExample : VedtaksbrevTemplate<LetterExampleDto> {
 
     override val kode: Brevkode.Vedtak = Brevkode.Vedtak.OMSORG_EGEN_AUTO
 
@@ -39,9 +52,6 @@ object LetterExample : VedtaksbrevTemplate {
         }
 
         // Main letter content
-        val pensjonInnvilget = argument().select(LetterExampleDto::pensjonInnvilget)
-        val datoAvslaatt = argument().select(LetterExampleDto::datoAvslaatt)
-        val tillegg = argument().select(LetterExampleDto::tilleggEksempel)
         outline {
             //Select boolean expression from this letters argument
 
@@ -73,14 +83,12 @@ object LetterExample : VedtaksbrevTemplate {
                 }
 
                 list {
-                    forEach(tillegg) { tillegg ->
-                        val navn = tillegg.select(ExampleTilleggDto::navn)
-                        val tillegg1 = tillegg.select(ExampleTilleggDto::tillegg1)
-                        ifNotNull(tillegg1) {
+                    forEach(tilleggEksempel) { tillegg ->
+                        ifNotNull(tillegg.tillegg1) {
                             item {
                                 textExpr(
-                                    Bokmal to "Du har fått tilleg1 for ".expr() + navn + " på ".expr() + it.format() + " Kr",
-                                    Nynorsk to "Du har fått tilleg1 for ".expr() + navn + " på ".expr() + it.format() + " Kr",
+                                    Bokmal to "Du har fått tilleg1 for ".expr() + tillegg.navn + " på ".expr() + it.format() + " Kr",
+                                    Nynorsk to "Du har fått tilleg1 for ".expr() + tillegg.navn + " på ".expr() + it.format() + " Kr",
                                 )
                             }
                         }
@@ -111,7 +119,7 @@ object LetterExample : VedtaksbrevTemplate {
                     }
                     item {
                         //Any type of phrase can also require data
-                        includePhrase(textOnlyPhraseTestWithParams, argument().select(LetterExampleDto::datoInnvilget))
+                        includePhrase(textOnlyPhraseTestWithParams, datoInnvilget)
                     }
                 }
                 text(Bokmal to lipsums[0], Nynorsk to lipsums[0])
@@ -134,11 +142,11 @@ object LetterExample : VedtaksbrevTemplate {
                         column(1, RIGHT) { text(Bokmal to "Kolonne 4", Nynorsk to "Kolonne 4", FontType.BOLD) }
                     }
                 ) {
-                    forEach(tillegg) { tillegg ->
-                        val navn = tillegg.select(ExampleTilleggDto::navn)
-                        val tillegg1 = tillegg.select(ExampleTilleggDto::tillegg1)
-                        val tillegg2 = tillegg.select(ExampleTilleggDto::tillegg2)
-                        val tillegg3 = tillegg.select(ExampleTilleggDto::tillegg3)
+                    forEach(tilleggEksempel) { tillegg ->
+                        val navn = tillegg.navn
+                        val tillegg1 = tillegg.tillegg1
+                        val tillegg2 = tillegg.tillegg2
+                        val tillegg3 = tillegg.tillegg3
                         row {
                             cell {
                                 textExpr(
@@ -207,7 +215,7 @@ object LetterExample : VedtaksbrevTemplate {
                 }
             }
             // Repeat content for each element in list
-            forEach(argument().select(LetterExampleDto::navneliste)) {
+            forEach(navneliste) {
                 title1 {
                     textExpr(Bokmal to it, Nynorsk to it)
                 }
@@ -220,7 +228,7 @@ object LetterExample : VedtaksbrevTemplate {
             }
 
             //Include outline phrase
-            includePhrase(outlinePhraseTest, argument().map { OutlinePhraseDto(it.datoInnvilget, it.pensjonInnvilget) })
+            includePhrase(OutlinePhraseTest(datoInnvilget, pensjonInnvilget))
 
             //Print some lipsum paragraphs.
             for (lipsum in lipsums) {
@@ -240,6 +248,7 @@ data class LetterExampleDto(
     val datoAvslaatt: LocalDate?,
     val pensjonBeloep: Int?,
 )
+
 data class ExampleTilleggDto(
     val navn: String,
     val tillegg1: Kroner? = null,
@@ -255,21 +264,20 @@ data class ExampleTilleggDto(
     )
 }
 
-data class OutlinePhraseDto(val datoInnvilget: LocalDate, val pensjonInnvilget: Boolean)
-
-val outlinePhraseTest = OutlinePhrase<LangBokmalNynorsk, OutlinePhraseDto> { phraseParameter ->
+data class OutlinePhraseTest(val datoInnvilget: Expression<LocalDate>, val pensjonInnvilget: Expression<Boolean>) : OutlinePhrase<LangBokmalNynorsk>() {
     //The elements used in outline can also be used in outline phrases.
     //This is intended for use in the top-level outline scope
 
-    paragraph {
-        showIf(phraseParameter.map { it.pensjonInnvilget }) {
-            val dato = phraseParameter.map { it.datoInnvilget }.format()
-            textExpr(
-                Bokmal to "Du har fått innvilget pensjon fra ".expr() + dato + ".",
-                Nynorsk to "Du har fått innvilget pensjon fra ".expr() + dato + ".",
-            )
+    override fun OutlineScope<LangBokmalNynorsk, Unit>.template() =
+        paragraph {
+            showIf(pensjonInnvilget) {
+                val dato = datoInnvilget.format()
+                textExpr(
+                    Bokmal to "Du har fått innvilget pensjon fra ".expr() + dato + ".",
+                    Nynorsk to "Du har fått innvilget pensjon fra ".expr() + dato + ".",
+                )
+            }
         }
-    }
 }
 
 @Suppress("unused", "UNUSED_ANONYMOUS_PARAMETER")
@@ -302,6 +310,7 @@ val textOnlyPhraseTestWithParams = TextOnlyPhrase<LangBokmalNynorsk, LocalDate> 
 
 data class TestVedleggDto(val testVerdi1: String, val testVerdi2: String)
 
+@TemplateModelHelpers
 val testVedlegg = createAttachment<LangBokmalNynorsk, TestVedleggDto>(
     title = newText(
         Bokmal to "Test vedlegg",
@@ -312,8 +321,6 @@ val testVedlegg = createAttachment<LangBokmalNynorsk, TestVedleggDto>(
     paragraph {
         //felles can also be used in phrases and attachment even if it wasn't explicitly sent in
         val dokDato = felles().select(Felles::dokumentDato).format()
-        val testVerdi1 = argument().select(TestVedleggDto::testVerdi1)
-        val testVerdi2 = argument().select(TestVedleggDto::testVerdi2)
         textExpr(
             Bokmal to "Test verdi 1: ".expr() + testVerdi1 + " Test verdi 2: " + testVerdi2 + " dokument dato: " + dokDato,
             Nynorsk to "Test verdi 1: ".expr() + testVerdi1 + " Test verdi 2: " + testVerdi2 + " dokument dato: " + dokDato,

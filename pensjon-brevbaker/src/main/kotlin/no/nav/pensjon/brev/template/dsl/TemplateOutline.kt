@@ -1,18 +1,13 @@
 package no.nav.pensjon.brev.template.dsl
 
 import no.nav.pensjon.brev.template.*
-import no.nav.pensjon.brev.template.dsl.expression.expr
 
 
 @LetterTemplateMarker
 class OutlineScope<Lang : LanguageSupport, LetterData : Any> : OutlineScopeBase<Lang, LetterData, OutlineScope<Lang, LetterData>>() {
 
-    fun includePhrase(phrase: OutlinePhrase<out Lang, Unit>) {
-        phrase.apply(this, Unit.expr())
-    }
-
-    fun <PhraseData> includePhrase(phrase: OutlinePhrase<out Lang, PhraseData>, data: Expression<PhraseData>) {
-        phrase.apply(this, data)
+    fun includePhrase(phrase: OutlinePhrase<out Lang>) {
+        phrase.apply(this)
     }
 
     override fun scopeFactory(): OutlineScope<Lang, LetterData> = OutlineScope()

@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.api.model.maler
 
-import no.nav.pensjon.brev.api.model.Kroner
+import no.nav.pensjon.brev.api.model.*
 import no.nav.pensjon.brev.api.model.vedlegg.*
 import java.time.LocalDate
 

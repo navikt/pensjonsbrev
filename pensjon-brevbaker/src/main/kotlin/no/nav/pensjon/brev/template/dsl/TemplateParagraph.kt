@@ -11,7 +11,7 @@ class ParagraphScope<Lang : LanguageSupport, LetterData : Any> : ParagraphScopeB
         phrase.apply(this, Unit.expr())
     }
 
-    fun <PhraseData> includePhrase(phrase: ParagraphPhrase<out Lang, PhraseData>, data: Expression<PhraseData>) {
+    fun <PhraseData: Any> includePhrase(phrase: ParagraphPhrase<out Lang, PhraseData>, data: Expression<PhraseData>) {
         phrase.apply(this, data)
     }
 

@@ -1,10 +1,8 @@
 package no.nav.pensjon.brev.template.dsl.expression
 
-import no.nav.pensjon.brev.template.BinaryOperation
-import no.nav.pensjon.brev.template.Expression
-import no.nav.pensjon.brev.template.StringExpression
-import no.nav.pensjon.brev.template.UnaryOperation
+import no.nav.pensjon.brev.template.*
 
+@Deprecated("Erstatt med generte helpers ved å annotere template/frase med @TemplateModelHelpers")
 fun <Data : Any, Field> Expression<Data>.select(
     selector: Data.() -> Field,
     @Suppress("UNUSED_PARAMETER") discourageLambdas: Nothing? = null
@@ -14,26 +12,27 @@ fun <Data : Any, Field> Expression<Data>.select(
         UnaryOperation.Select(selector)
     )
 
+fun <Data : Any, Field> Expression<Data>.select(
+    selector: TemplateModelSelector<Data, Field>
+): Expression<Field> =
+    Expression.UnaryInvoke(
+        this,
+        UnaryOperation.Select2(selector)
+    )
+
+@Deprecated("Erstatt med andre alternativ fra genererte helpers eller fra dsl-biblioteket")
 fun <T, R> Expression<T>.map(transform: (T) -> R): Expression<R> =
     Expression.UnaryInvoke(
         this,
         UnaryOperation.Select(transform),
     )
 
-fun <T1, T2, R> map2(t1: Expression<T1>, t2: Expression<T2>, transform: (T1, T2) -> R): Expression<R> =
-    Expression.BinaryInvoke(
-        t1,
-        t2,
-        BinaryOperation.Select(transform),
-    )
+fun <T> T.expr(): Expression<T> = Expression.Literal(this)
 
-fun <T> T.expr() = Expression.Literal(this)
-
-fun <T: Any> Expression<T?>.ifNull(then: T) =
+fun <T: Any> Expression<T?>.ifNull(then: T): Expression<T> =
     Expression.UnaryInvoke(this, UnaryOperation.IfNull(then))
 
-fun <T: Any> Expression<T?>.notNull() =
-    map { it != null }
+fun <T: Any> Expression<T?>.notNull(): Expression<Boolean> = notEqualTo(null)
 
 fun <T : Enum<T>> Expression<Enum<T>>.isOneOf(vararg enums: Enum<T>): Expression<Boolean> = Expression.BinaryInvoke(
     this,
@@ -41,11 +40,7 @@ fun <T : Enum<T>> Expression<Enum<T>>.isOneOf(vararg enums: Enum<T>): Expression
     BinaryOperation.EnumInList()
 )
 
-fun <T : Enum<T>> Expression<Enum<T>>.isNotAnyOf(vararg enums: Enum<T>): Expression<Boolean> = Expression.BinaryInvoke(
-    this,
-    enums.asList().expr(),
-    BinaryOperation.EnumNotInList()
-)
+fun <T : Enum<T>> Expression<Enum<T>>.isNotAnyOf(vararg enums: Enum<T>): Expression<Boolean> = not(isOneOf(*enums))
 
 fun not(expr: Expression<Boolean>): Expression<Boolean> =
     Expression.UnaryInvoke(expr, UnaryOperation.Not)
@@ -98,6 +93,9 @@ fun <T> Pair<Expression<T>, Expression<T>>.tuple() =
         second = second,
         operation = BinaryOperation.Tuple()
     )
+
+fun <T> Expression<T>.notEqualTo(other: T) =
+    not(equalTo(other))
 
 infix fun <T> Expression<T>.equalTo(other: T) =
     Expression.BinaryInvoke(

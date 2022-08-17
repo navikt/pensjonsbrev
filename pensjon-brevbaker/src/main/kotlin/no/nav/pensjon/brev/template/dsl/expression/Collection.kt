@@ -17,6 +17,9 @@ fun <T> Expression<Collection<T>>.isEmpty(): Expression<Boolean> =
         operation = BinaryOperation.ValidatePredicate(),
     )
 
+fun <T> Expression<Collection<T>>.isNotEmpty(): Expression<Boolean> =
+    not(this.isEmpty())
+
 /**
  * Collection contains at least one of the listed items.
  */

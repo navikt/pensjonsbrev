@@ -27,8 +27,6 @@ fun createOpplysningerBruktIBeregningUTDtoBarnetilleggGjeldende() =
 
 fun createOpplysningerBruktIBeregningUTDtoBarnetilleggGjeldendeGrunnlag() =
     OpplysningerBruktIBeregningUTDto.BarnetilleggGjeldende.Grunnlag(
-        erIkkeUtbetaltpgaTak = false,
-        erRedusertMotTak = false,
         gradertOIFU = Kroner(0),
         prosentsatsGradertOIFU = 0,
         totaltAntallBarn = 0,

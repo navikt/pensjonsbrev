@@ -1,13 +1,12 @@
 val jupiterVersion: String by project
-val jacksonVersion: String by project
 
 plugins {
-    kotlin("jvm") version "1.6.10"
+    kotlin("jvm")
     `maven-publish`
 }
 
 group = "no.nav.pensjon.brev"
-version = "3.5.4"
+version = "3.5.6"
 
 java {
     withSourcesJar()
