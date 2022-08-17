@@ -12,11 +12,10 @@ class TextOnlyPhrase<Lang : LanguageSupport, PhraseData : Any>(private val phras
     }
 }
 
-class ParagraphPhrase<Lang : LanguageSupport, PhraseData : Any>(private val phraseBody: ParagraphScope<Lang, Unit>.(arg: Expression<PhraseData>) -> Unit) : HasModel<PhraseData> {
-    fun apply(scope: ParagraphScope<in Lang, *>, data: Expression<PhraseData>) {
-        ParagraphScope<Lang, Unit>().apply {
-            phraseBody(data)
-        }.also { scope.addAll(it.children) }
+abstract class ParagraphPhrase<Lang : LanguageSupport> {
+    abstract fun ParagraphScope<Lang, Unit>.template()
+    fun apply(scope: ParagraphScope<in Lang, *>) {
+        ParagraphScope<Lang, Unit>().apply { template() }.also { scope.addAll(it.children) }
     }
 }
 

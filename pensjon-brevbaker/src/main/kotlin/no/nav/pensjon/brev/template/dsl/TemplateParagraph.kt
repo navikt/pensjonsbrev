@@ -1,18 +1,13 @@
 package no.nav.pensjon.brev.template.dsl
 
 import no.nav.pensjon.brev.template.*
-import no.nav.pensjon.brev.template.dsl.expression.*
 
 
 @LetterTemplateMarker
 class ParagraphScope<Lang : LanguageSupport, LetterData : Any> : ParagraphScopeBase<Lang, LetterData, ParagraphScope<Lang, LetterData>>() {
 
-    fun includePhrase(phrase: ParagraphPhrase<out Lang, Unit>) {
-        phrase.apply(this, Unit.expr())
-    }
-
-    fun <PhraseData: Any> includePhrase(phrase: ParagraphPhrase<out Lang, PhraseData>, data: Expression<PhraseData>) {
-        phrase.apply(this, data)
+    fun includePhrase(phrase: ParagraphPhrase<out Lang>) {
+        phrase.apply(this)
     }
 
     override fun scopeFactory(): ParagraphScope<Lang, LetterData> = ParagraphScope()

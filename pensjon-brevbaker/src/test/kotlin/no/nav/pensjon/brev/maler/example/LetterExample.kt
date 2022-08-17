@@ -280,21 +280,22 @@ data class OutlinePhraseTest(val datoInnvilget: Expression<LocalDate>, val pensj
         }
 }
 
-@Suppress("unused", "UNUSED_ANONYMOUS_PARAMETER")
-val paragraphPhraseTest = ParagraphPhrase<LangBokmalNynorsk, Unit> { phraseParameter ->
-    list {
-        item {
-            text(Bokmal to "Test 1", Nynorsk to "Test 1")
-        }
+@Suppress("unused")
+object ParagraphPhraseTest : ParagraphPhrase<LangBokmalNynorsk>() {
+    override fun ParagraphScope<LangBokmalNynorsk, Unit>.template() =
+        list {
+            item {
+                text(Bokmal to "Test 1", Nynorsk to "Test 1")
+            }
 
-        item {
-            text(Bokmal to "Test 2", Nynorsk to "Test 2")
-        }
+            item {
+                text(Bokmal to "Test 2", Nynorsk to "Test 2")
+            }
 
-        item {
-            text(Bokmal to "Test 3", Nynorsk to "Test 3")
+            item {
+                text(Bokmal to "Test 3", Nynorsk to "Test 3")
+            }
         }
-    }
 }
 
 val textOnlyPhraseTest = TextOnlyPhrase<LangBokmalNynorsk, Unit> {
