@@ -4,18 +4,21 @@ import no.nav.pensjon.brev.api.model.Felles
 import no.nav.pensjon.brev.api.model.NAVEnhet
 import no.nav.pensjon.brev.api.model.ReturAdresse
 import no.nav.pensjon.brev.api.model.Year
+import no.nav.pensjon.brev.maler.vedlegg.EgenerklaeringPleieOgOmsorgsarbeidSelectors.aarEgenerklaring
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.choice
 import no.nav.pensjon.brev.template.dsl.expression.*
+import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 
 data class EgenerklaeringPleieOgOmsorgsarbeid(val aarEgenerklaring: Year)
 
+@TemplateModelHelpers
 val egenerklaeringPleieOgOmsorgsarbeid = createAttachment<LangBokmalNynorskEnglish, EgenerklaeringPleieOgOmsorgsarbeid>(
     title = newText(
         Bokmal to "Egenerklæring om pleie- og omsorgsarbeid",
@@ -24,7 +27,6 @@ val egenerklaeringPleieOgOmsorgsarbeid = createAttachment<LangBokmalNynorskEngli
     ),
     includeSakspart = true
 ) {
-    val aarEgenerklaring = argument().select(EgenerklaeringPleieOgOmsorgsarbeid::aarEgenerklaring).format()
     paragraph {
         val dokDato = felles().select(Felles::dokumentDato).format()
         textExpr(
@@ -36,9 +38,9 @@ val egenerklaeringPleieOgOmsorgsarbeid = createAttachment<LangBokmalNynorskEngli
 
     paragraph {
         textExpr(
-            Bokmal to "I ".expr() + aarEgenerklaring + " har jeg utført pleie og omsorgsarbeid på minst 22 timer i uken. (Inkludert opptil en halv time reisetid per besøk.)",
-            Nynorsk to "I ".expr() + aarEgenerklaring + " har eg utført pleie- og omsorgsarbeid på minst 22 timar i veka. (Inkludert opptil ein halv time reisetid per besøk.)",
-            English to "In ".expr() + aarEgenerklaring + " I have provided care work that has amounted to at least 22 hours per week. (Travelling time up to 30 minutes per visit may be included.)",
+            Bokmal to "I ".expr() + aarEgenerklaring.format() + " har jeg utført pleie og omsorgsarbeid på minst 22 timer i uken. (Inkludert opptil en halv time reisetid per besøk.)",
+            Nynorsk to "I ".expr() + aarEgenerklaring.format() + " har eg utført pleie- og omsorgsarbeid på minst 22 timar i veka. (Inkludert opptil ein halv time reisetid per besøk.)",
+            English to "In ".expr() + aarEgenerklaring.format() + " I have provided care work that has amounted to at least 22 hours per week. (Travelling time up to 30 minutes per visit may be included.)",
         )
     }
 

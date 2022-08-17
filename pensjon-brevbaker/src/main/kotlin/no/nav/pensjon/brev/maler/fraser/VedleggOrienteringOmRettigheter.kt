@@ -32,172 +32,193 @@ object VedleggPlikter_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
     }
 }
 
-val vedleggPlikterAP2_001 = TextOnlyPhrase<LangBokmalNynorskEnglish, Unit> {
-    text(
-        Bokmal to "du skal oppholde deg utenfor Norge i en lengre periode eller skal flytte til et annet land",
-        Nynorsk to "du skal opphalde deg utanfor Noreg i ein lengre periode eller skal flytte til eit anna land",
-        English to "you intend to stay in a foreign country for an extended period of time or intend to move to another country"
-    )
+object VedleggPlikterAP2_001 : TextOnlyPhrase2<LangBokmalNynorskEnglish>() {
+    override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
+        text(
+            Bokmal to "du skal oppholde deg utenfor Norge i en lengre periode eller skal flytte til et annet land",
+            Nynorsk to "du skal opphalde deg utanfor Noreg i ein lengre periode eller skal flytte til eit anna land",
+            English to "you intend to stay in a foreign country for an extended period of time or intend to move to another country"
+        )
 }
 
-val vedleggPlikterAP3_001 = TextOnlyPhrase<LangBokmalNynorskEnglish, Unit> {
-    text(
-        Bokmal to "du flytter til et annet land, tilbake til Norge eller du endrer adresse i ditt nåværende bostedsland",
-        Nynorsk to "du flyttar til eit anna land, tilbake til Noreg eller du endrar adresse i landet kor du bur no",
-        English to "you move to another country, move back to Norway or if you change address in your country of residence"
-    )
+object VedleggPlikterAP3_001 : TextOnlyPhrase2<LangBokmalNynorskEnglish>() {
+    override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
+        text(
+            Bokmal to "du flytter til et annet land, tilbake til Norge eller du endrer adresse i ditt nåværende bostedsland",
+            Nynorsk to "du flyttar til eit anna land, tilbake til Noreg eller du endrar adresse i landet kor du bur no",
+            English to "you move to another country, move back to Norway or if you change address in your country of residence"
+        )
 }
 
-val vedleggPlikterAP1_001 = TextOnlyPhrase<LangBokmalNynorskEnglish, Unit> {
-    text(
-        Bokmal to "du gifter deg eller inngår samboerskap",
-        Nynorsk to "du giftar deg eller inngår sambuarskap",
-        English to "you marry or get a cohabiting partner"
-    )
+object VedleggPlikterAP1_001 : TextOnlyPhrase2<LangBokmalNynorskEnglish>() {
+    override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
+        text(
+            Bokmal to "du gifter deg eller inngår samboerskap",
+            Nynorsk to "du giftar deg eller inngår sambuarskap",
+            English to "you marry or get a cohabiting partner"
+        )
 }
 
-val vedleggPlikterAP4_002 = TextOnlyPhrase<LangBokmalNynorskEnglish, Unit> {
-    text(
-        Bokmal to "arbeidsinntekten, pensjonsinntekten, uføreinntekten eller kapitalinntekten endrer seg for ektefellen din",
-        Nynorsk to "arbeidsinntekta, pensjonsinntekta, uføreinntekta eller kapitalinntekta til ektefellen din endrar seg",
-        English to "the employment income, pension, disability benefit or investment income changes for your spouse"
-    )
+object VedleggPlikterAP4_002 : TextOnlyPhrase2<LangBokmalNynorskEnglish>() {
+    override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
+        text(
+            Bokmal to "arbeidsinntekten, pensjonsinntekten, uføreinntekten eller kapitalinntekten endrer seg for ektefellen din",
+            Nynorsk to "arbeidsinntekta, pensjonsinntekta, uføreinntekta eller kapitalinntekta til ektefellen din endrar seg",
+            English to "the employment income, pension, disability benefit or investment income changes for your spouse"
+        )
 }
 
-val vedleggPlikterAP13_002 = TextOnlyPhrase<LangBokmalNynorskEnglish, Unit> {
-    text(
-        Bokmal to "arbeidsinntekten, pensjonsinntekten, uføreinntekten eller kapitalinntekten endrer seg for partneren din",
-        Nynorsk to "arbeidsinntekta, pensjonsinntekta, uføreinntekta eller kapitalinntekta til partnaren din endrar seg",
-        English to "the employment income, pension, disability benefit or investment income changes for your partner"
-    )
+object VedleggPlikterAP13_002 : TextOnlyPhrase2<LangBokmalNynorskEnglish>() {
+    override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
+        text(
+            Bokmal to "arbeidsinntekten, pensjonsinntekten, uføreinntekten eller kapitalinntekten endrer seg for partneren din",
+            Nynorsk to "arbeidsinntekta, pensjonsinntekta, uføreinntekta eller kapitalinntekta til partnaren din endrar seg",
+            English to "the employment income, pension, disability benefit or investment income changes for your partner"
+        )
 }
 
-val vedleggPlikterAP15_002 = TextOnlyPhrase<LangBokmalNynorskEnglish, Unit> {
-    text(
-        Bokmal to "arbeidsinntekten, pensjonsinntekten, uføreinntekten eller kapitalinntekten endrer seg for samboeren din",
-        Nynorsk to "arbeidsinntekta, pensjonsinntekta, uføreinntekta eller kapitalinntekta til sambuaren din endrar seg",
-        English to "the employment income, pension, disability benefit or investment income changes for your cohabiting partner"
-    )
+object VedleggPlikterAP15_002 : TextOnlyPhrase2<LangBokmalNynorskEnglish>() {
+    override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
+        text(
+            Bokmal to "arbeidsinntekten, pensjonsinntekten, uføreinntekten eller kapitalinntekten endrer seg for samboeren din",
+            Nynorsk to "arbeidsinntekta, pensjonsinntekta, uføreinntekta eller kapitalinntekta til sambuaren din endrar seg",
+            English to "the employment income, pension, disability benefit or investment income changes for your cohabiting partner"
+        )
 }
 
 //vedleggPlikterAP6_002, vedleggPlikterAP14_002, vedleggPlikterAP18_001
-val vedleggPlikterAPFlytterFraHverandre = TextOnlyPhrase<LangBokmalNynorskEnglish, Sivilstand> { sivilstand ->
-    text(
-        Bokmal to "du og ",
-        Nynorsk to "du og ",
-        English to "you and your "
-    )
-    showIf(sivilstand.isOneOf(Sivilstand.GIFT)){
-        text(Bokmal to "ektefellen",Nynorsk to "ektefellen",English to "spouse")
-    }.orShowIf(sivilstand.isOneOf(Sivilstand.PARTNER)){
-        text(Bokmal to "partneren",Nynorsk to "partnaren",English to "partner")
-    }.orShowIf(sivilstand.isOneOf(Sivilstand.SAMBOER1_5, Sivilstand.SAMBOER3_2)){
-        text(Bokmal to "samboeren",Nynorsk to "sambuaren",English to "cohabiting partner")
-    }
-    text(
-        Bokmal to " din flytter fra hverandre",
-        Nynorsk to " din flyttar frå kvarandre",
-        English to " separate"
-    )
-}
-
-val vedleggPlikterAP16_001 = TextOnlyPhrase<LangBokmalNynorskEnglish, Unit> {
-    text(Bokmal to "du gifter deg", Nynorsk to "du giftar deg", English to "you marry")
-}
-
-val vedleggPlikterAP17_001 = TextOnlyPhrase<LangBokmalNynorskEnglish, Unit> {
-    text(
-        Bokmal to "du får barn med samboeren din",
-        Nynorsk to "du får barn med sambuaren din",
-        English to "you and your cohabiting partner have a child together"
-    )
-}
-
-val vedleggPlikterAP19_001 = TextOnlyPhrase<LangBokmalNynorskEnglish, Unit> {
-    text(Bokmal to "samboeren din dør", Nynorsk to "sambuaren din døyr", English to "your cohabiting partner dies")
-}
-
-val vedleggPlikterAP8_001 = TextOnlyPhrase<LangBokmalNynorskEnglish, Unit> {
-    text(
-        Bokmal to "du og ektefellen din flytter sammen igjen",
-        Nynorsk to "du og ektefellen din flyttar saman igjen",
-        English to "you and your spouse move back together"
-    )
-}
-
-val vedleggPlikterAP11_001 = TextOnlyPhrase<LangBokmalNynorskEnglish, Unit> {
-    text(
-        Bokmal to "du og partneren din flytter sammen igjen",
-        Nynorsk to "du og partnaren din flyttar saman igjen",
-        English to "you and your partner move back together"
-    )
-}
-
-val vedleggPlikterAP9_001 = TextOnlyPhrase<LangBokmalNynorskEnglish, Unit> {
-    text(Bokmal to "du blir skilt", Nynorsk to "du blir skild", English to "you divorce")
-}
-
-val vedleggPlikterAP7_001 = TextOnlyPhrase<LangBokmalNynorskEnglish, Unit> {
-    text(Bokmal to "ektefellen din dør", Nynorsk to "ektefellen din døyr", English to "your spouse dies")
-}
-
-val vedleggPlikterAP12_001 = TextOnlyPhrase<LangBokmalNynorskEnglish, Unit> {
-    text(Bokmal to "partneren din dør", Nynorsk to "partnaren din døyr", English to "your partner dies")
-}
-
-val vedleggPlikterAP10_001 = TextOnlyPhrase<LangBokmalNynorskEnglish, Unit> {
-    text(Bokmal to "du får ny samboer", Nynorsk to "du får ny sambuar", English to "you get a new cohabiting partner")
-}
-
-val vedleggPlikterAP5_001 = TextOnlyPhrase<LangBokmalNynorskEnglish, Sivilstand> { sivilstand ->
-    showIf(sivilstand.isOneOf(Sivilstand.GIFT, Sivilstand.GIFT_LEVER_ADSKILT)) {
+data class VedleggPlikterAPFlytterFraHverandre(val sivilstand: Expression<Sivilstand>) : TextOnlyPhrase2<LangBokmalNynorskEnglish>() {
+    override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         text(
-            Bokmal to "en av dere får et varig opphold i institusjon",
-            Nynorsk to "ein av dykk får et varig opphald i institusjon",
-            English to "either you or your spouse get permanent residency in an institution"
+            Bokmal to "du og ",
+            Nynorsk to "du og ",
+            English to "you and your "
         )
-    }
-    showIf(sivilstand.isOneOf(Sivilstand.PARTNER, Sivilstand.PARTNER_LEVER_ADSKILT)) {
+        showIf(sivilstand.isOneOf(Sivilstand.GIFT)) {
+            text(Bokmal to "ektefellen", Nynorsk to "ektefellen", English to "spouse")
+        }.orShowIf(sivilstand.isOneOf(Sivilstand.PARTNER)) {
+            text(Bokmal to "partneren", Nynorsk to "partnaren", English to "partner")
+        }.orShowIf(sivilstand.isOneOf(Sivilstand.SAMBOER1_5, Sivilstand.SAMBOER3_2)) {
+            text(Bokmal to "samboeren", Nynorsk to "sambuaren", English to "cohabiting partner")
+        }
         text(
-            Bokmal to "en av dere får et varig opphold i institusjon",
-            Nynorsk to "ein av dykk får et varig opphald i institusjon",
-            English to "either you or your partner get permanent residency in an institution"
-        )
-    }
-    showIf(sivilstand.isOneOf(Sivilstand.SAMBOER1_5, Sivilstand.SAMBOER3_2)) {
-        text(
-            Bokmal to "en av dere får et varig opphold i institusjon",
-            Nynorsk to "ein av dykk får et varig opphald i institusjon",
-            English to "either you or your partner get permanent residency in an institutio"
+            Bokmal to " din flytter fra hverandre",
+            Nynorsk to " din flyttar frå kvarandre",
+            English to " separate"
         )
     }
 }
 
-val vedleggPlikterAP26_001 = TextOnlyPhrase<LangBokmalNynorskEnglish, Unit> {
-    text(
-        Bokmal to "du får et varig opphold i institusjon",
-        Nynorsk to "du blir innlagd på institusjon",
-        English to "you get permanent residency in an institution"
-    )
+object VedleggPlikterAP16_001 : TextOnlyPhrase2<LangBokmalNynorskEnglish>() {
+    override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
+        text(Bokmal to "du gifter deg", Nynorsk to "du giftar deg", English to "you marry")
 }
 
-val vedleggPlikterAP27_001 = TextOnlyPhrase<LangBokmalNynorskEnglish, Unit> {
-    text(
-        Bokmal to "du sitter i varetekt, soner straff eller er under forvaring",
-        Nynorsk to "du sit i varetekt, sonar straff eller er under forvaring",
-        English to "you are held in detention, incarcerated or in custody"
-    )
+object VedleggPlikterAP17_001 : TextOnlyPhrase2<LangBokmalNynorskEnglish>() {
+    override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
+        text(
+            Bokmal to "du får barn med samboeren din",
+            Nynorsk to "du får barn med sambuaren din",
+            English to "you and your cohabiting partner have a child together"
+        )
+}
+
+object VedleggPlikterAP19_001 : TextOnlyPhrase2<LangBokmalNynorskEnglish>() {
+    override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
+        text(Bokmal to "samboeren din dør", Nynorsk to "sambuaren din døyr", English to "your cohabiting partner dies")
+}
+
+object VedleggPlikterAP8_001 : TextOnlyPhrase2<LangBokmalNynorskEnglish>() {
+    override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
+        text(
+            Bokmal to "du og ektefellen din flytter sammen igjen",
+            Nynorsk to "du og ektefellen din flyttar saman igjen",
+            English to "you and your spouse move back together"
+        )
+}
+
+object VedleggPlikterAP11_001 : TextOnlyPhrase2<LangBokmalNynorskEnglish>() {
+    override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
+        text(
+            Bokmal to "du og partneren din flytter sammen igjen",
+            Nynorsk to "du og partnaren din flyttar saman igjen",
+            English to "you and your partner move back together"
+        )
+}
+
+object VedleggPlikterAP9_001 : TextOnlyPhrase2<LangBokmalNynorskEnglish>() {
+    override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
+        text(Bokmal to "du blir skilt", Nynorsk to "du blir skild", English to "you divorce")
+}
+
+object VedleggPlikterAP7_001 : TextOnlyPhrase2<LangBokmalNynorskEnglish>() {
+    override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
+        text(Bokmal to "ektefellen din dør", Nynorsk to "ektefellen din døyr", English to "your spouse dies")
+}
+
+object VedleggPlikterAP12_001 : TextOnlyPhrase2<LangBokmalNynorskEnglish>() {
+    override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
+        text(Bokmal to "partneren din dør", Nynorsk to "partnaren din døyr", English to "your partner dies")
+}
+
+object VedleggPlikterAP10_001 : TextOnlyPhrase2<LangBokmalNynorskEnglish>() {
+    override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
+        text(Bokmal to "du får ny samboer", Nynorsk to "du får ny sambuar", English to "you get a new cohabiting partner")
+}
+
+data class VedleggPlikterAP5_001(val sivilstand: Expression<Sivilstand>) : TextOnlyPhrase2<LangBokmalNynorskEnglish>() {
+    override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+        showIf(sivilstand.isOneOf(Sivilstand.GIFT, Sivilstand.GIFT_LEVER_ADSKILT)) {
+            text(
+                Bokmal to "en av dere får et varig opphold i institusjon",
+                Nynorsk to "ein av dykk får et varig opphald i institusjon",
+                English to "either you or your spouse get permanent residency in an institution"
+            )
+        }
+        showIf(sivilstand.isOneOf(Sivilstand.PARTNER, Sivilstand.PARTNER_LEVER_ADSKILT)) {
+            text(
+                Bokmal to "en av dere får et varig opphold i institusjon",
+                Nynorsk to "ein av dykk får et varig opphald i institusjon",
+                English to "either you or your partner get permanent residency in an institution"
+            )
+        }
+        showIf(sivilstand.isOneOf(Sivilstand.SAMBOER1_5, Sivilstand.SAMBOER3_2)) {
+            text(
+                Bokmal to "en av dere får et varig opphold i institusjon",
+                Nynorsk to "ein av dykk får et varig opphald i institusjon",
+                English to "either you or your partner get permanent residency in an institutio"
+            )
+        }
+    }
+}
+
+object VedleggPlikterAP26_001 : TextOnlyPhrase2<LangBokmalNynorskEnglish>() {
+    override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
+        text(
+            Bokmal to "du får et varig opphold i institusjon",
+            Nynorsk to "du blir innlagd på institusjon",
+            English to "you get permanent residency in an institution"
+        )
+}
+
+object VedleggPlikterAP27_001 : TextOnlyPhrase2<LangBokmalNynorskEnglish>() {
+    override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
+        text(
+            Bokmal to "du sitter i varetekt, soner straff eller er under forvaring",
+            Nynorsk to "du sit i varetekt, sonar straff eller er under forvaring",
+            English to "you are held in detention, incarcerated or in custody"
+        )
 }
 
 object VedleggPlikterHvorforMeldeAP_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() =
-    paragraph {
-        text(
-            Bokmal to "Skjer det endringer, kan det få betydning for hvor mye du kan få utbetalt i alderspensjon. Derfor er det viktig at du gir oss beskjed så raskt som mulig.",
-            Nynorsk to "Skjer det endringar, kan det få betydning for kor mykje du kan få utbetalt i alderspensjon. Derfor er det viktig at du gir oss beskjed så raskt som mogleg.",
-            English to "To make sure you get the right amount of retirement pension, you need to report any changes in your circumstances that can influence the assessment of the supplement you receive. It is important that you notify any change to us as soon as possible."
-        )
-    }
+        paragraph {
+            text(
+                Bokmal to "Skjer det endringer, kan det få betydning for hvor mye du kan få utbetalt i alderspensjon. Derfor er det viktig at du gir oss beskjed så raskt som mulig.",
+                Nynorsk to "Skjer det endringar, kan det få betydning for kor mykje du kan få utbetalt i alderspensjon. Derfor er det viktig at du gir oss beskjed så raskt som mogleg.",
+                English to "To make sure you get the right amount of retirement pension, you need to report any changes in your circumstances that can influence the assessment of the supplement you receive. It is important that you notify any change to us as soon as possible."
+            )
+        }
 }
 
 object VedleggPlikterRettTilBarnetilleggAP_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
@@ -367,122 +388,122 @@ data class VedleggPlikterRettTilEktefelletilleggOgBarnetilleggAP_001(
 
 object VedleggPlikterinntektsprovingBTFellesBarnSaerkullsbarnAP_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() =
-    paragraph {
-        text(
-            Bokmal to "Hvor mye du får utbetalt i barnetillegg avhenger av den samlede inntekten du og ektefellen har. Du må derfor også gi beskjed hvis",
-            Nynorsk to "Kor mykje du får utbetalt i barnetillegg er avhengig av den samla inntekta du og ektefellen har. Du må derfor også gi beskjed om",
-            English to "How much you receive in child supplement depends on the total combined income of you and your spouse. You must therefore also notify us if your"
-        )
-        list {
-            item {
-                text(
-                    Bokmal to "arbeidsinntekten endres",
-                    Nynorsk to "arbeidsinntekta di endrer seg",
-                    English to "employment income changes"
-                )
-                text(
-                    Bokmal to "tjenestepensjonen fra offentlig eller private ordninger endres",
-                    Nynorsk to "tenestepensjon frå offentlege eller private ordningar endrar seg",
-                    English to "occupational pension from public or private schemes changes"
-                )
-                text(
-                    Bokmal to "den individuelle pensjonsordningen, livrente og gavepensjonen endres",
-                    Nynorsk to "den individuelle pensjonsordningen, livrente og gavepensjonen endres",
-                    English to "individual pension scheme, annuity and gratuity payments changes"
-                )
-                text(
-                    Bokmal to "andre ytelser fra folketrygden endres",
-                    Nynorsk to "andre ytingar frå folketrygda endrar seg",
-                    English to "other income supplements from the National Insurance Scheme changes"
-                )
-                text(
-                    Bokmal to "ytelser og pensjon fra andre land endres",
-                    Nynorsk to "ytingar og pensjon frå andre land endrar seg",
-                    English to "other income supplements and pension from other countries changes"
-                )
+        paragraph {
+            text(
+                Bokmal to "Hvor mye du får utbetalt i barnetillegg avhenger av den samlede inntekten du og ektefellen har. Du må derfor også gi beskjed hvis",
+                Nynorsk to "Kor mykje du får utbetalt i barnetillegg er avhengig av den samla inntekta du og ektefellen har. Du må derfor også gi beskjed om",
+                English to "How much you receive in child supplement depends on the total combined income of you and your spouse. You must therefore also notify us if your"
+            )
+            list {
+                item {
+                    text(
+                        Bokmal to "arbeidsinntekten endres",
+                        Nynorsk to "arbeidsinntekta di endrer seg",
+                        English to "employment income changes"
+                    )
+                    text(
+                        Bokmal to "tjenestepensjonen fra offentlig eller private ordninger endres",
+                        Nynorsk to "tenestepensjon frå offentlege eller private ordningar endrar seg",
+                        English to "occupational pension from public or private schemes changes"
+                    )
+                    text(
+                        Bokmal to "den individuelle pensjonsordningen, livrente og gavepensjonen endres",
+                        Nynorsk to "den individuelle pensjonsordningen, livrente og gavepensjonen endres",
+                        English to "individual pension scheme, annuity and gratuity payments changes"
+                    )
+                    text(
+                        Bokmal to "andre ytelser fra folketrygden endres",
+                        Nynorsk to "andre ytingar frå folketrygda endrar seg",
+                        English to "other income supplements from the National Insurance Scheme changes"
+                    )
+                    text(
+                        Bokmal to "ytelser og pensjon fra andre land endres",
+                        Nynorsk to "ytingar og pensjon frå andre land endrar seg",
+                        English to "other income supplements and pension from other countries changes"
+                    )
+                }
             }
         }
-    }
 }
 
 object VedleggPlikterinntektsprovingBTOgETAP_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() =
-    paragraph {
-        text(
-            Bokmal to "Hvor mye du får utbetalt i barnetillegg og ektefelletillegg avhenger av den samlede inntekten du har. Du må derfor også gi beskjed hvis",
-            Nynorsk to "Kor mykje du får utbetalt i barnetillegg og ektefelletillegg er avhengig av den samla inntekta du har. Du må derfor også gi beskjed om",
-            English to "How much you receive in child and spouse supplements depends on your total income. You must therefore notify us if your"
-        )
-        list {
-            item {
-                text(
-                    Bokmal to "arbeidsinntekten endres",
-                    Nynorsk to "arbeidsinntekta di endrer seg",
-                    English to "employment income changes"
-                )
-                text(
-                    Bokmal to "tjenestepensjonen fra offentlig eller private ordninger endre",
-                    Nynorsk to "tenestepensjon frå offentlege eller private ordningar endrar seg",
-                    English to "occupational pension from public or private schemes changes"
-                )
-                text(
-                    Bokmal to "den individuelle pensjonsordningen, livrente og gavepensjonen endres",
-                    Nynorsk to "individuelle pensjonsordningar, livrente og gåvepensjon endrar seg",
-                    English to "individual pension scheme, annuity and gratuity payments changes"
-                )
-                text(
-                    Bokmal to "andre ytelser fra folketrygden endres",
-                    Nynorsk to "andre ytingar frå folketrygda endrar seg",
-                    English to "other income supplements from the National Insurance Scheme changes"
-                )
-                text(
-                    Bokmal to "ytelser og pensjon fra andre land endres",
-                    Nynorsk to "ytingar og pensjon frå andre land endrar seg",
-                    English to "other income supplements and pension from other countries changes"
-                )
+        paragraph {
+            text(
+                Bokmal to "Hvor mye du får utbetalt i barnetillegg og ektefelletillegg avhenger av den samlede inntekten du har. Du må derfor også gi beskjed hvis",
+                Nynorsk to "Kor mykje du får utbetalt i barnetillegg og ektefelletillegg er avhengig av den samla inntekta du har. Du må derfor også gi beskjed om",
+                English to "How much you receive in child and spouse supplements depends on your total income. You must therefore notify us if your"
+            )
+            list {
+                item {
+                    text(
+                        Bokmal to "arbeidsinntekten endres",
+                        Nynorsk to "arbeidsinntekta di endrer seg",
+                        English to "employment income changes"
+                    )
+                    text(
+                        Bokmal to "tjenestepensjonen fra offentlig eller private ordninger endre",
+                        Nynorsk to "tenestepensjon frå offentlege eller private ordningar endrar seg",
+                        English to "occupational pension from public or private schemes changes"
+                    )
+                    text(
+                        Bokmal to "den individuelle pensjonsordningen, livrente og gavepensjonen endres",
+                        Nynorsk to "individuelle pensjonsordningar, livrente og gåvepensjon endrar seg",
+                        English to "individual pension scheme, annuity and gratuity payments changes"
+                    )
+                    text(
+                        Bokmal to "andre ytelser fra folketrygden endres",
+                        Nynorsk to "andre ytingar frå folketrygda endrar seg",
+                        English to "other income supplements from the National Insurance Scheme changes"
+                    )
+                    text(
+                        Bokmal to "ytelser og pensjon fra andre land endres",
+                        Nynorsk to "ytingar og pensjon frå andre land endrar seg",
+                        English to "other income supplements and pension from other countries changes"
+                    )
+                }
             }
         }
-    }
 }
 
 object VedleggPlikterinntektsprovingETAP_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() =
-    paragraph {
-        text(
-            Bokmal to "Hvor mye du får utbetalt i ektefelletillegg avhenger av den samlede inntekten du har. Du må derfor også gi beskjed hvis",
-            Nynorsk to "Kor mykje du får utbetalt i ektefelletillegg avhenger av den samla inntekta du har. Du må derfor også gi beskjed om",
-            English to "How much you receive in spouse supplement depends on your total income. You must therefore notify us if your"
-        )
-        list {
-            item {
-                text(
-                    Bokmal to "arbeidsinntekten endres",
-                    Nynorsk to "arbeidsinntekta di endrer seg",
-                    English to "employment income changes"
-                )
-                text(
-                    Bokmal to "tjenestepensjonen fra offentlig eller private ordninger endres",
-                    Nynorsk to "tenestepensjon frå offentlege eller private ordningar endrar seg",
-                    English to "occupational pension from public or private schemes changes"
-                )
-                text(
-                    Bokmal to "den individuelle pensjonsordningen, livrente og gavepensjonen endres",
-                    Nynorsk to "individuelle pensjonsordningar, livrente og gåvepensjon endrar seg",
-                    English to "individual pension scheme, annuity and gratuity payments changes"
-                )
-                text(
-                    Bokmal to "andre ytelser fra folketrygden endres",
-                    Nynorsk to "andre ytingar frå folketrygda endrar seg",
-                    English to "other income supplements from the National Insurance Scheme changes"
-                )
-                text(
-                    Bokmal to "ytelser og pensjon fra andre land endres",
-                    Nynorsk to "ytingar og pensjon frå andre land endrar seg",
-                    English to "other income supplements and pension from other countries changes"
-                )
+        paragraph {
+            text(
+                Bokmal to "Hvor mye du får utbetalt i ektefelletillegg avhenger av den samlede inntekten du har. Du må derfor også gi beskjed hvis",
+                Nynorsk to "Kor mykje du får utbetalt i ektefelletillegg avhenger av den samla inntekta du har. Du må derfor også gi beskjed om",
+                English to "How much you receive in spouse supplement depends on your total income. You must therefore notify us if your"
+            )
+            list {
+                item {
+                    text(
+                        Bokmal to "arbeidsinntekten endres",
+                        Nynorsk to "arbeidsinntekta di endrer seg",
+                        English to "employment income changes"
+                    )
+                    text(
+                        Bokmal to "tjenestepensjonen fra offentlig eller private ordninger endres",
+                        Nynorsk to "tenestepensjon frå offentlege eller private ordningar endrar seg",
+                        English to "occupational pension from public or private schemes changes"
+                    )
+                    text(
+                        Bokmal to "den individuelle pensjonsordningen, livrente og gavepensjonen endres",
+                        Nynorsk to "individuelle pensjonsordningar, livrente og gåvepensjon endrar seg",
+                        English to "individual pension scheme, annuity and gratuity payments changes"
+                    )
+                    text(
+                        Bokmal to "andre ytelser fra folketrygden endres",
+                        Nynorsk to "andre ytingar frå folketrygda endrar seg",
+                        English to "other income supplements from the National Insurance Scheme changes"
+                    )
+                    text(
+                        Bokmal to "ytelser og pensjon fra andre land endres",
+                        Nynorsk to "ytingar og pensjon frå andre land endrar seg",
+                        English to "other income supplements and pension from other countries changes"
+                    )
+                }
             }
         }
-    }
 }
 
 object VedleggPlikterUT_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
@@ -504,96 +525,108 @@ object VedleggPlikterUT_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
     }
 }
 
-val vedleggPlikterUT1_001 = TextOnlyPhrase<LangBokmalNynorskEnglish, Unit> {
-    text(
-        Bokmal to "inntekten din endrer seg. Du kan informere NAV om endret inntekt ved å bruke selvbetjeningsløsningen på nav.no",
-        Nynorsk to "inntekta di endrar seg. Du kan informere NAV om endra inntekt ved å bruke sjølvbeteningsløysninga på nav.no",
-        English to "your income changes. You can notify NAV of changes in your income by using the online service at nav.no"
-    )
+object VedleggPlikterUT1_001 : TextOnlyPhrase2<LangBokmalNynorskEnglish>() {
+    override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
+        text(
+            Bokmal to "inntekten din endrer seg. Du kan informere NAV om endret inntekt ved å bruke selvbetjeningsløsningen på nav.no",
+            Nynorsk to "inntekta di endrar seg. Du kan informere NAV om endra inntekt ved å bruke sjølvbeteningsløysninga på nav.no",
+            English to "your income changes. You can notify NAV of changes in your income by using the online service at nav.no"
+        )
 }
 
-val vedleggPlikterUT2_001 = TextOnlyPhrase<LangBokmalNynorskEnglish, Unit> {
-    text(Bokmal to "du endrer adresse", Nynorsk to "du endrar adresse", English to "you change address")
+object VedleggPlikterUT2_001 : TextOnlyPhrase2<LangBokmalNynorskEnglish>() {
+    override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
+        text(Bokmal to "du endrer adresse", Nynorsk to "du endrar adresse", English to "you change address")
 }
 
-val vedleggPlikterUT3_001 = TextOnlyPhrase<LangBokmalNynorskEnglish, Unit> {
-    text(
-        Bokmal to "du skal begynne å arbeide i utlandet",
-        Nynorsk to "du skal begynne å arbeide i utlandet",
-        English to "you will start working abroad"
-    )
+object VedleggPlikterUT3_001 : TextOnlyPhrase2<LangBokmalNynorskEnglish>() {
+    override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
+        text(
+            Bokmal to "du skal begynne å arbeide i utlandet",
+            Nynorsk to "du skal begynne å arbeide i utlandet",
+            English to "you will start working abroad"
+        )
 }
 
-val vedleggPlikterUT4_001 = TextOnlyPhrase<LangBokmalNynorskEnglish, Unit> {
-    text(
-        Bokmal to "du skal oppholde deg utenfor Norge lengre enn seks måneder",
-        Nynorsk to "du skal opphalde deg utanfor Noreg lengre enn seks månader",
-        English to "you intend to stay outside Norway for more than six months"
-    )
+object VedleggPlikterUT4_001 : TextOnlyPhrase2<LangBokmalNynorskEnglish>() {
+    override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
+        text(
+            Bokmal to "du skal oppholde deg utenfor Norge lengre enn seks måneder",
+            Nynorsk to "du skal opphalde deg utanfor Noreg lengre enn seks månader",
+            English to "you intend to stay outside Norway for more than six months"
+        )
 }
 
-val vedleggPlikterUT5_001 = TextOnlyPhrase<LangBokmalNynorskEnglish, Unit> {
-    text(
-        Bokmal to "du skal flytte til et annet land",
-        Nynorsk to "du flyttar til eit anna land",
-        English to "you are moving to another country"
-    )
+object VedleggPlikterUT5_001 : TextOnlyPhrase2<LangBokmalNynorskEnglish>() {
+    override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
+        text(
+            Bokmal to "du skal flytte til et annet land",
+            Nynorsk to "du flyttar til eit anna land",
+            English to "you are moving to another country"
+        )
 }
 
-val vedleggPlikterUT6_001 = TextOnlyPhrase<LangBokmalNynorskEnglish, Unit> {
-    text(
-        Bokmal to "du gifter deg eller inngår samboerskap",
-        Nynorsk to "du giftar deg eller inngår sambuarskap",
-        English to "you get married or get a cohabitant"
-    )
+object VedleggPlikterUT6_001 : TextOnlyPhrase2<LangBokmalNynorskEnglish>() {
+    override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
+        text(
+            Bokmal to "du gifter deg eller inngår samboerskap",
+            Nynorsk to "du giftar deg eller inngår sambuarskap",
+            English to "you get married or get a cohabitant"
+        )
 }
 
-val vedleggPlikterUT7_001 = TextOnlyPhrase<LangBokmalNynorskEnglish, Unit> {
-    text(
-        Bokmal to "barn du forsørger får en inntekt over folketrygdens grunnbeløp, eller det skjer endringer i omsorgsituasjonen",
-        Nynorsk to "barn du forsørgjer får ei samla inntekt over grunnbeløpet i folketrygda, eller det skjer endringar av omsorgsituasjonen",
-        English to "the child(ren) in your care earn an income exceeding the National Insurance basic amount or there are changes in the care situation"
-    )
+object VedleggPlikterUT7_001 : TextOnlyPhrase2<LangBokmalNynorskEnglish>() {
+    override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
+        text(
+            Bokmal to "barn du forsørger får en inntekt over folketrygdens grunnbeløp, eller det skjer endringer i omsorgsituasjonen",
+            Nynorsk to "barn du forsørgjer får ei samla inntekt over grunnbeløpet i folketrygda, eller det skjer endringar av omsorgsituasjonen",
+            English to "the child(ren) in your care earn an income exceeding the National Insurance basic amount or there are changes in the care situation"
+        )
 }
 
-val vedleggPlikterUT8_001 = TextOnlyPhrase<LangBokmalNynorskEnglish, Unit> {
-    text(
-        Bokmal to "tjenestepensjon fra offentlig eller private ordninger endrer seg",
-        Nynorsk to "tenestepensjon frå offentlege eller private ordningar endrar seg",
-        English to "your occupational pension from public or private schemes changes"
-    )
+object VedleggPlikterUT8_001 : TextOnlyPhrase2<LangBokmalNynorskEnglish>() {
+    override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
+        text(
+            Bokmal to "tjenestepensjon fra offentlig eller private ordninger endrer seg",
+            Nynorsk to "tenestepensjon frå offentlege eller private ordningar endrar seg",
+            English to "your occupational pension from public or private schemes changes"
+        )
 }
 
-val vedleggPlikterUT9_001 = TextOnlyPhrase<LangBokmalNynorskEnglish, Unit> {
-    text(
-        Bokmal to "individuelle pensjonsordninger, livrente og gavepensjon endrer seg",
-        Nynorsk to "individuelle pensjonsordningar, livrente og gåvepensjon endrar seg",
-        English to "your individual pension scheme, annuity or gratuity pension changes"
-    )
+object VedleggPlikterUT9_001 : TextOnlyPhrase2<LangBokmalNynorskEnglish>() {
+    override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
+        text(
+            Bokmal to "individuelle pensjonsordninger, livrente og gavepensjon endrer seg",
+            Nynorsk to "individuelle pensjonsordningar, livrente og gåvepensjon endrar seg",
+            English to "your individual pension scheme, annuity or gratuity pension changes"
+        )
 }
 
-val vedleggPlikterUT10_001 = TextOnlyPhrase<LangBokmalNynorskEnglish, Unit> {
-    text(
-        Bokmal to "ytelser og pensjon fra andre land endrer seg",
-        Nynorsk to "ytingar og pensjon frå andre land endrar seg",
-        English to "benefits and pensions from other countries change"
-    )
+object VedleggPlikterUT10_001 : TextOnlyPhrase2<LangBokmalNynorskEnglish>() {
+    override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
+        text(
+            Bokmal to "ytelser og pensjon fra andre land endrer seg",
+            Nynorsk to "ytingar og pensjon frå andre land endrar seg",
+            English to "benefits and pensions from other countries change"
+        )
 }
 
-val vedleggPlikterUT11_001 = TextOnlyPhrase<LangBokmalNynorskEnglish, Unit> {
-    text(
-        Bokmal to "du blir innlagt på institusjon",
-        Nynorsk to "du blir innlagd på institusjon",
-        English to "you are admitted to an institution"
-    )
+object VedleggPlikterUT11_001 : TextOnlyPhrase2<LangBokmalNynorskEnglish>() {
+    override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
+        text(
+            Bokmal to "du blir innlagt på institusjon",
+            Nynorsk to "du blir innlagd på institusjon",
+            English to "you are admitted to an institution"
+        )
 }
 
-val vedleggPlikterUT12_001 = TextOnlyPhrase<LangBokmalNynorskEnglish, Unit> {
-    text(
-        Bokmal to "du sitter i varetekt, soner straff eller er under forvaring",
-        Nynorsk to "du sit i varetekt, sonar straff eller er under forvaring",
-        English to "you are remanded in custody or serving time in prison or preventive custody"
-    )
+object VedleggPlikterUT12_001 : TextOnlyPhrase2<LangBokmalNynorskEnglish>() {
+    override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
+        text(
+            Bokmal to "du sitter i varetekt, soner straff eller er under forvaring",
+            Nynorsk to "du sit i varetekt, sonar straff eller er under forvaring",
+            English to "you are remanded in custody or serving time in prison or preventive custody"
+        )
 }
 
 object VedleggPlikterAFP_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
@@ -615,36 +648,40 @@ object VedleggPlikterAFP_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
     }
 }
 
-val vedleggPlikterAFP1_001 = TextOnlyPhrase<LangBokmalNynorskEnglish, Unit> {
-    text(
-        Bokmal to "inntekten din endrer seg",
-        Nynorsk to "inntekta di endrar seg",
-        English to "your income changes"
-    )
+object VedleggPlikterAFP1_001 : TextOnlyPhrase2<LangBokmalNynorskEnglish>() {
+    override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
+        text(
+            Bokmal to "inntekten din endrer seg",
+            Nynorsk to "inntekta di endrar seg",
+            English to "your income changes"
+        )
 }
 
-val vedleggPlikterAFP2_001 = TextOnlyPhrase<LangBokmalNynorskEnglish, Unit> {
-    text(
-        Bokmal to "du gifter deg eller inngår samboerskap",
-        Nynorsk to "du giftar deg eller inngår sambuarskap",
-        English to "you get married or get a cohabitant"
-    )
+object VedleggPlikterAFP2_001 : TextOnlyPhrase2<LangBokmalNynorskEnglish>() {
+    override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
+        text(
+            Bokmal to "du gifter deg eller inngår samboerskap",
+            Nynorsk to "du giftar deg eller inngår sambuarskap",
+            English to "you get married or get a cohabitant"
+        )
 }
 
-val vedleggPlikterAFP3_001 = TextOnlyPhrase<LangBokmalNynorskEnglish, Unit> {
-    text(
-        Bokmal to "du skal oppholde deg utenfor Norge i en lengre periode eller skal flytte til et annet land",
-        Nynorsk to "du skal opphalde deg utanfor Noreg i ein lengre periode eller skal flytte til eit anna land",
-        English to "you intend to stay outside Norway for a long period or intend to move to another country "
-    )
+object VedleggPlikterAFP3_001 : TextOnlyPhrase2<LangBokmalNynorskEnglish>() {
+    override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
+        text(
+            Bokmal to "du skal oppholde deg utenfor Norge i en lengre periode eller skal flytte til et annet land",
+            Nynorsk to "du skal opphalde deg utanfor Noreg i ein lengre periode eller skal flytte til eit anna land",
+            English to "you intend to stay outside Norway for a long period or intend to move to another country "
+        )
 }
 
-val vedleggPlikterAFP4_001 = TextOnlyPhrase<LangBokmalNynorskEnglish, Unit> {
-    text(
-        Bokmal to "du flytter til et annet land, tilbake til Norge eller du endrer adresse i ditt nåværende bostedsland",
-        Nynorsk to "du flyttar til eit anna land, tilbake til Noreg eller du endrar adresse i landet kor du bur no",
-        English to "you move to another country, move back to Norway, or you change address in your current country of residence"
-    )
+object VedleggPlikterAFP4_001 : TextOnlyPhrase2<LangBokmalNynorskEnglish>() {
+    override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
+        text(
+            Bokmal to "du flytter til et annet land, tilbake til Norge eller du endrer adresse i ditt nåværende bostedsland",
+            Nynorsk to "du flyttar til eit anna land, tilbake til Noreg eller du endrar adresse i landet kor du bur no",
+            English to "you move to another country, move back to Norway, or you change address in your current country of residence"
+        )
 }
 
 object InfoAPBeskjed_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {

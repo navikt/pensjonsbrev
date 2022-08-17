@@ -12,6 +12,13 @@ class TextOnlyPhrase<Lang : LanguageSupport, PhraseData : Any>(private val phras
     }
 }
 
+abstract class TextOnlyPhrase2<Lang : LanguageSupport> {
+    abstract fun TextOnlyScope<Lang, Unit>.template()
+    fun apply(scope: TextOnlyScope<in Lang, *>) {
+        TextOnlyScope<Lang, Unit>().apply { template() }.also { scope.addAll(it.children) }
+    }
+}
+
 abstract class ParagraphPhrase<Lang : LanguageSupport> {
     abstract fun ParagraphScope<Lang, Unit>.template()
     fun apply(scope: ParagraphScope<in Lang, *>) {

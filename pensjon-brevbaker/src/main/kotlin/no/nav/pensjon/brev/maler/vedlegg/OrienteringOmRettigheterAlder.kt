@@ -36,12 +36,12 @@ val orienteringOmRettigheterOgPlikterAlder =
 
             showIf(institusjon_gjeldende.isNotAnyOf(FENGSEL, HELSE, SYKEHJEM)) {
                 showIf(bruker_borINorge) {
-                    item { includePhrase(vedleggPlikterAP2_001) }
+                    item { includePhrase(VedleggPlikterAP2_001) }
                 }.orShow {
-                    item { includePhrase(vedleggPlikterAP3_001) }
+                    item { includePhrase(VedleggPlikterAP3_001) }
                 }
                 showIf(bruker_sivilstand.isOneOf(ENSLIG, ENKE)) {
-                    item { includePhrase(vedleggPlikterAP1_001) }
+                    item { includePhrase(VedleggPlikterAP1_001) }
                 }
             }
 
@@ -51,11 +51,11 @@ val orienteringOmRettigheterOgPlikterAlder =
             ){
 
                 showIf(bruker_sivilstand.isOneOf(GIFT)) {
-                    item { includePhrase(vedleggPlikterAP4_002) }
+                    item { includePhrase(VedleggPlikterAP4_002) }
                 }.orShowIf(bruker_sivilstand.isOneOf(PARTNER)) {
-                    item { includePhrase(vedleggPlikterAP13_002) }
+                    item { includePhrase(VedleggPlikterAP13_002) }
                 }.orShowIf(bruker_sivilstand.isOneOf(SAMBOER1_5, SAMBOER3_2)) {
-                    item { includePhrase(vedleggPlikterAP15_002) }
+                    item { includePhrase(VedleggPlikterAP15_002) }
                 }
             }
 
@@ -64,11 +64,11 @@ val orienteringOmRettigheterOgPlikterAlder =
                         and institusjon_gjeldende.isNotAnyOf(FENGSEL, HELSE, SYKEHJEM)
                         and instutisjon_epsInstitusjonGjeldende.isNotAnyOf(INGEN)
             ) {
-                item { includePhrase(vedleggPlikterAPFlytterFraHverandre, bruker_sivilstand) }
+                item { includePhrase(VedleggPlikterAPFlytterFraHverandre(bruker_sivilstand)) }
                 showIf(bruker_sivilstand.isOneOf(SAMBOER1_5, SAMBOER3_2)) {
-                    item { includePhrase(vedleggPlikterAP16_001) }
-                    item { includePhrase(vedleggPlikterAP17_001) }
-                    item { includePhrase(vedleggPlikterAP19_001) }
+                    item { includePhrase(VedleggPlikterAP16_001) }
+                    item { includePhrase(VedleggPlikterAP17_001) }
+                    item { includePhrase(VedleggPlikterAP19_001) }
                 }
             }
 
@@ -78,26 +78,26 @@ val orienteringOmRettigheterOgPlikterAlder =
                     and instutisjon_epsInstitusjonGjeldende.isNotAnyOf(SYKEHJEM)){
 
                 showIf(bruker_sivilstand.isOneOf(GIFT_LEVER_ADSKILT, GIFT)){
-                    item { includePhrase(vedleggPlikterAP8_001) }
+                    item { includePhrase(VedleggPlikterAP8_001) }
                 }.orShowIf(bruker_sivilstand.isOneOf(PARTNER, PARTNER_LEVER_ADSKILT)){
-                    item { includePhrase(vedleggPlikterAP11_001) }
+                    item { includePhrase(VedleggPlikterAP11_001) }
                 }
             }
 
             showIf(
                 bruker_sivilstand.isOneOf(GIFT, GIFT_LEVER_ADSKILT, PARTNER, PARTNER_LEVER_ADSKILT)
             ) {
-                item { includePhrase(vedleggPlikterAP9_001) }
+                item { includePhrase(VedleggPlikterAP9_001) }
             }
             showIf(
                 bruker_sivilstand.isOneOf(GIFT)
             ) {
-                item { includePhrase(vedleggPlikterAP7_001) }
+                item { includePhrase(VedleggPlikterAP7_001) }
             }
             showIf(
                 bruker_sivilstand.isOneOf(PARTNER, PARTNER_LEVER_ADSKILT)
             ) {
-                item { includePhrase(vedleggPlikterAP12_001) }
+                item { includePhrase(VedleggPlikterAP12_001) }
             }
             showIf(
                 bruker_sivilstand.isOneOf(GIFT, GIFT_LEVER_ADSKILT, PARTNER, PARTNER_LEVER_ADSKILT)
@@ -105,7 +105,7 @@ val orienteringOmRettigheterOgPlikterAlder =
                         and institusjon_gjeldende.isNotAnyOf(FENGSEL, HELSE, SYKEHJEM)
                         and instutisjon_epsInstitusjonGjeldende.isNotAnyOf(INGEN)
             ) {
-                item { includePhrase(vedleggPlikterAP10_001) }
+                item { includePhrase(VedleggPlikterAP10_001) }
             }
 
             showIf(
@@ -115,7 +115,7 @@ val orienteringOmRettigheterOgPlikterAlder =
                         and instutisjon_epsInstitusjonGjeldende.isNotAnyOf(INGEN)
             ) {
                 item {
-                    includePhrase(vedleggPlikterAP5_001, bruker_sivilstand)
+                    includePhrase(VedleggPlikterAP5_001(bruker_sivilstand))
                 }
             }
 
@@ -124,14 +124,14 @@ val orienteringOmRettigheterOgPlikterAlder =
                         and institusjon_gjeldende.isNotAnyOf(FENGSEL, HELSE, SYKEHJEM)
                         and bruker_borINorge
             ) {
-                item { includePhrase(vedleggPlikterAP26_001) }
+                item { includePhrase(VedleggPlikterAP26_001) }
             }
 
             showIf(
                 institusjon_gjeldende.isNotAnyOf(FENGSEL, HELSE, SYKEHJEM)
                         and bruker_borINorge
             ) {
-                item { includePhrase(vedleggPlikterAP27_001) }
+                item { includePhrase(VedleggPlikterAP27_001) }
             }
         }
 

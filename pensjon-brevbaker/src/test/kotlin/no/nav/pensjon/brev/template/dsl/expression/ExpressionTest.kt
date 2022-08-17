@@ -1,23 +1,29 @@
 package no.nav.pensjon.brev.template.dsl.expression
 
 import no.nav.pensjon.brev.template.*
+import no.nav.pensjon.brev.template.dsl.expression.SomeDtoSelectors.name
+import no.nav.pensjon.brev.template.dsl.expression.SomeDtoSelectors.nameSelector
+import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
 
 
 class ExpressionTest {
-    private data class SomeDto(val name: String)
+    data class SomeDto(val name: String)
+
+    @TemplateModelHelpers
+    object Helpers : HasModel<SomeDto>
 
     @Test
     fun `select creates a unaryinvoke with select`() {
         val argument = Expression.FromScope(ExpressionScope<SomeDto, *>::argument)
         val expected = Expression.UnaryInvoke(
             value = argument,
-            operation = UnaryOperation.Select(SomeDto::name)
+            operation = UnaryOperation.Select2(nameSelector)
         )
 
-        assertEquals(expected, argument.select(SomeDto::name))
+        assertEquals(expected, argument.name)
     }
 
     @Test

@@ -29,16 +29,16 @@ val orienteringOmRettigheterOgPlikterAFP = createAttachment<LangBokmalNynorskEng
 ) {
     includePhrase(VedleggPlikterAFP_001)
     list {
-        item { includePhrase(vedleggPlikterAFP1_001) }
+        item { includePhrase(VedleggPlikterAFP1_001) }
         showIf(bruker_sivilstand.isOneOf(ENSLIG, ENKE)) {
-            item { includePhrase(vedleggPlikterAFP2_001) }
+            item { includePhrase(VedleggPlikterAFP2_001) }
         }
 
         showIf(not(institusjon_gjeldende.isOneOf(FENGSEL, HELSE, SYKEHJEM))) {
             showIf(bruker_borINorge) {
-                item { includePhrase(vedleggPlikterAFP3_001) }
+                item { includePhrase(VedleggPlikterAFP3_001) }
             }.orShow {
-                item { includePhrase(vedleggPlikterAFP4_001) }
+                item { includePhrase(VedleggPlikterAFP4_001) }
             }
         }
     }

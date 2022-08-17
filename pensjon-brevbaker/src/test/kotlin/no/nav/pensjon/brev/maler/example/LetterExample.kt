@@ -15,7 +15,7 @@ import no.nav.pensjon.brev.maler.example.LetterExampleDtoSelectors.pensjonInnvil
 import no.nav.pensjon.brev.maler.example.LetterExampleDtoSelectors.tilleggEksempel
 import no.nav.pensjon.brev.maler.example.TestVedleggDtoSelectors.testVerdi1
 import no.nav.pensjon.brev.maler.example.TestVedleggDtoSelectors.testVerdi2
-import no.nav.pensjon.brev.maler.fraser.common.Felles.kroner
+import no.nav.pensjon.brev.maler.fraser.common.Felles.KronerText
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Element.Table.ColumnAlignment.RIGHT
@@ -115,11 +115,11 @@ object LetterExample : VedtaksbrevTemplate<LetterExampleDto> {
 
                     item {
                         //textOnlyPhrase can be included anywhere you write text.
-                        includePhrase(textOnlyPhraseTest)
+                        includePhrase(TextOnlyPhraseTest)
                     }
                     item {
                         //Any type of phrase can also require data
-                        includePhrase(textOnlyPhraseTestWithParams, datoInnvilget)
+                        includePhrase(TextOnlyPhraseTestWithParams(datoInnvilget))
                     }
                 }
                 text(Bokmal to lipsums[0], Nynorsk to lipsums[0])
@@ -156,7 +156,7 @@ object LetterExample : VedtaksbrevTemplate<LetterExampleDto> {
                             }
                             cell {
                                 ifNotNull(tillegg1) { tillegg ->
-                                    includePhrase(kroner, tillegg)
+                                    includePhrase(KronerText(tillegg))
                                 }
                             }
                             cell {
@@ -298,15 +298,17 @@ object ParagraphPhraseTest : ParagraphPhrase<LangBokmalNynorsk>() {
         }
 }
 
-val textOnlyPhraseTest = TextOnlyPhrase<LangBokmalNynorsk, Unit> {
-    text(Bokmal to "Dette er en tekstfrase", Nynorsk to "Dette er en tekstfrase")
+object TextOnlyPhraseTest : TextOnlyPhrase2<LangBokmalNynorsk>() {
+    override fun TextOnlyScope<LangBokmalNynorsk, Unit>.template() =
+        text(Bokmal to "Dette er en tekstfrase", Nynorsk to "Dette er en tekstfrase")
 }
 
-val textOnlyPhraseTestWithParams = TextOnlyPhrase<LangBokmalNynorsk, LocalDate> { param ->
-    textExpr(
-        Bokmal to "Dette er en tekstfrase med datoen: ".expr() + param.format(),
-        Nynorsk to "Dette er en tekstfrase med datoen: ".expr() + param.format(),
-    )
+data class TextOnlyPhraseTestWithParams(val dato: Expression<LocalDate>) : TextOnlyPhrase2<LangBokmalNynorsk>() {
+    override fun TextOnlyScope<LangBokmalNynorsk, Unit>.template() =
+        textExpr(
+            Bokmal to "Dette er en tekstfrase med datoen: ".expr() + dato.format(),
+            Nynorsk to "Dette er en tekstfrase med datoen: ".expr() + dato.format(),
+        )
 }
 
 data class TestVedleggDto(val testVerdi1: String, val testVerdi2: String)

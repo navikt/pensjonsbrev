@@ -65,8 +65,8 @@ import no.nav.pensjon.brev.api.model.vedlegg.YrkesskadeGjeldendeSelectors.skadet
 import no.nav.pensjon.brev.api.model.vedlegg.YrkesskadeGjeldendeSelectors.yrkesskadegrad
 import no.nav.pensjon.brev.api.model.vedlegg.YrkesskadeGjeldendeSelectors.yrkesskadegrad_safe
 import no.nav.pensjon.brev.maler.fraser.*
-import no.nav.pensjon.brev.maler.fraser.common.Felles.kroner
-import no.nav.pensjon.brev.maler.fraser.common.Felles.maaneder
+import no.nav.pensjon.brev.maler.fraser.common.Felles.KronerText
+import no.nav.pensjon.brev.maler.fraser.common.Felles.MaanederText
 import no.nav.pensjon.brev.model.*
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Language.*
@@ -141,7 +141,7 @@ val vedleggOpplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEng
                     )
                 }
                 cell {
-                    includePhrase(kroner, ufoeretrygdGjeldende.beregningsgrunnlagBeloepAar)
+                    includePhrase(KronerText(ufoeretrygdGjeldende.beregningsgrunnlagBeloepAar))
                 }
             }
         }
@@ -156,7 +156,7 @@ val vedleggOpplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEng
                         )
                     }
                     cell {
-                        includePhrase(kroner, beloep)
+                        includePhrase(KronerText(beloep))
                     }
                 }
             }
@@ -171,7 +171,7 @@ val vedleggOpplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEng
                     )
                 }
                 cell {
-                    includePhrase(kroner, inntektFoerUfoereGjeldende.ifuInntekt)
+                    includePhrase(KronerText(inntektFoerUfoereGjeldende.ifuInntekt))
                 }
             }
         }
@@ -185,7 +185,7 @@ val vedleggOpplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEng
                     )
                 }
                 cell {
-                    includePhrase(kroner, inntektEtterUfoereGjeldende_beloepIEU)
+                    includePhrase(KronerText(inntektEtterUfoereGjeldende_beloepIEU))
                 }
             }
         }
@@ -218,7 +218,7 @@ val vedleggOpplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEng
                     )
                 }
                 cell {
-                    includePhrase(kroner, ufoeretrygdGjeldende.beloepsgrense)
+                    includePhrase(KronerText(ufoeretrygdGjeldende.beloepsgrense))
                 }
             }
         }
@@ -232,7 +232,7 @@ val vedleggOpplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEng
                     )
                 }
                 cell {
-                    includePhrase(kroner, inntektsAvkortingGjeldende.inntektsgrenseAar)
+                    includePhrase(KronerText(inntektsAvkortingGjeldende.inntektsgrenseAar))
                 }
             }
         }
@@ -246,7 +246,7 @@ val vedleggOpplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEng
                     )
                 }
                 cell {
-                    includePhrase(kroner, inntektsAvkortingGjeldende.forventetInntektAar)
+                    includePhrase(KronerText(inntektsAvkortingGjeldende.forventetInntektAar))
                 }
             }
         }
@@ -279,7 +279,7 @@ val vedleggOpplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEng
                     )
                 }
                 cell {
-                    includePhrase(kroner, inntektsAvkortingGjeldende.inntektstak)
+                    includePhrase(KronerText(inntektsAvkortingGjeldende.inntektstak))
                 }
             }
         }.orShow {
@@ -292,7 +292,7 @@ val vedleggOpplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEng
                     )
                 }
                 cell {
-                    includePhrase(kroner, inntektsAvkortingGjeldende.inntektsgrenseAar)
+                    includePhrase(KronerText(inntektsAvkortingGjeldende.inntektsgrenseAar))
                 }
             }
         }
@@ -380,7 +380,7 @@ val vedleggOpplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEng
                         )
                     }
                     cell {
-                        includePhrase(kroner, yrkesskade.inntektVedSkadetidspunkt)
+                        includePhrase(KronerText(yrkesskade.inntektVedSkadetidspunkt))
                     }
                 }
             }
@@ -475,7 +475,7 @@ val vedleggOpplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEng
                         )
                     }
                     cell {
-                        includePhrase(maaneder, it)
+                        includePhrase(MaanederText(it))
                     }
                 }
             }
@@ -492,7 +492,7 @@ val vedleggOpplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEng
                         )
                     }
                     cell {
-                        includePhrase(maaneder, faktiskTTEOS)
+                        includePhrase(MaanederText(faktiskTTEOS))
                     }
                 }
             }
@@ -506,7 +506,7 @@ val vedleggOpplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEng
                             English to "Actual insurance period in Norway and EEA countries (maximum 40 years)"
                         )
                     }
-                    cell { includePhrase(maaneder, nevnerTTEOS) }
+                    cell { includePhrase(MaanederText(nevnerTTEOS)) }
                 }
             }
 
@@ -540,7 +540,7 @@ val vedleggOpplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEng
                             English to "Actual insurance period in another Nordic country, applied in calculation of future insurance period(s)"
                         )
                     }
-                    cell { includePhrase(maaneder, faktiskTTNordiskKonv) }
+                    cell { includePhrase(MaanederText(faktiskTTNordiskKonv)) }
                 }
             }
         }
@@ -555,7 +555,7 @@ val vedleggOpplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEng
                         )
                     }
                     cell {
-                        includePhrase(maaneder, framtidigTTNorsk)
+                        includePhrase(MaanederText(framtidigTTNorsk))
                     }
                 }
             }
@@ -589,7 +589,7 @@ val vedleggOpplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEng
                             English to "Total insurance period applied in calculating disability benefit after reduction of future insurance period(s"
                         )
                     }
-                    cell { includePhrase(maaneder, samletTTNordiskKonv) }
+                    cell { includePhrase(MaanederText(samletTTNordiskKonv)) }
                 }
             }
         }
@@ -610,7 +610,7 @@ val vedleggOpplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEng
                         )
                     }
                     cell {
-                        includePhrase(maaneder, faktiskTTBilateral)
+                        includePhrase(MaanederText(faktiskTTBilateral))
                     }
                 }
                 row {
@@ -622,7 +622,7 @@ val vedleggOpplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEng
                         )
                     }
                     cell {
-                        includePhrase(maaneder, nevnerProRata)
+                        includePhrase(MaanederText(nevnerProRata))
                     }
                 }
                 row {
@@ -673,7 +673,7 @@ val vedleggOpplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEng
                             )
                         }
                         cell {
-                            includePhrase(kroner, saerkullsbarn.fribeloep)
+                            includePhrase(KronerText(saerkullsbarn.fribeloep))
                         }
                     }
                     row {
@@ -685,7 +685,7 @@ val vedleggOpplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEng
                             )
                         }
                         cell {
-                            includePhrase(kroner, saerkullsbarn.inntektBruktIAvkortning)
+                            includePhrase(KronerText(saerkullsbarn.inntektBruktIAvkortning))
                         }
                     }
                     row {
@@ -697,7 +697,7 @@ val vedleggOpplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEng
                             )
                         }
                         cell {
-                            includePhrase(kroner, saerkullsbarn.inntektstak)
+                            includePhrase(KronerText(saerkullsbarn.inntektstak))
                         }
                     }
                 }
@@ -753,7 +753,7 @@ val vedleggOpplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEng
     ifNotNull(
         barnetilleggGjeldende.grunnlag_safe,
         barnetilleggGjeldende.saerkullsbarn_safe,
-    ) { grunnlag, saerkullTillegg ->
+    ) { _, saerkullTillegg ->
         val fribeloepEllerInntektErPeriodisert = saerkullTillegg.fribeloepEllerInntektErPeriodisert
         val harYrkesskadeGrad = yrkesskadeGjeldende.yrkesskadegrad_safe.ifNull(0).greaterThan(0)
         val harAnvendtTrygdetidUnder40 = trygdetidsdetaljerGjeldende.anvendtTT.lessThan(40)
@@ -832,7 +832,7 @@ val vedleggOpplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEng
                             )
                         }
                         cell {
-                            includePhrase(kroner, saerkullTillegg.beloepAarFoerAvkort)
+                            includePhrase(KronerText(saerkullTillegg.beloepAarFoerAvkort))
                         }
                     }
                 }
@@ -847,7 +847,7 @@ val vedleggOpplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEng
                         }
 
                         cell {
-                            includePhrase(kroner, saerkullTillegg.inntektBruktIAvkortning)
+                            includePhrase(KronerText(saerkullTillegg.inntektBruktIAvkortning))
                         }
                     }
                 }
@@ -861,7 +861,7 @@ val vedleggOpplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEng
                             )
                         }
                         cell {
-                            includePhrase(kroner, saerkullTillegg.fribeloep)
+                            includePhrase(KronerText(saerkullTillegg.fribeloep))
                         }
                     }
                 }
@@ -875,7 +875,7 @@ val vedleggOpplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEng
                             )
                         }
                         cell {
-                            includePhrase(kroner, saerkullTillegg.inntektOverFribeloep)
+                            includePhrase(KronerText(saerkullTillegg.inntektOverFribeloep))
                         }
                     }
                 }
@@ -893,7 +893,7 @@ val vedleggOpplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEng
                             )
                         }
                         cell {
-                            includePhrase(kroner, saerkullTillegg.avkortningsbeloepAar)
+                            includePhrase(KronerText(saerkullTillegg.avkortningsbeloepAar))
                         }
                     }
                 }
@@ -911,7 +911,7 @@ val vedleggOpplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEng
                             )
                         }
                         cell {
-                            includePhrase(kroner, saerkullTillegg.avkortningsbeloepAar)
+                            includePhrase(KronerText(saerkullTillegg.avkortningsbeloepAar))
                         }
                     }
                 }
@@ -925,7 +925,7 @@ val vedleggOpplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEng
                             )
                         }
                         cell {
-                            includePhrase(kroner, saerkullTillegg.justeringsbeloepAar)
+                            includePhrase(KronerText(saerkullTillegg.justeringsbeloepAar))
                         }
                     }
                 }
@@ -940,7 +940,7 @@ val vedleggOpplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEng
                             )
                         }
                         cell {
-                            includePhrase(kroner, saerkullTillegg.beloepAar)
+                            includePhrase(KronerText(saerkullTillegg.beloepAar))
                         }
                     }
                 }
@@ -954,7 +954,7 @@ val vedleggOpplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEng
                             )
                         }
                         cell {
-                            includePhrase(kroner, saerkullTillegg.beloep)
+                            includePhrase(KronerText(saerkullTillegg.beloep))
                         }
                     }
                 }
@@ -968,7 +968,7 @@ val vedleggOpplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEng
                             )
                         }
                         cell {
-                            includePhrase(kroner, saerkullTillegg.inntektstak)
+                            includePhrase(KronerText(saerkullTillegg.inntektstak))
                         }
                     }
                 }

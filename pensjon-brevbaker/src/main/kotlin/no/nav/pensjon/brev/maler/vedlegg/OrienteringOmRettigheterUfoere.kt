@@ -27,34 +27,34 @@ val vedleggOrienteringOmRettigheterOgPlikterUfoere = createAttachment<LangBokmal
     includePhrase(VedleggPlikterUT_001)
 
     list {
-        item { includePhrase(vedleggPlikterUT1_001) }
-        item { includePhrase(vedleggPlikterUT2_001) }
+        item { includePhrase(VedleggPlikterUT1_001) }
+        item { includePhrase(VedleggPlikterUT2_001) }
 
         showIf(
             bruker_borINorge
                     and institusjon_gjeldende.isNotAnyOf(FENGSEL, HELSE, SYKEHJEM)
         ) {
-            item { includePhrase(vedleggPlikterUT3_001) }
-            item { includePhrase(vedleggPlikterUT4_001) }
+            item { includePhrase(VedleggPlikterUT3_001) }
+            item { includePhrase(VedleggPlikterUT4_001) }
         }
 
-        item { includePhrase(vedleggPlikterUT5_001) }
+        item { includePhrase(VedleggPlikterUT5_001) }
 
         showIf(avdoed_sivilstand.isOneOf(ENSLIG, ENKE)) {
-            item { includePhrase(vedleggPlikterUT6_001) }
+            item { includePhrase(VedleggPlikterUT6_001) }
         }
 
         ifNotNull(ufoeretrygdPerMaaned_barnetilleggGjeldende) { tillegg ->
             showIf(tillegg.greaterThan(0)) {
-                item { includePhrase(vedleggPlikterUT7_001) }
+                item { includePhrase(VedleggPlikterUT7_001) }
             }
         }
 
-        item { includePhrase(vedleggPlikterUT8_001) }
-        item { includePhrase(vedleggPlikterUT9_001) }
-        item { includePhrase(vedleggPlikterUT10_001) }
-        item { includePhrase(vedleggPlikterUT11_001) }
-        item { includePhrase(vedleggPlikterUT12_001) }
+        item { includePhrase(VedleggPlikterUT8_001) }
+        item { includePhrase(VedleggPlikterUT9_001) }
+        item { includePhrase(VedleggPlikterUT10_001) }
+        item { includePhrase(VedleggPlikterUT11_001) }
+        item { includePhrase(VedleggPlikterUT12_001) }
     }
 
     includePhrase(VedleggVeiledning_001)
