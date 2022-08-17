@@ -20,7 +20,7 @@ class ExpressionTest {
         val argument = Expression.FromScope(ExpressionScope<SomeDto, *>::argument)
         val expected = Expression.UnaryInvoke(
             value = argument,
-            operation = UnaryOperation.Select2(nameSelector)
+            operation = UnaryOperation.Select(nameSelector)
         )
 
         assertEquals(expected, argument.name)

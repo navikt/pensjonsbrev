@@ -17,9 +17,9 @@ class ExpressionEvalTest {
     @TemplateModelHelpers
     object Helpers : HasModel<SomeDto>
 
-    val scope = ExpressionScope(SomeDto("Ole", null), Fixtures.felles, Language.Bokmal)
-    val argumentExpr = Expression.FromScope(ExpressionScope<SomeDto, *>::argument)
-    val fellesExpr = Expression.FromScope(ExpressionScope<SomeDto, *>::felles)
+    private val scope = ExpressionScope(SomeDto("Ole", null), Fixtures.felles, Language.Bokmal)
+    private val argumentExpr = Expression.FromScope(ExpressionScope<SomeDto, *>::argument)
+    private val fellesExpr = Expression.FromScope(ExpressionScope<SomeDto, *>::felles)
 
     @Test
     fun `eval Literal returns literal`() {

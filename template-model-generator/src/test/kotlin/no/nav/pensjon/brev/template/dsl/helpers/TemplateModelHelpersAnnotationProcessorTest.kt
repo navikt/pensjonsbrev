@@ -3,7 +3,6 @@ package no.nav.pensjon.brev.template.dsl.helpers
 import com.natpryce.hamkrest.*
 import com.natpryce.hamkrest.assertion.*
 import com.tschuchort.compiletesting.*
-import no.nav.pensjon.brev.*
 import no.nav.pensjon.brev.template.*
 import org.junit.jupiter.api.Test
 import java.io.File

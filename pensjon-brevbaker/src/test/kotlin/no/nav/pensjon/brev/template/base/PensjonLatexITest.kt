@@ -24,7 +24,7 @@ object Helpers : HasModel<TestTemplateDto>
 @Tag(TestTags.PDF_BYGGER)
 class PensjonLatexITest {
 
-    val brevData = TestTemplateDto("Ole")
+    private val brevData = TestTemplateDto("Ole")
     @Test
     fun canRender() {
         val template = createTemplate(

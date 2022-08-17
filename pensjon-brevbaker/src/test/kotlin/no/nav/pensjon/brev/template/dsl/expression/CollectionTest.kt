@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Assertions.*
 
 class CollectionTest {
 
-    val emptyScope: ExpressionScope<Unit, Language.Bokmal> = ExpressionScope(Unit, Fixtures.felles, Language.Bokmal)
+    private val emptyScope: ExpressionScope<Unit, Language.Bokmal> = ExpressionScope(Unit, Fixtures.felles, Language.Bokmal)
 
     @Test
     fun `containsAll returns true when input has all items`() {

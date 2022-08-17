@@ -7,7 +7,7 @@ fun <Data : Any, Field> Expression<Data>.select(
 ): Expression<Field> =
     Expression.UnaryInvoke(
         this,
-        UnaryOperation.Select2(selector)
+        UnaryOperation.Select(selector)
     )
 
 fun <T> T.expr(): Expression<T> = Expression.Literal(this)

@@ -12,8 +12,8 @@ import java.io.ByteArrayOutputStream
 
 class LatexPrintWriterTest {
 
-    lateinit var output: ByteArrayOutputStream
-    lateinit var printWriter: LatexPrintWriter
+    private lateinit var output: ByteArrayOutputStream
+    private lateinit var printWriter: LatexPrintWriter
 
     @BeforeEach
     fun setup() {
@@ -21,7 +21,7 @@ class LatexPrintWriterTest {
         printWriter = LatexPrintWriter(output)
     }
 
-    fun printedString(): String {
+    private fun printedString(): String {
         printWriter.close()
         return String(output.toByteArray())
     }

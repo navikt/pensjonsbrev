@@ -198,13 +198,13 @@ private fun title1(
 }
 
 private fun columnHeadersLatexString(columnSpec: List<Element.Table.ColumnSpec<out LanguageSupport>>) =
-    columnSpec.map {
+    columnSpec.joinToString("") {
         ("X" +
                 when (it.alignment) {
                     Element.Table.ColumnAlignment.LEFT -> "[l]"
                     Element.Table.ColumnAlignment.RIGHT -> "[r]"
                 }).repeat(it.columnSpan)
-    }.joinToString("")
+    }
 
 private fun renderTableCells(
     cells: List<Element.Table.Cell<out LanguageSupport>>,

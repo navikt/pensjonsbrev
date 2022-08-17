@@ -6,9 +6,9 @@ import no.nav.pensjon.brev.template.RenderedLetter
 
 abstract class DummyBase : BaseTemplate() {
     override fun render(letter: Letter<*>): RenderedLetter {
-        TODO("Not yet implemented")
+        throw NotImplementedError("Dummy")
     }
 
     override val languageSettings: LanguageSettings
-        get() = TODO("Not yet implemented")
+        get() = throw NotImplementedError("Dummy")
 }

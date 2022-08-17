@@ -12,7 +12,7 @@ import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 
 object PensjonLatex : BaseTemplate() {
-    val letterResourceFiles: Map<String, ByteArray> = hashMapOf(
+    private val letterResourceFiles: Map<String, ByteArray> = hashMapOf(
         "nav-logo.pdf" to getResource("latex/nav-logo.pdf"),
         "nav-logo.pdf_tex" to getResource("latex/nav-logo.pdf_tex"),
         "pensjonsbrev_v3.cls" to getResource("latex/pensjonsbrev_v3.cls"),

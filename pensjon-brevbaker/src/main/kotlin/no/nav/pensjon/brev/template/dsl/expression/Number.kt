@@ -15,7 +15,7 @@ val intValueSelector = object : TemplateModelSelector<IntValue, Int> {
 private val Expression<IntValue>.value: Expression<Int>
     get() = Expression.UnaryInvoke(
         this,
-        UnaryOperation.Select2(intValueSelector)
+        UnaryOperation.Select(intValueSelector)
     )
 
 fun Expression<Double>.format(): Expression<String> =

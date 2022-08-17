@@ -8,7 +8,7 @@ import no.nav.pensjon.brev.template.dsl.expression.expr
 import org.junit.jupiter.api.Test
 
 class IncludeAttachmentTest {
-    val testVedlegg = createAttachment<LangNynorsk, Unit>(
+    private val testVedlegg = createAttachment<LangNynorsk, Unit>(
         title = newText(
             Language.Nynorsk to "Test vedlegg",
         ),
