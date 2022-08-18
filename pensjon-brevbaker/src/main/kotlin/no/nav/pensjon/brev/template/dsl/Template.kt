@@ -6,6 +6,7 @@ import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Element.Text.FontType
 import no.nav.pensjon.brev.template.base.BaseTemplate
 import no.nav.pensjon.brev.template.dsl.expression.*
+import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import kotlin.reflect.KClass
 
 fun <Lang : LanguageSupport, LetterData : Any> createTemplate(
@@ -20,13 +21,13 @@ fun <Lang : LanguageSupport, LetterData : Any> createTemplate(
         return LetterTemplate(name, title, base, letterDataType, languages, outline, attachments, letterMetadata)
     }
 
+@TemplateModelHelpers([Felles::class])
 open class TemplateGlobalScope<LetterData : Any> {
-    fun argument(): Expression<LetterData> =
-        Expression.FromScope(ExpressionScope<LetterData, *>::argument)
+    val argument: Expression<LetterData>
+        get() = Expression.FromScope(ExpressionScope<LetterData, *>::argument)
 
-    fun felles(): Expression<Felles> =
-        Expression.FromScope(ExpressionScope<LetterData, *>::felles)
-
+    val felles: Expression<Felles>
+        get() = Expression.FromScope(ExpressionScope<LetterData, *>::felles)
 }
 
 @LetterTemplateMarker

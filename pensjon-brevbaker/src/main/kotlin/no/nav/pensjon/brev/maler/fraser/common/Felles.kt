@@ -101,19 +101,21 @@ object Felles {
         }
     }
 
-    val kroner = TextOnlyPhrase<LangBokmalNynorskEnglish, Kroner> { kroner ->
-        textExpr(
-            Bokmal to kroner.format() + " kr",
-            Nynorsk to kroner.format() + " kr",
-            English to kroner.format() + " NOK",
-        )
+    data class KronerText(val kroner: Expression<Kroner>) : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
+        override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
+            textExpr(
+                Bokmal to kroner.format() + " kr",
+                Nynorsk to kroner.format() + " kr",
+                English to kroner.format() + " NOK",
+            )
     }
 
-    val maaneder = TextOnlyPhrase<LangBokmalNynorskEnglish, Int> { maaned ->
-        textExpr(
-            Bokmal to maaned.format() + " måneder",
-            Nynorsk to maaned.format() + " måneder",
-            English to maaned.format() + " months"
-        )
+    data class MaanederText(val antall: Expression<Int>) : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
+        override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
+            textExpr(
+                Bokmal to antall.format() + " måneder",
+                Nynorsk to antall.format() + " måneder",
+                English to antall.format() + " months"
+            )
     }
 }

@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.template.dsl
 import no.nav.pensjon.brev.maler.fraser.*
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.base.PensjonLatex
+import no.nav.pensjon.brev.template.dsl.SomeDtoSelectors.name
 import no.nav.pensjon.brev.template.dsl.expression.*
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
@@ -99,11 +100,11 @@ class TemplateTest {
     @Test
     fun `TemplateTextOnlyScope_eval adds Expression element`() {
         val element = TextOnlyScope<BokmalLang, SomeDto>().apply {
-            eval(argument().select(SomeDto::name))
+            eval(name)
         }.children.first()
 
         val expected = Element.Text.Expression<BokmalLang>(
-            Expression.FromScope(ExpressionScope<SomeDto, *>::argument).select(SomeDto::name)
+            Expression.FromScope(ExpressionScope<SomeDto, *>::argument).name
         )
 
         assertEquals(expected, element)
@@ -211,8 +212,6 @@ class TemplateTest {
         assertEquals(expected, actual)
     }
 }
-
-data class TestFraseDto(val test: String)
 
 data class TestFrase(val test: Expression<String>) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() =

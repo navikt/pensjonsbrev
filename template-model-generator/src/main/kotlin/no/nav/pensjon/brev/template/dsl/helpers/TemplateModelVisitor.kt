@@ -107,13 +107,13 @@ internal class TemplateModelVisitor(
             |val TemplateGlobalScope<$dataClassName>.$propertyName: Expression<$type>
             |   get() = Expression.UnaryInvoke(
             |       Expression.FromScope(ExpressionScope<$dataClassName, *>::argument),
-            |       UnaryOperation.Select2($selectorName)
+            |       UnaryOperation.Select($selectorName)
             |   )
             |
             |val Expression<$dataClassName>.$propertyName: Expression<$type>
             |   get() = Expression.UnaryInvoke(
             |       this,
-            |       UnaryOperation.Select2($selectorName)
+            |       UnaryOperation.Select($selectorName)
             |   )
             |
             |val Expression<$dataClassName?>.${propertyName}_safe: Expression<${nullable(type)}>

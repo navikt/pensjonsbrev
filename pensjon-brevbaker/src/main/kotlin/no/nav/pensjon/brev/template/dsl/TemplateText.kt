@@ -1,19 +1,14 @@
 package no.nav.pensjon.brev.template.dsl
 
 import no.nav.pensjon.brev.template.*
-import no.nav.pensjon.brev.template.dsl.expression.expr
 
 
 @LetterTemplateMarker
 class TextOnlyScope<Lang : LanguageSupport, LetterData : Any>(children: MutableList<Element<Lang>> = mutableListOf()) :
     TextOnlyScopeBase<Lang, LetterData, TextOnlyScope<Lang, LetterData>>(children) {
 
-    fun includePhrase(phrase: TextOnlyPhrase<out Lang, Unit>) {
-        phrase.apply(this, Unit.expr())
-    }
-
-    fun <PhraseData : Any> includePhrase(phrase: TextOnlyPhrase<out Lang, PhraseData>, data: Expression<PhraseData>) {
-        phrase.apply(this, data)
+    fun includePhrase(phrase: TextOnlyPhrase<out Lang>) {
+        phrase.apply(this)
     }
 
     override fun scopeFactory(): TextOnlyScope<Lang, LetterData> = TextOnlyScope()

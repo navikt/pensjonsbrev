@@ -5,24 +5,17 @@ import no.nav.pensjon.brev.maler.fraser.common.*
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.expression.*
 
-private val intValueSelector = object : TemplateModelSelector<IntValue, Int> {
+val intValueSelector = object : TemplateModelSelector<IntValue, Int> {
     override val className: String = "no.nav.pensjon.brev.api.model.IntValue"
     override val propertyName: String = "value"
     override val propertyType: String = "kotlin.Int"
     override val selector = IntValue::value
 }
 
-private val doubleValueSelector = object : TemplateModelSelector<DoubleValue, Double> {
-    override val className: String = "no.nav.pensjon.brev.maler.fraser.common.DoubleValue"
-    override val propertyName: String = "value"
-    override val propertyType: String = "kotlin.Double"
-    override val selector = DoubleValue::value
-}
-
 private val Expression<IntValue>.value: Expression<Int>
     get() = Expression.UnaryInvoke(
         this,
-        UnaryOperation.Select2(intValueSelector)
+        UnaryOperation.Select(intValueSelector)
     )
 
 fun Expression<Double>.format(): Expression<String> =
@@ -39,10 +32,6 @@ fun Expression<Int>.format(): Expression<String> =
         Expression.FromScope(ExpressionScope<Any, *>::language),
         BinaryOperation.LocalizedIntFormat,
     )
-
-@JvmName("formatDoubleValue")
-fun Expression<DoubleValue>.format(): Expression<String> =
-    Expression.UnaryInvoke(this, UnaryOperation.Select2(doubleValueSelector)).format()
 
 
 // TODO: Skriv tester på disse

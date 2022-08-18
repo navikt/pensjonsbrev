@@ -1,9 +1,6 @@
 package no.nav.pensjon.brev.template.dsl.expression
 
-import no.nav.pensjon.brev.maler.fraser.common.LocalDateValue
-import no.nav.pensjon.brev.template.BinaryOperation
-import no.nav.pensjon.brev.template.Expression
-import no.nav.pensjon.brev.template.ExpressionScope
+import no.nav.pensjon.brev.template.*
 import java.time.LocalDate
 
 fun Expression<LocalDate>.format(short: Boolean = false) =
@@ -13,6 +10,14 @@ fun Expression<LocalDate>.format(short: Boolean = false) =
         if(short) BinaryOperation.LocalizedShortDateFormat else BinaryOperation.LocalizedDateFormat
     )
 
-@JvmName("formatLocalDateValue")
-fun Expression<LocalDateValue>.format() =
-    select(LocalDateValue::date).format()
+private object LocalDateSelectors {
+    val yearSelector = object : TemplateModelSelector<LocalDate, Int> {
+        override val className = "java.time.LocalDate"
+        override val propertyName = "year"
+        override val propertyType = "Int"
+        override val selector = LocalDate::getYear
+    }
+}
+
+val Expression<LocalDate>.year: Expression<Int>
+    get() = select(LocalDateSelectors.yearSelector)

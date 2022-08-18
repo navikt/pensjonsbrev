@@ -4,7 +4,7 @@ import no.nav.pensjon.brev.template.Element
 import no.nav.pensjon.brev.template.LanguageSupport
 
 @LetterTemplateMarker
-class TableScope<Lang : LanguageSupport, LetterData : Any>(val colSpec: List<Element.Table.ColumnSpec<Lang>>) :
+class TableScope<Lang : LanguageSupport, LetterData : Any>(private val colSpec: List<Element.Table.ColumnSpec<Lang>>) :
     ControlStructureScopeBase<Lang, LetterData, TableScope<Lang,LetterData>>(){
     fun row(
         init: TableRowScope<Lang, LetterData>.() -> Unit

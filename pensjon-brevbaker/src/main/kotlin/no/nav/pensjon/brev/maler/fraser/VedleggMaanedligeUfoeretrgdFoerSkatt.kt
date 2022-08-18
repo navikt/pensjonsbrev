@@ -16,7 +16,7 @@ import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdPerMaanedSelectors.total
 import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdPerMaanedSelectors.totalUTBeloepNetto
 import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdPerMaanedSelectors.virkningFraOgMed
 import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdPerMaanedSelectors.virkningTilOgMed
-import no.nav.pensjon.brev.maler.fraser.common.Felles.kroner
+import no.nav.pensjon.brev.maler.fraser.common.Felles.KronerText
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Language.*
@@ -143,7 +143,7 @@ data class TabellBeregnetUT(
                     )
                 }
                 cell {
-                    includePhrase(kroner, ordinaerUTBeloep)
+                    includePhrase(KronerText(ordinaerUTBeloep))
                 }
             }
 
@@ -157,7 +157,7 @@ data class TabellBeregnetUT(
                         )
                     }
                     cell {
-                        includePhrase(kroner, it)
+                        includePhrase(KronerText(it))
                     }
                 }
             }
@@ -172,7 +172,7 @@ data class TabellBeregnetUT(
                         )
                     }
                     cell {
-                        includePhrase(kroner, it)
+                        includePhrase(KronerText(it))
                     }
                 }
             }
@@ -188,7 +188,7 @@ data class TabellBeregnetUT(
                             )
                         }
                         cell {
-                            includePhrase(kroner, annetBelop)
+                            includePhrase(KronerText(annetBelop))
                         }
                     }
                 }.orShow {
@@ -201,7 +201,7 @@ data class TabellBeregnetUT(
                             )
                         }
                         cell {
-                            includePhrase(kroner, annetBelop)
+                            includePhrase(KronerText(annetBelop))
                         }
                     }
                 }
@@ -216,7 +216,7 @@ data class TabellBeregnetUT(
                     )
                 }
                 cell {
-                    includePhrase(kroner, totalUTBeloep)
+                    includePhrase(KronerText(totalUTBeloep))
                 }
             }
         }
@@ -264,17 +264,14 @@ data class TabellBeregnetUTAvkortet(
                     )
                 }
                 cell {
-                    includePhrase(kroner, ordinaerUTBeloepBrutto)
+                    includePhrase(KronerText(ordinaerUTBeloepBrutto))
                 }
                 cell {
-                    includePhrase(kroner, ordinaerUTBeloepNetto)
+                    includePhrase(KronerText(ordinaerUTBeloepNetto))
                 }
             }
 
-            ifNotNull(
-                barnetilleggBrutto,
-                barnetilleggNetto,
-            ) { brutto, netto ->
+            ifNotNull(barnetilleggBrutto,barnetilleggNetto) { brutto, netto ->
                 row {
                     cell {
                         text(
@@ -285,19 +282,16 @@ data class TabellBeregnetUTAvkortet(
                     }
 
                     cell {
-                        includePhrase(kroner, brutto)
+                        includePhrase(KronerText(brutto))
                     }
 
                     cell {
-                        includePhrase(kroner, netto)
+                        includePhrase(KronerText(netto))
                     }
                 }
             }
 
-            ifNotNull(
-                garantitilleggNordisk27Brutto,
-                garantitilleggNordisk27Netto,
-            ) { brutto, netto ->
+            ifNotNull(garantitilleggNordisk27Brutto, garantitilleggNordisk27Netto) { brutto, netto ->
                 row {
                     cell {
                         text(
@@ -308,11 +302,11 @@ data class TabellBeregnetUTAvkortet(
                     }
 
                     cell {
-                        includePhrase(kroner, brutto)
+                        includePhrase(KronerText(brutto))
                     }
 
                     cell {
-                        includePhrase(kroner, netto)
+                        includePhrase(KronerText(netto))
                     }
                 }
             }
@@ -327,11 +321,11 @@ data class TabellBeregnetUTAvkortet(
                 }
 
                 cell {
-                    includePhrase(kroner, totalUTBeloepBrutto)
+                    includePhrase(KronerText(totalUTBeloepBrutto))
                 }
 
                 cell {
-                    includePhrase(kroner, totalUTBeloepNetto)
+                    includePhrase(KronerText(totalUTBeloepNetto))
                 }
             }
         }

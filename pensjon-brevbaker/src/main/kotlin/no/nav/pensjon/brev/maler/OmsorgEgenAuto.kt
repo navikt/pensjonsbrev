@@ -71,9 +71,7 @@ object OmsorgEgenAuto : VedtaksbrevTemplate<OmsorgEgenAutoDto> {
 
         }
 
-        includeAttachment(egenerklaeringPleieOgOmsorgsarbeid, argument().map {
-            EgenerklaeringPleieOgOmsorgsarbeid(it.aarEgenerklaringOmsorgspoeng)
-        })
+        includeAttachment(egenerklaeringPleieOgOmsorgsarbeid, argument)
     }
 
 }

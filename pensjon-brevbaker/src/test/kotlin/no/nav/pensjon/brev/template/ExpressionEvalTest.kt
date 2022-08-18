@@ -1,9 +1,12 @@
 package no.nav.pensjon.brev.template
 
 import no.nav.pensjon.brev.Fixtures
-import no.nav.pensjon.brev.api.model.Felles
+import no.nav.pensjon.brev.api.model.FellesSelectors.saksnummer
+import no.nav.pensjon.brev.template.SomeDtoSelectors.kortNavn
+import no.nav.pensjon.brev.template.SomeDtoSelectors.name
 import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brev.template.dsl.expression.*
+import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 
@@ -11,9 +14,12 @@ class ExpressionEvalTest {
 
     data class SomeDto(val name: String, val kortNavn: String?)
 
-    val scope = ExpressionScope(SomeDto("Ole", null), Fixtures.felles, Language.Bokmal)
-    val argumentExpr = Expression.FromScope(ExpressionScope<SomeDto, *>::argument)
-    val fellesExpr = Expression.FromScope(ExpressionScope<SomeDto, *>::felles)
+    @TemplateModelHelpers
+    object Helpers : HasModel<SomeDto>
+
+    private val scope = ExpressionScope(SomeDto("Ole", null), Fixtures.felles, Language.Bokmal)
+    private val argumentExpr = Expression.FromScope(ExpressionScope<SomeDto, *>::argument)
+    private val fellesExpr = Expression.FromScope(ExpressionScope<SomeDto, *>::felles)
 
     @Test
     fun `eval Literal returns literal`() {
@@ -24,21 +30,21 @@ class ExpressionEvalTest {
 
     @Test
     fun `eval Argument returns argument value`() {
-        val evaluated: String = argumentExpr.select(SomeDto::name).eval(scope)
+        val evaluated: String = argumentExpr.name.eval(scope)
 
         assertEquals(scope.argument.name, evaluated)
     }
 
     @Test
     fun `eval optional argument field returns argument value`() {
-        val evaluated: String? = argumentExpr.select(SomeDto::kortNavn).eval(ExpressionScope(scope.argument.copy(kortNavn = "O"), scope.felles, scope.language))
+        val evaluated: String? = argumentExpr.kortNavn.eval(ExpressionScope(scope.argument.copy(kortNavn = "O"), scope.felles, scope.language))
 
         assertEquals("O", evaluated)
     }
 
     @Test
     fun `eval optional argument field without value returns null`() {
-        val evaluated: String? = argumentExpr.select(SomeDto::kortNavn).eval(scope)
+        val evaluated: String? = argumentExpr.kortNavn.eval(scope)
 
         assertNull(scope.argument.kortNavn) // tester ingenting om kortNavn har en verdi
         assertNull(evaluated)
@@ -46,8 +52,8 @@ class ExpressionEvalTest {
 
     @Test
     fun `eval can give default value for optional argument field`() {
-        val evaluated = argumentExpr.select(SomeDto::kortNavn).ifNull("J").eval(scope)
-        argumentExpr.select(SomeDto::name).ifNull("J").eval(scope)
+        val evaluated = argumentExpr.kortNavn.ifNull("J").eval(scope)
+        argumentExpr.name.ifNull("J").eval(scope)
 
         assertEquals("J", evaluated)
     }
@@ -75,7 +81,7 @@ class ExpressionEvalTest {
 
     @Test
     fun `eval can select fields from felles`() {
-        val evaluated = fellesExpr.select(Felles::saksnummer).eval(scope)
+        val evaluated = fellesExpr.saksnummer.eval(scope)
         assertEquals(Fixtures.felles.saksnummer, evaluated)
     }
 

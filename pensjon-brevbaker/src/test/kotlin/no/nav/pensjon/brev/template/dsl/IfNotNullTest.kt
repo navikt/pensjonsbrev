@@ -5,11 +5,15 @@ import no.nav.pensjon.brev.api.model.LetterMetadata
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.base.PensjonLatex
+import no.nav.pensjon.brev.template.dsl.NullBrevDtoSelectors.test1
 import no.nav.pensjon.brev.template.dsl.expression.*
+import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
 data class NullBrevDto(val test1: String?)
+@TemplateModelHelpers
+object Helpers : HasModel<NullBrevDto>
 
 class IfNotNullTest {
 
@@ -28,7 +32,7 @@ class IfNotNullTest {
 
         outline {
             text(Bokmal to "alltid med")
-            val nullTing1 = argument().select(NullBrevDto::test1)
+            val nullTing1 = test1
             ifNotNull(nullTing1) { ting ->
                 textExpr(
                     Bokmal to "hei: ".expr() + ting
@@ -39,7 +43,7 @@ class IfNotNullTest {
 
     @Test
     fun `ifNotNull adds a conditional with null check for navn`() {
-        val navn = Expression.FromScope(ExpressionScope<NullBrevDto, *>::argument).select(NullBrevDto::test1)
+        val navn = Expression.FromScope(ExpressionScope<NullBrevDto, *>::argument).test1
 
         @Suppress("UNCHECKED_CAST") // (navn as Expression<String>)
         val expected = template.copy(

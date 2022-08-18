@@ -7,24 +7,23 @@ import no.nav.pensjon.brev.*
 import no.nav.pensjon.brev.api.model.LetterMetadata
 import no.nav.pensjon.brev.latex.LaTeXCompilerService
 import no.nav.pensjon.brev.latex.PdfCompilationInput
+import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Language.Bokmal
-import no.nav.pensjon.brev.template.Letter
-import no.nav.pensjon.brev.template.dsl.createTemplate
-import no.nav.pensjon.brev.template.dsl.expression.select
-import no.nav.pensjon.brev.template.dsl.languages
-import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.template.latexEscape
+import no.nav.pensjon.brev.template.base.TestTemplateDtoSelectors.etNavn
+import no.nav.pensjon.brev.template.dsl.*
+import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 import org.opentest4j.AssertionFailedError
 
 data class TestTemplateDto(val etNavn: String)
+@TemplateModelHelpers
+object Helpers : HasModel<TestTemplateDto>
 
 @Tag(TestTags.PDF_BYGGER)
 class PensjonLatexITest {
 
-    val brevData = TestTemplateDto("Ole")
-
+    private val brevData = TestTemplateDto("Ole")
     @Test
     fun canRender() {
         val template = createTemplate(
@@ -41,7 +40,7 @@ class PensjonLatexITest {
             title { text(Bokmal to "En fin tittel") }
             outline {
                 text(Bokmal to "Argumentet etNavn er: ")
-                eval { argument().select(TestTemplateDto::etNavn) }
+                eval { etNavn }
             }
         }
         Letter(template, brevData, Bokmal, Fixtures.felles)
@@ -107,7 +106,7 @@ class PensjonLatexITest {
                 title { text(Bokmal to "En fin tittel") }
                 outline {
                     text(Bokmal to addChars(startChar, endChar) + "test")
-                    eval { argument().select(TestTemplateDto::etNavn) }
+                    eval { etNavn }
                 }
             }
 

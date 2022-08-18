@@ -18,7 +18,7 @@ import java.io.File
 import java.util.*
 
 val BREVBAKER_URL = System.getenv("BREVBAKER_URL") ?: "http://localhost:8080"
-val PDF_BUILDER_URL = "http://localhost:8081"
+const val PDF_BUILDER_URL = "http://localhost:8081"
 object TestTags {
     const val PDF_BYGGER = "pdf-bygger"
 }

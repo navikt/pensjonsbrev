@@ -320,7 +320,7 @@ data class VedleggBeregnUTJusterBelopUnder0BTSB_001(
             )
         }
 }
-
+// TODO: Fire ubrukte fraser
 object ReduksjonBTSBOverskrift_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() =
         title1 {
