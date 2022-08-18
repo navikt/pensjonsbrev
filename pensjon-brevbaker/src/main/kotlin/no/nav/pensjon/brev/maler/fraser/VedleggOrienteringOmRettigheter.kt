@@ -30,7 +30,7 @@ object VedleggPlikter_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
     }
 }
 
-object VedleggPlikterAP2_001 : TextOnlyPhrase2<LangBokmalNynorskEnglish>() {
+object VedleggPlikterAP2_001 : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
     override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         text(
             Bokmal to "du skal oppholde deg utenfor Norge i en lengre periode eller skal flytte til et annet land",
@@ -39,7 +39,7 @@ object VedleggPlikterAP2_001 : TextOnlyPhrase2<LangBokmalNynorskEnglish>() {
         )
 }
 
-object VedleggPlikterAP3_001 : TextOnlyPhrase2<LangBokmalNynorskEnglish>() {
+object VedleggPlikterAP3_001 : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
     override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         text(
             Bokmal to "du flytter til et annet land, tilbake til Norge eller du endrer adresse i ditt nåværende bostedsland",
@@ -48,7 +48,7 @@ object VedleggPlikterAP3_001 : TextOnlyPhrase2<LangBokmalNynorskEnglish>() {
         )
 }
 
-object VedleggPlikterAP1_001 : TextOnlyPhrase2<LangBokmalNynorskEnglish>() {
+object VedleggPlikterAP1_001 : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
     override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         text(
             Bokmal to "du gifter deg eller inngår samboerskap",
@@ -57,7 +57,7 @@ object VedleggPlikterAP1_001 : TextOnlyPhrase2<LangBokmalNynorskEnglish>() {
         )
 }
 
-object VedleggPlikterAP4_002 : TextOnlyPhrase2<LangBokmalNynorskEnglish>() {
+object VedleggPlikterAP4_002 : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
     override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         text(
             Bokmal to "arbeidsinntekten, pensjonsinntekten, uføreinntekten eller kapitalinntekten endrer seg for ektefellen din",
@@ -66,7 +66,7 @@ object VedleggPlikterAP4_002 : TextOnlyPhrase2<LangBokmalNynorskEnglish>() {
         )
 }
 
-object VedleggPlikterAP13_002 : TextOnlyPhrase2<LangBokmalNynorskEnglish>() {
+object VedleggPlikterAP13_002 : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
     override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         text(
             Bokmal to "arbeidsinntekten, pensjonsinntekten, uføreinntekten eller kapitalinntekten endrer seg for partneren din",
@@ -75,7 +75,7 @@ object VedleggPlikterAP13_002 : TextOnlyPhrase2<LangBokmalNynorskEnglish>() {
         )
 }
 
-object VedleggPlikterAP15_002 : TextOnlyPhrase2<LangBokmalNynorskEnglish>() {
+object VedleggPlikterAP15_002 : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
     override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         text(
             Bokmal to "arbeidsinntekten, pensjonsinntekten, uføreinntekten eller kapitalinntekten endrer seg for samboeren din",
@@ -85,7 +85,7 @@ object VedleggPlikterAP15_002 : TextOnlyPhrase2<LangBokmalNynorskEnglish>() {
 }
 
 //vedleggPlikterAP6_002, vedleggPlikterAP14_002, vedleggPlikterAP18_001
-data class VedleggPlikterAPFlytterFraHverandre(val sivilstand: Expression<Sivilstand>) : TextOnlyPhrase2<LangBokmalNynorskEnglish>() {
+data class VedleggPlikterAPFlytterFraHverandre(val sivilstand: Expression<Sivilstand>) : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
     override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         text(
             Bokmal to "du og ",
@@ -107,12 +107,12 @@ data class VedleggPlikterAPFlytterFraHverandre(val sivilstand: Expression<Sivils
     }
 }
 
-object VedleggPlikterAP16_001 : TextOnlyPhrase2<LangBokmalNynorskEnglish>() {
+object VedleggPlikterAP16_001 : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
     override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         text(Bokmal to "du gifter deg", Nynorsk to "du giftar deg", English to "you marry")
 }
 
-object VedleggPlikterAP17_001 : TextOnlyPhrase2<LangBokmalNynorskEnglish>() {
+object VedleggPlikterAP17_001 : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
     override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         text(
             Bokmal to "du får barn med samboeren din",
@@ -121,12 +121,12 @@ object VedleggPlikterAP17_001 : TextOnlyPhrase2<LangBokmalNynorskEnglish>() {
         )
 }
 
-object VedleggPlikterAP19_001 : TextOnlyPhrase2<LangBokmalNynorskEnglish>() {
+object VedleggPlikterAP19_001 : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
     override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         text(Bokmal to "samboeren din dør", Nynorsk to "sambuaren din døyr", English to "your cohabiting partner dies")
 }
 
-object VedleggPlikterAP8_001 : TextOnlyPhrase2<LangBokmalNynorskEnglish>() {
+object VedleggPlikterAP8_001 : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
     override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         text(
             Bokmal to "du og ektefellen din flytter sammen igjen",
@@ -135,7 +135,7 @@ object VedleggPlikterAP8_001 : TextOnlyPhrase2<LangBokmalNynorskEnglish>() {
         )
 }
 
-object VedleggPlikterAP11_001 : TextOnlyPhrase2<LangBokmalNynorskEnglish>() {
+object VedleggPlikterAP11_001 : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
     override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         text(
             Bokmal to "du og partneren din flytter sammen igjen",
@@ -144,27 +144,27 @@ object VedleggPlikterAP11_001 : TextOnlyPhrase2<LangBokmalNynorskEnglish>() {
         )
 }
 
-object VedleggPlikterAP9_001 : TextOnlyPhrase2<LangBokmalNynorskEnglish>() {
+object VedleggPlikterAP9_001 : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
     override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         text(Bokmal to "du blir skilt", Nynorsk to "du blir skild", English to "you divorce")
 }
 
-object VedleggPlikterAP7_001 : TextOnlyPhrase2<LangBokmalNynorskEnglish>() {
+object VedleggPlikterAP7_001 : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
     override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         text(Bokmal to "ektefellen din dør", Nynorsk to "ektefellen din døyr", English to "your spouse dies")
 }
 
-object VedleggPlikterAP12_001 : TextOnlyPhrase2<LangBokmalNynorskEnglish>() {
+object VedleggPlikterAP12_001 : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
     override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         text(Bokmal to "partneren din dør", Nynorsk to "partnaren din døyr", English to "your partner dies")
 }
 
-object VedleggPlikterAP10_001 : TextOnlyPhrase2<LangBokmalNynorskEnglish>() {
+object VedleggPlikterAP10_001 : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
     override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         text(Bokmal to "du får ny samboer", Nynorsk to "du får ny sambuar", English to "you get a new cohabiting partner")
 }
 
-data class VedleggPlikterAP5_001(val sivilstand: Expression<Sivilstand>) : TextOnlyPhrase2<LangBokmalNynorskEnglish>() {
+data class VedleggPlikterAP5_001(val sivilstand: Expression<Sivilstand>) : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
     override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         showIf(sivilstand.isOneOf(Sivilstand.GIFT, Sivilstand.GIFT_LEVER_ADSKILT)) {
             text(
@@ -190,7 +190,7 @@ data class VedleggPlikterAP5_001(val sivilstand: Expression<Sivilstand>) : TextO
     }
 }
 
-object VedleggPlikterAP26_001 : TextOnlyPhrase2<LangBokmalNynorskEnglish>() {
+object VedleggPlikterAP26_001 : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
     override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         text(
             Bokmal to "du får et varig opphold i institusjon",
@@ -199,7 +199,7 @@ object VedleggPlikterAP26_001 : TextOnlyPhrase2<LangBokmalNynorskEnglish>() {
         )
 }
 
-object VedleggPlikterAP27_001 : TextOnlyPhrase2<LangBokmalNynorskEnglish>() {
+object VedleggPlikterAP27_001 : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
     override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         text(
             Bokmal to "du sitter i varetekt, soner straff eller er under forvaring",
@@ -473,7 +473,7 @@ object VedleggPlikterUT_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
     }
 }
 
-object VedleggPlikterUT1_001 : TextOnlyPhrase2<LangBokmalNynorskEnglish>() {
+object VedleggPlikterUT1_001 : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
     override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         text(
             Bokmal to "inntekten din endrer seg. Du kan informere NAV om endret inntekt ved å bruke selvbetjeningsløsningen på nav.no",
@@ -482,12 +482,12 @@ object VedleggPlikterUT1_001 : TextOnlyPhrase2<LangBokmalNynorskEnglish>() {
         )
 }
 
-object VedleggPlikterUT2_001 : TextOnlyPhrase2<LangBokmalNynorskEnglish>() {
+object VedleggPlikterUT2_001 : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
     override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         text(Bokmal to "du endrer adresse", Nynorsk to "du endrar adresse", English to "you change address")
 }
 
-object VedleggPlikterUT3_001 : TextOnlyPhrase2<LangBokmalNynorskEnglish>() {
+object VedleggPlikterUT3_001 : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
     override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         text(
             Bokmal to "du skal begynne å arbeide i utlandet",
@@ -496,7 +496,7 @@ object VedleggPlikterUT3_001 : TextOnlyPhrase2<LangBokmalNynorskEnglish>() {
         )
 }
 
-object VedleggPlikterUT4_001 : TextOnlyPhrase2<LangBokmalNynorskEnglish>() {
+object VedleggPlikterUT4_001 : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
     override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         text(
             Bokmal to "du skal oppholde deg utenfor Norge lengre enn seks måneder",
@@ -505,7 +505,7 @@ object VedleggPlikterUT4_001 : TextOnlyPhrase2<LangBokmalNynorskEnglish>() {
         )
 }
 
-object VedleggPlikterUT5_001 : TextOnlyPhrase2<LangBokmalNynorskEnglish>() {
+object VedleggPlikterUT5_001 : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
     override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         text(
             Bokmal to "du skal flytte til et annet land",
@@ -514,7 +514,7 @@ object VedleggPlikterUT5_001 : TextOnlyPhrase2<LangBokmalNynorskEnglish>() {
         )
 }
 
-object VedleggPlikterUT6_001 : TextOnlyPhrase2<LangBokmalNynorskEnglish>() {
+object VedleggPlikterUT6_001 : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
     override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         text(
             Bokmal to "du gifter deg eller inngår samboerskap",
@@ -523,7 +523,7 @@ object VedleggPlikterUT6_001 : TextOnlyPhrase2<LangBokmalNynorskEnglish>() {
         )
 }
 
-object VedleggPlikterUT7_001 : TextOnlyPhrase2<LangBokmalNynorskEnglish>() {
+object VedleggPlikterUT7_001 : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
     override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         text(
             Bokmal to "barn du forsørger får en inntekt over folketrygdens grunnbeløp, eller det skjer endringer i omsorgsituasjonen",
@@ -532,7 +532,7 @@ object VedleggPlikterUT7_001 : TextOnlyPhrase2<LangBokmalNynorskEnglish>() {
         )
 }
 
-object VedleggPlikterUT8_001 : TextOnlyPhrase2<LangBokmalNynorskEnglish>() {
+object VedleggPlikterUT8_001 : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
     override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         text(
             Bokmal to "tjenestepensjon fra offentlig eller private ordninger endrer seg",
@@ -541,7 +541,7 @@ object VedleggPlikterUT8_001 : TextOnlyPhrase2<LangBokmalNynorskEnglish>() {
         )
 }
 
-object VedleggPlikterUT9_001 : TextOnlyPhrase2<LangBokmalNynorskEnglish>() {
+object VedleggPlikterUT9_001 : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
     override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         text(
             Bokmal to "individuelle pensjonsordninger, livrente og gavepensjon endrer seg",
@@ -550,7 +550,7 @@ object VedleggPlikterUT9_001 : TextOnlyPhrase2<LangBokmalNynorskEnglish>() {
         )
 }
 
-object VedleggPlikterUT10_001 : TextOnlyPhrase2<LangBokmalNynorskEnglish>() {
+object VedleggPlikterUT10_001 : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
     override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         text(
             Bokmal to "ytelser og pensjon fra andre land endrer seg",
@@ -559,7 +559,7 @@ object VedleggPlikterUT10_001 : TextOnlyPhrase2<LangBokmalNynorskEnglish>() {
         )
 }
 
-object VedleggPlikterUT11_001 : TextOnlyPhrase2<LangBokmalNynorskEnglish>() {
+object VedleggPlikterUT11_001 : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
     override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         text(
             Bokmal to "du blir innlagt på institusjon",
@@ -568,7 +568,7 @@ object VedleggPlikterUT11_001 : TextOnlyPhrase2<LangBokmalNynorskEnglish>() {
         )
 }
 
-object VedleggPlikterUT12_001 : TextOnlyPhrase2<LangBokmalNynorskEnglish>() {
+object VedleggPlikterUT12_001 : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
     override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         text(
             Bokmal to "du sitter i varetekt, soner straff eller er under forvaring",
@@ -596,7 +596,7 @@ object VedleggPlikterAFP_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
     }
 }
 
-object VedleggPlikterAFP1_001 : TextOnlyPhrase2<LangBokmalNynorskEnglish>() {
+object VedleggPlikterAFP1_001 : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
     override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         text(
             Bokmal to "inntekten din endrer seg",
@@ -605,7 +605,7 @@ object VedleggPlikterAFP1_001 : TextOnlyPhrase2<LangBokmalNynorskEnglish>() {
         )
 }
 
-object VedleggPlikterAFP2_001 : TextOnlyPhrase2<LangBokmalNynorskEnglish>() {
+object VedleggPlikterAFP2_001 : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
     override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         text(
             Bokmal to "du gifter deg eller inngår samboerskap",
@@ -614,7 +614,7 @@ object VedleggPlikterAFP2_001 : TextOnlyPhrase2<LangBokmalNynorskEnglish>() {
         )
 }
 
-object VedleggPlikterAFP3_001 : TextOnlyPhrase2<LangBokmalNynorskEnglish>() {
+object VedleggPlikterAFP3_001 : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
     override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         text(
             Bokmal to "du skal oppholde deg utenfor Norge i en lengre periode eller skal flytte til et annet land",
@@ -623,7 +623,7 @@ object VedleggPlikterAFP3_001 : TextOnlyPhrase2<LangBokmalNynorskEnglish>() {
         )
 }
 
-object VedleggPlikterAFP4_001 : TextOnlyPhrase2<LangBokmalNynorskEnglish>() {
+object VedleggPlikterAFP4_001 : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
     override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         text(
             Bokmal to "du flytter til et annet land, tilbake til Norge eller du endrer adresse i ditt nåværende bostedsland",

@@ -101,7 +101,7 @@ object Felles {
         }
     }
 
-    data class KronerText(val kroner: Expression<Kroner>) : TextOnlyPhrase2<LangBokmalNynorskEnglish>() {
+    data class KronerText(val kroner: Expression<Kroner>) : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
         override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
             textExpr(
                 Bokmal to kroner.format() + " kr",
@@ -110,7 +110,7 @@ object Felles {
             )
     }
 
-    data class MaanederText(val antall: Expression<Int>) : TextOnlyPhrase2<LangBokmalNynorskEnglish>() {
+    data class MaanederText(val antall: Expression<Int>) : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
         override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
             textExpr(
                 Bokmal to antall.format() + " måneder",

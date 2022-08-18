@@ -300,12 +300,12 @@ object ParagraphPhraseTest : ParagraphPhrase<LangBokmalNynorsk>() {
         }
 }
 
-object TextOnlyPhraseTest : TextOnlyPhrase2<LangBokmalNynorsk>() {
+object TextOnlyPhraseTest : TextOnlyPhrase<LangBokmalNynorsk>() {
     override fun TextOnlyScope<LangBokmalNynorsk, Unit>.template() =
         text(Bokmal to "Dette er en tekstfrase", Nynorsk to "Dette er en tekstfrase")
 }
 
-data class TextOnlyPhraseTestWithParams(val dato: Expression<LocalDate>) : TextOnlyPhrase2<LangBokmalNynorsk>() {
+data class TextOnlyPhraseTestWithParams(val dato: Expression<LocalDate>) : TextOnlyPhrase<LangBokmalNynorsk>() {
     override fun TextOnlyScope<LangBokmalNynorsk, Unit>.template() =
         textExpr(
             Bokmal to "Dette er en tekstfrase med datoen: ".expr() + dato.format(),
