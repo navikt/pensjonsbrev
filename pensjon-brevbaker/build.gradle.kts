@@ -95,7 +95,7 @@ dependencies {
     implementation("io.ktor:ktor-server-netty:$ktorVersion")
     implementation("io.ktor:ktor-server-status-pages:$ktorVersion")
     implementation("net.logstash.logback:logstash-logback-encoder:$logstashVersion")
-    implementation("no.nav.pensjon.brev:pensjon-brevbaker-api-model:3.5.6")
+    implementation("no.nav.pensjon.brev:pensjon-brevbaker-api-model:3.5.7")
 
     implementation(project(":template-model-generator"))
     ksp(project(":template-model-generator"))

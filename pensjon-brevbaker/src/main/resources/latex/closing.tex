@@ -23,7 +23,6 @@
 \newcommand{\closing}{
     \par
     \begin{minipage}{\textwidth}
-        \vspace{24pt}
         \lettersectiontitle{\feltclosingspoersmaal}
         \templateparagraph{\feltclosingkontaktoss}
         \par
@@ -39,6 +38,9 @@
 % attachmentList
 \newenvironment{attachmentList}
     {\par
-    \lettersectiontitle{\feltclosingvedleggprefix}
+    \vspace{14pt}
+    % enclose in brackets to prevent font from bleeding out to the rest of the letter.
+    % Should be the same as the secondary letter title, but without extra spacing after.
+    {\primaryFont\fontsize{\titletwotextsize}{0pt} \selectfont \textbf{\feltclosingvedleggprefix}}
     \begin{itemize}}
     {\end{itemize}}

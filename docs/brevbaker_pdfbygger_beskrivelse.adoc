@@ -66,16 +66,6 @@ class Mottaker{
     etternavn: String
     foedselsnummer: String
     kortnavn: String
-    adresse: Adresse
-}
-Mottaker --* Adresse
-
-class Adresse{
-    linje1: String
-    linje2: String
-    linje3: String? = null
-    linje4: String? = null
-    linje5: String? = null
 }
 
 class NAVEnhet{
