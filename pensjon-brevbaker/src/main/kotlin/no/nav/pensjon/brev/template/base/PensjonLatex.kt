@@ -152,14 +152,10 @@ object PensjonLatex : BaseTemplate() {
         }
 
     private fun navEnhetCommands(navEnhet: NAVEnhet, printWriter: LatexPrintWriter) =
-        with(navEnhet.returAdresse) {
+        with(navEnhet) {
             printWriter.printNewCmd("feltnavenhet", navEnhet.navn)
             printWriter.printNewCmd("feltnavenhettlf", navEnhet.telefonnummer.format())
             printWriter.printNewCmd("feltnavenhetnettside", navEnhet.nettside)
-            printWriter.printNewCmd("feltreturadressepostnrsted", "$postNr $postSted")
-            printWriter.printNewCmd("feltreturadresse", adresseLinje1)
-            printWriter.printNewCmd("feltpostadressepostnrsted", "$postNr $postSted")
-            printWriter.printNewCmd("feltpostadresse", adresseLinje1)
         }
 
     private fun vedleggCommand(letter: Letter<*>, printWriter: LatexPrintWriter) {

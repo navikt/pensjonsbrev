@@ -10,8 +10,6 @@ data class Felles(
     val signerendeSaksbehandlere: SignerendeSaksbehandlere? = null,
 )
 
-data class ReturAdresse(val adresseLinje1: String, val postNr: String, val postSted: String)
-
 data class SignerendeSaksbehandlere(val saksbehandler: String, val attesterendeSaksbehandler: String)
 
 data class Bruker(
@@ -23,7 +21,6 @@ data class Bruker(
 )
 
 data class NAVEnhet(
-    val returAdresse: ReturAdresse,
     val nettside: String,
     val navn: String,
     val telefonnummer: Telefonnummer,
