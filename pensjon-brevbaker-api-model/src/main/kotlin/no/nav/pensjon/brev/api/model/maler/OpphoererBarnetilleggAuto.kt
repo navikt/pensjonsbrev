@@ -6,14 +6,11 @@ import java.time.LocalDate
 @Suppress("unused")
 
 
-data class OpphoererBarnetilleggAutoDto(
+data class OpphoererBarnetilleggAutoInnledningDto(
     val oensketVirkningsDato: LocalDate,
 // Vedtaksdata.Kravhode.onsketVirkningsDato
     val fdatoPaaBarnetilleggOpphoert: Number,
 // UT.FodselsdatoBarn
     val totalNettoMaanedligUfoertrygdUtbetalt: Kroner,
 // Vedtaksdata.BeregningsData.BeregningUfore.TotalNetto
-
-    val barnetilleggFellesbarnInnvilget: Boolean,
-    val barnetilleggSaerkullsbarnInnvilget: Boolean,
 )

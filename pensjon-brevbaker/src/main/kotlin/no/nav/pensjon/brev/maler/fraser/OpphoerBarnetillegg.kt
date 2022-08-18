@@ -2,175 +2,193 @@ package no.nav.pensjon.brev.maler.fraser
 
 import no.nav.pensjon.brev.api.model.*
 import no.nav.pensjon.brev.api.model.Kroner
-import no.nav.pensjon.brev.maler.OpphoererBarnetilleggAuto
 import no.nav.pensjon.brev.model.format
+import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brev.template.dsl.expression.*
 import java.time.LocalDate
-import java.util.Date
+import kotlin.reflect.jvm.internal.ReflectProperties.Val
 
 
-data class OpphoererBarnetilleggAutoDto(
-    val oensketVirkningsDato: LocalDate,
-    val fdatoPaaBarnetilleggOpphoert: Number,
-    val totalNettoMaanedligUfoertrygdUtbetalt: Kroner,
-)
-
-object OpphoerBarnetilleggAuto {
-    val totalNettoMaanedligUfoertrygdUtbetalt = it.select(OpphoererBarnetilleggAutoDto::totalNettoMaanedligUfoertrygdUtbetalt)
-    val oensketVirkningsDato = it.select(OpphoererBarnetilleggAutoDto::oensketVirkningsDato)
-    val fdatoPaaBarnetilleggOpphoert = it.select(OpphoererBarnetilleggAutoDto::fdatoPaaBarnetilleggOpphoert)
-
-    val TBU2290 = OutlinePhrase<LangBokmalNynorskEnglish, OpphoererBarnetilleggAutoDto> {
+// TBU2290, TBU4082, TBU4083, TBU4084, TBU2223, TBU1128
+data class OpphoererBarnetilleggAutoInnledning(
+    val oensketVirkningsDato: Expression<LocalDate>,
+    val foedselsdatoPaaBarnetilleggOpphoert: Expression<LocalDate>,
+    val totalNettoMaanedligUfoertrygdUtbetalt: Expression<Kroner>,
+) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() {
         paragraph {
+            val virkningsDato = oensketVirkningsDato.format()
+            val foedselsdato = foedselsdatoPaaBarnetilleggOpphoert.format()
             textExpr(
-                Bokmal to "Vi har vedtatt at barnetillegget i uføretrygden din opphører fra ".expr() + oensketVirkningsDato.format() + " for barn født ".expr() + fdatoPaaBarnetilleggOpphoert.format() + ".".expr(),
-                Nynorsk to "Vi har stansa barnetillegget i uføretrygda di frå ".expr() + oensketVirkningsDato.format() + " for barn fødd ".expr() + fdatoPaaBarnetilleggOpphoert.format() + ".".expr(),
-                English to "The child supplement in your disability benefit has been discontinued, effective as of ".expr() + oensketVirkningsDato.fomat() + ", for child born ".expr() + fdatoPaaBarnetilleggOpphoert.format() + ".".expr()
+                Bokmal to "Vi har vedtatt at barnetillegget i uføretrygden din opphører fra ".expr() + virkningsDato + " for barn født ".expr() + foedselsdato + ".".expr(),
+                Nynorsk to "Vi har stansa barnetillegget i uføretrygda di frå ".expr() + virkningsDato + " for barn fødd ".expr() + foedselsdato + ".".expr(),
+                English to "The child supplement in your disability benefit has been discontinued, effective as of ".expr() + virkningsDato + ", for child born ".expr() + foedselsdato + ".".expr()
             )
+        }
+    }
+}
+
+// TBU1120, TBU1121, TBU1122, TBU1123, TBU1253, TBU1254, TBU4082, TBU4083, TBU4084
+data class Beloep(
+    val perMaaned: Expression<Kroner>,
+    val ektefelle: Expression<Boolean>,
+    val gjenlevende: Expression<Boolean>,
+    val fellesbarn: Expression<Boolean>,
+    val saerkullsbarn: Expression<Boolean>,
+    val ufoertrygd: Expression<Boolean>, // TODO add ufoertrygd to the data class?
+
+) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() =
+        paragraph {
+            val kroner = perMaaned.format()
+
+            showIf(ufoertrygd and not(fellesbarn) and not(saerkullsbarn) and not(ektefelle) and not(gjenlevende)) {
+                // TBU1120
+                textExpr(
+                    Bokmal to "Du får ".expr() + kroner + " kroner i uføretrygd per måned før skatt.",
+                    Nynorsk to "Du får ".expr() + kroner + " kroner i uføretrygd per månad før skatt.",
+                    English to "Your monthly disability benefit payment will be NOK ".expr() + kroner + " before tax."
+                )
+            }.orShowIf(ufoertrygd and (fellesbarn or saerkullsbarn) and not(gjenlevende) and not(ektefelle)) {
+                // TBU1121
+                textExpr(
+                    Bokmal to "Du får ".expr() + kroner + " kroner i uføretrygd og barnetillegg per måned før skatt.",
+                    Nynorsk to "Du får ".expr() + kroner + " kroner i uføretrygd og barnetillegg per månad før skatt.",
+                    English to "Your monthly disability benefit and child supplement payment will be NOK ".expr() + kroner + " before tax."
+                )
+            }.orShowIf(ufoertrygd and not(fellesbarn) and not(saerkullsbarn) and not(ektefelle) and gjenlevende) {
+                // TBU1122
+                textExpr(
+                    Bokmal to "Du får ".expr() + kroner + " kroner i uføretrygd og gjenlevendetillegg per måned før skatt.",
+                    Nynorsk to "Du får ".expr() + kroner + " kroner i uføretrygd og attlevandetillegg per månad før skatt.",
+                    English to "Your monthly disability benefit and survivor's supplement payment will be NOK ".expr() + kroner + " before tax."
+                )
+
+            }.orShowIf(ufoertrygd and (fellesbarn or saerkullsbarn) and ektefelle and not(gjenlevende)) {
+                // TBU1123
+                textExpr(
+                    Bokmal to "Du får ".expr() + kroner + " kroner i uføretrygd, barne- og ektefelletillegg per måned før skatt.",
+                    Nynorsk to "Du får ".expr() + kroner + " kroner i uføretrygd, barne- og ektefelletillegg per månad før skatt.",
+                    English to "Your monthly disability benefit, child supplement and survivor's supplement payment will be NOK ".expr() + kroner + " before tax."
+                )
+
+            }.orShowIf(ufoertrygd and not(fellesbarn) and not(saerkullsbarn) and ektefelle and not(gjenlevende)) {
+                // TBU1253
+                textExpr(
+                    Bokmal to "Du får ".expr() + kroner + " kroner i uføretrygd og ektefelletillegg per måned før skatt.",
+                    Nynorsk to "Du får ".expr() + kroner + " kroner i uføretrygd og ektefelletillegg per månad før skatt.",
+                    English to "Your monthly disability benefit and spouse supplement payment will be NOK ".expr() + kroner + " before tax."
+                )
+
+            }.orShowIf(ufoertrygd and (fellesbarn or saerkullsbarn) and not(ektefelle) and gjenlevende) {
+                //TBU1254
+                textExpr(
+                    Bokmal to "Du får ".expr() + kroner + " kroner i uføretrygd, barne- og gjenlevendetillegg per måned før skatt.",
+                    Nynorsk to "Du får ".expr() + kroner + " kroner i uføretrygd, barne- og attlevandetillegg per månad før skatt.",
+                    English to "Your monthly disability benefit, child supplement and spouse supplement payment will be NOK ".expr() + kroner + " before tax."
+                )
+
+            }.orShowIf(not(ufoertrygd) and (fellesbarn or saerkullsbarn) and not(ektefelle) and not(gjenlevende)) {
+                // TBU4082
+                textExpr(
+                    Bokmal to "Du får ".expr() + kroner + " kroner i barnetillegg per måned før skatt.",
+                    Nynorsk to "Du får ".expr() + kroner + " kroner i barnetillegg per månad før skatt.",
+                    English to "Your monthly child supplement payment will be NOK ".expr() + kroner + " before tax."
+                )
+
+            }.orShowIf(not(ufoertrygd) and (fellesbarn or saerkullsbarn) and ektefelle and not(gjenlevende)) {
+                // TBU4083
+                textExpr(
+                    Bokmal to "Du får ".expr() + kroner + " kroner i barne- og ektefelletillegg per måned før skatt.",
+                    Nynorsk to "Du får ".expr() + kroner + " kroner i barne- og ektefelletillegg per månad før skatt.",
+                    English to "Your monthly child supplement and spouse supplement  payment will be NOK ".expr() + kroner + " before tax."
+                )
+
+            }.orShowIf(not(ufoertrygd) and not(fellesbarn) and not(saerkullsbarn) and ektefelle and not(gjenlevende)) {
+                // TBU4084
+                textExpr(
+                    Bokmal to "Du får ".expr() + kroner + " kroner i ektefelletillegg per måned før skatt.",
+                    Nynorsk to "Du får ".expr() + kroner + " kroner i ektefelletillegg per månad før skatt.",
+                    English to "Your monthly spouse supplement payment will be NOK ".expr() + kroner + " before tax.
+                )
+
+            }
+        }
+
+
+    object TBU2223 : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() {
+            paragraph {
+                text(
+                    Bokmal to "Uføretrygden blir fortsatt utbetalt senest den 20. hver måned.",
+                    Nynorsk to "Uføretrygda blir framleis utbetalt seinast den 20. i kvar månad.",
+                    English to "Your disability benefit will still be paid no later than the 20th of every month."
+                )
+            }
         }
     }
 
-    val TBU1120 = OutlinePhrase<LangBokmalNynorskEnglish, OpphoererBarnetilleggAutoDto> {
-        paragraph {
-            textExpr(
-                Bokmal to "Du får ".expr() + totalNettoMaanedligUfoertrygdUtbetalt.format() + " kroner i uføretrygd per måned før skatt.".expr(),
-                Nynorsk to "Du får ".expr() + totalNettoMaanedligUfoertrygdUtbetalt.format() + " kroner i uføretrygd per månad før skatt.".expr(),
-                English to "Your monthly disability benefit payment will be NOK ".expr() + totalNettoMaanedligUfoertrygdUtbetalt.format() + " before tax.".expr()
-            )
+    object TBU1128 : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() {
+            paragraph {
+                text(
+                    Bokmal to "I dette brevet forklarer vi hvilke rettigheter og plikter du har. Det er derfor viktig at du leser hele brevet.",
+                    Nynorsk to "I dette brevet forklarer vi kva rettar og plikter du har. Det er derfor viktig at du les heile brevet.",
+                    English to "In this letter we will explain your rights and obligations. Therefore, it is important that you read the whole letter."
+                )
+            }
+        }
+    }
+    // TBU1092, TBU3920, TBU4085
+    data class BegrunnelseForVedtaket(
+        val antallBarn
+    )
+    object TBU1092 : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() {
+            title1 {
+                text(
+                    Bokmal to "Begrunnelse for vedtaket",
+                    Nynorsk to "Grunngiving for vedtaket",
+                    English to "Grounds for the decision"
+                )
+            }
+        }
+    }
+    //
+    data class BegrunnelseForVedtaket(
+        val barn
+    )
+
+    object TBU3920 : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() {
+            paragraph {
+                val = antallBarn
+                text(
+                    Bokmal to "For å ha rett til barnetillegg må du forsørge barn under 18 år. Vi har vedtatt at barnetillegget i uføretrygden opphører fordi barnetbarna har fylt 18 år.",
+                    Nynorsk to "For å ha rett til barnetillegg må du forsørgje barn under 18 år. Vi har stansa barnetillegget i uføretrygda fordi barnetbarna har fylt 18 år.",
+                    English to "To be eligible for child supplement, you must support children under 18 years of age. The child supplement in your disability benefit has been discontinued because your  childchildren has(have) turned 18 years of age."
+                )
+            }
         }
     }
 
-    val TBU1121 = OutlinePhrase<LangBokmalNynorskEnglish, OpphoererBarnetilleggAutoDto> {
-        paragraph {
-            textExpr(
-                Bokmal to "Du får ".expr() + totalNettoMaanedligUfoertrygdUtbetalt.format() + " kroner i uføretrygd og barnetillegg per måned før skatt.".expr(),
-                Nynorsk to "Du får ".expr() + totalNettoMaanedligUfoertrygdUtbetalt.format() + " kroner i uføretrygd og barnetillegg per månad før skatt.".expr(),
-                English to "Your monthly disability benefit and child supplement payment will be NOK ".expr() + totalNettoMaanedligUfoertrygdUtbetalt.format() + " before tax.".expr()
-            )
+    object TBU4085 : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() {
+            paragraph {
+                text(
+                    Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 12-15, 12-16 og 22-12 og forskrift om overgangsregler for barnetillegg i uføretrygden.",
+                    Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 12-15, 12-16 og 22-12 og forskrift om overgangsreglar for barnetillegg i uføretrygda.",
+                    English to "The decision has been made pursuant to Section 12-15, 12-16 and 22-12 of the Norwegian National Insurance Act and the transitional provisions for the child supplement in your disability benefit."
+                )
+            }
         }
     }
 
-    val TBU1122 = OutlinePhrase<LangBokmalNynorskEnglish, OpphoererBarnetilleggAutoDto> {
-        paragraph {
-            textExpr(
-                Bokmal to "Du får ".expr() + totalNettoMaanedligUfoertrygdUtbetalt.format() + " kroner i uføretrygd og gjenlevendetillegg per måned før skatt.".expr(),
-                Nynorsk to "Du får ".expr() + totalNettoMaanedligUfoertrygdUtbetalt.format() + " kroner i uføretrygd og attlevandetillegg per månad før skatt.".expr(),
-                English to "Your monthly disability benefit and survivor's supplement payment will be NOK ".expr() + totalNettoMaanedligUfoertrygdUtbetalt.format() + " before tax.".expr()
-            )
-        }
-    }
-
-    val TBU1123 = OutlinePhrase<LangBokmalNynorskEnglish, OpphoererBarnetilleggAutoDto> {
-        paragraph {
-            textExpr(
-                Bokmal to "Du får ".expr() + totalNettoMaanedligUfoertrygdUtbetalt.format() + " kroner i uføretrygd, barne- og gjenlevendetillegg per måned før skatt.".expr(),
-                Nynorsk to "Du får ".expr() + totalNettoMaanedligUfoertrygdUtbetalt.format() + " kroner i uføretrygd, barne- og attlevandetillegg per månad før skatt.".expr(),
-                English to "Your monthly disability benefit, child supplement and survivor's supplement payment will be NOK ".expr() + totalNettoMaanedligUfoertrygdUtbetalt.format() + " before tax.".expr()
-            )
-        }
-    }
-
-    val TBU1253 = OutlinePhrase<LangBokmalNynorskEnglish, OpphoererBarnetilleggAutoDto> {
-        paragraph {
-            textExpr(
-                Bokmal to "Du får ".expr() + totalNettoMaanedligUfoertrygdUtbetalt.format() + " kroner i uføretrygd og ektefelletillegg per måned før skatt.".expr(),
-                Nynorsk to "Du får ".expr() + totalNettoMaanedligUfoertrygdUtbetalt.format() + " kroner i uføretrygd og ektefelletillegg per månad før skatt.".expr(),
-                English to "Your monthly disability benefit and spouse supplement payment will be NOK ".expr() + totalNettoMaanedligUfoertrygdUtbetalt.format() + " before tax.".expr()
-            )
-        }
-    }
-
-    val TBU1254 = OutlinePhrase<LangBokmalNynorskEnglish, OpphoererBarnetilleggAutoDto> {
-        paragraph {
-            textExpr(
-                Bokmal to "Du får ".expr() + totalNettoMaanedligUfoertrygdUtbetalt.format() + " kroner i uføretrygd, barne- og ektefelletillegg per måned før skatt.".expr(),
-                Nynorsk to "Du får ".expr() + totalNettoMaanedligUfoertrygdUtbetalt.format() + " kroner i uføretrygd, barne- og ektefelletillegg per månad før skatt.".expr(),
-                English to "Your monthly disability benefit, child supplement and spouse supplement payment will be NOK ".expr() + totalNettoMaanedligUfoertrygdUtbetalt.format() + " before tax.".expr()
-            )
-        }
-    }
-
-    val TBU4082 = OutlinePhrase<LangBokmalNynorskEnglish, OpphoererBarnetilleggAutoDto> {
-        paragraph {
-            textExpr(
-                Bokmal to "Du får ".expr() + totalNettoMaanedligUfoertrygdUtbetalt.format() + " kroner i barnetillegg per måned før skatt.".expr(),
-                Nynorsk to "Du får ".expr() + totalNettoMaanedligUfoertrygdUtbetalt.format() + " kroner i barnetillegg per månad før skatt.".expr(),
-                English to "Your monthly child supplement payment will be NOK ".expr() + totalNettoMaanedligUfoertrygdUtbetalt.format() + " before tax.".expr()
-            )
-        }
-    }
-
-    val TBU4083 = OutlinePhrase<LangBokmalNynorskEnglish, OpphoererBarnetilleggAutoDto> {
-        paragraph {
-            textExpr(
-                Bokmal to "Du får ".expr() + totalNettoMaanedligUfoertrygdUtbetalt.format() + " kroner i barne- og ektefelletillegg per måned før skatt.".expr(),
-                Nynorsk to "Du får ".expr() + totalNettoMaanedligUfoertrygdUtbetalt.format() + " kroner i barne- og ektefelletillegg per månad før skatt.".expr(),
-                English to "Your monthly child supplement and spouse supplement  payment will be NOK ".expr() + totalNettoMaanedligUfoertrygdUtbetalt.format() + " before tax.".expr()
-            )
-        }
-    }
-
-    val TBU4084 = OutlinePhrase<LangBokmalNynorskEnglish, OpphoererBarnetilleggAutoDto> {
-        paragraph {
-            textExpr(
-                Bokmal to "Du får ".expr() + totalNettoMaanedligUfoertrygdUtbetalt.format() + " kroner i ektefelletillegg per måned før skatt.".expr(),
-                Nynorsk to "Du får ".expr() + totalNettoMaanedligUfoertrygdUtbetalt.format() + " kroner i ektefelletillegg per månad før skatt.".expr(),
-                English to "Your monthly spouse supplement payment will be NOK ".expr() + totalNettoMaanedligUfoertrygdUtbetalt.format() + " before tax.".expr()
-            )
-        }
-    }
-
-    val TBU2223 = OutlinePhrase<LangBokmalNynorskEnglish, Unit> {
-        paragraph {
-            text(
-                Bokmal to "Uføretrygden blir fortsatt utbetalt senest den 20. hver måned.",
-                Nynorsk to "Uføretrygda blir framleis utbetalt seinast den 20. i kvar månad.",
-                English to "Your disability benefit will still be paid no later than the 20th of every month."
-            )
-        }
-    }
-
-    val TBU1128 = OutlinePhrase<LangBokmalNynorskEnglish, Unit> {
-        paragraph {
-            text(
-                Bokmal to "I dette brevet forklarer vi hvilke rettigheter og plikter du har. Det er derfor viktig at du leser hele brevet.",
-                Nynorsk to "I dette brevet forklarer vi kva rettar og plikter du har. Det er derfor viktig at du les heile brevet.",
-                English to "In this letter we will explain your rights and obligations. Therefore, it is important that you read the whole letter."
-            )
-        }
-    }
-
-    val TBU1092 = OutlinePhrase<LangBokmalNynorskEnglish, Unit> {
-        title1 {
-            text(
-                Bokmal to "Begrunnelse for vedtaket",
-                Nynorsk to "Grunngiving for vedtaket",
-                English to "Grounds for the decision"
-            )
-        }
-    }
-    val TBU3920 = OutlinePhrase<LangBokmalNynorskEnglish, Unit> {
-        paragraph {
-            text(
-                Bokmal to "For å ha rett til barnetillegg må du forsørge barn under 18 år. Vi har vedtatt at barnetillegget i uføretrygden opphører fordi barnetbarna har fylt 18 år. ",
-                Nynorsk to "For å ha rett til barnetillegg må du forsørgje barn under 18 år. Vi har stansa barnetillegget i uføretrygda fordi barnetbarna har fylt 18 år.",
-                English to "To be eligible for child supplement, you must support children under 18 years of age. The child supplement in your disability benefit has been discontinued because your  childchildren has(have) turned 18 years of age."
-            )
-        }
-    }
-    val TBU4085 = OutlinePhrase<LangBokmalNynorskEnglish, Unit> {
-        paragraph {
-            text(
-                Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 12-15, 12-16 og 22-12 og forskrift om overgangsregler for barnetillegg i uføretrygden.",
-                Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 12-15, 12-16 og 22-12 og forskrift om overgangsreglar for barnetillegg i uføretrygda.",
-                English to "The decision has been made pursuant to Section 12-15, 12-16 and 22-12 of the Norwegian National Insurance Act and the transitional provisions for the child supplement in your disability benefit."
-            )
-        }
-    }
+    // TODO use existing
     val TBU1174 = OutlinePhrase<LangBokmalNynorskEnglish, Unit> {
         title1 {
             text(
@@ -285,6 +303,8 @@ object OpphoerBarnetilleggAuto {
             )
         }
     }
+
+    // TODO use existing
     val TBU1286 = OutlinePhrase<LangBokmalNynorskEnglish, Unit> {
         paragraph {
             text(
@@ -304,7 +324,7 @@ object OpphoerBarnetilleggAuto {
             )
         }
     }
-    val TBU1286_1 = OutlinePhrase<LangBokmalNynorskEnglish, Unit>   {
+    val TBU1286_1 = OutlinePhrase<LangBokmalNynorskEnglish, Unit> {
         paragraph {
             text(
                 Bokmal to "Barnetillegget for barnetbarna som ikke bor sammen med begge foreldrene, blir ikke utbetalt fordi du alene har en samlet inntekt som er høyere enn <BarnetilleggSerkull.inntektstak> kroner. Inntekten din er over grensen for å få utbetalt barnetillegg.",
@@ -313,7 +333,7 @@ object OpphoerBarnetilleggAuto {
             )
         }
     }
-    val TBU1286_2 = OutlinePhrase<LangBokmalNynorskEnglish, Unit>   {
+    val TBU1286_2 = OutlinePhrase<LangBokmalNynorskEnglish, Unit> {
         paragraph {
             text(
                 Bokmal to "Barnetillegget for barnetbarna som bor med begge sine foreldre, blir ikke utbetalt fordi dere har en samlet inntekt som er høyere enn <BarnetilleggFelles.inntektstak> kroner. De samlede inntektene er over grensen for å få utbetalt barnetillegg.",
@@ -390,6 +410,8 @@ object OpphoerBarnetilleggAuto {
             )
         }
     }
+
+    // TODO use existing
     val TBU1074 = OutlinePhrase<LangBokmalNynorskEnglish, Unit> {
         title1 {
             text(
@@ -408,6 +430,8 @@ object OpphoerBarnetilleggAuto {
             )
         }
     }
+
+    // TODO use existing
     val TBU1227 = OutlinePhrase<LangBokmalNynorskEnglish, Unit> {
         title1 {
             text(

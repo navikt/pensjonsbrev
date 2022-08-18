@@ -11,12 +11,13 @@ import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.expression.or
 import no.nav.pensjon.brev.template.dsl.expression.select
+import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 
 // BrevKode: PE_UT_07_200
-
-object OpphoererBarnetilleggAuto : VedtaksbrevTemplate {
+@TemplateModelHelpers
+object OpphoererBarnetilleggAuto : VedtaksbrevTemplate<OpphoererBarnetilleggAutoDto> {
 
     // override val kode = Brevkode.Vedtak.OPPHOER_BARNETILLEGG
 
