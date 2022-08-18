@@ -9,13 +9,14 @@ import no.nav.pensjon.brev.latex.LaTeXCompilerService
 import no.nav.pensjon.brev.latex.PdfCompilationInput
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Letter
-import no.nav.pensjon.brev.template.dsl.*
+import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.select
+import no.nav.pensjon.brev.template.dsl.languages
+import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.latexEscape
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 import org.opentest4j.AssertionFailedError
-import kotlin.collections.ArrayList
 
 data class TestTemplateDto(val etNavn: String)
 
@@ -23,6 +24,7 @@ data class TestTemplateDto(val etNavn: String)
 class PensjonLatexITest {
 
     val brevData = TestTemplateDto("Ole")
+
     @Test
     fun canRender() {
         val template = createTemplate(
@@ -46,19 +48,19 @@ class PensjonLatexITest {
             .render()
             .let { PdfCompilationInput(it.base64EncodedFiles()) }
             .let { LaTeXCompilerService(PDF_BUILDER_URL).producePdfSync(it).base64PDF }
-            .also { writeTestPDF("pensjonLatexITest_canRender" ,it) }
+            .also { writeTestPDF("pensjonLatexITest_canRender", it) }
     }
 
     @Test
     fun `Ping pdf builder`() {
-        runBlocking { LaTeXCompilerService(PDF_BUILDER_URL).ping()}
+        runBlocking { LaTeXCompilerService(PDF_BUILDER_URL).ping() }
     }
 
     @Test
     fun `try different characters to attempt escaping LaTeX`() {
         val invalidCharacters = ArrayList<Int>()
-        isValidCharacters(0,Char.MAX_VALUE.code, invalidCharacters)
-        if(invalidCharacters.isNotEmpty()) {
+        isValidCharacters(0, Char.MAX_VALUE.code, invalidCharacters)
+        if (invalidCharacters.isNotEmpty()) {
             throw AssertionFailedError(
                 """
                     Escaped characters managed to crash the letter compilation:
@@ -72,7 +74,7 @@ class PensjonLatexITest {
     }
 
     private fun isValidCharacters(begin: Int, end: Int, invalidCharacters: ArrayList<Int>) {
-        if (testCharacters(addChars(begin, end))) {
+        if (testCharacters(begin, end)) {
             //All characters are valid
             return
         } else {
@@ -89,7 +91,7 @@ class PensjonLatexITest {
         }
     }
 
-    private fun testCharacters(addChars: String): Boolean {
+    private fun testCharacters(startChar: Int, endChar: Int): Boolean {
         try {
             val testTemplate = createTemplate(
                 name = "test-template",
@@ -104,7 +106,7 @@ class PensjonLatexITest {
             ) {
                 title { text(Bokmal to "En fin tittel") }
                 outline {
-                    text(Bokmal to addChars.latexEscape() + "test")
+                    text(Bokmal to addChars(startChar, endChar) + "test")
                     eval { argument().select(TestTemplateDto::etNavn) }
                 }
             }
@@ -113,6 +115,8 @@ class PensjonLatexITest {
                 .render()
                 .let { PdfCompilationInput(it.base64EncodedFiles()) }
                 .let { LaTeXCompilerService(PDF_BUILDER_URL).producePdfSync(it).base64PDF }
+                .also { writeTestPDF("LATEX_ESCAPE_TEST_$startChar-$endChar", it) }
+
             return true
         } catch (e: Throwable) {
             return false

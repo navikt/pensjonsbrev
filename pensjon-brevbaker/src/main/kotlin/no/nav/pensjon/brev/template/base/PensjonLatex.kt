@@ -12,7 +12,7 @@ import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 
 object PensjonLatex : BaseTemplate() {
-    val letterResourceFiles: Map<String, ByteArray> = hashMapOf(
+    private val letterResourceFiles: Map<String, ByteArray> = hashMapOf(
         "nav-logo.pdf" to getResource("latex/nav-logo.pdf"),
         "nav-logo.pdf_tex" to getResource("latex/nav-logo.pdf_tex"),
         "pensjonsbrev_v3.cls" to getResource("latex/pensjonsbrev_v3.cls"),
@@ -118,7 +118,6 @@ object PensjonLatex : BaseTemplate() {
 
         with(letter.felles) {
             brukerCommands(bruker, printWriter)
-            mottakerCommands(mottaker, printWriter)
             navEnhetCommands(avsenderEnhet, printWriter)
             datoCommand(dokumentDato, letter.language, printWriter)
             saksbehandlerCommands(signerendeSaksbehandlere, printWriter)
@@ -142,7 +141,7 @@ object PensjonLatex : BaseTemplate() {
     }
 
     private fun datoCommand(dato: LocalDate, language: Language, printWriter: LatexPrintWriter) {
-        printWriter.printNewCmd("feltdato", dato.format(dateFormatter(language, FormatStyle.LONG)))
+        printWriter.printNewCmd("feltdato", dato.format(dateFormatter(language, FormatStyle.SHORT)))
     }
 
     private fun brukerCommands(bruker: Bruker, printWriter: LatexPrintWriter) =
@@ -151,16 +150,6 @@ object PensjonLatex : BaseTemplate() {
             printWriter.printNewCmd("feltfornavnbruker", fornavn)
             printWriter.printNewCmd("feltetternavnbruker", etternavn)
         }
-
-    private fun mottakerCommands(mottaker: Adresse, printWriter: LatexPrintWriter) =
-        with(mottaker) {
-            printWriter.printNewCmd("feltmottakeradresselineone", linje1)
-            printWriter.printNewCmd("feltmottakeradresselinetwo", linje2)
-            printWriter.printNewCmd("feltmottakeradresselinethree", linje3 ?: "")
-            printWriter.printNewCmd("feltmottakeradresselinefour", linje4 ?: "")
-            printWriter.printNewCmd("feltmottakeradresselinefive", linje5 ?: "")
-        }
-
 
     private fun navEnhetCommands(navEnhet: NAVEnhet, printWriter: LatexPrintWriter) =
         with(navEnhet.returAdresse) {
