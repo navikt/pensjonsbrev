@@ -20,10 +20,9 @@
 % tables and colors
 \usepackage{xcolor}
 \usepackage{ninecolors}
+\usepackage[all]{nowidow} % prevent widowed paragraphs
 \usepackage{tabularray} % better tables(tblr, longtblr)
 \usepackage{enumitem,amssymb} % for formChoice list
-
-\usepackage{placeins} % Float barrier to make elements between barrier not float.
 \usepackage[absolute
 %    ,showboxes %show boxes around textblocks for debugging
     ]{textpos} %first page absolute posistioned elements
@@ -40,40 +39,45 @@
 \setsansfont{Source Sans Pro}
 \setmainfont{Source Sans Pro}
 \addfontfeature{VerticalPosition = Inferior }
-\newfontface{\grayFont}{Source Sans Pro}[Color=888888]
 \newfontface{\primaryFont}[
-    BoldFont={Source Sans Pro Bold},
-    ItalicFont={Source Sans Pro Italic},
-    BoldItalicFont={Source Sans Pro Bold Italic}]{Source Sans Pro}
-\newfontface{\secondaryFont}[
+    Color=262626, % TODO blir det mye kostnader på for SITS å printe nesten svart istedenfor svart?
     BoldFont={Source Sans Pro Bold},
     ItalicFont={Source Sans Pro Italic},
     BoldItalicFont={Source Sans Pro Bold Italic}]{Source Sans Pro}
 
 % Global font commands
-\newcommand{\standardtextsize}{12pt}
-\newcommand{\tinytextsize}{8pt}
-\newcommand{\tinyText}[1]{{\secondaryFont \fontsize{8pt}{8pt} \selectfont #1}}
+\newcommand{\standardtextsize}{11.45pt}
+\newcommand{\standardtextspacing}{18.5pt}
+\newcommand{\titletextsize}{15.3pt}
+\newcommand{\titletwotextsize}{13.4pt}
+\newcommand{\pagenumbertext}[1]{{\primaryFont \fontsize{10pt}{10pt} \selectfont #1}}
 \setlength{\parindent}{0em} % indentations before first line in paragraph
 \setlength{\parskip}{1em} % space between paragraphs
+
 %itemize / lists spacing
-\setlist{nolistsep}
-\renewcommand{\baselinestretch}{1.2}
+\newlength{\listtopsep}
+\setlength{\listtopsep}{10pt} % separation between top of list and content
+\newlength{\listtopsepcalc}
+\setlength{\listtopsepcalc}{\dimexpr(\listtopsep-\parskip)} %parskip is subtracted because it is added to the topsep by default
+\setlist[itemize]{noitemsep, topsep=\listtopsepcalc, leftmargin=15pt}
+
 
 % paragraph formatting
-\widowpenalties 1 1000 %penalty score for breaking a paragraph
 \sloppy % no word-breaking
 \raggedright % no word spacing
 \raggedbottom % no line stretching to fit page
 
 
-% page text area formatting
-\setlength{\textwidth}{165 mm} % total text width
-% margin adjustments (adjusting relative to original standard article margins):
-\setlength{\oddsidemargin}{-5.4 mm}
-\setlength{\evensidemargin}{-5.4 mm}
-\setlength{\topmargin}{-12 mm}
-\setlength{\textheight}{247 mm} % standard text height
+%% page text area formatting
+\newlength{\lettermargin}
+\setlength{\lettermargin}{20mm}
+\usepackage[
+%    showframe, %used to show and debug margins
+    top=\lettermargin,
+    left=\lettermargin,
+    right=\lettermargin,
+    bottom=25mm
+]{geometry}
 
 \fancypagestyle{normalpage}{
     \renewcommand{\headrulewidth}{0pt}%
@@ -85,8 +89,8 @@
 %                 Logo
 %----------------------------------------
 \newcommand{\logo}{
-    \begin{textblock*}{25mm}(165mm,21mm)
-        \hfill\includegraphics[width=25mm,page=1]{nav-logo}
+    \begin{textblock*}{24.1mm}(16.7mm,17.7mm)
+        \hfill\includegraphics[width=24.1mm,page=1]{nav-logo}
     \end{textblock*}
 }
 
@@ -95,8 +99,8 @@
 %----------------------------------------
 \newcommand{\currentSectionName}{mainletter} %name of the current section of the letter. Used for lastpage label at the end of this section
 \newcommand{\letterpagenumber}{ %general page number formatting
-    \begin{textblock*}{25mm}(160mm,287mm)
-        \tinyText{\hfill\feltsideprefix~\thepage~\feltsideinfix~\pageref*{\currentSectionName}}
+    \begin{textblock*}{\textwidth}(\lettermargin,280mm)
+        \pagenumbertext{\feltsaksnummerprefix~\feltsaksnummer\hfill\feltsideprefix~\thepage~\feltsideinfix~\pageref*{\currentSectionName}}
     \end{textblock*}
 }
 
@@ -105,14 +109,14 @@
 %----------------------------------------
 \newcommand{\sakspart}{
     {
-        \setlength{\tabcolsep}{3.5mm}
-        \primaryFont \fontsize{\standardtextsize}{\standardtextsize} \selectfont
+        \setlength{\tabcolsep}{3.9mm}
+        \primaryFont \fontsize{\standardtextsize}{19.5pt} \selectfont
         \begin{tabular}{@{}ll}
             \feltnavnprefix & \feltetternavnbruker \space \feltfornavnbruker \\
             \feltfoedselsnummerprefix & \feltfoedselsnummerbruker \\
             \feltsaksnummerprefix & \feltsaksnummer
         \end{tabular}
-        \\[22pt]
+        \\[28pt]
     }
 }
 

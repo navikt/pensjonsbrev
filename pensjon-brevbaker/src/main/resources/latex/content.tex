@@ -4,7 +4,7 @@
 
 %Letter section title
 \newcommand{\lettersectiontitle}[1]{{
-    \primaryFont \fontsize{14pt}{14pt} \selectfont \vspace{6pt} \textbf{#1} \\*[6pt]
+    \primaryFont \fontsize{\titletwotextsize}{0pt} \selectfont \vspace{14pt} \textbf{#1} \\*[5pt]
 }}
 
 %Normal paragraphs
@@ -35,33 +35,38 @@
 %----------------------------------------
 %default table settings
 
-\newcommand{\tableHeaderText}[1]{{\primaryFont \fontsize{14pt}{14pt} \selectfont \textbf{#1}}} %footer font command
-\definecolor{columnheadercolor}{HTML}{CCE1FF}
-\definecolor{linecolor}{HTML}{A0A0A0}
-\definecolor{row1color}{HTML}{F1F1F1}
+\newcommand{\tableHeaderText}[1]{\allowbreak{\primaryFont \fontsize{\titletwotextsize}{\titletwotextsize} \selectfont \textbf{#1}}} %footer font command
+\definecolor{columnheadercolor}{HTML}{E6F0FF}
+\definecolor{linecolor}{HTML}{EFEFEF}
+\definecolor{row1color}{HTML}{F7F7F7}
 \definecolor{row2color}{HTML}{FFFFFF}
 
-\DefTblrTemplate{contfoot-text}{default}{\felttablenextpagecontinuation\hfill\space }
-\DefTblrTemplate{caption}{default}{\tableHeaderText{\InsertTblrText{caption}}}
-\DefTblrTemplate{capcont}{default}{\InsertTblrText{caption}\felttablecontinuedfrompreviouspage}
+\DefTblrTemplate{contfoot-text}{default}{\felttablenextpagecontinuation\hfill\space}
+\DefTblrTemplate{caption}{default}{} % remove built in header
+\DefTblrTemplate{capcont}{default}{\felttablecontinuedfrompreviouspage}
 
+
+\newfontface{\tabletext}[
+    Color=707070,
+    BoldFont={Source Sans Pro Bold},
+    ItalicFont={Source Sans Pro Italic},
+    BoldItalicFont={Source Sans Pro Bold Italic}]{Source Sans Pro}
 
 \newenvironment{letterTable}[1]{
     \setlength{\parskip}{0pt}
-    \begin{longtblr}[presep={3mm},postsep={3.979333349mm},]
+    \begin{longtblr}[presep={3.5mm},postsep={3.5mm},footsep={3.5mm}, headsep={3.5mm}]
     {
         colspec=#1,
-        colsep = 1.947333341 mm,
+        colsep = 2.5 mm,
         stretch = 0 mm, %Don't add extra space under each cell to fit the table exactly to page.
         hspan=minimal, %wrap instead of widening table over limit
-        hlines={0.084666667mm,linecolor},
-        row{odd}={row1color,rowsep=1.5mm},
-        row{even}={row2color,rowsep=1.5mm},
+        hlines={0.2mm,linecolor},
+        row{odd}={row1color,rowsep=2.6mm},
+        row{even}={row2color,rowsep=2.6mm},
         width=\textwidth,
         rowhead=1,
-        cells={b}, % bottom align cell content
         hline{1}={0pt,linecolor}, %remove first horizontal line over the column header
-        row{1-1}={columnheadercolor,rowsep=2.54mm}
+        row{1-1}={columnheadercolor,rowsep=3.2mm}
     }
 }{
     \end{longtblr}\setlength{\parskip}{1em}

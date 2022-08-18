@@ -35,6 +35,8 @@ private fun listItem(
 ) {
     printWriter.print("""\item """, escape = false)
     element.elements.forEach { renderElement(scope, it, printWriter) }
+    printWriter.println("")
+
 }
 
 private fun table(
