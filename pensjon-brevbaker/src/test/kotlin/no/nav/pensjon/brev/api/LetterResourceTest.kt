@@ -72,7 +72,7 @@ class LetterResourceTest {
                     LanguageCode.BOKMAL
                 )
             )
-        assertEquals(Fixtures.felles.avsenderEnhet.returAdresse, letter.felles.avsenderEnhet.returAdresse)
+        assertEquals(Fixtures.felles.avsenderEnhet.navn, letter.felles.avsenderEnhet.navn)
     }
 
     @Test

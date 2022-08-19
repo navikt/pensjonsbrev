@@ -49,12 +49,6 @@ Felles --* NAVEnhet
 Felles --* SignerendeSaksbehandlere
 Felles --* Mottaker
 
-class ReturAdresse{
-    adresseLinje1: String
-    postNr: String
-    postSted: String
-}
-
 class SignerendeSaksbehandlere{
     saksbehandler: String
     attesterendeSaksbehandler: String
@@ -69,13 +63,11 @@ class Mottaker{
 }
 
 class NAVEnhet{
-    returAdresse: ReturAdresse
     nettside: String
     navn: String
     telefonnummer: String
 }
 
-NAVEnhet --* ReturAdresse
 ....
 
 

@@ -3,18 +3,20 @@ package no.nav.pensjon.brev.maler.vedlegg
 import no.nav.pensjon.brev.api.model.FellesSelectors.avsenderEnhet
 import no.nav.pensjon.brev.api.model.FellesSelectors.dokumentDato
 import no.nav.pensjon.brev.api.model.NAVEnhetSelectors.navn
-import no.nav.pensjon.brev.api.model.NAVEnhetSelectors.returAdresse
-import no.nav.pensjon.brev.api.model.ReturAdresseSelectors.adresseLinje1
-import no.nav.pensjon.brev.api.model.ReturAdresseSelectors.postNr
-import no.nav.pensjon.brev.api.model.ReturAdresseSelectors.postSted
-import no.nav.pensjon.brev.api.model.maler.OmsorgEgenAutoDto
-import no.nav.pensjon.brev.api.model.maler.OmsorgEgenAutoDtoSelectors.aarEgenerklaringOmsorgspoeng
+import no.nav.pensjon.brev.api.model.vedlegg.EgenerklaeringOmsorgsarbeidDto
+import no.nav.pensjon.brev.api.model.vedlegg.EgenerklaeringOmsorgsarbeidDtoSelectors.aarEgenerklaringOmsorgspoeng
+import no.nav.pensjon.brev.api.model.vedlegg.EgenerklaeringOmsorgsarbeidDtoSelectors.returadresse
+import no.nav.pensjon.brev.api.model.vedlegg.ReturAdresseSelectors.adresseLinje1
+import no.nav.pensjon.brev.api.model.vedlegg.ReturAdresseSelectors.postNr
+import no.nav.pensjon.brev.api.model.vedlegg.ReturAdresseSelectors.postSted
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.choice
-import no.nav.pensjon.brev.template.dsl.expression.*
+import no.nav.pensjon.brev.template.dsl.expression.expr
+import no.nav.pensjon.brev.template.dsl.expression.format
+import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.dsl.text
@@ -22,7 +24,7 @@ import no.nav.pensjon.brev.template.dsl.textExpr
 
 
 @TemplateModelHelpers
-val egenerklaeringPleieOgOmsorgsarbeid = createAttachment<LangBokmalNynorskEnglish, OmsorgEgenAutoDto>(
+val egenerklaeringPleieOgOmsorgsarbeid = createAttachment<LangBokmalNynorskEnglish, EgenerklaeringOmsorgsarbeidDto>(
     title = newText(
         Bokmal to "Egenerklæring om pleie- og omsorgsarbeid",
         Nynorsk to "Eigenmelding om pleie- og omsorgsarbeid",
@@ -122,7 +124,7 @@ val egenerklaeringPleieOgOmsorgsarbeid = createAttachment<LangBokmalNynorskEngli
         eval { felles.avsenderEnhet.navn }
         newline()
 
-        with(felles.avsenderEnhet.returAdresse) {
+        with(returadresse) {
             eval { adresseLinje1 }
             newline()
             eval(postNr + " " + postSted)
