@@ -153,9 +153,9 @@ object PensjonLatex : BaseTemplate() {
 
     private fun navEnhetCommands(navEnhet: NAVEnhet, printWriter: LatexPrintWriter) =
         with(navEnhet) {
-            printWriter.printNewCmd("feltnavenhet", navEnhet.navn)
-            printWriter.printNewCmd("feltnavenhettlf", navEnhet.telefonnummer.format())
-            printWriter.printNewCmd("feltnavenhetnettside", navEnhet.nettside)
+            printWriter.printNewCmd("feltnavenhet", navn)
+            printWriter.printNewCmd("feltnavenhettlf", telefonnummer.format())
+            printWriter.printNewCmd("feltnavenhetnettside", nettside)
         }
 
     private fun vedleggCommand(letter: Letter<*>, printWriter: LatexPrintWriter) {
