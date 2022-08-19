@@ -2,7 +2,6 @@ package no.nav.pensjon.brev.maler
 
 import no.nav.pensjon.brev.api.model.LetterMetadata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
-import no.nav.pensjon.brev.api.model.maler.OpphoererBarnetilleggAutoDto
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.VedtaksbrevTemplate
 import no.nav.pensjon.brev.template.base.PensjonLatex
