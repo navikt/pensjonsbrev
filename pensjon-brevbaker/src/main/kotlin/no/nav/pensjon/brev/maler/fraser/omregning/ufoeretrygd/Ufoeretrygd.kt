@@ -22,8 +22,8 @@ object Ufoeretrygd {
             paragraph {
                 val formatertDato = kravVirkningFraOgMed.format()
                 textExpr(
-                    Bokmal to "Vi har økt uføretrygden din fra ".expr() + formatertDato + " fordi du fyller 20 år. Du vil nå få utbetalt uføretrygd med rettighet som ung ufør.",
-                    Nynorsk to "Vi har auka uføretrygda di frå ".expr() + formatertDato + " fordi du fyller 20 år. Du får no utbetalt uføretrygd med rett som ung ufør.",
+                    Bokmal to "Vi har økt uføretrygden din fra ".expr() + formatertDato + " fordi du fyller 20 år. Du vil nå få utbetalt uføretrygd med rettighet som ung ufør.".expr(),
+                    Nynorsk to "Vi har auka uføretrygda di frå ".expr() + formatertDato + " fordi du fyller 20 år. Du får no utbetalt uføretrygd med rett som ung ufør.".expr(),
                 )
             }
     }
@@ -37,41 +37,45 @@ object Ufoeretrygd {
         val gjenlevende: Expression<Boolean>,
         val fellesbarn: Expression<Boolean>,
         val saerkullsbarn: Expression<Boolean>,
-    ) : OutlinePhrase<LangBokmalNynorsk>() {
-        override fun OutlineScope<LangBokmalNynorsk, Unit>.template() =
+    ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() =
             paragraph {
                 val kroner = perMaaned.format()
                 showIf(not(fellesbarn) and not(saerkullsbarn) and not(ektefelle) and not(gjenlevende)) {
                     textExpr(
-                        Bokmal to "Du får ".expr() + kroner + " kroner i uføretrygd per måned før skatt.",
-                        Nynorsk to "Du får ".expr() + kroner + " kroner i uføretrygd per månad før skatt.",
+                        Bokmal to "Du får ".expr() + kroner + " kroner i uføretrygd per måned før skatt.".expr(),
+                        Nynorsk to "Du får ".expr() + kroner + " kroner i uføretrygd per månad før skatt.".expr(),
+                        English to "Your monthly disability benefit payment will be NOK ".expr() + kroner + " before tax.".expr()
                     )
                 }.orShowIf((fellesbarn or saerkullsbarn) and not(gjenlevende) and not(ektefelle)) {
                     textExpr(
-                        Bokmal to "Du får ".expr() + kroner + " kroner i uføretrygd og barnetillegg per måned før skatt.",
-                        Nynorsk to "Du får ".expr() + kroner + " kroner i uføretrygd og barnetillegg per månad før skatt.",
+                        Bokmal to "Du får ".expr() + kroner + " kroner i uføretrygd og barnetillegg per måned før skatt.".expr(),
+                        Nynorsk to "Du får ".expr() + kroner + " kroner i uføretrygd og barnetillegg per månad før skatt.".expr(),
+                        English to "Your monthly disability benefit and child supplement payment will be NOK ".expr() + kroner + " before tax.".expr()
                     )
                 }.orShowIf(not(fellesbarn) and not(saerkullsbarn) and not(ektefelle) and gjenlevende) {
                     textExpr(
-                        Bokmal to "Du får ".expr() + kroner + " kroner i uføretrygd og gjenlevendetillegg per måned før skatt.",
-                        Nynorsk to "Du får ".expr() + kroner + " kroner i uføretrygd og attlevandetillegg per månad før skatt.",
+                        Bokmal to "Du får ".expr() + kroner + " kroner i uføretrygd og gjenlevendetillegg per måned før skatt.".expr(),
+                        Nynorsk to "Du får ".expr() + kroner + " kroner i uføretrygd og attlevandetillegg per månad før skatt.".expr(),
+                        English to "Your monthly disability benefit and survivor's supplement payment will be NOK ".expr() + kroner + " before tax.".expr()
+                    )
+                }.orShowIf((fellesbarn or saerkullsbarn) and ektefelle and not(gjenlevende)) {
+                    textExpr(
+                        Bokmal to "Du får ".expr() + kroner + " kroner i uføretrygd, barne- og ektefelletillegg per måned før skatt.".expr(),
+                        Nynorsk to "Du får ".expr() + kroner + " kroner i uføretrygd, barne- og ektefelletillegg per månad før skatt.".expr(),
+                        English to "Your monthly disability benefit, child supplement and survivor's supplement payment will be NOK ".expr() + kroner + " before tax.".expr()
                     )
                 }.orShowIf(not(fellesbarn) and not(saerkullsbarn) and ektefelle and not(gjenlevende)) {
                     textExpr(
-                        Bokmal to "Du får ".expr() + kroner + " kroner i uføretrygd og ektefelletillegg per måned før skatt.",
-                        Nynorsk to "Du får ".expr() + kroner + " kroner i uføretrygd og ektefelletillegg per månad før skatt.",
+                        Bokmal to "Du får ".expr() + kroner + " kroner i uføretrygd og ektefelletillegg per måned før skatt.".expr(),
+                        Nynorsk to "Du får ".expr() + kroner + " kroner i uføretrygd og ektefelletillegg per månad før skatt.".expr(),
+                        English to "Your monthly disability benefit and spouse supplement payment will be NOK ".expr() + kroner + " before tax.".expr()
                     )
-
-                }.orShowIf((fellesbarn or saerkullsbarn) and ektefelle and not(gjenlevende)) {
-                    textExpr(
-                        Bokmal to "Du får ".expr() + kroner + " kroner i uføretrygd, barne- og ektefelletillegg per måned før skatt.",
-                        Nynorsk to "Du får ".expr() + kroner + " kroner i uføretrygd, barne- og ektefelletillegg per månad før skatt.",
-                    )
-
                 }.orShowIf((fellesbarn or saerkullsbarn) and not(ektefelle) and gjenlevende) {
                     textExpr(
-                        Bokmal to "Du får ".expr() + kroner + " kroner i uføretrygd, barne- og gjenlevendetillegg per måned før skatt.",
-                        Nynorsk to "Du får ".expr() + kroner + " kroner i uføretrygd, barne- og attlevandetillegg per månad før skatt.",
+                        Bokmal to "Du får ".expr() + kroner + " kroner i uføretrygd, barne- og gjenlevendetillegg per måned før skatt.".expr(),
+                        Nynorsk to "Du får ".expr() + kroner + " kroner i uføretrygd, barne- og attlevandetillegg per månad før skatt.".expr(),
+                        English to "Your monthly disability benefit, child supplement and spouse supplement payment will be NOK ".expr() + kroner + " before tax.".expr()
                     )
                 }
             }
@@ -83,8 +87,8 @@ object Ufoeretrygd {
     data class BarnetilleggIkkeUtbetalt(
         val saerkullsbarn: Expression<UngUfoerAutoDto.InnvilgetBarnetillegg?>,
         val fellesbarn: Expression<UngUfoerAutoDto.InnvilgetBarnetillegg?>,
-    ) : OutlinePhrase<LangBokmalNynorsk>() {
-        override fun OutlineScope<LangBokmalNynorsk, Unit>.template() =
+    ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() =
             paragraph {
                 val saerkullInnvilget = saerkullsbarn.notNull()
                 val saerkullUtbetalt = saerkullsbarn.utbetalt_safe.ifNull(false)
@@ -98,20 +102,46 @@ object Ufoeretrygd {
 
                     showIf(saerkullInnvilget and not(saerkullUtbetalt) and fellesUtbetalt and fellesInnvilget) {
                         textExpr(
-                            Bokmal to "Barnetillegget for ".expr() + ifElse(barnFlertall, "barna", "barnet") + " som ikke bor sammen med begge foreldrene, blir ikke utbetalt fordi du alene har en samlet inntekt som er høyere enn " +
-                                    inntektstak + " kroner. Inntekten din er over grensen for å få utbetalt barnetillegg.",
-
-                            Nynorsk to "Barnetillegget for ".expr() + ifElse(barnFlertall, "barna", "barnet") + "som ikkje bur saman med begge foreldra sine, blir ikkje utbetalt fordi du åleine har ei samla inntekt som er høgare enn " +
-                                    inntektstak + " kroner. Inntekta di er over grensa for å få utbetalt barnetillegg.",
+                            Bokmal to "Barnetillegget for ".expr() + ifElse(
+                                barnFlertall,
+                                "barna",
+                                "barnet"
+                            ) + " som ikke bor sammen med begge foreldrene, blir ikke utbetalt fordi du alene har en samlet inntekt som er høyere enn " +
+                                inntektstak + " kroner. Inntekten din er over grensen for å få utbetalt barnetillegg.".expr(),
+                            Nynorsk to "Barnetillegget for ".expr() + ifElse(
+                                barnFlertall,
+                                "barna",
+                                "barnet"
+                            ) + " som ikkje bur saman med begge foreldra sine, blir ikkje utbetalt fordi du åleine har ei samla inntekt som er høgare enn " +
+                                inntektstak + " kroner. Inntekta di er over grensa for å få utbetalt barnetillegg.".expr(),
+                            English to "You will not receive child supplement for the ".expr() + ifElse(
+                                barnFlertall,
+                                "children",
+                                "child"
+                            ) + " who do not live together with both parents because your total income on its own is higher than NOK " +
+                                inntektstak + ". You will not receive child supplement because your income exceeds the income limit.".expr()
                         )
 
                     }.orShowIf(saerkullInnvilget and not(saerkullUtbetalt) and not(fellesInnvilget)) {
                         textExpr(
-                            Bokmal to "Barnetillegget blir ikke utbetalt fordi du har en samlet inntekt som er høyere enn ".expr() +
-                                    inntektstak + " kroner. Inntekten din er over grensen for å få utbetalt barnetillegg.",
-
-                            Nynorsk to "Barnetillegget blir ikkje utbetalt fordi du åleine har ei samla inntekt som er høgare enn ".expr() +
-                                    inntektstak + " kroner. Inntekten din er over grensen for å få utbetalt barnetillegg.",
+                            Bokmal to "Barnetillegget for ".expr() + ifElse(
+                                barnFlertall,
+                                "barna",
+                                "barnet"
+                            ) + " som bor med begge sine foreldre, blir ikke utbetalt fordi dere har en samlet inntekt som er høyere enn " +
+                                inntektstak + " kroner. De samlede inntektene er over grensen for å få utbetalt barnetillegg. ".expr(),
+                            Nynorsk to "Barnetillegget for ".expr() + ifElse(
+                                barnFlertall,
+                                "barna",
+                                "barnet"
+                            ) + " som bur saman med begge foreldra sine, blir ikkje utbetalt fordi dei har ei samla inntekt som er høgare enn " +
+                                inntektstak + " kroner. Dei samla inntektene er over grensa for å få utbetalt barnetillegg.".expr(),
+                            English to "You will not receive child supplement for the ".expr() + ifElse(
+                                barnFlertall,
+                                "children",
+                                "child"
+                            ) + " who do not live together with both parents because your total income on its own is higher than NOK " +
+                                inntektstak + ". You will not receive child supplement because your income exceeds the income limit.".expr()
                         )
                     }
                 }
@@ -122,20 +152,47 @@ object Ufoeretrygd {
 
                     showIf(fellesInnvilget and not(fellesUtbetalt) and saerkullUtbetalt and saerkullInnvilget) {
                         textExpr(
-                            Bokmal to "Barnetillegget for ".expr() + ifElse(barnFlertall, "barna", "barnet") + " som bor med begge sine foreldre, blir ikke utbetalt fordi dere har en samlet inntekt som er høyere enn " +
-                                    inntektstak + " kroner. De samlede inntektene er over grensen for å få utbetalt barnetillegg.",
+                            Bokmal to "Barnetillegget for ".expr() + ifElse(
+                                barnFlertall,
+                                "barna",
+                                "barnet"
+                            ) + " som bor med begge sine foreldre, blir ikke utbetalt fordi dere har en samlet inntekt som er høyere enn " +
+                                inntektstak + " kroner. De samlede inntektene er over grensen for å få utbetalt barnetillegg.".expr(),
 
-                            Nynorsk to "Barnetillegget for ".expr() + ifElse(barnFlertall, "barna", "barnet") + " som bur saman med begge foreldra sine, blir ikkje utbetalt fordi dei har ei samla inntekt som er høgare enn " +
-                                    inntektstak + " kroner. Dei samla inntektene er over grensa for å få utbetalt barnetillegg.",
+                            Nynorsk to "Barnetillegget for ".expr() + ifElse(
+                                barnFlertall,
+                                "barna",
+                                "barnet"
+                            ) + " som bur saman med begge foreldra sine, blir ikkje utbetalt fordi dei har ei samla inntekt som er høgare enn " +
+                                inntektstak + " kroner. Dei samla inntektene er over grensa for å få utbetalt barnetillegg.".expr(),
+                            English to "You will not receive child supplement for the ".expr() + ifElse(
+                                barnFlertall,
+                                "children",
+                                "child"
+                            ) + " who lives together with both parents because your total income on its own is higher than NOK " +
+                                inntektstak + ". You will not receive child supplement because your combined incomes exceed the income limit.".expr()
                         )
 
                     }.orShowIf(fellesInnvilget and not(fellesUtbetalt) and not(saerkullInnvilget)) {
                         textExpr(
-                            Bokmal to "Barnetillegget blir ikke utbetalt fordi dere har en samlet inntekt som er høyere enn ".expr() +
-                                    inntektstak + " kroner. De samlede inntektene er over grensen for å få utbetalt barnetillegg.",
-
-                            Nynorsk to "Barnetillegget blir ikkje utbetalt fordi dei har ei samla inntekt som er høgare enn ".expr() +
-                                    inntektstak + " kroner. Dei samla inntektene er over grensa for å få utbetalt barnetillegg.",
+                            Bokmal to "Barnetillegget for ".expr() + ifElse(
+                                barnFlertall,
+                                "barna",
+                                "barnet"
+                            ) + " som bor med begge sine foreldre, blir ikke utbetalt fordi dere har en samlet inntekt som er høyere enn " +
+                                inntektstak + " kroner. De samlede inntektene er over grensen for å få utbetalt barnetillegg.".expr(),
+                            Nynorsk to "Barnetillegget for ".expr() + ifElse(
+                                barnFlertall,
+                                "barna",
+                                "barnet"
+                            ) + " som bur saman med begge foreldra sine, blir ikkje utbetalt fordi dei har ei samla inntekt som er høgare enn " +
+                                inntektstak + " kroner. Dei samla inntektene er over grensa for å få utbetalt barnetillegg.".expr(),
+                            English to "You will not receive child supplement for the ".expr() + ifElse(
+                                barnFlertall,
+                                "children",
+                                "child"
+                            ) + " who lives together with both parents because your total income on its own is higher than NOK " +
+                                inntektstak + ". You will not receive child supplement because your combined incomes exceed the income limit.".expr()
                         )
                     }
                 }
@@ -145,7 +202,8 @@ object Ufoeretrygd {
     /**
      * TBU3008, TBU3009, TBU3010
      */
-    data class UngUfoerHoeyereVed20aar(val minsteytelseVedVirkSats: Expression<Double>) : OutlinePhrase<LangBokmalNynorsk>() {
+    data class UngUfoerHoeyereVed20aar(val minsteytelseVedVirkSats: Expression<Double>) :
+        OutlinePhrase<LangBokmalNynorsk>() {
         override fun OutlineScope<LangBokmalNynorsk, Unit>.template() {
             paragraph {
                 text(
@@ -158,10 +216,10 @@ object Ufoeretrygd {
                 val satsFormatert = minsteytelseVedVirkSats.format()
                 textExpr(
                     Bokmal to "Sivilstanden påvirker størrelsen på den årlige uføretrygden og du får derfor en årlig ytelse som utgjør ".expr()
-                            + satsFormatert + " ganger grunnbeløpet.",
+                        + satsFormatert + " ganger grunnbeløpet.".expr(),
 
                     Nynorsk to "Sivilstanden påverkar storleiken på den årlege uføretrygda di, og du får derfor ei årleg yting som utgjer ".expr()
-                            + satsFormatert + " gonger grunnbeløpet.",
+                        + satsFormatert + " gonger grunnbeløpet.".expr(),
                 )
             }
         }
@@ -183,13 +241,15 @@ object Ufoeretrygd {
     /**
      * TBU1174
      */
-    object VirkningFomOverskrift : OutlinePhrase<LangBokmalNynorsk>() {
-        override fun OutlineScope<LangBokmalNynorsk, Unit>.template() =
+    object VirkningFomOverskrift : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() =
             title1 {
                 text(
                     Bokmal to "Dette er virkningstidspunktet ditt",
                     Nynorsk to "Dette er verknadstidspunktet ditt",
-                )
+                    English to "This is your effective date",
+
+                    )
             }
     }
 
@@ -201,8 +261,8 @@ object Ufoeretrygd {
             paragraph {
                 val dato = kravVirkningFraOgMed.format()
                 textExpr(
-                    Bokmal to "Uføretrygden din er endret fra ".expr() + dato + ". Dette kaller vi virkningstidspunktet. Du vil derfor få en ny utbetaling fra og med måneden vilkåret er oppfylt.",
-                    Nynorsk to "Uføretrygda di er endra frå ".expr() + dato + ". Dette kallar vi verknadstidspunktet. Du vil derfor få ny utbetaling frå og med månaden vilkåret er oppfylt.",
+                    Bokmal to "Uføretrygden din er endret fra ".expr() + dato + ". Dette kaller vi virkningstidspunktet. Du vil derfor få en ny utbetaling fra og med måneden vilkåret er oppfylt.".expr(),
+                    Nynorsk to "Uføretrygda di er endra frå ".expr() + dato + ". Dette kallar vi verknadstidspunktet. Du vil derfor få ny utbetaling frå og med månaden vilkåret er oppfylt.".expr(),
                 )
             }
     }
@@ -223,13 +283,13 @@ object Ufoeretrygd {
             paragraph {
                 text(
                     Bokmal to "Du får uføretrygd utbetalt den 20. hver måned, eller senest siste virkedag før denne datoen. " +
-                            "Du kan se alle utbetalingene du har mottatt på ${Constants.DITT_NAV}. Her kan du også endre kontonummeret ditt.",
+                        "Du kan se alle utbetalingene du har mottatt på ${Constants.DITT_NAV}. Her kan du også endre kontonummeret ditt.",
 
                     Nynorsk to "Du får uføretrygd utbetalt den 20. kvar månad, eller seinast siste yrkedag før denne datoen. " +
-                            "Du kan sjå alle utbetalingar du har fått på ${Constants.DITT_NAV}. Her kan du også endre kontonummeret ditt.",
+                        "Du kan sjå alle utbetalingar du har fått på ${Constants.DITT_NAV}. Her kan du også endre kontonummeret ditt.",
 
                     English to "Your disability benefit will be paid on the 20th of each month or no later than the last business day before this date. " +
-                            "To see all the payments you have received, go to: ${Constants.DITT_NAV}. You may also change your account number here.",
+                        "To see all the payments you have received, go to: ${Constants.DITT_NAV}. You may also change your account number here.",
                 )
             }
         }

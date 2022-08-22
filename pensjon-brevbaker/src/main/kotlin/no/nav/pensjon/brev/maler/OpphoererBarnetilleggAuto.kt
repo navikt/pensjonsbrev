@@ -2,14 +2,25 @@ package no.nav.pensjon.brev.maler
 
 import no.nav.pensjon.brev.api.model.LetterMetadata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
+import no.nav.pensjon.brev.api.model.maler.InnvilgetBarnetilleggSelectors.utbetalt_safe
+import no.nav.pensjon.brev.api.model.maler.InnvilgetTilleggSelectors.utbetalt_safe
+import no.nav.pensjon.brev.api.model.maler.OpphoererBarnetilleggAutoDto
+import no.nav.pensjon.brev.api.model.maler.UngUfoerAutoDtoSelectors.ektefelle
+import no.nav.pensjon.brev.api.model.maler.UngUfoerAutoDtoSelectors.fellesbarn
+import no.nav.pensjon.brev.api.model.maler.UngUfoerAutoDtoSelectors.gjenlevende
+import no.nav.pensjon.brev.api.model.maler.UngUfoerAutoDtoSelectors.saerkullsbarn
+import no.nav.pensjon.brev.api.model.maler.UngUfoerAutoDtoSelectors.totaltUfoerePerMnd
+import no.nav.pensjon.brev.maler.fraser.TBU1128
 import no.nav.pensjon.brev.template.Language
+import no.nav.pensjon.brev.maler.fraser.omregning.ufoeretrygd.Ufoeretrygd
+import no.nav.pensjon.brev.maler.fraser.vedtak.OpphoerBarnetillegg
+import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.VedtaksbrevTemplate
 import no.nav.pensjon.brev.template.base.PensjonLatex
 import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.and
+import no.nav.pensjon.brev.template.dsl.expression.ifNull
 import no.nav.pensjon.brev.template.dsl.expression.not
-import no.nav.pensjon.brev.template.dsl.expression.or
-import no.nav.pensjon.brev.template.dsl.expression.select
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -30,33 +41,41 @@ object OpphoererBarnetilleggAuto : VedtaksbrevTemplate<OpphoererBarnetilleggAuto
             isSensitiv = false,
             distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
         )
-    )
-    {
-        val barnetilleggFellesbarnInnvilget = argument().select(OpphoererBarnetilleggAutoDto::barnetilleggFellesbarnInnvilget)
-        val barnetilleggSaerkullsbarnInnvilget = argument().select(OpphoererBarnetilleggAutoDto::barnetilleggSaerkullsbarnInnvilget)
-
+    ) {
         title {
-
 // Hvis bruker ikke mottar noen barnetillegg:  <BTFBinnvilget> = false AND <BTSBinnvilget> = false
 // val = Vedtaksdata.BeregningsData.BeregningYtelsesKomp.BarnetilleggFelles.BTFBinnvilget
-            showIf(not(barnetilleggSaerkullsbarnInnvilget) and barnetilleggFellesbarnInnvilget) {
+            val barnetilleggFellesbarnInnvilget: Boolean
+            val barnetilleggSaerkullsbarnInnvilget: Boolean
+            val btFBinnvilget = barnetilleggFellesbarnInnvilget
+            val btSBinnvilget = barnetilleggSaerkullsbarnInnvilget
+            showIf(not(btFBinnvilget) and not(btSBinnvilget))
+            {
                 text(
                     Language.Bokmal to "NAV har vedtatt at barnetillegget ditt opphører",
                     Language.Nynorsk to "NAV har stansa barnetillegget ditt",
-                    Language.English to "NAV has discontinued the child supplement in your disability benefit")
-            }
-// Hvis barnetillegget fortsatt løper for andre barn/annet barn: <BTinnvilget> = true OR <BTSBinnvilget> = true
-// val = Vedtaksdata.BeregningsData.BeregningYtelsesKomp.BarnetilleggFelles.BarnetilleggSerkull.BTSBinnvilget
-            showIf(barnetilleggFellesbarnInnvilget or barnetilleggSaerkullsbarnInnvilget) {
+                    Language.English to "NAV has discontinued the child supplement in your disability benefit"
+                )
+                // Hvis barnetillegget fortsatt løper for andre barn/annet barn: <BTinnvilget> = true OR <BTSBinnvilget> = true
+                // val = Vedtaksdata.BeregningsData.BeregningYtelsesKomp.BarnetilleggFelles.BarnetilleggSerkull.BTSBinnvilget
+            }.orShowIf(btFBinnvilget or btSBinnvilget) {
                 text(
                     Language.Bokmal to "NAV har endret barnetillegget ditt",
                     Language.Nynorsk to "NAV har endra barnetillegget ditt",
-                    Language.English to "NAV has changed the child supplement in your disability benefit")
+                    Language.English to "NAV has changed the child supplement in your disability benefit"
+                )
             }
+
+            // TBU2290 > hentes fr en liste, kan være flere barn!
+
+
+
         }
-
-
+        override val kode: Brevkode.Vedtak
+        get() = TODO("Not yet implemented")
     }
+
+
     override val kode: Brevkode.Vedtak
         get() = TODO("Not yet implemented")
 }

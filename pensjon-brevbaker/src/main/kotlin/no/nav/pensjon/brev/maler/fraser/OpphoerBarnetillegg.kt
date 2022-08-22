@@ -11,10 +11,9 @@ import no.nav.pensjon.brev.template.dsl.expression.*
 import java.time.LocalDate
 
 
-data class TBU2290(
+data class BToensketVirkningsDatoOgFdatoPaaBTopphoert(
     val oensketVirkningsDato: Expression<LocalDate>,
     val foedselsdatoPaaBarnetilleggOpphoert: Expression<LocalDate>,
-    val totalNettoMaanedligUfoertrygdUtbetalt: Expression<Kroner>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() {
         paragraph {
@@ -29,35 +28,19 @@ data class TBU2290(
     }
 }
 
-// TBU1120, TBU1121, TBU1122, TBU1123, TBU1253, TBU1254, TBU4082, TBU4083, TBU4084
 data class Beloep(
     val perMaaned: Expression<Kroner>,
     val ektefelle: Expression<Boolean>,
     val gjenlevende: Expression<Boolean>,
     val fellesbarn: Expression<Boolean>,
     val saerkullsbarn: Expression<Boolean>,
-    val ufoertrygd: Expression<Boolean>, // TODO add ufoertrygd to the data class?
-
+    val ufoertrygd: Expression<Boolean>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() {
         paragraph {
             val kroner = perMaaned.format()
-
-            // TODO use existing TBU1120 in <maler/fraser/omregning/ufoeretrygd/Ufoeretrygd.kt
-            // TODO use existing TBU1121 in <maler/fraser/omregning/ufoeretrygd/Ufoeretrygd.kt
-            // TODO use existing TBU1122 in <maler/fraser/omregning/ufoeretrygd/Ufoeretrygd.kt
-
-            showIf(ufoertrygd and (fellesbarn or saerkullsbarn) and ektefelle and not(gjenlevende)) {
-                // TBU1123
-                textExpr(
-                    Bokmal to "Du får ".expr() + kroner + " kroner i uføretrygd, barne- og ektefelletillegg per måned før skatt.".expr(),
-                    Nynorsk to "Du får ".expr() + kroner + " kroner i uføretrygd, barne- og ektefelletillegg per månad før skatt.".expr(),
-                    English to "Your monthly disability benefit, child supplement and survivor's supplement payment will be NOK ".expr() + kroner + " before tax.".expr()
-                )
-                // TODO use existing TBU1173 in <maler/fraser/omregning/ufoeretrygd/Ufoeretrygd.kt
-                // TODO use existing TBU1254 in <maler/fraser/omregning/ufoeretrygd/Ufoeretrygd.kt
-
-            }.orShowIf(not(ufoertrygd) and (fellesbarn or saerkullsbarn) and not(ektefelle) and not(gjenlevende)) {
+            // TBU1120, TBU1121, TBU1122, TBU1123, TBU1253, TBU1254 is found in <maler/fraser/omregning/ufoeretrygd/Ufoeretrygd.kt
+            showIf(not(ufoertrygd) and (fellesbarn or saerkullsbarn) and not(ektefelle) and not(gjenlevende)) {
                 // TBU4082
                 textExpr(
                     Bokmal to "Du får ".expr() + kroner + " kroner i barnetillegg per måned før skatt.".expr(),
@@ -86,7 +69,6 @@ data class Beloep(
     }
 }
 
-
 object TBU2223 : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() {
         paragraph {
@@ -112,10 +94,7 @@ object TBU1128 : OutlinePhrase<LangBokmalNynorskEnglish>() {
 }
 
 // TODO use existing TBU1092 in <maler/fraser/vedtak/Vedtak.kt
-// TBU3920, TBU4085
-data class BegrunnelseForVedtaket(
-    val antallBarn: Number,
-) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+object TBU3920 : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() {
         paragraph {
             text(
@@ -124,6 +103,11 @@ data class BegrunnelseForVedtaket(
                 English to "To be eligible for child supplement, you must support children under 18 years of age. The child supplement in your disability benefit has been discontinued because your  childchildren has(have) turned 18 years of age."
             )
         }
+    }
+}
+
+object TBU4085 : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() {
         paragraph {
             text(
                 Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 12-15, 12-16 og 22-12 og forskrift om overgangsregler for barnetillegg i uføretrygden.",
@@ -134,7 +118,7 @@ data class BegrunnelseForVedtaket(
     }
 }
 
-// TODO use existing TBU1174 in <maler/fraser/omregning/ufoeretrygd/Ufoeretrygd.kt
+// TBU1174 in <maler/fraser/omregning/ufoeretrygd/Ufoeretrygd.kt
 // TBU4086
 data class OensketVirkningsDato(
     val oensketVirkningsDato: Expression<LocalDate>,
@@ -193,54 +177,54 @@ object TBU3801 : OutlinePhrase<LangBokmalNynorskEnglish>() {
             text(
                 Bokmal to "Endringer i inntektene til deg og ektefellenpartnerensamboeren dininntekten din kan ha betydning for barnetillegget ditt. Du kan enkelt melde fra om inntektsendringer under menyvalget «uføretrygd» på nav.no.",
                 Nynorsk to "Endringar i inntektene til deg og ektefellen/partnaren/sambuaren din inntekta di kan ha betydning for barnetillegget ditt. Du kan enkelt melde frå om inntektsendringar under menyvalet «uføretrygd» på nav.no.",
-                English to "Changes in your and your spouse/partner/cohabiting partner's income may affect your child supplement. You can easily report income changes under the menu option \"disability benefit\" at nav.no."
+                English to "Changes in your and your spouse/partner/cohabiting partner's income may affect your child supplement. You can easily report income changes under the menu option «disability benefit» at nav.no."
             )
         }
     }
 }
-
-data class TBU1284(
-    val brukersInntekt: Expression<Kroner>,
-    val fellesbarn: Expression<Boolean>,
-    val fribeloep: Expression<Kroner>,
-    val grunnbeloep: Expression<Kroner>,
-    val inntektAnnenForelder: Expression<Kroner>,
-    val saerkullsbarn: Expression<Boolean>,
+// TBU1284
+data class BTFBinntektBruktiAvkortningOgFribeloepOgGrunnbeloep(
+    val fellesbarnFribeloep: Expression<Kroner>,
+    val fellesbarnInntektAnnenForelder: Expression<Kroner>,
+    val fellesbarnInntektBruktiAvkortning: Expression<Kroner>,
+    val grunnbeloep: Expression<Kroner>
 
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() {
-        paragraph {
-            showIf(fellesbarn and not(saerkullsbarn)) {
+            paragraph {
+                val fbFribeloep = fellesbarnFribeloep.format()
+                val fbInntektAnnenForelder = fellesbarnInntektAnnenForelder.format()
+                val fbInntektBruktiAvkortning = fellesbarnInntektBruktiAvkortning.format()
+                val grunnbeloep = grunnbeloep.format()
+
                 textExpr(
-                    Bokmal to "Inntekten din er <BTFBBrukersInntektTilAvkortning> kroner og inntekten til ektefellenpartnerensamboeren din er <BTFBinntektAnnenForelder> kroner. Folketrygdens grunnbeløp på inntil <grunnbelop> kroner er holdt utenfor inntekten til ektefellenpartnerensamboeren din. Til sammen er inntektene høyere lavere enn fribeløpet ditt på <BTFBfribelop> kroner. Barnetillegget ditt er derfor ikke redusert ut fra inntekt.  Det du har fått utbetalt i barnetillegg tidligere i år har også betydning for hva du får i barnetillegg framover. Dette ble tatt hensyn til da vi endret barnetillegget.  Du har allerede fått utbetalt det du har rett til i år, og får derfor ikke utbetalt barnetillegg for resten av året.".expr(),
-                    Nynorsk to "Inntekta di er <BTFBBrukersInntektTilAvkortning> kroner, og inntekta til ektefellen/partnaren/sambuaren din er <BTFBinntektAnnenForelder> kroner. Grunnbeløpet i folketrygda på inntil <grunnbelop> kroner er halde utanfor inntekta til ektefellen/partnaren/sambuaren din. Til saman er inntektene høgare/lågare enn fribeløpet ditt på <BTFBfribelop> kroner. Barnetillegget ditt er derfor ikkje redusert ut frå inntekt. Det du har fått utbetalt i barnetillegg tidlegare i år har også noko å seie for kva du får i barnetillegg framover. Dette har vi teke omsyn til når vi endra barnetillegget. Du har allereie fått utbetalt det du har rett til i år, og får derfor ikkje utbetalt barnetillegg for resten av året.".expr(),
-                    English to "Your income is NOK <BTFBBrukersInntektTilAvkortning> and your spouse/partner/cohabiting partner's income is NOK <BTFBinntektAnnenForelder>. The national insurance basic amount of up to NOK <grunnbelop> has not been included in your spouse/partner/cohabiting partner's income. Together, the incomes are higher/lower than your exemption amount of NOK <BTFBfribelop>. Therefore your child supplement has not been reduced on the basis of your income. What you have received in child supplement earlier this year, affects what you will receive in child supplement in the future. This we took in to account when we changed your child supplement. You have already received what you are entitled to this year, therefore you will not receive any child supplement for the remainder of the year.".expr()
+                    Bokmal to "Inntekten din er ".expr() + fbInntektBruktiAvkortning + " kroner og inntekten til ektefellenpartnerensamboeren din er ".expr() + fbInntektAnnenForelder + " kroner. Folketrygdens grunnbeløp på inntil ".expr() + grunnbeloep + " kroner er holdt utenfor inntekten til ektefellenpartnerensamboeren din. Til sammen er inntektene høyere lavere enn fribeløpet ditt på ".expr() + fbFribeloep + " kroner. Barnetillegget ditt er derfor ikke redusert ut fra inntekt.  Det du har fått utbetalt i barnetillegg tidligere i år har også betydning for hva du får i barnetillegg framover. Dette ble tatt hensyn til da vi endret barnetillegget.  Du har allerede fått utbetalt det du har rett til i år, og får derfor ikke utbetalt barnetillegg for resten av året.".expr(),
+                    Nynorsk to "Inntekta di er ".expr() + fbInntektBruktiAvkortning + " kroner, og inntekta til ektefellen/partnaren/sambuaren din er ".expr() + fbInntektAnnenForelder + " kroner. Grunnbeløpet i folketrygda på inntil <grunnbelop> kroner er halde utanfor inntekta til ektefellen/partnaren/sambuaren din. Til saman er inntektene høgare/lågare enn fribeløpet ditt på ".expr() + fbFribeloep + " kroner. Barnetillegget ditt er derfor ikkje redusert ut frå inntekt. Det du har fått utbetalt i barnetillegg tidlegare i år har også noko å seie for kva du får i barnetillegg framover. Dette har vi teke omsyn til når vi endra barnetillegget. Du har allereie fått utbetalt det du har rett til i år, og får derfor ikkje utbetalt barnetillegg for resten av året.".expr(),
+                    English to "Your income is NOK ".expr() + fbInntektBruktiAvkortning + " and your spouse/partner/cohabiting partner's income is NOK ".expr() + fbInntektAnnenForelder + ". The national insurance basic amount of up to NOK <grunnbelop> has not been included in your spouse/partner/cohabiting partner's income. Together, the incomes are higher/lower than your exemption amount of NOK ".expr() + fbFribeloep + ". Therefore, your child supplement has not been reduced on the basis of your income. What you have received in child supplement earlier this year, affects what you will receive in child supplement in the future. This we took into account when we changed your child supplement. You have already received what you are entitled to this year, therefore you will not receive any child supplement for the remainder of the year.".expr()
                 )
             }
         }
     }
-}
 
-data class TBU1285(
-    val brukersInntekt: Expression<Kroner>,
-    val fellesbarn: Expression<Boolean>,
-    val fribeloep: Expression<Kroner>,
-    val grunnbeloep: Expression<Kroner>,
-    val inntektAnnenForelder: Expression<Kroner>,
-    val saerkullsbarn: Expression<Boolean>,
+// TBU1285
+data class BTSBinntektBruktiAvkortningOgBTfribeleop(
+    val saerkullsbarnInntektBruktiAvkortning: Expression<Kroner>,
+    val saerkullsbarnFribeloep: Expression<Kroner>,
 
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() {
         paragraph {
+            val sbInntektBruktiAvkortning = saerkullsbarnInntektBruktiAvkortning.format()
+            val sbFribeloep = saerkullsbarnFribeloep.format()
             textExpr(
-                Bokmal to "Inntekten din på <BTSBInntektBruktiAvkortning> kroner er høyere lavere enn fribeløpet ditt på <BTSBfribelop> kroner. Barnetillegget ditt er derfor ikke redusert ut fra inntekt. Inntekten din er <BTSBInntektBruktiAvkortning> kroner.".expr(),
-                Nynorsk to "Inntekta di på <BTSBInntektBruktiAvkortning> kroner er høgare/lågare enn fribeløpet ditt på <BTSBfribelop> kroner. Barnetillegget ditt er derfor ikkje redusert ut frå inntekt. Inntekta di er <BTSBInntektBruktiAvkortning> kroner.".expr(),
-                English to "Your income is NOK <BTSBInntektBruktiAvkortning>. What you have received in child supplement earlier this year, affects what you will receive in child supplement in the future. This we took in to account when we changed your child supplement. You have already received what you are entitled to this year, therefore you will not receive any child supplement for the remainder of the year.".expr()
+                Bokmal to "Inntekten din på ".expr() + sbInntektBruktiAvkortning + " kroner er høyere lavere enn fribeløpet ditt på ".expr() + sbFribeloep + " kroner. Barnetillegget ditt er derfor ikke redusert ut fra inntekt. Inntekten din er ".expr() + sbInntektBruktiAvkortning + " kroner.".expr(),
+                Nynorsk to "Inntekta di på ".expr() + sbInntektBruktiAvkortning + " kroner er høgare/lågare enn fribeløpet ditt på ".expr() + sbFribeloep + " kroner. Barnetillegget ditt er derfor ikkje redusert ut frå inntekt. Inntekta di er ".expr() + sbInntektBruktiAvkortning + " kroner.".expr(),
+                English to "Your income of NOK ".expr() + sbInntektBruktiAvkortning + " is higher lower than your exemption amount of NOK ".expr() + sbFribeloep + ". Therefore your child supplement has not been reduced on the basis of your income. Your income is NOK ".expr() + sbInntektBruktiAvkortning + ".".expr()
             )
             textExpr(
-                Bokmal to "Inntekten din er <BTSBInntektBruktiAvkortning> kroner. Det du har fått utbetalt i barnetillegg tidligere i år har også betydning for hva du får i barnetillegg framover. Dette ble tatt hensyn til da vi endret barnetillegget. Du har allerede fått utbetalt det du har rett til i år, og får derfor ikke utbetalt barnetillegg for resten av året.".expr(),
-                Nynorsk to "Inntekta di er <BTSBInntektBruktiAvkortning> kroner. Det du har fått utbetalt i barnetillegg tidlegare i år har også noko å seie for kva du får i barnetillegg framover. Dette har vi teke omsyn til når vi endra barnetillegget. Du har allereie fått utbetalt det du har rett til i år, og får derfor ikkje utbetalt barnetillegg for resten av året.".expr(),
-                English to "Your income is NOK <BTSBInntektBruktiAvkortning>. What you have received in child supplement earlier this year, affects what you will receive in child supplement in the future. This we took in to account when we changed your child supplement. You have already received what you are entitled to this year, therefore you will not receive any child supplement for the remainder of the year.".expr()
+                Bokmal to "Inntekten din er ".expr() + sbInntektBruktiAvkortning + " kroner. Det du har fått utbetalt i barnetillegg tidligere i år har også betydning for hva du får i barnetillegg framover. Dette ble tatt hensyn til da vi endret barnetillegget. Du har allerede fått utbetalt det du har rett til i år, og får derfor ikke utbetalt barnetillegg for resten av året.".expr(),
+                Nynorsk to "Inntekta di er ".expr() + sbInntektBruktiAvkortning + " kroner. Det du har fått utbetalt i barnetillegg tidlegare i år har også noko å seie for kva du får i barnetillegg framover. Dette har vi teke omsyn til når vi endra barnetillegget. Du har allereie fått utbetalt det du har rett til i år, og får derfor ikkje utbetalt barnetillegg for resten av året.".expr(),
+                English to "Your income is NOK ".expr() + sbInntektBruktiAvkortning + ". What you have received in child supplement earlier this year, affects what you will receive in child supplement in the future. This we took in to account when we changed your child supplement. You have already received what you are entitled to this year, therefore you will not receive any child supplement for the remainder of the year.".expr()
             )
         }
     }
@@ -257,39 +241,48 @@ data class BTfribeloep(
             val sbFribeloep = saerkullsbarnFribeloep.format()
             val fbFribeloep = fellesbarnFribeloep.format()
             textExpr(
-                Bokmal to "Inntekten din er høyerelavere enn ".expr() + sbFribeloep + " kroner, som er fribeløpet for barnetillegget til barnetbarna som ikke bor sammen med begge foreldrene. Dette barnetillegget er derfor ikke redusert ut fra inntekt. Til sammen er også inntektene til deg og ektefellenpartnerensamboeren din høyerelavere enn ".expr() + fbFribeloep + " kroner, som er fribeløpet for barnetillegget til barnetbarna som bor med begge sine foreldre. Dette barnetillegget er derfor ikke redusert ut fra inntekt. Barnetilleggene er derfor ikke redusert ut fra inntekt.".expr(),
-                Nynorsk to "Inntekta di er høgare/lågare enn ".expr() + sbFribeloep + " kroner, som er fribeløpet for barnetillegget til barnet/barna som ikkje bur saman med begge foreldra. Dette barnetillegget er derfor ikkje redusert ut frå inntekt. Til saman er også inntektene til deg og ektefellen/partnaren/sambuaren din høgare/lågare enn ".expr() + fbFribeloep + " kroner, som er fribeløpet for barnetillegget til barnet/barna som bur saman med begge foreldra sine. Dette barnetillegget er derfor ikkje redusert ut frå inntekt. Desse barnetillegga er derfor ikkje redusert ut frå inntekt.".expr(),
-                English to "Your income is higher/lower than NOK ".expr() + sbFribeloep + ", which is the exemption amount for the child supplement for the child/children who do not live together with both parents. Therefore your child supplement has not been reduced on the basis of your income. Together, your income and your spouse/partner/cohabiting partner's income is higher/lower than NOK ".expr() + fbFribeloep + ", which is the exemption amount for the child supplement for the child/children who lives together with both parents. Therefore your child supplement has not been reduced on the basis of your income. Therefore your child supplements have not been reduced on the basis of your income.".expr()
+                Bokmal to "Inntekten din er høyerelavere enn ".expr() + sbFribeloep + " kroner, som er fribeløpet for barnetillegget til barnetbarna som ikke bor sammen med begge foreldrene. Dette barnetillegget er derfor ikke redusert ut fra inntekt. Til sammen er også inntektene til deg og ektefellenpartnerensamboeren din høyerelavere enn ".expr() +
+                    fbFribeloep + " kroner, som er fribeløpet for barnetillegget til barnetbarna som bor med begge sine foreldre. Dette barnetillegget er derfor ikke redusert ut fra inntekt. Barnetilleggene er derfor ikke redusert ut fra inntekt.".expr(),
+                Nynorsk to "Inntekta di er høgare/lågare enn ".expr() + sbFribeloep + " kroner, som er fribeløpet for barnetillegget til barnet/barna som ikkje bur saman med begge foreldra. Dette barnetillegget er derfor ikkje redusert ut frå inntekt. Til saman er også inntektene til deg og ektefellen/partnaren/sambuaren din høgare/lågare enn ".expr() +
+                    fbFribeloep + " kroner, som er fribeløpet for barnetillegget til barnet/barna som bur saman med begge foreldra sine. Dette barnetillegget er derfor ikkje redusert ut frå inntekt. Desse barnetillegga er derfor ikkje redusert ut frå inntekt.".expr(),
+                English to "Your income is higher/lower than NOK ".expr() + sbFribeloep + ", which is the exemption amount for the child supplement for the child/children who do not live together with both parents. Therefore your child supplement has not been reduced on the basis of your income. Together, your income and your spouse/partner/cohabiting partner's income is higher/lower than NOK ".expr() +
+                    fbFribeloep + ", which is the exemption amount for the child supplement for the child/children who lives together with both parents. Therefore your child supplement has not been reduced on the basis of your income. Therefore your child supplements have not been reduced on the basis of your income.".expr()
             )
-            textExpr(
-                Bokmal to "Det du har fått utbetalt i barnetillegg tidligere i år har også betydning for hva du får i barnetillegg framover. Dette ble tatt hensyn til da vi endret barnetillegget for barnetbarna som bor med begge sine foreldre. Du har allerede fått utbetalt det du har rett til i år, og får derfor ikke utbetalt barnetillegg for resten av året.".expr(),
-                Nynorsk to "Det du har fått utbetalt i barnetillegg tidlegare i år har også noko å seie for kva du får i barnetillegg framover. Dette har vi teke omsyn til når vi endra barnetillegget for barnet/barna som bur saman med begge foreldra sine. Du har allereie fått utbetalt det du har rett til i år, og får derfor ikkje utbetalt barnetillegg for resten av året.".expr(),
-                English to "What you have received in child supplement earlier this year, affects what you will receive in child supplement in the future. This we took in to account when we changed your child supplement for the child/children who live(s) together with both parents. You have already received what you are entitled to this year, therefore you will not receive any child supplement for the remainder of the year.".expr()
+            text(
+                Bokmal to "Det du har fått utbetalt i barnetillegg tidligere i år har også betydning for hva du får i barnetillegg framover. Dette ble tatt hensyn til da vi endret barnetillegget for barnetbarna som bor med begge sine foreldre. Du har allerede fått utbetalt det du har rett til i år, og får derfor ikke utbetalt barnetillegg for resten av året.",
+                Nynorsk to "Det du har fått utbetalt i barnetillegg tidlegare i år har også noko å seie for kva du får i barnetillegg framover. Dette har vi teke omsyn til når vi endra barnetillegget for barnet/barna som bur saman med begge foreldra sine. Du har allereie fått utbetalt det du har rett til i år, og får derfor ikkje utbetalt barnetillegg for resten av året.",
+                English to "What you have received in child supplement earlier this year, affects what you will receive in child supplement in the future. This we took in to account when we changed your child supplement for the child/children who live(s) together with both parents. You have already received what you are entitled to this year, therefore you will not receive any child supplement for the remainder of the year."
             )
-            textExpr(
-                Bokmal to "Det du har fått utbetalt i barnetillegg tidligere i år har også betydning for hva du får i barnetillegg framover. Dette ble tatt hensyn til da vi endret barnetillegget for barnetbarna som ikke bor sammen med begge foreldrene. Du har allerede fått utbetalt det du har rett til i år, og får derfor ikke utbetalt barnetillegg for resten av året.".expr(),
-                Nynorsk to "Det du har fått utbetalt i barnetillegg tidlegare i år har også noko å seie for kva du får i barnetillegg framover. Dette har vi teke omsyn til når vi endra barnetillegget for barnet/barna som ikkje bur saman med begge foreldra. Du har allereie fått utbetalt det du har rett til i år, og får derfor ikkje utbetalt barnetillegg for resten av året.".expr(),
-                English to "What you have received in child supplement earlier this year, affects what you will receive in child supplement in the future. This we took in to account when we changed your child supplement for the child/children who do not live together with both parents. You have already received what you are entitled to this year, therefore you will not receive any child supplement for the remainder of the year.".expr()
+            text(
+                Bokmal to "Det du har fått utbetalt i barnetillegg tidligere i år har også betydning for hva du får i barnetillegg framover. Dette ble tatt hensyn til da vi endret barnetillegget for barnetbarna som ikke bor sammen med begge foreldrene. Du har allerede fått utbetalt det du har rett til i år, og får derfor ikke utbetalt barnetillegg for resten av året.",
+                Nynorsk to "Det du har fått utbetalt i barnetillegg tidlegare i år har også noko å seie for kva du får i barnetillegg framover. Dette har vi teke omsyn til når vi endra barnetillegget for barnet/barna som ikkje bur saman med begge foreldra. Du har allereie fått utbetalt det du har rett til i år, og får derfor ikkje utbetalt barnetillegg for resten av året.",
+                English to "What you have received in child supplement earlier this year, affects what you will receive in child supplement in the future. This we took in to account when we changed your child supplement for the child/children who do not live together with both parents. You have already received what you are entitled to this year, therefore you will not receive any child supplement for the remainder of the year."
 
             )
         }
     }
 }
 
-// TODO use existing TBU1286.1 in <maler/fraser/omregning/ufoeretrygd/Ufoeretrygd.kt
-// TODO use existing TBU1286.2 in <maler/fraser/omregning/ufoeretrygd/Ufoeretrygd.kt
+// TBU1286.1 in <maler/fraser/omregning/ufoeretrygd/Ufoeretrygd.kt
+// TBU1286.2 in <maler/fraser/omregning/ufoeretrygd/Ufoeretrygd.kt
 
-data class TBU2490(
+// TBU2490
+data class BTinntektstak(
     val fellesbarnInntektstak: Expression<Kroner>,
     val saerkullsbarnInntektstak: Expression<Kroner>,
 
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() {
         paragraph {
+            val fbInntektstak = fellesbarnInntektstak.format()
+            val sbInntektstak = saerkullsbarnInntektstak.format()
             textExpr(
-                Bokmal to "Barnetillegget for barnetbarna som bor med begge sine foreldre, blir ikke utbetalt fordi de samlede inntektene er høyere enn <BarnetilleggFelles.inntektstak> kroner. Barnetillegget for barnetbarna som ikke bor sammen med begge foreldrene, blir heller ikke utbetalt fordi inntekten din alene er høyere enn <BarnetilleggSerkull.inntektstak> kroner. Inntektene er over grensen for å få utbetalt barnetillegg.".expr(),
-                Nynorsk to "Barnetillegget for barnet/barna som bur saman med begge foreldra sine, blir ikkje utbetalt fordi dei samla inntektene er høgare enn <BarnetilleggFelles.inntektstak> kroner. Barnetillegget for barnet/barna som ikkje bur saman med begge foreldra, blir heller ikkje utbetalt fordi inntekta di åleine er høgare enn <BarnetilleggSerkull.inntektstak> kroner. Inntektene er over grensa for å få utbetalt barnetillegg.".expr(),
-                English to "You will not receive child supplement for the child/children who lives together with both parents because your total income is higher than NOK <BarnetilleggFelles.inntektstak>. You will not receive child supplement for the child/children who do not live together with both parents because your income alone is higher than NOK <BarnetilleggSerkull.inntektstak>. You will not receive child supplement because your income exceeds the income limit.".expr()
+                Bokmal to "Barnetillegget for barnetbarna som bor med begge sine foreldre, blir ikke utbetalt fordi de samlede inntektene er høyere enn ".expr() +
+                    fbInntektstak + " kroner. Barnetillegget for barnetbarna som ikke bor sammen med begge foreldrene, blir heller ikke utbetalt fordi inntekten din alene er høyere enn <BarnetilleggSerkull.inntektstak> kroner. Inntektene er over grensen for å få utbetalt barnetillegg.".expr(),
+                Nynorsk to "Barnetillegget for barnet/barna som bur saman med begge foreldra sine, blir ikkje utbetalt fordi dei samla inntektene er høgare enn ".expr() +
+                    fbInntektstak + " kroner. Barnetillegget for barnet/barna som ikkje bur saman med begge foreldra, blir heller ikkje utbetalt fordi inntekta di åleine er høgare enn <BarnetilleggSerkull.inntektstak> kroner. Inntektene er over grensa for å få utbetalt barnetillegg.".expr(),
+                English to "You will not receive child supplement for the child/children who lives together with both parents because your total income is higher than NOK ".expr() +
+                    fbInntektstak + ". You will not receive child supplement for the child/children who do not live together with both parents because your income alone is higher than NOK <BarnetilleggSerkull.inntektstak>. You will not receive child supplement because your income exceeds the income limit.".expr()
             )
         }
     }
@@ -361,16 +354,16 @@ object TBU2213 : OutlinePhrase<LangBokmalNynorskEnglish>() {
         }
         paragraph {
             text(
-                Bokmal to "Hvis du mener vedtaket er feil, kan du klage. Fristen for å klage er seks uker fra den datoen du mottok vedtaket. I vedlegget «Orientering om rettigheter og plikter» får du vite mer om hvordan du går fram. Du finner skjema og informasjon på nav.no/klage.",
-                Nynorsk to "Viss du meiner vedtaket er feil, kan du klage. Fristen for å klage er seks veker frå den datoen du fekk vedtaket. I vedlegget «Orientering om rettar og plikter» får du vite meir om korleis du går fram. Du finn skjema og informasjon på nav.no/klage.",
-                English to "If you believe the decision is wrong, you may appeal. The deadline for appeal is six weeks from the date you received the decision. In the attachment “Information about rights and obligations”, you can find out more about how to proceed. You will find forms and information at nav.no/klage."
+                Bokmal to "Hvis du mener vedtaket er feil, kan du klage. Fristen for å klage er seks uker fra den datoen du mottok vedtaket. I vedlegget «Orientering om rettigheter og plikter» får du vite mer om hvordan du går fram. Du finner skjema og informasjon på ${Constants.KLAGE_URL}.",
+                Nynorsk to "Viss du meiner vedtaket er feil, kan du klage. Fristen for å klage er seks veker frå den datoen du fekk vedtaket. I vedlegget «Orientering om rettar og plikter» får du vite meir om korleis du går fram. Du finn skjema og informasjon på ${Constants.KLAGE_URL}.",
+                English to "If you believe the decision is wrong, you may appeal. The deadline for appeal is six weeks from the date you received the decision. In the attachment “Information about rights and obligations”, you can find out more about how to proceed. You will find forms and information at ${Constants.KLAGE_URL}."
 
             )
         }
     }
 }
 
-// TODO use existing TBU1074 in <maler/fraser/common/Felles.kt
+// TBU1074 in <maler/fraser/common/Felles.kt
 object TBU2242 : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() {
         paragraph {
@@ -383,7 +376,8 @@ object TBU2242 : OutlinePhrase<LangBokmalNynorskEnglish>() {
     }
 }
 
-// TODO use existing TBU1227 in <maler/fraser/omregning/ufoeretrygd/Ufoeretrygd.kt
+// TBU1227 in <maler/fraser/omregning/ufoeretrygd/Ufoeretrygd.kt
+
 object TBU1228 : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() {
         title1 {
