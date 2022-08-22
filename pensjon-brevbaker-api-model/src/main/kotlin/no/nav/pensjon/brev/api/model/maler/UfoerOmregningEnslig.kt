@@ -22,7 +22,8 @@ data class UfoerOmregningEnsligDto(
     val barnetilleggSaerkullsbarnGjeldende_erRedusertMotInntekt: Boolean,
     val inntektFoerUfoerhetVedVirk: InntektFoerUfoerhetVedVirk,
     val bruker: Bruker,
-    val barnetilleggVedVirk: BarnetilleggVedVirk?,
+    val harBarnetillegg: Boolean,
+    val barnetilleggVedVirk: BarnetilleggVedVirk?, //TODO hoist særkullsbarn og fjern barnetillegg grunnlag i neste versjon
 ) {
     data class Avdoed(
         val navn: String,
