@@ -25,7 +25,8 @@ data class OpplysningerBruktIBeregningUTDto(
     )
 
     data class BarnetilleggGjeldende(
-        val grunnlag: Grunnlag,
+        val grunnlag: Grunnlag, // TODO remove in next version
+        val totaltAntallBarn: Int,
         val saerkullsbarn: Saerkullsbarn?
     ) {
         data class Grunnlag(
