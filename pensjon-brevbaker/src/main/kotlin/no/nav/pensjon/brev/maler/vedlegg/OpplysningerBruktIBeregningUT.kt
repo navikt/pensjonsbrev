@@ -104,7 +104,7 @@ val vedleggOpplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEng
                     English to "Information"
                 )
             }
-            column(alignment = Element.Table.ColumnAlignment.RIGHT) {
+            column(alignment = Element.ParagraphContent.Table.ColumnAlignment.RIGHT) {
                 text(
                     Bokmal to "Verdi",
                     Nynorsk to "Verdi",
@@ -813,7 +813,7 @@ val vedleggOpplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEng
                             English to "Description"
                         )
                     }
-                    column(alignment = Element.Table.ColumnAlignment.RIGHT) {
+                    column(alignment = Element.ParagraphContent.Table.ColumnAlignment.RIGHT) {
                         text(
                             Bokmal to "Beløp",
                             Nynorsk to "Beløp",

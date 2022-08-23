@@ -18,7 +18,7 @@ object Ufoeretrygd {
      * TBU3007
      */
     data class UngUfoer20aar_001(val kravVirkningFraOgMed: Expression<LocalDate>) : OutlinePhrase<LangBokmalNynorsk>() {
-        override fun OutlineScope<LangBokmalNynorsk, Unit>.template() =
+        override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() =
             paragraph {
                 val formatertDato = kravVirkningFraOgMed.format()
                 textExpr(
@@ -38,7 +38,7 @@ object Ufoeretrygd {
         val fellesbarn: Expression<Boolean>,
         val saerkullsbarn: Expression<Boolean>,
     ) : OutlinePhrase<LangBokmalNynorsk>() {
-        override fun OutlineScope<LangBokmalNynorsk, Unit>.template() =
+        override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() =
             paragraph {
                 val kroner = perMaaned.format()
                 showIf(not(fellesbarn) and not(saerkullsbarn) and not(ektefelle) and not(gjenlevende)) {
@@ -84,7 +84,7 @@ object Ufoeretrygd {
         val saerkullsbarn: Expression<UngUfoerAutoDto.InnvilgetBarnetillegg?>,
         val fellesbarn: Expression<UngUfoerAutoDto.InnvilgetBarnetillegg?>,
     ) : OutlinePhrase<LangBokmalNynorsk>() {
-        override fun OutlineScope<LangBokmalNynorsk, Unit>.template() =
+        override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() =
             paragraph {
                 val saerkullInnvilget = saerkullsbarn.notNull()
                 val saerkullUtbetalt = saerkullsbarn.utbetalt_safe.ifNull(false)
@@ -146,7 +146,7 @@ object Ufoeretrygd {
      * TBU3008, TBU3009, TBU3010
      */
     data class UngUfoerHoeyereVed20aar(val minsteytelseVedVirkSats: Expression<Double>) : OutlinePhrase<LangBokmalNynorsk>() {
-        override fun OutlineScope<LangBokmalNynorsk, Unit>.template() {
+        override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
             paragraph {
                 text(
                     Bokmal to "Du er tidligere innvilget rettighet som ung ufør i uføretrygden din. Denne rettigheten gir deg høyere utbetaling fra og med den måneden du fyller 20 år.",
@@ -171,7 +171,7 @@ object Ufoeretrygd {
      * TBU3011
      */
     object HjemmelSivilstand : OutlinePhrase<LangBokmalNynorsk>() {
-        override fun OutlineScope<LangBokmalNynorsk, Unit>.template() =
+        override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() =
             paragraph {
                 text(
                     Bokmal to "Vedtaket er gjort etter folketrygdloven § 12-13 og § 22-12.",
@@ -184,7 +184,7 @@ object Ufoeretrygd {
      * TBU1174
      */
     object VirkningFomOverskrift : OutlinePhrase<LangBokmalNynorsk>() {
-        override fun OutlineScope<LangBokmalNynorsk, Unit>.template() =
+        override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() =
             title1 {
                 text(
                     Bokmal to "Dette er virkningstidspunktet ditt",
@@ -197,7 +197,7 @@ object Ufoeretrygd {
      * TBU2529x
      */
     data class VirkningFraOgMed(val kravVirkningFraOgMed: Expression<LocalDate>) : OutlinePhrase<LangBokmalNynorsk>() {
-        override fun OutlineScope<LangBokmalNynorsk, Unit>.template() =
+        override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() =
             paragraph {
                 val dato = kravVirkningFraOgMed.format()
                 textExpr(
@@ -211,7 +211,7 @@ object Ufoeretrygd {
      * TBU1227, sjekkUtbetalingeneOverskrift_001, sjekkUtbetalingeneUT_001
      */
     object SjekkUtbetalingene : OutlinePhrase<LangBokmalNynorskEnglish>() {
-        override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             title1 {
                 text(
                     Bokmal to "Sjekk utbetalingene dine",

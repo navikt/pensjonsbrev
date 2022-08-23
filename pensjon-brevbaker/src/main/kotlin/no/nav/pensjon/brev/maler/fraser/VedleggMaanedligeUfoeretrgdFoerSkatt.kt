@@ -26,7 +26,7 @@ import java.time.LocalDate
 
 
 object VedleggBelopUT_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() =
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         paragraph {
             text(
                 Bokmal to "Nedenfor ser du den månedlige uføretrygden din.",
@@ -40,7 +40,7 @@ data class TabellBeregnetUTHele(
     val ufoeretrygd: Expression<MaanedligUfoeretrygdFoerSkattDto.UfoeretrygdPerMaaned>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
 
-    override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() {
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         includePhrase(TabellUfoeretrygtTittel(ufoeretrygd.virkningFraOgMed, ufoeretrygd.virkningTilOgMed))
 
         paragraph {
@@ -80,7 +80,7 @@ data class TabellUfoeretrygtTittel(
     val virkningsDatoTilOgMed: Expression<LocalDate?>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
 
-    override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() =
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         title1 {
             val virkningsDatoFraOgMed = virkningsDatoFraOgMed.format(short = true)
             textExpr(
@@ -104,7 +104,7 @@ data class TabellUfoeretrygtTittel(
 data class TabellUfoeretrygdTittel_broedtekst(
     val grunnbeloep: Expression<Kroner>,
 ) : ParagraphPhrase<LangBokmalNynorskEnglish>() {
-    override fun ParagraphScope<LangBokmalNynorskEnglish, Unit>.template() =
+    override fun ParagraphOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         textExpr(
             Bokmal to "Folketrygdens grunnbeløp (G) benyttet i beregningen er ".expr() + grunnbeloep.format() + " kroner.",
             Nynorsk to "Grunnbeløpet i folketrygda (G) nytta i utrekninga er ".expr() + grunnbeloep.format() + " kroner.",
@@ -120,16 +120,16 @@ data class TabellBeregnetUT(
     val ordinaerUTBeloep: Expression<Kroner>,
     val totalUTBeloep: Expression<Kroner>,
 ) : ParagraphPhrase<LangBokmalNynorskEnglish>() {
-    override fun ParagraphScope<LangBokmalNynorskEnglish, Unit>.template() {
+    override fun ParagraphOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         table(
             header = {
                 column(1) {}
-                column(1, alignment = Element.Table.ColumnAlignment.RIGHT) {
+                column(1, alignment = Element.ParagraphContent.Table.ColumnAlignment.RIGHT) {
                     text(
                         Bokmal to "Bruttobeløp per måned",
                         Nynorsk to "Bruttobeløp per månad",
                         English to "Gross monthly amount",
-                        Element.Text.FontType.BOLD
+                        Element.ParagraphContent.Text.FontType.BOLD
                     )
                 }
             }
@@ -233,24 +233,24 @@ data class TabellBeregnetUTAvkortet(
     val totalUTBeloepNetto: Expression<Kroner>,
     val totalUTBeloepBrutto: Expression<Kroner>,
 ) : ParagraphPhrase<LangBokmalNynorskEnglish>() {
-    override fun ParagraphScope<LangBokmalNynorskEnglish, Unit>.template() {
+    override fun ParagraphOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         table(
             header = {
                 column {}
-                column(alignment = Element.Table.ColumnAlignment.RIGHT) {
+                column(alignment = Element.ParagraphContent.Table.ColumnAlignment.RIGHT) {
                     text(
                         Bokmal to "Uføretrygd per måned før fradrag for inntekt",
                         Nynorsk to "Uføretrygd per månad før frådrag for inntekt",
                         English to "Monthly disability benefit before deductions for income",
-                        Element.Text.FontType.BOLD
+                        Element.ParagraphContent.Text.FontType.BOLD
                     )
                 }
-                column(alignment = Element.Table.ColumnAlignment.RIGHT) {
+                column(alignment = Element.ParagraphContent.Table.ColumnAlignment.RIGHT) {
                     text(
                         Bokmal to "Uføretrygd per måned etter fradrag for inntekt",
                         Nynorsk to "Uføretrygd per månad etter frådrag for inntekt",
                         English to "Monthly disability benefit after deductions for income",
-                        Element.Text.FontType.BOLD
+                        Element.ParagraphContent.Text.FontType.BOLD
                     )
                 }
             }

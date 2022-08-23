@@ -1,92 +1,93 @@
 package no.nav.pensjon.brev.template.dsl
 
 import no.nav.pensjon.brev.template.*
-
+import no.nav.pensjon.brev.template.ContentOrControlStructure.*
 
 @LetterTemplateMarker
-class TextOnlyScope<Lang : LanguageSupport, LetterData : Any>(children: MutableList<Element<Lang>> = mutableListOf()) :
-    TextOnlyScopeBase<Lang, LetterData, TextOnlyScope<Lang, LetterData>>(children) {
+class TextOnlyScope<Lang : LanguageSupport, LetterData : Any> : TextScope<Lang, LetterData>, ControlStructureScope<Lang, LetterData, Element.ParagraphContent.Text<Lang>, TextOnlyScope<Lang, LetterData>> {
+    private val children = mutableListOf<TextElement<Lang>>()
+    override val elements: List<TextElement<Lang>>
+        get() = children
+
+    override fun scopeFactory(): TextOnlyScope<Lang, LetterData> = TextOnlyScope()
+
+    override fun addControlStructure(e: TextElement<Lang>) {
+        children.add(e)
+    }
+
+    override fun addTextContent(e: TextElement<Lang>) {
+        children.add(e)
+    }
 
     fun includePhrase(phrase: TextOnlyPhrase<out Lang>) {
         phrase.apply(this)
     }
-
-    override fun scopeFactory(): TextOnlyScope<Lang, LetterData> = TextOnlyScope()
-
 }
 
-abstract class TextOnlyScopeBase<Lang : LanguageSupport, LetterData : Any, Scope : TextOnlyScopeBase<Lang, LetterData, Scope>>(
-    children: MutableList<Element<Lang>> = mutableListOf()
-) : ControlStructureScopeBase<Lang, LetterData, Scope>(children) {
+interface TextScope<Lang : LanguageSupport, LetterData : Any> : TemplateGlobalScope<LetterData> {
 
-    fun addAll(items: List<Element<Lang>>) {
-        children.addAll(items)
-    }
+    fun addTextContent(e: TextElement<Lang>)
 
     // TODO: Consider removing this since textExpr already supports this, or renaming to allLanguagesExpr (or something similar).
     fun eval(expression: StringExpression) {
-        children.add(Element.Text.Expression(expression))
-    }
-
-    fun eval(expressionInit: () -> StringExpression) {
-        children.add(Element.Text.Expression(expressionInit()))
+        addTextContent(Content(Element.ParagraphContent.Text.Expression(expression)))
     }
 
     fun newline() {
-        children.add(Element.NewLine())
+        addTextContent(Content(Element.ParagraphContent.Text.NewLine()))
     }
 }
 
-// TextOnlyBuilder.text()
+// TextScope.text()
 //
 //
-fun <Lang1 : Language, ParameterType : Any, Scope : TextOnlyScopeBase<LanguageSupport.Single<Lang1>, ParameterType, Scope>> Scope.text(
-    lang1: Pair<Lang1, String>, fontType: Element.Text.FontType = Element.Text.FontType.PLAIN
+fun <Lang1 : Language, ParameterType : Any> TextScope<LanguageSupport.Single<Lang1>, ParameterType>.text(
+    lang1: Pair<Lang1, String>, fontType: Element.ParagraphContent.Text.FontType = Element.ParagraphContent.Text.FontType.PLAIN
 ) {
-    Element.Text.Literal.create(lang1, fontType).also { children.add(it) }
+    Element.ParagraphContent.Text.Literal.create(lang1, fontType).also { addTextContent(Content(it)) }
 }
 
-fun <Lang1 : Language, Lang2 : Language, ParameterType : Any, Scope : TextOnlyScopeBase<LanguageSupport.Double<Lang1, Lang2>, ParameterType, Scope>> Scope.text(
+fun <Lang1 : Language, Lang2 : Language, ParameterType : Any> TextScope<LanguageSupport.Double<Lang1, Lang2>, ParameterType>.text(
     lang1: Pair<Lang1, String>,
     lang2: Pair<Lang2, String>,
-    fontType: Element.Text.FontType = Element.Text.FontType.PLAIN,
+    fontType: Element.ParagraphContent.Text.FontType = Element.ParagraphContent.Text.FontType.PLAIN,
 ) {
-    Element.Text.Literal.create(lang1, lang2, fontType).also { children.add(it) }
+    Element.ParagraphContent.Text.Literal.create(lang1, lang2, fontType).also { addTextContent(Content(it)) }
 }
 
-fun <Lang1 : Language, Lang2 : Language, Lang3 : Language, ParameterType : Any, Scope : TextOnlyScopeBase<LanguageSupport.Triple<Lang1, Lang2, Lang3>, ParameterType, Scope>> Scope.text(
+fun <Lang1 : Language, Lang2 : Language, Lang3 : Language, ParameterType : Any> TextScope<LanguageSupport.Triple<Lang1, Lang2, Lang3>, ParameterType>.text(
     lang1: Pair<Lang1, String>,
     lang2: Pair<Lang2, String>,
     lang3: Pair<Lang3, String>,
-    fontType: Element.Text.FontType = Element.Text.FontType.PLAIN,
+    fontType: Element.ParagraphContent.Text.FontType = Element.ParagraphContent.Text.FontType.PLAIN,
 ) {
-    Element.Text.Literal.create(lang1, lang2, lang3, fontType).also { children.add(it) }
+    Element.ParagraphContent.Text.Literal.create(lang1, lang2, lang3, fontType).also { addTextContent(Content(it)) }
 }
 
-// TextOnlyBuilder.textExpr()
+// TextScope.textExpr()
 //
 //
-fun <Lang1 : Language, ParameterType : Any, Scope : TextOnlyScopeBase<LanguageSupport.Single<Lang1>, ParameterType, Scope>> Scope.textExpr(
+fun <Lang1 : Language, ParameterType : Any> TextScope<LanguageSupport.Single<Lang1>, ParameterType>.textExpr(
     lang1: Pair<Lang1, StringExpression>,
-    fontType: Element.Text.FontType = Element.Text.FontType.PLAIN,
+    fontType: Element.ParagraphContent.Text.FontType = Element.ParagraphContent.Text.FontType.PLAIN,
 ) {
-    Element.Text.Expression.ByLanguage.create(lang1, fontType).also { children.add(it) }
+    Element.ParagraphContent.Text.Expression.ByLanguage.create(lang1, fontType).also { addTextContent(Content(it)) }
 }
 
-fun <Lang1 : Language, Lang2 : Language, ParameterType : Any, Scope : TextOnlyScopeBase<LanguageSupport.Double<Lang1, Lang2>, ParameterType, Scope>> Scope.textExpr(
+fun <Lang1 : Language, Lang2 : Language, ParameterType : Any> TextScope<LanguageSupport.Double<Lang1, Lang2>, ParameterType>.textExpr(
     lang1: Pair<Lang1, StringExpression>,
     lang2: Pair<Lang2, StringExpression>,
-    fontType: Element.Text.FontType = Element.Text.FontType.PLAIN,
+    fontType: Element.ParagraphContent.Text.FontType = Element.ParagraphContent.Text.FontType.PLAIN,
 ) {
-    Element.Text.Expression.ByLanguage.create(lang1, lang2, fontType).also { children.add(it) }
+    Element.ParagraphContent.Text.Expression.ByLanguage.create(lang1, lang2, fontType).also { addTextContent(Content(it)) }
 }
 
-fun <Lang1 : Language, Lang2 : Language, Lang3 : Language, ParameterType : Any, Scope : TextOnlyScopeBase<LanguageSupport.Triple<Lang1, Lang2, Lang3>, ParameterType, Scope>> Scope.textExpr(
+fun <Lang1 : Language, Lang2 : Language, Lang3 : Language, ParameterType : Any> TextScope<LanguageSupport.Triple<Lang1, Lang2, Lang3>, ParameterType>.textExpr(
     lang1: Pair<Lang1, StringExpression>,
     lang2: Pair<Lang2, StringExpression>,
     lang3: Pair<Lang3, StringExpression>,
-    fontType: Element.Text.FontType = Element.Text.FontType.PLAIN,
+    fontType: Element.ParagraphContent.Text.FontType = Element.ParagraphContent.Text.FontType.PLAIN,
 ) {
-    Element.Text.Expression.ByLanguage.create(lang1, lang2, lang3, fontType).also { children.add(it) }
+    Element.ParagraphContent.Text.Expression.ByLanguage.create(lang1, lang2, lang3, fontType).also { addTextContent(Content(it)) }
 }
 

@@ -12,7 +12,7 @@ import no.nav.pensjon.brev.template.dsl.expression.*
 
 
 object VedleggPlikter_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() {
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         title1 {
             text(
                 Bokmal to "Plikt til å opplyse om endringer - folketrygdloven § 21-3",
@@ -209,7 +209,7 @@ object VedleggPlikterAP27_001 : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
 }
 
 object VedleggPlikterHvorforMeldeAP_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() =
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         paragraph {
             text(
                 Bokmal to "Skjer det endringer, kan det få betydning for hvor mye du kan få utbetalt i alderspensjon. Derfor er det viktig at du gir oss beskjed så raskt som mulig.",
@@ -220,7 +220,7 @@ object VedleggPlikterHvorforMeldeAP_001 : OutlinePhrase<LangBokmalNynorskEnglish
 }
 
 object VedleggPlikterRettTilBarnetilleggAP_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() {
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         paragraph {
             text(
                 Bokmal to "Fordi du får barnetillegg må du også melde fra om endringer som kan ha betydning for dette tillegget.",
@@ -260,7 +260,7 @@ object VedleggPlikterRettTilBarnetilleggAP_001 : OutlinePhrase<LangBokmalNynorsk
 data class VedleggPlikterRettTilEktefelletilleggAP_001(
     val sivilstand: Expression<Sivilstand>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() {
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         paragraph {
             text(
                 Bokmal to "Fordi du får ektefelletillegg må du også melde fra om endringer som kan ha betydning for dette tillegget.",
@@ -323,7 +323,7 @@ data class VedleggPlikterRettTilEktefelletilleggAP_001(
 data class VedleggPlikterRettTilEktefelletilleggOgBarnetilleggAP_001(
     val sivilstand: Expression<Sivilstand>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() {
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
 
         paragraph {
             text(
@@ -385,7 +385,7 @@ data class VedleggPlikterRettTilEktefelletilleggOgBarnetilleggAP_001(
 }
 
 object InntektsProevingPliktListe : ParagraphPhrase<LangBokmalNynorskEnglish>() {
-    override fun ParagraphScope<LangBokmalNynorskEnglish, Unit>.template() =
+    override fun ParagraphOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         list {
             item {
                 text(
@@ -418,7 +418,7 @@ object InntektsProevingPliktListe : ParagraphPhrase<LangBokmalNynorskEnglish>() 
 }
 
 object VedleggPlikterinntektsprovingBTFellesBarnSaerkullsbarnAP_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() =
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         paragraph {
             text(
                 Bokmal to "Hvor mye du får utbetalt i barnetillegg avhenger av den samlede inntekten du og ektefellen har. Du må derfor også gi beskjed hvis",
@@ -431,7 +431,7 @@ object VedleggPlikterinntektsprovingBTFellesBarnSaerkullsbarnAP_001 : OutlinePhr
 
 
 object VedleggPlikterinntektsprovingBTOgETAP_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() =
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         paragraph {
             text(
                 Bokmal to "Hvor mye du får utbetalt i barnetillegg og ektefelletillegg avhenger av den samlede inntekten du har. Du må derfor også gi beskjed hvis",
@@ -443,7 +443,7 @@ object VedleggPlikterinntektsprovingBTOgETAP_001 : OutlinePhrase<LangBokmalNynor
 }
 
 object VedleggPlikterinntektsprovingETAP_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() =
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         paragraph {
             text(
                 Bokmal to "Hvor mye du får utbetalt i ektefelletillegg avhenger av den samlede inntekten du har. Du må derfor også gi beskjed hvis",
@@ -455,7 +455,7 @@ object VedleggPlikterinntektsprovingETAP_001 : OutlinePhrase<LangBokmalNynorskEn
 }
 
 object VedleggPlikterUT_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() {
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         title1 {
             text(
                 Bokmal to "Plikt til å opplyse om endringer - folketrygdloven § 21-3",
@@ -578,7 +578,7 @@ object VedleggPlikterUT12_001 : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
 }
 
 object VedleggPlikterAFP_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() {
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         title1 {
             text(
                 Bokmal to "Plikt til å opplyse om endringer",
@@ -633,7 +633,7 @@ object VedleggPlikterAFP4_001 : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
 }
 
 object InfoAPBeskjed_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() {
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         title1 {
             text(Bokmal to "Slik gir du oss beskjed", Nynorsk to "Slik gir du oss beskjed", English to "How to contact us")
         }
@@ -648,7 +648,7 @@ object InfoAPBeskjed_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
 }
 
 object VedleggVeiledning_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() {
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         title1 {
             text(
                 Bokmal to "Veiledning fra NAV - forvaltningsloven § 11",
@@ -668,7 +668,7 @@ object VedleggVeiledning_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
 
 
 object VedleggInnsynSakPensjon_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() {
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         val telefonNummer = felles.avsenderEnhet.telefonnummer
         val kontaktinformasjonNettsted = felles.avsenderEnhet.nettside
         title1 {
@@ -690,7 +690,7 @@ object VedleggInnsynSakPensjon_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
 
 
 object VedleggInnsynSakUTPesys_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() {
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         val telefonNummer = felles.avsenderEnhet.telefonnummer
         title1 {
             text(
@@ -710,7 +710,7 @@ object VedleggInnsynSakUTPesys_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
 }
 
 object VedleggHjelpFraAndre_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() {
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         title1 {
             text(
                 Bokmal to "Hjelp fra andre - forvaltningsloven § 12",
@@ -730,7 +730,7 @@ object VedleggHjelpFraAndre_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
 
 
 object VedleggKlagePensjon_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() {
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         val telefonNummer = felles.avsenderEnhet.telefonnummer
         title1 {
             text(
@@ -820,7 +820,7 @@ object VedleggKlagePensjon_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
 }
 
 object VedleggKlagePesys_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() {
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         title1 {
             text(
                 Bokmal to "Klage på vedtaket - folketrygdloven § 21-12",

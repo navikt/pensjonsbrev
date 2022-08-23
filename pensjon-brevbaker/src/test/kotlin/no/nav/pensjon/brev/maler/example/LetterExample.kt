@@ -20,8 +20,8 @@ import no.nav.pensjon.brev.maler.example.TestVedleggDtoSelectors.testVerdi2
 import no.nav.pensjon.brev.maler.fraser.common.Felles.KronerText
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.*
-import no.nav.pensjon.brev.template.Element.Table.ColumnAlignment.RIGHT
-import no.nav.pensjon.brev.template.Element.Text.FontType
+import no.nav.pensjon.brev.template.Element.ParagraphContent.Table.ColumnAlignment.RIGHT
+import no.nav.pensjon.brev.template.Element.ParagraphContent.Text.FontType
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.base.PensjonLatex
@@ -270,7 +270,7 @@ data class OutlinePhraseTest(val datoInnvilget: Expression<LocalDate>, val pensj
     //The elements used in outline can also be used in outline phrases.
     //This is intended for use in the top-level outline scope
 
-    override fun OutlineScope<LangBokmalNynorsk, Unit>.template() =
+    override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() =
         paragraph {
             showIf(pensjonInnvilget) {
                 val dato = datoInnvilget.format()
@@ -284,7 +284,7 @@ data class OutlinePhraseTest(val datoInnvilget: Expression<LocalDate>, val pensj
 
 @Suppress("unused")
 object ParagraphPhraseTest : ParagraphPhrase<LangBokmalNynorsk>() {
-    override fun ParagraphScope<LangBokmalNynorsk, Unit>.template() =
+    override fun ParagraphOnlyScope<LangBokmalNynorsk, Unit>.template() =
         list {
             item {
                 text(Bokmal to "Test 1", Nynorsk to "Test 1")

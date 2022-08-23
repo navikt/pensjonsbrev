@@ -1,7 +1,6 @@
 package no.nav.pensjon.brev.template.dsl
 
-import no.nav.pensjon.brev.template.Language
-import no.nav.pensjon.brev.template.LanguageSettings
+import no.nav.pensjon.brev.template.*
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
