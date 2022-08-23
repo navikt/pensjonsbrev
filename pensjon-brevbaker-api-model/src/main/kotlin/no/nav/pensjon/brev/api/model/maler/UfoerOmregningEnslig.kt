@@ -22,7 +22,8 @@ data class UfoerOmregningEnsligDto(
     val barnetilleggSaerkullsbarnGjeldende_erRedusertMotInntekt: Boolean,
     val inntektFoerUfoerhetVedVirk: InntektFoerUfoerhetVedVirk,
     val bruker: Bruker,
-    val barnetilleggVedVirk: BarnetilleggVedVirk?,
+    val harBarnetillegg: Boolean,
+    val barnetilleggSaerkullsbarnVedVirk: BarnetilleggSaerkullsbarnVedvirk?,
 ) {
     data class Avdoed(
         val navn: String,
@@ -47,18 +48,6 @@ data class UfoerOmregningEnsligDto(
     data class Bruker(
         val borIAvtaleLand: Boolean,
         val borINorge: Boolean,
-    )
-
-    data class BarnetilleggVedVirk(
-        val barnetilleggGrunnlag: BarnetilleggGrunnlagVedVirk,
-        val barnetilleggSaerkullsbarnVedVirk: BarnetilleggSaerkullsbarnVedvirk?,
-    )
-
-    data class BarnetilleggGrunnlagVedVirk(
-        val prosentsatsGradertOverInntektFoerUfoer: Int,
-        val gradertOverInntektFoerUfoer: Kroner,
-        val beloepFoerReduksjon: Kroner,
-        val beloepEtterReduksjon: Kroner,
     )
 
     data class BarnetilleggSaerkullsbarnVedvirk(

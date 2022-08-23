@@ -2,15 +2,12 @@ package no.nav.pensjon.brev.maler.vedlegg
 
 
 import no.nav.pensjon.brev.api.model.Beregningsmetode.*
-import no.nav.pensjon.brev.api.model.vedlegg.BarnetilleggGjeldendeSelectors.grunnlag
-import no.nav.pensjon.brev.api.model.vedlegg.BarnetilleggGjeldendeSelectors.grunnlag_safe
-import no.nav.pensjon.brev.api.model.vedlegg.BarnetilleggGjeldendeSelectors.saerkullsbarn
 import no.nav.pensjon.brev.api.model.vedlegg.BarnetilleggGjeldendeSelectors.saerkullsbarn_safe
+import no.nav.pensjon.brev.api.model.vedlegg.BarnetilleggGjeldendeSelectors.totaltAntallBarn
 import no.nav.pensjon.brev.api.model.vedlegg.BeregnetUTPerManedGjeldendeSelectors.brukerErFlyktning
 import no.nav.pensjon.brev.api.model.vedlegg.BeregnetUTPerManedGjeldendeSelectors.brukersSivilstand
 import no.nav.pensjon.brev.api.model.vedlegg.BeregnetUTPerManedGjeldendeSelectors.grunnbeloep
 import no.nav.pensjon.brev.api.model.vedlegg.BeregnetUTPerManedGjeldendeSelectors.virkDatoFom
-import no.nav.pensjon.brev.api.model.vedlegg.GrunnlagSelectors.totaltAntallBarn
 import no.nav.pensjon.brev.api.model.vedlegg.InntektFoerUfoereGjeldendeSelectors.erSannsynligEndret
 import no.nav.pensjon.brev.api.model.vedlegg.InntektFoerUfoereGjeldendeSelectors.ifuInntekt
 import no.nav.pensjon.brev.api.model.vedlegg.InntektsAvkortingGjeldendeSelectors.forventetInntektAar
@@ -67,11 +64,18 @@ import no.nav.pensjon.brev.api.model.vedlegg.YrkesskadeGjeldendeSelectors.yrkess
 import no.nav.pensjon.brev.maler.fraser.*
 import no.nav.pensjon.brev.maler.fraser.common.Felles.KronerText
 import no.nav.pensjon.brev.maler.fraser.common.Felles.MaanederText
-import no.nav.pensjon.brev.model.*
-import no.nav.pensjon.brev.template.*
+import no.nav.pensjon.brev.model.format
+import no.nav.pensjon.brev.model.tableFormat
+import no.nav.pensjon.brev.template.Element
+import no.nav.pensjon.brev.template.Element.ParagraphContent.Table.ColumnAlignment
+import no.nav.pensjon.brev.template.Element.ParagraphContent.Text.FontType
+import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.*
-import no.nav.pensjon.brev.template.dsl.*
+import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.expression.*
+import no.nav.pensjon.brev.template.dsl.newText
+import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.dsl.textExpr
 
 
 val vedleggOpplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEnglish, OpplysningerBruktIBeregningUTDto>(
@@ -82,7 +86,7 @@ val vedleggOpplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEng
     ),
     includeSakspart = false,
 ) {
-    val harMinsteytelseSats = minsteytelseGjeldende_sats.greaterThan(0.0)
+    val harMinsteytelseSats = minsteytelseGjeldende_sats.ifNull(0.0).greaterThan(0.0)
     val inntektsgrenseErUnderTak = inntektsAvkortingGjeldende.inntektsgrenseAar.lessThan(inntektsAvkortingGjeldende.inntektstak)
 
     paragraph {
@@ -101,14 +105,16 @@ val vedleggOpplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEng
                 text(
                     Bokmal to "Opplysning",
                     Nynorsk to "Opplysning",
-                    English to "Information"
+                    English to "Information",
+                    FontType.BOLD
                 )
             }
-            column(alignment = Element.ParagraphContent.Table.ColumnAlignment.RIGHT) {
+            column(alignment = ColumnAlignment.RIGHT) {
                 text(
                     Bokmal to "Verdi",
                     Nynorsk to "Verdi",
-                    English to "Value"
+                    English to "Value",
+                    FontType.BOLD
                 )
             }
         }
@@ -643,62 +649,59 @@ val vedleggOpplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEng
                 }
             }
         }
-        ifNotNull(barnetilleggGjeldende) { barnetillegg ->
-
-            ifNotNull(barnetillegg.saerkullsbarn) { saerkullsbarn ->
-                showIf(saerkullsbarn.beloep.greaterThan(0)) {
-                    row {
-                        cell {
-                            text(
-                                Bokmal to "Totalt antall barn du har barnetillegg for",
-                                Nynorsk to "Totalt tal barn du har barnetillegg for",
-                                English to "Total number of children for whom you receive child supplement"
-                            )
-                        }
-                        cell {
-                            val totaltAntallBarn = barnetillegg.grunnlag.totaltAntallBarn.format()
-                            textExpr(
-                                Bokmal to totaltAntallBarn,
-                                Nynorsk to totaltAntallBarn,
-                                English to totaltAntallBarn
-                            )
-                        }
+        ifNotNull(barnetilleggGjeldende, barnetilleggGjeldende.saerkullsbarn_safe) { barnetillegg, saerkullsbarn ->
+            showIf(saerkullsbarn.beloep.greaterThan(0)) {
+                row {
+                    cell {
+                        text(
+                            Bokmal to "Totalt antall barn du har barnetillegg for",
+                            Nynorsk to "Totalt tal barn du har barnetillegg for",
+                            English to "Total number of children for whom you receive child supplement"
+                        )
                     }
-                    row {
-                        cell {
-                            text(
-                                Bokmal to "Fribeløp for særkullsbarn",
-                                Nynorsk to "Fribeløp for særkullsbarn",
-                                English to "Exemption amount for children from a previous relationship"
-                            )
-                        }
-                        cell {
-                            includePhrase(KronerText(saerkullsbarn.fribeloep))
-                        }
+                    cell {
+                        val totaltAntallBarn = barnetillegg.totaltAntallBarn.format()
+                        textExpr(
+                            Bokmal to totaltAntallBarn,
+                            Nynorsk to totaltAntallBarn,
+                            English to totaltAntallBarn
+                        )
                     }
-                    row {
-                        cell {
-                            text(
-                                Bokmal to "Samlet inntekt som er brukt i fastsettelse av barnetillegg",
-                                Nynorsk to "Samla inntekt som er brukt i fastsetjinga av barnetillegg",
-                                English to "Your income, which is used to calculate child supplement"
-                            )
-                        }
-                        cell {
-                            includePhrase(KronerText(saerkullsbarn.inntektBruktIAvkortning))
-                        }
+                }
+                row {
+                    cell {
+                        text(
+                            Bokmal to "Fribeløp for særkullsbarn",
+                            Nynorsk to "Fribeløp for særkullsbarn",
+                            English to "Exemption amount for children from a previous relationship"
+                        )
                     }
-                    row {
-                        cell {
-                            text(
-                                Bokmal to "Samlet inntekt for deg som gjør at barnetillegget ikke blir utbetalt",
-                                Nynorsk to "Samla inntekt for deg som gjer at barnetillegget ikkje blir utbetalt",
-                                English to "Your income which means that no child supplement is received"
-                            )
-                        }
-                        cell {
-                            includePhrase(KronerText(saerkullsbarn.inntektstak))
-                        }
+                    cell {
+                        includePhrase(KronerText(saerkullsbarn.fribeloep))
+                    }
+                }
+                row {
+                    cell {
+                        text(
+                            Bokmal to "Samlet inntekt som er brukt i fastsettelse av barnetillegg",
+                            Nynorsk to "Samla inntekt som er brukt i fastsetjinga av barnetillegg",
+                            English to "Your income, which is used to calculate child supplement"
+                        )
+                    }
+                    cell {
+                        includePhrase(KronerText(saerkullsbarn.inntektBruktIAvkortning))
+                    }
+                }
+                row {
+                    cell {
+                        text(
+                            Bokmal to "Samlet inntekt for deg som gjør at barnetillegget ikke blir utbetalt",
+                            Nynorsk to "Samla inntekt for deg som gjer at barnetillegget ikkje blir utbetalt",
+                            English to "Your income which means that no child supplement is received"
+                        )
+                    }
+                    cell {
+                        includePhrase(KronerText(saerkullsbarn.inntektstak))
                     }
                 }
             }
@@ -726,8 +729,10 @@ val vedleggOpplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEng
         }
     }
 
-    showIf(harMinsteytelseSats) {
-        includePhrase(VedleggBeregnUTDinMY_001(minsteytelseGjeldende_sats))
+    ifNotNull(minsteytelseGjeldende_sats) {
+        showIf(harMinsteytelseSats) {
+            includePhrase(VedleggBeregnUTDinMY_001(it))
+        }
     }
 
     showIf(inntektFoerUfoereGjeldende.erSannsynligEndret) {
@@ -751,9 +756,8 @@ val vedleggOpplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEng
     }
 
     ifNotNull(
-        barnetilleggGjeldende.grunnlag_safe,
         barnetilleggGjeldende.saerkullsbarn_safe,
-    ) { _, saerkullTillegg ->
+    ) { saerkullTillegg ->
         val fribeloepEllerInntektErPeriodisert = saerkullTillegg.fribeloepEllerInntektErPeriodisert
         val harYrkesskadeGrad = yrkesskadeGjeldende.yrkesskadegrad_safe.ifNull(0).greaterThan(0)
         val harAnvendtTrygdetidUnder40 = trygdetidsdetaljerGjeldende.anvendtTT.lessThan(40)
@@ -810,14 +814,16 @@ val vedleggOpplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEng
                         text(
                             Bokmal to "Beskrivelse",
                             Nynorsk to "Beskrivelse",
-                            English to "Description"
+                            English to "Description",
+                            FontType.BOLD
                         )
                     }
-                    column(alignment = Element.ParagraphContent.Table.ColumnAlignment.RIGHT) {
+                    column(alignment = ColumnAlignment.RIGHT) {
                         text(
                             Bokmal to "Beløp",
                             Nynorsk to "Beløp",
-                            English to "Amount"
+                            English to "Amount",
+                            FontType.BOLD,
                         )
                     }
                 }

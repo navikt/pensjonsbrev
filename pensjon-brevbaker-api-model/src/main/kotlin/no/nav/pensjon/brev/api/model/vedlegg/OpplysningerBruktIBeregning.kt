@@ -11,7 +11,7 @@ data class OpplysningerBruktIBeregningUTDto(
     val inntektEtterUfoereGjeldende_beloepIEU: Kroner,
     val inntektFoerUfoereGjeldende: InntektFoerUfoereGjeldende,
     val inntektsAvkortingGjeldende: InntektsAvkortingGjeldende,
-    val minsteytelseGjeldende_sats: Double,
+    val minsteytelseGjeldende_sats: Double?,
     val trygdetidsdetaljerGjeldende: TrygdetidsdetaljerGjeldende,
     val ufoeretrygdGjeldende: UfoeretrygdGjeldende,
     val ungUfoerGjeldende_erUnder20Aar: Boolean?,
@@ -25,15 +25,9 @@ data class OpplysningerBruktIBeregningUTDto(
     )
 
     data class BarnetilleggGjeldende(
-        val grunnlag: Grunnlag,
+        val totaltAntallBarn: Int,
         val saerkullsbarn: Saerkullsbarn?
     ) {
-        data class Grunnlag(
-            val gradertOIFU: Kroner,
-            val prosentsatsGradertOIFU: Int,
-            val totaltAntallBarn: Int,
-        )
-
         data class Saerkullsbarn(
             val avkortningsbeloepAar: Kroner,
             val beloep: Kroner,

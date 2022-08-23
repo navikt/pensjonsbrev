@@ -1,12 +1,12 @@
 package no.nav.pensjon.brev.maler
 
-import no.nav.pensjon.brev.api.model.*
-import no.nav.pensjon.brev.api.model.maler.*
+import no.nav.pensjon.brev.api.model.Institusjon
+import no.nav.pensjon.brev.api.model.LetterMetadata
+import no.nav.pensjon.brev.api.model.Sivilstand
 import no.nav.pensjon.brev.api.model.maler.AvdoedSelectors.ektefelletilleggOpphoert
 import no.nav.pensjon.brev.api.model.maler.AvdoedSelectors.harFellesBarnUtenBarnetillegg
 import no.nav.pensjon.brev.api.model.maler.AvdoedSelectors.navn
 import no.nav.pensjon.brev.api.model.maler.AvdoedSelectors.sivilstand
-import no.nav.pensjon.brev.api.model.maler.BarnetilleggGrunnlagVedVirkSelectors.prosentsatsGradertOverInntektFoerUfoer
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarnVedvirkSelectors.barnOverfoertTilSaerkullsbarn
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarnVedvirkSelectors.barnOverfoertTilSaerkullsbarn_safe
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarnVedvirkSelectors.barnTidligereSaerkullsbarn
@@ -18,18 +18,19 @@ import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarnVedvirkSelec
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarnVedvirkSelectors.inntektBruktIAvkortning
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarnVedvirkSelectors.inntektstak
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarnVedvirkSelectors.justeringsbeloepAar
-import no.nav.pensjon.brev.api.model.maler.BarnetilleggVedVirkSelectors.barnetilleggGrunnlag_safe
-import no.nav.pensjon.brev.api.model.maler.BarnetilleggVedVirkSelectors.barnetilleggSaerkullsbarnVedVirk_safe
+import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.BrukerSelectors.borIAvtaleLand
 import no.nav.pensjon.brev.api.model.maler.BrukerSelectors.borINorge
 import no.nav.pensjon.brev.api.model.maler.InntektFoerUfoerhetVedVirkSelectors.beloep
 import no.nav.pensjon.brev.api.model.maler.InntektFoerUfoerhetVedVirkSelectors.erMinsteinntekt
 import no.nav.pensjon.brev.api.model.maler.InntektFoerUfoerhetVedVirkSelectors.erSannsynligEndret
 import no.nav.pensjon.brev.api.model.maler.InntektFoerUfoerhetVedVirkSelectors.oppjustertBeloep
+import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDto
 import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDtoSelectors.avdoed
-import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDtoSelectors.barnetilleggVedVirk
+import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDtoSelectors.barnetilleggSaerkullsbarnVedVirk
 import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDtoSelectors.beregnetUTPerMaaned_antallBeregningsperioderPaaVedtak
 import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDtoSelectors.bruker
+import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDtoSelectors.harBarnetillegg
 import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDtoSelectors.inntektFoerUfoerhetVedVirk
 import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDtoSelectors.institusjonsoppholdVedVirk
 import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDtoSelectors.krav_virkningsDatoFraOgMed
@@ -45,13 +46,17 @@ import no.nav.pensjon.brev.maler.fraser.*
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.fraser.omregning.ufoeretrygd.Ufoeretrygd
 import no.nav.pensjon.brev.maler.fraser.vedtak.Vedtak
-import no.nav.pensjon.brev.maler.vedlegg.*
+import no.nav.pensjon.brev.maler.vedlegg.vedleggMaanedligUfoeretrygdFoerSkatt
+import no.nav.pensjon.brev.maler.vedlegg.vedleggOpplysningerBruktIBeregningUT
+import no.nav.pensjon.brev.maler.vedlegg.vedleggOrienteringOmRettigheterOgPlikterUfoere
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.VedtaksbrevTemplate
 import no.nav.pensjon.brev.template.base.PensjonLatex
-import no.nav.pensjon.brev.template.dsl.*
+import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
+import no.nav.pensjon.brev.template.dsl.languages
+import no.nav.pensjon.brev.template.dsl.text
 
 // 000073
 @TemplateModelHelpers
@@ -81,10 +86,9 @@ object UfoerOmregningEnslig : VedtaksbrevTemplate<UfoerOmregningEnsligDto> {
         }
 
         outline {
-            val harBarnetilleggVedVirk = barnetilleggVedVirk.notNull()
-            val harBarnetilleggForSaerkullsbarnVedVirk = barnetilleggVedVirk.barnetilleggSaerkullsbarnVedVirk_safe.notNull()
-            val harBarnOverfoertTilSaerkullsbarn = barnetilleggVedVirk.barnetilleggSaerkullsbarnVedVirk_safe.barnOverfoertTilSaerkullsbarn_safe.ifNull(emptyList()).isNotEmpty()
-            val harbarnSomTidligerVarSaerkullsbarn = barnetilleggVedVirk.barnetilleggSaerkullsbarnVedVirk_safe.barnTidligereSaerkullsbarn_safe.ifNull(emptyList()).isNotEmpty()
+            val harBarnetilleggForSaerkullsbarnVedVirk = barnetilleggSaerkullsbarnVedVirk.notNull()
+            val harBarnOverfoertTilSaerkullsbarn = barnetilleggSaerkullsbarnVedVirk.barnOverfoertTilSaerkullsbarn_safe.ifNull(emptyList()).isNotEmpty()
+            val harbarnSomTidligerVarSaerkullsbarn = barnetilleggSaerkullsbarnVedVirk.barnTidligereSaerkullsbarn_safe.ifNull(emptyList()).isNotEmpty()
             val harUfoereMaanedligBeloepVedvirk = ufoeretrygdVedVirk.totalUfoereMaanedligBeloep.greaterThan(0)
 
             includePhrase(Vedtak.Overskrift)
@@ -164,10 +168,7 @@ object UfoerOmregningEnslig : VedtaksbrevTemplate<UfoerOmregningEnsligDto> {
                 includePhrase(HjemmelET_001)
             }
 
-            ifNotNull(
-                barnetilleggVedVirk.barnetilleggSaerkullsbarnVedVirk_safe,
-                barnetilleggVedVirk.barnetilleggGrunnlag_safe,
-            ) { barnetilleggSaerkullsbarnVedVirk, barnetilleggGrunnlag ->
+            ifNotNull(barnetilleggSaerkullsbarnVedVirk) { barnetilleggSaerkullsbarnVedVirk ->
 
                 val harNettoBeloep = barnetilleggSaerkullsbarnVedVirk.beloep.greaterThan(0)
                 val barnetilleggForSaerkullsbarnVedvirk_HarjusteringsBeloepAr = barnetilleggSaerkullsbarnVedVirk.justeringsbeloepAar.notEqualTo(0)
@@ -248,17 +249,11 @@ object UfoerOmregningEnslig : VedtaksbrevTemplate<UfoerOmregningEnsligDto> {
                         )
                     }
 
-                    showIf(not(barnetilleggSaerkullsbarnVedVirk.erRedusertMotInntekt) and barnetilleggGrunnlag.prosentsatsGradertOverInntektFoerUfoer.greaterThan(95)) {
-                        includePhrase(HjemmelBT_001)
-                    }
-
-
-                    showIf(barnetilleggSaerkullsbarnVedVirk.erRedusertMotInntekt and barnetilleggGrunnlag.prosentsatsGradertOverInntektFoerUfoer.greaterThan(95)) {
-                        includePhrase(HjemmelBTRedus_001)
-                    }
-
                     showIf(barnetilleggSaerkullsbarnVedVirk.erRedusertMotInntekt) {
+                        includePhrase(HjemmelBTRedus_001)
                         includePhrase(MerInfoBT_001)
+                    } orShow {
+                        includePhrase(HjemmelBT_001)
                     }
                 }
             }
@@ -315,7 +310,7 @@ object UfoerOmregningEnslig : VedtaksbrevTemplate<UfoerOmregningEnsligDto> {
 
             includePhrase(MeldInntektUTOverskrift_001)
 
-            showIf(harBarnetilleggVedVirk) {
+            showIf(harBarnetillegg) {
                 includePhrase(MeldInntektUTBT_001)
             }.orShow {
                 includePhrase(MeldInntektUT_001)
@@ -339,7 +334,7 @@ object UfoerOmregningEnslig : VedtaksbrevTemplate<UfoerOmregningEnsligDto> {
         includeAttachment(
             vedleggOpplysningerBruktIBeregningUT,
             opplysningerBruktIBeregningUT,
-            barnetilleggVedVirk.barnetilleggSaerkullsbarnVedVirk_safe.erRedusertMotInntekt_safe.ifNull(false) or harMinsteytelseVedVirk or inntektFoerUfoerhetVedVirk.erSannsynligEndret
+            barnetilleggSaerkullsbarnVedVirk.erRedusertMotInntekt_safe.ifNull(false) or harMinsteytelseVedVirk or inntektFoerUfoerhetVedVirk.erSannsynligEndret
         )
 
         includeAttachment(vedleggOrienteringOmRettigheterOgPlikterUfoere, orienteringOmRettigheterOgPlikter)

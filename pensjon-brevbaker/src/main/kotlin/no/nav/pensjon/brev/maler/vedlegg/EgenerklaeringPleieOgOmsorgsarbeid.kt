@@ -102,7 +102,7 @@ val egenerklaeringPleieOgOmsorgsarbeid = createAttachment<LangBokmalNynorskEngli
         )
     )
 
-    repeat(4) { newline() }
+    repeat(2) { newline() }
 
     formText(size = 25, prompt = newText(Bokmal to "Dato:", Nynorsk to "Dato:", English to "Date"))
     formText(
@@ -111,7 +111,7 @@ val egenerklaeringPleieOgOmsorgsarbeid = createAttachment<LangBokmalNynorskEngli
         prompt = newText(Bokmal to "Underskrift:", Nynorsk to "Underskrift:", English to "Signature:")
     )
 
-    repeat(3) { newline() }
+    repeat(2) { newline() }
 
     paragraph {
         text(

@@ -82,16 +82,15 @@ object DesignReferenceLetter : VedtaksbrevTemplate<LetterExampleDto> {
                         "Oktober",
                         "November",
                         "Desember",
-                        "Desember",
                         "Januar",
                         "Februar",
                         "Mars",
                     ).forEach {
                         row {
                             cell { text(Bokmal to it, Nynorsk to it) }
-                            cell { text(Bokmal to "1 Kr", Nynorsk to "1 Kr") }
-                            cell { text(Bokmal to "1 Kr", Nynorsk to "1 Kr") }
-                            cell { text(Bokmal to "2 Kr", Nynorsk to "2 Kr") }
+                            cell { text(Bokmal to "1 kr", Nynorsk to "1 kr") }
+                            cell { text(Bokmal to "1 kr", Nynorsk to "1 kr") }
+                            cell { text(Bokmal to "2 kr", Nynorsk to "2 kr") }
                         }
                     }
                 }
@@ -180,6 +179,12 @@ object DesignReferenceLetter : VedtaksbrevTemplate<LetterExampleDto> {
             }
 
             list {
+                item {
+                    text(
+                        Bokmal to "Nummerert list",
+                        Nynorsk to "Nummerert list",
+                    )
+                }
                 item {
                     text(
                         Bokmal to "Nummerert list",
