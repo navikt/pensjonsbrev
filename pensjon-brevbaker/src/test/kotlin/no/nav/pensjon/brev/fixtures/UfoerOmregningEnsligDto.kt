@@ -1,7 +1,9 @@
 package no.nav.pensjon.brev.fixtures
 
 import no.nav.pensjon.brev.Fixtures
-import no.nav.pensjon.brev.api.model.*
+import no.nav.pensjon.brev.api.model.Institusjon
+import no.nav.pensjon.brev.api.model.Kroner
+import no.nav.pensjon.brev.api.model.Sivilstand
 import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDto
 import java.time.LocalDate
 
@@ -36,30 +38,23 @@ fun createUfoerOmregningEnsligDto() =
             borIAvtaleLand = false,
             borINorge = true,
         ),
-        barnetilleggVedVirk = UfoerOmregningEnsligDto.BarnetilleggVedVirk(
-            barnetilleggSaerkullsbarnVedVirk = UfoerOmregningEnsligDto.BarnetilleggSaerkullsbarnVedvirk(
-                beloep = Kroner(0),
-                erRedusertMotInntekt = false,
-                inntektBruktIAvkortning = Kroner(0),
-                fribeloepVedvirk = Kroner(0),
-                justeringsbeloepAar = Kroner(0),
-                inntektstak = Kroner(0),
-                barnTidligereSaerkullsbarn = listOf(
-                    "Tidligere saerkullsbarn 1",
-                    "Tidligere saerkullsbarn 2",
-                    "Tidligere saerkullsbarn 3",
-                ),
-                barnOverfoertTilSaerkullsbarn = listOf(
-                    "Overfoert til saerkullsbarn 1",
-                    "Overfoert til saerkullsbarn 2",
-                    "Overfoert til saerkullsbarn 3",
-                ),
+        barnetilleggSaerkullsbarnVedVirk = UfoerOmregningEnsligDto.BarnetilleggSaerkullsbarnVedvirk(
+            beloep = Kroner(0),
+            erRedusertMotInntekt = false,
+            inntektBruktIAvkortning = Kroner(0),
+            fribeloepVedvirk = Kroner(0),
+            justeringsbeloepAar = Kroner(0),
+            inntektstak = Kroner(0),
+            barnTidligereSaerkullsbarn = listOf(
+                "Tidligere saerkullsbarn 1",
+                "Tidligere saerkullsbarn 2",
+                "Tidligere saerkullsbarn 3",
             ),
-            barnetilleggGrunnlag = UfoerOmregningEnsligDto.BarnetilleggGrunnlagVedVirk(
-                prosentsatsGradertOverInntektFoerUfoer = 0,
-                gradertOverInntektFoerUfoer = Kroner(0),
-                beloepFoerReduksjon = Kroner(0),
-                beloepEtterReduksjon = Kroner(0),
-            )
-        )
+            barnOverfoertTilSaerkullsbarn = listOf(
+                "Overfoert til saerkullsbarn 1",
+                "Overfoert til saerkullsbarn 2",
+                "Overfoert til saerkullsbarn 3",
+            ),
+        ),
+        harBarnetillegg = false,
     )

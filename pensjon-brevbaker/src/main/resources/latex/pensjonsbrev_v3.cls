@@ -22,6 +22,7 @@
 \usepackage{ninecolors}
 \usepackage[all]{nowidow} % prevent widowed paragraphs
 \usepackage{tabularray} % better tables(tblr, longtblr)
+%\usepackage{layout} % page layout debug package
 \usepackage{enumitem,amssymb} % for formChoice list
 \usepackage[absolute
 %    ,showboxes %show boxes around textblocks for debugging
@@ -68,16 +69,24 @@
 \raggedbottom % no line stretching to fit page
 
 
-%% page text area formatting
+% page text area formatting
+% DO NOT REPLACE WITH GEOMETRY PACKAGE. Geometry will use a hook for end of page, which is unstable and might cause page numbering bugs.
 \newlength{\lettermargin}
-\setlength{\lettermargin}{20mm}
-\usepackage[
-%    showframe, %used to show and debug margins
-    top=\lettermargin,
-    left=\lettermargin,
-    right=\lettermargin,
-    bottom=25mm
-]{geometry}
+\setlength{\lettermargin}{20mm} % top left and right margin.
+\newlength{\lettermarginbottom}
+\setlength{\lettermarginbottom}{25mm} % bottom margin.
+\newlength{\lettermargincalc}
+\setlength{\lettermargincalc}{\dimexpr(\lettermargin-1in)} % subtracting standard margin of one inch.
+
+\setlength{\textwidth}{\dimexpr(\paperwidth-\lettermargin*2)} % total text width calculated from margins and paper width
+\setlength{\headsep}{\lettermargincalc}
+\setlength{\headheight}{0mm}
+\setlength{\footskip}{0mm}
+\setlength{\hoffset}{0mm}
+\setlength{\oddsidemargin}{\lettermargincalc}
+\setlength{\evensidemargin}{\lettermargincalc}
+\setlength{\topmargin}{0mm}
+\setlength{\textheight}{\dimexpr(\paperheight-\lettermargin-\lettermarginbottom)} % standard text height
 
 \fancypagestyle{normalpage}{
     \renewcommand{\headrulewidth}{0pt}%
@@ -97,9 +106,13 @@
 %----------------------------------------
 %               Page number
 %----------------------------------------
+\newlength{\pagenumbertoppadding}
+\setlength{\pagenumbertoppadding}{11mm} % space between bottom of page content and page number
+\newlength{\pagenumberyposcalc} % calculate page number position to not collide with content.
+\setlength{\pagenumberyposcalc}{\dimexpr(\paperheight-\lettermarginbottom+\pagenumbertoppadding)} % bottom margin.
 \newcommand{\currentSectionName}{mainletter} %name of the current section of the letter. Used for lastpage label at the end of this section
 \newcommand{\letterpagenumber}{ %general page number formatting
-    \begin{textblock*}{\textwidth}(\lettermargin,280mm)
+    \begin{textblock*}{\textwidth}(\lettermargin,\pagenumberyposcalc)
         \pagenumbertext{\feltsaksnummerprefix~\feltsaksnummer\hfill\feltsideprefix~\thepage~\feltsideinfix~\pageref*{\currentSectionName}}
     \end{textblock*}
 }

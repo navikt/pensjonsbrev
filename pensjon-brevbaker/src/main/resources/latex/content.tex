@@ -37,7 +37,7 @@
 
 \newcommand{\tableHeaderText}[1]{\allowbreak{\primaryFont \fontsize{\titletwotextsize}{\titletwotextsize} \selectfont \textbf{#1}}} %footer font command
 \definecolor{columnheadercolor}{HTML}{E6F0FF}
-\definecolor{linecolor}{HTML}{EFEFEF}
+\definecolor{linecolor}{HTML}{E5E5E5}
 \definecolor{row1color}{HTML}{F7F7F7}
 \definecolor{row2color}{HTML}{FFFFFF}
 
@@ -60,7 +60,7 @@
         colsep = 2.5 mm,
         stretch = 0 mm, %Don't add extra space under each cell to fit the table exactly to page.
         hspan=minimal, %wrap instead of widening table over limit
-        hlines={0.2mm,linecolor},
+        hlines={0.5mm,linecolor},
         row{odd}={row1color,rowsep=2.6mm},
         row{even}={row2color,rowsep=2.6mm},
         width=\textwidth,
