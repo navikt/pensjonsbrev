@@ -22,14 +22,7 @@ fun createOpplysningerBruktIBeregningUTDto() =
 fun createOpplysningerBruktIBeregningUTDtoBarnetilleggGjeldende() =
     OpplysningerBruktIBeregningUTDto.BarnetilleggGjeldende(
         saerkullsbarn = Fixtures.create(),
-        grunnlag = Fixtures.create(),
-    )
-
-fun createOpplysningerBruktIBeregningUTDtoBarnetilleggGjeldendeGrunnlag() =
-    OpplysningerBruktIBeregningUTDto.BarnetilleggGjeldende.Grunnlag(
-        gradertOIFU = Kroner(0),
-        prosentsatsGradertOIFU = 0,
-        totaltAntallBarn = 0,
+        totaltAntallBarn = 0
     )
 
 fun createOpplysningerBruktIBeregningUTDtoBarnetilleggGjeldendeSaerkullsbarn() =
