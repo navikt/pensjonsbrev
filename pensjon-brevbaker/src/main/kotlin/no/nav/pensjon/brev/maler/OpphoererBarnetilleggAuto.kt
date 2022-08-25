@@ -2,19 +2,24 @@ package no.nav.pensjon.brev.maler
 
 import no.nav.pensjon.brev.api.model.LetterMetadata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
+import no.nav.pensjon.brev.api.model.maler.Fellesbarn
+import no.nav.pensjon.brev.api.model.maler.Folketrygdloven1215_1216_2212
 import no.nav.pensjon.brev.api.model.maler.InnvilgetBarnetilleggSelectors.utbetalt_safe
 import no.nav.pensjon.brev.api.model.maler.InnvilgetTilleggSelectors.utbetalt_safe
 import no.nav.pensjon.brev.api.model.maler.OpphoererBarnetilleggAutoDto
+import no.nav.pensjon.brev.api.model.maler.OpphoererBarnetilleggAutoDtoSelectors.fellesbarn
+import no.nav.pensjon.brev.api.model.maler.OpphoererBarnetilleggAutoDtoSelectors.oensketVirkningsDato
+import no.nav.pensjon.brev.api.model.maler.OpphoererBarnetilleggAutoDtoSelectors.saerkullsbarn
 import no.nav.pensjon.brev.api.model.maler.UngUfoerAutoDtoSelectors.ektefelle
 import no.nav.pensjon.brev.api.model.maler.UngUfoerAutoDtoSelectors.fellesbarn
 import no.nav.pensjon.brev.api.model.maler.UngUfoerAutoDtoSelectors.gjenlevende
 import no.nav.pensjon.brev.api.model.maler.UngUfoerAutoDtoSelectors.saerkullsbarn
 import no.nav.pensjon.brev.api.model.maler.UngUfoerAutoDtoSelectors.totaltUfoerePerMnd
-import no.nav.pensjon.brev.maler.fraser.TBU1128
+import no.nav.pensjon.brev.api.model.maler.UngUfoerAutoDtoSelectors.totaltUfoerePerMndSelector
+import no.nav.pensjon.brev.maler.fraser.Beloep
+import no.nav.pensjon.brev.maler.fraser.OpphoerBarnetillegg
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.maler.fraser.omregning.ufoeretrygd.Ufoeretrygd
-import no.nav.pensjon.brev.maler.fraser.vedtak.OpphoerBarnetillegg
-import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.VedtaksbrevTemplate
 import no.nav.pensjon.brev.template.base.PensjonLatex
 import no.nav.pensjon.brev.template.dsl.createTemplate
@@ -24,6 +29,7 @@ import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.maler.fraser.vedtak.Vedtak
 
 // BrevKode: PE_UT_07_200
 @TemplateModelHelpers
@@ -45,10 +51,7 @@ object OpphoererBarnetilleggAuto : VedtaksbrevTemplate<OpphoererBarnetilleggAuto
         title {
 // Hvis bruker ikke mottar noen barnetillegg:  <BTFBinnvilget> = false AND <BTSBinnvilget> = false
 // val = Vedtaksdata.BeregningsData.BeregningYtelsesKomp.BarnetilleggFelles.BTFBinnvilget
-            val barnetilleggFellesbarnInnvilget: Boolean
-            val barnetilleggSaerkullsbarnInnvilget: Boolean
-            val btFBinnvilget = barnetilleggFellesbarnInnvilget
-            val btSBinnvilget = barnetilleggSaerkullsbarnInnvilget
+
             showIf(not(btFBinnvilget) and not(btSBinnvilget))
             {
                 text(
@@ -65,17 +68,53 @@ object OpphoererBarnetilleggAuto : VedtaksbrevTemplate<OpphoererBarnetilleggAuto
                     Language.English to "NAV has changed the child supplement in your disability benefit"
                 )
             }
-
-            // TBU2290 > hentes fr en liste, kan være flere barn!
-
+        }
+        outline {
+            includePhrase(
+                Ufoeretrygd.Beloep(
+                    perMaaned = totaltUfoerePerMnd,
+                    ektefelle = ektefelle.utbetalt_safe.ifNull(false),
+                    gjenlevende = gjenlevende.utbetalt_safe.ifNull(false),
+                    fellesbarn = fellesbarn.utbetalt_safe.ifNull(false),
+                    saerkullsbarn = saerkullsbarn.utbetalt_safe.ifNull(false),
+                )
+            )
+            includePhrase(OpphoerBarnetillegg.TBU2223)
+            includePhrase(OpphoerBarnetillegg.TBU1128)
+            includePhrase(Vedtak.BegrunnelseOverskrift)
+            includePhrase(OpphoerBarnetillegg.TBU3920)
+            includePhrase(
+                OpphoerBarnetillegg.Folketrygdloven1215_1216_2212(
+                    fellesbarnInnvilget = fellesbarnInnvilget, saerkullsbarnInnvilget = saerkullsbarnInnvilget
+                )
+            )
+            includePhrase(
+                OpphoerBarnetillegg.BTOensketVirkningsDato(
+                    oensketVirkningsDato = oensketVirkningsDato
+                )
+            )
+            includePhrase(OpphoerBarnetillegg.TBU3800)
+            includePhrase(OpphoerBarnetillegg.TBU2338)
+            includePhrase(OpphoerBarnetillegg.TBU2339)
+            includePhrase(OpphoerBarnetillegg.TBU3801)
+            includePhrase(
+                OpphoerBarnetillegg.BTFribeloep(
+                    fellesbarnFribeloep = fellesFribeloep, saerkullsbarnFribeloep = saerkullsbarnFribeloep
+                )
+            )
+            includePhrase(
+                Ufoeretrygd.BarnetilleggIkkeUtbetalt(
+                    fellesbarn = fellesbarn, saerkullsbarn = saerkullsbarn
+                )
+            )
 
 
         }
-        override val kode: Brevkode.Vedtak
-        get() = TODO("Not yet implemented")
+        // TBU2290 > hentes fr en liste, kan være flere barn!
+
+
     }
-
-
     override val kode: Brevkode.Vedtak
         get() = TODO("Not yet implemented")
 }
+
