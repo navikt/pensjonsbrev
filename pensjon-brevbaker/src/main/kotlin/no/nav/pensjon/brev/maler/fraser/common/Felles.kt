@@ -14,7 +14,7 @@ object Felles {
      * TBU1223, TBU1224
      */
     object MeldEndringerPesys_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
-        override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             title1 {
                 text(
                     Bokmal to "Du må melde fra om endringer",
@@ -48,7 +48,7 @@ object Felles {
      * TBU1100
      */
     object RettTilKlagePesys_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
-        override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             title1 {
                 text(
                     Bokmal to "Du har rett til å klage",
@@ -82,7 +82,7 @@ object Felles {
      * TBU1074, TBU1075
      */
     object RettTilInnsynPesys_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
-        override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             title1 {
                 text(
                     Bokmal to "Du har rett til innsyn",

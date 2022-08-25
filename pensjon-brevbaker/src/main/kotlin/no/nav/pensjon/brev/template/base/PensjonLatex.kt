@@ -70,14 +70,13 @@ object PensjonLatex : BaseTemplate() {
         printWriter: LatexPrintWriter
     ) =
         with(printWriter) {
-            printCmd("startvedlegg", attachment.template.title.text(letter.language))
+            val scope = attachment.toScope(letter)
+
+            printCmd("startvedlegg", renderTitle(scope, listOf(attachment.template.title)))
             if (attachment.template.includeSakspart) {
                 printCmd("sakspart")
             }
-            val scope = letter.toScope().let {
-                ExpressionScope(attachment.data.eval(it), it.felles, it.language)
-            }
-            attachment.template.outline.forEach { renderElement(scope, it, printWriter) }
+            attachment.template.outline.forEach { renderContent(scope, it, printWriter) }
             printCmd("sluttvedlegg")
         }
 
@@ -106,7 +105,7 @@ object PensjonLatex : BaseTemplate() {
         languageSettings.writeLanguageSettings { settingName, settingValue ->
             printWriter.printNewCmd("felt$settingName") { bodyWriter ->
                 val scope = letter.toScope()
-                settingValue.forEach { renderElement(scope, it, bodyWriter) }
+                settingValue.forEach { renderContent(scope, it, bodyWriter) }
             }
         }
 
@@ -165,19 +164,20 @@ object PensjonLatex : BaseTemplate() {
                 bodyWriter.printCmd("begin", "attachmentList")
                 attachments.forEach {
                     bodyWriter.print("""\item """, escape = false)
-                    bodyWriter.println(it.template.title.text(letter.language))
+                    bodyWriter.println(renderTitle(it.toScope(letter), listOf(it.template.title)))
                 }
                 bodyWriter.printCmd("end", "attachmentList")
             }
         }
     }
 
-    private fun renderTitle(letter: Letter<*>): String {
+    private fun renderTitle(letter: Letter<*>): String = renderTitle(letter.toScope(), letter.template.title)
+
+    private fun renderTitle(scope: ExpressionScope<*, *>, title: List<TextElement<*>>): String {
         val output = ByteArrayOutputStream()
 
         LatexPrintWriter(output).use { printWriter ->
-            val scope = letter.toScope()
-            letter.template.title.forEach { renderElement(scope, it, printWriter) }
+            title.forEach { renderContent(scope, it, printWriter) }
         }
 
         return output.toString(Charsets.UTF_8)
@@ -185,7 +185,7 @@ object PensjonLatex : BaseTemplate() {
 
     private fun contents(letter: Letter<*>, printWriter: LatexPrintWriter) {
         val scope = letter.toScope()
-        letter.template.outline.forEach { renderElement(scope, it, printWriter) }
+        letter.template.outline.forEach { renderContent(scope, it, printWriter) }
     }
 
 }

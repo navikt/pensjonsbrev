@@ -9,9 +9,9 @@ typealias LangEnglish = LanguageSupport.Single<Language.English>
 typealias LangBokmalNynorsk = LanguageSupport.Double<Language.Bokmal, Language.Nynorsk>
 typealias LangBokmalNynorskEnglish = LanguageSupport.Triple<Language.Bokmal, Language.Nynorsk, Language.English>
 
-data class LanguageSettings(val settings: Map<String, List<Element<BaseLanguages>>>) {
+data class LanguageSettings(val settings: Map<String, List<TextElement<BaseLanguages>>>) {
 
-    fun writeLanguageSettings(writeSetting: (name: String, value: List<Element<BaseLanguages>>) -> Unit): Unit =
+    fun writeLanguageSettings(writeSetting: (name: String, value: List<TextElement<BaseLanguages>>) -> Unit): Unit =
         settings.entries.forEach { writeSetting(it.key, it.value) }
 
 }

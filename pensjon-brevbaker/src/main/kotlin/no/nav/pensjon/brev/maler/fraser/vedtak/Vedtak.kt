@@ -9,7 +9,7 @@ object Vedtak {
     // vedtakOverskriftPesys_001
     object Overskrift : OutlinePhrase<LangBokmalNynorskEnglish>() {
 
-        override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() =
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
             title1 {
                 text(
                     Bokmal to "Vedtak",
@@ -24,7 +24,7 @@ object Vedtak {
      */
     object BegrunnelseOverskrift : OutlinePhrase<LangBokmalNynorskEnglish>() {
 
-        override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() =
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
             title1 {
                 text(
                     Bokmal to "Begrunnelse for vedtaket",

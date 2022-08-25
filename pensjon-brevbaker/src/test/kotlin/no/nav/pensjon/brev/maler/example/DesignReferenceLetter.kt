@@ -2,8 +2,8 @@ package no.nav.pensjon.brev.maler.example
 
 import no.nav.pensjon.brev.api.model.LetterMetadata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
-import no.nav.pensjon.brev.template.Element.Table.ColumnAlignment.RIGHT
-import no.nav.pensjon.brev.template.Element.Text.FontType
+import no.nav.pensjon.brev.template.Element.ParagraphContent.Table.ColumnAlignment.RIGHT
+import no.nav.pensjon.brev.template.Element.ParagraphContent.Text.FontType
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.VedtaksbrevTemplate

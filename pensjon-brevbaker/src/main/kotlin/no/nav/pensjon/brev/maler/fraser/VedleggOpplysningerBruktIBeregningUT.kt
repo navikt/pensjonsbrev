@@ -11,7 +11,7 @@ import no.nav.pensjon.brev.template.dsl.expression.plus
 
 
 object RettTilMYOverskrift_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() =
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         title1 {
             text(
                 Bokmal to "For deg som har rett til minsteytelse",
@@ -22,7 +22,7 @@ object RettTilMYOverskrift_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
 }
 
 object VedleggBeregnUTInfoMY_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() =
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         paragraph {
             text(
                 Bokmal to "Du er sikret minsteytelse fordi beregningen ut fra din egenopptjente inntekt er lavere enn minstenivået for uføretrygd. Satsen på minsteytelsen avhenger av sivilstand. Bor du sammen med ektefelle, partner eller i et samboerforhold som har vart i minst 12 av de siste 18 månedene, utgjør minste årlige ytelse 2,28 ganger folketrygdens grunnbeløp. Er du enslig, utgjør minste årlige ytelse 2,48 ganger folketrygdens grunnbeløp.",
@@ -33,7 +33,7 @@ object VedleggBeregnUTInfoMY_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
 }
 
 object VedleggBeregnUTInfoMY2_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() =
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         paragraph {
             text(
                 Bokmal to "Du er sikret minsteytelse fordi beregningen ut fra din egenopptjente inntekt er lavere enn minstenivået for uføretrygd. Satsen på minsteytelsen avhenger av sivilstand. Bor du sammen med ektefelle, partner eller i et samboerforhold som har vart i minst 12 av de siste 18 månedene og har uføretrygd beregnet ut fra uførepensjon per 31. desember 2014, utgjør minste årlige ytelse 2,33 ganger folketrygdens grunnbeløp. Er du enslig, utgjør minste årlige ytelse 2,48 ganger folketrygdens grunnbeløp.",
@@ -44,7 +44,7 @@ object VedleggBeregnUTInfoMY2_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
 }
 
 object VedleggBeregnUTInfoMYUngUfor_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() =
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         paragraph {
             text(
                 Bokmal to "Du er sikret minsteytelse fordi beregningen ut fra din egenopptjente inntekt er lavere enn minstenivået for uføretrygd. Satsen på minsteytelsen avhenger av sivilstand. Du er innvilget rettighet som ung ufør. Minste årlige ytelse er 2,66 ganger folketrygdens grunnbeløp hvis du lever sammen med ektefelle, partner eller i et samboerforhold som har vart i minst 12 av de siste 18 månedene. Er du enslig, utgjør minste årlige ytelse 2,91 ganger grunnbeløpet.",
@@ -55,7 +55,7 @@ object VedleggBeregnUTInfoMYUngUfor_001 : OutlinePhrase<LangBokmalNynorskEnglish
 }
 
 object VedleggBeregnUTInfoMYUngUforUnder20_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() =
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         paragraph {
             text(
                 Bokmal to "Du er sikret minsteytelse fordi beregningen ut fra din egenopptjente inntekt er lavere enn minstenivået for uføretrygd. Satsen på minsteytelsen avhenger av sivilstand. Du er innvilget rettighet som ung ufør. Bor du sammen med ektefelle, partner eller i et samboerforhold som har vart i minst 12 av de siste 18 månedene, utgjør minste årlige ytelse 2,66 ganger folketrygdens grunnbeløp fra du fyller 20 år. Er du enslig, utgjør minste årlige ytelse 2,91 ganger folketrygdens grunnbeløp fra du fyller 20 år.",
@@ -70,7 +70,7 @@ data class VedleggBeregnUTDinMY_001(
     val sats_minsteytelseGjeldende: Expression<Double>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
 
-    override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() =
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         paragraph {
             textExpr(
                 Bokmal to "For deg vil minsteytelse utgjøre ".expr() + sats_minsteytelseGjeldende.format() + " ganger folketrygdens grunnbeløp. Er uføregraden din under 100 prosent, vil minsteytelsen bli justert ut fra uføregraden. Vi justerer også minsteytelsen ut fra trygdetid hvis du har mindre enn 40 års trygdetid. Dersom sivilstanden din endrer seg, kan det medføre at uføretrygden endres.",
@@ -81,7 +81,7 @@ data class VedleggBeregnUTDinMY_001(
 }
 
 object VedleggBeregnUTMinsteIFU_002 : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() {
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         title1 {
             text(
                 Bokmal to "Slik fastsetter vi inntekten din før du ble ufør",
@@ -114,7 +114,7 @@ object VedleggBeregnUTMinsteIFU_002 : OutlinePhrase<LangBokmalNynorskEnglish>() 
 }
 
 object SlikFastsettesKompGradOverskrift_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() =
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         title1 {
             text(
                 Bokmal to "Slik har vi fastsatt kompensasjonsgraden din",
@@ -125,7 +125,7 @@ object SlikFastsettesKompGradOverskrift_001 : OutlinePhrase<LangBokmalNynorskEng
 }
 
 object VedleggBeregnUTKompGrad_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() =
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         paragraph {
             text(
                 Bokmal to "Vi fastsetter kompensasjonsgraden ved å sammenligne det du har rett til i 100 prosent uføretrygd med din oppjusterte inntekt før du ble ufør. Kompensasjonsgraden brukes til å beregne hvor mye vi reduserer uføretrygden din, hvis du har inntekt som er høyere enn inntektsgrensen.",
@@ -136,7 +136,7 @@ object VedleggBeregnUTKompGrad_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
 }
 
 object VedleggBeregnUTKompGradGjsntt_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() =
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         paragraph {
             text(
                 Bokmal to "Hvis uføretrygden din i løpet av et kalenderår endres, bruker vi en gjennomsnittlig kompensasjonsgrad i beregningen.",
@@ -147,7 +147,7 @@ object VedleggBeregnUTKompGradGjsntt_001 : OutlinePhrase<LangBokmalNynorskEnglis
 }
 
 object VedleggBeregnUTKompGradGjsnttKonvUT_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() =
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         paragraph {
             text(
                 Bokmal to "Kompensasjonsgraden skal ved beregningen ikke settes høyere enn 70 prosent. Hvis uføretrygden din i løpet av et kalenderår endres, bruker vi en gjennomsnittlig kompensasjonsgrad i beregningen.",
@@ -158,7 +158,7 @@ object VedleggBeregnUTKompGradGjsnttKonvUT_001 : OutlinePhrase<LangBokmalNynorsk
 }
 
 object SlikBeregnBTOverskrift_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() =
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         title1 {
             text(
                 Bokmal to "Slik beregner vi størrelsen på barnetillegget",
@@ -169,7 +169,7 @@ object SlikBeregnBTOverskrift_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
 }
 
 object VedleggBeregnUTInnlednBT_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() =
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         paragraph {
             text(
                 Bokmal to "Størrelsen på barnetillegget er avhengig av samlet inntekt.",
@@ -219,7 +219,7 @@ object VedleggBeregnUTInnlednBT_001 : OutlinePhrase<LangBokmalNynorskEnglish>() 
 }
 
 object VedleggBeregnUTInfoBTSB_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() =
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         paragraph {
             text(
                 Bokmal to "Vi fastsetter størrelsen på barnetillegget ut fra inntekten din. Barnetillegget blir redusert dersom den samlede inntekten din er høyere enn fribeløpet. Fribeløpet for et barn er 3,1 ganger folketrygdens grunnbeløp og det øker med 40 prosent av folketrygdens grunnbeløp for hvert ekstra barn.",
@@ -230,7 +230,7 @@ object VedleggBeregnUTInfoBTSB_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
 }
 
 object VedleggBeregnUTredusTTBTSB_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() =
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         paragraph {
             text(
                 Bokmal to "Siden trygdetiden din er kortere enn 40 år, blir fribeløpet redusert ut fra den trygdetiden du har.",
@@ -244,7 +244,7 @@ object VedleggBeregnUTredusTTBTSB_001 : OutlinePhrase<LangBokmalNynorskEnglish>(
 data class VedleggBeregnUTIkkePeriodisertFriBOgInntektBTSB_001(
     val avkortningsbeloepAar_barnetilleggSBGjeldende: Expression<Kroner>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() =
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         paragraph {
             textExpr(
                 Bokmal to avkortningsbeloepAar_barnetilleggSBGjeldende.format() + " kroner er 50 prosent av den inntekten som overstiger fribeløpet for barn som ikke bor sammen med begge foreldrene.",
@@ -258,7 +258,7 @@ data class VedleggBeregnUTIkkePeriodisertFriBOgInntektBTSB_001(
 data class VedleggBeregnUTIkkePeriodisertFriBOgInntektBTSBJusterBelop_001(
     val avkortningsbeloepAar_barnetilleggSBGjeldende: Expression<Kroner>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() =
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         paragraph {
             textExpr(
                 Bokmal to avkortningsbeloepAar_barnetilleggSBGjeldende.format() + " kroner er 50 prosent av den inntekten som overstiger fribeløpet for barn som ikke bor sammen med begge foreldrene. Dette beløpet bruker vi til å redusere barnetillegget for hele året.",
@@ -271,7 +271,7 @@ data class VedleggBeregnUTIkkePeriodisertFriBOgInntektBTSBJusterBelop_001(
 data class VedleggBeregnUTPeridisertFriBOgInntektBTSB_001(
     val avkortningsbeloepAar_barnetilleggSBGjeldende: Expression<Kroner>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() =
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         paragraph {
             textExpr(
                 Bokmal to "For barn som ikke bor sammen med begge foreldrene blir 50 prosent av den inntekten som overstiger fribeløpet omregnet til et årlig beløp som tilsvarer ".expr() + avkortningsbeloepAar_barnetilleggSBGjeldende.format() + " kroner.",
@@ -284,7 +284,7 @@ data class VedleggBeregnUTPeridisertFriBOgInntektBTSB_001(
 data class VedleggBeregnUTPeriodisertFriBOgInntektBTSBJusterBelop_001(
     val avkortningsbeloepAar_barnetilleggSBGjeldende: Expression<Kroner>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() =
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         paragraph {
             textExpr(
                 Bokmal to "For barn som ikke bor sammen med begge foreldrene blir 50 prosent av den inntekten som overstiger fribeløpet omregnet til et årlig beløp som tilsvarer ".expr() + avkortningsbeloepAar_barnetilleggSBGjeldende.format() + " kroner. Dette beløpet bruker vi til å redusere barnetillegget for hele året.",
@@ -297,7 +297,7 @@ data class VedleggBeregnUTPeriodisertFriBOgInntektBTSBJusterBelop_001(
 data class VedleggBeregnUTJusterBelopOver0BTSB_001(
     val justeringsbeloepAar_barnetilleggSBGjeldende: Expression<Kroner>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() =
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         paragraph {
             textExpr(
                 Bokmal to "Vi tar hensyn til hvordan barnetillegget eventuelt har vært redusert tidligere, og vi har derfor lagt til ".expr() + justeringsbeloepAar_barnetilleggSBGjeldende.format() + " kroner i beløpet vi reduserer barnetillegget med for resten av året.",
@@ -311,7 +311,7 @@ data class VedleggBeregnUTJusterBelopOver0BTSB_001(
 data class VedleggBeregnUTJusterBelopUnder0BTSB_001(
     val justeringsbeloepAar_barnetilleggSBGjeldende: Expression<Kroner>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() =
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         paragraph {
             textExpr(
                 Bokmal to "Vi tar hensyn til hvordan barnetillegget eventuelt har vært redusert tidligere, og vi har derfor trukket fra ".expr() + justeringsbeloepAar_barnetilleggSBGjeldende.format() + " kroner i beløpet vi reduserer barnetillegget med for resten av året.",
@@ -322,7 +322,7 @@ data class VedleggBeregnUTJusterBelopUnder0BTSB_001(
 }
 // TODO: Fire ubrukte fraser
 object ReduksjonBTSBOverskrift_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() =
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         title1 {
             text(
                 Bokmal to "Reduksjon av barnetillegg for særkullsbarn før skatt",
@@ -335,7 +335,7 @@ object ReduksjonBTSBOverskrift_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
 data class ReduksjonBTSBTabell1_001(
     val inntektBruktIAvkortning_barnetilleggSBGjeldende: Expression<Kroner>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() =
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         paragraph {
             textExpr(
                 Bokmal to "Samlet inntekt brukt i fastsettelse av barnetillegget er ".expr() + inntektBruktIAvkortning_barnetilleggSBGjeldende.format() + " kroner.",
@@ -348,7 +348,7 @@ data class ReduksjonBTSBTabell1_001(
 data class ReduksjonBTSBTabell2_001(
     val fribeloep_barnetilleggSBGjeldende: Expression<Kroner>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() =
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         paragraph {
             textExpr(
                 Bokmal to "Fribeløp brukt i fastsettelsen av barnetillegget er ".expr() + fribeloep_barnetilleggSBGjeldende.format() + " kroner.",
@@ -361,7 +361,7 @@ data class ReduksjonBTSBTabell2_001(
 data class ReduksjonBTSBTabell3_001(
     val inntektOverFribeloep_barnetilleggSBGjeldende: Expression<Kroner>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() =
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         paragraph {
             textExpr(
                 Bokmal to "Inntekt over fribeløpet er ".expr() + inntektOverFribeloep_barnetilleggSBGjeldende.format() + " kroner.",
@@ -374,7 +374,7 @@ data class ReduksjonBTSBTabell3_001(
 data class Reduksjonbtsbtabell19_001(
     val inntektstak_barnetilleggSBGjeldende: Expression<Kroner>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() =
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         title1 {
             textExpr(
                 Bokmal to "Grensen for å få utbetalt barnetillegg er ".expr() + inntektstak_barnetilleggSBGjeldende.format() + " kroner.",
@@ -387,7 +387,7 @@ data class Reduksjonbtsbtabell19_001(
 data class VedleggBeregnUTredusBTSBPgaInntekt_001(
     val beloep_barnetilleggSBGjeldende: Expression<Kroner>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() =
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         paragraph {
             textExpr(
                 Bokmal to "Du vil få utbetalt ".expr() + beloep_barnetilleggSBGjeldende.format() + " kroner i måneden før skatt i barnetillegg.",
@@ -398,7 +398,7 @@ data class VedleggBeregnUTredusBTSBPgaInntekt_001(
 }
 
 object VedleggBeregnUTIkkeUtbetaltBTSBPgaInntekt_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() =
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         paragraph {
             text(
                 Bokmal to "Du får ikke utbetalt barnetillegget fordi samlet inntekt er over grensen for å få utbetalt barnetillegg.",
@@ -409,7 +409,7 @@ object VedleggBeregnUTIkkeUtbetaltBTSBPgaInntekt_001 : OutlinePhrase<LangBokmalN
 }
 
 object VedleggBeregnUTJusterBelopIkkeUtbetalt_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() =
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         paragraph {
             text(
                 Bokmal to "Du har allerede fått utbetalt det du har rett til i år, og får derfor ikke utbetalt barnetillegg for resten av året.",

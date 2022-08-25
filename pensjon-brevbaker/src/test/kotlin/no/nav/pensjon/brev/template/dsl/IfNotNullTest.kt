@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.template.dsl
 import no.nav.pensjon.brev.Fixtures.felles
 import no.nav.pensjon.brev.api.model.LetterMetadata
 import no.nav.pensjon.brev.template.*
+import no.nav.pensjon.brev.template.ContentOrControlStructure.*
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.base.PensjonLatex
 import no.nav.pensjon.brev.template.dsl.NullBrevDtoSelectors.test1
@@ -49,11 +50,13 @@ class IfNotNullTest {
         val expected = template.copy(
             outline = listOf(
                 newText(Bokmal to "alltid med"),
-                Element.Conditional(
+                Conditional(
                     predicate = navn.notNull(),
                     showIf = listOf(
-                        Element.Text.Expression.ByLanguage.create(
-                            Bokmal to "hei: ".expr() + (navn as Expression<String>)
+                        Content(
+                            Element.ParagraphContent.Text.Expression.ByLanguage.create(
+                                Bokmal to "hei: ".expr() + (navn as Expression<String>)
+                            )
                         )
                     ),
                     showElse = emptyList(),

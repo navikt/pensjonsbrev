@@ -21,7 +21,7 @@ class ShowIfTest {
             language = languages(Language.Nynorsk),
             letterMetadata = testLetterMetadata,
             outline = listOf(
-                Element.Conditional(
+                ContentOrControlStructure.Conditional(
                     predicate = Expression.FromScope(ExpressionScope<SomeDto, *>::argument).pensjonInnvilget,
                     showIf = listOf(newText(Language.Nynorsk to "jadda")),
                     showElse = listOf(newText(Language.Nynorsk to "neida"))
@@ -33,7 +33,7 @@ class ShowIfTest {
             name = "test",
             base = PensjonLatex,
             letterDataType = SomeDto::class,
-            languages = nynorskTittel.languages,
+            languages = languages(Language.Nynorsk),
             letterMetadata = testLetterMetadata,
         ) {
             title.add(nynorskTittel)
@@ -61,11 +61,11 @@ class ShowIfTest {
             language = languages(Language.Nynorsk),
             letterMetadata = testLetterMetadata,
             outline = listOf(
-                Element.Conditional(
+                ContentOrControlStructure.Conditional(
                     predicate = exprScope.pensjonInnvilget,
                     showIf = listOf(newText(Language.Nynorsk to "jadda")),
                     showElse = listOf(
-                        Element.Conditional(
+                        ContentOrControlStructure.Conditional(
                             predicate = exprScope.name equalTo "Test",
                             showIf = listOf(newText(Language.Nynorsk to "neidaJoda")),
                             showElse = emptyList()
@@ -79,7 +79,7 @@ class ShowIfTest {
             name = "test",
             base = PensjonLatex,
             letterDataType = SomeDto::class,
-            languages = nynorskTittel.languages,
+            languages = languages(Language.Nynorsk),
             letterMetadata = testLetterMetadata,
         ) {
             title.add(nynorskTittel)
@@ -106,11 +106,11 @@ class ShowIfTest {
             language = languages(Language.Nynorsk),
             letterMetadata = testLetterMetadata,
             outline = listOf(
-                Element.Conditional(
+                ContentOrControlStructure.Conditional(
                     predicate = exprScope.pensjonInnvilget,
                     showIf = listOf(newText(Language.Nynorsk to "jadda")),
                     showElse = listOf(
-                        Element.Conditional(
+                        ContentOrControlStructure.Conditional(
                             predicate = exprScope.name equalTo "Test",
                             showIf = listOf(newText(Language.Nynorsk to "neidaJoda")),
                             showElse = listOf(newText(Language.Nynorsk to "neida")),
@@ -124,7 +124,7 @@ class ShowIfTest {
             name = "test",
             base = PensjonLatex,
             letterDataType = SomeDto::class,
-            languages = nynorskTittel.languages,
+            languages = languages(Language.Nynorsk),
             letterMetadata = testLetterMetadata,
         ) {
             title.add(nynorskTittel)

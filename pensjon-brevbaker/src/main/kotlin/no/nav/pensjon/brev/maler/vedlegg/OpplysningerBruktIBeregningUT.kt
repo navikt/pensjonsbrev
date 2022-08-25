@@ -67,7 +67,8 @@ import no.nav.pensjon.brev.maler.fraser.common.Felles.MaanederText
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.model.tableFormat
 import no.nav.pensjon.brev.template.Element
-import no.nav.pensjon.brev.template.Element.Table.ColumnAlignment
+import no.nav.pensjon.brev.template.Element.ParagraphContent.Table.ColumnAlignment
+import no.nav.pensjon.brev.template.Element.ParagraphContent.Text.FontType
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.createAttachment
@@ -105,7 +106,7 @@ val vedleggOpplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEng
                     Bokmal to "Opplysning",
                     Nynorsk to "Opplysning",
                     English to "Information",
-                    Element.Text.FontType.BOLD
+                    FontType.BOLD
                 )
             }
             column(alignment = ColumnAlignment.RIGHT) {
@@ -113,7 +114,7 @@ val vedleggOpplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEng
                     Bokmal to "Verdi",
                     Nynorsk to "Verdi",
                     English to "Value",
-                    Element.Text.FontType.BOLD
+                    FontType.BOLD
                 )
             }
         }
@@ -814,7 +815,7 @@ val vedleggOpplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEng
                             Bokmal to "Beskrivelse",
                             Nynorsk to "Beskrivelse",
                             English to "Description",
-                            Element.Text.FontType.BOLD
+                            FontType.BOLD
                         )
                     }
                     column(alignment = ColumnAlignment.RIGHT) {
@@ -822,7 +823,7 @@ val vedleggOpplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEng
                             Bokmal to "Beløp",
                             Nynorsk to "Beløp",
                             English to "Amount",
-                            Element.Text.FontType.BOLD,
+                            FontType.BOLD,
                         )
                     }
                 }

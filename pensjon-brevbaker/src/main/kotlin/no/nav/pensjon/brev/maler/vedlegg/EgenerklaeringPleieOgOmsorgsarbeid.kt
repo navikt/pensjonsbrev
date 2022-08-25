@@ -121,11 +121,11 @@ val egenerklaeringPleieOgOmsorgsarbeid = createAttachment<LangBokmalNynorskEngli
         )
         newline()
 
-        eval { felles.avsenderEnhet.navn }
+        eval(felles.avsenderEnhet.navn)
         newline()
 
         with(returadresse) {
-            eval { adresseLinje1 }
+            eval(adresseLinje1)
             newline()
             eval(postNr + " " + postSted)
         }

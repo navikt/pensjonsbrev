@@ -2,7 +2,7 @@ package no.nav.pensjon.brev.template.dsl
 
 import no.nav.pensjon.brev.template.*
 
-class ShowElseScope<Lang : LanguageSupport, LetterData : Any, Scope : ControlStructureScopeBase<Lang, LetterData, Scope>>(
+class ShowElseScope<Lang : LanguageSupport, LetterData : Any, C : Element<Lang>, Scope : ControlStructureScope<Lang, LetterData, C, Scope>>(
     private val scopeFactory: () -> Scope,
 ) {
     val scope: Scope = scopeFactory()
@@ -14,9 +14,9 @@ class ShowElseScope<Lang : LanguageSupport, LetterData : Any, Scope : ControlStr
     fun orShowIf(
         predicate: Expression<Boolean>,
         body: Scope.() -> Unit
-    ): ShowElseScope<Lang, LetterData, Scope> =
+    ): ShowElseScope<Lang, LetterData, C, Scope> =
         ShowElseScope(scopeFactory).also { showElse ->
-            scope.children.add(Element.Conditional(predicate, scopeFactory().apply(body).children, showElse.scope.children))
+            scope.addControlStructure(ContentOrControlStructure.Conditional(predicate, scopeFactory().apply(body).elements, showElse.scope.elements))
         }
 
 }
