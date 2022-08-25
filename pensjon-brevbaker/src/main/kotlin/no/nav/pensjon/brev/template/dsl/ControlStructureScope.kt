@@ -29,7 +29,7 @@ interface ControlStructureScope<Lang : LanguageSupport, LetterData : Any, C : El
                 ContentOrControlStructure.Conditional(
                     expr1.notNull(),
                     scopeFactory().apply {
-                        // Følgende er en trygg cast fordi `children` blir kun brukt om `expr1.notNull()` evaluerer til true.
+                        // Følgende er en trygg cast fordi `elements` blir kun brukt om `expr1.notNull()` evaluerer til true.
                         @Suppress("UNCHECKED_CAST")
                         scope(this, expr1 as Expression<E1>)
                     }.elements,
