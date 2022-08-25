@@ -156,7 +156,7 @@ sealed class Element<out Lang : LanguageSupport> {
                 }
         }
 
-        data class Table<Lang : LanguageSupport>(
+        data class Table<out Lang : LanguageSupport>(
             val rows: List<TableRowElement<Lang>>,
             val header: Header<Lang>,
         ) : ParagraphContent<Lang>() {
@@ -174,7 +174,7 @@ sealed class Element<out Lang : LanguageSupport> {
                     is ContentOrControlStructure.Content -> listOf(row.content)
                 }
 
-            data class Row<Lang : LanguageSupport>(
+            data class Row<out Lang : LanguageSupport>(
                 val cells: List<Cell<Lang>>,
                 val colSpec: List<ColumnSpec<Lang>>
             ) : Element<Lang>() {
@@ -188,7 +188,7 @@ sealed class Element<out Lang : LanguageSupport> {
                 }
             }
 
-            data class Header<Lang : LanguageSupport>(val colSpec: List<ColumnSpec<Lang>>) {
+            data class Header<out Lang : LanguageSupport>(val colSpec: List<ColumnSpec<Lang>>) {
                 init {
                     if (colSpec.isEmpty()) {
                         throw InvalidTableDeclarationException("Table column specification needs at least one column")
@@ -196,11 +196,11 @@ sealed class Element<out Lang : LanguageSupport> {
                 }
             }
 
-            data class Cell<Lang : LanguageSupport>(
+            data class Cell<out Lang : LanguageSupport>(
                 val elements: List<TextElement<Lang>>
             )
 
-            data class ColumnSpec<Lang : LanguageSupport>(
+            data class ColumnSpec<out Lang : LanguageSupport>(
                 val headerContent: Cell<Lang>,
                 val alignment: ColumnAlignment,
                 val columnSpan: Int = 1
