@@ -10,11 +10,12 @@ import java.time.LocalDate
 @Suppress("unused")
 data class OpphoererBarnetilleggAutoDto(
     val btFribeloep: BTFribeloep,
+    val btHjemmelInnvilget: BTHjemmelInnvilget,
+    val btInntektstak: BTInntektstak,
     val ektefelletilleggInnvilget: Boolean,  //Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_Ektefelletillegg_ETinnvilget
     val ektefelletilleggUtbeltalt: Kroner?,  //Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_Ektefelletillegg_ETnetto
     val fellesbarn: Fellesbarn?,
     val foedselsdatoPaaBarnetilleggOpphoert: LocalDate,  //Vedtaksdata_Kravhode_KravlinjeListe_KravLinje_KravlinjeRelatertPerson?
-    val folketrygdloven121512162212: Folketrygdloven1215_1216_2212,
     val gjenlevendetilleggInnvilget: Boolean,  //Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GTinnvilget
     val gjenlevendetilleggUtbetalt: Kroner?,  //Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GTnetto
     val grunnbeloep: Kroner,  //Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Grunnbelop
@@ -48,7 +49,7 @@ data class Saerkullsbarn(
     val inntektstak: Kroner,  //Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_Inntektstak
 )
 
-data class Folketrygdloven1215_1216_2212(
+data class BTHjemmelInnvilget(
     val fellesbarnInnvilget: Boolean,
     val saerkullsbarnInnvilget: Boolean
 )
@@ -60,4 +61,9 @@ data class BTFribeloep(
 
 data class BTOensketVirkningsDato(
     val oensketVirkningsDato: LocalDate  //Vedtaksdata_Kravhode_onsketVirkningsDato
+)
+
+data class BTInntektstak(
+    val fellesbarnInntektstak: Kroner,  //Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_Inntektstak
+    val saerkullsbarnBTInntektstak: Kroner  //Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_Inntektstak
 )

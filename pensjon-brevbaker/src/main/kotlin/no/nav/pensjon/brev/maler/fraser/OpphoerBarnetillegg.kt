@@ -113,7 +113,7 @@ object OpphoerBarnetillegg {
     }
 
     // TBU4085
-    data class Folketrygdloven1215_1216_2212(
+    data class BTHjemmelInnvilget(
         val fellesbarnInnvilget: Expression<Boolean>,
         val saerkullsbarnInnvilget: Expression<Boolean>,
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
@@ -288,7 +288,7 @@ object OpphoerBarnetillegg {
 // TBU1286.2 in <maler/fraser/omregning/ufoeretrygd/Ufoeretrygd.kt
 
     // TBU2490
-    data class BTinntektstak(
+    data class BTInntektstak(
         val fellesbarnInntektstak: Expression<Kroner>,
         val saerkullsbarnInntektstak: Expression<Kroner>,
 

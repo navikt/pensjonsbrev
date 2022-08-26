@@ -3,11 +3,11 @@ package no.nav.pensjon.brev.maler
 import no.nav.pensjon.brev.api.model.LetterMetadata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.Fellesbarn
-import no.nav.pensjon.brev.api.model.maler.Folketrygdloven1215_1216_2212
 import no.nav.pensjon.brev.api.model.maler.InnvilgetBarnetilleggSelectors.utbetalt_safe
 import no.nav.pensjon.brev.api.model.maler.InnvilgetTilleggSelectors.utbetalt_safe
 import no.nav.pensjon.brev.api.model.maler.OpphoererBarnetilleggAutoDto
 import no.nav.pensjon.brev.api.model.maler.OpphoererBarnetilleggAutoDtoSelectors.fellesbarn
+import no.nav.pensjon.brev.api.model.maler.OpphoererBarnetilleggAutoDtoSelectors.fellesbarnSelector
 import no.nav.pensjon.brev.api.model.maler.OpphoererBarnetilleggAutoDtoSelectors.oensketVirkningsDato
 import no.nav.pensjon.brev.api.model.maler.OpphoererBarnetilleggAutoDtoSelectors.saerkullsbarn
 import no.nav.pensjon.brev.api.model.maler.UngUfoerAutoDtoSelectors.ektefelle
@@ -30,6 +30,7 @@ import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.maler.fraser.vedtak.Vedtak
+import no.nav.pensjon.brev.template.Expression
 
 // BrevKode: PE_UT_07_200
 @TemplateModelHelpers
@@ -83,16 +84,19 @@ object OpphoererBarnetilleggAuto : VedtaksbrevTemplate<OpphoererBarnetilleggAuto
             includePhrase(OpphoerBarnetillegg.TBU1128)
             includePhrase(Vedtak.BegrunnelseOverskrift)
             includePhrase(OpphoerBarnetillegg.TBU3920)
-            includePhrase(
-                OpphoerBarnetillegg.Folketrygdloven1215_1216_2212(
-                    fellesbarnInnvilget = fellesbarnInnvilget, saerkullsbarnInnvilget = saerkullsbarnInnvilget
-                )
-            )
+
             includePhrase(
                 OpphoerBarnetillegg.BTOensketVirkningsDato(
                     oensketVirkningsDato = oensketVirkningsDato
                 )
             )
+
+            showIf (barnetilleggInnvilget) {
+
+            }
+
+
+
             includePhrase(OpphoerBarnetillegg.TBU3800)
             includePhrase(OpphoerBarnetillegg.TBU2338)
             includePhrase(OpphoerBarnetillegg.TBU2339)
@@ -107,6 +111,12 @@ object OpphoererBarnetilleggAuto : VedtaksbrevTemplate<OpphoererBarnetilleggAuto
                     fellesbarn = fellesbarn, saerkullsbarn = saerkullsbarn
                 )
             )
+            includePhrase(
+                OpphoerBarnetillegg.BTInntektstak(
+                    fellesbarnInntektstak = fellesbarnInntektstak, saerkullsbarnInntektstak = saerkullsbarnInntektstak
+                )
+            )
+            includePhrase(OpphoerBarnetillegg.TBU1288)
 
 
         }
