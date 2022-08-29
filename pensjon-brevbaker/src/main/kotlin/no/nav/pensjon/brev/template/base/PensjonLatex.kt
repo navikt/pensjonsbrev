@@ -70,7 +70,7 @@ object PensjonLatex : BaseTemplate() {
         printWriter: LatexPrintWriter
     ) =
         with(printWriter) {
-            val scope = attachment.toScope(letter)
+            val scope = attachment.toScope(letter.toScope())
 
             printCmd("startvedlegg", renderTitle(scope, listOf(attachment.template.title)))
             if (attachment.template.includeSakspart) {
@@ -164,7 +164,7 @@ object PensjonLatex : BaseTemplate() {
                 bodyWriter.printCmd("begin", "attachmentList")
                 attachments.forEach {
                     bodyWriter.print("""\item """, escape = false)
-                    bodyWriter.println(renderTitle(it.toScope(letter), listOf(it.template.title)))
+                    bodyWriter.println(renderTitle(it.toScope(letter.toScope()), listOf(it.template.title)))
                 }
                 bodyWriter.printCmd("end", "attachmentList")
             }

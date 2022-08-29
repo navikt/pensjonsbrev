@@ -4,14 +4,14 @@ import no.nav.pensjon.brev.template.*
 
 
 @LetterTemplateMarker
-class OutlineOnlyScope<Lang : LanguageSupport, LetterData : Any> : OutlineScope<Lang, LetterData>, ControlStructureScope<Lang, LetterData, Element<Lang>, OutlineOnlyScope<Lang, LetterData>> {
-    private val children = mutableListOf<AnyElement<Lang>>()
-    override val elements: List<AnyElement<Lang>>
+class OutlineOnlyScope<Lang : LanguageSupport, LetterData : Any> : OutlineScope<Lang, LetterData>, ControlStructureScope<Lang, LetterData, Element.OutlineContent<Lang>, OutlineOnlyScope<Lang, LetterData>> {
+    private val children = mutableListOf<OutlineElement<Lang>>()
+    override val elements: List<OutlineElement<Lang>>
         get() = children
 
     override fun scopeFactory(): OutlineOnlyScope<Lang, LetterData> = OutlineOnlyScope()
 
-    override fun addControlStructure(e: AnyElement<Lang>) {
+    override fun addControlStructure(e: OutlineElement<Lang>) {
         children.add(e)
     }
 
@@ -23,7 +23,7 @@ class OutlineOnlyScope<Lang : LanguageSupport, LetterData : Any> : OutlineScope<
         children.add(e)
     }
 
-    override fun addOutlineContent(e: AnyElement<Lang>) {
+    override fun addOutlineContent(e: OutlineElement<Lang>) {
         children.add(e)
     }
 
@@ -34,18 +34,18 @@ class OutlineOnlyScope<Lang : LanguageSupport, LetterData : Any> : OutlineScope<
 }
 
 interface OutlineScope<Lang : LanguageSupport, LetterData : Any> : ParagraphScope<Lang, LetterData> {
-    fun addOutlineContent(e: AnyElement<Lang>)
+    fun addOutlineContent(e: OutlineElement<Lang>)
 
     fun title1(create: TextOnlyScope<Lang, LetterData>.() -> Unit) {
         TextOnlyScope<Lang, LetterData>().apply(create)
-            .let { Element.Title1(it.elements) }
+            .let { Element.OutlineContent.Title1(it.elements) }
             .let { ContentOrControlStructure.Content(it) }
             .also { addOutlineContent(it) }
     }
 
     fun paragraph(create: ParagraphOnlyScope<Lang, LetterData>.() -> Unit) {
         ParagraphOnlyScope<Lang, LetterData>().apply(create)
-            .let { Element.Paragraph(it.elements) }
+            .let { Element.OutlineContent.Paragraph(it.elements) }
             .let { ContentOrControlStructure.Content(it) }
             .also { addOutlineContent(it) }
     }

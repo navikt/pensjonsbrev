@@ -2,7 +2,7 @@ package no.nav.pensjon.brev.template.base
 
 import no.nav.pensjon.brev.latex.LatexPrintWriter
 import no.nav.pensjon.brev.template.*
-import no.nav.pensjon.brev.template.Element.ParagraphContent.Text.FontType
+import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
 
 fun renderContent(
     scope: ExpressionScope<*, *>,
@@ -21,24 +21,24 @@ fun renderElement(
     printWriter: LatexPrintWriter
 ): Unit =
     when (element) {
-        is Element.ParagraphContent.Form.MultipleChoice<*> -> formMultipleChoice(printWriter, element, scope)
-        is Element.ParagraphContent.Form.Text<*> -> formText(printWriter, element, scope)
-        is Element.ParagraphContent.ItemList<*> -> list(printWriter, element, scope)
-        is Element.ParagraphContent.ItemList.Item<*> -> listItem(printWriter, element, scope)
-        is Element.ParagraphContent.Text.NewLine<*> -> printWriter.printCmd("newline")
-        is Element.Paragraph<*> -> paragraph(printWriter, element, scope)
-        is Element.ParagraphContent.Table<*> -> table(printWriter, element, scope)
-        is Element.ParagraphContent.Table.Row<*> -> renderTableCells(element.cells, scope, printWriter, element.colSpec)
-        is Element.ParagraphContent.Text.Expression.ByLanguage<*> ->
+        is Element.OutlineContent.ParagraphContent.Form.MultipleChoice<*> -> formMultipleChoice(printWriter, element, scope)
+        is Element.OutlineContent.ParagraphContent.Form.Text<*> -> formText(printWriter, element, scope)
+        is Element.OutlineContent.ParagraphContent.ItemList<*> -> list(printWriter, element, scope)
+        is Element.OutlineContent.ParagraphContent.ItemList.Item<*> -> listItem(printWriter, element, scope)
+        is Element.OutlineContent.ParagraphContent.Text.NewLine<*> -> printWriter.printCmd("newline")
+        is Element.OutlineContent.Paragraph<*> -> paragraph(printWriter, element, scope)
+        is Element.OutlineContent.ParagraphContent.Table<*> -> table(printWriter, element, scope)
+        is Element.OutlineContent.ParagraphContent.Table.Row<*> -> renderTableCells(element.cells, scope, printWriter, element.colSpec)
+        is Element.OutlineContent.ParagraphContent.Text.Expression.ByLanguage<*> ->
             printText(printWriter, element, element.expr(scope.language).eval(scope))
-        is Element.ParagraphContent.Text.Expression<*> -> printText(printWriter, element, element.expression.eval(scope))
-        is Element.ParagraphContent.Text.Literal<*> -> printText(printWriter, element, element.text(scope.language))
-        is Element.Title1<*> -> title1(printWriter, element, scope)
+        is Element.OutlineContent.ParagraphContent.Text.Expression<*> -> printText(printWriter, element, element.expression.eval(scope))
+        is Element.OutlineContent.ParagraphContent.Text.Literal<*> -> printText(printWriter, element, element.text(scope.language))
+        is Element.OutlineContent.Title1<*> -> title1(printWriter, element, scope)
     }
 
 private fun listItem(
     printWriter: LatexPrintWriter,
-    element: Element.ParagraphContent.ItemList.Item<*>,
+    element: Element.OutlineContent.ParagraphContent.ItemList.Item<*>,
     scope: ExpressionScope<*, *>
 ) {
     printWriter.print("""\item """, escape = false)
@@ -49,7 +49,7 @@ private fun listItem(
 
 private fun table(
     printWriter: LatexPrintWriter,
-    element: Element.ParagraphContent.Table<*>,
+    element: Element.OutlineContent.ParagraphContent.Table<*>,
     scope: ExpressionScope<*, *>
 ) {
     with(printWriter) {
@@ -76,7 +76,7 @@ private fun willRenderRow(element: TableRowElement<*>, scope: ExpressionScope<*,
             val toRender = if (element.predicate.eval(scope)) element.showIf else element.showElse
             return toRender.any { willRenderRow(it, scope) }
         }
-        is ContentOrControlStructure.ForEach<*, Element.ParagraphContent.Table.Row<*>, *> -> {
+        is ContentOrControlStructure.ForEach<*, Element.OutlineContent.ParagraphContent.Table.Row<*>, *> -> {
             var hasRow = false
             element.render(scope) { s, e -> hasRow = willRenderRow(e, s) }
             hasRow
@@ -87,7 +87,7 @@ private fun willRenderRow(element: TableRowElement<*>, scope: ExpressionScope<*,
 
 private fun formMultipleChoice(
     printWriter: LatexPrintWriter,
-    element: Element.ParagraphContent.Form.MultipleChoice<*>,
+    element: Element.OutlineContent.ParagraphContent.Form.MultipleChoice<*>,
     scope: ExpressionScope<*, *>
 ) {
     with(printWriter) {
@@ -111,7 +111,7 @@ private fun formMultipleChoice(
 
 private fun formText(
     printWriter: LatexPrintWriter,
-    element: Element.ParagraphContent.Form.Text<*>,
+    element: Element.OutlineContent.ParagraphContent.Form.Text<*>,
     scope: ExpressionScope<*, *>
 ) {
     with(printWriter) {
@@ -130,7 +130,7 @@ private fun formText(
 
 private fun paragraph(
     printWriter: LatexPrintWriter,
-    element: Element.Paragraph<*>,
+    element: Element.OutlineContent.Paragraph<*>,
     scope: ExpressionScope<*, *>
 ) {
     printWriter.printCmd("templateparagraph") {
@@ -140,13 +140,13 @@ private fun paragraph(
 
 private fun list(
     printWriter: LatexPrintWriter,
-    element: Element.ParagraphContent.ItemList<*>,
+    element: Element.OutlineContent.ParagraphContent.ItemList<*>,
     scope: ExpressionScope<*, *>
 ) {
-    if (element.elements.any { willRenderItem(it, scope) }) {
+    if (element.items.any { willRenderItem(it, scope) }) {
         with(printWriter) {
             printCmd("begin") { arg { print("itemize") } }
-            element.elements.forEach { renderContent(scope, it, printWriter) }
+            element.items.forEach { renderContent(scope, it, printWriter) }
             printCmd("end") { arg { print("itemize") } }
         }
     }
@@ -158,7 +158,7 @@ private fun willRenderItem(element: ListItemElement<*>, scope: ExpressionScope<*
             val toRender = if (element.predicate.eval(scope)) element.showIf else element.showElse
             return toRender.any { willRenderItem(it, scope) }
         }
-        is ContentOrControlStructure.ForEach<*, Element.ParagraphContent.ItemList.Item<*>, *> -> {
+        is ContentOrControlStructure.ForEach<*, Element.OutlineContent.ParagraphContent.ItemList.Item<*>, *> -> {
             var hasItem = false
             element.render(scope) { s, e -> hasItem = willRenderItem(e, s) }
             hasItem
@@ -181,7 +181,7 @@ private fun <C : Element<*>> conditional(
 
 private fun printText(
     printWriter: LatexPrintWriter,
-    element: Element.ParagraphContent.Text<*>,
+    element: Element.OutlineContent.ParagraphContent.Text<*>,
     textLiteral: String
 ) {
     with(printWriter) {
@@ -195,30 +195,30 @@ private fun printText(
 
 private fun title1(
     printWriter: LatexPrintWriter,
-    element: Element.Title1<*>,
+    element: Element.OutlineContent.Title1<*>,
     scope: ExpressionScope<*, *>
 ) {
     with(printWriter) {
         printCmd("lettersectiontitle") {
-            arg { element.title1.forEach { child -> renderContent(scope, child, it) } }
+            arg { element.text.forEach { child -> renderContent(scope, child, it) } }
         }
     }
 }
 
-private fun columnHeadersLatexString(columnSpec: List<Element.ParagraphContent.Table.ColumnSpec<out LanguageSupport>>) =
+private fun columnHeadersLatexString(columnSpec: List<Element.OutlineContent.ParagraphContent.Table.ColumnSpec<LanguageSupport>>) =
     columnSpec.joinToString("") {
         ("X" +
                 when (it.alignment) {
-                    Element.ParagraphContent.Table.ColumnAlignment.LEFT -> "[l]"
-                    Element.ParagraphContent.Table.ColumnAlignment.RIGHT -> "[r]"
+                    Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.LEFT -> "[l]"
+                    Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT -> "[r]"
                 }).repeat(it.columnSpan)
     }
 
 private fun renderTableCells(
-    cells: List<Element.ParagraphContent.Table.Cell<out LanguageSupport>>,
+    cells: List<Element.OutlineContent.ParagraphContent.Table.Cell<LanguageSupport>>,
     scope: ExpressionScope<*, *>,
     printWriter: LatexPrintWriter,
-    colSpec: List<Element.ParagraphContent.Table.ColumnSpec<out LanguageSupport>>
+    colSpec: List<Element.OutlineContent.ParagraphContent.Table.ColumnSpec<LanguageSupport>>
 ) {
     with(printWriter) {
         cells.forEachIndexed { index, cell ->
@@ -226,7 +226,7 @@ private fun renderTableCells(
             if (columnSpan > 1) {
                 print("\\SetCell[c=$columnSpan]{}", escape = false)
             }
-            cell.elements.forEach { cellElement ->
+            cell.text.forEach { cellElement ->
                 renderContent(scope, cellElement, printWriter)
             }
             if (columnSpan > 1) {

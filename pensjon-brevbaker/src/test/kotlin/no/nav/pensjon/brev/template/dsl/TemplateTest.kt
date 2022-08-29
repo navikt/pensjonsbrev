@@ -38,10 +38,10 @@ class TemplateTest {
                 letterMetadata = testLetterMetadata,
                 outline = listOf(
                     Content(
-                        Element.Title1(
+                        Element.OutlineContent.Title1(
                             listOf(
                                 Content(
-                                    Element.ParagraphContent.Text.Literal.create(Language.Bokmal to "Heisann. ")
+                                    Element.OutlineContent.ParagraphContent.Text.Literal.create(Language.Bokmal to "Heisann. ")
                                 ),
                             )
                         )
@@ -107,7 +107,7 @@ class TemplateTest {
         }.elements.first()
 
         val expected = Content(
-            Element.ParagraphContent.Text.Expression<LangBokmal>(
+            Element.OutlineContent.ParagraphContent.Text.Expression<LangBokmal>(
                 Expression.FromScope(ExpressionScope<SomeDto, *>::argument).name
             )
         )
@@ -140,10 +140,10 @@ class TemplateTest {
                 language = languages(Language.Bokmal),
                 outline = listOf(
                     Content(
-                        Element.Title1(
+                        Element.OutlineContent.Title1(
                             listOf(
                                 Content(
-                                    Element.ParagraphContent.Text.Literal.create(Language.Bokmal to "jadda")
+                                    Element.OutlineContent.ParagraphContent.Text.Literal.create(Language.Bokmal to "jadda")
                                 )
                             )
                         )
@@ -180,8 +180,8 @@ class TemplateTest {
                 language = languages(Language.Bokmal),
                 letterMetadata = testLetterMetadata,
                 outline = listOf(
-                    Element.Title1(listOf(Content(Element.ParagraphContent.Text.Literal.create(Language.Bokmal to "Tittel")))),
-                    Element.Paragraph(listOf(Content(Element.ParagraphContent.Text.Literal.create(Language.Bokmal to "Dette er tekst som kun brukes i dette brevet."))))
+                    Element.OutlineContent.Title1(listOf(Content(Element.OutlineContent.ParagraphContent.Text.Literal.create(Language.Bokmal to "Tittel")))),
+                    Element.OutlineContent.Paragraph(listOf(Content(Element.OutlineContent.ParagraphContent.Text.Literal.create(Language.Bokmal to "Dette er tekst som kun brukes i dette brevet."))))
                 ).map { Content(it) }
             ),
             doc
@@ -195,7 +195,7 @@ class TemplateTest {
             formText(1, prompt)
         }.elements.first()
 
-        val expected = Content(Element.ParagraphContent.Form.Text(prompt, 1))
+        val expected = Content(Element.OutlineContent.ParagraphContent.Form.Text(prompt, 1))
 
         assertEquals(expected, element)
     }
@@ -210,7 +210,7 @@ class TemplateTest {
             }
         }.elements.first()
 
-        val expected = Content(Element.ParagraphContent.Form.MultipleChoice(prompt, listOf(Element.ParagraphContent.Text.Literal.create(Language.Bokmal to "velg denne"))))
+        val expected = Content(Element.OutlineContent.ParagraphContent.Form.MultipleChoice(prompt, listOf(Element.OutlineContent.ParagraphContent.Text.Literal.create(Language.Bokmal to "velg denne"))))
 
         assertEquals(expected, element)
     }

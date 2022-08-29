@@ -4,7 +4,7 @@ import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.ContentOrControlStructure.*
 
 @LetterTemplateMarker
-class TextOnlyScope<Lang : LanguageSupport, LetterData : Any> : TextScope<Lang, LetterData>, ControlStructureScope<Lang, LetterData, Element.ParagraphContent.Text<Lang>, TextOnlyScope<Lang, LetterData>> {
+class TextOnlyScope<Lang : LanguageSupport, LetterData : Any> : TextScope<Lang, LetterData>, ControlStructureScope<Lang, LetterData, Element.OutlineContent.ParagraphContent.Text<Lang>, TextOnlyScope<Lang, LetterData>> {
     private val children = mutableListOf<TextElement<Lang>>()
     override val elements: List<TextElement<Lang>>
         get() = children
@@ -30,11 +30,11 @@ interface TextScope<Lang : LanguageSupport, LetterData : Any> : TemplateGlobalSc
 
     // TODO: Consider removing this since textExpr already supports this, or renaming to allLanguagesExpr (or something similar).
     fun eval(expression: StringExpression) {
-        addTextContent(Content(Element.ParagraphContent.Text.Expression(expression)))
+        addTextContent(Content(Element.OutlineContent.ParagraphContent.Text.Expression(expression)))
     }
 
     fun newline() {
-        addTextContent(Content(Element.ParagraphContent.Text.NewLine()))
+        addTextContent(Content(Element.OutlineContent.ParagraphContent.Text.NewLine()))
     }
 }
 
@@ -42,26 +42,27 @@ interface TextScope<Lang : LanguageSupport, LetterData : Any> : TemplateGlobalSc
 //
 //
 fun <Lang1 : Language, ParameterType : Any> TextScope<LanguageSupport.Single<Lang1>, ParameterType>.text(
-    lang1: Pair<Lang1, String>, fontType: Element.ParagraphContent.Text.FontType = Element.ParagraphContent.Text.FontType.PLAIN
+    lang1: Pair<Lang1, String>,
+    fontType: Element.OutlineContent.ParagraphContent.Text.FontType = Element.OutlineContent.ParagraphContent.Text.FontType.PLAIN,
 ) {
-    Element.ParagraphContent.Text.Literal.create(lang1, fontType).also { addTextContent(Content(it)) }
+    Element.OutlineContent.ParagraphContent.Text.Literal.create(lang1, fontType).also { addTextContent(Content(it)) }
 }
 
 fun <Lang1 : Language, Lang2 : Language, ParameterType : Any> TextScope<LanguageSupport.Double<Lang1, Lang2>, ParameterType>.text(
     lang1: Pair<Lang1, String>,
     lang2: Pair<Lang2, String>,
-    fontType: Element.ParagraphContent.Text.FontType = Element.ParagraphContent.Text.FontType.PLAIN,
+    fontType: Element.OutlineContent.ParagraphContent.Text.FontType = Element.OutlineContent.ParagraphContent.Text.FontType.PLAIN,
 ) {
-    Element.ParagraphContent.Text.Literal.create(lang1, lang2, fontType).also { addTextContent(Content(it)) }
+    Element.OutlineContent.ParagraphContent.Text.Literal.create(lang1, lang2, fontType).also { addTextContent(Content(it)) }
 }
 
 fun <Lang1 : Language, Lang2 : Language, Lang3 : Language, ParameterType : Any> TextScope<LanguageSupport.Triple<Lang1, Lang2, Lang3>, ParameterType>.text(
     lang1: Pair<Lang1, String>,
     lang2: Pair<Lang2, String>,
     lang3: Pair<Lang3, String>,
-    fontType: Element.ParagraphContent.Text.FontType = Element.ParagraphContent.Text.FontType.PLAIN,
+    fontType: Element.OutlineContent.ParagraphContent.Text.FontType = Element.OutlineContent.ParagraphContent.Text.FontType.PLAIN,
 ) {
-    Element.ParagraphContent.Text.Literal.create(lang1, lang2, lang3, fontType).also { addTextContent(Content(it)) }
+    Element.OutlineContent.ParagraphContent.Text.Literal.create(lang1, lang2, lang3, fontType).also { addTextContent(Content(it)) }
 }
 
 // TextScope.textExpr()
@@ -69,25 +70,25 @@ fun <Lang1 : Language, Lang2 : Language, Lang3 : Language, ParameterType : Any> 
 //
 fun <Lang1 : Language, ParameterType : Any> TextScope<LanguageSupport.Single<Lang1>, ParameterType>.textExpr(
     lang1: Pair<Lang1, StringExpression>,
-    fontType: Element.ParagraphContent.Text.FontType = Element.ParagraphContent.Text.FontType.PLAIN,
+    fontType: Element.OutlineContent.ParagraphContent.Text.FontType = Element.OutlineContent.ParagraphContent.Text.FontType.PLAIN,
 ) {
-    Element.ParagraphContent.Text.Expression.ByLanguage.create(lang1, fontType).also { addTextContent(Content(it)) }
+    Element.OutlineContent.ParagraphContent.Text.Expression.ByLanguage.create(lang1, fontType).also { addTextContent(Content(it)) }
 }
 
 fun <Lang1 : Language, Lang2 : Language, ParameterType : Any> TextScope<LanguageSupport.Double<Lang1, Lang2>, ParameterType>.textExpr(
     lang1: Pair<Lang1, StringExpression>,
     lang2: Pair<Lang2, StringExpression>,
-    fontType: Element.ParagraphContent.Text.FontType = Element.ParagraphContent.Text.FontType.PLAIN,
+    fontType: Element.OutlineContent.ParagraphContent.Text.FontType = Element.OutlineContent.ParagraphContent.Text.FontType.PLAIN,
 ) {
-    Element.ParagraphContent.Text.Expression.ByLanguage.create(lang1, lang2, fontType).also { addTextContent(Content(it)) }
+    Element.OutlineContent.ParagraphContent.Text.Expression.ByLanguage.create(lang1, lang2, fontType).also { addTextContent(Content(it)) }
 }
 
 fun <Lang1 : Language, Lang2 : Language, Lang3 : Language, ParameterType : Any> TextScope<LanguageSupport.Triple<Lang1, Lang2, Lang3>, ParameterType>.textExpr(
     lang1: Pair<Lang1, StringExpression>,
     lang2: Pair<Lang2, StringExpression>,
     lang3: Pair<Lang3, StringExpression>,
-    fontType: Element.ParagraphContent.Text.FontType = Element.ParagraphContent.Text.FontType.PLAIN,
+    fontType: Element.OutlineContent.ParagraphContent.Text.FontType = Element.OutlineContent.ParagraphContent.Text.FontType.PLAIN,
 ) {
-    Element.ParagraphContent.Text.Expression.ByLanguage.create(lang1, lang2, lang3, fontType).also { addTextContent(Content(it)) }
+    Element.OutlineContent.ParagraphContent.Text.Expression.ByLanguage.create(lang1, lang2, lang3, fontType).also { addTextContent(Content(it)) }
 }
 

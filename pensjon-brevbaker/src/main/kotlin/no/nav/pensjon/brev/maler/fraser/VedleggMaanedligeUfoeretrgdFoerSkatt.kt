@@ -124,12 +124,12 @@ data class TabellBeregnetUT(
         table(
             header = {
                 column(1) {}
-                column(1, alignment = Element.ParagraphContent.Table.ColumnAlignment.RIGHT) {
+                column(1, alignment = Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT) {
                     text(
                         Bokmal to "Bruttobeløp per måned",
                         Nynorsk to "Bruttobeløp per månad",
                         English to "Gross monthly amount",
-                        Element.ParagraphContent.Text.FontType.BOLD
+                        Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
                     )
                 }
             }
@@ -237,20 +237,20 @@ data class TabellBeregnetUTAvkortet(
         table(
             header = {
                 column {}
-                column(alignment = Element.ParagraphContent.Table.ColumnAlignment.RIGHT) {
+                column(alignment = Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT) {
                     text(
                         Bokmal to "Uføretrygd per måned før fradrag for inntekt",
                         Nynorsk to "Uføretrygd per månad før frådrag for inntekt",
                         English to "Monthly disability benefit before deductions for income",
-                        Element.ParagraphContent.Text.FontType.BOLD
+                        Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
                     )
                 }
-                column(alignment = Element.ParagraphContent.Table.ColumnAlignment.RIGHT) {
+                column(alignment = Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT) {
                     text(
                         Bokmal to "Uføretrygd per måned etter fradrag for inntekt",
                         Nynorsk to "Uføretrygd per månad etter frådrag for inntekt",
                         English to "Monthly disability benefit after deductions for income",
-                        Element.ParagraphContent.Text.FontType.BOLD
+                        Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
                     )
                 }
             }

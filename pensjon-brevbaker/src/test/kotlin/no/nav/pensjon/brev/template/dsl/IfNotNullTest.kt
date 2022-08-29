@@ -54,7 +54,7 @@ class IfNotNullTest {
                     predicate = navn.notNull(),
                     showIf = listOf(
                         Content(
-                            Element.ParagraphContent.Text.Expression.ByLanguage.create(
+                            Element.OutlineContent.ParagraphContent.Text.Expression.ByLanguage.create(
                                 Bokmal to "hei: ".expr() + (navn as Expression<String>)
                             )
                         )

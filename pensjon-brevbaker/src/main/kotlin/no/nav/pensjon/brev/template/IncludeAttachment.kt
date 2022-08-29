@@ -23,6 +23,6 @@ data class IncludeAttachment<out Lang : LanguageSupport, AttachmentData : Any>(
 
 data class AttachmentTemplate<out Lang : LanguageSupport, AttachmentData : Any>(
     val title: TextElement<Lang>,
-    val outline: List<AnyElement<Lang>>,
+    val outline: List<OutlineElement<Lang>>,
     val includeSakspart: Boolean = false,
 ): HasModel<AttachmentData>

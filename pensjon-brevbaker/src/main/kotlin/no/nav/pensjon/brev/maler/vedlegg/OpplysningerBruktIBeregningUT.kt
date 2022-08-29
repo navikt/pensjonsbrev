@@ -66,9 +66,8 @@ import no.nav.pensjon.brev.maler.fraser.common.Felles.KronerText
 import no.nav.pensjon.brev.maler.fraser.common.Felles.MaanederText
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.model.tableFormat
-import no.nav.pensjon.brev.template.Element
-import no.nav.pensjon.brev.template.Element.ParagraphContent.Table.ColumnAlignment
-import no.nav.pensjon.brev.template.Element.ParagraphContent.Text.FontType
+import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment
+import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.createAttachment

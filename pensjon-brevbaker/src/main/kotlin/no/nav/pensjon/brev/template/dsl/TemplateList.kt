@@ -4,7 +4,7 @@ import no.nav.pensjon.brev.template.*
 
 
 @LetterTemplateMarker
-class ListScope<Lang : LanguageSupport, LetterData : Any> : ControlStructureScope<Lang, LetterData, Element.ParagraphContent.ItemList.Item<Lang>, ListScope<Lang, LetterData>> {
+class ListScope<Lang : LanguageSupport, LetterData : Any> : ControlStructureScope<Lang, LetterData, Element.OutlineContent.ParagraphContent.ItemList.Item<Lang>, ListScope<Lang, LetterData>> {
     private val children = mutableListOf<ListItemElement<Lang>>()
     override val elements: List<ListItemElement<Lang>>
         get() = children
@@ -17,7 +17,7 @@ class ListScope<Lang : LanguageSupport, LetterData : Any> : ControlStructureScop
 
     fun item(create: TextOnlyScope<Lang, LetterData>.() -> Unit) {
         TextOnlyScope<Lang, LetterData>().apply(create)
-            .let { Element.ParagraphContent.ItemList.Item(it.elements) }
+            .let { Element.OutlineContent.ParagraphContent.ItemList.Item(it.elements) }
             .let { ContentOrControlStructure.Content(it) }
             .also { children.add(it) }
     }
