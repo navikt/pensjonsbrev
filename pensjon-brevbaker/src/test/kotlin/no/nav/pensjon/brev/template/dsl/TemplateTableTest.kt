@@ -26,21 +26,21 @@ class TemplateTableTest {
         }
 
         val colSpec = listOf(
-            Element.ParagraphContent.Table.ColumnSpec(
-                Element.ParagraphContent.Table.Cell(
+            Element.OutlineContent.ParagraphContent.Table.ColumnSpec(
+                Element.OutlineContent.ParagraphContent.Table.Cell(
                     listOf(newText(Language.Bokmal to "header"))
-                ), Element.ParagraphContent.Table.ColumnAlignment.LEFT
+                ), Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.LEFT
             )
         )
         val expected = outlineTestLetter(
             Content(
-                Element.ParagraphContent.Table(
-                    header = Element.ParagraphContent.Table.Header(colSpec),
+                Element.OutlineContent.ParagraphContent.Table(
+                    header = Element.OutlineContent.ParagraphContent.Table.Header(colSpec),
                     rows = listOf(
                         Content(
-                            Element.ParagraphContent.Table.Row(
+                            Element.OutlineContent.ParagraphContent.Table.Row(
                                 listOf(
-                                    Element.ParagraphContent.Table.Cell(
+                                    Element.OutlineContent.ParagraphContent.Table.Cell(
                                         listOf(newText(Language.Bokmal to "joda"))
                                     )
                                 ), colSpec
@@ -126,30 +126,30 @@ class TemplateTableTest {
             }
         }
         val colSpec = listOf(
-            Element.ParagraphContent.Table.ColumnSpec(
-                Element.ParagraphContent.Table.Cell(
+            Element.OutlineContent.ParagraphContent.Table.ColumnSpec(
+                Element.OutlineContent.ParagraphContent.Table.Cell(
                     listOf(newText(Language.Bokmal to "header"))
-                ), Element.ParagraphContent.Table.ColumnAlignment.LEFT
+                ), Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.LEFT
             )
         )
         val expected = outlineTestLetter(
             Content(
-                Element.ParagraphContent.Table(
+                Element.OutlineContent.ParagraphContent.Table(
                     rows = listOf(
                         Conditional(
                             true.expr(),
                             listOf(
-                                Element.ParagraphContent.Table.Row(
+                                Element.OutlineContent.ParagraphContent.Table.Row(
                                     listOf(
-                                        Element.ParagraphContent.Table.Cell(
+                                        Element.OutlineContent.ParagraphContent.Table.Cell(
                                             listOf(newText(Language.Bokmal to "hei"))
                                         )
                                     ),
                                     colSpec = colSpec
                                 ),
-                                Element.ParagraphContent.Table.Row(
+                                Element.OutlineContent.ParagraphContent.Table.Row(
                                     listOf(
-                                        Element.ParagraphContent.Table.Cell(
+                                        Element.OutlineContent.ParagraphContent.Table.Cell(
                                             listOf(newText(Language.Bokmal to "heihå"))
                                         )
                                     ), colSpec = colSpec
@@ -157,7 +157,7 @@ class TemplateTableTest {
                             ).map { Content(it) }, emptyList()
                         )
                     ),
-                    header = Element.ParagraphContent.Table.Header(colSpec)
+                    header = Element.OutlineContent.ParagraphContent.Table.Header(colSpec)
                 )
             )
         )

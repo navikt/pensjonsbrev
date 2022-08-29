@@ -38,7 +38,7 @@ class LetterExampleTest {
         ).render()
             .let { PdfCompilationInput(it.base64EncodedFiles()) }
             .let { runBlocking { LaTeXCompilerService(PDF_BUILDER_URL).producePDF(it, "test").base64PDF } }
-            .also { writeTestPDF("EKSEMPELBREV2_BOKMAL", it) }
+            .also { writeTestPDF("DESIGN_REFERENCE_LETTER_BOKMAL", it) }
     }
 
 }

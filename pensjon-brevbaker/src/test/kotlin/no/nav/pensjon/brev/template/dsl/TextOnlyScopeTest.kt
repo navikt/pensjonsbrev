@@ -30,7 +30,7 @@ class TextOnlyScopeTest {
     fun `includePhrase with arg adds elements`() {
         val actual = TextOnlyScope<LangBokmal, Unit>().apply { includePhrase(TextPhraseWithArg("hei".expr())) }
 
-        assertEquals(listOf(Content(Element.ParagraphContent.Text.Expression.ByLanguage.create(Bokmal to "hei".expr()))), actual.elements)
+        assertEquals(listOf(Content(Element.OutlineContent.ParagraphContent.Text.Expression.ByLanguage.create(Bokmal to "hei".expr()))), actual.elements)
     }
 
     @Test
@@ -46,7 +46,7 @@ class TextOnlyScopeTest {
     fun `eval adds expression`() {
         val actual = TextOnlyScope<LangBokmal, Unit>().apply { eval("expr".expr()) }
 
-        assertEquals(listOf(Content(Element.ParagraphContent.Text.Expression<LangBokmal>("expr".expr()))), actual.elements)
+        assertEquals(listOf(Content(Element.OutlineContent.ParagraphContent.Text.Expression<LangBokmal>("expr".expr()))), actual.elements)
     }
 
     @Test
@@ -56,7 +56,7 @@ class TextOnlyScopeTest {
         }.elements.first()
 
         when (element) {
-            is Content -> assertThat(element.content, isA<Element.ParagraphContent.Text.NewLine<LangBokmal>>())
+            is Content -> assertThat(element.content, isA<Element.OutlineContent.ParagraphContent.Text.NewLine<LangBokmal>>())
             else -> fail("Element should be Content")
         }
     }

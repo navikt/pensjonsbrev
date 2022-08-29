@@ -18,7 +18,7 @@ internal inline fun <reified LetterData : Any> outlineTestTemplate(noinline func
         outline(function)
     }
 
-fun outlineTestLetter(vararg elements: AnyElement<LangBokmal>) = LetterTemplate(
+fun outlineTestLetter(vararg elements: OutlineElement<LangBokmal>) = LetterTemplate(
     name = "test",
     title = listOf(bokmalTittel),
     base = PensjonLatex,

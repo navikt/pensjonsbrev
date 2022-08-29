@@ -4,8 +4,8 @@ import no.nav.pensjon.brev.template.*
 
 @LetterTemplateMarker
 class TableScope<Lang : LanguageSupport, LetterData : Any>(
-    private val colSpec: List<Element.ParagraphContent.Table.ColumnSpec<Lang>>,
-) : ControlStructureScope<Lang, LetterData, Element.ParagraphContent.Table.Row<Lang>, TableScope<Lang,LetterData>>{
+    private val colSpec: List<Element.OutlineContent.ParagraphContent.Table.ColumnSpec<Lang>>,
+) : ControlStructureScope<Lang, LetterData, Element.OutlineContent.ParagraphContent.Table.Row<Lang>, TableScope<Lang,LetterData>>{
     private val children = mutableListOf<TableRowElement<Lang>>()
     override val elements: List<TableRowElement<Lang>>
         get() = children
@@ -18,7 +18,7 @@ class TableScope<Lang : LanguageSupport, LetterData : Any>(
 
     fun row(create: TableRowScope<Lang, LetterData>.() -> Unit) {
         TableRowScope<Lang, LetterData>().apply(create)
-            .let { Element.ParagraphContent.Table.Row(it.elements, colSpec) }
+            .let { Element.OutlineContent.ParagraphContent.Table.Row(it.elements, colSpec) }
             .let { ContentOrControlStructure.Content(it) }
             .also { children.add(it) }
     }
@@ -28,13 +28,13 @@ class TableScope<Lang : LanguageSupport, LetterData : Any>(
 
 @LetterTemplateMarker
 class TableRowScope<Lang : LanguageSupport, LetterData : Any> : TemplateGlobalScope<LetterData> {
-    private val children: MutableList<Element.ParagraphContent.Table.Cell<Lang>> = mutableListOf()
-    val elements: List<Element.ParagraphContent.Table.Cell<Lang>>
+    private val children: MutableList<Element.OutlineContent.ParagraphContent.Table.Cell<Lang>> = mutableListOf()
+    val elements: List<Element.OutlineContent.ParagraphContent.Table.Cell<Lang>>
         get() = children
 
     fun cell(init: TextOnlyScope<Lang, LetterData>.() -> Unit) {
         children.add(
-            Element.ParagraphContent.Table.Cell(
+            Element.OutlineContent.ParagraphContent.Table.Cell(
                 TextOnlyScope<Lang, LetterData>().apply(init).elements
             )
         )
@@ -43,19 +43,19 @@ class TableRowScope<Lang : LanguageSupport, LetterData : Any> : TemplateGlobalSc
 
 @LetterTemplateMarker
 class TableHeaderScope<Lang : LanguageSupport, LetterData : Any> : TemplateGlobalScope<LetterData> {
-    private val children: MutableList<Element.ParagraphContent.Table.ColumnSpec<Lang>> = mutableListOf()
-    val elements: List<Element.ParagraphContent.Table.ColumnSpec<Lang>>
+    private val children: MutableList<Element.OutlineContent.ParagraphContent.Table.ColumnSpec<Lang>> = mutableListOf()
+    val elements: List<Element.OutlineContent.ParagraphContent.Table.ColumnSpec<Lang>>
         get() = children
 
     fun column(
         columnSpan: Int = 1,
-        alignment: Element.ParagraphContent.Table.ColumnAlignment = Element.ParagraphContent.Table.ColumnAlignment.LEFT,
+        alignment: Element.OutlineContent.ParagraphContent.Table.ColumnAlignment = Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.LEFT,
         init: TextOnlyScope<Lang, LetterData>.() -> Unit,
     ) {
 
         children.add(
-            Element.ParagraphContent.Table.ColumnSpec(
-                Element.ParagraphContent.Table.Cell(TextOnlyScope<Lang, LetterData>().apply(init).elements),
+            Element.OutlineContent.ParagraphContent.Table.ColumnSpec(
+                Element.OutlineContent.ParagraphContent.Table.Cell(TextOnlyScope<Lang, LetterData>().apply(init).elements),
                 alignment,
                 columnSpan
             )

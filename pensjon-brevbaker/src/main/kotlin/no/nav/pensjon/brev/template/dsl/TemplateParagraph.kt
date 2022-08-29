@@ -4,7 +4,7 @@ import no.nav.pensjon.brev.template.*
 
 
 @LetterTemplateMarker
-class ParagraphOnlyScope<Lang : LanguageSupport, LetterData : Any> : ParagraphScope<Lang, LetterData>, ControlStructureScope<Lang, LetterData, Element.ParagraphContent<Lang>, ParagraphOnlyScope<Lang, LetterData>> {
+class ParagraphOnlyScope<Lang : LanguageSupport, LetterData : Any> : ParagraphScope<Lang, LetterData>, ControlStructureScope<Lang, LetterData, Element.OutlineContent.ParagraphContent<Lang>, ParagraphOnlyScope<Lang, LetterData>> {
     private val children = mutableListOf<ParagraphContentElement<Lang>>()
     override val elements: List<ParagraphContentElement<Lang>>
         get() = children
@@ -33,7 +33,7 @@ interface ParagraphScope<Lang : LanguageSupport, LetterData : Any> : TextScope<L
 
     fun list(create: ListScope<Lang, LetterData>.() -> Unit) {
         ListScope<Lang, LetterData>().apply(create)
-            .let { Element.ParagraphContent.ItemList(it.elements) }
+            .let { Element.OutlineContent.ParagraphContent.ItemList(it.elements) }
             .let { ContentOrControlStructure.Content(it) }
             .also { addParagraphContent(it) }
     }
@@ -44,15 +44,15 @@ interface ParagraphScope<Lang : LanguageSupport, LetterData : Any> : TextScope<L
     ) {
         val colSpec = TableHeaderScope<Lang, LetterData>().apply(header).elements
 
-        Element.ParagraphContent.Table(
+        Element.OutlineContent.ParagraphContent.Table(
             rows = TableScope<Lang, LetterData>(colSpec).apply(init).elements,
-            header = Element.ParagraphContent.Table.Header(colSpec)
+            header = Element.OutlineContent.ParagraphContent.Table.Header(colSpec)
         ).let { ContentOrControlStructure.Content(it) }
             .also { addParagraphContent(it) }
     }
 
     fun formText(size: Int, prompt: TextElement<Lang>, vspace: Boolean = true) {
-        Element.ParagraphContent.Form.Text(prompt, size, vspace)
+        Element.OutlineContent.ParagraphContent.Form.Text(prompt, size, vspace)
             .let { ContentOrControlStructure.Content(it) }
             .also { addParagraphContent(it) }
     }
@@ -63,7 +63,7 @@ interface ParagraphScope<Lang : LanguageSupport, LetterData : Any> : TextScope<L
         init: TemplateFormChoiceScope<Lang, LetterData>.() -> Unit
     ) {
         TemplateFormChoiceScope<Lang, LetterData>().apply(init)
-            .let { Element.ParagraphContent.Form.MultipleChoice(prompt, it.choices, vspace) }
+            .let { Element.OutlineContent.ParagraphContent.Form.MultipleChoice(prompt, it.choices, vspace) }
             .let { ContentOrControlStructure.Content(it) }
             .also { addParagraphContent(it) }
     }

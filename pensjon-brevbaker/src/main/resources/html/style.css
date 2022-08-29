@@ -1,0 +1,55 @@
+img.pensjonsbrev-logo {
+    height: 46px;
+    margin: 54px 0 0 52px;
+}
+.pensjonsbrev-brev {
+    margin: 67px 0 0 61px;
+}
+.pensjonsbrev-brevhode {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+.pensjonsbrev-brevdato {
+    display: flex;
+    flex-direction: column;
+    justify-content: end;
+}
+
+.pensjonsbrev-brevkropp {
+    margin-top: 54px;
+}
+
+/* Common */
+.pensjonsbrev-text-left {
+    text-align: left;
+}
+.pensjonsbrev-text-right {
+    text-align: right;
+}
+
+/* Sakspart */
+table.pensjonsbrev-sakspart th {
+    text-align: left;
+    padding-right: 20px;
+    font-weight: normal;
+}
+
+/* table */
+table.pensjonsbrev-table {
+    width: 70%;
+    border-spacing: 0;
+    border-collapse: collapse;
+}
+table.pensjonsbrev-table > thead {
+    height: 40px;
+    background-color: #E6F0FF;
+}
+table.pensjonsbrev-table > tbody > tr {
+    height: 30px;
+}
+table.pensjonsbrev-table > tbody > tr:nth-child(even) {
+    background-color: #F7F7F7;
+    border-top: 1px solid #E5E5E5;
+    border-bottom: 1px solid #E5E5E5;
+}

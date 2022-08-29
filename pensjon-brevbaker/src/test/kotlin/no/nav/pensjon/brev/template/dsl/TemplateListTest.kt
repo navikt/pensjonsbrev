@@ -20,10 +20,10 @@ class TemplateListTest {
 
         val expected = outlineTestLetter(
             Content(
-                Element.ParagraphContent.ItemList(
+                Element.OutlineContent.ParagraphContent.ItemList(
                     listOf(
                         Content(
-                            Element.ParagraphContent.ItemList.Item(listOf(newText(Language.Bokmal to "Test")))
+                            Element.OutlineContent.ParagraphContent.ItemList.Item(listOf(newText(Language.Bokmal to "Test")))
                         )
                     )
                 )
@@ -72,13 +72,13 @@ class TemplateListTest {
 
         val expected = outlineTestLetter(
             Content(
-                Element.ParagraphContent.ItemList(
+                Element.OutlineContent.ParagraphContent.ItemList(
                     listOf(
                         ContentOrControlStructure.Conditional(
                             true.expr(),
                             listOf(
                                 Content(
-                                    Element.ParagraphContent.ItemList.Item(
+                                    Element.OutlineContent.ParagraphContent.ItemList.Item(
                                         listOf(newText(Language.Bokmal to "Test"))
                                     )
                                 )
