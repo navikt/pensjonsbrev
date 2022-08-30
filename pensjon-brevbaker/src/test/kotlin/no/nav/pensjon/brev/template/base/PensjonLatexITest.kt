@@ -45,7 +45,6 @@ class PensjonLatexITest {
         }
         Letter(template, brevData, Bokmal, Fixtures.felles)
             .let { PensjonLatexRenderer.render(it) }
-            .let { PdfCompilationInput(it.base64EncodedFiles()) }
             .let { LaTeXCompilerService(PDF_BUILDER_URL).producePdfSync(it).base64PDF }
             .also { writeTestPDF("pensjonLatexITest_canRender", it) }
     }
@@ -111,7 +110,6 @@ class PensjonLatexITest {
 
             Letter(testTemplate, brevData, Bokmal, Fixtures.felles)
                 .let { PensjonLatexRenderer.render(it) }
-                .let { PdfCompilationInput(it.base64EncodedFiles()) }
                 .let { LaTeXCompilerService(PDF_BUILDER_URL).producePdfSync(it).base64PDF }
                 .also { writeTestPDF("LATEX_ESCAPE_TEST_$startChar-$endChar", it) }
 

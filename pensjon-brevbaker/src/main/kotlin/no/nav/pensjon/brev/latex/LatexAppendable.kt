@@ -2,6 +2,10 @@ package no.nav.pensjon.brev.latex
 
 import no.nav.pensjon.brev.template.latexEscape
 
+@DslMarker
+annotation class LatexAppendableMarker
+
+@LatexAppendableMarker
 class LatexAppendable(private val output: Appendable) {
 
     fun print(s: String, escape: Boolean = true) {
@@ -41,11 +45,12 @@ class LatexAppendable(private val output: Appendable) {
         else
             s
 
-    inner class CommandBuilder(private val latexAppendable: LatexAppendable) {
+    @LatexAppendableMarker
+    class CommandBuilder(private val latexAppendable: LatexAppendable) {
         fun arg(argBuilder: LatexAppendable.() -> Unit) {
-            output.append("{")
+            latexAppendable.output.append("{")
             argBuilder(latexAppendable)
-            output.append("}")
+            latexAppendable.output.append("}")
         }
     }
 }

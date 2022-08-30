@@ -13,7 +13,7 @@ import kotlinx.coroutines.runBlocking
 import no.nav.pensjon.brev.api.model.*
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.latex.LaTeXCompilerService
-import no.nav.pensjon.brev.latex.PdfCompilationInput
+import no.nav.pensjon.brev.template.render.RenderedLatexLetter
 import java.io.File
 import java.util.*
 
@@ -52,5 +52,12 @@ fun writeTestPDF(pdfFileName: String, pdf: String) {
     println("Test-file written to file:${"\\".repeat(3)}${file.absolutePath}".replace('\\', '/'))
 }
 
-fun LaTeXCompilerService.producePdfSync(pdfCompilationInput: PdfCompilationInput) =
-    runBlocking { producePDF(pdfCompilationInput, "fra-tester") }
+fun writeTestHTML(fileName: String, html: String) {
+    val file = File("build/test_html/${fileName}.html")
+    file.parentFile.mkdirs()
+    file.writeBytes(Base64.getDecoder().decode(html))
+}
+
+
+fun LaTeXCompilerService.producePdfSync(latexLetter: RenderedLatexLetter) =
+    runBlocking { producePDF(latexLetter, "fra-tester") }

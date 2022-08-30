@@ -9,7 +9,6 @@ import no.nav.pensjon.brev.api.model.LetterMetadata
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligUfoeretrygdFoerSkattDto
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligUfoeretrygdFoerSkattDto.UfoeretrygdPerMaaned
 import no.nav.pensjon.brev.latex.LaTeXCompilerService
-import no.nav.pensjon.brev.latex.PdfCompilationInput
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Letter
 import no.nav.pensjon.brev.template.dsl.createTemplate
@@ -82,7 +81,6 @@ class MaanedligUfoeretrygdFoerSkattITest {
             Fixtures.fellesAuto
         )
             .let { PensjonLatexRenderer.render(it) }
-            .let { PdfCompilationInput(it.base64EncodedFiles()) }
             .let { runBlocking { LaTeXCompilerService(PDF_BUILDER_URL).producePDF(it, "test").base64PDF } }
             .also { writeTestPDF("MaanedligUfoeretrygdFoerSkatt", it) }
     }

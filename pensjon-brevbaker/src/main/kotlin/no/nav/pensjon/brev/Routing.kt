@@ -15,7 +15,6 @@ import no.nav.pensjon.brev.api.description
 import no.nav.pensjon.brev.api.model.*
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.latex.LaTeXCompilerService
-import no.nav.pensjon.brev.latex.PdfCompilationInput
 import no.nav.pensjon.brev.template.render.PensjonLatexRenderer
 
 private val latexCompilerService = LaTeXCompilerService(requireEnv("PDF_BUILDER_URL"))
@@ -45,7 +44,7 @@ fun Application.brevbakerRouting(authenticationNames: Array<String>) =
                 val letterRequest = call.receive<VedtaksbrevRequest>()
 
                 val letter = letterResource.create(letterRequest)
-                val pdfBase64 = PdfCompilationInput(PensjonLatexRenderer.render(letter).base64EncodedFiles())
+                val pdfBase64 = PensjonLatexRenderer.render(letter)
                     .let { latexCompilerService.producePDF(it, call.callId) }
 
                 call.respond(LetterResponse(pdfBase64.base64PDF, letter.template.letterMetadata))

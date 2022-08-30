@@ -5,6 +5,7 @@ import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDto
 import no.nav.pensjon.brev.maler.UfoerOmregningEnslig
 import no.nav.pensjon.brev.maler.example.*
 import no.nav.pensjon.brev.template.*
+import no.nav.pensjon.brev.template.render.PensjonHTMLRenderer
 import org.junit.jupiter.api.Test
 
 class PensjonHTMLTest {

@@ -123,3 +123,5 @@ val pensjonLatexSettings = languageSettings {
         )
     }
 }
+
+val pensjonHTMLSettings = pensjonLatexSettings
