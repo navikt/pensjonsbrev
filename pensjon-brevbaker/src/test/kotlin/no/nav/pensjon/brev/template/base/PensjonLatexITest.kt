@@ -12,6 +12,7 @@ import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.base.TestTemplateDtoSelectors.etNavn
 import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
+import no.nav.pensjon.brev.template.render.PensjonLatexRenderer
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 import org.opentest4j.AssertionFailedError
@@ -28,7 +29,6 @@ class PensjonLatexITest {
     fun canRender() {
         val template = createTemplate(
             name = "test-template",
-            base = PensjonLatex,
             letterDataType = TestTemplateDto::class,
             languages = languages(Bokmal),
             letterMetadata = LetterMetadata(
@@ -44,7 +44,7 @@ class PensjonLatexITest {
             }
         }
         Letter(template, brevData, Bokmal, Fixtures.felles)
-            .render()
+            .let { PensjonLatexRenderer.render(it) }
             .let { PdfCompilationInput(it.base64EncodedFiles()) }
             .let { LaTeXCompilerService(PDF_BUILDER_URL).producePdfSync(it).base64PDF }
             .also { writeTestPDF("pensjonLatexITest_canRender", it) }
@@ -94,7 +94,6 @@ class PensjonLatexITest {
         try {
             val testTemplate = createTemplate(
                 name = "test-template",
-                base = PensjonLatex,
                 letterDataType = TestTemplateDto::class,
                 languages = languages(Bokmal),
                 letterMetadata = LetterMetadata(
@@ -111,7 +110,7 @@ class PensjonLatexITest {
             }
 
             Letter(testTemplate, brevData, Bokmal, Fixtures.felles)
-                .render()
+                .let { PensjonLatexRenderer.render(it) }
                 .let { PdfCompilationInput(it.base64EncodedFiles()) }
                 .let { LaTeXCompilerService(PDF_BUILDER_URL).producePdfSync(it).base64PDF }
                 .also { writeTestPDF("LATEX_ESCAPE_TEST_$startChar-$endChar", it) }

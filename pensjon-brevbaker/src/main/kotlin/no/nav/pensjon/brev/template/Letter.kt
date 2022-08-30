@@ -11,7 +11,4 @@ data class Letter<ParameterType : Any>(val template: LetterTemplate<*, *>, val a
         }
     }
 
-    fun render(): RenderedLetter =
-        template.render(this)
-
 }

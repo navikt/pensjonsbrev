@@ -22,7 +22,6 @@ import no.nav.pensjon.brev.maler.vedlegg.vedleggOrienteringOmRettigheterOgPlikte
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.VedtaksbrevTemplate
-import no.nav.pensjon.brev.template.base.PensjonLatex
 import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.ifNull
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
@@ -37,7 +36,6 @@ object UngUfoerAuto : VedtaksbrevTemplate<UngUfoerAutoDto> {
 
     override val template = createTemplate(
         name = kode.name,
-        base = PensjonLatex,
         letterDataType = UngUfoerAutoDto::class,
         languages = languages(Bokmal, Nynorsk),
         letterMetadata = LetterMetadata(

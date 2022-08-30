@@ -8,28 +8,26 @@ import com.natpryce.hamkrest.startsWith
 import no.nav.pensjon.brev.template.latexEscape
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import java.io.ByteArrayOutputStream
 
 class LatexPrintWriterTest {
 
-    private lateinit var output: ByteArrayOutputStream
-    private lateinit var printWriter: LatexPrintWriter
+    private lateinit var output: StringBuilder
+    private lateinit var appendable: LatexAppendable
 
     @BeforeEach
     fun setup() {
-        output = ByteArrayOutputStream()
-        printWriter = LatexPrintWriter(output)
+        output = StringBuilder()
+        appendable = LatexAppendable(output)
     }
 
     private fun printedString(): String {
-        printWriter.close()
-        return String(output.toByteArray())
+        return String(output)
     }
 
     @Test
     fun `print writes the string`() {
         val expected = "heisann dette er en test"
-        printWriter.print(expected)
+        appendable.print(expected)
 
         assertThat(printedString(), equalTo(expected))
     }
@@ -37,7 +35,7 @@ class LatexPrintWriterTest {
     @Test
     fun `println writes the string with newline`() {
         val expected = "heisann dette er en test"
-        printWriter.println(expected)
+        appendable.println(expected)
 
         assertThat(printedString(), startsWith(expected) and endsWith("\n"))
     }
@@ -45,21 +43,21 @@ class LatexPrintWriterTest {
     @Test
     fun `print escapes latex meta characters`() {
         val expected = """heisann dette er _en test"""
-        printWriter.print(expected)
+        appendable.print(expected)
         assertThat(printedString(), equalTo(expected.latexEscape()))
     }
 
     @Test
     fun `println escapes latex meta characters`() {
         val expected = """heisann dette er _en test"""
-        printWriter.println(expected)
+        appendable.println(expected)
         assertThat(printedString(), startsWith(expected.latexEscape()))
     }
 
     @Test
     fun `printCmd prints as command`() {
         val cmd = "paragraph"
-        printWriter.printCmd(cmd)
+        appendable.printCmd(cmd)
         assertThat(printedString(), startsWith("""\$cmd"""))
     }
 
@@ -68,13 +66,13 @@ class LatexPrintWriterTest {
         val cmd = "paragraph"
         val arg1 = "mitt første argument"
         val arg2 = "mitt andre argument"
-        printWriter.printCmd(cmd, arg1, arg2)
+        appendable.printCmd(cmd, arg1, arg2)
         assertThat(printedString(), startsWith("""\$cmd{$arg1}{$arg2}"""))
     }
 
     @Test
     fun `printCmd ends with newline`() {
-        printWriter.printCmd("paragraph")
+        appendable.printCmd("paragraph")
         assertThat(printedString(), endsWith("\n"))
     }
 
@@ -82,7 +80,7 @@ class LatexPrintWriterTest {
     fun `printCmd escapes latex meta characters of arguments`() {
         val cmd = "paragraph"
         val arg = "min fine paragraf med _"
-        printWriter.printCmd(cmd, arg)
+        appendable.printCmd(cmd, arg)
         assertThat(printedString(), startsWith("""\$cmd{${arg.latexEscape()}}"""))
     }
 
@@ -90,7 +88,7 @@ class LatexPrintWriterTest {
     fun `printCmd can print non-escaped arguments`() {
         val cmd = "paragraph"
         val arg = """\other{hei_sann}"""
-        printWriter.printCmd(cmd, arg, escape = false)
+        appendable.printCmd(cmd, arg, escape = false)
         assertThat(printedString(), startsWith("""\$cmd{$arg}"""))
     }
 
@@ -98,7 +96,7 @@ class LatexPrintWriterTest {
     fun `printNewCmd prints newcommand`() {
         val cmd = "mycommand"
         val body = """kroppen til vår cmd"""
-        printWriter.printNewCmd(cmd, body)
+        appendable.printNewCmd(cmd, body)
         assertThat(printedString(), startsWith("""\newcommand{\$cmd}{$body}"""))
     }
 
@@ -106,7 +104,7 @@ class LatexPrintWriterTest {
     fun `printNewCmd escapes body with latex meta characters`() {
         val cmd = "mycommand"
         val body = """kroppen til vår cmd med _"""
-        printWriter.printNewCmd(cmd, body)
+        appendable.printNewCmd(cmd, body)
         assertThat(printedString(), startsWith("""\newcommand{\$cmd}{${body.latexEscape()}}"""))
     }
 
@@ -114,14 +112,14 @@ class LatexPrintWriterTest {
     fun `printNewCmd can print body without escaping latex meta characters`() {
         val cmd = "mycommand"
         val body = """\othercmd{hei_sann}"""
-        printWriter.printNewCmd(cmd, body, escape = false)
+        appendable.printNewCmd(cmd, body, escape = false)
         assertThat(printedString(), startsWith("""\newcommand{\$cmd}{${body}}"""))
     }
 
     @Test
     fun `printCmd with CommandBuilder prints as command`() {
         val cmd = "paragraph"
-        printWriter.printCmd(cmd) { /* This empty block is important to test correct function */ }
+        appendable.printCmd(cmd) { /* This empty block is important to test correct function */ }
         assertThat(printedString(), startsWith("""\$cmd"""))
     }
 
@@ -131,32 +129,34 @@ class LatexPrintWriterTest {
         val cmd = "paragraph"
         val arg1 = "mitt første argument"
         val arg2 = "mitt andre argument"
-        printWriter.printCmd(cmd) {
-            arg { it.print(arg1) }
-            arg { it.print(arg2) }
+        appendable.printCmd(cmd) {
+            arg { print(arg1) }
+            arg { print(arg2) }
         }
         assertThat(printedString(), startsWith("""\$cmd{$arg1}{$arg2}"""))
     }
 
     @Test
     fun `printCmd with CommandBuilder ends with newline`() {
-        printWriter.printCmd("paragraph") { arg { it.print("hei") } }
+        appendable.printCmd("paragraph") { arg { print("hei") } }
         assertThat(printedString(), endsWith("\n"))
     }
 
     @Test
     fun `printNewCmd with bodybuilder prints new command`() {
         val name = "mycmd"
-        printWriter.printNewCmd(name) {
-            it.println("heisann")
+        appendable.printNewCmd(name) {
+            println("heisann")
         }
         assertThat(printedString(), startsWith("""\newcommand{\$name}"""))
     }
 
     @Test
     fun `printNewCmd with bodybuilder prints body in curly brackets`() {
-        printWriter.printNewCmd("mycmd") {
-            it.println("heisann")
+        appendable.apply {
+            printNewCmd("mycmd") {
+                println("heisann")
+            }
         }
         assertThat(printedString().replace(System.lineSeparator(), ""), endsWith("{heisann}"))
     }
@@ -164,9 +164,15 @@ class LatexPrintWriterTest {
     @Test
     fun `printNewCmd with bodybuilder can have body that invokes other cmd`() {
         val invoke = "otherCmd"
-        printWriter.printNewCmd("mycmd") {
-            it.printCmd(invoke)
+        appendable.printNewCmd("mycmd") {
+            printCmd(invoke)
         }
         assertThat(printedString().replace(System.lineSeparator(), ""), endsWith("""{\$invoke}"""))
+    }
+
+    @Test
+    fun `printCmd allows square brackets in argument`() {
+        appendable.printCmd("aCmd", "regularArg", "X[l]")
+        assertThat(printedString().replace(System.lineSeparator(), ""), equalTo("""\aCmd{regularArg}{X[l]}"""))
     }
 }

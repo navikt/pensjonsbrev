@@ -4,21 +4,19 @@ import no.nav.pensjon.brev.api.model.Felles
 import no.nav.pensjon.brev.api.model.LetterMetadata
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
-import no.nav.pensjon.brev.template.base.BaseTemplate
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import kotlin.reflect.KClass
 
 fun <Lang : LanguageSupport, LetterData : Any> createTemplate(
     name: String,
-    base: BaseTemplate,
     letterDataType: KClass<LetterData>,
     languages: Lang,
     letterMetadata: LetterMetadata,
     init: TemplateRootScope<Lang, LetterData>.() -> Unit
 ): LetterTemplate<Lang, LetterData> =
     with(TemplateRootScope<Lang, LetterData>().apply(init)) {
-        return LetterTemplate(name, title, base, letterDataType, languages, outline, attachments, letterMetadata)
+        return LetterTemplate(name, title, letterDataType, languages, outline, attachments, letterMetadata)
     }
 
 @TemplateModelHelpers([Felles::class])

@@ -3,7 +3,6 @@ package no.nav.pensjon.brev.template.dsl
 import no.nav.pensjon.brev.maler.fraser.*
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.ContentOrControlStructure.*
-import no.nav.pensjon.brev.template.base.PensjonLatex
 import no.nav.pensjon.brev.template.dsl.SomeDtoSelectors.name
 import no.nav.pensjon.brev.template.dsl.expression.*
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -15,7 +14,6 @@ class TemplateTest {
     fun `createTemplate can add outline with title1 using text-builder`() {
         val doc = createTemplate(
             name = "test",
-            base = PensjonLatex,
             letterDataType = Unit::class,
             languages = languages(Language.Bokmal),
             letterMetadata = testLetterMetadata,
@@ -32,10 +30,8 @@ class TemplateTest {
             LetterTemplate(
                 name = "test",
                 title = listOf(bokmalTittel),
-                base = PensjonLatex,
                 letterDataType = Unit::class,
                 language = languages(Language.Bokmal),
-                letterMetadata = testLetterMetadata,
                 outline = listOf(
                     Content(
                         Element.OutlineContent.Title1(
@@ -46,7 +42,8 @@ class TemplateTest {
                             )
                         )
                     )
-                )
+                ),
+                letterMetadata = testLetterMetadata
             ),
             doc
         )
@@ -71,7 +68,6 @@ class TemplateTest {
 
         val doc = createTemplate(
             name = "test",
-            base = PensjonLatex,
             letterDataType = SomeDto::class,
             languages = languages(Language.Bokmal),
             letterMetadata = testLetterMetadata,
@@ -84,17 +80,16 @@ class TemplateTest {
             LetterTemplate(
                 name = "test",
                 title = listOf(bokmalTittel),
-                base = PensjonLatex,
                 letterDataType = SomeDto::class,
                 language = languages(Language.Bokmal),
-                letterMetadata = testLetterMetadata,
                 outline = emptyList(),
                 attachments = listOf(
                     IncludeAttachment(
                         Expression.Literal(Unit),
                         attachment
                     )
-                )
+                ),
+                letterMetadata = testLetterMetadata
             ),
             doc
         )
@@ -119,7 +114,6 @@ class TemplateTest {
     fun `createTemplate adds literal title`() {
         val doc = createTemplate(
             name = "test",
-            base = PensjonLatex,
             letterDataType = Unit::class,
             languages = languages(Language.Bokmal),
             letterMetadata = testLetterMetadata,
@@ -134,9 +128,7 @@ class TemplateTest {
             LetterTemplate(
                 name = "test",
                 title = listOf(bokmalTittel),
-                base = PensjonLatex,
                 letterDataType = Unit::class,
-                letterMetadata = testLetterMetadata,
                 language = languages(Language.Bokmal),
                 outline = listOf(
                     Content(
@@ -148,7 +140,8 @@ class TemplateTest {
                             )
                         )
                     )
-                )
+                ),
+                letterMetadata = testLetterMetadata
             ), doc
         )
     }
@@ -157,7 +150,6 @@ class TemplateTest {
     fun `createTemplate adds outline`() {
         val doc = createTemplate(
             name = "test",
-            base = PensjonLatex,
             letterDataType = Unit::class,
             languages = languages(Language.Bokmal),
             letterMetadata = testLetterMetadata,
@@ -175,14 +167,13 @@ class TemplateTest {
             LetterTemplate(
                 name = "test",
                 title = listOf(bokmalTittel),
-                base = PensjonLatex,
                 letterDataType = Unit::class,
                 language = languages(Language.Bokmal),
-                letterMetadata = testLetterMetadata,
                 outline = listOf(
                     Element.OutlineContent.Title1(listOf(Content(Element.OutlineContent.ParagraphContent.Text.Literal.create(Language.Bokmal to "Tittel")))),
                     Element.OutlineContent.Paragraph(listOf(Content(Element.OutlineContent.ParagraphContent.Text.Literal.create(Language.Bokmal to "Dette er tekst som kun brukes i dette brevet."))))
-                ).map { Content(it) }
+                ).map { Content(it) },
+                letterMetadata = testLetterMetadata
             ),
             doc
         )

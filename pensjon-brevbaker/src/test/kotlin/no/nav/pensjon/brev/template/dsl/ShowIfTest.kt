@@ -3,7 +3,6 @@ package no.nav.pensjon.brev.template.dsl
 import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.equalTo
 import no.nav.pensjon.brev.template.*
-import no.nav.pensjon.brev.template.base.PensjonLatex
 import no.nav.pensjon.brev.template.dsl.SomeDtoSelectors.name
 import no.nav.pensjon.brev.template.dsl.SomeDtoSelectors.pensjonInnvilget
 import no.nav.pensjon.brev.template.dsl.expression.*
@@ -16,22 +15,20 @@ class ShowIfTest {
         val expected = LetterTemplate(
             name = "test",
             title = listOf(nynorskTittel),
-            base = PensjonLatex,
             letterDataType = SomeDto::class,
             language = languages(Language.Nynorsk),
-            letterMetadata = testLetterMetadata,
             outline = listOf(
                 ContentOrControlStructure.Conditional(
                     predicate = Expression.FromScope(ExpressionScope<SomeDto, *>::argument).pensjonInnvilget,
                     showIf = listOf(newText(Language.Nynorsk to "jadda")),
                     showElse = listOf(newText(Language.Nynorsk to "neida"))
                 )
-            )
+            ),
+            letterMetadata = testLetterMetadata
         )
 
         val actual = createTemplate(
             name = "test",
-            base = PensjonLatex,
             letterDataType = SomeDto::class,
             languages = languages(Language.Nynorsk),
             letterMetadata = testLetterMetadata,
@@ -56,10 +53,8 @@ class ShowIfTest {
         val expected = LetterTemplate(
             name = "test",
             title = listOf(nynorskTittel),
-            base = PensjonLatex,
             letterDataType = SomeDto::class,
             language = languages(Language.Nynorsk),
-            letterMetadata = testLetterMetadata,
             outline = listOf(
                 ContentOrControlStructure.Conditional(
                     predicate = exprScope.pensjonInnvilget,
@@ -72,12 +67,12 @@ class ShowIfTest {
                         )
                     )
                 )
-            )
+            ),
+            letterMetadata = testLetterMetadata
         )
 
         val actual = createTemplate(
             name = "test",
-            base = PensjonLatex,
             letterDataType = SomeDto::class,
             languages = languages(Language.Nynorsk),
             letterMetadata = testLetterMetadata,
@@ -101,10 +96,8 @@ class ShowIfTest {
         val expected = LetterTemplate(
             name = "test",
             title = listOf(nynorskTittel),
-            base = PensjonLatex,
             letterDataType = SomeDto::class,
             language = languages(Language.Nynorsk),
-            letterMetadata = testLetterMetadata,
             outline = listOf(
                 ContentOrControlStructure.Conditional(
                     predicate = exprScope.pensjonInnvilget,
@@ -117,12 +110,12 @@ class ShowIfTest {
                         )
                     )
                 )
-            )
+            ),
+            letterMetadata = testLetterMetadata
         )
 
         val actual = createTemplate(
             name = "test",
-            base = PensjonLatex,
             letterDataType = SomeDto::class,
             languages = languages(Language.Nynorsk),
             letterMetadata = testLetterMetadata,
