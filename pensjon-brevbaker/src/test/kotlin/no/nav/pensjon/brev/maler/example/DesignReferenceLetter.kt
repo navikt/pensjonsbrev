@@ -7,7 +7,6 @@ import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.VedtaksbrevTemplate
-import no.nav.pensjon.brev.template.base.PensjonLatex
 import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -18,7 +17,6 @@ object DesignReferenceLetter : VedtaksbrevTemplate<LetterExampleDto> {
 
     override val template = createTemplate(
         name = "EKSEMPEL_BREV", //Letter ID
-        base = PensjonLatex, //Master-template
         letterDataType = LetterExampleDto::class, // Data class containing the required data of this letter
         languages = languages(Bokmal, Nynorsk),
         letterMetadata = LetterMetadata(

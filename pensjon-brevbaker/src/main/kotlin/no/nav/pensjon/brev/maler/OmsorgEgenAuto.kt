@@ -10,7 +10,6 @@ import no.nav.pensjon.brev.maler.vedlegg.egenerklaeringPleieOgOmsorgsarbeid
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.VedtaksbrevTemplate
-import no.nav.pensjon.brev.template.base.PensjonLatex
 import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.plus
@@ -26,7 +25,6 @@ object OmsorgEgenAuto : VedtaksbrevTemplate<OmsorgEgenAutoDto> {
 
     override val template = createTemplate(
         name = kode.name,
-        base = PensjonLatex,
         letterDataType = OmsorgEgenAutoDto::class,
         languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(

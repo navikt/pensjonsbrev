@@ -4,7 +4,6 @@ import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.equalTo
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Language.Nynorsk
-import no.nav.pensjon.brev.template.base.PensjonLatex
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import org.junit.jupiter.api.Test
 
@@ -25,21 +24,19 @@ class IncludeAttachmentTest {
         val expected = LetterTemplate(
             name = "test",
             title = listOf(newText(Nynorsk to "tittel")),
-            base = PensjonLatex,
             letterDataType = SomeDto::class,
             language = languages(Nynorsk),
-            letterMetadata = testLetterMetadata,
             outline = emptyList(),
             attachments = listOf(
                 IncludeAttachment(Unit.expr(), testVedlegg, false.expr())
-            )
+            ),
+            letterMetadata = testLetterMetadata
         )
 
         val actual = createTemplate(
             name = "test",
-            base = PensjonLatex,
-            languages = languages(Nynorsk),
             letterDataType = SomeDto::class,
+            languages = languages(Nynorsk),
             letterMetadata = testLetterMetadata,
         ) {
             title { text(Nynorsk to "tittel") }

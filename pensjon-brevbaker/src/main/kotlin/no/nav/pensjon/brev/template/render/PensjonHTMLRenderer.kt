@@ -1,4 +1,4 @@
-package no.nav.pensjon.brev.template.base
+package no.nav.pensjon.brev.template.render
 
 import kotlinx.html.*
 import kotlinx.html.stream.appendHTML
@@ -7,47 +7,13 @@ import no.nav.pensjon.brev.template.base.pensjonlatex.*
 import java.time.format.FormatStyle
 import java.util.*
 
+
 private object AltTexts {
     val logo = Element.OutlineContent.ParagraphContent.Text.Literal.create(
         Language.Bokmal to "NAV logo",
         Language.Nynorsk to "NAV logo",
         Language.English to "NAV logo",
     )
-}
-
-abstract class LetterRenderer<R : RenderedLetter> {
-
-    fun render(letter: Letter<*>): RenderedLetter = renderLetter(letter.toScope(), letter.template)
-
-    private fun <C : Element<*>> controlStructure(scope: ExpressionScope<*, *>, element: ContentOrControlStructure<*, C>, block: (s: ExpressionScope<*, *>, e: C) -> Unit) {
-        when (element) {
-            is ContentOrControlStructure.Content -> block(scope, element.content)
-
-            is ContentOrControlStructure.Conditional -> {
-                val body = if (element.predicate.eval(scope)) element.showIf else element.showElse
-                render(scope, body, block)
-            }
-
-            is ContentOrControlStructure.ForEach<*, C, *> -> element.render(scope) { s, e -> controlStructure(s, e, block) }
-        }
-    }
-
-    protected fun <C : Element<*>> render(scope: ExpressionScope<*, *>, elements: List<ContentOrControlStructure<*, C>>, renderBlock: (scope: ExpressionScope<*, *>, element: C) -> Unit) {
-        elements.forEach {
-            controlStructure(scope, it) { controlStructureScope, content ->
-                renderBlock(controlStructureScope, content)
-            }
-        }
-    }
-
-    @JvmName("renderAttachments")
-    protected fun render(scope: ExpressionScope<*, *>, attachments: List<IncludeAttachment<*, *>>, renderAttachment: (attachmentScope: ExpressionScope<*, *>, id: Int, attachment: AttachmentTemplate<*, *>) -> Unit) {
-        attachments.filter { it.predicate.eval(scope) }
-            .mapIndexed { index, attachment -> renderAttachment(attachment.toScope(scope), index, attachment.template) }
-    }
-
-    protected abstract fun renderLetter(scope: ExpressionScope<*, *>, template: LetterTemplate<*, *>): R
-
 }
 
 object PensjonHTMLRenderer : LetterRenderer<RenderedHtmlLetter>() {
@@ -64,7 +30,7 @@ object PensjonHTMLRenderer : LetterRenderer<RenderedHtmlLetter>() {
     override fun renderLetter(scope: ExpressionScope<*, *>, template: LetterTemplate<*, *>): RenderedHtmlLetter = RenderedHtmlLetter().apply {
         newFile("index.html") {
             appendLine("<!DOCTYPE html>").appendHTML().html {
-                lang = languageTag(scope.language)
+                lang = scope.language.locale().toLanguageTag()
                 head {
                     meta(charset = Charsets.UTF_8.name())
                     title { renderText(scope, template.title) }
@@ -90,13 +56,6 @@ object PensjonHTMLRenderer : LetterRenderer<RenderedHtmlLetter>() {
             }
         }
     }
-
-    private fun languageTag(lang: Language) =
-        when (lang) {
-            Language.Bokmal -> "nb"
-            Language.English -> "en"
-            Language.Nynorsk -> "nn"
-        }
 
     private fun FlowContent.renderOutlineContent(scope: ExpressionScope<*, *>, element: Element.OutlineContent<*>): Unit =
         when (element) {

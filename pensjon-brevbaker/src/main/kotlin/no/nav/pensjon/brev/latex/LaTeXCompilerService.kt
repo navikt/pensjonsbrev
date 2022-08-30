@@ -21,7 +21,7 @@ class LaTeXCompilerService(private val pdfByggerUrl: String) {
             requestTimeout = 120_000
         }
     }
-
+    // TODO: Se på feilhåndtering ved 400 fra pdf-bygger
     suspend fun producePDF(compilationInput: PdfCompilationInput, callId: String?): PDFCompilationOutput =
         httpClient.post("$pdfByggerUrl/compile") {
             contentType(ContentType.Application.Json)

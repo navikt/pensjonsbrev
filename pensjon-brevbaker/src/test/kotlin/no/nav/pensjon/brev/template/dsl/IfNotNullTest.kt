@@ -5,7 +5,6 @@ import no.nav.pensjon.brev.api.model.LetterMetadata
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.ContentOrControlStructure.*
 import no.nav.pensjon.brev.template.Language.*
-import no.nav.pensjon.brev.template.base.PensjonLatex
 import no.nav.pensjon.brev.template.dsl.NullBrevDtoSelectors.test1
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
@@ -20,7 +19,6 @@ class IfNotNullTest {
 
     val template = createTemplate(
         name = "NULL_BREV",
-        base = PensjonLatex,
         letterDataType = NullBrevDto::class,
         languages = languages(Bokmal),
         letterMetadata = LetterMetadata(

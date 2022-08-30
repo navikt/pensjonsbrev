@@ -10,7 +10,6 @@ import no.nav.pensjon.brev.maler.fraser.vedtak.Vedtak
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.VedtaksbrevTemplate
-import no.nav.pensjon.brev.template.base.PensjonLatex
 import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
@@ -23,7 +22,6 @@ object OpptjeningVedForhoeyetHjelpesats : VedtaksbrevTemplate<OpptjeningVedForho
 
     override val template = createTemplate(
         name = kode.name,
-        base = PensjonLatex,
         letterDataType = OpptjeningVedForhoeyetHjelpesatsDto::class,
         languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(

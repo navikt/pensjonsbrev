@@ -5,6 +5,7 @@ import no.nav.pensjon.brev.*
 import no.nav.pensjon.brev.api.model.maler.OmsorgEgenAutoDto
 import no.nav.pensjon.brev.latex.*
 import no.nav.pensjon.brev.template.*
+import no.nav.pensjon.brev.template.render.PensjonLatexRenderer
 import org.junit.jupiter.api.*
 
 @Tag(TestTags.PDF_BYGGER)
@@ -17,7 +18,8 @@ class OmsorgEgenAutoITest {
             Fixtures.create<OmsorgEgenAutoDto>(),
             Language.Bokmal,
             Fixtures.fellesAuto
-        ).render()
+        )
+            .let { PensjonLatexRenderer.render(it) }
             .let { PdfCompilationInput(it.base64EncodedFiles()) }
             .let { runBlocking { LaTeXCompilerService(PDF_BUILDER_URL).producePDF(it, "test").base64PDF } }
             .also { writeTestPDF("OMSORG_EGEN_AUTO_BOKMAL", it) }

@@ -12,11 +12,11 @@ import no.nav.pensjon.brev.latex.LaTeXCompilerService
 import no.nav.pensjon.brev.latex.PdfCompilationInput
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Letter
-import no.nav.pensjon.brev.template.base.PensjonLatex
 import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.render.PensjonLatexRenderer
 import no.nav.pensjon.brev.writeTestPDF
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
@@ -29,7 +29,6 @@ class MaanedligUfoeretrygdFoerSkattITest {
     fun testVedlegg() {
         val template = createTemplate(
             name = "test-template",
-            base = PensjonLatex,
             letterDataType = Unit::class,
             languages = languages(Bokmal),
             letterMetadata = LetterMetadata(
@@ -81,7 +80,8 @@ class MaanedligUfoeretrygdFoerSkattITest {
             Unit,
             Bokmal,
             Fixtures.fellesAuto
-        ).render()
+        )
+            .let { PensjonLatexRenderer.render(it) }
             .let { PdfCompilationInput(it.base64EncodedFiles()) }
             .let { runBlocking { LaTeXCompilerService(PDF_BUILDER_URL).producePDF(it, "test").base64PDF } }
             .also { writeTestPDF("MaanedligUfoeretrygdFoerSkatt", it) }

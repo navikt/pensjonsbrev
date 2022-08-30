@@ -1,28 +1,22 @@
 package no.nav.pensjon.brev.template
 
 import no.nav.pensjon.brev.api.model.LetterMetadata
-import no.nav.pensjon.brev.template.base.BaseTemplate
 import kotlin.reflect.KClass
 
 data class LetterTemplate<Lang : LanguageSupport, LetterData : Any>(
     val name: String,
     val title: List<TextElement<Lang>>,
-    val base: BaseTemplate,
     val letterDataType: KClass<LetterData>,
     val language: Lang,
     val outline: List<OutlineElement<Lang>>,
     val attachments: List<IncludeAttachment<Lang, *>> = emptyList(),
     val letterMetadata: LetterMetadata,
 ) {
-
     init {
         if (title.isEmpty()) {
             throw MissingTitleInTemplateException("Missing title in template: $name")
         }
     }
-
-    fun render(letter: Letter<*>) =
-        base.render(letter)
 }
 
 sealed class Expression<out Out> {
@@ -131,7 +125,6 @@ typealias TableRowElement<Lang> = ContentOrControlStructure<Lang, Element.Outlin
 typealias ParagraphContentElement<Lang> = ContentOrControlStructure<Lang, Element.OutlineContent.ParagraphContent<Lang>>
 typealias ListItemElement<Lang> = ContentOrControlStructure<Lang, Element.OutlineContent.ParagraphContent.ItemList.Item<Lang>>
 typealias OutlineElement<Lang> = ContentOrControlStructure<Lang, Element.OutlineContent<Lang>>
-typealias AnyElement<Lang> = ContentOrControlStructure<Lang, Element<Lang>>
 
 sealed class Element<out Lang : LanguageSupport> {
     sealed class OutlineContent<out Lang : LanguageSupport> : Element<Lang>() {
@@ -318,6 +311,7 @@ sealed class Element<out Lang : LanguageSupport> {
                 ) : Form<Lang>()
 
                 data class MultipleChoice<out Lang : LanguageSupport>(
+                    // TODO: Denne bør ikke være TextElement, bør være Element.OutlineContent.ParagraphContent.Text
                     val prompt: TextElement<Lang>,
                     val choices: List<ParagraphContent.Text<Lang>>,
                     val vspace: Boolean = true,

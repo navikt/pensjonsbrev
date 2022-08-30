@@ -9,6 +9,7 @@ import no.nav.pensjon.brev.latex.LaTeXCompilerService
 import no.nav.pensjon.brev.latex.PdfCompilationInput
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.Letter
+import no.nav.pensjon.brev.template.render.PensjonLatexRenderer
 import no.nav.pensjon.brev.writeTestPDF
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
@@ -23,7 +24,8 @@ class UfoerOmregningEnsligITest {
             Fixtures.create<UfoerOmregningEnsligDto>(),
             Language.Bokmal,
             Fixtures.fellesAuto,
-        ).render()
+        )
+            .let { PensjonLatexRenderer.render(it) }
             .let { PdfCompilationInput(it.base64EncodedFiles()) }
             .let { runBlocking { LaTeXCompilerService(PDF_BUILDER_URL).producePDF(it, "test").base64PDF } }
             .also { writeTestPDF("UT_DOD_ENSLIG_AUTO_BOKMAL", it) }
