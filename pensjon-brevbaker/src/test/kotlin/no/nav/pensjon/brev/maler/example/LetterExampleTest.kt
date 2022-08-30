@@ -5,7 +5,6 @@ import no.nav.pensjon.brev.Fixtures
 import no.nav.pensjon.brev.PDF_BUILDER_URL
 import no.nav.pensjon.brev.TestTags
 import no.nav.pensjon.brev.latex.LaTeXCompilerService
-import no.nav.pensjon.brev.latex.PdfCompilationInput
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.Letter
 import no.nav.pensjon.brev.template.render.PensjonLatexRenderer
@@ -25,7 +24,6 @@ class LetterExampleTest {
             Fixtures.fellesAuto
         )
             .let { PensjonLatexRenderer.render(it) }
-            .let { PdfCompilationInput(it.base64EncodedFiles()) }
             .let { runBlocking { LaTeXCompilerService(PDF_BUILDER_URL).producePDF(it, "test").base64PDF } }
             .also { writeTestPDF("EKSEMPELBREV_BOKMAL", it) }
     }
@@ -39,7 +37,6 @@ class LetterExampleTest {
             Fixtures.fellesAuto
         )
             .let { PensjonLatexRenderer.render(it) }
-            .let { PdfCompilationInput(it.base64EncodedFiles()) }
             .let { runBlocking { LaTeXCompilerService(PDF_BUILDER_URL).producePDF(it, "test").base64PDF } }
             .also { writeTestPDF("DESIGN_REFERENCE_LETTER_BOKMAL", it) }
     }

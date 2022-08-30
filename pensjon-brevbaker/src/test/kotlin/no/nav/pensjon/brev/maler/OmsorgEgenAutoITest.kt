@@ -20,7 +20,6 @@ class OmsorgEgenAutoITest {
             Fixtures.fellesAuto
         )
             .let { PensjonLatexRenderer.render(it) }
-            .let { PdfCompilationInput(it.base64EncodedFiles()) }
             .let { runBlocking { LaTeXCompilerService(PDF_BUILDER_URL).producePDF(it, "test").base64PDF } }
             .also { writeTestPDF("OMSORG_EGEN_AUTO_BOKMAL", it) }
     }

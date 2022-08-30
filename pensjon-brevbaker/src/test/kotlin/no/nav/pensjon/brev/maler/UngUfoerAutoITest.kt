@@ -20,7 +20,6 @@ class UngUfoerAutoITest {
             Language.Bokmal,
             Fixtures.fellesAuto
         ).let { PensjonLatexRenderer.render(it) }
-            .let { PdfCompilationInput(it.base64EncodedFiles()) }
             .let { runBlocking { LaTeXCompilerService(PDF_BUILDER_URL).producePDF(it, "test").base64PDF } }
             .also { writeTestPDF("UNG_UFOER_AUTO_BOKMAL", it) }
     }

@@ -4,7 +4,7 @@ import no.nav.pensjon.brev.template.*
 
 abstract class LetterRenderer<R : RenderedLetter> {
 
-    fun render(letter: Letter<*>): RenderedLetter = renderLetter(letter.toScope(), letter.template)
+    fun render(letter: Letter<*>): R = renderLetter(letter.toScope(), letter.template)
 
     private fun <C : Element<*>> controlStructure(scope: ExpressionScope<*, *>, element: ContentOrControlStructure<*, C>, block: (s: ExpressionScope<*, *>, e: C) -> Unit) {
         when (element) {
