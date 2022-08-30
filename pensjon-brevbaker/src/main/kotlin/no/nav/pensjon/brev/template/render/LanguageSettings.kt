@@ -1,4 +1,4 @@
-package no.nav.pensjon.brev.template.base.pensjonlatex
+package no.nav.pensjon.brev.template.render
 
 import no.nav.pensjon.brev.api.model.FellesSelectors.avsenderEnhet
 import no.nav.pensjon.brev.api.model.NAVEnhetSelectors.nettside
@@ -8,7 +8,7 @@ import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brev.template.dsl.expression.*
 
-object Setting {
+object LanguageSetting {
     object Sakspart {
         val navn = "navnprefix"
         val saksnummer = "saksnummerprefix"
@@ -17,7 +17,7 @@ object Setting {
 }
 
 val pensjonLatexSettings = languageSettings {
-    setting(Setting.Sakspart.navn) {
+    setting(LanguageSetting.Sakspart.navn) {
         text(
             Language.Bokmal to "Navn:",
             Language.Nynorsk to "Namn:",
@@ -25,7 +25,7 @@ val pensjonLatexSettings = languageSettings {
         )
     }
 
-    setting(Setting.Sakspart.saksnummer) {
+    setting(LanguageSetting.Sakspart.saksnummer) {
         text(
             Language.Bokmal to "Saksnummer:",
             Language.Nynorsk to "Saksnummer:",
@@ -33,7 +33,7 @@ val pensjonLatexSettings = languageSettings {
         )
     }
 
-    setting(Setting.Sakspart.foedselsnummer) {
+    setting(LanguageSetting.Sakspart.foedselsnummer) {
         text(
             Language.Bokmal to "Fødselsnummer:",
             Language.Nynorsk to "Fødselsnummer:",
