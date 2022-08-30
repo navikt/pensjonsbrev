@@ -148,9 +148,9 @@ object PensjonHTMLRenderer : LetterRenderer<RenderedHtmlLetter>() {
             tbody {
                 with(scope.felles.bruker) {
                     listOf(
-                        Setting.Sakspart.navn to "$fornavn $mellomnavn $etternavn",
-                        Setting.Sakspart.foedselsnummer to foedselsnummer.value,
-                        Setting.Sakspart.saksnummer to scope.felles.saksnummer,
+                        LanguageSetting.Sakspart.navn to "$fornavn $mellomnavn $etternavn",
+                        LanguageSetting.Sakspart.foedselsnummer to foedselsnummer.value,
+                        LanguageSetting.Sakspart.saksnummer to scope.felles.saksnummer,
                     )
                 }.forEach {
                     tr {

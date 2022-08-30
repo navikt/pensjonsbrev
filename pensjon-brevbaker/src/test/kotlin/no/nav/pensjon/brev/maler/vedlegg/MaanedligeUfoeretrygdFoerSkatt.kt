@@ -1,24 +1,17 @@
 package no.nav.pensjon.brev.maler.vedlegg
 
 import kotlinx.coroutines.runBlocking
-import no.nav.pensjon.brev.Fixtures
-import no.nav.pensjon.brev.PDF_BUILDER_URL
-import no.nav.pensjon.brev.TestTags
-import no.nav.pensjon.brev.api.model.Kroner
-import no.nav.pensjon.brev.api.model.LetterMetadata
+import no.nav.pensjon.brev.*
+import no.nav.pensjon.brev.api.model.*
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligUfoeretrygdFoerSkattDto
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligUfoeretrygdFoerSkattDto.UfoeretrygdPerMaaned
 import no.nav.pensjon.brev.latex.LaTeXCompilerService
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Letter
-import no.nav.pensjon.brev.template.dsl.createTemplate
+import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brev.template.dsl.expression.expr
-import no.nav.pensjon.brev.template.dsl.languages
-import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.render.PensjonLatexRenderer
-import no.nav.pensjon.brev.writeTestPDF
-import org.junit.jupiter.api.Tag
-import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.*
 import java.time.LocalDate
 
 @Tag(TestTags.PDF_BYGGER)
