@@ -13,9 +13,10 @@ import kotlinx.coroutines.runBlocking
 import no.nav.pensjon.brev.api.model.*
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.latex.LaTeXCompilerService
-import no.nav.pensjon.brev.template.render.RenderedLatexLetter
+import no.nav.pensjon.brev.template.render.*
 import java.io.File
 import java.util.*
+import kotlin.io.path.Path
 
 val BREVBAKER_URL = System.getenv("BREVBAKER_URL") ?: "http://localhost:8080"
 const val PDF_BUILDER_URL = "http://localhost:8081"
@@ -52,10 +53,10 @@ fun writeTestPDF(pdfFileName: String, pdf: String) {
     println("Test-file written to file:${"\\".repeat(3)}${file.absolutePath}".replace('\\', '/'))
 }
 
-fun writeTestHTML(fileName: String, html: String) {
-    val file = File("build/test_html/${fileName}.html")
-    file.parentFile.mkdirs()
-    file.writeBytes(Base64.getDecoder().decode(html))
+fun writeTestHTML(letterName: String, htmlLetter: RenderedHtmlLetter) {
+    val dir = Path("build/test_html/$letterName")
+    dir.toFile().mkdirs()
+    htmlLetter.files.forEach { it.writeTo(dir) }
 }
 
 

@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.template.render
 
 import no.nav.pensjon.brev.latex.LatexAppendable
+import java.nio.file.Path
 import java.util.*
 
 interface RenderedLetter {
@@ -52,9 +53,20 @@ class RenderedHtmlLetter : RenderedLetter {
 }
 
 sealed class RenderedFile {
-    class Binary(val fileName: String, val content: ByteArray) : RenderedFile()
+    abstract fun writeTo(path: Path)
+
+    class Binary(val fileName: String, val content: ByteArray) : RenderedFile() {
+        override fun writeTo(path: Path) {
+            path.resolve(fileName).toFile().writeBytes(content)
+        }
+    }
+
     class PlainText(val fileName: String, val content: String) : RenderedFile() {
         constructor(fileName: String, contentWriter: Appendable.() -> Unit) :
                 this(fileName, String(StringBuilder().apply(contentWriter)))
+
+        override fun writeTo(path: Path) {
+            path.resolve(fileName).toFile().writeText(content, Charsets.UTF_8)
+        }
     }
 }
