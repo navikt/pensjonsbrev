@@ -53,15 +53,16 @@ class RenderedHtmlLetter : RenderedLetter {
 }
 
 sealed class RenderedFile {
+    abstract val fileName: String
     abstract fun writeTo(path: Path)
 
-    class Binary(val fileName: String, val content: ByteArray) : RenderedFile() {
+    class Binary(override val fileName: String, val content: ByteArray) : RenderedFile() {
         override fun writeTo(path: Path) {
             path.resolve(fileName).toFile().writeBytes(content)
         }
     }
 
-    class PlainText(val fileName: String, val content: String) : RenderedFile() {
+    class PlainText(override val fileName: String, val content: String) : RenderedFile() {
         constructor(fileName: String, contentWriter: Appendable.() -> Unit) :
                 this(fileName, String(StringBuilder().apply(contentWriter)))
 

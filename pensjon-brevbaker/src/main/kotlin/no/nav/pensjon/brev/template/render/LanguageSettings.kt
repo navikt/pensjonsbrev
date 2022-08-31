@@ -10,9 +10,16 @@ import no.nav.pensjon.brev.template.dsl.expression.*
 
 object LanguageSetting {
     object Sakspart {
-        val navn = "navnprefix"
-        val saksnummer = "saksnummerprefix"
-        val foedselsnummer = "foedselsnummerprefix"
+        const val navn = "navnprefix"
+        const val saksnummer = "saksnummerprefix"
+        const val foedselsnummer = "foedselsnummerprefix"
+    }
+    object Closing {
+        const val harDuSpoersmaal = "closingspoersmaal"
+        const val kontaktOss = "closingkontaktoss"
+        const val greeting = "closinggreeting"
+        const val saksbehandler = "closingsaksbehandlersuffix"
+        const val automatisk = "closingautomatisktext"
     }
 }
 
@@ -57,7 +64,8 @@ val pensjonLatexSettings = languageSettings {
         )
     }
 
-    setting("closingspoersmaal") {
+    // TODO: Slå sammen closingspoersmaal og closingkontaktoss til en frase.
+    setting(LanguageSetting.Closing.harDuSpoersmaal) {
         text(
             Language.Bokmal to "Har du spørsmål?",
             Language.Nynorsk to "Har du spørsmål?",
@@ -65,7 +73,7 @@ val pensjonLatexSettings = languageSettings {
         )
     }
 
-    setting("closingkontaktoss") {
+    setting(LanguageSetting.Closing.kontaktOss) {
         val nettside = felles.avsenderEnhet.nettside
         val telefonnummer = felles.avsenderEnhet.telefonnummer.format()
 
@@ -79,7 +87,7 @@ val pensjonLatexSettings = languageSettings {
         )
     }
 
-    setting("closinggreeting") {
+    setting(LanguageSetting.Closing.greeting) {
         text(
             Language.Bokmal to "Med vennlig hilsen",
             Language.Nynorsk to "Med vennleg helsing",
@@ -87,14 +95,14 @@ val pensjonLatexSettings = languageSettings {
         )
     }
 
-    setting("closingsaksbehandlersuffix") {
+    setting(LanguageSetting.Closing.saksbehandler) {
         text(
-            Language.Bokmal to "saksbehandler",
-            Language.Nynorsk to "saksbehandlar",
+            Language.Bokmal to "Saksbehandler",
+            Language.Nynorsk to "Saksbehandlar",
             Language.English to "Executive Officer",
         )
     }
-    setting("closingautomatisktext") {
+    setting(LanguageSetting.Closing.automatisk) {
         text(
             Language.Bokmal to "Brevet er produsert automatisk og derfor ikke underskrevet av saksbehandler.",
             Language.Nynorsk to "Brevet er produsert automatisk og er difor ikkje underskrive av saksbehandler.",

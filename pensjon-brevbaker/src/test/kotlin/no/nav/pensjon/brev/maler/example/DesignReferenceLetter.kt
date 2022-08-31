@@ -174,41 +174,41 @@ object DesignReferenceLetter : VedtaksbrevTemplate<LetterExampleDto> {
                             "det. Dette er grunnen til det. Dette er grunnen til det. Dette er grunnen til det. Du får 16 000 kroner i\n" +
                             "måneden fra januar 2022."
                 )
-            }
 
-            list {
-                item {
-                    text(
-                        Bokmal to "Nummerert list",
-                        Nynorsk to "Nummerert list",
-                    )
-                }
-                item {
-                    text(
-                        Bokmal to "Nummerert list",
-                        Nynorsk to "Nummerert list",
-                    )
-                }
-                item {
-                    text(
-                        Bokmal to "Nummerert list",
-                        Nynorsk to "Nummerert list",
-                    )
-                }
-                item {
-                    text(
-                        Bokmal to "Nummerert list",
-                        Nynorsk to "Nummerert list",
-                    )
-                }
-                item {
-                    text(
-                        Bokmal to "Nummerert list",
-                        Nynorsk to "Nummerert list",
-                    )
+
+                list {
+                    item {
+                        text(
+                            Bokmal to "Nummerert list",
+                            Nynorsk to "Nummerert list",
+                        )
+                    }
+                    item {
+                        text(
+                            Bokmal to "Nummerert list",
+                            Nynorsk to "Nummerert list",
+                        )
+                    }
+                    item {
+                        text(
+                            Bokmal to "Nummerert list",
+                            Nynorsk to "Nummerert list",
+                        )
+                    }
+                    item {
+                        text(
+                            Bokmal to "Nummerert list",
+                            Nynorsk to "Nummerert list",
+                        )
+                    }
+                    item {
+                        text(
+                            Bokmal to "Nummerert list",
+                            Nynorsk to "Nummerert list",
+                        )
+                    }
                 }
             }
-
 
         }
     }

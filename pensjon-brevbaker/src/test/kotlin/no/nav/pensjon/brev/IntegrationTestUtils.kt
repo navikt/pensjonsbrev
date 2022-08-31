@@ -57,6 +57,10 @@ fun writeTestHTML(letterName: String, htmlLetter: RenderedHtmlLetter) {
     val dir = Path("build/test_html/$letterName")
     dir.toFile().mkdirs()
     htmlLetter.files.forEach { it.writeTo(dir) }
+    htmlLetter.files.firstOrNull { it.fileName == "index.html" }
+        ?.also {
+            println("""Test index-html written to file://${dir.resolve(it.fileName).toAbsolutePath()}""")
+        }
 }
 
 

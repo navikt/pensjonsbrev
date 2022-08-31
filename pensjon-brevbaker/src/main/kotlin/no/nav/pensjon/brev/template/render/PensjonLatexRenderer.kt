@@ -4,7 +4,6 @@ import no.nav.pensjon.brev.api.model.*
 import no.nav.pensjon.brev.latex.LatexAppendable
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.*
-import no.nav.pensjon.brev.template.base.pensjonlatex.pensjonLatexSettings
 import java.lang.StringBuilder
 import java.time.*
 import java.time.format.*

@@ -152,6 +152,7 @@ sealed class Element<out Lang : LanguageSupport> {
                     }
             }
 
+            // TODO: Siden tabellene skal passe inn i et brev, så bør vi ha en maksimumsgrense på antall-kolonner (evt. bare total bredde)
             data class Table<out Lang : LanguageSupport>(
                 val rows: List<TableRowElement<Lang>>,
                 val header: Header<Lang>,

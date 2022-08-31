@@ -1,55 +1,162 @@
+html {
+    line-height: 1.5rem;
+    font-family: "Source Sans Pro", sans-serif;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.pensjonsbrev-rot {
+    max-width: 44rem;
+}
+
 img.pensjonsbrev-logo {
-    height: 46px;
-    margin: 54px 0 0 52px;
+    height: 3rem;
+    margin-bottom: 2rem;
 }
+
 .pensjonsbrev-brev {
-    margin: 67px 0 0 61px;
+    margin-top: 2rem;
+    margin-bottom: 2rem;
 }
+
+h1.pensjonsbrev-tittel {
+    margin-top: 1rem;
+    margin-bottom: 2rem;
+    line-height: 2rem;
+}
+
 .pensjonsbrev-brevhode {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
 }
-.pensjonsbrev-brevdato {
-    display: flex;
-    flex-direction: column;
-    justify-content: end;
+
+.pensjonsbrev-brevhode .pensjonsbrev-brevdato {
+    display: none;
 }
 
 .pensjonsbrev-brevkropp {
-    margin-top: 54px;
+    margin-top: 2rem;
+}
+
+h2.pensjonsbrev-title1 {
+    margin-top: 2rem;
+    margin-bottom: 0.5rem;
+    line-height: 1.7rem;
+}
+
+.pensjonsbrev-paragraph {
+    margin-bottom: 1.5rem;
 }
 
 /* Common */
 .pensjonsbrev-text-left {
     text-align: left;
 }
+
 .pensjonsbrev-text-right {
     text-align: right;
 }
 
+.pensjonsbrev-text-italic {
+    font-style: italic;
+}
+
+.pensjonsbrev-text-bold {
+    font-weight: bold;
+}
+
 /* Sakspart */
-table.pensjonsbrev-sakspart th {
-    text-align: left;
-    padding-right: 20px;
-    font-weight: normal;
+.pensjonsbrev-sakspart {
+    display: inline-grid;
+    grid-auto-flow: column;
+    grid-template-rows: repeat(6, auto);
+}
+.pensjonsbrev-sakspart-tittel {
+    margin-top: 1rem;
+}
+/* fjern margin på første tittel slik at vi ikke får for større mellomrom til tittel */
+.pensjonsbrev-sakspart > .pensjonsbrev-sakspart-tittel:nth-child(1) {
+    margin-top: 0;
+}
+.pensjonsbrev-sakspart-verdi {
+    margin-top: 0.4rem;
 }
 
 /* table */
 table.pensjonsbrev-table {
-    width: 70%;
+    margin-top: 1rem;
+    width: 100%;
     border-spacing: 0;
     border-collapse: collapse;
 }
+
 table.pensjonsbrev-table > thead {
-    height: 40px;
     background-color: #E6F0FF;
 }
-table.pensjonsbrev-table > tbody > tr {
-    height: 30px;
+
+table.pensjonsbrev-table > thead th {
+    padding: 0.9rem 0.5rem;
 }
+
+table.pensjonsbrev-table > tbody td {
+    padding: 0.6rem 0.5rem;
+}
+
 table.pensjonsbrev-table > tbody > tr:nth-child(even) {
     background-color: #F7F7F7;
     border-top: 1px solid #E5E5E5;
     border-bottom: 1px solid #E5E5E5;
+}
+
+/* Closing */
+.pensjonsbrev-closing-greeting {
+    margin-top: 3rem;
+    margin-bottom: 1.3rem;
+}
+
+.pensjonsbrev-closing-automatisk {
+    margin-top: 0.3rem;
+}
+
+.pensjonsbrev-closing-manuell {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+.pensjonsbrev-closing-saksbehandler {
+    margin-top: 1.3rem;
+    margin-right: 5rem;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Liten -> Stor */
+@media screen and (min-width: 30em) {
+    .pensjonsbrev-brevdato {
+        display: none;
+    }
+    .pensjonsbrev-brevhode .pensjonsbrev-brevdato {
+        display: flex;
+        flex-direction: column;
+        justify-content: end;
+    }
+
+    .pensjonsbrev-sakspart {
+        grid-auto-flow: row;
+        grid-template-columns: repeat(2, auto);
+        grid-row-gap: 0.4rem;
+        grid-column-gap: 1rem;
+        grid-template-rows: none;
+    }
+    /* bruker row/column gap */
+    .pensjonsbrev-sakspart > div {
+        margin-top: 0;
+    }
 }
