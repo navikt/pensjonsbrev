@@ -1,4 +1,4 @@
-package no.nav.pensjon.brev.template.base
+package no.nav.pensjon.brev.template.render
 
 //import kotlinx.html.*
 //import no.nav.pensjon.brev.template.*

@@ -53,8 +53,8 @@ fun writeTestPDF(pdfFileName: String, pdf: String) {
     println("Test-file written to file:${"\\".repeat(3)}${file.absolutePath}".replace('\\', '/'))
 }
 
-fun writeTestHTML(letterName: String, htmlLetter: RenderedHtmlLetter) {
-    val dir = Path("build/test_html/$letterName")
+fun writeTestHTML(letterName: String, htmlLetter: RenderedHtmlLetter, buildSubDir: String = "test_html") {
+    val dir = Path("build/$buildSubDir/$letterName")
     dir.toFile().mkdirs()
     htmlLetter.files.forEach { it.writeTo(dir) }
     htmlLetter.files.firstOrNull { it.fileName == "index.html" }
