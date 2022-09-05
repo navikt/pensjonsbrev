@@ -9,7 +9,11 @@ import java.time.LocalDate
 
 @Suppress("unused")
 data class OpphoererBarnetilleggAutoDto(
-    val barnetillegg: Barnetillegg,
+    val foedselsdatoPaaBarnetilleggOpphoert: LocalDate,  //Vedtaksdata_Kravhode_KravlinjeListe_KravLinje_KravlinjeRelatertPerson?
+    val oensketVirkningsDato: LocalDate,  //Vedtaksdata_Kravhode_onsketVirkningsDato
+    val barnetilleggFellesbarn: BarnetilleggFellesbarn?,
+    val barnetilleggSaerkullsbarn: BarnetilleggSaerkullsbarn?,
+    val brukerBorInorge: Boolean,
     val grunnbeloep: Kroner,  //Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Grunnbelop
     val sivilstand: Sivilstand,  //Vedtaksdata_Kravhode_BeregningsData_BeregningUfore_BeregningSivilstandAnvendt  Er mapping fra Pesys riktig?
     val ufoeretrygd: Ufoeretrygd,
@@ -24,24 +28,17 @@ data class Ufoeretrygd(
     val ektefelletilleggUtbeltalt: Kroner?,  //Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_Ektefelletillegg_ETnetto
     val gjenlevendetilleggUtbetalt: Kroner?,  //Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GTnetto
 )
-
-data class Barnetillegg(
-    val foedselsdatoPaaBarnetilleggOpphoert: List<LocalDate>,  //Vedtaksdata_Kravhode_KravlinjeListe_KravLinje_KravlinjeRelatertPerson?
-    val oensketVirkningsDato: LocalDate,  //Vedtaksdata_Kravhode_onsketVirkningsDato
-    val fellesbarn: Fellesbarn?,
-    val saerkullsbarn: Saerkullsbarn?,
-)
-data class Fellesbarn(
+data class BarnetilleggFellesbarn(
     val antallBarnInnvilget: Int,  //<Vedtaksbrev_Grunnlag_Persongrunnlagsliste_AntallBarn?
     val beloepNetto: Kroner,  //Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBnetto
-    val fradrag: Int,  //Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_BTFBfradrag
+    val fradrag: Kroner,  //Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_BTFBfradrag
     val fribeloep: Kroner,  //Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBfribelop
     val inntektAnnenForelder: Kroner,  //Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_BTFBinntektAnnenForelder
     val inntektBruktIAvkortning: Kroner,  //Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_BTFBBrukersInntektTilAvkortning
     val inntektstak: Kroner,  //Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_Inntektstak
 )
 
-data class Saerkullsbarn(
+data class BarnetilleggSaerkullsbarn(
     val antallBarnInnvilget: Int,  //Grunnlag_Persongrunnlagsliste_AntallBarn?
     val beloepNetto: Kroner,  //Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto
     val fribeloep: Kroner,  //Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBfribelop

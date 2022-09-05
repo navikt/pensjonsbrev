@@ -1,6 +1,10 @@
 package no.nav.pensjon.brev.maler.fraser
 
 import no.nav.pensjon.brev.api.model.Kroner
+import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarn
+import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarn
+import no.nav.pensjon.brev.api.model.maler.OpphoererBarnetilleggAutoDto
+import no.nav.pensjon.brev.api.model.maler.UngUfoerAutoDto
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
@@ -12,21 +16,22 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 import java.time.LocalDate
 
+
 object OpphoerBarnetillegg {
 
-
-    data class BToensketVirkningsDatoOgFdatoPaaBTopphoert(
+    data class TBU2290(
         val oensketVirkningsDato: Expression<LocalDate>,
         val foedselsdatoPaaBarnetilleggOpphoert: Expression<LocalDate>,
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() {
             paragraph {
                 val virkningsDato = oensketVirkningsDato.format()
-                val foedselsdato = foedselsdatoPaaBarnetilleggOpphoert.format()
+                val foedselsDato = foedselsdatoPaaBarnetilleggOpphoert.format()  // or childs name?
+                // showIf antall foedselsDato = 1
                 textExpr(
-                    Bokmal to "Vi har vedtatt at barnetillegget i uføretrygden din opphører fra ".expr() + virkningsDato + " for barn født ".expr() + foedselsdato + ".".expr(),
-                    Nynorsk to "Vi har stansa barnetillegget i uføretrygda di frå ".expr() + virkningsDato + " for barn fødd ".expr() + foedselsdato + ".".expr(),
-                    English to "The child supplement in your disability benefit has been discontinued, effective as of ".expr() + virkningsDato + ", for child born ".expr() + foedselsdato + ".".expr()
+                    Bokmal to "Vi har vedtatt at barnetillegget i uføretrygden din opphører fra ".expr() + virkningsDato + " for barnet/barna født ".expr() + foedselsDato + ".".expr(),
+                    Nynorsk to "Vi har stansa barnetillegget i uføretrygda di frå ".expr() + virkningsDato + " for barn fødd ".expr() + foedselsDato + ".".expr(),
+                    English to "The child supplement in your disability benefit has been discontinued, effective as of ".expr() + virkningsDato + ", for the child born ".expr() + foedselsDato + ".".expr()
                 )
             }
         }
@@ -77,6 +82,7 @@ object OpphoerBarnetillegg {
         }
     }
 
+
     object TBU2223 : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() {
             paragraph {
@@ -114,24 +120,23 @@ object OpphoerBarnetillegg {
         }
     }
 
-    // TBU4085
-    data class BTHjemmelInnvilget(
-        val fellesbarnInnvilget: Expression<Boolean>,
-        val saerkullsbarnInnvilget: Expression<Boolean>,
+    data class TBU4085(
+        val harBarnetilleggFellesbarn: Expression<Boolean>,
+        val harBarnetilleggSaerkullsbarn: Expression<Boolean>
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() {
             paragraph {
-                showIf(fellesbarnInnvilget or saerkullsbarnInnvilget) {
-                    textExpr(
-                        Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 12-15, 12-16 og 22-12 og forskrift om overgangsregler for barnetillegg i uføretrygden.".expr(),
-                        Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 12-15, 12-16 og 22-12 og forskrift om overgangsreglar for barnetillegg i uføretrygda.".expr(),
-                        English to "The decision has been made pursuant to Section 12-15, 12-16 and 22-12 of the Norwegian National Insurance Act and the transitional provisions for the child supplement in your disability benefit.".expr()
+                showIf(harBarnetilleggFellesbarn or harBarnetilleggSaerkullsbarn) {
+                    text(
+                        Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 12-15, 12-16 og 22-12",
+                        Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 12-15, 12-16 og 22-12",
+                        English to "The decision has been made pursuant to Section 12-15, 12-16 and 22-12 of the Norwegian National Insurance Act."
                     )
                 }.orShow {
-                    textExpr(
-                        Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 12-15, og 22-12 og forskrift om overgangsregler for barnetillegg i uføretrygden.".expr(),
-                        Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 12-15, og 22-12 og forskrift om overgangsreglar for barnetillegg i uføretrygda.".expr(),
-                        English to "The decision has been made pursuant to Section 12-15, and 22-12 of the Norwegian National Insurance Act and the transitional provisions for the child supplement in your disability benefit.".expr()
+                    text(
+                        Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 12-15, og 22-12.",
+                        Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 12-15, og 22-12.",
+                        English to "The decision has been made pursuant to Section 12-15, and 22-12 of the Norwegian National Insurance Act."
 
                     )
                 }
@@ -141,18 +146,27 @@ object OpphoerBarnetillegg {
 
 
     // TBU1174 in <maler/fraser/omregning/ufoeretrygd/Ufoeretrygd.kt
-// TBU4086
-    data class BTOensketVirkningsDato(
+    data class TBU4086(
         val oensketVirkningsDato: Expression<LocalDate>,
+        val harBarnetilleggFellesbarn: Expression<Boolean>,
+        val harBarnetilleggSaerkullsbarn: Expression<Boolean>
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() {
             paragraph {
                 val dato = oensketVirkningsDato.format()
-                textExpr(
-                    Bokmal to "Barnetillegget ditt har opphørter blitt endret fra ".expr() + dato + ". Dette er måneden etter at barnet barna har fylt 18 år. Dette kaller vi virkningstidspunktet.".expr(),
-                    Nynorsk to "Barnetillegget ditt er stansaendra frå ".expr() + dato + ". Dette er månaden etter at barnet barna  har fylt 18 år. Dette kallar vi verknadstidspunktet.".expr(),
-                    English to "Your child supplement has been discontinued changed from ".expr() + dato + ". This is the month after the child children has have turned 18. This is called the effective date.".expr()
-                )
+                showIf(harBarnetilleggFellesbarn or harBarnetilleggSaerkullsbarn) {
+                    textExpr(
+                        Bokmal to "Barnetillegget ditt er blitt endret fra ".expr() + dato + ". Dette er måneden etter at barn barna har fylt 18 år. Dette kaller vi virkningstidspunktet.".expr(),
+                        Nynorsk to "Barnetillegget ditt er endra frå ".expr() + dato + ". Dette er månaden etter at barnet barna  har fylt 18 år. Dette kallar vi verknadstidspunktet.".expr(),
+                        English to "Your child supplement has been changed from ".expr() + dato + ". This is the month after the child children has have turned 18. This is called the effective date.".expr()
+                    )
+                } orShow {
+                    textExpr(
+                        Bokmal to "Barnetillegget ditt har opphørt fra ".expr() + dato + ". Dette er måneden etter at barnet barna har fylt 18 år. Dette kaller vi virkningstidspunktet.".expr(),
+                        Nynorsk to "Barnetillegget ditt er stansa frå ".expr() + dato + ". Dette er månaden etter at barnet barna  har fylt 18 år. Dette kallar vi verknadstidspunktet.".expr(),
+                        English to "Your child supplement has been discontinued from ".expr() + dato + ". This is the month after the child children has have turned 18. This is called the effective date.".expr()
+                    )
+                }
             }
         }
     }
@@ -253,8 +267,7 @@ object OpphoerBarnetillegg {
         }
     }
 
-    // TBU1286
-    data class BTFribeloep(
+    data class TBU1286(
         val saerkullsbarnFribeloep: Expression<Kroner?>,
         val fellesbarnFribeloep: Expression<Kroner?>
 
@@ -266,11 +279,11 @@ object OpphoerBarnetillegg {
                 ifNotNull(saerkullsbarnFribeloep, fellesbarnFribeloep) { saerkullsbarn, fellesbarn ->
                     textExpr(
                         Bokmal to "Inntekten din er høyerelavere enn ".expr() + saerkullsbarn.format() + " kroner, som er fribeløpet for barnetillegget til barnetbarna som ikke bor sammen med begge foreldrene. Dette barnetillegget er derfor ikke redusert ut fra inntekt. Til sammen er også inntektene til deg og ektefellenpartnerensamboeren din høyerelavere enn ".expr() +
-                                fellesbarn.format() + " kroner, som er fribeløpet for barnetillegget til barnetbarna som bor med begge sine foreldre. Dette barnetillegget er derfor ikke redusert ut fra inntekt. Barnetilleggene er derfor ikke redusert ut fra inntekt.".expr(),
+                            fellesbarn.format() + " kroner, som er fribeløpet for barnetillegget til barnetbarna som bor med begge sine foreldre. Dette barnetillegget er derfor ikke redusert ut fra inntekt. Barnetilleggene er derfor ikke redusert ut fra inntekt.".expr(),
                         Nynorsk to "Inntekta di er høgare/lågare enn ".expr() + saerkullsbarn.format() + " kroner, som er fribeløpet for barnetillegget til barnet/barna som ikkje bur saman med begge foreldra. Dette barnetillegget er derfor ikkje redusert ut frå inntekt. Til saman er også inntektene til deg og ektefellen/partnaren/sambuaren din høgare/lågare enn ".expr() +
-                                fellesbarn.format() + " kroner, som er fribeløpet for barnetillegget til barnet/barna som bur saman med begge foreldra sine. Dette barnetillegget er derfor ikkje redusert ut frå inntekt. Desse barnetillegga er derfor ikkje redusert ut frå inntekt.".expr(),
+                            fellesbarn.format() + " kroner, som er fribeløpet for barnetillegget til barnet/barna som bur saman med begge foreldra sine. Dette barnetillegget er derfor ikkje redusert ut frå inntekt. Desse barnetillegga er derfor ikkje redusert ut frå inntekt.".expr(),
                         English to "Your income is higher/lower than NOK ".expr() + saerkullsbarn.format() + ", which is the exemption amount for the child supplement for the child/children who do not live together with both parents. Therefore your child supplement has not been reduced on the basis of your income. Together, your income and your spouse/partner/cohabiting partner's income is higher/lower than NOK ".expr() +
-                                fellesbarn.format() + ", which is the exemption amount for the child supplement for the child/children who lives together with both parents. Therefore your child supplement has not been reduced on the basis of your income. Therefore your child supplements have not been reduced on the basis of your income.".expr()
+                            fellesbarn.format() + ", which is the exemption amount for the child supplement for the child/children who lives together with both parents. Therefore your child supplement has not been reduced on the basis of your income. Therefore your child supplements have not been reduced on the basis of your income.".expr()
                     )
                     text(
                         Bokmal to "Det du har fått utbetalt i barnetillegg tidligere i år har også betydning for hva du får i barnetillegg framover. Dette ble tatt hensyn til da vi endret barnetillegget for barnetbarna som bor med begge sine foreldre. Du har allerede fått utbetalt det du har rett til i år, og får derfor ikke utbetalt barnetillegg for resten av året.",
@@ -290,8 +303,7 @@ object OpphoerBarnetillegg {
 // TBU1286.1 in <maler/fraser/omregning/ufoeretrygd/Ufoeretrygd.kt
 // TBU1286.2 in <maler/fraser/omregning/ufoeretrygd/Ufoeretrygd.kt
 
-    // TBU2490
-    data class BTInntektstak(
+    data class TBU2490(
         val fellesbarnInntektstak: Expression<Kroner>,
         val saerkullsbarnInntektstak: Expression<Kroner>,
 
@@ -301,12 +313,12 @@ object OpphoerBarnetillegg {
                 val inntektstakFellesbarn = fellesbarnInntektstak.format()
                 val inntektstakSaerkullsbarn = saerkullsbarnInntektstak.format()
                 textExpr(
-                    Bokmal to "Barnetillegget for barnetbarna som bor med begge sine foreldre, blir ikke utbetalt fordi de samlede inntektene er høyere enn ".expr() +
-                            inntektstakFellesbarn + " kroner. Barnetillegget for barnetbarna som ikke bor sammen med begge foreldrene, blir heller ikke utbetalt fordi inntekten din alene er høyere enn "+ inntektstakSaerkullsbarn +" kroner. Inntektene er over grensen for å få utbetalt barnetillegg.".expr(),
-                    Nynorsk to "Barnetillegget for barnet/barna som bur saman med begge foreldra sine, blir ikkje utbetalt fordi dei samla inntektene er høgare enn ".expr() +
-                            inntektstakFellesbarn + " kroner. Barnetillegget for barnet/barna som ikkje bur saman med begge foreldra, blir heller ikkje utbetalt fordi inntekta di åleine er høgare enn "+ inntektstakSaerkullsbarn +" kroner. Inntektene er over grensa for å få utbetalt barnetillegg.".expr(),
-                    English to "You will not receive child supplement for the child/children who lives together with both parents because your total income is higher than NOK ".expr() +
-                            inntektstakFellesbarn + ". You will not receive child supplement for the child/children who do not live together with both parents because your income alone is higher than NOK "+ inntektstakSaerkullsbarn +". You will not receive child supplement because your income exceeds the income limit.".expr()
+                    Bokmal to "Barnetillegget for barnetbarna som bor med begge sine foreldre, blir ikke utbetalt fordi de samlede inntektene er høyere enn ".expr()
+                        + inntektstakFellesbarn + " kroner. Barnetillegget for barnetbarna som ikke bor sammen med begge foreldrene, blir heller ikke utbetalt fordi inntekten din alene er høyere enn " + inntektstakSaerkullsbarn + " kroner. Inntektene er over grensen for å få utbetalt barnetillegg.".expr(),
+                    Nynorsk to "Barnetillegget for barnet/barna som bur saman med begge foreldra sine, blir ikkje utbetalt fordi dei samla inntektene er høgare enn ".expr()
+                        + inntektstakFellesbarn + " kroner. Barnetillegget for barnet/barna som ikkje bur saman med begge foreldra, blir heller ikkje utbetalt fordi inntekta di åleine er høgare enn " + inntektstakSaerkullsbarn + " kroner. Inntektene er over grensa for å få utbetalt barnetillegg.".expr(),
+                    English to "You will not receive child supplement for the child/children who lives together with both parents because your total income is higher than NOK ".expr()
+                        + inntektstakFellesbarn + ". You will not receive child supplement for the child/children who do not live together with both parents because your income alone is higher than NOK " + inntektstakSaerkullsbarn + ". You will not receive child supplement because your income exceeds the income limit.".expr()
                 )
             }
         }

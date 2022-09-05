@@ -1,0 +1,44 @@
+package no.nav.pensjon.brev.fixtures
+
+import no.nav.pensjon.brev.Fixtures
+import no.nav.pensjon.brev.api.model.Kroner
+import no.nav.pensjon.brev.api.model.Sivilstand
+import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarn
+import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarn
+import no.nav.pensjon.brev.api.model.maler.OpphoererBarnetilleggAutoDto
+import no.nav.pensjon.brev.api.model.maler.Ufoeretrygd
+import java.time.LocalDate
+
+fun createOpphoererBarnetilleggAutoDto()=
+    OpphoererBarnetilleggAutoDto(
+        foedselsdatoPaaBarnetilleggOpphoert = LocalDate.of(2004, 6, 14),
+        oensketVirkningsDato = LocalDate.now(),
+        barnetilleggFellesbarn = BarnetilleggFellesbarn(
+            antallBarnInnvilget = 2,
+            beloepNetto = Kroner(8000),
+            fradrag = Kroner(2000),
+            fribeloep = Kroner(1000),
+            inntektAnnenForelder = Kroner(550000),
+            inntektBruktIAvkortning = Kroner(375000),
+            inntektstak = Kroner(320000)
+        ),
+        barnetilleggSaerkullsbarn = BarnetilleggSaerkullsbarn(
+            antallBarnInnvilget = 1,
+            beloepNetto = Kroner(10000),
+            fribeloep = Kroner(14000),
+            inntektBruktIAvkortning = Kroner(8000),
+            inntektstak = Kroner(350000)
+        ),
+        brukerBorInorge = true,
+        grunnbeloep = Kroner(98000),
+        sivilstand = Sivilstand.GIFT,
+        ufoeretrygd = Ufoeretrygd(
+            ufoertrygdUtbetalt = 80,
+            utbetaltPerMaaned = Kroner(345000),
+            ektefelletilleggUtbeltalt = Kroner(125000),
+            gjenlevendetilleggUtbetalt = Kroner(105000)
+            ),
+        maanedligUfoeretrygdFoerSkattDto = Fixtures.create(),
+        opplysningerBruktIBeregningUTDto = Fixtures.create(),
+        orienteringOmRettigheterUfoereDto = Fixtures.create()
+    )
