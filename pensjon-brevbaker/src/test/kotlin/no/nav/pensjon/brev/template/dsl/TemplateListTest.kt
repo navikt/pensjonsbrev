@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.template.dsl
 
 import no.nav.pensjon.brev.template.*
+import no.nav.pensjon.brev.template.ContentOrControlStructure.Content
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.outlineTestTemplate
 import org.junit.jupiter.api.Assertions
@@ -18,9 +19,13 @@ class TemplateListTest {
         }
 
         val expected = outlineTestLetter(
-            Element.ItemList(
-                listOf(
-                    Element.ItemList.Item(listOf(newText(Language.Bokmal to "Test")))
+            Content(
+                Element.OutlineContent.ParagraphContent.ItemList(
+                    listOf(
+                        Content(
+                            Element.OutlineContent.ParagraphContent.ItemList.Item(listOf(newText(Language.Bokmal to "Test")))
+                        )
+                    )
                 )
             )
         )
@@ -66,15 +71,19 @@ class TemplateListTest {
         }
 
         val expected = outlineTestLetter(
-            Element.ItemList(
-                listOf(
-                    Element.Conditional(
-                        true.expr(),
-                        listOf(
-                            Element.ItemList.Item(
-                                listOf(newText(Language.Bokmal to "Test"))
-                            )
-                        ), emptyList()
+            Content(
+                Element.OutlineContent.ParagraphContent.ItemList(
+                    listOf(
+                        ContentOrControlStructure.Conditional(
+                            true.expr(),
+                            listOf(
+                                Content(
+                                    Element.OutlineContent.ParagraphContent.ItemList.Item(
+                                        listOf(newText(Language.Bokmal to "Test"))
+                                    )
+                                )
+                            ), emptyList()
+                        )
                     )
                 )
             )

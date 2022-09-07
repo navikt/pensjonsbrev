@@ -1,47 +1,61 @@
 package no.nav.pensjon.brev.template.dsl
 
-import no.nav.pensjon.brev.template.Element
-import no.nav.pensjon.brev.template.LanguageSupport
+import no.nav.pensjon.brev.template.*
 
 @LetterTemplateMarker
-class TableScope<Lang : LanguageSupport, LetterData : Any>(val colSpec: List<Element.Table.ColumnSpec<Lang>>) :
-    ControlStructureScopeBase<Lang, LetterData, TableScope<Lang,LetterData>>(){
-    fun row(
-        init: TableRowScope<Lang, LetterData>.() -> Unit
-    ) {
-        children.add(Element.Table.Row(TableRowScope<Lang, LetterData>().apply(init).children, colSpec))
-    }
+class TableScope<Lang : LanguageSupport, LetterData : Any>(
+    private val colSpec: List<Element.OutlineContent.ParagraphContent.Table.ColumnSpec<Lang>>,
+) : ControlStructureScope<Lang, LetterData, Element.OutlineContent.ParagraphContent.Table.Row<Lang>, TableScope<Lang,LetterData>>{
+    private val children = mutableListOf<TableRowElement<Lang>>()
+    override val elements: List<TableRowElement<Lang>>
+        get() = children
 
     override fun scopeFactory(): TableScope<Lang, LetterData> = TableScope(colSpec)
+
+    override fun addControlStructure(e: TableRowElement<Lang>) {
+        children.add(e)
+    }
+
+    fun row(create: TableRowScope<Lang, LetterData>.() -> Unit) {
+        TableRowScope<Lang, LetterData>().apply(create)
+            .let { Element.OutlineContent.ParagraphContent.Table.Row(it.elements, colSpec) }
+            .let { ContentOrControlStructure.Content(it) }
+            .also { children.add(it) }
+    }
+
 }
 
 
 @LetterTemplateMarker
-open class TableRowScope<Lang : LanguageSupport, LetterData : Any>(val children: MutableList<Element.Table.Cell<Lang>> = mutableListOf()) :
-    TemplateGlobalScope<LetterData>() {
+class TableRowScope<Lang : LanguageSupport, LetterData : Any> : TemplateGlobalScope<LetterData> {
+    private val children: MutableList<Element.OutlineContent.ParagraphContent.Table.Cell<Lang>> = mutableListOf()
+    val elements: List<Element.OutlineContent.ParagraphContent.Table.Cell<Lang>>
+        get() = children
+
     fun cell(init: TextOnlyScope<Lang, LetterData>.() -> Unit) {
         children.add(
-            Element.Table.Cell(
-                TextOnlyScope<Lang, LetterData>().apply(init).children
+            Element.OutlineContent.ParagraphContent.Table.Cell(
+                TextOnlyScope<Lang, LetterData>().apply(init).elements
             )
         )
     }
 }
 
 @LetterTemplateMarker
-open class TableHeaderScope<Lang : LanguageSupport, LetterData : Any>(
-    val children: MutableList<Element.Table.ColumnSpec<Lang>> = mutableListOf()
-) :
-    TemplateGlobalScope<LetterData>() {
+class TableHeaderScope<Lang : LanguageSupport, LetterData : Any> : TemplateGlobalScope<LetterData> {
+    private val children: MutableList<Element.OutlineContent.ParagraphContent.Table.ColumnSpec<Lang>> = mutableListOf()
+    val elements: List<Element.OutlineContent.ParagraphContent.Table.ColumnSpec<Lang>>
+        get() = children
+
     fun column(
         columnSpan: Int = 1,
-        alignment: Element.Table.ColumnAlignment = Element.Table.ColumnAlignment.LEFT,
+        alignment: Element.OutlineContent.ParagraphContent.Table.ColumnAlignment = Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.LEFT,
         init: TextOnlyScope<Lang, LetterData>.() -> Unit,
     ) {
 
         children.add(
-            Element.Table.ColumnSpec(
-                Element.Table.Cell(TextOnlyScope<Lang, LetterData>().apply(init).children),
+            Element.OutlineContent.ParagraphContent.Table.ColumnSpec(
+                Element.OutlineContent.ParagraphContent.Table.Cell(TextOnlyScope<Lang, LetterData>().apply(init).elements),
                 alignment,
                 columnSpan
             )

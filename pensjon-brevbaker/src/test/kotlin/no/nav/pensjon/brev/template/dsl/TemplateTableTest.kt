@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.template.dsl
 
 import no.nav.pensjon.brev.template.*
+import no.nav.pensjon.brev.template.ContentOrControlStructure.*
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertThrows
@@ -25,23 +26,26 @@ class TemplateTableTest {
         }
 
         val colSpec = listOf(
-            Element.Table.ColumnSpec(
-                Element.Table.Cell(
+            Element.OutlineContent.ParagraphContent.Table.ColumnSpec(
+                Element.OutlineContent.ParagraphContent.Table.Cell(
                     listOf(newText(Language.Bokmal to "header"))
-                ), Element.Table.ColumnAlignment.LEFT
+                ), Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.LEFT
             )
         )
         val expected = outlineTestLetter(
-            Element.Table(
-                header =
-                Element.Table.Header(colSpec),
-                children = listOf(
-                    Element.Table.Row(
-                        listOf(
-                            Element.Table.Cell(
-                                listOf(newText(Language.Bokmal to "joda"))
+            Content(
+                Element.OutlineContent.ParagraphContent.Table(
+                    header = Element.OutlineContent.ParagraphContent.Table.Header(colSpec),
+                    rows = listOf(
+                        Content(
+                            Element.OutlineContent.ParagraphContent.Table.Row(
+                                listOf(
+                                    Element.OutlineContent.ParagraphContent.Table.Cell(
+                                        listOf(newText(Language.Bokmal to "joda"))
+                                    )
+                                ), colSpec
                             )
-                        ), colSpec
+                        )
                     )
                 )
             )
@@ -122,37 +126,39 @@ class TemplateTableTest {
             }
         }
         val colSpec = listOf(
-            Element.Table.ColumnSpec(
-                Element.Table.Cell(
+            Element.OutlineContent.ParagraphContent.Table.ColumnSpec(
+                Element.OutlineContent.ParagraphContent.Table.Cell(
                     listOf(newText(Language.Bokmal to "header"))
-                ), Element.Table.ColumnAlignment.LEFT
+                ), Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.LEFT
             )
         )
         val expected = outlineTestLetter(
-            Element.Table(
-                children = listOf(
-                    Element.Conditional(
-                        true.expr(),
-                        listOf(
-                            Element.Table.Row(
-                                listOf(
-                                    Element.Table.Cell(
-                                        listOf(newText(Language.Bokmal to "hei"))
-                                    )
+            Content(
+                Element.OutlineContent.ParagraphContent.Table(
+                    rows = listOf(
+                        Conditional(
+                            true.expr(),
+                            listOf(
+                                Element.OutlineContent.ParagraphContent.Table.Row(
+                                    listOf(
+                                        Element.OutlineContent.ParagraphContent.Table.Cell(
+                                            listOf(newText(Language.Bokmal to "hei"))
+                                        )
+                                    ),
+                                    colSpec = colSpec
                                 ),
-                                colSpec = colSpec
-                            ),
-                            Element.Table.Row(
-                                listOf(
-                                    Element.Table.Cell(
-                                        listOf(newText(Language.Bokmal to "heihå"))
-                                    )
-                                ), colSpec = colSpec
-                            )
-                        ), emptyList()
-                    )
-                ),
-                header = Element.Table.Header(colSpec)
+                                Element.OutlineContent.ParagraphContent.Table.Row(
+                                    listOf(
+                                        Element.OutlineContent.ParagraphContent.Table.Cell(
+                                            listOf(newText(Language.Bokmal to "heihå"))
+                                        )
+                                    ), colSpec = colSpec
+                                )
+                            ).map { Content(it) }, emptyList()
+                        )
+                    ),
+                    header = Element.OutlineContent.ParagraphContent.Table.Header(colSpec)
+                )
             )
         )
         assertEquals(expected, doc)

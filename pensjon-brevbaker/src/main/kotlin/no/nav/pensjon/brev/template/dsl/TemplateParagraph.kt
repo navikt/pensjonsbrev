@@ -4,45 +4,67 @@ import no.nav.pensjon.brev.template.*
 
 
 @LetterTemplateMarker
-class ParagraphScope<Lang : LanguageSupport, LetterData : Any> : ParagraphScopeBase<Lang, LetterData, ParagraphScope<Lang, LetterData>>() {
+class ParagraphOnlyScope<Lang : LanguageSupport, LetterData : Any> : ParagraphScope<Lang, LetterData>, ControlStructureScope<Lang, LetterData, Element.OutlineContent.ParagraphContent<Lang>, ParagraphOnlyScope<Lang, LetterData>> {
+    private val children = mutableListOf<ParagraphContentElement<Lang>>()
+    override val elements: List<ParagraphContentElement<Lang>>
+        get() = children
+
+    override fun scopeFactory(): ParagraphOnlyScope<Lang, LetterData> = ParagraphOnlyScope()
+
+    override fun addControlStructure(e: ParagraphContentElement<Lang>) {
+        children.add(e)
+    }
+
+    override fun addParagraphContent(e: ParagraphContentElement<Lang>) {
+        children.add(e)
+    }
+
+    override fun addTextContent(e: TextElement<Lang>) {
+        children.add(e)
+    }
 
     fun includePhrase(phrase: ParagraphPhrase<out Lang>) {
         phrase.apply(this)
     }
-
-    override fun scopeFactory(): ParagraphScope<Lang, LetterData> = ParagraphScope()
-
 }
 
-abstract class ParagraphScopeBase<Lang : LanguageSupport, LetterData : Any, Scope : ParagraphScopeBase<Lang, LetterData, Scope>> :
-    TextOnlyScopeBase<Lang, LetterData, Scope>() {
+interface ParagraphScope<Lang : LanguageSupport, LetterData : Any> : TextScope<Lang, LetterData> {
+    fun addParagraphContent(e: ParagraphContentElement<Lang>)
 
-    fun list(init: ListScope<Lang, LetterData>.() -> Unit) {
-        children.add(Element.ItemList(ListScope<Lang, LetterData>().apply(init).children))
+    fun list(create: ListScope<Lang, LetterData>.() -> Unit) {
+        ListScope<Lang, LetterData>().apply(create)
+            .let { Element.OutlineContent.ParagraphContent.ItemList(it.elements) }
+            .let { ContentOrControlStructure.Content(it) }
+            .also { addParagraphContent(it) }
     }
 
-    fun table(header: TableHeaderScope<Lang, LetterData>.() -> Unit,
-              init: TableScope<Lang, LetterData>.() -> Unit) {
-        val colSpec = TableHeaderScope<Lang, LetterData>().apply(header).children
-        children.add(
-            Element.Table(
-                children = TableScope<Lang, LetterData>(colSpec).apply(init).children,
-                header = Element.Table.Header(colSpec)
-            )
-        )
+    fun table(
+        header: TableHeaderScope<Lang, LetterData>.() -> Unit,
+        init: TableScope<Lang, LetterData>.() -> Unit
+    ) {
+        val colSpec = TableHeaderScope<Lang, LetterData>().apply(header).elements
+
+        Element.OutlineContent.ParagraphContent.Table(
+            rows = TableScope<Lang, LetterData>(colSpec).apply(init).elements,
+            header = Element.OutlineContent.ParagraphContent.Table.Header(colSpec)
+        ).let { ContentOrControlStructure.Content(it) }
+            .also { addParagraphContent(it) }
     }
 
-    fun formText(size: Int, prompt: Element.Text<Lang>, vspace: Boolean = true) {
-        children.add(Element.Form.Text(prompt, size, vspace))
+    fun formText(size: Int, prompt: TextElement<Lang>, vspace: Boolean = true) {
+        Element.OutlineContent.ParagraphContent.Form.Text(prompt, size, vspace)
+            .let { ContentOrControlStructure.Content(it) }
+            .also { addParagraphContent(it) }
     }
 
     fun formChoice(
-        prompt: Element.Text<Lang>,
+        prompt: TextElement<Lang>,
         vspace: Boolean = true,
         init: TemplateFormChoiceScope<Lang, LetterData>.() -> Unit
     ) {
         TemplateFormChoiceScope<Lang, LetterData>().apply(init)
-            .let { Element.Form.MultipleChoice(prompt, it.choices, vspace) }
-            .also { children.add(it) }
+            .let { Element.OutlineContent.ParagraphContent.Form.MultipleChoice(prompt, it.choices, vspace) }
+            .let { ContentOrControlStructure.Content(it) }
+            .also { addParagraphContent(it) }
     }
 }

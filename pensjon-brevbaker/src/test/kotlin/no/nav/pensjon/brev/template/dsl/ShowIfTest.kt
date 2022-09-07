@@ -3,7 +3,8 @@ package no.nav.pensjon.brev.template.dsl
 import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.equalTo
 import no.nav.pensjon.brev.template.*
-import no.nav.pensjon.brev.template.base.PensjonLatex
+import no.nav.pensjon.brev.template.dsl.SomeDtoSelectors.name
+import no.nav.pensjon.brev.template.dsl.SomeDtoSelectors.pensjonInnvilget
 import no.nav.pensjon.brev.template.dsl.expression.*
 import org.junit.jupiter.api.*
 
@@ -14,30 +15,28 @@ class ShowIfTest {
         val expected = LetterTemplate(
             name = "test",
             title = listOf(nynorskTittel),
-            base = PensjonLatex,
             letterDataType = SomeDto::class,
             language = languages(Language.Nynorsk),
-            letterMetadata = testLetterMetadata,
             outline = listOf(
-                Element.Conditional(
-                    predicate = Expression.FromScope(ExpressionScope<SomeDto, *>::argument).select(SomeDto::pensjonInnvilget),
+                ContentOrControlStructure.Conditional(
+                    predicate = Expression.FromScope(ExpressionScope<SomeDto, *>::argument).pensjonInnvilget,
                     showIf = listOf(newText(Language.Nynorsk to "jadda")),
                     showElse = listOf(newText(Language.Nynorsk to "neida"))
                 )
-            )
+            ),
+            letterMetadata = testLetterMetadata
         )
 
         val actual = createTemplate(
             name = "test",
-            base = PensjonLatex,
             letterDataType = SomeDto::class,
-            languages = nynorskTittel.languages,
+            languages = languages(Language.Nynorsk),
             letterMetadata = testLetterMetadata,
         ) {
             title.add(nynorskTittel)
 
             outline {
-                showIf(argument().select(SomeDto::pensjonInnvilget)) {
+                showIf(pensjonInnvilget) {
                     text(Language.Nynorsk to "jadda")
                 } orShow {
                     text(Language.Nynorsk to "neida")
@@ -54,37 +53,35 @@ class ShowIfTest {
         val expected = LetterTemplate(
             name = "test",
             title = listOf(nynorskTittel),
-            base = PensjonLatex,
             letterDataType = SomeDto::class,
             language = languages(Language.Nynorsk),
-            letterMetadata = testLetterMetadata,
             outline = listOf(
-                Element.Conditional(
-                    predicate = exprScope.select(SomeDto::pensjonInnvilget),
+                ContentOrControlStructure.Conditional(
+                    predicate = exprScope.pensjonInnvilget,
                     showIf = listOf(newText(Language.Nynorsk to "jadda")),
                     showElse = listOf(
-                        Element.Conditional(
-                            predicate = exprScope.select(SomeDto::name) equalTo "Test",
+                        ContentOrControlStructure.Conditional(
+                            predicate = exprScope.name equalTo "Test",
                             showIf = listOf(newText(Language.Nynorsk to "neidaJoda")),
                             showElse = emptyList()
                         )
                     )
                 )
-            )
+            ),
+            letterMetadata = testLetterMetadata
         )
 
         val actual = createTemplate(
             name = "test",
-            base = PensjonLatex,
             letterDataType = SomeDto::class,
-            languages = nynorskTittel.languages,
+            languages = languages(Language.Nynorsk),
             letterMetadata = testLetterMetadata,
         ) {
             title.add(nynorskTittel)
             outline {
-                showIf(argument().select(SomeDto::pensjonInnvilget)) {
+                showIf(pensjonInnvilget) {
                     text(Language.Nynorsk to "jadda")
-                }.orShowIf(argument().select(SomeDto::name) equalTo "Test") {
+                }.orShowIf(name equalTo "Test") {
                     text(Language.Nynorsk to "neidaJoda")
                 }
             }
@@ -99,37 +96,35 @@ class ShowIfTest {
         val expected = LetterTemplate(
             name = "test",
             title = listOf(nynorskTittel),
-            base = PensjonLatex,
             letterDataType = SomeDto::class,
             language = languages(Language.Nynorsk),
-            letterMetadata = testLetterMetadata,
             outline = listOf(
-                Element.Conditional(
-                    predicate = exprScope.select(SomeDto::pensjonInnvilget),
+                ContentOrControlStructure.Conditional(
+                    predicate = exprScope.pensjonInnvilget,
                     showIf = listOf(newText(Language.Nynorsk to "jadda")),
                     showElse = listOf(
-                        Element.Conditional(
-                            predicate = exprScope.select(SomeDto::name) equalTo "Test",
+                        ContentOrControlStructure.Conditional(
+                            predicate = exprScope.name equalTo "Test",
                             showIf = listOf(newText(Language.Nynorsk to "neidaJoda")),
                             showElse = listOf(newText(Language.Nynorsk to "neida")),
                         )
                     )
                 )
-            )
+            ),
+            letterMetadata = testLetterMetadata
         )
 
         val actual = createTemplate(
             name = "test",
-            base = PensjonLatex,
             letterDataType = SomeDto::class,
-            languages = nynorskTittel.languages,
+            languages = languages(Language.Nynorsk),
             letterMetadata = testLetterMetadata,
         ) {
             title.add(nynorskTittel)
             outline {
-                showIf(argument().select(SomeDto::pensjonInnvilget)) {
+                showIf(pensjonInnvilget) {
                     text(Language.Nynorsk to "jadda")
-                }.orShowIf(argument().select(SomeDto::name) equalTo "Test") {
+                }.orShowIf(name equalTo "Test") {
                     text(Language.Nynorsk to "neidaJoda")
                 } orShow {
                     text(Language.Nynorsk to "neida")

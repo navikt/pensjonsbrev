@@ -30,9 +30,7 @@ class TemplateResourceTest {
     @Test
     fun `all names returned by getTemplates can be fetched with getTemplate`() {
         val templateNames = templateResource.getTemplates().toSet()
-        val templates = templateNames
-            .map { templateResource.getTemplate(it) }
-            .filterNotNull()
+        val templates = templateNames.mapNotNull { templateResource.getTemplate(it) }
             .map { Brevkode.Vedtak.valueOf(it.name) }
             .toSet()
 

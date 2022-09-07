@@ -15,7 +15,7 @@ object Felles {
      * TBU1223, TBU1224
      */
     object MeldEndringerPesys_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
-        override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             title1 {
                 text(
                     Bokmal to "Du må melde fra om endringer",
@@ -49,7 +49,7 @@ object Felles {
      * TBU1100
      */
     object RettTilKlagePesys_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
-        override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             title1 {
                 text(
                     Bokmal to "Du har rett til å klage",
@@ -83,7 +83,7 @@ object Felles {
      * TBU1074, TBU2242NB, TBU1075NN, TBU2242EN  // Updated texst in the paragraph, approved by Ingrid
      */
     object RettTilInnsynPesys_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
-        override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             title1 {
                 text(
                     Bokmal to "Du har rett til innsyn",
@@ -102,20 +102,22 @@ object Felles {
         }
     }
 
-    val kroner = TextOnlyPhrase<LangBokmalNynorskEnglish, Kroner> { kroner ->
-        textExpr(
-            Bokmal to kroner.format() + " kr",
-            Nynorsk to kroner.format() + " kr",
-            English to kroner.format() + " NOK",
-        )
+    data class KronerText(val kroner: Expression<Kroner>) : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
+        override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
+            textExpr(
+                Bokmal to kroner.format() + " kr",
+                Nynorsk to kroner.format() + " kr",
+                English to kroner.format() + " NOK",
+            )
     }
 
-    val maaneder = TextOnlyPhrase<LangBokmalNynorskEnglish, Int> { maaned ->
-        textExpr(
-            Bokmal to maaned.format() + " måneder",
-            Nynorsk to maaned.format() + " måneder",
-            English to maaned.format() + " months"
-        )
+    data class MaanederText(val antall: Expression<Int>) : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
+        override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
+            textExpr(
+                Bokmal to antall.format() + " måneder",
+                Nynorsk to antall.format() + " måneder",
+                English to antall.format() + " months"
+            )
     }
     data class SivilstandEPSBestemtForm(val sivilstand: Expression<Sivilstand>) :
         ParagraphPhrase<LangBokmalNynorskEnglish>() {

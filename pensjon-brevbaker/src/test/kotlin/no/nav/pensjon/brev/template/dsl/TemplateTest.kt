@@ -2,12 +2,11 @@ package no.nav.pensjon.brev.template.dsl
 
 import no.nav.pensjon.brev.maler.fraser.*
 import no.nav.pensjon.brev.template.*
-import no.nav.pensjon.brev.template.base.PensjonLatex
+import no.nav.pensjon.brev.template.ContentOrControlStructure.*
+import no.nav.pensjon.brev.template.dsl.SomeDtoSelectors.name
 import no.nav.pensjon.brev.template.dsl.expression.*
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-
-typealias BokmalLang = LanguageSupport.Single<Language.Bokmal>
 
 class TemplateTest {
 
@@ -15,9 +14,8 @@ class TemplateTest {
     fun `createTemplate can add outline with title1 using text-builder`() {
         val doc = createTemplate(
             name = "test",
-            base = PensjonLatex,
             letterDataType = Unit::class,
-            languages = bokmalTittel.languages,
+            languages = languages(Language.Bokmal),
             letterMetadata = testLetterMetadata,
         ) {
             title.add(bokmalTittel)
@@ -32,17 +30,20 @@ class TemplateTest {
             LetterTemplate(
                 name = "test",
                 title = listOf(bokmalTittel),
-                base = PensjonLatex,
                 letterDataType = Unit::class,
                 language = languages(Language.Bokmal),
-                letterMetadata = testLetterMetadata,
                 outline = listOf(
-                    Element.Title1(
-                        listOf(
-                            Element.Text.Literal.create(Language.Bokmal to "Heisann. "),
+                    Content(
+                        Element.OutlineContent.Title1(
+                            listOf(
+                                Content(
+                                    Element.OutlineContent.ParagraphContent.Text.Literal.create(Language.Bokmal to "Heisann. ")
+                                ),
+                            )
                         )
                     )
-                )
+                ),
+                letterMetadata = testLetterMetadata
             ),
             doc
         )
@@ -67,9 +68,8 @@ class TemplateTest {
 
         val doc = createTemplate(
             name = "test",
-            base = PensjonLatex,
             letterDataType = SomeDto::class,
-            languages = bokmalTittel.languages,
+            languages = languages(Language.Bokmal),
             letterMetadata = testLetterMetadata,
         ) {
             title.add(bokmalTittel)
@@ -80,17 +80,16 @@ class TemplateTest {
             LetterTemplate(
                 name = "test",
                 title = listOf(bokmalTittel),
-                base = PensjonLatex,
                 letterDataType = SomeDto::class,
                 language = languages(Language.Bokmal),
-                letterMetadata = testLetterMetadata,
                 outline = emptyList(),
                 attachments = listOf(
                     IncludeAttachment(
                         Expression.Literal(Unit),
                         attachment
                     )
-                )
+                ),
+                letterMetadata = testLetterMetadata
             ),
             doc
         )
@@ -98,12 +97,14 @@ class TemplateTest {
 
     @Test
     fun `TemplateTextOnlyScope_eval adds Expression element`() {
-        val element = TextOnlyScope<BokmalLang, SomeDto>().apply {
-            eval(argument().select(SomeDto::name))
-        }.children.first()
+        val element = TextOnlyScope<LangBokmal, SomeDto>().apply {
+            eval(name)
+        }.elements.first()
 
-        val expected = Element.Text.Expression<BokmalLang>(
-            Expression.FromScope(ExpressionScope<SomeDto, *>::argument).select(SomeDto::name)
+        val expected = Content(
+            Element.OutlineContent.ParagraphContent.Text.Expression<LangBokmal>(
+                Expression.FromScope(ExpressionScope<SomeDto, *>::argument).name
+            )
         )
 
         assertEquals(expected, element)
@@ -113,9 +114,8 @@ class TemplateTest {
     fun `createTemplate adds literal title`() {
         val doc = createTemplate(
             name = "test",
-            base = PensjonLatex,
             letterDataType = Unit::class,
-            languages = bokmalTittel.languages,
+            languages = languages(Language.Bokmal),
             letterMetadata = testLetterMetadata,
         ) {
             title.add(bokmalTittel)
@@ -128,11 +128,20 @@ class TemplateTest {
             LetterTemplate(
                 name = "test",
                 title = listOf(bokmalTittel),
-                base = PensjonLatex,
                 letterDataType = Unit::class,
-                letterMetadata = testLetterMetadata,
                 language = languages(Language.Bokmal),
-                outline = listOf(Element.Title1(listOf(Element.Text.Literal.create(Language.Bokmal to "jadda"))))
+                outline = listOf(
+                    Content(
+                        Element.OutlineContent.Title1(
+                            listOf(
+                                Content(
+                                    Element.OutlineContent.ParagraphContent.Text.Literal.create(Language.Bokmal to "jadda")
+                                )
+                            )
+                        )
+                    )
+                ),
+                letterMetadata = testLetterMetadata
             ), doc
         )
     }
@@ -141,9 +150,8 @@ class TemplateTest {
     fun `createTemplate adds outline`() {
         val doc = createTemplate(
             name = "test",
-            base = PensjonLatex,
             letterDataType = Unit::class,
-            languages = bokmalTittel.languages,
+            languages = languages(Language.Bokmal),
             letterMetadata = testLetterMetadata,
         ) {
             title.add(bokmalTittel)
@@ -159,14 +167,13 @@ class TemplateTest {
             LetterTemplate(
                 name = "test",
                 title = listOf(bokmalTittel),
-                base = PensjonLatex,
                 letterDataType = Unit::class,
                 language = languages(Language.Bokmal),
-                letterMetadata = testLetterMetadata,
                 outline = listOf(
-                    Element.Title1(listOf(Element.Text.Literal.create(Language.Bokmal to "Tittel"))),
-                    Element.Paragraph(listOf(Element.Text.Literal.create(Language.Bokmal to "Dette er tekst som kun brukes i dette brevet.")))
-                )
+                    Element.OutlineContent.Title1(listOf(Content(Element.OutlineContent.ParagraphContent.Text.Literal.create(Language.Bokmal to "Tittel")))),
+                    Element.OutlineContent.Paragraph(listOf(Content(Element.OutlineContent.ParagraphContent.Text.Literal.create(Language.Bokmal to "Dette er tekst som kun brukes i dette brevet."))))
+                ).map { Content(it) },
+                letterMetadata = testLetterMetadata
             ),
             doc
         )
@@ -175,11 +182,11 @@ class TemplateTest {
     @Test
     fun `TemplateContainerScope_formText adds Form$Text element`() {
         val prompt = newText(Language.Bokmal to "hei")
-        val element = ParagraphScope<BokmalLang, SomeDto>().apply {
+        val element = ParagraphOnlyScope<LangBokmal, SomeDto>().apply {
             formText(1, prompt)
-        }.children.first()
+        }.elements.first()
 
-        val expected = Element.Form.Text(prompt, 1)
+        val expected = Content(Element.OutlineContent.ParagraphContent.Form.Text(prompt, 1))
 
         assertEquals(expected, element)
     }
@@ -188,13 +195,13 @@ class TemplateTest {
     fun `TemplateContainerScope_formChoice adds Form$MultipleChoice`() {
         val prompt = newText(Language.Bokmal to "hei")
 
-        val element = ParagraphScope<BokmalLang, SomeDto>().apply {
+        val element = ParagraphOnlyScope<LangBokmal, SomeDto>().apply {
             formChoice(prompt) {
                 choice(Language.Bokmal to "velg denne")
             }
-        }.children.first()
+        }.elements.first()
 
-        val expected = Element.Form.MultipleChoice(prompt, listOf(newText(Language.Bokmal to "velg denne")))
+        val expected = Content(Element.OutlineContent.ParagraphContent.Form.MultipleChoice(prompt, listOf(Element.OutlineContent.ParagraphContent.Text.Literal.create(Language.Bokmal to "velg denne"))))
 
         assertEquals(expected, element)
     }
@@ -202,20 +209,18 @@ class TemplateTest {
     @Test
     fun `TemplateContainerScope_includePhrase adds phrase`() {
         val argument = Expression.Literal("jadda")
-        val actual = OutlineScope<BokmalLang, SomeDto>().apply {
+        val actual = OutlineOnlyScope<LangBokmal, SomeDto>().apply {
             includePhrase(TestFrase(argument))
-        }.children
+        }.elements
 
-        val expected = OutlineScope<BokmalLang, SomeDto>().apply { TestFrase(argument).apply(this) }.children
+        val expected = OutlineOnlyScope<LangBokmal, SomeDto>().apply { TestFrase(argument).apply(this) }.elements
 
         assertEquals(expected, actual)
     }
 }
 
-data class TestFraseDto(val test: String)
-
 data class TestFrase(val test: Expression<String>) : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() =
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         paragraph {
             textExpr(
                 Language.Bokmal to "Hei på deg fra TestFrase: ".expr() + test,

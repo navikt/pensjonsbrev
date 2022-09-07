@@ -58,13 +58,21 @@ fun Application.module() {
 
     routing {
         post("/compile") {
+            val logger = call.application.environment.log
+
             val result = call.receive<PdfCompilationInput>()
                 .let { laTeXService.producePDF(it.files) }
 
             when(result) {
                 is PDFCompilationResponse.Base64PDF -> call.respond(result)
-                is PDFCompilationResponse.Failure.Client -> call.respond(HttpStatusCode.BadRequest, result)
-                is PDFCompilationResponse.Failure.Server -> call.respond(HttpStatusCode.InternalServerError, result)
+                is PDFCompilationResponse.Failure.Client -> {
+                    logger.info("Client error: $result")
+                    call.respond(HttpStatusCode.BadRequest, result)
+                }
+                is PDFCompilationResponse.Failure.Server -> {
+                    logger.error("Server error: $result")
+                    call.respond(HttpStatusCode.InternalServerError, result)
+                }
             }
         }
 

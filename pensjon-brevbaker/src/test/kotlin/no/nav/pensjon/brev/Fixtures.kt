@@ -14,11 +14,6 @@ object Fixtures {
         dokumentDato = LocalDate.of(2020, 1, 1),
         saksnummer = "1337123",
         avsenderEnhet = NAVEnhet(
-            returAdresse = ReturAdresse(
-                adresseLinje1 = "Postboks 6600 Etterstad",
-                postNr = "0607",
-                postSted = "Oslo",
-            ),
             nettside = "nav.no",
             navn = "NAV Familie- og pensjonsytelser Porsgrunn",
             telefonnummer = Telefonnummer("55553334"),
@@ -46,10 +41,9 @@ object Fixtures {
             LetterExampleDto::class -> createLetterExampleDto() as T
             MaanedligUfoeretrygdFoerSkattDto::class -> createMaanedligUfoeretrygdFoerSkattDto() as T
             MaanedligUfoeretrygdFoerSkattDto.UfoeretrygdPerMaaned::class -> createMaanedligUfoeretrygdFoerSkattDtoUfoeretrygdPerMaaned() as T
-            OmsorgEgenAutoDto::class -> OmsorgEgenAutoDto(Year(2020), Year(2021)) as T
+            OmsorgEgenAutoDto::class -> createOmsorgEgenAutoDto() as T
             OpplysningerBruktIBeregningUTDto::class -> createOpplysningerBruktIBeregningUTDto() as T
             OpplysningerBruktIBeregningUTDto.BarnetilleggGjeldende::class -> createOpplysningerBruktIBeregningUTDtoBarnetilleggGjeldende() as T
-            OpplysningerBruktIBeregningUTDto.BarnetilleggGjeldende.Grunnlag::class -> createOpplysningerBruktIBeregningUTDtoBarnetilleggGjeldendeGrunnlag() as T
             OpplysningerBruktIBeregningUTDto.BarnetilleggGjeldende.Saerkullsbarn::class -> createOpplysningerBruktIBeregningUTDtoBarnetilleggGjeldendeSaerkullsbarn() as T
             OpplysningerBruktIBeregningUTDto.BeregnetUTPerManedGjeldende::class -> createOpplysningerBruktIBeregningUTDtoBeregnetUTPerManedGjeldende() as T
             OpplysningerBruktIBeregningUTDto.InntektFoerUfoereGjeldende::class -> createOpplysningerBruktIBeregningUTDtoInntektFoerUfoereGjeldende() as T
@@ -62,6 +56,7 @@ object Fixtures {
             OrienteringOmRettigheterUfoereDto::class -> createOrienteringOmRettigheterUfoereDto() as T
             UfoerOmregningEnsligDto::class -> createUfoerOmregningEnsligDto() as T
             UngUfoerAutoDto::class -> createUngUfoerAutoDto() as T
+            EgenerklaeringOmsorgsarbeidDto::class -> createEgenerklaeringOmsorgsarbeidDto() as T
             OpphoererBarnetilleggAutoDto::class -> createOpphoererBarnetilleggAutoDto() as T
 
             else -> throw IllegalArgumentException("Don't know how to construct: ${letterDataType.qualifiedName}")

@@ -3,7 +3,6 @@ package no.nav.pensjon.brev.template.dsl.helpers
 import com.natpryce.hamkrest.*
 import com.natpryce.hamkrest.assertion.*
 import com.tschuchort.compiletesting.*
-import no.nav.pensjon.brev.*
 import no.nav.pensjon.brev.template.*
 import org.junit.jupiter.api.Test
 import java.io.File
@@ -322,4 +321,29 @@ class TemplateModelHelpersAnnotationProcessorTest {
         )
     }
 
+    @Test
+    fun `generates helpers for additionalModels`() {
+        val result = SourceFile.kotlin(
+            "MyClass.kt", """
+                    import AnotherModelSelectors.age
+                    import no.nav.pensjon.brev.template.HasModel
+                    import no.nav.pensjon.brev.template.Expression
+                    import no.nav.pensjon.brev.template.dsl.TemplateGlobalScope
+                    import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
+                    import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpersAnnotationProcessorTest
+                    import no.nav.pensjon.brev.template.thirdpkg.SimpleModel
+                    import no.nav.pensjon.brev.template.thirdpkg.SimpleModelSelectors.name
+
+                    data class AnotherModel(val age: Int)
+
+                    @TemplateModelHelpers([AnotherModel::class])
+                    object MyClass : HasModel<List<SimpleModel>> {
+                        val x: Expression<Int> = Expression.Literal(AnotherModel(35)).age
+                    }
+                    """.trimIndent()
+        ).compile()
+
+        assertThat(result.exitCode, equalTo(KotlinCompilation.ExitCode.OK))
+        assertThat(result.generatedFiles, hasSize(greaterThan(3)) and anyElement(has(File::getName, containsSubstring("AnotherModelSelectors"))))
+    }
 }

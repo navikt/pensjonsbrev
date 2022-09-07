@@ -18,19 +18,14 @@ fun Expression<Telefonnummer>.format() =
 @JvmName("formatKroner")
 fun Expression<Kroner>.format() =
     Expression.BinaryInvoke(
-        select(Kroner::value),
+        select(intValueSelector),
         Expression.FromScope(ExpressionScope<Any, *>::language),
         BinaryOperation.LocalizedCurrencyFormat
     )
 
 @JvmName("formatIntValue")
 fun Expression<IntValue>.format() =
-    select(object : TemplateModelSelector<IntValue, Int> {
-        override val className = "no.nav.pensjon.brev.api.model.IntValue"
-        override val propertyName = "value"
-        override val propertyType = "Int"
-        override val selector = IntValue::value
-    }).format()
+    select(intValueSelector).format()
 
 @JvmName("formatSivilstand")
 fun Expression<Sivilstand>.tableFormat() =

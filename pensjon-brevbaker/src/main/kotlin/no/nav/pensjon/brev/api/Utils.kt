@@ -8,7 +8,6 @@ import no.nav.pensjon.brev.template.LetterTemplate
 fun LetterTemplate<*, *>.description() =
     TemplateDescription(
         name = name,
-        base = base::class.qualifiedName!!,
         letterDataClass = letterDataType.java.name,
         languages = language.all().map { it.toCode() },
         metadata = letterMetadata,

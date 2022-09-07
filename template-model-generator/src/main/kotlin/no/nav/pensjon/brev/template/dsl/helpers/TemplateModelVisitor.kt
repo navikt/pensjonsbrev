@@ -24,10 +24,12 @@ internal class TemplateModelVisitor(
 
     private fun <T> createFile(classDeclaration: KSClassDeclaration, useBlock: (PrintWriter) -> T): T {
         val className = classDeclaration.simpleName.asString()
-        val symbolFile = classDeclaration.containingFile //?: throw OurProcessorException("Couldn't find containingFile of symbol: $className")
         val pkg = classDeclaration.packageName.asString()
 
-        return PrintWriter(codeGenerator.createNewFile(Dependencies(true, *listOfNotNull(symbolFile).toTypedArray()), pkg, "${className}Selectors")).use { writer ->
+        // TODO: Finn ut hvorfor dependencies ikke fungerer for måten Felles er annotert inn
+//        val symbolFile = classDeclaration.containingFile //?: throw OurProcessorException("Couldn't find containingFile of symbol: $className")
+        // Fungerer ikke med: Dependencies(true, *listOfNotNull(symbolFile).toTypedArray())
+        return PrintWriter(codeGenerator.createNewFile(Dependencies.ALL_FILES, pkg, "${className}Selectors")).use { writer ->
             writer.println(
                 """
                 ${if (pkg.isNotBlank()) "package $pkg" else ""}
@@ -107,13 +109,13 @@ internal class TemplateModelVisitor(
             |val TemplateGlobalScope<$dataClassName>.$propertyName: Expression<$type>
             |   get() = Expression.UnaryInvoke(
             |       Expression.FromScope(ExpressionScope<$dataClassName, *>::argument),
-            |       UnaryOperation.Select2($selectorName)
+            |       UnaryOperation.Select($selectorName)
             |   )
             |
             |val Expression<$dataClassName>.$propertyName: Expression<$type>
             |   get() = Expression.UnaryInvoke(
             |       this,
-            |       UnaryOperation.Select2($selectorName)
+            |       UnaryOperation.Select($selectorName)
             |   )
             |
             |val Expression<$dataClassName?>.${propertyName}_safe: Expression<${nullable(type)}>

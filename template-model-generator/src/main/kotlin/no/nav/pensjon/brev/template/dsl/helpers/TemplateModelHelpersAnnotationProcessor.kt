@@ -58,20 +58,42 @@ internal class TemplateModelHelpersAnnotationProcessor(private val codeGenerator
         }
 
         override fun visitClassDeclaration(classDeclaration: KSClassDeclaration, data: Unit) {
+            val additionalModels = classDeclaration.getAdditionalModelsFromAnnotation().toList()
+            additionalModels.forEach { visitModelAndSubModels(it) }
+
             val className = classDeclaration.simpleName.asString()
             if (classDeclaration.classKind == ClassKind.OBJECT) {
                 classDeclaration.findModelTypeFromHasModelInterface().generateModels()
+            } else if (additionalModels.isNotEmpty()) {
+                logger.warn("Annotation $ANNOTATION_NAME does not support target class kind ${classDeclaration.classKind} $className at ${classDeclaration.location}: skipping it")
             } else {
                 throw UnsupportedAnnotationTarget("Annotation $ANNOTATION_NAME does not support target class kind ${classDeclaration.classKind} (only supports ${ClassKind.OBJECT}): $className at ${classDeclaration.location}")
             }
         }
 
         override fun visitPropertyDeclaration(property: KSPropertyDeclaration, data: Unit) {
+            if(property.getAdditionalModelsFromAnnotation().any()) {
+                throw MissingImplementation("Annotation $ANNOTATION_NAME does not support additionalModels for target $property at: ${property.location}")
+            }
+
             val propertyType = property.type.resolve()
             if (!hasModelType.isAssignableFrom(propertyType)) {
                 throw InvalidTargetException("$ANNOTATION_NAME annotated target property must have a value that extends $HAS_MODEL_INTERFACE_NAME: $property at ${property.location}")
             }
             property.findModelTypeFromHasModelInterface().generateModels()
+        }
+
+        private fun KSAnnotated.getAdditionalModelsFromAnnotation(): Sequence<KSClassDeclaration> {
+            return annotations.filter {
+                it.shortName.getShortName() == TemplateModelHelpers::class.simpleName && it.annotationType.resolve().declaration
+                    .qualifiedName?.asString() == TemplateModelHelpers::class.qualifiedName
+            }.flatMap { it.arguments}
+                .filter { it.name?.getShortName() == "additionalModels" }
+                .map { it.value }
+                .filterIsInstance<Collection<*>>()
+                .flatMap { it.filterIsInstance<KSType>() }
+                .map { it.declaration }
+                .filterIsInstance<KSClassDeclaration>()
         }
 
         private fun KSType.generateModels() {

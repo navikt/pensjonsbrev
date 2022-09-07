@@ -18,7 +18,7 @@ data class OmregnEPSInnledning(
     val avdoedNavn: Expression<String>,
     val kravVirkningsDatoFraOgMed: Expression<LocalDate>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() {
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         paragraph {
             val virkningsdato = kravVirkningsDatoFraOgMed.format()
             showIf(harMinsteytelseVedVirk or inntektFoerUfoereErSannsynligEndret or ektefelletilleggOpphoert) {
@@ -86,7 +86,7 @@ data class UtbetalingUfoeretrygd(
     val institusjonsoppholdVedVirk: Expression<Institusjon>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
 
-    override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() {
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         val faarUtbetaltUfoeretrygd = totalUfoereMaanedligBeloep.greaterThan(0)
 
         showIf(faarUtbetaltUfoeretrygd) {
@@ -162,7 +162,7 @@ data class EndrMYDodEPS2_001(
     val minsteytelse_sats_vedvirk: Expression<Double>,
     val kompensasjonsgrad_ufoeretrygd_vedvirk: Expression<Double>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() {
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         paragraph {
             textExpr(
                 Bokmal to "Du er sikret minsteytelse fordi beregningen ut fra din egenopptjente inntekt er lavere enn minstenivået for uføretrygd. Satsen på minsteytelsen avhenger av sivilstand. For deg utgjør minsteytelsen ".expr()
@@ -193,7 +193,7 @@ data class EndrMYOgMinstIFUDodEPS2_001(
     val kompensasjonsgrad_ufoeretrygd_vedvirk: Expression<Double>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
 
-    override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() {
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         paragraph {
             textExpr(
                 Bokmal to "Du er sikret minsteytelse fordi beregningen ut fra din egenopptjente inntekt er lavere enn minstenivået for uføretrygd. Satsen på minsteytelsen avhenger av sivilstand. For deg utgjør minsteytelsen ".expr()
@@ -229,7 +229,7 @@ data class EndrMinstIFUDodEPS2_001(
     val oppjustert_inntekt_foer_ufoerhet_vedvirk: Expression<Kroner>,
     val kompensasjonsgrad_ufoeretrygd_vedvirk: Expression<Double>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() {
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         paragraph {
             textExpr(
                 Bokmal to "Inntekten din før du ble ufør er fastsatt til minstenivå som er avhengig av sivilstand. For deg er inntekten din før du ble ufør satt til ".expr()
@@ -253,7 +253,7 @@ data class HjemmelSivilstandUfoeretrygd(
     val harMinsteinntektFoerUfoerhet: Expression<Boolean>,
     val ufoeretrygdVedvirkErInntektsavkortet: Expression<Boolean>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() {
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         showIf(harMinsteinntektFoerUfoerhet) {
             showIf(ufoeretrygdVedvirkErInntektsavkortet) {
                 //HjemmelSivilstandUTMinsteIFUAvkortet_001
@@ -299,7 +299,7 @@ data class HjemmelSivilstandUfoeretrygd(
 }
 
 object HjemmelEPSDodUTInstitusjon_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() =
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         paragraph {
             text(
                 Bokmal to "Uføretrygden din beregnes etter folketrygdloven § 12-19 så lenge du er på institusjon.",
@@ -310,7 +310,7 @@ object HjemmelEPSDodUTInstitusjon_001 : OutlinePhrase<LangBokmalNynorskEnglish>(
 }
 
 object HjemmelEPSDodUTFengsel_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() =
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         paragraph {
             text(
                 Bokmal to "Uføretrygden din beregnes etter folketrygdloven § 12-20 så lenge du er under straffegjennomføring.",
@@ -321,7 +321,7 @@ object HjemmelEPSDodUTFengsel_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
 }
 
 object OpphorETOverskrift_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() =
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         title1 {
             text(
                 Bokmal to "Ektefelletillegget ditt opphører",
@@ -332,7 +332,7 @@ object OpphorETOverskrift_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
 }
 
 object OpphorET_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() =
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         paragraph {
             text(
                 Bokmal to "Du forsørger ikke lenger en ektefellepartnersamboer. Derfor opphører ektefelletillegget ditt.",
@@ -343,7 +343,7 @@ object OpphorET_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
 }
 
 object HjemmelET_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() =
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         paragraph {
             text(
                 Bokmal to "Vedtaket er gjort etter forskrift om omregning av uførepensjon til uføretrygd § 8.",
@@ -354,7 +354,7 @@ object HjemmelET_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
 }
 
 object OmregningFBOverskrift_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() =
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         title1 {
             text(
                 Bokmal to "Barnetillegg for fellesbarn er regnet om",
@@ -367,7 +367,7 @@ object OmregningFBOverskrift_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
 data class InfoFBTilSB_001(
     val barnOverfoertTilSaerkullsbarn: Expression<List<String>>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() =
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         paragraph {
             text(
                 Bokmal to "Vi har regnet om barnetillegget for barn som ikke lenger bor sammen med begge foreldre. Dette gjelder:",
@@ -391,7 +391,7 @@ data class InfoFBTilSB_001(
 data class InfoTidligereSB_001(
     val tidligereSaerkullsbarn: Expression<List<String>>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() =
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         paragraph {
             text(
                 Bokmal to "Denne omregningen har også betydning for barnetillegget for:",
@@ -415,7 +415,7 @@ data class InfoTidligereSB_001(
 data class InfoTidligereSBOgEndretUT_001(
     val tidligereSaerkullsbarn: Expression<List<String>>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() =
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         paragraph {
             text(
                 Bokmal to "Omregningen av barnetillegg og endring i uføretrygden din har også betydning for barnetillegget for:",
@@ -437,7 +437,7 @@ data class InfoTidligereSBOgEndretUT_001(
 }
 
 object EndringUTpavirkerBTOverskrift_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() =
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         title1 {
             text(
                 Bokmal to "Slik påvirker endring av uføretrygden barnetillegget ditt",
@@ -448,7 +448,7 @@ object EndringUTpavirkerBTOverskrift_001 : OutlinePhrase<LangBokmalNynorskEnglis
 }
 
 object InfoBTSBInntekt_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() =
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         paragraph {
             text(
                 Bokmal to "Inntekten din har betydning for hva du får i barnetillegg. " +
@@ -468,7 +468,7 @@ object InfoBTSBInntekt_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
 }
 
 object InfoBTOverfortTilSBInntekt_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() =
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         paragraph {
             text(
                 Bokmal to "Inntekten din har betydning for hva du får i barnetillegg. " +
@@ -495,7 +495,7 @@ data class IkkeRedusBTSBPgaInntekt_001(
     val barnetillegg_saerkullsbarn_inntekt_brukt_i_avkortning_vedvirk: Expression<Kroner>,
     val barnetillegg_saerkullsbarn_fribeloep_vedvirk: Expression<Kroner>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() =
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         paragraph {
             textExpr(
                 Bokmal to "Inntekten din på ".expr()
@@ -515,7 +515,7 @@ data class RedusBTSBPgaInntekt_001(
     val barnetillegg_saerkullsbarn_inntekt_brukt_i_avkortning_vedvirk: Expression<Kroner>,
     val barnetillegg_saerkullsbarn_fribeloep_vedvirk: Expression<Kroner>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() =
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         paragraph {
             textExpr(
                 Bokmal to "Inntekten din på ".expr()
@@ -532,7 +532,7 @@ data class RedusBTSBPgaInntekt_001(
 }
 
 object JusterBelopRedusBTPgaInntekt_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() =
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         paragraph {
             text(
                 Bokmal to "Det du har fått utbetalt i barnetillegg tidligere i år har også betydning for hva du får i barnetillegg framover. Dette ble tatt hensyn til da vi endret barnetillegget.",
@@ -543,7 +543,7 @@ object JusterBelopRedusBTPgaInntekt_001 : OutlinePhrase<LangBokmalNynorskEnglish
 }
 
 object JusterBelopIkkeUtbetaltBTPgaInntekt_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() =
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         paragraph {
             text(
                 Bokmal to "Det du har fått utbetalt i barnetillegg tidligere i år har også betydning for hva du får i barnetillegg framover. " +
@@ -562,7 +562,7 @@ data class IkkeUtbetaltBTSBPgaInntekt_001(
     val barnetillegg_saerkullsbarn_inntekt_brukt_i_avkortning_vedvirk: Expression<Kroner>,
     val barnetillegg_saerkullsbarn_inntektstak_vedvirk: Expression<Kroner>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() =
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         paragraph {
             textExpr(
                 Bokmal to "Inntekten din på ".expr()
@@ -579,7 +579,7 @@ data class IkkeUtbetaltBTSBPgaInntekt_001(
 }
 
 object HjemmelBT_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() =
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         paragraph {
             text(
                 Bokmal to "Vedtaket er gjort etter folketrygdloven § 12-15.",
@@ -590,7 +590,7 @@ object HjemmelBT_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
 }
 
 object HjemmelBTRedus_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() =
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         paragraph {
             text(
                 Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 12-15 og 12-16.",
@@ -601,7 +601,7 @@ object HjemmelBTRedus_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
 }
 
 object MerInfoBT_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() =
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         paragraph {
             text(
                 Bokmal to "Du kan lese mer om beregningen av barnetillegg i vedlegget.",
@@ -612,7 +612,7 @@ object MerInfoBT_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
 }
 
 data class GjRettSamboerOverskrift(val avdoedNavn: Expression<String>) : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() =
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         title1 {
             textExpr(
                 Bokmal to "Rettigheter du kan ha som tidligere samboer med ".expr()
@@ -627,7 +627,7 @@ data class GjRettSamboerOverskrift(val avdoedNavn: Expression<String>) : Outline
 }
 
 object GjRettUTSamboer_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() =
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         paragraph {
             text(
                 Bokmal to "Samboere som tidligere har vært gift, eller som har eller har hatt felles barn, kan ha rett til gjenlevendetillegg i uføretrygden. " +
@@ -641,7 +641,7 @@ object GjRettUTSamboer_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
 }
 
 object RettTilUTGJTOverskrift_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() =
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         title1 {
             text(
                 Bokmal to "Du kan ha rett til gjenlevendetillegg i uføretrygden",
@@ -652,7 +652,7 @@ object RettTilUTGJTOverskrift_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
 }
 
 object HvemUTGJTVilkar_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() {
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         paragraph {
             text(
                 Bokmal to "For å ha rett til gjenlevendetillegg i uføretrygden, må du som hovedregel:",
@@ -708,7 +708,7 @@ object HvemUTGJTVilkar_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
 }
 
 object HvordanSoekerDuOverskrift_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() =
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         title1 {
             text(
                 Bokmal to "Hvordan søker du?",
@@ -719,7 +719,7 @@ object HvordanSoekerDuOverskrift_001 : OutlinePhrase<LangBokmalNynorskEnglish>()
 }
 
 object SoekUTGJT_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() =
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         paragraph {
             text(
                 Bokmal to "Vi oppfordrer deg til å søke om gjenlevendetillegg i uføretrygden så snart som mulig fordi vi vanligvis kun etterbetaler for tre måneder. " +
@@ -733,7 +733,7 @@ object SoekUTGJT_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
 }
 
 object SoekAvtaleLandUT_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() =
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         paragraph {
             text(
                 Bokmal to "Dersom du bor i utlandet, må du kontakte trygdemyndigheter i bostedslandet ditt og søke om ytelser etter avdøde.",
@@ -744,7 +744,7 @@ object SoekAvtaleLandUT_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
 }
 
 object AvdodBoddArbUtlandOverskrift_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() =
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         title1 {
             text(
                 Bokmal to "Rettigheter hvis avdøde har bodd eller arbeidet i utlandet",
@@ -755,7 +755,7 @@ object AvdodBoddArbUtlandOverskrift_001 : OutlinePhrase<LangBokmalNynorskEnglish
 }
 
 object AvdodBoddArbUtland2_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() =
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         paragraph {
             text(
                 Bokmal to "Hvis avdøde har bodd eller arbeidet i utlandet kan dette få betydning for hvor mye du får ubetalt i gjenlevendetillegg. " +
@@ -777,7 +777,7 @@ object AvdodBoddArbUtland2_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
 }
 
 object PensjonFraAndreOverskrift_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() =
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         title1 {
             text(
                 Bokmal to "Andre pensjonsordninger",
@@ -788,7 +788,7 @@ object PensjonFraAndreOverskrift_001 : OutlinePhrase<LangBokmalNynorskEnglish>()
 }
 
 object InfoAvdodPenFraAndre_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() =
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         paragraph {
             text(
                 Bokmal to "Dersom avdøde hadde en privat eller offentlig pensjonsordning og du har spørsmål om dette, må du kontakte avdødes arbeidsgiver. " +
@@ -802,7 +802,7 @@ object InfoAvdodPenFraAndre_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
 }
 
 object HarBarnUnder18Overskrift_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() =
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         title1 {
             text(
                 Bokmal to "For deg som har barn under 18 år",
@@ -813,7 +813,7 @@ object HarBarnUnder18Overskrift_001 : OutlinePhrase<LangBokmalNynorskEnglish>() 
 }
 
 object HarBarnUtenBT_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() =
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         paragraph {
             text(
                 Bokmal to "Har du barn under 18 år, og ikke er innvilget barnetillegg, kan du søke om dette.",
@@ -824,7 +824,7 @@ object HarBarnUtenBT_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
 }
 
 object HarBarnUnder18_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() =
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         paragraph {
             text(
                 Bokmal to "Forsørger du barn under 18 år, kan du ha rett til utvidet barnetrygd. " +
@@ -841,7 +841,7 @@ object HarBarnUnder18_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
 }
 
 object VirknTdsPktOverskrift_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() =
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         title1 {
             text(
                 Bokmal to "Dette er virkningstidspunktet ditt",
@@ -852,7 +852,7 @@ object VirknTdsPktOverskrift_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
 }
 
 data class VirkTdsPktUT_001(val krav_virkedato_fom: Expression<LocalDate>) : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() =
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         paragraph {
             textExpr(
                 Bokmal to "Uføretrygden din er omregnet fra ".expr()
@@ -866,7 +866,7 @@ data class VirkTdsPktUT_001(val krav_virkedato_fom: Expression<LocalDate>) : Out
 }
 
 data class VirkTdsPktUTIkkeEndring_001(val krav_virkedato_fom: Expression<LocalDate>) : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() =
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         paragraph {
             textExpr(
                 Bokmal to "Uføretrygden din er omregnet fra ".expr()
@@ -880,7 +880,7 @@ data class VirkTdsPktUTIkkeEndring_001(val krav_virkedato_fom: Expression<LocalD
 }
 
 data class VirkTdsPktUTBTOmregn_001(val krav_virkedato_fom: Expression<LocalDate>) : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() =
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         paragraph {
             textExpr(
                 Bokmal to "Barnetillegget i uføretrygden din er omregnet fra ".expr()
@@ -894,7 +894,7 @@ data class VirkTdsPktUTBTOmregn_001(val krav_virkedato_fom: Expression<LocalDate
 }
 
 data class VirkTdsPktUTAvkortetTil0_001(val krav_virkedato_fom: Expression<LocalDate>) : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() =
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         paragraph {
             textExpr(
                 Bokmal to "Uføretrygden din er omregnet fra ".expr()
@@ -908,7 +908,7 @@ data class VirkTdsPktUTAvkortetTil0_001(val krav_virkedato_fom: Expression<Local
 }
 
 object MeldInntektUTOverskrift_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() =
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         title1 {
             text(
                 Bokmal to "Du må melde fra om eventuell inntekt",
@@ -919,7 +919,7 @@ object MeldInntektUTOverskrift_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
 }
 
 object MeldInntektUT_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() =
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         paragraph {
             text(
                 Bokmal to "Dersom du er i jobb eller har planer om å jobbe, må du melde fra om eventuelle endringer i inntekten din." +
@@ -944,7 +944,7 @@ object MeldInntektUT_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
 }
 
 object MeldInntektUTBT_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() =
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         paragraph {
             text(
 
@@ -970,7 +970,7 @@ object MeldInntektUTBT_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
 }
 
 object SkattekortOverskrift_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() =
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         title1 {
             text(
                 Bokmal to "Skattekort",
@@ -981,7 +981,7 @@ object SkattekortOverskrift_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
 }
 
 object SkattekortUT_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() =
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         paragraph {
             text(
                 Bokmal to "Uføretrygd skattlegges som lønnsinntekt. " +
@@ -1001,7 +1001,7 @@ object SkattekortUT_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
 }
 
 object SkattBorIUtlandPesys_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() {
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         title1 {
             text(
                 Bokmal to "Skatt for deg som bor i utlandet",

@@ -1,6 +1,8 @@
 package no.nav.pensjon.brev.maler
 
 import no.nav.pensjon.brev.api.model.*
+import no.nav.pensjon.brev.api.model.BrukerSelectors.foedselsdato
+import no.nav.pensjon.brev.api.model.FellesSelectors.bruker
 import no.nav.pensjon.brev.api.model.maler.*
 import no.nav.pensjon.brev.api.model.maler.OpptjeningVedForhoeyetHjelpesatsDtoSelectors.aarInnvilgetOmrsorgspoeng
 import no.nav.pensjon.brev.maler.fraser.*
@@ -8,11 +10,9 @@ import no.nav.pensjon.brev.maler.fraser.vedtak.Vedtak
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.VedtaksbrevTemplate
-import no.nav.pensjon.brev.template.base.PensjonLatex
 import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
-import java.time.LocalDate
 
 // BrevTypeKode: MF_000094
 @TemplateModelHelpers
@@ -22,7 +22,6 @@ object OpptjeningVedForhoeyetHjelpesats : VedtaksbrevTemplate<OpptjeningVedForho
 
     override val template = createTemplate(
         name = kode.name,
-        base = PensjonLatex,
         letterDataType = OpptjeningVedForhoeyetHjelpesatsDto::class,
         languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(
@@ -44,7 +43,7 @@ object OpptjeningVedForhoeyetHjelpesats : VedtaksbrevTemplate<OpptjeningVedForho
 
             includePhrase(Omsorgsopptjening.HjelpestoenadInnledn(aarInnvilgetOmrsorgspoeng))
 
-            val foedtEtter1953 = felles().select(Felles::bruker).select(Bruker::foedselsdato).select(LocalDate::getYear).greaterThan(1953)
+            val foedtEtter1953 = felles.bruker.foedselsdato.year.greaterThan(1953)
             showIf(foedtEtter1953) {
                 includePhrase(Omsorgsopptjening.HjelpestKap20Hjemmel)
             } orShow {

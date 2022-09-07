@@ -13,12 +13,13 @@ import kotlinx.coroutines.runBlocking
 import no.nav.pensjon.brev.api.model.*
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.latex.LaTeXCompilerService
-import no.nav.pensjon.brev.latex.PdfCompilationInput
+import no.nav.pensjon.brev.template.render.*
 import java.io.File
 import java.util.*
+import kotlin.io.path.Path
 
 val BREVBAKER_URL = System.getenv("BREVBAKER_URL") ?: "http://localhost:8080"
-val PDF_BUILDER_URL = "http://localhost:8081"
+const val PDF_BUILDER_URL = "http://localhost:8081"
 object TestTags {
     const val PDF_BYGGER = "pdf-bygger"
 }
@@ -52,5 +53,16 @@ fun writeTestPDF(pdfFileName: String, pdf: String) {
     println("Test-file written to file:${"\\".repeat(3)}${file.absolutePath}".replace('\\', '/'))
 }
 
-fun LaTeXCompilerService.producePdfSync(pdfCompilationInput: PdfCompilationInput) =
-    runBlocking { producePDF(pdfCompilationInput, "fra-tester") }
+fun writeTestHTML(letterName: String, htmlLetter: RenderedHtmlLetter) {
+    val dir = Path("build/test_html/$letterName")
+    dir.toFile().mkdirs()
+    htmlLetter.files.forEach { it.writeTo(dir) }
+    htmlLetter.files.firstOrNull { it.fileName == "index.html" }
+        ?.also {
+            println("""Test index-html written to file://${dir.resolve(it.fileName).toAbsolutePath()}""")
+        }
+}
+
+
+fun LaTeXCompilerService.producePdfSync(latexLetter: RenderedLatexLetter) =
+    runBlocking { producePDF(latexLetter, "fra-tester") }

@@ -14,7 +14,7 @@ import no.nav.pensjon.brev.template.dsl.*
 //  vedleggKlagePensjon_001
 
 object VedleggInnsynSakUnder18_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() =
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         paragraph {
             text(
                 Bokmal to "Er du under 18 år, har vergen din rett til å se dokumentene i saken din på vegne av deg.",

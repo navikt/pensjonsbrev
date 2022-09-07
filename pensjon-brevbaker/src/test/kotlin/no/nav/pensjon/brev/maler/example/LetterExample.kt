@@ -1,6 +1,8 @@
 package no.nav.pensjon.brev.maler.example
 
-import no.nav.pensjon.brev.api.model.Felles
+import no.nav.pensjon.brev.api.model.BrukerSelectors.fornavn
+import no.nav.pensjon.brev.api.model.FellesSelectors.bruker
+import no.nav.pensjon.brev.api.model.FellesSelectors.dokumentDato
 import no.nav.pensjon.brev.api.model.Kroner
 import no.nav.pensjon.brev.api.model.LetterMetadata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
@@ -15,14 +17,13 @@ import no.nav.pensjon.brev.maler.example.LetterExampleDtoSelectors.pensjonInnvil
 import no.nav.pensjon.brev.maler.example.LetterExampleDtoSelectors.tilleggEksempel
 import no.nav.pensjon.brev.maler.example.TestVedleggDtoSelectors.testVerdi1
 import no.nav.pensjon.brev.maler.example.TestVedleggDtoSelectors.testVerdi2
-import no.nav.pensjon.brev.maler.fraser.common.Felles.kroner
+import no.nav.pensjon.brev.maler.fraser.common.Felles.KronerText
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.*
-import no.nav.pensjon.brev.template.Element.Table.ColumnAlignment.RIGHT
-import no.nav.pensjon.brev.template.Element.Text.FontType
+import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT
+import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.Nynorsk
-import no.nav.pensjon.brev.template.base.PensjonLatex
 import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
@@ -35,7 +36,7 @@ object LetterExample : VedtaksbrevTemplate<LetterExampleDto> {
 
     override val template = createTemplate(
         name = "EKSEMPEL_BREV", //Letter ID
-        base = PensjonLatex, //Master-template
+        //Master-template
         letterDataType = LetterExampleDto::class, // Data class containing the required data of this letter
         languages = languages(Bokmal, Nynorsk),
         letterMetadata = LetterMetadata(
@@ -57,7 +58,7 @@ object LetterExample : VedtaksbrevTemplate<LetterExampleDto> {
 
 
             // Data from the felles(common) argument can also be used. Both felles and argument supports map and select.
-            val firstName = felles().map { it.bruker.fornavn }
+            val firstName = felles.bruker.fornavn
 
             // section title
             title1 {
@@ -115,11 +116,11 @@ object LetterExample : VedtaksbrevTemplate<LetterExampleDto> {
 
                     item {
                         //textOnlyPhrase can be included anywhere you write text.
-                        includePhrase(textOnlyPhraseTest)
+                        includePhrase(TextOnlyPhraseTest)
                     }
                     item {
                         //Any type of phrase can also require data
-                        includePhrase(textOnlyPhraseTestWithParams, datoInnvilget)
+                        includePhrase(TextOnlyPhraseTestWithParams(datoInnvilget))
                     }
                 }
                 text(Bokmal to lipsums[0], Nynorsk to lipsums[0])
@@ -156,7 +157,7 @@ object LetterExample : VedtaksbrevTemplate<LetterExampleDto> {
                             }
                             cell {
                                 ifNotNull(tillegg1) { tillegg ->
-                                    includePhrase(kroner, tillegg)
+                                    includePhrase(KronerText(tillegg))
                                 }
                             }
                             cell {
@@ -268,7 +269,7 @@ data class OutlinePhraseTest(val datoInnvilget: Expression<LocalDate>, val pensj
     //The elements used in outline can also be used in outline phrases.
     //This is intended for use in the top-level outline scope
 
-    override fun OutlineScope<LangBokmalNynorsk, Unit>.template() =
+    override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() =
         paragraph {
             showIf(pensjonInnvilget) {
                 val dato = datoInnvilget.format()
@@ -282,7 +283,7 @@ data class OutlinePhraseTest(val datoInnvilget: Expression<LocalDate>, val pensj
 
 @Suppress("unused")
 object ParagraphPhraseTest : ParagraphPhrase<LangBokmalNynorsk>() {
-    override fun ParagraphScope<LangBokmalNynorsk, Unit>.template() =
+    override fun ParagraphOnlyScope<LangBokmalNynorsk, Unit>.template() =
         list {
             item {
                 text(Bokmal to "Test 1", Nynorsk to "Test 1")
@@ -298,15 +299,17 @@ object ParagraphPhraseTest : ParagraphPhrase<LangBokmalNynorsk>() {
         }
 }
 
-val textOnlyPhraseTest = TextOnlyPhrase<LangBokmalNynorsk, Unit> {
-    text(Bokmal to "Dette er en tekstfrase", Nynorsk to "Dette er en tekstfrase")
+object TextOnlyPhraseTest : TextOnlyPhrase<LangBokmalNynorsk>() {
+    override fun TextOnlyScope<LangBokmalNynorsk, Unit>.template() =
+        text(Bokmal to "Dette er en tekstfrase", Nynorsk to "Dette er en tekstfrase")
 }
 
-val textOnlyPhraseTestWithParams = TextOnlyPhrase<LangBokmalNynorsk, LocalDate> { param ->
-    textExpr(
-        Bokmal to "Dette er en tekstfrase med datoen: ".expr() + param.format(),
-        Nynorsk to "Dette er en tekstfrase med datoen: ".expr() + param.format(),
-    )
+data class TextOnlyPhraseTestWithParams(val dato: Expression<LocalDate>) : TextOnlyPhrase<LangBokmalNynorsk>() {
+    override fun TextOnlyScope<LangBokmalNynorsk, Unit>.template() =
+        textExpr(
+            Bokmal to "Dette er en tekstfrase med datoen: ".expr() + dato.format(),
+            Nynorsk to "Dette er en tekstfrase med datoen: ".expr() + dato.format(),
+        )
 }
 
 data class TestVedleggDto(val testVerdi1: String, val testVerdi2: String)
@@ -321,7 +324,7 @@ val testVedlegg = createAttachment<LangBokmalNynorsk, TestVedleggDto>(
 ) {
     paragraph {
         //felles can also be used in phrases and attachment even if it wasn't explicitly sent in
-        val dokDato = felles().select(Felles::dokumentDato).format()
+        val dokDato = felles.dokumentDato.format()
         textExpr(
             Bokmal to "Test verdi 1: ".expr() + testVerdi1 + " Test verdi 2: " + testVerdi2 + " dokument dato: " + dokDato,
             Nynorsk to "Test verdi 1: ".expr() + testVerdi1 + " Test verdi 2: " + testVerdi2 + " dokument dato: " + dokDato,

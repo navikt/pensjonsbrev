@@ -16,7 +16,7 @@ import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdPerMaanedSelectors.total
 import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdPerMaanedSelectors.totalUTBeloepNetto
 import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdPerMaanedSelectors.virkningFraOgMed
 import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdPerMaanedSelectors.virkningTilOgMed
-import no.nav.pensjon.brev.maler.fraser.common.Felles.kroner
+import no.nav.pensjon.brev.maler.fraser.common.Felles.KronerText
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Language.*
@@ -26,7 +26,7 @@ import java.time.LocalDate
 
 
 object VedleggBelopUT_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() =
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         paragraph {
             text(
                 Bokmal to "Nedenfor ser du den månedlige uføretrygden din.",
@@ -40,7 +40,7 @@ data class TabellBeregnetUTHele(
     val ufoeretrygd: Expression<MaanedligUfoeretrygdFoerSkattDto.UfoeretrygdPerMaaned>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
 
-    override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() {
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         includePhrase(TabellUfoeretrygtTittel(ufoeretrygd.virkningFraOgMed, ufoeretrygd.virkningTilOgMed))
 
         paragraph {
@@ -80,7 +80,7 @@ data class TabellUfoeretrygtTittel(
     val virkningsDatoTilOgMed: Expression<LocalDate?>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
 
-    override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() =
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         title1 {
             val virkningsDatoFraOgMed = virkningsDatoFraOgMed.format(short = true)
             textExpr(
@@ -104,7 +104,7 @@ data class TabellUfoeretrygtTittel(
 data class TabellUfoeretrygdTittel_broedtekst(
     val grunnbeloep: Expression<Kroner>,
 ) : ParagraphPhrase<LangBokmalNynorskEnglish>() {
-    override fun ParagraphScope<LangBokmalNynorskEnglish, Unit>.template() =
+    override fun ParagraphOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         textExpr(
             Bokmal to "Folketrygdens grunnbeløp (G) benyttet i beregningen er ".expr() + grunnbeloep.format() + " kroner.",
             Nynorsk to "Grunnbeløpet i folketrygda (G) nytta i utrekninga er ".expr() + grunnbeloep.format() + " kroner.",
@@ -120,16 +120,16 @@ data class TabellBeregnetUT(
     val ordinaerUTBeloep: Expression<Kroner>,
     val totalUTBeloep: Expression<Kroner>,
 ) : ParagraphPhrase<LangBokmalNynorskEnglish>() {
-    override fun ParagraphScope<LangBokmalNynorskEnglish, Unit>.template() {
+    override fun ParagraphOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         table(
             header = {
                 column(1) {}
-                column(1, alignment = Element.Table.ColumnAlignment.RIGHT) {
+                column(1, alignment = Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT) {
                     text(
                         Bokmal to "Bruttobeløp per måned",
                         Nynorsk to "Bruttobeløp per månad",
                         English to "Gross monthly amount",
-                        Element.Text.FontType.BOLD
+                        Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
                     )
                 }
             }
@@ -143,7 +143,7 @@ data class TabellBeregnetUT(
                     )
                 }
                 cell {
-                    includePhrase(kroner, ordinaerUTBeloep)
+                    includePhrase(KronerText(ordinaerUTBeloep))
                 }
             }
 
@@ -157,7 +157,7 @@ data class TabellBeregnetUT(
                         )
                     }
                     cell {
-                        includePhrase(kroner, it)
+                        includePhrase(KronerText(it))
                     }
                 }
             }
@@ -172,7 +172,7 @@ data class TabellBeregnetUT(
                         )
                     }
                     cell {
-                        includePhrase(kroner, it)
+                        includePhrase(KronerText(it))
                     }
                 }
             }
@@ -188,7 +188,7 @@ data class TabellBeregnetUT(
                             )
                         }
                         cell {
-                            includePhrase(kroner, annetBelop)
+                            includePhrase(KronerText(annetBelop))
                         }
                     }
                 }.orShow {
@@ -201,7 +201,7 @@ data class TabellBeregnetUT(
                             )
                         }
                         cell {
-                            includePhrase(kroner, annetBelop)
+                            includePhrase(KronerText(annetBelop))
                         }
                     }
                 }
@@ -216,7 +216,7 @@ data class TabellBeregnetUT(
                     )
                 }
                 cell {
-                    includePhrase(kroner, totalUTBeloep)
+                    includePhrase(KronerText(totalUTBeloep))
                 }
             }
         }
@@ -233,24 +233,24 @@ data class TabellBeregnetUTAvkortet(
     val totalUTBeloepNetto: Expression<Kroner>,
     val totalUTBeloepBrutto: Expression<Kroner>,
 ) : ParagraphPhrase<LangBokmalNynorskEnglish>() {
-    override fun ParagraphScope<LangBokmalNynorskEnglish, Unit>.template() {
+    override fun ParagraphOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         table(
             header = {
                 column {}
-                column(alignment = Element.Table.ColumnAlignment.RIGHT) {
+                column(alignment = Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT) {
                     text(
                         Bokmal to "Uføretrygd per måned før fradrag for inntekt",
                         Nynorsk to "Uføretrygd per månad før frådrag for inntekt",
                         English to "Monthly disability benefit before deductions for income",
-                        Element.Text.FontType.BOLD
+                        Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
                     )
                 }
-                column(alignment = Element.Table.ColumnAlignment.RIGHT) {
+                column(alignment = Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT) {
                     text(
                         Bokmal to "Uføretrygd per måned etter fradrag for inntekt",
                         Nynorsk to "Uføretrygd per månad etter frådrag for inntekt",
                         English to "Monthly disability benefit after deductions for income",
-                        Element.Text.FontType.BOLD
+                        Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
                     )
                 }
             }
@@ -264,17 +264,14 @@ data class TabellBeregnetUTAvkortet(
                     )
                 }
                 cell {
-                    includePhrase(kroner, ordinaerUTBeloepBrutto)
+                    includePhrase(KronerText(ordinaerUTBeloepBrutto))
                 }
                 cell {
-                    includePhrase(kroner, ordinaerUTBeloepNetto)
+                    includePhrase(KronerText(ordinaerUTBeloepNetto))
                 }
             }
 
-            ifNotNull(
-                barnetilleggBrutto,
-                barnetilleggNetto,
-            ) { brutto, netto ->
+            ifNotNull(barnetilleggBrutto,barnetilleggNetto) { brutto, netto ->
                 row {
                     cell {
                         text(
@@ -285,19 +282,16 @@ data class TabellBeregnetUTAvkortet(
                     }
 
                     cell {
-                        includePhrase(kroner, brutto)
+                        includePhrase(KronerText(brutto))
                     }
 
                     cell {
-                        includePhrase(kroner, netto)
+                        includePhrase(KronerText(netto))
                     }
                 }
             }
 
-            ifNotNull(
-                garantitilleggNordisk27Brutto,
-                garantitilleggNordisk27Netto,
-            ) { brutto, netto ->
+            ifNotNull(garantitilleggNordisk27Brutto, garantitilleggNordisk27Netto) { brutto, netto ->
                 row {
                     cell {
                         text(
@@ -308,11 +302,11 @@ data class TabellBeregnetUTAvkortet(
                     }
 
                     cell {
-                        includePhrase(kroner, brutto)
+                        includePhrase(KronerText(brutto))
                     }
 
                     cell {
-                        includePhrase(kroner, netto)
+                        includePhrase(KronerText(netto))
                     }
                 }
             }
@@ -327,11 +321,11 @@ data class TabellBeregnetUTAvkortet(
                 }
 
                 cell {
-                    includePhrase(kroner, totalUTBeloepBrutto)
+                    includePhrase(KronerText(totalUTBeloepBrutto))
                 }
 
                 cell {
-                    includePhrase(kroner, totalUTBeloepNetto)
+                    includePhrase(KronerText(totalUTBeloepNetto))
                 }
             }
         }

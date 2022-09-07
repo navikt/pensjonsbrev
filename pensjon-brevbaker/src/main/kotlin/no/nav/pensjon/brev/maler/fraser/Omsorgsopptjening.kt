@@ -1,6 +1,8 @@
 package no.nav.pensjon.brev.maler.fraser
 
 import no.nav.pensjon.brev.api.model.*
+import no.nav.pensjon.brev.api.model.FellesSelectors.avsenderEnhet
+import no.nav.pensjon.brev.api.model.NAVEnhetSelectors.nettside
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Language.*
@@ -10,7 +12,7 @@ import no.nav.pensjon.brev.template.dsl.expression.*
 object Omsorgsopptjening {
     // omsorgsopptjenHjelpestInnledn_001
     data class HjelpestoenadInnledn(val aarInnvilgetOmrsorgspoeng: Expression<Year>) : OutlinePhrase<LangBokmalNynorskEnglish>() {
-        override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() =
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
             paragraph {
                 textExpr(
                     Bokmal to "Du har fått godkjent pensjonsopptjening for ".expr() + aarInnvilgetOmrsorgspoeng.format() + " fordi du utfører omsorgsarbeid for barn som har rett til forhøyet hjelpestønad etter sats 3 eller 4.",
@@ -23,7 +25,7 @@ object Omsorgsopptjening {
 
     // omsorgsopptjenHjelpestKap20Hjemmel_001
     object HjelpestKap20Hjemmel : OutlinePhrase<LangBokmalNynorskEnglish>() {
-        override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() =
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
             paragraph {
                 text(
                     Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 3-16 første ledd bokstav b, 20-8 første ledd bokstav b og 20-21.",
@@ -35,7 +37,7 @@ object Omsorgsopptjening {
 
     // omsorgsopptjenHjelpestKap3Hjemmel_001
     object HjelpestKap3Hjemmel : OutlinePhrase<LangBokmalNynorskEnglish>() {
-        override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() =
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
             paragraph {
                 text(
                     Bokmal to "Vedtaket er gjort etter folketrygdloven § 3-16 første ledd bokstav b.",
@@ -47,7 +49,7 @@ object Omsorgsopptjening {
 
     // omsorgsopptjenInfoOverskrift_001, omsorgsopptjenInfo_001
     object Info : OutlinePhrase<LangBokmalNynorskEnglish>() {
-        override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             title1 {
                 text(
                     Bokmal to "Hva er pensjonsopptjening for omsorgsarbeid?",
@@ -56,7 +58,7 @@ object Omsorgsopptjening {
                 )
             }
             paragraph {
-                val nettside = felles().select(Felles::avsenderEnhet).select(NAVEnhet::nettside)
+                val nettside = felles.avsenderEnhet.nettside
                 textExpr(
                     Bokmal to "Pensjonsopptjeningen fra omsorgsarbeidet tilsvarer det du ville fått av en inntekt på 4,5 ganger grunnbeløpet for det aktuelle året. Du kan lese mer om dette på nav.no, og få oversikt over pensjonsopptjeningen din på ".expr() +
                             nettside + ". Her finner du også omsorgsopptjening som du har fått godkjent.",
@@ -71,7 +73,7 @@ object Omsorgsopptjening {
 
     // omsorgsopptjenOverforingInfoOverskrift_001, omsorgsopptjenOverforingInfo_001
     object OverforingInfo : OutlinePhrase<LangBokmalNynorskEnglish>() {
-        override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             title1 {
                 text(
                     Bokmal to "Overføring av omsorgsopptjening til den andre forelderen",
@@ -91,7 +93,7 @@ object Omsorgsopptjening {
 
     // omsorgsopptjenHjelpestonadAutoGodkjennInfoTittel_001, omsorgsopptjenHjelpestonadAutoGodkjennInfo_001
     object HjelpestonadAutoGodkjennInfo : OutlinePhrase<LangBokmalNynorskEnglish>() {
-        override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             title1 {
                 text(
                     Bokmal to "Automatisk godkjenning av omsorgsopptjening",

@@ -1,8 +1,7 @@
-package no.nav.pensjon.brev
+package no.nav.pensjon.brev.template.dsl.helpers
 
 import com.natpryce.hamkrest.*
 import com.tschuchort.compiletesting.*
-import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpersAnnotationProcessorProvider
 import java.io.File
 
 fun hasKspErrorMessages(msg: String): Matcher<String> =
