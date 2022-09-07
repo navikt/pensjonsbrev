@@ -27,6 +27,8 @@ data class Ufoeretrygd(
     val utbetaltPerMaaned: Kroner,  //Vedtaksdata_BeregningsData_BeregningUfore_TotalNetto
     val ektefelletilleggUtbeltalt: Kroner?,  //Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_Ektefelletillegg_ETnetto
     val gjenlevendetilleggUtbetalt: Kroner?,  //Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GTnetto
+    val utbetalingsgrad: Int,
+
 )
 data class BarnetilleggFellesbarn(
     val antallBarnInnvilget: Int,  //<Vedtaksbrev_Grunnlag_Persongrunnlagsliste_AntallBarn?

@@ -59,6 +59,7 @@ object UngUfoerAuto : VedtaksbrevTemplate<UngUfoerAutoDto> {
             includePhrase(
                 Ufoeretrygd.Beloep(
                     perMaaned = totaltUfoerePerMnd,
+                    ufoeretrygd = true.expr(),
                     ektefelle = ektefelle.utbetalt_safe.ifNull(false),
                     gjenlevende = gjenlevende.utbetalt_safe.ifNull(false),
                     fellesbarn = fellesbarn.utbetalt_safe.ifNull(false),
