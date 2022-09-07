@@ -1,13 +1,11 @@
 package no.nav.pensjon.brev.maler.fraser.omregning.ufoeretrygd
 
-import io.ktor.http.HttpHeaders.If
 import no.nav.pensjon.brev.api.model.Kroner
 import no.nav.pensjon.brev.api.model.maler.InnvilgetBarnetilleggSelectors.antallBarn
 import no.nav.pensjon.brev.api.model.maler.InnvilgetBarnetilleggSelectors.inntektstak
 import no.nav.pensjon.brev.api.model.maler.InnvilgetBarnetilleggSelectors.utbetalt_safe
 import no.nav.pensjon.brev.api.model.maler.UngUfoerAutoDto
 import no.nav.pensjon.brev.maler.fraser.Constants
-import no.nav.pensjon.brev.maler.fraser.common.Felles.kroner
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Language.*
@@ -40,11 +38,11 @@ object Ufoeretrygd {
         val gjenlevende: Expression<Boolean>,
         val fellesbarn: Expression<Boolean>,
         val saerkullsbarn: Expression<Boolean>,
-    ) : OutlinePhrase<LangBokmalNynorsk>() {
-        override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() =
+    ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
             paragraph {
                 val kroner = perMaaned.format()
-                showIf(utbetalingsgrad.greaterThan(0)) {
+                showIf(ufoeretrygd) {
                     showIf(not(fellesbarn) and not(saerkullsbarn) and not(ektefelle) and not(gjenlevende)) {
                         textExpr(
                             Bokmal to "Du får ".expr() + kroner + " kroner i uføretrygd per måned før skatt.".expr(),

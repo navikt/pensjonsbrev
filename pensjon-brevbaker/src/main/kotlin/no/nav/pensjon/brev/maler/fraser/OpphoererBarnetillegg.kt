@@ -10,7 +10,7 @@ import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.OutlinePhrase
-import no.nav.pensjon.brev.template.dsl.OutlineScope
+import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
@@ -23,7 +23,7 @@ object OpphoerBarnetillegg {
         val oensketVirkningsDato: Expression<LocalDate>,
         val foedselsdatoPaaBarnetilleggOpphoert: Expression<LocalDate>,
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
-        override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             paragraph {
                 val virkningsDato = oensketVirkningsDato.format()
                 val foedselsDato = foedselsdatoPaaBarnetilleggOpphoert.format()  // or childs name?
@@ -41,7 +41,7 @@ object OpphoerBarnetillegg {
 
 
     object TBU2223 : OutlinePhrase<LangBokmalNynorskEnglish>() {
-        override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             paragraph {
                 text(
                     Bokmal to "Uføretrygden blir fortsatt utbetalt senest den 20. hver måned.",
@@ -53,7 +53,7 @@ object OpphoerBarnetillegg {
     }
 
     object TBU1128 : OutlinePhrase<LangBokmalNynorskEnglish>() {
-        override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             paragraph {
                 text(
                     Bokmal to "I dette brevet forklarer vi hvilke rettigheter og plikter du har. Det er derfor viktig at du leser hele brevet.",
@@ -66,7 +66,7 @@ object OpphoerBarnetillegg {
 
     //Use existing TBU1092 in <maler/fraser/vedtak/Vedtak.kt
     object TBU3920 : OutlinePhrase<LangBokmalNynorskEnglish>() {
-        override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             paragraph {
                 textExpr(
                     Bokmal to "For å ha rett til barnetillegg må du forsørge barn under 18 år. Vi har vedtatt at barnetillegget i uføretrygden opphører fordi barnetbarna har fylt 18 år.".expr(),
@@ -81,7 +81,7 @@ object OpphoerBarnetillegg {
         val harBarnetilleggFellesbarn: Expression<Boolean>,
         val harBarnetilleggSaerkullsbarn: Expression<Boolean>
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
-        override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             paragraph {
                 showIf(harBarnetilleggFellesbarn or harBarnetilleggSaerkullsbarn) {
                     text(
@@ -108,7 +108,7 @@ object OpphoerBarnetillegg {
         val harBarnetilleggFellesbarn: Expression<Boolean>,
         val harBarnetilleggSaerkullsbarn: Expression<Boolean>
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
-        override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             paragraph {
                 val dato = oensketVirkningsDato.format()
                 showIf(harBarnetilleggFellesbarn or harBarnetilleggSaerkullsbarn) {
@@ -129,7 +129,7 @@ object OpphoerBarnetillegg {
     }
 
     object TBU3800 : OutlinePhrase<LangBokmalNynorskEnglish>() {
-        override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             title1 {
                 text(
                     Bokmal to "Slik påvirker inntekt barnetillegget ditt",
@@ -141,7 +141,7 @@ object OpphoerBarnetillegg {
     }
 
     object TBU2338 : OutlinePhrase<LangBokmalNynorskEnglish>() {
-        override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             paragraph {
                 text(
                     Bokmal to "Inntekten din har betydning for hva du får i barnetillegg. Er inntekten din over grensen for å få utbetalt fullt barnetillegg, blir tillegget redusert. Denne grensen kaller vi for fribeløp. Inntekten til ektefellenpartnerensamboeren din har ikke betydning for størrelsen på barnetillegget.",
@@ -153,7 +153,7 @@ object OpphoerBarnetillegg {
     }
 
     object TBU2339 : OutlinePhrase<LangBokmalNynorskEnglish>() {
-        override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             paragraph {
                 text(
                     Bokmal to "Inntekten til deg og ektefellenpartnerensamboeren din har betydning for hva du får i barnetillegg. Er inntektene over grensen for å få utbetalt fullt barnetillegg, blir tillegget redusert. Denne grensen kaller vi for fribeløp. Inntekten til ektefellenpartnerensamboeren din har kun betydning for størrelsen på barnetillegget til barnetbarna som bor sammen med begge sine foreldre.",
@@ -165,7 +165,7 @@ object OpphoerBarnetillegg {
     }
 
     object TBU3801 : OutlinePhrase<LangBokmalNynorskEnglish>() {
-        override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             paragraph {
                 text(
                     Bokmal to "Endringer i inntektene til deg og ektefellenpartnerensamboeren dininntekten din kan ha betydning for barnetillegget ditt. Du kan enkelt melde fra om inntektsendringer under menyvalget «uføretrygd» på nav.no.",
@@ -184,7 +184,7 @@ object OpphoerBarnetillegg {
         val grunnbeloep: Expression<Kroner>
 
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
-        override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             paragraph {
                 val fbFribeloep = fellesbarnFribeloep.format()
                 val fbInntektAnnenForelder = fellesbarnInntektAnnenForelder.format()
@@ -206,7 +206,7 @@ object OpphoerBarnetillegg {
         val saerkullsbarnFribeloep: Expression<Kroner>,
 
         ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
-        override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             paragraph {
                 val sbInntektBruktiAvkortning = saerkullsbarnInntektBruktiAvkortning.format()
                 val sbFribeloep = saerkullsbarnFribeloep.format()
@@ -229,7 +229,7 @@ object OpphoerBarnetillegg {
         val fellesbarnFribeloep: Expression<Kroner>,
 
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
-        override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             paragraph {
                 textExpr(
                     Bokmal to "Inntekten din er høyerelavere enn ".expr() + saerkullsbarnFribeloep.format() + " kroner, som er fribeløpet for barnetillegget til barna/barnet som ikke bor sammen med begge foreldrene. Dette barnetillegget er derfor ikke redusert ut fra inntekt. Til sammen er også inntektene til deg og ektefellenpartnerensamboeren din høyerelavere enn ".expr()
@@ -262,7 +262,7 @@ object OpphoerBarnetillegg {
         val saerkullsbarnInntektstak: Expression<Kroner>,
 
         ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
-        override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             paragraph {
                 val inntektstakFellesbarn = fellesbarnInntektstak.format()
                 val inntektstakSaerkullsbarn = saerkullsbarnInntektstak.format()
@@ -279,7 +279,7 @@ object OpphoerBarnetillegg {
     }
 
     object TBU1288 : OutlinePhrase<LangBokmalNynorskEnglish>() {
-        override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             paragraph {
                 text(
                     Bokmal to "Du kan lese mer om beregningen av barnetillegg i vedlegget «Opplysninger om beregningen».",
@@ -291,7 +291,7 @@ object OpphoerBarnetillegg {
     }
 
     object TBU2364 : OutlinePhrase<LangBokmalNynorskEnglish>() {
-        override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             paragraph {
                 text(
                     Bokmal to "Du må melde fra om eventuell inntekt",
@@ -303,7 +303,7 @@ object OpphoerBarnetillegg {
     }
 
     object TBU2365 : OutlinePhrase<LangBokmalNynorskEnglish>() {
-        override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             paragraph {
                 text(
                     Bokmal to "Dersom du er i jobb eller har planer om å jobbe, må du melde fra om eventuelle endringer i inntekten din. Det er viktig at du melder fra så tidlig som mulig, slik at du får riktig utbetaling av uføretrygd. Dette kan du gjøre under menyvalget «uføretrygd» når du logger deg inn på nav.no. Her kan du legge inn hvor mye du forventer å tjene i løpet av året. Du vil da kunne se hvor mye du vil få utbetalt i uføretrygd ved siden av inntekten din.",
@@ -315,7 +315,7 @@ object OpphoerBarnetillegg {
     }
 
     object TBU2212 : OutlinePhrase<LangBokmalNynorskEnglish>() {
-        override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             title1 {
                 text(
                     Bokmal to "Du må melde fra om endringer",
@@ -334,7 +334,7 @@ object OpphoerBarnetillegg {
     }
 
     object TBU2213 : OutlinePhrase<LangBokmalNynorskEnglish>() {
-        override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             title1 {
                 text(
                     Bokmal to "Du har rett til å klage",
@@ -355,7 +355,7 @@ object OpphoerBarnetillegg {
 
     // TBU1074 in <maler/fraser/common/Felles.kt
     object TBU2242 : OutlinePhrase<LangBokmalNynorskEnglish>() {
-        override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             paragraph {
                 text(
                     Bokmal to "Du har rett til å se dokumentene i saken din. Se vedlegg «Orientering om rettigheter og plikter» for informasjon om hvordan du går fram.",
@@ -369,7 +369,7 @@ object OpphoerBarnetillegg {
 // TBU1227 in <maler/fraser/omregning/ufoeretrygd/Ufoeretrygd.kt
 
     object TBU1228 : OutlinePhrase<LangBokmalNynorskEnglish>() {
-        override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             title1 {
                 text(
                     Bokmal to "Skattekort",
@@ -389,7 +389,7 @@ object OpphoerBarnetillegg {
     }
 
     object TBU3730 : OutlinePhrase<LangBokmalNynorskEnglish>() {
-        override fun OutlineScope<LangBokmalNynorskEnglish, Unit>.template() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             title1 {
                 text(
                     Bokmal to "Skatt for deg som bor i utlandet",
