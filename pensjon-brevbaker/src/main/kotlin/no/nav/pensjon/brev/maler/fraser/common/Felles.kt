@@ -1,12 +1,15 @@
 package no.nav.pensjon.brev.maler.fraser.common
 
 import no.nav.pensjon.brev.api.model.Kroner
+import no.nav.pensjon.brev.api.model.Sivilstand
 import no.nav.pensjon.brev.maler.fraser.Constants
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.dsl.*
-import no.nav.pensjon.brev.template.dsl.expression.*
+import no.nav.pensjon.brev.template.dsl.expression.format
+import no.nav.pensjon.brev.template.dsl.expression.isOneOf
+import no.nav.pensjon.brev.template.dsl.expression.plus
 
 object Felles {
 
@@ -117,5 +120,55 @@ object Felles {
                 Nynorsk to antall.format() + " måneder",
                 English to antall.format() + " months"
             )
+    }
+
+    data class SivilstandEPSBestemtForm(val sivilstand: Expression<Sivilstand>) :
+        ParagraphPhrase<LangBokmalNynorskEnglish>() {
+        override fun ParagraphOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+            showIf(sivilstand.isOneOf(Sivilstand.GIFT, Sivilstand.GIFT_LEVER_ADSKILT)) {
+                text(
+                    Bokmal to "ektefellen",
+                    Nynorsk to "ektefellen",
+                    English to "spouse"
+                )
+            }.orShowIf(sivilstand.isOneOf(Sivilstand.PARTNER, Sivilstand.PARTNER_LEVER_ADSKILT)) {
+                text(
+                    Bokmal to "partneren",
+                    Nynorsk to "partnaren",
+                    English to "partner"
+                )
+            }.orShowIf(sivilstand.isOneOf(Sivilstand.SAMBOER1_5, Sivilstand.SAMBOER3_2)) {
+                text(
+                    Bokmal to "samboeren",
+                    Nynorsk to "sambuaren",
+                    English to "cohabitant"
+                )
+            }
+        }
+    }
+
+    data class SivilstandEPSUbestemtForm(val sivilstand: Expression<Sivilstand>) :
+        ParagraphPhrase<LangBokmalNynorskEnglish>() {
+        override fun ParagraphOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+            showIf(sivilstand.isOneOf(Sivilstand.GIFT, Sivilstand.GIFT_LEVER_ADSKILT)) {
+                text(
+                    Bokmal to "ektefelle",
+                    Nynorsk to "ektefelle",
+                    English to "spouse"
+                )
+            }.orShowIf(sivilstand.isOneOf(Sivilstand.PARTNER, Sivilstand.PARTNER_LEVER_ADSKILT)) {
+                text(
+                    Bokmal to "partner",
+                    Nynorsk to "partnar",
+                    English to "partner"
+                )
+            }.orShowIf(sivilstand.isOneOf(Sivilstand.SAMBOER1_5, Sivilstand.SAMBOER3_2)) {
+                text(
+                    Bokmal to "samboer",
+                    Nynorsk to "sambuar",
+                    English to "cohabitant"
+                )
+            }
+        }
     }
 }
