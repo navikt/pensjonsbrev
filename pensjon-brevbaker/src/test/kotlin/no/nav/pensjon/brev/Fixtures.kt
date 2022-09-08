@@ -4,6 +4,7 @@ import no.nav.pensjon.brev.api.model.*
 import no.nav.pensjon.brev.api.model.maler.*
 import no.nav.pensjon.brev.api.model.vedlegg.*
 import no.nav.pensjon.brev.fixtures.*
+import no.nav.pensjon.brev.maler.UfoeretrygdEndretPgaInntektDto
 import no.nav.pensjon.brev.maler.example.*
 import java.time.LocalDate
 import kotlin.reflect.KClass
@@ -57,6 +58,7 @@ object Fixtures {
             UfoerOmregningEnsligDto::class -> createUfoerOmregningEnsligDto() as T
             UngUfoerAutoDto::class -> createUngUfoerAutoDto() as T
             EgenerklaeringOmsorgsarbeidDto::class -> createEgenerklaeringOmsorgsarbeidDto() as T
+            UfoeretrygdEndretPgaInntektDto::class -> createUfoeretrygdEndretPgaInntektDto() as T
 
             else -> throw IllegalArgumentException("Don't know how to construct: ${letterDataType.qualifiedName}")
         }

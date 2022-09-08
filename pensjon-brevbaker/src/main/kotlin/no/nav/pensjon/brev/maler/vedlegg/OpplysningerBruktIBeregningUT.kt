@@ -108,14 +108,7 @@ val vedleggOpplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEng
                     FontType.BOLD
                 )
             }
-            column(alignment = ColumnAlignment.RIGHT) {
-                text(
-                    Bokmal to "Verdi",
-                    Nynorsk to "Verdi",
-                    English to "Value",
-                    FontType.BOLD
-                )
-            }
+            column(alignment = ColumnAlignment.RIGHT) {}
         }
     ) {
         // Hvis ufoeretrygdGjeldende.uforetidspunkt != tom, include
