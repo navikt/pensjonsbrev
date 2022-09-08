@@ -19,7 +19,7 @@ fun Expression<Telefonnummer>.format() =
 fun Expression<Kroner>.format() =
     Expression.BinaryInvoke(
         select(intValueSelector),
-        Expression.FromScope(ExpressionScope<Any, *>::language),
+        Expression.FromScope.language(ExpressionScope<Any, *>::language),
         BinaryOperation.LocalizedCurrencyFormat
     )
 
@@ -31,7 +31,7 @@ fun Expression<IntValue>.format() =
 fun Expression<Sivilstand>.tableFormat() =
     Expression.BinaryInvoke(
         this,
-        Expression.FromScope(ExpressionScope<Any, *>::language),
+        Expression.FromScope.language(ExpressionScope<Any, *>::language),
         FormatSivilstandTabell
     )
 
@@ -73,4 +73,7 @@ object FormatSivilstandTabell : BinaryOperation<Sivilstand, Language, String>() 
                 English -> "Cohabitation (cf. Section 12-13 of the National Insurance Act)"
             }
         }
+
+    // TODO denne fungerer ikke som infix
+    override val symbol = " .formatSivilstand(language)"
 }

@@ -42,7 +42,7 @@ class IfNotNullTest {
 
     @Test
     fun `ifNotNull adds a conditional with null check for navn`() {
-        val navn = Expression.FromScope(ExpressionScope<NullBrevDto, *>::argument).test1
+        val navn = Expression.FromScope.argument(ExpressionScope<NullBrevDto, *>::argument).test1
 
         @Suppress("UNCHECKED_CAST") // (navn as Expression<String>)
         val expected = template.copy(

@@ -19,7 +19,7 @@ class ShowIfTest {
             language = languages(Language.Nynorsk),
             outline = listOf(
                 ContentOrControlStructure.Conditional(
-                    predicate = Expression.FromScope(ExpressionScope<SomeDto, *>::argument).pensjonInnvilget,
+                    predicate = Expression.FromScope.argument(ExpressionScope<SomeDto, *>::argument).pensjonInnvilget,
                     showIf = listOf(newText(Language.Nynorsk to "jadda")),
                     showElse = listOf(newText(Language.Nynorsk to "neida"))
                 )
@@ -49,7 +49,7 @@ class ShowIfTest {
 
     @Test
     fun `orShowIf adds a conditional element as else`() {
-        val exprScope = Expression.FromScope(ExpressionScope<SomeDto, *>::argument)
+        val exprScope = Expression.FromScope.argument(ExpressionScope<SomeDto, *>::argument)
         val expected = LetterTemplate(
             name = "test",
             title = listOf(nynorskTittel),
@@ -92,7 +92,7 @@ class ShowIfTest {
 
     @Test
     fun `final orShow nests as showOr in inner-most conditional element`() {
-        val exprScope = Expression.FromScope(ExpressionScope<SomeDto, *>::argument)
+        val exprScope = Expression.FromScope.argument(ExpressionScope<SomeDto, *>::argument)
         val expected = LetterTemplate(
             name = "test",
             title = listOf(nynorskTittel),

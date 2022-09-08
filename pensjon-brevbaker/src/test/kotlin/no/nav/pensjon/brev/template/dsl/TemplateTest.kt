@@ -103,7 +103,7 @@ class TemplateTest {
 
         val expected = Content(
             Element.OutlineContent.ParagraphContent.Text.Expression<LangBokmal>(
-                Expression.FromScope(ExpressionScope<SomeDto, *>::argument).name
+                Expression.FromScope.argument(ExpressionScope<SomeDto, *>::argument).name
             )
         )
 

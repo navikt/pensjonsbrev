@@ -21,7 +21,7 @@ private val Expression<IntValue>.value: Expression<Int>
 fun Expression<Double>.format(): Expression<String> =
     Expression.BinaryInvoke(
         this,
-        Expression.FromScope(ExpressionScope<Any, *>::language),
+        Expression.FromScope.language(ExpressionScope<Any, *>::language),
         BinaryOperation.LocalizedDoubleFormat,
     )
 
@@ -29,7 +29,7 @@ fun Expression<Double>.format(): Expression<String> =
 fun Expression<Int>.format(): Expression<String> =
     Expression.BinaryInvoke(
         this,
-        Expression.FromScope(ExpressionScope<Any, *>::language),
+        Expression.FromScope.language(ExpressionScope<Any, *>::language),
         BinaryOperation.LocalizedIntFormat,
     )
 

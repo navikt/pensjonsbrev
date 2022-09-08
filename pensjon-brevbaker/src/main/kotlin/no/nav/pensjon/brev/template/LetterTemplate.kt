@@ -28,11 +28,17 @@ sealed class Expression<out Out> {
         override fun eval(scope: ExpressionScope<*, *>): Out = value
     }
 
-    data class FromScope<ParameterType : Any, out Out>(val selector: ExpressionScope<ParameterType, *>.() -> Out) :
+    data class FromScope<ParameterType : Any, out Out>(val selector: ExpressionScope<ParameterType, *>.() -> Out, val __name: String) :
         Expression<Out>() {
         override fun eval(scope: ExpressionScope<*, *>): Out {
             @Suppress("UNCHECKED_CAST")
             return (scope as ExpressionScope<ParameterType, *>).selector()
+        }
+
+        companion object {
+            fun <ParameterType : Any, Out> argument(selector: ExpressionScope<ParameterType, *>.() -> Out) = FromScope(selector, "argument")
+            fun <ParameterType : Any, Out> felles(selector: ExpressionScope<ParameterType, *>.() -> Out) = FromScope(selector, "felles")
+            fun <ParameterType : Any, Out> language(selector: ExpressionScope<ParameterType, *>.() -> Out) = FromScope(selector, "language")
         }
     }
 
@@ -72,6 +78,8 @@ sealed class ContentOrControlStructure<out Lang : LanguageSupport, out C : Eleme
         val body: List<ContentOrControlStructure<Lang, C>>,
         private val next: NextExpression<Item>
     ) : ContentOrControlStructure<Lang, C>() {
+        val nextExpr : Expression<Item>
+            get() = next
 
         fun render(
             scope: ExpressionScope<*, *>,

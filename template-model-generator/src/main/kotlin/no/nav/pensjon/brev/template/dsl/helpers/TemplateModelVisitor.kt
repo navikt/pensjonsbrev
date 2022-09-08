@@ -108,7 +108,7 @@ internal class TemplateModelVisitor(
             |
             |val TemplateGlobalScope<$dataClassName>.$propertyName: Expression<$type>
             |   get() = Expression.UnaryInvoke(
-            |       Expression.FromScope(ExpressionScope<$dataClassName, *>::argument),
+            |       Expression.FromScope.argument(ExpressionScope<$dataClassName, *>::argument),
             |       UnaryOperation.Select($selectorName)
             |   )
             |
