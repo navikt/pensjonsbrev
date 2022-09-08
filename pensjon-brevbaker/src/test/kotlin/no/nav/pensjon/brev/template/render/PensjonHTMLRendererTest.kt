@@ -9,7 +9,7 @@ class PensjonHTMLRendererTest {
     @Test
     fun renderDesignReference() {
         Letter(
-            LetterExample.template,
+            DesignReferenceLetter.template,
             Fixtures.create<LetterExampleDto>(),
             Language.Bokmal,
             Fixtures.fellesAuto

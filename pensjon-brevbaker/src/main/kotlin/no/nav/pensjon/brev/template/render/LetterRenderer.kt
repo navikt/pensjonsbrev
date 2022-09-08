@@ -41,6 +41,11 @@ abstract class LetterRenderer<R : RenderedLetter> {
         return hasContent
     }
 
+    protected fun getResource(fileName: String): ByteArray =
+        this::class.java.getResourceAsStream("/$fileName")
+            ?.use { it.readAllBytes() }
+            ?: throw IllegalStateException("""Could not find resource /$fileName""")
+
     protected abstract fun renderLetter(scope: ExpressionScope<*, *>, template: LetterTemplate<*, *>): R
 
 }

@@ -20,11 +20,6 @@ object PensjonLatexRenderer : LetterRenderer<RenderedLatexLetter>() {
         RenderedFile.PlainText("tabularray.sty", getResource("latex/tabularray.sty").toString(Charsets.UTF_8)),
     )
 
-    private fun getResource(fileName: String): ByteArray =
-        this::class.java.getResourceAsStream("/$fileName")
-            ?.use { it.readAllBytes() }
-            ?: throw IllegalStateException("""Could not find latex resource /$fileName""")
-
     override fun renderLetter(scope: ExpressionScope<*, *>, template: LetterTemplate<*, *>): RenderedLatexLetter =
         RenderedLatexLetter().apply {
             newLatexFile("params.tex") { appendMasterTemplateParameters(scope, template.attachments) }
