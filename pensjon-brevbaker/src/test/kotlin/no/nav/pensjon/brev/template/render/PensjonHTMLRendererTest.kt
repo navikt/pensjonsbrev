@@ -14,6 +14,6 @@ class PensjonHTMLRendererTest {
             Language.Bokmal,
             Fixtures.fellesAuto
         ).let { PensjonHTMLRenderer.render(it) }
-            .also { writeTestHTML("LETTER_EXAMPLE", it) }
+            .also { writeTestHTML("DESIGN_REFERENCE_LETTER", it) }
     }
 }
