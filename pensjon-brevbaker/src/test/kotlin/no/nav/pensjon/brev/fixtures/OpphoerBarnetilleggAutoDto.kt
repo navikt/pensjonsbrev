@@ -17,19 +17,23 @@ fun createOpphoererBarnetilleggAutoDto()=
 
         barnetilleggFellesbarn = BarnetilleggFellesbarn(
             antallBarnInnvilget = 2,
+            beloepFratrukketAnnenForeldersInntekt = Kroner(2500),
             beloepNetto = Kroner(8000),
             fradrag = Kroner(2000),
             fribeloep = Kroner(1000),
             inntektAnnenForelder = Kroner(550000),
             inntektBruktIAvkortning = Kroner(375000),
-            inntektstak = Kroner(320000)
+            inntektstak = Kroner(320000),
+            justeringsbeloep = Kroner(7500)
         ),
     /*    barnetilleggSaerkullsbarn = BarnetilleggSaerkullsbarn(
             antallBarnInnvilget = 1,
+            beloepFratrukketAnnenForeldersInntekt = Kroner(2500),
             beloepNetto = Kroner(10000),
             fribeloep = Kroner(14000),
             inntektBruktIAvkortning = Kroner(8000),
-            inntektstak = Kroner(350000)
+            inntektstak = Kroner(350000),
+            justeringsbeloep = Kroner(7500)
         ), */
         brukerBorInorge = true,
         grunnbeloep = Kroner(98000),
@@ -39,9 +43,9 @@ fun createOpphoererBarnetilleggAutoDto()=
             utbetaltPerMaaned = Kroner(345000),
             ektefelletilleggUtbeltalt = Kroner(125000),
             gjenlevendetilleggUtbetalt = null,
-            utbetalingsgrad = 50
+            harUtbetalingsgrad = false
             ),
-        maanedligUfoeretrygdFoerSkattDto = Fixtures.create(),
-        opplysningerBruktIBeregningUTDto = Fixtures.create(),
-        orienteringOmRettigheterUfoereDto = Fixtures.create()
+        maanedligUfoeretrygdFoerSkatt = Fixtures.create(),
+        opplysningerBruktIBeregningUT = Fixtures.create(),
+        orienteringOmRettigheterUfoere = Fixtures.create()
     )

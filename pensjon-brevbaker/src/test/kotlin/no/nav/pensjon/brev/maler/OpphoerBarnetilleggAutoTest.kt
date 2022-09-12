@@ -10,6 +10,7 @@ import no.nav.pensjon.brev.latex.PdfCompilationInput
 import no.nav.pensjon.brev.maler.fraser.OpphoerBarnetillegg
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.Letter
+import no.nav.pensjon.brev.template.render.PensjonLatexRenderer
 import no.nav.pensjon.brev.writeTestPDF
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
@@ -24,9 +25,8 @@ class OpphoerBarnetilleggAutoTest {
             Fixtures.create<OpphoererBarnetilleggAutoDto>(),
             Language.Bokmal,
             Fixtures.fellesAuto,
-        ).render()
-            .let { PdfCompilationInput(it.base64EncodedFiles()) }
+        ).let { PensjonLatexRenderer.render(it) }
             .let { runBlocking { LaTeXCompilerService(PDF_BUILDER_URL).producePDF(it, "test").base64PDF } }
-            .also { writeTestPDF("UT_OPPHOER_BARNETILLEGG", it) }
+            .also { writeTestPDF("UT_OPPHOERER_BARNETILLEGG", it) }
     }
 }
