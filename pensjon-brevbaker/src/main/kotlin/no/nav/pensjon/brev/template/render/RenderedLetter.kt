@@ -50,6 +50,10 @@ class RenderedHtmlLetter : RenderedLetter {
     fun newFile(filename: String, writeToFile: Appendable.() -> Unit) {
         _files.add(RenderedFile.PlainText(filename, writeToFile))
     }
+
+    fun addFile(file: RenderedFile.PlainText) {
+        _files.add(file)
+    }
 }
 
 sealed class RenderedFile {

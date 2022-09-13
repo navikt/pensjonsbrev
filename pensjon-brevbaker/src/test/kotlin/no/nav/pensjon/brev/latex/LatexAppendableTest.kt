@@ -9,7 +9,7 @@ import no.nav.pensjon.brev.template.latexEscape
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
-class LatexPrintWriterTest {
+class LatexAppendableTest {
 
     private lateinit var output: StringBuilder
     private lateinit var appendable: LatexAppendable

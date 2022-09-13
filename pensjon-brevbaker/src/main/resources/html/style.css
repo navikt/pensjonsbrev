@@ -11,6 +11,8 @@ body {
 
 .pensjonsbrev-rot {
     max-width: 44rem;
+    margin-left: 0.5rem;
+    margin-right: 0.5rem;
 }
 
 img.pensjonsbrev-logo {
@@ -27,6 +29,7 @@ h1.pensjonsbrev-tittel {
     margin-top: 1rem;
     margin-bottom: 2rem;
     line-height: 2rem;
+    font-size: 1.5rem;
 }
 
 .pensjonsbrev-brevhode {
@@ -47,6 +50,7 @@ h2.pensjonsbrev-title1 {
     margin-top: 2rem;
     margin-bottom: 0.5rem;
     line-height: 1.7rem;
+    font-size: 1.25rem;
 }
 
 .pensjonsbrev-paragraph {
@@ -87,8 +91,33 @@ h2.pensjonsbrev-title1 {
     margin-top: 0.4rem;
 }
 
-/* table */
+/* table mobile */
+ul.pensjonsbrev-table {
+    list-style: none;
+    padding-left: 0;
+    border: 0.06rem solid #707070;
+    border-radius: 0.3rem;
+}
+ul.pensjonsbrev-table > li {
+    border-bottom: 0.06rem solid #707070;
+    padding: 1.3rem;
+}
+
+ul.pensjonsbrev-table > li:nth-child(even) {
+    background-color: #F7F7F7;
+}
+
+ul.pensjonsbrev-table > li > div {
+    display: inline-grid;
+    grid-auto-flow: row;
+    grid-template-columns: repeat(2, auto);
+    grid-row-gap: 0.3rem;
+    grid-column-gap: 1rem;
+}
+
+/* table big screen */
 table.pensjonsbrev-table {
+    display: none;
     margin-top: 1rem;
     width: 100%;
     border-spacing: 0;
@@ -109,8 +138,8 @@ table.pensjonsbrev-table > tbody td {
 
 table.pensjonsbrev-table > tbody > tr:nth-child(even) {
     background-color: #F7F7F7;
-    border-top: 1px solid #E5E5E5;
-    border-bottom: 1px solid #E5E5E5;
+    border-top: 0.06rem solid #E5E5E5;
+    border-bottom: 0.06rem solid #E5E5E5;
 }
 
 /* Closing */
@@ -137,8 +166,63 @@ table.pensjonsbrev-table > tbody > tr:nth-child(even) {
     flex-direction: column;
 }
 
+hr.pensjonsbrev-vedlegg {
+    border: 0.06rem solid #262626;
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+}
+
+/* Form */
+.pensjonsbrev-form-text {
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+    margin-bottom: 2rem;
+    margin-top: 1rem;
+}
+.pensjonsbrev-form-text > div:first-child {
+    font-weight: bold;
+}
+.pensjonsbrev-form-line-long {
+    border-bottom: 0.06rem solid black;
+    height: 0.06rem;
+    width: 100%;
+}
+.pensjonsbrev-form-line-short {
+    border-bottom: 0.06rem solid black;
+    height: 0.06rem;
+    width: 60%;
+}
+.pensjonsbrev-form-line-none {
+    display: none;
+}
+
+.pensjonsbrev-form-choice {
+    display: flex;
+    flex-direction: column;
+    gap: 1.3rem;
+    margin-bottom: 2rem;
+    margin-top: 1rem;
+}
+.pensjonsbrev-form-choice-checkbox {
+    display: inline-block;
+    width: 1.5rem;
+    height: 1.5rem;
+    border: 0.13rem solid #707070;
+    border-radius: 0.3rem;
+    margin-right: 0.5rem;
+}
+.pensjonsbrev-form-choice > div:first-child {
+    font-weight: bold;
+}
+.pensjonsbrev-form-choice > div:not(:first-child) {
+    margin-bottom: 0.3rem;
+    display: flex;
+    flex-direction: row;
+}
+
 /* Liten -> Stor */
-@media screen and (min-width: 30em) {
+@media (min-width: 30em) {
     .pensjonsbrev-brevdato {
         display: none;
     }
@@ -158,5 +242,27 @@ table.pensjonsbrev-table > tbody > tr:nth-child(even) {
     /* bruker row/column gap */
     .pensjonsbrev-sakspart > div {
         margin-top: 0;
+    }
+
+    ul.pensjonsbrev-table {
+        display: none;
+    }
+    table.pensjonsbrev-table {
+        display: table;
+    }
+}
+
+@media print {
+    div.pensjonsbrev-brev {
+        page-break-after: always;
+    }
+    div.pensjonsbrev-vedlegg {
+        page-break-after: always;
+    }
+    hr.pensjonsbrev-vedlegg {
+        display: none;
+    }
+    .pensjonsbrev-table {
+        -webkit-print-color-adjust: exact;
     }
 }

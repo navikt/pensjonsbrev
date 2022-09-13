@@ -20,11 +20,6 @@ object PensjonLatexRenderer : LetterRenderer<RenderedLatexLetter>() {
         RenderedFile.PlainText("tabularray.sty", getResource("latex/tabularray.sty").toString(Charsets.UTF_8)),
     )
 
-    private fun getResource(fileName: String): ByteArray =
-        this::class.java.getResourceAsStream("/$fileName")
-            ?.use { it.readAllBytes() }
-            ?: throw IllegalStateException("""Could not find latex resource /$fileName""")
-
     override fun renderLetter(scope: ExpressionScope<*, *>, template: LetterTemplate<*, *>): RenderedLatexLetter =
         RenderedLatexLetter().apply {
             newLatexFile("params.tex") { appendMasterTemplateParameters(scope, template.attachments) }
@@ -279,8 +274,13 @@ object PensjonLatexRenderer : LetterRenderer<RenderedLatexLetter>() {
 
                 printCmd("formText") {
                     arg {
+                        val size = when (element.size) {
+                            Element.OutlineContent.ParagraphContent.Form.Text.Size.NONE -> 0
+                            Element.OutlineContent.ParagraphContent.Form.Text.Size.SHORT -> 25
+                            Element.OutlineContent.ParagraphContent.Form.Text.Size.LONG -> 60
+                        }
                         renderText(scope, listOf(element.prompt))
-                        print(" ${".".repeat(element.size)}")
+                        print(" ${".".repeat(size)}")
                     }
                 }
             }

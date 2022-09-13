@@ -463,13 +463,11 @@ object VedleggPlikterUT_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
                 English to "Duty to inform of changes - Section 21-3 of the National Insurance Act"
             )
         }
-        paragraph {
-            text(
-                Bokmal to "Du må melde fra til NAV hvis",
-                Nynorsk to "Du må melde frå til NAV om",
-                English to "You must notify NAV if"
-            )
-        }
+        text(
+            Bokmal to "Du må melde fra til NAV hvis",
+            Nynorsk to "Du må melde frå til NAV om",
+            English to "You must notify NAV if"
+        )
     }
 }
 
