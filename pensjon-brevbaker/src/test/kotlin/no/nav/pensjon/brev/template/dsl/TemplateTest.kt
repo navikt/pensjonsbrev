@@ -183,10 +183,10 @@ class TemplateTest {
     fun `TemplateContainerScope_formText adds Form$Text element`() {
         val prompt = newText(Language.Bokmal to "hei")
         val element = ParagraphOnlyScope<LangBokmal, SomeDto>().apply {
-            formText(1, prompt)
+            formText(Element.OutlineContent.ParagraphContent.Form.Text.Size.SHORT, prompt)
         }.elements.first()
 
-        val expected = Content(Element.OutlineContent.ParagraphContent.Form.Text(prompt, 1))
+        val expected = Content(Element.OutlineContent.ParagraphContent.Form.Text(prompt, Element.OutlineContent.ParagraphContent.Form.Text.Size.SHORT))
 
         assertEquals(expected, element)
     }

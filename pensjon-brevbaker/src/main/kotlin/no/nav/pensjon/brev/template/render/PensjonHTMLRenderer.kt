@@ -172,21 +172,27 @@ object PensjonHTMLRenderer : LetterRenderer<RenderedHtmlLetter>() {
 
     private fun FlowContent.renderForm(scope: ExpressionScope<*, *>, element: Element.OutlineContent.ParagraphContent.Form<*>): Unit =
         when (element) {
-            // TODO: Dette er hacky
             is Element.OutlineContent.ParagraphContent.Form.MultipleChoice -> {
                 div(classes("form-choice")) {
-                    renderText(scope, listOf(element.prompt))
+                    div { renderText(scope, listOf(element.prompt)) }
                     element.choices.forEach {
-                        input(InputType.radio)
-                        renderTextContent(scope, it)
+                        div {
+                            div(classes("form-choice-checkbox"))
+                            div { renderTextContent(scope, it) }
+                        }
                     }
                 }
             }
 
             is Element.OutlineContent.ParagraphContent.Form.Text -> {
                 div(classes("form-text")) {
-                    renderText(scope, listOf(element.prompt))
-                    input(type = InputType.text)
+                    div { renderText(scope, listOf(element.prompt)) }
+                    val size = when (element.size) {
+                        Element.OutlineContent.ParagraphContent.Form.Text.Size.NONE -> "none"
+                        Element.OutlineContent.ParagraphContent.Form.Text.Size.SHORT -> "short"
+                        Element.OutlineContent.ParagraphContent.Form.Text.Size.LONG -> "long"
+                    }
+                    div(classes("form-line-$size")) { }
                 }
             }
         }
@@ -207,11 +213,20 @@ object PensjonHTMLRenderer : LetterRenderer<RenderedHtmlLetter>() {
                     div {
                         row.cells.forEachIndexed { index, cell ->
                             val spec = element.header.colSpec[index]
-                            div {
-                                renderText(scope, spec.headerContent.text)
-                                text(":")
+                            val textClasses = if (index == 0) classes("text-bold") else null
+
+                            if (spec.headerContent.text.isEmpty()) {
+                                div { span(textClasses) { renderTextWithoutStyle(scope, cell.text) } }
+                                div { }
+                            } else {
+                                div {
+                                    span(textClasses) {
+                                        renderTextWithoutStyle(scope, spec.headerContent.text)
+                                        text(":")
+                                    }
+                                }
+                                div { span(textClasses) { renderTextWithoutStyle(rowScope, cell.text) } }
                             }
-                            div { renderText(rowScope, cell.text) }
                         }
                     }
                 }

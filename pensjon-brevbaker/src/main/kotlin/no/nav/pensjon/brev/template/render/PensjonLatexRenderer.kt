@@ -274,8 +274,13 @@ object PensjonLatexRenderer : LetterRenderer<RenderedLatexLetter>() {
 
                 printCmd("formText") {
                     arg {
+                        val size = when (element.size) {
+                            Element.OutlineContent.ParagraphContent.Form.Text.Size.NONE -> 0
+                            Element.OutlineContent.ParagraphContent.Form.Text.Size.SHORT -> 25
+                            Element.OutlineContent.ParagraphContent.Form.Text.Size.LONG -> 60
+                        }
                         renderText(scope, listOf(element.prompt))
-                        print(" ${".".repeat(element.size)}")
+                        print(" ${".".repeat(size)}")
                     }
                 }
             }

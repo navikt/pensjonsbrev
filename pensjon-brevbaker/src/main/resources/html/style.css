@@ -172,6 +172,55 @@ hr.pensjonsbrev-vedlegg {
     margin-bottom: 2rem;
 }
 
+/* Form */
+.pensjonsbrev-form-text {
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+    margin-bottom: 2rem;
+    margin-top: 1rem;
+}
+.pensjonsbrev-form-text > div:first-child {
+    font-weight: bold;
+}
+.pensjonsbrev-form-line-long {
+    border-bottom: 0.06rem solid black;
+    height: 0.06rem;
+    width: 100%;
+}
+.pensjonsbrev-form-line-short {
+    border-bottom: 0.06rem solid black;
+    height: 0.06rem;
+    width: 60%;
+}
+.pensjonsbrev-form-line-none {
+    display: none;
+}
+
+.pensjonsbrev-form-choice {
+    display: flex;
+    flex-direction: column;
+    gap: 1.3rem;
+    margin-bottom: 2rem;
+    margin-top: 1rem;
+}
+.pensjonsbrev-form-choice-checkbox {
+    display: inline-block;
+    width: 1.5rem;
+    height: 1.5rem;
+    border: 0.13rem solid #707070;
+    border-radius: 0.3rem;
+    margin-right: 0.5rem;
+}
+.pensjonsbrev-form-choice > div:first-child {
+    font-weight: bold;
+}
+.pensjonsbrev-form-choice > div:not(:first-child) {
+    margin-bottom: 0.3rem;
+    display: flex;
+    flex-direction: row;
+}
+
 /* Liten -> Stor */
 @media (min-width: 30em) {
     .pensjonsbrev-brevdato {

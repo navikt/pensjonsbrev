@@ -315,9 +315,11 @@ sealed class Element<out Lang : LanguageSupport> {
             sealed class Form<out Lang : LanguageSupport> : ParagraphContent<Lang>() {
                 data class Text<out Lang : LanguageSupport>(
                     val prompt: TextElement<Lang>,
-                    val size: Int,
+                    val size: Size,
                     val vspace: Boolean = true,
-                ) : Form<Lang>()
+                ) : Form<Lang>() {
+                    enum class Size { NONE, SHORT, LONG }
+                }
 
                 data class MultipleChoice<out Lang : LanguageSupport>(
                     // TODO: Denne bør ikke være TextElement, bør være Element.OutlineContent.ParagraphContent.Text
