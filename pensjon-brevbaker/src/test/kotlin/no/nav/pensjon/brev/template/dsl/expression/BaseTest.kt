@@ -81,4 +81,69 @@ class BaseTest {
         assertFalse(expr.eval(ExpressionScope(3, scope.felles, scope.language)))
     }
 
+    @Test
+    fun `EqualTo positive match for expression`() {
+        val expr = 55.expr().equalTo(55.expr())
+        val scope = ExpressionScope(2, Fixtures.felles, Language.Bokmal)
+
+        assertTrue(expr.eval(ExpressionScope(3, scope.felles, scope.language)))
+    }
+
+    @Test
+    fun `EqualTo negative match for expression`() {
+        val expr = 44.expr().equalTo(55.expr())
+        val scope = ExpressionScope(2, Fixtures.felles, Language.Bokmal)
+
+        assertFalse(expr.eval(ExpressionScope(3, scope.felles, scope.language)))
+    }
+
+    @Test
+    fun `EqualTo positive match for literal`() {
+        val expr = 55.expr().equalTo(55)
+        val scope = ExpressionScope(2, Fixtures.felles, Language.Bokmal)
+
+        assertTrue(expr.eval(ExpressionScope(3, scope.felles, scope.language)))
+    }
+
+    @Test
+    fun `EqualTo negative match for literal`() {
+        val expr = 44.expr().equalTo(55)
+        val scope = ExpressionScope(2, Fixtures.felles, Language.Bokmal)
+
+        assertFalse(expr.eval(ExpressionScope(3, scope.felles, scope.language)))
+    }
+
+    @Test
+    fun `NotEqualTo positive match for expression`() {
+        val expr = 44.expr().notEqualTo(55.expr())
+        val scope = ExpressionScope(2, Fixtures.felles, Language.Bokmal)
+
+        assertTrue(expr.eval(ExpressionScope(3, scope.felles, scope.language)))
+    }
+
+    @Test
+    fun `NotEqualTo negative match for expression`() {
+        val expr = 55.expr().notEqualTo(55.expr())
+        val scope = ExpressionScope(2, Fixtures.felles, Language.Bokmal)
+
+        assertFalse(expr.eval(ExpressionScope(3, scope.felles, scope.language)))
+    }
+
+    @Test
+    fun `NotEqualTo positive match for literal`() {
+        val expr = 44.expr().notEqualTo(55)
+        val scope = ExpressionScope(2, Fixtures.felles, Language.Bokmal)
+
+        assertTrue(expr.eval(ExpressionScope(3, scope.felles, scope.language)))
+    }
+
+    @Test
+    fun `NotEqualTo negative match for literal`() {
+        val expr = 55.expr().notEqualTo(55)
+        val scope = ExpressionScope(2, Fixtures.felles, Language.Bokmal)
+
+        assertFalse(expr.eval(ExpressionScope(3, scope.felles, scope.language)))
+    }
+
+
 }
