@@ -25,4 +25,7 @@ fun createUfoeretrygdEndretPgaInntektDto() =
         ufoeregrad = 5.5,
         utbetalingsgrad = 5.2,
         fyller67IVirkningsAar = true,
+        barnetilleggSaerkullsbarnInntektBruktIAvkortning = Kroner(1234),
+        barnetilleggFellesbarnInntektBruktIAvkortning = Kroner(1234),
+        antallSaerkullsbarn = 5,
     )

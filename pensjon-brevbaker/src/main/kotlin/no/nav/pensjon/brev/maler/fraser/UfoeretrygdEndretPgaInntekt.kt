@@ -75,7 +75,7 @@ object UfoeretrygdEndretPgaInntekt {
                     text(Bokmal to ". Inntekten til din ")
                     includePhrase(Felles.SivilstandEPSUbestemtForm(brukersSivilstandUfoeretrygd))
                     text(
-                        Bokmal to "har kun betydning for størrelsen på barnetillegget "
+                        Bokmal to " har kun betydning for størrelsen på barnetillegget "
                     )
                     showIf(harFlereBarnetillegg) {
                         textExpr(
@@ -94,7 +94,7 @@ object UfoeretrygdEndretPgaInntekt {
 
                 showIf(harEndretUfoeretrygd) {
                     text(
-                        Bokmal to "ufoeretrygden din"
+                        Bokmal to "uføretrygden din"
                     )
                     showIf(harEndretBarnetillegg) {
                         text(
@@ -114,7 +114,7 @@ object UfoeretrygdEndretPgaInntekt {
                     }
                 }
                 textExpr(
-                    Bokmal to " er derfor endret fra".expr() + virkningFraOgMed.format() + "."
+                    Bokmal to " er derfor endret fra ".expr() + virkningFraOgMed.format() + "."
                 )
             }
         }
@@ -134,24 +134,25 @@ object UfoeretrygdEndretPgaInntekt {
                 textExpr(
                     Bokmal to "Vi vil bruke en inntekt på ".expr() + forventetInntektAvkoret.format() +
                             " kroner når vi reduserer uføretrygden din for " + virkningFraOgMedAar.format() +
-                            ". Har du ikke meldt inn ny inntekt for " + aarFoerVirkningsAar.format() +
                             ". Har du ikke meldt inn ny inntekt for " + virkningFraOgMedAar.format() +
                             ", er inntekten justert opp til dagens verdi."
                 )
-
-                showIf(utbetalingsgrad.notEqualTo(ufoeregrad)) {
-                    text(
-                        Bokmal to "Fikk du innvilget uføretrygd etter januar " + aarFoerVirkningsAar.format() + ", er inntekten justert opp slik at den gjelder for hele " + virkningFraOgMedAar.format() + "."
+            }
+            showIf(utbetalingsgrad.notEqualTo(ufoeregrad)) {
+                paragraph {
+                    textExpr(
+                        Bokmal to "Fikk du innvilget uføretrygd etter januar ".expr() + aarFoerVirkningsAar.format() + ", er inntekten justert opp slik at den gjelder for hele " + virkningFraOgMedAar.format() + "."
                     )
                 }
+            }
 
-                showIf(fyller67IVirkningsAar) {
+            showIf(fyller67IVirkningsAar) {
+                paragraph {
                     textExpr(
                         Bokmal to "Fordi du fyller 67 år i ".expr() + virkningFraOgMedAar.format() + ", er inntekten justert i forhold til antall måneder du mottar uføretrygd."
                     )
                 }
             }
         }
-
     }
 }
