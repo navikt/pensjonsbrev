@@ -69,7 +69,7 @@ jobs:
       - name: "compile and run tests"
         run: "./gradlew :pdf-bygger:build"
       - name: "Build and publish Docker image"
-        run: "docker build --pull --tag ${IMAGE_PDF_BUILDER} . && echo $GITHUB_TOKEN | docker login\
+        run: "docker build --pull --tag ${IMAGE_PDF_BUILDER} pdf-bygger && echo $GITHUB_TOKEN | docker login\
         \ --username $GITHUB_REPOSITORY --password-stdin https://ghcr.io\
         \ && docker push ${IMAGE_PDF_BUILDER}"
         env:
