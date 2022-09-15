@@ -10,7 +10,7 @@ jobs:
     steps:
       - uses: "actions/checkout@v2"
       - name: Build and publish Docker image
-        run: "docker build --pull --tag ${{ github.event.repository.updated_at}} pdf-bygger -f latex.Dockerfile && echo $GITHUB_TOKEN | docker login\
+        run: "docker build --pull --tag $(date +'%Y-%m-%d-%h') pdf-bygger -f latex.Dockerfile && echo $GITHUB_TOKEN | docker login\
         \ --username $GITHUB_REPOSITORY --password-stdin https://ghcr.io\
         \ && docker push ${{ github.event.repository.updated_at}}"
         env:
