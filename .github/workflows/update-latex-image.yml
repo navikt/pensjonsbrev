@@ -1,7 +1,6 @@
 name: "Build and publish new LaTeX image"
 on:
   workflow_dispatch:
-  pull_request:
 env:
   "IMAGE_LATEX": "ghcr.io/${{ github.repository }}/pensjon-latex:${$(date +'%Y-%m-%d-%H:%M')}"
 jobs:
