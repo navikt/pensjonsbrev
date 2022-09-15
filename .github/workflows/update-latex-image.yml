@@ -12,6 +12,6 @@ jobs:
       - name: Build and publish Docker image
         run: "docker build --pull --tag latex-$(date +'%Y-%m-%d-%H:%M') -f pdf-bygger/latex.Dockerfile pdf-bygger && echo $GITHUB_TOKEN | docker login\
         \ --username $GITHUB_REPOSITORY --password-stdin https://ghcr.io\
-        \ && docker push ${{ github.event.repository.updated_at}}"
+        \ && docker push latex-$(date +'%Y-%m-%d-%H:%M')"
         env:
           "GITHUB_TOKEN": "${{ secrets.GITHUB_TOKEN }}"
