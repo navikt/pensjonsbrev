@@ -20,20 +20,18 @@ object PensjonHTMLRenderer : LetterRenderer<RenderedHtmlLetter>() {
     private val languageSettings = pensjonHTMLSettings
     private val css = getResource("html/style.css").toString(Charsets.UTF_8)
     private val navLogoImg = "data:image/png;base64,${Base64.getEncoder().encodeToString(getResource("html/nav-logo.png"))}"
-    private val fontBinary = """
+    private val fontBinary = listOf(fontFaceCss("normal", 400), fontFaceCss("italic", 400), fontFaceCss("normal", 700))
+
+    private fun fontFaceCss(style: String, weight: Int) =
+        """
         @font-face {
             font-family: 'Source Sans Pro';
-            font-style: normal;
-            font-weight: 400;
-            src: url(data:font/woff2;charset=utf-8;base64,${Base64.getEncoder().encodeToString(getResource("html/SourceSansPro-latin.woff2"))}) format('woff2');
+            font-style: $style;
+            font-weight: $weight;
+            src: url(data:font/woff2;charset=utf-8;base64,${Base64.getEncoder().encodeToString(getResource("html/SourceSansPro-latin-$style-$weight.woff2"))}) format('woff2');
             unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-        }    
+        }
         """.trimIndent()
-
-    private fun getResource(fileName: String): ByteArray =
-        this::class.java.getResourceAsStream("/$fileName")
-            ?.use { it.readAllBytes() }
-            ?: throw IllegalStateException("""Could not find resource /$fileName""")
 
     override fun renderLetter(scope: ExpressionScope<*, *>, template: LetterTemplate<*, *>): RenderedHtmlLetter = RenderedHtmlLetter().apply {
         newFile("index.html") {
@@ -42,8 +40,8 @@ object PensjonHTMLRenderer : LetterRenderer<RenderedHtmlLetter>() {
                 head {
                     meta(charset = Charsets.UTF_8.name())
                     meta(name = "viewport", content = "width=device-width")
-                    title { render(scope, template.title) { inner, text -> renderTextContentWithoutStyle(inner, text) } }
-                    style { unsafe { raw(fontBinary) } }
+                    title { renderTextWithoutStyle(scope, template.title) }
+                    style { unsafe { fontBinary.forEach { raw(it) } } }
                     style { unsafe { raw(css) } }
                 }
                 body {
@@ -62,6 +60,7 @@ object PensjonHTMLRenderer : LetterRenderer<RenderedHtmlLetter>() {
                             }
                         }
                         render(scope, template.attachments) { attachmentScope, _, attachment ->
+                            hr(classes("vedlegg"))
                             renderAttachment(attachmentScope, attachment)
                         }
                     }
@@ -108,6 +107,7 @@ object PensjonHTMLRenderer : LetterRenderer<RenderedHtmlLetter>() {
 
     private fun FlowContent.renderAttachment(scope: ExpressionScope<*, *>, template: AttachmentTemplate<*, *>): Unit =
         div(classes("vedlegg")) {
+            img(classes = classes("logo"), src = navLogoImg, alt = AltTexts.logo.text(scope.language))
             h1(classes("tittel")) { renderText(scope, listOf(template.title)) }
             if (template.includeSakspart) {
                 renderSakspart(scope)
@@ -158,6 +158,10 @@ object PensjonHTMLRenderer : LetterRenderer<RenderedHtmlLetter>() {
         }
     }
 
+    private fun Tag.renderTextWithoutStyle(scope: ExpressionScope<*, *>, elements: List<TextElement<*>>) {
+        render(scope, elements) { inner, text -> renderTextContentWithoutStyle(inner, text) }
+    }
+
     private fun Tag.renderTextContentWithoutStyle(scope: ExpressionScope<*, *>, element: Element.OutlineContent.ParagraphContent.Text<*>): Unit =
         when (element) {
             is Element.OutlineContent.ParagraphContent.Text.Expression.ByLanguage -> text(element.expr(scope.language).eval(scope))
@@ -168,21 +172,27 @@ object PensjonHTMLRenderer : LetterRenderer<RenderedHtmlLetter>() {
 
     private fun FlowContent.renderForm(scope: ExpressionScope<*, *>, element: Element.OutlineContent.ParagraphContent.Form<*>): Unit =
         when (element) {
-            // TODO: Dette er hacky
             is Element.OutlineContent.ParagraphContent.Form.MultipleChoice -> {
                 div(classes("form-choice")) {
-                    renderText(scope, listOf(element.prompt))
+                    div { renderText(scope, listOf(element.prompt)) }
                     element.choices.forEach {
-                        input(InputType.radio)
-                        renderTextContent(scope, it)
+                        div {
+                            div(classes("form-choice-checkbox"))
+                            div { renderTextContent(scope, it) }
+                        }
                     }
                 }
             }
 
             is Element.OutlineContent.ParagraphContent.Form.Text -> {
                 div(classes("form-text")) {
-                    renderText(scope, listOf(element.prompt))
-                    input(type = InputType.text)
+                    div { renderText(scope, listOf(element.prompt)) }
+                    val size = when (element.size) {
+                        Element.OutlineContent.ParagraphContent.Form.Text.Size.NONE -> "none"
+                        Element.OutlineContent.ParagraphContent.Form.Text.Size.SHORT -> "short"
+                        Element.OutlineContent.ParagraphContent.Form.Text.Size.LONG -> "long"
+                    }
+                    div(classes("form-line-$size")) { }
                 }
             }
         }
@@ -196,6 +206,33 @@ object PensjonHTMLRenderer : LetterRenderer<RenderedHtmlLetter>() {
     }
 
     private fun FlowContent.renderTable(scope: ExpressionScope<*, *>, element: Element.OutlineContent.ParagraphContent.Table<*>) {
+        // Small screen
+        ul(classes("table")) {
+            render(scope, element.rows) { rowScope, row ->
+                li {
+                    div {
+                        row.cells.forEachIndexed { index, cell ->
+                            val spec = element.header.colSpec[index]
+                            val textClasses = if (index == 0) classes("text-bold") else null
+
+                            if (spec.headerContent.text.isEmpty()) {
+                                div { span(textClasses) { renderTextWithoutStyle(scope, cell.text) } }
+                                div { }
+                            } else {
+                                div {
+                                    span(textClasses) {
+                                        renderTextWithoutStyle(scope, spec.headerContent.text)
+                                        text(":")
+                                    }
+                                }
+                                div { span(textClasses) { renderTextWithoutStyle(rowScope, cell.text) } }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        // Big screen
         table(classes("table")) {
             thead {
                 tr {

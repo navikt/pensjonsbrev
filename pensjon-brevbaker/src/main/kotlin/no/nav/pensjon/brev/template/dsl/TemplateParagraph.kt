@@ -51,7 +51,7 @@ interface ParagraphScope<Lang : LanguageSupport, LetterData : Any> : TextScope<L
             .also { addParagraphContent(it) }
     }
 
-    fun formText(size: Int, prompt: TextElement<Lang>, vspace: Boolean = true) {
+    fun formText(size: Element.OutlineContent.ParagraphContent.Form.Text.Size, prompt: TextElement<Lang>, vspace: Boolean = true) {
         Element.OutlineContent.ParagraphContent.Form.Text(prompt, size, vspace)
             .let { ContentOrControlStructure.Content(it) }
             .also { addParagraphContent(it) }

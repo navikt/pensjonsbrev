@@ -36,7 +36,6 @@ object LetterExample : VedtaksbrevTemplate<LetterExampleDto> {
 
     override val template = createTemplate(
         name = "EKSEMPEL_BREV", //Letter ID
-        //Master-template
         letterDataType = LetterExampleDto::class, // Data class containing the required data of this letter
         languages = languages(Bokmal, Nynorsk),
         letterMetadata = LetterMetadata(

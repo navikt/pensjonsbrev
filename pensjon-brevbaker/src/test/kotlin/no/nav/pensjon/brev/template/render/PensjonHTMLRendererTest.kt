@@ -1,12 +1,11 @@
-package no.nav.pensjon.brev.template.base
+package no.nav.pensjon.brev.template.render
 
 import no.nav.pensjon.brev.*
 import no.nav.pensjon.brev.maler.example.*
 import no.nav.pensjon.brev.template.*
-import no.nav.pensjon.brev.template.render.PensjonHTMLRenderer
 import org.junit.jupiter.api.Test
 
-class PensjonHTMLTest {
+class PensjonHTMLRendererTest {
     @Test
     fun renderDesignReference() {
         Letter(

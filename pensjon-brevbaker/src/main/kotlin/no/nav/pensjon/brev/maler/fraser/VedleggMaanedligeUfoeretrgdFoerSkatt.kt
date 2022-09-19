@@ -239,17 +239,17 @@ data class TabellBeregnetUTAvkortet(
                 column {}
                 column(alignment = Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT) {
                     text(
-                        Bokmal to "Uføretrygd per måned før fradrag for inntekt",
-                        Nynorsk to "Uføretrygd per månad før frådrag for inntekt",
-                        English to "Monthly disability benefit before deductions for income",
+                        Bokmal to "Før fradrag for inntekt",
+                        Nynorsk to "Før frådrag for inntekt",
+                        English to "Before deductions for income",
                         Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
                     )
                 }
                 column(alignment = Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT) {
                     text(
-                        Bokmal to "Uføretrygd per måned etter fradrag for inntekt",
-                        Nynorsk to "Uføretrygd per månad etter frådrag for inntekt",
-                        English to "Monthly disability benefit after deductions for income",
+                        Bokmal to "Etter fradrag for inntekt",
+                        Nynorsk to "Etter frådrag for inntekt",
+                        English to "After deductions for income",
                         Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
                     )
                 }
