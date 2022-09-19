@@ -2,10 +2,12 @@ package no.nav.pensjon.brev.maler.fraser
 
 import io.ktor.http.*
 import no.nav.pensjon.brev.api.model.Kroner
+import no.nav.pensjon.brev.api.model.Sivilstand
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarn
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarn
 import no.nav.pensjon.brev.api.model.maler.OpphoererBarnetilleggAutoDto
 import no.nav.pensjon.brev.api.model.maler.UngUfoerAutoDto
+import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
@@ -176,10 +178,10 @@ object OpphoerBarnetillegg {
     }
 
     data class TBU1284Fellesbarn(
-        val fribeloep: Expression<Kroner>,
+        val fribeloepFellesbarn: Expression<Kroner>,
         val inntektAnnenForelder: Expression<Kroner>,
-        val inntektBruktiAvkortning: Expression<Kroner>,
-        val grunnbeloep: Expression<Kroner>,
+        val inntektBruktiAvkortningFellesbarn: Expression<Kroner>,
+        val grunnbeloepFellesbarn: Expression<Kroner>,
         val harBarnetilleggFellesbarn: Expression<Boolean>,
         val harBarnetilleggSaerkullsbarn: Expression<Boolean>,
         val beloepFratrukketAnnenForeldersInntekt: Expression<Int>,
@@ -187,35 +189,35 @@ object OpphoerBarnetillegg {
         ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             paragraph {
-                val fribeloepFellesbarn = fribeloep.format()
-                val inntektAnnenForelderFellesbarn = inntektAnnenForelder.format()
-                val inntektBruktiAvkortningFellesbarn = inntektBruktiAvkortning.format()
-                val grunnbeloep = grunnbeloep.format()
+                val fribeloep = fribeloepFellesbarn.format()
+                val inntektAnnenForelder = inntektAnnenForelder.format()
+                val inntektBruktiAvkortning = inntektBruktiAvkortningFellesbarn.format()
+                val grunnbeloep = grunnbeloepFellesbarn.format()
 
                 showIf(harBarnetilleggFellesbarn and not(harBarnetilleggSaerkullsbarn)) {
                     textExpr(
-                        Bokmal to "Inntekten din er ".expr() + inntektBruktiAvkortningFellesbarn + " kroner og inntekten til ektefellenpartnerensamboeren din er ".expr()
-                            + inntektAnnenForelderFellesbarn + " kroner. Folketrygdens grunnbeløp på inntil ".expr()
+                        Bokmal to "Inntekten din er ".expr() + inntektBruktiAvkortning + " kroner og inntekten til ektefellenpartnerensamboeren din er ".expr()
+                            + inntektAnnenForelder + " kroner. Folketrygdens grunnbeløp på inntil ".expr()
                             + grunnbeloep + " kroner er holdt utenfor inntekten til ektefellenpartnerensamboeren din. Til sammen er inntektene høyere lavere enn fribeløpet ditt på ".expr()
-                            + fribeloepFellesbarn + " kroner. Barnetillegget ditt er derfor ikke redusert ut fra inntekt.  Det du har fått utbetalt i barnetillegg tidligere i år har også betydning for hva du får i barnetillegg framover. Dette ble tatt hensyn til da vi endret barnetillegget.  Du har allerede fått utbetalt det du har rett til i år, og får derfor ikke utbetalt barnetillegg for resten av året.".expr(),
-                        Nynorsk to "Inntekta di er ".expr() + inntektBruktiAvkortningFellesbarn + " kroner, og inntekta til ektefellen/partnaren/sambuaren din er ".expr()
-                            + inntektAnnenForelderFellesbarn + " kroner. Grunnbeløpet i folketrygda på inntil ".expr()
+                            + fribeloep + " kroner. Barnetillegget ditt er derfor ikke redusert ut fra inntekt.  Det du har fått utbetalt i barnetillegg tidligere i år har også betydning for hva du får i barnetillegg framover. Dette ble tatt hensyn til da vi endret barnetillegget.  Du har allerede fått utbetalt det du har rett til i år, og får derfor ikke utbetalt barnetillegg for resten av året.".expr(),
+                        Nynorsk to "Inntekta di er ".expr() + inntektBruktiAvkortning + " kroner, og inntekta til ektefellen/partnaren/sambuaren din er ".expr()
+                            + inntektAnnenForelder + " kroner. Grunnbeløpet i folketrygda på inntil ".expr()
                             + grunnbeloep + " kroner er halde utanfor inntekta til ektefellen/partnaren/sambuaren din. Til saman er inntektene høgare/lågare enn fribeløpet ditt på ".expr()
-                            + fribeloepFellesbarn + " kroner. Barnetillegget ditt er derfor ikkje redusert ut frå inntekt. Det du har fått utbetalt i barnetillegg tidlegare i år har også noko å seie for kva du får i barnetillegg framover. Dette har vi teke omsyn til når vi endra barnetillegget. Du har allereie fått utbetalt det du har rett til i år, og får derfor ikkje utbetalt barnetillegg for resten av året.".expr(),
-                        English to "Your income is NOK ".expr() + inntektBruktiAvkortningFellesbarn + " and your spouse/partner/cohabiting partner's income is NOK ".expr()
-                            + inntektAnnenForelderFellesbarn + ". The national insurance basic amount of up to NOK ".expr()
+                            + fribeloep + " kroner. Barnetillegget ditt er derfor ikkje redusert ut frå inntekt. Det du har fått utbetalt i barnetillegg tidlegare i år har også noko å seie for kva du får i barnetillegg framover. Dette har vi teke omsyn til når vi endra barnetillegget. Du har allereie fått utbetalt det du har rett til i år, og får derfor ikkje utbetalt barnetillegg for resten av året.".expr(),
+                        English to "Your income is NOK ".expr() + inntektBruktiAvkortning + " and your spouse/partner/cohabiting partner's income is NOK ".expr()
+                            + inntektAnnenForelder + ". The national insurance basic amount of up to NOK ".expr()
                             + grunnbeloep + " has not been included in your spouse/partner/cohabiting partner's income. Together, the incomes are higher/lower than your exemption amount of NOK ".expr()
-                            + fribeloepFellesbarn + ". Therefore, your child supplement has not been reduced on the basis of your income. What you have received in child supplement earlier this year, affects what you will receive in child supplement in the future. This we took into account when we changed your child supplement. You have already received what you are entitled to this year, therefore you will not receive any child supplement for the remainder of the year.".expr()
+                            + fribeloep + ". Therefore, your child supplement has not been reduced on the basis of your income. What you have received in child supplement earlier this year, affects what you will receive in child supplement in the future. This we took into account when we changed your child supplement. You have already received what you are entitled to this year, therefore you will not receive any child supplement for the remainder of the year.".expr()
                     )
                 }.orShowIf(harBarnetilleggFellesbarn) {
                     textExpr(
-                        Bokmal to "Inntekten din er ".expr() + inntektBruktiAvkortningFellesbarn + " kroner og inntekten til ektefellenpartnerensamboeren din er ".expr()
-                            + inntektBruktiAvkortningFellesbarn + " kroner. Folketrygdens grunnbeløp på inntil ".expr() + grunnbeloep + " kroner er holdt utenfor inntekten til ektefellenpartnerensamboeren din. Det du har fått utbetalt i barnetillegg tidligere i år har også betydning for hva du får i barnetillegg framover. Dette ble tatt hensyn til da vi endret barnetillegget.  Du har allerede fått utbetalt det du har rett til i år, og får derfor ikke utbetalt barnetillegg for resten av året.".expr(),
-                        Nynorsk to "Inntekta di er ".expr() + inntektBruktiAvkortningFellesbarn + " kroner, og inntekta til ektefellen/partnaren/sambuaren din er ".expr()
-                            + inntektAnnenForelderFellesbarn + " kroner. Grunnbeløpet i folketrygda på inntil ".expr()
+                        Bokmal to "Inntekten din er ".expr() + inntektBruktiAvkortning + " kroner og inntekten til ektefellenpartnerensamboeren din er ".expr()
+                            + inntektBruktiAvkortning + " kroner. Folketrygdens grunnbeløp på inntil ".expr() + grunnbeloep + " kroner er holdt utenfor inntekten til ektefellenpartnerensamboeren din. Det du har fått utbetalt i barnetillegg tidligere i år har også betydning for hva du får i barnetillegg framover. Dette ble tatt hensyn til da vi endret barnetillegget.  Du har allerede fått utbetalt det du har rett til i år, og får derfor ikke utbetalt barnetillegg for resten av året.".expr(),
+                        Nynorsk to "Inntekta di er ".expr() + inntektBruktiAvkortning + " kroner, og inntekta til ektefellen/partnaren/sambuaren din er ".expr()
+                            + inntektAnnenForelder + " kroner. Grunnbeløpet i folketrygda på inntil ".expr()
                             + grunnbeloep + " kroner er halde utanfor inntekta til ektefellen/partnaren/sambuaren din. Det du har fått utbetalt i barnetillegg tidlegare i år har også noko å seie for kva du får i barnetillegg framover. Dette har vi teke omsyn til når vi endra barnetillegget. Du har allereie fått utbetalt det du har rett til i år, og får derfor ikkje utbetalt barnetillegg for resten av året.".expr(),
-                        English to "Your income is NOK ".expr() + inntektBruktiAvkortningFellesbarn + " and your spouse/partner/cohabiting partner's income is NOK ".expr()
-                            + inntektAnnenForelderFellesbarn + ". The national insurance basic amount of up to NOK ".expr()
+                        English to "Your income is NOK ".expr() + inntektBruktiAvkortning + " and your spouse/partner/cohabiting partner's income is NOK ".expr()
+                            + inntektAnnenForelder+ ". The national insurance basic amount of up to NOK ".expr()
                             + grunnbeloep + " has not been included in your spouse/partner/cohabiting partner's income. Therefore, your child supplement has not been reduced on the basis of your income. What you have received in child supplement earlier this year, affects what you will receive in child supplement in the future. This we took into account when we changed your child supplement. You have already received what you are entitled to this year, therefore you will not receive any child supplement for the remainder of the year.".expr()
                     )
                 }
@@ -272,63 +274,63 @@ object OpphoerBarnetillegg {
     }
 
     data class TBU1285(
-        val fribeloep: Expression<Kroner>,
-        val inntektBruktiAvkortning: Expression<Kroner>,
-        val beloepNetto: Expression<Kroner>,
-        val justeringsbeloep: Expression<Kroner>,
+        val fribeloepSaerkullsbarn: Expression<Kroner>,
+        val inntektBruktiAvkortningSaerkullsbarn: Expression<Kroner>,
+        val beloepNettoSaerkullsbarn: Expression<Kroner>,
+        val justeringsbeloepSaerkullsbarn: Expression<Kroner>,
 
         ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             paragraph {
-                val fribeloepSaerkullsbarn = fribeloep.format()
-                val inntektBruktiAvkortningSaerkullsbarn = inntektBruktiAvkortning.format()
+                val fribeloep = fribeloepSaerkullsbarn.format()
+                val inntektBruktiAvkortning = inntektBruktiAvkortningSaerkullsbarn.format()
                 val hoeyereLavere = inntektBruktiAvkortningSaerkullsbarn.lessThanOrEqual(fribeloepSaerkullsbarn)
                 val ikke = inntektBruktiAvkortningSaerkullsbarn.lessThanOrEqual(fribeloepSaerkullsbarn)
 
-                showIf(beloepNetto.greaterThan(0) and justeringsbeloep.equalTo(0)) {
+                showIf(beloepNettoSaerkullsbarn.greaterThan(0) and justeringsbeloepSaerkullsbarn.equalTo(0)) {
                     textExpr(
-                        Bokmal to "Inntekten din på ".expr() + inntektBruktiAvkortningSaerkullsbarn + " kroner er ".expr() + ifElse(
+                        Bokmal to "Inntekten din på ".expr() + inntektBruktiAvkortning + " kroner er ".expr() + ifElse(
                             hoeyereLavere,
                             ifTrue = "lavere",
                             ifFalse = "høyere"
                         ) + " enn fribeløpet ditt på ".expr()
-                            + fribeloepSaerkullsbarn + " kroner. Barnetillegget ditt er derfor ".expr() + ifElse(
+                            + fribeloep + " kroner. Barnetillegget ditt er derfor ".expr() + ifElse(
                             ikke,
                             ifTrue = "ikke ",
                             ifFalse = ""
                         ) + "redusert ut fra inntekt.".expr(),
-                        Nynorsk to "Inntekta di på ".expr() + inntektBruktiAvkortningSaerkullsbarn + " kroner er ".expr() + ifElse(
+                        Nynorsk to "Inntekta di på ".expr() + inntektBruktiAvkortning + " kroner er ".expr() + ifElse(
                             hoeyereLavere,
                             ifTrue = "lågare",
                             ifFalse = "høgare"
                         ) + " enn fribeløpet ditt på ".expr()
-                            + fribeloepSaerkullsbarn + " kroner. Barnetillegget ditt er derfor ".expr() + ifElse(
+                            + fribeloep + " kroner. Barnetillegget ditt er derfor ".expr() + ifElse(
                             ikke,
-                            ifTrue = "ikke ",
+                            ifTrue = "ikkje ",
                             ifFalse = ""
                         ) + "redusert ut frå inntekt.".expr(),
-                        English to "Your income of NOK ".expr() + inntektBruktiAvkortningSaerkullsbarn + " is ".expr() + ifElse(
+                        English to "Your income of NOK ".expr() + inntektBruktiAvkortning + " is ".expr() + ifElse(
                             hoeyereLavere,
                             ifTrue = "lower",
                             ifFalse = "higher"
                         ) + " than your exemption amount of NOK ".expr()
-                            + fribeloepSaerkullsbarn + ". Therefore your child supplement has ".expr() + ifElse(
+                            + fribeloep + ". Therefore your child supplement has ".expr() + ifElse(
                             ikke,
                             ifTrue = "not ",
                             ifFalse = ""
                         ) + "not been reduced on the basis of your income.".expr()
                     )
-                }.orShowIf(beloepNetto.equalTo(0) and justeringsbeloep.equalTo(0)) {
+                }.orShowIf(beloepNettoSaerkullsbarn.equalTo(0) and justeringsbeloepSaerkullsbarn.equalTo(0)) {
                     textExpr(
-                        Bokmal to "Inntekten din er ".expr() + inntektBruktiAvkortningSaerkullsbarn + " kroner. Du har allerede fått utbetalt det du har rett til i år, og får derfor ikke utbetalt barnetillegg for resten av året.".expr(),
-                        Nynorsk to "Inntekta di er ".expr() + inntektBruktiAvkortningSaerkullsbarn + " kroner. Du har allereie fått utbetalt det du har rett til i år, og får derfor ikkje utbetalt barnetillegg for resten av året.".expr(),
-                        English to "Your income is NOK ".expr() + inntektBruktiAvkortningSaerkullsbarn + ". You have already received what you are entitled to this year, therefore you will not receive any child supplement for the remainder of the year.".expr()
+                        Bokmal to "Inntekten din er ".expr() + inntektBruktiAvkortning + " kroner. Du har allerede fått utbetalt det du har rett til i år, og får derfor ikke utbetalt barnetillegg for resten av året.".expr(),
+                        Nynorsk to "Inntekta di er ".expr() + inntektBruktiAvkortning + " kroner. Du har allereie fått utbetalt det du har rett til i år, og får derfor ikkje utbetalt barnetillegg for resten av året.".expr(),
+                        English to "Your income is NOK ".expr() + inntektBruktiAvkortning + ". You have already received what you are entitled to this year, therefore you will not receive any child supplement for the remainder of the year.".expr()
                     )
-                }.orShowIf(beloepNetto.equalTo(0) and justeringsbeloep.greaterThan(0)) {
+                }.orShowIf(beloepNettoSaerkullsbarn.equalTo(0) and justeringsbeloepSaerkullsbarn.greaterThan(0)) {
                     textExpr(
-                        Bokmal to "Inntekten din er ".expr() + inntektBruktiAvkortningSaerkullsbarn + " kroner. Det du har fått utbetalt i barnetillegg tidligere i år har også betydning for hva du får i barnetillegg framover. Dette ble tatt hensyn til da vi endret barnetillegget. Du har allerede fått utbetalt det du har rett til i år, og får derfor ikke utbetalt barnetillegg for resten av året.".expr(),
-                        Nynorsk to "Inntekta di er ".expr() + inntektBruktiAvkortningSaerkullsbarn + " kroner. Det du har fått utbetalt i barnetillegg tidlegare i år har også noko å seie for kva du får i barnetillegg framover. Dette har vi teke omsyn til når vi endra barnetillegget. Du har allereie fått utbetalt det du har rett til i år, og får derfor ikkje utbetalt barnetillegg for resten av året.".expr(),
-                        English to "Your income is NOK ".expr() + inntektBruktiAvkortningSaerkullsbarn + ". What you have received in child supplement earlier this year, affects what you will receive in child supplement in the future. This we took in to account when we changed your child supplement. You have already received what you are entitled to this year, therefore you will not receive any child supplement for the remainder of the year.".expr()
+                        Bokmal to "Inntekten din er ".expr() + inntektBruktiAvkortning + " kroner. Det du har fått utbetalt i barnetillegg tidligere i år har også betydning for hva du får i barnetillegg framover. Dette ble tatt hensyn til da vi endret barnetillegget. Du har allerede fått utbetalt det du har rett til i år, og får derfor ikke utbetalt barnetillegg for resten av året.".expr(),
+                        Nynorsk to "Inntekta di er ".expr() + inntektBruktiAvkortning + " kroner. Det du har fått utbetalt i barnetillegg tidlegare i år har også noko å seie for kva du får i barnetillegg framover. Dette har vi teke omsyn til når vi endra barnetillegget. Du har allereie fått utbetalt det du har rett til i år, og får derfor ikkje utbetalt barnetillegg for resten av året.".expr(),
+                        English to "Your income is NOK ".expr() + inntektBruktiAvkortning + ". What you have received in child supplement earlier this year, affects what you will receive in child supplement in the future. This we took in to account when we changed your child supplement. You have already received what you are entitled to this year, therefore you will not receive any child supplement for the remainder of the year.".expr()
                     )
                 }
             }
@@ -336,125 +338,244 @@ object OpphoerBarnetillegg {
     }
 
     data class TBU1286Saerkullsbarn(
-        val beloepNettoSB: Expression<Kroner>,
-        val fradragSB: Expression<Kroner>,
-        val fradragFB: Expression<Kroner>,
-        val fribeloepSB: Expression<Kroner>,
-        val justeringsbeloepSB: Expression<Kroner>,
+        val beloepNettoSaerkullsbarn: Expression<Kroner>,
+        val fradragSaerkullsbarn: Expression<Kroner>,
+        val fradragFellesbarn: Expression<Kroner>,
+        val fribeloepSaerkullsbarn: Expression<Kroner>,
+        val justeringsbeloepSaerkullsbarn: Expression<Kroner>,
+        val antallSaerkullsbarnInnvilget: Expression<Int?>,
 
         ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             paragraph {
-                val fribeloepSaerkullsbarn = fribeloepSB.format()
-                // Bruker mottar barnetillegg for både saerkullsbarn og fellesbarn, men kun barnetillegget for saerkullsbarn er blitt redusert
-                showIf(
-                    beloepNettoSB.notEqualTo(0) and justeringsbeloepSB.equalTo(0) and fradragFB.greaterThan(0)
-                        and fradragSB.equalTo(0)
-                ) {
-                    textExpr(
-                        Bokmal to "Inntekten din er høyere enn ".expr() + fribeloepSaerkullsbarn + " kroner, som er fribeløpet for barnetillegget til barna/barnet som ikke bor sammen med begge foreldrene. Dette barnetillegget er derfor redusert ut fra inntekt.".expr(),
-                        Nynorsk to "Inntekta di er høgare enn ".expr() + fribeloepSaerkullsbarn + " kroner, som er fribeløpet for barnetillegget til barna/barnet som ikkje bur saman med begge foreldra. Dette barnetillegget er derfor redusert ut frå inntekt.".expr(),
-                        English to "Your income is higher than NOK ".expr() + fribeloepSaerkullsbarn + ", which is the exemption amount for the child supplement for the barnet/barna who do not live together with both parents. Therefore, your child supplement has been reduced on the basis of your income.".expr()
-                    )
-                    // Bruker mottar barnetillegg for både saerkullsbarn og fellesbarn, men kun barnetillegget for saerkullsbarn er ikke blitt redusert
-                }.orShowIf(
-                    beloepNettoSB.notEqualTo(0) and justeringsbeloepSB.equalTo(0) and fradragSB.equalTo(0)
-                        and fradragFB.greaterThan(0)
-                ) {
-                    textExpr(
-                        Bokmal to "Inntekten din er lavere enn ".expr() + fribeloepSaerkullsbarn + " kroner, som er fribeløpet for barnetillegget til barnetbarna som ikke bor sammen med begge foreldrene. Dette barnetillegget er derfor ikke redusert ut fra inntekt.".expr(),
-                        Nynorsk to "Inntekta di er lågare enn ".expr() + fribeloepSaerkullsbarn + " kroner, som er fribeløpet for barnetillegget til barna/barnet som ikkje bur saman med begge foreldra. Dette barnetillegget er derfor ikkje redusert ut frå inntekt.".expr(),
-                        English to "Your income is lower than NOK ".expr() + fribeloepSaerkullsbarn + ", which is the exemption amount for the child supplement for the barnet/barna who do not live together with both parents. Therefore, your child supplement has not been reduced on the basis of your income.".expr()
-                    )
+                val fribeloep = fribeloepSaerkullsbarn.format()
+
+                ifNotNull(antallSaerkullsbarnInnvilget) { antallSaerkullsbarnInnvilget ->
+                    val barnFlertall = antallSaerkullsbarnInnvilget.greaterThan(1)
+
+                    // Bruker mottar barnetillegg for både saerkullsbarn og fellesbarn, men kun barnetillegget for saerkullsbarn er blitt redusert
+                    showIf(
+                        beloepNettoSaerkullsbarn.notEqualTo(0) and justeringsbeloepSaerkullsbarn.equalTo(0) and fradragFellesbarn.greaterThan(0)
+                            and fradragSaerkullsbarn.equalTo(0)
+                    ) {
+                        textExpr(
+                            Bokmal to "Inntekten din er høyere enn ".expr() + fribeloep + " kroner, som er fribeløpet for barnetillegget til ".expr() + ifElse(
+                                barnFlertall,
+                                ifTrue = "barna",
+                                ifFalse = "barnet"
+                            ) + " som ikke bor sammen med begge foreldrene. Dette barnetillegget er derfor redusert ut fra inntekt.".expr(),
+                            Nynorsk to "Inntekta di er høgare enn ".expr() + fribeloep + " kroner, som er fribeløpet for barnetillegget til ".expr() + ifElse(
+                                barnFlertall,
+                                ifTrue = "barna",
+                                ifFalse = "barnet"
+                            ) + " som ikkje bur saman med begge foreldra. Dette barnetillegget er derfor redusert ut frå inntekt.".expr(),
+                            English to "Your income is higher than NOK ".expr() + fribeloep + ", which is the exemption amount for the child supplement for the ".expr() + ifElse(
+                                barnFlertall,
+                                ifTrue = "children who do",
+                                ifFalse = "child who does"
+                            ) + " not live together with both parents. Therefore, your child supplement has been reduced on the basis of your income.".expr()
+                        )
+                        // Bruker mottar barnetillegg for både saerkullsbarn og fellesbarn, men kun barnetillegget for saerkullsbarn er ikke blitt redusert
+                    }.orShowIf(
+                        beloepNettoSaerkullsbarn.notEqualTo(0) and justeringsbeloepSaerkullsbarn.equalTo(0) and fradragSaerkullsbarn.equalTo(0)
+                            and fradragFellesbarn.greaterThan(0)
+                    ) {
+                        textExpr(
+                            Bokmal to "Inntekten din er lavere enn ".expr() + fribeloep + " kroner, som er fribeløpet for barnetillegget til ".expr() + ifElse(
+                                barnFlertall,
+                                ifTrue = "barna",
+                                ifFalse = "barnet"
+                            ) + " som ikke bor sammen med begge foreldrene. Dette barnetillegget er derfor ikke redusert ut fra inntekt.".expr(),
+                            Nynorsk to "Inntekta di er lågare enn ".expr() + fribeloep + " kroner, som er fribeløpet for barnetillegget til ".expr() + ifElse(
+                                barnFlertall,
+                                ifTrue = "barna",
+                                ifFalse = "barnet "
+                            ) + " som ikkje bur saman med begge foreldra. Dette barnetillegget er derfor ikkje redusert ut frå inntekt.".expr(),
+                            English to "Your income is lower than NOK ".expr() + fribeloep + ", which is the exemption amount for the child supplement for the ".expr() + ifElse(
+                                barnFlertall,
+                                ifTrue = "children who do",
+                                ifFalse = "child who does"
+                            ) + " not live together with both parents. Therefore, your child supplement has not been reduced on the basis of your income.".expr()
+                        )
+                    }
                 }
             }
         }
     }
 
     data class TBU1286Fellesbarn(
-        val beloepNettoFB: Expression<Kroner>,
-        val fradragSB: Expression<Kroner>,
-        val fradragFB: Expression<Kroner>,
-        val fribeloepFB: Expression<Kroner>,
-        val justeringsbeloepFB: Expression<Kroner>,
+        val beloepNettoFellesbarn: Expression<Kroner>,
+        val fradragSaerkullsbarn: Expression<Kroner>,
+        val fradragFellesbarn: Expression<Kroner>,
+        val fribeloepFellesbarn: Expression<Kroner>,
+        val justeringsbeloepFellesbarn: Expression<Kroner>,
+        val antallFellesbarnInnvilget: Expression<Int?>,
 
         ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             paragraph {
-                val fribeloepFellesbarn = fribeloepFB.format()
-                // Bruker mottar barnetillegg for både saerkullsbarn og fellesbarn, men kun barnetillegget for fellesbarn er blitt redusert
-                showIf(
-                    beloepNettoFB.greaterThan(0) and justeringsbeloepFB.equalTo(0) and fradragFB.greaterThan(0)
-                        and fradragSB.equalTo(0)
-                ) {
-                    textExpr(
-                        Bokmal to "Til sammen er inntektene til deg og ektefellenpartnerensamboeren din høyere enn ".expr() + fribeloepFellesbarn + " kroner, som er fribeløpet for barnetillegget til barnetbarna som bor med begge sine foreldre. Dette barnetillegget er derfor redusert ut fra inntekt.".expr(),
-                        Nynorsk to "Til saman er inntektene til deg og ektefellen/partnaren/sambuaren din høgare enn ".expr() + fribeloepFellesbarn + " kroner, som er fribeløpet for barnetillegget til barnet/barna som bur saman med begge foreldra sine. Dette barnetillegget er derfor redusert ut frå inntekt.".expr(),
-                        English to "Together, your income and your spouse/partner/cohabiting partner's income is higher than NOK ".expr() + fribeloepFellesbarn + ", which is the exemption amount for the child supplement for the child/children who lives together with both parents. Therefore, your child supplement has been reduced on the basis of your income.".expr()
-                    )
-                    // Bruker mottar barnetillegg for både saerkullsbarn og fellesbarn, men kun barnetillegget for fellesbarn er ikke blitt redusert
-                }.orShowIf(
-                    beloepNettoFB.greaterThan(0) and justeringsbeloepFB.equalTo(0) and fradragFB.equalTo(0)
-                        and fradragSB.greaterThan(0)
-                ) {
-                    textExpr(
-                        Bokmal to "Til sammen er inntektene til deg og ektefellenpartnerensamboeren din lavere enn ".expr() + fribeloepFellesbarn + " kroner, som er fribeløpet for barnetillegget til barnetbarna som bor med begge sine foreldre.  Dette barnetillegget er derfor ikke redusert ut fra inntekt.".expr(),
-                        Nynorsk to "Til saman er inntektene til deg og ektefellen/partnaren/sambuaren din lågare enn ".expr() + fribeloepFellesbarn + " kroner, som er fribeløpet for barnetillegget til barnet/barna som bur saman med begge foreldra sine. Dette barnetillegget er derfor ikke redusert ut frå inntekt.".expr(),
-                        English to "Together, your income and your spouse/partner/cohabiting partner's income is lower than NOK ".expr() + fribeloepFellesbarn + ", which is the exemption amount for the child supplement for the child/children who lives together with both parents. Therefore, your child supplement has not been reduced on the basis of your income.".expr()
-                    )
+                val fribeloep = fribeloepFellesbarn.format()
+
+                ifNotNull(antallFellesbarnInnvilget) { antallFellesbarnInnvilget ->
+                    val barnFlertall = antallFellesbarnInnvilget.greaterThan(1)
+
+                    // Bruker mottar barnetillegg for både saerkullsbarn og fellesbarn, men kun barnetillegget for fellesbarn er blitt redusert
+                    showIf(
+                        beloepNettoFellesbarn.greaterThan(0) and justeringsbeloepFellesbarn.equalTo(0) and fradragFellesbarn.greaterThan(0)
+                            and fradragSaerkullsbarn.equalTo(0)
+                    ) {
+                        textExpr(
+                            Bokmal to "Til sammen er inntektene til deg og sivilstandEPSBestemtForm  din høyere enn ".expr() + fribeloep + " kroner, som er fribeløpet for barnetillegget til ".expr() + ifElse(
+                                barnFlertall,
+                                ifTrue = "barna",
+                                ifFalse = "barnet"
+                            ) + " som bor med begge sine foreldre. Dette barnetillegget er derfor redusert ut fra inntekt.".expr(),
+                            Nynorsk to "Til saman er inntektene til deg og ektefellen/partnaren/sambuaren din høgare enn ".expr() + fribeloep + " kroner, som er fribeløpet for barnetillegget til ".expr() + ifElse(
+                                barnFlertall,
+                                ifTrue = "barna",
+                                ifFalse = "barnet"
+                            ) + " som bur saman med begge foreldra sine. Dette barnetillegget er derfor redusert ut frå inntekt.".expr(),
+                            English to "Together, your income and your spouse/partner/cohabiting partner's income is higher than NOK ".expr() + fribeloep + ", which is the exemption amount for the child supplement for the ".expr() + ifElse(
+                                barnFlertall,
+                                ifTrue = "children who live",
+                                ifFalse = "child who lives"
+                            ) + " together with both parents. Therefore, your child supplement has been reduced on the basis of your income.".expr()
+                        )
+                        // Bruker mottar barnetillegg for både saerkullsbarn og fellesbarn, men kun barnetillegget for fellesbarn er ikke blitt redusert
+                    }.orShowIf(
+                        beloepNettoFellesbarn.greaterThan(0) and justeringsbeloepFellesbarn.equalTo(0) and fradragFellesbarn.equalTo(0)
+                            and fradragSaerkullsbarn.greaterThan(0)
+                    ) {
+                        textExpr(
+                            Bokmal to "Til sammen er inntektene til deg og ektefellenpartnerensamboeren din lavere enn ".expr() + fribeloep + " kroner, som er fribeløpet for barnetillegget til ".expr() + ifElse(
+                                barnFlertall,
+                                ifTrue = "barna",
+                                ifFalse = "barnet"
+                            ) + " som bor med begge sine foreldre.  Dette barnetillegget er derfor ikke redusert ut fra inntekt.".expr(),
+                            Nynorsk to "Til saman er inntektene til deg og ektefellen/partnaren/sambuaren din lågare enn ".expr() + fribeloep + " kroner, som er fribeløpet for barnetillegget til ".expr() + ifElse(
+                                barnFlertall,
+                                ifTrue = "barna",
+                                ifFalse = "barnet"
+                            ) + " som bur saman med begge foreldra sine. Dette barnetillegget er derfor ikke redusert ut frå inntekt.".expr(),
+                            English to "Together, your income and your spouse/partner/cohabiting partner's income is lower than NOK ".expr() + fribeloep + ", which is the exemption amount for the child supplement for the ".expr() + ifElse(
+                                barnFlertall,
+                                ifTrue = "children who live",
+                                ifFalse = "child who lives"
+                            ) + " together with both parents. Therefore, your child supplement has not been reduced on the basis of your income.".expr()
+                        )
+                    }
                 }
             }
         }
-    }
 
-    data class TBU1286SearkullsbarnFellesbarn(
-        val beloepNettoSB: Expression<Kroner>,
-        val beloepNettoFB: Expression<Kroner>,
-        val fradragSB: Expression<Kroner>,
-        val fradragFB: Expression<Kroner>,
-        val fribeloepSB: Expression<Kroner>,
-        val fribeloepFB: Expression<Kroner>,
-        val justeringsbeloepSB: Expression<Kroner>,
-        val justeringsbeloepFB: Expression<Kroner>,
+        data class TBU1286SearkullsbarnFellesbarn(
+            val beloepNettoSaerkullsbarn: Expression<Kroner>,
+            val beloepNettoFellesbarn: Expression<Kroner>,
+            val fradragSaerkullsbarn: Expression<Kroner>,
+            val fradragFellesbarn: Expression<Kroner>,
+            val fribeloepSaerkullsbarn: Expression<Kroner>,
+            val fribeloepFellesbarn: Expression<Kroner>,
+            val justeringsbeloepSaerkullsbarn: Expression<Kroner>,
+            val justeringsbeloepFellesbarn: Expression<Kroner>,
+            val antallSaerkullsbarnInnvilget: Expression<Int?>,
+            val antallFellesbarnInnvilget: Expression<Int?>,
 
-        ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
-        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-            paragraph {
-                val fribeloepSaerkullsbarn = fribeloepSB.format()
-                val fribeloepFellesbarn = fribeloepFB.format()
-                // Bruker mottar barnetillegg for både saerkullsbarn og fellesbarn, barnetilleggene for baade fellesbarn og saerkullsbarn er blitt redusert
-                showIf(
-                    (fradragFB.greaterThan(0) and justeringsbeloepFB.equalTo(0) and fradragSB.greaterThan(0) and justeringsbeloepSB.equalTo(
-                        0
-                    ))
-                ) {
-                    textExpr(
-                        Bokmal to "Inntekten din er høyere enn ".expr() + fribeloepSaerkullsbarn + " kroner, som er fribeløpet for barnetillegget til barnetbarna som ikke bor sammen med begge foreldrene. Til sammen er også inntektene til deg og ektefellenpartnerensamboeren din høyere enn ".expr()
-                            + fribeloepFellesbarn + " kroner, som er fribeløpet for barnetillegget til barnetbarna som bor med begge sine foreldre. Barnetilleggene er derfor redusert ut fra inntekt.".expr(),
-                        Nynorsk to "Inntekta di er høgare enn ".expr() + fribeloepSaerkullsbarn + " kroner, som er fribeløpet for barnetillegget til barnet/barna som ikkje bur saman med begge foreldra. Til saman er også inntektene til deg og ektefellen/partnaren/sambuaren din høgare enn ".expr()
-                            + fribeloepFellesbarn + " kroner, som er fribeløpet for barnetillegget til barnet/barna som bur saman med begge foreldra sine. Desse barnetillegga er derfor redusert ut frå inntekt.".expr(),
-                        English to "Your income is higher than NOK ".expr() + fribeloepSaerkullsbarn + ", which is the exemption amount for the child supplement for the child/children who do not live together with both parents. Together, your income and your spouse/partner/cohabiting partner's income is higher than NOK ".expr()
-                            + fribeloepFellesbarn + ", which is the exemption amount for the child supplement for the child/children who lives together with both parents. Therefore, your child supplements have been reduced on the basis of your income.".expr()
-                    ) // Bruker mottar barnetillegg for både saerkullsbarn og fellesbarn, barnetilleggene for baade fellesbarn og saerkullsbarn er ikke blitt redusert
-                }.orShowIf(
-                    beloepNettoFB.greaterThan(0) and fradragFB.equalTo(0) and beloepNettoSB.greaterThan(0) and fradragSB.equalTo(
-                        0
-                    )
-                ) {
-                    textExpr(
-                        Bokmal to "Inntekten din er lavere enn ".expr() + fribeloepSaerkullsbarn + " kroner, som er fribeløpet for barnetillegget til barnetbarna som ikke bor sammen med begge foreldrene. Til sammen er også inntektene til deg og ektefellenpartnerensamboeren din lavere enn ".expr()
-                            + fribeloepFellesbarn + " kroner, som er fribeløpet for barnetillegget til barnetbarna som bor med begge sine foreldre. Barnetilleggene er derfor ikke redusert ut fra inntekt.".expr(),
-                        Nynorsk to "Inntekta di er lågare enn ".expr() + fribeloepSaerkullsbarn + " kroner, som er fribeløpet for barnetillegget til barnet/barna som ikkje bur saman med begge foreldra. Til saman er også inntektene til deg og ektefellen/partnaren/sambuaren din lågare enn ".expr()
-                            + fribeloepFellesbarn + " kroner, som er fribeløpet for barnetillegget til barnet/barna som bur saman med begge foreldra sine. Desse barnetillegga er derfor ikkje redusert ut frå inntekt.".expr(),
-                        English to "Your income is lower than NOK ".expr() + fribeloepSaerkullsbarn + ", which is the exemption amount for the child supplement for the child/children who do not live together with both parents. Together, your income and your spouse/partner/cohabiting partner's income is lower than NOK ".expr()
-                            + fribeloepFellesbarn + ", which is the exemption amount for the child supplement for the child/children who lives together with both parents. Therefore, your child supplements have not been reduced on the basis of your income.".expr()
-                    )
+            ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+            override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+                paragraph {
+                    val fribeloepSaerkullsbarn = fribeloepSaerkullsbarn.format()
+                    val fribeloepFellesbarn = fribeloepFellesbarn.format()
+
+                    ifNotNull(
+                        antallSaerkullsbarnInnvilget,
+                        antallFellesbarnInnvilget
+                    ) { antallSaerkullsbarnInnvilget, antallFellesbarnInnvilget ->
+                        val barnFlertallSaerkullsbarn = antallSaerkullsbarnInnvilget.greaterThan(1)
+                        val barnFlertallFellesbarn = antallFellesbarnInnvilget.greaterThan(1)
+
+                        // Bruker mottar barnetillegg for både saerkullsbarn og fellesbarn, barnetilleggene for baade fellesbarn og saerkullsbarn er blitt redusert
+                        showIf(
+                            (fradragFellesbarn.greaterThan(0) and justeringsbeloepFellesbarn.equalTo(0) and fradragSaerkullsbarn.greaterThan(
+                                0
+                            ) and justeringsbeloepSaerkullsbarn.equalTo(
+                                0
+                            ))
+                        ) {
+                            textExpr(
+                                Bokmal to "Inntekten din er høyere enn ".expr() + fribeloepSaerkullsbarn + " kroner, som er fribeløpet for barnetillegget til ".expr() + ifElse(
+                                    barnFlertallSaerkullsbarn,
+                                    ifTrue = "barna",
+                                    ifFalse = "barnet"
+                                ) + " som ikke bor sammen med begge foreldrene. Til sammen er også inntektene til deg og ektefellenpartnerensamboeren din høyere enn ".expr()
+                                    + fribeloepFellesbarn + " kroner, som er fribeløpet for barnetillegget til ".expr() + ifElse(
+                                    barnFlertallFellesbarn,
+                                    ifTrue = "barna",
+                                    ifFalse = "barnet"
+                                ) + " som bor med begge sine foreldre. Barnetilleggene er derfor redusert ut fra inntekt.".expr(),
+                                Nynorsk to "Inntekta di er høgare enn ".expr() + fribeloepSaerkullsbarn + " kroner, som er fribeløpet for barnetillegget til ".expr() + ifElse(
+                                    barnFlertallSaerkullsbarn,
+                                    ifTrue = "barna",
+                                    ifFalse = "barnet"
+                                ) + " som ikkje bur saman med begge foreldra. Til saman er også inntektene til deg og ektefellen/partnaren/sambuaren din høgare enn ".expr()
+                                    + fribeloepFellesbarn + " kroner, som er fribeløpet for barnetillegget til ".expr() + ifElse(
+                                    barnFlertallFellesbarn,
+                                    ifTrue = "barna",
+                                    ifFalse = "barnet"
+                                ) + " som bur saman med begge foreldra sine. Desse barnetillegga er derfor redusert ut frå inntekt.".expr(),
+                                English to "Your income is higher than NOK ".expr() + fribeloepSaerkullsbarn + ", which is the exemption amount for the child supplement for the ".expr() + ifElse(
+                                    barnFlertallSaerkullsbarn,
+                                    ifTrue = "children who do",
+                                    ifFalse = "child who does"
+                                ) + " not live together with both parents. Together, your income and your spouse/partner/cohabiting partner's income is higher than NOK ".expr()
+                                    + fribeloepFellesbarn + ", which is the exemption amount for the child supplement for the ".expr() + ifElse(
+                                    barnFlertallFellesbarn,
+                                    ifTrue = "children who live",
+                                    ifFalse = "child who lives"
+                                ) + " together with both parents. Therefore, your child supplements have been reduced on the basis of your income.".expr()
+                            ) // Bruker mottar barnetillegg for både saerkullsbarn og fellesbarn, barnetilleggene for baade fellesbarn og saerkullsbarn er ikke blitt redusert
+                        }.orShowIf(
+                            beloepNettoFellesbarn.greaterThan(0) and fradragFellesbarn.equalTo(0) and beloepNettoSaerkullsbarn.greaterThan(
+                                0
+                            ) and fradragSaerkullsbarn.equalTo(
+                                0
+                            )
+                        ) {
+                            textExpr(
+                                Bokmal to "Inntekten din er lavere enn ".expr() + fribeloepSaerkullsbarn + " kroner, som er fribeløpet for barnetillegget til ".expr() + ifElse(
+                                    barnFlertallSaerkullsbarn,
+                                    ifTrue = "barna",
+                                    ifFalse = "barnet"
+                                ) + " som ikke bor sammen med begge foreldrene. Til sammen er også inntektene til deg og ektefellenpartnerensamboeren din lavere enn ".expr()
+                                    + fribeloepFellesbarn + " kroner, som er fribeløpet for barnetillegget til ".expr() + ifElse(
+                                    barnFlertallFellesbarn,
+                                    ifTrue = "barna",
+                                    ifFalse = "barnet"
+                                ) + " som bor med begge sine foreldre. Barnetilleggene er derfor ikke redusert ut fra inntekt.".expr(),
+                                Nynorsk to "Inntekta di er lågare enn ".expr() + fribeloepSaerkullsbarn + " kroner, som er fribeløpet for barnetillegget til ".expr() + ifElse(
+                                    barnFlertallSaerkullsbarn,
+                                    ifTrue = "barna",
+                                    ifFalse = "barnet"
+                                ) + " som ikkje bur saman med begge foreldra. Til saman er også inntektene til deg og ektefellen/partnaren/sambuaren din lågare enn ".expr()
+                                    + fribeloepFellesbarn + " kroner, som er fribeløpet for barnetillegget til ".expr() + ifElse(
+                                    barnFlertallFellesbarn,
+                                    ifTrue = "barna",
+                                    ifFalse = "barnet"
+                                ) + " som bur saman med begge foreldra sine. Desse barnetillegga er derfor ikkje redusert ut frå inntekt.".expr(),
+                                English to "Your income is lower than NOK ".expr() + fribeloepSaerkullsbarn + ", which is the exemption amount for the child supplement for the ".expr() + ifElse(
+                                    barnFlertallSaerkullsbarn,
+                                    ifTrue = "children who do",
+                                    ifFalse = "child who does"
+                                ) + " who do not live together with both parents. Together, your income and your spouse/partner/cohabiting partner's income is lower than NOK ".expr()
+                                    + fribeloepFellesbarn + ", which is the exemption amount for the child supplement for the ".expr() + ifElse(
+                                    barnFlertallFellesbarn,
+                                    ifTrue = "children who live",
+                                    ifFalse = "child who lives"
+                                ) + " who lives together with both parents. Therefore, your child supplements have not been reduced on the basis of your income.".expr()
+                            )
+                        }
+                    }
                 }
             }
-        }
-    }
-
-
 
 
 // TBU1286.1 in <maler/fraser/omregning/ufoeretrygd/Ufoeretrygd.kt
@@ -613,3 +734,5 @@ object OpphoerBarnetillegg {
                 }
             }
         }
+    }
+}
