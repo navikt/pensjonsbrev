@@ -5,11 +5,9 @@ import no.nav.pensjon.brev.api.model.Sivilstand
 import no.nav.pensjon.brev.api.model.Year
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.model.format
-import no.nav.pensjon.brev.template.Expression
-import no.nav.pensjon.brev.template.LangBokmal
+import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Language.Bokmal
-import no.nav.pensjon.brev.template.OutlinePhrase
-import no.nav.pensjon.brev.template.TextOnlyPhrase
+import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.TextOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.*
@@ -23,11 +21,14 @@ object UfoeretrygdEndretPgaInntekt {
         val harEndretUfoeretrygd: Expression<Boolean>,
         val harEndretBarnetillegg: Expression<Boolean>,
         val harFlereBarnetillegg: Expression<Boolean>,
-    ) : TextOnlyPhrase<LangBokmal>() {
-        override fun TextOnlyScope<LangBokmal, Unit>.template() {
+    ) : TextOnlyPhrase<LangBokmalNynorsk>() {
+
+        //
+        override fun TextOnlyScope<LangBokmalNynorsk, Unit>.template() {
             showIf(harEndretUfoeretrygd and not(harEndretBarnetillegg)) {
                 text(
                     Bokmal to "NAV har endret utbetalingen av uføretrygden din",
+                    Nynorsk to "NAV har endra utbetalinga av uføretrygda di"
                 )
             }
 
@@ -35,16 +36,19 @@ object UfoeretrygdEndretPgaInntekt {
                 textExpr(
                     Bokmal to "NAV har endret utbetalingen av uføretrygden og ".expr()
                             + ifElse(harFlereBarnetillegg, "barnetilleggene dine", "barnetillegget ditt"),
+                    Nynorsk to "NAV har endra utbetalinga av uføretrygda di og ".expr()
+                            + ifElse(harFlereBarnetillegg, "barnetillegga di", "barnetillegget ditt"),
                 )
             }
 
             showIf(not(harEndretUfoeretrygd) and harEndretBarnetillegg) {
                 textExpr(
-                    Bokmal to "NAV har endret utbetalingen av ".expr() + ifElse(
-                        harFlereBarnetillegg,
-                        "barnetilleggene",
-                        "barnetillegget"
-                    ) + " i uføretrygden din".expr()
+                    Bokmal to "NAV har endret utbetalingen av ".expr() +
+                            ifElse(harFlereBarnetillegg,"barnetilleggene","barnetillegget")
+                            + " i uføretrygden din".expr(),
+                    Nynorsk to "NAV har endra utbetalinga av ".expr() +
+                            ifElse(harFlereBarnetillegg,"barnetillegga","barnetillegget")
+                            + " i uføretrygda di".expr()
                 )
             }
         }
@@ -52,107 +56,378 @@ object UfoeretrygdEndretPgaInntekt {
 
     // TBU2249
     data class InnledningInntektsendring(
-        val harFlereFellesBarn: Expression<Boolean>,
+        val harFlereFellesbarn: Expression<Boolean>,
         val harEndretBarnetillegg: Expression<Boolean>,
         val harEndretUfoeretrygd: Expression<Boolean>,
-        val harFlereBarnetillegg: Expression<Boolean>,
-        val harInnvilgetBarnetilleggFellesBarn: Expression<Boolean>,
-        val brukersSivilstandUfoeretrygd: Expression<Sivilstand>,
-        val virkningFraOgMed: Expression<LocalDate>,
-    ) : OutlinePhrase<LangBokmal>() {
-        override fun OutlineOnlyScope<LangBokmal, Unit>.template() {
+        val harBarnetilleggForSaerkullOgFellesbarn: Expression<Boolean>,
+        val harBarnetilleggFellesbarn: Expression<Boolean>,
+        val brukersSivilstand: Expression<Sivilstand>,
+        val virkningsdatoFraOgMed: Expression<LocalDate>,
+    ) : OutlinePhrase<LangBokmalNynorsk>() {
+        override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
             paragraph {
                 text(
                     Bokmal to "Vi har mottatt nye opplysninger om inntekten ",
+                    Nynorsk to "Vi har fått nye opplysningar om inntekta ",
                 )
-                showIf(not(harInnvilgetBarnetilleggFellesBarn)) {
+
+                showIf(not(harBarnetilleggFellesbarn)) {
                     text(
-                        Bokmal to "din.",
+                        Bokmal to "din",
+                        Nynorsk to "di",
                     )
                 }.orShow {
-                    text(Bokmal to "til deg eller din ")
-                    includePhrase(Felles.SivilstandEPSUbestemtForm(brukersSivilstandUfoeretrygd))
-                    text(Bokmal to ". Inntekten til din ")
-                    includePhrase(Felles.SivilstandEPSUbestemtForm(brukersSivilstandUfoeretrygd))
                     text(
-                        Bokmal to " har kun betydning for størrelsen på barnetillegget "
+                        Bokmal to "til deg eller din ",
+                        Nynorsk to "til deg eller ",
                     )
-                    showIf(harFlereBarnetillegg) {
+
+                    includePhrase(Felles.SivilstandEPSBestemtForm(brukersSivilstand))
+
+                    text(
+                        Bokmal to ". Inntekten til din ",
+                        Nynorsk to " din. Inntekta til ",
+                    )
+
+                    includePhrase(Felles.SivilstandEPSBestemtForm(brukersSivilstand))
+
+                    text(
+                        Bokmal to " har kun betydning for størrelsen på barnetillegget ",
+                        Nynorsk to " din har berre betydning for storleiken på barnetillegget ",
+
+                        )
+                    showIf(harBarnetilleggForSaerkullOgFellesbarn) {
                         textExpr(
-                            Bokmal to "for ".expr() + ifElse(harFlereFellesBarn, "barna", "barnet")
-                                    + " som bor med begge foreldre.",
+                            Bokmal to "for ".expr() + ifElse(
+                                harFlereFellesbarn,
+                                "barna",
+                                "barnet"
+                            ) + " som bor med begge sine foreldre",
+                            Nynorsk to "for ".expr() + ifElse(
+                                harFlereFellesbarn,
+                                "barna",
+                                "barnet"
+                            ) + " som bur saman med begge foreldra sine",
                         )
                     }.orShow {
                         text(
-                            Bokmal to "ditt."
+                            Bokmal to "ditt",
+                            Nynorsk to "ditt",
                         )
                     }
                 }
+
                 text(
-                    Bokmal to " Utbetalingen av "
+                    Bokmal to ". Utbetalingen av ",
+                    Nynorsk to ". Utbetalinga av ",
                 )
 
                 showIf(harEndretUfoeretrygd) {
                     text(
-                        Bokmal to "uføretrygden din"
+                        Bokmal to "uføretrygden din " + ifElse(harEndretBarnetillegg, "og ", ""),
+                        Nynorsk to "uføretrygda di " + ifElse(harEndretBarnetillegg, "og ", ""),
                     )
-                    showIf(harEndretBarnetillegg) {
-                        text(
-                            Bokmal to " og "
-                        )
-                    }
                 }
+
                 showIf(harEndretBarnetillegg) {
-                    showIf(harFlereBarnetillegg) {
+                    showIf(harBarnetilleggForSaerkullOgFellesbarn) {
                         text(
-                            Bokmal to "barnetilleggene dine"
+                            Bokmal to "barnetilleggene dine ",
+                            Nynorsk to "barnetillegga dine",
                         )
                     }.orShow {
                         text(
-                            Bokmal to "barnetillegget ditt"
+                            Bokmal to "barnetillegget ditt",
+                            Nynorsk to "barnetillegget ditt",
                         )
                     }
                 }
                 textExpr(
-                    Bokmal to " er derfor endret fra ".expr() + virkningFraOgMed.format() + "."
+                    Bokmal to " er derfor endret fra ".expr() + virkningsdatoFraOgMed.format() + ".",
+                    Nynorsk to " er derfor endra frå ".expr() + virkningsdatoFraOgMed.format() + ".",
                 )
             }
         }
     }
 
     // TBU3403
-    data class InnledningReduksjon(
-        val forventetInntektAvkoret: Expression<Kroner>,
-        val virkningFraOgMedAar: Expression<Int>,
+    data class InnledningReduksjonUfoeretrygd(
+        val forventetInntektBruktIAvkortningAvUfoeretrygd: Expression<Kroner>,
+        val harEndretUfoeretrygd: Expression<Boolean>,
+        val virkningsaar: Expression<Int>,
         val aarFoerVirkningsAar: Expression<Year>,
         val ufoeregrad: Expression<Double>,
         val utbetalingsgrad: Expression<Double>,
         val fyller67IVirkningsAar: Expression<Boolean>
-    ) : OutlinePhrase<LangBokmal>() {
-        override fun OutlineOnlyScope<LangBokmal, Unit>.template() {
-            paragraph {
-                textExpr(
-                    Bokmal to "Vi vil bruke en inntekt på ".expr() + forventetInntektAvkoret.format() +
-                            " kroner når vi reduserer uføretrygden din for " + virkningFraOgMedAar.format() +
-                            ". Har du ikke meldt inn ny inntekt for " + virkningFraOgMedAar.format() +
-                            ", er inntekten justert opp til dagens verdi."
-                )
-            }
-            showIf(utbetalingsgrad.notEqualTo(ufoeregrad)) {
+    ) : OutlinePhrase<LangBokmalNynorsk>() {
+        override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
+            showIf(harEndretUfoeretrygd) {
                 paragraph {
                     textExpr(
-                        Bokmal to "Fikk du innvilget uføretrygd etter januar ".expr() + aarFoerVirkningsAar.format() + ", er inntekten justert opp slik at den gjelder for hele " + virkningFraOgMedAar.format() + "."
+                        Bokmal to "Vi vil bruke en inntekt på ".expr() + forventetInntektBruktIAvkortningAvUfoeretrygd.format() + " kroner når vi reduserer uføretrygden din for ".expr() + virkningsaar.format() + ". Har du ikke meldt inn ny inntekt for ".expr() + virkningsaar.format() + ", er inntekten justert opp til dagens verdi.",
+                        Nynorsk to "Vi vil bruke ei inntekt på ".expr() + forventetInntektBruktIAvkortningAvUfoeretrygd.format() + " kroner når vi reduserer uføretrygda di for ".expr() + virkningsaar.format() + ". Har du ikkje meldt inn ny inntekt for ".expr() + virkningsaar.format() + ", er inntekta justert opp til dagens verdi.",
+                    )
+                }
+
+                showIf(utbetalingsgrad.notEqualTo(ufoeregrad)){
+                    paragraph {
+                        textExpr(
+                            Bokmal to "Fikk du innvilget uføretrygd etter januar ".expr() + aarFoerVirkningsAar.format() + ", er inntekten justert opp slik at den gjelder for hele ".expr() + virkningsaar.format() + ".",
+                            Nynorsk to "Fekk du innvilga uføretrygd etter januar ".expr() + aarFoerVirkningsAar.format() + ", er inntekta også justert opp slik at den gjeld for heile ".expr() + virkningsaar.format() + ".",
+                        )
+                    }
+                }
+                showIf(fyller67IVirkningsAar) {
+                    paragraph {
+                        textExpr(
+                            Bokmal to "Fordi du fyller 67 år i ".expr() + virkningsaar.format() + ", er inntekten justert i forhold til antall måneder du mottar uføretrygd.",
+                            Nynorsk to "Fordi du fyljer 67 år i ".expr() + virkningsaar.format() + ", er inntekta justert ut frå talet på månadar du får uføretrygd.",
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    //TBU4016, TBU4001, TBU4002, TBU4017
+    data class InnledningReduksjonBarnetillegg(
+        val harEndretUfoeretrygd: Expression<Boolean>,
+        val harEndretBarnetillegg: Expression<Boolean>,
+        val harBarnetilleggSaerkullsbarn: Expression<Boolean>,
+        val harBarnetilleggFellesbarn: Expression<Boolean>,
+        val harFlereFellesbarn: Expression<Boolean>,
+        val harFlereSaerkullsbarn: Expression<Boolean>,
+        val harEndretBarnetilleggFellesbarn: Expression<Boolean>,
+        val harEndretBarnetilleggSaerkullsbarn: Expression<Boolean>,
+        val inntektBruktIAvkortningAvBarnetilleggForSaerkullsbarn: Expression<Kroner>,
+        val inntektBruktIAvkortningAvBarnetilleggForFellesbarn: Expression<Kroner>,
+        val virkningsaar: Expression<Int>,
+    ): OutlinePhrase<LangBokmalNynorsk>(){
+        override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
+            //TBU4016
+            showIf(
+                harEndretUfoeretrygd
+                        and harEndretBarnetillegg
+                        and harBarnetilleggSaerkullsbarn
+                        and not(harBarnetilleggFellesbarn)
+            ) {
+                paragraph {
+                    textExpr(
+                        Bokmal to "I reduksjonen av barnetillegget ditt vil vi bruke en inntekt på ".expr()
+                                + inntektBruktIAvkortningAvBarnetilleggForSaerkullsbarn.format() + " kroner.",
+                        Nynorsk to "I reduksjonen av barnetillegget ditt vil vi bruke ei inntekt på ".expr()
+                                + inntektBruktIAvkortningAvBarnetilleggForSaerkullsbarn.format() + " kroner.",
                     )
                 }
             }
 
-            showIf(fyller67IVirkningsAar) {
+
+            //TBU4001
+            showIf(
+                harEndretBarnetillegg
+                        and harEndretUfoeretrygd
+                        and harBarnetilleggFellesbarn
+            ) {
                 paragraph {
                     textExpr(
-                        Bokmal to "Fordi du fyller 67 år i ".expr() + virkningFraOgMedAar.format() + ", er inntekten justert i forhold til antall måneder du mottar uføretrygd."
+                        Bokmal to "I reduksjonen av barnetillegget ditt vil vi bruke en inntekt på ".expr()
+                                + inntektBruktIAvkortningAvBarnetilleggForFellesbarn.format() + " kroner",
+                        Nynorsk to "I reduksjonen av barnetillegget ditt vil vi bruke ei inntekt på ".expr()
+                                + inntektBruktIAvkortningAvBarnetilleggForFellesbarn.format() + " kroner",
+                    )
+
+                    showIf(harBarnetilleggSaerkullsbarn) {
+                        textExpr(
+                            Bokmal to " for ".expr()
+                                    + ifElse(harFlereFellesbarn, "barna", "barnet")
+                                    + " som bor med begge sine foreldre. For ".expr()
+                                    + ifElse(harFlereSaerkullsbarn, "barna", "barnet")
+                                    + " som ikke bor sammen med begge foreldrene vil vi bruke en inntekt på ".expr()
+                                    + inntektBruktIAvkortningAvBarnetilleggForSaerkullsbarn.format() + " kroner",
+                            Nynorsk to "for ".expr()
+                                    + ifElse(harFlereFellesbarn, "barna", "barnet")
+                                    + " som bur med begge sine foreldra. For ".expr()
+                                    + ifElse(harFlereSaerkullsbarn, "barna", "barnet")
+                                    + " som ikkje bur saman med begge foreldrea vil vi bruke ei inntekt på ".expr()
+                                    + inntektBruktIAvkortningAvBarnetilleggForSaerkullsbarn.format() + " kroner",
+                        )
+                    }
+                    text(
+                        Bokmal to ".",
+                        Nynorsk to ".",
+                    )
+                }
+            }
+
+            //TBU4002
+            showIf(not(harEndretUfoeretrygd) and harEndretBarnetilleggFellesbarn) {
+                paragraph {
+                    textExpr(
+                        Bokmal to "Vi vil bruke en inntekt på ".expr()
+                                + inntektBruktIAvkortningAvBarnetilleggForFellesbarn.format()
+                                + " kroner når vi reduserer barnetillegget ditt",
+                        Nynorsk to "Vi vil bruke ei inntekt på ".expr()
+                                + inntektBruktIAvkortningAvBarnetilleggForFellesbarn.format()
+                                + " kroner når vi reduserer barnetillegget ditt",
+                    )
+
+                    showIf(harBarnetilleggSaerkullsbarn) {
+                        textExpr(
+                            Bokmal to " for ".expr()
+                                    + ifElse(harFlereFellesbarn, "barna", "barnet")
+                                    + " som bor med begge sine foreldre for ".expr() + virkningsaar.format()
+                                    + ". For ".expr() + ifElse(harFlereSaerkullsbarn, "barna", "barnet")
+                                    + " som ikke bor sammen med begge foreldrene vil vi bruke en inntekt på ".expr()
+                                    + inntektBruktIAvkortningAvBarnetilleggForSaerkullsbarn.format()
+                                    + " kroner",
+                            Nynorsk to " for ".expr()
+                                    + ifElse(harFlereFellesbarn, "barna", "barnet")
+                                    + " som bur saman med begge foreldra sine for ".expr() + virkningsaar.format()
+                                    + ". For ".expr() + ifElse(harFlereSaerkullsbarn, "barna", "barnet")
+                                    + " som ikkje bur saman med begge foreldra vil vi bruke ei inntekt på ".expr()
+                                    + inntektBruktIAvkortningAvBarnetilleggForSaerkullsbarn.format()
+                                    + " kroner",
+                        )
+                    }
+
+                    textExpr(
+                        Bokmal to ". Har du ikke meldt inn nye inntekter for ".expr()
+                                + virkningsaar.format() + ", er inntektene justert opp til dagens verdi.",
+                        Nynorsk to ". Har du ikkje meldt inn ei nye inntekter for ".expr()
+                                + virkningsaar.format() + ", er inntektainntektene justert opp til dagens verdi.",
+                    )
+                }
+            }
+
+            //TBU4017
+            showIf(not(harEndretUfoeretrygd)
+                    and not(harEndretBarnetilleggFellesbarn)
+                    and harEndretBarnetilleggSaerkullsbarn)
+            {
+                paragraph {
+                    textExpr(
+                        Bokmal to "Vi vil bruke en inntekt på ".expr()
+                                + inntektBruktIAvkortningAvBarnetilleggForSaerkullsbarn.format()
+                                + " kroner når vi reduserer barnetillegget ditt. Har du ikke meldt inn ny inntekt for ".expr()
+                                + virkningsaar.format() + ", er inntekten justert opp til dagens verdi.",
+                        Nynorsk to "Vi vil bruke ei inntekt på ".expr()
+                                + inntektBruktIAvkortningAvBarnetilleggForSaerkullsbarn.format()
+                                + " kroner når vi reduserer barnetillegget ditt. Har du ikkje meldt inn ny inntekt for ".expr()
+                                + virkningsaar.format() + ", er inntekta justert opp til dagens verdi.",
                     )
                 }
             }
         }
     }
+
+
+    //TBU4003
+     data class BarnetilleggInntektEllerFribeloepPeriodisert(
+         val barnetilleggFellesbarn_fribeloepErPeriodisert: Expression<Boolean>,
+         val barnetilleggFellesbarn_gammeltBeloep: Expression<Kroner>,
+         val barnetilleggFellesbarn_harBarnetillegg: Expression<Boolean>,
+         val barnetilleggFellesbarn_inntektErPeriodisert: Expression<Boolean>,
+         val barnetilleggFellesbarn_nyttBeloep: Expression<Kroner>,
+         val barnetilleggSaerkullsbarn_fribeloepErPeriodisert: Expression<Boolean>,
+         val barnetilleggSaerkullsbarn_gammeltBeloep: Expression<Kroner>,
+         val barnetilleggSaerkullsbarn_harBarnetillegg: Expression<Boolean>,
+         val barnetilleggSaerkullsbarn_inntektErPeriodisert: Expression<Boolean>,
+         val barnetilleggSaerkullsbarn_nyttBeloep: Expression<Kroner>,
+         val harFlereFellesbarn: Expression<Boolean>,
+         val harFlereSaerkullsbarn: Expression<Boolean>,
+     ): OutlinePhrase<LangBokmalNynorsk>(){
+         override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
+             showIf(
+                 (barnetilleggFellesbarn_gammeltBeloep.greaterThan(barnetilleggFellesbarn_nyttBeloep)
+                         or barnetilleggSaerkullsbarn_gammeltBeloep.greaterThan(barnetilleggSaerkullsbarn_nyttBeloep))
+                         and (barnetilleggFellesbarn_nyttBeloep.greaterThan(0)
+                         or barnetilleggSaerkullsbarn_nyttBeloep.greaterThan(0))
+                         and (
+                         barnetilleggFellesbarn_inntektErPeriodisert
+                                 or barnetilleggFellesbarn_fribeloepErPeriodisert
+                                 or barnetilleggSaerkullsbarn_inntektErPeriodisert
+                                 or barnetilleggSaerkullsbarn_fribeloepErPeriodisert
+                         )
+             ) {
+                 paragraph{
+                     text(
+                         Bokmal to "Fordi du ikke har barnetillegg ",
+                         Nynorsk to "Fordi du ikkje har barnetillegg ",
+                     )
+
+                     showIf(barnetilleggSaerkullsbarn_harBarnetillegg and barnetilleggFellesbarn_harBarnetillegg) {
+
+                         showIf(
+                             (barnetilleggFellesbarn_inntektErPeriodisert and not(barnetilleggSaerkullsbarn_inntektErPeriodisert))
+                                     or (barnetilleggFellesbarn_fribeloepErPeriodisert and not(barnetilleggSaerkullsbarn_fribeloepErPeriodisert))
+                         ) {
+                             textExpr(
+                                 Bokmal to "for ".expr() +
+                                         ifElse(
+                                             harFlereFellesbarn,
+                                             "barna",
+                                             "barnet"
+                                         ) + " som bor med begge sine foreldre ",
+                                 Nynorsk to "for ".expr() +
+                                         ifElse(
+                                             harFlereFellesbarn,
+                                             "barna",
+                                             "barnet"
+                                         ) + " som bur saman med begge foreldra ",
+                             )
+                         }
+
+                         showIf(
+                             (not(barnetilleggFellesbarn_inntektErPeriodisert) and barnetilleggSaerkullsbarn_inntektErPeriodisert)
+                                     or (not(barnetilleggFellesbarn_fribeloepErPeriodisert) and barnetilleggSaerkullsbarn_fribeloepErPeriodisert)
+                         ) {
+                             textExpr(
+                                 Bokmal to "for ".expr()
+                                         + ifElse(harFlereSaerkullsbarn, "barna", "barnet")
+                                         + " som ikke bor sammen med begge foreldrene ",
+                                 Nynorsk to "for ".expr()
+                                         + ifElse(harFlereSaerkullsbarn, "barna", "barnet")
+                                         + " som ikkje bur saman med begge foreldra ",
+                             )
+                         }
+                     }
+
+                     val fribeloepErPeriodisert =
+                         barnetilleggFellesbarn_fribeloepErPeriodisert or barnetilleggSaerkullsbarn_fribeloepErPeriodisert
+                     val inntektErPeriodisert =
+                         barnetilleggFellesbarn_inntektErPeriodisert or barnetilleggSaerkullsbarn_inntektErPeriodisert
+
+                     text(Bokmal to "hele året er ", Nynorsk to "heile året er ")
+
+                     showIf(inntektErPeriodisert) {
+                         text(Bokmal to "inntektene ", Nynorsk to "inntektene ")
+                         showIf(fribeloepErPeriodisert) {
+                             text(Bokmal to "og ", Nynorsk to "og ")
+                         }
+                     }
+
+                     showIf(fribeloepErPeriodisert) {
+                         text(Bokmal to "fribeløpet ", Nynorsk to "fribeløpet ")
+                     }
+
+                     textExpr(
+                         Bokmal to "justert slik at ".expr()
+                                 + ifElse(
+                             fribeloepErPeriodisert and not(inntektErPeriodisert),
+                             "det",
+                             "de"
+                         ) + " kun gjelder for den perioden du mottar barnetillegg.",
+                         Nynorsk to "justert slik at ".expr()
+                                 + ifElse(
+                             fribeloepErPeriodisert and not(inntektErPeriodisert),
+                             "det",
+                             "dei"
+                         ) + " berre gjelde for den perioden du får barnetillegg.",
+                     )
+                 }
+             }
+
+         }
+
+     }
 }
