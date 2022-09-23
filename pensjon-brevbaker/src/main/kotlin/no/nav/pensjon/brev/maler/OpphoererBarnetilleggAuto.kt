@@ -1,9 +1,18 @@
 package no.nav.pensjon.brev.maler
 
 import no.nav.pensjon.brev.api.model.LetterMetadata
+import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.antallFellesbarnInnvilgetSelector
+import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.antallFellesbarnInnvilget_safe
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.beloepFratrukketAnnenForeldersInntekt_safe
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.beloepNettoFellesbarnSelector
+import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.beloepNettoFellesbarn_safe
+import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.fribeloepFellesbarn_safe
+import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.inntektAnnenForelder_safe
+import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.inntektBruktIAvkortningFellesbarn_safe
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarnSelectors.beloepNettoSaerkullsbarn_safe
+import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarnSelectors.fribeloepSaerkullsbarn_safe
+import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarnSelectors.inntektBruktIAvkortningSaerkullsbarn_safe
+import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarnSelectors.justeringsbeloepSaerkullsbarn_safe
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.OpphoererBarnetilleggAutoDto
 import no.nav.pensjon.brev.api.model.maler.OpphoererBarnetilleggAutoDtoSelectors.barnetilleggFellesbarn
@@ -132,32 +141,43 @@ object OpphoererBarnetilleggAuto : VedtaksbrevTemplate<OpphoererBarnetilleggAuto
                     )
                 }
             }
+
+            ifNotNull(
+                barnetilleggFellesbarn.antallFellesbarnInnvilget_safe,
+                barnetilleggFellesbarn.beloepNettoFellesbarn_safe
+            ) { antallFellesbarnInnvilget, beloepNettoFellesbarn ->
+                showIf(harBarnetilleggFellesbarn) {
+                    includePhrase(
+                        OpphoerBarnetillegg.TBU2339(
+                            antallFellesbarnInnvilget = antallFellesbarnInnvilget,
+                            beloepNettoFellesbarn = beloepNettoFellesbarn,
+                            sivilstand = sivilstand
+                        )
+                    )
+                }
+            }
         }
     }
 }
 /*
-            showIf(harBarnetilleggFellesbarn) {
-                includePhrase(OpphoerBarnetillegg.TBU2339)
-            }
-
             showIf(harBarnetilleggFellesbarn and harBarnetilleggSaerkullsbarn) {
                 includePhrase(OpphoerBarnetillegg.TBU3801)
             }
 
             ifNotNull(
-                barnetilleggFellesbarn.fribeloep_safe,
+                barnetilleggFellesbarn.fribeloepFellesbarn_safe,
                 barnetilleggFellesbarn.inntektAnnenForelder_safe,
-                barnetilleggFellesbarn.inntektBruktIAvkortning_safe,
+                barnetilleggFellesbarn.inntektBruktIAvkortningFellesbarn_safe,
                 barnetilleggFellesbarn.beloepFratrukketAnnenForeldersInntekt_safe,
-            ) { fribeloep, inntektAnnenForelder, inntektBruktiAvkortning, beloepFratrukketAnnenForeldersInntekt ->
+            ) { fribeloepFellesbarn, inntektAnnenForelder, inntektBruktiAvkortningFellesbarn, beloepFratrukketAnnenForeldersInntekt ->
                 showIf(
                     harBarnetilleggFellesbarn and not(harBarnetilleggSaerkullsbarn)
                 ) {
                     includePhrase(
                         OpphoerBarnetillegg.TBU1284FB(
-                            fribeloep = fribeloep,
+                            fribeloepFellesbarn = fribeloepFellesbarn,
                             inntektAnnenForelder = inntektAnnenForelder,
-                            inntektBruktiAvkortning = inntektBruktiAvkortning,
+                            inntektBruktiAvkortning = inntektBruktiAvkortningFellesbarn,
                             grunnbeloep = grunnbeloep,
                             harBarnetilleggFellesbarn = harBarnetilleggFellesbarn,
                             harBarnetilleggSaerkullsbarn = harBarnetilleggSaerkullsbarn,
@@ -168,21 +188,21 @@ object OpphoererBarnetilleggAuto : VedtaksbrevTemplate<OpphoererBarnetilleggAuto
             }
 
             ifNotNull(
-                barnetilleggSaerkullsbarn.fribeloep_safe,
-                barnetilleggSaerkullsbarn.inntektBruktIAvkortning_safe,
-                barnetilleggSaerkullsbarn.beloepNetto_safe,
-                barnetilleggSaerkullsbarn.justeringsbeloep_safe
+                barnetilleggSaerkullsbarn.fribeloepSaerkullsbarn_safe,
+                barnetilleggSaerkullsbarn.inntektBruktIAvkortningSaerkullsbarn_safe,
+                barnetilleggSaerkullsbarn.beloepNettoSaerkullsbarn_safe,
+                barnetilleggSaerkullsbarn.justeringsbeloepSaerkullsbarn_safe
 
-            ) { fribeloep, inntektBruktIAvkortning, beloepNetto, justeringsbeloep ->
+            ) { fribeloepSaerkullsbarn, inntektBruktIAvkortningSaerkullsbarn, beloepNettoSaerkullsbarn, justeringsbeloepSaerkullsbarn ->
                 showIf(
                     harBarnetilleggSaerkullsbarn and not(harBarnetilleggFellesbarn)
                 ) {
                     includePhrase(
                         OpphoerBarnetillegg.TBU1285(
-                            fribeloep = fribeloep,
-                            inntektBruktiAvkortning = inntektBruktIAvkortning,
-                            beloepNetto = beloepNetto,
-                            justeringsbeloep = justeringsbeloep
+                            fribeloepSaerkullsbarn = fribeloepSaerkullsbarn,
+                            inntektBruktiAvkortningSaerkullsbarn = inntektBruktIAvkortningSaerkullsbarn,
+                            beloepNettoSaerkullsbarn = beloepNettoSaerkullsbarn,
+                            justeringsbeloepSaerkullsbarn = justeringsbeloepSaerkullsbarn
                         )
                     )
                 }
@@ -246,8 +266,4 @@ object OpphoererBarnetilleggAuto : VedtaksbrevTemplate<OpphoererBarnetilleggAuto
 
     }
 }
-
-
-
-
 */
