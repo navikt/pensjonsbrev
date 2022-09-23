@@ -152,7 +152,7 @@ object UfoeretrygdEndretPgaInntekt {
 
     // TBU3403
     data class InnledningReduksjonUfoeretrygd(
-        val forventetInntektBruktIAvkortningAvUfoeretrygd: Expression<Kroner>,
+        val forventetInntektUfoeretrygd: Expression<Kroner>,
         val harEndretUfoeretrygd: Expression<Boolean>,
         val virkningsaar: Expression<Int>,
         val aarFoerVirkningsAar: Expression<Year>,
@@ -164,8 +164,8 @@ object UfoeretrygdEndretPgaInntekt {
             showIf(harEndretUfoeretrygd) {
                 paragraph {
                     textExpr(
-                        Bokmal to "Vi vil bruke en inntekt på ".expr() + forventetInntektBruktIAvkortningAvUfoeretrygd.format() + " kroner når vi reduserer uføretrygden din for ".expr() + virkningsaar.format() + ". Har du ikke meldt inn ny inntekt for ".expr() + virkningsaar.format() + ", er inntekten justert opp til dagens verdi.",
-                        Nynorsk to "Vi vil bruke ei inntekt på ".expr() + forventetInntektBruktIAvkortningAvUfoeretrygd.format() + " kroner når vi reduserer uføretrygda di for ".expr() + virkningsaar.format() + ". Har du ikkje meldt inn ny inntekt for ".expr() + virkningsaar.format() + ", er inntekta justert opp til dagens verdi.",
+                        Bokmal to "Vi vil bruke en inntekt på ".expr() + forventetInntektUfoeretrygd.format() + " kroner når vi reduserer uføretrygden din for ".expr() + virkningsaar.format() + ". Har du ikke meldt inn ny inntekt for ".expr() + virkningsaar.format() + ", er inntekten justert opp til dagens verdi.",
+                        Nynorsk to "Vi vil bruke ei inntekt på ".expr() + forventetInntektUfoeretrygd.format() + " kroner når vi reduserer uføretrygda di for ".expr() + virkningsaar.format() + ". Har du ikkje meldt inn ny inntekt for ".expr() + virkningsaar.format() + ", er inntekta justert opp til dagens verdi.",
                     )
                 }
 
@@ -457,4 +457,65 @@ object UfoeretrygdEndretPgaInntekt {
              }
          }
      }
+
+
+    //TBU2253
+    data class EndringUfoeretrygdBegrunnelseInntektstak(
+        val inntektsgrenseUfoeretrygd: Expression<Kroner>,
+        val inntektakUfoeretrygd: Expression<Kroner>,
+        val nyttUfoeretrygdBeloep: Expression<Kroner>,
+        val forventetInntektUfoeretrygd: Expression<Kroner>,
+        val gammeltUfoeretrygdBeloep: Expression<Kroner>,
+        val utbetalingsgrad: Expression<Double>,
+        val ufoeregrad: Expression<Double>,
+    ): OutlinePhrase<LangBokmalNynorsk>(){
+        override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
+
+            showIf(inntektsgrenseUfoeretrygd.lessThan(inntektakUfoeretrygd)) {
+                paragraph {
+                    text(
+                        Bokmal to "Når vi endrer utbetalingen av uføretrygden din, tar vi utgangspunkt i inntekten du har ved siden av uføretrygden. Det er bare den delen av inntekten din som overstiger inntektsgrensen som vil gi en reduksjon av uføretrygden.",
+                        Nynorsk to "Når vi endrar utbetalinga av uføretrygda di, tek vi utgangspunkt i inntekta du har ved sida av uføretrygda. Det er berre den delen av inntekta di som kjem over inntektsgrensa som gir ein reduksjon av uføretrygda di.",
+                    )
+                }
+
+                paragraph {
+                    showIf(nyttUfoeretrygdBeloep.greaterThan(0)) {
+                        showIf(
+                            forventetInntektUfoeretrygd.greaterThan(inntektsgrenseUfoeretrygd)
+                                    and gammeltUfoeretrygdBeloep.greaterThan(nyttUfoeretrygdBeloep)
+                        ) {
+                            text(
+                                Bokmal to "Uføretrygden din reduseres fordi du tjener over inntektsgrensen din. Selv om du får en reduksjon lønner det seg likevel å jobbe ved siden av uføretrygden.",
+                                Nynorsk to "Uføretrygda di blir redusert fordi du tener over inntektsgrensa di. Sjølv om du får ein reduksjon, lønner det seg likevel å jobbe ved sida av uføretrygda.",
+                            )
+                        }.orShowIf(forventetInntektUfoeretrygd.lessThan(inntektsgrenseUfoeretrygd)) {
+                            showIf(
+                                utbetalingsgrad.equalTo(ufoeregrad)
+                                        and gammeltUfoeretrygdBeloep.lessThan(nyttUfoeretrygdBeloep)
+                            ) {
+                                text(
+                                    Bokmal to "Endringen i inntekten din gjør at uføretrygden ikke lenger er redusert. ",
+                                    Nynorsk to "Endringa i inntekta di gjer at uføretrygda ikkje lenger er redusert. "
+                                )
+                            }
+                            text(
+                                Bokmal to "Utbetalingen av uføretrygden din økes fordi du tjener under inntektsgrensen din. Det betyr at uføretrygden ikke lenger er redusert.",
+                                Nynorsk to "Utbetalinga av uføretrygda aukar fordi du tener under inntektsgrensa di. Det betyr at uføretrygda ikkje lenger er redusert."
+                            )
+                        }
+                    }.orShowIf(
+                        nyttUfoeretrygdBeloep.equalTo(0)
+                                and forventetInntektUfoeretrygd.lessThanOrEqual(inntektsgrenseUfoeretrygd)
+                    ){
+                        text(
+                            Bokmal to "Endring i inntekten din gjør at du ikke får utbetalt uføretrygd for resten av året.",
+                            Nynorsk to "Endring i inntekta di gjer at du ikkje får utbetalt uføretrygd for resten av året.",
+                        )
+                    }
+                }
+            }
+        }
+
+    }
 }
