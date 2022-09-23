@@ -2,16 +2,8 @@ package no.nav.pensjon.brev.maler
 
 import no.nav.pensjon.brev.api.model.LetterMetadata
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.beloepFratrukketAnnenForeldersInntekt_safe
-import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.beloepNetto_safe
-import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.fribeloep_safe
-import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.inntektAnnenForelder_safe
-import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.inntektBruktIAvkortning_safe
-import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.inntektstak_safe
-import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarnSelectors.beloepNetto_safe
-import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarnSelectors.fribeloep_safe
-import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarnSelectors.inntektBruktIAvkortning_safe
-import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarnSelectors.inntektstak_safe
-import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarnSelectors.justeringsbeloep_safe
+import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.beloepNettoFellesbarnSelector
+import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarnSelectors.beloepNettoSaerkullsbarn_safe
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.OpphoererBarnetilleggAutoDto
 import no.nav.pensjon.brev.api.model.maler.OpphoererBarnetilleggAutoDtoSelectors.barnetilleggFellesbarn
@@ -23,6 +15,7 @@ import no.nav.pensjon.brev.api.model.maler.OpphoererBarnetilleggAutoDtoSelectors
 import no.nav.pensjon.brev.api.model.maler.OpphoererBarnetilleggAutoDtoSelectors.oensketVirkningsDato
 import no.nav.pensjon.brev.api.model.maler.OpphoererBarnetilleggAutoDtoSelectors.opplysningerBruktIBeregningUT
 import no.nav.pensjon.brev.api.model.maler.OpphoererBarnetilleggAutoDtoSelectors.orienteringOmRettigheterUfoere
+import no.nav.pensjon.brev.api.model.maler.OpphoererBarnetilleggAutoDtoSelectors.sivilstand
 import no.nav.pensjon.brev.api.model.maler.OpphoererBarnetilleggAutoDtoSelectors.ufoeretrygd
 import no.nav.pensjon.brev.api.model.maler.UfoeretrygdSelectors.ektefelletilleggUtbeltalt_safe
 import no.nav.pensjon.brev.api.model.maler.UfoeretrygdSelectors.gjenlevendetilleggUtbetalt_safe
@@ -124,10 +117,25 @@ object OpphoererBarnetilleggAuto : VedtaksbrevTemplate<OpphoererBarnetilleggAuto
                 includePhrase(OpphoerBarnetillegg.TBU3800)
             }
 
-            showIf(not(harBarnetilleggFellesbarn) and harBarnetilleggSaerkullsbarn) {
-                includePhrase(OpphoerBarnetillegg.TBU2338)
-            }
 
+            ifNotNull(
+                barnetilleggSaerkullsbarn.beloepNettoSaerkullsbarn_safe,
+            ) { beloepNettoSaerkullsbarn ->
+                showIf(not(harBarnetilleggFellesbarn) and harBarnetilleggSaerkullsbarn) {
+                    includePhrase(
+                        OpphoerBarnetillegg.TBU2338(
+                            beloepNettoSaerkullsbarn = beloepNettoSaerkullsbarn,
+                            harBarnetilleggFellesbarn = harBarnetilleggFellesbarn,
+                            harBarnetilleggSaerkullsbarn = harBarnetilleggSaerkullsbarn,
+                            sivilstand = sivilstand
+                        )
+                    )
+                }
+            }
+        }
+    }
+}
+/*
             showIf(harBarnetilleggFellesbarn) {
                 includePhrase(OpphoerBarnetillegg.TBU2339)
             }
@@ -165,7 +173,7 @@ object OpphoererBarnetilleggAuto : VedtaksbrevTemplate<OpphoererBarnetilleggAuto
                 barnetilleggSaerkullsbarn.beloepNetto_safe,
                 barnetilleggSaerkullsbarn.justeringsbeloep_safe
 
-            ) {fribeloep, inntektBruktIAvkortning, beloepNetto, justeringsbeloep ->
+            ) { fribeloep, inntektBruktIAvkortning, beloepNetto, justeringsbeloep ->
                 showIf(
                     harBarnetilleggSaerkullsbarn and not(harBarnetilleggFellesbarn)
                 ) {
@@ -242,3 +250,4 @@ object OpphoererBarnetilleggAuto : VedtaksbrevTemplate<OpphoererBarnetilleggAuto
 
 
 
+*/
