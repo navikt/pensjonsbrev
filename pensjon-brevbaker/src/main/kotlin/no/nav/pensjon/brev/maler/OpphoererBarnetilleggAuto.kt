@@ -114,6 +114,7 @@ object OpphoererBarnetilleggAuto : VedtaksbrevTemplate<OpphoererBarnetilleggAuto
             )
 
             includePhrase(Ufoeretrygd.VirkningFomOverskrift)
+
             includePhrase(
                 OpphoerBarnetillegg.TBU4086(
                     oensketVirkningsDato = oensketVirkningsDato,
@@ -151,119 +152,126 @@ object OpphoererBarnetilleggAuto : VedtaksbrevTemplate<OpphoererBarnetilleggAuto
                         OpphoerBarnetillegg.TBU2339(
                             antallFellesbarnInnvilget = antallFellesbarnInnvilget,
                             beloepNettoFellesbarn = beloepNettoFellesbarn,
+                            harBarnetilleggFellesbarn = harBarnetilleggFellesbarn,
+                            harBarnetilleggSaerkullsbarn = harBarnetilleggSaerkullsbarn,
                             sivilstand = sivilstand
                         )
                     )
                 }
             }
+
+            includePhrase(
+                OpphoerBarnetillegg.TBU3801(
+                    harBarnetilleggFellesbarn = harBarnetilleggFellesbarn,
+                    harBarnetilleggSaerkullsbarn = harBarnetilleggSaerkullsbarn,
+                    sivilstand = sivilstand
+                )
+            )
         }
     }
 }
-/*
-            showIf(harBarnetilleggFellesbarn and harBarnetilleggSaerkullsbarn) {
-                includePhrase(OpphoerBarnetillegg.TBU3801)
-            }
 
-            ifNotNull(
-                barnetilleggFellesbarn.fribeloepFellesbarn_safe,
-                barnetilleggFellesbarn.inntektAnnenForelder_safe,
-                barnetilleggFellesbarn.inntektBruktIAvkortningFellesbarn_safe,
-                barnetilleggFellesbarn.beloepFratrukketAnnenForeldersInntekt_safe,
-            ) { fribeloepFellesbarn, inntektAnnenForelder, inntektBruktiAvkortningFellesbarn, beloepFratrukketAnnenForeldersInntekt ->
-                showIf(
-                    harBarnetilleggFellesbarn and not(harBarnetilleggSaerkullsbarn)
-                ) {
-                    includePhrase(
-                        OpphoerBarnetillegg.TBU1284FB(
-                            fribeloepFellesbarn = fribeloepFellesbarn,
-                            inntektAnnenForelder = inntektAnnenForelder,
-                            inntektBruktiAvkortning = inntektBruktiAvkortningFellesbarn,
-                            grunnbeloep = grunnbeloep,
-                            harBarnetilleggFellesbarn = harBarnetilleggFellesbarn,
-                            harBarnetilleggSaerkullsbarn = harBarnetilleggSaerkullsbarn,
-                            beloepFratrukketAnnenForeldersInntekt = beloepFratrukketAnnenForeldersInntekt
-                        )
+
+/*   ifNotNull(
+        barnetilleggFellesbarn.fribeloepFellesbarn_safe,
+        barnetilleggFellesbarn.inntektAnnenForelder_safe,
+        barnetilleggFellesbarn.inntektBruktIAvkortningFellesbarn_safe,
+        barnetilleggFellesbarn.beloepFratrukketAnnenForeldersInntekt_safe,
+    ) { fribeloepFellesbarn, inntektAnnenForelder, inntektBruktiAvkortningFellesbarn, beloepFratrukketAnnenForeldersInntekt ->
+        showIf(
+            harBarnetilleggFellesbarn and not(harBarnetilleggSaerkullsbarn)
+        ) {
+            includePhrase(
+                OpphoerBarnetillegg.TBU1284FB(
+                    fribeloepFellesbarn = fribeloepFellesbarn,
+                    inntektAnnenForelder = inntektAnnenForelder,
+                    inntektBruktiAvkortning = inntektBruktiAvkortningFellesbarn,
+                    grunnbeloep = grunnbeloep,
+                    harBarnetilleggFellesbarn = harBarnetilleggFellesbarn,
+                    harBarnetilleggSaerkullsbarn = harBarnetilleggSaerkullsbarn,
+                    beloepFratrukketAnnenForeldersInntekt = beloepFratrukketAnnenForeldersInntekt
+                )
+            )
+        }
+    }
+
+    ifNotNull(
+        barnetilleggSaerkullsbarn.fribeloepSaerkullsbarn_safe,
+        barnetilleggSaerkullsbarn.inntektBruktIAvkortningSaerkullsbarn_safe,
+        barnetilleggSaerkullsbarn.beloepNettoSaerkullsbarn_safe,
+        barnetilleggSaerkullsbarn.justeringsbeloepSaerkullsbarn_safe
+
+    ) { fribeloepSaerkullsbarn, inntektBruktIAvkortningSaerkullsbarn, beloepNettoSaerkullsbarn, justeringsbeloepSaerkullsbarn ->
+        showIf(
+            harBarnetilleggSaerkullsbarn and not(harBarnetilleggFellesbarn)
+        ) {
+            includePhrase(
+                OpphoerBarnetillegg.TBU1285(
+                    fribeloepSaerkullsbarn = fribeloepSaerkullsbarn,
+                    inntektBruktiAvkortningSaerkullsbarn = inntektBruktIAvkortningSaerkullsbarn,
+                    beloepNettoSaerkullsbarn = beloepNettoSaerkullsbarn,
+                    justeringsbeloepSaerkullsbarn = justeringsbeloepSaerkullsbarn
+                )
+            )
+        }
+    }
+
+    ifNotNull(
+        barnetilleggFellesbarn.fribeloep_safe,
+        barnetilleggSaerkullsbarn.fribeloep_safe
+    ) { fellesbarnFribeloep, saerkullsbarnFribeleop ->
+        showIf(
+            barnetilleggFellesbarn.fribeloep_safe.equalTo(other = 0)
+                and barnetilleggSaerkullsbarn.fribeloep_safe.equalTo(other = 0)
+        ) {
+            includePhrase(
+                OpphoerBarnetillegg.TBU1286(
+                    fellesbarnFribeloep = fellesbarnFribeloep,
+                    saerkullsbarnFribeloep = saerkullsbarnFribeleop,
+                )
+            )
+        }
+
+        ifNotNull(
+            barnetilleggFellesbarn.inntektstak_safe,
+            barnetilleggSaerkullsbarn.inntektstak_safe,
+        ) { inntektstakFellesbarn, inntektstakSaerkullsbarn ->
+            showIf(
+                barnetilleggFellesbarn.beloepNetto_safe.equalTo(0)
+                    and barnetilleggSaerkullsbarn.beloepNetto_safe.equalTo(0)
+            ) {
+                includePhrase(
+                    OpphoerBarnetillegg.TBU2490(
+                        fellesbarnInntektstak = inntektstakFellesbarn,
+                        saerkullsbarnInntektstak = inntektstakSaerkullsbarn,
                     )
-                }
-            }
-
-            ifNotNull(
-                barnetilleggSaerkullsbarn.fribeloepSaerkullsbarn_safe,
-                barnetilleggSaerkullsbarn.inntektBruktIAvkortningSaerkullsbarn_safe,
-                barnetilleggSaerkullsbarn.beloepNettoSaerkullsbarn_safe,
-                barnetilleggSaerkullsbarn.justeringsbeloepSaerkullsbarn_safe
-
-            ) { fribeloepSaerkullsbarn, inntektBruktIAvkortningSaerkullsbarn, beloepNettoSaerkullsbarn, justeringsbeloepSaerkullsbarn ->
-                showIf(
-                    harBarnetilleggSaerkullsbarn and not(harBarnetilleggFellesbarn)
-                ) {
-                    includePhrase(
-                        OpphoerBarnetillegg.TBU1285(
-                            fribeloepSaerkullsbarn = fribeloepSaerkullsbarn,
-                            inntektBruktiAvkortningSaerkullsbarn = inntektBruktIAvkortningSaerkullsbarn,
-                            beloepNettoSaerkullsbarn = beloepNettoSaerkullsbarn,
-                            justeringsbeloepSaerkullsbarn = justeringsbeloepSaerkullsbarn
-                        )
-                    )
-                }
-            }
-
-            ifNotNull(
-                barnetilleggFellesbarn.fribeloep_safe,
-                barnetilleggSaerkullsbarn.fribeloep_safe
-            ) { fellesbarnFribeloep, saerkullsbarnFribeleop ->
-                showIf(
-                    barnetilleggFellesbarn.fribeloep_safe.equalTo(other = 0)
-                        and barnetilleggSaerkullsbarn.fribeloep_safe.equalTo(other = 0)
-                ) {
-                    includePhrase(
-                        OpphoerBarnetillegg.TBU1286(
-                            fellesbarnFribeloep = fellesbarnFribeloep,
-                            saerkullsbarnFribeloep = saerkullsbarnFribeleop,
-                        )
-                    )
-                }
-
-                ifNotNull(
-                    barnetilleggFellesbarn.inntektstak_safe,
-                    barnetilleggSaerkullsbarn.inntektstak_safe,
-                ) { inntektstakFellesbarn, inntektstakSaerkullsbarn ->
-                    showIf(
-                        barnetilleggFellesbarn.beloepNetto_safe.equalTo(0)
-                            and barnetilleggSaerkullsbarn.beloepNetto_safe.equalTo(0)
-                    ) {
-                        includePhrase(
-                            OpphoerBarnetillegg.TBU2490(
-                                fellesbarnInntektstak = inntektstakFellesbarn,
-                                saerkullsbarnInntektstak = inntektstakSaerkullsbarn,
-                            )
-                        )
-                    }
-                }
-
-                showIf(harBarnetilleggFellesbarn or harBarnetilleggSaerkullsbarn) {
-                    includePhrase(OpphoerBarnetillegg.TBU1288)
-                }
-
-                includePhrase(OpphoerBarnetillegg.TBU2364)
-                includePhrase(OpphoerBarnetillegg.TBU2365)
-                includePhrase(Felles.MeldEndringerPesys_001)
-                includePhrase(Felles.RettTilKlagePesys_001)
-                includePhrase(Felles.RettTilInnsynPesys_001) // Endret tekst etter avtale med Ingrid
-                includePhrase(Ufoeretrygd.SjekkUtbetalingene)
-                includePhrase(OpphoerBarnetillegg.TBU1228)
-            }
-
-            showIf(brukerBorInorge) {
-                includePhrase(OpphoerBarnetillegg.TBU3730)
+                )
             }
         }
 
+        showIf(harBarnetilleggFellesbarn or harBarnetilleggSaerkullsbarn) {
+            includePhrase(OpphoerBarnetillegg.TBU1288)
+        }
 
-        includeAttachment(vedleggMaanedligUfoeretrygdFoerSkatt, maanedligUfoeretrygdFoerSkatt)
-        includeAttachment(vedleggOpplysningerBruktIBeregningUT, opplysningerBruktIBeregningUT)
-        includeAttachment(vedleggOrienteringOmRettigheterOgPlikterUfoere, orienteringOmRettigheterUfoere)
-
+        includePhrase(OpphoerBarnetillegg.TBU2364)
+        includePhrase(OpphoerBarnetillegg.TBU2365)
+        includePhrase(Felles.MeldEndringerPesys_001)
+        includePhrase(Felles.RettTilKlagePesys_001)
+        includePhrase(Felles.RettTilInnsynPesys_001) // Endret tekst etter avtale med Ingrid
+        includePhrase(Ufoeretrygd.SjekkUtbetalingene)
+        includePhrase(OpphoerBarnetillegg.TBU1228)
     }
+
+    showIf(brukerBorInorge) {
+        includePhrase(OpphoerBarnetillegg.TBU3730)
+    }
+}
+
+
+includeAttachment(vedleggMaanedligUfoeretrygdFoerSkatt, maanedligUfoeretrygdFoerSkatt)
+includeAttachment(vedleggOpplysningerBruktIBeregningUT, opplysningerBruktIBeregningUT)
+includeAttachment(vedleggOrienteringOmRettigheterOgPlikterUfoere, orienteringOmRettigheterUfoere)
+
+}
 }
 */

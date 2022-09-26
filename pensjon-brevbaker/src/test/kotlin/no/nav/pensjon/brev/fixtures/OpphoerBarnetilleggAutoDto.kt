@@ -13,9 +13,9 @@ fun createOpphoererBarnetilleggAutoDto() =
     OpphoererBarnetilleggAutoDto(
         foedselsdatoPaaBarnetilleggOpphoert = LocalDate.of(2004, 6, 14),
         oensketVirkningsDato = LocalDate.now(),
-        barnetilleggSaerkullsbarn = null,
+        barnetilleggFellesbarn = null,
 
-            barnetilleggFellesbarn = BarnetilleggFellesbarn(
+         /*   barnetilleggFellesbarn = BarnetilleggFellesbarn(
                 antallFellesbarnInnvilget = 2,
                 beloepFratrukketAnnenForeldersInntekt = Kroner(2500),
                 beloepNettoFellesbarn = Kroner(5000),
@@ -25,8 +25,8 @@ fun createOpphoererBarnetilleggAutoDto() =
                 inntektBruktIAvkortningFellesbarn = Kroner(375000),
                 inntektstak = Kroner(320000),
                 justeringsbeloepFellesbarn = Kroner(7500)
-            ),
-       /* barnetilleggSaerkullsbarn = BarnetilleggSaerkullsbarn(
+            ), */
+        barnetilleggSaerkullsbarn = BarnetilleggSaerkullsbarn(
             antallSaerkullsbarnbarnInnvilget = 1,
             beloepNettoSaerkullsbarn = Kroner(10000),
             fradragSaerkullsbarn = Kroner(2500),
@@ -34,7 +34,7 @@ fun createOpphoererBarnetilleggAutoDto() =
             inntektBruktIAvkortningSaerkullsbarn = Kroner(8000),
             inntektstakSaerkullsbarn = Kroner(350000),
             justeringsbeloepSaerkullsbarn = Kroner(7500),
-        ), */
+        ),
         brukerBorInorge = true,
         grunnbeloep = Kroner(98000),
         sivilstand = Sivilstand.SAMBOER1_5,

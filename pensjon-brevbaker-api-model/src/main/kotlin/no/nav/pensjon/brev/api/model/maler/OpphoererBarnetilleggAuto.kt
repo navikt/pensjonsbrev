@@ -37,7 +37,7 @@ data class BarnetilleggFellesbarn(
     val beloepNettoFellesbarn: Kroner,  //Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto
     val fradragFellesbarn: Kroner,  //Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_BTFBfradrag
     val fribeloepFellesbarn: Kroner,  //Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBfribelop
-    val inntektAnnenForelder: Kroner,  //Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_BTFBinntektAnnenForelder
+    val inntektAnnenForelderFellesbarn: Kroner,  //Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_BTFBinntektAnnenForelder
     val inntektBruktIAvkortningFellesbarn: Kroner,  //Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_BTFBBrukersInntektTilAvkortning
     val inntektstak: Kroner,  //Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_Inntektstak
     val justeringsbeloepFellesbarn: Kroner
