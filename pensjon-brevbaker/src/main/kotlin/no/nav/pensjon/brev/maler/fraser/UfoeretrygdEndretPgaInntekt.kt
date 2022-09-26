@@ -189,7 +189,7 @@ object UfoeretrygdEndretPgaInntekt {
         }
     }
 
-    //TBU4016, TBU4001, TBU4002, TBU4017
+    /**TBU4016, TBU4001, TBU4002, TBU4017*/
     data class InnledningReduksjonBarnetillegg(
         val harEndretUfoeretrygd: Expression<Boolean>,
         val harEndretBarnetillegg: Expression<Boolean>,
@@ -204,7 +204,7 @@ object UfoeretrygdEndretPgaInntekt {
         val virkningsaar: Expression<Int>,
     ): OutlinePhrase<LangBokmalNynorsk>(){
         override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
-            //TBU4016
+            /**TBU4016*/
             showIf(
                 harEndretUfoeretrygd
                         and harEndretBarnetillegg
@@ -222,7 +222,7 @@ object UfoeretrygdEndretPgaInntekt {
             }
 
 
-            //TBU4001
+            /**TBU4001*/
             showIf(
                 harEndretBarnetillegg
                         and harEndretUfoeretrygd
@@ -259,7 +259,7 @@ object UfoeretrygdEndretPgaInntekt {
                 }
             }
 
-            //TBU4002
+            /**TBU4002*/
             showIf(not(harEndretUfoeretrygd) and harEndretBarnetilleggFellesbarn) {
                 paragraph {
                     textExpr(
@@ -299,7 +299,7 @@ object UfoeretrygdEndretPgaInntekt {
                 }
             }
 
-            //TBU4017
+            /**TBU4017*/
             showIf(not(harEndretUfoeretrygd)
                     and not(harEndretBarnetilleggFellesbarn)
                     and harEndretBarnetilleggSaerkullsbarn)
@@ -321,7 +321,7 @@ object UfoeretrygdEndretPgaInntekt {
     }
 
 
-    //TBU4013
+    /**TBU4013*/
     data class InnledningInntektsjusteringUfoeretrygd(
         val virkningsaar: Expression<Int>,
         val aarFoerVirkningsAar: Expression<Int>,
@@ -342,7 +342,7 @@ object UfoeretrygdEndretPgaInntekt {
         }
     }
 
-    //TBU4004
+    /**TBU4004*/
     data class MeldFraOmInntektsEndringerUfoer(
         val barnetilleggFellesbarn_harBarnetillegg : Expression<Boolean>,
         val virkningsaar: Expression<Int>,
@@ -367,7 +367,7 @@ object UfoeretrygdEndretPgaInntekt {
 
     }
 
-    //TBU4003
+    /**TBU4003*/
      data class BarnetilleggInntektEllerFribeloepPeriodisert(
          val barnetilleggFellesbarn_fribeloepErPeriodisert: Expression<Boolean>,
          val barnetilleggFellesbarn_harBarnetillegg: Expression<Boolean>,
@@ -459,10 +459,10 @@ object UfoeretrygdEndretPgaInntekt {
      }
 
 
-    //TBU2253
+    /**TBU2253*/
     data class EndringUfoeretrygdBegrunnelseInntektstak(
         val inntektsgrenseUfoeretrygd: Expression<Kroner>,
-        val inntektakUfoeretrygd: Expression<Kroner>,
+        val inntektstakUfoeretrygd: Expression<Kroner>,
         val nyttUfoeretrygdBeloep: Expression<Kroner>,
         val forventetInntektUfoeretrygd: Expression<Kroner>,
         val gammeltUfoeretrygdBeloep: Expression<Kroner>,
@@ -513,6 +513,85 @@ object UfoeretrygdEndretPgaInntekt {
                             Nynorsk to "Endring i inntekta di gjer at du ikkje får utbetalt uføretrygd for resten av året.",
                         )
                     }
+                }
+            }
+        }
+    }
+
+    data class InntektVedSidenAvUfoeretrygd(
+        val inntektsgrenseUfoeretrygd: Expression<Kroner>,
+        val ufoeretrygdBeloepErRedusert: Expression<Boolean>,
+        val forventetInntektUfoeretrygd: Expression<Kroner>,
+    ): OutlinePhrase<LangBokmalNynorsk>(){
+        override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
+            showIf(inntektsgrenseUfoeretrygd.lessThan(inntektsgrenseUfoeretrygd)) {
+                paragraph {
+                    text(
+                        Bokmal to "Når vi endrer utbetalingen av uføretrygden din, tar vi utgangspunkt i inntekten du har ved siden av uføretrygden.",
+                        Nynorsk to "Når vi endrar utbetalinga av uføretrygda di, tek vi utgangspunkt i inntekta du har ved sida av uføretrygda.",
+                    )
+
+                    showIf(
+                        ufoeretrygdBeloepErRedusert
+                                and forventetInntektUfoeretrygd.greaterThan(inntektsgrenseUfoeretrygd)
+                    ) {
+                        text(
+                            Bokmal to " Det lønner seg likevel å jobbe, fordi inntekt og uføretrygd alltid vil være høyere enn uføretrygd alene.",
+                            Nynorsk to " Det lønner seg likevel å jobbe fordi inntekt og uføretrygd vil alltid vere høgare enn uføretrygd åleine.",
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    /**TBU4005*/
+    data class UfoeretrygdTrekkPgaInntekt(
+        val forventetInntektUfoeretrygd: Expression<Kroner>,
+        val inntektsgrenseUfoeretrygd: Expression<Kroner>,
+        val nyttUfoeretrygdBeloep: Expression<Kroner>,
+        val ufoeretrygdAvkortningsbeloepPerAar: Expression<Kroner>,
+        val virkningsdatoErFoersteJanuar: Expression<Boolean>,
+
+        ): OutlinePhrase<LangBokmalNynorsk>(){
+        override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
+            showIf(forventetInntektUfoeretrygd.greaterThan(inntektsgrenseUfoeretrygd) and nyttUfoeretrygdBeloep.greaterThan(0)){
+                paragraph {
+                    textExpr(
+                        Bokmal to "Siden du har en inntekt på ".expr() + forventetInntektUfoeretrygd.format()
+                                + " kroner trekker vi ".expr() + ufoeretrygdAvkortningsbeloepPerAar.format()
+                                + " kroner fra uføretrygden "
+                                + ifElse(virkningsdatoErFoersteJanuar, "for neste år.","i år."),
+                        Nynorsk to "Fordi du har ei inntekt på ".expr() + forventetInntektUfoeretrygd.format()
+                                + " kroner trekkjer vi ".expr() + ufoeretrygdAvkortningsbeloepPerAar.format()
+                                + " kroner frå uføretrygda "
+                                + ifElse(virkningsdatoErFoersteJanuar, "for neste år.","i år."),
+                    )
+                }
+            }
+        }
+    }
+
+    data class IkkeUtbetaltUfoeretrygdPaaGrunnAvInntekt(
+        val forventetInntektUfoeretrygd: Expression<Kroner>,
+        val inntektstakUfoeretrygd: Expression<Kroner>,
+        val nyttUfoeretrygdBeloep: Expression<Kroner>,
+        val inntektsgrenseUfoeretrygd: Expression<Kroner>,
+    ): OutlinePhrase<LangBokmalNynorsk>(){
+        override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
+            showIf(forventetInntektUfoeretrygd.greaterThan(inntektstakUfoeretrygd)
+                    and inntektsgrenseUfoeretrygd.notEqualTo(inntektstakUfoeretrygd)
+                    and nyttUfoeretrygdBeloep.equalTo(0)
+            ){
+                paragraph {
+                    textExpr(
+                        Bokmal to "Du får ikke utbetalt uføretrygd siden inntekten din er høyere enn 80 prosent av inntekten du hadde før du ble ufør, det vil si ".expr()
+                                + inntektstakUfoeretrygd.format() + " kroner. Inntekten vi har brukt er ".expr()
+                                + forventetInntektUfoeretrygd.format() + " kroner og du vil derfor ikke få utbetalt uføretrygd resten av året.",
+                        Nynorsk to "Du får ikkje utbetalt uføretrygd fordi inntekta di er høgare enn 80 prosent av inntekta du hadde før du blei ufør, det vil seie ".expr()
+                                + inntektstakUfoeretrygd.format() + " kroner. Inntekta vi har brukt er ".expr()
+                                + forventetInntektUfoeretrygd.format() + " kroner og du vil ikkje få utbetalt uføretrygd resten av året.",
+                    )
                 }
             }
         }
