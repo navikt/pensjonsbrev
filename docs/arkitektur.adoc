@@ -48,32 +48,30 @@ Om vi f.eks ønsker å produsere html brev eller noe annet kan vi bare lage ett 
 
 [plantuml, target=img/dagens-arkitektur, format=svg]
 ....
+Batch --> [Pesys]
 [Pesys] --> [Brevbaker]
 [Pesys] --> [Distribusjon]
 [Pesys] --> [Arkiv]
 [Brevbaker] --> [Pdfbygger]
 ....
 
-=== Antatt fremtidig arkitektur for løsningen
+=== Planlagt arkitektur for brevredigering
+Det er tiltenkt at redigering og bestilling av manuelle brev skal gjøres gjennom en dedikert applikasjon. PSAK skal lenke til denne applikasjonen.
+Det skal minimeres i størst mulig grad hvilke data vi lagrer i databasen til denne nye løsningen, blant annet vil all person og saksdata overlates til Pesys og andre systemer.
+Kun data om hvordan et brev evt. er endret på skal lagres, samt innstillinger for den enkelte saksbehandler.
 
 [plantuml, target=img/planlagt-arkitektur, format=svg]
 ....
-saksbehandler --> [saksbehandling-frontend]
-[saksbehandling-frontend] --> [Saksbehandling-backend]
+saksbehandler --> [Brevredigering-frontend]
+[Brevredigering-frontend] --> [Brevredigering-backend]
+[Brevredigering-backend] --> mellomlagretRedigering
+[Brevredigering-backend] --> [Mottakeroppslag e.l.]
+[Brevredigering-backend] --> [Brevbaker]
+[Brevredigering-backend] --> [Pesys]
 [Pesys] --> [Brevbaker]
-[Pesys] --> [Saksbehandling-backend]
-[Pesys] --> [Brev-bestiller]
-[Brev-bestiller] --> [Distribusjon]
-[Brev-bestiller] --> [Arkiv]
-[Brev-bestiller] -->bestillingsKoe
-[Saksbehandling-backend] --> mellomlagretRedigering
-[Saksbehandling-backend] --> [Brev-bestiller]
-[Saksbehandling-backend] --> [Brevbaker]
-database "Mellomlagret redigering" as mellomlagretRedigering{
+[Pesys] --> [Distribusjon]
+[Pesys] --> [Arkiv]
+database "Brevredigering-db" as mellomlagretRedigering{
 }
-database "bestillings-kø" as bestillingsKoe{
-}
-
 [Brevbaker] --> [Pdfbygger]
-[Psak] --> [Pesys]
 ....
