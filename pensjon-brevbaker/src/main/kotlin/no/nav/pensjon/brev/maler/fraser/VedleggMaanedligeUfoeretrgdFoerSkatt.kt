@@ -23,7 +23,6 @@ import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdPerMaanedSelectors.total
 import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdPerMaanedSelectors.virkningFraOgMed
 import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdPerMaanedSelectors.virkningTilOgMed
 import no.nav.pensjon.brev.maler.fraser.common.Felles.KronerText
-import no.nav.pensjon.brev.maler.fraser.common.Felles.KronerTextBold
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
@@ -253,7 +252,7 @@ object VedleggMaanedligeUfoeretrgdFoerSkatt {
                         includePhrase(TabellTekstSumFoerSkatt())
                     }
                     cell {
-                        includePhrase(KronerTextBold(totalUTBeloep))
+                        includePhrase(KronerText(totalUTBeloep, FontType.BOLD))
                     }
                 }
             }
@@ -396,11 +395,11 @@ object VedleggMaanedligeUfoeretrgdFoerSkatt {
                     }
 
                     cell {
-                        includePhrase(KronerTextBold(totalUTBeloepBrutto))
+                        includePhrase(KronerText(totalUTBeloepBrutto, FontType.BOLD))
                     }
 
                     cell {
-                        includePhrase(KronerTextBold(totalUTBeloepNetto))
+                        includePhrase(KronerText(totalUTBeloepNetto, FontType.BOLD))
                     }
                 }
             }

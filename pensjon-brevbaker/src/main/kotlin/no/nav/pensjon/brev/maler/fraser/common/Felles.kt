@@ -102,22 +102,13 @@ object Felles {
         }
     }
 
-    data class KronerText(val kroner: Expression<Kroner>) : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
+    data class KronerText(val kroner: Expression<Kroner>, val fontType: FontType = FontType.PLAIN) : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
         override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
             textExpr(
                 Bokmal to kroner.format() + " kr",
                 Nynorsk to kroner.format() + " kr",
                 English to kroner.format() + " NOK",
-            )
-    }
-
-    data class KronerTextBold(val kroner: Expression<Kroner>) : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
-        override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
-            textExpr(
-                Bokmal to kroner.format() + " kr",
-                Nynorsk to kroner.format() + " kr",
-                English to kroner.format() + " NOK",
-                FontType.BOLD
+                fontType
             )
     }
 
