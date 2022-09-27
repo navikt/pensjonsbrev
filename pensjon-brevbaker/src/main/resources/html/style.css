@@ -34,12 +34,10 @@ h1.pensjonsbrev-tittel {
 
 .pensjonsbrev-brevhode {
     display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-}
-
-.pensjonsbrev-brevhode .pensjonsbrev-brevdato {
-    display: none;
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 2rem;
+    margin-bottom: 2rem;
 }
 
 .pensjonsbrev-brevkropp {
@@ -223,13 +221,14 @@ hr.pensjonsbrev-vedlegg {
 
 /* Liten -> Stor */
 @media (min-width: 30em) {
-    .pensjonsbrev-brevdato {
-        display: none;
-    }
     .pensjonsbrev-brevhode .pensjonsbrev-brevdato {
         display: flex;
         flex-direction: column;
         justify-content: end;
+    }
+    .pensjonsbrev-brevhode {
+        flex-direction: row;
+        justify-content: space-between;
     }
 
     .pensjonsbrev-sakspart {
