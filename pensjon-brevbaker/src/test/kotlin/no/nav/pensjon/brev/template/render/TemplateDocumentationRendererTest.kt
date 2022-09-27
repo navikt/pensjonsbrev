@@ -17,6 +17,17 @@ class TemplateDocumentationRendererTest {
             Language.Bokmal,
             Fixtures.fellesAuto
         ).let { TemplateDocumentationRenderer.render(it) }
+            .also { writeTestHTML("LETTER_EXAMPLE", it, "template_doc") }
+    }
+
+    @Test
+    fun renderDesignReference() {
+        Letter(
+            DesignReferenceLetter.template,
+            Fixtures.create<LetterExampleDto>(),
+            Language.Bokmal,
+            Fixtures.fellesAuto
+        ).let { TemplateDocumentationRenderer.render(it) }
             .also { writeTestHTML("DESIGN_REFERENCE_LETTER", it, "template_doc") }
     }
 

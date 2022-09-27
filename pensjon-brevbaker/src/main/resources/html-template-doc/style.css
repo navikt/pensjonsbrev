@@ -198,6 +198,14 @@ table.pensjonsbrev-table > tbody > tr:nth-child(even) {
     margin-bottom: 1.3rem;
 }
 
+.pensjonsbrev-list {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    padding-left: 3rem;
+}
+.pensjonsbrev-item {
+
+}
 
 .pensjonsbrev-brev > * {
     margin-left: 1.3rem;

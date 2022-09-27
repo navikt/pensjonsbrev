@@ -168,9 +168,10 @@ object TemplateDocumentationRenderer {
                         renderExpression(element.items, true)
                     }
                     div(classes("foreach-body")) {
-                        render(scope, element.body) { bodyScope, forEachElement ->
-                            renderAnyContent(bodyScope, forEachElement)
-                        }
+                        render(scope, element.body, block)
+//                        { bodyScope, forEachElement ->
+//                            renderAnyContent(bodyScope, forEachElement)
+//                        }
                     }
                 }
             }
@@ -287,9 +288,9 @@ object TemplateDocumentationRenderer {
         }
 
     private fun FlowContent.renderList(scope: ExpressionScope<*, *>, element: Element.OutlineContent.ParagraphContent.ItemList<*>) {
-        ul {
+        div(classes("list")) {
             render(scope, element.items) { listScope, content ->
-                li { renderText(listScope, content.text) }
+                div(classes("item")) { renderText(listScope, content.text) }
             }
         }
     }
