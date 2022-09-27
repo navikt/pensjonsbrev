@@ -48,12 +48,11 @@ object PensjonHTMLRenderer : LetterRenderer<RenderedHtmlLetter>() {
                     div(classes("rot")) {
                         div(classes("brev")) {
                             img(classes = classes("logo"), src = navLogoImg, alt = AltTexts.logo.text(scope.language))
-                            brevdato(scope)
-                            h1(classes("tittel")) { renderText(scope, template.title) }
                             div(classes("brevhode")) {
                                 renderSakspart(scope)
                                 brevdato(scope)
                             }
+                            h1(classes("tittel")) { renderText(scope, template.title) }
                             div(classes("brevkropp")) {
                                 renderOutline(scope, template.outline)
                                 renderClosing(scope)
