@@ -17,7 +17,6 @@ object PensjonLatexRenderer : LetterRenderer<RenderedLatexLetter>() {
         RenderedFile.PlainText("attachment.tex", getResource("latex/attachment.tex").toString(Charsets.UTF_8)),
         RenderedFile.PlainText("closing.tex", getResource("latex/closing.tex").toString(Charsets.UTF_8)),
         RenderedFile.PlainText("content.tex", getResource("latex/content.tex").toString(Charsets.UTF_8)),
-        RenderedFile.PlainText("tabularray.sty", getResource("latex/tabularray.sty").toString(Charsets.UTF_8)),
     )
 
     override fun renderLetter(scope: ExpressionScope<*, *>, template: LetterTemplate<*, *>): RenderedLatexLetter =

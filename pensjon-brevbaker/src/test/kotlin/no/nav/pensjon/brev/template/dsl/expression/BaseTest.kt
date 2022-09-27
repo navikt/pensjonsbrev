@@ -81,4 +81,38 @@ class BaseTest {
         assertFalse(expr.eval(ExpressionScope(3, scope.felles, scope.language)))
     }
 
+
+    @Nested
+    inner class EqualTo{
+        val scope = ExpressionScope(2, Fixtures.felles, Language.Bokmal)
+
+        @Test
+        fun `EqualTo positive match for expression`() = assertTrue(55.expr().equalTo(55.expr()).eval(scope))
+
+        @Test
+        fun `EqualTo negative match for expression`() = assertFalse(55.expr().equalTo(44.expr()).eval(scope))
+
+        @Test
+        fun `EqualTo positive match for literal`() = assertTrue(55.expr().equalTo(55).eval(scope))
+
+        @Test
+        fun `EqualTo negative match for literal`() = assertFalse(55.expr().equalTo(44).eval(scope))
+    }
+
+    @Nested
+    inner class NotEqualTo{
+        val scope = ExpressionScope(2, Fixtures.felles, Language.Bokmal)
+
+        @Test
+        fun `NotEqualTo positive match for expression`() = assertTrue(55.expr().notEqualTo(44.expr()).eval(scope))
+
+        @Test
+        fun `NotEqualTo negative match for expression`() = assertFalse(55.expr().notEqualTo(55.expr()).eval(scope))
+
+        @Test
+        fun `NotEqualTo positive match for literal`() = assertTrue(55.expr().notEqualTo(44).eval(scope))
+
+        @Test
+        fun `NotEqualTo negative match for literal`() = assertFalse(55.expr().notEqualTo(55).eval(scope))
+    }
 }
