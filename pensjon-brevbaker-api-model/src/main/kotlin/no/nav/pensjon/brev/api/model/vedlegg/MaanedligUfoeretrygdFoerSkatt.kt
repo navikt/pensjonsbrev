@@ -18,8 +18,6 @@ data class MaanedligUfoeretrygdFoerSkattDto(
         val gjenlevendetilleggNetto: Kroner?,
         val ektefelletilleggBrutto: Kroner?,
         val ektefelletilleggNetto: Kroner?,
-        val barnetilleggBrutto: Kroner?, //TODO fjern i neste versjon. Brukes under versjonsovergang
-        val barnetilleggNetto: Kroner?, //TODO fjern i neste versjon. Brukes under versjonsovergang
         val dekningFasteUtgifter: Kroner?,
         val erAvkortet: Boolean,
         val garantitilleggNordisk27Brutto: Kroner?,
