@@ -23,8 +23,10 @@ import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdPerMaanedSelectors.total
 import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdPerMaanedSelectors.virkningFraOgMed
 import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdPerMaanedSelectors.virkningTilOgMed
 import no.nav.pensjon.brev.maler.fraser.common.Felles.KronerText
+import no.nav.pensjon.brev.maler.fraser.common.Felles.KronerTextBold
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.*
+import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brev.template.dsl.expression.*
@@ -147,7 +149,7 @@ object VedleggMaanedligeUfoeretrgdFoerSkatt {
                             Bokmal to "Bruttobeløp per måned",
                             Nynorsk to "Bruttobeløp per månad",
                             English to "Gross monthly amount",
-                            Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
+                            FontType.BOLD
                         )
                     }
                 }
@@ -251,7 +253,7 @@ object VedleggMaanedligeUfoeretrgdFoerSkatt {
                         includePhrase(TabellTekstSumFoerSkatt())
                     }
                     cell {
-                        includePhrase(KronerText(totalUTBeloep))
+                        includePhrase(KronerTextBold(totalUTBeloep))
                     }
                 }
             }
@@ -283,7 +285,7 @@ object VedleggMaanedligeUfoeretrgdFoerSkatt {
                             Bokmal to "Før fradrag for inntekt",
                             Nynorsk to "Før frådrag for inntekt",
                             English to "Before deductions for income",
-                            Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
+                            FontType.BOLD
                         )
                     }
                     column(alignment = Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT) {
@@ -291,7 +293,7 @@ object VedleggMaanedligeUfoeretrgdFoerSkatt {
                             Bokmal to "Etter fradrag for inntekt",
                             Nynorsk to "Etter frådrag for inntekt",
                             English to "After deductions for income",
-                            Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
+                            FontType.BOLD
                         )
                     }
                 }
@@ -394,11 +396,11 @@ object VedleggMaanedligeUfoeretrgdFoerSkatt {
                     }
 
                     cell {
-                        includePhrase(KronerText(totalUTBeloepBrutto))
+                        includePhrase(KronerTextBold(totalUTBeloepBrutto))
                     }
 
                     cell {
-                        includePhrase(KronerText(totalUTBeloepNetto))
+                        includePhrase(KronerTextBold(totalUTBeloepNetto))
                     }
                 }
             }
@@ -471,6 +473,7 @@ object VedleggMaanedligeUfoeretrgdFoerSkatt {
                 Bokmal to "Sum før skatt",
                 Nynorsk to "Sum før skatt",
                 English to "Total before tax",
+                FontType.BOLD
             )
         }
     }

@@ -4,6 +4,7 @@ import no.nav.pensjon.brev.api.model.Kroner
 import no.nav.pensjon.brev.maler.fraser.Constants
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.*
+import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brev.template.dsl.expression.*
@@ -107,6 +108,16 @@ object Felles {
                 Bokmal to kroner.format() + " kr",
                 Nynorsk to kroner.format() + " kr",
                 English to kroner.format() + " NOK",
+            )
+    }
+
+    data class KronerTextBold(val kroner: Expression<Kroner>) : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
+        override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
+            textExpr(
+                Bokmal to kroner.format() + " kr",
+                Nynorsk to kroner.format() + " kr",
+                English to kroner.format() + " NOK",
+                FontType.BOLD
             )
     }
 
