@@ -28,3 +28,6 @@ preAuthorized:
   - name: pensjon-psak-q2
     namespace: teampensjon
     cluster: dev-fss
+  - name: locust
+    namespace: pensjonsbrev
+    cluster: dev-gcp
