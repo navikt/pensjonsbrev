@@ -1,0 +1,21 @@
+from locust import HttpUser, task, between
+import azuread
+import os
+
+payload = open(os.path.join(os.path.dirname(__file__), 'vedtaksbrev_request.json'), "r").read()
+
+class BrevbakerLoadTest(HttpUser):
+    token = azuread.fetch_token()
+    wait_time = between(1, 60) #vent mellom 1 og 60 sekunder på respons
+
+    @task
+    def load_test(self):
+        headers = {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + self.access_token()}
+        self.client.post("/letter/vedtak", payload, headers=headers)
+
+    def access_token(self):
+        if self.token.is_valid():
+            return self.token.token
+        else:
+            self.token = azuread.fetch_token()
+            return self.token.token

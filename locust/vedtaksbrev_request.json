@@ -1,0 +1,134 @@
+{
+  "kode": "UNG_UFOER_AUTO",
+  "language": "BOKMAL",
+  "letterData": {
+    "kravVirkningFraOgMed": [
+      2022,
+      9,
+      29
+    ],
+    "totaltUfoerePerMnd": {
+      "value": 9000
+    },
+    "ektefelle": null,
+    "gjenlevende": {
+      "utbetalt": true
+    },
+    "fellesbarn": {
+      "utbetalt": false,
+      "antallBarn": 1,
+      "inntektstak": {
+        "value": 10000
+      }
+    },
+    "saerkullsbarn": {
+      "utbetalt": true,
+      "antallBarn": 2,
+      "inntektstak": {
+        "value": 10000
+      }
+    },
+    "minsteytelseVedVirkSats": 2.91,
+    "maanedligUfoeretrygdFoerSkatt": {
+      "gjeldendeBeregnetUTPerMaaned": {
+        "annetBelop": {
+          "value": 0
+        },
+        "barnetilleggSaerkullsbarnBrutto": {
+          "value": 0
+        },
+        "barnetilleggSaerkullsbarnNetto": {
+          "value": 0
+        },
+        "barnetilleggFellesbarnBrutto": {
+          "value": 0
+        },
+        "barnetilleggFellesbarnNetto": {
+          "value": 0
+        },
+        "gjenlevendetilleggBrutto": {
+          "value": 0
+        },
+        "gjenlevendetilleggNetto": {
+          "value": 0
+        },
+        "ektefelletilleggBrutto": {
+          "value": 0
+        },
+        "ektefelletilleggNetto": {
+          "value": 0
+        },
+        "dekningFasteUtgifter": {
+          "value": 0
+        },
+        "erAvkortet": true,
+        "garantitilleggNordisk27Brutto": {
+          "value": 0
+        },
+        "garantitilleggNordisk27Netto": {
+          "value": 0
+        },
+        "grunnbeloep": {
+          "value": 0
+        },
+        "ordinaerUTBeloepBrutto": {
+          "value": 0
+        },
+        "ordinaerUTBeloepNetto": {
+          "value": 0
+        },
+        "totalUTBeloepBrutto": {
+          "value": 0
+        },
+        "totalUTBeloepNetto": {
+          "value": 0
+        },
+        "virkningFraOgMed": [
+          2020,
+          1,
+          1
+        ],
+        "virkningTilOgMed": [
+          2020,
+          1,
+          2
+        ]
+      },
+      "krav_virkningsDatoFraOgMed": [
+        2020,
+        1,
+        1
+      ],
+      "tidligereUfoeretrygdPerioder": []
+    },
+    "orienteringOmRettigheterUfoere": {
+      "bruker_borINorge": false,
+      "institusjon_gjeldende": "INGEN",
+      "avdoed_sivilstand": "ENSLIG",
+      "ufoeretrygdPerMaaned_barnetilleggGjeldende": {
+        "value": 0
+      }
+    }
+  },
+  "felles": {
+    "dokumentDato" : [ 2020, 1, 1 ],
+    "saksnummer" : "1337123",
+    "avsenderEnhet" : {
+      "nettside" : "nav.no",
+      "navn" : "NAV Familie- og pensjonsytelser Porsgrunn",
+      "telefonnummer" : {
+        "value" : "55553334"
+      }
+    },
+    "bruker" : {
+      "foedselsnummer" : {
+        "value" : "01019878910"
+      },
+      "foedselsdato" : [ 1998, 1, 1 ],
+      "fornavn" : "Testerson",
+      "mellomnavn" : "\"bruker\"",
+      "etternavn" : "Test"
+    },
+    "signerendeSaksbehandlere" : null
+  }
+}
