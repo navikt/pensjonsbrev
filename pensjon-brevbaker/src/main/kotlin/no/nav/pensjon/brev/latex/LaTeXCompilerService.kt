@@ -4,10 +4,12 @@ import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.engine.cio.*
 import io.ktor.client.plugins.*
+import io.ktor.client.plugins.compression.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.serialization.jackson.*
+import no.nav.pensjon.brev.template.jacksonObjectMapper
 import no.nav.pensjon.brev.template.render.RenderedLatexLetter
 
 data class PdfCompilationInput(val files: Map<String, String>)
@@ -20,6 +22,9 @@ class LaTeXCompilerService(private val pdfByggerUrl: String) {
         install(ContentNegotiation) {
             jackson()
         }
+        install(ContentEncoding){
+            gzip()
+        }
 
         HttpResponseValidator {
             validateResponse { response ->
@@ -27,6 +32,7 @@ class LaTeXCompilerService(private val pdfByggerUrl: String) {
                     HttpStatusCode.BadRequest -> {
                         throw LatexCompileException("Rendered latex is invalid, couldn't compile pdf: ${response.body<String>()}")
                     }
+
                     HttpStatusCode.InternalServerError -> {
                         throw LatexCompileException("Couldn't compile latex to pdf due to server error: ${response.body<String>()}")
                     }
@@ -35,7 +41,7 @@ class LaTeXCompilerService(private val pdfByggerUrl: String) {
         }
 
         engine {
-            requestTimeout = 120_000
+            requestTimeout = 60_000
         }
     }
 
@@ -43,7 +49,7 @@ class LaTeXCompilerService(private val pdfByggerUrl: String) {
         httpClient.post("$pdfByggerUrl/compile") {
             contentType(ContentType.Application.Json)
             header("Nav-Call-Id", callId)
-            setBody(PdfCompilationInput(latexLetter.base64EncodedFiles()))
+            setBody(jacksonObjectMapper().writeValueAsBytes(PdfCompilationInput(latexLetter.base64EncodedFiles())))
         }.body()
 
     suspend fun ping() {

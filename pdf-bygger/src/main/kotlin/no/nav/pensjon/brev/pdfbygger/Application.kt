@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.pdfbygger
 
 import com.fasterxml.jackson.core.JacksonException
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import io.ktor.http.*
 import io.ktor.serialization.jackson.*
 import io.ktor.server.application.*
@@ -8,6 +9,7 @@ import io.ktor.server.metrics.micrometer.*
 import io.ktor.server.netty.*
 import io.ktor.server.plugins.callid.*
 import io.ktor.server.plugins.callloging.*
+import io.ktor.server.plugins.compression.*
 import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.plugins.statuspages.*
 import io.ktor.server.request.*
@@ -29,6 +31,22 @@ fun main(args: Array<String>) = EngineMain.main(args)
 fun Application.module() {
     install(ContentNegotiation) {
         jackson()
+    }
+
+    install(Compression) {
+        gzip {
+            priority = 1.0
+            matchContentType(
+                ContentType.Application.Json
+            )
+        }
+        deflate {
+            priority = 10.0
+            minimumSize(1024)
+            matchContentType(
+                ContentType.Application.Json
+            )
+        }
     }
 
     install(MicrometerMetrics) {
@@ -60,7 +78,10 @@ fun Application.module() {
         post("/compile") {
             val logger = call.application.environment.log
 
-            val result = call.receive<PdfCompilationInput>()
+            val request = withContext(Dispatchers.IO) {
+                call.receiveStream().readAllBytes()
+            }
+            val result = jacksonObjectMapper().readValue(request, PdfCompilationInput::class.java)
                 .let { laTeXService.producePDF(it.files) }
 
             when(result) {
