@@ -57,7 +57,7 @@ class LaTeXService {
     private fun executeCompileProcess(
         workingDir: Path,
         texFilename: String = "letter",
-        timeout: Long = 30,
+        timeout: Long = 60,
         timeoutUnit: TimeUnit = TimeUnit.SECONDS,
         output: Path = workingDir.resolve("process.out"),
         error: Path = workingDir.resolve("process.err"),
