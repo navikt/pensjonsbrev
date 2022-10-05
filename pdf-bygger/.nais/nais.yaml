@@ -33,6 +33,9 @@ spec:
     requests:
       cpu: "12"
       memory: "4096Mi"
+    limits:
+      cpu: "14"
+      memory: "8196Mi"
   accessPolicy:
     inbound:
       rules:
