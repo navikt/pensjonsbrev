@@ -57,11 +57,8 @@ spec:
     port: "8080"
   resources:
     requests:
-      cpu: "2"
+      cpu: "12"
       memory: "4096Mi"
-    limits:
-      cpu: "2"
-      memory: "8196Mi"
   accessPolicy:
     inbound:
       rules:
