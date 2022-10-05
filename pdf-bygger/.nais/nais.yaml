@@ -1,28 +1,3 @@
-apiVersion: autoscaling/v2
-kind: HorizontalPodAutoscaler
-metadata:
-  labels:
-    app: pensjon-pdf-bygger
-    team: pensjonsbrev
-  name: pensjon-pdf-bygger
-  namespace: pensjonsbrev
-spec:
-  scaleTargetRef:
-    apiVersion: apps/v1
-    kind: Deployment
-    name: pensjon-pdf-bygger
-  minReplicas: 2
-  maxReplicas: 20
-  metrics:
-    - type: Pods
-      pods:
-        metric:
-          name: active_sessions
-        target:
-          type: AverageValue
-          averageValue: 12
-
----
 apiVersion: "nais.io/v1alpha1"
 kind: "Application"
 metadata:
@@ -50,7 +25,6 @@ spec:
     min: 2
     max: 20
     cpuThresholdPercentage: 50
-    disableAutoScaling: true
   prometheus:
     enabled: true
     path: "/metrics"
