@@ -8,10 +8,8 @@ import io.ktor.client.plugins.*
 import io.ktor.client.plugins.compression.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
-import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.serialization.jackson.*
-import io.ktor.utils.io.*
 import no.nav.pensjon.brev.template.jacksonObjectMapper
 import no.nav.pensjon.brev.template.render.RenderedLatexLetter
 
@@ -26,6 +24,28 @@ class LaTeXCompilerService(private val pdfByggerUrl: String) {
         install(ContentNegotiation) {
             jackson()
         }
+        HttpResponseValidator {
+            validateResponse { response ->
+                when (response.status) {
+                    HttpStatusCode.BadRequest -> {
+                        throw LatexCompileException("Rendered latex is invalid, couldn't compile pdf: ${response.body<String>()}")
+                    }
+
+                    HttpStatusCode.InternalServerError -> {
+                        throw LatexCompileException("Couldn't compile latex to pdf due to server error: ${response.body<String>()}")
+                    }
+                }
+            }
+        }
+        install(HttpRequestRetry) {
+            maxRetries = 10
+            exponentialDelay()
+            retryOnExceptionIf { request, cause ->
+                cause is HttpRequestTimeoutException
+                        || cause is ConnectTimeoutException
+                        || cause is ServerResponseException
+            }
+        }
         install(ContentEncoding) {
             gzip()
         }
@@ -38,45 +58,12 @@ class LaTeXCompilerService(private val pdfByggerUrl: String) {
 
     // TODO improve error handling.
     suspend fun producePDF(latexLetter: RenderedLatexLetter, callId: String?): PDFCompilationOutput =
-        httpClient.runCatching {
-            httpClient.post("$pdfByggerUrl/compile") {
-                contentType(ContentType.Application.Json)
-                header("Nav-Call-Id", callId)
-                //TODO use multipart form/file data. This works but it's inefficient and ugly.
-                // it's a fix for the application locking up on just a few simultaneous users
-
-                setBody(jacksonObjectMapper().writeValueAsBytes(PdfCompilationInput(latexLetter.base64EncodedFiles())))
-            }
-        }.getOrElse { exception ->
-            when (exception) {
-                is ClientRequestException -> {
-                    val response = exception.response
-                    when (response.status) {
-                        HttpStatusCode.BadRequest -> {
-                            throw LatexCompileException("Rendered latex is invalid, couldn't compile pdf: ${response.bodyAsText()}")
-                        }
-                        HttpStatusCode.InternalServerError -> {
-                            throw LatexCompileException("Couldn't compile latex to pdf due to server error: ${response.bodyAsText()}")
-                        }
-
-                        HttpStatusCode.GatewayTimeout,
-                        HttpStatusCode.TooManyRequests,
-                        HttpStatusCode.RequestTimeout
-                        -> {
-                            throw LatexTimeoutException(
-                                """Latex compilation timed out with status with:
-                                    code: ${response.status.description}
-                                    message:${response.bodyAsText()}""".trimMargin())
-                        }
-                        else -> {throw exception}
-                    }
-                }
-                is HttpRequestTimeoutException,
-                is CancellationException,
-                is ConnectTimeoutException ->
-                    throw LatexTimeoutException("Latex compilation timed out with exception: " + exception.message)
-                else -> {throw exception}
-            }
+        httpClient.post("$pdfByggerUrl/compile") {
+            contentType(ContentType.Application.Json)
+            header("Nav-Call-Id", callId)
+            //TODO use multipart form/file data. This works but it's inefficient and ugly.
+            // it's a fix for the application locking up on just a few simultaneous users
+            setBody(jacksonObjectMapper().writeValueAsBytes(PdfCompilationInput(latexLetter.base64EncodedFiles())))
         }.body()
 
     suspend fun ping() {
