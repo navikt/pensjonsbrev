@@ -167,6 +167,24 @@ object OpphoererBarnetilleggAuto : VedtaksbrevTemplate<OpphoererBarnetilleggAuto
                     sivilstand = sivilstand
                 )
             )
+
+            showIf(
+                harBarnetilleggFellesbarn
+            ) {
+                includePhrase(
+                    OpphoerBarnetillegg.TBU1284(
+                        beloepFratrukketAnnenForeldersInntekt = beloepFratrukketAnnenForeldersInntekt,
+                        beloepNettoFellesbarn = beloepNettoFellesbarn,
+                        fradragFellesbarn = fradragFellesbarn,
+                        inntektAnnenForelderFellesbarn = inntektAnnenForelderFellesbarn,
+                        inntektBruktiAvkortningFellesbarn = inntektBruktiAvkortningFellesbarn,
+                        grunnbeloepFellesbarn = grunnbeloepFellesbarn,
+                        harBarnetilleggSaerkullsbarn = harBarnetilleggSaerkullsbarn,
+                        justeringsbeloepFellesbarn = justeringsbeloepFellesbarn,
+                        sivilstand = sivilstand
+                    )
+                )
+            }
         }
     }
 }
@@ -232,22 +250,17 @@ object OpphoererBarnetilleggAuto : VedtaksbrevTemplate<OpphoererBarnetilleggAuto
             )
         }
 
-        ifNotNull(
-            barnetilleggFellesbarn.inntektstak_safe,
-            barnetilleggSaerkullsbarn.inntektstak_safe,
-        ) { inntektstakFellesbarn, inntektstakSaerkullsbarn ->
-            showIf(
-                barnetilleggFellesbarn.beloepNetto_safe.equalTo(0)
-                    and barnetilleggSaerkullsbarn.beloepNetto_safe.equalTo(0)
-            ) {
-                includePhrase(
-                    OpphoerBarnetillegg.TBU2490(
-                        fellesbarnInntektstak = inntektstakFellesbarn,
-                        saerkullsbarnInntektstak = inntektstakSaerkullsbarn,
-                    )
-                )
+
+            showIf(harBarnetilleggFellesbarn and harBarnetilleggSaerkullsbarn) {
+                includePhrase(OpphoerBarnetillegg.TBU2490(
+                 beloepNettoFellesbarn =
+                 beloepNettoSaerkullsbarn =
+                 inntektstakFellesbarn =
+            inntektstakSaerkullsbarn =
+            justeringsbeloepFellesbarn =
+            justeringsbeloepSaerkullsbarn
+            ))
             }
-        }
 
         showIf(harBarnetilleggFellesbarn or harBarnetilleggSaerkullsbarn) {
             includePhrase(OpphoerBarnetillegg.TBU1288)
@@ -259,6 +272,7 @@ object OpphoererBarnetilleggAuto : VedtaksbrevTemplate<OpphoererBarnetilleggAuto
         includePhrase(Felles.RettTilKlagePesys_001)
         includePhrase(Felles.RettTilInnsynPesys_001) // Endret tekst etter avtale med Ingrid
         includePhrase(Ufoeretrygd.SjekkUtbetalingene)
+
         includePhrase(OpphoerBarnetillegg.TBU1228)
     }
 
