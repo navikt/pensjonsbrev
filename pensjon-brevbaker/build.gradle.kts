@@ -1,5 +1,5 @@
 val logbackVersion: String by project
-val ktorVersion: String by project
+val ktorVersion: String by System.getProperties()
 val jupiterVersion: String by project
 val hamkrestVersion: String by project
 val logstashVersion: String by project
@@ -103,7 +103,7 @@ dependencies {
     ksp(project(":template-model-generator"))
 
     // Necessary for java.time.LocalDate
-    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.13.3")
+    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.13.4")
 
     // Metrics
     implementation("io.ktor:ktor-server-metrics:$ktorVersion")

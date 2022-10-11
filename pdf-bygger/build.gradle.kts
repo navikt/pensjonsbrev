@@ -1,4 +1,4 @@
-val ktorVersion: String by project
+val ktorVersion: String by System.getProperties()
 val logbackVersion: String by project
 val logstashVersion: String by project
 val micrometerVersion: String by project
