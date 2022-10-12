@@ -32,6 +32,7 @@ import no.nav.pensjon.brev.api.model.maler.UfoeretrygdSelectors.harUtbetalingsgr
 import no.nav.pensjon.brev.api.model.maler.UfoeretrygdSelectors.utbetaltPerMaaned
 import no.nav.pensjon.brev.maler.fraser.OpphoerBarnetillegg
 import no.nav.pensjon.brev.maler.fraser.common.Felles
+import no.nav.pensjon.brev.maler.fraser.common.UfoeretrygdBarnetillegg
 import no.nav.pensjon.brev.maler.fraser.omregning.ufoeretrygd.Ufoeretrygd
 import no.nav.pensjon.brev.maler.fraser.vedtak.Vedtak
 import no.nav.pensjon.brev.maler.vedlegg.vedleggMaanedligUfoeretrygdFoerSkatt
@@ -84,7 +85,7 @@ object OpphoererBarnetilleggAuto : VedtaksbrevTemplate<OpphoererBarnetilleggAuto
         }
         outline {
             includePhrase(
-                OpphoerBarnetillegg.TBU2290(
+                UfoeretrygdBarnetillegg.TBU2290(
                     foedselsdatoPaaBarnetilleggOpphoert = foedselsdatoPaaBarnetilleggOpphoert,
                     oensketVirkningsDato = oensketVirkningsDato
                 )
@@ -101,10 +102,10 @@ object OpphoererBarnetilleggAuto : VedtaksbrevTemplate<OpphoererBarnetilleggAuto
                 )
             )
 
-            includePhrase(OpphoerBarnetillegg.TBU2223)
-            includePhrase(OpphoerBarnetillegg.TBU1128)
+            includePhrase(UfoeretrygdBarnetillegg.TBU2223)
+            includePhrase(UfoeretrygdBarnetillegg.TBU1128)
             includePhrase(Vedtak.BegrunnelseOverskrift)
-            includePhrase(OpphoerBarnetillegg.TBU3920)
+            includePhrase(UfoeretrygdBarnetillegg.TBU3920)
 
             includePhrase(
                 OpphoerBarnetillegg.TBU4085(
@@ -124,7 +125,7 @@ object OpphoererBarnetilleggAuto : VedtaksbrevTemplate<OpphoererBarnetilleggAuto
             )
 
             showIf(harBarnetilleggFellesbarn or harBarnetilleggSaerkullsbarn) {
-                includePhrase(OpphoerBarnetillegg.TBU3800)
+                includePhrase(UfoeretrygdBarnetillegg.TBU3800)
             }
 
 
@@ -133,7 +134,7 @@ object OpphoererBarnetilleggAuto : VedtaksbrevTemplate<OpphoererBarnetilleggAuto
             ) { beloepNettoSaerkullsbarn ->
                 showIf(not(harBarnetilleggFellesbarn) and harBarnetilleggSaerkullsbarn) {
                     includePhrase(
-                        OpphoerBarnetillegg.TBU2338(
+                        UfoeretrygdBarnetillegg.TBU2338(
                             beloepNettoSaerkullsbarn = beloepNettoSaerkullsbarn,
                             harBarnetilleggFellesbarn = harBarnetilleggFellesbarn,
                             harBarnetilleggSaerkullsbarn = harBarnetilleggSaerkullsbarn,
@@ -149,7 +150,7 @@ object OpphoererBarnetilleggAuto : VedtaksbrevTemplate<OpphoererBarnetilleggAuto
             ) { antallFellesbarnInnvilget, beloepNettoFellesbarn ->
                 showIf(harBarnetilleggFellesbarn) {
                     includePhrase(
-                        OpphoerBarnetillegg.TBU2339(
+                        UfoeretrygdBarnetillegg.TBU2339(
                             antallFellesbarnInnvilget = antallFellesbarnInnvilget,
                             beloepNettoFellesbarn = beloepNettoFellesbarn,
                             harBarnetilleggFellesbarn = harBarnetilleggFellesbarn,
@@ -161,7 +162,7 @@ object OpphoererBarnetilleggAuto : VedtaksbrevTemplate<OpphoererBarnetilleggAuto
             }
 
             includePhrase(
-                OpphoerBarnetillegg.TBU3801(
+                UfoeretrygdBarnetillegg.TBU3801(
                     harBarnetilleggFellesbarn = harBarnetilleggFellesbarn,
                     harBarnetilleggSaerkullsbarn = harBarnetilleggSaerkullsbarn,
                     sivilstand = sivilstand
@@ -172,7 +173,7 @@ object OpphoererBarnetilleggAuto : VedtaksbrevTemplate<OpphoererBarnetilleggAuto
                 harBarnetilleggFellesbarn
             ) {
                 includePhrase(
-                    OpphoerBarnetillegg.TBU1284(
+                    UfoeretrygdBarnetillegg.TBU1284(
                         beloepFratrukketAnnenForeldersInntekt = beloepFratrukketAnnenForeldersInntekt,
                         beloepNettoFellesbarn = beloepNettoFellesbarn,
                         fradragFellesbarn = fradragFellesbarn,
