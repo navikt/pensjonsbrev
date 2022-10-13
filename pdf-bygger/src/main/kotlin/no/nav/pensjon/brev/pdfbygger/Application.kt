@@ -92,7 +92,7 @@ fun Application.module() {
                     call.respond(HttpStatusCode.InternalServerError, result)
                 }
 
-                is PDFCompilationResponse.Failure.ServerTimeout -> {
+                is PDFCompilationResponse.Failure.Timeout -> {
                     logger.error("Server error: $result")
                     call.respond(HttpStatusCode.GatewayTimeout, result)
                 }
