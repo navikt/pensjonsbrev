@@ -20,6 +20,7 @@ class LatexCompileException(msg: String, cause: Throwable? = null) : Exception(m
 class LatexTimeoutException(msg: String) : Exception(msg)
 
 class LaTeXCompilerService(private val pdfByggerUrl: String) {
+    private val objectmapper = jacksonObjectMapper()
     private val httpClient = HttpClient(CIO) {
         install(ContentNegotiation) {
             jackson()
@@ -60,9 +61,14 @@ class LaTeXCompilerService(private val pdfByggerUrl: String) {
         httpClient.post("$pdfByggerUrl/compile") {
             contentType(ContentType.Application.Json)
             header("Nav-Call-Id", callId)
-            //TODO use multipart form/file data. This works but it's inefficient and ugly.
-            // it's a fix for the application locking up on just a few simultaneous users
-            setBody(jacksonObjectMapper().writeValueAsBytes(PdfCompilationInput(latexLetter.base64EncodedFiles())))
+            //TODO unresolved bug. There is a bug where simultanious requests will lock up the requests for this http client
+            // If the body is set using an object, it will use the content-negotiation strategy which also uses a jackson object-mapper
+            // for some unknown reason, this results in all requests being halted for around 5 minutes.
+            // To test if the bug is present, run 10 simultanious requests to brevbaker and see if it starts producing letters.
+            // The solution is to seemingly do the same, but with creating a objectmapper outside of content-negotiation instead of simply using the following line:
+            // setBody(PdfCompilationInput(latexLetter.base64EncodedFiles()))
+            // this needs further investigation
+            setBody(objectmapper.writeValueAsBytes(PdfCompilationInput(latexLetter.base64EncodedFiles())))
         }.body()
 
     suspend fun ping() {
