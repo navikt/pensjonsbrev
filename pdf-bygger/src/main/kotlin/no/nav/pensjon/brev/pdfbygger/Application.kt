@@ -1,7 +1,6 @@
 package no.nav.pensjon.brev.pdfbygger
 
 import com.fasterxml.jackson.core.JacksonException
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import io.ktor.http.*
 import io.ktor.serialization.jackson.*
 import io.ktor.server.application.*
@@ -79,10 +78,7 @@ fun Application.module() {
         post("/compile") {
             val logger = call.application.environment.log
 
-            val request = withContext(Dispatchers.IO) {
-                call.receiveStream().readAllBytes()
-            }
-            val result = jacksonObjectMapper().readValue(request, PdfCompilationInput::class.java)
+            val result = call.receive<PdfCompilationInput>()
                 .let { laTeXService.producePDF(it.files) }
 
             when(result) {

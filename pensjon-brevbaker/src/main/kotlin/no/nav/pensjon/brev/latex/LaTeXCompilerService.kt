@@ -40,7 +40,7 @@ class LaTeXCompilerService(private val pdfByggerUrl: String) {
         install(HttpRequestRetry) {
             maxRetries = 10
             exponentialDelay()
-            retryOnExceptionIf { request, cause ->
+            retryOnExceptionIf { _, cause ->
                 cause is HttpRequestTimeoutException
                         || cause is ConnectTimeoutException
                         || cause is ServerResponseException
@@ -56,7 +56,6 @@ class LaTeXCompilerService(private val pdfByggerUrl: String) {
         }
     }
 
-    // TODO improve error handling.
     suspend fun producePDF(latexLetter: RenderedLatexLetter, callId: String?): PDFCompilationOutput =
         httpClient.post("$pdfByggerUrl/compile") {
             contentType(ContentType.Application.Json)
