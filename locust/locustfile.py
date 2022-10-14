@@ -10,8 +10,8 @@ class BrevbakerLoadTest(HttpUser):
 
     @task
     def load_test(self):
-        headers = {'Content-Type': 'application/json'} # local testing
-        #headers = {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + self.access_token()}# dev environment testing
+        #headers = {'Content-Type': 'application/json'} # local testing
+        headers = {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + self.access_token()}# dev environment testing
         self.client.post("/letter/vedtak", payload, headers=headers)
 
     def access_token(self):
