@@ -47,6 +47,8 @@ val vedleggOrienteringOmRettigheterOgPlikterUfoere = createAttachment<LangBokmal
         ifNotNull(ufoeretrygdPerMaaned_barnetilleggGjeldende) { tillegg ->
             showIf(tillegg.greaterThan(0)) {
                 item { includePhrase(VedleggPlikterUT7_001) }
+                item { includePhrase(VedleggPlikterUT13_001) }
+                item { includePhrase(VedleggPlikterUT14_001) }
             }
         }
 

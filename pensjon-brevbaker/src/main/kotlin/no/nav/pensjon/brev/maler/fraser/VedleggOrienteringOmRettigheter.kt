@@ -580,6 +580,24 @@ object VedleggPlikterUT12_001 : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
         )
 }
 
+object VedleggPlikterUT13_001 : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
+    override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
+        text(
+            Bokmal to "barn du forsørger skal flytte til et annet land",
+            Nynorsk to "barn du forsørgjer skal flytte til eit anna land",
+            English to "the child(ren) in your care move to another country"
+        )
+}
+
+object VedleggPlikterUT14_001 : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
+    override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
+        text(
+            Bokmal to "barn du forsørger skal oppholde seg i et annet land mer enn 90 dager i løpet av en tolvmånedersperiode",
+            Nynorsk to "barn du forsørgjer skal opphalde seg i eit anna land i meir enn 90 dagar i løpet av ein tolv månedars periode",
+            English to "the child(ren) in your care stay in another country for more than 90 days in a 12 month period"
+        )
+}
+
 object VedleggPlikterAFP_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         title1 {
