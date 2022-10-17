@@ -44,6 +44,7 @@ dependencies {
     implementation("io.ktor:ktor-server-netty:$ktorVersion")
     implementation("io.ktor:ktor-server-status-pages:$ktorVersion")
     implementation("net.logstash.logback:logstash-logback-encoder:$logstashVersion")
+    implementation("io.ktor:ktor-server-compression-jvm:$ktorVersion")
 
     // Metrics
     implementation("io.ktor:ktor-server-metrics:$ktorVersion")
