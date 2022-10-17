@@ -47,7 +47,7 @@ fun Application.module() {
             }
         }
         exception<LatexTimeoutException>{ call, cause ->
-            call.respond(HttpStatusCode.TooManyRequests, cause.message ?: "Timed out while compiling latex")
+            call.respond(HttpStatusCode.ServiceUnavailable, cause.message ?: "Timed out while compiling latex")
         }
         exception<ParameterConversionException> { call, cause ->
             call.respond(HttpStatusCode.BadRequest, cause.message?: "Failed to convert path parameter to required type: unknown cause")
