@@ -9,6 +9,5 @@ data class OrienteringOmRettigheterUfoereDto(
     val bruker_borINorge: Boolean,
     val harInnvilgetBarnetillegg: Boolean,
     val institusjon_gjeldende: Institusjon,
-    val ufoeretrygdPerMaaned_barnetilleggGjeldende: Kroner?
 )
 
