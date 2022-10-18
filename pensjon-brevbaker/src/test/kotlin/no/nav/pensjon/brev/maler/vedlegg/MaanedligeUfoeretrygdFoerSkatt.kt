@@ -9,6 +9,7 @@ import no.nav.pensjon.brev.api.model.LetterMetadata
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligUfoeretrygdFoerSkattDto
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligUfoeretrygdFoerSkattDto.UfoeretrygdPerMaaned
 import no.nav.pensjon.brev.latex.LaTeXCompilerService
+import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Letter
 import no.nav.pensjon.brev.template.dsl.createTemplate
@@ -29,7 +30,7 @@ class MaanedligUfoeretrygdFoerSkattITest {
         val template = createTemplate(
             name = "test-template",
             letterDataType = Unit::class,
-            languages = languages(Bokmal),
+            languages = languages(Language.Bokmal, Language.Nynorsk,Language.English),
             letterMetadata = LetterMetadata(
                 "test mal",
                 isSensitiv = false,
@@ -37,7 +38,11 @@ class MaanedligUfoeretrygdFoerSkattITest {
             ),
         ) {
             title {
-                text(Bokmal to "tittel")
+                text(
+                    Language.Bokmal to "tittel",
+                        Language.Nynorsk to "tittel",
+                        Language.English to "tittel",
+                )
             }
             outline {
 
@@ -47,7 +52,7 @@ class MaanedligUfoeretrygdFoerSkattITest {
                 .copy(
                     annetBelop = Kroner(1),
                     barnetilleggFellesbarnBrutto = Kroner(2),
-                    barnetilleggFellesbarnNetto = Kroner(3),
+                    barnetilleggFellesbarnNetto = Kroner(3000),
                     barnetilleggSaerkullsbarnBrutto = Kroner(4),
                     barnetilleggSaerkullsbarnNetto = Kroner(5),
                     dekningFasteUtgifter = Kroner(6),
@@ -80,7 +85,7 @@ class MaanedligUfoeretrygdFoerSkattITest {
         Letter(
             template,
             Unit,
-            Bokmal,
+            Language.English,
             Fixtures.fellesAuto
         )
             .let { PensjonLatexRenderer.render(it) }

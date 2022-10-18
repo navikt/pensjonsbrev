@@ -11,6 +11,8 @@ import no.nav.pensjon.brev.template.dsl.expression.*
 object LanguageSetting {
     object Sakspart {
         const val navn = "navnprefix"
+        const val gjelderNavn = "gjeldernavnprefix"
+        const val vergenavn = "vergenavnprefix"
         const val saksnummer = "saksnummerprefix"
         const val foedselsnummer = "foedselsnummerprefix"
     }
@@ -29,6 +31,22 @@ val pensjonLatexSettings = languageSettings {
             Language.Bokmal to "Navn:",
             Language.Nynorsk to "Namn:",
             Language.English to "Name:",
+        )
+    }
+
+    setting(LanguageSetting.Sakspart.vergenavn) {
+        text(
+            Language.Bokmal to "Verge:",
+            Language.Nynorsk to "Verje:",
+            Language.English to "Guardian:",
+        )
+    }
+
+    setting(LanguageSetting.Sakspart.gjelderNavn) {
+        text(
+            Language.Bokmal to "Saken gjelder:",
+            Language.Nynorsk to "Saka gjeld:",
+            Language.English to "Case regarding:",
         )
     }
 

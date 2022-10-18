@@ -29,6 +29,7 @@ object Fixtures {
             saksbehandler = "Ole Saksbehandler",
             attesterendeSaksbehandler = "Per Attesterende",
         ),
+        vergeNavn = "Verge Vergeson",
     )
 
     val fellesAuto = felles.copy(signerendeSaksbehandlere = null)

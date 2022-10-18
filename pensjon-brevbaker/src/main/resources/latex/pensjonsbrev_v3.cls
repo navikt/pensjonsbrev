@@ -120,17 +120,18 @@
 %----------------------------------------
 %             Case details
 %----------------------------------------
+\NewTblrEnviron{mytblr}
+\SetTblrOuter[mytblr]{baseline=B}
+\SetTblrInner[mytblr]{leftsep=0pt}
+\SetTblrInner[mytblr]{rightsep=23pt}
+\SetTblrInner[mytblr]{rowsep=0pt}
+\SetTblrOuter[mytblr]{postsep=0pt}
+\SetTblrOuter[mytblr]{footsep=0pt}
+
 \newcommand{\sakspart}{
-    {
-        \setlength{\tabcolsep}{3.9mm}
-        \primaryFont \fontsize{\standardtextsize}{19.5pt} \selectfont
-        \begin{tabular}{@{}ll}
-            \feltnavnprefix & \feltetternavnbruker \space \feltfornavnbruker \\
-            \feltfoedselsnummerprefix & \feltfoedselsnummerbruker \\
-            \feltsaksnummerprefix & \feltsaksnummer
-        \end{tabular}
-        \\[28pt]
-    }
+    \primaryFont \fontsize{\standardtextsize}{19.5pt} \selectfont
+    \saksinfomottaker \hfill \letterdate
+    \\[-2mm]
 }
 
 
