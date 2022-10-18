@@ -85,8 +85,7 @@ object VedleggPlikterAP15_002 : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
 }
 
 //vedleggPlikterAP6_002, vedleggPlikterAP14_002, vedleggPlikterAP18_001
-data class VedleggPlikterAPFlytterFraHverandre(val sivilstand: Expression<Sivilstand>) :
-    TextOnlyPhrase<LangBokmalNynorskEnglish>() {
+data class VedleggPlikterAPFlytterFraHverandre(val sivilstand: Expression<Sivilstand>) : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
     override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         text(
             Bokmal to "du og ",
@@ -162,11 +161,7 @@ object VedleggPlikterAP12_001 : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
 
 object VedleggPlikterAP10_001 : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
     override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
-        text(
-            Bokmal to "du får ny samboer",
-            Nynorsk to "du får ny sambuar",
-            English to "you get a new cohabiting partner"
-        )
+        text(Bokmal to "du får ny samboer", Nynorsk to "du får ny sambuar", English to "you get a new cohabiting partner")
 }
 
 data class VedleggPlikterAP5_001(val sivilstand: Expression<Sivilstand>) : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
@@ -638,11 +633,7 @@ object VedleggPlikterAFP4_001 : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
 object InfoAPBeskjed_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         title1 {
-            text(
-                Bokmal to "Slik gir du oss beskjed",
-                Nynorsk to "Slik gir du oss beskjed",
-                English to "How to contact us"
-            )
+            text(Bokmal to "Slik gir du oss beskjed", Nynorsk to "Slik gir du oss beskjed", English to "How to contact us")
         }
         paragraph {
             text(
@@ -707,15 +698,14 @@ object VedleggInnsynSakUTPesys_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
             )
         }
         paragraph {
-            text(
-                Bokmal to "Du kan logge deg inn via nav.no for å se dokumenter i saken din.",
-                Nynorsk to "Du kan logge deg inn via nav.no for å sjå dokument i saka di.",
-                English to "You can log in via nav.no to read your case documents."
+            textExpr(
+                Bokmal to "Med få unntak har du rett til å se dokumentene i saken din. Du kan se noen dokumenter på nav.no/dittnav. Du kan også ringe oss på telefon ".expr() + telefonNummer.format() + ".".expr(),
+                Nynorsk to "Med få unntak har du rett til å sjå dokumenta i saka di. Du kan sjå nokre dokument på nav.no/dittnav. Du kan også ringe oss på telefon ".expr() + telefonNummer.format() + ".".expr(),
+                English to "With some exceptions, you are entitled to access all the documents pertaining to your case. You can read some of the documents at nav.no/dittnav. You can also call us at tel.: ".expr() + telefonNummer.format() + ".".expr()
             )
         }
     }
 }
-
 
 object VedleggHjelpFraAndre_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
