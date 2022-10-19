@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test
 class UngUfoerAutoITest {
 
     @Test
-    fun test() {
+    fun Pdftest() {
         Letter(
             UngUfoerAuto.template,
             Fixtures.create<UngUfoerAutoDto>(),
