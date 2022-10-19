@@ -6,11 +6,12 @@ payload = open(os.path.join(os.path.dirname(__file__), 'vedtaksbrev_request.json
 
 class BrevbakerLoadTest(HttpUser):
     token = azuread.fetch_token()
-    wait_time = between(1, 60) #vent mellom 1 og 60 sekunder på respons
+    wait_time = between(0,0)
 
     @task
     def load_test(self):
-        headers = {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + self.access_token()}
+        #headers = {'Content-Type': 'application/json'} # local testing
+        headers = {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + self.access_token()}# dev environment testing
         self.client.post("/letter/vedtak", payload, headers=headers)
 
     def access_token(self):

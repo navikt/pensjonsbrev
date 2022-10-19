@@ -8,6 +8,7 @@ import io.ktor.server.metrics.micrometer.*
 import io.ktor.server.netty.*
 import io.ktor.server.plugins.callid.*
 import io.ktor.server.plugins.callloging.*
+import io.ktor.server.plugins.compression.*
 import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.plugins.statuspages.*
 import io.ktor.server.request.*
@@ -27,8 +28,25 @@ fun main(args: Array<String>) = EngineMain.main(args)
 
 @Suppress("unused")
 fun Application.module() {
+    this.log.info("Tilgjengelige kjerner: " + Runtime.getRuntime().availableProcessors().toString())
     install(ContentNegotiation) {
         jackson()
+    }
+
+    install(Compression) {
+        gzip {
+            priority = 1.0
+            matchContentType(
+                ContentType.Application.Json
+            )
+        }
+        deflate {
+            priority = 10.0
+            minimumSize(1024)
+            matchContentType(
+                ContentType.Application.Json
+            )
+        }
     }
 
     install(MicrometerMetrics) {
@@ -72,6 +90,11 @@ fun Application.module() {
                 is PDFCompilationResponse.Failure.Server -> {
                     logger.error("Server error: $result")
                     call.respond(HttpStatusCode.InternalServerError, result)
+                }
+
+                is PDFCompilationResponse.Failure.Timeout -> {
+                    logger.error("Server error: $result")
+                    call.respond(HttpStatusCode.GatewayTimeout, result)
                 }
             }
         }
