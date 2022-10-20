@@ -8,5 +8,5 @@ fun createOrienteringOmRettigheterUfoereDto() =
         bruker_borINorge = false,
         institusjon_gjeldende = Institusjon.INGEN,
         avdoed_sivilstand = Sivilstand.ENSLIG,
-        ufoeretrygdPerMaaned_barnetilleggGjeldende = Kroner(0),
+        harInnvilgetBarnetillegg = true,
     )
