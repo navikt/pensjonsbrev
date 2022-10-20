@@ -30,6 +30,7 @@ import no.nav.pensjon.brev.api.model.maler.UfoeretrygdSelectors.ektefelletillegg
 import no.nav.pensjon.brev.api.model.maler.UfoeretrygdSelectors.gjenlevendetilleggUtbetalt_safe
 import no.nav.pensjon.brev.api.model.maler.UfoeretrygdSelectors.harUtbetalingsgrad
 import no.nav.pensjon.brev.api.model.maler.UfoeretrygdSelectors.utbetaltPerMaaned
+
 import no.nav.pensjon.brev.maler.fraser.OpphoerBarnetillegg
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.fraser.common.UfoeretrygdBarnetillegg
