@@ -1,4 +1,4 @@
-package no.nav.pensjon.brev.skribenten
+package no.nav.pensjon.brev.skribenten.services
 
 import com.typesafe.config.Config
 import io.ktor.client.*

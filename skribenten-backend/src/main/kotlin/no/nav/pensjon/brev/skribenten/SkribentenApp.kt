@@ -60,6 +60,7 @@ fun main() {
             allowMethod(HttpMethod.Patch)
             allowHeader(HttpHeaders.Authorization)
             allowHeader(HttpHeaders.ContentType)
+            allowHeader("Nav-Call-Id")
             allowHost("localhost:3000", schemes = listOf("http"))
             // TODO: Legg til allowHost for dev og prod med https
         }

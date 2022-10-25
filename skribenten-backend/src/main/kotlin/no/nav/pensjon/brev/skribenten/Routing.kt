@@ -8,10 +8,13 @@ import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import no.nav.pensjon.brev.skribenten.auth.*
+import no.nav.pensjon.brev.skribenten.services.*
+import java.util.Base64
 
 fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config) {
     val authService = AzureAdService(authConfig)
     val penService = PenService(skribentenConfig.getConfig("services.pen"), authService)
+    val brevbakerService = BrevbakerService(skribentenConfig.getConfig("services.brevbaker"), authService)
 
     routing {
         get("/isAlive") {
@@ -23,11 +26,15 @@ fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config
         }
 
         authenticate(authConfig.name) {
-            post("/test") {
+            post("/test/pen") {
                 val sak = penService.hentSak(call, 22958874)
                 val dto = call.receive<Testing>()
                 call.application.log.info("mottok: $dto")
                 call.respond(dto.copy(name = "hei ${dto.name}, sak 22958874 hentet"))
+            }
+            get("/test/brevbaker") {
+                val brev = brevbakerService.genererBrev(call)
+                call.respondBytes(Base64.getDecoder().decode(brev.base64pdf), ContentType.Application.Pdf)
             }
         }
     }

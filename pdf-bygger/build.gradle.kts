@@ -9,11 +9,6 @@ plugins {
     id("com.github.johnrengelman.shadow")
 }
 
-repositories {
-    mavenLocal()
-    mavenCentral()
-}
-
 group="no.nav.pensjon.brev"
 version="0.0.1-SNAPSHOT"
 
