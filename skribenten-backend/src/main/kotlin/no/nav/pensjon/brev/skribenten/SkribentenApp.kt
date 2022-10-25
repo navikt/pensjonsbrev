@@ -25,7 +25,7 @@ fun main() {
         .resolveWith(ConfigFactory.load("azuread")) // loads azuread secrets for local
         .getConfig("skribenten")
 
-    embeddedServer(Netty, port = 8082, host = "0.0.0.0") {
+    embeddedServer(Netty, port = skribentenConfig.getInt("port"), host = "0.0.0.0") {
         install(CallLogging) {
             callIdMdc("x_correlationId")
             disableDefaultColors()

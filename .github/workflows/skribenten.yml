@@ -1,0 +1,50 @@
+name: "Build and deploy Skribenten"
+on:
+  pull_request:
+  push:
+    branches:
+      - "main"
+    paths:
+      - "skribenten-backend/**"
+      - ".github/workflows/skribenten.yml"
+env:
+  "IMAGE_TAG": "${{ github.sha }}"
+  "IMAGE_SKRIBENTEN_BACKEND": "ghcr.io/${{ github.repository }}/pensjon-skribenten-backend:${{ github.sha }}"
+
+jobs:
+  # Er snyk allerede dekket av pdfbygger-brevbaker.yml? Hvordan får vi den til å kun kjøre i disse jobbene?
+
+  build-skribenten-backend:
+    name: "Build skribenten backend"
+    runs-on: "ubuntu-latest"
+    steps:
+      - uses: "actions/checkout@v2"
+      - uses: "gradle/wrapper-validation-action@v1"
+      - uses: "actions/cache@v2"
+        with:
+          "path": "~/.gradle/caches"
+          "key": "${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle.kts') }}"
+          "restore-keys": "${{ runner.os }}-gradle-"
+      - uses: "actions/setup-java@v1"
+        with:
+          "java-version": "17"
+      - name: "compile and run tests"
+        run: "./gradlew :skribenten-backend:publishImage"
+        env:
+          "GITHUB_TOKEN": "${{ secrets.GITHUB_TOKEN }}"
+
+  deploy-skribenten-backend-dev:
+    name: "Deploy skribenten-backend to dev"
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: "build-skribenten-backend"
+    runs-on: "ubuntu-latest"
+    steps:
+      - uses: "actions/checkout@v2"
+      - name: "Deploy Skribenten backend to DEV"
+        uses: "nais/deploy/actions/deploy@v1"
+        env:
+          "APIKEY": "${{ secrets.NAIS_DEPLOY_APIKEY }}"
+          "CLUSTER": "dev-gcp"
+          "RESOURCE": "skribenten-backend/.nais/nais.yaml"
+          "VAR": image=${{ env.IMAGE_SKRIBENTEN_BACKEND }}
+          "VARS": "skribenten-backend/.nais/dev.yaml"

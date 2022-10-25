@@ -1,0 +1,17 @@
+app-name: "skribenten-backend"
+brevbaker-app: "pensjon-brevbaker"
+ingresses:
+  - "https://pensjon-skribenten.dev.intern.nav.no"
+env:
+  - name: PEN_URL
+    value: "https://pensjon-pen-q2.dev.adeo.no/pen/springapi/"
+  - name: PEN_SCOPE
+    value: "api://dev-fss.teampensjon.pensjon-pen-q2/.default"
+
+preAuthorized:
+  - name: skribenten-frontend
+    namespace: pensjonsbrev
+    cluster: dev-gcp
+  - name: skribenten-frontend-lokal
+    namespace: pensjonsbrev
+    cluster: dev-gcp

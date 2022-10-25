@@ -28,7 +28,14 @@ ktor {
     docker {
         jreVersion.set(JreVersion.JRE_17)
         localImageName.set("pensjon-skribenten")
-        imageTag.set(providers.environmentVariable("IMAGE_SKRIBENTEN_TAG").orElse("latest"))
+        imageTag.set(providers.environmentVariable("IMAGE_TAG").orElse("latest"))
+        externalRegistry.set(
+            object : DockerImageRegistry {
+                override val toImage: Provider<String> = providers.environmentVariable("IMAGE_SKRIBENTEN_BACKEND")
+                override val password: Provider<String> = providers.environmentVariable("GITHUB_TOKEN")
+                override val username: Provider<String> = providers.environmentVariable("GITHUB_REPOSITORY")
+            }
+        )
     }
 }
 
