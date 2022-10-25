@@ -1,4 +1,4 @@
-package no.nav.pensjon.brev.brevredigering
+package no.nav.pensjon.brev.skribenten
 
 import io.ktor.server.application.*
 import io.ktor.server.metrics.micrometer.*

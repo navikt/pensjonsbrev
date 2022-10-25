@@ -3,6 +3,7 @@ import io.ktor.plugin.features.*
 val kotlinVersion: String by System.getProperties()
 val ktorVersion: String by System.getProperties()
 val logbackVersion: String by project
+val logstashVersion: String by project
 val micrometerVersion: String by project
 
 plugins {
@@ -11,10 +12,10 @@ plugins {
     id("io.ktor.plugin")
 }
 
-group = "no.nav.pensjon.brev.brevredigering"
+group = "no.nav.pensjon.brev.skribenten"
 version = "0.0.1"
 application {
-    mainClass.set("no.nav.pensjon.brev.brevredigering.ApplicationKt")
+    mainClass.set("no.nav.pensjon.brev.skribenten.ApplicationKt")
 
     val isDevelopment: Boolean = project.ext.has("development")
     applicationDefaultJvmArgs = listOf("-Dio.ktor.development=$isDevelopment")
@@ -26,8 +27,8 @@ ktor {
     }
     docker {
         jreVersion.set(JreVersion.JRE_17)
-        localImageName.set("pensjon-brevredigering")
-        imageTag.set(providers.environmentVariable("IMAGE_BREVREDIGERING_TAG").orElse("latest"))
+        localImageName.set("pensjon-skribenten")
+        imageTag.set(providers.environmentVariable("IMAGE_SKRIBENTEN_TAG").orElse("latest"))
     }
 }
 
@@ -35,14 +36,32 @@ repositories {
     mavenCentral()
 }
 
+sourceSets {
+    main {
+        resources {
+            srcDir("secrets")
+        }
+    }
+}
+
 dependencies {
+    implementation("io.ktor:ktor-client-auth:$ktorVersion")
+    implementation("io.ktor:ktor-client-cio:$ktorVersion")
+    implementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
     implementation("io.ktor:ktor-serialization-jackson:$ktorVersion")
+    implementation("io.ktor:ktor-server-auth:$ktorVersion")
+    implementation("io.ktor:ktor-server-auth-jwt:$ktorVersion")
     implementation("io.ktor:ktor-server-call-id:$ktorVersion")
     implementation("io.ktor:ktor-server-call-logging:$ktorVersion")
     implementation("io.ktor:ktor-server-content-negotiation:$ktorVersion")
     implementation("io.ktor:ktor-server-core-jvm:$ktorVersion")
+    implementation("io.ktor:ktor-server-cors:$ktorVersion")
     implementation("io.ktor:ktor-server-netty-jvm:$ktorVersion")
     implementation("io.ktor:ktor-server-status-pages:$ktorVersion")
+
+    // Logging
+    implementation("ch.qos.logback:logback-classic:$logbackVersion")
+    implementation("net.logstash.logback:logstash-logback-encoder:$logstashVersion")
 
     // Necessary for java.time.LocalDate
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.13.4")
@@ -52,7 +71,7 @@ dependencies {
     implementation("io.ktor:ktor-server-metrics-micrometer:$ktorVersion")
     implementation("io.micrometer:micrometer-registry-prometheus:$micrometerVersion")
 
-    implementation("ch.qos.logback:logback-classic:$logbackVersion")
+    // Test
     testImplementation("io.ktor:ktor-server-tests-jvm:$ktorVersion")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlinVersion")
 }
