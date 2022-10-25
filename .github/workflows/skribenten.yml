@@ -10,7 +10,7 @@ on:
       - ".github/workflows/skribenten.yml"
 env:
   "IMAGE_TAG": "${{ github.sha }}"
-  "IMAGE_SKRIBENTEN_BACKEND": "ghcr.io/${{ github.repository }}/pensjon-skribenten-backend:${{ github.sha }}"
+  "IMAGE_SKRIBENTEN_BACKEND": "ghcr.io/${{ github.repository }}/pensjon-skribenten-backend"
 
 jobs:
   # Er snyk allerede dekket av pdfbygger-brevbaker.yml? Hvordan får vi den til å kun kjøre i disse jobbene?
