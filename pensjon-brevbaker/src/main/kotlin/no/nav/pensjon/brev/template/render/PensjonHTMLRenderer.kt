@@ -34,39 +34,39 @@ object PensjonHTMLRenderer : LetterRenderer<RenderedHtmlLetter>() {
         """.trimIndent()
 
     override fun renderLetter(scope: ExpressionScope<*, *>, template: LetterTemplate<*, *>): RenderedHtmlLetter = RenderedHtmlLetter().apply {
-        newFile("index.html") {
-            appendLine("<!DOCTYPE html>").appendHTML().html {
-                lang = scope.language.locale().toLanguageTag()
-                head {
-                    meta(charset = Charsets.UTF_8.name())
-                    meta(name = "viewport", content = "width=device-width")
-                    title { renderTextWithoutStyle(scope, template.title) }
-                    style { unsafe { fontBinary.forEach { raw(it) } } }
-                    style { unsafe { raw(css) } }
-                }
-                body {
-                    div(classes("rot")) {
-                        div(classes("brev")) {
+            newFile("index.html") {
+                appendLine("<!DOCTYPE html>").appendHTML().html {
+                    lang = scope.language.locale().toLanguageTag()
+                    head {
+                        meta(charset = Charsets.UTF_8.name())
+                        meta(name = "viewport", content = "width=device-width")
+                        title { renderTextWithoutStyle(scope, template.title) }
+                        style { unsafe { fontBinary.forEach { raw(it) } } }
+                        style { unsafe { raw(css) } }
+                    }
+                    body {
+                        div(classes("rot")) {
+                            div(classes("brev")) {
                             img(classes = classes("logo"), src = navLogoImg, alt = AltTexts.logo.text(scope.language))
-                            div(classes("brevhode")) {
-                                renderSakspart(scope)
-                                brevdato(scope)
+                                div(classes("brevhode")) {
+                                    renderSakspart(scope)
+                                    brevdato(scope)
+                                }
+                                h1(classes("tittel")) { renderText(scope, template.title) }
+                                div(classes("brevkropp")) {
+                                    renderOutline(scope, template.outline)
+                                    renderClosing(scope)
+                                }
                             }
-                            h1(classes("tittel")) { renderText(scope, template.title) }
-                            div(classes("brevkropp")) {
-                                renderOutline(scope, template.outline)
-                                renderClosing(scope)
+                            render(scope, template.attachments) { attachmentScope, _, attachment ->
+                                hr(classes("vedlegg"))
+                                renderAttachment(attachmentScope, attachment)
                             }
-                        }
-                        render(scope, template.attachments) { attachmentScope, _, attachment ->
-                            hr(classes("vedlegg"))
-                            renderAttachment(attachmentScope, attachment)
                         }
                     }
                 }
             }
         }
-    }
 
     private fun FlowContent.brevdato(scope: ExpressionScope<*, *>): Unit =
         div(classes("brevdato")) {
@@ -271,8 +271,11 @@ object PensjonHTMLRenderer : LetterRenderer<RenderedHtmlLetter>() {
     private fun FlowContent.renderSakspart(scope: ExpressionScope<*, *>) =
         div(classes("sakspart")) {
             with(scope.felles.bruker) {
-                listOf(
-                    LanguageSetting.Sakspart.navn to "$fornavn $mellomnavn $etternavn",
+                val navnPrefix = if (scope.felles.vergeNavn != null) LanguageSetting.Sakspart.gjelderNavn else LanguageSetting.Sakspart.navn
+
+                listOfNotNull(
+                    scope.felles.vergeNavn?.let { LanguageSetting.Sakspart.vergenavn to it },
+                    navnPrefix to "$fornavn $mellomnavn $etternavn",
                     LanguageSetting.Sakspart.foedselsnummer to foedselsnummer.value,
                     LanguageSetting.Sakspart.saksnummer to scope.felles.saksnummer,
                 )

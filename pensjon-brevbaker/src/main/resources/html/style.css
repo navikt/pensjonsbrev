@@ -76,7 +76,7 @@ h2.pensjonsbrev-title1 {
 .pensjonsbrev-sakspart {
     display: inline-grid;
     grid-auto-flow: column;
-    grid-template-rows: repeat(6, auto);
+    grid-template-rows: repeat(8, auto);/* TODO is it ok to have a static number here when the number of cells is variable? */
 }
 .pensjonsbrev-sakspart-tittel {
     margin-top: 1rem;
