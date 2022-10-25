@@ -20,6 +20,7 @@ application {
     val isDevelopment: Boolean = project.ext.has("development")
     applicationDefaultJvmArgs = listOf("-Dio.ktor.development=$isDevelopment")
 }
+data class GithubImageRegistry(override val toImage: Provider<String>, override val username: Provider<String>, override val password: Provider<String>) : DockerImageRegistry
 
 ktor {
     fatJar {
@@ -30,11 +31,11 @@ ktor {
         localImageName.set("pensjon-skribenten")
         imageTag.set(providers.environmentVariable("IMAGE_TAG").orElse("latest"))
         externalRegistry.set(
-            object : DockerImageRegistry {
-                override val toImage: Provider<String> = providers.environmentVariable("IMAGE_SKRIBENTEN_BACKEND")
-                override val password: Provider<String> = providers.environmentVariable("GITHUB_TOKEN")
-                override val username: Provider<String> = providers.environmentVariable("GITHUB_REPOSITORY")
-            }
+            GithubImageRegistry(
+                toImage = providers.environmentVariable("IMAGE_SKRIBENTEN_BACKEND"),
+                username = providers.environmentVariable("GITHUB_TOKEN"),
+                password = providers.environmentVariable("GITHUB_REPOSITORY"),
+            )
         )
     }
 }
