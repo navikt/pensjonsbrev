@@ -33,8 +33,8 @@ ktor {
         externalRegistry.set(
             GithubImageRegistry(
                 toImage = providers.environmentVariable("IMAGE_SKRIBENTEN_BACKEND"),
-                username = providers.environmentVariable("GITHUB_TOKEN"),
-                password = providers.environmentVariable("GITHUB_REPOSITORY"),
+                username = providers.environmentVariable("GITHUB_REPOSITORY"),
+                password = providers.environmentVariable("GITHUB_TOKEN"),
             )
         )
     }
