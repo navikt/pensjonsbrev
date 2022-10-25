@@ -108,35 +108,33 @@ object PensjonLatexRenderer : LetterRenderer<RenderedLatexLetter>() {
     private fun LatexAppendable.brukerCommands(bruker: Bruker) =
         with(bruker) {
             printNewCmd("feltfoedselsnummerbruker", foedselsnummer.format())
-            printNewCmd("feltfornavnbruker", fornavn)
+            printNewCmd("feltfornavnbruker", fornavn + mellomnavn?.let { " $it" } )
             printNewCmd("feltetternavnbruker", etternavn)
         }
 
     private fun LatexAppendable.saksinfoCommands(verge: String?) {
         verge?.let { printNewCmd("feltvergenavn", it) }
         printNewCmd("saksinfomottaker") {
-            printCmd("begin", "mytblr", "l")
+            printCmd("begin", "saksinfotable", "")
             verge?.let {
                 println("""\feltvergenavnprefix & \feltvergenavn \\""", escape = false)
                 println(
-                    """\felt${LanguageSetting.Sakspart.gjelderNavn} & \feltetternavnbruker \space \feltfornavnbruker \\""",
+                    """\felt${LanguageSetting.Sakspart.gjelderNavn} & \feltfornavnbruker \space \feltetternavnbruker \\""",
                     escape = false
                 )
             } ?: println(
-                """\felt${LanguageSetting.Sakspart.navn} & \feltetternavnbruker \space \feltfornavnbruker \\""",
+                """\felt${LanguageSetting.Sakspart.navn} & \feltfornavnbruker \space \feltetternavnbruker \\""",
                 escape = false
             )
             println(
                 """\felt${LanguageSetting.Sakspart.foedselsnummer} & \feltfoedselsnummerbruker \\""",
                 escape = false
             )
-            println("""\felt${LanguageSetting.Sakspart.saksnummer} & \feltsaksnummer \\""", escape = false)
+            println("""\felt${LanguageSetting.Sakspart.saksnummer} & \feltsaksnummer \hfill \letterdate\\""", escape = false)
 
 
-            printCmd("end", "mytblr")
+            printCmd("end", "saksinfotable")
         }
-
-
     }
 
     private fun LatexAppendable.navEnhetCommands(navEnhet: NAVEnhet) =
@@ -175,8 +173,11 @@ object PensjonLatexRenderer : LetterRenderer<RenderedLatexLetter>() {
             arg {
                 renderText(scope, listOf(attachment.title))
             }
+
             arg {
-                printCmd("sakspart")
+                if(attachment.includeSakspart) {
+                    printCmd("sakspart")
+                }
             }
         }
 

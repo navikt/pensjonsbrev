@@ -120,17 +120,18 @@
 %----------------------------------------
 %             Case details
 %----------------------------------------
-\NewTblrEnviron{mytblr}
-\SetTblrOuter[mytblr]{baseline=B}
-\SetTblrInner[mytblr]{leftsep=0pt}
-\SetTblrInner[mytblr]{rightsep=23pt}
-\SetTblrInner[mytblr]{rowsep=0pt}
-\SetTblrOuter[mytblr]{postsep=0pt}
-\SetTblrOuter[mytblr]{footsep=0pt}
+\NewTblrEnviron{saksinfotable}
+\SetTblrInner[saksinfotable]{colspec={l@{\hskip 8mm}X}}
+\SetTblrInner[saksinfotable]{leftsep=0pt}
+\SetTblrInner[saksinfotable]{rightsep=0pt}
+\SetTblrInner[saksinfotable]{rowsep=0pt}
+\SetTblrOuter[saksinfotable]{postsep=0pt}
+\SetTblrOuter[saksinfotable]{footsep=0pt}
 
 \newcommand{\sakspart}{
+    \setlength{\tabcolsep}{12pt}
     \primaryFont \fontsize{\standardtextsize}{19.5pt} \selectfont
-    \saksinfomottaker \hfill \letterdate
+    \saksinfomottaker
     \\[-2mm]
 }
 

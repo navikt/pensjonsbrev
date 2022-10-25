@@ -19,9 +19,9 @@ object Fixtures {
             telefonnummer = Telefonnummer("55553334"),
         ),
         bruker = Bruker(
-            fornavn = "Testerson",
+            fornavn = "Test",
             mellomnavn = "\"bruker\"",
-            etternavn = "Test",
+            etternavn = "Testerson",
             foedselsnummer = Foedselsnummer("01019878910"),
             foedselsdato = LocalDate.of(1998, 1, 1),
         ),
@@ -29,7 +29,7 @@ object Fixtures {
             saksbehandler = "Ole Saksbehandler",
             attesterendeSaksbehandler = "Per Attesterende",
         ),
-        vergeNavn = "Verge Vergeson",
+        vergeNavn = null,
     )
 
     val fellesAuto = felles.copy(signerendeSaksbehandlere = null)
