@@ -7,6 +7,10 @@ env:
     value: "https://pensjon-pen-q2.dev.adeo.no/pen/springapi/"
   - name: PEN_SCOPE
     value: "api://dev-fss.teampensjon.pensjon-pen-q2/.default"
+  - name: BREVBAKER_URL
+    value: "https://pensjon-brevbaker.dev.intern.nav.no"
+  - name: BREVBAKER_SCOPE
+    value: "api://dev-gcp.pensjonsbrev.pensjon-brevbaker/.default"
 
 preAuthorized:
   - name: skribenten-frontend
