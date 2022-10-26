@@ -101,12 +101,12 @@ object PensjonLatexRenderer : LetterRenderer<RenderedLatexLetter>() {
     private fun LatexAppendable.brukerCommands(bruker: Bruker) =
         with(bruker) {
             printNewCmd("feltfoedselsnummerbruker", foedselsnummer.format())
-            printNewCmd("feltnavnbruker", fornavn + mellomnavn?.let{" $it"})
+            printNewCmd("feltnavnbruker", listOfNotNull(fornavn, mellomnavn).joinToString(" "))
             printNewCmd("feltetternavnbruker", etternavn)
         }
 
     private fun LatexAppendable.saksinfoCommands(verge: String?) {
-        verge?.let { printNewCmd("feltvergenavn", it) }
+        verge?.also { printNewCmd("feltvergenavn", it) }
         printNewCmd("saksinfomottaker") {
             printCmd("begin", "saksinfotable", "")
             verge?.let {
