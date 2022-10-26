@@ -19,7 +19,6 @@ val vedleggMaanedligUfoeretrygdFoerSkatt = createAttachment<LangBokmalNynorskEng
         Nynorsk to "Dette er den månadlege uføretrygda di før skatt",
         English to "This is your monthly disability benefit before tax",
     ),
-    includeSakspart = false
 ) {
 
     includePhrase(VedleggMaanedligeUfoeretrgdFoerSkatt.VedleggBelopUT_001)
