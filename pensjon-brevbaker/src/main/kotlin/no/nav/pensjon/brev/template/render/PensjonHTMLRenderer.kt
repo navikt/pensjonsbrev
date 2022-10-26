@@ -34,39 +34,39 @@ object PensjonHTMLRenderer : LetterRenderer<RenderedHtmlLetter>() {
         """.trimIndent()
 
     override fun renderLetter(scope: ExpressionScope<*, *>, template: LetterTemplate<*, *>): RenderedHtmlLetter = RenderedHtmlLetter().apply {
-            newFile("index.html") {
-                appendLine("<!DOCTYPE html>").appendHTML().html {
-                    lang = scope.language.locale().toLanguageTag()
-                    head {
-                        meta(charset = Charsets.UTF_8.name())
-                        meta(name = "viewport", content = "width=device-width")
-                        title { renderTextWithoutStyle(scope, template.title) }
-                        style { unsafe { fontBinary.forEach { raw(it) } } }
-                        style { unsafe { raw(css) } }
-                    }
-                    body {
-                        div(classes("rot")) {
-                            div(classes("brev")) {
-                            img(classes = classes("logo"), src = navLogoImg, alt = AltTexts.logo.text(scope.language))
-                                div(classes("brevhode")) {
-                                    renderSakspart(scope)
-                                    brevdato(scope)
-                                }
-                                h1(classes("tittel")) { renderText(scope, template.title) }
-                                div(classes("brevkropp")) {
-                                    renderOutline(scope, template.outline)
-                                    renderClosing(scope)
-                                }
+        newFile("index.html") {
+            appendLine("<!DOCTYPE html>").appendHTML().html {
+                lang = scope.language.locale().toLanguageTag()
+                head {
+                    meta(charset = Charsets.UTF_8.name())
+                    meta(name = "viewport", content = "width=device-width")
+                    title { renderTextWithoutStyle(scope, template.title) }
+                    style { unsafe { fontBinary.forEach { raw(it) } } }
+                    style { unsafe { raw(css) } }
+                }
+                body {
+                    div(classes("rot")) {
+                        div(classes("brev")) {
+                        img(classes = classes("logo"), src = navLogoImg, alt = AltTexts.logo.text(scope.language))
+                            div(classes("brevhode")) {
+                                renderSakspart(scope)
+                                brevdato(scope)
                             }
-                            render(scope, template.attachments) { attachmentScope, _, attachment ->
-                                hr(classes("vedlegg"))
-                                renderAttachment(attachmentScope, attachment)
+                            h1(classes("tittel")) { renderText(scope, template.title) }
+                            div(classes("brevkropp")) {
+                                renderOutline(scope, template.outline)
+                                renderClosing(scope)
                             }
+                        }
+                        render(scope, template.attachments) { attachmentScope, _, attachment ->
+                            hr(classes("vedlegg"))
+                            renderAttachment(attachmentScope, attachment)
                         }
                     }
                 }
             }
         }
+    }
 
     private fun FlowContent.brevdato(scope: ExpressionScope<*, *>): Unit =
         div(classes("brevdato")) {
