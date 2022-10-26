@@ -14,10 +14,7 @@ object PensjonLatexRenderer : LetterRenderer<RenderedLatexLetter>() {
     private val letterResourceFiles: List<RenderedFile> = listOf(
         RenderedFile.Binary("nav-logo.pdf", getResource("latex/nav-logo.pdf")),
         RenderedFile.PlainText("nav-logo.pdf_tex", getResource("latex/nav-logo.pdf_tex").toString(Charsets.UTF_8)),
-        RenderedFile.PlainText(
-            "pensjonsbrev_v3.cls",
-            getResource("latex/pensjonsbrev_v3.cls").toString(Charsets.UTF_8)
-        ),
+        RenderedFile.PlainText("pensjonsbrev_v3.cls", getResource("latex/pensjonsbrev_v3.cls").toString(Charsets.UTF_8)),
         RenderedFile.PlainText("firstpage.tex", getResource("latex/firstpage.tex").toString(Charsets.UTF_8)),
         RenderedFile.PlainText("attachment.tex", getResource("latex/attachment.tex").toString(Charsets.UTF_8)),
         RenderedFile.PlainText("closing.tex", getResource("latex/closing.tex").toString(Charsets.UTF_8)),
@@ -35,10 +32,7 @@ object PensjonLatexRenderer : LetterRenderer<RenderedLatexLetter>() {
             addFiles(letterResourceFiles)
         }
 
-    private fun LatexAppendable.appendMasterTemplateParameters(
-        scope: ExpressionScope<*, *>,
-        attachments: List<IncludeAttachment<*, *>>
-    ) {
+    private fun LatexAppendable.appendMasterTemplateParameters(scope: ExpressionScope<*, *>, attachments: List<IncludeAttachment<*, *>>) {
         pensjonLatexSettings.writeLanguageSettings { settingName, settingValue ->
             printNewCmd("felt$settingName") {
                 renderText(scope, settingValue)
@@ -67,8 +61,7 @@ object PensjonLatexRenderer : LetterRenderer<RenderedLatexLetter>() {
     }
 
     private fun LatexAppendable.appendPdfMetadata(scope: ExpressionScope<*, *>, template: LetterTemplate<*, *>) {
-        val title =
-            StringBuilder().apply { LatexAppendable(this).apply { renderText(scope, template.title) } }.toString()
+        val title = StringBuilder().apply { LatexAppendable(this).apply { renderText(scope, template.title) } }.toString()
         print(
             """
                \pdfinfo{
@@ -108,7 +101,7 @@ object PensjonLatexRenderer : LetterRenderer<RenderedLatexLetter>() {
     private fun LatexAppendable.brukerCommands(bruker: Bruker) =
         with(bruker) {
             printNewCmd("feltfoedselsnummerbruker", foedselsnummer.format())
-            printNewCmd("feltnavnbruker", listOfNotNull(fornavn, mellomnavn, etternavn).joinToString(" "))
+            printNewCmd("feltnavnbruker", fornavn + mellomnavn?.let{" $it"})
             printNewCmd("feltetternavnbruker", etternavn)
         }
 
@@ -135,7 +128,6 @@ object PensjonLatexRenderer : LetterRenderer<RenderedLatexLetter>() {
                 escape = false
             )
 
-
             printCmd("end", "saksinfotable")
         }
     }
@@ -153,10 +145,7 @@ object PensjonLatexRenderer : LetterRenderer<RenderedLatexLetter>() {
         return "D:${formattedTime.replace(":", "’")}’"
     }
 
-    private fun LatexAppendable.vedleggCommand(
-        scope: ExpressionScope<*, *>,
-        attachments: List<IncludeAttachment<*, *>>
-    ) {
+    private fun LatexAppendable.vedleggCommand(scope: ExpressionScope<*, *>, attachments: List<IncludeAttachment<*, *>>) {
         printNewCmd("feltclosingvedlegg") {
             val includedAttachments = attachments.filter { it.predicate.eval(scope) }
             if (includedAttachments.isNotEmpty()) {
