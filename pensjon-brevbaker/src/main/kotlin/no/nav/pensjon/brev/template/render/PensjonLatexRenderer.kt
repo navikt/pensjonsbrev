@@ -101,7 +101,7 @@ object PensjonLatexRenderer : LetterRenderer<RenderedLatexLetter>() {
     private fun LatexAppendable.brukerCommands(bruker: Bruker) =
         with(bruker) {
             printNewCmd("feltfoedselsnummerbruker", foedselsnummer.format())
-            printNewCmd("feltnavnbruker", listOfNotNull(fornavn, mellomnavn).joinToString(" "))
+            printNewCmd("feltfornavnbruker", listOfNotNull(fornavn, mellomnavn).joinToString(" "))
             printNewCmd("feltetternavnbruker", etternavn)
         }
 
