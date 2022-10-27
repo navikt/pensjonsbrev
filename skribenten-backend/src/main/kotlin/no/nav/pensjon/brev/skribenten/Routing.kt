@@ -28,9 +28,7 @@ fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config
         authenticate(authConfig.name) {
             post("/test/pen") {
                 val sak = penService.hentSak(call, 22958874)
-                val dto = call.receive<Testing>()
-                call.application.log.info("mottok: $dto")
-                call.respond(dto.copy(name = "hei ${dto.name}, sak 22958874 hentet"))
+                respondWithResult(sak)
             }
 
             get("/test/brevbaker") {
