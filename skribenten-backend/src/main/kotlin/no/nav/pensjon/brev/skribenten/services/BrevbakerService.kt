@@ -2,30 +2,23 @@ package no.nav.pensjon.brev.skribenten.services
 
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.typesafe.config.Config
-import io.ktor.client.*
-import io.ktor.client.call.*
-import io.ktor.client.engine.cio.*
 import io.ktor.client.plugins.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.serialization.jackson.*
 import io.ktor.server.application.*
-import io.ktor.server.plugins.callid.*
 import no.nav.pensjon.brev.api.model.*
 import no.nav.pensjon.brev.api.model.Year
 import no.nav.pensjon.brev.api.model.maler.*
 import no.nav.pensjon.brev.api.model.vedlegg.*
-import no.nav.pensjon.brev.skribenten.auth.AzureAdService
+import no.nav.pensjon.brev.skribenten.auth.*
 import java.time.*
 
-class BrevbakerException(msg: String) : Exception(msg)
-
-class BrevbakerService(config: Config, private val authService: AzureAdService) {
+class BrevbakerService(config: Config, authService: AzureADService) {
     private val brevbakerUrl = config.getString("url")
-    private val brevbakerScope = config.getString("scope")
 
-    private val client = HttpClient(CIO) {
+    private val client = AzureADOnBehalfOfAuthorizedHttpClient(config.getString("scope"), authService) {
         defaultRequest {
             url(brevbakerUrl)
         }
@@ -34,38 +27,12 @@ class BrevbakerService(config: Config, private val authService: AzureAdService) 
                 registerModule(JavaTimeModule())
             }
         }
-        HttpResponseValidator {
-            validateResponse { response ->
-                // TODO: Gjør dette skikkelig når vi vet bruken.
-                when (response.status) {
-                    HttpStatusCode.BadRequest -> {
-                        throw BrevbakerException("Bad request: ${response.body<String>()}")
-                    }
-
-                    HttpStatusCode.InternalServerError -> {
-                        throw BrevbakerException("Brevbaker doesn't work: ${response.body<String>()}")
-                    }
-                }
-            }
-        }
-    }
-
-    private suspend fun HttpRequestBuilder.addAuthorization(call: ApplicationCall) =
-        authService.getOnBehalfOfToken(call, brevbakerScope).also {
-            bearerAuth(it.accessToken)
-        }
-
-    private fun HttpRequestBuilder.addCallId(call: ApplicationCall) {
-        headers {
-            call.callId?.also { append("Nav-Call-Id", it) }
-        }
     }
 
     // Demo request
-    suspend fun genererBrev(call: ApplicationCall): LetterResponse {
-        return client.post("/letter/vedtak") {
-            addAuthorization(call)
-            addCallId(call)
+    // TODO: handle exceptions thrown by client, and wrap them in ServiceResult.Error. Design a type to represent errors.
+    suspend fun genererBrev(call: ApplicationCall): ServiceResult<LetterResponse, Any> =
+        client.post(call, "/letter/vedtak") {
             contentType(ContentType.Application.Json)
             setBody(
                 VedtaksbrevRequest(
@@ -84,6 +51,6 @@ class BrevbakerService(config: Config, private val authService: AzureAdService) 
                     language = LanguageCode.BOKMAL,
                 )
             )
-        }.body()
-    }
+        }.toServiceResult()
 }
+

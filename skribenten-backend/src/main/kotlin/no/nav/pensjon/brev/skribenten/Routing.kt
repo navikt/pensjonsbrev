@@ -12,7 +12,7 @@ import no.nav.pensjon.brev.skribenten.services.*
 import java.util.Base64
 
 fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config) {
-    val authService = AzureAdService(authConfig)
+    val authService = AzureADService(authConfig)
     val penService = PenService(skribentenConfig.getConfig("services.pen"), authService)
     val brevbakerService = BrevbakerService(skribentenConfig.getConfig("services.brevbaker"), authService)
 
@@ -32,9 +32,10 @@ fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config
                 call.application.log.info("mottok: $dto")
                 call.respond(dto.copy(name = "hei ${dto.name}, sak 22958874 hentet"))
             }
+
             get("/test/brevbaker") {
                 val brev = brevbakerService.genererBrev(call)
-                call.respondBytes(Base64.getDecoder().decode(brev.base64pdf), ContentType.Application.Pdf)
+                respondWithResult(brev, onOk = { respondBytes(Base64.getDecoder().decode(it.base64pdf), ContentType.Application.Pdf) })
             }
         }
     }

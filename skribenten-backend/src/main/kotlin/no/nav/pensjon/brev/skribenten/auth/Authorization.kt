@@ -81,10 +81,10 @@ class InvalidAuthorization(msg: String, cause: Throwable? = null): Exception(msg
 @JvmInline
 value class UserAccessToken(val token: String)
 data class UserPrincipal(val accessToken: UserAccessToken, val jwtPayload: Payload): Principal {
-    private val onBehalfOfTokens = mutableMapOf<String, OnBehalfOfToken>()
+    private val onBehalfOfTokens = mutableMapOf<String, TokenResponse.OnBehalfOfToken>()
 
-    fun getOnBehalfOfToken(scope: String): OnBehalfOfToken? = onBehalfOfTokens[scope]
-    fun setOnBehalfOfToken(scope: String, token: OnBehalfOfToken) {
+    fun getOnBehalfOfToken(scope: String): TokenResponse.OnBehalfOfToken? = onBehalfOfTokens[scope]
+    fun setOnBehalfOfToken(scope: String, token: TokenResponse.OnBehalfOfToken) {
         onBehalfOfTokens[scope] = token
     }
 }
