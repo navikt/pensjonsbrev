@@ -14,15 +14,20 @@ import no.nav.pensjon.brev.template.render.TestTemplateDtoSelectors.etNavn
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 import org.opentest4j.AssertionFailedError
+import org.slf4j.LoggerFactory
 
 data class TestTemplateDto(val etNavn: String)
+
 @TemplateModelHelpers
 object Helpers : HasModel<TestTemplateDto>
 
+private const val FIND_FAILING_CHARACTERS = false
+
 @Tag(TestTags.PDF_BYGGER)
 class PensjonLatexITest {
-
+    private val logger = LoggerFactory.getLogger(PensjonLatexITest::class.java)
     private val brevData = TestTemplateDto("Ole")
+
     @Test
     fun canRender() {
         val template = createTemplate(
@@ -73,7 +78,7 @@ class PensjonLatexITest {
         if (testCharacters(begin, end)) {
             //All characters are valid
             return
-        } else {
+        } else if (FIND_FAILING_CHARACTERS) {
             if (begin - end == 0) {
                 //Failed at single character
                 invalidCharacters.add(begin)
@@ -113,6 +118,8 @@ class PensjonLatexITest {
 
             return true
         } catch (e: Throwable) {
+            if (!FIND_FAILING_CHARACTERS) throw e
+            else logger.error("Failed printing character in range $startChar - $endChar with message: ${e.message}")
             return false
         }
     }
