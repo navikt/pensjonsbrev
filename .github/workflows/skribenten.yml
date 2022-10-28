@@ -34,7 +34,7 @@ jobs:
 
   deploy-skribenten-backend-dev:
     name: "Deploy skribenten-backend to dev"
-#    if: (github.event_name == 'push' && github.ref == 'refs/heads/main') || github.event_name == 'workflow_dispatch'
+    if: (github.event_name == 'push' && github.ref == 'refs/heads/main') || github.event_name == 'workflow_dispatch'
     needs: "build-skribenten-backend"
     runs-on: "ubuntu-latest"
     steps:
