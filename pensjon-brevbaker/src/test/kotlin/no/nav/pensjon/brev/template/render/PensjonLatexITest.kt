@@ -57,10 +57,14 @@ class PensjonLatexITest {
         runBlocking { LaTeXCompilerService(PDF_BUILDER_URL).ping() }
     }
 
+    // To figure out which character makes the compilation fail, set the FIND_FAILING_CHARACTERS to true.
+    // FIND_FAILING_CHARACTERS is disabled by default to not take up too much time in case of universally failing compilation.
     @Test
     fun `try different characters to attempt escaping LaTeX`() {
         val invalidCharacters = ArrayList<Int>()
-        isValidCharacters(0, Char.MAX_VALUE.code, invalidCharacters)
+        // split in two halfs so it doesn't time out the letter compilation
+        isValidCharacters(0, Char.MAX_VALUE.code / 2, invalidCharacters)
+        isValidCharacters(Char.MAX_VALUE.code / 2 + 1, Char.MAX_VALUE.code, invalidCharacters)
         if (invalidCharacters.isNotEmpty()) {
             throw AssertionFailedError(
                 """
