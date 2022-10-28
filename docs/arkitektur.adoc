@@ -62,6 +62,15 @@ Kun data om hvordan et brev evt. er endret på skal lagres, samt innstillinger f
 
 [plantuml, target=img/planlagt-arkitektur, format=svg]
 ....
+package Brevmaler {
+    [Brevbaker]
+    [Pdfbygger]
+}
+package Brevredigering {
+    [Brevredigering-frontend]
+    [Brevredigering-backend]
+    database "Brevredigering-db" as mellomlagretRedigering
+}
 saksbehandler --> [Brevredigering-frontend]
 [Brevredigering-frontend] --> [Brevredigering-backend]
 [Brevredigering-backend] --> mellomlagretRedigering
@@ -71,7 +80,10 @@ saksbehandler --> [Brevredigering-frontend]
 [Pesys] --> [Brevbaker]
 [Pesys] --> [Distribusjon]
 [Pesys] --> [Arkiv]
-database "Brevredigering-db" as mellomlagretRedigering{
-}
 [Brevbaker] --> [Pdfbygger]
+note as pesysansvar
+    Pensjonsbrev er ansvarlig for deler av pesys
+end note
+[Pesys]..pesysansvar
+
 ....

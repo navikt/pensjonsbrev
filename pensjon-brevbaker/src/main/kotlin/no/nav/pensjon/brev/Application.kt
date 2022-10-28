@@ -13,6 +13,7 @@ import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.plugins.statuspages.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
+import no.nav.pensjon.brev.Metrics.configureMetrics
 import no.nav.pensjon.brev.api.ParseLetterDataException
 import no.nav.pensjon.brev.latex.LatexTimeoutException
 import no.nav.pensjon.brev.template.brevbakerConfig
@@ -76,9 +77,6 @@ fun Application.module() {
         }
     }
 
-    install(MicrometerMetrics) {
-        registry = Metrics.prometheusRegistry
-    }
-
+    configureMetrics()
     brevbakerRouting(jwtConfigs.map { it.name }.toTypedArray())
 }

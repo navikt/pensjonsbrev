@@ -1,4 +1,4 @@
-val ktorVersion: String by project
+val ktorVersion: String by System.getProperties()
 val logbackVersion: String by project
 val logstashVersion: String by project
 val micrometerVersion: String by project
@@ -7,11 +7,6 @@ plugins {
     kotlin("jvm")
     application
     id("com.github.johnrengelman.shadow")
-}
-
-repositories {
-    mavenLocal()
-    mavenCentral()
 }
 
 group="no.nav.pensjon.brev"
