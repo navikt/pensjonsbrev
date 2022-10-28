@@ -38,5 +38,3 @@ fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config
         }
     }
 }
-
-data class Testing(val name: String, val age: Int)
