@@ -16,9 +16,6 @@ group = "no.nav.pensjon.brev.skribenten"
 version = "0.0.1"
 application {
     mainClass.set("no.nav.pensjon.brev.skribenten.ApplicationKt")
-
-    val isDevelopment: Boolean = project.ext.has("development")
-    applicationDefaultJvmArgs = listOf("-Dio.ktor.development=$isDevelopment")
 }
 data class GithubImageRegistry(override val toImage: Provider<String>, override val username: Provider<String>, override val password: Provider<String>) : DockerImageRegistry
 
