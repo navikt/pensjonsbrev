@@ -13,8 +13,6 @@ env:
   "IMAGE_SKRIBENTEN_BACKEND": "ghcr.io/${{ github.repository }}/pensjon-skribenten-backend"
 
 jobs:
-  # Er snyk allerede dekket av pdfbygger-brevbaker.yml? Hvordan får vi den til å kun kjøre i disse jobbene?
-
   build-skribenten-backend:
     name: "Build skribenten backend"
     runs-on: "ubuntu-latest"
