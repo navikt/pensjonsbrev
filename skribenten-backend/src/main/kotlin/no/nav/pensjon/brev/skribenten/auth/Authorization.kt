@@ -14,7 +14,7 @@ import java.net.URL
 
 private val logger = LoggerFactory.getLogger("no.nav.pensjon.brev.skribenten.auth.Authentication")
 
-data class JwtConfig(val name: String, val issuer: String, val jwksUrl: String, val clientId: String, val tokenUri: String, val clientSecret: String, val preAuthorizedApps: List<PreAuthorizedApp>?, val requireAzureAdClaims: Boolean) {
+data class JwtConfig(val name: String, val issuer: String, val jwksUrl: String, val clientId: String, val tokenUri: String, val clientSecret: String, val preAuthorizedApps: List<PreAuthorizedApp>, val requireAzureAdClaims: Boolean) {
     data class PreAuthorizedApp(val name: String, val clientId: String)
 }
 
@@ -60,7 +60,7 @@ fun AuthenticationConfig.skribentenJwt(config: JwtConfig) =
         validate {
             val azp = it["azp"]
 
-            if (config.preAuthorizedApps == null || config.preAuthorizedApps.any { app -> app.clientId == azp }) {
+            if (config.preAuthorizedApps.any { app -> app.clientId == azp }) {
                 UserPrincipal(userAccessToken(), it.payload)
             } else {
                 logger.info("Invalid authorization - claim 'azp' is not a preAuthorizedApp: $azp")
