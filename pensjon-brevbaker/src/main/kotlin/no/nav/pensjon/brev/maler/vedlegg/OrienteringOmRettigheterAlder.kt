@@ -148,7 +148,10 @@ val orienteringOmRettigheterOgPlikterAlder =
                     and not(barnetilleggVedvirk_innvilgetBarnetillegFellesbarn)
                     and not(barnetilleggVedvirk_innvilgetBarnetilleggSaerkullsbarn)
         ) {
-            includePhrase(VedleggPlikterRettTilEktefelletilleggAP_001(bruker_sivilstand))
+            includePhrase(VedleggPlikterRettTilEktefelletilleggAP_001(
+                    bruker_sivilstand
+                )
+            )
         }
         showIf(
             barnetilleggVedvirk_innvilgetBarnetillegFellesbarn
