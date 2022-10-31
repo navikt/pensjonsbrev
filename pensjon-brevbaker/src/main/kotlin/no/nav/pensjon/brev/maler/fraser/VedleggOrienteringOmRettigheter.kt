@@ -224,8 +224,15 @@ object VedleggPlikterHvorforMeldeAP_001 : OutlinePhrase<LangBokmalNynorskEnglish
         }
 }
 
-object VedleggPlikterRettTilBarnetilleggAP_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
+data class VedleggPlikterRettTilBarnetilleggAP_001(
+    val antallFellesbarnInnvilget: Expression<Int?>,
+    val antallSaerkullsbarnInnvilget: Expression<Int?>,
+) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+        ifNotNull(
+            antallFellesbarnInnvilget, antallSaerkullsbarnInnvilget
+        ) { antallFellesbarnInnvilget, antallSaerkullsbarnInnvilget ->
+            val barnFlertall = antallFellesbarnInnvilget.greaterThan(1) or antallSaerkullsbarnInnvilget.greaterThan(1)
         paragraph {
             text(
                 Bokmal to "Fordi du får barnetillegg må du også melde fra om endringer som kan ha betydning for dette tillegget.",
@@ -234,10 +241,10 @@ object VedleggPlikterRettTilBarnetilleggAP_001 : OutlinePhrase<LangBokmalNynorsk
             )
         }
         paragraph {
-            text(
-                Bokmal to "Du må gi oss beskjed hvis barn du forsørger",
-                Nynorsk to "Du må gi oss beskjed om barn du forsørgjer",
-                English to "You must notify us if the child(ren) you provide for will"
+            textExpr(
+                Bokmal to "Du må gi oss beskjed hvis ".expr() + barn du forsørger".expr(),
+                Nynorsk to "Du må gi oss beskjed om barn du forsørgjer".expr(),
+                English to "You must notify us if the child(ren) you provide for will".expr()
             )
         }
         list {
