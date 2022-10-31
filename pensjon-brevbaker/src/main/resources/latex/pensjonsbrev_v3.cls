@@ -120,17 +120,19 @@
 %----------------------------------------
 %             Case details
 %----------------------------------------
+\NewTblrEnviron{saksinfotable}
+\SetTblrInner[saksinfotable]{colspec={l@{\hskip 8mm}X}}
+\SetTblrInner[saksinfotable]{leftsep=0pt}
+\SetTblrInner[saksinfotable]{rightsep=0pt}
+\SetTblrInner[saksinfotable]{rowsep=0pt}
+\SetTblrOuter[saksinfotable]{postsep=0pt}
+\SetTblrOuter[saksinfotable]{footsep=0pt}
+
 \newcommand{\sakspart}{
-    {
-        \setlength{\tabcolsep}{3.9mm}
-        \primaryFont \fontsize{\standardtextsize}{19.5pt} \selectfont
-        \begin{tabular}{@{}ll}
-            \feltnavnprefix & \feltetternavnbruker \space \feltfornavnbruker \\
-            \feltfoedselsnummerprefix & \feltfoedselsnummerbruker \\
-            \feltsaksnummerprefix & \feltsaksnummer
-        \end{tabular}
-        \\[28pt]
-    }
+    \setlength{\tabcolsep}{12pt}
+    \primaryFont \fontsize{\standardtextsize}{19.5pt} \selectfont
+    \saksinfomottaker
+    \\[-2mm]
 }
 
 

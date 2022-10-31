@@ -7,6 +7,7 @@ data class Felles(
     val saksnummer: String,
     val avsenderEnhet: NAVEnhet,
     val bruker: Bruker,
+    val vergeNavn: String?,
     val signerendeSaksbehandlere: SignerendeSaksbehandlere? = null,
 )
 
