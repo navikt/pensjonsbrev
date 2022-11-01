@@ -149,19 +149,35 @@ object Ufoeretrygd {
         override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
             paragraph {
                 text(
-                    Bokmal to "Sivilstanden din avgjør hva du kan få i minsteytelse som ung ufør:",
-                    Nynorsk to "Sivilstanden di avgjør kva di kan få i minsteytelse som ung ufør:",
+                    Bokmal to "Du har tidligere fått innvilget uføretrygd som ung ufør. Fra og med den måneden du fyller 20 år har du rett til høyre minsteytelse.",
+                    Nynorsk to "Du har tidlegare innvilga rett som ung ufør i uføretrygda di. Frå og med månaden du fyller 20 år har du rett til høgare minsteyting.",
                 )
+                text(
+                    Bokmal to "Sivilstanden din avgjør hva du kan få i minsteytelse som ung ufør:",
+                    Nynorsk to "Sivilstanden din avgjer kva du kan få i minsteyting som ung ufør:",
+                )
+                list {
+                    item {
+                        text(
+                            Bokmal to "Er du enslig, er minste årlige uføretrygd 2,91 ganger folketrygdens grunnbeløp.",
+                            Nynorsk to "Er du einsleg, er minste årlege uføretrygd 2,91 gangar grunnbeløpet i folketrygda."
+                        )
+                        text(
+                            Bokmal to "Lever du sammen med en ektefelle eller samboer, er minste årlige ytelse 2,66 ganger folketrygdens grunnbeløp.",
+                            Nynorsk to "Lever du saman med ein ektefelle eller sambuar, er minste årlege yting 2,66 gangar grunnbeløpet i folketrygda."
+                        )
+                    }
+                }
             }
 
             paragraph {
                 val satsFormatert = minsteytelseVedVirkSats.format()
                 textExpr(
-                    Bokmal to "Sivilstanden påvirker størrelsen på den årlige uføretrygden og du får derfor en årlig ytelse som utgjør ".expr()
+                    Bokmal to "Du får derfor en årlig ytelse som utgjør ".expr()
                             + satsFormatert + " ganger grunnbeløpet.",
 
-                    Nynorsk to "Sivilstanden påverkar storleiken på den årlege uføretrygda di, og du får derfor ei årleg yting som utgjer ".expr()
-                            + satsFormatert + " gonger grunnbeløpet.",
+                    Nynorsk to "Du får derfor ei årleg yting som utgjer".expr()
+                            + satsFormatert + " gangar grunnbeløpet.",
                 )
             }
         }

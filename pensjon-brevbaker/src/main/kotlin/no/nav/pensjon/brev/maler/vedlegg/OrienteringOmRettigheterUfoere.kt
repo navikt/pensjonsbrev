@@ -46,7 +46,7 @@ val vedleggOrienteringOmRettigheterOgPlikterUfoere =
             }
 
             showIf(harInnvilgetBarnetillegg) {
-                item { includePhrase(VedleggPlikterAP7_001) }
+                item { includePhrase(VedleggPlikterAP7_001)}
                 item { includePhrase(VedleggPlikterUT13_001) }
                 item { includePhrase(VedleggPlikterUT14_001) }
             }
