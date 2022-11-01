@@ -7,6 +7,7 @@ import no.nav.pensjon.brev.api.model.Sivilstand
 data class OrienteringOmRettigheterAlderDto(
     val bruker_sivilstand: Sivilstand,
     val bruker_borINorge: Boolean,
+    val harTilleggForFlereBarn: Boolean,
     val institusjon_gjeldende: Institusjon,
     val eps_borSammenMedBrukerGjeldende: Boolean,
     val instutisjon_epsInstitusjonGjeldende: Institusjon,

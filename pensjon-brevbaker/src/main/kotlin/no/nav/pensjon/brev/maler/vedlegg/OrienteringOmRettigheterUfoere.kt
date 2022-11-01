@@ -3,6 +3,8 @@ package no.nav.pensjon.brev.maler.vedlegg
 import no.nav.pensjon.brev.api.model.Institusjon.*
 import no.nav.pensjon.brev.api.model.Sivilstand.*
 import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterUfoereDto
+import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterUfoereDtoSelectors.antallFellesbarnInnvilget
+import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterUfoereDtoSelectors.antallSaerkullsbarnInnvilget
 import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterUfoereDtoSelectors.avdoed_sivilstand
 import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterUfoereDtoSelectors.bruker_borINorge
 import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterUfoereDtoSelectors.harInnvilgetBarnetillegg
@@ -46,9 +48,23 @@ val vedleggOrienteringOmRettigheterOgPlikterUfoere =
             }
 
             showIf(harInnvilgetBarnetillegg) {
-                item { includePhrase(VedleggPlikterAP7_001)}
-                item { includePhrase(VedleggPlikterUT13_001) }
-                item { includePhrase(VedleggPlikterUT14_001) }
+                item { includePhrase(VedleggPlikterAP7_001) }
+                item {
+                    includePhrase(
+                       VedleggPlikterUT13_001(
+                            antallFellesbarnInnvilget = antallFellesbarnInnvilget,
+                            antallSaerkullsbarnInnvilget = antallSaerkullsbarnInnvilget
+                        )
+                    )
+                }
+                item {
+                    includePhrase(
+                        VedleggPlikterUT14_001(
+                            antallFellesbarnInnvilget = antallFellesbarnInnvilget,
+                            antallSaerkullsbarnInnvilget = antallSaerkullsbarnInnvilget
+                        )
+                    )
+                }
             }
 
             item { includePhrase(VedleggPlikterUT8_001) }

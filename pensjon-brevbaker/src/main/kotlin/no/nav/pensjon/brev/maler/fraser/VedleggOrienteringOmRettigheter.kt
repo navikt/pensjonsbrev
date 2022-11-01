@@ -671,15 +671,10 @@ object VedleggPlikterUT12_001 : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
 }
 
 data class VedleggPlikterUT13_001(
-    val antallFellesbarnInnvilget: Expression<Int?>,
-    val antallSaerkullsbarnInnvilget: Expression<Int?>,
+    val harTilleggForFlereBarn: Boolean
 ) : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
     override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-        ifNotNull(
-            antallFellesbarnInnvilget, antallSaerkullsbarnInnvilget
-        ) { antallFellesbarnInnvilget, antallSaerkullsbarnInnvilget ->
-            val barnFlertall =
-                antallFellesbarnInnvilget.greaterThan(1) or antallSaerkullsbarnInnvilget.greaterThan(1)
+
             textExpr(
                 Bokmal to ifElse(
                     barnFlertall,
