@@ -149,8 +149,8 @@ object Ufoeretrygd {
         override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
             paragraph {
                 text(
-                    Bokmal to "Du er tidligere innvilget rettighet som ung ufør i uføretrygden din. Denne rettigheten gir deg høyere utbetaling fra og med den måneden du fyller 20 år.",
-                    Nynorsk to "Du har tidlegare fått innvilga rett som ung ufør i uføretrygda di. Denne retten gir deg høgare utbetaling frå og med den månaden du fyller 20 år.",
+                    Bokmal to "Sivilstanden din avgjør hva du kan få i minsteytelse som ung ufør:",
+                    Nynorsk to "Sivilstanden di avgjør kva di kan få i minsteytelse som ung ufør:",
                 )
             }
 
