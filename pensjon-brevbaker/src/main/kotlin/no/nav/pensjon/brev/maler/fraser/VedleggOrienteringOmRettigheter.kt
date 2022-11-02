@@ -8,7 +8,10 @@ import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.dsl.*
-import no.nav.pensjon.brev.template.dsl.expression.*
+import no.nav.pensjon.brev.template.dsl.expression.expr
+import no.nav.pensjon.brev.template.dsl.expression.ifElse
+import no.nav.pensjon.brev.template.dsl.expression.isOneOf
+import no.nav.pensjon.brev.template.dsl.expression.plus
 
 
 object VedleggPlikter_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
@@ -225,60 +228,53 @@ object VedleggPlikterHvorforMeldeAP_001 : OutlinePhrase<LangBokmalNynorskEnglish
 }
 
 data class VedleggPlikterRettTilBarnetilleggAP_001(
-    val antallFellesbarnInnvilget: Expression<Int?>,
-    val antallSaerkullsbarnInnvilget: Expression<Int?>,
-
-    ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    val harTilleggForFlereBarn: Expression<Boolean>
+) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-        ifNotNull(
-            antallFellesbarnInnvilget, antallSaerkullsbarnInnvilget
-        ) { antallFellesbarnInnvilget, antallSaerkullsbarnInnvilget ->
-            val barnFlertall = antallFellesbarnInnvilget.greaterThan(1) or antallSaerkullsbarnInnvilget.greaterThan(1)
-
-            paragraph {
+        val barnFlertall = harTilleggForFlereBarn
+        paragraph {
+            text(
+                Bokmal to "Fordi du får barnetillegg må du også melde fra om endringer som kan ha betydning for dette tillegget.",
+                Nynorsk to "Fordi du får barnetillegg må du også melde frå om endringar som kan ha betydning for dette tillegget.",
+                English to "Because you receive child supplement, you must notify us if there are any changes in circumstances that can have an influence on the assessment of the supplement."
+            )
+        }
+        paragraph {
+            textExpr(
+                Bokmal to "Du må gi oss beskjed hvis ".expr() + ifElse(
+                    barnFlertall,
+                    "barna",
+                    "barnet"
+                ) + " du forsørger".expr(),
+                Nynorsk to "Du må gi oss beskjed om ".expr() + ifElse(
+                    barnFlertall,
+                    "barna",
+                    "barnet"
+                ) + " du forsørgjer".expr(),
+                English to "You must notify us if the ".expr() + ifElse(
+                    barnFlertall,
+                    "children",
+                    "child"
+                ) + " you provide for will".expr()
+            )
+        }
+        list {
+            item {
                 text(
-                    Bokmal to "Fordi du får barnetillegg må du også melde fra om endringer som kan ha betydning for dette tillegget.",
-                    Nynorsk to "Fordi du får barnetillegg må du også melde frå om endringar som kan ha betydning for dette tillegget.",
-                    English to "Because you receive child supplement, you must notify us if there are any changes in circumstances that can have an influence on the assessment of the supplement."
+                    Bokmal to "får egen inntekt som er mer enn folketrygden grunnbeløp omsorgssituasjonen for barnet endrer seg",
+                    Nynorsk to "får eiga inntekt som er meir enn grunnbeløpet i folketrygda skjer endringar av omsorgsituasjonen",
+                    English to "earn an income exceeding the National Insurance basic amount have parental care provision changes"
                 )
-            }
-            paragraph {
-                textExpr(
-                    Bokmal to "Du må gi oss beskjed hvis ".expr() + ifElse(
-                        barnFlertall,
-                        ifTrue = "barna",
-                        ifFalse = "barnet"
-                    ) + " du forsørger".expr(),
-                    Nynorsk to "Du må gi oss beskjed om ".expr() + ifElse(
-                        barnFlertall,
-                        ifTrue = "barna",
-                        ifFalse = "barnet"
-                    ) + " du forsørgjer".expr(),
-                    English to "You must notify us if the ".expr() + ifElse(
-                        barnFlertall,
-                        ifTrue = "children",
-                        ifFalse = "child"
-                    ) + " you provide for will".expr()
+                text(
+                    Bokmal to "skal flytte til et annet land",
+                    Nynorsk to "skal flytte til eit anna land",
+                    English to "move to another country"
                 )
-            }
-            list {
-                item {
-                    text(
-                        Bokmal to "får egen inntekt som er mer enn folketrygden grunnbeløp omsorgssituasjonen for barnet endrer seg",
-                        Nynorsk to "får eiga inntekt som er meir enn grunnbeløpet i folketrygda skjer endringar av omsorgsituasjonen",
-                        English to "earn an income exceeding the National Insurance basic amount have parental care provision changes"
-                    )
-                    text(
-                        Bokmal to "skal flytte til et annet land",
-                        Nynorsk to "skal flytte til eit anna land",
-                        English to "move to another country"
-                    )
-                    text(
-                        Bokmal to "skal oppholde seg i et annet land i mer enn 90 dager i løpet av en tolvmånedersperiode",
-                        Nynorsk to "skal opphalde seg i eit anna land i meir enn 90 dagar i løpet av ein tolv månedars periode",
-                        English to "stay in another country for more than 90 days in a 12 month period"
-                    )
-                }
+                text(
+                    Bokmal to "skal oppholde seg i et annet land i mer enn 90 dager i løpet av en tolvmånedersperiode",
+                    Nynorsk to "skal opphalde seg i eit anna land i meir enn 90 dagar i løpet av ein tolv månedars periode",
+                    English to "stay in another country for more than 90 days in a 12 month period"
+                )
             }
         }
     }
@@ -349,108 +345,100 @@ data class VedleggPlikterRettTilEktefelletilleggAP_001(
 
 data class VedleggPlikterRettTilEktefelletilleggOgBarnetilleggAP_001(
     val sivilstand: Expression<Sivilstand>,
-    val antallFellesbarnInnvilget: Expression<Int?>,
-    val antallSaerkullsbarnInnvilget: Expression<Int?>,
-
-    ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    val harTilleggForFlereBarn: Expression<Boolean>
+) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-        ifNotNull(
-            antallFellesbarnInnvilget, antallSaerkullsbarnInnvilget
-        ) { antallFellesbarnInnvilget, antallSaerkullsbarnInnvilget ->
-            val barnFlertall =
-                antallFellesbarnInnvilget.greaterThan(1) or antallSaerkullsbarnInnvilget.greaterThan(1)
+        val barnFlertall = harTilleggForFlereBarn
+        paragraph {
+            text(
+                Bokmal to "Fordi du får ektefelletillegg og barnetillegg må du også melde fra om endringer som kan ha betydning for disse tilleggene.",
+                Nynorsk to "Fordi du får ektefelletillegg og barnetillegg må du også melde frå om endringar som kan ha betydning for desse tillegga.",
+                English to "Because you receive both spouse supplement and child supplement, you must notify us if there are any changes in circumstances that can have an influence on the assessment of these supplements."
+            )
+        }
 
-            paragraph {
-                text(
-                    Bokmal to "Fordi du får ektefelletillegg og barnetillegg må du også melde fra om endringer som kan ha betydning for disse tilleggene.",
-                    Nynorsk to "Fordi du får ektefelletillegg og barnetillegg må du også melde frå om endringar som kan ha betydning for desse tillegga.",
-                    English to "Because you receive both spouse supplement and child supplement, you must notify us if there are any changes in circumstances that can have an influence on the assessment of these supplements."
+        paragraph {
+            showIf(sivilstand.isOneOf(Sivilstand.GIFT, Sivilstand.GIFT_LEVER_ADSKILT)) {
+                textExpr(
+                    Bokmal to "Du må gi oss beskjed hvis ".expr() + ifElse(
+                        barnFlertall,
+                        "barna",
+                        "barnet"
+                    ) + " eller ektefellen du forsørger".expr(),
+                    Nynorsk to "Du må gi oss beskjed om ".expr() + ifElse(
+                        barnFlertall,
+                        "barna",
+                        "barnet"
+                    ) + " eller ektefellen du forsørgjer".expr(),
+                    English to "You must notify us if the ".expr() + ifElse(
+                        barnFlertall,
+                        "children",
+                        "child"
+                    ) + " or spouse you provide for will".expr()
                 )
             }
-
-            paragraph {
-                showIf(sivilstand.isOneOf(Sivilstand.GIFT, Sivilstand.GIFT_LEVER_ADSKILT)) {
-                    textExpr(
-                        Bokmal to "Du må gi oss beskjed hvis ".expr() + ifElse(
-                            barnFlertall,
-                            ifTrue = "barna",
-                            ifFalse = "barnet"
-                        ) + " eller ektefellen du forsørger".expr(),
-                        Nynorsk to "Du må gi oss beskjed om ".expr() + ifElse(
-                            barnFlertall,
-                            ifTrue = "barna",
-                            ifFalse = "barnet"
-                        ) + " eller ektefellen du forsørgjer".expr(),
-                        English to "You must notify us if the ".expr() + ifElse(
-                            barnFlertall,
-                            ifTrue = "barna",
-                            ifFalse = "barnet"
-                        ) + " or spouse you provide for will".expr()
-                    )
-                }
-                showIf(sivilstand.isOneOf(Sivilstand.SAMBOER1_5, Sivilstand.SAMBOER3_2)) {
-                    textExpr(
-                        Bokmal to "Du må gi oss beskjed hvis ".expr() + ifElse(
-                            barnFlertall,
-                            ifTrue = "barna",
-                            ifFalse = "barnet"
-                        ) + " eller samboeren du forsørger".expr(),
-                        Nynorsk to "Du må gi oss beskjed om ".expr() + ifElse(
-                            barnFlertall,
-                            ifTrue = "barna",
-                            ifFalse = "barnet"
-                        ) + " eller samboeren du forsørgjer".expr(),
-                        English to "You must notify us if the ".expr() + ifElse(
-                            barnFlertall,
-                            ifTrue = "children",
-                            ifFalse = "child"
-                        ) + " or partner you provide for will".expr()
-                    )
-                }
-                showIf(sivilstand.isOneOf(Sivilstand.PARTNER, Sivilstand.PARTNER_LEVER_ADSKILT)) {
-                    textExpr(
-                        Bokmal to "Du må gi oss beskjed hvis ".expr() + ifElse(
-                            barnFlertall,
-                            ifTrue = "barna",
-                            ifFalse = "barnet"
-                        ) + " eller partneren du forsørger".expr(),
-                        Nynorsk to "Du må gi oss beskjed om ".expr() + ifElse(
-                            barnFlertall,
-                            ifTrue = "barna",
-                            ifFalse = "barnet"
-                        ) + " eller partneren du forsørgjer".expr(),
-                        English to "You must notify us if the ".expr() + ifElse(
-                            barnFlertall,
-                            ifTrue = "children",
-                            ifFalse = "child"
-                        ) + " or partner you provide for will".expr()
-                    )
-                }
+            showIf(sivilstand.isOneOf(Sivilstand.SAMBOER1_5, Sivilstand.SAMBOER3_2)) {
+                textExpr(
+                    Bokmal to "Du må gi oss beskjed hvis ".expr() + ifElse(
+                        barnFlertall,
+                        "barna",
+                        "barnet"
+                    ) + " eller samboeren du forsørger".expr(),
+                    Nynorsk to "Du må gi oss beskjed om ".expr() + ifElse(
+                        barnFlertall,
+                        "barna",
+                        "barnet"
+                    ) + " eller samboeren du forsørgjer".expr(),
+                    English to "You must notify us if the ".expr() + ifElse(
+                        barnFlertall,
+                        "children",
+                        "child"
+                    ) + " or partner you provide for will".expr()
+                )
             }
+            showIf(sivilstand.isOneOf(Sivilstand.PARTNER, Sivilstand.PARTNER_LEVER_ADSKILT)) {
+                textExpr(
+                    Bokmal to "Du må gi oss beskjed hvis ".expr() + ifElse(
+                        barnFlertall,
+                        "barna",
+                        "barnet"
+                    ) + " eller partneren du forsørger".expr(),
+                    Nynorsk to "Du må gi oss beskjed om ".expr() + ifElse(
+                        barnFlertall,
+                        "barna",
+                        "barnet"
+                    ) + " eller partneren du forsørgjer".expr(),
+                    English to "You must notify us if the ".expr() + ifElse(
+                        barnFlertall,
+                        "children",
+                        "child"
+                    ) + " or partner you provide for will".expr()
+                )
+            }
+        }
 
-            list {
-                item {
-                    text(
-                        Bokmal to "får egen inntekt som er mer enn  folketrygden grunnbeløp",
-                        Nynorsk to "får eiga inntekt som er meir enn grunnbeløpet i folketrygda",
-                        English to "earn an income exceeding the National Insurance basic amount"
-                    )
-                    text(
-                        Bokmal to "omsorgssituasjonen for barnet endrer seg",
-                        Nynorsk to "omsorgssituasjonen for barnet endrar seg",
-                        English to "have parental care provision changes"
-                    )
-                    text(
-                        Bokmal to "skal flytte til et annet land",
-                        Nynorsk to "skal flytte til eit anna land",
-                        English to "move to another country"
-                    )
-                    text(
-                        Bokmal to "skal oppholde seg i et annet land i mer enn 90 dager i løpet av en tolvmånedersperiode",
-                        Nynorsk to "skal opphalde seg i eit anna land i meir enn 90 dager i løpet av ein tolv månedars periode",
-                        English to "stay in another country for more than 90 days in a 12 month period"
-                    )
-                }
+        list {
+            item {
+                text(
+                    Bokmal to "får egen inntekt som er mer enn  folketrygden grunnbeløp",
+                    Nynorsk to "får eiga inntekt som er meir enn grunnbeløpet i folketrygda",
+                    English to "earn an income exceeding the National Insurance basic amount"
+                )
+                text(
+                    Bokmal to "omsorgssituasjonen for barnet endrer seg",
+                    Nynorsk to "omsorgssituasjonen for barnet endrar seg",
+                    English to "have parental care provision changes"
+                )
+                text(
+                    Bokmal to "skal flytte til et annet land",
+                    Nynorsk to "skal flytte til eit anna land",
+                    English to "move to another country"
+                )
+                text(
+                    Bokmal to "skal oppholde seg i et annet land i mer enn 90 dager i løpet av en tolvmånedersperiode",
+                    Nynorsk to "skal opphalde seg i eit anna land i meir enn 90 dager i løpet av ein tolv månedars periode",
+                    English to "stay in another country for more than 90 days in a 12 month period"
+                )
             }
         }
     }
@@ -595,33 +583,27 @@ object VedleggPlikterUT6_001 : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
 }
 
 data class VedleggPlikterUT7_001(
-    val antallFellesbarnInnvilget: Expression<Int?>,
-    val antallSaerkullsbarnInnvilget: Expression<Int?>,
+    val harTilleggForFlereBarn: Expression<Boolean>
 ) : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
     override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-        ifNotNull(
-            antallFellesbarnInnvilget, antallSaerkullsbarnInnvilget
-        ) { antallFellesbarnInnvilget, antallSaerkullsbarnInnvilget ->
-            val barnFlertall =
-                antallFellesbarnInnvilget.greaterThan(1) or antallSaerkullsbarnInnvilget.greaterThan(1)
-            textExpr(
-                Bokmal to ifElse(
-                    barnFlertall,
-                    ifTrue = "barna",
-                    ifFalse = "barnet"
-                ) + " du forsørger får en inntekt over folketrygdens grunnbeløp, eller det skjer endringer i omsorgsituasjonen".expr(),
-                Nynorsk to ifElse(
-                    barnFlertall,
-                    ifTrue = "barna",
-                    ifFalse = "barnet"
-                ) + " du forsørgjer får ei samla inntekt over grunnbeløpet i folketrygda, eller det skjer endringar av omsorgsituasjonen".expr(),
-                English to ifElse(
-                    barnFlertall,
-                    ifTrue = "the children",
-                    ifFalse = "the child"
-                ) + " in your care earn an income exceeding the National Insurance basic amount or there are changes in the care situation".expr()
-            )
-        }
+        val barnFlertall = harTilleggForFlereBarn
+        textExpr(
+            Bokmal to ifElse(
+                barnFlertall,
+                "barna",
+                "barnet"
+            ) + " du forsørger får en inntekt over folketrygdens grunnbeløp, eller det skjer endringer i omsorgsituasjonen".expr(),
+            Nynorsk to ifElse(
+                barnFlertall,
+                "barna",
+                "barnet"
+            ) + " du forsørgjer får ei samla inntekt over grunnbeløpet i folketrygda, eller det skjer endringar av omsorgsituasjonen".expr(),
+            English to ifElse(
+                barnFlertall,
+                "children in your care earn",
+                "the child in your care earns"
+            ) + " an income exceeding the National Insurance basic amount or there are changes in the care situation".expr()
+        )
     }
 }
 
@@ -671,55 +653,53 @@ object VedleggPlikterUT12_001 : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
 }
 
 data class VedleggPlikterUT13_001(
-    val harTilleggForFlereBarn: Boolean
+    val harTilleggForFlereBarn: Expression<Boolean>
 ) : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
     override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-        val barnflertall = harTilleggForFlereBarn
+        val barnFlertall = harTilleggForFlereBarn
         textExpr(
-            Bokmal to ifElse(barnFlertall, "barna", "barnet") + " du forsørger skal flytte til et annet land".expr(),
+            Bokmal to ifElse(
+                barnFlertall,
+                "barna",
+                "barnet"
+            ) + " du forsørger skal flytte til et annet land".expr(),
             Nynorsk to ifElse(
                 barnFlertall,
-                ifTrue = "barna",
-                ifFalse = "barnet"
-            ) + " barn du forsørgjer skal flytte til eit anna land".expr(),
+                "barna",
+                "barnet"
+            ) + " du forsørgjer skal flytte til eit anna land".expr(),
             English to ifElse(
                 barnFlertall,
-                ifTrue = "the children",
-                ifFalse = "the child"
-            ) + " in your care move to another country".expr()
+                "children in your care move",
+                "the child in your care moves"
+            ) + " to another country".expr()
         )
     }
 }
-}
+
 
 data class VedleggPlikterUT14_001(
-    val antallFellesbarnInnvilget: Expression<Int?>,
-    val antallSaerkullsbarnInnvilget: Expression<Int?>,
+    val harTilleggForFlereBarn: Expression<Boolean>
 ) : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
     override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-        ifNotNull(
-            antallFellesbarnInnvilget, antallSaerkullsbarnInnvilget
-        ) { antallFellesbarnInnvilget, antallSaerkullsbarnInnvilget ->
-            val barnFlertall =
-                antallFellesbarnInnvilget.greaterThan(1) or antallSaerkullsbarnInnvilget.greaterThan(1)
-            textExpr(
-                Bokmal to ifElse(
-                    barnFlertall,
-                    ifTrue = "barna",
-                    ifFalse = "barnet"
-                ) + " du forsørger skal oppholde seg i et annet land mer enn 90 dager i løpet av en tolvmånedersperiode".expr(),
-                Nynorsk to ifElse(
-                    barnFlertall,
-                    ifTrue = "barna",
-                    ifFalse = "barnet"
-                ) + " du forsørgjer skal opphalde seg i eit anna land i meir enn 90 dagar i løpet av ein tolv månedars periode".expr(),
-                English to ifElse(
-                    barnFlertall,
-                    ifTrue = "the children",
-                    ifFalse = "the child"
-                ) + " in your care stay in another country for more than 90 days in a 12 month period".expr()
-            )
-        }
+        val barnFlertall = harTilleggForFlereBarn
+        textExpr(
+            Bokmal to ifElse(
+                barnFlertall,
+                "barna",
+                "barnet"
+            ) + " du forsørger skal oppholde seg i et annet land mer enn 90 dager i løpet av en tolvmånedersperiode".expr(),
+            Nynorsk to ifElse(
+                barnFlertall,
+                "barna",
+                "barnet"
+            ) + " du forsørgjer skal opphalde seg i eit anna land i meir enn 90 dagar i løpet av ein tolv månedars periode".expr(),
+            English to ifElse(
+                barnFlertall,
+                "children in your care stay",
+                "the child in your care stays"
+            ) + " in another country for more than 90 days in a 12 month period".expr()
+        )
     }
 }
 

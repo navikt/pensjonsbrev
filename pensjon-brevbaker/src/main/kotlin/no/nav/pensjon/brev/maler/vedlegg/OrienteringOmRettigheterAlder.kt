@@ -9,6 +9,7 @@ import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterAlderDtoSel
 import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterAlderDtoSelectors.bruker_sivilstand
 import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterAlderDtoSelectors.ektefelletilleggVedvirk_innvilgetEktefelletillegg
 import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterAlderDtoSelectors.eps_borSammenMedBrukerGjeldende
+import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterAlderDtoSelectors.harTilleggForFlereBarn
 import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterAlderDtoSelectors.institusjon_gjeldende
 import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterAlderDtoSelectors.instutisjon_epsInstitusjonGjeldende
 import no.nav.pensjon.brev.maler.fraser.*
@@ -144,8 +145,7 @@ val orienteringOmRettigheterOgPlikterAlder =
         ) {
             includePhrase(
                 VedleggPlikterRettTilBarnetilleggAP_001(
-                    antallFellesbarnInnvilget = antallFellesbarnInnvilget,
-                    antallSaerkullsbarnInnvilget = antallSaerkullsbarnInnvilget
+                    harTilleggForFlereBarn = harTilleggForFlereBarn
                 )
             )
         }
@@ -165,7 +165,12 @@ val orienteringOmRettigheterOgPlikterAlder =
                 or barnetilleggVedvirk_innvilgetBarnetilleggSaerkullsbarn //TODO hva henger denne or egentlig sammen med?
                 and ektefelletilleggVedvirk_innvilgetEktefelletillegg
         ) {
-            includePhrase(VedleggPlikterRettTilEktefelletilleggOgBarnetilleggAP_001(bruker_sivilstand))
+            includePhrase(
+                VedleggPlikterRettTilEktefelletilleggOgBarnetilleggAP_001(
+                    bruker_sivilstand,
+                    harTilleggForFlereBarn = harTilleggForFlereBarn
+                )
+            )
         }
         showIf(
             barnetilleggVedvirk_innvilgetBarnetillegFellesbarn
