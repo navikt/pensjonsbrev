@@ -674,26 +674,22 @@ data class VedleggPlikterUT13_001(
     val harTilleggForFlereBarn: Boolean
 ) : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
     override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-
-            textExpr(
-                Bokmal to ifElse(
-                    barnFlertall,
-                    ifTrue = "barna",
-                    ifFalse = "barnet"
-                ) + " du forsørger skal flytte til et annet land".expr(),
-                Nynorsk to ifElse(
-                    barnFlertall,
-                    ifTrue = "barna",
-                    ifFalse = "barnet"
-                ) + " barn du forsørgjer skal flytte til eit anna land".expr(),
-                English to ifElse(
-                    barnFlertall,
-                    ifTrue = "the children",
-                    ifFalse = "the child"
-                ) + " in your care move to another country".expr()
-            )
-        }
+        val barnflertall = harTilleggForFlereBarn
+        textExpr(
+            Bokmal to ifElse(barnFlertall, "barna", "barnet") + " du forsørger skal flytte til et annet land".expr(),
+            Nynorsk to ifElse(
+                barnFlertall,
+                ifTrue = "barna",
+                ifFalse = "barnet"
+            ) + " barn du forsørgjer skal flytte til eit anna land".expr(),
+            English to ifElse(
+                barnFlertall,
+                ifTrue = "the children",
+                ifFalse = "the child"
+            ) + " in your care move to another country".expr()
+        )
     }
+}
 }
 
 data class VedleggPlikterUT14_001(
