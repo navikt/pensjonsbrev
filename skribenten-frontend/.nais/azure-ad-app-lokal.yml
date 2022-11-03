@@ -1,0 +1,20 @@
+#######
+# Denne er brukt til å gjøre det mulig å bruke tokens lokalt
+#
+# secret kan hentes fra cluster med "kubectl -n pensjonsbrev get secret azure-skribenten-frontend-lokal -o json | jq '.data | map_values(@base64d)'"
+#
+# Kjøres en gang eller ved endringer med
+# kubectl apply -f .deploy/azure-ad-app-lokal.yaml
+###
+apiVersion: nais.io/v1
+kind: AzureAdApplication
+metadata:
+  name: skribenten-frontend-lokal
+  namespace: pensjonsbrev
+  labels:
+    team: pensjonsbrev
+spec:
+  secretName: azure-skribenten-frontend-lokal
+  singlePageApplication: true
+  replyUrls:
+    - url: "http://localhost:3000/"
