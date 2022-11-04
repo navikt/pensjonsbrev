@@ -13,7 +13,9 @@ import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.plugins.statuspages.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
+import no.nav.pensjon.brev.Metrics.configureMetrics
 import no.nav.pensjon.brev.api.ParseLetterDataException
+import no.nav.pensjon.brev.latex.LatexTimeoutException
 import no.nav.pensjon.brev.template.brevbakerConfig
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
@@ -45,6 +47,9 @@ fun Application.module() {
                 call.respond(HttpStatusCode.BadRequest, cause.message ?: "Unknown failure")
             }
         }
+        exception<LatexTimeoutException>{ call, cause ->
+            call.respond(HttpStatusCode.ServiceUnavailable, cause.message ?: "Timed out while compiling latex")
+        }
         exception<ParameterConversionException> { call, cause ->
             call.respond(HttpStatusCode.BadRequest, cause.message?: "Failed to convert path parameter to required type: unknown cause")
         }
@@ -72,9 +77,6 @@ fun Application.module() {
         }
     }
 
-    install(MicrometerMetrics) {
-        registry = Metrics.prometheusRegistry
-    }
-
+    configureMetrics()
     brevbakerRouting(jwtConfigs.map { it.name }.toTypedArray())
 }

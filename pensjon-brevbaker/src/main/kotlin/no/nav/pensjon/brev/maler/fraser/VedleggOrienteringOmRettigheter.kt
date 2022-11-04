@@ -85,7 +85,8 @@ object VedleggPlikterAP15_002 : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
 }
 
 //vedleggPlikterAP6_002, vedleggPlikterAP14_002, vedleggPlikterAP18_001
-data class VedleggPlikterAPFlytterFraHverandre(val sivilstand: Expression<Sivilstand>) : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
+data class VedleggPlikterAPFlytterFraHverandre(val sivilstand: Expression<Sivilstand>) :
+    TextOnlyPhrase<LangBokmalNynorskEnglish>() {
     override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         text(
             Bokmal to "du og ",
@@ -161,7 +162,11 @@ object VedleggPlikterAP12_001 : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
 
 object VedleggPlikterAP10_001 : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
     override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
-        text(Bokmal to "du får ny samboer", Nynorsk to "du får ny sambuar", English to "you get a new cohabiting partner")
+        text(
+            Bokmal to "du får ny samboer",
+            Nynorsk to "du får ny sambuar",
+            English to "you get a new cohabiting partner"
+        )
 }
 
 data class VedleggPlikterAP5_001(val sivilstand: Expression<Sivilstand>) : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
@@ -463,13 +468,11 @@ object VedleggPlikterUT_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
                 English to "Duty to inform of changes - Section 21-3 of the National Insurance Act"
             )
         }
-        paragraph {
-            text(
-                Bokmal to "Du må melde fra til NAV hvis",
-                Nynorsk to "Du må melde frå til NAV om",
-                English to "You must notify NAV if"
-            )
-        }
+        text(
+            Bokmal to "Du må melde fra til NAV hvis",
+            Nynorsk to "Du må melde frå til NAV om",
+            English to "You must notify NAV if"
+        )
     }
 }
 
@@ -577,6 +580,24 @@ object VedleggPlikterUT12_001 : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
         )
 }
 
+object VedleggPlikterUT13_001 : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
+    override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
+        text(
+            Bokmal to "barn du forsørger skal flytte til et annet land",
+            Nynorsk to "barn du forsørgjer skal flytte til eit anna land",
+            English to "the child(ren) in your care move to another country"
+        )
+}
+
+object VedleggPlikterUT14_001 : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
+    override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
+        text(
+            Bokmal to "barn du forsørger skal oppholde seg i et annet land mer enn 90 dager i løpet av en tolvmånedersperiode",
+            Nynorsk to "barn du forsørgjer skal opphalde seg i eit anna land i meir enn 90 dagar i løpet av ein tolv månedars periode",
+            English to "the child(ren) in your care stay in another country for more than 90 days in a 12 month period"
+        )
+}
+
 object VedleggPlikterAFP_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         title1 {
@@ -635,7 +656,11 @@ object VedleggPlikterAFP4_001 : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
 object InfoAPBeskjed_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         title1 {
-            text(Bokmal to "Slik gir du oss beskjed", Nynorsk to "Slik gir du oss beskjed", English to "How to contact us")
+            text(
+                Bokmal to "Slik gir du oss beskjed",
+                Nynorsk to "Slik gir du oss beskjed",
+                English to "How to contact us"
+            )
         }
         paragraph {
             text(
@@ -691,7 +716,6 @@ object VedleggInnsynSakPensjon_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
 
 object VedleggInnsynSakUTPesys_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-        val telefonNummer = felles.avsenderEnhet.telefonnummer
         title1 {
             text(
                 Bokmal to "Innsyn i saken din - forvaltningsloven § 18",
@@ -700,14 +724,15 @@ object VedleggInnsynSakUTPesys_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
             )
         }
         paragraph {
-            textExpr(
-                Bokmal to "Med få unntak har du rett til å se dokumentene i saken din. Du kan se noen dokumenter på nav.no/dittnav. Du kan også ringe oss på telefon ".expr() + telefonNummer.format() + ".".expr(),
-                Nynorsk to "Med få unntak har du rett til å sjå dokumenta i saka di. Du kan sjå nokre dokument på nav.no/dittnav. Du kan også ringe oss på telefon ".expr() + telefonNummer.format() + ".".expr(),
-                English to "With some exceptions, you are entitled to access all the documents pertaining to your case. You can read some of the documents at nav.no/dittnav. You can also call us at tel.: ".expr() + telefonNummer.format() + ".".expr()
+            text(
+                Bokmal to "Du kan logge deg inn via nav.no for å se dokumenter i saken din.",
+                Nynorsk to "Du kan logge deg inn via nav.no for å sjå dokument i saka di.",
+                English to "You can log in via nav.no to read your case documents."
             )
         }
     }
 }
+
 
 object VedleggHjelpFraAndre_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {

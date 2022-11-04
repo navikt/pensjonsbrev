@@ -9,7 +9,7 @@ import no.nav.pensjon.brev.template.latexEscape
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
-class LatexPrintWriterTest {
+class LatexAppendableTest {
 
     private lateinit var output: StringBuilder
     private lateinit var appendable: LatexAppendable
@@ -158,7 +158,7 @@ class LatexPrintWriterTest {
                 println("heisann")
             }
         }
-        assertThat(printedString().replace(System.lineSeparator(), ""), endsWith("{heisann}"))
+        assertThat(printedString().replace("\n", ""), endsWith("{heisann}"))
     }
 
     @Test
@@ -167,12 +167,12 @@ class LatexPrintWriterTest {
         appendable.printNewCmd("mycmd") {
             printCmd(invoke)
         }
-        assertThat(printedString().replace(System.lineSeparator(), ""), endsWith("""{\$invoke}"""))
+        assertThat(printedString().replace("\n", ""), endsWith("""{\$invoke}"""))
     }
 
     @Test
     fun `printCmd allows square brackets in argument`() {
         appendable.printCmd("aCmd", "regularArg", "X[l]")
-        assertThat(printedString().replace(System.lineSeparator(), ""), equalTo("""\aCmd{regularArg}{X[l]}"""))
+        assertThat(printedString().replace("\n", ""), equalTo("""\aCmd{regularArg}{X[l]}"""))
     }
 }

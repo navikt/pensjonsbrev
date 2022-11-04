@@ -1,12 +1,14 @@
 package no.nav.pensjon.brev.template.render
 
-import no.nav.pensjon.brev.api.model.*
+import no.nav.pensjon.brev.api.model.Bruker
+import no.nav.pensjon.brev.api.model.NAVEnhet
+import no.nav.pensjon.brev.api.model.SignerendeSaksbehandlere
 import no.nav.pensjon.brev.latex.LatexAppendable
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.*
-import java.lang.StringBuilder
-import java.time.*
-import java.time.format.*
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
 
 object PensjonLatexRenderer : LetterRenderer<RenderedLatexLetter>() {
     private val letterResourceFiles: List<RenderedFile> = listOf(
@@ -17,13 +19,7 @@ object PensjonLatexRenderer : LetterRenderer<RenderedLatexLetter>() {
         RenderedFile.PlainText("attachment.tex", getResource("latex/attachment.tex").toString(Charsets.UTF_8)),
         RenderedFile.PlainText("closing.tex", getResource("latex/closing.tex").toString(Charsets.UTF_8)),
         RenderedFile.PlainText("content.tex", getResource("latex/content.tex").toString(Charsets.UTF_8)),
-        RenderedFile.PlainText("tabularray.sty", getResource("latex/tabularray.sty").toString(Charsets.UTF_8)),
     )
-
-    private fun getResource(fileName: String): ByteArray =
-        this::class.java.getResourceAsStream("/$fileName")
-            ?.use { it.readAllBytes() }
-            ?: throw IllegalStateException("""Could not find latex resource /$fileName""")
 
     override fun renderLetter(scope: ExpressionScope<*, *>, template: LetterTemplate<*, *>): RenderedLatexLetter =
         RenderedLatexLetter().apply {
@@ -50,8 +46,9 @@ object PensjonLatexRenderer : LetterRenderer<RenderedLatexLetter>() {
 
         with(scope.felles) {
             brukerCommands(bruker)
+            saksinfoCommands(vergeNavn)
             navEnhetCommands(avsenderEnhet)
-            printNewCmd("feltdato", dokumentDato.format(dateFormatter(scope.language, FormatStyle.SHORT)))
+            printNewCmd("feltdato", dokumentDato.format(dateFormatter(scope.language, FormatStyle.LONG)))
             saksbehandlerCommands(signerendeSaksbehandlere)
         }
     }
@@ -104,9 +101,36 @@ object PensjonLatexRenderer : LetterRenderer<RenderedLatexLetter>() {
     private fun LatexAppendable.brukerCommands(bruker: Bruker) =
         with(bruker) {
             printNewCmd("feltfoedselsnummerbruker", foedselsnummer.format())
-            printNewCmd("feltfornavnbruker", fornavn)
+            printNewCmd("feltfornavnbruker", listOfNotNull(fornavn, mellomnavn).joinToString(" "))
             printNewCmd("feltetternavnbruker", etternavn)
         }
+
+    private fun LatexAppendable.saksinfoCommands(verge: String?) {
+        verge?.also { printNewCmd("feltvergenavn", it) }
+        printNewCmd("saksinfomottaker") {
+            printCmd("begin", "saksinfotable", "")
+            verge?.let {
+                println("""\feltvergenavnprefix & \feltvergenavn \\""", escape = false)
+                println(
+                    """\felt${LanguageSetting.Sakspart.gjelderNavn} & \feltfornavnbruker \space \feltetternavnbruker \\""",
+                    escape = false
+                )
+            } ?: println(
+                """\felt${LanguageSetting.Sakspart.navn} & \feltfornavnbruker \space \feltetternavnbruker \\""",
+                escape = false
+            )
+            println(
+                """\felt${LanguageSetting.Sakspart.foedselsnummer} & \feltfoedselsnummerbruker \\""",
+                escape = false
+            )
+            println(
+                """\felt${LanguageSetting.Sakspart.saksnummer} & \feltsaksnummer \hfill \letterdate\\""",
+                escape = false
+            )
+
+            printCmd("end", "saksinfotable")
+        }
+    }
 
     private fun LatexAppendable.navEnhetCommands(navEnhet: NAVEnhet) =
         with(navEnhet) {
@@ -137,9 +161,9 @@ object PensjonLatexRenderer : LetterRenderer<RenderedLatexLetter>() {
     }
 
     private fun LatexAppendable.renderAttachment(scope: ExpressionScope<*, *>, attachment: AttachmentTemplate<*, *>) {
-        printCmd("startvedlegg") { arg { renderText(scope, listOf(attachment.title)) } }
-        if (attachment.includeSakspart) {
-            printCmd("sakspart")
+        printCmd("startvedlegg") {
+            arg { renderText(scope, listOf(attachment.title)) }
+            arg { if (attachment.includeSakspart) printCmd("sakspart") }
         }
         renderOutline(scope, attachment.outline)
         printCmd("sluttvedlegg")
@@ -279,8 +303,13 @@ object PensjonLatexRenderer : LetterRenderer<RenderedLatexLetter>() {
 
                 printCmd("formText") {
                     arg {
+                        val size = when (element.size) {
+                            Element.OutlineContent.ParagraphContent.Form.Text.Size.NONE -> 0
+                            Element.OutlineContent.ParagraphContent.Form.Text.Size.SHORT -> 25
+                            Element.OutlineContent.ParagraphContent.Form.Text.Size.LONG -> 60
+                        }
                         renderText(scope, listOf(element.prompt))
-                        print(" ${".".repeat(element.size)}")
+                        print(" ${".".repeat(size)}")
                     }
                 }
             }

@@ -4,8 +4,7 @@ import no.nav.pensjon.brev.api.model.vedlegg.MaanedligUfoeretrygdFoerSkattDto
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligUfoeretrygdFoerSkattDtoSelectors.gjeldendeBeregnetUTPerMaaned
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligUfoeretrygdFoerSkattDtoSelectors.krav_virkningsDatoFraOgMed
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligUfoeretrygdFoerSkattDtoSelectors.tidligereUfoeretrygdPerioder
-import no.nav.pensjon.brev.maler.fraser.TabellBeregnetUTHele
-import no.nav.pensjon.brev.maler.fraser.VedleggBelopUT_001
+import no.nav.pensjon.brev.maler.fraser.VedleggMaanedligeUfoeretrgdFoerSkatt
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.createAttachment
@@ -22,9 +21,9 @@ val vedleggMaanedligUfoeretrygdFoerSkatt = createAttachment<LangBokmalNynorskEng
     ),
 ) {
 
-    includePhrase(VedleggBelopUT_001)
+    includePhrase(VedleggMaanedligeUfoeretrgdFoerSkatt.VedleggBelopUT_001)
 
-    includePhrase(TabellBeregnetUTHele(gjeldendeBeregnetUTPerMaaned))
+    includePhrase(VedleggMaanedligeUfoeretrgdFoerSkatt.TabellBeregnetUTHele(gjeldendeBeregnetUTPerMaaned))
 
     showIf(tidligereUfoeretrygdPerioder.isNotEmpty()) {
         title1 {
@@ -44,7 +43,7 @@ val vedleggMaanedligUfoeretrygdFoerSkatt = createAttachment<LangBokmalNynorskEng
         }
 
         forEach(tidligereUfoeretrygdPerioder) {
-            includePhrase(TabellBeregnetUTHele(it))
+            includePhrase(VedleggMaanedligeUfoeretrgdFoerSkatt.TabellBeregnetUTHele(it))
         }
     }
 }

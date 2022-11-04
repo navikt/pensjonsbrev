@@ -10,9 +10,9 @@ import no.nav.pensjon.brev.api.model.vedlegg.ReturAdresseSelectors.adresseLinje1
 import no.nav.pensjon.brev.api.model.vedlegg.ReturAdresseSelectors.postNr
 import no.nav.pensjon.brev.api.model.vedlegg.ReturAdresseSelectors.postSted
 import no.nav.pensjon.brev.model.format
-import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
+import no.nav.pensjon.brev.template.*
+import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Form.Text.Size
 import no.nav.pensjon.brev.template.Language.*
-import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.choice
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
@@ -50,7 +50,7 @@ val egenerklaeringPleieOgOmsorgsarbeid = createAttachment<LangBokmalNynorskEngli
     }
 
     formText(
-        60, newText(
+        Size.LONG, newText(
             Bokmal to "Navn på pleietrengende:",
             Nynorsk to "Navn på pleietrengende:",
             English to "I have provided care work for:",
@@ -59,9 +59,9 @@ val egenerklaeringPleieOgOmsorgsarbeid = createAttachment<LangBokmalNynorskEngli
 
     formChoice(
         newText(
-            Bokmal to "Arbeidet har vart i (sett kryss):",
-            Nynorsk to "Arbeidet har vart i (set kryss):",
-            English to "The work has lasted for (insert X):"
+            Bokmal to "Arbeidet har vart i:",
+            Nynorsk to "Arbeidet har vart i:",
+            English to "The work has lasted for:"
         )
     ) {
         choice(
@@ -76,15 +76,15 @@ val egenerklaeringPleieOgOmsorgsarbeid = createAttachment<LangBokmalNynorskEngli
         )
     }
 
-    formText(
-        size = 0, prompt = newText(
+    title1 {
+        text(
             Bokmal to "Hvis omsorgsforholdet har opphørt i løpet av året:",
             Nynorsk to "Om omsorgsforholdet er blitt avslutta under året:",
             English to "If care work has ceased during the year:",
         )
-    )
+    }
     formText(
-        size = 25,
+        size = Size.SHORT,
         vspace = false,
         prompt = newText(
             Bokmal to "Oppgi dato for opphøret:",
@@ -93,7 +93,7 @@ val egenerklaeringPleieOgOmsorgsarbeid = createAttachment<LangBokmalNynorskEngli
         )
     )
     formText(
-        size = 55,
+        size = Size.LONG,
         vspace = false,
         prompt = newText(
             Bokmal to "Oppgi årsaken til opphøret:",
@@ -104,9 +104,9 @@ val egenerklaeringPleieOgOmsorgsarbeid = createAttachment<LangBokmalNynorskEngli
 
     repeat(2) { newline() }
 
-    formText(size = 25, prompt = newText(Bokmal to "Dato:", Nynorsk to "Dato:", English to "Date"))
+    formText(size = Size.SHORT, prompt = newText(Bokmal to "Dato:", Nynorsk to "Dato:", English to "Date"))
     formText(
-        size = 55,
+        size = Size.LONG,
         vspace = false,
         prompt = newText(Bokmal to "Underskrift:", Nynorsk to "Underskrift:", English to "Signature:")
     )

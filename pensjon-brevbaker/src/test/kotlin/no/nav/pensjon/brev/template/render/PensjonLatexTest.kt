@@ -1,4 +1,4 @@
-package no.nav.pensjon.brev.template.base
+package no.nav.pensjon.brev.template.render
 
 import no.nav.pensjon.brev.Fixtures
 import no.nav.pensjon.brev.template.Language.Bokmal

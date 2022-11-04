@@ -1,5 +1,5 @@
 val logbackVersion: String by project
-val ktorVersion: String by project
+val ktorVersion: String by System.getProperties()
 val jupiterVersion: String by project
 val hamkrestVersion: String by project
 val logstashVersion: String by project
@@ -20,20 +20,7 @@ application {
 }
 
 repositories {
-    mavenLocal()
-    mavenCentral()
     maven { url = uri("https://maven.pkg.jetbrains.space/public/p/kotlinx-html/maven") }
-    maven {
-        // Create a token at https://github.com/settings/tokens/new with package.read
-        // Then create a gradle.properties file in $HOME/.gradle with the following:
-        // gpr.user=<your github username>
-        // gpr.token=<the token>
-        url = uri("https://maven.pkg.github.com/navikt/pensjonsbrev")
-        credentials {
-            username = project.findProperty("gpr.user") as String? ?: System.getenv("GITHUB_ACTOR")
-            password = project.findProperty("gpr.token") as String? ?: System.getenv("GITHUB_TOKEN")
-        }
-    }
 }
 
 
@@ -94,15 +81,16 @@ dependencies {
     implementation("io.ktor:ktor-server-core:$ktorVersion")
     implementation("io.ktor:ktor-server-netty:$ktorVersion")
     implementation("io.ktor:ktor-server-status-pages:$ktorVersion")
+    implementation("io.ktor:ktor-client-encoding:$ktorVersion")
     implementation("net.logstash.logback:logstash-logback-encoder:$logstashVersion")
-    implementation("no.nav.pensjon.brev:pensjon-brevbaker-api-model:3.5.12-SNAPSHOT")
+    implementation("no.nav.pensjon.brev:pensjon-brevbaker-api-model:3.5.18-SNAPSHOT")
     implementation("org.jetbrains.kotlinx:kotlinx-html-jvm:0.8.0")
 
     implementation(project(":template-model-generator"))
     ksp(project(":template-model-generator"))
 
     // Necessary for java.time.LocalDate
-    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.13.3")
+    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.13.4")
 
     // Metrics
     implementation("io.ktor:ktor-server-metrics:$ktorVersion")

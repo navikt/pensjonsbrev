@@ -1,4 +1,4 @@
-package no.nav.pensjon.brev.template.base
+package no.nav.pensjon.brev.template.render
 
 import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.isEmpty
@@ -6,25 +6,28 @@ import kotlinx.coroutines.runBlocking
 import no.nav.pensjon.brev.*
 import no.nav.pensjon.brev.api.model.LetterMetadata
 import no.nav.pensjon.brev.latex.LaTeXCompilerService
-import no.nav.pensjon.brev.latex.PdfCompilationInput
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Language.Bokmal
-import no.nav.pensjon.brev.template.base.TestTemplateDtoSelectors.etNavn
 import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
-import no.nav.pensjon.brev.template.render.PensjonLatexRenderer
+import no.nav.pensjon.brev.template.render.TestTemplateDtoSelectors.etNavn
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 import org.opentest4j.AssertionFailedError
+import org.slf4j.LoggerFactory
 
 data class TestTemplateDto(val etNavn: String)
+
 @TemplateModelHelpers
 object Helpers : HasModel<TestTemplateDto>
 
+private const val FIND_FAILING_CHARACTERS = false
+
 @Tag(TestTags.PDF_BYGGER)
 class PensjonLatexITest {
-
+    private val logger = LoggerFactory.getLogger(PensjonLatexITest::class.java)
     private val brevData = TestTemplateDto("Ole")
+
     @Test
     fun canRender() {
         val template = createTemplate(
@@ -54,10 +57,14 @@ class PensjonLatexITest {
         runBlocking { LaTeXCompilerService(PDF_BUILDER_URL).ping() }
     }
 
+    // To figure out which character makes the compilation fail, set the FIND_FAILING_CHARACTERS to true.
+    // FIND_FAILING_CHARACTERS is disabled by default to not take up too much time in case of universally failing compilation.
     @Test
     fun `try different characters to attempt escaping LaTeX`() {
         val invalidCharacters = ArrayList<Int>()
-        isValidCharacters(0, Char.MAX_VALUE.code, invalidCharacters)
+        // split in two halfs so it doesn't time out the letter compilation
+        isValidCharacters(0, Char.MAX_VALUE.code / 2, invalidCharacters)
+        isValidCharacters(Char.MAX_VALUE.code / 2 + 1, Char.MAX_VALUE.code, invalidCharacters)
         if (invalidCharacters.isNotEmpty()) {
             throw AssertionFailedError(
                 """
@@ -75,7 +82,7 @@ class PensjonLatexITest {
         if (testCharacters(begin, end)) {
             //All characters are valid
             return
-        } else {
+        } else if (FIND_FAILING_CHARACTERS) {
             if (begin - end == 0) {
                 //Failed at single character
                 invalidCharacters.add(begin)
@@ -115,6 +122,8 @@ class PensjonLatexITest {
 
             return true
         } catch (e: Throwable) {
+            if (!FIND_FAILING_CHARACTERS) throw e
+            else logger.error("Failed printing character in range $startChar - $endChar with message: ${e.message}")
             return false
         }
     }

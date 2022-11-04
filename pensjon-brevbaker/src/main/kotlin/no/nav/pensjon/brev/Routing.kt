@@ -9,7 +9,7 @@ import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.util.*
-import io.prometheus.client.exporter.common.TextFormat
+import io.micrometer.core.instrument.Tag
 import no.nav.pensjon.brev.api.LetterResource
 import no.nav.pensjon.brev.api.description
 import no.nav.pensjon.brev.api.model.*
@@ -19,6 +19,7 @@ import no.nav.pensjon.brev.template.render.PensjonLatexRenderer
 
 private val latexCompilerService = LaTeXCompilerService(requireEnv("PDF_BUILDER_URL"))
 private val letterResource = LetterResource()
+
 fun Application.brevbakerRouting(authenticationNames: Array<String>) =
     routing {
 
@@ -48,6 +49,9 @@ fun Application.brevbakerRouting(authenticationNames: Array<String>) =
                     .let { latexCompilerService.producePDF(it, call.callId) }
 
                 call.respond(LetterResponse(pdfBase64.base64PDF, letter.template.letterMetadata))
+
+                Metrics.prometheusRegistry.counter("pensjon_brevbaker_letter_request_count",
+                    listOf(Tag.of("brevkode", letterRequest.kode.name))).increment()
             }
 
             get("/ping_authorized") {
@@ -62,12 +66,6 @@ fun Application.brevbakerRouting(authenticationNames: Array<String>) =
 
         get("/isReady") {
             call.respondText("Ready!", ContentType.Text.Plain, HttpStatusCode.OK)
-        }
-
-        get("/metrics") {
-            call.respondTextWriter(ContentType.parse(TextFormat.CONTENT_TYPE_004)) {
-                Metrics.writeMetrics004(this, Metrics.prometheusRegistry)
-            }
         }
 
     }
