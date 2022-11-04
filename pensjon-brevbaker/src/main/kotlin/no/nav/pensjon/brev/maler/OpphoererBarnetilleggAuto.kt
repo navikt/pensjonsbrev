@@ -109,7 +109,7 @@ object OpphoererBarnetilleggAuto : VedtaksbrevTemplate<OpphoererBarnetilleggAuto
             includePhrase(UfoeretrygdBarnetillegg.TBU3920)
 
             includePhrase(
-                OpphoerBarnetillegg.TBU4085(
+                UfoeretrygdBarnetillegg.TBU4045(
                     harBarnetilleggFellesbarn = harBarnetilleggFellesbarn,
                     harBarnetilleggSaerkullsbarn = harBarnetilleggSaerkullsbarn
                 )
