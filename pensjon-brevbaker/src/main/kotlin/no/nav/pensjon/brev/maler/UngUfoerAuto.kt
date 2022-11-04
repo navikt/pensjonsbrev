@@ -77,7 +77,7 @@ object UngUfoerAuto : VedtaksbrevTemplate<UngUfoerAutoDto> {
 
 
             includePhrase(Vedtak.BegrunnelseOverskrift)
-            includePhrase(Ufoeretrygd.UngUfoerHoeyereVed20aar(minsteytelseVedVirkSats))
+            includePhrase(Ufoeretrygd.EndringMinsteYtelseUngUfoerVed20aar(minsteytelseVedVirkSats))
             includePhrase(Ufoeretrygd.HjemmelSivilstand)
 
             includePhrase(Ufoeretrygd.VirkningFomOverskrift)

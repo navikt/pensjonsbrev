@@ -143,35 +143,18 @@ val orienteringOmRettigheterOgPlikterAlder =
                 and barnetilleggVedvirk_innvilgetBarnetilleggSaerkullsbarn
                 and not(ektefelletilleggVedvirk_innvilgetEktefelletillegg)
         ) {
-            includePhrase(
-                VedleggPlikterRettTilBarnetilleggAP_001(
-                    harTilleggForFlereBarn = harTilleggForFlereBarn
-                )
-            )
-        }
+            includePhrase(VedleggPlikterRettTilBarnetilleggAP_001(harTilleggForFlereBarn)) }
         showIf(
             ektefelletilleggVedvirk_innvilgetEktefelletillegg
                 and not(barnetilleggVedvirk_innvilgetBarnetillegFellesbarn)
                 and not(barnetilleggVedvirk_innvilgetBarnetilleggSaerkullsbarn)
-        ) {
-            includePhrase(
-                VedleggPlikterRettTilEktefelletilleggAP_001(
-                    bruker_sivilstand
-                )
-            )
-        }
+        ) { includePhrase(VedleggPlikterRettTilEktefelletilleggAP_001(bruker_sivilstand)) }
         showIf(
             barnetilleggVedvirk_innvilgetBarnetillegFellesbarn
                 or barnetilleggVedvirk_innvilgetBarnetilleggSaerkullsbarn //TODO hva henger denne or egentlig sammen med?
                 and ektefelletilleggVedvirk_innvilgetEktefelletillegg
         ) {
-            includePhrase(
-                VedleggPlikterRettTilEktefelletilleggOgBarnetilleggAP_001(
-                    bruker_sivilstand,
-                    harTilleggForFlereBarn = harTilleggForFlereBarn
-                )
-            )
-        }
+            includePhrase(VedleggPlikterRettTilEktefelletilleggOgBarnetilleggAP_001(bruker_sivilstand, harTilleggForFlereBarn)) }
         showIf(
             barnetilleggVedvirk_innvilgetBarnetillegFellesbarn
                 or barnetilleggVedvirk_innvilgetBarnetilleggSaerkullsbarn //TODO hva henger denne or egentlig sammen med?
