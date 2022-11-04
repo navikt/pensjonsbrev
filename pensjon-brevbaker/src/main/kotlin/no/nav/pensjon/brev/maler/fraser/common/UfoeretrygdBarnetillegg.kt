@@ -1,6 +1,5 @@
 package no.nav.pensjon.brev.maler.fraser.common
 
-import io.ktor.http.*
 import no.nav.pensjon.brev.api.model.Kroner
 import no.nav.pensjon.brev.api.model.Sivilstand
 import no.nav.pensjon.brev.maler.fraser.Constants
@@ -532,143 +531,144 @@ object UfoeretrygdBarnetillegg {
             }
         }
     }
-}
 
-data class TBU1286Saerkullsbarn(
-    val beloepNettoSaerkullsbarn: Expression<Kroner?>,
-    val fradragSaerkullsbarn: Expression<Kroner>,
-    val fradragFellesbarn: Expression<Kroner>,
-    val fribeloepSaerkullsbarn: Expression<Kroner>,
-    val justeringsbeloepSaerkullsbarn: Expression<Kroner>,
-    val antallSaerkullsbarnInnvilget: Expression<Int?>,
 
-    ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-        paragraph {
-            val fribeloep = fribeloepSaerkullsbarn.format()
+    data class TBU1286Saerkullsbarn(
+        val beloepNettoSaerkullsbarn: Expression<Kroner?>,
+        val fradragSaerkullsbarn: Expression<Kroner>,
+        val fradragFellesbarn: Expression<Kroner>,
+        val fribeloepSaerkullsbarn: Expression<Kroner>,
+        val justeringsbeloepSaerkullsbarn: Expression<Kroner>,
+        val antallSaerkullsbarnInnvilget: Expression<Int?>,
 
-            ifNotNull(
-                antallSaerkullsbarnInnvilget,
-                beloepNettoSaerkullsbarn
-            ) { antallSaerkullsbarnInnvilget, beloepNettoSaerkullsbarn ->
-                val barnFlertall = antallSaerkullsbarnInnvilget.greaterThan(1)
+        ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+            paragraph {
+                val fribeloep = fribeloepSaerkullsbarn.format()
 
-                // Bruker mottar barnetillegg for både saerkullsbarn og fellesbarn, men kun barnetillegget for saerkullsbarn er blitt redusert
-                showIf(
-                    beloepNettoSaerkullsbarn.notEqualTo(0) and justeringsbeloepSaerkullsbarn.equalTo(0)
-                )
-                {
-                    textExpr(
-                        Bokmal to "Inntekten din er høyere enn ".expr() + fribeloep + " kroner, som er fribeløpet for barnetillegget til ".expr() + ifElse(
-                            barnFlertall,
-                            ifTrue = "barna",
-                            ifFalse = "barnet"
-                        ) + " som ikke bor sammen med begge foreldrene. Dette barnetillegget er derfor redusert ut fra inntekt.".expr(),
-                        Nynorsk to "Inntekta di er høgare enn ".expr() + fribeloep + " kroner, som er fribeløpet for barnetillegget til ".expr() + ifElse(
-                            barnFlertall,
-                            ifTrue = "barna",
-                            ifFalse = "barnet"
-                        ) + " som ikkje bur saman med begge foreldra. Dette barnetillegget er derfor redusert ut frå inntekt.".expr(),
-                        English to "Your income is higher than NOK ".expr() + fribeloep + ", which is the exemption amount for the child supplement for the ".expr() + ifElse(
-                            barnFlertall,
-                            ifTrue = "children who do",
-                            ifFalse = "child who does"
-                        ) + " not live together with both parents. Therefore, your child supplement has been reduced on the basis of your income.".expr()
+                ifNotNull(
+                    antallSaerkullsbarnInnvilget,
+                    beloepNettoSaerkullsbarn
+                ) { antallSaerkullsbarnInnvilget, beloepNettoSaerkullsbarn ->
+                    val barnFlertall = antallSaerkullsbarnInnvilget.greaterThan(1)
+
+                    // Bruker mottar barnetillegg for både saerkullsbarn og fellesbarn, men kun barnetillegget for saerkullsbarn er blitt redusert
+                    showIf(
+                        beloepNettoSaerkullsbarn.notEqualTo(0) and justeringsbeloepSaerkullsbarn.equalTo(0)
                     )
-                    // Bruker mottar barnetillegg for både saerkullsbarn og fellesbarn, men kun barnetillegget for saerkullsbarn er ikke blitt redusert
-                }.orShowIf(
-                    beloepNettoSaerkullsbarn.notEqualTo(0) and justeringsbeloepSaerkullsbarn.equalTo(0) and fradragSaerkullsbarn.equalTo(
-                        0
-                    )
-                        and fradragFellesbarn.greaterThan(0)
-                ) {
-                    textExpr(
-                        Bokmal to "Inntekten din er lavere enn ".expr() + fribeloep + " kroner, som er fribeløpet for barnetillegget til ".expr() + ifElse(
-                            barnFlertall,
-                            ifTrue = "barna",
-                            ifFalse = "barnet"
-                        ) + " som ikke bor sammen med begge foreldrene. Dette barnetillegget er derfor ikke redusert ut fra inntekt.".expr(),
-                        Nynorsk to "Inntekta di er lågare enn ".expr() + fribeloep + " kroner, som er fribeløpet for barnetillegget til ".expr() + ifElse(
-                            barnFlertall,
-                            ifTrue = "barna",
-                            ifFalse = "barnet "
-                        ) + " som ikkje bur saman med begge foreldra. Dette barnetillegget er derfor ikkje redusert ut frå inntekt.".expr(),
-                        English to "Your income is lower than NOK ".expr() + fribeloep + ", which is the exemption amount for the child supplement for the ".expr() + ifElse(
-                            barnFlertall,
-                            ifTrue = "children who do",
-                            ifFalse = "child who does"
-                        ) + " not live together with both parents. Therefore, your child supplement has not been reduced on the basis of your income.".expr()
-                    )
+                    {
+                        textExpr(
+                            Bokmal to "Inntekten din er høyere enn ".expr() + fribeloep + " kroner, som er fribeløpet for barnetillegget til ".expr() + ifElse(
+                                barnFlertall,
+                                ifTrue = "barna",
+                                ifFalse = "barnet"
+                            ) + " som ikke bor sammen med begge foreldrene. Dette barnetillegget er derfor redusert ut fra inntekt.".expr(),
+                            Nynorsk to "Inntekta di er høgare enn ".expr() + fribeloep + " kroner, som er fribeløpet for barnetillegget til ".expr() + ifElse(
+                                barnFlertall,
+                                ifTrue = "barna",
+                                ifFalse = "barnet"
+                            ) + " som ikkje bur saman med begge foreldra. Dette barnetillegget er derfor redusert ut frå inntekt.".expr(),
+                            English to "Your income is higher than NOK ".expr() + fribeloep + ", which is the exemption amount for the child supplement for the ".expr() + ifElse(
+                                barnFlertall,
+                                ifTrue = "children who do",
+                                ifFalse = "child who does"
+                            ) + " not live together with both parents. Therefore, your child supplement has been reduced on the basis of your income.".expr()
+                        )
+                        // Bruker mottar barnetillegg for både saerkullsbarn og fellesbarn, men kun barnetillegget for saerkullsbarn er ikke blitt redusert
+                    }.orShowIf(
+                        beloepNettoSaerkullsbarn.notEqualTo(0) and justeringsbeloepSaerkullsbarn.equalTo(0) and fradragSaerkullsbarn.equalTo(
+                            0
+                        )
+                            and fradragFellesbarn.greaterThan(0)
+                    ) {
+                        textExpr(
+                            Bokmal to "Inntekten din er lavere enn ".expr() + fribeloep + " kroner, som er fribeløpet for barnetillegget til ".expr() + ifElse(
+                                barnFlertall,
+                                ifTrue = "barna",
+                                ifFalse = "barnet"
+                            ) + " som ikke bor sammen med begge foreldrene. Dette barnetillegget er derfor ikke redusert ut fra inntekt.".expr(),
+                            Nynorsk to "Inntekta di er lågare enn ".expr() + fribeloep + " kroner, som er fribeløpet for barnetillegget til ".expr() + ifElse(
+                                barnFlertall,
+                                ifTrue = "barna",
+                                ifFalse = "barnet "
+                            ) + " som ikkje bur saman med begge foreldra. Dette barnetillegget er derfor ikkje redusert ut frå inntekt.".expr(),
+                            English to "Your income is lower than NOK ".expr() + fribeloep + ", which is the exemption amount for the child supplement for the ".expr() + ifElse(
+                                barnFlertall,
+                                ifTrue = "children who do",
+                                ifFalse = "child who does"
+                            ) + " not live together with both parents. Therefore, your child supplement has not been reduced on the basis of your income.".expr()
+                        )
+                    }
                 }
             }
         }
     }
-}
 
-data class TBU1286Fellesbarn(
-    val beloepNettoFellesbarn: Expression<Kroner>,
-    val fradragSaerkullsbarn: Expression<Kroner>,
-    val fradragFellesbarn: Expression<Kroner>,
-    val fribeloepFellesbarn: Expression<Kroner>,
-    val justeringsbeloepFellesbarn: Expression<Kroner>,
-    val antallFellesbarnInnvilget: Expression<Int?>,
+    data class TBU1286Fellesbarn(
+        val beloepNettoFellesbarn: Expression<Kroner>,
+        val fradragSaerkullsbarn: Expression<Kroner>,
+        val fradragFellesbarn: Expression<Kroner>,
+        val fribeloepFellesbarn: Expression<Kroner>,
+        val justeringsbeloepFellesbarn: Expression<Kroner>,
+        val antallFellesbarnInnvilget: Expression<Int?>,
 
-    ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-        paragraph {
-            val fribeloep = fribeloepFellesbarn.format()
+        ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+            paragraph {
+                val fribeloep = fribeloepFellesbarn.format()
 
-            ifNotNull(antallFellesbarnInnvilget) { antallFellesbarnInnvilget ->
-                val barnFlertall = antallFellesbarnInnvilget.greaterThan(1)
+                ifNotNull(antallFellesbarnInnvilget) { antallFellesbarnInnvilget ->
+                    val barnFlertall = antallFellesbarnInnvilget.greaterThan(1)
 
-                // Bruker mottar barnetillegg for både saerkullsbarn og fellesbarn, men kun barnetillegget for fellesbarn er blitt redusert
-                showIf(
-                    beloepNettoFellesbarn.greaterThan(0) and justeringsbeloepFellesbarn.equalTo(0) and fradragFellesbarn.greaterThan(
-                        0
-                    )
-                        and fradragSaerkullsbarn.equalTo(0)
-                ) {
-                    textExpr(
-                        Bokmal to "Til sammen er inntektene til deg og sivilstandEPSBestemtForm  din høyere enn ".expr() + fribeloep + " kroner, som er fribeløpet for barnetillegget til ".expr() + ifElse(
-                            barnFlertall,
-                            ifTrue = "barna",
-                            ifFalse = "barnet"
-                        ) + " som bor med begge sine foreldre. Dette barnetillegget er derfor redusert ut fra inntekt.".expr(),
-                        Nynorsk to "Til saman er inntektene til deg og ektefellen/partnaren/sambuaren din høgare enn ".expr() + fribeloep + " kroner, som er fribeløpet for barnetillegget til ".expr() + ifElse(
-                            barnFlertall,
-                            ifTrue = "barna",
-                            ifFalse = "barnet"
-                        ) + " som bur saman med begge foreldra sine. Dette barnetillegget er derfor redusert ut frå inntekt.".expr(),
-                        English to "Together, your income and your spouse/partner/cohabiting partner's income is higher than NOK ".expr() + fribeloep + ", which is the exemption amount for the child supplement for the ".expr() + ifElse(
-                            barnFlertall,
-                            ifTrue = "children who live",
-                            ifFalse = "child who lives"
-                        ) + " together with both parents. Therefore, your child supplement has been reduced on the basis of your income.".expr()
-                    )
-                    // Bruker mottar barnetillegg for både saerkullsbarn og fellesbarn, men kun barnetillegget for fellesbarn er ikke blitt redusert
-                }.orShowIf(
-                    beloepNettoFellesbarn.greaterThan(0) and justeringsbeloepFellesbarn.equalTo(0) and fradragFellesbarn.equalTo(
-                        0
-                    )
-                        and fradragSaerkullsbarn.greaterThan(0)
-                ) {
-                    textExpr(
-                        Bokmal to "Til sammen er inntektene til deg og ektefellenpartnerensamboeren din lavere enn ".expr() + fribeloep + " kroner, som er fribeløpet for barnetillegget til ".expr() + ifElse(
-                            barnFlertall,
-                            ifTrue = "barna",
-                            ifFalse = "barnet"
-                        ) + " som bor med begge sine foreldre.  Dette barnetillegget er derfor ikke redusert ut fra inntekt.".expr(),
-                        Nynorsk to "Til saman er inntektene til deg og ektefellen/partnaren/sambuaren din lågare enn ".expr() + fribeloep + " kroner, som er fribeløpet for barnetillegget til ".expr() + ifElse(
-                            barnFlertall,
-                            ifTrue = "barna",
-                            ifFalse = "barnet"
-                        ) + " som bur saman med begge foreldra sine. Dette barnetillegget er derfor ikke redusert ut frå inntekt.".expr(),
-                        English to "Together, your income and your spouse/partner/cohabiting partner's income is lower than NOK ".expr() + fribeloep + ", which is the exemption amount for the child supplement for the ".expr() + ifElse(
-                            barnFlertall,
-                            ifTrue = "children who live",
-                            ifFalse = "child who lives"
-                        ) + " together with both parents. Therefore, your child supplement has not been reduced on the basis of your income.".expr()
-                    )
+                    // Bruker mottar barnetillegg for både saerkullsbarn og fellesbarn, men kun barnetillegget for fellesbarn er blitt redusert
+                    showIf(
+                        beloepNettoFellesbarn.greaterThan(0) and justeringsbeloepFellesbarn.equalTo(0) and fradragFellesbarn.greaterThan(
+                            0
+                        )
+                            and fradragSaerkullsbarn.equalTo(0)
+                    ) {
+                        textExpr(
+                            Bokmal to "Til sammen er inntektene til deg og sivilstandEPSBestemtForm  din høyere enn ".expr() + fribeloep + " kroner, som er fribeløpet for barnetillegget til ".expr() + ifElse(
+                                barnFlertall,
+                                ifTrue = "barna",
+                                ifFalse = "barnet"
+                            ) + " som bor med begge sine foreldre. Dette barnetillegget er derfor redusert ut fra inntekt.".expr(),
+                            Nynorsk to "Til saman er inntektene til deg og ektefellen/partnaren/sambuaren din høgare enn ".expr() + fribeloep + " kroner, som er fribeløpet for barnetillegget til ".expr() + ifElse(
+                                barnFlertall,
+                                ifTrue = "barna",
+                                ifFalse = "barnet"
+                            ) + " som bur saman med begge foreldra sine. Dette barnetillegget er derfor redusert ut frå inntekt.".expr(),
+                            English to "Together, your income and your spouse/partner/cohabiting partner's income is higher than NOK ".expr() + fribeloep + ", which is the exemption amount for the child supplement for the ".expr() + ifElse(
+                                barnFlertall,
+                                ifTrue = "children who live",
+                                ifFalse = "child who lives"
+                            ) + " together with both parents. Therefore, your child supplement has been reduced on the basis of your income.".expr()
+                        )
+                        // Bruker mottar barnetillegg for både saerkullsbarn og fellesbarn, men kun barnetillegget for fellesbarn er ikke blitt redusert
+                    }.orShowIf(
+                        beloepNettoFellesbarn.greaterThan(0) and justeringsbeloepFellesbarn.equalTo(0) and fradragFellesbarn.equalTo(
+                            0
+                        )
+                            and fradragSaerkullsbarn.greaterThan(0)
+                    ) {
+                        textExpr(
+                            Bokmal to "Til sammen er inntektene til deg og ektefellenpartnerensamboeren din lavere enn ".expr() + fribeloep + " kroner, som er fribeløpet for barnetillegget til ".expr() + ifElse(
+                                barnFlertall,
+                                ifTrue = "barna",
+                                ifFalse = "barnet"
+                            ) + " som bor med begge sine foreldre.  Dette barnetillegget er derfor ikke redusert ut fra inntekt.".expr(),
+                            Nynorsk to "Til saman er inntektene til deg og ektefellen/partnaren/sambuaren din lågare enn ".expr() + fribeloep + " kroner, som er fribeløpet for barnetillegget til ".expr() + ifElse(
+                                barnFlertall,
+                                ifTrue = "barna",
+                                ifFalse = "barnet"
+                            ) + " som bur saman med begge foreldra sine. Dette barnetillegget er derfor ikke redusert ut frå inntekt.".expr(),
+                            English to "Together, your income and your spouse/partner/cohabiting partner's income is lower than NOK ".expr() + fribeloep + ", which is the exemption amount for the child supplement for the ".expr() + ifElse(
+                                barnFlertall,
+                                ifTrue = "children who live",
+                                ifFalse = "child who lives"
+                            ) + " together with both parents. Therefore, your child supplement has not been reduced on the basis of your income.".expr()
+                        )
+                    }
                 }
             }
         }
@@ -782,222 +782,224 @@ data class TBU1286Fellesbarn(
                 }
             }
         }
+    }
 
-        // Denne skal kun når bruker mottar barnetillegg for både særkullsbarn og fellesbarn og ingen av dem blir utbetalt
-        data class TBU2490(
-            val beloepNettoFellesbarn: Expression<Kroner>,
-            val beloepNettoSaerkullsbarn: Expression<Kroner>,
-            val harBarnetilleggFellesbarn: Expression<Boolean>,
-            val harBarnetilleggSaerkullsbarn: Expression<Boolean>,
-            val inntektstakFellesbarn: Expression<Kroner>,
-            val inntektstakSaerkullsbarn: Expression<Kroner>,
-            val justeringsbeloepFellesbarn: Expression<Kroner>,
-            val justeringsbeloepSaerkullsbarn: Expression<Kroner>,
-            val antallSaerkullsbarnInnvilget: Expression<Int?>,
-            val antallFellesbarnInnvilget: Expression<Int?>,
+    // Denne skal kun når bruker mottar barnetillegg for både særkullsbarn og fellesbarn og ingen av dem blir utbetalt
+    data class TBU2490(
+        val beloepNettoFellesbarn: Expression<Kroner>,
+        val beloepNettoSaerkullsbarn: Expression<Kroner>,
+        val harBarnetilleggFellesbarn: Expression<Boolean>,
+        val harBarnetilleggSaerkullsbarn: Expression<Boolean>,
+        val inntektstakFellesbarn: Expression<Kroner>,
+        val inntektstakSaerkullsbarn: Expression<Kroner>,
+        val justeringsbeloepFellesbarn: Expression<Kroner>,
+        val justeringsbeloepSaerkullsbarn: Expression<Kroner>,
+        val antallSaerkullsbarnInnvilget: Expression<Int?>,
+        val antallFellesbarnInnvilget: Expression<Int?>,
 
-            ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
-            override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-                paragraph {
+        ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+            paragraph {
 
-                    ifNotNull(
-                        antallSaerkullsbarnInnvilget,
-                        antallFellesbarnInnvilget
-                    ) { antallSaerkullsbarnInnvilget, antallFellesbarnInnvilget ->
-                        val barnFlertallSaerkullsbarn = antallSaerkullsbarnInnvilget.greaterThan(1)
-                        val barnFlertallFellesbarn = antallFellesbarnInnvilget.greaterThan(1)
+                ifNotNull(
+                    antallSaerkullsbarnInnvilget,
+                    antallFellesbarnInnvilget
+                ) { antallSaerkullsbarnInnvilget, antallFellesbarnInnvilget ->
+                    val barnFlertallSaerkullsbarn = antallSaerkullsbarnInnvilget.greaterThan(1)
+                    val barnFlertallFellesbarn = antallFellesbarnInnvilget.greaterThan(1)
 
-                        showIf(
-                            harBarnetilleggFellesbarn and harBarnetilleggSaerkullsbarn
-                                and beloepNettoFellesbarn.equalTo(0) and beloepNettoSaerkullsbarn.equalTo(0)
-                                and justeringsbeloepFellesbarn.equalTo(0) and justeringsbeloepSaerkullsbarn.equalTo(0)
-                        ) {
-                            textExpr(
-                                Bokmal to "Barnetillegget for ".expr() + ifElse(
-                                    barnFlertallFellesbarn,
-                                    ifTrue = "barna",
-                                    ifFalse = "barnet"
-                                ) + " som bor med begge sine foreldre, blir ikke utbetalt fordi de samlede inntektene er høyere enn ".expr()
-                                    + inntektstakFellesbarn.format() + " kroner. Barnetillegget for ".expr() + ifElse(
-                                    barnFlertallSaerkullsbarn,
-                                    ifTrue = "barna",
-                                    ifFalse = "barnet"
-                                ) + " som ikke bor sammen med begge foreldrene, blir heller ikke utbetalt fordi inntekten din alene er høyere enn ".expr()
-                                    + inntektstakSaerkullsbarn.format() + " kroner. Inntektene er over grensen for å få utbetalt barnetillegg.".expr(),
-                                Nynorsk to "Barnetillegget for ".expr() + ifElse(
-                                    barnFlertallFellesbarn,
-                                    ifTrue = "barna",
-                                    ifFalse = "barnet"
-                                ) + " som bur saman med begge foreldra sine, blir ikkje utbetalt fordi dei samla inntektene er høgare enn ".expr()
-                                    + inntektstakFellesbarn.format() + " kroner. Barnetillegget for ".expr() + ifElse(
-                                    barnFlertallSaerkullsbarn,
-                                    ifTrue = "barna",
-                                    ifFalse = "barnet"
-                                ) + " som ikkje bur saman med begge foreldra, blir heller ikkje utbetalt fordi inntekta di åleine er høgare enn ".expr()
-                                    + inntektstakSaerkullsbarn.format() + " kroner. Inntektene er over grensa for å få utbetalt barnetillegg.".expr(),
-                                English to "You will not receive child supplement for the ".expr() + ifElse(
-                                    barnFlertallFellesbarn,
-                                    ifTrue = "children",
-                                    ifFalse = "child"
-                                ) + " who lives together with both parents because your total income is higher than NOK ".expr()
-                                    + inntektstakFellesbarn.format() + ". You will not receive child supplement for the ".expr() + ifElse(
-                                    barnFlertallSaerkullsbarn,
-                                    ifTrue = "children",
-                                    ifFalse = "child"
-                                ) + " who do not live together with both parents because your income alone is higher than NOK ".expr()
-                                    + inntektstakSaerkullsbarn.format() + ". You will not receive child supplement because your income exceeds the income limit.".expr()
-                            )
-                        }
-                    }
-                }
-            }
-
-            data class TBU1288(
-                val harBarnetilleggFellesbarn: Expression<Boolean?>,
-                val harBarnetilleggSaerkullsbarn: Expression<Boolean?>,
-
-                ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
-                override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-                    paragraph {
-
-                        ifNotNull(
-                            harBarnetilleggFellesbarn,
-                            harBarnetilleggSaerkullsbarn,
-                        ) { harBarnetilleggFellesbarn, harBarnetilleggSaerkullsbarn ->
-
-                            showIf(harBarnetilleggFellesbarn or harBarnetilleggSaerkullsbarn)
-                            {
-                                text(
-                                    Bokmal to "Du kan lese mer om beregningen av barnetillegg i vedlegget «Opplysninger om beregningen».",
-                                    Nynorsk to "Du kan lese meir om berekninga av barnetillegg i vedlegget «Opplysningar om berekninga».",
-                                    English to "Read more about how child supplements are calculated in the attachment called «Information about calculations»."
-                                )
-                            }
-                        }
-                    }
-                }
-            }
-
-            object TBU2364 : OutlinePhrase<LangBokmalNynorskEnglish>() {
-                override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-                    paragraph {
-                        text(
-                            Bokmal to "Du må melde fra om eventuell inntekt",
-                            Nynorsk to "Du må melde frå om eventuell inntekt",
-                            English to "Report any income"
+                    showIf(
+                        harBarnetilleggFellesbarn and harBarnetilleggSaerkullsbarn
+                            and beloepNettoFellesbarn.equalTo(0) and beloepNettoSaerkullsbarn.equalTo(0)
+                            and justeringsbeloepFellesbarn.equalTo(0) and justeringsbeloepSaerkullsbarn.equalTo(
+                            0
                         )
-                    }
-                }
-            }
-
-            object TBU2365 : OutlinePhrase<LangBokmalNynorskEnglish>() {
-                override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-                    paragraph {
-                        text(
-                            Bokmal to "Dersom du er i jobb eller har planer om å jobbe, må du melde fra om eventuelle endringer i inntekten din. Det er viktig at du melder fra så tidlig som mulig, slik at du får riktig utbetaling av uføretrygd. Dette kan du gjøre under menyvalget «uføretrygd» når du logger deg inn på nav.no. Her kan du legge inn hvor mye du forventer å tjene i løpet av året. Du vil da kunne se hvor mye du vil få utbetalt i uføretrygd ved siden av inntekten din.",
-                            Nynorsk to "Dersom du er i jobb eller har planar om å jobbe, må du melde frå om eventuelle endringar i inntekta di. Det er viktig at du melder frå så tidleg som råd, slik at du får rett utbetaling av uføretrygd. Dette kan du gjere under menyvalet «uføretrygd» når du logger deg inn på nav.no. Her kan du leggje inn kor mykje du forventar å tene i løpet av året. Du vil då kunne sjå kor mykje du kjem til å få betalt ut i uføretrygd ved sida av inntekta di.",
-                            English to "If you are working or are planning to work, you must report any changes in your income. It is important that you report this as soon as possible, so that you receive the correct disability benefit payments. You can register your change in income under the option “uføretrygd” at nav.no. You can register how much you expect to earn in the calendar year. You will then be able to see how much disability benefit you will receive in addition to your income."
+                    ) {
+                        textExpr(
+                            Bokmal to "Barnetillegget for ".expr() + ifElse(
+                                barnFlertallFellesbarn,
+                                ifTrue = "barna",
+                                ifFalse = "barnet"
+                            ) + " som bor med begge sine foreldre, blir ikke utbetalt fordi de samlede inntektene er høyere enn ".expr()
+                                + inntektstakFellesbarn.format() + " kroner. Barnetillegget for ".expr() + ifElse(
+                                barnFlertallSaerkullsbarn,
+                                ifTrue = "barna",
+                                ifFalse = "barnet"
+                            ) + " som ikke bor sammen med begge foreldrene, blir heller ikke utbetalt fordi inntekten din alene er høyere enn ".expr()
+                                + inntektstakSaerkullsbarn.format() + " kroner. Inntektene er over grensen for å få utbetalt barnetillegg.".expr(),
+                            Nynorsk to "Barnetillegget for ".expr() + ifElse(
+                                barnFlertallFellesbarn,
+                                ifTrue = "barna",
+                                ifFalse = "barnet"
+                            ) + " som bur saman med begge foreldra sine, blir ikkje utbetalt fordi dei samla inntektene er høgare enn ".expr()
+                                + inntektstakFellesbarn.format() + " kroner. Barnetillegget for ".expr() + ifElse(
+                                barnFlertallSaerkullsbarn,
+                                ifTrue = "barna",
+                                ifFalse = "barnet"
+                            ) + " som ikkje bur saman med begge foreldra, blir heller ikkje utbetalt fordi inntekta di åleine er høgare enn ".expr()
+                                + inntektstakSaerkullsbarn.format() + " kroner. Inntektene er over grensa for å få utbetalt barnetillegg.".expr(),
+                            English to "You will not receive child supplement for the ".expr() + ifElse(
+                                barnFlertallFellesbarn,
+                                ifTrue = "children",
+                                ifFalse = "child"
+                            ) + " who lives together with both parents because your total income is higher than NOK ".expr()
+                                + inntektstakFellesbarn.format() + ". You will not receive child supplement for the ".expr() + ifElse(
+                                barnFlertallSaerkullsbarn,
+                                ifTrue = "children",
+                                ifFalse = "child"
+                            ) + " who do not live together with both parents because your income alone is higher than NOK ".expr()
+                                + inntektstakSaerkullsbarn.format() + ". You will not receive child supplement because your income exceeds the income limit.".expr()
                         )
-                    }
-                }
-            }
-
-            object TBU2212 : OutlinePhrase<LangBokmalNynorskEnglish>() {
-                override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-                    title1 {
-                        text(
-                            Bokmal to "Du må melde fra om endringer",
-                            Nynorsk to "Du må melde frå om endringar",
-                            English to "You must notify any changes"
-                        )
-                    }
-                    paragraph {
-                        text(
-                            Bokmal to "Skjer det endringer, må du melde fra til oss med en gang. I vedlegget «Orientering om rettigheter og plikter» ser du hvilke endringer du må si fra om.",
-                            Nynorsk to "Skjer det endringar, må du melde frå til oss med ein gong. I vedlegget «Orientering om rettar og plikter» ser du kva endringar du må seie frå om.",
-                            English to "You must notify us immediately of any changes in your situation. In the attachment “Information about rights and obligations” you will see which changes you must report."
-                        )
-                    }
-                }
-            }
-
-            object TBU2213 : OutlinePhrase<LangBokmalNynorskEnglish>() {
-                override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-                    title1 {
-                        text(
-                            Bokmal to "Du har rett til å klage",
-                            Nynorsk to "Du har rett til å klage",
-                            English to "You have the right of appeal"
-                        )
-                    }
-                    paragraph {
-                        text(
-                            Bokmal to "Hvis du mener vedtaket er feil, kan du klage. Fristen for å klage er seks uker fra den datoen du mottok vedtaket. I vedlegget «Orientering om rettigheter og plikter» får du vite mer om hvordan du går fram. Du finner skjema og informasjon på ${Constants.KLAGE_URL}.",
-                            Nynorsk to "Viss du meiner vedtaket er feil, kan du klage. Fristen for å klage er seks veker frå den datoen du fekk vedtaket. I vedlegget «Orientering om rettar og plikter» får du vite meir om korleis du går fram. Du finn skjema og informasjon på ${Constants.KLAGE_URL}.",
-                            English to "If you believe the decision is wrong, you may appeal. The deadline for appeal is six weeks from the date you received the decision. In the attachment “Information about rights and obligations”, you can find out more about how to proceed. You will find forms and information at ${Constants.KLAGE_URL}."
-
-                        )
-                    }
-                }
-            }
-
-            object TBU2242 : OutlinePhrase<LangBokmalNynorskEnglish>() {
-                override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-                    paragraph {
-                        text(
-                            Bokmal to "Du har rett til å se dokumentene i saken din. Se vedlegg «Orientering om rettigheter og plikter» for informasjon om hvordan du går fram.",
-                            Nynorsk to "Du har rett til å sjå dokumenta i saka di. Sjå vedlegg «Orientering om rettar og plikter» for informasjon om korleis du går fram.",
-                            English to "You are entitled to see your case documents. Refer to the attachment “Rights and obligations” for information about how to proceed."
-                        )
-                    }
-                }
-            }
-
-            object TBU1228 : OutlinePhrase<LangBokmalNynorskEnglish>() {
-                override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-                    title1 {
-                        text(
-                            Bokmal to "Skattekort",
-                            Nynorsk to "Skattekort",
-                            English to "Tax card"
-                        )
-
-                    }
-                    paragraph {
-                        text(
-                            Bokmal to "Uføretrygd skattlegges som lønnsinntekt. Du trenger ikke levere skattekortet ditt til NAV fordi skatteopplysningene dine sendes elektronisk fra Skatteetaten. Du bør likevel sjekke at du har riktig skattekort. Skattekortet kan du endre på skatteetaten.no. Under menyvalget «uføretrygd» når du logger deg inn på nav.no, kan du se hvilket skattetrekk som er registrert hos NAV.",
-                            Nynorsk to "Uføretrygd blir skattlagd som lønsinntekt. Du treng ikkje levere skattekortet ditt til NAV, fordi skatteopplysningane dine blir sende elektronisk frå Skatteetaten. Du bør likevel sjekke at du har rett skattekort. Skattekortet kan du endre på skatteetaten.no. Under menyvalet «uføretrygd» når du logger deg inn på nav.no, kan du sjå kva skattetrekk som er registrert hos NAV.",
-                            English to "You do not need to submit your tax card to NAV because your tax details are sent electronically from the Norwegian Tax Administration. However, you should check that you have the correct tax card. You may change your tax card under skatteetaten.no. You may see your registered income tax rate under the option “uføretrygd” at nav.no."
-                        )
-                    }
-                }
-            }
-
-            data class TBU3730(
-                val brukerBorInorge: Expression<Boolean>
-
-            ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
-                override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-                    showIf(brukerBorInorge) {
-                        title1 {
-                            text(
-                                Bokmal to "Skatt for deg som bor i utlandet",
-                                Nynorsk to "Skatt for deg som bur i utlandet",
-                                English to "Tax for people who live abroad"
-                            )
-                        }
-                        paragraph {
-                            text(
-                                Bokmal to "Bor du i utlandet og betaler kildeskatt, finner du mer informasjon om kildeskatt på skatteetaten.no. Hvis du er bosatt i utlandet og betaler skatt i annet land enn Norge, kan du kontakte skattemyndighetene der du bor.",
-                                Nynorsk to "Bur du i utlandet og betaler kjeldeskatt, finn du meir informasjon om kjeldeskatt på skatteetaten.no. Viss du er busett i utlandet og betaler skatt i eit anna land enn Noreg, kan du kontakte skattemyndigheitene der du bur.",
-                                English to "You can find more information about withholding tax to Norway at skatteetaten.no. For information about taxation from your country of residence, you can contact the locale tax authorities."
-                            )
-                        }
                     }
                 }
             }
         }
     }
+
+    data class TBU1288(
+        val harBarnetilleggFellesbarn: Expression<Boolean?>,
+        val harBarnetilleggSaerkullsbarn: Expression<Boolean?>,
+
+        ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+            paragraph {
+
+                ifNotNull(
+                    harBarnetilleggFellesbarn,
+                    harBarnetilleggSaerkullsbarn,
+                ) { harBarnetilleggFellesbarn, harBarnetilleggSaerkullsbarn ->
+
+                    showIf(harBarnetilleggFellesbarn or harBarnetilleggSaerkullsbarn)
+                    {
+                        text(
+                            Bokmal to "Du kan lese mer om beregningen av barnetillegg i vedlegget «Opplysninger om beregningen».",
+                            Nynorsk to "Du kan lese meir om berekninga av barnetillegg i vedlegget «Opplysningar om berekninga».",
+                            English to "Read more about how child supplements are calculated in the attachment called «Information about calculations»."
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    object TBU2364 : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+            paragraph {
+                text(
+                    Bokmal to "Du må melde fra om eventuell inntekt",
+                    Nynorsk to "Du må melde frå om eventuell inntekt",
+                    English to "Report any income"
+                )
+            }
+        }
+    }
+
+    object TBU2365 : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+            paragraph {
+                text(
+                    Bokmal to "Dersom du er i jobb eller har planer om å jobbe, må du melde fra om eventuelle endringer i inntekten din. Det er viktig at du melder fra så tidlig som mulig, slik at du får riktig utbetaling av uføretrygd. Dette kan du gjøre under menyvalget «uføretrygd» når du logger deg inn på nav.no. Her kan du legge inn hvor mye du forventer å tjene i løpet av året. Du vil da kunne se hvor mye du vil få utbetalt i uføretrygd ved siden av inntekten din.",
+                    Nynorsk to "Dersom du er i jobb eller har planar om å jobbe, må du melde frå om eventuelle endringar i inntekta di. Det er viktig at du melder frå så tidleg som råd, slik at du får rett utbetaling av uføretrygd. Dette kan du gjere under menyvalet «uføretrygd» når du logger deg inn på nav.no. Her kan du leggje inn kor mykje du forventar å tene i løpet av året. Du vil då kunne sjå kor mykje du kjem til å få betalt ut i uføretrygd ved sida av inntekta di.",
+                    English to "If you are working or are planning to work, you must report any changes in your income. It is important that you report this as soon as possible, so that you receive the correct disability benefit payments. You can register your change in income under the option “uføretrygd” at nav.no. You can register how much you expect to earn in the calendar year. You will then be able to see how much disability benefit you will receive in addition to your income."
+                )
+            }
+        }
+    }
+
+    object TBU2212 : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+            title1 {
+                text(
+                    Bokmal to "Du må melde fra om endringer",
+                    Nynorsk to "Du må melde frå om endringar",
+                    English to "You must notify any changes"
+                )
+            }
+            paragraph {
+                text(
+                    Bokmal to "Skjer det endringer, må du melde fra til oss med en gang. I vedlegget «Orientering om rettigheter og plikter» ser du hvilke endringer du må si fra om.",
+                    Nynorsk to "Skjer det endringar, må du melde frå til oss med ein gong. I vedlegget «Orientering om rettar og plikter» ser du kva endringar du må seie frå om.",
+                    English to "You must notify us immediately of any changes in your situation. In the attachment “Information about rights and obligations” you will see which changes you must report."
+                )
+            }
+        }
+    }
+
+    object TBU2213 : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+            title1 {
+                text(
+                    Bokmal to "Du har rett til å klage",
+                    Nynorsk to "Du har rett til å klage",
+                    English to "You have the right of appeal"
+                )
+            }
+            paragraph {
+                text(
+                    Bokmal to "Hvis du mener vedtaket er feil, kan du klage. Fristen for å klage er seks uker fra den datoen du mottok vedtaket. I vedlegget «Orientering om rettigheter og plikter» får du vite mer om hvordan du går fram. Du finner skjema og informasjon på ${Constants.KLAGE_URL}.",
+                    Nynorsk to "Viss du meiner vedtaket er feil, kan du klage. Fristen for å klage er seks veker frå den datoen du fekk vedtaket. I vedlegget «Orientering om rettar og plikter» får du vite meir om korleis du går fram. Du finn skjema og informasjon på ${Constants.KLAGE_URL}.",
+                    English to "If you believe the decision is wrong, you may appeal. The deadline for appeal is six weeks from the date you received the decision. In the attachment “Information about rights and obligations”, you can find out more about how to proceed. You will find forms and information at ${Constants.KLAGE_URL}."
+
+                )
+            }
+        }
+    }
+
+    object TBU2242 : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+            paragraph {
+                text(
+                    Bokmal to "Du har rett til å se dokumentene i saken din. Se vedlegg «Orientering om rettigheter og plikter» for informasjon om hvordan du går fram.",
+                    Nynorsk to "Du har rett til å sjå dokumenta i saka di. Sjå vedlegg «Orientering om rettar og plikter» for informasjon om korleis du går fram.",
+                    English to "You are entitled to see your case documents. Refer to the attachment “Rights and obligations” for information about how to proceed."
+                )
+            }
+        }
+    }
+
+    object TBU1228 : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+            title1 {
+                text(
+                    Bokmal to "Skattekort",
+                    Nynorsk to "Skattekort",
+                    English to "Tax card"
+                )
+            }
+            paragraph {
+                text(
+                    Bokmal to "Uføretrygd skattlegges som lønnsinntekt. Du trenger ikke levere skattekortet ditt til NAV fordi skatteopplysningene dine sendes elektronisk fra Skatteetaten. Du bør likevel sjekke at du har riktig skattekort. Skattekortet kan du endre på skatteetaten.no. Under menyvalget «uføretrygd» når du logger deg inn på nav.no, kan du se hvilket skattetrekk som er registrert hos NAV.",
+                    Nynorsk to "Uføretrygd blir skattlagd som lønsinntekt. Du treng ikkje levere skattekortet ditt til NAV, fordi skatteopplysningane dine blir sende elektronisk frå Skatteetaten. Du bør likevel sjekke at du har rett skattekort. Skattekortet kan du endre på skatteetaten.no. Under menyvalet «uføretrygd» når du logger deg inn på nav.no, kan du sjå kva skattetrekk som er registrert hos NAV.",
+                    English to "You do not need to submit your tax card to NAV because your tax details are sent electronically from the Norwegian Tax Administration. However, you should check that you have the correct tax card. You may change your tax card under skatteetaten.no. You may see your registered income tax rate under the option “uføretrygd” at nav.no."
+                )
+            }
+        }
+    }
+
+    data class TBU3730(
+        val brukerBorInorge: Expression<Boolean>
+
+    ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+            showIf(brukerBorInorge) {
+                title1 {
+                    text(
+                        Bokmal to "Skatt for deg som bor i utlandet",
+                        Nynorsk to "Skatt for deg som bur i utlandet",
+                        English to "Tax for people who live abroad"
+                    )
+                }
+                paragraph {
+                    text(
+                        Bokmal to "Bor du i utlandet og betaler kildeskatt, finner du mer informasjon om kildeskatt på skatteetaten.no. Hvis du er bosatt i utlandet og betaler skatt i annet land enn Norge, kan du kontakte skattemyndighetene der du bor.",
+                        Nynorsk to "Bur du i utlandet og betaler kjeldeskatt, finn du meir informasjon om kjeldeskatt på skatteetaten.no. Viss du er busett i utlandet og betaler skatt i eit anna land enn Noreg, kan du kontakte skattemyndigheitene der du bur.",
+                        English to "You can find more information about withholding tax to Norway at skatteetaten.no. For information about taxation from your country of residence, you can contact the locale tax authorities."
+                    )
+                }
+            }
+        }
+    }
 }
+
 
 
