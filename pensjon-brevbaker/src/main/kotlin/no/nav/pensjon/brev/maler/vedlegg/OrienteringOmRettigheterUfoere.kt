@@ -6,6 +6,8 @@ import no.nav.pensjon.brev.api.model.Sivilstand.ENSLIG
 import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterUfoereDto
 import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterUfoereDtoSelectors.avdoed_sivilstand
 import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterUfoereDtoSelectors.bruker_borINorge
+import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterUfoereDtoSelectors.harInnvilgetBarnetillegg
+import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterUfoereDtoSelectors.harTilleggForFlereBarn
 import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterUfoereDtoSelectors.institusjon_gjeldende
 import no.nav.pensjon.brev.maler.fraser.*
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
@@ -49,27 +51,9 @@ val vedleggOrienteringOmRettigheterOgPlikterUfoere =
 
             showIf(harInnvilgetBarnetillegg) {
                 item { includePhrase(VedleggPlikterAP7_001) }
-                item {
-                    includePhrase(
-                        VedleggPlikterUT7_001(
-                            harTilleggForFlereBarn = harTilleggForFlereBarn
-                        )
-                    )
-                }
-                item {
-                    includePhrase(
-                        VedleggPlikterUT13_001(
-                            harTilleggForFlereBarn = harTilleggForFlereBarn
-                        )
-                    )
-                }
-                item {
-                    includePhrase(
-                        VedleggPlikterUT14_001(
-                            harTilleggForFlereBarn = harTilleggForFlereBarn
-                        )
-                    )
-                }
+                item { includePhrase(VedleggPlikterUT7_001(harTilleggForFlereBarn)) }
+                item { includePhrase(VedleggPlikterUT13_001(harTilleggForFlereBarn)) }
+                item { includePhrase(VedleggPlikterUT14_001(harTilleggForFlereBarn)) }
             }
 
             item { includePhrase(VedleggPlikterUT8_001) }
