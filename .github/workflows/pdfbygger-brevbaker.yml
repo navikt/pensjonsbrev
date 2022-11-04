@@ -14,17 +14,6 @@ env:
   "IMAGE_BREVBAKER": "ghcr.io/${{ github.repository }}/pensjon-brevbaker:${{ github.sha }}"
   "IMAGE_PDF_BUILDER": "ghcr.io/${{ github.repository }}/pensjon-pdf-bygger:${{ github.sha }}"
 jobs:
-  snyk:
-    runs-on: "ubuntu-latest"
-    steps:
-      - uses: "actions/checkout@master"
-      - name: "Run Snyk to check for vulnerabilities"
-        uses: "snyk/actions/gradle-jdk16@master"
-        env:
-          SNYK_TOKEN: "${{ secrets.SNYK_TOKEN }}"
-        with:
-          command: "monitor"
-          args: "--org=pensjonsbrev --all-projects"
   "build-brevbaker":
     name: "build brevbaker"
     runs-on: "ubuntu-latest"

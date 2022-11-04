@@ -821,7 +821,6 @@ object VedleggInnsynSakPensjon_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
 
 object VedleggInnsynSakUTPesys_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-        val telefonNummer = felles.avsenderEnhet.telefonnummer
         title1 {
             text(
                 Bokmal to "Innsyn i saken din - forvaltningsloven § 18",

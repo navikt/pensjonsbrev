@@ -10,4 +10,3 @@ data class OrienteringOmRettigheterUfoereDto(
     val harInnvilgetBarnetillegg: Boolean,
     val institusjon_gjeldende: Institusjon,
 )
-
