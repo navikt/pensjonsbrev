@@ -1,49 +1,33 @@
 package no.nav.pensjon.brev.maler
 
 import no.nav.pensjon.brev.api.model.LetterMetadata
-import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.antallFellesbarnInnvilgetSelector
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.antallFellesbarnInnvilget_safe
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.beloepFratrukketAnnenForeldersInntekt_safe
-import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.beloepNettoFellesbarnSelector
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.beloepNettoFellesbarn_safe
-import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.fribeloepFellesbarn_safe
-import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.inntektAnnenForelder_safe
+import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.fradragFellesbarn_safe
+import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.inntektAnnenForelderFellesbarn_safe
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.inntektBruktIAvkortningFellesbarn_safe
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarnSelectors.beloepNettoSaerkullsbarn_safe
-import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarnSelectors.fribeloepSaerkullsbarn_safe
-import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarnSelectors.inntektBruktIAvkortningSaerkullsbarn_safe
-import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarnSelectors.justeringsbeloepSaerkullsbarn_safe
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.OpphoererBarnetilleggAutoDto
 import no.nav.pensjon.brev.api.model.maler.OpphoererBarnetilleggAutoDtoSelectors.barnetilleggFellesbarn
 import no.nav.pensjon.brev.api.model.maler.OpphoererBarnetilleggAutoDtoSelectors.barnetilleggSaerkullsbarn
-import no.nav.pensjon.brev.api.model.maler.OpphoererBarnetilleggAutoDtoSelectors.brukerBorInorge
 import no.nav.pensjon.brev.api.model.maler.OpphoererBarnetilleggAutoDtoSelectors.foedselsdatoPaaBarnetilleggOpphoert
 import no.nav.pensjon.brev.api.model.maler.OpphoererBarnetilleggAutoDtoSelectors.grunnbeloep
-import no.nav.pensjon.brev.api.model.maler.OpphoererBarnetilleggAutoDtoSelectors.maanedligUfoeretrygdFoerSkatt
 import no.nav.pensjon.brev.api.model.maler.OpphoererBarnetilleggAutoDtoSelectors.oensketVirkningsDato
-import no.nav.pensjon.brev.api.model.maler.OpphoererBarnetilleggAutoDtoSelectors.opplysningerBruktIBeregningUT
-import no.nav.pensjon.brev.api.model.maler.OpphoererBarnetilleggAutoDtoSelectors.orienteringOmRettigheterUfoere
 import no.nav.pensjon.brev.api.model.maler.OpphoererBarnetilleggAutoDtoSelectors.sivilstand
 import no.nav.pensjon.brev.api.model.maler.OpphoererBarnetilleggAutoDtoSelectors.ufoeretrygd
 import no.nav.pensjon.brev.api.model.maler.UfoeretrygdSelectors.ektefelletilleggUtbeltalt_safe
 import no.nav.pensjon.brev.api.model.maler.UfoeretrygdSelectors.gjenlevendetilleggUtbetalt_safe
 import no.nav.pensjon.brev.api.model.maler.UfoeretrygdSelectors.harUtbetalingsgrad
 import no.nav.pensjon.brev.api.model.maler.UfoeretrygdSelectors.utbetaltPerMaaned
-
-import no.nav.pensjon.brev.maler.fraser.OpphoerBarnetillegg
 import no.nav.pensjon.brev.maler.fraser.OpphoererBarnetillegg
-import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.fraser.common.UfoeretrygdBarnetillegg
 import no.nav.pensjon.brev.maler.fraser.common.UfoeretrygdFelles
 import no.nav.pensjon.brev.maler.fraser.omregning.ufoeretrygd.Ufoeretrygd
 import no.nav.pensjon.brev.maler.fraser.vedtak.Vedtak
-import no.nav.pensjon.brev.maler.vedlegg.vedleggMaanedligUfoeretrygdFoerSkatt
-import no.nav.pensjon.brev.maler.vedlegg.vedleggOpplysningerBruktIBeregningUT
-import no.nav.pensjon.brev.maler.vedlegg.vedleggOrienteringOmRettigheterOgPlikterUfoere
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.VedtaksbrevTemplate
-import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
@@ -172,22 +156,31 @@ object OpphoererBarnetilleggAuto : VedtaksbrevTemplate<OpphoererBarnetilleggAuto
                 )
             )
 
-            showIf(
-                harBarnetilleggFellesbarn
-            ) {
-                includePhrase(
-                    UfoeretrygdBarnetillegg.TBU1284(
-                        beloepFratrukketAnnenForeldersInntekt = beloepFratrukketAnnenForeldersInntekt,
-                        beloepNettoFellesbarn = beloepNettoFellesbarn,
-                        fradragFellesbarn = fradragFellesbarn,
-                        inntektAnnenForelderFellesbarn = inntektAnnenForelderFellesbarn,
-                        inntektBruktiAvkortningFellesbarn = inntektBruktiAvkortningFellesbarn,
-                        grunnbeloepFellesbarn = grunnbeloepFellesbarn,
-                        harBarnetilleggSaerkullsbarn = harBarnetilleggSaerkullsbarn,
-                        justeringsbeloepFellesbarn = justeringsbeloepFellesbarn,
-                        sivilstand = sivilstand
+            ifNotNull(
+                barnetilleggFellesbarn.beloepFratrukketAnnenForeldersInntekt_safe,
+                barnetilleggFellesbarn.beloepNettoFellesbarn_safe,
+                barnetilleggFellesbarn.fradragFellesbarn_safe,
+                barnetilleggFellesbarn.inntektAnnenForelderFellesbarn_safe,
+                barnetilleggFellesbarn.inntektBruktIAvkortningFellesbarn_safe,
+
+                ) { beloepFratrukketAnnenForeldersInntekt, beloepNettoFellesbarn, fradragFellesbarn, inntektAnnenForelderFellesbarn, inntektBruktIAvkortningFellesbarn ->
+                showIf(
+                    harBarnetilleggFellesbarn
+                ) {
+                    includePhrase(
+                        UfoeretrygdBarnetillegg.TBU1284(
+                            beloepFratrukketAnnenForeldersInntekt,
+                            beloepNettoFellesbarn,
+                            fradragFellesbarn,
+                            inntektAnnenForelderFellesbarn,
+                            inntektBruktiAvkortningFellesbarn = inntektBruktiAvkortningFellesbarn,
+                            grunnbeloepFellesbarn = grunnbeloepFellesbarn,
+                            harBarnetilleggSaerkullsbarn,
+                            justeringsbeloepFellesbarn = justeringsbeloepFellesbarn,
+                            sivilstand = sivilstand
+                        )
                     )
-                )
+                }
             }
         }
     }
