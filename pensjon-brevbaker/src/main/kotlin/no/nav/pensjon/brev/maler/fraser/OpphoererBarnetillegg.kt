@@ -12,7 +12,7 @@ import no.nav.pensjon.brev.template.dsl.textExpr
 import java.time.LocalDate
 
 
-object OpphoerBarnetillegg {
+object OpphoererBarnetillegg {
 
     data class TBU4085(
         val harBarnetilleggFellesbarn: Expression<Boolean>,
