@@ -182,6 +182,8 @@ object OpphoererBarnetilleggAuto : VedtaksbrevTemplate<OpphoererBarnetilleggAuto
                     )
                 }
             }
+
+
         }
     }
 }
