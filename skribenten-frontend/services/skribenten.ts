@@ -1,13 +1,17 @@
 import {IMsalContext} from "@azure/msal-react/dist/MsalContext";
 import {withAuthorization} from "./msal";
 
-const backendUrl = process.env.NEXT_PUBLIC_SKRIBENTEN_API_URL || "http://localhost:8082"
-const backendScope = process.env.NEXT_PUBLIC_SKRIBENTEN_API_SCOPE || "api://dev-gcp.pensjonsbrev.skribenten-backend-lokal/.default"
+export interface SkribentenAPIConfig {
+    url: string
+    scope: string
+}
 
-const SkribentenAPI = {
-    testPesys: (msal: IMsalContext): Promise<string> =>
-        withAuthorization(msal, backendScope).then((auth) =>
-            fetch(`${backendUrl}/test/pen`, {
+class SkribentenAPI {
+    constructor(readonly config: SkribentenAPIConfig) {}
+
+    async testPesys(msal: IMsalContext): Promise<string> {
+        return withAuthorization(msal, this.config.scope).then((auth) =>
+            fetch(`${this.config.url}/test/pen`, {
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json',
@@ -16,11 +20,12 @@ const SkribentenAPI = {
                 method: 'POST',
                 body: JSON.stringify({name: 'Alexander', age: 35})
             })
-        ).then((res) => res.json()).then(JSON.stringify),
+        ).then((res) => res.json()).then(JSON.stringify)
+    }
 
-    testBrevbaker: (msal: IMsalContext): Promise<Blob> =>
-        withAuthorization(msal, backendScope).then((auth) =>
-            fetch(`${backendUrl}/test/brevbaker`, {
+    async testBrevbaker(msal: IMsalContext): Promise<Blob> {
+        return withAuthorization(msal, this.config.scope).then((auth) =>
+            fetch(`${this.config.url}/test/brevbaker`, {
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json',
@@ -29,6 +34,7 @@ const SkribentenAPI = {
                 method: 'GET',
             })
         ).then(resp => resp.blob())
+    }
 }
 
 export default SkribentenAPI

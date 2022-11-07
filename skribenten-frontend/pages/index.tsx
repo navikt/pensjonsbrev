@@ -1,9 +1,10 @@
 import type {NextPage} from 'next'
 import Head from 'next/head'
-import styles from '../styles/Home.module.css'
 import {AuthenticatedTemplate, UnauthenticatedTemplate, useMsal} from "@azure/msal-react";
 import {useState} from "react";
+import styles from '../styles/Home.module.css'
 import SkribentenAPI from "../services/skribenten";
+import {SkribentenConfig} from "./_app";
 
 
 function SignInButton() {
@@ -20,6 +21,7 @@ function WelcomeUser() {
 interface PdfFileLinkProps {
     pdfFile?: Blob,
 }
+
 const PdfFileLink = ({pdfFile}: PdfFileLinkProps) => {
     if (pdfFile == null) {
         return <span>No file</span>
@@ -29,7 +31,8 @@ const PdfFileLink = ({pdfFile}: PdfFileLinkProps) => {
     }
 }
 
-const Home: NextPage = () => {
+const Home: NextPage<SkribentenConfig> = (props) => {
+    const skribentenAPI = new SkribentenAPI(props.api)
     const [penData, setPenData] = useState("unknown")
     const [brevbakerData, setBrevbakerData] = useState<Blob>()
     const msal = useMsal()
@@ -45,9 +48,9 @@ const Home: NextPage = () => {
                 <p>This will only render if a user is signed-in.</p>
                 <WelcomeUser/>
                 <p>Fetch from pesys: {penData}</p>
-                <button onClick={() => SkribentenAPI.testPesys(msal).then(setPenData)}>Test Pesys</button>
-                <p>Generated brev: <PdfFileLink pdfFile={brevbakerData} /></p>
-                <button onClick={() => SkribentenAPI.testBrevbaker(msal).then(setBrevbakerData)}>Test brevbaker</button>
+                <button onClick={() => skribentenAPI.testPesys(msal).then(setPenData)}>Test Pesys</button>
+                <p>Generated brev: <PdfFileLink pdfFile={brevbakerData}/></p>
+                <button onClick={() => skribentenAPI.testBrevbaker(msal).then(setBrevbakerData)}>Test brevbaker</button>
             </AuthenticatedTemplate>
             <UnauthenticatedTemplate>
                 <p>This will only render if a user is not signed-in.</p>
@@ -56,7 +59,5 @@ const Home: NextPage = () => {
         </div>
     )
 }
-
-
 
 export default Home
