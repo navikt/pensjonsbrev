@@ -1,8 +1,11 @@
 package no.nav.pensjon.brev.maler
 
 import no.nav.pensjon.brev.api.model.LetterMetadata
+import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarn
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.antallFellesbarnInnvilget_safe
+import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.beloepFratrukketAnnenForeldersInntektSelector
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.beloepFratrukketAnnenForeldersInntekt_safe
+import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.beloepNettoFellesbarnSelector
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.beloepNettoFellesbarn_safe
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.fradragFellesbarn_safe
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.inntektAnnenForelderFellesbarn_safe
@@ -160,19 +163,17 @@ object OpphoererBarnetilleggAuto : VedtaksbrevTemplate<OpphoererBarnetilleggAuto
                 barnetilleggFellesbarn.beloepNettoFellesbarn_safe,
                 barnetilleggFellesbarn.fradragFellesbarn_safe,
                 barnetilleggFellesbarn.inntektAnnenForelderFellesbarn_safe,
-                barnetilleggFellesbarn.inntektBruktIAvkortningFellesbarn_safe,
+                barnetilleggFellesbarn.inntektBruktIAvkortningFellesbarn_safe
+            ) { beloepFratrukketAnnenForeldersInntekt, beloepNettoFellesbarn, fradragFellesbarn, inntektAnnenForelderFellesbarn, inntektBruktIAvkortningFellesbarn ->
 
-                ) { beloepFratrukketAnnenForeldersInntekt, beloepNettoFellesbarn, fradragFellesbarn, inntektAnnenForelderFellesbarn, inntektBruktIAvkortningFellesbarn ->
-                showIf(
-                    harBarnetilleggFellesbarn
-                ) {
+                showIf(harBarnetilleggFellesbarn) {
                     includePhrase(
                         UfoeretrygdBarnetillegg.TBU1284(
-                            beloepFratrukketAnnenForeldersInntekt,
-                            beloepNettoFellesbarn,
-                            fradragFellesbarn,
-                            inntektAnnenForelderFellesbarn,
-                            inntektBruktiAvkortningFellesbarn = inntektBruktiAvkortningFellesbarn,
+                            beloepFratrukketAnnenForeldersInntekt = beloepFratrukketAnnenForeldersInntekt,
+                            beloepNettoFellesbarn = beloepNettoFellesbarn,
+                            fradragFellesbarn = fradragFellesbarn,
+                            inntektAnnenForelderFellesbarn = inntektAnnenForelderFellesbarn,
+                            inntektBruktiAvkortningFellesbarn = inntektBruktIAvkortningFellesbarn,
                             grunnbeloepFellesbarn = grunnbeloepFellesbarn,
                             harBarnetilleggSaerkullsbarn,
                             justeringsbeloepFellesbarn = justeringsbeloepFellesbarn,
