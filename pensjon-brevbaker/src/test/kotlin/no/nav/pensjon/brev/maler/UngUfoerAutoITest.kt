@@ -29,7 +29,7 @@ class UngUfoerAutoITest {
         Letter(
             UngUfoerAuto.template,
             Fixtures.create<UngUfoerAutoDto>(),
-            Language.Bokmal,
+            Language.Nynorsk,
             Fixtures.fellesAuto
         ).let { PensjonHTMLRenderer.render(it) }
             .also { writeTestHTML("UNG_UFOER_AUTO_BOKMAL", it) }
