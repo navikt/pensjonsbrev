@@ -792,19 +792,19 @@ object UfoeretrygdBarnetillegg {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             paragraph {
 
-                    showIf(harBarnetilleggFellesbarn or harBarnetilleggSaerkullsbarn)
-                    {
-                        text(
-                            Bokmal to "Du kan lese mer om beregningen av barnetillegg i vedlegget «Opplysninger om beregningen».",
-                            Nynorsk to "Du kan lese meir om berekninga av barnetillegg i vedlegget «Opplysningar om berekninga».",
-                            English to "Read more about how child supplements are calculated in the attachment called «Information about calculations»."
-                        )
-                    }
+                showIf(harBarnetilleggFellesbarn or harBarnetilleggSaerkullsbarn)
+                {
+                    text(
+                        Bokmal to "Du kan lese mer om beregningen av barnetillegg i vedlegget «Opplysninger om beregningen».",
+                        Nynorsk to "Du kan lese meir om berekninga av barnetillegg i vedlegget «Opplysningar om berekninga».",
+                        English to "Read more about how child supplements are calculated in the attachment called «Information about calculations»."
+                    )
                 }
             }
         }
     }
 }
+
 
 
 
