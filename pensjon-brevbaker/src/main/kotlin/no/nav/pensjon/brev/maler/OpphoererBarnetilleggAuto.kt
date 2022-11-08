@@ -13,6 +13,7 @@ import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.innte
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarnSelectors.beloepNettoSaerkullsbarn_safe
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.OpphoererBarnetilleggAutoDto
+import no.nav.pensjon.brev.api.model.maler.OpphoererBarnetilleggAutoDtoSelectors
 import no.nav.pensjon.brev.api.model.maler.OpphoererBarnetilleggAutoDtoSelectors.barnetilleggFellesbarn
 import no.nav.pensjon.brev.api.model.maler.OpphoererBarnetilleggAutoDtoSelectors.barnetilleggSaerkullsbarn
 import no.nav.pensjon.brev.api.model.maler.OpphoererBarnetilleggAutoDtoSelectors.foedselsdatoPaaBarnetilleggOpphoert

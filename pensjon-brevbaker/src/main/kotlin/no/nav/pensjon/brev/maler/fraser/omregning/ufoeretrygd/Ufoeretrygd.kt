@@ -263,19 +263,11 @@ object Ufoeretrygd {
             paragraph {
                 val satsFormatert = minsteytelseVedVirkSats.format()
                 textExpr(
-<<<<<<< HEAD
-                    Bokmal to "Sivilstanden påvirker størrelsen på den årlige uføretrygden og du får derfor en årlig ytelse som utgjør ".expr()
-                        + satsFormatert + " ganger grunnbeløpet.".expr(),
-
-                    Nynorsk to "Sivilstanden påverkar storleiken på den årlege uføretrygda di, og du får derfor ei årleg yting som utgjer ".expr()
-                        + satsFormatert + " gonger grunnbeløpet.".expr(),
-=======
                     Bokmal to "Du får derfor en årlig ytelse som utgjør ".expr()
                             + satsFormatert + " ganger grunnbeløpet.",
 
                     Nynorsk to "Du får derfor ei årleg yting som utgjer ".expr()
                             + satsFormatert + " gangar grunnbeløpet.",
->>>>>>> main
                 )
             }
         }
