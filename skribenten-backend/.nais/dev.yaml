@@ -1,7 +1,7 @@
 app-name: "skribenten-backend"
 brevbaker-app: "pensjon-brevbaker"
 ingresses:
-  - "https://pensjon-skribenten.dev.intern.nav.no"
+  - "https://pensjon-skribenten-api.dev.intern.nav.no"
 env:
   - name: PEN_URL
     value: "https://pensjon-pen-q2.dev.adeo.no/pen/springapi/"

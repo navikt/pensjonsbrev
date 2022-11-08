@@ -1,17 +1,21 @@
 package no.nav.pensjon.brev.maler.vedlegg
 
 import no.nav.pensjon.brev.api.model.Institusjon.*
-import no.nav.pensjon.brev.api.model.Sivilstand.*
+import no.nav.pensjon.brev.api.model.Sivilstand.ENKE
+import no.nav.pensjon.brev.api.model.Sivilstand.ENSLIG
 import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterUfoereDto
 import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterUfoereDtoSelectors.avdoed_sivilstand
 import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterUfoereDtoSelectors.bruker_borINorge
 import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterUfoereDtoSelectors.harInnvilgetBarnetillegg
+import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterUfoereDtoSelectors.harTilleggForFlereBarn
 import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterUfoereDtoSelectors.institusjon_gjeldende
 import no.nav.pensjon.brev.maler.fraser.*
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.createAttachment
-import no.nav.pensjon.brev.template.dsl.expression.*
+import no.nav.pensjon.brev.template.dsl.expression.and
+import no.nav.pensjon.brev.template.dsl.expression.isNotAnyOf
+import no.nav.pensjon.brev.template.dsl.expression.isOneOf
 import no.nav.pensjon.brev.template.dsl.newText
 
 // Conditional for showing the attachment is: sakstype = UFOEREP && vedtakResultat = AVSLG
@@ -46,9 +50,10 @@ val vedleggOrienteringOmRettigheterOgPlikterUfoere =
             }
 
             showIf(harInnvilgetBarnetillegg) {
-                item { includePhrase(VedleggPlikterUT7_001) }
-                item { includePhrase(VedleggPlikterUT13_001) }
-                item { includePhrase(VedleggPlikterUT14_001) }
+                item { includePhrase(VedleggPlikterAP7_001) }
+                item { includePhrase(VedleggPlikterUT7_001(harTilleggForFlereBarn)) }
+                item { includePhrase(VedleggPlikterUT13_001(harTilleggForFlereBarn)) }
+                item { includePhrase(VedleggPlikterUT14_001(harTilleggForFlereBarn)) }
             }
 
             item { includePhrase(VedleggPlikterUT8_001) }

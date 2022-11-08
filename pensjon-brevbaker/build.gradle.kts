@@ -83,7 +83,11 @@ dependencies {
     implementation("io.ktor:ktor-server-status-pages:$ktorVersion")
     implementation("io.ktor:ktor-client-encoding:$ktorVersion")
     implementation("net.logstash.logback:logstash-logback-encoder:$logstashVersion")
+<<<<<<< HEAD
     implementation("no.nav.pensjon.brev:pensjon-brevbaker-api-model:3.5.18-SNAPSHOT")
+=======
+    implementation("no.nav.pensjon.brev:pensjon-brevbaker-api-model:3.5.17")
+>>>>>>> main
     implementation("org.jetbrains.kotlinx:kotlinx-html-jvm:0.8.0")
 
     implementation(project(":template-model-generator"))

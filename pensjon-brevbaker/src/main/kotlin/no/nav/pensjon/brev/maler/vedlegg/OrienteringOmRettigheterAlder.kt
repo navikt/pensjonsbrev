@@ -9,6 +9,7 @@ import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterAlderDtoSel
 import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterAlderDtoSelectors.bruker_sivilstand
 import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterAlderDtoSelectors.ektefelletilleggVedvirk_innvilgetEktefelletillegg
 import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterAlderDtoSelectors.eps_borSammenMedBrukerGjeldende
+import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterAlderDtoSelectors.harTilleggForFlereBarn
 import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterAlderDtoSelectors.institusjon_gjeldende
 import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterAlderDtoSelectors.instutisjon_epsInstitusjonGjeldende
 import no.nav.pensjon.brev.maler.fraser.*
@@ -47,8 +48,8 @@ val orienteringOmRettigheterOgPlikterAlder =
 
             showIf(
                 eps_borSammenMedBrukerGjeldende
-                        and instutisjon_epsInstitusjonGjeldende.isNotAnyOf(INGEN)
-            ){
+                    and instutisjon_epsInstitusjonGjeldende.isNotAnyOf(INGEN)
+            ) {
 
                 showIf(bruker_sivilstand.isOneOf(GIFT)) {
                     item { includePhrase(VedleggPlikterAP4_002) }
@@ -61,8 +62,8 @@ val orienteringOmRettigheterOgPlikterAlder =
 
             showIf(
                 eps_borSammenMedBrukerGjeldende
-                        and institusjon_gjeldende.isNotAnyOf(FENGSEL, HELSE, SYKEHJEM)
-                        and instutisjon_epsInstitusjonGjeldende.isNotAnyOf(INGEN)
+                    and institusjon_gjeldende.isNotAnyOf(FENGSEL, HELSE, SYKEHJEM)
+                    and instutisjon_epsInstitusjonGjeldende.isNotAnyOf(INGEN)
             ) {
                 item { includePhrase(VedleggPlikterAPFlytterFraHverandre(bruker_sivilstand)) }
                 showIf(bruker_sivilstand.isOneOf(SAMBOER1_5, SAMBOER3_2)) {
@@ -75,11 +76,12 @@ val orienteringOmRettigheterOgPlikterAlder =
             showIf(
                 not(eps_borSammenMedBrukerGjeldende)
                     and institusjon_gjeldende.isNotAnyOf(SYKEHJEM)
-                    and instutisjon_epsInstitusjonGjeldende.isNotAnyOf(SYKEHJEM)){
+                    and instutisjon_epsInstitusjonGjeldende.isNotAnyOf(SYKEHJEM)
+            ) {
 
-                showIf(bruker_sivilstand.isOneOf(GIFT_LEVER_ADSKILT, GIFT)){
+                showIf(bruker_sivilstand.isOneOf(GIFT_LEVER_ADSKILT, GIFT)) {
                     item { includePhrase(VedleggPlikterAP8_001) }
-                }.orShowIf(bruker_sivilstand.isOneOf(PARTNER, PARTNER_LEVER_ADSKILT)){
+                }.orShowIf(bruker_sivilstand.isOneOf(PARTNER, PARTNER_LEVER_ADSKILT)) {
                     item { includePhrase(VedleggPlikterAP11_001) }
                 }
             }
@@ -101,18 +103,18 @@ val orienteringOmRettigheterOgPlikterAlder =
             }
             showIf(
                 bruker_sivilstand.isOneOf(GIFT, GIFT_LEVER_ADSKILT, PARTNER, PARTNER_LEVER_ADSKILT)
-                        and not(eps_borSammenMedBrukerGjeldende)
-                        and institusjon_gjeldende.isNotAnyOf(FENGSEL, HELSE, SYKEHJEM)
-                        and instutisjon_epsInstitusjonGjeldende.isNotAnyOf(INGEN)
+                    and not(eps_borSammenMedBrukerGjeldende)
+                    and institusjon_gjeldende.isNotAnyOf(FENGSEL, HELSE, SYKEHJEM)
+                    and instutisjon_epsInstitusjonGjeldende.isNotAnyOf(INGEN)
             ) {
                 item { includePhrase(VedleggPlikterAP10_001) }
             }
 
             showIf(
                 bruker_sivilstand.isNotAnyOf(ENSLIG, ENKE)
-                        and (eps_borSammenMedBrukerGjeldende)
-                        and institusjon_gjeldende.isNotAnyOf(FENGSEL, HELSE, SYKEHJEM)
-                        and instutisjon_epsInstitusjonGjeldende.isNotAnyOf(INGEN)
+                    and (eps_borSammenMedBrukerGjeldende)
+                    and institusjon_gjeldende.isNotAnyOf(FENGSEL, HELSE, SYKEHJEM)
+                    and instutisjon_epsInstitusjonGjeldende.isNotAnyOf(INGEN)
             ) {
                 item {
                     includePhrase(VedleggPlikterAP5_001(bruker_sivilstand))
@@ -121,15 +123,15 @@ val orienteringOmRettigheterOgPlikterAlder =
 
             showIf(
                 bruker_sivilstand.isOneOf(ENSLIG, ENKE)
-                        and institusjon_gjeldende.isNotAnyOf(FENGSEL, HELSE, SYKEHJEM)
-                        and bruker_borINorge
+                    and institusjon_gjeldende.isNotAnyOf(FENGSEL, HELSE, SYKEHJEM)
+                    and bruker_borINorge
             ) {
                 item { includePhrase(VedleggPlikterAP26_001) }
             }
 
             showIf(
                 institusjon_gjeldende.isNotAnyOf(FENGSEL, HELSE, SYKEHJEM)
-                        and bruker_borINorge
+                    and bruker_borINorge
             ) {
                 item { includePhrase(VedleggPlikterAP27_001) }
             }
@@ -138,43 +140,39 @@ val orienteringOmRettigheterOgPlikterAlder =
         includePhrase(VedleggPlikterHvorforMeldeAP_001)
         showIf(
             barnetilleggVedvirk_innvilgetBarnetillegFellesbarn
-                    and barnetilleggVedvirk_innvilgetBarnetilleggSaerkullsbarn
-                    and not(ektefelletilleggVedvirk_innvilgetEktefelletillegg)
+                and barnetilleggVedvirk_innvilgetBarnetilleggSaerkullsbarn
+                and not(ektefelletilleggVedvirk_innvilgetEktefelletillegg)
         ) {
-            includePhrase(VedleggPlikterRettTilBarnetilleggAP_001)
-        }
+            includePhrase(VedleggPlikterRettTilBarnetilleggAP_001(harTilleggForFlereBarn)) }
         showIf(
             ektefelletilleggVedvirk_innvilgetEktefelletillegg
-                    and not(barnetilleggVedvirk_innvilgetBarnetillegFellesbarn)
-                    and not(barnetilleggVedvirk_innvilgetBarnetilleggSaerkullsbarn)
-        ) {
-            includePhrase(VedleggPlikterRettTilEktefelletilleggAP_001(bruker_sivilstand))
-        }
+                and not(barnetilleggVedvirk_innvilgetBarnetillegFellesbarn)
+                and not(barnetilleggVedvirk_innvilgetBarnetilleggSaerkullsbarn)
+        ) { includePhrase(VedleggPlikterRettTilEktefelletilleggAP_001(bruker_sivilstand)) }
         showIf(
             barnetilleggVedvirk_innvilgetBarnetillegFellesbarn
-                    or barnetilleggVedvirk_innvilgetBarnetilleggSaerkullsbarn //TODO hva henger denne or egentlig sammen med?
-                    and ektefelletilleggVedvirk_innvilgetEktefelletillegg
+                or barnetilleggVedvirk_innvilgetBarnetilleggSaerkullsbarn //TODO hva henger denne or egentlig sammen med?
+                and ektefelletilleggVedvirk_innvilgetEktefelletillegg
         ) {
-            includePhrase(VedleggPlikterRettTilEktefelletilleggOgBarnetilleggAP_001(bruker_sivilstand))
-        }
+            includePhrase(VedleggPlikterRettTilEktefelletilleggOgBarnetilleggAP_001(bruker_sivilstand, harTilleggForFlereBarn)) }
         showIf(
             barnetilleggVedvirk_innvilgetBarnetillegFellesbarn
-                    or barnetilleggVedvirk_innvilgetBarnetilleggSaerkullsbarn //TODO hva henger denne or egentlig sammen med?
-                    and not(ektefelletilleggVedvirk_innvilgetEktefelletillegg)
+                or barnetilleggVedvirk_innvilgetBarnetilleggSaerkullsbarn //TODO hva henger denne or egentlig sammen med?
+                and not(ektefelletilleggVedvirk_innvilgetEktefelletillegg)
         ) {
             includePhrase(VedleggPlikterinntektsprovingBTFellesBarnSaerkullsbarnAP_001)
         }
         showIf(
             barnetilleggVedvirk_innvilgetBarnetillegFellesbarn
-                    or barnetilleggVedvirk_innvilgetBarnetilleggSaerkullsbarn //TODO hva henger denne or egentlig sammen med?
-                    and ektefelletilleggVedvirk_innvilgetEktefelletillegg
+                or barnetilleggVedvirk_innvilgetBarnetilleggSaerkullsbarn //TODO hva henger denne or egentlig sammen med?
+                and ektefelletilleggVedvirk_innvilgetEktefelletillegg
         ) {
             includePhrase(VedleggPlikterinntektsprovingBTOgETAP_001)
         }
         showIf(
             not(barnetilleggVedvirk_innvilgetBarnetillegFellesbarn)
-                    and not(barnetilleggVedvirk_innvilgetBarnetilleggSaerkullsbarn)
-                    and ektefelletilleggVedvirk_innvilgetEktefelletillegg
+                and not(barnetilleggVedvirk_innvilgetBarnetilleggSaerkullsbarn)
+                and ektefelletilleggVedvirk_innvilgetEktefelletillegg
         ) {
             includePhrase(VedleggPlikterinntektsprovingETAP_001)
         }
