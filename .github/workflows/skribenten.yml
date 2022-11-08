@@ -11,6 +11,7 @@ on:
 env:
   "IMAGE_TAG": "${{ github.sha }}"
   "IMAGE_SKRIBENTEN_BACKEND": "ghcr.io/${{ github.repository }}/pensjon-skribenten-backend"
+  "IMAGE_SKRIBENTEN_FRONTEND": "ghcr.io/${{ github.repository }}/pensjon-skribenten-frontend:${{ github.sha }}"
 
 jobs:
   build-skribenten-backend:
@@ -32,6 +33,18 @@ jobs:
         env:
           "GITHUB_TOKEN": "${{ secrets.GITHUB_TOKEN }}"
 
+  build-skribenten-frontend:
+    name: "Build skribenten frontend"
+    runs-on: "ubuntu-latest"
+    steps:
+      - uses: "actions/checkout@v2"
+      - name: "Build and publish Docker image"
+        run: "docker build --pull --tag ${IMAGE_SKRIBENTEN_FRONTEND} skribenten-frontend && echo $GITHUB_TOKEN | docker login\
+        \ --username $GITHUB_REPOSITORY --password-stdin https://ghcr.io\
+        \ && docker push ${IMAGE_SKRIBENTEN_FRONTEND}"
+        env:
+          "GITHUB_TOKEN": "${{ secrets.GITHUB_TOKEN }}"
+
   deploy-skribenten-backend-dev:
     name: "Deploy skribenten-backend to dev"
     if: (github.event_name == 'push' && github.ref == 'refs/heads/main') || github.event_name == 'workflow_dispatch'
@@ -47,3 +60,20 @@ jobs:
           "RESOURCE": "skribenten-backend/.nais/nais.yaml"
           "VAR": image=${{ format('{0}:{1}', env.IMAGE_SKRIBENTEN_BACKEND, env.IMAGE_TAG) }}
           "VARS": "skribenten-backend/.nais/dev.yaml"
+
+
+  deploy-skribenten-frontend-dev:
+    name: "Deploy skribenten-frontend to dev"
+    if: (github.event_name == 'push' && github.ref == 'refs/heads/main') || github.event_name == 'workflow_dispatch'
+    needs: "build-skribenten-frontend"
+    runs-on: "ubuntu-latest"
+    steps:
+      - uses: "actions/checkout@v2"
+      - name: "Deploy Skribenten backend to DEV"
+        uses: "nais/deploy/actions/deploy@v1"
+        env:
+          "APIKEY": "${{ secrets.NAIS_DEPLOY_APIKEY }}"
+          "CLUSTER": "dev-gcp"
+          "RESOURCE": "skribenten-frontend/.nais/nais.yaml"
+          "VAR": image=${{ env.IMAGE_SKRIBENTEN_FRONTEND }}
+          "VARS": "skribenten-frontend/.nais/dev.yaml"
