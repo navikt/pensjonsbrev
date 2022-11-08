@@ -42,7 +42,7 @@ spec:
       claims:
         extra:
           - azp_name
-      replyUrls:
+      replyURLs:
         {{#each ingresses as |url|}}
            - {{url}}/oauth2/callback
         {{/each}}

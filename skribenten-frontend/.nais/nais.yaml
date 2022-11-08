@@ -36,7 +36,7 @@ spec:
     application:
       enabled: true
       singlePageApplication: true
-      replyUrls:
+      replyURLs:
         {{#each ingresses as |url|}}
            - {{url}}/
         {{/each}}
