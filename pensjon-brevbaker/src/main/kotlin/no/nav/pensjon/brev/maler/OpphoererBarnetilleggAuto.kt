@@ -5,15 +5,21 @@ import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.antal
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.beloepFratrukketAnnenForeldersInntekt_safe
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.beloepNettoFellesbarn_safe
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.fradragFellesbarn_safe
+import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.fribeloepFellesbarn_safe
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.inntektAnnenForelderFellesbarn_safe
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.inntektBruktIAvkortningFellesbarn_safe
+import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.justeringsbeloepFellesbarn_safe
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarnSelectors.beloepNettoSaerkullsbarn_safe
+import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarnSelectors.fribeloepSaerkullsbarn_safe
+import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarnSelectors.inntektBruktIAvkortningSaerkullsbarn_safe
+import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarnSelectors.justeringsbeloepSaerkullsbarn_safe
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.OpphoererBarnetilleggAutoDto
 import no.nav.pensjon.brev.api.model.maler.OpphoererBarnetilleggAutoDtoSelectors.barnetilleggFellesbarn
 import no.nav.pensjon.brev.api.model.maler.OpphoererBarnetilleggAutoDtoSelectors.barnetilleggSaerkullsbarn
 import no.nav.pensjon.brev.api.model.maler.OpphoererBarnetilleggAutoDtoSelectors.brukerBorInorge
 import no.nav.pensjon.brev.api.model.maler.OpphoererBarnetilleggAutoDtoSelectors.foedselsdatoPaaBarnetilleggOpphoert
+import no.nav.pensjon.brev.api.model.maler.OpphoererBarnetilleggAutoDtoSelectors.grunnbeloep
 import no.nav.pensjon.brev.api.model.maler.OpphoererBarnetilleggAutoDtoSelectors.oensketVirkningsDato
 import no.nav.pensjon.brev.api.model.maler.OpphoererBarnetilleggAutoDtoSelectors.sivilstand
 import no.nav.pensjon.brev.api.model.maler.OpphoererBarnetilleggAutoDtoSelectors.ufoeretrygd
@@ -127,7 +133,7 @@ object OpphoererBarnetilleggAuto : VedtaksbrevTemplate<OpphoererBarnetilleggAuto
 
 
             ifNotNull(
-                barnetilleggFellesbarn.beloepNettoSaerkullsbarn_safe,
+                barnetilleggSaerkullsbarn.beloepNettoSaerkullsbarn_safe,
             ) { beloepNettoSaerkullsbarn ->
                 showIf(not(harBarnetilleggFellesbarn) and harBarnetilleggSaerkullsbarn) {
                     includePhrase(
@@ -169,35 +175,44 @@ object OpphoererBarnetilleggAuto : VedtaksbrevTemplate<OpphoererBarnetilleggAuto
             ifNotNull(
                 barnetilleggFellesbarn.beloepFratrukketAnnenForeldersInntekt_safe,
                 barnetilleggFellesbarn.beloepNettoFellesbarn_safe,
+                barnetilleggFellesbarn.fribeloepFellesbarn_safe,
                 barnetilleggFellesbarn.fradragFellesbarn_safe,
                 barnetilleggFellesbarn.inntektAnnenForelderFellesbarn_safe,
-                barnetilleggFellesbarn.inntektBruktIAvkortningFellesbarn_safe
-            ) { beloepFratrukketAnnenForeldersInntekt, beloepNettoFellesbarn, fradragFellesbarn, inntektAnnenForelderFellesbarn, inntektBruktIAvkortningFellesbarn ->
-
+                barnetilleggFellesbarn.inntektBruktIAvkortningFellesbarn_safe,
+                barnetilleggFellesbarn.justeringsbeloepFellesbarn_safe
+            ) { beloepFratrukketAnnenForeldersInntekt, beloepNettoFellesbarn, fribeloepFellesbarn, fradragFellesbarn, inntektAnnenForelderFellesbarn, inntektBruktIAvkortningFellesbarn, justeringsbeloepFellesbarn ->
                 showIf(harBarnetilleggFellesbarn) {
                     includePhrase(
                         UfoeretrygdBarnetillegg.TBU1284(
                             beloepFratrukketAnnenForeldersInntekt = beloepFratrukketAnnenForeldersInntekt,
                             beloepNettoFellesbarn = beloepNettoFellesbarn,
+                            fribeloepFellesbarn = fribeloepFellesbarn,
                             fradragFellesbarn = fradragFellesbarn,
                             inntektAnnenForelderFellesbarn = inntektAnnenForelderFellesbarn,
                             inntektBruktiAvkortningFellesbarn = inntektBruktIAvkortningFellesbarn,
-                            grunnbeloepFellesbarn = grunnbeloepFellesbarn,
-                            harBarnetilleggSaerkullsbarn,
+                            grunnbeloep = grunnbeloep,
+                            harBarnetilleggSaerkullsbarn = harBarnetilleggSaerkullsbarn,
                             justeringsbeloepFellesbarn = justeringsbeloepFellesbarn,
                             sivilstand = sivilstand
                         )
                     )
                 }
             }
-            includePhrase(
-                UfoeretrygdBarnetillegg.TBU1285(
-                    beloepNettoSaerkullsbarn = beloepNettoSaerkullsbarn,
-                    fribeloepSaerkullsbarn = fribeloepSaerkullsbarn,
-                    inntektBruktIAvkortningSaerkullsbarn = inntektBruktIAvkortningSaerkullsbarn,
-                    justeringsbeloepSaerkullsbarn = justeringsbeloepSaerkullsbarn
+            ifNotNull(
+                barnetilleggSaerkullsbarn.beloepNettoSaerkullsbarn_safe,
+                barnetilleggSaerkullsbarn.fribeloepSaerkullsbarn_safe,
+                barnetilleggSaerkullsbarn.inntektBruktIAvkortningSaerkullsbarn_safe,
+                barnetilleggSaerkullsbarn.justeringsbeloepSaerkullsbarn_safe
+            ) { beloepNettoSaerkullsbarn, fribeloepSaerkullsbarn, inntektBruktIAvkortningSaerkullsbarn, justeringsbeloepSaerkullsbarn ->
+                includePhrase(
+                    UfoeretrygdBarnetillegg.TBU1285(
+                        beloepNettoSaerkullsbarn = beloepNettoSaerkullsbarn,
+                        fribeloepSaerkullsbarn = fribeloepSaerkullsbarn,
+                        inntektBruktIAvkortningSaerkullsbarn = inntektBruktIAvkortningSaerkullsbarn,
+                        justeringsbeloepSaerkullsbarn = justeringsbeloepSaerkullsbarn
+                    )
                 )
-            )
+            }
             includePhrase(
                 UfoeretrygdBarnetillegg.TBU1286Saerkullsbarn(
                     beloepNettoSaerkullsbarn = beloepNettoSaerkullsbarn,

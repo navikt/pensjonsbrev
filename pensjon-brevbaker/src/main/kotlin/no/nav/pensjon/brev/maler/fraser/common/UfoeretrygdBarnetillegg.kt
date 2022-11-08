@@ -272,7 +272,7 @@ object UfoeretrygdBarnetillegg {
         val fribeloepFellesbarn: Expression<Kroner>,
         val inntektAnnenForelderFellesbarn: Expression<Kroner>,
         val inntektBruktiAvkortningFellesbarn: Expression<Kroner>,
-        val grunnbeloepFellesbarn: Expression<Kroner>,
+        val grunnbeloep: Expression<Kroner>,
         val harBarnetilleggSaerkullsbarn: Expression<Boolean>,
         val justeringsbeloepFellesbarn: Expression<Kroner>,
         val sivilstand: Expression<Sivilstand>
@@ -283,7 +283,7 @@ object UfoeretrygdBarnetillegg {
                 val fribeloep = fribeloepFellesbarn.format()
                 val inntektAnnenForelder = inntektAnnenForelderFellesbarn.format()
                 val inntektBruktiAvkortning = inntektBruktiAvkortningFellesbarn.format()
-                val grunnbeloep = grunnbeloepFellesbarn.format()
+                val grunnbeloep = grunnbeloep.format()
                 val hoeyereLavere = inntektBruktiAvkortningFellesbarn.lessThanOrEqual(fribeloepFellesbarn)
                 val ikke = fradragFellesbarn.equalTo(0)
 
