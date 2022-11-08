@@ -409,16 +409,16 @@ object UfoeretrygdBarnetillegg {
     data class TBU1285(
         val beloepNettoSaerkullsbarn: Expression<Kroner>,
         val fribeloepSaerkullsbarn: Expression<Kroner>,
-        val inntektBruktiAvkortningSaerkullsbarn: Expression<Kroner>,
+        val inntektBruktIAvkortningSaerkullsbarn: Expression<Kroner>,
         val justeringsbeloepSaerkullsbarn: Expression<Kroner>
 
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             paragraph {
                 val fribeloep = fribeloepSaerkullsbarn.format()
-                val inntektBruktiAvkortning = inntektBruktiAvkortningSaerkullsbarn.format()
-                val hoeyereLavere = inntektBruktiAvkortningSaerkullsbarn.lessThanOrEqual(fribeloepSaerkullsbarn)
-                val ikke = inntektBruktiAvkortningSaerkullsbarn.lessThanOrEqual(fribeloepSaerkullsbarn)
+                val inntektBruktiAvkortning = inntektBruktIAvkortningSaerkullsbarn.format()
+                val hoeyereLavere = inntektBruktIAvkortningSaerkullsbarn.lessThanOrEqual(fribeloepSaerkullsbarn)
+                val ikke = inntektBruktIAvkortningSaerkullsbarn.lessThanOrEqual(fribeloepSaerkullsbarn)
 
                 showIf(
                     beloepNettoSaerkullsbarn.greaterThan(0) and justeringsbeloepSaerkullsbarn.equalTo(0)
@@ -785,17 +785,12 @@ object UfoeretrygdBarnetillegg {
 
 
     data class TBU1288(
-        val harBarnetilleggFellesbarn: Expression<Boolean?>,
-        val harBarnetilleggSaerkullsbarn: Expression<Boolean?>,
+        val harBarnetilleggFellesbarn: Expression<Boolean>,
+        val harBarnetilleggSaerkullsbarn: Expression<Boolean>,
 
         ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             paragraph {
-
-                ifNotNull(
-                    harBarnetilleggFellesbarn,
-                    harBarnetilleggSaerkullsbarn,
-                ) { harBarnetilleggFellesbarn, harBarnetilleggSaerkullsbarn ->
 
                     showIf(harBarnetilleggFellesbarn or harBarnetilleggSaerkullsbarn)
                     {
