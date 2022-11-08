@@ -21,12 +21,21 @@ import no.nav.pensjon.brev.api.model.maler.UfoeretrygdSelectors.ektefelletillegg
 import no.nav.pensjon.brev.api.model.maler.UfoeretrygdSelectors.gjenlevendetilleggUtbetalt_safe
 import no.nav.pensjon.brev.api.model.maler.UfoeretrygdSelectors.harUtbetalingsgrad
 import no.nav.pensjon.brev.api.model.maler.UfoeretrygdSelectors.utbetaltPerMaaned
+import no.nav.pensjon.brev.api.model.maler.UngUfoerAutoDtoSelectors.maanedligUfoeretrygdFoerSkatt
+import no.nav.pensjon.brev.api.model.maler.UngUfoerAutoDtoSelectors.orienteringOmRettigheterUfoere
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligUfoeretrygdFoerSkattDtoSelectors.gjeldendeBeregnetUTPerMaaned
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligUfoeretrygdFoerSkattDtoSelectors.tidligereUfoeretrygdPerioder
+import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdPerMaanedSelectors.totalUTBeloepBrutto_safe
+import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdPerMaanedSelectors.totalUTBeloepNetto_safe
 import no.nav.pensjon.brev.maler.fraser.OpphoererBarnetillegg
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.fraser.common.UfoeretrygdBarnetillegg
 import no.nav.pensjon.brev.maler.fraser.common.UfoeretrygdFelles
 import no.nav.pensjon.brev.maler.fraser.omregning.ufoeretrygd.Ufoeretrygd
 import no.nav.pensjon.brev.maler.fraser.vedtak.Vedtak
+import no.nav.pensjon.brev.maler.vedlegg.vedleggMaanedligUfoeretrygdFoerSkatt
+import no.nav.pensjon.brev.maler.vedlegg.vedleggOpplysningerBruktIBeregningUT
+import no.nav.pensjon.brev.maler.vedlegg.vedleggOrienteringOmRettigheterOgPlikterUfoere
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.VedtaksbrevTemplate
 import no.nav.pensjon.brev.template.dsl.createTemplate
@@ -118,7 +127,7 @@ object OpphoererBarnetilleggAuto : VedtaksbrevTemplate<OpphoererBarnetilleggAuto
 
 
             ifNotNull(
-                barnetilleggSaerkullsbarn.beloepNettoSaerkullsbarn_safe,
+                barnetilleggFellesbarn.beloepNettoSaerkullsbarn_safe,
             ) { beloepNettoSaerkullsbarn ->
                 showIf(not(harBarnetilleggFellesbarn) and harBarnetilleggSaerkullsbarn) {
                     includePhrase(
@@ -254,7 +263,16 @@ object OpphoererBarnetilleggAuto : VedtaksbrevTemplate<OpphoererBarnetilleggAuto
                     brukerBorInorge = brukerBorInorge
                 )
             )
-
+            includeAttachment(
+                vedleggMaanedligUfoeretrygdFoerSkatt, maanedligUfoeretrygdFoerSkatt,
+                with(maanedligUfoeretrygdFoerSkatt) {
+                    tidligereUfoeretrygdPerioder.isNotEmpty() or
+                        gjeldendeBeregnetUTPerMaaned.totalUTBeloepNetto_safe
+                            .notEqualTo(gjeldendeBeregnetUTPerMaaned.totalUTBeloepBrutto_safe)
+                }
+            )
+            includeAttachment(vedleggOpplysningerBruktIBeregningUT, opplysningerBruktIBeregningUT)
+            includeAttachment(vedleggOrienteringOmRettigheterOgPlikterUfoere, orienteringOmRettigheterUfoere)
         }
     }
 }
