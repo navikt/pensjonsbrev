@@ -2,11 +2,20 @@ name: "Build and deploy Skribenten"
 on:
   workflow_dispatch:
   pull_request:
+    paths:
+      - "build.gradle.kts"
+      - "gradle.properties"
+      - "skribenten-backend/**"
+      - "skribenten-frontend/**"
+      - ".github/workflows/skribenten.yml"
   push:
     branches:
       - "main"
     paths:
+      - "build.gradle.kts"
+      - "gradle.properties"
       - "skribenten-backend/**"
+      - "skribenten-frontend/**"
       - ".github/workflows/skribenten.yml"
 env:
   "IMAGE_TAG": "${{ github.sha }}"
