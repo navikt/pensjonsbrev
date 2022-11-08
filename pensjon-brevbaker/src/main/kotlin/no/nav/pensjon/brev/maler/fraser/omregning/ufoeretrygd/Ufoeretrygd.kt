@@ -229,12 +229,9 @@ object Ufoeretrygd {
     /**
      * TBU3008, TBU3009, TBU3010, endrMYUngUfoer20Aar_001
      */
-<<<<<<< HEAD
-    data class UngUfoerHoeyereVed20aar(val minsteytelseVedVirkSats: Expression<Double>) :
-        OutlinePhrase<LangBokmalNynorsk>() {
-=======
+
     data class EndringMinsteYtelseUngUfoerVed20aar(val minsteytelseVedVirkSats: Expression<Double>) : OutlinePhrase<LangBokmalNynorsk>() {
->>>>>>> main
+
         override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
             paragraph {
                 text(
