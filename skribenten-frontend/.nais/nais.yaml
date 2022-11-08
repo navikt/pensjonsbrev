@@ -12,12 +12,12 @@ spec:
     port: 80
     protocol: http
   liveness:
-    path: "/health"
+    path: "/api/health"
     port: 3000
     initialDelay: 20
     timeout: 60
   readiness:
-    path: "/health"
+    path: "/api/health"
     port: 3000
     initialDelay: 20
     timeout: 60
