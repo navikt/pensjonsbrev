@@ -97,18 +97,6 @@ object UfoeretrygdFelles {
         }
     }
 
-    object TBU2242 : OutlinePhrase<LangBokmalNynorskEnglish>() {
-        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-            paragraph {
-                text(
-                    Language.Bokmal to "Du har rett til å se dokumentene i saken din. Se vedlegg «Orientering om rettigheter og plikter» for informasjon om hvordan du går fram.",
-                    Language.Nynorsk to "Du har rett til å sjå dokumenta i saka di. Sjå vedlegg «Orientering om rettar og plikter» for informasjon om korleis du går fram.",
-                    Language.English to "You are entitled to see your case documents. Refer to the attachment “Rights and obligations” for information about how to proceed."
-                )
-            }
-        }
-    }
-
     object TBU1228 : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             title1 {

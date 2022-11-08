@@ -12,6 +12,7 @@ import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.OpphoererBarnetilleggAutoDto
 import no.nav.pensjon.brev.api.model.maler.OpphoererBarnetilleggAutoDtoSelectors.barnetilleggFellesbarn
 import no.nav.pensjon.brev.api.model.maler.OpphoererBarnetilleggAutoDtoSelectors.barnetilleggSaerkullsbarn
+import no.nav.pensjon.brev.api.model.maler.OpphoererBarnetilleggAutoDtoSelectors.brukerBorInorge
 import no.nav.pensjon.brev.api.model.maler.OpphoererBarnetilleggAutoDtoSelectors.foedselsdatoPaaBarnetilleggOpphoert
 import no.nav.pensjon.brev.api.model.maler.OpphoererBarnetilleggAutoDtoSelectors.oensketVirkningsDato
 import no.nav.pensjon.brev.api.model.maler.OpphoererBarnetilleggAutoDtoSelectors.sivilstand
@@ -21,6 +22,7 @@ import no.nav.pensjon.brev.api.model.maler.UfoeretrygdSelectors.gjenlevendetille
 import no.nav.pensjon.brev.api.model.maler.UfoeretrygdSelectors.harUtbetalingsgrad
 import no.nav.pensjon.brev.api.model.maler.UfoeretrygdSelectors.utbetaltPerMaaned
 import no.nav.pensjon.brev.maler.fraser.OpphoererBarnetillegg
+import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.fraser.common.UfoeretrygdBarnetillegg
 import no.nav.pensjon.brev.maler.fraser.common.UfoeretrygdFelles
 import no.nav.pensjon.brev.maler.fraser.omregning.ufoeretrygd.Ufoeretrygd
@@ -232,13 +234,27 @@ object OpphoererBarnetilleggAuto : VedtaksbrevTemplate<OpphoererBarnetilleggAuto
                     justeringsbeloepFellesbarn = justeringsbeloepFellesbarn,
                     antallSaerkullsbarnInnvilget = antallSaerkullsbarnInnvilget,
                     antallFellesbarnInnvilget = antallFellesbarnInnvilget
-                    )
+                )
             )
             includePhrase(
                 UfoeretrygdBarnetillegg.TBU1288(
-
+                    harBarnetilleggSaerkullsbarn = harBarnetilleggSaerkullsbarn,
+                    harBarnetilleggFellesbarn = harBarnetilleggFellesbarn
                 )
             )
+            includePhrase(UfoeretrygdFelles.TBU2364)
+            includePhrase(UfoeretrygdFelles.TBU2365)
+            includePhrase(UfoeretrygdFelles.TBU2212)
+            includePhrase(UfoeretrygdFelles.TBU2213)
+            includePhrase(Felles.RettTilInnsynPesys_001)
+            includePhrase(Ufoeretrygd.SjekkUtbetalingene)
+            includePhrase(UfoeretrygdFelles.TBU1228)
+            includePhrase(
+                UfoeretrygdFelles.TBU3730(
+                    brukerBorInorge = brukerBorInorge
+                )
+            )
+
         }
     }
 }
