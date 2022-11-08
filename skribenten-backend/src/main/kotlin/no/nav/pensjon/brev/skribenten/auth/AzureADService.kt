@@ -1,8 +1,8 @@
 package no.nav.pensjon.brev.skribenten.auth
 
-import com.fasterxml.jackson.annotation.JsonProperty
-import com.fasterxml.jackson.annotation.JsonTypeInfo
+import com.fasterxml.jackson.annotation.*
 import com.fasterxml.jackson.databind.DeserializationFeature
+import com.fasterxml.jackson.module.kotlin.*
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.engine.cio.*
@@ -10,15 +10,19 @@ import io.ktor.client.plugins.auth.providers.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
 import io.ktor.client.request.forms.*
+import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.serialization.jackson.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
+import io.ktor.util.*
+import io.ktor.utils.io.jvm.javaio.*
 import java.time.LocalDateTime
 
 class UnauthorizedException(msg: String) : Exception(msg)
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.DEDUCTION)
+@JsonSubTypes(JsonSubTypes.Type(TokenResponse.OnBehalfOfToken::class), JsonSubTypes.Type(TokenResponse.ErrorResponse::class))
 sealed class TokenResponse {
     data class OnBehalfOfToken(
         @JsonProperty("access_token") val accessToken: String,
@@ -50,9 +54,10 @@ class AzureADService(private val jwtConfig: JwtConfig) {
             }
         }
     }
+    private val objectMapper = jacksonObjectMapper().apply { disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES) }
 
-    private suspend fun exchangeToken(accessToken: UserAccessToken, scope: String): TokenResponse =
-        client.submitForm(
+    private suspend fun exchangeToken(accessToken: UserAccessToken, scope: String): TokenResponse {
+        val response = client.submitForm(
             url = jwtConfig.tokenUri,
             formParameters = Parameters.build {
                 append("grant_type", "urn:ietf:params:oauth:grant-type:jwt-bearer")
@@ -64,7 +69,10 @@ class AzureADService(private val jwtConfig: JwtConfig) {
             }
         ) {
             headers { append(HttpHeaders.ContentType, ContentType.Application.FormUrlEncoded) }
-        }.body()
+        }
+        // For some incomprehensible reason Ktor built-in deserialization does not work.
+        return objectMapper.readValue(response.bodyAsText())
+    }
 
     suspend fun getOnBehalfOfToken(call: ApplicationCall, scope: String): TokenResponse {
         val principal: UserPrincipal = call.authentication.principal() ?: throw UnauthorizedException("ApplicationCall doesn't have a UserPrincipal")
