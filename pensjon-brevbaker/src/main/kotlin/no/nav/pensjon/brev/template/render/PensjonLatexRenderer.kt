@@ -62,7 +62,6 @@ object PensjonLatexRenderer : LetterRenderer<RenderedLatexLetter>() {
         printCmd("Date", scope.felles.dokumentDato.format(DateTimeFormatter.ISO_LOCAL_DATE))
         printCmd("Producer", DOCUMENT_PUBLISHER)
         printCmd("Creator", DOCUMENT_PUBLISHER)
-        printCmd("Language", scope.language.locale().toLanguageTag().latexEscape())
     }
 
     private fun LatexAppendable.renderLetterTemplate(scope: ExpressionScope<*, *>, template: LetterTemplate<*, *>) {
