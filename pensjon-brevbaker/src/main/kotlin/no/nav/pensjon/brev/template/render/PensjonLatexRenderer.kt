@@ -10,6 +10,8 @@ import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 
+private const val DOCUMENT_PRODUCER = "brevbaker / pdf-bygger med LaTeX"
+
 object PensjonLatexRenderer : LetterRenderer<RenderedLatexLetter>() {
     private val letterResourceFiles: List<RenderedFile> = listOf(
         RenderedFile.Binary("nav-logo.pdf", getResource("latex/nav-logo.pdf")),
@@ -58,25 +60,12 @@ object PensjonLatexRenderer : LetterRenderer<RenderedLatexLetter>() {
         printCmd("Language", scope.language.locale().toLanguageTag())
         printCmd("Publisher", scope.felles.avsenderEnhet.navn)
         printCmd("Date", scope.felles.dokumentDato.format(DateTimeFormatter.ISO_LOCAL_DATE))
-    }
-
-    private fun LatexAppendable.appendPdfMetadata(scope: ExpressionScope<*, *>, template: LetterTemplate<*, *>) {
-        val title = StringBuilder().apply { LatexAppendable(this).apply { renderText(scope, template.title) } }.toString()
-        print(
-            """
-               \pdfinfo{
-                    /Creator (${scope.felles.avsenderEnhet.navn.latexEscape()})
-                    /Title  (${title})
-                    /Language (${scope.language.locale().toLanguageTag().latexEscape()})
-                    /Producer (${scope.felles.avsenderEnhet.navn.latexEscape()})
-                }
-            """.trimIndent(), escape = false
-        )
+        printCmd("Producer", DOCUMENT_PRODUCER)
+        printCmd("Creator", DOCUMENT_PRODUCER)
     }
 
     private fun LatexAppendable.renderLetterTemplate(scope: ExpressionScope<*, *>, template: LetterTemplate<*, *>) {
         println("""\documentclass{pensjonsbrev_v3}""", escape = false)
-        appendPdfMetadata(scope, template)
         printCmd("begin", "document")
         printCmd("firstpage")
         printCmd("tittel") { arg { renderText(scope, template.title) } }
@@ -142,7 +131,7 @@ object PensjonLatexRenderer : LetterRenderer<RenderedLatexLetter>() {
     private fun pdfCreationTime(): String {
         val now = ZonedDateTime.now()
         val formattedTime = now.format(DateTimeFormatter.ofPattern("YYYYMMddHHmmssxxx"))
-        return "D:${formattedTime.replace(":", "’")}’"
+        return "D:${formattedTime.replace(":", "'")}'"
     }
 
     private fun LatexAppendable.vedleggCommand(scope: ExpressionScope<*, *>, attachments: List<IncludeAttachment<*, *>>) {
