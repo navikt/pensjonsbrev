@@ -10,7 +10,7 @@ import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 
-private const val DOCUMENT_PUBLISHER = "brevbaker / pdf-bygger med LaTeX"
+private const val DOCUMENT_PRODUCER = "brevbaker / pdf-bygger med LaTeX"
 
 object PensjonLatexRenderer : LetterRenderer<RenderedLatexLetter>() {
     private val letterResourceFiles: List<RenderedFile> = listOf(
@@ -60,8 +60,8 @@ object PensjonLatexRenderer : LetterRenderer<RenderedLatexLetter>() {
         printCmd("Language", scope.language.locale().toLanguageTag())
         printCmd("Publisher", scope.felles.avsenderEnhet.navn)
         printCmd("Date", scope.felles.dokumentDato.format(DateTimeFormatter.ISO_LOCAL_DATE))
-        printCmd("Producer", DOCUMENT_PUBLISHER)
-        printCmd("Creator", DOCUMENT_PUBLISHER)
+        printCmd("Producer", DOCUMENT_PRODUCER)
+        printCmd("Creator", DOCUMENT_PRODUCER)
     }
 
     private fun LatexAppendable.renderLetterTemplate(scope: ExpressionScope<*, *>, template: LetterTemplate<*, *>) {
