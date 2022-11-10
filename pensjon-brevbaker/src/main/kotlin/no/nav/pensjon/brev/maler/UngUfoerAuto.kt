@@ -46,7 +46,7 @@ object UngUfoerAuto : VedtaksbrevTemplate<UngUfoerAutoDto> {
         letterDataType = UngUfoerAutoDto::class,
         languages = languages(Bokmal, Nynorsk),
         letterMetadata = LetterMetadata(
-            displayTitle = "Vedtak – ung ufør ved 20 år",
+            displayTitle = "Vedtak - endring av uføretrygd fordi du fyller 20 år",
             isSensitiv = true,
             distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
         )
