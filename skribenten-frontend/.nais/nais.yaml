@@ -7,28 +7,24 @@ metadata:
     "team": "pensjonsbrev"
 spec:
   image: {{image}}
-  port: 8080
+  port: 3000
   service:
     port: 80
     protocol: http
   liveness:
-    path: "/isAlive"
-    port: 8080
+    path: "/api/health"
+    port: 3000
     initialDelay: 20
     timeout: 60
   readiness:
-    path: "/isReady"
-    port: 8080
+    path: "/api/health"
+    port: 3000
     initialDelay: 20
     timeout: 60
   replicas:
     min: 2
     max: 10
     cpuThresholdPercentage: 50
-  prometheus:
-    enabled: true
-    path: "/metrics"
-    port: "8080"
   requests:
     cpu: "200m"
     memory: "256Mi"
@@ -39,23 +35,10 @@ spec:
   azure:
     application:
       enabled: true
-      claims:
-        extra:
-          - azp_name
+      singlePageApplication: true
       replyURLs:
         {{#each ingresses as |url|}}
-           - {{url}}/oauth2/callback
-        {{/each}}
-  accessPolicy:
-    outbound:
-      rules:
-        - application: {{brevbaker-app}}
-    inbound:
-      rules:
-        {{#each preAuthorized as |app|}}
-          - application: {{app.name}}
-            namespace: {{app.namespace}}
-            cluster: {{app.cluster}}
+           - {{url}}/
         {{/each}}
   ingresses:
     {{#each ingresses as |url|}}
@@ -63,6 +46,6 @@ spec:
     {{/each}}
   env:
     {{#each env as |e|}}
-       - name: {{e.name }}
-         value: {{{e.value }}}
+      - name: {{e.name }}
+        value: {{{e.value }}}
     {{/each}}

@@ -2,10 +2,19 @@ name: "Build and deploy brevbaker and pdf-bygger"
 on:
   workflow_dispatch:
   pull_request:
+    paths:
+      - "build.gradle.kts"
+      - "gradle.properties"
+      - "template-model-generator/**"
+      - "pensjon-brevbaker/**"
+      - "pdf-bygger/**"
+      - ".github/workflows/pdfbygger-brevbaker.yml"
   push:
     branches:
       - "main"
     paths:
+      - "build.gradle.kts"
+      - "gradle.properties"
       - "template-model-generator/**"
       - "pensjon-brevbaker/**"
       - "pdf-bygger/**"
