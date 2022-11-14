@@ -1,7 +1,9 @@
 package no.nav.pensjon.brev.maler
 
 import no.nav.pensjon.brev.api.model.LetterMetadata
+import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarn
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.antallFellesbarnInnvilget_safe
+import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.beloepFratrukketAnnenForeldersInntekt
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.beloepFratrukketAnnenForeldersInntekt_safe
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.beloepNettoFellesbarn_safe
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.fradragFellesbarn_safe
@@ -171,33 +173,23 @@ object OpphoererBarnetilleggAuto : VedtaksbrevTemplate<OpphoererBarnetilleggAuto
                     sivilstand = sivilstand
                 )
             )
-
-            ifNotNull(
-                barnetilleggFellesbarn.beloepFratrukketAnnenForeldersInntekt_safe,
-                barnetilleggFellesbarn.beloepNettoFellesbarn_safe,
-                barnetilleggFellesbarn.fribeloepFellesbarn_safe,
-                barnetilleggFellesbarn.fradragFellesbarn_safe,
-                barnetilleggFellesbarn.inntektAnnenForelderFellesbarn_safe,
-                barnetilleggFellesbarn.inntektBruktIAvkortningFellesbarn_safe,
-                barnetilleggFellesbarn.justeringsbeloepFellesbarn_safe
-            ) { beloepFratrukketAnnenForeldersInntekt, beloepNettoFellesbarn, fribeloepFellesbarn, fradragFellesbarn, inntektAnnenForelderFellesbarn, inntektBruktIAvkortningFellesbarn, justeringsbeloepFellesbarn ->
-                showIf(harBarnetilleggFellesbarn) {
+            ifNotNull(barnetilleggFellesbarn) { barnetilleggFellesbarn ->
                     includePhrase(
                         UfoeretrygdBarnetillegg.TBU1284(
-                            beloepFratrukketAnnenForeldersInntekt = beloepFratrukketAnnenForeldersInntekt,
-                            beloepNettoFellesbarn = beloepNettoFellesbarn,
-                            fribeloepFellesbarn = fribeloepFellesbarn,
-                            fradragFellesbarn = fradragFellesbarn,
+                            barnetilleggFellesbarn.beloepFratrukketAnnenForeldersInntekt,
+                            beloepNettoFellesbarn,
+                            fribeloepFellesbarn,
+                            fradragFellesbarn,
                             inntektAnnenForelderFellesbarn = inntektAnnenForelderFellesbarn,
                             inntektBruktiAvkortningFellesbarn = inntektBruktIAvkortningFellesbarn,
-                            grunnbeloep = grunnbeloep,
-                            harBarnetilleggSaerkullsbarn = harBarnetilleggSaerkullsbarn,
                             justeringsbeloepFellesbarn = justeringsbeloepFellesbarn,
+                            harBarnetilleggSaerkullsbarn = harBarnetilleggSaerkullsbarn,
+                            grunnbeloep = grunnbeloep,
                             sivilstand = sivilstand
                         )
                     )
                 }
-            }
+
             ifNotNull(
                 barnetilleggSaerkullsbarn.beloepNettoSaerkullsbarn_safe,
                 barnetilleggSaerkullsbarn.fribeloepSaerkullsbarn_safe,
@@ -213,6 +205,7 @@ object OpphoererBarnetilleggAuto : VedtaksbrevTemplate<OpphoererBarnetilleggAuto
                     )
                 )
             }
+
             includePhrase(
                 UfoeretrygdBarnetillegg.TBU1286Saerkullsbarn(
                     beloepNettoSaerkullsbarn = beloepNettoSaerkullsbarn,
