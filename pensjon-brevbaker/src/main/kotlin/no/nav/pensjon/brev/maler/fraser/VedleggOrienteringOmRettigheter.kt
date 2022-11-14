@@ -899,6 +899,8 @@ object VedleggKlagePensjon_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
                         Nynorsk to "kva vedtak du klagar på",
                         English to "which decision you are appealing"
                     )
+                }
+                item {
                     text(
                         Bokmal to "hvilken endring i vedtaket du ber om",
                         Nynorsk to "kva endring i vedtaket du ber om",
@@ -916,6 +918,8 @@ object VedleggKlagePensjon_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
                         Nynorsk to "skrive kvifor du meiner vedtaket er feil",
                         English to "specify why you believe the decision is wrong"
                     )
+                }
+                item {
                     text(
                         Bokmal to "nevne erklæringer og andre dokumenter som du legger ved klagen",
                         Nynorsk to "nemne erklæringar og andre dokument som du legg ved klaga",

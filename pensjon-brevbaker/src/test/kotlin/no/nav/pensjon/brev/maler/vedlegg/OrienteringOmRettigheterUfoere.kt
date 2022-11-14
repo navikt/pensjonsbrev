@@ -53,7 +53,7 @@ class OrienteringOmRettigheterUfoereTest {
             Letter(
                 template,
                 Unit,
-                Bokmal,
+                English,
                 Fixtures.fellesAuto
             )
                 .let { PensjonLatexRenderer.render(it) }
