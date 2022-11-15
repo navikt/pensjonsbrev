@@ -19,8 +19,8 @@ object VedleggPlikter_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
         title1 {
             text(
                 Bokmal to "Plikt til å opplyse om endringer - folketrygdloven § 21-3",
-                Nynorsk to "Plikt til å opplyse om endringar  - folketrygdlova § 21-3",
-                English to "Duty to inform of changes  - Section 21-3 of the National Insurance Act"
+                Nynorsk to "Plikt til å opplyse om endringar - folketrygdlova § 21-3",
+                English to "Duty to inform of changes - Section 21-3 of the National Insurance Act"
             )
         }
         paragraph {
@@ -800,7 +800,6 @@ object VedleggVeiledning_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
 object VedleggInnsynSakPensjon_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         val telefonNummer = felles.avsenderEnhet.telefonnummer
-        val kontaktinformasjonNettsted = felles.avsenderEnhet.nettside
         title1 {
             text(
                 Bokmal to "Innsyn i saken din - forvaltningsloven § 18",
@@ -810,17 +809,17 @@ object VedleggInnsynSakPensjon_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
         }
         paragraph {
             textExpr(
-                Bokmal to "Med få unntak har du rett til å se dokumentene i saken din. Du kan logge deg inn på ".expr() + kontaktinformasjonNettsted + " for å se all kommunikasjon som har vært mellom deg og NAV i saken din. Du kan også ringe oss på telefon ".expr() + telefonNummer.format() + ".".expr(),
-                Nynorsk to "Med få unntak har du rett til å sjå dokumenta i saka di. Du kan logge deg inn på ".expr() + kontaktinformasjonNettsted + " for å sjå all kommunikasjon som har vore mellom deg og NAV i saka di. Du kan også ringje oss på telefon ".expr() + telefonNummer.format() + ".".expr(),
-                English to "With some exceptions, you are entitled to access all the documents relating to your case. Log on to ".expr() + kontaktinformasjonNettsted + " to review the communication between you and NAV in connection with your case. You can also call us at tel.: ".expr() + telefonNummer.format() + ".".expr()
+                Bokmal to "Med få unntak har du rett til å se dokumentene i saken din. Du kan logge deg inn på ${Constants.NAV_URL} for å se all kommunikasjon som har vært mellom deg og NAV i saken din. Du kan også ringe oss på telefon ".expr() + telefonNummer.format() + ".".expr(),
+                Nynorsk to "Med få unntak har du rett til å sjå dokumenta i saka di. Du kan logge deg inn på ${Constants.NAV_URL} for å sjå all kommunikasjon som har vore mellom deg og NAV i saka di. Du kan også ringje oss på telefon ".expr() + telefonNummer.format() + ".".expr(),
+                English to "With some exceptions, you are entitled to access all the documents relating to your case. Log on to ${Constants.NAV_URL} to review the communication between you and NAV in connection with your case. You can also call us at tel.: ".expr() + telefonNummer.format() + ".".expr()
             )
         }
     }
 }
 
-
 object VedleggInnsynSakUTPesys_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+        val telefonNummer = felles.avsenderEnhet.telefonnummer
         title1 {
             text(
                 Bokmal to "Innsyn i saken din - forvaltningsloven § 18",
@@ -829,15 +828,14 @@ object VedleggInnsynSakUTPesys_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
             )
         }
         paragraph {
-            text(
-                Bokmal to "Du kan logge deg inn via nav.no for å se dokumenter i saken din.",
-                Nynorsk to "Du kan logge deg inn via nav.no for å sjå dokument i saka di.",
-                English to "You can log in via nav.no to read your case documents."
+            textExpr(
+                Bokmal to "Med få unntak har du rett til å se dokumentene i saken din. Du kan logge deg inn via ${Constants.NAV_URL} for å se dokumenter i saken din. Du kan også ringe oss på telefon ".expr() + telefonNummer.format() + ".".expr(),
+                Nynorsk to "Med få unntak har du rett til å sjå dokumenta i saka di. Du kan logge deg inn via ${Constants.NAV_URL} for å sjå dokumenter i saka di. Du kan også ringje oss på telefon ".expr() + telefonNummer.format() + ".".expr(),
+                English to "With some exceptions, you are entitled to access the documents relating to your case. Log on to ${Constants.NAV_URL} to review the documents in connection with your case. You can also call us at tel.: ".expr() + telefonNummer.format() + ".".expr()
             )
         }
     }
 }
-
 
 object VedleggHjelpFraAndre_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
@@ -857,7 +855,6 @@ object VedleggHjelpFraAndre_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
         }
     }
 }
-
 
 object VedleggKlagePensjon_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
@@ -899,6 +896,8 @@ object VedleggKlagePensjon_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
                         Nynorsk to "kva vedtak du klagar på",
                         English to "which decision you are appealing"
                     )
+                }
+                item {
                     text(
                         Bokmal to "hvilken endring i vedtaket du ber om",
                         Nynorsk to "kva endring i vedtaket du ber om",
@@ -916,6 +915,8 @@ object VedleggKlagePensjon_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
                         Nynorsk to "skrive kvifor du meiner vedtaket er feil",
                         English to "specify why you believe the decision is wrong"
                     )
+                }
+                item {
                     text(
                         Bokmal to "nevne erklæringer og andre dokumenter som du legger ved klagen",
                         Nynorsk to "nemne erklæringar og andre dokument som du legg ved klaga",
