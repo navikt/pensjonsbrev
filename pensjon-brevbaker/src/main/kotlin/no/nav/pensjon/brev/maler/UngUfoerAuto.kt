@@ -16,7 +16,7 @@ import no.nav.pensjon.brev.api.model.maler.UngUfoerAutoDtoSelectors.saerkullsbar
 import no.nav.pensjon.brev.api.model.maler.UngUfoerAutoDtoSelectors.totaltUfoerePerMnd
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligUfoeretrygdFoerSkattDtoSelectors.gjeldendeBeregnetUTPerMaaned
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligUfoeretrygdFoerSkattDtoSelectors.tidligereUfoeretrygdPerioder
-import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdPerMaanedSelectors.totalUTBeloepBrutto_safe
+import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdPerMaanedSelectors.ordinaerUTBeloepBrutto_safe
 import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdPerMaanedSelectors.totalUTBeloepNetto_safe
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.fraser.omregning.ufoeretrygd.Ufoeretrygd
@@ -47,7 +47,7 @@ object UngUfoerAuto : VedtaksbrevTemplate<UngUfoerAutoDto> {
         letterDataType = UngUfoerAutoDto::class,
         languages = languages(Bokmal, Nynorsk),
         letterMetadata = LetterMetadata(
-            displayTitle = "Vedtak – ung ufør ved 20 år",
+            displayTitle = "Vedtak - endring av uføretrygd fordi du fyller 20 år",
             isSensitiv = true,
             distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
         )
@@ -95,8 +95,8 @@ object UngUfoerAuto : VedtaksbrevTemplate<UngUfoerAutoDto> {
         includeAttachment(vedleggMaanedligUfoeretrygdFoerSkatt, maanedligUfoeretrygdFoerSkatt,
             with(maanedligUfoeretrygdFoerSkatt) {
                 tidligereUfoeretrygdPerioder.isNotEmpty() or
-                        gjeldendeBeregnetUTPerMaaned.totalUTBeloepNetto_safe
-                            .notEqualTo(gjeldendeBeregnetUTPerMaaned.totalUTBeloepBrutto_safe)
+                        gjeldendeBeregnetUTPerMaaned.ordinaerUTBeloepBrutto_safe
+                            .notEqualTo(gjeldendeBeregnetUTPerMaaned.totalUTBeloepNetto_safe)
             }
         )
         includeAttachment(vedleggOrienteringOmRettigheterOgPlikterUfoere, orienteringOmRettigheterUfoere)

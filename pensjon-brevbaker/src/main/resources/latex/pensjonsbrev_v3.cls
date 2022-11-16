@@ -31,7 +31,7 @@
 %! suppress = FileNotFound
 \input{params}  % Must be done before pdfx is imported
 
-\usepackage{pdfx}       % create pdf/A compliant pdf's
+\usepackage[a-3b]{pdfx}       % create pdf/A compliant pdf's
 
 %----------------------------------------
 %                Global
