@@ -266,7 +266,7 @@ object UfoeretrygdBarnetillegg {
 
 
     data class TBU1284(
-        val beloepFratrukketAnnenForeldersInntekt: Expression<Int>,
+        val beloepFratrukketAnnenForeldersInntekt: Expression<Kroner>,
         val beloepNettoFellesbarn: Expression<Kroner>,
         val fradragFellesbarn: Expression<Kroner>,
         val fribeloepFellesbarn: Expression<Kroner>,
