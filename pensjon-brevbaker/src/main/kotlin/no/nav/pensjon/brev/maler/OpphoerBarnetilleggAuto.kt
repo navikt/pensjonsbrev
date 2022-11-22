@@ -114,7 +114,7 @@ object OpphoerBarnetilleggAuto : VedtaksbrevTemplate<OpphoerBarnetilleggAutoDto>
             includePhrase(UfoeretrygdBarnetillegg.TBU3920)
 
             includePhrase(
-                OpphoerBarnetillegg.TBU4085(
+                OpphoerBarnetillegg.ForskriftForReduksjonAvBarnetillegg(
                     harBarnetilleggFellesbarn = harBarnetilleggFellesbarn,
                     harBarnetilleggSaerkullsbarn = harBarnetilleggSaerkullsbarn
                 )
@@ -123,7 +123,7 @@ object OpphoerBarnetilleggAuto : VedtaksbrevTemplate<OpphoerBarnetilleggAutoDto>
             includePhrase(Ufoeretrygd.VirkningFomOverskrift)
 
             includePhrase(
-                OpphoerBarnetillegg.TBU4086(
+                OpphoerBarnetillegg.OensketVirkningsDatoForEndringAvBarnetillegg(
                     oensketVirkningsDato = oensketVirkningsDato,
                     harBarnetilleggFellesbarn = harBarnetilleggFellesbarn,
                     harBarnetilleggSaerkullsbarn = harBarnetilleggSaerkullsbarn

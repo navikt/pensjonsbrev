@@ -5,7 +5,10 @@ import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
-import no.nav.pensjon.brev.template.dsl.expression.*
+import no.nav.pensjon.brev.template.dsl.expression.expr
+import no.nav.pensjon.brev.template.dsl.expression.format
+import no.nav.pensjon.brev.template.dsl.expression.or
+import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 import java.time.LocalDate
@@ -13,7 +16,8 @@ import java.time.LocalDate
 
 object OpphoerBarnetillegg {
 
-    data class TBU4085(
+    // TBU4085
+    data class ForskriftForReduksjonAvBarnetillegg(
         val harBarnetilleggFellesbarn: Expression<Boolean>,
         val harBarnetilleggSaerkullsbarn: Expression<Boolean>
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
@@ -37,7 +41,8 @@ object OpphoerBarnetillegg {
         }
     }
 
-    data class TBU4086(
+    // TBU4086
+    data class OensketVirkningsDatoForEndringAvBarnetillegg(
         val oensketVirkningsDato: Expression<LocalDate>,
         val harBarnetilleggFellesbarn: Expression<Boolean>,
         val harBarnetilleggSaerkullsbarn: Expression<Boolean>
