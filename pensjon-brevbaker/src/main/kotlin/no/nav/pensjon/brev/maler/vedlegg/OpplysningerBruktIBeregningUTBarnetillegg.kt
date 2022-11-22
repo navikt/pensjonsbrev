@@ -729,7 +729,15 @@ val vedleggOpplysningerBruktIBeregningUTBarnetillegg =
                             }
                         }
                     }
-                    //Samlet inntekt
+                    row {
+                        cell {
+                            text(
+                                Bokmal to "Samlet inntekt til annen forelder som er brukt i fastsettelse av barnetillegg",
+                                Nynorsk to "Samla inntekt til annen forelder som er brukt i fastsetjinga av barnetillegg",
+                                English to "Income of the other parent, which is used to calculate child supplement"
+                            )
+                        }
+                    }
                     row {
                         cell {
                             text(
