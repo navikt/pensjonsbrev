@@ -6,7 +6,7 @@ import no.nav.pensjon.brev.api.model.Sivilstand
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarn
 import java.time.LocalDate
 
-data class OpplysningerBruktIBeregningUTDto(
+data class OpplysningerBruktIBeregningUTBarnetilleggDto(
     val barnetilleggGjeldende: BarnetilleggGjeldende?,
     val beregnetUTPerManedGjeldende: BeregnetUTPerManedGjeldende,
     val inntektEtterUfoereGjeldende_beloepIEU: Kroner,
@@ -26,38 +26,35 @@ data class OpplysningerBruktIBeregningUTDto(
     )
 
     data class BarnetilleggGjeldende(
+        val totaltAntallBarn: Int, // saerkullsbarn + fellesbarn
         val saerkullsbarn: Saerkullsbarn?,
         val fellesbarn: Fellesbarn?
     ) {
         data class Saerkullsbarn(
             val avkortningsbeloepAar: Kroner,
-            val beloepSaerkullsbarn: Kroner,
+            val beloep: Kroner,
             val beloepAar: Kroner,
             val beloepAarFoerAvkort: Kroner,
             val erRedusertMotinntekt: Boolean,
-            val fribeloepSaerkullsbarn: Kroner,
+            val fribeloep: Kroner,
             val fribeloepEllerInntektErPeriodisert: Boolean,
             val inntektBruktIAvkortning: Kroner,
             val inntektOverFribeloep: Kroner,
             val inntektstak: Kroner,
             val justeringsbeloepAar: Kroner,
-            val antallSaerkullsbarn: Int,
-            val innvilgetBarnetilleggSaerkullsbarn: Boolean,
         )
         data class Fellesbarn(
             val avkortningsbeloepAar: Kroner,
-            val beloepFellesbarn: Kroner,
+            val beloep: Kroner,
             val beloepAar: Kroner,
             val beloepAarFoerAvkort: Kroner,
             val erRedusertMotinntekt: Boolean,
-            val fribeloepFellesbarn: Kroner,
+            val fribeloep: Kroner,
             val fribeloepEllerInntektErPeriodisert: Boolean,
             val inntektBruktIAvkortning: Kroner,
             val inntektOverFribeloep: Kroner,
             val inntektstak: Kroner,
             val justeringsbeloepAar: Kroner,
-            val antallFellesbarn: Int,
-            val innvilgetBarnetilleggFellesbarn: Boolean
         )
     }
 
