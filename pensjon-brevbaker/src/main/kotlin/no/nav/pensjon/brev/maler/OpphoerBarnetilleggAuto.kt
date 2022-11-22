@@ -35,7 +35,7 @@ import no.nav.pensjon.brev.api.model.maler.UfoeretrygdSelectors.ektefelletillegg
 import no.nav.pensjon.brev.api.model.maler.UfoeretrygdSelectors.gjenlevendetilleggUtbetalt_safe
 import no.nav.pensjon.brev.api.model.maler.UfoeretrygdSelectors.harUtbetalingsgrad
 import no.nav.pensjon.brev.api.model.maler.UfoeretrygdSelectors.utbetaltPerMaaned
-import no.nav.pensjon.brev.maler.fraser.OpphoererBarnetillegg
+import no.nav.pensjon.brev.maler.fraser.OpphoerBarnetillegg
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.fraser.common.UfoeretrygdBarnetillegg
 import no.nav.pensjon.brev.maler.fraser.common.UfoeretrygdFelles
@@ -114,7 +114,7 @@ object OpphoerBarnetilleggAuto : VedtaksbrevTemplate<OpphoerBarnetilleggAutoDto>
             includePhrase(UfoeretrygdBarnetillegg.TBU3920)
 
             includePhrase(
-                OpphoererBarnetillegg.TBU4085(
+                OpphoerBarnetillegg.TBU4085(
                     harBarnetilleggFellesbarn = harBarnetilleggFellesbarn,
                     harBarnetilleggSaerkullsbarn = harBarnetilleggSaerkullsbarn
                 )
@@ -123,7 +123,7 @@ object OpphoerBarnetilleggAuto : VedtaksbrevTemplate<OpphoerBarnetilleggAutoDto>
             includePhrase(Ufoeretrygd.VirkningFomOverskrift)
 
             includePhrase(
-                OpphoererBarnetillegg.TBU4086(
+                OpphoerBarnetillegg.TBU4086(
                     oensketVirkningsDato = oensketVirkningsDato,
                     harBarnetilleggFellesbarn = harBarnetilleggFellesbarn,
                     harBarnetilleggSaerkullsbarn = harBarnetilleggSaerkullsbarn

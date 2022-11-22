@@ -1,6 +1,5 @@
 package no.nav.pensjon.brev.maler.fraser
 
-import io.ktor.http.*
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.*
@@ -12,7 +11,7 @@ import no.nav.pensjon.brev.template.dsl.textExpr
 import java.time.LocalDate
 
 
-object OpphoererBarnetillegg {
+object OpphoerBarnetillegg {
 
     data class TBU4085(
         val harBarnetilleggFellesbarn: Expression<Boolean>,
