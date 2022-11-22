@@ -4,7 +4,7 @@ import kotlinx.coroutines.runBlocking
 import no.nav.pensjon.brev.Fixtures
 import no.nav.pensjon.brev.PDF_BUILDER_URL
 import no.nav.pensjon.brev.TestTags
-import no.nav.pensjon.brev.api.model.maler.OpphoererBarnetilleggAutoDto
+import no.nav.pensjon.brev.api.model.maler.OpphoerBarnetilleggAutoDto
 import no.nav.pensjon.brev.latex.LaTeXCompilerService
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.Letter
@@ -19,8 +19,8 @@ class OpphoerBarnetilleggAutoTest {
     @Test
     fun test() {
         Letter(
-            OpphoererBarnetilleggAuto.template,
-            Fixtures.create<OpphoererBarnetilleggAutoDto>(),
+            OpphoerBarnetilleggAuto.template,
+            Fixtures.create<OpphoerBarnetilleggAutoDto>(),
             Language.Bokmal,
             Fixtures.fellesAuto,
         ).let { PensjonLatexRenderer.render(it) }

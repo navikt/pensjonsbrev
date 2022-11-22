@@ -5,12 +5,12 @@ import no.nav.pensjon.brev.api.model.Kroner
 import no.nav.pensjon.brev.api.model.Sivilstand
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarn
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarn
-import no.nav.pensjon.brev.api.model.maler.OpphoererBarnetilleggAutoDto
+import no.nav.pensjon.brev.api.model.maler.OpphoerBarnetilleggAutoDto
 import no.nav.pensjon.brev.api.model.maler.Ufoeretrygd
 import java.time.LocalDate
 
-fun createOpphoererBarnetilleggAutoDto() =
-    OpphoererBarnetilleggAutoDto(
+fun createOpphoerBarnetilleggAutoDto() =
+    OpphoerBarnetilleggAutoDto(
         foedselsdatoPaaBarnetilleggOpphoert = LocalDate.of(2004, 6, 14),
         oensketVirkningsDato = LocalDate.now(),
     //    barnetilleggFellesbarn = null,

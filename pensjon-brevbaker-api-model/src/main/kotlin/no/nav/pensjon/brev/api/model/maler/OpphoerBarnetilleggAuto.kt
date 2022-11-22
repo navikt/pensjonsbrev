@@ -8,7 +8,7 @@ import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterUfoereDto
 import java.time.LocalDate
 
 @Suppress("unused")
-data class OpphoererBarnetilleggAutoDto(
+data class OpphoerBarnetilleggAutoDto(
     val foedselsdatoPaaBarnetilleggOpphoert: LocalDate,
     val oensketVirkningsDato: LocalDate,
     val barnetilleggFellesbarn: BarnetilleggFellesbarn?,
