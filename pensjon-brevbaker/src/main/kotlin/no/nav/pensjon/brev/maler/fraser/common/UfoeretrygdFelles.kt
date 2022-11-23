@@ -10,7 +10,8 @@ import no.nav.pensjon.brev.template.dsl.text
 
 object UfoeretrygdFelles {
 
-    object TBU2223 : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    // TBU2223
+    object UtbetalingsdatoUfoeretrygd : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             paragraph {
                 text(
@@ -22,7 +23,8 @@ object UfoeretrygdFelles {
         }
     }
 
-    object TBU1128 : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    // TBU1128
+    object ViktigAALeseHeleBrevet : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             paragraph {
                 text(
@@ -34,7 +36,8 @@ object UfoeretrygdFelles {
         }
     }
 
-    object TBU2364 : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    // TBU2364
+    object MeldeFraOmEventuellInntektOverskrift : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             paragraph {
                 text(
@@ -46,7 +49,8 @@ object UfoeretrygdFelles {
         }
     }
 
-    object TBU2365 : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    // TBU2365
+    object MeldeFraOmEventuellInntekt : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             paragraph {
                 text(
@@ -58,7 +62,8 @@ object UfoeretrygdFelles {
         }
     }
 
-    object TBU2212 : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    // TBU2212
+    object MeldeFraOmEndringer : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             title1 {
                 text(
@@ -77,7 +82,8 @@ object UfoeretrygdFelles {
         }
     }
 
-    object TBU2213 : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    // TBU2213
+    object RettTilAAKlage : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             title1 {
                 text(
@@ -97,7 +103,8 @@ object UfoeretrygdFelles {
         }
     }
 
-    object TBU1228 : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    // TBU1228
+    object Skattekort: OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             title1 {
                 text(
@@ -116,7 +123,8 @@ object UfoeretrygdFelles {
         }
     }
 
-    data class TBU3730(
+    // TBU3730
+    data class SkattForDegSomBorIUtlandet(
         val brukerBorInorge: Expression<Boolean>
 
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {

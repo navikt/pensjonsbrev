@@ -17,7 +17,7 @@ import java.time.LocalDate
 object OpphoerBarnetillegg {
 
     // TBU4085
-    data class ForskriftForReduksjonAvBarnetillegg(
+    data class HjemmelForBarnetilleggIUfoeretrygden(
         val harBarnetilleggFellesbarn: Expression<Boolean>,
         val harBarnetilleggSaerkullsbarn: Expression<Boolean>
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
@@ -42,7 +42,7 @@ object OpphoerBarnetillegg {
     }
 
     // TBU4086
-    data class OensketVirkningsDatoForEndringAvBarnetillegg(
+    data class OensketVirkningsDatoForEndring(
         val oensketVirkningsDato: Expression<LocalDate>,
         val harBarnetilleggFellesbarn: Expression<Boolean>,
         val harBarnetilleggSaerkullsbarn: Expression<Boolean>

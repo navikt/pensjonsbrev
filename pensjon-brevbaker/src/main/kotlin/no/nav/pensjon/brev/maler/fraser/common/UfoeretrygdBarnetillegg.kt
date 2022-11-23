@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.maler.fraser.common
 
 import no.nav.pensjon.brev.api.model.Kroner
 import no.nav.pensjon.brev.api.model.Sivilstand
+import no.nav.pensjon.brev.maler.fraser.Constants
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
@@ -16,7 +17,8 @@ import java.time.LocalDate
 
 object UfoeretrygdBarnetillegg {
 
-    data class TBU2290(
+    // TBU2290
+    data class VirkningsDatoForOpphoer(
         val oensketVirkningsDato: Expression<LocalDate>,
         val foedselsdatoPaaBarnetilleggOpphoert: Expression<LocalDate>,
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
@@ -34,7 +36,8 @@ object UfoeretrygdBarnetillegg {
         }
     }
 
-    object TBU3920 : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    // TBU3920
+    object BarnHarFylt18AAR : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             paragraph {
                 textExpr(
@@ -46,19 +49,28 @@ object UfoeretrygdBarnetillegg {
         }
     }
 
-    object TBU3800 : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    // TBU3800
+    data class BetydningAvInntektOverskrift(
+        val harBarnetilleggSaerkullsbarn: Expression<Boolean>,
+        val harBarnetilleggFellesbarn: Expression<Boolean>,
+
+        ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             title1 {
-                text(
-                    Bokmal to "Slik påvirker inntekt barnetillegget ditt",
-                    Nynorsk to "Slik verkar inntekt inn på barnetillegget ditt",
-                    English to "Income will affect your child supplement"
-                )
+
+                showIf(harBarnetilleggFellesbarn or harBarnetilleggSaerkullsbarn) {
+                    text(
+                        Bokmal to "Slik påvirker inntekt barnetillegget ditt",
+                        Nynorsk to "Slik verkar inntekt inn på barnetillegget ditt",
+                        English to "Income will affect your child supplement"
+                    )
+                }
             }
         }
     }
 
-    data class TBU2338(
+    // TBU2338
+    data class BetydningAvInntektSaerkullsbarn(
         val beloepNettoSaerkullsbarn: Expression<Kroner>,
         val harBarnetilleggFellesbarn: Expression<Boolean>,
         val harBarnetilleggSaerkullsbarn: Expression<Boolean>,
@@ -68,7 +80,7 @@ object UfoeretrygdBarnetillegg {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             paragraph {
 
-                showIf(harBarnetilleggSaerkullsbarn and not(harBarnetilleggFellesbarn)) {
+                showIf((not(harBarnetilleggFellesbarn) and harBarnetilleggSaerkullsbarn) or (harBarnetilleggSaerkullsbarn and harBarnetilleggFellesbarn)) {
                     text(
                         Bokmal to "Inntekten din har betydning for hva du får i barnetillegg. Er inntekten din over grensen for å få utbetalt fullt barnetillegg, blir tillegget redusert.",
                         Nynorsk to "Inntekta di har noko å seie for kva du får i barnetillegg. Er inntekta di over grensa for å få utbetalt fullt barnetillegg, blir tillegget redusert.",
@@ -117,9 +129,10 @@ object UfoeretrygdBarnetillegg {
         }
     }
 
-
-    data class TBU2339(
+    // TBU2339
+    data class BetydningAvInntektFellesbarn(
         val antallFellesbarnInnvilget: Expression<Int>,
+        val antallSaerkullsbarnInnvilget: Expression<Int>,
         val beloepNettoFellesbarn: Expression<Kroner>,
         val harBarnetilleggFellesbarn: Expression<Boolean>,
         val harBarnetilleggSaerkullsbarn: Expression<Boolean>,
@@ -128,49 +141,13 @@ object UfoeretrygdBarnetillegg {
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             paragraph {
-                val barnFlertall = antallFellesbarnInnvilget.greaterThan(1)
-
-                text(
-                    Bokmal to "Inntekten til deg og ",
-                    Nynorsk to "Inntekta til deg og ",
-                    English to "The incomes of you and your "
-                )
-                showIf(sivilstand.isOneOf(Sivilstand.GIFT, Sivilstand.GIFT_LEVER_ADSKILT)) {
+                val barnFlertall =
+                    antallFellesbarnInnvilget.greaterThan(1) or antallSaerkullsbarnInnvilget.greaterThan(1)
+                showIf(harBarnetilleggFellesbarn and not(harBarnetilleggSaerkullsbarn)) {
                     text(
-                        Bokmal to "ektefellen",
-                        Nynorsk to "ektefellen",
-                        English to "spouse"
-                    )
-                }.orShowIf(sivilstand.isOneOf(Sivilstand.PARTNER, Sivilstand.PARTNER_LEVER_ADSKILT)) {
-                    text(
-                        Bokmal to "partneren",
-                        Nynorsk to "partnaren",
-                        English to "partner"
-                    )
-                }.orShowIf(sivilstand.isOneOf(Sivilstand.SAMBOER1_5, Sivilstand.SAMBOER3_2)) {
-                    text(
-                        Bokmal to "samboeren",
-                        Nynorsk to "sambuaren",
-                        English to "cohabitant"
-                    )
-                }
-                text(
-                    Bokmal to " din har betydning for hva du får i barnetillegg. Er inntektene over grensen for å få utbetalt fullt barnetillegg, blir tillegget redusert.",
-                    Nynorsk to " din har noko å seie for kva du får i barnetillegg. Er den samla inntekta over grensa for å få utbetalt fullt barnetillegg, blir tillegget ditt redusert.",
-                    English to " affects how much you receive in child supplement. If your income exceeds the limit for receiving full child supplement, your child supplement will be reduced."
-                )
-                showIf(beloepNettoFellesbarn.greaterThan(0)) {
-                    text(
-                        Bokmal to " Denne grensen kaller vi for fribeløp.",
-                        Nynorsk to " Denne grensa kallar vi for fribeløp.",
-                        English to " We call this limit the exemption amount."
-                    )
-                }
-                showIf(harBarnetilleggFellesbarn and harBarnetilleggSaerkullsbarn) {
-                    text(
-                        Bokmal to " Inntekten til ",
-                        Nynorsk to " Inntekta til ",
-                        English to "The income of your "
+                        Bokmal to "Inntekten til deg og ",
+                        Nynorsk to "Inntekta til deg og ",
+                        English to "The incomes of you and your "
                     )
                     showIf(sivilstand.isOneOf(Sivilstand.GIFT, Sivilstand.GIFT_LEVER_ADSKILT)) {
                         text(
@@ -190,31 +167,69 @@ object UfoeretrygdBarnetillegg {
                             Nynorsk to "sambuaren",
                             English to "cohabitant"
                         )
-                        textExpr(
-                            Bokmal to " din har kun betydning for størrelsen på barnetillegget til ".expr() + ifElse(
-                                barnFlertall,
-                                ifTrue = "barna",
-                                ifFalse = "barnet"
-                            ) + " som bor sammen med begge sine foreldre.".expr(),
-                            Nynorsk to " din har berre betydning for storleiken på barnetillegget til ".expr() + ifElse(
-                                barnFlertall,
-                                ifTrue = "barna",
-                                ifFalse = "barnet"
-                            ) + " som bur saman med begge foreldra sine.".expr(),
-                            English to " only affects the size of the child supplement for the ".expr() + ifElse(
-                                barnFlertall,
-                                ifTrue = "children who live",
-                                ifFalse = "child who lives"
-                            ) + " together with both parents.".expr()
+                    }
+                    text(
+                        Bokmal to " din har betydning for hva du får i barnetillegg. Er inntektene over grensen for å få utbetalt fullt barnetillegg, blir tillegget redusert.",
+                        Nynorsk to " din har noko å seie for kva du får i barnetillegg. Er den samla inntekta over grensa for å få utbetalt fullt barnetillegg, blir tillegget ditt redusert.",
+                        English to " affects how much you receive in child supplement. If your income exceeds the limit for receiving full child supplement, your child supplement will be reduced."
+                    )
+                    showIf(beloepNettoFellesbarn.greaterThan(0)) {
+                        text(
+                            Bokmal to " Denne grensen kaller vi for fribeløp.",
+                            Nynorsk to " Denne grensa kallar vi for fribeløp.",
+                            English to " We call this limit the exemption amount."
                         )
+                    }
+                    showIf(harBarnetilleggFellesbarn and harBarnetilleggSaerkullsbarn) {
+                        text(
+                            Bokmal to " Inntekten til ",
+                            Nynorsk to " Inntekta til ",
+                            English to "The income of your "
+                        )
+                        showIf(sivilstand.isOneOf(Sivilstand.GIFT, Sivilstand.GIFT_LEVER_ADSKILT)) {
+                            text(
+                                Bokmal to "ektefellen",
+                                Nynorsk to "ektefellen",
+                                English to "spouse"
+                            )
+                        }.orShowIf(sivilstand.isOneOf(Sivilstand.PARTNER, Sivilstand.PARTNER_LEVER_ADSKILT)) {
+                            text(
+                                Bokmal to "partneren",
+                                Nynorsk to "partnaren",
+                                English to "partner"
+                            )
+                        }.orShowIf(sivilstand.isOneOf(Sivilstand.SAMBOER1_5, Sivilstand.SAMBOER3_2)) {
+                            text(
+                                Bokmal to "samboeren",
+                                Nynorsk to "sambuaren",
+                                English to "cohabitant"
+                            )
+                            textExpr(
+                                Bokmal to " din har kun betydning for størrelsen på barnetillegget til ".expr() + ifElse(
+                                    barnFlertall,
+                                    ifTrue = "barna",
+                                    ifFalse = "barnet"
+                                ) + " som bor sammen med begge sine foreldre.".expr(),
+                                Nynorsk to " din har berre betydning for storleiken på barnetillegget til ".expr() + ifElse(
+                                    barnFlertall,
+                                    ifTrue = "barna",
+                                    ifFalse = "barnet"
+                                ) + " som bur saman med begge foreldra sine.".expr(),
+                                English to " only affects the size of the child supplement for the ".expr() + ifElse(
+                                    barnFlertall,
+                                    ifTrue = "children who live",
+                                    ifFalse = "child who lives"
+                                ) + " together with both parents.".expr()
+                            )
+                        }
                     }
                 }
             }
         }
     }
 
-
-    data class TBU3801(
+    // TBU3801
+    data class BetydningAvInntektEndringer(
         val harBarnetilleggFellesbarn: Expression<Boolean>,
         val harBarnetilleggSaerkullsbarn: Expression<Boolean>,
         val sivilstand: Expression<Sivilstand>
@@ -249,23 +264,23 @@ object UfoeretrygdBarnetillegg {
                         )
                     }
                     text(
-                        Bokmal to " din kan ha betydning for barnetillegget ditt. Du kan enkelt melde fra om inntektsendringer under menyvalget «uføretrygd» på nav.no.",
-                        Nynorsk to " di kan ha betydning for barnetillegget ditt. Du kan enkelt melde frå om inntektsendringar under menyvalet «uføretrygd» på nav.no.",
-                        English to " income may affect your child supplement. You can easily report income changes under the menu option «disability benefit» at nav.no."
+                        Bokmal to " din kan ha betydning for barnetillegget ditt. Du kan enkelt melde fra om inntektsendringer under menyvalget «uføretrygd» på ${Constants.NAV_URL}.",
+                        Nynorsk to " di kan ha betydning for barnetillegget ditt. Du kan enkelt melde frå om inntektsendringar under menyvalet «uføretrygd» på ${Constants.NAV_URL}.",
+                        English to " income may affect your child supplement. You can easily report income changes under the menu option «disability benefit» at ${Constants.NAV_URL}."
                     )
                 }.orShowIf(not(harBarnetilleggFellesbarn) and harBarnetilleggSaerkullsbarn) {
                     text(
-                        Bokmal to "Endringer i inntekten din kan ha betydning for barnetillegget ditt. Du kan enkelt melde fra om inntektsendringer under menyvalget «uføretrygd» på nav.no.",
-                        Nynorsk to "Endringar i inntekta di kan ha betydning for barnetillegget ditt. Du kan enkelt melde frå om inntektsendringar under menyvalet «uføretrygd» på nav.no.",
-                        English to ""
+                        Bokmal to "Endringer i inntekten din kan ha betydning for barnetillegget ditt. Du kan enkelt melde fra om inntektsendringer under menyvalget «uføretrygd» på ${Constants.NAV_URL}.",
+                        Nynorsk to "Endringar i inntekta di kan ha betydning for barnetillegget ditt. Du kan enkelt melde frå om inntektsendringar under menyvalet «uføretrygd» på ${Constants.NAV_URL}.",
+                        English to "Changes in income may affect your child supplement. You can easily report income changes under the menu option «disability benefit» at ${Constants.NAV_URL}."
                     )
                 }
             }
         }
     }
 
-
-    data class TBU1284(
+// TBU1284
+    data class InntektTilAvkortningFellesbarn(
         val beloepFratrukketAnnenForeldersInntekt: Expression<Kroner>,
         val beloepNettoFellesbarn: Expression<Kroner>,
         val fradragFellesbarn: Expression<Kroner>,
@@ -405,8 +420,8 @@ object UfoeretrygdBarnetillegg {
         }
     }
 
-
-    data class TBU1285(
+// TBU1285
+    data class InntektTilAvkortningSaerkullsbarn(
         val beloepNettoSaerkullsbarn: Expression<Kroner>,
         val fribeloepSaerkullsbarn: Expression<Kroner>,
         val inntektBruktIAvkortningSaerkullsbarn: Expression<Kroner>,
@@ -478,8 +493,8 @@ object UfoeretrygdBarnetillegg {
         }
     }
 
-
-    data class TBU1286Saerkullsbarn(
+// TBU1286
+    data class RedusertBarnetilleggSaerkullsbarn(
         val beloepNettoSaerkullsbarn: Expression<Kroner>,
         val fradragSaerkullsbarn: Expression<Kroner>,
         val fradragFellesbarn: Expression<Kroner>,
@@ -543,8 +558,8 @@ object UfoeretrygdBarnetillegg {
         }
     }
 
-
-    data class TBU1286Fellesbarn(
+// TBU1286
+    data class RedusertBarnetilleggFellesbarn(
         val beloepNettoFellesbarn: Expression<Kroner>,
         val fradragSaerkullsbarn: Expression<Kroner>,
         val fradragFellesbarn: Expression<Kroner>,
@@ -611,8 +626,8 @@ object UfoeretrygdBarnetillegg {
         }
     }
 
-
-    data class TBU1286SearkullsbarnFellesbarn(
+// TBU1286
+    data class RedusertBarnetilleggSearkullsbarnFellesbarn(
         val beloepNettoSaerkullsbarn: Expression<Kroner>,
         val beloepNettoFellesbarn: Expression<Kroner>,
         val fradragSaerkullsbarn: Expression<Kroner>,
@@ -716,9 +731,8 @@ object UfoeretrygdBarnetillegg {
         }
     }
 
-
-    // Denne skal kun når bruker mottar barnetillegg for både særkullsbarn og fellesbarn og ingen av dem blir utbetalt
-    data class TBU2490(
+// TBU2490 Når bruker barnetilleggene for både særkullsbarn og fellesbarn er innvilget og ingen av dem blir utbetalt
+    data class InnvilgetOgIkkeUtbetalt(
         val beloepNettoFellesbarn: Expression<Kroner>,
         val beloepNettoSaerkullsbarn: Expression<Kroner>,
         val harBarnetilleggFellesbarn: Expression<Boolean>,
@@ -783,8 +797,8 @@ object UfoeretrygdBarnetillegg {
         }
     }
 
-
-    data class TBU1288(
+// TBU1288
+    data class HenvisningTilVedleggOpplysningerOmBeregning(
         val harBarnetilleggFellesbarn: Expression<Boolean>,
         val harBarnetilleggSaerkullsbarn: Expression<Boolean>,
 
@@ -804,6 +818,7 @@ object UfoeretrygdBarnetillegg {
         }
     }
 }
+
 
 
 
