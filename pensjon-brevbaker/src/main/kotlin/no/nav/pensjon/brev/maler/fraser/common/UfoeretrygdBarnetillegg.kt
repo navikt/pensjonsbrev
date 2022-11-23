@@ -16,7 +16,8 @@ import java.time.LocalDate
 
 
 object UfoeretrygdBarnetillegg {
-
+    // TODO: children plural
+    // TODO: Childs name?
     // TBU2290
     data class VirkningsDatoForOpphoer(
         val oensketVirkningsDato: Expression<LocalDate>,
@@ -35,7 +36,7 @@ object UfoeretrygdBarnetillegg {
             }
         }
     }
-
+// TODO: children plural
     // TBU3920
     object BarnHarFylt18AAR : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
@@ -43,7 +44,7 @@ object UfoeretrygdBarnetillegg {
                 textExpr(
                     Bokmal to "For å ha rett til barnetillegg må du forsørge barn under 18 år. Vi har vedtatt at barnetillegget i uføretrygden opphører fordi barnetbarna har fylt 18 år.".expr(),
                     Nynorsk to "For å ha rett til barnetillegg må du forsørgje barn under 18 år. Vi har stansa barnetillegget i uføretrygda fordi barnetbarna har fylt 18 år.".expr(),
-                    English to "To be eligible for child supplement, you must support children under 18 years of age. The child supplement in your disability benefit has been discontinued because your  childchildren has(have) turned 18 years of age.".expr()
+                    English to "To be eligible for child supplement, you must support children under 18 years of age. The child supplement in your disability benefit has been discontinued because your childchildren has(have) turned 18 years of age.".expr()
                 )
             }
         }
@@ -128,7 +129,7 @@ object UfoeretrygdBarnetillegg {
             }
         }
     }
-
+    // TODO: barnflertall
     // TBU2339
     data class BetydningAvInntektFellesbarn(
         val antallFellesbarnInnvilget: Expression<Int>,
@@ -492,7 +493,7 @@ object UfoeretrygdBarnetillegg {
             }
         }
     }
-
+    // TODO: barnflertall
 // TBU1286
     data class RedusertBarnetilleggSaerkullsbarn(
         val beloepNettoSaerkullsbarn: Expression<Kroner>,
@@ -557,7 +558,7 @@ object UfoeretrygdBarnetillegg {
             }
         }
     }
-
+    // TODO: barnflertall
 // TBU1286
     data class RedusertBarnetilleggFellesbarn(
         val beloepNettoFellesbarn: Expression<Kroner>,
@@ -625,7 +626,7 @@ object UfoeretrygdBarnetillegg {
             }
         }
     }
-
+    // TODO: spouse/ektefelle/partner
 // TBU1286
     data class RedusertBarnetilleggSearkullsbarnFellesbarn(
         val beloepNettoSaerkullsbarn: Expression<Kroner>,
@@ -638,6 +639,7 @@ object UfoeretrygdBarnetillegg {
         val justeringsbeloepFellesbarn: Expression<Kroner>,
         val antallSaerkullsbarnInnvilget: Expression<Int>,
         val antallFellesbarnInnvilget: Expression<Int>,
+        val sivilstand: Expression<Sivilstand>,
 
         ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
@@ -647,7 +649,7 @@ object UfoeretrygdBarnetillegg {
                 val barnFlertallSaerkullsbarn = antallSaerkullsbarnInnvilget.greaterThan(1)
                 val barnFlertallFellesbarn = antallFellesbarnInnvilget.greaterThan(1)
 
-                // Bruker mottar barnetillegg for både saerkullsbarn og fellesbarn, barnetilleggene for baade fellesbarn og saerkullsbarn er blitt redusert
+                // Bruker mottar barnetillegg for både saerkullsbarn og fellesbarn, barnetilleggene for både fellesbarn og saerkullsbarn er blitt redusert
                 showIf(
                     (fradragFellesbarn.greaterThan(0) and justeringsbeloepFellesbarn.equalTo(0) and fradragSaerkullsbarn.greaterThan(
                         0

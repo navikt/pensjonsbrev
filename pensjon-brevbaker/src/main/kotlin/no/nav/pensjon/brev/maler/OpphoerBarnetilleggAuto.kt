@@ -251,7 +251,8 @@ object OpphoerBarnetilleggAuto : VedtaksbrevTemplate<OpphoerBarnetilleggAutoDto>
                         barnetilleggSaerkullsbarn.justeringsbeloepSaerkullsbarn,
                         barnetilleggFellesbarn.justeringsbeloepFellesbarn,
                         barnetilleggSaerkullsbarn.antallSaerkullsbarnbarnInnvilget,
-                        barnetilleggFellesbarn.antallFellesbarnInnvilget
+                        barnetilleggFellesbarn.antallFellesbarnInnvilget,
+                        sivilstand = sivilstand
                     )
                 )
             }
