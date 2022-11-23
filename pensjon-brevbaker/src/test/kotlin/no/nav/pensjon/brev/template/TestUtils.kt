@@ -6,23 +6,24 @@ import java.nio.charset.Charset
 import java.util.*
 
 fun <Param : Any> Letter<Param>.assertRenderedLetterDoesNotContainAnyOf(vararg searchText: String): Letter<Param> {
-    val letterString = PensjonLatexRenderer.render(this).base64EncodedFiles()["letter.tex"]
+    val letterString = renderLetterAndAttachments()
     searchText.forEach {
-        Assertions.assertFalse(
-            Base64.getDecoder().decode(letterString).toString(Charset.defaultCharset()).contains(it),
-            """Letter should not contain "$it""""
-        )
+        Assertions.assertFalse(letterString.contains(it), """Letter should not contain "$it"""")
     }
     return this
 }
 
 fun <Param : Any> Letter<Param>.assertRenderedLetterContainsAllOf(vararg searchText: String): Letter<Param> {
-    val letterString = PensjonLatexRenderer.render(this).base64EncodedFiles()["letter.tex"]
+    val letterString = renderLetterAndAttachments()
     searchText.forEach {
-        Assertions.assertTrue(
-            Base64.getDecoder().decode(letterString).toString(Charset.defaultCharset()).contains(it),
-            """Letter should contain "$it""""
-        )
+        Assertions.assertTrue(letterString.contains(it), """Letter should contain "$it"""")
     }
     return this
+}
+
+private fun <Param : Any> Letter<Param>.renderLetterAndAttachments(): String {
+    val letterString = PensjonLatexRenderer.render(this).base64EncodedFiles().filterKeys {
+        it.startsWith("attachment") || it == "letter.tex"
+    }.map { Base64.getDecoder().decode(it.value).toString(Charset.defaultCharset()) }.joinToString("\n")
+    return letterString
 }
