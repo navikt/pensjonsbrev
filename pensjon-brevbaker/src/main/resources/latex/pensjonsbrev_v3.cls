@@ -39,6 +39,7 @@
 %fonts
 \setsansfont{Source Sans Pro}
 \setmainfont{Source Sans Pro}
+\defaultfontfeatures{LetterSpace=1.5}
 \addfontfeature{VerticalPosition = Inferior }
 \newfontface{\primaryFont}[
     Color=262626, % TODO blir det mye kostnader på for SITS å printe nesten svart istedenfor svart?
@@ -67,6 +68,7 @@
 \sloppy % no word-breaking
 \raggedright % no word spacing
 \raggedbottom % no line stretching to fit page
+\frenchspacing % no double space after ended sentence
 
 
 % page text area formatting
@@ -132,7 +134,7 @@
     \setlength{\tabcolsep}{12pt}
     \primaryFont \fontsize{\standardtextsize}{19.5pt} \selectfont
     \saksinfomottaker
-    \\[-2mm]
+    \\[1em]
 }
 
 
