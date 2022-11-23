@@ -6,7 +6,6 @@ import no.nav.pensjon.brev.maler.fraser.VedleggMaanedligeUfoeretrgdFoerSkatt
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.createAttachment
-import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.newText
 
 val vedleggMaanedligUfoeretrygdFoerSkatt = createAttachment<LangBokmalNynorskEnglish, MaanedligUfoeretrygdFoerSkattDto>(
@@ -16,12 +15,9 @@ val vedleggMaanedligUfoeretrygdFoerSkatt = createAttachment<LangBokmalNynorskEng
         English to "This is your monthly disability benefit before tax",
     ),
 ) {
-
     includePhrase(VedleggMaanedligeUfoeretrgdFoerSkatt.VedleggBelopUT_001)
 
-    showIf(ufoeretrygdPerioder.isNotEmpty()) {
-        forEach(ufoeretrygdPerioder) {
-            includePhrase(VedleggMaanedligeUfoeretrgdFoerSkatt.TabellBeregnetUTHele(it))
-        }
+    forEach(ufoeretrygdPerioder) {
+        includePhrase(VedleggMaanedligeUfoeretrgdFoerSkatt.TabellBeregnetUTHele(it))
     }
 }
