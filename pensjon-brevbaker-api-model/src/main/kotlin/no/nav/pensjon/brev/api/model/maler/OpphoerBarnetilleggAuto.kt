@@ -34,6 +34,7 @@ data class Ufoeretrygd(
 data class BarnetilleggFellesbarn(
     val antallFellesbarnInnvilget: Int,
     val beloepFratrukketAnnenForeldersInntekt: Kroner,
+    val beloepBruttoFellesbarn: Kroner,
     val beloepNettoFellesbarn: Kroner,
     val fradragFellesbarn: Kroner,
     val fribeloepFellesbarn: Kroner,
@@ -45,6 +46,7 @@ data class BarnetilleggFellesbarn(
 
 data class BarnetilleggSaerkullsbarn(
     val antallSaerkullsbarnbarnInnvilget: Int,
+    val beloepBruttoSaerkullsbarn: Kroner,
     val beloepNettoSaerkullsbarn: Kroner,
     val fradragSaerkullsbarn: Kroner,
     val fribeloepSaerkullsbarn: Kroner,
