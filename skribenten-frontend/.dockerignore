@@ -7,3 +7,5 @@ README.md
 .git
 secrets
 .nais
+vitest.config.ts
+test

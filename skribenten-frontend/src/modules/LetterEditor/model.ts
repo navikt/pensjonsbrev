@@ -1,37 +1,39 @@
 export interface LiteralValue {
-    type: 'literal'
-    text: string
+    readonly type: 'literal'
+    readonly text: string
 }
 export interface VariableValue {
-    type: 'variable'
-    name: string
-    text: string
+    readonly type: 'variable'
+    readonly name: string
+    readonly text: string
 }
 export type TextContent = LiteralValue | VariableValue
 
 
 export interface Block {
-    type: string
-    locked: boolean
-    content: TextContent[]
+    readonly type: string
+    readonly locked: boolean
+    readonly content: TextContent[]
 }
 export interface ParagraphBlock extends Block {
-    type: 'paragraph'
+    readonly type: 'paragraph'
 }
 export interface Title1Block extends Block {
-    type: 'title1'
+    readonly type: 'title1'
 }
 export interface HeaderBlock extends Block {
-    type: 'header'
+    readonly type: 'header'
 }
 export type AnyBlock = HeaderBlock | Title1Block | ParagraphBlock
 
-export type VariableType = 'string' | 'datetime' // | 'int' | 'double'
+
+export type VariableType = 'text' | 'date' // | 'int' | 'double'
 export interface VariableSpec {
-    name: string
-    type: VariableType
+    readonly name: string
+    readonly type: VariableType
 }
 export interface VariableDecl {
-    spec: VariableSpec
-    value: any
+    readonly spec: VariableSpec
+    readonly value: string
 }
+export type Variables = Record<string, VariableDecl>

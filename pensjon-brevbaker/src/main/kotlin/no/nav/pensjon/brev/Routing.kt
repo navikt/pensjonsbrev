@@ -24,14 +24,25 @@ fun Application.brevbakerRouting(authenticationNames: Array<String>) =
     routing {
 
         get("/templates") {
-            call.respond(letterResource.templateResource.getTemplates())
+            call.respond(letterResource.templateResource.getVedtaksbrev())
         }
 
         get("/templates/vedtaksbrev/{kode}") {
             val template = call.parameters
                 .getOrFail<Brevkode.Vedtak>("kode")
-                .let { letterResource.templateResource.getTemplate(it) }
+                .let { letterResource.templateResource.getVedtaksbrev(it) }
                 ?.description()
+
+            if (template == null) {
+                call.respond(HttpStatusCode.NotFound)
+            } else {
+                call.respond(template)
+            }
+        }
+
+        get("/templates/redigerbar/{kode}") {
+            val template = call.parameters.getOrFail<Brevkode.Redigerbar>("kode")
+                .let { letterResource.templateResource.getRedigerbartBrev(it) }
 
             if (template == null) {
                 call.respond(HttpStatusCode.NotFound)

@@ -1,17 +1,4 @@
-import {useEffect, useState} from "react"
-import dynamic from "next/dynamic";
-import LetterEditor from "../modules/LetterEditor/LetterEditor";
-
-// const LetterEditor = dynamic(() => import('../components/LetterEditor'), { ssr: false })
-
-const blocks = [
-    {
-        type: "paragraph",
-        data: {
-            text: "Halla, hvordan går det?"
-        }
-    }
-]
+import LetterEditor from "../modules/LetterEditor/LetterEditor"
 
 // const RedigerBrev: NextPage = () => {
 function RedigerBrev() {
@@ -27,7 +14,6 @@ function RedigerBrev() {
         <div style={{ display: 'flex', flexDirection: 'column'}}>
             <LetterEditor />
         </div>
-
     )
 }
 

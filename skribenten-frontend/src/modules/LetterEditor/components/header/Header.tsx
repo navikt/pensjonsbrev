@@ -1,6 +1,6 @@
-import {FC} from "react";
-import {HeaderBlock} from "../../model";
-import Text from "../text/Text";
+import {FC} from "react"
+import {HeaderBlock} from "../../model"
+import Text from "../text/Text"
 
 export interface HeaderProps {
     block: HeaderBlock

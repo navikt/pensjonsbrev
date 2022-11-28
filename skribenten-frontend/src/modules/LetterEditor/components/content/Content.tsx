@@ -1,21 +1,22 @@
-import {FC} from "react";
-import Text, {SplitParagraph, UpdateText} from "../text/Text";
+import {FC} from "react"
+import Text from "../text/Text"
 import styles from "./Content.module.css"
-import {AnyBlock, TextContent} from "../../model";
-import {Updater} from "../../../../lib/state";
+import {AnyBlock, TextContent} from "../../model"
+import {bindAction, BoundAction} from "../../../../lib/actions"
+import {TextContentAction} from "../../actions/content"
 
 export interface ContentProps {
     block: AnyBlock
     doUnlock: Unlock
     updateContent: UpdateContent
-    splitContent: SplitContent
+    splitBlockAtContent: SplitBlockAtContent
 }
 
-export type Unlock = () => void
-export type UpdateContent = (contentId: number, mapper: Updater<TextContent>) => void
-export type SplitContent = (contentId: number) => SplitParagraph
+export type Unlock = BoundAction<[]>
+export type UpdateContent = BoundAction<[contentId: number, content: TextContent]>
+export type SplitBlockAtContent = BoundAction<[contentId: number, currentText: string, nextText: string]>
 
-const Content: FC<ContentProps> = ({block, doUnlock, updateContent, splitContent}) => {
+const Content: FC<ContentProps> = ({block, doUnlock, updateContent, splitBlockAtContent}) => {
     if (block.locked) {
         return (
             <div className={styles.locked}>
@@ -31,7 +32,10 @@ const Content: FC<ContentProps> = ({block, doUnlock, updateContent, splitContent
         return (
             <div className={styles.content}>
                 {block.content.map((c, id) =>
-                    <Text key={id} content={c} updateText={text => updateContent(id, c => ({...c, text}))} splitParagraph={splitContent(id)}/>
+                    <Text key={id}
+                          content={c}
+                          updateText={bindAction(TextContentAction.updateText, updateContent.bind(null, id), c)}
+                          splitBlockAtConentWithText={splitBlockAtContent.bind(null, id)}/>
                 )}
             </div>
         )
