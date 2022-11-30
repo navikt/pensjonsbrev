@@ -41,6 +41,7 @@ object OpphoerBarnetillegg {
         }
     }
 
+
     // TBU4086
     data class OensketVirkningsDatoForEndring(
         val oensketVirkningsDato: Expression<LocalDate>,

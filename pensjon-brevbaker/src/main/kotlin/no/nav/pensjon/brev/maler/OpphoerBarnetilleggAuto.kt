@@ -2,7 +2,7 @@ package no.nav.pensjon.brev.maler
 
 import no.nav.pensjon.brev.api.model.LetterMetadata
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.antallFellesbarnInnvilget
-import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.antallFellesbarnInnvilget_safe
+import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.beloepBruttoFellesbarn
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.beloepFratrukketAnnenForeldersInntekt
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.beloepNettoFellesbarn
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.beloepNettoFellesbarn_safe
@@ -13,6 +13,7 @@ import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.innte
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.inntektstakFellesbarn
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.justeringsbeloepFellesbarn
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarnSelectors.antallSaerkullsbarnbarnInnvilget
+import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarnSelectors.beloepBruttoSaerkullsbarn
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarnSelectors.beloepNettoSaerkullsbarn
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarnSelectors.beloepNettoSaerkullsbarn_safe
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarnSelectors.fradragSaerkullsbarn
@@ -42,7 +43,6 @@ import no.nav.pensjon.brev.maler.fraser.common.UfoeretrygdFelles
 import no.nav.pensjon.brev.maler.fraser.omregning.ufoeretrygd.Ufoeretrygd
 import no.nav.pensjon.brev.maler.fraser.vedtak.Vedtak
 import no.nav.pensjon.brev.maler.vedlegg.vedleggOrienteringOmRettigheterOgPlikterUfoere
-import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.VedtaksbrevTemplate
 import no.nav.pensjon.brev.template.dsl.createTemplate
@@ -142,7 +142,7 @@ object OpphoerBarnetilleggAuto : VedtaksbrevTemplate<OpphoerBarnetilleggAutoDto>
                 barnetilleggSaerkullsbarn.beloepNettoSaerkullsbarn_safe,
             ) { beloepNettoSaerkullsbarn ->
                 includePhrase(
-                    UfoeretrygdBarnetillegg.BetydningAvInntektSaerkullsbarn(
+                    UfoeretrygdBarnetillegg.InntektHarBetydningForSaerkullsbarnTillegg(
                         beloepNettoSaerkullsbarn = beloepNettoSaerkullsbarn,
                         harBarnetilleggFellesbarn = harBarnetilleggFellesbarn,
                         harBarnetilleggSaerkullsbarn = harBarnetilleggSaerkullsbarn,
@@ -155,7 +155,7 @@ object OpphoerBarnetilleggAuto : VedtaksbrevTemplate<OpphoerBarnetilleggAutoDto>
                 barnetilleggFellesbarn.beloepNettoFellesbarn_safe
             ) { beloepNettoFellesbarn ->
                 includePhrase(
-                    UfoeretrygdBarnetillegg.BetydningAvInntektFellesbarn(
+                    UfoeretrygdBarnetillegg.InntektHarBetydningForFellesbarnTillegg(
                         beloepNettoFellesbarn = beloepNettoFellesbarn,
                         harBarnetilleggFellesbarn = harBarnetilleggFellesbarn,
                         harBarnetilleggSaerkullsbarn = harBarnetilleggSaerkullsbarn,
@@ -213,13 +213,21 @@ object OpphoerBarnetilleggAuto : VedtaksbrevTemplate<OpphoerBarnetilleggAutoDto>
                 barnetilleggSaerkullsbarn
             ) { barnetilleggFellesbarn, barnetilleggSaerkullsbarn ->
                 includePhrase(
-                    UfoeretrygdBarnetillegg.HarSaerkullsbarnOgHarFellesbarnOgRedusertBT(
+                    UfoeretrygdBarnetillegg.BarnetilleggReduksjonSaerkullsbarnFellesbarn(
                         barnetilleggSaerkullsbarn.beloepNettoSaerkullsbarn,
+                        barnetilleggSaerkullsbarn.beloepBruttoSaerkullsbarn,
                         barnetilleggSaerkullsbarn.fradragSaerkullsbarn,
-                        barnetilleggFellesbarn.fradragFellesbarn,
                         barnetilleggSaerkullsbarn.fribeloepSaerkullsbarn,
                         barnetilleggSaerkullsbarn.justeringsbeloepSaerkullsbarn,
                         barnetilleggSaerkullsbarn.antallSaerkullsbarnbarnInnvilget,
+                        barnetilleggSaerkullsbarn.inntektBruktIAvkortningSaerkullsbarn,
+                        barnetilleggFellesbarn.fradragFellesbarn,
+                        barnetilleggFellesbarn.beloepBruttoFellesbarn,
+                        barnetilleggFellesbarn.beloepNettoFellesbarn,
+                        barnetilleggFellesbarn.fribeloepFellesbarn,
+                        barnetilleggFellesbarn.justeringsbeloepFellesbarn,
+                        barnetilleggFellesbarn.antallFellesbarnInnvilget,
+                        barnetilleggFellesbarn.inntektBruktIAvkortningFellesbarn,
                     )
                 )
             }
