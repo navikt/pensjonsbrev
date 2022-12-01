@@ -80,8 +80,6 @@ object OpphoerBarnetilleggAuto : VedtaksbrevTemplate<OpphoerBarnetilleggAutoDto>
                     Language.Nynorsk to "NAV har stansa barnetillegget ditt",
                     Language.English to "NAV has discontinued the child supplement in your disability benefit"
                 )
-                // Hvis barnetillegget fortsatt løper for andre barn/annet barn: <BTinnvilget> = true OR <BTSBinnvilget> = true
-                // val = Vedtaksdata.BeregningsData.BeregningYtelsesKomp.BarnetilleggFelles.BarnetilleggSerkull.BTSBinnvilget
             }.orShowIf(harBarnetilleggFellesbarn or harBarnetilleggSaerkullsbarn) {
                 text(
                     Language.Bokmal to "NAV har endret barnetillegget ditt",
@@ -183,15 +181,15 @@ object OpphoerBarnetilleggAuto : VedtaksbrevTemplate<OpphoerBarnetilleggAutoDto>
             ifNotNull(barnetilleggFellesbarn) { barnetilleggFellesbarn ->
                 includePhrase(
                     UfoeretrygdBarnetillegg.InntektTilAvkortningFellesbarn(
-                        barnetilleggFellesbarn.beloepFratrukketAnnenForeldersInntekt,
-                        barnetilleggFellesbarn.beloepNettoFellesbarn,
-                        barnetilleggFellesbarn.fribeloepFellesbarn,
-                        barnetilleggFellesbarn.fradragFellesbarn,
-                        barnetilleggFellesbarn.inntektAnnenForelderFellesbarn,
-                        barnetilleggFellesbarn.inntektBruktIAvkortningFellesbarn,
-                        barnetilleggFellesbarn.justeringsbeloepFellesbarn,
+                        beloepFratrukketAnnenForeldersInntekt = barnetilleggFellesbarn.beloepFratrukketAnnenForeldersInntekt,
+                        beloepNettoFellesbarn = barnetilleggFellesbarn.beloepNettoFellesbarn,
+                        fradragFellesbarn = barnetilleggFellesbarn.fribeloepFellesbarn,
+                        fribeloepFellesbarn = barnetilleggFellesbarn.fradragFellesbarn,
+                        inntektAnnenForelderFellesbarn = barnetilleggFellesbarn.inntektAnnenForelderFellesbarn,
+                        inntektBruktiAvkortningFellesbarn = barnetilleggFellesbarn.inntektBruktIAvkortningFellesbarn,
+                        justeringsbeloepFellesbarn = barnetilleggFellesbarn.justeringsbeloepFellesbarn,
+                        grunnbeloep = grunnbeloep,
                         harBarnetilleggSaerkullsbarn = harBarnetilleggSaerkullsbarn,
-                        grunnbeloep,
                         sivilstand = sivilstand,
                     )
                 )
@@ -200,10 +198,10 @@ object OpphoerBarnetilleggAuto : VedtaksbrevTemplate<OpphoerBarnetilleggAutoDto>
             ifNotNull(barnetilleggSaerkullsbarn) { barnetilleggSaerkullsbarn ->
                 includePhrase(
                     UfoeretrygdBarnetillegg.InntektTilAvkortningSaerkullsbarn(
-                        barnetilleggSaerkullsbarn.beloepNettoSaerkullsbarn,
-                        barnetilleggSaerkullsbarn.fribeloepSaerkullsbarn,
-                        barnetilleggSaerkullsbarn.inntektBruktIAvkortningSaerkullsbarn,
-                        barnetilleggSaerkullsbarn.justeringsbeloepSaerkullsbarn
+                        beloepNettoSaerkullsbarn = barnetilleggSaerkullsbarn.beloepNettoSaerkullsbarn,
+                        fribeloepSaerkullsbarn = barnetilleggSaerkullsbarn.fribeloepSaerkullsbarn,
+                        inntektBruktIAvkortningSaerkullsbarn = barnetilleggSaerkullsbarn.inntektBruktIAvkortningSaerkullsbarn,
+                        justeringsbeloepSaerkullsbarn = barnetilleggSaerkullsbarn.justeringsbeloepSaerkullsbarn
                     )
                 )
             }
@@ -214,20 +212,23 @@ object OpphoerBarnetilleggAuto : VedtaksbrevTemplate<OpphoerBarnetilleggAutoDto>
             ) { barnetilleggFellesbarn, barnetilleggSaerkullsbarn ->
                 includePhrase(
                     UfoeretrygdBarnetillegg.BarnetilleggReduksjonSaerkullsbarnFellesbarn(
-                        barnetilleggSaerkullsbarn.beloepNettoSaerkullsbarn,
-                        barnetilleggSaerkullsbarn.beloepBruttoSaerkullsbarn,
-                        barnetilleggSaerkullsbarn.fradragSaerkullsbarn,
-                        barnetilleggSaerkullsbarn.fribeloepSaerkullsbarn,
-                        barnetilleggSaerkullsbarn.justeringsbeloepSaerkullsbarn,
-                        barnetilleggSaerkullsbarn.antallSaerkullsbarnbarnInnvilget,
-                        barnetilleggSaerkullsbarn.inntektBruktIAvkortningSaerkullsbarn,
-                        barnetilleggFellesbarn.fradragFellesbarn,
-                        barnetilleggFellesbarn.beloepBruttoFellesbarn,
-                        barnetilleggFellesbarn.beloepNettoFellesbarn,
-                        barnetilleggFellesbarn.fribeloepFellesbarn,
-                        barnetilleggFellesbarn.justeringsbeloepFellesbarn,
-                        barnetilleggFellesbarn.antallFellesbarnInnvilget,
-                        barnetilleggFellesbarn.inntektBruktIAvkortningFellesbarn,
+                        beloepNettoSaerkullsbarn = barnetilleggSaerkullsbarn.beloepNettoSaerkullsbarn,
+                        beloepBruttoSaerkullsbarn = barnetilleggSaerkullsbarn.beloepBruttoSaerkullsbarn,
+                        fradragSaerkullsbarn = barnetilleggSaerkullsbarn.fradragSaerkullsbarn,
+                        fribeloepSaerkullsbarn = barnetilleggSaerkullsbarn.fribeloepSaerkullsbarn,
+                        justeringsbeloepSaerkullsbarn = barnetilleggSaerkullsbarn.justeringsbeloepSaerkullsbarn,
+                        antallSaerkullsbarnInnvilget = barnetilleggSaerkullsbarn.antallSaerkullsbarnbarnInnvilget,
+                        harBarnetilleggSaerkullsbarn = harBarnetilleggSaerkullsbarn,
+                        inntektBruktIAvkortningSaerkullsbarn = barnetilleggSaerkullsbarn.inntektBruktIAvkortningSaerkullsbarn,
+                        fradragFellesbarn = barnetilleggFellesbarn.fradragFellesbarn,
+                        beloepBruttoFellesbarn = barnetilleggFellesbarn.beloepBruttoFellesbarn,
+                        harBarnetilleggFellesbarn = harBarnetilleggFellesbarn,
+                        beloepNettoFellesbarn = barnetilleggFellesbarn.beloepNettoFellesbarn,
+                        fribeloepFellesbarn = barnetilleggFellesbarn.fribeloepFellesbarn,
+                        justeringsbeloepFellesbarn = barnetilleggFellesbarn.justeringsbeloepFellesbarn,
+                        antallFellesbarnInnvilget = barnetilleggFellesbarn.antallFellesbarnInnvilget,
+                        inntektBruktiAvkortningFellesbarn = barnetilleggFellesbarn.inntektBruktIAvkortningFellesbarn,
+                        sivilstand = sivilstand,
                     )
                 )
             }
