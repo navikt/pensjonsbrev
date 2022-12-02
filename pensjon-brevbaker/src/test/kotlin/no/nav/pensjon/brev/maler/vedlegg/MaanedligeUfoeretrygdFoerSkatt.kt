@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.maler.vedlegg
 
+import io.ktor.util.date.*
 import kotlinx.coroutines.runBlocking
 import no.nav.pensjon.brev.*
 import no.nav.pensjon.brev.api.model.Kroner
@@ -7,7 +8,6 @@ import no.nav.pensjon.brev.api.model.LetterMetadata
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligUfoeretrygdFoerSkattDto
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligUfoeretrygdFoerSkattDto.UfoeretrygdPerMaaned
 import no.nav.pensjon.brev.latex.LaTeXCompilerService
-import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.Letter
 import no.nav.pensjon.brev.template.dsl.createTemplate
@@ -64,15 +64,23 @@ class MaanedligUfoeretrygdFoerSkattITest {
                 totalUTBeloepNetto = Kroner(18),
             )
 
-        includeAttachment(
+        includeAttachmentIfNotNull(
             vedleggMaanedligUfoeretrygdFoerSkatt,
             MaanedligUfoeretrygdFoerSkattDto(
-                ufoeretrygdPerMaaned,
-                LocalDate.of(2020, 1, 1),
-                listOf(
-                    ufoeretrygdPerMaaned,
-                    ufoeretrygdPerMaaned.copy(erAvkortet = false),
-                )
+                ufoeretrygdPerioder = listOf(
+                    ufoeretrygdPerMaaned.copy(
+                        virkningFraOgMed = LocalDate.of(2020, 3, 1),
+                        virkningTilOgMed = null,
+                    ),
+                    ufoeretrygdPerMaaned.copy(
+                        virkningFraOgMed = LocalDate.of(2020, 2, 1),
+                        virkningTilOgMed = LocalDate.of(2020, 2, 28)
+                    ),
+                    ufoeretrygdPerMaaned.copy(
+                        virkningFraOgMed = LocalDate.of(2020, 1, 1),
+                        virkningTilOgMed = LocalDate.of(2020, 1, 31)
+                    ),
+                ),
             ).expr()
         )
     }
@@ -90,14 +98,14 @@ class MaanedligUfoeretrygdFoerSkattITest {
             .also { writeTestPDF("MaanedligUfoeretrygdFoerSkatt", it) }
     }
 
-     @Test
-     fun testHtml(){
-         Letter(
-             template,
-             Unit,
-             Bokmal,
-             Fixtures.fellesAuto
-         ).let { PensjonHTMLRenderer.render(it) }
-             .also { writeTestHTML("MaanedligUfoeretrygdFoerSkatt", it) }
-     }
+    @Test
+    fun testHtml() {
+        Letter(
+            template,
+            Unit,
+            Bokmal,
+            Fixtures.fellesAuto
+        ).let { PensjonHTMLRenderer.render(it) }
+            .also { writeTestHTML("MaanedligUfoeretrygdFoerSkatt", it) }
+    }
 }

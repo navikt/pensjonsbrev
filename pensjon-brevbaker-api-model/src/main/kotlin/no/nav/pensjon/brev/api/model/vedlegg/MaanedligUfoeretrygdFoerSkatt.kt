@@ -4,9 +4,7 @@ import no.nav.pensjon.brev.api.model.Kroner
 import java.time.LocalDate
 
 data class MaanedligUfoeretrygdFoerSkattDto(
-    val gjeldendeBeregnetUTPerMaaned: UfoeretrygdPerMaaned,
-    val krav_virkningsDatoFraOgMed: LocalDate,
-    val tidligereUfoeretrygdPerioder: List<UfoeretrygdPerMaaned>,
+    val ufoeretrygdPerioder: List<UfoeretrygdPerMaaned>,
 ) {
     data class UfoeretrygdPerMaaned(
         val annetBelop: Kroner,
