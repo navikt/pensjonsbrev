@@ -32,25 +32,25 @@ data class Ufoeretrygd(
     )
 
 data class BarnetilleggFellesbarn(
-    val antallFellesbarnInnvilget: Int,
-    val beloepFratrukketAnnenForeldersInntekt: Kroner,
-    val beloepBruttoFellesbarn: Kroner,
-    val beloepNettoFellesbarn: Kroner,
-    val fradragFellesbarn: Kroner,
-    val fribeloepFellesbarn: Kroner,
-    val inntektAnnenForelderFellesbarn: Kroner,
-    val inntektBruktIAvkortningFellesbarn: Kroner,
-    val inntektstakFellesbarn: Kroner,
-    val justeringsbeloepFellesbarn: Kroner
+    val gjelderFlereBarn: Boolean,
+    val harFradrag: Boolean,
+    val harFratrukketBeloepFraAnnenForelder: Boolean, //todo hør med ingrid om navn. Hva betyr dette?
+    val beloepBrutto: Kroner,
+    val beloepNetto: Kroner,
+    val fribeloep: Kroner,
+    val inntektAnnenForelder: Kroner,
+    val inntektBruktIAvkortning: Kroner,
+    val inntektstak: Kroner,
+    val harJusteringsbeloep: Boolean
 )
 
 data class BarnetilleggSaerkullsbarn(
-    val antallSaerkullsbarnbarnInnvilget: Int,
-    val beloepBruttoSaerkullsbarn: Kroner,
-    val beloepNettoSaerkullsbarn: Kroner,
-    val fradragSaerkullsbarn: Kroner,
-    val fribeloepSaerkullsbarn: Kroner,
-    val inntektBruktIAvkortningSaerkullsbarn: Kroner,
-    val inntektstakSaerkullsbarn: Kroner,
-    val justeringsbeloepSaerkullsbarn: Kroner
+    val gjelderFlereBarn: Boolean,
+    val harFradrag: Boolean,
+    val beloepBrutto: Kroner,
+    val beloepNetto: Kroner,
+    val fribeloep: Kroner,
+    val inntektBruktIAvkortning: Kroner,
+    val inntektstak: Kroner,
+    val harJusteringsbeloep: Boolean,
 )
