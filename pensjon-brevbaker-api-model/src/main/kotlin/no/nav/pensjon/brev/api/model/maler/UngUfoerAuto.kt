@@ -13,7 +13,7 @@ data class UngUfoerAutoDto(
     val fellesbarn: InnvilgetBarnetillegg?,
     val saerkullsbarn: InnvilgetBarnetillegg?,
     val minsteytelseVedVirkSats: Double,
-    val maanedligUfoeretrygdFoerSkatt: MaanedligUfoeretrygdFoerSkattDto,
+    val maanedligUfoeretrygdFoerSkatt: MaanedligUfoeretrygdFoerSkattDto?,
     val orienteringOmRettigheterUfoere: OrienteringOmRettigheterUfoereDto,
 ) {
     data class InnvilgetTillegg(val utbetalt: Boolean)
