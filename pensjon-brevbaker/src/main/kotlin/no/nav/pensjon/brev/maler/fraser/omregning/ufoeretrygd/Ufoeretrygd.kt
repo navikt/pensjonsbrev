@@ -226,11 +226,13 @@ object Ufoeretrygd {
     }
 
 
+
     /**
      * TBU3008, TBU3009, TBU3010, endrMYUngUfoer20Aar_001
      */
 
-    data class EndringMinsteYtelseUngUfoerVed20aar(val minsteytelseVedVirkSats: Expression<Double>) : OutlinePhrase<LangBokmalNynorsk>() {
+    data class EndringMinsteYtelseUngUfoerVed20aar(val minsteytelseVedVirkSats: Expression<Double>) :
+        OutlinePhrase<LangBokmalNynorsk>() {
 
         override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
             paragraph {
@@ -264,10 +266,10 @@ object Ufoeretrygd {
                 val satsFormatert = minsteytelseVedVirkSats.format()
                 textExpr(
                     Bokmal to "Du får derfor en årlig ytelse som utgjør ".expr()
-                            + satsFormatert + " ganger grunnbeløpet.",
+                        + satsFormatert + " ganger grunnbeløpet.",
 
                     Nynorsk to "Du får derfor ei årleg yting som utgjer ".expr()
-                            + satsFormatert + " gangar grunnbeløpet.",
+                        + satsFormatert + " gangar grunnbeløpet.",
                 )
             }
         }
@@ -296,7 +298,7 @@ object Ufoeretrygd {
                     Bokmal to "Dette er virkningstidspunktet ditt",
                     Nynorsk to "Dette er verknadstidspunktet ditt",
                     English to "This is your effective date",
-                    )
+                )
             }
     }
 

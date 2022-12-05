@@ -24,10 +24,13 @@ import no.nav.pensjon.brev.api.model.maler.OpphoerBarnetilleggAutoDto
 import no.nav.pensjon.brev.api.model.maler.OpphoerBarnetilleggAutoDtoSelectors.barnetilleggFellesbarn
 import no.nav.pensjon.brev.api.model.maler.OpphoerBarnetilleggAutoDtoSelectors.barnetilleggSaerkullsbarn
 import no.nav.pensjon.brev.api.model.maler.OpphoerBarnetilleggAutoDtoSelectors.brukerBorInorge
+import no.nav.pensjon.brev.api.model.maler.OpphoerBarnetilleggAutoDtoSelectors.fellesbarn
 import no.nav.pensjon.brev.api.model.maler.OpphoerBarnetilleggAutoDtoSelectors.foedselsdatoPaaBarnetilleggOpphoert
 import no.nav.pensjon.brev.api.model.maler.OpphoerBarnetilleggAutoDtoSelectors.grunnbeloep
+import no.nav.pensjon.brev.api.model.maler.OpphoerBarnetilleggAutoDtoSelectors.maanedligUfoeretrygdFoerSkatt
 import no.nav.pensjon.brev.api.model.maler.OpphoerBarnetilleggAutoDtoSelectors.oensketVirkningsDato
 import no.nav.pensjon.brev.api.model.maler.OpphoerBarnetilleggAutoDtoSelectors.orienteringOmRettigheterUfoere
+import no.nav.pensjon.brev.api.model.maler.OpphoerBarnetilleggAutoDtoSelectors.saerkullsbarn
 import no.nav.pensjon.brev.api.model.maler.OpphoerBarnetilleggAutoDtoSelectors.sivilstand
 import no.nav.pensjon.brev.api.model.maler.OpphoerBarnetilleggAutoDtoSelectors.ufoeretrygd
 import no.nav.pensjon.brev.api.model.maler.UfoeretrygdSelectors.ektefelletilleggUtbeltalt_safe
@@ -40,6 +43,7 @@ import no.nav.pensjon.brev.maler.fraser.common.UfoeretrygdBarnetillegg
 import no.nav.pensjon.brev.maler.fraser.common.UfoeretrygdFelles
 import no.nav.pensjon.brev.maler.fraser.omregning.ufoeretrygd.Ufoeretrygd
 import no.nav.pensjon.brev.maler.fraser.vedtak.Vedtak
+import no.nav.pensjon.brev.maler.vedlegg.vedleggMaanedligUfoeretrygdFoerSkatt
 import no.nav.pensjon.brev.maler.vedlegg.vedleggOrienteringOmRettigheterOgPlikterUfoere
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.VedtaksbrevTemplate
@@ -219,44 +223,17 @@ object OpphoerBarnetilleggAuto : VedtaksbrevTemplate<OpphoerBarnetilleggAutoDto>
                 )
             }
 
-            //TODO TBU1286.1 TBU1286.2
-            //ifNotNull(
-            //    barnetilleggFellesbarn,
-            //    barnetilleggSaerkullsbarn
-            //) { barnetilleggFellesbarn, barnetilleggSaerkullsbarn ->
-            //    includePhrase(
-            //        UfoeretrygdBarnetillegg.RedusertBarnetilleggFellesbarn(
-            //            barnetilleggFellesbarn.beloepNetto,
-            //            barnetilleggSaerkullsbarn.fradragSaerkullsbarn,
-            //            barnetilleggFellesbarn.fradragFellesbarn,
-            //            barnetilleggFellesbarn.fribeloep,
-            //            barnetilleggFellesbarn.justeringsbeloepFellesbarn,
-            //            barnetilleggFellesbarn.antallFellesbarnInnvilget,
-            //            sivilstand = sivilstand
-            //        )
-            //    )
-            //}
-//
-            //ifNotNull(
-            //    barnetilleggFellesbarn,
-            //    barnetilleggSaerkullsbarn
-            //) { barnetilleggFellesbarn, barnetilleggSaerkullsbarn ->
-            //    includePhrase(
-            //        UfoeretrygdBarnetillegg.RedusertBarnetilleggSearkullsbarnFellesbarn(
-            //            barnetilleggSaerkullsbarn.beloepNetto,
-            //            barnetilleggFellesbarn.beloepNetto,
-            //            barnetilleggSaerkullsbarn.fradragSaerkullsbarn,
-            //            barnetilleggFellesbarn.fradragFellesbarn,
-            //            barnetilleggSaerkullsbarn.fribeloep,
-            //            barnetilleggFellesbarn.fribeloep,
-            //            barnetilleggSaerkullsbarn.justeringsbeloepSaerkullsbarn,
-            //            barnetilleggFellesbarn.justeringsbeloepFellesbarn,
-            //            barnetilleggSaerkullsbarn.antallSaerkullsbarnbarnInnvilget,
-            //            barnetilleggFellesbarn.antallFellesbarnInnvilget,
-            //            sivilstand = sivilstand
-            //        )
-            //    )
-            //}
+            ifNotNull(
+                saerkullsbarn,
+                fellesbarn
+            ) { saerkullsbarn, fellesbarn ->
+                includePhrase(
+                    Ufoeretrygd.BarnetilleggIkkeUtbetalt(
+                        saerkullsbarn = saerkullsbarn,
+                        fellesbarn = fellesbarn
+                    )
+                )
+            }
 
             ifNotNull(
                 barnetilleggFellesbarn,
@@ -295,6 +272,7 @@ object OpphoerBarnetilleggAuto : VedtaksbrevTemplate<OpphoerBarnetilleggAutoDto>
                 )
             )
         }
+        includeAttachment(vedleggMaanedligUfoeretrygdFoerSkatt, maanedligUfoeretrygdFoerSkatt)
         includeAttachment(vedleggOrienteringOmRettigheterOgPlikterUfoere, orienteringOmRettigheterUfoere)
     }
 }
