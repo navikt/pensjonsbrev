@@ -9,9 +9,7 @@ import java.time.LocalDate
 
 @Suppress("unused")
 data class OpphoerBarnetilleggAutoDto(
-    val saerkullsbarn: UngUfoerAutoDto.InnvilgetBarnetillegg?,
-    val fellesbarn: UngUfoerAutoDto.InnvilgetBarnetillegg?,
-    val foedselsdatoPaaBarnetilleggOpphoert: LocalDate,
+    val foedselsdatoPaaBarnMedOpphoertBarnetillegg: List<LocalDate>,
     val oensketVirkningsDato: LocalDate,
     val barnetilleggFellesbarn: BarnetilleggFellesbarn?,
     val barnetilleggSaerkullsbarn: BarnetilleggSaerkullsbarn?,
@@ -25,12 +23,11 @@ data class OpphoerBarnetilleggAutoDto(
 )
 
 data class Ufoeretrygd(
-    val ufoertrygdUtbetalt: Int,
+    val ufoertrygdUtbetalt: Kroner,
     val utbetaltPerMaaned: Kroner,
     val ektefelletilleggUtbeltalt: Kroner?,
     val gjenlevendetilleggUtbetalt: Kroner?,
     val harUtbetalingsgrad: Boolean,
-
     )
 
 data class BarnetilleggFellesbarn(

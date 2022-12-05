@@ -3,30 +3,31 @@ package no.nav.pensjon.brev.fixtures
 import no.nav.pensjon.brev.Fixtures
 import no.nav.pensjon.brev.api.model.Kroner
 import no.nav.pensjon.brev.api.model.Sivilstand
-import no.nav.pensjon.brev.api.model.maler.*
+import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarn
+import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarn
+import no.nav.pensjon.brev.api.model.maler.OpphoerBarnetilleggAutoDto
+import no.nav.pensjon.brev.api.model.maler.Ufoeretrygd
 import java.time.LocalDate
 
 fun createOpphoerBarnetilleggAutoDto() =
     OpphoerBarnetilleggAutoDto(
-        foedselsdatoPaaBarnetilleggOpphoert = LocalDate.of(2004, 6, 14),
+        foedselsdatoPaaBarnMedOpphoertBarnetillegg = listOf(
+            LocalDate.of(2004, 6, 14),
+            LocalDate.of(2001, 1, 2),
+        ),
         oensketVirkningsDato = LocalDate.now(),
-        saerkullsbarn = UngUfoerAutoDto.InnvilgetBarnetillegg(true, 2, Kroner(10_000)),
-        fellesbarn = UngUfoerAutoDto.InnvilgetBarnetillegg(false, 1, Kroner(10_000)),
-
-    //    barnetilleggFellesbarn = null,
-
-            barnetilleggFellesbarn = BarnetilleggFellesbarn(
-                gjelderFlereBarn = true,
-                harFradrag = true,
-                harFratrukketBeloepFraAnnenForelder = true,
-                beloepBrutto = Kroner(8000),
-                beloepNetto = Kroner(5000),
-                fribeloep = Kroner(10000),
-                inntektAnnenForelder = Kroner(550000),
-                inntektBruktIAvkortning = Kroner(375000),
-                inntektstak = Kroner(320000),
-                harJusteringsbeloep = true,
-            ),
+        barnetilleggFellesbarn = BarnetilleggFellesbarn(
+            gjelderFlereBarn = true,
+            harFradrag = true,
+            harFratrukketBeloepFraAnnenForelder = true,
+            beloepBrutto = Kroner(8000),
+            beloepNetto = Kroner(5000),
+            fribeloep = Kroner(10000),
+            inntektAnnenForelder = Kroner(550000),
+            inntektBruktIAvkortning = Kroner(375000),
+            inntektstak = Kroner(320000),
+            harJusteringsbeloep = true,
+        ),
         barnetilleggSaerkullsbarn = BarnetilleggSaerkullsbarn(
             gjelderFlereBarn = true,
             harFradrag = true,
@@ -41,7 +42,7 @@ fun createOpphoerBarnetilleggAutoDto() =
         grunnbeloep = Kroner(98000),
         sivilstand = Sivilstand.SAMBOER1_5,
         ufoeretrygd = Ufoeretrygd(
-            ufoertrygdUtbetalt = 80,
+            ufoertrygdUtbetalt = Kroner(80),
             utbetaltPerMaaned = Kroner(345000),
             ektefelletilleggUtbeltalt = Kroner(125000),
             gjenlevendetilleggUtbetalt = null,

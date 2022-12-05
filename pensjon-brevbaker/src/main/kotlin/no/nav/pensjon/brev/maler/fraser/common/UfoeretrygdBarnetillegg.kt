@@ -20,7 +20,7 @@ object UfoeretrygdBarnetillegg {
     // TBU2290
     data class VirkningsDatoForOpphoer(
         val oensketVirkningsDato: Expression<LocalDate>,
-        val foedselsdatoPaaBarnetilleggOpphoert: Expression<LocalDate>,
+        val foedselsdatoPaaBarnetilleggOpphoert: Expression<List<LocalDate>>,
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             paragraph {

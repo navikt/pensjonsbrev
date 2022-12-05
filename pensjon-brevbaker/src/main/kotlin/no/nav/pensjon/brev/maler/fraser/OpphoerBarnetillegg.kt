@@ -34,7 +34,6 @@ object OpphoerBarnetillegg {
                         Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 12-15, og 22-12.",
                         Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 12-15, og 22-12.",
                         English to "The decision has been made pursuant to Section 12-15, and 22-12 of the Norwegian National Insurance Act."
-
                     )
                 }
             }
