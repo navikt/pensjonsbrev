@@ -9,6 +9,8 @@ import java.time.LocalDate
 
 @Suppress("unused")
 data class OpphoerBarnetilleggAutoDto(
+    val saerkullsbarn: UngUfoerAutoDto.InnvilgetBarnetillegg?,
+    val fellesbarn: UngUfoerAutoDto.InnvilgetBarnetillegg?,
     val foedselsdatoPaaBarnetilleggOpphoert: LocalDate,
     val oensketVirkningsDato: LocalDate,
     val barnetilleggFellesbarn: BarnetilleggFellesbarn?,

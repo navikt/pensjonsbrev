@@ -3,37 +3,39 @@ package no.nav.pensjon.brev.fixtures
 import no.nav.pensjon.brev.Fixtures
 import no.nav.pensjon.brev.api.model.Kroner
 import no.nav.pensjon.brev.api.model.Sivilstand
-import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarn
-import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarn
-import no.nav.pensjon.brev.api.model.maler.OpphoerBarnetilleggAutoDto
-import no.nav.pensjon.brev.api.model.maler.Ufoeretrygd
+import no.nav.pensjon.brev.api.model.maler.*
 import java.time.LocalDate
 
 fun createOpphoerBarnetilleggAutoDto() =
     OpphoerBarnetilleggAutoDto(
         foedselsdatoPaaBarnetilleggOpphoert = LocalDate.of(2004, 6, 14),
         oensketVirkningsDato = LocalDate.now(),
+        saerkullsbarn = UngUfoerAutoDto.InnvilgetBarnetillegg(true, 2, Kroner(10_000)),
+        fellesbarn = UngUfoerAutoDto.InnvilgetBarnetillegg(false, 1, Kroner(10_000)),
+
     //    barnetilleggFellesbarn = null,
 
             barnetilleggFellesbarn = BarnetilleggFellesbarn(
-                antallFellesbarnInnvilget = 2,
-                beloepFratrukketAnnenForeldersInntekt = Kroner(2500),
-                beloepNettoFellesbarn = Kroner(5000),
-                fradragFellesbarn = Kroner(2000),
-                fribeloepFellesbarn = Kroner(1000),
-                inntektAnnenForelderFellesbarn = Kroner(550000),
-                inntektBruktIAvkortningFellesbarn = Kroner(375000),
-                inntektstakFellesbarn = Kroner(320000),
-                justeringsbeloepFellesbarn = Kroner(7500)
+                gjelderFlereBarn = true,
+                harFradrag = true,
+                harFratrukketBeloepFraAnnenForelder = true,
+                beloepBrutto = Kroner(8000),
+                beloepNetto = Kroner(5000),
+                fribeloep = Kroner(10000),
+                inntektAnnenForelder = Kroner(550000),
+                inntektBruktIAvkortning = Kroner(375000),
+                inntektstak = Kroner(320000),
+                harJusteringsbeloep = true,
             ),
         barnetilleggSaerkullsbarn = BarnetilleggSaerkullsbarn(
-            antallSaerkullsbarnbarnInnvilget = 1,
-            beloepNettoSaerkullsbarn = Kroner(10000),
-            fradragSaerkullsbarn = Kroner(2500),
-            fribeloepSaerkullsbarn = Kroner(14000),
-            inntektBruktIAvkortningSaerkullsbarn = Kroner(8000),
-            inntektstakSaerkullsbarn = Kroner(350000),
-            justeringsbeloepSaerkullsbarn = Kroner(7500),
+            gjelderFlereBarn = true,
+            harFradrag = true,
+            beloepBrutto = Kroner(10000),
+            beloepNetto = Kroner(5000),
+            fribeloep = Kroner(14000),
+            inntektBruktIAvkortning = Kroner(8000),
+            inntektstak = Kroner(350000),
+            harJusteringsbeloep = true,
         ),
         brukerBorInorge = true,
         grunnbeloep = Kroner(98000),
