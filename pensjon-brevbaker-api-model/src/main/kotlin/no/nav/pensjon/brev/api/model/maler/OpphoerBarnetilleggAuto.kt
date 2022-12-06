@@ -2,7 +2,7 @@ package no.nav.pensjon.brev.api.model.maler
 
 import no.nav.pensjon.brev.api.model.Kroner
 import no.nav.pensjon.brev.api.model.Sivilstand
-import no.nav.pensjon.brev.api.model.phrases.UfoeretrygdBarnetilleggIkkeUtbetalt
+import no.nav.pensjon.brev.api.model.phrases.InnvilgetBarnetillegg
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligUfoeretrygdFoerSkattDto
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDto
 import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterUfoereDto
@@ -32,25 +32,27 @@ data class Ufoeretrygd(
     )
 
 data class BarnetilleggFellesbarn(
-    val gjelderFlereBarn: Boolean,
+    override val gjelderFlereBarn: Boolean,
+    override val inntektstak: Kroner,
+    override val utbetalt: Boolean,
+    val beloepBrutto: Kroner,
+    val beloepNetto: Kroner,
+    val fribeloep: Kroner,
     val harFradrag: Boolean,
     val harFratrukketBeloepFraAnnenForelder: Boolean, //todo hør med ingrid om navn. Hva betyr dette?
-    val beloepBrutto: Kroner,
-    val beloepNetto: Kroner,
-    val fribeloep: Kroner,
+    val harJusteringsbeloep: Boolean,
     val inntektAnnenForelder: Kroner,
     val inntektBruktIAvkortning: Kroner,
-    val inntektstak: Kroner,
-    val harJusteringsbeloep: Boolean
-): UfoeretrygdBarnetilleggIkkeUtbetalt
+): InnvilgetBarnetillegg
 
 data class BarnetilleggSaerkullsbarn(
-    val gjelderFlereBarn: Boolean,
-    val harFradrag: Boolean,
+    override val gjelderFlereBarn: Boolean,
+    override val inntektstak: Kroner,
+    override val utbetalt: Boolean,
     val beloepBrutto: Kroner,
     val beloepNetto: Kroner,
     val fribeloep: Kroner,
-    val inntektBruktIAvkortning: Kroner,
-    val inntektstak: Kroner,
+    val harFradrag: Boolean,
     val harJusteringsbeloep: Boolean,
-)
+    val inntektBruktIAvkortning: Kroner,
+): InnvilgetBarnetillegg

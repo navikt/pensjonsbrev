@@ -1,8 +1,8 @@
 package no.nav.pensjon.brev.maler
 
 import no.nav.pensjon.brev.api.model.LetterMetadata
+import no.nav.pensjon.brev.api.model.maler.BarnetilleggSelectors.utbetalt_safe
 import no.nav.pensjon.brev.api.model.maler.Brevkode
-import no.nav.pensjon.brev.api.model.maler.InnvilgetBarnetilleggSelectors.utbetalt_safe
 import no.nav.pensjon.brev.api.model.maler.InnvilgetTilleggSelectors.utbetalt_safe
 import no.nav.pensjon.brev.api.model.maler.UngUfoerAutoDto
 import no.nav.pensjon.brev.api.model.maler.UngUfoerAutoDtoSelectors.ektefelle
@@ -16,7 +16,6 @@ import no.nav.pensjon.brev.api.model.maler.UngUfoerAutoDtoSelectors.saerkullsbar
 import no.nav.pensjon.brev.api.model.maler.UngUfoerAutoDtoSelectors.totaltUfoerePerMnd
 import no.nav.pensjon.brev.maler.fraser.UngUfoer
 import no.nav.pensjon.brev.maler.fraser.common.Felles
-import no.nav.pensjon.brev.maler.fraser.ufoer.Barnetillegg
 import no.nav.pensjon.brev.maler.fraser.ufoer.Ufoeretrygd
 import no.nav.pensjon.brev.maler.fraser.vedtak.Vedtak
 import no.nav.pensjon.brev.maler.vedlegg.vedleggMaanedligUfoeretrygdFoerSkatt
@@ -70,7 +69,12 @@ object UngUfoerAuto : VedtaksbrevTemplate<UngUfoerAutoDto> {
                 )
             )
 
-            includePhrase(Barnetillegg.BarnetilleggIkkeUtbetalt(saerkullsbarn = saerkullsbarn, fellesbarn = fellesbarn))
+            //TODO fiks når template-model generator har fått interface støtte
+            //includePhrase(Barnetillegg.BarnetilleggIkkeUtbetalt(
+            //    saerkullsbarn = saerkullsbarn,
+            //    fellesbarn = fellesbarn,
+            //    )
+            //)
 
 
             includePhrase(Vedtak.BegrunnelseOverskrift)
