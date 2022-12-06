@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.api.model.maler
 
 import no.nav.pensjon.brev.api.model.*
+import no.nav.pensjon.brev.api.model.phrases.UfoeretrygdBarnetilleggIkkeUtbetalt
 import no.nav.pensjon.brev.api.model.vedlegg.*
 import java.time.LocalDate
 
@@ -17,6 +18,10 @@ data class UngUfoerAutoDto(
     val orienteringOmRettigheterUfoere: OrienteringOmRettigheterUfoereDto,
 ) {
     data class InnvilgetTillegg(val utbetalt: Boolean)
-    data class InnvilgetBarnetillegg(val utbetalt: Boolean, val antallBarn: Int, val inntektstak: Kroner)
+    data class InnvilgetBarnetillegg(
+        override val utbetalt: Boolean,
+        override val antallBarn: Int,
+        override val inntektstak: Kroner
+    ):UfoeretrygdBarnetilleggIkkeUtbetalt
 
 }

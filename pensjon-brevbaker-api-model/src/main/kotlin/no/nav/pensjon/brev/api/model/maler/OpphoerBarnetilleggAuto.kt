@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.api.model.maler
 
 import no.nav.pensjon.brev.api.model.Kroner
 import no.nav.pensjon.brev.api.model.Sivilstand
+import no.nav.pensjon.brev.api.model.phrases.UfoeretrygdBarnetilleggIkkeUtbetalt
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligUfoeretrygdFoerSkattDto
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDto
 import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterUfoereDto
@@ -41,7 +42,7 @@ data class BarnetilleggFellesbarn(
     val inntektBruktIAvkortning: Kroner,
     val inntektstak: Kroner,
     val harJusteringsbeloep: Boolean
-)
+): UfoeretrygdBarnetilleggIkkeUtbetalt
 
 data class BarnetilleggSaerkullsbarn(
     val gjelderFlereBarn: Boolean,
