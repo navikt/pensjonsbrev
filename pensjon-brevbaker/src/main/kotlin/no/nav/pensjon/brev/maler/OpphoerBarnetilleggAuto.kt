@@ -1,24 +1,31 @@
 package no.nav.pensjon.brev.maler
 
+import no.nav.pensjon.brev.api.model.Kroner
 import no.nav.pensjon.brev.api.model.LetterMetadata
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.beloepBrutto
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.beloepNetto
+import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.beloepNetto_safe
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.fribeloep
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.gjelderFlereBarn
+import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.gjelderFlereBarn_safe
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.harFradrag
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.harFratrukketBeloepFraAnnenForelder
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.harJusteringsbeloep
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.inntektAnnenForelder
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.inntektBruktIAvkortning
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.inntektstak
+import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.inntektstak_safe
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarnSelectors.beloepBrutto
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarnSelectors.beloepNetto
+import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarnSelectors.beloepNetto_safe
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarnSelectors.fribeloep
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarnSelectors.gjelderFlereBarn
+import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarnSelectors.gjelderFlereBarn_safe
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarnSelectors.harFradrag
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarnSelectors.harJusteringsbeloep
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarnSelectors.inntektBruktIAvkortning
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarnSelectors.inntektstak
+import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarnSelectors.inntektstak_safe
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.OpphoerBarnetilleggAutoDto
 import no.nav.pensjon.brev.api.model.maler.OpphoerBarnetilleggAutoDtoSelectors.barnetilleggFellesbarn
@@ -222,15 +229,16 @@ object OpphoerBarnetilleggAuto : VedtaksbrevTemplate<OpphoerBarnetilleggAutoDto>
 
             //TODO
             includePhrase(
-                Barnetillegg.BarnetilleggIkkeUtbetalt(
-                    harInnvilgetBarnetilleggFellesbarn =,
-                    harInnvilgetBarnetilleggSaerkullsbarn =,
-                    harUtbetaltBarnetilleggFellesbarn =,
-                    harUtbetaltBarnetilleggSaerkullsbarn =,
-                    harFlereFellesBarn =,
-                    harFlereSaerkullsbarn =,
-                    inntektstakFellesbarn =,
-                    inntektstakSaerkullsbarn =,
+                Ufoeretrygd.BarnetilleggIkkeUtbetalt(
+                    saerkullInnvilget = harBarnetilleggSaerkullsbarn,
+                    saerkullUtbetalt = barnetilleggSaerkullsbarn.beloepNetto_safe.ifNull(Kroner(0)).greaterThan(0),
+                    harFlereSaerkullsbarn = barnetilleggSaerkullsbarn.gjelderFlereBarn_safe.ifNull(false),
+                    saerkullInntektstak = barnetilleggSaerkullsbarn.inntektstak_safe.ifNull(Kroner(0)),
+                    fellesbarnInnvilget = harBarnetilleggFellesbarn,
+                    fellesUtbetalt = barnetilleggFellesbarn.beloepNetto_safe.ifNull(Kroner(0)).greaterThan(0),
+                    harFlereFellesBarn = barnetilleggFellesbarn.gjelderFlereBarn_safe.ifNull(false),
+                    fellesInntektstak = barnetilleggFellesbarn.inntektstak_safe.ifNull(Kroner(0)),
+                    test= Ufoeretrygd.BarnetilleggIkkeUtbetalt.InnvilgetBarnetillegg(123).expr()
                 )
             )
 
