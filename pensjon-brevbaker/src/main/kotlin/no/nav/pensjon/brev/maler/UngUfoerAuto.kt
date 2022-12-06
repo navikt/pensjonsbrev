@@ -14,8 +14,10 @@ import no.nav.pensjon.brev.api.model.maler.UngUfoerAutoDtoSelectors.minsteytelse
 import no.nav.pensjon.brev.api.model.maler.UngUfoerAutoDtoSelectors.orienteringOmRettigheterUfoere
 import no.nav.pensjon.brev.api.model.maler.UngUfoerAutoDtoSelectors.saerkullsbarn
 import no.nav.pensjon.brev.api.model.maler.UngUfoerAutoDtoSelectors.totaltUfoerePerMnd
+import no.nav.pensjon.brev.maler.fraser.UngUfoer
 import no.nav.pensjon.brev.maler.fraser.common.Felles
-import no.nav.pensjon.brev.maler.fraser.omregning.ufoeretrygd.Ufoeretrygd
+import no.nav.pensjon.brev.maler.fraser.ufoer.Barnetillegg
+import no.nav.pensjon.brev.maler.fraser.ufoer.Ufoeretrygd
 import no.nav.pensjon.brev.maler.fraser.vedtak.Vedtak
 import no.nav.pensjon.brev.maler.vedlegg.vedleggMaanedligUfoeretrygdFoerSkatt
 import no.nav.pensjon.brev.maler.vedlegg.vedleggOrienteringOmRettigheterOgPlikterUfoere
@@ -55,7 +57,7 @@ object UngUfoerAuto : VedtaksbrevTemplate<UngUfoerAutoDto> {
         outline {
 
             includePhrase(Vedtak.Overskrift)
-            includePhrase(Ufoeretrygd.UngUfoer20aar_001(kravVirkningFraOgMed))
+            includePhrase(UngUfoer.UngUfoer20aar(kravVirkningFraOgMed))
 
             includePhrase(
                 Ufoeretrygd.Beloep(
@@ -68,11 +70,11 @@ object UngUfoerAuto : VedtaksbrevTemplate<UngUfoerAutoDto> {
                 )
             )
 
-            includePhrase(Ufoeretrygd.BarnetilleggIkkeUtbetalt(saerkullsbarn = saerkullsbarn, fellesbarn = fellesbarn))
+            includePhrase(Barnetillegg.BarnetilleggIkkeUtbetalt(saerkullsbarn = saerkullsbarn, fellesbarn = fellesbarn))
 
 
             includePhrase(Vedtak.BegrunnelseOverskrift)
-            includePhrase(Ufoeretrygd.EndringMinsteYtelseUngUfoerVed20aar(minsteytelseVedVirkSats))
+            includePhrase(UngUfoer.EndringMinsteYtelseUngUfoerVed20aar(minsteytelseVedVirkSats))
             includePhrase(Ufoeretrygd.HjemmelSivilstand)
 
             includePhrase(Ufoeretrygd.VirkningFomOverskrift)

@@ -37,9 +37,8 @@ import no.nav.pensjon.brev.api.model.maler.UfoeretrygdSelectors.harUtbetalingsgr
 import no.nav.pensjon.brev.api.model.maler.UfoeretrygdSelectors.utbetaltPerMaaned
 import no.nav.pensjon.brev.maler.fraser.OpphoerBarnetillegg
 import no.nav.pensjon.brev.maler.fraser.common.Felles
-import no.nav.pensjon.brev.maler.fraser.common.UfoeretrygdBarnetillegg
-import no.nav.pensjon.brev.maler.fraser.common.UfoeretrygdFelles
-import no.nav.pensjon.brev.maler.fraser.omregning.ufoeretrygd.Ufoeretrygd
+import no.nav.pensjon.brev.maler.fraser.ufoer.Barnetillegg
+import no.nav.pensjon.brev.maler.fraser.ufoer.Ufoeretrygd
 import no.nav.pensjon.brev.maler.fraser.vedtak.Vedtak
 import no.nav.pensjon.brev.maler.vedlegg.vedleggMaanedligUfoeretrygdFoerSkatt
 import no.nav.pensjon.brev.maler.vedlegg.vedleggOrienteringOmRettigheterOgPlikterUfoere
@@ -87,7 +86,7 @@ object OpphoerBarnetilleggAuto : VedtaksbrevTemplate<OpphoerBarnetilleggAutoDto>
         }
         outline {
             includePhrase(
-                UfoeretrygdBarnetillegg.VirkningsDatoForOpphoer(
+                Barnetillegg.VirkningsDatoForOpphoer(
                     foedselsdatoPaaBarnetilleggOpphoert = foedselsdatoPaaBarnMedOpphoertBarnetillegg,
                     oensketVirkningsDato = oensketVirkningsDato
                 )
@@ -104,10 +103,10 @@ object OpphoerBarnetilleggAuto : VedtaksbrevTemplate<OpphoerBarnetilleggAutoDto>
                 )
             )
 
-            includePhrase(UfoeretrygdFelles.UtbetalingsdatoUfoeretrygd)
-            includePhrase(UfoeretrygdFelles.ViktigAALeseHeleBrevet)
+            includePhrase(Ufoeretrygd.UtbetalingsdatoUfoeretrygd)
+            includePhrase(Ufoeretrygd.ViktigAALeseHeleBrevet)
             includePhrase(Vedtak.BegrunnelseOverskrift)
-            includePhrase(UfoeretrygdBarnetillegg.BarnHarFylt18AAR)
+            includePhrase(Barnetillegg.BarnHarFylt18AAR)
 
             includePhrase(
                 OpphoerBarnetillegg.HjemmelForBarnetilleggIUfoeretrygden(
@@ -127,7 +126,7 @@ object OpphoerBarnetilleggAuto : VedtaksbrevTemplate<OpphoerBarnetilleggAutoDto>
             )
 
             includePhrase(
-                UfoeretrygdBarnetillegg.BetydningAvInntektOverskrift(
+                Barnetillegg.BetydningAvInntektOverskrift(
                     harBarnetilleggFellesbarn = harBarnetilleggFellesbarn,
                     harBarnetilleggSaerkullsbarn = harBarnetilleggSaerkullsbarn
                 )
@@ -137,7 +136,7 @@ object OpphoerBarnetilleggAuto : VedtaksbrevTemplate<OpphoerBarnetilleggAutoDto>
                 barnetilleggSaerkullsbarn,
             ) { barnetilleggSaerkullsbarn ->
                 includePhrase(
-                    UfoeretrygdBarnetillegg.InntektHarBetydningForSaerkullsbarnTillegg(
+                    Barnetillegg.InntektHarBetydningForSaerkullsbarnTillegg(
                         harBarnetilleggFellesbarn = harBarnetilleggFellesbarn,
                         harBarnetilleggSaerkullsbarn = harBarnetilleggSaerkullsbarn,
                         sivilstand = sivilstand,
@@ -149,7 +148,7 @@ object OpphoerBarnetilleggAuto : VedtaksbrevTemplate<OpphoerBarnetilleggAutoDto>
 
             ifNotNull(barnetilleggFellesbarn) { barnetilleggFellesBarn ->
                 includePhrase(
-                    UfoeretrygdBarnetillegg.InntektHarBetydningForFellesbarnTillegg(
+                    Barnetillegg.InntektHarBetydningForFellesbarnTillegg(
                         faarUtbetaltBarnetilleggFellesbarn = barnetilleggFellesBarn.beloepNetto.greaterThan(0),
                         harBarnetilleggFellesbarn = harBarnetilleggFellesbarn,
                         harBarnetilleggSaerkullsbarn = harBarnetilleggSaerkullsbarn,
@@ -159,7 +158,7 @@ object OpphoerBarnetilleggAuto : VedtaksbrevTemplate<OpphoerBarnetilleggAutoDto>
             }
 
             includePhrase(
-                UfoeretrygdBarnetillegg.BetydningAvInntektEndringer(
+                Barnetillegg.BetydningAvInntektEndringer(
                     harBarnetilleggFellesbarn = harBarnetilleggFellesbarn,
                     harBarnetilleggSaerkullsbarn = harBarnetilleggSaerkullsbarn,
                     sivilstand = sivilstand
@@ -168,7 +167,7 @@ object OpphoerBarnetilleggAuto : VedtaksbrevTemplate<OpphoerBarnetilleggAutoDto>
 
             ifNotNull(barnetilleggFellesbarn) { barnetilleggFellesbarn ->
                 includePhrase(
-                    UfoeretrygdBarnetillegg.InntektTilAvkortningFellesbarn(
+                    Barnetillegg.InntektTilAvkortningFellesbarn(
                         harBeloepFratrukketAnnenForelder = barnetilleggFellesbarn.harFratrukketBeloepFraAnnenForelder,
                         faarUtbetaltBarnetilleggFellesBarn = barnetilleggFellesbarn.beloepNetto.greaterThan(0),
                         harFradragFellesbarn = barnetilleggFellesbarn.harFradrag,
@@ -185,7 +184,7 @@ object OpphoerBarnetilleggAuto : VedtaksbrevTemplate<OpphoerBarnetilleggAutoDto>
 
             ifNotNull(barnetilleggSaerkullsbarn) { barnetilleggSaerkullsbarn ->
                 includePhrase(
-                    UfoeretrygdBarnetillegg.InntektTilAvkortningSaerkullsbarn(
+                    Barnetillegg.InntektTilAvkortningSaerkullsbarn(
                         beloepNettoSaerkullsbarn = barnetilleggSaerkullsbarn.beloepNetto,
                         fribeloepSaerkullsbarn = barnetilleggSaerkullsbarn.fribeloep,
                         inntektBruktIAvkortningSaerkullsbarn = barnetilleggSaerkullsbarn.inntektBruktIAvkortning,
@@ -199,7 +198,7 @@ object OpphoerBarnetilleggAuto : VedtaksbrevTemplate<OpphoerBarnetilleggAutoDto>
                 barnetilleggSaerkullsbarn
             ) { barnetilleggFellesbarn, barnetilleggSaerkullsbarn ->
                 includePhrase(
-                    UfoeretrygdBarnetillegg.BarnetilleggReduksjonSaerkullsbarnFellesbarn(
+                    Barnetillegg.BarnetilleggReduksjonSaerkullsbarnFellesbarn(
                         beloepNettoSaerkullsbarn = barnetilleggSaerkullsbarn.beloepNetto,
                         beloepBruttoSaerkullsbarn = barnetilleggSaerkullsbarn.beloepBrutto,
                         harFradragSaerkullsbarn = barnetilleggSaerkullsbarn.harFradrag,
@@ -223,7 +222,15 @@ object OpphoerBarnetilleggAuto : VedtaksbrevTemplate<OpphoerBarnetilleggAutoDto>
 
             //TODO
             includePhrase(
-                Ufoeretrygd.BarnetilleggIkkeUtbetalt(
+                Barnetillegg.BarnetilleggIkkeUtbetalt(
+                    harInnvilgetBarnetilleggFellesbarn =,
+                    harInnvilgetBarnetilleggSaerkullsbarn =,
+                    harUtbetaltBarnetilleggFellesbarn =,
+                    harUtbetaltBarnetilleggSaerkullsbarn =,
+                    harFlereFellesBarn =,
+                    harFlereSaerkullsbarn =,
+                    inntektstakFellesbarn =,
+                    inntektstakSaerkullsbarn =,
                 )
             )
 
@@ -232,7 +239,7 @@ object OpphoerBarnetilleggAuto : VedtaksbrevTemplate<OpphoerBarnetilleggAutoDto>
                 barnetilleggSaerkullsbarn
             ) { barnetilleggFellesbarn, barnetilleggSaerkullsbarn ->
                 includePhrase(
-                    UfoeretrygdBarnetillegg.InnvilgetOgIkkeUtbetalt(
+                    Barnetillegg.InnvilgetOgIkkeUtbetalt(
                         beloepNettoFellesbarn = barnetilleggFellesbarn.beloepNetto,
                         beloepNettoSaerkullsbarn = barnetilleggSaerkullsbarn.beloepNetto,
                         inntektstakFellesbarn = barnetilleggFellesbarn.inntektstak,
@@ -246,20 +253,20 @@ object OpphoerBarnetilleggAuto : VedtaksbrevTemplate<OpphoerBarnetilleggAutoDto>
             }
 
             includePhrase(
-                UfoeretrygdBarnetillegg.HenvisningTilVedleggOpplysningerOmBeregning(
+                Barnetillegg.HenvisningTilVedleggOpplysningerOmBeregning(
                     harBarnetilleggSaerkullsbarn = harBarnetilleggSaerkullsbarn,
                     harBarnetilleggFellesbarn = harBarnetilleggFellesbarn
                 )
             )
-            includePhrase(UfoeretrygdFelles.MeldeFraOmEventuellInntektOverskrift)
-            includePhrase(UfoeretrygdFelles.MeldeFraOmEventuellInntekt)
-            includePhrase(UfoeretrygdFelles.MeldeFraOmEndringer)
-            includePhrase(UfoeretrygdFelles.RettTilAAKlage)
+            includePhrase(Ufoeretrygd.MeldeFraOmEventuellInntektOverskrift)
+            includePhrase(Ufoeretrygd.MeldeFraOmEventuellInntekt)
+            includePhrase(Ufoeretrygd.MeldeFraOmEndringer)
+            includePhrase(Ufoeretrygd.RettTilAAKlage)
             includePhrase(Felles.RettTilInnsynPesys_001)
             includePhrase(Ufoeretrygd.SjekkUtbetalingene)
-            includePhrase(UfoeretrygdFelles.Skattekort)
+            includePhrase(Ufoeretrygd.Skattekort)
             includePhrase(
-                UfoeretrygdFelles.SkattForDegSomBorIUtlandet(
+                Ufoeretrygd.SkattForDegSomBorIUtlandet(
                     brukerBorInorge = brukerBorInorge
                 )
             )
