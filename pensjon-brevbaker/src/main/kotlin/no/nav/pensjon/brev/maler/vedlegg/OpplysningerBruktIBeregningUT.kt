@@ -2,11 +2,14 @@ package no.nav.pensjon.brev.maler.vedlegg
 
 
 import no.nav.pensjon.brev.api.model.Beregningsmetode.*
+import no.nav.pensjon.brev.api.model.vedlegg.BarnetilleggGjeldendeSelectors.fellesbarn_safe
 import no.nav.pensjon.brev.api.model.vedlegg.BarnetilleggGjeldendeSelectors.saerkullsbarn_safe
 import no.nav.pensjon.brev.api.model.vedlegg.BeregnetUTPerManedGjeldendeSelectors.brukerErFlyktning
 import no.nav.pensjon.brev.api.model.vedlegg.BeregnetUTPerManedGjeldendeSelectors.brukersSivilstand
 import no.nav.pensjon.brev.api.model.vedlegg.BeregnetUTPerManedGjeldendeSelectors.grunnbeloep
 import no.nav.pensjon.brev.api.model.vedlegg.BeregnetUTPerManedGjeldendeSelectors.virkDatoFom
+import no.nav.pensjon.brev.api.model.vedlegg.FellesbarnSelectors.antallbarn
+import no.nav.pensjon.brev.api.model.vedlegg.FellesbarnSelectors.beloep
 import no.nav.pensjon.brev.api.model.vedlegg.InntektFoerUfoereGjeldendeSelectors.erSannsynligEndret
 import no.nav.pensjon.brev.api.model.vedlegg.InntektFoerUfoereGjeldendeSelectors.ifuInntekt
 import no.nav.pensjon.brev.api.model.vedlegg.InntektsAvkortingGjeldendeSelectors.forventetInntektAar
@@ -23,10 +26,13 @@ import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSel
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.ufoeretrygdGjeldende
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.ungUfoerGjeldende_erUnder20Aar
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.yrkesskadeGjeldende
+import no.nav.pensjon.brev.api.model.vedlegg.SaerkullsbarnSelectors.antallbarn
 import no.nav.pensjon.brev.api.model.vedlegg.SaerkullsbarnSelectors.avkortningsbeloepAar
+import no.nav.pensjon.brev.api.model.vedlegg.SaerkullsbarnSelectors.beloep
 import no.nav.pensjon.brev.api.model.vedlegg.SaerkullsbarnSelectors.beloepAar
 import no.nav.pensjon.brev.api.model.vedlegg.SaerkullsbarnSelectors.beloepAarFoerAvkort
 import no.nav.pensjon.brev.api.model.vedlegg.SaerkullsbarnSelectors.erRedusertMotinntekt
+import no.nav.pensjon.brev.api.model.vedlegg.SaerkullsbarnSelectors.fribeloep
 import no.nav.pensjon.brev.api.model.vedlegg.SaerkullsbarnSelectors.fribeloepEllerInntektErPeriodisert
 import no.nav.pensjon.brev.api.model.vedlegg.SaerkullsbarnSelectors.inntektBruktIAvkortning
 import no.nav.pensjon.brev.api.model.vedlegg.SaerkullsbarnSelectors.inntektOverFribeloep
@@ -645,8 +651,12 @@ val vedleggOpplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEng
                 }
             }
         }
-        ifNotNull(barnetilleggGjeldende, barnetilleggGjeldende.saerkullsbarn_safe) { barnetillegg, saerkullsbarn ->
-            showIf(saerkullsbarn.beloep.greaterThan(0)) {
+        ifNotNull(
+            barnetilleggGjeldende,
+            barnetilleggGjeldende.saerkullsbarn_safe,
+            barnetilleggGjeldende.fellesbarn_safe
+        ) { barnetillegg, saerkullsbarn, fellesbarn ->
+            showIf(saerkullsbarn.beloep.greaterThan(0) or fellesbarn.beloep.greaterThan(0)) {
                 row {
                     cell {
                         text(
@@ -656,7 +666,8 @@ val vedleggOpplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEng
                         )
                     }
                     cell {
-                        val totaltAntallBarn = barnetillegg.totaltAntallBarn.format()
+                        val totaltAntallBarn =
+                            ((saerkullsbarn.antallbarn).format() + (fellesbarn.antallbarn).format())
                         textExpr(
                             Bokmal to totaltAntallBarn,
                             Nynorsk to totaltAntallBarn,

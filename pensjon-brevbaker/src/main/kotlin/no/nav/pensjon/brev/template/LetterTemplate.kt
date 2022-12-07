@@ -21,6 +21,7 @@ data class LetterTemplate<Lang : LanguageSupport, LetterData : Any>(
 
 sealed class Expression<out Out> {
 
+
     abstract fun eval(scope: ExpressionScope<*, *>): Out
 
     data class Literal<out Out>(val value: Out) : Expression<Out>() {

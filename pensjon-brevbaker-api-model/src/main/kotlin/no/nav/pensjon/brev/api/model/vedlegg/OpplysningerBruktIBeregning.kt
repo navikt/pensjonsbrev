@@ -31,33 +31,35 @@ data class OpplysningerBruktIBeregningUTDto(
     ) {
         data class Saerkullsbarn(
             val avkortningsbeloepAar: Kroner,
-            val beloepSaerkullsbarn: Kroner,
+            val beloep: Kroner,
             val beloepAar: Kroner,
             val beloepAarFoerAvkort: Kroner,
             val erRedusertMotinntekt: Boolean,
-            val fribeloepSaerkullsbarn: Kroner,
+            val fribeloep: Kroner,
             val fribeloepEllerInntektErPeriodisert: Boolean,
             val inntektBruktIAvkortning: Kroner,
             val inntektOverFribeloep: Kroner,
             val inntektstak: Kroner,
             val justeringsbeloepAar: Kroner,
-            val antallSaerkullsbarn: Int,
-            val innvilgetBarnetilleggSaerkullsbarn: Boolean,
+            val antallbarn: Int,
+            val innvilgetBarnetillegg: Boolean,
         )
         data class Fellesbarn(
             val avkortningsbeloepAar: Kroner,
-            val beloepFellesbarn: Kroner,
+            val beloep: Kroner,
             val beloepAar: Kroner,
             val beloepAarFoerAvkort: Kroner,
+            val beloepFratrukketAnnenForeldersInntekt: Kroner,
             val erRedusertMotinntekt: Boolean,
-            val fribeloepFellesbarn: Kroner,
+            val fribeloep: Kroner,
             val fribeloepEllerInntektErPeriodisert: Boolean,
+            val inntektAnnenForelder: Kroner,
             val inntektBruktIAvkortning: Kroner,
             val inntektOverFribeloep: Kroner,
             val inntektstak: Kroner,
             val justeringsbeloepAar: Kroner,
-            val antallFellesbarn: Int,
-            val innvilgetBarnetilleggFellesbarn: Boolean
+            val antallbarn: Int,
+            val innvilgetBarnetillegg: Boolean
         )
     }
 

@@ -2,16 +2,20 @@ package no.nav.pensjon.brev.maler.vedlegg
 
 
 import no.nav.pensjon.brev.api.model.Beregningsmetode.*
+import no.nav.pensjon.brev.api.model.Kroner
 import no.nav.pensjon.brev.api.model.vedlegg.BarnetilleggGjeldendeSelectors.fellesbarn_safe
 import no.nav.pensjon.brev.api.model.vedlegg.BarnetilleggGjeldendeSelectors.saerkullsbarn_safe
 import no.nav.pensjon.brev.api.model.vedlegg.BeregnetUTPerManedGjeldendeSelectors.brukerErFlyktning
 import no.nav.pensjon.brev.api.model.vedlegg.BeregnetUTPerManedGjeldendeSelectors.brukersSivilstand
 import no.nav.pensjon.brev.api.model.vedlegg.BeregnetUTPerManedGjeldendeSelectors.grunnbeloep
 import no.nav.pensjon.brev.api.model.vedlegg.BeregnetUTPerManedGjeldendeSelectors.virkDatoFom
-import no.nav.pensjon.brev.api.model.vedlegg.FellesbarnSelectors.antallFellesbarn
-import no.nav.pensjon.brev.api.model.vedlegg.FellesbarnSelectors.beloepFellesbarn
-import no.nav.pensjon.brev.api.model.vedlegg.FellesbarnSelectors.fribeloepFellesbarn
-import no.nav.pensjon.brev.api.model.vedlegg.FellesbarnSelectors.innvilgetBarnetilleggFellesbarn
+import no.nav.pensjon.brev.api.model.vedlegg.FellesbarnSelectors.antallbarn
+import no.nav.pensjon.brev.api.model.vedlegg.FellesbarnSelectors.beloep
+import no.nav.pensjon.brev.api.model.vedlegg.FellesbarnSelectors.fribeloep
+import no.nav.pensjon.brev.api.model.vedlegg.FellesbarnSelectors.inntektAnnenForelder
+import no.nav.pensjon.brev.api.model.vedlegg.FellesbarnSelectors.inntektBruktIAvkortning
+import no.nav.pensjon.brev.api.model.vedlegg.FellesbarnSelectors.inntektstak
+import no.nav.pensjon.brev.api.model.vedlegg.FellesbarnSelectors.innvilgetBarnetillegg
 import no.nav.pensjon.brev.api.model.vedlegg.InntektFoerUfoereGjeldendeSelectors.erSannsynligEndret
 import no.nav.pensjon.brev.api.model.vedlegg.InntektFoerUfoereGjeldendeSelectors.ifuInntekt
 import no.nav.pensjon.brev.api.model.vedlegg.InntektsAvkortingGjeldendeSelectors.forventetInntektAar
@@ -28,19 +32,18 @@ import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSel
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.ufoeretrygdGjeldende
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.ungUfoerGjeldende_erUnder20Aar
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.yrkesskadeGjeldende
-import no.nav.pensjon.brev.api.model.vedlegg.SaerkullsbarnSelectors.antallSaerkullsbarn
+import no.nav.pensjon.brev.api.model.vedlegg.SaerkullsbarnSelectors.antallbarn
 import no.nav.pensjon.brev.api.model.vedlegg.SaerkullsbarnSelectors.avkortningsbeloepAar
+import no.nav.pensjon.brev.api.model.vedlegg.SaerkullsbarnSelectors.beloep
 import no.nav.pensjon.brev.api.model.vedlegg.SaerkullsbarnSelectors.beloepAar
 import no.nav.pensjon.brev.api.model.vedlegg.SaerkullsbarnSelectors.beloepAarFoerAvkort
-import no.nav.pensjon.brev.api.model.vedlegg.SaerkullsbarnSelectors.beloepSaerkullsbarn
 import no.nav.pensjon.brev.api.model.vedlegg.SaerkullsbarnSelectors.erRedusertMotinntekt
 import no.nav.pensjon.brev.api.model.vedlegg.SaerkullsbarnSelectors.fribeloep
 import no.nav.pensjon.brev.api.model.vedlegg.SaerkullsbarnSelectors.fribeloepEllerInntektErPeriodisert
-import no.nav.pensjon.brev.api.model.vedlegg.SaerkullsbarnSelectors.fribeloepSaerkullsbarn
 import no.nav.pensjon.brev.api.model.vedlegg.SaerkullsbarnSelectors.inntektBruktIAvkortning
 import no.nav.pensjon.brev.api.model.vedlegg.SaerkullsbarnSelectors.inntektOverFribeloep
 import no.nav.pensjon.brev.api.model.vedlegg.SaerkullsbarnSelectors.inntektstak
-import no.nav.pensjon.brev.api.model.vedlegg.SaerkullsbarnSelectors.innvilgetBarnetilleggSaerkullsbarn
+import no.nav.pensjon.brev.api.model.vedlegg.SaerkullsbarnSelectors.innvilgetBarnetillegg
 import no.nav.pensjon.brev.api.model.vedlegg.SaerkullsbarnSelectors.justeringsbeloepAar
 import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidsdetaljerGjeldendeSelectors.anvendtTT
 import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidsdetaljerGjeldendeSelectors.beregningsmetode
@@ -668,7 +671,7 @@ val vedleggOpplysningerBruktIBeregningUTBarnetillegg =
                 barnetilleggGjeldende.saerkullsbarn_safe,
                 barnetilleggGjeldende.fellesbarn_safe
             ) { barnetillegg, saerkullsbarn, fellesbarn ->
-                showIf(saerkullsbarn.beloepSaerkullsbarn.greaterThan(0) or fellesbarn.beloepFellesbarn.greaterThan(0)) {
+                showIf(saerkullsbarn.beloep.greaterThan(0) or fellesbarn.beloep.greaterThan(0)) {
                     row {
                         cell {
                             text(
@@ -679,7 +682,7 @@ val vedleggOpplysningerBruktIBeregningUTBarnetillegg =
                         }
                         cell {
                             val totaltAntallBarn =
-                                ((saerkullsbarn.antallSaerkullsbarn).format() + (fellesbarn.antallFellesbarn).format())
+                                ((saerkullsbarn.antallbarn).format() + (fellesbarn.antallbarn).format())
                             textExpr(
                                 Bokmal to totaltAntallBarn,
                                 Nynorsk to totaltAntallBarn,
@@ -687,7 +690,7 @@ val vedleggOpplysningerBruktIBeregningUTBarnetillegg =
                             )
                         }
                     }
-                    showIf(saerkullsbarn.fribeloepSaerkullsbarn.greaterThan(0)) {
+                    showIf(saerkullsbarn.innvilgetBarnetillegg) {
                         row {
                             cell {
                                 text(
@@ -697,11 +700,11 @@ val vedleggOpplysningerBruktIBeregningUTBarnetillegg =
                                 )
                             }
                             cell {
-                                includePhrase(KronerText(saerkullsbarn.fribeloepSaerkullsbarn))
+                                includePhrase(KronerText(saerkullsbarn.fribeloep))
                             }
                         }
                     }
-                    showIf(fellesbarn.fribeloepFellesbarn.greaterThan(0)) {
+                    showIf(fellesbarn.innvilgetBarnetillegg) {
                         row {
                             cell {
                                 text(
@@ -711,11 +714,11 @@ val vedleggOpplysningerBruktIBeregningUTBarnetillegg =
                                 )
                             }
                             cell {
-                                includePhrase(KronerText(fellesbarn.fribeloepFellesbarn))
+                                includePhrase(KronerText(fellesbarn.fribeloep))
                             }
                         }
                     }
-                    showIf(saerkullsbarn.innvilgetBarnetilleggSaerkullsbarn or fellesbarn.innvilgetBarnetilleggFellesbarn) {
+                    showIf(not(fellesbarn.innvilgetBarnetillegg)) {
                         row {
                             cell {
                                 text(
@@ -728,26 +731,59 @@ val vedleggOpplysningerBruktIBeregningUTBarnetillegg =
                                 includePhrase(KronerText(saerkullsbarn.inntektBruktIAvkortning))
                             }
                         }
-                    }
-                    row {
-                        cell {
-                            text(
-                                Bokmal to "Samlet inntekt til annen forelder som er brukt i fastsettelse av barnetillegg",
-                                Nynorsk to "Samla inntekt til annen forelder som er brukt i fastsetjinga av barnetillegg",
-                                English to "Income of the other parent, which is used to calculate child supplement"
-                            )
+                    }.orShowIf(fellesbarn.innvilgetBarnetillegg) {
+                        row {
+                            cell {
+                                text(
+                                    Bokmal to "Samlet inntekt som er brukt i fastsettelse av barnetillegg",
+                                    Nynorsk to "Samla inntekt som er brukt i fastsetjinga av barnetillegg",
+                                    English to "Your income, which is used to calculate child supplement"
+                                )
+                            }
+                            cell {
+                                includePhrase(KronerText(fellesbarn.inntektBruktIAvkortning))
+                            }
                         }
                     }
-                    row {
-                        cell {
-                            text(
-                                Bokmal to "Samlet inntekt for deg som gjør at barnetillegget ikke blir utbetalt",
-                                Nynorsk to "Samla inntekt for deg som gjer at barnetillegget ikkje blir utbetalt",
-                                English to "Your income which means that no child supplement is received"
-                            )
+                    showIf(fellesbarn.innvilgetBarnetillegg) {
+                        row {
+                            cell {
+                                text(
+                                    Bokmal to "Samlet inntekt til annen forelder som er brukt i fastsettelse av barnetillegg",
+                                    Nynorsk to "Samla inntekt til annen forelder som er brukt i fastsetjinga av barnetillegg",
+                                    English to "Income of the other parent, which is used to calculate child supplement"
+                                )
+                            }
+                            cell {
+                                includePhrase(KronerText(fellesbarn.inntektAnnenForelder))
+                            }
                         }
-                        cell {
-                            includePhrase(KronerText(saerkullsbarn.inntektstak))
+                    }
+                    showIf(saerkullsbarn.innvilgetBarnetillegg) {
+                        row {
+                            cell {
+                                text(
+                                    Bokmal to "Samlet inntekt for deg som gjør at barnetillegget ikke blir utbetalt",
+                                    Nynorsk to "Samla inntekt for deg som gjer at barnetillegget ikkje blir utbetalt",
+                                    English to "Your income which means that no child supplement is received"
+                                )
+                            }
+                            cell {
+                                includePhrase(KronerText(saerkullsbarn.inntektstak))
+                            }
+                        }
+                    }.orShowIf(fellesbarn.innvilgetBarnetillegg) {
+                        row {
+                            cell {
+                                text(
+                                    Bokmal to "Samlet inntekt for deg og annen forelder som gjør at barnetillegget ikke blir utbetalt",
+                                    Nynorsk to "",
+                                    English to ""
+                                )
+                            }
+                            cell {
+                                includePhrase(KronerText(fellesbarn.inntektstak))
+                            }
                         }
                     }
                 }
