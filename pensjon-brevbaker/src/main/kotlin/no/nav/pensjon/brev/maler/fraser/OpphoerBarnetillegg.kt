@@ -1,20 +1,23 @@
 package no.nav.pensjon.brev.maler.fraser
 
-import io.ktor.http.*
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
-import no.nav.pensjon.brev.template.dsl.expression.*
+import no.nav.pensjon.brev.template.dsl.expression.expr
+import no.nav.pensjon.brev.template.dsl.expression.format
+import no.nav.pensjon.brev.template.dsl.expression.or
+import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 import java.time.LocalDate
 
 
-object OpphoererBarnetillegg {
+object OpphoerBarnetillegg {
 
-    data class TBU4085(
+    // TBU4085
+    data class HjemmelForBarnetilleggIUfoeretrygden(
         val harBarnetilleggFellesbarn: Expression<Boolean>,
         val harBarnetilleggSaerkullsbarn: Expression<Boolean>
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
@@ -31,14 +34,15 @@ object OpphoererBarnetillegg {
                         Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 12-15, og 22-12.",
                         Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 12-15, og 22-12.",
                         English to "The decision has been made pursuant to Section 12-15, and 22-12 of the Norwegian National Insurance Act."
-
                     )
                 }
             }
         }
     }
 
-    data class TBU4086(
+
+    // TBU4086
+    data class OensketVirkningsDatoForEndring(
         val oensketVirkningsDato: Expression<LocalDate>,
         val harBarnetilleggFellesbarn: Expression<Boolean>,
         val harBarnetilleggSaerkullsbarn: Expression<Boolean>
