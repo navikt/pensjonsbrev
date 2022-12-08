@@ -240,7 +240,6 @@ object VedleggBeregnUTredusTTBTSB_001 : OutlinePhrase<LangBokmalNynorskEnglish>(
         }
 }
 
-
 data class VedleggBeregnUTIkkePeriodisertFriBOgInntektBTSB_001(
     val avkortningsbeloepAar_barnetilleggSBGjeldende: Expression<Kroner>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
@@ -418,3 +417,23 @@ object VedleggBeregnUTJusterBelopIkkeUtbetalt_001 : OutlinePhrase<LangBokmalNyno
             )
         }
 }
+
+// TBU607V
+data class MaanedligTilleggFellesbarn(
+    val beloep_barnetilleggFBGjeldende: Expression<Kroner>,
+) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+        paragraph {
+            textExpr(
+                Bokmal to "Du vil få utbetalt ".expr() + beloep_barnetilleggFBGjeldende.format() + " kroner i måneden før skatt i barnetillegg for barnetbarna som bor med begge sine foreldre".expr(),
+                Nynorsk to "Du vil få utbetalt ".expr() + beloep_barnetilleggFBGjeldende.format() + " kroner i månaden før skatt i barnetillegg for barnet(barna) som bur saman med begge foreldra sine.".expr(),
+                English to "You will receive a monthly child supplement payment of NOK ".expr() + beloep_barnetilleggFBGjeldende.format() + " for the child/children who live together with both parents.".expr()
+            )
+        }
+    }
+}
+
+// TBU608V
+data class FaaIkkeUtbetaltTilleggFellesbarn(
+    val
+)
