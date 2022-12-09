@@ -1283,7 +1283,12 @@ val vedleggOpplysningerBruktIBeregningUTBarnetillegg =
                         }
                     }
                 } // TABLE 2 Felles barn - end
-
+showIf(fellesbarn.beloep.greaterThan(0)) {
+    includePhrase(MaanedligTilleggFellesbarn(
+        beloep_barnetilleggFBGjeldende = beloep_barnetilleggFBGjeldende,
+         harTilleggForFlereFellesbarn = harTilleggForFlereFellesbarn
+        )
+}
             }
         }
     }
