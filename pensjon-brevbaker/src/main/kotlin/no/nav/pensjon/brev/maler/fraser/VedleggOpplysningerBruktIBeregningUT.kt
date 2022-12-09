@@ -2,12 +2,17 @@ package no.nav.pensjon.brev.maler.fraser
 
 import no.nav.pensjon.brev.api.model.Kroner
 import no.nav.pensjon.brev.model.format
-import no.nav.pensjon.brev.template.*
+import no.nav.pensjon.brev.template.Expression
+import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.*
-import no.nav.pensjon.brev.template.dsl.*
+import no.nav.pensjon.brev.template.OutlinePhrase
+import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
+import no.nav.pensjon.brev.template.dsl.expression.ifElse
 import no.nav.pensjon.brev.template.dsl.expression.plus
+import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.dsl.textExpr
 
 
 object RettTilMYOverskrift_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
@@ -421,13 +426,20 @@ object VedleggBeregnUTJusterBelopIkkeUtbetalt_001 : OutlinePhrase<LangBokmalNyno
 // TBU607V
 data class MaanedligTilleggFellesbarn(
     val beloep_barnetilleggFBGjeldende: Expression<Kroner>,
+    val harTilleggForFlereFellesbarn: Expression<Boolean>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         paragraph {
             textExpr(
-                Bokmal to "Du vil få utbetalt ".expr() + beloep_barnetilleggFBGjeldende.format() + " kroner i måneden før skatt i barnetillegg for barnetbarna som bor med begge sine foreldre".expr(),
-                Nynorsk to "Du vil få utbetalt ".expr() + beloep_barnetilleggFBGjeldende.format() + " kroner i månaden før skatt i barnetillegg for barnet(barna) som bur saman med begge foreldra sine.".expr(),
-                English to "You will receive a monthly child supplement payment of NOK ".expr() + beloep_barnetilleggFBGjeldende.format() + " for the child/children who live together with both parents.".expr()
+                Bokmal to "Du vil få utbetalt ".expr() + beloep_barnetilleggFBGjeldende.format() + " kroner i måneden før skatt i barnetillegg for ".expr() +
+                    ifElse(harTilleggForFlereFellesbarn, ifTrue = "barna", ifFalse = "barnet") +
+                    " som bor med begge sine foreldre".expr(),
+                Nynorsk to "Du vil få utbetalt ".expr() + beloep_barnetilleggFBGjeldende.format() + " kroner i månaden før skatt i barnetillegg for ".expr() +
+                    ifElse(harTilleggForFlereFellesbarn, ifTrue = "barna", ifFalse = "barnet") +
+                    " som bur saman med begge foreldra sine.".expr(),
+                English to "You will receive a monthly child supplement payment of NOK ".expr() + beloep_barnetilleggFBGjeldende.format() + " for the ".expr() +
+                    ifElse(harTilleggForFlereFellesbarn, ifTrue = "children who live", ifFalse = "child who lives") +
+                    " together with both parents.".expr()
             )
         }
     }
@@ -435,5 +447,23 @@ data class MaanedligTilleggFellesbarn(
 
 // TBU608V
 data class FaaIkkeUtbetaltTilleggFellesbarn(
-    val
-)
+    val harTilleggForFlereFellesbarn: Expression<Boolean>,
+    val beloep_barnetilleggFBGjeldende: Expression<Kroner>: Expression<Kroner>,
+    val justeringsbeloepAar.barnetill:
+): OutlinePhrase<LangBokmalNynorskEnglish>() {
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+        paragraph {
+            showIf(
+            )
+            textExpr(
+                Bokmal to "Du får ikke utbetalt barnetillegget for ".expr() +
+                    ifElse(harTilleggForFlereFellesbarn, ifTrue = "barna", ifFalse = "barnet") + " barnetbarna som bor med begge sine foreldre fordi samlet inntekt er over grensen for å få utbetalt barnetillegg. Du har allerede fått utbetalt det du har rett til i år, og får derfor ikke utbetalt barnetillegg for resten av året.".expr(),
+                Nynorsk to "Du får ikkje utbetalt barnetillegget for ".expr() +
+                    ifElse(harTilleggForFlereFellesbarn, ifTrue = "barna", ifFalse = "barnet") + " som bur saman med begge foreldra sine fordi samla inntekt er over grensa for å få utbetalt barnetillegg. Du har allereie fått utbetalt det du har rett til i år, og får derfor ikkje utbetalt barnetillegg for resten av året. ".expr(),
+                English to "You will not receive a child supplement for the ".expr() +
+                    ifElse(harTilleggForFlereFellesbarn, ifTrue = "children who live", ifFalse = "child who lives") + " together with both parents because your income is over the income limit for receiving a child supplement. You have already received what you are entitled to this year, therefore you will not receive any child supplement for the remainder of the year.".expr()
+            )
+            
+        }
+    }
+}

@@ -1282,8 +1282,7 @@ val vedleggOpplysningerBruktIBeregningUTBarnetillegg =
                             }
                         }
                     }
-                }
-// TABLE 2 Fellesbarn - end
+                } // TABLE 2 Felles barn - end
 
             }
         }
