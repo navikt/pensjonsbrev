@@ -26,21 +26,21 @@ fun createOpplysningerBruktIBeregningUTDtoBarnetilleggGjeldende() =
     )
 fun createOpplysningerBruktIBeregningUTDtoBarnetilleggGjeldendeFellesbarn() =
     OpplysningerBruktIBeregningUTDto.BarnetilleggGjeldende.Fellesbarn(
-        antallbarn = 0,
+        antallbarn = 1,
         avkortningsbeloepAar = Kroner(0),
-        beloep = Kroner(0),
-        beloepAar = Kroner(0),
+        beloep = Kroner(5000),
+        beloepAar = Kroner(60000),
         beloepAarFoerAvkort = Kroner(0),
         beloepFratrukketAnnenForeldersInntekt = Kroner(0),
-        erRedusertMotinntekt = false,
-        fribeloep = Kroner(0),
+        erRedusertMotinntekt = true,
+        fribeloep = Kroner(20000),
         fribeloepEllerInntektErPeriodisert = false,
-        gjelderFlereBarn = false,
+        gjelderFlereBarn = true,
         inntektAnnenForelder = Kroner(0),
         inntektBruktIAvkortning = Kroner(0),
         inntektOverFribeloep = Kroner(0),
         inntektstak = Kroner(0),
-        innvilgetBarnetillegg = false,
+        innvilgetBarnetillegg = true,
         justeringsbeloepAar = Kroner(0),
     )
 

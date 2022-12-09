@@ -45,7 +45,7 @@ class OpplysningerBruktIBeregningUTTest {
             }
 
             includeAttachment(
-                vedleggOpplysningerBruktIBeregningUT,
+                vedleggOpplysningerBruktIBeregningUTBarnetillegg,
                 Fixtures.create(OpplysningerBruktIBeregningUTDto::class).expr()
             )
     }
