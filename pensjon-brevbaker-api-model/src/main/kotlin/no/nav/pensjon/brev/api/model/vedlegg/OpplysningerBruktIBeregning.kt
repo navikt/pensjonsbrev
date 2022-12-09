@@ -29,7 +29,7 @@ data class OpplysningerBruktIBeregningUTDto(
         val fellesbarn: Fellesbarn?
     ) {
         data class Saerkullsbarn(
-            val gjelderFlereBarn: Boolean,
+            val antallbarn: Int,
             val avkortningsbeloepAar: Kroner,
             val beloep: Kroner,
             val beloepAar: Kroner,
@@ -37,15 +37,15 @@ data class OpplysningerBruktIBeregningUTDto(
             val erRedusertMotinntekt: Boolean,
             val fribeloep: Kroner,
             val fribeloepEllerInntektErPeriodisert: Boolean,
+            val gjelderFlereBarn: Boolean,
             val inntektBruktIAvkortning: Kroner,
             val inntektOverFribeloep: Kroner,
             val inntektstak: Kroner,
-            val justeringsbeloepAar: Kroner,
-            val antallbarn: Int,
             val innvilgetBarnetillegg: Boolean,
+            val justeringsbeloepAar: Kroner,
         )
         data class Fellesbarn(
-            val gjelderFlereBarn: Boolean,
+            val antallbarn: Int,
             val avkortningsbeloepAar: Kroner,
             val beloep: Kroner,
             val beloepAar: Kroner,
@@ -54,13 +54,13 @@ data class OpplysningerBruktIBeregningUTDto(
             val erRedusertMotinntekt: Boolean,
             val fribeloep: Kroner,
             val fribeloepEllerInntektErPeriodisert: Boolean,
+            val gjelderFlereBarn: Boolean,
             val inntektAnnenForelder: Kroner,
             val inntektBruktIAvkortning: Kroner,
             val inntektOverFribeloep: Kroner,
             val inntektstak: Kroner,
+            val innvilgetBarnetillegg: Boolean,
             val justeringsbeloepAar: Kroner,
-            val antallbarn: Int,
-            val innvilgetBarnetillegg: Boolean
         )
     }
 

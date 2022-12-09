@@ -22,11 +22,31 @@ fun createOpplysningerBruktIBeregningUTDto() =
 fun createOpplysningerBruktIBeregningUTDtoBarnetilleggGjeldende() =
     OpplysningerBruktIBeregningUTDto.BarnetilleggGjeldende(
         saerkullsbarn = Fixtures.create(),
-        totaltAntallBarn = 0
+        fellesbarn = Fixtures.create(),
+    )
+fun createOpplysningerBruktIBeregningUTDtoBarnetilleggGjeldendeFellesbarn() =
+    OpplysningerBruktIBeregningUTDto.BarnetilleggGjeldende.Fellesbarn(
+        antallbarn = 0,
+        avkortningsbeloepAar = Kroner(0),
+        beloep = Kroner(0),
+        beloepAar = Kroner(0),
+        beloepAarFoerAvkort = Kroner(0),
+        beloepFratrukketAnnenForeldersInntekt = Kroner(0),
+        erRedusertMotinntekt = false,
+        fribeloep = Kroner(0),
+        fribeloepEllerInntektErPeriodisert = false,
+        gjelderFlereBarn = false,
+        inntektAnnenForelder = Kroner(0),
+        inntektBruktIAvkortning = Kroner(0),
+        inntektOverFribeloep = Kroner(0),
+        inntektstak = Kroner(0),
+        innvilgetBarnetillegg = false,
+        justeringsbeloepAar = Kroner(0),
     )
 
 fun createOpplysningerBruktIBeregningUTDtoBarnetilleggGjeldendeSaerkullsbarn() =
     OpplysningerBruktIBeregningUTDto.BarnetilleggGjeldende.Saerkullsbarn(
+        antallbarn = 0,
         avkortningsbeloepAar = Kroner(0),
         beloep = Kroner(0),
         beloepAar = Kroner(0),
@@ -34,9 +54,11 @@ fun createOpplysningerBruktIBeregningUTDtoBarnetilleggGjeldendeSaerkullsbarn() =
         erRedusertMotinntekt = false,
         fribeloep = Kroner(0),
         fribeloepEllerInntektErPeriodisert = false,
+        gjelderFlereBarn = false,
         inntektBruktIAvkortning = Kroner(0),
         inntektOverFribeloep = Kroner(0),
         inntektstak = Kroner(0),
+        innvilgetBarnetillegg = false,
         justeringsbeloepAar = Kroner(0),
     )
 
