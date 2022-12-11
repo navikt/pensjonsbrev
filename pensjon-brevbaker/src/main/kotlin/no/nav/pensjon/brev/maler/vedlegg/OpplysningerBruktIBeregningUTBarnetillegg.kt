@@ -1283,15 +1283,27 @@ val vedleggOpplysningerBruktIBeregningUTBarnetillegg =
                         }
                     }
                 } // TABLE 2 Felles barn - end
-         /*       showIf(fellesbarn.beloep.greaterThan(0)) {
-                    includePhrase(
-                        MaanedligTilleggFellesbarn(
-                            beloep_barnetilleggFBGjeldende,
-                            harTilleggForFlereFellesbarn = harTilleggForFlereFellesbarn
+                ifNotNull(
+                    barnetilleggGjeldende.fellesbarn_safe,
+                ) { fellesbarn ->
+                    showIf(fellesbarn.beloep.greaterThan(0)) {
+                        includePhrase(
+                            MaanedligTilleggFellesbarn(
+                                beloep_barnetilleggFBGjeldende = fellesbarn.beloep,
+                                antallbarn_barnetilleggFBGjeldende = fellesbarn.antallbarn,
+                            )
                         )
-                    )
-                } */
+                    }
+                    showIf(fellesbarn.innvilgetBarnetillegg) {
+                        includePhrase(
+                            FaaIkkeUtbetaltTilleggFellesbarn(
+                                antallbarn_barnetilleggFBGjeldende = fellesbarn.antallbarn,
+                                beloep_barnetilleggFBGjeldende = fellesbarn.beloep,
+                                justeringsbeloepAar_barnetilleggFBGjeldende = fellesbarn.justeringsbeloepAar,
+                            )
+                        )
+                    }
+                }
             }
         }
     }
-

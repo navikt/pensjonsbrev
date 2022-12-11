@@ -425,10 +425,11 @@ object VedleggBeregnUTJusterBelopIkkeUtbetalt_001 : OutlinePhrase<LangBokmalNyno
 // TBU607V
 data class MaanedligTilleggFellesbarn(
     val beloep_barnetilleggFBGjeldende: Expression<Kroner>,
-    val harTilleggForFlereFellesbarn: Expression<Boolean>,
+    val antallbarn_barnetilleggFBGjeldende: Expression<Int>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         paragraph {
+            val harTilleggForFlereFellesbarn = antallbarn_barnetilleggFBGjeldende.greaterThan(1)
             textExpr(
                 Bokmal to "Du vil få utbetalt ".expr() + beloep_barnetilleggFBGjeldende.format() + " kroner i måneden før skatt i barnetillegg for ".expr() +
                     ifElse(harTilleggForFlereFellesbarn, ifTrue = "barna", ifFalse = "barnet") +
@@ -446,12 +447,13 @@ data class MaanedligTilleggFellesbarn(
 
 // TBU608V
 data class FaaIkkeUtbetaltTilleggFellesbarn(
-    val harTilleggForFlereFellesbarn: Expression<Boolean>,
+    val antallbarn_barnetilleggFBGjeldende: Expression<Int>,
     val beloep_barnetilleggFBGjeldende: Expression<Kroner>,
     val justeringsbeloepAar_barnetilleggFBGjeldende: Expression<Kroner>
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         paragraph {
+            val harTilleggForFlereFellesbarn = antallbarn_barnetilleggFBGjeldende.greaterThan(1)
             showIf(
                 beloep_barnetilleggFBGjeldende.equalTo(0) and justeringsbeloepAar_barnetilleggFBGjeldende.equalTo(0)
             ) {
@@ -461,7 +463,7 @@ data class FaaIkkeUtbetaltTilleggFellesbarn(
                             harTilleggForFlereFellesbarn,
                             ifTrue = "barna",
                             ifFalse = "barnet"
-                        ) + " barnetbarna som bor med begge sine foreldre fordi samlet inntekt er over grensen for å få utbetalt barnetillegg. Du har allerede fått utbetalt det du har rett til i år, og får derfor ikke utbetalt barnetillegg for resten av året.".expr(),
+                        ) + " som bor med begge sine foreldre fordi samlet inntekt er over grensen for å få utbetalt barnetillegg. Du har allerede fått utbetalt det du har rett til i år, og får derfor ikke utbetalt barnetillegg for resten av året.".expr(),
                     Nynorsk to "Du får ikkje utbetalt barnetillegget for ".expr() +
                         ifElse(
                             harTilleggForFlereFellesbarn,

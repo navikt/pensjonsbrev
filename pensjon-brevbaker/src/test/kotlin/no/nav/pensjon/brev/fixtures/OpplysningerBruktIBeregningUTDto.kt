@@ -28,18 +28,18 @@ fun createOpplysningerBruktIBeregningUTDtoBarnetilleggGjeldendeFellesbarn() =
     OpplysningerBruktIBeregningUTDto.BarnetilleggGjeldende.Fellesbarn(
         antallbarn = 1,
         avkortningsbeloepAar = Kroner(0),
-        beloep = Kroner(5000),
+        beloep = Kroner(0),
         beloepAar = Kroner(60000),
         beloepAarFoerAvkort = Kroner(0),
         beloepFratrukketAnnenForeldersInntekt = Kroner(0),
         erRedusertMotinntekt = true,
         fribeloep = Kroner(20000),
         fribeloepEllerInntektErPeriodisert = false,
-        gjelderFlereBarn = true,
-        inntektAnnenForelder = Kroner(0),
-        inntektBruktIAvkortning = Kroner(0),
-        inntektOverFribeloep = Kroner(0),
-        inntektstak = Kroner(0),
+        gjelderFlereBarn = false,
+        inntektAnnenForelder = Kroner(200000),
+        inntektBruktIAvkortning = Kroner(50000),
+        inntektOverFribeloep = Kroner(25000),
+        inntektstak = Kroner(200000),
         innvilgetBarnetillegg = true,
         justeringsbeloepAar = Kroner(0),
     )
@@ -66,7 +66,7 @@ fun createOpplysningerBruktIBeregningUTDtoBeregnetUTPerManedGjeldende() =
     OpplysningerBruktIBeregningUTDto.BeregnetUTPerManedGjeldende(
         brukerErFlyktning = false,
         brukersSivilstand = Sivilstand.ENSLIG,
-        grunnbeloep = Kroner(0),
+        grunnbeloep = Kroner(100000),
         virkDatoFom = LocalDate.of(2020, 1, 1),
     )
 
@@ -108,7 +108,7 @@ fun createOpplysningerBruktIBeregningUTDtoTrygdetidsdetaljerGjeldendeUtenforEOSo
 
 fun createOpplysningerBruktIBeregningUTDtoUfoeretrygdGjeldende() =
     OpplysningerBruktIBeregningUTDto.UfoeretrygdGjeldende(
-        beloepsgrense = Kroner(0),
+        beloepsgrense = Kroner(220000),
         beregningsgrunnlagBeloepAar = Kroner(0),
         erKonvertert = false,
         kompensasjonsgrad = 0.0,
