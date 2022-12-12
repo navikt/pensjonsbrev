@@ -34,6 +34,7 @@ import no.nav.pensjon.brev.api.model.vedlegg.SaerkullsbarnSelectors.beloepAarFoe
 import no.nav.pensjon.brev.api.model.vedlegg.SaerkullsbarnSelectors.erRedusertMotinntekt
 import no.nav.pensjon.brev.api.model.vedlegg.SaerkullsbarnSelectors.fribeloep
 import no.nav.pensjon.brev.api.model.vedlegg.SaerkullsbarnSelectors.fribeloepEllerInntektErPeriodisert
+import no.nav.pensjon.brev.api.model.vedlegg.SaerkullsbarnSelectors.harFlereBarn
 import no.nav.pensjon.brev.api.model.vedlegg.SaerkullsbarnSelectors.inntektBruktIAvkortning
 import no.nav.pensjon.brev.api.model.vedlegg.SaerkullsbarnSelectors.inntektOverFribeloep
 import no.nav.pensjon.brev.api.model.vedlegg.SaerkullsbarnSelectors.inntektstak
@@ -789,11 +790,11 @@ val vedleggOpplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEng
         }
 
         showIf(fribeloepEllerInntektErPeriodisert and justeringsBeloepAr.greaterThan(0)) {
-            includePhrase(VedleggBeregnUTPeridisertFriBOgInntektBTSB_001(saerkullTillegg.avkortningsbeloepAar))
+            includePhrase(VedleggBeregnUTPeridisertFriBOgInntektBTSB_001(saerkullTillegg.avkortningsbeloepAar, saerkullTillegg.harFlereBarn))
         }
 
         showIf(fribeloepEllerInntektErPeriodisert and not(justeringsBeloepAr.greaterThan(0))) {
-            includePhrase(VedleggBeregnUTPeriodisertFriBOgInntektBTSBJusterBelop_001(saerkullTillegg.avkortningsbeloepAar))
+            includePhrase(VedleggBeregnUTPeriodisertFriBOgInntektBTSBJusterBelop_001(saerkullTillegg.avkortningsbeloepAar, saerkullTillegg.harFlereBarn))
         }
 
         showIf(justeringsBeloepAr.greaterThan(0)) {
@@ -988,7 +989,7 @@ val vedleggOpplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEng
             }
         }
         // TABLE 2 - end
-        showIf(saerkullTillegg.beloep.greaterThan(0)) {
+       showIf(saerkullTillegg.beloep.greaterThan(0)) {
             includePhrase(VedleggBeregnUTredusBTSBPgaInntekt_001(saerkullTillegg.beloep))
         }.orShowIf(saerkullTillegg.beloep.equalTo(0)) {
             showIf(saerkullTillegg.justeringsbeloepAar.equalTo(0)) {

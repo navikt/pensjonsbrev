@@ -1,7 +1,7 @@
 package no.nav.pensjon.brev.maler.fraser
 
 import no.nav.pensjon.brev.api.model.Kroner
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTBarnetilleggDto
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDto
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
@@ -175,9 +175,9 @@ object VedleggBeregnUTInnlednBT_001 : OutlinePhrase<LangBokmalNynorskEnglish>() 
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         paragraph {
             text(
-                Bokmal to "Størrelsen på barnetillegget er avhengig av samlet inntekt.",
-                Nynorsk to "Storleiken på barnetillegget er avhengig av samla inntekt.",
-                English to "The amount of child supplement is dependent on your total income."
+                Bokmal to "Størrelsen på barnetillegget er avhengig av samlet inntekt. ",
+                Nynorsk to "Storleiken på barnetillegget er avhengig av samla inntekt. ",
+                English to "The amount of child supplement is dependent on your total income. "
             )
             text(
                 Bokmal to "Barnetillegget kan bli redusert ut fra:",
@@ -191,26 +191,36 @@ object VedleggBeregnUTInnlednBT_001 : OutlinePhrase<LangBokmalNynorskEnglish>() 
                         Nynorsk to "uføretrygd",
                         English to "disability benefits"
                     )
+                }
+                item {
                     text(
                         Bokmal to "arbeidsinntekt",
                         Nynorsk to "arbeidsinntekt",
                         English to "income from employment"
                     )
+                }
+                item {
                     text(
                         Bokmal to "næringsinntekt",
                         Nynorsk to "næringsinntekt ",
                         English to "income from self-employment"
                     )
+                }
+                item {
                     text(
-                        Bokmal to "inntekt fra utlande",
+                        Bokmal to "inntekt fra utlandet",
                         Nynorsk to "inntekt frå utlandet",
                         English to "income from overseas"
                     )
+                }
+                item {
                     text(
                         Bokmal to "ytelser/pensjon fra Norge",
                         Nynorsk to "ytingar/pensjon frå Noreg",
                         English to "payments/pensions from Norway"
                     )
+                }
+                item {
                     text(
                         Bokmal to "pensjon fra utlandet",
                         Nynorsk to "pensjon frå utlandet",
@@ -272,26 +282,28 @@ data class VedleggBeregnUTIkkePeriodisertFriBOgInntektBTSBJusterBelop_001(
 
 data class VedleggBeregnUTPeridisertFriBOgInntektBTSB_001(
     val avkortningsbeloepAar_barnetilleggSBGjeldende: Expression<Kroner>,
+    val harFlereBarn: Expression<Boolean>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         paragraph {
             textExpr(
-                Bokmal to "For barn som ikke bor sammen med begge foreldrene blir 50 prosent av den inntekten som overstiger fribeløpet omregnet til et årlig beløp som tilsvarer ".expr() + avkortningsbeloepAar_barnetilleggSBGjeldende.format() + " kroner.",
-                Nynorsk to "For barn som ikkje bur saman med begge foreldra vert 50 prosent av den inntekta som overstig fribeløpet omrekna til eit årleg beløp som svarar til ".expr() + avkortningsbeloepAar_barnetilleggSBGjeldende.format() + " kroner.",
-                English to "For a child/children that does/do not live with both parents 50 percent of the income that exceeds the exemption amount is recalculated to an annual amount of NOK ".expr() + avkortningsbeloepAar_barnetilleggSBGjeldende.format() + "."
+                Bokmal to "For ".expr() + ifElse(harFlereBarn, ifTrue = "barna", ifFalse = "barnet") + " som ikke bor sammen med begge foreldrene blir 50 prosent av den inntekten som overstiger fribeløpet omregnet til et årlig beløp som tilsvarer ".expr() + avkortningsbeloepAar_barnetilleggSBGjeldende.format() + " kroner.",
+                Nynorsk to "For ".expr() + ifElse(harFlereBarn, ifTrue = "barna", ifFalse = "barnet") + " som ikkje bur saman med begge foreldra vert 50 prosent av den inntekta som overstig fribeløpet omrekna til eit årleg beløp som svarar til ".expr() + avkortningsbeloepAar_barnetilleggSBGjeldende.format() + " kroner.",
+                English to "For ".expr() + ifElse(harFlereBarn, ifTrue = "the child that does", ifFalse = "the children that do") + " not live with both parents 50 percent of the income that exceeds the exemption amount is recalculated to an annual amount of NOK ".expr() + avkortningsbeloepAar_barnetilleggSBGjeldende.format() + "."
             )
         }
 }
 
 data class VedleggBeregnUTPeriodisertFriBOgInntektBTSBJusterBelop_001(
     val avkortningsbeloepAar_barnetilleggSBGjeldende: Expression<Kroner>,
+    val harFlereBarn: Expression<Boolean>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         paragraph {
             textExpr(
-                Bokmal to "For barn som ikke bor sammen med begge foreldrene blir 50 prosent av den inntekten som overstiger fribeløpet omregnet til et årlig beløp som tilsvarer ".expr() + avkortningsbeloepAar_barnetilleggSBGjeldende.format() + " kroner. Dette beløpet bruker vi til å redusere barnetillegget for hele året.",
-                Nynorsk to "For barn som ikkje bur saman med begge foreldra vert 50 prosent av den inntekta som overstig fribeløpet omrekna til eit årleg beløp som svarar til ".expr() + avkortningsbeloepAar_barnetilleggSBGjeldende.format() + " kroner. Dette beløpet bruker vi til å redusera barnetillegget for heile året.",
-                English to "For a child/children that does/do not live with both parents 50 percent of the income that exceeds the exemption amount is recalculated to an annual amount of NOK ".expr() + avkortningsbeloepAar_barnetilleggSBGjeldende.format() + ". This amount will be used to reduce this child supplement during the calendar year."
+                Bokmal to "For ".expr() + ifElse(harFlereBarn, ifTrue = "barna", ifFalse = "barnet") + " som ikke bor sammen med begge foreldrene blir 50 prosent av den inntekten som overstiger fribeløpet omregnet til et årlig beløp som tilsvarer ".expr() + avkortningsbeloepAar_barnetilleggSBGjeldende.format() + " kroner. Dette beløpet bruker vi til å redusere barnetillegget for hele året.",
+                Nynorsk to "For ".expr() + ifElse(harFlereBarn, ifTrue = "barna", ifFalse = "barnet") + " som ikkje bur saman med begge foreldra vert 50 prosent av den inntekta som overstig fribeløpet omrekna til eit årleg beløp som svarar til ".expr() + avkortningsbeloepAar_barnetilleggSBGjeldende.format() + " kroner. Dette beløpet bruker vi til å redusera barnetillegget for heile året.",
+                English to "For ".expr() + ifElse(harFlereBarn, ifTrue = "the child that does", ifFalse = "the children that do") + " not live with both parents, 50 percent of the income that exceeds the exemption amount is recalculated to an annual amount of NOK ".expr() + avkortningsbeloepAar_barnetilleggSBGjeldende.format() + ". This amount will be used to reduce this child supplement during the calendar year."
             )
         }
 }
@@ -309,6 +321,18 @@ data class VedleggBeregnUTJusterBelopOver0BTSB_001(
         }
 }
 
+data class VedleggBeregnUTJusterBelopOver0BTFB(
+    val justeringsbeloepAar_barnetilleggFBGjeldende: Expression<Kroner>,
+) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
+        paragraph {
+            textExpr(
+                Bokmal to "Vi tar hensyn til hvordan barnetillegget eventuelt har vært redusert tidligere, og vi har derfor lagt til ".expr() + justeringsbeloepAar_barnetilleggFBGjeldende.format() + " kroner i beløpet vi reduserer barnetillegget med for resten av året.",
+                Nynorsk to "Vi tek omsyn til korleis barnetillegget eventuelt har vore redusert tidligare, og vi har difor lagt til ".expr() + justeringsbeloepAar_barnetilleggFBGjeldende.format() + " kroner i beløpet vi reduserer barnetillegget med for resten av året.",
+                English to "We take into account how the child supplement has been reduced earlier this year. The amount with which your child supplement will be reduced for the rest of the year has therefore been reduced with NOK ".expr() + justeringsbeloepAar_barnetilleggFBGjeldende.format() + "."
+            )
+        }
+}
 
 data class VedleggBeregnUTJusterBelopUnder0BTSB_001(
     val justeringsbeloepAar_barnetilleggSBGjeldende: Expression<Kroner>,
@@ -323,6 +347,18 @@ data class VedleggBeregnUTJusterBelopUnder0BTSB_001(
         }
 }
 
+data class VedleggBeregnUTJusterBelopUnder0BTFB(
+    val justeringsbeloepAar_barnetilleggFBGjeldende: Expression<Kroner>
+) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
+        paragraph {
+            textExpr(
+                Bokmal to "Vi tar hensyn til hvordan barnetillegget eventuelt har vært redusert tidligere, og vi har derfor trukket fra ".expr() + justeringsbeloepAar_barnetilleggFBGjeldende.format() + " kroner i beløpet vi reduserer barnetillegget med for resten av året.",
+                Nynorsk to "Vi tek omsyn til korleis barnetillegget eventuelt har vore redusert tidligare, og vi har difor trekt frå ".expr() + justeringsbeloepAar_barnetilleggFBGjeldende.format() + " kroner i beløpet vi reduserer barnetillegget med for resten av året.",
+                English to "We take into account how the child supplement has been reduced earlier this year. The amount with which your child supplement will be reduced for the rest of the year has therefore been reduced with NOK ".expr() + justeringsbeloepAar_barnetilleggFBGjeldende.format() + "."
+            )
+        }
+}
 // TODO: Fire ubrukte fraser
 object ReduksjonBTSBOverskrift_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
@@ -425,20 +461,19 @@ object VedleggBeregnUTJusterBelopIkkeUtbetalt_001 : OutlinePhrase<LangBokmalNyno
 // TBU607V
 data class MaanedligTilleggFellesbarn(
     val beloep_barnetilleggFBGjeldende: Expression<Kroner>,
-    val antallbarn_barnetilleggFBGjeldende: Expression<Int>,
+    val harFlereBarn: Expression<Boolean>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         paragraph {
-            val harTilleggForFlereFellesbarn = antallbarn_barnetilleggFBGjeldende.greaterThan(1)
             textExpr(
                 Bokmal to "Du vil få utbetalt ".expr() + beloep_barnetilleggFBGjeldende.format() + " kroner i måneden før skatt i barnetillegg for ".expr() +
-                    ifElse(harTilleggForFlereFellesbarn, ifTrue = "barna", ifFalse = "barnet") +
+                    ifElse(harFlereBarn, ifTrue = "barna", ifFalse = "barnet") +
                     " som bor med begge sine foreldre".expr(),
                 Nynorsk to "Du vil få utbetalt ".expr() + beloep_barnetilleggFBGjeldende.format() + " kroner i månaden før skatt i barnetillegg for ".expr() +
-                    ifElse(harTilleggForFlereFellesbarn, ifTrue = "barna", ifFalse = "barnet") +
+                    ifElse(harFlereBarn, ifTrue = "barna", ifFalse = "barnet") +
                     " som bur saman med begge foreldra sine.".expr(),
                 English to "You will receive a monthly child supplement payment of NOK ".expr() + beloep_barnetilleggFBGjeldende.format() + " for the ".expr() +
-                    ifElse(harTilleggForFlereFellesbarn, ifTrue = "children who live", ifFalse = "child who lives") +
+                    ifElse(harFlereBarn, ifTrue = "children who live", ifFalse = "child who lives") +
                     " together with both parents.".expr()
             )
         }
@@ -447,35 +482,25 @@ data class MaanedligTilleggFellesbarn(
 
 // TBU608V
 data class FaaIkkeUtbetaltTilleggFellesbarn(
-    val antallbarn_barnetilleggFBGjeldende: Expression<Int>,
     val beloep_barnetilleggFBGjeldende: Expression<Kroner>,
+    val harFlereBarn: Expression<Boolean>,
     val justeringsbeloepAar_barnetilleggFBGjeldende: Expression<Kroner>
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         paragraph {
-            val harTilleggForFlereFellesbarn = antallbarn_barnetilleggFBGjeldende.greaterThan(1)
             showIf(
                 beloep_barnetilleggFBGjeldende.equalTo(0) and justeringsbeloepAar_barnetilleggFBGjeldende.equalTo(0)
             ) {
                 textExpr(
                     Bokmal to "Du får ikke utbetalt barnetillegget for ".expr() +
-                        ifElse(
-                            harTilleggForFlereFellesbarn,
-                            ifTrue = "barna",
-                            ifFalse = "barnet"
-                        ) + " som bor med begge sine foreldre fordi samlet inntekt er over grensen for å få utbetalt barnetillegg. Du har allerede fått utbetalt det du har rett til i år, og får derfor ikke utbetalt barnetillegg for resten av året.".expr(),
+                        ifElse(harFlereBarn, ifTrue = "barna", ifFalse = "barnet") +
+                        " som bor med begge sine foreldre fordi samlet inntekt er over grensen for å få utbetalt barnetillegg. Du har allerede fått utbetalt det du har rett til i år, og får derfor ikke utbetalt barnetillegg for resten av året.".expr(),
                     Nynorsk to "Du får ikkje utbetalt barnetillegget for ".expr() +
-                        ifElse(
-                            harTilleggForFlereFellesbarn,
-                            ifTrue = "barna",
-                            ifFalse = "barnet"
-                        ) + " som bur saman med begge foreldra sine fordi samla inntekt er over grensa for å få utbetalt barnetillegg. Du har allereie fått utbetalt det du har rett til i år, og får derfor ikkje utbetalt barnetillegg for resten av året. ".expr(),
+                        ifElse(harFlereBarn, ifTrue = "barna", ifFalse = "barnet") +
+                        " som bur saman med begge foreldra sine fordi samla inntekt er over grensa for å få utbetalt barnetillegg. Du har allereie fått utbetalt det du har rett til i år, og får derfor ikkje utbetalt barnetillegg for resten av året. ".expr(),
                     English to "You will not receive a child supplement for the ".expr() +
-                        ifElse(
-                            harTilleggForFlereFellesbarn,
-                            ifTrue = "children who live",
-                            ifFalse = "child who lives"
-                        ) + " together with both parents because your income is over the income limit for receiving a child supplement. You have already received what you are entitled to this year, therefore you will not receive any child supplement for the remainder of the year.".expr()
+                        ifElse(harFlereBarn, ifTrue = "children who live", ifFalse = "child who lives") +
+                        " together with both parents because your income is over the income limit for receiving a child supplement. You have already received what you are entitled to this year, therefore you will not receive any child supplement for the remainder of the year.".expr()
                 )
 
             }
