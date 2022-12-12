@@ -1,20 +1,46 @@
 import LetterEditor from "../modules/LetterEditor/LetterEditor"
+import {NextPage} from "next"
+import {useEffect, useState} from "react"
+import {initObjectFromSpec, ObjectValue} from "../modules/ModelEditor/model"
+import {RedigerbarTemplateDescription, RenderedLetter} from "../modules/LetterEditor/model"
+import {AuthenticatedTemplate, useMsal} from "@azure/msal-react"
+import SkribentenAPI from "../../services/skribenten"
+import {SkribentenConfig} from "./_app"
+import ModelEditor from "../modules/ModelEditor/ModelEditor"
 
-// const RedigerBrev: NextPage = () => {
-function RedigerBrev() {
-    // const [editor, setEditor] = useState<EditorJS>()
-    // useEffect(() => {
-    //     console.log(typeof window)
-    //     setEditor(new EditorJS(editorContainerId))
-    // })
-    // useEffect(() => new EditorJS(editorContainerId))
-    // const editor = new EditorJS(editorContainerId)
-    //            <EditorJs value={{blocks: blocks}} placeholder={"heisann!!"}/>
-    return (
-        <div style={{ display: 'flex', flexDirection: 'column'}}>
-            <LetterEditor />
-        </div>
-    )
+const BREVKODE = "INFORMASJON_OM_SAKSBEHANDLINGSTID"
+
+const RedigerBrev: NextPage<SkribentenConfig> = (props) => {
+    const api = new SkribentenAPI(props.api)
+
+    const [modelSpec, setModelSpec] = useState<RedigerbarTemplateDescription | null>(null)
+    const [modelValue, setModelValue] = useState<ObjectValue>({})
+    const [letter, setLetter] = useState<RenderedLetter | null>(null)
+
+    const msal = useMsal()
+
+    useEffect(() => {
+        api.getRedigerbarTemplateDescription(msal, BREVKODE).then(d => {
+            setModelValue(initObjectFromSpec(d.modelSpecification.types, d.modelSpecification.types[d.modelSpecification.letterModelTypeName]))
+            setModelSpec(d)
+        })
+    }, [])
+
+    const renderLetter = () => {
+        api.renderLetter(msal, BREVKODE, modelValue).then(setLetter)
+    }
+
+    if (modelSpec === null) {
+        return (<div>Laster mal...</div>)
+    } else {
+        return (
+            <AuthenticatedTemplate>
+                <ModelEditor spec={modelSpec.modelSpecification} value={modelValue} updateValue={setModelValue}/>
+                <button type="button" onClick={renderLetter}>Oppdater variabler</button>
+                { letter !== null ? <LetterEditor letter={letter}/> : <div/> }
+            </AuthenticatedTemplate>
+        )
+    }
 }
 
 export default RedigerBrev
