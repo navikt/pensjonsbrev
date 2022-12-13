@@ -1,7 +1,9 @@
 package no.nav.pensjon.brev.maler.fraser
 
 import no.nav.pensjon.brev.api.model.Kroner
+import no.nav.pensjon.brev.api.model.Sivilstand
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDto
+import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
@@ -287,9 +289,21 @@ data class VedleggBeregnUTPeridisertFriBOgInntektBTSB_001(
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         paragraph {
             textExpr(
-                Bokmal to "For ".expr() + ifElse(harFlereBarn, ifTrue = "barna", ifFalse = "barnet") + " som ikke bor sammen med begge foreldrene blir 50 prosent av den inntekten som overstiger fribeløpet omregnet til et årlig beløp som tilsvarer ".expr() + avkortningsbeloepAar_barnetilleggSBGjeldende.format() + " kroner.",
-                Nynorsk to "For ".expr() + ifElse(harFlereBarn, ifTrue = "barna", ifFalse = "barnet") + " som ikkje bur saman med begge foreldra vert 50 prosent av den inntekta som overstig fribeløpet omrekna til eit årleg beløp som svarar til ".expr() + avkortningsbeloepAar_barnetilleggSBGjeldende.format() + " kroner.",
-                English to "For ".expr() + ifElse(harFlereBarn, ifTrue = "the child that does", ifFalse = "the children that do") + " not live with both parents 50 percent of the income that exceeds the exemption amount is recalculated to an annual amount of NOK ".expr() + avkortningsbeloepAar_barnetilleggSBGjeldende.format() + "."
+                Bokmal to "For ".expr() + ifElse(
+                    harFlereBarn,
+                    ifTrue = "barna",
+                    ifFalse = "barnet"
+                ) + " som ikke bor sammen med begge foreldrene blir 50 prosent av den inntekten som overstiger fribeløpet omregnet til et årlig beløp som tilsvarer ".expr() + avkortningsbeloepAar_barnetilleggSBGjeldende.format() + " kroner.",
+                Nynorsk to "For ".expr() + ifElse(
+                    harFlereBarn,
+                    ifTrue = "barna",
+                    ifFalse = "barnet"
+                ) + " som ikkje bur saman med begge foreldra vert 50 prosent av den inntekta som overstig fribeløpet omrekna til eit årleg beløp som svarar til ".expr() + avkortningsbeloepAar_barnetilleggSBGjeldende.format() + " kroner.",
+                English to "For ".expr() + ifElse(
+                    harFlereBarn,
+                    ifTrue = "the child that does",
+                    ifFalse = "the children that do"
+                ) + " not live with both parents 50 percent of the income that exceeds the exemption amount is recalculated to an annual amount of NOK ".expr() + avkortningsbeloepAar_barnetilleggSBGjeldende.format() + "."
             )
         }
 }
@@ -301,9 +315,21 @@ data class VedleggBeregnUTPeriodisertFriBOgInntektBTSBJusterBelop_001(
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         paragraph {
             textExpr(
-                Bokmal to "For ".expr() + ifElse(harFlereBarn, ifTrue = "barna", ifFalse = "barnet") + " som ikke bor sammen med begge foreldrene blir 50 prosent av den inntekten som overstiger fribeløpet omregnet til et årlig beløp som tilsvarer ".expr() + avkortningsbeloepAar_barnetilleggSBGjeldende.format() + " kroner. Dette beløpet bruker vi til å redusere barnetillegget for hele året.",
-                Nynorsk to "For ".expr() + ifElse(harFlereBarn, ifTrue = "barna", ifFalse = "barnet") + " som ikkje bur saman med begge foreldra vert 50 prosent av den inntekta som overstig fribeløpet omrekna til eit årleg beløp som svarar til ".expr() + avkortningsbeloepAar_barnetilleggSBGjeldende.format() + " kroner. Dette beløpet bruker vi til å redusera barnetillegget for heile året.",
-                English to "For ".expr() + ifElse(harFlereBarn, ifTrue = "the child that does", ifFalse = "the children that do") + " not live with both parents, 50 percent of the income that exceeds the exemption amount is recalculated to an annual amount of NOK ".expr() + avkortningsbeloepAar_barnetilleggSBGjeldende.format() + ". This amount will be used to reduce this child supplement during the calendar year."
+                Bokmal to "For ".expr() + ifElse(
+                    harFlereBarn,
+                    ifTrue = "barna",
+                    ifFalse = "barnet"
+                ) + " som ikke bor sammen med begge foreldrene blir 50 prosent av den inntekten som overstiger fribeløpet omregnet til et årlig beløp som tilsvarer ".expr() + avkortningsbeloepAar_barnetilleggSBGjeldende.format() + " kroner. Dette beløpet bruker vi til å redusere barnetillegget for hele året.",
+                Nynorsk to "For ".expr() + ifElse(
+                    harFlereBarn,
+                    ifTrue = "barna",
+                    ifFalse = "barnet"
+                ) + " som ikkje bur saman med begge foreldra vert 50 prosent av den inntekta som overstig fribeløpet omrekna til eit årleg beløp som svarar til ".expr() + avkortningsbeloepAar_barnetilleggSBGjeldende.format() + " kroner. Dette beløpet bruker vi til å redusera barnetillegget for heile året.",
+                English to "For ".expr() + ifElse(
+                    harFlereBarn,
+                    ifTrue = "the child that does",
+                    ifFalse = "the children that do"
+                ) + " not live with both parents, 50 percent of the income that exceeds the exemption amount is recalculated to an annual amount of NOK ".expr() + avkortningsbeloepAar_barnetilleggSBGjeldende.format() + ". This amount will be used to reduce this child supplement during the calendar year."
             )
         }
 }
@@ -359,6 +385,7 @@ data class VedleggBeregnUTJusterBelopUnder0BTFB(
             )
         }
 }
+
 // TODO: Fire ubrukte fraser
 object ReduksjonBTSBOverskrift_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
@@ -516,3 +543,38 @@ data class FaaIkkeUtbetaltTilleggFellesbarn(
         }
     }
 }
+
+// TBU069V - Fellesbarn
+data class FastsetterStorelsenPaaBTFellesbarn(
+    val innvilgetBarnetillegg_barnetilleggFBGjeldende: Expression<Boolean>,
+    val innvilgetBarnetillegg_barnetilleggSBGjeldende: Expression<Boolean>,
+) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+        paragraph {
+            text(
+                    Bokmal to "Vi fastsetter størrelsen på barnetillegget ut fra den samlede inntekten til begge foreldrene.",
+                    Nynorsk to "Vi fastset storleiken på barnetillegget ut frå den samla inntekta til begge foreldra.",
+                    English to "We determine the amount of child supplement based on the total income of both parents."
+                )
+            }
+            paragraph {
+                textExpr(
+                    Bokmal to "Barnetillegget blir redusert dersom den samlede inntekten er høyere enn fribeløpet. Fribeløpet for et barn er 4,6 ganger folketrygdens grunnbeløp og det øker med 40 prosent av folketrygdens grunnbeløp for hvert ekstra barn.".expr(),
+                    Nynorsk to "Barnetillegget blir redusert dersom den samla inntekta di er høgare enn fribeløpet. Fribeløpet for eit barn er 4,6 gonger grunnbeløpet i folketrygda og det aukar med 40 prosent av grunnbeløpet for kvart ekstra barn.".expr(),
+                    English to "The child supplement will be reduced if your total income is greater than the exemption amount. The exemption amount is 4.6 times the National Insurance basic amount and it increases with 40 percent of the National Insurance basic amount for each extra child.".expr()
+                )
+            }
+            paragraph {
+                text(
+                    Bokmal to "Dersom begge foreldrene mottar uføretrygd blir barnetillegget gitt til den som har rett til det høyeste tillegget. Dette gjelder også dersom den ene forelderen mottar alderspensjon.",
+                    Nynorsk to "",
+                    English to ""
+                )
+            }
+        }
+
+
+
+
+
+

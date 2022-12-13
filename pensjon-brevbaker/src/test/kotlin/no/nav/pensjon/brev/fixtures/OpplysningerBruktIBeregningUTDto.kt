@@ -4,15 +4,18 @@ import no.nav.pensjon.brev.Fixtures
 import no.nav.pensjon.brev.api.model.*
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDto
 import java.time.LocalDate
+import no.nav.pensjon.brev.api.model.Sivilstand
 
 fun createOpplysningerBruktIBeregningUTDto() =
     OpplysningerBruktIBeregningUTDto(
         barnetilleggGjeldende = Fixtures.create(),
         beregnetUTPerManedGjeldende = Fixtures.create(),
+        grunnbeloep = Kroner(90000),
         inntektEtterUfoereGjeldende_beloepIEU = Kroner(0),
         inntektFoerUfoereGjeldende = Fixtures.create(),
         inntektsAvkortingGjeldende = Fixtures.create(),
         minsteytelseGjeldende_sats = 0.0,
+        sivilstand = Sivilstand.GIFT,
         trygdetidsdetaljerGjeldende = Fixtures.create(),
         ufoeretrygdGjeldende = Fixtures.create(),
         ungUfoerGjeldende_erUnder20Aar = false,
@@ -122,4 +125,5 @@ fun createOpplysningerBruktIBeregningUTDtoYrkesskadeGjeldende() =
         inntektVedSkadetidspunkt = Kroner(0),
         skadetidspunkt = LocalDate.of(2020, 1, 1),
         yrkesskadegrad = 0,
+        yrkesskadeResultat =
     )
