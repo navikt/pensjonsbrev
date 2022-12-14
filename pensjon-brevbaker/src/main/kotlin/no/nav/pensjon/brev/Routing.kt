@@ -10,61 +10,87 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.util.*
 import io.micrometer.core.instrument.Tag
-import no.nav.pensjon.brev.api.LetterResource
-import no.nav.pensjon.brev.api.description
+import no.nav.pensjon.brev.api.*
 import no.nav.pensjon.brev.api.model.*
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.latex.LaTeXCompilerService
-import no.nav.pensjon.brev.template.render.PensjonLatexRenderer
+import no.nav.pensjon.brev.template.TemplateModelSpecification
+import no.nav.pensjon.brev.template.render.*
 
 private val latexCompilerService = LaTeXCompilerService(requireEnv("PDF_BUILDER_URL"))
 private val letterResource = LetterResource()
 
+data class RedigerbarTemplateDescription(
+    val description: TemplateDescription,
+    val modelSpecification: TemplateModelSpecification,
+)
+
 fun Application.brevbakerRouting(authenticationNames: Array<String>) =
     routing {
 
-        get("/templates") {
-            call.respond(letterResource.templateResource.getVedtaksbrev())
-        }
+        route("/templates") {
+            route("/vedtaksbrev") {
+                get {
+                    call.respond(letterResource.templateResource.getVedtaksbrev())
+                }
 
-        get("/templates/vedtaksbrev/{kode}") {
-            val template = call.parameters
-                .getOrFail<Brevkode.Vedtak>("kode")
-                .let { letterResource.templateResource.getVedtaksbrev(it) }
-                ?.description()
+                get("{kode}") {
+                    val template = call.parameters
+                        .getOrFail<Brevkode.Vedtak>("kode")
+                        .let { letterResource.templateResource.getVedtaksbrev(it) }
+                        ?.description()
 
-            if (template == null) {
-                call.respond(HttpStatusCode.NotFound)
-            } else {
-                call.respond(template)
+                    if (template == null) {
+                        call.respond(HttpStatusCode.NotFound)
+                    } else {
+                        call.respond(template)
+                    }
+                }
             }
-        }
 
-        get("/templates/redigerbar/{kode}") {
-            val template = call.parameters.getOrFail<Brevkode.Redigerbar>("kode")
-                .let { letterResource.templateResource.getRedigerbartBrev(it) }
+            route("/redigerbar") {
+                get {
+                    call.respond(letterResource.templateResource.getRedigerbareBrev())
+                }
 
-            if (template == null) {
-                call.respond(HttpStatusCode.NotFound)
-            } else {
-                call.respond(template)
+                get("{kode}") {
+                    val template = call.parameters.getOrFail<Brevkode.Redigerbar>("kode")
+                        .let { letterResource.templateResource.getRedigerbartBrev(it) }
+
+                    if (template == null) {
+                        call.respond(HttpStatusCode.NotFound)
+                    } else {
+                        call.respond(RedigerbarTemplateDescription(template.description(), template.modelSpecification))
+                    }
+                }
             }
         }
 
         authenticate(*authenticationNames, optional = environment?.developmentMode ?: false) {
-            post("/letter/vedtak") {
-                val letterRequest = call.receive<VedtaksbrevRequest>()
+            route("/letter") {
 
-                val letter = letterResource.create(letterRequest)
-                val pdfBase64 = PensjonLatexRenderer.render(letter)
-                    .let { latexCompilerService.producePDF(it, call.callId) }
+                post("/vedtak") {
+                    val letterRequest = call.receive<VedtaksbrevRequest>()
 
-                call.respond(LetterResponse(pdfBase64.base64PDF, letter.template.letterMetadata))
+                    val letter = letterResource.create(letterRequest)
+                    val pdfBase64 = PensjonLatexRenderer.render(letter)
+                        .let { latexCompilerService.producePDF(it, call.callId) }
 
-                Metrics.prometheusRegistry.counter("pensjon_brevbaker_letter_request_count",
-                    listOf(Tag.of("brevkode", letterRequest.kode.name))).increment()
+                    call.respond(LetterResponse(pdfBase64.base64PDF, letter.template.letterMetadata))
+
+                    Metrics.prometheusRegistry.counter(
+                        "pensjon_brevbaker_letter_request_count",
+                        listOf(Tag.of("brevkode", letterRequest.kode.name))
+                    ).increment()
+                }
+
+                post("/redigerbar") {
+                    val letterRequest = call.receive<RedigerbartbrevRequest>()
+
+                    call.respond(PensjonJsonRenderer.render(letterResource.create(letterRequest)))
+                }
+
             }
-
             get("/ping_authorized") {
                 val principal = call.authentication.principal as JWTPrincipal
                 call.respondText("Authorized as: ${principal.subject}")

@@ -5,7 +5,9 @@ import io.ktor.server.plugins.*
 import no.nav.pensjon.brev.Fixtures
 import no.nav.pensjon.brev.api.model.*
 import no.nav.pensjon.brev.api.model.maler.*
+import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmSaksbehandlingstidDto
 import no.nav.pensjon.brev.maler.*
+import no.nav.pensjon.brev.maler.redigerbar.InformasjonOmSaksbehandlingstid
 import no.nav.pensjon.brev.template.jacksonObjectMapper
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -14,31 +16,62 @@ val objectMapper = jacksonObjectMapper()
 
 class LetterResourceTest {
     private val testLetterResource = LetterResource()
-    private val template = OmsorgEgenAuto
+    private val vedtakTemplate = OmsorgEgenAuto
     private val omsorgEgenAutoDto = objectMapper.convertValue<Map<String, Any>>(Fixtures.create<OmsorgEgenAutoDto>())
+    private val redigerbarTemplate = InformasjonOmSaksbehandlingstid
+    private val redigerbarData = objectMapper.convertValue<Map<String, Any>>(Fixtures.create<InformasjonOmSaksbehandlingstidDto>())
 
     @Test
-    fun `create finds correct template`() {
+    fun `create vedtaksbrev finds correct template`() {
         val letter =
             testLetterResource.create(
                 VedtaksbrevRequest(
-                    template.kode,
+                    vedtakTemplate.kode,
                     omsorgEgenAutoDto,
                     Fixtures.felles,
                     LanguageCode.BOKMAL
                 )
             )
 
-        assertEquals(template.template, letter.template)
+        assertEquals(vedtakTemplate.template, letter.template)
     }
 
     @Test
-    fun `create fails when template doesnt exist`() {
+    fun `create vedtaksbrev fails when template doesnt exist`() {
         assertThrows<NotFoundException> {
-            LetterResource(TemplateResource(setOf(OmsorgEgenAuto))).create(
+            LetterResource(TemplateResource(vedtaksbrevTemplates = setOf(OmsorgEgenAuto))).create(
                 VedtaksbrevRequest(
                     UngUfoerAuto.kode,
                     omsorgEgenAutoDto,
+                    Fixtures.felles,
+                    LanguageCode.BOKMAL
+                )
+            )
+        }
+    }
+
+    @Test
+    fun `create redigerbart finds correct template`() {
+        val letter =
+            testLetterResource.create(
+                RedigerbartbrevRequest(
+                    redigerbarTemplate.kode,
+                    redigerbarData,
+                    Fixtures.felles,
+                    LanguageCode.BOKMAL
+                )
+            )
+
+        assertEquals(redigerbarTemplate.template, letter.template)
+    }
+
+    @Test
+    fun `create redigerbart fails when template doesnt exist`() {
+        assertThrows<NotFoundException> {
+            LetterResource(TemplateResource(redigerbareTemplates = emptySet())).create(
+                RedigerbartbrevRequest(
+                    redigerbarTemplate.kode,
+                    redigerbarData,
                     Fixtures.felles,
                     LanguageCode.BOKMAL
                 )
@@ -51,7 +84,7 @@ class LetterResourceTest {
         assertThrows<ParseLetterDataException> {
             testLetterResource.create(
                 VedtaksbrevRequest(
-                    template.kode,
+                    vedtakTemplate.kode,
                     emptyMap<String, String>(),
                     Fixtures.felles,
                     LanguageCode.BOKMAL
@@ -66,7 +99,7 @@ class LetterResourceTest {
         val letter =
             testLetterResource.create(
                 VedtaksbrevRequest(
-                    template.kode,
+                    vedtakTemplate.kode,
                     omsorgEgenAutoDto,
                     Fixtures.felles,
                     LanguageCode.BOKMAL
@@ -78,7 +111,7 @@ class LetterResourceTest {
     @Test
     fun `create fails when letterData is invalid`() {
         assertThrows<ParseLetterDataException> {
-            testLetterResource.create(VedtaksbrevRequest(template.kode, mapOf("pensjonInnvilget" to true), Fixtures.felles, LanguageCode.BOKMAL))
+            testLetterResource.create(VedtaksbrevRequest(vedtakTemplate.kode, mapOf("pensjonInnvilget" to true), Fixtures.felles, LanguageCode.BOKMAL))
         }
     }
 
@@ -95,6 +128,5 @@ class LetterResourceTest {
             )
         }
     }
-
 
 }
