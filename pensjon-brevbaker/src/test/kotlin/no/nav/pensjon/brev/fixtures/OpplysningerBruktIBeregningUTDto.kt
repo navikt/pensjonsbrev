@@ -54,14 +54,14 @@ fun createOpplysningerBruktIBeregningUTDtoBarnetilleggGjeldendeSaerkullsbarn() =
         beloep = Kroner(20000),
         beloepAar = Kroner(60000),
         beloepAarFoerAvkort = Kroner(0),
-        erRedusertMotinntekt = true,
+        erRedusertMotinntekt = false,
         fribeloep = Kroner(35000),
         fribeloepEllerInntektErPeriodisert = false,
         harFlereBarn = true,
         inntektBruktIAvkortning = Kroner(200000),
         inntektOverFribeloep = Kroner(40000),
         inntektstak = Kroner(220000),
-        innvilgetBarnetillegg = true,
+        innvilgetBarnetillegg = false,
         justeringsbeloepAar = Kroner(15000),
     )
 
@@ -88,7 +88,7 @@ fun createOpplysningerBruktIBeregningUTDtoInntektsAvkortingGjeldende() =
 
 fun createOpplysningerBruktIBeregningUTDtoTrygdetidsdetaljerGjeldende() =
     OpplysningerBruktIBeregningUTDto.TrygdetidsdetaljerGjeldende(
-        anvendtTT = 0,
+        anvendtTT = 40,
         beregningsmetode = Beregningsmetode.FOLKETRYGD,
         faktiskTTEOS = 0,
         faktiskTTNordiskKonv = 0,
@@ -125,5 +125,4 @@ fun createOpplysningerBruktIBeregningUTDtoYrkesskadeGjeldende() =
         inntektVedSkadetidspunkt = Kroner(0),
         skadetidspunkt = LocalDate.of(2020, 1, 1),
         yrkesskadegrad = 0,
-        yrkesskadeResultat =
     )

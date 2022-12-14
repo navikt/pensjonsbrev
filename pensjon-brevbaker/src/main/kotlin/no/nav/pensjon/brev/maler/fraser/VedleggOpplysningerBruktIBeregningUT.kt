@@ -3,6 +3,8 @@ package no.nav.pensjon.brev.maler.fraser
 import no.nav.pensjon.brev.api.model.Kroner
 import no.nav.pensjon.brev.api.model.Sivilstand
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDto
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.trygdetidsdetaljerGjeldende
+import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidsdetaljerGjeldendeSelectors.anvendtTT
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Expression
@@ -545,35 +547,123 @@ data class FaaIkkeUtbetaltTilleggFellesbarn(
 }
 
 // TBU069V - Fellesbarn
-data class FastsetterStorelsenPaaBTFellesbarn(
-    val innvilgetBarnetillegg_barnetilleggFBGjeldende: Expression<Boolean>,
-    val innvilgetBarnetillegg_barnetilleggSBGjeldende: Expression<Boolean>,
+data class FastsetterStoerelsenPaaBTFellesbarn(
+    val harAnvendtTrygdetidUnder40 : Expression<Boolean>,
+    // val yrkesskadeResult: yrkesskadeResultatListe
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         paragraph {
             text(
-                    Bokmal to "Vi fastsetter størrelsen på barnetillegget ut fra den samlede inntekten til begge foreldrene.",
-                    Nynorsk to "Vi fastset storleiken på barnetillegget ut frå den samla inntekta til begge foreldra.",
-                    English to "We determine the amount of child supplement based on the total income of both parents."
-                )
-            }
-            paragraph {
-                textExpr(
-                    Bokmal to "Barnetillegget blir redusert dersom den samlede inntekten er høyere enn fribeløpet. Fribeløpet for et barn er 4,6 ganger folketrygdens grunnbeløp og det øker med 40 prosent av folketrygdens grunnbeløp for hvert ekstra barn.".expr(),
-                    Nynorsk to "Barnetillegget blir redusert dersom den samla inntekta di er høgare enn fribeløpet. Fribeløpet for eit barn er 4,6 gonger grunnbeløpet i folketrygda og det aukar med 40 prosent av grunnbeløpet for kvart ekstra barn.".expr(),
-                    English to "The child supplement will be reduced if your total income is greater than the exemption amount. The exemption amount is 4.6 times the National Insurance basic amount and it increases with 40 percent of the National Insurance basic amount for each extra child.".expr()
-                )
-            }
-            paragraph {
-                text(
-                    Bokmal to "Dersom begge foreldrene mottar uføretrygd blir barnetillegget gitt til den som har rett til det høyeste tillegget. Dette gjelder også dersom den ene forelderen mottar alderspensjon.",
-                    Nynorsk to "",
-                    English to ""
-                )
-            }
+                Bokmal to "Vi fastsetter størrelsen på barnetillegget ut fra den samlede inntekten til begge foreldrene.",
+                Nynorsk to "Vi fastset storleiken på barnetillegget ut frå den samla inntekta til begge foreldra.",
+                English to "We determine the amount of child supplement based on the total income of both parents."
+            )
         }
+        paragraph {
+            textExpr(
+                Bokmal to "Barnetillegget blir redusert dersom den samlede inntekten er høyere enn fribeløpet. Fribeløpet for et barn er 4,6 ganger folketrygdens grunnbeløp og det øker med 40 prosent av folketrygdens grunnbeløp for hvert ekstra barn.".expr(),
+                Nynorsk to "Barnetillegget blir redusert dersom den samla inntekta di er høgare enn fribeløpet. Fribeløpet for eit barn er 4,6 gonger grunnbeløpet i folketrygda og det aukar med 40 prosent av grunnbeløpet for kvart ekstra barn.".expr(),
+                English to "The child supplement will be reduced if your total income is greater than the exemption amount. The exemption amount is 4.6 times the National Insurance basic amount and it increases with 40 percent of the National Insurance basic amount for each extra child.".expr()
+            )
+        }
+        showIf(harAnvendtTrygdetidUnder40) {
+            text(
+                Bokmal to "Siden trygdetiden din er kortere enn 40 år, blir fribeløpet redusert ut fra den trygdetiden du har. ",
+                Nynorsk to "Sidan trygdetida di er kortare enn 40 år, blir fribeløpet redusert ut frå den trygdetida du har. ",
+                English to "Since you have less than 40 years National Insurance membership, the exemption amount is ruduced correspondingly in relation to the the length of time of you National Insurance membership. "
+            )
+        }
+        paragraph {
+            text(
+                Bokmal to "Dersom begge foreldrene mottar uføretrygd blir barnetillegget gitt til den som har rett til det høyeste tillegget. Dette gjelder også dersom den ene forelderen mottar alderspensjon.",
+                Nynorsk to "Dersom begge foreldra får uføretrygd, blir barnetillegget gitt til den som har rett til det høgaste tillegget. Dette gjeld også dersom den eine forelderen får alderspensjon.",
+                English to "If both parents recieve disbaility benefit, child supplement will be paid to the parent with the highest disability benefit. This applies also if one of the parents receives retirement pension."
+            )
+        }
+    }
+}
 
+// TBU069V - Saerkullsbarn
+data class FastsetterStoerelsenPaaBTSaerkullsbarn(
+    val harAnvendtTrygdetidUnder40 : Expression<Boolean>,
+) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+        paragraph {
+            text(
+                Bokmal to "Vi fastsetter størrelsen på barnetillegget ut fra inntekten din. Inntekt til en ektefelle/partner/samboer som ikke er forelder til barnet, har ikke betydning for størrelsen på barnetillegget.",
+                Nynorsk to "Vi fastset storleiken på barnetillegget ut frå inntekta di. Inntekt til ein ektefelle/partnar/sambuar som ikkje er forelder til barnet, har ikkje betydning for storleiken på barnetillegget.",
+                English to "We determine the amount of child supplement based on your income. The income of a spouse/partner/cohabitant who is not the child's parent, is not taken into consideration."
+            )
+        }
+        paragraph {
+            textExpr(
+                Bokmal to "Barnetillegget blir redusert dersom den samlede inntekten din er høyere enn fribeløpet. Fribeløpet for et barn er 3,1 ganger folketrygdens grunnbeløp og det øker med 40 prosent av folketrygdens grunnbeløp for hvert ekstra barn.".expr(),
+                Nynorsk to "Barnetillegget blir redusert dersom den samla inntekta di er høgare enn fribeløpet. Fribeløpet for eit barn er 3,1 gonger grunnbeløpet i folketrygda og det aukar med 40 prosent av grunnbeløpet for kvart ekstra barn.".expr(),
+                English to "The child supplement will be reduced if your total income is greater than the exemption amount. The exemption amount is 3.1 times the National Insurance basic amount and it increases with 40 percent of the National Insurance basic amount for each extra child.".expr()
+            )
+        }
+        showIf(harAnvendtTrygdetidUnder40) {
+            text(
+                Bokmal to "Siden trygdetiden din er kortere enn 40 år, blir fribeløpet redusert ut fra den trygdetiden du har. ",
+                Nynorsk to "Sidan trygdetida di er kortare enn 40 år, blir fribeløpet redusert ut frå den trygdetida du har. ",
+                English to "Since you have less than 40 years National Insurance membership, the exemption amount is ruduced correspondingly in relation to the the length of time of you National Insurance membership. "
+            )
+        }
+        paragraph {
+            text(
+                Bokmal to "Dersom begge foreldrene mottar uføretrygd blir barnetillegget gitt til den som har den daglige omsorgen for barnet. Dette gjelder også dersom den ene forelderen mottar alderspensjon. Har foreldrene delt omsorg for barnet, blir barnetillegget gitt til den forelderen som bor på samme folkeregistrete adresse som barnet. ",
+                Nynorsk to "Dersom begge foreldra får uføretrygd, blir barnetillegget gitt til den som har den daglege omsorga for barnet. Dette gjeld også dersom den eine forelderen får alderspensjon. Har foreldra delt omsorg for barnet, blir barnetillegget gitt til den forelderen som bur på same folkeregistrerte adresse som barnet.",
+                English to "If both parents recieve disbaility benefit, child supplement will be paid to the parent with guardianship of the child. This applies also if one of the parents receives retirement pension. If both parents have guardianship of the child, child supplement is given to the parent who lives at the same registered adresse as the child."
+            )
+        }
+    }
+}
 
+// TBU069V - Fellesbarn OG Saerkullsbarn
+data class FastsetterStoerelsenPaaBTFellesbarnOgSaerkullsbarn(
+    val harAnvendtTrygdetidUnder40: Expression<Boolean>,
+    val harTilleggForFlereFellesbarn: Expression<Boolean>,
+    val harTilleggForFlereSaerkullsbarn: Expression<Boolean>,
+    val sivilstand: Expression<Sivilstand>,
+) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+        paragraph {
+            textExpr(
+                Bokmal to "Vi fastsetter størrelsen på barnetillegget ut fra inntekten til deg og din ".expr(),
+                Nynorsk to "Vi fastset storleiken på barnetillegget ut frå inntekta til deg og din ".expr(),
+                English to "We determine the amount of child supplement based on the total income for you and your ".expr()
+            )
+
+            includePhrase(Felles.SivilstandEPSUbestemtForm(sivilstand))
+
+            textExpr(
+                Bokmal to "for ".expr() +
+                    ifElse(harTilleggForFlereFellesbarn, ifTrue = "barna", ifFalse = "barnet") + " som bor med begge sine foreldre. Barnetillegget blir redusert dersom den samlede inntekten er høyere enn fribeløpet. Fribeløpet for et barn som bor med begge foreldrene er 4,6 ganger folketrygdens grunnbeløp, og øker med 40 prosent av folketrygdens grunnbeløp for hvert ekstra barn.".expr(),
+                Nynorsk to "for ".expr() +
+                    ifElse(harTilleggForFlereFellesbarn, ifTrue = "barna", ifFalse = "barnet") + " som bur med begge foreldra sine. Barnetillegget blir redusert dersom den samla inntekta er høgare enn fribeløpet. Fribeløpet for eit barn som bur med begge foreldra, er 4,6 gonger grunnbeløpet i folketrygda, og aukar med 40 prosent av grunnbeløpet i folketrygda for kvart ekstra barn.".expr(),
+                English to "for the ".expr() +
+                    ifElse(harTilleggForFlereFellesbarn, ifTrue = "children who live", ifFalse = "child who lives") + " with both parents. The child supplement will be reduced if your total income is greater than the exemption amount. The exemption amount is 4.6 times the National Insurance basic amount and it increases with 40 percent of the National Insurance basic amount for each extra child.".expr()
+            )
+        }
+        paragraph {
+            textExpr(
+                Bokmal to "For ".expr() +
+                    ifElse(harTilleggForFlereSaerkullsbarn, ifTrue = "barna", ifFalse = "barnet") + " som ikke bor sammen med begge foreldre, fastsetter vi størrelsen på barnetillegget ut fra inntekten din. Inntekt til en ektefelle/partner/samboer som ikke er forelder til barnet, har ikke betydning for størrelsen på barnetillegget. Barnetillegget blir redusert dersom den samlede inntekten din er høyere enn fribeløpet. Fribeløpet for et barn som ikke bor sammen med begge foreldrene er 3,1 ganger folketrygdens grunnbeløp, og øker med 40 prosent av folketrygdens grunnbeløp for hvert ekstra barn. ".expr(),
+                Nynorsk to "For ".expr() +
+                    ifElse(harTilleggForFlereSaerkullsbarn, ifTrue = "barna", ifFalse = "barnet") + " som ikkje bur saman med begge foreldra, fastset vi storleiken på barnetillegget ut frå inntekta di. Inntekt til ein ektefelle/partnar/sambuar som ikkje er forelder til barnet, har ikkje betydning for storleiken på barnetillegget. Barnetillegget blir redusert dersom den samla inntekta di er høgare enn fribeløpet. Fribeløpet for eit barn som ikkje bur saman med begge foreldra, er 3,1 gonger grunnbeløpet i folketrygda, og aukar med 40 prosent av grunnbeløpet i folketrygda for kvart ekstra barn. ".expr(),
+                English to "For the ".expr() +
+                    ifElse(harTilleggForFlereSaerkullsbarn, ifTrue = "children who do", ifFalse = "child who does") + "not live together with both parents, the amount of child supplement is based on your income. The income of a spouse/partner/cohabitant who is not the child's parent, is not taken into consideration. The child supplement will be reduced if your total income is greater than the exemption amount. The exemption amount is 3.1 times the National Insurance basic amount and it increases with 40 percent of the National Insurance basic amount for each extra child. ".expr(),
+            )
+        }
+        showIf(harAnvendtTrygdetidUnder40) {
+            text(
+                Bokmal to "Siden trygdetiden din er kortere enn 40 år, blir fribeløpet redusert ut fra den trygdetiden du har.",
+                Nynorsk to "Sidan trygdetida di er kortare enn 40 år, blir fribeløpet redusert ut frå den trygdetida du har.",
+                English to "Since you have less than 40 years National Insurance membership, the exemption amount is ruduced correspondingly in relation to how long you have had National Insurance membership."
+            )
+        }
+    }
+}
 
 
 

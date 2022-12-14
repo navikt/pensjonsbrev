@@ -3,7 +3,6 @@ package no.nav.pensjon.brev.maler.vedlegg
 
 import no.nav.pensjon.brev.api.model.Beregningsmetode.*
 import no.nav.pensjon.brev.api.model.Kroner
-import no.nav.pensjon.brev.api.model.Sivilstand
 import no.nav.pensjon.brev.api.model.vedlegg.BarnetilleggGjeldendeSelectors.fellesbarn_safe
 import no.nav.pensjon.brev.api.model.vedlegg.BarnetilleggGjeldendeSelectors.saerkullsbarn_safe
 import no.nav.pensjon.brev.api.model.vedlegg.BeregnetUTPerManedGjeldendeSelectors.brukerErFlyktning
@@ -97,7 +96,7 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 
 
-val vedleggOpplysningerBruktIBeregningUTBarnetillegg =
+/*val vedleggOpplysningerBruktIBeregningUTBarnetillegg =
     createAttachment<LangBokmalNynorskEnglish, OpplysningerBruktIBeregningUTDto>(
         title = newText(
             Bokmal to "Opplysninger om beregningen",
@@ -847,51 +846,16 @@ val vedleggOpplysningerBruktIBeregningUTBarnetillegg =
         }
 
         ifNotNull(
-            barnetilleggGjeldende.fellesbarn_safe, barnetilleggGjeldende.saerkullsbarn_safe,
-        ) { fellesTillegg, saerkullTillegg ->
+            barnetilleggGjeldende.saerkullsbarn_safe,
+        ) { saerkullTillegg ->
             val fribeloepEllerInntektErPeriodisert = saerkullTillegg.fribeloepEllerInntektErPeriodisert
-            val harAnvendtTrygdetidUnder40 = trygdetidsdetaljerGjeldende.anvendtTT.lessThan(40)
-            val harSaerkullsbarn = saerkullTillegg.innvilgetBarnetillegg
             val harYrkesskadeGrad = yrkesskadeGjeldende.yrkesskadegrad_safe.ifNull(0).greaterThan(0)
+            val harAnvendtTrygdetidUnder40 = trygdetidsdetaljerGjeldende.anvendtTT.lessThan(40)
             val justeringsBeloepAr = saerkullTillegg.justeringsbeloepAar
-            val harFellesbarn = fellesTillegg.innvilgetBarnetillegg
-            val harTilleggForFlereFellesbarn = fellesTillegg.antallbarn.greaterThan(1)
-            val harTilleggForFlereSaerkullsbarn = fellesTillegg.antallbarn.greaterThan(1)
-
-
-            showIf(fellesTillegg.erRedusertMotinntekt or saerkullTillegg.erRedusertMotinntekt) {
-                includePhrase(SlikBeregnBTOverskrift_001)
-                includePhrase(VedleggBeregnUTInnlednBT_001)
-            }
-
-            showIf(fellesTillegg.erRedusertMotinntekt and not(saerkullTillegg.erRedusertMotinntekt)) {
-                includePhrase(FastsetterStoerelsenPaaBTFellesbarn(harAnvendtTrygdetidUnder40 = harAnvendtTrygdetidUnder40))
-            }
-
-            showIf(saerkullTillegg.erRedusertMotinntekt and not(fellesTillegg.erRedusertMotinntekt)) {
-                includePhrase(FastsetterStoerelsenPaaBTSaerkullsbarn(harAnvendtTrygdetidUnder40 = harAnvendtTrygdetidUnder40))
-            }
-
-        /*    showIf(harFellesbarn and harSaerkullsbarn) {
-                includePhrase(FastsetterStoerelsenPaaBTFellesbarnOgSaerkullsbarn(
-                    harAnvendtTrygdetidUnder40 = harAnvendtTrygdetidUnder40,
-                    harTilleggForFlereFellesbarn = harTilleggForFlereFellesbarn,
-                    harTilleggForFlereSaerkullsbarn = harTilleggForFlereSaerkullsbarn,
-                    sivilstand = sivilstand
-                ))
-
-            } */
-
-            /*      ifNotNull(
-                      barnetilleggGjeldende.saerkullsbarn_safe,
-                  ) { saerkullTillegg ->
-                      val fribeloepEllerInntektErPeriodisert = saerkullTillegg.fribeloepEllerInntektErPeriodisert
-                      val harYrkesskadeGrad = yrkesskadeGjeldende.yrkesskadegrad_safe.ifNull(0).greaterThan(0)
-                      val harAnvendtTrygdetidUnder40 = trygdetidsdetaljerGjeldende.anvendtTT.lessThan(40)
-                      val justeringsBeloepAr = saerkullTillegg.justeringsbeloepAar */
-
 
             showIf(saerkullTillegg.erRedusertMotinntekt) {
+                includePhrase(SlikBeregnBTOverskrift_001)
+                includePhrase(VedleggBeregnUTInnlednBT_001)
                 includePhrase(VedleggBeregnUTInfoBTSB_001)
             }
 
@@ -1177,22 +1141,22 @@ val vedleggOpplysningerBruktIBeregningUTBarnetillegg =
 
             // TABLE 2 Fellesbarn - start
 
-            showIf(fellesTillegg.justeringsbeloepAar.greaterThan(0)) {
-                includePhrase(VedleggBeregnUTJusterBelopOver0BTFB(fellesTillegg.justeringsbeloepAar))
-            }
-
-            showIf(fellesTillegg.justeringsbeloepAar.lessThan(0)) {
-                includePhrase(VedleggBeregnUTJusterBelopUnder0BTFB(fellesTillegg.justeringsbeloepAar))
-            }
-
-            showIf(fellesTillegg.erRedusertMotinntekt) {
-                title1 {
-                    text(
-                        Bokmal to "Reduksjon av barnetillegg for fellesbarn før skatt",
-                        Nynorsk to "Reduksjon av barnetillegg for fellesbarn før skatt",
-                        English to "Reduction of child supplement payment for joint children before tax"
-                    )
+                showIf(fellesTillegg.justeringsbeloepAar.greaterThan(0)) {
+                    includePhrase(VedleggBeregnUTJusterBelopOver0BTFB(fellesTillegg.justeringsbeloepAar))
                 }
+
+                showIf(fellesTillegg.justeringsbeloepAar.lessThan(0)) {
+                    includePhrase(VedleggBeregnUTJusterBelopUnder0BTFB(fellesTillegg.justeringsbeloepAar))
+                }
+
+                showIf(fellesTillegg.erRedusertMotinntekt) {
+                    title1 {
+                        text(
+                            Bokmal to "Reduksjon av barnetillegg for fellesbarn før skatt",
+                            Nynorsk to "Reduksjon av barnetillegg for fellesbarn før skatt",
+                            English to "Reduction of child supplement payment for joint children before tax"
+                        )
+                    }
                 table(
                     header = {
                         column(columnSpan = 2) {
@@ -1379,3 +1343,4 @@ val vedleggOpplysningerBruktIBeregningUTBarnetillegg =
         }
     }
 
+*/
