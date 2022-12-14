@@ -83,14 +83,14 @@ dependencies {
     implementation("io.ktor:ktor-server-status-pages:$ktorVersion")
     implementation("io.ktor:ktor-client-encoding:$ktorVersion")
     implementation("net.logstash.logback:logstash-logback-encoder:$logstashVersion")
-    implementation("no.nav.pensjon.brev:pensjon-brevbaker-api-model:3.5.19")
+    implementation("no.nav.pensjon.brev:pensjon-brevbaker-api-model:3.5.20")
     implementation("org.jetbrains.kotlinx:kotlinx-html-jvm:0.8.0")
 
     implementation(project(":template-model-generator"))
     ksp(project(":template-model-generator"))
 
     // Necessary for java.time.LocalDate
-    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.13.4")
+    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.14.0")
 
     // Metrics
     implementation("io.ktor:ktor-server-metrics:$ktorVersion")
