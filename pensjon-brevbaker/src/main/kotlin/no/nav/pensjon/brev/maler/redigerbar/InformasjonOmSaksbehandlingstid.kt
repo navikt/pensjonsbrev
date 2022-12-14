@@ -64,7 +64,7 @@ object InformasjonOmSaksbehandlingstid : RedigerbarTemplate<InformasjonOmSaksbeh
                         Bokmal to "Du har ikke høy nok opptjenening til å ta ut ".expr() + prosent + " prosent alderspensjon fra " + uttaksDato
                                 + ". Eventuelle AFP-rettigheter vil kunne gi deg rett til uttak av alderspensjon.",
                         Nynorsk to "Du har ikkje høg nok pensjonsopptjening til å ta ut ".expr() + prosent + " prosent alderspensjon frå " + uttaksDato
-                                + ". Eventuelle AFP-rettihetar vil kunne gi deg rett til uttak av alderspensjon.",
+                                + ". Eventuelle AFP-rettar vil kunne gi deg rett til uttak av alderspensjon.",
                         English to "Your accumulated pension capital is not sufficient for you to draw a retirement pension at ".expr() + prosent + " percent from " + uttaksDato
                                 + ". If you are entitled to a contractual early retirement pension (AFP) in the private sector, you might be entitled to draw a retirement pension.",
                     )
@@ -73,8 +73,8 @@ object InformasjonOmSaksbehandlingstid : RedigerbarTemplate<InformasjonOmSaksbeh
                     text(
                         Bokmal to "Vi vil behandle søknaden din når vi har mottatt informasjon fra Fellesordningen om dine AFP-rettigheter. Det tar normalt fire til seks uker før du får svar fra dem på søknaden din. " +
                                 "Dette forutsetter at du har sendt inn søknad om AFP i privat sektor til Fellesordningen.",
-                        Nynorsk to "Vi vil behandle søknaden din når vi har mottatt informasjon frå Fellesordningen om dine AFP-rettigheter. Det tek normalt fire til seks veker før du får svar frå dei på søknaden din. " +
-                                "Dette færesett at du har sendt inn søknad om AFP i privat sektor til Fellesordningen.",
+                        Nynorsk to "Vi vil behandle søknaden din når vi har mottatt informasjon frå Fellesordningen om dine AFP-rettar. Det tek normalt fire til seks veker før du får svar frå dei på søknaden din. " +
+                                "Dette føresett at du har sendt inn søknad om AFP i privat sektor til Fellesordningen.",
                         English to "We will process your application once we have received the necessary information from Fellesordningen about your AFP rights. Normally it takes four to six weeks for you to get a reply from them on your application. " +
                                 "This requires that you have submitted an application for AFP to Fellesordningen.",
                     )
@@ -105,8 +105,8 @@ object InformasjonOmSaksbehandlingstid : RedigerbarTemplate<InformasjonOmSaksbeh
             paragraph {
                 text(
                     Bokmal to "Du må melde fra til oss med en gang hvis det skjer endringer som kan ha betydning for saken din, for eksempel ved endring av sivilstand eller ved flytting.",
-                    Nynorsk to "Du må melde frå til oss med ein gong dersom det skjer endringar som kan ha noko å seie for saka din, for eksempel ved endring av sivilstand eller ved flytting.",
-                    English to "You must notify us immediately if there are any changes that may affect your case, such as a chane in your marital status or if you move."
+                    Nynorsk to "Du må melde frå til oss med ein gong dersom det skjer endringar som kan ha noko å seie for saka di, for eksempel ved endring av sivilstand eller ved flytting.",
+                    English to "You must notify us immediately if there are any changes that may affect your case, such as a change in your marital status or if you move."
                 )
             }
         }
