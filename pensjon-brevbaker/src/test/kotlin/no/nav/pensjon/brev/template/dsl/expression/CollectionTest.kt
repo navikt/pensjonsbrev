@@ -1,9 +1,11 @@
 package no.nav.pensjon.brev.template.dsl.expression
 
 import no.nav.pensjon.brev.Fixtures
+import no.nav.pensjon.brev.api.model.Foedselsnummer
+import no.nav.pensjon.brev.api.model.FoedselsnummerSelectors.valueSelector
 import no.nav.pensjon.brev.template.*
-import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Test
 
 class CollectionTest {
 
@@ -118,6 +120,27 @@ class CollectionTest {
             anyOf(4, 5)
         }
         assertFalse(containsExclusively.eval(emptyScope))
+    }
+
+    @Test
+    fun `map transforms collection items`() {
+        val fnrs = listOf(1, 5, 6, 2, 4, 7).map { Foedselsnummer(it.toString()) }
+
+        assertEquals(fnrs.map { it.value }, fnrs.expr().map(UnaryOperation.Select(valueSelector)).eval(emptyScope))
+        assertEquals(fnrs.map { it.value }, fnrs.expr().map(valueSelector).eval(emptyScope))
+    }
+
+    @Test
+    fun `format transforms collection to a string`() {
+        val fnrs = listOf(1, 5, 6, 2, 4, 7).map { Foedselsnummer(it.toString()) }
+
+        listOf(Language.Bokmal, Language.Nynorsk, Language.English).forEach {
+            val scope = ExpressionScope(Unit, Fixtures.felles, it)
+            assertEquals(
+                BinaryOperation.LocalizedCollectionFormat.apply(fnrs.map { it.value }, it),
+                fnrs.expr().map(valueSelector).format().eval(scope)
+            )
+        }
     }
 
 }

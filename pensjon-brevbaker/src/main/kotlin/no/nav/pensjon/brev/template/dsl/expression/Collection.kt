@@ -20,6 +20,39 @@ fun <T> Expression<Collection<T>>.isEmpty(): Expression<Boolean> =
 fun <T> Expression<Collection<T>>.isNotEmpty(): Expression<Boolean> =
     not(this.isEmpty())
 
+fun <T: Any, R> Expression<Collection<T>>.map(selector: TemplateModelSelector<T, R>): Expression<Collection<R>> =
+    map(UnaryOperation.Select(selector))
+
+fun <T, R> Expression<Collection<T>>.map(mapper: UnaryOperation<T, R>): Expression<Collection<R>> =
+    Expression.UnaryInvoke(
+        value = this,
+        operation = UnaryOperation.MapCollection(mapper),
+    )
+
+fun <In1, In2, Out> Expression<Collection<In1>>.map(mapper: BinaryOperation<In1, In2, Out>, second: Expression<In2>): Expression<Collection<Out>> =
+    Expression.BinaryInvoke(
+        first = this,
+        second = second,
+        operation = BinaryOperation.MapCollection(mapper)
+    )
+
+fun <In1, In2, Out> Expression<Collection<In2>>.map(first: Expression<In1>, mapper: BinaryOperation<In1, In2, Out>): Expression<Collection<Out>> =
+    Expression.BinaryInvoke(
+        first = this,
+        second = first,
+        operation = BinaryOperation.MapCollection(BinaryOperation.Flip(mapper))
+    )
+
+fun <In> Expression<Collection<In>>.map(mapper: BinaryOperation<In, Language, String>): Expression<Collection<String>> =
+    map(mapper, Expression.FromScope(ExpressionScope<Any, *>::language))
+
+fun Expression<Collection<String>>.format(): StringExpression =
+    Expression.BinaryInvoke(
+        first = this,
+        second = Expression.FromScope(ExpressionScope<Any, *>::language),
+        operation = BinaryOperation.LocalizedCollectionFormat
+    )
+
 /**
  * Collection contains at least one of the listed items.
  */
