@@ -46,7 +46,8 @@ class BrevbakerService(config: Config, authService: AzureADService) {
                         LocalDate.now(),
                         "1234",
                         NAVEnhet("nav.no", "NAV", Telefonnummer("22225555")),
-                        Bruker(Foedselsnummer("12345678910"), LocalDate.of(2000, Month.JANUARY, 1), "Test", null, "Testeson")
+                        Bruker(Foedselsnummer("12345678910"), LocalDate.of(2000, Month.JANUARY, 1), "Test", null, "Testeson"),
+                        "Verge vergesen",
                     ),
                     language = LanguageCode.BOKMAL,
                 )
