@@ -2,8 +2,6 @@ package no.nav.pensjon.brev.maler.vedlegg
 
 
 import no.nav.pensjon.brev.api.model.Beregningsmetode.*
-import no.nav.pensjon.brev.api.model.Kroner
-import no.nav.pensjon.brev.api.model.Sivilstand
 import no.nav.pensjon.brev.api.model.vedlegg.BarnetilleggGjeldendeSelectors.fellesbarn_safe
 import no.nav.pensjon.brev.api.model.vedlegg.BarnetilleggGjeldendeSelectors.saerkullsbarn_safe
 import no.nav.pensjon.brev.api.model.vedlegg.BeregnetUTPerManedGjeldendeSelectors.brukerErFlyktning
@@ -17,7 +15,6 @@ import no.nav.pensjon.brev.api.model.vedlegg.FellesbarnSelectors.beloepAar
 import no.nav.pensjon.brev.api.model.vedlegg.FellesbarnSelectors.beloepAarFoerAvkort
 import no.nav.pensjon.brev.api.model.vedlegg.FellesbarnSelectors.erRedusertMotinntekt
 import no.nav.pensjon.brev.api.model.vedlegg.FellesbarnSelectors.fribeloep
-import no.nav.pensjon.brev.api.model.vedlegg.FellesbarnSelectors.fribeloepEllerInntektErPeriodisert
 import no.nav.pensjon.brev.api.model.vedlegg.FellesbarnSelectors.harFlereBarn
 import no.nav.pensjon.brev.api.model.vedlegg.FellesbarnSelectors.inntektAnnenForelder
 import no.nav.pensjon.brev.api.model.vedlegg.FellesbarnSelectors.inntektBruktIAvkortning
@@ -37,6 +34,7 @@ import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSel
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.inntektFoerUfoereGjeldende
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.inntektsAvkortingGjeldende
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.minsteytelseGjeldende_sats
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.sivilstand
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.trygdetidsdetaljerGjeldende
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.ufoeretrygdGjeldende
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.ungUfoerGjeldende_erUnder20Aar
@@ -864,23 +862,25 @@ val vedleggOpplysningerBruktIBeregningUTBarnetillegg =
                 includePhrase(VedleggBeregnUTInnlednBT_001)
             }
 
-            showIf(fellesTillegg.erRedusertMotinntekt and not(saerkullTillegg.erRedusertMotinntekt)) {
+            showIf(harFellesbarn and not(harSaerkullsbarn)) {
                 includePhrase(FastsetterStoerelsenPaaBTFellesbarn(harAnvendtTrygdetidUnder40 = harAnvendtTrygdetidUnder40))
             }
 
-            showIf(saerkullTillegg.erRedusertMotinntekt and not(fellesTillegg.erRedusertMotinntekt)) {
+            showIf(harSaerkullsbarn and not(harFellesbarn)) {
                 includePhrase(FastsetterStoerelsenPaaBTSaerkullsbarn(harAnvendtTrygdetidUnder40 = harAnvendtTrygdetidUnder40))
             }
 
-        /*    showIf(harFellesbarn and harSaerkullsbarn) {
-                includePhrase(FastsetterStoerelsenPaaBTFellesbarnOgSaerkullsbarn(
-                    harAnvendtTrygdetidUnder40 = harAnvendtTrygdetidUnder40,
-                    harTilleggForFlereFellesbarn = harTilleggForFlereFellesbarn,
-                    harTilleggForFlereSaerkullsbarn = harTilleggForFlereSaerkullsbarn,
-                    sivilstand = sivilstand
-                ))
+            showIf(harFellesbarn and harSaerkullsbarn) {
+                includePhrase(
+                    FastsetterStoerelsenPaaBTFellesbarnOgSaerkullsbarn(
+                        harAnvendtTrygdetidUnder40 = harAnvendtTrygdetidUnder40,
+                        harTilleggForFlereFellesbarn = harTilleggForFlereFellesbarn,
+                        harTilleggForFlereSaerkullsbarn = harTilleggForFlereSaerkullsbarn,
+                        sivilstand = sivilstand
+                    )
+                )
+            }
 
-            } */
 
             /*      ifNotNull(
                       barnetilleggGjeldende.saerkullsbarn_safe,
@@ -888,7 +888,7 @@ val vedleggOpplysningerBruktIBeregningUTBarnetillegg =
                       val fribeloepEllerInntektErPeriodisert = saerkullTillegg.fribeloepEllerInntektErPeriodisert
                       val harYrkesskadeGrad = yrkesskadeGjeldende.yrkesskadegrad_safe.ifNull(0).greaterThan(0)
                       val harAnvendtTrygdetidUnder40 = trygdetidsdetaljerGjeldende.anvendtTT.lessThan(40)
-                      val justeringsBeloepAr = saerkullTillegg.justeringsbeloepAar */
+                      val justeringsBeloepAr = saerkullTillegg.justeringsbeloepAar
 
 
             showIf(saerkullTillegg.erRedusertMotinntekt) {
@@ -951,6 +951,7 @@ val vedleggOpplysningerBruktIBeregningUTBarnetillegg =
             showIf(justeringsBeloepAr.lessThan(0)) {
                 includePhrase(VedleggBeregnUTJusterBelopUnder0BTSB_001(saerkullTillegg.justeringsbeloepAar))
             }
+            */
 // TABLE 2 Saerkullsbarn - start
             showIf(saerkullTillegg.erRedusertMotinntekt) {
                 title1 {

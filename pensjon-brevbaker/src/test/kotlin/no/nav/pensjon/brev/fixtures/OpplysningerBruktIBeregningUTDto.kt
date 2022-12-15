@@ -54,14 +54,14 @@ fun createOpplysningerBruktIBeregningUTDtoBarnetilleggGjeldendeSaerkullsbarn() =
         beloep = Kroner(20000),
         beloepAar = Kroner(60000),
         beloepAarFoerAvkort = Kroner(0),
-        erRedusertMotinntekt = false,
+        erRedusertMotinntekt = true,
         fribeloep = Kroner(35000),
         fribeloepEllerInntektErPeriodisert = false,
         harFlereBarn = true,
         inntektBruktIAvkortning = Kroner(200000),
         inntektOverFribeloep = Kroner(40000),
         inntektstak = Kroner(220000),
-        innvilgetBarnetillegg = false,
+        innvilgetBarnetillegg = true,
         justeringsbeloepAar = Kroner(15000),
     )
 

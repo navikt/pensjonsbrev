@@ -637,11 +637,11 @@ data class FastsetterStoerelsenPaaBTFellesbarnOgSaerkullsbarn(
             includePhrase(Felles.SivilstandEPSUbestemtForm(sivilstand))
 
             textExpr(
-                Bokmal to "for ".expr() +
+                Bokmal to " for ".expr() +
                     ifElse(harTilleggForFlereFellesbarn, ifTrue = "barna", ifFalse = "barnet") + " som bor med begge sine foreldre. Barnetillegget blir redusert dersom den samlede inntekten er høyere enn fribeløpet. Fribeløpet for et barn som bor med begge foreldrene er 4,6 ganger folketrygdens grunnbeløp, og øker med 40 prosent av folketrygdens grunnbeløp for hvert ekstra barn.".expr(),
-                Nynorsk to "for ".expr() +
+                Nynorsk to " for ".expr() +
                     ifElse(harTilleggForFlereFellesbarn, ifTrue = "barna", ifFalse = "barnet") + " som bur med begge foreldra sine. Barnetillegget blir redusert dersom den samla inntekta er høgare enn fribeløpet. Fribeløpet for eit barn som bur med begge foreldra, er 4,6 gonger grunnbeløpet i folketrygda, og aukar med 40 prosent av grunnbeløpet i folketrygda for kvart ekstra barn.".expr(),
-                English to "for the ".expr() +
+                English to " for the ".expr() +
                     ifElse(harTilleggForFlereFellesbarn, ifTrue = "children who live", ifFalse = "child who lives") + " with both parents. The child supplement will be reduced if your total income is greater than the exemption amount. The exemption amount is 4.6 times the National Insurance basic amount and it increases with 40 percent of the National Insurance basic amount for each extra child.".expr()
             )
         }
@@ -665,6 +665,16 @@ data class FastsetterStoerelsenPaaBTFellesbarnOgSaerkullsbarn(
     }
 }
 
+// TBU605V
+data class FellesEllerSaerkullsbarn(
+    val avkortningsbeloepAar_barnetilleggFBGjeldende: Expression<Kroner>,
+    val avkortningsbeloepAar_barnetilleggSBGjeldende: Expression<Kroner>,
+) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+        paragraph {
 
+        }
+    }
+}
 
 
