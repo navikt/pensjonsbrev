@@ -15,6 +15,7 @@ import no.nav.pensjon.brev.api.model.vedlegg.FellesbarnSelectors.beloepAar
 import no.nav.pensjon.brev.api.model.vedlegg.FellesbarnSelectors.beloepAarFoerAvkort
 import no.nav.pensjon.brev.api.model.vedlegg.FellesbarnSelectors.erRedusertMotinntekt
 import no.nav.pensjon.brev.api.model.vedlegg.FellesbarnSelectors.fribeloep
+import no.nav.pensjon.brev.api.model.vedlegg.FellesbarnSelectors.fribeloepEllerInntektErPeriodisert
 import no.nav.pensjon.brev.api.model.vedlegg.FellesbarnSelectors.harFlereBarn
 import no.nav.pensjon.brev.api.model.vedlegg.FellesbarnSelectors.inntektAnnenForelder
 import no.nav.pensjon.brev.api.model.vedlegg.FellesbarnSelectors.inntektBruktIAvkortning
@@ -879,6 +880,14 @@ val vedleggOpplysningerBruktIBeregningUTBarnetillegg =
                         sivilstand = sivilstand
                     )
                 )
+            }
+
+            showIf(fellesTillegg.erRedusertMotinntekt and not(saerkullTillegg.erRedusertMotinntekt)) {
+                includePhrase(PeriodisertInntektFellesbarn(fellesTillegg.avkortningsbeloepAar, fellesTillegg.fribeloepEllerInntektErPeriodisert, fellesTillegg.justeringsbeloepAar, sivilstand = sivilstand))
+            }
+
+            showIf(saerkullTillegg.erRedusertMotinntekt and not(fellesTillegg.erRedusertMotinntekt)) {
+                includePhrase(PeriodisertInntekSaerkullsbarn(saerkullTillegg.avkortningsbeloepAar, saerkullTillegg.fribeloepEllerInntektErPeriodisert, saerkullTillegg.justeringsbeloepAar))
             }
 
 
