@@ -848,14 +848,14 @@ val vedleggOpplysningerBruktIBeregningUTBarnetillegg =
         ifNotNull(
             barnetilleggGjeldende.fellesbarn_safe, barnetilleggGjeldende.saerkullsbarn_safe,
         ) { fellesTillegg, saerkullTillegg ->
-            val fribeloepEllerInntektErPeriodisert = saerkullTillegg.fribeloepEllerInntektErPeriodisert
+            val fribeloepEllerInntektErPeriodisertSB = saerkullTillegg.fribeloepEllerInntektErPeriodisert
             val harAnvendtTrygdetidUnder40 = trygdetidsdetaljerGjeldende.anvendtTT.lessThan(40)
             val harSaerkullsbarn = saerkullTillegg.innvilgetBarnetillegg
             val harYrkesskadeGrad = yrkesskadeGjeldende.yrkesskadegrad_safe.ifNull(0).greaterThan(0)
-            val justeringsBeloepAr = saerkullTillegg.justeringsbeloepAar
             val harFellesbarn = fellesTillegg.innvilgetBarnetillegg
             val harTilleggForFlereFellesbarn = fellesTillegg.antallbarn.greaterThan(1)
             val harTilleggForFlereSaerkullsbarn = fellesTillegg.antallbarn.greaterThan(1)
+            val fribeloepEllerInntektErPeriodisertFB = fellesTillegg.fribeloepEllerInntektErPeriodisert
 
 
             showIf(fellesTillegg.erRedusertMotinntekt or saerkullTillegg.erRedusertMotinntekt) {
@@ -883,84 +883,56 @@ val vedleggOpplysningerBruktIBeregningUTBarnetillegg =
             }
 
             showIf(fellesTillegg.erRedusertMotinntekt and not(saerkullTillegg.erRedusertMotinntekt)) {
-                includePhrase(PeriodisertInntektFellesbarn(fellesTillegg.avkortningsbeloepAar, fellesTillegg.fribeloepEllerInntektErPeriodisert, fellesTillegg.justeringsbeloepAar, sivilstand = sivilstand))
+                includePhrase(
+                    PeriodisertInntektFellesbarnB(
+                        fellesTillegg.avkortningsbeloepAar,
+                        fellesTillegg.fribeloepEllerInntektErPeriodisert,
+                        fellesTillegg.justeringsbeloepAar,
+                        sivilstand = sivilstand
+                    )
+                )
             }
 
             showIf(saerkullTillegg.erRedusertMotinntekt and not(fellesTillegg.erRedusertMotinntekt)) {
-                includePhrase(PeriodisertInntekSaerkullsbarn(saerkullTillegg.avkortningsbeloepAar, saerkullTillegg.fribeloepEllerInntektErPeriodisert, saerkullTillegg.justeringsbeloepAar))
-            }
-
-
-            /*      ifNotNull(
-                      barnetilleggGjeldende.saerkullsbarn_safe,
-                  ) { saerkullTillegg ->
-                      val fribeloepEllerInntektErPeriodisert = saerkullTillegg.fribeloepEllerInntektErPeriodisert
-                      val harYrkesskadeGrad = yrkesskadeGjeldende.yrkesskadegrad_safe.ifNull(0).greaterThan(0)
-                      val harAnvendtTrygdetidUnder40 = trygdetidsdetaljerGjeldende.anvendtTT.lessThan(40)
-                      val justeringsBeloepAr = saerkullTillegg.justeringsbeloepAar
-
-
-            showIf(saerkullTillegg.erRedusertMotinntekt) {
-                includePhrase(VedleggBeregnUTInfoBTSB_001)
-            }
-
-            showIf(harAnvendtTrygdetidUnder40 and harYrkesskadeGrad) {
-                includePhrase(VedleggBeregnUTredusTTBTSB_001)
-            }
-
-            showIf(fribeloepEllerInntektErPeriodisert and justeringsBeloepAr.greaterThan(0)) {
-                includePhrase(VedleggBeregnUTIkkePeriodisertFriBOgInntektBTSB_001(saerkullTillegg.avkortningsbeloepAar))
-            }
-
-            showIf(not(fribeloepEllerInntektErPeriodisert) and justeringsBeloepAr.greaterThan(0)) {
-                includePhrase(VedleggBeregnUTIkkePeriodisertFriBOgInntektBTSBJusterBelop_001(saerkullTillegg.avkortningsbeloepAar))
-            }
-
-            showIf(fribeloepEllerInntektErPeriodisert and justeringsBeloepAr.greaterThan(0)) {
                 includePhrase(
-                    VedleggBeregnUTPeridisertFriBOgInntektBTSB_001(
+                    PeriodisertInntekSaerkullsbarnB(
                         saerkullTillegg.avkortningsbeloepAar,
-                        saerkullTillegg.harFlereBarn
+                        saerkullTillegg.fribeloepEllerInntektErPeriodisert,
+                        saerkullTillegg.justeringsbeloepAar
                     )
                 )
             }
 
-            showIf(fribeloepEllerInntektErPeriodisert and not(justeringsBeloepAr.greaterThan(0))) {
+            showIf(harFellesbarn or harSaerkullsbarn) {
                 includePhrase(
-                    VedleggBeregnUTPeriodisertFriBOgInntektBTSBJusterBelop_001(
-                        saerkullTillegg.avkortningsbeloepAar,
-                        saerkullTillegg.harFlereBarn
+                    PeriodisertInntekt(
+                        justeringsbeloepAar_barnetilleggFBGjeldende = fellesTillegg.justeringsbeloepAar,
+                        justeringsbeloepAar_barnetilleggSBGjeldende = saerkullTillegg.justeringsbeloepAar,
+                        sivilstand = sivilstand
+                    )
+                )
+            }
+
+            showIf(harFellesbarn) {
+                includePhrase(
+                    PeriodisertInntektFellesbarnC(
+                        avkortningsbeloepAar_barnetilleggFBGjeldende = fellesTillegg.avkortningsbeloepAar,
+                        fribeloepEllerInntektErPeriodisert_barnetilleggFBGjeldende = fellesTillegg.fribeloepEllerInntektErPeriodisert,
+                        harTilleggForFlereFellesbarn = harTilleggForFlereFellesbarn,
+                        justeringsbeloepAar_barnetilleggFBGjeldende = fellesTillegg.justeringsbeloepAar
+                    )
+                )
+            }
+
+            showIf(harFellesbarn) {
+                includePhrase(
+                    PeriodisertInntektFellesbarnD(
+                        justeringsbeloepAar_barnetilleggFBGjeldende = fellesTillegg.justeringsbeloepAar
                     )
                 )
             }
 
 
-            showIf(fribeloepEllerInntektErPeriodisert and justeringsBeloepAr.greaterThan(0)) {
-                includePhrase(
-                    VedleggBeregnUTPeridisertFriBOgInntektBTSB_001(
-                        saerkullTillegg.avkortningsbeloepAar,
-                        saerkullTillegg.harFlereBarn
-                    )
-                )
-            }
-
-            showIf(fribeloepEllerInntektErPeriodisert and not(justeringsBeloepAr.greaterThan(0))) {
-                includePhrase(
-                    VedleggBeregnUTPeriodisertFriBOgInntektBTSBJusterBelop_001(
-                        saerkullTillegg.avkortningsbeloepAar,
-                        saerkullTillegg.harFlereBarn
-                    )
-                )
-            }
-
-            showIf(justeringsBeloepAr.greaterThan(0)) {
-                includePhrase(VedleggBeregnUTJusterBelopOver0BTSB_001(saerkullTillegg.justeringsbeloepAar))
-            }
-            // TODO: < 0? Is there a minus operator from Pesys?
-            showIf(justeringsBeloepAr.lessThan(0)) {
-                includePhrase(VedleggBeregnUTJusterBelopUnder0BTSB_001(saerkullTillegg.justeringsbeloepAar))
-            }
-            */
 // TABLE 2 Saerkullsbarn - start
             showIf(saerkullTillegg.erRedusertMotinntekt) {
                 title1 {
