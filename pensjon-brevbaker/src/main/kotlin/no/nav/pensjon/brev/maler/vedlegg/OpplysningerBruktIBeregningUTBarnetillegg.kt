@@ -932,6 +932,19 @@ val vedleggOpplysningerBruktIBeregningUTBarnetillegg =
                 )
             }
 
+            showIf(harSaerkullsbarn) {
+                includePhrase(
+                    PeriodisertInntektSaerkullsbarnC(
+                        avkortningsbeloepAar_barnetilleggSBGjeldende = saerkullTillegg.avkortningsbeloepAar,
+                        fribeloepEllerInntektErPeriodisert_barnetilleggSBGjeldende = saerkullTillegg.fribeloepEllerInntektErPeriodisert,
+                        harTilleggForFlereSaerkullsbarn = harTilleggForFlereFellesbarn,
+                        justeringsbeloepAar_barnetilleggSBGjeldende = saerkullTillegg.justeringsbeloepAar,
+                        sivilstand = sivilstand,
+                        erRedusertMotInntektSaerkullsbarn = saerkullTillegg.erRedusertMotinntekt,
+                    )
+                )
+            }
+
 
 // TABLE 2 Saerkullsbarn - start
             showIf(saerkullTillegg.erRedusertMotinntekt) {
