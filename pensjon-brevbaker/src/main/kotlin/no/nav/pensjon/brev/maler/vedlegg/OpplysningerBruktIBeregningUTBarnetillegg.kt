@@ -48,7 +48,6 @@ import no.nav.pensjon.brev.api.model.vedlegg.SaerkullsbarnSelectors.beloepAarFoe
 import no.nav.pensjon.brev.api.model.vedlegg.SaerkullsbarnSelectors.erRedusertMotinntekt
 import no.nav.pensjon.brev.api.model.vedlegg.SaerkullsbarnSelectors.fribeloep
 import no.nav.pensjon.brev.api.model.vedlegg.SaerkullsbarnSelectors.fribeloepEllerInntektErPeriodisert
-import no.nav.pensjon.brev.api.model.vedlegg.SaerkullsbarnSelectors.harFlereBarn
 import no.nav.pensjon.brev.api.model.vedlegg.SaerkullsbarnSelectors.inntektBruktIAvkortning
 import no.nav.pensjon.brev.api.model.vedlegg.SaerkullsbarnSelectors.inntektOverFribeloep
 import no.nav.pensjon.brev.api.model.vedlegg.SaerkullsbarnSelectors.inntektstak
@@ -79,7 +78,6 @@ import no.nav.pensjon.brev.api.model.vedlegg.YrkesskadeGjeldendeSelectors.beregn
 import no.nav.pensjon.brev.api.model.vedlegg.YrkesskadeGjeldendeSelectors.inntektVedSkadetidspunkt
 import no.nav.pensjon.brev.api.model.vedlegg.YrkesskadeGjeldendeSelectors.skadetidspunkt
 import no.nav.pensjon.brev.api.model.vedlegg.YrkesskadeGjeldendeSelectors.yrkesskadegrad
-import no.nav.pensjon.brev.api.model.vedlegg.YrkesskadeGjeldendeSelectors.yrkesskadegrad_safe
 import no.nav.pensjon.brev.maler.fraser.*
 import no.nav.pensjon.brev.maler.fraser.common.Felles.KronerText
 import no.nav.pensjon.brev.maler.fraser.common.Felles.MaanederText
@@ -800,33 +798,33 @@ val vedleggOpplysningerBruktIBeregningUTBarnetillegg =
         }
 
         showIf(harMinsteytelseSats) {
-            includePhrase(RettTilMYOverskrift_001)
+            includePhrase(RettTilMYOverskrift)
         }
 
         showIf(harMinsteytelseSats) {
             ifNotNull(ungUfoerGjeldende_erUnder20Aar) { erUnder20Aar ->
                 showIf(erUnder20Aar) {
-                    includePhrase(VedleggBeregnUTInfoMYUngUforUnder20_001)
+                    includePhrase(VedleggBeregnUTInfoMYUngUforUnder20)
                 }.orShow {
-                    includePhrase(VedleggBeregnUTInfoMYUngUfor_001)
+                    includePhrase(VedleggBeregnUTInfoMYUngUfor)
                 }
             }.orShow {
                 showIf(ufoeretrygdGjeldende.erKonvertert) {
-                    includePhrase(VedleggBeregnUTInfoMY2_001)
+                    includePhrase(VedleggBeregnUTInfoMY2)
                 }.orShow {
-                    includePhrase(VedleggBeregnUTInfoMY_001)
+                    includePhrase(VedleggBeregnUTInfoMY)
                 }
             }
         }
 
         ifNotNull(minsteytelseGjeldende_sats) {
             showIf(harMinsteytelseSats) {
-                includePhrase(VedleggBeregnUTDinMY_001(it))
+                includePhrase(VedleggBeregnUTDinMY(it))
             }
         }
 
         showIf(inntektFoerUfoereGjeldende.erSannsynligEndret) {
-            includePhrase(VedleggBeregnUTMinsteIFU_002)
+            includePhrase(VedleggBeregnUTMinsteIFU)
         }
 
         showIf(
@@ -835,32 +833,29 @@ val vedleggOpplysningerBruktIBeregningUTBarnetillegg =
                 and inntektsgrenseErUnderTak
         ) {
 
-            includePhrase(SlikFastsettesKompGradOverskrift_001)
-            includePhrase(VedleggBeregnUTKompGrad_001)
+            includePhrase(SlikFastsettesKompGradOverskrift)
+            includePhrase(VedleggBeregnUTKompGrad)
 
             showIf(ufoeretrygdGjeldende.erKonvertert) {
-                includePhrase(VedleggBeregnUTKompGradGjsnttKonvUT_001)
+                includePhrase(VedleggBeregnUTKompGradGjsnttKonvUT)
             }.orShow {
-                includePhrase(VedleggBeregnUTKompGradGjsntt_001)
+                includePhrase(VedleggBeregnUTKompGradGjsntt)
             }
         }
 
         ifNotNull(
             barnetilleggGjeldende.fellesbarn_safe, barnetilleggGjeldende.saerkullsbarn_safe,
         ) { fellesTillegg, saerkullTillegg ->
-            val fribeloepEllerInntektErPeriodisertSB = saerkullTillegg.fribeloepEllerInntektErPeriodisert
             val harAnvendtTrygdetidUnder40 = trygdetidsdetaljerGjeldende.anvendtTT.lessThan(40)
             val harSaerkullsbarn = saerkullTillegg.innvilgetBarnetillegg
-            val harYrkesskadeGrad = yrkesskadeGjeldende.yrkesskadegrad_safe.ifNull(0).greaterThan(0)
             val harFellesbarn = fellesTillegg.innvilgetBarnetillegg
             val harTilleggForFlereFellesbarn = fellesTillegg.antallbarn.greaterThan(1)
             val harTilleggForFlereSaerkullsbarn = fellesTillegg.antallbarn.greaterThan(1)
-            val fribeloepEllerInntektErPeriodisertFB = fellesTillegg.fribeloepEllerInntektErPeriodisert
 
 
             showIf(fellesTillegg.erRedusertMotinntekt or saerkullTillegg.erRedusertMotinntekt) {
-                includePhrase(SlikBeregnBTOverskrift_001)
-                includePhrase(VedleggBeregnUTInnlednBT_001)
+                includePhrase(SlikBeregnBTOverskrift)
+                includePhrase(VedleggBeregnUTInnlednBT)
             }
 
             showIf(harFellesbarn and not(harSaerkullsbarn)) {
@@ -905,7 +900,7 @@ val vedleggOpplysningerBruktIBeregningUTBarnetillegg =
 
             showIf(harFellesbarn or harSaerkullsbarn) {
                 includePhrase(
-                    PeriodisertInntekt(
+                    PeriodisertInntektInnledning(
                         justeringsbeloepAar_barnetilleggFBGjeldende = fellesTillegg.justeringsbeloepAar,
                         justeringsbeloepAar_barnetilleggSBGjeldende = saerkullTillegg.justeringsbeloepAar,
                         sivilstand = sivilstand
@@ -943,6 +938,222 @@ val vedleggOpplysningerBruktIBeregningUTBarnetillegg =
                         erRedusertMotInntektSaerkullsbarn = saerkullTillegg.erRedusertMotinntekt,
                     )
                 )
+            }
+
+            showIf(harFellesbarn) {
+                includePhrase(
+                    PeriodisertInntektSaerkullsbarnD(
+                        justeringsbeloepAar_barnetilleggSBGjeldende = saerkullTillegg.justeringsbeloepAar
+                    )
+                )
+            }
+
+            // FELLESBARN - start
+            ifNotNull(
+                barnetilleggGjeldende.fellesbarn_safe,
+            ) { fellesTillegg ->
+
+                // TABLE 2 Fellesbarn - start
+
+                showIf(fellesTillegg.justeringsbeloepAar.greaterThan(0)) {
+                    includePhrase(VedleggBeregnUTJusterBelopOver0BTFB(fellesTillegg.justeringsbeloepAar))
+                }
+
+                showIf(fellesTillegg.justeringsbeloepAar.lessThan(0)) {
+                    includePhrase(VedleggBeregnUTJusterBelopUnder0BTFB(fellesTillegg.justeringsbeloepAar))
+                }
+
+                showIf(fellesTillegg.erRedusertMotinntekt) {
+                    title1 {
+                        text(
+                            Bokmal to "Reduksjon av barnetillegg for fellesbarn før skatt",
+                            Nynorsk to "Reduksjon av barnetillegg for fellesbarn før skatt",
+                            English to "Reduction of child supplement payment for joint children before tax"
+                        )
+                    }
+                    table(
+                        header = {
+                            column(columnSpan = 2) {
+                                text(
+                                    Bokmal to "Beskrivelse",
+                                    Nynorsk to "Beskrivelse",
+                                    English to "Description",
+                                    FontType.BOLD
+                                )
+                            }
+                            column(alignment = ColumnAlignment.RIGHT) {
+                                text(
+                                    Bokmal to "Beløp",
+                                    Nynorsk to "Beløp",
+                                    English to "Amount",
+                                    FontType.BOLD
+                                )
+                            }
+                        }
+                    ) {
+                        showIf(fellesTillegg.beloep.greaterThan(0) and fellesTillegg.justeringsbeloepAar.notEqualTo(0)) {
+                            row {
+                                cell {
+                                    text(
+                                        Bokmal to "Årlig barnetillegg før reduksjon ut fra inntekt",
+                                        Nynorsk to "Årleg barnetillegg før reduksjon ut frå inntekt",
+                                        English to "Yearly child supplement before income reduction"
+                                    )
+                                }
+                                cell {
+                                    includePhrase(KronerText(fellesTillegg.beloepAarFoerAvkort))
+                                }
+                            }
+                        }
+                        showIf(fellesTillegg.erRedusertMotinntekt) {
+                            row {
+                                cell {
+                                    text(
+                                        Bokmal to "Samlet inntekt brukt i fastsettelse av barnetillegget er ",
+                                        Nynorsk to "Samla inntekt brukt i fastsetjinga av barnetillegget er ",
+                                        English to "Total income applied in calculation of reduction in child supplement is "
+                                    )
+                                }
+                                cell {
+                                    includePhrase(KronerText(fellesTillegg.inntektBruktIAvkortning))
+                                }
+                            }
+                        }
+                        showIf(fellesTillegg.beloep.greaterThan(0) and fellesTillegg.justeringsbeloepAar.notEqualTo(0))
+                        {
+                            row {
+                                cell {
+                                    text(
+                                        Bokmal to "Fribeløp brukt i fastsettelsen av barnetillegget er",
+                                        Nynorsk to "Fribeløp brukt i fastsetjinga av barnetillegget er",
+                                        English to "Exemption amount applied in calculation of reduction in child supplement is"
+                                    )
+                                }
+                                cell {
+                                    includePhrase(KronerText(fellesTillegg.fribeloep))
+                                }
+                            }
+                        }
+                        showIf(
+                            fellesTillegg.beloep.notEqualTo(0) or (fellesTillegg.beloep.equalTo(0))
+                        ) {
+                            row {
+                                cell {
+                                    text(
+                                        Bokmal to "Inntekt over fribeløpet er",
+                                        Nynorsk to "Inntekt over fribeløpet er",
+                                        English to "Income exceeding the exemption amount is",
+                                    )
+                                }
+                                cell {
+                                    includePhrase(KronerText(fellesTillegg.inntektOverFribeloep))
+                                }
+                            }
+                        }
+                        showIf(
+                            fellesTillegg.beloep.notEqualTo(0) and fellesTillegg.justeringsbeloepAar.notEqualTo(0) and fellesTillegg.avkortningsbeloepAar.greaterThan(
+                                0
+                            )
+                        ) {
+                            row {
+                                cell {
+                                    text( // TODO finn en fornuftig måte å vise regnestykket på
+                                        Bokmal to "- 50 prosent av inntekt som overstiger fribeløpet (oppgitt som et årlig beløep",
+                                        Nynorsk to "- 50 prosent av inntekt som overstig fribeløpet",
+                                        English to "- 50 percent of income exceeding the allowance amount"
+                                    )
+                                }
+                                cell {
+                                    includePhrase(KronerText(fellesTillegg.avkortningsbeloepAar))
+                                }
+                            }
+                        }
+                        showIf(
+                            fellesTillegg.justeringsbeloepAar.notEqualTo(0)
+                        ) {
+                            row {
+                                cell {
+                                    text(
+                                        Bokmal to "+ Beløp som er brukt for å justere reduksjonen av barnetillegget",
+                                        Nynorsk to "+ Beløp som er brukt for å justere reduksjonen av barnetillegget",
+                                        English to "+ Amount which is used to adjust the reduction of child supplement"
+                                    )
+                                }
+                                cell {
+                                    includePhrase(KronerText(fellesTillegg.justeringsbeloepAar))
+                                }
+                            }
+                        }
+                        showIf(
+                            fellesTillegg.beloep.notEqualTo(0) or (fellesTillegg.beloep.equalTo(0) and fellesTillegg.beloepAar.notEqualTo(
+                                0
+                            ))
+                        ) {
+                            row {
+                                cell {
+                                    text(
+                                        Bokmal to "= Årlig barnetillegg etter reduksjon ut fra inntekt",
+                                        Nynorsk to "= Årleg barnetillegg etter reduksjon ut frå inntekt",
+                                        English to "= Yearly child supplement after income reduction",
+                                        FontType.BOLD,
+                                    )
+                                }
+                                cell {
+                                    includePhrase(KronerText(fellesTillegg.beloepAar))
+                                }
+                            }
+                        }
+                        showIf(
+                            fellesTillegg.beloep.greaterThan(0) or fellesTillegg.beloep.equalTo(0)
+                        ) {
+                            row {
+                                cell {
+                                    text(
+                                        Bokmal to "Utbetaling av barnetillegg per måned",
+                                        Nynorsk to "Utbetaling av barnetillegg per månad",
+                                        English to "Child supplement payment for the remaining months of the year"
+                                    )
+                                }
+                                cell {
+                                    includePhrase(KronerText(fellesTillegg.beloep))
+                                }
+                            }
+                        }
+                        showIf(
+                            fellesTillegg.beloep.equalTo(0) and fellesTillegg.justeringsbeloepAar.equalTo(0)
+                        ) {
+                            row {
+                                cell {
+                                    text(
+                                        Bokmal to "Grensen for å få utbetalt barnetillegg",
+                                        Nynorsk to "Grensa for å få utbetalt barnetillegg",
+                                        English to "The income limit for receiving child supplement"
+                                    )
+                                }
+                                cell {
+                                    includePhrase(KronerText(fellesTillegg.inntektstak))
+                                }
+                            }
+                        }
+                    }
+                } // TABLE 2 Felles barn - end
+                showIf(fellesTillegg.beloep.greaterThan(0)) {
+                    includePhrase(
+                        MaanedligTilleggFellesbarn(
+                            beloep_barnetilleggFBGjeldende = fellesTillegg.beloep,
+                            harFlereBarn = fellesTillegg.harFlereBarn,
+                        )
+                    )
+                }
+                showIf(fellesTillegg.innvilgetBarnetillegg) {
+                    includePhrase(
+                        FaaIkkeUtbetaltTilleggFellesbarn(
+                            beloep_barnetilleggFBGjeldende = fellesTillegg.beloep,
+                            justeringsbeloepAar_barnetilleggFBGjeldende = fellesTillegg.justeringsbeloepAar,
+                            harFlereBarn = fellesTillegg.harFlereBarn,
+                        )
+                    )
+                }
             }
 
 
@@ -1155,221 +1366,13 @@ val vedleggOpplysningerBruktIBeregningUTBarnetillegg =
 
 
             showIf(saerkullTillegg.beloep.greaterThan(0)) {
-                includePhrase(VedleggBeregnUTredusBTSBPgaInntekt_001(saerkullTillegg.beloep))
+                includePhrase(VedleggBeregnUTredusBTSBPgaInntekt(saerkullTillegg.beloep))
             }.orShowIf(saerkullTillegg.beloep.equalTo(0)) {
                 showIf(saerkullTillegg.justeringsbeloepAar.equalTo(0)) {
-                    includePhrase(VedleggBeregnUTIkkeUtbetaltBTSBPgaInntekt_001)
+                    includePhrase(VedleggBeregnUTIkkeUtbetaltBTSBPgaInntekt)
                 } orShow {
-                    includePhrase(VedleggBeregnUTJusterBelopIkkeUtbetalt_001)
+                    includePhrase(VedleggBeregnUTJusterBelopIkkeUtbetalt)
                 }
-            }
-        }
-
-        // FELLESBARN - start
-        ifNotNull(
-            barnetilleggGjeldende.fellesbarn_safe,
-        ) { fellesTillegg ->
-
-            // TABLE 2 Fellesbarn - start
-
-            showIf(fellesTillegg.justeringsbeloepAar.greaterThan(0)) {
-                includePhrase(VedleggBeregnUTJusterBelopOver0BTFB(fellesTillegg.justeringsbeloepAar))
-            }
-
-            showIf(fellesTillegg.justeringsbeloepAar.lessThan(0)) {
-                includePhrase(VedleggBeregnUTJusterBelopUnder0BTFB(fellesTillegg.justeringsbeloepAar))
-            }
-
-            showIf(fellesTillegg.erRedusertMotinntekt) {
-                title1 {
-                    text(
-                        Bokmal to "Reduksjon av barnetillegg for fellesbarn før skatt",
-                        Nynorsk to "Reduksjon av barnetillegg for fellesbarn før skatt",
-                        English to "Reduction of child supplement payment for joint children before tax"
-                    )
-                }
-                table(
-                    header = {
-                        column(columnSpan = 2) {
-                            text(
-                                Bokmal to "Beskrivelse",
-                                Nynorsk to "Beskrivelse",
-                                English to "Description",
-                                FontType.BOLD
-                            )
-                        }
-                        column(alignment = ColumnAlignment.RIGHT) {
-                            text(
-                                Bokmal to "Beløp",
-                                Nynorsk to "Beløp",
-                                English to "Amount",
-                                FontType.BOLD
-                            )
-                        }
-                    }
-                ) {
-                    showIf(fellesTillegg.beloep.greaterThan(0) and fellesTillegg.justeringsbeloepAar.notEqualTo(0)) {
-                        row {
-                            cell {
-                                text(
-                                    Bokmal to "Årlig barnetillegg før reduksjon ut fra inntekt",
-                                    Nynorsk to "Årleg barnetillegg før reduksjon ut frå inntekt",
-                                    English to "Yearly child supplement before income reduction"
-                                )
-                            }
-                            cell {
-                                includePhrase(KronerText(fellesTillegg.beloepAarFoerAvkort))
-                            }
-                        }
-                    }
-                    showIf(fellesTillegg.erRedusertMotinntekt) {
-                        row {
-                            cell {
-                                text(
-                                    Bokmal to "Samlet inntekt brukt i fastsettelse av barnetillegget er ",
-                                    Nynorsk to "Samla inntekt brukt i fastsetjinga av barnetillegget er ",
-                                    English to "Total income applied in calculation of reduction in child supplement is "
-                                )
-                            }
-                            cell {
-                                includePhrase(KronerText(fellesTillegg.inntektBruktIAvkortning))
-                            }
-                        }
-                    }
-                    showIf(fellesTillegg.beloep.greaterThan(0) and fellesTillegg.justeringsbeloepAar.notEqualTo(0))
-                    {
-                        row {
-                            cell {
-                                text(
-                                    Bokmal to "Fribeløp brukt i fastsettelsen av barnetillegget er",
-                                    Nynorsk to "Fribeløp brukt i fastsetjinga av barnetillegget er",
-                                    English to "Exemption amount applied in calculation of reduction in child supplement is"
-                                )
-                            }
-                            cell {
-                                includePhrase(KronerText(fellesTillegg.fribeloep))
-                            }
-                        }
-                    }
-                    showIf(
-                        fellesTillegg.beloep.notEqualTo(0) or (fellesTillegg.beloep.equalTo(0))
-                    ) {
-                        row {
-                            cell {
-                                text(
-                                    Bokmal to "Inntekt over fribeløpet er",
-                                    Nynorsk to "Inntekt over fribeløpet er",
-                                    English to "Income exceeding the exemption amount is",
-                                )
-                            }
-                            cell {
-                                includePhrase(KronerText(fellesTillegg.inntektOverFribeloep))
-                            }
-                        }
-                    }
-                    showIf(
-                        fellesTillegg.beloep.notEqualTo(0) and fellesTillegg.justeringsbeloepAar.notEqualTo(0) and fellesTillegg.avkortningsbeloepAar.greaterThan(
-                            0
-                        )
-                    ) {
-                        row {
-                            cell {
-                                text( // TODO finn en fornuftig måte å vise regnestykket på
-                                    Bokmal to "- 50 prosent av inntekt som overstiger fribeløpet (oppgitt som et årlig beløep",
-                                    Nynorsk to "- 50 prosent av inntekt som overstig fribeløpet",
-                                    English to "- 50 percent of income exceeding the allowance amount"
-                                )
-                            }
-                            cell {
-                                includePhrase(KronerText(fellesTillegg.avkortningsbeloepAar))
-                            }
-                        }
-                    }
-                    showIf(
-                        fellesTillegg.justeringsbeloepAar.notEqualTo(0)
-                    ) {
-                        row {
-                            cell {
-                                text(
-                                    Bokmal to "+ Beløp som er brukt for å justere reduksjonen av barnetillegget",
-                                    Nynorsk to "+ Beløp som er brukt for å justere reduksjonen av barnetillegget",
-                                    English to "+ Amount which is used to adjust the reduction of child supplement"
-                                )
-                            }
-                            cell {
-                                includePhrase(KronerText(fellesTillegg.justeringsbeloepAar))
-                            }
-                        }
-                    }
-                    showIf(
-                        fellesTillegg.beloep.notEqualTo(0) or (fellesTillegg.beloep.equalTo(0) and fellesTillegg.beloepAar.notEqualTo(
-                            0
-                        ))
-                    ) {
-                        row {
-                            cell {
-                                text(
-                                    Bokmal to "= Årlig barnetillegg etter reduksjon ut fra inntekt",
-                                    Nynorsk to "= Årleg barnetillegg etter reduksjon ut frå inntekt",
-                                    English to "= Yearly child supplement after income reduction",
-                                    FontType.BOLD,
-                                )
-                            }
-                            cell {
-                                includePhrase(KronerText(fellesTillegg.beloepAar))
-                            }
-                        }
-                    }
-                    showIf(
-                        fellesTillegg.beloep.greaterThan(0) or fellesTillegg.beloep.equalTo(0)
-                    ) {
-                        row {
-                            cell {
-                                text(
-                                    Bokmal to "Utbetaling av barnetillegg per måned",
-                                    Nynorsk to "Utbetaling av barnetillegg per månad",
-                                    English to "Child supplement payment for the remaining months of the year"
-                                )
-                            }
-                            cell {
-                                includePhrase(KronerText(fellesTillegg.beloep))
-                            }
-                        }
-                    }
-                    showIf(
-                        fellesTillegg.beloep.equalTo(0) and fellesTillegg.justeringsbeloepAar.equalTo(0)
-                    ) {
-                        row {
-                            cell {
-                                text(
-                                    Bokmal to "Grensen for å få utbetalt barnetillegg",
-                                    Nynorsk to "Grensa for å få utbetalt barnetillegg",
-                                    English to "The income limit for receiving child supplement"
-                                )
-                            }
-                            cell {
-                                includePhrase(KronerText(fellesTillegg.inntektstak))
-                            }
-                        }
-                    }
-                }
-            } // TABLE 2 Felles barn - end
-            showIf(fellesTillegg.beloep.greaterThan(0)) {
-                includePhrase(
-                    MaanedligTilleggFellesbarn(
-                        beloep_barnetilleggFBGjeldende = fellesTillegg.beloep,
-                        harFlereBarn = fellesTillegg.harFlereBarn,
-                    )
-                )
-            }
-            showIf(fellesTillegg.innvilgetBarnetillegg) {
-                includePhrase(
-                    FaaIkkeUtbetaltTilleggFellesbarn(
-                        beloep_barnetilleggFBGjeldende = fellesTillegg.beloep,
-                        justeringsbeloepAar_barnetilleggFBGjeldende = fellesTillegg.justeringsbeloepAar,
-                        harFlereBarn = fellesTillegg.harFlereBarn,
-                    )
-                )
             }
         }
     }

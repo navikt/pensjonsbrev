@@ -718,33 +718,33 @@ val vedleggOpplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEng
 
 
     showIf(harMinsteytelseSats) {
-        includePhrase(RettTilMYOverskrift_001)
+        includePhrase(RettTilMYOverskrift)
     }
 
     showIf(harMinsteytelseSats) {
         ifNotNull(ungUfoerGjeldende_erUnder20Aar) { erUnder20Aar ->
             showIf(erUnder20Aar) {
-                includePhrase(VedleggBeregnUTInfoMYUngUforUnder20_001)
+                includePhrase(VedleggBeregnUTInfoMYUngUforUnder20)
             }.orShow {
-                includePhrase(VedleggBeregnUTInfoMYUngUfor_001)
+                includePhrase(VedleggBeregnUTInfoMYUngUfor)
             }
         }.orShow {
             showIf(ufoeretrygdGjeldende.erKonvertert) {
-                includePhrase(VedleggBeregnUTInfoMY2_001)
+                includePhrase(VedleggBeregnUTInfoMY2)
             }.orShow {
-                includePhrase(VedleggBeregnUTInfoMY_001)
+                includePhrase(VedleggBeregnUTInfoMY)
             }
         }
     }
 
     ifNotNull(minsteytelseGjeldende_sats) {
         showIf(harMinsteytelseSats) {
-            includePhrase(VedleggBeregnUTDinMY_001(it))
+            includePhrase(VedleggBeregnUTDinMY(it))
         }
     }
 
     showIf(inntektFoerUfoereGjeldende.erSannsynligEndret) {
-        includePhrase(VedleggBeregnUTMinsteIFU_002)
+        includePhrase(VedleggBeregnUTMinsteIFU)
     }
 
     showIf(
@@ -753,13 +753,13 @@ val vedleggOpplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEng
                 and inntektsgrenseErUnderTak
     ) {
 
-        includePhrase(SlikFastsettesKompGradOverskrift_001)
-        includePhrase(VedleggBeregnUTKompGrad_001)
+        includePhrase(SlikFastsettesKompGradOverskrift)
+        includePhrase(VedleggBeregnUTKompGrad)
 
         showIf(ufoeretrygdGjeldende.erKonvertert) {
-            includePhrase(VedleggBeregnUTKompGradGjsnttKonvUT_001)
+            includePhrase(VedleggBeregnUTKompGradGjsnttKonvUT)
         }.orShow {
-            includePhrase(VedleggBeregnUTKompGradGjsntt_001)
+            includePhrase(VedleggBeregnUTKompGradGjsntt)
         }
     }
 
@@ -772,37 +772,37 @@ val vedleggOpplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEng
         val justeringsBeloepAr = saerkullTillegg.justeringsbeloepAar
 
         showIf(saerkullTillegg.erRedusertMotinntekt) {
-            includePhrase(SlikBeregnBTOverskrift_001)
-            includePhrase(VedleggBeregnUTInfoBTSB_001)
-            includePhrase(VedleggBeregnUTInnlednBT_001)
+            includePhrase(SlikBeregnBTOverskrift)
+            includePhrase(VedleggBeregnUTInfoBTSB)
+            includePhrase(VedleggBeregnUTInnlednBT)
         }
 
         showIf(harAnvendtTrygdetidUnder40 and harYrkesskadeGrad) {
-            includePhrase(VedleggBeregnUTredusTTBTSB_001)
+            includePhrase(VedleggBeregnUTredusTTBTSB)
         }
 
         showIf(fribeloepEllerInntektErPeriodisert and justeringsBeloepAr.greaterThan(0)) {
-            includePhrase(VedleggBeregnUTIkkePeriodisertFriBOgInntektBTSB_001(saerkullTillegg.avkortningsbeloepAar))
+            includePhrase(VedleggBeregnUTIkkePeriodisertFriBOgInntektBTSB(saerkullTillegg.avkortningsbeloepAar))
         }
 
         showIf(not(fribeloepEllerInntektErPeriodisert) and justeringsBeloepAr.greaterThan(0)) {
-            includePhrase(VedleggBeregnUTIkkePeriodisertFriBOgInntektBTSBJusterBelop_001(saerkullTillegg.avkortningsbeloepAar))
+            includePhrase(VedleggBeregnUTIkkePeriodisertFriBOgInntektBTSBJusterBelop(saerkullTillegg.avkortningsbeloepAar))
         }
 
         showIf(fribeloepEllerInntektErPeriodisert and justeringsBeloepAr.greaterThan(0)) {
-            includePhrase(VedleggBeregnUTPeridisertFriBOgInntektBTSB_001(saerkullTillegg.avkortningsbeloepAar, saerkullTillegg.harFlereBarn))
+            includePhrase(VedleggBeregnUTPeridisertFriBOgInntektBTSB(saerkullTillegg.avkortningsbeloepAar, saerkullTillegg.harFlereBarn))
         }
 
         showIf(fribeloepEllerInntektErPeriodisert and not(justeringsBeloepAr.greaterThan(0))) {
-            includePhrase(VedleggBeregnUTPeriodisertFriBOgInntektBTSBJusterBelop_001(saerkullTillegg.avkortningsbeloepAar, saerkullTillegg.harFlereBarn))
+            includePhrase(VedleggBeregnUTPeriodisertFriBOgInntektBTSBJusterBelop(saerkullTillegg.avkortningsbeloepAar, saerkullTillegg.harFlereBarn))
         }
 
         showIf(justeringsBeloepAr.greaterThan(0)) {
-            includePhrase(VedleggBeregnUTJusterBelopOver0BTSB_001(saerkullTillegg.justeringsbeloepAar))
+            includePhrase(VedleggBeregnUTJusterBelopOver0BTSB(saerkullTillegg.justeringsbeloepAar))
         }
-        // TODO: < 0? Is there a minus operator from Pesys?
+
         showIf(justeringsBeloepAr.lessThan(0)) {
-            includePhrase(VedleggBeregnUTJusterBelopUnder0BTSB_001(saerkullTillegg.justeringsbeloepAar))
+            includePhrase(VedleggBeregnUTJusterBelopUnder0BTSB(saerkullTillegg.justeringsbeloepAar))
         }
 
 
@@ -990,12 +990,12 @@ val vedleggOpplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEng
         }
         // TABLE 2 - end
        showIf(saerkullTillegg.beloep.greaterThan(0)) {
-            includePhrase(VedleggBeregnUTredusBTSBPgaInntekt_001(saerkullTillegg.beloep))
+            includePhrase(VedleggBeregnUTredusBTSBPgaInntekt(saerkullTillegg.beloep))
         }.orShowIf(saerkullTillegg.beloep.equalTo(0)) {
             showIf(saerkullTillegg.justeringsbeloepAar.equalTo(0)) {
-                includePhrase(VedleggBeregnUTIkkeUtbetaltBTSBPgaInntekt_001)
+                includePhrase(VedleggBeregnUTIkkeUtbetaltBTSBPgaInntekt)
             } orShow {
-                includePhrase(VedleggBeregnUTJusterBelopIkkeUtbetalt_001)
+                includePhrase(VedleggBeregnUTJusterBelopIkkeUtbetalt)
             }
         }
     }
