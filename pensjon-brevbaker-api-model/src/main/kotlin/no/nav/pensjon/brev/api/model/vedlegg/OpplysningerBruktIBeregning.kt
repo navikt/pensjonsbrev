@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.api.model.vedlegg
 import no.nav.pensjon.brev.api.model.Beregningsmetode
 import no.nav.pensjon.brev.api.model.Kroner
 import no.nav.pensjon.brev.api.model.Sivilstand
+import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarn
 import java.time.LocalDate
 
 data class OpplysningerBruktIBeregningUTDto(
@@ -28,7 +29,8 @@ data class OpplysningerBruktIBeregningUTDto(
 
     data class BarnetilleggGjeldende(
         val saerkullsbarn: Saerkullsbarn?,
-        val fellesbarn: Fellesbarn?
+        val fellesbarn: Fellesbarn?,
+        val totaltAntallBarn: Int,
     ) {
         data class Saerkullsbarn(
             val antallbarn: Int,
