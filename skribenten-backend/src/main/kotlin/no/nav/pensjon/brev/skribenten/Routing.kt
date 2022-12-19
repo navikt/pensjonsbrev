@@ -7,6 +7,9 @@ import io.ktor.server.auth.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import io.ktor.server.util.*
+import no.nav.pensjon.brev.api.model.maler.Brevkode
+import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmSaksbehandlingstidDto
 import no.nav.pensjon.brev.skribenten.auth.*
 import no.nav.pensjon.brev.skribenten.services.*
 import java.util.Base64
@@ -34,6 +37,26 @@ fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config
             get("/test/brevbaker") {
                 val brev = brevbakerService.genererBrev(call)
                 respondWithResult(brev, onOk = { respondBytes(Base64.getDecoder().decode(it.base64pdf), ContentType.Application.Pdf) })
+            }
+
+            get("/template/{brevkode}") {
+                val brevkode = call.parameters.getOrFail<Brevkode.Redigerbar>("brevkode")
+
+                when (val template = brevbakerService.getTemplate(call, brevkode)) {
+                    is ServiceResult.AuthorizationError -> TODO()
+                    is ServiceResult.Error -> TODO()
+                    is ServiceResult.Ok -> call.respondText(template.result, ContentType.Application.Json)
+                }
+            }
+            post("/letter/{brevkode}") {
+                val brevkode = call.parameters.getOrFail<Brevkode.Redigerbar>("brevkode")
+                val brevdata = call.receive<InformasjonOmSaksbehandlingstidDto>()
+
+                when (val rendered = brevbakerService.renderLetter(call, brevkode, brevdata)) {
+                    is ServiceResult.AuthorizationError -> TODO()
+                    is ServiceResult.Error -> TODO()
+                    is ServiceResult.Ok -> call.respondText(rendered.result, ContentType.Application.Json)
+                }
             }
         }
     }

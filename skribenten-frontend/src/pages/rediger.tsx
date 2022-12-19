@@ -7,6 +7,7 @@ import {AuthenticatedTemplate, useMsal} from "@azure/msal-react"
 import SkribentenAPI from "../../services/skribenten"
 import {SkribentenConfig} from "./_app"
 import ModelEditor from "../modules/ModelEditor/ModelEditor"
+import styles from "./rediger.module.css"
 
 const BREVKODE = "INFORMASJON_OM_SAKSBEHANDLINGSTID"
 
@@ -34,11 +35,15 @@ const RedigerBrev: NextPage<SkribentenConfig> = (props) => {
         return (<div>Laster mal...</div>)
     } else {
         return (
-            <AuthenticatedTemplate>
-                <ModelEditor spec={modelSpec.modelSpecification} value={modelValue} updateValue={setModelValue}/>
-                <button type="button" onClick={renderLetter}>Oppdater variabler</button>
-                { letter !== null ? <LetterEditor letter={letter}/> : <div/> }
-            </AuthenticatedTemplate>
+            <div className={styles.container}>
+                <AuthenticatedTemplate>
+                    <div>
+                        <ModelEditor spec={modelSpec.modelSpecification} value={modelValue} updateValue={setModelValue}/>
+                        <button type="button" onClick={renderLetter}>Oppdater variabler</button>
+                    </div>
+                    {letter !== null ? <LetterEditor letter={letter}/> : <div/>}
+                </AuthenticatedTemplate>
+            </div>
         )
     }
 }

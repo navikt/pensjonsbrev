@@ -16,13 +16,18 @@ export interface ObjectEditorProps {
 const ObjectEditor: FC<ObjectEditorProps> = ({allSpecs, spec, value, updateValue}) => {
     return (
         <div className={styles.container}>
-            {Object.entries(spec).map(([name, field]) =>
-                <div key={name}>
-                    <label>
-                        {name}:
-                        <FieldEditor allSpecs={allSpecs} spec={field} value={value[name]} updateValue={bindAction(ModelValueAction.UpdateField, updateValue, value, name)}/>
-                    </label>
-                </div>
+            {Object.entries(spec).map(([name, field]) => {
+                    const updateField = bindAction(ModelValueAction.UpdateField, updateValue, value, name)
+                    return (
+                        <div key={name}>
+                            <label>
+                                {name}:
+                                {field.nullable && value[name] != null && <button type="button" onClick={() => updateField(null)}>Remove</button>}
+                                <FieldEditor allSpecs={allSpecs} spec={field} value={value[name]} updateValue={updateField}/>
+                            </label>
+                        </div>
+                    )
+                }
             )}
         </div>
     )

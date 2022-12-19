@@ -1,6 +1,19 @@
 .container {
-    /*width: 43.75rem;*/
+}
 
-    /** tmp */
-    margin-left: 2rem;
+.letter {
+    width: 43.75rem;
+    padding-left: 4.0625rem;
+    margin-bottom: 3rem;
+}
+
+.letter > * {
+    /*margin-bottom: 1.875rem;*/
+    border-radius: 0.25rem;
+}
+
+.letter > h1 {
+    margin-bottom: 1.875rem;
+    font-weight: 700;
+    font-size: 1.25rem;
 }

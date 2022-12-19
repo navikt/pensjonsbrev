@@ -8,6 +8,8 @@ import {bindAction, BoundAction} from "../../lib/actions"
 import {SplitBlockAtContent} from "./components/content/Content"
 import {BlocksAction} from "./actions/blocks"
 import {BlockAction} from "./actions/block"
+import SakspartView from "./components/sakspart/SakspartView"
+import SignaturView from "./components/signatur/SignaturView"
 
 interface AnyBlockProps {
     block: AnyBlock,
@@ -45,7 +47,9 @@ const LetterEditor: FC<LetterEditorProps> = ({letter}) => {
 
     return (
         <div className={styles.container}>
-            <div>
+            <div className={styles.letter}>
+                <SakspartView sakspart={letter.sakspart}/>
+                <h1>{letter.title}</h1>
                 {blocks.map((block, blockId) =>
                     <AnyBlock key={blockId}
                               block={block}
@@ -53,6 +57,7 @@ const LetterEditor: FC<LetterEditorProps> = ({letter}) => {
                               updateBlock={updateBlock.bind(null, blockId)}
                     />
                 )}
+                <SignaturView signatur={letter.signatur}/>
             </div>
             <button onClick={() => console.log(blocks)}>Save</button>
         </div>

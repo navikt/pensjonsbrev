@@ -17,7 +17,7 @@ export type FieldValue<T extends FieldType> =
 
 
 export function initValueFromSpec<T extends FieldType>(objSpecs: ObjectTypeSpecifications, spec: T, nullIfNullable?: boolean): FieldValue<T>
-export function initValueFromSpec(objSpecs: ObjectTypeSpecifications, spec: FieldType, nullIfNullable: boolean = true): FieldValue<FieldType> | null {
+export function initValueFromSpec(objSpecs: ObjectTypeSpecifications, spec: FieldType, nullIfNullable = true): FieldValue<FieldType> | null {
     if (spec.nullable && nullIfNullable) {
         return null
     } else {

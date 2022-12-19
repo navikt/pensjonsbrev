@@ -17,6 +17,7 @@ export type TextContent = LiteralValue | VariableValue
 export interface Block extends Identifiable {
     readonly type: string
     readonly locked?: boolean
+    readonly editable?: boolean
     readonly content: TextContent[]
 }
 export interface ParagraphBlock extends Block {
@@ -29,9 +30,24 @@ export interface HeaderBlock extends Block {
     readonly type: 'header'
 }
 export type AnyBlock = HeaderBlock | Title1Block | ParagraphBlock
-
+export interface Sakspart {
+    readonly gjelderNavn: string
+    readonly gjelderFoedselsnummer: string
+    readonly saksnummer: string
+    readonly dokumentDato: string
+}
+export interface Signatur {
+    readonly hilsenTekst: string
+    readonly saksbehandlerRolleTekst: string
+    readonly saksbehandlerNavn: string
+    readonly attesterendeSaksbehandlerNavn?: string
+    readonly navAvsenderEnhet: string
+}
 export interface RenderedLetter {
+    readonly title: string
+    readonly sakspart: Sakspart
     blocks: AnyBlock[]
+    readonly signatur: Signatur
 }
 
 

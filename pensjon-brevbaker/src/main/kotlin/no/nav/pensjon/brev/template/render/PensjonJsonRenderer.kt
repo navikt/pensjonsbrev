@@ -1,8 +1,10 @@
 package no.nav.pensjon.brev.template.render
 
 import com.fasterxml.jackson.annotation.*
+import no.nav.pensjon.brev.api.model.*
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.render.Block.Type.*
+import java.time.format.FormatStyle
 import java.util.*
 
 typealias TreeLocation = List<String>
@@ -21,22 +23,51 @@ sealed class Content {
     data class Variable(override val id: Int, override val location: TreeLocation, override val text: String) : Content()
 }
 
-data class Block(val id: Int, val type: Type, val location: TreeLocation, val content: List<Content>) {
+data class Block(val id: Int, val type: Type, val location: TreeLocation, val content: List<Content>, val editable: Boolean = true) {
     enum class Type {
         TITLE1, PARAGRAPH, TEXT
     }
 }
 
-data class RenderedJsonLetter(val title: String, val blocks: List<Block>)
+data class Sakspart(val gjelderNavn: String, val gjelderFoedselsnummer: String, val saksnummer: String, val dokumentDato: String)
+data class Signatur(
+    val hilsenTekst: String,
+    val saksbehandlerRolleTekst: String,
+    val saksbehandlerNavn: String,
+    val attesterendeSaksbehandlerNavn: String?,
+    val navAvsenderEnhet: String,
+)
+data class RenderedJsonLetter(val title: String, val sakspart: Sakspart, val blocks: List<Block>, val signatur: Signatur)
 
 object PensjonJsonRenderer {
+    private val languageSettings = pensjonHTMLSettings
+
     fun render(letter: Letter<*>): RenderedJsonLetter =
         letter.toScope().let { scope ->
             RenderedJsonLetter(
                 title = renderText(scope, letter.template.title, emptyList()).joinToString { it.text },
-                blocks = renderOutline(scope, letter.template.outline)
+                sakspart = Sakspart(
+                    gjelderNavn = gjelderNavn(scope.felles.bruker),
+                    gjelderFoedselsnummer = scope.felles.bruker.foedselsnummer.value,
+                    saksnummer = scope.felles.saksnummer,
+                    dokumentDato = scope.felles.dokumentDato.format(dateFormatter(scope.language, FormatStyle.SHORT)),
+                ),
+                blocks = renderOutline(scope, letter.template.outline),
+                // TODO: Signerende saksbehandler skal være obligatorisk for redigerbare brev, og attesterende skal være nullable
+                signatur = scope.felles.signerendeSaksbehandlere.let { sign ->
+                    Signatur(
+                        hilsenTekst = renderText(scope, languageSettings.settings[LanguageSetting.Closing.greeting]!!, emptyList()).joinToString { it.text },
+                        saksbehandlerRolleTekst = renderText(scope, languageSettings.settings[LanguageSetting.Closing.saksbehandler]!!, emptyList()).joinToString { it.text },
+                        saksbehandlerNavn = sign?.saksbehandler ?: "",
+                        attesterendeSaksbehandlerNavn = sign?.attesterendeSaksbehandler ?: "",
+                        navAvsenderEnhet = scope.felles.avsenderEnhet.navn,
+                    )
+                }
             )
         }
+
+    private fun gjelderNavn(bruker: Bruker) =
+        listOfNotNull(bruker.fornavn, bruker.mellomnavn, bruker.etternavn).joinToString(" ")
 
     private fun <C : Element<*>> render(scope: ExpressionScope<*, *>, elements: List<ContentOrControlStructure<*, C>>, location: TreeLocation, renderBlock: (scope: ExpressionScope<*, *>, element: C, location: TreeLocation) -> Unit) {
         elements.forEach { controlStructure(scope, it, location, renderBlock) }
@@ -61,6 +92,21 @@ object PensjonJsonRenderer {
             render(scope, outline, emptyList()) { outlineScope, element, location ->
                 add(renderOutlineContent(outlineScope, element, location + (siblingCounter++).toString()))
             }
+            // Har du spørsmål?
+            add(
+                renderOutlineContent(
+                    scope,
+                    Element.OutlineContent.Title1(languageSettings.settings[LanguageSetting.Closing.harDuSpoersmaal]!!),
+                    listOf((siblingCounter++).toString())
+                ).copy(editable = false)
+            )
+            add(
+                renderParagraph(
+                    scope,
+                    Element.OutlineContent.Paragraph(languageSettings.settings[LanguageSetting.Closing.kontaktOss]!!),
+                    listOf((siblingCounter++).toString())
+                ).copy(editable = false)
+            )
         }
 
     private fun renderOutlineContent(scope: ExpressionScope<*, *>, element: Element.OutlineContent<*>, location: TreeLocation): Block =

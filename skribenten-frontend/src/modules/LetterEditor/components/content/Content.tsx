@@ -17,7 +17,15 @@ export type UpdateContent = BoundAction<[contentId: number, content: TextContent
 export type SplitBlockAtContent = BoundAction<[contentId: number, currentText: string, nextText: string]>
 
 const Content: FC<ContentProps> = ({block, doUnlock, updateContent, splitBlockAtContent}) => {
-    if (block.locked) {
+    if (!block.editable) {
+        return (
+            <div className={styles.notEditable}>
+                {block.content.map((c, id) =>
+                    <Text key={id} content={c} />
+                )}
+            </div>
+        )
+    } else if (block.locked) {
         return (
             <div className={styles.locked}>
                 <div className={styles.content}>
@@ -34,7 +42,7 @@ const Content: FC<ContentProps> = ({block, doUnlock, updateContent, splitBlockAt
                 {block.content.map((c, id) =>
                     <Text key={id}
                           content={c}
-                          updateText={bindAction(TextContentAction.updateText, updateContent.bind(null, id), c)}
+                          updateText={bindAction(TextContentAction.updateText, (newContent: TextContent) => updateContent(id, newContent), c)}
                           splitBlockAtConentWithText={splitBlockAtContent.bind(null, id)}/>
                 )}
             </div>
