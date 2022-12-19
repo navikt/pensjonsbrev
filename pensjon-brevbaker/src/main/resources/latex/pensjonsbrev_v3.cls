@@ -115,7 +115,7 @@
 \newcommand{\currentSectionName}{mainletter} %name of the current section of the letter. Used for lastpage label at the end of this section
 \newcommand{\letterpagenumber}{ %general page number formatting
     \begin{textblock*}{\textwidth}(\lettermargin,\pagenumberyposcalc)
-        \pagenumbertext{\feltsaksnummerprefix~\feltsaksnummer\hfill\feltsideprefix~\thepage~\feltsideinfix~\pageref*{\currentSectionName}}
+        \pagenumbertext{\feltsaksnummer\hfill\feltsideprefix~\thepage~\feltsideinfix~\pageref*{\currentSectionName}}
     \end{textblock*}
 }
 
