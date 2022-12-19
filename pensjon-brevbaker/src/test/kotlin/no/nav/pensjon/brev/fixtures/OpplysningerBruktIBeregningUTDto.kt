@@ -15,7 +15,7 @@ fun createOpplysningerBruktIBeregningUTDto() =
         inntektFoerUfoereGjeldende = Fixtures.create(),
         inntektsAvkortingGjeldende = Fixtures.create(),
         minsteytelseGjeldende_sats = 0.0,
-        sivilstand = Sivilstand.GIFT,
+        sivilstand = Sivilstand.PARTNER,
         trygdetidsdetaljerGjeldende = Fixtures.create(),
         ufoeretrygdGjeldende = Fixtures.create(),
         ungUfoerGjeldende_erUnder20Aar = false,
@@ -26,6 +26,7 @@ fun createOpplysningerBruktIBeregningUTDtoBarnetilleggGjeldende() =
     OpplysningerBruktIBeregningUTDto.BarnetilleggGjeldende(
         saerkullsbarn = Fixtures.create(),
         fellesbarn = Fixtures.create(),
+        totaltAntallBarn = 3
     )
 fun createOpplysningerBruktIBeregningUTDtoBarnetilleggGjeldendeFellesbarn() =
     OpplysningerBruktIBeregningUTDto.BarnetilleggGjeldende.Fellesbarn(
@@ -44,7 +45,7 @@ fun createOpplysningerBruktIBeregningUTDtoBarnetilleggGjeldendeFellesbarn() =
         inntektOverFribeloep = Kroner(25000),
         inntektstak = Kroner(200000),
         innvilgetBarnetillegg = true,
-        justeringsbeloepAar = Kroner(15000),
+        justeringsbeloepAar = Kroner(0),
     )
 
 fun createOpplysningerBruktIBeregningUTDtoBarnetilleggGjeldendeSaerkullsbarn() =
@@ -68,7 +69,7 @@ fun createOpplysningerBruktIBeregningUTDtoBarnetilleggGjeldendeSaerkullsbarn() =
 fun createOpplysningerBruktIBeregningUTDtoBeregnetUTPerManedGjeldende() =
     OpplysningerBruktIBeregningUTDto.BeregnetUTPerManedGjeldende(
         brukerErFlyktning = false,
-        brukersSivilstand = Sivilstand.ENSLIG,
+        brukersSivilstand = Sivilstand.GIFT,
         grunnbeloep = Kroner(100000),
         virkDatoFom = LocalDate.of(2020, 1, 1),
     )
