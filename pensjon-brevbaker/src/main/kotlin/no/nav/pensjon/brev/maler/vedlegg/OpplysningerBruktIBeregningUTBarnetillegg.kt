@@ -918,9 +918,6 @@ val vedleggOpplysningerBruktIBeregningUTBarnetillegg =
                             justeringsbeloepAar_barnetilleggFBGjeldende = fellesTillegg.justeringsbeloepAar
                         )
                     )
-                }
-
-                showIf(fellesTillegg.erRedusertMotinntekt) {
                     includePhrase(
                         PeriodisertInntektFellesbarnC(
                             justeringsbeloepAar_barnetilleggFBGjeldende = fellesTillegg.justeringsbeloepAar
@@ -939,9 +936,6 @@ val vedleggOpplysningerBruktIBeregningUTBarnetillegg =
                             erRedusertMotInntektSaerkullsbarn = saerkullTillegg.erRedusertMotinntekt,
                         )
                     )
-                }
-
-                showIf(saerkullTillegg.erRedusertMotinntekt) {
                     includePhrase(
                         PeriodisertInntektSaerkullsbarnC(
                             justeringsbeloepAar_barnetilleggSBGjeldende = saerkullTillegg.justeringsbeloepAar
