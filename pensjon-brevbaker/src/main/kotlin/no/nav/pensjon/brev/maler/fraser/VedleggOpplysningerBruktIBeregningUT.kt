@@ -500,6 +500,7 @@ data class FastsetterStoerelsenPaaBTFellesbarnOgSaerkullsbarn(
     }
 }
 
+// TBU605V
 data class PeriodisertInntektInnledning(
     val justeringsbeloepAar_barnetilleggFBGjeldende: Expression<Kroner>,
     val justeringsbeloepAar_barnetilleggSBGjeldende: Expression<Kroner>,
@@ -557,7 +558,7 @@ data class PeriodisertInntektInnledning(
 
 
 // TBU605V
-data class PeriodisertInntektFellesbarnB(
+data class PeriodisertInntektFellesbarnA(
     val avkortningsbeloepAar_barnetilleggFBGjeldende: Expression<Kroner>,
     val fribeloepEllerInntektFellesbarn: Expression<Boolean>,
     val justeringsbeloepAar_barnetilleggFBGjeldende: Expression<Kroner>,
@@ -626,7 +627,8 @@ data class PeriodisertInntektFellesbarnB(
     }
 }
 
-data class PeriodisertInntekSaerkullsbarnB(
+// TBU605V - saerkullsbarn
+data class PeriodisertInntekSaerkullsbarnA(
     val avkortningsbeloepAar_barnetilleggSBGjeldende: Expression<Kroner>,
     val fribeloepEllerInntektSaerkullsbarn: Expression<Boolean>,
     val justeringsbeloepAar_barnetilleggSBGjeldende: Expression<Kroner>,
@@ -692,8 +694,8 @@ data class PeriodisertInntekSaerkullsbarnB(
     }
 }
 
-
-data class PeriodisertInntektFellesbarnC(
+// TBU613V - fellesbarn
+data class PeriodisertInntektFellesbarnB(
     val avkortningsbeloepAar_barnetilleggFBGjeldende: Expression<Kroner>,
     val fribeloepEllerInntektErPeriodisert_barnetilleggFBGjeldende: Expression<Boolean>,
     val harTilleggForFlereFellesbarn: Expression<Boolean>,
@@ -742,7 +744,8 @@ data class PeriodisertInntektFellesbarnC(
     }
 }
 
-data class PeriodisertInntektFellesbarnD(
+// TBU613V - fellesbarn
+data class PeriodisertInntektFellesbarnC(
     val justeringsbeloepAar_barnetilleggFBGjeldende: Expression<Kroner>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
@@ -766,8 +769,8 @@ data class PeriodisertInntektFellesbarnD(
     }
 }
 
-
-data class PeriodisertInntektSaerkullsbarnC(
+// TBU613V - saerkullsbarn
+data class PeriodisertInntektSaerkullsbarnB(
     val avkortningsbeloepAar_barnetilleggSBGjeldende: Expression<Kroner>,
     val fribeloepEllerInntektErPeriodisert_barnetilleggSBGjeldende: Expression<Boolean>,
     val harTilleggForFlereSaerkullsbarn: Expression<Boolean>,
@@ -823,8 +826,8 @@ data class PeriodisertInntektSaerkullsbarnC(
     }
 }
 
-
-data class PeriodisertInntektSaerkullsbarnD(
+// TBU613 - saerkullsbarn
+data class PeriodisertInntektSaerkullsbarnC(
     val justeringsbeloepAar_barnetilleggSBGjeldende: Expression<Kroner>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
@@ -847,7 +850,6 @@ data class PeriodisertInntektSaerkullsbarnD(
     }
 }
 
-// TODO ubrukte fraser
 
 object VedleggBeregnUTInfoBTSB : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
