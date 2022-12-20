@@ -132,15 +132,15 @@ val pensjonLatexSettings = languageSettings {
     }
     setting("tablenextpagecontinuation") {
         text(
-            Bokmal to "Fortsettelse på neste side",
-            Nynorsk to "Fortsettelse på neste side",
-            English to "Continued on the next page",
+            Bokmal to "Tabellen fortsetter på neste side",
+            Nynorsk to "Tabellen fortsett på neste side",
+            English to "Continued on next page",
         )
     }
     setting("tablecontinuedfrompreviouspage") {
         text(
             Bokmal to "Fortsettelse fra forrige side",
-            Nynorsk to "Fortsettelse fra forrige side",
+            Nynorsk to "Fortsetjing frå førre side",
             English to "Continuation from previous page",
         )
     }
