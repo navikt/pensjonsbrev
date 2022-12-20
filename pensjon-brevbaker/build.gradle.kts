@@ -90,7 +90,7 @@ dependencies {
     ksp(project(":template-model-generator"))
 
     // Necessary for java.time.LocalDate
-    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.13.4")
+    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.14.0")
 
     // Metrics
     implementation("io.ktor:ktor-server-metrics:$ktorVersion")

@@ -12,8 +12,19 @@ object Brevkode {
         val brevkoder: Set<String> = koder.toSet()
 
         companion object {
+            @Suppress("unused")
             fun findByKode(kode: String): Vedtak? =
                 Vedtak.values().find { it.brevkoder.contains(kode) }
+        }
+    }
+    enum class Redigerbar(val kode: String) {
+        INFORMASJON_OM_SAKSBEHANDLINGSTID("AP_INFO_STID_MAN"),
+        ;
+
+        companion object {
+            @Suppress("unused")
+            fun findByKode(kode: String): Redigerbar? =
+                Redigerbar.values().firstOrNull { it.kode == kode }
         }
     }
 }

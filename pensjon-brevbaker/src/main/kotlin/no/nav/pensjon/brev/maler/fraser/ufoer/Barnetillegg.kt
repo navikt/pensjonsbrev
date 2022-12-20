@@ -5,6 +5,7 @@ import no.nav.pensjon.brev.api.model.Sivilstand
 import no.nav.pensjon.brev.maler.fraser.Constants
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.model.format
+import no.nav.pensjon.brev.template.BinaryOperation
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.*
@@ -13,13 +14,14 @@ import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
+import java.time.LocalDate
 
 
 object Barnetillegg {
     // TODO: children plural
     // TBU2290
 
-    /*
+
     data class VirkningsDatoForOpphoer(
         val oensketVirkningsDato: Expression<LocalDate>,
         val foedselsdatoPaaBarnetilleggOpphoert: Expression<List<LocalDate>>,
@@ -27,7 +29,7 @@ object Barnetillegg {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             paragraph {
                 val virkningsDato = oensketVirkningsDato.format()
-                val foedselsDato = foedselsdatoPaaBarnetilleggOpphoert.format()
+                val foedselsDato = foedselsdatoPaaBarnetilleggOpphoert.map(BinaryOperation.LocalizedDateFormat).format()
 
                 textExpr(
                     Bokmal to "Vi har vedtatt at barnetillegget i uføretrygden din opphører fra ".expr() + virkningsDato + " for barn født ".expr() + foedselsDato + ".".expr(),
@@ -51,7 +53,7 @@ object Barnetillegg {
             }
         }
     }
-     */
+
 
     // TBU3800
     data class BetydningAvInntektOverskrift(
