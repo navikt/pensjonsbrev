@@ -943,7 +943,6 @@ val vedleggOpplysningerBruktIBeregningUTBarnetillegg =
                     )
                 }
 
-                // FELLESBARN - start
                 ifNotNull(
                     barnetilleggGjeldende.fellesbarn_safe,
                 ) { fellesTillegg ->
