@@ -46,10 +46,14 @@ object Barnetillegg {
     ) : OutlinePhrase<LangBokmalNynorskEnglish>(){
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             paragraph {
+                val barnFlertall = opphoertBarnetilleggFlereBarn
                 textExpr(
-                    Bokmal to "For å ha rett til barnetillegg må du forsørge barn under 18 år. Vi har vedtatt at barnetillegget i uføretrygden opphører fordi barnetbarna har fylt 18 år.".expr(),
-                    Nynorsk to "For å ha rett til barnetillegg må du forsørgje barn under 18 år. Vi har stansa barnetillegget i uføretrygda fordi barnetbarna har fylt 18 år.".expr(),
-                    English to "To be eligible for child supplement, you must support children under 18 years of age. The child supplement in your disability benefit has been discontinued because your childchildren has(have) turned 18 years of age.".expr()
+                    Bokmal to "For å ha rett til barnetillegg må du forsørge barn under 18 år. Vi har vedtatt at barnetillegget i uføretrygden opphører fordi ".expr() +
+                            ifElse(barnFlertall, ifTrue = "barna", ifFalse = "barnet") + " har fylt 18 år.".expr(),
+                    Nynorsk to "For å ha rett til barnetillegg må du forsørgje barn under 18 år. Vi har stansa barnetillegget i uføretrygda fordi ".expr() +
+                            ifElse(barnFlertall, ifTrue = "barna", ifFalse = "barnet") + " har fylt 18 år.".expr(),
+                    English to "To be eligible for child supplement, you must support children under 18 years of age. The child supplement in your disability benefit has been discontinued because your ".expr() +
+                            ifElse(barnFlertall, ifTrue = "children have", ifFalse = "your child has") + " turned 18 years of age.".expr()
                 )
             }
         }
