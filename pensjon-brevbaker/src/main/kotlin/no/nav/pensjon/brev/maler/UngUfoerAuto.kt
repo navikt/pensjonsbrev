@@ -1,6 +1,9 @@
 package no.nav.pensjon.brev.maler
 
+import no.nav.pensjon.brev.api.model.Kroner
 import no.nav.pensjon.brev.api.model.LetterMetadata
+import no.nav.pensjon.brev.api.model.maler.BarnetilleggSelectors.gjelderFlereBarn_safe
+import no.nav.pensjon.brev.api.model.maler.BarnetilleggSelectors.inntektstak_safe
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggSelectors.utbetalt_safe
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.InnvilgetTilleggSelectors.utbetalt_safe
@@ -16,6 +19,7 @@ import no.nav.pensjon.brev.api.model.maler.UngUfoerAutoDtoSelectors.saerkullsbar
 import no.nav.pensjon.brev.api.model.maler.UngUfoerAutoDtoSelectors.totaltUfoerePerMnd
 import no.nav.pensjon.brev.maler.fraser.UngUfoer
 import no.nav.pensjon.brev.maler.fraser.common.Felles
+import no.nav.pensjon.brev.maler.fraser.ufoer.Barnetillegg
 import no.nav.pensjon.brev.maler.fraser.ufoer.Ufoeretrygd
 import no.nav.pensjon.brev.maler.fraser.vedtak.Vedtak
 import no.nav.pensjon.brev.maler.vedlegg.vedleggMaanedligUfoeretrygdFoerSkatt
@@ -24,8 +28,9 @@ import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.VedtaksbrevTemplate
 import no.nav.pensjon.brev.template.dsl.createTemplate
-
-import no.nav.pensjon.brev.template.dsl.expression.*
+import no.nav.pensjon.brev.template.dsl.expression.expr
+import no.nav.pensjon.brev.template.dsl.expression.ifNull
+import no.nav.pensjon.brev.template.dsl.expression.notNull
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -69,12 +74,18 @@ object UngUfoerAuto : VedtaksbrevTemplate<UngUfoerAutoDto> {
                 )
             )
 
-            //TODO fiks når template-model generator har fått interface støtte
-            //includePhrase(Barnetillegg.BarnetilleggIkkeUtbetalt(
-            //    saerkullsbarn = saerkullsbarn,
-            //    fellesbarn = fellesbarn,
-            //    )
-            //)
+            includePhrase(
+                Barnetillegg.BarnetilleggIkkeUtbetalt(
+                    saerkullInnvilget = saerkullsbarn.notNull(),
+                    saerkullUtbetalt = saerkullsbarn.utbetalt_safe.ifNull(false),
+                    harFlereSaerkullsbarn = saerkullsbarn.gjelderFlereBarn_safe.ifNull(false),
+                    inntektstakSaerkullsbarn = saerkullsbarn.inntektstak_safe.ifNull(Kroner(0)),
+                    fellesInnvilget = fellesbarn.notNull(),
+                    fellesUtbetalt = fellesbarn.utbetalt_safe.ifNull(false),
+                    harFlereFellesBarn = fellesbarn.gjelderFlereBarn_safe.ifNull(false),
+                    inntektstakFellesbarn = fellesbarn.inntektstak_safe.ifNull(Kroner(0)),
+                )
+            )
 
 
             includePhrase(Vedtak.BegrunnelseOverskrift)

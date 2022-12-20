@@ -30,6 +30,10 @@ sealed class UnaryOperation<In, out Out> : Operation() {
         override fun apply(input: T): String = input.toString()
     }
 
+    object SizeOf : UnaryOperation<Collection<*>, Int>(){
+        override fun apply(input: Collection<*>): Int = input.size
+    }
+
     object FormatPhoneNumber : UnaryOperation<Telefonnummer, String>() {
         override fun apply(input: Telefonnummer): String = input.format()
     }
