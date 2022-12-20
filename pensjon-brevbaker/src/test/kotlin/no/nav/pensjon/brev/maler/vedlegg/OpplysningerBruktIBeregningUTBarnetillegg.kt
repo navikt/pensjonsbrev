@@ -52,7 +52,7 @@ class OpplysningerBruktIBeregningUTTest {
         Letter(
             template,
             Unit,
-            Language.Bokmal,
+            Language.Nynorsk,
             Fixtures.fellesAuto
         )
             .let { PensjonLatexRenderer.render(it) }
