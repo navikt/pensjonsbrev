@@ -20,7 +20,6 @@
 % tables and colors
 \usepackage{xcolor}
 \usepackage{ninecolors}
-\usepackage[all]{nowidow} % prevent widowed paragraphs
 \usepackage{tabularray} % better tables(tblr, longtblr)
 %\usepackage{layout} % page layout debug package
 \usepackage{enumitem,amssymb} % for formChoice list
@@ -69,6 +68,8 @@
 \raggedright % no word spacing
 \raggedbottom % no line stretching to fit page
 \frenchspacing % no double space after ended sentence
+\interlinepenalty=10000 % penalty for breaking up a text.
+\@itempenalty=10000 % penalty for breaking up an itemlist
 
 
 % page text area formatting
