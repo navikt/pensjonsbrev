@@ -561,19 +561,22 @@ object Barnetillegg {
     /**
      * TBU1286.1, TBU1286.2
      */
-    data class BarnetilleggIkkeUtbetalt(
+    data class BarnetilleggetInnvilgetOgIkkeUtbetalt(
         val fellesInnvilget: Expression<Boolean>,
         val fellesUtbetalt: Expression<Boolean>,
         val harFlereFellesBarn: Expression<Boolean>,
         val harFlereSaerkullsbarn: Expression<Boolean>,
+        val harJusteringsbeloepFellesbarn: Expression<Boolean>,
+        val harJusteringsbeloepSaerkullsbarn: Expression<Boolean>,
         val inntektstakFellesbarn: Expression<Kroner>,
         val inntektstakSaerkullsbarn: Expression<Kroner>,
         val saerkullInnvilget: Expression<Boolean>,
         val saerkullUtbetalt: Expression<Boolean>,
-    ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+
+        ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
             paragraph {
-                showIf(saerkullInnvilget and not(saerkullUtbetalt) and not(fellesInnvilget)) {
+                showIf(saerkullInnvilget and not(saerkullUtbetalt) and not(fellesInnvilget) and not(harJusteringsbeloepSaerkullsbarn)) {
                     textExpr(
                         Bokmal to "Barnetillegget for ".expr() +
                                 ifElse(harFlereSaerkullsbarn, "barna", "barnet") +
@@ -588,7 +591,7 @@ object Barnetillegg {
                                 " because your total income on its own is higher than NOK " +
                                 inntektstakFellesbarn.format() + ". You will not receive child supplement because your income exceeds the income limit.".expr()
                     )
-                }.orShowIf(saerkullInnvilget and not(saerkullUtbetalt) and fellesInnvilget) {
+                }.orShowIf(saerkullInnvilget and not(saerkullUtbetalt) and fellesUtbetalt and not(harJusteringsbeloepSaerkullsbarn)) {
                     textExpr(
                         Bokmal to "Barnetillegget for ".expr() +
                                 ifElse(harFlereSaerkullsbarn, "barna", "barnet") +
@@ -603,7 +606,7 @@ object Barnetillegg {
                                 " not live together with both parents because your total income on its own is higher than NOK " +
                                 inntektstakFellesbarn.format() + ". You will not receive child supplement because your income exceeds the income limit.".expr()
                     )
-                }.orShowIf(fellesInnvilget and not(fellesUtbetalt) and not(saerkullInnvilget)) {
+                }.orShowIf(fellesInnvilget and not(fellesUtbetalt) and not(saerkullInnvilget) and not(harJusteringsbeloepFellesbarn)) {
                     textExpr(
                         Bokmal to "Barnetillegget for ".expr() +
                                 ifElse(harFlereFellesBarn, "barna", "barnet") +
@@ -619,7 +622,7 @@ object Barnetillegg {
                                 " because your total income on its own is higher than NOK " +
                                 inntektstakFellesbarn.format() + ". You will not receive child supplement because your combined incomes exceed the income limit.".expr()
                     )
-                }.orShowIf(fellesInnvilget and not(fellesUtbetalt) and saerkullInnvilget) {
+                }.orShowIf(fellesInnvilget and not(fellesUtbetalt) and saerkullUtbetalt and not(harJusteringsbeloepFellesbarn)) {
                     textExpr(
                         Bokmal to "Barnetillegget for ".expr() +
                                 ifElse(harFlereFellesBarn, "barna", "barnet") +
@@ -641,9 +644,11 @@ object Barnetillegg {
 
 
     // TBU2490 Barnetilleggene for både særkullsbarn og fellesbarn er innvilget og ingen av dem blir utbetalt
-    data class InnvilgetOgIkkeUtbetalt(
+    data class BarnetilleggeneInnvilgetOgIkkeUtbetalt(
         val fellesInnvilget: Expression<Boolean>,
         val fellesUtbetalt: Expression<Boolean>,
+        val harJusteringsbeloepFellesbarn: Expression<Boolean>,
+        val harJusteringsbeloepSaerkullsbarn: Expression<Boolean>,
         val harTilleggForFlereFellesbarn: Expression<Boolean>,
         val harTilleggForFlereSaerkullsbarn: Expression<Boolean>,
         val inntektstakFellesbarn: Expression<Kroner>,
@@ -653,7 +658,7 @@ object Barnetillegg {
 
         ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-            showIf(fellesInnvilget and not(fellesUtbetalt) and saerkullInnvilget and not(saerkullUtbetalt)
+            showIf(fellesInnvilget and not(fellesUtbetalt) and not(harJusteringsbeloepFellesbarn) and saerkullInnvilget and not(saerkullUtbetalt) and not(harJusteringsbeloepSaerkullsbarn)
             ) {
                 paragraph {
                     textExpr(
