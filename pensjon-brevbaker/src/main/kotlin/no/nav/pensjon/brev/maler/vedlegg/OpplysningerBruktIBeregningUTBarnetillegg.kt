@@ -796,7 +796,8 @@ val vedleggOpplysningerBruktIBeregningUTBarnetillegg =
                 }
             }
         }
-
+        // END of table 1
+        // START of minsteytelse
         showIf(harMinsteytelseSats) {
             includePhrase(RettTilMYOverskrift)
         }
@@ -829,8 +830,8 @@ val vedleggOpplysningerBruktIBeregningUTBarnetillegg =
 
         showIf(
             harMinsteytelseSats
-                and inntektFoerUfoereGjeldende.erSannsynligEndret
-                and inntektsgrenseErUnderTak
+                    and inntektFoerUfoereGjeldende.erSannsynligEndret
+                    and inntektsgrenseErUnderTak
         ) {
 
             includePhrase(SlikFastsettesKompGradOverskrift)
@@ -842,7 +843,8 @@ val vedleggOpplysningerBruktIBeregningUTBarnetillegg =
                 includePhrase(VedleggBeregnUTKompGradGjsntt)
             }
         }
-
+        // END of minsteytelse
+        // START of barnetillegg
         ifNotNull(
             barnetilleggGjeldende.fellesbarn_safe, barnetilleggGjeldende.saerkullsbarn_safe,
         ) { fellesTillegg, saerkullTillegg ->
@@ -947,7 +949,7 @@ val vedleggOpplysningerBruktIBeregningUTBarnetillegg =
                     barnetilleggGjeldende.fellesbarn_safe,
                 ) { fellesTillegg ->
 
-                    // TABLE 2 Fellesbarn - start
+                    // START of table 2 for Fellesbarn
                     showIf(fellesTillegg.justeringsbeloepAar.greaterThan(0)) {
                         includePhrase(VedleggBeregnUTJusterBelopOver0BTFB(fellesTillegg.justeringsbeloepAar))
                     }
@@ -1260,10 +1262,10 @@ val vedleggOpplysningerBruktIBeregningUTBarnetillegg =
                     }
                     showIf(
                         not(saerkullTillegg.fribeloepEllerInntektErPeriodisert)
-                            and (saerkullTillegg.beloep.notEqualTo(0) or (saerkullTillegg.beloep.equalTo(0) and saerkullTillegg.beloepAar.notEqualTo(
+                                and (saerkullTillegg.beloep.notEqualTo(0) or (saerkullTillegg.beloep.equalTo(0) and saerkullTillegg.beloepAar.notEqualTo(
                             0
                         )))
-                            and saerkullTillegg.avkortningsbeloepAar.greaterThan(0)
+                                and saerkullTillegg.avkortningsbeloepAar.greaterThan(0)
                     ) {
                         row {
                             cell {
@@ -1280,10 +1282,10 @@ val vedleggOpplysningerBruktIBeregningUTBarnetillegg =
                     }
                     showIf(
                         saerkullTillegg.fribeloepEllerInntektErPeriodisert
-                            and (saerkullTillegg.beloep.notEqualTo(0) or (saerkullTillegg.beloep.equalTo(0) and saerkullTillegg.beloepAar.notEqualTo(
+                                and (saerkullTillegg.beloep.notEqualTo(0) or (saerkullTillegg.beloep.equalTo(0) and saerkullTillegg.beloepAar.notEqualTo(
                             0
                         )))
-                            and saerkullTillegg.avkortningsbeloepAar.greaterThan(0)
+                                and saerkullTillegg.avkortningsbeloepAar.greaterThan(0)
                     ) {
                         row {
                             cell {
