@@ -229,14 +229,14 @@ object OpphoerBarnetilleggAuto : VedtaksbrevTemplate<OpphoerBarnetilleggAutoDto>
 
             includePhrase(
                 Barnetillegg.BarnetilleggIkkeUtbetalt(
-                    saerkullInnvilget = barnetilleggSaerkullsbarn.notNull(),
-                    saerkullUtbetalt = barnetilleggSaerkullsbarn.utbetalt_safe.ifNull(false),
-                    harFlereSaerkullsbarn = barnetilleggSaerkullsbarn.gjelderFlereBarn_safe.ifNull(false),
-                    inntektstakSaerkullsbarn = barnetilleggSaerkullsbarn.inntektstak_safe.ifNull(Kroner(0)),
                     fellesInnvilget = barnetilleggFellesbarn.notNull(),
                     fellesUtbetalt = barnetilleggFellesbarn.utbetalt_safe.ifNull(false),
                     harFlereFellesBarn = barnetilleggFellesbarn.gjelderFlereBarn_safe.ifNull(false),
+                    harFlereSaerkullsbarn = barnetilleggSaerkullsbarn.gjelderFlereBarn_safe.ifNull(false),
                     inntektstakFellesbarn = barnetilleggFellesbarn.inntektstak_safe.ifNull(Kroner(0)),
+                    inntektstakSaerkullsbarn = barnetilleggSaerkullsbarn.inntektstak_safe.ifNull(Kroner(0)),
+                    saerkullInnvilget = barnetilleggSaerkullsbarn.notNull(),
+                    saerkullUtbetalt = barnetilleggSaerkullsbarn.utbetalt_safe.ifNull(false),
                 )
             )
 
@@ -246,14 +246,14 @@ object OpphoerBarnetilleggAuto : VedtaksbrevTemplate<OpphoerBarnetilleggAutoDto>
             ) { barnetilleggFellesbarn, barnetilleggSaerkullsbarn ->
                 includePhrase(
                     Barnetillegg.InnvilgetOgIkkeUtbetalt(
-                        beloepNettoFellesbarn = barnetilleggFellesbarn.beloepNetto,
-                        beloepNettoSaerkullsbarn = barnetilleggSaerkullsbarn.beloepNetto,
+                        fellesInnvilget = barnetilleggFellesbarn.notNull(),
+                        fellesUtbetalt = barnetilleggFellesbarn.utbetalt_safe.ifNull(false),
+                        harTilleggForFlereFellesbarn = barnetilleggFellesbarn.gjelderFlereBarn,
+                        harTilleggForFlereSaerkullsbarn = barnetilleggSaerkullsbarn.gjelderFlereBarn,
                         inntektstakFellesbarn = barnetilleggFellesbarn.inntektstak,
                         inntektstakSaerkullsbarn = barnetilleggSaerkullsbarn.inntektstak,
-                        harJusteringsbeloepFellesbarn = barnetilleggFellesbarn.harJusteringsbeloep,
-                        harJusteringsbeloepSaerkullsbarn = barnetilleggSaerkullsbarn.harJusteringsbeloep,
-                        harTilleggForFlereSaerkullsbarn = barnetilleggSaerkullsbarn.gjelderFlereBarn,
-                        harTilleggForFlereFellesbarn = barnetilleggFellesbarn.gjelderFlereBarn
+                        saerkullInnvilget = barnetilleggSaerkullsbarn.notNull(),
+                        saerkullUtbetalt = barnetilleggSaerkullsbarn.utbetalt_safe.ifNull(false),
                     )
                 )
             }
