@@ -26,9 +26,6 @@ import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarnSelectors.in
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarnSelectors.inntektstak
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarnSelectors.inntektstak_safe
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarnSelectors.utbetalt_safe
-import no.nav.pensjon.brev.api.model.maler.BarnetilleggSelectors.gjelderFlereBarn_safe
-import no.nav.pensjon.brev.api.model.maler.BarnetilleggSelectors.inntektstak_safe
-import no.nav.pensjon.brev.api.model.maler.BarnetilleggSelectors.utbetalt_safe
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.OpphoerBarnetilleggAutoDto
 import no.nav.pensjon.brev.api.model.maler.OpphoerBarnetilleggAutoDtoSelectors.barnetilleggFellesbarn
@@ -45,8 +42,6 @@ import no.nav.pensjon.brev.api.model.maler.UfoeretrygdSelectors.ektefelletillegg
 import no.nav.pensjon.brev.api.model.maler.UfoeretrygdSelectors.gjenlevendetilleggUtbetalt_safe
 import no.nav.pensjon.brev.api.model.maler.UfoeretrygdSelectors.harUtbetalingsgrad
 import no.nav.pensjon.brev.api.model.maler.UfoeretrygdSelectors.utbetaltPerMaaned
-import no.nav.pensjon.brev.api.model.maler.UngUfoerAutoDtoSelectors.fellesbarn
-import no.nav.pensjon.brev.api.model.maler.UngUfoerAutoDtoSelectors.saerkullsbarn
 import no.nav.pensjon.brev.maler.fraser.OpphoerBarnetillegg
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.fraser.ufoer.Barnetillegg
@@ -99,7 +94,7 @@ object OpphoerBarnetilleggAuto : VedtaksbrevTemplate<OpphoerBarnetilleggAutoDto>
         outline {
             includePhrase(
                 Barnetillegg.VirkningsDatoForOpphoer(
-                    foedselsdatoPaaBarnetilleggOpphoert = foedselsdatoPaaBarnMedOpphoertBarnetillegg,
+                    foedselsdatoPaaBarnMedOpphoertBarnetillegg = foedselsdatoPaaBarnMedOpphoertBarnetillegg,
                     oensketVirkningsDato = oensketVirkningsDato
                 )
             )
@@ -146,9 +141,7 @@ object OpphoerBarnetilleggAuto : VedtaksbrevTemplate<OpphoerBarnetilleggAutoDto>
                 )
             )
 
-            ifNotNull(
-                barnetilleggSaerkullsbarn,
-            ) { barnetilleggSaerkullsbarn ->
+            ifNotNull(barnetilleggSaerkullsbarn) { barnetilleggSaerkullsbarn ->
                 includePhrase(
                     Barnetillegg.InntektHarBetydningForSaerkullsbarnTillegg(
                         harBarnetilleggFellesbarn = harBarnetilleggFellesbarn,

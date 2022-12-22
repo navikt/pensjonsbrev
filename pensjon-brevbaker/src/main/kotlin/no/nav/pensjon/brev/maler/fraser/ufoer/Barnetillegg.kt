@@ -18,23 +18,31 @@ import java.time.LocalDate
 
 
 object Barnetillegg {
-    // TODO: children plural
+
+
+    // TODO: kan vi ikke bare bruke navnet på barna?
     // TBU2290
-
-
     data class VirkningsDatoForOpphoer(
         val oensketVirkningsDato: Expression<LocalDate>,
-        val foedselsdatoPaaBarnetilleggOpphoert: Expression<List<LocalDate>>,
+        val foedselsdatoPaaBarnMedOpphoertBarnetillegg: Expression<List<LocalDate>>,
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             paragraph {
                 val virkningsDato = oensketVirkningsDato.format()
-                val foedselsDato = foedselsdatoPaaBarnetilleggOpphoert.map(BinaryOperation.LocalizedDateFormat).format()
+                val barnFlertall = foedselsdatoPaaBarnMedOpphoertBarnetillegg.size().greaterThan(1)
+                val foedselsDato =
+                    foedselsdatoPaaBarnMedOpphoertBarnetillegg.map(BinaryOperation.LocalizedDateFormat).format()
 
                 textExpr(
-                    Bokmal to "Vi har vedtatt at barnetillegget i uføretrygden din opphører fra ".expr() + virkningsDato + " for barn født ".expr() + foedselsDato + ".".expr(),
-                    Nynorsk to "Vi har stansa barnetillegget i uføretrygda di frå ".expr() + virkningsDato + " for barn fødd ".expr() + foedselsDato + ".".expr(),
-                    English to "The child supplement in your disability benefit has been discontinued, effective as of ".expr() + virkningsDato + ", for child/children born ".expr() + foedselsDato + ".".expr()
+                    Bokmal to "Vi har vedtatt at barnetillegget i uføretrygden din opphører fra ".expr() + virkningsDato +
+                            " for " + ifElse(barnFlertall, "barna", "barnet") +
+                            " født ".expr() + foedselsDato + ".".expr(),
+                    Nynorsk to "Vi har stansa barnetillegget i uføretrygda di frå ".expr() + virkningsDato +
+                            " for " + ifElse(barnFlertall, "barna", "barnet") +
+                            " fødd ".expr() + foedselsDato + ".".expr(),
+                    English to "The child supplement in your disability benefit has been discontinued, effective as of ".expr() + virkningsDato +
+                            ", for " + ifElse(barnFlertall, "children", "the child") +
+                            " born ".expr() + foedselsDato + ".".expr()
                 )
             }
         }
@@ -43,17 +51,17 @@ object Barnetillegg {
     // TBU3920
     data class BarnHarFylt18AAR(
         val opphoertBarnetilleggFlereBarn: Expression<Boolean>,
-    ) : OutlinePhrase<LangBokmalNynorskEnglish>(){
+    ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             paragraph {
                 val barnFlertall = opphoertBarnetilleggFlereBarn
                 textExpr(
                     Bokmal to "For å ha rett til barnetillegg må du forsørge barn under 18 år. Vi har vedtatt at barnetillegget i uføretrygden opphører fordi ".expr() +
-                            ifElse(barnFlertall, ifTrue = "barna", ifFalse = "barnet") + " har fylt 18 år.".expr(),
+                            ifElse(barnFlertall, "barna", "barnet") + " har fylt 18 år.".expr(),
                     Nynorsk to "For å ha rett til barnetillegg må du forsørgje barn under 18 år. Vi har stansa barnetillegget i uføretrygda fordi ".expr() +
-                            ifElse(barnFlertall, ifTrue = "barna", ifFalse = "barnet") + " har fylt 18 år.".expr(),
+                            ifElse(barnFlertall, "barna", "barnet") + " har fylt 18 år.".expr(),
                     English to "To be eligible for child supplement, you must support children under 18 years of age. The child supplement in your disability benefit has been discontinued because your ".expr() +
-                            ifElse(barnFlertall, ifTrue = "children have", ifFalse = "your child has") + " turned 18 years of age.".expr()
+                            ifElse(barnFlertall, "children have", "child has") + " turned 18 years of age.".expr()
                 )
             }
         }
@@ -64,7 +72,6 @@ object Barnetillegg {
     data class BetydningAvInntektOverskrift(
         val harBarnetilleggSaerkullsbarn: Expression<Boolean>,
         val harBarnetilleggFellesbarn: Expression<Boolean>,
-
         ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             title1 {
@@ -83,9 +90,9 @@ object Barnetillegg {
         val harBarnetilleggSaerkullsbarn: Expression<Boolean>,
         val sivilstand: Expression<Sivilstand>,
         val faarUtbetaltBarnetilleggSaerkullsbarn: Expression<Boolean>,
-
         ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+
             showIf(harBarnetilleggSaerkullsbarn and not(harBarnetilleggFellesbarn)) {
                 paragraph {
                     text(
@@ -666,6 +673,7 @@ object Barnetillegg {
                     )
                 }
 
+                // TODO following two textexpressions are equal
                 showIf(fellesInnvilget and not(fellesUtbetalt) and saerkullUtbetalt and saerkullInnvilget) {
                     textExpr(
                         Bokmal to "Barnetillegget for ".expr() +
