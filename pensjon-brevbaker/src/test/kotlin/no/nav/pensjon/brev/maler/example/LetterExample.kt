@@ -28,6 +28,8 @@ import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import java.time.LocalDate
+import kotlin.random.Random
+import kotlin.random.nextULong
 
 @TemplateModelHelpers
 object LetterExample : VedtaksbrevTemplate<LetterExampleDto> {
@@ -70,6 +72,23 @@ object LetterExample : VedtaksbrevTemplate<LetterExampleDto> {
                     Nynorsk to "Du kan klage på vedtaket innen seks uker fra du mottok det. Kontoret som har fattet vedtaket, vil da vurdere saken din på nytt."
                 )
             }
+            for(a in 1..15){
+                title1 {
+                    text(Bokmal to "bla ", Nynorsk to "bla ")
+                }
+                paragraph{
+
+                    for(a in 1..Random.nextInt(1,200)){
+                        text(Bokmal to "bla ", Nynorsk to "bla ")
+                    }
+                }
+                paragraph{
+
+                    for(a in 1..Random.nextInt(1,200)){
+                        text(Bokmal to "bla ", Nynorsk to "bla ")
+                    }
+                }
+            }
 
             // Fetch a value from the letter arguments
             paragraph {
@@ -81,6 +100,7 @@ object LetterExample : VedtaksbrevTemplate<LetterExampleDto> {
                         Nynorsk to "Hei ".expr() + firstName + ". Du har fått innvilget pensjon.".expr(),
                     )
                 }
+                text(Bokmal to lipsums[0], Nynorsk to lipsums[0])
 
                 list {
                     forEach(tilleggEksempel) { tillegg ->
