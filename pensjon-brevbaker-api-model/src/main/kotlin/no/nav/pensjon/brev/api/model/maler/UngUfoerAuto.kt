@@ -18,10 +18,9 @@ data class UngUfoerAutoDto(
     val orienteringOmRettigheterUfoere: OrienteringOmRettigheterUfoereDto,
 ) {
     data class InnvilgetTillegg(val utbetalt: Boolean)
-    //TODO legg til støtte for interfaces i template-model-generator.
     data class Barnetillegg(
         override val utbetalt: Boolean,
-        val antallBarn: Int, // TODO remove after version transition
+        val antallBarn: Int,
         override val inntektstak: Kroner,
         override val gjelderFlereBarn: Boolean,
     ): InnvilgetBarnetillegg
