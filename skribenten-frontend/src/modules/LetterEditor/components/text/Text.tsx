@@ -1,5 +1,5 @@
 import {FC} from "react"
-import {TextContent} from "../../model"
+import {LITERAL, TextContent, VARIABLE} from "../../model"
 import ContentEditable, {ContentEditableEvent} from "react-contenteditable"
 import styles from "./Text.module.css"
 import {BoundAction} from "../../../../lib/actions"
@@ -28,16 +28,16 @@ function updateOrSplit(updateText: UpdateText, split: SplitBlockAtContentWithTex
 const Text: FC<TextProps> = ({content, updateText, splitBlockAtConentWithText}) => {
     if (updateText && splitBlockAtConentWithText) {
         switch (content.type) {
-            case "literal":
+            case LITERAL:
                 return <ContentEditable html={content.text} tagName={'span'} onChange={updateOrSplit(updateText, splitBlockAtConentWithText)}/>
-            case "variable":
+            case VARIABLE:
                 return <span className={styles.variable}>{content.text}</span>
         }
     } else {
         switch (content.type) {
-            case "literal":
+            case LITERAL:
                 return <span>{content.text}</span>
-            case "variable":
+            case VARIABLE:
                 return <span className={styles.variable}>{content.text}</span>
         }
     }

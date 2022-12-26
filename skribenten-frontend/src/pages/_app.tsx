@@ -2,8 +2,8 @@ import '../../styles/globals.css'
 import type {AppContext, AppProps} from 'next/app'
 import App from 'next/app'
 import {MsalProvider} from "@azure/msal-react"
-import {AzureConfig, createMsal} from "../../services/msal"
-import {SkribentenAPIConfig} from "../../services/skribenten"
+import {AzureConfig, createMsal} from "../lib/services/msal"
+import {SkribentenAPIConfig} from "../lib/services/skribenten"
 
 function SkribentenApp({Component, pageProps}: AppProps<SkribentenConfig>) {
     return (

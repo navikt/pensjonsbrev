@@ -1,13 +1,12 @@
 import {IMsalContext} from "@azure/msal-react/dist/MsalContext";
 import {withAuthorization} from "./msal";
-import {RedigerbarTemplateDescription, RenderedLetter} from "../src/modules/LetterEditor/model"
-import {ObjectValue} from "../src/modules/ModelEditor/model"
+import {RedigerbarTemplateDescription, RenderedLetter} from "../../modules/LetterEditor/model"
+import {ObjectValue} from "../../modules/ModelEditor/model"
 
 export interface SkribentenAPIConfig {
     url: string
     scope: string
 }
-
 class SkribentenAPI {
     constructor(readonly config: SkribentenAPIConfig) {}
 
@@ -51,7 +50,7 @@ class SkribentenAPI {
         ).then(resp => resp.json())
     }
 
-    async renderLetter(msal: IMsalContext, brevkode: String, data: ObjectValue): Promise<RenderedLetter> {
+    async renderLetter(msal: IMsalContext, brevkode: String, data: ObjectValue, editedLetter: RenderedLetter | null): Promise<RenderedLetter> {
         return withAuthorization(msal, this.config.scope).then(auth =>
             fetch(`${this.config.url}/letter/${brevkode}`, {
                 headers: {
@@ -60,7 +59,7 @@ class SkribentenAPI {
                     'Authorization': `Bearer ${auth.accessToken}`,
                 },
                 method: 'POST',
-                body: JSON.stringify(data),
+                body: JSON.stringify({letterData: data, editedLetter: editedLetter}),
             })
         ).then(resp => resp.json())
     }

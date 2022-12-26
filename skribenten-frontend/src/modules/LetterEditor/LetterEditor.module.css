@@ -9,6 +9,8 @@
 
 .letter > * {
     /*margin-bottom: 1.875rem;*/
+    padding-left: 0.625rem;
+    padding-right: 0.625rem;
     border-radius: 0.25rem;
 }
 

@@ -3,6 +3,7 @@ import {LetterModelSpecification} from "../LetterEditor/model"
 import {BoundAction} from "../../lib/actions"
 import ObjectEditor from "./components/ObjectEditor/ObjectEditor"
 import {ObjectValue} from "./model"
+import styles from "./ModelEditor.module.css"
 
 export interface ModelSpecificationEditorProps {
     spec: LetterModelSpecification
@@ -14,9 +15,17 @@ const ModelSpecificationEditor: FC<ModelSpecificationEditorProps> = ({spec, valu
     const objectTypeSpec = spec.types[spec.letterModelTypeName]
 
     return (
-        <form>
-            <ObjectEditor allSpecs={spec.types} spec={objectTypeSpec} value={value} updateValue={updateValue}/>
-        </form>
+        <div className={styles.container}>
+            <div><h2>Brevredigering</h2></div>
+            <div className={styles.tabmenu}>
+                <div>Overstyring</div>
+            </div>
+            <div>
+                <form>
+                    <ObjectEditor allSpecs={spec.types} spec={objectTypeSpec} value={value} updateValue={updateValue}/>
+                </form>
+            </div>
+        </div>
     )
 }
 

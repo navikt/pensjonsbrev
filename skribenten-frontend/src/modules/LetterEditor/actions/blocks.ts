@@ -1,5 +1,5 @@
 import {Action} from "../../../lib/actions"
-import {AnyBlock, VariableDecl} from "../model"
+import {AnyBlock, VARIABLE, VariableDecl} from "../model"
 import produce from "immer"
 
 const setVariable: Action<AnyBlock[], [decl: VariableDecl]> =
@@ -7,7 +7,7 @@ const setVariable: Action<AnyBlock[], [decl: VariableDecl]> =
         draft.forEach(
             block => block.content.forEach(
                 content => {
-                    if (content.type === 'variable' && content.name === decl.spec.name) {
+                    if (content.type === VARIABLE && content.name === decl.spec.name) {
                         content.text = decl.value
                     }
                 }

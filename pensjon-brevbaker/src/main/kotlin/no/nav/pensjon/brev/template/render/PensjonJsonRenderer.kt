@@ -3,41 +3,8 @@ package no.nav.pensjon.brev.template.render
 import com.fasterxml.jackson.annotation.*
 import no.nav.pensjon.brev.api.model.*
 import no.nav.pensjon.brev.template.*
-import no.nav.pensjon.brev.template.render.Block.Type.*
 import java.time.format.FormatStyle
 import java.util.*
-
-typealias TreeLocation = List<String>
-
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type", include = JsonTypeInfo.As.PROPERTY)
-@JsonSubTypes(
-    JsonSubTypes.Type(Content.Literal::class, name = "literal"),
-    JsonSubTypes.Type(Content.Variable::class, name = "variable"),
-)
-sealed class Content {
-    abstract val id: Int
-    abstract val text: String
-    abstract val location: TreeLocation
-
-    data class Literal(override val id: Int, override val location: TreeLocation, override val text: String) : Content()
-    data class Variable(override val id: Int, override val location: TreeLocation, override val text: String) : Content()
-}
-
-data class Block(val id: Int, val type: Type, val location: TreeLocation, val content: List<Content>, val editable: Boolean = true) {
-    enum class Type {
-        TITLE1, PARAGRAPH, TEXT
-    }
-}
-
-data class Sakspart(val gjelderNavn: String, val gjelderFoedselsnummer: String, val saksnummer: String, val dokumentDato: String)
-data class Signatur(
-    val hilsenTekst: String,
-    val saksbehandlerRolleTekst: String,
-    val saksbehandlerNavn: String,
-    val attesterendeSaksbehandlerNavn: String?,
-    val navAvsenderEnhet: String,
-)
-data class RenderedJsonLetter(val title: String, val sakspart: Sakspart, val blocks: List<Block>, val signatur: Signatur)
 
 object PensjonJsonRenderer {
     private val languageSettings = pensjonHTMLSettings
@@ -112,15 +79,15 @@ object PensjonJsonRenderer {
     private fun renderOutlineContent(scope: ExpressionScope<*, *>, element: Element.OutlineContent<*>, location: TreeLocation): Block =
         when (element) {
             is Element.OutlineContent.Paragraph -> renderParagraph(scope, element, location)
-            is Element.OutlineContent.Title1 -> Block(element.hashCode(), TITLE1, location, renderText(scope, element.text, location))
+            is Element.OutlineContent.Title1 -> Block(element.hashCode(), Block.Type.TITLE1, location, renderText(scope, element.text, location))
             is Element.OutlineContent.ParagraphContent.Form -> TODO()
             is Element.OutlineContent.ParagraphContent.ItemList -> TODO()
             is Element.OutlineContent.ParagraphContent.Table -> TODO()
-            is Element.OutlineContent.ParagraphContent.Text -> Block(element.hashCode(), TEXT, location, renderTextContent(scope, element, listOf("0")))
+            is Element.OutlineContent.ParagraphContent.Text -> Block(element.hashCode(), Block.Type.TEXT, location, renderTextContent(scope, element, listOf("0")))
         }
 
     private fun renderParagraph(scope: ExpressionScope<*, *>, paragraph: Element.OutlineContent.Paragraph<*>, currentLocation: TreeLocation): Block =
-        Block(paragraph.hashCode(), PARAGRAPH, currentLocation, mutableListOf<Content>().apply {
+        Block(paragraph.hashCode(), Block.Type.PARAGRAPH, currentLocation, mutableListOf<Content>().apply {
             var siblingCounter = 0
             render(scope, paragraph.paragraph, currentLocation) { pScope, element, _ ->
                 addAll(renderParagraphContent(pScope, element, listOf((siblingCounter++).toString())))
@@ -139,7 +106,7 @@ object PensjonJsonRenderer {
         when (element) {
             is Element.OutlineContent.ParagraphContent.Text.Expression.ByLanguage -> element.expr(scope.language).toContent(scope)
             is Element.OutlineContent.ParagraphContent.Text.Expression -> element.expression.toContent(scope)
-            is Element.OutlineContent.ParagraphContent.Text.Literal -> listOf(Content.Literal(element.hashCode(), location, element.text(scope.language)))
+            is Element.OutlineContent.ParagraphContent.Text.Literal -> listOf(Content(Content.Type.LITERAL, element.hashCode(), location, element.text(scope.language)))
             is Element.OutlineContent.ParagraphContent.Text.NewLine -> TODO()
         }
 
@@ -154,14 +121,14 @@ object PensjonJsonRenderer {
     private fun StringExpression.toContent(scope: ExpressionScope<*, *>): List<Content> =
         if (this is Expression.Literal) {
             // TODO: figure out how to handle location
-            listOf(Content.Literal(hashCode(), emptyList(), eval(scope)))
+            listOf(Content(Content.Type.LITERAL, hashCode(), emptyList(), eval(scope)))
         } else if (this is Expression.BinaryInvoke<*, *, *> && operation is BinaryOperation.Concat) {
             // Since we know that operation is Concat, we also know that `first` and `second` are StringExpression.
             @Suppress("UNCHECKED_CAST")
             (first as StringExpression).toContent(scope) + (second as StringExpression).toContent(scope)
         } else {
             // TODO: figure out how to handle location
-            listOf(Content.Variable(hashCode(), emptyList(), eval(scope)))
+            listOf(Content(Content.Type.VARIABLE, hashCode(), emptyList(), eval(scope)))
         }.mergeLiterals()
 
     private fun List<Content>.mergeLiterals(): List<Content> =
@@ -169,8 +136,8 @@ object PensjonJsonRenderer {
             val last = acc.lastOrNull()
             if (acc.isEmpty()) {
                 listOf(content)
-            } else if (last is Content.Literal && content is Content.Literal) {
-                acc.subList(0, acc.size - 1) + Content.Literal(Objects.hash(last.id, content.id), last.location, last.text + content.text)
+            } else if (last?.type == Content.Type.LITERAL && content.type == Content.Type.LITERAL) {
+                acc.subList(0, acc.size - 1) + Content(Content.Type.LITERAL, Objects.hash(last.id, content.id), last.location, last.text + content.text)
             } else {
                 acc + content
             }

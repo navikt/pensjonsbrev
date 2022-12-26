@@ -3,12 +3,14 @@ export interface Identifiable {
     readonly location: string[]
 }
 
+export const LITERAL = 'LITERAL'
 export interface LiteralValue extends Identifiable {
-    readonly type: 'literal'
+    readonly type: typeof LITERAL
     readonly text: string
 }
+export const VARIABLE = 'VARIABLE'
 export interface VariableValue extends Identifiable {
-    readonly type: 'variable'
+    readonly type: typeof VARIABLE
     readonly name?: string
     readonly text: string
 }
@@ -26,10 +28,7 @@ export interface ParagraphBlock extends Block {
 export interface Title1Block extends Block {
     readonly type: 'TITLE1'
 }
-export interface HeaderBlock extends Block {
-    readonly type: 'header'
-}
-export type AnyBlock = HeaderBlock | Title1Block | ParagraphBlock
+export type AnyBlock = Title1Block | ParagraphBlock
 export interface Sakspart {
     readonly gjelderNavn: string
     readonly gjelderFoedselsnummer: string
@@ -46,7 +45,7 @@ export interface Signatur {
 export interface RenderedLetter {
     readonly title: string
     readonly sakspart: Sakspart
-    blocks: AnyBlock[]
+    readonly blocks: AnyBlock[]
     readonly signatur: Signatur
 }
 

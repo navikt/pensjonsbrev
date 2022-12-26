@@ -1,8 +1,7 @@
 import Title1 from "./components/title1/Title1"
 import Paragraph from "./components/paragraph/Paragraph"
-import Header from "./components/header/Header"
 import styles from "./LetterEditor.module.css"
-import {FC, useEffect, useState} from "react"
+import {FC} from "react"
 import {AnyBlock, RenderedLetter} from "./model"
 import {bindAction, BoundAction} from "../../lib/actions"
 import {SplitBlockAtContent} from "./components/content/Content"
@@ -10,6 +9,7 @@ import {BlocksAction} from "./actions/blocks"
 import {BlockAction} from "./actions/block"
 import SakspartView from "./components/sakspart/SakspartView"
 import SignaturView from "./components/signatur/SignaturView"
+import {RenderedLetterAction} from "./actions/letter"
 
 interface AnyBlockProps {
     block: AnyBlock,
@@ -23,8 +23,6 @@ const AnyBlock: FC<AnyBlockProps> = ({block, splitBlock, updateBlock}) => {
     const updateBlockContent = bindAction(BlockAction.updateBlockContent, updateBlock, block)
 
     switch (block.type) {
-        case 'header':
-            return <Header block={block}/>
         case 'TITLE1':
             return <Title1 block={block} doUnlock={doUnlock} updateContent={updateBlockContent} splitContent={splitBlock}/>
         case 'PARAGRAPH':
@@ -34,16 +32,15 @@ const AnyBlock: FC<AnyBlockProps> = ({block, splitBlock, updateBlock}) => {
 
 export interface LetterEditorProps {
     letter: RenderedLetter
+    updateLetter: BoundAction<[letter: RenderedLetter]>
 }
 
-const LetterEditor: FC<LetterEditorProps> = ({letter}) => {
-    const [blocks, updateBlocks] = useState(letter.blocks)
+const LetterEditor: FC<LetterEditorProps> = ({letter, updateLetter}) => {
+    const blocks = letter.blocks
+
+    const updateBlocks = bindAction(RenderedLetterAction.updateBlocks, updateLetter, letter)
     const updateBlock = bindAction(BlocksAction.updateBlock, updateBlocks, blocks)
     const splitBlock = bindAction(BlocksAction.splitBlock, updateBlocks, blocks)
-
-    useEffect(() => {
-        updateBlocks(letter.blocks)
-    }, [letter])
 
     return (
         <div className={styles.container}>

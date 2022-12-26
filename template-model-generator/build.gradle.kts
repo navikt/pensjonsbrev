@@ -15,6 +15,12 @@ tasks {
     test {
         useJUnitPlatform()
     }
+    compileKotlin {
+        kotlinOptions.jvmTarget = "17"
+    }
+    compileTestKotlin {
+        kotlinOptions.jvmTarget = "17"
+    }
 }
 
 dependencies {

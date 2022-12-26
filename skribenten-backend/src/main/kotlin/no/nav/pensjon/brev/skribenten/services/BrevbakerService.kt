@@ -32,7 +32,7 @@ class BrevbakerService(config: Config, authService: AzureADService) {
     suspend fun getTemplate(call: ApplicationCall, brevkode: Brevkode.Redigerbar): ServiceResult<String, Any> =
         client.get(call, "/templates/redigerbar/${brevkode.name}").toServiceResult()
 
-    suspend fun renderLetter(call: ApplicationCall, brevkode: Brevkode.Redigerbar, brevdata: Any): ServiceResult<String, Any> =
+    suspend fun renderLetter(call: ApplicationCall, brevkode: Brevkode.Redigerbar, brevdata: Any): ServiceResult<RenderedJsonLetter, Any> =
         client.post(call, "/letter/redigerbar") {
             contentType(ContentType.Application.Json)
             setBody(

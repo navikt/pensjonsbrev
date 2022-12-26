@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.template.render
 
 import no.nav.pensjon.brev.Fixtures.felles
+import no.nav.pensjon.brev.api.model.Block
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.dsl.*
