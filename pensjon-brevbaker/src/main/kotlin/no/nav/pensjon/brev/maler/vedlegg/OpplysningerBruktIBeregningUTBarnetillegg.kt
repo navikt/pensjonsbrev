@@ -673,6 +673,7 @@ val vedleggOpplysningerBruktIBeregningUTBarnetillegg =
                     }
                 }
             }
+            // TODO Does not calculate!
             ifNotNull(
                 barnetilleggGjeldende,
                 barnetilleggGjeldende.saerkullsbarn_safe,
@@ -683,7 +684,7 @@ val vedleggOpplysningerBruktIBeregningUTBarnetillegg =
                         cell {
                             text(
                                 Bokmal to "Totalt antall barn du har barnetillegg for",
-                                Nynorsk to "Totalt tal barn du har barnetillegg for",
+                                Nynorsk to "Totalt antall barn du har barnetillegg for",
                                 English to "Total number of children for whom you receive child supplement"
                             )
                         }
