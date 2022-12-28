@@ -228,7 +228,7 @@ object OpphoerBarnetilleggAuto : VedtaksbrevTemplate<OpphoerBarnetilleggAutoDto>
                     )
                 )
             }
-
+1
             includePhrase(
                 Barnetillegg.BarnetilleggetInnvilgetOgIkkeUtbetalt(
                     fellesInnvilget = barnetilleggFellesbarn.notNull(),
