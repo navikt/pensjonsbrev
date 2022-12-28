@@ -5,7 +5,9 @@ import no.nav.pensjon.brev.Fixtures
 import no.nav.pensjon.brev.PDF_BUILDER_URL
 import no.nav.pensjon.brev.TestTags
 import no.nav.pensjon.brev.api.model.LetterMetadata
+import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarn
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDto
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDto.BarnetilleggGjeldende.Fellesbarn
 import no.nav.pensjon.brev.latex.LaTeXCompilerService
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.Letter
@@ -41,18 +43,25 @@ class OpplysningerBruktIBeregningUTTest {
                 )
             }
             outline {
-
             }
 
-            includeAttachment(
-                vedleggOpplysningerBruktIBeregningUTBarnetillegg,
+                val dto = Fixtures.create(OpplysningerBruktIBeregningUTDto::class)
+                dto.copy(
+                    barnetilleggGjeldende = OpplysningerBruktIBeregningUTDto.BarnetilleggGjeldende(
+                        fellesbarn = Fixtures.create(Fellesbarn::class),
+                        saerkullsbarn = null,
+                        totaltAntallBarn = 1,
+                    )
+                )
+
+            includeAttachment(vedleggOpplysningerBruktIBeregningUTBarnetillegg,
                 Fixtures.create(OpplysningerBruktIBeregningUTDto::class).expr()
-            )
-    }
+                )
+        }
         Letter(
             template,
             Unit,
-            Language.Bokmal,
+            Language.Nynorsk,
             Fixtures.fellesAuto
         )
             .let { PensjonLatexRenderer.render(it) }
