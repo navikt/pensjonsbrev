@@ -1,7 +1,6 @@
 package no.nav.pensjon.brev.api.model.maler
 
 import no.nav.pensjon.brev.api.model.*
-import no.nav.pensjon.brev.api.model.phrases.InnvilgetBarnetillegg
 import no.nav.pensjon.brev.api.model.vedlegg.*
 import java.time.LocalDate
 
@@ -19,10 +18,9 @@ data class UngUfoerAutoDto(
 ) {
     data class InnvilgetTillegg(val utbetalt: Boolean)
     data class Barnetillegg(
-        override val utbetalt: Boolean,
-        val antallBarn: Int,
-        override val inntektstak: Kroner,
-        override val gjelderFlereBarn: Boolean,
-    ): InnvilgetBarnetillegg
-
+        val utbetalt: Boolean,
+        val antallBarn: Int, //TODO remove in next version
+        val inntektstak: Kroner,
+        val gjelderFlereBarn: Boolean,
+    )
 }
