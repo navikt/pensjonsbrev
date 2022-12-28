@@ -45,7 +45,7 @@ class OpplysningerBruktIBeregningUTTest {
 
             outline {
             }
-
+// TODO Virker ikke etter hensikt
                 val dto = Fixtures.create(OpplysningerBruktIBeregningUTDto::class)
                 dto.copy(
                     barnetilleggGjeldende = OpplysningerBruktIBeregningUTDto.BarnetilleggGjeldende(
