@@ -26,11 +26,11 @@ fun createOpplysningerBruktIBeregningUTDtoBarnetilleggGjeldende() =
     OpplysningerBruktIBeregningUTDto.BarnetilleggGjeldende(
         saerkullsbarn = Fixtures.create(),
         fellesbarn = Fixtures.create(),
-        totaltAntallBarn = 3
+        totaltAntallBarn = 4
     )
 fun createOpplysningerBruktIBeregningUTDtoBarnetilleggGjeldendeFellesbarn() =
     OpplysningerBruktIBeregningUTDto.BarnetilleggGjeldende.Fellesbarn(
-        antallbarn = 2,
+        antallbarn = 3,
         avkortningsbeloepAar = Kroner(40000),
         beloep = Kroner(6000),
         beloepAar = Kroner(60000),
@@ -49,8 +49,8 @@ fun createOpplysningerBruktIBeregningUTDtoBarnetilleggGjeldendeFellesbarn() =
     )
 
 fun createOpplysningerBruktIBeregningUTDtoBarnetilleggGjeldendeSaerkullsbarn() =
-    OpplysningerBruktIBeregningUTDto.BarnetilleggGjeldende.Saerkullsbarn(
-        antallbarn = 2,
+   OpplysningerBruktIBeregningUTDto.BarnetilleggGjeldende.Saerkullsbarn(
+        antallbarn = 1,
         avkortningsbeloepAar = Kroner(5000),
         beloep = Kroner(20000),
         beloepAar = Kroner(60000),

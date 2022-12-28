@@ -487,7 +487,7 @@ data class FaaIkkeUtbetaltTilleggFellesbarn(
                                 harTilleggForFlereSaerkullsbarn,
                                 ifTrue = "children who do",
                                 ifFalse = "child who does"
-                            ) + "not live together with both parents, the amount of child supplement is based on your income. The income of a spouse/partner/cohabitant who is not the child's parent, is not taken into consideration. The child supplement will be reduced if your total income is greater than the exemption amount. The exemption amount is 3.1 times the National Insurance basic amount and it increases with 40 percent of the National Insurance basic amount for each extra child. ".expr(),
+                            ) + " not live together with both parents, the amount of child supplement is based on your income. The income of a spouse/partner/cohabitant who is not the child's parent, is not taken into consideration. The child supplement will be reduced if your total income is greater than the exemption amount. The exemption amount is 3.1 times the National Insurance basic amount and it increases with 40 percent of the National Insurance basic amount for each extra child. ".expr(),
                 )
             }
             showIf(harAnvendtTrygdetidUnder40) {
@@ -731,8 +731,8 @@ data class FaaIkkeUtbetaltTilleggFellesbarn(
                     English to "For ".expr() +
                             ifElse(
                                 harTilleggForFlereFellesbarn,
-                                ifTrue = "children that live",
-                                ifFalse = "a child that lives"
+                                ifTrue = "children who live",
+                                ifFalse = "a child who lives"
                             )
                             + " with both of their parents, 50 percent of the income that exceeds the exemption amount ".expr() +
                             ifElse(
@@ -816,8 +816,8 @@ data class FaaIkkeUtbetaltTilleggFellesbarn(
                     English to "For ".expr() +
                             ifElse(
                                 harTilleggForFlereSaerkullsbarn,
-                                ifTrue = "children that do not",
-                                ifFalse = "the child that does not"
+                                ifTrue = "children who do not",
+                                ifFalse = "the child who does not"
                             )
                             + " live with both of their parents, 50 percent of the income that exceeds the exemption amount ".expr() +
                             ifElse(
@@ -945,8 +945,8 @@ data class FaaIkkeUtbetaltTilleggFellesbarn(
                         ) + " som ikkje bur saman med begge foreldra vert 50 prosent av den inntekta som overstig fribeløpet omrekna til eit årleg beløp som svarar til ".expr() + avkortningsbeloepAar_barnetilleggSBGjeldende.format() + " kroner.",
                         English to "For ".expr() + ifElse(
                             harFlereBarn,
-                            ifTrue = "the child that does",
-                            ifFalse = "the children that do"
+                            ifTrue = "the child who does",
+                            ifFalse = "the children who do"
                         ) + " not live with both parents 50 percent of the income that exceeds the exemption amount is recalculated to an annual amount of NOK ".expr() + avkortningsbeloepAar_barnetilleggSBGjeldende.format() + "."
                     )
                 }
@@ -971,8 +971,8 @@ data class FaaIkkeUtbetaltTilleggFellesbarn(
                         ) + " som ikkje bur saman med begge foreldra vert 50 prosent av den inntekta som overstig fribeløpet omrekna til eit årleg beløp som svarar til ".expr() + avkortningsbeloepAar_barnetilleggSBGjeldende.format() + " kroner. Dette beløpet bruker vi til å redusera barnetillegget for heile året.",
                         English to "For ".expr() + ifElse(
                             harFlereBarn,
-                            ifTrue = "the child that does",
-                            ifFalse = "the children that do"
+                            ifTrue = "the child who does",
+                            ifFalse = "the children who do"
                         ) + " not live with both parents, 50 percent of the income that exceeds the exemption amount is recalculated to an annual amount of NOK ".expr() + avkortningsbeloepAar_barnetilleggSBGjeldende.format() + ". This amount will be used to reduce this child supplement during the calendar year."
                     )
                 }

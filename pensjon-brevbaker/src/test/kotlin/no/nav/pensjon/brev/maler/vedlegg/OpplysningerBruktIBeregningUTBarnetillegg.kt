@@ -42,6 +42,7 @@ class OpplysningerBruktIBeregningUTTest {
                     Language.English to "Title"
                 )
             }
+
             outline {
             }
 
@@ -50,7 +51,7 @@ class OpplysningerBruktIBeregningUTTest {
                     barnetilleggGjeldende = OpplysningerBruktIBeregningUTDto.BarnetilleggGjeldende(
                         fellesbarn = Fixtures.create(Fellesbarn::class),
                         saerkullsbarn = null,
-                        totaltAntallBarn = 1,
+                        totaltAntallBarn = 2,
                     )
                 )
 
@@ -61,7 +62,7 @@ class OpplysningerBruktIBeregningUTTest {
         Letter(
             template,
             Unit,
-            Language.Nynorsk,
+            Language.English,
             Fixtures.fellesAuto
         )
             .let { PensjonLatexRenderer.render(it) }
