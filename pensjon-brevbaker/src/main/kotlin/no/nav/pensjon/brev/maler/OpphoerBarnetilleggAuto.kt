@@ -1,33 +1,32 @@
 package no.nav.pensjon.brev.maler
 
 import no.nav.pensjon.brev.api.model.Kroner
+import no.nav.pensjon.brev.api.model.KronerSelectors.value_safe
 import no.nav.pensjon.brev.api.model.LetterMetadata
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.beloepBrutto
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.beloepNetto
+import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.beloepNetto_safe
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.fribeloep
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.gjelderFlereBarn
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.gjelderFlereBarn_safe
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.harFradrag
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.harFratrukketBeloepFraAnnenForelder
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.harJusteringsbeloep
-import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.harJusteringsbeloep_safe
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.inntektAnnenForelder
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.inntektBruktIAvkortning
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.inntektstak
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.inntektstak_safe
-import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.utbetalt_safe
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarnSelectors.beloepBrutto
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarnSelectors.beloepNetto
+import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarnSelectors.beloepNetto_safe
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarnSelectors.fribeloep
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarnSelectors.gjelderFlereBarn
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarnSelectors.gjelderFlereBarn_safe
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarnSelectors.harFradrag
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarnSelectors.harJusteringsbeloep
-import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarnSelectors.harJusteringsbeloep_safe
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarnSelectors.inntektBruktIAvkortning
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarnSelectors.inntektstak
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarnSelectors.inntektstak_safe
-import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarnSelectors.utbetalt_safe
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.OpphoerBarnetilleggAutoDto
 import no.nav.pensjon.brev.api.model.maler.OpphoerBarnetilleggAutoDtoSelectors.barnetilleggFellesbarn
@@ -115,9 +114,11 @@ object OpphoerBarnetilleggAuto : VedtaksbrevTemplate<OpphoerBarnetilleggAutoDto>
             includePhrase(Ufoeretrygd.UtbetalingsdatoUfoeretrygd)
             includePhrase(Ufoeretrygd.ViktigAALeseHeleBrevet)
             includePhrase(Vedtak.BegrunnelseOverskrift)
-            includePhrase(Barnetillegg.BarnHarFylt18AAR(
-                opphoertBarnetilleggFlereBarn = foedselsdatoPaaBarnMedOpphoertBarnetillegg.size().greaterThan(1)
-            ))
+            includePhrase(
+                Barnetillegg.BarnHarFylt18AAR(
+                    opphoertBarnetilleggFlereBarn = foedselsdatoPaaBarnMedOpphoertBarnetillegg.size().greaterThan(1)
+                )
+            )
 
             includePhrase(
                 OpphoerBarnetillegg.HjemmelForBarnetilleggIUfoeretrygden(
@@ -230,17 +231,15 @@ object OpphoerBarnetilleggAuto : VedtaksbrevTemplate<OpphoerBarnetilleggAutoDto>
             }
 
             includePhrase(
-                Barnetillegg.BarnetilleggetInnvilgetOgIkkeUtbetalt(
+                Barnetillegg.BarnetilleggIkkeUtbetalt(
                     fellesInnvilget = barnetilleggFellesbarn.notNull(),
-                    fellesUtbetalt = barnetilleggFellesbarn.utbetalt_safe.ifNull(false),
+                    fellesUtbetalt = barnetilleggFellesbarn.beloepNetto_safe.value_safe.ifNull(0).greaterThan(0),
                     harFlereFellesBarn = barnetilleggFellesbarn.gjelderFlereBarn_safe.ifNull(false),
                     harFlereSaerkullsbarn = barnetilleggSaerkullsbarn.gjelderFlereBarn_safe.ifNull(false),
-                    harJusteringsbeloepFellesbarn = barnetilleggFellesbarn.harJusteringsbeloep_safe.ifNull(false),
-                    harJusteringsbeloepSaerkullsbarn = barnetilleggSaerkullsbarn.harJusteringsbeloep_safe.ifNull(false),
                     inntektstakFellesbarn = barnetilleggFellesbarn.inntektstak_safe.ifNull(Kroner(0)),
                     inntektstakSaerkullsbarn = barnetilleggSaerkullsbarn.inntektstak_safe.ifNull(Kroner(0)),
                     saerkullInnvilget = barnetilleggSaerkullsbarn.notNull(),
-                    saerkullUtbetalt = barnetilleggSaerkullsbarn.utbetalt_safe.ifNull(false),
+                    saerkullUtbetalt = barnetilleggSaerkullsbarn.beloepNetto_safe.value_safe.ifNull(0).greaterThan(0),
                 )
             )
 
@@ -249,17 +248,16 @@ object OpphoerBarnetilleggAuto : VedtaksbrevTemplate<OpphoerBarnetilleggAutoDto>
                 barnetilleggSaerkullsbarn
             ) { barnetilleggFellesbarn, barnetilleggSaerkullsbarn ->
                 includePhrase(
-                    Barnetillegg.BarnetilleggeneInnvilgetOgIkkeUtbetalt(
+                    Barnetillegg.InnvilgetOgIkkeUtbetalt(
                         fellesInnvilget = barnetilleggFellesbarn.notNull(),
-                        fellesUtbetalt = barnetilleggFellesbarn.utbetalt_safe.ifNull(false),
-                        harJusteringsbeloepFellesbarn = barnetilleggFellesbarn.harJusteringsbeloep_safe.ifNull(false),
-                        harJusteringsbeloepSaerkullsbarn = barnetilleggSaerkullsbarn.harJusteringsbeloep_safe.ifNull(false),
+                        fellesUtbetalt = barnetilleggFellesbarn.beloepNetto_safe.value_safe.ifNull(0).greaterThan(0),
                         harTilleggForFlereFellesbarn = barnetilleggFellesbarn.gjelderFlereBarn,
                         harTilleggForFlereSaerkullsbarn = barnetilleggSaerkullsbarn.gjelderFlereBarn,
                         inntektstakFellesbarn = barnetilleggFellesbarn.inntektstak,
                         inntektstakSaerkullsbarn = barnetilleggSaerkullsbarn.inntektstak,
                         saerkullInnvilget = barnetilleggSaerkullsbarn.notNull(),
-                        saerkullUtbetalt = barnetilleggSaerkullsbarn.utbetalt_safe.ifNull(false),
+                        saerkullUtbetalt = barnetilleggSaerkullsbarn.beloepNetto_safe.value_safe.ifNull(0)
+                            .greaterThan(0),
                     )
                 )
             }

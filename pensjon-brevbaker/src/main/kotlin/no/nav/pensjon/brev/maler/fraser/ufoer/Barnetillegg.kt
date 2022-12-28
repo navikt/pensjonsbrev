@@ -558,26 +558,29 @@ object Barnetillegg {
         }
     }
 
+    // TODO avklar når / om vi skal bruke justeringsbeløp for å filtrere ut frasen
+    // i extream sjekkes det at justeringsbeløp er lik 0 for særkullsbarn i TBU1286.1
+    // , men det sjekkes ikke mot justeringsbeløp for felles barn i TBU1286.2
+    // i malen sjekkes det om justeringsbeløp er lik 0 for særkullsbarn i TBU1286.2
+    // skal vi følge malen eller extream? skal eksisterende bruk av frasen i UngUfoerAuto ha samme filteret?
+
     /**
      * TBU1286.1, TBU1286.2
      */
-    data class BarnetilleggetInnvilgetOgIkkeUtbetalt(
+    data class BarnetilleggIkkeUtbetalt(
         val fellesInnvilget: Expression<Boolean>,
         val fellesUtbetalt: Expression<Boolean>,
         val harFlereFellesBarn: Expression<Boolean>,
         val harFlereSaerkullsbarn: Expression<Boolean>,
-        val harJusteringsbeloepFellesbarn: Expression<Boolean>,
-        val harJusteringsbeloepSaerkullsbarn: Expression<Boolean>,
         val inntektstakFellesbarn: Expression<Kroner>,
         val inntektstakSaerkullsbarn: Expression<Kroner>,
         val saerkullInnvilget: Expression<Boolean>,
         val saerkullUtbetalt: Expression<Boolean>,
-
-        ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
             paragraph {
-                showIf(saerkullInnvilget and not(saerkullUtbetalt) and not(fellesInnvilget) and not(harJusteringsbeloepSaerkullsbarn)) {
-                    textExpr(
+                showIf(saerkullInnvilget and not(saerkullUtbetalt) and not(fellesInnvilget)) {
+                    textExpr( // TBU1286.1
                         Bokmal to "Barnetillegget for ".expr() +
                                 ifElse(harFlereSaerkullsbarn, "barna", "barnet") +
                                 " blir ikke utbetalt fordi du har en samlet inntekt som er høyere enn " +
@@ -591,8 +594,8 @@ object Barnetillegg {
                                 " because your total income on its own is higher than NOK " +
                                 inntektstakFellesbarn.format() + ". You will not receive child supplement because your income exceeds the income limit.".expr()
                     )
-                }.orShowIf(saerkullInnvilget and not(saerkullUtbetalt) and fellesUtbetalt and not(harJusteringsbeloepSaerkullsbarn)) {
-                    textExpr(
+                }.orShowIf(saerkullInnvilget and not(saerkullUtbetalt) and fellesInnvilget) {
+                    textExpr( // TBU1286.1
                         Bokmal to "Barnetillegget for ".expr() +
                                 ifElse(harFlereSaerkullsbarn, "barna", "barnet") +
                                 " som ikke bor sammen med begge foreldrene, blir ikke utbetalt fordi du alene har en samlet inntekt som er høyere enn " +
@@ -606,8 +609,8 @@ object Barnetillegg {
                                 " not live together with both parents because your total income on its own is higher than NOK " +
                                 inntektstakFellesbarn.format() + ". You will not receive child supplement because your income exceeds the income limit.".expr()
                     )
-                }.orShowIf(fellesInnvilget and not(fellesUtbetalt) and not(saerkullInnvilget) and not(harJusteringsbeloepFellesbarn)) {
-                    textExpr(
+                }.orShowIf(fellesInnvilget and not(fellesUtbetalt) and not(saerkullInnvilget)) {
+                    textExpr(// TBU1286.2
                         Bokmal to "Barnetillegget for ".expr() +
                                 ifElse(harFlereFellesBarn, "barna", "barnet") +
                                 " blir ikke utbetalt fordi dere har en samlet inntekt som er høyere enn " +
@@ -622,8 +625,8 @@ object Barnetillegg {
                                 " because your total income on its own is higher than NOK " +
                                 inntektstakFellesbarn.format() + ". You will not receive child supplement because your combined incomes exceed the income limit.".expr()
                     )
-                }.orShowIf(fellesInnvilget and not(fellesUtbetalt) and saerkullUtbetalt and not(harJusteringsbeloepFellesbarn)) {
-                    textExpr(
+                }.orShowIf(fellesInnvilget and not(fellesUtbetalt) and saerkullInnvilget) {
+                    textExpr(// TBU1286.2
                         Bokmal to "Barnetillegget for ".expr() +
                                 ifElse(harFlereFellesBarn, "barna", "barnet") +
                                 " som bor med begge sine foreldre, blir ikke utbetalt fordi dere har en samlet inntekt som er høyere enn " +
@@ -644,11 +647,9 @@ object Barnetillegg {
 
 
     // TBU2490 Barnetilleggene for både særkullsbarn og fellesbarn er innvilget og ingen av dem blir utbetalt
-    data class BarnetilleggeneInnvilgetOgIkkeUtbetalt(
+    data class InnvilgetOgIkkeUtbetalt(
         val fellesInnvilget: Expression<Boolean>,
         val fellesUtbetalt: Expression<Boolean>,
-        val harJusteringsbeloepFellesbarn: Expression<Boolean>,
-        val harJusteringsbeloepSaerkullsbarn: Expression<Boolean>,
         val harTilleggForFlereFellesbarn: Expression<Boolean>,
         val harTilleggForFlereSaerkullsbarn: Expression<Boolean>,
         val inntektstakFellesbarn: Expression<Kroner>,
@@ -658,7 +659,8 @@ object Barnetillegg {
 
         ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-            showIf(fellesInnvilget and not(fellesUtbetalt) and not(harJusteringsbeloepFellesbarn) and saerkullInnvilget and not(saerkullUtbetalt) and not(harJusteringsbeloepSaerkullsbarn)
+            showIf(
+                fellesInnvilget and not(fellesUtbetalt) and saerkullInnvilget and not(saerkullUtbetalt)
             ) {
                 paragraph {
                     textExpr(

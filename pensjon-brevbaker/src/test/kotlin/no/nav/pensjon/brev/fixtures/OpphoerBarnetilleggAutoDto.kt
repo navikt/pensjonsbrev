@@ -27,7 +27,6 @@ fun createOpphoerBarnetilleggAutoDto() =
             inntektBruktIAvkortning = Kroner(375000),
             inntektstak = Kroner(320000),
             harJusteringsbeloep = true,
-            utbetalt = false,
         ),
         barnetilleggSaerkullsbarn = BarnetilleggSaerkullsbarn(
             gjelderFlereBarn = true,
@@ -38,7 +37,6 @@ fun createOpphoerBarnetilleggAutoDto() =
             inntektBruktIAvkortning = Kroner(8000),
             inntektstak = Kroner(350000),
             harJusteringsbeloep = true,
-            utbetalt = true,
         ),
         brukerBorInorge =true,
         grunnbeloep = Kroner(98000),
