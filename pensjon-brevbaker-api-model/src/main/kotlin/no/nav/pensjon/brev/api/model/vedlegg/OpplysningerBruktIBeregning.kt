@@ -3,7 +3,6 @@ package no.nav.pensjon.brev.api.model.vedlegg
 import no.nav.pensjon.brev.api.model.Beregningsmetode
 import no.nav.pensjon.brev.api.model.Kroner
 import no.nav.pensjon.brev.api.model.Sivilstand
-import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarn
 import java.time.LocalDate
 
 data class OpplysningerBruktIBeregningUTDto(
@@ -33,11 +32,10 @@ data class OpplysningerBruktIBeregningUTDto(
         val totaltAntallBarn: Int,
     ) {
         data class Saerkullsbarn(
-            val antallbarn: Int,
             val avkortningsbeloepAar: Kroner,
-            val beloep: Kroner,
-            val beloepAar: Kroner,
-            val beloepAarFoerAvkort: Kroner,
+            val beloepNetto: Kroner,
+            val beloepAarNetto: Kroner,
+            val beloepAarBrutto: Kroner,
             val erRedusertMotinntekt: Boolean,
             val fribeloep: Kroner,
             val fribeloepEllerInntektErPeriodisert: Boolean,
@@ -45,15 +43,13 @@ data class OpplysningerBruktIBeregningUTDto(
             val inntektBruktIAvkortning: Kroner,
             val inntektOverFribeloep: Kroner,
             val inntektstak: Kroner,
-            val innvilgetBarnetillegg: Boolean,
             val justeringsbeloepAar: Kroner,
         )
         data class Fellesbarn(
-            val antallbarn: Int,
             val avkortningsbeloepAar: Kroner,
-            val beloep: Kroner,
-            val beloepAar: Kroner,
-            val beloepAarFoerAvkort: Kroner,
+            val beloepNetto: Kroner,
+            val beloepAarNetto: Kroner,
+            val beloepAarBrutto: Kroner,
             val beloepFratrukketAnnenForeldersInntekt: Kroner,
             val erRedusertMotinntekt: Boolean,
             val fribeloep: Kroner,
@@ -63,7 +59,6 @@ data class OpplysningerBruktIBeregningUTDto(
             val inntektBruktIAvkortning: Kroner,
             val inntektOverFribeloep: Kroner,
             val inntektstak: Kroner,
-            val innvilgetBarnetillegg: Boolean,
             val justeringsbeloepAar: Kroner,
         )
     }

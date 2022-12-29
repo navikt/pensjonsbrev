@@ -4,12 +4,13 @@ package no.nav.pensjon.brev.maler.vedlegg
 import no.nav.pensjon.brev.api.model.Beregningsmetode.*
 import no.nav.pensjon.brev.api.model.vedlegg.BarnetilleggGjeldendeSelectors.fellesbarn_safe
 import no.nav.pensjon.brev.api.model.vedlegg.BarnetilleggGjeldendeSelectors.saerkullsbarn_safe
+import no.nav.pensjon.brev.api.model.vedlegg.BarnetilleggGjeldendeSelectors.totaltAntallBarn
+import no.nav.pensjon.brev.api.model.vedlegg.BarnetilleggGjeldendeSelectors.totaltAntallBarn_safe
 import no.nav.pensjon.brev.api.model.vedlegg.BeregnetUTPerManedGjeldendeSelectors.brukerErFlyktning
 import no.nav.pensjon.brev.api.model.vedlegg.BeregnetUTPerManedGjeldendeSelectors.brukersSivilstand
 import no.nav.pensjon.brev.api.model.vedlegg.BeregnetUTPerManedGjeldendeSelectors.grunnbeloep
 import no.nav.pensjon.brev.api.model.vedlegg.BeregnetUTPerManedGjeldendeSelectors.virkDatoFom
-import no.nav.pensjon.brev.api.model.vedlegg.FellesbarnSelectors.antallbarn
-import no.nav.pensjon.brev.api.model.vedlegg.FellesbarnSelectors.beloep
+import no.nav.pensjon.brev.api.model.vedlegg.FellesbarnSelectors.beloepNetto
 import no.nav.pensjon.brev.api.model.vedlegg.InntektFoerUfoereGjeldendeSelectors.erSannsynligEndret
 import no.nav.pensjon.brev.api.model.vedlegg.InntektFoerUfoereGjeldendeSelectors.ifuInntekt
 import no.nav.pensjon.brev.api.model.vedlegg.InntektsAvkortingGjeldendeSelectors.forventetInntektAar
@@ -26,11 +27,10 @@ import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSel
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.ufoeretrygdGjeldende
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.ungUfoerGjeldende_erUnder20Aar
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.yrkesskadeGjeldende
-import no.nav.pensjon.brev.api.model.vedlegg.SaerkullsbarnSelectors.antallbarn
 import no.nav.pensjon.brev.api.model.vedlegg.SaerkullsbarnSelectors.avkortningsbeloepAar
-import no.nav.pensjon.brev.api.model.vedlegg.SaerkullsbarnSelectors.beloep
-import no.nav.pensjon.brev.api.model.vedlegg.SaerkullsbarnSelectors.beloepAar
-import no.nav.pensjon.brev.api.model.vedlegg.SaerkullsbarnSelectors.beloepAarFoerAvkort
+import no.nav.pensjon.brev.api.model.vedlegg.SaerkullsbarnSelectors.beloepAarBrutto
+import no.nav.pensjon.brev.api.model.vedlegg.SaerkullsbarnSelectors.beloepAarNetto
+import no.nav.pensjon.brev.api.model.vedlegg.SaerkullsbarnSelectors.beloepNetto
 import no.nav.pensjon.brev.api.model.vedlegg.SaerkullsbarnSelectors.erRedusertMotinntekt
 import no.nav.pensjon.brev.api.model.vedlegg.SaerkullsbarnSelectors.fribeloep
 import no.nav.pensjon.brev.api.model.vedlegg.SaerkullsbarnSelectors.fribeloepEllerInntektErPeriodisert
@@ -657,18 +657,17 @@ val vedleggOpplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEng
             barnetilleggGjeldende.saerkullsbarn_safe,
             barnetilleggGjeldende.fellesbarn_safe
         ) { barnetillegg, saerkullsbarn, fellesbarn ->
-            showIf(saerkullsbarn.beloep.greaterThan(0) or fellesbarn.beloep.greaterThan(0)) {
+            showIf(saerkullsbarn.beloepNetto.greaterThan(0) or fellesbarn.beloepNetto.greaterThan(0)) {
                 row {
                     cell {
                         text(
                             Bokmal to "Totalt antall barn du har barnetillegg for",
-                            Nynorsk to "Totalt tal barn du har barnetillegg for",
+                                Nynorsk to "Totalt antall barn du har barnetillegg for",
                             English to "Total number of children for whom you receive child supplement"
                         )
                     }
                     cell {
-                        val totaltAntallBarn =
-                            ((saerkullsbarn.antallbarn).format() + (fellesbarn.antallbarn).format())
+                        val totaltAntallBarn = barnetillegg.totaltAntallBarn.format()
                         textExpr(
                             Bokmal to totaltAntallBarn,
                             Nynorsk to totaltAntallBarn,
@@ -836,7 +835,7 @@ val vedleggOpplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEng
                     }
                 }
             ) {
-                showIf(saerkullTillegg.beloep.greaterThan(0) and saerkullTillegg.justeringsbeloepAar.notEqualTo(0)) {
+                showIf(saerkullTillegg.beloepNetto.greaterThan(0) and saerkullTillegg.justeringsbeloepAar.notEqualTo(0)) {
                     row {
                         cell {
                             text(
@@ -846,7 +845,7 @@ val vedleggOpplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEng
                             )
                         }
                         cell {
-                            includePhrase(KronerText(saerkullTillegg.beloepAarFoerAvkort))
+                            includePhrase(KronerText(saerkullTillegg.beloepAarBrutto))
                         }
                     }
                 }
@@ -865,7 +864,7 @@ val vedleggOpplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEng
                         }
                     }
                 }
-                showIf(saerkullTillegg.beloep.greaterThan(0) or (saerkullTillegg.beloep.lessThan(0) and saerkullTillegg.justeringsbeloepAar.notEqualTo(0))) {
+                showIf(saerkullTillegg.beloepNetto.greaterThan(0) or (saerkullTillegg.beloepNetto.lessThan(0) and saerkullTillegg.justeringsbeloepAar.notEqualTo(0))) {
                     row {
                         cell {
                             text(
@@ -879,7 +878,7 @@ val vedleggOpplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEng
                         }
                     }
                 }
-                showIf(saerkullTillegg.beloep.notEqualTo(0) or (saerkullTillegg.beloep.equalTo(0) and saerkullTillegg.justeringsbeloepAar.notEqualTo(0))) {
+                showIf(saerkullTillegg.beloepNetto.notEqualTo(0) or (saerkullTillegg.beloepNetto.equalTo(0) and saerkullTillegg.justeringsbeloepAar.notEqualTo(0))) {
                     row {
                         cell {
                             text(
@@ -895,7 +894,7 @@ val vedleggOpplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEng
                 }
                 showIf(
                     not(saerkullTillegg.fribeloepEllerInntektErPeriodisert)
-                            and (saerkullTillegg.beloep.notEqualTo(0) or (saerkullTillegg.beloep.equalTo(0) and saerkullTillegg.beloepAar.notEqualTo(0)))
+                            and (saerkullTillegg.beloepNetto.notEqualTo(0) or (saerkullTillegg.beloepNetto.equalTo(0) and saerkullTillegg.beloepAarNetto.notEqualTo(0)))
                             and saerkullTillegg.avkortningsbeloepAar.greaterThan(0)
                 ) {
                     row {
@@ -913,7 +912,7 @@ val vedleggOpplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEng
                 }
                 showIf(
                     saerkullTillegg.fribeloepEllerInntektErPeriodisert
-                            and (saerkullTillegg.beloep.notEqualTo(0) or (saerkullTillegg.beloep.equalTo(0) and saerkullTillegg.beloepAar.notEqualTo(0)))
+                            and (saerkullTillegg.beloepNetto.notEqualTo(0) or (saerkullTillegg.beloepNetto.equalTo(0) and saerkullTillegg.beloepAarNetto.notEqualTo(0)))
                             and saerkullTillegg.avkortningsbeloepAar.greaterThan(0)
                 ) {
                     row {
@@ -943,22 +942,23 @@ val vedleggOpplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEng
                         }
                     }
                 }
-                showIf(saerkullTillegg.beloep.notEqualTo(0) or (saerkullTillegg.beloep.equalTo(0) and saerkullTillegg.beloepAar.notEqualTo(0))) {
+                showIf(saerkullTillegg.beloepNetto.notEqualTo(0) or (saerkullTillegg.beloepNetto.equalTo(0) and saerkullTillegg.beloepAarNetto.notEqualTo(0))) {
                     row {
                         cell {
                             // TODO: Det er '=' for bokmål, men ikke de andre?
                             text(
                                 Bokmal to "= Årlig barnetillegg etter reduksjon ut fra inntekt",
-                                Nynorsk to "Årleg barnetillegg etter reduksjon ut frå inntekt",
-                                English to "Yearly child supplement after income reduction"
+                                    Nynorsk to "= Årleg barnetillegg etter reduksjon ut frå inntekt",
+                                    English to "= Yearly child supplement after income reduction",
+                                    FontType.BOLD,
                             )
                         }
                         cell {
-                            includePhrase(KronerText(saerkullTillegg.beloepAar))
+                            includePhrase(KronerText(saerkullTillegg.beloepAarNetto))
                         }
                     }
                 }
-                showIf(saerkullTillegg.beloep.notEqualTo(0) or (saerkullTillegg.beloep.equalTo(0) and saerkullTillegg.justeringsbeloepAar.notEqualTo(0))) {
+                showIf(saerkullTillegg.beloepNetto.notEqualTo(0) or (saerkullTillegg.beloepNetto.equalTo(0) and saerkullTillegg.justeringsbeloepAar.notEqualTo(0))) {
                     row {
                         cell {
                             text(
@@ -968,11 +968,11 @@ val vedleggOpplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEng
                             )
                         }
                         cell {
-                            includePhrase(KronerText(saerkullTillegg.beloep))
+                            includePhrase(KronerText(saerkullTillegg.beloepNetto))
                         }
                     }
                 }
-                showIf(saerkullTillegg.beloep.equalTo(0) and saerkullTillegg.beloepAar.equalTo(0)) {
+                showIf(saerkullTillegg.beloepNetto.equalTo(0) and saerkullTillegg.beloepAarNetto.equalTo(0)) {
                     row {
                         cell {
                             text(
@@ -989,9 +989,9 @@ val vedleggOpplysningerBruktIBeregningUT = createAttachment<LangBokmalNynorskEng
             }
         }
         // TABLE 2 - end
-       showIf(saerkullTillegg.beloep.greaterThan(0)) {
-            includePhrase(VedleggBeregnUTredusBTSBPgaInntekt(saerkullTillegg.beloep))
-        }.orShowIf(saerkullTillegg.beloep.equalTo(0)) {
+       showIf(saerkullTillegg.beloepNetto.greaterThan(0)) {
+            includePhrase(VedleggBeregnUTredusBTSBPgaInntekt(saerkullTillegg.beloepNetto))
+        }.orShowIf(saerkullTillegg.beloepNetto.equalTo(0)) {
             showIf(saerkullTillegg.justeringsbeloepAar.equalTo(0)) {
                 includePhrase(VedleggBeregnUTIkkeUtbetaltBTSBPgaInntekt)
             } orShow {

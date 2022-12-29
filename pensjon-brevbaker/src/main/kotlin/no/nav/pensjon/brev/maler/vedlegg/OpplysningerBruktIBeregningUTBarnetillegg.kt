@@ -4,15 +4,15 @@ package no.nav.pensjon.brev.maler.vedlegg
 import no.nav.pensjon.brev.api.model.Beregningsmetode.*
 import no.nav.pensjon.brev.api.model.vedlegg.BarnetilleggGjeldendeSelectors.fellesbarn_safe
 import no.nav.pensjon.brev.api.model.vedlegg.BarnetilleggGjeldendeSelectors.saerkullsbarn_safe
+import no.nav.pensjon.brev.api.model.vedlegg.BarnetilleggGjeldendeSelectors.totaltAntallBarn
 import no.nav.pensjon.brev.api.model.vedlegg.BeregnetUTPerManedGjeldendeSelectors.brukerErFlyktning
 import no.nav.pensjon.brev.api.model.vedlegg.BeregnetUTPerManedGjeldendeSelectors.brukersSivilstand
 import no.nav.pensjon.brev.api.model.vedlegg.BeregnetUTPerManedGjeldendeSelectors.grunnbeloep
 import no.nav.pensjon.brev.api.model.vedlegg.BeregnetUTPerManedGjeldendeSelectors.virkDatoFom
-import no.nav.pensjon.brev.api.model.vedlegg.FellesbarnSelectors.antallbarn
 import no.nav.pensjon.brev.api.model.vedlegg.FellesbarnSelectors.avkortningsbeloepAar
-import no.nav.pensjon.brev.api.model.vedlegg.FellesbarnSelectors.beloep
-import no.nav.pensjon.brev.api.model.vedlegg.FellesbarnSelectors.beloepAar
-import no.nav.pensjon.brev.api.model.vedlegg.FellesbarnSelectors.beloepAarFoerAvkort
+import no.nav.pensjon.brev.api.model.vedlegg.FellesbarnSelectors.beloepAarBrutto
+import no.nav.pensjon.brev.api.model.vedlegg.FellesbarnSelectors.beloepAarNetto
+import no.nav.pensjon.brev.api.model.vedlegg.FellesbarnSelectors.beloepNetto
 import no.nav.pensjon.brev.api.model.vedlegg.FellesbarnSelectors.erRedusertMotinntekt
 import no.nav.pensjon.brev.api.model.vedlegg.FellesbarnSelectors.fribeloep
 import no.nav.pensjon.brev.api.model.vedlegg.FellesbarnSelectors.fribeloepEllerInntektErPeriodisert
@@ -21,7 +21,6 @@ import no.nav.pensjon.brev.api.model.vedlegg.FellesbarnSelectors.inntektAnnenFor
 import no.nav.pensjon.brev.api.model.vedlegg.FellesbarnSelectors.inntektBruktIAvkortning
 import no.nav.pensjon.brev.api.model.vedlegg.FellesbarnSelectors.inntektOverFribeloep
 import no.nav.pensjon.brev.api.model.vedlegg.FellesbarnSelectors.inntektstak
-import no.nav.pensjon.brev.api.model.vedlegg.FellesbarnSelectors.innvilgetBarnetillegg
 import no.nav.pensjon.brev.api.model.vedlegg.FellesbarnSelectors.justeringsbeloepAar
 import no.nav.pensjon.brev.api.model.vedlegg.InntektFoerUfoereGjeldendeSelectors.erSannsynligEndret
 import no.nav.pensjon.brev.api.model.vedlegg.InntektFoerUfoereGjeldendeSelectors.ifuInntekt
@@ -40,18 +39,16 @@ import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSel
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.ufoeretrygdGjeldende
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.ungUfoerGjeldende_erUnder20Aar
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.yrkesskadeGjeldende
-import no.nav.pensjon.brev.api.model.vedlegg.SaerkullsbarnSelectors.antallbarn
 import no.nav.pensjon.brev.api.model.vedlegg.SaerkullsbarnSelectors.avkortningsbeloepAar
-import no.nav.pensjon.brev.api.model.vedlegg.SaerkullsbarnSelectors.beloep
-import no.nav.pensjon.brev.api.model.vedlegg.SaerkullsbarnSelectors.beloepAar
-import no.nav.pensjon.brev.api.model.vedlegg.SaerkullsbarnSelectors.beloepAarFoerAvkort
+import no.nav.pensjon.brev.api.model.vedlegg.SaerkullsbarnSelectors.beloepAarBrutto
+import no.nav.pensjon.brev.api.model.vedlegg.SaerkullsbarnSelectors.beloepAarNetto
+import no.nav.pensjon.brev.api.model.vedlegg.SaerkullsbarnSelectors.beloepNetto
 import no.nav.pensjon.brev.api.model.vedlegg.SaerkullsbarnSelectors.erRedusertMotinntekt
 import no.nav.pensjon.brev.api.model.vedlegg.SaerkullsbarnSelectors.fribeloep
 import no.nav.pensjon.brev.api.model.vedlegg.SaerkullsbarnSelectors.fribeloepEllerInntektErPeriodisert
 import no.nav.pensjon.brev.api.model.vedlegg.SaerkullsbarnSelectors.inntektBruktIAvkortning
 import no.nav.pensjon.brev.api.model.vedlegg.SaerkullsbarnSelectors.inntektOverFribeloep
 import no.nav.pensjon.brev.api.model.vedlegg.SaerkullsbarnSelectors.inntektstak
-import no.nav.pensjon.brev.api.model.vedlegg.SaerkullsbarnSelectors.innvilgetBarnetillegg
 import no.nav.pensjon.brev.api.model.vedlegg.SaerkullsbarnSelectors.justeringsbeloepAar
 import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidsdetaljerGjeldendeSelectors.anvendtTT
 import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidsdetaljerGjeldendeSelectors.beregningsmetode
@@ -674,12 +671,16 @@ val vedleggOpplysningerBruktIBeregningUTBarnetillegg =
                 }
             }
             // TODO Does not calculate!
+            // TODO denne sjekken sjekker at du har barnetillegg felles barn og særkullsbarn.
+            //  under ser jeg showIf(saerkull/fellessbarn.innvilgetBarnetillegg). Dette gjøres med ifNotNull(saerkull/fellesbarn)
+            // på øverste nivå kan vi fortsatt bruke ifNotNull(barnetilleggGjeldende), men ikke saerkull/fellesbarn
+            // fordi da kommer vi kun inn i blokken om vi har innvilget både tillegg for saerkull/fellesbarn
             ifNotNull(
                 barnetilleggGjeldende,
                 barnetilleggGjeldende.saerkullsbarn_safe,
                 barnetilleggGjeldende.fellesbarn_safe
             ) { barnetillegg, saerkullsbarn, fellesbarn ->
-                showIf(saerkullsbarn.beloep.greaterThan(0) or fellesbarn.beloep.greaterThan(0)) {
+                showIf(saerkullsbarn.beloepNetto.greaterThan(0) or fellesbarn.beloepNetto.greaterThan(0)) {
                     row {
                         cell {
                             text(
@@ -689,15 +690,14 @@ val vedleggOpplysningerBruktIBeregningUTBarnetillegg =
                             )
                         }
                         cell {
-                            val totaltAntallBarn =
-                                ((saerkullsbarn.antallbarn).format() + (fellesbarn.antallbarn).format())
                             textExpr(
-                                Bokmal to totaltAntallBarn,
-                                Nynorsk to totaltAntallBarn,
-                                English to totaltAntallBarn
+                                Bokmal to barnetillegg.totaltAntallBarn.format(),
+                                Nynorsk to barnetillegg.totaltAntallBarn.format(),
+                                English to barnetillegg.totaltAntallBarn.format(),
                             )
                         }
                     }
+                    // TODO erstatt med ifnotnull(barnetillegg.saerkullsbarn)
                     showIf(saerkullsbarn.innvilgetBarnetillegg) {
                         row {
                             cell {
@@ -712,6 +712,7 @@ val vedleggOpplysningerBruktIBeregningUTBarnetillegg =
                             }
                         }
                     }
+                    // TODO erstatt med ifnotnull(barnetillegg.fellesbarn)
                     showIf(fellesbarn.innvilgetBarnetillegg) {
                         row {
                             cell {
@@ -726,6 +727,8 @@ val vedleggOpplysningerBruktIBeregningUTBarnetillegg =
                             }
                         }
                     }
+                    //TODO kan erstattes med barnetillegg.fellesbarn.notNull(). Vi burde lage .isNull()
+                    // inverter/flipp case. showif(fellesbarn.notNull()){...}.orshow{...}
                     showIf(not(fellesbarn.innvilgetBarnetillegg)) {
                         row {
                             cell {
@@ -767,6 +770,7 @@ val vedleggOpplysningerBruktIBeregningUTBarnetillegg =
                             }
                         }
                     }
+                    // TODO erstatt med ifnotnull(barnetillegg.saerkullsbarn)
                     showIf(saerkullsbarn.innvilgetBarnetillegg) {
                         row {
                             cell {
@@ -845,15 +849,21 @@ val vedleggOpplysningerBruktIBeregningUTBarnetillegg =
             }
         }
         // END of minsteytelse
-        // START of barnetillegg
-        ifNotNull(
+
+        //TODO -HH OpplysningerBruktIBeregning bør være komplett om denne delen inkluderes
+        // START of barnetillegg TODO denne bør eksistere i en frase/fil. Filen er veldig lang.
+        ifNotNull( // TODO Dette går ikke. Ifnotnull må sjekkes rundt hvert sted hvor vi sjekker om barnetillegg skal være innvilget
+            // Om vi sjekker at vi har fellesbarn og særkullsbarn så vil vi kun komme innenfor blokken om du har innvilget barnetillegg for særkullsbarn og felles barn
             barnetilleggGjeldende.fellesbarn_safe, barnetilleggGjeldende.saerkullsbarn_safe,
         ) { fellesTillegg, saerkullTillegg ->
             val harAnvendtTrygdetidUnder40 = trygdetidsdetaljerGjeldende.anvendtTT.lessThan(40)
+
+            // TODO -HH dette kan sjekkes med saerkullTillegg.notNull(), men over i ifnotnull sjekker vi at du har både barnetillegg felles barn og saerkullsbarn
             val harSaerkullsbarn = saerkullTillegg.innvilgetBarnetillegg
             val harFellesbarn = fellesTillegg.innvilgetBarnetillegg
-            val harTilleggForFlereFellesbarn = fellesTillegg.antallbarn.greaterThan(1)
-            val harTilleggForFlereSaerkullsbarn = fellesTillegg.antallbarn.greaterThan(1)
+
+            val harTilleggForFlereFellesbarn = fellesTillegg.harFlereBarn
+            val harTilleggForFlereSaerkullsbarn = fellesTillegg.harFlereBarn
 
 
             showIf(fellesTillegg.erRedusertMotinntekt or saerkullTillegg.erRedusertMotinntekt) {
@@ -988,7 +998,7 @@ val vedleggOpplysningerBruktIBeregningUTBarnetillegg =
                             }
                         ) {
                             showIf(
-                                fellesTillegg.beloep.greaterThan(0) and fellesTillegg.justeringsbeloepAar.notEqualTo(
+                                fellesTillegg.beloepNetto.greaterThan(0) and fellesTillegg.justeringsbeloepAar.notEqualTo(
                                     0
                                 )
                             ) {
@@ -1001,7 +1011,7 @@ val vedleggOpplysningerBruktIBeregningUTBarnetillegg =
                                         )
                                     }
                                     cell {
-                                        includePhrase(KronerText(fellesTillegg.beloepAarFoerAvkort))
+                                        includePhrase(KronerText(fellesTillegg.beloepAarBrutto))
                                     }
                                 }
                             }
@@ -1020,7 +1030,7 @@ val vedleggOpplysningerBruktIBeregningUTBarnetillegg =
                                 }
                             }
                             showIf(
-                                fellesTillegg.beloep.greaterThan(0) and fellesTillegg.justeringsbeloepAar.notEqualTo(
+                                fellesTillegg.beloepNetto.greaterThan(0) and fellesTillegg.justeringsbeloepAar.notEqualTo(
                                     0
                                 )
                             )
@@ -1039,7 +1049,7 @@ val vedleggOpplysningerBruktIBeregningUTBarnetillegg =
                                 }
                             }
                             showIf(
-                                fellesTillegg.beloep.notEqualTo(0) or (fellesTillegg.beloep.equalTo(0))
+                                fellesTillegg.beloepNetto.notEqualTo(0) or (fellesTillegg.beloepNetto.equalTo(0))
                             ) {
                                 row {
                                     cell {
@@ -1055,7 +1065,7 @@ val vedleggOpplysningerBruktIBeregningUTBarnetillegg =
                                 }
                             }
                             showIf(
-                                fellesTillegg.beloep.notEqualTo(0) and fellesTillegg.justeringsbeloepAar.notEqualTo(0) and fellesTillegg.avkortningsbeloepAar.greaterThan(
+                                fellesTillegg.beloepNetto.notEqualTo(0) and fellesTillegg.justeringsbeloepAar.notEqualTo(0) and fellesTillegg.avkortningsbeloepAar.greaterThan(
                                     0
                                 )
                             ) {
@@ -1089,7 +1099,7 @@ val vedleggOpplysningerBruktIBeregningUTBarnetillegg =
                                 }
                             }
                             showIf(
-                                fellesTillegg.beloep.notEqualTo(0) or (fellesTillegg.beloep.equalTo(0) and fellesTillegg.beloepAar.notEqualTo(
+                                fellesTillegg.beloepNetto.notEqualTo(0) or (fellesTillegg.beloepNetto.equalTo(0) and fellesTillegg.beloepAarNetto.notEqualTo(
                                     0
                                 ))
                             ) {
@@ -1103,12 +1113,12 @@ val vedleggOpplysningerBruktIBeregningUTBarnetillegg =
                                         )
                                     }
                                     cell {
-                                        includePhrase(KronerText(fellesTillegg.beloepAar))
+                                        includePhrase(KronerText(fellesTillegg.beloepAarNetto))
                                     }
                                 }
                             }
                             showIf(
-                                fellesTillegg.beloep.greaterThan(0) or fellesTillegg.beloep.equalTo(0)
+                                fellesTillegg.beloepNetto.greaterThan(0) or fellesTillegg.beloepNetto.equalTo(0)
                             ) {
                                 row {
                                     cell {
@@ -1119,12 +1129,12 @@ val vedleggOpplysningerBruktIBeregningUTBarnetillegg =
                                         )
                                     }
                                     cell {
-                                        includePhrase(KronerText(fellesTillegg.beloep))
+                                        includePhrase(KronerText(fellesTillegg.beloepNetto))
                                     }
                                 }
                             }
                             showIf(
-                                fellesTillegg.beloep.equalTo(0) and fellesTillegg.justeringsbeloepAar.equalTo(0)
+                                fellesTillegg.beloepNetto.equalTo(0) and fellesTillegg.justeringsbeloepAar.equalTo(0)
                             ) {
                                 row {
                                     cell {
@@ -1142,10 +1152,10 @@ val vedleggOpplysningerBruktIBeregningUTBarnetillegg =
                         }
                     }  // TABLE 2 Felles barn - end
 
-                    showIf(fellesTillegg.beloep.greaterThan(0)) {
+                    showIf(fellesTillegg.beloepNetto.greaterThan(0)) {
                         includePhrase(
                             MaanedligTilleggFellesbarn(
-                                beloep_barnetilleggFBGjeldende = fellesTillegg.beloep,
+                                beloep_barnetilleggFBGjeldende = fellesTillegg.beloepNetto,
                                 harFlereBarn = fellesTillegg.harFlereBarn,
                             )
                         )
@@ -1153,7 +1163,7 @@ val vedleggOpplysningerBruktIBeregningUTBarnetillegg =
                     showIf(fellesTillegg.innvilgetBarnetillegg) {
                         includePhrase(
                             FaaIkkeUtbetaltTilleggFellesbarn(
-                                beloep_barnetilleggFBGjeldende = fellesTillegg.beloep,
+                                beloep_barnetilleggFBGjeldende = fellesTillegg.beloepNetto,
                                 justeringsbeloepAar_barnetilleggFBGjeldende = fellesTillegg.justeringsbeloepAar,
                                 harFlereBarn = fellesTillegg.harFlereBarn,
                             )
@@ -1193,7 +1203,7 @@ val vedleggOpplysningerBruktIBeregningUTBarnetillegg =
                     }
                 ) {
                     showIf(
-                        saerkullTillegg.beloep.greaterThan(0) and saerkullTillegg.justeringsbeloepAar.notEqualTo(
+                        saerkullTillegg.beloepNetto.greaterThan(0) and saerkullTillegg.justeringsbeloepAar.notEqualTo(
                             0
                         )
                     ) {
@@ -1206,7 +1216,7 @@ val vedleggOpplysningerBruktIBeregningUTBarnetillegg =
                                 )
                             }
                             cell {
-                                includePhrase(KronerText(saerkullTillegg.beloepAarFoerAvkort))
+                                includePhrase(KronerText(saerkullTillegg.beloepAarBrutto))
                             }
                         }
                     }
@@ -1226,7 +1236,7 @@ val vedleggOpplysningerBruktIBeregningUTBarnetillegg =
                         }
                     }
                     showIf(
-                        saerkullTillegg.beloep.greaterThan(0) or (saerkullTillegg.beloep.lessThan(0) and saerkullTillegg.justeringsbeloepAar.notEqualTo(
+                        saerkullTillegg.beloepNetto.greaterThan(0) or (saerkullTillegg.beloepNetto.lessThan(0) and saerkullTillegg.justeringsbeloepAar.notEqualTo(
                             0
                         ))
                     ) {
@@ -1244,7 +1254,7 @@ val vedleggOpplysningerBruktIBeregningUTBarnetillegg =
                         }
                     }
                     showIf(
-                        saerkullTillegg.beloep.notEqualTo(0) or (saerkullTillegg.beloep.equalTo(0) and saerkullTillegg.justeringsbeloepAar.notEqualTo(
+                        saerkullTillegg.beloepNetto.notEqualTo(0) or (saerkullTillegg.beloepNetto.equalTo(0) and saerkullTillegg.justeringsbeloepAar.notEqualTo(
                             0
                         ))
                     ) {
@@ -1263,7 +1273,7 @@ val vedleggOpplysningerBruktIBeregningUTBarnetillegg =
                     }
                     showIf(
                         not(saerkullTillegg.fribeloepEllerInntektErPeriodisert)
-                                and (saerkullTillegg.beloep.notEqualTo(0) or (saerkullTillegg.beloep.equalTo(0) and saerkullTillegg.beloepAar.notEqualTo(
+                                and (saerkullTillegg.beloepNetto.notEqualTo(0) or (saerkullTillegg.beloepNetto.equalTo(0) and saerkullTillegg.beloepAarNetto.notEqualTo(
                             0
                         )))
                                 and saerkullTillegg.avkortningsbeloepAar.greaterThan(0)
@@ -1283,7 +1293,7 @@ val vedleggOpplysningerBruktIBeregningUTBarnetillegg =
                     }
                     showIf(
                         saerkullTillegg.fribeloepEllerInntektErPeriodisert
-                                and (saerkullTillegg.beloep.notEqualTo(0) or (saerkullTillegg.beloep.equalTo(0) and saerkullTillegg.beloepAar.notEqualTo(
+                                and (saerkullTillegg.beloepNetto.notEqualTo(0) or (saerkullTillegg.beloepNetto.equalTo(0) and saerkullTillegg.beloepAarNetto.notEqualTo(
                             0
                         )))
                                 and saerkullTillegg.avkortningsbeloepAar.greaterThan(0)
@@ -1316,7 +1326,7 @@ val vedleggOpplysningerBruktIBeregningUTBarnetillegg =
                         }
                     }
                     showIf(
-                        saerkullTillegg.beloep.notEqualTo(0) or (saerkullTillegg.beloep.equalTo(0) and saerkullTillegg.beloepAar.notEqualTo(
+                        saerkullTillegg.beloepNetto.notEqualTo(0) or (saerkullTillegg.beloepNetto.equalTo(0) and saerkullTillegg.beloepAarNetto.notEqualTo(
                             0
                         ))
                     ) {
@@ -1330,12 +1340,12 @@ val vedleggOpplysningerBruktIBeregningUTBarnetillegg =
                                 )
                             }
                             cell {
-                                includePhrase(KronerText(saerkullTillegg.beloepAar))
+                                includePhrase(KronerText(saerkullTillegg.beloepAarNetto))
                             }
                         }
                     }
                     showIf(
-                        saerkullTillegg.beloep.notEqualTo(0) or (saerkullTillegg.beloep.equalTo(0) and saerkullTillegg.justeringsbeloepAar.notEqualTo(
+                        saerkullTillegg.beloepNetto.notEqualTo(0) or (saerkullTillegg.beloepNetto.equalTo(0) and saerkullTillegg.justeringsbeloepAar.notEqualTo(
                             0
                         ))
                     ) {
@@ -1348,11 +1358,11 @@ val vedleggOpplysningerBruktIBeregningUTBarnetillegg =
                                 )
                             }
                             cell {
-                                includePhrase(KronerText(saerkullTillegg.beloep))
+                                includePhrase(KronerText(saerkullTillegg.beloepNetto))
                             }
                         }
                     }
-                    showIf(saerkullTillegg.beloep.equalTo(0) and saerkullTillegg.beloepAar.equalTo(0)) {
+                    showIf(saerkullTillegg.beloepNetto.equalTo(0) and saerkullTillegg.beloepAarNetto.equalTo(0)) {
                         row {
                             cell {
                                 text(
@@ -1370,9 +1380,9 @@ val vedleggOpplysningerBruktIBeregningUTBarnetillegg =
             } // TABLE 2 - end
 
 
-            showIf(saerkullTillegg.beloep.greaterThan(0)) {
-                includePhrase(VedleggBeregnUTredusBTSBPgaInntekt(saerkullTillegg.beloep))
-            }.orShowIf(saerkullTillegg.beloep.equalTo(0)) {
+            showIf(saerkullTillegg.beloepNetto.greaterThan(0)) {
+                includePhrase(VedleggBeregnUTredusBTSBPgaInntekt(saerkullTillegg.beloepNetto))
+            }.orShowIf(saerkullTillegg.beloepNetto.equalTo(0)) {
                 showIf(saerkullTillegg.justeringsbeloepAar.equalTo(0)) {
                     includePhrase(VedleggBeregnUTIkkeUtbetaltBTSBPgaInntekt)
                 } orShow {
