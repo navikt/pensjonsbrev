@@ -2,7 +2,6 @@ package no.nav.pensjon.brev.api.model.maler
 
 import no.nav.pensjon.brev.api.model.Kroner
 import no.nav.pensjon.brev.api.model.Sivilstand
-import no.nav.pensjon.brev.api.model.phrases.InnvilgetBarnetillegg
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligUfoeretrygdFoerSkattDto
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDto
 import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterUfoereDto
@@ -32,9 +31,8 @@ data class Ufoeretrygd(
     )
 
 data class BarnetilleggFellesbarn(
-    override val gjelderFlereBarn: Boolean,
-    override val inntektstak: Kroner,
-    override val utbetalt: Boolean,
+    val gjelderFlereBarn: Boolean,
+    val inntektstak: Kroner,
     val beloepBrutto: Kroner,
     val beloepNetto: Kroner,
     val fribeloep: Kroner,
@@ -43,16 +41,15 @@ data class BarnetilleggFellesbarn(
     val harJusteringsbeloep: Boolean,
     val inntektAnnenForelder: Kroner,
     val inntektBruktIAvkortning: Kroner,
-): InnvilgetBarnetillegg
+)
 
 data class BarnetilleggSaerkullsbarn(
-    override val gjelderFlereBarn: Boolean,
-    override val inntektstak: Kroner,
-    override val utbetalt: Boolean,
+    val gjelderFlereBarn: Boolean,
+    val inntektstak: Kroner,
     val beloepBrutto: Kroner,
     val beloepNetto: Kroner,
     val fribeloep: Kroner,
     val harFradrag: Boolean,
     val harJusteringsbeloep: Boolean,
     val inntektBruktIAvkortning: Kroner,
-): InnvilgetBarnetillegg
+)

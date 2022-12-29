@@ -169,7 +169,7 @@ object UfoerOmregningEnslig : VedtaksbrevTemplate<UfoerOmregningEnsligDto> {
             ifNotNull(barnetilleggSaerkullsbarnVedVirk) { barnetilleggSaerkullsbarnVedVirk ->
 
                 val harNettoBeloep = barnetilleggSaerkullsbarnVedVirk.beloep.greaterThan(0)
-                val barnetilleggForSaerkullsbarnVedvirk_HarjusteringsBeloepAr = barnetilleggSaerkullsbarnVedVirk.justeringsbeloepAar.notEqualTo(0)
+                val harJusteringsbeloepSaerkull = barnetilleggSaerkullsbarnVedVirk.justeringsbeloepAar.notEqualTo(0)
 
                 showIf(harBarnOverfoertTilSaerkullsbarn) {
                     includePhrase(OmregningFBOverskrift_001)
@@ -218,7 +218,7 @@ object UfoerOmregningEnslig : VedtaksbrevTemplate<UfoerOmregningEnsligDto> {
                     }
 
                     showIf(
-                        barnetilleggSaerkullsbarnVedVirk.erRedusertMotInntekt and harNettoBeloep or (not(harNettoBeloep) and barnetilleggForSaerkullsbarnVedvirk_HarjusteringsBeloepAr)
+                        barnetilleggSaerkullsbarnVedVirk.erRedusertMotInntekt and harNettoBeloep or (not(harNettoBeloep) and harJusteringsbeloepSaerkull)
                     ) {
                         includePhrase(
                             RedusBTSBPgaInntekt_001(
@@ -228,16 +228,16 @@ object UfoerOmregningEnslig : VedtaksbrevTemplate<UfoerOmregningEnsligDto> {
                         )
                     }
 
-                    showIf(barnetilleggForSaerkullsbarnVedvirk_HarjusteringsBeloepAr and harNettoBeloep) {
+                    showIf(harJusteringsbeloepSaerkull and harNettoBeloep) {
                         includePhrase(JusterBelopRedusBTPgaInntekt_001)
                     }
 
-                    showIf(barnetilleggForSaerkullsbarnVedvirk_HarjusteringsBeloepAr and not(harNettoBeloep)) {
+                    showIf(harJusteringsbeloepSaerkull and not(harNettoBeloep)) {
                         includePhrase(JusterBelopIkkeUtbetaltBTPgaInntekt_001)
                     }
 
                     showIf(
-                        barnetilleggSaerkullsbarnVedVirk.erRedusertMotInntekt and not(harNettoBeloep) and not(barnetilleggForSaerkullsbarnVedvirk_HarjusteringsBeloepAr)
+                        barnetilleggSaerkullsbarnVedVirk.erRedusertMotInntekt and not(harNettoBeloep) and not(harJusteringsbeloepSaerkull)
                     ) {
                         includePhrase(
                             IkkeUtbetaltBTSBPgaInntekt_001(

@@ -18,37 +18,50 @@ import java.time.LocalDate
 
 
 object Barnetillegg {
-    // TODO: children plural
+
+
+    // TODO: kan vi ikke bare bruke navnet på barna?
     // TBU2290
-
-
     data class VirkningsDatoForOpphoer(
         val oensketVirkningsDato: Expression<LocalDate>,
-        val foedselsdatoPaaBarnetilleggOpphoert: Expression<List<LocalDate>>,
+        val foedselsdatoPaaBarnMedOpphoertBarnetillegg: Expression<List<LocalDate>>,
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             paragraph {
                 val virkningsDato = oensketVirkningsDato.format()
-                val foedselsDato = foedselsdatoPaaBarnetilleggOpphoert.map(BinaryOperation.LocalizedDateFormat).format()
+                val barnFlertall = foedselsdatoPaaBarnMedOpphoertBarnetillegg.size().greaterThan(1)
+                val foedselsDato =
+                    foedselsdatoPaaBarnMedOpphoertBarnetillegg.map(BinaryOperation.LocalizedDateFormat).format()
 
                 textExpr(
-                    Bokmal to "Vi har vedtatt at barnetillegget i uføretrygden din opphører fra ".expr() + virkningsDato + " for barn født ".expr() + foedselsDato + ".".expr(),
-                    Nynorsk to "Vi har stansa barnetillegget i uføretrygda di frå ".expr() + virkningsDato + " for barn fødd ".expr() + foedselsDato + ".".expr(),
-                    English to "The child supplement in your disability benefit has been discontinued, effective as of ".expr() + virkningsDato + ", for child/children born ".expr() + foedselsDato + ".".expr()
+                    Bokmal to "Vi har vedtatt at barnetillegget i uføretrygden din opphører fra ".expr() + virkningsDato +
+                            " for " + ifElse(barnFlertall, "barna", "barnet") +
+                            " født ".expr() + foedselsDato + ".".expr(),
+                    Nynorsk to "Vi har stansa barnetillegget i uføretrygda di frå ".expr() + virkningsDato +
+                            " for " + ifElse(barnFlertall, "barna", "barnet") +
+                            " fødd ".expr() + foedselsDato + ".".expr(),
+                    English to "The child supplement in your disability benefit has been discontinued, effective as of ".expr() + virkningsDato +
+                            ", for " + ifElse(barnFlertall, "children", "the child") +
+                            " born ".expr() + foedselsDato + ".".expr()
                 )
             }
         }
     }
 
-    // TODO: children plural
     // TBU3920
-    object BarnHarFylt18AAR : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    data class BarnHarFylt18AAR(
+        val opphoertBarnetilleggFlereBarn: Expression<Boolean>,
+    ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             paragraph {
+                val barnFlertall = opphoertBarnetilleggFlereBarn
                 textExpr(
-                    Bokmal to "For å ha rett til barnetillegg må du forsørge barn under 18 år. Vi har vedtatt at barnetillegget i uføretrygden opphører fordi barnetbarna har fylt 18 år.".expr(),
-                    Nynorsk to "For å ha rett til barnetillegg må du forsørgje barn under 18 år. Vi har stansa barnetillegget i uføretrygda fordi barnetbarna har fylt 18 år.".expr(),
-                    English to "To be eligible for child supplement, you must support children under 18 years of age. The child supplement in your disability benefit has been discontinued because your childchildren has(have) turned 18 years of age.".expr()
+                    Bokmal to "For å ha rett til barnetillegg må du forsørge barn under 18 år. Vi har vedtatt at barnetillegget i uføretrygden opphører fordi ".expr() +
+                            ifElse(barnFlertall, "barna", "barnet") + " har fylt 18 år.".expr(),
+                    Nynorsk to "For å ha rett til barnetillegg må du forsørgje barn under 18 år. Vi har stansa barnetillegget i uføretrygda fordi ".expr() +
+                            ifElse(barnFlertall, "barna", "barnet") + " har fylt 18 år.".expr(),
+                    English to "To be eligible for child supplement, you must support children under 18 years of age. The child supplement in your disability benefit has been discontinued because your ".expr() +
+                            ifElse(barnFlertall, "children have", "child has") + " turned 18 years of age.".expr()
                 )
             }
         }
@@ -59,8 +72,7 @@ object Barnetillegg {
     data class BetydningAvInntektOverskrift(
         val harBarnetilleggSaerkullsbarn: Expression<Boolean>,
         val harBarnetilleggFellesbarn: Expression<Boolean>,
-
-        ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             title1 {
                 text(
@@ -78,9 +90,9 @@ object Barnetillegg {
         val harBarnetilleggSaerkullsbarn: Expression<Boolean>,
         val sivilstand: Expression<Sivilstand>,
         val faarUtbetaltBarnetilleggSaerkullsbarn: Expression<Boolean>,
-
-        ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+
             showIf(harBarnetilleggSaerkullsbarn and not(harBarnetilleggFellesbarn)) {
                 paragraph {
                     text(
@@ -546,24 +558,109 @@ object Barnetillegg {
         }
     }
 
+    // TODO avklar når / om vi skal bruke justeringsbeløp for å filtrere ut frasen
+    // i extream sjekkes det at justeringsbeløp er lik 0 for særkullsbarn i TBU1286.1
+    // , men det sjekkes ikke mot justeringsbeløp for felles barn i TBU1286.2
+    // i malen sjekkes det om justeringsbeløp er lik 0 for særkullsbarn i TBU1286.2
+    // skal vi følge malen eller extream? skal eksisterende bruk av frasen i UngUfoerAuto ha samme filteret?
+
+    /**
+     * TBU1286.1, TBU1286.2
+     */
+    data class BarnetilleggIkkeUtbetalt(
+        val fellesInnvilget: Expression<Boolean>,
+        val fellesUtbetalt: Expression<Boolean>,
+        val harFlereFellesBarn: Expression<Boolean>,
+        val harFlereSaerkullsbarn: Expression<Boolean>,
+        val inntektstakFellesbarn: Expression<Kroner>,
+        val inntektstakSaerkullsbarn: Expression<Kroner>,
+        val saerkullInnvilget: Expression<Boolean>,
+        val saerkullUtbetalt: Expression<Boolean>,
+    ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
+            paragraph {
+                showIf(saerkullInnvilget and not(saerkullUtbetalt) and not(fellesInnvilget)) {
+                    textExpr( // TBU1286.1
+                        Bokmal to "Barnetillegget for ".expr() +
+                                ifElse(harFlereSaerkullsbarn, "barna", "barnet") +
+                                " blir ikke utbetalt fordi du har en samlet inntekt som er høyere enn " +
+                                inntektstakFellesbarn.format() + " kroner. Inntekten din er over grensen for å få utbetalt barnetillegg.".expr(),
+                        Nynorsk to "Barnetillegget for ".expr() +
+                                ifElse(harFlereSaerkullsbarn, "barna", "barnet") +
+                                " blir ikkje utbetalt fordi du har ei samla inntekt som er høgare enn " +
+                                inntektstakFellesbarn.format() + " kroner. Inntekta di er over grensa for å få utbetalt barnetillegg.".expr(),
+                        English to "You will not receive child supplement for the ".expr() +
+                                ifElse(harFlereSaerkullsbarn, "children", "child") +
+                                " because your total income on its own is higher than NOK " +
+                                inntektstakFellesbarn.format() + ". You will not receive child supplement because your income exceeds the income limit.".expr()
+                    )
+                }.orShowIf(saerkullInnvilget and not(saerkullUtbetalt) and fellesInnvilget) {
+                    textExpr( // TBU1286.1
+                        Bokmal to "Barnetillegget for ".expr() +
+                                ifElse(harFlereSaerkullsbarn, "barna", "barnet") +
+                                " som ikke bor sammen med begge foreldrene, blir ikke utbetalt fordi du alene har en samlet inntekt som er høyere enn " +
+                                inntektstakFellesbarn.format() + " kroner. Inntekten din er over grensen for å få utbetalt barnetillegg.".expr(),
+                        Nynorsk to "Barnetillegget for ".expr() +
+                                ifElse(harFlereSaerkullsbarn, "barna", "barnet") +
+                                " som ikkje bur saman med begge foreldra sine, blir ikkje utbetalt fordi du åleine har ei samla inntekt som er høgare enn " +
+                                inntektstakFellesbarn.format() + " kroner. Inntekta di er over grensa for å få utbetalt barnetillegg.".expr(),
+                        English to "You will not receive child supplement for the ".expr() +
+                                ifElse(harFlereSaerkullsbarn, "children who do", "child who does") +
+                                " not live together with both parents because your total income on its own is higher than NOK " +
+                                inntektstakFellesbarn.format() + ". You will not receive child supplement because your income exceeds the income limit.".expr()
+                    )
+                }.orShowIf(fellesInnvilget and not(fellesUtbetalt) and not(saerkullInnvilget)) {
+                    textExpr(// TBU1286.2
+                        Bokmal to "Barnetillegget for ".expr() +
+                                ifElse(harFlereFellesBarn, "barna", "barnet") +
+                                " blir ikke utbetalt fordi dere har en samlet inntekt som er høyere enn " +
+                                inntektstakFellesbarn.format() + " kroner. De samlede inntektene er over grensen for å få utbetalt barnetillegg.".expr(),
+
+                        Nynorsk to "Barnetillegget for ".expr() +
+                                ifElse(harFlereFellesBarn, "barna", "barnet") +
+                                " blir ikkje utbetalt fordi dei har ei samla inntekt som er høgare enn " +
+                                inntektstakFellesbarn.format() + " kroner. Dei samla inntektene er over grensa for å få utbetalt barnetillegg.".expr(),
+                        English to "You will not receive child supplement for the ".expr() +
+                                ifElse(harFlereFellesBarn, "children", "child") +
+                                " because your total income on its own is higher than NOK " +
+                                inntektstakFellesbarn.format() + ". You will not receive child supplement because your combined incomes exceed the income limit.".expr()
+                    )
+                }.orShowIf(fellesInnvilget and not(fellesUtbetalt) and saerkullInnvilget) {
+                    textExpr(// TBU1286.2
+                        Bokmal to "Barnetillegget for ".expr() +
+                                ifElse(harFlereFellesBarn, "barna", "barnet") +
+                                " som bor med begge sine foreldre, blir ikke utbetalt fordi dere har en samlet inntekt som er høyere enn " +
+                                inntektstakFellesbarn.format() + " kroner. De samlede inntektene er over grensen for å få utbetalt barnetillegg.".expr(),
+
+                        Nynorsk to "Barnetillegget for ".expr() +
+                                ifElse(harFlereFellesBarn, "barna", "barnet") +
+                                " som bur saman med begge foreldra sine, blir ikkje utbetalt fordi dei har ei samla inntekt som er høgare enn " +
+                                inntektstakFellesbarn.format() + " kroner. Dei samla inntektene er over grensa for å få utbetalt barnetillegg.".expr(),
+                        English to "You will not receive child supplement for the ".expr() +
+                                ifElse(harFlereFellesBarn, "children who live", "child who lives") +
+                                " together with both parents because your total income on its own is higher than NOK " +
+                                inntektstakFellesbarn.format() + ". You will not receive child supplement because your combined incomes exceed the income limit.".expr()
+                    )
+                }
+            }
+    }
+
 
     // TBU2490 Barnetilleggene for både særkullsbarn og fellesbarn er innvilget og ingen av dem blir utbetalt
     data class InnvilgetOgIkkeUtbetalt(
-        val beloepNettoFellesbarn: Expression<Kroner>,
-        val beloepNettoSaerkullsbarn: Expression<Kroner>,
+        val fellesInnvilget: Expression<Boolean>,
+        val fellesUtbetalt: Expression<Boolean>,
+        val harTilleggForFlereFellesbarn: Expression<Boolean>,
+        val harTilleggForFlereSaerkullsbarn: Expression<Boolean>,
         val inntektstakFellesbarn: Expression<Kroner>,
         val inntektstakSaerkullsbarn: Expression<Kroner>,
-        val harJusteringsbeloepFellesbarn: Expression<Boolean>,
-        val harJusteringsbeloepSaerkullsbarn: Expression<Boolean>,
-        val harTilleggForFlereSaerkullsbarn: Expression<Boolean>,
-        val harTilleggForFlereFellesbarn: Expression<Boolean>,
+        val saerkullInnvilget: Expression<Boolean>,
+        val saerkullUtbetalt: Expression<Boolean>,
 
         ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-            showIf(beloepNettoFellesbarn.equalTo(0)
-                        and beloepNettoSaerkullsbarn.equalTo(0)
-                        and harJusteringsbeloepFellesbarn
-                        and harJusteringsbeloepSaerkullsbarn
+            showIf(
+                fellesInnvilget and not(fellesUtbetalt) and saerkullInnvilget and not(saerkullUtbetalt)
             ) {
                 paragraph {
                     textExpr(
@@ -613,103 +710,7 @@ object Barnetillegg {
         }
     }
 
-    /**
-     * TBU1286.1, TBU1286.2
-     */
-    /*
-    data class BarnetilleggIkkeUtbetalt(
-        val saerkullsbarn: Expression<InnvilgetBarnetillegg>, //TODO inkluder interface når den er eksponert fra api-model
-        val fellesbarn: Expression<InnvilgetBarnetillegg>, //TODO inkluder interface når den er eksponert fra api-model
-    ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
-        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
-            paragraph {
-
-                ifNotNull(saerkullsbarn, fellesbarn){ saerkullsbarn, fellesbarn ->
-                    showIf(fellesbarn.utbetalt and not(saerkullsbarn.utbetalt)){
-                        val harFlereSaerkullsbarn = saerkullsbarn.
-                        textExpr(
-                            Bokmal to "Barnetillegget for ".expr() +
-                                    ifElse(harFlereSaerkullsbarn, "barna", "barnet") +
-                                    " som ikke bor sammen med begge foreldrene, blir ikke utbetalt fordi du alene har en samlet inntekt som er høyere enn " +
-                                    fellesInntektstak.format() + " kroner. Inntekten din er over grensen for å få utbetalt barnetillegg.".expr(),
-                            Nynorsk to "Barnetillegget for ".expr() +
-                                    ifElse(harFlereSaerkullsbarn, "barna", "barnet") +
-                                    " som ikkje bur saman med begge foreldra sine, blir ikkje utbetalt fordi du åleine har ei samla inntekt som er høgare enn " +
-                                    fellesInntektstak.format() + " kroner. Inntekta di er over grensa for å få utbetalt barnetillegg.".expr(),
-                            English to "You will not receive child supplement for the ".expr() +
-                                    ifElse(harFlereSaerkullsbarn, "children who do not", "child who does not") +
-                                    " live together with both parents because your total income on its own is higher than NOK " +
-                                    fellesInntektstak.format() + ". You will not receive child supplement because your income exceeds the income limit.".expr()
-                        )
-                    }
-                }
-                //TODO rydd opp i logikk når interface støtten er klar for resten av frasene.
-                showIf(fellesbarnInnvilget and fellesUtbetalt and saerkullInnvilget and not(saerkullUtbetalt)) {
-                    textExpr(
-                        Bokmal to "Barnetillegget for ".expr() +
-                                ifElse(harFlereSaerkullsbarn, "barna", "barnet") +
-                                " som ikke bor sammen med begge foreldrene, blir ikke utbetalt fordi du alene har en samlet inntekt som er høyere enn " +
-                                fellesInntektstak.format() + " kroner. Inntekten din er over grensen for å få utbetalt barnetillegg.".expr(),
-                        Nynorsk to "Barnetillegget for ".expr() +
-                                ifElse(harFlereSaerkullsbarn, "barna", "barnet") +
-                                " som ikkje bur saman med begge foreldra sine, blir ikkje utbetalt fordi du åleine har ei samla inntekt som er høgare enn " +
-                                fellesInntektstak.format() + " kroner. Inntekta di er over grensa for å få utbetalt barnetillegg.".expr(),
-                        English to "You will not receive child supplement for the ".expr() +
-                                ifElse(harFlereSaerkullsbarn, "children who do not", "child who does not") +
-                                " live together with both parents because your total income on its own is higher than NOK " +
-                                fellesInntektstak.format() + ". You will not receive child supplement because your income exceeds the income limit.".expr()
-                    )
-
-                }.orShowIf(not(fellesbarnInnvilget) and saerkullInnvilget and not(saerkullUtbetalt)) {
-                    textExpr(
-                        Bokmal to "Barnetillegget for ".expr() +
-                                ifElse(harFlereSaerkullsbarn, "barna", "barnet") +
-                                " som bor med begge sine foreldre, blir ikke utbetalt fordi dere har en samlet inntekt som er høyere enn " +
-                                fellesInntektstak.format() + " kroner. De samlede inntektene er over grensen for å få utbetalt barnetillegg. ".expr(),
-                        Nynorsk to "Barnetillegget for ".expr() +
-                                ifElse(harFlereSaerkullsbarn, "barna", "barnet") +
-                                " som bur saman med begge foreldra sine, blir ikkje utbetalt fordi dei har ei samla inntekt som er høgare enn " +
-                                fellesInntektstak.format() + " kroner. Dei samla inntektene er over grensa for å få utbetalt barnetillegg.".expr(),
-                        English to "You will not receive child supplement for the ".expr() +
-                                ifElse(harFlereSaerkullsbarn, "children who live", "child who lives") +
-                                " together with both parents because your combined income is higher than NOK " +
-                                fellesInntektstak.format() + " You will not receive child supplement because your combined incomes exceed the income limit.".expr()
-                    )
-                }
-
-                showIf(saerkullInnvilget and saerkullUtbetalt and fellesbarnInnvilget and not(fellesUtbetalt)) {
-                    textExpr(
-                        Bokmal to "Barnetillegget for ".expr() +
-                                ifElse(harFlereFellesBarn, "barna", "barnet") +
-                                " som bor med begge sine foreldre, blir ikke utbetalt fordi dere har en samlet inntekt som er høyere enn " +
-                                fellesInntektstak.format() + " kroner. De samlede inntektene er over grensen for å få utbetalt barnetillegg.".expr(),
-                        Nynorsk to "Barnetillegget for ".expr() +
-                                ifElse(harFlereFellesBarn, "barna", "barnet") +
-                                " som bur saman med begge foreldra sine, blir ikkje utbetalt fordi dei har ei samla inntekt som er høgare enn " +
-                                fellesInntektstak.format() + " kroner. Dei samla inntektene er over grensa for å få utbetalt barnetillegg.".expr(),
-                        English to "You will not receive child supplement for the ".expr() +
-                                ifElse(harFlereFellesBarn, "children who live", "child who lives") +
-                                " together with both parents because your combined income is higher than NOK " +
-                                fellesInntektstak.format() + " You will not receive child supplement because your combined incomes exceed the income limit.".expr()
-                    )
-
-                }.orShowIf(not(saerkullInnvilget) and fellesbarnInnvilget and not(fellesUtbetalt)) {
-                    textExpr(
-                        Bokmal to "Barnetillegget for ".expr() +
-                                ifElse(harFlereFellesBarn, "barna", "barnet") +
-                                " som bor med begge sine foreldre, blir ikke utbetalt fordi dere har en samlet inntekt som er høyere enn " +
-                                fellesInntektstak.format() + " kroner. De samlede inntektene er over grensen for å få utbetalt barnetillegg.".expr(),
-                        Nynorsk to "Barnetillegget for ".expr() +
-                                ifElse(harFlereFellesBarn, "barna", "barnet") +
-                                " som bur saman med begge foreldra sine, blir ikkje utbetalt fordi dei har ei samla inntekt som er høgare enn " +
-                                fellesInntektstak.format() + " kroner. Dei samla inntektene er over grensa for å få utbetalt barnetillegg.".expr(),
-                        English to "You will not receive child supplement for the ".expr() +
-                                ifElse(harFlereFellesBarn, "children", "child") +
-                                " who lives together with both parents because your total income on its own is higher than NOK " +
-                                fellesInntektstak.format() + ". You will not receive child supplement because your combined incomes exceed the income limit.".expr()
-                    )
-                }
-            }
-    }*/
 }
+
+
 
