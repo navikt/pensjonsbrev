@@ -326,8 +326,7 @@ data class FaaIkkeUtbetaltTilleggFellesbarn(
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
 
-        showIf(
-            beloep_barnetilleggFBGjeldende.equalTo(0) and justeringsbeloepAar_barnetilleggFBGjeldende.equalTo(0)
+        showIf(justeringsbeloepAar_barnetilleggFBGjeldende.equalTo(0)
         ) {
             paragraph {
                 textExpr(
@@ -343,7 +342,7 @@ data class FaaIkkeUtbetaltTilleggFellesbarn(
                 )
             }
         }
-            showIf(beloep_barnetilleggFBGjeldende.equalTo(0) and justeringsbeloepAar_barnetilleggFBGjeldende.notEqualTo(0)
+            showIf(justeringsbeloepAar_barnetilleggFBGjeldende.notEqualTo(0) and beloep_barnetilleggFBGjeldende.equalTo(0)
         ) {
             paragraph {
                 text(
