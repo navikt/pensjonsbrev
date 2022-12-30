@@ -2,7 +2,9 @@ package no.nav.pensjon.brev.maler.vedlegg
 
 
 import no.nav.pensjon.brev.api.model.Beregningsmetode.*
+import no.nav.pensjon.brev.api.model.vedlegg.BarnetilleggGjeldendeSelectors.fellesbarn
 import no.nav.pensjon.brev.api.model.vedlegg.BarnetilleggGjeldendeSelectors.fellesbarn_safe
+import no.nav.pensjon.brev.api.model.vedlegg.BarnetilleggGjeldendeSelectors.saerkullsbarn
 import no.nav.pensjon.brev.api.model.vedlegg.BarnetilleggGjeldendeSelectors.saerkullsbarn_safe
 import no.nav.pensjon.brev.api.model.vedlegg.BarnetilleggGjeldendeSelectors.totaltAntallBarn
 import no.nav.pensjon.brev.api.model.vedlegg.BeregnetUTPerManedGjeldendeSelectors.brukerErFlyktning
@@ -697,8 +699,7 @@ val vedleggOpplysningerBruktIBeregningUTBarnetillegg =
                             )
                         }
                     }
-                    // TODO erstatt med ifnotnull(barnetillegg.saerkullsbarn)
-                    showIf(saerkullsbarn.innvilgetBarnetillegg) {
+                    ifNotNull(barnetillegg.saerkullsbarn) { saerkullsbarn ->
                         row {
                             cell {
                                 text(
@@ -712,8 +713,7 @@ val vedleggOpplysningerBruktIBeregningUTBarnetillegg =
                             }
                         }
                     }
-                    // TODO erstatt med ifnotnull(barnetillegg.fellesbarn)
-                    showIf(fellesbarn.innvilgetBarnetillegg) {
+                    ifNotNull(barnetillegg.fellesbarn) { fellesbarn ->
                         row {
                             cell {
                                 text(
@@ -727,22 +727,8 @@ val vedleggOpplysningerBruktIBeregningUTBarnetillegg =
                             }
                         }
                     }
-                    //TODO kan erstattes med barnetillegg.fellesbarn.notNull(). Vi burde lage .isNull()
-                    // inverter/flipp case. showif(fellesbarn.notNull()){...}.orshow{...}
-                    showIf(not(fellesbarn.innvilgetBarnetillegg)) {
-                        row {
-                            cell {
-                                text(
-                                    Bokmal to "Samlet inntekt som er brukt i fastsettelse av barnetillegg",
-                                    Nynorsk to "Samla inntekt som er brukt i fastsetjinga av barnetillegg",
-                                    English to "Your income, which is used to calculate child supplement"
-                                )
-                            }
-                            cell {
-                                includePhrase(KronerText(saerkullsbarn.inntektBruktIAvkortning))
-                            }
-                        }
-                    }.orShowIf(fellesbarn.innvilgetBarnetillegg) {
+
+                    showIf(barnetillegg.fellesbarn.notNull()) {
                         row {
                             cell {
                                 text(
@@ -755,8 +741,22 @@ val vedleggOpplysningerBruktIBeregningUTBarnetillegg =
                                 includePhrase(KronerText(fellesbarn.inntektBruktIAvkortning))
                             }
                         }
+                    }.orShow {
+                        row {
+                            cell {
+                                text(
+                                    Bokmal to "Samlet inntekt som er brukt i fastsettelse av barnetillegg",
+                                    Nynorsk to "Samla inntekt som er brukt i fastsetjinga av barnetillegg",
+                                    English to "Your income, which is used to calculate child supplement"
+                                )
+                            }
+                            cell {
+                                includePhrase(KronerText(saerkullsbarn.inntektBruktIAvkortning))
+                            }
+                        }
                     }
-                    showIf(fellesbarn.innvilgetBarnetillegg) {
+
+                    ifNotNull(barnetillegg.fellesbarn) { fellesbarn ->
                         row {
                             cell {
                                 text(
@@ -770,8 +770,8 @@ val vedleggOpplysningerBruktIBeregningUTBarnetillegg =
                             }
                         }
                     }
-                    // TODO erstatt med ifnotnull(barnetillegg.saerkullsbarn)
-                    showIf(saerkullsbarn.innvilgetBarnetillegg) {
+
+                    showIf(barnetillegg.saerkullsbarn.notNull()) {
                         row {
                             cell {
                                 text(
@@ -784,7 +784,7 @@ val vedleggOpplysningerBruktIBeregningUTBarnetillegg =
                                 includePhrase(KronerText(saerkullsbarn.inntektstak))
                             }
                         }
-                    }.orShowIf(fellesbarn.innvilgetBarnetillegg) {
+                    }.orShowIf(barnetillegg.fellesbarn.notNull()) {
                         row {
                             cell {
                                 text(
@@ -852,7 +852,8 @@ val vedleggOpplysningerBruktIBeregningUTBarnetillegg =
 
         //TODO -HH OpplysningerBruktIBeregning bør være komplett om denne delen inkluderes
         // START of barnetillegg TODO denne bør eksistere i en frase/fil. Filen er veldig lang.
-        ifNotNull( // TODO Dette går ikke. Ifnotnull må sjekkes rundt hvert sted hvor vi sjekker om barnetillegg skal være innvilget
+        ifNotNull(
+            // TODO Dette går ikke. Ifnotnull må sjekkes rundt hvert sted hvor vi sjekker om barnetillegg skal være innvilget
             // Om vi sjekker at vi har fellesbarn og særkullsbarn så vil vi kun komme innenfor blokken om du har innvilget barnetillegg for særkullsbarn og felles barn
             barnetilleggGjeldende.fellesbarn_safe, barnetilleggGjeldende.saerkullsbarn_safe,
         ) { fellesTillegg, saerkullTillegg ->
@@ -1065,7 +1066,9 @@ val vedleggOpplysningerBruktIBeregningUTBarnetillegg =
                                 }
                             }
                             showIf(
-                                fellesTillegg.beloepNetto.notEqualTo(0) and fellesTillegg.justeringsbeloepAar.notEqualTo(0) and fellesTillegg.avkortningsbeloepAar.greaterThan(
+                                fellesTillegg.beloepNetto.notEqualTo(0) and fellesTillegg.justeringsbeloepAar.notEqualTo(
+                                    0
+                                ) and fellesTillegg.avkortningsbeloepAar.greaterThan(
                                     0
                                 )
                             ) {
