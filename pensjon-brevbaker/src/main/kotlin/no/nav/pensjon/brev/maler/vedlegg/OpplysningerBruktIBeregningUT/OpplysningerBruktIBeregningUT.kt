@@ -1,11 +1,10 @@
-package no.nav.pensjon.brev.maler.vedlegg
+package no.nav.pensjon.brev.maler.vedlegg.OpplysningerBruktIBeregningUT
 
 
 import no.nav.pensjon.brev.api.model.Beregningsmetode.*
 import no.nav.pensjon.brev.api.model.vedlegg.BarnetilleggGjeldendeSelectors.fellesbarn_safe
 import no.nav.pensjon.brev.api.model.vedlegg.BarnetilleggGjeldendeSelectors.saerkullsbarn_safe
 import no.nav.pensjon.brev.api.model.vedlegg.BarnetilleggGjeldendeSelectors.totaltAntallBarn
-import no.nav.pensjon.brev.api.model.vedlegg.BarnetilleggGjeldendeSelectors.totaltAntallBarn_safe
 import no.nav.pensjon.brev.api.model.vedlegg.BeregnetUTPerManedGjeldendeSelectors.brukerErFlyktning
 import no.nav.pensjon.brev.api.model.vedlegg.BeregnetUTPerManedGjeldendeSelectors.brukersSivilstand
 import no.nav.pensjon.brev.api.model.vedlegg.BeregnetUTPerManedGjeldendeSelectors.grunnbeloep

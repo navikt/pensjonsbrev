@@ -1,4 +1,4 @@
-package no.nav.pensjon.brev.maler.vedlegg
+package no.nav.pensjon.brev.maler.vedlegg.OpplysningerBruktIBeregningUT
 
 
 import no.nav.pensjon.brev.api.model.Beregningsmetode.*

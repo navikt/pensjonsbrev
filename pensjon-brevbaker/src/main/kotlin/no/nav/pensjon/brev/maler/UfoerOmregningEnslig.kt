@@ -47,7 +47,7 @@ import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.fraser.ufoer.Ufoeretrygd
 import no.nav.pensjon.brev.maler.fraser.vedtak.Vedtak
 import no.nav.pensjon.brev.maler.vedlegg.vedleggMaanedligUfoeretrygdFoerSkatt
-import no.nav.pensjon.brev.maler.vedlegg.vedleggOpplysningerBruktIBeregningUT
+import no.nav.pensjon.brev.maler.vedlegg.OpplysningerBruktIBeregningUT.vedleggOpplysningerBruktIBeregningUT
 import no.nav.pensjon.brev.maler.vedlegg.vedleggOrienteringOmRettigheterOgPlikterUfoere
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.VedtaksbrevTemplate
