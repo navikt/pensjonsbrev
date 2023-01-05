@@ -33,12 +33,6 @@ import no.nav.pensjon.brev.template.dsl.text
 
         ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-            // TODO -HH dette kan sjekkes med saerkullTillegg.notNull(), men over i ifnotnull sjekker vi at du har både barnetillegg felles barn og saerkullsbarn
-            val harSaerkullsbarn = saerkullTillegg.innvilgetBarnetillegg
-            val harFellesbarn = fellesTillegg.innvilgetBarnetillegg
-
-            val harTilleggForFlereFellesbarn = fellesTillegg.harFlereBarn
-            val harTilleggForFlereSaerkullsbarn = fellesTillegg.harFlereBarn
 
             ifNotNull(barnetillegg.saerkullsbarn) { saerkullsbarn ->
 
