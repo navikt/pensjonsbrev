@@ -1,4 +1,4 @@
-package no.nav.pensjon.brev.maler.fraser
+package no.nav.pensjon.brev.maler.fraser.vedlegg
 
 
 import no.nav.pensjon.brev.template.*

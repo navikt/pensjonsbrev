@@ -2,7 +2,7 @@ package no.nav.pensjon.brev.maler.vedlegg
 
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligUfoeretrygdFoerSkattDto
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligUfoeretrygdFoerSkattDtoSelectors.ufoeretrygdPerioder
-import no.nav.pensjon.brev.maler.fraser.VedleggMaanedligeUfoeretrgdFoerSkatt
+import no.nav.pensjon.brev.maler.fraser.vedlegg.VedleggMaanedligeUfoeretrgdFoerSkatt
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.createAttachment

@@ -1,4 +1,4 @@
-package no.nav.pensjon.brev.maler.vedlegg.opplysningerbruktiberegningufoere
+package no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningufoere
 
 import no.nav.pensjon.brev.api.model.Beregningsmetode
 import no.nav.pensjon.brev.api.model.Kroner

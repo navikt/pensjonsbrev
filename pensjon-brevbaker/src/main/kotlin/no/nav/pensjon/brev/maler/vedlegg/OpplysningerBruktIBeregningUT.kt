@@ -1,4 +1,4 @@
-package no.nav.pensjon.brev.maler.vedlegg.opplysningerbruktiberegningufoere
+package no.nav.pensjon.brev.maler.vedlegg
 
 
 import no.nav.pensjon.brev.api.model.Kroner
@@ -52,6 +52,10 @@ import no.nav.pensjon.brev.api.model.vedlegg.SaerkullsbarnSelectors.justeringsbe
 import no.nav.pensjon.brev.api.model.vedlegg.SaerkullsbarnSelectors.justeringsbeloepAar_safe
 import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidsdetaljerGjeldendeSelectors.anvendtTT
 import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdGjeldendeSelectors.erKonvertert
+import no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningufoere.VedleggOpplysningerBruktIBeregningUTFraser
+import no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningufoere.VedleggOpplysningerBruktIBeregningUTFraser.SlikBeregnBTOverskrift
+import no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningufoere.OpplysningerOmBarnetilleggTabell
+import no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningufoere.TabellUfoereOpplysninger
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.*
@@ -99,33 +103,33 @@ val vedleggOpplysningerBruktIBeregningUT =
             )
         )
         showIf(harMinsteytelseSats) {
-            includePhrase(RettTilMYOverskrift)
+            includePhrase(VedleggOpplysningerBruktIBeregningUTFraser.RettTilMYOverskrift)
         }
 
         showIf(harMinsteytelseSats) {
             ifNotNull(ungUfoerGjeldende_erUnder20Aar) { erUnder20Aar ->
                 showIf(erUnder20Aar) {
-                    includePhrase(VedleggBeregnUTInfoMYUngUforUnder20)
+                    includePhrase(VedleggOpplysningerBruktIBeregningUTFraser.VedleggBeregnUTInfoMYUngUforUnder20)
                 }.orShow {
-                    includePhrase(VedleggBeregnUTInfoMYUngUfor)
+                    includePhrase(VedleggOpplysningerBruktIBeregningUTFraser.VedleggBeregnUTInfoMYUngUfor)
                 }
             }.orShow {
                 showIf(ufoeretrygdGjeldende.erKonvertert) {
-                    includePhrase(VedleggBeregnUTInfoMY2)
+                    includePhrase(VedleggOpplysningerBruktIBeregningUTFraser.VedleggBeregnUTInfoMY2)
                 }.orShow {
-                    includePhrase(VedleggBeregnUTInfoMY)
+                    includePhrase(VedleggOpplysningerBruktIBeregningUTFraser.VedleggBeregnUTInfoMY)
                 }
             }
         }
 
         ifNotNull(minsteytelseGjeldende_sats) {
             showIf(harMinsteytelseSats) {
-                includePhrase(VedleggBeregnUTDinMY(it))
+                includePhrase(VedleggOpplysningerBruktIBeregningUTFraser.VedleggBeregnUTDinMY(it))
             }
         }
 
         showIf(inntektFoerUfoereGjeldende.erSannsynligEndret) {
-            includePhrase(VedleggBeregnUTMinsteIFU)
+            includePhrase(VedleggOpplysningerBruktIBeregningUTFraser.VedleggBeregnUTMinsteIFU)
         }
 
         showIf(
@@ -134,13 +138,13 @@ val vedleggOpplysningerBruktIBeregningUT =
                     and inntektsgrenseErUnderTak
         ) {
 
-            includePhrase(SlikFastsettesKompGradOverskrift)
-            includePhrase(VedleggBeregnUTKompGrad)
+            includePhrase(VedleggOpplysningerBruktIBeregningUTFraser.SlikFastsettesKompGradOverskrift)
+            includePhrase(VedleggOpplysningerBruktIBeregningUTFraser.VedleggBeregnUTKompGrad)
 
             showIf(ufoeretrygdGjeldende.erKonvertert) {
-                includePhrase(VedleggBeregnUTKompGradGjsnttKonvUT)
+                includePhrase(VedleggOpplysningerBruktIBeregningUTFraser.VedleggBeregnUTKompGradGjsnttKonvUT)
             }.orShow {
-                includePhrase(VedleggBeregnUTKompGradGjsntt)
+                includePhrase(VedleggOpplysningerBruktIBeregningUTFraser.VedleggBeregnUTKompGradGjsntt)
             }
         }
         // END of minsteytelse
@@ -164,19 +168,20 @@ val vedleggOpplysningerBruktIBeregningUT =
 
             showIf(erRedusertMotInntekt) {
                 includePhrase(SlikBeregnBTOverskrift)
-                includePhrase(VedleggBeregnUTInnlednBT)
+                includePhrase(VedleggOpplysningerBruktIBeregningUTFraser.VedleggBeregnUTInnlednBT)
             }
 
             showIf(harTilleggFellesBarn and not(harTilleggSaerkullsbarn)) {
-                includePhrase(FastsetterStoerelsenPaaBTFellesbarn(harAnvendtTrygdetidUnder40))
+                includePhrase(VedleggOpplysningerBruktIBeregningUTFraser.FastsetterStoerelsenPaaBTFellesbarn(harAnvendtTrygdetidUnder40))
             }
 
             showIf(harTilleggSaerkullsbarn and not(harTilleggFellesBarn)) {
-                includePhrase(FastsetterStoerelsenPaaBTSaerkullsbarn(harAnvendtTrygdetidUnder40))
+                includePhrase(VedleggOpplysningerBruktIBeregningUTFraser.FastsetterStoerelsenPaaBTSaerkullsbarn(harAnvendtTrygdetidUnder40))
             }
 
             ifNotNull(barnetillegg.fellesbarn_safe, barnetillegg.saerkullsbarn_safe) { felles, saerkull ->
                 includePhrase(
+                    VedleggOpplysningerBruktIBeregningUTFraser.
                     FastsetterStoerelsenPaaBTFellesbarnOgSaerkullsbarn(
                         harAnvendtTrygdetidUnder40 = harAnvendtTrygdetidUnder40,
                         harTilleggForFlereFellesbarn = felles.harFlereBarn,
@@ -188,6 +193,7 @@ val vedleggOpplysningerBruktIBeregningUT =
 
             showIf(erRedusertMotInntekt) {
                 includePhrase(
+                    VedleggOpplysningerBruktIBeregningUTFraser.
                     PeriodisertInntektInnledning(harJusteringsbeloep = harJusteringsbeloep, sivilstand = sivilstand)
                 )
 
@@ -198,6 +204,7 @@ val vedleggOpplysningerBruktIBeregningUT =
                         )
                     ) {
                         includePhrase(
+                            VedleggOpplysningerBruktIBeregningUTFraser.
                             PeriodisertInntektFellesbarnA(
                                 barnetilleggFellesBarn.avkortningsbeloepAar,
                                 barnetilleggFellesBarn.fribeloepEllerInntektErPeriodisert,
@@ -215,6 +222,7 @@ val vedleggOpplysningerBruktIBeregningUT =
                         )
                     ) {
                         includePhrase(
+                            VedleggOpplysningerBruktIBeregningUTFraser.
                             PeriodisertInntekSaerkullsbarnA(
                                 saerkullTillegg.avkortningsbeloepAar,
                                 saerkullTillegg.fribeloepEllerInntektErPeriodisert,
@@ -227,6 +235,7 @@ val vedleggOpplysningerBruktIBeregningUT =
                 ifNotNull(barnetillegg.fellesbarn_safe) { fellesTillegg ->
                     showIf(fellesTillegg.erRedusertMotinntekt) {
                         includePhrase(
+                            VedleggOpplysningerBruktIBeregningUTFraser.
                             PeriodisertInntektFellesbarnB(
                                 avkortningsbeloepAar_barnetilleggFBGjeldende = fellesTillegg.avkortningsbeloepAar,
                                 fribeloepEllerInntektErPeriodisert_barnetilleggFBGjeldende = fellesTillegg.fribeloepEllerInntektErPeriodisert,
@@ -235,6 +244,7 @@ val vedleggOpplysningerBruktIBeregningUT =
                             )
                         )
                         includePhrase(
+                            VedleggOpplysningerBruktIBeregningUTFraser.
                             PeriodisertInntektFellesbarnC(
                                 justeringsbeloepAar_barnetilleggFBGjeldende = fellesTillegg.justeringsbeloepAar
                             )
@@ -245,6 +255,7 @@ val vedleggOpplysningerBruktIBeregningUT =
                 ifNotNull(barnetillegg.saerkullsbarn_safe) { saerkullTillegg ->
                     showIf(barnetillegSaerkullsbarnErRedusertMotInntekt) {
                         includePhrase(
+                            VedleggOpplysningerBruktIBeregningUTFraser.
                             PeriodisertInntektSaerkullsbarnB(
                                 avkortningsbeloepAar_barnetilleggSBGjeldende = saerkullTillegg.avkortningsbeloepAar,
                                 fribeloepEllerInntektErPeriodisert_barnetilleggSBGjeldende = saerkullTillegg.fribeloepEllerInntektErPeriodisert,
@@ -255,6 +266,7 @@ val vedleggOpplysningerBruktIBeregningUT =
                             )
                         )
                         includePhrase(
+                            VedleggOpplysningerBruktIBeregningUTFraser.
                             PeriodisertInntektSaerkullsbarnC(
                                 justeringsbeloepAar_barnetilleggSBGjeldende = saerkullTillegg.justeringsbeloepAar
                             )
@@ -265,11 +277,11 @@ val vedleggOpplysningerBruktIBeregningUT =
                 ifNotNull(barnetilleggGjeldende.fellesbarn_safe) { fellesTillegg ->
 
                     showIf(fellesTillegg.justeringsbeloepAar.greaterThan(0)) {
-                        includePhrase(VedleggBeregnUTJusterBelopOver0BTFB(fellesTillegg.justeringsbeloepAar))
+                        includePhrase(VedleggOpplysningerBruktIBeregningUTFraser.VedleggBeregnUTJusterBelopOver0BTFB(fellesTillegg.justeringsbeloepAar))
                     }
 
                     showIf(fellesTillegg.justeringsbeloepAar.lessThan(0)) {
-                        includePhrase(VedleggBeregnUTJusterBelopUnder0BTFB(fellesTillegg.justeringsbeloepAar))
+                        includePhrase(VedleggOpplysningerBruktIBeregningUTFraser.VedleggBeregnUTJusterBelopUnder0BTFB(fellesTillegg.justeringsbeloepAar))
                     }
 
                     showIf(fellesTillegg.erRedusertMotinntekt) {
@@ -291,6 +303,7 @@ val vedleggOpplysningerBruktIBeregningUT =
 
                     showIf(fellesTillegg.beloepNetto.greaterThan(0)) {
                         includePhrase(
+                            VedleggOpplysningerBruktIBeregningUTFraser.
                             MaanedligTilleggFellesbarn(
                                 beloep_barnetilleggFBGjeldende = fellesTillegg.beloepNetto,
                                 harFlereBarn = fellesTillegg.harFlereBarn,
@@ -298,6 +311,7 @@ val vedleggOpplysningerBruktIBeregningUT =
                         )
                     }.orShow {
                         includePhrase(
+                            VedleggOpplysningerBruktIBeregningUTFraser.
                             FaaIkkeUtbetaltTilleggFellesbarn(
                                 beloep_barnetilleggFBGjeldende = fellesTillegg.beloepNetto,
                                 justeringsbeloepAar_barnetilleggFBGjeldende = fellesTillegg.justeringsbeloepAar,
@@ -325,12 +339,12 @@ val vedleggOpplysningerBruktIBeregningUT =
                         )
                     }
                     showIf(saerkullTillegg.beloepNetto.greaterThan(0)) {
-                        includePhrase(VedleggBeregnUTredusBTSBPgaInntekt(saerkullTillegg.beloepNetto))
+                        includePhrase(VedleggOpplysningerBruktIBeregningUTFraser.VedleggBeregnUTredusBTSBPgaInntekt(saerkullTillegg.beloepNetto))
                     }.orShow {
                         showIf(saerkullTillegg.justeringsbeloepAar.equalTo(0)) {
-                            includePhrase(VedleggBeregnUTIkkeUtbetaltBTSBPgaInntekt)
+                            includePhrase(VedleggOpplysningerBruktIBeregningUTFraser.VedleggBeregnUTIkkeUtbetaltBTSBPgaInntekt)
                         } orShow {
-                            includePhrase(VedleggBeregnUTJusterBelopIkkeUtbetalt)
+                            includePhrase(VedleggOpplysningerBruktIBeregningUTFraser.VedleggBeregnUTJusterBelopIkkeUtbetalt)
                         }
                     }
                 }
