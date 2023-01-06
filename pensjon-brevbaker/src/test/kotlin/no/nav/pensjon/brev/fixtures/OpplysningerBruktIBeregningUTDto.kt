@@ -30,11 +30,10 @@ fun createOpplysningerBruktIBeregningUTDtoBarnetilleggGjeldende() =
     )
 fun createOpplysningerBruktIBeregningUTDtoBarnetilleggGjeldendeFellesbarn() =
     OpplysningerBruktIBeregningUTDto.BarnetilleggGjeldende.Fellesbarn(
-        antallbarn = 3,
         avkortningsbeloepAar = Kroner(40000),
-        beloep = Kroner(6000),
-        beloepAar = Kroner(60000),
-        beloepAarFoerAvkort = Kroner(25000),
+        beloepNetto = Kroner(6000),
+        beloepAarNetto = Kroner(60000),
+        beloepAarBrutto = Kroner(25000),
         beloepFratrukketAnnenForeldersInntekt = Kroner(35000),
         erRedusertMotinntekt = true,
         fribeloep = Kroner(20000),
@@ -44,17 +43,15 @@ fun createOpplysningerBruktIBeregningUTDtoBarnetilleggGjeldendeFellesbarn() =
         inntektBruktIAvkortning = Kroner(50000),
         inntektOverFribeloep = Kroner(25000),
         inntektstak = Kroner(200000),
-        innvilgetBarnetillegg = true,
         justeringsbeloepAar = Kroner(0),
     )
 
 fun createOpplysningerBruktIBeregningUTDtoBarnetilleggGjeldendeSaerkullsbarn() =
    OpplysningerBruktIBeregningUTDto.BarnetilleggGjeldende.Saerkullsbarn(
-        antallbarn = 1,
         avkortningsbeloepAar = Kroner(5000),
-        beloep = Kroner(20000),
-        beloepAar = Kroner(60000),
-        beloepAarFoerAvkort = Kroner(0),
+        beloepNetto = Kroner(20000),
+        beloepAarNetto = Kroner(60000),
+        beloepAarBrutto = Kroner(0),
         erRedusertMotinntekt = true,
         fribeloep = Kroner(35000),
         fribeloepEllerInntektErPeriodisert = false,
@@ -62,7 +59,6 @@ fun createOpplysningerBruktIBeregningUTDtoBarnetilleggGjeldendeSaerkullsbarn() =
         inntektBruktIAvkortning = Kroner(200000),
         inntektOverFribeloep = Kroner(40000),
         inntektstak = Kroner(220000),
-        innvilgetBarnetillegg = true,
         justeringsbeloepAar = Kroner(15000),
     )
 

@@ -1,17 +1,7 @@
-package no.nav.pensjon.brev.maler.fraser
+package no.nav.pensjon.brev.maler.vedlegg.opplysningerbruktiberegningufoere
 
 import no.nav.pensjon.brev.api.model.Kroner
-import no.nav.pensjon.brev.api.model.KronerSelectors.value
 import no.nav.pensjon.brev.api.model.Sivilstand
-import no.nav.pensjon.brev.api.model.vedlegg.BarnetilleggGjeldendeSelectors.fellesbarn_safe
-import no.nav.pensjon.brev.api.model.vedlegg.BarnetilleggGjeldendeSelectors.saerkullsbarn_safe
-import no.nav.pensjon.brev.api.model.vedlegg.FellesbarnSelectors.erRedusertMotinntekt_safe
-import no.nav.pensjon.brev.api.model.vedlegg.FellesbarnSelectors.justeringsbeloepAar_safe
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDto
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.sivilstand
-import no.nav.pensjon.brev.api.model.vedlegg.SaerkullsbarnSelectors.erRedusertMotinntekt_safe
-import no.nav.pensjon.brev.api.model.vedlegg.SaerkullsbarnSelectors.justeringsbeloepAar_safe
-import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidsdetaljerGjeldendeSelectors.anvendtTT
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Expression
@@ -488,72 +478,6 @@ data class FastsetterStoerelsenPaaBTFellesbarnOgSaerkullsbarn(
                 Bokmal to "Siden trygdetiden din er kortere enn 40 år, blir fribeløpet redusert ut fra den trygdetiden du har.",
                 Nynorsk to "Sidan trygdetida di er kortare enn 40 år, blir fribeløpet redusert ut frå den trygdetida du har.",
                 English to "Since you have less than 40 years National Insurance membership, the exemption amount is ruduced correspondingly in relation to how long you have had National Insurance membership."
-            )
-        }
-    }
-}
-
-data class PeriodisertInntekt(
-    val barnetillegg: Expression<OpplysningerBruktIBeregningUTDto.BarnetilleggGjeldende>,
-    val trygdetidsdetaljerGjeldende: Expression<OpplysningerBruktIBeregningUTDto.TrygdetidsdetaljerGjeldende>,
-) : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-        val harAnvendtTrygdetidUnder40 = trygdetidsdetaljerGjeldende.anvendtTT.lessThan(40)
-        val harTilleggFellesBarn = barnetillegg.notNull()
-        val harTilleggSaerkullsbarn = barnetillegg.notNull()
-        val barnetilleggFellesbarnErRedusertMotInntekt =
-            barnetillegg.fellesbarn_safe.erRedusertMotinntekt_safe.ifNull(false)
-        val barnetillegSaerkullsbarnErRedusertMotInntekt =
-            barnetillegg.saerkullsbarn_safe.erRedusertMotinntekt_safe.ifNull(false)
-        val erRedusertMotInntekt = barnetilleggFellesbarnErRedusertMotInntekt or
-                barnetillegSaerkullsbarnErRedusertMotInntekt
-        val harJusteringsbeloepFellesbarn =
-            barnetillegg.fellesbarn_safe.justeringsbeloepAar_safe.ifNull(Kroner(0)).value.greaterThan(0)
-        val harJusteringsbeloepSaerkullsbarn =
-            barnetillegg.saerkullsbarn_safe.justeringsbeloepAar_safe.ifNull(Kroner(0)).value.greaterThan(0)
-        val harJusteringsbeloep = harJusteringsbeloepFellesbarn or harJusteringsbeloepSaerkullsbarn
-
-        showIf(barnetillegSaerkullsbarnErRedusertMotInntekt and not(fellesTillegg.erRedusertMotinntekt)) {
-            includePhrase(
-                PeriodisertInntekSaerkullsbarnA(
-                    saerkullTillegg.avkortningsbeloepAar,
-                    saerkullTillegg.fribeloepEllerInntektErPeriodisert,
-                    saerkullTillegg.justeringsbeloepAar,
-                )
-            )
-        }
-
-        showIf(fellesTillegg.erRedusertMotinntekt) {
-            includePhrase(
-                PeriodisertInntektFellesbarnB(
-                    avkortningsbeloepAar_barnetilleggFBGjeldende = fellesTillegg.avkortningsbeloepAar,
-                    fribeloepEllerInntektErPeriodisert_barnetilleggFBGjeldende = fellesTillegg.fribeloepEllerInntektErPeriodisert,
-                    harTilleggForFlereFellesbarn = harTilleggForFlereFellesbarn,
-                    justeringsbeloepAar_barnetilleggFBGjeldende = fellesTillegg.justeringsbeloepAar
-                )
-            )
-            includePhrase(
-                PeriodisertInntektFellesbarnC(
-                    justeringsbeloepAar_barnetilleggFBGjeldende = fellesTillegg.justeringsbeloepAar
-                )
-            )
-        }
-
-        showIf(barnetillegSaerkullsbarnErRedusertMotInntekt) {
-            includePhrase(
-                PeriodisertInntektSaerkullsbarnB(
-                    avkortningsbeloepAar_barnetilleggSBGjeldende = saerkullTillegg.avkortningsbeloepAar,
-                    fribeloepEllerInntektErPeriodisert_barnetilleggSBGjeldende = saerkullTillegg.fribeloepEllerInntektErPeriodisert,
-                    harTilleggForFlereSaerkullsbarn = harTilleggForFlereFellesbarn,
-                    justeringsbeloepAar_barnetilleggSBGjeldende = saerkullTillegg.justeringsbeloepAar,
-                    sivilstand = sivilstand,
-                    erRedusertMotInntektSaerkullsbarn = barnetillegSaerkullsbarnErRedusertMotInntekt,
-                )
-            )
-            includePhrase(
-                PeriodisertInntektSaerkullsbarnC(
-                    justeringsbeloepAar_barnetilleggSBGjeldende = saerkullTillegg.justeringsbeloepAar
-                )
             )
         }
     }
