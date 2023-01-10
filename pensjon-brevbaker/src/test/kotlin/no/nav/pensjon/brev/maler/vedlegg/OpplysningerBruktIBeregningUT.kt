@@ -6,7 +6,6 @@ import no.nav.pensjon.brev.PDF_BUILDER_URL
 import no.nav.pensjon.brev.TestTags
 import no.nav.pensjon.brev.api.model.LetterMetadata
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDto
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDto.BarnetilleggGjeldende.Fellesbarn
 import no.nav.pensjon.brev.latex.LaTeXCompilerService
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.Letter
@@ -44,20 +43,11 @@ class OpplysningerBruktIBeregningUTTest {
 
             outline {
             }
-// TODO Virker ikke etter hensikt
-                val dto = Fixtures.create(OpplysningerBruktIBeregningUTDto::class)
-                dto.copy(
-                    barnetilleggGjeldende = OpplysningerBruktIBeregningUTDto.BarnetilleggGjeldende(
-                        fellesbarn = Fixtures.create(Fellesbarn::class),
-                        saerkullsbarn = null,
-                        totaltAntallBarn = 2,
-                    )
-                )
 
             includeAttachment(
                 vedleggOpplysningerBruktIBeregningUT,
                 Fixtures.create(OpplysningerBruktIBeregningUTDto::class).expr()
-                )
+            )
         }
         Letter(
             template,

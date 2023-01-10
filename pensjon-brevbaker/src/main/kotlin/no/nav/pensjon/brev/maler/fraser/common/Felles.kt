@@ -80,7 +80,7 @@ object Felles {
     }
 
     /**
-     * TBU1074, TBU2242NB, TBU1075NN, TBU2242EN  // Updated texst in the paragraph, approved by Ingrid
+     * TBU1074, TBU2242NB, TBU1075NN, TBU2242EN
      */
     object RettTilInnsynPesys_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
