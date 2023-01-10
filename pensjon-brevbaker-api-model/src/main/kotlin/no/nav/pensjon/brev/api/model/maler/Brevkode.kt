@@ -6,7 +6,7 @@ object Brevkode {
         OMSORG_EGEN_AUTO("OMSORG_EGEN_AUTO", "OMSORGP_EGENMLD"),
         UFOER_OMREGNING_ENSLIG("UT_DOD_ENSLIG_AUTO", "TILST_DOD_UT"),
         OMSORGP_GODSKRIVING("OMSORG_HJST_AUTO"),
-        OPPHOER_BARNETILLEGG_AUTO("PE_UT_07_200")
+        UT_OPPHOER_BT_AUTO("PE_UT_07_200")
         ;
 
         val brevkoder: Set<String> = koder.toSet()
