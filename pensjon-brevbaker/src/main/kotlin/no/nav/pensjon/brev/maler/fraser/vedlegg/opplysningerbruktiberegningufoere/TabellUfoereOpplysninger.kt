@@ -165,7 +165,6 @@ data class TabellUfoereOpplysninger(
                     }
                 }
             }
-            // Mandatory
             row {
                 cell {
                     text(
@@ -183,8 +182,8 @@ data class TabellUfoereOpplysninger(
                     )
                 }
             }
-            // Mandatory
-            showIf(ufoeretrygdGjeldende.beloepsgrense.greaterThan(0)) {
+            showIf(ufoeretrygdGjeldende.beloepsgrense.greaterThan(0)
+                or inntektsAvkortingGjeldende.inntektsgrenseAar.greaterThan(0)) {
                 row {
                     cell {
                         text(
@@ -194,21 +193,11 @@ data class TabellUfoereOpplysninger(
                         )
                     }
                     cell {
-                        includePhrase(Felles.KronerText(ufoeretrygdGjeldende.beloepsgrense))
-                    }
-                }
-            }
-            showIf(inntektsAvkortingGjeldende.inntektsgrenseAar.greaterThan(0)) {
-                row {
-                    cell {
-                        text(
-                            Language.Bokmal to "Inntektsgrense",
-                            Language.Nynorsk to "Inntektsgrense",
-                            Language.English to "Income cap"
-                        )
-                    }
-                    cell {
-                        includePhrase(Felles.KronerText(inntektsAvkortingGjeldende.inntektsgrenseAar))
+                        showIf(ufoeretrygdGjeldende.beloepsgrense.greaterThan(0)){
+                            includePhrase(Felles.KronerText(ufoeretrygdGjeldende.beloepsgrense))
+                        }.orShow {
+                            includePhrase(Felles.KronerText(inntektsAvkortingGjeldende.inntektsgrenseAar))
+                        }
                     }
                 }
             }
