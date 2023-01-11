@@ -1,6 +1,6 @@
 import LetterEditor from "../modules/LetterEditor/LetterEditor"
 import {NextPage} from "next"
-import {useEffect, useState} from "react"
+import React, {useEffect, useState} from "react"
 import {initObjectFromSpec, ObjectValue} from "../modules/ModelEditor/model"
 import {RedigerbarTemplateDescription, RenderedLetter} from "../modules/LetterEditor/model"
 import {AuthenticatedTemplate, useMsal} from "@azure/msal-react"

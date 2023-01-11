@@ -1,18 +1,19 @@
 import {ParagraphBlock} from "../../model"
 import {FC} from "react"
 import styles from "./Paragraph.module.css"
-import Content, {SplitBlockAtContent, Unlock, UpdateContent} from "../content/Content"
+import Content from "../content/Content"
+import {BlockProps} from "../../BlockProps"
 
-export interface ParagraphProps {
-    block: ParagraphBlock
-    doUnlock: Unlock
-    updateContent: UpdateContent
-    splitContent: SplitBlockAtContent
-}
-
-const Paragraph: FC<ParagraphProps> = ({ block, doUnlock, updateContent, splitContent }) => (
+const Paragraph: FC<BlockProps<ParagraphBlock>> = ({block, doUnlock, updateContent, splitBlockAtContent, mergeWithPrevious, blockStealFocus, blockFocusStolen}) => (
     <div className={styles.paragraph}>
-        <Content block={block} doUnlock={doUnlock} updateContent={updateContent} splitBlockAtContent={splitContent}/>
+        <Content block={block}
+                 doUnlock={doUnlock}
+                 updateContent={updateContent}
+                 splitBlockAtContent={splitBlockAtContent}
+                 mergeWithPrevious={mergeWithPrevious}
+                 blockStealFocus={blockStealFocus}
+                 blockFocusStolen={blockFocusStolen}
+        />
     </div>
 )
 export default Paragraph

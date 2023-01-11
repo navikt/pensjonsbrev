@@ -1,5 +1,9 @@
 .content {
+    min-height: 1.5rem;
+}
 
+.content:hover {
+    cursor: text;
 }
 
 .locked {

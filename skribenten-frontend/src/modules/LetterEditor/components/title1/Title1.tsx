@@ -1,19 +1,20 @@
 import {FC} from "react"
 import {Title1Block} from "../../model"
-import Content, {SplitBlockAtContent, Unlock, UpdateContent} from "../content/Content"
+import Content from "../content/Content"
 import styles from "./Title1.module.css"
+import {BlockProps} from "../../BlockProps"
 
-export interface Title1Props {
-    block: Title1Block
-    doUnlock: Unlock
-    updateContent: UpdateContent
-    splitContent: SplitBlockAtContent
-}
-
-const Title1: FC<Title1Props> = ({block, doUnlock, updateContent, splitContent}) => {
+const Title1: FC<BlockProps<Title1Block>> = ({block, doUnlock, updateContent, splitBlockAtContent, mergeWithPrevious, blockStealFocus, blockFocusStolen}) => {
     return (
         <h2 className={styles.container}>
-            <Content block={block} doUnlock={doUnlock} updateContent={updateContent} splitBlockAtContent={splitContent}/>
+            <Content block={block}
+                     doUnlock={doUnlock}
+                     updateContent={updateContent}
+                     splitBlockAtContent={splitBlockAtContent}
+                     mergeWithPrevious={mergeWithPrevious}
+                     blockStealFocus={blockStealFocus}
+                     blockFocusStolen={blockFocusStolen}
+            />
         </h2>
     )
 }

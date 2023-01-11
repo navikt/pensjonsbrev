@@ -3,4 +3,5 @@
     border: 0.0625rem solid rgba(0, 0, 0, 0.44);
     border-radius: 0.25rem;
     padding: 0.0625rem 0.25rem;
+    cursor: default;
 }

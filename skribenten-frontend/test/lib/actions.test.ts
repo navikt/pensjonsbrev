@@ -1,5 +1,5 @@
 import {describe, expect, test} from "vitest";
-import {bindAction, combine} from "../../src/lib/actions";
+import {Action, bindAction, bindActionWithCallback, combine} from "../../src/lib/actions";
 
 describe("bindAction", () => {
     test("output from action is passed as input to receiver", () => {
@@ -47,5 +47,41 @@ describe("combine", () => {
 
         expect(f1Value).toEqual("f1: touched")
         expect(f2Value).toEqual("f2: touched")
+    })
+})
+
+describe("bindActionWithCallback", () => {
+    function receiver(this: {result: string}, cb: (current: string) => string) {
+        this.result = cb("current value")
+    }
+
+    const touchedBy: Action<string, [who: string]> = (target: string, who: string) => target + " touched by " + who
+
+    test("action is passed input from callbackReceiver", () => {
+        const state = { result: "" }
+        const bound = bindActionWithCallback(touchedBy, receiver.bind(state))
+
+        bound("an angel")
+
+        expect(state.result).toEqual("current value touched by an angel")
+    })
+
+    test("can bind action arguments", () => {
+        const state = { result: "" }
+        const bound = bindActionWithCallback(touchedBy, receiver.bind(state), "you")
+
+        bound()
+
+        expect(state.result).toEqual("current value touched by you")
+    })
+
+    test("can bind other subsequent actions", () => {
+        const state = { result: "" }
+        const bound = bindActionWithCallback(touchedBy, receiver.bind(state))
+        const next = bindAction(target => "silly " + target, bound)
+
+        next("me")
+
+        expect(state.result).toEqual("current value touched by silly me")
     })
 })
