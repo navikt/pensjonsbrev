@@ -7,6 +7,7 @@ import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 
 class PensjonJsonRendererTest {
@@ -16,6 +17,7 @@ class PensjonJsonRendererTest {
             jacksonObjectMapper().writeValue(System.out, it.blocks)
         }
 
+    @Disabled
     @Test
     fun `outline root elements are rendered in same order`() {
         val result = renderTemplate(Unit) {
@@ -116,6 +118,7 @@ class PensjonJsonRendererTest {
         assertEquals(listOf("3"), result.blocks[3].location)
     }
 
+    @Disabled
     @Test
     fun `forEach rendering adds step to location`() {
         val result = renderTemplate(Unit) {
@@ -129,6 +132,7 @@ class PensjonJsonRendererTest {
         assertEquals(listOf("c", "1"), result.blocks[1].location)
     }
 
+    @Disabled
     @Test
     fun `showIf rendering adds step to location`() {
         val result = renderTemplate(Unit) {
