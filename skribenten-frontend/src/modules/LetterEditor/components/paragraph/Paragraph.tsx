@@ -4,13 +4,13 @@ import styles from "./Paragraph.module.css"
 import Content from "../content/Content"
 import {BlockProps} from "../../BlockProps"
 
-const Paragraph: FC<BlockProps<ParagraphBlock>> = ({block, doUnlock, updateContent, splitBlockAtContent, mergeWithPrevious, blockStealFocus, blockFocusStolen}) => (
+const Paragraph: FC<BlockProps<ParagraphBlock>> = ({block, doUnlock, updateContent, splitBlockAtContent, mergeWith, blockStealFocus, blockFocusStolen}) => (
     <div className={styles.paragraph}>
         <Content block={block}
                  doUnlock={doUnlock}
                  updateContent={updateContent}
                  splitBlockAtContent={splitBlockAtContent}
-                 mergeWithPrevious={mergeWithPrevious}
+                 mergeWith={mergeWith}
                  blockStealFocus={blockStealFocus}
                  blockFocusStolen={blockFocusStolen}
         />

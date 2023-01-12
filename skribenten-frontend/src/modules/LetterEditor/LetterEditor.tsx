@@ -4,23 +4,24 @@ import styles from "./LetterEditor.module.css"
 import {FC, useState} from "react"
 import {AnyBlock, RenderedLetter} from "./model"
 import {bindAction, BoundAction} from "../../lib/actions"
-import {BlocksAction} from "./actions/blocks"
+import {BlocksAction, MERGE_TARGET} from "./actions/blocks"
 import {BlockAction} from "./actions/block"
 import SakspartView from "./components/sakspart/SakspartView"
 import SignaturView from "./components/signatur/SignaturView"
 import {RenderedLetterAction} from "./actions/letter"
 import {SplitBlockAtContent} from "./BlockProps"
+import EditorMenu from "./components/editormenu/EditorMenu"
 
 interface AnyBlockProps {
     block: AnyBlock,
     splitBlock: SplitBlockAtContent
-    mergeWithPrevious: BoundAction<[]>
+    mergeWith: BoundAction<[target: MERGE_TARGET]>
     updateBlock: BoundAction<[block: AnyBlock]>
     stealFocus: boolean
     blockFocusStolen: BoundAction<[]>
 }
 
-const AnyBlock: FC<AnyBlockProps> = ({block, splitBlock, mergeWithPrevious, updateBlock, stealFocus, blockFocusStolen}) => {
+const AnyBlock: FC<AnyBlockProps> = ({block, splitBlock, mergeWith, updateBlock, stealFocus, blockFocusStolen}) => {
 
     const doUnlock = bindAction(BlockAction.unlock, updateBlock, block)
     const updateBlockContent = bindAction(BlockAction.updateBlockContent, updateBlock, block)
@@ -31,7 +32,7 @@ const AnyBlock: FC<AnyBlockProps> = ({block, splitBlock, mergeWithPrevious, upda
                            doUnlock={doUnlock}
                            updateContent={updateBlockContent}
                            splitBlockAtContent={splitBlock}
-                           mergeWithPrevious={mergeWithPrevious}
+                           mergeWith={mergeWith}
                            blockStealFocus={stealFocus}
                            blockFocusStolen={blockFocusStolen}
             />
@@ -40,7 +41,7 @@ const AnyBlock: FC<AnyBlockProps> = ({block, splitBlock, mergeWithPrevious, upda
                               doUnlock={doUnlock}
                               updateContent={updateBlockContent}
                               splitBlockAtContent={splitBlock}
-                              mergeWithPrevious={mergeWithPrevious}
+                              mergeWith={mergeWith}
                               blockStealFocus={stealFocus}
                               blockFocusStolen={blockFocusStolen}
             />
@@ -56,19 +57,34 @@ const LetterEditor: FC<LetterEditorProps> = ({letter, updateLetter}) => {
     const blocks = letter.blocks
 
     const [stealFocusBlockId, setStealFocusBlockId] = useState<number | null>(null)
+    const [currentBlock, setCurrentBlock] = useState(-1)
 
     const updateBlocks = bindAction(RenderedLetterAction.updateBlocks, updateLetter, letter)
     const updateBlock = bindAction(BlocksAction.updateBlock, updateBlocks, blocks)
-    const mergeWithPrevious = bindAction(BlocksAction.mergeWithPreviousBlock, updateBlocks, blocks)
+    const mergeWith = bindAction(BlocksAction.mergeWith, updateBlocks, blocks)
+    const mergeWithAndStealFocus = (id: number, target: MERGE_TARGET) => {
+        mergeWith(id, target)
+        switch (target) {
+            case MERGE_TARGET.PREVIOUS:
+                setStealFocusBlockId(id - 1)
+                break
+            case MERGE_TARGET.NEXT:
+                // setStealFocusBlockId(id)
+                break
+        }
+    }
 
     const splitBlock = (blockId: number, block: AnyBlock, contentId: number, currentText: string, nextText: string) => {
         updateBlocks(BlocksAction.splitBlock(blocks, blockId, block, contentId, currentText, nextText))
         setStealFocusBlockId(blockId + 1)
     }
 
+    const switchType = bindAction(BlockAction.switchType, updateBlock.bind(null, currentBlock), blocks[currentBlock])
 
     return (
         <div className={styles.container}>
+            <input type="number" value={currentBlock} onChange={e => setCurrentBlock(Number(e.target.value))}/>
+            <EditorMenu switchType={switchType} />
             <div className={styles.letter}>
                 <SakspartView sakspart={letter.sakspart}/>
                 <h1>{letter.title}</h1>
@@ -76,7 +92,7 @@ const LetterEditor: FC<LetterEditorProps> = ({letter, updateLetter}) => {
                     <AnyBlock key={blockId}
                               block={block}
                               splitBlock={splitBlock.bind(null, blockId, block)}
-                              mergeWithPrevious={mergeWithPrevious.bind(null, blockId)}
+                              mergeWith={mergeWithAndStealFocus.bind(null, blockId)}
                               updateBlock={updateBlock.bind(null, blockId)}
                               stealFocus={stealFocusBlockId === blockId}
                               blockFocusStolen={() => setStealFocusBlockId(null)}

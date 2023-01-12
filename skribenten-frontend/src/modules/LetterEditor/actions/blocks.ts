@@ -1,15 +1,12 @@
 import {Action} from "../../../lib/actions"
 import {AnyBlock, LITERAL} from "../model"
 import produce from "immer"
+import {cleanseText} from "./content"
 
 const updateBlock: Action<AnyBlock[], [blockId: number, block: AnyBlock]> =
     produce((draft, blockId, block) => {
         draft[blockId] = block
     })
-
-function cleanseText(text: string): string {
-    return text.replaceAll("<br>", "")
-}
 
 const splitBlock: Action<AnyBlock[], [blockId: number, block: AnyBlock, contentId: number, firstText: string, secondText: string]> =
     produce((draft, blockId, block, contentId, firstText, secondText) => {
@@ -29,29 +26,46 @@ const splitBlock: Action<AnyBlock[], [blockId: number, block: AnyBlock, contentI
         draft.splice(blockId, 0, newBlock)
     })
 
-const mergeWithPreviousBlock: Action<AnyBlock[], [blockId: number]> =
-    produce((draft, blockId) => {
-        const block = draft[blockId]
-        const prev = draft[blockId - 1]
 
-        if (block != null && prev != null) {
-            if (prev.content.length === 1 && prev.content[0].text === "") {
-                draft.splice(blockId - 1, 1)
+function getMergeIds(srcId: number, target: MERGE_TARGET): [number, number] {
+    switch (target) {
+        case MERGE_TARGET.PREVIOUS:
+            return [srcId - 1, srcId]
+        case MERGE_TARGET.NEXT:
+            return [srcId, srcId + 1]
+    }
+}
+function isEmpty(block: AnyBlock): boolean {
+    return block.content.length === 1 && block.content[0].text.length === 0
+}
+
+export enum MERGE_TARGET { PREVIOUS = "PREVIOUS", NEXT = "NEXT" }
+const mergeWith: Action<AnyBlock[], [blockId: number, target: MERGE_TARGET]> =
+    produce((draft, blockId, target) => {
+        const [firstId, secondId] = getMergeIds(blockId, target)
+        const first = draft[firstId]
+        const second = draft[secondId]
+
+        if (first != null && second != null) {
+            if (isEmpty(first)) {
+                draft.splice(firstId, 1)
+            } else if(isEmpty(second)) {
+                draft.splice(secondId, 1)
             } else {
-                const lastContent = prev.content[prev.content.length - 1]
-                const firstContent = block.content[0]
+                const lastContentOfFirst = first.content[first.content.length - 1]
+                const firstContentOfSecond = second.content[0]
 
                 // merge adjoining literals
-                if (lastContent.type === LITERAL && firstContent.type === LITERAL) {
-                    lastContent.text += firstContent.text
-                    block.content.splice(0, 1)
+                if (lastContentOfFirst.type === LITERAL && firstContentOfSecond.type === LITERAL) {
+                    lastContentOfFirst.text += firstContentOfSecond.text
+                    second.content.splice(0, 1)
                 }
-                prev.content.splice(prev.content.length, 0, ...block.content)
-                draft.splice(blockId, 1)
+                first.content.splice(first.content.length, 0, ...second.content)
+                draft.splice(secondId, 1)
             }
         }
     })
 
 export const BlocksAction = {
-    updateBlock, splitBlock, mergeWithPreviousBlock,
+    updateBlock, splitBlock, mergeWith,
 }

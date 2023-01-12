@@ -1,6 +1,6 @@
 import {describe, expect, test} from "vitest"
 import {AnyBlock, LITERAL, ParagraphBlock, VARIABLE} from "../../../../src/modules/LetterEditor/model"
-import {BlocksAction} from "../../../../src/modules/LetterEditor/actions/blocks"
+import {BlocksAction, MERGE_TARGET} from "../../../../src/modules/LetterEditor/actions/blocks"
 
 describe("BlocksAction", () => {
     const blocks: AnyBlock[] = [
@@ -31,6 +31,44 @@ describe("BlocksAction", () => {
                 {id: 1, location: [], type: LITERAL, text: "Det blir "},
                 {id: 2, location: [], type: VARIABLE, text: "spennende"},
             ]
+        },
+    ]
+
+    const blocksFirstEmpty: AnyBlock[] = [
+        {
+            id: 1,
+            location: [],
+            type: "PARAGRAPH",
+            content: [
+                {id: 1, location: [], type: LITERAL, text: ""},
+            ],
+        },
+        {
+            id: 2,
+            location: [],
+            type: "PARAGRAPH",
+            content: [
+                {id: 1, location: [], type: LITERAL, text: "ABC"},
+            ],
+        },
+    ]
+
+    const blocksSecondEmpty: AnyBlock[] = [
+        {
+            id: 1,
+            location: [],
+            type: "PARAGRAPH",
+            content: [
+                {id: 1, location: [], type: LITERAL, text: "ABC"},
+            ],
+        },
+        {
+            id: 2,
+            location: [],
+            type: "PARAGRAPH",
+            content: [
+                {id: 1, location: [], type: LITERAL, text: ""},
+            ],
         },
     ]
 
@@ -81,50 +119,71 @@ describe("BlocksAction", () => {
         })
     })
 
-    describe("mergeWithPreviousBlock", () => {
-        test("the specified block is removed", () => {
-            const result = BlocksAction.mergeWithPreviousBlock(blocks, 1)
-            expect(result).toHaveLength(1)
+    describe("mergeWith", () => {
+        describe("next", () => {
+            test("the specified blocks are merged and the number of blocks reduced", () => {
+                const result = BlocksAction.mergeWith(blocks, 1, MERGE_TARGET.NEXT)
+                expect(result).toHaveLength(blocks.length - 1)
+            })
+
+            test("merge is ignored if the specified block is the last", () => {
+                const result = BlocksAction.mergeWith(blocks, blocks.length - 1, MERGE_TARGET.NEXT)
+                expect(result).toEqual(blocks)
+            })
+
+            test("the content of the next block is added to the end of the specified", () => {
+                const result = BlocksAction.mergeWith(blocks, 0, MERGE_TARGET.NEXT)
+                expect(result[0].content).toEqual(blocks[0].content.concat(blocks[1].content))
+            })
+
+            test("adjoining literal content in merging blocks are joined", () => {
+                const result = BlocksAction.mergeWith(blocks, 1, MERGE_TARGET.NEXT)
+                expect(result[1].content).toHaveLength(2)
+                expect(result[1].content[0].text).toEqual(blocks[1].content[0].text + blocks[2].content[0].text)
+            })
+
+            test("id of specified block is kept if the next is empty", () => {
+                const result = BlocksAction.mergeWith(blocksSecondEmpty, 0, MERGE_TARGET.NEXT)
+
+                expect(result[0].id).toEqual(blocks[0].id)
+            })
+
+            test("id of next block is kept if the specified is empty", () => {
+                const result = BlocksAction.mergeWith(blocksFirstEmpty, 0, MERGE_TARGET.NEXT)
+                expect(result[0].id).toEqual(blocks[1].id)
+            })
         })
+        describe("previous", () => {
+            test("the specified blocks are merged and the number of blocks reduced", () => {
+                const result = BlocksAction.mergeWith(blocks, 1, MERGE_TARGET.PREVIOUS)
+                expect(result).toHaveLength(blocks.length - 1)
+            })
 
-        test("merge is ignored if the specified block is the first", () => {
-            const result = BlocksAction.mergeWithPreviousBlock(blocks, 0)
-            expect(result).toEqual(blocks)
-        })
+            test("merge is ignored if the specified block is the first", () => {
+                const result = BlocksAction.mergeWith(blocks, 0, MERGE_TARGET.PREVIOUS)
+                expect(result).toEqual(blocks)
+            })
 
-        test("the content of the specified block is added to the end of the previous", () => {
-            const result = BlocksAction.mergeWithPreviousBlock(blocks, 1)
-            expect(result[0].content).toEqual(blocks[0].content.concat(blocks[1].content))
-        })
+            test("the content of the specified block is added to the end of the previous", () => {
+                const result = BlocksAction.mergeWith(blocks, 1, MERGE_TARGET.PREVIOUS)
+                expect(result[0].content).toEqual(blocks[0].content.concat(blocks[1].content))
+            })
 
-        test("adjoining literal content in merging blocks are joined", () => {
-            const result = BlocksAction.mergeWithPreviousBlock(blocks, 2)
-            expect(result[1].content).toHaveLength(2)
-            expect(result[1].content[0].text).toEqual(blocks[1].content[0].text + blocks[2].content[0].text)
-        })
+            test("adjoining literal content in merging blocks are joined", () => {
+                const result = BlocksAction.mergeWith(blocks, 2, MERGE_TARGET.PREVIOUS)
+                expect(result[1].content).toHaveLength(2)
+                expect(result[1].content[0].text).toEqual(blocks[1].content[0].text + blocks[2].content[0].text)
+            })
 
-        test("id of specified block is kept if the previous is empty", () => {
-            const blocks: AnyBlock[] = [
-                {
-                    id: 1,
-                    location: [],
-                    type: "PARAGRAPH",
-                    content: [
-                        {id: 1, location: [], type: LITERAL, text: ""},
-                    ],
-                },
-                {
-                    id: 2,
-                    location: [],
-                    type: "PARAGRAPH",
-                    content: [
-                        {id: 1, location: [], type: LITERAL, text: "ABC"},
-                    ],
-                },
-            ]
-            const result = BlocksAction.mergeWithPreviousBlock(blocks, 1)
+            test("id of specified block is kept if the previous is empty", () => {
+                const result = BlocksAction.mergeWith(blocksFirstEmpty, 1, MERGE_TARGET.PREVIOUS)
+                expect(result[0].id).toEqual(blocks[1].id)
+            })
 
-            expect(result[0].id).toEqual(blocks[1].id)
+            test("id of previous block is kept if the specified is empty", () => {
+                const result = BlocksAction.mergeWith(blocksSecondEmpty, 1, MERGE_TARGET.PREVIOUS)
+                expect(result[0].id).toEqual(blocks[0].id)
+            })
         })
     })
 })

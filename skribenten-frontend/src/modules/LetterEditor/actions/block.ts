@@ -12,6 +12,11 @@ const unlock: Action<AnyBlock, []> =
         draft.locked = false
     })
 
+const switchType: Action<AnyBlock, [type: "PARAGRAPH" | "TITLE1"]> =
+    produce((draft, type) => {
+        draft.type = type
+    })
+
 export const BlockAction = {
-    updateBlockContent, unlock,
+    updateBlockContent, unlock, switchType,
 }

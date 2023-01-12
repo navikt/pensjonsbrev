@@ -5,6 +5,7 @@ import {AnyBlock} from "../../model"
 import {BlockProps} from "../../BlockProps"
 import EditableText from "../text/EditableText"
 import {SelectionService} from "../../services/SelectionService"
+import {MERGE_TARGET} from "../../actions/blocks"
 
 const selectService = new SelectionService()
 
@@ -19,9 +20,9 @@ class Content extends React.Component<BlockProps<AnyBlock>, ContentState> {
 
     // TODO: Bake denne inn i useCallback her istedenfor i EditableText?
     setChildRef(contentId: number, node: HTMLElement) {
-        if (contentId === 0) {
-            const prev = this.childRefs[contentId]
+        const prev = this.childRefs[contentId]
 
+        if (contentId === 0) {
             // TODO: Skriver dette over emitchange i ContentEditable?
             if (prev) {
                 prev.onkeydown = null
@@ -31,6 +32,13 @@ class Content extends React.Component<BlockProps<AnyBlock>, ContentState> {
             }
             if (this.props.blockStealFocus && node != null) {
                 selectService.focusStartOfNode(node, this.props.blockFocusStolen)
+            }
+        } else if (contentId === this.props.block.content.length - 1) {
+            if (prev) {
+                prev.onkeydown = null
+            }
+            if (node) {
+                node.onkeydown = this.deleteHandler
             }
         }
 
@@ -66,7 +74,19 @@ class Content extends React.Component<BlockProps<AnyBlock>, ContentState> {
             const range = sel.getRangeAt(0)
             if (range != null && range.startOffset === 0 && range.collapsed) {
                 e.preventDefault()
-                this.props.mergeWithPrevious()
+                this.props.mergeWith(MERGE_TARGET.PREVIOUS)
+            }
+        }
+    }
+
+    deleteHandler = (e: KeyboardEvent) => {
+        if (e.key === "Delete") {
+            const sel = window.getSelection() as Selection
+            const range = sel && sel.getRangeAt(0)
+            const lastContent = this.props.block.content[this.props.block.content.length - 1]
+            if (range != null && range.startOffset >= lastContent.text.length && range.collapsed) {
+                e.preventDefault()
+                this.props.mergeWith(MERGE_TARGET.NEXT)
             }
         }
     }
@@ -114,4 +134,5 @@ class Content extends React.Component<BlockProps<AnyBlock>, ContentState> {
         }
     }
 }
+
 export default Content

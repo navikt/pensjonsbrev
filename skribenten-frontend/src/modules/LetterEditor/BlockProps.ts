@@ -1,5 +1,6 @@
 import {AnyBlock, TextContent} from "./model"
 import {BoundAction} from "../../lib/actions"
+import {MERGE_TARGET} from "./actions/blocks"
 
 export type Unlock = BoundAction<[]>
 export type UpdateContent = BoundAction<[contentId: number, content: TextContent]>
@@ -9,7 +10,7 @@ export interface BlockProps<T extends AnyBlock> {
     block: T
     doUnlock: Unlock
     updateContent: UpdateContent
-    mergeWithPrevious: BoundAction<[]>
+    mergeWith: BoundAction<[target: MERGE_TARGET]>
     splitBlockAtContent: SplitBlockAtContent
     blockStealFocus: boolean
     blockFocusStolen: BoundAction<[]>
