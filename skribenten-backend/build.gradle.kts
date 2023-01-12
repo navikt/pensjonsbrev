@@ -69,14 +69,15 @@ dependencies {
     implementation("io.ktor:ktor-server-netty-jvm:$ktorVersion")
     implementation("io.ktor:ktor-server-status-pages:$ktorVersion")
 
-    implementation("no.nav.pensjon.brev:pensjon-brevbaker-api-model:3.5.19")
+//    implementation("no.nav.pensjon.brev:pensjon-brevbaker-api-model:3.5.19")
+    implementation(project(":pensjon-brevbaker-api-model"))
 
     // Logging
     implementation("ch.qos.logback:logback-classic:$logbackVersion")
     implementation("net.logstash.logback:logstash-logback-encoder:$logstashVersion")
 
     // Necessary for java.time.LocalDate
-    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.13.4")
+    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.14.0")
 
     // Metrics
     implementation("io.ktor:ktor-server-metrics:$ktorVersion")
