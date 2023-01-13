@@ -16,7 +16,7 @@ import no.nav.pensjon.brev.api.model.maler.UfoeretrygdSelectors.harUtbetalingsgr
 import no.nav.pensjon.brev.api.model.maler.UfoeretrygdSelectors.utbetaltPerMaaned
 import no.nav.pensjon.brev.maler.fraser.EndringOpptjening
 import no.nav.pensjon.brev.maler.fraser.ufoer.Ufoeretrygd
-import no.nav.pensjon.brev.maler.fraser.vedtak.Vedtak
+import no.nav.pensjon.brev.maler.fraser.common.Vedtak
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.VedtaksbrevTemplate
@@ -73,7 +73,7 @@ object EndringOpptjeningAuto : VedtaksbrevTemplate<EndringOpptjeningAutoDto> {
             )
 
             includePhrase(Ufoeretrygd.UtbetalingsdatoUfoeretrygd)
-            includePhrase(Vedtak.Hen)
+            includePhrase(Vedtak.)
             includePhrase(Vedtak.BegrunnelseOverskrift)
             includePhrase(EndringOpptjening.UfoerInntektListe)
 

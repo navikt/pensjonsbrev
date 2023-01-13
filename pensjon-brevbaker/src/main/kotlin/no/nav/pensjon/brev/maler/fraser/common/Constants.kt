@@ -1,4 +1,4 @@
-package no.nav.pensjon.brev.maler.fraser
+package no.nav.pensjon.brev.maler.fraser.common
 
 object Constants {
     const val NAV_URL = "nav.no"
