@@ -98,10 +98,18 @@ object Ufoeretrygd {
 
                     showIf(saerkullInnvilget and not(saerkullUtbetalt) and fellesUtbetalt and fellesInnvilget) {
                         textExpr(
-                            Bokmal to "Barnetillegget for ".expr() + ifElse(barnFlertall, "barna", "barnet") + " som ikke bor sammen med begge foreldrene, blir ikke utbetalt fordi du alene har en samlet inntekt som er høyere enn " +
+                            Bokmal to "Barnetillegget for ".expr() + ifElse(
+                                barnFlertall,
+                                "barna",
+                                "barnet"
+                            ) + " som ikke bor sammen med begge foreldrene, blir ikke utbetalt fordi du alene har en samlet inntekt som er høyere enn " +
                                     inntektstak + " kroner. Inntekten din er over grensen for å få utbetalt barnetillegg.",
 
-                            Nynorsk to "Barnetillegget for ".expr() + ifElse(barnFlertall, "barna", "barnet") + "som ikkje bur saman med begge foreldra sine, blir ikkje utbetalt fordi du åleine har ei samla inntekt som er høgare enn " +
+                            Nynorsk to "Barnetillegget for ".expr() + ifElse(
+                                barnFlertall,
+                                "barna",
+                                "barnet"
+                            ) + "som ikkje bur saman med begge foreldra sine, blir ikkje utbetalt fordi du åleine har ei samla inntekt som er høgare enn " +
                                     inntektstak + " kroner. Inntekta di er over grensa for å få utbetalt barnetillegg.",
                         )
 
@@ -122,10 +130,18 @@ object Ufoeretrygd {
 
                     showIf(fellesInnvilget and not(fellesUtbetalt) and saerkullUtbetalt and saerkullInnvilget) {
                         textExpr(
-                            Bokmal to "Barnetillegget for ".expr() + ifElse(barnFlertall, "barna", "barnet") + " som bor med begge sine foreldre, blir ikke utbetalt fordi dere har en samlet inntekt som er høyere enn " +
+                            Bokmal to "Barnetillegget for ".expr() + ifElse(
+                                barnFlertall,
+                                "barna",
+                                "barnet"
+                            ) + " som bor med begge sine foreldre, blir ikke utbetalt fordi dere har en samlet inntekt som er høyere enn " +
                                     inntektstak + " kroner. De samlede inntektene er over grensen for å få utbetalt barnetillegg.",
 
-                            Nynorsk to "Barnetillegget for ".expr() + ifElse(barnFlertall, "barna", "barnet") + " som bur saman med begge foreldra sine, blir ikkje utbetalt fordi dei har ei samla inntekt som er høgare enn " +
+                            Nynorsk to "Barnetillegget for ".expr() + ifElse(
+                                barnFlertall,
+                                "barna",
+                                "barnet"
+                            ) + " som bur saman med begge foreldra sine, blir ikkje utbetalt fordi dei har ei samla inntekt som er høgare enn " +
                                     inntektstak + " kroner. Dei samla inntektene er over grensa for å få utbetalt barnetillegg.",
                         )
 
@@ -145,7 +161,8 @@ object Ufoeretrygd {
     /**
      * TBU3008, TBU3009, TBU3010, endrMYUngUfoer20Aar_001
      */
-    data class EndringMinsteYtelseUngUfoerVed20aar(val minsteytelseVedVirkSats: Expression<Double>) : OutlinePhrase<LangBokmalNynorsk>() {
+    data class EndringMinsteYtelseUngUfoerVed20aar(val minsteytelseVedVirkSats: Expression<Double>) :
+        OutlinePhrase<LangBokmalNynorsk>() {
         override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
             paragraph {
                 text(
@@ -254,17 +271,31 @@ object Ufoeretrygd {
             }
         }
     }
-}
 
-// TBU2227 TODO: I have diverted from existing text. Added NN- and EN-språklag
-object HenvisningTilVedleggOpplysningerOmBeregningenUfoer : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-        paragraph {
-            text(
-                Bokmal to "Du kan lese mer om beregningen av uføretrygden din i vedlegget «Opplysninger om beregningen».",
-                Nynorsk to "Du kan lese meir om berekninga av uføretrygden din i vedlegget «Opplysningar om berekninga».",
-                English to "You can read more about the calculation of your disabilty benefit in the attachment «Information about calculations»."
-            )
+    // TBU2223
+    object UtbetalingsdatoUfoeretrygd : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+            paragraph {
+                text(
+                    Bokmal to "Uføretrygden blir fortsatt utbetalt senest den 20. hver måned.",
+                    Nynorsk to "",
+                    English to ""
+                )
+            }
+        }
+    }
+
+
+    // TBU2227 TODO: I have diverted from existing text. Added NN- and EN-språklag
+    object HenvisningTilVedleggOpplysningerOmBeregningenUfoer : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+            paragraph {
+                text(
+                    Bokmal to "Du kan lese mer om beregningen av uføretrygden din i vedlegget «Opplysninger om beregningen».",
+                    Nynorsk to "Du kan lese meir om berekninga av uføretrygden din i vedlegget «Opplysningar om berekninga».",
+                    English to "You can read more about the calculation of your disabilty benefit in the attachment «Information about calculations»."
+                )
+            }
         }
     }
 }
