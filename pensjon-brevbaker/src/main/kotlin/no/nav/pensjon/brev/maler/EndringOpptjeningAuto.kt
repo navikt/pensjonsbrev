@@ -15,7 +15,7 @@ import no.nav.pensjon.brev.api.model.maler.UfoeretrygdSelectors.gjenlevendetille
 import no.nav.pensjon.brev.api.model.maler.UfoeretrygdSelectors.harUtbetalingsgrad
 import no.nav.pensjon.brev.api.model.maler.UfoeretrygdSelectors.utbetaltPerMaaned
 import no.nav.pensjon.brev.maler.fraser.EndringOpptjening
-import no.nav.pensjon.brev.maler.fraser.omregning.ufoeretrygd.Ufoeretrygd
+import no.nav.pensjon.brev.maler.fraser.ufoer.Ufoeretrygd
 import no.nav.pensjon.brev.maler.fraser.vedtak.Vedtak
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.Language.*

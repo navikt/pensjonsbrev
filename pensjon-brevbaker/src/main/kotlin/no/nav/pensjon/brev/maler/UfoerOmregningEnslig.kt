@@ -44,7 +44,7 @@ import no.nav.pensjon.brev.api.model.maler.UfoeretrygdVedVirkSelectors.kompensas
 import no.nav.pensjon.brev.api.model.maler.UfoeretrygdVedVirkSelectors.totalUfoereMaanedligBeloep
 import no.nav.pensjon.brev.maler.fraser.*
 import no.nav.pensjon.brev.maler.fraser.common.Felles
-import no.nav.pensjon.brev.maler.fraser.omregning.ufoeretrygd.Ufoeretrygd
+import no.nav.pensjon.brev.maler.fraser.ufoer.Ufoeretrygd
 import no.nav.pensjon.brev.maler.fraser.vedtak.Vedtak
 import no.nav.pensjon.brev.maler.vedlegg.vedleggMaanedligUfoeretrygdFoerSkatt
 import no.nav.pensjon.brev.maler.vedlegg.vedleggOpplysningerBruktIBeregningUT
