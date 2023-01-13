@@ -64,7 +64,7 @@ import no.nav.pensjon.brev.template.dsl.text
 @TemplateModelHelpers
 object OpphoerBarnetilleggAuto : VedtaksbrevTemplate<OpphoerBarnetilleggAutoDto> {
 
-    override val kode: Brevkode.Vedtak = Brevkode.Vedtak.OPPHOER_BARNETILLEGG_AUTO
+    override val kode: Brevkode.Vedtak = Brevkode.Vedtak.UT_OPPHOER_BT_AUTO
 
     override val template = createTemplate(
         name = kode.name,

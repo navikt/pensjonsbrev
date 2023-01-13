@@ -3,7 +3,6 @@ package no.nav.pensjon.brev.maler.vedlegg
 
 import no.nav.pensjon.brev.api.model.vedlegg.BeregnetUTPerManedGjeldendeSelectors.grunnbeloep
 import no.nav.pensjon.brev.api.model.vedlegg.BeregnetUTPerManedGjeldendeSelectors.virkDatoFom
-import no.nav.pensjon.brev.api.model.vedlegg.InntektFoerUfoereGjeldendeSelectors.erSannsynligEndret
 import no.nav.pensjon.brev.api.model.vedlegg.InntektsAvkortingGjeldendeSelectors.inntektsgrenseAar
 import no.nav.pensjon.brev.api.model.vedlegg.InntektsAvkortingGjeldendeSelectors.inntektstak
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDto
@@ -12,6 +11,7 @@ import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSel
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.inntektEtterUfoereGjeldende_beloepIEU
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.inntektFoerUfoereGjeldende
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.inntektsAvkortingGjeldende
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.kravAarsak
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.minsteytelseGjeldende_sats
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.sivilstand
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.trygdetidsdetaljerGjeldende
@@ -19,10 +19,9 @@ import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSel
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.ungUfoerGjeldende_erUnder20Aar
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.yrkesskadeGjeldende
 import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidsdetaljerGjeldendeSelectors.anvendtTT
-import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdGjeldendeSelectors.erKonvertert
 import no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningufoere.OpplysningerOmBarnetillegg
+import no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningufoere.OpplysningerOmMinstetillegg
 import no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningufoere.TabellUfoereOpplysninger
-import no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningufoere.VedleggOpplysningerBruktIBeregningUTFraser
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.*
@@ -41,7 +40,6 @@ val vedleggOpplysningerBruktIBeregningUT =
         ),
         includeSakspart = false,
     ) {
-        val harMinsteytelseSats = minsteytelseGjeldende_sats.ifNull(0.0).greaterThan(0.0)
         val inntektsgrenseErUnderTak =
             inntektsAvkortingGjeldende.inntektsgrenseAar.lessThan(inntektsAvkortingGjeldende.inntektstak)
 
@@ -69,47 +67,16 @@ val vedleggOpplysningerBruktIBeregningUT =
                 barnetilleggGjeldende = barnetilleggGjeldende,
             )
         )
-        showIf(harMinsteytelseSats) {
-            includePhrase(VedleggOpplysningerBruktIBeregningUTFraser.RettTilMYOverskrift)
-            ifNotNull(ungUfoerGjeldende_erUnder20Aar) { erUnder20Aar ->
-                showIf(erUnder20Aar) {
-                    includePhrase(VedleggOpplysningerBruktIBeregningUTFraser.VedleggBeregnUTInfoMYUngUforUnder20)
-                }.orShow {
-                    includePhrase(VedleggOpplysningerBruktIBeregningUTFraser.VedleggBeregnUTInfoMYUngUfor)
-                }
-            }.orShow {
-                showIf(ufoeretrygdGjeldende.erKonvertert) {
-                    includePhrase(VedleggOpplysningerBruktIBeregningUTFraser.VedleggBeregnUTInfoMY2)
-                }.orShow {
-                    includePhrase(VedleggOpplysningerBruktIBeregningUTFraser.VedleggBeregnUTInfoMY)
-                }
-            }
-        }
-
-        ifNotNull(minsteytelseGjeldende_sats) {
-            showIf(harMinsteytelseSats) {
-                includePhrase(VedleggOpplysningerBruktIBeregningUTFraser.VedleggBeregnUTDinMY(it))
-            }
-        }
-
-        showIf(inntektFoerUfoereGjeldende.erSannsynligEndret) {
-            includePhrase(VedleggOpplysningerBruktIBeregningUTFraser.VedleggBeregnUTMinsteIFU)
-        }
-
-        showIf(
-            harMinsteytelseSats
-                    and inntektFoerUfoereGjeldende.erSannsynligEndret
-                    and inntektsgrenseErUnderTak
-        ) {
-
-            includePhrase(VedleggOpplysningerBruktIBeregningUTFraser.SlikFastsettesKompGradOverskrift)
-            includePhrase(VedleggOpplysningerBruktIBeregningUTFraser.VedleggBeregnUTKompGrad)
-
-            showIf(ufoeretrygdGjeldende.erKonvertert) {
-                includePhrase(VedleggOpplysningerBruktIBeregningUTFraser.VedleggBeregnUTKompGradGjsnttKonvUT)
-            }.orShow {
-                includePhrase(VedleggOpplysningerBruktIBeregningUTFraser.VedleggBeregnUTKompGradGjsntt)
-            }
+        val harMinsteytelseSats = minsteytelseGjeldende_sats.ifNull(0.0).greaterThan(0.0)
+        // TODO send med info fra brev-malen om deler av vedlegget skal vises eller ikke.
+        showIf(harMinsteytelseSats){
+            includePhrase(OpplysningerOmMinstetillegg(
+                minsteytelseGjeldendeSats = minsteytelseGjeldende_sats,
+                ungUfoerGjeldende_erUnder20Aar = ungUfoerGjeldende_erUnder20Aar,
+                ufoeretrygdGjeldende = ufoeretrygdGjeldende,
+                inntektFoerUfoereGjeldende = inntektFoerUfoereGjeldende,
+                inntektsgrenseErUnderTak = inntektsgrenseErUnderTak,
+            ))
         }
 
         ifNotNull(barnetilleggGjeldende) { barnetillegg ->
@@ -119,6 +86,7 @@ val vedleggOpplysningerBruktIBeregningUT =
                     sivilstand = sivilstand,
                     anvendtTrygdetid = trygdetidsdetaljerGjeldende.anvendtTT,
                     harYrkesskade = yrkesskadeGjeldende.notNull(),
+                    kravAarsak = kravAarsak,
                 )
             )
         }

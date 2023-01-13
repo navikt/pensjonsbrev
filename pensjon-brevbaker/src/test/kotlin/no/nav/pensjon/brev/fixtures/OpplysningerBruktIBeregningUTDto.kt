@@ -1,10 +1,12 @@
 package no.nav.pensjon.brev.fixtures
 
 import no.nav.pensjon.brev.Fixtures
-import no.nav.pensjon.brev.api.model.*
+import no.nav.pensjon.brev.api.model.Beregningsmetode
+import no.nav.pensjon.brev.api.model.KravAarsak
+import no.nav.pensjon.brev.api.model.Kroner
+import no.nav.pensjon.brev.api.model.Sivilstand
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDto
 import java.time.LocalDate
-import no.nav.pensjon.brev.api.model.Sivilstand
 
 fun createOpplysningerBruktIBeregningUTDto() =
     OpplysningerBruktIBeregningUTDto(
@@ -20,6 +22,7 @@ fun createOpplysningerBruktIBeregningUTDto() =
         ufoeretrygdGjeldende = Fixtures.create(),
         ungUfoerGjeldende_erUnder20Aar = false,
         yrkesskadeGjeldende = Fixtures.create(),
+        kravAarsak = KravAarsak.ENDRET_INNTEKT,
     )
 
 fun createOpplysningerBruktIBeregningUTDtoBarnetilleggGjeldende() =
@@ -28,6 +31,7 @@ fun createOpplysningerBruktIBeregningUTDtoBarnetilleggGjeldende() =
         fellesbarn = Fixtures.create(),
         totaltAntallBarn = 4
     )
+
 fun createOpplysningerBruktIBeregningUTDtoBarnetilleggGjeldendeFellesbarn() =
     OpplysningerBruktIBeregningUTDto.BarnetilleggGjeldende.Fellesbarn(
         avkortningsbeloepAar = Kroner(40000),
@@ -44,10 +48,11 @@ fun createOpplysningerBruktIBeregningUTDtoBarnetilleggGjeldendeFellesbarn() =
         inntektOverFribeloep = Kroner(25000),
         inntektstak = Kroner(200000),
         justeringsbeloepAar = Kroner(0),
+        virkdatoErNesteAar = true,
     )
 
 fun createOpplysningerBruktIBeregningUTDtoBarnetilleggGjeldendeSaerkullsbarn() =
-   OpplysningerBruktIBeregningUTDto.BarnetilleggGjeldende.Saerkullsbarn(
+    OpplysningerBruktIBeregningUTDto.BarnetilleggGjeldende.Saerkullsbarn(
         avkortningsbeloepAar = Kroner(5000),
         beloepNetto = Kroner(20000),
         beloepAarNetto = Kroner(60000),
@@ -60,6 +65,7 @@ fun createOpplysningerBruktIBeregningUTDtoBarnetilleggGjeldendeSaerkullsbarn() =
         inntektOverFribeloep = Kroner(40000),
         inntektstak = Kroner(220000),
         justeringsbeloepAar = Kroner(15000),
+        virkdatoErNesteAar = true,
     )
 
 fun createOpplysningerBruktIBeregningUTDtoBeregnetUTPerManedGjeldende() =
