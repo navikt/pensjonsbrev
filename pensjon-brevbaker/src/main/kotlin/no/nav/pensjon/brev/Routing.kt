@@ -29,6 +29,12 @@ fun Application.brevbakerRouting(authenticationNames: Array<String>) =
     routing {
 
         route("/templates") {
+
+            // TODO: Fjern når pesys er endret
+            get {
+                call.respond(letterResource.templateResource.getVedtaksbrev())
+            }
+
             route("/vedtaksbrev") {
                 get {
                     call.respond(letterResource.templateResource.getVedtaksbrev())
@@ -69,6 +75,7 @@ fun Application.brevbakerRouting(authenticationNames: Array<String>) =
         authenticate(*authenticationNames, optional = environment?.developmentMode ?: false) {
             route("/letter") {
 
+                // TODO: Denne stien bør være lik som den under /templates
                 post("/vedtak") {
                     val letterRequest = call.receive<VedtaksbrevRequest>()
 
