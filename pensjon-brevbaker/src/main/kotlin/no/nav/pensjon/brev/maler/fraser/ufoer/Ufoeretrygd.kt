@@ -302,5 +302,19 @@ object Ufoeretrygd {
             }
         }
     }
+
+    // TBU2227 TODO: I have diverted from existing text. Added NN- and EN-språklag
+    object HenvisningTilVedleggOpplysningerOmBeregningenUfoer : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+            paragraph {
+                text(
+                    Bokmal to "Du kan lese mer om beregningen av uføretrygden din i vedlegget «Opplysninger om beregningen».",
+                    Nynorsk to "Du kan lese meir om berekninga av uføretrygden din i vedlegget «Opplysningar om berekninga».",
+                    English to "You can read more about the calculation of your disabilty benefit in the attachment «Information about calculations»."
+                )
+            }
+        }
+    }
+
 }
 
