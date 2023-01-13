@@ -278,8 +278,21 @@ object Ufoeretrygd {
             paragraph {
                 text(
                     Bokmal to "Uføretrygden blir fortsatt utbetalt senest den 20. hver måned.",
-                    Nynorsk to "",
-                    English to ""
+                    Nynorsk to "Uføretrygda blir framleis utbetalt seinast den 20. i kvar månad.",
+                    English to "Your disability benefit will still be paid no later than the 20th of every month."
+                )
+            }
+        }
+    }
+
+    // TBU1128
+    object ViktigAALeseHeleBrevet : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+            paragraph {
+                text(
+                    Bokmal to "I dette brevet forklarer vi hvilke rettigheter og plikter du har. Det er derfor viktig at du leser hele brevet.",
+                    Nynorsk to "I dette brevet forklarer vi kva rettar og plikter du har. Det er derfor viktig at du les heile brevet.",
+                    English to "In this letter we will explain your rights and obligations. Therefore, it is important that you read the whole letter."
                 )
             }
         }

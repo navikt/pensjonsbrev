@@ -72,8 +72,8 @@ object EndringOpptjeningAuto : VedtaksbrevTemplate<EndringOpptjeningAutoDto> {
                 )
             )
 
-            includePhrase(Ufoeretrygd.Utb)
-            includePhrase(Vedtak.HenvisningTilRettigheterOgPlikter)
+            includePhrase(Ufoeretrygd.UtbetalingsdatoUfoeretrygd)
+            includePhrase(Vedtak.Hen)
             includePhrase(Vedtak.BegrunnelseOverskrift)
             includePhrase(EndringOpptjening.UfoerInntektListe)
 

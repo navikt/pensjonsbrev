@@ -87,6 +87,7 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-html-jvm:0.8.0")
 
     implementation(project(":template-model-generator"))
+    implementation(project(mapOf("path" to ":pensjon-brevbaker-api-model")))
     ksp(project(":template-model-generator"))
 
     // Necessary for java.time.LocalDate
