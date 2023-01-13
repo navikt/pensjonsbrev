@@ -31,28 +31,29 @@ object HjemlerFolketrygdloven {
             // TBU2230 - med gjenlevendetillegg
             // TBU2233 - med ektefelletillegg
             showIf(not(innvilgetTilleggFellesbarn) and not(innvilgetTilleggSaerkullsbarn) and yrkesskadeGrad.equalTo(0)) {
+                paragraph {
+                    text(
+                        Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 12-11 til 12-14",
+                        Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 12-11 til 12-14",
+                        English to ""
+                    )
                 showIf(not(innvilgetEktefelleTillegg) and not(innvilgetGjenlevendeTillegg)) {
-                    paragraph {
                         text(
-                            Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 12-11 til 12-14 og 22-12.",
-                            Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 12-11 til 12-14 og 22-12.",
-                            English to ""
+                            Bokmal to " og 22-12.",
+                            Nynorsk to " og 22-12.",
+                            English to " and 22-12."
                         )
-                    }
                 }.orShowIf(not(innvilgetEktefelleTillegg) and innvilgetGjenlevendeTillegg) {
-                    paragraph {
                         text(
-                            Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 12- 11 til 12-14, 12-18 og 22-12.",
-                            Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 12- 11 til 12-14, 12-18 og 22-12.",
-                            English to ""
+                            Bokmal to ", 12-18 og 22-12.",
+                            Nynorsk to ", 12-18 og 22-12.",
+                            English to ", 12-18 and 22-12."
                         )
-                    }
                 }.orShowIf(innvilgetEktefelleTillegg and not(innvilgetEktefelleTillegg)) {
-                    paragraph {
                         text(
-                            Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 12-11 til 12-14, 22-12 og overgangsforskriften § 8",
-                            Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 12-11 til 12-14, 22-12 og overgangsforskriften § 8",
-                            English to ""
+                            Bokmal to ", 22-12 og overgangsforskriften § 8",
+                            Nynorsk to ", 22-12 og overgangsforskriften § 8",
+                            English to ", 22-12 and overgangsforskriften § 8"
                         )
                     }
                 }
@@ -61,28 +62,29 @@ object HjemlerFolketrygdloven {
             // TBU2236 - ved yrkesskade, med gjenlevendetillegg
             // TBU2239 - ved yrkesskade, med ektefelletillegg
             showIf(not(innvilgetTilleggFellesbarn) and not(innvilgetTilleggSaerkullsbarn) and yrkesskadeGrad.greaterThan(0)) {
+                paragraph {
+                    text(
+                        Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 12-11 til 12-14, 12-17",
+                        Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 12-11 til 12-14, 12-17",
+                        English to ""
+                    )
                 showIf(not(innvilgetEktefelleTillegg) and not(innvilgetGjenlevendeTillegg)) {
-                    paragraph {
                         text(
-                            Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 12-11 til 12-14, 12-17 og 22-12.",
-                            Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 12-11 til 12-14, 12-17 og 22-12.",
-                            English to ""
+                            Bokmal to " og 22-12.",
+                            Nynorsk to " og 22-12.",
+                            English to " and 22-12"
                         )
-                    }
                 }.orShowIf(not(innvilgetEktefelleTillegg) and innvilgetGjenlevendeTillegg) {
-                    paragraph {
                         text(
-                            Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 12- 11 til 12-14, 12-17, 12-18 og 22-12.",
-                            Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 12- 11 til 12-14, 12-17, 12-18 og 22-12.",
-                            English to ""
+                            Bokmal to ", 12-18 og 22-12.",
+                            Nynorsk to ", 12-18 og 22-12.",
+                            English to ", 12-18 and 22-12."
                         )
-                    }
                 }.orShowIf(innvilgetEktefelleTillegg and not(innvilgetGjenlevendeTillegg)) {
-                    paragraph {
                         text(
-                            Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 12-11 til 12-14, 12- 17, 22-12 og overgangsforskriften § 8.",
-                            Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 12-11 til 12-14, 12- 17, 22-12 og overgangsforskriften § 8.",
-                            English to ""
+                            Bokmal to ", 22-12 og overgangsforskriften § 8.",
+                            Nynorsk to ", 22-12 og overgangsforskriften § 8.",
+                            English to ", 22-12 and overgangsforskriften § 8."
                         )
                     }
                 }
