@@ -21,8 +21,8 @@ data class EndringOpptjeningAutoDto(
         val ektefelletilleggUtbeltalt: Kroner?,
         val gjenlevendetilleggUtbetalt: Kroner?,
         val harUtbetalingsgrad: Boolean,
-        val innvilgetEktefelleTillegg: Boolean,  // in use
-        val innvilgetGjenlevendeTillegg: Boolean,  // in use
+        val innvilgetEktefelletillegg: Boolean,  // in use
+        val innvilgetGjenlevendetillegg: Boolean,  // in use
         val ufoertrygdUtbetalt: Kroner,
         val utbetaltPerMaaned: Kroner,
         val yrkesskadeGrad: Int,  // in use

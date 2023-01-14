@@ -13,8 +13,12 @@ import no.nav.pensjon.brev.api.model.maler.EndringOpptjeningAutoDtoSelectors.vir
 import no.nav.pensjon.brev.api.model.maler.UfoeretrygdSelectors.ektefelletilleggUtbeltalt_safe
 import no.nav.pensjon.brev.api.model.maler.UfoeretrygdSelectors.gjenlevendetilleggUtbetalt_safe
 import no.nav.pensjon.brev.api.model.maler.UfoeretrygdSelectors.harUtbetalingsgrad
+import no.nav.pensjon.brev.api.model.maler.UfoeretrygdSelectors.innvilgetEktefelleTilleggSelector
+import no.nav.pensjon.brev.api.model.maler.UfoeretrygdSelectors.innvilgetEktefelletillegg
+import no.nav.pensjon.brev.api.model.maler.UfoeretrygdSelectors.innvilgetGjenlevendetillegg
 import no.nav.pensjon.brev.api.model.maler.UfoeretrygdSelectors.utbetaltPerMaaned
 import no.nav.pensjon.brev.maler.fraser.EndringOpptjening
+import no.nav.pensjon.brev.maler.fraser.common.HjemlerFolketrygdloven
 import no.nav.pensjon.brev.maler.fraser.ufoer.Ufoeretrygd
 import no.nav.pensjon.brev.maler.fraser.common.Vedtak
 import no.nav.pensjon.brev.template.Language
@@ -86,6 +90,16 @@ object EndringOpptjeningAuto : VedtaksbrevTemplate<EndringOpptjeningAutoDto> {
             )
 
             includePhrase(Ufoeretrygd.HenvisningTilVedleggOpplysningerOmBeregningenUfoer)
+
+            includePhrase(
+                HjemlerFolketrygdloven.Folketrygdloven(
+                    innvilgetEktefelletillegg = ufoeretrygd.innvilgetEktefelletillegg,
+                    innvilgetGjenlevendetillegg = ufoeretrygd.innvilgetGjenlevendetillegg,
+                    innvilgetTilleggFellesbarn = folketrygdloven.innvilgetTilleggFellesbarn,
+                    innvilgetTilleggSaerkullsbarn = folketrygdloven.innvilgetTilleggSaerkullsbarn,
+                    yrkesskadeGrad = folketrygdloven.yrkesskadegrad
+                )
+            )
         }
     }
 }
