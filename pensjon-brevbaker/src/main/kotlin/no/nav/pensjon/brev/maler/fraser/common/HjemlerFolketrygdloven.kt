@@ -23,9 +23,9 @@ object HjemlerFolketrygdloven {
     data class Folketrygdloven(
         val innvilgetEktefelletillegg: Expression<Boolean>,
         val innvilgetGjenlevendetillegg: Expression<Boolean>,
-        val innvilgetTilleggFellesbarn: Expression<Boolean>,
-        val innvilgetTilleggSaerkullsbarn: Expression<Boolean>,
-        val yrkesskadeGrad: Expression<Int>,
+        val innvilgetFellesbarntillegg: Expression<Boolean>,
+        val innvilgetSaerkullsbarntillegg: Expression<Boolean>,
+        val harYrkesskadegradUtbetaling: Expression<Boolean>,
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
 
@@ -35,16 +35,15 @@ object HjemlerFolketrygdloven {
             // TBU2234 - ved yrkesskade, uten tillegg
             // TBU2236 - ved yrkesskade, med gjenlevendetillegg
             // TBU2239 - ved yrkesskade, med ektefelletillegg
-            showIf(not(innvilgetTilleggFellesbarn) and not(innvilgetTilleggSaerkullsbarn)) {
+            showIf(not(innvilgetFellesbarntillegg) and not(innvilgetSaerkullsbarntillegg)) {
                 paragraph {
-                    val harYrkesskade = yrkesskadeGrad.greaterThan(0)
                     textExpr(
                         Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 12-11 til 12-14".expr() +
-                                ifElse(harYrkesskade, ifTrue = ", 22-17,", ifFalse = "") + "".expr(),
+                                ifElse(harYrkesskadegradUtbetaling, ifTrue = ", 22-17,", ifFalse = "") + "".expr(),
                         Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 12-11 til 12-14".expr() +
-                                ifElse(harYrkesskade, ifTrue = ", 22-17,", ifFalse = "") + "".expr(),
+                                ifElse(harYrkesskadegradUtbetaling, ifTrue = ", 22-17,", ifFalse = "") + "".expr(),
                         English to "This decision was made pursuant to the provisions of §§ 12-11 to 12-14".expr() +
-                                ifElse(harYrkesskade, ifTrue = ", 22-17,", ifFalse = "") + "".expr()
+                                ifElse(harYrkesskadegradUtbetaling, ifTrue = ", 22-17,", ifFalse = "") + "".expr()
                     )
                     showIf(not(innvilgetEktefelletillegg) and not(innvilgetGjenlevendetillegg)) {
                         text(Bokmal to " og 22-12.", Nynorsk to " og 22-12.", English to " and 22-12 of the National Insurance Act.")
@@ -62,15 +61,14 @@ object HjemlerFolketrygdloven {
             // TBU2235 - ved yrkesskade, med barnetillegg
             // TBU2237 - ved yrkesskade, med barnetillegg og gjenlevendetillegg
             // TBU2238 - ved yrkesskade, med barnetillegg og ektefelletillegg
-            showIf(innvilgetTilleggFellesbarn and innvilgetTilleggSaerkullsbarn and yrkesskadeGrad.equalTo(0)) {
-                val harYrkesskade = yrkesskadeGrad.greaterThan(0)
+            showIf(innvilgetFellesbarntillegg and innvilgetSaerkullsbarntillegg) {
                 textExpr(
                     Bokmal to "Vedtaket er gjort etter folketrygdloven §§ ".expr() +
-                            ifElse(harYrkesskade, ifTrue = "12-11 til 12-17", ifFalse = "12-11 til 12-16") + "".expr(),
+                            ifElse(harYrkesskadegradUtbetaling, ifTrue = "12-11 til 12-17", ifFalse = "12-11 til 12-16") + "".expr(),
                     Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ ".expr() +
-                            ifElse(harYrkesskade, ifTrue = "12-11 til 12-17", ifFalse = "12-11 til 12-16") + "".expr(),
+                            ifElse(harYrkesskadegradUtbetaling, ifTrue = "12-11 til 12-17", ifFalse = "12-11 til 12-16") + "".expr(),
                     English to "his decision was made pursuant to the provisions of §§ ".expr() +
-                            ifElse(harYrkesskade, ifTrue = "12-11 to 12-17", ifFalse = "12-11 to 12-16") + "".expr()
+                            ifElse(harYrkesskadegradUtbetaling, ifTrue = "12-11 to 12-17", ifFalse = "12-11 to 12-16") + "".expr()
                 )
                 showIf(not(innvilgetEktefelletillegg) and not(innvilgetGjenlevendetillegg)) {
                     text(Bokmal to " og 22-12.", Nynorsk to " og 22-12.", English to " and 22-12 of the National Insurance Act.")

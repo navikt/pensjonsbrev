@@ -8,14 +8,17 @@ import no.nav.pensjon.brev.api.model.maler.EndringOpptjeningAutoDto
 import no.nav.pensjon.brev.api.model.maler.EndringOpptjeningAutoDtoSelectors.barnetilleggFellesbarn
 import no.nav.pensjon.brev.api.model.maler.EndringOpptjeningAutoDtoSelectors.barnetilleggSaerkullsbarn
 import no.nav.pensjon.brev.api.model.maler.EndringOpptjeningAutoDtoSelectors.endringIOpptjening
+import no.nav.pensjon.brev.api.model.maler.EndringOpptjeningAutoDtoSelectors.folketrygdloven
 import no.nav.pensjon.brev.api.model.maler.EndringOpptjeningAutoDtoSelectors.ufoeretrygd
 import no.nav.pensjon.brev.api.model.maler.EndringOpptjeningAutoDtoSelectors.virkningsDato
+import no.nav.pensjon.brev.api.model.maler.FolketrygdlovenSelectors.harYrkesskadeGradUtbetaling
+import no.nav.pensjon.brev.api.model.maler.FolketrygdlovenSelectors.innvilgetEktefelletillegg
+import no.nav.pensjon.brev.api.model.maler.FolketrygdlovenSelectors.innvilgetFellesbarntillegg
+import no.nav.pensjon.brev.api.model.maler.FolketrygdlovenSelectors.innvilgetGjenlevendetillegg
+import no.nav.pensjon.brev.api.model.maler.FolketrygdlovenSelectors.innvilgetSaerkullsbarntillegg
 import no.nav.pensjon.brev.api.model.maler.UfoeretrygdSelectors.ektefelletilleggUtbeltalt_safe
 import no.nav.pensjon.brev.api.model.maler.UfoeretrygdSelectors.gjenlevendetilleggUtbetalt_safe
 import no.nav.pensjon.brev.api.model.maler.UfoeretrygdSelectors.harUtbetalingsgrad
-import no.nav.pensjon.brev.api.model.maler.UfoeretrygdSelectors.innvilgetEktefelleTilleggSelector
-import no.nav.pensjon.brev.api.model.maler.UfoeretrygdSelectors.innvilgetEktefelletillegg
-import no.nav.pensjon.brev.api.model.maler.UfoeretrygdSelectors.innvilgetGjenlevendetillegg
 import no.nav.pensjon.brev.api.model.maler.UfoeretrygdSelectors.utbetaltPerMaaned
 import no.nav.pensjon.brev.maler.fraser.EndringOpptjening
 import no.nav.pensjon.brev.maler.fraser.common.HjemlerFolketrygdloven
@@ -93,11 +96,11 @@ object EndringOpptjeningAuto : VedtaksbrevTemplate<EndringOpptjeningAutoDto> {
 
             includePhrase(
                 HjemlerFolketrygdloven.Folketrygdloven(
-                    innvilgetEktefelletillegg = ufoeretrygd.innvilgetEktefelletillegg,
-                    innvilgetGjenlevendetillegg = ufoeretrygd.innvilgetGjenlevendetillegg,
-                    innvilgetTilleggFellesbarn = folketrygdloven.innvilgetTilleggFellesbarn,
-                    innvilgetTilleggSaerkullsbarn = folketrygdloven.innvilgetTilleggSaerkullsbarn,
-                    yrkesskadeGrad = folketrygdloven.yrkesskadegrad
+                    innvilgetEktefelletillegg = folketrygdloven.innvilgetEktefelletillegg,
+                    innvilgetGjenlevendetillegg = folketrygdloven.innvilgetGjenlevendetillegg,
+                    innvilgetFellesbarntillegg = folketrygdloven.innvilgetFellesbarntillegg,
+                    innvilgetSaerkullsbarntillegg = folketrygdloven.innvilgetSaerkullsbarntillegg,
+                    harYrkesskadegradUtbetaling = folketrygdloven.harYrkesskadeGradUtbetaling
                 )
             )
         }
