@@ -259,7 +259,7 @@ object Ufoeretrygd {
     }
 
     // TBU1228
-    object Skattekort: OutlinePhrase<LangBokmalNynorskEnglish>() {
+    object Skattekort : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             title1 {
                 text(
@@ -315,6 +315,5 @@ object Ufoeretrygd {
             }
         }
     }
-
 }
 
