@@ -58,17 +58,20 @@ object EndringOpptjening {
                 )
                 list {
                     item {
-
                         text(
                             Bokmal to "pensjonsgivende inntekt",
                             Nynorsk to "pensjonsgivende inntekt",
                             English to "pensionable income"
                         )
+                    }
+                    item {
                         text(
                             Bokmal to "omsorgspoeng",
                             Nynorsk to "omsorgspoeng",
                             English to "acquired care rights"
                         )
+                    }
+                    item {
                         text(
                             Bokmal to "år med inntekt i utlandet",
                             Nynorsk to "år med inntekt i utlandet",
@@ -80,28 +83,30 @@ object EndringOpptjening {
         }
     }
 
-        // TBU2225, TBU226
-        data class EndringIOpptjeningTilUfoeretrygd(
-            val ufoerBeloepOekt: Expression<Boolean>,
-            val ufoerBeloepRedusert: Expression<Boolean>,
-            val virkningsDato: Expression<LocalDate>,
-        ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
-            override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-                paragraph {
-                    showIf(ufoerBeloepOekt) {
-                        textExpr(
-                            Bokmal to "Du har fått en endring i opptjeningen din før du ble ufør. Dette gir deg en økt uføretrygd fra ".expr() + virkningsDato.format() + ". Du vil derfor motta en etterbetaling fra NAV.".expr(),
-                            Nynorsk to "".expr(),
-                            English to "".expr()
-                        )
-                    }.orShow {
-                        textExpr(
-                            Bokmal to "Du har fått en endring i opptjeningen din før du ble ufør. Dette gir deg en redusert uføretrygd fra ".expr() + virkningsDato.format() + ".".expr(),
-                            Nynorsk to "".expr(),
-                            English to "".expr()
-                        )
-                    }
+
+    // TBU2225, TBU226
+    data class EndringIOpptjeningTilUfoeretrygd(
+        val ufoerBeloepOekt: Expression<Boolean>,
+        val ufoerBeloepRedusert: Expression<Boolean>,
+        val virkningsDato: Expression<LocalDate>,
+    ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+            paragraph {
+                showIf(ufoerBeloepOekt) {
+                    textExpr(
+                        Bokmal to "Du har fått en endring i opptjeningen din før du ble ufør. Dette gir deg en økt uføretrygd fra ".expr() + virkningsDato.format() + ". Du vil derfor motta en etterbetaling fra NAV.".expr(),
+                        Nynorsk to "".expr(),
+                        English to "".expr()
+                    )
+                }.orShow {
+                    textExpr(
+                        Bokmal to "Du har fått en endring i opptjeningen din før du ble ufør. Dette gir deg en redusert uføretrygd fra ".expr() + virkningsDato.format() + ".".expr(),
+                        Nynorsk to "".expr(),
+                        English to "".expr()
+                    )
                 }
             }
         }
     }
+}
+
