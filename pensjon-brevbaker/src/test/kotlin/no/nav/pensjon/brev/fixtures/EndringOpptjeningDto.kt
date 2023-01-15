@@ -6,9 +6,9 @@ import no.nav.pensjon.brev.api.model.maler.EndringOpptjeningAutoDto
 import java.time.LocalDate
 
 @Suppress("unused")
-fun createEndringOpptjeningDto() =
+fun createEndringOpptjeningAutoDto() =
     EndringOpptjeningAutoDto(
-barnetilleggFellesbarn = Fixtures.create(),
+        barnetilleggFellesbarn = Fixtures.create(),
         barnetilleggSaerkullsbarn = Fixtures.create(),
         endringIOpptjening = Fixtures.create(),
         folketrygdloven = Fixtures.create(),
@@ -16,13 +16,13 @@ barnetilleggFellesbarn = Fixtures.create(),
         virkningsDato = LocalDate.of(2023, 1, 1)
     )
 
-fun createEndringOpptjeningDtoEndringIOpptjening() =
+fun createEndringOpptjeningAutoDtoEndringIOpptjening() =
     EndringOpptjeningAutoDto.EndringIOpptjening(
         ufoerBeloepOekt = true,
         ufoerBeloepRedusert = false
     )
 
-fun createEndringOpptjeningDtoFolketrygdloven() =
+fun createEndringOpptjeningAutoDtoFolketrygdloven() =
     EndringOpptjeningAutoDto.Folketrygdloven(
         harYrkesskadeGradUtbetaling = false,
         innvilgetEktefelletillegg = true,
@@ -31,7 +31,7 @@ fun createEndringOpptjeningDtoFolketrygdloven() =
         innvilgetSaerkullsbarntillegg = false
     )
 
-fun createEndringOpptjeningDtoUfoeretrygd() =
+fun createEndringOpptjeningAutoDtoUfoeretrygd() =
     EndringOpptjeningAutoDto.Ufoeretrygd(
         ektefelletilleggUtbeltalt = Kroner(25000),
         gjenlevendetilleggUtbetalt = Kroner(0),
@@ -40,12 +40,12 @@ fun createEndringOpptjeningDtoUfoeretrygd() =
         utbetaltPerMaaned = Kroner(16000)
     )
 
-fun createEndringOpptjeningDtoBarnetilleggFellesbarn() =
+fun createEndringOpptjeningAutoDtoBarnetilleggFellesbarn() =
     EndringOpptjeningAutoDto.BarnetilleggFellesbarn(
         beloepBrutto = Kroner(24000)
     )
 
-fun createEndringOpptjeningDtoBarnetilleggSaerkullsbarn() =
+fun createEndringOpptjeningAutoDtoBarnetilleggSaerkullsbarn() =
     EndringOpptjeningAutoDto.BarnetilleggSaerkullsbarn(
         beloepBrutto = Kroner(34000)
     )

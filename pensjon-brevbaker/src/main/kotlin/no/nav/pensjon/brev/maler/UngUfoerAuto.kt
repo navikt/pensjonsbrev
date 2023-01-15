@@ -68,11 +68,11 @@ object UngUfoerAuto : VedtaksbrevTemplate<UngUfoerAutoDto> {
                 )
             )
 
-            includePhrase(Ufoeretrygd.BarnetilleggIkkeUtbetalt(saerkullsbarn = saerkullsbarn, fellesbarn = fellesbarn))
+         //   includePhrase(Ufoeretrygd.BarnetilleggIkkeUtbetalt(saerkullsbarn = saerkullsbarn, fellesbarn = fellesbarn))
 
 
             includePhrase(Vedtak.BegrunnelseOverskrift)
-            includePhrase(Ufoeretrygd.EndringMinsteYtelseUngUfoerVed20aar(minsteytelseVedVirkSats))
+        //    includePhrase(Ufoeretrygd.EndringMinsteYtelseUngUfoerVed20aar(minsteytelseVedVirkSats))
             includePhrase(Ufoeretrygd.HjemmelSivilstand)
 
             includePhrase(Ufoeretrygd.VirkningFomOverskrift)

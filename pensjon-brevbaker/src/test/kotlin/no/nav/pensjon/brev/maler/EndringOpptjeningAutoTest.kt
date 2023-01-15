@@ -14,7 +14,7 @@ class EndringOpptjeningAutoTest {
     @Test
     fun testPdf() {
         Letter(
-            OmsorgEgenAuto.template,
+            EndringOpptjeningAuto.template,
             Fixtures.create<EndringOpptjeningAutoDto>(),
             Language.Bokmal,
             Fixtures.fellesAuto
@@ -27,7 +27,7 @@ class EndringOpptjeningAutoTest {
     @Test
     fun testHtml() {
         Letter(
-            OmsorgEgenAuto.template,
+            EndringOpptjeningAuto.template,
             Fixtures.create<EndringOpptjeningAutoDto>(),
             Language.Bokmal,
             Fixtures.fellesAuto

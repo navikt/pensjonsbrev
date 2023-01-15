@@ -39,7 +39,7 @@ object EndringOpptjeningAuto : VedtaksbrevTemplate<EndringOpptjeningAutoDto> {
     override val kode: Brevkode.Vedtak = Brevkode.Vedtak.UT_ENDRING_OPPTJENING_AUTO
 
     override val template = createTemplate(
-        name = OmsorgEgenAuto.kode.name,
+        name = kode.name,
         letterDataType = EndringOpptjeningAutoDto::class,
         languages = languages(Language.Bokmal, Language.Nynorsk, Language.English),
         letterMetadata = LetterMetadata(
