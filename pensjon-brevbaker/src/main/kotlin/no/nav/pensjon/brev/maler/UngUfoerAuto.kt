@@ -14,6 +14,7 @@ import no.nav.pensjon.brev.api.model.maler.UngUfoerAutoDtoSelectors.minsteytelse
 import no.nav.pensjon.brev.api.model.maler.UngUfoerAutoDtoSelectors.orienteringOmRettigheterUfoere
 import no.nav.pensjon.brev.api.model.maler.UngUfoerAutoDtoSelectors.saerkullsbarn
 import no.nav.pensjon.brev.api.model.maler.UngUfoerAutoDtoSelectors.totaltUfoerePerMnd
+import no.nav.pensjon.brev.maler.fraser.UngUfoer
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.fraser.ufoer.Ufoeretrygd
 import no.nav.pensjon.brev.maler.fraser.common.Vedtak
@@ -54,7 +55,7 @@ object UngUfoerAuto : VedtaksbrevTemplate<UngUfoerAutoDto> {
         outline {
 
             includePhrase(Vedtak.Overskrift)
-            includePhrase(Ufoeretrygd.UngUfoer20aar_001(kravVirkningFraOgMed))
+            includePhrase(UngUfoer.UngUfoer20aar(kravVirkningFraOgMed))
 
             includePhrase(
                 Ufoeretrygd.Beloep(
@@ -63,6 +64,7 @@ object UngUfoerAuto : VedtaksbrevTemplate<UngUfoerAutoDto> {
                     gjenlevende = gjenlevende.utbetalt_safe.ifNull(false),
                     fellesbarn = fellesbarn.utbetalt_safe.ifNull(false),
                     saerkullsbarn = saerkullsbarn.utbetalt_safe.ifNull(false),
+                    ufoeretrygd = ufoeretrygd.utbetalt_safe.ifNull(false)
                 )
             )
 
