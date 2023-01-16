@@ -24,11 +24,11 @@ fun createEndringOpptjeningAutoDtoEndringIOpptjening() =
 
 fun createEndringOpptjeningAutoDtoFolketrygdloven() =
     EndringOpptjeningAutoDto.Folketrygdloven(
-        harYrkesskadeGradUtbetaling = false,
+        harYrkesskadeGradUtbetaling = true,
         innvilgetEktefelletillegg = true,
         innvilgetFellesbarntillegg = false,
         innvilgetGjenlevendetillegg = false,
-        innvilgetSaerkullsbarntillegg = false
+        innvilgetSaerkullsbarntillegg = true
     )
 
 fun createEndringOpptjeningAutoDtoUfoeretrygd() =
