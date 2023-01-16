@@ -13,13 +13,13 @@ fun createEndringOpptjeningAutoDto() =
         endringIOpptjening = Fixtures.create(),
         folketrygdloven = Fixtures.create(),
         ufoeretrygd = Fixtures.create(),
-        virkningsDato = LocalDate.of(2023, 1, 1)
     )
 
 fun createEndringOpptjeningAutoDtoEndringIOpptjening() =
     EndringOpptjeningAutoDto.EndringIOpptjening(
-        ufoerBeloepOekt = true,
-        ufoerBeloepRedusert = false
+        ufoerBeloepOekt = false,
+        ufoerBeloepRedusert = true,
+        virkningsDato = LocalDate.of(2023, 1, 1),
     )
 
 fun createEndringOpptjeningAutoDtoFolketrygdloven() =
@@ -28,7 +28,7 @@ fun createEndringOpptjeningAutoDtoFolketrygdloven() =
         innvilgetEktefelletillegg = true,
         innvilgetFellesbarntillegg = false,
         innvilgetGjenlevendetillegg = false,
-        innvilgetSaerkullsbarntillegg = true
+        innvilgetSaerkullsbarntillegg = true,
     )
 
 fun createEndringOpptjeningAutoDtoUfoeretrygd() =
@@ -37,7 +37,7 @@ fun createEndringOpptjeningAutoDtoUfoeretrygd() =
         gjenlevendetilleggUtbetalt = Kroner(0),
         harUtbetalingsgrad = false,
         ufoertrygdUtbetalt = Kroner(2000000),
-        utbetaltPerMaaned = Kroner(16000)
+        utbetaltPerMaaned = Kroner(16000),
     )
 
 fun createEndringOpptjeningAutoDtoBarnetilleggFellesbarn() =

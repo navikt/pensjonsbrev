@@ -4,13 +4,13 @@ import no.nav.pensjon.brev.api.model.LetterMetadata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.EndringIOpptjeningSelectors.ufoerBeloepOekt
 import no.nav.pensjon.brev.api.model.maler.EndringIOpptjeningSelectors.ufoerBeloepRedusert
+import no.nav.pensjon.brev.api.model.maler.EndringIOpptjeningSelectors.virkningsDato
 import no.nav.pensjon.brev.api.model.maler.EndringOpptjeningAutoDto
 import no.nav.pensjon.brev.api.model.maler.EndringOpptjeningAutoDtoSelectors.barnetilleggFellesbarn
 import no.nav.pensjon.brev.api.model.maler.EndringOpptjeningAutoDtoSelectors.barnetilleggSaerkullsbarn
 import no.nav.pensjon.brev.api.model.maler.EndringOpptjeningAutoDtoSelectors.endringIOpptjening
 import no.nav.pensjon.brev.api.model.maler.EndringOpptjeningAutoDtoSelectors.folketrygdloven
 import no.nav.pensjon.brev.api.model.maler.EndringOpptjeningAutoDtoSelectors.ufoeretrygd
-import no.nav.pensjon.brev.api.model.maler.EndringOpptjeningAutoDtoSelectors.virkningsDato
 import no.nav.pensjon.brev.api.model.maler.FolketrygdlovenSelectors.harYrkesskadeGradUtbetaling
 import no.nav.pensjon.brev.api.model.maler.FolketrygdlovenSelectors.innvilgetEktefelletillegg
 import no.nav.pensjon.brev.api.model.maler.FolketrygdlovenSelectors.innvilgetFellesbarntillegg
@@ -64,7 +64,7 @@ object EndringOpptjeningAuto : VedtaksbrevTemplate<EndringOpptjeningAutoDto> {
                 EndringOpptjening.BetydningForUfoeretrygden(
                     ufoerBeloepOekt = endringIOpptjening.ufoerBeloepOekt,
                     ufoerBeloepRedusert = endringIOpptjening.ufoerBeloepRedusert,
-                    virkningsDato = virkningsDato
+                    virkningsDato = endringIOpptjening.virkningsDato,
                 )
             )
 
@@ -88,7 +88,7 @@ object EndringOpptjeningAuto : VedtaksbrevTemplate<EndringOpptjeningAutoDto> {
                 EndringOpptjening.EndringIOpptjeningTilUfoeretrygd(
                     ufoerBeloepOekt = endringIOpptjening.ufoerBeloepOekt,
                     ufoerBeloepRedusert = endringIOpptjening.ufoerBeloepRedusert,
-                    virkningsDato = virkningsDato
+                    virkningsDato = endringIOpptjening.virkningsDato,
                 )
             )
 
@@ -96,11 +96,11 @@ object EndringOpptjeningAuto : VedtaksbrevTemplate<EndringOpptjeningAutoDto> {
 
             includePhrase(
                 HjemlerFolketrygdloven.Folketrygdloven(
+                    harYrkesskadegradUtbetaling = folketrygdloven.harYrkesskadeGradUtbetaling,
                     innvilgetEktefelletillegg = folketrygdloven.innvilgetEktefelletillegg,
-                    innvilgetGjenlevendetillegg = folketrygdloven.innvilgetGjenlevendetillegg,
                     innvilgetFellesbarntillegg = folketrygdloven.innvilgetFellesbarntillegg,
+                    innvilgetGjenlevendetillegg = folketrygdloven.innvilgetGjenlevendetillegg,
                     innvilgetSaerkullsbarntillegg = folketrygdloven.innvilgetSaerkullsbarntillegg,
-                    harYrkesskadegradUtbetaling = folketrygdloven.harYrkesskadeGradUtbetaling
                 )
             )
         }

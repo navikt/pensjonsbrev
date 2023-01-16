@@ -10,12 +10,12 @@ data class EndringOpptjeningAutoDto(
     val endringIOpptjening: EndringIOpptjening,
     val folketrygdloven: Folketrygdloven, // in use
     val ufoeretrygd: Ufoeretrygd,  // in use
-    val virkningsDato: LocalDate,  // in use
 ) {
 
     data class EndringIOpptjening(
         val ufoerBeloepOekt: Boolean,  // in use
         val ufoerBeloepRedusert: Boolean,  // in use
+        val virkningsDato: LocalDate,  // in use
     )
 
     data class Folketrygdloven(
