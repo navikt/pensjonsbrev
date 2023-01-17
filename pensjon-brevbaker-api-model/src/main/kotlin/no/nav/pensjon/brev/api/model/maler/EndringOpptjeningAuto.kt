@@ -29,8 +29,8 @@ data class EndringOpptjeningAutoDto(
     )
 
     data class KombinereUfoeretrygdMedInntekt(
-        val ufoeregrad: Int,
-        val utbetalingsgrad: Int,
+        val ufoeregrad: Int, // Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegningu_ufoeregrad
+        val utbetalingsgrad: Int, // Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_utbetalingsgrad
         val inntektEtterUfoerhet: Kroner, // kan bli null
         val oppjustertInntektEtterUfoerhet: Kroner,
         val inntektsgrense: Kroner,
