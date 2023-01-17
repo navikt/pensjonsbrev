@@ -8,6 +8,7 @@ data class EndringOpptjeningAutoDto(
     val barnetilleggFellesbarn: BarnetilleggFellesbarn?,
     val barnetilleggSaerkullsbarn: BarnetilleggSaerkullsbarn?,
     val endringIOpptjening: EndringIOpptjening,
+    val kombinereUfoeretrygdMedInntekt: KombinereUfoeretrygdMedInntekt,
     val ufoeretrygd: Ufoeretrygd,  // used
 ) {
 
@@ -31,16 +32,7 @@ data class EndringOpptjeningAutoDto(
     data class KombinereUfoeretrygdMedInntekt(
         val ufoeregrad: Int, // Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegningu_ufoeregrad
         val utbetalingsgrad: Int, // Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_utbetalingsgrad
-        val inntektEtterUfoerhet: Kroner, // kan bli null
-        val oppjustertInntektEtterUfoerhet: Kroner,
-        val inntektsgrense: Kroner,
-        val inntektsgrenseFaktisk: Kroner,
-        val kompensasjonsgrad: Double,
-        val forventetInntekt: Kroner,
-        val nettoAkk_pluss_NettoRestAr: Kroner, // what is this?
-        val nettoAkk: Kroner,
-        val uforetrygdordinarNetto: Kroner,
-        val uforetrygdberegningUforegrad: Double // (procent - Int or Double?)
+
 
 
     )

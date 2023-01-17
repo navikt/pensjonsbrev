@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.fixtures
 import no.nav.pensjon.brev.Fixtures
 import no.nav.pensjon.brev.api.model.Kroner
 import no.nav.pensjon.brev.api.model.maler.EndringOpptjeningAutoDto
+import no.nav.pensjon.brev.maler.EndringOpptjeningAuto
 import java.time.LocalDate
 
 @Suppress("unused")
@@ -11,6 +12,7 @@ fun createEndringOpptjeningAutoDto() =
         barnetilleggFellesbarn = Fixtures.create(),
         barnetilleggSaerkullsbarn = Fixtures.create(),
         endringIOpptjening = Fixtures.create(),
+        kombinereUfoeretrygdMedInntekt = Fixtures.create(),
         ufoeretrygd = Fixtures.create(),
     )
 
@@ -19,6 +21,12 @@ fun createEndringOpptjeningAutoDtoEndringIOpptjening() =
         ufoerBeloepOekt = false,
         ufoerBeloepRedusert = true,
         virkningsDato = LocalDate.of(2023, 1, 1),
+    )
+
+fun createEndringOpptjeningAutoDtoKombinereUfoeretrygdMedInntekt() =
+    EndringOpptjeningAutoDto.KombinereUfoeretrygdMedInntekt(
+        ufoeregrad = 80,
+        utbetalingsgrad = 100,
     )
 
 fun createEndringOpptjeningAutoDtoUfoeretrygd() =

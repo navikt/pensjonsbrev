@@ -9,7 +9,10 @@ import no.nav.pensjon.brev.api.model.maler.EndringOpptjeningAutoDto
 import no.nav.pensjon.brev.api.model.maler.EndringOpptjeningAutoDtoSelectors.barnetilleggFellesbarn
 import no.nav.pensjon.brev.api.model.maler.EndringOpptjeningAutoDtoSelectors.barnetilleggSaerkullsbarn
 import no.nav.pensjon.brev.api.model.maler.EndringOpptjeningAutoDtoSelectors.endringIOpptjening
+import no.nav.pensjon.brev.api.model.maler.EndringOpptjeningAutoDtoSelectors.kombinereUfoeretrygdMedInntekt
 import no.nav.pensjon.brev.api.model.maler.EndringOpptjeningAutoDtoSelectors.ufoeretrygd
+import no.nav.pensjon.brev.api.model.maler.KombinereUfoeretrygdMedInntektSelectors.ufoeregrad
+import no.nav.pensjon.brev.api.model.maler.KombinereUfoeretrygdMedInntektSelectors.utbetalingsgrad
 import no.nav.pensjon.brev.api.model.maler.UfoeretrygdSelectors.ektefelletilleggInnvilget
 import no.nav.pensjon.brev.api.model.maler.UfoeretrygdSelectors.fellesbarnInnvilget
 import no.nav.pensjon.brev.api.model.maler.UfoeretrygdSelectors.gjenlevendetilleggInnvilget
@@ -21,6 +24,7 @@ import no.nav.pensjon.brev.maler.fraser.EndringOpptjening
 import no.nav.pensjon.brev.maler.fraser.ufoer.HjemlerFolketrygdloven
 import no.nav.pensjon.brev.maler.fraser.ufoer.Ufoeretrygd
 import no.nav.pensjon.brev.maler.fraser.common.Vedtak
+import no.nav.pensjon.brev.maler.fraser.ufoer.KombinereUfoeretrygdMedInntekt
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.VedtaksbrevTemplate
@@ -100,6 +104,11 @@ object EndringOpptjeningAuto : VedtaksbrevTemplate<EndringOpptjeningAutoDto> {
                     saerkullsbarntilleggInnvilget = ufoeretrygd.saerkullsbarnInnvilget,
                 )
             )
+
+            includePhrase(KombinereUfoeretrygdMedInntekt.KombinereUfoeretrygdOgInntektOverskrift(
+                ufoeregrad = kombinereUfoeretrygdMedInntekt.ufoeregrad,
+                utbetalingsgrad = kombinereUfoeretrygdMedInntekt.utbetalingsgrad,
+            ) )
         }
     }
 }

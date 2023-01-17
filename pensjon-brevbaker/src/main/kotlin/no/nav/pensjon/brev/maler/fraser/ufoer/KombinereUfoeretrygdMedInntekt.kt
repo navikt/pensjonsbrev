@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.maler.fraser.ufoer
 
 import no.nav.pensjon.brev.api.model.Kroner
 import no.nav.pensjon.brev.maler.fraser.common.Constants
+import no.nav.pensjon.brev.maler.fraser.ufoer.Ufoeretrygd.SjekkUtbetalingene.template
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorsk
@@ -20,17 +21,25 @@ object KombinereUfoeretrygdMedInntekt {
         val ufoeregrad: Expression<Int>,
         val utbetalingsgrad: Expression<Int>,
 
-    ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-            val h = ufoeregrad.equalTo(100)
-            val har100ProsentUtbetalingsgrad = utbetalingsgrad.equalTo(100)
+            val harFullUfoeregrad = ufoeregrad.equalTo(100)
+            val harFullUtbetalingsgrad = utbetalingsgrad.equalTo(100)
+            val harStoerreUtbetalingsgrad =
             title1 {
-           //     showIf(har100ProsentUfoeregrad and har100ProsentUtbetalingsgrad)
-                textExpr(
-                    Bokmal to "Skal du kombinere uføretrygd og inntekt?".expr(),
-                    Nynorsk to "Skal du kombinere uføretrygd og inntekt?".expr(),
-                    English to "Will you combine disability benefit with income?".expr()
-                )
+                showIf(harFullUfoeregrad and harFullUtbetalingsgrad) {
+                    textExpr(
+                        Bokmal to "Skal du kombinere uføretrygd og inntekt?".expr(),
+                        Nynorsk to "Skal du kombinere uføretrygd og inntekt?".expr(),
+                        English to "Will you combine disability benefit with salary income?".expr()
+                    )
+                }.orShowIf(ufoeregrad.greaterThan(0) and not(harFullUfoeregrad)) {
+                    textExpr(
+                        Bokmal to "For deg som kombinerer uføretrygd og inntekt".expr(),
+                        Nynorsk to "For deg som kombinerer uføretrygd og inntekt".expr(),
+                        English to "If you combine disabilty benefit with salary income".expr()
+                    )
+                }
             }
         }
     }
