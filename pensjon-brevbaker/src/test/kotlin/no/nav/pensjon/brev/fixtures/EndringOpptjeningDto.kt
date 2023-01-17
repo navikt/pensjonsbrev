@@ -23,10 +23,10 @@ fun createEndringOpptjeningAutoDtoEndringIOpptjening() =
 
 fun createEndringOpptjeningAutoDtoUfoeretrygd() =
     EndringOpptjeningAutoDto.Ufoeretrygd(
-        ektefelletilleggInnvilget = false,
-        fellesbarnInnvilget = false,
+        ektefelletilleggInnvilget = true,
+        fellesbarnInnvilget = true,
         gjenlevendetilleggInnvilget = false,
-        harUtbetalingsgrad = false,
+        harUtbetalingsgrad = true,
         harYrkesskadeGradUtbetaling = false,
         saerkullsbarnInnvilget = false,
         ufoertrygdUtbetalt = Kroner(2000000),

@@ -21,11 +21,11 @@ data class EndringOpptjeningAutoDto(
         val ektefelletilleggInnvilget: Boolean,  // used
         val fellesbarnInnvilget: Boolean,  // used
         val gjenlevendetilleggInnvilget: Boolean,  // used
-        val harUtbetalingsgrad: Boolean,
+        val harUtbetalingsgrad: Boolean,  // used
         val harYrkesskadeGradUtbetaling: Boolean, // yrkesskadeGrad > 0  - used
         val saerkullsbarnInnvilget: Boolean,  // used
         val ufoertrygdUtbetalt: Kroner,
-        val utbetaltPerMaaned: Kroner,
+        val utbetaltPerMaaned: Kroner,  // used
     )
 
     data class KombinereUfoeretrygdMedInntekt(

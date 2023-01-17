@@ -19,12 +19,13 @@ object KombinereUfoeretrygdMedInntekt {
     data class KombinereUfoeretrygdOgInntektOverskrift(
         val ufoeregrad: Expression<Int>,
         val utbetalingsgrad: Expression<Int>,
+
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-            val har100ProsentUfoeregrad = ufoeregrad.equalTo(100)
+            val h = ufoeregrad.equalTo(100)
             val har100ProsentUtbetalingsgrad = utbetalingsgrad.equalTo(100)
             title1 {
-                showIf(har100ProsentUfoeregrad and har100ProsentUtbetalingsgrad)
+           //     showIf(har100ProsentUfoeregrad and har100ProsentUtbetalingsgrad)
                 textExpr(
                     Bokmal to "Skal du kombinere uføretrygd og inntekt?".expr(),
                     Nynorsk to "Skal du kombinere uføretrygd og inntekt?".expr(),
