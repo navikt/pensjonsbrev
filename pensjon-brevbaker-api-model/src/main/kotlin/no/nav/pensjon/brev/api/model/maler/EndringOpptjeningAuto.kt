@@ -8,7 +8,6 @@ data class EndringOpptjeningAutoDto(
     val barnetilleggFellesbarn: BarnetilleggFellesbarn?,
     val barnetilleggSaerkullsbarn: BarnetilleggSaerkullsbarn?,
     val endringIOpptjening: EndringIOpptjening,
-    val folketrygdloven: Folketrygdloven, // used
     val ufoeretrygd: Ufoeretrygd,  // used
 ) {
 
@@ -18,18 +17,13 @@ data class EndringOpptjeningAutoDto(
         val virkningsDato: LocalDate,  // used
     )
 
-    data class Folketrygdloven(
-        val harYrkesskadeGradUtbetaling: Boolean, // yrkesskadeGrad > 0  - used
-        val innvilgetEktefelletillegg: Boolean,  // used
-        val innvilgetFellesbarntillegg: Boolean,  // used
-        val innvilgetGjenlevendetillegg: Boolean,  // used
-        val innvilgetSaerkullsbarntillegg: Boolean,  // used
-    )
-
     data class Ufoeretrygd(
-        val ektefelletilleggUtbeltalt: Kroner?,
-        val gjenlevendetilleggUtbetalt: Kroner?,
+        val ektefelletilleggInnvilget: Boolean,  // used
+        val fellesbarnInnvilget: Boolean,  // used
+        val gjenlevendetilleggInnvilget: Boolean,  // used
         val harUtbetalingsgrad: Boolean,
+        val harYrkesskadeGradUtbetaling: Boolean, // yrkesskadeGrad > 0  - used
+        val saerkullsbarnInnvilget: Boolean,  // used
         val ufoertrygdUtbetalt: Kroner,
         val utbetaltPerMaaned: Kroner,
     )

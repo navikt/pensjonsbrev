@@ -63,7 +63,6 @@ object Fixtures {
             InformasjonOmSaksbehandlingstidDto::class -> createInformasjonOmSaksbehandlingstidDto() as T
             EndringOpptjeningAutoDto::class -> createEndringOpptjeningAutoDto() as T
             EndringOpptjeningAutoDto.EndringIOpptjening::class -> createEndringOpptjeningAutoDtoEndringIOpptjening() as T
-            EndringOpptjeningAutoDto.Folketrygdloven::class -> createEndringOpptjeningAutoDtoFolketrygdloven() as T
             EndringOpptjeningAutoDto.Ufoeretrygd::class -> createEndringOpptjeningAutoDtoUfoeretrygd() as T
             EndringOpptjeningAutoDto.BarnetilleggFellesbarn::class -> createEndringOpptjeningAutoDtoBarnetilleggFellesbarn() as T
             EndringOpptjeningAutoDto.BarnetilleggSaerkullsbarn::class -> createEndringOpptjeningAutoDtoBarnetilleggSaerkullsbarn() as T
