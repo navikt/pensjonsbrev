@@ -11,13 +11,14 @@ import SignaturView from "./components/signatur/SignaturView"
 import {RenderedLetterAction} from "./actions/letter"
 import {SplitBlockAtContent} from "./BlockProps"
 import EditorMenu from "./components/editormenu/EditorMenu"
+import {CursorPosition} from "./components/content/Content"
 
 interface AnyBlockProps {
     block: AnyBlock,
     splitBlock: SplitBlockAtContent
     mergeWith: BoundAction<[target: MERGE_TARGET]>
     updateBlock: BoundAction<[block: AnyBlock]>
-    stealFocus: boolean
+    stealFocus?: CursorPosition
     blockFocusStolen: BoundAction<[]>
 }
 
@@ -56,27 +57,36 @@ export interface LetterEditorProps {
 const LetterEditor: FC<LetterEditorProps> = ({letter, updateLetter}) => {
     const blocks = letter.blocks
 
-    const [stealFocusBlockId, setStealFocusBlockId] = useState<number | null>(null)
+    const [stealFocus, setStealFocus] = useState<{[blockId: number]: CursorPosition | undefined}>({})
     const [currentBlock, setCurrentBlock] = useState(-1)
 
     const updateBlocks = bindAction(RenderedLetterAction.updateBlocks, updateLetter, letter)
     const updateBlock = bindAction(BlocksAction.updateBlock, updateBlocks, blocks)
     const mergeWith = bindAction(BlocksAction.mergeWith, updateBlocks, blocks)
-    const mergeWithAndStealFocus = (id: number, target: MERGE_TARGET) => {
-        mergeWith(id, target)
+
+    const mergeWithAndStealFocus: BoundAction<[blockId: number, target: MERGE_TARGET]> = (blockId, target) => {
+        mergeWith(blockId, target)
         switch (target) {
             case MERGE_TARGET.PREVIOUS:
-                setStealFocusBlockId(id - 1)
+                const prev = blocks[blockId - 1]
+                if (prev) {
+                    const lastContentId = prev.content.length - 1
+                    setStealFocus({[blockId - 1]: {contentId: lastContentId, startOffset: prev.content[lastContentId].text.length}})
+                }
                 break
             case MERGE_TARGET.NEXT:
-                // setStealFocusBlockId(id)
+                const current = blocks[blockId]
+                if (current) {
+                    const lastContentId = current.content.length - 1
+                    setStealFocus({[blockId]: {contentId: lastContentId, startOffset: current.content[lastContentId].text.length}})
+                }
                 break
         }
     }
 
     const splitBlock = (blockId: number, block: AnyBlock, contentId: number, currentText: string, nextText: string) => {
         updateBlocks(BlocksAction.splitBlock(blocks, blockId, block, contentId, currentText, nextText))
-        setStealFocusBlockId(blockId + 1)
+        setStealFocus({[blockId + 1]: {contentId: 0, startOffset: 0}})
     }
 
     const switchType = bindAction(BlockAction.switchType, updateBlock.bind(null, currentBlock), blocks[currentBlock])
@@ -94,8 +104,8 @@ const LetterEditor: FC<LetterEditorProps> = ({letter, updateLetter}) => {
                               splitBlock={splitBlock.bind(null, blockId, block)}
                               mergeWith={mergeWithAndStealFocus.bind(null, blockId)}
                               updateBlock={updateBlock.bind(null, blockId)}
-                              stealFocus={stealFocusBlockId === blockId}
-                              blockFocusStolen={() => setStealFocusBlockId(null)}
+                              stealFocus={stealFocus[blockId]}
+                              blockFocusStolen={() => setStealFocus({})}
                     />
                 )}
                 <SignaturView signatur={letter.signatur}/>

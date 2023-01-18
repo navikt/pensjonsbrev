@@ -9,19 +9,26 @@ import {MERGE_TARGET} from "../../actions/blocks"
 
 const selectService = new SelectionService()
 
+export type CursorPosition = {
+    contentId: number,
+    startOffset: number,
+}
 type ContentState = never
 
+type ContentRefs = { [nodeId: number]: HTMLElement | undefined | null }
+
 class Content extends React.Component<BlockProps<AnyBlock>, ContentState> {
-    private childRefs: { [contentId: number]: HTMLElement } = {}
+    private childRefs: ContentRefs = {}
 
     constructor(props: BlockProps<AnyBlock>) {
         super(props)
     }
 
     // TODO: Bake denne inn i useCallback her istedenfor i EditableText?
-    setChildRef(contentId: number, node: HTMLElement) {
+    setChildRef(contentId: number, node: HTMLElement | null) {
         const prev = this.childRefs[contentId]
 
+        // TODO: if-else-if her vil forhindre at blokker med kun en kontent får både backspace og delete
         if (contentId === 0) {
             // TODO: Skriver dette over emitchange i ContentEditable?
             if (prev) {
@@ -46,24 +53,20 @@ class Content extends React.Component<BlockProps<AnyBlock>, ContentState> {
     }
 
     componentDidUpdate() {
-        const first = this.childRefs[0]
-        if (this.props.blockStealFocus && first != null) {
-            if (first) {
-                selectService.focusStartOfNode(first, this.props.blockFocusStolen)
-            } else {
-                console.warn("Got stealBlockFocus, but first child is not EditableText (or spanref is missing)")
-            }
+        const span = this.props.blockStealFocus != null ? this.childRefs[this.props.blockStealFocus.contentId] : null
+        if (this.props.blockStealFocus && span) {
+            selectService.focusAtOffset(span.childNodes[0], this.props.blockStealFocus.startOffset)
+            this.props.blockFocusStolen()
         }
     }
 
     stealFocusHandler: MouseEventHandler<HTMLDivElement> = (e) => {
         if (e.target === e.currentTarget) {
-            const closestContent = selectService.findClosestNodeId(this.childRefs, {x: e.clientX, y: e.clientY})
-            const node = this.childRefs[closestContent]
-            if (node) {
-                selectService.focusEndOfClickedLine(node, e.clientY)
+            const nodes = Object.entries(this.childRefs).map(e => e[1]).filter((n): n is HTMLElement => n != null)
+            if (nodes.length > 0) {
+                selectService.focusEndOfClickedLine(nodes, {x: e.clientX, y: e.clientY}, this.props.blockFocusStolen)
             } else {
-                console.warn("Attempted to steal focus on click, but the closest EditableText contentId does not have a spanRef: ", closestContent)
+                console.warn("Cannot steal focus for click because we don't have any childRefs.")
             }
         }
     }
@@ -113,8 +116,9 @@ class Content extends React.Component<BlockProps<AnyBlock>, ContentState> {
                 </div>
             )
         } else {
+            // TODO: Bruk focus og blur for å vite hvilken block Tittel og Normal knappene skal påvirke.
             return (
-                <div className={styles.content} onClick={this.stealFocusHandler}>
+                <div className={styles.content} onClick={this.stealFocusHandler} onFocus={() => console.log("focus: ", block.id)} onBlur={() => console.log("unfocus: ", block.id)}>
                     {block.content.map((c, contentId) => {
                             switch (c.type) {
                                 case "LITERAL":
