@@ -32,6 +32,12 @@ data class EndringOpptjeningAutoDto(
     data class KombinereUfoeretrygdMedInntekt(
         val ufoeregrad: Int, // Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegningu_ufoeregrad
         val utbetalingsgrad: Int, // Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_utbetalingsgrad
+        val inntektsgrenseNesteAar: Kroner,  //
+        val inntektsgrense: Kroner,  // Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_InntektsgrenseNesteAr
+        val harInntektEtterUfoere: Boolean,  // IEUInntekt > 0 / Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektsgrense
+        val beloepsgrense: Kroner,
+        val grunnbeloep: Kroner,
+
 
 
 
