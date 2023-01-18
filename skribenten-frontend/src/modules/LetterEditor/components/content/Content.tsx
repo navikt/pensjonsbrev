@@ -6,6 +6,7 @@ import {BlockProps} from "../../BlockProps"
 import EditableText from "../text/EditableText"
 import {SelectionService} from "../../services/SelectionService"
 import {MERGE_TARGET} from "../../actions/blocks"
+import {combine} from "../../../../lib/actions"
 
 const selectService = new SelectionService()
 
@@ -28,23 +29,24 @@ class Content extends React.Component<BlockProps<AnyBlock>, ContentState> {
     setChildRef(contentId: number, node: HTMLElement | null) {
         const prev = this.childRefs[contentId]
 
-        // TODO: if-else-if her vil forhindre at blokker med kun en kontent får både backspace og delete
-        if (contentId === 0) {
-            // TODO: Skriver dette over emitchange i ContentEditable?
-            if (prev) {
-                prev.onkeydown = null
-            }
-            if (node) {
-                node.onkeydown = this.backspaceHandler
-            }
-            if (this.props.blockStealFocus && node != null) {
-                selectService.focusStartOfNode(node, this.props.blockFocusStolen)
-            }
-        } else if (contentId === this.props.block.content.length - 1) {
-            if (prev) {
-                prev.onkeydown = null
-            }
-            if (node) {
+        if (prev) {
+            prev.onkeydown = null
+        }
+
+        // TODO: Skriver dette over emitchange i ContentEditable?
+        if (node != null) {
+            // Første node skal ha backspaceHandler og siste node skal ha deleteHandler. Dette kan være samme node.
+            if (contentId === 0) {
+                if (this.props.block.content.length === 1) {
+                    node.onkeydown = combine(this.backspaceHandler, this.deleteHandler)
+                } else {
+                    node.onkeydown = this.backspaceHandler
+                }
+
+                if (this.props.blockStealFocus) {
+                    selectService.focusStartOfNode(node, this.props.blockFocusStolen)
+                }
+            } else if (contentId === this.props.block.content.length - 1) {
                 node.onkeydown = this.deleteHandler
             }
         }
