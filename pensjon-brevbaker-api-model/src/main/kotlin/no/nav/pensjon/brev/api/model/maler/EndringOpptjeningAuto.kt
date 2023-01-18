@@ -35,10 +35,9 @@ data class EndringOpptjeningAutoDto(
         val inntektsgrenseNesteAar: Kroner,  //
         val inntektsgrense: Kroner,  // Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_InntektsgrenseNesteAr
         val harInntektEtterUfoere: Boolean,  // IEUInntekt > 0 / Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektsgrense
-        val beloepsgrense: Kroner,
-        val grunnbeloep: Kroner,
-
-
+        val beloepsgrense: Kroner,  // Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Belopsgrense
+        val grunnbeloep: Kroner,  // Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Grunnbelop
+        val oieu: Kroner,  // ? Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Oieu
 
 
     )
@@ -46,11 +45,11 @@ data class EndringOpptjeningAutoDto(
     data class BarnetilleggFellesbarn(
         val beloepBrutto: Kroner,
 
-    )
+        )
 
     data class BarnetilleggSaerkullsbarn(
         val beloepBrutto: Kroner,
 
-    )
+        )
 
 }

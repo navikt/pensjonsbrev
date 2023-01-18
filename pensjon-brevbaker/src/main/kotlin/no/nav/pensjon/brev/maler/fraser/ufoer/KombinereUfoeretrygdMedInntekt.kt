@@ -86,30 +86,63 @@ object KombinereUfoeretrygdMedInntekt {
             val harFullUfoeregrad = ufoeregrad.equalTo(100)
             val inntektsgrenseFaktisk = inntektsgrense.equalTo(0)
             // inntektsgrenseFaktisk = if inntektsgrenseNesteAar = 0 -> inntektsgrense, or -> inntektsgrenseNesteAar
-            showIf(harFullUfoeregrad and not(harInntektEtterUfoere)) {
-                textExpr(
-                    Bokmal to "Du kan ha en årlig inntekt på 40 prosent av folketrygdens grunnbeløp, uten at uføretrygden din blir redusert. I dag er dette ".expr() +
-                            ifElse(inntektsgrenseFaktisk, ifTrue = inntektsgrense.format(), ifFalse = inntektsgrenseNesteAar.format()) + " kroner. Dette er inntektsgrensen din.".expr(),
-                    Nynorsk to "".expr(),
-                    English to "".expr()
-                )
-            }.orShowIf() {
-                textExpr(
-                    Bokmal to "Du kan ha en årlig inntekt på 60 000 kroner uten at uføretrygden din blir redusert. Dette er inntektsgrensen din.".expr(),
-                    Nynorsk to "".expr(),
-                    English to "".expr()
-                )
-            }.orShowIf() {
-                textExpr(
-                    Bokmal to "Du kan ha en årlig inntekt på folketrygdens grunnbeløp fordi du er i varig tilrettelagt arbeid, uten at uføretrygden din blir redusert. I dag er dette ".expr() + inntektsgrense.format() + " kroner. Dette er inntektsgrensen din.".expr(),
-                    Nynorsk to "".expr(),
-                    English to "".expr()
+            showIf(
+                harFullUfoeregrad and not(harInntektEtterUfoere) and (beloepsgrense.notEqualTo(grunnbeloep) and beloepsgrense.notEqualTo(
+                    60000
+                ) and not(harInntektEtterUfoere))
+            ) {
+                paragraph {
+                    textExpr(
+                        Bokmal to "Du kan ha en årlig inntekt på 40 prosent av folketrygdens grunnbeløp, uten at uføretrygden din blir redusert. I dag er dette ".expr() +
+                                ifElse(
+                                    inntektsgrenseFaktisk,
+                                    ifTrue = inntektsgrense.format(),
+                                    ifFalse = inntektsgrenseNesteAar.format()
+                                ) + " kroner. Dette er inntektsgrensen din.".expr(),
+                        Nynorsk to "".expr(),
+                        English to "".expr()
+                    )
+                }
+            }.orShowIf(harFullUfoeregrad and beloepsgrense.equalTo(60000)) {
+                paragraph {
+                    textExpr(
+                        Bokmal to "Du kan ha en årlig inntekt på 60 000 kroner uten at uføretrygden din blir redusert. Dette er inntektsgrensen din.".expr(),
+                        Nynorsk to "".expr(),
+                        English to "".expr()
+                    )
+                }
+            }.orShowIf(grunnbeloep.equalTo(inntektsgrense)) {
+                paragraph {
+                    textExpr(
+                        Bokmal to "Du kan ha en årlig inntekt på folketrygdens grunnbeløp fordi du er i varig tilrettelagt arbeid, uten at uføretrygden din blir redusert. I dag er dette ".expr() + inntektsgrense.format() + " kroner. Dette er inntektsgrensen din.".expr(),
+                        Nynorsk to "".expr(),
+                        English to "".expr()
 
-                )
+                    )
+                }
             }
         }
-        }
+    }
 
-    // TBU1207, TBU2357, TBU1208
-    data class InntektsgrenseLagtTilGrunn
-}
+        // TBU1207, TBU2357, TBU1208
+        data class InntektsgrenseLagtTilGrunn(
+            val inntektsgrense: Expression<Kroner>,
+            val inntektsgrenseNesteAar: Expression<Kroner>,
+            val beloepsgrense: Expression<Kroner>,
+
+            ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+            override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+                     val inntektsgrenseFaktisk = inntektsgrense.equalTo(0)
+                showIf(beloepsgrense.notEqualTo(60000)) {
+                    paragraph {
+                        textExpr(
+                            Bokmal to ("Vi har lagt til grunn at du framover skal ha en inntekt på <Oieu> kroner per år. Du kan i tillegg ha en årlig inntekt på 40 prosent av folketrygdens grunnbeløp, uten at uføretrygden din blir redusert. Inntektsgrensen din blir derfor ".expr() +
+                                    ifElse(inntektsgrenseFaktisk, ifTrue = inntektsgrense.format(), ifFalse = inntektsgrenseNesteAar.format()) + " kroner.".expr(),
+                            Nynorsk to "".expr(),
+                            English to "".expr()
+                        )
+                    }
+                }
+            }
+        }
+    }
