@@ -89,7 +89,6 @@ data class TabellUfoereOpplysninger(
                 }
             }
         ) {
-            // Hvis ufoeretrygdGjeldende.uforetidspunkt != tom, include
             row {
                 cell {
                     text(
