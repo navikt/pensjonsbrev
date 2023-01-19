@@ -46,9 +46,9 @@ import no.nav.pensjon.brev.api.model.maler.UfoeretrygdSelectors.harUtbetalingsgr
 import no.nav.pensjon.brev.api.model.maler.UfoeretrygdSelectors.utbetaltPerMaaned
 import no.nav.pensjon.brev.maler.fraser.OpphoerBarnetillegg
 import no.nav.pensjon.brev.maler.fraser.common.Felles
+import no.nav.pensjon.brev.maler.fraser.common.Vedtak
 import no.nav.pensjon.brev.maler.fraser.ufoer.Barnetillegg
 import no.nav.pensjon.brev.maler.fraser.ufoer.Ufoeretrygd
-import no.nav.pensjon.brev.maler.fraser.common.Vedtak
 import no.nav.pensjon.brev.maler.vedlegg.createVedleggOpplysningerBruktIBeregningUT
 import no.nav.pensjon.brev.maler.vedlegg.vedleggMaanedligUfoeretrygdFoerSkatt
 import no.nav.pensjon.brev.maler.vedlegg.vedleggOrienteringOmRettigheterOgPlikterUfoere
@@ -79,18 +79,17 @@ object OpphoerBarnetilleggAuto : VedtaksbrevTemplate<OpphoerBarnetilleggAutoDto>
         val harBarnetilleggFellesbarn = barnetilleggFellesbarn.notNull()
         val harBarnetilleggSaerkullsbarn = barnetilleggSaerkullsbarn.notNull()
         title {
-            showIf(not(harBarnetilleggFellesbarn) and not(harBarnetilleggSaerkullsbarn))
-            {
-                text(
-                    Language.Bokmal to "NAV har vedtatt at barnetillegget ditt opphører",
-                    Language.Nynorsk to "NAV har stansa barnetillegget ditt",
-                    Language.English to "NAV has discontinued the child supplement in your disability benefit"
-                )
-            }.orShowIf(harBarnetilleggFellesbarn or harBarnetilleggSaerkullsbarn) {
+            showIf(harBarnetilleggFellesbarn or harBarnetilleggSaerkullsbarn) {
                 text(
                     Language.Bokmal to "NAV har endret barnetillegget ditt",
                     Language.Nynorsk to "NAV har endra barnetillegget ditt",
                     Language.English to "NAV has changed the child supplement in your disability benefit"
+                )
+            }.orShow {
+                text(
+                    Language.Bokmal to "NAV har vedtatt at barnetillegget ditt opphører",
+                    Language.Nynorsk to "NAV har stansa barnetillegget ditt",
+                    Language.English to "NAV has discontinued the child supplement in your disability benefit"
                 )
             }
         }
@@ -152,8 +151,7 @@ object OpphoerBarnetilleggAuto : VedtaksbrevTemplate<OpphoerBarnetilleggAutoDto>
                         harBarnetilleggFellesbarn = harBarnetilleggFellesbarn,
                         harBarnetilleggSaerkullsbarn = harBarnetilleggSaerkullsbarn,
                         sivilstand = sivilstand,
-                        faarUtbetaltBarnetilleggSaerkullsbarn =
-                        barnetilleggSaerkullsbarn.beloepNetto.greaterThan(0),
+                        faarUtbetaltBarnetilleggSaerkullsbarn = barnetilleggSaerkullsbarn.beloepNetto.greaterThan(0),
                     )
                 )
             }
@@ -277,18 +275,16 @@ object OpphoerBarnetilleggAuto : VedtaksbrevTemplate<OpphoerBarnetilleggAutoDto>
             includePhrase(Felles.RettTilInnsynPesys_001)
             includePhrase(Ufoeretrygd.SjekkUtbetalingene)
             includePhrase(Ufoeretrygd.Skattekort)
-            includePhrase(
-                Ufoeretrygd.SkattForDegSomBorIUtlandet(
-                    brukerBorInorge = brukerBorInorge
-                )
-            )
+            includePhrase(Ufoeretrygd.SkattForDegSomBorIUtlandet(brukerBorInorge = brukerBorInorge))
         }
         includeAttachment(vedleggMaanedligUfoeretrygdFoerSkatt, maanedligUfoeretrygdFoerSkatt)
         includeAttachment(vedleggOrienteringOmRettigheterOgPlikterUfoere, orienteringOmRettigheterUfoere)
-        includeAttachment(createVedleggOpplysningerBruktIBeregningUT(
-            skalViseMinsteytelse = false,
-            skalViseBarnetillegg = true,
-        ), opplysningerBruktIBeregningUT)
+        includeAttachment(
+            createVedleggOpplysningerBruktIBeregningUT(
+                skalViseMinsteytelse = false,
+                skalViseBarnetillegg = true,
+            ), opplysningerBruktIBeregningUT
+        )
     }
 }
 
