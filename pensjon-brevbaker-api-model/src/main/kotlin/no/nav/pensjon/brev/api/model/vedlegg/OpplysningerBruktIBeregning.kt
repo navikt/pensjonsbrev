@@ -10,6 +10,7 @@ data class OpplysningerBruktIBeregningUTDto(
     val barnetilleggGjeldende: BarnetilleggGjeldende?,
     val beregnetUTPerManedGjeldende: BeregnetUTPerManedGjeldende,
     val grunnbeloep: Kroner,
+    val fraOgMedDatoErNesteAar: Boolean,
     val inntektEtterUfoereGjeldende_beloepIEU: Kroner,
     val inntektFoerUfoereGjeldende: InntektFoerUfoereGjeldende,
     val inntektsAvkortingGjeldende: InntektsAvkortingGjeldende,
@@ -36,6 +37,7 @@ data class OpplysningerBruktIBeregningUTDto(
         data class Saerkullsbarn(
             val avkortningsbeloepAar: Kroner,
             val beloepNetto: Kroner,
+            val beloepBrutto: Kroner,
             val beloepAarNetto: Kroner,
             val beloepAarBrutto: Kroner,
             val erRedusertMotinntekt: Boolean,
@@ -46,11 +48,11 @@ data class OpplysningerBruktIBeregningUTDto(
             val inntektOverFribeloep: Kroner,
             val inntektstak: Kroner,
             val justeringsbeloepAar: Kroner,
-            val virkdatoErNesteAar: Boolean,
         )
         data class Fellesbarn(
             val avkortningsbeloepAar: Kroner,
             val beloepNetto: Kroner,
+            val beloepBrutto: Kroner,
             val beloepAarNetto: Kroner,
             val beloepAarBrutto: Kroner,
             val beloepFratrukketAnnenForeldersInntekt: Kroner,
@@ -63,7 +65,6 @@ data class OpplysningerBruktIBeregningUTDto(
             val inntektOverFribeloep: Kroner,
             val inntektstak: Kroner,
             val justeringsbeloepAar: Kroner,
-            val virkdatoErNesteAar: Boolean,
         )
     }
 

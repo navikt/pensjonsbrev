@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.template.dsl.expression
 
+import no.nav.pensjon.brev.api.model.Kroner
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.expression.*
 
@@ -19,6 +20,12 @@ fun <T> Expression<Collection<T>>.isEmpty(): Expression<Boolean> =
 
 fun <T> Expression<Collection<T>>.size(): Expression<Int> =
     Expression.UnaryInvoke(value = this, operation = UnaryOperation.SizeOf)
+
+fun Expression<Int>.absoluteValue(): Expression<Int> =
+    Expression.UnaryInvoke(value = this, operation = UnaryOperation.AbsoluteValue)
+
+fun Expression<Kroner>.absoluteKronerValue(): Expression<Kroner> =
+    Expression.UnaryInvoke(value = this, operation = UnaryOperation.AbsoluteValueKroner)
 
 fun <T> Expression<Collection<T>>.isNotEmpty(): Expression<Boolean> =
     not(this.isEmpty())

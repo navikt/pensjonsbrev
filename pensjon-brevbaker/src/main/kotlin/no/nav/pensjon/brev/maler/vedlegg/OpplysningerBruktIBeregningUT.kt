@@ -8,6 +8,7 @@ import no.nav.pensjon.brev.api.model.vedlegg.InntektsAvkortingGjeldendeSelectors
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDto
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.barnetilleggGjeldende
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.beregnetUTPerManedGjeldende
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.fraOgMedDatoErNesteAar
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.inntektEtterUfoereGjeldende_beloepIEU
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.inntektFoerUfoereGjeldende
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.inntektsAvkortingGjeldende
@@ -30,8 +31,7 @@ import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.dsl.textExpr
 
-
-val vedleggOpplysningerBruktIBeregningUT =
+fun createVedleggOpplysningerBruktIBeregningUT(skalViseMinsteytelse: Boolean, skalViseBarnetillegg: Boolean) =
     createAttachment<LangBokmalNynorskEnglish, OpplysningerBruktIBeregningUTDto>(
         title = newText(
             Bokmal to "Opplysninger om beregningen",
@@ -67,28 +67,34 @@ val vedleggOpplysningerBruktIBeregningUT =
                 barnetilleggGjeldende = barnetilleggGjeldende,
             )
         )
-        val harMinsteytelseSats = minsteytelseGjeldende_sats.ifNull(0.0).greaterThan(0.0)
-        // TODO send med info fra brev-malen om deler av vedlegget skal vises eller ikke.
-        showIf(harMinsteytelseSats){
-            includePhrase(OpplysningerOmMinstetillegg(
-                minsteytelseGjeldendeSats = minsteytelseGjeldende_sats,
-                ungUfoerGjeldende_erUnder20Aar = ungUfoerGjeldende_erUnder20Aar,
-                ufoeretrygdGjeldende = ufoeretrygdGjeldende,
-                inntektFoerUfoereGjeldende = inntektFoerUfoereGjeldende,
-                inntektsgrenseErUnderTak = inntektsgrenseErUnderTak,
-            ))
+        if(skalViseMinsteytelse) {
+            val harMinsteytelseSats = minsteytelseGjeldende_sats.ifNull(0.0).greaterThan(0.0)
+            showIf(harMinsteytelseSats) {
+                includePhrase(
+                    OpplysningerOmMinstetillegg(
+                        minsteytelseGjeldendeSats = minsteytelseGjeldende_sats,
+                        ungUfoerGjeldende_erUnder20Aar = ungUfoerGjeldende_erUnder20Aar,
+                        ufoeretrygdGjeldende = ufoeretrygdGjeldende,
+                        inntektFoerUfoereGjeldende = inntektFoerUfoereGjeldende,
+                        inntektsgrenseErUnderTak = inntektsgrenseErUnderTak,
+                    )
+                )
+            }
         }
 
-        ifNotNull(barnetilleggGjeldende) { barnetillegg ->
-            includePhrase(
-                OpplysningerOmBarnetillegg(
-                    barnetillegg = barnetillegg,
-                    sivilstand = sivilstand,
-                    anvendtTrygdetid = trygdetidsdetaljerGjeldende.anvendtTT,
-                    harYrkesskade = yrkesskadeGjeldende.notNull(),
-                    kravAarsak = kravAarsak,
+        if(skalViseBarnetillegg) {
+            ifNotNull(barnetilleggGjeldende) { barnetillegg ->
+                includePhrase(
+                    OpplysningerOmBarnetillegg(
+                        barnetillegg = barnetillegg,
+                        sivilstand = sivilstand,
+                        anvendtTrygdetid = trygdetidsdetaljerGjeldende.anvendtTT,
+                        harYrkesskade = yrkesskadeGjeldende.notNull(),
+                        kravAarsak = kravAarsak,
+                        fraOgMedDatoErNesteAar = fraOgMedDatoErNesteAar,
+                    )
                 )
-            )
+            }
         }
     }
 

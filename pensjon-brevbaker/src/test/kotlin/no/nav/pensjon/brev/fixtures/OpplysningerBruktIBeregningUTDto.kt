@@ -23,6 +23,7 @@ fun createOpplysningerBruktIBeregningUTDto() =
         ungUfoerGjeldende_erUnder20Aar = false,
         yrkesskadeGjeldende = Fixtures.create(),
         kravAarsak = KravAarsak.ENDRET_INNTEKT,
+        fraOgMedDatoErNesteAar = false
     )
 
 fun createOpplysningerBruktIBeregningUTDtoBarnetilleggGjeldende() =
@@ -35,9 +36,10 @@ fun createOpplysningerBruktIBeregningUTDtoBarnetilleggGjeldende() =
 fun createOpplysningerBruktIBeregningUTDtoBarnetilleggGjeldendeFellesbarn() =
     OpplysningerBruktIBeregningUTDto.BarnetilleggGjeldende.Fellesbarn(
         avkortningsbeloepAar = Kroner(40000),
-        beloepNetto = Kroner(6000),
-        beloepAarNetto = Kroner(60000),
-        beloepAarBrutto = Kroner(25000),
+        beloepNetto = Kroner(10000),
+        beloepBrutto = Kroner(20000),
+        beloepAarNetto = Kroner(120000),
+        beloepAarBrutto = Kroner(240000),
         beloepFratrukketAnnenForeldersInntekt = Kroner(35000),
         erRedusertMotinntekt = true,
         fribeloep = Kroner(20000),
@@ -47,16 +49,16 @@ fun createOpplysningerBruktIBeregningUTDtoBarnetilleggGjeldendeFellesbarn() =
         inntektBruktIAvkortning = Kroner(50000),
         inntektOverFribeloep = Kroner(25000),
         inntektstak = Kroner(200000),
-        justeringsbeloepAar = Kroner(0),
-        virkdatoErNesteAar = true,
+        justeringsbeloepAar = Kroner(120000),
     )
 
 fun createOpplysningerBruktIBeregningUTDtoBarnetilleggGjeldendeSaerkullsbarn() =
     OpplysningerBruktIBeregningUTDto.BarnetilleggGjeldende.Saerkullsbarn(
         avkortningsbeloepAar = Kroner(5000),
-        beloepNetto = Kroner(20000),
-        beloepAarNetto = Kroner(60000),
-        beloepAarBrutto = Kroner(0),
+        beloepNetto = Kroner(10000),
+        beloepBrutto = Kroner(20000),
+        beloepAarNetto = Kroner(120000),
+        beloepAarBrutto = Kroner(240000),
         erRedusertMotinntekt = true,
         fribeloep = Kroner(35000),
         fribeloepEllerInntektErPeriodisert = false,
@@ -65,7 +67,6 @@ fun createOpplysningerBruktIBeregningUTDtoBarnetilleggGjeldendeSaerkullsbarn() =
         inntektOverFribeloep = Kroner(40000),
         inntektstak = Kroner(220000),
         justeringsbeloepAar = Kroner(15000),
-        virkdatoErNesteAar = true,
     )
 
 fun createOpplysningerBruktIBeregningUTDtoBeregnetUTPerManedGjeldende() =

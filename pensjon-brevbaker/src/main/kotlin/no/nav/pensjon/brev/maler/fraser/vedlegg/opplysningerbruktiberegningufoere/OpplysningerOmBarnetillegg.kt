@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningufoe
 
 import no.nav.pensjon.brev.api.model.KravAarsak
 import no.nav.pensjon.brev.api.model.Kroner
+import no.nav.pensjon.brev.api.model.KronerSelectors.value
 import no.nav.pensjon.brev.api.model.Sivilstand
 import no.nav.pensjon.brev.api.model.vedlegg.BarnetilleggGjeldendeSelectors.fellesbarn_safe
 import no.nav.pensjon.brev.api.model.vedlegg.BarnetilleggGjeldendeSelectors.saerkullsbarn_safe
@@ -9,6 +10,7 @@ import no.nav.pensjon.brev.api.model.vedlegg.FellesbarnSelectors.avkortningsbelo
 import no.nav.pensjon.brev.api.model.vedlegg.FellesbarnSelectors.avkortningsbeloepAar_safe
 import no.nav.pensjon.brev.api.model.vedlegg.FellesbarnSelectors.beloepAarBrutto
 import no.nav.pensjon.brev.api.model.vedlegg.FellesbarnSelectors.beloepAarNetto
+import no.nav.pensjon.brev.api.model.vedlegg.FellesbarnSelectors.beloepBrutto
 import no.nav.pensjon.brev.api.model.vedlegg.FellesbarnSelectors.beloepNetto
 import no.nav.pensjon.brev.api.model.vedlegg.FellesbarnSelectors.erRedusertMotinntekt
 import no.nav.pensjon.brev.api.model.vedlegg.FellesbarnSelectors.fribeloep
@@ -19,12 +21,12 @@ import no.nav.pensjon.brev.api.model.vedlegg.FellesbarnSelectors.inntektOverFrib
 import no.nav.pensjon.brev.api.model.vedlegg.FellesbarnSelectors.inntektstak
 import no.nav.pensjon.brev.api.model.vedlegg.FellesbarnSelectors.justeringsbeloepAar
 import no.nav.pensjon.brev.api.model.vedlegg.FellesbarnSelectors.justeringsbeloepAar_safe
-import no.nav.pensjon.brev.api.model.vedlegg.FellesbarnSelectors.virkdatoErNesteAar
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDto
 import no.nav.pensjon.brev.api.model.vedlegg.SaerkullsbarnSelectors.avkortningsbeloepAar
 import no.nav.pensjon.brev.api.model.vedlegg.SaerkullsbarnSelectors.avkortningsbeloepAar_safe
 import no.nav.pensjon.brev.api.model.vedlegg.SaerkullsbarnSelectors.beloepAarBrutto
 import no.nav.pensjon.brev.api.model.vedlegg.SaerkullsbarnSelectors.beloepAarNetto
+import no.nav.pensjon.brev.api.model.vedlegg.SaerkullsbarnSelectors.beloepBrutto
 import no.nav.pensjon.brev.api.model.vedlegg.SaerkullsbarnSelectors.beloepNetto
 import no.nav.pensjon.brev.api.model.vedlegg.SaerkullsbarnSelectors.erRedusertMotinntekt
 import no.nav.pensjon.brev.api.model.vedlegg.SaerkullsbarnSelectors.erRedusertMotinntekt_safe
@@ -37,10 +39,10 @@ import no.nav.pensjon.brev.api.model.vedlegg.SaerkullsbarnSelectors.inntektOverF
 import no.nav.pensjon.brev.api.model.vedlegg.SaerkullsbarnSelectors.inntektstak
 import no.nav.pensjon.brev.api.model.vedlegg.SaerkullsbarnSelectors.justeringsbeloepAar
 import no.nav.pensjon.brev.api.model.vedlegg.SaerkullsbarnSelectors.justeringsbeloepAar_safe
-import no.nav.pensjon.brev.api.model.vedlegg.SaerkullsbarnSelectors.virkdatoErNesteAar
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Element
+import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.*
@@ -56,6 +58,7 @@ data class OpplysningerOmBarnetillegg(
     val anvendtTrygdetid: Expression<Int>,
     val harYrkesskade: Expression<Boolean>,
     val kravAarsak: Expression<KravAarsak>,
+    val fraOgMedDatoErNesteAar: Expression<Boolean>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         val harAnvendtTrygdetidUnder40 = anvendtTrygdetid.lessThan(40)
@@ -149,12 +152,10 @@ data class OpplysningerOmBarnetillegg(
             includePhrase(
                 PeriodisertInntektOverFribeloepEttTillegg(
                     inntektEllerFribeloepErPeriodisert = inntektEllerFribeloepErPeriodisert,
-                    avkortningsbeloepAarSaerkull = barnetillegg.saerkullsbarn_safe.avkortningsbeloepAar_safe.ifNull(
-                        Kroner(0)
-                    ),
-                    avkortningsbeloepAarFelles = barnetillegg.fellesbarn_safe.avkortningsbeloepAar_safe.ifNull(
-                        Kroner(0)
-                    ),
+                    avkortningsbeloepAarSaerkull = barnetillegg.saerkullsbarn_safe.avkortningsbeloepAar_safe
+                        .ifNull(Kroner(0)),
+                    avkortningsbeloepAarFelles = barnetillegg.fellesbarn_safe.avkortningsbeloepAar_safe
+                        .ifNull(Kroner(0)),
                     harJusteringsbeloep = harJusteringsbeloep,
                 )
             )
@@ -171,11 +172,11 @@ data class OpplysningerOmBarnetillegg(
                 title1 {
                     textExpr(
                         Bokmal to "Reduksjon av barnetillegg for fellesbarn før skatt ".expr()
-                                + ifElse(fellesTillegg.virkdatoErNesteAar, "for neste år", "i år"),
+                                + ifElse(fraOgMedDatoErNesteAar, "for neste år", "i år"),
                         Nynorsk to "Reduksjon av barnetillegg for fellesbarn før skatt ".expr()
-                                + ifElse(fellesTillegg.virkdatoErNesteAar, "for neste år", "i år"),
+                                + ifElse(fraOgMedDatoErNesteAar, "for neste år", "i år"),
                         English to "Reduction of child supplement payment for joint children before tax, ".expr()
-                                + ifElse(fellesTillegg.virkdatoErNesteAar, "for next year", "for this year"),
+                                + ifElse(fraOgMedDatoErNesteAar, "for next year", "for this year"),
                     )
                 }
                 includePhrase(
@@ -190,21 +191,22 @@ data class OpplysningerOmBarnetillegg(
                         fellesTillegg.inntektstak,
                         fellesTillegg.justeringsbeloepAar,
                         fellesTillegg.beloepNetto,
+                        fellesTillegg.beloepBrutto,
                     )
                 )
 
                 showIf(fellesTillegg.beloepNetto.greaterThan(0)) {
                     includePhrase(
                         MaanedligTilleggFellesbarn(
-                            beloep_barnetilleggFBGjeldende = fellesTillegg.beloepNetto,
+                            barnetilleggFellesbarn = fellesTillegg.beloepNetto,
                             harFlereBarn = fellesTillegg.harFlereBarn,
                         )
                     )
                 }.orShow {
                     includePhrase(
                         FaaIkkeUtbetaltTilleggFellesbarn(
-                            beloep_barnetilleggFBGjeldende = fellesTillegg.beloepNetto,
-                            justeringsbeloepAar_barnetilleggFBGjeldende = fellesTillegg.justeringsbeloepAar,
+                            nettoBeloepFellesbarn = fellesTillegg.beloepNetto,
+                            justeringsbeloepForAarFellesBarn = fellesTillegg.justeringsbeloepAar,
                             harFlereBarn = fellesTillegg.harFlereBarn,
                         )
                     )
@@ -217,11 +219,11 @@ data class OpplysningerOmBarnetillegg(
                 title1 {
                     textExpr(
                         Bokmal to "Reduksjon av barnetillegg for særkullsbarn før skatt ".expr()
-                                + ifElse(saerkullTillegg.virkdatoErNesteAar, "for neste år", "i år"),
+                                + ifElse(fraOgMedDatoErNesteAar, "for neste år", "i år"),
                         Nynorsk to "Reduksjon av barnetillegg for særkullsbarn før skatt ".expr()
-                                + ifElse(saerkullTillegg.virkdatoErNesteAar, "for neste år", "i år"),
+                                + ifElse(fraOgMedDatoErNesteAar, "for neste år", "i år"),
                         English to "Reduction of child supplement payment for children from a previous relationship before tax, ".expr()
-                                + ifElse(saerkullTillegg.virkdatoErNesteAar, "for next year", "for this year"),
+                                + ifElse(fraOgMedDatoErNesteAar, "for next year", "for this year"),
                     )
                 }
                 includePhrase(
@@ -236,6 +238,7 @@ data class OpplysningerOmBarnetillegg(
                         saerkullTillegg.inntektstak,
                         saerkullTillegg.justeringsbeloepAar,
                         saerkullTillegg.beloepNetto,
+                        saerkullTillegg.beloepBrutto,
                     )
                 )
 
@@ -267,6 +270,7 @@ data class OpplysningerOmBarnetillegg(
         val inntektstak: Expression<Kroner>,
         val justeringsbeloepAar: Expression<Kroner>,
         val beloepNetto: Expression<Kroner>,
+        val beloepBrutto: Expression<Kroner>,
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             val faarUtbetaltTillegg = beloepNetto.greaterThan(0)
@@ -275,24 +279,18 @@ data class OpplysningerOmBarnetillegg(
             table(
                 header = {
                     column(columnSpan = 2) {
-                        text(
-                            Bokmal to "Beskrivelse",
-                            Nynorsk to "Beskrivelse",
-                            English to "Description",
-                            Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
-                        )
                     }
                     column(alignment = Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT) {
                         text(
                             Bokmal to "Beløp",
                             Nynorsk to "Beløp",
                             English to "Amount",
-                            Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
+                            BOLD
                         )
                     }
                 }
             ) {
-                showIf(faarUtbetaltTillegg and harJusteringsbeloep) {
+                showIf(beloepNetto.notEqualTo(beloepBrutto)) {
                     row {
                         cell {
                             text(
@@ -306,59 +304,20 @@ data class OpplysningerOmBarnetillegg(
                         }
                     }
                 }
-                showIf(erRedusertMotinntekt) {
+
+                showIf(avkortningsbeloepAar.greaterThan(0)) {
                     row {
                         cell {
                             text(
-                                Bokmal to "Samlet inntekt brukt i fastsettelse av barnetillegget er ",
-                                Nynorsk to "Samla inntekt brukt i fastsetjinga av barnetillegget er ",
-                                English to "Total income applied in calculation of reduction in child supplement is "
+                                Bokmal to "- 50 prosent av inntekt som overstiger fribeløpet ",
+                                Nynorsk to "- 50 prosent av inntekta som overstig fribeløpet ",
+                                English to "- 50 percent of income exceeding the allowance amount "
                             )
-                        }
-                        cell {
-                            includePhrase(Felles.KronerText(inntektBruktIAvkortning))
-                        }
-                    }
-                }
-                showIf(faarUtbetaltTillegg and harJusteringsbeloep) {
-                    row {
-                        cell {
+                            text(Bokmal to "*", Nynorsk to "*", English to "*", BOLD)
                             text(
-                                Bokmal to "Fribeløp brukt i fastsettelsen av barnetillegget er",
-                                Nynorsk to "Fribeløp brukt i fastsetjinga av barnetillegget er",
-                                English to "Exemption amount applied in calculation of reduction in child supplement is",
-                            )
-                        }
-                        cell {
-                            includePhrase(Felles.KronerText(fribeloep))
-                        }
-                    }
-                }
-                showIf(harNettoBeloep or (not(harNettoBeloep) and harJusteringsbeloep)) {
-                    row {
-                        cell {
-                            text(
-                                Bokmal to "Inntekt over fribeløpet er",
-                                Nynorsk to "Inntekt over fribeløpet er",
-                                English to "Income exceeding the exemption amount is",
-                            )
-                        }
-                        cell {
-                            includePhrase(Felles.KronerText(inntektOverFribeloep))
-                        }
-                    }
-                }
-                showIf(
-                    harNettoBeloep
-                            and harJusteringsbeloep
-                            and avkortningsbeloepAar.greaterThan(0)
-                ) {
-                    row {
-                        cell {
-                            text( // TODO finn en fornuftig måte å vise regnestykket på
-                                Bokmal to "- 50 prosent av inntekt som overstiger fribeløpet (oppgitt som et årlig beløep)",
-                                Nynorsk to "- 50 prosent av inntekta som overstig fribeløpet (oppgitt som eit årleg beløp)",
-                                English to "- 50 percent of income exceeding the allowance amount (calculated to an annual amount)"
+                                Bokmal to " (oppgitt som et årlig beløep)",
+                                Nynorsk to " (oppgitt som eit årleg beløp)",
+                                English to " (calculated to an annual amount)"
                             )
                         }
                         cell {
@@ -366,32 +325,34 @@ data class OpplysningerOmBarnetillegg(
                         }
                     }
                 }
+
                 showIf(harJusteringsbeloep) {
+                    val positivt = justeringsbeloepAar.value.greaterThan(0)
                     row {
                         cell {
-                            text(
-                                Bokmal to "+ Beløp som er brukt for å justere reduksjonen av barnetillegget",
-                                Nynorsk to "+ Beløp som er brukt for å justere reduksjonen av barnetillegget",
-                                English to "+ Amount which is used to adjust the reduction of child supplement"
+                            textExpr(
+                                Bokmal to ifElse(positivt, "+", "-") +
+                                        " Beløp som er brukt for å justere reduksjonen av barnetillegget",
+                                Nynorsk to ifElse(positivt, "+", "-") +
+                                        " Beløp som er brukt for å justere reduksjonen av barnetillegget",
+                                English to ifElse(positivt, "+", "-") +
+                                        " Amount which is used to adjust the reduction of child supplement",
                             )
                         }
                         cell {
-                            includePhrase(Felles.KronerText(justeringsbeloepAar))
+                            includePhrase(Felles.KronerText(justeringsbeloepAar.absoluteKronerValue()))
                         }
                     }
                 }
-                showIf(
-                    harNettoBeloep or (beloepNetto.equalTo(0) and beloepAarNetto.notEqualTo(
-                        0
-                    ))
-                ) {
+
+                showIf(avkortningsbeloepAar.greaterThan(0) or harJusteringsbeloep) {
                     row {
                         cell {
                             text(
                                 Bokmal to "= Årlig barnetillegg etter reduksjon ut fra inntekt",
                                 Nynorsk to "= Årleg barnetillegg etter reduksjon ut frå inntekt",
                                 English to "= Yearly child supplement after income reduction",
-                                Element.OutlineContent.ParagraphContent.Text.FontType.BOLD,
+                                BOLD,
                             )
                         }
                         cell {
@@ -399,9 +360,8 @@ data class OpplysningerOmBarnetillegg(
                         }
                     }
                 }
-                showIf(
-                    faarUtbetaltTillegg or beloepNetto.equalTo(0)
-                ) {
+
+                showIf(faarUtbetaltTillegg or not(harNettoBeloep)) {
                     row {
                         cell {
                             text(
@@ -415,9 +375,8 @@ data class OpplysningerOmBarnetillegg(
                         }
                     }
                 }
-                showIf(
-                    beloepNetto.equalTo(0) and justeringsbeloepAar.equalTo(0)
-                ) {
+
+                showIf(not(harNettoBeloep) and justeringsbeloepAar.equalTo(0)) {
                     row {
                         cell {
                             text(
@@ -430,6 +389,46 @@ data class OpplysningerOmBarnetillegg(
                             includePhrase(Felles.KronerText(inntektstak))
                         }
                     }
+                }
+            }
+
+            paragraph {
+                text(Bokmal to "*)", Nynorsk to "*)", English to "*)", BOLD)
+                textExpr(
+                    Bokmal to "Samlet inntekt brukt i fastsettelse av barnetillegget er ".expr() +
+                            inntektBruktIAvkortning.format() + " kroner",
+                    Nynorsk to "Samla inntekt brukt i fastsetjinga av barnetillegget er ".expr() +
+                            inntektBruktIAvkortning.format() + " kroner",
+                    English to "Total income applied in calculation of reduction in child supplement is NOK".expr() +
+                            inntektBruktIAvkortning.format(),
+                )
+            }
+
+            showIf(faarUtbetaltTillegg and harJusteringsbeloep) {
+                paragraph {
+                    text(Bokmal to "*)", Nynorsk to "*)", English to "*)", BOLD)
+                    textExpr(
+                        Bokmal to "Fribeløp brukt i fastsettelsen av barnetillegget er ".expr() +
+                                fribeloep.format() + " kroner",
+                        Nynorsk to "Fribeløp brukt i fastsetjinga av barnetillegget er ".expr() +
+                                fribeloep.format() + " kroner",
+                        English to "Exemption amount applied in calculation of reduction in child supplement is NOK ".expr() +
+                                fribeloep.format(),
+                    )
+                }
+            }
+
+            showIf(harNettoBeloep or (not(harNettoBeloep) and harJusteringsbeloep)) {
+                paragraph {
+                    text(Bokmal to "*)", Nynorsk to "*)", English to "*)", BOLD)
+                    textExpr(
+                        Bokmal to "Inntekt over fribeløpet er ".expr() +
+                                inntektOverFribeloep.format() + " kroner",
+                        Nynorsk to "Inntekt over fribeløpet er ".expr() +
+                                inntektOverFribeloep.format() + " kroner",
+                        English to "Income exceeding the exemption amount is NOK ".expr() +
+                                inntektOverFribeloep.format(),
+                    )
                 }
             }
         }
@@ -597,14 +596,14 @@ data class OpplysningerOmBarnetillegg(
 
 
     data class VedleggBeregnUTredusBTSBPgaInntekt(
-        val beloep_barnetilleggSBGjeldende: Expression<Kroner>,
+        val saerkullTilleggNetto: Expression<Kroner>,
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
             paragraph {
                 textExpr(
-                    Bokmal to "Du vil få utbetalt ".expr() + beloep_barnetilleggSBGjeldende.format() + " kroner i måneden før skatt i barnetillegg.",
-                    Nynorsk to "Du vil få utbetalt ".expr() + beloep_barnetilleggSBGjeldende.format() + " kroner i månaden før skatt i barnetillegg.",
-                    English to "You will receive a monthly child supplement payment of NOK ".expr() + beloep_barnetilleggSBGjeldende.format() + " before tax."
+                    Bokmal to "Du vil få utbetalt ".expr() + saerkullTilleggNetto.format() + " kroner i måneden før skatt i barnetillegg.",
+                    Nynorsk to "Du vil få utbetalt ".expr() + saerkullTilleggNetto.format() + " kroner i månaden før skatt i barnetillegg.",
+                    English to "You will receive a monthly child supplement payment of NOK ".expr() + saerkullTilleggNetto.format() + " before tax."
                 )
             }
     }
@@ -633,19 +632,19 @@ data class OpplysningerOmBarnetillegg(
 
     // TBU607V
     data class MaanedligTilleggFellesbarn(
-        val beloep_barnetilleggFBGjeldende: Expression<Kroner>,
+        val barnetilleggFellesbarn: Expression<Kroner>,
         val harFlereBarn: Expression<Boolean>,
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             paragraph {
                 textExpr(
-                    Bokmal to "Du vil få utbetalt ".expr() + beloep_barnetilleggFBGjeldende.format() + " kroner i måneden før skatt i barnetillegg for ".expr() +
+                    Bokmal to "Du vil få utbetalt ".expr() + barnetilleggFellesbarn.format() + " kroner i måneden før skatt i barnetillegg for ".expr() +
                             ifElse(harFlereBarn, "barna", "barnet") +
                             " som bor med begge sine foreldre".expr(),
-                    Nynorsk to "Du vil få utbetalt ".expr() + beloep_barnetilleggFBGjeldende.format() + " kroner i månaden før skatt i barnetillegg for ".expr() +
+                    Nynorsk to "Du vil få utbetalt ".expr() + barnetilleggFellesbarn.format() + " kroner i månaden før skatt i barnetillegg for ".expr() +
                             ifElse(harFlereBarn, "barna", "barnet") +
                             " som bur saman med begge foreldra sine.".expr(),
-                    English to "You will receive a monthly child supplement payment of NOK ".expr() + beloep_barnetilleggFBGjeldende.format() + " for the ".expr() +
+                    English to "You will receive a monthly child supplement payment of NOK ".expr() + barnetilleggFellesbarn.format() + " for the ".expr() +
                             ifElse(harFlereBarn, "children who live", "child who lives") +
                             " together with both parents.".expr()
                 )
@@ -655,14 +654,14 @@ data class OpplysningerOmBarnetillegg(
 
     // TBU608V
     data class FaaIkkeUtbetaltTilleggFellesbarn(
-        val beloep_barnetilleggFBGjeldende: Expression<Kroner>,
+        val nettoBeloepFellesbarn: Expression<Kroner>,
         val harFlereBarn: Expression<Boolean>,
-        val justeringsbeloepAar_barnetilleggFBGjeldende: Expression<Kroner>
+        val justeringsbeloepForAarFellesBarn: Expression<Kroner>
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
 
             showIf(
-                justeringsbeloepAar_barnetilleggFBGjeldende.equalTo(0)
+                justeringsbeloepForAarFellesBarn.equalTo(0)
             ) {
                 paragraph {
                     textExpr(
@@ -679,7 +678,7 @@ data class OpplysningerOmBarnetillegg(
                 }
             }
             showIf(
-                justeringsbeloepAar_barnetilleggFBGjeldende.notEqualTo(0) and beloep_barnetilleggFBGjeldende.equalTo(0)
+                justeringsbeloepForAarFellesBarn.notEqualTo(0) and nettoBeloepFellesbarn.equalTo(0)
             ) {
                 paragraph {
                     text(

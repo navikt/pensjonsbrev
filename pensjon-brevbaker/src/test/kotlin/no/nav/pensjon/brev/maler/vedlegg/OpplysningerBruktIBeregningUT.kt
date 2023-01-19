@@ -45,14 +45,14 @@ class OpplysningerBruktIBeregningUTTest {
             }
 
             includeAttachment(
-                vedleggOpplysningerBruktIBeregningUT,
+                createVedleggOpplysningerBruktIBeregningUT(skalViseMinsteytelse = true, skalViseBarnetillegg = true),
                 Fixtures.create(OpplysningerBruktIBeregningUTDto::class).expr()
             )
         }
         Letter(
             template,
             Unit,
-            Language.English,
+            Language.Bokmal,
             Fixtures.fellesAuto
         )
             .let { PensjonLatexRenderer.render(it) }

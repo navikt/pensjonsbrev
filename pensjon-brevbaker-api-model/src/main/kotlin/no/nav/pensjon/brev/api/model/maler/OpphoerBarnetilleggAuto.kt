@@ -37,7 +37,7 @@ data class BarnetilleggFellesbarn(
     val beloepNetto: Kroner,
     val fribeloep: Kroner,
     val harFradrag: Boolean,
-    val harFratrukketBeloepFraAnnenForelder: Boolean, //todo hør med ingrid om navn. Hva betyr dette?
+    val harFratrukketBeloepFraAnnenForelder: Boolean,
     val harJusteringsbeloep: Boolean,
     val inntektAnnenForelder: Kroner,
     val inntektBruktIAvkortning: Kroner,
