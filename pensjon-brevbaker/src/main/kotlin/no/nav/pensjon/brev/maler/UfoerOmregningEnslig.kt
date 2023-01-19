@@ -178,15 +178,17 @@ object UfoerOmregningEnslig : VedtaksbrevTemplate<UfoerOmregningEnsligDto> {
                     includePhrase(InfoFBTilSB_001(barnetilleggSaerkullsbarnVedVirk.barnOverfoertTilSaerkullsbarn))
 
                     showIf(
-                        barnetilleggSaerkullsbarnVedVirk.erRedusertMotInntekt and harbarnSomTidligerVarSaerkullsbarn and not(
-                            inntektFoerUfoerhetVedVirk.erSannsynligEndret
-                        ) and not(harMinsteytelseVedVirk)
+                        barnetilleggSaerkullsbarnVedVirk.erRedusertMotInntekt
+                                and harbarnSomTidligerVarSaerkullsbarn
+                                and not(inntektFoerUfoerhetVedVirk.erSannsynligEndret)
+                                and not(harMinsteytelseVedVirk)
                     ) {
                         includePhrase(InfoTidligereSB_001(barnetilleggSaerkullsbarnVedVirk.barnTidligereSaerkullsbarn))
                     }
 
                     showIf(
-                        harbarnSomTidligerVarSaerkullsbarn and (inntektFoerUfoerhetVedVirk.erSannsynligEndret or harMinsteytelseVedVirk) and barnetilleggSaerkullsbarnVedVirk.erRedusertMotInntekt
+                        harbarnSomTidligerVarSaerkullsbarn and (inntektFoerUfoerhetVedVirk.erSannsynligEndret or harMinsteytelseVedVirk)
+                                and barnetilleggSaerkullsbarnVedVirk.erRedusertMotInntekt
                     ) {
                         includePhrase(InfoTidligereSBOgEndretUT_001(barnetilleggSaerkullsbarnVedVirk.barnTidligereSaerkullsbarn))
                     }
@@ -297,17 +299,21 @@ object UfoerOmregningEnslig : VedtaksbrevTemplate<UfoerOmregningEnsligDto> {
             }
 
             showIf(
-                harUfoereMaanedligBeloepVedvirk and not(harMinsteytelseVedVirk) and not(inntektFoerUfoerhetVedVirk.erSannsynligEndret) and not(
-                    avdoed.ektefelletilleggOpphoert
-                ) and not(harBarnOverfoertTilSaerkullsbarn)
+                harUfoereMaanedligBeloepVedvirk
+                        and not(harMinsteytelseVedVirk)
+                        and not(inntektFoerUfoerhetVedVirk.erSannsynligEndret)
+                        and not(avdoed.ektefelletilleggOpphoert)
+                        and not(harBarnOverfoertTilSaerkullsbarn)
             ) {
                 includePhrase(VirkTdsPktUTIkkeEndring_001(krav_virkningsDatoFraOgMed))
             }
 
             showIf(
-                harUfoereMaanedligBeloepVedvirk and not(harMinsteytelseVedVirk) and not(inntektFoerUfoerhetVedVirk.erSannsynligEndret) and not(
-                    avdoed.ektefelletilleggOpphoert
-                ) and harBarnOverfoertTilSaerkullsbarn
+                harUfoereMaanedligBeloepVedvirk
+                        and not(harMinsteytelseVedVirk)
+                        and not(inntektFoerUfoerhetVedVirk.erSannsynligEndret)
+                        and not(avdoed.ektefelletilleggOpphoert)
+                        and harBarnOverfoertTilSaerkullsbarn
             ) {
                 includePhrase(VirkTdsPktUTBTOmregn_001(krav_virkningsDatoFraOgMed))
             }
