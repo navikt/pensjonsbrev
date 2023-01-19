@@ -558,15 +558,7 @@ object Barnetillegg {
         }
     }
 
-    // TODO avklar når / om vi skal bruke justeringsbeløp for å filtrere ut frasen
-    // i extream sjekkes det at justeringsbeløp er lik 0 for særkullsbarn i TBU1286.1
-    // , men det sjekkes ikke mot justeringsbeløp for felles barn i TBU1286.2
-    // i malen sjekkes det om justeringsbeløp er lik 0 for særkullsbarn i TBU1286.2
-    // skal vi følge malen eller extream? skal eksisterende bruk av frasen i UngUfoerAuto ha samme filteret?
-
-    /**
-     * TBU1286.1, TBU1286.2
-     */
+    // TBU1286.1, TBU1286.2
     data class BarnetilleggIkkeUtbetalt(
         val fellesInnvilget: Expression<Boolean>,
         val fellesUtbetalt: Expression<Boolean>,
@@ -646,7 +638,7 @@ object Barnetillegg {
     }
 
 
-    // TBU2490 Barnetilleggene for både særkullsbarn og fellesbarn er innvilget og ingen av dem blir utbetalt
+    // TBU2490
     data class InnvilgetOgIkkeUtbetalt(
         val fellesInnvilget: Expression<Boolean>,
         val fellesUtbetalt: Expression<Boolean>,
