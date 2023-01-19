@@ -37,13 +37,15 @@ data class EndringOpptjeningAutoDto(
         val harInntektEtterUfoere: Boolean,  // IEUInntekt > 0 / Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektsgrense
         val beloepsgrense: Kroner,  // Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Belopsgrense
         val grunnbeloep: Kroner,  // Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Grunnbelop
-        val oieu: Kroner,  // ? Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Oieu
+        val oppjustertInntektEtterUfoere: Kroner,  // ? Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Oieu
         val harBeloepsgrense60000: Boolean,  // Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Belopsgrense = 60000
         val harFullUfoeregrad: Boolean,  // Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegningu_ufoeregrad = 100
         val harDelvisUfoeregrad: Boolean,  // Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegningu_ufoeregrad > 0 < 100
         val inntektstak: Kroner,  // OIFU*0,8  // Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektstak ??
         val kompensasjonsgrad: Int,  //
-        val forventetInntekt: Kroner  //
+        val forventetInntekt: Kroner,  //
+        val oppjustertInntektFoerUfoere: Kroner,  //
+        val oppjustertInntektFoerUfoere80prosent: Kroner,  //
 
         // oifu = OppjustertInntektFoerUfoere
         // oieu = OppjustertInntektEtterUfoere

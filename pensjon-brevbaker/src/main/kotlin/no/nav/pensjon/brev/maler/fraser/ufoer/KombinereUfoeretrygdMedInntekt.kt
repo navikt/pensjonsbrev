@@ -186,9 +186,17 @@ object KombinereUfoeretrygdMedInntekt {
                 paragraph {
                     textExpr(
                         Bokmal to "For deg utgjør kompensasjonsgraden ".expr() + kompensasjonsgrad.format() + " prosent. Det er bare den delen av inntekten din som overstiger ".expr() +
-                                ifElse(inntektsgrenseFaktisk, ifTrue = inntektsgrense.format(), ifFalse = inntektsgrenseNesteAar.format() ) + " kroner, som vi justerer uføretrygden din ut fra. Det betyr at et beløp som tilsvarer ".expr()
+                                ifElse(
+                                    inntektsgrenseFaktisk,
+                                    ifTrue = inntektsgrense.format(),
+                                    ifFalse = inntektsgrenseNesteAar.format()
+                                ) + " kroner, som vi justerer uføretrygden din ut fra. Det betyr at et beløp som tilsvarer ".expr()
                                 + kompensasjonsgrad.format() + " prosent av den inntekten du har over ".expr() +
-                                ifElse(inntektsgrenseFaktisk, ifTrue = inntektsgrense.format(), ifFalse = inntektsgrenseNesteAar.format()) + " kroner trekkes fra uføretrygden din.".expr(),
+                                ifElse(
+                                    inntektsgrenseFaktisk,
+                                    ifTrue = inntektsgrense.format(),
+                                    ifFalse = inntektsgrenseNesteAar.format()
+                                ) + " kroner trekkes fra uføretrygden din.".expr(),
                         Nynorsk to "".expr(),
                         English to "".expr()
                     )
@@ -208,12 +216,62 @@ object KombinereUfoeretrygdMedInntekt {
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
 
-            showIf(utbetalingsgrad.lessThan(ufoeregrad) and forventetInntekt.greaterThan(inntektsgrense) and inntektsgrense.lessThan(inntektstak)) {
-                showIf(utbetalingsgrad.lessThan(ufoeregrad) and forventetInntekt.greaterThan(inntektsgrense) and inntektsgrense.lessThan(inntektstak))  {
+            showIf(
+                utbetalingsgrad.lessThan(ufoeregrad) and forventetInntekt.greaterThan(inntektsgrense) and inntektsgrense.lessThan(
+                    inntektstak
+                )
+            ) {
+                showIf(
+                    utbetalingsgrad.lessThan(ufoeregrad) and forventetInntekt.greaterThan(inntektsgrense) and inntektsgrense.lessThan(
+                        inntektstak
+                    )
+                ) {
                     paragraph {
-                        Du har tidligere meldt fra om en inntekt på <PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_ForventetInntekt> kroner i år.
+                        textExpr(
+                            Bokmal to "".expr(),
+                            Nynorsk to "".expr(),
+                            English to "".expr()
+                        )
+                        //   Du har tidligere meldt fra om en inntekt på <PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_ForventetInntekt> kroner i år.
                     }
                 }
+            }
+        }
+    }
+
+    // TBU2261
+    data class ReduksjonAvInntektUfoere(
+        val utbetalingsgrad: Expression<Int>,
+        val ufoeregrad: Expression<Int>,
+        val inntektsgrense: Expression<Kroner>,
+        val oppjustertInntektFoerUfoere80prosent: Expression<Kroner>,
+
+        ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+            showIf(utbetalingsgrad.lessThan(ufoeregrad) and inntektsgrense.lessThan(oppjustertInntektFoerUfoere80prosent)) {
+                paragraph {
+                    textExpr(
+                        Bokmal to "".expr(),
+                        Nynorsk to "".expr(),
+                        English to "".expr()
+                    )
+                }
+            }
+        }
+    }
+
+    // TBU1210
+    data class BeholderUfoeregraden(
+       val ufoeregrad: Expression<Int>
+
+    ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+            paragraph {
+                textExpr(
+                     Bokmal to "".expr(),
+                    Nynorsk to "".expr(),
+                    English to "".expr()
+                )
             }
         }
     }
