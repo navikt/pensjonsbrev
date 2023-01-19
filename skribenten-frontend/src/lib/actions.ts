@@ -100,6 +100,13 @@ export function bindActionWithCallback(action: Action<any, any[]>, to: CallbackR
  * Combine multiple receivers to one receiver, such that all receivers will receive the update.
  * @param receivers the receivers to combine.
  */
-export function combine<T>(...receivers: Receiver<T>[]): Receiver<T> {
-    return (update: T) => receivers.forEach(r => r(update))
+export function combine<T>(...receivers: Receiver<T>[]): Receiver<T>
+
+/**
+ * Combine multiple {@link BoundAction}s to one BoundAction that will pass the arguments to of them.
+ * @param boundActions the bound actions to combine.
+ */
+export function combine<Args extends any[]>(...boundActions: BoundAction<Args>[]): BoundAction<Args>
+export function combine(...receivers: ((...args: any[]) => void)[]): (...args: any[]) => void {
+    return (...args: any[]) => receivers.forEach(r => r(...args))
 }

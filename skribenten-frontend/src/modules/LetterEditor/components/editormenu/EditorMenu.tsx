@@ -11,8 +11,8 @@ const EditorMenu: FC<EditorMenuProps> = ({switchType}) => {
         <div className={styles.container}>
             <div className={styles.top}/>
             <div className={styles.bottom}>
-                <button type="button">Angre</button>
-                <button type="button">Gjør om</button>
+                <button type="button" disabled={true}>Angre</button>
+                <button type="button" disabled={true}>Gjør om</button>
                 <div className={styles.space}/>
                 <button type="button" onClick={switchType.bind(null, "TITLE1")}>Tittel</button>
                 <button type="button" onClick={switchType.bind(null, "PARAGRAPH")}>Normal</button>

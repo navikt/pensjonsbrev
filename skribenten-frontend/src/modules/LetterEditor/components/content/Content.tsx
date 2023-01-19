@@ -5,15 +5,11 @@ import {AnyBlock} from "../../model"
 import {BlockProps} from "../../BlockProps"
 import EditableText from "../text/EditableText"
 import {SelectionService} from "../../services/SelectionService"
-import {MERGE_TARGET} from "../../actions/blocks"
+import {MergeTarget} from "../../actions/blocks"
 import {combine} from "../../../../lib/actions"
 
 const selectService = new SelectionService()
 
-export type CursorPosition = {
-    contentId: number,
-    startOffset: number,
-}
 type ContentState = never
 
 type ContentRefs = { [nodeId: number]: HTMLElement | undefined | null }
@@ -33,7 +29,6 @@ class Content extends React.Component<BlockProps<AnyBlock>, ContentState> {
             prev.onkeydown = null
         }
 
-        // TODO: Skriver dette over emitchange i ContentEditable?
         if (node != null) {
             // Første node skal ha backspaceHandler og siste node skal ha deleteHandler. Dette kan være samme node.
             if (contentId === 0) {
@@ -79,7 +74,7 @@ class Content extends React.Component<BlockProps<AnyBlock>, ContentState> {
             const range = sel.getRangeAt(0)
             if (range != null && range.startOffset === 0 && range.collapsed) {
                 e.preventDefault()
-                this.props.mergeWith(MERGE_TARGET.PREVIOUS)
+                this.props.mergeWith(MergeTarget.PREVIOUS)
             }
         }
     }
@@ -91,13 +86,13 @@ class Content extends React.Component<BlockProps<AnyBlock>, ContentState> {
             const lastContent = this.props.block.content[this.props.block.content.length - 1]
             if (range != null && range.startOffset >= lastContent.text.length && range.collapsed) {
                 e.preventDefault()
-                this.props.mergeWith(MERGE_TARGET.NEXT)
+                this.props.mergeWith(MergeTarget.NEXT)
             }
         }
     }
 
     render() {
-        const {block, doUnlock, updateContent, splitBlockAtContent} = this.props
+        const {block, doUnlock, updateContent, splitBlockAtContent, onFocus} = this.props
         if (!block.editable) {
             return (
                 <div className={styles.notEditable}>
@@ -118,9 +113,8 @@ class Content extends React.Component<BlockProps<AnyBlock>, ContentState> {
                 </div>
             )
         } else {
-            // TODO: Bruk focus og blur for å vite hvilken block Tittel og Normal knappene skal påvirke.
             return (
-                <div className={styles.content} onClick={this.stealFocusHandler} onFocus={() => console.log("focus: ", block.id)} onBlur={() => console.log("unfocus: ", block.id)}>
+                <div className={styles.content} onClick={this.stealFocusHandler} onFocus={onFocus}>
                     {block.content.map((c, contentId) => {
                             switch (c.type) {
                                 case "LITERAL":

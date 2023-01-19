@@ -112,3 +112,11 @@ export interface RedigerbarTemplateDescription {
     readonly description: TemplateDescription
     readonly modelSpecification: LetterModelSpecification
 }
+
+export type CursorPosition = {
+    contentId: number,
+    startOffset: number,
+}
+export type StealFocus = {
+    [blockId: number]: CursorPosition | undefined
+}

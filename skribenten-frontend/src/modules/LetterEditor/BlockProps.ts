@@ -1,7 +1,6 @@
-import {AnyBlock, TextContent} from "./model"
+import {AnyBlock, CursorPosition, TextContent} from "./model"
 import {BoundAction} from "../../lib/actions"
-import {MERGE_TARGET} from "./actions/blocks"
-import {CursorPosition} from "./components/content/Content"
+import {MergeTarget} from "./actions/blocks"
 
 export type Unlock = BoundAction<[]>
 export type UpdateContent = BoundAction<[contentId: number, content: TextContent]>
@@ -11,8 +10,9 @@ export interface BlockProps<T extends AnyBlock> {
     block: T
     doUnlock: Unlock
     updateContent: UpdateContent
-    mergeWith: BoundAction<[target: MERGE_TARGET]>
+    mergeWith: BoundAction<[target: MergeTarget]>
     splitBlockAtContent: SplitBlockAtContent
     blockStealFocus: CursorPosition | undefined
     blockFocusStolen: BoundAction<[]>
+    onFocus: BoundAction<[]>
 }

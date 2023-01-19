@@ -27,11 +27,11 @@ const splitBlock: Action<AnyBlock[], [blockId: number, block: AnyBlock, contentI
     })
 
 
-function getMergeIds(srcId: number, target: MERGE_TARGET): [number, number] {
+function getMergeIds(srcId: number, target: MergeTarget): [number, number] {
     switch (target) {
-        case MERGE_TARGET.PREVIOUS:
+        case MergeTarget.PREVIOUS:
             return [srcId - 1, srcId]
-        case MERGE_TARGET.NEXT:
+        case MergeTarget.NEXT:
             return [srcId, srcId + 1]
     }
 }
@@ -39,8 +39,8 @@ function isEmpty(block: AnyBlock): boolean {
     return block.content.length === 1 && block.content[0].text.length === 0
 }
 
-export enum MERGE_TARGET { PREVIOUS = "PREVIOUS", NEXT = "NEXT" }
-const mergeWith: Action<AnyBlock[], [blockId: number, target: MERGE_TARGET]> =
+export enum MergeTarget { PREVIOUS = "PREVIOUS", NEXT = "NEXT" }
+const mergeWith: Action<AnyBlock[], [blockId: number, target: MergeTarget]> =
     produce((draft, blockId, target) => {
         const [firstId, secondId] = getMergeIds(blockId, target)
         const first = draft[firstId]
