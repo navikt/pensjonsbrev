@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.api.model.vedlegg
 
 import no.nav.pensjon.brev.api.model.Beregningsmetode
+import no.nav.pensjon.brev.api.model.KravAarsak
 import no.nav.pensjon.brev.api.model.Kroner
 import no.nav.pensjon.brev.api.model.Sivilstand
 import java.time.LocalDate
@@ -8,14 +9,18 @@ import java.time.LocalDate
 data class OpplysningerBruktIBeregningUTDto(
     val barnetilleggGjeldende: BarnetilleggGjeldende?,
     val beregnetUTPerManedGjeldende: BeregnetUTPerManedGjeldende,
+    val grunnbeloep: Kroner,
+    val fraOgMedDatoErNesteAar: Boolean,
     val inntektEtterUfoereGjeldende_beloepIEU: Kroner,
     val inntektFoerUfoereGjeldende: InntektFoerUfoereGjeldende,
     val inntektsAvkortingGjeldende: InntektsAvkortingGjeldende,
     val minsteytelseGjeldende_sats: Double?,
+    val sivilstand: Sivilstand,
     val trygdetidsdetaljerGjeldende: TrygdetidsdetaljerGjeldende,
     val ufoeretrygdGjeldende: UfoeretrygdGjeldende,
     val ungUfoerGjeldende_erUnder20Aar: Boolean?,
     val yrkesskadeGjeldende: YrkesskadeGjeldende?,
+    val kravAarsak: KravAarsak,
 ) {
     data class YrkesskadeGjeldende(
         val beregningsgrunnlagBeloepAar: Kroner,
@@ -25,17 +30,37 @@ data class OpplysningerBruktIBeregningUTDto(
     )
 
     data class BarnetilleggGjeldende(
+        val saerkullsbarn: Saerkullsbarn?,
+        val fellesbarn: Fellesbarn?,
         val totaltAntallBarn: Int,
-        val saerkullsbarn: Saerkullsbarn?
     ) {
         data class Saerkullsbarn(
             val avkortningsbeloepAar: Kroner,
-            val beloep: Kroner,
-            val beloepAar: Kroner,
-            val beloepAarFoerAvkort: Kroner,
+            val beloepNetto: Kroner,
+            val beloepBrutto: Kroner,
+            val beloepAarNetto: Kroner,
+            val beloepAarBrutto: Kroner,
             val erRedusertMotinntekt: Boolean,
             val fribeloep: Kroner,
             val fribeloepEllerInntektErPeriodisert: Boolean,
+            val harFlereBarn: Boolean,
+            val inntektBruktIAvkortning: Kroner,
+            val inntektOverFribeloep: Kroner,
+            val inntektstak: Kroner,
+            val justeringsbeloepAar: Kroner,
+        )
+        data class Fellesbarn(
+            val avkortningsbeloepAar: Kroner,
+            val beloepNetto: Kroner,
+            val beloepBrutto: Kroner,
+            val beloepAarNetto: Kroner,
+            val beloepAarBrutto: Kroner,
+            val beloepFratrukketAnnenForeldersInntekt: Kroner,
+            val erRedusertMotinntekt: Boolean,
+            val fribeloep: Kroner,
+            val fribeloepEllerInntektErPeriodisert: Boolean,
+            val harFlereBarn: Boolean,
+            val inntektAnnenForelder: Kroner,
             val inntektBruktIAvkortning: Kroner,
             val inntektOverFribeloep: Kroner,
             val inntektstak: Kroner,

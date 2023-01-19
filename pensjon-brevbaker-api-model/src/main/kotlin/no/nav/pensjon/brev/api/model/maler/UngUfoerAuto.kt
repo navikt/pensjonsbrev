@@ -10,13 +10,17 @@ data class UngUfoerAutoDto(
     val totaltUfoerePerMnd: Kroner,
     val ektefelle: InnvilgetTillegg?,
     val gjenlevende: InnvilgetTillegg?,
-    val fellesbarn: InnvilgetBarnetillegg?,
-    val saerkullsbarn: InnvilgetBarnetillegg?,
+    val fellesbarn: Barnetillegg?,
+    val saerkullsbarn: Barnetillegg?,
     val minsteytelseVedVirkSats: Double,
     val maanedligUfoeretrygdFoerSkatt: MaanedligUfoeretrygdFoerSkattDto?,
     val orienteringOmRettigheterUfoere: OrienteringOmRettigheterUfoereDto,
 ) {
     data class InnvilgetTillegg(val utbetalt: Boolean)
-    data class InnvilgetBarnetillegg(val utbetalt: Boolean, val antallBarn: Int, val inntektstak: Kroner)
-
+    data class Barnetillegg(
+        val utbetalt: Boolean,
+        val antallBarn: Int, //TODO remove in next version
+        val inntektstak: Kroner,
+        val gjelderFlereBarn: Boolean,
+    )
 }
