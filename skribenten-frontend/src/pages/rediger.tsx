@@ -3,7 +3,7 @@ import {NextPage} from "next"
 import React, {useEffect, useState} from "react"
 import {initObjectFromSpec, ObjectValue} from "../modules/ModelEditor/model"
 import {RedigerbarTemplateDescription, RenderedLetter} from "../modules/LetterEditor/model"
-import {AuthenticatedTemplate, useMsal} from "@azure/msal-react"
+import {useMsal} from "@azure/msal-react"
 import SkribentenAPI from "../lib/services/skribenten"
 import {SkribentenConfig} from "./_app"
 import ModelEditor from "../modules/ModelEditor/ModelEditor"
@@ -36,13 +36,11 @@ const RedigerBrev: NextPage<SkribentenConfig> = (props) => {
     } else {
         return (
             <div className={styles.container}>
-                <AuthenticatedTemplate>
-                    <div>
-                        <ModelEditor spec={modelSpec.modelSpecification} value={modelValue} updateValue={setModelValue}/>
-                        <button type="button" onClick={renderLetter}>Oppdater variabler</button>
-                    </div>
-                    {letter !== null ? <LetterEditor letter={letter} updateLetter={setLetter}/> : <div/>}
-                </AuthenticatedTemplate>
+                <div>
+                    <ModelEditor spec={modelSpec.modelSpecification} value={modelValue} updateValue={setModelValue}/>
+                    <button type="button" onClick={renderLetter}>Oppdater variabler</button>
+                </div>
+                {letter !== null ? <LetterEditor letter={letter} updateLetter={setLetter}/> : <div/>}
             </div>
         )
     }

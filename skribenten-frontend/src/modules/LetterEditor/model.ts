@@ -50,19 +50,6 @@ export interface RenderedLetter {
 }
 
 
-// TODO: Variables might not be necessary any more
-export type VariableType = 'text' | 'date' // | 'int' | 'double'
-export interface VariableSpec {
-    readonly name: string
-    readonly type: VariableType
-}
-export interface VariableDecl {
-    readonly spec: VariableSpec
-    readonly value: string
-}
-export type Variables = Record<string, VariableDecl>
-
-
 export type LanguageCode = 'BOKMAL' | 'NYNORSK' | 'ENGLISH'
 export type Distribusjonstype = 'VEDTAK' | 'VIKTIG' | 'ANNET'
 export interface LetterMetadata {

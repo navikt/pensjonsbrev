@@ -7,7 +7,7 @@ import SkribentenAPI from "../lib/services/skribenten"
 import {SkribentenConfig} from "./_app"
 
 
-function SignInButton() {
+export function SignInButton() {
     const {instance} = useMsal()
     return <button onClick={() => instance.loginRedirect()}>Sign in</button>
 }

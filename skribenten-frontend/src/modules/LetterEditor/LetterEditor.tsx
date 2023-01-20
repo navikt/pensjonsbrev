@@ -23,7 +23,7 @@ interface AnyBlockProps {
     onFocus: BoundAction<[]>
 }
 
-const AnyBlock: FC<AnyBlockProps> = ({block, splitBlock, mergeWith, updateBlock, stealFocus, blockFocusStolen, onFocus}) => {
+const AnyBlockView: FC<AnyBlockProps> = ({block, splitBlock, mergeWith, updateBlock, stealFocus, blockFocusStolen, onFocus}) => {
 
     const doUnlock = bindAction(BlockAction.unlock, updateBlock, block)
     const updateBlockContent = bindAction(BlockAction.updateBlockContent, updateBlock, block)
@@ -87,7 +87,7 @@ const LetterEditor: FC<LetterEditorProps> = ({letter, updateLetter}) => {
                 <SakspartView sakspart={letter.sakspart}/>
                 <h1>{letter.title}</h1>
                 {blocks.map((block, blockId) =>
-                    <AnyBlock key={blockId}
+                    <AnyBlockView key={blockId}
                               block={block}
                               splitBlock={splitBlock.bind(null, blockId, block)}
                               mergeWith={mergeWithAndStealFocus.bind(null, blockId)}
