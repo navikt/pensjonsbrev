@@ -1,6 +1,5 @@
 package no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningufoere
 
-import no.nav.pensjon.brev.api.model.KravAarsak
 import no.nav.pensjon.brev.api.model.Kroner
 import no.nav.pensjon.brev.api.model.KronerSelectors.value
 import no.nav.pensjon.brev.api.model.Sivilstand
@@ -57,7 +56,7 @@ data class OpplysningerOmBarnetillegg(
     val sivilstand: Expression<Sivilstand>,
     val anvendtTrygdetid: Expression<Int>,
     val harYrkesskade: Expression<Boolean>,
-    val kravAarsak: Expression<KravAarsak>,
+    val harKravaarsakEndringInntekt: Expression<Boolean>,
     val fraOgMedDatoErNesteAar: Expression<Boolean>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
@@ -112,7 +111,7 @@ data class OpplysningerOmBarnetillegg(
             includePhrase(
                 PeriodisertInntektInnledning(
                     sivilstand = sivilstand,
-                    kravAarsak = kravAarsak,
+                    harKravaarsakEndringInntekt = harKravaarsakEndringInntekt,
                     harFlereTillegg = true.expr()
                 )
             )
@@ -145,7 +144,7 @@ data class OpplysningerOmBarnetillegg(
             includePhrase(
                 PeriodisertInntektInnledning(
                     sivilstand = sivilstand,
-                    kravAarsak = kravAarsak,
+                    harKravaarsakEndringInntekt = harKravaarsakEndringInntekt,
                     harFlereTillegg = false.expr(),
                 )
             )
@@ -824,14 +823,12 @@ data class OpplysningerOmBarnetillegg(
     // TBU605V
     data class PeriodisertInntektInnledning(
         val sivilstand: Expression<Sivilstand>,
-        val kravAarsak: Expression<KravAarsak>,
+        val harKravaarsakEndringInntekt: Expression<Boolean>,
         val harFlereTillegg: Expression<Boolean>,
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             paragraph {
-                val kravAarsakErEndretInntekt = kravAarsak.isOneOf(
-                    KravAarsak.ENDRET_INNTEKT, KravAarsak.EPS_ENDRET_INNTEKT, KravAarsak.BEGGE_FOR_END_IN
-                )
+
                 val foreldreBorSammen =
                     sivilstand.isOneOf(
                         Sivilstand.GIFT,
@@ -841,16 +838,16 @@ data class OpplysningerOmBarnetillegg(
                     )
                 textExpr(
                     Bokmal to ifElse(
-                        kravAarsakErEndretInntekt,
+                        harKravaarsakEndringInntekt,
                         "Når inntekten ",
                         "Har det vært en endring i inntekten ",
                     ),
                     Nynorsk to ifElse(
-                        kravAarsakErEndretInntekt,
+                        harKravaarsakEndringInntekt,
                         "Når inntekta ",
                         "Har det vore ie endring i inntekta ",
                     ),
-                    English to ifElse(kravAarsakErEndretInntekt, "When ", "If ")
+                    English to ifElse(harKravaarsakEndringInntekt, "When ", "If ")
                 )
                 textExpr(
                     Bokmal to ifElse(foreldreBorSammen, "din eller til din", "din"),

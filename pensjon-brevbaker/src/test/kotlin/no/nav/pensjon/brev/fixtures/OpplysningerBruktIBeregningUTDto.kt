@@ -2,7 +2,6 @@ package no.nav.pensjon.brev.fixtures
 
 import no.nav.pensjon.brev.Fixtures
 import no.nav.pensjon.brev.api.model.Beregningsmetode
-import no.nav.pensjon.brev.api.model.KravAarsak
 import no.nav.pensjon.brev.api.model.Kroner
 import no.nav.pensjon.brev.api.model.Sivilstand
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDto
@@ -22,7 +21,7 @@ fun createOpplysningerBruktIBeregningUTDto() =
         ufoeretrygdGjeldende = Fixtures.create(),
         ungUfoerGjeldende_erUnder20Aar = false,
         yrkesskadeGjeldende = Fixtures.create(),
-        kravAarsak = KravAarsak.ENDRET_INNTEKT,
+        harKravaarsakEndringInntekt = true,
         fraOgMedDatoErNesteAar = false
     )
 
