@@ -23,7 +23,7 @@ object HjemlerFolketrygdloven {
     data class Folketrygdloven(
         val ektefelletilleggInnvilget: Expression<Boolean>,
         val fellesbarntilleggInnvilget: Expression<Boolean>,
-        val gjenlevendetilleggInnvilget: Expression<Boolean>,
+        val harGjenlevendetilleggInnvilget: Expression<Boolean>,
         val harYrkesskadegradUtbetaling: Expression<Boolean>,
         val saerkullsbarntilleggInnvilget: Expression<Boolean>,
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
@@ -45,11 +45,11 @@ object HjemlerFolketrygdloven {
                         English to "This decision was made pursuant to the provisions of §§ 12-11 to 12-14".expr() +
                                 ifElse(harYrkesskadegradUtbetaling, ifTrue = ", 22-17", ifFalse = "") + "".expr()
                     )
-                    showIf(not(ektefelletilleggInnvilget) and not(gjenlevendetilleggInnvilget)) {
+                    showIf(not(ektefelletilleggInnvilget) and not(harGjenlevendetilleggInnvilget)) {
                         text(Bokmal to " og 22-12.", Nynorsk to " og 22-12.", English to " and 22-12 of the National Insurance Act.")
-                    }.orShowIf(not(ektefelletilleggInnvilget) and gjenlevendetilleggInnvilget) {
+                    }.orShowIf(not(ektefelletilleggInnvilget) and harGjenlevendetilleggInnvilget) {
                         text(Bokmal to ", 12-18 og 22-12.", Nynorsk to ", 12-18 og 22-12.", English to ", 12-18 and 22-12 of the National Insurance Act.")
-                    }.orShowIf(ektefelletilleggInnvilget and not(gjenlevendetilleggInnvilget)) {
+                    }.orShowIf(ektefelletilleggInnvilget and not(harGjenlevendetilleggInnvilget)) {
                         text(Bokmal to ", 22-12 og overgangsforskriften § 8.", Nynorsk to ", 22-12 og overgangsforskriften § 8.", English to ", 22-12 and overgangsforskriften § 8 of the National Insurance Act.")
                     }
                 }
@@ -71,11 +71,11 @@ object HjemlerFolketrygdloven {
                         English to "his decision was made pursuant to the provisions of §§ ".expr() +
                                 ifElse(harYrkesskadegradUtbetaling, ifTrue = "12-11 to 12-17", ifFalse = "12-11 to 12-16") + "".expr()
                     )
-                    showIf(not(ektefelletilleggInnvilget) and not(gjenlevendetilleggInnvilget)) {
+                    showIf(not(ektefelletilleggInnvilget) and not(harGjenlevendetilleggInnvilget)) {
                         text(Bokmal to " og 22-12.", Nynorsk to " og 22-12.", English to " and 22-12 of the National Insurance Act.")
-                    }.orShowIf(not(ektefelletilleggInnvilget) and gjenlevendetilleggInnvilget) {
+                    }.orShowIf(not(ektefelletilleggInnvilget) and harGjenlevendetilleggInnvilget) {
                         text(Bokmal to ", 12-18 og 22-12.", Nynorsk to ", 12-18 og 22-12.", English to ", 12-18 og 22-12 of the National Insurance Act.")
-                    }.orShowIf(ektefelletilleggInnvilget and not(gjenlevendetilleggInnvilget)) {
+                    }.orShowIf(ektefelletilleggInnvilget and not(harGjenlevendetilleggInnvilget)) {
                         text(Bokmal to ", 22-12 og overgangsforskriften § 8.", Nynorsk to ", 22-12 og overgangsforskriften § 8.", English to ", 22-12 and overgangsforskriften § 8 of the National Insurance Act."
                         )
                     }

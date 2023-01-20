@@ -1,7 +1,6 @@
 package no.nav.pensjon.brev.maler.fraser.ufoer
 
 import no.nav.pensjon.brev.api.model.Kroner
-import no.nav.pensjon.brev.api.model.maler.EndringOpptjeningAutoDto
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
@@ -68,7 +67,7 @@ object KombinereUfoeretrygdMedInntekt {
         }
     }
 
-    // TBU1205, TBU1296, TBU1206
+    // TBU1205, TBU1206  (TBU1296 er ikke tatt med - konvertering til UT utgikk 31. desember 2018) Dermed endres flette logikk for TBU1205.
     data class Inntektsgrense(
         val beloepsgrense: Expression<Kroner>,
         val grunnbeloep: Expression<Kroner>,
@@ -76,7 +75,6 @@ object KombinereUfoeretrygdMedInntekt {
         val inntektsgrense: Expression<Kroner>,
         val inntektsgrenseNesteAar: Expression<Kroner>,
         val ufoeregrad: Expression<Int>,
-        val harBeloepsgrense60000: Expression<Boolean>,
         val harFullUfoeregrad: Expression<Boolean>,
 
         ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
@@ -84,10 +82,7 @@ object KombinereUfoeretrygdMedInntekt {
             val inntektsgrenseFaktisk = inntektsgrense.equalTo(0)
             // inntektsgrenseFaktisk = if inntektsgrenseNesteAar = 0 -> inntektsgrense, or -> inntektsgrenseNesteAar
             showIf(
-                harFullUfoeregrad and not(harInntektEtterUfoere) and (beloepsgrense.notEqualTo(grunnbeloep) and not(
-                    harBeloepsgrense60000
-                )
-                        and not(harInntektEtterUfoere))
+                harFullUfoeregrad and not(harInntektEtterUfoere) and (beloepsgrense.notEqualTo(grunnbeloep))
             ) {
                 paragraph {
                     textExpr(
@@ -97,14 +92,6 @@ object KombinereUfoeretrygdMedInntekt {
                                     ifTrue = inntektsgrense.format(),
                                     ifFalse = inntektsgrenseNesteAar.format()
                                 ) + " kroner. Dette er inntektsgrensen din.".expr(),
-                        Nynorsk to "".expr(),
-                        English to "".expr()
-                    )
-                }
-            }.orShowIf(harFullUfoeregrad and beloepsgrense.equalTo(60000)) {
-                paragraph {
-                    textExpr(
-                        Bokmal to "Du kan ha en årlig inntekt på 60 000 kroner uten at uføretrygden din blir redusert. Dette er inntektsgrensen din.".expr(),
                         Nynorsk to "".expr(),
                         English to "".expr()
                     )
@@ -122,16 +109,15 @@ object KombinereUfoeretrygdMedInntekt {
         }
     }
 
-    // TBU1207, TBU2357   TODO: Er TBU2357 foreldret?
+    // TBU1207, TBU2357   (TBU1296 er ikke tatt med - konvertering til UT utgikk 31. desember 2018) Dermed endres flette logikk for TBU1205.
     data class InntektsgrenseLagtTilGrunn(
         val inntektsgrense: Expression<Kroner>,
         val inntektsgrenseNesteAar: Expression<Kroner>,
         val beloepsgrense: Expression<Kroner>,
-        val oieu: Expression<Kroner>,
+        val oppjustertInntektEtterUfoere: Expression<Kroner>,
         val grunnbeloep: Expression<Kroner>,
         val ufoeregrad: Expression<Int>,
         val harInntektEtterUfoere: Expression<Boolean>,
-        val harBeloepsgrense60000: Expression<Boolean>,
         val harFullUfoeregrad: Expression<Boolean>,
         val harDelvisUfoeregrad: Expression<Boolean>,
 
@@ -139,23 +125,15 @@ object KombinereUfoeretrygdMedInntekt {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             val inntektsgrenseFaktisk = inntektsgrense.equalTo(0)
 
-            showIf(not(harBeloepsgrense60000) and beloepsgrense.notEqualTo(grunnbeloep) and (harDelvisUfoeregrad or (harInntektEtterUfoere and harFullUfoeregrad))) {
+            showIf(beloepsgrense.notEqualTo(grunnbeloep) and (harDelvisUfoeregrad or (harInntektEtterUfoere and harFullUfoeregrad))) {
                 paragraph {
                     textExpr(
-                        Bokmal to "Vi har lagt til grunn at du framover skal ha en inntekt på ".expr() + oieu.format() + " kroner per år. Du kan i tillegg ha en årlig inntekt på 40 prosent av folketrygdens grunnbeløp, uten at uføretrygden din blir redusert. Inntektsgrensen din blir derfor ".expr() +
+                        Bokmal to "Vi har lagt til grunn at du framover skal ha en inntekt på ".expr() + oppjustertInntektEtterUfoere.format() + " kroner per år. Du kan i tillegg ha en årlig inntekt på 40 prosent av folketrygdens grunnbeløp, uten at uføretrygden din blir redusert. Inntektsgrensen din blir derfor ".expr() +
                                 ifElse(
                                     inntektsgrenseFaktisk,
                                     ifTrue = inntektsgrense.format(),
                                     ifFalse = inntektsgrenseNesteAar.format()
                                 ) + " kroner.".expr(),
-                        Nynorsk to "".expr(),
-                        English to "".expr()
-                    )
-                }
-            }.orShowIf(harBeloepsgrense60000 and harDelvisUfoeregrad) {
-                paragraph {
-                    textExpr(
-                        Bokmal to "Vi har lagt til grunn at du framover skal ha en inntekt på <PE_UT_Inntektsgrense_faktisk_minus_60000> kroner per år. Du kan i tillegg ha en årlig inntekt på 60 000 kroner, uten at uføretrygden din blir redusert. Inntektsgrensen din blir derfor <PE_UT_Inntektsgrense_faktisk> kroner.".expr(),
                         Nynorsk to "".expr(),
                         English to "".expr()
                     )
@@ -211,33 +189,50 @@ object KombinereUfoeretrygdMedInntekt {
         val utbetalingsgrad: Expression<Int>,
         val ufoeregrad: Expression<Int>,
         val inntektsgrense: Expression<Kroner>,
-        val inntektstak: Expression<Kroner>
+        val inntektstak: Expression<Kroner>,
+        val oppjustertInntektFoerUfoere80prosent: Expression<Kroner>,
+        val harBeloepRedusert: Expression<Boolean>,
+        val harBeloepOekt: Expression<Boolean>,
 
-    ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
 
-            showIf(
-                utbetalingsgrad.lessThan(ufoeregrad) and forventetInntekt.greaterThan(inntektsgrense) and inntektsgrense.lessThan(
-                    inntektstak
-                )
-            ) {
+            paragraph {
                 showIf(
                     utbetalingsgrad.lessThan(ufoeregrad) and forventetInntekt.greaterThan(inntektsgrense) and inntektsgrense.lessThan(
-                        inntektstak
+                        oppjustertInntektFoerUfoere80prosent
                     )
                 ) {
-                    paragraph {
-                        textExpr(
-                            Bokmal to "".expr(),
-                            Nynorsk to "".expr(),
-                            English to "".expr()
-                        )
-                        //   Du har tidligere meldt fra om en inntekt på <PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_ForventetInntekt> kroner i år.
-                    }
+                    textExpr(
+                        Bokmal to "Du har tidligere meldt fra om en inntekt på ".expr() + forventetInntekt.format() + " kroner for i år.".expr(),
+                        Nynorsk to "".expr(),
+                        English to "".expr()
+                    )
+                }.orShowIf(
+                    utbetalingsgrad.lessThan(ufoeregrad) and harBeloepRedusert and inntektsgrense.lessThan(
+                        oppjustertInntektFoerUfoere80prosent
+                    )
+                ) {
+                    textExpr(
+                        Bokmal to "Vi har derfor redusert utbetalingen av uføretrygden din for resten av kalenderåret.".expr(),
+                        Nynorsk to "".expr(),
+                        English to "".expr()
+                    )
+                }.orShowIf(
+                    utbetalingsgrad.lessThan(ufoeregrad) and harBeloepOekt and inntektsgrense.lessThan(
+                        oppjustertInntektFoerUfoere80prosent
+                    )
+                ) {
+                    textExpr(
+                        Bokmal to "Vi har derfor økt utbetalingen av uføretrygden din for resten av kalenderåret.".expr(),
+                        Nynorsk to "".expr(),
+                        English to "".expr()
+                    )
                 }
             }
         }
     }
+
 
     // TBU2261
     data class ReduksjonAvInntektUfoere(
@@ -245,13 +240,19 @@ object KombinereUfoeretrygdMedInntekt {
         val ufoeregrad: Expression<Int>,
         val inntektsgrense: Expression<Kroner>,
         val oppjustertInntektFoerUfoere80prosent: Expression<Kroner>,
+        val nettoAkkumulerteBeloepUtbetalt: Expression<Kroner>,
+        val nettoAkkumulertePlussNettoRestAar: Expression<Kroner>,
+        val nettoUfoeretrygdUtbetaltPerMaaned: Expression<Kroner>,
 
         ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             showIf(utbetalingsgrad.lessThan(ufoeregrad) and inntektsgrense.lessThan(oppjustertInntektFoerUfoere80prosent)) {
                 paragraph {
                     textExpr(
-                        Bokmal to "".expr(),
+                        Bokmal to "Ut fra den årlige inntekten din vil uføretrygden utgjøre ".expr() +
+                                nettoAkkumulertePlussNettoRestAar.format() + " kroner. Hittil i år har du fått utbetalt ".expr() +
+                                nettoAkkumulerteBeloepUtbetalt.format() + " kroner. Du har derfor rett til en utbetaling av uføretrygd på ".expr() +
+                                nettoUfoeretrygdUtbetaltPerMaaned.format() + " kroner per måned for resten av året.".expr(),
                         Nynorsk to "".expr(),
                         English to "".expr()
                     )
@@ -262,13 +263,13 @@ object KombinereUfoeretrygdMedInntekt {
 
     // TBU1210
     data class BeholderUfoeregraden(
-       val ufoeregrad: Expression<Int>
+        val ufoeregrad: Expression<Int>
 
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             paragraph {
                 textExpr(
-                     Bokmal to "".expr(),
+                    Bokmal to "Blir uføretrygden din redusert på grunn av inntekt beholder du likevel uføregraden din på ".expr() + ufoeregrad.format() + " prosent. Du får utbetalt hele uføretrygden igjen dersom du tjener mindre enn inntektsgrensen din.".expr(),
                     Nynorsk to "".expr(),
                     English to "".expr()
                 )

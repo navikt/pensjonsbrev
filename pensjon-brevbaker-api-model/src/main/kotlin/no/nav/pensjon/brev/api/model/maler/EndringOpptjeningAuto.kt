@@ -21,13 +21,15 @@ data class EndringOpptjeningAutoDto(
     data class Ufoeretrygd(
         val ektefelletilleggInnvilget: Boolean,  // used
         val fellesbarnInnvilget: Boolean,  // used
-        val gjenlevendetilleggInnvilget: Boolean,  // used
+        val harGjenlevendetilleggInnvilget: Boolean,  // used
         val harUtbetalingsgrad: Boolean,  // used
         val harYrkesskadeGradUtbetaling: Boolean, // yrkesskadeGrad > 0  - used
         val saerkullsbarnInnvilget: Boolean,  // used
         val ufoertrygdUtbetalt: Kroner,
         val utbetaltPerMaaned: Kroner,  // used
     )
+
+
 
     data class KombinereUfoeretrygdMedInntekt(
         val ufoeregrad: Int, // Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegningu_ufoeregrad
@@ -37,18 +39,21 @@ data class EndringOpptjeningAutoDto(
         val harInntektEtterUfoere: Boolean,  // IEUInntekt > 0 / Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektsgrense
         val beloepsgrense: Kroner,  // Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Belopsgrense
         val grunnbeloep: Kroner,  // Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Grunnbelop
-        val oppjustertInntektEtterUfoere: Kroner,  // ? Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Oieu
-        val harBeloepsgrense60000: Boolean,  // Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Belopsgrense = 60000
+        val oppjustertInntektEtterUfoere: Kroner,  // <Oieu> Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Oieu
         val harFullUfoeregrad: Boolean,  // Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegningu_ufoeregrad = 100
         val harDelvisUfoeregrad: Boolean,  // Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegningu_ufoeregrad > 0 < 100
-        val inntektstak: Kroner,  // OIFU*0,8  // Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektstak ??
         val kompensasjonsgrad: Int,  //
         val forventetInntekt: Kroner,  //
-        val oppjustertInntektFoerUfoere: Kroner,  //
-        val oppjustertInntektFoerUfoere80prosent: Kroner,  //
+        val oppjustertInntektFoerUfoere: Kroner,  // <Oifu>
+        val oppjustertInntektFoerUfoere80prosent: Kroner,  // TODO: <Oifu * 0.8) Beregning i Exstream! Tror verdien finnes i Pesys
+        val nettoAkkumulerteBeloepUtbetalt: Kroner,  // <NettoAkk> Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_NettoAkk
+        val nettoTilUtbetalingRestenAvAaret: Kroner,  // Kan bli et negativt tall <NettoRestAr>
+        val nettoUfoeretrygdUtbetaltPerMaaned: Kroner,  // Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_Netto
+        val harBeloepRedusert: Boolean,  // Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Uforegrad AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BelopRedusert
+        val harBeloepOekt: Boolean,  // Vedtaksdata_BeregningsData_BeregningUfore_BelopOkt
+        val nettoAkkumulertePlussNettoRestAar: Kroner  // TODO: <NettoAkk_pluss_NettoRestAr> Beregning i Exstream!  PE_UT_NettoAkk_pluss_NettoRestAr. Tror ikke verdien finnes i Pesys
 
-        // oifu = OppjustertInntektFoerUfoere
-        // oieu = OppjustertInntektEtterUfoere
+
     )
 
     data class BarnetilleggFellesbarn(
