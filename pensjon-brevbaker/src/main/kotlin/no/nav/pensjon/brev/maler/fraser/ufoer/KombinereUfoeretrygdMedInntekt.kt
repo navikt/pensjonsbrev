@@ -278,17 +278,56 @@ object KombinereUfoeretrygdMedInntekt {
         }
     }
 
-    // TBU2366
-    data class MeldeFraOmEndringerIInntektenOverskrift(
+    // TBU2366, TBU2367, TBU2279, TBU3740, TBU2280
+    data class MeldeFraOmEndringerIInntekten(
+        val forventetInntekt: Expression<Kroner>,
+        val inntektsgrense: Expression<Kroner>,
+        val inntektstak: Expression<Kroner>,
+        val oppjustertInntektFoerUfoere80prosent: Expression<Kroner>,
         val ufoeregrad: Expression<Int>,
         val utbetalingsgrad: Expression<Int>,
 
         ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-            title1 {
-                showIf(utbetalingsgrad.lessThan(ufoeregrad)) {
+            showIf(utbetalingsgrad.lessThan(ufoeregrad)) {
+                title1 {
                     text(
                         Bokmal to "Du må melde fra om endringer i inntekten",
+                        Nynorsk to "",
+                        English to ""
+                    )
+                }
+                paragraph {
+                    text(
+                        Bokmal to "Du kan melde fra om inntektsendringer under menyvalget «uføretrygd» når du logger deg inn på nav.no. Her kan du legge inn endringer i den forventede årlige inntekten, og se hva dette betyr for utbetalingen av uføretrygden din. For at du skal få en jevn utbetaling av uføretrygden, er det viktig at du melder fra om inntektsendringer så tidlig som mulig.",
+                        Nynorsk to "",
+                        English to ""
+                    )
+                }
+                showIf(inntektsgrense.lessThan(oppjustertInntektFoerUfoere80prosent)) {
+                    paragraph {
+                        textExpr(
+                            Bokmal to "Vi gjør oppmerksom på at det ikke utbetales uføretrygd når inntekten din utgjør mer enn 80 prosent av oppjustert inntekt før du ble ufør, det vil si ".expr() +
+                                    oppjustertInntektFoerUfoere80prosent.format() + " kroner per år".expr(),
+                            Nynorsk to "".expr(),
+                            English to "".expr()
+                        )
+                    }
+                }
+            }
+            showIf(forventetInntekt.lessThan(inntektstak) and inntektstak.lessThanOrEqual(inntektsgrense)) {
+                paragraph {
+                    textExpr(
+                        Bokmal to "Vi gjør oppmerksom på at det ikke utbetales uføretrygd når inntekten din utgjør mer enn inntektsgrensen din, det vil si ".expr() + inntektsgrense.format() + " kroner per år.".expr(),
+                        Nynorsk to "".expr(),
+                        English to "".expr()
+                    )
+                }
+            }
+            showIf(utbetalingsgrad.lessThan(ufoeregrad)) {
+                paragraph {
+                    text(
+                        Bokmal to "Vi vil foreta et etteroppgjør dersom du har fått utbetalt for mye eller for lite uføretrygd. Dette gjør vi når likningen fra Skatteetaten er klar. Du kan lese mer om dette i vedlegget «Opplysninger om beregningen».",
                         Nynorsk to "",
                         English to ""
                     )
@@ -296,5 +335,6 @@ object KombinereUfoeretrygdMedInntekt {
             }
         }
     }
+
 
 }
