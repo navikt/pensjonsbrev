@@ -25,16 +25,16 @@ object KombinereUfoeretrygdMedInntekt {
             val harFullUtbetalingsgrad = utbetalingsgrad.equalTo(100)
             title1 {
                 showIf(harFullUfoeregrad and harFullUtbetalingsgrad) {
-                    textExpr(
-                        Bokmal to "Skal du kombinere uføretrygd og inntekt?".expr(),
-                        Nynorsk to "Skal du kombinere uføretrygd og inntekt?".expr(),
-                        English to "Will you combine disability benefit with salary income?".expr()
+                    text(
+                        Bokmal to "Skal du kombinere uføretrygd og inntekt?",
+                        Nynorsk to "Skal du kombinere uføretrygd og inntekt?",
+                        English to "Will you combine disability benefit with salary income?"
                     )
                 }.orShowIf(harDelvisUfoeregrad) {
-                    textExpr(
-                        Bokmal to "For deg som kombinerer uføretrygd og inntekt".expr(),
-                        Nynorsk to "For deg som kombinerer uføretrygd og inntekt".expr(),
-                        English to "If you combine disabilty benefit with salary income".expr()
+                    text(
+                        Bokmal to "For deg som kombinerer uføretrygd og inntekt",
+                        Nynorsk to "For deg som kombinerer uføretrygd og inntekt",
+                        English to "If you combine disabilty benefit with salary income"
                     )
                 }
             }
@@ -50,18 +50,18 @@ object KombinereUfoeretrygdMedInntekt {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             showIf(ufoeregrad.equalTo(utbetalingsgrad)) {
                 paragraph {
-                    textExpr(
-                        Bokmal to "Du har mulighet til å ha inntekt ved siden av uføretrygden din. Det lønner seg å jobbe, fordi inntekt og uføretrygd alltid vil være høyere enn uføretrygd alene.".expr(),
-                        Nynorsk to "".expr(),
-                        English to "You have the possibilty to earn an income in addition to your disability benefit. It pays to work, your income and disabiltiy benefit combined will always be higher than disability benefit alone.".expr()
+                    text(
+                        Bokmal to "Du har mulighet til å ha inntekt ved siden av uføretrygden din. Det lønner seg å jobbe, fordi inntekt og uføretrygd alltid vil være høyere enn uføretrygd alene.",
+                        Nynorsk to "",
+                        English to "You have the possibilty to earn an income in addition to your disability benefit. It pays to work, your income and disabiltiy benefit combined will always be higher than disability benefit alone."
                     )
                 }
             }.orShowIf(utbetalingsgrad.lessThan(ufoeregrad)) {
                 paragraph {
-                    textExpr(
-                        Bokmal to "Utbetalingen av uføretrygden din er redusert fordi du har inntekt utover inntektsgrensen. Det lønner seg likevel å jobbe, fordi inntekt og uføretrygd alltid vil være høyere enn uføretrygd alene.".expr(),
-                        Nynorsk to "".expr(),
-                        English to "Your disability benefit payment is reduced because your salary income exceeds the income limit for disability benefit. It still pays to work however, because income and disability benefit combined will always be higher than disability benefit alone.".expr()
+                    text(
+                        Bokmal to "Utbetalingen av uføretrygden din er redusert fordi du har inntekt utover inntektsgrensen. Det lønner seg likevel å jobbe, fordi inntekt og uføretrygd alltid vil være høyere enn uføretrygd alene.",
+                        Nynorsk to "",
+                        English to "Your disability benefit payment is reduced because your salary income exceeds the income limit for disability benefit. It still pays to work however, because income and disability benefit combined will always be higher than disability benefit alone."
                     )
                 }
             }
@@ -156,10 +156,10 @@ object KombinereUfoeretrygdMedInntekt {
 
             showIf(inntektsgrense.lessThan(inntektstak)) {
                 paragraph {
-                    textExpr(
-                        Bokmal to "Vi bruker en fastsatt prosentandel når vi justerer uføretrygden din ut fra inntekt. Denne prosentandelen kaller vi kompensasjonsgrad.".expr(),
-                        Nynorsk to "".expr(),
-                        English to "".expr()
+                    text(
+                        Bokmal to "Vi bruker en fastsatt prosentandel når vi justerer uføretrygden din ut fra inntekt. Denne prosentandelen kaller vi kompensasjonsgrad.",
+                        Nynorsk to "",
+                        English to ""
                     )
                 }
                 paragraph {
@@ -214,20 +214,20 @@ object KombinereUfoeretrygdMedInntekt {
                         oppjustertInntektFoerUfoere80prosent
                     )
                 ) {
-                    textExpr(
-                        Bokmal to "Vi har derfor redusert utbetalingen av uføretrygden din for resten av kalenderåret.".expr(),
-                        Nynorsk to "".expr(),
-                        English to "".expr()
+                    text(
+                        Bokmal to "Vi har derfor redusert utbetalingen av uføretrygden din for resten av kalenderåret.",
+                        Nynorsk to "",
+                        English to ""
                     )
                 }.orShowIf(
                     utbetalingsgrad.lessThan(ufoeregrad) and harBeloepOekt and inntektsgrense.lessThan(
                         oppjustertInntektFoerUfoere80prosent
                     )
                 ) {
-                    textExpr(
-                        Bokmal to "Vi har derfor økt utbetalingen av uføretrygden din for resten av kalenderåret.".expr(),
-                        Nynorsk to "".expr(),
-                        English to "".expr()
+                    text(
+                        Bokmal to "Vi har derfor økt utbetalingen av uføretrygden din for resten av kalenderåret.",
+                        Nynorsk to "",
+                        English to ""
                     )
                 }
             }
@@ -287,10 +287,10 @@ object KombinereUfoeretrygdMedInntekt {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             title1 {
                 showIf(utbetalingsgrad.lessThan(ufoeregrad)) {
-                    textExpr(
-                        Bokmal to "Du må melde fra om endringer i inntekten".expr(),
-                        Nynorsk to "".expr(),
-                        English to "".expr()
+                    text(
+                        Bokmal to "Du må melde fra om endringer i inntekten",
+                        Nynorsk to "",
+                        English to ""
                     )
                 }
             }

@@ -8,6 +8,7 @@ import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.*
+import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 
 object Gjenlevendetillegg {
@@ -19,13 +20,12 @@ object Gjenlevendetillegg {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             showIf(harGjenlevendetilleggInnvilget) {
                 title1 {
-                    textExpr(
-                        Bokmal to "For deg som mottar gjenlevendetillegg".expr(),
-                        Nynorsk to "For deg som mottar gjenlevendetillegg".expr(),
-                        English to "".expr()
+                    text(
+                        Bokmal to "For deg som mottar gjenlevendetillegg",
+                        Nynorsk to "For deg som mottar gjenlevendetillegg",
+                        English to ""
                     )
                 }
-                paragraph {  }
             }
         }
     }
