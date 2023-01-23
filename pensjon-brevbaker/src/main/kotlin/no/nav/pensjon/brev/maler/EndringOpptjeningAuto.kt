@@ -46,6 +46,9 @@ import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.VedtaksbrevTemplate
 import no.nav.pensjon.brev.template.dsl.createTemplate
+import no.nav.pensjon.brev.template.dsl.expression.equalTo
+import no.nav.pensjon.brev.template.dsl.expression.expr
+import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.notNull
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
@@ -200,6 +203,13 @@ object EndringOpptjeningAuto : VedtaksbrevTemplate<EndringOpptjeningAutoDto> {
                     ufoeregrad = kombinereUfoeretrygdMedInntekt.ufoeregrad
                 )
             )
+
+            val utbetalingsgrad = kombinereUfoeretrygdMedInntekt.utbetalingsgrad.format()
+            val ufoeregrad = kombinereUfoeretrygdMedInntekt.ufoeregrad.format()
+            showIf(utbetalingsgrad.equalTo(ufoeregrad) {
+                includePhrase(Ufoeretrygd.MeldeFraOmEventuellInntektOverskrift)
+                includePhrase(Ufoeretrygd.MeldeFraOmEventuellInntekt)
+            }
         }
     }
 }

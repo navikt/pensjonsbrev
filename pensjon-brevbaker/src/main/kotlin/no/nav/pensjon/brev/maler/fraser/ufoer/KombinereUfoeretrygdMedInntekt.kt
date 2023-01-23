@@ -8,6 +8,7 @@ import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.*
+import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 
 object KombinereUfoeretrygdMedInntekt {
@@ -276,4 +277,24 @@ object KombinereUfoeretrygdMedInntekt {
             }
         }
     }
+
+    // TBU2366
+    data class MeldeFraOmEndringerIInntektenOverskrift(
+        val ufoeregrad: Expression<Int>,
+        val utbetalingsgrad: Expression<Int>,
+
+        ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+            title1 {
+                showIf(utbetalingsgrad.lessThan(ufoeregrad)) {
+                    textExpr(
+                        Bokmal to "Du må melde fra om endringer i inntekten".expr(),
+                        Nynorsk to "".expr(),
+                        English to "".expr()
+                    )
+                }
+            }
+        }
+    }
+
 }
