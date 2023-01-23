@@ -1,44 +1,50 @@
 package no.nav.pensjon.brev.maler
 
-import com.fasterxml.jackson.databind.type.PlaceholderForType
 import no.nav.pensjon.brev.api.model.Kroner
 import no.nav.pensjon.brev.api.model.LetterMetadata
 import no.nav.pensjon.brev.api.model.Sivilstand
 import no.nav.pensjon.brev.api.model.Year
 import no.nav.pensjon.brev.api.model.YearSelectors.value
 import no.nav.pensjon.brev.api.model.maler.Brevkode
-import no.nav.pensjon.brev.maler.BarnetilleggFellesbarnSelectors.antallBarn
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDto
 import no.nav.pensjon.brev.maler.BarnetilleggFellesbarnSelectors.fribeloepErPeriodisert
 import no.nav.pensjon.brev.maler.BarnetilleggFellesbarnSelectors.gammeltBeloep
+import no.nav.pensjon.brev.maler.BarnetilleggFellesbarnSelectors.gjelderFlereBarn
 import no.nav.pensjon.brev.maler.BarnetilleggFellesbarnSelectors.harBarnetillegg
+import no.nav.pensjon.brev.maler.BarnetilleggFellesbarnSelectors.inntektBruktIAvkortning
 import no.nav.pensjon.brev.maler.BarnetilleggFellesbarnSelectors.inntektErPeriodisert
 import no.nav.pensjon.brev.maler.BarnetilleggFellesbarnSelectors.nyttBeloep
-import no.nav.pensjon.brev.maler.BarnetilleggSaerkullsbarnSelectors.antallBarn
 import no.nav.pensjon.brev.maler.BarnetilleggSaerkullsbarnSelectors.fribeloepErPeriodisert
 import no.nav.pensjon.brev.maler.BarnetilleggSaerkullsbarnSelectors.gammeltBeloep
+import no.nav.pensjon.brev.maler.BarnetilleggSaerkullsbarnSelectors.gjelderFlereBarn
 import no.nav.pensjon.brev.maler.BarnetilleggSaerkullsbarnSelectors.harBarnetillegg
+import no.nav.pensjon.brev.maler.BarnetilleggSaerkullsbarnSelectors.inntektBruktIAvkortning
 import no.nav.pensjon.brev.maler.BarnetilleggSaerkullsbarnSelectors.inntektErPeriodisert
 import no.nav.pensjon.brev.maler.BarnetilleggSaerkullsbarnSelectors.nyttBeloep
 import no.nav.pensjon.brev.maler.UfoeretrygdEndretPgaInntektDtoSelectors.aarFoerVirkningsAar
 import no.nav.pensjon.brev.maler.UfoeretrygdEndretPgaInntektDtoSelectors.barnetilleggFellesbarn
 import no.nav.pensjon.brev.maler.UfoeretrygdEndretPgaInntektDtoSelectors.barnetilleggSaerkullsbarn
-import no.nav.pensjon.brev.maler.UfoeretrygdEndretPgaInntektDtoSelectors.brukersSivilstand
-import no.nav.pensjon.brev.maler.UfoeretrygdEndretPgaInntektDtoSelectors.forventetInntektUfoeretrygd
 import no.nav.pensjon.brev.maler.UfoeretrygdEndretPgaInntektDtoSelectors.fyller67IVirkningsAar
-import no.nav.pensjon.brev.maler.UfoeretrygdEndretPgaInntektDtoSelectors.gammeltUfoeretrygdBeloep
-import no.nav.pensjon.brev.maler.UfoeretrygdEndretPgaInntektDtoSelectors.inntektBruktIAvkortningAvBarnetilleggForFellesbarn
-import no.nav.pensjon.brev.maler.UfoeretrygdEndretPgaInntektDtoSelectors.inntektBruktIAvkortningAvBarnetilleggForSaerkullsbarn
-import no.nav.pensjon.brev.maler.UfoeretrygdEndretPgaInntektDtoSelectors.inntektsgrenseUfoeretrygd
-import no.nav.pensjon.brev.maler.UfoeretrygdEndretPgaInntektDtoSelectors.inntektstakUfoeretrygd
-import no.nav.pensjon.brev.maler.UfoeretrygdEndretPgaInntektDtoSelectors.nyttUfoeretrygdBeloep
-import no.nav.pensjon.brev.maler.UfoeretrygdEndretPgaInntektDtoSelectors.ufoeregrad
-import no.nav.pensjon.brev.maler.UfoeretrygdEndretPgaInntektDtoSelectors.ufoeretrygdAvkortningsbeloepPerAar
-import no.nav.pensjon.brev.maler.UfoeretrygdEndretPgaInntektDtoSelectors.ufoeretrygdBeloepErRedusert
-import no.nav.pensjon.brev.maler.UfoeretrygdEndretPgaInntektDtoSelectors.utbetalingsgrad
+import no.nav.pensjon.brev.maler.UfoeretrygdEndretPgaInntektDtoSelectors.harEktefelletillegg
+import no.nav.pensjon.brev.maler.UfoeretrygdEndretPgaInntektDtoSelectors.harGjenlevendetillegg
+import no.nav.pensjon.brev.maler.UfoeretrygdEndretPgaInntektDtoSelectors.opplysningerBruktIBeregningUTDto
+import no.nav.pensjon.brev.maler.UfoeretrygdEndretPgaInntektDtoSelectors.sivilstand
+import no.nav.pensjon.brev.maler.UfoeretrygdEndretPgaInntektDtoSelectors.ufoeretrygd
 import no.nav.pensjon.brev.maler.UfoeretrygdEndretPgaInntektDtoSelectors.virkningsdatoFraOgMed
+import no.nav.pensjon.brev.maler.UfoeretrygdSelectors.avkortningsbeloepPerAar
+import no.nav.pensjon.brev.maler.UfoeretrygdSelectors.beloepErRedusert
+import no.nav.pensjon.brev.maler.UfoeretrygdSelectors.beloepNetto
+import no.nav.pensjon.brev.maler.UfoeretrygdSelectors.forventetInntekt
+import no.nav.pensjon.brev.maler.UfoeretrygdSelectors.gammeltBeloep
+import no.nav.pensjon.brev.maler.UfoeretrygdSelectors.inntektsgrense
+import no.nav.pensjon.brev.maler.UfoeretrygdSelectors.inntektstak
+import no.nav.pensjon.brev.maler.UfoeretrygdSelectors.nyttBeloep
+import no.nav.pensjon.brev.maler.UfoeretrygdSelectors.ufoeregrad
+import no.nav.pensjon.brev.maler.UfoeretrygdSelectors.utbetalingsgrad
 import no.nav.pensjon.brev.maler.fraser.UfoeretrygdEndretPgaInntekt
-import no.nav.pensjon.brev.maler.fraser.vedtak.Vedtak
-import no.nav.pensjon.brev.model.format
+import no.nav.pensjon.brev.maler.fraser.common.Vedtak
+import no.nav.pensjon.brev.maler.fraser.ufoer.Ufoeretrygd
+import no.nav.pensjon.brev.maler.vedlegg.createVedleggOpplysningerBruktIBeregningUT
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.VedtaksbrevTemplate
@@ -46,80 +52,91 @@ import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
-import no.nav.pensjon.brev.template.dsl.textExpr
 import java.time.LocalDate
 import java.time.Month
 
 data class UfoeretrygdEndretPgaInntektDto(
     val barnetilleggFellesbarn: BarnetilleggFellesbarn,
     val barnetilleggSaerkullsbarn: BarnetilleggSaerkullsbarn,
-    val brukersSivilstand: Sivilstand,
-    val nyttUfoeretrygdBeloep: Kroner,
-    val gammeltUfoeretrygdBeloep: Kroner,
+    val sivilstand: Sivilstand,
+    val ufoeretrygd: Ufoeretrygd,
     val virkningsdatoFraOgMed: LocalDate,
     val aarFoerVirkningsAar: Year,
     val fyller67IVirkningsAar: Boolean,
-    val ufoeregrad: Double,
-    val utbetalingsgrad: Double,
-    val inntektsgrenseUfoeretrygd: Kroner,
-    val inntektstakUfoeretrygd: Kroner,
-    val ufoeretrygdBeloepErRedusert: Boolean,
+    val harEktefelletillegg: Boolean,
+    val harGjenlevendetillegg: Boolean,
+    val opplysningerBruktIBeregningUTDto: OpplysningerBruktIBeregningUTDto,
 
-    val FF01_NAV: PlaceholderForType,
-    val FF01_webadresse: PlaceholderForType,
-    val FF01_webadresse_Skatteetaten_no: PlaceholderForType, //TODO
-    val FF01_webadresse_nav: PlaceholderForType, // TODO bruk felles
-    val FF01_webadresse_navKlage: PlaceholderForType,//TODO phrase
-    val FF01_webadresse_uforetrygd: String,
-    val PE_BarnetilleggFelles_JusteringsbelopPerArUtenMinus: Kroner,
-    val PE_BarnetilleggSerkull_JusteringsbelopPerArUtenMinus: Kroner,
-    val PE_Kontaktinformasjon_NavnAvsenderEnhet: PlaceholderForType, //TODO phrase eller felles
-    val PE_Sivilstand_Ektefelle_Partner_Samboer_Bormed_UT: PlaceholderForType,//TODO phrase
-    val PE_Sivilstand_Ektefelle_Partner_Samboer_Bormed_UT_NN_entall: PlaceholderForType,//TODO phrase
-    val PE_Skatteetaten: PlaceholderForType,
-    val PE_UT_NettoAkk_pluss_NettoRestAr: Kroner,
-    val PE_UT_OrienteringOmRettighetOgPlikt_eller_RettigheterOgMulighetForKlage: PlaceholderForType,//TODO phrase
-    val PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_AvkortingsbelopPerAr: Kroner,
-    val PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_Inntektstak: Kroner,
-    val PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_BTFBinntektAnnenForelder: Kroner,
-    val PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_AvkortingsbelopPerAr: Kroner,
-    val PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_Inntektstak: Kroner,
-    val PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_BTFBBrukersInntektTilAvkortning: Kroner,
-    val ufoeretrygdAvkortningsbeloepPerAar: Kroner,
-    val forventetInntektUfoeretrygd: Kroner,
-    val PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektsgrense: Kroner,
-    val inntektstakUfoeretrygd: Kroner,
-    val PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_Netto: Kroner,
-    val PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_NettoAkk: Kroner,
-    val PE_Vedtaksdata_BeregningsData_BeregningUfore_TotalNetto: Kroner,
-    val PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Grunnbelop: Kroner,
-    val PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Uforegrad: Double,
-    val inntektBruktIAvkortningAvBarnetilleggForFellesbarn: Kroner,
-    val PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBfribelop: Kroner,
-    val PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto: Kroner,
-    val inntektBruktIAvkortningAvBarnetilleggForSaerkullsbarn: Kroner,
-    val PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBfribelop: Kroner,
-    val PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBnetto: Kroner,
-)
 
-data class BarnetilleggSaerkullsbarn(
-    val antallBarn: Int,
-    val gammeltBeloep: Kroner,
-    val harBarnetillegg: Boolean,
-    val inntektErPeriodisert: Boolean,
-    val fribeloepErPeriodisert: Boolean,
-    val nyttBeloep: Kroner,
-)
+    //Under konvertering:
+    //val FF01_NAV: PlaceholderForType,
+    //val FF01_webadresse: PlaceholderForType,
+    //val FF01_webadresse_Skatteetaten_no: PlaceholderForType, //TODO
+    //val FF01_webadresse_nav: PlaceholderForType, // TODO bruk felles
+    //val FF01_webadresse_navKlage: PlaceholderForType,//TODO phrase
+    //val FF01_webadresse_uforetrygd: String,
+    //val PE_BarnetilleggFelles_JusteringsbelopPerArUtenMinus: Kroner,
+    //val PE_BarnetilleggSerkull_JusteringsbelopPerArUtenMinus: Kroner,
+    //val PE_Kontaktinformasjon_NavnAvsenderEnhet: PlaceholderForType, //TODO phrase eller felles
+    //val PE_Sivilstand_Ektefelle_Partner_Samboer_Bormed_UT: PlaceholderForType,//TODO phrase
+    //val PE_Sivilstand_Ektefelle_Partner_Samboer_Bormed_UT_NN_entall: PlaceholderForType,//TODO phrase
+    //val PE_Skatteetaten: PlaceholderForType,
+    //val PE_UT_NettoAkk_pluss_NettoRestAr: Kroner,
+    //val PE_UT_OrienteringOmRettighetOgPlikt_eller_RettigheterOgMulighetForKlage: PlaceholderForType,//TODO phrase
+    //val PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_AvkortingsbelopPerAr: Kroner,
+    //val PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_Inntektstak: Kroner,
+    //val PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_BTFBinntektAnnenForelder: Kroner,
+    //val PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_AvkortingsbelopPerAr: Kroner,
+    //val PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_Inntektstak: Kroner,
+    //val PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_BTFBBrukersInntektTilAvkortning: Kroner,
+    //val PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektsgrense: Kroner,
+    //val PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_Netto: Kroner,
+    //val PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_NettoAkk: Kroner,
+    //val PE_Vedtaksdata_BeregningsData_BeregningUfore_TotalNetto: Kroner,
+    //val PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Grunnbelop: Kroner,
+    //val PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Uforegrad: Double,
+    //val inntektBruktIAvkortningAvBarnetilleggForFellesbarn: Kroner,
+    //val PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBfribelop: Kroner,
+    //val PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto: Kroner,
+    //val inntektBruktIAvkortningAvBarnetilleggForSaerkullsbarn: Kroner,
+    //val PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBfribelop: Kroner,
+    //val PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBnetto: Kroner,
+) {
+    //val ufoeretrygdAvkortningsbeloepPerAar: Kroner,
+    //val forventetInntektUfoeretrygd: Kroner,
+    data class Ufoeretrygd(
+        val nyttBeloep: Kroner,
+        val gammeltBeloep: Kroner,
+        val beloepNetto: Kroner,
+        val ufoeregrad: Double,
+        val utbetalingsgrad: Double,
+        val inntektsgrense: Kroner,
+        val forventetInntekt: Kroner,
+        val inntektstak: Kroner,
+        val beloepErRedusert: Boolean,
+        val avkortningsbeloepPerAar: Kroner,
+        )
 
-data class BarnetilleggFellesbarn(
-    val antallBarn: Int,
-    val gammeltBeloep: Kroner,
-    val harBarnetillegg: Boolean,
-    val inntektErPeriodisert: Boolean,
-    val fribeloepErPeriodisert: Boolean,
-    val nyttBeloep: Kroner,
-)
+    data class BarnetilleggSaerkullsbarn(
+        val gammeltBeloep: Kroner,
+        val harBarnetillegg: Boolean,
+        val inntektErPeriodisert: Boolean,
+        val fribeloepErPeriodisert: Boolean,
+        val nyttBeloep: Kroner,
+        val inntektBruktIAvkortning: Kroner,
+        val gjelderFlereBarn: Boolean,
+    )
 
+    data class BarnetilleggFellesbarn(
+        val gammeltBeloep: Kroner,
+        val harBarnetillegg: Boolean,
+        val inntektErPeriodisert: Boolean,
+        val fribeloepErPeriodisert: Boolean,
+        val nyttBeloep: Kroner,
+        val inntektBruktIAvkortning: Kroner,
+        val gjelderFlereBarn: Boolean,
+        )
+}
 @TemplateModelHelpers
 object UfoeretrygdEndretPgaInntekt : VedtaksbrevTemplate<UfoeretrygdEndretPgaInntektDto> {
     override val kode = Brevkode.Vedtak.UFOER_ENDRET_PGA_INNTEKT
@@ -135,11 +152,9 @@ object UfoeretrygdEndretPgaInntekt : VedtaksbrevTemplate<UfoeretrygdEndretPgaInn
         )
     ) {
 
-        val harFlereFellesbarn = barnetilleggFellesbarn.antallBarn.greaterThan(1)
-        val harFlereSaerkullsbarn = barnetilleggSaerkullsbarn.antallBarn.greaterThan(1)
         val harBarnetilleggForSaerkullOgFellesbarn =
             barnetilleggFellesbarn.harBarnetillegg and barnetilleggSaerkullsbarn.harBarnetillegg
-        val harEndretUfoeretrygd = gammeltUfoeretrygdBeloep.notEqualTo(nyttUfoeretrygdBeloep)
+        val harEndretUfoeretrygd = ufoeretrygd.gammeltBeloep.notEqualTo(ufoeretrygd.nyttBeloep)
         val harEndretBarnetilleggFellesbarn =
             barnetilleggFellesbarn.nyttBeloep.notEqualTo(barnetilleggFellesbarn.gammeltBeloep)
         val harEndretBarnetilleggSaerkullsbarn =
@@ -163,12 +178,12 @@ object UfoeretrygdEndretPgaInntekt : VedtaksbrevTemplate<UfoeretrygdEndretPgaInn
             showIf(virkningsdatoErFoersteJanuar) {
                 includePhrase(
                     UfoeretrygdEndretPgaInntekt.InnledningReduksjonUfoeretrygd(
-                        forventetInntektUfoeretrygd = forventetInntektUfoeretrygd,
+                        forventetInntektUfoeretrygd = ufoeretrygd.forventetInntekt,
                         harEndretUfoeretrygd = harEndretUfoeretrygd,
                         virkningsaar = virkningsaar,
                         aarFoerVirkningsAar = aarFoerVirkningsAar,
-                        ufoeregrad = ufoeregrad,
-                        utbetalingsgrad = utbetalingsgrad,
+                        ufoeregrad = ufoeretrygd.ufoeregrad,
+                        utbetalingsgrad = ufoeretrygd.utbetalingsgrad,
                         fyller67IVirkningsAar = fyller67IVirkningsAar,
                     )
                 )
@@ -179,17 +194,17 @@ object UfoeretrygdEndretPgaInntekt : VedtaksbrevTemplate<UfoeretrygdEndretPgaInn
                         harEndretBarnetillegg = harEndretBarnetillegg,
                         harBarnetilleggSaerkullsbarn = barnetilleggSaerkullsbarn.harBarnetillegg,
                         harBarnetilleggFellesbarn = barnetilleggFellesbarn.harBarnetillegg,
-                        harFlereFellesbarn = harFlereFellesbarn,
-                        harFlereSaerkullsbarn = harFlereSaerkullsbarn,
+                        harFlereFellesbarn = barnetilleggFellesbarn.gjelderFlereBarn,
+                        harFlereSaerkullsbarn = barnetilleggSaerkullsbarn.gjelderFlereBarn,
                         harEndretBarnetilleggFellesbarn = harEndretBarnetilleggFellesbarn,
                         harEndretBarnetilleggSaerkullsbarn = harEndretBarnetilleggSaerkullsbarn,
-                        inntektBruktIAvkortningAvBarnetilleggForSaerkullsbarn = inntektBruktIAvkortningAvBarnetilleggForSaerkullsbarn,
-                        inntektBruktIAvkortningAvBarnetilleggForFellesbarn = inntektBruktIAvkortningAvBarnetilleggForFellesbarn,
+                        inntektBruktIAvkortningAvBarnetilleggForSaerkullsbarn = barnetilleggSaerkullsbarn.inntektBruktIAvkortning,
+                        inntektBruktIAvkortningAvBarnetilleggForFellesbarn = barnetilleggFellesbarn.inntektBruktIAvkortning,
                         virkningsaar = virkningsaar,
                     )
                 )
 
-                showIf(ufoeregrad.notEqualTo(utbetalingsgrad) and harEndretBarnetillegg) {
+                showIf(ufoeretrygd.ufoeregrad.notEqualTo(ufoeretrygd.utbetalingsgrad) and harEndretBarnetillegg) {
                     includePhrase(
                         UfoeretrygdEndretPgaInntekt.InnledningInntektsjusteringUfoeretrygd(
                             aarFoerVirkningsAar = aarFoerVirkningsAar.value,
@@ -218,8 +233,8 @@ object UfoeretrygdEndretPgaInntekt : VedtaksbrevTemplate<UfoeretrygdEndretPgaInn
                             barnetilleggSaerkullsbarn_fribeloepErPeriodisert = barnetilleggSaerkullsbarn.fribeloepErPeriodisert,
                             barnetilleggSaerkullsbarn_harBarnetillegg = barnetilleggSaerkullsbarn.harBarnetillegg,
                             barnetilleggSaerkullsbarn_inntektErPeriodisert = barnetilleggSaerkullsbarn.inntektErPeriodisert,
-                            harFlereFellesbarn = harFlereFellesbarn,
-                            harFlereSaerkullsbarn = harFlereSaerkullsbarn,
+                            harFlereFellesbarn = barnetilleggFellesbarn.gjelderFlereBarn,
+                            harFlereSaerkullsbarn = barnetilleggSaerkullsbarn.gjelderFlereBarn,
                         )
                     )
                 }
@@ -229,105 +244,74 @@ object UfoeretrygdEndretPgaInntekt : VedtaksbrevTemplate<UfoeretrygdEndretPgaInn
                     UfoeretrygdEndretPgaInntekt.MeldFraOmInntektsEndringerUfoer(
                         barnetilleggFellesbarn_harBarnetillegg = barnetilleggFellesbarn.harBarnetillegg,
                         virkningsaar = virkningsaar,
-                        brukersSivilstand = brukersSivilstand,
+                        brukersSivilstand = sivilstand,
                     )
                 )
             }.orShow {
                 includePhrase(
                     UfoeretrygdEndretPgaInntekt.InnledningInntektsendring(
-                        harFlereFellesbarn = harFlereFellesbarn,
+                        harFlereFellesbarn = barnetilleggFellesbarn.gjelderFlereBarn,
                         harEndretBarnetillegg = harEndretBarnetillegg,
                         harEndretUfoeretrygd = harEndretUfoeretrygd,
                         harBarnetilleggForSaerkullOgFellesbarn = harBarnetilleggForSaerkullOgFellesbarn,
                         harBarnetilleggFellesbarn = barnetilleggFellesbarn.harBarnetillegg,
-                        brukersSivilstand = brukersSivilstand,
+                        brukersSivilstand = sivilstand,
                         virkningsdatoFraOgMed = virkningsdatoFraOgMed,
                     )
                 )
             }
-
-            //TODO gjenbruk etter jeremy har fått ut branchen sin i main.
-            //textExpr(
-            //    Bokmal to "Du får ".expr() + PE_Vedtaksdata_BeregningsData_BeregningUfore_TotalNetto + " kroner i uføretrygd per måned før skatt.",
-            //    Nynorsk to "Du får ".expr() + PE_Vedtaksdata_BeregningsData_BeregningUfore_TotalNetto + " kroner i uføretrygd per månad før skatt.",
-            //)
-            //textExpr(
-            //    Bokmal to "Du får ".expr() + PE_Vedtaksdata_BeregningsData_BeregningUfore_TotalNetto + " kroner i uføretrygd og barnetillegg per måned før skatt.",
-            //    Nynorsk to "Du får ".expr() + PE_Vedtaksdata_BeregningsData_BeregningUfore_TotalNetto + " kroner i uføretrygd og barnetillegg per månad før skatt.",
-            //)
-            //textExpr(
-            //    Bokmal to "Du får ".expr() + PE_Vedtaksdata_BeregningsData_BeregningUfore_TotalNetto + " kroner i uføretrygd, barne- og ektefelletillegg per måned før skatt.",
-            //    Nynorsk to "Du får ".expr() + PE_Vedtaksdata_BeregningsData_BeregningUfore_TotalNetto + " kroner i uføretrygd, barne- og ektefelletillegg per månad før skatt.",
-            //)
-            //textExpr(
-            //    Bokmal to "Du får ".expr() + PE_Vedtaksdata_BeregningsData_BeregningUfore_TotalNetto + " kroner i uføretrygd og ektefelletillegg per måned før skatt.",
-            //    Nynorsk to "Du får ".expr() + PE_Vedtaksdata_BeregningsData_BeregningUfore_TotalNetto + " kroner i uføretrygd og ektefelletillegg per månad før skatt.",
-            //)
-            //textExpr(
-            //    Bokmal to "Du får ".expr() + PE_Vedtaksdata_BeregningsData_BeregningUfore_TotalNetto + " kroner i uføretrygd og gjenlevendetillegg per måned før skatt.",
-            //    Nynorsk to "Du får ".expr() + PE_Vedtaksdata_BeregningsData_BeregningUfore_TotalNetto + " kroner i uføretrygd og attlevandetillegg per månad før skatt.",
-            //)
-            //textExpr(
-            //    Bokmal to "Du får ".expr() + PE_Vedtaksdata_BeregningsData_BeregningUfore_TotalNetto + " kroner i uføretrygd, barne- og gjenlevendetillegg per måned før skatt.",
-            //    Nynorsk to "Du får ".expr() + PE_Vedtaksdata_BeregningsData_BeregningUfore_TotalNetto + " kroner i uføretrygd, barne- og attlevandetillegg per månad før skatt.",
-            //)
-
-            //TODO gjenbruk etter jeremy har fått ut branchen sin i main.
-            //text(
-            //    Bokmal to "Uføretrygden blir fortsatt utbetalt senest den 20. hver måned.",
-            //    Nynorsk to "Uføretrygda blir framleis utbetalt seinast den 20. i kvar månad.",
-            //)
-
-            //TODO gjenbruk etter jeremy har fått ut branchen sin i main.
-            //text(
-            //    Bokmal to "I dette brevet forklarer vi hvilke rettigheter og plikter du har. Det er derfor viktig at du leser hele brevet.",
-            //    Nynorsk to "I dette brevet forklarer vi kva rettar og plikter du har. Det er derfor viktig at du les heile brevet.",
-            //)
+            includePhrase(Ufoeretrygd.Beloep(
+                perMaaned = ufoeretrygd.beloepNetto,
+                ektefelle = harEktefelletillegg,
+                ufoeretrygd = true.expr(),
+                gjenlevende = harGjenlevendetillegg,
+                saerkullsbarn = barnetilleggSaerkullsbarn.notNull(),
+                fellesbarn = barnetilleggFellesbarn.notNull(),
+            ))
+            includePhrase(Ufoeretrygd.UtbetalingsdatoUfoeretrygd)
+            includePhrase(Ufoeretrygd.ViktigAALeseHeleBrevet)
 
 
             includePhrase(Vedtak.BegrunnelseOverskrift)
 
             includePhrase(
                 UfoeretrygdEndretPgaInntekt.EndringUfoeretrygdBegrunnelseInntektstak(
-                    inntektsgrenseUfoeretrygd = inntektsgrenseUfoeretrygd,
-                    inntektstakUfoeretrygd = inntektstakUfoeretrygd,
-                    nyttUfoeretrygdBeloep = nyttUfoeretrygdBeloep,
-                    forventetInntektUfoeretrygd = forventetInntektUfoeretrygd,
-                    gammeltUfoeretrygdBeloep = gammeltUfoeretrygdBeloep,
-                    utbetalingsgrad = utbetalingsgrad,
-                    ufoeregrad = ufoeregrad,
+                    inntektsgrenseUfoeretrygd = ufoeretrygd.inntektsgrense,
+                    inntektstakUfoeretrygd = ufoeretrygd.inntektstak,
+                    nyttUfoeretrygdBeloep = ufoeretrygd.nyttBeloep,
+                    forventetInntektUfoeretrygd = ufoeretrygd.forventetInntekt,
+                    gammeltUfoeretrygdBeloep = ufoeretrygd.gammeltBeloep,
+                    utbetalingsgrad = ufoeretrygd.utbetalingsgrad,
+                    ufoeregrad = ufoeretrygd.ufoeregrad,
                 )
             )
 
-
             includePhrase(
                 UfoeretrygdEndretPgaInntekt.InntektVedSidenAvUfoeretrygd(
-                    inntektsgrenseUfoeretrygd = inntektsgrenseUfoeretrygd,
-                    ufoeretrygdBeloepErRedusert = ufoeretrygdBeloepErRedusert,
-                    forventetInntektUfoeretrygd = forventetInntektUfoeretrygd,
+                    inntektsgrenseUfoeretrygd = ufoeretrygd.inntektsgrense,
+                    ufoeretrygdBeloepErRedusert = ufoeretrygd.beloepErRedusert,
+                    forventetInntektUfoeretrygd = ufoeretrygd.forventetInntekt,
                 )
             )
 
             includePhrase(
                 UfoeretrygdEndretPgaInntekt.UfoeretrygdTrekkPgaInntekt(
-                    forventetInntektUfoeretrygd = forventetInntektUfoeretrygd,
-                    inntektsgrenseUfoeretrygd = inntektsgrenseUfoeretrygd,
-                    nyttUfoeretrygdBeloep = nyttUfoeretrygdBeloep,
-                    ufoeretrygdAvkortningsbeloepPerAar = ufoeretrygdAvkortningsbeloepPerAar,
+                    forventetInntektUfoeretrygd = ufoeretrygd.forventetInntekt,
+                    inntektsgrenseUfoeretrygd = ufoeretrygd.inntektsgrense,
+                    nyttUfoeretrygdBeloep = ufoeretrygd.nyttBeloep,
+                    ufoeretrygdAvkortningsbeloepPerAar = ufoeretrygd.avkortningsbeloepPerAar,
                     virkningsdatoErFoersteJanuar = virkningsdatoErFoersteJanuar,
                 )
             )
 
             includePhrase(
                 UfoeretrygdEndretPgaInntekt.IkkeUtbetaltUfoeretrygdPaaGrunnAvInntekt(
-                    forventetInntektUfoeretrygd = forventetInntektUfoeretrygd,
-                    inntektstakUfoeretrygd = inntektstakUfoeretrygd,
-                    nyttUfoeretrygdBeloep = nyttUfoeretrygdBeloep,
-                    inntektsgrenseUfoeretrygd = inntektsgrenseUfoeretrygd,
+                    forventetInntektUfoeretrygd = ufoeretrygd.forventetInntekt,
+                    inntektstakUfoeretrygd = ufoeretrygd.inntektstak,
+                    nyttUfoeretrygdBeloep = ufoeretrygd.nyttBeloep,
+                    inntektsgrenseUfoeretrygd = ufoeretrygd.inntektsgrense,
                 )
             )
-
-
 
             //textExpr(
             //    Bokmal to "Det utbetales ikke uføretrygd når inntekten din utgjør mer enn inntektsgrensen, det vil si ".expr() + PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektsgrense + " kroner. Inntekten vi har brukt er ".expr() + forventetInntektUfoeretrygd + " kroner og du vil derfor ikke få utbetalt uføretrygd resten av året.",
@@ -598,5 +582,9 @@ object UfoeretrygdEndretPgaInntekt : VedtaksbrevTemplate<UfoeretrygdEndretPgaInn
             //    Nynorsk to "Orientering om rettar og plikter",
             //)
         }
+        includeAttachment(
+            createVedleggOpplysningerBruktIBeregningUT(skalViseMinsteytelse = true, skalViseBarnetillegg = true),
+            opplysningerBruktIBeregningUTDto
+            )
     }
 }

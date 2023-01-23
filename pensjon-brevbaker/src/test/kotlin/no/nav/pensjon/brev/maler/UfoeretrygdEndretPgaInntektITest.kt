@@ -16,16 +16,7 @@ class UfoeretrygdEndretPgaInntektITest {
     fun testPdf() {
         Letter(
             UfoeretrygdEndretPgaInntekt.template,
-            Fixtures.create<UfoeretrygdEndretPgaInntektDto>().copy(
-                virkningFraOgMed = LocalDate.of(2020,1,1),
-                harInnvilgetBarnetilleggSaerkullsBarn = true,
-                harInnvilgetBarnetilleggFellesBarn = true,
-                beloepGammelBarnetillegFellesBarn = Kroner(0),
-                beloepNyBarnetillegFellesBarn = Kroner(10),
-                beloepGammelUfoeretrygd = Kroner(110),
-                beloepNyUfoeretrygd = Kroner(10),
-                antallSaerkullsbarn = 5
-            ),
+            Fixtures.create<UfoeretrygdEndretPgaInntektDto>(),
             Language.Bokmal,
             Fixtures.fellesAuto
         )
