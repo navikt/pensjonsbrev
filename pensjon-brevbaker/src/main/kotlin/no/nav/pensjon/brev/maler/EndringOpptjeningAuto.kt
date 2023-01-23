@@ -11,14 +11,31 @@ import no.nav.pensjon.brev.api.model.maler.EndringOpptjeningAutoDtoSelectors.bar
 import no.nav.pensjon.brev.api.model.maler.EndringOpptjeningAutoDtoSelectors.endringIOpptjening
 import no.nav.pensjon.brev.api.model.maler.EndringOpptjeningAutoDtoSelectors.kombinereUfoeretrygdMedInntekt
 import no.nav.pensjon.brev.api.model.maler.EndringOpptjeningAutoDtoSelectors.ufoeretrygd
+import no.nav.pensjon.brev.api.model.maler.KombinereUfoeretrygdMedInntektSelectors.beloepsgrense
+import no.nav.pensjon.brev.api.model.maler.KombinereUfoeretrygdMedInntektSelectors.forventetInntekt
+import no.nav.pensjon.brev.api.model.maler.KombinereUfoeretrygdMedInntektSelectors.grunnbeloep
+import no.nav.pensjon.brev.api.model.maler.KombinereUfoeretrygdMedInntektSelectors.harBeloepOekt
+import no.nav.pensjon.brev.api.model.maler.KombinereUfoeretrygdMedInntektSelectors.harBeloepRedusert
+import no.nav.pensjon.brev.api.model.maler.KombinereUfoeretrygdMedInntektSelectors.harDelvisUfoeregrad
+import no.nav.pensjon.brev.api.model.maler.KombinereUfoeretrygdMedInntektSelectors.harFullUfoeregrad
+import no.nav.pensjon.brev.api.model.maler.KombinereUfoeretrygdMedInntektSelectors.harInntektEtterUfoere
+import no.nav.pensjon.brev.api.model.maler.KombinereUfoeretrygdMedInntektSelectors.inntektsgrense
+import no.nav.pensjon.brev.api.model.maler.KombinereUfoeretrygdMedInntektSelectors.inntektsgrenseNesteAar
+import no.nav.pensjon.brev.api.model.maler.KombinereUfoeretrygdMedInntektSelectors.inntektstak
+import no.nav.pensjon.brev.api.model.maler.KombinereUfoeretrygdMedInntektSelectors.kompensasjonsgrad
+import no.nav.pensjon.brev.api.model.maler.KombinereUfoeretrygdMedInntektSelectors.nettoAkkumulerteBeloepUtbetalt
+import no.nav.pensjon.brev.api.model.maler.KombinereUfoeretrygdMedInntektSelectors.nettoAkkumulertePlussNettoRestAar
+import no.nav.pensjon.brev.api.model.maler.KombinereUfoeretrygdMedInntektSelectors.nettoUfoeretrygdUtbetaltPerMaaned
+import no.nav.pensjon.brev.api.model.maler.KombinereUfoeretrygdMedInntektSelectors.oppjustertInntektEtterUfoere
+import no.nav.pensjon.brev.api.model.maler.KombinereUfoeretrygdMedInntektSelectors.oppjustertInntektFoerUfoere80prosent
 import no.nav.pensjon.brev.api.model.maler.KombinereUfoeretrygdMedInntektSelectors.ufoeregrad
 import no.nav.pensjon.brev.api.model.maler.KombinereUfoeretrygdMedInntektSelectors.utbetalingsgrad
-import no.nav.pensjon.brev.api.model.maler.UfoeretrygdSelectors.ektefelletilleggInnvilget
-import no.nav.pensjon.brev.api.model.maler.UfoeretrygdSelectors.fellesbarnInnvilget
-import no.nav.pensjon.brev.api.model.maler.UfoeretrygdSelectors.gjenlevendetilleggInnvilget
+import no.nav.pensjon.brev.api.model.maler.UfoeretrygdSelectors.harEktefelletilleggInnvilget
+import no.nav.pensjon.brev.api.model.maler.UfoeretrygdSelectors.harFellesbarnInnvilget
+import no.nav.pensjon.brev.api.model.maler.UfoeretrygdSelectors.harGjenlevendetilleggInnvilget
+import no.nav.pensjon.brev.api.model.maler.UfoeretrygdSelectors.harSaerkullsbarnInnvilget
 import no.nav.pensjon.brev.api.model.maler.UfoeretrygdSelectors.harUtbetalingsgrad
 import no.nav.pensjon.brev.api.model.maler.UfoeretrygdSelectors.harYrkesskadeGradUtbetaling
-import no.nav.pensjon.brev.api.model.maler.UfoeretrygdSelectors.saerkullsbarnInnvilget
 import no.nav.pensjon.brev.api.model.maler.UfoeretrygdSelectors.utbetaltPerMaaned
 import no.nav.pensjon.brev.maler.fraser.EndringOpptjening
 import no.nav.pensjon.brev.maler.fraser.ufoer.HjemlerFolketrygdloven
@@ -71,11 +88,11 @@ object EndringOpptjeningAuto : VedtaksbrevTemplate<EndringOpptjeningAutoDto> {
 
             includePhrase(
                 Ufoeretrygd.Beloep(
-                    ektefelle = ufoeretrygd.ektefelletilleggInnvilget,
-                    fellesbarn = ufoeretrygd.fellesbarnInnvilget,
-                    gjenlevende = ufoeretrygd.gjenlevendetilleggInnvilget,
+                    ektefelle = ufoeretrygd.harEktefelletilleggInnvilget,
+                    fellesbarn = ufoeretrygd.harFellesbarnInnvilget,
+                    gjenlevende = ufoeretrygd.harGjenlevendetilleggInnvilget,
                     perMaaned = ufoeretrygd.utbetaltPerMaaned,
-                    saerkullsbarn = ufoeretrygd.saerkullsbarnInnvilget,
+                    saerkullsbarn = ufoeretrygd.harSaerkullsbarnInnvilget,
                     ufoeretrygd = ufoeretrygd.harUtbetalingsgrad,
                 )
             )
@@ -97,18 +114,92 @@ object EndringOpptjeningAuto : VedtaksbrevTemplate<EndringOpptjeningAutoDto> {
 
             includePhrase(
                 HjemlerFolketrygdloven.Folketrygdloven(
-                    ektefelletilleggInnvilget = ufoeretrygd.ektefelletilleggInnvilget,
-                    fellesbarntilleggInnvilget = ufoeretrygd.fellesbarnInnvilget,
-                    harGjenlevendetilleggInnvilget = ufoeretrygd.gjenlevendetilleggInnvilget,
+                    harEktefelletilleggInnvilget = ufoeretrygd.harEktefelletilleggInnvilget,
+                    harFellesbarntilleggInnvilget = ufoeretrygd.harFellesbarnInnvilget,
+                    harGjenlevendetilleggInnvilget = ufoeretrygd.harGjenlevendetilleggInnvilget,
                     harYrkesskadegradUtbetaling = ufoeretrygd.harYrkesskadeGradUtbetaling,
-                    saerkullsbarntilleggInnvilget = ufoeretrygd.saerkullsbarnInnvilget,
+                    harSaerkullsbarntilleggInnvilget = ufoeretrygd.harSaerkullsbarnInnvilget,
                 )
             )
 
-            includePhrase(KombinereUfoeretrygdMedInntekt.KombinereUfoeretrygdOgInntektOverskrift(
-                ufoeregrad = kombinereUfoeretrygdMedInntekt.ufoeregrad,
-                utbetalingsgrad = kombinereUfoeretrygdMedInntekt.utbetalingsgrad,
-            ) )
+            includePhrase(
+                KombinereUfoeretrygdMedInntekt.KombinereUfoeretrygdOgInntektOverskrift(
+                    ufoeregrad = kombinereUfoeretrygdMedInntekt.ufoeregrad,
+                    utbetalingsgrad = kombinereUfoeretrygdMedInntekt.utbetalingsgrad,
+                )
+            )
+
+            includePhrase(
+                KombinereUfoeretrygdMedInntekt.InntektVedSidenAvUfoeretrygd(
+                    ufoeregrad = kombinereUfoeretrygdMedInntekt.ufoeregrad,
+                    utbetalingsgrad = kombinereUfoeretrygdMedInntekt.utbetalingsgrad,
+                )
+            )
+
+            includePhrase(
+                KombinereUfoeretrygdMedInntekt.Inntektsgrense(
+                    beloepsgrense = kombinereUfoeretrygdMedInntekt.beloepsgrense,
+                    grunnbeloep = kombinereUfoeretrygdMedInntekt.grunnbeloep,
+                    harFullUfoeregrad = kombinereUfoeretrygdMedInntekt.harFullUfoeregrad,
+                    harInntektEtterUfoere = kombinereUfoeretrygdMedInntekt.harInntektEtterUfoere,
+                    inntektsgrense = kombinereUfoeretrygdMedInntekt.inntektsgrense,
+                    inntektsgrenseNesteAar = kombinereUfoeretrygdMedInntekt.inntektsgrenseNesteAar,
+                    ufoeregrad = kombinereUfoeretrygdMedInntekt.ufoeregrad,
+                )
+            )
+
+            includePhrase(
+                KombinereUfoeretrygdMedInntekt.InntektsgrenseLagtTilGrunn(
+                    inntektsgrense = kombinereUfoeretrygdMedInntekt.inntektsgrense,
+                    inntektsgrenseNesteAar = kombinereUfoeretrygdMedInntekt.inntektsgrenseNesteAar,
+                    beloepsgrense = kombinereUfoeretrygdMedInntekt.beloepsgrense,
+                    oppjustertInntektEtterUfoere = kombinereUfoeretrygdMedInntekt.oppjustertInntektEtterUfoere,
+                    grunnbeloep = kombinereUfoeretrygdMedInntekt.grunnbeloep,
+                    ufoeregrad = kombinereUfoeretrygdMedInntekt.ufoeregrad,
+                    harInntektEtterUfoere = kombinereUfoeretrygdMedInntekt.harInntektEtterUfoere,
+                    harFullUfoeregrad = kombinereUfoeretrygdMedInntekt.harFullUfoeregrad,
+                    harDelvisUfoeregrad = kombinereUfoeretrygdMedInntekt.harDelvisUfoeregrad,
+                )
+            )
+
+            includePhrase(
+                KombinereUfoeretrygdMedInntekt.Kompensasjonsgrad(
+                    inntektsgrense = kombinereUfoeretrygdMedInntekt.inntektsgrense,
+                    inntektsgrenseNesteAar = kombinereUfoeretrygdMedInntekt.inntektsgrenseNesteAar,
+                    inntektstak = kombinereUfoeretrygdMedInntekt.inntektstak,
+                    kompensasjonsgrad = kombinereUfoeretrygdMedInntekt.kompensasjonsgrad,
+                )
+            )
+            includePhrase(
+                KombinereUfoeretrygdMedInntekt.OekeUfoereUtbetalingForRestenAvKalenderAaret(
+                    forventetInntekt = kombinereUfoeretrygdMedInntekt.forventetInntekt,
+                    harBeloepOekt = kombinereUfoeretrygdMedInntekt.harBeloepOekt,
+                    harBeloepRedusert = kombinereUfoeretrygdMedInntekt.harBeloepRedusert,
+                    inntektsgrense = kombinereUfoeretrygdMedInntekt.inntektsgrense,
+                    inntektstak = kombinereUfoeretrygdMedInntekt.inntektstak,
+                    oppjustertInntektFoerUfoere80prosent = kombinereUfoeretrygdMedInntekt.oppjustertInntektFoerUfoere80prosent,
+                    ufoeregrad = kombinereUfoeretrygdMedInntekt.ufoeregrad,
+                    utbetalingsgrad = kombinereUfoeretrygdMedInntekt.utbetalingsgrad,
+                )
+            )
+
+            includePhrase(
+                KombinereUfoeretrygdMedInntekt.ReduksjonAvInntektUfoere(
+                    inntektsgrense = kombinereUfoeretrygdMedInntekt.inntektsgrense,
+                    nettoAkkumulerteBeloepUtbetalt = kombinereUfoeretrygdMedInntekt.nettoAkkumulerteBeloepUtbetalt,
+                    nettoAkkumulertePlussNettoRestAar = kombinereUfoeretrygdMedInntekt.nettoAkkumulertePlussNettoRestAar,
+                    nettoUfoeretrygdUtbetaltPerMaaned = kombinereUfoeretrygdMedInntekt.nettoUfoeretrygdUtbetaltPerMaaned,
+                    oppjustertInntektFoerUfoere80prosent = kombinereUfoeretrygdMedInntekt.oppjustertInntektFoerUfoere80prosent,
+                    ufoeregrad = kombinereUfoeretrygdMedInntekt.ufoeregrad,
+                    utbetalingsgrad = kombinereUfoeretrygdMedInntekt.utbetalingsgrad,
+                )
+            )
+
+            includePhrase(
+                KombinereUfoeretrygdMedInntekt.BeholderUfoeregraden(
+                    ufoeregrad = kombinereUfoeretrygdMedInntekt.ufoeregrad
+                )
+            )
         }
     }
 }

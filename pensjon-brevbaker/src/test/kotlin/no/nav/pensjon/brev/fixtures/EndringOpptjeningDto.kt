@@ -35,6 +35,7 @@ fun createEndringOpptjeningAutoDtoKombinereUfoeretrygdMedInntekt() =
         harInntektEtterUfoere = false,
         inntektsgrense = Kroner(0),
         inntektsgrenseNesteAar = Kroner(0),
+        inntektstak = Kroner(0),
         kompensasjonsgrad = 0,
         nettoAkkumulerteBeloepUtbetalt = Kroner(0),
         nettoAkkumulertePlussNettoRestAar = Kroner(0),

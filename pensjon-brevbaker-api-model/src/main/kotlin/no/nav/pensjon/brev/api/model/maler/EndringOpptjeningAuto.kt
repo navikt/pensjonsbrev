@@ -42,6 +42,7 @@ data class EndringOpptjeningAutoDto(
         val harInntektEtterUfoere: Boolean,  // IEUInntekt > 0 / Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektsgrense
         val inntektsgrense: Kroner,  // Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_InntektsgrenseNesteAr
         val inntektsgrenseNesteAar: Kroner,  //
+        val inntektstak: Kroner,
         val kompensasjonsgrad: Int,  //
         val nettoAkkumulerteBeloepUtbetalt: Kroner,  // <NettoAkk> Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_NettoAkk
         val nettoAkkumulertePlussNettoRestAar: Kroner,  // TODO: <NettoAkk_pluss_NettoRestAr> Beregning i Exstream!  PE_UT_NettoAkk_pluss_NettoRestAr. Tror ikke verdien finnes i Pesys

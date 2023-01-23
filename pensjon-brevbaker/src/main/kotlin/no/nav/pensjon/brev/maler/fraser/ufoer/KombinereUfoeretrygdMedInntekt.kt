@@ -71,11 +71,11 @@ object KombinereUfoeretrygdMedInntekt {
     data class Inntektsgrense(
         val beloepsgrense: Expression<Kroner>,
         val grunnbeloep: Expression<Kroner>,
+        val harFullUfoeregrad: Expression<Boolean>,
         val harInntektEtterUfoere: Expression<Boolean>,
         val inntektsgrense: Expression<Kroner>,
         val inntektsgrenseNesteAar: Expression<Kroner>,
         val ufoeregrad: Expression<Int>,
-        val harFullUfoeregrad: Expression<Boolean>,
 
         ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
@@ -186,13 +186,13 @@ object KombinereUfoeretrygdMedInntekt {
     // TBU2361, TBU2362, TBU2363
     data class OekeUfoereUtbetalingForRestenAvKalenderAaret(
         val forventetInntekt: Expression<Kroner>,
-        val utbetalingsgrad: Expression<Int>,
-        val ufoeregrad: Expression<Int>,
+        val harBeloepOekt: Expression<Boolean>,
+        val harBeloepRedusert: Expression<Boolean>,
         val inntektsgrense: Expression<Kroner>,
         val inntektstak: Expression<Kroner>,
         val oppjustertInntektFoerUfoere80prosent: Expression<Kroner>,
-        val harBeloepRedusert: Expression<Boolean>,
-        val harBeloepOekt: Expression<Boolean>,
+        val ufoeregrad: Expression<Int>,
+        val utbetalingsgrad: Expression<Int>,
 
         ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
@@ -236,13 +236,13 @@ object KombinereUfoeretrygdMedInntekt {
 
     // TBU2261
     data class ReduksjonAvInntektUfoere(
-        val utbetalingsgrad: Expression<Int>,
-        val ufoeregrad: Expression<Int>,
         val inntektsgrense: Expression<Kroner>,
-        val oppjustertInntektFoerUfoere80prosent: Expression<Kroner>,
         val nettoAkkumulerteBeloepUtbetalt: Expression<Kroner>,
         val nettoAkkumulertePlussNettoRestAar: Expression<Kroner>,
         val nettoUfoeretrygdUtbetaltPerMaaned: Expression<Kroner>,
+        val oppjustertInntektFoerUfoere80prosent: Expression<Kroner>,
+        val ufoeregrad: Expression<Int>,
+        val utbetalingsgrad: Expression<Int>,
 
         ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
