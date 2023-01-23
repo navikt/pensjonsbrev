@@ -51,6 +51,13 @@ class TemplateRootScope<Lang : LanguageSupport, LetterData : Any>(
         attachments.add(IncludeAttachment(attachmentData, template, predicate))
     }
 
+    fun <AttachmentData : Any> includeAttachmentIfNotNull(
+        template: AttachmentTemplate<Lang, AttachmentData>,
+        attachmentData: Expression<AttachmentData?>,
+    ) {
+        @Suppress("UNCHECKED_CAST")
+        attachments.add(IncludeAttachment(attachmentData as Expression<AttachmentData>, template, attachmentData.notNull()))
+    }
 }
 
 

@@ -1,12 +1,16 @@
 package no.nav.pensjon.brev.template.render
 
-import no.nav.pensjon.brev.api.model.*
+import no.nav.pensjon.brev.api.model.Bruker
+import no.nav.pensjon.brev.api.model.NAVEnhet
+import no.nav.pensjon.brev.api.model.SignerendeSaksbehandlere
 import no.nav.pensjon.brev.latex.LatexAppendable
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.*
-import java.lang.StringBuilder
-import java.time.*
-import java.time.format.*
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
+
+private const val DOCUMENT_PRODUCER = "brevbaker / pdf-bygger med LaTeX"
 
 object PensjonLatexRenderer : LetterRenderer<RenderedLatexLetter>() {
     private val letterResourceFiles: List<RenderedFile> = listOf(
@@ -44,8 +48,9 @@ object PensjonLatexRenderer : LetterRenderer<RenderedLatexLetter>() {
 
         with(scope.felles) {
             brukerCommands(bruker)
+            saksinfoCommands(vergeNavn)
             navEnhetCommands(avsenderEnhet)
-            printNewCmd("feltdato", dokumentDato.format(dateFormatter(scope.language, FormatStyle.SHORT)))
+            printNewCmd("feltdato", dokumentDato.format(dateFormatter(scope.language, FormatStyle.LONG)))
             saksbehandlerCommands(signerendeSaksbehandlere)
         }
     }
@@ -55,25 +60,12 @@ object PensjonLatexRenderer : LetterRenderer<RenderedLatexLetter>() {
         printCmd("Language", scope.language.locale().toLanguageTag())
         printCmd("Publisher", scope.felles.avsenderEnhet.navn)
         printCmd("Date", scope.felles.dokumentDato.format(DateTimeFormatter.ISO_LOCAL_DATE))
-    }
-
-    private fun LatexAppendable.appendPdfMetadata(scope: ExpressionScope<*, *>, template: LetterTemplate<*, *>) {
-        val title = StringBuilder().apply { LatexAppendable(this).apply { renderText(scope, template.title) } }.toString()
-        print(
-            """
-               \pdfinfo{
-                    /Creator (${scope.felles.avsenderEnhet.navn.latexEscape()})
-                    /Title  (${title})
-                    /Language (${scope.language.locale().toLanguageTag().latexEscape()})
-                    /Producer (${scope.felles.avsenderEnhet.navn.latexEscape()})
-                }
-            """.trimIndent(), escape = false
-        )
+        printCmd("Producer", DOCUMENT_PRODUCER)
+        printCmd("Creator", DOCUMENT_PRODUCER)
     }
 
     private fun LatexAppendable.renderLetterTemplate(scope: ExpressionScope<*, *>, template: LetterTemplate<*, *>) {
         println("""\documentclass{pensjonsbrev_v3}""", escape = false)
-        appendPdfMetadata(scope, template)
         printCmd("begin", "document")
         printCmd("firstpage")
         printCmd("tittel") { arg { renderText(scope, template.title) } }
@@ -98,9 +90,36 @@ object PensjonLatexRenderer : LetterRenderer<RenderedLatexLetter>() {
     private fun LatexAppendable.brukerCommands(bruker: Bruker) =
         with(bruker) {
             printNewCmd("feltfoedselsnummerbruker", foedselsnummer.format())
-            printNewCmd("feltfornavnbruker", fornavn)
+            printNewCmd("feltfornavnbruker", listOfNotNull(fornavn, mellomnavn).joinToString(" "))
             printNewCmd("feltetternavnbruker", etternavn)
         }
+
+    private fun LatexAppendable.saksinfoCommands(verge: String?) {
+        verge?.also { printNewCmd("feltvergenavn", it) }
+        printNewCmd("saksinfomottaker") {
+            printCmd("begin", "saksinfotable", "")
+            verge?.let {
+                println("""\feltvergenavnprefix & \feltvergenavn \\""", escape = false)
+                println(
+                    """\felt${LanguageSetting.Sakspart.gjelderNavn} & \feltfornavnbruker \space \feltetternavnbruker \\""",
+                    escape = false
+                )
+            } ?: println(
+                """\felt${LanguageSetting.Sakspart.navn} & \feltfornavnbruker \space \feltetternavnbruker \\""",
+                escape = false
+            )
+            println(
+                """\felt${LanguageSetting.Sakspart.foedselsnummer} & \feltfoedselsnummerbruker \\""",
+                escape = false
+            )
+            println(
+                """\felt${LanguageSetting.Sakspart.saksnummer} & \feltsaksnummer \hfill \letterdate\\""",
+                escape = false
+            )
+
+            printCmd("end", "saksinfotable")
+        }
+    }
 
     private fun LatexAppendable.navEnhetCommands(navEnhet: NAVEnhet) =
         with(navEnhet) {
@@ -112,7 +131,7 @@ object PensjonLatexRenderer : LetterRenderer<RenderedLatexLetter>() {
     private fun pdfCreationTime(): String {
         val now = ZonedDateTime.now()
         val formattedTime = now.format(DateTimeFormatter.ofPattern("YYYYMMddHHmmssxxx"))
-        return "D:${formattedTime.replace(":", "’")}’"
+        return "D:${formattedTime.replace(":", "'")}'"
     }
 
     private fun LatexAppendable.vedleggCommand(scope: ExpressionScope<*, *>, attachments: List<IncludeAttachment<*, *>>) {
@@ -131,9 +150,9 @@ object PensjonLatexRenderer : LetterRenderer<RenderedLatexLetter>() {
     }
 
     private fun LatexAppendable.renderAttachment(scope: ExpressionScope<*, *>, attachment: AttachmentTemplate<*, *>) {
-        printCmd("startvedlegg") { arg { renderText(scope, listOf(attachment.title)) } }
-        if (attachment.includeSakspart) {
-            printCmd("sakspart")
+        printCmd("startvedlegg") {
+            arg { renderText(scope, listOf(attachment.title)) }
+            arg { if (attachment.includeSakspart) printCmd("sakspart") }
         }
         renderOutline(scope, attachment.outline)
         printCmd("sluttvedlegg")

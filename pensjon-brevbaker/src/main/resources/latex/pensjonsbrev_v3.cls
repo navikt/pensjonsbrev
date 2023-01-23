@@ -31,7 +31,7 @@
 %! suppress = FileNotFound
 \input{params}  % Must be done before pdfx is imported
 
-\usepackage{pdfx}       % create pdf/A compliant pdf's
+\usepackage[a-3b]{pdfx}       % create pdf/A compliant pdf's
 
 %----------------------------------------
 %                Global
@@ -39,6 +39,7 @@
 %fonts
 \setsansfont{Source Sans Pro}
 \setmainfont{Source Sans Pro}
+\defaultfontfeatures{LetterSpace=1.5}
 \addfontfeature{VerticalPosition = Inferior }
 \newfontface{\primaryFont}[
     Color=262626, % TODO blir det mye kostnader på for SITS å printe nesten svart istedenfor svart?
@@ -67,6 +68,7 @@
 \sloppy % no word-breaking
 \raggedright % no word spacing
 \raggedbottom % no line stretching to fit page
+\frenchspacing % no double space after ended sentence
 
 
 % page text area formatting
@@ -113,24 +115,26 @@
 \newcommand{\currentSectionName}{mainletter} %name of the current section of the letter. Used for lastpage label at the end of this section
 \newcommand{\letterpagenumber}{ %general page number formatting
     \begin{textblock*}{\textwidth}(\lettermargin,\pagenumberyposcalc)
-        \pagenumbertext{\feltsaksnummerprefix~\feltsaksnummer\hfill\feltsideprefix~\thepage~\feltsideinfix~\pageref*{\currentSectionName}}
+        \pagenumbertext{\feltsaksnummer\hfill\feltsideprefix~\thepage~\feltsideinfix~\pageref*{\currentSectionName}}
     \end{textblock*}
 }
 
 %----------------------------------------
 %             Case details
 %----------------------------------------
+\NewTblrEnviron{saksinfotable}
+\SetTblrInner[saksinfotable]{colspec={l@{\hskip 8mm}X}}
+\SetTblrInner[saksinfotable]{leftsep=0pt}
+\SetTblrInner[saksinfotable]{rightsep=0pt}
+\SetTblrInner[saksinfotable]{rowsep=0pt}
+\SetTblrOuter[saksinfotable]{postsep=0pt}
+\SetTblrOuter[saksinfotable]{footsep=0pt}
+
 \newcommand{\sakspart}{
-    {
-        \setlength{\tabcolsep}{3.9mm}
-        \primaryFont \fontsize{\standardtextsize}{19.5pt} \selectfont
-        \begin{tabular}{@{}ll}
-            \feltnavnprefix & \feltetternavnbruker \space \feltfornavnbruker \\
-            \feltfoedselsnummerprefix & \feltfoedselsnummerbruker \\
-            \feltsaksnummerprefix & \feltsaksnummer
-        \end{tabular}
-        \\[28pt]
-    }
+    \setlength{\tabcolsep}{12pt}
+    \primaryFont \fontsize{\standardtextsize}{19.5pt} \selectfont
+    \saksinfomottaker
+    \\[1em]
 }
 
 

@@ -20,9 +20,9 @@ object Fixtures {
             telefonnummer = Telefonnummer("55553334"),
         ),
         bruker = Bruker(
-            fornavn = "Testerson",
+            fornavn = "Test",
             mellomnavn = "\"bruker\"",
-            etternavn = "Test",
+            etternavn = "Testerson",
             foedselsnummer = Foedselsnummer("01019878910"),
             foedselsdato = LocalDate.of(1998, 1, 1),
         ),
@@ -30,6 +30,7 @@ object Fixtures {
             saksbehandler = "Ole Saksbehandler",
             attesterendeSaksbehandler = "Per Attesterende",
         ),
+        vergeNavn = null,
     )
 
     val fellesAuto = felles.copy(signerendeSaksbehandlere = null)
@@ -46,6 +47,7 @@ object Fixtures {
             OpplysningerBruktIBeregningUTDto::class -> createOpplysningerBruktIBeregningUTDto() as T
             OpplysningerBruktIBeregningUTDto.BarnetilleggGjeldende::class -> createOpplysningerBruktIBeregningUTDtoBarnetilleggGjeldende() as T
             OpplysningerBruktIBeregningUTDto.BarnetilleggGjeldende.Saerkullsbarn::class -> createOpplysningerBruktIBeregningUTDtoBarnetilleggGjeldendeSaerkullsbarn() as T
+            OpplysningerBruktIBeregningUTDto.BarnetilleggGjeldende.Fellesbarn::class -> createOpplysningerBruktIBeregningUTDtoBarnetilleggGjeldendeFellesbarn() as T
             OpplysningerBruktIBeregningUTDto.BeregnetUTPerManedGjeldende::class -> createOpplysningerBruktIBeregningUTDtoBeregnetUTPerManedGjeldende() as T
             OpplysningerBruktIBeregningUTDto.InntektFoerUfoereGjeldende::class -> createOpplysningerBruktIBeregningUTDtoInntektFoerUfoereGjeldende() as T
             OpplysningerBruktIBeregningUTDto.InntektsAvkortingGjeldende::class -> createOpplysningerBruktIBeregningUTDtoInntektsAvkortingGjeldende() as T
@@ -59,6 +61,7 @@ object Fixtures {
             UngUfoerAutoDto::class -> createUngUfoerAutoDto() as T
             EgenerklaeringOmsorgsarbeidDto::class -> createEgenerklaeringOmsorgsarbeidDto() as T
             UfoeretrygdEndretPgaInntektDto::class -> createUfoeretrygdEndretPgaInntektDto() as T
+            OpphoerBarnetilleggAutoDto::class -> createOpphoerBarnetilleggAutoDto() as T
 
             else -> throw IllegalArgumentException("Don't know how to construct: ${letterDataType.qualifiedName}")
         }

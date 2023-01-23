@@ -27,8 +27,9 @@ services:
     image: locustio/locust
     ports:
       - "20080:20080"
+      - "8089:8089"
     volumes:
-      - ./:/mnt/locust
+      - ./locust:/mnt/locust
     command: -f /mnt/locust/locustfile.py --master -H http://locust-master:20080
 
   locust-worker:
@@ -36,7 +37,7 @@ services:
       - locust
     image: locustio/locust
     volumes:
-      - ./:/mnt/locust
+      - ./locust:/mnt/locust
     command: -f /mnt/locust/locustfile.py --worker --master-host locust-master
 
 networks:

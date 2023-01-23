@@ -6,7 +6,7 @@ import no.nav.pensjon.brev.api.model.FellesSelectors.bruker
 import no.nav.pensjon.brev.api.model.maler.*
 import no.nav.pensjon.brev.api.model.maler.OpptjeningVedForhoeyetHjelpesatsDtoSelectors.aarInnvilgetOmrsorgspoeng
 import no.nav.pensjon.brev.maler.fraser.*
-import no.nav.pensjon.brev.maler.fraser.vedtak.Vedtak
+import no.nav.pensjon.brev.maler.fraser.common.Vedtak
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.VedtaksbrevTemplate

@@ -7,7 +7,7 @@ import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterAfpDto
 import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterAfpDtoSelectors.bruker_borINorge
 import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterAfpDtoSelectors.bruker_sivilstand
 import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterAfpDtoSelectors.institusjon_gjeldende
-import no.nav.pensjon.brev.maler.fraser.*
+import no.nav.pensjon.brev.maler.fraser.vedlegg.*
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.createAttachment

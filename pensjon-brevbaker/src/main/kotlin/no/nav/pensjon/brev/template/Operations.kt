@@ -6,6 +6,7 @@ import no.nav.pensjon.brev.template.expression.Predicate
 import java.text.NumberFormat
 import java.time.LocalDate
 import java.time.format.FormatStyle
+import kotlin.math.absoluteValue
 
 abstract class Operation {
     // Since most operations don't have fields, and hence can't be data classes,
@@ -30,6 +31,18 @@ sealed class UnaryOperation<In, out Out> : Operation() {
         override fun apply(input: T): String = input.toString()
     }
 
+    object SizeOf : UnaryOperation<Collection<*>, Int>(){
+        override fun apply(input: Collection<*>): Int = input.size
+    }
+
+    object AbsoluteValue : UnaryOperation<Int, Int>(){
+        override fun apply(input: Int): Int = input.absoluteValue
+    }
+
+    object AbsoluteValueKroner : UnaryOperation<Kroner, Kroner>(){
+        override fun apply(input: Kroner): Kroner = Kroner(input.value.absoluteValue)
+    }
+
     object FormatPhoneNumber : UnaryOperation<Telefonnummer, String>() {
         override fun apply(input: Telefonnummer): String = input.format()
     }
@@ -48,6 +61,10 @@ sealed class UnaryOperation<In, out Out> : Operation() {
 
     object Not : UnaryOperation<Boolean, Boolean>() {
         override fun apply(input: Boolean): Boolean = input.not()
+    }
+
+    data class MapCollection<In, Out>(val mapper: UnaryOperation<In, Out>): UnaryOperation<Collection<In>, Collection<Out>>() {
+        override fun apply(input: Collection<In>): Collection<Out> = input.map { mapper.apply(it) }
     }
 }
 
@@ -114,6 +131,26 @@ abstract class BinaryOperation<in In1, in In2, out Out> : Operation() {
                 .format(first)
     }
 
+    object LocalizedCollectionFormat : BinaryOperation<Collection<String>, Language, String>() {
+        override fun apply(first: Collection<String>, second: Language): String {
+            return if (first.size == 1) {
+                first.first()
+            } else {
+                val lastSeparator = when (second) {
+                    Language.Bokmal -> " og "
+                    Language.Nynorsk -> " og "
+                    Language.English -> " and "
+                }
+                first.take(first.size - 1).joinToString(", ") + lastSeparator + first.last()
+            }
+        }
+
+    }
+
+    data class MapCollection<In1, In2, Out>(val mapper: BinaryOperation<In1, In2, Out>): BinaryOperation<Collection<In1>, In2, Collection<Out>>() {
+        override fun apply(first: Collection<In1>, second: In2): Collection<Out> = first.map { mapper.apply(it, second) }
+    }
+
     class EnumInList<EnumType : Enum<*>> : BinaryOperation<EnumType, List<EnumType>, Boolean>() {
         override fun apply(first: EnumType, second: List<EnumType>): Boolean = second.contains(first)
     }
@@ -128,6 +165,10 @@ abstract class BinaryOperation<in In1, in In2, out Out> : Operation() {
 
     class ValidatePredicate<T> : BinaryOperation<Predicate<T>, T, Boolean>() {
         override fun apply(first: Predicate<T>, second: T): Boolean = first.validate(second)
+    }
+
+    data class Flip<In1, In2, Out>(val operation: BinaryOperation<In2, In1, Out>): BinaryOperation<In1, In2, Out>() {
+        override fun apply(first: In1, second: In2): Out = operation.apply(second, first)
     }
 
 }

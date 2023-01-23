@@ -20,7 +20,6 @@ data class LetterTemplate<Lang : LanguageSupport, LetterData : Any>(
 }
 
 sealed class Expression<out Out> {
-    val schema: String = this::class.java.name.removePrefix(this::class.java.`package`.name + '.')
 
     abstract fun eval(scope: ExpressionScope<*, *>): Out
 

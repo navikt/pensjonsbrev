@@ -5,6 +5,8 @@ metadata:
   namespace: "pensjonsbrev"
   labels:
     "team": "pensjonsbrev"
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "300"
 spec:
   image: {{image}}
   port: 8080

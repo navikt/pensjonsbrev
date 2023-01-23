@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test
 class UngUfoerAutoITest {
 
     @Test
-    fun test() {
+    fun pdftest() {
         Letter(
             UngUfoerAuto.template,
             Fixtures.create<UngUfoerAutoDto>(),
@@ -29,7 +29,7 @@ class UngUfoerAutoITest {
         Letter(
             UngUfoerAuto.template,
             Fixtures.create<UngUfoerAutoDto>(),
-            Language.Bokmal,
+            Language.Nynorsk,
             Fixtures.fellesAuto
         ).let { PensjonHTMLRenderer.render(it) }
             .also { writeTestHTML("UNG_UFOER_AUTO_BOKMAL", it) }

@@ -1,0 +1,8 @@
+app-name: "skribenten-frontend"
+ingresses:
+  - "https://pensjon-skribenten.dev.intern.nav.no"
+env:
+  - name: SKRIBENTEN_API_URL
+    value: "https://pensjon-skribenten-api.dev.intern.nav.no"
+  - name: SKRIBENTEN_API_SCOPE
+    value: "api://dev-gcp.pensjonsbrev.skribenten-backend/.default"

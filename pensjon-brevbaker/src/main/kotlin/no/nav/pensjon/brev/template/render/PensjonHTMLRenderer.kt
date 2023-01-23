@@ -47,13 +47,12 @@ object PensjonHTMLRenderer : LetterRenderer<RenderedHtmlLetter>() {
                 body {
                     div(classes("rot")) {
                         div(classes("brev")) {
-                            img(classes = classes("logo"), src = navLogoImg, alt = AltTexts.logo.text(scope.language))
-                            brevdato(scope)
-                            h1(classes("tittel")) { renderText(scope, template.title) }
+                        img(classes = classes("logo"), src = navLogoImg, alt = AltTexts.logo.text(scope.language))
                             div(classes("brevhode")) {
                                 renderSakspart(scope)
                                 brevdato(scope)
                             }
+                            h1(classes("tittel")) { renderText(scope, template.title) }
                             div(classes("brevkropp")) {
                                 renderOutline(scope, template.outline)
                                 renderClosing(scope)
@@ -272,8 +271,11 @@ object PensjonHTMLRenderer : LetterRenderer<RenderedHtmlLetter>() {
     private fun FlowContent.renderSakspart(scope: ExpressionScope<*, *>) =
         div(classes("sakspart")) {
             with(scope.felles.bruker) {
-                listOf(
-                    LanguageSetting.Sakspart.navn to "$fornavn $mellomnavn $etternavn",
+                val navnPrefix = if (scope.felles.vergeNavn != null) LanguageSetting.Sakspart.gjelderNavn else LanguageSetting.Sakspart.navn
+
+                listOfNotNull(
+                    scope.felles.vergeNavn?.let { LanguageSetting.Sakspart.vergenavn to it },
+                    navnPrefix to "$fornavn $mellomnavn $etternavn",
                     LanguageSetting.Sakspart.foedselsnummer to foedselsnummer.value,
                     LanguageSetting.Sakspart.saksnummer to scope.felles.saksnummer,
                 )
