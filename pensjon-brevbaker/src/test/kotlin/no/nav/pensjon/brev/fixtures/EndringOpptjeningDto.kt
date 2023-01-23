@@ -25,18 +25,36 @@ fun createEndringOpptjeningAutoDtoEndringIOpptjening() =
 
 fun createEndringOpptjeningAutoDtoKombinereUfoeretrygdMedInntekt() =
     EndringOpptjeningAutoDto.KombinereUfoeretrygdMedInntekt(
-        ufoeregrad = 80,
-        utbetalingsgrad = 100,
+        beloepsgrense = Kroner(0),
+        forventetInntekt = Kroner(0),
+        grunnbeloep = Kroner(111477),  // 1G 2023
+        harBeloepOekt = false,
+        harBeloepRedusert = false,
+        harDelvisUfoeregrad = false,
+        harFullUfoeregrad = false,
+        harInntektEtterUfoere = false,
+        inntektsgrense = Kroner(0),
+        inntektsgrenseNesteAar = Kroner(0),
+        kompensasjonsgrad = 0,
+        nettoAkkumulerteBeloepUtbetalt = Kroner(0),
+        nettoAkkumulertePlussNettoRestAar = Kroner(0),
+        nettoTilUtbetalingRestenAvAaret = Kroner(0),
+        nettoUfoeretrygdUtbetaltPerMaaned = Kroner(0),
+        oppjustertInntektEtterUfoere = Kroner(0),
+        oppjustertInntektFoerUfoere80prosent = Kroner(0),
+        oppjustertInntektFoerUfoere = Kroner(0),
+        ufoeregrad = 0,
+        utbetalingsgrad = 0,
     )
 
 fun createEndringOpptjeningAutoDtoUfoeretrygd() =
     EndringOpptjeningAutoDto.Ufoeretrygd(
-        ektefelletilleggInnvilget = true,
-        fellesbarnInnvilget = true,
-        gjenlevendetilleggInnvilget = false,
+        harEktefelletilleggInnvilget = true,
+        harFellesbarnInnvilget = true,
+        harGjenlevendetilleggInnvilget = false,
         harUtbetalingsgrad = true,
         harYrkesskadeGradUtbetaling = false,
-        saerkullsbarnInnvilget = false,
+        harSaerkullsbarnInnvilget = false,
         ufoertrygdUtbetalt = Kroner(2000000),
         utbetaltPerMaaned = Kroner(16000),
     )

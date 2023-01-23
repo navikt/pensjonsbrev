@@ -99,7 +99,7 @@ object EndringOpptjeningAuto : VedtaksbrevTemplate<EndringOpptjeningAutoDto> {
                 HjemlerFolketrygdloven.Folketrygdloven(
                     ektefelletilleggInnvilget = ufoeretrygd.ektefelletilleggInnvilget,
                     fellesbarntilleggInnvilget = ufoeretrygd.fellesbarnInnvilget,
-                    gjenlevendetilleggInnvilget = ufoeretrygd.gjenlevendetilleggInnvilget,
+                    harGjenlevendetilleggInnvilget = ufoeretrygd.gjenlevendetilleggInnvilget,
                     harYrkesskadegradUtbetaling = ufoeretrygd.harYrkesskadeGradUtbetaling,
                     saerkullsbarntilleggInnvilget = ufoeretrygd.saerkullsbarnInnvilget,
                 )
