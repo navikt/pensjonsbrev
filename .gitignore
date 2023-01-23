@@ -35,5 +35,4 @@ build
 # Gradle
 .gradle
 !gradle/wrapper/gradle-wrapper.jar
-/.gradle/
 /.run/
