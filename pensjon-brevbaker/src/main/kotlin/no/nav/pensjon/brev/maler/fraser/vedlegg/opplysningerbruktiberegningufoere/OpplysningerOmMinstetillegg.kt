@@ -22,7 +22,13 @@ data class OpplysningerOmMinstetillegg(
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         val harMinsteytelseSats = minsteytelseGjeldendeSats.ifNull(0.0).greaterThan(0.0)
         showIf(harMinsteytelseSats) {
-            includePhrase(RettTilMinsteytelseOverskrift)
+            title1 {
+                text(
+                    Language.Bokmal to "For deg som har rett til minsteytelse",
+                    Language.Nynorsk to "For deg som har rett til minsteyting",
+                    Language.English to "You have been granted minimum benefit"
+                )
+            }
             ifNotNull(ungUfoerGjeldende_erUnder20Aar) { erUnder20Aar ->
                 showIf(erUnder20Aar) {
                     includePhrase(VedleggBeregnUTInfoMYUngUforUnder20)
@@ -54,7 +60,13 @@ data class OpplysningerOmMinstetillegg(
                     and inntektsgrenseErUnderTak
         ) {
 
-            includePhrase(SlikFastsettesKompGradOverskrift)
+            title1 {
+                text(
+                    Language.Bokmal to "Slik har vi fastsatt kompensasjonsgraden din",
+                    Language.Nynorsk to "Slik har vi fastsett kompensasjonsgraden din",
+                    Language.English to "This is your degree of compensation"
+                )
+            }
             includePhrase(VedleggBeregnUTKompGrad)
 
             showIf(ufoeretrygdGjeldende.erKonvertert) {
@@ -63,17 +75,6 @@ data class OpplysningerOmMinstetillegg(
                 includePhrase(VedleggBeregnUTKompGradGjsntt)
             }
         }
-    }
-
-    object RettTilMinsteytelseOverskrift : OutlinePhrase<LangBokmalNynorskEnglish>() {
-        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
-            title1 {
-                text(
-                    Language.Bokmal to "For deg som har rett til minsteytelse",
-                    Language.Nynorsk to "For deg som har rett til minsteyting",
-                    Language.English to "You have been granted minimum benefit"
-                )
-            }
     }
 
     object VedleggBeregnUTInfoMY : OutlinePhrase<LangBokmalNynorskEnglish>() {
@@ -164,17 +165,6 @@ data class OpplysningerOmMinstetillegg(
                 }
             }
         }
-    }
-
-    object SlikFastsettesKompGradOverskrift : OutlinePhrase<LangBokmalNynorskEnglish>() {
-        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
-            title1 {
-                text(
-                    Language.Bokmal to "Slik har vi fastsatt kompensasjonsgraden din",
-                    Language.Nynorsk to "Slik har vi fastsett kompensasjonsgraden din",
-                    Language.English to "This is your degree of compensation"
-                )
-            }
     }
 
     object VedleggBeregnUTKompGrad : OutlinePhrase<LangBokmalNynorskEnglish>() {

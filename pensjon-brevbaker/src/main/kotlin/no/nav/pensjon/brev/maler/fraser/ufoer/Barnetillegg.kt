@@ -67,23 +67,6 @@ object Barnetillegg {
         }
     }
 
-
-    // TBU3800
-    data class BetydningAvInntektOverskrift(
-        val harBarnetilleggSaerkullsbarn: Expression<Boolean>,
-        val harBarnetilleggFellesbarn: Expression<Boolean>,
-    ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
-        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-            title1 {
-                text(
-                    Bokmal to "Slik påvirker inntekt barnetillegget ditt",
-                    Nynorsk to "Slik verkar inntekt inn på barnetillegget ditt",
-                    English to "Income will affect your child supplement"
-                )
-            }
-        }
-    }
-
     // TBU2338
     data class InntektHarBetydningForSaerkullsbarnTillegg(
         val harBarnetilleggFellesbarn: Expression<Boolean>,

@@ -73,7 +73,14 @@ data class OpplysningerOmBarnetillegg(
         val harJusteringsbeloep = justeringsbeloepFelles.greaterThan(0) or
                 justeringsbeloepSaerkull.greaterThan(0)
 
-        includePhrase(SlikBeregnBTOverskrift)
+        title1 {
+            text(
+                Bokmal to "Slik beregner vi størrelsen på barnetillegget",
+                Nynorsk to "Slik reknar vi ut storleiken på barnetillegget",
+                English to "How we calculate the amount of child supplement"
+            )
+        }
+
         includePhrase(VedleggBeregnUTInnlednBT)
 
         showIf(harTilleggFellesBarn and not(harTilleggSaerkullsbarn)) {
@@ -431,17 +438,6 @@ data class OpplysningerOmBarnetillegg(
                 }
             }
         }
-    }
-
-    object SlikBeregnBTOverskrift : OutlinePhrase<LangBokmalNynorskEnglish>() {
-        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
-            title1 {
-                text(
-                    Bokmal to "Slik beregner vi størrelsen på barnetillegget",
-                    Nynorsk to "Slik reknar vi ut storleiken på barnetillegget",
-                    English to "How we calculate the amount of child supplement"
-                )
-            }
     }
 
     object VedleggBeregnUTInnlednBT : OutlinePhrase<LangBokmalNynorskEnglish>() {
@@ -836,24 +832,29 @@ data class OpplysningerOmBarnetillegg(
                         Sivilstand.SAMBOER1_5,
                         Sivilstand.SAMBOER3_2
                     )
-                textExpr(
-                    Bokmal to ifElse(
-                        harKravaarsakEndringInntekt,
-                        "Når inntekten ",
-                        "Har det vært en endring i inntekten ",
-                    ),
-                    Nynorsk to ifElse(
-                        harKravaarsakEndringInntekt,
-                        "Når inntekta ",
-                        "Har det vore ie endring i inntekta ",
-                    ),
-                    English to ifElse(harKravaarsakEndringInntekt, "When ", "If ")
-                )
-                textExpr(
-                    Bokmal to ifElse(foreldreBorSammen, "din eller til din", "din"),
-                    Nynorsk to ifElse(foreldreBorSammen, "di eller til di", "di"),
-                    English to ifElse(foreldreBorSammen, "your or your", "your"),
-                )
+                showIf(harKravaarsakEndringInntekt) {
+                    text(Bokmal to "Når inntekten ", Nynorsk to "Når inntekta ", English to "When ")
+                }.orShow {
+                    text(
+                        Bokmal to "Har det vært en endring i inntekten ",
+                        Nynorsk to "Har det vært en endring i inntekten ",
+                        English to "If "
+                    )
+                }
+
+                showIf(foreldreBorSammen) {
+                    text(
+                        Bokmal to "din eller til din",
+                        Nynorsk to "di eller til di",
+                        English to "your or your",
+                    )
+                }.orShow {
+                    text(
+                        Bokmal to "din",
+                        Nynorsk to "di",
+                        English to "your",
+                    )
+                }
 
                 showIf(foreldreBorSammen) {
                     includePhrase(Felles.SivilstandEPSUbestemtForm(sivilstand))
@@ -885,27 +886,28 @@ data class OpplysningerOmBarnetillegg(
                 textExpr(
                     Bokmal to "50 prosent av den inntekten som overstiger fribeløpet for ".expr()
                             + ifElse(harTilleggForFlereFellesbarn, "barna", "barnet") +
-                            " som bor med begge sine foreldre ".expr() +
-                            ifElse(
-                                inntektEllerFribeloepErPeriodisert,
-                                "blir omregnet til et årlig beløp som tilsvarer",
-                                "er",
-                            ),
+                            " som bor med begge sine foreldre ".expr(),
                     Nynorsk to "50 prosent av inntekta som overstig fribeløpet for ".expr()
                             + ifElse(harTilleggForFlereFellesbarn, "barna", "barnet") +
-                            " som bur med begge foreldra sine ".expr() +
-                            ifElse(
-                                inntektEllerFribeloepErPeriodisert,
-                                "blir rekna om til et årleg beløp som svarer til",
-                                "er",
-                            ),
-                    English to "50 percent of income that exceeds the exemption amount ".expr() +
-                            ifElse(
-                                inntektEllerFribeloepErPeriodisert,
-                                "is recalculated to an annual amount of",
-                                "is",
-                            ),
+                            " som bur med begge foreldra sine ".expr(),
+                    English to "50 percent of income that exceeds the exemption amount for the ".expr()
+                            + ifElse(harTilleggForFlereFellesbarn, "children", "child") +
+                            " that " + ifElse(harTilleggForFlereFellesbarn, "live", "lives") +
+                            " with both of their parents, ".expr(),
                 )
+                showIf(inntektEllerFribeloepErPeriodisert) {
+                    text(
+                        Bokmal to "blir omregnet til et årlig beløp som tilsvarer",
+                        Nynorsk to "blir rekna om til et årleg beløp som svarer til",
+                        English to "is recalculated to an annual amount of",
+                    )
+                }.orShow {
+                    text(
+                        Bokmal to "er",
+                        Nynorsk to "er",
+                        English to "is",
+                    )
+                }
 
                 showIf(avkortningsbeloepAarFelles.greaterThan(0)) {
                     textExpr(
@@ -939,26 +941,24 @@ data class OpplysningerOmBarnetillegg(
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             paragraph {
-                textExpr(
-                    Bokmal to "50 prosent av den inntekten som overstiger fribeløpet ".expr() +
-                            ifElse(
-                                inntektEllerFribeloepErPeriodisert,
-                                "blir omregnet til et årlig beløp som tilsvarer",
-                                "er",
-                            ),
-                    Nynorsk to "50 prosent av inntekta som overstig fribeløpet ".expr() +
-                            ifElse(
-                                inntektEllerFribeloepErPeriodisert,
-                                "blir rekna om til et årleg beløp som svarer til",
-                                "er",
-                            ),
-                    English to "50 percent of income that exceeds the exemption amount ".expr() +
-                            ifElse(
-                                inntektEllerFribeloepErPeriodisert,
-                                "is recalculated to an annual amount of",
-                                "is",
-                            ),
+                text(
+                    Bokmal to "50 prosent av den inntekten som overstiger fribeløpet ",
+                    Nynorsk to "50 prosent av inntekta som overstig fribeløpet ",
+                    English to "50 percent of income that exceeds the exemption amount ",
                 )
+                showIf(inntektEllerFribeloepErPeriodisert) {
+                    text(
+                        Bokmal to "blir omregnet til et årlig beløp som tilsvarer",
+                        Nynorsk to "blir rekna om til et årleg beløp som svarer til",
+                        English to "is recalculated to an annual amount of",
+                    )
+                }.orShow {
+                    text(
+                        Bokmal to "er",
+                        Nynorsk to "er",
+                        English to "is",
+                    )
+                }
 
                 showIf(avkortningsbeloepAarFelles.greaterThan(0)) {
                     textExpr(
