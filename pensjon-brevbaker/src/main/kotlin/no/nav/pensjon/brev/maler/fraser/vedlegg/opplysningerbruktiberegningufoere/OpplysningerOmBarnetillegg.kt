@@ -844,10 +844,12 @@ data class OpplysningerOmBarnetillegg(
 
                 showIf(foreldreBorSammen) {
                     text(
-                        Bokmal to "din eller til din",
-                        Nynorsk to "di eller til di",
-                        English to "your or your",
+                        Bokmal to "din eller til din ",
+                        Nynorsk to "di eller til di ",
+                        English to "your or your ",
                     )
+                    includePhrase(Felles.SivilstandEPSUbestemtForm(sivilstand))
+                    text(Bokmal to "", Nynorsk to "", English to "'s")
                 }.orShow {
                     text(
                         Bokmal to "din",
@@ -856,17 +858,12 @@ data class OpplysningerOmBarnetillegg(
                     )
                 }
 
-                showIf(foreldreBorSammen) {
-                    includePhrase(Felles.SivilstandEPSUbestemtForm(sivilstand))
-                    text(Bokmal to "", Nynorsk to "", English to "'s")
-                }
-
                 textExpr(
                     Bokmal to " endrer seg, blir reduksjonen av ".expr() +
-                            ifElse(harFlereTillegg, "barnetilleggene", "barnetilleggene") +
+                            ifElse(harFlereTillegg, "barnetilleggene", "barnetillegget") +
                             " vurdert på nytt.",
                     Nynorsk to " endrar seg, blir reduksjonen av ".expr() +
-                            ifElse(harFlereTillegg, "barnetilleggene", "barnetilleggene") +
+                            ifElse(harFlereTillegg, "barnetilleggene", "barnetillegget") +
                             " vurdert på nytt.",
                     English to " income has been changed, your child supplement will be recalculated.".expr(),
                 )
