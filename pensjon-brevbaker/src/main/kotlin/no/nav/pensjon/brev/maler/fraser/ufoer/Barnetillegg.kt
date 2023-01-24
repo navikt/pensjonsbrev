@@ -258,7 +258,7 @@ object Barnetillegg {
                                 Nynorsk to " Til saman er inntektene ".expr() +
                                         ifElse(inntektLavereEnnFribeloep, "lågare", "høgare") +
                                         " enn fribeløpet ditt på ".expr() + fribeloepFellesbarn.format() + " kroner. Barnetillegget ditt er derfor".expr() +
-                                        ifElse(harFradragFellesbarn,""," ikkje") +
+                                        ifElse(harFradragFellesbarn, "", " ikkje") +
                                         " redusert ut frå inntekt. ".expr(),
                                 English to " Together, the incomes are ".expr() +
                                         ifElse(inntektLavereEnnFribeloep, "lower", "higher") +
@@ -425,18 +425,14 @@ object Barnetillegg {
                     showIf(harFradragForEnBarnetilleggYtelse) {
                         textExpr(
                             Bokmal to "Dette barnetillegget er derfor ".expr() +
-                                    ifElse(barnetilleggSaerkullsbarnIkkeRedusert, "ikke redusert", "redusert") +
-                                    " ut fra inntekt .".expr(),
+                                    ifElse(barnetilleggSaerkullsbarnIkkeRedusert, "ikke", "") +
+                                    " redusert ut fra inntekt .".expr(),
                             Nynorsk to "Dette barnetillegget er derfor ".expr() +
-                                    ifElse(barnetilleggSaerkullsbarnIkkeRedusert, "ikkje redusert", "redusert") +
-                                    " ut frå inntekt.".expr(),
+                                    ifElse(barnetilleggSaerkullsbarnIkkeRedusert, "ikkje", "") +
+                                    " redusert ut frå inntekt.".expr(),
                             English to "Therefore, your child supplement has ".expr() +
-                                    ifElse(
-                                        barnetilleggSaerkullsbarnIkkeRedusert,
-                                        "has not reduced",
-                                        "has been reduced"
-                                    ) +
-                                    " on the basis of your income.".expr()
+                                    ifElse(barnetilleggSaerkullsbarnIkkeRedusert,"not","") +
+                                    " been reduced on the basis of your income.".expr()
                         )
                     }
                     showIf(faarUtbetaltBarnetilleggFellesbarn and not(harJusteringsbeloepFellesbarn)) {
@@ -476,34 +472,28 @@ object Barnetillegg {
                             textExpr(
                                 Bokmal to
                                         "Dette barnetillegget er derfor ".expr() +
-                                        ifElse(barnetilleggFellesbarnIkkeRedusert, "ikke redusert", "redusert") +
-                                        " ut fra inntekt.".expr(),
+                                        ifElse(barnetilleggFellesbarnIkkeRedusert, "ikke", "") +
+                                        " redusert ut fra inntekt.".expr(),
                                 Nynorsk to "Dette barnetillegget er derfor ".expr() +
-                                        ifElse(barnetilleggFellesbarnIkkeRedusert, "ikkje redusert", "redusert") +
-                                        " ut frå inntekt.".expr(),
+                                        ifElse(barnetilleggFellesbarnIkkeRedusert, "ikkje", "") +
+                                        " redusert ut frå inntekt.".expr(),
                                 English to "Therefore, your child supplement has ".expr() +
-                                        ifElse(barnetilleggFellesbarnIkkeRedusert, "not been reduced", "been reduced") +
-                                        " on the basis of your income.".expr()
+                                        ifElse(barnetilleggFellesbarnIkkeRedusert, "not", "") +
+                                        " been reduced on the basis of your income.".expr()
                             )
                         }.orShow {
                             val ikkeRedusert =
                                 barnetilleggFellesbarnIkkeRedusert and barnetilleggSaerkullsbarnIkkeRedusert
                             textExpr(
                                 Bokmal to "Barnetilleggene er derfor ".expr() +
-                                        ifElse(
-                                            ikkeRedusert,
-                                            "ikke redusert",
-                                            "redusert"
-                                        ) + " ut fra inntekt.".expr(),
+                                        ifElse(ikkeRedusert, "ikke", "") +
+                                        " redusert ut fra inntekt.".expr(),
                                 Nynorsk to "Desse barnetillegga er derfor ".expr() +
-                                        ifElse(
-                                            ikkeRedusert,
-                                            "ikkje redusert",
-                                            "redusert"
-                                        ) + " ut frå inntekt.".expr(),
+                                        ifElse(ikkeRedusert, "ikkje", "") +
+                                        " redusert ut frå inntekt.".expr(),
                                 English to "Therefore your child supplements have ".expr() +
-                                        ifElse(ikkeRedusert, "not been reduced", "have been reduced") +
-                                        " on the basis of your income.".expr()
+                                        ifElse(ikkeRedusert, "not ", "") +
+                                        " been reduced on the basis of your income.".expr()
                             )
                         }
                     }
