@@ -27,6 +27,7 @@ import no.nav.pensjon.brev.api.model.maler.KombinereUfoeretrygdMedInntektSelecto
 import no.nav.pensjon.brev.api.model.maler.KombinereUfoeretrygdMedInntektSelectors.nettoAkkumulertePlussNettoRestAar
 import no.nav.pensjon.brev.api.model.maler.KombinereUfoeretrygdMedInntektSelectors.nettoUfoeretrygdUtbetaltPerMaaned
 import no.nav.pensjon.brev.api.model.maler.KombinereUfoeretrygdMedInntektSelectors.oppjustertInntektEtterUfoere
+import no.nav.pensjon.brev.api.model.maler.KombinereUfoeretrygdMedInntektSelectors.oppjustertInntektFoerUfoere
 import no.nav.pensjon.brev.api.model.maler.KombinereUfoeretrygdMedInntektSelectors.oppjustertInntektFoerUfoere80prosent
 import no.nav.pensjon.brev.api.model.maler.KombinereUfoeretrygdMedInntektSelectors.ufoeregrad
 import no.nav.pensjon.brev.api.model.maler.KombinereUfoeretrygdMedInntektSelectors.utbetalingsgrad
@@ -206,10 +207,20 @@ object EndringOpptjeningAuto : VedtaksbrevTemplate<EndringOpptjeningAutoDto> {
 
             val utbetalingsgrad = kombinereUfoeretrygdMedInntekt.utbetalingsgrad.format()
             val ufoeregrad = kombinereUfoeretrygdMedInntekt.ufoeregrad.format()
-            showIf(utbetalingsgrad.equalTo(ufoeregrad) {
-                includePhrase(Ufoeretrygd.MeldeFraOmEventuellInntektOverskrift)
+            showIf(utbetalingsgrad.equalTo(ufoeregrad)) {
                 includePhrase(Ufoeretrygd.MeldeFraOmEventuellInntekt)
             }
+
+            includePhrase(
+                KombinereUfoeretrygdMedInntekt.MeldeFraOmEndringerIInntekten(
+                    forventetInntekt = kombinereUfoeretrygdMedInntekt.forventetInntekt,
+                    inntektsgrense = kombinereUfoeretrygdMedInntekt.inntektsgrense,
+                    inntektstak = kombinereUfoeretrygdMedInntekt.inntektstak,
+                    oppjustertInntektFoerUfoere80prosent = kombinereUfoeretrygdMedInntekt.oppjustertInntektFoerUfoere80prosent,
+                    ufoeregrad = kombinereUfoeretrygdMedInntekt.ufoeregrad,
+                    utbetalingsgrad = kombinereUfoeretrygdMedInntekt.utbetalingsgrad,
+                )
+            )
         }
     }
 }

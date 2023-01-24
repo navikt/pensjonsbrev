@@ -110,7 +110,7 @@ object KombinereUfoeretrygdMedInntekt {
         }
     }
 
-    // TBU1207, TBU2357   (TBU1296 er ikke tatt med - konvertering til UT utgikk 31. desember 2018) Dermed endres flette logikk for TBU1205.
+    // TBU1207   (TBU1296, TBU2357 er ikke tatt med - konvertering til UT utgikk 31. desember 2018) Dermed endres flette logikk for TBU1205.
     data class InntektsgrenseLagtTilGrunn(
         val inntektsgrense: Expression<Kroner>,
         val inntektsgrenseNesteAar: Expression<Kroner>,
@@ -293,15 +293,15 @@ object KombinereUfoeretrygdMedInntekt {
                 title1 {
                     text(
                         Bokmal to "Du må melde fra om endringer i inntekten",
-                        Nynorsk to "",
-                        English to ""
+                        Nynorsk to "Du må melde frå om endringar i inntekta",
+                        English to "You must notify us of changes in income"
                     )
                 }
                 paragraph {
                     text(
                         Bokmal to "Du kan melde fra om inntektsendringer under menyvalget «uføretrygd» når du logger deg inn på nav.no. Her kan du legge inn endringer i den forventede årlige inntekten, og se hva dette betyr for utbetalingen av uføretrygden din. For at du skal få en jevn utbetaling av uføretrygden, er det viktig at du melder fra om inntektsendringer så tidlig som mulig.",
-                        Nynorsk to "",
-                        English to ""
+                        Nynorsk to "Du kan melde frå om inntektsendringar under menyvalet «uføretrygd» når du logger deg inn på nav.no. Her kan du leggje inn kor mykje du forventar å tene i løpet av året, og sjå hva dette betyr for utbetalinga av uføretrygden di. For at du skal få ein jamn utbetaling av uføretrygda, er det viktig at du melde frå om inntektsendringar så tidleg som mogleg",
+                        English to "You can register changes in income under the option «uføretrygd» at nav.no. You can register how much you expect to earn in the calendar year. You will then be able to see how much disabilty benefit you will receive. In order for you to receive even payments of disability benefit, it is important that you register income changes as soon as possible."  // TODO: check English "even payments"
                     )
                 }
                 showIf(inntektsgrense.lessThan(oppjustertInntektFoerUfoere80prosent)) {

@@ -31,7 +31,7 @@ fun createEndringOpptjeningAutoDtoKombinereUfoeretrygdMedInntekt() =
         harBeloepOekt = false,
         harBeloepRedusert = false,
         harDelvisUfoeregrad = false,
-        harFullUfoeregrad = false,
+        harFullUfoeregrad = true,
         harInntektEtterUfoere = false,
         inntektsgrense = Kroner(0),
         inntektsgrenseNesteAar = Kroner(0),
@@ -44,8 +44,8 @@ fun createEndringOpptjeningAutoDtoKombinereUfoeretrygdMedInntekt() =
         oppjustertInntektEtterUfoere = Kroner(0),
         oppjustertInntektFoerUfoere80prosent = Kroner(0),
         oppjustertInntektFoerUfoere = Kroner(0),
-        ufoeregrad = 0,
-        utbetalingsgrad = 0,
+        ufoeregrad = 100,
+        utbetalingsgrad = 100,
     )
 
 fun createEndringOpptjeningAutoDtoUfoeretrygd() =
