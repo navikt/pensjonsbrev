@@ -19,12 +19,14 @@ data class EndringOpptjeningAutoDto(
     )
 
     data class Ufoeretrygd(
+        val forventetInntekt: Kroner,  //  Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_ForventetInntekt
         val harEktefelletilleggInnvilget: Boolean,  // used
         val harFellesbarnInnvilget: Boolean,  // used
         val harGjenlevendetilleggInnvilget: Boolean,  // used
+        val harSaerkullsbarnInnvilget: Boolean,  // used
         val harUtbetalingsgrad: Boolean,  // used
         val harYrkesskadeGradUtbetaling: Boolean, // yrkesskadeGrad > 0  - used
-        val harSaerkullsbarnInnvilget: Boolean,  // used
+        val inntektsgrense: Kroner,  // Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektsgrense
         val ufoertrygdUtbetalt: Kroner,
         val utbetaltPerMaaned: Kroner,  // used
     )
@@ -40,7 +42,7 @@ data class EndringOpptjeningAutoDto(
         val harDelvisUfoeregrad: Boolean,  // Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegningu_ufoeregrad > 0 < 100
         val harFullUfoeregrad: Boolean,  // Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegningu_ufoeregrad = 100
         val harInntektEtterUfoere: Boolean,  // IEUInntekt > 0 / Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektsgrense
-        val inntektsgrense: Kroner,  // Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_InntektsgrenseNesteAr
+        val inntektsgrense: Kroner,  // Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektsgrense
         val inntektsgrenseNesteAar: Kroner,  //
         val inntektstak: Kroner,  // Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektstak
         val kompensasjonsgrad: Int,  //
