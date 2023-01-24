@@ -24,7 +24,8 @@ fun <T> Expression<Collection<T>>.size(): Expression<Int> =
 fun Expression<Int>.absoluteValue(): Expression<Int> =
     Expression.UnaryInvoke(value = this, operation = UnaryOperation.AbsoluteValue)
 
-fun Expression<Kroner>.absoluteKronerValue(): Expression<Kroner> =
+@JvmName("absoluteValueKroner")
+fun Expression<Kroner>.absoluteValue(): Expression<Kroner> =
     Expression.UnaryInvoke(value = this, operation = UnaryOperation.AbsoluteValueKroner)
 
 fun <T> Expression<Collection<T>>.isNotEmpty(): Expression<Boolean> =

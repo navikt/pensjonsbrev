@@ -346,7 +346,7 @@ data class OpplysningerOmBarnetillegg(
                             )
                         }
                         cell {
-                            includePhrase(Felles.KronerText(justeringsbeloepAar.absoluteKronerValue()))
+                            includePhrase(Felles.KronerText(justeringsbeloepAar.absoluteValue()))
                         }
                     }
                 }

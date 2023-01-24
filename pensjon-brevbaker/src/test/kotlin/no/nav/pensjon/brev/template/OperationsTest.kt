@@ -2,7 +2,6 @@ package no.nav.pensjon.brev.template
 
 import no.nav.pensjon.brev.Fixtures
 import no.nav.pensjon.brev.api.model.Kroner
-import no.nav.pensjon.brev.template.dsl.expression.absoluteKronerValue
 import no.nav.pensjon.brev.template.dsl.expression.absoluteValue
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -58,13 +57,13 @@ class OperationsTest {
 
         @Test
         fun `absoluteKronerValue returns positive value if negative value`(){
-            val expr = Kroner(-123).expr().absoluteKronerValue()
+            val expr = Kroner(-123).expr().absoluteValue()
             assertEquals(expr.eval(scope), Kroner(123))
         }
 
         @Test
         fun `absoluteKronerValue returns positive value if positive value`(){
-            val expr = Kroner(123).expr().absoluteKronerValue()
+            val expr = Kroner(123).expr().absoluteValue()
             assertEquals(expr.eval(scope), Kroner(123))
         }
 
@@ -76,7 +75,7 @@ class OperationsTest {
 
         @Test
         fun `absoluteValue returns positive value if positive value`(){
-            val expr = Kroner(123).expr().absoluteKronerValue()
+            val expr = Kroner(123).expr().absoluteValue()
             assertEquals(expr.eval(scope), Kroner(123))
         }
     }
