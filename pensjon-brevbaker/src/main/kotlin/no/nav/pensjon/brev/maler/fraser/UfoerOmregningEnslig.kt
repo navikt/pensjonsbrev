@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.maler.fraser
 
 import no.nav.pensjon.brev.api.model.*
+import no.nav.pensjon.brev.maler.fraser.ufoer.Barnetillegg.DuHarFaattUtbetaltBarnetilleggTidligereIAar
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Language.*
@@ -534,10 +535,12 @@ data class RedusBTSBPgaInntekt_001(
 object JusterBelopRedusBTPgaInntekt_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         paragraph {
+            includePhrase(DuHarFaattUtbetaltBarnetilleggTidligereIAar)
+
             text(
-                Bokmal to "Det du har fått utbetalt i barnetillegg tidligere i år har også betydning for hva du får i barnetillegg framover. Dette ble tatt hensyn til da vi endret barnetillegget.",
-                Nynorsk to "Det du har fått utbetalt i barnetillegg tidlegare i år, påverkar også det du får i barnetillegg framover. Det blei teke omsyn til dette då vi endra barnetillegget.",
-                English to "The amount you have received in child supplement earlier this year also affects how much child supplement you will receive henceforth. This was taken into account when we changed your child supplement."
+                Bokmal to " Dette ble tatt hensyn til da vi endret barnetillegget.",
+                Nynorsk to " Det blei teke omsyn til dette då vi endra barnetillegget.",
+                English to " This was taken into account when we changed your child supplement."
             )
         }
 }
@@ -545,15 +548,11 @@ object JusterBelopRedusBTPgaInntekt_001 : OutlinePhrase<LangBokmalNynorskEnglish
 object JusterBelopIkkeUtbetaltBTPgaInntekt_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         paragraph {
+            includePhrase(DuHarFaattUtbetaltBarnetilleggTidligereIAar)
             text(
-                Bokmal to "Det du har fått utbetalt i barnetillegg tidligere i år har også betydning for hva du får i barnetillegg framover. " +
-                        "Du har allerede fått utbetalt det du har rett til i år, og får derfor ikke utbetalt barnetillegg for resten av året.",
-
-                Nynorsk to "Det du har fått utbetalt i barnetillegg tidlegare i år, påverkar også det du får i barnetillegg framover. " +
-                        "Du har allereie fått utbetalt det du har rett til i år, og får derfor ikkje utbetalt barnetillegg for resten av året.",
-
-                English to "The amount you have received in child supplement earlier this year also affects how much child supplement you will receive henceforth. " +
-                        "You have already received the amount you are entitled to this year, and therefore you will not receive child supplement for the remainder of the year."
+                Bokmal to " Du har allerede fått utbetalt det du har rett til i år, og får derfor ikke utbetalt barnetillegg for resten av året.",
+                Nynorsk to " Du har allereie fått utbetalt det du har rett til i år, og får derfor ikkje utbetalt barnetillegg for resten av året.",
+                English to " You have already received the amount you are entitled to this year, and therefore you will not receive child supplement for the remainder of the year."
             )
         }
 }
