@@ -3,11 +3,8 @@ package no.nav.pensjon.brev.maler.fraser.ufoer
 import no.nav.pensjon.brev.api.model.Kroner
 import no.nav.pensjon.brev.maler.fraser.common.Constants
 import no.nav.pensjon.brev.model.format
-import no.nav.pensjon.brev.template.Expression
-import no.nav.pensjon.brev.template.LangBokmalNynorsk
-import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
+import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Language.*
-import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.text
@@ -309,5 +306,35 @@ object Ufoeretrygd {
             }
         }
     }
+
+    // TBU3224
+    data class EtterbetalingAvUfoeretrygd(
+        val harBeloepOekt: Expression<Boolean>,
+        val ufoeregrad: Expression<Int>,
+        val utbetalingsgrad: Expression<Int>,
+        val virkningsDato: Expression<LocalDate>,
+
+        ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+            showIf(harBeloepOekt and utbetalingsgrad.lessThan(ufoeregrad)) {
+                title1 {
+                    text(
+                        Bokmal to "Etterbetaling av uføretrygd",
+                        Nynorsk to "Etterbetaling av uføretrygd",
+                        English to "Disability benefit paid in arrears"
+                    )
+                }
+                paragraph {
+                    textExpr(
+                        Bokmal to "Du får etterbetalt uføretrygd fra ".expr() + virkningsDato.format() + ". Beløpet blir vanligvis utbetalt i løpet av sju virkedager. Det kan bli beregnet fradrag i etterbetalingen for skatt og ytelser du har mottatt fra NAV eller andre, som for eksempel tjenestepensjonsordninger. I disse tilfellene kan etterbetalingen bli forsinket med inntil ni uker. Fradrag i etterbetalingen vil gå fram av utbetalingsmeldingen.".expr(),
+                        Nynorsk to "".expr(),
+                        English to "You will receive disbability benefit paid in arrears from ".expr() + virkningsDato.format() + ". The payment is usually made within a week. The arrears payment can include deductutions for tax and benefits you have received from NAV or others, for example occupational pension schemes. In these cases the payment in arrears can be delayed upto nine weeks. Any deductions will be listed on the payment notification".expr()
+                    )
+                }
+            }
+        }
+    }
 }
 
+
+// paid in arrears

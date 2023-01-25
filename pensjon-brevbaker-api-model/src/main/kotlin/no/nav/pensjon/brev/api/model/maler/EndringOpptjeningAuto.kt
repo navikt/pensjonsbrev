@@ -8,32 +8,23 @@ data class EndringOpptjeningAutoDto(
     val barnetilleggFellesbarn: BarnetilleggFellesbarn?,
     val barnetilleggSaerkullsbarn: BarnetilleggSaerkullsbarn?,
     val endringIOpptjening: EndringIOpptjening,
-    val kombinereUfoeretrygdMedInntekt: KombinereUfoeretrygdMedInntekt,
     val ufoeretrygd: Ufoeretrygd,  // used
 ) {
 
-    data class EndringIOpptjening(
-        val ufoerBeloepOekt: Boolean,  // used
-        val ufoerBeloepRedusert: Boolean,  // used
-        val virkningsDato: LocalDate,  // used
-    )
-
     data class Ufoeretrygd(
-        val forventetInntekt: Kroner,  //  Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_ForventetInntekt
         val harEktefelletilleggInnvilget: Boolean,  // used
         val harFellesbarnInnvilget: Boolean,  // used
         val harGjenlevendetilleggInnvilget: Boolean,  // used
         val harSaerkullsbarnInnvilget: Boolean,  // used
         val harUtbetalingsgrad: Boolean,  // used
         val harYrkesskadeGradUtbetaling: Boolean, // yrkesskadeGrad > 0  - used
-        val inntektsgrense: Kroner,  // Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektsgrense
         val ufoertrygdUtbetalt: Kroner,
         val utbetaltPerMaaned: Kroner,  // used
     )
 
 
 
-    data class KombinereUfoeretrygdMedInntekt(
+    data class EndringIOpptjening(
         val beloepsgrense: Kroner,  // Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Belopsgrense
         val forventetInntekt: Kroner,  //  Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_ForventetInntekt
         val grunnbeloep: Kroner,  // Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Grunnbelop
@@ -55,7 +46,7 @@ data class EndringOpptjeningAutoDto(
         val oppjustertInntektFoerUfoere: Kroner,  // <Oifu>
         val ufoeregrad: Int, // Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegningu_ufoeregrad
         val utbetalingsgrad: Int, // Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_utbetalingsgrad
-
+        val virkningsDato: LocalDate,  // used
 
     )
 

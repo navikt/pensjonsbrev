@@ -24,13 +24,13 @@ object EndringOpptjening {
 
     // TBU2221, TBU2222
     data class BetydningForUfoeretrygden(
-        val ufoerBeloepOekt: Expression<Boolean>,
-        val ufoerBeloepRedusert: Expression<Boolean>,
+        val harBeloepOekt: Expression<Boolean>,
+        val harBeloepRedusert: Expression<Boolean>,
         val virkningsDato: Expression<LocalDate>,
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             paragraph {
-                showIf(ufoerBeloepOekt or ufoerBeloepRedusert) {
+                showIf(harBeloepOekt or harBeloepRedusert) {
                     textExpr(
                         Bokmal to "Utbetalingen er endret med virkning fra ".expr() + virkningsDato.format() + ".".expr(),
                         Nynorsk to "".expr(),
@@ -84,15 +84,14 @@ object EndringOpptjening {
     }
 
 
-    // TBU2225, TBU226
+    // TBU2225, TBU2226
     data class EndringIOpptjeningTilUfoeretrygd(
-        val ufoerBeloepOekt: Expression<Boolean>,
-        val ufoerBeloepRedusert: Expression<Boolean>,
+        val harBeloepOekt: Expression<Boolean>,
         val virkningsDato: Expression<LocalDate>,
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             paragraph {
-                showIf(ufoerBeloepOekt) {
+                showIf(harBeloepOekt) {
                     textExpr(
                         Bokmal to "Du har fått en endring i opptjeningen din før du ble ufør. Dette gir deg en økt uføretrygd fra ".expr() + virkningsDato.format() + ". Du vil derfor motta en etterbetaling fra NAV.".expr(),
                         Nynorsk to "".expr(),
