@@ -107,5 +107,58 @@ object EndringOpptjening {
             }
         }
     }
+
+    // TBU3224
+    data class EtterbetalingAvUfoeretrygd(
+        val harBeloepOekt: Expression<Boolean>,
+        val ufoeregrad: Expression<Int>,
+        val utbetalingsgrad: Expression<Int>,
+        val virkningsDato: Expression<LocalDate>,
+
+        ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+            showIf(harBeloepOekt and utbetalingsgrad.lessThan(ufoeregrad)) {
+                title1 {
+                    text(
+                        Bokmal to "Etterbetaling av uføretrygd",
+                        Nynorsk to "Etterbetaling av uføretrygd",
+                        English to "Disability benefit paid in arrears"
+                    )
+                }
+                paragraph {
+                    textExpr(
+                        Bokmal to "Du får etterbetalt uføretrygd fra ".expr() + virkningsDato.format() + ". Beløpet blir vanligvis utbetalt i løpet av sju virkedager. Det kan bli beregnet fradrag i etterbetalingen for skatt og ytelser du har mottatt fra NAV eller andre, som for eksempel tjenestepensjonsordninger. I disse tilfellene kan etterbetalingen bli forsinket med inntil ni uker. Fradrag i etterbetalingen vil gå fram av utbetalingsmeldingen.".expr(),
+                        Nynorsk to "".expr(),
+                        English to "You will receive disbability benefit paid in arrears from ".expr() + virkningsDato.format() + ". The payment is usually made within a week. The arrears payment can include deductutions for tax and benefits you have received from NAV or others, for example occupational pension schemes. In these cases the payment in arrears can be delayed upto nine weeks. Any deductions will be listed on the payment notification".expr()
+                    )
+                }
+            }
+        }
+    }
+
+    // TBU2530
+    data class TilbakekrevingAvUfoeretrygd(
+        val harBeloepRedusert: Expression<Boolean>
+    ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+
+            showIf(harBeloepRedusert) {
+                title1 {
+                    text(
+                        Bokmal to "Tilbakekreving av uføretrygd",
+                        Nynorsk to "Tilbakekreving av uføretrygd",
+                        English to "Repayment of disability benefit"
+                    )
+                }
+                paragraph {
+                    text(
+                        Bokmal to "Fordi uføretrygden din er redusert tilbake i tid, betyr dette at du har fått utbetalt for mye i uføretrygd. Du får eget brev med varsel om eventuell tilbakekreving av det feilutbetalte beløpet.",
+                        Nynorsk to "",
+                        English to "Your disability benefit was reduced in the past, this means you have been paid too much disability benefit. You will recieve a letter notifying you of the demand for the repayment of the overpayment of disability benefit."
+                    )
+                }
+            }
+        }
+    }
 }
 

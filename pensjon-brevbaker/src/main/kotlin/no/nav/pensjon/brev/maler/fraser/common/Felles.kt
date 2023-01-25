@@ -93,9 +93,9 @@ object Felles {
 
             paragraph {
                 text(
-                    Bokmal to "Du har rett til å se dokumentene i saken din. I vedlegget får du vite hvordan du går fram.",
-                    Nynorsk to "Du har rett til å sjå dokumenta i saka di. I vedlegget får du vite korleis du går fram.",
-                    English to "You have the right to access all documents pertaining to your case. The appendix includes information on how to proceed.",
+                    Bokmal to "Du har rett til å se dokumentene i saken din. I vedlegget «Dine rettigheter og plikter» får du vite hvordan du går fram.",
+                    Nynorsk to "Du har rett til å sjå dokumenta i saka di. I vedlegget «Dine rettar og plikter» får du vite korleis du går fram.",
+                    English to "You have the right to access all documents pertaining to your case. The appendix «Your rights and obligations» includes information on how to proceed.",
                 )
             }
         }

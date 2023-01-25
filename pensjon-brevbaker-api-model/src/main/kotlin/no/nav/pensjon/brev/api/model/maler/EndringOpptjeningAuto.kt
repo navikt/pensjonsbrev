@@ -1,6 +1,9 @@
 package no.nav.pensjon.brev.api.model.maler
 
 import no.nav.pensjon.brev.api.model.Kroner
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligUfoeretrygdFoerSkattDto
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDto
+import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterUfoereDto
 import java.time.LocalDate
 
 @Suppress("unused")
@@ -9,9 +12,13 @@ data class EndringOpptjeningAutoDto(
     val barnetilleggSaerkullsbarn: BarnetilleggSaerkullsbarn?,
     val endringIOpptjening: EndringIOpptjening,
     val ufoeretrygd: Ufoeretrygd,  // used
+    val maanedligUfoeretrygdFoerSkatt: MaanedligUfoeretrygdFoerSkattDto,
+    val opplysningerBruktIBeregningUT: OpplysningerBruktIBeregningUTDto,
+    val orienteringOmRettigheterUfoere: OrienteringOmRettigheterUfoereDto,
 ) {
 
     data class Ufoeretrygd(
+        val brukerBorInorge: Boolean, // used
         val harEktefelletilleggInnvilget: Boolean,  // used
         val harFellesbarnInnvilget: Boolean,  // used
         val harGjenlevendetilleggInnvilget: Boolean,  // used

@@ -220,9 +220,9 @@ object Ufoeretrygd {
             }
             paragraph {
                 text(
-                    Bokmal to "Skjer det endringer, må du melde fra til oss med en gang. I vedlegget «Orientering om rettigheter og plikter» ser du hvilke endringer du må si fra om.",
-                    Nynorsk to "Skjer det endringar, må du melde frå til oss med ein gong. I vedlegget «Orientering om rettar og plikter» ser du kva endringar du må seie frå om.",
-                    English to "You must notify us immediately of any changes in your situation. In the attachment “Information about rights and obligations” you will see which changes you must report."
+                    Bokmal to "Skjer det endringer, må du melde fra til oss med en gang. I vedlegget «Dine rettigheter og plikter» ser du hvilke endringer du må si fra om.",
+                    Nynorsk to "Skjer det endringar, må du melde frå til oss med ein gong. I vedlegget «Dine rettar og plikter» ser du kva endringar du må seie frå om.",
+                    English to "You must notify us immediately of any changes in your situation. In the appendix “Your rights and obligations” you will see which changes you must report."
                 )
             }
         }
@@ -240,9 +240,9 @@ object Ufoeretrygd {
             }
             paragraph {
                 text(
-                    Bokmal to "Hvis du mener vedtaket er feil, kan du klage. Fristen for å klage er seks uker fra den datoen du mottok vedtaket. I vedlegget «Orientering om rettigheter og plikter» får du vite mer om hvordan du går fram. Du finner skjema og informasjon på ${Constants.KLAGE_URL}.",
-                    Nynorsk to "Viss du meiner vedtaket er feil, kan du klage. Fristen for å klage er seks veker frå den datoen du fekk vedtaket. I vedlegget «Orientering om rettar og plikter» får du vite meir om korleis du går fram. Du finn skjema og informasjon på ${Constants.KLAGE_URL}.",
-                    English to "If you believe the decision is wrong, you may appeal. The deadline for appeal is six weeks from the date you received the decision. In the attachment “Information about rights and obligations”, you can find out more about how to proceed. You will find forms and information at ${Constants.KLAGE_URL}."
+                    Bokmal to "Hvis du mener vedtaket er feil, kan du klage. Fristen for å klage er seks uker fra den datoen du mottok vedtaket. I vedlegget «Dine rettigheter og plikter» får du vite mer om hvordan du går fram. Du finner skjema og informasjon på ${Constants.KLAGE_URL}.",
+                    Nynorsk to "Viss du meiner vedtaket er feil, kan du klage. Fristen for å klage er seks veker frå den datoen du fekk vedtaket. I vedlegget «Dine rettar og plikter» får du vite meir om korleis du går fram. Du finn skjema og informasjon på ${Constants.KLAGE_URL}.",
+                    English to "If you believe the decision is wrong, you may appeal. The deadline for appeal is six weeks from the date you received the decision. In the appendix “Your rights and obligations”, you can find out more about how to proceed. You will find forms and information at ${Constants.KLAGE_URL}."
 
                 )
             }
@@ -301,40 +301,10 @@ object Ufoeretrygd {
                 text(
                     Bokmal to "Du kan lese mer om beregningen av uføretrygden din i vedlegget «Opplysninger om beregningen».",
                     Nynorsk to "Du kan lese meir om berekninga av uføretrygden din i vedlegget «Opplysningar om berekninga».",
-                    English to "You can read more about the calculation of your disabilty benefit in the attachment «Information about calculations»."
+                    English to "You can read more about the calculation of your disabilty benefit in the appendix «Information about calculations»."
                 )
-            }
-        }
-    }
-
-    // TBU3224
-    data class EtterbetalingAvUfoeretrygd(
-        val harBeloepOekt: Expression<Boolean>,
-        val ufoeregrad: Expression<Int>,
-        val utbetalingsgrad: Expression<Int>,
-        val virkningsDato: Expression<LocalDate>,
-
-        ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
-        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-            showIf(harBeloepOekt and utbetalingsgrad.lessThan(ufoeregrad)) {
-                title1 {
-                    text(
-                        Bokmal to "Etterbetaling av uføretrygd",
-                        Nynorsk to "Etterbetaling av uføretrygd",
-                        English to "Disability benefit paid in arrears"
-                    )
-                }
-                paragraph {
-                    textExpr(
-                        Bokmal to "Du får etterbetalt uføretrygd fra ".expr() + virkningsDato.format() + ". Beløpet blir vanligvis utbetalt i løpet av sju virkedager. Det kan bli beregnet fradrag i etterbetalingen for skatt og ytelser du har mottatt fra NAV eller andre, som for eksempel tjenestepensjonsordninger. I disse tilfellene kan etterbetalingen bli forsinket med inntil ni uker. Fradrag i etterbetalingen vil gå fram av utbetalingsmeldingen.".expr(),
-                        Nynorsk to "".expr(),
-                        English to "You will receive disbability benefit paid in arrears from ".expr() + virkningsDato.format() + ". The payment is usually made within a week. The arrears payment can include deductutions for tax and benefits you have received from NAV or others, for example occupational pension schemes. In these cases the payment in arrears can be delayed upto nine weeks. Any deductions will be listed on the payment notification".expr()
-                    )
-                }
             }
         }
     }
 }
 
-
-// paid in arrears

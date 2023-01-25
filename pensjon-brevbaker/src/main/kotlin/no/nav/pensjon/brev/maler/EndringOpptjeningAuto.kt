@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.maler
 
 import no.nav.pensjon.brev.api.model.LetterMetadata
+import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarnVedvirkSelectors.erRedusertMotInntekt_safe
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.EndringIOpptjeningSelectors.virkningsDato
 import no.nav.pensjon.brev.api.model.maler.EndringOpptjeningAutoDto
@@ -27,6 +28,16 @@ import no.nav.pensjon.brev.api.model.maler.EndringIOpptjeningSelectors.oppjuster
 import no.nav.pensjon.brev.api.model.maler.EndringIOpptjeningSelectors.oppjustertInntektFoerUfoere80prosent
 import no.nav.pensjon.brev.api.model.maler.EndringIOpptjeningSelectors.ufoeregrad
 import no.nav.pensjon.brev.api.model.maler.EndringIOpptjeningSelectors.utbetalingsgrad
+import no.nav.pensjon.brev.api.model.maler.EndringOpptjeningAutoDtoSelectors.maanedligUfoeretrygdFoerSkatt
+import no.nav.pensjon.brev.api.model.maler.EndringOpptjeningAutoDtoSelectors.opplysningerBruktIBeregningUT
+import no.nav.pensjon.brev.api.model.maler.EndringOpptjeningAutoDtoSelectors.orienteringOmRettigheterUfoere
+import no.nav.pensjon.brev.api.model.maler.InntektFoerUfoerhetVedVirkSelectors.erSannsynligEndret
+import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDtoSelectors.barnetilleggSaerkullsbarnVedVirk
+import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDtoSelectors.inntektFoerUfoerhetVedVirk
+import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDtoSelectors.maanedligUfoeretrygdFoerSkatt
+import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDtoSelectors.opplysningerBruktIBeregningUT
+import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDtoSelectors.orienteringOmRettigheterOgPlikter
+import no.nav.pensjon.brev.api.model.maler.UfoeretrygdSelectors.brukerBorInorge
 import no.nav.pensjon.brev.api.model.maler.UfoeretrygdSelectors.harEktefelletilleggInnvilget
 import no.nav.pensjon.brev.api.model.maler.UfoeretrygdSelectors.harFellesbarnInnvilget
 import no.nav.pensjon.brev.api.model.maler.UfoeretrygdSelectors.harGjenlevendetilleggInnvilget
@@ -35,18 +46,20 @@ import no.nav.pensjon.brev.api.model.maler.UfoeretrygdSelectors.harUtbetalingsgr
 import no.nav.pensjon.brev.api.model.maler.UfoeretrygdSelectors.harYrkesskadeGradUtbetaling
 import no.nav.pensjon.brev.api.model.maler.UfoeretrygdSelectors.utbetaltPerMaaned
 import no.nav.pensjon.brev.maler.fraser.EndringOpptjening
+import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.fraser.ufoer.HjemlerFolketrygdloven
 import no.nav.pensjon.brev.maler.fraser.ufoer.Ufoeretrygd
 import no.nav.pensjon.brev.maler.fraser.common.Vedtak
 import no.nav.pensjon.brev.maler.fraser.ufoer.Gjenlevendetillegg
 import no.nav.pensjon.brev.maler.fraser.ufoer.KombinereUfoeretrygdMedInntekt
+import no.nav.pensjon.brev.maler.vedlegg.vedleggMaanedligUfoeretrygdFoerSkatt
+import no.nav.pensjon.brev.maler.vedlegg.vedleggOpplysningerBruktIBeregningUT
+import no.nav.pensjon.brev.maler.vedlegg.vedleggOrienteringOmRettigheterOgPlikterUfoere
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.VedtaksbrevTemplate
 import no.nav.pensjon.brev.template.dsl.createTemplate
-import no.nav.pensjon.brev.template.dsl.expression.equalTo
-import no.nav.pensjon.brev.template.dsl.expression.format
-import no.nav.pensjon.brev.template.dsl.expression.notNull
+import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -226,7 +239,7 @@ object EndringOpptjeningAuto : VedtaksbrevTemplate<EndringOpptjeningAutoDto> {
             )
 
             includePhrase(
-                Ufoeretrygd.EtterbetalingAvUfoeretrygd(
+                EndringOpptjening.EtterbetalingAvUfoeretrygd(
                     harBeloepOekt = endringIOpptjening.harBeloepOekt,
                     ufoeregrad = endringIOpptjening.ufoeregrad,
                     utbetalingsgrad = endringIOpptjening.utbetalingsgrad,
@@ -234,6 +247,28 @@ object EndringOpptjeningAuto : VedtaksbrevTemplate<EndringOpptjeningAutoDto> {
 
                 )
             )
+            includePhrase(
+                EndringOpptjening.TilbakekrevingAvUfoeretrygd(
+                    harBeloepRedusert = endringIOpptjening.harBeloepRedusert
+                )
+            )
+            includePhrase(Ufoeretrygd.MeldeFraOmEndringer)
+            includePhrase(Ufoeretrygd.RettTilAAKlage)
+            includePhrase(Felles.RettTilKlagePesys_001)
+            includePhrase(Felles.RettTilInnsynPesys_001)
+            includePhrase(Ufoeretrygd.SjekkUtbetalingene)
+            includePhrase(Ufoeretrygd.Skattekort)
+
+            includePhrase(
+                Ufoeretrygd.SkattForDegSomBorIUtlandet(
+                    brukerBorInorge = ufoeretrygd.brukerBorInorge
+                )
+            )
         }
+
+        includeAttachment(vedleggMaanedligUfoeretrygdFoerSkatt, maanedligUfoeretrygdFoerSkatt)
+        includeAttachment(vedleggOpplysningerBruktIBeregningUT, opplysningerBruktIBeregningUT)
+        includeAttachment(vedleggOrienteringOmRettigheterOgPlikterUfoere, orienteringOmRettigheterUfoere)
+
     }
 }
