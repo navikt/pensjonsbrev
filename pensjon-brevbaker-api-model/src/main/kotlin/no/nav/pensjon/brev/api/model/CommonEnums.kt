@@ -2,7 +2,7 @@
 
 package no.nav.pensjon.brev.api.model
 
-enum class Sivilstand{
+enum class Sivilstand {
     ENSLIG,
     ENKE,
     GIFT,
@@ -15,21 +15,21 @@ enum class Sivilstand{
     SAMBOER3_2,
 }
 
-enum class Sakstype{
+enum class Sakstype {
     AFP,
     ALDER,
     UFOEREP,
     BARNEP,
 }
 
-enum class Institusjon{
+enum class Institusjon {
     FENGSEL,
     HELSE,
     SYKEHJEM,
     INGEN,
 }
 
-enum class Beregningsmetode{
+enum class Beregningsmetode {
     AUSTRALIA,
     CANADA,
     CHILE,
