@@ -1,9 +1,9 @@
-package no.nav.pensjon.brev.maler.fraser
+package no.nav.pensjon.brev.maler.fraser.vedlegg
 
 import no.nav.pensjon.brev.api.model.FellesSelectors.avsenderEnhet
-import no.nav.pensjon.brev.api.model.NAVEnhetSelectors.nettside
 import no.nav.pensjon.brev.api.model.NAVEnhetSelectors.telefonnummer
 import no.nav.pensjon.brev.api.model.Sivilstand
+import no.nav.pensjon.brev.maler.fraser.common.Constants
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Language.*

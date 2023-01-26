@@ -6,6 +6,7 @@ import no.nav.pensjon.brev.template.expression.Predicate
 import java.text.NumberFormat
 import java.time.LocalDate
 import java.time.format.FormatStyle
+import kotlin.math.absoluteValue
 
 abstract class Operation {
     // Since most operations don't have fields, and hence can't be data classes,
@@ -28,6 +29,18 @@ sealed class UnaryOperation<In, out Out> : Operation() {
 
     class ToString<T : Any> : UnaryOperation<T, String>() {
         override fun apply(input: T): String = input.toString()
+    }
+
+    object SizeOf : UnaryOperation<Collection<*>, Int>(){
+        override fun apply(input: Collection<*>): Int = input.size
+    }
+
+    object AbsoluteValue : UnaryOperation<Int, Int>(){
+        override fun apply(input: Int): Int = input.absoluteValue
+    }
+
+    object AbsoluteValueKroner : UnaryOperation<Kroner, Kroner>(){
+        override fun apply(input: Kroner): Kroner = Kroner(input.value.absoluteValue)
     }
 
     object FormatPhoneNumber : UnaryOperation<Telefonnummer, String>() {

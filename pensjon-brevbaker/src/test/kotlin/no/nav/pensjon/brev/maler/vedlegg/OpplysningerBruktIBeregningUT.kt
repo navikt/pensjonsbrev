@@ -4,9 +4,9 @@ import kotlinx.coroutines.runBlocking
 import no.nav.pensjon.brev.Fixtures
 import no.nav.pensjon.brev.PDF_BUILDER_URL
 import no.nav.pensjon.brev.TestTags
-import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterUfoereDto
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDto
 import no.nav.pensjon.brev.latex.LaTeXCompilerService
-import no.nav.pensjon.brev.template.Language.*
+import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.Letter
 import no.nav.pensjon.brev.template.createVedleggTestTemplate
 import no.nav.pensjon.brev.template.dsl.expression.expr
@@ -16,26 +16,23 @@ import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 
 @Tag(TestTags.PDF_BYGGER)
-class OrienteringOmRettigheterUfoereTest {
+class OpplysningerBruktIBeregningUTTest {
 
     @Test
     fun testVedlegg() {
         val template = createVedleggTestTemplate(
-            vedleggOrienteringOmRettigheterOgPlikterUfoere,
-            Fixtures.create(OrienteringOmRettigheterUfoereDto::class).expr()
+            createVedleggOpplysningerBruktIBeregningUT(skalViseMinsteytelse = true, skalViseBarnetillegg = true),
+            Fixtures.create(OpplysningerBruktIBeregningUTDto::class).expr()
         )
         Letter(
             template,
             Unit,
-            Nynorsk,
+            Language.Bokmal,
             Fixtures.fellesAuto
         )
             .let { PensjonLatexRenderer.render(it) }
             .let { runBlocking { LaTeXCompilerService(PDF_BUILDER_URL).producePDF(it, "test").base64PDF } }
-            .also { writeTestPDF("OrienteringOmRettigheterUfoere", it) }
+            .also { writeTestPDF("OpplysningerBruktIBeregningUfoere", it) }
 
     }
 }
-
-
-

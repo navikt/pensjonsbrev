@@ -1,7 +1,7 @@
 package no.nav.pensjon.brev.template.render
 
-import no.nav.pensjon.brev.maler.fraser.Constants.KONTAKT_URL
-import no.nav.pensjon.brev.maler.fraser.Constants.NAV_URL
+import no.nav.pensjon.brev.maler.fraser.common.Constants.KONTAKT_URL
+import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.plus
