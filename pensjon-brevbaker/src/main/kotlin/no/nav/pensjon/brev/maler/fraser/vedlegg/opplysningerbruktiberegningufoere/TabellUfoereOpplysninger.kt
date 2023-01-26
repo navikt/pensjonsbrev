@@ -80,12 +80,6 @@ data class TabellUfoereOpplysninger(
                     )
                 }
                 column(alignment = Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT) {
-                    text(
-                        Language.Bokmal to "Verdi",
-                        Language.Nynorsk to "Verdi",
-                        Language.English to "Value",
-                        Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
-                    )
                 }
             }
         ) {

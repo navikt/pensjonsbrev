@@ -3,7 +3,11 @@ package no.nav.pensjon.brev.maler.fraser.vedlegg
 import no.nav.pensjon.brev.api.model.FellesSelectors.avsenderEnhet
 import no.nav.pensjon.brev.api.model.NAVEnhetSelectors.telefonnummer
 import no.nav.pensjon.brev.api.model.Sivilstand
-import no.nav.pensjon.brev.maler.fraser.common.Constants
+import no.nav.pensjon.brev.maler.fraser.common.Constants.BESKJED_TIL_NAV_URL
+import no.nav.pensjon.brev.maler.fraser.common.Constants.ETTERSENDELSE_URL
+import no.nav.pensjon.brev.maler.fraser.common.Constants.FULLMAKT_URL
+import no.nav.pensjon.brev.maler.fraser.common.Constants.KLAGE_URL
+import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Language.*
@@ -535,9 +539,9 @@ object VedleggPlikterUT_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
 object VedleggPlikterUT1_001 : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
     override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         text(
-            Bokmal to "inntekten din endrer seg. Du kan informere NAV om endret inntekt ved å bruke selvbetjeningsløsningen på nav.no",
-            Nynorsk to "inntekta di endrar seg. Du kan informere NAV om endra inntekt ved å bruke sjølvbeteningsløysninga på nav.no",
-            English to "your income changes. You can notify NAV of changes in your income by using the online service at nav.no"
+            Bokmal to "inntekten din endrer seg. Du kan informere NAV om endret inntekt ved å bruke selvbetjeningsløsningen på $NAV_URL",
+            Nynorsk to "inntekta di endrar seg. Du kan informere NAV om endra inntekt ved å bruke sjølvbeteningsløysninga på $NAV_URL",
+            English to "your income changes. You can notify NAV of changes in your income by using the online service at $NAV_URL"
         )
 }
 
@@ -769,15 +773,15 @@ object InfoAPBeskjed_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
         }
         paragraph {
             text(
-                Bokmal to "Du kan logge deg inn på Din Pensjon og velge «Kontakt NAV om pensjon», eller på nav.no/beskjedtilnav og velge «Send beskjed til NAV». Du kan også sende beskjed til oss i posten. Adressen finner du på nav.no/ettersendelse.",
-                Nynorsk to "Du kan logge deg inn på Din Pensjon og velje «Kontakt NAV om pensjon», eller på nav.no/beskjedtilnav og velje «Send beskjed til NAV». Du kan også gi melding til oss i posten. Adressa finner du på nav.no/ettersendelse.",
-                English to "You can contact us by logging in to your personal Din Pensjon pension page and selecting “Kontakt NAV”, or by logging in to nav.no/beskjedtilnav and selecting “Send beskjed til NAV”. You can also contact us by post. You can find the address at nav.no/ettersendelser."
+                Bokmal to "Du kan logge deg inn på Din Pensjon og velge «Kontakt NAV om pensjon», eller på $BESKJED_TIL_NAV_URL og velge «Send beskjed til NAV». Du kan også sende beskjed til oss i posten. Adressen finner du på $ETTERSENDELSE_URL.",
+                Nynorsk to "Du kan logge deg inn på Din Pensjon og velje «Kontakt NAV om pensjon», eller på $BESKJED_TIL_NAV_URL og velje «Send beskjed til NAV». Du kan også gi melding til oss i posten. Adressa finner du på $ETTERSENDELSE_URL.",
+                English to "You can contact us by logging in to your personal Din Pensjon pension page and selecting “Kontakt NAV”, or by logging in to $BESKJED_TIL_NAV_URL and selecting “Send beskjed til NAV”. You can also contact us by post. You can find the address at $ETTERSENDELSE_URL."
             )
         }
     }
 }
 
-object VedleggVeiledning_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
+object VedleggVeiledning : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         title1 {
             text(
@@ -797,7 +801,7 @@ object VedleggVeiledning_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
 }
 
 
-object VedleggInnsynSakPensjon_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
+object VedleggInnsynSakPensjon : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         val telefonNummer = felles.avsenderEnhet.telefonnummer
         title1 {
@@ -809,15 +813,15 @@ object VedleggInnsynSakPensjon_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
         }
         paragraph {
             textExpr(
-                Bokmal to "Med få unntak har du rett til å se dokumentene i saken din. Du kan logge deg inn på ${Constants.NAV_URL} for å se all kommunikasjon som har vært mellom deg og NAV i saken din. Du kan også ringe oss på telefon ".expr() + telefonNummer.format() + ".".expr(),
-                Nynorsk to "Med få unntak har du rett til å sjå dokumenta i saka di. Du kan logge deg inn på ${Constants.NAV_URL} for å sjå all kommunikasjon som har vore mellom deg og NAV i saka di. Du kan også ringje oss på telefon ".expr() + telefonNummer.format() + ".".expr(),
-                English to "With some exceptions, you are entitled to access all the documents relating to your case. Log on to ${Constants.NAV_URL} to review the communication between you and NAV in connection with your case. You can also call us at tel.: ".expr() + telefonNummer.format() + ".".expr()
+                Bokmal to "Med få unntak har du rett til å se dokumentene i saken din. Du kan logge deg inn på $NAV_URL for å se all kommunikasjon som har vært mellom deg og NAV i saken din. Du kan også ringe oss på telefon ".expr() + telefonNummer.format() + ".".expr(),
+                Nynorsk to "Med få unntak har du rett til å sjå dokumenta i saka di. Du kan logge deg inn på $NAV_URL for å sjå all kommunikasjon som har vore mellom deg og NAV i saka di. Du kan også ringje oss på telefon ".expr() + telefonNummer.format() + ".".expr(),
+                English to "With some exceptions, you are entitled to access all the documents relating to your case. Log on to $NAV_URL to review the communication between you and NAV in connection with your case. You can also call us at tel.: ".expr() + telefonNummer.format() + ".".expr()
             )
         }
     }
 }
 
-object VedleggInnsynSakUTPesys_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
+object VedleggInnsynSakUfoeretrygdPesys : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         val telefonNummer = felles.avsenderEnhet.telefonnummer
         title1 {
@@ -829,15 +833,15 @@ object VedleggInnsynSakUTPesys_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
         }
         paragraph {
             textExpr(
-                Bokmal to "Med få unntak har du rett til å se dokumentene i saken din. Du kan logge deg inn via ${Constants.NAV_URL} for å se dokumenter i saken din. Du kan også ringe oss på telefon ".expr() + telefonNummer.format() + ".".expr(),
-                Nynorsk to "Med få unntak har du rett til å sjå dokumenta i saka di. Du kan logge deg inn via ${Constants.NAV_URL} for å sjå dokumenter i saka di. Du kan også ringje oss på telefon ".expr() + telefonNummer.format() + ".".expr(),
-                English to "With some exceptions, you are entitled to access the documents relating to your case. Log on to ${Constants.NAV_URL} to review the documents in connection with your case. You can also call us at tel.: ".expr() + telefonNummer.format() + ".".expr()
+                Bokmal to "Med få unntak har du rett til å se dokumentene i saken din. Du kan logge deg inn via $NAV_URL for å se dokumenter i saken din. Du kan også ringe oss på telefon ".expr() + telefonNummer.format() + ".".expr(),
+                Nynorsk to "Med få unntak har du rett til å sjå dokumenta i saka di. Du kan logge deg inn via $NAV_URL for å sjå dokumenter i saka di. Du kan også ringje oss på telefon ".expr() + telefonNummer.format() + ".".expr(),
+                English to "With some exceptions, you are entitled to access the documents relating to your case. Log on to $NAV_URL to review the documents in connection with your case. You can also call us at tel.: ".expr() + telefonNummer.format() + ".".expr()
             )
         }
     }
 }
 
-object VedleggHjelpFraAndre_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
+object VedleggHjelpFraAndre : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         title1 {
             text(
@@ -848,15 +852,15 @@ object VedleggHjelpFraAndre_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
         }
         paragraph {
             text(
-                Bokmal to "Du kan be om hjelp fra andre under hele saksbehandlingen, for eksempel av advokat, rettshjelper, en organisasjon du er medlem av eller en annen myndig person. Hvis den som hjelper deg ikke er advokat, må du gi denne personen en skriftlig fullmakt. Bruk gjerne skjemaet du finner på nav.no/fullmakt.",
-                Nynorsk to "Du kan be om hjelp frå andre under heile saksbehandlinga, for eksempel av advokat, rettshjelpar, ein organisasjon du er medlem av, eller ein annan myndig person. Dersom den som hjelper deg, ikkje er advokat, må du gi denne personen ei skriftleg fullmakt. Bruk gjerne skjemaet du finn på nav.no/fullmakt.",
-                English to "You can use the assistance of a third party throughout the administrative process, e.g. from a lawyer, legal services provider, an organisation of which you are a member, or another competent person. If the person assisting you is not a lawyer, you must issue a written power of attorney authorising them to help you. You can use the form found on nav.no/fullmakt."
+                Bokmal to "Du kan be om hjelp fra andre under hele saksbehandlingen, for eksempel av advokat, rettshjelper, en organisasjon du er medlem av eller en annen myndig person. Hvis den som hjelper deg ikke er advokat, må du gi denne personen en skriftlig fullmakt. Bruk gjerne skjemaet du finner på $FULLMAKT_URL.",
+                Nynorsk to "Du kan be om hjelp frå andre under heile saksbehandlinga, for eksempel av advokat, rettshjelpar, ein organisasjon du er medlem av, eller ein annan myndig person. Dersom den som hjelper deg, ikkje er advokat, må du gi denne personen ei skriftleg fullmakt. Bruk gjerne skjemaet du finn på $FULLMAKT_URL.",
+                English to "You can use the assistance of a third party throughout the administrative process, e.g. from a lawyer, legal services provider, an organisation of which you are a member, or another competent person. If the person assisting you is not a lawyer, you must issue a written power of attorney authorising them to help you. You can use the form found on $FULLMAKT_URL."
             )
         }
     }
 }
 
-object VedleggKlagePensjon_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
+object VedleggKlagePensjon : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         val telefonNummer = felles.avsenderEnhet.telefonnummer
         title1 {
@@ -882,9 +886,9 @@ object VedleggKlagePensjon_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
         }
         paragraph {
             textExpr(
-                Bokmal to "Klagen må være skriftlig og inneholde navn, fødselsnummer og adresse. Bruk gjerne skjemaet som du finner på nav.no/klage. Trenger du hjelp, er du velkommen til å ringe oss på telefon ".expr() + telefonNummer.format() + ".".expr(),
-                Nynorsk to "Klaga må vere skriftleg og innehalde namn, fødselsnummer og adresse. Bruk gjerne skjemaet som du finn på nav.no/klage. Treng du hjelp, er du velkomen til å ringje oss på telefon ".expr() + telefonNummer.format() + ".".expr(),
-                English to "Your appeal must be made in writing and include your name, national identity number and address. Feel free to use the form found at nav.no/klage. Should you need assistance in writing the appeal, please call us at tel.: ".expr() + telefonNummer.format() + ".".expr()
+                Bokmal to "Klagen må være skriftlig og inneholde navn, fødselsnummer og adresse. Bruk gjerne skjemaet som du finner på $KLAGE_URL. Trenger du hjelp, er du velkommen til å ringe oss på telefon ".expr() + telefonNummer.format() + ".".expr(),
+                Nynorsk to "Klaga må vere skriftleg og innehalde namn, fødselsnummer og adresse. Bruk gjerne skjemaet som du finn på $KLAGE_URL. Treng du hjelp, er du velkomen til å ringje oss på telefon ".expr() + telefonNummer.format() + ".".expr(),
+                English to "Your appeal must be made in writing and include your name, national identity number and address. Feel free to use the form found at $KLAGE_URL. Should you need assistance in writing the appeal, please call us at tel.: ".expr() + telefonNummer.format() + ".".expr()
             )
         }
         paragraph {
@@ -935,8 +939,8 @@ object VedleggKlagePensjon_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
         }
         paragraph {
             text(
-                Bokmal to "Får du medhold, kan du få dekket vesentlige utgifter som har vært nødvendige for å få endret vedtaket. Du kan ha krav på fri rettshjelp etter rettshjelploven. Informasjon om denne ordningen kan du få hos fylkesmannen, advokater eller NAV.",
-                Nynorsk to "Får du medhald, kan du få dekt vesentlege utgifter som har vore nødvendige for å få endra vedtaket. Du kan ha krav på fri rettshjelp etter rettshjelplova. Informasjon om denne ordninga kan du få hos fylkesmannen, advokatar eller NAV.",
+                Bokmal to "Får du medhold, kan du få dekket vesentlige utgifter som har vært nødvendige for å få endret vedtaket. Du kan ha krav på fri rettshjelp etter rettshjelploven. Informasjon om denne ordningen kan du få hos Statsforvalteren, advokater eller NAV.",
+                Nynorsk to "Får du medhald, kan du få dekt vesentlege utgifter som har vore nødvendige for å få endra vedtaket. Du kan ha krav på fri rettshjelp etter rettshjelplova. Informasjon om denne ordninga kan du få hos Statsforvalteren, advokatar eller NAV.",
                 English to "If your appeal is successful, you may be eligible for compensation for costs incurred to have the decision overturned. You may also be eligible for free legal aid, pursuant to the Legal Aid Act. Information about the legal aid scheme can be obtained from the county governor, lawyers or NAV."
             )
         }
@@ -1024,9 +1028,9 @@ object VedleggKlagePesys_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
         }
         paragraph {
             text(
-                Bokmal to "Bruk gjerne skjemaet du finner på nav.no/klage. NAV kan hjelpe deg med å skrive klagen.",
-                Nynorsk to "Bruk gjerne skjemaet som du finn på nav.no/klage. NAV kan hjelpe deg med å skrive klaga.",
-                English to "You can use the form found on nav.no/klage. NAV can assist you in writing the appeal."
+                Bokmal to "Bruk gjerne skjemaet du finner på $KLAGE_URL. NAV kan hjelpe deg med å skrive klagen.",
+                Nynorsk to "Bruk gjerne skjemaet som du finn på $KLAGE_URL. NAV kan hjelpe deg med å skrive klaga.",
+                English to "You can use the form found on $KLAGE_URL. NAV can assist you in writing the appeal."
             )
         }
         paragraph {
@@ -1038,8 +1042,8 @@ object VedleggKlagePesys_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
         }
         paragraph {
             text(
-                Bokmal to "Får du medhold, kan du få dekket vesentlige utgifter som har vært nødvendige for å få endret vedtaket. Du kan ha krav på fri rettshjelp etter rettshjelploven. Informasjon om denne ordningen kan du få hos fylkesmannen, advokater eller NAV.",
-                Nynorsk to "Får du medhald, kan du få dekt vesentlege utgifter som har vore nødvendige for å få endra vedtaket. Du kan ha krav på fri rettshjelp etter rettshjelplova. Informasjon om denne ordninga kan du få hos fylkesmannen, advokatar eller NAV.",
+                Bokmal to "Får du medhold, kan du få dekket vesentlige utgifter som har vært nødvendige for å få endret vedtaket. Du kan ha krav på fri rettshjelp etter rettshjelploven. Informasjon om denne ordningen kan du få hos Statsforvalteren, advokater eller NAV.",
+                Nynorsk to "Får du medhald, kan du få dekt vesentlege utgifter som har vore nødvendige for å få endra vedtaket. Du kan ha krav på fri rettshjelp etter rettshjelplova. Informasjon om denne ordninga kan du få hos Statsforvalteren, advokatar eller NAV.",
                 English to "If your appeal is successful, you may be eligible for compensation for the costs incurred to have the decision overturned. You may also be eligible for free legal aid, pursuant to the Legal Aid Act. Information about the legal aid scheme can be obtained from the county governor, lawyers of NAV."
             )
         }

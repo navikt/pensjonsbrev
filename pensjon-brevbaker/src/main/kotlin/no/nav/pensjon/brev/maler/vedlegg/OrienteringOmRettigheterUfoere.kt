@@ -63,8 +63,8 @@ val vedleggOrienteringOmRettigheterOgPlikterUfoere =
             item { includePhrase(VedleggPlikterUT12_001) }
         }
 
-        includePhrase(VedleggVeiledning_001)
-        includePhrase(VedleggInnsynSakUTPesys_001)
-        includePhrase(VedleggHjelpFraAndre_001)
-        includePhrase(VedleggKlagePensjon_001)
+        includePhrase(VedleggVeiledning)
+        includePhrase(VedleggInnsynSakUfoeretrygdPesys)
+        includePhrase(VedleggHjelpFraAndre)
+        includePhrase(VedleggKlagePensjon)
     }

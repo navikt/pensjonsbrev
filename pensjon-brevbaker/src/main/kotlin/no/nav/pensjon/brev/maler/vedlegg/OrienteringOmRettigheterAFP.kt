@@ -43,8 +43,8 @@ val orienteringOmRettigheterOgPlikterAFP = createAttachment<LangBokmalNynorskEng
         }
     }
 
-    includePhrase(VedleggVeiledning_001)
-    includePhrase(VedleggInnsynSakPensjon_001)
-    includePhrase(VedleggHjelpFraAndre_001)
-    includePhrase(VedleggKlagePensjon_001)
+    includePhrase(VedleggVeiledning)
+    includePhrase(VedleggInnsynSakPensjon)
+    includePhrase(VedleggHjelpFraAndre)
+    includePhrase(VedleggKlagePensjon)
 }

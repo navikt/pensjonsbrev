@@ -280,10 +280,10 @@ object OpphoerBarnetilleggAuto : VedtaksbrevTemplate<OpphoerBarnetilleggAutoDto>
             includePhrase(Ufoeretrygd.MeldeFraOmEventuellInntekt)
             includePhrase(Ufoeretrygd.MeldeFraOmEndringer)
             includePhrase(Ufoeretrygd.RettTilAAKlage)
-            includePhrase(Felles.RettTilInnsynPesys_001)
+            includePhrase(Felles.RettTilInnsynPesys)
             includePhrase(Ufoeretrygd.SjekkUtbetalingene)
             includePhrase(Ufoeretrygd.Skattekort)
-            includePhrase(Ufoeretrygd.SkattForDegSomBorIUtlandet(brukerBorInorge = brukerBorInorge))
+            includePhrase(Ufoeretrygd.SkattForDegSomBorIUtlandet(brukerBorInorge))
         }
         includeAttachment(vedleggMaanedligUfoeretrygdFoerSkatt, maanedligUfoeretrygdFoerSkatt)
         includeAttachment(vedleggOrienteringOmRettigheterOgPlikterUfoere, orienteringOmRettigheterUfoere)

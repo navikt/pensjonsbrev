@@ -95,9 +95,9 @@ object UngUfoerAuto : VedtaksbrevTemplate<UngUfoerAutoDto> {
             includePhrase(Ufoeretrygd.VirkningFomOverskrift)
             includePhrase(Ufoeretrygd.VirkningFraOgMed(kravVirkningFraOgMed))
 
-            includePhrase(Felles.MeldEndringerPesys_001)
-            includePhrase(Felles.RettTilKlagePesys_001)
-            includePhrase(Felles.RettTilInnsynPesys_001)
+            includePhrase(Ufoeretrygd.MeldeFraOmEndringer)
+            includePhrase(Ufoeretrygd.RettTilAAKlage)
+            includePhrase(Felles.RettTilInnsynPesys)
             includePhrase(Ufoeretrygd.SjekkUtbetalingene)
 
         }

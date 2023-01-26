@@ -178,8 +178,8 @@ val orienteringOmRettigheterOgPlikterAlder =
         }
 
         includePhrase(InfoAPBeskjed_001)
-        includePhrase(VedleggVeiledning_001)
-        includePhrase(VedleggInnsynSakPensjon_001)
-        includePhrase(VedleggHjelpFraAndre_001)
+        includePhrase(VedleggVeiledning)
+        includePhrase(VedleggInnsynSakPensjon)
+        includePhrase(VedleggHjelpFraAndre)
         includePhrase(VedleggKlagePesys_001)
     }

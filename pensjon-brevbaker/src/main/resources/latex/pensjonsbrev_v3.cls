@@ -57,8 +57,9 @@
 \setlength{\parskip}{1em} % space between paragraphs
 
 %itemize / lists spacing
+%TODO separate topsep and bottom sep.
 \newlength{\listtopsep}
-\setlength{\listtopsep}{10pt} % separation between top of list and content
+\setlength{\listtopsep}{0pt} % separation between top of list and content
 \newlength{\listtopsepcalc}
 \setlength{\listtopsepcalc}{\dimexpr(\listtopsep-\parskip)} %parskip is subtracted because it is added to the topsep by default
 \setlist[itemize]{noitemsep, topsep=\listtopsepcalc, leftmargin=15pt}

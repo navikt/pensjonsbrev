@@ -5,15 +5,7 @@ import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.dsl.*
 
-
-// Phrases that are repeated and found in VedleggOrienteringOmRettigheter.kt
-//  vedleggInnsynSakPensjon_001
-//  vedleggInnsynSakPensjon_001
-//  vedleggInnsynSakUTPesys_001
-//  vedleggHjelpFraAndre_001
-//  vedleggKlagePensjon_001
-
-object VedleggInnsynSakUnder18_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
+object VedleggInnsynSakUnder18 : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         paragraph {
             text(
