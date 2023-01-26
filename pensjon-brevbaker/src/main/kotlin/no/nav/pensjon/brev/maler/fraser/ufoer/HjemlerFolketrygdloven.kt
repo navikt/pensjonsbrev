@@ -50,7 +50,7 @@ object HjemlerFolketrygdloven {
                     }.orShowIf(not(harEktefelletilleggInnvilget) and harGjenlevendetilleggInnvilget) {
                         text(Bokmal to ", 12-18 og 22-12.", Nynorsk to ", 12-18 og 22-12.", English to ", 12-18 and 22-12 of the National Insurance Act.")
                     }.orShowIf(harEktefelletilleggInnvilget and not(harGjenlevendetilleggInnvilget)) {
-                        text(Bokmal to ", 22-12 og overgangsforskriften § 8.", Nynorsk to ", 22-12 og overgangsforskriften § 8.", English to ", 22-12 and overgangsforskriften § 8 of the National Insurance Act.")
+                        text(Bokmal to ", 22-12 og overgangsforskriften § 8.", Nynorsk to ", 22-12 og overgangsforskriften § 8.", English to ", 22-12 and the transition provision § 8 of the National Insurance Act.")
                     }
                 }
             }
@@ -68,7 +68,7 @@ object HjemlerFolketrygdloven {
                                 ifElse(harYrkesskadegradUtbetaling, ifTrue = "12-11 til 12-17", ifFalse = "12-11 til 12-16") + "".expr(),
                         Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ ".expr() +
                                 ifElse(harYrkesskadegradUtbetaling, ifTrue = "12-11 til 12-17", ifFalse = "12-11 til 12-16") + "".expr(),
-                        English to "his decision was made pursuant to the provisions of §§ ".expr() +
+                        English to "This decision was made pursuant to the provisions of §§ ".expr() +
                                 ifElse(harYrkesskadegradUtbetaling, ifTrue = "12-11 to 12-17", ifFalse = "12-11 to 12-16") + "".expr()
                     )
                     showIf(not(harEktefelletilleggInnvilget) and not(harGjenlevendetilleggInnvilget)) {
@@ -76,7 +76,7 @@ object HjemlerFolketrygdloven {
                     }.orShowIf(not(harEktefelletilleggInnvilget) and harGjenlevendetilleggInnvilget) {
                         text(Bokmal to ", 12-18 og 22-12.", Nynorsk to ", 12-18 og 22-12.", English to ", 12-18 og 22-12 of the National Insurance Act.")
                     }.orShowIf(harEktefelletilleggInnvilget and not(harGjenlevendetilleggInnvilget)) {
-                        text(Bokmal to ", 22-12 og overgangsforskriften § 8.", Nynorsk to ", 22-12 og overgangsforskriften § 8.", English to ", 22-12 and overgangsforskriften § 8 of the National Insurance Act."
+                        text(Bokmal to ", 22-12 og overgangsforskriften § 8.", Nynorsk to ", 22-12 og overgangsforskriften § 8.", English to ", 22-12 and the transition provision § 8 of the National Insurance Act."
                         )
                     }
                 }

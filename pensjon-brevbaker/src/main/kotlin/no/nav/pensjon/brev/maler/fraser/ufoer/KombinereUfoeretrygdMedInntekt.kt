@@ -29,13 +29,13 @@ object KombinereUfoeretrygdMedInntekt {
                     text(
                         Bokmal to "Skal du kombinere uføretrygd og inntekt?",
                         Nynorsk to "Skal du kombinere uføretrygd og inntekt?",
-                        English to "Will you combine disability benefit with salary income?"
+                        English to "Will you combine disability benefit with income?"
                     )
                 }.orShowIf(harDelvisUfoeregrad) {
                     text(
                         Bokmal to "For deg som kombinerer uføretrygd og inntekt",
                         Nynorsk to "For deg som kombinerer uføretrygd og inntekt",
-                        English to "If you combine disabilty benefit with salary income"
+                        English to "For you who combines disabilty benefit with income"
                     )
                 }
             }
@@ -62,7 +62,7 @@ object KombinereUfoeretrygdMedInntekt {
                     text(
                         Bokmal to "Utbetalingen av uføretrygden din er redusert fordi du har inntekt utover inntektsgrensen. Det lønner seg likevel å jobbe, fordi inntekt og uføretrygd alltid vil være høyere enn uføretrygd alene.",
                         Nynorsk to "",
-                        English to "Your disability benefit payment is reduced because your salary income exceeds the income limit for disability benefit. It still pays to work however, because income and disability benefit combined will always be higher than disability benefit alone."
+                        English to "Your disability benefit payment is reduced because your income exceeds the income limit for disability benefit. It still pays to work however, because income and disability benefit combined will always be higher than disability benefit alone."
                     )
                 }
             }
@@ -95,15 +95,22 @@ object KombinereUfoeretrygdMedInntekt {
                                     ifFalse = inntektsgrenseNesteAar.format()
                                 ) + " kroner. Dette er inntektsgrensen din.".expr(),
                         Nynorsk to "".expr(),
-                        English to "".expr()
+                        English to "You can have a yearly income that is 40 percent of National Insurance scheme basic amount, without your disability benefit being reduced. This amount is currently NOK ".expr() +
+                                ifElse(
+                                    inntektsgrenseFaktisk,
+                                    ifTrue = inntektsgrense.format(),
+                                    ifFalse = inntektsgrenseNesteAar.format()
+                                ) + ". This is your income limit before disability benefit is reduced.".expr()
                     )
                 }
             }.orShowIf(grunnbeloep.equalTo(beloepsgrense)) {
                 paragraph {
                     textExpr(
-                        Bokmal to "Du kan ha en årlig inntekt på folketrygdens grunnbeløp fordi du er i varig tilrettelagt arbeid, uten at uføretrygden din blir redusert. I dag er dette ".expr() + inntektsgrense.format() + " kroner. Dette er inntektsgrensen din.".expr(),
+                        Bokmal to "Du kan ha en årlig inntekt på folketrygdens grunnbeløp fordi du er i varig tilrettelagt arbeid, uten at uføretrygden din blir redusert. I dag er dette ".expr() +
+                                inntektsgrense.format() + " kroner. Dette er inntektsgrensen din.".expr(),
                         Nynorsk to "".expr(),
-                        English to "".expr()
+                        English to "You can have a yearly income that is the same as the National Insurance scheme basic amount because you are in permanent facilitated work, without your disability benefit being reduced. This amount is currently NOK ".expr() +
+                                inntektsgrense.format() + ". This is your income limit before disability benefit is reduced."
 
                     )
                 }
@@ -137,7 +144,12 @@ object KombinereUfoeretrygdMedInntekt {
                                     ifFalse = inntektsgrenseNesteAar.format()
                                 ) + " kroner.".expr(),
                         Nynorsk to "".expr(),
-                        English to "".expr()
+                        English to "We have assumed that you will have an income of NOK ".expr() + oppjustertInntektEtterUfoere.format() + " per year. You can in addition have an annual income of 40 percent of the National Insurance scheme basic amount, without your disability benefit being reduced. This amount is currently NOK ".expr() +
+                                ifElse(
+                                    inntektsgrenseFaktisk,
+                                    ifTrue = inntektsgrense.format(),
+                                    ifFalse = inntektsgrenseNesteAar.format()
+                                ) + ".".expr()
                     )
                 }
             }
@@ -160,7 +172,7 @@ object KombinereUfoeretrygdMedInntekt {
                     text(
                         Bokmal to "Vi bruker en fastsatt prosentandel når vi justerer uføretrygden din ut fra inntekt. Denne prosentandelen kaller vi kompensasjonsgrad.",
                         Nynorsk to "",
-                        English to ""
+                        English to "We use a stipulated percentage rate when we adjust your disability benefit in relation to income. This stipulated percentage rate is called the adjustment rate."
                     )
                 }
                 paragraph {
@@ -178,7 +190,12 @@ object KombinereUfoeretrygdMedInntekt {
                                     ifFalse = inntektsgrenseNesteAar.format()
                                 ) + " kroner trekkes fra uføretrygden din.".expr(),
                         Nynorsk to "".expr(),
-                        English to "".expr()
+                        English to "For you, the adjustment rate is ".expr() + kompensasjonsgrad.format() + " procent. It is only the part of your income that exceeds NOK ".expr() +
+                                ifElse(
+                                    inntektsgrenseFaktisk,
+                                    ifTrue = inntektsgrense.format(),
+                                    ifFalse = inntektsgrenseNesteAar.format()
+                                ) + " that is subtracted from your disability benefit.".expr()
                     )
                 }
             }
