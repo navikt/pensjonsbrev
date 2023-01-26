@@ -225,7 +225,7 @@ object KombinereUfoeretrygdMedInntekt {
                     textExpr(
                         Bokmal to "Du har tidligere meldt fra om en inntekt på ".expr() + forventetInntekt.format() + " kroner for i år.".expr(),
                         Nynorsk to "".expr(),
-                        English to "".expr()
+                        English to "You have previously reported an income of NOK ".expr() + forventetInntekt.format() + " for this year.".expr()
                     )
                 }.orShowIf(
                     utbetalingsgrad.lessThan(ufoeregrad) and harBeloepRedusert and inntektsgrense.lessThan(
@@ -235,7 +235,7 @@ object KombinereUfoeretrygdMedInntekt {
                     text(
                         Bokmal to "Vi har derfor redusert utbetalingen av uføretrygden din for resten av kalenderåret.",
                         Nynorsk to "",
-                        English to ""
+                        English to "We have therefore redused the payment of your disability benefit for the rest of the calendar year."
                     )
                 }.orShowIf(
                     utbetalingsgrad.lessThan(ufoeregrad) and harBeloepOekt and inntektsgrense.lessThan(
@@ -245,7 +245,7 @@ object KombinereUfoeretrygdMedInntekt {
                     text(
                         Bokmal to "Vi har derfor økt utbetalingen av uføretrygden din for resten av kalenderåret.",
                         Nynorsk to "",
-                        English to ""
+                        English to "We have therefore increased your disability payment for the rest of the calendar year."
                     )
                 }
             }
@@ -273,7 +273,10 @@ object KombinereUfoeretrygdMedInntekt {
                                 nettoAkkumulerteBeloepUtbetalt.format() + " kroner. Du har derfor rett til en utbetaling av uføretrygd på ".expr() +
                                 nettoUfoeretrygdUtbetaltPerMaaned.format() + " kroner per måned for resten av året.".expr(),
                         Nynorsk to "".expr(),
-                        English to "".expr()
+                        English to "Given your annual income, your disabililty benefit will be NOK ".expr() +
+                                nettoAkkumulertePlussNettoRestAar.format() + ". To date this year, you have been paid NOK ".expr() +
+                                nettoAkkumulerteBeloepUtbetalt.format() + ". You are therefore entitled to a disability payment of NOK ".expr() +
+                                nettoUfoeretrygdUtbetaltPerMaaned.format() + " per calendar month for the rest of the year.".expr()
                     )
                 }
             }
@@ -288,9 +291,11 @@ object KombinereUfoeretrygdMedInntekt {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             paragraph {
                 textExpr(
-                    Bokmal to "Blir uføretrygden din redusert på grunn av inntekt beholder du likevel uføregraden din på ".expr() + ufoeregrad.format() + " prosent. Du får utbetalt hele uføretrygden igjen dersom du tjener mindre enn inntektsgrensen din.".expr(),
+                    Bokmal to "Blir uføretrygden din redusert på grunn av inntekt beholder du likevel uføregraden din på ".expr() +
+                            ufoeregrad.format() + " prosent. Du får utbetalt hele uføretrygden igjen dersom du tjener mindre enn inntektsgrensen din.".expr(),
                     Nynorsk to "".expr(),
-                    English to "".expr()
+                    English to "If your disability benefit is reduced because of income, you nonetheless keep your disability rate of ".expr() +
+                            ufoeregrad.format() + " procent. You will get paid the entire disability benefit again if you earn less than your income limit.".expr()
                 )
             }
         }
