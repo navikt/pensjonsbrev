@@ -10,6 +10,7 @@ val productionTemplates: Set<VedtaksbrevTemplate<*>> = setOf<VedtaksbrevTemplate
     UngUfoerAuto,
     UfoerOmregningEnslig,
     OpptjeningVedForhoeyetHjelpesats,
+    OpphoerBarnetilleggAuto,
 )
 
 class TemplateResource(templates: Set<VedtaksbrevTemplate<*>> = productionTemplates) {

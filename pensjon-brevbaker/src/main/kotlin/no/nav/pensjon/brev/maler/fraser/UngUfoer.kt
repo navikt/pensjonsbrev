@@ -69,8 +69,8 @@ object UngUfoer {
             paragraph {
                 val formatertDato = kravVirkningFraOgMed.format()
                 textExpr(
-                    Language.Bokmal to "Vi har økt uføretrygden din fra ".expr() + formatertDato + " fordi du fyller 20 år. Du vil nå få utbetalt uføretrygd med rettighet som ung ufør.".expr(),
-                    Language.Nynorsk to "Vi har auka uføretrygda di frå ".expr() + formatertDato + " fordi du fyller 20 år. Du får no utbetalt uføretrygd med rett som ung ufør.".expr(),
+                    Language.Bokmal to "Vi har økt uføretrygden din fra ".expr() + formatertDato + " fordi du fyller 20 år. Du vil nå få utbetalt uføretrygd med rettighet som ung ufør.",
+                    Language.Nynorsk to "Vi har auka uføretrygda di frå ".expr() + formatertDato + " fordi du fyller 20 år. Du får no utbetalt uføretrygd med rett som ung ufør.",
                 )
             }
     }

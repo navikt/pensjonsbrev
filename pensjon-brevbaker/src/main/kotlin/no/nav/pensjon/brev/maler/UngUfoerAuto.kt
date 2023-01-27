@@ -68,11 +68,22 @@ object UngUfoerAuto : VedtaksbrevTemplate<UngUfoerAutoDto> {
                 )
             )
 
-         //   includePhrase(Ufoeretrygd.BarnetilleggIkkeUtbetalt(saerkullsbarn = saerkullsbarn, fellesbarn = fellesbarn))
+            includePhrase(
+                Barnetillegg.BarnetilleggIkkeUtbetalt(
+                    saerkullInnvilget = saerkullsbarn.notNull(),
+                    saerkullUtbetalt = saerkullsbarn.utbetalt_safe.ifNull(false),
+                    harFlereSaerkullsbarn = saerkullsbarn.gjelderFlereBarn_safe.ifNull(false),
+                    inntektstakSaerkullsbarn = saerkullsbarn.inntektstak_safe.ifNull(Kroner(0)),
+                    fellesInnvilget = fellesbarn.notNull(),
+                    fellesUtbetalt = fellesbarn.utbetalt_safe.ifNull(false),
+                    harFlereFellesBarn = fellesbarn.gjelderFlereBarn_safe.ifNull(false),
+                    inntektstakFellesbarn = fellesbarn.inntektstak_safe.ifNull(Kroner(0)),
+                )
+            )
 
 
             includePhrase(Vedtak.BegrunnelseOverskrift)
-        //    includePhrase(Ufoeretrygd.EndringMinsteYtelseUngUfoerVed20aar(minsteytelseVedVirkSats))
+            includePhrase(UngUfoer.EndringMinsteYtelseUngUfoerVed20aar(minsteytelseVedVirkSats))
             includePhrase(Ufoeretrygd.HjemmelSivilstand)
 
             includePhrase(Ufoeretrygd.VirkningFomOverskrift)
