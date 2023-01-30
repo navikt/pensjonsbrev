@@ -79,6 +79,8 @@ object OpphoerBarnetilleggAuto : VedtaksbrevTemplate<OpphoerBarnetilleggAutoDto>
         val harBarnetilleggFellesbarn = barnetilleggFellesbarn.notNull()
         val harBarnetilleggSaerkullsbarn = barnetilleggSaerkullsbarn.notNull()
         val harBarnetillegg = harBarnetilleggFellesbarn or harBarnetilleggSaerkullsbarn
+        val harOpphoertBarnetilleggForFlereBarn =
+            foedselsdatoPaaBarnMedOpphoertBarnetillegg.size().greaterThan(1)
         title {
             showIf(harBarnetilleggFellesbarn or harBarnetilleggSaerkullsbarn) {
                 text(
@@ -135,7 +137,8 @@ object OpphoerBarnetilleggAuto : VedtaksbrevTemplate<OpphoerBarnetilleggAutoDto>
                 OpphoerBarnetillegg.OensketVirkningsDatoForEndring(
                     oensketVirkningsDato = oensketVirkningsDato,
                     harBarnetilleggFellesbarn = harBarnetilleggFellesbarn,
-                    harBarnetilleggSaerkullsbarn = harBarnetilleggSaerkullsbarn
+                    harBarnetilleggSaerkullsbarn = harBarnetilleggSaerkullsbarn,
+                    harOpphoertBarnetilleggForFlereBarn = harOpphoertBarnetilleggForFlereBarn,
                 )
             )
 
