@@ -1,4 +1,4 @@
-package no.nav.pensjon.brev.maler.fraser.ufoer
+package no.nav.pensjon.brev.maler.fraser.ufoer.EndringIOpptjening
 
 import no.nav.pensjon.brev.api.model.Kroner
 import no.nav.pensjon.brev.maler.fraser.common.Constants
@@ -61,8 +61,8 @@ object KombinereUfoeretrygdMedInntekt {
                 paragraph {
                     text(
                         Bokmal to "Utbetalingen av uføretrygden din er redusert fordi du har inntekt utover inntektsgrensen. Det lønner seg likevel å jobbe, fordi inntekt og uføretrygd alltid vil være høyere enn uføretrygd alene.",
-                        Nynorsk to "",  // TODO: NN
-                        English to "Your disability benefit payment is reduced because your income exceeds the income limit for disability benefit. It still pays to work however, because income and disability benefit combined will always be higher than disability benefit alone."
+                        Nynorsk to "Utbetalinga av uføretrygda di er redusert fordi du har inntekt utover inntektsgrensa. Det løne seg likevel å jobbe, fordi inntekt og uføretrygd alltid vil vere høgare enn uføretryd aleine.",
+                        English to "Your disability benefit payment is reduced because your income exceeds the income limit for disability benefit. It still pays to work, your income and disabiltiy benefit combined will always be higher than disability benefit alone."
                     )
                 }
             }
@@ -100,7 +100,7 @@ object KombinereUfoeretrygdMedInntekt {
                                     ifTrue = inntektsgrense.format(),
                                     ifFalse = inntektsgrenseNesteAar.format()
                                 ) + " kroner. Dette er inntektsgrensa di.".expr(),
-                        English to "You can have a yearly income that is 40 percent of National Insurance scheme basic amount, without your disability benefit being reduced. This amount is currently NOK ".expr() +
+                        English to "You can have a yearly income that is 40 percent of National Insurance Scheme basic amount, without your disability benefit being reduced. This amount is currently NOK ".expr() +
                                 ifElse(
                                     inntektsgrenseFaktisk,
                                     ifTrue = inntektsgrense.format(),
@@ -115,7 +115,7 @@ object KombinereUfoeretrygdMedInntekt {
                                 inntektsgrense.format() + " kroner. Dette er inntektsgrensen din.".expr(),
                         Nynorsk to "Du kan ha ei årleg inntekt på grunnbeløpet i folketrygda mens du er i varig tilrettelagt arbeid, utan at uføretrygda di blir redusert. I dag er dette ".expr() +
                                 inntektsgrense.format() + " kroner. Dette er inntektsgrensa di.".expr(),
-                        English to "You can have a yearly income that is the same as the National Insurance scheme basic amount because you are in permanent facilitated work, without your disability benefit being reduced. This amount is currently NOK ".expr() +
+                        English to "You can have a yearly income that is the same as the National Insurance Scheme basic amount because you are in permanent adapted work, without your disability benefit being reduced. This amount is currently NOK ".expr() +
                                 inntektsgrense.format() + ". This is your income limit before disability benefit is reduced."
 
                     )
@@ -155,7 +155,7 @@ object KombinereUfoeretrygdMedInntekt {
                                     ifTrue = inntektsgrense.format(),
                                     ifFalse = inntektsgrenseNesteAar.format()
                                 ) + " kroner.".expr(),
-                        English to "We have assumed that you will have an income of NOK ".expr() + oppjustertInntektEtterUfoere.format() + " per year. You can in addition have an annual income of 40 percent of the National Insurance scheme basic amount, without your disability benefit being reduced. This amount is currently NOK ".expr() +
+                        English to "We have assumed that you will have an income of NOK ".expr() + oppjustertInntektEtterUfoere.format() + " per year. You can in addition have an annual income of 40 percent of the National Insurance Scheme basic amount, without your disability benefit being reduced. This amount is currently NOK ".expr() +
                                 ifElse(
                                     inntektsgrenseFaktisk,
                                     ifTrue = inntektsgrense.format(),
@@ -223,7 +223,7 @@ object KombinereUfoeretrygdMedInntekt {
             }
         }
     }
-    // TODO: NN
+    //
     // TBU2361, TBU2362, TBU2363
     data class OekeUfoereUtbetalingForRestenAvKalenderAaret(
         val forventetInntekt: Expression<Kroner>,
@@ -246,7 +246,7 @@ object KombinereUfoeretrygdMedInntekt {
                 ) {
                     textExpr(
                         Bokmal to "Du har tidligere meldt fra om en inntekt på ".expr() + forventetInntekt.format() + " kroner for i år.".expr(),
-                        Nynorsk to "".expr(),
+                        Nynorsk to "Du har tidlegare meldt frå om ein inntekt på ".expr() + forventetInntekt.format() + " kroner for i år.".expr(),
                         English to "You have previously reported an income of NOK ".expr() + forventetInntekt.format() + " for this year.".expr()
                     )
                 }.orShowIf(
@@ -256,7 +256,7 @@ object KombinereUfoeretrygdMedInntekt {
                 ) {
                     text(
                         Bokmal to "Vi har derfor redusert utbetalingen av uføretrygden din for resten av kalenderåret.",
-                        Nynorsk to "",
+                        Nynorsk to "Vi har difor redusert utbetalinga av uføretrygda di for resten av kalenderåret.",
                         English to "We have therefore redused the payment of your disability benefit for the rest of the calendar year."
                     )
                 }.orShowIf(
@@ -266,7 +266,7 @@ object KombinereUfoeretrygdMedInntekt {
                 ) {
                     text(
                         Bokmal to "Vi har derfor økt utbetalingen av uføretrygden din for resten av kalenderåret.",
-                        Nynorsk to "",
+                        Nynorsk to "Vi har difor auka utbetalinga av uføretrygda di for resten av kalendaråret.",
                         English to "We have therefore increased your disability payment for the rest of the calendar year."
                     )
                 }
@@ -320,14 +320,14 @@ object KombinereUfoeretrygdMedInntekt {
                             ufoeregrad.format() + " prosent. Du får utbetalt hele uføretrygden igjen dersom du tjener mindre enn inntektsgrensen din.".expr(),
                     Nynorsk to "Blir uføretrygda di blir redusert på grunn av inntekt, beheld du likevel uføregraden på ".expr() +
                             ufoeregrad.format() + " prosent. Du får utbetalt heile uføretrygda att dersom du tener mindre enn inntektsgrensa di.".expr(),
-                    English to "If your disability benefit is reduced because of income, you nonetheless keep your disability rate of ".expr() +
+                    English to "If your disability benefit is reduced because of income, you nonetheless keep your degree of disability that is ".expr() +
                             ufoeregrad.format() + " procent. You will get paid the entire disability benefit again if you earn less than your income limit.".expr()
                 )
             }
         }
     }
 
-    // TBU2366, TBU2367, TBU2279, TBU3740, TBU2280  // TODO:NN - egen innsats!
+    // TBU2366, TBU2367, TBU2279, TBU3740, TBU2280
     data class MeldeFraOmEndringerIInntekten(
         val forventetInntekt: Expression<Kroner>,
         val inntektsgrense: Expression<Kroner>,
@@ -349,8 +349,8 @@ object KombinereUfoeretrygdMedInntekt {
                 paragraph {
                     text(
                         Bokmal to "Du kan melde fra om inntektsendringer under menyvalget «uføretrygd» når du logger deg inn på ${Constants.NAV_URL}. Her kan du legge inn endringer i den forventede årlige inntekten, og se hva dette betyr for utbetalingen av uføretrygden din. For at du skal få en jevn utbetaling av uføretrygden, er det viktig at du melder fra om inntektsendringer så tidlig som mulig.",
-                        Nynorsk to "Du kan melde frå om inntektsendringar under menyvalet «uføretrygd» når du logger deg inn på ${Constants.NAV_URL}. Her kan du leggje inn kor mykje du forventar å tene i løpet av året, og sjå hva dette betyr for utbetalinga av uføretrygden di. For at du skal få ein jamn utbetaling av uføretrygda, er det viktig at du melde frå om inntektsendringar så tidleg som mogleg",
-                        English to "You can register changes in income under the option «uføretrygd» at ${Constants.NAV_URL}. You can register how much you expect to earn in the calendar year. You will then be able to see how much disabilty benefit you will receive. In order for you to receive even payments of disability benefit, it is important that you register income changes as soon as possible."  // TODO: check English "even payments"
+                        Nynorsk to "Du kan melde frå om inntektsendringar under menyvalet «uføretrygd» når du logger deg inn på ${Constants.NAV_URL}. Her kan du leggje inn kor mykje du forventar å tene i løpet av året, og sjå hva dette betyr for utbetalinga av uføretrygda di. For at du skal få ein jamn utbetaling av uføretrygda, er det viktig at du melde frå om inntektsendringar så tidleg som mogleg",
+                        English to "You can register changes in income under the option «uføretrygd» at ${Constants.NAV_URL}. You can register how much you expect to earn in the calendar year. You will then be able to see how much disabilty benefit you will receive. In order for you to receive even payments of disability benefit, it is important that you register income changes as soon as possible."
                     )
                 }
                 showIf(inntektsgrense.lessThan(oppjustertInntektFoerUfoere80prosent)) {
@@ -360,7 +360,8 @@ object KombinereUfoeretrygdMedInntekt {
                                     oppjustertInntektFoerUfoere80prosent.format() + " kroner per år.".expr(),
                             Nynorsk to "Ver merksom på at det ikkje utbetales uføretrygd når inntekta di utgjer meir enn 80 prosent av oppjustert inntekt før du ble ufør, det vil si ".expr() +
                                     oppjustertInntektFoerUfoere80prosent.format() + " kroner per år.".expr(),
-                            English to "".expr()
+                            English to "We wish to point out that disability benefit payments stop when you earn more than 80 percent of the upwards adjusted income you had before you had a disability, which is NOK ".expr() +
+                            oppjustertInntektFoerUfoere80prosent.format() + " per year.".expr()
                         )
                     }
                 }
@@ -368,9 +369,12 @@ object KombinereUfoeretrygdMedInntekt {
             showIf(forventetInntekt.lessThan(inntektstak) and inntektstak.lessThanOrEqual(inntektsgrense)) {
                 paragraph {
                     textExpr(
-                        Bokmal to "Vi gjør oppmerksom på at det ikke utbetales uføretrygd når inntekten din utgjør mer enn inntektsgrensen din, det vil si ".expr() + inntektsgrense.format() + " kroner per år.".expr(),
-                        Nynorsk to "".expr(),
-                        English to "".expr()
+                        Bokmal to "Vi gjør oppmerksom på at det ikke utbetales uføretrygd når inntekten din utgjør mer enn inntektsgrensen din, det vil si ".expr() +
+                                inntektsgrense.format() + " kroner per år.".expr(),
+                        Nynorsk to "Ver merksom på at det ikkje utbetales uføretrygd når inntekta di utgjer meir enn inntektsgrensa di, det vil si ".expr() +
+                                inntektsgrense.format() + " kroner per år.".expr(),
+                        English to "We wish to point out that disability benefit payments stop when you earn more than your income limit, which is NOK ".expr() +
+                                inntektsgrense.format() + " per year.".expr()
                     )
                 }
             }
@@ -378,8 +382,8 @@ object KombinereUfoeretrygdMedInntekt {
                 paragraph {
                     text(
                         Bokmal to "Vi vil foreta et etteroppgjør dersom du har fått utbetalt for mye eller for lite uføretrygd. Dette gjør vi når likningen fra Skatteetaten er klar. Du kan lese mer om dette i vedlegget «Opplysninger om beregningen».",
-                        Nynorsk to "",
-                        English to ""
+                        Nynorsk to "Vi vil foreta eit etteroppgjør dersom du har fått utbetalt for mykje eller for lite utbetalt uføretrygd. Dette gjer vi når likninga fra Skatteetaten er klar. Du kan lesa meir om dette i vedlegget «Opplysningar om utrekninga».",
+                        English to "We will calculate a final settlement if you have received too much or too little disability benefit in a calendar year. We do this when your tax assessment is completed. You can read more about this in the appendix «Information about calculations»."
                     )
                 }
             }

@@ -1,4 +1,4 @@
-package no.nav.pensjon.brev.maler.fraser
+package no.nav.pensjon.brev.maler.fraser.ufoer.EndringIOpptjening
 
 import java.time.LocalDate
 import no.nav.pensjon.brev.template.*
