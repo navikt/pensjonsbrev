@@ -15,8 +15,8 @@ object EndringOpptjening {
             paragraph {
                 text(
                     Bokmal to "Vi har mottatt nye opplysninger fra Skatteetaten, og har derfor beregnet uføretrygden din på nytt.",
-                    Nynorsk to "",
-                    English to ""
+                    Nynorsk to "Vi har mottatt nye opplysningar fra Skatteetaten, og har difor berekna uføretrygda di på nytt.",
+                    English to "We have received new information from the Norwegian tax administration «Skatteetaten», and we have therefore recalculated your disability benefit."
                 )
             }
     }
@@ -33,14 +33,14 @@ object EndringOpptjening {
                 showIf(harBeloepOekt or harBeloepRedusert) {
                     textExpr(
                         Bokmal to "Utbetalingen er endret med virkning fra ".expr() + virkningsDato.format() + ".".expr(),
-                        Nynorsk to "".expr(),
-                        English to "".expr()
+                        Nynorsk to "Utbetalinga er endra med virkning frå ".expr() + virkningsDato.format() + ".".expr(),
+                        English to "The payment is changed with effect from ".expr() + virkningsDato.format() + ".".expr()
                     )
                 }.orShow {
                     textExpr(
                         Bokmal to "Dette får ikke betydning for uføretrygden din, og du vil få utbetalt det samme som før.".expr(),
-                        Nynorsk to "".expr(),
-                        English to "".expr()
+                        Nynorsk to "Dette får ikkje betydning for uføretrygda di, og du vil få utbetalt det same som før.".expr(),
+                        English to "This will not affect your disability benefit, and you will receive the same payment as before.".expr()
                     )
                 }
             }
