@@ -15,21 +15,23 @@ class PensjonLatexTest {
     fun `table is not rendered when all the rows are filtered out`() {
         val doc = outlineTestTemplate<Unit> {
             title1 { text(Bokmal to "THIS TEXT SHOULD RENDER") }
-            table(
-                header = {
-                    column {
-                        text(
-                            Bokmal to "This text should not render1",
-                        )
-                    }
-                }
-            ) {
-                showIf(false.expr()) {
-                    row {
-                        cell {
+            paragraph {
+                table(
+                    header = {
+                        column {
                             text(
-                                Bokmal to "This text should not render2",
+                                Bokmal to "This text should not render1",
                             )
+                        }
+                    }
+                ) {
+                    showIf(false.expr()) {
+                        row {
+                            cell {
+                                text(
+                                    Bokmal to "This text should not render2",
+                                )
+                            }
                         }
                     }
                 }
@@ -48,21 +50,23 @@ class PensjonLatexTest {
     @Test
     fun `all table elements is rendered to LaTeX`() {
         val doc = outlineTestTemplate<Unit> {
-            table(
-                header = {
-                    column {
-                        text(
-                            Bokmal to "This text should render 1",
-                        )
-                    }
-                }
-            ) {
-                showIf(true.expr()) {
-                    row {
-                        cell {
+            paragraph {
+                table(
+                    header = {
+                        column {
                             text(
-                                Bokmal to "This text should render 2",
+                                Bokmal to "This text should render 1",
                             )
+                        }
+                    }
+                ) {
+                    showIf(true.expr()) {
+                        row {
+                            cell {
+                                text(
+                                    Bokmal to "This text should render 2",
+                                )
+                            }
                         }
                     }
                 }
@@ -80,9 +84,11 @@ class PensjonLatexTest {
     fun `list is not rendered when items are filtered out`() {
         val doc = outlineTestTemplate<Unit> {
             title1 { text(Bokmal to "this text should render") }
-            list {
-                showIf(false.expr()) {
-                    item { text(Bokmal to "This text should not render") }
+            paragraph {
+                list {
+                    showIf(false.expr()) {
+                        item { text(Bokmal to "This text should not render") }
+                    }
                 }
             }
         }

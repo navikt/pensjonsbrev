@@ -30,12 +30,14 @@ class IfNotNullTest {
         title { text(Bokmal to "Heisann") }
 
         outline {
-            text(Bokmal to "alltid med")
-            val nullTing1 = test1
-            ifNotNull(nullTing1) { ting ->
-                textExpr(
-                    Bokmal to "hei: ".expr() + ting
-                )
+            paragraph {
+                text(Bokmal to "alltid med")
+                val nullTing1 = test1
+                ifNotNull(nullTing1) { ting ->
+                    textExpr(
+                        Bokmal to "hei: ".expr() + ting
+                    )
+                }
             }
         }
     }
@@ -47,17 +49,23 @@ class IfNotNullTest {
         @Suppress("UNCHECKED_CAST") // (navn as Expression<String>)
         val expected = template.copy(
             outline = listOf(
-                newText(Bokmal to "alltid med"),
-                Conditional(
-                    predicate = navn.notNull(),
-                    showIf = listOf(
-                        Content(
-                            Element.OutlineContent.ParagraphContent.Text.Expression.ByLanguage.create(
-                                Bokmal to "hei: ".expr() + (navn as Expression<String>)
+                Content(
+                    Element.OutlineContent.Paragraph(
+                        listOf(
+                            newText(Bokmal to "alltid med"),
+                            Conditional(
+                                predicate = navn.notNull(),
+                                showIf = listOf(
+                                    Content(
+                                        Element.OutlineContent.ParagraphContent.Text.Expression.ByLanguage.create(
+                                            Bokmal to "hei: ".expr() + (navn as Expression<String>)
+                                        )
+                                    )
+                                ),
+                                showElse = emptyList(),
                             )
                         )
-                    ),
-                    showElse = emptyList(),
+                    )
                 )
             )
         )

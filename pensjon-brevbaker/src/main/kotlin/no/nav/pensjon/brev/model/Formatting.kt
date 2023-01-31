@@ -32,7 +32,7 @@ fun Expression<Sivilstand>.tableFormat() =
     Expression.BinaryInvoke(
         this,
         Expression.FromScope(ExpressionScope<Any, *>::language),
-        FormatSivilstandTabell
+        FormatSivilstandTabell,
     )
 
 
@@ -44,17 +44,20 @@ object FormatSivilstandTabell : BinaryOperation<Sivilstand, Language, String>() 
                 Nynorsk -> "Enkje/Enkjemann"
                 English -> "Widow/widower"
             }
+
             ENKE -> when (second) {
                 Bokmal -> "Enslig"
                 Nynorsk -> "Einsleg"
                 English -> "Single"
             }
+
             GIFT,
             GIFT_LEVER_ADSKILT,
             SEPARERT -> when (second) {
                 Bokmal, Nynorsk -> "Gift"
                 English -> "Married"
             }
+
             PARTNER,
             PARTNER_LEVER_ADSKILT,
             SEPARERT_PARTNER -> when (second) {
@@ -62,11 +65,13 @@ object FormatSivilstandTabell : BinaryOperation<Sivilstand, Language, String>() 
                 Nynorsk -> "Partnar"
                 English -> "Partnership"
             }
+
             SAMBOER1_5 -> when (second) {
                 Bokmal -> "Samboer (jf. Folketrygdloven § 1-5)"
                 Nynorsk -> "Sambuar (jf. folketrygdlova § 1-5)"
                 English -> "Cohabitation (cf. Section 1-5 of the National Insurance Act)"
             }
+
             SAMBOER3_2 -> when (second) {
                 Bokmal -> "Samboer (jf. Folketrygdloven § 12-13)"
                 Nynorsk -> "Sambuar (jf. folketrygdlova § 12-13)"
@@ -74,3 +79,48 @@ object FormatSivilstandTabell : BinaryOperation<Sivilstand, Language, String>() 
             }
         }
 }
+
+@JvmName("formatSivilstandBestemtForm")
+fun Expression<Sivilstand>.bestemtForm() =
+    Expression.BinaryInvoke(this, Expression.FromScope(ExpressionScope<Any, *>::language), SivilstandEpsBestemt)
+
+@JvmName("formatSivilstandUbestemtForm")
+fun Expression<Sivilstand>.ubestemtForm() =
+    Expression.BinaryInvoke(this, Expression.FromScope(ExpressionScope<Any, *>::language), SivilstandEpsUbestemt)
+
+object SivilstandEpsUbestemt : BinaryOperation<Sivilstand, Language, String>() {
+    override fun apply(first: Sivilstand, second: Language): String = sivilstand(first, second, false)
+}
+
+object SivilstandEpsBestemt : BinaryOperation<Sivilstand, Language, String>() {
+    override fun apply(first: Sivilstand, second: Language): String = sivilstand(first, second, true)
+}
+
+private fun sivilstand(sivilstand: Sivilstand, language: Language, bestemtForm: Boolean): String =
+    when (sivilstand) {
+        GIFT,
+        GIFT_LEVER_ADSKILT,
+        SEPARERT -> when (language) { //TODO skal separert være med?
+            Bokmal, Nynorsk -> if (bestemtForm) "ektefellen" else "ektefelle"
+            English -> "spouse"
+        }
+
+        PARTNER,
+        PARTNER_LEVER_ADSKILT,
+        SEPARERT_PARTNER -> when (language) {
+            Bokmal -> if (bestemtForm) "partneren" else "partner"
+            Nynorsk -> if (bestemtForm) "partnaren" else "partnar"
+            English -> "partner"
+        }
+
+        SAMBOER1_5, SAMBOER3_2 -> when (language) {
+            Bokmal -> if (bestemtForm) "samboeren" else "samboer"
+            Nynorsk -> if (bestemtForm) "sambuaren" else "sambuar"
+            English -> "cohabitant"
+        }
+
+        else -> {
+            ""
+        }
+        // TODO ERROR handling? Dette burde ikke gå an, men hvordan skal vi begrense det? Ny sivilstand enum for EPS?
+    }

@@ -49,31 +49,33 @@ val egenerklaeringPleieOgOmsorgsarbeid = createAttachment<LangBokmalNynorskEngli
         )
     }
 
-    formText(
-        Size.LONG, newText(
-            Bokmal to "Navn på pleietrengende:",
-            Nynorsk to "Navn på pleietrengende:",
-            English to "I have provided care work for:",
+    paragraph {
+        formText(
+            Size.LONG, newText(
+                Bokmal to "Navn på pleietrengende:",
+                Nynorsk to "Navn på pleietrengende:",
+                English to "I have provided care work for:",
+            )
         )
-    )
 
-    formChoice(
-        newText(
-            Bokmal to "Arbeidet har vart i:",
-            Nynorsk to "Arbeidet har vart i:",
-            English to "The work has lasted for:"
-        )
-    ) {
-        choice(
-            Bokmal to "minst seks måneder",
-            Nynorsk to "minst seks månader",
-            English to "at least six months"
-        )
-        choice(
-            Bokmal to "under seks måneder",
-            Nynorsk to "under seks månader",
-            English to "less than six months"
-        )
+        formChoice(
+            newText(
+                Bokmal to "Arbeidet har vart i:",
+                Nynorsk to "Arbeidet har vart i:",
+                English to "The work has lasted for:"
+            )
+        ) {
+            choice(
+                Bokmal to "minst seks måneder",
+                Nynorsk to "minst seks månader",
+                English to "at least six months"
+            )
+            choice(
+                Bokmal to "under seks måneder",
+                Nynorsk to "under seks månader",
+                English to "less than six months"
+            )
+        }
     }
 
     title1 {
@@ -83,35 +85,37 @@ val egenerklaeringPleieOgOmsorgsarbeid = createAttachment<LangBokmalNynorskEngli
             English to "If care work has ceased during the year:",
         )
     }
-    formText(
-        size = Size.SHORT,
-        vspace = false,
-        prompt = newText(
-            Bokmal to "Oppgi dato for opphøret:",
-            Nynorsk to "Dato for opphøyr:",
-            English to "State date if ceased:"
+    paragraph{
+        formText(
+            size = Size.SHORT,
+            vspace = false,
+            prompt = newText(
+                Bokmal to "Oppgi dato for opphøret:",
+                Nynorsk to "Dato for opphøyr:",
+                English to "State date if ceased:"
+            )
         )
-    )
-    formText(
-        size = Size.LONG,
-        vspace = false,
-        prompt = newText(
-            Bokmal to "Oppgi årsaken til opphøret:",
-            Nynorsk to "Grunnen til opphøyr: ",
-            English to "State reason if ceased"
+        formText(
+            size = Size.LONG,
+            vspace = false,
+            prompt = newText(
+                Bokmal to "Oppgi årsaken til opphøret:",
+                Nynorsk to "Grunnen til opphøyr: ",
+                English to "State reason if ceased"
+            )
         )
-    )
 
-    repeat(2) { newline() }
+        repeat(2) { newline() }
 
-    formText(size = Size.SHORT, prompt = newText(Bokmal to "Dato:", Nynorsk to "Dato:", English to "Date"))
-    formText(
-        size = Size.LONG,
-        vspace = false,
-        prompt = newText(Bokmal to "Underskrift:", Nynorsk to "Underskrift:", English to "Signature:")
-    )
+        formText(size = Size.SHORT, prompt = newText(Bokmal to "Dato:", Nynorsk to "Dato:", English to "Date"))
+        formText(
+            size = Size.LONG,
+            vspace = false,
+            prompt = newText(Bokmal to "Underskrift:", Nynorsk to "Underskrift:", English to "Signature:")
+        )
 
-    repeat(2) { newline() }
+        repeat(2) { newline() }
+    }
 
     paragraph {
         text(

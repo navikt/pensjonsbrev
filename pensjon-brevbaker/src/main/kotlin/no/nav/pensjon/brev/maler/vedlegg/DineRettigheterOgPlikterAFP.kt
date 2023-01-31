@@ -19,7 +19,7 @@ import no.nav.pensjon.brev.template.dsl.newText
 // Conditional for showing the attachment is: sakstype = AFP && vedtakResultat = INNVL
 
 @TemplateModelHelpers
-val orienteringOmRettigheterOgPlikterAFP = createAttachment<LangBokmalNynorskEnglish, OrienteringOmRettigheterAfpDto>(
+val dineRettigheterOgPlikterAFP = createAttachment<LangBokmalNynorskEnglish, OrienteringOmRettigheterAfpDto>(
     title = newText(
         Bokmal to "Dine rettigheter og plikter",
         Nynorsk to "Dine rettar og plikter",
@@ -27,22 +27,23 @@ val orienteringOmRettigheterOgPlikterAFP = createAttachment<LangBokmalNynorskEng
     ),
     includeSakspart = false,
 ) {
-    includePhrase(VedleggPlikterAFP_001)
-    list {
-        item { includePhrase(VedleggPlikterAFP1_001) }
-        showIf(bruker_sivilstand.isOneOf(ENSLIG, ENKE)) {
-            item { includePhrase(VedleggPlikterAFP2_001) }
-        }
+    includePhrase(VedleggPlikterAFP)
+    paragraph {
+        list {
+            item { includePhrase(VedleggPlikterAFP1) }
+            showIf(bruker_sivilstand.isOneOf(ENSLIG, ENKE)) {
+                item { includePhrase(VedleggPlikterAFP2) }
+            }
 
-        showIf(not(institusjon_gjeldende.isOneOf(FENGSEL, HELSE, SYKEHJEM))) {
-            showIf(bruker_borINorge) {
-                item { includePhrase(VedleggPlikterAFP3_001) }
-            }.orShow {
-                item { includePhrase(VedleggPlikterAFP4_001) }
+            showIf(not(institusjon_gjeldende.isOneOf(FENGSEL, HELSE, SYKEHJEM))) {
+                showIf(bruker_borINorge) {
+                    item { includePhrase(VedleggPlikterAFP3) }
+                }.orShow {
+                    item { includePhrase(VedleggPlikterAFP4) }
+                }
             }
         }
     }
-
     includePhrase(VedleggVeiledning)
     includePhrase(VedleggInnsynSakPensjon)
     includePhrase(VedleggHjelpFraAndre)

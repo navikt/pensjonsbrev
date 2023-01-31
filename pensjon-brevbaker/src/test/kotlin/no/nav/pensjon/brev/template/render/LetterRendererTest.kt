@@ -159,10 +159,10 @@ class LetterRendererTest {
     @Test
     fun `render attachments will only render attachments where predicate is true`() {
         val attachment1 = createAttachment<LangBokmal, Unit>(newText(Bokmal to "tittel"), false) {
-            text(Bokmal to "Attachment #1")
+            paragraph{ text(Bokmal to "Attachment #1") }
         }
         val attachment2 = createAttachment<LangBokmal, Unit>(newText(Bokmal to "tittel2"), false) {
-            text(Bokmal to "Attachment #2")
+            paragraph { text(Bokmal to "Attachment #2") }
         }
         val attachments = listOf(IncludeAttachment(Unit.expr(), attachment1, true.expr()), IncludeAttachment(Unit.expr(), attachment2, false.expr()))
 
@@ -180,7 +180,7 @@ class LetterRendererTest {
     fun `render attachments will receive scope based on letterScope and data Expression and can evaluate attachment expressions`() {
         var attachmentScopedExpr: Expression<String>? = null
         val attachment1 = createAttachment(newText(Bokmal to "tittel"), false) {
-            textExpr(Bokmal to testVerdi1)
+            paragraph { textExpr(Bokmal to testVerdi1) }
             attachmentScopedExpr = testVerdi1
         }
         val letterData = LetterData("Anonymous", TestVedleggDto("a value", "another value"))
