@@ -21,7 +21,6 @@ class Content extends React.Component<BlockProps<AnyBlock>, ContentState> {
         super(props)
     }
 
-    // TODO: Bake denne inn i useCallback her istedenfor i EditableText?
     setChildRef(contentId: number, node: HTMLElement | null) {
         const prev = this.childRefs[contentId]
 

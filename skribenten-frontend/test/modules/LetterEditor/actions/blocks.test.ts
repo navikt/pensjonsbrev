@@ -117,6 +117,14 @@ describe("BlocksAction", () => {
 
             expect(result).not.toBe(blocks)
         })
+
+        test('when the secondText is empty the new block will have one content element with an empty string', () => {
+            const result = BlocksAction.splitBlock(blocks, 1, blocks[1], 0, blocks[1].content[0].text, "")
+
+            expect(result.length).toBe(blocks.length + 1)
+            expect(result[2].content.length).toBe(1)
+            expect(result[2].content[0].text).toBe("")
+        })
     })
 
     describe("mergeWith", () => {

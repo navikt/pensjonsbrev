@@ -93,7 +93,7 @@ export class SelectionService {
         if (offset === null) {
             this.warn("couldn't find max offset in node:", nearest)
         } else {
-            //TODO: should only add 1 to offset if it is the last character in the node
+            //TODO: should only add 1 to offset if it is the last character in the block, now it works for individual TextContent nodes
             if (offset === nearest.node.length - 1) {
                 this.warn("adding 1 to offset")
                 this.focusAtOffset(nearest.node, offset + 1)

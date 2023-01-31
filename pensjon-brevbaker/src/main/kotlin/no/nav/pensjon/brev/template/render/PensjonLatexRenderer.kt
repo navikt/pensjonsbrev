@@ -90,8 +90,7 @@ object PensjonLatexRenderer : LetterRenderer<RenderedLatexLetter>() {
     private fun LatexAppendable.brukerCommands(bruker: Bruker) =
         with(bruker) {
             printNewCmd("feltfoedselsnummerbruker", foedselsnummer.format())
-            printNewCmd("feltfornavnbruker", listOfNotNull(fornavn, mellomnavn).joinToString(" "))
-            printNewCmd("feltetternavnbruker", etternavn)
+            printNewCmd("feltnavnbruker", fulltNavn())
         }
 
     private fun LatexAppendable.saksinfoCommands(verge: String?) {
@@ -101,11 +100,11 @@ object PensjonLatexRenderer : LetterRenderer<RenderedLatexLetter>() {
             verge?.let {
                 println("""\feltvergenavnprefix & \feltvergenavn \\""", escape = false)
                 println(
-                    """\felt${LanguageSetting.Sakspart.gjelderNavn} & \feltfornavnbruker \space \feltetternavnbruker \\""",
+                    """\felt${LanguageSetting.Sakspart.gjelderNavn} & \feltnavnbruker \\""",
                     escape = false
                 )
             } ?: println(
-                """\felt${LanguageSetting.Sakspart.navn} & \feltfornavnbruker \space \feltetternavnbruker \\""",
+                """\felt${LanguageSetting.Sakspart.navn} & \feltnavnbruker \\""",
                 escape = false
             )
             println(

@@ -14,7 +14,7 @@ object PensjonJsonRenderer {
             RenderedJsonLetter(
                 title = renderText(scope, letter.template.title, emptyList()).joinToString { it.text },
                 sakspart = Sakspart(
-                    gjelderNavn = gjelderNavn(scope.felles.bruker),
+                    gjelderNavn = scope.felles.bruker.fulltNavn(),
                     gjelderFoedselsnummer = scope.felles.bruker.foedselsnummer.value,
                     saksnummer = scope.felles.saksnummer,
                     dokumentDato = scope.felles.dokumentDato.format(dateFormatter(scope.language, FormatStyle.SHORT)),
@@ -32,9 +32,6 @@ object PensjonJsonRenderer {
                 }
             )
         }
-
-    private fun gjelderNavn(bruker: Bruker) =
-        listOfNotNull(bruker.fornavn, bruker.mellomnavn, bruker.etternavn).joinToString(" ")
 
     private fun <C : Element<*>> render(scope: ExpressionScope<*, *>, elements: List<ContentOrControlStructure<*, C>>, location: TreeLocation, renderBlock: (scope: ExpressionScope<*, *>, element: C, location: TreeLocation) -> Unit) {
         elements.forEach { controlStructure(scope, it, location, renderBlock) }
