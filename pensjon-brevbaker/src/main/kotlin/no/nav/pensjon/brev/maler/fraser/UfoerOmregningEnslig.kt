@@ -323,7 +323,7 @@ object HjemmelEPSDodUTFengsel : OutlinePhrase<LangBokmalNynorskEnglish>() {
         }
 }
 
-object OpphorETOverskrift_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
+object OpphorEktefelletilleggOverskrift : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         title1 {
             text(
@@ -334,7 +334,7 @@ object OpphorETOverskrift_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
         }
 }
 
-object OpphorET_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
+object OpphorEktefelletillegg : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         paragraph {
             text(
@@ -345,7 +345,7 @@ object OpphorET_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
         }
 }
 
-object HjemmelET_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
+object HjemmelEktefelletillegg : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         paragraph {
             text(
@@ -356,7 +356,7 @@ object HjemmelET_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
         }
 }
 
-object OmregningFBOverskrift_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
+object OmregningFellesbarnOverskrift : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         title1 {
             text(
@@ -367,7 +367,7 @@ object OmregningFBOverskrift_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
         }
 }
 
-data class InfoFBTilSB_001(
+data class InfoFellesbarnTilSaerkullsbarn(
     val barnOverfoertTilSaerkullsbarn: Expression<List<String>>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
@@ -391,7 +391,7 @@ data class InfoFBTilSB_001(
         }
 }
 
-data class InfoTidligereSB_001(
+data class InfoTidligereSaerkullsbarn(
     val tidligereSaerkullsbarn: Expression<List<String>>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
@@ -415,7 +415,7 @@ data class InfoTidligereSB_001(
         }
 }
 
-data class InfoTidligereSBOgEndretUT(
+data class InfoTidligereSaerkullsbarnOgEndretUfoeretrygd(
     val tidligereSaerkullsbarn: Expression<List<String>>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
@@ -883,7 +883,7 @@ data class VirkningstidspunktOmregningBarnetillegg(val krav_virkedato_fom: Expre
         }
 }
 
-data class VirkTdsPktUTAvkortetTil0_001(val krav_virkedato_fom: Expression<LocalDate>) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+data class VirkningstidspunktUfoeretrygdAvkortetTil0(val krav_virkedato_fom: Expression<LocalDate>) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         paragraph {
             textExpr(

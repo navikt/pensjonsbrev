@@ -32,7 +32,7 @@ val dineRettigheterOgPlikterAlder =
         ),
         includeSakspart = true,
     ) {
-        includePhrase(VedleggPlikter_001)
+        includePhrase(VedleggPlikter)
         paragraph{
             list {
                 showIf(institusjon_gjeldende.isNotAnyOf(FENGSEL, HELSE, SYKEHJEM)) {

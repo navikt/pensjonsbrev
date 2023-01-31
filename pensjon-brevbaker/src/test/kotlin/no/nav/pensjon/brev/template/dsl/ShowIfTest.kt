@@ -43,7 +43,7 @@ class ShowIfTest {
             title.add(nynorskTittel)
 
             outline {
-                paragraph{
+                paragraph {
                     showIf(pensjonInnvilget) {
                         text(Language.Nynorsk to "jadda")
                     } orShow {
@@ -65,14 +65,20 @@ class ShowIfTest {
             letterDataType = SomeDto::class,
             language = languages(Language.Nynorsk),
             outline = listOf(
-                ContentOrControlStructure.Conditional(
-                    predicate = exprScope.pensjonInnvilget,
-                    showIf = listOf(newText(Language.Nynorsk to "jadda")),
-                    showElse = listOf(
-                        ContentOrControlStructure.Conditional(
-                            predicate = exprScope.name equalTo "Test",
-                            showIf = listOf(newText(Language.Nynorsk to "neidaJoda")),
-                            showElse = emptyList()
+                Content(
+                    Paragraph(
+                        listOf(
+                            ContentOrControlStructure.Conditional(
+                                predicate = exprScope.pensjonInnvilget,
+                                showIf = listOf(newText(Language.Nynorsk to "jadda")),
+                                showElse = listOf(
+                                    ContentOrControlStructure.Conditional(
+                                        predicate = exprScope.name equalTo "Test",
+                                        showIf = listOf(newText(Language.Nynorsk to "neidaJoda")),
+                                        showElse = emptyList()
+                                    )
+                                )
+                            )
                         )
                     )
                 )
@@ -110,14 +116,20 @@ class ShowIfTest {
             letterDataType = SomeDto::class,
             language = languages(Language.Nynorsk),
             outline = listOf(
-                ContentOrControlStructure.Conditional(
-                    predicate = exprScope.pensjonInnvilget,
-                    showIf = listOf(newText(Language.Nynorsk to "jadda")),
-                    showElse = listOf(
-                        ContentOrControlStructure.Conditional(
-                            predicate = exprScope.name equalTo "Test",
-                            showIf = listOf(newText(Language.Nynorsk to "neidaJoda")),
-                            showElse = listOf(newText(Language.Nynorsk to "neida")),
+                Content(
+                    Paragraph(
+                        listOf(
+                            ContentOrControlStructure.Conditional(
+                                predicate = exprScope.pensjonInnvilget,
+                                showIf = listOf(newText(Language.Nynorsk to "jadda")),
+                                showElse = listOf(
+                                    ContentOrControlStructure.Conditional(
+                                        predicate = exprScope.name equalTo "Test",
+                                        showIf = listOf(newText(Language.Nynorsk to "neidaJoda")),
+                                        showElse = listOf(newText(Language.Nynorsk to "neida")),
+                                    )
+                                )
+                            )
                         )
                     )
                 )

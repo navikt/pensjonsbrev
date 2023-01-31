@@ -1,7 +1,8 @@
 package no.nav.pensjon.brev.template.dsl
 
 import no.nav.pensjon.brev.template.*
-import no.nav.pensjon.brev.template.ContentOrControlStructure.*
+import no.nav.pensjon.brev.template.ContentOrControlStructure.Conditional
+import no.nav.pensjon.brev.template.ContentOrControlStructure.Content
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertThrows
@@ -12,7 +13,7 @@ class TemplateTableTest {
     fun `table can be created with default values`() {
 
         val doc = outlineTestTemplate<Unit> {
-            paragraph{
+            paragraph {
                 table(header = {
                     column {
                         text(Language.Bokmal to "header")
@@ -24,7 +25,8 @@ class TemplateTableTest {
                         }
                     }
                 }
-            }        }
+            }
+        }
 
         val colSpec = listOf(
             Element.OutlineContent.ParagraphContent.Table.ColumnSpec(
@@ -35,16 +37,22 @@ class TemplateTableTest {
         )
         val expected = outlineTestLetter(
             Content(
-                Element.OutlineContent.ParagraphContent.Table(
-                    header = Element.OutlineContent.ParagraphContent.Table.Header(colSpec),
-                    rows = listOf(
+                Element.OutlineContent.Paragraph(
+                    listOf(
                         Content(
-                            Element.OutlineContent.ParagraphContent.Table.Row(
-                                listOf(
-                                    Element.OutlineContent.ParagraphContent.Table.Cell(
-                                        listOf(newText(Language.Bokmal to "joda"))
+                            Element.OutlineContent.ParagraphContent.Table(
+                                header = Element.OutlineContent.ParagraphContent.Table.Header(colSpec),
+                                rows = listOf(
+                                    Content(
+                                        Element.OutlineContent.ParagraphContent.Table.Row(
+                                            listOf(
+                                                Element.OutlineContent.ParagraphContent.Table.Cell(
+                                                    listOf(newText(Language.Bokmal to "joda"))
+                                                )
+                                            ), colSpec
+                                        )
                                     )
-                                ), colSpec
+                                )
                             )
                         )
                     )
@@ -79,7 +87,8 @@ class TemplateTableTest {
                             }
                         }
                     }
-                }            }
+                }
+            }
         }
     }
 
@@ -97,7 +106,8 @@ class TemplateTableTest {
 
                         }
                     }
-                }            }
+                }
+            }
         }
     }
 
@@ -128,7 +138,8 @@ class TemplateTableTest {
                         }
                     }
                 }
-            }        }
+            }
+        }
         val colSpec = listOf(
             Element.OutlineContent.ParagraphContent.Table.ColumnSpec(
                 Element.OutlineContent.ParagraphContent.Table.Cell(
@@ -138,30 +149,36 @@ class TemplateTableTest {
         )
         val expected = outlineTestLetter(
             Content(
-                Element.OutlineContent.ParagraphContent.Table(
-                    rows = listOf(
-                        Conditional(
-                            true.expr(),
-                            listOf(
-                                Element.OutlineContent.ParagraphContent.Table.Row(
-                                    listOf(
-                                        Element.OutlineContent.ParagraphContent.Table.Cell(
-                                            listOf(newText(Language.Bokmal to "hei"))
-                                        )
-                                    ),
-                                    colSpec = colSpec
+                Element.OutlineContent.Paragraph(
+                    listOf(
+                        Content(
+                            Element.OutlineContent.ParagraphContent.Table(
+                                rows = listOf(
+                                    Conditional(
+                                        true.expr(),
+                                        listOf(
+                                            Element.OutlineContent.ParagraphContent.Table.Row(
+                                                listOf(
+                                                    Element.OutlineContent.ParagraphContent.Table.Cell(
+                                                        listOf(newText(Language.Bokmal to "hei"))
+                                                    )
+                                                ),
+                                                colSpec = colSpec
+                                            ),
+                                            Element.OutlineContent.ParagraphContent.Table.Row(
+                                                listOf(
+                                                    Element.OutlineContent.ParagraphContent.Table.Cell(
+                                                        listOf(newText(Language.Bokmal to "heihå"))
+                                                    )
+                                                ), colSpec = colSpec
+                                            )
+                                        ).map { Content(it) }, emptyList()
+                                    )
                                 ),
-                                Element.OutlineContent.ParagraphContent.Table.Row(
-                                    listOf(
-                                        Element.OutlineContent.ParagraphContent.Table.Cell(
-                                            listOf(newText(Language.Bokmal to "heihå"))
-                                        )
-                                    ), colSpec = colSpec
-                                )
-                            ).map { Content(it) }, emptyList()
+                                header = Element.OutlineContent.ParagraphContent.Table.Header(colSpec)
+                            )
                         )
-                    ),
-                    header = Element.OutlineContent.ParagraphContent.Table.Header(colSpec)
+                    )
                 )
             )
         )

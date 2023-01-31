@@ -19,7 +19,7 @@ import no.nav.pensjon.brev.template.dsl.expression.isOneOf
 import no.nav.pensjon.brev.template.dsl.expression.plus
 
 
-object VedleggPlikter_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
+object VedleggPlikter : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         title1 {
             text(
@@ -450,25 +450,6 @@ object VedleggPlikterinntektsprovingETAP : OutlinePhrase<LangBokmalNynorskEnglis
             )
             includePhrase(InntektsProevingPliktListe)
         }
-}
-
-object VedleggPlikterUT : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-        title1 {
-            text(
-                Bokmal to "Plikt til å opplyse om endringer - folketrygdloven § 21-3",
-                Nynorsk to "Plikt til å opplyse om endringar - folketrygdlova § 21-3",
-                English to "Duty to inform of changes - Section 21-3 of the National Insurance Act"
-            )
-        }
-        paragraph {
-            text(
-                Bokmal to "Du må melde fra til NAV hvis",
-                Nynorsk to "Du må melde frå til NAV om",
-                English to "You must notify NAV if"
-            )
-        }
-    }
 }
 
 object VedleggPlikterUT1 : TextOnlyPhrase<LangBokmalNynorskEnglish>() {

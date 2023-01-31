@@ -29,7 +29,7 @@ val vedleggDineRettigheterOgPlikterUfoere =
         ),
         includeSakspart = false,
     ) {
-        includePhrase(VedleggPlikterUT)
+        includePhrase(VedleggPlikter)
 
         paragraph {
             list {

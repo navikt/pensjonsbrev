@@ -159,9 +159,9 @@ object UfoerOmregningEnslig : VedtaksbrevTemplate<UfoerOmregningEnsligDto> {
             }
 
             showIf(avdoed.ektefelletilleggOpphoert) {
-                includePhrase(OpphorETOverskrift_001)
-                includePhrase(OpphorET_001)
-                includePhrase(HjemmelET_001)
+                includePhrase(OpphorEktefelletilleggOverskrift)
+                includePhrase(OpphorEktefelletillegg)
+                includePhrase(HjemmelEktefelletillegg)
             }
 
             ifNotNull(barnetilleggSaerkullsbarnVedVirk) { barnetilleggSaerkullsbarnVedVirk ->
@@ -170,8 +170,8 @@ object UfoerOmregningEnslig : VedtaksbrevTemplate<UfoerOmregningEnsligDto> {
                 val harJusteringsbeloepSaerkull = barnetilleggSaerkullsbarnVedVirk.justeringsbeloepAar.notEqualTo(0)
 
                 showIf(harBarnOverfoertTilSaerkullsbarn) {
-                    includePhrase(OmregningFBOverskrift_001)
-                    includePhrase(InfoFBTilSB_001(barnetilleggSaerkullsbarnVedVirk.barnOverfoertTilSaerkullsbarn))
+                    includePhrase(OmregningFellesbarnOverskrift)
+                    includePhrase(InfoFellesbarnTilSaerkullsbarn(barnetilleggSaerkullsbarnVedVirk.barnOverfoertTilSaerkullsbarn))
 
                     showIf(
                         barnetilleggSaerkullsbarnVedVirk.erRedusertMotInntekt
@@ -179,14 +179,14 @@ object UfoerOmregningEnslig : VedtaksbrevTemplate<UfoerOmregningEnsligDto> {
                                 and not(inntektFoerUfoerhetVedVirk.erSannsynligEndret)
                                 and not(harMinsteytelseVedVirk)
                     ) {
-                        includePhrase(InfoTidligereSB_001(barnetilleggSaerkullsbarnVedVirk.barnTidligereSaerkullsbarn))
+                        includePhrase(InfoTidligereSaerkullsbarn(barnetilleggSaerkullsbarnVedVirk.barnTidligereSaerkullsbarn))
                     }
 
                     showIf(
                         harbarnSomTidligerVarSaerkullsbarn and (inntektFoerUfoerhetVedVirk.erSannsynligEndret or harMinsteytelseVedVirk)
                                 and barnetilleggSaerkullsbarnVedVirk.erRedusertMotInntekt
                     ) {
-                        includePhrase(InfoTidligereSBOgEndretUT(barnetilleggSaerkullsbarnVedVirk.barnTidligereSaerkullsbarn))
+                        includePhrase(InfoTidligereSaerkullsbarnOgEndretUfoeretrygd(barnetilleggSaerkullsbarnVedVirk.barnTidligereSaerkullsbarn))
                     }
                 }
 
@@ -315,7 +315,7 @@ object UfoerOmregningEnslig : VedtaksbrevTemplate<UfoerOmregningEnsligDto> {
             }
 
             showIf(not(harUfoereMaanedligBeloepVedvirk)) {
-                includePhrase(VirkTdsPktUTAvkortetTil0_001(krav_virkningsDatoFraOgMed))
+                includePhrase(VirkningstidspunktUfoeretrygdAvkortetTil0(krav_virkningsDatoFraOgMed))
             }
 
             includePhrase(Ufoeretrygd.MeldeFraOmEventuellInntektOverskrift)

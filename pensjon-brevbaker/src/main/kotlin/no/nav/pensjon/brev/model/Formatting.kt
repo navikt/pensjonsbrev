@@ -99,8 +99,7 @@ object SivilstandEpsBestemt : BinaryOperation<Sivilstand, Language, String>() {
 private fun sivilstand(sivilstand: Sivilstand, language: Language, bestemtForm: Boolean): String =
     when (sivilstand) {
         GIFT,
-        GIFT_LEVER_ADSKILT,
-        SEPARERT -> when (language) { //TODO skal separert være med?
+        GIFT_LEVER_ADSKILT -> when (language) {
             Bokmal, Nynorsk -> if (bestemtForm) "ektefellen" else "ektefelle"
             English -> "spouse"
         }

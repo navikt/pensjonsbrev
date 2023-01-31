@@ -81,22 +81,28 @@ class TemplateListTest {
             }
         }
 
+        @Suppress("INFERRED_TYPE_VARIABLE_INTO_POSSIBLE_EMPTY_INTERSECTION")
         val expected = outlineTestLetter(
             Content(
-                Element.OutlineContent.ParagraphContent.ItemList(
-                    listOf(
-                        ContentOrControlStructure.Conditional(
-                            true.expr(),
-                            listOf(
-                                Content(
-                                    Element.OutlineContent.ParagraphContent.ItemList.Item(
-                                        listOf(newText(Language.Bokmal to "Test"))
+                    Element.OutlineContent.Paragraph(
+                        listOf(
+                            Content(
+                            Element.OutlineContent.ParagraphContent.ItemList(
+                                listOf(
+                                    ContentOrControlStructure.Conditional(
+                                        true.expr(),
+                                        listOf(
+                                            Content(
+                                                Element.OutlineContent.ParagraphContent.ItemList.Item(
+                                                    listOf(newText(Language.Bokmal to "Test"))
+                                                )
+                                            )
+                                        ), emptyList()
                                     )
                                 )
-                            ), emptyList()
+                            ))
                         )
                     )
-                )
             )
         )
 
