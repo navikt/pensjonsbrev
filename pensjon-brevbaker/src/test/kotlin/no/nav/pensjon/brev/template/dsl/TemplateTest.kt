@@ -65,7 +65,8 @@ class TemplateTest {
                     Language.Nynorsk to "hei",
                     Language.English to "Hello",
                 )
-            }        }
+            }
+        }
 
         val doc = createTemplate(
             name = "test",
