@@ -1,14 +1,19 @@
 package no.nav.pensjon.brev.maler.fraser
 
-import no.nav.pensjon.brev.api.model.*
+import no.nav.pensjon.brev.api.model.Institusjon
+import no.nav.pensjon.brev.api.model.Kroner
 import no.nav.pensjon.brev.maler.fraser.common.Constants.GJENLEVENDE_SKJEMA_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
 import no.nav.pensjon.brev.maler.fraser.ufoer.Barnetillegg.DuHarFaattUtbetaltBarnetilleggTidligereIAar
 import no.nav.pensjon.brev.model.format
-import no.nav.pensjon.brev.template.*
+import no.nav.pensjon.brev.template.Expression
+import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.*
-import no.nav.pensjon.brev.template.dsl.*
+import no.nav.pensjon.brev.template.OutlinePhrase
+import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.*
+import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.dsl.textExpr
 import java.time.LocalDate
 
 // omregnUTBTDodEPSInnledn_001, omregnUTDodEPSInnledn1_001, omregnBTDodEPSInnledn_001, omregnUTBTSBDodEPSInnledn_001, omregnUTDodEPSInnledn2_001
@@ -632,7 +637,8 @@ object MerInfoBarnetillegg : OutlinePhrase<LangBokmalNynorskEnglish>() {
         }
 }
 
-data class GjenlevenderettSamboerOverskrift(val avdoedNavn: Expression<String>) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+data class GjenlevenderettSamboerOverskrift(val avdoedNavn: Expression<String>) :
+    OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         title1 {
             textExpr(
@@ -872,61 +878,62 @@ object HarBarnUnder18 : OutlinePhrase<LangBokmalNynorskEnglish>() {
 }
 
 // VirkTdsPktUT_001
-data class VirkningstidspunktUfoeretrygd(val kravVirkedatoFom: Expression<LocalDate>) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+data class VirkningstidspunktUfoeretrygd(val kravVirkedatoFom: Expression<LocalDate>) :
+    OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         paragraph {
             textExpr(
-                Bokmal to "Uføretrygden din er omregnet fra ".expr()
-                        + kravVirkedatoFom.format() + ".".expr(),
-                Nynorsk to "Uføretrygda di er rekna om frå ".expr()
-                        + kravVirkedatoFom.format() + ".".expr(),
-                English to "Your disability benefit has been recalculated from ".expr()
-                        + kravVirkedatoFom.format() + ".".expr()
+                Bokmal to "Uføretrygden din er omregnet fra ".expr() + kravVirkedatoFom.format() + ".",
+                Nynorsk to "Uføretrygda di er rekna om frå ".expr() + kravVirkedatoFom.format() + ".",
+                English to "Your disability benefit has been recalculated from ".expr() + kravVirkedatoFom.format() + "."
             )
         }
 }
 
 // VirkTdsPktUTIkkeEndring_001
-data class VirkningstidspunktUfoeretrygdIngenEndring(val krav_virkedato_fom: Expression<LocalDate>) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+data class VirkningstidspunktUfoeretrygdIngenEndring(val kravVirkedatoFom: Expression<LocalDate>) :
+    OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         paragraph {
             textExpr(
                 Bokmal to "Uføretrygden din er omregnet fra ".expr()
-                        + krav_virkedato_fom.format() + ", men dette fører ikke til endring i utbetalingen.".expr(),
+                        + kravVirkedatoFom.format() + ", men dette fører ikke til endring i utbetalingen.".expr(),
                 Nynorsk to " Uføretrygda di er rekna om frå ".expr()
-                        + krav_virkedato_fom.format() + ", men det fører ikkje til endring i utbetalinga.".expr(),
+                        + kravVirkedatoFom.format() + ", men det fører ikkje til endring i utbetalinga.".expr(),
                 English to "We have recalculated your disability benefit from ".expr()
-                        + krav_virkedato_fom.format() + ", however this will not lead to change in your payment.".expr()
+                        + kravVirkedatoFom.format() + ", however this will not lead to change in your payment.".expr()
             )
         }
 }
 
 // VirkTdsPktUTBTOmregn_001
-data class VirkningstidspunktOmregningBarnetillegg(val krav_virkedato_fom: Expression<LocalDate>) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+data class VirkningstidspunktOmregningBarnetillegg(val kravVirkedatoFom: Expression<LocalDate>) :
+    OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         paragraph {
             textExpr(
                 Bokmal to "Barnetillegget i uføretrygden din er omregnet fra ".expr()
-                        + krav_virkedato_fom.format() + ".".expr(),
+                        + kravVirkedatoFom.format() + ".".expr(),
                 Nynorsk to "Barnetillegget i uføretrygda di er rekna om frå ".expr()
-                        + krav_virkedato_fom.format() + ".".expr(),
+                        + kravVirkedatoFom.format() + ".".expr(),
                 English to "We have recalculated the child supplement in your disability benefit from ".expr()
-                        + krav_virkedato_fom.format() + ".".expr()
+                        + kravVirkedatoFom.format() + ".".expr()
             )
         }
 }
 
 // VirkTdsPktUTAvkortetTil0_001
-data class VirkningstidspunktUfoeretrygdAvkortetTil0(val krav_virkedato_fom: Expression<LocalDate>) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+data class VirkningstidspunktUfoeretrygdAvkortetTil0(val kravVirkedatoFom: Expression<LocalDate>) :
+    OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         paragraph {
             textExpr(
                 Bokmal to "Uføretrygden din er omregnet fra ".expr()
-                        + krav_virkedato_fom.format() + ", men dette fører ikke til endring i utbetalingen da uføretrygden er redusert til 0 kr.".expr(),
+                        + kravVirkedatoFom.format() + ", men dette fører ikke til endring i utbetalingen da uføretrygden er redusert til 0 kr.".expr(),
                 Nynorsk to " Uføretrygda di er rekna om frå ".expr()
-                        + krav_virkedato_fom.format() + ", men det fører ikkje til endring i utbetalinga då uføretrygda er redusert til 0 kr.".expr(),
+                        + kravVirkedatoFom.format() + ", men det fører ikkje til endring i utbetalinga då uføretrygda er redusert til 0 kr.".expr(),
                 English to "We have recalculated your disability benefit from".expr()
-                        + krav_virkedato_fom.format() + ". However this will not lead to change in your payment because your disability benefit is reduced to NOK 0.".expr()
+                        + kravVirkedatoFom.format() + ". However this will not lead to change in your payment because your disability benefit is reduced to NOK 0.".expr()
             )
         }
 }
