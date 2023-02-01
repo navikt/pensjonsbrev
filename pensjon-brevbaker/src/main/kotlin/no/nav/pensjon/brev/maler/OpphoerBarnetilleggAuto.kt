@@ -154,7 +154,7 @@ object OpphoerBarnetilleggAuto : VedtaksbrevTemplate<OpphoerBarnetilleggAutoDto>
                             harBarnetilleggFellesbarn = harBarnetilleggFellesbarn,
                             harBarnetilleggSaerkullsbarn = harBarnetilleggSaerkullsbarn,
                             sivilstand = sivilstand,
-                            faarUtbetaltBarnetilleggSaerkullsbarn = barnetilleggSaerkullsbarn.beloepNetto.greaterThan(0),
+                            faarUtbetaltBarnetilleggSaerkullsbarn = faarUtbetaltBarnetilleggSaerkullsbarn,
                         )
                     )
                 }

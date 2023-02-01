@@ -30,6 +30,7 @@ import no.nav.pensjon.brev.api.model.maler.EndringIOpptjeningSelectors.oppjuster
 import no.nav.pensjon.brev.api.model.maler.EndringIOpptjeningSelectors.oppjustertInntektFoerUfoere80prosent
 import no.nav.pensjon.brev.api.model.maler.EndringIOpptjeningSelectors.ufoeregrad
 import no.nav.pensjon.brev.api.model.maler.EndringIOpptjeningSelectors.utbetalingsgrad
+import no.nav.pensjon.brev.api.model.maler.OpphoerBarnetilleggAutoDtoSelectors.opplysningerBruktIBeregningUT
 import no.nav.pensjon.brev.api.model.maler.UfoeretrygdSelectors.brukerBorInorge
 import no.nav.pensjon.brev.api.model.maler.UfoeretrygdSelectors.harEktefelletilleggInnvilget
 import no.nav.pensjon.brev.api.model.maler.UfoeretrygdSelectors.harFellesbarnInnvilget
@@ -45,6 +46,7 @@ import no.nav.pensjon.brev.maler.fraser.common.Vedtak
 import no.nav.pensjon.brev.maler.fraser.ufoer.Gjenlevendetillegg
 import no.nav.pensjon.brev.maler.fraser.ufoer.endringIOpptjening.EndringIOpptjening
 import no.nav.pensjon.brev.maler.fraser.ufoer.endringIOpptjening.KombinereUfoeretrygdMedInntekt
+import no.nav.pensjon.brev.maler.vedlegg.createVedleggOpplysningerBruktIBeregningUT
 import no.nav.pensjon.brev.maler.vedlegg.vedleggMaanedligUfoeretrygdFoerSkatt
 import no.nav.pensjon.brev.maler.vedlegg.vedleggOrienteringOmRettigheterOgPlikterUfoere
 import no.nav.pensjon.brev.template.Language
@@ -222,7 +224,7 @@ object EndringIOpptjeningAuto : VedtaksbrevTemplate<EndringIOpptjeningAutoDto> {
                 )
             )
 
-            showIf(harBarnetillegg) {
+       //     showIf(harBarnetillegg) {
                 title1 {
                     text(
                         Language.Bokmal to "Slik påvirker inntekt barnetillegget ditt",
@@ -269,7 +271,13 @@ object EndringIOpptjeningAuto : VedtaksbrevTemplate<EndringIOpptjeningAutoDto> {
         }
 
         includeAttachment(vedleggMaanedligUfoeretrygdFoerSkatt, maanedligUfoeretrygdFoerSkatt)
-        includeAttachment(vedleggOpplysningerBruktIBeregningUT, opplysningerBruktIBeregningUT)
+
+        includeAttachment(
+            createVedleggOpplysningerBruktIBeregningUT(
+                skalViseMinsteytelse = false,
+                skalViseBarnetillegg = true,
+            ), opplysningerBruktIBeregningUT)
+
         includeAttachment(vedleggOrienteringOmRettigheterOgPlikterUfoere, orienteringOmRettigheterUfoere)
 
     }
