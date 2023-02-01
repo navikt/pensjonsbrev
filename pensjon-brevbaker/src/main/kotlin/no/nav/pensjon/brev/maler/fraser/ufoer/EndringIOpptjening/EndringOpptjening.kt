@@ -94,14 +94,14 @@ object EndringOpptjening {
                 showIf(harBeloepOekt) {
                     textExpr(
                         Bokmal to "Du har fått en endring i opptjeningen din før du ble ufør. Dette gir deg en økt uføretrygd fra ".expr() + virkningsDato.format() + ". Du vil derfor motta en etterbetaling fra NAV.".expr(),
-                        Nynorsk to "".expr(),
-                        English to "".expr()
+                        Nynorsk to "Du har fått ein endring i oppteninga di før du ble ufør. Dette gir deg ein auka uføretrygd frå ".expr() + virkningsDato.format() + ". Du vil difor motta ein etterbetaling frå NAV.".expr(),
+                        English to "You have had a change in earnings before you became eligible for disability benefit. This gives you an increase in disability benefit from ".expr() + virkningsDato.format() + ". You will therefore receive an arrears payment from NAV.".expr()
                     )
                 }.orShow {
                     textExpr(
                         Bokmal to "Du har fått en endring i opptjeningen din før du ble ufør. Dette gir deg en redusert uføretrygd fra ".expr() + virkningsDato.format() + ".".expr(),
-                        Nynorsk to "".expr(),
-                        English to "".expr()
+                        Nynorsk to "Du har fått ein endring i oppteninga di før du ble ufør. Dette gir deg ein redusert uføretrygd frå ".expr() + virkningsDato.format() + ".".expr(),
+                        English to "You have had a change in earnings before you became eligible for disability benefit. This gives you a reduction in disability benefit from ".expr() + virkningsDato.format() + ".".expr()
                     )
                 }
             }
@@ -128,7 +128,7 @@ object EndringOpptjening {
                 paragraph {
                     textExpr(
                         Bokmal to "Du får etterbetalt uføretrygd fra ".expr() + virkningsDato.format() + ". Beløpet blir vanligvis utbetalt i løpet av sju virkedager. Det kan bli beregnet fradrag i etterbetalingen for skatt og ytelser du har mottatt fra NAV eller andre, som for eksempel tjenestepensjonsordninger. I disse tilfellene kan etterbetalingen bli forsinket med inntil ni uker. Fradrag i etterbetalingen vil gå fram av utbetalingsmeldingen.".expr(),
-                        Nynorsk to "".expr(),
+                        Nynorsk to "Du får etterbetalt uføretrygd frå ".expr() + virkningsDato.format() + ". Beløpet blir vanlegvis utbetalt i løpet av sju verkedagar. Det kan bli berekna fradrag i etterbetalinga for skatt og ytingar du har mottatt frå NAV eller andre, som for eksempel tjenestepensjonsordninga. I desse tilfella kan etterbetalinga bli forseinka med inntil ni uka. Fradrag i etterbetallinga vil gå fram av utbetalingsmeldinga.".expr(),
                         English to "You will receive disbability benefit paid in arrears from ".expr() + virkningsDato.format() + ". The payment is usually made within a week. The arrears payment can include deductutions for tax and benefits you have received from NAV or others, for example occupational pension schemes. In these cases the payment in arrears can be delayed upto nine weeks. Any deductions will be listed on the payment notification".expr()
                     )
                 }
@@ -152,8 +152,8 @@ object EndringOpptjening {
                 }
                 paragraph {
                     text(
-                        Bokmal to "Fordi uføretrygden din er redusert tilbake i tid, betyr dette at du har fått utbetalt for mye i uføretrygd. Du får eget brev med varsel om eventuell tilbakekreving av det feilutbetalte beløpet.",
-                        Nynorsk to "",
+                        Bokmal to "Fordi uføretrygden din er redusert tilbake i tid, betyr dette at du har fått utbetalt for mye i uføretrygd. Du får et eget brev med varsel om eventuell tilbakekreving av det feilutbetalte beløpet.",
+                        Nynorsk to "Fordi uføretrygda di er redusert tilbake i tid, betyr dette at du har fått utbetalt for mykje i uføretrygd. Du får eit eget brev med varsel om eventuell tilbakekrevjing av det feilutbetalte beløpet.",
                         English to "Your disability benefit was reduced in the past, this means you have been paid too much disability benefit. You will recieve a letter notifying you of the demand for the repayment of the overpayment of disability benefit."
                     )
                 }

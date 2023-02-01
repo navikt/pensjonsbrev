@@ -77,7 +77,7 @@ object EndringOpptjeningAuto : VedtaksbrevTemplate<EndringOpptjeningAutoDto> {
         title {
             text(
                 Bokmal to "NAV har beregnet uføretrygden din på nytt",
-                Nynorsk to "NAV har berekne uføretrygden di på nytt",
+                Nynorsk to "NAV har berekna uføretrygda di på nytt",
                 English to "NAV has recalculated your disability benefit"
             )
         }
