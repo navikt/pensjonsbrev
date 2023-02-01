@@ -447,7 +447,7 @@ object VedleggPlikterinntektsprovingBTFellesBarnSaerkullsbarnAP :
         }
 }
 
-
+// VedleggPlikterinntektsprovingBTOgETAP_001
 object VedleggPlikterinntektsprovingBTOgETAP : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         paragraph {
@@ -460,6 +460,7 @@ object VedleggPlikterinntektsprovingBTOgETAP : OutlinePhrase<LangBokmalNynorskEn
         }
 }
 
+// VedleggPlikterinntektsprovingETAP_001
 object VedleggPlikterinntektsprovingETAP : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         paragraph {
