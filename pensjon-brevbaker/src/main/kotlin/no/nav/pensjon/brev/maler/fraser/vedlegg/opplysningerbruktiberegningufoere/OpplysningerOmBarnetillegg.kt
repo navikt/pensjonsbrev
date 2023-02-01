@@ -780,10 +780,12 @@ data class OpplysningerOmBarnetillegg(
                             sivilstand.ubestemtForm() + " for ".expr() +
                             ifElse(harTilleggForFlereFellesbarn, "barna", "barnet") +
                             " som bor med begge sine foreldre. Barnetillegget blir redusert dersom den samlede inntekten er høyere enn fribeløpet. Fribeløpet for et barn som bor med begge foreldrene er 4,6 ganger folketrygdens grunnbeløp, og øker med 40 prosent av folketrygdens grunnbeløp for hvert ekstra barn.".expr(),
+
                     Nynorsk to "Vi fastset storleiken på barnetillegget ut frå inntekta til deg og din ".expr() +
                             sivilstand.ubestemtForm() + " for ".expr() +
                             ifElse(harTilleggForFlereFellesbarn, "barna", "barnet") +
                             " som bur med begge foreldra sine. Barnetillegget blir redusert dersom den samla inntekta er høgare enn fribeløpet. Fribeløpet for eit barn som bur med begge foreldra, er 4,6 gonger grunnbeløpet i folketrygda, og aukar med 40 prosent av grunnbeløpet i folketrygda for kvart ekstra barn.".expr(),
+
                     English to "We determine the amount of child supplement based on the total income for you and your ".expr() +
                             sivilstand.ubestemtForm() + " for the ".expr() +
                             ifElse(harTilleggForFlereFellesbarn, "children who live", "child who lives") +

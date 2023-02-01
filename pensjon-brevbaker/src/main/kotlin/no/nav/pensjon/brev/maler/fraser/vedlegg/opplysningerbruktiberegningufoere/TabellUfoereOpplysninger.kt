@@ -680,15 +680,10 @@ data class TabellUfoereOpplysninger(
                             }
                         }
 
-                        val inntektBruktIAvkortningFelles =
-                            barnetillegg.fellesbarn_safe.inntektBruktIAvkortning_safe.ifNull(Kroner(0))
-                        val inntektBruktIAvkortningSaerkull =
-                            barnetillegg.saerkullsbarn_safe.inntektBruktIAvkortning_safe.ifNull(Kroner(0))
-                        showIf(
-                            inntektBruktIAvkortningFelles.greaterThan(0) or inntektBruktIAvkortningSaerkull.greaterThan(
-                                0
-                            )
-                        ) {
+                        val inntektBruktIAvkortningFelles = barnetillegg.fellesbarn_safe.inntektBruktIAvkortning_safe.ifNull(Kroner(0))
+                        val inntektBruktIAvkortningSaerkull = barnetillegg.saerkullsbarn_safe.inntektBruktIAvkortning_safe.ifNull(Kroner(0))
+                        showIf(inntektBruktIAvkortningFelles.greaterThan(0)
+                                or inntektBruktIAvkortningSaerkull.greaterThan(0)) {
                             row {
                                 cell {
                                     text(

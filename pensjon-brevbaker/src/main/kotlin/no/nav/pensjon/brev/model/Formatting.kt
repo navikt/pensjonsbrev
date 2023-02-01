@@ -121,5 +121,4 @@ private fun sivilstand(sivilstand: Sivilstand, language: Language, bestemtForm: 
         else -> {
             ""
         }
-        // TODO ERROR handling? Dette burde ikke gå an, men hvordan skal vi begrense det? Ny sivilstand enum for EPS?
     }
