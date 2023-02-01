@@ -4,7 +4,6 @@ import no.nav.pensjon.brev.api.model.*
 import no.nav.pensjon.brev.api.model.maler.*
 import no.nav.pensjon.brev.api.model.vedlegg.*
 import no.nav.pensjon.brev.fixtures.*
-import no.nav.pensjon.brev.maler.EndringOpptjeningAuto
 import no.nav.pensjon.brev.maler.example.*
 import java.time.LocalDate
 import kotlin.reflect.KClass
@@ -61,11 +60,11 @@ object Fixtures {
             UngUfoerAutoDto::class -> createUngUfoerAutoDto() as T
             EgenerklaeringOmsorgsarbeidDto::class -> createEgenerklaeringOmsorgsarbeidDto() as T
             OpphoerBarnetilleggAutoDto::class -> createOpphoerBarnetilleggAutoDto() as T
-            EndringOpptjeningAutoDto::class -> createEndringOpptjeningAutoDto() as T
-            EndringOpptjeningAutoDto.BarnetilleggFellesbarn::class -> createEndringOpptjeningAutoDtoBarnetilleggFellesbarn() as T
-            EndringOpptjeningAutoDto.BarnetilleggSaerkullsbarn::class -> createEndringOpptjeningAutoDtoBarnetilleggSaerkullsbarn() as T
-            EndringOpptjeningAutoDto.EndringIOpptjening::class -> createEndringOpptjeningAutoDtoEndringIOpptjening() as T
-            EndringOpptjeningAutoDto.Ufoeretrygd::class -> createEndringOpptjeningAutoDtoUfoeretrygd() as T
+            EndringIOpptjeningAutoDto::class -> createEndringIOpptjeningAutoDto() as T
+            EndringIOpptjeningAutoDto.BarnetilleggFellesbarn::class -> createEndringIOpptjeningAutoDtoBarnetilleggFellesbarn() as T
+            EndringIOpptjeningAutoDto.BarnetilleggSaerkullsbarn::class -> createEndringIOpptjeningAutoDtoBarnetilleggSaerkullsbarn() as T
+            EndringIOpptjeningAutoDto.EndringIOpptjening::class -> createEndringIOpptjeningAutoDtoEndringIOpptjening() as T
+            EndringIOpptjeningAutoDto.Ufoeretrygd::class -> createEndringIOpptjeningAutoDtoUfoeretrygd() as T
 
             else -> throw IllegalArgumentException("Don't know how to construct: ${letterDataType.qualifiedName}")
         }

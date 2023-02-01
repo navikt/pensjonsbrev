@@ -5,7 +5,7 @@ import no.nav.pensjon.brev.*
 import no.nav.pensjon.brev.Fixtures
 import no.nav.pensjon.brev.PDF_BUILDER_URL
 import no.nav.pensjon.brev.TestTags
-import no.nav.pensjon.brev.api.model.maler.EndringOpptjeningAutoDto
+import no.nav.pensjon.brev.api.model.maler.EndringIOpptjeningAutoDto
 import no.nav.pensjon.brev.latex.*
 import no.nav.pensjon.brev.latex.LaTeXCompilerService
 import no.nav.pensjon.brev.template.*
@@ -19,13 +19,13 @@ import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 
 @Tag(TestTags.PDF_BYGGER)
-class EndringOpptjeningAutoTest {
+class EndringIOpptjeningAutoTest {
 
     @Test
     fun testPdf() {
         Letter(
-            EndringOpptjeningAuto.template,
-            Fixtures.create<EndringOpptjeningAutoDto>(),
+            EndringIOpptjeningAuto.template,
+            Fixtures.create<EndringIOpptjeningAutoDto>(),
             Language.Bokmal,
             Fixtures.fellesAuto
         )

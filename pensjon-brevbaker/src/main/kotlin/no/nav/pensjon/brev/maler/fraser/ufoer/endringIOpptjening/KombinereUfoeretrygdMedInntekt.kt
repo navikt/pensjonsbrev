@@ -1,4 +1,4 @@
-package no.nav.pensjon.brev.maler.fraser.ufoer.EndringIOpptjening
+package no.nav.pensjon.brev.maler.fraser.ufoer.endringIOpptjening
 
 import no.nav.pensjon.brev.api.model.Kroner
 import no.nav.pensjon.brev.maler.fraser.common.Constants
@@ -149,7 +149,7 @@ object KombinereUfoeretrygdMedInntekt {
                                     ifTrue = inntektsgrense.format(),
                                     ifFalse = inntektsgrenseNesteAar.format()
                                 ) + " kroner.".expr(),
-                        Nynorsk to "Vi har lagt til grunn at du framover skal ha ei inntekt på ".expr() + oppjustertInntektEtterUfoere.format() + " kroner per år. Du kan i tillegg ha ei årleg inntekt på 40 prosent av grunnbeløpet i folketrygda utan at uføretrygda di blir redusert. Inntektsgrensa di blir derfor ".expr() +
+                        Nynorsk to "Vi har lagt til grunn at du framover skal ha ei inntekt på ".expr() + oppjustertInntektEtterUfoere.format() + " kroner per år. Du kan i tillegg ha ei årleg inntekt på 40 prosent av grunnbeløpet i folketrygda utan at uføretrygda di blir redusert. Inntektsgrensa di blir difor ".expr() +
                                 ifElse(
                                     inntektsgrenseFaktisk,
                                     ifTrue = inntektsgrense.format(),

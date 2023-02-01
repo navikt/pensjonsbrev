@@ -7,7 +7,7 @@ import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterUfoereDto
 import java.time.LocalDate
 
 @Suppress("unused")
-data class EndringOpptjeningAutoDto(
+data class EndringIOpptjeningAutoDto(
     val barnetilleggFellesbarn: BarnetilleggFellesbarn?,
     val barnetilleggSaerkullsbarn: BarnetilleggSaerkullsbarn?,
     val endringIOpptjening: EndringIOpptjening,

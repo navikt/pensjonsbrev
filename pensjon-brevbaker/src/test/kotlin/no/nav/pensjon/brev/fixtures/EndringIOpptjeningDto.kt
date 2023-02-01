@@ -2,13 +2,12 @@ package no.nav.pensjon.brev.fixtures
 
 import no.nav.pensjon.brev.Fixtures
 import no.nav.pensjon.brev.api.model.Kroner
-import no.nav.pensjon.brev.api.model.maler.EndringOpptjeningAutoDto
-import no.nav.pensjon.brev.maler.EndringOpptjeningAuto
+import no.nav.pensjon.brev.api.model.maler.EndringIOpptjeningAutoDto
 import java.time.LocalDate
 
 @Suppress("unused")
-fun createEndringOpptjeningAutoDto() =
-    EndringOpptjeningAutoDto(
+fun createEndringIOpptjeningAutoDto() =
+    EndringIOpptjeningAutoDto(
         barnetilleggFellesbarn = Fixtures.create(),
         barnetilleggSaerkullsbarn = Fixtures.create(),
         endringIOpptjening = Fixtures.create(),
@@ -18,8 +17,8 @@ fun createEndringOpptjeningAutoDto() =
         orienteringOmRettigheterUfoere = Fixtures.create(),
     )
 
-fun createEndringOpptjeningAutoDtoEndringIOpptjening() =
-    EndringOpptjeningAutoDto.EndringIOpptjening(
+fun createEndringIOpptjeningAutoDtoEndringIOpptjening() =
+    EndringIOpptjeningAutoDto.EndringIOpptjening(
         beloepsgrense = Kroner(0),
         forventetInntekt = Kroner(0),
         grunnbeloep = Kroner(111477),  // 1G 2023
@@ -44,8 +43,8 @@ fun createEndringOpptjeningAutoDtoEndringIOpptjening() =
         virkningsDato = LocalDate.of(2023, 1, 1),
     )
 
-fun createEndringOpptjeningAutoDtoUfoeretrygd() =
-    EndringOpptjeningAutoDto.Ufoeretrygd(
+fun createEndringIOpptjeningAutoDtoUfoeretrygd() =
+    EndringIOpptjeningAutoDto.Ufoeretrygd(
         brukerBorInorge = false,
         harEktefelletilleggInnvilget = true,
         harFellesbarnInnvilget = true,
@@ -57,12 +56,12 @@ fun createEndringOpptjeningAutoDtoUfoeretrygd() =
         utbetaltPerMaaned = Kroner(16000),
     )
 
-fun createEndringOpptjeningAutoDtoBarnetilleggFellesbarn() =
-    EndringOpptjeningAutoDto.BarnetilleggFellesbarn(
+fun createEndringIOpptjeningAutoDtoBarnetilleggFellesbarn() =
+    EndringIOpptjeningAutoDto.BarnetilleggFellesbarn(
         beloepBrutto = Kroner(24000)
     )
 
-fun createEndringOpptjeningAutoDtoBarnetilleggSaerkullsbarn() =
-    EndringOpptjeningAutoDto.BarnetilleggSaerkullsbarn(
+fun createEndringIOpptjeningAutoDtoBarnetilleggSaerkullsbarn() =
+    EndringIOpptjeningAutoDto.BarnetilleggSaerkullsbarn(
         beloepBrutto = Kroner(34000)
     )

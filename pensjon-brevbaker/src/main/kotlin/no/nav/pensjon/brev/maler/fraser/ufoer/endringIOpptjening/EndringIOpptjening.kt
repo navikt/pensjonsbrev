@@ -1,4 +1,4 @@
-package no.nav.pensjon.brev.maler.fraser.ufoer.EndringIOpptjening
+package no.nav.pensjon.brev.maler.fraser.ufoer.endringIOpptjening
 
 import java.time.LocalDate
 import no.nav.pensjon.brev.template.*
@@ -8,7 +8,7 @@ import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 
-object EndringOpptjening {
+object EndringIOpptjening {
     // TBU2220
     object OpplysningerFraSkatteetaten : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
@@ -53,7 +53,7 @@ object EndringOpptjening {
             paragraph {
                 text(
                     Bokmal to "Uføretrygden blir beregnet ut fra inntektsårene før du ble ufør. Vi beregner uføretrygden på nytt dersom du får endringer i",
-                    Nynorsk to "",
+                    Nynorsk to "Uføretrygda blir berekna ut frå inntektsårene før du ble ufør. Vi bereknar uføretrygda på nytt dersom du får endringar i",
                     English to "The calculation of disability benefits is based upon your income in the years before the disibilty. We recalculate the disibility benefit if you have changes in"
                 )
                 list {
