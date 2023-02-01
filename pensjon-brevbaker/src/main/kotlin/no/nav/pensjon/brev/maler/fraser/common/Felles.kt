@@ -1,7 +1,6 @@
 package no.nav.pensjon.brev.maler.fraser.common
 
 import no.nav.pensjon.brev.api.model.Kroner
-import no.nav.pensjon.brev.api.model.Sivilstand
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
@@ -12,7 +11,7 @@ import no.nav.pensjon.brev.template.dsl.expression.*
 object Felles {
 
     /**
-     * TBU1074, TBU2242NB, TBU1075NN, TBU2242EN
+     * TBU1074, TBU2242NB, TBU1075NN, TBU2242EN, RettTilInnsynPesys_001
      */
     object RettTilInnsynPesys : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
@@ -28,7 +27,7 @@ object Felles {
                 text(
                     Bokmal to "Du har rett til å se dokumentene i saken din. Se vedlegg «Dine rettigheter og plikter» for informasjon om hvordan du går fram.",
                     Nynorsk to "Du har rett til å sjå dokumenta i saka di. Sjå vedlegg «Dine rettar og plikter» for informasjon om korleis du går fram.",
-                    English to "You are entitled to see your case documents. Refer to the attachment «Your rights and obligations» for information about how to proceed.",
+                    English to "You are entitled to see your case documents. Refer to the attachment “Your rights and obligations” for information about how to proceed.",
                 )
             }
         }

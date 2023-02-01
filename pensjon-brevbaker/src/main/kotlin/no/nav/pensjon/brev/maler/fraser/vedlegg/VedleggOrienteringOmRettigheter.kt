@@ -19,6 +19,7 @@ import no.nav.pensjon.brev.template.dsl.expression.isOneOf
 import no.nav.pensjon.brev.template.dsl.expression.plus
 
 
+// VedleggPlikter_001
 object VedleggPlikter : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         title1 {
@@ -38,6 +39,7 @@ object VedleggPlikter : OutlinePhrase<LangBokmalNynorskEnglish>() {
     }
 }
 
+//VedleggPlikterAP2_001
 object VedleggPlikterAP2 : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
     override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         text(
@@ -47,6 +49,7 @@ object VedleggPlikterAP2 : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
         )
 }
 
+// VedleggPlikterAP3_001
 object VedleggPlikterAP3 : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
     override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         text(
@@ -56,6 +59,7 @@ object VedleggPlikterAP3 : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
         )
 }
 
+// VedleggPlikterAP1_001
 object VedleggPlikterAP1 : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
     override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         text(
@@ -116,11 +120,13 @@ data class VedleggPlikterAPFlytterFraHverandre(val sivilstand: Expression<Sivils
     }
 }
 
+// VedleggPlikterAP16_001
 object VedleggPlikterAP16 : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
     override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         text(Bokmal to "du gifter deg", Nynorsk to "du giftar deg", English to "you marry")
 }
 
+// VedleggPlikterAP17_001
 object VedleggPlikterAP17 : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
     override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         text(
@@ -130,11 +136,13 @@ object VedleggPlikterAP17 : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
         )
 }
 
+// VedleggPlikterAP19_001
 object VedleggPlikterAP19 : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
     override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         text(Bokmal to "samboeren din dør", Nynorsk to "sambuaren din døyr", English to "your cohabiting partner dies")
 }
 
+// VedleggPlikterAP8_001
 object VedleggPlikterAP8 : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
     override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         text(
@@ -144,6 +152,7 @@ object VedleggPlikterAP8 : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
         )
 }
 
+//VedleggPlikterAP11_001
 object VedleggPlikterAP11 : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
     override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         text(
@@ -153,21 +162,25 @@ object VedleggPlikterAP11 : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
         )
 }
 
+//VedleggPlikterAP9_001
 object VedleggPlikterAP9 : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
     override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         text(Bokmal to "du blir skilt", Nynorsk to "du blir skild", English to "you divorce")
 }
 
+//VedleggPlikterAP7_001
 object VedleggPlikterAP7 : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
     override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         text(Bokmal to "ektefellen din dør", Nynorsk to "ektefellen din døyr", English to "your spouse dies")
 }
 
+//VedleggPlikterAP12_001
 object VedleggPlikterAP12 : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
     override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         text(Bokmal to "partneren din dør", Nynorsk to "partnaren din døyr", English to "your partner dies")
 }
 
+//VedleggPlikterAP10_001
 object VedleggPlikterAP10 : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
     override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         text(
@@ -177,6 +190,7 @@ object VedleggPlikterAP10 : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
         )
 }
 
+// VedleggPlikterAP5_001
 data class VedleggPlikterAP5(val sivilstand: Expression<Sivilstand>) : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
     override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         showIf(sivilstand.isOneOf(Sivilstand.GIFT, Sivilstand.GIFT_LEVER_ADSKILT)) {
@@ -203,6 +217,7 @@ data class VedleggPlikterAP5(val sivilstand: Expression<Sivilstand>) : TextOnlyP
     }
 }
 
+// VedleggPlikterAP26_001
 object VedleggPlikterAP26 : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
     override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         text(
@@ -212,6 +227,7 @@ object VedleggPlikterAP26 : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
         )
 }
 
+// VedleggPlikterAP27_001
 object VedleggPlikterAP27 : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
     override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         text(
@@ -221,7 +237,8 @@ object VedleggPlikterAP27 : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
         )
 }
 
-object VedleggPlikterHvorforMeldeAP_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
+// VedleggPlikterHvorforMeldeAP_001
+object VedleggPlikterHvorforMeldeAlderspensjon : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         paragraph {
             text(
@@ -232,6 +249,7 @@ object VedleggPlikterHvorforMeldeAP_001 : OutlinePhrase<LangBokmalNynorskEnglish
         }
 }
 
+// VedleggPlikterRettTilBarnetilleggAP_001
 data class VedleggPlikterRettTilBarnetilleggAP(
     val harTilleggForFlereBarn: Expression<Boolean>
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
@@ -285,6 +303,7 @@ data class VedleggPlikterRettTilBarnetilleggAP(
     }
 }
 
+// VedleggPlikterRettTilEktefelletilleggAP_001
 data class VedleggPlikterRettTilEktefelletilleggAP(
     val sivilstand: Expression<Sivilstand>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
@@ -293,7 +312,7 @@ data class VedleggPlikterRettTilEktefelletilleggAP(
             text(
                 Bokmal to "Fordi du får ektefelletillegg må du også melde fra om endringer som kan ha betydning for dette tillegget.",
                 Nynorsk to "Fordi du får ektefelletillegg må du også melde frå om endringar som kan ha betydning for dette tillegget.",
-                English to "Because you receive spouse supplement, you must notify us if there are any changes in circumstances that can have an influence on the assessment of the supplement."
+                English to "Because you receive spouse supplement, you must notify us if there are any changes in circumstances that can have an influence on the assessment of the supplement.",
             )
         }
 
@@ -306,19 +325,19 @@ data class VedleggPlikterRettTilEktefelletilleggAP(
             list {
                 item {
                     text(
-                        Bokmal to "får egen inntekt som er mer enn  folketrygden grunnbeløp",
+                        Bokmal to "får egen inntekt som er mer enn folketrygden grunnbeløp",
                         Nynorsk to "får eiga inntekt som er meir enn grunnbeløpet i folketrygda",
-                        English to "earn an income exceeding the National Insurance basic amount"
+                        English to "earn an income exceeding the National Insurance basic amount",
                     )
                     text(
                         Bokmal to "skal flytte til et annet land",
                         Nynorsk to "skal flytte til eit anna land",
-                        English to "move to another country"
+                        English to "move to another country",
                     )
                     text(
                         Bokmal to "skal oppholde seg i et annet land i mer enn 90 dager i løpet av en tolvmånedersperiode",
                         Nynorsk to "skal opphalde seg i eit anna land i meir enn 90 dager i løpet av ein tolv månedars periode",
-                        English to "stay in another country for more than 90 days in a 12 month period"
+                        English to "stay in another country for more than 90 days in a 12 month period",
                     )
                 }
             }
@@ -344,13 +363,13 @@ data class VedleggPlikterRettTilEktefelletilleggOgBarnetilleggAP(
         paragraph {
             textExpr(
                 Bokmal to "Du må gi oss beskjed hvis ".expr() +
-                        ifElse(barnFlertall, "barna", "barnet") +" eller " + sivilstand.bestemtForm() +
+                        ifElse(barnFlertall, "barna", "barnet") + " eller " + sivilstand.bestemtForm() +
                         " du forsørger".expr(),
                 Nynorsk to "Du må gi oss beskjed om ".expr() +
-                        ifElse(barnFlertall, "barna", "barnet") +" eller " + sivilstand.bestemtForm() +
+                        ifElse(barnFlertall, "barna", "barnet") + " eller " + sivilstand.bestemtForm() +
                         " du forsørgjer".expr(),
                 English to "You must notify us if the ".expr() +
-                        ifElse(barnFlertall, "children", "child") +" or " + sivilstand.bestemtForm() +
+                        ifElse(barnFlertall, "children", "child") + " or " + sivilstand.bestemtForm() +
                         " you provide for will".expr()
             )
             list {
@@ -678,7 +697,8 @@ object VedleggPlikterAFP4 : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
         )
 }
 
-object InfoAPBeskjed_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
+// InfoAPBeskjed_001
+object InfoAlderspensjonGiBeskjed : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         title1 {
             text(
@@ -870,7 +890,8 @@ object VedleggKlagePensjon : OutlinePhrase<LangBokmalNynorskEnglish>() {
     }
 }
 
-object VedleggKlagePesys_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
+// VedleggKlagePesys_001
+object VedleggKlagePesys : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         title1 {
             text(

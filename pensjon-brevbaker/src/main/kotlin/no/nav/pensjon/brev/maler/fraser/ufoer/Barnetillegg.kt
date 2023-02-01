@@ -161,7 +161,7 @@ object Barnetillegg {
                     text(
                         Bokmal to "Du kan enkelt melde fra om inntektsendringer under menyvalget «uføretrygd» på ${Constants.NAV_URL}.",
                         Nynorsk to "Du kan enkelt melde frå om inntektsendringar under menyvalet «uføretrygd» på ${Constants.NAV_URL}.",
-                        English to "You can easily report income changes under the menu option «disability benefit» at ${Constants.NAV_URL}."
+                        English to "You can easily report income changes under the menu option “disability benefit” at ${Constants.NAV_URL}."
                     )
                 }
             }
@@ -648,7 +648,7 @@ object Barnetillegg {
                     text(
                         Bokmal to "Du kan lese mer om beregningen av barnetillegg i vedlegget «Opplysninger om beregningen».",
                         Nynorsk to "Du kan lese meir om berekninga av barnetillegg i vedlegget «Opplysningar om berekninga».",
-                        English to "Read more about how child supplements are calculated in the attachment called «Information about calculations»."
+                        English to "Read more about how child supplements are calculated in the attachment called “Information about calculations”."
                     )
                 }
             }

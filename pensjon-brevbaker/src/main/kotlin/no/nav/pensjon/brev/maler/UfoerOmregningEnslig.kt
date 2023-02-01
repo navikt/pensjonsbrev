@@ -119,16 +119,16 @@ object UfoerOmregningEnslig : VedtaksbrevTemplate<UfoerOmregningEnsligDto> {
                 ifNotNull(minsteytelseVedvirk_sats) { minsteytelseVedVirkSats ->
                     showIf(inntektFoerUfoerhetVedVirk.erSannsynligEndret) {
                         includePhrase(
-                            EndringMinsteytelseOgMinstInntektFoerUfoerhetDoedEPS2(
-                                minsteytelseSatsVedvirk = minsteytelseVedVirkSats,
-                                inntektFoerUfoerhetVedvirk = inntektFoerUfoerhetVedVirk.beloep,
-                                oppjustertInntektFoerUfoerhetVedvirk = inntektFoerUfoerhetVedVirk.oppjustertBeloep,
-                                kompensasjonsgradUfoeretrygdVedvirk = ufoeretrygdVedVirk.kompensasjonsgrad,
+                            EndringMinsteytelseOgMinstInntektFoerUfoerhetDoedEPS(
+                                minsteytelseSats = minsteytelseVedVirkSats,
+                                inntektFoerUfoerhet = inntektFoerUfoerhetVedVirk.beloep,
+                                oppjustertInntektFoerUfoerhet = inntektFoerUfoerhetVedVirk.oppjustertBeloep,
+                                kompensasjonsgradUfoeretrygd = ufoeretrygdVedVirk.kompensasjonsgrad,
                             )
                         )
                     } orShow {
                         includePhrase(
-                            EndrMinsteytelseDoedEPS2(
+                            EndretMinsteytelseDoedEPS(
                                 minsteytelseSatsVedvirk = minsteytelseVedVirkSats,
                                 kompensasjonsgradUfoeretrygdVedvirk = ufoeretrygdVedVirk.kompensasjonsgrad
                             )
@@ -136,10 +136,10 @@ object UfoerOmregningEnslig : VedtaksbrevTemplate<UfoerOmregningEnsligDto> {
                     }
                 } orShow {
                     includePhrase(
-                        EndrMinstInntektFoerUfoerhetDodEPS2(
-                            inntektFoerUfoerhetVedVirk = inntektFoerUfoerhetVedVirk.beloep,
-                            oppjustertInntektFoerUfoerhetVedvirk = inntektFoerUfoerhetVedVirk.oppjustertBeloep,
-                            kompensasjonsgradUfoeretrygdVedvirk = ufoeretrygdVedVirk.kompensasjonsgrad,
+                        EndretMinstInntektFoerUfoerhetDoedEPS(
+                            inntektFoerUfoerhet = inntektFoerUfoerhetVedVirk.beloep,
+                            oppjustertInntektFoerUfoerhet = inntektFoerUfoerhetVedVirk.oppjustertBeloep,
+                            kompensasjonsgradUfoeretrygd = ufoeretrygdVedVirk.kompensasjonsgrad,
                         )
                     )
                 }
@@ -148,19 +148,19 @@ object UfoerOmregningEnslig : VedtaksbrevTemplate<UfoerOmregningEnsligDto> {
             includePhrase(
                 HjemmelSivilstandUfoeretrygd(
                     harMinsteinntektFoerUfoerhet = inntektFoerUfoerhetVedVirk.erMinsteinntekt,
-                    ufoeretrygdVedvirkErInntektsavkortet = ufoeretrygdVedVirk.erInntektsavkortet,
+                    ufoeretrygdErInntektsavkortet = ufoeretrygdVedVirk.erInntektsavkortet,
                 )
             )
 
             showIf(institusjonsoppholdVedVirk.isOneOf(Institusjon.HELSE)) {
-                includePhrase(HjemmelEPSDodUTInstitusjon)
+                includePhrase(HjemmelEPSDoedInstitusjonUfoeretrygd)
             }.orShowIf(institusjonsoppholdVedVirk.isOneOf(Institusjon.FENGSEL)) {
-                includePhrase(HjemmelEPSDodUTFengsel)
+                includePhrase(HjemmelEPSDoedFengselUfoerUfoeretrygd)
             }
 
             showIf(avdoed.ektefelletilleggOpphoert) {
-                includePhrase(OpphorEktefelletilleggOverskrift)
-                includePhrase(OpphorEktefelletillegg)
+                includePhrase(OpphoerEktefelletilleggOverskrift)
+                includePhrase(OpphoerEktefelletillegg)
                 includePhrase(HjemmelEktefelletillegg)
             }
 
@@ -213,8 +213,8 @@ object UfoerOmregningEnslig : VedtaksbrevTemplate<UfoerOmregningEnsligDto> {
                     ) {
                         includePhrase(
                             IkkeRedusertBarnetilleggSaerkullsbarnPgaInntekt(
-                                barnetillegg_saerkullsbarn_inntekt_brukt_i_avkortning_vedvirk = barnetilleggSaerkullsbarnVedVirk.inntektBruktIAvkortning,
-                                barnetillegg_saerkullsbarn_fribeloep_vedvirk = barnetilleggSaerkullsbarnVedVirk.fribeloepVedvirk,
+                                barnetilleggSaerkullsbarnInntektBruktIAvkortning = barnetilleggSaerkullsbarnVedVirk.inntektBruktIAvkortning,
+                                barnetilleggSaerkullsbarnFribeloep = barnetilleggSaerkullsbarnVedVirk.fribeloepVedvirk,
                             )
                         )
                     }
@@ -224,8 +224,8 @@ object UfoerOmregningEnslig : VedtaksbrevTemplate<UfoerOmregningEnsligDto> {
                     ) {
                         includePhrase(
                             RedusertBarnetilleggSaerkullsbarnPgaInntekt(
-                                barnetillegg_saerkullsbarn_inntekt_brukt_i_avkortning_vedvirk = barnetilleggSaerkullsbarnVedVirk.inntektBruktIAvkortning,
-                                barnetillegg_saerkullsbarn_fribeloep_vedvirk = barnetilleggSaerkullsbarnVedVirk.fribeloepVedvirk,
+                                barnetilleggSaerkullsbarnInntektBruktIAvkortning = barnetilleggSaerkullsbarnVedVirk.inntektBruktIAvkortning,
+                                barnetilleggSaerkullsbarnFribeloep = barnetilleggSaerkullsbarnVedVirk.fribeloepVedvirk,
                             )
                         )
                     }
@@ -245,8 +245,8 @@ object UfoerOmregningEnslig : VedtaksbrevTemplate<UfoerOmregningEnsligDto> {
                     ) {
                         includePhrase(
                             IkkeUtbetaltBarnetilleggSaerkullsbarnPgaInntekt(
-                                barnetilleggSaerkullsbarnInntektBruktIAvkortningVedvirk = barnetilleggSaerkullsbarnVedVirk.inntektBruktIAvkortning,
-                                barnetilleggSaerkullsbarnInntektstakVedvirk = barnetilleggSaerkullsbarnVedVirk.inntektstak,
+                                barnetilleggSaerkullsbarnInntektBruktIAvkortning = barnetilleggSaerkullsbarnVedVirk.inntektBruktIAvkortning,
+                                barnetilleggSaerkullsbarnInntektstak = barnetilleggSaerkullsbarnVedVirk.inntektstak,
                             )
                         )
                     }
@@ -277,7 +277,7 @@ object UfoerOmregningEnslig : VedtaksbrevTemplate<UfoerOmregningEnsligDto> {
                 includePhrase(AvdoedBoddArbeidetIUtlandOverskrift)
                 includePhrase(AvdoedBoddEllerArbeidetIUtland)
                 includePhrase(PensjonFraAndreOverskrift)
-                includePhrase(InfoAvdodPenFraAndre)
+                includePhrase(InfoAvdoedPenFraAndre)
             }
 
             showIf(avdoed.harFellesBarnUtenBarnetillegg) {

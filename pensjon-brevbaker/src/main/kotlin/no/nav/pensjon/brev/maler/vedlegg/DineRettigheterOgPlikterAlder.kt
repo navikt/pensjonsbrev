@@ -137,7 +137,7 @@ val dineRettigheterOgPlikterAlder =
                 }
             }
         }
-        includePhrase(VedleggPlikterHvorforMeldeAP_001)
+        includePhrase(VedleggPlikterHvorforMeldeAlderspensjon)
         showIf(
             barnetilleggVedvirk_innvilgetBarnetillegFellesbarn
                 and barnetilleggVedvirk_innvilgetBarnetilleggSaerkullsbarn
@@ -177,9 +177,9 @@ val dineRettigheterOgPlikterAlder =
             includePhrase(VedleggPlikterinntektsprovingETAP)
         }
 
-        includePhrase(InfoAPBeskjed_001)
+        includePhrase(InfoAlderspensjonGiBeskjed)
         includePhrase(VedleggVeiledning)
         includePhrase(VedleggInnsynSakPensjon)
         includePhrase(VedleggHjelpFraAndre)
-        includePhrase(VedleggKlagePesys_001)
+        includePhrase(VedleggKlagePesys)
     }
