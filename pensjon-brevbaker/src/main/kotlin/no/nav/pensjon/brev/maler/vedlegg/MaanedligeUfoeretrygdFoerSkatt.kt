@@ -15,7 +15,7 @@ val vedleggMaanedligUfoeretrygdFoerSkatt = createAttachment<LangBokmalNynorskEng
         English to "This is your monthly disability benefit before tax",
     ),
 ) {
-    includePhrase(VedleggMaanedligeUfoeretrgdFoerSkatt.VedleggBelopUT_001)
+    includePhrase(VedleggMaanedligeUfoeretrgdFoerSkatt.VedleggBeloepUfoeretrygd)
 
     forEach(ufoeretrygdPerioder) {
         includePhrase(VedleggMaanedligeUfoeretrgdFoerSkatt.TabellBeregnetUTHele(it))

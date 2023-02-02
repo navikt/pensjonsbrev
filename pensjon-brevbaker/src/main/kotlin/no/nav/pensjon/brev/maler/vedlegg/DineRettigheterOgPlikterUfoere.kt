@@ -20,7 +20,7 @@ import no.nav.pensjon.brev.template.dsl.newText
 
 // Conditional for showing the attachment is: sakstype = UFOEREP && vedtakResultat = AVSLG
 
-val vedleggOrienteringOmRettigheterOgPlikterUfoere =
+val vedleggDineRettigheterOgPlikterUfoere =
     createAttachment<LangBokmalNynorskEnglish, OrienteringOmRettigheterUfoereDto>(
         title = newText(
             Bokmal to "Dine rettigheter og plikter",
@@ -29,42 +29,43 @@ val vedleggOrienteringOmRettigheterOgPlikterUfoere =
         ),
         includeSakspart = false,
     ) {
-        includePhrase(VedleggPlikterUT_001)
+        includePhrase(VedleggPlikter)
 
-        list {
-            item { includePhrase(VedleggPlikterUT1_001) }
-            item { includePhrase(VedleggPlikterUT2_001) }
+        paragraph {
+            list {
+                item { includePhrase(VedleggPlikterUT1) }
+                item { includePhrase(VedleggPlikterUT2) }
 
-            showIf(
-                bruker_borINorge
-                    and institusjon_gjeldende.isNotAnyOf(FENGSEL, HELSE, SYKEHJEM)
-            ) {
-                item { includePhrase(VedleggPlikterUT3_001) }
-                item { includePhrase(VedleggPlikterUT4_001) }
+                showIf(
+                    bruker_borINorge
+                            and institusjon_gjeldende.isNotAnyOf(FENGSEL, HELSE, SYKEHJEM)
+                ) {
+                    item { includePhrase(VedleggPlikterUT3) }
+                    item { includePhrase(VedleggPlikterUT4) }
+                }
+
+                item { includePhrase(VedleggPlikterUT5) }
+
+                showIf(avdoed_sivilstand.isOneOf(ENSLIG, ENKE)) {
+                    item { includePhrase(VedleggPlikterUT6) }
+                }
+
+                showIf(harInnvilgetBarnetillegg) {
+                    item { includePhrase(VedleggPlikterAP7) }
+                    item { includePhrase(VedleggPlikterUT7(harTilleggForFlereBarn)) }
+                    item { includePhrase(VedleggPlikterUT13(harTilleggForFlereBarn)) }
+                    item { includePhrase(VedleggPlikterUT14(harTilleggForFlereBarn)) }
+                }
+
+                item { includePhrase(VedleggPlikterUT8) }
+                item { includePhrase(VedleggPlikterUT9) }
+                item { includePhrase(VedleggPlikterUT10) }
+                item { includePhrase(VedleggPlikterUT11) }
+                item { includePhrase(VedleggPlikterUT12) }
             }
-
-            item { includePhrase(VedleggPlikterUT5_001) }
-
-            showIf(avdoed_sivilstand.isOneOf(ENSLIG, ENKE)) {
-                item { includePhrase(VedleggPlikterUT6_001) }
-            }
-
-            showIf(harInnvilgetBarnetillegg) {
-                item { includePhrase(VedleggPlikterAP7_001) }
-                item { includePhrase(VedleggPlikterUT7_001(harTilleggForFlereBarn)) }
-                item { includePhrase(VedleggPlikterUT13_001(harTilleggForFlereBarn)) }
-                item { includePhrase(VedleggPlikterUT14_001(harTilleggForFlereBarn)) }
-            }
-
-            item { includePhrase(VedleggPlikterUT8_001) }
-            item { includePhrase(VedleggPlikterUT9_001) }
-            item { includePhrase(VedleggPlikterUT10_001) }
-            item { includePhrase(VedleggPlikterUT11_001) }
-            item { includePhrase(VedleggPlikterUT12_001) }
         }
-
-        includePhrase(VedleggVeiledning_001)
-        includePhrase(VedleggInnsynSakUTPesys_001)
-        includePhrase(VedleggHjelpFraAndre_001)
-        includePhrase(VedleggKlagePensjon_001)
+        includePhrase(VedleggVeiledning)
+        includePhrase(VedleggInnsynSakUfoeretrygdPesys)
+        includePhrase(VedleggHjelpFraAndre)
+        includePhrase(VedleggKlagePensjon)
     }

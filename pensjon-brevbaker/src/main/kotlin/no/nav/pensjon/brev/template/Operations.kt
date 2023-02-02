@@ -106,12 +106,12 @@ abstract class BinaryOperation<in In1, in In2, out Out> : Operation() {
 
     object LocalizedShortDateFormat : BinaryOperation<LocalDate, Language, String>() {
         override fun apply(first: LocalDate, second: Language): String =
-            first.format(dateFormatter(second, FormatStyle.SHORT))
+            first.format(dateFormatter(second, FormatStyle.SHORT)).replace(' ', ' ') //space to non braking space
     }
 
     object LocalizedDateFormat : BinaryOperation<LocalDate, Language, String>() {
         override fun apply(first: LocalDate, second: Language): String =
-            first.format(dateFormatter(second, FormatStyle.LONG))
+            first.format(dateFormatter(second, FormatStyle.LONG)).replace(' ', ' ') //space to non braking space
     }
 
     object LocalizedDoubleFormat : BinaryOperation<Double, Language, String>() {

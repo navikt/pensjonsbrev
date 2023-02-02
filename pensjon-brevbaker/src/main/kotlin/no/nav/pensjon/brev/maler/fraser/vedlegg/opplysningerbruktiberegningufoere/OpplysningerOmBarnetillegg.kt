@@ -40,6 +40,7 @@ import no.nav.pensjon.brev.api.model.vedlegg.SaerkullsbarnSelectors.justeringsbe
 import no.nav.pensjon.brev.api.model.vedlegg.SaerkullsbarnSelectors.justeringsbeloepAar_safe
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.model.format
+import no.nav.pensjon.brev.model.ubestemtForm
 import no.nav.pensjon.brev.template.Element
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
 import no.nav.pensjon.brev.template.Expression
@@ -282,122 +283,123 @@ data class OpplysningerOmBarnetillegg(
             val faarUtbetaltTillegg = beloepNetto.greaterThan(0)
             val harJusteringsbeloep = justeringsbeloepAar.notEqualTo(0)
             val harNettoBeloep = beloepNetto.notEqualTo(0)
-            table(
-                header = {
-                    column(columnSpan = 2) {
-                    }
-                    column(alignment = Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT) {
-                        text(
-                            Bokmal to "Beløp",
-                            Nynorsk to "Beløp",
-                            English to "Amount",
-                            BOLD
-                        )
-                    }
-                }
-            ) {
-                showIf(beloepNetto.notEqualTo(beloepBrutto)) {
-                    row {
-                        cell {
+            paragraph {
+                table(
+                    header = {
+                        column(columnSpan = 2) {
+                        }
+                        column(alignment = Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT) {
                             text(
-                                Bokmal to "Årlig barnetillegg før reduksjon ut fra inntekt",
-                                Nynorsk to "Årleg barnetillegg før reduksjon ut frå inntekt",
-                                English to "Yearly child supplement before income reduction"
+                                Bokmal to "Beløp",
+                                Nynorsk to "Beløp",
+                                English to "Amount",
+                                BOLD
                             )
                         }
-                        cell {
-                            includePhrase(Felles.KronerText(beloepAarBrutto))
+                    }
+                ) {
+                    showIf(beloepNetto.notEqualTo(beloepBrutto)) {
+                        row {
+                            cell {
+                                text(
+                                    Bokmal to "Årlig barnetillegg før reduksjon ut fra inntekt",
+                                    Nynorsk to "Årleg barnetillegg før reduksjon ut frå inntekt",
+                                    English to "Yearly child supplement before income reduction"
+                                )
+                            }
+                            cell {
+                                includePhrase(Felles.KronerText(beloepAarBrutto))
+                            }
                         }
                     }
-                }
 
-                showIf(avkortningsbeloepAar.greaterThan(0)) {
-                    row {
-                        cell {
-                            text(
-                                Bokmal to "- 50 prosent av inntekt som overstiger fribeløpet ",
-                                Nynorsk to "- 50 prosent av inntekta som overstig fribeløpet ",
-                                English to "- 50 percent of income exceeding the allowance amount "
-                            )
-                            text(Bokmal to "*", Nynorsk to "*", English to "*", BOLD)
-                            text(
-                                Bokmal to " (oppgitt som et årlig beløep)",
-                                Nynorsk to " (oppgitt som eit årleg beløp)",
-                                English to " (calculated to an annual amount)"
-                            )
-                        }
-                        cell {
-                            includePhrase(Felles.KronerText(avkortningsbeloepAar))
-                        }
-                    }
-                }
-
-                showIf(harJusteringsbeloep) {
-                    val positivt = justeringsbeloepAar.value.greaterThan(0)
-                    row {
-                        cell {
-                            textExpr(
-                                Bokmal to ifElse(positivt, "+", "-") +
-                                        " Beløp som er brukt for å justere reduksjonen av barnetillegget",
-                                Nynorsk to ifElse(positivt, "+", "-") +
-                                        " Beløp som er brukt for å justere reduksjonen av barnetillegget",
-                                English to ifElse(positivt, "+", "-") +
-                                        " Amount which is used to adjust the reduction of child supplement",
-                            )
-                        }
-                        cell {
-                            includePhrase(Felles.KronerText(justeringsbeloepAar.absoluteValue()))
+                    showIf(avkortningsbeloepAar.greaterThan(0)) {
+                        row {
+                            cell {
+                                text(
+                                    Bokmal to "- 50 prosent av inntekt som overstiger fribeløpet ",
+                                    Nynorsk to "- 50 prosent av inntekta som overstig fribeløpet ",
+                                    English to "- 50 percent of income exceeding the allowance amount "
+                                )
+                                text(Bokmal to "*", Nynorsk to "*", English to "*", BOLD)
+                                text(
+                                    Bokmal to " (oppgitt som et årlig beløep)",
+                                    Nynorsk to " (oppgitt som eit årleg beløp)",
+                                    English to " (calculated to an annual amount)"
+                                )
+                            }
+                            cell {
+                                includePhrase(Felles.KronerText(avkortningsbeloepAar))
+                            }
                         }
                     }
-                }
 
-                showIf(avkortningsbeloepAar.greaterThan(0) or harJusteringsbeloep) {
-                    row {
-                        cell {
-                            text(
-                                Bokmal to "= Årlig barnetillegg etter reduksjon ut fra inntekt",
-                                Nynorsk to "= Årleg barnetillegg etter reduksjon ut frå inntekt",
-                                English to "= Yearly child supplement after income reduction",
-                                BOLD,
-                            )
-                        }
-                        cell {
-                            includePhrase(Felles.KronerText(beloepAarNetto))
+                    showIf(harJusteringsbeloep) {
+                        val positivt = justeringsbeloepAar.value.greaterThan(0)
+                        row {
+                            cell {
+                                textExpr(
+                                    Bokmal to ifElse(positivt, "+", "-") +
+                                            " Beløp som er brukt for å justere reduksjonen av barnetillegget",
+                                    Nynorsk to ifElse(positivt, "+", "-") +
+                                            " Beløp som er brukt for å justere reduksjonen av barnetillegget",
+                                    English to ifElse(positivt, "+", "-") +
+                                            " Amount which is used to adjust the reduction of child supplement",
+                                )
+                            }
+                            cell {
+                                includePhrase(Felles.KronerText(justeringsbeloepAar.absoluteValue()))
+                            }
                         }
                     }
-                }
 
-                showIf(faarUtbetaltTillegg or not(harNettoBeloep)) {
-                    row {
-                        cell {
-                            text(
-                                Bokmal to "Utbetaling av barnetillegg per måned",
-                                Nynorsk to "Utbetaling av barnetillegg per månad",
-                                English to "Child supplement payment for the remaining months of the year"
-                            )
-                        }
-                        cell {
-                            includePhrase(Felles.KronerText(beloepNetto))
+                    showIf(avkortningsbeloepAar.greaterThan(0) or harJusteringsbeloep) {
+                        row {
+                            cell {
+                                text(
+                                    Bokmal to "= Årlig barnetillegg etter reduksjon ut fra inntekt",
+                                    Nynorsk to "= Årleg barnetillegg etter reduksjon ut frå inntekt",
+                                    English to "= Yearly child supplement after income reduction",
+                                    BOLD,
+                                )
+                            }
+                            cell {
+                                includePhrase(Felles.KronerText(beloepAarNetto))
+                            }
                         }
                     }
-                }
 
-                showIf(not(harNettoBeloep) and justeringsbeloepAar.equalTo(0)) {
-                    row {
-                        cell {
-                            text(
-                                Bokmal to "Grensen for å få utbetalt barnetillegg",
-                                Nynorsk to "Grensa for å få utbetalt barnetillegg",
-                                English to "The income limit for receiving child supplement"
-                            )
+                    showIf(faarUtbetaltTillegg or not(harNettoBeloep)) {
+                        row {
+                            cell {
+                                text(
+                                    Bokmal to "Utbetaling av barnetillegg per måned",
+                                    Nynorsk to "Utbetaling av barnetillegg per månad",
+                                    English to "Child supplement payment for the remaining months of the year"
+                                )
+                            }
+                            cell {
+                                includePhrase(Felles.KronerText(beloepNetto))
+                            }
                         }
-                        cell {
-                            includePhrase(Felles.KronerText(inntektstak))
+                    }
+
+                    showIf(not(harNettoBeloep) and justeringsbeloepAar.equalTo(0)) {
+                        row {
+                            cell {
+                                text(
+                                    Bokmal to "Grensen for å få utbetalt barnetillegg",
+                                    Nynorsk to "Grensa for å få utbetalt barnetillegg",
+                                    English to "The income limit for receiving child supplement"
+                                )
+                            }
+                            cell {
+                                includePhrase(Felles.KronerText(inntektstak))
+                            }
                         }
                     }
                 }
             }
-
             paragraph {
                 text(Bokmal to "*)", Nynorsk to "*)", English to "*)", BOLD)
                 textExpr(
@@ -745,11 +747,13 @@ data class OpplysningerOmBarnetillegg(
                 )
             }
             showIf(harAnvendtTrygdetidUnder40 and not(harYrkesskade)) {
-                text(
-                    Bokmal to "Siden trygdetiden din er kortere enn 40 år, blir fribeløpet redusert ut fra den trygdetiden du har. ",
-                    Nynorsk to "Sidan trygdetida di er kortare enn 40 år, blir fribeløpet redusert ut frå den trygdetida du har. ",
-                    English to "Since you have less than 40 years National Insurance membership, the exemption amount is ruduced correspondingly in relation to the the length of time of you National Insurance membership. "
-                )
+                paragraph{
+                    text(
+                        Bokmal to "Siden trygdetiden din er kortere enn 40 år, blir fribeløpet redusert ut fra den trygdetiden du har. ",
+                        Nynorsk to "Sidan trygdetida di er kortare enn 40 år, blir fribeløpet redusert ut frå den trygdetida du har. ",
+                        English to "Since you have less than 40 years National Insurance membership, the exemption amount is ruduced correspondingly in relation to the the length of time of you National Insurance membership. "
+                    )
+                }
             }
             paragraph {
                 text(
@@ -772,23 +776,20 @@ data class OpplysningerOmBarnetillegg(
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             paragraph {
                 textExpr(
-                    Bokmal to "Vi fastsetter størrelsen på barnetillegget ut fra inntekten til deg og din ".expr(),
-                    Nynorsk to "Vi fastset storleiken på barnetillegget ut frå inntekta til deg og din ".expr(),
-                    English to "We determine the amount of child supplement based on the total income for you and your ".expr()
-                )
+                    Bokmal to "Vi fastsetter størrelsen på barnetillegget ut fra inntekten til deg og din ".expr() +
+                            sivilstand.ubestemtForm() + " for ".expr() +
+                            ifElse(harTilleggForFlereFellesbarn, "barna", "barnet") +
+                            " som bor med begge sine foreldre. Barnetillegget blir redusert dersom den samlede inntekten er høyere enn fribeløpet. Fribeløpet for et barn som bor med begge foreldrene er 4,6 ganger folketrygdens grunnbeløp, og øker med 40 prosent av folketrygdens grunnbeløp for hvert ekstra barn.".expr(),
 
-                includePhrase(Felles.SivilstandEPSUbestemtForm(sivilstand))
+                    Nynorsk to "Vi fastset storleiken på barnetillegget ut frå inntekta til deg og din ".expr() +
+                            sivilstand.ubestemtForm() + " for ".expr() +
+                            ifElse(harTilleggForFlereFellesbarn, "barna", "barnet") +
+                            " som bur med begge foreldra sine. Barnetillegget blir redusert dersom den samla inntekta er høgare enn fribeløpet. Fribeløpet for eit barn som bur med begge foreldra, er 4,6 gonger grunnbeløpet i folketrygda, og aukar med 40 prosent av grunnbeløpet i folketrygda for kvart ekstra barn.".expr(),
 
-                textExpr(
-                    Bokmal to " for ".expr() +
-                            ifElse(harTilleggForFlereFellesbarn, "barna", "barnet")
-                            + " som bor med begge sine foreldre. Barnetillegget blir redusert dersom den samlede inntekten er høyere enn fribeløpet. Fribeløpet for et barn som bor med begge foreldrene er 4,6 ganger folketrygdens grunnbeløp, og øker med 40 prosent av folketrygdens grunnbeløp for hvert ekstra barn.".expr(),
-                    Nynorsk to " for ".expr() +
-                            ifElse(harTilleggForFlereFellesbarn, "barna", "barnet")
-                            + " som bur med begge foreldra sine. Barnetillegget blir redusert dersom den samla inntekta er høgare enn fribeløpet. Fribeløpet for eit barn som bur med begge foreldra, er 4,6 gonger grunnbeløpet i folketrygda, og aukar med 40 prosent av grunnbeløpet i folketrygda for kvart ekstra barn.".expr(),
-                    English to " for the ".expr() +
-                            ifElse(harTilleggForFlereFellesbarn, "children who live", "child who lives")
-                            + " with both parents. The child supplement will be reduced if your total income is greater than the exemption amount. The exemption amount is 4.6 times the National Insurance basic amount and it increases with 40 percent of the National Insurance basic amount for each extra child.".expr()
+                    English to "We determine the amount of child supplement based on the total income for you and your ".expr() +
+                            sivilstand.ubestemtForm() + " for the ".expr() +
+                            ifElse(harTilleggForFlereFellesbarn, "children who live", "child who lives") +
+                            " with both parents. The child supplement will be reduced if your total income is greater than the exemption amount. The exemption amount is 4.6 times the National Insurance basic amount and it increases with 40 percent of the National Insurance basic amount for each extra child.".expr(),
                 )
             }
             paragraph {
@@ -843,13 +844,11 @@ data class OpplysningerOmBarnetillegg(
                 }
 
                 showIf(foreldreBorSammen) {
-                    text(
-                        Bokmal to "din eller til din ",
-                        Nynorsk to "di eller til di ",
-                        English to "your or your ",
+                    textExpr(
+                        Bokmal to "din eller til din ".expr() + sivilstand.ubestemtForm(),
+                        Nynorsk to "di eller til di ".expr() + sivilstand.ubestemtForm(),
+                        English to "your or your ".expr() + sivilstand.ubestemtForm() + "'s",
                     )
-                    includePhrase(Felles.SivilstandEPSUbestemtForm(sivilstand))
-                    text(Bokmal to "", Nynorsk to "", English to "'s")
                 }.orShow {
                     text(
                         Bokmal to "din",
