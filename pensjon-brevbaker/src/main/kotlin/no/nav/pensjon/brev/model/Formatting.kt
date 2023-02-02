@@ -39,13 +39,13 @@ fun Expression<Sivilstand>.tableFormat() =
 object FormatSivilstandTabell : BinaryOperation<Sivilstand, Language, String>() {
     override fun apply(first: Sivilstand, second: Language): String =
         when (first) {
-            ENSLIG -> when (second) {
+            ENKE -> when (second) {
                 Bokmal -> "Enke/Enkemann"
                 Nynorsk -> "Enkje/Enkjemann"
                 English -> "Widow/widower"
             }
 
-            ENKE -> when (second) {
+            ENSLIG -> when (second) {
                 Bokmal -> "Enslig"
                 Nynorsk -> "Einsleg"
                 English -> "Single"
@@ -118,7 +118,8 @@ private fun sivilstand(sivilstand: Sivilstand, language: Language, bestemtForm: 
             English -> "cohabitant"
         }
 
-        else -> {
-            ""
-        }
+        //TODO lag en egen SivilstandEps enum slik at vi kan garantere at teksten blir riktig.
+        ENSLIG,
+        ENKE,
+        SEPARERT-> ""
     }
