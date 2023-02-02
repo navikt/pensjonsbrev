@@ -14,7 +14,7 @@ import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 
 @Tag(TestTags.PDF_BYGGER)
-class OpphoerBarnetilleggAutoTest {
+class OpphoerBarnetilleggAutoTestEndringIOpptjening {
 
     @Test
     fun test() {

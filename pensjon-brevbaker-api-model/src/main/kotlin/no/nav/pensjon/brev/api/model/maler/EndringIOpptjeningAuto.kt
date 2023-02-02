@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.api.model.maler
 
 import no.nav.pensjon.brev.api.model.Kroner
+import no.nav.pensjon.brev.api.model.Sivilstand
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligUfoeretrygdFoerSkattDto
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDto
 import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterUfoereDto
@@ -11,7 +12,8 @@ data class EndringIOpptjeningAutoDto(
     val barnetilleggFellesbarn: BarnetilleggFellesbarn?,
     val barnetilleggSaerkullsbarn: BarnetilleggSaerkullsbarn?,
     val endringIOpptjening: EndringIOpptjening,
-    val ufoeretrygd: Ufoeretrygd,  // used
+    val sivilstand: Sivilstand,
+    val ufoeretrygd: Ufoeretrygd,
     val maanedligUfoeretrygdFoerSkatt: MaanedligUfoeretrygdFoerSkattDto,
     val opplysningerBruktIBeregningUT: OpplysningerBruktIBeregningUTDto,
     val orienteringOmRettigheterUfoere: OrienteringOmRettigheterUfoereDto,
@@ -32,9 +34,11 @@ data class EndringIOpptjeningAutoDto(
 
 
     data class EndringIOpptjening(
+        val barnetilleggFellesbarn: BarnetilleggFellesbarn?,
+        val barnetilleggSaerkullsbarn: BarnetilleggSaerkullsbarn?,
         val beloepsgrense: Kroner,  // Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Belopsgrense
         val forventetInntekt: Kroner,  //  Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_ForventetInntekt
-        val grunnbeloep: Kroner,  // Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Grunnbelop
+        val grunnbeloep: Kroner,  // Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Grunnbelop  //
         val harBeloepOekt: Boolean,  // Vedtaksdata_BeregningsData_BeregningUfore_BelopOkt
         val harBeloepRedusert: Boolean,  // Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Uforegrad AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BelopRedusert
         val harDelvisUfoeregrad: Boolean,  // Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegningu_ufoeregrad > 0 < 100
@@ -58,12 +62,27 @@ data class EndringIOpptjeningAutoDto(
     )
 
     data class BarnetilleggFellesbarn(
-        val beloepBrutto: Kroner,
+        val beloepNetto: Kroner,
+        val harFlereBarn: Boolean,
+        val harFratrukketBeloepFraAnnenForelder: Boolean,
+        val harInnvilgetBarnetillegg: Boolean,
+        val inntektAnnenForelder: Kroner,
+        val inntektBruktIAvkortning: Kroner,
+        val inntektstak: Kroner,
+        val justeringsbeloepAar: Kroner,
+
 
         )
 
     data class BarnetilleggSaerkullsbarn(
-        val beloepBrutto: Kroner,
+        val avkortningsbeloepAar: Kroner,
+        val beloepNetto: Kroner,
+        val fribeloep: Kroner,
+        val harFlereBarn: Boolean,
+        val harInnvilgetBarnetillegg: Boolean,
+        val inntektBruktIAvkortning: Kroner,
+        val inntektstak: Kroner,
+        val justeringsbeloepAar: Kroner,
 
         )
 

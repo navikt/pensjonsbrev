@@ -2,17 +2,9 @@ package no.nav.pensjon.brev.maler.fraser.ufoer.endringIOpptjening
 
 import no.nav.pensjon.brev.api.model.Kroner
 import no.nav.pensjon.brev.api.model.Sivilstand
-import no.nav.pensjon.brev.api.model.vedlegg.BarnetilleggGjeldendeSelectors.fellesbarn_safe
-import no.nav.pensjon.brev.api.model.vedlegg.BarnetilleggGjeldendeSelectors.saerkullsbarn_safe
-import no.nav.pensjon.brev.api.model.vedlegg.FellesbarnSelectors.fribeloepEllerInntektErPeriodisert_safe
-import no.nav.pensjon.brev.api.model.vedlegg.FellesbarnSelectors.justeringsbeloepAar_safe
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDto
-import no.nav.pensjon.brev.api.model.vedlegg.SaerkullsbarnSelectors.erRedusertMotinntekt_safe
-import no.nav.pensjon.brev.api.model.vedlegg.SaerkullsbarnSelectors.fribeloep
-import no.nav.pensjon.brev.api.model.vedlegg.SaerkullsbarnSelectors.fribeloepEllerInntektErPeriodisert_safe
-import no.nav.pensjon.brev.api.model.vedlegg.SaerkullsbarnSelectors.inntektBruktIAvkortning
-import no.nav.pensjon.brev.api.model.vedlegg.SaerkullsbarnSelectors.inntektstak
-import no.nav.pensjon.brev.api.model.vedlegg.SaerkullsbarnSelectors.justeringsbeloepAar_safe
+import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.beloepNetto
+import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarnSelectors.beloepNetto
+import no.nav.pensjon.brev.api.model.maler.EndringIOpptjeningAutoDto
 import no.nav.pensjon.brev.maler.fraser.ufoer.Barnetillegg
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Language.*
@@ -20,27 +12,20 @@ import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.text
 
-data class InkludereBarnetillegg(
-    val barnetillegg: Expression<OpplysningerBruktIBeregningUTDto.BarnetilleggGjeldende>,
+data class BarnetilleggEndringIOpptjening(
+    val barnetilleggFellesbarn: Expression<EndringIOpptjeningAutoDto.BarnetilleggFellesbarn>,
+    val barnetilleggSaerkullsbarn: Expression<EndringIOpptjeningAutoDto.BarnetilleggSaerkullsbarn>,
+    val harInnvilgetBarnetilleggFellesbarn: Expression<Boolean>,
+    val harInnvilgetBarnetilleggSaerkullsbarn: Expression<Boolean>,
     val sivilstand: Expression<Sivilstand>,
 
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-        val harAnvendtTrygdetidUnder40 = anvendtTrygdetid.lessThan(40)
-        val harTilleggFellesBarn = barnetillegg.notNull()
-        val harTilleggSaerkullsbarn = barnetillegg.notNull()
-        val barnetillegSaerkullsbarnErRedusertMotInntekt =
-            barnetillegg.saerkullsbarn_safe.erRedusertMotinntekt_safe.ifNull(false)
-        val inntektEllerFribeloepErPeriodisert =
-            barnetillegg.fellesbarn_safe.fribeloepEllerInntektErPeriodisert_safe.ifNull(false) or
-                    barnetillegg.saerkullsbarn_safe.fribeloepEllerInntektErPeriodisert_safe.ifNull(false)
-        val justeringsbeloepFelles = barnetillegg.fellesbarn_safe.justeringsbeloepAar_safe.ifNull(Kroner(0))
-        val justeringsbeloepSaerkull = barnetillegg.saerkullsbarn_safe.justeringsbeloepAar_safe.ifNull(Kroner(0))
-        val harJusteringsbeloep = justeringsbeloepFelles.greaterThan(0) or
-                justeringsbeloepSaerkull.greaterThan(0)
-
-
-        showIf(harBarnetillegg) {
+        val harInnvilgetBarnetillegg = harInnvilgetBarnetilleggFellesbarn or harInnvilgetBarnetilleggSaerkullsbarn
+        val harBarnetilleggFellesbarn = barnetilleggFellesbarn.notNull()
+        val harBarnetilleggSaerkullsbarn = barnetilleggSaerkullsbarn.notNull()
+        val harBarnetillegg = harBarnetilleggFellesbarn or harBarnetilleggSaerkullsbarn
+        showIf(harInnvilgetBarnetillegg) {
             title1 {
                 text(
                     Language.Bokmal to "Slik påvirker inntekt barnetillegget ditt",
@@ -49,7 +34,7 @@ data class InkludereBarnetillegg(
                 )
             }
 
-            ifNotNull(barnetilleggSaerkullsbarn) { barnetilleggSaerkullsbarn ->
+            ifNotNull(harBarnetilleggSaerkullsbarn) { harBarnetilleggSaerkullsbarn ->
                 includePhrase(
                     Barnetillegg.InntektHarBetydningForSaerkullsbarnTillegg(
                         harBarnetilleggFellesbarn = harBarnetilleggFellesbarn,
