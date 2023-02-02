@@ -349,7 +349,7 @@ data class TabellUfoereOpplysninger(
 
                 val beregningsmetode = trygdetidsdetaljerGjeldende.beregningsmetode
 
-                showIf(beregnetUTPerManedGjeldende.brukerErFlyktning and beregningsmetode.isOneOf(Beregningsmetode.FOLKETRYGD)) {
+                showIf(beregnetUTPerManedGjeldende.brukerErFlyktning) {
                     row {
                         cell {
                             text(
@@ -366,6 +366,8 @@ data class TabellUfoereOpplysninger(
                             )
                         }
                     }
+                }
+                showIf(beregningsmetode.isOneOf(Beregningsmetode.FOLKETRYGD)){
                     row {
                         cell {
                             text(
