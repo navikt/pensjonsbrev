@@ -16,8 +16,6 @@ import java.time.LocalDate
 
 
 object Barnetillegg {
-
-    // TODO: kan vi ikke bare bruke navnet på barna?
     // TBU2290
     data class VirkningsDatoForOpphoer(
         val oensketVirkningsDato: Expression<LocalDate>,
@@ -32,10 +30,10 @@ object Barnetillegg {
 
                 textExpr(
                     Bokmal to "Vi har vedtatt at barnetillegget i uføretrygden din opphører fra ".expr() + virkningsDato +
-                            " for " + ifElse(barnFlertall, "barna", "barnet") +
+                            " for " + ifElse(barnFlertall, "barna", "barn") +
                             " født ".expr() + foedselsDato + ".".expr(),
                     Nynorsk to "Vi har stansa barnetillegget i uføretrygda di frå ".expr() + virkningsDato +
-                            " for " + ifElse(barnFlertall, "barna", "barnet") +
+                            " for " + ifElse(barnFlertall, "barna", "barn") +
                             " fødd ".expr() + foedselsDato + ".".expr(),
                     English to "The child supplement in your disability benefit has been discontinued, effective as of ".expr() + virkningsDato +
                             ", for " + ifElse(barnFlertall, "children", "the child") +
