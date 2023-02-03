@@ -9,47 +9,47 @@ import java.time.LocalDate
 
 @Suppress("unused")
 data class OpphoerBarnetilleggAutoDto(
-    val foedselsdatoPaaBarnMedOpphoertBarnetillegg: List<LocalDate>,
-    val oensketVirkningsDato: LocalDate,
     val barnetilleggFellesbarn: BarnetilleggFellesbarn?,
     val barnetilleggSaerkullsbarn: BarnetilleggSaerkullsbarn?,
     val brukerBorInorge: Boolean,
+    val foedselsdatoPaaBarnMedOpphoertBarnetillegg: List<LocalDate>,
     val grunnbeloep: Kroner,
-    val sivilstand: Sivilstand,
-    val ufoeretrygd: Ufoeretrygd,
     val maanedligUfoeretrygdFoerSkatt: MaanedligUfoeretrygdFoerSkattDto,
+    val oensketVirkningsDato: LocalDate,
     val opplysningerBruktIBeregningUT: OpplysningerBruktIBeregningUTDto,
     val orienteringOmRettigheterUfoere: OrienteringOmRettigheterUfoereDto,
+    val sivilstand: Sivilstand,
+    val ufoeretrygd: Ufoeretrygd,
 )
 
 data class Ufoeretrygd(
-    val ufoertrygdUtbetalt: Kroner,
-    val utbetaltPerMaaned: Kroner,
     val ektefelletilleggUtbeltalt: Kroner?,
     val gjenlevendetilleggUtbetalt: Kroner?,
     val harUtbetalingsgrad: Boolean,
+    val ufoertrygdUtbetalt: Kroner,
+    val utbetaltPerMaaned: Kroner,
     )
 
 data class BarnetilleggFellesbarn(
-    val gjelderFlereBarn: Boolean,
-    val inntektstak: Kroner,
     val beloepBrutto: Kroner,
     val beloepNetto: Kroner,
     val fribeloep: Kroner,
+    val gjelderFlereBarn: Boolean,
     val harFradrag: Boolean,
     val harFratrukketBeloepFraAnnenForelder: Boolean,
     val harJusteringsbeloep: Boolean,
     val inntektAnnenForelder: Kroner,
     val inntektBruktIAvkortning: Kroner,
+    val inntektstak: Kroner,
 )
 
 data class BarnetilleggSaerkullsbarn(
-    val gjelderFlereBarn: Boolean,
-    val inntektstak: Kroner,
     val beloepBrutto: Kroner,
     val beloepNetto: Kroner,
     val fribeloep: Kroner,
+    val gjelderFlereBarn: Boolean,
     val harFradrag: Boolean,
     val harJusteringsbeloep: Boolean,
     val inntektBruktIAvkortning: Kroner,
+    val inntektstak: Kroner,
 )

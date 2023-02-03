@@ -62,27 +62,29 @@ data class EndringIOpptjeningAutoDto(
     )
 
     data class BarnetilleggFellesbarn(
+        val beloepBrutto: Kroner,
         val beloepNetto: Kroner,
-        val harFlereBarn: Boolean,
+        val fribeloep: Kroner,
+        val gjelderFlereBarn: Boolean,
+        val harFradrag: Boolean,
         val harFratrukketBeloepFraAnnenForelder: Boolean,
-        val harInnvilgetBarnetillegg: Boolean,
+        val harJusteringsbeloep: Boolean,
         val inntektAnnenForelder: Kroner,
         val inntektBruktIAvkortning: Kroner,
         val inntektstak: Kroner,
-        val justeringsbeloepAar: Kroner,
 
 
         )
 
     data class BarnetilleggSaerkullsbarn(
-        val avkortningsbeloepAar: Kroner,
+        val beloepBrutto: Kroner,
         val beloepNetto: Kroner,
         val fribeloep: Kroner,
-        val harFlereBarn: Boolean,
-        val harInnvilgetBarnetillegg: Boolean,
+        val gjelderFlereBarn: Boolean,
+        val harFradrag: Boolean,
+        val harJusteringsbeloep: Boolean,
         val inntektBruktIAvkortning: Kroner,
         val inntektstak: Kroner,
-        val justeringsbeloepAar: Kroner,
 
         )
 

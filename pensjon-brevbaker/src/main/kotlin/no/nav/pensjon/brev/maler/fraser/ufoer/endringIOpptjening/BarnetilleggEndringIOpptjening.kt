@@ -1,13 +1,35 @@
 package no.nav.pensjon.brev.maler.fraser.ufoer.endringIOpptjening
 
 import no.nav.pensjon.brev.api.model.Kroner
+import no.nav.pensjon.brev.api.model.KronerSelectors.value_safe
 import no.nav.pensjon.brev.api.model.Sivilstand
+import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.beloepBrutto
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.beloepNetto
+import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.beloepNetto_safe
+import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.fribeloep
+import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.gjelderFlereBarn
+import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.gjelderFlereBarn_safe
+import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.harFradrag
+import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.harFratrukketBeloepFraAnnenForelder
+import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.harJusteringsbeloep
+import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.inntektAnnenForelder
+import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.inntektBruktIAvkortning
+import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.inntektstak
+import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.inntektstak_safe
+import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarnSelectors.beloepBrutto
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarnSelectors.beloepNetto
+import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarnSelectors.beloepNetto_safe
+import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarnSelectors.fribeloep
+import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarnSelectors.gjelderFlereBarn
+import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarnSelectors.gjelderFlereBarn_safe
+import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarnSelectors.harFradrag
+import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarnSelectors.harJusteringsbeloep
+import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarnSelectors.inntektBruktIAvkortning
+import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarnSelectors.inntektstak
+import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarnSelectors.inntektstak_safe
 import no.nav.pensjon.brev.api.model.maler.EndringIOpptjeningAutoDto
 import no.nav.pensjon.brev.maler.fraser.ufoer.Barnetillegg
 import no.nav.pensjon.brev.template.*
-import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.text
@@ -15,17 +37,15 @@ import no.nav.pensjon.brev.template.dsl.text
 data class BarnetilleggEndringIOpptjening(
     val barnetilleggFellesbarn: Expression<EndringIOpptjeningAutoDto.BarnetilleggFellesbarn>,
     val barnetilleggSaerkullsbarn: Expression<EndringIOpptjeningAutoDto.BarnetilleggSaerkullsbarn>,
-    val harInnvilgetBarnetilleggFellesbarn: Expression<Boolean>,
-    val harInnvilgetBarnetilleggSaerkullsbarn: Expression<Boolean>,
+    val grunnbeloep: Expression<Kroner>,
     val sivilstand: Expression<Sivilstand>,
 
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-        val harInnvilgetBarnetillegg = harInnvilgetBarnetilleggFellesbarn or harInnvilgetBarnetilleggSaerkullsbarn
         val harBarnetilleggFellesbarn = barnetilleggFellesbarn.notNull()
         val harBarnetilleggSaerkullsbarn = barnetilleggSaerkullsbarn.notNull()
         val harBarnetillegg = harBarnetilleggFellesbarn or harBarnetilleggSaerkullsbarn
-        showIf(harInnvilgetBarnetillegg) {
+        showIf(harBarnetillegg) {
             title1 {
                 text(
                     Language.Bokmal to "Slik påvirker inntekt barnetillegget ditt",
