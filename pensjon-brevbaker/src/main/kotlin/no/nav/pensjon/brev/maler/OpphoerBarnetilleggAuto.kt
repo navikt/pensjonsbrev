@@ -51,7 +51,7 @@ import no.nav.pensjon.brev.maler.fraser.ufoer.Barnetillegg
 import no.nav.pensjon.brev.maler.fraser.ufoer.Ufoeretrygd
 import no.nav.pensjon.brev.maler.vedlegg.createVedleggOpplysningerBruktIBeregningUT
 import no.nav.pensjon.brev.maler.vedlegg.vedleggMaanedligUfoeretrygdFoerSkatt
-import no.nav.pensjon.brev.maler.vedlegg.vedleggOrienteringOmRettigheterOgPlikterUfoere
+import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgPlikterUfoere
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.VedtaksbrevTemplate
 import no.nav.pensjon.brev.template.dsl.createTemplate
@@ -71,7 +71,7 @@ object OpphoerBarnetilleggAuto : VedtaksbrevTemplate<OpphoerBarnetilleggAutoDto>
         letterDataType = OpphoerBarnetilleggAutoDto::class,
         languages = languages(Language.Bokmal, Language.Nynorsk, Language.English),
         letterMetadata = LetterMetadata(
-            displayTitle = "Vedtak – opphør av barnetillegget",
+            displayTitle = "Vedtak – opphør av barnetillegget (automatisk)",
             isSensitiv = false,
             distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
         )
@@ -79,6 +79,8 @@ object OpphoerBarnetilleggAuto : VedtaksbrevTemplate<OpphoerBarnetilleggAutoDto>
         val harBarnetilleggFellesbarn = barnetilleggFellesbarn.notNull()
         val harBarnetilleggSaerkullsbarn = barnetilleggSaerkullsbarn.notNull()
         val harBarnetillegg = harBarnetilleggFellesbarn or harBarnetilleggSaerkullsbarn
+        val harOpphoertBarnetilleggForFlereBarn =
+            foedselsdatoPaaBarnMedOpphoertBarnetillegg.size().greaterThan(1)
         title {
             showIf(harBarnetilleggFellesbarn or harBarnetilleggSaerkullsbarn) {
                 text(
@@ -135,7 +137,8 @@ object OpphoerBarnetilleggAuto : VedtaksbrevTemplate<OpphoerBarnetilleggAutoDto>
                 OpphoerBarnetillegg.OensketVirkningsDatoForEndring(
                     oensketVirkningsDato = oensketVirkningsDato,
                     harBarnetilleggFellesbarn = harBarnetilleggFellesbarn,
-                    harBarnetilleggSaerkullsbarn = harBarnetilleggSaerkullsbarn
+                    harBarnetilleggSaerkullsbarn = harBarnetilleggSaerkullsbarn,
+                    harOpphoertBarnetilleggForFlereBarn = harOpphoertBarnetilleggForFlereBarn,
                 )
             )
 
@@ -280,13 +283,13 @@ object OpphoerBarnetilleggAuto : VedtaksbrevTemplate<OpphoerBarnetilleggAutoDto>
             includePhrase(Ufoeretrygd.MeldeFraOmEventuellInntekt)
             includePhrase(Ufoeretrygd.MeldeFraOmEndringer)
             includePhrase(Ufoeretrygd.RettTilAAKlage)
-            includePhrase(Felles.RettTilInnsynPesys_001)
+            includePhrase(Felles.RettTilInnsynPesys)
             includePhrase(Ufoeretrygd.SjekkUtbetalingene)
             includePhrase(Ufoeretrygd.Skattekort)
-            includePhrase(Ufoeretrygd.SkattForDegSomBorIUtlandet(brukerBorInorge = brukerBorInorge))
+            includePhrase(Ufoeretrygd.SkattForDegSomBorIUtlandet(brukerBorInorge))
         }
         includeAttachment(vedleggMaanedligUfoeretrygdFoerSkatt, maanedligUfoeretrygdFoerSkatt)
-        includeAttachment(vedleggOrienteringOmRettigheterOgPlikterUfoere, orienteringOmRettigheterUfoere)
+        includeAttachment(vedleggDineRettigheterOgPlikterUfoere, orienteringOmRettigheterUfoere)
         includeAttachment(
             createVedleggOpplysningerBruktIBeregningUT(
                 skalViseMinsteytelse = false,

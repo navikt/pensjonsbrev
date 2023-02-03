@@ -42,7 +42,7 @@
 \defaultfontfeatures{LetterSpace=1.5}
 \addfontfeature{VerticalPosition = Inferior }
 \newfontface{\primaryFont}[
-    Color=262626, % TODO blir det mye kostnader på for SITS å printe nesten svart istedenfor svart?
+    Color=262626,
     BoldFont={Source Sans Pro Bold},
     ItalicFont={Source Sans Pro Italic},
     BoldItalicFont={Source Sans Pro Bold Italic}]{Source Sans Pro}
@@ -58,10 +58,10 @@
 
 %itemize / lists spacing
 \newlength{\listtopsep}
-\setlength{\listtopsep}{10pt} % separation between top of list and content
-\newlength{\listtopsepcalc}
-\setlength{\listtopsepcalc}{\dimexpr(\listtopsep-\parskip)} %parskip is subtracted because it is added to the topsep by default
-\setlist[itemize]{noitemsep, topsep=\listtopsepcalc, leftmargin=15pt}
+\setlength{\listtopsep}{0pt} % separation between top of list and content
+% removes whitespace between items, removes parskip whitespace over and under the list
+% adds custom space to margin and after list
+\setlist[itemize]{noitemsep, topsep=\dimexpr(-\parskip), leftmargin=15pt, after=\vspace{10pt}}
 
 
 % paragraph formatting

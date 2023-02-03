@@ -123,7 +123,6 @@ object PensjonHTMLRenderer : LetterRenderer<RenderedHtmlLetter>() {
 
     private fun FlowContent.renderOutlineContent(scope: ExpressionScope<*, *>, element: Element.OutlineContent<*>): Unit =
         when (element) {
-            is Element.OutlineContent.ParagraphContent -> renderParagraphContent(scope, element)
             is Element.OutlineContent.Paragraph -> renderParagraph(scope, element)
             is Element.OutlineContent.Title1 -> h2(classes("title1")) { renderText(scope, element.text) }
         }

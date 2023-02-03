@@ -1,7 +1,8 @@
 package no.nav.pensjon.brev.template.dsl
 
 import no.nav.pensjon.brev.template.*
-import no.nav.pensjon.brev.template.ContentOrControlStructure.*
+import no.nav.pensjon.brev.template.ContentOrControlStructure.Conditional
+import no.nav.pensjon.brev.template.ContentOrControlStructure.Content
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertThrows
@@ -12,14 +13,16 @@ class TemplateTableTest {
     fun `table can be created with default values`() {
 
         val doc = outlineTestTemplate<Unit> {
-            table(header = {
-                column {
-                    text(Language.Bokmal to "header")
-                }
-            }) {
-                row {
-                    cell {
-                        text(Language.Bokmal to "joda")
+            paragraph {
+                table(header = {
+                    column {
+                        text(Language.Bokmal to "header")
+                    }
+                }) {
+                    row {
+                        cell {
+                            text(Language.Bokmal to "joda")
+                        }
                     }
                 }
             }
@@ -34,16 +37,22 @@ class TemplateTableTest {
         )
         val expected = outlineTestLetter(
             Content(
-                Element.OutlineContent.ParagraphContent.Table(
-                    header = Element.OutlineContent.ParagraphContent.Table.Header(colSpec),
-                    rows = listOf(
+                Element.OutlineContent.Paragraph(
+                    listOf(
                         Content(
-                            Element.OutlineContent.ParagraphContent.Table.Row(
-                                listOf(
-                                    Element.OutlineContent.ParagraphContent.Table.Cell(
-                                        listOf(newText(Language.Bokmal to "joda"))
+                            Element.OutlineContent.ParagraphContent.Table(
+                                header = Element.OutlineContent.ParagraphContent.Table.Header(colSpec),
+                                rows = listOf(
+                                    Content(
+                                        Element.OutlineContent.ParagraphContent.Table.Row(
+                                            listOf(
+                                                Element.OutlineContent.ParagraphContent.Table.Cell(
+                                                    listOf(newText(Language.Bokmal to "joda"))
+                                                )
+                                            ), colSpec
+                                        )
                                     )
-                                ), colSpec
+                                )
                             )
                         )
                     )
@@ -58,22 +67,24 @@ class TemplateTableTest {
     fun `table creation fails when rows have uneven amount of cells`() {
         assertThrows(InvalidTableDeclarationException::class.java) {
             outlineTestTemplate<Unit> {
-                table(header = {
-                    column {
-                        text(Language.Bokmal to "header")
-                    }
-                }) {
-                    row {
-                        cell {
-                            text(Language.Bokmal to "en enkel celle")
+                paragraph {
+                    table(header = {
+                        column {
+                            text(Language.Bokmal to "header")
                         }
-                    }
-                    row {
-                        cell {
-                            text(Language.Bokmal to "en Henkel celle")
+                    }) {
+                        row {
+                            cell {
+                                text(Language.Bokmal to "en enkel celle")
+                            }
                         }
-                        cell {
-                            text(Language.Bokmal to "en celle for mye")
+                        row {
+                            cell {
+                                text(Language.Bokmal to "en Henkel celle")
+                            }
+                            cell {
+                                text(Language.Bokmal to "en celle for mye")
+                            }
                         }
                     }
                 }
@@ -85,13 +96,15 @@ class TemplateTableTest {
     fun `table creation fails when rows are missing cells`() {
         assertThrows(InvalidTableDeclarationException::class.java) {
             outlineTestTemplate<Unit> {
-                table(header = {
-                    column {
-                        text(Language.Bokmal to "header")
-                    }
-                }) {
-                    row {
+                paragraph {
+                    table(header = {
+                        column {
+                            text(Language.Bokmal to "header")
+                        }
+                    }) {
+                        row {
 
+                        }
                     }
                 }
             }
@@ -102,24 +115,26 @@ class TemplateTableTest {
     @Test
     fun `showif adds rows with predicates`() {
         val doc = outlineTestTemplate<Unit> {
-            table(header = {
-                column {
-                    text(Language.Bokmal to "header")
-                }
-            }) {
-                showIf(true.expr()) {
-                    row {
-                        cell {
-                            text(
-                                Language.Bokmal to "hei",
-                            )
-                        }
+            paragraph {
+                table(header = {
+                    column {
+                        text(Language.Bokmal to "header")
                     }
-                    row {
-                        cell {
-                            text(
-                                Language.Bokmal to "heihå",
-                            )
+                }) {
+                    showIf(true.expr()) {
+                        row {
+                            cell {
+                                text(
+                                    Language.Bokmal to "hei",
+                                )
+                            }
+                        }
+                        row {
+                            cell {
+                                text(
+                                    Language.Bokmal to "heihå",
+                                )
+                            }
                         }
                     }
                 }
@@ -134,30 +149,36 @@ class TemplateTableTest {
         )
         val expected = outlineTestLetter(
             Content(
-                Element.OutlineContent.ParagraphContent.Table(
-                    rows = listOf(
-                        Conditional(
-                            true.expr(),
-                            listOf(
-                                Element.OutlineContent.ParagraphContent.Table.Row(
-                                    listOf(
-                                        Element.OutlineContent.ParagraphContent.Table.Cell(
-                                            listOf(newText(Language.Bokmal to "hei"))
-                                        )
-                                    ),
-                                    colSpec = colSpec
+                Element.OutlineContent.Paragraph(
+                    listOf(
+                        Content(
+                            Element.OutlineContent.ParagraphContent.Table(
+                                rows = listOf(
+                                    Conditional(
+                                        true.expr(),
+                                        listOf(
+                                            Element.OutlineContent.ParagraphContent.Table.Row(
+                                                listOf(
+                                                    Element.OutlineContent.ParagraphContent.Table.Cell(
+                                                        listOf(newText(Language.Bokmal to "hei"))
+                                                    )
+                                                ),
+                                                colSpec = colSpec
+                                            ),
+                                            Element.OutlineContent.ParagraphContent.Table.Row(
+                                                listOf(
+                                                    Element.OutlineContent.ParagraphContent.Table.Cell(
+                                                        listOf(newText(Language.Bokmal to "heihå"))
+                                                    )
+                                                ), colSpec = colSpec
+                                            )
+                                        ).map { Content(it) }, emptyList()
+                                    )
                                 ),
-                                Element.OutlineContent.ParagraphContent.Table.Row(
-                                    listOf(
-                                        Element.OutlineContent.ParagraphContent.Table.Cell(
-                                            listOf(newText(Language.Bokmal to "heihå"))
-                                        )
-                                    ), colSpec = colSpec
-                                )
-                            ).map { Content(it) }, emptyList()
+                                header = Element.OutlineContent.ParagraphContent.Table.Header(colSpec)
+                            )
                         )
-                    ),
-                    header = Element.OutlineContent.ParagraphContent.Table.Header(colSpec)
+                    )
                 )
             )
         )
