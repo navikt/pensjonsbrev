@@ -9,17 +9,17 @@ import java.time.LocalDate
 
 @Suppress("unused")
 data class EndringIOpptjeningAutoDto(
-    val barnetilleggFellesbarn: BarnetilleggFellesbarn?,
-    val barnetilleggSaerkullsbarn: BarnetilleggSaerkullsbarn?,
+    val fellesbarnTillegg: FellesbarnTillegg?,
+    val saerkullsbarnTillegg: SaerkullsbarnTillegg?,
     val endringIOpptjening: EndringIOpptjening,
     val sivilstand: Sivilstand,
-    val ufoeretrygd: Ufoeretrygd,
+    val ufoeretrygdEndringIOpptjening: UfoeretrygdEndringIOpptjening,
     val maanedligUfoeretrygdFoerSkatt: MaanedligUfoeretrygdFoerSkattDto,
     val opplysningerBruktIBeregningUT: OpplysningerBruktIBeregningUTDto,
     val orienteringOmRettigheterUfoere: OrienteringOmRettigheterUfoereDto,
 ) {
 
-    data class Ufoeretrygd(
+    data class UfoeretrygdEndringIOpptjening(
         val brukerBorInorge: Boolean, // used
         val harEktefelletilleggInnvilget: Boolean,  // used
         val harFellesbarnInnvilget: Boolean,  // used
@@ -34,8 +34,6 @@ data class EndringIOpptjeningAutoDto(
 
 
     data class EndringIOpptjening(
-        val barnetilleggFellesbarn: BarnetilleggFellesbarn?,
-        val barnetilleggSaerkullsbarn: BarnetilleggSaerkullsbarn?,
         val beloepsgrense: Kroner,  // Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Belopsgrense
         val forventetInntekt: Kroner,  //  Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_ForventetInntekt
         val grunnbeloep: Kroner,  // Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Grunnbelop  //
@@ -61,7 +59,7 @@ data class EndringIOpptjeningAutoDto(
 
     )
 
-    data class BarnetilleggFellesbarn(
+    data class FellesbarnTillegg(
         val beloepBrutto: Kroner,
         val beloepNetto: Kroner,
         val fribeloep: Kroner,
@@ -76,7 +74,7 @@ data class EndringIOpptjeningAutoDto(
 
         )
 
-    data class BarnetilleggSaerkullsbarn(
+    data class SaerkullsbarnTillegg(
         val beloepBrutto: Kroner,
         val beloepNetto: Kroner,
         val fribeloep: Kroner,

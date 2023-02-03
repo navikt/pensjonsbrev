@@ -225,7 +225,7 @@ object UfoerOmregningEnslig : VedtaksbrevTemplate<UfoerOmregningEnsligDto> {
                     }
 
                     showIf(harJusteringsbeloepSaerkull and harNettoBeloep) {
-                        includePhrase(JusterBelopRedusBTPgaInntekt_001)
+                        includePhrase(JusterBeloepRedusertBarnetilleggPgaInntekt)
                     }
 
                     showIf(harJusteringsbeloepSaerkull and not(harNettoBeloep)) {
