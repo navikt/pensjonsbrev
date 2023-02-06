@@ -172,7 +172,6 @@ object PensjonLatexRenderer : LetterRenderer<RenderedLatexLetter>() {
         element: Element.OutlineContent<*>,
     ): Unit =
         when (element) {
-            is Element.OutlineContent.ParagraphContent -> renderParagraphContent(scope, element)
             is Element.OutlineContent.Paragraph -> renderParagraph(scope, element)
             is Element.OutlineContent.Title1 -> printCmd("lettersectiontitle") { arg { renderText(scope, element.text) } }
         }

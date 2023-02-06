@@ -13,8 +13,10 @@ class ForEachViewTest {
         val actual = outlineTestTemplate<Unit> {
             val myList = listen.expr()
 
-            forEach(myList) { x ->
-                eval(x)
+            paragraph {
+                forEach(myList) { x ->
+                    eval(x)
+                }
             }
         }
 
@@ -27,9 +29,11 @@ class ForEachViewTest {
         val actual = outlineTestTemplate<Unit> {
             val myList = listen.expr()
 
-            forEach(myList) { subList ->
-                forEach(subList) {
-                    eval(it)
+            paragraph {
+                forEach(myList) { subList ->
+                    forEach(subList) {
+                        eval(it)
+                    }
                 }
             }
         }
@@ -43,12 +47,15 @@ class ForEachViewTest {
         val actual = outlineTestTemplate<String> {
             val myList = listen.expr()
 
-            forEach(myList) { x ->
-                eval(argument + x)
+            paragraph {
+                forEach(myList) { x ->
+                    eval(argument + x)
+                }
             }
         }
 
-        Letter(actual, "Tja:", Language.Bokmal, felles).assertRenderedLetterContainsAllOf(*listen.map { "Tja:$it" }.toTypedArray())
+        Letter(actual, "Tja:", Language.Bokmal, felles).assertRenderedLetterContainsAllOf(*listen.map { "Tja:$it" }
+            .toTypedArray())
     }
 
 }

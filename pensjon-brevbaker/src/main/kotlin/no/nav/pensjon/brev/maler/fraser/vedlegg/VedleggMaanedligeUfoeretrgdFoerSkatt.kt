@@ -1,4 +1,4 @@
-package no.nav.pensjon.brev.maler.fraser
+package no.nav.pensjon.brev.maler.fraser.vedlegg
 
 import no.nav.pensjon.brev.api.model.Kroner
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligUfoeretrygdFoerSkattDto
@@ -32,7 +32,8 @@ import no.nav.pensjon.brev.template.dsl.expression.*
 import java.time.LocalDate
 
 object VedleggMaanedligeUfoeretrgdFoerSkatt {
-    object VedleggBelopUT_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    //VedleggBelopUT_001
+    object VedleggBeloepUfoeretrygd : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
             paragraph {
                 text(

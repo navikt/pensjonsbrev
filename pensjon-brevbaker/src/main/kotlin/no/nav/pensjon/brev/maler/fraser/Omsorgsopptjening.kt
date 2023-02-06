@@ -3,6 +3,8 @@ package no.nav.pensjon.brev.maler.fraser
 import no.nav.pensjon.brev.api.model.*
 import no.nav.pensjon.brev.api.model.FellesSelectors.avsenderEnhet
 import no.nav.pensjon.brev.api.model.NAVEnhetSelectors.nettside
+import no.nav.pensjon.brev.maler.fraser.common.Constants
+import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Language.*
@@ -60,11 +62,11 @@ object Omsorgsopptjening {
             paragraph {
                 val nettside = felles.avsenderEnhet.nettside
                 textExpr(
-                    Bokmal to "Pensjonsopptjeningen fra omsorgsarbeidet tilsvarer det du ville fått av en inntekt på 4,5 ganger grunnbeløpet for det aktuelle året. Du kan lese mer om dette på nav.no, og få oversikt over pensjonsopptjeningen din på ".expr() +
+                    Bokmal to "Pensjonsopptjeningen fra omsorgsarbeidet tilsvarer det du ville fått av en inntekt på 4,5 ganger grunnbeløpet for det aktuelle året. Du kan lese mer om dette på $NAV_URL, og få oversikt over pensjonsopptjeningen din på ".expr() +
                             nettside + ". Her finner du også omsorgsopptjening som du har fått godkjent.",
-                    Nynorsk to "Pensjonsoppteninga frå omsorgsarbeidet svarer til det du ville ha fått av ei inntekt på 4,5 gonger grunnbeløpet for det aktuelle året. Du kan lese meir om dette på nav.no, og få oversikt over pensjonsoppteninga di på ".expr() +
+                    Nynorsk to "Pensjonsoppteninga frå omsorgsarbeidet svarer til det du ville ha fått av ei inntekt på 4,5 gonger grunnbeløpet for det aktuelle året. Du kan lese meir om dette på $NAV_URL, og få oversikt over pensjonsoppteninga di på ".expr() +
                             nettside + ". Her finn du også omsorgsopptening som du har fått godkjent.",
-                    English to "The pension savings you earn for care work are equivalent to what you would have earned on an income of 4.5 times the National Insurance basic amount (“G”) for the year in question. You can read more about this at nav.no and see your earned pension savings at ".expr() +
+                    English to "The pension savings you earn for care work are equivalent to what you would have earned on an income of 4.5 times the National Insurance basic amount (“G”) for the year in question. You can read more about this at $NAV_URL and see your earned pension savings at ".expr() +
                             nettside + ". Here you will also see your approved pension earnings for care work. "
                 )
             }
