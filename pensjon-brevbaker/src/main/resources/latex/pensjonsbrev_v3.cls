@@ -68,8 +68,8 @@
 \raggedright % no word spacing
 \raggedbottom % no line stretching to fit page
 \frenchspacing % no double space after ended sentence
-\interlinepenalty=10000 % penalty for breaking up a text.
-\@itempenalty=10000 % penalty for breaking up an itemlist
+\interlinepenalty=3000 % penalty for breaking up a text.
+\@itempenalty=115 % penalty for breaking up an itemlist
 
 
 % page text area formatting
