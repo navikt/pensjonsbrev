@@ -68,7 +68,11 @@
 \raggedright % no word spacing
 \raggedbottom % no line stretching to fit page
 \frenchspacing % no double space after ended sentence
-\interlinepenalty=3000 % penalty for breaking up a text.
+
+\interlinepenalty=1700 % penalty added between each line of a paragraph.
+\clubpenalty=9000 %for a broken page, with a single line of a paragraph remaining on the bottom of the preceding page.
+\widowpenalty=9000 % penalty for a broken page, with a single line of a paragraph (called "widow") remaining on the top of the succeeding page.
+
 \@itempenalty=115 % penalty for breaking up an itemlist
 
 

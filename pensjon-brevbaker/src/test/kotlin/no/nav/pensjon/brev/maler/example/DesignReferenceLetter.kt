@@ -15,9 +15,9 @@ object DesignReferenceLetter : VedtaksbrevTemplate<LetterExampleDto> {
 
     override val kode: Brevkode.Vedtak = Brevkode.Vedtak.OMSORG_EGEN_AUTO
 
-    val TABLE_PADDING = 10
-    val TEXT_REPEAT = 10
-    val REPEAT_LIST_ELEMENTS = 3
+    val TABLE_PADDING = 20
+    val TEXT_REPEAT = 11
+    val REPEAT_LIST_ELEMENTS = 1
     override val template = createTemplate(
         name = "EKSEMPEL_BREV", //Letter ID
         letterDataType = LetterExampleDto::class, // Data class containing the required data of this letter
@@ -43,11 +43,11 @@ object DesignReferenceLetter : VedtaksbrevTemplate<LetterExampleDto> {
 
             paragraph {
                 text(
-                    Bokmal to "Du har fått innvilget pensjon. Dette er grunnen til det. Dette er grunnen til det. Dette er grunnen til\n" +
-                            "det. Dette er grunnen til det. Dette er grunnen til det. Dette er grunnen til det. Du får 16 000 kroner i\n" +
+                    Bokmal to "Du har fått innvilget pensjon. Dette er grunnen til det. Dette er grunnen til det. Dette er grunnen til " +
+                            "det. Dette er grunnen til det. Dette er grunnen til det. Dette er grunnen til det. Du får 16 000 kroner i " +
                             "måneden fra januar 2022.",
-                    Nynorsk to "Du har fått innvilget pensjon. Dette er grunnen til det. Dette er grunnen til det. Dette er grunnen til\n" +
-                            "det. Dette er grunnen til det. Dette er grunnen til det. Dette er grunnen til det. Du får 16 000 kroner i\n" +
+                    Nynorsk to "Du har fått innvilget pensjon. Dette er grunnen til det. Dette er grunnen til det. Dette er grunnen til " +
+                            "det. Dette er grunnen til det. Dette er grunnen til det. Dette er grunnen til det. Du får 16 000 kroner i " +
                             "måneden fra januar 2022."
                 )
             }
@@ -106,19 +106,8 @@ object DesignReferenceLetter : VedtaksbrevTemplate<LetterExampleDto> {
             }
 
             paragraph {
-                text(
-                    Bokmal to "Du har fått innvilget pensjon. Dette er grunnen til det. Dette er grunnen til det. Dette er grunnen til" +
-                            "det. Dette er grunnen til det. Dette er grunnen til det. Dette er grunnen til det. Du får 16 000 kroner i" +
-                            "måneden fra januar 2022.",
-                    Nynorsk to "Du har fått innvilget pensjon. Dette er grunnen til det. Dette er grunnen til det. Dette er grunnen til" +
-                            "det. Dette er grunnen til det. Dette er grunnen til det. Dette er grunnen til det. Du får 16 000 kroner i" +
-                            "måneden fra januar 2022."
-                )
-            }
-
-            paragraph {
                 for (i in 1..TEXT_REPEAT) {
-                    text(Bokmal to "Du har fått innvilget pensjon.", Nynorsk to "Du har fått innvilget pensjon.")
+                    text(Bokmal to "Du har fått innvilget pensjon du har fått innvilget pensjon. ", Nynorsk to "Du har fått innvilget pensjon du har fått innvilget pensjon. ")
                 }
             }
 
