@@ -8,10 +8,11 @@ import java.time.LocalDate
 @Suppress("unused")
 fun createEndringIOpptjeningAutoDto() =
     EndringIOpptjeningAutoDto(
-        barnetilleggFellesbarn = Fixtures.create(),
-        barnetilleggSaerkullsbarn = Fixtures.create(),
+        fellesbarnTillegg = Fixtures.create(),
+        saerkullsbarnTillegg = Fixtures.create(),
         endringIOpptjening = Fixtures.create(),
-        ufoeretrygd = Fixtures.create(),
+        sivilstand = Fixtures.create(),
+        ufoeretrygdEndringIOpptjening = Fixtures.create(),
         maanedligUfoeretrygdFoerSkatt = Fixtures.create(),
         opplysningerBruktIBeregningUT = Fixtures.create(),
         orienteringOmRettigheterUfoere = Fixtures.create(),
@@ -44,7 +45,7 @@ fun createEndringIOpptjeningAutoDtoEndringIOpptjening() =
     )
 
 fun createEndringIOpptjeningAutoDtoUfoeretrygd() =
-    EndringIOpptjeningAutoDto.Ufoeretrygd(
+    EndringIOpptjeningAutoDto.UfoeretrygdEndringIOpptjening(
         brukerBorInorge = false,
         harEktefelletilleggInnvilget = true,
         harFellesbarnInnvilget = true,
@@ -57,11 +58,27 @@ fun createEndringIOpptjeningAutoDtoUfoeretrygd() =
     )
 
 fun createEndringIOpptjeningAutoDtoBarnetilleggFellesbarn() =
-    EndringIOpptjeningAutoDto.BarnetilleggFellesbarn(
-        beloepBrutto = Kroner(24000)
+    EndringIOpptjeningAutoDto.FellesbarnTillegg(
+        beloepBrutto = Kroner(0),
+        beloepNetto = Kroner(0),
+        fribeloep = Kroner(0),
+        gjelderFlereBarn = false,
+        harFradrag = false,
+        harFratrukketBeloepFraAnnenForelder = false,
+        harJusteringsbeloep = false,
+        inntektAnnenForelder = Kroner(0),
+        inntektBruktIAvkortning = Kroner(0),
+        inntektstak = Kroner(0),
     )
 
 fun createEndringIOpptjeningAutoDtoBarnetilleggSaerkullsbarn() =
-    EndringIOpptjeningAutoDto.BarnetilleggSaerkullsbarn(
-        beloepBrutto = Kroner(34000)
+    EndringIOpptjeningAutoDto.SaerkullsbarnTillegg(
+        beloepBrutto = Kroner(34000),
+        beloepNetto = Kroner(0),
+        fribeloep = Kroner(0),
+        gjelderFlereBarn = false,
+        harFradrag = false,
+        harJusteringsbeloep = false,
+        inntektBruktIAvkortning = Kroner(0),
+        inntektstak = Kroner(0),
     )

@@ -18,6 +18,7 @@ import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarnVedvirkSelec
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarnVedvirkSelectors.inntektBruktIAvkortning
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarnVedvirkSelectors.inntektstak
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarnVedvirkSelectors.justeringsbeloepAar
+import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarnVedvirkSelectors.justeringsbeloepAar_safe
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.BrukerSelectors.borIAvtaleLand
 import no.nav.pensjon.brev.api.model.maler.BrukerSelectors.borINorge
@@ -47,7 +48,6 @@ import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.fraser.ufoer.Ufoeretrygd
 import no.nav.pensjon.brev.maler.fraser.common.Vedtak
 import no.nav.pensjon.brev.maler.vedlegg.vedleggMaanedligUfoeretrygdFoerSkatt
-import no.nav.pensjon.brev.maler.vedlegg.vedleggOpplysningerBruktIBeregningUT
 import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgPlikterUfoere
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.VedtaksbrevTemplate
@@ -224,12 +224,12 @@ object UfoerOmregningEnslig : VedtaksbrevTemplate<UfoerOmregningEnsligDto> {
                         )
                     }
 
-                    showIf(harJusteringsbeloepSaerkull and harNettoBeloep) {
+                    showIf(barnetilleggForSaerkullsbarnVedvirk_HarjusteringsBeloepAr and harNettoBeloep) {
                         includePhrase(JusterBeloepRedusertBarnetilleggPgaInntekt)
                     }
 
-                    showIf(harJusteringsbeloepSaerkull and not(harNettoBeloep)) {
-                        includePhrase(JusterBelopIkkeUtbetaltBTPgaInntekt_001)
+                    showIf(barnetilleggForSaerkullsbarnVedvirk_HarjusteringsBeloepAr and not(harNettoBeloep)) {
+                        includePhrase(IkkeUtbetaltBarnetilleggPgaInntektOgJusteringsbelop )
                     }
 
                     showIf(
@@ -321,11 +321,10 @@ object UfoerOmregningEnslig : VedtaksbrevTemplate<UfoerOmregningEnsligDto> {
         includeAttachment(vedleggMaanedligUfoeretrygdFoerSkatt, maanedligUfoeretrygdFoerSkatt)
 
 
-        includeAttachment(
-            vedleggOpplysningerBruktIBeregningUT,
+    /*    includeAttachment(
             opplysningerBruktIBeregningUT,
             barnetilleggSaerkullsbarnVedVirk.erRedusertMotInntekt_safe.ifNull(false) or harMinsteytelseVedVirk or inntektFoerUfoerhetVedVirk.erSannsynligEndret
-        )
+        ) */
 
         includeAttachment(vedleggDineRettigheterOgPlikterUfoere, orienteringOmRettigheterOgPlikter)
     }
