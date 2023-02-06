@@ -3,13 +3,17 @@ package no.nav.pensjon.brev.template.dsl.expression
 import no.nav.pensjon.brev.Fixtures
 import no.nav.pensjon.brev.api.model.Foedselsnummer
 import no.nav.pensjon.brev.api.model.FoedselsnummerSelectors.valueSelector
-import no.nav.pensjon.brev.template.*
+import no.nav.pensjon.brev.template.BinaryOperation
+import no.nav.pensjon.brev.template.ExpressionScope
+import no.nav.pensjon.brev.template.Language
+import no.nav.pensjon.brev.template.UnaryOperation
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 
 class CollectionTest {
 
-    private val emptyScope: ExpressionScope<Unit, Language.Bokmal> = ExpressionScope(Unit, Fixtures.felles, Language.Bokmal)
+    private val emptyScope: ExpressionScope<Unit, Language.Bokmal> =
+        ExpressionScope(Unit, Fixtures.felles, Language.Bokmal)
 
     @Test
     fun `containsAll returns true when input has all items`() {
@@ -143,4 +147,11 @@ class CollectionTest {
         }
     }
 
+    @Test
+    fun `size operator returns correct size`() {
+        val fnrs = listOf(1, 5, 6, 2, 4, 7)
+        val scope = ExpressionScope(Unit, Fixtures.felles, Language.Bokmal)
+        assertEquals(fnrs.size, fnrs.expr().size().eval(scope))
+        assertEquals(0, emptyList<Int>().expr().size().eval(scope))
+    }
 }

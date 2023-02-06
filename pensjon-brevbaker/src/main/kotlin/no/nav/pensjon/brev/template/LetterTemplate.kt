@@ -22,7 +22,6 @@ data class LetterTemplate<Lang : LanguageSupport, LetterData : Any>(
 }
 
 sealed class Expression<out Out> {
-    val schema: String = this::class.java.name.removePrefix(this::class.java.`package`.name + '.')
 
     abstract fun eval(scope: ExpressionScope<*, *>): Out
 
@@ -134,7 +133,8 @@ sealed class Element<out Lang : LanguageSupport> {
 
         data class Paragraph<out Lang : LanguageSupport>(val paragraph: List<ParagraphContentElement<Lang>>) : OutlineContent<Lang>()
 
-        sealed class ParagraphContent<out Lang : LanguageSupport> : OutlineContent<Lang>() {
+        sealed class ParagraphContent<out Lang : LanguageSupport> : Element<Lang>() {
+
             data class ItemList<out Lang : LanguageSupport>(
                 val items: List<ContentOrControlStructure<Lang, Item<Lang>>>
             ) : ParagraphContent<Lang>() {
@@ -322,9 +322,7 @@ sealed class Element<out Lang : LanguageSupport> {
                     val vspace: Boolean = true,
                 ) : Form<Lang>()
             }
-
         }
-
     }
 
 }

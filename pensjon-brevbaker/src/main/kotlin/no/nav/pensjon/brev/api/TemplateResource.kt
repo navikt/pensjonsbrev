@@ -11,6 +11,7 @@ val prodVedtaksbrevTemplates: Set<VedtaksbrevTemplate<*>> = setOf(
     UngUfoerAuto,
     UfoerOmregningEnslig,
     OpptjeningVedForhoeyetHjelpesats,
+    OpphoerBarnetilleggAuto,
 )
 
 val prodRedigerbareTemplates: Set<RedigerbarTemplate<*>> = setOf(

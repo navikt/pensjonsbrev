@@ -42,8 +42,10 @@ class PensjonLatexITest {
         ) {
             title { text(Bokmal to "En fin tittel") }
             outline {
-                text(Bokmal to "Argumentet etNavn er: ")
-                eval(etNavn)
+                paragraph {
+                    text(Bokmal to "Argumentet etNavn er: ")
+                    eval(etNavn)
+                }
             }
         }
         Letter(template, brevData, Bokmal, Fixtures.felles)
@@ -110,8 +112,10 @@ class PensjonLatexITest {
             ) {
                 title { text(Bokmal to "En fin tittel") }
                 outline {
-                    text(Bokmal to addChars(startChar, endChar) + "test")
-                    eval(etNavn)
+                    paragraph {
+                        text(Bokmal to addChars(startChar, endChar) + "test")
+                        eval(etNavn)
+                    }
                 }
             }
 

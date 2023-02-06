@@ -4,7 +4,7 @@ import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.vedlegg.DineRettigheterOgMulighetTilAaKlageDto
 import no.nav.pensjon.brev.api.model.vedlegg.DineRettigheterOgMulighetTilAaKlageDtoSelectors.brukerUnder18Ar
 import no.nav.pensjon.brev.api.model.vedlegg.DineRettigheterOgMulighetTilAaKlageDtoSelectors.saktype
-import no.nav.pensjon.brev.maler.fraser.*
+import no.nav.pensjon.brev.maler.fraser.vedlegg.*
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.createAttachment
@@ -24,17 +24,17 @@ val dineRettigheterOgMulighetTilAaKlage = createAttachment<LangBokmalNynorskEngl
     ),
     includeSakspart = false,
 ) {
-    includePhrase(VedleggVeiledning_001)
+    includePhrase(VedleggVeiledning)
 
     showIf(saktype.isNotAnyOf(Sakstype.UFOEREP)) {
-        includePhrase(VedleggInnsynSakPensjon_001)
-        includePhrase(VedleggInnsynSakUTPesys_001)
+        includePhrase(VedleggInnsynSakPensjon)
+        includePhrase(VedleggInnsynSakUfoeretrygdPesys)
     }
 
     showIf(saktype.isOneOf(Sakstype.BARNEP) and brukerUnder18Ar) {
-        includePhrase(VedleggInnsynSakUnder18_001)
+        includePhrase(VedleggInnsynSakUnder18)
     }
 
-    includePhrase(VedleggHjelpFraAndre_001)
-    includePhrase(VedleggKlagePensjon_001)
+    includePhrase(VedleggHjelpFraAndre)
+    includePhrase(VedleggKlagePensjon)
 }

@@ -15,14 +15,6 @@ class OutlineOnlyScope<Lang : LanguageSupport, LetterData : Any> : OutlineScope<
         children.add(e)
     }
 
-    override fun addTextContent(e: TextElement<Lang>) {
-        children.add(e)
-    }
-
-    override fun addParagraphContent(e: ParagraphContentElement<Lang>) {
-        children.add(e)
-    }
-
     override fun addOutlineContent(e: OutlineElement<Lang>) {
         children.add(e)
     }
@@ -33,7 +25,7 @@ class OutlineOnlyScope<Lang : LanguageSupport, LetterData : Any> : OutlineScope<
 
 }
 
-interface OutlineScope<Lang : LanguageSupport, LetterData : Any> : ParagraphScope<Lang, LetterData> {
+interface OutlineScope<Lang : LanguageSupport, LetterData : Any> {
     fun addOutlineContent(e: OutlineElement<Lang>)
 
     fun title1(create: TextOnlyScope<Lang, LetterData>.() -> Unit) {
