@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.template.render
 
 import com.fasterxml.jackson.annotation.*
 import no.nav.pensjon.brev.api.model.*
+import no.nav.pensjon.brev.api.model.RenderedJsonLetter.*
 import no.nav.pensjon.brev.template.*
 import java.time.format.FormatStyle
 import java.util.*
@@ -20,7 +21,7 @@ object PensjonJsonRenderer {
                     dokumentDato = scope.felles.dokumentDato.format(dateFormatter(scope.language, FormatStyle.SHORT)),
                 ),
                 blocks = renderOutline(scope, letter.template.outline),
-                // TODO: Signerende saksbehandler skal være obligatorisk for redigerbare brev, og attesterende skal være nullable
+                // TODO: Attesterende saksbehandler må kunne være null for informasjonsskriv som ikke attesteres
                 signatur = scope.felles.signerendeSaksbehandlere.let { sign ->
                     Signatur(
                         hilsenTekst = renderText(scope, languageSettings.settings[LanguageSetting.Closing.greeting]!!, emptyList()).joinToString { it.text },
@@ -77,10 +78,6 @@ object PensjonJsonRenderer {
         when (element) {
             is Element.OutlineContent.Paragraph -> renderParagraph(scope, element, location)
             is Element.OutlineContent.Title1 -> Block(element.hashCode(), Block.Type.TITLE1, location, renderText(scope, element.text, location))
-            is Element.OutlineContent.ParagraphContent.Form -> TODO()
-            is Element.OutlineContent.ParagraphContent.ItemList -> TODO()
-            is Element.OutlineContent.ParagraphContent.Table -> TODO()
-            is Element.OutlineContent.ParagraphContent.Text -> Block(element.hashCode(), Block.Type.TEXT, location, renderTextContent(scope, element, listOf("0")))
         }
 
     private fun renderParagraph(scope: ExpressionScope<*, *>, paragraph: Element.OutlineContent.Paragraph<*>, currentLocation: TreeLocation): Block =

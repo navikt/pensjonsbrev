@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.skribenten
 
 import no.nav.pensjon.brev.api.model.*
+import no.nav.pensjon.brev.api.model.RenderedJsonLetter.*
 
 fun updatedEditedLetter(editedLetter: RenderedJsonLetter, nextLetter: RenderedJsonLetter): RenderedJsonLetter {
     val editedBlocks = editedLetter.blocks.associateBy { it.id }

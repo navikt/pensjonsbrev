@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.skribenten
 
 import no.nav.pensjon.brev.api.model.*
+import no.nav.pensjon.brev.api.model.RenderedJsonLetter.*
 import org.junit.Test
 import kotlin.test.assertEquals
 

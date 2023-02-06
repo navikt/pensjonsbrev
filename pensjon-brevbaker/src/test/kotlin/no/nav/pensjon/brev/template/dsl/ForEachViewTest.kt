@@ -63,7 +63,7 @@ class ForEachViewTest {
             }
         }
 
-        Letter(actual, "Tja:", Language.Bokmal, felles).assertRenderedLetterContainsAllOf(*listen.map { "Tja:$it" }
+        Letter(actual, Argument("Tja:"), Language.Bokmal, felles).assertRenderedLetterContainsAllOf(*listen.map { "Tja:$it" }
             .toTypedArray())
     }
 
