@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.fixtures
 
 import no.nav.pensjon.brev.Fixtures
 import no.nav.pensjon.brev.api.model.Kroner
+import no.nav.pensjon.brev.api.model.Sivilstand
 import no.nav.pensjon.brev.api.model.maler.EndringIOpptjeningAutoDto
 import java.time.LocalDate
 
@@ -11,7 +12,7 @@ fun createEndringIOpptjeningAutoDto() =
         fellesbarnTillegg = Fixtures.create(),
         saerkullsbarnTillegg = Fixtures.create(),
         endringIOpptjening = Fixtures.create(),
-        sivilstand = Fixtures.create(),
+        sivilstand = Sivilstand.SAMBOER1_5,
         ufoeretrygdEndringIOpptjening = Fixtures.create(),
         maanedligUfoeretrygdFoerSkatt = Fixtures.create(),
         opplysningerBruktIBeregningUT = Fixtures.create(),
