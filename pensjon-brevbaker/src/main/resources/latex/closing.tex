@@ -23,7 +23,8 @@
 \newcommand{\closing}{
     \par
     \begin{minipage}{\textwidth}
-        \lettersectiontitle{\feltclosingspoersmaal}
+        \lettersectiontitle{\feltclosingspoersmaal} \\[-2em] %newline without extra spacing to prevent indented paragraph
+        % usually this is solved by \setlength{\parindent}{0em}, but it does not work inside minipage for some reason
         \templateparagraph{\feltclosingkontaktoss}
         \par
         \vspace*{42pt}
