@@ -210,16 +210,16 @@ object PensjonLatexRenderer : LetterRenderer<RenderedLatexLetter>() {
 
             printCmd("begin", "letterTable", columnHeadersLatexString(columnSpec))
 
-            renderTableRow(scope, columnSpec.map { it.headerContent }, columnSpec)
+            renderTableCells(scope, columnSpec.map { it.headerContent }, columnSpec)
             render(scope, table.rows) { rowScope, row ->
-                renderTableRow(rowScope, row.cells, columnSpec)
+                renderTableCells(rowScope, row.cells, columnSpec)
             }
 
             printCmd("end", "letterTable")
         }
     }
 
-    private fun LatexAppendable.renderTableRow(
+    private fun LatexAppendable.renderTableCells(
         scope: ExpressionScope<*, *>,
         cells: List<Element.OutlineContent.ParagraphContent.Table.Cell<LanguageSupport>>,
         colSpec: List<Element.OutlineContent.ParagraphContent.Table.ColumnSpec<LanguageSupport>>
