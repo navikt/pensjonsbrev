@@ -26,7 +26,7 @@ class EndringIOpptjeningAutoTest {
         Letter(
             EndringIOpptjeningAuto.template,
             Fixtures.create<EndringIOpptjeningAutoDto>(),
-            Language.Bokmal,
+            Language.English,
             Fixtures.fellesAuto
         )
             .let { PensjonLatexRenderer.render(it) }

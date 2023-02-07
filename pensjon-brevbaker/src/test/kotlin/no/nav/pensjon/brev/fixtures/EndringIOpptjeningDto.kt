@@ -22,14 +22,14 @@ fun createEndringIOpptjeningAutoDto() =
 fun createEndringIOpptjeningAutoDtoEndringIOpptjening() =
     EndringIOpptjeningAutoDto.EndringIOpptjening(
         beloepsgrense = Kroner(0),
-        forventetInntekt = Kroner(0),
+        forventetInntekt = Kroner(400000),
         grunnbeloep = Kroner(111477),  // 1G 2023
         harBeloepOekt =true,
         harBeloepRedusert = false,
         harDelvisUfoeregrad = true,
         harFullUfoeregrad = false,
         harInntektEtterUfoere = false,
-        inntektsgrense = Kroner(0),
+        inntektsgrense = Kroner(300000),
         inntektsgrenseNesteAar = Kroner(0),
         inntektstak = Kroner(0),
         kompensasjonsgrad = 0,
@@ -49,8 +49,8 @@ fun createEndringIOpptjeningAutoDtoUfoeretrygd() =
     EndringIOpptjeningAutoDto.UfoeretrygdEndringIOpptjening(
         brukerBorInorge = false,
         harEktefelletilleggInnvilget = true,
-        harFellesbarnInnvilget = true,
-        harGjenlevendetilleggInnvilget = false,
+        harFellesbarnInnvilget = false,
+        harGjenlevendetilleggInnvilget = true,
         harSaerkullsbarnInnvilget = false,
         harUtbetalingsgrad = true,
         harYrkesskadeGradUtbetaling = false,
@@ -74,7 +74,7 @@ fun createEndringIOpptjeningAutoDtoBarnetilleggFellesbarn() =
 
 fun createEndringIOpptjeningAutoDtoBarnetilleggSaerkullsbarn() =
     EndringIOpptjeningAutoDto.SaerkullsbarnTillegg(
-        beloepBrutto = Kroner(34000),
+        beloepBrutto = Kroner(0),
         beloepNetto = Kroner(0),
         fribeloep = Kroner(0),
         gjelderFlereBarn = false,

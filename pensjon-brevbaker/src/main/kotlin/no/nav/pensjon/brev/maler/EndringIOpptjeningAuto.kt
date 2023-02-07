@@ -227,15 +227,15 @@ object EndringIOpptjeningAuto : VedtaksbrevTemplate<EndringIOpptjeningAutoDto> {
                 fellesbarnTillegg,
                 saerkullsbarnTillegg
             ) { fellesbarnTillegg, saerkullsbarnTillegg ->
-                includePhrase(
-                    BarnetilleggEndringIOpptjening(
-                        barnetilleggFellesbarn = fellesbarnTillegg,
-                        barnetilleggSaerkullsbarn = saerkullsbarnTillegg,
-                        grunnbeloep = endringIOpptjening.grunnbeloep,
-                        sivilstand = sivilstand
+                    includePhrase(
+                        BarnetilleggEndringIOpptjening(
+                            barnetilleggFellesbarn = fellesbarnTillegg,
+                            barnetilleggSaerkullsbarn = saerkullsbarnTillegg,
+                            grunnbeloep = endringIOpptjening.grunnbeloep,
+                            sivilstand = sivilstand
+                        )
                     )
-                )
-            }
+                }
 
             includePhrase(
                 Gjenlevendetillegg.HarGjenlevendetillegg(

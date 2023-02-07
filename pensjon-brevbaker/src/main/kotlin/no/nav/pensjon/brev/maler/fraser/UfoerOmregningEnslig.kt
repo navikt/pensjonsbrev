@@ -120,7 +120,7 @@ data class UtbetalingUfoeretrygd(
                     text(
                         Bokmal to " Du kan lese mer om andre beregningsperioder i vedlegget.",
                         Nynorsk to " Du kan lese meir om andre utrekningsperiodar i vedlegget.",
-                        English to " You can read more about other calculation periods in the appendix."
+                        English to " You can read more about other calculation periods in the attachment."
                     )
                 }
             }
@@ -158,7 +158,7 @@ data class UtbetalingUfoeretrygd(
                     text(
                         Bokmal to " Du kan lese mer om andre beregningsperioder i vedlegget.",
                         Nynorsk to " Du kan lese meir om andre utrekningsperiodar i vedlegget.",
-                        English to " You can read more about other calculation periods in the appendix."
+                        English to " You can read more about other calculation periods in the attachemnt."
                     )
                 }
             }
@@ -189,7 +189,7 @@ data class EndretMinsteytelseDoedEPS(
                 Nynorsk to "Dette kan ha noko å seie for kompensasjonsgraden din som er fastsett til ".expr()
                         + kompensasjonsgradUfoeretrygdVedvirk.format() + " prosent. Du kan lese meir om dette i vedlegget.".expr(),
                 English to "This may affect your degree of compensation, which is determined to be ".expr()
-                        + kompensasjonsgradUfoeretrygdVedvirk.format() + " percent. You can read more about this in the appendix.".expr()
+                        + kompensasjonsgradUfoeretrygdVedvirk.format() + " percent. You can read more about this in the attachment.".expr()
             )
         }
     }
@@ -228,7 +228,7 @@ data class EndringMinsteytelseOgMinstInntektFoerUfoerhetDoedEPS(
                 English to "The change in your marital status also affects your income prior to disability, which is determined to be NOK ".expr()
                         + inntektFoerUfoerhet.format() + ". Adjusted to today’s value, this is equivalent to an income of NOK ".expr()
                         + oppjustertInntektFoerUfoerhet.format() + ". Your degree of compensation is determined to be ".expr()
-                        + kompensasjonsgradUfoeretrygd.format() + " percent. You can read more about this in the appendix.".expr()
+                        + kompensasjonsgradUfoeretrygd.format() + " percent. You can read more about this in the attachment.".expr()
             )
         }
     }
@@ -254,7 +254,7 @@ data class EndretMinstInntektFoerUfoerhetDoedEPS(
                 English to "Your income prior to disability is set to the minimum level, which depends on marital status. The change in your marital status affects your income prior to disability, which is determined to be NOK ".expr()
                         + inntektFoerUfoerhet.format() + ". Adjusted to today’s value, this is equivalent to an income of NOK ".expr()
                         + oppjustertInntektFoerUfoerhet.format() + ". This may affect your degree of compensation, which has been determined to be ".expr()
-                        + kompensasjonsgradUfoeretrygd.format() + " percent. You can read more about this in the appendix.".expr()
+                        + kompensasjonsgradUfoeretrygd.format() + " percent. You can read more about this in the attachment.".expr()
             )
         }
     }
@@ -632,7 +632,7 @@ object MerInfoBarnetillegg : OutlinePhrase<LangBokmalNynorskEnglish>() {
             text(
                 Bokmal to "Du kan lese mer om beregningen av barnetillegg i vedlegget.",
                 Nynorsk to "Du kan lese meir om utrekninga av barnetillegg i vedlegget.",
-                English to "You can read more about how child supplement is calculated in the appendix."
+                English to "You can read more about how child supplement is calculated in the attachment."
             )
         }
 }

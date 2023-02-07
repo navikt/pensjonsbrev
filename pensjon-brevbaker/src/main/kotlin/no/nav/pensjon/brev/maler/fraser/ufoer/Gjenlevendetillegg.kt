@@ -26,7 +26,7 @@ object Gjenlevendetillegg {
                     text(
                         Bokmal to "For deg som mottar gjenlevendetillegg",
                         Nynorsk to "For deg som mottar gjenlevendetillegg",
-                        English to "For you who receives survivor's supplement"
+                        English to "Survivor's supplement"
                     )
                 }
                 paragraph {
@@ -47,7 +47,7 @@ object Gjenlevendetillegg {
                         textExpr(
                             Bokmal to "Du har en inntekt tilsvarende ".expr() + forventetInntekt.format() + " kroner. Gjenlevendetillegget er redusert ut fra dette.".expr(),
                             Nynorsk to "Du har ein inntekt tilsvarande " .expr() + forventetInntekt.format() + " kroner. Gjenlevendetillegget er redusert ut frå dette.".expr(),
-                            English to "You have an income equivalent to NOK ".expr() + forventetInntekt.format() + ". Survivor's supplement is reduced based on this".expr()
+                            English to "You have an income equivalent to NOK ".expr() + forventetInntekt.format() + ", which is more than your income limit of NOK ".expr() + inntektsgrense.format() + ". Your survivor's supplement is therefore reduced.".expr()
                         )
                     }
                 }
@@ -55,7 +55,7 @@ object Gjenlevendetillegg {
                     text(
                         Bokmal to "Du kan lese mer om dette i vedlegget «Opplysninger om beregningen».",
                         Nynorsk to "Du kan lese meir om dette i vedlegget «Opplysningar om utrekninga».",
-                        English to "You can read more about this in the appendix «Information about calculations»."
+                        English to "You can read more about this in the attachment «Information about calculations»."
                     )
                 }
             }
