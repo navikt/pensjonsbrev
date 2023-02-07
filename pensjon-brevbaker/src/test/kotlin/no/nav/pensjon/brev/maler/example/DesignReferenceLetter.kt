@@ -15,9 +15,6 @@ object DesignReferenceLetter : VedtaksbrevTemplate<LetterExampleDto> {
 
     override val kode: Brevkode.Vedtak = Brevkode.Vedtak.OMSORG_EGEN_AUTO
 
-    val TABLE_PADDING = 20
-    val TEXT_REPEAT = 11
-    val REPEAT_LIST_ELEMENTS = 1
     override val template = createTemplate(
         name = "EKSEMPEL_BREV", //Letter ID
         letterDataType = LetterExampleDto::class, // Data class containing the required data of this letter
@@ -43,11 +40,11 @@ object DesignReferenceLetter : VedtaksbrevTemplate<LetterExampleDto> {
 
             paragraph {
                 text(
-                    Bokmal to "Du har fått innvilget pensjon. Dette er grunnen til det. Dette er grunnen til det. Dette er grunnen til " +
-                            "det. Dette er grunnen til det. Dette er grunnen til det. Dette er grunnen til det. Du får 16 000 kroner i " +
+                    Bokmal to "Du har fått innvilget pensjon. Dette er grunnen til det. Dette er grunnen til det. Dette er grunnen til\n" +
+                            "det. Dette er grunnen til det. Dette er grunnen til det. Dette er grunnen til det. Du får 16 000 kroner i\n" +
                             "måneden fra januar 2022.",
-                    Nynorsk to "Du har fått innvilget pensjon. Dette er grunnen til det. Dette er grunnen til det. Dette er grunnen til " +
-                            "det. Dette er grunnen til det. Dette er grunnen til det. Dette er grunnen til det. Du får 16 000 kroner i " +
+                    Nynorsk to "Du har fått innvilget pensjon. Dette er grunnen til det. Dette er grunnen til det. Dette er grunnen til\n" +
+                            "det. Dette er grunnen til det. Dette er grunnen til det. Dette er grunnen til det. Du får 16 000 kroner i\n" +
                             "måneden fra januar 2022."
                 )
             }
@@ -58,6 +55,10 @@ object DesignReferenceLetter : VedtaksbrevTemplate<LetterExampleDto> {
             }
 
             paragraph {
+                text(
+                    Bokmal to "Dette er din månedlige pensjonsutbetaling",
+                    Nynorsk to "Dette er din månedlige pensjonsutbetaling"
+                )
                 table(
                     header = {
                         column(1) { text(Bokmal to "Måned", Nynorsk to "Måned", FontType.BOLD) }
@@ -81,21 +82,13 @@ object DesignReferenceLetter : VedtaksbrevTemplate<LetterExampleDto> {
                         "Desember",
                         "Januar",
                         "Februar",
-                        "Mars"
+                        "Mars",
                     ).forEach {
                         row {
                             cell { text(Bokmal to it, Nynorsk to it) }
                             cell { text(Bokmal to "1 kr", Nynorsk to "1 kr") }
                             cell { text(Bokmal to "1 kr", Nynorsk to "1 kr") }
                             cell { text(Bokmal to "2 kr", Nynorsk to "2 kr") }
-                        }
-                    }
-                    for (i in 1..TABLE_PADDING) {
-                        row {
-                            cell { text(Bokmal to "Padding :)", Nynorsk to "Padding :)") }
-                            cell { text(Bokmal to "Padding :)", Nynorsk to "Padding :)") }
-                            cell { text(Bokmal to "Padding :)", Nynorsk to "Padding :)") }
-                            cell { text(Bokmal to "Padding :)", Nynorsk to "Padding :)") }
                         }
                     }
                 }
@@ -106,9 +99,25 @@ object DesignReferenceLetter : VedtaksbrevTemplate<LetterExampleDto> {
             }
 
             paragraph {
-                for (i in 1..TEXT_REPEAT) {
-                    text(Bokmal to "Du har fått innvilget pensjon du har fått innvilget pensjon. ", Nynorsk to "Du har fått innvilget pensjon du har fått innvilget pensjon. ")
-                }
+                text(
+                    Bokmal to "Du har fått innvilget pensjon. Dette er grunnen til det. Dette er grunnen til det. Dette er grunnen til" +
+                            "det. Dette er grunnen til det. Dette er grunnen til det. Dette er grunnen til det. Du får 16 000 kroner i" +
+                            "måneden fra januar 2022.",
+                    Nynorsk to "Du har fått innvilget pensjon. Dette er grunnen til det. Dette er grunnen til det. Dette er grunnen til" +
+                            "det. Dette er grunnen til det. Dette er grunnen til det. Dette er grunnen til det. Du får 16 000 kroner i" +
+                            "måneden fra januar 2022."
+                )
+            }
+
+            paragraph {
+                text(
+                    Bokmal to "Du har fått innvilget pensjon. Dette er grunnen til det. Dette er grunnen til det. Dette er grunnen til" +
+                            "det. Dette er grunnen til det. Dette er grunnen til det. Dette er grunnen til det. Du får 16 000 kroner i" +
+                            "måneden fra januar 2022.",
+                    Nynorsk to "Du har fått innvilget pensjon. Dette er grunnen til det. Dette er grunnen til det. Dette er grunnen til" +
+                            "det. Dette er grunnen til det. Dette er grunnen til det. Dette er grunnen til det. Du får 16 000 kroner i" +
+                            "måneden fra januar 2022."
+                )
             }
 
             title1 {
@@ -125,13 +134,29 @@ object DesignReferenceLetter : VedtaksbrevTemplate<LetterExampleDto> {
                             "måneden fra januar 2022."
                 )
                 list {
-                    for (i in 1..REPEAT_LIST_ELEMENTS) {
-                        item {
-                            text(
-                                Bokmal to "Kulepunkt",
-                                Nynorsk to "Kulepunkt",
-                            )
-                        }
+                    item {
+                        text(
+                            Bokmal to "Kulepunkt",
+                            Nynorsk to "Kulepunkt",
+                        )
+                    }
+                    item {
+                        text(
+                            Bokmal to "Kulepunkt",
+                            Nynorsk to "Kulepunkt",
+                        )
+                    }
+                    item {
+                        text(
+                            Bokmal to "Kulepunkt",
+                            Nynorsk to "Kulepunkt",
+                        )
+                    }
+                    item {
+                        text(
+                            Bokmal to "Kulepunkt",
+                            Nynorsk to "Kulepunkt",
+                        )
                     }
                 }
             }
