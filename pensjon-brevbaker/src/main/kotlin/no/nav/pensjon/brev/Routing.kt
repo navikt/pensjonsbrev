@@ -40,7 +40,7 @@ fun Application.brevbakerRouting(authenticationNames: Array<String>) =
                     call.respond(letterResource.templateResource.getVedtaksbrev())
                 }
 
-                get("{kode}") {
+                get("/{kode}") {
                     val template = call.parameters
                         .getOrFail<Brevkode.Vedtak>("kode")
                         .let { letterResource.templateResource.getVedtaksbrev(it) }
@@ -59,7 +59,7 @@ fun Application.brevbakerRouting(authenticationNames: Array<String>) =
                     call.respond(letterResource.templateResource.getRedigerbareBrev())
                 }
 
-                get("{kode}") {
+                get("/{kode}") {
                     val template = call.parameters.getOrFail<Brevkode.Redigerbar>("kode")
                         .let { letterResource.templateResource.getRedigerbartBrev(it) }
 

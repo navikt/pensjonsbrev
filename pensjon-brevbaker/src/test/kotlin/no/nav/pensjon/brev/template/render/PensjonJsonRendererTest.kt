@@ -94,6 +94,7 @@ class PensjonJsonRendererTest {
         assertNotEquals(p1.location, p2.location)
     }
 
+    //TODO: Følgende tester er deaktivert fordi jeg ikke vet om location er nødvendig enda, ei hvordan det bør fungere.
     @Disabled
     @Test
     fun `control structures adds step to location but still counts blocks in outer scope`() {
