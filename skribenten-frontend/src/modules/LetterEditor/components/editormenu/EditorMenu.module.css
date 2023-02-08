@@ -1,0 +1,21 @@
+.container {
+    width: 100%;
+}
+
+.container > * {
+    border-bottom: 0.0625rem solid rgba(0, 0, 0, 0.19);
+}
+
+.top {
+    height: 3.375rem;
+    background-color: #CCF1D6;
+}
+
+.bottom {
+    height: 2.75rem;
+}
+
+.space {
+    width: 2rem;
+    display: inline-block;
+}

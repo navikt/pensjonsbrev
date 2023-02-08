@@ -61,7 +61,7 @@ object InformasjonOmSaksbehandlingstid : RedigerbarTemplate<InformasjonOmSaksbeh
                 val uttaksDato = it.uttaksDato.format()
                 paragraph {
                     textExpr(
-                        Bokmal to "Du har ikke høy nok opptjenening til å ta ut ".expr() + prosent + " prosent alderspensjon fra " + uttaksDato
+                        Bokmal to "Du har ikke høy nok opptjening til å ta ut ".expr() + prosent + " prosent alderspensjon fra " + uttaksDato
                                 + ". Eventuelle AFP-rettigheter vil kunne gi deg rett til uttak av alderspensjon.",
                         Nynorsk to "Du har ikkje høg nok pensjonsopptjening til å ta ut ".expr() + prosent + " prosent alderspensjon frå " + uttaksDato
                                 + ". Eventuelle AFP-rettar vil kunne gi deg rett til uttak av alderspensjon.",

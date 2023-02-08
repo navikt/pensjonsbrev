@@ -2,6 +2,7 @@ package no.nav.pensjon.brev
 
 import no.nav.pensjon.brev.api.model.*
 import no.nav.pensjon.brev.api.model.maler.*
+import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmSaksbehandlingstidDto
 import no.nav.pensjon.brev.api.model.vedlegg.*
 import no.nav.pensjon.brev.fixtures.*
 import no.nav.pensjon.brev.maler.example.*
@@ -39,6 +40,7 @@ object Fixtures {
     @Suppress("UNCHECKED_CAST")
     fun <T: Any> create(letterDataType: KClass<T>): T =
         when (letterDataType) {
+            InformasjonOmSaksbehandlingstidDto::class -> createInformasjonOmSaksbehandlingstidDto() as T
             LetterExampleDto::class -> createLetterExampleDto() as T
             MaanedligUfoeretrygdFoerSkattDto::class -> createMaanedligUfoeretrygdFoerSkattDto() as T
             MaanedligUfoeretrygdFoerSkattDto.UfoeretrygdPerMaaned::class -> createMaanedligUfoeretrygdFoerSkattDtoUfoeretrygdPerMaaned() as T

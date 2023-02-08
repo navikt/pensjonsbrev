@@ -1,16 +1,23 @@
-import '../styles/globals.css'
+import '../../styles/globals.css'
 import type {AppContext, AppProps} from 'next/app'
 import App from 'next/app'
-import {MsalProvider} from "@azure/msal-react";
-import {AzureConfig, createMsal} from "../services/msal";
-import {SkribentenAPIConfig} from "../services/skribenten";
+import {AuthenticatedTemplate, MsalProvider, UnauthenticatedTemplate} from "@azure/msal-react"
+import {AzureConfig, createMsal} from "../lib/services/msal"
+import {SkribentenAPIConfig} from "../lib/services/skribenten"
+import {SignInButton} from "./index"
 
 function SkribentenApp({Component, pageProps}: AppProps<SkribentenConfig>) {
     return (
         <MsalProvider instance={createMsal(pageProps.azure)}>
-            <Component {...pageProps} />
+            <AuthenticatedTemplate>
+                <Component {...pageProps} />
+            </AuthenticatedTemplate>
+            <UnauthenticatedTemplate>
+                <p>Du må logge inn.</p>
+                <SignInButton/>
+            </UnauthenticatedTemplate>
         </MsalProvider>
-    );
+    )
 }
 
 export interface SkribentenConfig {
@@ -30,8 +37,8 @@ SkribentenApp.getInitialProps = async (appContext: AppContext) => {
             api: {
                 url: process.env.SKRIBENTEN_API_URL,
                 scope: process.env.SKRIBENTEN_API_SCOPE,
-            }
-        }
+            },
+        },
     }
 }
 

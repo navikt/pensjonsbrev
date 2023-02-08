@@ -274,7 +274,7 @@ object PensjonHTMLRenderer : LetterRenderer<RenderedHtmlLetter>() {
 
                 listOfNotNull(
                     scope.felles.vergeNavn?.let { LanguageSetting.Sakspart.vergenavn to it },
-                    navnPrefix to "$fornavn $mellomnavn $etternavn",
+                    navnPrefix to fulltNavn(),
                     LanguageSetting.Sakspart.foedselsnummer to foedselsnummer.value,
                     LanguageSetting.Sakspart.saksnummer to scope.felles.saksnummer,
                 )

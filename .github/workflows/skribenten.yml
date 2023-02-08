@@ -38,10 +38,13 @@ jobs:
         with:
           "java-version": "17"
       - name: "compile and run tests"
-        run: "./gradlew :skribenten-backend:publishImage"
+        run: |
+          ./gradlew :pensjon-brevbaker-api-model:publishToMavenLocal 
+          ./gradlew :skribenten-backend:publishImage
         env:
           "GITHUB_TOKEN": "${{ secrets.GITHUB_TOKEN }}"
 
+  # TODO: Få inn kjøring av tester (linting kjøres ved build)
   build-skribenten-frontend:
     name: "Build skribenten frontend"
     runs-on: "ubuntu-latest"

@@ -32,6 +32,7 @@ private fun <Param : Any> Letter<Param>.renderLetterAndAttachments(): String {
     return letterString
 }
 
+
 fun <AttachmentData : Any> createVedleggTestTemplate(
     template: AttachmentTemplate<LangBokmalNynorskEnglish, AttachmentData>,
     attachmentData: Expression<AttachmentData>

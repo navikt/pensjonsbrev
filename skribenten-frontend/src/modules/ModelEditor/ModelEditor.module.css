@@ -1,0 +1,17 @@
+.container {
+    width: 23.5rem;
+    border: 0.0625rem solid rgba(0, 0, 0, 0.19);
+    border-radius: 0.25rem;
+}
+
+.container > div {
+    margin: 1.5rem 1rem;
+}
+
+.tabmenu {
+    border-bottom: 0.25rem solid #0067C5;
+}
+
+.tabmenu > div {
+    padding: 0.75rem 1rem;
+}
