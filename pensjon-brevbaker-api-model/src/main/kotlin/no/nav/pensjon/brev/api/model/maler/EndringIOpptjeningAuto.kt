@@ -56,7 +56,6 @@ data class EndringIOpptjeningAutoDto(
         val ufoeregrad: Int, // Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegningu_ufoeregrad
         val utbetalingsgrad: Int, // Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_utbetalingsgrad
         val virkningsDato: LocalDate,
-
     )
 
     data class FellesbarnTillegg(
@@ -70,8 +69,6 @@ data class EndringIOpptjeningAutoDto(
         val inntektAnnenForelder: Kroner,
         val inntektBruktIAvkortning: Kroner,
         val inntektstak: Kroner,
-
-
         )
 
     data class SaerkullsbarnTillegg(
@@ -83,7 +80,6 @@ data class EndringIOpptjeningAutoDto(
         val harJusteringsbeloep: Boolean,
         val inntektBruktIAvkortning: Kroner,
         val inntektstak: Kroner,
-
         )
 
 }
