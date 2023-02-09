@@ -119,3 +119,4 @@ data class SlikBeregnerViUfoeretrygdenDin(
             )
         }
     }
+}
