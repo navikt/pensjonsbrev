@@ -35,8 +35,8 @@ import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.text
 
 data class BarnetilleggEndringIOpptjening(
-    val barnetilleggFellesbarn: Expression<EndringIOpptjeningAutoDto.FellesbarnTillegg>,
-    val barnetilleggSaerkullsbarn: Expression<EndringIOpptjeningAutoDto.SaerkullsbarnTillegg>,
+    val barnetilleggFellesbarn: Expression<EndringIOpptjeningAutoDto.FellesbarnTillegg?>,
+    val barnetilleggSaerkullsbarn: Expression<EndringIOpptjeningAutoDto.SaerkullsbarnTillegg?>,
     val grunnbeloep: Expression<Kroner>,
     val sivilstand: Expression<Sivilstand>,
 
