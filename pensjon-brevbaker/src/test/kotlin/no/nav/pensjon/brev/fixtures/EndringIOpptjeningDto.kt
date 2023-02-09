@@ -13,7 +13,6 @@ fun createEndringIOpptjeningAutoDto() =
         saerkullsbarnTillegg = Fixtures.create(),
         endringIOpptjening = Fixtures.create(),
         sivilstand = Sivilstand.GIFT,
-        ufoeretrygdEndringIOpptjening = Fixtures.create(),
         maanedligUfoeretrygdFoerSkatt = Fixtures.create(),
         opplysningerBruktIBeregningUT = Fixtures.create(),
         orienteringOmRettigheterUfoere = Fixtures.create(),
@@ -22,13 +21,18 @@ fun createEndringIOpptjeningAutoDto() =
 fun createEndringIOpptjeningAutoDtoEndringIOpptjening() =
     EndringIOpptjeningAutoDto.EndringIOpptjening(
         beloepsgrense = Kroner(0),
+        brukerBorInorge = false,
         forventetInntekt = Kroner(400000),
         grunnbeloep = Kroner(111477),  // 1G 2023
         harBeloepOekt =true,
         harBeloepRedusert = false,
         harDelvisUfoeregrad = true,
+        harEktefelletilleggInnvilget = true,
         harFullUfoeregrad = false,
+        harGjenlevendetilleggInnvilget = true,
         harInntektEtterUfoere = false,
+        harUtbetalingsgrad = true,
+        harYrkesskadeGradUtbetaling = false,
         inntektsgrense = Kroner(300000),
         inntektsgrenseNesteAar = Kroner(0),
         inntektstak = Kroner(0),
@@ -41,21 +45,10 @@ fun createEndringIOpptjeningAutoDtoEndringIOpptjening() =
         oppjustertInntektFoerUfoere = Kroner(0),
         oppjustertInntektFoerUfoere80prosent = Kroner(0),
         ufoeregrad = 60,
-        utbetalingsgrad = 50,
-        virkningsDato = LocalDate.of(2023, 1, 1),
-    )
-
-fun createEndringIOpptjeningAutoDtoUfoeretrygd() =
-    EndringIOpptjeningAutoDto.UfoeretrygdEndringIOpptjening(
-        brukerBorInorge = false,
-        harEktefelletilleggInnvilget = true,
-        harFellesbarnInnvilget = false,
-        harGjenlevendetilleggInnvilget = true,
-        harSaerkullsbarnInnvilget = false,
-        harUtbetalingsgrad = true,
-        harYrkesskadeGradUtbetaling = false,
         ufoertrygdUtbetalt = Kroner(2000000),
+        utbetalingsgrad = 50,
         utbetaltPerMaaned = Kroner(16000),
+        virkningsDato = LocalDate.of(2023, 1, 1),
     )
 
 fun createEndringIOpptjeningAutoDtoBarnetilleggFellesbarn() =
@@ -64,6 +57,7 @@ fun createEndringIOpptjeningAutoDtoBarnetilleggFellesbarn() =
         beloepNetto = Kroner(0),
         fribeloep = Kroner(0),
         gjelderFlereBarn = false,
+        harFellesbarnInnvilget = false,
         harFradrag = false,
         harFratrukketBeloepFraAnnenForelder = false,
         harJusteringsbeloep = false,
@@ -80,6 +74,7 @@ fun createEndringIOpptjeningAutoDtoBarnetilleggSaerkullsbarn() =
         gjelderFlereBarn = false,
         harFradrag = false,
         harJusteringsbeloep = false,
+        harSaerkullsbarnInnvilget = false,
         inntektBruktIAvkortning = Kroner(0),
         inntektstak = Kroner(0),
     )

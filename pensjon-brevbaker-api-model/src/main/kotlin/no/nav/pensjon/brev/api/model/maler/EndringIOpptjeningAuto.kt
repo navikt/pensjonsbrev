@@ -9,39 +9,29 @@ import java.time.LocalDate
 
 @Suppress("unused")
 data class EndringIOpptjeningAutoDto(
+    val endringIOpptjening: EndringIOpptjening,
     val fellesbarnTillegg: FellesbarnTillegg?,
     val saerkullsbarnTillegg: SaerkullsbarnTillegg?,
-    val endringIOpptjening: EndringIOpptjening,
     val sivilstand: Sivilstand,
-    val ufoeretrygdEndringIOpptjening: UfoeretrygdEndringIOpptjening,
     val maanedligUfoeretrygdFoerSkatt: MaanedligUfoeretrygdFoerSkattDto,
     val opplysningerBruktIBeregningUT: OpplysningerBruktIBeregningUTDto,
     val orienteringOmRettigheterUfoere: OrienteringOmRettigheterUfoereDto,
 ) {
 
-    data class UfoeretrygdEndringIOpptjening(
-        val brukerBorInorge: Boolean,
-        val harEktefelletilleggInnvilget: Boolean,
-        val harFellesbarnInnvilget: Boolean,
-        val harGjenlevendetilleggInnvilget: Boolean,
-        val harSaerkullsbarnInnvilget: Boolean,
-        val harUtbetalingsgrad: Boolean,
-        val harYrkesskadeGradUtbetaling: Boolean,
-        val ufoertrygdUtbetalt: Kroner,
-        val utbetaltPerMaaned: Kroner,
-    )
-
-
-
     data class EndringIOpptjening(
         val beloepsgrense: Kroner,  // Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Belopsgrense
+        val brukerBorInorge: Boolean,
         val forventetInntekt: Kroner,  //  Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_ForventetInntekt
         val grunnbeloep: Kroner,  // Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Grunnbelop
         val harBeloepOekt: Boolean,  // Vedtaksdata_BeregningsData_BeregningUfore_BelopOkt
         val harBeloepRedusert: Boolean,  // Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Uforegrad AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BelopRedusert
         val harDelvisUfoeregrad: Boolean,  // Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegningu_ufoeregrad > 0 < 100
+        val harEktefelletilleggInnvilget: Boolean,
         val harFullUfoeregrad: Boolean,  // Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegningu_ufoeregrad = 100
+        val harGjenlevendetilleggInnvilget: Boolean,
         val harInntektEtterUfoere: Boolean,  // IEUInntekt > 0 / Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektsgrense
+        val harUtbetalingsgrad: Boolean,
+        val harYrkesskadeGradUtbetaling: Boolean,
         val inntektsgrense: Kroner,  // Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektsgrense
         val inntektsgrenseNesteAar: Kroner,  // Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektsgrense
         val inntektstak: Kroner,  // Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektstak
@@ -54,7 +44,9 @@ data class EndringIOpptjeningAutoDto(
         val oppjustertInntektFoerUfoere80prosent: Kroner,  // <Oifu * 0.8) Beregning i Exstream! Tror verdien finnes i Pesys
         val oppjustertInntektFoerUfoere: Kroner,  // <Oifu> Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Oifu
         val ufoeregrad: Int, // Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegningu_ufoeregrad
+        val ufoertrygdUtbetalt: Kroner,
         val utbetalingsgrad: Int, // Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_utbetalingsgrad
+        val utbetaltPerMaaned: Kroner,
         val virkningsDato: LocalDate,
     )
 
@@ -63,6 +55,7 @@ data class EndringIOpptjeningAutoDto(
         val beloepNetto: Kroner,
         val fribeloep: Kroner,
         val gjelderFlereBarn: Boolean,
+        val harFellesbarnInnvilget: Boolean,
         val harFradrag: Boolean,
         val harFratrukketBeloepFraAnnenForelder: Boolean,
         val harJusteringsbeloep: Boolean,
@@ -78,6 +71,7 @@ data class EndringIOpptjeningAutoDto(
         val gjelderFlereBarn: Boolean,
         val harFradrag: Boolean,
         val harJusteringsbeloep: Boolean,
+        val harSaerkullsbarnInnvilget: Boolean,
         val inntektBruktIAvkortning: Kroner,
         val inntektstak: Kroner,
         )

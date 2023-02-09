@@ -64,7 +64,6 @@ object Fixtures {
             EndringIOpptjeningAutoDto.FellesbarnTillegg::class -> createEndringIOpptjeningAutoDtoBarnetilleggFellesbarn() as T
             EndringIOpptjeningAutoDto.SaerkullsbarnTillegg::class -> createEndringIOpptjeningAutoDtoBarnetilleggSaerkullsbarn() as T
             EndringIOpptjeningAutoDto.EndringIOpptjening::class -> createEndringIOpptjeningAutoDtoEndringIOpptjening() as T
-            EndringIOpptjeningAutoDto.UfoeretrygdEndringIOpptjening::class -> createEndringIOpptjeningAutoDtoUfoeretrygd() as T
 
             else -> throw IllegalArgumentException("Don't know how to construct: ${letterDataType.qualifiedName}")
         }
