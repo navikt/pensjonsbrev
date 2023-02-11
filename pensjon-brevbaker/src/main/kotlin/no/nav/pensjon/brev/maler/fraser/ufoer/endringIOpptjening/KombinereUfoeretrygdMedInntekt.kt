@@ -16,14 +16,12 @@ object KombinereUfoeretrygdMedInntekt {
 
     // TBU1201, TBBU1203
     data class KombinereUfoeretrygdOgInntektOverskrift(
-        val ufoeregrad: Expression<Int>,
-        val utbetalingsgrad: Expression<Int>,
+        val harDelvisUfoeregrad: Expression<Boolean>,
+        val harFullUfoeregrad: Expression<Boolean>,
+        val harFullUtbetalingsgrad: Expression<Boolean>,
 
         ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-            val harFullUfoeregrad = ufoeregrad.equalTo(100)
-            val harDelvisUfoeregrad = (ufoeregrad.greaterThan(0) and not(harFullUfoeregrad))
-            val harFullUtbetalingsgrad = utbetalingsgrad.equalTo(100)
             title1 {
                 showIf(harFullUfoeregrad and harFullUtbetalingsgrad) {
                     text(
@@ -126,15 +124,15 @@ object KombinereUfoeretrygdMedInntekt {
 
     // TBU1207   (TBU1296, TBU2357 er ikke tatt med - konvertering til UT utgikk 31. desember 2018) Dermed endres flette logikk for TBU1205.
     data class InntektsgrenseLagtTilGrunn(
+        val beloepsgrense: Expression<Kroner>,
+        val grunnbeloep: Expression<Kroner>,
+        val harDelvisUfoeregrad: Expression<Boolean>,
+        val harFullUfoeregrad: Expression<Boolean>,
+        val harInntektEtterUfoere: Expression<Boolean>,
         val inntektsgrense: Expression<Kroner>,
         val inntektsgrenseNesteAar: Expression<Kroner>,
-        val beloepsgrense: Expression<Kroner>,
         val oppjustertInntektEtterUfoere: Expression<Kroner>,
-        val grunnbeloep: Expression<Kroner>,
         val ufoeregrad: Expression<Int>,
-        val harInntektEtterUfoere: Expression<Boolean>,
-        val harFullUfoeregrad: Expression<Boolean>,
-        val harDelvisUfoeregrad: Expression<Boolean>,
 
         ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {

@@ -20,6 +20,7 @@ import no.nav.pensjon.brev.api.model.maler.EndringIOpptjeningSelectors.harBeloep
 import no.nav.pensjon.brev.api.model.maler.EndringIOpptjeningSelectors.harDelvisUfoeregrad
 import no.nav.pensjon.brev.api.model.maler.EndringIOpptjeningSelectors.harEktefelletilleggInnvilget
 import no.nav.pensjon.brev.api.model.maler.EndringIOpptjeningSelectors.harFullUfoeregrad
+import no.nav.pensjon.brev.api.model.maler.EndringIOpptjeningSelectors.harFullUtbetalingsgrad
 import no.nav.pensjon.brev.api.model.maler.EndringIOpptjeningSelectors.harGjenlevendetilleggInnvilget
 import no.nav.pensjon.brev.api.model.maler.EndringIOpptjeningSelectors.harInntektEtterUfoere
 import no.nav.pensjon.brev.api.model.maler.EndringIOpptjeningSelectors.harUtbetalingsgrad
@@ -102,13 +103,14 @@ object EndringIOpptjeningAuto : VedtaksbrevTemplate<EndringIOpptjeningAutoDto> {
             )
 
             includePhrase(Ufoeretrygd.UtbetalingsdatoUfoeretrygd)
-            includePhrase(Vedtak.ViktigAaLeseHeleBrevet)
+            includePhrase(Ufoeretrygd.ViktigAALeseHeleBrevet)
             includePhrase(Vedtak.BegrunnelseOverskrift)
             includePhrase(EndringIOpptjening.UfoerInntektListe)
 
             includePhrase(
                 EndringIOpptjening.EndringIOpptjeningTilUfoeretrygd(
                     harBeloepOekt = endringIOpptjening.harBeloepOekt,
+                    harBeloepRedusert = endringIOpptjening.harBeloepRedusert,
                     virkningsDato = endringIOpptjening.virkningsDato,
                 )
             )
@@ -127,8 +129,9 @@ object EndringIOpptjeningAuto : VedtaksbrevTemplate<EndringIOpptjeningAutoDto> {
 
             includePhrase(
                 KombinereUfoeretrygdMedInntekt.KombinereUfoeretrygdOgInntektOverskrift(
-                    ufoeregrad = endringIOpptjening.ufoeregrad,
-                    utbetalingsgrad = endringIOpptjening.utbetalingsgrad,
+                    harDelvisUfoeregrad = endringIOpptjening.harDelvisUfoeregrad,
+                    harFullUfoeregrad = endringIOpptjening.harFullUfoeregrad,
+                    harFullUtbetalingsgrad = endringIOpptjening.harFullUtbetalingsgrad,
                 )
             )
 
@@ -221,19 +224,14 @@ object EndringIOpptjeningAuto : VedtaksbrevTemplate<EndringIOpptjeningAutoDto> {
                 )
             )
 
-            ifNotNull(
-                fellesbarnTillegg,
-                saerkullsbarnTillegg
-            ) { fellesbarnTillegg, saerkullsbarnTillegg ->
-                    includePhrase(
-                        BarnetilleggEndringIOpptjening(
-                            barnetilleggFellesbarn = fellesbarnTillegg,
-                            barnetilleggSaerkullsbarn = saerkullsbarnTillegg,
-                            grunnbeloep = endringIOpptjening.grunnbeloep,
-                            sivilstand = sivilstand
-                        )
-                    )
-                }
+            includePhrase(
+                BarnetilleggEndringIOpptjening(
+                    barnetilleggFellesbarn = fellesbarnTillegg,
+                    barnetilleggSaerkullsbarn = saerkullsbarnTillegg,
+                    grunnbeloep = endringIOpptjening.grunnbeloep,
+                    sivilstand = sivilstand
+                )
+            )
 
             includePhrase(
                 Gjenlevendetillegg.HarGjenlevendetillegg(

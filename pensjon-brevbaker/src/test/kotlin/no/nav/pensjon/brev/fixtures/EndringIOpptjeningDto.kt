@@ -24,12 +24,13 @@ fun createEndringIOpptjeningAutoDtoEndringIOpptjening() =
         brukerBorInorge = false,
         forventetInntekt = Kroner(400000),
         grunnbeloep = Kroner(111477),  // 1G 2023
-        harBeloepOekt =true,
-        harBeloepRedusert = false,
+        harBeloepOekt = false,
+        harBeloepRedusert = true,
         harDelvisUfoeregrad = true,
         harEktefelletilleggInnvilget = true,
         harFullUfoeregrad = false,
-        harGjenlevendetilleggInnvilget = true,
+        harFullUtbetalingsgrad = true,
+        harGjenlevendetilleggInnvilget = false,
         harInntektEtterUfoere = false,
         harUtbetalingsgrad = true,
         harYrkesskadeGradUtbetaling = false,
@@ -44,26 +45,26 @@ fun createEndringIOpptjeningAutoDtoEndringIOpptjening() =
         oppjustertInntektEtterUfoere = Kroner(0),
         oppjustertInntektFoerUfoere = Kroner(0),
         oppjustertInntektFoerUfoere80prosent = Kroner(0),
-        ufoeregrad = 60,
+        ufoeregrad = 100,
         ufoertrygdUtbetalt = Kroner(2000000),
-        utbetalingsgrad = 50,
+        utbetalingsgrad = 100,
         utbetaltPerMaaned = Kroner(16000),
         virkningsDato = LocalDate.of(2023, 1, 1),
     )
 
 fun createEndringIOpptjeningAutoDtoBarnetilleggFellesbarn() =
     EndringIOpptjeningAutoDto.FellesbarnTillegg(
-        beloepBrutto = Kroner(0),
-        beloepNetto = Kroner(0),
-        fribeloep = Kroner(0),
+        beloepBrutto = Kroner(50000),
+        beloepNetto = Kroner(20000),
+        fribeloep = Kroner(200000),
         gjelderFlereBarn = false,
         harFellesbarnInnvilget = false,
         harFradrag = false,
         harFratrukketBeloepFraAnnenForelder = false,
         harJusteringsbeloep = false,
-        inntektAnnenForelder = Kroner(0),
-        inntektBruktIAvkortning = Kroner(0),
-        inntektstak = Kroner(0),
+        inntektAnnenForelder = Kroner(200000),
+        inntektBruktIAvkortning = Kroner(400000),
+        inntektstak = Kroner(300000),
     )
 
 fun createEndringIOpptjeningAutoDtoBarnetilleggSaerkullsbarn() =

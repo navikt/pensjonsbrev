@@ -34,16 +34,4 @@ object Vedtak {
             }
     }
 
-    // TBU1091
-    object ViktigAaLeseHeleBrevet : OutlinePhrase<LangBokmalNynorskEnglish>() {
-        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-            paragraph {
-                text(
-                    Bokmal to "I dette brevet forklarer vi hvilke rettigheter og plikter du har. Det er derfor viktig at du leser hele brevet.",
-                    Nynorsk to "",
-                    English to ""
-                )
-            }
-        }
-    }
 }

@@ -25,7 +25,9 @@ class EndringIOpptjeningAutoTest {
     fun testPdf() {
         Letter(
             EndringIOpptjeningAuto.template,
-            Fixtures.create<EndringIOpptjeningAutoDto>(),
+            Fixtures.create<EndringIOpptjeningAutoDto>().copy(
+                fellesbarnTillegg = null, saerkullsbarnTillegg = null
+            ),
             Language.Bokmal,
             Fixtures.fellesAuto
         )
