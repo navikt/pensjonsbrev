@@ -172,8 +172,8 @@ object EndringIOpptjeningAuto : VedtaksbrevTemplate<EndringIOpptjeningAutoDto> {
                 KombinereUfoeretrygdMedInntekt.Kompensasjonsgrad(
                     inntektsgrense = endringIOpptjening.inntektsgrense,
                     inntektsgrenseNesteAar = endringIOpptjening.inntektsgrenseNesteAar,
-                    inntektstak = endringIOpptjening.inntektstak,
                     kompensasjonsgrad = endringIOpptjening.kompensasjonsgrad,
+                    oppjustertInntektFoerUfoere80prosent = endringIOpptjening.oppjustertInntektFoerUfoere80prosent,
                 )
             )
             includePhrase(

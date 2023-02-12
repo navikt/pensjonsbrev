@@ -169,14 +169,14 @@ object KombinereUfoeretrygdMedInntekt {
     data class Kompensasjonsgrad(
         val inntektsgrense: Expression<Kroner>,
         val inntektsgrenseNesteAar: Expression<Kroner>,
-        val inntektstak: Expression<Kroner>,
+        val oppjustertInntektFoerUfoere80prosent: Expression<Kroner>,
         val kompensasjonsgrad: Expression<Int>,
 
         ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             val inntektsgrenseFaktisk = inntektsgrenseNesteAar.greaterThan(0)
 
-            showIf(inntektsgrense.lessThan(inntektstak)) {
+            showIf(inntektsgrense.lessThan(oppjustertInntektFoerUfoere80prosent)) {
                 paragraph {
                     text(
                         Bokmal to "Vi bruker en fastsatt prosentandel når vi justerer uføretrygden din ut fra inntekt. Denne prosentandelen kaller vi kompensasjonsgrad.",
@@ -238,39 +238,35 @@ object KombinereUfoeretrygdMedInntekt {
 
             paragraph {
                 showIf(
-                    utbetalingsgrad.lessThan(ufoeregrad) and forventetInntekt.greaterThan(inntektsgrense) and inntektsgrense.lessThan(
+                    utbetalingsgrad.lessThan(ufoeregrad) and inntektsgrense.lessThan(
                         oppjustertInntektFoerUfoere80prosent
                     )
                 ) {
-                    textExpr(
-                        Bokmal to "Du har tidligere meldt fra om en inntekt på ".expr() + forventetInntekt.format() + " kroner for i år.".expr(),
-                        Nynorsk to "Du har tidlegare meldt frå om ein inntekt på ".expr() + forventetInntekt.format() + " kroner for i år.".expr(),
-                        English to "You have previously reported an income of NOK ".expr() + forventetInntekt.format() + " for this year.".expr()
-                    )
-                }.orShowIf(
-                    utbetalingsgrad.lessThan(ufoeregrad) and harBeloepRedusert and inntektsgrense.lessThan(
-                        oppjustertInntektFoerUfoere80prosent
-                    )
-                ) {
-                    text(
-                        Bokmal to "Vi har derfor redusert utbetalingen av uføretrygden din for resten av kalenderåret.",
-                        Nynorsk to "Vi har difor redusert utbetalinga av uføretrygda di for resten av kalenderåret.",
-                        English to "We have therefore redused the payment of your disability benefit for the rest of the calendar year."
-                    )
-                }.orShowIf(
-                    utbetalingsgrad.lessThan(ufoeregrad) and harBeloepOekt and inntektsgrense.lessThan(
-                        oppjustertInntektFoerUfoere80prosent
-                    )
-                ) {
-                    text(
-                        Bokmal to "Vi har derfor økt utbetalingen av uføretrygden din for resten av kalenderåret.",
-                        Nynorsk to "Vi har difor auka utbetalinga av uføretrygda di for resten av kalendaråret.",
-                        English to "We have therefore increased your disability payment for the rest of the calendar year."
-                    )
+                    showIf(forventetInntekt.greaterThan(inntektsgrense)) {
+                        textExpr(
+                            Bokmal to "Du har tidligere meldt fra om en inntekt på ".expr() + forventetInntekt.format() + " kroner for i år.".expr(),
+                            Nynorsk to "Du har tidlegare meldt frå om ein inntekt på ".expr() + forventetInntekt.format() + " kroner for i år.".expr(),
+                            English to "You have previously reported an income of NOK ".expr() + forventetInntekt.format() + " for this year.".expr()
+                        )
+                    }
+                    showIf(harBeloepRedusert) {
+                        text(
+                            Bokmal to " Vi har derfor redusert utbetalingen av uføretrygden din for resten av kalenderåret.",
+                            Nynorsk to " Vi har difor redusert utbetalinga av uføretrygda di for resten av kalenderåret.",
+                            English to " We have therefore redused the payment of your disability benefit for the rest of the calendar year."
+                        )
+                    }.orShowIf(harBeloepOekt) {
+                        text(
+                            Bokmal to " Vi har derfor økt utbetalingen av uføretrygden din for resten av kalenderåret.",
+                            Nynorsk to " Vi har difor auka utbetalinga av uføretrygda di for resten av kalendaråret.",
+                            English to " We have therefore increased your disability payment for the rest of the calendar year."
+                        )
+                    }
                 }
             }
         }
     }
+
 
     // TBU2261
     data class ReduksjonAvInntektUfoere(
@@ -294,7 +290,7 @@ object KombinereUfoeretrygdMedInntekt {
                         Nynorsk to "Ut frå den årlege inntekta di vil uføretrygda utgjera ".expr() +
                                 nettoAkkumulertePlussNettoRestAar.format() + " kroner. Hittil i år har du fått utbetalt ".expr() +
                                 nettoAkkumulerteBeloepUtbetalt.format() + " kroner. Du har derfor rett til ein utbetaling av uføretrygd på ".expr() +
-                                nettoUfoeretrygdUtbetaltPerMaaned.format() + " kroner per månad for resten av året".expr(),
+                                nettoUfoeretrygdUtbetaltPerMaaned.format() + " kroner per månad for resten av året.".expr(),
                         English to "Given your annual income, your disabililty benefit will be NOK ".expr() +
                                 nettoAkkumulertePlussNettoRestAar.format() + ". To date this year, you have been paid NOK ".expr() +
                                 nettoAkkumulerteBeloepUtbetalt.format() + ". You are therefore entitled to a disability payment of NOK ".expr() +
@@ -317,7 +313,7 @@ object KombinereUfoeretrygdMedInntekt {
                             ufoeregrad.format() + " prosent. Du får utbetalt hele uføretrygden igjen dersom du tjener mindre enn inntektsgrensen din.".expr(),
                     Nynorsk to "Blir uføretrygda di blir redusert på grunn av inntekt, beheld du likevel uføregraden på ".expr() +
                             ufoeregrad.format() + " prosent. Du får utbetalt heile uføretrygda att dersom du tener mindre enn inntektsgrensa di.".expr(),
-                    English to "If your disability benefit is reduced because of income, you nonetheless keep your degree of disability that is ".expr() +
+                    English to "If your disability benefit is reduced because of income, you nonetheless keep your degree of disability which is ".expr() +
                             ufoeregrad.format() + " procent. You will get paid the entire disability benefit again if you earn less than your income limit.".expr()
                 )
             }
@@ -358,7 +354,7 @@ object KombinereUfoeretrygdMedInntekt {
                             Nynorsk to "Ver merksom på at det ikkje utbetales uføretrygd når inntekta di utgjer meir enn 80 prosent av oppjustert inntekt før du ble ufør, det vil si ".expr() +
                                     oppjustertInntektFoerUfoere80prosent.format() + " kroner per år.".expr(),
                             English to "We wish to point out that disability benefit payments stop when you earn more than 80 percent of the upwards adjusted income you had before you had a disability, which is NOK ".expr() +
-                            oppjustertInntektFoerUfoere80prosent.format() + " per year.".expr()
+                                    oppjustertInntektFoerUfoere80prosent.format() + " per year.".expr()
                         )
                     }
                 }
