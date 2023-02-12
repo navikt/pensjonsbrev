@@ -207,9 +207,9 @@ object EndringIOpptjeningAuto : VedtaksbrevTemplate<EndringIOpptjeningAutoDto> {
                 )
             )
 
-            val utbetalingsgrad = endringIOpptjening.utbetalingsgrad.format()
-            val ufoeregrad = endringIOpptjening.ufoeregrad.format()
-            showIf(utbetalingsgrad.equalTo(ufoeregrad)) {
+            showIf(endringIOpptjening.utbetalingsgrad.format().equalTo(endringIOpptjening.ufoeregrad.format()))
+            {
+                includePhrase(Ufoeretrygd.MeldeFraOmEventuellInntektOverskrift)
                 includePhrase(Ufoeretrygd.MeldeFraOmEventuellInntekt)
             }
 

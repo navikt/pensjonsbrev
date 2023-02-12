@@ -342,7 +342,7 @@ object KombinereUfoeretrygdMedInntekt {
                 paragraph {
                     text(
                         Bokmal to "Du kan melde fra om inntektsendringer under menyvalget «uføretrygd» når du logger deg inn på ${Constants.NAV_URL}. Her kan du legge inn endringer i den forventede årlige inntekten, og se hva dette betyr for utbetalingen av uføretrygden din. For at du skal få en jevn utbetaling av uføretrygden, er det viktig at du melder fra om inntektsendringer så tidlig som mulig.",
-                        Nynorsk to "Du kan melde frå om inntektsendringar under menyvalet «uføretrygd» når du logger deg inn på ${Constants.NAV_URL}. Her kan du leggje inn kor mykje du forventar å tene i løpet av året, og sjå hva dette betyr for utbetalinga av uføretrygda di. For at du skal få ein jamn utbetaling av uføretrygda, er det viktig at du melde frå om inntektsendringar så tidleg som mogleg",
+                        Nynorsk to "Du kan melde frå om inntektsendringar under menyvalet «uføretrygd» når du logger deg inn på ${Constants.NAV_URL}. Her kan du leggje inn kor mykje du forventar å tene i løpet av året, og sjå hva dette betyr for utbetalinga av uføretrygda di. For at du skal få ein jamn utbetaling av uføretrygda, er det viktig at du melde frå om inntektsendringar så tidleg som mogleg.",
                         English to "You can register changes in income under the option «uføretrygd» at ${Constants.NAV_URL}. You can register how much you expect to earn in the calendar year. You will then be able to see how much disabilty benefit you will receive. In order for you to receive even payments of disability benefit, it is important that you register income changes as soon as possible."
                     )
                 }

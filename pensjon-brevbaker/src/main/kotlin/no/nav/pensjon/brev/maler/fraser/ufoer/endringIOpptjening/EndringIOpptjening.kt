@@ -118,7 +118,7 @@ object EndringIOpptjening {
 
         ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-            showIf(harBeloepOekt and utbetalingsgrad.lessThan(ufoeregrad)) {
+            showIf(harBeloepOekt and utbetalingsgrad.equalTo(ufoeregrad)) {
                 title1 {
                     text(
                         Bokmal to "Etterbetaling av uføretrygd",
@@ -130,7 +130,7 @@ object EndringIOpptjening {
                     textExpr(
                         Bokmal to "Du får etterbetalt uføretrygd fra ".expr() + virkningsDato.format() + ". Beløpet blir vanligvis utbetalt i løpet av sju virkedager. Det kan bli beregnet fradrag i etterbetalingen for skatt og ytelser du har mottatt fra NAV eller andre, som for eksempel tjenestepensjonsordninger. I disse tilfellene kan etterbetalingen bli forsinket med inntil ni uker. Fradrag i etterbetalingen vil gå fram av utbetalingsmeldingen.".expr(),
                         Nynorsk to "Du får etterbetalt uføretrygd frå ".expr() + virkningsDato.format() + ". Beløpet blir vanlegvis utbetalt i løpet av sju verkedagar. Det kan bli berekna fradrag i etterbetalinga for skatt og ytingar du har mottatt frå NAV eller andre, som for eksempel tjenestepensjonsordninga. I desse tilfella kan etterbetalinga bli forseinka med inntil ni uka. Fradrag i etterbetallinga vil gå fram av utbetalingsmeldinga.".expr(),
-                        English to "You will receive disbability benefit paid in arrears from ".expr() + virkningsDato.format() + ". The payment is usually made within a week. The arrears payment can include deductutions for tax and benefits you have received from NAV or others, for example occupational pension schemes. In these cases the payment in arrears can be delayed upto nine weeks. Any deductions will be listed on the payment notification".expr()
+                        English to "You will receive disbability benefit paid in arrears from ".expr() + virkningsDato.format() + ". The payment is usually made within a week. The arrears payment can include deductutions for tax and benefits you have received from NAV or others, for example occupational pension schemes. In these cases the payment in arrears can be delayed upto nine weeks. Any deductions will be listed on the payment notification.".expr()
                     )
                 }
             }
