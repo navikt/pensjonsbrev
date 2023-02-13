@@ -62,7 +62,7 @@ data class TabellUfoereOpplysninger(
     val inntektsAvkortingGjeldende: Expression<OpplysningerBruktIBeregningUTDto.InntektsAvkortingGjeldende>,
     val inntektsgrenseErUnderTak: Expression<Boolean>,
     val beregnetUTPerManedGjeldende: Expression<OpplysningerBruktIBeregningUTDto.BeregnetUTPerManedGjeldende>,
-    val inntektEtterUfoereGjeldende_beloepIEU: Expression<Kroner>,
+    val inntektEtterUfoereGjeldendeBeloep: Expression<Kroner?>,
     val ungUfoerGjeldende_erUnder20Aar: Expression<Boolean?>,
     val trygdetidsdetaljerGjeldende: Expression<OpplysningerBruktIBeregningUTDto.TrygdetidsdetaljerGjeldende>,
     val barnetilleggGjeldende: Expression<OpplysningerBruktIBeregningUTDto.BarnetilleggGjeldende?>,
@@ -145,17 +145,19 @@ data class TabellUfoereOpplysninger(
                         }
                     }
                 }
-                showIf(inntektEtterUfoereGjeldende_beloepIEU.greaterThan(0)) {
-                    row {
-                        cell {
-                            text(
-                                Language.Bokmal to "Inntekt etter uførhet",
-                                Language.Nynorsk to "Inntekt etter uførleik",
-                                Language.English to "Income after disability"
-                            )
-                        }
-                        cell {
-                            includePhrase(Felles.KronerText(inntektEtterUfoereGjeldende_beloepIEU))
+                ifNotNull(inntektEtterUfoereGjeldendeBeloep) { beloep ->
+                    showIf(beloep.greaterThan(0)) {
+                        row {
+                            cell {
+                                text(
+                                    Language.Bokmal to "Inntekt etter uførhet",
+                                    Language.Nynorsk to "Inntekt etter uførleik",
+                                    Language.English to "Income after disability"
+                                )
+                            }
+                            cell {
+                                includePhrase(Felles.KronerText(beloep))
+                            }
                         }
                     }
                 }
@@ -367,7 +369,7 @@ data class TabellUfoereOpplysninger(
                         }
                     }
                 }
-                showIf(beregningsmetode.isOneOf(Beregningsmetode.FOLKETRYGD)){
+                showIf(beregningsmetode.isOneOf(Beregningsmetode.FOLKETRYGD)) {
                     row {
                         cell {
                             text(
@@ -436,7 +438,7 @@ data class TabellUfoereOpplysninger(
                     }
                 }
                 ifNotNull(trygdetidsdetaljerGjeldende.faktiskTTNorge) {
-                    showIf(beregningsmetode.isOneOf(Beregningsmetode.FOLKETRYGD)) {
+                    showIf(beregningsmetode.isNotAnyOf(Beregningsmetode.FOLKETRYGD)) {
                         row {
                             cell {
                                 text(
@@ -751,5 +753,6 @@ data class TabellUfoereOpplysninger(
                     }
                 }
             }
-        }    }
+        }
+    }
 }
