@@ -30,9 +30,9 @@ import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import java.time.LocalDate
 
 @TemplateModelHelpers
-object LetterExample : VedtaksbrevTemplate<LetterExampleDto> {
+object LetterExample : AutobrevTemplate<LetterExampleDto> {
 
-    override val kode: Brevkode.Vedtak = Brevkode.Vedtak.OMSORG_EGEN_AUTO
+    override val kode: Brevkode.AutoBrev = Brevkode.AutoBrev.OMSORG_EGEN_AUTO
 
     override val template = createTemplate(
         name = "EKSEMPEL_BREV", //Letter ID
@@ -42,6 +42,7 @@ object LetterExample : VedtaksbrevTemplate<LetterExampleDto> {
             displayTitle = "Dette er ett eksempel-brev", // Display title for external systems
             isSensitiv = false, // If this letter contains sensitive information requiring level 4 log-in
             distribusjonstype = LetterMetadata.Distribusjonstype.ANNET, // Brukes ved distribusjon av brevet
+            brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
         )
     ) {
         title {

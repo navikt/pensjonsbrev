@@ -9,7 +9,7 @@ class ParseLetterDataException(msg: String, cause: Exception): Exception(msg, ca
 class LetterResource(val templateResource: TemplateResource = TemplateResource()) {
     private val objectMapper = jacksonObjectMapper()
 
-    fun create(letterRequest: VedtaksbrevRequest): Letter<*> {
+    fun create(letterRequest: AutobrevRequest): Letter<*> {
         val template: LetterTemplate<*, *> = templateResource.getVedtaksbrev(letterRequest.kode)
             ?: throw NotFoundException("Template '${letterRequest.kode}' doesn't exist")
 

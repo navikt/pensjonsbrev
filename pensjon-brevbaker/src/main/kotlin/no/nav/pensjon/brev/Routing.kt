@@ -27,6 +27,7 @@ data class RedigerbarTemplateDescription(
 
 fun Application.brevbakerRouting(authenticationNames: Array<String>) =
     routing {
+        //TODO rename paths with vedtaksbrev to autobrev after merge with skribent-branch.
 
         route("/templates") {
 
@@ -42,7 +43,7 @@ fun Application.brevbakerRouting(authenticationNames: Array<String>) =
 
                 get("/{kode}") {
                     val template = call.parameters
-                        .getOrFail<Brevkode.Vedtak>("kode")
+                        .getOrFail<Brevkode.AutoBrev>("kode")
                         .let { letterResource.templateResource.getVedtaksbrev(it) }
                         ?.description()
 
@@ -77,7 +78,7 @@ fun Application.brevbakerRouting(authenticationNames: Array<String>) =
 
                 // TODO: Denne stien bør være lik som den under /templates
                 post("/vedtak") {
-                    val letterRequest = call.receive<VedtaksbrevRequest>()
+                    val letterRequest = call.receive<AutobrevRequest>()
 
                     val letter = letterResource.create(letterRequest)
                     val pdfBase64 = PensjonLatexRenderer.render(letter)

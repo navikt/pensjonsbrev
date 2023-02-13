@@ -35,7 +35,7 @@ val httpClient = HttpClient(CIO) {
 }
 
 // TODO: Endre denne når sti matcher den under /templates
-fun requestLetter(letterRequest: VedtaksbrevRequest): LetterResponse =
+fun requestLetter(letterRequest: AutobrevRequest): LetterResponse =
     runBlocking {
         httpClient.post("$BREVBAKER_URL/letter/vedtak") {
             contentType(ContentType.Application.Json)
@@ -44,7 +44,7 @@ fun requestLetter(letterRequest: VedtaksbrevRequest): LetterResponse =
     }
 
 //TODO: Endre denne når pesysy støtter ny sti
-fun requestTemplates(): Set<Brevkode.Vedtak> = runBlocking {
+fun requestTemplates(): Set<Brevkode.AutoBrev> = runBlocking {
     httpClient.get("$BREVBAKER_URL/templates").body()
 }
 

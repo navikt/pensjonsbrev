@@ -45,7 +45,7 @@ class TemplateResourceTest {
     fun `all names returned by getVedtaksbrev can be fetched with getVedtaksbrev`() {
         val templateNames = templateResource.getVedtaksbrev().toSet()
         val templates = templateNames.mapNotNull { templateResource.getVedtaksbrev(it) }
-            .map { Brevkode.Vedtak.valueOf(it.name) }
+            .map { Brevkode.AutoBrev.valueOf(it.name) }
             .toSet()
 
         assertEquals(templateNames, templates)
@@ -63,11 +63,11 @@ class TemplateResourceTest {
 
     @Test
     fun `all vedtaksbrev templates have letterDataType which are data class`() {
-        val templatesWithoutDataClass: Map<Brevkode.Vedtak, LetterTemplate<*, *>> = templateResource.getVedtaksbrev()
+        val templatesWithoutDataClass: Map<Brevkode.AutoBrev, LetterTemplate<*, *>> = templateResource.getVedtaksbrev()
             .associateWith { templateResource.getVedtaksbrev(it)!! }
             .filterValues { !it.letterDataType.isData }
 
-        assertEquals(emptySet<Brevkode.Vedtak>(), templatesWithoutDataClass.keys)
+        assertEquals(emptySet<Brevkode.AutoBrev>(), templatesWithoutDataClass.keys)
     }
 
     @Test
@@ -93,7 +93,7 @@ class TemplateResourceTest {
             }.filterValues { it != null }
 
         assertEquals(
-            emptyMap<Brevkode.Vedtak, String>(),
+            emptyMap<Brevkode.AutoBrev, String>(),
             templatesWithoutSampleData,
             "letterDataType classes must be constructable by Fixtures.create."
         )

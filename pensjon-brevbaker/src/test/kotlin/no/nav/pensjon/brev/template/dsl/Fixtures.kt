@@ -10,6 +10,7 @@ internal val testLetterMetadata = LetterMetadata(
     displayTitle = "En fin display tittel",
     isSensitiv = false,
     distribusjonstype = LetterMetadata.Distribusjonstype.ANNET,
+    brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
 )
 
 @TemplateModelHelpers

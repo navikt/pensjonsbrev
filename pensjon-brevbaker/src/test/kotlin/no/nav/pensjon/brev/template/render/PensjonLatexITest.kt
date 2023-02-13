@@ -38,6 +38,7 @@ class PensjonLatexITest {
                 displayTitle = "En fin display tittel",
                 isSensitiv = false,
                 distribusjonstype = LetterMetadata.Distribusjonstype.ANNET,
+                brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
             )
         ) {
             title { text(Bokmal to "En fin tittel") }
@@ -108,6 +109,7 @@ class PensjonLatexITest {
                     displayTitle = "En fin display tittel",
                     isSensitiv = false,
                     distribusjonstype = LetterMetadata.Distribusjonstype.ANNET,
+                    brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
                 )
             ) {
                 title { text(Bokmal to "En fin tittel") }

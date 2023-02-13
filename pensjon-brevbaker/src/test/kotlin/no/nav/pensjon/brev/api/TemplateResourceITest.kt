@@ -20,14 +20,14 @@ class TemplateResourceITest {
             .forEach { testTemplate(it.key, it.value) }
     }
 
-    private fun testTemplate(kode: Brevkode.Vedtak, template: LetterTemplate<*, *>?) {
+    private fun testTemplate(kode: Brevkode.AutoBrev, template: LetterTemplate<*, *>?) {
         if (template == null) {
             fail { "TemplateResource.getTemplates() returned a template name that doesnt exist: $kode" }
         }
         val argument = createArgument(template.letterDataType)
         try {
             val rendered = requestLetter(
-                VedtaksbrevRequest(
+                AutobrevRequest(
                     kode = kode,
                     letterData = argument,
                     felles = Fixtures.felles.copy(signerendeSaksbehandlere = null),

@@ -58,8 +58,8 @@ class BrevbakerService(config: Config, authService: AzureADService) {
         client.post(call, "/letter/vedtak") {
             contentType(ContentType.Application.Json)
             setBody(
-                VedtaksbrevRequest(
-                    kode = Brevkode.Vedtak.OMSORG_EGEN_AUTO,
+                AutobrevRequest(
+                    kode = Brevkode.AutoBrev.OMSORG_EGEN_AUTO,
                     letterData = OmsorgEgenAutoDto(
                         Year(2020),
                         Year(2021),

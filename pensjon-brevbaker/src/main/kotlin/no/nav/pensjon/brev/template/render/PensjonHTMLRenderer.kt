@@ -75,10 +75,6 @@ object PensjonHTMLRenderer : LetterRenderer<RenderedHtmlLetter>() {
 
     private fun FlowContent.renderClosing(scope: ExpressionScope<*, *>) {
         div("closing") {
-            // Har du spørsmål?
-            renderOutlineContent(scope, Element.OutlineContent.Title1(languageSettings.settings[LanguageSetting.Closing.harDuSpoersmaal]!!))
-            renderParagraph(scope, Element.OutlineContent.Paragraph(languageSettings.settings[LanguageSetting.Closing.kontaktOss]!!))
-
             // Med vennlig hilsen
             div(classes("closing-greeting")) { renderText(scope, languageSettings.settings[LanguageSetting.Closing.greeting]!!) }
             div(classes("closing-enhet")) { text(scope.felles.avsenderEnhet.navn) }
@@ -98,7 +94,7 @@ object PensjonHTMLRenderer : LetterRenderer<RenderedHtmlLetter>() {
                 }
             } else {
                 div(classes("closing-automatisk")) {
-                    renderText(scope, languageSettings.settings[LanguageSetting.Closing.automatisk]!!)
+                    renderText(scope, languageSettings.settings[LanguageSetting.Closing.automatiskInformasjonsbrev]!!)
                 }
             }
         }
