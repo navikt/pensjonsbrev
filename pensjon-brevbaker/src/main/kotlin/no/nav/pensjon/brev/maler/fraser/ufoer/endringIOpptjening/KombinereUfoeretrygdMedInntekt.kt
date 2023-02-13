@@ -170,7 +170,7 @@ object KombinereUfoeretrygdMedInntekt {
         val inntektsgrense: Expression<Kroner>,
         val inntektsgrenseNesteAar: Expression<Kroner>,
         val oppjustertInntektFoerUfoere80prosent: Expression<Kroner>,
-        val kompensasjonsgrad: Expression<Int>,
+        val kompensasjonsgrad: Expression<Double>,
 
         ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
