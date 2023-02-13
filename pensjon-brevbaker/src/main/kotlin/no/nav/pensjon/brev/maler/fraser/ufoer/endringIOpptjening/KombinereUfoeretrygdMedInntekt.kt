@@ -210,7 +210,7 @@ object KombinereUfoeretrygdMedInntekt {
                                     ifTrue = inntektsgrenseNesteAar.format(),
                                     ifFalse = inntektsgrense.format()
                                 ) + " kroner blir trekt frå uføretrygda di.".expr(),
-                        English to "For you, the adjustment rate is ".expr() + kompensasjonsgrad.format() + " procent. It is only the part of your income that exceeds NOK ".expr() +
+                        English to "For you, the adjustment rate is ".expr() + kompensasjonsgrad.format() + " percent. It is only the part of your income that exceeds NOK ".expr() +
                                 ifElse(
                                     inntektsgrenseFaktisk,
                                     ifTrue = inntektsgrenseNesteAar.format(),
@@ -314,7 +314,7 @@ object KombinereUfoeretrygdMedInntekt {
                     Nynorsk to "Blir uføretrygda di blir redusert på grunn av inntekt, beheld du likevel uføregraden på ".expr() +
                             ufoeregrad.format() + " prosent. Du får utbetalt heile uføretrygda att dersom du tener mindre enn inntektsgrensa di.".expr(),
                     English to "If your disability benefit is reduced because of income, you nonetheless keep your degree of disability which is ".expr() +
-                            ufoeregrad.format() + " procent. You will get paid the entire disability benefit again if you earn less than your income limit.".expr()
+                            ufoeregrad.format() + " percent. You will get paid the entire disability benefit again if you earn less than your income limit.".expr()
                 )
             }
         }

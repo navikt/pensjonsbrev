@@ -25,10 +25,8 @@ class EndringIOpptjeningAutoTest {
     fun testPdf() {
         Letter(
             EndringIOpptjeningAuto.template,
-            Fixtures.create<EndringIOpptjeningAutoDto>().copy(
-                fellesbarnTillegg = null, saerkullsbarnTillegg = null
-            ),
-            Language.English,
+            Fixtures.create<EndringIOpptjeningAutoDto>(),
+            Language.Bokmal,
             Fixtures.fellesAuto
         )
             .let { PensjonLatexRenderer.render(it) }

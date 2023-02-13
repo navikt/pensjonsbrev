@@ -162,12 +162,13 @@ object OpphoerBarnetilleggAuto : VedtaksbrevTemplate<OpphoerBarnetilleggAutoDto>
                     )
                 }
 
-                ifNotNull(barnetilleggFellesbarn) { barnetilleggFellesBarn ->
+                ifNotNull(barnetilleggFellesbarn) { barnetilleggFellesbarn ->
                     includePhrase(
                         Barnetillegg.InntektHarBetydningForFellesbarnTillegg(
-                            faarUtbetaltBarnetilleggFellesbarn = barnetilleggFellesBarn.beloepNetto.greaterThan(0),
+                            faarUtbetaltBarnetilleggFellesbarn = barnetilleggFellesbarn.beloepNetto.greaterThan(0),
                             harBarnetilleggFellesbarn = harBarnetilleggFellesbarn,
                             harBarnetilleggSaerkullsbarn = harBarnetilleggSaerkullsbarn,
+                            harFlereFellesbarn = barnetilleggFellesbarn.gjelderFlereBarn,
                             sivilstand = sivilstand
                         )
                     )
@@ -185,15 +186,15 @@ object OpphoerBarnetilleggAuto : VedtaksbrevTemplate<OpphoerBarnetilleggAutoDto>
                 ifNotNull(barnetilleggFellesbarn) { barnetilleggFellesbarn ->
                     includePhrase(
                         Barnetillegg.InntektTilAvkortningFellesbarn(
-                            harBeloepFratrukketAnnenForelder = barnetilleggFellesbarn.harFratrukketBeloepFraAnnenForelder,
                             faarUtbetaltBarnetilleggFellesBarn = barnetilleggFellesbarn.beloepNetto.greaterThan(0),
-                            harFradragFellesbarn = barnetilleggFellesbarn.harFradrag,
                             fribeloepFellesbarn = barnetilleggFellesbarn.fribeloep,
-                            inntektAnnenForelderFellesbarn = barnetilleggFellesbarn.inntektAnnenForelder,
-                            inntektBruktiAvkortningFellesbarn = barnetilleggFellesbarn.inntektBruktIAvkortning,
-                            harJusteringsbeloepFellesbarn = barnetilleggFellesbarn.harJusteringsbeloep,
                             grunnbeloep = grunnbeloep,
                             harBarnetilleggSaerkullsbarn = harBarnetilleggSaerkullsbarn,
+                            harBeloepFratrukketAnnenForelder = barnetilleggFellesbarn.harFratrukketBeloepFraAnnenForelder,
+                            harFradragFellesbarn = barnetilleggFellesbarn.harFradrag,
+                            harJusteringsbeloepFellesbarn = barnetilleggFellesbarn.harJusteringsbeloep,
+                            inntektAnnenForelderFellesbarn = barnetilleggFellesbarn.inntektAnnenForelder,
+                            inntektBruktiAvkortningFellesbarn = barnetilleggFellesbarn.inntektBruktIAvkortning,
                             sivilstand = sivilstand,
                         )
                     )

@@ -26,7 +26,7 @@ object Gjenlevendetillegg {
                     text(
                         Bokmal to "For deg som mottar gjenlevendetillegg",
                         Nynorsk to "For deg som mottar gjenlevendetillegg",
-                        English to "Survivor's supplement"
+                        English to "Your survivor's supplement"
                     )
                 }
                 paragraph {

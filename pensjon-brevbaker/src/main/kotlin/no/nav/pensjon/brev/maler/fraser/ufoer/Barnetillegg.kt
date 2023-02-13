@@ -89,7 +89,7 @@ object Barnetillegg {
                         textExpr(
                             Bokmal to " Inntekten til ".expr() + sivilstand.bestemtForm() + " din har ikke betydning for størrelsen på barnetillegget.",
                             Nynorsk to " Inntekta til ".expr() + sivilstand.bestemtForm() + " din har ikkje noko å seie for storleiken på barnetillegget.",
-                            English to " The income of your ".expr() + sivilstand.bestemtForm() + " does not affect the size of your child supplement.",
+                            English to " The income of your ".expr() + sivilstand.bestemtForm() + " does not affect the amount of your child supplement.",
                         )
                     }
                 }
@@ -103,6 +103,7 @@ object Barnetillegg {
         val faarUtbetaltBarnetilleggFellesbarn: Expression<Boolean>,
         val harBarnetilleggFellesbarn: Expression<Boolean>,
         val harBarnetilleggSaerkullsbarn: Expression<Boolean>,
+        val harFlereFellesbarn: Expression<Boolean>,
         val sivilstand: Expression<Sivilstand>
 
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
@@ -112,7 +113,7 @@ object Barnetillegg {
                     textExpr(
                         Bokmal to "Inntekten til deg og ".expr() + sivilstand.bestemtForm() + " din har betydning for hva du får i barnetillegg. Er inntektene over grensen for å få utbetalt fullt barnetillegg, blir tillegget redusert.",
                         Nynorsk to "Inntekta til deg og ".expr() + sivilstand.bestemtForm() + " din har noko å seie for kva du får i barnetillegg. Er den samla inntekta over grensa for å få utbetalt fullt barnetillegg, blir tillegget ditt redusert.",
-                        English to "The incomes of you and your ".expr() + sivilstand.bestemtForm() + " affects how much you receive in child supplement. If your income exceeds the limit for receiving full child supplement, your child supplement will be reduced.",
+                        English to "The incomes of you and your ".expr() + sivilstand.bestemtForm() + " influence how much you receive in child supplement. If your income exceeds the limit for receiving full child supplement, your child supplement will be reduced.",
                     )
                     showIf(faarUtbetaltBarnetilleggFellesbarn) {
                         text(
@@ -123,9 +124,12 @@ object Barnetillegg {
                     }
                     showIf(harBarnetilleggSaerkullsbarn) {
                         textExpr(
-                            Bokmal to " Inntekten til ".expr() + sivilstand.bestemtForm() + " din har kun betydning for størrelsen på barnetillegget til barna som bor sammen med begge sine foreldre.",
-                            Nynorsk to " Inntekta til ".expr() + sivilstand.bestemtForm() + " din har berre betydning for storleiken på barnetillegget til barna som bur saman med begge foreldra sine.",
-                            English to " The income of your ".expr() + sivilstand.bestemtForm() + " only affects the size of the child supplement for the children who live together with both parents.",
+                            Bokmal to " Inntekten til ".expr() + sivilstand.bestemtForm() + " din har kun betydning for størrelsen på barnetillegget til ".expr() +
+                                    ifElse(harFlereFellesbarn,"barna","barnet") + " som bor sammen med begge sine foreldre.".expr(),
+                            Nynorsk to " Inntekta til ".expr() + sivilstand.bestemtForm() + " din har berre betydning for storleiken på barnetillegget til ".expr() +
+                                    ifElse(harFlereFellesbarn, ifTrue = "barna", ifFalse = "barnet") + " som bur saman med begge foreldra sine.".expr(),
+                            English to " The income of your ".expr() + sivilstand.bestemtForm() + " only affects the amount of child supplement for the ".expr() +
+                                    ifElse(harFlereFellesbarn, ifTrue = "children who live", ifFalse = "child who lives") + " together with both parents.",
                         )
                     }
                 }
@@ -148,7 +152,7 @@ object Barnetillegg {
                         textExpr(
                             Bokmal to "Endringer i inntektene til deg og ".expr() + sivilstand.bestemtForm() + " din kan ha betydning for barnetillegget ditt. ",
                             Nynorsk to "Endringar i inntektene til deg og ".expr() + sivilstand.bestemtForm() + " di kan ha betydning for barnetillegget ditt. ",
-                            English to "Changes in your and your ".expr() + sivilstand.bestemtForm() + " income may affect your child supplement. ",
+                            English to "Changes in your and your ".expr() + sivilstand.bestemtForm() + "'s income may affect your child supplement. ",
                         )
                     }.orShowIf(harBarnetilleggSaerkullsbarn) {
                         text(
@@ -160,7 +164,7 @@ object Barnetillegg {
                     text(
                         Bokmal to "Du kan enkelt melde fra om inntektsendringer under menyvalget «uføretrygd» på ${Constants.NAV_URL}.",
                         Nynorsk to "Du kan enkelt melde frå om inntektsendringar under menyvalet «uføretrygd» på ${Constants.NAV_URL}.",
-                        English to "You can easily report income changes under the menu option “disability benefit” at ${Constants.NAV_URL}."
+                        English to "You can report income changes under the menu option “disability benefit” at ${Constants.NAV_URL}."
                     )
                 }
             }

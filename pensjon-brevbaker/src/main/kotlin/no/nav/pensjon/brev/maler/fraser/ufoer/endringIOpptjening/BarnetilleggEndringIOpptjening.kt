@@ -59,20 +59,21 @@ data class BarnetilleggEndringIOpptjening(
         ifNotNull(barnetilleggSaerkullsbarn) { barnetilleggSaerkullsbarn ->
             includePhrase(
                 Barnetillegg.InntektHarBetydningForSaerkullsbarnTillegg(
+                    faarUtbetaltBarnetilleggSaerkullsbarn = barnetilleggSaerkullsbarn.beloepNetto.greaterThan(0),
                     harBarnetilleggFellesbarn = harBarnetilleggFellesbarn,
                     harBarnetilleggSaerkullsbarn = harBarnetilleggSaerkullsbarn,
                     sivilstand = sivilstand,
-                    faarUtbetaltBarnetilleggSaerkullsbarn = barnetilleggSaerkullsbarn.beloepNetto.greaterThan(0),
                 )
             )
         }
 
-        ifNotNull(barnetilleggFellesbarn) { barnetilleggFellesBarn ->
+        ifNotNull(barnetilleggFellesbarn) { barnetilleggFellesbarn ->
             includePhrase(
                 Barnetillegg.InntektHarBetydningForFellesbarnTillegg(
-                    faarUtbetaltBarnetilleggFellesbarn = barnetilleggFellesBarn.beloepNetto.greaterThan(0),
+                    faarUtbetaltBarnetilleggFellesbarn = barnetilleggFellesbarn.beloepNetto.greaterThan(0),
                     harBarnetilleggFellesbarn = harBarnetilleggFellesbarn,
                     harBarnetilleggSaerkullsbarn = harBarnetilleggSaerkullsbarn,
+                    harFlereFellesbarn = barnetilleggFellesbarn.gjelderFlereBarn,
                     sivilstand = sivilstand
                 )
             )
@@ -89,15 +90,15 @@ data class BarnetilleggEndringIOpptjening(
         ifNotNull(barnetilleggFellesbarn) { barnetilleggFellesbarn ->
             includePhrase(
                 Barnetillegg.InntektTilAvkortningFellesbarn(
-                    harBeloepFratrukketAnnenForelder = barnetilleggFellesbarn.harFratrukketBeloepFraAnnenForelder,
                     faarUtbetaltBarnetilleggFellesBarn = barnetilleggFellesbarn.beloepNetto.greaterThan(0),
-                    harFradragFellesbarn = barnetilleggFellesbarn.harFradrag,
                     fribeloepFellesbarn = barnetilleggFellesbarn.fribeloep,
-                    inntektAnnenForelderFellesbarn = barnetilleggFellesbarn.inntektAnnenForelder,
-                    inntektBruktiAvkortningFellesbarn = barnetilleggFellesbarn.inntektBruktIAvkortning,
-                    harJusteringsbeloepFellesbarn = barnetilleggFellesbarn.harJusteringsbeloep,
                     grunnbeloep = grunnbeloep,
                     harBarnetilleggSaerkullsbarn = harBarnetilleggSaerkullsbarn,
+                    harBeloepFratrukketAnnenForelder = barnetilleggFellesbarn.harFratrukketBeloepFraAnnenForelder,
+                    harFradragFellesbarn = barnetilleggFellesbarn.harFradrag,
+                    harJusteringsbeloepFellesbarn = barnetilleggFellesbarn.harJusteringsbeloep,
+                    inntektAnnenForelderFellesbarn = barnetilleggFellesbarn.inntektAnnenForelder,
+                    inntektBruktiAvkortningFellesbarn = barnetilleggFellesbarn.inntektBruktIAvkortning,
                     sivilstand = sivilstand,
                 )
             )
@@ -108,8 +109,8 @@ data class BarnetilleggEndringIOpptjening(
                 Barnetillegg.InntektTilAvkortningSaerkullsbarn(
                     beloepNettoSaerkullsbarn = barnetilleggSaerkullsbarn.beloepNetto,
                     fribeloepSaerkullsbarn = barnetilleggSaerkullsbarn.fribeloep,
-                    inntektBruktIAvkortningSaerkullsbarn = barnetilleggSaerkullsbarn.inntektBruktIAvkortning,
                     harJusteringsbeloepSaerkullsbarn = barnetilleggSaerkullsbarn.harJusteringsbeloep,
+                    inntektBruktIAvkortningSaerkullsbarn = barnetilleggSaerkullsbarn.inntektBruktIAvkortning,
                 )
             )
         }
@@ -120,21 +121,21 @@ data class BarnetilleggEndringIOpptjening(
         ) { barnetilleggFellesbarn, barnetilleggSaerkullsbarn ->
             includePhrase(
                 Barnetillegg.BarnetilleggReduksjonSaerkullsbarnFellesbarn(
-                    beloepNettoSaerkullsbarn = barnetilleggSaerkullsbarn.beloepNetto,
-                    beloepBruttoSaerkullsbarn = barnetilleggSaerkullsbarn.beloepBrutto,
-                    harFradragSaerkullsbarn = barnetilleggSaerkullsbarn.harFradrag,
-                    fribeloepSaerkullsbarn = barnetilleggSaerkullsbarn.fribeloep,
-                    harJusteringsbeloepSaerkullsbarn = barnetilleggSaerkullsbarn.harJusteringsbeloep,
-                    harTilleggForFlereSaerkullsbarn = barnetilleggSaerkullsbarn.gjelderFlereBarn,
-                    harBarnetilleggSaerkullsbarn = harBarnetilleggSaerkullsbarn,
-                    inntektBruktIAvkortningSaerkullsbarn = barnetilleggSaerkullsbarn.inntektBruktIAvkortning,
-                    harFradragFellesbarn = barnetilleggFellesbarn.harFradrag,
                     beloepBruttoFellesbarn = barnetilleggFellesbarn.beloepBrutto,
-                    harBarnetilleggFellesbarn = harBarnetilleggFellesbarn,
+                    beloepBruttoSaerkullsbarn = barnetilleggSaerkullsbarn.beloepBrutto,
                     beloepNettoFellesbarn = barnetilleggFellesbarn.beloepNetto,
+                    beloepNettoSaerkullsbarn = barnetilleggSaerkullsbarn.beloepNetto,
                     fribeloepFellesbarn = barnetilleggFellesbarn.fribeloep,
+                    fribeloepSaerkullsbarn = barnetilleggSaerkullsbarn.fribeloep,
+                    harBarnetilleggFellesbarn = harBarnetilleggFellesbarn,
+                    harBarnetilleggSaerkullsbarn = harBarnetilleggSaerkullsbarn,
+                    harFradragFellesbarn = barnetilleggFellesbarn.harFradrag,
+                    harFradragSaerkullsbarn = barnetilleggSaerkullsbarn.harFradrag,
                     harJusteringsbeloepFellesbarn = barnetilleggFellesbarn.harJusteringsbeloep,
+                    harJusteringsbeloepSaerkullsbarn = barnetilleggSaerkullsbarn.harJusteringsbeloep,
                     harTilleggForFlereFellesbarn = barnetilleggFellesbarn.gjelderFlereBarn,
+                    harTilleggForFlereSaerkullsbarn = barnetilleggSaerkullsbarn.gjelderFlereBarn,
+                    inntektBruktIAvkortningSaerkullsbarn = barnetilleggSaerkullsbarn.inntektBruktIAvkortning,
                     inntektBruktiAvkortningFellesbarn = barnetilleggFellesbarn.inntektBruktIAvkortning,
                     sivilstand = sivilstand,
                 )
@@ -177,8 +178,8 @@ data class BarnetilleggEndringIOpptjening(
 
         includePhrase(
             Barnetillegg.HenvisningTilVedleggOpplysningerOmBeregning(
+                harBarnetilleggFellesbarn = harBarnetilleggFellesbarn,
                 harBarnetilleggSaerkullsbarn = harBarnetilleggSaerkullsbarn,
-                harBarnetilleggFellesbarn = harBarnetilleggFellesbarn
             )
         )
     }
