@@ -55,22 +55,22 @@ fun createEndringIOpptjeningAutoDtoEndringIOpptjening() =
 fun createEndringIOpptjeningAutoDtoBarnetilleggFellesbarn() =
     EndringIOpptjeningAutoDto.FellesbarnTillegg(
         beloepBrutto = Kroner(50000),
-        beloepNetto = Kroner(20000),
+        beloepNetto = Kroner(0),
         fribeloep = Kroner(200000),
         gjelderFlereBarn = true,
         harFellesbarnInnvilget = true,
         harFradrag = true,
         harFratrukketBeloepFraAnnenForelder = true,
-        harJusteringsbeloep = true,
+        harJusteringsbeloep = false,
         inntektAnnenForelder = Kroner(200000),
-        inntektBruktIAvkortning = Kroner(400000),
+        inntektBruktIAvkortning = Kroner(30),
         inntektstak = Kroner(300000),
     )
 
 fun createEndringIOpptjeningAutoDtoBarnetilleggSaerkullsbarn() =
     EndringIOpptjeningAutoDto.SaerkullsbarnTillegg(
         beloepBrutto = Kroner(80000),
-        beloepNetto = Kroner(60000),
+        beloepNetto = Kroner(0),
         fribeloep = Kroner(200000),
         gjelderFlereBarn = false,
         harFradrag = false,
