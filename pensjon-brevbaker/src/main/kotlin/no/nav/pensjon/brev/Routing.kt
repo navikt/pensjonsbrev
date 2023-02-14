@@ -36,6 +36,27 @@ fun Application.brevbakerRouting(authenticationNames: Array<String>) =
                 call.respond(letterResource.templateResource.getAutoBrev())
             }
 
+            // TODO: Fjern når pesys er endret
+            route("/vedtaksbrev") {
+                get {
+                    call.respond(letterResource.templateResource.getAutoBrev())
+                }
+
+                get("/{kode}") {
+                    val template = call.parameters
+                        .getOrFail<Brevkode.AutoBrev>("kode")
+                        .let { letterResource.templateResource.getAutoBrev(it) }
+                        ?.description()
+
+                    if (template == null) {
+                        call.respond(HttpStatusCode.NotFound)
+                    } else {
+                        call.respond(template)
+                    }
+                }
+            }
+
+
             route("/autobrev") {
                 get {
                     call.respond(letterResource.templateResource.getAutoBrev())
