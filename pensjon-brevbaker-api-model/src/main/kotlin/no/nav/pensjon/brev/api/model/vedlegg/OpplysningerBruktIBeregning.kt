@@ -8,8 +8,10 @@ import java.time.LocalDate
 data class OpplysningerBruktIBeregningUTDto(
     val barnetilleggGjeldende: BarnetilleggGjeldende?,
     val beregnetUTPerManedGjeldende: BeregnetUTPerManedGjeldende,
-    val grunnbeloep: Kroner,
+    val beregningsmetode: Beregningsmetode,
     val fraOgMedDatoErNesteAar: Boolean,
+    val grunnbeloep: Kroner,
+    val harKravaarsakEndringInntekt: Boolean,
     val inntektEtterUfoereGjeldende_beloepIEU: Kroner,
     val inntektFoerUfoereGjeldende: InntektFoerUfoereGjeldende,
     val inntektsAvkortingGjeldende: InntektsAvkortingGjeldende,
@@ -19,7 +21,6 @@ data class OpplysningerBruktIBeregningUTDto(
     val ufoeretrygdGjeldende: UfoeretrygdGjeldende,
     val ungUfoerGjeldende_erUnder20Aar: Boolean?,
     val yrkesskadeGjeldende: YrkesskadeGjeldende?,
-    val harKravaarsakEndringInntekt: Boolean,
 ) {
     data class YrkesskadeGjeldende(
         val beregningsgrunnlagBeloepAar: Kroner,
