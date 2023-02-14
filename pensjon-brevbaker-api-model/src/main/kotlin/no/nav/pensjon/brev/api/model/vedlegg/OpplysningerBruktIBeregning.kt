@@ -10,7 +10,7 @@ data class OpplysningerBruktIBeregningUTDto(
     val beregnetUTPerManedGjeldende: BeregnetUTPerManedGjeldende,
     val grunnbeloep: Kroner,
     val fraOgMedDatoErNesteAar: Boolean,
-    val inntektEtterUfoereGjeldende_beloepIEU: Kroner,
+    val inntektEtterUfoereGjeldende_beloepIEU: Kroner?,
     val inntektFoerUfoereGjeldende: InntektFoerUfoereGjeldende,
     val inntektsAvkortingGjeldende: InntektsAvkortingGjeldende,
     val minsteytelseGjeldende_sats: Double?,

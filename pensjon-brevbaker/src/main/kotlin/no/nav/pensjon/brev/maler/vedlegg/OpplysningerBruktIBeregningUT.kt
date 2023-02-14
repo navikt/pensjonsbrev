@@ -61,7 +61,7 @@ fun createVedleggOpplysningerBruktIBeregningUT(skalViseMinsteytelse: Boolean, sk
                 inntektsAvkortingGjeldende = inntektsAvkortingGjeldende,
                 inntektsgrenseErUnderTak = inntektsgrenseErUnderTak,
                 beregnetUTPerManedGjeldende = beregnetUTPerManedGjeldende,
-                inntektEtterUfoereGjeldende_beloepIEU = inntektEtterUfoereGjeldende_beloepIEU,
+                inntektEtterUfoereGjeldendeBeloep = inntektEtterUfoereGjeldende_beloepIEU,
                 ungUfoerGjeldende_erUnder20Aar = ungUfoerGjeldende_erUnder20Aar,
                 trygdetidsdetaljerGjeldende = trygdetidsdetaljerGjeldende,
                 barnetilleggGjeldende = barnetilleggGjeldende,
