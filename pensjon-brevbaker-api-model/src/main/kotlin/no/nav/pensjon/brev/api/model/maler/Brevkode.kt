@@ -16,7 +16,7 @@ object Brevkode {
         companion object {
             @Suppress("unused")
             fun findByKode(kode: String): AutoBrev? =
-                AutoBrev.values().find { it.brevkoder.contains(kode) }
+                AutoBrev.values().find { it.brevkoder.contains(kode) || it.name == kode }
         }
     }
     enum class Redigerbar(val kode: String) {
@@ -26,7 +26,7 @@ object Brevkode {
         companion object {
             @Suppress("unused")
             fun findByKode(kode: String): Redigerbar? =
-                Redigerbar.values().firstOrNull { it.kode == kode }
+                Redigerbar.values().firstOrNull { it.kode == kode || it.name == kode}
         }
     }
 }

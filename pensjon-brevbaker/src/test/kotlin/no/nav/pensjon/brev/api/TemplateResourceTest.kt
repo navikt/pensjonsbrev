@@ -13,11 +13,11 @@ import org.junit.jupiter.api.Test
 
 class TemplateResourceTest {
 
-    private val templateResource = TemplateResource(prodVedtaksbrevTemplates)
+    private val templateResource = TemplateResource(prodAutobrevTemplates)
 
     @Test
-    fun `getVedtaksbrev fetches template`() {
-        assertEquals(OmsorgEgenAuto.template, templateResource.getVedtaksbrev(OmsorgEgenAuto.kode))
+    fun `getAutoBrev fetches template`() {
+        assertEquals(OmsorgEgenAuto.template, templateResource.getAutoBrev(OmsorgEgenAuto.kode))
     }
 
     @Test
@@ -26,9 +26,9 @@ class TemplateResourceTest {
     }
 
     @Test
-    fun `getVedtaksbrev returns list of template names`() {
+    fun `getAutoBrev returns list of template names`() {
         assertThat(
-            templateResource.getVedtaksbrev(),
+            templateResource.getAutoBrev(),
             hasElement(OmsorgEgenAuto.kode) and hasElement(UngUfoerAuto.kode)
         )
     }
@@ -42,9 +42,9 @@ class TemplateResourceTest {
     }
 
     @Test
-    fun `all names returned by getVedtaksbrev can be fetched with getVedtaksbrev`() {
-        val templateNames = templateResource.getVedtaksbrev().toSet()
-        val templates = templateNames.mapNotNull { templateResource.getVedtaksbrev(it) }
+    fun `all names returned by getAutoBrev can be fetched with getAutoBrev`() {
+        val templateNames = templateResource.getAutoBrev().toSet()
+        val templates = templateNames.mapNotNull { templateResource.getAutoBrev(it) }
             .map { Brevkode.AutoBrev.valueOf(it.name) }
             .toSet()
 
@@ -62,9 +62,9 @@ class TemplateResourceTest {
     }
 
     @Test
-    fun `all vedtaksbrev templates have letterDataType which are data class`() {
-        val templatesWithoutDataClass: Map<Brevkode.AutoBrev, LetterTemplate<*, *>> = templateResource.getVedtaksbrev()
-            .associateWith { templateResource.getVedtaksbrev(it)!! }
+    fun `all autobrev templates have letterDataType which are data class`() {
+        val templatesWithoutDataClass: Map<Brevkode.AutoBrev, LetterTemplate<*, *>> = templateResource.getAutoBrev()
+            .associateWith { templateResource.getAutoBrev(it)!! }
             .filterValues { !it.letterDataType.isData }
 
         assertEquals(emptySet<Brevkode.AutoBrev>(), templatesWithoutDataClass.keys)
@@ -80,9 +80,9 @@ class TemplateResourceTest {
     }
 
     @Test
-    fun `all vedtaksbrev templates have letterDataType that can be created`() {
-        val templatesWithoutSampleData = templateResource.getVedtaksbrev()
-            .associateWith { templateResource.getVedtaksbrev(it)!! }
+    fun `all autobrev templates have letterDataType that can be created`() {
+        val templatesWithoutSampleData = templateResource.getAutoBrev()
+            .associateWith { templateResource.getAutoBrev(it)!! }
             .mapValues {
                 try {
                     Fixtures.create(it.value.letterDataType)
@@ -120,10 +120,10 @@ class TemplateResourceTest {
     }
 
     @Test
-    fun `all vedtaksbrev template letterDataType can be serialized and deserialized`() {
+    fun `all autobrev template letterDataType can be serialized and deserialized`() {
         val jackson = jacksonObjectMapper()
-        templateResource.getVedtaksbrev()
-            .map { templateResource.getVedtaksbrev(it)!! }
+        templateResource.getAutoBrev()
+            .map { templateResource.getAutoBrev(it)!! }
             .forEach {
                 val data = Fixtures.create(it.letterDataType)
                 val json = jackson.writeValueAsString(data)

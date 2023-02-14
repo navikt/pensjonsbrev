@@ -33,18 +33,18 @@ fun Application.brevbakerRouting(authenticationNames: Array<String>) =
 
             // TODO: Fjern når pesys er endret
             get {
-                call.respond(letterResource.templateResource.getVedtaksbrev())
+                call.respond(letterResource.templateResource.getAutoBrev())
             }
 
-            route("/vedtaksbrev") {
+            route("/autobrev") {
                 get {
-                    call.respond(letterResource.templateResource.getVedtaksbrev())
+                    call.respond(letterResource.templateResource.getAutoBrev())
                 }
 
                 get("/{kode}") {
                     val template = call.parameters
                         .getOrFail<Brevkode.AutoBrev>("kode")
-                        .let { letterResource.templateResource.getVedtaksbrev(it) }
+                        .let { letterResource.templateResource.getAutoBrev(it) }
                         ?.description()
 
                     if (template == null) {
@@ -76,8 +76,22 @@ fun Application.brevbakerRouting(authenticationNames: Array<String>) =
         authenticate(*authenticationNames, optional = environment?.developmentMode ?: false) {
             route("/letter") {
 
-                // TODO: Denne stien bør være lik som den under /templates
+                // TODO: Fjern når pesys er endret
                 post("/vedtak") {
+                    val letterRequest = call.receive<AutobrevRequest>()
+
+                    val letter = letterResource.create(letterRequest)
+                    val pdfBase64 = PensjonLatexRenderer.render(letter)
+                        .let { latexCompilerService.producePDF(it, call.callId) }
+
+                    call.respond(LetterResponse(pdfBase64.base64PDF, letter.template.letterMetadata))
+
+                    Metrics.prometheusRegistry.counter(
+                        "pensjon_brevbaker_letter_request_count",
+                        listOf(Tag.of("brevkode", letterRequest.kode.name))
+                    ).increment()
+                }
+                post("/autobrev") {
                     val letterRequest = call.receive<AutobrevRequest>()
 
                     val letter = letterResource.create(letterRequest)

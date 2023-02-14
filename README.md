@@ -14,7 +14,7 @@ Når man kjører lokalt med docker compose er den allerede satt opp til remote d
 
 ### Ytelsestesting med locust
 Ytelsestesten er i utgangspunktet satt opp til å teste vedtaksbrevet UNG_UFOER_AUTO.
-1. Evt. rediger `locust/vedtaksbrev_request.json` om du ønsker å teste et annet brev.
+1. Evt. rediger `locust/autobrev_request.json` om du ønsker å teste et annet brev.
 2. Kjør `./locust/fetch-secrets.sh`
 3. Start docker compose med locust profil `docker compose --profile locust up`
 4. Gå inn på locust grensesnittet via http://localhost:8089/ og skriv inn url til endepunktet du ønsker å ytelses-teste.

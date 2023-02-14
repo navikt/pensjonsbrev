@@ -22,7 +22,7 @@ class LetterResourceTest {
     private val redigerbarData = objectMapper.convertValue<Map<String, Any>>(Fixtures.create<InformasjonOmSaksbehandlingstidDto>())
 
     @Test
-    fun `create vedtaksbrev finds correct template`() {
+    fun `create autobrev finds correct template`() {
         val letter =
             testLetterResource.create(
                 AutobrevRequest(
@@ -37,9 +37,9 @@ class LetterResourceTest {
     }
 
     @Test
-    fun `create vedtaksbrev fails when template doesnt exist`() {
+    fun `create autobrev fails when template doesnt exist`() {
         assertThrows<NotFoundException> {
-            LetterResource(TemplateResource(vedtaksbrevTemplates = setOf(OmsorgEgenAuto))).create(
+            LetterResource(TemplateResource(autobrevTemplates = setOf(OmsorgEgenAuto))).create(
                 AutobrevRequest(
                     UngUfoerAuto.kode,
                     omsorgEgenAutoDto,

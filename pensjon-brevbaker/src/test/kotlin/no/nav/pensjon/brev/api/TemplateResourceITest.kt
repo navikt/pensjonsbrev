@@ -16,7 +16,7 @@ class TemplateResourceITest {
     @Test
     fun `all templates can render and compile`() {
         requestTemplates()
-            .associateWith { templateResource.getVedtaksbrev(it) }
+            .associateWith { templateResource.getAutoBrev(it) }
             .forEach { testTemplate(it.key, it.value) }
     }
 

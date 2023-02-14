@@ -6,7 +6,7 @@ import no.nav.pensjon.brev.maler.redigerbar.InformasjonOmSaksbehandlingstid
 import no.nav.pensjon.brev.template.*
 
 
-val prodVedtaksbrevTemplates: Set<AutobrevTemplate<*>> = setOf(
+val prodAutobrevTemplates: Set<AutobrevTemplate<*>> = setOf(
     OmsorgEgenAuto,
     UngUfoerAuto,
     UfoerOmregningEnslig,
@@ -19,20 +19,20 @@ val prodRedigerbareTemplates: Set<RedigerbarTemplate<*>> = setOf(
 )
 
 class TemplateResource(
-    vedtaksbrevTemplates: Set<AutobrevTemplate<*>> = prodVedtaksbrevTemplates,
+    autobrevTemplates: Set<AutobrevTemplate<*>> = prodAutobrevTemplates,
     redigerbareTemplates: Set<RedigerbarTemplate<*>> = prodRedigerbareTemplates,
 ) {
-    private val vedtaksbrevMap: Map<Brevkode.AutoBrev, AutobrevTemplate<*>> =
-        vedtaksbrevTemplates.associateBy { it.kode }
+    private val autoBrevMap: Map<Brevkode.AutoBrev, AutobrevTemplate<*>> =
+        autobrevTemplates.associateBy { it.kode }
 
     private val redigerbareBrevMap: Map<Brevkode.Redigerbar, RedigerbarTemplate<*>> =
         redigerbareTemplates.associateBy { it.kode }
 
-    fun getVedtaksbrev(): Set<Brevkode.AutoBrev> =
-        vedtaksbrevMap.keys
+    fun getAutoBrev(): Set<Brevkode.AutoBrev> =
+        autoBrevMap.keys
 
-    fun getVedtaksbrev(kode: Brevkode.AutoBrev): LetterTemplate<*, *>? =
-        vedtaksbrevMap[kode]?.template
+    fun getAutoBrev(kode: Brevkode.AutoBrev): LetterTemplate<*, *>? =
+        autoBrevMap[kode]?.template
 
     fun getRedigerbareBrev(): Set<Brevkode.Redigerbar> =
         redigerbareBrevMap.keys

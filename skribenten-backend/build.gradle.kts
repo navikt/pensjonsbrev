@@ -69,7 +69,7 @@ dependencies {
     implementation("io.ktor:ktor-server-netty-jvm:$ktorVersion")
     implementation("io.ktor:ktor-server-status-pages:$ktorVersion")
 
-    implementation("no.nav.pensjon.brev:pensjon-brevbaker-api-model:3.5.23-SNAPSHOT")
+    implementation("no.nav.pensjon.brev:pensjon-brevbaker-api-model:3.5.24")
 
     // Logging
     implementation("ch.qos.logback:logback-classic:$logbackVersion")
