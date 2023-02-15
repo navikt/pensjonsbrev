@@ -19,7 +19,7 @@ object GjenlevendeInfoFoer1970 : AutobrevTemplate<Unit> {
         letterDataType = Unit::class,
         languages = languages(Bokmal),
         letterMetadata = LetterMetadata(
-            displayTitle = "", //TODO
+            displayTitle = "adhoc - Informasjon om endringer i gjenlevendepensjonen din (født før 1970)", //TODO midlertidig tittel
             isSensitiv = false,
             distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
