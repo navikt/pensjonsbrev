@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningufoere
 
-import io.ktor.client.request.forms.*
+
 import no.nav.pensjon.brev.api.model.Beregningsmetode
 import no.nav.pensjon.brev.maler.fraser.common.Constants
 import no.nav.pensjon.brev.template.Expression
@@ -10,8 +10,7 @@ import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.model.format
-import no.nav.pensjon.brev.template.Language
+
 
 /* Include IF brevkode not(
 PE_UT_05_100
@@ -144,51 +143,6 @@ data class SlikBeregnerViUfoeretrygdenDin(
                     }
                 }
             }
-        }
-
-        /* Include IF brevkode not(
-        PE_UT_04_300
-        PE_UT_14_300
-AND BrukerKonvertertUP = true
-AND KravArsakType != soknad_bt
-AND IF brevkode not(
-PE_UT_04_108
-PE_UT_04_109
-PE_UT_06_300
-PE_UT_07_200
-)
-         */
-        paragraph {
-            text(
-                Bokmal to "Uførepensjonen din har tidligere blitt regnet om til uføretrygd og er justert ut fra trygdetid og uføregrad.",
-                Nynorsk to "",
-                English to "Your disability pension has previously been converted to disability benefit, and is adjusted for your social security period and degree of disbabilty.",
-            )
-        }
-        paragraph {
-            text(
-                Bokmal to "Når uføretrygden din endres, kan dette medføre at beregningsgrunnlaget har blitt endret.",
-                Nynorsk to "",
-                English to "When you disability benefit changes, it can entail that the basis for calculation has been changed."
-            )
-            text(
-                Bokmal to " Dette gjelder også for gjenlevendetillegget du mottar i uføretrygden",
-                Nynorsk to "",
-                English to " This also applies for the survivor's supplement in your disability benefit.",
-
-            )
-        }
-        paragraph {
-            text(
-                Bokmal to "Når uføregraden din øker, sammenligner vi det tidligere beregningsgrunnlaget på uførepensjonen med beregningsgrunnlaget på uføretrygd. Du får alternativet som gir deg høyest uføretrygd.",
-                Nynorsk to "",
-                English to ""
-            )
-            text(
-                Bokmal to " Dette gjelder også for gjenlevendetillegget du mottar i uføretrygden",
-                Nynorsk to "",
-                English to ""
-            )
         }
     }
 }
