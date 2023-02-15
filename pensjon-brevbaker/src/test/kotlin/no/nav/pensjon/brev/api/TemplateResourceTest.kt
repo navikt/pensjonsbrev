@@ -65,6 +65,7 @@ class TemplateResourceTest {
     fun `all autobrev templates have letterDataType which are data class`() {
         val templatesWithoutDataClass: Map<Brevkode.AutoBrev, LetterTemplate<*, *>> = templateResource.getAutoBrev()
             .associateWith { templateResource.getAutoBrev(it)!! }
+            .filterValues { it.letterDataType != Unit::class }
             .filterValues { !it.letterDataType.isData }
 
         assertEquals(emptySet<Brevkode.AutoBrev>(), templatesWithoutDataClass.keys)
@@ -124,6 +125,7 @@ class TemplateResourceTest {
         val jackson = jacksonObjectMapper()
         templateResource.getAutoBrev()
             .map { templateResource.getAutoBrev(it)!! }
+            .filter { it.letterDataType != Unit::class }
             .forEach {
                 val data = Fixtures.create(it.letterDataType)
                 val json = jackson.writeValueAsString(data)
