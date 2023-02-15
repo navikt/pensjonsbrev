@@ -1,12 +1,21 @@
 package no.nav.pensjon.brev.maler.fraser.common
 
 import no.nav.pensjon.brev.api.model.Kroner
+import no.nav.pensjon.brev.maler.fraser.common.Constants.KONTAKT_URL
+import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
 import no.nav.pensjon.brev.model.format
-import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
+import no.nav.pensjon.brev.template.Expression
+import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.*
-import no.nav.pensjon.brev.template.dsl.*
-import no.nav.pensjon.brev.template.dsl.expression.*
+import no.nav.pensjon.brev.template.OutlinePhrase
+import no.nav.pensjon.brev.template.TextOnlyPhrase
+import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
+import no.nav.pensjon.brev.template.dsl.TextOnlyScope
+import no.nav.pensjon.brev.template.dsl.expression.format
+import no.nav.pensjon.brev.template.dsl.expression.plus
+import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.dsl.textExpr
 
 object Felles {
 
@@ -33,7 +42,27 @@ object Felles {
         }
     }
 
-    data class KronerText(val kroner: Expression<Kroner>, val fontType: FontType = FontType.PLAIN) : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
+    object HarDuSpoersmaalPesys : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+            title1 {
+                text(
+                    Bokmal to "Har du spørsmål?",
+                    Nynorsk to "Har du spørsmål?",
+                    English to "Do you have questions?",
+                )
+            }
+            paragraph {
+                text(
+                    Bokmal to "Du finner mer informasjon på $NAV_URL. Hvis du ikke finner svar på spørsmålet ditt, kontakt oss på $KONTAKT_URL.",
+                    Nynorsk to "Du finn meir informasjon på $NAV_URL. Om du ikkje finn svar på spørsmålet ditt, kontakt oss på $KONTAKT_URL.",
+                    English to "You can find more information at $NAV_URL. If you do not find the answer to your question, contact us at $KONTAKT_URL.",
+                )
+            }
+        }
+    }
+
+    data class KronerText(val kroner: Expression<Kroner>, val fontType: FontType = FontType.PLAIN) :
+        TextOnlyPhrase<LangBokmalNynorskEnglish>() {
         override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
             textExpr(
                 Bokmal to kroner.format() + " kr",

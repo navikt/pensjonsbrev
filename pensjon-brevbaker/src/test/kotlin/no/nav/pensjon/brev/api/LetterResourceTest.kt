@@ -22,10 +22,10 @@ class LetterResourceTest {
     private val redigerbarData = objectMapper.convertValue<Map<String, Any>>(Fixtures.create<InformasjonOmSaksbehandlingstidDto>())
 
     @Test
-    fun `create vedtaksbrev finds correct template`() {
+    fun `create autobrev finds correct template`() {
         val letter =
             testLetterResource.create(
-                VedtaksbrevRequest(
+                AutobrevRequest(
                     vedtakTemplate.kode,
                     omsorgEgenAutoDto,
                     Fixtures.felles,
@@ -37,10 +37,10 @@ class LetterResourceTest {
     }
 
     @Test
-    fun `create vedtaksbrev fails when template doesnt exist`() {
+    fun `create autobrev fails when template doesnt exist`() {
         assertThrows<NotFoundException> {
-            LetterResource(TemplateResource(vedtaksbrevTemplates = setOf(OmsorgEgenAuto))).create(
-                VedtaksbrevRequest(
+            LetterResource(TemplateResource(autobrevTemplates = setOf(OmsorgEgenAuto))).create(
+                AutobrevRequest(
                     UngUfoerAuto.kode,
                     omsorgEgenAutoDto,
                     Fixtures.felles,
@@ -83,7 +83,7 @@ class LetterResourceTest {
     fun `create requires arguments`() {
         assertThrows<ParseLetterDataException> {
             testLetterResource.create(
-                VedtaksbrevRequest(
+                AutobrevRequest(
                     vedtakTemplate.kode,
                     emptyMap<String, String>(),
                     Fixtures.felles,
@@ -98,7 +98,7 @@ class LetterResourceTest {
         println(objectMapper.readValue(objectMapper.writeValueAsString(Fixtures.create(OmsorgEgenAutoDto::class)), OmsorgEgenAutoDto::class.java))
         val letter =
             testLetterResource.create(
-                VedtaksbrevRequest(
+                AutobrevRequest(
                     vedtakTemplate.kode,
                     omsorgEgenAutoDto,
                     Fixtures.felles,
@@ -111,7 +111,7 @@ class LetterResourceTest {
     @Test
     fun `create fails when letterData is invalid`() {
         assertThrows<ParseLetterDataException> {
-            testLetterResource.create(VedtaksbrevRequest(vedtakTemplate.kode, mapOf("pensjonInnvilget" to true), Fixtures.felles, LanguageCode.BOKMAL))
+            testLetterResource.create(AutobrevRequest(vedtakTemplate.kode, mapOf("pensjonInnvilget" to true), Fixtures.felles, LanguageCode.BOKMAL))
         }
     }
 
@@ -119,7 +119,7 @@ class LetterResourceTest {
     fun `create fails for unsupported language`() {
         assertThrows<BadRequestException> {
             testLetterResource.create(
-                VedtaksbrevRequest(
+                AutobrevRequest(
                     UngUfoerAuto.kode,
                     Fixtures.create(UngUfoerAutoDto::class),
                     Fixtures.felles,

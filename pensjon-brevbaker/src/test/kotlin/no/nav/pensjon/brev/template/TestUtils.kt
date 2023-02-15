@@ -44,6 +44,7 @@ fun <AttachmentData : Any> createVedleggTestTemplate(
         "test mal",
         isSensitiv = false,
         distribusjonstype = LetterMetadata.Distribusjonstype.ANNET,
+        brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
     ),
 ) {
     title {

@@ -2,16 +2,20 @@ package no.nav.pensjon.brev.api
 
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.maler.*
+import no.nav.pensjon.brev.maler.adhoc.GjenlevendeInfoEtter1970
+import no.nav.pensjon.brev.maler.adhoc.GjenlevendeInfoFoer1970
 import no.nav.pensjon.brev.maler.redigerbar.InformasjonOmSaksbehandlingstid
 import no.nav.pensjon.brev.template.*
 
 
-val prodVedtaksbrevTemplates: Set<VedtaksbrevTemplate<*>> = setOf(
+val prodAutobrevTemplates: Set<AutobrevTemplate<*>> = setOf(
+    GjenlevendeInfoEtter1970,
+    GjenlevendeInfoFoer1970,
     OmsorgEgenAuto,
-    UngUfoerAuto,
-    UfoerOmregningEnslig,
-    OpptjeningVedForhoeyetHjelpesats,
     OpphoerBarnetilleggAuto,
+    OpptjeningVedForhoeyetHjelpesats,
+    UfoerOmregningEnslig,
+    UngUfoerAuto,
 )
 
 val prodRedigerbareTemplates: Set<RedigerbarTemplate<*>> = setOf(
@@ -19,20 +23,20 @@ val prodRedigerbareTemplates: Set<RedigerbarTemplate<*>> = setOf(
 )
 
 class TemplateResource(
-    vedtaksbrevTemplates: Set<VedtaksbrevTemplate<*>> = prodVedtaksbrevTemplates,
+    autobrevTemplates: Set<AutobrevTemplate<*>> = prodAutobrevTemplates,
     redigerbareTemplates: Set<RedigerbarTemplate<*>> = prodRedigerbareTemplates,
 ) {
-    private val vedtaksbrevMap: Map<Brevkode.Vedtak, VedtaksbrevTemplate<*>> =
-        vedtaksbrevTemplates.associateBy { it.kode }
+    private val autoBrevMap: Map<Brevkode.AutoBrev, AutobrevTemplate<*>> =
+        autobrevTemplates.associateBy { it.kode }
 
     private val redigerbareBrevMap: Map<Brevkode.Redigerbar, RedigerbarTemplate<*>> =
         redigerbareTemplates.associateBy { it.kode }
 
-    fun getVedtaksbrev(): Set<Brevkode.Vedtak> =
-        vedtaksbrevMap.keys
+    fun getAutoBrev(): Set<Brevkode.AutoBrev> =
+        autoBrevMap.keys
 
-    fun getVedtaksbrev(kode: Brevkode.Vedtak): LetterTemplate<*, *>? =
-        vedtaksbrevMap[kode]?.template
+    fun getAutoBrev(kode: Brevkode.AutoBrev): LetterTemplate<*, *>? =
+        autoBrevMap[kode]?.template
 
     fun getRedigerbareBrev(): Set<Brevkode.Redigerbar> =
         redigerbareBrevMap.keys

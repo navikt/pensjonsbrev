@@ -6,14 +6,14 @@ import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Tabl
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.Nynorsk
-import no.nav.pensjon.brev.template.VedtaksbrevTemplate
+import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 
-object DesignReferenceLetter : VedtaksbrevTemplate<LetterExampleDto> {
+object DesignReferenceLetter : AutobrevTemplate<LetterExampleDto> {
 
-    override val kode: Brevkode.Vedtak = Brevkode.Vedtak.OMSORG_EGEN_AUTO
+    override val kode: Brevkode.AutoBrev = Brevkode.AutoBrev.OMSORG_EGEN_AUTO
 
     override val template = createTemplate(
         name = "EKSEMPEL_BREV", //Letter ID
@@ -23,6 +23,7 @@ object DesignReferenceLetter : VedtaksbrevTemplate<LetterExampleDto> {
             displayTitle = "Dette er ett eksempel-brev", // Display title for external systems
             isSensitiv = false, // If this letter contains sensitive information requiring level 4 log-in
             distribusjonstype = LetterMetadata.Distribusjonstype.ANNET, // Brukes ved distribusjon av brevet
+            brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
         )
     ) {
         title {

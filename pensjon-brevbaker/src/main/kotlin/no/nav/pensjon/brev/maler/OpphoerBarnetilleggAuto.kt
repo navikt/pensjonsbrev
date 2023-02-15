@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.maler
 import no.nav.pensjon.brev.api.model.Kroner
 import no.nav.pensjon.brev.api.model.KronerSelectors.value_safe
 import no.nav.pensjon.brev.api.model.LetterMetadata
+import no.nav.pensjon.brev.api.model.LetterMetadata.Brevtype.VEDTAKSBREV
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.beloepBrutto
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.beloepNetto
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.beloepNetto_safe
@@ -53,7 +54,7 @@ import no.nav.pensjon.brev.maler.vedlegg.createVedleggOpplysningerBruktIBeregnin
 import no.nav.pensjon.brev.maler.vedlegg.vedleggMaanedligUfoeretrygdFoerSkatt
 import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgPlikterUfoere
 import no.nav.pensjon.brev.template.Language
-import no.nav.pensjon.brev.template.VedtaksbrevTemplate
+import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
@@ -62,9 +63,9 @@ import no.nav.pensjon.brev.template.dsl.text
 
 // BrevKode: PE_UT_07_200
 @TemplateModelHelpers
-object OpphoerBarnetilleggAuto : VedtaksbrevTemplate<OpphoerBarnetilleggAutoDto> {
+object OpphoerBarnetilleggAuto : AutobrevTemplate<OpphoerBarnetilleggAutoDto> {
 
-    override val kode: Brevkode.Vedtak = Brevkode.Vedtak.UT_OPPHOER_BT_AUTO
+    override val kode: Brevkode.AutoBrev = Brevkode.AutoBrev.UT_OPPHOER_BT_AUTO
 
     override val template = createTemplate(
         name = kode.name,
@@ -74,6 +75,7 @@ object OpphoerBarnetilleggAuto : VedtaksbrevTemplate<OpphoerBarnetilleggAutoDto>
             displayTitle = "Vedtak – opphør av barnetillegget (automatisk)",
             isSensitiv = false,
             distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
+            brevtype = VEDTAKSBREV
         )
     ) {
         val harBarnetilleggFellesbarn = barnetilleggFellesbarn.notNull()
@@ -287,6 +289,7 @@ object OpphoerBarnetilleggAuto : VedtaksbrevTemplate<OpphoerBarnetilleggAutoDto>
             includePhrase(Ufoeretrygd.SjekkUtbetalingene)
             includePhrase(Ufoeretrygd.Skattekort)
             includePhrase(Ufoeretrygd.SkattForDegSomBorIUtlandet(brukerBorInorge))
+            includePhrase(Felles.HarDuSpoersmaalPesys)
         }
         includeAttachment(vedleggMaanedligUfoeretrygdFoerSkatt, maanedligUfoeretrygdFoerSkatt)
         includeAttachment(
