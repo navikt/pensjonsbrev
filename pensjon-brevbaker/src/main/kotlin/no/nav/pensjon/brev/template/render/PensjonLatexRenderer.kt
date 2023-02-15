@@ -8,9 +8,9 @@ import no.nav.pensjon.brev.latex.LatexAppendable
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent
+import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.*
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Form.Text.Size
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment
-import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
@@ -216,15 +216,15 @@ object PensjonLatexRenderer : LetterRenderer<RenderedLatexLetter>() {
 
     private fun LatexAppendable.renderParagraphContent(scope: ExpressionScope<*, *>, element: ParagraphContent<*>): Unit =
         when (element) {
-            is ParagraphContent.Form -> renderForm(scope, element)
+            is Form -> renderForm(scope, element)
             is Text -> renderTextContent(scope, element)
-            is ParagraphContent.ItemList -> renderList(scope, element)
-            is ParagraphContent.Table -> renderTable(scope, element)
+            is ItemList -> renderList(scope, element)
+            is Table -> renderTable(scope, element)
         }
 
     private fun LatexAppendable.renderList(
         scope: ExpressionScope<*, *>,
-        list: ParagraphContent.ItemList<*>
+        list: ItemList<*>
     ) {
         if (hasAnyContent(scope, list.items)) {
             printCmd("begin", "itemize")
@@ -236,7 +236,7 @@ object PensjonLatexRenderer : LetterRenderer<RenderedLatexLetter>() {
         }
     }
 
-    private fun LatexAppendable.renderTable(scope: ExpressionScope<*, *>, table: ParagraphContent.Table<*>) {
+    private fun LatexAppendable.renderTable(scope: ExpressionScope<*, *>, table: Table<*>) {
         if (hasAnyContent(scope, table.rows)) {
             val columnSpec = table.header.colSpec
 
@@ -253,8 +253,8 @@ object PensjonLatexRenderer : LetterRenderer<RenderedLatexLetter>() {
 
     private fun LatexAppendable.renderTableCells(
         scope: ExpressionScope<*, *>,
-        cells: List<ParagraphContent.Table.Cell<LanguageSupport>>,
-        colSpec: List<ParagraphContent.Table.ColumnSpec<LanguageSupport>>
+        cells: List<Table.Cell<LanguageSupport>>,
+        colSpec: List<Table.ColumnSpec<LanguageSupport>>
     ) {
         cells.forEachIndexed { index, cell ->
             val columnSpan = colSpec[index].columnSpan
@@ -272,7 +272,7 @@ object PensjonLatexRenderer : LetterRenderer<RenderedLatexLetter>() {
         print("""\\""", escape = false)
     }
 
-    private fun columnHeadersLatexString(columnSpec: List<ParagraphContent.Table.ColumnSpec<LanguageSupport>>): String =
+    private fun columnHeadersLatexString(columnSpec: List<Table.ColumnSpec<LanguageSupport>>): String =
         columnSpec.joinToString("") {
             ("X" +
                     when (it.alignment) {
@@ -302,9 +302,9 @@ object PensjonLatexRenderer : LetterRenderer<RenderedLatexLetter>() {
             FontType.ITALIC -> printCmd("textit") { arg { print(textLiteral) } }
         }
 
-    private fun LatexAppendable.renderForm(scope: ExpressionScope<*, *>, element: ParagraphContent.Form<*>): Unit =
+    private fun LatexAppendable.renderForm(scope: ExpressionScope<*, *>, element: Form<*>): Unit =
         when (element) {
-            is ParagraphContent.Form.MultipleChoice -> {
+            is Form.MultipleChoice -> {
                 if (element.vspace) {
                     printCmd("formvspace")
                 }
@@ -322,7 +322,7 @@ object PensjonLatexRenderer : LetterRenderer<RenderedLatexLetter>() {
                 printCmd("end", "formChoice")
             }
 
-            is ParagraphContent.Form.Text -> {
+            is Form.Text -> {
                 if (element.vspace) {
                     printCmd("formvspace")
                 }
