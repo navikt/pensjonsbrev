@@ -7,6 +7,11 @@ import no.nav.pensjon.brev.api.model.SignerendeSaksbehandlere
 import no.nav.pensjon.brev.latex.LatexAppendable
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.*
+import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent
+import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Form.Text.Size
+import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment
+import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text
+import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
@@ -30,11 +35,7 @@ object PensjonLatexRenderer : LetterRenderer<RenderedLatexLetter>() {
     override fun renderLetter(scope: ExpressionScope<*, *>, template: LetterTemplate<*, *>): RenderedLatexLetter =
         RenderedLatexLetter().apply {
             newLatexFile("params.tex") {
-                appendMasterTemplateParameters(
-                    scope,
-                    template.attachments,
-                    template.letterMetadata.brevtype
-                )
+                appendMasterTemplateParameters(scope, template.attachments, template.letterMetadata.brevtype)
             }
             newLatexFile("letter.xmpdata") { appendXmpData(scope, template) }
             newLatexFile("letter.tex") { renderLetterTemplate(scope, template) }
@@ -91,10 +92,7 @@ object PensjonLatexRenderer : LetterRenderer<RenderedLatexLetter>() {
         printCmd("end", "document")
     }
 
-    private fun LatexAppendable.signaturCommands(
-        saksbehandlere: SignerendeSaksbehandlere?,
-        brevtype: LetterMetadata.Brevtype,
-    ) {
+    private fun LatexAppendable.signaturCommands(saksbehandlere: SignerendeSaksbehandlere?, brevtype: LetterMetadata.Brevtype) {
         printNewCmd("closingbehandlet") {
             if (saksbehandlere != null) {
                 println("""\parbox[t]{0.5\linewidth}{${saksbehandlere.saksbehandler} \\ \feltclosingsaksbehandlersuffix}""")
@@ -163,10 +161,7 @@ object PensjonLatexRenderer : LetterRenderer<RenderedLatexLetter>() {
         return "D:${formattedTime.replace(":", "'")}'"
     }
 
-    private fun LatexAppendable.vedleggCommand(
-        scope: ExpressionScope<*, *>,
-        attachments: List<IncludeAttachment<*, *>>
-    ) {
+    private fun LatexAppendable.vedleggCommand(scope: ExpressionScope<*, *>, attachments: List<IncludeAttachment<*, *>>) {
         printNewCmd("feltclosingvedlegg") {
             val includedAttachments = attachments.filter { it.predicate.eval(scope) }
             if (includedAttachments.isNotEmpty()) {
@@ -199,19 +194,11 @@ object PensjonLatexRenderer : LetterRenderer<RenderedLatexLetter>() {
     private fun LatexAppendable.renderText(scope: ExpressionScope<*, *>, elements: List<TextElement<*>>): Unit =
         render(scope, elements) { inner, text -> renderTextContent(inner, text) }
 
-    private fun LatexAppendable.renderOutlineContent(
-        scope: ExpressionScope<*, *>,
-        element: Element.OutlineContent<*>,
-    ): Unit =
+    private fun LatexAppendable.renderOutlineContent(scope: ExpressionScope<*, *>, element: Element.OutlineContent<*>): Unit =
         when (element) {
             is Element.OutlineContent.Paragraph -> renderParagraph(scope, element)
             is Element.OutlineContent.Title1 -> printCmd("lettersectiontitle") {
-                arg {
-                    renderText(
-                        scope,
-                        element.text
-                    )
-                }
+                arg { renderText(scope, element.text) }
             }
         }
 
@@ -227,20 +214,17 @@ object PensjonLatexRenderer : LetterRenderer<RenderedLatexLetter>() {
             }
         }
 
-    private fun LatexAppendable.renderParagraphContent(
-        scope: ExpressionScope<*, *>,
-        element: Element.OutlineContent.ParagraphContent<*>
-    ): Unit =
+    private fun LatexAppendable.renderParagraphContent(scope: ExpressionScope<*, *>, element: ParagraphContent<*>): Unit =
         when (element) {
-            is Element.OutlineContent.ParagraphContent.Form -> renderForm(scope, element)
-            is Element.OutlineContent.ParagraphContent.Text -> renderTextContent(scope, element)
-            is Element.OutlineContent.ParagraphContent.ItemList -> renderList(scope, element)
-            is Element.OutlineContent.ParagraphContent.Table -> renderTable(scope, element)
+            is ParagraphContent.Form -> renderForm(scope, element)
+            is Text -> renderTextContent(scope, element)
+            is ParagraphContent.ItemList -> renderList(scope, element)
+            is ParagraphContent.Table -> renderTable(scope, element)
         }
 
     private fun LatexAppendable.renderList(
         scope: ExpressionScope<*, *>,
-        list: Element.OutlineContent.ParagraphContent.ItemList<*>
+        list: ParagraphContent.ItemList<*>
     ) {
         if (hasAnyContent(scope, list.items)) {
             printCmd("begin", "itemize")
@@ -252,10 +236,7 @@ object PensjonLatexRenderer : LetterRenderer<RenderedLatexLetter>() {
         }
     }
 
-    private fun LatexAppendable.renderTable(
-        scope: ExpressionScope<*, *>,
-        table: Element.OutlineContent.ParagraphContent.Table<*>
-    ) {
+    private fun LatexAppendable.renderTable(scope: ExpressionScope<*, *>, table: ParagraphContent.Table<*>) {
         if (hasAnyContent(scope, table.rows)) {
             val columnSpec = table.header.colSpec
 
@@ -272,8 +253,8 @@ object PensjonLatexRenderer : LetterRenderer<RenderedLatexLetter>() {
 
     private fun LatexAppendable.renderTableCells(
         scope: ExpressionScope<*, *>,
-        cells: List<Element.OutlineContent.ParagraphContent.Table.Cell<LanguageSupport>>,
-        colSpec: List<Element.OutlineContent.ParagraphContent.Table.ColumnSpec<LanguageSupport>>
+        cells: List<ParagraphContent.Table.Cell<LanguageSupport>>,
+        colSpec: List<ParagraphContent.Table.ColumnSpec<LanguageSupport>>
     ) {
         cells.forEachIndexed { index, cell ->
             val columnSpan = colSpec[index].columnSpan
@@ -291,56 +272,39 @@ object PensjonLatexRenderer : LetterRenderer<RenderedLatexLetter>() {
         print("""\\""", escape = false)
     }
 
-    private fun columnHeadersLatexString(columnSpec: List<Element.OutlineContent.ParagraphContent.Table.ColumnSpec<LanguageSupport>>): String =
+    private fun columnHeadersLatexString(columnSpec: List<ParagraphContent.Table.ColumnSpec<LanguageSupport>>): String =
         columnSpec.joinToString("") {
             ("X" +
                     when (it.alignment) {
-                        Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.LEFT -> "[l]"
-                        Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT -> "[r]"
+                        ColumnAlignment.LEFT -> "[l]"
+                        ColumnAlignment.RIGHT -> "[r]"
                     }).repeat(it.columnSpan)
         }
 
     private fun LatexAppendable.renderTextContent(
         scope: ExpressionScope<*, *>,
-        element: Element.OutlineContent.ParagraphContent.Text<*>
+        element: Text<*>
     ): Unit =
         when (element) {
-            is Element.OutlineContent.ParagraphContent.Text.Expression.ByLanguage -> renderTextLiteral(
-                element.expr(
-                    scope.language
-                ).eval(scope), element.fontType
-            )
-
-            is Element.OutlineContent.ParagraphContent.Text.Expression -> renderTextLiteral(
-                element.expression.eval(
-                    scope
-                ), element.fontType
-            )
-
-            is Element.OutlineContent.ParagraphContent.Text.Literal -> renderTextLiteral(
-                element.text(scope.language),
-                element.fontType
-            )
-
-            is Element.OutlineContent.ParagraphContent.Text.NewLine -> printCmd("newline")
+            is Text.Expression.ByLanguage -> renderTextLiteral(element.expr(scope.language).eval(scope), element.fontType)
+            is Text.Expression -> renderTextLiteral(element.expression.eval(scope), element.fontType)
+            is Text.Literal -> renderTextLiteral(element.text(scope.language), element.fontType)
+            is Text.NewLine -> printCmd("newline")
         }
 
     private fun LatexAppendable.renderTextLiteral(
         textLiteral: String,
-        fontType: Element.OutlineContent.ParagraphContent.Text.FontType
+        fontType: FontType
     ): Unit =
         when (fontType) {
-            Element.OutlineContent.ParagraphContent.Text.FontType.PLAIN -> print(textLiteral)
-            Element.OutlineContent.ParagraphContent.Text.FontType.BOLD -> printCmd("textbf") { arg { print(textLiteral) } }
-            Element.OutlineContent.ParagraphContent.Text.FontType.ITALIC -> printCmd("textit") { arg { print(textLiteral) } }
+            FontType.PLAIN -> print(textLiteral)
+            FontType.BOLD -> printCmd("textbf") { arg { print(textLiteral) } }
+            FontType.ITALIC -> printCmd("textit") { arg { print(textLiteral) } }
         }
 
-    private fun LatexAppendable.renderForm(
-        scope: ExpressionScope<*, *>,
-        element: Element.OutlineContent.ParagraphContent.Form<*>
-    ): Unit =
+    private fun LatexAppendable.renderForm(scope: ExpressionScope<*, *>, element: ParagraphContent.Form<*>): Unit =
         when (element) {
-            is Element.OutlineContent.ParagraphContent.Form.MultipleChoice -> {
+            is ParagraphContent.Form.MultipleChoice -> {
                 if (element.vspace) {
                     printCmd("formvspace")
                 }
@@ -358,7 +322,7 @@ object PensjonLatexRenderer : LetterRenderer<RenderedLatexLetter>() {
                 printCmd("end", "formChoice")
             }
 
-            is Element.OutlineContent.ParagraphContent.Form.Text -> {
+            is ParagraphContent.Form.Text -> {
                 if (element.vspace) {
                     printCmd("formvspace")
                 }
@@ -366,9 +330,9 @@ object PensjonLatexRenderer : LetterRenderer<RenderedLatexLetter>() {
                 printCmd("formText") {
                     arg {
                         val size = when (element.size) {
-                            Element.OutlineContent.ParagraphContent.Form.Text.Size.NONE -> 0
-                            Element.OutlineContent.ParagraphContent.Form.Text.Size.SHORT -> 25
-                            Element.OutlineContent.ParagraphContent.Form.Text.Size.LONG -> 60
+                            Size.NONE -> 0
+                            Size.SHORT -> 25
+                            Size.LONG -> 60
                         }
                         renderText(scope, listOf(element.prompt))
                         print(" ${".".repeat(size)}")
