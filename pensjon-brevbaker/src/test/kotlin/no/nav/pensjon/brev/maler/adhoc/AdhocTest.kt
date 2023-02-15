@@ -20,7 +20,7 @@ class AdhocTest {
     }
 
     fun testAdhocPdf(template: LetterTemplate<*, *>, pdfName: String) {
-        Letter(template, Any(), Language.Bokmal, Fixtures.fellesAuto)
+        Letter(template, Unit, Language.Bokmal, Fixtures.fellesAuto)
             .let { PensjonLatexRenderer.render(it) }
             .let { runBlocking { LaTeXCompilerService(PDF_BUILDER_URL).producePDF(it, "test").base64PDF } }
             .also { writeTestPDF(pdfName, it) }
