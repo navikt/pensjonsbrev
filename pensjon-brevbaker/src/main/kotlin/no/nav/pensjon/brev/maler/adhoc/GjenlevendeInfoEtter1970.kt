@@ -22,7 +22,7 @@ object GjenlevendeInfoEtter1970 : AutobrevTemplate<Unit> {
             displayTitle = "", //TODO
             isSensitiv = false,
             distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
-            brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV
+            brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
         )
     ) {
         title {
@@ -99,6 +99,16 @@ object GjenlevendeInfoEtter1970 : AutobrevTemplate<Unit> {
             paragraph {
                 text(
                     Bokmal to "Får du godkjent utdanning eller arbeidstrening kan du også søke om skolepenger og tilleggsstønad. Du finner mer informasjon om stønadene på nav.no/gjenlevendepensjon#andre-stonader.",
+                )
+            }
+            title1 {
+                text(
+                    Bokmal to "Har du spørsmål?",
+                )
+            }
+            paragraph {
+                text(
+                    Bokmal to "Du finner informasjon på nav.no/gjenlevendepensjon#regelendringer. Du kan også kontakte oss på telefon 55 55 33 34 eller på nav.no/kontaktoss.",
                 )
             }
         }

@@ -95,9 +95,9 @@ object PensjonLatexRenderer : LetterRenderer<RenderedLatexLetter>() {
     private fun LatexAppendable.signaturCommands(saksbehandlere: SignerendeSaksbehandlere?, brevtype: LetterMetadata.Brevtype) {
         printNewCmd("closingbehandlet") {
             if (saksbehandlere != null) {
-                println("""\parbox[t]{0.5\linewidth}{${saksbehandlere.saksbehandler} \\ \feltclosingsaksbehandlersuffix}""")
+                print("""\parbox[t]{0.5\linewidth}{${saksbehandlere.saksbehandler} \\ \feltclosingsaksbehandlersuffix}""", escape = false)
                 if (brevtype == LetterMetadata.Brevtype.VEDTAKSBREV) {
-                    println("""\parbox[t]{0.5\linewidth}{${saksbehandlere.attesterendeSaksbehandler} \\ \feltclosingsaksbehandlersuffix}""")
+                    println("""\parbox[t]{0.5\linewidth}{${saksbehandlere.attesterendeSaksbehandler} \\ \feltclosingsaksbehandlersuffix}""", escape = false)
                 }
                 printCmd("par")
                 printCmd("vspace*{12pt}")

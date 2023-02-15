@@ -22,7 +22,7 @@ object GjenlevendeInfoFoer1970 : AutobrevTemplate<Unit> {
             displayTitle = "", //TODO
             isSensitiv = false,
             distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
-            brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
+            brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
         )
     ) { 
         //TODO legg inn alle tekstene på nytt når det er klart.
@@ -118,12 +118,12 @@ object GjenlevendeInfoFoer1970 : AutobrevTemplate<Unit> {
             //TODO legg inn tabellen når den begynner å bli klar.
             title1 {
                 text(
-                    Bokmal to "Har du custom spørsmål?",
+                    Bokmal to "Har du spørsmål?",
                 )
             }
             paragraph {
                 text(
-                    Bokmal to "Jeg har custom svar :D",
+                    Bokmal to "Du finner informasjon på nav.no/gjenlevendepensjon#regelendringer. Du kan også kontakte oss på telefon 55 55 33 34 eller på nav.no/kontaktoss.",
                 )
             }
         }
