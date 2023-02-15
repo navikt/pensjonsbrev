@@ -145,5 +145,18 @@ data class SlikBeregnerViUfoeretrygdenDin(
             }
         }
     }
+
+    // TBU034V
+    object FolketrygdensGrunnbeloep : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+            paragraph {
+                text(
+                    Bokmal to "Folketrygdens grunnbeløp endres hvert år, og uføretrygden din blir justert ut fra dette.",
+                    Nynorsk to "",
+                    English to ""
+                )
+            }
+        }
+    }
 }
 
