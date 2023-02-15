@@ -2,7 +2,6 @@ package no.nav.pensjon.brev.maler.adhoc
 
 import kotlinx.coroutines.runBlocking
 import no.nav.pensjon.brev.*
-import no.nav.pensjon.brev.api.model.SignerendeSaksbehandlere
 import no.nav.pensjon.brev.latex.LaTeXCompilerService
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.Letter
@@ -15,13 +14,13 @@ import org.junit.jupiter.api.Test
 @Tag(TestTags.PDF_BYGGER)
 class AdhocTest {
     fun testHtml(template: LetterTemplate<*, *>, htmlName: String) {
-        Letter(template, Unit, Language.Bokmal, Fixtures.fellesAuto.copy(signerendeSaksbehandlere = SignerendeSaksbehandlere("sakperson1", "sakperson2")))
+        Letter(template, Unit, Language.Bokmal, Fixtures.fellesAuto)
             .let { PensjonHTMLRenderer.render(it) }
             .also { writeTestHTML(htmlName, it) }
     }
 
     fun testAdhocPdf(template: LetterTemplate<*, *>, pdfName: String) {
-        Letter(template, Any(), Language.Bokmal, Fixtures.fellesAuto.copy(signerendeSaksbehandlere = SignerendeSaksbehandlere("sakperson1", "sakperson2")))
+        Letter(template, Any(), Language.Bokmal, Fixtures.fellesAuto)
             .let { PensjonLatexRenderer.render(it) }
             .let { runBlocking { LaTeXCompilerService(PDF_BUILDER_URL).producePDF(it, "test").base64PDF } }
             .also { writeTestPDF(pdfName, it) }
