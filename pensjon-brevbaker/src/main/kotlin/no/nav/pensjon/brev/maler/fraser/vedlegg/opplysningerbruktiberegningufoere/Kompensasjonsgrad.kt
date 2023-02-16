@@ -42,7 +42,7 @@ INCLUDE
                     text(
                         Bokmal to "Slik har vi fastsatt kompensasjonsgraden din",
                         Nynorsk to "Slik har vi fastsett kompensasjonsgraden din",
-                        English to ""
+                        English to "This is your degree of compensation"
                     )
                 }
                 paragraph {
@@ -53,7 +53,9 @@ INCLUDE
                         Nynorsk to "Vi fastset kompensasjonsgraden ved å samanlikne det du ".expr() +
                                 ifElse(harFullUfoeregrad, ifTrue = "har rett til", ifFalse = "ville hatt rett til") +
                                 " i 100 prosent uføretrygd, med den oppjusterte inntekta di før du blei ufør. Kompensasjonsgraden blir brukt til å berekne kor mykje vi reduserer uføretrygda di, dersom du har inntekt som er høgare enn inntektsgrensa.".expr(),
-                        English to "".expr()
+                        English to "Your degree of compensation is established by comparing what you ".expr() +
+                                ifElse(harFullUfoeregrad, ifTrue = "are entitled to with a degree of disability of", ifFalse = "would have been entitled to had your degree of disability been") +
+                                " 100 percent, and your recalculated income prior to your disability. The degree of compensation is used to calculate how much your disability benefit will be reduced if your income exceeds the income limit.".expr()
                     )
                 }
                 paragraph {
