@@ -79,13 +79,13 @@ data class BarnetilleggEndringIOpptjening(
             )
         }
 
-        includePhrase(
-            Barnetillegg.BetydningAvInntektEndringer(
-                harBarnetilleggFellesbarn = harBarnetilleggFellesbarn,
-                harBarnetilleggSaerkullsbarn = harBarnetilleggSaerkullsbarn,
-                sivilstand = sivilstand
+            includePhrase(
+                Barnetillegg.BetydningAvInntektEndringer(
+                    harBarnetilleggFellesbarn = harBarnetilleggFellesbarn.notNull(),
+                    harBarnetilleggSaerkullsbarn = harBarnetilleggSaerkullsbarn.notNull(),
+                    sivilstand = sivilstand
+                )
             )
-        )
 
         ifNotNull(barnetilleggFellesbarn) { barnetilleggFellesbarn ->
             includePhrase(
@@ -93,7 +93,7 @@ data class BarnetilleggEndringIOpptjening(
                     faarUtbetaltBarnetilleggFellesBarn = barnetilleggFellesbarn.beloepNetto.greaterThan(0),
                     fribeloepFellesbarn = barnetilleggFellesbarn.fribeloep,
                     grunnbeloep = grunnbeloep,
-                    harBarnetilleggSaerkullsbarn = harBarnetilleggSaerkullsbarn,
+                    harBarnetilleggSaerkullsbarn = harBarnetilleggSaerkullsbarn.notNull(),
                     harBeloepFratrukketAnnenForelder = barnetilleggFellesbarn.harFratrukketBeloepFraAnnenForelder,
                     harFradragFellesbarn = barnetilleggFellesbarn.harFradrag,
                     harJusteringsbeloepFellesbarn = barnetilleggFellesbarn.harJusteringsbeloep,
@@ -178,8 +178,8 @@ data class BarnetilleggEndringIOpptjening(
 
         includePhrase(
             Barnetillegg.HenvisningTilVedleggOpplysningerOmBeregning(
-                harBarnetilleggFellesbarn = harBarnetilleggFellesbarn,
-                harBarnetilleggSaerkullsbarn = harBarnetilleggSaerkullsbarn,
+                harBarnetilleggFellesbarn = harBarnetilleggFellesbarn.notNull(),
+                harBarnetilleggSaerkullsbarn = harBarnetilleggSaerkullsbarn.notNull(),
             )
         )
     }
