@@ -37,7 +37,11 @@ import no.nav.pensjon.brev.api.model.maler.EndringIOpptjeningSelectors.oppjuster
 import no.nav.pensjon.brev.api.model.maler.EndringIOpptjeningSelectors.ufoeregrad
 import no.nav.pensjon.brev.api.model.maler.EndringIOpptjeningSelectors.utbetalingsgrad
 import no.nav.pensjon.brev.api.model.maler.EndringIOpptjeningSelectors.utbetaltPerMaaned
+import no.nav.pensjon.brev.api.model.maler.FellesbarnTilleggSelectors.harFellesbarnInnvilget
 import no.nav.pensjon.brev.api.model.maler.FellesbarnTilleggSelectors.harFellesbarnInnvilget_safe
+import no.nav.pensjon.brev.api.model.maler.OpphoerBarnetilleggAutoDtoSelectors.barnetilleggFellesbarn
+import no.nav.pensjon.brev.api.model.maler.OpphoerBarnetilleggAutoDtoSelectors.barnetilleggSaerkullsbarn
+import no.nav.pensjon.brev.api.model.maler.SaerkullsbarnTilleggSelectors.harSaerkullsbarnInnvilget
 import no.nav.pensjon.brev.api.model.maler.SaerkullsbarnTilleggSelectors.harSaerkullsbarnInnvilget_safe
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.fraser.ufoer.HjemlerFolketrygdloven
@@ -50,6 +54,7 @@ import no.nav.pensjon.brev.maler.fraser.ufoer.endringIOpptjening.KombinereUfoere
 import no.nav.pensjon.brev.maler.vedlegg.createVedleggOpplysningerBruktIBeregningUT
 import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgPlikterUfoere
 import no.nav.pensjon.brev.maler.vedlegg.vedleggMaanedligUfoeretrygdFoerSkatt
+import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.VedtaksbrevTemplate
 import no.nav.pensjon.brev.template.dsl.createTemplate
@@ -93,9 +98,9 @@ object EndringIOpptjeningAuto : VedtaksbrevTemplate<EndringIOpptjeningAutoDto> {
 
             includePhrase(
                 Ufoeretrygd.Beloep(
-                    ektefelle = endringIOpptjening.harEktefelletilleggInnvilget,
+                    ektefelle = endringIOpptjening.harEktefelletilleggInnvilget.notNull(),
                     fellesbarn = fellesbarnTillegg.harFellesbarnInnvilget_safe.notNull(),
-                    gjenlevende = endringIOpptjening.harGjenlevendetilleggInnvilget,
+                    gjenlevende = endringIOpptjening.harGjenlevendetilleggInnvilget.notNull(),
                     perMaaned = endringIOpptjening.utbetaltPerMaaned,
                     saerkullsbarn = saerkullsbarnTillegg.harSaerkullsbarnInnvilget_safe.notNull(),
                     ufoeretrygd = endringIOpptjening.harUtbetalingsgrad,
@@ -119,10 +124,10 @@ object EndringIOpptjeningAuto : VedtaksbrevTemplate<EndringIOpptjeningAutoDto> {
 
             includePhrase(
                 HjemlerFolketrygdloven.Folketrygdloven(
-                    harEktefelletilleggInnvilget = endringIOpptjening.harEktefelletilleggInnvilget,
+                    harEktefelletilleggInnvilget = endringIOpptjening.harEktefelletilleggInnvilget.notNull(),
                     harFellesbarntilleggInnvilget = fellesbarnTillegg.harFellesbarnInnvilget_safe.notNull(),
-                    harGjenlevendetilleggInnvilget = endringIOpptjening.harGjenlevendetilleggInnvilget,
-                    harYrkesskadegradUtbetaling = endringIOpptjening.harYrkesskadeGradUtbetaling,
+                    harGjenlevendetilleggInnvilget = endringIOpptjening.harGjenlevendetilleggInnvilget.notNull(),
+                    harYrkesskadegradUtbetaling = endringIOpptjening.harYrkesskadeGradUtbetaling.notNull(),
                     harSaerkullsbarntilleggInnvilget = saerkullsbarnTillegg.harSaerkullsbarnInnvilget_safe.notNull(),
                 )
             )
@@ -223,20 +228,24 @@ object EndringIOpptjeningAuto : VedtaksbrevTemplate<EndringIOpptjeningAutoDto> {
                     utbetalingsgrad = endringIOpptjening.utbetalingsgrad,
                 )
             )
-
-            includePhrase(
-                BarnetilleggEndringIOpptjening(
-                    barnetilleggFellesbarn = fellesbarnTillegg,
-                    barnetilleggSaerkullsbarn = saerkullsbarnTillegg,
-                    grunnbeloep = endringIOpptjening.grunnbeloep,
-                    sivilstand = sivilstand
-                )
-            )
+            ifNotNull(fellesbarnTillegg, saerkullsbarnTillegg
+            ) { fellesbarnTillegg, saerkullsbarnTillegg ->
+                showIf(fellesbarnTillegg.harFellesbarnInnvilget or saerkullsbarnTillegg.harSaerkullsbarnInnvilget) {
+                    includePhrase(
+                        BarnetilleggEndringIOpptjening(
+                            barnetilleggFellesbarn = fellesbarnTillegg,
+                            barnetilleggSaerkullsbarn = saerkullsbarnTillegg,
+                            grunnbeloep = endringIOpptjening.grunnbeloep,
+                            sivilstand = sivilstand
+                        )
+                    )
+                }
+            }
 
             includePhrase(
                 Gjenlevendetillegg.HarGjenlevendetillegg(
                     forventetInntekt = endringIOpptjening.forventetInntekt,
-                    harGjenlevendetilleggInnvilget = endringIOpptjening.harGjenlevendetilleggInnvilget,
+                    harGjenlevendetilleggInnvilget = endringIOpptjening.harGjenlevendetilleggInnvilget.notNull(),
                     inntektsgrense = endringIOpptjening.inntektsgrense,
                 )
             )
