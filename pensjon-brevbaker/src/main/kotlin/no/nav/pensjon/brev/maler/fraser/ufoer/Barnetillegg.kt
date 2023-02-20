@@ -125,11 +125,23 @@ object Barnetillegg {
                     showIf(harBarnetilleggSaerkullsbarn) {
                         textExpr(
                             Bokmal to " Inntekten til ".expr() + sivilstand.bestemtForm() + " din har kun betydning for størrelsen på barnetillegget til ".expr() +
-                                    ifElse(harFlereFellesbarn,"barna","barnet") + " som bor sammen med begge sine foreldre.".expr(),
+                                    ifElse(
+                                        harFlereFellesbarn,
+                                        "barna",
+                                        "barnet"
+                                    ) + " som bor sammen med begge sine foreldre.".expr(),
                             Nynorsk to " Inntekta til ".expr() + sivilstand.bestemtForm() + " din har berre betydning for storleiken på barnetillegget til ".expr() +
-                                    ifElse(harFlereFellesbarn, ifTrue = "barna", ifFalse = "barnet") + " som bur saman med begge foreldra sine.".expr(),
+                                    ifElse(
+                                        harFlereFellesbarn,
+                                        ifTrue = "barna",
+                                        ifFalse = "barnet"
+                                    ) + " som bur saman med begge foreldra sine.".expr(),
                             English to " The income of your ".expr() + sivilstand.bestemtForm() + " only affects the amount of child supplement for the ".expr() +
-                                    ifElse(harFlereFellesbarn, ifTrue = "children who live", ifFalse = "child who lives") + " together with both parents.",
+                                    ifElse(
+                                        harFlereFellesbarn,
+                                        ifTrue = "children who live",
+                                        ifFalse = "child who lives"
+                                    ) + " together with both parents.",
                         )
                     }
                 }
@@ -542,7 +554,7 @@ object Barnetillegg {
                                 " because your combined incomes is higher than the income limit NOK " +
                                 inntektstakSaerkullsbarn.format() + ". Your income exceeds the income limit to receive child supplement.".expr()
                     )
-                }.orShowIf(saerkullInnvilget and not(saerkullUtbetalt) and fellesInnvilget and fellesUtbetalt) {
+                }.orShowIf(saerkullInnvilget and not(saerkullUtbetalt) and fellesInnvilget) {
                     textExpr( // TBU1286.1
                         Bokmal to "Barnetillegget for ".expr() +
                                 ifElse(harFlereSaerkullsbarn, "barna", "barnet") +
@@ -557,22 +569,22 @@ object Barnetillegg {
                                 " not live together with both parents because your income on its own is higher than NOK " +
                                 inntektstakSaerkullsbarn.format() + ". Your income exceeds the income limit to receive child supplement.".expr()
                     )
-                }.orShowIf(fellesInnvilget and not(fellesUtbetalt) and not(saerkullInnvilget)) {
-                    textExpr(// TBU1286.2
-                        Bokmal to "Barnetillegget for ".expr() +
-                                ifElse(harFlereFellesBarn, "barna", "barnet") +
-                                " blir ikke utbetalt fordi dere har en samlet inntekt som er høyere enn " +
-                                inntektstakFellesbarn.format() + " kroner. De samlede inntektene er over grensen for å få utbetalt barnetillegg.".expr(),
-                        Nynorsk to "Barnetillegget for ".expr() +
-                                ifElse(harFlereFellesBarn, "barna", "barnet") +
-                                " blir ikkje utbetalt fordi dei har ei samla inntekt som er høgare enn " +
-                                inntektstakFellesbarn.format() + " kroner. Dei samla inntektene er over grensa for å få utbetalt barnetillegg.".expr(),
-                        English to "You will not receive child supplement for the ".expr() +
-                                ifElse(harFlereFellesBarn, "children", "child") +
-                                " because your combined incomes is higher than NOK " +
-                                inntektstakFellesbarn.format() + ". Your combined incomes exceed the income limit to receive child supplement.".expr()
-                    )
-                }.orShowIf(fellesInnvilget and not(fellesUtbetalt) and saerkullInnvilget and saerkullUtbetalt) {
+                    /*   }.orShowIf(fellesInnvilget and not(fellesUtbetalt) and not(saerkullInnvilget)) {
+                           textExpr(// TBU1286.2
+                               Bokmal to "Barnetillegget for ".expr() +
+                                       ifElse(harFlereFellesBarn, "barna", "barnet") +
+                                       " blir ikke utbetalt fordi dere har en samlet inntekt som er høyere enn " +
+                                       inntektstakFellesbarn.format() + " kroner. De samlede inntektene er over grensen for å få utbetalt barnetillegg.".expr(),
+                               Nynorsk to "Barnetillegget for ".expr() +
+                                       ifElse(harFlereFellesBarn, "barna", "barnet") +
+                                       " blir ikkje utbetalt fordi dei har ei samla inntekt som er høgare enn " +
+                                       inntektstakFellesbarn.format() + " kroner. Dei samla inntektene er over grensa for å få utbetalt barnetillegg.".expr(),
+                               English to "You will not receive child supplement for the ".expr() +
+                                       ifElse(harFlereFellesBarn, "children", "child") +
+                                       " because your combined incomes is higher than NOK " +
+                                       inntektstakFellesbarn.format() + ". Your combined incomes exceed the income limit to receive child supplement.".expr()
+                           ) */
+                }.orShowIf(fellesInnvilget and not(fellesUtbetalt) and saerkullInnvilget) {
                     textExpr(// TBU1286.2
                         Bokmal to "Barnetillegget for ".expr() +
                                 ifElse(harFlereFellesBarn, "barna", "barnet") +
