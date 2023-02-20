@@ -12,7 +12,7 @@ fun createEndringIOpptjeningAutoDto() =
         fellesbarnTillegg = Fixtures.create(),
         saerkullsbarnTillegg = Fixtures.create(),
         endringIOpptjening = Fixtures.create(),
-        sivilstand = Sivilstand.SAMBOER1_5,
+        sivilstand = Sivilstand.GIFT,
         maanedligUfoeretrygdFoerSkatt = Fixtures.create(),
         opplysningerBruktIBeregningUT = Fixtures.create(),
         orienteringOmRettigheterUfoere = Fixtures.create(),
@@ -55,7 +55,7 @@ fun createEndringIOpptjeningAutoDtoEndringIOpptjening() =
 fun createEndringIOpptjeningAutoDtoBarnetilleggFellesbarn() =
     EndringIOpptjeningAutoDto.FellesbarnTillegg(
         beloepBrutto = Kroner(50000),
-        beloepNetto = Kroner(0),
+        beloepNetto = Kroner(30000),
         fribeloep = Kroner(200000),
         gjelderFlereBarn = true,
         harFellesbarnInnvilget = true,
@@ -70,7 +70,7 @@ fun createEndringIOpptjeningAutoDtoBarnetilleggFellesbarn() =
 fun createEndringIOpptjeningAutoDtoBarnetilleggSaerkullsbarn() =
     EndringIOpptjeningAutoDto.SaerkullsbarnTillegg(
         beloepBrutto = Kroner(80000),
-        beloepNetto = Kroner(0),
+        beloepNetto = Kroner(25000),
         fribeloep = Kroner(200000),
         gjelderFlereBarn = false,
         harFradrag = false,
