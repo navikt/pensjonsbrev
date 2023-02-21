@@ -11,7 +11,6 @@ fun createOpplysningerBruktIBeregningUTDto() =
     OpplysningerBruktIBeregningUTDto(
         barnetilleggGjeldende = Fixtures.create(),
         beregnetUTPerManedGjeldende = Fixtures.create(),
-        beregningsmetode = Beregningsmetode.EOS,
         fraOgMedDatoErNesteAar = false,
         grunnbeloep = Kroner(90000),
         harKravaarsakEndringInntekt = true,
