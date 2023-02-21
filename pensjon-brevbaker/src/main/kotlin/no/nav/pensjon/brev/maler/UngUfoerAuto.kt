@@ -26,7 +26,7 @@ import no.nav.pensjon.brev.maler.vedlegg.vedleggMaanedligUfoeretrygdFoerSkatt
 import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgPlikterUfoere
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.Nynorsk
-import no.nav.pensjon.brev.template.VedtaksbrevTemplate
+import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
@@ -35,9 +35,9 @@ import no.nav.pensjon.brev.template.dsl.text
 
 // BrevTypeKode: PE_BA_04_505
 @TemplateModelHelpers
-object UngUfoerAuto : VedtaksbrevTemplate<UngUfoerAutoDto> {
+object UngUfoerAuto : AutobrevTemplate<UngUfoerAutoDto> {
 
-    override val kode: Brevkode.Vedtak = Brevkode.Vedtak.UNG_UFOER_AUTO
+    override val kode: Brevkode.AutoBrev = Brevkode.AutoBrev.UNG_UFOER_AUTO
 
     override val template = createTemplate(
         name = kode.name,
@@ -47,6 +47,7 @@ object UngUfoerAuto : VedtaksbrevTemplate<UngUfoerAutoDto> {
             displayTitle = "Vedtak - endring av uføretrygd fordi du fyller 20 år",
             isSensitiv = true,
             distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
+            brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
         )
     ) {
         title {
@@ -97,7 +98,7 @@ object UngUfoerAuto : VedtaksbrevTemplate<UngUfoerAutoDto> {
             includePhrase(Ufoeretrygd.RettTilAAKlage)
             includePhrase(Felles.RettTilInnsynPesys)
             includePhrase(Ufoeretrygd.SjekkUtbetalingene)
-
+            includePhrase(Felles.HarDuSpoersmaalPesys)
         }
 
         includeAttachmentIfNotNull(vedleggMaanedligUfoeretrygdFoerSkatt, maanedligUfoeretrygdFoerSkatt)

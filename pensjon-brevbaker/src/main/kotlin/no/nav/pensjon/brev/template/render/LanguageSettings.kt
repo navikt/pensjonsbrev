@@ -1,13 +1,8 @@
 package no.nav.pensjon.brev.template.render
 
-import no.nav.pensjon.brev.maler.fraser.common.Constants.KONTAKT_URL
-import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
 import no.nav.pensjon.brev.template.Language.*
-import no.nav.pensjon.brev.template.dsl.expression.expr
-import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.languageSettings
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.template.dsl.textExpr
 
 object LanguageSetting {
     object Sakspart {
@@ -19,11 +14,10 @@ object LanguageSetting {
     }
 
     object Closing {
-        const val harDuSpoersmaal = "closingspoersmaal"
-        const val kontaktOss = "closingkontaktoss"
+        const val automatiskVedtaksbrev = "closingautomatisktextvedtaksbrev"
         const val greeting = "closinggreeting"
         const val saksbehandler = "closingsaksbehandlersuffix"
-        const val automatisk = "closingautomatisktext"
+        const val automatiskInformasjonsbrev = "closingautomatisktextinfobrev"
     }
 }
 
@@ -84,23 +78,6 @@ val pensjonLatexSettings = languageSettings {
         )
     }
 
-    // TODO: Slå sammen closingspoersmaal og closingkontaktoss til en frase.
-    setting(LanguageSetting.Closing.harDuSpoersmaal) {
-        text(
-            Bokmal to "Har du spørsmål?",
-            Nynorsk to "Har du spørsmål?",
-            English to "Do you have questions?",
-        )
-    }
-
-    setting(LanguageSetting.Closing.kontaktOss) {
-        textExpr(
-            Bokmal to "Du finner mer informasjon på ".expr() + NAV_URL + ". Hvis du ikke finner svar på spørsmålet ditt, kontakt oss på ".expr() + KONTAKT_URL + ".",
-            Nynorsk to "Du finn meir informasjon på ".expr() + NAV_URL + ". Om du ikkje finn svar på spørsmålet ditt, kontakt oss på ".expr() + KONTAKT_URL + ".",
-            English to "You can find more information at ".expr() + NAV_URL + ". If you do not find the answer to your question, contact us at ".expr() + KONTAKT_URL + ".",
-        )
-    }
-
     setting(LanguageSetting.Closing.greeting) {
         text(
             Bokmal to "Med vennlig hilsen",
@@ -113,14 +90,21 @@ val pensjonLatexSettings = languageSettings {
         text(
             Bokmal to "Saksbehandler",
             Nynorsk to "Saksbehandlar",
-            English to "Executive Officer",
+            English to "Assessor",
         )
     }
-    setting(LanguageSetting.Closing.automatisk) {
+    setting(LanguageSetting.Closing.automatiskInformasjonsbrev) {
         text(
             Bokmal to "Brevet er produsert automatisk og derfor ikke underskrevet av saksbehandler.",
             Nynorsk to "Brevet er produsert automatisk og er difor ikkje underskrive av saksbehandler.",
             English to "This letter has been processed automatically and is therefore not signed by an assessor.",
+        )
+    }
+    setting(LanguageSetting.Closing.automatiskVedtaksbrev) {
+        text(
+            Bokmal to "Saken har blitt automatisk saksbehandlet. Vedtaksbrevet er derfor ikke underskrevet av saksbehandler.",
+            Nynorsk to "Saken har blitt automatisk saksbehandla. Vedtaksbrevet er derfor ikkje underskriven av saksbehandlar.",
+            English to "Your case has been processed automatically. The decision letter has therefore not been signed by an assessor.",
         )
     }
     setting("closingvedleggprefix") {

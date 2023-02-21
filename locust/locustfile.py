@@ -2,7 +2,7 @@ from locust import HttpUser, task, between
 import azuread
 import os
 
-payload = open(os.path.join(os.path.dirname(__file__), 'vedtaksbrev_request.json'), "r").read()
+payload = open(os.path.join(os.path.dirname(__file__), 'autobrev_request.json'), "r").read()
 
 class BrevbakerLoadTest(HttpUser):
     token = azuread.fetch_token()
@@ -12,7 +12,7 @@ class BrevbakerLoadTest(HttpUser):
     def load_test(self):
         #headers = {'Content-Type': 'application/json'} # local testing
         headers = {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + self.access_token()}# dev environment testing
-        self.client.post("/letter/vedtak", payload, headers=headers)
+        self.client.post("/letter/autobrev", payload, headers=headers)
 
     def access_token(self):
         if self.token.is_valid():

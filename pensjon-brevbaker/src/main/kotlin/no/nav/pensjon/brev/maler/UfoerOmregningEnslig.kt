@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.maler
 
 import no.nav.pensjon.brev.api.model.Institusjon
 import no.nav.pensjon.brev.api.model.LetterMetadata
+import no.nav.pensjon.brev.api.model.LetterMetadata.Brevtype.VEDTAKSBREV
 import no.nav.pensjon.brev.api.model.Sivilstand
 import no.nav.pensjon.brev.api.model.maler.AvdoedSelectors.ektefelletilleggOpphoert
 import no.nav.pensjon.brev.api.model.maler.AvdoedSelectors.harFellesBarnUtenBarnetillegg
@@ -50,7 +51,7 @@ import no.nav.pensjon.brev.maler.fraser.common.Vedtak
 import no.nav.pensjon.brev.maler.vedlegg.vedleggMaanedligUfoeretrygdFoerSkatt
 import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgPlikterUfoere
 import no.nav.pensjon.brev.template.Language.*
-import no.nav.pensjon.brev.template.VedtaksbrevTemplate
+import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
@@ -59,9 +60,9 @@ import no.nav.pensjon.brev.template.dsl.text
 
 // 000073
 @TemplateModelHelpers
-object UfoerOmregningEnslig : VedtaksbrevTemplate<UfoerOmregningEnsligDto> {
+object UfoerOmregningEnslig : AutobrevTemplate<UfoerOmregningEnsligDto> {
 
-    override val kode: Brevkode.Vedtak = Brevkode.Vedtak.UFOER_OMREGNING_ENSLIG
+    override val kode: Brevkode.AutoBrev = Brevkode.AutoBrev.UFOER_OMREGNING_ENSLIG
 
     override val template = createTemplate(
         name = kode.name,
@@ -70,7 +71,8 @@ object UfoerOmregningEnslig : VedtaksbrevTemplate<UfoerOmregningEnsligDto> {
         letterMetadata = LetterMetadata(
             displayTitle = "Vedtak – omregning til enslig uføretrygdet (automatisk)",
             isSensitiv = true,
-            distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK
+            distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
+            brevtype = VEDTAKSBREV
         ),
     ) {
         val harMinsteytelseVedVirk = minsteytelseVedvirk_sats.notNull()
@@ -316,6 +318,7 @@ object UfoerOmregningEnslig : VedtaksbrevTemplate<UfoerOmregningEnsligDto> {
             includePhrase(Ufoeretrygd.SjekkUtbetalingene)
             includePhrase(Ufoeretrygd.Skattekort)
             includePhrase(Ufoeretrygd.SkattForDegSomBorIUtlandet(bruker.borINorge))
+            includePhrase(Felles.HarDuSpoersmaalPesys)
         }
 
         includeAttachment(vedleggMaanedligUfoeretrygdFoerSkatt, maanedligUfoeretrygdFoerSkatt)

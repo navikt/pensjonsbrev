@@ -1,34 +1,19 @@
 %----------------------------------------
 %       Closing/last page of letter
 %----------------------------------------
-\newcommand{\closingsaksbehandlet}{
-    \vspace*{60pt}
-    \parbox[t]{0.5\linewidth}{\feltclosingsaksbehandlerfirst \\ \feltclosingsaksbehandlersuffix}
-    \parbox[t]{0.5\linewidth}{\feltclosingsaksbehandlersecond \\ \feltclosingsaksbehandlersuffix}
-    \par
-    \vspace*{14pt}
-    \feltnavenhet
-}
-
-% Closing page text with no signatures
-\newcommand{\closingautomatiskbehandlet}{
-    \vspace*{4pt}
-    \feltnavenhet
-    \par
-    \vspace*{12pt}
-    \feltclosingautomatisktext
-}
 
 % Closing page text
 \newcommand{\closing}{
-    \par
+    \nopagebreak
     \begin{minipage}{\textwidth}
-        \lettersectiontitle{\feltclosingspoersmaal}
-        \templateparagraph{\feltclosingkontaktoss}
-        \par
+        \sloppy % no word-breaking
+        \raggedright % no word spacing
+        \raggedbottom % no line stretching to fit page
+        \frenchspacing % no double space after ended sentence
         \vspace*{42pt}
         \feltclosinggreeting
         \par
+        \vspace*{4pt}
         \closingbehandlet
         \feltclosingvedlegg
         \label{\currentSectionName} %set label for the last page before attachments

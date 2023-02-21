@@ -1,6 +1,6 @@
-import {PublicClientApplication} from "@azure/msal-browser";
-import {IMsalContext} from "@azure/msal-react/dist/MsalContext";
-import {AuthenticationResult} from "@azure/msal-common";
+import {PublicClientApplication} from "@azure/msal-browser"
+import {IMsalContext} from "@azure/msal-react/dist/MsalContext"
+import {AuthenticationResult} from "@azure/msal-common"
 
 export interface AzureConfig {
     clientId: string
@@ -13,7 +13,7 @@ function createMsal(config: AzureConfig): PublicClientApplication {
             clientId: config.clientId,
             authority: `https://login.microsoftonline.com/${config.tenantId}`,
             redirectUri: "/",
-        }
+        },
     })
 }
 

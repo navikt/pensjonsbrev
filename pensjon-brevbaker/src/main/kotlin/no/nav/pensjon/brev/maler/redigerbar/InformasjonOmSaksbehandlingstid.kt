@@ -10,11 +10,16 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmSaksbehandlin
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmSaksbehandlingstidDtoSelectors.ytelse
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InkluderVenterSvarAFPSelectors.uttakAlderspensjonProsent
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InkluderVenterSvarAFPSelectors.uttaksDato
-import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Language.*
-import no.nav.pensjon.brev.template.dsl.*
-import no.nav.pensjon.brev.template.dsl.expression.*
+import no.nav.pensjon.brev.template.RedigerbarTemplate
+import no.nav.pensjon.brev.template.dsl.createTemplate
+import no.nav.pensjon.brev.template.dsl.expression.expr
+import no.nav.pensjon.brev.template.dsl.expression.format
+import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
+import no.nav.pensjon.brev.template.dsl.languages
+import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.dsl.textExpr
 
 @TemplateModelHelpers
 object InformasjonOmSaksbehandlingstid : RedigerbarTemplate<InformasjonOmSaksbehandlingstidDto> {
@@ -28,6 +33,7 @@ object InformasjonOmSaksbehandlingstid : RedigerbarTemplate<InformasjonOmSaksbeh
             displayTitle = "Informasjon om saksbehandlingstid",
             isSensitiv = false,
             distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
+            brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
         )
     ) {
         title {
@@ -61,7 +67,7 @@ object InformasjonOmSaksbehandlingstid : RedigerbarTemplate<InformasjonOmSaksbeh
                 val uttaksDato = it.uttaksDato.format()
                 paragraph {
                     textExpr(
-                        Bokmal to "Du har ikke høy nok opptjenening til å ta ut ".expr() + prosent + " prosent alderspensjon fra " + uttaksDato
+                        Bokmal to "Du har ikke høy nok opptjening til å ta ut ".expr() + prosent + " prosent alderspensjon fra " + uttaksDato
                                 + ". Eventuelle AFP-rettigheter vil kunne gi deg rett til uttak av alderspensjon.",
                         Nynorsk to "Du har ikkje høg nok pensjonsopptjening til å ta ut ".expr() + prosent + " prosent alderspensjon frå " + uttaksDato
                                 + ". Eventuelle AFP-rettar vil kunne gi deg rett til uttak av alderspensjon.",

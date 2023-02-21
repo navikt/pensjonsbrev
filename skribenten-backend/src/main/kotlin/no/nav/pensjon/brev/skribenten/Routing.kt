@@ -7,9 +7,14 @@ import io.ktor.server.auth.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import io.ktor.server.util.*
+import no.nav.pensjon.brev.api.model.RenderedJsonLetter
+import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.skribenten.auth.*
 import no.nav.pensjon.brev.skribenten.services.*
 import java.util.Base64
+
+data class RenderLetterRequest(val letterData: Any, val editedLetter: RenderedJsonLetter?)
 
 fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config) {
     val authService = AzureADService(authConfig)
@@ -34,6 +39,29 @@ fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config
             get("/test/brevbaker") {
                 val brev = brevbakerService.genererBrev(call)
                 respondWithResult(brev, onOk = { respondBytes(Base64.getDecoder().decode(it.base64pdf), ContentType.Application.Pdf) })
+            }
+
+            get("/template/{brevkode}") {
+                val brevkode = call.parameters.getOrFail<Brevkode.Redigerbar>("brevkode")
+
+                when (val template = brevbakerService.getTemplate(call, brevkode)) {
+                    is ServiceResult.AuthorizationError -> TODO()
+                    is ServiceResult.Error -> TODO()
+                    is ServiceResult.Ok -> call.respondText(template.result, ContentType.Application.Json)
+                }
+            }
+            post("/letter/{brevkode}") {
+                val brevkode = call.parameters.getOrFail<Brevkode.Redigerbar>("brevkode")
+                val request = call.receive<RenderLetterRequest>()
+
+                when (val rendered = brevbakerService.renderLetter(call, brevkode, request.letterData)) {
+                    is ServiceResult.AuthorizationError -> TODO()
+                    is ServiceResult.Error -> TODO()
+                    is ServiceResult.Ok -> call.respond(
+                        request.editedLetter?.let { updatedEditedLetter(it, rendered.result) }
+                            ?: rendered.result
+                    )
+                }
             }
         }
     }

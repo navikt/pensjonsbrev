@@ -32,6 +32,7 @@ private fun <Param : Any> Letter<Param>.renderLetterAndAttachments(): String {
     return letterString
 }
 
+
 fun <AttachmentData : Any> createVedleggTestTemplate(
     template: AttachmentTemplate<LangBokmalNynorskEnglish, AttachmentData>,
     attachmentData: Expression<AttachmentData>
@@ -43,6 +44,7 @@ fun <AttachmentData : Any> createVedleggTestTemplate(
         "test mal",
         isSensitiv = false,
         distribusjonstype = LetterMetadata.Distribusjonstype.ANNET,
+        brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
     ),
 ) {
     title {

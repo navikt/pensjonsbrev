@@ -13,7 +13,7 @@ class LetterTest {
         name = "test",
         letterDataType = TestData::class,
         languages = languages(Language.Bokmal),
-        letterMetadata = LetterMetadata("Test", false, LetterMetadata.Distribusjonstype.ANNET),
+        letterMetadata = LetterMetadata("Test", false, LetterMetadata.Distribusjonstype.ANNET, brevtype = LetterMetadata.Brevtype.VEDTAKSBREV),
     ) {
         title {
             text(Language.Bokmal to "test")

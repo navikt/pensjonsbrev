@@ -1,14 +1,14 @@
 import type {NextPage} from 'next'
 import Head from 'next/head'
-import {AuthenticatedTemplate, UnauthenticatedTemplate, useMsal} from "@azure/msal-react";
-import {useState} from "react";
-import styles from '../styles/Home.module.css'
-import SkribentenAPI from "../services/skribenten";
-import {SkribentenConfig} from "./_app";
+import {AuthenticatedTemplate, UnauthenticatedTemplate, useMsal} from "@azure/msal-react"
+import {useState} from "react"
+import styles from '../../styles/Home.module.css'
+import SkribentenAPI from "../lib/services/skribenten"
+import {SkribentenConfig} from "./_app"
 
 
-function SignInButton() {
-    const {instance} = useMsal();
+export function SignInButton() {
+    const {instance} = useMsal()
     return <button onClick={() => instance.loginRedirect()}>Sign in</button>
 }
 

@@ -34,16 +34,16 @@ val httpClient = HttpClient(CIO) {
     }
 }
 
-fun requestLetter(letterRequest: VedtaksbrevRequest): LetterResponse =
+fun requestLetter(letterRequest: AutobrevRequest): LetterResponse =
     runBlocking {
-        httpClient.post("$BREVBAKER_URL/letter/vedtak") {
+        httpClient.post("$BREVBAKER_URL/letter/autobrev") {
             contentType(ContentType.Application.Json)
             setBody(letterRequest)
         }.body()
     }
 
-fun requestTemplates(): Set<Brevkode.Vedtak> = runBlocking {
-    httpClient.get("$BREVBAKER_URL/templates").body()
+fun requestTemplates(): Set<Brevkode.AutoBrev> = runBlocking {
+    httpClient.get("$BREVBAKER_URL/templates/autobrev").body()
 }
 
 fun writeTestPDF(pdfFileName: String, pdf: String) {

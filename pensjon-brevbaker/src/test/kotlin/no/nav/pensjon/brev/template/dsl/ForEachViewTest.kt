@@ -41,20 +41,29 @@ class ForEachViewTest {
         Letter(actual, Unit, Language.Bokmal, felles).assertRenderedLetterContainsAllOf(*allWords.toTypedArray())
     }
 
+    data class Argument(val value: String)
+
     @Test
     fun `ForEachView render works with letter argument`() {
         val listen = listOf("hei", "ha det bra", "og", "goodbye")
-        val actual = outlineTestTemplate<String> {
+        val selector = object : TemplateModelSelector<Argument, String> {
+            override val className = Argument::class.java.name
+            override val propertyName = "value"
+            override val propertyType = "String"
+            override val selector = Argument::value
+        }
+
+        val actual = outlineTestTemplate<Argument> {
             val myList = listen.expr()
 
             paragraph {
                 forEach(myList) { x ->
-                    eval(argument + x)
+                    eval(argument.select(selector) + x)
                 }
             }
         }
 
-        Letter(actual, "Tja:", Language.Bokmal, felles).assertRenderedLetterContainsAllOf(*listen.map { "Tja:$it" }
+        Letter(actual, Argument("Tja:"), Language.Bokmal, felles).assertRenderedLetterContainsAllOf(*listen.map { "Tja:$it" }
             .toTypedArray())
     }
 

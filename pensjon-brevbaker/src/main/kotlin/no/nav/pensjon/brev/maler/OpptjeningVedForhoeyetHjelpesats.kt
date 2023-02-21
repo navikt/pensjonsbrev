@@ -3,22 +3,24 @@ package no.nav.pensjon.brev.maler
 import no.nav.pensjon.brev.api.model.*
 import no.nav.pensjon.brev.api.model.BrukerSelectors.foedselsdato
 import no.nav.pensjon.brev.api.model.FellesSelectors.bruker
+import no.nav.pensjon.brev.api.model.LetterMetadata.Brevtype.VEDTAKSBREV
 import no.nav.pensjon.brev.api.model.maler.*
 import no.nav.pensjon.brev.api.model.maler.OpptjeningVedForhoeyetHjelpesatsDtoSelectors.aarInnvilgetOmrsorgspoeng
 import no.nav.pensjon.brev.maler.fraser.*
+import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.fraser.common.Vedtak
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Language.*
-import no.nav.pensjon.brev.template.VedtaksbrevTemplate
+import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 
 // BrevTypeKode: MF_000094
 @TemplateModelHelpers
-object OpptjeningVedForhoeyetHjelpesats : VedtaksbrevTemplate<OpptjeningVedForhoeyetHjelpesatsDto> {
+object OpptjeningVedForhoeyetHjelpesats : AutobrevTemplate<OpptjeningVedForhoeyetHjelpesatsDto> {
 
-    override val kode = Brevkode.Vedtak.OMSORGP_GODSKRIVING
+    override val kode = Brevkode.AutoBrev.OMSORGP_GODSKRIVING
 
     override val template = createTemplate(
         name = kode.name,
@@ -28,6 +30,7 @@ object OpptjeningVedForhoeyetHjelpesats : VedtaksbrevTemplate<OpptjeningVedForho
             displayTitle = "Vedtak – innvilgelse av omsorgsopptjening ved forhøyet hjelpestønad sats 3 eller 4",
             isSensitiv = false,
             distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
+            brevtype = VEDTAKSBREV
         )
     ) {
         title {
@@ -51,10 +54,9 @@ object OpptjeningVedForhoeyetHjelpesats : VedtaksbrevTemplate<OpptjeningVedForho
             }
 
             includePhrase(Omsorgsopptjening.Info)
-
             includePhrase(Omsorgsopptjening.OverforingInfo)
-
             includePhrase(Omsorgsopptjening.HjelpestonadAutoGodkjennInfo)
+            includePhrase(Felles.HarDuSpoersmaalPesys)
         }
 
     }

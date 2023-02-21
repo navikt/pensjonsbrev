@@ -1,11 +1,13 @@
 package no.nav.pensjon.brev.api.model.maler
 
 object Brevkode {
-    enum class Vedtak(vararg koder: String) {
-        UNG_UFOER_AUTO("PE_BA_04_505", "UP_FULLTT_BELOPENDR"),
+    enum class AutoBrev(vararg koder: String) {
+        ADHOC_GJENLEVENDEINFOETTER1970,
+        ADHOC_GJENLEVENDEINFOFOER1970,
+        OMSORGP_GODSKRIVING("OMSORG_HJST_AUTO"),
         OMSORG_EGEN_AUTO("OMSORG_EGEN_AUTO", "OMSORGP_EGENMLD"),
         UFOER_OMREGNING_ENSLIG("UT_DOD_ENSLIG_AUTO", "TILST_DOD_UT"),
-        OMSORGP_GODSKRIVING("OMSORG_HJST_AUTO"),
+        UNG_UFOER_AUTO("PE_BA_04_505", "UP_FULLTT_BELOPENDR"),
         UT_OPPHOER_BT_AUTO("PE_UT_07_200", "OPPHOR_ENDRING_UT_BT"),
         UT_ENDRING_OPPTJENING_AUTO("PE_UT_06_100"),
         ;
@@ -14,8 +16,8 @@ object Brevkode {
 
         companion object {
             @Suppress("unused")
-            fun findByKode(kode: String): Vedtak? =
-                Vedtak.values().find { it.brevkoder.contains(kode) }
+            fun findByKode(kode: String): AutoBrev? =
+                AutoBrev.values().find { it.brevkoder.contains(kode) || it.name == kode }
         }
     }
     enum class Redigerbar(val kode: String) {
@@ -25,7 +27,7 @@ object Brevkode {
         companion object {
             @Suppress("unused")
             fun findByKode(kode: String): Redigerbar? =
-                Redigerbar.values().firstOrNull { it.kode == kode }
+                Redigerbar.values().firstOrNull { it.kode == kode || it.name == kode}
         }
     }
 }

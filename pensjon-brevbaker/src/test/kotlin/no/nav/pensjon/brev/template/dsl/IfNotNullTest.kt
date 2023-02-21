@@ -25,6 +25,7 @@ class IfNotNullTest {
             "Jadda",
             isSensitiv = true,
             distribusjonstype = LetterMetadata.Distribusjonstype.ANNET,
+            brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
         )
     ) {
         title { text(Bokmal to "Heisann") }

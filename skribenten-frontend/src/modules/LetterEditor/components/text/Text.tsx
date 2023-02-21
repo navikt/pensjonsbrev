@@ -1,0 +1,21 @@
+import {FC} from "react"
+import {LITERAL, TextContent, VARIABLE} from "../../model"
+import styles from "./Text.module.css"
+
+export type ClickClientY = number
+export type ContentStealFocus = ClickClientY | "START" | null
+
+export interface TextProps {
+    content: TextContent
+}
+
+const Text: FC<TextProps> = ({content}) => {
+    switch (content.type) {
+        case LITERAL:
+            return <span>{content.text}</span>
+        case VARIABLE:
+            return <span className={styles.variable}>{content.text}</span>
+    }
+}
+
+export default Text
