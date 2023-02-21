@@ -228,6 +228,7 @@ object EndringIOpptjeningAuto : VedtaksbrevTemplate<EndringIOpptjeningAutoDto> {
                     utbetalingsgrad = endringIOpptjening.utbetalingsgrad,
                 )
             )
+
             ifNotNull(fellesbarnTillegg, saerkullsbarnTillegg
             ) { fellesbarnTillegg, saerkullsbarnTillegg ->
                 showIf(fellesbarnTillegg.harFellesbarnInnvilget or saerkullsbarnTillegg.harSaerkullsbarnInnvilget) {
