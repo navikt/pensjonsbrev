@@ -29,7 +29,8 @@ PE_UT_14_300
  */
 
 data class SlikBeregnerViUfoeretrygdenDin(
-    val harKonvertertSak: Expression<Boolean>,
+    val beregningsmetode: Expression<Beregningsmetode>,
+    val harGodkjentBrevkode: Expression<Boolean>,
 
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
@@ -41,7 +42,7 @@ data class SlikBeregnerViUfoeretrygdenDin(
                 English to "This is how your disability benefit is calculated"
             )
         }
-        showIf(not(harKonvertertSak)) {
+        showIf(harGodkjentBrevkode) {
             // TBU012V - hente ut året fra uføretidspunktet
             paragraph {
                 text(
@@ -111,52 +112,33 @@ data class SlikBeregnerViUfoeretrygdenDin(
             }
 
             // TBU016V - brukere med inntekt i utlandet
-            data class InntektIUtlandet(
-                val beregningsmetode: Expression<Beregningsmetode>,
+            showIf(beregningsmetode.isOneOf(Beregningsmetode.EOS)) {
+                paragraph {
+                    text(
+                        Bokmal to "Når vi beregner uføretrygden din, bruker vi gjennomsnittsinntekten i de tre beste av de fem siste årene før du ble ufør. Inntekt opptil seks ganger folketrygdens grunnbeløp (G) blir tatt med i beregningen. Uføretrygden utgjør 66 prosent av beregningsgrunnlaget. Du finner størrelsen på grunnbeløpet på ${Constants.GRUNNBELOEP_URL}.",
+                        Nynorsk to "Når vi bereknar uføretrygda di, bruker vi gjennomsnittsinntekta i dei tre beste av dei fem siste åra før du blei ufør. Inntekt opptil seks gonger grunnbeløpet i folketrygda (G) blir teke med i berekninga. Uføretrygda utgjer 66 prosent av berekningsgrunnlaget. Du finn storleiken på grunnbeløpet på ${Constants.GRUNNBELOEP_URL}.",
+                        English to "In calculating your disability benefit, we base calculations on your average income for the best three of the last five years prior to the onset of your disability. Income up to six times the National Insurance basic amount (G) is included in the calculation. The disability benefit equals 66 percent of the basis for calculation. You can find out how much the basic amount is at ${Constants.GRUNNBELOEP_URL}."
+                    )
+                }
 
-                ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
-                override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-                    showIf(beregningsmetode.isOneOf(Beregningsmetode.EOS)) {
-                        paragraph {
-                            text(
-                                Bokmal to "Når vi beregner uføretrygden din, bruker vi gjennomsnittsinntekten i de tre beste av de fem siste årene før du ble ufør. Inntekt opptil seks ganger folketrygdens grunnbeløp (G) blir tatt med i beregningen. Uføretrygden utgjør 66 prosent av beregningsgrunnlaget. Du finner størrelsen på grunnbeløpet på ${Constants.GRUNNBELOEP_URL}.",
-                                Nynorsk to "Når vi bereknar uføretrygda di, bruker vi gjennomsnittsinntekta i dei tre beste av dei fem siste åra før du blei ufør. Inntekt opptil seks gonger grunnbeløpet i folketrygda (G) blir teke med i berekninga. Uføretrygda utgjer 66 prosent av berekningsgrunnlaget. Du finn storleiken på grunnbeløpet på ${Constants.GRUNNBELOEP_URL}.",
-                                English to "In calculating your disability benefit, we base calculations on your average income for the best three of the last five years prior to the onset of your disability. Income up to six times the National Insurance basic amount (G) is included in the calculation. The disability benefit equals 66 percent of the basis for calculation. You can find out how much the basic amount is at ${Constants.GRUNNBELOEP_URL}."
-                            )
-                        }
+                paragraph {
+                    text(
+                        Bokmal to "Du hadde inntekt i utlandet i minst ett av de fem siste årene før du ble ufør. Vi bruker ikke denne inntekten når vi beregner uføretrygden din. For å kompensere for dette, erstatter vi disse årene med et gjennomsnitt av årene du har hatt inntekt i Norge i denne femårsperioden. Du kan se hvilke år vi har brukt i tabellen «Inntekt lagt til grunn for beregning av uføretrygden din».",
+                        Nynorsk to "Du hadde inntekt i utlandet i minst eitt av dei fem siste åra før du blei ufør. Vi bruker ikkje denne inntekta når vi bereknar uføretrygda di. For å kompensere for dette erstattar vi desse åra med eit gjennomsnitt av åra du har hatt inntekt i Noreg i denne femårsperioden. Du kan sjå kva år vi har brukt, i tabellen «Inntekt lagd til grunn for berekning av uføretrygda di».",
+                        English to "You had income abroad for at least one of the last five years prior to the onset of your disability. This income will not be included when we calculate your disability benefit. To compensate, we will instead apply an average of your income from Norway during this five-year period. You can see which years we have applied in the table called \"Income included in the basis for calculation of your disability benefit\"."
+                    )
+                }
 
-                        paragraph {
-                            text(
-                                Bokmal to "Du hadde inntekt i utlandet i minst ett av de fem siste årene før du ble ufør. Vi bruker ikke denne inntekten når vi beregner uføretrygden din. For å kompensere for dette, erstatter vi disse årene med et gjennomsnitt av årene du har hatt inntekt i Norge i denne femårsperioden. Du kan se hvilke år vi har brukt i tabellen «Inntekt lagt til grunn for beregning av uføretrygden din».",
-                                Nynorsk to "Du hadde inntekt i utlandet i minst eitt av dei fem siste åra før du blei ufør. Vi bruker ikkje denne inntekta når vi bereknar uføretrygda di. For å kompensere for dette erstattar vi desse åra med eit gjennomsnitt av åra du har hatt inntekt i Noreg i denne femårsperioden. Du kan sjå kva år vi har brukt, i tabellen «Inntekt lagd til grunn for berekning av uføretrygda di».",
-                                English to "You had income abroad for at least one of the last five years prior to the onset of your disability. This income will not be included when we calculate your disability benefit. To compensate, we will instead apply an average of your income from Norway during this five-year period. You can see which years we have applied in the table called \"Income included in the basis for calculation of your disability benefit\"."
-                            )
-                        }
-
-                        paragraph {
-                            text(
-                                Bokmal to "Når vi beregner gjennomsnittet bruker vi bare de årene du hadde inntekt i Norge i femårsperioden. Hvis du hadde inntekt i Norge og i utlandet samme år, bruker vi den inntekten som er best for deg.",
-                                Nynorsk to "Når vi bereknar gjennomsnittet, bruker vi berre dei åra du hadde inntekt i Noreg i femårsperioden. Dersom du hadde inntekt i Noreg og i utlandet same året, bruker vi den inntekta som er best for deg.",
-                                English to "When we calculate the average income, we only include the years you had income in Norway during this five-year period. If you had income in Norway and abroad during the same year, we apply the income that will benefit you most."
-                            )
-                        }
-                    }
+                paragraph {
+                    text(
+                        Bokmal to "Når vi beregner gjennomsnittet bruker vi bare de årene du hadde inntekt i Norge i femårsperioden. Hvis du hadde inntekt i Norge og i utlandet samme år, bruker vi den inntekten som er best for deg.",
+                        Nynorsk to "Når vi bereknar gjennomsnittet, bruker vi berre dei åra du hadde inntekt i Noreg i femårsperioden. Dersom du hadde inntekt i Noreg og i utlandet same året, bruker vi den inntekta som er best for deg.",
+                        English to "When we calculate the average income, we only include the years you had income in Norway during this five-year period. If you had income in Norway and abroad during the same year, we apply the income that will benefit you most."
+                    )
                 }
             }
         }
     }
-
-    // TBU034V
-    object FolketrygdensGrunnbeloep : OutlinePhrase<LangBokmalNynorskEnglish>() {
-        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-            paragraph {
-                text(
-                    Bokmal to "Folketrygdens grunnbeløp endres hvert år, og uføretrygden din blir justert ut fra dette.",
-                    Nynorsk to "",
-                    English to ""
-                )
-            }
-        }
-    }
 }
+
 

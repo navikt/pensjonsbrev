@@ -11,7 +11,10 @@ fun createOpplysningerBruktIBeregningUTDto() =
     OpplysningerBruktIBeregningUTDto(
         barnetilleggGjeldende = Fixtures.create(),
         beregnetUTPerManedGjeldende = Fixtures.create(),
+        beregningsmetode = Beregningsmetode.EOS,
+        fraOgMedDatoErNesteAar = false,
         grunnbeloep = Kroner(90000),
+        harKravaarsakEndringInntekt = true,
         inntektEtterUfoereGjeldende_beloepIEU = Kroner(0),
         inntektFoerUfoereGjeldende = Fixtures.create(),
         inntektsAvkortingGjeldende = Fixtures.create(),
@@ -21,14 +24,12 @@ fun createOpplysningerBruktIBeregningUTDto() =
         ufoeretrygdGjeldende = Fixtures.create(),
         ungUfoerGjeldende_erUnder20Aar = false,
         yrkesskadeGjeldende = Fixtures.create(),
-        harKravaarsakEndringInntekt = true,
-        fraOgMedDatoErNesteAar = false
     )
 
 fun createOpplysningerBruktIBeregningUTDtoBarnetilleggGjeldende() =
     OpplysningerBruktIBeregningUTDto.BarnetilleggGjeldende(
-        saerkullsbarn = Fixtures.create(),
         fellesbarn = Fixtures.create(),
+        saerkullsbarn = Fixtures.create(),
         totaltAntallBarn = 4
     )
 
