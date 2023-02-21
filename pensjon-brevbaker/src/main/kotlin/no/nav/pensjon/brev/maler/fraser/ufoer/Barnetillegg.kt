@@ -569,7 +569,7 @@ object Barnetillegg {
                                 " not live together with both parents because your income on its own is higher than NOK " +
                                 inntektstakSaerkullsbarn.format() + ". Your income exceeds the income limit to receive child supplement.".expr()
                     )
-                    /*   }.orShowIf(fellesInnvilget and not(fellesUtbetalt) and not(saerkullInnvilget)) {
+                       }.orShowIf(fellesInnvilget and not(fellesUtbetalt) and not(saerkullInnvilget)) {
                            textExpr(// TBU1286.2
                                Bokmal to "Barnetillegget for ".expr() +
                                        ifElse(harFlereFellesBarn, "barna", "barnet") +
@@ -583,7 +583,7 @@ object Barnetillegg {
                                        ifElse(harFlereFellesBarn, "children", "child") +
                                        " because your combined incomes is higher than NOK " +
                                        inntektstakFellesbarn.format() + ". Your combined incomes exceed the income limit to receive child supplement.".expr()
-                           ) */
+                           )
                 }.orShowIf(fellesInnvilget and not(fellesUtbetalt) and saerkullInnvilget) {
                     textExpr(// TBU1286.2
                         Bokmal to "Barnetillegget for ".expr() +
