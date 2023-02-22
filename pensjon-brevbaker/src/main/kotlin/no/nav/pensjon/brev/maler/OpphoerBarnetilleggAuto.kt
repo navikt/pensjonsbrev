@@ -117,7 +117,7 @@ object OpphoerBarnetilleggAuto : AutobrevTemplate<OpphoerBarnetilleggAutoDto> {
                 )
             )
 
-            includePhrase(Ufoeretrygd.UtbetalingsdatoUfoeretrygd)
+            includePhrase(Ufoeretrygd.UtbetalingsdatoUfoeretrygd(ufoeretrygd.utbetaltPerMaaned.greaterThan(0)))
             includePhrase(Ufoeretrygd.ViktigAALeseHeleBrevet)
             includePhrase(Vedtak.BegrunnelseOverskrift)
             includePhrase(
