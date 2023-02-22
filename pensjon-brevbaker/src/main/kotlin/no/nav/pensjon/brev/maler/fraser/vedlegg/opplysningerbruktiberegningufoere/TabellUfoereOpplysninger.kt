@@ -66,6 +66,7 @@ data class TabellUfoereOpplysninger(
     val ungUfoerGjeldende_erUnder20Aar: Expression<Boolean?>,
     val trygdetidsdetaljerGjeldende: Expression<OpplysningerBruktIBeregningUTDto.TrygdetidsdetaljerGjeldende>,
     val barnetilleggGjeldende: Expression<OpplysningerBruktIBeregningUTDto.BarnetilleggGjeldende?>,
+    val harMinsteytelse: Expression<Boolean>,
 
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
@@ -259,22 +260,24 @@ data class TabellUfoereOpplysninger(
                         }
                     }
                 }
-                // Mandatory
-                row {
-                    cell {
-                        text(
-                            Language.Bokmal to "Sivilstatus lagt til grunn i beregningen",
-                            Language.Nynorsk to "Sivilstatus lagt til grunn i utrekninga",
-                            Language.English to "Marital status applied to calculation"
-                        )
-                    }
-                    cell {
-                        val brukersSivilstand = beregnetUTPerManedGjeldende.brukersSivilstand.tableFormat()
-                        textExpr(
-                            Language.Bokmal to brukersSivilstand,
-                            Language.Nynorsk to brukersSivilstand,
-                            Language.English to brukersSivilstand
-                        )
+
+                showIf(harMinsteytelse) {
+                    row {
+                        cell {
+                            text(
+                                Language.Bokmal to "Sivilstatus lagt til grunn i beregningen",
+                                Language.Nynorsk to "Sivilstatus lagt til grunn i utrekninga",
+                                Language.English to "Marital status applied to calculation"
+                            )
+                        }
+                        cell {
+                            val brukersSivilstand = beregnetUTPerManedGjeldende.brukersSivilstand.tableFormat()
+                            textExpr(
+                                Language.Bokmal to brukersSivilstand,
+                                Language.Nynorsk to brukersSivilstand,
+                                Language.English to brukersSivilstand
+                            )
+                        }
                     }
                 }
                 showIf(ungUfoerGjeldende_erUnder20Aar.ifNull(false)) {
