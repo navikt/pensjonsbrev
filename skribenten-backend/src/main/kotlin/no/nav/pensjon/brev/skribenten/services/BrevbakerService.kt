@@ -55,7 +55,7 @@ class BrevbakerService(config: Config, authService: AzureADService) {
     // Demo request
     // TODO: handle exceptions thrown by client, and wrap them in ServiceResult.Error. Design a type to represent errors.
     suspend fun genererBrev(call: ApplicationCall): ServiceResult<LetterResponse, Any> =
-        client.post(call, "/letter/vedtak") {
+        client.post(call, "/letter/autobrev") {
             contentType(ContentType.Application.Json)
             setBody(
                 AutobrevRequest(
