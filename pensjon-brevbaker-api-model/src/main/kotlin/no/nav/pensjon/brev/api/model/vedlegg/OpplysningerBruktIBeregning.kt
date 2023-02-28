@@ -31,7 +31,8 @@ data class OpplysningerBruktIBeregningUTDto(
     data class BarnetilleggGjeldende(
         val saerkullsbarn: Saerkullsbarn?,
         val fellesbarn: Fellesbarn?,
-        val totaltAntallBarn: Int,
+        val totaltAntallBarn: Int, //TODO remove in next version. The following list can be used
+        val foedselsdatoPaaBarnTilleggetGjelder: List<LocalDate>,
     ) {
         data class Saerkullsbarn(
             val avkortningsbeloepAar: Kroner,
