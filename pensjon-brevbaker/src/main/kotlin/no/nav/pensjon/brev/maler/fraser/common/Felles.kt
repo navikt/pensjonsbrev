@@ -4,18 +4,12 @@ import no.nav.pensjon.brev.api.model.Kroner
 import no.nav.pensjon.brev.maler.fraser.common.Constants.KONTAKT_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
 import no.nav.pensjon.brev.model.format
+import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
-import no.nav.pensjon.brev.template.Expression
-import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.*
-import no.nav.pensjon.brev.template.OutlinePhrase
-import no.nav.pensjon.brev.template.TextOnlyPhrase
-import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
-import no.nav.pensjon.brev.template.dsl.TextOnlyScope
-import no.nav.pensjon.brev.template.dsl.expression.format
-import no.nav.pensjon.brev.template.dsl.expression.plus
-import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.template.dsl.textExpr
+import no.nav.pensjon.brev.template.dsl.*
+import no.nav.pensjon.brev.template.dsl.expression.*
+import java.time.LocalDate
 
 object Felles {
 
@@ -79,5 +73,25 @@ object Felles {
                 Nynorsk to antall.format() + " måneder",
                 English to antall.format() + " months"
             )
+    }
+
+    data class DatoerOppramsningEllerListing(val foedselsdatoer: Expression<List<LocalDate>>): ParagraphPhrase<LangBokmalNynorskEnglish>(){
+        override fun ParagraphOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+            showIf(foedselsdatoer.size().lessThan(3)){
+                val foedselsDato = foedselsdatoer.map(BinaryOperation.LocalizedDateFormat).format()
+                textExpr(
+                    Bokmal to " ".expr() + foedselsDato + ".",
+                    Nynorsk to " ".expr() + foedselsDato + ".",
+                    English to " ".expr() + foedselsDato + ".",
+                )
+            }.orShow {
+                text(Bokmal to ":", Nynorsk to ":", English to ":")
+                list {
+                    forEach(foedselsdatoer){
+                        item { textExpr(Bokmal to it.format(), Nynorsk to it.format(), English to it.format()) }
+                    }
+                }
+            }
+        }
     }
 }

@@ -32,6 +32,7 @@ data class OpplysningerBruktIBeregningUTDto(
         val saerkullsbarn: Saerkullsbarn?,
         val fellesbarn: Fellesbarn?,
         val totaltAntallBarn: Int,
+        val foedselsdatoPaaBarnTilleggetGjelder: List<LocalDate>,
     ) {
         data class Saerkullsbarn(
             val avkortningsbeloepAar: Kroner,
