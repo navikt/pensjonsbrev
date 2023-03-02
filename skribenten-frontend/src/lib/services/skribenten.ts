@@ -1,6 +1,6 @@
 import {IMsalContext} from "@azure/msal-react/dist/MsalContext"
 import {withAuthorization} from "./msal"
-import {RedigerbarTemplateDescription, RenderedLetter} from "../../modules/LetterEditor/model"
+import {RedigerbarTemplateDescription, RenderedLetter} from "../../modules/LetterEditor/model/api"
 import {ObjectValue} from "../../modules/ModelEditor/model"
 
 export interface SkribentenAPIConfig {

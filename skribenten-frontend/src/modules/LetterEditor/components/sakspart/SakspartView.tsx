@@ -1,4 +1,4 @@
-import {Sakspart} from "../../model"
+import {Sakspart} from "../../model/api"
 import {FC} from "react"
 import styles from "./SakspartView.module.css"
 

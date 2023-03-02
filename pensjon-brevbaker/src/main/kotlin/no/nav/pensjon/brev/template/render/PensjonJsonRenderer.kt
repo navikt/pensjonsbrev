@@ -3,6 +3,9 @@ package no.nav.pensjon.brev.template.render
 import com.fasterxml.jackson.annotation.*
 import no.nav.pensjon.brev.api.model.*
 import no.nav.pensjon.brev.api.model.RenderedJsonLetter.*
+import no.nav.pensjon.brev.api.model.RenderedJsonLetter.Block.Paragraph
+import no.nav.pensjon.brev.api.model.RenderedJsonLetter.ParagraphContent.Text
+import no.nav.pensjon.brev.api.model.RenderedJsonLetter.ParagraphContent.Text.*
 import no.nav.pensjon.brev.template.*
 import java.time.format.FormatStyle
 import java.util.*
@@ -59,11 +62,10 @@ object PensjonJsonRenderer {
             }
             // Har du spørsmål?
             add(
-                renderOutlineContent(
-                    scope,
-                    Element.OutlineContent.Title1(languageSettings.settings[LanguageSetting.Closing.harDuSpoersmaal]!!),
-                    listOf((siblingCounter++).toString())
-                ).copy(editable = false)
+                languageSettings.settings[LanguageSetting.Closing.harDuSpoersmaal]!!.let {
+                    val loc = listOf((siblingCounter++).toString())
+                    Block.Title1(it.hashCode(), loc, false, renderText(scope, it, loc))
+                }
             )
             add(
                 renderParagraph(
@@ -77,63 +79,66 @@ object PensjonJsonRenderer {
     private fun renderOutlineContent(scope: ExpressionScope<*, *>, element: Element.OutlineContent<*>, location: TreeLocation): Block =
         when (element) {
             is Element.OutlineContent.Paragraph -> renderParagraph(scope, element, location)
-            is Element.OutlineContent.Title1 -> Block(element.hashCode(), Block.Type.TITLE1, location, renderText(scope, element.text, location))
+            is Element.OutlineContent.Title1 -> Block.Title1(element.hashCode(), location, true, renderText(scope, element.text, location))
         }
 
-    private fun renderParagraph(scope: ExpressionScope<*, *>, paragraph: Element.OutlineContent.Paragraph<*>, currentLocation: TreeLocation): Block =
-        Block(paragraph.hashCode(), Block.Type.PARAGRAPH, currentLocation, mutableListOf<Content>().apply {
-            var siblingCounter = 0
+    private fun renderParagraph(scope: ExpressionScope<*, *>, paragraph: Element.OutlineContent.Paragraph<*>, currentLocation: TreeLocation): Paragraph =
+        Paragraph(paragraph.hashCode(), currentLocation, true, mutableListOf<ParagraphContent>().apply {
             render(scope, paragraph.paragraph, currentLocation) { pScope, element, _ ->
-                addAll(renderParagraphContent(pScope, element, listOf((siblingCounter++).toString())))
+                addAll(renderParagraphContent(pScope, element))
             }
         })
 
-    private fun renderParagraphContent(scope: ExpressionScope<*, *>, element: Element.OutlineContent.ParagraphContent<*>, location: TreeLocation): List<Content> =
+    private fun renderParagraphContent(scope: ExpressionScope<*, *>, element: Element.OutlineContent.ParagraphContent<*>): List<ParagraphContent> =
         when (element) {
-            is Element.OutlineContent.ParagraphContent.Text -> renderTextContent(scope, element, location)
-            is Element.OutlineContent.ParagraphContent.Form -> TODO()
-            is Element.OutlineContent.ParagraphContent.ItemList -> TODO()
+            is Element.OutlineContent.ParagraphContent.Text -> renderTextContent(scope, element)
+            is Element.OutlineContent.ParagraphContent.ItemList -> listOf(renderItemList(scope, element))
             is Element.OutlineContent.ParagraphContent.Table -> TODO()
+            is Element.OutlineContent.ParagraphContent.Form -> TODO()
         }
 
-    private fun renderTextContent(scope: ExpressionScope<*, *>, element: Element.OutlineContent.ParagraphContent.Text<*>, location: TreeLocation): List<Content> =
+    private fun renderItemList(scope: ExpressionScope<*, *>, itemList: Element.OutlineContent.ParagraphContent.ItemList<*>): ParagraphContent.ItemList =
+        ParagraphContent.ItemList(itemList.hashCode(), mutableListOf<ParagraphContent.ItemList.Item>().apply {
+            render(scope, itemList.items, emptyList()) { inner, item, _ ->
+                add(ParagraphContent.ItemList.Item(renderText(inner, item.text, emptyList())))
+            }
+        })
+
+    private fun renderTextContent(scope: ExpressionScope<*, *>, element: Element.OutlineContent.ParagraphContent.Text<*>): List<Text> =
         when (element) {
             is Element.OutlineContent.ParagraphContent.Text.Expression.ByLanguage -> element.expr(scope.language).toContent(scope)
             is Element.OutlineContent.ParagraphContent.Text.Expression -> element.expression.toContent(scope)
-            is Element.OutlineContent.ParagraphContent.Text.Literal -> listOf(Content(Content.Type.LITERAL, element.hashCode(), location, element.text(scope.language)))
+            is Element.OutlineContent.ParagraphContent.Text.Literal -> listOf(Literal(element.hashCode(), element.text(scope.language)))
             is Element.OutlineContent.ParagraphContent.Text.NewLine -> TODO()
         }
 
-    private fun renderText(scope: ExpressionScope<*, *>, elements: List<TextElement<*>>, currentLocation: TreeLocation): List<Content> =
-        mutableListOf<Content>().apply {
-            var childLocation = 0
-            render(scope, elements, currentLocation) { inner, text, location ->
-                addAll(renderTextContent(inner, text, location + (childLocation++).toString()))
+    private fun renderText(scope: ExpressionScope<*, *>, elements: List<TextElement<*>>, currentLocation: TreeLocation): List<Text> =
+        mutableListOf<Text>().apply {
+            render(scope, elements, currentLocation) { inner, text, _ ->
+                addAll(renderTextContent(inner, text))
             }
         }
 
-    private fun StringExpression.toContent(scope: ExpressionScope<*, *>): List<Content> =
+    private fun StringExpression.toContent(scope: ExpressionScope<*, *>): List<Text> =
         if (this is Expression.Literal) {
-            // TODO: figure out how to handle location
-            listOf(Content(Content.Type.LITERAL, hashCode(), emptyList(), eval(scope)))
+            listOf(Literal(hashCode(), eval(scope)))
         } else if (this is Expression.BinaryInvoke<*, *, *> && operation is BinaryOperation.Concat) {
             // Since we know that operation is Concat, we also know that `first` and `second` are StringExpression.
             @Suppress("UNCHECKED_CAST")
             (first as StringExpression).toContent(scope) + (second as StringExpression).toContent(scope)
         } else {
-            // TODO: figure out how to handle location
-            listOf(Content(Content.Type.VARIABLE, hashCode(), emptyList(), eval(scope)))
+            listOf(Variable(hashCode(), eval(scope)))
         }.mergeLiterals()
 
-    private fun List<Content>.mergeLiterals(): List<Content> =
-        fold(emptyList()) { acc, content ->
-            val last = acc.lastOrNull()
+    private fun List<Text>.mergeLiterals(): List<Text> =
+        fold(emptyList()) { acc, current ->
+            val previous = acc.lastOrNull()
             if (acc.isEmpty()) {
-                listOf(content)
-            } else if (last?.type == Content.Type.LITERAL && content.type == Content.Type.LITERAL) {
-                acc.subList(0, acc.size - 1) + Content(Content.Type.LITERAL, Objects.hash(last.id, content.id), last.location, last.text + content.text)
+                listOf(current)
+            } else if (previous is Literal && current is Literal) {
+                acc.subList(0, acc.size - 1) + Literal(Objects.hash(previous.id, current.id), previous.text + current.text)
             } else {
-                acc + content
+                acc + current
             }
         }
 }

@@ -1,5 +1,5 @@
 import {FC} from "react"
-import {LetterModelSpecification} from "../LetterEditor/model"
+import {LetterModelSpecification} from "../LetterEditor/model/api"
 import {BoundAction} from "../../lib/actions"
 import ObjectEditor from "./components/ObjectEditor/ObjectEditor"
 import {ObjectValue} from "./model"

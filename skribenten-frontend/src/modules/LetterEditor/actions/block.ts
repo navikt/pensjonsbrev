@@ -1,8 +1,8 @@
 import {Action} from "../../../lib/actions"
-import {AnyBlock, TextContent} from "../model"
+import {AnyBlock, Content} from "../model/api"
 import produce from "immer"
 
-const updateBlockContent: Action<AnyBlock, [contentId: number, content: TextContent]> =
+const updateBlockContent: Action<AnyBlock, [contentId: number, content: Content]> =
     produce((draft, contentId, content) => {
         draft.content[contentId] = content
     })

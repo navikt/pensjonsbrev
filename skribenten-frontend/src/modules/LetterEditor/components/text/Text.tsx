@@ -1,9 +1,6 @@
 import {FC} from "react"
-import {LITERAL, TextContent, VARIABLE} from "../../model"
+import {LITERAL, TextContent, VARIABLE} from "../../model/api"
 import styles from "./Text.module.css"
-
-export type ClickClientY = number
-export type ContentStealFocus = ClickClientY | "START" | null
 
 export interface TextProps {
     content: TextContent

@@ -10,14 +10,22 @@ fun updatedEditedLetter(editedLetter: RenderedJsonLetter, nextLetter: RenderedJs
     })
 }
 
+// TODO: Vet ikke helt hvordan jeg skal håndtere dette her.
 private fun mergeBlocks(edited: Block, next: Block): Block {
-    val editedContent = edited.content.associateBy { it.id }
-
-    return next.copy(content = next.content.map {
-        if (it.type == Content.Type.VARIABLE) {
-            it
-        } else {
-            editedContent[it.id] ?: it
-        }
-    })
+    return next
+//    val editedContent = when(edited) {
+//        is Block.Paragraph -> edited.content.associateBy { it.id }
+//        is Block.Title1 -> edited.content.associateBy { it.id }
+//    }
+//
+//    if (next is Block.Paragraph) {
+//
+//    }
+//    return next.copy(content = next.content.map {
+//        if (it.type == Content.Type.VARIABLE) {
+//            it
+//        } else {
+//            editedContent[it.id] ?: it
+//        }
+//    })
 }

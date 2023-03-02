@@ -2,20 +2,22 @@ import Title1 from "./components/title1/Title1"
 import Paragraph from "./components/paragraph/Paragraph"
 import styles from "./LetterEditor.module.css"
 import {FC, useState} from "react"
-import {AnyBlock, StealFocus, CursorPosition, RenderedLetter} from "./model"
+import {AnyBlock, RenderedLetter} from "./model/api"
 import {bindAction, BoundAction, combine} from "../../lib/actions"
-import {BlocksAction, MergeTarget} from "./actions/blocks"
+import {BlocksAction} from "./actions/blocks"
 import {BlockAction} from "./actions/block"
 import SakspartView from "./components/sakspart/SakspartView"
 import SignaturView from "./components/signatur/SignaturView"
 import {RenderedLetterAction} from "./actions/letter"
-import {SplitBlockAtContent} from "./BlockProps"
+import {SplitAtContent} from "./BlockProps"
 import EditorMenu from "./components/editormenu/EditorMenu"
 import {StealFocusAction} from "./actions/stealfocus"
+import {MergeTarget} from "./actions/common"
+import {CursorPosition, StealFocus} from "./model/state"
 
 interface AnyBlockProps {
     block: AnyBlock,
-    splitBlock: SplitBlockAtContent
+    splitBlock: SplitAtContent
     mergeWith: BoundAction<[target: MergeTarget]>
     updateBlock: BoundAction<[block: AnyBlock]>
     stealFocus?: CursorPosition
@@ -25,13 +27,11 @@ interface AnyBlockProps {
 
 const AnyBlockView: FC<AnyBlockProps> = ({block, splitBlock, mergeWith, updateBlock, stealFocus, blockFocusStolen, onFocus}) => {
 
-    const doUnlock = bindAction(BlockAction.unlock, updateBlock, block)
     const updateBlockContent = bindAction(BlockAction.updateBlockContent, updateBlock, block)
 
     switch (block.type) {
         case 'TITLE1':
             return <Title1 block={block}
-                           doUnlock={doUnlock}
                            updateContent={updateBlockContent}
                            splitBlockAtContent={splitBlock}
                            mergeWith={mergeWith}
@@ -41,7 +41,6 @@ const AnyBlockView: FC<AnyBlockProps> = ({block, splitBlock, mergeWith, updateBl
             />
         case 'PARAGRAPH':
             return <Paragraph block={block}
-                              doUnlock={doUnlock}
                               updateContent={updateBlockContent}
                               splitBlockAtContent={splitBlock}
                               mergeWith={mergeWith}
@@ -71,10 +70,10 @@ const LetterEditor: FC<LetterEditorProps> = ({letter, updateLetter}) => {
         bindAction(StealFocusAction.onMerge, setStealFocus, stealFocus)
     ).bind(null, blocks)
 
-    const splitBlock = (blockId: number, block: AnyBlock, contentId: number, currentText: string, nextText: string) => {
-        updateBlocks(BlocksAction.splitBlock(blocks, blockId, block, contentId, currentText, nextText))
-        setStealFocus(StealFocusAction.onSplit(stealFocus, blockId))
-    }
+    const splitBlockAndStealFocus = combine(
+        bindAction(BlocksAction.splitBlock, updateBlocks),
+        bindAction(StealFocusAction.onSplit, setStealFocus, stealFocus),
+    ).bind(null, blocks)
 
     const focusStolen = bindAction(StealFocusAction.focusStolen, setStealFocus, stealFocus)
 
@@ -89,7 +88,7 @@ const LetterEditor: FC<LetterEditorProps> = ({letter, updateLetter}) => {
                 {blocks.map((block, blockId) =>
                     <AnyBlockView key={blockId}
                               block={block}
-                              splitBlock={splitBlock.bind(null, blockId, block)}
+                              splitBlock={splitBlockAndStealFocus.bind(null, blockId)}
                               mergeWith={mergeWithAndStealFocus.bind(null, blockId)}
                               updateBlock={updateBlock.bind(null, blockId)}
                               stealFocus={stealFocus[blockId]}

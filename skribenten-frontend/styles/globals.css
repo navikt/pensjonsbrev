@@ -15,8 +15,13 @@ a {
   box-sizing: border-box;
 }
 
-[contenteditable] {
+/*TODO: Move into letter editor css*/
+span[contenteditable] {
   outline: 0 solid transparent;
+  min-width: 0.0625rem;
+}
+span[contenteditable]:empty::before {
+  content: "​";
 }
 
 /*@media (prefers-color-scheme: dark) {*/
