@@ -60,20 +60,6 @@ object PensjonJsonRenderer {
             render(scope, outline, emptyList()) { outlineScope, element, location ->
                 add(renderOutlineContent(outlineScope, element, location + (siblingCounter++).toString()))
             }
-            // Har du spørsmål?
-            add(
-                languageSettings.settings[LanguageSetting.Closing.harDuSpoersmaal]!!.let {
-                    val loc = listOf((siblingCounter++).toString())
-                    Block.Title1(it.hashCode(), loc, false, renderText(scope, it, loc))
-                }
-            )
-            add(
-                renderParagraph(
-                    scope,
-                    Element.OutlineContent.Paragraph(languageSettings.settings[LanguageSetting.Closing.kontaktOss]!!),
-                    listOf((siblingCounter++).toString())
-                ).copy(editable = false)
-            )
         }
 
     private fun renderOutlineContent(scope: ExpressionScope<*, *>, element: Element.OutlineContent<*>, location: TreeLocation): Block =
