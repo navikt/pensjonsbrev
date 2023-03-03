@@ -472,7 +472,7 @@ data class OpplysningerOmBarnetillegg(
                     English to "You are entitled to child supplement for the".expr() +
                             ifElse(barnFlertall, "children", "child") + " born",
                 )
-                includePhrase(Felles.DatoerOppramsningEllerListing(foedselsdatoPaaBarnTilleggetGjelder))
+                includePhrase(Felles.TextOrList(foedselsdatoPaaBarnTilleggetGjelder.map(BinaryOperation.LocalizedDateFormat)))
             }
 
             paragraph {

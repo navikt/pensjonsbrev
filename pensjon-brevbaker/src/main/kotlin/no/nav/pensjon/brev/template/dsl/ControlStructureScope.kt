@@ -77,7 +77,7 @@ interface ControlStructureScope<Lang : LanguageSupport, LetterData : Any, C : El
             )
         }
 
-    fun <Item : Any> forEach(items: Expression<List<Item>>, body: Scope.(item: Expression<Item>) -> Unit) {
+    fun <Item : Any> forEach(items: Expression<Collection<Item>>, body: Scope.(item: Expression<Item>) -> Unit) {
         addControlStructure(ContentOrControlStructure.ForEach.create(items) { expr -> scopeFactory().apply { body(expr) }.elements })
     }
 }

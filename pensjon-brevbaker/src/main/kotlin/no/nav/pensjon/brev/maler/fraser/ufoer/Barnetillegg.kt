@@ -38,7 +38,7 @@ object Barnetillegg {
                             ", for " + ifElse(barnFlertall, "children", "the child") +
                             " born".expr(),
                 )
-                includePhrase(Felles.DatoerOppramsningEllerListing(foedselsdatoPaaBarnMedOpphoertBarnetillegg))
+                includePhrase(Felles.TextOrList(foedselsdatoPaaBarnMedOpphoertBarnetillegg.map(BinaryOperation.LocalizedDateFormat)))
             }
         }
     }

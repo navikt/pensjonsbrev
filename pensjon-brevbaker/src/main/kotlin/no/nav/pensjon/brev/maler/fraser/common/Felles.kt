@@ -9,7 +9,6 @@ import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brev.template.dsl.expression.*
-import java.time.LocalDate
 
 object Felles {
 
@@ -75,10 +74,10 @@ object Felles {
             )
     }
 
-    data class DatoerOppramsningEllerListing(val foedselsdatoer: Expression<List<LocalDate>>): ParagraphPhrase<LangBokmalNynorskEnglish>(){
+    data class TextOrList(val foedselsdatoer: Expression<Collection<String>>, val limit: Int = 2): ParagraphPhrase<LangBokmalNynorskEnglish>(){
         override fun ParagraphOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-            showIf(foedselsdatoer.size().lessThan(3)){
-                val foedselsDato = foedselsdatoer.map(BinaryOperation.LocalizedDateFormat).format()
+            showIf(foedselsdatoer.size().lessThanOrEqual(limit)){
+                val foedselsDato = foedselsdatoer.format()
                 textExpr(
                     Bokmal to " ".expr() + foedselsDato + ".",
                     Nynorsk to " ".expr() + foedselsDato + ".",
@@ -88,7 +87,7 @@ object Felles {
                 text(Bokmal to ":", Nynorsk to ":", English to ":")
                 list {
                     forEach(foedselsdatoer){
-                        item { textExpr(Bokmal to it.format(), Nynorsk to it.format(), English to it.format()) }
+                        item { textExpr(Bokmal to it, Nynorsk to it, English to it) }
                     }
                 }
             }
