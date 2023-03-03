@@ -3,23 +3,25 @@ package no.nav.pensjon.brev.api.model.vedlegg
 import no.nav.pensjon.brev.api.model.Beregningsmetode
 import no.nav.pensjon.brev.api.model.Kroner
 import no.nav.pensjon.brev.api.model.Sivilstand
+import no.nav.pensjon.brev.api.model.Year
 import java.time.LocalDate
 
 data class OpplysningerBruktIBeregningUTDto(
     val barnetilleggGjeldende: BarnetilleggGjeldende?,
     val beregnetUTPerManedGjeldende: BeregnetUTPerManedGjeldende,
-    val grunnbeloep: Kroner,
     val fraOgMedDatoErNesteAar: Boolean,
+    val grunnbeloep: Kroner,
+    val harKravaarsakEndringInntekt: Boolean,
     val inntektEtterUfoereGjeldende_beloepIEU: Kroner?,
     val inntektFoerUfoereGjeldende: InntektFoerUfoereGjeldende,
     val inntektsAvkortingGjeldende: InntektsAvkortingGjeldende,
     val minsteytelseGjeldende_sats: Double?,
+    val opptjeningUfoeretrygd: List<OpptjeningUfoeretrygd>,
     val sivilstand: Sivilstand,
     val trygdetidsdetaljerGjeldende: TrygdetidsdetaljerGjeldende,
     val ufoeretrygdGjeldende: UfoeretrygdGjeldende,
     val ungUfoerGjeldende_erUnder20Aar: Boolean?,
     val yrkesskadeGjeldende: YrkesskadeGjeldende?,
-    val harKravaarsakEndringInntekt: Boolean,
 ) {
     data class YrkesskadeGjeldende(
         val beregningsgrunnlagBeloepAar: Kroner,
@@ -114,5 +116,16 @@ data class OpplysningerBruktIBeregningUTDto(
     data class InntektFoerUfoereGjeldende(
         val erSannsynligEndret: Boolean,
         val ifuInntekt: Kroner,
+    )
+
+    data class OpptjeningUfoeretrygd(
+        val aar: Year,
+        val erBrukt: Boolean,
+        val foerstegangstjenesteOpptjening: Boolean,
+        val inntektAvkortet: Kroner,
+        val inntektAvtaleland: Boolean,
+        val justertPensjonsgivendeInntekt: Kroner,
+        val omsorgsopptjening: Boolean,
+        val pensjonsgivendeInntekt: Kroner,
     )
 }
