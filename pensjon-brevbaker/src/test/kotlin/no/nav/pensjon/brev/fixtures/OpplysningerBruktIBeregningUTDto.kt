@@ -135,11 +135,11 @@ fun createOpplysningerBruktIBeregningUTDtoYrkesskadeGjeldende() =
 fun createOpplysningerBruktIBeregningUTDtoOpptjeningUfoeretrygd() =
     OpplysningerBruktIBeregningUTDto.OpptjeningUfoeretrygd(
         aar = Year(2022),
-        foerstegangstjenesteOpptjening = false,
-        justertPensjonsgivendeInntekt = Kroner(0),
-        omsorgsopptjening = false,
-        pensjonsgivendeInntekt = Kroner(0),
         erBrukt = false,
+        harFoerstegangstjenesteOpptjening = false,
+        harInntektAvtaleland = false,
+        harOmsorgsopptjening = true,
         inntektAvkortet = Kroner(0),
-        inntektAvtaleland = false,
+        justertPensjonsgivendeInntekt = Kroner(0),
+        pensjonsgivendeInntekt = Kroner(0),
     )

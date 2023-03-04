@@ -121,11 +121,11 @@ data class OpplysningerBruktIBeregningUTDto(
     data class OpptjeningUfoeretrygd(
         val aar: Year,
         val erBrukt: Boolean,
-        val foerstegangstjenesteOpptjening: Boolean,
+        val harFoerstegangstjenesteOpptjening: Boolean,
+        val harInntektAvtaleland: Boolean,
+        val harOmsorgsopptjening: Boolean,
         val inntektAvkortet: Kroner,
-        val inntektAvtaleland: Boolean,
         val justertPensjonsgivendeInntekt: Kroner,
-        val omsorgsopptjening: Boolean,
         val pensjonsgivendeInntekt: Kroner,
     )
 }

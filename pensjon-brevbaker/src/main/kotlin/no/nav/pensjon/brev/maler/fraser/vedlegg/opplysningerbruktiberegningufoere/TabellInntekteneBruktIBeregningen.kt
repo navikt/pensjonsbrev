@@ -2,12 +2,13 @@ package no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningufoe
 
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDto
 import no.nav.pensjon.brev.api.model.vedlegg.OpptjeningUfoeretrygdSelectors.aar
-import no.nav.pensjon.brev.api.model.vedlegg.OpptjeningUfoeretrygdSelectors.foerstegangstjenesteOpptjening
+import no.nav.pensjon.brev.api.model.vedlegg.OpptjeningUfoeretrygdSelectors.harFoerstegangstjenesteOpptjening
+import no.nav.pensjon.brev.api.model.vedlegg.OpptjeningUfoeretrygdSelectors.harInntektAvtaleland
+import no.nav.pensjon.brev.api.model.vedlegg.OpptjeningUfoeretrygdSelectors.harOmsorgsopptjening
 import no.nav.pensjon.brev.api.model.vedlegg.OpptjeningUfoeretrygdSelectors.inntektAvkortet
-import no.nav.pensjon.brev.api.model.vedlegg.OpptjeningUfoeretrygdSelectors.inntektAvtaleland
 import no.nav.pensjon.brev.api.model.vedlegg.OpptjeningUfoeretrygdSelectors.justertPensjonsgivendeInntekt
-import no.nav.pensjon.brev.api.model.vedlegg.OpptjeningUfoeretrygdSelectors.omsorgsopptjening
 import no.nav.pensjon.brev.api.model.vedlegg.OpptjeningUfoeretrygdSelectors.pensjonsgivendeInntekt
+import no.nav.pensjon.brev.maler.fraser.ufoer.Barnetillegg
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
@@ -16,12 +17,12 @@ import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.OutlinePhrase
-import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.ifElse
-import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.textExpr
 import java.time.LocalDate
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
+import no.nav.pensjon.brev.template.dsl.expression.and
+import no.nav.pensjon.brev.template.dsl.expression.not
 
 // TODO: Forklaringstekster til tabellene
 // TODO: Beloepsgrense <> 6000? Gjelder fremdeles? Tror ikke, ifølge Ingrid.
@@ -36,7 +37,6 @@ data class TabellInntekteneBruktIBeregningen(
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
 
-
         // TBU 036V
         title1 {
             text(
@@ -46,41 +46,38 @@ data class TabellInntekteneBruktIBeregningen(
             )
         }
         // TBU037V
+        showIf(
+
+        )
         paragraph {
-            table(
-                header = {
-                    column(alignment = Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.LEFT) {
-                        text(
-                            Bokmal to "År",
-                            Nynorsk to "År",
-                            English to "Year"
+            table(header = {
+                column(alignment = Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.LEFT) {
+                    text(
+                        Bokmal to "År", Nynorsk to "År", English to "Year"
 
-                        )
-                    }
-                    column(alignment = Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT) {
-                        text(
-                            Bokmal to "Pensjonsgivende inntekt",
-                            Nynorsk to "Pensjonsgivande inntekt",
-                            English to "Pensionable income"
-
-                        )
-                    }
-                    column(alignment = Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT) {
-                        text(
-                            Bokmal to "Inntekt brukt i beregningen",
-                            Nynorsk to "Inntekt brukt i berekninga",
-                            English to "Income applied in the calculation"
-                        )
-                    }
-                    column(alignment = Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT) {
-                        text(
-                            Bokmal to "Merknad",
-                            Nynorsk to "Merknad",
-                            English to "Comments"
-                        )
-                    }
+                    )
                 }
-            ) {
+                column(alignment = Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT) {
+                    text(
+                        Bokmal to "Pensjonsgivende inntekt",
+                        Nynorsk to "Pensjonsgivande inntekt",
+                        English to "Pensionable income"
+
+                    )
+                }
+                column(alignment = Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT) {
+                    text(
+                        Bokmal to "Inntekt brukt i beregningen",
+                        Nynorsk to "Inntekt brukt i berekninga",
+                        English to "Income applied in the calculation"
+                    )
+                }
+                column(alignment = Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT) {
+                    text(
+                        Bokmal to "Merknad", Nynorsk to "Merknad", English to "Comments"
+                    )
+                }
+            }) {
                 forEach(
                     opptjeningUfoeretrygd
                 ) { opptjening ->
@@ -108,7 +105,7 @@ data class TabellInntekteneBruktIBeregningen(
                         }
                         cell {
                             showIf(
-                                opptjening.foerstegangstjenesteOpptjening
+                                opptjening.harFoerstegangstjenesteOpptjening
                             ) {
                                 text(
                                     Bokmal to "Førstegangstjeneste",
@@ -117,12 +114,10 @@ data class TabellInntekteneBruktIBeregningen(
                                 )
                             }
                             showIf(
-                                opptjening.omsorgsopptjening
+                                opptjening.harOmsorgsopptjening
                             ) {
                                 text(
-                                    Bokmal to "Omsorgsår",
-                                    Nynorsk to "Omsorgsår",
-                                    English to "Care work"
+                                    Bokmal to "Omsorgsår", Nynorsk to "Omsorgsår", English to "Care work"
                                 )
                             }
                         }
@@ -133,47 +128,41 @@ data class TabellInntekteneBruktIBeregningen(
         }
         // TBU038V
         paragraph {
-            table(
-                header = {
-                    column(alignment = Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.LEFT) {
-                        text(
-                            Bokmal to "År",
-                            Nynorsk to "År",
-                            English to "Year"
+            table(header = {
+                column(alignment = Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.LEFT) {
+                    text(
+                        Bokmal to "År", Nynorsk to "År", English to "Year"
 
-                        )
-                    }
-                    column(alignment = Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT) {
-                        text(
-                            Bokmal to "Inntekt i utland",
-                            Nynorsk to "Inntekt i utland",
-                            English to "Income from abroard"
-                        )
-                    }
-                    column(alignment = Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT) {
-                        text(
-                            Bokmal to "Pensjonsgivende inntekt",
-                            Nynorsk to "Pensjonsgivande inntekt",
-                            English to "Pensionable income"
-
-                        )
-                    }
-                    column(alignment = Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT) {
-                        text(
-                            Bokmal to "Inntekt brukt i beregningen",
-                            Nynorsk to "Inntekt brukt i berekninga",
-                            English to "Income applied in the calculation"
-                        )
-                    }
-                    column(alignment = Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT) {
-                        text(
-                            Bokmal to "Merknad",
-                            Nynorsk to "Merknad",
-                            English to "Comments"
-                        )
-                    }
+                    )
                 }
-            ) {
+                column(alignment = Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT) {
+                    text(
+                        Bokmal to "Inntekt i utland",
+                        Nynorsk to "Inntekt i utland",
+                        English to "Income from abroard"
+                    )
+                }
+                column(alignment = Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT) {
+                    text(
+                        Bokmal to "Pensjonsgivende inntekt",
+                        Nynorsk to "Pensjonsgivande inntekt",
+                        English to "Pensionable income"
+
+                    )
+                }
+                column(alignment = Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT) {
+                    text(
+                        Bokmal to "Inntekt brukt i beregningen",
+                        Nynorsk to "Inntekt brukt i berekninga",
+                        English to "Income applied in the calculation"
+                    )
+                }
+                column(alignment = Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT) {
+                    text(
+                        Bokmal to "Merknad", Nynorsk to "Merknad", English to "Comments"
+                    )
+                }
+            }) {
                 forEach(
                     opptjeningUfoeretrygd
                 ) { opptjening ->
@@ -186,7 +175,7 @@ data class TabellInntekteneBruktIBeregningen(
                             )
                         }
                         cell {
-                            val harInntektAvtaleland = opptjening.inntektAvtaleland
+                            val harInntektAvtaleland = opptjening.harInntektAvtaleland
                             textExpr(
                                 Bokmal to ifElse(harInntektAvtaleland, ifTrue = "Ja", ifFalse = "Nei"),
                                 Nynorsk to ifElse(harInntektAvtaleland, ifTrue = "Ja", ifFalse = "Nei"),
@@ -209,7 +198,7 @@ data class TabellInntekteneBruktIBeregningen(
                         }
                         cell {
                             showIf(
-                                opptjening.foerstegangstjenesteOpptjening
+                                opptjening.harFoerstegangstjenesteOpptjening
                             ) {
                                 text(
                                     Bokmal to "Førstegangstjeneste",
@@ -218,20 +207,44 @@ data class TabellInntekteneBruktIBeregningen(
                                 )
                             }
                             showIf(
-                                opptjening.omsorgsopptjening
+                                opptjening.harOmsorgsopptjening
                             ) {
                                 text(
-                                    Bokmal to "Omsorgsår",
-                                    Nynorsk to "Omsorgsår",
-                                    English to "Care work"
+                                    Bokmal to "Omsorgsår", Nynorsk to "Omsorgsår", English to "Care work"
                                 )
                             }
                         }
                     }
                 }
-
             }
+        }
+        forEach(
+            opptjeningUfoeretrygd
+        ) { opptjening ->
 
+            paragraph {
+                showIf(opptjening.harFoerstegangstjenesteOpptjening and opptjening.harOmsorgsopptjening) {
+                    text(
+                        Bokmal to "År med omsorgsopptjening og militær eller sivil førstegangstjeneste: Det skal ses bort fra år med pensjonsopptjening på grunnlag av omsorgsarbeid dersom dette er en fordel. Dersom inntekten i året før militær eller sivil førstegangstjeneste tok til er høyere, benyttes denne inntekten.",
+                        Nynorsk to "År med omsorgsopptening og militær eller sivil førstegongsteneste: Ein skal sjå bort frå år med pensjonsopptening på grunnlag av omsorgsarbeid dersom dette er ein fordel. Dersom inntekta i året før militær eller sivil førstegongsteneste tok til, er høgare, blir denne inntekta brukt.",
+                        English to "Years when you earned pension points for care work or initial service, either military or civilian: If you stand to benefit from excluding years when you have earned pension points from care work, these years will be excluded. If the income in the year before your military or civilian initial service started is higher, this income will be used as the basis for calculation."
+                    )
+                }
+                showIf(opptjening.harOmsorgsopptjening and not(opptjening.harFoerstegangstjenesteOpptjening)) {
+                    text(
+                        Bokmal to "År med omsorgsopptjening: Det skal ses bort fra år med pensjonsopptjening på grunnlag av omsorgsarbeid dersom dette er en fordel.",
+                        Nynorsk to "År med omsorgsopptening: Ein skal sjå bort frå år med pensjonsopptening på grunnlag av omsorgsarbeid dersom dette er ein fordel.",
+                        English to "Years when you earned pension points for care work: If you stand to benefit from excluding years when you have earned pension points from care work, these years will be excluded."
+                    )
+                }
+                showIf(opptjening.harFoerstegangstjenesteOpptjening and not(opptjening.harOmsorgsopptjening)) {
+                    text(
+                        Bokmal to "År med militær eller sivil førstegangstjeneste: Dersom inntekten i året før tjenesten tok til er høyere, benyttes denne inntekten.",
+                        Nynorsk to "År med militær eller sivil førstegongsteneste: Dersom inntekta i året før tenesta tok til, er høgare, blir denne inntekta brukt.",
+                        English to "Years when you earned pension points for military or civilian initial service: If the income in the year before your service started is higher, this income will be used as a basis for calculation."
+                    )
+                }
+            }
         }
     }
 }
