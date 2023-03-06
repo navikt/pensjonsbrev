@@ -43,8 +43,3 @@ enum class Beregningsmetode {
     SVEITS,
     USA
 }
-
-enum class KravArsakType {
-    SOKNAD_BT,
-    TILST_DOD,
-}
