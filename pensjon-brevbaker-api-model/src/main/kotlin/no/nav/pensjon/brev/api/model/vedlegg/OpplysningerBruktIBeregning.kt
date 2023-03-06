@@ -4,6 +4,7 @@ import no.nav.pensjon.brev.api.model.Beregningsmetode
 import no.nav.pensjon.brev.api.model.Kroner
 import no.nav.pensjon.brev.api.model.Sivilstand
 import no.nav.pensjon.brev.api.model.Year
+import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDto
 import java.time.LocalDate
 
 data class OpplysningerBruktIBeregningUTDto(
@@ -11,7 +12,9 @@ data class OpplysningerBruktIBeregningUTDto(
     val beregnetUTPerManedGjeldende: BeregnetUTPerManedGjeldende,
     val fraOgMedDatoErNesteAar: Boolean,
     val grunnbeloep: Kroner,
+    val harAvdoed: Boolean,
     val harKravaarsakEndringInntekt: Boolean,
+    val harKravaarsakSoeknadBT: Boolean,
     val inntektEtterUfoereGjeldende_beloepIEU: Kroner?,
     val inntektFoerUfoereGjeldende: InntektFoerUfoereGjeldende,
     val inntektsAvkortingGjeldende: InntektsAvkortingGjeldende,
@@ -121,6 +124,7 @@ data class OpplysningerBruktIBeregningUTDto(
     data class OpptjeningUfoeretrygd(
         val aar: Year,
         val erBrukt: Boolean,
+        val harBeregningsmetodeFolketrygd: Boolean,
         val harFoerstegangstjenesteOpptjening: Boolean,
         val harInntektAvtaleland: Boolean,
         val harOmsorgsopptjening: Boolean,

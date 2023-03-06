@@ -14,17 +14,20 @@ fun createOpplysningerBruktIBeregningUTDto() =
         beregnetUTPerManedGjeldende = Fixtures.create(),
         fraOgMedDatoErNesteAar = false,
         grunnbeloep = Kroner(90000),
+        harAvdoed = true,
         harKravaarsakEndringInntekt = true,
+        harKravaarsakSoeknadBT = false,
         inntektEtterUfoereGjeldende_beloepIEU = Kroner(0),
         inntektFoerUfoereGjeldende = Fixtures.create(),
         inntektsAvkortingGjeldende = Fixtures.create(),
         minsteytelseGjeldende_sats = 0.0,
+        opptjeningUfoeretrygd = listOf(Fixtures.create()),
         sivilstand = Sivilstand.PARTNER,
         trygdetidsdetaljerGjeldende = Fixtures.create(),
         ufoeretrygdGjeldende = Fixtures.create(),
         ungUfoerGjeldende_erUnder20Aar = false,
         yrkesskadeGjeldende = Fixtures.create(),
-        opptjeningUfoeretrygd = listOf(Fixtures.create()),
+
     )
 
 fun createOpplysningerBruktIBeregningUTDtoBarnetilleggGjeldende() =
@@ -136,8 +139,9 @@ fun createOpplysningerBruktIBeregningUTDtoOpptjeningUfoeretrygd() =
     OpplysningerBruktIBeregningUTDto.OpptjeningUfoeretrygd(
         aar = Year(2022),
         erBrukt = false,
+        harBeregningsmetodeFolketrygd = false,
         harFoerstegangstjenesteOpptjening = false,
-        harInntektAvtaleland = false,
+        harInntektAvtaleland = true,
         harOmsorgsopptjening = true,
         inntektAvkortet = Kroner(0),
         justertPensjonsgivendeInntekt = Kroner(0),
