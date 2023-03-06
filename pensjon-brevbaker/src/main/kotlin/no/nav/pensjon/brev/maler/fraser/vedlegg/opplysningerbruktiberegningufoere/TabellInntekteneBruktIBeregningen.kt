@@ -22,7 +22,6 @@ import java.time.LocalDate
 import no.nav.pensjon.brev.template.dsl.expression.*
 
 // TODO: Forklaringstekster til tabellene
-// TODO: Beloepsgrense <> 6000? Gjelder fremdeles? Tror ikke, ifølge Ingrid.
 /* IF brevkode not(PE_UT_05_100, PE_UT_05_100, PE_UT_04_300, PE_UT_14_300, PE_UT_04_500, PE_UT_04_102)
 OR beloepsgrense not(6000) AND kravAarsakType isNotOneOf(soknad_bt)
 AND brevkode not(PE_UT_04_108, PE_UT_04_109, PE_UT_07_200, PE_UT_06_300) INCLUDE */
