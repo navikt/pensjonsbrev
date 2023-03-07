@@ -14,6 +14,7 @@ fun createOpphoerBarnetilleggAutoDto() =
         foedselsdatoPaaBarnMedOpphoertBarnetillegg = listOf(
             LocalDate.of(2004, 6, 14),
             LocalDate.of(2001, 1, 2),
+            LocalDate.of(2003, 2, 5),
         ),
         oensketVirkningsDato = LocalDate.now(),
         barnetilleggFellesbarn = BarnetilleggFellesbarn(
