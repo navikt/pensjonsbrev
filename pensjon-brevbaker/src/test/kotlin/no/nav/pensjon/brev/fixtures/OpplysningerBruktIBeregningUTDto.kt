@@ -14,21 +14,20 @@ fun createOpplysningerBruktIBeregningUTDto() =
         beregnetUTPerManedGjeldende = Fixtures.create(),
         fraOgMedDatoErNesteAar = false,
         grunnbeloep = Kroner(90000),
-        harAvdoed = true,
         harKravaarsakEndringInntekt = true,
         harKravaarsakSoeknadBT = false,
         inntektEtterUfoereGjeldende_beloepIEU = Kroner(0),
         inntektFoerUfoereGjeldende = Fixtures.create(),
         inntektsAvkortingGjeldende = Fixtures.create(),
         minsteytelseGjeldende_sats = 0.0,
-        opptjeningUfoeretrygd = listOf(Fixtures.create()),
+        opptjeningUfoeretrygd = Fixtures.create(),
         sivilstand = Sivilstand.PARTNER,
         trygdetidsdetaljerGjeldende = Fixtures.create(),
         ufoeretrygdGjeldende = Fixtures.create(),
         ungUfoerGjeldende_erUnder20Aar = false,
         yrkesskadeGjeldende = Fixtures.create(),
-
-    )
+        opptjeningAvdoedUfoeretrygd = Fixtures.create(),
+        )
 
 fun createOpplysningerBruktIBeregningUTDtoBarnetilleggGjeldende() =
     OpplysningerBruktIBeregningUTDto.BarnetilleggGjeldende(
@@ -137,6 +136,13 @@ fun createOpplysningerBruktIBeregningUTDtoYrkesskadeGjeldende() =
 
 fun createOpplysningerBruktIBeregningUTDtoOpptjeningUfoeretrygd() =
     OpplysningerBruktIBeregningUTDto.OpptjeningUfoeretrygd(
+        harFoerstegangstjenesteOpptjening = false,
+        harOmsorgsopptjening = true,
+        opptjeningsperioder = listOf(Fixtures.create(), Fixtures.create())
+    )
+
+fun createOpplysningerBruktIBeregningUTDtoOpptjeningsperiode() =
+    OpplysningerBruktIBeregningUTDto.Opptjeningsperiode(
         aar = Year(2022),
         erBrukt = false,
         harBeregningsmetodeFolketrygd = false,

@@ -12,14 +12,14 @@ data class OpplysningerBruktIBeregningUTDto(
     val beregnetUTPerManedGjeldende: BeregnetUTPerManedGjeldende,
     val fraOgMedDatoErNesteAar: Boolean,
     val grunnbeloep: Kroner,
-    val harAvdoed: Boolean,
     val harKravaarsakEndringInntekt: Boolean,
-    val harKravaarsakSoeknadBT: Boolean,
+    val harKravaarsakSoeknadBT: Boolean,  // TODO: Create in Pesys (IF PE_Vedtaksdata_Kravhode_KravArsakType <> "soknad_bt)
     val inntektEtterUfoereGjeldende_beloepIEU: Kroner?,
     val inntektFoerUfoereGjeldende: InntektFoerUfoereGjeldende,
     val inntektsAvkortingGjeldende: InntektsAvkortingGjeldende,
     val minsteytelseGjeldende_sats: Double?,
-    val opptjeningUfoeretrygd: List<OpptjeningUfoeretrygd>,
+    val opptjeningUfoeretrygd: OpptjeningUfoeretrygd?,
+    val opptjeningAvdoedUfoeretrygd: OpptjeningUfoeretrygd?,
     val sivilstand: Sivilstand,
     val trygdetidsdetaljerGjeldende: TrygdetidsdetaljerGjeldende,
     val ufoeretrygdGjeldende: UfoeretrygdGjeldende,
@@ -120,8 +120,8 @@ data class OpplysningerBruktIBeregningUTDto(
         val erSannsynligEndret: Boolean,
         val ifuInntekt: Kroner,
     )
-
-    data class OpptjeningUfoeretrygd(
+    // TODO: Create in Pesys
+    data class Opptjeningsperiode(
         val aar: Year,
         val erBrukt: Boolean,
         val harBeregningsmetodeFolketrygd: Boolean,
@@ -131,5 +131,11 @@ data class OpplysningerBruktIBeregningUTDto(
         val inntektAvkortet: Kroner,
         val justertPensjonsgivendeInntekt: Kroner,
         val pensjonsgivendeInntekt: Kroner,
+    )
+
+    data class OpptjeningUfoeretrygd(
+        val harFoerstegangstjenesteOpptjening: Boolean,
+        val harOmsorgsopptjening: Boolean,
+        val opptjeningsperioder: List<Opptjeningsperiode>,
     )
 }
