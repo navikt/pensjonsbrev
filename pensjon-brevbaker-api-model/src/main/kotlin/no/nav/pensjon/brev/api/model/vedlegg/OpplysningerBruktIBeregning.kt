@@ -18,9 +18,10 @@ data class OpplysningerBruktIBeregningUTDto(
     val inntektFoerUfoereGjeldende: InntektFoerUfoereGjeldende,
     val inntektsAvkortingGjeldende: InntektsAvkortingGjeldende,
     val minsteytelseGjeldende_sats: Double?,
-    val opptjeningUfoeretrygd: OpptjeningUfoeretrygd?,
     val opptjeningAvdoedUfoeretrygd: OpptjeningUfoeretrygd?,
+    val opptjeningUfoeretrygd: OpptjeningUfoeretrygd?,
     val sivilstand: Sivilstand,
+    val trygdetiden: Trygdetiden,
     val trygdetidsdetaljerGjeldende: TrygdetidsdetaljerGjeldende,
     val ufoeretrygdGjeldende: UfoeretrygdGjeldende,
     val ungUfoerGjeldende_erUnder20Aar: Boolean?,
@@ -137,5 +138,16 @@ data class OpplysningerBruktIBeregningUTDto(
         val harFoerstegangstjenesteOpptjening: Boolean,
         val harOmsorgsopptjening: Boolean,
         val opptjeningsperioder: List<Opptjeningsperiode>,
+    )
+
+    data class Trygdetiden(
+        val fastsattTrygdetid: Int,
+        val har40AarFastsattTrygdetid: Boolean,
+        val harFlyktningstatus: Boolean,
+        val harFramtidigTrygdetidEOS: Boolean,
+        val harFramtidigTrygdetidNorsk: Boolean,
+        val harLikUfoeregradOgYrkesskadegrad: Boolean,
+        val harTrygdetidsgrunnlag: Boolean,
+        val harYrkesskadeOppfylt: Boolean,
     )
 }

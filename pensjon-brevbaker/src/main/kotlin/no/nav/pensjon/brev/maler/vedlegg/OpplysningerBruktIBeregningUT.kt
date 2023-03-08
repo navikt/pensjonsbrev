@@ -23,10 +23,7 @@ import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSel
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.ungUfoerGjeldende_erUnder20Aar
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.yrkesskadeGjeldende
 import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidsdetaljerGjeldendeSelectors.anvendtTT
-import no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningufoere.OpplysningerOmBarnetillegg
-import no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningufoere.OpplysningerOmMinstetillegg
-import no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningufoere.TabellInntekteneBruktIBeregningen
-import no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningufoere.TabellUfoereOpplysninger
+import no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningufoere.*
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.*
@@ -121,6 +118,19 @@ fun createVedleggOpplysningerBruktIBeregningUT(skalViseMinsteytelse: Boolean, sk
                     )
                 )
             }
+
+            includePhrase(
+                Trygdetiden(
+                    fastsattTrygdetid = fastsattTrygdetid,
+                    har40AarFastsattTrygdetid = har40AarFastsattTrygdetid,
+                    harFlyktningstatus = harFlyktningstatus,
+                    harFramtidigTrygdetidEOS = harFramtidigTrygdetidEOS,
+                    harFramtidigTrygdetidNorsk = harFramtidigTrygdetidNorsk,
+                    harLikUfoeregradOgYrkesskadegrad = harLikUfoeregradOgYrkesskadegrad,
+                    harTrygdetidsgrunnlag = harTrygdetidsgrunnlag,
+                    harYrkesskadeOppfylt = harYrkesskadeOppfylt,
+                    )
+            )
         }
     }
 
