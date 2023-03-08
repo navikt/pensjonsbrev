@@ -27,7 +27,7 @@ fun createOpplysningerBruktIBeregningUTDto() =
         ungUfoerGjeldende_erUnder20Aar = false,
         yrkesskadeGjeldende = Fixtures.create(),
         opptjeningAvdoedUfoeretrygd = Fixtures.create(),
-        trygdetiden = Fixtures.create(),
+        trygdetid = Fixtures.create(),
         )
 
 fun createOpplysningerBruktIBeregningUTDtoBarnetilleggGjeldende() =
@@ -155,8 +155,8 @@ fun createOpplysningerBruktIBeregningUTDtoOpptjeningsperiode() =
         pensjonsgivendeInntekt = Kroner(0),
     )
 
-fun createOpplysningerBruktIBeregningUTDtoTrygdetiden() =
-    OpplysningerBruktIBeregningUTDto.Trygdetiden(
+fun createOpplysningerBruktIBeregningUTDtoTrygdetid() =
+    OpplysningerBruktIBeregningUTDto.Trygdetid(
         fastsattTrygdetid = 0,
         har40AarFastsattTrygdetid = false,
         harFlyktningstatus = false,

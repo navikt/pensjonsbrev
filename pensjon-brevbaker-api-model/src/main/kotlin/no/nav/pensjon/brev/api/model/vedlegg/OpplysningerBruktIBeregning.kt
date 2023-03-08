@@ -21,7 +21,7 @@ data class OpplysningerBruktIBeregningUTDto(
     val opptjeningAvdoedUfoeretrygd: OpptjeningUfoeretrygd?,
     val opptjeningUfoeretrygd: OpptjeningUfoeretrygd?,
     val sivilstand: Sivilstand,
-    val trygdetiden: Trygdetiden,
+    val trygdetid: Trygdetid,
     val trygdetidsdetaljerGjeldende: TrygdetidsdetaljerGjeldende,
     val ufoeretrygdGjeldende: UfoeretrygdGjeldende,
     val ungUfoerGjeldende_erUnder20Aar: Boolean?,
@@ -140,7 +140,7 @@ data class OpplysningerBruktIBeregningUTDto(
         val opptjeningsperioder: List<Opptjeningsperiode>,
     )
 
-    data class Trygdetiden(
+    data class Trygdetid(
         val fastsattTrygdetid: Int,
         val har40AarFastsattTrygdetid: Boolean,
         val harFlyktningstatus: Boolean,

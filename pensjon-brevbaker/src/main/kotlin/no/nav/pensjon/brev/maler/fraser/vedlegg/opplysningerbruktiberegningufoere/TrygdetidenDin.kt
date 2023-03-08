@@ -142,8 +142,5 @@ data class Trygdetiden(
                 }
             }
         }
-
     }
-
-
 }

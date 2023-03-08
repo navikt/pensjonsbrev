@@ -69,7 +69,7 @@ object Fixtures {
             Unit::class -> Unit as T
             OpplysningerBruktIBeregningUTDto.OpptjeningUfoeretrygd::class -> createOpplysningerBruktIBeregningUTDtoOpptjeningUfoeretrygd() as T
             OpplysningerBruktIBeregningUTDto.Opptjeningsperiode::class -> createOpplysningerBruktIBeregningUTDtoOpptjeningsperiode() as T
-            OpplysningerBruktIBeregningUTDto.Trygdetiden::class -> createOpplysningerBruktIBeregningUTDtoTrygdetiden() as T
+            OpplysningerBruktIBeregningUTDto.Trygdetid::class -> createOpplysningerBruktIBeregningUTDtoTrygdetid() as T
 
             else -> throw IllegalArgumentException("Don't know how to construct: ${letterDataType.qualifiedName}")
         }
