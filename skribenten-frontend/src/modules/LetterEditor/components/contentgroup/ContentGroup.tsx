@@ -8,7 +8,7 @@ import {SelectionService} from "../../services/SelectionService"
 import {BoundAction, combine} from "../../../../lib/actions"
 import ItemList from "../itemlist/ItemList"
 import {MergeTarget} from "../../actions/common"
-import {isTextContent} from "../../modelutils"
+import {isTextContent} from "../../model/utils"
 import {CursorPosition} from "../../model/state"
 
 const selectService = new SelectionService()

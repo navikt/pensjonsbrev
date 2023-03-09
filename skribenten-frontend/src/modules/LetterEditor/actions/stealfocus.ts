@@ -1,8 +1,9 @@
 import {ITEM_LIST, LITERAL, VARIABLE} from "../model/api"
 import {Action} from "../../../lib/actions"
 import produce from "immer"
-import {isEmptyContentGroup, MergeTarget} from "./common"
+import {MergeTarget} from "./common"
 import {ContentGroup, StealFocus} from "../model/state"
+import {isEmptyContentGroup} from "../model/utils"
 
 const onMerge: Action<StealFocus, [contentGroups: ContentGroup[], contentGroupId: number, target: MergeTarget]> =
     produce((draft, contentGroups, contentGroupId, target) => {

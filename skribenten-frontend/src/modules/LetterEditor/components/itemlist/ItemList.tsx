@@ -16,6 +16,8 @@ interface ItemProps {
     mergeWith: BoundAction<[target: MergeTarget]>
     splitAtContent: BoundAction<[contentId: number, offset: number]>
 }
+// Deactivate rule for onFocus.
+/* eslint-disable @typescript-eslint/no-empty-function */
 const Item: FC<ItemProps> = ({item, editable, stealFocus, focusStolen, updateItem, mergeWith, splitAtContent}) => (
     <li>
         <ContentGroup content={item.content}
@@ -28,6 +30,7 @@ const Item: FC<ItemProps> = ({item, editable, stealFocus, focusStolen, updateIte
                       onFocus={() => {}}/>
     </li>
 )
+/* eslint-disable @typescript-eslint/no-empty-function */
 
 interface ItemListProps {
     itemList: Model.ItemList

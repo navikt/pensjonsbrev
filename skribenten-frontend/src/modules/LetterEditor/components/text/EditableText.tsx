@@ -21,7 +21,7 @@ const EditableText: FC<EditableTextProps> = ({content, updateContent, innerRef})
     const updateText = bindAction(TextContentAction.updateText, updateContent, content)
     const ref = useCallback((node: HTMLElement) => {
         innerRef(node)
-    }, [])
+    }, [innerRef])
     return <ContentEditable innerRef={ref} html={content.text} tagName="span" onChange={onChangeHandler(updateText)}/>
 }
 

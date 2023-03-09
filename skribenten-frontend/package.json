@@ -6,8 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "test": "vitest",
-    "test-ui": "vitest --ui",
+    "test": "vitest run",
+    "test-watch": "vitest --ui",
     "lint": "next lint"
   },
   "dependencies": {

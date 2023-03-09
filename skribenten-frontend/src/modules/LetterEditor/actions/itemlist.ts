@@ -1,8 +1,8 @@
 import {Item, ItemList, TextContent} from "../model/api"
 import {Action} from "../../../lib/actions"
 import produce from "immer"
-import {getMergeIds, isEmptyItem, mergeContentArrays, MergeTarget} from "./common"
-import {cleanseText} from "./textcontent"
+import {cleanseText, MergeTarget} from "./common"
+import {getMergeIds, isEmptyItem, mergeContentArrays} from "../model/utils"
 
 const updateItem: Action<ItemList, [itemId: number, item: Item]> =
     produce((draft, itemId, item) => {

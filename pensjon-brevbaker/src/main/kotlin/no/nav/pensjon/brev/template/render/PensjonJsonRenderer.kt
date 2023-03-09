@@ -10,6 +10,8 @@ import no.nav.pensjon.brev.template.*
 import java.time.format.FormatStyle
 import java.util.*
 
+class PensjonJsonRendererException(msg: String): Exception(msg)
+
 object PensjonJsonRenderer {
     private val languageSettings = pensjonHTMLSettings
 
@@ -80,7 +82,7 @@ object PensjonJsonRenderer {
             is Element.OutlineContent.ParagraphContent.Text -> renderTextContent(scope, element)
             is Element.OutlineContent.ParagraphContent.ItemList -> listOf(renderItemList(scope, element))
             is Element.OutlineContent.ParagraphContent.Table -> TODO()
-            is Element.OutlineContent.ParagraphContent.Form -> TODO()
+            is Element.OutlineContent.ParagraphContent.Form -> throw PensjonJsonRendererException("Can't render unsupported element: Form.*")
         }
 
     private fun renderItemList(scope: ExpressionScope<*, *>, itemList: Element.OutlineContent.ParagraphContent.ItemList<*>): ParagraphContent.ItemList =
@@ -95,7 +97,7 @@ object PensjonJsonRenderer {
             is Element.OutlineContent.ParagraphContent.Text.Expression.ByLanguage -> element.expr(scope.language).toContent(scope)
             is Element.OutlineContent.ParagraphContent.Text.Expression -> element.expression.toContent(scope)
             is Element.OutlineContent.ParagraphContent.Text.Literal -> listOf(Literal(element.hashCode(), element.text(scope.language)))
-            is Element.OutlineContent.ParagraphContent.Text.NewLine -> TODO()
+            is Element.OutlineContent.ParagraphContent.Text.NewLine -> throw PensjonJsonRendererException("Can't render unsupported element: NewLine")
         }
 
     private fun renderText(scope: ExpressionScope<*, *>, elements: List<TextElement<*>>, currentLocation: TreeLocation): List<Text> =

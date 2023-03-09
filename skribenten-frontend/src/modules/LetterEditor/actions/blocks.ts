@@ -1,8 +1,8 @@
 import {Action} from "../../../lib/actions"
 import {AnyBlock, LITERAL, PARAGRAPH, ParagraphBlock, TITLE1, Title1Block, VARIABLE} from "../model/api"
 import produce from "immer"
-import {cleanseText} from "./textcontent"
-import {getMergeIds, isEmptyContent, mergeContentArrays, MergeTarget} from "./common"
+import {cleanseText, MergeTarget} from "./common"
+import {getMergeIds, isEmptyContent, mergeContentArrays} from "../model/utils"
 
 const updateBlock: Action<AnyBlock[], [blockId: number, block: AnyBlock]> =
     produce((draft, blockId, block) => {

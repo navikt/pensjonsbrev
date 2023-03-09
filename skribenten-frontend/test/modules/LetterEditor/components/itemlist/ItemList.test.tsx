@@ -6,7 +6,8 @@ import {afterEach, beforeEach, describe, expect, test, vi} from "vitest"
 import {cleanup, render, screen} from "@testing-library/react"
 import {ItemListAction} from "../../../../../src/modules/LetterEditor/actions/itemlist"
 import {TextContentAction} from "../../../../../src/modules/LetterEditor/actions/textcontent"
-import {isEmptyItem, MergeTarget} from "../../../../../src/modules/LetterEditor/actions/common"
+import {MergeTarget} from "../../../../../src/modules/LetterEditor/actions/common"
+import {isEmptyItem} from "../../../../../src/modules/LetterEditor/model/utils"
 
 
 const itemList: Model.ItemList = {
@@ -147,7 +148,7 @@ describe('enterHandler', () => {
         expect(updateList).toHaveBeenCalled()
         expect(updateList.mock.lastCall![0].items.length).toEqual(itemList.items.length + 1)
 
-        // the splitted item
+        // the split item
         const splitItem = updateList.mock.lastCall![0].items[itemId]
         expect(splitItem.content.length).toBe(contentId + 1)
         expect(splitItem.content[contentId].text).toEqual(itemList.items[itemId].content[contentId].text.substring(0, offset))
@@ -177,9 +178,6 @@ describe('enterHandler', () => {
         await user.keyboard("{Home}{Enter}")
 
         expect(updateList).toHaveBeenCalledWith(itemListWithEmptyItem)
-    })
-    test('enter in the last empty item splits outside of item list (after it in the containing paragraph)', () => {
-        // TODO skriv en skikkelig test for dette når jeg vet hvordan dette tar form fra paragraph
     })
 })
 

@@ -20,6 +20,8 @@ import no.nav.pensjon.brev.api.model.vedlegg.*
 import no.nav.pensjon.brev.skribenten.auth.*
 import java.time.*
 
+class BrevbakerServiceException(msg: String): Exception(msg)
+
 class BrevbakerService(config: Config, authService: AzureADService) {
     private val brevbakerUrl = config.getString("url")
 
@@ -123,7 +125,7 @@ object RenderedJsonLetterModule : SimpleModule() {
                 val type = when(RenderedJsonLetter.ParagraphContent.Type.valueOf(node.get("type").textValue())) {
                     RenderedJsonLetter.ParagraphContent.Type.LITERAL -> RenderedJsonLetter.ParagraphContent.Text.Literal::class.java
                     RenderedJsonLetter.ParagraphContent.Type.VARIABLE -> RenderedJsonLetter.ParagraphContent.Text.Variable::class.java
-                    else -> TODO("Bruk skikkelig exception")
+                    RenderedJsonLetter.ParagraphContent.Type.ITEM_LIST -> throw BrevbakerServiceException("ITEM_LIST is not allowed in a text-only block.")
                 }
                 return p.codec.treeToValue(node, type)
             }
