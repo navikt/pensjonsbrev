@@ -12,17 +12,17 @@ const itemList: ItemList = {
             {id: 2, type: VARIABLE, text: "Ole"},
             {id: 3, type: LITERAL, text: ". Sees på "},
             {id: 4, type: VARIABLE, text: "fredag"},
-        ]
+        ],
     }, {
         content: [
             {id: 1, type: LITERAL, text: "Da kan vi diskutere planen videre."},
-        ]
+        ],
     }, {
         content: [
             {id: 1, type: LITERAL, text: "Det blir "},
             {id: 2, type: VARIABLE, text: "spennende"},
-        ]
-    }]
+        ],
+    }],
 }
 const itemListSecondEmpty: ItemList = {
     id: 2,
@@ -41,7 +41,7 @@ const itemListSecondEmpty: ItemList = {
                 {id: 1, type: LITERAL, text: "DEF"},
             ],
         },
-    ]
+    ],
 }
 
 describe("mergeWith", () => {

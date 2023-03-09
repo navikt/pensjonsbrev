@@ -20,12 +20,15 @@ const RedigerBrev: NextPage<SkribentenConfig> = (props) => {
 
     const msal = useMsal()
 
+    // We only want this effect to trigger once, so we don't pass any deps.
+    /* eslint-disable react-hooks/exhaustive-deps */
     useEffect(() => {
         api.getRedigerbarTemplateDescription(msal, BREVKODE).then(d => {
             setModelValue(initObjectFromSpec(d.modelSpecification.types, d.modelSpecification.types[d.modelSpecification.letterModelTypeName]))
             setModelSpec(d)
         })
     }, [])
+    /* eslint-enable react-hooks/exhaustive-deps */
 
     const renderLetter = () => {
         api.renderLetter(msal, BREVKODE, modelValue, letter).then(setLetter)

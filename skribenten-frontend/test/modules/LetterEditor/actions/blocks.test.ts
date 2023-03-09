@@ -31,7 +31,7 @@ describe("BlocksAction", () => {
             content: [
                 {id: 1, type: LITERAL, text: "Det blir "},
                 {id: 2, type: VARIABLE, text: "spennende"},
-            ]
+            ],
         },
     ]
 
@@ -78,7 +78,7 @@ describe("BlocksAction", () => {
             id: 1,
             location: [],
             type: "PARAGRAPH",
-            content: [{id: 1, type: "LITERAL", text: "hei"}]
+            content: [{id: 1, type: "LITERAL", text: "hei"}],
         }
         test("replaces block at index", () => {
             const result = BlocksAction.updateBlock(blocks, 0, updatedBlock)

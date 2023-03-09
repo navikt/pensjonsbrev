@@ -45,7 +45,24 @@ describe('updateContent', () => {
         await user.keyboard(' person')
 
         expect(updateContentAction).toHaveBeenCalled()
-        expect(updateContentAction).toHaveBeenLastCalledWith(0, TextContentAction.updateText(content[0], firstSpan.textContent!))
+        expect(updateContentAction).toHaveBeenLastCalledWith(0, TextContentAction.updateText(content[0], content[0].text + ' person'))
+    })
+    test('enter is not propagated as br-element', async () => {
+        const firstSpan = screen.getByText(content[0].text)
+
+        await user.click(firstSpan)
+        await user.keyboard("{Enter}asd")
+
+        // Enter does cause a splitAction-event but we're only rendering the original block, so the focus is still in the span we clicked.
+        expect(updateContentAction).toHaveBeenLastCalledWith(0, TextContentAction.updateText(content[0], content[0].text + "asd"))
+    })
+    test('space is not propagated as nbsp-entity', async () => {
+        const firstSpan = screen.getByText(content[0].text)
+
+        await user.click(firstSpan)
+        await user.keyboard("  asd")
+
+        expect(updateContentAction).toHaveBeenLastCalledWith(0, TextContentAction.updateText(content[0], content[0].text + "  asd"))
     })
 })
 

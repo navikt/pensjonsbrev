@@ -6,8 +6,7 @@ describe("TextContentAction", () => {
     const content: Content = {
         type: LITERAL,
         id: 1,
-        location: [],
-        text: "heisann"
+        text: "heisann",
     }
 
     describe('updateText', () => {

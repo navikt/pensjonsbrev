@@ -13,7 +13,7 @@ describe('StealFocusAction', () => {
             content: [
                 {id: 1, type: VARIABLE, text: "Ole"},
                 {id: 2, type: LITERAL, text: " på mandag diskutere vi planen videre."},
-            ]
+            ],
         }, {
             type: PARAGRAPH,
             id: 2,
@@ -23,19 +23,19 @@ describe('StealFocusAction', () => {
                 {id: 1, type: LITERAL, text: "Hyggelig å møte deg "},
                 {
                     id: 2, type: ITEM_LIST, items: [{
-                        content: [{id: 1, type: LITERAL, text: "item 1"}, {id: 2, type: LITERAL, text: "item 2"}]
-                    }]
+                        content: [{id: 1, type: LITERAL, text: "item 1"}, {id: 2, type: LITERAL, text: "item 2"}],
+                    }],
                 },
-            ]
+            ],
         }, {
             type: PARAGRAPH,
             id: 3,
             location: [],
             editable: true,
             content: [
-                {id: 1, type: LITERAL, text: "last"}
-            ]
-        }
+                {id: 1, type: LITERAL, text: "last"},
+            ],
+        },
     ]
 
     describe('onMerge', () => {
@@ -110,13 +110,13 @@ describe('StealFocusAction', () => {
                     id: 1,
                     location: [],
                     editable: true,
-                    content: [{type: LITERAL, id: 1, text: ""}]
+                    content: [{type: LITERAL, id: 1, text: ""}],
                 }, {
                     type: PARAGRAPH,
                     id: 1,
                     location: [],
                     editable: true,
-                    content: [{type: LITERAL, id: 1, text: "some text"}]
+                    content: [{type: LITERAL, id: 1, text: "some text"}],
                 },
             ]
             const result = StealFocusAction.onSplit({}, blocksWithEmptyPrevious, 0)

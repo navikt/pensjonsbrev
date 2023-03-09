@@ -16,7 +16,7 @@ const itemList: Model.ItemList = {
     items: [
         {content: [{type: Model.LITERAL, id: 1, text: "item 1, text 1"}, {type: Model.LITERAL, id: 2, text: "item 1, text 2"}]},
         {content: [{type: Model.LITERAL, id: 3, text: "item 2, text 1"}, {type: Model.LITERAL, id: 4, text: "item 2, text 2"}]},
-    ]
+    ],
 }
 
 const user = userEvent.setup()
@@ -82,7 +82,7 @@ describe('backspaceHandler', () => {
         await user.keyboard("{End}{Backspace}")
 
         expect(updateList).toHaveBeenCalled()
-        expect(updateList.mock.lastCall![0].items.length).toEqual(2)
+        expect(updateList.mock.lastCall?.[0].items.length).toEqual(2)
         expect(updateList).toHaveBeenCalledWith(updateItemContent(itemList, 1, 0, text.substring(0, text.length - 1)))
     })
 })
@@ -115,7 +115,7 @@ describe('deleteHandler', () => {
         await user.keyboard("{Home}{Delete}")
 
         expect(updateList).toHaveBeenCalled()
-        expect(updateList.mock.lastCall![0].items.length).toEqual(2)
+        expect(updateList.mock.lastCall?.[0].items.length).toEqual(2)
         expect(updateList).toHaveBeenCalledWith(updateItemContent(itemList, 0, 1, text.substring(1, text.length)))
     })
 })
@@ -131,8 +131,8 @@ describe('enterHandler', () => {
         await user.keyboard("{End}{Enter}")
 
         expect(updateList).toHaveBeenCalled()
-        expect(updateList.mock.lastCall![0].items.length).toEqual(itemList.items.length + 1)
-        expect(updateList.mock.lastCall![0].items[itemId + 1]).toSatisfy(isEmptyItem)
+        expect(updateList.mock.lastCall?.[0].items.length).toEqual(itemList.items.length + 1)
+        expect(updateList.mock.lastCall?.[0].items[itemId + 1]).toSatisfy(isEmptyItem)
         expect(updateList).toHaveBeenLastCalledWith(ItemListAction.updateItems(itemList, ItemListAction.splitItem(itemList.items, itemId, contentId, text.length)))
     })
     test('enter not at the end of an item triggers split at cursor with content after cursor in the new item', async () => {
@@ -146,17 +146,17 @@ describe('enterHandler', () => {
         await user.keyboard("{Home}{ArrowRight}{ArrowRight}{ArrowRight}{ArrowRight}{Enter}")
 
         expect(updateList).toHaveBeenCalled()
-        expect(updateList.mock.lastCall![0].items.length).toEqual(itemList.items.length + 1)
+        expect(updateList.mock.lastCall?.[0].items.length).toEqual(itemList.items.length + 1)
 
         // the split item
-        const splitItem = updateList.mock.lastCall![0].items[itemId]
-        expect(splitItem.content.length).toBe(contentId + 1)
-        expect(splitItem.content[contentId].text).toEqual(itemList.items[itemId].content[contentId].text.substring(0, offset))
+        const splitItem = updateList.mock.lastCall?.[0].items[itemId]
+        expect(splitItem?.content.length).toBe(contentId + 1)
+        expect(splitItem?.content[contentId].text).toEqual(itemList.items[itemId].content[contentId].text.substring(0, offset))
 
         // the new item
-        const newItem = updateList.mock.lastCall![0].items[itemId + 1]
-        expect(newItem.content.length).toBe(itemList.items[itemId].content.length - contentId)
-        expect(newItem.content[0].text).toEqual(itemList.items[itemId].content[contentId].text.substring(offset))
+        const newItem = updateList.mock.lastCall?.[0].items[itemId + 1]
+        expect(newItem?.content.length).toBe(itemList.items[itemId].content.length - contentId)
+        expect(newItem?.content[0].text).toEqual(itemList.items[itemId].content[contentId].text.substring(offset))
 
         expect(updateList).toHaveBeenLastCalledWith(ItemListAction.updateItems(itemList, ItemListAction.splitItem(itemList.items, itemId, contentId, offset)))
     })
@@ -166,8 +166,8 @@ describe('enterHandler', () => {
             items: [
                 itemList.items[0],
                 {content: [{id: -1, type: "LITERAL", text: ""}]},
-                itemList.items[1]
-            ]
+                itemList.items[1],
+            ],
         }
         cleanup()
         render(<ItemList itemList={itemListWithEmptyItem} editable={true} updateList={updateList}/>)

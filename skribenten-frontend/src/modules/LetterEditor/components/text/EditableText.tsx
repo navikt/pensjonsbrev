@@ -19,9 +19,13 @@ function onChangeHandler(updateText: BoundAction<[text: string]>): (e: ContentEd
 
 const EditableText: FC<EditableTextProps> = ({content, updateContent, innerRef}) => {
     const updateText = bindAction(TextContentAction.updateText, updateContent, content)
+    // Passing innerRef as a dependency has some weird consequences such as the cursor skipping to the end on every edit.
+    /* eslint-disable react-hooks/exhaustive-deps */
     const ref = useCallback((node: HTMLElement) => {
         innerRef(node)
-    }, [innerRef])
+    }, [])
+    /* eslint-enable react-hooks/exhaustive-deps */
+
     return <ContentEditable innerRef={ref} html={content.text} tagName="span" onChange={onChangeHandler(updateText)}/>
 }
 
