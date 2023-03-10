@@ -40,6 +40,7 @@ import no.nav.pensjon.brev.api.model.vedlegg.SaerkullsbarnSelectors.inntektstak
 import no.nav.pensjon.brev.api.model.vedlegg.SaerkullsbarnSelectors.justeringsbeloepAar
 import no.nav.pensjon.brev.api.model.vedlegg.SaerkullsbarnSelectors.justeringsbeloepAar_safe
 import no.nav.pensjon.brev.maler.fraser.common.Felles
+import no.nav.pensjon.brev.model.bestemtForm
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.model.ubestemtForm
 import no.nav.pensjon.brev.template.*
@@ -330,7 +331,7 @@ data class OpplysningerOmBarnetillegg(
                                 )
                                 text(Bokmal to "*", Nynorsk to "*", English to "*", BOLD)
                                 text(
-                                    Bokmal to " (oppgitt som et årlig beløep)",
+                                    Bokmal to " (oppgitt som et årlig beløp)",
                                     Nynorsk to " (oppgitt som eit årleg beløp)",
                                     English to " (calculated to an annual amount)"
                                 )
@@ -477,16 +478,16 @@ data class OpplysningerOmBarnetillegg(
 
             paragraph {
                 text(
-                    Bokmal to "Barnetillegget kan utgjøre opptil 40 prosent av folketrygdens grunnbeløp for hvert barn du forsørger. ",
-                    Nynorsk to "Barnetillegget kan utgjere opptil 40 prosent av grunnbeløpet i folketrygda for kvart barn du forsørgjer. ",
-                    English to "The child supplement may be up to 40 percent of the national insurance basic amount for each child you support. "
+                    Bokmal to "Barnetillegget kan utgjøre opptil 40 prosent av folketrygdens grunnbeløp for hvert barn du forsørger. Du har rett til barnetillegg så lenge du forsørger barn som er under 18 år. Barnetillegget opphører når barnet fyller 18 år. ",
+                    Nynorsk to "Barnetillegget kan utgjere opptil 40 prosent av grunnbeløpet i folketrygda for kvart barn du forsørgjer. Du har rett til barnetillegg så lenge du forsørgjer barn som er under 18 år.",
+                    English to "The child supplement may be up to 40 percent of the national insurance basic amount for each child you support. You are entitled to child supplement as long as you support children under 18 years of age."
                 )
 
                 showIf(harAnvendtTrygdetidUnder40 and not(harYrkesskade)) {
                     text(
-                        Bokmal to "Du har rett til barnetillegg så lenge du forsørger barn som er under 18 år. Barnetillegget opphører når barnet fyller 18 år. Hvor mye du får i barnetillegg er også avhengig av trygdetiden din. Fordi trygdetiden din er kortere enn 40 år, blir barnetillegget ditt redusert.",
-                        Nynorsk to "Du har rett til barnetillegg så lenge du forsørgjer barn som er under 18 år. Barnetillegget opphøyrer når barnet fyller 18 år. Kor mykje du får i barnetillegg, er også avhengig av trygdetida di. Fordi trygdetida di er kortare enn 40 år, blir barnetillegget ditt redusert.",
-                        English to "You are entitled to child supplement as long as you support children under 18 years of age. Payment of child supplement stops when the child turns 18. How much child supplement you receive depends on your period of national insurance cover. As your period of national insurance cover is less than 40 years, your child supplement will be reduced."
+                        Bokmal to " Hvor mye du får i barnetillegg er også avhengig av trygdetiden din. Fordi trygdetiden din er kortere enn 40 år, blir barnetillegget ditt redusert.",
+                        Nynorsk to " Barnetillegget opphøyrer når barnet fyller 18 år. Kor mykje du får i barnetillegg, er også avhengig av trygdetida di. Fordi trygdetida di er kortare enn 40 år, blir barnetillegget ditt redusert.",
+                        English to " Payment of child supplement stops when the child turns 18. How much child supplement you receive depends on your period of national insurance cover. As your period of national insurance cover is less than 40 years, your child supplement will be reduced."
                     )
                 }
             }
@@ -503,13 +504,15 @@ data class OpplysningerOmBarnetillegg(
     }
 
     object VedleggBeregnUTInnlednBT : OutlinePhrase<LangBokmalNynorskEnglish>() {
-        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             paragraph {
                 text(
                     Bokmal to "Størrelsen på barnetillegget er avhengig av samlet inntekt. ",
                     Nynorsk to "Storleiken på barnetillegget er avhengig av samla inntekt. ",
                     English to "The amount of child supplement is dependent on your total income. "
                 )
+            }
+            paragraph {
                 text(
                     Bokmal to "Barnetillegget kan bli redusert ut fra:",
                     Nynorsk to "Barnetillegget kan bli redusert ut frå:",
@@ -560,6 +563,7 @@ data class OpplysningerOmBarnetillegg(
                     }
                 }
             }
+        }
     }
 
     data class PeriodisertInntektSaerkullsbarn(
@@ -885,43 +889,56 @@ data class OpplysningerOmBarnetillegg(
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             paragraph {
-
-                val foreldreBorSammen =
-                    sivilstand.isOneOf(
-                        Sivilstand.GIFT,
-                        Sivilstand.PARTNER,
-                        Sivilstand.SAMBOER1_5,
-                        Sivilstand.SAMBOER3_2
-                    )
                 showIf(harKravaarsakEndringInntekt) {
-                    text(Bokmal to "Når inntekten ", Nynorsk to "Når inntekta ", English to "When ")
+                    textExpr(
+                        Bokmal to "Når inntekten ".expr(),
+                        Nynorsk to "Når inntekta ".expr(),
+                        English to "When ".expr(),
+                    )
+                    showIf(harFlereTillegg) {
+                        textExpr(
+                            Bokmal to "til deg eller ".expr() + sivilstand.bestemtForm() + " din",
+                            Nynorsk to "di eller til ".expr() + sivilstand.bestemtForm() + " din",
+                            English to "your or your ".expr() + sivilstand.ubestemtForm() + "'s",
+                        )
+                    }.orShow {
+                        text(
+                            Bokmal to "din",
+                            Nynorsk to "di",
+                            English to "your",
+                        )
+                    }
+                    text(
+                        Bokmal to " endrer seg",
+                        Nynorsk to " endrar seg",
+                        English to "",
+                    )
                 }.orShow {
                     text(
                         Bokmal to "Har det vært en endring i inntekten ",
-                        Nynorsk to "Har det vært en endring i inntekten ",
-                        English to "If "
+                        Nynorsk to "Har det vore ei endring i inntekta ",
+                        English to "If ",
                     )
-                }
-
-                showIf(foreldreBorSammen) {
-                    textExpr(
-                        Bokmal to "din eller til din ".expr() + sivilstand.ubestemtForm(),
-                        Nynorsk to "di eller til di ".expr() + sivilstand.ubestemtForm(),
-                        English to "your or your ".expr() + sivilstand.ubestemtForm() + "'s",
-                    )
-                }.orShow {
-                    text(
-                        Bokmal to "din",
-                        Nynorsk to "di",
-                        English to "your",
-                    )
+                    showIf(harFlereTillegg) {
+                        textExpr(
+                            Bokmal to "til deg eller ".expr() + sivilstand.bestemtForm() + " din" ,
+                            Nynorsk to "til deg eller ".expr() + sivilstand.bestemtForm() + " din",
+                            English to "your or your ".expr() + sivilstand.ubestemtForm() + "'s",
+                        )
+                    }.orShow {
+                        text(
+                            Bokmal to "din",
+                            Nynorsk to "di",
+                            English to "your",
+                        )
+                    }
                 }
 
                 textExpr(
-                    Bokmal to " endrer seg, blir reduksjonen av ".expr() +
+                    Bokmal to " blir reduksjonen av ".expr() +
                             ifElse(harFlereTillegg, "barnetilleggene", "barnetillegget") +
                             " vurdert på nytt.",
-                    Nynorsk to " endrar seg, blir reduksjonen av ".expr() +
+                    Nynorsk to " blir reduksjonen av ".expr() +
                             ifElse(harFlereTillegg, "barnetilleggene", "barnetillegget") +
                             " vurdert på nytt.",
                     English to " income has been changed, your child supplement will be recalculated.".expr(),
