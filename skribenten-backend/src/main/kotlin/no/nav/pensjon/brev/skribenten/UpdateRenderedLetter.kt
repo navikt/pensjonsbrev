@@ -10,7 +10,7 @@ fun updatedEditedLetter(editedLetter: RenderedJsonLetter, nextLetter: RenderedJs
     })
 }
 
-// TODO: Vet ikke helt hvordan jeg skal håndtere dette her.
+// TODO: PL-6535 Vet ikke helt hvordan jeg skal håndtere dette her.
 private fun mergeBlocks(edited: Block, next: Block): Block {
     return next
 //    val editedContent = when(edited) {

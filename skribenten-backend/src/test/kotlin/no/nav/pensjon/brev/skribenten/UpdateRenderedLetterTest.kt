@@ -5,6 +5,7 @@ import no.nav.pensjon.brev.api.model.RenderedJsonLetter.*
 import org.junit.Test
 import kotlin.test.assertEquals
 
+// TODO: PL-6535 Kommenter inn igjen!!
 class UpdateRenderedLetterTest {
 
     //TODO: Burde denne kun teste at VARIABLE er endret?
