@@ -1,5 +1,8 @@
 package no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningufoere
 
+import no.nav.pensjon.brev.api.model.vedlegg.BeregnetUTPerManedGjeldendeSelectors.brukerErFlyktning
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDto
+import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidsdetaljerGjeldendeSelectors.framtidigTTNorsk
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.Expression
@@ -9,15 +12,16 @@ import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brev.template.dsl.expression.*
 
-data class Trygdetiden(
+data class TrygdetidenDin(
     val fastsattTrygdetid: Expression<Int>,  // (<FaTTNorge> + <FramtidigTTNorge>)/12
     val har40AarFastsattTrygdetid: Expression<Boolean>,
-    val harFlyktningstatus: Expression<Boolean>,  // brukerFlyktning = true
+    val beregnetUTPerManedGjeldende: Expression<OpplysningerBruktIBeregningUTDto.BeregnetUTPerManedGjeldende>,
     val harFramtidigTrygdetidEOS: Expression<Boolean>,
     val harFramtidigTrygdetidNorsk: Expression<Boolean>,
     val harLikUfoeregradOgYrkesskadegrad: Expression<Boolean>,
     val harTrygdetidsgrunnlag: Expression<Boolean>,  // PE_Grunnlag_Persongrunnlagsliste_TrygdetidsgrunnlagListeNor_Trygdetidsgrunnlag_TrygdetidFom
     val harYrkesskadeOppfylt: Expression<Boolean>,  // YrkesskadeResultat = Oppfylt / Finnes andre YrkesskadeResultat koder? Se TBU043V
+
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         val harFramtidigTrygdetid = harFramtidigTrygdetidNorsk or harFramtidigTrygdetidEOS
@@ -77,7 +81,7 @@ data class Trygdetiden(
         }
 
         // TBU041V
-        showIf(harFlyktningstatus) {
+        showIf(beregnetUTPerManedGjeldende.brukerErFlyktning) {
             paragraph {
                 text(
                     Bokmal to "Trygdetiden din er fastsatt til 40 år, fordi du er innvilget flyktningstatus fra Utlendingsdirektoratet. Du beholder uføretrygden beregnet med 40 års trygdetid så lenge du er bosatt i Norge.",
@@ -88,7 +92,7 @@ data class Trygdetiden(
         }
         // TBU075V
         showIf(
-            harYrkesskadeOppfylt and not(har40AarFastsattTrygdetid) and not(harFlyktningstatus) and not(
+            harYrkesskadeOppfylt and not(har40AarFastsattTrygdetid) and not(beregnetUTPerManedGjeldende.brukerErFlyktning) and not(
                 harLikUfoeregradOgYrkesskadegrad
             )
         ) {
@@ -116,7 +120,7 @@ data class Trygdetiden(
             }
         }
         // TBU042V
-        showIf(harYrkesskadeOppfylt and harLikUfoeregradOgYrkesskadegrad and not(harFlyktningstatus)) {
+        showIf(harYrkesskadeOppfylt and harLikUfoeregradOgYrkesskadegrad and not(beregnetUTPerManedGjeldende.brukerErFlyktning)) {
             paragraph {
                 text(
                     Bokmal to "Trygdetiden din er fastsatt til 40 år, fordi du er innvilget uføretrygd etter særbestemmelser for yrkesskade eller yrkessykdom.",
@@ -126,7 +130,7 @@ data class Trygdetiden(
             }
         }
         // TBU043V
-        showIf(not(harLikUfoeregradOgYrkesskadegrad) and not(harFlyktningstatus) and not(harYrkesskadeOppfylt)) {
+        showIf(not(harLikUfoeregradOgYrkesskadegrad) and not(beregnetUTPerManedGjeldende.brukerErFlyktning) and not(harYrkesskadeOppfylt)) {
             paragraph {
                 textExpr(
                     Bokmal to "Trygdetiden din i folketrygden er fastsatt til ".expr() + fastsattTrygdetid.format() + " år.".expr(),

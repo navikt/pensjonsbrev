@@ -33,8 +33,7 @@ data class TabellInntekteneBruktIBeregningen(
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
 
-        // TBU 036V
-
+        // TBU036V
         title1 {
             textExpr(
                 Bokmal to "Inntekt lagt til grunn for beregning av ".expr() +

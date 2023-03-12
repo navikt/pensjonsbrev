@@ -15,22 +15,23 @@ import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSel
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.inntektFoerUfoereGjeldende
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.inntektsAvkortingGjeldende
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.minsteytelseGjeldende_sats
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.norskTrygdetid
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.opptjeningAvdoedUfoeretrygd
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.opptjeningUfoeretrygd
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.sivilstand
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.trygdetid
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.trygdetidGjeldende
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.trygdetidsdetaljerGjeldende
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.ufoeretrygdGjeldende
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.ungUfoerGjeldende_erUnder20Aar
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.utenlandskTrygdetid
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.yrkesskadeGjeldende
-import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidSelectors.fastsattTrygdetid
-import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidSelectors.har40AarFastsattTrygdetid
-import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidSelectors.harFlyktningstatus
-import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidSelectors.harFramtidigTrygdetidEOS
-import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidSelectors.harFramtidigTrygdetidNorsk
-import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidSelectors.harLikUfoeregradOgYrkesskadegrad
-import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidSelectors.harTrygdetidsgrunnlag
-import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidSelectors.harYrkesskadeOppfylt
+import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidGjeldendeSelectors.fastsattTrygdetid
+import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidGjeldendeSelectors.har40AarFastsattTrygdetid
+import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidGjeldendeSelectors.harFramtidigTrygdetidEOS
+import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidGjeldendeSelectors.harFramtidigTrygdetidNorsk
+import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidGjeldendeSelectors.harLikUfoeregradOgYrkesskadegrad
+import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidGjeldendeSelectors.harTrygdetidsgrunnlag
+import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidGjeldendeSelectors.harYrkesskadeOppfylt
 import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidsdetaljerGjeldendeSelectors.anvendtTT
 import no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningufoere.*
 import no.nav.pensjon.brev.model.format
@@ -128,19 +129,31 @@ fun createVedleggOpplysningerBruktIBeregningUT(skalViseMinsteytelse: Boolean, sk
                 )
             }
             includePhrase(
-                Trygdetiden(
-                    fastsattTrygdetid = trygdetid.fastsattTrygdetid,
-                    har40AarFastsattTrygdetid = trygdetid.har40AarFastsattTrygdetid,
-                    harFlyktningstatus = trygdetid.harFlyktningstatus,
-                    harFramtidigTrygdetidEOS = trygdetid.harFramtidigTrygdetidEOS,
-                    harFramtidigTrygdetidNorsk = trygdetid.harFramtidigTrygdetidNorsk,
-                    harLikUfoeregradOgYrkesskadegrad = trygdetid.harLikUfoeregradOgYrkesskadegrad,
-                    harTrygdetidsgrunnlag = trygdetid.harTrygdetidsgrunnlag,
-                    harYrkesskadeOppfylt = trygdetid.harYrkesskadeOppfylt,
+                TrygdetidenDin(
+                    beregnetUTPerManedGjeldende = beregnetUTPerManedGjeldende,
+                    fastsattTrygdetid = trygdetidGjeldende.fastsattTrygdetid,
+                    har40AarFastsattTrygdetid = trygdetidGjeldende.har40AarFastsattTrygdetid,
+                    harFramtidigTrygdetidEOS = trygdetidGjeldende.harFramtidigTrygdetidEOS,
+                    harFramtidigTrygdetidNorsk = trygdetidGjeldende.harFramtidigTrygdetidNorsk,
+                    harLikUfoeregradOgYrkesskadegrad = trygdetidGjeldende.harLikUfoeregradOgYrkesskadegrad,
+                    harTrygdetidsgrunnlag = trygdetidGjeldende.harTrygdetidsgrunnlag,
+                    harYrkesskadeOppfylt = trygdetidGjeldende.harYrkesskadeOppfylt,
                 )
             )
+            includePhrase(
+                TabellTrygdetiden(
+                    beregnetUTPerManedGjeldende = beregnetUTPerManedGjeldende,
+                    trygdetidsdetaljerGjeldende = trygdetidsdetaljerGjeldende,
+                    trygdetidGjeldende = trygdetidGjeldende,
+                    norskTrygdetid = norskTrygdetid,
+                    utenlandskTrygdetid = utenlandskTrygdetid,
+                )
+            )
+
         }
     }
+
+
 
 
 

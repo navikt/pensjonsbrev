@@ -4,7 +4,6 @@ import no.nav.pensjon.brev.api.model.Beregningsmetode
 import no.nav.pensjon.brev.api.model.Kroner
 import no.nav.pensjon.brev.api.model.Sivilstand
 import no.nav.pensjon.brev.api.model.Year
-import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDto
 import java.time.LocalDate
 
 data class OpplysningerBruktIBeregningUTDto(
@@ -21,11 +20,15 @@ data class OpplysningerBruktIBeregningUTDto(
     val opptjeningAvdoedUfoeretrygd: OpptjeningUfoeretrygd?,
     val opptjeningUfoeretrygd: OpptjeningUfoeretrygd?,
     val sivilstand: Sivilstand,
-    val trygdetid: Trygdetid,
+    val trygdetidGjeldende: TrygdetidGjeldende,
     val trygdetidsdetaljerGjeldende: TrygdetidsdetaljerGjeldende,
     val ufoeretrygdGjeldende: UfoeretrygdGjeldende,
     val ungUfoerGjeldende_erUnder20Aar: Boolean?,
     val yrkesskadeGjeldende: YrkesskadeGjeldende?,
+    val norskTrygdetid: List<NorskTrygdetid>,
+    val eosLandTrygdetid: List<UtenlandskTrygdetid>,
+    val bilateralLandTrygdetid: List<UtenlandskTrygdetid>,
+    val utenlandskTrygdetid: List<UtenlandskTrygdetid>,
 ) {
     data class YrkesskadeGjeldende(
         val beregningsgrunnlagBeloepAar: Kroner,
@@ -54,6 +57,7 @@ data class OpplysningerBruktIBeregningUTDto(
             val inntektstak: Kroner,
             val justeringsbeloepAar: Kroner,
         )
+
         data class Fellesbarn(
             val avkortningsbeloepAar: Kroner,
             val beloepNetto: Kroner,
@@ -121,6 +125,7 @@ data class OpplysningerBruktIBeregningUTDto(
         val erSannsynligEndret: Boolean,
         val ifuInntekt: Kroner,
     )
+
     // TODO: Create in Pesys
     data class Opptjeningsperiode(
         val aar: Year,
@@ -140,14 +145,25 @@ data class OpplysningerBruktIBeregningUTDto(
         val opptjeningsperioder: List<Opptjeningsperiode>,
     )
 
-    data class Trygdetid(
+    data class TrygdetidGjeldende(
         val fastsattTrygdetid: Int,
         val har40AarFastsattTrygdetid: Boolean,
-        val harFlyktningstatus: Boolean,
         val harFramtidigTrygdetidEOS: Boolean,
         val harFramtidigTrygdetidNorsk: Boolean,
         val harLikUfoeregradOgYrkesskadegrad: Boolean,
         val harTrygdetidsgrunnlag: Boolean,
         val harYrkesskadeOppfylt: Boolean,
     )
+
+    data class NorskTrygdetid(
+        val trygdetidFom: LocalDate,
+        val trygdetidTom: LocalDate
+    )
+
+    data class UtenlandskTrygdetid(
+        val trygdetidLand: String,
+        val trygdetidFom: LocalDate,
+        val trygdetidTom: LocalDate
+    )
+
 }
