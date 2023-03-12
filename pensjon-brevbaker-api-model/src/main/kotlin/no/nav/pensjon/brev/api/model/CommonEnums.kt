@@ -46,5 +46,5 @@ enum class Beregningsmetode {
 
 enum class KravAarsakType {
     SOKNAD_BT,
-    TILST_DOD,
+    TILST_DOD
 }
