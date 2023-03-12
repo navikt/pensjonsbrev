@@ -26,8 +26,6 @@ data class OpplysningerBruktIBeregningUTDto(
     val ungUfoerGjeldende_erUnder20Aar: Boolean?,
     val yrkesskadeGjeldende: YrkesskadeGjeldende?,
     val norskTrygdetid: List<NorskTrygdetid>,
-    val eosLandTrygdetid: List<UtenlandskTrygdetid>,
-    val bilateralLandTrygdetid: List<UtenlandskTrygdetid>,
     val utenlandskTrygdetid: List<UtenlandskTrygdetid>,
 ) {
     data class YrkesskadeGjeldende(

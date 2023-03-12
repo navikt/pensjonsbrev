@@ -28,8 +28,8 @@ fun createOpplysningerBruktIBeregningUTDto() =
         yrkesskadeGjeldende = Fixtures.create(),
         opptjeningAvdoedUfoeretrygd = Fixtures.create(),
         trygdetidGjeldende = Fixtures.create(),
-        norskTrygdetid = Fixtures.create(),
-        utenlandskTrygdetid = Fixtures.create(),
+        norskTrygdetid = listOf(createOpplysningerBruktIBeregningUTDtoNorskTrygdetid()),
+        utenlandskTrygdetid = listOf(createOpplysningerBruktIBeregningUTDtoUtenlandskTrygdetid()),
     )
 
 fun createOpplysningerBruktIBeregningUTDtoBarnetilleggGjeldende() =
