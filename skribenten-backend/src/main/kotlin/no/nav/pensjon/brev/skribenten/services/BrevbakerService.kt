@@ -67,7 +67,7 @@ class BrevbakerService(config: Config, authService: AzureADService) {
             contentType(ContentType.Application.Json)
             setBody(
                 AutobrevRequest(
-                    kode = Brevkode.AutoBrev.OMSORG_EGEN_AUTO,
+                    kode = Brevkode.AutoBrev.PE_OMSORG_EGEN_AUTO,
                     letterData = OmsorgEgenAutoDto(
                         Year(2020),
                         Year(2021),

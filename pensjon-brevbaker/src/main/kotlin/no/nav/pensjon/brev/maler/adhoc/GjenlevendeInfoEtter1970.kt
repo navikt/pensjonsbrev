@@ -12,7 +12,7 @@ import no.nav.pensjon.brev.template.dsl.text
 @TemplateModelHelpers
 object GjenlevendeInfoEtter1970 : AutobrevTemplate<Unit> {
 
-    override val kode: Brevkode.AutoBrev = Brevkode.AutoBrev.ADHOC_GJENLEVENDEINFOETTER1970
+    override val kode: Brevkode.AutoBrev = Brevkode.AutoBrev.PE_ADHOC_2023_04_GJENLEVENDEINFOETTER1970
 
     override val template = createTemplate(
         name = kode.name,

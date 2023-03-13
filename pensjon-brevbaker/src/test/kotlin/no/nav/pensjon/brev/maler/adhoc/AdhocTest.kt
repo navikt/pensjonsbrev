@@ -28,11 +28,11 @@ class AdhocTest {
 
     @Test
     fun `testGjenlevendeFoer1970 pdf`() {
-        testAdhocPdf(GjenlevendeInfoFoer1970.template, "ADHOC_GJENLEVENDEINFOFOER1970")
+        testAdhocPdf(GjenlevendeInfoFoer1971.template, "ADHOC_GJENLEVENDEINFOFOER1971")
     }
     @Test
     fun `testGjenlevendeFoer1970 html`() {
-        testHtml(GjenlevendeInfoFoer1970.template, "ADHOC_GJENLEVENDEINFOFOER1970")
+        testHtml(GjenlevendeInfoFoer1971.template, "ADHOC_GJENLEVENDEINFOFOER1971")
     }
 
     @Test
