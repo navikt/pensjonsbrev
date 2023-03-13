@@ -1,9 +1,6 @@
 package no.nav.pensjon.brev.api.model.vedlegg
 
-import no.nav.pensjon.brev.api.model.Beregningsmetode
-import no.nav.pensjon.brev.api.model.Kroner
-import no.nav.pensjon.brev.api.model.Sivilstand
-import no.nav.pensjon.brev.api.model.Year
+import no.nav.pensjon.brev.api.model.*
 import java.time.LocalDate
 
 data class OpplysningerBruktIBeregningUTDto(
@@ -11,6 +8,7 @@ data class OpplysningerBruktIBeregningUTDto(
     val beregnetUTPerManedGjeldende: BeregnetUTPerManedGjeldende,
     val fraOgMedDatoErNesteAar: Boolean,
     val grunnbeloep: Kroner,
+    val harEktefelletillegg: Boolean?,  // TODO: Ny
     val harKravaarsakEndringInntekt: Boolean,
     val harKravaarsakSoeknadBT: Boolean,  // TODO: Create in Pesys (IF PE_Vedtaksdata_Kravhode_KravArsakType <> "soknad_bt)
     val inntektEtterUfoereGjeldende_beloepIEU: Kroner?,
@@ -27,6 +25,8 @@ data class OpplysningerBruktIBeregningUTDto(
     val yrkesskadeGjeldende: YrkesskadeGjeldende?,
     val norskTrygdetid: List<NorskTrygdetid>,
     val utenlandskTrygdetid: List<UtenlandskTrygdetid>,
+    val gjenlevendetilleggGjeldene: GjenlevendetilleggGjeldene?,  // TODO: Ny
+    val kravAarsakType: KravAarsakType,
 ) {
     data class YrkesskadeGjeldende(
         val beregningsgrunnlagBeloepAar: Kroner,

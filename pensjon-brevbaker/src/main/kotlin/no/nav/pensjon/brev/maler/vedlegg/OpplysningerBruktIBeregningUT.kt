@@ -3,17 +3,22 @@ package no.nav.pensjon.brev.maler.vedlegg
 
 import no.nav.pensjon.brev.api.model.vedlegg.BeregnetUTPerManedGjeldendeSelectors.grunnbeloep
 import no.nav.pensjon.brev.api.model.vedlegg.BeregnetUTPerManedGjeldendeSelectors.virkDatoFom
+import no.nav.pensjon.brev.api.model.vedlegg.GjenlevendetilleggGjeldeneSelectors.harGjenlevendetillegg
+import no.nav.pensjon.brev.api.model.vedlegg.GjenlevendetilleggGjeldeneSelectors.harNyttGjenlevendetillegg
 import no.nav.pensjon.brev.api.model.vedlegg.InntektsAvkortingGjeldendeSelectors.inntektsgrenseAar
 import no.nav.pensjon.brev.api.model.vedlegg.InntektsAvkortingGjeldendeSelectors.inntektstak
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDto
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.barnetilleggGjeldende
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.beregnetUTPerManedGjeldende
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.fraOgMedDatoErNesteAar
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.gjenlevendetilleggGjeldene
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.harEktefelletillegg
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.harKravaarsakEndringInntekt
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.harKravaarsakSoeknadBT
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.inntektEtterUfoereGjeldende_beloepIEU
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.inntektFoerUfoereGjeldende
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.inntektsAvkortingGjeldende
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.kravAarsakType
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.minsteytelseGjeldende_sats
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.norskTrygdetid
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.opptjeningAvdoedUfoeretrygd
@@ -128,6 +133,7 @@ fun createVedleggOpplysningerBruktIBeregningUT(skalViseMinsteytelse: Boolean, sk
                     )
                 )
             }
+
             includePhrase(
                 TrygdetidenDin(
                     beregnetUTPerManedGjeldende = beregnetUTPerManedGjeldende,
@@ -140,6 +146,7 @@ fun createVedleggOpplysningerBruktIBeregningUT(skalViseMinsteytelse: Boolean, sk
                     harYrkesskadeOppfylt = trygdetidGjeldende.harYrkesskadeOppfylt,
                 )
             )
+
             includePhrase(
                 TabellTrygdetiden(
                     beregnetUTPerManedGjeldende = beregnetUTPerManedGjeldende,
@@ -150,6 +157,34 @@ fun createVedleggOpplysningerBruktIBeregningUT(skalViseMinsteytelse: Boolean, sk
                 )
             )
 
+            ifNotNull(gjenlevendetilleggGjeldene) { tillegg ->
+                includePhrase(
+                    SlikBeregnerViGjenlevendetillegg(
+                        harGjenlevendetillegg = tillegg.harGjenlevendetillegg,
+                        harNyttGjenlevendetillegg = tillegg.harNyttGjenlevendetillegg,
+                        kravAarsakType = kravAarsakType,
+                    )
+                )
+            }
+
+            ifNotNull(harEktefelletillegg) {ektefelletillegg ->
+                includePhrase(
+                    ForDegSomMottarEktefelletillegg(
+                        harEktefelletilleggInnvilget = ektefelletillegg,
+                        kravAarsakType = kravAarsakType,
+                    )
+                )
+            }
+
+            includePhrase(
+                EtteroppgjoerAvUfoeretrygdOgBarnetillegg(
+                    kravAarsakType = kravAarsakType,
+                    sivilstand = sivilstand,
+                    // harBarnetilleggInnvilget
+                    //  harFellesbarn =
+                    // borIUtlandet =
+                )
+            )
         }
     }
 

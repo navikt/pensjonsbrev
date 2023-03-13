@@ -1,10 +1,7 @@
 package no.nav.pensjon.brev.fixtures
 
 import no.nav.pensjon.brev.Fixtures
-import no.nav.pensjon.brev.api.model.Beregningsmetode
-import no.nav.pensjon.brev.api.model.Kroner
-import no.nav.pensjon.brev.api.model.Sivilstand
-import no.nav.pensjon.brev.api.model.Year
+import no.nav.pensjon.brev.api.model.*
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDto
 import java.time.LocalDate
 
@@ -13,23 +10,25 @@ fun createOpplysningerBruktIBeregningUTDto() =
         barnetilleggGjeldende = Fixtures.create(),
         beregnetUTPerManedGjeldende = Fixtures.create(),
         fraOgMedDatoErNesteAar = false,
+        gjenlevendetilleggGjeldene = Fixtures.create(),
         grunnbeloep = Kroner(90000),
         harKravaarsakEndringInntekt = true,
         harKravaarsakSoeknadBT = false,
         inntektEtterUfoereGjeldende_beloepIEU = Kroner(0),
         inntektFoerUfoereGjeldende = Fixtures.create(),
         inntektsAvkortingGjeldende = Fixtures.create(),
+        kravAarsakType = KravAarsakType.SOKNAD_BT,
         minsteytelseGjeldende_sats = 0.0,
+        norskTrygdetid = listOf(createOpplysningerBruktIBeregningUTDtoNorskTrygdetid()),
+        opptjeningAvdoedUfoeretrygd = Fixtures.create(),
         opptjeningUfoeretrygd = Fixtures.create(),
         sivilstand = Sivilstand.PARTNER,
+        trygdetidGjeldende = Fixtures.create(),
         trygdetidsdetaljerGjeldende = Fixtures.create(),
         ufoeretrygdGjeldende = Fixtures.create(),
         ungUfoerGjeldende_erUnder20Aar = false,
-        yrkesskadeGjeldende = Fixtures.create(),
-        opptjeningAvdoedUfoeretrygd = Fixtures.create(),
-        trygdetidGjeldende = Fixtures.create(),
-        norskTrygdetid = listOf(createOpplysningerBruktIBeregningUTDtoNorskTrygdetid()),
         utenlandskTrygdetid = listOf(createOpplysningerBruktIBeregningUTDtoUtenlandskTrygdetid()),
+        yrkesskadeGjeldende = Fixtures.create(),
     )
 
 fun createOpplysningerBruktIBeregningUTDtoBarnetilleggGjeldende() =
@@ -179,6 +178,12 @@ fun createOpplysningerBruktIBeregningUTDtoUtenlandskTrygdetid() =
         trygdetidLand = "Storbritannia",
         trygdetidFom = LocalDate.of(2020, 1, 1),
         trygdetidTom = LocalDate.of(2020, 1, 1),
+    )
+
+fun createOpplysningerBruktIBeregningUTDtoGjenlevendetilleggGjeldene() =
+    OpplysningerBruktIBeregningUTDto.GjenlevendetilleggGjeldene(
+        harGjenlevendetillegg = false,
+        harNyttGjenlevendetillegg = false,
     )
 
 
