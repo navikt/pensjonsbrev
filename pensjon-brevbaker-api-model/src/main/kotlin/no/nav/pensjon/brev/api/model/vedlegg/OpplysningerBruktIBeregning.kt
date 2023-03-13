@@ -164,4 +164,9 @@ data class OpplysningerBruktIBeregningUTDto(
         val trygdetidTom: LocalDate
     )
 
+    data class GjenlevendetilleggGjeldene(
+        val harGjenlevendetillegg: Boolean,
+        val harNyttGjenlevendetillegg: Boolean,
+    )
+
 }
