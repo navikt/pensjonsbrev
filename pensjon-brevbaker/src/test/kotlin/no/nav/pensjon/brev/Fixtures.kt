@@ -72,6 +72,7 @@ object Fixtures {
             OpplysningerBruktIBeregningUTDto.TrygdetidGjeldende::class -> createOpplysningerBruktIBeregningUTDtoTrygdetidGjeldende() as T
             OpplysningerBruktIBeregningUTDto.NorskTrygdetid::class -> createOpplysningerBruktIBeregningUTDtoNorskTrygdetid() as T
             OpplysningerBruktIBeregningUTDto.UtenlandskTrygdetid::class -> createOpplysningerBruktIBeregningUTDtoUtenlandskTrygdetid() as T
+            OpplysningerBruktIBeregningUTDto.GjenlevendetilleggGjeldene::class -> createOpplysningerBruktIBeregningUTDtoGjenlevendetilleggGjeldene() as T
 
             else -> throw IllegalArgumentException("Don't know how to construct: ${letterDataType.qualifiedName}")
         }
