@@ -1,4 +1,4 @@
-import {TScalar} from "../../../LetterEditor/model"
+import {TScalar} from "../../../LetterEditor/model/api"
 import {BoundAction} from "../../../../lib/actions"
 import {ScalarValue} from "../../model"
 import {FC} from "react"

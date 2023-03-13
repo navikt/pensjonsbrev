@@ -1,20 +1,21 @@
-import {ParagraphBlock} from "../../model"
+import {ParagraphBlock} from "../../model/api"
 import {FC} from "react"
 import styles from "./Paragraph.module.css"
-import Content from "../content/Content"
+import ContentGroup from "../contentgroup/ContentGroup"
 import {BlockProps} from "../../BlockProps"
 
-const Paragraph: FC<BlockProps<ParagraphBlock>> = ({block, doUnlock, updateContent, splitBlockAtContent, mergeWith, blockStealFocus, blockFocusStolen, onFocus}) => (
-    <div className={styles.paragraph}>
-        <Content block={block}
-                 doUnlock={doUnlock}
-                 updateContent={updateContent}
-                 splitBlockAtContent={splitBlockAtContent}
-                 mergeWith={mergeWith}
-                 blockStealFocus={blockStealFocus}
-                 blockFocusStolen={blockFocusStolen}
-                 onFocus={onFocus}
-        />
-    </div>
-)
+const Paragraph: FC<BlockProps<ParagraphBlock>> =
+    ({block, updateContent, splitBlockAtContent, mergeWith, blockStealFocus, blockFocusStolen, onFocus}) => (
+        <div className={styles.paragraph}>
+            <ContentGroup content={block.content}
+                          editable={block.editable}
+                          updateContent={updateContent}
+                          splitAtContent={splitBlockAtContent}
+                          mergeWith={mergeWith}
+                          stealFocus={blockStealFocus}
+                          focusStolen={blockFocusStolen}
+                          onFocus={onFocus}
+            />
+        </div>
+    )
 export default Paragraph
