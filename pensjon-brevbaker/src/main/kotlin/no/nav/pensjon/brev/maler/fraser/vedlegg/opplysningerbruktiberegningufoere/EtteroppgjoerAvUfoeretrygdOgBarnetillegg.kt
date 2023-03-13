@@ -20,11 +20,11 @@ OR brevkode = PE_UT_06_300
 THEN INCLUDE */
 
 data class EtteroppgjoerAvUfoeretrygdOgBarnetillegg(
-    val kravAarsakType: Expression<KravAarsakType>,
+    val borIUtlandet: Expression<Boolean>,
     val harBarnetilleggInnvilget: Expression<Boolean>,
     val harFellesbarn: Expression<Boolean>,
+    val kravAarsakType: Expression<KravAarsakType>,
     val sivilstand: Expression<Sivilstand>,
-    val borIUtlandet: Expression<Boolean>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         // TBU066V, TBU067V
