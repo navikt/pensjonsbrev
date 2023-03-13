@@ -1,45 +1,74 @@
 import {Action} from "../../../lib/actions"
-import {AnyBlock, LITERAL} from "../model"
+import {AnyBlock, LITERAL, PARAGRAPH, ParagraphBlock, TITLE1, Title1Block, VARIABLE} from "../model/api"
 import produce from "immer"
-import {cleanseText} from "./content"
+import {cleanseText, MergeTarget} from "./common"
+import {getMergeIds, isEmptyContent, mergeContentArrays} from "../model/utils"
 
 const updateBlock: Action<AnyBlock[], [blockId: number, block: AnyBlock]> =
     produce((draft, blockId, block) => {
         draft[blockId] = block
     })
 
-const splitBlock: Action<AnyBlock[], [blockId: number, block: AnyBlock, contentId: number, firstText: string, secondText: string]> =
-    produce((draft, blockId, block, contentId, firstText, secondText) => {
-        //TODO: Må også sette id til -1 om blokk med tom tekst er over.
-        const newBlock = {
-            ...block,
-            content: [...block.content.slice(0, contentId), {...(block.content[contentId]), text: cleanseText(firstText)}],
-        }
+const splitBlock: Action<AnyBlock[], [blockId: number, contentId: number, offset: number]> =
+    produce((draft, blockId, contentId, offset) => {
+        const block = draft[blockId]
+        const prevBlock = draft[blockId - 1]
 
-        draft[blockId].content.splice(0, contentId)
-        const content = draft[blockId].content[0]
-        content.text = cleanseText(secondText)
-        if (content.text.length === 0) {
-            content.id = -1
-        }
+        if (!isEmptyBlock(block) && (prevBlock == null || !isEmptyBlock(prevBlock))) {
+            if (block.type === TITLE1) {
+                const content = block.content[contentId]
+                const firstText = content.text.substring(0, offset)
+                const secondText = content.text.substring(offset)
 
-        draft.splice(blockId, 0, newBlock)
+                const newBlock: Title1Block = {
+                    ...block,
+                    content: [...block.content.slice(0, contentId), {...content, text: cleanseText(firstText)}],
+                }
+
+                block.content.splice(0, contentId)
+
+                content.text = cleanseText(secondText)
+                if (content.text.length === 0) {
+                    content.id = -1
+                }
+
+                draft.splice(blockId, 0, newBlock)
+            } else if (block.type === PARAGRAPH) {
+                const content = block.content[contentId]
+                if (content.type === LITERAL || content.type === VARIABLE) {
+                    const firstText = content.text.substring(0, offset)
+                    const secondText = content.text.substring(offset)
+
+                    const newBlock: ParagraphBlock = {
+                        ...block,
+                        content: [...block.content.slice(0, contentId), {...content, text: cleanseText(firstText)}],
+                    }
+
+                    block.content.splice(0, contentId)
+
+                    content.text = cleanseText(secondText)
+                    if (content.text.length === 0) {
+                        content.id = -1
+                    }
+
+                    draft.splice(blockId, 0, newBlock)
+                } else {
+                    console.warn("Don't know how to split an ItemList content.")
+                }
+            }
+        }
     })
 
 
-function getMergeIds(srcId: number, target: MergeTarget): [number, number] {
-    switch (target) {
-        case MergeTarget.PREVIOUS:
-            return [srcId - 1, srcId]
-        case MergeTarget.NEXT:
-            return [srcId, srcId + 1]
+function isEmptyBlock(block: AnyBlock): boolean {
+    switch (block.type) {
+        case TITLE1:
+            return block.content.length === 1 && block.content[0].text.length === 0
+        case PARAGRAPH:
+            return block.content.length === 1 && isEmptyContent(block.content[0])
     }
 }
-function isEmpty(block: AnyBlock): boolean {
-    return block.content.length === 1 && block.content[0].text.length === 0
-}
 
-export enum MergeTarget { PREVIOUS = "PREVIOUS", NEXT = "NEXT" }
 const mergeWith: Action<AnyBlock[], [blockId: number, target: MergeTarget]> =
     produce((draft, blockId, target) => {
         const [firstId, secondId] = getMergeIds(blockId, target)
@@ -47,20 +76,12 @@ const mergeWith: Action<AnyBlock[], [blockId: number, target: MergeTarget]> =
         const second = draft[secondId]
 
         if (first != null && second != null) {
-            if (isEmpty(first)) {
+            if (isEmptyBlock(first)) {
                 draft.splice(firstId, 1)
-            } else if(isEmpty(second)) {
+            } else if (isEmptyBlock(second)) {
                 draft.splice(secondId, 1)
             } else {
-                const lastContentOfFirst = first.content[first.content.length - 1]
-                const firstContentOfSecond = second.content[0]
-
-                // merge adjoining literals
-                if (lastContentOfFirst.type === LITERAL && firstContentOfSecond.type === LITERAL) {
-                    lastContentOfFirst.text += firstContentOfSecond.text
-                    second.content.splice(0, 1)
-                }
-                first.content.splice(first.content.length, 0, ...second.content)
+                first.content = mergeContentArrays(first.content, second.content)
                 draft.splice(secondId, 1)
             }
         }

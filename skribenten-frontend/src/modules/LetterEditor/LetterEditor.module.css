@@ -19,3 +19,11 @@
     font-weight: 700;
     font-size: 1.25rem;
 }
+
+.letter span[contenteditable] {
+    outline: 0 solid transparent;
+    min-width: 0.0625rem;
+}
+.letter span[contenteditable]:empty::before {
+    content: "​";
+}

@@ -12,6 +12,20 @@ export class SelectionService {
     }
 
     /**
+     * Returns the current offset of the cursor, or -1 if not able to get selection or range.
+     *
+     */
+    getCursorOffset(): number {
+        const sel = window.getSelection() as Selection
+        const range = sel.getRangeAt(0)
+        if (range != null && range.collapsed) {
+            return range.startOffset
+        } else {
+            return -1
+        }
+    }
+
+    /**
      * Attempt to focus cursor to the start of the given node.
      * @param node node to focus cursor to
      * @param focusStolen callback invoked if focus is stolen
@@ -62,8 +76,9 @@ export class SelectionService {
      *
      * @param node the node to focus cursor to
      * @param offset the offset in the node
+     * @param focusStolen callback to indicate focus stolen
      */
-    focusAtOffset(node: ChildNode, offset: number) {
+    focusAtOffset(node: ChildNode, offset: number, focusStolen?: () => void) {
         const range = document.createRange()
         range.setStart(node, offset)
         range.collapse()
@@ -72,6 +87,7 @@ export class SelectionService {
         if (sel !== null) {
             sel.removeAllRanges()
             sel.addRange(range)
+            focusStolen && focusStolen()
         } else {
             this.warn("window.getSelection() is null")
         }
@@ -93,14 +109,13 @@ export class SelectionService {
         if (offset === null) {
             this.warn("couldn't find max offset in node:", nearest)
         } else {
-            //TODO: should only add 1 to offset if it is the last character in the block, now it works for individual TextContent nodes
+            //should only add 1 to offset if it is the last character in the block
             if (offset === nearest.node.length - 1) {
                 this.warn("adding 1 to offset")
-                this.focusAtOffset(nearest.node, offset + 1)
+                this.focusAtOffset(nearest.node, offset + 1, focusStolen)
             } else {
-                this.focusAtOffset(nearest.node, offset)
+                this.focusAtOffset(nearest.node, offset, focusStolen)
             }
-            focusStolen && focusStolen()
         }
 
     }

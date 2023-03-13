@@ -2,7 +2,7 @@ import LetterEditor from "../modules/LetterEditor/LetterEditor"
 import {NextPage} from "next"
 import React, {useEffect, useState} from "react"
 import {initObjectFromSpec, ObjectValue} from "../modules/ModelEditor/model"
-import {RedigerbarTemplateDescription, RenderedLetter} from "../modules/LetterEditor/model"
+import {RedigerbarTemplateDescription, RenderedLetter} from "../modules/LetterEditor/model/api"
 import {useMsal} from "@azure/msal-react"
 import SkribentenAPI from "../lib/services/skribenten"
 import {SkribentenConfig} from "./_app"
@@ -20,12 +20,15 @@ const RedigerBrev: NextPage<SkribentenConfig> = (props) => {
 
     const msal = useMsal()
 
+    // We only want this effect to trigger once, so we don't pass any deps.
+    /* eslint-disable react-hooks/exhaustive-deps */
     useEffect(() => {
         api.getRedigerbarTemplateDescription(msal, BREVKODE).then(d => {
             setModelValue(initObjectFromSpec(d.modelSpecification.types, d.modelSpecification.types[d.modelSpecification.letterModelTypeName]))
             setModelSpec(d)
         })
     }, [])
+    /* eslint-enable react-hooks/exhaustive-deps */
 
     const renderLetter = () => {
         api.renderLetter(msal, BREVKODE, modelValue, letter).then(setLetter)

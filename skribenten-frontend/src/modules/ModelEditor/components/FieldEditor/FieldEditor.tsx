@@ -1,4 +1,4 @@
-import {FieldType, ObjectTypeSpecifications, TArray, TEnum, TObject, TScalar} from "../../../LetterEditor/model"
+import {FieldType, ObjectTypeSpecifications, TArray, TEnum, TObject, TScalar} from "../../../LetterEditor/model/api"
 import {BoundAction} from "../../../../lib/actions"
 import {FC} from "react"
 import {FieldValue, initValueFromSpec} from "../../model"

@@ -1,9 +1,9 @@
-import {describe, expect, test} from "vitest";
-import {Action, bindAction, bindActionWithCallback, combine} from "../../src/lib/actions";
+import {describe, expect, test} from "vitest"
+import {Action, bindAction, bindActionWithCallback, combine} from "../../src/lib/actions"
 
 describe("bindAction", () => {
     test("output from action is passed as input to receiver", () => {
-        let result: string = "untouched"
+        let result = "untouched"
         const bound = bindAction((target: string) => "action: " + target, (r: string) => {
             result = r
         })
@@ -13,7 +13,7 @@ describe("bindAction", () => {
     })
 
     test("actions can bound to other bound actions", () => {
-        let result: string = "untouched"
+        let result = "untouched"
         const bound = bindAction((target) => "action: " + target, (r: string) => {
             result = r
         })
@@ -24,7 +24,7 @@ describe("bindAction", () => {
     })
 
     test("can bind target to action", () => {
-        let result: string = "untouched"
+        let result = "untouched"
         const bound = bindAction((target: string) => "action: " + target, (r: string) => {
             result = r
         }, "our target")
@@ -34,7 +34,7 @@ describe("bindAction", () => {
     })
 
     test("can bind arguments to action", () => {
-        let result: string = "untouched"
+        let result = "untouched"
         const bound = bindAction((target: string, arg: number) => "action: " + target + arg, (r: string) => {
             result = r
         }, "our target", 4)
