@@ -35,11 +35,13 @@ import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 
+
+// TODO Slett UngUfoerAutoTmp etter overgangsfase.
 // BrevTypeKode: PE_BA_04_505
 @TemplateModelHelpers
-object UngUfoerAuto : AutobrevTemplate<UngUfoerAutoDto> {
+object UngUfoerAutoTmp : AutobrevTemplate<UngUfoerAutoDto> {
 
-    override val kode: Brevkode.AutoBrev = Brevkode.AutoBrev.UT_UNG_UFOER_20_AAR_AUTO
+    override val kode: Brevkode.AutoBrev = Brevkode.AutoBrev.UNG_UFOER_AUTO
 
     override val template = createTemplate(
         name = kode.name,

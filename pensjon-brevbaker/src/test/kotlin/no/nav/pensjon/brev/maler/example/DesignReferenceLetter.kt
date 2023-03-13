@@ -13,7 +13,7 @@ import no.nav.pensjon.brev.template.dsl.text
 
 object DesignReferenceLetter : AutobrevTemplate<LetterExampleDto> {
 
-    override val kode: Brevkode.AutoBrev = Brevkode.AutoBrev.OMSORG_EGEN_AUTO
+    override val kode: Brevkode.AutoBrev = Brevkode.AutoBrev.PE_OMSORG_EGEN_AUTO
 
     override val template = createTemplate(
         name = "EKSEMPEL_BREV", //Letter ID

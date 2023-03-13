@@ -32,7 +32,7 @@ import java.time.LocalDate
 @TemplateModelHelpers
 object LetterExample : AutobrevTemplate<LetterExampleDto> {
 
-    override val kode: Brevkode.AutoBrev = Brevkode.AutoBrev.OMSORG_EGEN_AUTO
+    override val kode: Brevkode.AutoBrev = Brevkode.AutoBrev.PE_OMSORG_EGEN_AUTO
 
     override val template = createTemplate(
         name = "EKSEMPEL_BREV", //Letter ID

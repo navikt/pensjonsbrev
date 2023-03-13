@@ -23,7 +23,7 @@ import no.nav.pensjon.brev.template.dsl.textExpr
 @TemplateModelHelpers
 object OmsorgEgenAuto : AutobrevTemplate<OmsorgEgenAutoDto> {
 
-    override val kode: Brevkode.AutoBrev = Brevkode.AutoBrev.OMSORG_EGEN_AUTO
+    override val kode: Brevkode.AutoBrev = Brevkode.AutoBrev.PE_OMSORG_EGEN_AUTO
 
     override val template = createTemplate(
         name = kode.name,

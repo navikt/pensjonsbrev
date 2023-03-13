@@ -20,7 +20,7 @@ import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 @TemplateModelHelpers
 object OpptjeningVedForhoeyetHjelpesats : AutobrevTemplate<OpptjeningVedForhoeyetHjelpesatsDto> {
 
-    override val kode = Brevkode.AutoBrev.OMSORGP_GODSKRIVING
+    override val kode = Brevkode.AutoBrev.PE_OMSORG_HJELPESTOENAD_AUTO
 
     override val template = createTemplate(
         name = kode.name,
