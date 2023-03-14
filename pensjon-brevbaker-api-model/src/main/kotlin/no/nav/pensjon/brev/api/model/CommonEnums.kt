@@ -48,3 +48,8 @@ enum class KravAarsakType {
     SOKNAD_BT,
     TILST_DOD
 }
+enum class InntektFoerUfoereBegrunnelse {
+    STDBEGR_12_8_2_3,
+    STDBEGR_12_8_2_4,
+    STDBEGR_12_8_2_5,
+}

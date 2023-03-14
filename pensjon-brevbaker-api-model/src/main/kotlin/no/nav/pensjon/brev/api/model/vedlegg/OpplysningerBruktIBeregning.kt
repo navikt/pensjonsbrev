@@ -15,6 +15,7 @@ data class OpplysningerBruktIBeregningUTDto(
     val harKravaarsakEndringInntekt: Boolean,
     val inntektEtterUfoereGjeldende_beloepIEU: Kroner?,
     val inntektFoerUfoereGjeldende: InntektFoerUfoereGjeldende,
+    val inntektFoerUfoereBegrunnelse: InntektFoerUfoereBegrunnelse,
     val inntektsAvkortingGjeldende: InntektsAvkortingGjeldende,
     val kravAarsakType: KravAarsakType,  // TODO: PE_Vedtaksdata_Kravhode_KravArsakType
     val minsteytelseGjeldende_sats: Double?,
@@ -109,6 +110,7 @@ data class OpplysningerBruktIBeregningUTDto(
         val beloepsgrense: Kroner,
         val beregningsgrunnlagBeloepAar: Kroner,
         val erKonvertert: Boolean,
+        val harDelvisUfoeregrad: Boolean,  // TODO: Ny
         val kompensasjonsgrad: Double,
         val ufoeregrad: Int,
         val ufoeretidspunkt: LocalDate,
