@@ -77,7 +77,7 @@ fun createOpplysningerBruktIBeregningUTDtoBarnetilleggGjeldendeSaerkullsbarn() =
 fun createOpplysningerBruktIBeregningUTDtoBeregnetUTPerManedGjeldende() =
     OpplysningerBruktIBeregningUTDto.BeregnetUTPerManedGjeldende(
         brukerErFlyktning = false,
-        brukersSivilstand = Sivilstand.GIFT,
+        brukersSivilstand = Sivilstand.SAMBOER1_5,
         grunnbeloep = Kroner(100000),
         virkDatoFom = LocalDate.of(2020, 1, 1),
     )

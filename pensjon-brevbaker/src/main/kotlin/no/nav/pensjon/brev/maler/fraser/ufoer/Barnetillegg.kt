@@ -200,11 +200,11 @@ object Barnetillegg {
                 showIf(harBeloepFratrukketAnnenForelder) {
                     textExpr(
                         Bokmal to " Folketrygdens grunnbeløp på inntil ".expr() + grunnbeloep + " kroner er holdt utenfor inntekten til "
-                                + sivilstand.bestemtForm() + " din.",
+                                + sivilstand.bestemtForm() + " din. ",
                         Nynorsk to " Grunnbeløpet i folketrygda på inntil ".expr() + grunnbeloep + " kroner er halde utanfor inntekta til "
-                                + sivilstand.bestemtForm() + " din.",
+                                + sivilstand.bestemtForm() + " din. ",
                         English to " The national insurance basic amount of up to NOK ".expr() + grunnbeloep + " has not been included in your "
-                                + sivilstand.bestemtForm() + "'s income.",
+                                + sivilstand.bestemtForm() + "'s income. ",
                     )
                 }
 

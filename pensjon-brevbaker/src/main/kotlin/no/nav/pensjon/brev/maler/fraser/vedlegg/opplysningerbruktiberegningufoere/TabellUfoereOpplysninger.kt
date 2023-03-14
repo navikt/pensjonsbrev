@@ -88,7 +88,7 @@ data class TabellUfoereOpplysninger(
                             Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
                         )
                     }
-                    column(alignment = Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT) {
+                    column(columnSpan = 2, alignment = Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT) {
                     }
                 }
             ) {

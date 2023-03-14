@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningufoe
 import no.nav.pensjon.brev.api.model.Kroner
 import no.nav.pensjon.brev.api.model.KronerSelectors.value
 import no.nav.pensjon.brev.api.model.Sivilstand
+import no.nav.pensjon.brev.api.model.vedlegg.BarnetilleggGjeldendeSelectors.fellesbarn
 import no.nav.pensjon.brev.api.model.vedlegg.BarnetilleggGjeldendeSelectors.fellesbarn_safe
 import no.nav.pensjon.brev.api.model.vedlegg.BarnetilleggGjeldendeSelectors.foedselsdatoPaaBarnTilleggetGjelder
 import no.nav.pensjon.brev.api.model.vedlegg.BarnetilleggGjeldendeSelectors.saerkullsbarn_safe
@@ -62,8 +63,8 @@ data class OpplysningerOmBarnetillegg(
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         val harAnvendtTrygdetidUnder40 = anvendtTrygdetid.lessThan(40)
-        val harTilleggFellesBarn = barnetillegg.notNull()
-        val harTilleggSaerkullsbarn = barnetillegg.notNull()
+        val harTilleggFellesBarn = barnetillegg.fellesbarn_safe.notNull()
+        val harTilleggSaerkullsbarn = barnetillegg.saerkullsbarn_safe.notNull()
         val barnetillegSaerkullsbarnErRedusertMotInntekt =
             barnetillegg.saerkullsbarn_safe.erRedusertMotinntekt_safe.ifNull(false)
         val inntektEllerFribeloepErPeriodisert =
@@ -507,9 +508,9 @@ data class OpplysningerOmBarnetillegg(
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             paragraph {
                 text(
-                    Bokmal to "Størrelsen på barnetillegget er avhengig av samlet inntekt. ",
-                    Nynorsk to "Storleiken på barnetillegget er avhengig av samla inntekt. ",
-                    English to "The amount of child supplement is dependent on your total income. "
+                    Bokmal to "Størrelsen på barnetillegget er avhengig av samlet inntekt.",
+                    Nynorsk to "Storleiken på barnetillegget er avhengig av samla inntekt.",
+                    English to "The amount of child supplement is dependent on your total income."
                 )
             }
             paragraph {
@@ -782,9 +783,9 @@ data class OpplysningerOmBarnetillegg(
             }
             paragraph {
                 text(
-                    Bokmal to "Dersom begge foreldrene mottar uføretrygd blir barnetillegget gitt til den som har rett til det høyeste tillegget. Dette gjelder også dersom den ene forelderen mottar alderspensjon.",
-                    Nynorsk to "Dersom begge foreldra får uføretrygd, blir barnetillegget gitt til den som har rett til det høgaste tillegget. Dette gjeld også dersom den eine forelderen får alderspensjon.",
-                    English to "If both parents recieve disbaility benefit, child supplement will be paid to the parent with the highest disability benefit. This applies also if one of the parents receives retirement pension."
+                    Bokmal to "Dersom begge foreldrene mottar uføretrygd blir barnetillegget gitt til den som har rett til det høyeste tillegget.",
+                    Nynorsk to "Dersom begge foreldra får uføretrygd, blir barnetillegget gitt til den som har rett til det høgaste tillegget.",
+                    English to "If both parents recieve disbaility benefit, child supplement will be paid to the parent with the highest disability benefit."
                 )
             }
         }
@@ -821,9 +822,9 @@ data class OpplysningerOmBarnetillegg(
             }
             paragraph {
                 text(
-                    Bokmal to "Dersom begge foreldrene mottar uføretrygd blir barnetillegget gitt til den som har den daglige omsorgen for barnet. Dette gjelder også dersom den ene forelderen mottar alderspensjon. Har foreldrene delt omsorg for barnet, blir barnetillegget gitt til den forelderen som bor på samme folkeregistrete adresse som barnet. ",
-                    Nynorsk to "Dersom begge foreldra får uføretrygd, blir barnetillegget gitt til den som har den daglege omsorga for barnet. Dette gjeld også dersom den eine forelderen får alderspensjon. Har foreldra delt omsorg for barnet, blir barnetillegget gitt til den forelderen som bur på same folkeregistrerte adresse som barnet.",
-                    English to "If both parents recieve disbaility benefit, child supplement will be paid to the parent with guardianship of the child. This applies also if one of the parents receives retirement pension. If both parents have guardianship of the child, child supplement is given to the parent who lives at the same registered adresse as the child."
+                    Bokmal to "Dersom begge foreldrene mottar uføretrygd blir barnetillegget gitt til den som har den daglige omsorgen for barnet. Har foreldrene delt omsorg for barnet, blir barnetillegget gitt til den forelderen som bor på samme folkeregistrerte adresse som barnet.",
+                    Nynorsk to "Dersom begge foreldra får uføretrygd, blir barnetillegget gitt til den som har den daglege omsorga for barnet. Har foreldra delt omsorg for barnet, blir barnetillegget gitt til den forelderen som bur på same folkeregistrerte adresse som barnet.",
+                    English to "If both parents recieve disbaility benefit, child supplement will be paid to the parent with guardianship of the child. If both parents have guardianship of the child, child supplement is given to the parent who lives at the same registered adresse as the child."
                 )
             }
         }
