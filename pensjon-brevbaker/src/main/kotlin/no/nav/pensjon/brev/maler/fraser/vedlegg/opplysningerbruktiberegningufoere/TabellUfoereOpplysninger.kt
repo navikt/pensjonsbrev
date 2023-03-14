@@ -288,9 +288,9 @@ data class TabellUfoereOpplysninger(
                                 Nynorsk to "Du eller ".expr()
                                         + ifElse(erGift,"ektefellen","partnaren") +
                                         " er registrert med annan bustad, eller er på institusjon",
-                                English to "Du eller ".expr()
-                                        + ifElse(erGift,"ektefellen","partneren") +
-                                        " er registrert med annet bosted, eller er på institusjon",
+                                English to "You or your ".expr()
+                                        + ifElse(erGift,"spouse","partner") +
+                                        " have been registered as having a different address, or as living in an institution",
                             )
                         }
                         cell {
@@ -711,14 +711,9 @@ data class TabellUfoereOpplysninger(
                             }
                         }
 
-                        val inntektBruktIAvkortningFelles =
-                            barnetillegg.fellesbarn_safe.inntektBruktIAvkortning_safe.ifNull(Kroner(0))
-                        val inntektBruktIAvkortningSaerkull =
-                            barnetillegg.saerkullsbarn_safe.inntektBruktIAvkortning_safe.ifNull(Kroner(0))
-                        showIf(
-                            inntektBruktIAvkortningFelles.greaterThan(0)
-                                    or inntektBruktIAvkortningSaerkull.greaterThan(0)
-                        ) {
+                        val inntektBruktIAvkortningFelles = barnetillegg.fellesbarn_safe.inntektBruktIAvkortning_safe.ifNull(Kroner(0))
+                        val inntektBruktIAvkortningSaerkull = barnetillegg.saerkullsbarn_safe.inntektBruktIAvkortning_safe.ifNull(Kroner(0))
+                        showIf(inntektBruktIAvkortningFelles.greaterThan(0) or inntektBruktIAvkortningSaerkull.greaterThan(0)) {
                             row {
                                 cell {
                                     text(
