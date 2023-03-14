@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.maler.vedlegg
 
 
+import no.nav.pensjon.brev.api.model.KravAarsakType
 import no.nav.pensjon.brev.api.model.vedlegg.BeregnetUTPerManedGjeldendeSelectors.grunnbeloep
 import no.nav.pensjon.brev.api.model.vedlegg.BeregnetUTPerManedGjeldendeSelectors.virkDatoFom
 import no.nav.pensjon.brev.api.model.vedlegg.GjenlevendetilleggGjeldeneSelectors.harGjenlevendetillegg
@@ -113,7 +114,7 @@ fun createVedleggOpplysningerBruktIBeregningUT(skalViseMinsteytelse: Boolean, sk
                 )
             }
         }
-        showIf(not(harKravaarsakSoeknadBT)) {
+        showIf(kravAarsakType.isNotAnyOf(KravAarsakType.SOKNAD_BT)) {  // TODO: ShowIf before or after ifNotNull?
             ifNotNull(opptjeningUfoeretrygd) { opptjening ->
                 includePhrase(
                     TabellInntekteneBruktIBeregningen(
@@ -175,16 +176,16 @@ fun createVedleggOpplysningerBruktIBeregningUT(skalViseMinsteytelse: Boolean, sk
                     )
                 )
             }
-
-            includePhrase(
+// TODO: api-model? - her hentes datagrunnlaget fra hit og dit
+      /*      includePhrase(
                 EtteroppgjoerAvUfoeretrygdOgBarnetillegg(
                     kravAarsakType = kravAarsakType,
                     sivilstand = sivilstand,
                     // harBarnetilleggInnvilget
-                    //  harFellesbarn =
-                    // borIUtlandet =
+                    // harFellesbarn
+                    // borIUtlandet
                 )
-            )
+            ) */
         }
     }
 

@@ -22,8 +22,7 @@ import no.nav.pensjon.brev.template.dsl.textExpr
 import java.time.LocalDate
 import no.nav.pensjon.brev.template.dsl.expression.*
 
-// TODO: Forklaringstekster til tabellene
-// TODO: Inkluder avkortetBeloep når beregningsMetode != FOLKETRYGD istedenfor justertBeloep når beregningsMetode = FOLKETRYGD
+// TODO: Må hente datagrunnlaget til avdød - styrer dette fra Pesys?
 
 data class TabellInntekteneBruktIBeregningen(
     val beregningGjeldendeFraOgMed: Expression<LocalDate>,
