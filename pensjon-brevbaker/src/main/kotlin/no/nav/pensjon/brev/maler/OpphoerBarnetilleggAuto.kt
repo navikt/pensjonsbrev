@@ -269,7 +269,7 @@ object OpphoerBarnetilleggAuto : AutobrevTemplate<OpphoerBarnetilleggAutoDto> {
             includePhrase(Ufoeretrygd.SkattForDegSomBorIUtlandet(brukerBorInorge))
             includePhrase(Felles.HarDuSpoersmaalPesys)
         }
-        // TODO sjekk at pesys ekskluderer denne riktig. Gjenbruk logikk fra ung ufør
+
         includeAttachmentIfNotNull(vedleggMaanedligUfoeretrygdFoerSkatt, maanedligUfoeretrygdFoerSkatt)
         includeAttachment(
             createVedleggOpplysningerBruktIBeregningUT(

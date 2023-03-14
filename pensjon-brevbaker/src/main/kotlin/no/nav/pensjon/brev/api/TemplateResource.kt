@@ -16,7 +16,6 @@ val prodAutobrevTemplates: Set<AutobrevTemplate<*>> = setOf(
     OpptjeningVedForhoeyetHjelpesats,
     UfoerOmregningEnslig,
     UngUfoerAuto,
-    UngUfoerAutoTmp, // TODO slett etter overgangsfase i forbindelse med endring i brevkoden til ung ufør auto
 )
 
 val prodRedigerbareTemplates: Set<RedigerbarTemplate<*>> = setOf(

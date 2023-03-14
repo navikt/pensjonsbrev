@@ -188,38 +188,38 @@ object Barnetillegg {
             paragraph {
                 textExpr(
                     Bokmal to "Inntekten din er ".expr() + inntektBruktiAvkortningFellesbarn.format() + " kroner og inntekten til ".expr() +
-                            sivilstand.bestemtForm() + " din er ".expr() + inntektAnnenForelderFellesbarn.format() + " kroner.",
+                            sivilstand.bestemtForm() + " din er ".expr() + inntektAnnenForelderFellesbarn.format() + " kroner. ",
 
                     Nynorsk to "Inntekta di er ".expr() + inntektBruktiAvkortningFellesbarn.format() + " kroner, og inntekta til ".expr() +
-                            sivilstand.bestemtForm() + " din er ".expr() + inntektAnnenForelderFellesbarn.format() + " kroner.",
+                            sivilstand.bestemtForm() + " din er ".expr() + inntektAnnenForelderFellesbarn.format() + " kroner. ",
 
                     English to "Your income is NOK ".expr() + inntektBruktiAvkortningFellesbarn.format() + " and your ".expr() +
-                            sivilstand.bestemtForm() + "'s income is NOK ".expr() + inntektAnnenForelderFellesbarn.format() + ".",
+                            sivilstand.bestemtForm() + "'s income is NOK ".expr() + inntektAnnenForelderFellesbarn.format() + ". ",
                 )
 
                 showIf(harBeloepFratrukketAnnenForelder) {
                     textExpr(
-                        Bokmal to " Folketrygdens grunnbeløp på inntil ".expr() + grunnbeloep + " kroner er holdt utenfor inntekten til "
+                        Bokmal to "Folketrygdens grunnbeløp på inntil ".expr() + grunnbeloep + " kroner er holdt utenfor inntekten til "
                                 + sivilstand.bestemtForm() + " din. ",
-                        Nynorsk to " Grunnbeløpet i folketrygda på inntil ".expr() + grunnbeloep + " kroner er halde utanfor inntekta til "
+                        Nynorsk to "Grunnbeløpet i folketrygda på inntil ".expr() + grunnbeloep + " kroner er halde utanfor inntekta til "
                                 + sivilstand.bestemtForm() + " din. ",
-                        English to " The national insurance basic amount of up to NOK ".expr() + grunnbeloep + " has not been included in your "
+                        English to "The national insurance basic amount of up to NOK ".expr() + grunnbeloep + " has not been included in your "
                                 + sivilstand.bestemtForm() + "'s income. ",
                     )
                 }
 
                 showIf(not(harBarnetilleggSaerkullsbarn) and not(harJusteringsbeloepFellesbarn) and faarUtbetaltBarnetilleggFellesBarn) {
                     textExpr(
-                        Bokmal to " Til sammen er inntektene ".expr() +
+                        Bokmal to "Til sammen er inntektene ".expr() +
                                 ifElse(inntektLavereEnnFribeloep, "lavere", "høyere") +
                                 " enn fribeløpet ditt på ".expr() + fribeloepFellesbarn.format() + " kroner. Barnetillegget ditt er derfor".expr() +
                                 ifElse(harFradragFellesbarn, "", " ikke") + " redusert ut fra inntekt".expr(),
-                        Nynorsk to " Til saman er inntektene ".expr() +
+                        Nynorsk to "Til saman er inntektene ".expr() +
                                 ifElse(inntektLavereEnnFribeloep, "lågare", "høgare") +
                                 " enn fribeløpet ditt på ".expr() + fribeloepFellesbarn.format() + " kroner. Barnetillegget ditt er derfor".expr() +
                                 ifElse(harFradragFellesbarn, "", " ikkje") +
                                 " redusert ut frå inntekt. ".expr(),
-                        English to " Together, the incomes are ".expr() +
+                        English to "Together, the incomes are ".expr() +
                                 ifElse(inntektLavereEnnFribeloep, "lower", "higher") +
                                 " than your exemption amount of NOK ".expr() + fribeloepFellesbarn.format() +
                                 ". Therefore, your child supplement has".expr() +

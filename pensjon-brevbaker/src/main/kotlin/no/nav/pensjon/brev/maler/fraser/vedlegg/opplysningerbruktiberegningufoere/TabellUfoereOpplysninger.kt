@@ -37,7 +37,6 @@ import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidsdetaljerGjeldendeSelector
 import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidsdetaljerGjeldendeSelectors.tellerTTEOS
 import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidsdetaljerGjeldendeSelectors.tellerTTNordiskKonv
 import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidsdetaljerGjeldendeSelectors.utenforEOSogNorden
-import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdGjeldendeSelectors.beloepsgrense
 import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdGjeldendeSelectors.beregningsgrunnlagBeloepAar
 import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdGjeldendeSelectors.kompensasjonsgrad
 import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdGjeldendeSelectors.ufoeregrad
@@ -66,7 +65,7 @@ data class TabellUfoereOpplysninger(
     val inntektsgrenseErUnderTak: Expression<Boolean>,
     val beregnetUTPerManedGjeldende: Expression<OpplysningerBruktIBeregningUTDto.BeregnetUTPerManedGjeldende>,
     val inntektEtterUfoereGjeldendeBeloep: Expression<Kroner?>,
-    val ungUfoerGjeldende_erUnder20Aar: Expression<Boolean?>,
+    val erUngUfoer: Expression<Boolean>,
     val trygdetidsdetaljerGjeldende: Expression<OpplysningerBruktIBeregningUTDto.TrygdetidsdetaljerGjeldende>,
     val barnetilleggGjeldende: Expression<OpplysningerBruktIBeregningUTDto.BarnetilleggGjeldende?>,
     val harMinsteytelse: Expression<Boolean>,
@@ -183,10 +182,7 @@ data class TabellUfoereOpplysninger(
                         )
                     }
                 }
-                showIf(
-                    ufoeretrygdGjeldende.beloepsgrense.greaterThan(0)
-                            or inntektsAvkortingGjeldende.inntektsgrenseAar.greaterThan(0)
-                ) {
+                showIf(inntektsAvkortingGjeldende.inntektsgrenseAar.greaterThan(0)) {
                     row {
                         cell {
                             text(
@@ -196,11 +192,7 @@ data class TabellUfoereOpplysninger(
                             )
                         }
                         cell {
-                            showIf(ufoeretrygdGjeldende.beloepsgrense.greaterThan(0)) {
-                                includePhrase(Felles.KronerText(ufoeretrygdGjeldende.beloepsgrense))
-                            }.orShow {
-                                includePhrase(Felles.KronerText(inntektsAvkortingGjeldende.inntektsgrenseAar))
-                            }
+                            includePhrase(Felles.KronerText(inntektsAvkortingGjeldende.inntektsgrenseAar))
                         }
                     }
                 }
@@ -311,7 +303,7 @@ data class TabellUfoereOpplysninger(
                     }
 
                 }
-                showIf(ungUfoerGjeldende_erUnder20Aar.ifNull(false)) {
+                showIf(erUngUfoer) {
                     row {
                         cell {
                             text(
