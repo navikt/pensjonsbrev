@@ -6,15 +6,19 @@ import java.time.LocalDate
 data class OpplysningerBruktIBeregningUTDto(
     val barnetilleggGjeldende: BarnetilleggGjeldende?,
     val beregnetUTPerManedGjeldende: BeregnetUTPerManedGjeldende,
+    val borIUtlandet: Boolean,  // TODO: (PE_Grunnlag_Persongrunnlagsliste_PersonBostedsland) <> "nor" AND (PE_Grunnlag_Persongrunnlagsliste_PersonBostedsland) <> ""
     val fraOgMedDatoErNesteAar: Boolean,
+    val gjenlevendetilleggGjeldene: GjenlevendetilleggGjeldene?,
     val grunnbeloep: Kroner,
-    val harEktefelletillegg: Boolean?,  // TODO: Ny
+    val harBarnetilleggInnvilget: Boolean?,  // TODO: IF (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true) OR (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true)
+    val harEktefelletilleggInnvilget: Boolean?,  // TODO: PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_Ektefelletillegg_ETinnvilget = true
     val harKravaarsakEndringInntekt: Boolean,
-    val harKravaarsakSoeknadBT: Boolean,  // TODO: Create in Pesys (IF PE_Vedtaksdata_Kravhode_KravArsakType <> "soknad_bt)
     val inntektEtterUfoereGjeldende_beloepIEU: Kroner?,
     val inntektFoerUfoereGjeldende: InntektFoerUfoereGjeldende,
     val inntektsAvkortingGjeldende: InntektsAvkortingGjeldende,
+    val kravAarsakType: KravAarsakType,  // TODO: PE_Vedtaksdata_Kravhode_KravArsakType
     val minsteytelseGjeldende_sats: Double?,
+    val norskTrygdetid: List<NorskTrygdetid>,
     val opptjeningAvdoedUfoeretrygd: OpptjeningUfoeretrygd?,
     val opptjeningUfoeretrygd: OpptjeningUfoeretrygd?,
     val sivilstand: Sivilstand,
@@ -22,11 +26,8 @@ data class OpplysningerBruktIBeregningUTDto(
     val trygdetidsdetaljerGjeldende: TrygdetidsdetaljerGjeldende,
     val ufoeretrygdGjeldende: UfoeretrygdGjeldende,
     val ungUfoerGjeldende_erUnder20Aar: Boolean?,
-    val yrkesskadeGjeldende: YrkesskadeGjeldende?,
-    val norskTrygdetid: List<NorskTrygdetid>,
     val utenlandskTrygdetid: List<UtenlandskTrygdetid>,
-    val gjenlevendetilleggGjeldene: GjenlevendetilleggGjeldene?,  // TODO: Ny
-    val kravAarsakType: KravAarsakType,
+    val yrkesskadeGjeldende: YrkesskadeGjeldende?,
 ) {
     data class YrkesskadeGjeldende(
         val beregningsgrunnlagBeloepAar: Kroner,
@@ -165,8 +166,8 @@ data class OpplysningerBruktIBeregningUTDto(
     )
 
     data class GjenlevendetilleggGjeldene(
-        val harGjenlevendetillegg: Boolean,
-        val harNyttGjenlevendetillegg: Boolean,
+        val harGjenlevendetillegg: Boolean,  // TODO: PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GTinnvilget = true
+        val harNyttGjenlevendetillegg: Boolean,  // TODO: PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_NyttGjenlevendetillegg = true
     )
 
 }

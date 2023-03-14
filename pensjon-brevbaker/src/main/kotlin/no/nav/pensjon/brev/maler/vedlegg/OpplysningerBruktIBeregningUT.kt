@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.maler.vedlegg
 
 
 import no.nav.pensjon.brev.api.model.KravAarsakType
+import no.nav.pensjon.brev.api.model.vedlegg.BarnetilleggGjeldendeSelectors.fellesbarn_safe
 import no.nav.pensjon.brev.api.model.vedlegg.BeregnetUTPerManedGjeldendeSelectors.grunnbeloep
 import no.nav.pensjon.brev.api.model.vedlegg.BeregnetUTPerManedGjeldendeSelectors.virkDatoFom
 import no.nav.pensjon.brev.api.model.vedlegg.GjenlevendetilleggGjeldeneSelectors.harGjenlevendetillegg
@@ -11,11 +12,12 @@ import no.nav.pensjon.brev.api.model.vedlegg.InntektsAvkortingGjeldendeSelectors
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDto
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.barnetilleggGjeldende
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.beregnetUTPerManedGjeldende
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.borIUtlandet
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.fraOgMedDatoErNesteAar
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.gjenlevendetilleggGjeldene
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.harEktefelletillegg
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.harBarnetilleggInnvilget
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.harEktefelletilleggInnvilget
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.harKravaarsakEndringInntekt
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.harKravaarsakSoeknadBT
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.inntektEtterUfoereGjeldende_beloepIEU
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.inntektFoerUfoereGjeldende
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.inntektsAvkortingGjeldende
@@ -47,7 +49,7 @@ import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.dsl.textExpr
-import java.time.LocalDate
+
 
 fun createVedleggOpplysningerBruktIBeregningUT(skalViseMinsteytelse: Boolean, skalViseBarnetillegg: Boolean) =
     createAttachment<LangBokmalNynorskEnglish, OpplysningerBruktIBeregningUTDto>(
@@ -114,6 +116,7 @@ fun createVedleggOpplysningerBruktIBeregningUT(skalViseMinsteytelse: Boolean, sk
                 )
             }
         }
+
         showIf(kravAarsakType.isNotAnyOf(KravAarsakType.SOKNAD_BT)) {  // TODO: ShowIf before or after ifNotNull?
             ifNotNull(opptjeningUfoeretrygd) { opptjening ->
                 includePhrase(
@@ -158,34 +161,31 @@ fun createVedleggOpplysningerBruktIBeregningUT(skalViseMinsteytelse: Boolean, sk
                 )
             )
 
-            ifNotNull(gjenlevendetilleggGjeldene) { tillegg ->
+            ifNotNull(gjenlevendetilleggGjeldene) { gjenlevendetillegg ->
                 includePhrase(
                     SlikBeregnerViGjenlevendetillegg(
-                        harGjenlevendetillegg = tillegg.harGjenlevendetillegg,
-                        harNyttGjenlevendetillegg = tillegg.harNyttGjenlevendetillegg,
-                        kravAarsakType = kravAarsakType,
+                        harGjenlevendetillegg = gjenlevendetillegg.harGjenlevendetillegg,
+                        harNyttGjenlevendetillegg = gjenlevendetillegg.harNyttGjenlevendetillegg,
                     )
                 )
             }
 
-            ifNotNull(harEktefelletillegg) {ektefelletillegg ->
+            ifNotNull(harEktefelletilleggInnvilget) { ektefelletillegg ->
                 includePhrase(
                     ForDegSomMottarEktefelletillegg(
                         harEktefelletilleggInnvilget = ektefelletillegg,
-                        kravAarsakType = kravAarsakType,
                     )
                 )
             }
-// TODO: api-model? - her hentes datagrunnlaget fra hit og dit
-      /*      includePhrase(
+
+            includePhrase(
                 EtteroppgjoerAvUfoeretrygdOgBarnetillegg(
-                    kravAarsakType = kravAarsakType,
                     sivilstand = sivilstand,
-                    // harBarnetilleggInnvilget
-                    // harFellesbarn
-                    // borIUtlandet
+                    harBarnetilleggInnvilget = harBarnetilleggInnvilget.notNull(),
+                    harFellesbarn = barnetilleggGjeldende.fellesbarn_safe.notNull(),
+                    borIUtlandet = borIUtlandet,
                 )
-            ) */
+            )
         }
     }
 

@@ -1,12 +1,10 @@
 package no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningufoere
 
-import no.nav.pensjon.brev.api.model.KravAarsakType
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
-import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.text
 
 
@@ -19,11 +17,11 @@ AND brevkode <> PE_UT_04_108, PE_UT_04_109, PE_UT_07_200, PE_UT_06_300,
 THEN INCLUDE */
 data class ForDegSomMottarEktefelletillegg(
     val harEktefelletilleggInnvilget: Expression<Boolean>,
-    val kravAarsakType: Expression<KravAarsakType>,
+
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         // TBU071V
-        showIf(harEktefelletilleggInnvilget and (kravAarsakType.isNotAnyOf(KravAarsakType.SOKNAD_BT))) {
+        showIf(harEktefelletilleggInnvilget) {
             title1 {
                 text(
                     Bokmal to "Ektefelletillegget blir utbetalt som et fast tillegg ved siden av uføretrygden. Tillegget blir ikke endret i perioden ektefelletillegget er innvilget.",
