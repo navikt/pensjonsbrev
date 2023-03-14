@@ -1,14 +1,17 @@
 package no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningufoere
 
+import no.nav.pensjon.brev.api.model.InntektFoerUfoereBegrunnelse
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
+import no.nav.pensjon.brev.template.dsl.expression.isOneOf
 import no.nav.pensjon.brev.template.dsl.text
 
 data class SlikFastsetterViInntektenDinFoerDuBleUfoer(
     val harDelvisUfoergrad: Expression<Boolean>,
+    val inntektFoerUfoereBegrunnelse: Expression<InntektFoerUfoereBegrunnelse>,
 
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
@@ -70,6 +73,44 @@ data class SlikFastsetterViInntektenDinFoerDuBleUfoer(
                 Nynorsk to "Inntekta di før du blei ufør skal svare til dei inntektsmoglegheitene du hadde før uføretidspunktet. Vi bruker gjennomsnittet av den pensjonsgivande inntekta di for dei tre siste åra før du blei ufør. Alle tre åra skal vere med, sjølv om inntektene har variert mykje.  Det kan gjerast unntak frå denne regelen, dersom sjukdom eller skade har redusert inntektsmoglegheitene dine over fleire år.",
                 English to "Your income prior to disability should correspond to the income opportunities you had before the disability. We calculate your average income from the last three years before the disability. All three years will be included, regardless of any income variation. Exceptions to this rule can be made if illness or injury has reduced your income opportunities over several years."
             )
+        }
+
+        // TBU201V / INCLUDE IF brevkode = "PE_UT_04_500 OR
+        showIf(inntektFoerUfoereBegrunnelse.isOneOf(InntektFoerUfoereBegrunnelse.STDBEGR_12_8_2_3, InntektFoerUfoereBegrunnelse.STDBEGR_12_8_2_4, InntektFoerUfoereBegrunnelse.STDBEGR_12_8_2_5)) {
+            paragraph {
+                text(
+                    Bokmal to "Minstenivå på inntekt før uførhet ",
+                    Nynorsk to "Minstenivå på inntekt før du blei ufør",
+                    English to "The minimum level of income prior to date of disability"
+                )
+            }
+            paragraph {
+                text(
+                    Bokmal to "Inntekten din før du ble ufør skal ikke settes lavere enn:",
+                    Nynorsk to "Inntekta di før du blei ufør skal ikkje setjas lågare enn:",
+                    English to "Your income prior to your date of disability will not be set lower than:"
+                )
+                list {
+                    item {
+                        text(Bokmal to "3,3 ganger grunnbeløpet dersom du lever sammen med ektefelle/partner/samboer. Samboerforholdet ditt må ha vart i minst 12 av de siste 18 månedene.",
+                            Nynorsk to "3,5 ganger grunnbeløpet dersom du er enslig.",
+                            English to "4,5 ganger grunnbeløpet dersom du har rett til uføretrygd med rettighet som ung ufør."
+                        )
+                    }
+                    item {
+                        text(Bokmal to "3,3 gonger grunnbeløpet dersom du lever saman med ektefelle/partner/sambuar. Sambuarforholdet ditt må ha vart i minst 12 av dei siste 18 månadene.",
+                            Nynorsk to "3,5 gonger grunnbeløpet dersom du er einsleg.",
+                            English to "4,5 gonger grunnbeløpet dersom du har rett til uføretrygd med rett som ung ufør."
+                        )
+                    }
+                    item {
+                        text(Bokmal to "3.3 times the National Insurance basic amount for individuals living with a spouse or partner, or in a cohabitant relationship that has lasted no less than 12 of the last 18 months.",
+                            Nynorsk to "3.5 times the National Insurance basic amount if you are single.",
+                            English to "4.5 times the National Insurance basic amount if you are a young disabled individual."
+                        )
+                    }
+                }
+            }
         }
 
         // TBU053
