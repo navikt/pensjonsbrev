@@ -6,9 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "test": "vitest",
-    "test-ui": "vitest --ui",
-    "lint": "next lint"
+    "test": "vitest run",
+    "test-watch": "vitest --ui",
+    "lint": "next lint --dir test"
   },
   "dependencies": {
     "@azure/msal-browser": "^2.30.0",

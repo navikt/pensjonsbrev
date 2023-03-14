@@ -1,13 +1,12 @@
 import {describe, expect, test} from "vitest"
-import {LITERAL, TextContent} from "../../../../src/modules/LetterEditor/model"
-import {TextContentAction} from "../../../../src/modules/LetterEditor/actions/content"
+import {LITERAL, Content} from "../../../../src/modules/LetterEditor/model/api"
+import {TextContentAction} from "../../../../src/modules/LetterEditor/actions/textcontent"
 
 describe("TextContentAction", () => {
-    const content: TextContent = {
+    const content: Content = {
         type: LITERAL,
         id: 1,
-        location: [],
-        text: "heisann"
+        text: "heisann",
     }
 
     describe('updateText', () => {

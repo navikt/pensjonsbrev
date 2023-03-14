@@ -29,7 +29,6 @@ fun createOpplysningerBruktIBeregningUTDtoBarnetilleggGjeldende() =
     OpplysningerBruktIBeregningUTDto.BarnetilleggGjeldende(
         saerkullsbarn = Fixtures.create(),
         fellesbarn = Fixtures.create(),
-        totaltAntallBarn = 4,
         foedselsdatoPaaBarnTilleggetGjelder = listOf(
             LocalDate.of(2000,1,1),
             LocalDate.of(2000,2,2),
@@ -77,7 +76,7 @@ fun createOpplysningerBruktIBeregningUTDtoBarnetilleggGjeldendeSaerkullsbarn() =
 fun createOpplysningerBruktIBeregningUTDtoBeregnetUTPerManedGjeldende() =
     OpplysningerBruktIBeregningUTDto.BeregnetUTPerManedGjeldende(
         brukerErFlyktning = false,
-        brukersSivilstand = Sivilstand.SAMBOER1_5,
+        brukersSivilstand = Sivilstand.GIFT,
         grunnbeloep = Kroner(100000),
         virkDatoFom = LocalDate.of(2020, 1, 1),
     )

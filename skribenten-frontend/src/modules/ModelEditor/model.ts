@@ -1,4 +1,4 @@
-import {FieldType, ObjectTypeSpecification, ObjectTypeSpecifications, TArray, TEnum, TObject, TScalar} from "../LetterEditor/model"
+import {FieldType, ObjectTypeSpecification, ObjectTypeSpecifications, TArray, TEnum, TObject, TScalar} from "../LetterEditor/model/api"
 
 export type ScalarValue = number | string | boolean
 

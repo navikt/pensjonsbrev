@@ -1,6 +1,9 @@
 package no.nav.pensjon.brev.template.render
 
+import com.natpryce.hamkrest.assertion.assertThat
+import com.natpryce.hamkrest.isA
 import no.nav.pensjon.brev.Fixtures.felles
+import no.nav.pensjon.brev.api.model.RenderedJsonLetter
 import no.nav.pensjon.brev.api.model.RenderedJsonLetter.Block
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Language.Bokmal
@@ -25,10 +28,19 @@ class PensjonJsonRendererTest {
             paragraph { text(Bokmal to "hei paragraph2") }
         }
 
-        assertEquals(
-            listOf("hei tittel", "hei paragraph", "hei paragraph2"),
-            result.blocks.map { it.content.firstOrNull()?.text },
-        )
+        assertThat(result.blocks[0], isA<Block.Title1>())
+        assertThat(result.blocks[1], isA<Block.Paragraph>())
+        assertThat(result.blocks[2], isA<Block.Paragraph>())
+        val p2 = result.blocks[2]
+        if (p2 is Block.Paragraph) {
+            val text = p2.content.first()
+            assertThat(text, isA<RenderedJsonLetter.ParagraphContent.Text.Literal>())
+            if (text is RenderedJsonLetter.ParagraphContent.Text.Literal) {
+                assertEquals("hei paragraph2", text.text)
+            }
+        }
+
+        assertEquals(listOf("hei tittel", "hei paragraph", "hei paragraph2"), result.blocks.textInOrder())
     }
 
     @Test
@@ -46,7 +58,7 @@ class PensjonJsonRendererTest {
     }
 
     @Test
-    fun `paragraph content is rendered in order with location`() {
+    fun `paragraph content is rendered in order`() {
         val result = renderTemplate(Unit) {
             paragraph {
                 text(Bokmal to "first")
@@ -54,12 +66,11 @@ class PensjonJsonRendererTest {
             }
         }
 
-        assertEquals(listOf("first", "second"), result.blocks.first().content.map { it.text })
-        assertEquals(listOf("0"), result.blocks.first().content.first().location)
+        assertEquals(listOf("first", "second"), result.blocks.first().textInOrder())
     }
 
     @Test
-    fun `title1 content is rendered in order with location`() {
+    fun `title1 content is rendered in order`() {
         val result = renderTemplate(Unit) {
             title1 {
                 text(Bokmal to "first")
@@ -67,7 +78,7 @@ class PensjonJsonRendererTest {
             }
         }
 
-        assertEquals(listOf("first", "second"), result.blocks.first().content.map { it.text })
+        assertEquals(listOf("first", "second"), result.blocks.first().textInOrder())
     }
 
     @Test
@@ -76,19 +87,6 @@ class PensjonJsonRendererTest {
             paragraph { text(Bokmal to "hei") }
             paragraph { text(Bokmal to "hei") }
         }.blocks
-
-        assertEquals(p1.id, p2.id)
-        assertNotEquals(p1.location, p2.location)
-    }
-
-    @Test
-    fun `repeated equal nested elements are distinguishable by location`() {
-        val (p1, p2) = renderTemplate(Unit) {
-            paragraph {
-                text(Bokmal to "hei")
-                text(Bokmal to "hei")
-            }
-        }.blocks[0].content
 
         assertEquals(p1.id, p2.id)
         assertNotEquals(p1.location, p2.location)
@@ -145,4 +143,18 @@ class PensjonJsonRendererTest {
         assertEquals(listOf("c", "0"), result.blocks[0].location)
     }
 
+    private fun List<Block>.textInOrder(): List<String> =
+        flatMap { it.textInOrder() }
+
+    private fun Block.textInOrder(): List<String> =
+        when(this) {
+            is Block.Paragraph -> content.flatMap { it.textInOrder() }
+            is Block.Title1 -> content.map { it.text }
+        }
+
+    private fun RenderedJsonLetter.ParagraphContent.textInOrder(): List<String> =
+        when(this) {
+            is RenderedJsonLetter.ParagraphContent.ItemList -> items.flatMap { item -> item.content.map { it.text } }
+            is RenderedJsonLetter.ParagraphContent.Text -> listOf(text)
+        }
 }

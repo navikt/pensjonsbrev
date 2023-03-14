@@ -19,7 +19,6 @@ data class UngUfoerAutoDto(
     data class InnvilgetTillegg(val utbetalt: Boolean)
     data class Barnetillegg(
         val utbetalt: Boolean,
-        val antallBarn: Int, //TODO remove in next version
         val inntektstak: Kroner,
         val gjelderFlereBarn: Boolean,
     )
