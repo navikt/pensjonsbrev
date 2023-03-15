@@ -17,7 +17,7 @@ data class OpphoerBarnetilleggAutoDto(
     val grunnbeloep: Kroner,
     val sivilstand: Sivilstand,
     val ufoeretrygd: Ufoeretrygd,
-    val maanedligUfoeretrygdFoerSkatt: MaanedligUfoeretrygdFoerSkattDto,
+    val maanedligUfoeretrygdFoerSkatt: MaanedligUfoeretrygdFoerSkattDto?,
     val opplysningerBruktIBeregningUT: OpplysningerBruktIBeregningUTDto,
     val orienteringOmRettigheterUfoere: OrienteringOmRettigheterUfoereDto,
 )

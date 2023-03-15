@@ -9,7 +9,6 @@ object Brevkode {
         UT_OMREGNING_ENSLIG_AUTO("UT_DOD_ENSLIG_AUTO", "TILST_DOD_UT"),
         UT_OPPHOER_BT_AUTO("PE_UT_07_200", "OPPHOR_ENDRING_UT_BT"),
         UT_UNG_UFOER_20_AAR_AUTO("PE_BA_04_505", "UP_FULLTT_BELOPENDR"),
-        UNG_UFOER_AUTO, // TODO slett etter overgang
         ;
 
         val brevkoder: Set<String> = koder.toSet()

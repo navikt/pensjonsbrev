@@ -2,6 +2,8 @@ package no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningufoe
 
 import no.nav.pensjon.brev.api.model.Beregningsmetode
 import no.nav.pensjon.brev.api.model.Kroner
+import no.nav.pensjon.brev.api.model.Sivilstand.GIFT_LEVER_ADSKILT
+import no.nav.pensjon.brev.api.model.Sivilstand.PARTNER_LEVER_ADSKILT
 import no.nav.pensjon.brev.api.model.vedlegg.BarnetilleggGjeldendeSelectors.fellesbarn
 import no.nav.pensjon.brev.api.model.vedlegg.BarnetilleggGjeldendeSelectors.fellesbarn_safe
 import no.nav.pensjon.brev.api.model.vedlegg.BarnetilleggGjeldendeSelectors.foedselsdatoPaaBarnTilleggetGjelder
@@ -35,7 +37,6 @@ import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidsdetaljerGjeldendeSelector
 import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidsdetaljerGjeldendeSelectors.tellerTTEOS
 import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidsdetaljerGjeldendeSelectors.tellerTTNordiskKonv
 import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidsdetaljerGjeldendeSelectors.utenforEOSogNorden
-import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdGjeldendeSelectors.beloepsgrense
 import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdGjeldendeSelectors.beregningsgrunnlagBeloepAar
 import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdGjeldendeSelectors.kompensasjonsgrad
 import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdGjeldendeSelectors.ufoeregrad
@@ -64,7 +65,7 @@ data class TabellUfoereOpplysninger(
     val inntektsgrenseErUnderTak: Expression<Boolean>,
     val beregnetUTPerManedGjeldende: Expression<OpplysningerBruktIBeregningUTDto.BeregnetUTPerManedGjeldende>,
     val inntektEtterUfoereGjeldendeBeloep: Expression<Kroner?>,
-    val ungUfoerGjeldende_erUnder20Aar: Expression<Boolean?>,
+    val erUngUfoer: Expression<Boolean>,
     val trygdetidsdetaljerGjeldende: Expression<OpplysningerBruktIBeregningUTDto.TrygdetidsdetaljerGjeldende>,
     val barnetilleggGjeldende: Expression<OpplysningerBruktIBeregningUTDto.BarnetilleggGjeldende?>,
     val harMinsteytelse: Expression<Boolean>,
@@ -72,6 +73,7 @@ data class TabellUfoereOpplysninger(
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         paragraph {
+            val brukersSivilstand = beregnetUTPerManedGjeldende.brukersSivilstand
             table(
                 header = {
                     column(3) {
@@ -82,7 +84,7 @@ data class TabellUfoereOpplysninger(
                             Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
                         )
                     }
-                    column(alignment = Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT) {
+                    column(columnSpan = 2, alignment = Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT) {
                     }
                 }
             ) {
@@ -180,10 +182,7 @@ data class TabellUfoereOpplysninger(
                         )
                     }
                 }
-                showIf(
-                    ufoeretrygdGjeldende.beloepsgrense.greaterThan(0)
-                            or inntektsAvkortingGjeldende.inntektsgrenseAar.greaterThan(0)
-                ) {
+                showIf(inntektsAvkortingGjeldende.inntektsgrenseAar.greaterThan(0)) {
                     row {
                         cell {
                             text(
@@ -193,11 +192,7 @@ data class TabellUfoereOpplysninger(
                             )
                         }
                         cell {
-                            showIf(ufoeretrygdGjeldende.beloepsgrense.greaterThan(0)) {
-                                includePhrase(Felles.KronerText(ufoeretrygdGjeldende.beloepsgrense))
-                            }.orShow {
-                                includePhrase(Felles.KronerText(inntektsAvkortingGjeldende.inntektsgrenseAar))
-                            }
+                            includePhrase(Felles.KronerText(inntektsAvkortingGjeldende.inntektsgrenseAar))
                         }
                     }
                 }
@@ -272,16 +267,43 @@ data class TabellUfoereOpplysninger(
                             )
                         }
                         cell {
-                            val brukersSivilstand = beregnetUTPerManedGjeldende.brukersSivilstand.tableFormat()
                             textExpr(
-                                Bokmal to brukersSivilstand,
-                                Nynorsk to brukersSivilstand,
-                                English to brukersSivilstand
+                                Bokmal to brukersSivilstand.tableFormat(),
+                                Nynorsk to brukersSivilstand.tableFormat(),
+                                English to brukersSivilstand.tableFormat()
                             )
                         }
                     }
                 }
-                showIf(ungUfoerGjeldende_erUnder20Aar.ifNull(false)) {
+
+                showIf(brukersSivilstand.isOneOf(GIFT_LEVER_ADSKILT, PARTNER_LEVER_ADSKILT)) {
+                    val erGift = brukersSivilstand.isOneOf(GIFT_LEVER_ADSKILT)
+                    row {
+                        cell {
+                            //Du eller partnaren er registrert med annan bustad, eller er på institusjon
+                            textExpr(
+                                Bokmal to "Du eller ".expr()
+                                        + ifElse(erGift,"ektefellen","partneren") +
+                                        " er registrert med annet bosted, eller er på institusjon",
+                                Nynorsk to "Du eller ".expr()
+                                        + ifElse(erGift,"ektefellen","partnaren") +
+                                        " er registrert med annan bustad, eller er på institusjon",
+                                English to "You or your ".expr()
+                                        + ifElse(erGift,"spouse","partner") +
+                                        " have been registered as having a different address, or as living in an institution",
+                            )
+                        }
+                        cell {
+                            text(
+                                Bokmal to "Ja",
+                                Nynorsk to "Ja",
+                                English to "Yes",
+                            )
+                        }
+                    }
+
+                }
+                showIf(erUngUfoer) {
                     row {
                         cell {
                             text(
@@ -691,8 +713,7 @@ data class TabellUfoereOpplysninger(
 
                         val inntektBruktIAvkortningFelles = barnetillegg.fellesbarn_safe.inntektBruktIAvkortning_safe.ifNull(Kroner(0))
                         val inntektBruktIAvkortningSaerkull = barnetillegg.saerkullsbarn_safe.inntektBruktIAvkortning_safe.ifNull(Kroner(0))
-                        showIf(inntektBruktIAvkortningFelles.greaterThan(0)
-                                or inntektBruktIAvkortningSaerkull.greaterThan(0)) {
+                        showIf(inntektBruktIAvkortningFelles.greaterThan(0) or inntektBruktIAvkortningSaerkull.greaterThan(0)) {
                             row {
                                 cell {
                                     text(
