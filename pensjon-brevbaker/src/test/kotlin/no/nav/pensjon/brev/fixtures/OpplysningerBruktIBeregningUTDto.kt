@@ -20,7 +20,7 @@ fun createOpplysningerBruktIBeregningUTDto() =
         inntektFoerUfoereBegrunnelse = InntektFoerUfoereBegrunnelse.STDBEGR_12_8_2_3,
         inntektFoerUfoereGjeldende = Fixtures.create(),
         inntektsAvkortingGjeldende = Fixtures.create(),
-        kravAarsakType = KravAarsakType.SOKNAD_BT,
+        kravAarsakType = KravAarsakType.ENDRET_OPPTJENING,
         minsteytelseGjeldende_sats = 0.0,
         norskTrygdetid = listOf(createOpplysningerBruktIBeregningUTDtoNorskTrygdetid()),
         opptjeningAvdoedUfoeretrygd = Fixtures.create(),
@@ -30,7 +30,8 @@ fun createOpplysningerBruktIBeregningUTDto() =
         trygdetidsdetaljerGjeldende = Fixtures.create(),
         ufoeretrygdGjeldende = Fixtures.create(),
         ungUfoerGjeldende_erUnder20Aar = false,
-        utenlandskTrygdetid = listOf(createOpplysningerBruktIBeregningUTDtoUtenlandskTrygdetid()),
+        utenlandskTrygdetid = (1..3).map { createOpplysningerBruktIBeregningUTDtoUtenlandskTrygdetid() },
+        //listOf(createOpplysningerBruktIBeregningUTDtoNorskTrygdetid(), createOpplysningerBruktIBeregningUTDtoNorskTrygdetid(), createOpplysningerBruktIBeregningUTDtoNorskTrygdetid())
         yrkesskadeGjeldende = Fixtures.create(),
     )
 
@@ -186,7 +187,7 @@ fun createOpplysningerBruktIBeregningUTDtoUtenlandskTrygdetid() =
 
 fun createOpplysningerBruktIBeregningUTDtoGjenlevendetilleggGjeldene() =
     OpplysningerBruktIBeregningUTDto.GjenlevendetilleggGjeldene(
-        harGjenlevendetillegg = false,
+        harGjenlevendetillegg = true,
         harNyttGjenlevendetillegg = false,
     )
 

@@ -16,6 +16,15 @@ data class SlikBeregnerViGjenlevendetillegg(
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
 
+        /* IF GTInnvilget = true
+     AND brevkode <> PE_UT_04_300, PE_UT_14_300,
+     AND KravArsakType <> "soknad_bt"
+     AND NyttGjenlevendetillegg = true
+     AND brevkode <> PE_UT_100, PE_UT_07_100, PE_UT_04_108, PE_UT_04_109, PE_UT_04_500, PE_UT_07_200
+     THEN INCLUDE */
+
+
+
         showIf(harGjenlevendetillegg) {
             title1 {
                 text(
@@ -24,13 +33,6 @@ data class SlikBeregnerViGjenlevendetillegg(
                     English to "This is how we calculate your survivor's supplement"
                 )
             }
-
-            /* IF GTInnvilget = true
-        AND brevkode <> PE_UT_04_300, PE_UT_14_300,
-        AND KravArsakType <> "soknad_bt"
-        AND NyttGjenlevendetillegg = true
-        AND brevkode <> PE_UT_100, PE_UT_07_100, PE_UT_04_108, PE_UT_04_109, PE_UT_04_500, PE_UT_07_200
-        THEN INCLUDE */
 
             showIf(harNyttGjenlevendetillegg) {
                 paragraph {

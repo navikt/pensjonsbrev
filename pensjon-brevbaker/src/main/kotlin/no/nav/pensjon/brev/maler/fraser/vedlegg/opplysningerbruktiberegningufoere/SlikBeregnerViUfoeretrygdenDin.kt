@@ -12,21 +12,10 @@ import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.text
 
 
-/* Include IF brevkode not(
-PE_UT_05_100
-PE_UT_04_300
-PE_UT_07_100
-)
-AND beloepsgrense != 6000
-AND kravAarsakType != soknad_bt
-AND IF brevkode not(
-PE_UT_04_108
-PE_UT_04_109
-PE_UT_06_300
-PE_UT_07_200
-PE_UT_14_300
-)
- */
+/* Include IF brevkode not(PE_UT_05_100, PE_UT_04_300, PE_UT_07_100)
+AND beloepsgrense <> 6000
+AND kravAarsakType <> soknad_bt
+AND IF brevkode not(PE_UT_04_108, PE_UT_04_109, PE_UT_06_300, PE_UT_07_200, PE_UT_14_300) */
 
 data class SlikBeregnerViUfoeretrygdenDin(
     val beregningsmetode: Expression<Beregningsmetode>,
@@ -52,7 +41,7 @@ data class SlikBeregnerViUfoeretrygdenDin(
                 )
             }
 
-            //TBU013V
+            // TBU013V
             paragraph {
                 text(
                     Bokmal to "Når vi beregner uføretrygden din, bruker vi som hovedregel gjennomsnittsinntekten i de tre beste av de fem siste årene før du ble ufør. Fordi ligningen din for året før du ble ufør ikke er ferdig, bruker vi her gjennomsnittsinntekten i de tre beste av de fire siste årene før du ble ufør.",
