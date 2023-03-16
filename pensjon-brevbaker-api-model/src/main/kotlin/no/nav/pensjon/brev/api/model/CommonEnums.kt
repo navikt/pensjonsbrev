@@ -46,7 +46,9 @@ enum class Beregningsmetode {
 
 enum class KravAarsakType {
     SOKNAD_BT,
-    TILST_DOD
+    TILST_DOD,
+    ENDRET_OPPTJENING,
+    ENDRET_INNTEKT,
 }
 enum class InntektFoerUfoereBegrunnelse {
     STDBEGR_12_8_2_3,
