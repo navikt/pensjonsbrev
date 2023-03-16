@@ -2,31 +2,135 @@ package no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningufoe
 
 import no.nav.pensjon.brev.api.model.KravAarsakType
 import no.nav.pensjon.brev.api.model.Kroner
-import no.nav.pensjon.brev.maler.fraser.common.Constants
+import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Expression
-import no.nav.pensjon.brev.template.Language
+import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 
-data class SlikHarViFastsattKompensasjonsgradenDin(
-val kravAarsakType: Expression<KravAarsakType>,
-    val harUlikBeloepUT: Expression<Boolean>,
-    val ifuInntekt: Expression<Kroner>,
-    val harFullUfoeregrad: Expression<Boolean>,
-    val harDelvisUfoeregrad: Expression<Boolean>,
-    val oifuInntekt: Expression<Boolean>,
-    val ugradertBruttoPerAar: Expression<Boolean>,
-    val ufoeregrad: Expression<Int>,
-
-)
-
-
 /* TBU056V
 IF (brevkode = PE_UT_04_102, PE_UT_04_116, PE_UT_04_101, PE_UT_04_114, PE_UT_04_300, PE_UT_14_300, PE_UT_04_500)
 OR (KravArsakType = <ENDRET_INNTEKT>
 AND <BelopGammelUT> <> <BelopNyUT>)
 AND <KravArsakType> <> <SOKNAD_BT> */
+
+
+data class SlikHarViFastsattKompensasjonsgradenDin(
+    val kravAarsakType: Expression<KravAarsakType>,
+    val harUlikBeloepUT: Expression<Boolean>,
+    val ifuInntekt: Expression<Kroner>,
+    val harFullUfoeregrad: Expression<Boolean>,
+    val harDelvisUfoeregrad: Expression<Boolean>,
+    val oifuInntekt: Expression<Kroner>,
+    val ugradertBruttoPerAar: Expression<Kroner>,
+    val ufoeregrad: Expression<Int>,
+    val kompensasjonsgrad: Expression<Int>,
+    val harBrukerKonvertertUP: Expression<Boolean>,
+    val inntektsgrenseLessThanInntektstak: Expression<Boolean>,
+
+    ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+        showIf(
+            (
+                    kravAarsakType.isOneOf(
+                        KravAarsakType.ENDRET_INNTEKT
+                    )) and harUlikBeloepUT and not(
+                kravAarsakType.isOneOf(
+                    KravAarsakType.SOKNAD_BT
+                )
+            )
+        ) {
+            title1 {
+                text(
+                    Bokmal to "Slik har vi fastsatt kompensasjonsgraden din",
+                    Nynorsk to "Slik har vi fastsett kompensasjonsgraden din",
+                    English to "This is your degree of compensation"
+                )
+            }
+
+            paragraph {
+                textExpr(
+                    Bokmal to "Vi fastsetter kompensasjonsgraden ved å sammenligne det du ".expr() +
+                            ifElse(
+                                harFullUfoeregrad,
+                                ifTrue = "har rett til",
+                                ifFalse = "ville hatt rett til"
+                            ) + " i 100 prosent uføretrygd med din oppjusterte inntekt før du ble ufør".expr(),
+                    Nynorsk to "Vi fastset kompensasjonsgraden ved å samanlikne det du ".expr() +
+                            ifElse(
+                                harFullUfoeregrad,
+                                ifTrue = "har rett til",
+                                ifFalse = "ville hatt rett til"
+                            ) + " i 100 prosent uføretrygd, med den oppjusterte inntekta di før du blei ufør.".expr(),
+                    English to "Your degree of compensation is established by comparing what you ".expr() +
+                            ifElse(
+                                harFullUfoeregrad,
+                                ifTrue = "are entitled to with a degree of disability of",
+                                ifFalse = "would have been entitled to had your degree of disability been"
+                            ) + " 100 percent, and your recalculated income prior to your disability.".expr()
+                )
+                text(
+                    Bokmal to "Kompensasjonsgraden brukes til å beregne hvor mye vi reduserer uføretrygden din, hvis du har inntekt som er høyere enn inntektsgrensen.",
+                    Nynorsk to "Kompensasjonsgraden blir brukt til å berekne kor mykje vi reduserer uføretrygda di, dersom du har inntekt som er høgare enn inntektsgrensa.",
+                    English to "The degree of compensation is used to calculate how much your disability benefit will be reduced if your income exceeds the income limit."
+                )
+            }
+            paragraph {
+                textExpr(
+                    Bokmal to "Inntekten din før du ble ufør er fastsatt til ".expr() + ifuInntekt.format() + " kroner. For å kunne fastsette kompensasjonsgraden din, må denne inntekten oppjusteres til dagens verdi. Oppjustert til dagens verdi tilsvarer dette en inntekt på ".expr() + oifuInntekt.format() + " kroner.".expr(),
+                    Nynorsk to "Inntekta di før du blei ufør er fastsett til ".expr() + ifuInntekt.format() + " kroner. For å kunne fastsetje kompensasjonsgraden din, må inntekta oppjusterast til dagens verdi. Oppjustert til dagens verdi utgjer dette ei inntekt på ".expr() + oifuInntekt.format() + " kroner.".expr(),
+                    English to "Your income before you became disabled has been determined to be NOK ".expr() + ifuInntekt.format() + ". To establish your degree of compensation this is adjusted to today’s value and is equivalent to an income of NOK ".expr() + oifuInntekt.format() + ".".expr()
+                )
+            }
+            showIf(harFullUfoeregrad) {
+                paragraph {
+                    textExpr(
+                        Bokmal to "Du har rett til 100 prosent uføretrygd, som utgjør ".expr() + ugradertBruttoPerAar.format() + " kroner per år.".expr(),
+                        Nynorsk to "Du har rett til 100 prosent uføretrygd, som utgjer ".expr() + ugradertBruttoPerAar.format() + " kroner per år.".expr(),
+                        English to "For you, a 100 percent disability benefit will total NOK ".expr() + ugradertBruttoPerAar.format() + " per year.".expr()
+                    )
+                }
+            }
+            showIf(harDelvisUfoeregrad) {
+                paragraph {
+                    textExpr(
+                        Bokmal to "Du har rett til ".expr() + ufoeregrad.format() + " prosent uføretrygd. Regnet om til 100 prosent uføretrygd, utgjør dette ".expr() + ugradertBruttoPerAar.format() + " kroner per år.".expr(),
+                        Nynorsk to "Du har rett til ".expr() + ufoeregrad.format() + " prosent uføretrygd. Rekna om til 100 prosent uføretrygd, utgjer dette ".expr() + ugradertBruttoPerAar.format() + " kroner per år.".expr(),
+                        English to "You are entitled to ".expr() + ufoeregrad.format() + " percent disability benefit. Recalculated to 100 prosent disability, this totals NOK ".expr() + ugradertBruttoPerAar.format() + " per year".expr(),
+                    )
+                }
+            }
+            paragraph {
+                textExpr(
+                    Bokmal to "Vi beregner kompensasjonsgraden din slik: ".expr() + ugradertBruttoPerAar.format() + " / ".expr() + oifuInntekt.format() + " * 100 = ".expr() + kompensasjonsgrad.format() + " prosent.".expr(),
+                    Nynorsk to "Vi bereknar kompensasjonsgraden din slik: ".expr() + ugradertBruttoPerAar.format() + " / ".expr() + oifuInntekt.format() + " * 100 = ".expr() + kompensasjonsgrad.format() + " prosent.".expr(),
+                    English to "We have calculated your degree of compensation as follows: ".expr() + ugradertBruttoPerAar.format() + " / ".expr() + oifuInntekt.format() + " * 100 = ".expr() + kompensasjonsgrad.format() + " percent.".expr()
+                )
+            }
+            showIf(inntektsgrenseLessThanInntektstak) {
+                paragraph {
+                    showIf(harBrukerKonvertertUP) {
+                        text(
+                            Bokmal to "Kompensasjonsgraden skal ved beregningen ikke settes høyere enn 70 prosent.",
+                            Nynorsk to "Kompensasjonsgraden skal ikkje setjast høgare enn 70 prosent i berekninga.",
+                            English to "Your degree of compensation will not be set higher than 70 percent.",
+                        )
+                    }
+                    text(
+                        Bokmal to "Hvis uføretrygden din i løpet av et kalenderår endres, bruker vi en gjennomsnittlig kompensasjonsgrad i beregningen.",
+                        Nynorsk to "Dersom uføretrygda di blir endra i løpet av eit kalenderår, vil vi bruke ein gjennomsnittleg kompensasjonsgrad i berekninga.",
+                        English to "If your degree of compensation has changed over the course of a calendar year, your disability benefit payment will be recalculated based on your average degree of compensation."
+                    )
+                }
+            }
+        }
+    }
+}
+
+
+
+
