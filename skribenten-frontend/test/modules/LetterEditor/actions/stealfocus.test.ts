@@ -8,7 +8,6 @@ describe('StealFocusAction', () => {
         {
             type: PARAGRAPH,
             id: 1,
-            location: [],
             editable: true,
             content: [
                 {id: 1, type: VARIABLE, text: "Ole"},
@@ -17,7 +16,6 @@ describe('StealFocusAction', () => {
         }, {
             type: PARAGRAPH,
             id: 2,
-            location: [],
             editable: true,
             content: [
                 {id: 1, type: LITERAL, text: "Hyggelig å møte deg "},
@@ -30,7 +28,6 @@ describe('StealFocusAction', () => {
         }, {
             type: PARAGRAPH,
             id: 3,
-            location: [],
             editable: true,
             content: [
                 {id: 1, type: LITERAL, text: "last"},
@@ -108,13 +105,11 @@ describe('StealFocusAction', () => {
                 {
                     type: PARAGRAPH,
                     id: 1,
-                    location: [],
                     editable: true,
                     content: [{type: LITERAL, id: 1, text: ""}],
                 }, {
                     type: PARAGRAPH,
                     id: 1,
-                    location: [],
                     editable: true,
                     content: [{type: LITERAL, id: 1, text: "some text"}],
                 },

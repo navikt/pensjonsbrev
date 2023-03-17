@@ -36,18 +36,20 @@ const splitBlock: Action<AnyBlock[], [blockId: number, contentId: number, offset
             } else if (block.type === PARAGRAPH) {
                 const content = block.content[contentId]
                 if (content.type === LITERAL || content.type === VARIABLE) {
-                    const firstText = content.text.substring(0, offset)
-                    const secondText = content.text.substring(offset)
+                    const firstText = cleanseText(content.text.substring(0, offset))
+                    const secondText = cleanseText(content.text.substring(offset))
 
                     const newBlock: ParagraphBlock = {
                         ...block,
-                        content: [...block.content.slice(0, contentId), {...content, text: cleanseText(firstText)}],
+                        id: contentId === 0 && firstText.length < 2 ? -1 : block.id,
+                        content: [...block.content.slice(0, contentId), {...content, id: firstText.length < 2 ? -1 : content.id , text: firstText}],
                     }
 
                     block.content.splice(0, contentId)
 
-                    content.text = cleanseText(secondText)
-                    if (content.text.length === 0) {
+                    content.text = secondText
+                    if (block.content.length === 1 && content.text.length < 2) {
+                        block.id = -1
                         content.id = -1
                     }
 

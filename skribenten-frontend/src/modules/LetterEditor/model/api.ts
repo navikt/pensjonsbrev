@@ -1,6 +1,5 @@
 export interface Identifiable {
     readonly id: number
-    readonly location: string[]
 }
 
 export const LITERAL = 'LITERAL'

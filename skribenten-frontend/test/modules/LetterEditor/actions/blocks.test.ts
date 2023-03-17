@@ -7,7 +7,6 @@ describe("BlocksAction", () => {
     const blocks: AnyBlock[] = [
         {
             id: 1,
-            location: [],
             type: "PARAGRAPH",
             content: [
                 {id: 1, type: LITERAL, text: "Hyggelig å møte deg "},
@@ -18,7 +17,6 @@ describe("BlocksAction", () => {
         },
         {
             id: 2,
-            location: [],
             type: "PARAGRAPH",
             content: [
                 {id: 1, type: LITERAL, text: "Da kan vi diskutere planen videre."},
@@ -26,7 +24,6 @@ describe("BlocksAction", () => {
         },
         {
             id: 3,
-            location: [],
             type: "PARAGRAPH",
             content: [
                 {id: 1, type: LITERAL, text: "Det blir "},
@@ -38,7 +35,6 @@ describe("BlocksAction", () => {
     const blocksFirstEmpty: AnyBlock[] = [
         {
             id: 1,
-            location: [],
             type: "PARAGRAPH",
             content: [
                 {id: 1, type: LITERAL, text: ""},
@@ -46,7 +42,6 @@ describe("BlocksAction", () => {
         },
         {
             id: 2,
-            location: [],
             type: "PARAGRAPH",
             content: [
                 {id: 1, type: LITERAL, text: "ABC"},
@@ -57,7 +52,6 @@ describe("BlocksAction", () => {
     const blocksSecondEmpty: AnyBlock[] = [
         {
             id: 1,
-            location: [],
             type: "PARAGRAPH",
             content: [
                 {id: 1, type: LITERAL, text: "ABC"},
@@ -65,7 +59,6 @@ describe("BlocksAction", () => {
         },
         {
             id: 2,
-            location: [],
             type: "PARAGRAPH",
             content: [
                 {id: 1, type: LITERAL, text: ""},
@@ -76,7 +69,6 @@ describe("BlocksAction", () => {
     describe("updateBlock", () => {
         const updatedBlock: ParagraphBlock = {
             id: 1,
-            location: [],
             type: "PARAGRAPH",
             content: [{id: 1, type: "LITERAL", text: "hei"}],
         }
