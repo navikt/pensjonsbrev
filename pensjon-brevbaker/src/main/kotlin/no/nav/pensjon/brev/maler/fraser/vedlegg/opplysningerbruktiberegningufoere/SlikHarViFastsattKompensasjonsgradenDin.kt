@@ -20,17 +20,17 @@ AND <KravArsakType> <> <SOKNAD_BT> */
 
 
 data class SlikHarViFastsattKompensasjonsgradenDin(
-    val kravAarsakType: Expression<KravAarsakType>,
-    val harUlikBeloepUT: Expression<Boolean>,
-    val ifuInntekt: Expression<Kroner>,
-    val harFullUfoeregrad: Expression<Boolean>,
-    val harDelvisUfoeregrad: Expression<Boolean>,
-    val oifuInntekt: Expression<Kroner>,
-    val ugradertBruttoPerAar: Expression<Kroner>,
-    val ufoeregrad: Expression<Int>,
-    val kompensasjonsgrad: Expression<Int>,
     val harBrukerKonvertertUP: Expression<Boolean>,
-    val inntektsgrenseLessThanInntektstak: Expression<Boolean>,
+    val harDelvisUfoeregrad: Expression<Boolean>,
+    val harFullUfoeregrad: Expression<Boolean>,
+    val harGammelUTBeloepUlikNyUTBeloep: Expression<Boolean>,
+    val ifuInntekt: Expression<Kroner>,
+    val harInntektsgrenseLessThanInntektstak: Expression<Boolean>,
+    val kompensasjonsgrad: Expression<Double>,
+    val kravAarsakType: Expression<KravAarsakType>,
+    val oifuInntekt: Expression<Kroner>,
+    val ufoeregrad: Expression<Int>,
+    val ugradertBruttoPerAar: Expression<Kroner>,
 
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
@@ -38,7 +38,7 @@ data class SlikHarViFastsattKompensasjonsgradenDin(
             (
                     kravAarsakType.isOneOf(
                         KravAarsakType.ENDRET_INNTEKT
-                    )) and harUlikBeloepUT and not(
+                    )) and harGammelUTBeloepUlikNyUTBeloep and not(
                 kravAarsakType.isOneOf(
                     KravAarsakType.SOKNAD_BT
                 )
@@ -111,7 +111,7 @@ data class SlikHarViFastsattKompensasjonsgradenDin(
                     English to "We have calculated your degree of compensation as follows: ".expr() + ugradertBruttoPerAar.format() + " / ".expr() + oifuInntekt.format() + " * 100 = ".expr() + kompensasjonsgrad.format() + " percent.".expr()
                 )
             }
-            showIf(inntektsgrenseLessThanInntektstak) {
+            showIf(harInntektsgrenseLessThanInntektstak) {
                 paragraph {
                     showIf(harBrukerKonvertertUP) {
                         text(
