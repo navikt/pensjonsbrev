@@ -13,6 +13,7 @@ import no.nav.pensjon.brev.api.model.vedlegg.InntektsAvkortingGjeldendeSelectors
 import no.nav.pensjon.brev.api.model.vedlegg.InntektsAvkortingGjeldendeSelectors.harInntektsgrenseLessThanInntektstak
 import no.nav.pensjon.brev.api.model.vedlegg.InntektsAvkortingGjeldendeSelectors.inntektsgrenseAar
 import no.nav.pensjon.brev.api.model.vedlegg.InntektsAvkortingGjeldendeSelectors.inntektstak
+import no.nav.pensjon.brev.api.model.vedlegg.InntektsAvkortingGjeldendeSelectors.nettoPerAar
 import no.nav.pensjon.brev.api.model.vedlegg.InntektsAvkortingGjeldendeSelectors.overskytendeInntekt
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDto
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.barnetilleggGjeldende
@@ -210,6 +211,20 @@ fun createVedleggOpplysningerBruktIBeregningUT(skalViseMinsteytelse: Boolean, sk
                     inntektsgrenseAar = inntektsAvkortingGjeldende.inntektsgrenseAar,
                     kompensasjonsgrad = ufoeretrygdGjeldende.kompensasjonsgrad,
                     kravAarsakType = kravAarsakType,
+                    overskytendeInntekt = inntektsAvkortingGjeldende.overskytendeInntekt,
+                )
+            )
+
+            includePhrase(
+                SlikBeregnerViReduksjonAvUfoeretrygden(
+                    forventetInntektAar = inntektsAvkortingGjeldende.forventetInntektAar,
+                    harGammelUTBeloepUlikNyUTBeloep = ufoeretrygdGjeldende.harGammelUTBeloepUlikNyUTBeloep,
+                    harInntektsgrenseLessThanInntektstak = inntektsAvkortingGjeldende.harInntektsgrenseLessThanInntektstak,
+                    harNyUTBeloep = ufoeretrygdGjeldende.harNyUTBeloep,
+                    inntektsgrenseAar = inntektsAvkortingGjeldende.inntektsgrenseAar,
+                    kompensasjonsgrad = ufoeretrygdGjeldende.kompensasjonsgrad,
+                    kravAarsakType = kravAarsakType,
+                    nettoPerAar = inntektsAvkortingGjeldende.nettoPerAar,
                     overskytendeInntekt = inntektsAvkortingGjeldende.overskytendeInntekt,
                 )
             )

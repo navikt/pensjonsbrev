@@ -127,7 +127,8 @@ data class OpplysningerBruktIBeregningUTDto(
         val harInntektsgrenseLessThanInntektstak: Boolean,  // TODO: Ny / BEREGNING! / PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektsgrense < PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektstak
         val inntektsgrenseAar: Kroner,
         val inntektstak: Kroner,
-        val overskytendeInntekt: Kroner  // TODO: Ny / BEREGNING! (PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_ForventetInntekt - PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektsgrense)
+        val nettoPerAar: Kroner, // TODO: Ny / BEREGNING!
+        val overskytendeInntekt: Kroner,  // TODO: Ny / BEREGNING! (PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_ForventetInntekt - PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektsgrense)
     )
 
     data class InntektFoerUfoereGjeldende(
