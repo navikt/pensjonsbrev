@@ -13,11 +13,9 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 
 
-
-
 data class SlikBlirDinUtbetalingFoerSkatt(
     val ufoeregrad: Expression<Int>,
-    val harutbetalingsgradLessThanUfoeregrad: Expression<Boolean>,
+    val harUtbetalingsgradLessThanUfoeregrad: Expression<Boolean>,
     val nettoAkkumulertePlussNettoRestAar: Expression<Kroner>,
     val nettoAkkumulerteBeloepUtbetalt: Expression<Kroner>,
     val nettoTilUtbetalingRestenAvAaret: Expression<Kroner>,
@@ -27,5 +25,14 @@ data class SlikBlirDinUtbetalingFoerSkatt(
     val harTotalNetto: Expression<Kroner>, // har fra før?
     val harInntektsgrenseLargerThanOrEqualToInntektstak: Expression<Boolean>,
     val harForventetInntektLargerThanInntektstak: Expression<Boolean>,
+    val kravAarsakType: Expression<KravAarsakType>,
 
-)
+    ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+    showIf(harUtbetalingsgradLessThanUfoeregrad and kravAarsakType.isNotAnyOf(KravAarsakType.SOKNAD_BT)) {
+
+    }
+    }
+
+
+    }
