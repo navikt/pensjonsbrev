@@ -5,11 +5,15 @@ import no.nav.pensjon.brev.api.model.KravAarsakType
 import no.nav.pensjon.brev.api.model.vedlegg.BarnetilleggGjeldendeSelectors.fellesbarn_safe
 import no.nav.pensjon.brev.api.model.vedlegg.BeregnetUTPerManedGjeldendeSelectors.grunnbeloep
 import no.nav.pensjon.brev.api.model.vedlegg.BeregnetUTPerManedGjeldendeSelectors.virkDatoFom
+import no.nav.pensjon.brev.api.model.vedlegg.BeregningUfoereSelectors.harBeloepRedusert
+import no.nav.pensjon.brev.api.model.vedlegg.BeregningUfoereSelectors.totalNetto
 import no.nav.pensjon.brev.api.model.vedlegg.GjenlevendetilleggGjeldeneSelectors.harGjenlevendetillegg
 import no.nav.pensjon.brev.api.model.vedlegg.GjenlevendetilleggGjeldeneSelectors.harNyttGjenlevendetillegg
 import no.nav.pensjon.brev.api.model.vedlegg.InntektFoerUfoereGjeldendeSelectors.ifuInntekt
 import no.nav.pensjon.brev.api.model.vedlegg.InntektFoerUfoereGjeldendeSelectors.oifuInntekt
 import no.nav.pensjon.brev.api.model.vedlegg.InntektsAvkortingGjeldendeSelectors.forventetInntektAar
+import no.nav.pensjon.brev.api.model.vedlegg.InntektsAvkortingGjeldendeSelectors.harForventetInntektLargerThanInntektstak
+import no.nav.pensjon.brev.api.model.vedlegg.InntektsAvkortingGjeldendeSelectors.harInntektsgrenseLargerThanOrEqualToInntektstak
 import no.nav.pensjon.brev.api.model.vedlegg.InntektsAvkortingGjeldendeSelectors.harInntektsgrenseLessThanInntektstak
 import no.nav.pensjon.brev.api.model.vedlegg.InntektsAvkortingGjeldendeSelectors.inntektsgrenseAar
 import no.nav.pensjon.brev.api.model.vedlegg.InntektsAvkortingGjeldendeSelectors.inntektstak
@@ -18,6 +22,7 @@ import no.nav.pensjon.brev.api.model.vedlegg.InntektsAvkortingGjeldendeSelectors
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDto
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.barnetilleggGjeldende
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.beregnetUTPerManedGjeldende
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.beregningUfoere
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.borIUtlandet
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.fraOgMedDatoErNesteAar
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.gjenlevendetilleggGjeldene
@@ -38,6 +43,7 @@ import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSel
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.trygdetidGjeldende
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.trygdetidsdetaljerGjeldende
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.ufoeretrygdGjeldende
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.ufoeretrygdOrdinaer
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.ungUfoerGjeldende_erUnder20Aar
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.utenlandskTrygdetid
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.yrkesskadeGjeldende
@@ -52,11 +58,15 @@ import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidsdetaljerGjeldendeSelector
 import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdGjeldendeSelectors.harDelvisUfoeregrad
 import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdGjeldendeSelectors.harFullUfoeregrad
 import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdGjeldendeSelectors.harGammelUTBeloepUlikNyUTBeloep
-import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdGjeldendeSelectors.harNyUTBeloep
+import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdGjeldendeSelectors.harUtbetalingsgradLessThanUfoeregrad
 import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdGjeldendeSelectors.kompensasjonsgrad
-import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdGjeldendeSelectors.kompensasjonsgradSelector
 import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdGjeldendeSelectors.ufoeregrad
 import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdGjeldendeSelectors.ugradertBruttoPerAar
+import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdOrdinaerSelectors.fradrag
+import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdOrdinaerSelectors.harNyUTBeloep
+import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdOrdinaerSelectors.nettoAkkumulerteBeloepUtbetalt
+import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdOrdinaerSelectors.nettoAkkumulertePlussNettoRestAar
+import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdOrdinaerSelectors.nettoTilUtbetalingRestenAvAaret
 import no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningufoere.*
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
@@ -207,7 +217,7 @@ fun createVedleggOpplysningerBruktIBeregningUT(skalViseMinsteytelse: Boolean, sk
                     forventetInntektAar = inntektsAvkortingGjeldende.forventetInntektAar,
                     harGammelUTBeloepUlikNyUTBeloep = ufoeretrygdGjeldende.harGammelUTBeloepUlikNyUTBeloep,
                     harInntektsgrenseLessThanInntektstak = inntektsAvkortingGjeldende.harInntektsgrenseLessThanInntektstak,
-                    harNyUtBeloep = ufoeretrygdGjeldende.harNyUTBeloep,
+                    harNyUtBeloep = ufoeretrygdOrdinaer.harNyUTBeloep,
                     inntektsgrenseAar = inntektsAvkortingGjeldende.inntektsgrenseAar,
                     kompensasjonsgrad = ufoeretrygdGjeldende.kompensasjonsgrad,
                     kravAarsakType = kravAarsakType,
@@ -220,12 +230,34 @@ fun createVedleggOpplysningerBruktIBeregningUT(skalViseMinsteytelse: Boolean, sk
                     forventetInntektAar = inntektsAvkortingGjeldende.forventetInntektAar,
                     harGammelUTBeloepUlikNyUTBeloep = ufoeretrygdGjeldende.harGammelUTBeloepUlikNyUTBeloep,
                     harInntektsgrenseLessThanInntektstak = inntektsAvkortingGjeldende.harInntektsgrenseLessThanInntektstak,
-                    harNyUTBeloep = ufoeretrygdGjeldende.harNyUTBeloep,
+                    harNyUTBeloep = ufoeretrygdOrdinaer.harNyUTBeloep,
                     inntektsgrenseAar = inntektsAvkortingGjeldende.inntektsgrenseAar,
                     kompensasjonsgrad = ufoeretrygdGjeldende.kompensasjonsgrad,
                     kravAarsakType = kravAarsakType,
                     nettoPerAar = inntektsAvkortingGjeldende.nettoPerAar,
                     overskytendeInntekt = inntektsAvkortingGjeldende.overskytendeInntekt,
+                )
+            )
+
+            includePhrase(
+                TabellSlikBlirDinUtbetalingFoerSkatt(
+                    forventetInntektAar = inntektsAvkortingGjeldende.forventetInntektAar,
+                    fradrag = ufoeretrygdOrdinaer.fradrag,
+                    harBeloepRedusert = beregningUfoere.harBeloepRedusert,
+                    harForventetInntektLargerThanInntektstak = inntektsAvkortingGjeldende.harForventetInntektLargerThanInntektstak,
+                    harInntektsgrenseLargerThanOrEqualToInntektstak = inntektsAvkortingGjeldende.harInntektsgrenseLargerThanOrEqualToInntektstak,
+                    harInntektsgrenseLessThanInntektstak = inntektsAvkortingGjeldende.harInntektsgrenseLessThanInntektstak,
+                    harNyUTBeloep = ufoeretrygdOrdinaer.harNyUTBeloep,
+                    harUtbetalingsgradLessThanUfoeregrad = ufoeretrygdGjeldende.harUtbetalingsgradLessThanUfoeregrad,
+                    inntektsgrenseAar = inntektsAvkortingGjeldende.inntektsgrenseAar,
+                    inntektstak = inntektsAvkortingGjeldende.inntektstak,
+                    kravAarsakType = kravAarsakType,
+                    nettoAkkumulerteBeloepUtbetalt = ufoeretrygdOrdinaer.nettoAkkumulerteBeloepUtbetalt,
+                    nettoAkkumulertePlussNettoRestAar = ufoeretrygdOrdinaer.nettoAkkumulertePlussNettoRestAar,
+                    nettoTilUtbetalingRestenAvAaret = ufoeretrygdOrdinaer.nettoTilUtbetalingRestenAvAaret,
+                    totalNetto = beregningUfoere.totalNetto,
+                    ufoeregrad = ufoeretrygdGjeldende.ufoeregrad,
+                    ufoeretrygdOrdinaer = ufoeretrygdOrdinaer
                 )
             )
 

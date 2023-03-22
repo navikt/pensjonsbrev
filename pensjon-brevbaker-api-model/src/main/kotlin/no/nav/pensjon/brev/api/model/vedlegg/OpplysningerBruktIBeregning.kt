@@ -27,9 +27,11 @@ data class OpplysningerBruktIBeregningUTDto(
     val trygdetidGjeldende: TrygdetidGjeldende,
     val trygdetidsdetaljerGjeldende: TrygdetidsdetaljerGjeldende,
     val ufoeretrygdGjeldende: UfoeretrygdGjeldende,
+    val ufoeretrygdOrdinaer: UfoeretrygdOrdinaer,
     val ungUfoerGjeldende_erUnder20Aar: Boolean?,
     val utenlandskTrygdetid: List<UtenlandskTrygdetid>,
     val yrkesskadeGjeldende: YrkesskadeGjeldende?,
+    val beregningUfoere: BeregningUfoere,
 
 ) {
     data class YrkesskadeGjeldende(
@@ -115,7 +117,7 @@ data class OpplysningerBruktIBeregningUTDto(
         val harDelvisUfoeregrad: Boolean,  // TODO: Ny
         val harFullUfoeregrad: Boolean, // TODO: Ny
         val harGammelUTBeloepUlikNyUTBeloep: Boolean, // TODO: Ny / BERENGING! / PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopGammelUT <> PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopNyUT
-        val harNyUTBeloep: Boolean, // TODO: Ny / PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopNyUT
+        val harUtbetalingsgradLessThanUfoeregrad: Boolean,
         val kompensasjonsgrad: Double,
         val ufoeregrad: Int,
         val ufoeretidspunkt: LocalDate,
@@ -124,7 +126,9 @@ data class OpplysningerBruktIBeregningUTDto(
 
     data class InntektsAvkortingGjeldende(
         val forventetInntektAar: Kroner,
+        val harForventetInntektLargerThanInntektstak: Boolean,
         val harInntektsgrenseLessThanInntektstak: Boolean,  // TODO: Ny / BEREGNING! / PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektsgrense < PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektstak
+        val harInntektsgrenseLargerThanOrEqualToInntektstak: Boolean,
         val inntektsgrenseAar: Kroner,
         val inntektstak: Kroner,
         val nettoPerAar: Kroner, // TODO: Ny / BEREGNING!
@@ -181,5 +185,18 @@ data class OpplysningerBruktIBeregningUTDto(
         val harGjenlevendetillegg: Boolean,  // TODO: PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GTinnvilget = true
         val harNyttGjenlevendetillegg: Boolean,  // TODO: PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_NyttGjenlevendetillegg = true
     )
+
+    data class UfoeretrygdOrdinaer(
+        val nettoAkkumulerteBeloepUtbetalt: Kroner,  // NettoAkk
+        val nettoAkkumulertePlussNettoRestAar: Kroner,  // NettoAkk + NettoRestAr
+        val nettoTilUtbetalingRestenAvAaret: Kroner,  // NettoRestAr
+        val fradrag: Kroner,
+        val harNyUTBeloep: Boolean, // TODO: Ny / PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopNyUT
+    )
+
+    data class BeregningUfoere(
+        val harBeloepRedusert: Boolean,  // PE_Vedtaksdata_BeregningsData_BeregningUfore_BelopRedusert
+        val totalNetto: Kroner,  // PE_Vedtaksdata_BeregningsData_BeregningUfore_TotalNetto
+        )
 
 }
