@@ -413,7 +413,6 @@ data class TabellUfoereOpplysninger(
                             )
                         }
                     }
-
                 }
 
                 showIf(beregningsmetode.isOneOf(Beregningsmetode.EOS, Beregningsmetode.NORDISK)) {
@@ -658,6 +657,11 @@ data class TabellUfoereOpplysninger(
                             }
                         }
                     }
+
+                    //førstegangsbehandling bruker bor i utlandet
+                    //TODO manglende felt år med inntekt
+                    //TODO år med inntekt brukt i beregningen
+
                 }
 
                 ifNotNull(barnetilleggGjeldende) { barnetillegg ->
@@ -762,7 +766,8 @@ data class TabellUfoereOpplysninger(
                                     includePhrase(Felles.KronerText(inntektstakSaerkull))
                                 }
                             }
-                        }.orShowIf(inntektstakFelles.greaterThan(0)) {
+                        }
+                        showIf(inntektstakFelles.greaterThan(0)) {
                             row {
                                 cell {
                                     text(
