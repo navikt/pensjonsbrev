@@ -1,0 +1,61 @@
+.brevvelgerContainer {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 24px 16px;
+    gap: 24px;
+    max-width: 376px;
+    min-width: 30%;
+    margin-left: 10%;
+    height: 100%;
+    background: #FFFFFF;
+    border: 1px solid rgba(0, 0, 0, 0.19);
+    border-radius: 4px;
+}
+
+.mediumHeading, .brevvelgerContainer h2 {
+    font-size: var(--a-font-size-heading-xsmall);
+    margin: 0;
+}
+
+.brevvelgerContainer p {
+    margin: 10px 0 0;
+}
+
+.brevvelgerContainer > div {
+    width: 100%;
+}
+
+.brevvelgerContainer h1 {
+    font-size: var(--a-font-size-heading-medium);
+}
+
+.brevvelgerContainer hr{
+    margin-left: 1px;
+    margin-right: 1px;
+    width: 98%;
+}
+
+.mottakerCard {
+    width: 100%;
+    border-radius: 4px;
+    padding: 12px 8px 12px 8px;
+    border: 1px solid var(--a-gray-600)
+}
+
+.mottakerCard > div {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.letterGroup {
+    margin-top: 10px;
+    --__ac-expansioncard-border-width: 0;
+    --__ac-expansioncard-border-radius: 0;
+    --__ac-expansioncard-border-co: 0;
+    --ac-expansioncard-border-open-color: var(--a-border-alt-3);
+    --ac-expansioncard-border-hover-color: var(--a-border-alt-3);
+}

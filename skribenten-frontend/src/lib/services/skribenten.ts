@@ -25,6 +25,7 @@ class SkribentenAPI {
     }
 
     async testBrevbaker(msal: IMsalContext): Promise<Blob> {
+        console.log(this.config.url)
         return withAuthorization(msal, this.config.scope).then((auth) =>
             fetch(`${this.config.url}/test/brevbaker`, {
                 headers: {
