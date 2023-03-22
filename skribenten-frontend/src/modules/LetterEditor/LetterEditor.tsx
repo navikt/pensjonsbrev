@@ -2,13 +2,13 @@ import Title1 from "./components/title1/Title1"
 import Paragraph from "./components/paragraph/Paragraph"
 import styles from "./LetterEditor.module.css"
 import {FC, useState} from "react"
-import {AnyBlock, RenderedLetter} from "./model/api"
+import {AnyBlock, EditedLetter} from "./model/api"
 import {bindAction, BoundAction, combine} from "../../lib/actions"
 import {BlocksAction} from "./actions/blocks"
 import {BlockAction} from "./actions/block"
 import SakspartView from "./components/sakspart/SakspartView"
 import SignaturView from "./components/signatur/SignaturView"
-import {RenderedLetterAction} from "./actions/letter"
+import {EditedLetterAction} from "./actions/letter"
 import {SplitAtContent} from "./BlockProps"
 import EditorMenu from "./components/editormenu/EditorMenu"
 import {StealFocusAction} from "./actions/stealfocus"
@@ -52,17 +52,17 @@ const AnyBlockView: FC<AnyBlockProps> = ({block, splitBlock, mergeWith, updateBl
 }
 
 export interface LetterEditorProps {
-    letter: RenderedLetter
-    updateLetter: BoundAction<[letter: RenderedLetter]>
+    editedLetter: EditedLetter
+    updateLetter: BoundAction<[letter: EditedLetter]>
 }
 
-const LetterEditor: FC<LetterEditorProps> = ({letter, updateLetter}) => {
-    const blocks = letter.blocks
+const LetterEditor: FC<LetterEditorProps> = ({editedLetter, updateLetter}) => {
+    const blocks = editedLetter.letter.blocks
 
     const [stealFocus, setStealFocus] = useState<StealFocus>({})
     const [currentBlock, setCurrentBlock] = useState(0)
 
-    const updateBlocks = bindAction(RenderedLetterAction.updateBlocks, updateLetter, letter)
+    const updateBlocks = bindAction(EditedLetterAction.updateBlocks, updateLetter, editedLetter)
     const updateBlock = bindAction(BlocksAction.updateBlock, updateBlocks, blocks)
 
     const mergeWithAndStealFocus = combine(
@@ -83,8 +83,8 @@ const LetterEditor: FC<LetterEditorProps> = ({letter, updateLetter}) => {
         <div className={styles.container}>
             <EditorMenu switchType={switchType} />
             <div className={styles.letter}>
-                <SakspartView sakspart={letter.sakspart}/>
-                <h1>{letter.title}</h1>
+                <SakspartView sakspart={editedLetter.letter.sakspart}/>
+                <h1>{editedLetter.letter.title}</h1>
                 {blocks.map((block, blockId) =>
                     <AnyBlockView key={blockId}
                               block={block}
@@ -96,7 +96,7 @@ const LetterEditor: FC<LetterEditorProps> = ({letter, updateLetter}) => {
                               onFocus={setCurrentBlock.bind(null, blockId)}
                     />
                 )}
-                <SignaturView signatur={letter.signatur}/>
+                <SignaturView signatur={editedLetter.letter.signatur}/>
             </div>
             <button onClick={() => console.log(blocks)}>Save</button>
         </div>

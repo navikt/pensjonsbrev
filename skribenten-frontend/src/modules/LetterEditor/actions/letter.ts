@@ -1,11 +1,19 @@
 import {Action} from "../../../lib/actions"
-import {AnyBlock, RenderedLetter} from "../model/api"
+import {AnyBlock, EditedLetter, RenderedLetter} from "../model/api"
 import produce from "immer"
 
-const updateBlocks: Action<RenderedLetter, [blocks: AnyBlock[]]> = produce((draft, blocks) => {
-    draft.blocks = blocks
+const updateBlocks: Action<EditedLetter, [blocks: AnyBlock[]]> = produce((draft, blocks) => {
+    draft.letter.blocks = blocks
 })
 
-export const RenderedLetterAction = {
-    updateBlocks,
+const updateLetter: Action<EditedLetter, [letter: RenderedLetter]> = produce((draft, letter) => {
+    draft.letter = letter
+})
+
+function create(letter: RenderedLetter): EditedLetter {
+    return {letter, deletedBlocks: []}
+}
+
+export const EditedLetterAction = {
+    create, updateBlocks, updateLetter,
 }

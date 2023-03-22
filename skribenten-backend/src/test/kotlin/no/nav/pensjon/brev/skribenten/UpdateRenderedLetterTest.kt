@@ -13,7 +13,7 @@ class UpdateRenderedLetterTest {
 
     @Test
     fun `no changes in editedLetter and no changes in nextLetter returns same letter`() {
-        val edited = letter(
+        val edited = editedLetter(
             Title1(
                 1, true, listOf(
                     Literal(1, "En tittel "),
@@ -22,8 +22,7 @@ class UpdateRenderedLetterTest {
                 )
             )
         )
-        val next = edited.copy()
-        assertEquals(edited, updatedEditedLetter(edited, next))
+        assertEquals(edited.letter, updatedEditedLetter(edited, edited.letter))
     }
 
     @Test
@@ -37,7 +36,7 @@ class UpdateRenderedLetterTest {
                 )
             )
         )
-        val edited = letter(
+        val edited = editedLetter(
             Title1(
                 1, true, listOf(
                     Literal(1, "Her har jeg redigert "),
@@ -47,7 +46,7 @@ class UpdateRenderedLetterTest {
             )
         )
 
-        assertEquals(edited, updatedEditedLetter(edited, next))
+        assertEquals(edited.letter, updatedEditedLetter(edited, next))
     }
 
     @Test
@@ -61,7 +60,7 @@ class UpdateRenderedLetterTest {
                 )
             )
         )
-        val edited = letter(
+        val edited = editedLetter(
             Title1(
                 1, true, listOf(
                     Literal(1, "En tittel "),
@@ -84,7 +83,7 @@ class UpdateRenderedLetterTest {
                 )
             )
         )
-        val edited = letter(
+        val edited = editedLetter(
             Title1(
                 1, true, listOf(
                     Literal(1, "Her har jeg redigert "),
@@ -116,7 +115,7 @@ class UpdateRenderedLetterTest {
                 )
             )
         )
-        val edited = letter(
+        val edited = editedLetter(
             Title1(
                 1, true, listOf(
                     Literal(-1, "Her har jeg lagt til "),
@@ -152,7 +151,7 @@ class UpdateRenderedLetterTest {
                 )
             )
         )
-        val edited = letter(
+        val edited = editedLetter(
             Title1(
                 1, true, listOf(
                     Variable(2, "for deg "),
@@ -186,7 +185,7 @@ class UpdateRenderedLetterTest {
                 )
             )
         )
-        val edited = letter(
+        val edited = editedLetter(
             Title1(
                 1, true, listOf(
                     Literal(1, "Her har jeg redigert "),
@@ -210,7 +209,7 @@ class UpdateRenderedLetterTest {
                 )
             )
         )
-        val edited = letter(
+        val edited = editedLetter(
             Title1(
                 1, true, listOf(
                     Literal(-1, "ny literal"),
@@ -221,7 +220,7 @@ class UpdateRenderedLetterTest {
             )
         )
 
-        assertEquals(edited, updatedEditedLetter(edited, next))
+        assertEquals(edited.letter, updatedEditedLetter(edited, next))
     }
 
     @Test
@@ -236,7 +235,7 @@ class UpdateRenderedLetterTest {
                 )
             )
         )
-        val edited = letter(
+        val edited = editedLetter(
             Title1(
                 1, true, listOf(
                     Variable(1, "En tittel "),
@@ -272,7 +271,7 @@ class UpdateRenderedLetterTest {
                 )
             )
         )
-        val edited = letter(
+        val edited = editedLetter(
             Title1(
                 1, true, listOf(
                     Literal(1, "Noe redigert tekst "),
@@ -306,7 +305,7 @@ class UpdateRenderedLetterTest {
                 )
             )
         )
-        val edited = letter(
+        val edited = editedLetter(
             Title1(
                 1, true, listOf(
                     Literal(1, "Noe redigert tekst "),
@@ -340,7 +339,7 @@ class UpdateRenderedLetterTest {
                 )
             )
         )
-        val edited = letter(
+        val edited = editedLetter(
             Paragraph(
                 1, true, listOf(
                     Literal(1, "Noe redigert tekst "),
@@ -374,7 +373,7 @@ class UpdateRenderedLetterTest {
                 )
             )
         )
-        val edited = letter(
+        val edited = editedLetter(
             Title1(
                 1, true, listOf(
                     Literal(1, "Her har jeg redigert "),
@@ -398,7 +397,7 @@ class UpdateRenderedLetterTest {
                 )
             )
         )
-        val edited = letter(
+        val edited = editedLetter(
             Paragraph(
                 -1, true, listOf(
                     Literal(-1, "Noe ny tekst")
@@ -418,7 +417,7 @@ class UpdateRenderedLetterTest {
             ),
         )
 
-        assertEquals(edited, updatedEditedLetter(edited, next))
+        assertEquals(edited.letter, updatedEditedLetter(edited, next))
     }
 
     @Test
@@ -437,7 +436,7 @@ class UpdateRenderedLetterTest {
                 )
             ),
         )
-        val edited = letter(
+        val edited = editedLetter(
             Title1(
                 1, true, listOf(
                     Literal(1, "Her har jeg redigert "),
@@ -490,7 +489,7 @@ class UpdateRenderedLetterTest {
                 )
             ),
         )
-        val edited = letter(
+        val edited = editedLetter(
             Paragraph(
                 -1, true, listOf(
                     Literal(-1, "første teksten")
@@ -525,7 +524,7 @@ class UpdateRenderedLetterTest {
             ),
         )
 
-        assertEquals(edited, updatedEditedLetter(edited, next))
+        assertEquals(edited.letter, updatedEditedLetter(edited, next))
     }
 
     @Test
@@ -549,7 +548,7 @@ class UpdateRenderedLetterTest {
                 )
             ),
         )
-        val edited = letter(
+        val edited = editedLetter(
             Title1(
                 1, true, listOf(
                     Literal(1, "Her har jeg redigert "),
@@ -596,11 +595,171 @@ class UpdateRenderedLetterTest {
         assertEquals(expected, updatedEditedLetter(edited, next))
     }
 
+    @Test
+    fun `an edited block can be split into multiple blocks and the updates should be merged into the correct blocks`() {
+        val next = letter(
+            Paragraph(1, true, listOf(
+                Literal(1, "Første tekst"),
+                Variable(2, "Oppdatert variable"),
+                Literal(3, "Andre tekst"),
+                Variable(4, "variable lagt til"),
+            ))
+        )
+        val edited = editedLetter(
+            Paragraph(1, true, listOf(
+                Literal(1, "Første tekst med redigering"),
+                Variable(2, "variable"),
+            )),
+            Paragraph(1, true, listOf(
+                Literal(3, "Andre tekst med redigering"),
+            )),
+        )
+        val expected = letter(
+            Paragraph(1, true, listOf(
+                Literal(1, "Første tekst med redigering"),
+                Variable(2, "Oppdatert variable"),
+            )),
+            Paragraph(1, true, listOf(
+                Literal(3, "Andre tekst med redigering"),
+                Variable(4, "variable lagt til"),
+            )),
+        )
+
+        assertEquals(expected, updatedEditedLetter(edited, next))
+    }
+
+    @Test
+    fun `an edited block split into multiple blocks should not be overwritten`() {
+        val next = letter(
+            Paragraph(1, true, listOf(
+                Variable(1, "Oppdatert variable"),
+                Literal(2, "Første tekst"),
+                Literal(3, "Andre tekst"),
+                Variable(4, "variable lagt til"),
+            ))
+        )
+        val edited = editedLetter(
+            Paragraph(1, true, listOf(
+                Variable(1, "variable"),
+                Literal(2, "Første "),
+            )),
+            Paragraph(1, true, listOf(
+                Literal(2, "tekst med redigering"),
+                Literal(3, "Andre tekst med redigering"),
+            )),
+        )
+        val expected = letter(
+            Paragraph(1, true, listOf(
+                Variable(1, "Oppdatert variable"),
+                Literal(2, "Første "),
+            )),
+            Paragraph(1, true, listOf(
+                Literal(2, "tekst med redigering"),
+                Literal(3, "Andre tekst med redigering"),
+                Variable(4, "variable lagt til"),
+            )),
+        )
+
+        assertEquals(expected, updatedEditedLetter(edited, next))
+    }
+
+    @Test
+    fun `an edited block split into multiple blocks should not be overwritten when it is last in block`() {
+        val next = letter(
+            Paragraph(1, true, listOf(
+                Literal(2, "Første tekst"),
+            ))
+        )
+        val edited = editedLetter(
+            Paragraph(1, true, listOf(
+                Literal(2, "Første "),
+            )),
+            Paragraph(1, true, listOf(
+                Literal(2, "tekst med redigering"),
+            )),
+        )
+        val expected = letter(
+            Paragraph(1, true, listOf(
+                Literal(2, "Første "),
+            )),
+            Paragraph(1, true, listOf(
+                Literal(2, "tekst med redigering"),
+            )),
+        )
+
+        assertEquals(expected, updatedEditedLetter(edited, next))
+    }
+
+    @Test
+    fun `a new edited block in between a split rendered one should be kept`() {
+        val next = letter(
+            Paragraph(1, true, listOf(
+                Literal(2, "Første tekst"),
+            ))
+        )
+        val edited = editedLetter(
+            Paragraph(1, true, listOf(
+                Literal(2, "Første "),
+            )),
+            Paragraph(-1, true, listOf(
+               Literal(-1, "Noe ny tekst")
+            )),
+            Paragraph(1, true, listOf(
+                Literal(2, "tekst med redigering"),
+            )),
+        )
+        val expected = letter(
+            Paragraph(1, true, listOf(
+                Literal(2, "Første "),
+            )),
+            Paragraph(-1, true, listOf(
+                Literal(-1, "Noe ny tekst")
+            )),
+            Paragraph(1, true, listOf(
+                Literal(2, "tekst med redigering"),
+            )),
+        )
+
+        assertEquals(expected, updatedEditedLetter(edited, next))
+    }
+
+    @Test
+    fun `deleted blocks should not reappear`() {
+        val next = letter(
+            Paragraph(1, true, listOf(
+                Literal(1, "Første"),
+            )),
+            Paragraph(2, true, listOf(
+                Literal(2, "Andre"),
+            )),
+            Paragraph(3, true, listOf(
+                Literal(3, "Tredje"),
+            )),
+        )
+        val edited = editedLetter(
+            Paragraph(1, true, listOf(
+                Literal(1, "Første"),
+            )),
+            Paragraph(3, true, listOf(
+                Literal(3, "Tredje"),
+            )),
+            deleted = setOf(2)
+        )
+
+        assertEquals(edited.letter, updatedEditedLetter(edited, next))
+    }
+
     private fun letter(vararg blocks: Block) =
         RenderedJsonLetter(
             title = "En tittel",
             sakspart = Sakspart("Test Testeson", "1234568910", "1234", "20.12.2022"),
             blocks = blocks.toList(),
             signatur = Signatur("Med vennlig hilsen", "Saksbehandler", "Kjersti Saksbehandler", null, "NAV Familie- og pensjonsytelser Porsgrunn")
+        )
+
+    private fun editedLetter(vararg blocks: Block, deleted: Set<Int> = emptySet()): EditedJsonLetter =
+        EditedJsonLetter(
+            letter(*blocks),
+            deleted
         )
 }
