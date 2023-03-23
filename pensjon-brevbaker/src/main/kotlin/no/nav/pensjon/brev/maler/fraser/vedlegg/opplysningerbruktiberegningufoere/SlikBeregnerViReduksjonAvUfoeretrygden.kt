@@ -29,7 +29,7 @@ data class SlikBeregnerViReduksjonAvUfoeretrygden(
     val inntektsgrenseAar: Expression<Kroner>,
     val kompensasjonsgrad: Expression<Double>,
     val kravAarsakType: Expression<KravAarsakType>,
-    val nettoPerAar: Expression<Kroner>,
+    val nettoPerAarReduksjonUT: Expression<Kroner>,
     val overskytendeInntekt: Expression<Kroner>,
 
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
@@ -47,9 +47,9 @@ data class SlikBeregnerViReduksjonAvUfoeretrygden(
             }
             paragraph {
                 textExpr(
-                    Bokmal to "".expr() + overskytendeInntekt.format() + " kr x ".expr() + kompensasjonsgrad.format() + " % = ".expr() + nettoPerAar.format() + " kroner i reduksjon for året".expr(),
-                    Nynorsk to "".expr() + overskytendeInntekt.format() + " kr x ".expr() + kompensasjonsgrad.format() + " % = ".expr() + nettoPerAar.format() + " kroner i reduksjon for året".expr(),
-                    English to "NOK ".expr() + overskytendeInntekt.format() + " kr x ".expr() + kompensasjonsgrad.format() + " % = NOK ".expr() + nettoPerAar.format() + " in reductions for the year".expr()
+                    Bokmal to "".expr() + overskytendeInntekt.format() + " kr x ".expr() + kompensasjonsgrad.format() + " % = ".expr() + nettoPerAarReduksjonUT.format() + " kroner i reduksjon for året".expr(),
+                    Nynorsk to "".expr() + overskytendeInntekt.format() + " kr x ".expr() + kompensasjonsgrad.format() + " % = ".expr() + nettoPerAarReduksjonUT.format() + " kroner i reduksjon for året".expr(),
+                    English to "NOK ".expr() + overskytendeInntekt.format() + " kr x ".expr() + kompensasjonsgrad.format() + " % = NOK ".expr() + nettoPerAarReduksjonUT.format() + " in reductions for the year".expr()
                 )
             }
         }

@@ -33,7 +33,7 @@ data class TabellSlikBlirDinUtbetalingFoerSkatt(
     val nettoAkkumulerteBeloepUtbetalt: Expression<Kroner>,
     val nettoAkkumulertePlussNettoRestAar: Expression<Kroner>,
     val nettoTilUtbetalingRestenAvAaret: Expression<Kroner>,
-    val totalNetto: Expression<Kroner>,
+    val harTotalNettoUT: Expression<Boolean>,
     val ufoeregrad: Expression<Int>,
     val ufoeretrygdOrdinaer: Expression<OpplysningerBruktIBeregningUTDto.UfoeretrygdOrdinaer>,
 
@@ -119,7 +119,7 @@ data class TabellSlikBlirDinUtbetalingFoerSkatt(
         }
         // TBU063V  / brevkode not(PE_UT_04_108, PE_UT_04_109, PE_UT_06_300)
         showIf(
-            harBeloepRedusert and totalNetto.greaterThan(0) and harInntektsgrenseLessThanInntektstak and harNyUTBeloep
+            harBeloepRedusert and harTotalNettoUT and harInntektsgrenseLessThanInntektstak and harNyUTBeloep
         ) {
             paragraph {
                 textExpr(

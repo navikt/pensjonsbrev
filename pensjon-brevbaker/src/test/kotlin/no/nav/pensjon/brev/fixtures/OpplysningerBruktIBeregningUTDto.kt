@@ -10,6 +10,7 @@ fun createOpplysningerBruktIBeregningUTDto() =
         //listOf(createOpplysningerBruktIBeregningUTDtoNorskTrygdetid(), createOpplysningerBruktIBeregningUTDtoNorskTrygdetid(), createOpplysningerBruktIBeregningUTDtoNorskTrygdetid())
         barnetilleggGjeldende = Fixtures.create(),
         beregnetUTPerManedGjeldende = Fixtures.create(),
+        beregningUfoere = Fixtures.create(),
         borIUtlandet = false,
         fraOgMedDatoErNesteAar = false,
         gjenlevendetilleggGjeldene = Fixtures.create(),
@@ -31,6 +32,7 @@ fun createOpplysningerBruktIBeregningUTDto() =
         trygdetidGjeldende = Fixtures.create(),
         trygdetidsdetaljerGjeldende = Fixtures.create(),
         ufoeretrygdGjeldende = Fixtures.create(),
+        ufoeretrygdOrdinaer = Fixtures.create(),
         ungUfoerGjeldende_erUnder20Aar = false,
         utenlandskTrygdetid = (1..3).map { createOpplysningerBruktIBeregningUTDtoUtenlandskTrygdetid() },
         yrkesskadeGjeldende = Fixtures.create(),
@@ -97,9 +99,12 @@ fun createOpplysningerBruktIBeregningUTDtoInntektFoerUfoereGjeldende() =
 fun createOpplysningerBruktIBeregningUTDtoInntektsAvkortingGjeldende() =
     OpplysningerBruktIBeregningUTDto.InntektsAvkortingGjeldende(
         forventetInntektAar = Kroner(0),
-        harInntektsgrenseLessThanInntektstak = false,
+        harForventetInntektLargerThanInntektstak = false,
+        harInntektsgrenseLargerThanOrEqualToInntektstak = false,
+        harInntektsgrenseLessThanInntektstak = true,
         inntektsgrenseAar = Kroner(0),
         inntektstak = Kroner(0),
+        nettoPerAarReduksjonUT = Kroner(0),
         overskytendeInntekt = Kroner(0),
     )
 
@@ -132,13 +137,12 @@ fun createOpplysningerBruktIBeregningUTDtoUfoeretrygdGjeldende() =
         beregningsgrunnlagBeloepAar = Kroner(0),
         erKonvertert = false,
         harDelvisUfoeregrad = false,
+        harFullUfoeregrad = false,
+        harUtbetalingsgradLessThanUfoeregrad = true,
         kompensasjonsgrad = 0.0,
         ufoeregrad = 0,
         ufoeretidspunkt = LocalDate.of(2020, 1, 1),
-        harFullUfoeregrad = false,
-        harGammelUTBeloepUlikNyUTBeloep = false,
-        harNyUTBeloep = false,
-        ugradertBruttoPerAar = Kroner(0)
+        ugradertBruttoPerAar = Kroner(0),
     )
 
 fun createOpplysningerBruktIBeregningUTDtoYrkesskadeGjeldende() =
@@ -197,6 +201,22 @@ fun createOpplysningerBruktIBeregningUTDtoGjenlevendetilleggGjeldene() =
     OpplysningerBruktIBeregningUTDto.GjenlevendetilleggGjeldene(
         harGjenlevendetillegg = true,
         harNyttGjenlevendetillegg = false,
+    )
+
+fun createOpplysningerBruktIBeregningUTDtoUfoeretrygdOrdinaer() =
+    OpplysningerBruktIBeregningUTDto.UfoeretrygdOrdinaer(
+        fradrag = Kroner(80000),
+        harGammelUTBeloepUlikNyUTBeloep = false,
+        harNyUTBeloep = false,
+        nettoAkkumulerteBeloepUtbetalt = Kroner(200000),
+        nettoAkkumulertePlussNettoRestAar = Kroner(300000),
+        nettoTilUtbetalingRestenAvAaret = Kroner(100000),
+    )
+
+fun createOpplysningerBruktIBeregningUTDtoBeregningUfoere() =
+    OpplysningerBruktIBeregningUTDto.BeregningUfoere(
+        harBeloepRedusert = true,
+        harTotalNettoUT = true,
     )
 
 

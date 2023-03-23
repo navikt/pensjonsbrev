@@ -6,7 +6,7 @@ import no.nav.pensjon.brev.api.model.vedlegg.BarnetilleggGjeldendeSelectors.fell
 import no.nav.pensjon.brev.api.model.vedlegg.BeregnetUTPerManedGjeldendeSelectors.grunnbeloep
 import no.nav.pensjon.brev.api.model.vedlegg.BeregnetUTPerManedGjeldendeSelectors.virkDatoFom
 import no.nav.pensjon.brev.api.model.vedlegg.BeregningUfoereSelectors.harBeloepRedusert
-import no.nav.pensjon.brev.api.model.vedlegg.BeregningUfoereSelectors.totalNetto
+import no.nav.pensjon.brev.api.model.vedlegg.BeregningUfoereSelectors.harTotalNettoUT
 import no.nav.pensjon.brev.api.model.vedlegg.GjenlevendetilleggGjeldeneSelectors.harGjenlevendetillegg
 import no.nav.pensjon.brev.api.model.vedlegg.GjenlevendetilleggGjeldeneSelectors.harNyttGjenlevendetillegg
 import no.nav.pensjon.brev.api.model.vedlegg.InntektFoerUfoereGjeldendeSelectors.ifuInntekt
@@ -17,7 +17,7 @@ import no.nav.pensjon.brev.api.model.vedlegg.InntektsAvkortingGjeldendeSelectors
 import no.nav.pensjon.brev.api.model.vedlegg.InntektsAvkortingGjeldendeSelectors.harInntektsgrenseLessThanInntektstak
 import no.nav.pensjon.brev.api.model.vedlegg.InntektsAvkortingGjeldendeSelectors.inntektsgrenseAar
 import no.nav.pensjon.brev.api.model.vedlegg.InntektsAvkortingGjeldendeSelectors.inntektstak
-import no.nav.pensjon.brev.api.model.vedlegg.InntektsAvkortingGjeldendeSelectors.nettoPerAar
+import no.nav.pensjon.brev.api.model.vedlegg.InntektsAvkortingGjeldendeSelectors.nettoPerAarReduksjonUT
 import no.nav.pensjon.brev.api.model.vedlegg.InntektsAvkortingGjeldendeSelectors.overskytendeInntekt
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDto
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.barnetilleggGjeldende
@@ -57,12 +57,12 @@ import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidGjeldendeSelectors.harYrke
 import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidsdetaljerGjeldendeSelectors.anvendtTT
 import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdGjeldendeSelectors.harDelvisUfoeregrad
 import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdGjeldendeSelectors.harFullUfoeregrad
-import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdGjeldendeSelectors.harGammelUTBeloepUlikNyUTBeloep
 import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdGjeldendeSelectors.harUtbetalingsgradLessThanUfoeregrad
 import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdGjeldendeSelectors.kompensasjonsgrad
 import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdGjeldendeSelectors.ufoeregrad
 import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdGjeldendeSelectors.ugradertBruttoPerAar
 import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdOrdinaerSelectors.fradrag
+import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdOrdinaerSelectors.harGammelUTBeloepUlikNyUTBeloep
 import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdOrdinaerSelectors.harNyUTBeloep
 import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdOrdinaerSelectors.nettoAkkumulerteBeloepUtbetalt
 import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdOrdinaerSelectors.nettoAkkumulertePlussNettoRestAar
@@ -143,7 +143,7 @@ fun createVedleggOpplysningerBruktIBeregningUT(skalViseMinsteytelse: Boolean, sk
             }
         }
 
-        showIf(kravAarsakType.isNotAnyOf(KravAarsakType.SOKNAD_BT)) {  // TODO: ShowIf before or after ifNotNull?
+        showIf(kravAarsakType.isNotAnyOf(KravAarsakType.SOKNAD_BT)) {
             ifNotNull(opptjeningUfoeretrygd) { opptjening ->
                 includePhrase(
                     TabellInntekteneBruktIBeregningen(
@@ -201,7 +201,7 @@ fun createVedleggOpplysningerBruktIBeregningUT(skalViseMinsteytelse: Boolean, sk
                     harBrukerKonvertertUP = harBrukerKonvertertUP,
                     harDelvisUfoeregrad = ufoeretrygdGjeldende.harDelvisUfoeregrad,
                     harFullUfoeregrad = ufoeretrygdGjeldende.harFullUfoeregrad,
-                    harGammelUTBeloepUlikNyUTBeloep = ufoeretrygdGjeldende.harGammelUTBeloepUlikNyUTBeloep,
+                    harGammelUTBeloepUlikNyUTBeloep = ufoeretrygdOrdinaer.harGammelUTBeloepUlikNyUTBeloep,
                     ifuInntekt = inntektFoerUfoereGjeldende.ifuInntekt,
                     harInntektsgrenseLessThanInntektstak = inntektsAvkortingGjeldende.harInntektsgrenseLessThanInntektstak,
                     kompensasjonsgrad = ufoeretrygdGjeldende.kompensasjonsgrad,
@@ -215,7 +215,7 @@ fun createVedleggOpplysningerBruktIBeregningUT(skalViseMinsteytelse: Boolean, sk
             includePhrase(
                 SlikBeregnerViUtbetalingAvUfoeretrygdenNaarInntektenDinEndres(
                     forventetInntektAar = inntektsAvkortingGjeldende.forventetInntektAar,
-                    harGammelUTBeloepUlikNyUTBeloep = ufoeretrygdGjeldende.harGammelUTBeloepUlikNyUTBeloep,
+                    harGammelUTBeloepUlikNyUTBeloep = ufoeretrygdOrdinaer.harGammelUTBeloepUlikNyUTBeloep,
                     harInntektsgrenseLessThanInntektstak = inntektsAvkortingGjeldende.harInntektsgrenseLessThanInntektstak,
                     harNyUtBeloep = ufoeretrygdOrdinaer.harNyUTBeloep,
                     inntektsgrenseAar = inntektsAvkortingGjeldende.inntektsgrenseAar,
@@ -228,13 +228,13 @@ fun createVedleggOpplysningerBruktIBeregningUT(skalViseMinsteytelse: Boolean, sk
             includePhrase(
                 SlikBeregnerViReduksjonAvUfoeretrygden(
                     forventetInntektAar = inntektsAvkortingGjeldende.forventetInntektAar,
-                    harGammelUTBeloepUlikNyUTBeloep = ufoeretrygdGjeldende.harGammelUTBeloepUlikNyUTBeloep,
+                    harGammelUTBeloepUlikNyUTBeloep = ufoeretrygdOrdinaer.harGammelUTBeloepUlikNyUTBeloep,
                     harInntektsgrenseLessThanInntektstak = inntektsAvkortingGjeldende.harInntektsgrenseLessThanInntektstak,
                     harNyUTBeloep = ufoeretrygdOrdinaer.harNyUTBeloep,
                     inntektsgrenseAar = inntektsAvkortingGjeldende.inntektsgrenseAar,
                     kompensasjonsgrad = ufoeretrygdGjeldende.kompensasjonsgrad,
                     kravAarsakType = kravAarsakType,
-                    nettoPerAar = inntektsAvkortingGjeldende.nettoPerAar,
+                    nettoPerAarReduksjonUT = inntektsAvkortingGjeldende.nettoPerAarReduksjonUT,
                     overskytendeInntekt = inntektsAvkortingGjeldende.overskytendeInntekt,
                 )
             )
@@ -255,7 +255,7 @@ fun createVedleggOpplysningerBruktIBeregningUT(skalViseMinsteytelse: Boolean, sk
                     nettoAkkumulerteBeloepUtbetalt = ufoeretrygdOrdinaer.nettoAkkumulerteBeloepUtbetalt,
                     nettoAkkumulertePlussNettoRestAar = ufoeretrygdOrdinaer.nettoAkkumulertePlussNettoRestAar,
                     nettoTilUtbetalingRestenAvAaret = ufoeretrygdOrdinaer.nettoTilUtbetalingRestenAvAaret,
-                    totalNetto = beregningUfoere.totalNetto,
+                    harTotalNettoUT = beregningUfoere.harTotalNettoUT,
                     ufoeregrad = ufoeretrygdGjeldende.ufoeregrad,
                     ufoeretrygdOrdinaer = ufoeretrygdOrdinaer
                 )
