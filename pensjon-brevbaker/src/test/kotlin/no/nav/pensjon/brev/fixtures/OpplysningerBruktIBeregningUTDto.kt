@@ -34,7 +34,8 @@ fun createOpplysningerBruktIBeregningUTDto() =
         ufoeretrygdGjeldende = Fixtures.create(),
         ufoeretrygdOrdinaer = Fixtures.create(),
         ungUfoerGjeldende_erUnder20Aar = false,
-        utenlandskTrygdetid = (1..3).map { createOpplysningerBruktIBeregningUTDtoUtenlandskTrygdetid() },
+        utenlandskTrygdetidBilateral = (1..3).map { createOpplysningerBruktIBeregningUTDtoUtenlandskTrygdetidBilateral() },
+        utenlandskTrygdetidEOS = (1..3).map { createOpplysningerBruktIBeregningUTDtoUtenlandskTrygdetidEOS() },
         yrkesskadeGjeldende = Fixtures.create(),
     )
 
@@ -190,9 +191,16 @@ fun createOpplysningerBruktIBeregningUTDtoNorskTrygdetid() =
         trygdetidTom = LocalDate.of(2020, 1, 1),
     )
 
-fun createOpplysningerBruktIBeregningUTDtoUtenlandskTrygdetid() =
-    OpplysningerBruktIBeregningUTDto.UtenlandskTrygdetid(
-        trygdetidLand = "Storbritannia",
+fun createOpplysningerBruktIBeregningUTDtoUtenlandskTrygdetidEOS() =
+    OpplysningerBruktIBeregningUTDto.UtenlandskTrygdetidEOS(
+        trygdetidEOSLand = "Nederland",
+        trygdetidFom = LocalDate.of(2020, 1, 1),
+        trygdetidTom = LocalDate.of(2020, 1, 1),
+    )
+
+fun createOpplysningerBruktIBeregningUTDtoUtenlandskTrygdetidBilateral() =
+    OpplysningerBruktIBeregningUTDto.UtenlandskTrygdetidBilateral(
+        trygdetidBilateralLand = "Storbritannia",
         trygdetidFom = LocalDate.of(2020, 1, 1),
         trygdetidTom = LocalDate.of(2020, 1, 1),
     )
@@ -207,11 +215,13 @@ fun createOpplysningerBruktIBeregningUTDtoUfoeretrygdOrdinaer() =
     OpplysningerBruktIBeregningUTDto.UfoeretrygdOrdinaer(
         fradrag = Kroner(80000),
         harGammelUTBeloepUlikNyUTBeloep = false,
-        harNyUTBeloep = false,
+        harNyUTBeloep = true,
         nettoAkkumulerteBeloepUtbetalt = Kroner(200000),
         nettoAkkumulertePlussNettoRestAar = Kroner(300000),
         nettoTilUtbetalingRestenAvAaret = Kroner(100000),
-    )
+        ufoeretrygdPlussInntekt = Kroner(500000),
+
+        )
 
 fun createOpplysningerBruktIBeregningUTDtoBeregningUfoere() =
     OpplysningerBruktIBeregningUTDto.BeregningUfoere(

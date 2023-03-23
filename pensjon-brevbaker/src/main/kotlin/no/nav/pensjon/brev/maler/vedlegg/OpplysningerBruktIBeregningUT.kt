@@ -45,7 +45,8 @@ import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSel
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.ufoeretrygdGjeldende
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.ufoeretrygdOrdinaer
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.ungUfoerGjeldende_erUnder20Aar
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.utenlandskTrygdetid
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.utenlandskTrygdetidBilateral
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.utenlandskTrygdetidEOS
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.yrkesskadeGjeldende
 import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidGjeldendeSelectors.fastsattTrygdetid
 import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidGjeldendeSelectors.har40AarFastsattTrygdetid
@@ -67,6 +68,7 @@ import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdOrdinaerSelectors.harNyU
 import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdOrdinaerSelectors.nettoAkkumulerteBeloepUtbetalt
 import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdOrdinaerSelectors.nettoAkkumulertePlussNettoRestAar
 import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdOrdinaerSelectors.nettoTilUtbetalingRestenAvAaret
+import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdOrdinaerSelectors.ufoeretrygdPlussInntekt
 import no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningufoere.*
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
@@ -186,15 +188,18 @@ fun createVedleggOpplysningerBruktIBeregningUT(skalViseMinsteytelse: Boolean, sk
                 )
             )
 
-            includePhrase(
-                TabellTrygdetiden(
-                    beregnetUTPerManedGjeldende = beregnetUTPerManedGjeldende,
-                    trygdetidsdetaljerGjeldende = trygdetidsdetaljerGjeldende,
-                    trygdetidGjeldende = trygdetidGjeldende,
-                    norskTrygdetid = norskTrygdetid,
-                    utenlandskTrygdetid = utenlandskTrygdetid,
+                includePhrase(
+                    TabellTrygdetiden(
+                        beregnetUTPerManedGjeldende = beregnetUTPerManedGjeldende,
+                        trygdetidsdetaljerGjeldende = trygdetidsdetaljerGjeldende,
+                        trygdetidGjeldende = trygdetidGjeldende,
+                        norskTrygdetid = norskTrygdetid,
+                        utenlandskTrygdetidBilateral = utenlandskTrygdetidBilateral,
+                        utenlandskTrygdetidEOS = utenlandskTrygdetidEOS,
+                    )
                 )
-            )
+            }
+
 
             includePhrase(
                 SlikHarViFastsattKompensasjonsgradenDin(
@@ -248,6 +253,7 @@ fun createVedleggOpplysningerBruktIBeregningUT(skalViseMinsteytelse: Boolean, sk
                     harInntektsgrenseLargerThanOrEqualToInntektstak = inntektsAvkortingGjeldende.harInntektsgrenseLargerThanOrEqualToInntektstak,
                     harInntektsgrenseLessThanInntektstak = inntektsAvkortingGjeldende.harInntektsgrenseLessThanInntektstak,
                     harNyUTBeloep = ufoeretrygdOrdinaer.harNyUTBeloep,
+                    harTotalNettoUT = beregningUfoere.harTotalNettoUT,
                     harUtbetalingsgradLessThanUfoeregrad = ufoeretrygdGjeldende.harUtbetalingsgradLessThanUfoeregrad,
                     inntektsgrenseAar = inntektsAvkortingGjeldende.inntektsgrenseAar,
                     inntektstak = inntektsAvkortingGjeldende.inntektstak,
@@ -255,9 +261,9 @@ fun createVedleggOpplysningerBruktIBeregningUT(skalViseMinsteytelse: Boolean, sk
                     nettoAkkumulerteBeloepUtbetalt = ufoeretrygdOrdinaer.nettoAkkumulerteBeloepUtbetalt,
                     nettoAkkumulertePlussNettoRestAar = ufoeretrygdOrdinaer.nettoAkkumulertePlussNettoRestAar,
                     nettoTilUtbetalingRestenAvAaret = ufoeretrygdOrdinaer.nettoTilUtbetalingRestenAvAaret,
-                    harTotalNettoUT = beregningUfoere.harTotalNettoUT,
                     ufoeregrad = ufoeretrygdGjeldende.ufoeregrad,
-                    ufoeretrygdOrdinaer = ufoeretrygdOrdinaer
+                    ufoeretrygdOrdinaer = ufoeretrygdOrdinaer,
+                    ufoeretrygdPlussInntekt = ufoeretrygdOrdinaer.ufoeretrygdPlussInntekt,
                 )
             )
 
@@ -287,7 +293,7 @@ fun createVedleggOpplysningerBruktIBeregningUT(skalViseMinsteytelse: Boolean, sk
                 )
             )
         }
-    }
+
 
 
 

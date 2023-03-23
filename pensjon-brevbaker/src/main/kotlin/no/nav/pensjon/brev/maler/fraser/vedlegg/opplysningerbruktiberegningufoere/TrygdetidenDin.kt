@@ -2,7 +2,6 @@ package no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningufoe
 
 import no.nav.pensjon.brev.api.model.vedlegg.BeregnetUTPerManedGjeldendeSelectors.brukerErFlyktning
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDto
-import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidsdetaljerGjeldendeSelectors.framtidigTTNorsk
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.Expression

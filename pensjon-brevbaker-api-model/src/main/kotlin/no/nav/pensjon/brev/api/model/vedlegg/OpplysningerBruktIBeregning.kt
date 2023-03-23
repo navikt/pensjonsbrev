@@ -30,7 +30,8 @@ data class OpplysningerBruktIBeregningUTDto(
     val ufoeretrygdGjeldende: UfoeretrygdGjeldende,
     val ufoeretrygdOrdinaer: UfoeretrygdOrdinaer,
     val ungUfoerGjeldende_erUnder20Aar: Boolean?,
-    val utenlandskTrygdetid: List<UtenlandskTrygdetid>,
+    val utenlandskTrygdetidEOS: List<UtenlandskTrygdetidEOS>,
+    val utenlandskTrygdetidBilateral: List<UtenlandskTrygdetidBilateral>,
     val yrkesskadeGjeldende: YrkesskadeGjeldende?,
 
 ) {
@@ -174,10 +175,16 @@ data class OpplysningerBruktIBeregningUTDto(
         val trygdetidTom: LocalDate
     )
 
-    data class UtenlandskTrygdetid(
-        val trygdetidLand: String,
+    data class UtenlandskTrygdetidEOS(
+        val trygdetidEOSLand: String,
         val trygdetidFom: LocalDate,
-        val trygdetidTom: LocalDate
+        val trygdetidTom: LocalDate,
+    )
+
+    data class UtenlandskTrygdetidBilateral(
+        val trygdetidBilateralLand: String,
+        val trygdetidFom: LocalDate,
+        val trygdetidTom: LocalDate,
     )
 
     data class GjenlevendetilleggGjeldene(
@@ -192,6 +199,7 @@ data class OpplysningerBruktIBeregningUTDto(
         val nettoAkkumulerteBeloepUtbetalt: Kroner,  // NettoAkk
         val nettoAkkumulertePlussNettoRestAar: Kroner,  // NettoAkk + NettoRestAr
         val nettoTilUtbetalingRestenAvAaret: Kroner,  // NettoRestAr
+        val ufoeretrygdPlussInntekt: Kroner,  // NettoAkk + NettoRestAr + ForventetInntekt
     )
 
     data class BeregningUfoere(

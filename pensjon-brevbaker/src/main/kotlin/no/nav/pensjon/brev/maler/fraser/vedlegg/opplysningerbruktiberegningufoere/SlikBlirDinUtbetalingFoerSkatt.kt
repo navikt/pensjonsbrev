@@ -8,8 +8,8 @@ import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdOrdinaerSelectors.nettoA
 import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdOrdinaerSelectors.nettoTilUtbetalingRestenAvAaret
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Element
-import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Expression
+import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
@@ -36,6 +36,7 @@ data class TabellSlikBlirDinUtbetalingFoerSkatt(
     val harTotalNettoUT: Expression<Boolean>,
     val ufoeregrad: Expression<Int>,
     val ufoeretrygdOrdinaer: Expression<OpplysningerBruktIBeregningUTDto.UfoeretrygdOrdinaer>,
+    val ufoeretrygdPlussInntekt: Expression<Kroner>,
 
 
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
@@ -52,16 +53,16 @@ data class TabellSlikBlirDinUtbetalingFoerSkatt(
                 table(header = {
                     column(alignment = Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.LEFT) {
                         text(
-                            Bokmal to "Beregning", Nynorsk to "Berekning", English to "Calculation"
+                            Bokmal to "", Nynorsk to "", English to ""
 
                         )
                     }
-                    column(alignment = Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.LEFT) {
+                    column(alignment = Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT) {
                         text(
                             Bokmal to "Beløp",
                             Nynorsk to "Beløp",
-                            English to "Amount"
-
+                            English to "Amount",
+                            Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
                         )
                     }
                 }) {
@@ -131,9 +132,9 @@ data class TabellSlikBlirDinUtbetalingFoerSkatt(
             // TBU064V  / brevkode not(PE_UT_04_108, PE_UT_04_109, PE_UT_06_300, PE_UT_07_200)
             paragraph {
                 textExpr(
-                    Bokmal to "Uføretrygden og inntekten din vil ut fra dette til sammen utgjøre ".expr() + nettoAkkumulerteBeloepUtbetalt.format() + " + ".expr() + nettoTilUtbetalingRestenAvAaret.format() + " + ".expr() + forventetInntektAar.format() + " kroner for dette året.".expr(),
-                    Nynorsk to "Uføretrygda di og inntekta di utgjer til saman ".expr() + nettoAkkumulerteBeloepUtbetalt.format() + " + ".expr() + nettoTilUtbetalingRestenAvAaret.format() + " + ".expr() + forventetInntektAar.format() + " kroner i dette året.".expr(),
-                    English to "Your disability benefit and income together will total NOK ".expr() + nettoAkkumulerteBeloepUtbetalt.format() + " + ".expr() + nettoTilUtbetalingRestenAvAaret.format() + " + ".expr() + forventetInntektAar.format() + " for this year.".expr()
+                    Bokmal to "Uføretrygden og inntekten din vil ut fra dette til sammen utgjøre ".expr() + ufoeretrygdPlussInntekt.format() + " kroner for dette året.".expr(),
+                    Nynorsk to "Uføretrygda di og inntekta di utgjer til saman ".expr() + ufoeretrygdPlussInntekt.format() + " kroner i dette året.".expr(),
+                    English to "Your disability benefit and income together will total NOK ".expr() + ufoeretrygdPlussInntekt.format() + " for this year.".expr()
                 )
             }
         }

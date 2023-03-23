@@ -162,13 +162,12 @@ data class TabellInntekteneBruktIBeregningen(
                     English to "* Indicates years when you earned pension points for military or civilian initial service. If the income in the year before your service started is higher, this income will be used as a basis for calculation."
                 )
             }
-        }
-        paragraph {
-            text(
-                Bokmal to "**) Inntekten er justert etter endringer i folketrygdens grunnbeløp.",
-                Nynorsk to "**) Gjennomsnittleg norsk inntekt justert etter endringar i grunnbeløpet i folketrygda.",
-                English to "**) Average Norwegian income adjusted in accordance with changes in the National Insurance basic amount."
-            )
+            newline()
+                text(
+                    Bokmal to "**) Inntekten er justert etter endringer i folketrygdens grunnbeløp.",
+                    Nynorsk to "**) Gjennomsnittleg norsk inntekt justert etter endringar i grunnbeløpet i folketrygda.",
+                    English to "**) Average Norwegian income adjusted in accordance with changes in the National Insurance basic amount."
+                )
         }
     }
 }
