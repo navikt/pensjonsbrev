@@ -14,9 +14,9 @@
     border-radius: 4px;
 }
 
-.mediumHeading, .brevvelgerContainer h2 {
+.sectionHeading {
     font-size: var(--a-font-size-heading-xsmall);
-    margin: 0;
+    margin-left: 4px;
 }
 
 .brevvelgerContainer p {
@@ -44,6 +44,10 @@
     border: 1px solid var(--a-gray-600)
 }
 
+.mottakerCardHeading {
+    margin-left: 0;
+}
+
 .mottakerCard > div {
     display: flex;
     flex-direction: row;
@@ -52,10 +56,17 @@
 }
 
 .letterGroup {
-    margin-top: 10px;
+    --ac-expansioncard-bg: var(--a-white);
+    --ac-expansioncard-border-open-color: var(--a-white);
+    --ac-expansioncard-border-hover-color: var(--a-white);
     --__ac-expansioncard-border-width: 0;
     --__ac-expansioncard-border-radius: 0;
-    --__ac-expansioncard-border-co: 0;
-    --ac-expansioncard-border-open-color: var(--a-border-alt-3);
-    --ac-expansioncard-border-hover-color: var(--a-border-alt-3);
+    padding: 0;
+    margin: 0;
+}
+
+.letterGroupHeader{
+    padding: 0 0 0 4px;
+    font-weight: normal;
+    font-size: var(--a-font-size-medium);
 }

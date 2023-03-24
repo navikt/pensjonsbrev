@@ -1,0 +1,54 @@
+.expansionButton {
+    box-sizing: inherit;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    padding: 4px;
+    background-color: var(--a-white);
+    border-width: 0;
+    border-radius: 2px;
+    justify-content: space-between;
+}
+
+.expansionButton:hover {
+    cursor: pointer;
+    background-color: var(--a-surface-action-subtle-hover);
+}
+
+.expansionButtonOpen {
+    background-color: var(--a-surface-action-selected);
+}
+.expansionButtonOpen:hover {
+    background-color: var(--a-surface-action-selected-hover);
+}
+
+.expansionHeader {
+    font-weight: var(--a-font-weight-regular);
+    font-size: var(--a-font-size-medium);
+    vertical-align: middle;
+    margin: 0;
+}
+.expansionHeaderOpen {
+    color: var(--a-white);
+}
+
+.expansionContainer {
+    box-sizing: inherit;
+    width: 100%;
+}
+
+.expansionArrowDown {
+    color: #000000;
+}
+
+.expansionArrowUp {
+    color: var(--a-white);
+}
+
+.letterCategoryContainer {
+    display: flex;
+    flex-direction: column;
+    margin-left: 8px;
+    margin-top: 4px;
+    margin-bottom: 4px;
+}
