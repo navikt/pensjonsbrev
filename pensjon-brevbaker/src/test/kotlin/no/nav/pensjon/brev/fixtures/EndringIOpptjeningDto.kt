@@ -33,6 +33,7 @@ fun createEndringIOpptjeningAutoDtoEndringIOpptjening() =
         harGjenlevendetilleggInnvilget = true,
         harInntektEtterUfoere = true,
         harUtbetalingsgrad = true,
+        harUfoeretrygdUtbetalt = true,
         harYrkesskadeGradUtbetaling = false,
         inntektsgrense = Kroner(300000),
         inntektsgrenseNesteAar = Kroner(380000),

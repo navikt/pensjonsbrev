@@ -43,7 +43,8 @@ fun createOpplysningerBruktIBeregningUTDtoBarnetilleggGjeldende() =
     OpplysningerBruktIBeregningUTDto.BarnetilleggGjeldende(
         fellesbarn = Fixtures.create(),
         saerkullsbarn = Fixtures.create(),
-        totaltAntallBarn = 4
+        totaltAntallBarn = 4,
+        foedselsdatoPaaBarnTilleggetGjelder = listOf(LocalDate.of(1990, 3, 24)),
     )
 
 fun createOpplysningerBruktIBeregningUTDtoBarnetilleggGjeldendeFellesbarn() =

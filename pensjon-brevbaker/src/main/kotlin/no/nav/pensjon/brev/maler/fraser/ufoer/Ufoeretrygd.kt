@@ -169,9 +169,9 @@ object Ufoeretrygd {
     }
 
     // TBU2223
-    data class UtbetalingsdatoUfoeretrygd(val faarUtbetaltUfoeretrygd: Expression<Boolean>) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    data class UtbetalingsdatoUfoeretrygd(val harUfoeretrygdUtbetalt: Expression<Boolean>) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-            showIf(faarUtbetaltUfoeretrygd) {
+            showIf(harUfoeretrygdUtbetalt) {
                 paragraph {
                     text(
                         Bokmal to "Uføretrygden blir fortsatt utbetalt senest den 20. hver måned.",
@@ -331,7 +331,7 @@ object Ufoeretrygd {
         }
     }
 
-    // TBU2227 TODO: I have diverted from existing text. Added NN- and EN-språklag
+    // TBU2227
     object HenvisningTilVedleggOpplysningerOmBeregningenUfoer : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             paragraph {
