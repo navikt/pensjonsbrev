@@ -15,7 +15,6 @@ import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.harFr
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.harJusteringsbeloep
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.inntektAnnenForelder
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.inntektBruktIAvkortning
-import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.inntektstak
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.inntektstak_safe
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarnSelectors.beloepBrutto
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarnSelectors.beloepNetto
@@ -26,7 +25,6 @@ import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarnSelectors.gj
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarnSelectors.harFradrag
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarnSelectors.harJusteringsbeloep
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarnSelectors.inntektBruktIAvkortning
-import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarnSelectors.inntektstak
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarnSelectors.inntektstak_safe
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.OpphoerBarnetilleggAutoDto
@@ -51,10 +49,10 @@ import no.nav.pensjon.brev.maler.fraser.common.Vedtak
 import no.nav.pensjon.brev.maler.fraser.ufoer.Barnetillegg
 import no.nav.pensjon.brev.maler.fraser.ufoer.Ufoeretrygd
 import no.nav.pensjon.brev.maler.vedlegg.createVedleggOpplysningerBruktIBeregningUT
-import no.nav.pensjon.brev.maler.vedlegg.vedleggMaanedligUfoeretrygdFoerSkatt
 import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgPlikterUfoere
-import no.nav.pensjon.brev.template.Language
+import no.nav.pensjon.brev.maler.vedlegg.vedleggMaanedligUfoeretrygdFoerSkatt
 import no.nav.pensjon.brev.template.AutobrevTemplate
+import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
@@ -117,7 +115,7 @@ object OpphoerBarnetilleggAuto : AutobrevTemplate<OpphoerBarnetilleggAutoDto> {
                 )
             )
 
-            includePhrase(Ufoeretrygd.UtbetalingsdatoUfoeretrygd)
+            includePhrase(Ufoeretrygd.UtbetalingsdatoUfoeretrygd(ufoeretrygd.utbetaltPerMaaned.greaterThan(0)))
             includePhrase(Ufoeretrygd.ViktigAALeseHeleBrevet)
             includePhrase(Vedtak.BegrunnelseOverskrift)
             includePhrase(
@@ -253,26 +251,6 @@ object OpphoerBarnetilleggAuto : AutobrevTemplate<OpphoerBarnetilleggAutoDto> {
                             .greaterThan(0),
                     )
                 )
-
-                ifNotNull(
-                    barnetilleggFellesbarn,
-                    barnetilleggSaerkullsbarn
-                ) { barnetilleggFellesbarn, barnetilleggSaerkullsbarn ->
-                    includePhrase(
-                        Barnetillegg.InnvilgetOgIkkeUtbetalt(
-                            fellesInnvilget = barnetilleggFellesbarn.notNull(),
-                            fellesUtbetalt = barnetilleggFellesbarn.beloepNetto_safe.value_safe.ifNull(0)
-                                .greaterThan(0),
-                            harTilleggForFlereFellesbarn = barnetilleggFellesbarn.gjelderFlereBarn,
-                            harTilleggForFlereSaerkullsbarn = barnetilleggSaerkullsbarn.gjelderFlereBarn,
-                            inntektstakFellesbarn = barnetilleggFellesbarn.inntektstak,
-                            inntektstakSaerkullsbarn = barnetilleggSaerkullsbarn.inntektstak,
-                            saerkullInnvilget = barnetilleggSaerkullsbarn.notNull(),
-                            saerkullUtbetalt = barnetilleggSaerkullsbarn.beloepNetto_safe.value_safe.ifNull(0)
-                                .greaterThan(0),
-                        )
-                    )
-                }
 
                 includePhrase(
                     Barnetillegg.HenvisningTilVedleggOpplysningerOmBeregning(

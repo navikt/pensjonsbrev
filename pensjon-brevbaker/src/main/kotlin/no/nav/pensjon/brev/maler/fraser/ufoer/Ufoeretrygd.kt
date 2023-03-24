@@ -169,14 +169,16 @@ object Ufoeretrygd {
     }
 
     // TBU2223
-    object UtbetalingsdatoUfoeretrygd : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    data class UtbetalingsdatoUfoeretrygd(val faarUtbetaltUfoeretrygd: Expression<Boolean>) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-            paragraph {
-                text(
-                    Bokmal to "Uføretrygden blir fortsatt utbetalt senest den 20. hver måned.",
-                    Nynorsk to "Uføretrygda blir framleis utbetalt seinast den 20. i kvar månad.",
-                    English to "Your disability benefit will still be paid no later than the 20th of every month."
-                )
+            showIf(faarUtbetaltUfoeretrygd) {
+                paragraph {
+                    text(
+                        Bokmal to "Uføretrygden blir fortsatt utbetalt senest den 20. hver måned.",
+                        Nynorsk to "Uføretrygda blir framleis utbetalt seinast den 20. i kvar månad.",
+                        English to "Your disability benefit will still be paid no later than the 20th of every month."
+                    )
+                }
             }
         }
     }
@@ -307,11 +309,10 @@ object Ufoeretrygd {
     }
 
     // TBU3730, SkattBorIUtlandPesys_001
-    data class SkattForDegSomBorIUtlandet(
-        val brukerBorInorge: Expression<Boolean>
-    ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    data class SkattForDegSomBorIUtlandet(val brukerBorInorge: Expression<Boolean>) :
+        OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-            showIf(brukerBorInorge) {
+            showIf(not(brukerBorInorge)) {
                 title1 {
                     text(
                         Bokmal to "Skatt for deg som bor i utlandet",

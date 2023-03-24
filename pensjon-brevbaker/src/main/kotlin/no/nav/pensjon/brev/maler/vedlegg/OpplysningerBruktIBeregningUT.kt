@@ -113,6 +113,7 @@ fun createVedleggOpplysningerBruktIBeregningUT(skalViseMinsteytelse: Boolean, sk
                 ungUfoerGjeldende_erUnder20Aar = ungUfoerGjeldende_erUnder20Aar,
                 trygdetidsdetaljerGjeldende = trygdetidsdetaljerGjeldende,
                 barnetilleggGjeldende = barnetilleggGjeldende,
+                harMinsteytelse = minsteytelseGjeldende_sats.notNull(),
             )
         )
         if (skalViseMinsteytelse) {
