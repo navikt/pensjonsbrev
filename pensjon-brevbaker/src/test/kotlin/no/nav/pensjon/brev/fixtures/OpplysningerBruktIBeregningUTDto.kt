@@ -151,7 +151,7 @@ fun createOpplysningerBruktIBeregningUTDtoYrkesskadeGjeldende() =
         beregningsgrunnlagBeloepAar = Kroner(0),
         inntektVedSkadetidspunkt = Kroner(0),
         skadetidspunkt = LocalDate.of(2020, 1, 1),
-        yrkesskadegrad = 0,
+        yrkesskadegrad = 50,
     )
 
 fun createOpplysningerBruktIBeregningUTDtoOpptjeningUfoeretrygd() =

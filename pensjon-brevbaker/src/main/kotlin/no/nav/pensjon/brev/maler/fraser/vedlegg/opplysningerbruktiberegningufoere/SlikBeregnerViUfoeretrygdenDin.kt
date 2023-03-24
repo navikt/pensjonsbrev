@@ -126,6 +126,15 @@ data class SlikBeregnerViUfoeretrygdenDin(
                     )
                 }
             }
+
+            // TBU034V
+            paragraph {
+                text(
+                    Bokmal to "Folketrygdens grunnbeløp endres hvert år, og uføretrygden din blir justert ut fra dette.",
+                    Nynorsk to "Grunnbeløpet i folketrygda blir endra kvart år, og uføretrygda di blir justert ut frå dette.",
+                    English to "The National Insurance basic amount changes every year, and your disability benefit will be adjusted in accordance with this."
+                )
+            }
         }
     }
 }
