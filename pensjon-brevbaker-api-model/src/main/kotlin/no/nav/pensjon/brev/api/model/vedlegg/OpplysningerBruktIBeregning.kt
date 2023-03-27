@@ -5,8 +5,8 @@ import java.time.LocalDate
 
 data class OpplysningerBruktIBeregningUTDto(
     val barnetilleggGjeldende: BarnetilleggGjeldende?,
-    val beregningUfoere: BeregningUfoere, // TODO
     val beregnetUTPerManedGjeldende: BeregnetUTPerManedGjeldende,
+    val beregningUfoere: BeregningUfoere, // TODO
     val borIUtlandet: Boolean,  // TODO: (PE_Grunnlag_Persongrunnlagsliste_PersonBostedsland) <> "nor" AND (PE_Grunnlag_Persongrunnlagsliste_PersonBostedsland) <> ""
     val fraOgMedDatoErNesteAar: Boolean,
     val gjenlevendetilleggGjeldene: GjenlevendetilleggGjeldene?, // TODO
@@ -14,6 +14,7 @@ data class OpplysningerBruktIBeregningUTDto(
     val harBarnetilleggInnvilget: Boolean?,  // TODO: IF (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true) OR (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true)
     val harBrukerKonvertertUP: Boolean, // TODO
     val harEktefelletilleggInnvilget: Boolean?,  // TODO: PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_Ektefelletillegg_ETinnvilget = true
+    val harGodkjentBrevkode: Boolean,  // TODO  **
     val harKravaarsakEndringInntekt: Boolean,
     val inntektEtterUfoereGjeldende_beloepIEU: Kroner?,
     val inntektFoerUfoereBegrunnelse: InntektFoerUfoereBegrunnelse,
@@ -30,8 +31,8 @@ data class OpplysningerBruktIBeregningUTDto(
     val ufoeretrygdGjeldende: UfoeretrygdGjeldende,
     val ufoeretrygdOrdinaer: UfoeretrygdOrdinaer, // TODO
     val ungUfoerGjeldende_erUnder20Aar: Boolean?,
-    val utenlandskTrygdetidEOS: List<UtenlandskTrygdetidEOS>, // TODO
     val utenlandskTrygdetidBilateral: List<UtenlandskTrygdetidBilateral>, // TODO
+    val utenlandskTrygdetidEOS: List<UtenlandskTrygdetidEOS>, // TODO
     val yrkesskadeGjeldende: YrkesskadeGjeldende?,
 
 ) {

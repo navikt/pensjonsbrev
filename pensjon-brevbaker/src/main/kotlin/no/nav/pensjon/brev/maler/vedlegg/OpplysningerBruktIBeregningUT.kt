@@ -30,6 +30,7 @@ import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSel
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.harBarnetilleggInnvilget
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.harBrukerKonvertertUP
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.harEktefelletilleggInnvilget
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.harGodkjentBrevkode
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.harKravaarsakEndringInntekt
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.inntektEtterUfoereGjeldende_beloepIEU
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.inntektFoerUfoereBegrunnelse
@@ -57,6 +58,7 @@ import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidGjeldendeSelectors.harLikU
 import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidGjeldendeSelectors.harTrygdetidsgrunnlag
 import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidGjeldendeSelectors.harYrkesskadeOppfylt
 import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidsdetaljerGjeldendeSelectors.anvendtTT
+import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidsdetaljerGjeldendeSelectors.beregningsmetode
 import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdGjeldendeSelectors.harDelvisUfoeregrad
 import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdGjeldendeSelectors.harFullUfoeregrad
 import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdGjeldendeSelectors.harUtbetalingsgradLessThanUfoeregrad
@@ -69,6 +71,7 @@ import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdOrdinaerSelectors.harNyU
 import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdOrdinaerSelectors.harTotalNettoUT
 import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdOrdinaerSelectors.nettoAkkumulerteBeloepUtbetalt
 import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdOrdinaerSelectors.nettoTilUtbetalingRestenAvAaret
+import no.nav.pensjon.brev.api.model.vedlegg.YrkesskadeGjeldendeSelectors.yrkesskadegrad_safe
 import no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningufoere.*
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
@@ -116,6 +119,14 @@ fun createVedleggOpplysningerBruktIBeregningUT(skalViseMinsteytelse: Boolean, sk
                 harMinsteytelse = minsteytelseGjeldende_sats.notNull(),
             )
         )
+
+        includePhrase(
+            SlikBeregnerViUfoeretrygdenDin(
+                beregningsmetode = trygdetidsdetaljerGjeldende.beregningsmetode,
+                harGodkjentBrevkode = harGodkjentBrevkode,
+            )
+        )
+
         if (skalViseMinsteytelse) {
             val harMinsteytelseSats = minsteytelseGjeldende_sats.ifNull(0.0).greaterThan(0.0)
             showIf(harMinsteytelseSats) {
@@ -131,19 +142,8 @@ fun createVedleggOpplysningerBruktIBeregningUT(skalViseMinsteytelse: Boolean, sk
             }
         }
 
-        if (skalViseBarnetillegg) {
-            ifNotNull(barnetilleggGjeldende) { barnetillegg ->
-                includePhrase(
-                    OpplysningerOmBarnetillegg(
-                        barnetillegg = barnetillegg,
-                        sivilstand = sivilstand,
-                        anvendtTrygdetid = trygdetidsdetaljerGjeldende.anvendtTT,
-                        harYrkesskade = yrkesskadeGjeldende.notNull(),
-                        harKravaarsakEndringInntekt = harKravaarsakEndringInntekt,
-                        fraOgMedDatoErNesteAar = fraOgMedDatoErNesteAar,
-                    )
-                )
-            }
+        showIf(kravAarsakType.isNotAnyOf(KravAarsakType.SOKNAD_BT) and trygdetidGjeldende.harYrkesskadeOppfylt) {
+            includePhrase(BeregningAvUfoeretrygdSomSkyldesYrkesskadeEllerYrkessykdom.YrkesskadeEllerYrkessykdom)
         }
 
         showIf(kravAarsakType.isNotAnyOf(KravAarsakType.SOKNAD_BT)) {
@@ -168,15 +168,6 @@ fun createVedleggOpplysningerBruktIBeregningUT(skalViseMinsteytelse: Boolean, sk
             }
 
             includePhrase(
-                SlikFastsetterViInntektenDinFoerDuBleUfoer(
-                    harDelvisUfoergrad = ufoeretrygdGjeldende.harDelvisUfoeregrad,
-                    inntektFoerUfoereBegrunnelse = inntektFoerUfoereBegrunnelse,
-                )
-            )
-
-            includePhrase(SlikFastsetterViInntektenDinEtterDuBleUfoer)
-
-            includePhrase(
                 TrygdetidenDin(
                     beregnetUTPerManedGjeldende = beregnetUTPerManedGjeldende,
                     fastsattTrygdetid = trygdetidGjeldende.fastsattTrygdetid,
@@ -199,6 +190,19 @@ fun createVedleggOpplysningerBruktIBeregningUT(skalViseMinsteytelse: Boolean, sk
                     utenlandskTrygdetidEOS = utenlandskTrygdetidEOS,
                 )
             )
+
+            showIf(kravAarsakType.isOneOf(KravAarsakType.ENDRET_IFU)) {
+                includePhrase(SlikHarViFastsattDenNyeInntektsgrensenDin.DenNyeInntektsgrensenDin)
+            }
+
+            includePhrase(
+                SlikFastsetterViInntektenDinFoerDuBleUfoer(
+                    harDelvisUfoergrad = ufoeretrygdGjeldende.harDelvisUfoeregrad,
+                    inntektFoerUfoereBegrunnelse = inntektFoerUfoereBegrunnelse,
+                )
+            )
+
+            includePhrase(SlikFastsetterViInntektenDinEtterDuBleUfoer)
 
             includePhrase(
                 SlikHarViFastsattKompensasjonsgradenDin(
@@ -266,6 +270,21 @@ fun createVedleggOpplysningerBruktIBeregningUT(skalViseMinsteytelse: Boolean, sk
                     ufoeretrygdPlussInntekt = beregningUfoere.ufoeretrygdPlussInntekt,
                 )
             )
+
+            if (skalViseBarnetillegg) {
+                ifNotNull(barnetilleggGjeldende) { barnetillegg ->
+                    includePhrase(
+                        OpplysningerOmBarnetillegg(
+                            barnetillegg = barnetillegg,
+                            sivilstand = sivilstand,
+                            anvendtTrygdetid = trygdetidsdetaljerGjeldende.anvendtTT,
+                            harYrkesskade = yrkesskadeGjeldende.notNull(),
+                            harKravaarsakEndringInntekt = harKravaarsakEndringInntekt,
+                            fraOgMedDatoErNesteAar = fraOgMedDatoErNesteAar,
+                        )
+                    )
+                }
+            }
 
             ifNotNull(gjenlevendetilleggGjeldene) { gjenlevendetillegg ->
                 includePhrase(

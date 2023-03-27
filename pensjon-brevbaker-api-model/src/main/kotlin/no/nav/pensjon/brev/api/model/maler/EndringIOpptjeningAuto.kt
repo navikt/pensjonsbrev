@@ -15,7 +15,7 @@ data class EndringIOpptjeningAutoDto(
     val fellesbarnTillegg: FellesbarnTillegg?,
     val harEktefelletilleggInnvilget: Boolean?,  // Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Ektefelletillegg
     val harGjenlevendetilleggInnvilget: Boolean?,  // Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg
-    val harYrkesskadeGradUtbetaling: Boolean?,
+    val harYrkesskadeOppfylt: Boolean?,  // Uforetrygdberegning.Yrkesskadegrad
     val maanedligUfoeretrygdFoerSkatt: MaanedligUfoeretrygdFoerSkattDto,
     val opplysningerBruktIBeregningUT: OpplysningerBruktIBeregningUTDto,
     val orienteringOmRettigheterUfoere: OrienteringOmRettigheterUfoereDto,

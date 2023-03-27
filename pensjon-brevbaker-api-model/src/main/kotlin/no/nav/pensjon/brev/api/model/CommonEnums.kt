@@ -49,6 +49,7 @@ enum class KravAarsakType {
     TILST_DOD,
     ENDRET_OPPTJENING,
     ENDRET_INNTEKT,
+    ENDRET_IFU,
 }
 enum class InntektFoerUfoereBegrunnelse {
     STDBEGR_12_8_2_3,

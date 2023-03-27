@@ -18,6 +18,7 @@ fun createOpplysningerBruktIBeregningUTDto() =
         harBarnetilleggInnvilget = false,
         harBrukerKonvertertUP = false,
         harEktefelletilleggInnvilget = false,
+        harGodkjentBrevkode = true,
         harKravaarsakEndringInntekt = true,
         inntektEtterUfoereGjeldende_beloepIEU = Kroner(0),
         inntektFoerUfoereBegrunnelse = InntektFoerUfoereBegrunnelse.STDBEGR_12_8_2_3,
