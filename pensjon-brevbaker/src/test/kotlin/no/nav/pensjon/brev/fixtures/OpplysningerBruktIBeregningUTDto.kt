@@ -103,11 +103,8 @@ fun createOpplysningerBruktIBeregningUTDtoInntektsAvkortingGjeldende() =
         forventetInntektAar = Kroner(0),
         harForventetInntektLargerThanInntektstak = false,
         harInntektsgrenseLargerThanOrEqualToInntektstak = false,
-        harInntektsgrenseLessThanInntektstak = true,
         inntektsgrenseAar = Kroner(0),
         inntektstak = Kroner(0),
-        nettoPerAarReduksjonUT = Kroner(0),
-        overskytendeInntekt = Kroner(0),
     )
 
 fun createOpplysningerBruktIBeregningUTDtoTrygdetidsdetaljerGjeldende() =
@@ -215,19 +212,22 @@ fun createOpplysningerBruktIBeregningUTDtoGjenlevendetilleggGjeldene() =
 fun createOpplysningerBruktIBeregningUTDtoUfoeretrygdOrdinaer() =
     OpplysningerBruktIBeregningUTDto.UfoeretrygdOrdinaer(
         fradrag = Kroner(80000),
-        harGammelUTBeloepUlikNyUTBeloep = false,
         harNyUTBeloep = true,
         nettoAkkumulerteBeloepUtbetalt = Kroner(200000),
-        nettoAkkumulertePlussNettoRestAar = Kroner(300000),
         nettoTilUtbetalingRestenAvAaret = Kroner(100000),
-        ufoeretrygdPlussInntekt = Kroner(500000),
+        harBeloepRedusert = true,
+        harTotalNettoUT = true,
 
         )
 
 fun createOpplysningerBruktIBeregningUTDtoBeregningUfoere() =
     OpplysningerBruktIBeregningUTDto.BeregningUfoere(
-        harBeloepRedusert = true,
-        harTotalNettoUT = true,
+        nettoPerAarReduksjonUT = Kroner(0),
+        overskytendeInntekt = Kroner(0),
+        harInntektsgrenseLessThanInntektstak = true,
+        harGammelUTBeloepUlikNyUTBeloep = false,
+        nettoAkkumulertePlussNettoRestAar = Kroner(300000),
+        ufoeretrygdPlussInntekt = Kroner(500000),
     )
 
 

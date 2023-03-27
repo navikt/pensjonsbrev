@@ -2,9 +2,9 @@ package no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningufoe
 
 import no.nav.pensjon.brev.api.model.KravAarsakType
 import no.nav.pensjon.brev.api.model.Kroner
+import no.nav.pensjon.brev.api.model.vedlegg.BeregningUfoereSelectors.nettoAkkumulertePlussNettoRestAar
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDto
 import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdOrdinaerSelectors.nettoAkkumulerteBeloepUtbetalt
-import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdOrdinaerSelectors.nettoAkkumulertePlussNettoRestAar
 import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdOrdinaerSelectors.nettoTilUtbetalingRestenAvAaret
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Element
@@ -19,6 +19,7 @@ import no.nav.pensjon.brev.template.dsl.textExpr
 
 // TBU062V, TBU063V, TBU064V, TBU074V, TBU600V, TBU065V
 data class TabellSlikBlirDinUtbetalingFoerSkatt(
+    val beregningUfoere: Expression<OpplysningerBruktIBeregningUTDto.BeregningUfoere>,
     val forventetInntektAar: Expression<Kroner>,
     val fradrag: Expression<Kroner>,
     val harBeloepRedusert: Expression<Boolean>,
@@ -26,6 +27,7 @@ data class TabellSlikBlirDinUtbetalingFoerSkatt(
     val harInntektsgrenseLargerThanOrEqualToInntektstak: Expression<Boolean>,
     val harInntektsgrenseLessThanInntektstak: Expression<Boolean>,
     val harNyUTBeloep: Expression<Boolean>,
+    val harTotalNettoUT: Expression<Boolean>,
     val harUtbetalingsgradLessThanUfoeregrad: Expression<Boolean>,
     val inntektsgrenseAar: Expression<Kroner>,
     val inntektstak: Expression<Kroner>,
@@ -33,7 +35,6 @@ data class TabellSlikBlirDinUtbetalingFoerSkatt(
     val nettoAkkumulerteBeloepUtbetalt: Expression<Kroner>,
     val nettoAkkumulertePlussNettoRestAar: Expression<Kroner>,
     val nettoTilUtbetalingRestenAvAaret: Expression<Kroner>,
-    val harTotalNettoUT: Expression<Boolean>,
     val ufoeregrad: Expression<Int>,
     val ufoeretrygdOrdinaer: Expression<OpplysningerBruktIBeregningUTDto.UfoeretrygdOrdinaer>,
     val ufoeretrygdPlussInntekt: Expression<Kroner>,
@@ -76,9 +77,9 @@ data class TabellSlikBlirDinUtbetalingFoerSkatt(
                         }
                         cell {
                             textExpr(
-                                Bokmal to ufoeretrygdOrdinaer.nettoAkkumulertePlussNettoRestAar.format(),
-                                Nynorsk to ufoeretrygdOrdinaer.nettoAkkumulertePlussNettoRestAar.format(),
-                                English to ufoeretrygdOrdinaer.nettoAkkumulertePlussNettoRestAar.format()
+                                Bokmal to beregningUfoere.nettoAkkumulertePlussNettoRestAar.format(),
+                                Nynorsk to beregningUfoere.nettoAkkumulertePlussNettoRestAar.format(),
+                                English to beregningUfoere.nettoAkkumulertePlussNettoRestAar.format()
 
                             )
                         }

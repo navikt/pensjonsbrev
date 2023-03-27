@@ -5,8 +5,8 @@ import java.time.LocalDate
 
 data class OpplysningerBruktIBeregningUTDto(
     val barnetilleggGjeldende: BarnetilleggGjeldende?,
-    val beregnetUTPerManedGjeldende: BeregnetUTPerManedGjeldende,
     val beregningUfoere: BeregningUfoere,
+    val beregnetUTPerManedGjeldende: BeregnetUTPerManedGjeldende,
     val borIUtlandet: Boolean,  // TODO: (PE_Grunnlag_Persongrunnlagsliste_PersonBostedsland) <> "nor" AND (PE_Grunnlag_Persongrunnlagsliste_PersonBostedsland) <> ""
     val fraOgMedDatoErNesteAar: Boolean,
     val gjenlevendetilleggGjeldene: GjenlevendetilleggGjeldene?,
@@ -35,6 +35,7 @@ data class OpplysningerBruktIBeregningUTDto(
     val yrkesskadeGjeldende: YrkesskadeGjeldende?,
 
 ) {
+
     data class YrkesskadeGjeldende(
         val beregningsgrunnlagBeloepAar: Kroner,
         val inntektVedSkadetidspunkt: Kroner,
@@ -128,18 +129,15 @@ data class OpplysningerBruktIBeregningUTDto(
     data class InntektsAvkortingGjeldende(
         val forventetInntektAar: Kroner,
         val harForventetInntektLargerThanInntektstak: Boolean,
-        val harInntektsgrenseLessThanInntektstak: Boolean,  // TODO: Ny / BEREGNING! / PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektsgrense < PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektstak
         val harInntektsgrenseLargerThanOrEqualToInntektstak: Boolean,
         val inntektsgrenseAar: Kroner,
         val inntektstak: Kroner,
-        val nettoPerAarReduksjonUT: Kroner, // TODO: Ny / BEREGNING!  (overskytenedeInntekt X kompensasjonsgrad)
-        val overskytendeInntekt: Kroner,  // TODO: Ny / BEREGNING! (PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_ForventetInntekt - PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektsgrense)
     )
 
     data class InntektFoerUfoereGjeldende(
         val erSannsynligEndret: Boolean,
         val ifuInntekt: Kroner,
-        val oifuInntekt: Kroner, // TODO: Ny
+        val oifuInntekt: Kroner, // TODO
     )
 
     // TODO: Create in Pesys
@@ -195,17 +193,21 @@ data class OpplysningerBruktIBeregningUTDto(
 
     data class UfoeretrygdOrdinaer(
         val fradrag: Kroner,
-        val harGammelUTBeloepUlikNyUTBeloep: Boolean, // TODO: Ny / BERENGING! / PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopGammelUT <> PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopNyUT
         val harNyUTBeloep: Boolean, // TODO: Ny / PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopNyUT
         val nettoAkkumulerteBeloepUtbetalt: Kroner,  // NettoAkk
-        val nettoAkkumulertePlussNettoRestAar: Kroner,  // NettoAkk + NettoRestAr
         val nettoTilUtbetalingRestenAvAaret: Kroner,  // NettoRestAr
-        val ufoeretrygdPlussInntekt: Kroner,  // NettoAkk + NettoRestAr + ForventetInntekt
+        val harBeloepRedusert: Boolean,  // PE_Vedtaksdata_BeregningsData_BeregningUfore_BelopRedusert
+        val harTotalNettoUT: Boolean,  // PE_Vedtaksdata_BeregningsData_BeregningUfore_TotalNetto
     )
 
     data class BeregningUfoere(
-        val harBeloepRedusert: Boolean,  // PE_Vedtaksdata_BeregningsData_BeregningUfore_BelopRedusert
-        val harTotalNettoUT: Boolean,  // PE_Vedtaksdata_BeregningsData_BeregningUfore_TotalNetto
-        )
+        val harGammelUTBeloepUlikNyUTBeloep: Boolean, // TODO: PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopGammelUT <> PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopNyUT
+        val nettoAkkumulertePlussNettoRestAar: Kroner,  // TODO: NettoAkk + NettoRestAr
+        val ufoeretrygdPlussInntekt: Kroner,  // TODO: NettoAkk + NettoRestAr + ForventetInntekt
+        val nettoPerAarReduksjonUT: Kroner, // TODO: overskytenedeInntekt X kompensasjonsgrad
+        val overskytendeInntekt: Kroner,  // TODO: PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_ForventetInntekt - PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektsgrense
+        val harInntektsgrenseLessThanInntektstak: Boolean,  // TODO: PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektsgrense < PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektstak
+
+    )
 
 }
