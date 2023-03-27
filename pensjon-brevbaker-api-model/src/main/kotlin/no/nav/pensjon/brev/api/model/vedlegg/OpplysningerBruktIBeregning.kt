@@ -5,14 +5,14 @@ import java.time.LocalDate
 
 data class OpplysningerBruktIBeregningUTDto(
     val barnetilleggGjeldende: BarnetilleggGjeldende?,
-    val beregningUfoere: BeregningUfoere,
+    val beregningUfoere: BeregningUfoere, // TODO
     val beregnetUTPerManedGjeldende: BeregnetUTPerManedGjeldende,
     val borIUtlandet: Boolean,  // TODO: (PE_Grunnlag_Persongrunnlagsliste_PersonBostedsland) <> "nor" AND (PE_Grunnlag_Persongrunnlagsliste_PersonBostedsland) <> ""
     val fraOgMedDatoErNesteAar: Boolean,
-    val gjenlevendetilleggGjeldene: GjenlevendetilleggGjeldene?,
+    val gjenlevendetilleggGjeldene: GjenlevendetilleggGjeldene?, // TODO
     val grunnbeloep: Kroner,
     val harBarnetilleggInnvilget: Boolean?,  // TODO: IF (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true) OR (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true)
-    val harBrukerKonvertertUP: Boolean, // TODO: Ny
+    val harBrukerKonvertertUP: Boolean, // TODO
     val harEktefelletilleggInnvilget: Boolean?,  // TODO: PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_Ektefelletillegg_ETinnvilget = true
     val harKravaarsakEndringInntekt: Boolean,
     val inntektEtterUfoereGjeldende_beloepIEU: Kroner?,
@@ -21,17 +21,17 @@ data class OpplysningerBruktIBeregningUTDto(
     val inntektsAvkortingGjeldende: InntektsAvkortingGjeldende,
     val kravAarsakType: KravAarsakType,  // TODO: PE_Vedtaksdata_Kravhode_KravArsakType
     val minsteytelseGjeldende_sats: Double?,
-    val norskTrygdetid: List<NorskTrygdetid>,
-    val opptjeningAvdoedUfoeretrygd: OpptjeningUfoeretrygd?,
-    val opptjeningUfoeretrygd: OpptjeningUfoeretrygd?,
+    val norskTrygdetid: List<NorskTrygdetid>, // TODO
+    val opptjeningAvdoedUfoeretrygd: OpptjeningUfoeretrygd?, // TODO
+    val opptjeningUfoeretrygd: OpptjeningUfoeretrygd?, // TODO
     val sivilstand: Sivilstand,
     val trygdetidGjeldende: TrygdetidGjeldende,
     val trygdetidsdetaljerGjeldende: TrygdetidsdetaljerGjeldende,
     val ufoeretrygdGjeldende: UfoeretrygdGjeldende,
-    val ufoeretrygdOrdinaer: UfoeretrygdOrdinaer,
+    val ufoeretrygdOrdinaer: UfoeretrygdOrdinaer, // TODO
     val ungUfoerGjeldende_erUnder20Aar: Boolean?,
-    val utenlandskTrygdetidEOS: List<UtenlandskTrygdetidEOS>,
-    val utenlandskTrygdetidBilateral: List<UtenlandskTrygdetidBilateral>,
+    val utenlandskTrygdetidEOS: List<UtenlandskTrygdetidEOS>, // TODO
+    val utenlandskTrygdetidBilateral: List<UtenlandskTrygdetidBilateral>, // TODO
     val yrkesskadeGjeldende: YrkesskadeGjeldende?,
 
 ) {
