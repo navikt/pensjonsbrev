@@ -46,7 +46,7 @@ data class EndringIOpptjeningAutoDto(
 
     data class EndringIOpptjeningBeregning(
         val nettoAkkumulertePlussNettoRestAar: Kroner,  // <NettoAkk> + <NettoRestAr> Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_NettoRestAr
-        val oppjustertInntektFoerUfoere80prosent: Kroner,  // <Oifu * 0.8) Beregning i Exstream! Tror verdien finnes i Pesys
+        val oppjustertInntektFoerUfoere80prosent: Kroner,  // <Oifu * 0.8) : Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Oifu
     )
 
     data class EndringIOpptjeningBoolean(

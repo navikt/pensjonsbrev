@@ -24,7 +24,7 @@ object HjemlerFolketrygdloven {
         val harEktefelletilleggInnvilget: Expression<Boolean>,
         val harFellesbarntilleggInnvilget: Expression<Boolean>,
         val harGjenlevendetilleggInnvilget: Expression<Boolean>,
-        val harYrkesskadegradUtbetaling: Expression<Boolean>,
+        val harYrkesskadeOppfylt: Expression<Boolean>,
         val harSaerkullsbarntilleggInnvilget: Expression<Boolean>,
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
@@ -39,11 +39,11 @@ object HjemlerFolketrygdloven {
                 paragraph {
                     textExpr(
                         Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 12-11 til 12-14".expr() +
-                                ifElse(harYrkesskadegradUtbetaling, ifTrue = ", 22-17", ifFalse = "") + "".expr(),
+                                ifElse(harYrkesskadeOppfylt, ifTrue = ", 22-17", ifFalse = "") + "".expr(),
                         Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 12-11 til 12-14".expr() +
-                                ifElse(harYrkesskadegradUtbetaling, ifTrue = ", 22-17", ifFalse = "") + "".expr(),
+                                ifElse(harYrkesskadeOppfylt, ifTrue = ", 22-17", ifFalse = "") + "".expr(),
                         English to "This decision was made pursuant to the provisions of §§ 12-11 to 12-14".expr() +
-                                ifElse(harYrkesskadegradUtbetaling, ifTrue = ", 22-17", ifFalse = "") + "".expr()
+                                ifElse(harYrkesskadeOppfylt, ifTrue = ", 22-17", ifFalse = "") + "".expr()
                     )
                     showIf(not(harEktefelletilleggInnvilget) and not(harGjenlevendetilleggInnvilget)) {
                         text(Bokmal to " og 22-12.", Nynorsk to " og 22-12.", English to " and 22-12 of the National Insurance Act.")
@@ -65,11 +65,11 @@ object HjemlerFolketrygdloven {
                 paragraph {
                     textExpr(
                         Bokmal to "Vedtaket er gjort etter folketrygdloven §§ ".expr() +
-                                ifElse(harYrkesskadegradUtbetaling, ifTrue = "12-11 til 12-17", ifFalse = "12-11 til 12-16") + "".expr(),
+                                ifElse(harYrkesskadeOppfylt, ifTrue = "12-11 til 12-17", ifFalse = "12-11 til 12-16") + "".expr(),
                         Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ ".expr() +
-                                ifElse(harYrkesskadegradUtbetaling, ifTrue = "12-11 til 12-17", ifFalse = "12-11 til 12-16") + "".expr(),
+                                ifElse(harYrkesskadeOppfylt, ifTrue = "12-11 til 12-17", ifFalse = "12-11 til 12-16") + "".expr(),
                         English to "This decision was made pursuant to the provisions of §§ ".expr() +
-                                ifElse(harYrkesskadegradUtbetaling, ifTrue = "12-11 to 12-17", ifFalse = "12-11 to 12-16") + "".expr()
+                                ifElse(harYrkesskadeOppfylt, ifTrue = "12-11 to 12-17", ifFalse = "12-11 to 12-16") + "".expr()
                     )
                     showIf(not(harEktefelletilleggInnvilget) and not(harGjenlevendetilleggInnvilget)) {
                         text(Bokmal to " og 22-12.", Nynorsk to " og 22-12.", English to " and 22-12 of the National Insurance Act.")
