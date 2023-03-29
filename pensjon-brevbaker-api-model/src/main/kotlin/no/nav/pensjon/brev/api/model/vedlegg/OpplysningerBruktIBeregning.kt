@@ -214,15 +214,16 @@ data class OpplysningerBruktIBeregningUTDto(
         val beregningsgrunnlagBeloepAar: Kroner,  // PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GjenlevendetilleggInformasjon_BeregningsgrunnlagAvdod
         val beregningsgrunnlagBeloepAarYrkesskade: Kroner?, // PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GjenlevendetilleggInformasjon_BeregningsgrunnlagAvdodYrkesskadeArsbelop
         val erUngUfoer: Boolean?, // PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GjenlevendetilleggInformasjon_MinsteYtelseBenyttetUngUfor
-        val yrkesskadegrad: Int?,  //
-        val inntektVedSkadetidspunkt: Kroner // PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GjenlevendetilleggInformasjon_InntektVedSkadetidspunkt
+        val yrkesskadegrad: Int?,  // PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GjenlevendetilleggInformasjon_Yrkesskadegrad
+        val inntektVedSkadetidspunkt: Kroner? // PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GjenlevendetilleggInformasjon_InntektVedSkadetidspunkt
     )
 
     data class TrygdetidsdetaljerGjeldeneAvdoed(
-        val faktiskTTNorge: Int?,
+        val faktiskTTNorge: Int?,  // PE_Vedtaksdata_TrygdetidAvdod_FaTTNorge
         val faktiskTTEOS: Int?,
         val faktiskTTBilateral: Int?,
         val faktiskTTNordiskKonv: Int?,
+        val framtidigTTEOS: Int?,  // PE_Vedtaksdata_TrygdetidAvdod_FramtidigTTEOS
         val anvendtTT: Int,  // PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GjenlevendetilleggInformasjon_AnvendtTrygdetid
     )
 
