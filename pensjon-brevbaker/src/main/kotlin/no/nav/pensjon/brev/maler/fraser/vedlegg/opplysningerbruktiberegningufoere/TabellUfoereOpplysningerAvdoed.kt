@@ -1,52 +1,30 @@
 package no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningufoere
 
-import no.nav.pensjon.brev.api.model.Beregningsmetode
 import no.nav.pensjon.brev.api.model.Kroner
-import no.nav.pensjon.brev.api.model.vedlegg.BarnetilleggGjeldendeSelectors.fellesbarn
-import no.nav.pensjon.brev.api.model.vedlegg.BarnetilleggGjeldendeSelectors.fellesbarn_safe
-import no.nav.pensjon.brev.api.model.vedlegg.BarnetilleggGjeldendeSelectors.saerkullsbarn
-import no.nav.pensjon.brev.api.model.vedlegg.BarnetilleggGjeldendeSelectors.saerkullsbarn_safe
-import no.nav.pensjon.brev.api.model.vedlegg.BarnetilleggGjeldendeSelectors.totaltAntallBarn
-import no.nav.pensjon.brev.api.model.vedlegg.FellesbarnSelectors.beloepNetto_safe
-import no.nav.pensjon.brev.api.model.vedlegg.FellesbarnSelectors.fribeloep
-import no.nav.pensjon.brev.api.model.vedlegg.FellesbarnSelectors.inntektAnnenForelder
-import no.nav.pensjon.brev.api.model.vedlegg.FellesbarnSelectors.inntektBruktIAvkortning_safe
-import no.nav.pensjon.brev.api.model.vedlegg.FellesbarnSelectors.inntektstak_safe
 import no.nav.pensjon.brev.api.model.vedlegg.GjenlevendetilleggInformasjonSelectors.beregningsgrunnlagBeloepAar
 import no.nav.pensjon.brev.api.model.vedlegg.GjenlevendetilleggInformasjonSelectors.beregningsgrunnlagBeloepAarYrkesskade_safe
 import no.nav.pensjon.brev.api.model.vedlegg.GjenlevendetilleggInformasjonSelectors.erUngUfoer_safe
-import no.nav.pensjon.brev.api.model.vedlegg.GjenlevendetilleggInformasjonSelectors.inntektVedSkadetidspunkt
 import no.nav.pensjon.brev.api.model.vedlegg.GjenlevendetilleggInformasjonSelectors.inntektVedSkadetidspunkt_safe
 import no.nav.pensjon.brev.api.model.vedlegg.GjenlevendetilleggInformasjonSelectors.ufoeretidspunkt
 import no.nav.pensjon.brev.api.model.vedlegg.GjenlevendetilleggInformasjonSelectors.yrkesskadegrad
-import no.nav.pensjon.brev.api.model.vedlegg.GjenlevendetilleggInformasjonSelectors.yrkesskadegrad_safe
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDto
 import no.nav.pensjon.brev.api.model.vedlegg.PersonGrunnlagSelectors.avdoedeErFlyktning_safe
 import no.nav.pensjon.brev.api.model.vedlegg.PersonGrunnlagSelectors.avdoedesnavn
-import no.nav.pensjon.brev.api.model.vedlegg.SaerkullsbarnSelectors.beloepNetto_safe
-import no.nav.pensjon.brev.api.model.vedlegg.SaerkullsbarnSelectors.fribeloep
-import no.nav.pensjon.brev.api.model.vedlegg.SaerkullsbarnSelectors.inntektBruktIAvkortning_safe
-import no.nav.pensjon.brev.api.model.vedlegg.SaerkullsbarnSelectors.inntektstak_safe
-import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidsdetaljerGjeldendeSelectors.beregningsmetode
-import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidsdetaljerGjeldendeSelectors.faktiskTTEOS
-import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidsdetaljerGjeldendeSelectors.faktiskTTNordiskKonv
-import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidsdetaljerGjeldendeSelectors.faktiskTTNorge
-import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidsdetaljerGjeldendeSelectors.framtidigTTNorsk
-import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidsdetaljerGjeldendeSelectors.nevnerTTEOS
-import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidsdetaljerGjeldendeSelectors.nevnerTTNordiskKonv
-import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidsdetaljerGjeldendeSelectors.samletTTNordiskKonv
-import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidsdetaljerGjeldendeSelectors.tellerTTEOS
-import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidsdetaljerGjeldendeSelectors.tellerTTNordiskKonv
-import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidsdetaljerGjeldendeSelectors.utenforEOSogNorden
 import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidsdetaljerGjeldeneAvdoedSelectors.anvendtTT
+import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidsdetaljerGjeldeneAvdoedSelectors.faktiskTTBilateral
 import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidsdetaljerGjeldeneAvdoedSelectors.faktiskTTEOS
+import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidsdetaljerGjeldeneAvdoedSelectors.faktiskTTNordiskKonv
 import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidsdetaljerGjeldeneAvdoedSelectors.faktiskTTNorge
+import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidsdetaljerGjeldeneAvdoedSelectors.framtidigTTAvtaleland
 import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidsdetaljerGjeldeneAvdoedSelectors.framtidigTTEOS_safe
-import no.nav.pensjon.brev.api.model.vedlegg.UtenforEOSogNordenSelectors.faktiskTTBilateral
-import no.nav.pensjon.brev.api.model.vedlegg.UtenforEOSogNordenSelectors.nevnerProRata
-import no.nav.pensjon.brev.api.model.vedlegg.UtenforEOSogNordenSelectors.tellerProRata
-import no.nav.pensjon.brev.api.model.vedlegg.YrkesskadeGjeldendeSelectors.inntektVedSkadetidspunkt
-import no.nav.pensjon.brev.api.model.vedlegg.YrkesskadeGjeldendeSelectors.yrkesskadegrad
+import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidsdetaljerGjeldeneAvdoedSelectors.framtidigTTNorsk
+import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidsdetaljerGjeldeneAvdoedSelectors.nevnerTTBilateralProRata
+import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidsdetaljerGjeldeneAvdoedSelectors.nevnerTTEOS
+import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidsdetaljerGjeldeneAvdoedSelectors.nevnerTTNordiskKonv
+import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidsdetaljerGjeldeneAvdoedSelectors.samletTTNordiskKonv
+import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidsdetaljerGjeldeneAvdoedSelectors.tellerTTBilateralProRata
+import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidsdetaljerGjeldeneAvdoedSelectors.tellerTTEOS
+import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidsdetaljerGjeldeneAvdoedSelectors.tellerTTNordiskKonv
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
@@ -304,50 +282,72 @@ data class TabellUfoereOpplysningerAvdoed(
                             }
                         }
                     }
+                    // TODO: Summeres i Exstream!
+                    ifNotNull(
+                        trygdetidsdetaljerGjeldeneAvdoed.faktiskTTNorge,
+                        trygdetidsdetaljerGjeldeneAvdoed.faktiskTTEOS
+                    ) { faktiskTTNorge, faktiskTTEOS ->
+                        showIf(faktiskTTNorge.greaterThan(0) and faktiskTTEOS.greaterThan(0)) {
+                            row {
+                                cell {
+                                    text(
+                                        Language.Bokmal to "Faktisk trygdetid i Norge og avtaleland (maksimalt 40 år)",
+                                        Language.Nynorsk to "Faktisk trygdetid i Noreg og avtaleland (maksimalt 40 år)",
+                                        Language.English to "Actual insurance period in Norway and partner countries (maximum 40 years)"
+                                    )
+                                }
+                                cell {
+                                    textExpr(
+                                        Language.Bokmal to faktiskTTNorge.format() + " + " + faktiskTTEOS.format() + " måneder",
+                                        Language.Nynorsk to faktiskTTNorge.format() + " + " + faktiskTTEOS.format() + " månader",
+                                        Language.English to faktiskTTNorge.format() + " + " + faktiskTTEOS.format() + " months"
+                                    )
+                                }
+                            }
+                        }
+                    }
 
                     ifNotNull(
-                        trygdetidsdetaljerGjeldende.tellerTTEOS,
-                        trygdetidsdetaljerGjeldende.nevnerTTEOS
+                        trygdetidsdetaljerGjeldeneAvdoed.tellerTTEOS,
+                        trygdetidsdetaljerGjeldeneAvdoed.nevnerTTEOS
                     ) { tellerTTEOS, nevnerTTEOS ->
-                        row {
-                            cell {
-                                text(
-                                    Language.Bokmal to "Forholdstallet brukt i beregning av trygdetid",
-                                    Language.Nynorsk to "Forholdstalet brukt i utrekning av trygdetid",
-                                    Language.English to "Ratio applied in calculation of insurance period"
-                                )
-                            }
-                            cell {
-                                textExpr(
-                                    Language.Bokmal to tellerTTEOS.format() + " / " + nevnerTTEOS.format(),
-                                    Language.Nynorsk to tellerTTEOS.format() + " / " + nevnerTTEOS.format(),
-                                    Language.English to tellerTTEOS.format() + " / " + nevnerTTEOS.format()
-                                )
+                        showIf(tellerTTEOS.greaterThan(0) and nevnerTTEOS.greaterThan(0)) {
+                            row {
+                                cell {
+                                    text(
+                                        Language.Bokmal to "Forholdstallet brukt i beregning av trygdetid",
+                                        Language.Nynorsk to "Forholdstalet brukt i utrekning av trygdetid",
+                                        Language.English to "Ratio applied in calculation of insurance period"
+                                    )
+                                }
+                                cell {
+                                    textExpr(
+                                        Language.Bokmal to tellerTTEOS.format() + " / " + nevnerTTEOS.format(),
+                                        Language.Nynorsk to tellerTTEOS.format() + " / " + nevnerTTEOS.format(),
+                                        Language.English to tellerTTEOS.format() + " / " + nevnerTTEOS.format()
+                                    )
+                                }
                             }
                         }
                     }
                 }
 
-                showIf(beregningsmetode.isOneOf(Beregningsmetode.NORDISK)) {
-                    ifNotNull(trygdetidsdetaljerGjeldende.faktiskTTNordiskKonv) { faktiskTTNordiskKonv ->
-                        row {
-                            cell {
-                                text(
-                                    Language.Bokmal to "Faktisk trygdetid i annet nordisk land som brukes i beregning av framtidig trygdetid",
-                                    Language.Nynorsk to "Faktisk trygdetid i anna nordisk land som blir brukt i utrekning av framtidig trygdetid",
-                                    Language.English to "Actual insurance period in another Nordic country, applied in calculation of future insurance period(s)"
-                                )
-                            }
-                            cell { includePhrase(Felles.MaanederText(faktiskTTNordiskKonv)) }
+                ifNotNull(trygdetidsdetaljerGjeldeneAvdoed.faktiskTTNordiskKonv) { faktiskTTNordiskKonv ->
+                    row {
+                        cell {
+                            text(
+                                Language.Bokmal to "Faktisk trygdetid i annet nordisk land som brukes i beregning av framtidig trygdetid",
+                                Language.Nynorsk to "Faktisk trygdetid i anna nordisk land som blir brukt i utrekning av framtidig trygdetid",
+                                Language.English to "Actual insurance period in another Nordic country, applied in calculation of future insurance period(s)"
+                            )
                         }
+                        cell { includePhrase(Felles.MaanederText(faktiskTTNordiskKonv)) }
                     }
                 }
-                ifNotNull(trygdetidsdetaljerGjeldende.framtidigTTNorsk) { framtidigTTNorsk ->
+
+                ifNotNull(trygdetidsdetaljerGjeldeneAvdoed.framtidigTTNorsk) { framtidigTTNorsk ->
                     showIf(
-                        beregningsmetode.isOneOf(
-                            Beregningsmetode.NORDISK,
-                            Beregningsmetode.FOLKETRYGD
-                        ) and framtidigTTNorsk.lessThan(480)
+                        framtidigTTNorsk.greaterThan(0) and framtidigTTNorsk.lessThan(480)
                     ) {
                         row {
                             cell {
@@ -363,11 +363,12 @@ data class TabellUfoereOpplysningerAvdoed(
                         }
                     }
                 }
-                showIf(beregningsmetode.isOneOf(Beregningsmetode.NORDISK)) {
-                    ifNotNull(
-                        trygdetidsdetaljerGjeldende.tellerTTNordiskKonv,
-                        trygdetidsdetaljerGjeldende.nevnerTTNordiskKonv
-                    ) { tellerTTNordiskKonv, nevnerTTNordiskKonv ->
+
+                ifNotNull(
+                    trygdetidsdetaljerGjeldeneAvdoed.tellerTTNordiskKonv,
+                    trygdetidsdetaljerGjeldeneAvdoed.nevnerTTNordiskKonv
+                ) { tellerTTNordiskKonv, nevnerTTNordiskKonv ->
+                    showIf(tellerTTNordiskKonv.greaterThan(0) and nevnerTTNordiskKonv.greaterThan(0)) {
                         row {
                             cell {
                                 text(
@@ -385,8 +386,10 @@ data class TabellUfoereOpplysningerAvdoed(
                             }
                         }
                     }
+                }
 
-                    ifNotNull(trygdetidsdetaljerGjeldende.samletTTNordiskKonv) { samletTTNordiskKonv ->
+                ifNotNull(trygdetidsdetaljerGjeldeneAvdoed.samletTTNordiskKonv) { samletTTNordiskKonv ->
+                    showIf(samletTTNordiskKonv.greaterThan(0)) {
                         row {
                             cell {
                                 text(
@@ -400,19 +403,9 @@ data class TabellUfoereOpplysningerAvdoed(
                     }
                 }
 
-                ifNotNull(trygdetidsdetaljerGjeldende.utenforEOSogNorden) {
 
-                    val faktiskTTBilateral = it.faktiskTTBilateral
-                    val nevnerProRata = it.nevnerProRata
-                    val tellerProRata = it.tellerProRata
-
-                    showIf(
-                        beregningsmetode.isNotAnyOf(
-                            Beregningsmetode.FOLKETRYGD,
-                            Beregningsmetode.NORDISK,
-                            Beregningsmetode.EOS
-                        )
-                    ) {
+                ifNotNull(trygdetidsdetaljerGjeldeneAvdoed.faktiskTTBilateral) { faktiskTTBilateral ->
+                    showIf(faktiskTTBilateral.greaterThan(0)) {
                         row {
                             cell {
                                 text(
@@ -425,6 +418,32 @@ data class TabellUfoereOpplysningerAvdoed(
                                 includePhrase(Felles.MaanederText(faktiskTTBilateral))
                             }
                         }
+                    }
+                }
+
+                ifNotNull(trygdetidsdetaljerGjeldeneAvdoed.framtidigTTAvtaleland) { framtidigTTAvtaleland ->
+                    showIf(framtidigTTAvtaleland.greaterThan(0)) {
+                        row {
+                            cell {
+                                text(
+                                    Language.Bokmal to "Framtidig trygdetid",
+                                    Language.Nynorsk to "Framtidig trygdetid",
+                                    Language.English to "Future insurance period in Norway"
+                                )
+                            }
+                            cell {
+                                includePhrase(Felles.MaanederText(framtidigTTAvtaleland))
+                            }
+                        }
+                    }
+                }
+
+                // TODO: Summeres i Exstream!
+                ifNotNull(
+                    trygdetidsdetaljerGjeldeneAvdoed.faktiskTTNorge,
+                    trygdetidsdetaljerGjeldeneAvdoed.faktiskTTBilateral
+                ) { faktiskTTNorge, faktiskTTBilateral ->
+                    showIf(faktiskTTNorge.greaterThan(0) and faktiskTTBilateral.greaterThan(0)) {
                         row {
                             cell {
                                 text(
@@ -434,9 +453,20 @@ data class TabellUfoereOpplysningerAvdoed(
                                 )
                             }
                             cell {
-                                includePhrase(Felles.MaanederText(nevnerProRata))
+                                textExpr(
+                                    Language.Bokmal to faktiskTTNorge.format() + " + " + faktiskTTBilateral.format() + " måneder",
+                                    Language.Nynorsk to faktiskTTNorge.format() + " + " + faktiskTTBilateral.format() + " månader",
+                                    Language.English to faktiskTTNorge.format() + " + " + faktiskTTBilateral.format() + " months",
+                                )
                             }
                         }
+                    }
+                }
+                ifNotNull(
+                    trygdetidsdetaljerGjeldeneAvdoed.tellerTTBilateralProRata,
+                    trygdetidsdetaljerGjeldeneAvdoed.nevnerTTBilateralProRata
+                ) { tellerProRata, nevnerProRata ->
+                    showIf(tellerProRata.greaterThan(0) and nevnerProRata.greaterThan(0)) {
                         row {
                             cell {
                                 text(
@@ -451,129 +481,6 @@ data class TabellUfoereOpplysningerAvdoed(
                                     Language.Nynorsk to tellerProRata.format() + " / " + nevnerProRata.format(),
                                     Language.English to tellerProRata.format() + " / " + nevnerProRata.format()
                                 )
-                            }
-                        }
-                    }
-                }
-
-                ifNotNull(barnetilleggGjeldende) { barnetillegg ->
-                    showIf(
-                        barnetillegg.saerkullsbarn_safe.beloepNetto_safe.ifNull(Kroner(0)).greaterThan(0)
-                                or barnetillegg.fellesbarn_safe.beloepNetto_safe.ifNull(Kroner(0)).greaterThan(0)
-                    ) {
-                        row {
-                            cell {
-                                text(
-                                    Language.Bokmal to "Totalt antall barn du har barnetillegg for",
-                                    Language.Nynorsk to "Totalt antall barn du har barnetillegg for",
-                                    Language.English to "Total number of children for whom you receive child supplement"
-                                )
-                            }
-                            cell {
-                                textExpr(
-                                    Language.Bokmal to barnetillegg.totaltAntallBarn.format(),
-                                    Language.Nynorsk to barnetillegg.totaltAntallBarn.format(),
-                                    Language.English to barnetillegg.totaltAntallBarn.format(),
-                                )
-                            }
-                        }
-                        ifNotNull(barnetillegg.saerkullsbarn) { saerkullsbarn ->
-                            row {
-                                cell {
-                                    text(
-                                        Language.Bokmal to "Fribeløp for særkullsbarn",
-                                        Language.Nynorsk to "Fribeløp for særkullsbarn",
-                                        Language.English to "Exemption amount for children from a previous relationship"
-                                    )
-                                }
-                                cell {
-                                    includePhrase(Felles.KronerText(saerkullsbarn.fribeloep))
-                                }
-                            }
-                        }
-                        ifNotNull(barnetillegg.fellesbarn) { fellesbarn ->
-                            row {
-                                cell {
-                                    text(
-                                        Language.Bokmal to "Fribeløp for fellesbarn",
-                                        Language.Nynorsk to "Fribeløp for fellessbarn",
-                                        Language.English to "Exemption amount for joint children"
-                                    )
-                                }
-                                cell {
-                                    includePhrase(Felles.KronerText(fellesbarn.fribeloep))
-                                }
-                            }
-                        }
-
-                        val inntektBruktIAvkortningFelles =
-                            barnetillegg.fellesbarn_safe.inntektBruktIAvkortning_safe.ifNull(Kroner(0))
-                        val inntektBruktIAvkortningSaerkull =
-                            barnetillegg.saerkullsbarn_safe.inntektBruktIAvkortning_safe.ifNull(Kroner(0))
-                        showIf(
-                            inntektBruktIAvkortningFelles.greaterThan(0)
-                                    or inntektBruktIAvkortningSaerkull.greaterThan(0)
-                        ) {
-                            row {
-                                cell {
-                                    text(
-                                        Language.Bokmal to "Samlet inntekt som er brukt i fastsettelse av barnetillegg",
-                                        Language.Nynorsk to "Samla inntekt som er brukt i fastsetjinga av barnetillegg",
-                                        Language.English to "Your income, which is used to calculate child supplement"
-                                    )
-                                }
-                                cell {
-                                    showIf(inntektBruktIAvkortningFelles.greaterThan(0)) {
-                                        includePhrase(Felles.KronerText(inntektBruktIAvkortningFelles))
-                                    }.orShow {
-                                        includePhrase(Felles.KronerText(inntektBruktIAvkortningSaerkull))
-                                    }
-                                }
-                            }
-                        }
-
-                        ifNotNull(barnetillegg.fellesbarn) { fellesbarn ->
-                            row {
-                                cell {
-                                    text(
-                                        Language.Bokmal to "Samlet inntekt til annen forelder som er brukt i fastsettelse av barnetillegg",
-                                        Language.Nynorsk to "Samla inntekt til annen forelder som er brukt i fastsetjinga av barnetillegg",
-                                        Language.English to "Income of the other parent, which is used to calculate child supplement"
-                                    )
-                                }
-                                cell {
-                                    includePhrase(Felles.KronerText(fellesbarn.inntektAnnenForelder))
-                                }
-                            }
-                        }
-
-                        val inntektstakFelles = barnetillegg.fellesbarn_safe.inntektstak_safe.ifNull(Kroner(0))
-                        val inntektstakSaerkull = barnetillegg.saerkullsbarn_safe.inntektstak_safe.ifNull(Kroner(0))
-                        showIf(inntektstakSaerkull.greaterThan(0)) {
-                            row {
-                                cell {
-                                    text(
-                                        Language.Bokmal to "Samlet inntekt for deg som gjør at barnetillegget ikke blir utbetalt",
-                                        Language.Nynorsk to "Samla inntekt for deg som gjer at barnetillegget ikkje blir utbetalt",
-                                        Language.English to "Your income which means that no child supplement is received"
-                                    )
-                                }
-                                cell {
-                                    includePhrase(Felles.KronerText(inntektstakSaerkull))
-                                }
-                            }
-                        }.orShowIf(inntektstakFelles.greaterThan(0)) {
-                            row {
-                                cell {
-                                    text(
-                                        Language.Bokmal to "Samlet inntekt for deg og annen forelder som gjør at barnetillegget ikke blir utbetalt",
-                                        Language.Nynorsk to "Samla inntekt for deg og annan forelder som gjer at barnetillegget ikkje blir utbetalt",
-                                        Language.English to "Total combined income which means that no child supplement is received"
-                                    )
-                                }
-                                cell {
-                                    includePhrase(Felles.KronerText(inntektstakFelles))
-                                }
                             }
                         }
                     }

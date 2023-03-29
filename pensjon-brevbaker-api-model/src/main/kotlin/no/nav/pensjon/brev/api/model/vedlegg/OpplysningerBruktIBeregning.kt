@@ -225,6 +225,15 @@ data class OpplysningerBruktIBeregningUTDto(
         val faktiskTTNordiskKonv: Int?,
         val framtidigTTEOS: Int?,  // PE_Vedtaksdata_TrygdetidAvdod_FramtidigTTEOS
         val anvendtTT: Int,  // PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GjenlevendetilleggInformasjon_AnvendtTrygdetid
+        val tellerTTEOS: Int?,  // PE_Vedtaksdata_TrygdetidAvdod_TTTellerEOS
+        val nevnerTTEOS: Int?,  // PE_Vedtaksdata_TrygdetidAvdod_TTNevnerEOS
+        val framtidigTTNorsk: Int?, // PE_Vedtaksdata_TrygdetidAvdod_FramtidigTTNorsk
+        val tellerTTNordiskKonv: Int?,  // PE_Vedtaksdata_TrygdetidAvdod_TTTellerNordisk
+        val nevnerTTNordiskKonv: Int?,  // PE_Vedtaksdata_TrygdetidAvdod_TTNevnerNordisk
+        val samletTTNordiskKonv: Int?,  // FaTTNorge + FaTT_A10netto
+        val framtidigTTAvtaleland: Int?,  //
+        val tellerTTBilateralProRata: Int?,
+        val nevnerTTBilateralProRata: Int?,
     )
 
     data class PersonGrunnlag(
