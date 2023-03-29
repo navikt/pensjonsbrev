@@ -13,7 +13,7 @@ fun createOpplysningerBruktIBeregningUTDto() =
         beregningUfoere = Fixtures.create(),
         borIUtlandet = false,
         fraOgMedDatoErNesteAar = false,
-        gjenlevendetilleggGjeldene = Fixtures.create(),
+        gjenlevendetilleggInformasjon = Fixtures.create(),
         grunnbeloep = Kroner(90000),
         harBarnetilleggInnvilget = false,
         harBrukerKonvertertUP = false,
@@ -29,9 +29,11 @@ fun createOpplysningerBruktIBeregningUTDto() =
         norskTrygdetid = listOf(createOpplysningerBruktIBeregningUTDtoNorskTrygdetid()),
         opptjeningAvdoedUfoeretrygd = Fixtures.create(),
         opptjeningUfoeretrygd = Fixtures.create(),
+        personGrunnlag = Fixtures.create(),
         sivilstand = Sivilstand.PARTNER,
         trygdetidGjeldende = Fixtures.create(),
         trygdetidsdetaljerGjeldende = Fixtures.create(),
+        trygdetidsdetaljerGjeldeneAvdoed = Fixtures.create(),
         ufoeretrygdGjeldende = Fixtures.create(),
         ufoeretrygdOrdinaer = Fixtures.create(),
         ungUfoerGjeldende_erUnder20Aar = false,
@@ -43,19 +45,19 @@ fun createOpplysningerBruktIBeregningUTDto() =
 fun createOpplysningerBruktIBeregningUTDtoBarnetilleggGjeldende() =
     OpplysningerBruktIBeregningUTDto.BarnetilleggGjeldende(
         fellesbarn = Fixtures.create(),
+        foedselsdatoPaaBarnTilleggetGjelder = listOf(LocalDate.of(1990, 3, 24)),
         saerkullsbarn = Fixtures.create(),
         totaltAntallBarn = 4,
-        foedselsdatoPaaBarnTilleggetGjelder = listOf(LocalDate.of(1990, 3, 24)),
     )
 
 fun createOpplysningerBruktIBeregningUTDtoBarnetilleggGjeldendeFellesbarn() =
     OpplysningerBruktIBeregningUTDto.BarnetilleggGjeldende.Fellesbarn(
         avkortningsbeloepAar = Kroner(40000),
-        beloepNetto = Kroner(10000),
-        beloepBrutto = Kroner(20000),
-        beloepAarNetto = Kroner(120000),
         beloepAarBrutto = Kroner(240000),
+        beloepAarNetto = Kroner(120000),
+        beloepBrutto = Kroner(20000),
         beloepFratrukketAnnenForeldersInntekt = Kroner(35000),
+        beloepNetto = Kroner(10000),
         erRedusertMotinntekt = true,
         fribeloep = Kroner(20000),
         fribeloepEllerInntektErPeriodisert = false,
@@ -70,10 +72,10 @@ fun createOpplysningerBruktIBeregningUTDtoBarnetilleggGjeldendeFellesbarn() =
 fun createOpplysningerBruktIBeregningUTDtoBarnetilleggGjeldendeSaerkullsbarn() =
     OpplysningerBruktIBeregningUTDto.BarnetilleggGjeldende.Saerkullsbarn(
         avkortningsbeloepAar = Kroner(5000),
-        beloepNetto = Kroner(10000),
-        beloepBrutto = Kroner(20000),
-        beloepAarNetto = Kroner(120000),
         beloepAarBrutto = Kroner(240000),
+        beloepAarNetto = Kroner(120000),
+        beloepBrutto = Kroner(20000),
+        beloepNetto = Kroner(10000),
         erRedusertMotinntekt = true,
         fribeloep = Kroner(35000),
         fribeloepEllerInntektErPeriodisert = false,
@@ -204,31 +206,62 @@ fun createOpplysningerBruktIBeregningUTDtoUtenlandskTrygdetidBilateral() =
         trygdetidTom = LocalDate.of(2020, 1, 1),
     )
 
-fun createOpplysningerBruktIBeregningUTDtoGjenlevendetilleggGjeldene() =
-    OpplysningerBruktIBeregningUTDto.GjenlevendetilleggGjeldene(
+fun createOpplysningerBruktIBeregningUTDtoGjenlevendetilleggInformasjon() =
+    OpplysningerBruktIBeregningUTDto.GjenlevendetilleggInformasjon(
+        beregningsgrunnlagBeloepAar = Kroner(0),
+        beregningsgrunnlagBeloepAarYrkesskade = Kroner(0),
+        erUngUfoer = false,
         harGjenlevendetillegg = true,
         harNyttGjenlevendetillegg = false,
+        inntektVedSkadetidspunkt = Kroner(0),
+        ufoeretidspunkt = LocalDate.of(2020,1,1),
+        yrkesskadegrad = 0,
     )
 
 fun createOpplysningerBruktIBeregningUTDtoUfoeretrygdOrdinaer() =
     OpplysningerBruktIBeregningUTDto.UfoeretrygdOrdinaer(
         fradrag = Kroner(80000),
+        harBeloepRedusert = true,
         harNyUTBeloep = true,
+        harTotalNettoUT = true,
         nettoAkkumulerteBeloepUtbetalt = Kroner(200000),
         nettoTilUtbetalingRestenAvAaret = Kroner(100000),
-        harBeloepRedusert = true,
-        harTotalNettoUT = true,
 
         )
 
 fun createOpplysningerBruktIBeregningUTDtoBeregningUfoere() =
     OpplysningerBruktIBeregningUTDto.BeregningUfoere(
+        harGammelUTBeloepUlikNyUTBeloep = false,
+        harInntektsgrenseLessThanInntektstak = true,
+        nettoAkkumulertePlussNettoRestAar = Kroner(300000),
         nettoPerAarReduksjonUT = Kroner(0),
         overskytendeInntekt = Kroner(0),
-        harInntektsgrenseLessThanInntektstak = true,
-        harGammelUTBeloepUlikNyUTBeloep = false,
-        nettoAkkumulertePlussNettoRestAar = Kroner(300000),
         ufoeretrygdPlussInntekt = Kroner(500000),
+    )
+
+fun createOpplysningerBruktIBeregningUTDtoTrygdetidsdetaljerGjeldeneAvdoed() =
+    OpplysningerBruktIBeregningUTDto.TrygdetidsdetaljerGjeldeneAvdoed(
+        anvendtTT = 0,
+        faktiskTTBilateral = 0,
+        faktiskTTEOS = 0,
+        faktiskTTNordiskKonv = 0,
+        faktiskTTNorge = 0,
+        framtidigTTAvtaleland = 0,
+        framtidigTTEOS = 0,
+        framtidigTTNorsk = 0,
+        nevnerTTBilateralProRata = 0,
+        nevnerTTEOS = 0,
+        nevnerTTNordiskKonv = 0,
+        samletTTNordiskKonv = 0,
+        tellerTTBilateralProRata = 0,
+        tellerTTEOS = 0,
+        tellerTTNordiskKonv = 0,
+    )
+
+fun createOpplysningerBruktIBeregningUTDtoPersonGrunnlag() =
+    OpplysningerBruktIBeregningUTDto.PersonGrunnlag(
+        avdoedesnavn = "Per Pensjon",
+        avdoedeErFlyktning = false,
     )
 
 
