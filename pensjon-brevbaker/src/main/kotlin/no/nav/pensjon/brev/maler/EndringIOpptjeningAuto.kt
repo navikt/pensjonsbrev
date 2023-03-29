@@ -294,7 +294,8 @@ object EndringIOpptjeningAuto : AutobrevTemplate<EndringIOpptjeningAutoDto> {
             createVedleggOpplysningerBruktIBeregningUT(
                 skalViseMinsteytelse = false,
                 skalViseBarnetillegg = true,
-            ), opplysningerBruktIBeregningUT
+                skalViseGjenlevendetillegg = false
+                ), opplysningerBruktIBeregningUT
         )
 
         includeAttachment(vedleggDineRettigheterOgPlikterUfoere, orienteringOmRettigheterUfoere)

@@ -11,10 +11,8 @@ fun createOpplysningerBruktIBeregningUTDto() =
         barnetilleggGjeldende = Fixtures.create(),
         beregnetUTPerManedGjeldende = Fixtures.create(),
         beregningUfoere = Fixtures.create(),
-        borIUtlandet = false,
         fraOgMedDatoErNesteAar = false,
         gjenlevendetilleggInformasjon = Fixtures.create(),
-        grunnbeloep = Kroner(90000),
         harBarnetilleggInnvilget = false,
         harBrukerKonvertertUP = false,
         harEktefelletilleggInnvilget = false,
@@ -262,6 +260,7 @@ fun createOpplysningerBruktIBeregningUTDtoPersonGrunnlag() =
     OpplysningerBruktIBeregningUTDto.PersonGrunnlag(
         avdoedesnavn = "Per Pensjon",
         avdoedeErFlyktning = false,
+        borIUtlandet = false,
     )
 
 

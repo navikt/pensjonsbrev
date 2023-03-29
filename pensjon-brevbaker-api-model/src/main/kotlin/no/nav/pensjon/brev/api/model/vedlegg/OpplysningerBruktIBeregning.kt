@@ -6,13 +6,11 @@ import java.time.LocalDate
 data class OpplysningerBruktIBeregningUTDto(
     val barnetilleggGjeldende: BarnetilleggGjeldende?,
     val beregnetUTPerManedGjeldende: BeregnetUTPerManedGjeldende,
-    val beregningUfoere: BeregningUfoere, // TODO
-    val borIUtlandet: Boolean,  // TODO: (PE_Grunnlag_Persongrunnlagsliste_PersonBostedsland) <> "nor" AND (PE_Grunnlag_Persongrunnlagsliste_PersonBostedsland) <> ""
+    val beregningUfoere: BeregningUfoere,
     val fraOgMedDatoErNesteAar: Boolean,
-    val gjenlevendetilleggInformasjon: GjenlevendetilleggInformasjon?, // TODO
-    val grunnbeloep: Kroner,
-    val harBarnetilleggInnvilget: Boolean?,  // TODO: IF (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true) OR (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true)
-    val harBrukerKonvertertUP: Boolean, // TODO
+    val gjenlevendetilleggInformasjon: GjenlevendetilleggInformasjon?,
+    val harBarnetilleggInnvilget: Boolean?,  // (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true) OR (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true)
+    val harBrukerKonvertertUP: Boolean,
     val harEktefelletilleggInnvilget: Boolean?,  // TODO: PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_Ektefelletillegg_ETinnvilget = true
     val harGodkjentBrevkode: Boolean,  // TODO  **
     val harKravaarsakEndringInntekt: Boolean,
@@ -209,13 +207,13 @@ data class OpplysningerBruktIBeregningUTDto(
 
     data class GjenlevendetilleggInformasjon(
         val beregningsgrunnlagBeloepAar: Kroner,  // PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GjenlevendetilleggInformasjon_BeregningsgrunnlagAvdod
-        val beregningsgrunnlagBeloepAarYrkesskade: Kroner?, // PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GjenlevendetilleggInformasjon_BeregningsgrunnlagAvdodYrkesskadeArsbelop
-        val erUngUfoer: Boolean?, // PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GjenlevendetilleggInformasjon_MinsteYtelseBenyttetUngUfor
+        val beregningsgrunnlagBeloepAarYrkesskade: Kroner, // PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GjenlevendetilleggInformasjon_BeregningsgrunnlagAvdodYrkesskadeArsbelop
+        val erUngUfoer: Boolean, // PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GjenlevendetilleggInformasjon_MinsteYtelseBenyttetUngUfor
         val harGjenlevendetillegg: Boolean,  // TODO: PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GTinnvilget = true
         val harNyttGjenlevendetillegg: Boolean,  // TODO: PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_NyttGjenlevendetillegg = true
-        val inntektVedSkadetidspunkt: Kroner?, // PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GjenlevendetilleggInformasjon_InntektVedSkadetidspunkt
+        val inntektVedSkadetidspunkt: Kroner, // PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GjenlevendetilleggInformasjon_InntektVedSkadetidspunkt
         val ufoeretidspunkt: LocalDate,  // PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GjenlevendetilleggInformasjon_Uforetidspunkt
-        val yrkesskadegrad: Int?,  // PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GjenlevendetilleggInformasjon_Yrkesskadegrad
+        val yrkesskadegrad: Int,  // PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GjenlevendetilleggInformasjon_Yrkesskadegrad
     )
 
     data class TrygdetidsdetaljerGjeldeneAvdoed(
@@ -239,5 +237,6 @@ data class OpplysningerBruktIBeregningUTDto(
     data class PersonGrunnlag(
         val avdoedesnavn: String,  // PE_Grunnlag_Persongrunnlag_Avdod_?  Eventuelt bruk fødselsnummer som i designet
         val avdoedeErFlyktning: Boolean?,  // PE_Grunnlag_PersongrunnlagAvdod_BrukerFlyktning
+        val borIUtlandet: Boolean,  // PE_Grunnlag_Persongrunnlagsliste_PersonBostedsland <> "nor" AND PE_Grunnlag_Persongrunnlagsliste_PersonBostedsland <> ""
     )
 }

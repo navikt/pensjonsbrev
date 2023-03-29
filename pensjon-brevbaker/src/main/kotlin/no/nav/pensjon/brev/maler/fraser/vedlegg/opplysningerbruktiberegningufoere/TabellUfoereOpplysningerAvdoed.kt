@@ -1,12 +1,11 @@
 package no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningufoere
 
-import no.nav.pensjon.brev.api.model.Kroner
-import no.nav.pensjon.brev.api.model.vedlegg.GjenlevendetilleggInformasjonSelectors.beregningsgrunnlagBeloepAar
 import no.nav.pensjon.brev.api.model.vedlegg.GjenlevendetilleggInformasjonSelectors.beregningsgrunnlagBeloepAarYrkesskade_safe
+import no.nav.pensjon.brev.api.model.vedlegg.GjenlevendetilleggInformasjonSelectors.beregningsgrunnlagBeloepAar_safe
 import no.nav.pensjon.brev.api.model.vedlegg.GjenlevendetilleggInformasjonSelectors.erUngUfoer_safe
 import no.nav.pensjon.brev.api.model.vedlegg.GjenlevendetilleggInformasjonSelectors.inntektVedSkadetidspunkt_safe
-import no.nav.pensjon.brev.api.model.vedlegg.GjenlevendetilleggInformasjonSelectors.ufoeretidspunkt
-import no.nav.pensjon.brev.api.model.vedlegg.GjenlevendetilleggInformasjonSelectors.yrkesskadegrad
+import no.nav.pensjon.brev.api.model.vedlegg.GjenlevendetilleggInformasjonSelectors.ufoeretidspunkt_safe
+import no.nav.pensjon.brev.api.model.vedlegg.GjenlevendetilleggInformasjonSelectors.yrkesskadegrad_safe
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDto
 import no.nav.pensjon.brev.api.model.vedlegg.PersonGrunnlagSelectors.avdoedeErFlyktning_safe
 import no.nav.pensjon.brev.api.model.vedlegg.PersonGrunnlagSelectors.avdoedesnavn
@@ -32,17 +31,21 @@ import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 
+/*
+IF (GTInnvilget = true
+AND KravArsakType <> SOKNAD_BT
+AND not(brevkode PE_UT_07_100, PE_UT_05_100)
+AND BeregnoingsMetode = FOLKETRYGD
+AND NyttGjenlevendetillegg = true
+AND not(brevkode PE_UT_04_108, PE_UT_04_109, PE_UT_04_500, PE_UT_07_200, PE_UT_06_300)
+AND (brevkode <> PE_UT_04_102
+OR (brevkode = PE_UT_04_102
+AND KravArsakType <> TILST_DOD)))
+THEN INCLUDE
+ */
+
 data class TabellUfoereOpplysningerAvdoed(
-    val gjenlevendetilleggInformasjon: Expression<OpplysningerBruktIBeregningUTDto.GjenlevendetilleggInformasjon>,
-    val barnetilleggGjeldende: Expression<OpplysningerBruktIBeregningUTDto.BarnetilleggGjeldende?>,
-    val beregnetUTPerManedGjeldende: Expression<OpplysningerBruktIBeregningUTDto.BeregnetUTPerManedGjeldende>,
-    val harMinsteytelse: Expression<Boolean>,
-    val inntektEtterUfoereGjeldendeBeloep: Expression<Kroner?>,
-    val inntektFoerUfoereGjeldende: Expression<OpplysningerBruktIBeregningUTDto.InntektFoerUfoereGjeldende>,
-    val inntektsAvkortingGjeldende: Expression<OpplysningerBruktIBeregningUTDto.InntektsAvkortingGjeldende>,
-    val inntektsgrenseErUnderTak: Expression<Boolean>,
-    val ufoeretrygdGjeldende: Expression<OpplysningerBruktIBeregningUTDto.UfoeretrygdGjeldende>,
-    val yrkesskadeGjeldende: Expression<OpplysningerBruktIBeregningUTDto.YrkesskadeGjeldende?>,
+    val gjenlevendetilleggInformasjon: Expression<OpplysningerBruktIBeregningUTDto.GjenlevendetilleggInformasjon?>,
     val persjonGrunnlag: Expression<OpplysningerBruktIBeregningUTDto.PersonGrunnlag>,
     val trygdetidsdetaljerGjeldeneAvdoed: Expression<OpplysningerBruktIBeregningUTDto.TrygdetidsdetaljerGjeldeneAvdoed>,
 
@@ -89,25 +92,28 @@ data class TabellUfoereOpplysningerAvdoed(
                         )
                     }
                     cell {
-                        val ufoeretidspunkt = gjenlevendetilleggInformasjon.ufoeretidspunkt
-                        textExpr(
-                            Language.Bokmal to ufoeretidspunkt.format(),
-                            Language.Nynorsk to ufoeretidspunkt.format(),
-                            Language.English to ufoeretidspunkt.format()
-                        )
-                    }
-                }
-                showIf(gjenlevendetilleggInformasjon.beregningsgrunnlagBeloepAar.greaterThan(0)) {
-                    row {
-                        cell {
-                            text(
-                                Language.Bokmal to "Beregningsgrunnlag",
-                                Language.Nynorsk to "Utrekningsgrunnlag",
-                                Language.English to "Basis for calculation"
+                        ifNotNull(gjenlevendetilleggInformasjon.ufoeretidspunkt_safe) {ufoeretidspunkt ->
+                            textExpr(
+                                Language.Bokmal to ufoeretidspunkt.format(),
+                                Language.Nynorsk to ufoeretidspunkt.format(),
+                                Language.English to ufoeretidspunkt.format()
                             )
                         }
-                        cell {
-                            includePhrase(Felles.KronerText(gjenlevendetilleggInformasjon.beregningsgrunnlagBeloepAar))
+                    }
+                }
+                ifNotNull(gjenlevendetilleggInformasjon.beregningsgrunnlagBeloepAar_safe) { beloepAar ->
+                    showIf(beloepAar.greaterThan(0)) {
+                        row {
+                            cell {
+                                text(
+                                    Language.Bokmal to "Beregningsgrunnlag",
+                                    Language.Nynorsk to "Utrekningsgrunnlag",
+                                    Language.English to "Basis for calculation"
+                                )
+                            }
+                            cell {
+                                includePhrase(Felles.KronerText(beloepAar))
+                            }
                         }
                     }
                 }
@@ -182,7 +188,7 @@ data class TabellUfoereOpplysningerAvdoed(
                         }
                     }
                 }
-                ifNotNull(gjenlevendetilleggInformasjon.yrkesskadegrad) { yrkesskadegrad ->
+                ifNotNull(gjenlevendetilleggInformasjon.yrkesskadegrad_safe) { yrkesskadegrad ->
                     showIf(yrkesskadegrad.greaterThan(0)) {
                         row {
                             cell {
@@ -402,7 +408,6 @@ data class TabellUfoereOpplysningerAvdoed(
                         }
                     }
                 }
-
 
                 ifNotNull(trygdetidsdetaljerGjeldeneAvdoed.faktiskTTBilateral) { faktiskTTBilateral ->
                     showIf(faktiskTTBilateral.greaterThan(0)) {
