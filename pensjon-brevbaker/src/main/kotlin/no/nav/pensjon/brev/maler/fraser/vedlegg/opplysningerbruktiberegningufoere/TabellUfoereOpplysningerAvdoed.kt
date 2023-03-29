@@ -55,7 +55,7 @@ data class TabellUfoereOpplysningerAvdoed(
         paragraph {
             table(
                 header = {
-                    column(3) {
+                    column(2) {
                         text(
                             Language.Bokmal to "Opplysning",
                             Language.Nynorsk to "Opplysning",
@@ -83,7 +83,8 @@ data class TabellUfoereOpplysningerAvdoed(
                             Language.English to navn,
                         )
                     }
-
+                }
+                row { 
                     cell {
                         text(
                             Language.Bokmal to "Uføretidspunkt",
