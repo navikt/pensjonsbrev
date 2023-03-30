@@ -56,3 +56,6 @@ enum class InntektFoerUfoereBegrunnelse {
     STDBEGR_12_8_2_4,
     STDBEGR_12_8_2_5,
 }
+enum class EksludereBrevkode{
+    UT_OPPHOER_BT_AUTO,  // PE_UT_07_200
+}
