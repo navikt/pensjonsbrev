@@ -19,6 +19,9 @@ preAuthorized:
   - name: pensjon-pen-q2
     namespace: teampensjon
     cluster: dev-fss
+  - name: penbatch
+    namespace: pensjon-batch
+    cluster: dev-fss
   - name: pensjon-pen-q4
     namespace: teampensjon
     cluster: dev-fss
