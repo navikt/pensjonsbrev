@@ -1,21 +1,29 @@
-import React, {FC} from "react";
+import React, {FC} from "react"
 import styles from "./LetterCategories.module.css"
-import {LetterCategory as Category}  from "../../LetterFilter";
-import LetterCategory from "./LetterCategory/LetterCategory";
+import {LetterCategory as Category} from "../../model/skribenten"
+import LetterCategory from "./LetterCategory/LetterCategory"
 
 interface LetterCategoriesProps {
     categories: Category[],
     expanded: boolean,
+    selectedLetter : string | null,
+    onLetterSelected: (id : string | null) => void
 }
 
 
-const LetterCategories: FC<LetterCategoriesProps> = ({categories, expanded}) => {
+const LetterCategories: FC<LetterCategoriesProps> = ({categories, expanded, selectedLetter, onLetterSelected}) => {
     return (
-        <div className={styles.letterCategories}>
-            {categories.filter((category: Category) => category.letters.length > 0)
-                .map((category: Category) =>(<LetterCategory category={category} isExpanded={expanded}/>))
+        <ul className={styles.letterCategories}>
+            {categories.filter((category: Category) => category.templates.length > 0)
+                .map((category: Category) => (
+                    <LetterCategory
+                        category={category}
+                        key={category.name}
+                        isExpanded={expanded}
+                        selectedLetter={selectedLetter}
+                        onLetterSelected={onLetterSelected}/>))
             }
-        </div>
+        </ul>
     )
 }
 

@@ -1,20 +1,27 @@
-import {FC} from "react";
+import {FC} from "react"
 import styles from "./LetterPicker.module.css"
-import {LetterMetaData} from "../../LetterFilter";
-import LetterButton from "./LetterButton/LetterButton";
+import LetterButton from "./LetterButton/LetterButton"
+import {LetterMetadata} from "../../model/skribenten"
 
-interface PickerContainerProps {
-    letters: LetterMetaData[]
+interface LetterPickerProps {
+    letters: LetterMetadata[]
+    selectedLetter : string | null,
+    onLetterSelected: (id : string | null) => void
 }
 
-const LetterPicker:FC<PickerContainerProps> = (props) => {
-    return (
-        <div className={styles.letterCategoryContainer}>
-            {props.letters.map(letterData=>
-                (<LetterButton text={letterData.name} id={letterData.id}/>)
-            )}
-        </div>
-    );
-};
+const LetterPicker: FC<LetterPickerProps> = ({letters,selectedLetter, onLetterSelected}) => {
 
-export default LetterPicker;
+    return (
+        <ul className={styles.letterList}>
+            {letters.map(letterData =>
+                (<LetterButton text={letterData.name}
+                               isSelected={letterData.id === selectedLetter}
+                               id={letterData.id}
+                               key={letterData.id}
+                               onClicked={onLetterSelected}/>)
+            )}
+        </ul>
+    )
+}
+
+export default LetterPicker

@@ -1,33 +1,28 @@
-import React, {FC, useState} from 'react';
+import React, {FC, useState} from 'react'
 import styles from "./LetterFilter.module.css"
-import {Button, Heading, Search} from "@navikt/ds-react";
-import LetterCategories from "./components/LetterCategories/LetterCategories";
-import LetterPicker from "./components/LetterPicker/LetterPicker";
+import {Button, Heading, Loader, Search} from "@navikt/ds-react"
+import LetterCategories from "./components/LetterCategories/LetterCategories"
+import LetterPicker from "./components/LetterPicker/LetterPicker"
+import {LetterCategory, LetterTemplateInfo} from "./model/skribenten"
 
 export interface LetterFilterProps {
-    favourites: LetterMetaData[]
-    categories: LetterCategory[]
-}
-
-export type LetterCategory = {
-    name: string,
-    letters: LetterMetaData[]
-}
-export type LetterMetaData = {
-    id: string,
-    name: string,
+    letterTemplateInfo: LetterTemplateInfo | null,
+    selectedLetter: string | null,
+    onLetterSelected: (id: string | null) => void
 }
 
 function filterCategories(categories: LetterCategory[], searchText: string): LetterCategory[] {
     return categories.map(c => ({
-            ...c, letters: c.letters.filter(l => l.name.toLowerCase().includes(searchText.toLowerCase()))
+            ...c, templates: c.templates.filter(l => l.name.toLowerCase().includes(searchText.toLowerCase())),
         })
     )
 }
 
-const LetterFilter: FC<LetterFilterProps> = ({favourites, categories}) => {
+const LetterFilter: FC<LetterFilterProps> = ({letterTemplateInfo, selectedLetter, onLetterSelected}) => {
     const [searchFilter, setSearchFilter] = useState("")
     const [expandCategories, setExpandCategories] = useState(false)
+    const favourites = letterTemplateInfo?.favourites
+    console.log(letterTemplateInfo)
 
     const searchUpdatedHandler = (text: string) => {
         setSearchFilter(text)
@@ -42,12 +37,14 @@ const LetterFilter: FC<LetterFilterProps> = ({favourites, categories}) => {
                     <Heading level="2" size="small" className={styles.mottakerCardHeading}>Mottaker</Heading>
                     <Button variant="tertiary" size="xsmall">Endre mottaker</Button>
                 </div>
-                <p>Test Testerson</p>
+                <p>Test Saksbehandlerson</p>
             </div>
             <div>
                 <h2 className={styles.sectionHeading}>Favoritter</h2>
                 <hr/>
-                <LetterPicker letters={favourites}/>
+                {favourites != null ? (<LetterPicker letters={favourites} selectedLetter={selectedLetter}
+                                                     onLetterSelected={onLetterSelected}/>)
+                    : (<Loader/>)}
             </div>
             <div>
                 <h2 className={styles.sectionHeading}>Brevlisten</h2>
@@ -59,8 +56,11 @@ const LetterFilter: FC<LetterFilterProps> = ({favourites, categories}) => {
                     onChange={searchUpdatedHandler}
                     size="small"/>
 
-                <LetterCategories categories={filterCategories(categories, searchFilter)}
-                                  expanded={expandCategories}/>
+                {letterTemplateInfo?.categories != null ? (<LetterCategories categories={filterCategories(letterTemplateInfo?.categories, searchFilter)}
+                                                                             expanded={expandCategories}
+                                                                             selectedLetter={selectedLetter}
+                                                                             onLetterSelected={onLetterSelected}/>)
+                    : (<Loader/>)}
             </div>
         </div>
     )

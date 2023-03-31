@@ -1,0 +1,14 @@
+.pageContainer{
+
+}
+
+.outerContainer {
+    background-color: var(--a-bg-subtle);
+}
+
+.innterContainer{
+    display: flex;
+    justify-content: center;
+    gap: 1.125rem;
+    padding: 0.625rem;
+}

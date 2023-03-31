@@ -3,24 +3,21 @@
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    padding: 24px 16px;
-    gap: 24px;
-    max-width: 376px;
-    min-width: 30%;
-    margin-left: 10%;
-    height: 100%;
-    background: #FFFFFF;
-    border: 1px solid rgba(0, 0, 0, 0.19);
-    border-radius: 4px;
+    padding: 1.5rem 1rem;
+    gap: 1.5rem;
+    background: var(--a-white);
+    border: 0.0625rem solid rgba(0, 0, 0, 0.19);
+    border-radius: 0.25rem;
+    max-height: inherit;
 }
 
 .sectionHeading {
     font-size: var(--a-font-size-heading-xsmall);
-    margin-left: 4px;
+    margin-left: 0.25rem;
 }
 
 .brevvelgerContainer p {
-    margin: 10px 0 0;
+    margin: 0.625rem 0 0;
 }
 
 .brevvelgerContainer > div {
@@ -32,16 +29,16 @@
 }
 
 .brevvelgerContainer hr{
-    margin-left: 1px;
-    margin-right: 1px;
+    margin-left: 0.0625rem;
+    margin-right: 0.0625rem;
     width: 98%;
 }
 
 .mottakerCard {
     width: 100%;
-    border-radius: 4px;
-    padding: 12px 8px 12px 8px;
-    border: 1px solid var(--a-gray-600)
+    border-radius: 0.25rem;
+    padding: 0.75rem 0.5rem 0.75rem 0.5rem;
+    border: 0.0625rem solid var(--a-gray-600)
 }
 
 .mottakerCardHeading {
@@ -66,7 +63,7 @@
 }
 
 .letterGroupHeader{
-    padding: 0 0 0 4px;
+    padding: 0 0 0 0.25rem;
     font-weight: normal;
     font-size: var(--a-font-size-medium);
 }

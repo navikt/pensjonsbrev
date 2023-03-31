@@ -3,13 +3,15 @@ import styles from "./LetterButton.module.css"
 
 interface LetterButtonProps {
     text: string,
-    id: string
+    id: string,
+    isSelected: boolean,
+    onClicked: (id : string | null) => void,
 }
 
-const LetterButton: FC<LetterButtonProps>= (props) => (
-    <button className={styles.selectLetterButton}>
-        {props.text}
-    </button>
-);
+const LetterButton: FC<LetterButtonProps> = ({text, id, isSelected = false, onClicked}) =>
+        <li className={`${isSelected ? styles.letterButtonOpen : ""} ${styles.letterButton}`}
+                       onClick={() => onClicked(isSelected ? null : id)}>
+            {text}
+        </li>
 
-export default LetterButton;
+export default LetterButton

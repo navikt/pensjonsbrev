@@ -1,18 +1,33 @@
-.selectLetterButton {
+.letterButton {
     box-sizing: inherit;
     width: 100%;
     display: flex;
     flex-direction: row;
     background-color: var(--a-white);
     border-width: 0;
-    border-radius: 2px;
+    border-radius: 0.125rem;
     justify-content: space-between;
     font-weight: var(--a-font-weight-regular);
     font-size: var(--a-font-size-medium);
-    padding: 2px 4px;
+    padding: 0.125rem 0.25rem;
 }
 
-.selectLetterButton:hover {
+.letterButton:hover {
     cursor: pointer;
     background-color: var(--a-surface-action-subtle-hover);
+}
+
+.letterButton:hover {
+    cursor: pointer;
+    background-color: var(--a-surface-action-subtle-hover);
+}
+
+.letterButtonOpen {
+    color: var(--a-white);
+
+    background-color: var(--a-surface-action-selected);
+}
+
+.letterButtonOpen:hover {
+    background-color: var(--a-surface-action-selected-hover);
 }

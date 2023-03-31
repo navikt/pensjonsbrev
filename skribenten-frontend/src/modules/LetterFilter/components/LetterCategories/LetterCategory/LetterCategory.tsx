@@ -1,26 +1,30 @@
-import React, {FC, useState} from 'react';
+import React, {FC, useState} from 'react'
 import styles from "./LetterCategory.module.css"
-import {ChevronDownIcon, ChevronUpIcon} from "@navikt/aksel-icons";
-import LetterButton from "../../LetterPicker/LetterButton/LetterButton";
-import {LetterCategory, LetterMetaData} from "../../../LetterFilter";
+import {ChevronDownIcon, ChevronUpIcon} from "@navikt/aksel-icons"
+import {LetterCategory as Category} from "../../../model/skribenten"
+import LetterPicker from "../../LetterPicker/LetterPicker"
 
 export interface LetterCategoryProps {
-    category: LetterCategory,
+    category: Category,
     isExpanded: boolean,
+    selectedLetter : string | null,
+    onLetterSelected: (id : string | null) => void
 }
 
-const LetterCategory: FC<LetterCategoryProps> = ({category,isExpanded}) => {
+const LetterCategory: FC<LetterCategoryProps> = ({category, isExpanded, selectedLetter, onLetterSelected}) => {
     const [isActive, setIsActive] = useState(false)
     const expanded = isActive || isExpanded
 
     const content = (expanded && (
         <div className={styles.letterCategoryContainer}>
-            {category.letters.map(letter=> (<LetterButton text={letter.name} id={letter.id}/>))}
+            <LetterPicker letters={category.templates}
+                          selectedLetter={selectedLetter}
+                          onLetterSelected={onLetterSelected}/>
         </div>
     ))
 
     return (
-        <div className={styles.expansionContainer}>
+        <li className={styles.expansionContainer}>
             <button className={`${expanded ? styles.expansionButtonOpen : ""} ${styles.expansionButton}`}
                     onClick={() => setIsActive(!expanded)}>
 
@@ -32,8 +36,8 @@ const LetterCategory: FC<LetterCategoryProps> = ({category,isExpanded}) => {
                 {!expanded && <ChevronDownIcon title="a11y-title" fontSize="1rem" className={styles.expansionArrowDown}/>}
             </button>
             {content}
-        </div>
-    );
-};
+        </li>
+    )
+}
 
-export default LetterCategory;
+export default LetterCategory

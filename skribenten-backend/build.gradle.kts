@@ -82,6 +82,7 @@ dependencies {
     implementation("io.ktor:ktor-server-metrics:$ktorVersion")
     implementation("io.ktor:ktor-server-metrics-micrometer:$ktorVersion")
     implementation("io.micrometer:micrometer-registry-prometheus:$micrometerVersion")
+    implementation("io.ktor:ktor-client-cio-jvm:2.1.3")
 
     // Test
     testImplementation("io.ktor:ktor-server-tests-jvm:$ktorVersion")

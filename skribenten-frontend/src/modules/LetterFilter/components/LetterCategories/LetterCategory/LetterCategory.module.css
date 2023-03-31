@@ -3,10 +3,10 @@
     width: 100%;
     display: flex;
     flex-direction: row;
-    padding: 4px;
+    padding: 0.25rem;
     background-color: var(--a-white);
     border-width: 0;
-    border-radius: 2px;
+    border-radius: 0.125rem;
     justify-content: space-between;
 }
 
@@ -16,10 +16,12 @@
 }
 
 .expansionButtonOpen {
-    background-color: var(--a-surface-action-selected);
+    /*TODO await design changes*/
+    /*color: var(--a-white);
+    background-color: var(--a-surface-action-selected);*/
 }
 .expansionButtonOpen:hover {
-    background-color: var(--a-surface-action-selected-hover);
+    /*background-color: var(--a-surface-action-selected-hover);*/
 }
 
 .expansionHeader {
@@ -28,13 +30,11 @@
     vertical-align: middle;
     margin: 0;
 }
-.expansionHeaderOpen {
-    color: var(--a-white);
-}
 
 .expansionContainer {
     box-sizing: inherit;
     width: 100%;
+    display: block;
 }
 
 .expansionArrowDown {
@@ -42,13 +42,13 @@
 }
 
 .expansionArrowUp {
-    color: var(--a-white);
+    color: #000000;
 }
 
 .letterCategoryContainer {
     display: flex;
     flex-direction: column;
-    margin-left: 8px;
-    margin-top: 4px;
-    margin-bottom: 4px;
+    margin-left: 0.5rem;
+    margin-top: 0.25rem;
+    margin-bottom: 0.25rem;
 }

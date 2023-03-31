@@ -1,0 +1,30 @@
+
+.previewContainer {
+    border: 0.0625rem solid #00000030;
+    display: flex;
+    background-color: var(--a-white);
+    border-radius: 0.25rem;
+    flex-direction: column;
+}
+
+.pdfViewer {
+    background-color: var(--a-white);
+}
+
+.previewImage {
+    vertical-align: top;
+}
+
+.topMenu {
+    display: block;
+    height: 3rem;
+    background-color: var(--a-blue-100);
+    border-bottom: 0.0625rem solid var(--a-gray-300);
+}
+
+.zoomButton {
+    text-transform: none;
+    float: right;
+    height: 1.5rem;
+    margin: 0.75rem 1rem 0.75rem 0;
+}

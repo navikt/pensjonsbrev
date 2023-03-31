@@ -1,5 +1,6 @@
-.letterCategoryContainer {
+.letterList {
     display: flex;
     flex-direction: column;
-    margin-left: 0;
+    margin: 0;
+    padding: 0;
 }

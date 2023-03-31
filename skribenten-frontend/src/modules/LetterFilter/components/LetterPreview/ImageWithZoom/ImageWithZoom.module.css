@@ -1,0 +1,17 @@
+.viewer {
+    position: relative;
+    cursor: pointer;
+    min-height: 1100px;
+    width: 793px;
+    overflow: auto;
+    transform-origin: top left;
+}
+
+.image {
+    transition: transform 0.3s ease;
+    position: absolute;
+    transform-origin: top left;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    user-select: none;
+}

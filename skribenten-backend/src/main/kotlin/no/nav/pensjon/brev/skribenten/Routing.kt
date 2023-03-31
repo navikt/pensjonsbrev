@@ -20,6 +20,7 @@ fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config
     val authService = AzureADService(authConfig)
     val penService = PenService(skribentenConfig.getConfig("services.pen"), authService)
     val brevbakerService = BrevbakerService(skribentenConfig.getConfig("services.brevbaker"), authService)
+    val brevmetadataService = BrevmetadataService(skribentenConfig.getConfig("services.brevmetadata"))
 
     routing {
         get("/isAlive") {
@@ -62,6 +63,9 @@ fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config
                             ?: rendered.result
                     )
                 }
+            }
+            get("/lettertemplates") {
+                call.respond(LetterTemplateInfo(categories = brevmetadataService.getRedigerbareBrev(), favourites = emptyList()))
             }
         }
     }
