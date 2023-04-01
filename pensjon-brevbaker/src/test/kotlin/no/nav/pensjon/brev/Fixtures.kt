@@ -42,7 +42,6 @@ object Fixtures {
         when (letterDataType) {
             EgenerklaeringOmsorgsarbeidDto::class -> createEgenerklaeringOmsorgsarbeidDto() as T
             EndringIOpptjeningAutoDto.EndringIOpptjening::class -> createEndringIOpptjeningAutoDtoEndringIOpptjening() as T
-            EndringIOpptjeningAutoDto.EndringIOpptjeningBeregning::class -> createEndringIOpptjeningBeregning() as T
             EndringIOpptjeningAutoDto.EndringIOpptjeningBoolean::class -> createEndringIOpptjeningAutoDtoEndringIOpptjeningBoolean() as T
             EndringIOpptjeningAutoDto.FellesbarnTillegg::class -> createEndringIOpptjeningAutoDtoBarnetilleggFellesbarn() as T
             EndringIOpptjeningAutoDto.SaerkullsbarnTillegg::class -> createEndringIOpptjeningAutoDtoBarnetilleggSaerkullsbarn() as T
@@ -75,11 +74,9 @@ object Fixtures {
             OpplysningerBruktIBeregningUTDto.NorskTrygdetid::class -> createOpplysningerBruktIBeregningUTDtoNorskTrygdetid() as T
             OpplysningerBruktIBeregningUTDto.UtenlandskTrygdetidEOS::class -> createOpplysningerBruktIBeregningUTDtoUtenlandskTrygdetidEOS() as T
             OpplysningerBruktIBeregningUTDto.UtenlandskTrygdetidBilateral::class -> createOpplysningerBruktIBeregningUTDtoUtenlandskTrygdetidBilateral() as T
-            OpplysningerBruktIBeregningUTDto.GjenlevendetilleggInformasjon::class -> createOpplysningerBruktIBeregningUTDtoGjenlevendetilleggInformasjon() as T
+            OpplysningerBruktIBeregningUTDto.GjenlevendetilleggTabell::class -> createOpplysningerBruktIBeregningUTDtoGjenlevendetilleggInformasjon() as T
             OpplysningerBruktIBeregningUTDto.UfoeretrygdOrdinaer::class -> createOpplysningerBruktIBeregningUTDtoUfoeretrygdOrdinaer() as T
             OpplysningerBruktIBeregningUTDto.BeregningUfoere::class -> createOpplysningerBruktIBeregningUTDtoBeregningUfoere() as T
-            OpplysningerBruktIBeregningUTDto.TrygdetidsdetaljerGjeldeneAvdoed::class -> createOpplysningerBruktIBeregningUTDtoTrygdetidsdetaljerGjeldeneAvdoed() as T
-            OpplysningerBruktIBeregningUTDto.PersonGrunnlag::class -> createOpplysningerBruktIBeregningUTDtoPersonGrunnlag() as T
 
             else -> throw IllegalArgumentException("Don't know how to construct: ${letterDataType.qualifiedName}")
         }

@@ -1,7 +1,6 @@
 package no.nav.pensjon.brev.maler.vedlegg
 
 
-import io.ktor.util.collections.*
 import no.nav.pensjon.brev.api.model.KravAarsakType
 import no.nav.pensjon.brev.api.model.vedlegg.BarnetilleggGjeldendeSelectors.fellesbarn_safe
 import no.nav.pensjon.brev.api.model.vedlegg.BeregnetUTPerManedGjeldendeSelectors.grunnbeloep
@@ -12,9 +11,7 @@ import no.nav.pensjon.brev.api.model.vedlegg.BeregningUfoereSelectors.nettoAkkum
 import no.nav.pensjon.brev.api.model.vedlegg.BeregningUfoereSelectors.nettoPerAarReduksjonUT
 import no.nav.pensjon.brev.api.model.vedlegg.BeregningUfoereSelectors.overskytendeInntekt
 import no.nav.pensjon.brev.api.model.vedlegg.BeregningUfoereSelectors.ufoeretrygdPlussInntekt
-import no.nav.pensjon.brev.api.model.vedlegg.GjenlevendetilleggInformasjonSelectors.harGjenlevendetillegg
-import no.nav.pensjon.brev.api.model.vedlegg.GjenlevendetilleggInformasjonSelectors.harGjenlevendetillegg_safe
-import no.nav.pensjon.brev.api.model.vedlegg.GjenlevendetilleggInformasjonSelectors.harNyttGjenlevendetillegg
+import no.nav.pensjon.brev.api.model.vedlegg.GjenlevendetilleggTabellSelectors.harNyttGjenlevendetillegg_safe
 import no.nav.pensjon.brev.api.model.vedlegg.InntektFoerUfoereGjeldendeSelectors.ifuInntekt
 import no.nav.pensjon.brev.api.model.vedlegg.InntektFoerUfoereGjeldendeSelectors.oifuInntekt
 import no.nav.pensjon.brev.api.model.vedlegg.InntektsAvkortingGjeldendeSelectors.forventetInntektAar
@@ -26,8 +23,9 @@ import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDto
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.barnetilleggGjeldende
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.beregnetUTPerManedGjeldende
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.beregningUfoere
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.borIUtlandet
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.fraOgMedDatoErNesteAar
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.gjenlevendetilleggInformasjon
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.gjenlevendetilleggTabell
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.harBarnetilleggInnvilget
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.harBrukerKonvertertUP
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.harEktefelletilleggInnvilget
@@ -42,18 +40,15 @@ import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSel
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.norskTrygdetid
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.opptjeningAvdoedUfoeretrygd
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.opptjeningUfoeretrygd
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.personGrunnlag
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.sivilstand
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.trygdetidGjeldende
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.trygdetidsdetaljerGjeldende
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.trygdetidsdetaljerGjeldeneAvdoed
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.ufoeretrygdGjeldende
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.ufoeretrygdOrdinaer
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.ungUfoerGjeldende_erUnder20Aar
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.utenlandskTrygdetidBilateral
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.utenlandskTrygdetidEOS
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.yrkesskadeGjeldende
-import no.nav.pensjon.brev.api.model.vedlegg.PersonGrunnlagSelectors.borIUtlandet
 import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidGjeldendeSelectors.fastsattTrygdetid
 import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidGjeldendeSelectors.har40AarFastsattTrygdetid
 import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidGjeldendeSelectors.harFramtidigTrygdetidEOS
@@ -75,10 +70,8 @@ import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdOrdinaerSelectors.harNyU
 import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdOrdinaerSelectors.harTotalNettoUT
 import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdOrdinaerSelectors.nettoAkkumulerteBeloepUtbetalt
 import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdOrdinaerSelectors.nettoTilUtbetalingRestenAvAaret
-import no.nav.pensjon.brev.api.model.vedlegg.YrkesskadeGjeldendeSelectors.yrkesskadegrad_safe
 import no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningufoere.*
 import no.nav.pensjon.brev.model.format
-import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.createAttachment
@@ -90,7 +83,7 @@ import no.nav.pensjon.brev.template.dsl.textExpr
 fun createVedleggOpplysningerBruktIBeregningUT(
     skalViseMinsteytelse: Boolean,
     skalViseBarnetillegg: Boolean,
-    skalViseGjenlevendetillegg: Boolean
+    skalViseGjenlevendetillegg: Boolean,
 ) =
     createAttachment<LangBokmalNynorskEnglish, OpplysningerBruktIBeregningUTDto>(
         title = newText(
@@ -130,13 +123,12 @@ fun createVedleggOpplysningerBruktIBeregningUT(
         )
 
         if (skalViseGjenlevendetillegg) {
-            val harGjenlevendetillegg = gjenlevendetilleggInformasjon.harGjenlevendetillegg_safe.ifNull(then = false)
+            val harGjenlevendetillegg = gjenlevendetilleggTabell.notNull()
             showIf(harGjenlevendetillegg and kravAarsakType.isNotAnyOf(KravAarsakType.SOKNAD_BT)) {
                 includePhrase(
                     TabellUfoereOpplysningerAvdoed(
-                        gjenlevendetilleggInformasjon = gjenlevendetilleggInformasjon,
-                        persjonGrunnlag = personGrunnlag,
-                        trygdetidsdetaljerGjeldeneAvdoed = trygdetidsdetaljerGjeldeneAvdoed,
+                        beregnetUTPerManedGjeldende = beregnetUTPerManedGjeldende,
+                        gjenlevendetilleggTabell = gjenlevendetilleggTabell,
                     )
                 )
             }
@@ -308,13 +300,15 @@ fun createVedleggOpplysningerBruktIBeregningUT(
                 }
             }
 
-            ifNotNull(gjenlevendetilleggInformasjon) { gjenlevendetillegg ->
-                includePhrase(
-                    SlikBeregnerViGjenlevendetillegg(
-                        harGjenlevendetillegg = gjenlevendetillegg.harGjenlevendetillegg,
-                        harNyttGjenlevendetillegg = gjenlevendetillegg.harNyttGjenlevendetillegg,
+            if (skalViseGjenlevendetillegg) {
+                ifNotNull(gjenlevendetilleggTabell) { gjenlevendetillegg ->
+                    includePhrase(
+                        SlikBeregnerViGjenlevendetillegg(
+                            harGjenlevendetillegg = gjenlevendetillegg.notNull(),
+                            harNyttGjenlevendetillegg = gjenlevendetilleggTabell.harNyttGjenlevendetillegg_safe.ifNull(then = false)
+                        )
                     )
-                )
+                }
             }
 
             ifNotNull(harEktefelletilleggInnvilget) { ektefelletillegg ->
@@ -330,7 +324,7 @@ fun createVedleggOpplysningerBruktIBeregningUT(
                     sivilstand = sivilstand,
                     harBarnetilleggInnvilget = harBarnetilleggInnvilget.notNull(),
                     harFellesbarn = barnetilleggGjeldende.fellesbarn_safe.notNull(),
-                    borIUtlandet = personGrunnlag.borIUtlandet,
+                    borIUtlandet = borIUtlandet,
                 )
             )
         }

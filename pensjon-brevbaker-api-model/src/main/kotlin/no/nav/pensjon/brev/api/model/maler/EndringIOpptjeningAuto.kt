@@ -10,7 +10,6 @@ import java.time.LocalDate
 @Suppress("unused")
 data class EndringIOpptjeningAutoDto(
     val endringIOpptjening: EndringIOpptjening,
-    val endringIOpptjeningBeregning: EndringIOpptjeningBeregning?,
     val endringIOpptjeningBoolean: EndringIOpptjeningBoolean,
     val fellesbarnTillegg: FellesbarnTillegg?,
     val harEktefelletilleggInnvilget: Boolean?,  // Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Ektefelletillegg
@@ -42,11 +41,8 @@ data class EndringIOpptjeningAutoDto(
         val ufoertrygdUtbetalt: Kroner,
         val utbetalingsgrad: Int, // Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_utbetalingsgrad
         val utbetaltPerMaaned: Kroner,
-    )
-
-    data class EndringIOpptjeningBeregning(
-        val nettoAkkumulertePlussNettoRestAar: Kroner,  // <NettoAkk> + <NettoRestAr> Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_NettoRestAr
-        val oppjustertInntektFoerUfoere80prosent: Kroner,  // <Oifu * 0.8) : Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Oifu
+        val nettoAkkumulertePlussNettoRestAar: Kroner,  // TODO: Beregnes i Exstream: <NettoAkk> + <NettoRestAr> Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_NettoRestAr
+        val oppjustertInntektFoerUfoere80prosent: Kroner,  // TODO: Beregnes i Exstream: <Oifu * 0.8) : Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Oifu
     )
 
     data class EndringIOpptjeningBoolean(

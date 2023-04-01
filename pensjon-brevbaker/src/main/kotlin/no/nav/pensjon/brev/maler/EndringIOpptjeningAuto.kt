@@ -4,7 +4,6 @@ import no.nav.pensjon.brev.api.model.LetterMetadata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.EndringIOpptjeningAutoDto
 import no.nav.pensjon.brev.api.model.maler.EndringIOpptjeningAutoDtoSelectors.endringIOpptjening
-import no.nav.pensjon.brev.api.model.maler.EndringIOpptjeningAutoDtoSelectors.endringIOpptjeningBeregning
 import no.nav.pensjon.brev.api.model.maler.EndringIOpptjeningAutoDtoSelectors.endringIOpptjeningBoolean
 import no.nav.pensjon.brev.api.model.maler.EndringIOpptjeningAutoDtoSelectors.fellesbarnTillegg
 import no.nav.pensjon.brev.api.model.maler.EndringIOpptjeningAutoDtoSelectors.harEktefelletilleggInnvilget
@@ -16,8 +15,6 @@ import no.nav.pensjon.brev.api.model.maler.EndringIOpptjeningAutoDtoSelectors.or
 import no.nav.pensjon.brev.api.model.maler.EndringIOpptjeningAutoDtoSelectors.saerkullsbarnTillegg
 import no.nav.pensjon.brev.api.model.maler.EndringIOpptjeningAutoDtoSelectors.sivilstand
 import no.nav.pensjon.brev.api.model.maler.EndringIOpptjeningAutoDtoSelectors.virkningsDato
-import no.nav.pensjon.brev.api.model.maler.EndringIOpptjeningBeregningSelectors.nettoAkkumulertePlussNettoRestAar_safe
-import no.nav.pensjon.brev.api.model.maler.EndringIOpptjeningBeregningSelectors.oppjustertInntektFoerUfoere80prosent_safe
 import no.nav.pensjon.brev.api.model.maler.EndringIOpptjeningBooleanSelectors.brukerBorInorge
 import no.nav.pensjon.brev.api.model.maler.EndringIOpptjeningBooleanSelectors.harBeloepOekt
 import no.nav.pensjon.brev.api.model.maler.EndringIOpptjeningBooleanSelectors.harBeloepRedusert
@@ -35,8 +32,10 @@ import no.nav.pensjon.brev.api.model.maler.EndringIOpptjeningSelectors.inntektsg
 import no.nav.pensjon.brev.api.model.maler.EndringIOpptjeningSelectors.inntektstak
 import no.nav.pensjon.brev.api.model.maler.EndringIOpptjeningSelectors.kompensasjonsgrad
 import no.nav.pensjon.brev.api.model.maler.EndringIOpptjeningSelectors.nettoAkkumulerteBeloepUtbetalt
+import no.nav.pensjon.brev.api.model.maler.EndringIOpptjeningSelectors.nettoAkkumulertePlussNettoRestAar_safe
 import no.nav.pensjon.brev.api.model.maler.EndringIOpptjeningSelectors.nettoUfoeretrygdUtbetaltPerMaaned
 import no.nav.pensjon.brev.api.model.maler.EndringIOpptjeningSelectors.oppjustertInntektEtterUfoere
+import no.nav.pensjon.brev.api.model.maler.EndringIOpptjeningSelectors.oppjustertInntektFoerUfoere80prosent_safe
 import no.nav.pensjon.brev.api.model.maler.EndringIOpptjeningSelectors.ufoeregrad
 import no.nav.pensjon.brev.api.model.maler.EndringIOpptjeningSelectors.utbetalingsgrad
 import no.nav.pensjon.brev.api.model.maler.EndringIOpptjeningSelectors.utbetaltPerMaaned
@@ -177,8 +176,8 @@ object EndringIOpptjeningAuto : AutobrevTemplate<EndringIOpptjeningAutoDto> {
                 )
             )
             ifNotNull(
-                endringIOpptjeningBeregning.oppjustertInntektFoerUfoere80prosent_safe,
-                endringIOpptjeningBeregning.nettoAkkumulertePlussNettoRestAar_safe
+                endringIOpptjening.oppjustertInntektFoerUfoere80prosent_safe,
+                endringIOpptjening.nettoAkkumulertePlussNettoRestAar_safe
             ) { oppjustertInntekt, nettoAkkumulerte ->
                 includePhrase(
                     KombinereUfoeretrygdMedInntekt.Kompensasjonsgrad(

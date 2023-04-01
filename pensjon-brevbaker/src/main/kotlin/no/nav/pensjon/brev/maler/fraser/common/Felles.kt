@@ -16,6 +16,7 @@ import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
+import org.w3c.dom.Text
 
 object Felles {
 
@@ -79,5 +80,25 @@ object Felles {
                 Nynorsk to antall.format() + " måneder",
                 English to antall.format() + " months"
             )
+    }
+
+    data class AarText(val antall: Expression<Int>) : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
+        override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+            textExpr(
+                Bokmal to antall.format() + " år",
+                Nynorsk to antall.format() + " år",
+                English to antall.format() + " years"
+            )
+        }
+    }
+
+    data class ProsentText(val antall: Expression<Int>) : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
+        override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+            textExpr(
+                Bokmal to antall.format() + " %",
+                Nynorsk to antall.format() + " %",
+                English to antall.format() + " %"
+            )
+        }
     }
 }

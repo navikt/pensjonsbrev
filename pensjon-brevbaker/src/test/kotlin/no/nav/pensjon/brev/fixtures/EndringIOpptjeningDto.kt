@@ -10,7 +10,6 @@ import java.time.LocalDate
 fun createEndringIOpptjeningAutoDto() =
     EndringIOpptjeningAutoDto(
         endringIOpptjening = Fixtures.create(),
-        endringIOpptjeningBeregning = Fixtures.create(),
         endringIOpptjeningBoolean = Fixtures.create(),
         fellesbarnTillegg = Fixtures.create(),
         harEktefelletilleggInnvilget = true,
@@ -34,22 +33,17 @@ fun createEndringIOpptjeningAutoDtoEndringIOpptjening() =
         inntektstak = Kroner(0),
         kompensasjonsgrad = 60.00,
         nettoAkkumulerteBeloepUtbetalt = Kroner(380000),
+        nettoAkkumulertePlussNettoRestAar = Kroner(80000),
         nettoTilUtbetalingRestenAvAaret = Kroner(55000),
         nettoUfoeretrygdUtbetaltPerMaaned = Kroner(12000),
         oppjustertInntektEtterUfoere = Kroner(320000),
         oppjustertInntektFoerUfoere = Kroner(0),
+        oppjustertInntektFoerUfoere80prosent = Kroner(260000),
         ufoeregrad = 80,
         ufoertrygdUtbetalt = Kroner(2000000),
         utbetalingsgrad = 80,
-        utbetaltPerMaaned = Kroner(16000)
+        utbetaltPerMaaned = Kroner(16000),
     )
-
-fun createEndringIOpptjeningBeregning() =
-    EndringIOpptjeningAutoDto.EndringIOpptjeningBeregning(
-        nettoAkkumulertePlussNettoRestAar = Kroner(435000),
-        oppjustertInntektFoerUfoere80prosent = Kroner(320000),
-    )
-
 
 fun createEndringIOpptjeningAutoDtoEndringIOpptjeningBoolean() =
     EndringIOpptjeningAutoDto.EndringIOpptjeningBoolean(

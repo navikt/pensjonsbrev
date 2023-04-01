@@ -5,15 +5,20 @@ import no.nav.pensjon.brev.api.model.Sivilstand.*
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.dsl.expression.*
-
+@JvmName("formatTelefonnummer")
 fun Telefonnummer.format() =
     "([0-9][0-9])".toRegex().replace(value, "$1 ").trim()
 
-fun Foedselsnummer.format() =
-    "([0-9]{6})([0-9]{5})".toRegex().replace(value, "$1 $2")
-
 fun Expression<Telefonnummer>.format() =
     Expression.UnaryInvoke(this, UnaryOperation.FormatPhoneNumber)
+
+@JvmName("formatFoedselsnummer")
+    fun Foedselsnummer.format() =
+        "([0-9]{6})([0-9]{5})".toRegex().replace(value, "$1 $2")
+
+    fun Expression<Foedselsnummer>.format() =
+        Expression.UnaryInvoke(this, UnaryOperation.FormatFoedselsnummer)
+
 
 @JvmName("formatKroner")
 fun Expression<Kroner>.format() =

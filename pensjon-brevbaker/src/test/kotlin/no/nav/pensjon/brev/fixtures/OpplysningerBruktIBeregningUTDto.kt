@@ -11,8 +11,9 @@ fun createOpplysningerBruktIBeregningUTDto() =
         barnetilleggGjeldende = Fixtures.create(),
         beregnetUTPerManedGjeldende = Fixtures.create(),
         beregningUfoere = Fixtures.create(),
+        borIUtlandet = false,
         fraOgMedDatoErNesteAar = false,
-        gjenlevendetilleggInformasjon = Fixtures.create(),
+        gjenlevendetilleggTabell = Fixtures.create(),
         harBarnetilleggInnvilget = false,
         harBrukerKonvertertUP = false,
         harEktefelletilleggInnvilget = false,
@@ -27,11 +28,9 @@ fun createOpplysningerBruktIBeregningUTDto() =
         norskTrygdetid = listOf(createOpplysningerBruktIBeregningUTDtoNorskTrygdetid()),
         opptjeningAvdoedUfoeretrygd = Fixtures.create(),
         opptjeningUfoeretrygd = Fixtures.create(),
-        personGrunnlag = Fixtures.create(),
         sivilstand = Sivilstand.PARTNER,
         trygdetidGjeldende = Fixtures.create(),
         trygdetidsdetaljerGjeldende = Fixtures.create(),
-        trygdetidsdetaljerGjeldeneAvdoed = Fixtures.create(),
         ufoeretrygdGjeldende = Fixtures.create(),
         ufoeretrygdOrdinaer = Fixtures.create(),
         ungUfoerGjeldende_erUnder20Aar = false,
@@ -88,7 +87,7 @@ fun createOpplysningerBruktIBeregningUTDtoBeregnetUTPerManedGjeldende() =
     OpplysningerBruktIBeregningUTDto.BeregnetUTPerManedGjeldende(
         brukerErFlyktning = false,
         brukersSivilstand = Sivilstand.GIFT,
-        grunnbeloep = Kroner(100000),
+        grunnbeloep = Kroner(111477),
         virkDatoFom = LocalDate.of(2020, 1, 1),
     )
 
@@ -205,15 +204,33 @@ fun createOpplysningerBruktIBeregningUTDtoUtenlandskTrygdetidBilateral() =
     )
 
 fun createOpplysningerBruktIBeregningUTDtoGjenlevendetilleggInformasjon() =
-    OpplysningerBruktIBeregningUTDto.GjenlevendetilleggInformasjon(
-        beregningsgrunnlagBeloepAar = Kroner(0),
-        beregningsgrunnlagBeloepAarYrkesskade = Kroner(0),
-        erUngUfoer = false,
-        harGjenlevendetillegg = true,
+    OpplysningerBruktIBeregningUTDto.GjenlevendetilleggTabell(
+        anvendtTTAvdoed = 0,
+        beregningsgrunnlagBeloepAarAvdoed = Kroner(0),
+        beregningsgrunnlagBeloepAarYrkesskadeAvdoed = Kroner(0),
+        erFlyktningAvdoed = false,
+        erUngUfoerAvdoed = false,
+        faktiskTTBilateralAvdoed = 0,
+        faktiskTTEOSAvdoed = 0,
+        faktiskTTNordiskKonvAvdoed = 0,
+        faktiskTTNorgeAvdoed = 0,
+        faktiskTrygdetidINorgePlusAvtalelandAvdoed = 0,
+        foedselsnummerAvdoed = Foedselsnummer("01014512345"),
+        framtidigTTAvtalelandAvdoed = 0,
+        framtidigTTEOSAvdoed = 0,
+        framtidigTTNorskAvdoed = 0,
         harNyttGjenlevendetillegg = false,
-        inntektVedSkadetidspunkt = Kroner(0),
-        ufoeretidspunkt = LocalDate.of(2020,1,1),
-        yrkesskadegrad = 0,
+        inntektVedSkadetidspunktAvdoed = Kroner(0),
+        nevnerTTBilateralProRataAvdoed = 0,
+        nevnerTTEOSAvdoed = 0,
+        nevnerTTNordiskKonvAvdoed = 0,
+        samletTTNordiskKonvAvdoed = 0,
+        samletTrygdetidEtterAvkortingAvdoed = 0,
+        tellerTTBilateralProRataAvdoed = 0,
+        tellerTTEOSAvdoed = 0,
+        tellerTTNordiskKonvAvdoed = 0,
+        ufoeretidspunktAvdoed = LocalDate.of(2020,1,1),
+        yrkesskadegradAvdoed = 0,
     )
 
 fun createOpplysningerBruktIBeregningUTDtoUfoeretrygdOrdinaer() =
@@ -237,30 +254,5 @@ fun createOpplysningerBruktIBeregningUTDtoBeregningUfoere() =
         ufoeretrygdPlussInntekt = Kroner(500000),
     )
 
-fun createOpplysningerBruktIBeregningUTDtoTrygdetidsdetaljerGjeldeneAvdoed() =
-    OpplysningerBruktIBeregningUTDto.TrygdetidsdetaljerGjeldeneAvdoed(
-        anvendtTT = 0,
-        faktiskTTBilateral = 0,
-        faktiskTTEOS = 0,
-        faktiskTTNordiskKonv = 0,
-        faktiskTTNorge = 0,
-        framtidigTTAvtaleland = 0,
-        framtidigTTEOS = 0,
-        framtidigTTNorsk = 0,
-        nevnerTTBilateralProRata = 0,
-        nevnerTTEOS = 0,
-        nevnerTTNordiskKonv = 0,
-        samletTTNordiskKonv = 0,
-        tellerTTBilateralProRata = 0,
-        tellerTTEOS = 0,
-        tellerTTNordiskKonv = 0,
-    )
-
-fun createOpplysningerBruktIBeregningUTDtoPersonGrunnlag() =
-    OpplysningerBruktIBeregningUTDto.PersonGrunnlag(
-        avdoedesnavn = "Per Pensjon",
-        avdoedeErFlyktning = false,
-        borIUtlandet = false,
-    )
 
 

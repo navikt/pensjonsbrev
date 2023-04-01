@@ -275,7 +275,7 @@ object OpphoerBarnetilleggAuto : AutobrevTemplate<OpphoerBarnetilleggAutoDto> {
             createVedleggOpplysningerBruktIBeregningUT(
                 skalViseMinsteytelse = false,
                 skalViseBarnetillegg = true,
-                skalViseGjenlevendetillegg = true
+                skalViseGjenlevendetillegg = false,
             ), opplysningerBruktIBeregningUT
         )
         includeAttachment(vedleggDineRettigheterOgPlikterUfoere, orienteringOmRettigheterUfoere)

@@ -46,6 +46,9 @@ sealed class UnaryOperation<In, out Out> : Operation() {
     object FormatPhoneNumber : UnaryOperation<Telefonnummer, String>() {
         override fun apply(input: Telefonnummer): String = input.format()
     }
+    object FormatFoedselsnummer : UnaryOperation<Foedselsnummer, String>() {
+        override fun apply(input: Foedselsnummer): String = input.format()
+    }
 
     data class Select<In: Any, Out>(val selector: TemplateModelSelector<In, Out>) : UnaryOperation<In, Out>() {
         override fun apply(input: In): Out = selector.selector(input)
