@@ -1,9 +1,16 @@
 package no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningufoere
 
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDto
-import no.nav.pensjon.brev.api.model.vedlegg.OpptjeningUfoeretrygdSelectors.harFoerstegangstjenesteOpptjening
-import no.nav.pensjon.brev.api.model.vedlegg.OpptjeningUfoeretrygdSelectors.harOmsorgsopptjening
+import no.nav.pensjon.brev.api.model.vedlegg.OpptjeningUfoeretrygdAvdoedSelectors.opptjeningsperioderAvdoed
+import no.nav.pensjon.brev.api.model.vedlegg.OpptjeningUfoeretrygdSelectors.harFoerstegangstjenesteOpptjening_safe
+import no.nav.pensjon.brev.api.model.vedlegg.OpptjeningUfoeretrygdSelectors.harOmsorgsopptjening_safe
 import no.nav.pensjon.brev.api.model.vedlegg.OpptjeningUfoeretrygdSelectors.opptjeningsperioder
+import no.nav.pensjon.brev.api.model.vedlegg.OpptjeningsperiodeAvdoedSelectors.aarAvdoed
+import no.nav.pensjon.brev.api.model.vedlegg.OpptjeningsperiodeAvdoedSelectors.harFoerstegangstjenesteOpptjeningAvdoed
+import no.nav.pensjon.brev.api.model.vedlegg.OpptjeningsperiodeAvdoedSelectors.harInntektAvtalelandAvdoed
+import no.nav.pensjon.brev.api.model.vedlegg.OpptjeningsperiodeAvdoedSelectors.harOmsorgsopptjeningAvdoed
+import no.nav.pensjon.brev.api.model.vedlegg.OpptjeningsperiodeAvdoedSelectors.justertPensjonsgivendeInntektAvdoed
+import no.nav.pensjon.brev.api.model.vedlegg.OpptjeningsperiodeAvdoedSelectors.pensjonsgivendeInntektAvdoed
 import no.nav.pensjon.brev.api.model.vedlegg.OpptjeningsperiodeSelectors.aar
 import no.nav.pensjon.brev.api.model.vedlegg.OpptjeningsperiodeSelectors.harFoerstegangstjenesteOpptjening
 import no.nav.pensjon.brev.api.model.vedlegg.OpptjeningsperiodeSelectors.harInntektAvtaleland
@@ -22,12 +29,12 @@ import no.nav.pensjon.brev.template.dsl.textExpr
 import java.time.LocalDate
 import no.nav.pensjon.brev.template.dsl.expression.*
 
-// TODO: Må hente datagrunnlaget til avdød - styrer dette fra Pesys?
 
 data class TabellInntekteneBruktIBeregningen(
     val beregningGjeldendeFraOgMed: Expression<LocalDate>,
     val harAvdoed: Expression<Boolean>,
-    val opptjeningUfoeretrygd: Expression<OpplysningerBruktIBeregningUTDto.OpptjeningUfoeretrygd>,
+    val opptjeningUfoeretrygd: Expression<OpplysningerBruktIBeregningUTDto.OpptjeningUfoeretrygd?>,
+    val opptjeningUfoeretrygdAvdoed: Expression<OpplysningerBruktIBeregningUTDto.OpptjeningUfoeretrygdAvdoed?>,
 
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
@@ -85,77 +92,156 @@ data class TabellInntekteneBruktIBeregningen(
                     )
                 }
             }) {
-                forEach(
-                    opptjeningUfoeretrygd.opptjeningsperioder
-                ) { opptjening ->
-                    row {
-                        cell {
-                            textExpr(
-                                Bokmal to opptjening.aar.format(),
-                                Nynorsk to opptjening.aar.format(),
-                                English to opptjening.aar.format()
-                            )
-                        }
-                        cell {
-                            textExpr(
-                                Bokmal to opptjening.pensjonsgivendeInntekt.format(),
-                                Nynorsk to opptjening.pensjonsgivendeInntekt.format(),
-                                English to opptjening.pensjonsgivendeInntekt.format()
-                            )
-                        }
-                        // TODO: String "**" on the end?
-                        cell {
-                            textExpr(
-                                Bokmal to opptjening.justertPensjonsgivendeInntekt.format() + "**",
-                                Nynorsk to opptjening.justertPensjonsgivendeInntekt.format() + "**",
-                                English to opptjening.justertPensjonsgivendeInntekt.format() + "**"
-                            )
-                        }
-                        cell {
+                ifNotNull(opptjeningUfoeretrygd) { opptjeningUfoeretrygd ->
+                    showIf(not(harAvdoed)) {
+                        forEach(
+                            opptjeningUfoeretrygd.opptjeningsperioder
+                        ) { opptjening ->
+                            row {
+                                cell {
+                                    textExpr(
+                                        Bokmal to opptjening.aar.format(),
+                                        Nynorsk to opptjening.aar.format(),
+                                        English to opptjening.aar.format()
+                                    )
+                                }
+                                cell {
+                                    textExpr(
+                                        Bokmal to opptjening.pensjonsgivendeInntekt.format(),
+                                        Nynorsk to opptjening.pensjonsgivendeInntekt.format(),
+                                        English to opptjening.pensjonsgivendeInntekt.format()
+                                    )
+                                }
+                                cell {
+                                    textExpr(
+                                        Bokmal to opptjening.justertPensjonsgivendeInntekt.format() + "**",
+                                        Nynorsk to opptjening.justertPensjonsgivendeInntekt.format() + "**",
+                                        English to opptjening.justertPensjonsgivendeInntekt.format() + "**"
+                                    )
+                                }
+                                cell {
 
-                            showIf(
-                                opptjening.harFoerstegangstjenesteOpptjening
-                            ) {
-                                text(
-                                    Bokmal to "Førstegangstjeneste* ",
-                                    Nynorsk to "Førstegongsteneste* ",
-                                    English to "Initial service* ",
-                                )
+                                    showIf(
+                                        opptjening.harFoerstegangstjenesteOpptjening
+                                    ) {
+                                        text(
+                                            Bokmal to "Førstegangstjeneste* ",
+                                            Nynorsk to "Førstegongsteneste* ",
+                                            English to "Initial service* ",
+                                        )
+                                    }
+                                    showIf(
+                                        opptjening.harOmsorgsopptjening
+                                    ) {
+                                        text(
+                                            Bokmal to "Omsorgsår* ",
+                                            Nynorsk to "Omsorgsår* ",
+                                            English to "Care work* "
+                                        )
+                                    }
+                                    showIf(opptjening.harInntektAvtaleland) {
+                                        text(
+                                            Bokmal to "Inntekt i utland* ",
+                                            Nynorsk to "Inntekt i utland* ",
+                                            English to "Income from abroad* "
+                                        )
+                                    }
+                                }
                             }
-                            showIf(
-                                opptjening.harOmsorgsopptjening
-                            ) {
-                                text(Bokmal to "Omsorgsår* ", Nynorsk to "Omsorgsår* ", English to "Care work* ")
-                            }
-                            showIf(opptjening.harInntektAvtaleland) {
-                                text(
-                                    Bokmal to "Inntekt i utland* ",
-                                    Nynorsk to "Inntekt i utland* ",
-                                    English to "Income from abroad* "
-                                )
+                        }
+                    }
+                }
+                ifNotNull(opptjeningUfoeretrygdAvdoed) { opptjeningUfoeretrygdAvdoed ->
+                    showIf(harAvdoed) {
+                        forEach(
+                            opptjeningUfoeretrygdAvdoed.opptjeningsperioderAvdoed
+                        ) { opptjeningAvdoed ->
+                            row {
+                                cell {
+                                    textExpr(
+                                        Bokmal to opptjeningAvdoed.aarAvdoed.format(),
+                                        Nynorsk to opptjeningAvdoed.aarAvdoed.format(),
+                                        English to opptjeningAvdoed.aarAvdoed.format()
+                                    )
+                                }
+                                cell {
+                                    textExpr(
+                                        Bokmal to opptjeningAvdoed.pensjonsgivendeInntektAvdoed.format(),
+                                        Nynorsk to opptjeningAvdoed.pensjonsgivendeInntektAvdoed.format(),
+                                        English to opptjeningAvdoed.pensjonsgivendeInntektAvdoed.format()
+                                    )
+                                }
+                                cell {
+                                    textExpr(
+                                        Bokmal to opptjeningAvdoed.justertPensjonsgivendeInntektAvdoed.format() + "**",
+                                        Nynorsk to opptjeningAvdoed.justertPensjonsgivendeInntektAvdoed.format() + "**",
+                                        English to opptjeningAvdoed.justertPensjonsgivendeInntektAvdoed.format() + "**"
+                                    )
+                                }
+                                cell {
+
+                                    showIf(
+                                        opptjeningAvdoed.harFoerstegangstjenesteOpptjeningAvdoed
+                                    ) {
+                                        text(
+                                            Bokmal to "Førstegangstjeneste* ",
+                                            Nynorsk to "Førstegongsteneste* ",
+                                            English to "Initial service* ",
+                                        )
+                                    }
+                                    showIf(
+                                        opptjeningAvdoed.harOmsorgsopptjeningAvdoed
+                                    ) {
+                                        text(
+                                            Bokmal to "Omsorgsår* ",
+                                            Nynorsk to "Omsorgsår* ",
+                                            English to "Care work* "
+                                        )
+                                    }
+                                    showIf(opptjeningAvdoed.harInntektAvtalelandAvdoed) {
+                                        text(
+                                            Bokmal to "Inntekt i utland* ",
+                                            Nynorsk to "Inntekt i utland* ",
+                                            English to "Income from abroad* "
+                                        )
+                                    }
+                                }
                             }
                         }
                     }
                 }
             }
         }
-
         paragraph {
-            showIf(opptjeningUfoeretrygd.harFoerstegangstjenesteOpptjening and opptjeningUfoeretrygd.harOmsorgsopptjening) {
+            showIf(
+                opptjeningUfoeretrygd.harOmsorgsopptjening_safe.ifNull(false) and opptjeningUfoeretrygd.harFoerstegangstjenesteOpptjening_safe.ifNull(
+                    false
+                )
+            ) {
                 text(
                     Bokmal to "*) Markerer år med omsorgsopptjening og militær eller sivil førstegangstjeneste. Det skal ses bort fra år med pensjonsopptjening på grunnlag av omsorgsarbeid dersom dette er en fordel. Dersom inntekten i året før militær eller sivil førstegangstjeneste tok til er høyere, benyttes denne inntekten.",
                     Nynorsk to "*) Markerer år med omsorgsopptening og militær eller sivil førstegongsteneste. Ein skal sjå bort frå år med pensjonsopptening på grunnlag av omsorgsarbeid dersom dette er ein fordel. Dersom inntekta i året før militær eller sivil førstegongsteneste tok til, er høgare, blir denne inntekta brukt.",
                     English to "*) Indicates years when you earned pension points for care work or initial service, either military or civilian. If you stand to benefit from excluding years when you have earned pension points from care work, these years will be excluded. If the income in the year before your military or civilian initial service started is higher, this income will be used as the basis for calculation."
                 )
             }
-            showIf(opptjeningUfoeretrygd.harOmsorgsopptjening and not(opptjeningUfoeretrygd.harFoerstegangstjenesteOpptjening)) {
+            showIf(
+                opptjeningUfoeretrygd.harOmsorgsopptjening_safe.ifNull(false) and not(
+                    opptjeningUfoeretrygd.harFoerstegangstjenesteOpptjening_safe.ifNull(
+                        false
+                    )
+                )
+            ) {
                 text(
                     Bokmal to "*) Markerer år med omsorgsopptjening. Det skal ses bort fra år med pensjonsopptjening på grunnlag av omsorgsarbeid dersom dette er en fordel.",
                     Nynorsk to "*) Markerer år med omsorgsopptening. Ein skal sjå bort frå år med pensjonsopptening på grunnlag av omsorgsarbeid dersom dette er ein fordel.",
                     English to "*) Indicates years when you earned pension points for care work. If you stand to benefit from excluding years when you have earned pension points from care work, these years will be excluded."
                 )
             }
-            showIf(opptjeningUfoeretrygd.harFoerstegangstjenesteOpptjening and not(opptjeningUfoeretrygd.harOmsorgsopptjening)) {
+            showIf(
+                opptjeningUfoeretrygd.harFoerstegangstjenesteOpptjening_safe.ifNull(false) and not(
+                    opptjeningUfoeretrygd.harOmsorgsopptjening_safe.ifNull(false)
+                )
+            ) {
                 text(
                     Bokmal to "*) Markerer år med militær eller sivil førstegangstjeneste. Dersom inntekten i året før tjenesten tok til er høyere, benyttes denne inntekten.",
                     Nynorsk to "*) Markerer år med militær eller sivil førstegongsteneste. Dersom inntekta i året før tenesta tok til, er høgare, blir denne inntekta brukt.",
@@ -163,11 +249,11 @@ data class TabellInntekteneBruktIBeregningen(
                 )
             }
             newline()
-                text(
-                    Bokmal to "**) Inntekten er justert etter endringer i folketrygdens grunnbeløp.",
-                    Nynorsk to "**) Gjennomsnittleg norsk inntekt justert etter endringar i grunnbeløpet i folketrygda.",
-                    English to "**) Average Norwegian income adjusted in accordance with changes in the National Insurance basic amount."
-                )
+            text(
+                Bokmal to "**) Inntekten er justert etter endringer i folketrygdens grunnbeløp.",
+                Nynorsk to "**) Gjennomsnittleg norsk inntekt justert etter endringar i grunnbeløpet i folketrygda.",
+                English to "**) Average Norwegian income adjusted in accordance with changes in the National Insurance basic amount."
+            )
         }
     }
 }

@@ -13,7 +13,6 @@ data class OpplysningerBruktIBeregningUTDto(
     val harBarnetilleggInnvilget: Boolean?,  // (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true) OR (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true)
     val harBrukerKonvertertUP: Boolean,
     val harEktefelletilleggInnvilget: Boolean?,  // TODO: PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_Ektefelletillegg_ETinnvilget = true
-    val harGodkjentBrevkode: Boolean,  // TODO  **
     val harKravaarsakEndringInntekt: Boolean,
     val inntektEtterUfoereGjeldende_beloepIEU: Kroner?,
     val inntektFoerUfoereBegrunnelse: InntektFoerUfoereBegrunnelse,
@@ -22,8 +21,6 @@ data class OpplysningerBruktIBeregningUTDto(
     val kravAarsakType: KravAarsakType,  // TODO: PE_Vedtaksdata_Kravhode_KravArsakType
     val minsteytelseGjeldende_sats: Double?,
     val norskTrygdetid: List<NorskTrygdetid>, // TODO
-    val opptjeningAvdoedUfoeretrygd: OpptjeningUfoeretrygd?, // TODO
-    val opptjeningUfoeretrygd: OpptjeningUfoeretrygd?, // TODO
     val sivilstand: Sivilstand,
     val trygdetidGjeldende: TrygdetidGjeldende,
     val trygdetidsdetaljerGjeldende: TrygdetidsdetaljerGjeldende,
@@ -33,6 +30,8 @@ data class OpplysningerBruktIBeregningUTDto(
     val utenlandskTrygdetidBilateral: List<UtenlandskTrygdetidBilateral>, // TODO
     val utenlandskTrygdetidEOS: List<UtenlandskTrygdetidEOS>, // TODO
     val yrkesskadeGjeldende: YrkesskadeGjeldende?,
+    val opptjeningUfoeretrygd: OpptjeningUfoeretrygd?,
+    val opptjeningUfoeretrygdAvdoed: OpptjeningUfoeretrygdAvdoed?,
 
 ) {
 
@@ -140,15 +139,14 @@ data class OpplysningerBruktIBeregningUTDto(
         val oifuInntekt: Kroner, // TODO
     )
 
-    // TODO: Create in Pesys
     data class Opptjeningsperiode(
         val aar: Year,
-        val erBrukt: Boolean,
-        val harBeregningsmetodeFolketrygd: Boolean,
+        val erBrukt: Boolean,  //?
+        val harBeregningsmetodeFolketrygd: Boolean,  //?
         val harFoerstegangstjenesteOpptjening: Boolean,
         val harInntektAvtaleland: Boolean,
         val harOmsorgsopptjening: Boolean,
-        val inntektAvkortet: Kroner,
+        val inntektAvkortet: Kroner,  //?
         val justertPensjonsgivendeInntekt: Kroner,
         val pensjonsgivendeInntekt: Kroner,
     )
@@ -157,6 +155,22 @@ data class OpplysningerBruktIBeregningUTDto(
         val harFoerstegangstjenesteOpptjening: Boolean,
         val harOmsorgsopptjening: Boolean,
         val opptjeningsperioder: List<Opptjeningsperiode>,
+    )
+
+
+    data class OpptjeningsperiodeAvdoed(
+        val aarAvdoed: Year,
+        val harFoerstegangstjenesteOpptjeningAvdoed: Boolean,
+        val harInntektAvtalelandAvdoed: Boolean,
+        val harOmsorgsopptjeningAvdoed: Boolean,
+        val justertPensjonsgivendeInntektAvdoed: Kroner,
+        val pensjonsgivendeInntektAvdoed: Kroner,
+    )
+
+    data class OpptjeningUfoeretrygdAvdoed(
+        val harFoerstegangstjenesteOpptjeningAvdoed: Boolean,
+        val harOmsorgsopptjeningAvdoed: Boolean,
+        val opptjeningsperioderAvdoed: List<OpptjeningsperiodeAvdoed>,
     )
 
     data class TrygdetidGjeldende(

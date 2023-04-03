@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.maler.vedlegg
 
 
+import no.nav.pensjon.brev.api.model.Beregningsmetode
 import no.nav.pensjon.brev.api.model.KravAarsakType
 import no.nav.pensjon.brev.api.model.vedlegg.BarnetilleggGjeldendeSelectors.fellesbarn_safe
 import no.nav.pensjon.brev.api.model.vedlegg.BeregnetUTPerManedGjeldendeSelectors.grunnbeloep
@@ -29,7 +30,6 @@ import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSel
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.harBarnetilleggInnvilget
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.harBrukerKonvertertUP
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.harEktefelletilleggInnvilget
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.harGodkjentBrevkode
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.harKravaarsakEndringInntekt
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.inntektEtterUfoereGjeldende_beloepIEU
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.inntektFoerUfoereBegrunnelse
@@ -38,7 +38,6 @@ import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSel
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.kravAarsakType
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.minsteytelseGjeldende_sats
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.norskTrygdetid
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.opptjeningAvdoedUfoeretrygd
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.opptjeningUfoeretrygd
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.sivilstand
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.trygdetidGjeldende
@@ -49,6 +48,8 @@ import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSel
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.utenlandskTrygdetidBilateral
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.utenlandskTrygdetidEOS
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.yrkesskadeGjeldende
+import no.nav.pensjon.brev.api.model.vedlegg.OpptjeningUfoeretrygdSelectors.harFoerstegangstjenesteOpptjening_safe
+import no.nav.pensjon.brev.api.model.vedlegg.OpptjeningUfoeretrygdSelectors.harOmsorgsopptjening_safe
 import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidGjeldendeSelectors.fastsattTrygdetid
 import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidGjeldendeSelectors.har40AarFastsattTrygdetid
 import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidGjeldendeSelectors.harFramtidigTrygdetidEOS
@@ -63,6 +64,7 @@ import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdGjeldendeSelectors.harFu
 import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdGjeldendeSelectors.harUtbetalingsgradLessThanUfoeregrad
 import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdGjeldendeSelectors.kompensasjonsgrad
 import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdGjeldendeSelectors.ufoeregrad
+import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdGjeldendeSelectors.ufoeretidspunkt
 import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdGjeldendeSelectors.ugradertBruttoPerAar
 import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdOrdinaerSelectors.fradrag
 import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdOrdinaerSelectors.harBeloepRedusert
@@ -84,6 +86,8 @@ fun createVedleggOpplysningerBruktIBeregningUT(
     skalViseMinsteytelse: Boolean,
     skalViseBarnetillegg: Boolean,
     skalViseGjenlevendetillegg: Boolean,
+    skalViseSlikBeregnerViUfoeretrygdenDin: Boolean,
+    skalViseTabellInntekteneBruktIBeregningen: Boolean,
 ) =
     createAttachment<LangBokmalNynorskEnglish, OpplysningerBruktIBeregningUTDto>(
         title = newText(
@@ -123,8 +127,15 @@ fun createVedleggOpplysningerBruktIBeregningUT(
         )
 
         if (skalViseGjenlevendetillegg) {
+            val beregningsmetode = trygdetidsdetaljerGjeldende.beregningsmetode
             val harGjenlevendetillegg = gjenlevendetilleggTabell.notNull()
-            showIf(harGjenlevendetillegg and kravAarsakType.isNotAnyOf(KravAarsakType.SOKNAD_BT)) {
+            val harNyttGjenlevendetillegg = gjenlevendetilleggTabell.harNyttGjenlevendetillegg_safe
+            showIf(
+                harGjenlevendetillegg and kravAarsakType.isNotAnyOf(KravAarsakType.SOKNAD_BT)
+                        and beregningsmetode.isOneOf(Beregningsmetode.FOLKETRYGD) and harNyttGjenlevendetillegg.ifNull(
+                    then = false
+                )
+            ) {
                 includePhrase(
                     TabellUfoereOpplysningerAvdoed(
                         beregnetUTPerManedGjeldende = beregnetUTPerManedGjeldende,
@@ -133,13 +144,20 @@ fun createVedleggOpplysningerBruktIBeregningUT(
                 )
             }
         }
-
-        includePhrase(
-            SlikBeregnerViUfoeretrygdenDin(
-                beregningsmetode = trygdetidsdetaljerGjeldende.beregningsmetode,
-                harGodkjentBrevkode = harGodkjentBrevkode,
-            )
-        )
+        if (skalViseSlikBeregnerViUfoeretrygdenDin) {
+            showIf(kravAarsakType.isNotAnyOf(KravAarsakType.SOKNAD_BT)) {
+                includePhrase(
+                    SlikBeregnerViUfoeretrygdenDin(
+                        beregningsmetode = trygdetidsdetaljerGjeldende.beregningsmetode,
+                        harFoerstegangstjenesteOpptjening = opptjeningUfoeretrygd.harFoerstegangstjenesteOpptjening_safe.ifNull(
+                            then = false),
+                        harOmsorgsopptjening = opptjeningUfoeretrygd.harOmsorgsopptjening_safe.ifNull(then = false),
+                        ufoeretidspunkt = ufoeretrygdGjeldende.ufoeretidspunkt,
+                        virkDatoFom = beregnetUTPerManedGjeldende.virkDatoFom,
+                    )
+                )
+            }
+        }
 
         if (skalViseMinsteytelse) {
             val harMinsteytelseSats = minsteytelseGjeldende_sats.ifNull(0.0).greaterThan(0.0)
@@ -159,7 +177,7 @@ fun createVedleggOpplysningerBruktIBeregningUT(
         showIf(kravAarsakType.isNotAnyOf(KravAarsakType.SOKNAD_BT) and trygdetidGjeldende.harYrkesskadeOppfylt) {
             includePhrase(BeregningAvUfoeretrygdSomSkyldesYrkesskadeEllerYrkessykdom.YrkesskadeEllerYrkessykdom)
         }
-
+if (skalViseTabellInntekteneBruktIBeregningen) {
         showIf(kravAarsakType.isNotAnyOf(KravAarsakType.SOKNAD_BT)) {
             ifNotNull(opptjeningUfoeretrygd) { opptjening ->
                 includePhrase(
@@ -180,7 +198,7 @@ fun createVedleggOpplysningerBruktIBeregningUT(
                     )
                 )
             }
-
+        }
             includePhrase(
                 TrygdetidenDin(
                     beregnetUTPerManedGjeldende = beregnetUTPerManedGjeldende,
@@ -193,6 +211,7 @@ fun createVedleggOpplysningerBruktIBeregningUT(
                     harYrkesskadeOppfylt = trygdetidGjeldende.harYrkesskadeOppfylt,
                 )
             )
+
 
             includePhrase(
                 TabellTrygdetiden(
@@ -305,7 +324,9 @@ fun createVedleggOpplysningerBruktIBeregningUT(
                     includePhrase(
                         SlikBeregnerViGjenlevendetillegg(
                             harGjenlevendetillegg = gjenlevendetillegg.notNull(),
-                            harNyttGjenlevendetillegg = gjenlevendetilleggTabell.harNyttGjenlevendetillegg_safe.ifNull(then = false)
+                            harNyttGjenlevendetillegg = gjenlevendetilleggTabell.harNyttGjenlevendetillegg_safe.ifNull(
+                                then = false
+                            )
                         )
                     )
                 }

@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningufoe
 
 
 import no.nav.pensjon.brev.api.model.Beregningsmetode
+import no.nav.pensjon.brev.maler.fraser.OpphoerBarnetillegg
 import no.nav.pensjon.brev.maler.fraser.common.Constants
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
@@ -10,16 +11,19 @@ import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.text
+import java.time.LocalDate
 
 
 /* Include IF brevkode not(PE_UT_05_100, PE_UT_04_300, PE_UT_07_100)
-AND beloepsgrense <> 6000
 AND kravAarsakType <> soknad_bt
 AND IF brevkode not(PE_UT_04_108, PE_UT_04_109, PE_UT_06_300, PE_UT_07_200, PE_UT_14_300) */
 
 data class SlikBeregnerViUfoeretrygdenDin(
     val beregningsmetode: Expression<Beregningsmetode>,
-    val harGodkjentBrevkode: Expression<Boolean>,
+    val harFoerstegangstjenesteOpptjening: Expression<Boolean>,
+    val harOmsorgsopptjening: Expression<Boolean>,
+    val ufoeretidspunkt: Expression<LocalDate>,
+    val virkDatoFom: Expression<LocalDate>,
 
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
@@ -31,17 +35,21 @@ data class SlikBeregnerViUfoeretrygdenDin(
                 English to "This is how your disability benefit is calculated"
             )
         }
-        showIf(harGodkjentBrevkode) {
+        showIf(beregningsmetode.isOneOf(Beregningsmetode.FOLKETRYGD)) {
             // TBU012V - hente ut året fra uføretidspunktet
-            paragraph {
-                text(
-                    Bokmal to "Når vi beregner uføretrygden din, bruker vi gjennomsnittsinntekten i de tre beste av de fem siste årene før du ble ufør. Inntekt opptil seks ganger folketrygdens grunnbeløp (G) blir tatt med i beregningen. Uføretrygden utgjør 66 prosent av beregningsgrunnlaget. Du finner størrelsen på grunnbeløpet på ${Constants.GRUNNBELOEP_URL}.",
-                    Nynorsk to "Når vi bereknar uføretrygda di, bruker vi gjennomsnittsinntekta i dei tre beste av dei fem siste åra før du blei ufør. Inntekt opptil seks gonger grunnbeløpet (G) i folketrygda blir teken med i berekninga. Uføretrygda utgjer 66 prosent av berekningsgrunnlaget. Du finn storleiken på grunnbeløpet på ${Constants.GRUNNBELOEP_URL}.",
-                    English to "In calculating your disability benefit, we base calculations on your average income for the best three of the last five years prior to the onset of your disability. Income up to six times the National Insurance basic amount (G) is included in the calculation. The disability benefit equals 66 percent of the basis for calculation. You can find out how much the basic amount is at ${Constants.GRUNNBELOEP_URL}."
-                )
+            // TODO: ufoeretidspunkt år <> vorkDatoFom år (og ufoeretidspunkt måned > 06 og virkDatoFom måned > 06)?
+            showIf(not(harFoerstegangstjenesteOpptjening) and not(harOmsorgsopptjening)) {
+                paragraph {
+                    text(
+                        Bokmal to "Når vi beregner uføretrygden din, bruker vi gjennomsnittsinntekten i de tre beste av de fem siste årene før du ble ufør. Inntekt opptil seks ganger folketrygdens grunnbeløp (G) blir tatt med i beregningen. Uføretrygden utgjør 66 prosent av beregningsgrunnlaget. Du finner størrelsen på grunnbeløpet på ${Constants.GRUNNBELOEP_URL}.",
+                        Nynorsk to "Når vi bereknar uføretrygda di, bruker vi gjennomsnittsinntekta i dei tre beste av dei fem siste åra før du blei ufør. Inntekt opptil seks gonger grunnbeløpet (G) i folketrygda blir teken med i berekninga. Uføretrygda utgjer 66 prosent av berekningsgrunnlaget. Du finn storleiken på grunnbeløpet på ${Constants.GRUNNBELOEP_URL}.",
+                        English to "In calculating your disability benefit, we base calculations on your average income for the best three of the last five years prior to the onset of your disability. Income up to six times the National Insurance basic amount (G) is included in the calculation. The disability benefit equals 66 percent of the basis for calculation. You can find out how much the basic amount is at ${Constants.GRUNNBELOEP_URL}."
+                    )
+                }
             }
 
             // TBU013V
+            // TODO: ufoeretidspunkt år = vorkDatoFom år (og ufoeretidspunkt måned < 06 og virkDatoFom måned < 06)?
             paragraph {
                 text(
                     Bokmal to "Når vi beregner uføretrygden din, bruker vi som hovedregel gjennomsnittsinntekten i de tre beste av de fem siste årene før du ble ufør. Fordi ligningen din for året før du ble ufør ikke er ferdig, bruker vi her gjennomsnittsinntekten i de tre beste av de fire siste årene før du ble ufør.",
@@ -67,38 +75,43 @@ data class SlikBeregnerViUfoeretrygdenDin(
             }
 
             // TBU014V
-            paragraph {
-                text(
-                    Bokmal to "Når vi beregner uføretrygden din, bruker vi som hovedregel gjennomsnittsinntekten i de tre beste av de fem siste årene før du ble ufør. Du har vært i militæret, eller hatt sivil førstegangstjeneste. Inntekt i denne perioden skal utgjøre minst tre ganger gjennomsnittlig G (folketrygdens grunnbeløp). Du hadde en høyere inntekt i året før du avtjente førstegangstjeneste, og vi bruker derfor denne inntekten i beregningen.",
-                    Nynorsk to "Når vi bereknar uføretrygda di, bruker vi som hovudregel gjennomsnittsinntekta i dei tre beste av dei fem siste åra før du blei ufør. Du har vore i militæret, eller hatt sivil førstegongsteneste. Inntekt i denne perioden skal utgjere minst tre gonger gjennomsnittleg G (grunnbeløpet i folketrygda). Du hadde ei høgare inntekt i året før du avtente førstegongstenesta, og vi bruker derfor denne inntekta i berekninga.",
-                    English to "In calculating your disability benefit, calculations are, as a main rule, based on your average income for the best three of the last five years prior to the onset of your disability. You have served in the military, or completed your initial service as a civilian. Income during this period must total no less than three times the average G (National Insurance basic amount). Your income was higher in the year prior to your initial service, and we have thus applied this incomed in the calculations."
-                )
-            }
+            showIf(not(harFoerstegangstjenesteOpptjening and not(harOmsorgsopptjening))) {
+                paragraph {
+                    text(
+                        Bokmal to "Når vi beregner uføretrygden din, bruker vi som hovedregel gjennomsnittsinntekten i de tre beste av de fem siste årene før du ble ufør. Du har vært i militæret, eller hatt sivil førstegangstjeneste. Inntekt i denne perioden skal utgjøre minst tre ganger gjennomsnittlig G (folketrygdens grunnbeløp). Du hadde en høyere inntekt i året før du avtjente førstegangstjeneste, og vi bruker derfor denne inntekten i beregningen.",
+                        Nynorsk to "Når vi bereknar uføretrygda di, bruker vi som hovudregel gjennomsnittsinntekta i dei tre beste av dei fem siste åra før du blei ufør. Du har vore i militæret, eller hatt sivil førstegongsteneste. Inntekt i denne perioden skal utgjere minst tre gonger gjennomsnittleg G (grunnbeløpet i folketrygda). Du hadde ei høgare inntekt i året før du avtente førstegongstenesta, og vi bruker derfor denne inntekta i berekninga.",
+                        English to "In calculating your disability benefit, calculations are, as a main rule, based on your average income for the best three of the last five years prior to the onset of your disability. You have served in the military, or completed your initial service as a civilian. Income during this period must total no less than three times the average G (National Insurance basic amount). Your income was higher in the year prior to your initial service, and we have thus applied this incomed in the calculations."
+                    )
+                }
 
-            paragraph {
-                text(
-                    Bokmal to "Bare inntekt opptil seks ganger folketrygdens grunnbeløp (G) regnes med. Uføretrygden utgjør 66 prosent av beregningsgrunnlaget. Du finner størrelsen på grunnbeløpet på ${Constants.GRUNNBELOEP_URL}.",
-                    Nynorsk to "Berre inntekt opptil seks gonger grunnbeløpet (G) i folketrygda blir rekna med. Uføretrygda utgjer 66 prosent av berekningsgrunnlaget. Du finn storleiken på grunnbeløpet på ${Constants.GRUNNBELOEP_URL}.",
-                    English to "The calculations only include income up to six times the National Insurance basic amount (G). The disability benefit equals 66 percent of the basis for calculation. You can find out how much the basic amount is at ${Constants.GRUNNBELOEP_URL}."
-                )
+                paragraph {
+                    text(
+                        Bokmal to "Bare inntekt opptil seks ganger folketrygdens grunnbeløp (G) regnes med. Uføretrygden utgjør 66 prosent av beregningsgrunnlaget. Du finner størrelsen på grunnbeløpet på ${Constants.GRUNNBELOEP_URL}.",
+                        Nynorsk to "Berre inntekt opptil seks gonger grunnbeløpet (G) i folketrygda blir rekna med. Uføretrygda utgjer 66 prosent av berekningsgrunnlaget. Du finn storleiken på grunnbeløpet på ${Constants.GRUNNBELOEP_URL}.",
+                        English to "The calculations only include income up to six times the National Insurance basic amount (G). The disability benefit equals 66 percent of the basis for calculation. You can find out how much the basic amount is at ${Constants.GRUNNBELOEP_URL}."
+                    )
+                }
             }
 
             // TBU015V
-            paragraph {
-                text(
-                    Bokmal to "Når vi beregner uføretrygden din, bruker vi som hovedregel gjennomsnittsinntekten i de tre beste av de fem siste årene før du ble ufør. Du har hatt pensjonsopptjening på grunnlag av omsorgsarbeid i ett eller flere av disse årene. Vi bruker disse årene i beregningen, hvis dette er en fordel for deg.",
-                    Nynorsk to "Når vi bereknar uføretrygda di, bruker vi som hovudregel gjennomsnittsinntekta i dei tre beste av dei fem siste åra før du blei ufør. Du har hatt pensjonsopptening på grunnlag av omsorgsarbeid i eitt eller fleire av desse åra. Vi bruker desse åra i berekninga dersom dette er ein fordel for deg.",
-                    English to "In calculating your disability benefit, calculations are, as a main rule, based on your average income for the best three of the last five years prior to the onset of your disability. You have earned pension points due to care work during one or more of these years. We will include these years in the calculation, if this is to your advantage."
-                )
+            showIf(harOmsorgsopptjening) {
+                paragraph {
+                    text(
+                        Bokmal to "Når vi beregner uføretrygden din, bruker vi som hovedregel gjennomsnittsinntekten i de tre beste av de fem siste årene før du ble ufør. Du har hatt pensjonsopptjening på grunnlag av omsorgsarbeid i ett eller flere av disse årene. Vi bruker disse årene i beregningen, hvis dette er en fordel for deg.",
+                        Nynorsk to "Når vi bereknar uføretrygda di, bruker vi som hovudregel gjennomsnittsinntekta i dei tre beste av dei fem siste åra før du blei ufør. Du har hatt pensjonsopptening på grunnlag av omsorgsarbeid i eitt eller fleire av desse åra. Vi bruker desse åra i berekninga dersom dette er ein fordel for deg.",
+                        English to "In calculating your disability benefit, calculations are, as a main rule, based on your average income for the best three of the last five years prior to the onset of your disability. You have earned pension points due to care work during one or more of these years. We will include these years in the calculation, if this is to your advantage."
+                    )
+                }
+
+                paragraph {
+                    text(
+                        Bokmal to "Bare inntekt opptil seks ganger folketrygdens grunnbeløp (G) regnes med. Uføretrygden utgjør 66 prosent av beregningsgrunnlaget. Du finner størrelsen på grunnbeløpet på ${Constants.GRUNNBELOEP_URL}.",
+                        Nynorsk to "Berre inntekt opptil seks gonger grunnbeløpet (G) i folketrygda blir rekna med. Uføretrygda utgjer 66 prosent av berekningsgrunnlaget. Du finn storleiken på grunnbeløpet på ${Constants.GRUNNBELOEP_URL}.",
+                        English to "The calculations only include income up to six times the National Insurance basic amount (G). The disability benefit equals 66 percent of the basis for calculation. You can find out how much the basic amount is at ${Constants.GRUNNBELOEP_URL}."
+                    )
+                }
             }
 
-            paragraph {
-                text(
-                    Bokmal to "Bare inntekt opptil seks ganger folketrygdens grunnbeløp (G) regnes med. Uføretrygden utgjør 66 prosent av beregningsgrunnlaget. Du finner størrelsen på grunnbeløpet på ${Constants.GRUNNBELOEP_URL}.",
-                    Nynorsk to "Berre inntekt opptil seks gonger grunnbeløpet (G) i folketrygda blir rekna med. Uføretrygda utgjer 66 prosent av berekningsgrunnlaget. Du finn storleiken på grunnbeløpet på ${Constants.GRUNNBELOEP_URL}.",
-                    English to "The calculations only include income up to six times the National Insurance basic amount (G). The disability benefit equals 66 percent of the basis for calculation. You can find out how much the basic amount is at ${Constants.GRUNNBELOEP_URL}."
-                )
-            }
 
             // TBU016V - brukere med inntekt i utlandet
             showIf(beregningsmetode.isOneOf(Beregningsmetode.EOS)) {
@@ -138,5 +151,6 @@ data class SlikBeregnerViUfoeretrygdenDin(
         }
     }
 }
+
 
 

@@ -39,7 +39,7 @@ import no.nav.pensjon.brev.template.dsl.textExpr
 IF (GTInnvilget = true
 AND KravArsakType <> SOKNAD_BT
 AND not(brevkode PE_UT_07_100, PE_UT_05_100)
-AND BeregnoingsMetode = FOLKETRYGD
+AND BeregningsMetode = FOLKETRYGD
 AND NyttGjenlevendetillegg = true
 AND not(brevkode PE_UT_04_108, PE_UT_04_109, PE_UT_04_500, PE_UT_07_200, PE_UT_06_300)
 AND (brevkode <> PE_UT_04_102

@@ -293,7 +293,9 @@ object EndringIOpptjeningAuto : AutobrevTemplate<EndringIOpptjeningAutoDto> {
             createVedleggOpplysningerBruktIBeregningUT(
                 skalViseMinsteytelse = false,
                 skalViseBarnetillegg = true,
-                skalViseGjenlevendetillegg = false
+                skalViseGjenlevendetillegg = false,
+                skalViseSlikBeregnerViUfoeretrygdenDin = true,
+                skalViseTabellInntekteneBruktIBeregningen = true,
                 ), opplysningerBruktIBeregningUT
         )
 
