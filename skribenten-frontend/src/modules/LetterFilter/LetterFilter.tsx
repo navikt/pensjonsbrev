@@ -3,10 +3,11 @@ import styles from "./LetterFilter.module.css"
 import {Button, Heading, Loader, Search} from "@navikt/ds-react"
 import LetterCategories from "./components/LetterCategories/LetterCategories"
 import LetterPicker from "./components/LetterPicker/LetterPicker"
-import {LetterCategory, LetterTemplateInfo} from "./model/skribenten"
+import {LetterCategory, LetterMetadata} from "./model/skribenten"
 
 export interface LetterFilterProps {
-    letterTemplateInfo: LetterTemplateInfo | null,
+    categories: LetterCategory[] | null
+    favourites: LetterMetadata[] | null
     selectedLetter: string | null,
     onLetterSelected: (id: string | null) => void
 }
@@ -18,11 +19,9 @@ function filterCategories(categories: LetterCategory[], searchText: string): Let
     )
 }
 
-const LetterFilter: FC<LetterFilterProps> = ({letterTemplateInfo, selectedLetter, onLetterSelected}) => {
+const LetterFilter: FC<LetterFilterProps> = ({categories, favourites, selectedLetter, onLetterSelected}) => {
     const [searchFilter, setSearchFilter] = useState("")
     const [expandCategories, setExpandCategories] = useState(false)
-    const favourites = letterTemplateInfo?.favourites
-    console.log(letterTemplateInfo)
 
     const searchUpdatedHandler = (text: string) => {
         setSearchFilter(text)
@@ -56,10 +55,10 @@ const LetterFilter: FC<LetterFilterProps> = ({letterTemplateInfo, selectedLetter
                     onChange={searchUpdatedHandler}
                     size="small"/>
 
-                {letterTemplateInfo?.categories != null ? (<LetterCategories categories={filterCategories(letterTemplateInfo?.categories, searchFilter)}
-                                                                             expanded={expandCategories}
-                                                                             selectedLetter={selectedLetter}
-                                                                             onLetterSelected={onLetterSelected}/>)
+                {categories != null ? (<LetterCategories categories={filterCategories(categories, searchFilter)}
+                                                         expanded={expandCategories}
+                                                         selectedLetter={selectedLetter}
+                                                         onLetterSelected={onLetterSelected}/>)
                     : (<Loader/>)}
             </div>
         </div>

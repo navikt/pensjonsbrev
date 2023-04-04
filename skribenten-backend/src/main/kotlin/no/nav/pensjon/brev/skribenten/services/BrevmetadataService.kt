@@ -29,12 +29,6 @@ data class BrevdataDto(
     val brevsystem: String?,
 )
 
-
-data class LetterTemplateInfo(
-    val categories: List<LetterCategory>,
-    val favourites: List<LetterMetadata>,
-)
-
 data class LetterCategory(
     val name: String,
     val templates: List<LetterMetadata>,
@@ -53,31 +47,49 @@ class BrevmetadataService(config: Config) {
             url(brevmetadataUrl)
         }
         install(ContentNegotiation) {
-            jackson{
+            jackson {
                 disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
             }
         }
     }
 
-    //TODO get saksinfo from pen for å bestemme filterer for sakstyper.
-    suspend fun getRedigerbareBrev(): List<LetterCategory> {
-        val metadata: List<BrevdataDto> = httpClient.get("/api/brevdata/brevdataForSaktype/UFOREP?includeXsd=false") {
-            contentType(ContentType.Application.Json)
-        }.body()
-        return metadata
+    suspend fun getRedigerbareBrevKategorier(sakstype: String): List<LetterCategory> {
+        val metadata: List<BrevdataDto> =
+            httpClient.get("/api/brevdata/brevdataForSaktype/$sakstype?includeXsd=false") {
+                contentType(ContentType.Application.Json)
+            }.body()
+        return mapToCategories(metadata)
+    }
+
+    private fun mapToCategories(metadata: List<BrevdataDto>) =
+        metadata
             .filter { it.redigerbart ?: false }
-            .groupBy {
-                it.brevkategori
-            }.map {
+            .groupBy {it.brevkategori}
+            .map {
                 LetterCategory(
                     name = it.key ?: "Annet",
-                    templates = it.value.map { template ->
-                        LetterMetadata(
-                            name = template.dekode ?: "MissingName",
-                            id = template.brevkodeIBrevsystem ?: "MissingCode",
-                        )
-                    }
+                    templates = it.value.mapToMetadata()
                 )
             }
+
+    private fun List<BrevdataDto>.mapToMetadata() =
+        map { template ->
+            LetterMetadata(
+                name = template.dekode ?: "MissingName",
+                id = template.brevkodeIBrevsystem ?: "MissingCode",
+            )
+        }
+
+    suspend fun getRedigerbareBrev(): List<LetterMetadata> {
+        val metadata: List<BrevdataDto> = httpClient.get("/api/brevdata/allbrev/?includeXsd=false") {
+            contentType(ContentType.Application.Json)
+        }.body()
+        return metadata.filter { it.redigerbart ?: false }.mapToMetadata()
     }
+
+    suspend fun getMetadataForLetters(letterCodes: Collection<String>): List<LetterMetadata>
+        = getRedigerbareBrev().filter { letterCodes.contains(it.id) }
+
+
+
 }

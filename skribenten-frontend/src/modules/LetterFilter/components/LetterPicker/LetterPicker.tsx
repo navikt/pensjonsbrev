@@ -10,7 +10,6 @@ interface LetterPickerProps {
 }
 
 const LetterPicker: FC<LetterPickerProps> = ({letters,selectedLetter, onLetterSelected}) => {
-
     return (
         <ul className={styles.letterList}>
             {letters.map(letterData =>

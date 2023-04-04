@@ -8,11 +8,15 @@ import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.util.*
+import io.ktor.util.pipeline.*
 import no.nav.pensjon.brev.api.model.RenderedJsonLetter
 import no.nav.pensjon.brev.api.model.maler.Brevkode
-import no.nav.pensjon.brev.skribenten.auth.*
+import no.nav.pensjon.brev.skribenten.auth.AzureADService
+import no.nav.pensjon.brev.skribenten.auth.JwtConfig
+import no.nav.pensjon.brev.skribenten.auth.UnauthorizedException
+import no.nav.pensjon.brev.skribenten.auth.UserPrincipal
 import no.nav.pensjon.brev.skribenten.services.*
-import java.util.Base64
+import java.util.*
 
 data class RenderLetterRequest(val letterData: Any, val editedLetter: RenderedJsonLetter?)
 
@@ -21,6 +25,7 @@ fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config
     val penService = PenService(skribentenConfig.getConfig("services.pen"), authService)
     val brevbakerService = BrevbakerService(skribentenConfig.getConfig("services.brevbaker"), authService)
     val brevmetadataService = BrevmetadataService(skribentenConfig.getConfig("services.brevmetadata"))
+    val databaseService = SkribentenFakeDatabaseService(brevmetadataService)
 
     routing {
         get("/isAlive") {
@@ -39,7 +44,9 @@ fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config
 
             get("/test/brevbaker") {
                 val brev = brevbakerService.genererBrev(call)
-                respondWithResult(brev, onOk = { respondBytes(Base64.getDecoder().decode(it.base64pdf), ContentType.Application.Pdf) })
+                respondWithResult(
+                    brev,
+                    onOk = { respondBytes(Base64.getDecoder().decode(it.base64pdf), ContentType.Application.Pdf) })
             }
 
             get("/template/{brevkode}") {
@@ -65,8 +72,27 @@ fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config
                 }
             }
             get("/lettertemplates") {
-                call.respond(LetterTemplateInfo(categories = brevmetadataService.getRedigerbareBrev(), favourites = emptyList()))
+                //TODO supplement the data with extra data from brevbaker
+                //TODO fetch templates from brevbaker
+                val userId = getLoggedInUserId()
+                call.respond(brevmetadataService.getRedigerbareBrevKategorier("UFOREP"))
+            }
+
+            post("/favourites") {
+                call.respond(databaseService.addFavourite(getLoggedInUserId(), call.receive<String>()))
+            }
+
+            delete("/favourites") {
+                call.respond(databaseService.removeFavourite(getLoggedInUserId(), call.receive<String>()))
+            }
+
+            get("/favourites") {
+                call.respond(databaseService.getFavourites(getLoggedInUserId()))
             }
         }
     }
 }
+
+private fun PipelineContext<Unit, ApplicationCall>.getLoggedInUserId(): String =
+    (call.authentication.principal<UserPrincipal>()?.getUserId()
+        ?: throw UnauthorizedException("Missing user principal"))

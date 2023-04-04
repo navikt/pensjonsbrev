@@ -5,13 +5,15 @@ interface LetterButtonProps {
     text: string,
     id: string,
     isSelected: boolean,
-    onClicked: (id : string | null) => void,
+    onClicked: (id: string | null) => void,
 }
 
 const LetterButton: FC<LetterButtonProps> = ({text, id, isSelected = false, onClicked}) =>
-        <li className={`${isSelected ? styles.letterButtonOpen : ""} ${styles.letterButton}`}
-                       onClick={() => onClicked(isSelected ? null : id)}>
+    <li className={styles.buttonElement}>
+        <button className={`${isSelected ? styles.letterButtonOpen : ""} ${styles.letterButton}`}
+                         onClick={() => onClicked(isSelected ? null : id)}>
             {text}
-        </li>
+        </button>
+    </li>
 
 export default LetterButton

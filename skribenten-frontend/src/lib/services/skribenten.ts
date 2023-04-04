@@ -2,7 +2,7 @@ import {IMsalContext} from "@azure/msal-react/dist/MsalContext"
 import {withAuthorization} from "./msal"
 import { RedigerbarTemplateDescription, RenderedLetter} from "../../modules/LetterEditor/model/api"
 import {ObjectValue} from "../../modules/ModelEditor/model"
-import {LetterTemplateInfo} from "../../modules/LetterFilter/model/skribenten"
+import {LetterCategory, LetterMetadata} from "../../modules/LetterFilter/model/skribenten"
 
 export interface SkribentenAPIConfig {
     url: string
@@ -67,7 +67,7 @@ class SkribentenAPI {
     }
 
 
-    async getLetterTemplates(msal: IMsalContext): Promise<LetterTemplateInfo> {
+    async getLetterTemplates(msal: IMsalContext): Promise<LetterCategory[]> {
         return withAuthorization(msal, this.config.scope).then(auth =>
             fetch(`${this.config.url}/lettertemplates`, {
                 headers: {
@@ -77,6 +77,44 @@ class SkribentenAPI {
                 method: 'GET',
             })
         ).then(resp => resp.json())
+    }
+
+    async getFavourites(msal: IMsalContext): Promise<string[]> {
+        return withAuthorization(msal, this.config.scope).then(auth =>
+            fetch(`${this.config.url}/favourites`, {
+                headers: {
+                    'Accept': 'application/json',
+                    'Authorization': `Bearer ${auth.accessToken}`,
+                },
+                method: 'GET',
+            })
+        ).then(resp => resp.json()).catch(res => console.log(res))
+    }
+
+    async addFavourite(msal: IMsalContext, letterId: string) {
+        return withAuthorization(msal, this.config.scope).then(auth =>
+            fetch(`${this.config.url}/favourites`, {
+                headers: {
+                    'Accept': 'application/json',
+                    'Authorization': `Bearer ${auth.accessToken}`,
+                },
+                method: 'POST',
+                body: letterId,
+            })
+        )
+    }
+
+    async removeFavourite(msal: IMsalContext, letterId: string) {
+        return withAuthorization(msal, this.config.scope).then(auth =>
+            fetch(`${this.config.url}/favourites`, {
+                headers: {
+                    'Accept': 'application/json',
+                    'Authorization': `Bearer ${auth.accessToken}`,
+                },
+                method: 'DELETE',
+                body: letterId,
+            })
+        )
     }
 
 }

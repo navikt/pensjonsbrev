@@ -10,6 +10,7 @@
     font-weight: var(--a-font-weight-regular);
     font-size: var(--a-font-size-medium);
     padding: 0.125rem 0.25rem;
+    text-align: left;
 }
 
 .letterButton:hover {
@@ -30,4 +31,8 @@
 
 .letterButtonOpen:hover {
     background-color: var(--a-surface-action-selected-hover);
+}
+
+.buttonElement {
+    display: block;
 }

@@ -52,3 +52,7 @@
     margin-top: 0.25rem;
     margin-bottom: 0.25rem;
 }
+
+.categoryHighlighted {
+    background-color: var(--a-gray-500);
+}
