@@ -77,6 +77,8 @@ object Fixtures {
             OpplysningerBruktIBeregningUTDto.GjenlevendetilleggTabell::class -> createOpplysningerBruktIBeregningUTDtoGjenlevendetilleggInformasjon() as T
             OpplysningerBruktIBeregningUTDto.UfoeretrygdOrdinaer::class -> createOpplysningerBruktIBeregningUTDtoUfoeretrygdOrdinaer() as T
             OpplysningerBruktIBeregningUTDto.BeregningUfoere::class -> createOpplysningerBruktIBeregningUTDtoBeregningUfoere() as T
+            OpplysningerBruktIBeregningUTDto.OpptjeningUfoeretrygdAvdoed::class -> createOpplysningerBruktIBeregningUTDtoOpptjeningUfoeretrygdAvdoed() as T
+            OpplysningerBruktIBeregningUTDto.OpptjeningsperiodeAvdoed::class -> createOpplysningerBruktIBeregningUTDtoOpptjeningsperiodeAvdoede() as T
 
             else -> throw IllegalArgumentException("Don't know how to construct: ${letterDataType.qualifiedName}")
         }

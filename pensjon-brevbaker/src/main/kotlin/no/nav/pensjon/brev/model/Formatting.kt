@@ -5,19 +5,20 @@ import no.nav.pensjon.brev.api.model.Sivilstand.*
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.dsl.expression.*
-@JvmName("formatTelefonnummer")
+
 fun Telefonnummer.format() =
     "([0-9][0-9])".toRegex().replace(value, "$1 ").trim()
 
 fun Expression<Telefonnummer>.format() =
     Expression.UnaryInvoke(this, UnaryOperation.FormatPhoneNumber)
 
-@JvmName("formatFoedselsnummer")
-    fun Foedselsnummer.format() =
-        "([0-9]{6})([0-9]{5})".toRegex().replace(value, "$1 $2")
 
-    fun Expression<Foedselsnummer>.format() =
-        Expression.UnaryInvoke(this, UnaryOperation.FormatFoedselsnummer)
+fun Foedselsnummer.format() =
+    "([0-9]{6})([0-9]{5})".toRegex().replace(value, "$1 $2")
+
+@JvmName("formatFoedselsnummer")
+fun Expression<Foedselsnummer>.format() =
+    Expression.UnaryInvoke(this, UnaryOperation.FormatFoedselsnummer)
 
 
 @JvmName("formatKroner")
@@ -126,5 +127,5 @@ private fun sivilstand(sivilstand: Sivilstand, language: Language, bestemtForm: 
         //TODO lag en egen SivilstandEps enum slik at vi kan garantere at teksten blir riktig.
         ENSLIG,
         ENKE,
-        SEPARERT-> ""
+        SEPARERT -> ""
     }

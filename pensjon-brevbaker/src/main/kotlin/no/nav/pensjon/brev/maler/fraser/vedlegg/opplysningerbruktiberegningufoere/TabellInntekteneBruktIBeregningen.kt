@@ -120,7 +120,6 @@ data class TabellInntekteneBruktIBeregningen(
                                     )
                                 }
                                 cell {
-
                                     showIf(
                                         opptjening.harFoerstegangstjenesteOpptjening
                                     ) {

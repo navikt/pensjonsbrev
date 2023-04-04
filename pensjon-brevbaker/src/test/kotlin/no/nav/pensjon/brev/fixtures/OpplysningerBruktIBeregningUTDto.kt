@@ -25,7 +25,6 @@ fun createOpplysningerBruktIBeregningUTDto() =
         kravAarsakType = KravAarsakType.ENDRET_OPPTJENING,
         minsteytelseGjeldende_sats = 0.0,
         norskTrygdetid = listOf(createOpplysningerBruktIBeregningUTDtoNorskTrygdetid()),
-        opptjeningAvdoedUfoeretrygd = Fixtures.create(),
         opptjeningUfoeretrygd = Fixtures.create(),
         sivilstand = Sivilstand.PARTNER,
         trygdetidGjeldende = Fixtures.create(),
@@ -36,6 +35,7 @@ fun createOpplysningerBruktIBeregningUTDto() =
         utenlandskTrygdetidBilateral = (1..3).map { createOpplysningerBruktIBeregningUTDtoUtenlandskTrygdetidBilateral() },
         utenlandskTrygdetidEOS = (1..3).map { createOpplysningerBruktIBeregningUTDtoUtenlandskTrygdetidEOS() },
         yrkesskadeGjeldende = Fixtures.create(),
+        opptjeningUfoeretrygdAvdoed = Fixtures.create(),
     )
 
 fun createOpplysningerBruktIBeregningUTDtoBarnetilleggGjeldende() =
@@ -155,7 +155,7 @@ fun createOpplysningerBruktIBeregningUTDtoOpptjeningUfoeretrygd() =
     OpplysningerBruktIBeregningUTDto.OpptjeningUfoeretrygd(
         harFoerstegangstjenesteOpptjening = false,
         harOmsorgsopptjening = true,
-        opptjeningsperioder = listOf(Fixtures.create(), Fixtures.create())
+        opptjeningsperioder = listOf(Fixtures.create(), Fixtures.create()),
     )
 
 fun createOpplysningerBruktIBeregningUTDtoOpptjeningsperiode() =
@@ -169,6 +169,23 @@ fun createOpplysningerBruktIBeregningUTDtoOpptjeningsperiode() =
         inntektAvkortet = Kroner(0),
         justertPensjonsgivendeInntekt = Kroner(0),
         pensjonsgivendeInntekt = Kroner(0),
+    )
+
+fun createOpplysningerBruktIBeregningUTDtoOpptjeningUfoeretrygdAvdoed() =
+    OpplysningerBruktIBeregningUTDto.OpptjeningUfoeretrygdAvdoed(
+        harFoerstegangstjenesteOpptjeningAvdoed = false,
+        harOmsorgsopptjeningAvdoed = false,
+        opptjeningsperioderAvdoed = listOf(Fixtures.create(), Fixtures.create()),
+    )
+
+fun createOpplysningerBruktIBeregningUTDtoOpptjeningsperiodeAvdoede() =
+    OpplysningerBruktIBeregningUTDto.OpptjeningsperiodeAvdoed(
+       aarAvdoed = Year(2021),
+        harFoerstegangstjenesteOpptjeningAvdoed = false,
+        harInntektAvtalelandAvdoed = false,
+        harOmsorgsopptjeningAvdoed = false,
+        justertPensjonsgivendeInntektAvdoed = Kroner(0),
+        pensjonsgivendeInntektAvdoed = Kroner(0),
     )
 
 fun createOpplysningerBruktIBeregningUTDtoTrygdetidGjeldende() =

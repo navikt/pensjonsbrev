@@ -32,7 +32,6 @@ data class OpplysningerBruktIBeregningUTDto(
     val yrkesskadeGjeldende: YrkesskadeGjeldende?,
     val opptjeningUfoeretrygd: OpptjeningUfoeretrygd?,
     val opptjeningUfoeretrygdAvdoed: OpptjeningUfoeretrygdAvdoed?,
-
 ) {
 
     data class YrkesskadeGjeldende(
@@ -139,6 +138,12 @@ data class OpplysningerBruktIBeregningUTDto(
         val oifuInntekt: Kroner, // TODO
     )
 
+    data class OpptjeningUfoeretrygd(
+        val harFoerstegangstjenesteOpptjening: Boolean,
+        val harOmsorgsopptjening: Boolean,
+        val opptjeningsperioder: List<Opptjeningsperiode>,
+    )
+
     data class Opptjeningsperiode(
         val aar: Year,
         val erBrukt: Boolean,  //?
@@ -151,12 +156,11 @@ data class OpplysningerBruktIBeregningUTDto(
         val pensjonsgivendeInntekt: Kroner,
     )
 
-    data class OpptjeningUfoeretrygd(
-        val harFoerstegangstjenesteOpptjening: Boolean,
-        val harOmsorgsopptjening: Boolean,
-        val opptjeningsperioder: List<Opptjeningsperiode>,
+    data class OpptjeningUfoeretrygdAvdoed(
+        val harFoerstegangstjenesteOpptjeningAvdoed: Boolean,
+        val harOmsorgsopptjeningAvdoed: Boolean,
+        val opptjeningsperioderAvdoed: List<OpptjeningsperiodeAvdoed>,
     )
-
 
     data class OpptjeningsperiodeAvdoed(
         val aarAvdoed: Year,
@@ -165,12 +169,6 @@ data class OpplysningerBruktIBeregningUTDto(
         val harOmsorgsopptjeningAvdoed: Boolean,
         val justertPensjonsgivendeInntektAvdoed: Kroner,
         val pensjonsgivendeInntektAvdoed: Kroner,
-    )
-
-    data class OpptjeningUfoeretrygdAvdoed(
-        val harFoerstegangstjenesteOpptjeningAvdoed: Boolean,
-        val harOmsorgsopptjeningAvdoed: Boolean,
-        val opptjeningsperioderAvdoed: List<OpptjeningsperiodeAvdoed>,
     )
 
     data class TrygdetidGjeldende(

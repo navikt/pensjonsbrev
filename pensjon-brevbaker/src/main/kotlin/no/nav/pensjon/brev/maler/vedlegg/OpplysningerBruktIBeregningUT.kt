@@ -39,6 +39,7 @@ import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSel
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.minsteytelseGjeldende_sats
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.norskTrygdetid
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.opptjeningUfoeretrygd
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.opptjeningUfoeretrygdAvdoed
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.sivilstand
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.trygdetidGjeldende
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.trygdetidsdetaljerGjeldende
@@ -177,28 +178,21 @@ fun createVedleggOpplysningerBruktIBeregningUT(
         showIf(kravAarsakType.isNotAnyOf(KravAarsakType.SOKNAD_BT) and trygdetidGjeldende.harYrkesskadeOppfylt) {
             includePhrase(BeregningAvUfoeretrygdSomSkyldesYrkesskadeEllerYrkessykdom.YrkesskadeEllerYrkessykdom)
         }
+
 if (skalViseTabellInntekteneBruktIBeregningen) {
         showIf(kravAarsakType.isNotAnyOf(KravAarsakType.SOKNAD_BT)) {
-            ifNotNull(opptjeningUfoeretrygd) { opptjening ->
+            ifNotNull(opptjeningUfoeretrygd, opptjeningUfoeretrygdAvdoed) { opptjening, opptjeningAvdoed ->
                 includePhrase(
                     TabellInntekteneBruktIBeregningen(
                         beregningGjeldendeFraOgMed = beregnetUTPerManedGjeldende.virkDatoFom,
                         harAvdoed = false.expr(),
                         opptjeningUfoeretrygd = opptjening,
-                    )
-                )
-            }
-
-            ifNotNull(opptjeningAvdoedUfoeretrygd) { opptjening ->
-                includePhrase(
-                    TabellInntekteneBruktIBeregningen(
-                        beregningGjeldendeFraOgMed = beregnetUTPerManedGjeldende.virkDatoFom,
-                        harAvdoed = true.expr(),
-                        opptjeningUfoeretrygd = opptjening,
+                        opptjeningUfoeretrygdAvdoed = opptjeningAvdoed,
                     )
                 )
             }
         }
+
             includePhrase(
                 TrygdetidenDin(
                     beregnetUTPerManedGjeldende = beregnetUTPerManedGjeldende,
