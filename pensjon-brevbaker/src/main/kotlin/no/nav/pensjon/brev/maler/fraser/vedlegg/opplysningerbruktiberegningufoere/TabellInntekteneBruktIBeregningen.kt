@@ -34,7 +34,6 @@ data class TabellInntekteneBruktIBeregningen(
     val beregningGjeldendeFraOgMed: Expression<LocalDate>,
     val harAvdoed: Expression<Boolean>,
     val opptjeningUfoeretrygd: Expression<OpplysningerBruktIBeregningUTDto.OpptjeningUfoeretrygd?>,
-    val opptjeningUfoeretrygdAvdoed: Expression<OpplysningerBruktIBeregningUTDto.OpptjeningUfoeretrygdAvdoed?>,
 
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
@@ -139,65 +138,6 @@ data class TabellInntekteneBruktIBeregningen(
                                         )
                                     }
                                     showIf(opptjening.harInntektAvtaleland) {
-                                        text(
-                                            Bokmal to "Inntekt i utland* ",
-                                            Nynorsk to "Inntekt i utland* ",
-                                            English to "Income from abroad* "
-                                        )
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-                ifNotNull(opptjeningUfoeretrygdAvdoed) { opptjeningUfoeretrygdAvdoed ->
-                    showIf(harAvdoed) {
-                        forEach(
-                            opptjeningUfoeretrygdAvdoed.opptjeningsperioderAvdoed
-                        ) { opptjeningAvdoed ->
-                            row {
-                                cell {
-                                    textExpr(
-                                        Bokmal to opptjeningAvdoed.aarAvdoed.format(),
-                                        Nynorsk to opptjeningAvdoed.aarAvdoed.format(),
-                                        English to opptjeningAvdoed.aarAvdoed.format()
-                                    )
-                                }
-                                cell {
-                                    textExpr(
-                                        Bokmal to opptjeningAvdoed.pensjonsgivendeInntektAvdoed.format(),
-                                        Nynorsk to opptjeningAvdoed.pensjonsgivendeInntektAvdoed.format(),
-                                        English to opptjeningAvdoed.pensjonsgivendeInntektAvdoed.format()
-                                    )
-                                }
-                                cell {
-                                    textExpr(
-                                        Bokmal to opptjeningAvdoed.justertPensjonsgivendeInntektAvdoed.format() + "**",
-                                        Nynorsk to opptjeningAvdoed.justertPensjonsgivendeInntektAvdoed.format() + "**",
-                                        English to opptjeningAvdoed.justertPensjonsgivendeInntektAvdoed.format() + "**"
-                                    )
-                                }
-                                cell {
-
-                                    showIf(
-                                        opptjeningAvdoed.harFoerstegangstjenesteOpptjeningAvdoed
-                                    ) {
-                                        text(
-                                            Bokmal to "Førstegangstjeneste* ",
-                                            Nynorsk to "Førstegongsteneste* ",
-                                            English to "Initial service* ",
-                                        )
-                                    }
-                                    showIf(
-                                        opptjeningAvdoed.harOmsorgsopptjeningAvdoed
-                                    ) {
-                                        text(
-                                            Bokmal to "Omsorgsår* ",
-                                            Nynorsk to "Omsorgsår* ",
-                                            English to "Care work* "
-                                        )
-                                    }
-                                    showIf(opptjeningAvdoed.harInntektAvtalelandAvdoed) {
                                         text(
                                             Bokmal to "Inntekt i utland* ",
                                             Nynorsk to "Inntekt i utland* ",

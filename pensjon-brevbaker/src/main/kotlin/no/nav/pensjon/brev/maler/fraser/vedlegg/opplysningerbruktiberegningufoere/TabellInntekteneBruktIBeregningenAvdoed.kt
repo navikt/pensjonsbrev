@@ -4,8 +4,6 @@ import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDto
 import no.nav.pensjon.brev.api.model.vedlegg.OpptjeningUfoeretrygdAvdoedSelectors.harFoerstegangstjenesteOpptjeningAvdoed_safe
 import no.nav.pensjon.brev.api.model.vedlegg.OpptjeningUfoeretrygdAvdoedSelectors.harOmsorgsopptjeningAvdoed_safe
 import no.nav.pensjon.brev.api.model.vedlegg.OpptjeningUfoeretrygdAvdoedSelectors.opptjeningsperioderAvdoed
-import no.nav.pensjon.brev.api.model.vedlegg.OpptjeningUfoeretrygdSelectors.harFoerstegangstjenesteOpptjening_safe
-import no.nav.pensjon.brev.api.model.vedlegg.OpptjeningUfoeretrygdSelectors.harOmsorgsopptjening_safe
 import no.nav.pensjon.brev.api.model.vedlegg.OpptjeningsperiodeAvdoedSelectors.aarAvdoed
 import no.nav.pensjon.brev.api.model.vedlegg.OpptjeningsperiodeAvdoedSelectors.harFoerstegangstjenesteOpptjeningAvdoed
 import no.nav.pensjon.brev.api.model.vedlegg.OpptjeningsperiodeAvdoedSelectors.harInntektAvtalelandAvdoed
@@ -28,7 +26,6 @@ import no.nav.pensjon.brev.template.dsl.expression.*
 data class TabellInntekteneBruktIBeregningenAvdoed(
     val beregningGjeldendeFraOgMed: Expression<LocalDate>,
     val harAvdoed: Expression<Boolean>,
-    val opptjeningUfoeretrygd: Expression<OpplysningerBruktIBeregningUTDto.OpptjeningUfoeretrygd?>,
     val opptjeningUfoeretrygdAvdoed: Expression<OpplysningerBruktIBeregningUTDto.OpptjeningUfoeretrygdAvdoed?>,
 
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {

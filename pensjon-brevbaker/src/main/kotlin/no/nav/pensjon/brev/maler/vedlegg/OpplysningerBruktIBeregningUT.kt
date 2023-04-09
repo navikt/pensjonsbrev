@@ -89,6 +89,7 @@ fun createVedleggOpplysningerBruktIBeregningUT(
     skalViseGjenlevendetillegg: Boolean,
     skalViseSlikBeregnerViUfoeretrygdenDin: Boolean,
     skalViseTabellInntekteneBruktIBeregningen: Boolean,
+    skalViseTabellInntekteneBruktIBeregningenAvdoed: Boolean,
 ) =
     createAttachment<LangBokmalNynorskEnglish, OpplysningerBruktIBeregningUTDto>(
         title = newText(
@@ -181,17 +182,30 @@ fun createVedleggOpplysningerBruktIBeregningUT(
 
 if (skalViseTabellInntekteneBruktIBeregningen) {
         showIf(kravAarsakType.isNotAnyOf(KravAarsakType.SOKNAD_BT)) {
-            ifNotNull(opptjeningUfoeretrygd, opptjeningUfoeretrygdAvdoed) { opptjening, opptjeningAvdoed ->
+            ifNotNull(opptjeningUfoeretrygd) { opptjening ->
                 includePhrase(
                     TabellInntekteneBruktIBeregningen(
                         beregningGjeldendeFraOgMed = beregnetUTPerManedGjeldende.virkDatoFom,
                         harAvdoed = false.expr(),
                         opptjeningUfoeretrygd = opptjening,
-                        opptjeningUfoeretrygdAvdoed = opptjeningAvdoed,
                     )
                 )
             }
         }
+
+    if (skalViseTabellInntekteneBruktIBeregningenAvdoed) {
+        showIf(kravAarsakType.isNotAnyOf(KravAarsakType.SOKNAD_BT)) {
+            ifNotNull(opptjeningUfoeretrygdAvdoed) {opptjeningAvdoed ->
+                includePhrase(
+                    TabellInntekteneBruktIBeregningenAvdoed(
+                        beregningGjeldendeFraOgMed = beregnetUTPerManedGjeldende.virkDatoFom,
+                        harAvdoed = true.expr(),
+                        opptjeningUfoeretrygdAvdoed = opptjeningAvdoed
+                    )
+                )
+            }
+        }
+    }
 
             includePhrase(
                 TrygdetidenDin(
