@@ -13,7 +13,7 @@ fun createOpplysningerBruktIBeregningUTDto() =
         beregningUfoere = Fixtures.create(),
         borIUtlandet = false,
         fraOgMedDatoErNesteAar = false,
-        gjenlevendetilleggTabell = Fixtures.create(),
+        opplysningerAvdoed = Fixtures.create(),
         harBarnetilleggInnvilget = false,
         harBrukerKonvertertUP = false,
         harEktefelletilleggInnvilget = false,
@@ -220,20 +220,20 @@ fun createOpplysningerBruktIBeregningUTDtoUtenlandskTrygdetidBilateral() =
     )
 
 fun createOpplysningerBruktIBeregningUTDtoGjenlevendetilleggInformasjon() =
-    OpplysningerBruktIBeregningUTDto.GjenlevendetilleggTabell(
-        anvendtTTAvdoed = 0,
-        beregningsgrunnlagBeloepAarAvdoed = Kroner(0),
-        beregningsgrunnlagBeloepAarYrkesskadeAvdoed = Kroner(0),
+    OpplysningerBruktIBeregningUTDto.OpplysningerAvdoed(
+        anvendtTTAvdoed = 40,
+        beregningsgrunnlagBeloepAarAvdoed = Kroner(400000),
+        beregningsgrunnlagBeloepAarYrkesskadeAvdoed = Kroner(370000),
         erFlyktningAvdoed = false,
         erUngUfoerAvdoed = false,
-        faktiskTTBilateralAvdoed = 0,
-        faktiskTTEOSAvdoed = 0,
+        faktiskTTBilateralAvdoed = 12,
+        faktiskTTEOSAvdoed = 8,
         faktiskTTNordiskKonvAvdoed = 0,
         faktiskTTNorgeAvdoed = 0,
         faktiskTrygdetidINorgePlusAvtalelandAvdoed = 0,
         foedselsnummerAvdoed = Foedselsnummer("01014512345"),
         framtidigTTAvtalelandAvdoed = 0,
-        framtidigTTEOSAvdoed = 0,
+        framtidigTTEOSAvdoed = 16,
         framtidigTTNorskAvdoed = 0,
         harNyttGjenlevendetillegg = false,
         inntektVedSkadetidspunktAvdoed = Kroner(0),

@@ -275,9 +275,13 @@ object OpphoerBarnetilleggAuto : AutobrevTemplate<OpphoerBarnetilleggAutoDto> {
             createVedleggOpplysningerBruktIBeregningUT(
                 skalViseMinsteytelse = false,
                 skalViseBarnetillegg = true,
-                skalViseGjenlevendetillegg = false,
+                skalViseAvdoed = false,
                 skalViseSlikBeregnerViUfoeretrygdenDin = false,
                 skalViseTabellInntekteneBruktIBeregningen = false,
+                skalViseTabellInntekteneBruktIBeregningenAvdoed = false,
+                skalViseSlikBeregnerViGjenlevendetillegg = false,
+                skalViseForDegSomMottarEktefelletillegg = false,
+                skalViseEtteroppgjoerAvUfoeretrygdOgBarnetillegg = false,
             ), opplysningerBruktIBeregningUT
         )
         includeAttachment(vedleggDineRettigheterOgPlikterUfoere, orienteringOmRettigheterUfoere)

@@ -1,16 +1,9 @@
 package no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningufoere
 
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDto
-import no.nav.pensjon.brev.api.model.vedlegg.OpptjeningUfoeretrygdAvdoedSelectors.opptjeningsperioderAvdoed
 import no.nav.pensjon.brev.api.model.vedlegg.OpptjeningUfoeretrygdSelectors.harFoerstegangstjenesteOpptjening_safe
 import no.nav.pensjon.brev.api.model.vedlegg.OpptjeningUfoeretrygdSelectors.harOmsorgsopptjening_safe
 import no.nav.pensjon.brev.api.model.vedlegg.OpptjeningUfoeretrygdSelectors.opptjeningsperioder
-import no.nav.pensjon.brev.api.model.vedlegg.OpptjeningsperiodeAvdoedSelectors.aarAvdoed
-import no.nav.pensjon.brev.api.model.vedlegg.OpptjeningsperiodeAvdoedSelectors.harFoerstegangstjenesteOpptjeningAvdoed
-import no.nav.pensjon.brev.api.model.vedlegg.OpptjeningsperiodeAvdoedSelectors.harInntektAvtalelandAvdoed
-import no.nav.pensjon.brev.api.model.vedlegg.OpptjeningsperiodeAvdoedSelectors.harOmsorgsopptjeningAvdoed
-import no.nav.pensjon.brev.api.model.vedlegg.OpptjeningsperiodeAvdoedSelectors.justertPensjonsgivendeInntektAvdoed
-import no.nav.pensjon.brev.api.model.vedlegg.OpptjeningsperiodeAvdoedSelectors.pensjonsgivendeInntektAvdoed
 import no.nav.pensjon.brev.api.model.vedlegg.OpptjeningsperiodeSelectors.aar
 import no.nav.pensjon.brev.api.model.vedlegg.OpptjeningsperiodeSelectors.harFoerstegangstjenesteOpptjening
 import no.nav.pensjon.brev.api.model.vedlegg.OpptjeningsperiodeSelectors.harInntektAvtaleland
@@ -32,7 +25,6 @@ import no.nav.pensjon.brev.template.dsl.expression.*
 
 data class TabellInntekteneBruktIBeregningen(
     val beregningGjeldendeFraOgMed: Expression<LocalDate>,
-    val harAvdoed: Expression<Boolean>,
     val opptjeningUfoeretrygd: Expression<OpplysningerBruktIBeregningUTDto.OpptjeningUfoeretrygd?>,
 
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
@@ -41,24 +33,9 @@ data class TabellInntekteneBruktIBeregningen(
         // TBU036V
         title1 {
             textExpr(
-                Bokmal to "Inntekt lagt til grunn for beregning av ".expr() +
-                        ifElse(
-                            harAvdoed,
-                            ifTrue = "avdødes uføretrygd",
-                            ifFalse = "uføretrygden din"
-                        ) + " fra ".expr() + beregningGjeldendeFraOgMed.format(),
-                Nynorsk to "Inntekt lagd til grunn for berekning av ".expr() +
-                        ifElse(
-                            harAvdoed,
-                            ifTrue = "avdødes uføretrygd",
-                            ifFalse = "uføretrygda di"
-                        ) + " frå ".expr() + beregningGjeldendeFraOgMed.format(),
-                English to "Income on which to calculate ".expr() +
-                        ifElse(
-                            harAvdoed,
-                            ifTrue = "the disability benefit for the deceased",
-                            ifFalse = "your disability benefit"
-                        ) + " from ".expr() + beregningGjeldendeFraOgMed.format()
+                Bokmal to "Inntekt lagt til grunn for beregning av uføretrygden din fra ".expr() + beregningGjeldendeFraOgMed.format(),
+                Nynorsk to "Inntekt lagd til grunn for berekning av uføretrygda di frå ".expr() + beregningGjeldendeFraOgMed.format(),
+                English to "Income on which to calculate your disability benefit from ".expr() + beregningGjeldendeFraOgMed.format()
             )
         }
         // TBU037V
@@ -92,7 +69,6 @@ data class TabellInntekteneBruktIBeregningen(
                 }
             }) {
                 ifNotNull(opptjeningUfoeretrygd) { opptjeningUfoeretrygd ->
-                    showIf(not(harAvdoed)) {
                         forEach(
                             opptjeningUfoeretrygd.opptjeningsperioder
                         ) { opptjening ->
@@ -150,7 +126,6 @@ data class TabellInntekteneBruktIBeregningen(
                     }
                 }
             }
-        }
         paragraph {
             showIf(
                 opptjeningUfoeretrygd.harOmsorgsopptjening_safe.ifNull(false) and opptjeningUfoeretrygd.harFoerstegangstjenesteOpptjening_safe.ifNull(

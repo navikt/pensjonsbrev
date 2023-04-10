@@ -25,7 +25,6 @@ import no.nav.pensjon.brev.template.dsl.expression.*
 
 data class TabellInntekteneBruktIBeregningenAvdoed(
     val beregningGjeldendeFraOgMed: Expression<LocalDate>,
-    val harAvdoed: Expression<Boolean>,
     val opptjeningUfoeretrygdAvdoed: Expression<OpplysningerBruktIBeregningUTDto.OpptjeningUfoeretrygdAvdoed?>,
 
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
@@ -70,7 +69,6 @@ data class TabellInntekteneBruktIBeregningenAvdoed(
                 }
             }) {
                 ifNotNull(opptjeningUfoeretrygdAvdoed) { opptjeningUfoeretrygdAvdoed ->
-                    showIf(harAvdoed) {
                         forEach(
                             opptjeningUfoeretrygdAvdoed.opptjeningsperioderAvdoed
                         ) { opptjeningAvdoed ->
@@ -129,7 +127,6 @@ data class TabellInntekteneBruktIBeregningenAvdoed(
                     }
                 }
             }
-        }
         paragraph {
             showIf(
                 opptjeningUfoeretrygdAvdoed.harOmsorgsopptjeningAvdoed_safe.ifNull(false) and opptjeningUfoeretrygdAvdoed.harFoerstegangstjenesteOpptjeningAvdoed_safe.ifNull(

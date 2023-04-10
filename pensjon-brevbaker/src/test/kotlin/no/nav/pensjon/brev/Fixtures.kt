@@ -74,7 +74,7 @@ object Fixtures {
             OpplysningerBruktIBeregningUTDto.NorskTrygdetid::class -> createOpplysningerBruktIBeregningUTDtoNorskTrygdetid() as T
             OpplysningerBruktIBeregningUTDto.UtenlandskTrygdetidEOS::class -> createOpplysningerBruktIBeregningUTDtoUtenlandskTrygdetidEOS() as T
             OpplysningerBruktIBeregningUTDto.UtenlandskTrygdetidBilateral::class -> createOpplysningerBruktIBeregningUTDtoUtenlandskTrygdetidBilateral() as T
-            OpplysningerBruktIBeregningUTDto.GjenlevendetilleggTabell::class -> createOpplysningerBruktIBeregningUTDtoGjenlevendetilleggInformasjon() as T
+            OpplysningerBruktIBeregningUTDto.OpplysningerAvdoed::class -> createOpplysningerBruktIBeregningUTDtoGjenlevendetilleggInformasjon() as T
             OpplysningerBruktIBeregningUTDto.UfoeretrygdOrdinaer::class -> createOpplysningerBruktIBeregningUTDtoUfoeretrygdOrdinaer() as T
             OpplysningerBruktIBeregningUTDto.BeregningUfoere::class -> createOpplysningerBruktIBeregningUTDtoBeregningUfoere() as T
             OpplysningerBruktIBeregningUTDto.OpptjeningUfoeretrygdAvdoed::class -> createOpplysningerBruktIBeregningUTDtoOpptjeningUfoeretrygdAvdoed() as T

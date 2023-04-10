@@ -9,7 +9,7 @@ data class OpplysningerBruktIBeregningUTDto(
     val beregningUfoere: BeregningUfoere,
     val borIUtlandet: Boolean,  // PE_Grunnlag_Persongrunnlagsliste_PersonBostedsland <> "nor" AND PE_Grunnlag_Persongrunnlagsliste_PersonBostedsland <> ""
     val fraOgMedDatoErNesteAar: Boolean,
-    val gjenlevendetilleggTabell: GjenlevendetilleggTabell?,
+    val opplysningerAvdoed: OpplysningerAvdoed?,
     val harBarnetilleggInnvilget: Boolean?,  // (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true) OR (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true)
     val harBrukerKonvertertUP: Boolean,
     val harEktefelletilleggInnvilget: Boolean?,  // TODO: PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_Ektefelletillegg_ETinnvilget = true
@@ -217,7 +217,7 @@ data class OpplysningerBruktIBeregningUTDto(
         val ufoeretrygdPlussInntekt: Kroner,  // TODO: NettoAkk + NettoRestAr + ForventetInntekt
     )
 
-    data class GjenlevendetilleggTabell(
+    data class OpplysningerAvdoed(
         val anvendtTTAvdoed: Int,  // PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GjenlevendetilleggInformasjon_AnvendtTrygdetid
         val beregningsgrunnlagBeloepAarAvdoed: Kroner,  // PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GjenlevendetilleggInformasjon_BeregningsgrunnlagAvdod
         val beregningsgrunnlagBeloepAarYrkesskadeAvdoed: Kroner?, // PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GjenlevendetilleggInformasjon_BeregningsgrunnlagAvdodYrkesskadeArsbelop
