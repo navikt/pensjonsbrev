@@ -9,6 +9,8 @@
     border: 0.0625rem solid rgba(0, 0, 0, 0.19);
     border-radius: 0.25rem;
     max-height: inherit;
+    min-width: 20rem;
+    max-width: 30rem;
 }
 
 .sectionHeading {

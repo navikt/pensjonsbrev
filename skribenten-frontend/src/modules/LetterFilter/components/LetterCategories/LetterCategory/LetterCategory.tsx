@@ -15,7 +15,7 @@ const LetterCategory: FC<LetterCategoryProps> = ({category, isExpanded, selected
     const [isActive, setIsActive] = useState(false)
     const expanded = isActive || isExpanded
     const categoryIsSelected = (): boolean => {
-        if (expanded && selectedLetter) {
+        if (expanded && !selectedLetter) {
             return true
         } else if (selectedLetter && category.templates.some(c => c.id === selectedLetter)) {
             return true
@@ -25,7 +25,7 @@ const LetterCategory: FC<LetterCategoryProps> = ({category, isExpanded, selected
 
 
     const content = (expanded && (
-        <div className={`${styles.letterCategoryContainer} ${categoryIsSelected() ? styles.categoryHighlighted : ""}`}>
+        <div className={`${styles.letterCategoryContainer}`}>
             <LetterPicker letters={category.templates}
                           selectedLetter={selectedLetter}
                           onLetterSelected={onLetterSelected}/>
@@ -41,9 +41,8 @@ const LetterCategory: FC<LetterCategoryProps> = ({category, isExpanded, selected
                     {category.name}
                 </h2>
 
-                {expanded && <ChevronUpIcon title="a11y-title" fontSize="1rem" className={styles.expansionArrowUp}/>}
-                {!expanded &&
-                    <ChevronDownIcon title="a11y-title" fontSize="1rem" className={styles.expansionArrowDown}/>}
+                {expanded && <ChevronUpIcon title="a11y-title" fontSize="1rem" className={styles.expansionArrow}/>}
+                {!expanded && <ChevronDownIcon title="a11y-title" fontSize="1rem" className={styles.expansionArrow}/>}
             </button>
             {content}
         </li>
