@@ -125,7 +125,7 @@ fun createVedleggOpplysningerBruktIBeregningUT(
                 inntektsgrenseErUnderTak = inntektsgrenseErUnderTak,
                 beregnetUTPerManedGjeldende = beregnetUTPerManedGjeldende,
                 inntektEtterUfoereGjeldendeBeloep = inntektEtterUfoereGjeldende_beloepIEU,
-                ungUfoerGjeldende_erUnder20Aar = ungUfoerGjeldende_erUnder20Aar,
+                erUngUfoer = ungUfoerGjeldende_erUnder20Aar.notNull(),
                 trygdetidsdetaljerGjeldende = trygdetidsdetaljerGjeldende,
                 barnetilleggGjeldende = barnetilleggGjeldende,
                 harMinsteytelse = minsteytelseGjeldende_sats.notNull(),

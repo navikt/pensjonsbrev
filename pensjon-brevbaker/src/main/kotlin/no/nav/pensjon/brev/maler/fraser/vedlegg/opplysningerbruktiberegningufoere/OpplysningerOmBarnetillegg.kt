@@ -4,6 +4,7 @@ import no.nav.pensjon.brev.api.model.Kroner
 import no.nav.pensjon.brev.api.model.KronerSelectors.value
 import no.nav.pensjon.brev.api.model.Sivilstand
 import no.nav.pensjon.brev.api.model.vedlegg.BarnetilleggGjeldendeSelectors.fellesbarn_safe
+import no.nav.pensjon.brev.api.model.vedlegg.BarnetilleggGjeldendeSelectors.foedselsdatoPaaBarnTilleggetGjelder
 import no.nav.pensjon.brev.api.model.vedlegg.BarnetilleggGjeldendeSelectors.saerkullsbarn_safe
 import no.nav.pensjon.brev.api.model.vedlegg.FellesbarnSelectors.avkortningsbeloepAar
 import no.nav.pensjon.brev.api.model.vedlegg.FellesbarnSelectors.avkortningsbeloepAar_safe
@@ -39,18 +40,17 @@ import no.nav.pensjon.brev.api.model.vedlegg.SaerkullsbarnSelectors.inntektstak
 import no.nav.pensjon.brev.api.model.vedlegg.SaerkullsbarnSelectors.justeringsbeloepAar
 import no.nav.pensjon.brev.api.model.vedlegg.SaerkullsbarnSelectors.justeringsbeloepAar_safe
 import no.nav.pensjon.brev.maler.fraser.common.Felles
+import no.nav.pensjon.brev.model.bestemtForm
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.model.ubestemtForm
-import no.nav.pensjon.brev.template.Element
+import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
-import no.nav.pensjon.brev.template.Expression
-import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.*
-import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
+import java.time.LocalDate
 
 data class OpplysningerOmBarnetillegg(
     val barnetillegg: Expression<OpplysningerBruktIBeregningUTDto.BarnetilleggGjeldende>,
@@ -62,8 +62,8 @@ data class OpplysningerOmBarnetillegg(
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         val harAnvendtTrygdetidUnder40 = anvendtTrygdetid.lessThan(40)
-        val harTilleggFellesBarn = barnetillegg.notNull()
-        val harTilleggSaerkullsbarn = barnetillegg.notNull()
+        val harTilleggFellesBarn = barnetillegg.fellesbarn_safe.notNull()
+        val harTilleggSaerkullsbarn = barnetillegg.saerkullsbarn_safe.notNull()
         val barnetillegSaerkullsbarnErRedusertMotInntekt =
             barnetillegg.saerkullsbarn_safe.erRedusertMotinntekt_safe.ifNull(false)
         val inntektEllerFribeloepErPeriodisert =
@@ -73,6 +73,14 @@ data class OpplysningerOmBarnetillegg(
         val justeringsbeloepSaerkull = barnetillegg.saerkullsbarn_safe.justeringsbeloepAar_safe.ifNull(Kroner(0))
         val harJusteringsbeloep = justeringsbeloepFelles.greaterThan(0) or
                 justeringsbeloepSaerkull.greaterThan(0)
+
+        includePhrase(
+            ForDegSomHarRettTilBarnetillegg(
+                harAnvendtTrygdetidUnder40 = harAnvendtTrygdetidUnder40,
+                harYrkesskade = harYrkesskade,
+                barnetillegg.foedselsdatoPaaBarnTilleggetGjelder,
+            )
+        )
 
         title1 {
             text(
@@ -323,7 +331,7 @@ data class OpplysningerOmBarnetillegg(
                                 )
                                 text(Bokmal to "*", Nynorsk to "*", English to "*", BOLD)
                                 text(
-                                    Bokmal to " (oppgitt som et årlig beløep)",
+                                    Bokmal to " (oppgitt som et årlig beløp)",
                                     Nynorsk to " (oppgitt som eit årleg beløp)",
                                     English to " (calculated to an annual amount)"
                                 )
@@ -442,14 +450,69 @@ data class OpplysningerOmBarnetillegg(
         }
     }
 
-    object VedleggBeregnUTInnlednBT : OutlinePhrase<LangBokmalNynorskEnglish>() {
-        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
+    // TBU 501V
+    data class ForDegSomHarRettTilBarnetillegg(
+        val harAnvendtTrygdetidUnder40: Expression<Boolean>,
+        val harYrkesskade: Expression<Boolean>,
+        val foedselsdatoPaaBarnTilleggetGjelder: Expression<List<LocalDate>>,
+    ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+            title1 {
+                text(
+                    Bokmal to "For deg som har rett til barnetillegg",
+                    Nynorsk to "For deg som har rett til barnetillegg",
+                    English to "For you who are eligible for child supplement",
+                )
+            }
+            val barnFlertall = foedselsdatoPaaBarnTilleggetGjelder.size().greaterThan(1)
+
+            paragraph {
+                textExpr(
+                    Bokmal to "Du har rett til barnetillegg for barn født".expr(),
+                    Nynorsk to "Du har rett til barnetillegg for barn fødd".expr(),
+                    English to "You are entitled to child supplement for the".expr() +
+                            ifElse(barnFlertall, "children", "child") + " born",
+                )
+                includePhrase(Felles.TextOrList(foedselsdatoPaaBarnTilleggetGjelder.map(BinaryOperation.LocalizedDateFormat)))
+            }
+
             paragraph {
                 text(
-                    Bokmal to "Størrelsen på barnetillegget er avhengig av samlet inntekt. ",
-                    Nynorsk to "Storleiken på barnetillegget er avhengig av samla inntekt. ",
-                    English to "The amount of child supplement is dependent on your total income. "
+                    Bokmal to "Barnetillegget kan utgjøre opptil 40 prosent av folketrygdens grunnbeløp for hvert barn du forsørger. Du har rett til barnetillegg så lenge du forsørger barn som er under 18 år. Barnetillegget opphører når barnet fyller 18 år. ",
+                    Nynorsk to "Barnetillegget kan utgjere opptil 40 prosent av grunnbeløpet i folketrygda for kvart barn du forsørgjer. Du har rett til barnetillegg så lenge du forsørgjer barn som er under 18 år.  Barnetillegget opphøyrer når barnet fyller 18 år.",
+                    English to "The child supplement may be up to 40 percent of the national insurance basic amount for each child you support. You are entitled to child supplement as long as you support children under 18 years of age. Payment of child supplement stops when the child turns 18."
                 )
+
+                showIf(harAnvendtTrygdetidUnder40 and not(harYrkesskade)) {
+                    text(
+                        Bokmal to " Hvor mye du får i barnetillegg er også avhengig av trygdetiden din. Fordi trygdetiden din er kortere enn 40 år, blir barnetillegget ditt redusert.",
+                        Nynorsk to " Kor mykje du får i barnetillegg, er også avhengig av trygdetida di. Fordi trygdetida di er kortare enn 40 år, blir barnetillegget ditt redusert.",
+                        English to " How much child supplement you receive depends on your period of national insurance cover. As your period of national insurance cover is less than 40 years, your child supplement will be reduced."
+                    )
+                }
+            }
+
+            paragraph {
+                text(
+                    Bokmal to "Dersom et barn får egen inntekt eller kapitalinntekt i løpet av et år som er høyere enn folketrygdens grunnbeløp, så har du ikke rett til barnetillegg for dette barnet. ",
+                    Nynorsk to "Dersom eit barn får eiga inntekt eller kapitalinntekt som er høgare enn grunnbeløpet i folketrygda gjennom eit år, så har du ikkje rett til barnetillegg for dette barnet.",
+                    English to "If a child has its own income or capital income in a year that is higher than the national insurance basic amount, you are not entitled to child supplement for this child."
+                )
+            }
+        }
+
+    }
+
+    object VedleggBeregnUTInnlednBT : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+            paragraph {
+                text(
+                    Bokmal to "Størrelsen på barnetillegget er avhengig av samlet inntekt.",
+                    Nynorsk to "Storleiken på barnetillegget er avhengig av samla inntekt.",
+                    English to "The amount of child supplement is dependent on your total income."
+                )
+            }
+            paragraph {
                 text(
                     Bokmal to "Barnetillegget kan bli redusert ut fra:",
                     Nynorsk to "Barnetillegget kan bli redusert ut frå:",
@@ -500,6 +563,7 @@ data class OpplysningerOmBarnetillegg(
                     }
                 }
             }
+        }
     }
 
     data class PeriodisertInntektSaerkullsbarn(
@@ -718,9 +782,9 @@ data class OpplysningerOmBarnetillegg(
             }
             paragraph {
                 text(
-                    Bokmal to "Dersom begge foreldrene mottar uføretrygd blir barnetillegget gitt til den som har rett til det høyeste tillegget. Dette gjelder også dersom den ene forelderen mottar alderspensjon.",
-                    Nynorsk to "Dersom begge foreldra får uføretrygd, blir barnetillegget gitt til den som har rett til det høgaste tillegget. Dette gjeld også dersom den eine forelderen får alderspensjon.",
-                    English to "If both parents recieve disbaility benefit, child supplement will be paid to the parent with the highest disability benefit. This applies also if one of the parents receives retirement pension."
+                    Bokmal to "Dersom begge foreldrene mottar uføretrygd blir barnetillegget gitt til den som har rett til det høyeste tillegget.",
+                    Nynorsk to "Dersom begge foreldra får uføretrygd, blir barnetillegget gitt til den som har rett til det høgaste tillegget.",
+                    English to "If both parents recieve disbaility benefit, child supplement will be paid to the parent with the highest disability benefit."
                 )
             }
         }
@@ -747,7 +811,7 @@ data class OpplysningerOmBarnetillegg(
                 )
             }
             showIf(harAnvendtTrygdetidUnder40 and not(harYrkesskade)) {
-                paragraph{
+                paragraph {
                     text(
                         Bokmal to "Siden trygdetiden din er kortere enn 40 år, blir fribeløpet redusert ut fra den trygdetiden du har. ",
                         Nynorsk to "Sidan trygdetida di er kortare enn 40 år, blir fribeløpet redusert ut frå den trygdetida du har. ",
@@ -757,9 +821,9 @@ data class OpplysningerOmBarnetillegg(
             }
             paragraph {
                 text(
-                    Bokmal to "Dersom begge foreldrene mottar uføretrygd blir barnetillegget gitt til den som har den daglige omsorgen for barnet. Dette gjelder også dersom den ene forelderen mottar alderspensjon. Har foreldrene delt omsorg for barnet, blir barnetillegget gitt til den forelderen som bor på samme folkeregistrete adresse som barnet. ",
-                    Nynorsk to "Dersom begge foreldra får uføretrygd, blir barnetillegget gitt til den som har den daglege omsorga for barnet. Dette gjeld også dersom den eine forelderen får alderspensjon. Har foreldra delt omsorg for barnet, blir barnetillegget gitt til den forelderen som bur på same folkeregistrerte adresse som barnet.",
-                    English to "If both parents recieve disbaility benefit, child supplement will be paid to the parent with guardianship of the child. This applies also if one of the parents receives retirement pension. If both parents have guardianship of the child, child supplement is given to the parent who lives at the same registered adresse as the child."
+                    Bokmal to "Dersom begge foreldrene mottar uføretrygd blir barnetillegget gitt til den som har den daglige omsorgen for barnet. Har foreldrene delt omsorg for barnet, blir barnetillegget gitt til den forelderen som bor på samme folkeregistrerte adresse som barnet.",
+                    Nynorsk to "Dersom begge foreldra får uføretrygd, blir barnetillegget gitt til den som har den daglege omsorga for barnet. Har foreldra delt omsorg for barnet, blir barnetillegget gitt til den forelderen som bur på same folkeregistrerte adresse som barnet.",
+                    English to "If both parents recieve disbaility benefit, child supplement will be paid to the parent with guardianship of the child. If both parents have guardianship of the child, child supplement is given to the parent who lives at the same registered address as the child."
                 )
             }
         }
@@ -825,43 +889,56 @@ data class OpplysningerOmBarnetillegg(
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             paragraph {
-
-                val foreldreBorSammen =
-                    sivilstand.isOneOf(
-                        Sivilstand.GIFT,
-                        Sivilstand.PARTNER,
-                        Sivilstand.SAMBOER1_5,
-                        Sivilstand.SAMBOER3_2
-                    )
                 showIf(harKravaarsakEndringInntekt) {
-                    text(Bokmal to "Når inntekten ", Nynorsk to "Når inntekta ", English to "When ")
+                    textExpr(
+                        Bokmal to "Når inntekten ".expr(),
+                        Nynorsk to "Når inntekta ".expr(),
+                        English to "When ".expr(),
+                    )
+                    showIf(harFlereTillegg) {
+                        textExpr(
+                            Bokmal to "til deg eller ".expr() + sivilstand.bestemtForm() + " din",
+                            Nynorsk to "di eller til ".expr() + sivilstand.bestemtForm() + " din",
+                            English to "your or your ".expr() + sivilstand.ubestemtForm() + "'s",
+                        )
+                    }.orShow {
+                        text(
+                            Bokmal to "din",
+                            Nynorsk to "di",
+                            English to "your",
+                        )
+                    }
+                    text(
+                        Bokmal to " endrer seg",
+                        Nynorsk to " endrar seg",
+                        English to "",
+                    )
                 }.orShow {
                     text(
                         Bokmal to "Har det vært en endring i inntekten ",
-                        Nynorsk to "Har det vært en endring i inntekten ",
-                        English to "If "
+                        Nynorsk to "Har det vore ei endring i inntekta ",
+                        English to "If ",
                     )
-                }
-
-                showIf(foreldreBorSammen) {
-                    textExpr(
-                        Bokmal to "din eller til din ".expr() + sivilstand.ubestemtForm(),
-                        Nynorsk to "di eller til di ".expr() + sivilstand.ubestemtForm(),
-                        English to "your or your ".expr() + sivilstand.ubestemtForm() + "'s",
-                    )
-                }.orShow {
-                    text(
-                        Bokmal to "din",
-                        Nynorsk to "di",
-                        English to "your",
-                    )
+                    showIf(harFlereTillegg) {
+                        textExpr(
+                            Bokmal to "til deg eller ".expr() + sivilstand.bestemtForm() + " din" ,
+                            Nynorsk to "til deg eller ".expr() + sivilstand.bestemtForm() + " din",
+                            English to "your or your ".expr() + sivilstand.ubestemtForm() + "'s",
+                        )
+                    }.orShow {
+                        text(
+                            Bokmal to "din",
+                            Nynorsk to "di",
+                            English to "your",
+                        )
+                    }
                 }
 
                 textExpr(
-                    Bokmal to " endrer seg, blir reduksjonen av ".expr() +
+                    Bokmal to " blir reduksjonen av ".expr() +
                             ifElse(harFlereTillegg, "barnetilleggene", "barnetillegget") +
                             " vurdert på nytt.",
-                    Nynorsk to " endrar seg, blir reduksjonen av ".expr() +
+                    Nynorsk to " blir reduksjonen av ".expr() +
                             ifElse(harFlereTillegg, "barnetilleggene", "barnetillegget") +
                             " vurdert på nytt.",
                     English to " income has been changed, your child supplement will be recalculated.".expr(),

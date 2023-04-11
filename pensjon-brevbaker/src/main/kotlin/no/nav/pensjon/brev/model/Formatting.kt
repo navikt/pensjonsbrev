@@ -73,15 +73,15 @@ object FormatSivilstandTabell : BinaryOperation<Sivilstand, Language, String>() 
             }
 
             SAMBOER1_5 -> when (second) {
-                Bokmal -> "Samboer (jf. Folketrygdloven § 1-5)"
-                Nynorsk -> "Sambuar (jf. folketrygdlova § 1-5)"
-                English -> "Cohabitation (cf. Section 1-5 of the National Insurance Act)"
+                Bokmal -> "Samboer (jf. Folketrygdloven § 1-5)"
+                Nynorsk -> "Sambuar (jf. folketrygdlova § 1-5)"
+                English -> "Cohabitation (cf. Section 1-5 of the National Insurance Act)"
             }
 
             SAMBOER3_2 -> when (second) {
-                Bokmal -> "Samboer (jf. Folketrygdloven § 12-13)"
-                Nynorsk -> "Sambuar (jf. folketrygdlova § 12-13)"
-                English -> "Cohabitation (cf. Section 12-13 of the National Insurance Act)"
+                Bokmal -> "Samboer (jf. Folketrygdloven § 12-13)"
+                Nynorsk -> "Sambuar (jf. Folketrygdlova § 12-13)"
+                English -> "Cohabitation (cf. Section 12-13 of the National Insurance Act)"
             }
         }
 }

@@ -37,7 +37,7 @@ import no.nav.pensjon.brev.template.dsl.text
 @TemplateModelHelpers
 object UngUfoerAuto : AutobrevTemplate<UngUfoerAutoDto> {
 
-    override val kode: Brevkode.AutoBrev = Brevkode.AutoBrev.UNG_UFOER_AUTO
+    override val kode: Brevkode.AutoBrev = Brevkode.AutoBrev.UT_UNG_UFOER_20_AAR_AUTO
 
     override val template = createTemplate(
         name = kode.name,

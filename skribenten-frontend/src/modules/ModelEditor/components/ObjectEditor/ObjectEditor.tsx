@@ -1,4 +1,4 @@
-import {ObjectTypeSpecification, ObjectTypeSpecifications, TObject} from "../../../LetterEditor/model"
+import {ObjectTypeSpecification, ObjectTypeSpecifications, TObject} from "../../../LetterEditor/model/api"
 import {FieldValue} from "../../model"
 import {bindAction, BoundAction} from "../../../../lib/actions"
 import {FC} from "react"

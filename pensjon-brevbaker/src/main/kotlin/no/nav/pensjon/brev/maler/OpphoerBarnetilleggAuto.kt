@@ -270,7 +270,8 @@ object OpphoerBarnetilleggAuto : AutobrevTemplate<OpphoerBarnetilleggAutoDto> {
             includePhrase(Ufoeretrygd.SkattForDegSomBorIUtlandet(brukerBorInorge))
             includePhrase(Felles.HarDuSpoersmaalPesys)
         }
-        includeAttachment(vedleggMaanedligUfoeretrygdFoerSkatt, maanedligUfoeretrygdFoerSkatt)
+
+        includeAttachmentIfNotNull(vedleggMaanedligUfoeretrygdFoerSkatt, maanedligUfoeretrygdFoerSkatt)
         includeAttachment(
             createVedleggOpplysningerBruktIBeregningUT(
                 skalViseMinsteytelse = false,
@@ -282,7 +283,8 @@ object OpphoerBarnetilleggAuto : AutobrevTemplate<OpphoerBarnetilleggAutoDto> {
                 skalViseSlikBeregnerViGjenlevendetillegg = false,
                 skalViseForDegSomMottarEktefelletillegg = false,
                 skalViseEtteroppgjoerAvUfoeretrygdOgBarnetillegg = false,
-            ), opplysningerBruktIBeregningUT
+            ), opplysningerBruktIBeregningUT,
+            harBarnetillegg
         )
         includeAttachment(vedleggDineRettigheterOgPlikterUfoere, orienteringOmRettigheterUfoere)
     }

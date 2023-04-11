@@ -14,7 +14,7 @@ data class OpphoerBarnetilleggAutoDto(
     val brukerBorInorge: Boolean,
     val foedselsdatoPaaBarnMedOpphoertBarnetillegg: List<LocalDate>,
     val grunnbeloep: Kroner,
-    val maanedligUfoeretrygdFoerSkatt: MaanedligUfoeretrygdFoerSkattDto,
+    val maanedligUfoeretrygdFoerSkatt: MaanedligUfoeretrygdFoerSkattDto?,
     val oensketVirkningsDato: LocalDate,
     val opplysningerBruktIBeregningUT: OpplysningerBruktIBeregningUTDto,
     val orienteringOmRettigheterUfoere: OrienteringOmRettigheterUfoereDto,

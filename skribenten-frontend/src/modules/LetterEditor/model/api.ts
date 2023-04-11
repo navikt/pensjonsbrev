@@ -4,29 +4,48 @@ export interface Identifiable {
 }
 
 export const LITERAL = 'LITERAL'
-export interface LiteralValue extends Identifiable {
+export interface LiteralValue {
+    readonly id: number
     readonly type: typeof LITERAL
     readonly text: string
 }
 export const VARIABLE = 'VARIABLE'
-export interface VariableValue extends Identifiable {
+export interface VariableValue {
+    readonly id: number
     readonly type: typeof VARIABLE
     readonly name?: string
     readonly text: string
 }
+
+export const ITEM_LIST = 'ITEM_LIST'
+export interface ItemList {
+    readonly id: number
+    readonly type: typeof ITEM_LIST
+    readonly items: Item[]
+}
+export interface Item {
+    content: TextContent[]
+}
+
 export type TextContent = LiteralValue | VariableValue
+export type Content = ItemList | LiteralValue | VariableValue
 
 export interface Block extends Identifiable {
     readonly type: string
     readonly locked?: boolean
     readonly editable?: boolean
-    readonly content: TextContent[]
 }
+
+export const PARAGRAPH = 'PARAGRAPH'
 export interface ParagraphBlock extends Block {
-    readonly type: 'PARAGRAPH'
+    readonly type: typeof PARAGRAPH
+    readonly content: Content[]
 }
+
+export const TITLE1 = 'TITLE1'
 export interface Title1Block extends Block {
-    readonly type: 'TITLE1'
+    readonly type: typeof TITLE1
+    readonly content: TextContent[]
 }
 export type AnyBlock = Title1Block | ParagraphBlock
 export interface Sakspart {
@@ -98,12 +117,4 @@ export interface LetterModelSpecification {
 export interface RedigerbarTemplateDescription {
     readonly description: TemplateDescription
     readonly modelSpecification: LetterModelSpecification
-}
-
-export type CursorPosition = {
-    contentId: number,
-    startOffset: number,
-}
-export type StealFocus = {
-    [blockId: number]: CursorPosition | undefined
 }

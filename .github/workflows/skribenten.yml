@@ -44,7 +44,6 @@ jobs:
         env:
           "GITHUB_TOKEN": "${{ secrets.GITHUB_TOKEN }}"
 
-  # TODO: Få inn kjøring av tester (linting kjøres ved build)
   build-skribenten-frontend:
     name: "Build skribenten frontend"
     runs-on: "ubuntu-latest"

@@ -69,8 +69,8 @@ sealed class ContentOrControlStructure<out Lang : LanguageSupport, out C : Eleme
 
     @Suppress("DataClassPrivateConstructor")
     data class ForEach<out Lang : LanguageSupport, C : Element<Lang>, Item : Any> private constructor(
-        val items: Expression<List<Item>>,
-        val body: List<ContentOrControlStructure<Lang, C>>,
+        val items: Expression<Collection<Item>>,
+        val body: Collection<ContentOrControlStructure<Lang, C>>,
         private val next: NextExpression<Item>
     ) : ContentOrControlStructure<Lang, C>() {
 
@@ -88,8 +88,8 @@ sealed class ContentOrControlStructure<out Lang : LanguageSupport, out C : Eleme
 
         companion object {
             fun <Lang : LanguageSupport, C : Element<Lang>, Item : Any> create(
-                items: Expression<List<Item>>,
-                createView: (item: Expression<Item>) -> List<ContentOrControlStructure<Lang, C>>
+                items: Expression<Collection<Item>>,
+                createView: (item: Expression<Item>) -> Collection<ContentOrControlStructure<Lang, C>>
             ): ForEach<Lang, C, Item> =
                 NextExpression<Item>().let { ForEach(items, createView(it), it) }
         }

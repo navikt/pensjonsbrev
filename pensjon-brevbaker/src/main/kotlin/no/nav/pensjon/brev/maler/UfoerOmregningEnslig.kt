@@ -62,7 +62,7 @@ import no.nav.pensjon.brev.template.dsl.text
 @TemplateModelHelpers
 object UfoerOmregningEnslig : AutobrevTemplate<UfoerOmregningEnsligDto> {
 
-    override val kode: Brevkode.AutoBrev = Brevkode.AutoBrev.UFOER_OMREGNING_ENSLIG
+    override val kode: Brevkode.AutoBrev = Brevkode.AutoBrev.UT_OMREGNING_ENSLIG_AUTO
 
     override val template = createTemplate(
         name = kode.name,
