@@ -115,13 +115,13 @@ data class OpplysningerBruktIBeregningUTDto(
         val beloepsgrense: Kroner,
         val beregningsgrunnlagBeloepAar: Kroner,
         val erKonvertert: Boolean,
-        val harDelvisUfoeregrad: Boolean,  // TODO: Ny
-        val harFullUfoeregrad: Boolean, // TODO: Ny
+        val harDelvisUfoeregrad: Boolean,
+        val harFullUfoeregrad: Boolean,
         val harUtbetalingsgradLessThanUfoeregrad: Boolean,
         val kompensasjonsgrad: Double,
         val ufoeregrad: Int,
         val ufoeretidspunkt: LocalDate,
-        val ugradertBruttoPerAar: Kroner, // TODO: Ny
+        val ugradertBruttoPerAar: Kroner,
     )
 
     data class InntektsAvkortingGjeldende(
@@ -135,7 +135,7 @@ data class OpplysningerBruktIBeregningUTDto(
     data class InntektFoerUfoereGjeldende(
         val erSannsynligEndret: Boolean,
         val ifuInntekt: Kroner,
-        val oifuInntekt: Kroner, // TODO
+        val oifuInntekt: Kroner,
     )
 
     data class OpptjeningUfoeretrygd(
@@ -211,10 +211,10 @@ data class OpplysningerBruktIBeregningUTDto(
     data class BeregningUfoere(
         val harGammelUTBeloepUlikNyUTBeloep: Boolean, // TODO: PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopGammelUT <> PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopNyUT
         val harInntektsgrenseLessThanInntektstak: Boolean,  // TODO: PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektsgrense < PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektstak
-        val nettoAkkumulertePlussNettoRestAar: Kroner,  // TODO: NettoAkk + NettoRestAr
-        val nettoPerAarReduksjonUT: Kroner, // TODO: overskytenedeInntekt X kompensasjonsgrad
-        val overskytendeInntekt: Kroner,  // TODO: PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_ForventetInntekt - PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektsgrense
-        val ufoeretrygdPlussInntekt: Kroner,  // TODO: NettoAkk + NettoRestAr + ForventetInntekt
+        val nettoAkkumulertePlussNettoRestAar: Kroner,  // TODO: Summeres i Exstream: NettoAkk + NettoRestAr
+        val nettoPerAarReduksjonUT: Kroner, // TODO: Summeres i Exstream: overskytenedeInntekt X kompensasjonsgrad
+        val overskytendeInntekt: Kroner,  // TODO: Summeres i Exstream: PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_ForventetInntekt - PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektsgrense
+        val ufoeretrygdPlussInntekt: Kroner,  // TODO: Summeres i Exstream: NettoAkk + NettoRestAr + ForventetInntekt
     )
 
     data class OpplysningerAvdoed(
@@ -227,9 +227,10 @@ data class OpplysningerBruktIBeregningUTDto(
         val faktiskTTEOSAvdoed: Int?,
         val faktiskTTNordiskKonvAvdoed: Int?,
         val faktiskTTNorgeAvdoed: Int?,  // PE_Vedtaksdata_TrygdetidAvdod_FaTTNorge
-        val faktiskTrygdetidINorgePlusAvtalelandAvdoed: Int?, // TODO: Summeres i Extream: PE_Vedtaksdata_TrygdetidAvdod_FaTTNorge + PE_Vedtaksdata_TrygdetidAvdod_TTUtlandTrygdeAvtale_FaTTBilateral
+        val faktiskTTNorgePlusFaktiskBilateralAvdoed: Int?, // TODO: Summeres i Extream: PE_Vedtaksdata_TrygdetidAvdod_FaTTNorge + PE_Vedtaksdata_TrygdetidAvdod_TTUtlandTrygdeAvtale_FaTTBilateral
+        val faktiskTTNorgePlusfaktiskTTEOSAvdoed: Int?,  // TODO: Summeres i Exstream: PE_Vedtaksdata_TrygdetidAvdod_FaTTNorge + PE_Vedtaksdata_TrygdetidAvdod_TTUtlandTrygdeAvtale_FaTTEOS
         val foedselsnummerAvdoed: Foedselsnummer,
-        val framtidigTTAvtalelandAvdoed: Int?,  //
+        val framtidigTTAvtalelandAvdoed: Int?,
         val framtidigTTEOSAvdoed: Int?,  // PE_Vedtaksdata_TrygdetidAvdod_FramtidigTTEOS
         val framtidigTTNorskAvdoed: Int?, // PE_Vedtaksdata_TrygdetidAvdod_FramtidigTTNorsk
         val harNyttGjenlevendetillegg: Boolean,  // PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_NyttGjenlevendetillegg

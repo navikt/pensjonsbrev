@@ -11,7 +11,8 @@ import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerAvdoedSelectors.faktisk
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerAvdoedSelectors.faktiskTTEOSAvdoed_safe
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerAvdoedSelectors.faktiskTTNordiskKonvAvdoed_safe
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerAvdoedSelectors.faktiskTTNorgeAvdoed_safe
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerAvdoedSelectors.faktiskTrygdetidINorgePlusAvtalelandAvdoed_safe
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerAvdoedSelectors.faktiskTTNorgePlusFaktiskBilateralAvdoed_safe
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerAvdoedSelectors.faktiskTTNorgePlusfaktiskTTEOSAvdoed_safe
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerAvdoedSelectors.foedselsnummerAvdoed_safe
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerAvdoedSelectors.framtidigTTAvtalelandAvdoed_safe
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerAvdoedSelectors.framtidigTTEOSAvdoed_safe
@@ -244,7 +245,7 @@ data class TabellUfoereOpplysningerAvdoed(
                         }
                     }
                 }
-                ifNotNull(opplysningerAvdoed.faktiskTrygdetidINorgePlusAvtalelandAvdoed_safe) { faktiskTTNorge ->
+                ifNotNull(opplysningerAvdoed.faktiskTTNorgeAvdoed_safe) { faktiskTTNorge ->
                     showIf(faktiskTTNorge.greaterThan(0)) {
                         row {
                             cell {
@@ -302,7 +303,7 @@ data class TabellUfoereOpplysningerAvdoed(
                                 }
                                 cell {
                                     val faktiskTrygdetid =
-                                        opplysningerAvdoed.faktiskTrygdetidINorgePlusAvtalelandAvdoed_safe
+                                        opplysningerAvdoed.faktiskTTNorgePlusfaktiskTTEOSAvdoed_safe
                                     includePhrase(Felles.MaanederText(faktiskTrygdetid.ifNull(then = 0)))
                                 }
                             }
@@ -440,7 +441,7 @@ data class TabellUfoereOpplysningerAvdoed(
                             }
                             cell {
                                 val faktiskTrygdetidINorgePlusAvtalelandAvdoed =
-                                    opplysningerAvdoed.faktiskTrygdetidINorgePlusAvtalelandAvdoed_safe
+                                    opplysningerAvdoed.faktiskTTNorgePlusFaktiskBilateralAvdoed_safe
                                 includePhrase(Felles.MaanederText(faktiskTrygdetidINorgePlusAvtalelandAvdoed.ifNull(then = 0)))
                             }
                         }

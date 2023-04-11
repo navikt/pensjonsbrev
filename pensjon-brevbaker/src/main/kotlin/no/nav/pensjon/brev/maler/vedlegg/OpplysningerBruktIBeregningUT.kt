@@ -201,7 +201,8 @@ fun createVedleggOpplysningerBruktIBeregningUT(
         }
 
         if (skalViseTabellInntekteneBruktIBeregningenAvdoed) {
-            showIf(kravAarsakType.isNotAnyOf(KravAarsakType.SOKNAD_BT)) {
+            val harAvdoed = true.expr()
+            showIf(harAvdoed and kravAarsakType.isNotAnyOf(KravAarsakType.SOKNAD_BT)) {
                 ifNotNull(opptjeningUfoeretrygdAvdoed) { opptjeningAvdoed ->
                     includePhrase(
                         TabellInntekteneBruktIBeregningenAvdoed(
