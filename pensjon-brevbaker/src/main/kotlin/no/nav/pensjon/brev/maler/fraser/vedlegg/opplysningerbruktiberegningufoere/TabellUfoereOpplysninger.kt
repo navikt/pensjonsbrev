@@ -105,7 +105,7 @@ data class TabellUfoereOpplysninger(
                         )
                     }
                 }
-                showIf(ufoeretrygdGjeldende.beregningsgrunnlagBeloepAar.greaterThan(0)) {
+                showIf(ufoeretrygdGjeldende.beregningsgrunnlagBeloepAar.greaterThan(0) and not(harMinsteytelse)) {
                     row {
                         cell {
                             text(
@@ -274,35 +274,34 @@ data class TabellUfoereOpplysninger(
                             )
                         }
                     }
-                }
 
-                showIf(brukersSivilstand.isOneOf(GIFT_LEVER_ADSKILT, PARTNER_LEVER_ADSKILT)) {
-                    val erGift = brukersSivilstand.isOneOf(GIFT_LEVER_ADSKILT)
-                    row {
-                        cell {
-                            //Du eller partnaren er registrert med annan bustad, eller er på institusjon
-                            textExpr(
-                                Bokmal to "Du eller ".expr()
-                                        + ifElse(erGift,"ektefellen","partneren") +
-                                        " er registrert med annet bosted, eller er på institusjon",
-                                Nynorsk to "Du eller ".expr()
-                                        + ifElse(erGift,"ektefellen","partnaren") +
-                                        " er registrert med annan bustad, eller er på institusjon",
-                                English to "You or your ".expr()
-                                        + ifElse(erGift,"spouse","partner") +
-                                        " have been registered as having a different address, or as living in an institution",
-                            )
-                        }
-                        cell {
-                            text(
-                                Bokmal to "Ja",
-                                Nynorsk to "Ja",
-                                English to "Yes",
-                            )
+                    showIf(brukersSivilstand.isOneOf(GIFT_LEVER_ADSKILT, PARTNER_LEVER_ADSKILT)) {
+                        val erGift = brukersSivilstand.isOneOf(GIFT_LEVER_ADSKILT)
+                        row {
+                            cell {
+                                textExpr(
+                                    Bokmal to "Du eller ".expr()
+                                            + ifElse(erGift, "ektefellen", "partneren") +
+                                            " er registrert med annet bosted, eller er på institusjon",
+                                    Nynorsk to "Du eller ".expr()
+                                            + ifElse(erGift, "ektefellen", "partnaren") +
+                                            " er registrert med annan bustad, eller er på institusjon",
+                                    English to "You or your ".expr()
+                                            + ifElse(erGift, "spouse", "partner") +
+                                            " have been registered as having a different address, or as living in an institution",
+                                )
+                            }
+                            cell {
+                                text(
+                                    Bokmal to "Ja",
+                                    Nynorsk to "Ja",
+                                    English to "Yes",
+                                )
+                            }
                         }
                     }
-
                 }
+
                 showIf(erUngUfoer) {
                     row {
                         cell {
@@ -413,7 +412,6 @@ data class TabellUfoereOpplysninger(
                             )
                         }
                     }
-
                 }
 
                 showIf(beregningsmetode.isOneOf(Beregningsmetode.EOS, Beregningsmetode.NORDISK)) {
@@ -658,6 +656,11 @@ data class TabellUfoereOpplysninger(
                             }
                         }
                     }
+
+                    //førstegangsbehandling bruker bor i utlandet
+                    //TODO manglende felt år med inntekt
+                    //TODO år med inntekt brukt i beregningen
+
                 }
 
                 ifNotNull(barnetilleggGjeldende) { barnetillegg ->
@@ -762,7 +765,8 @@ data class TabellUfoereOpplysninger(
                                     includePhrase(Felles.KronerText(inntektstakSaerkull))
                                 }
                             }
-                        }.orShowIf(inntektstakFelles.greaterThan(0)) {
+                        }
+                        showIf(inntektstakFelles.greaterThan(0)) {
                             row {
                                 cell {
                                     text(
