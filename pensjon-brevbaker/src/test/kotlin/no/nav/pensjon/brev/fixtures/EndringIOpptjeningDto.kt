@@ -9,8 +9,7 @@ import java.time.LocalDate
 @Suppress("unused")
 fun createEndringIOpptjeningAutoDto() =
     EndringIOpptjeningAutoDto(
-        endringIOpptjening = Fixtures.create(),
-        endringIOpptjeningBoolean = Fixtures.create(),
+        avkortningsinformasjon = Fixtures.create(),
         fellesbarnTillegg = Fixtures.create(),
         harEktefelletilleggInnvilget = true,
         harGjenlevendetilleggInnvilget = true,
@@ -24,10 +23,19 @@ fun createEndringIOpptjeningAutoDto() =
     )
 
 fun createEndringIOpptjeningAutoDtoEndringIOpptjening() =
-    EndringIOpptjeningAutoDto.EndringIOpptjening(
+    EndringIOpptjeningAutoDto.Avkortningsinformasjon(
         beloepsgrense = Kroner(60000),
+        brukerBorInorge = false,
         forventetInntekt = Kroner(400000),
         grunnbeloep = Kroner(111477),  // 1G 2023
+        harBeloepOekt = false,
+        harBeloepRedusert = true,
+        harDelvisUfoeregrad = true,
+        harFullUfoeregrad = false,
+        harFullUtbetalingsgrad = false,
+        harInntektEtterUfoere = true,
+        harUfoeretrygdUtbetalt = true,
+        harUtbetalingsgrad = true,
         inntektsgrense = Kroner(300000),
         inntektsgrenseNesteAar = Kroner(380000),
         inntektstak = Kroner(0),
@@ -43,19 +51,6 @@ fun createEndringIOpptjeningAutoDtoEndringIOpptjening() =
         ufoertrygdUtbetalt = Kroner(2000000),
         utbetalingsgrad = 80,
         utbetaltPerMaaned = Kroner(16000),
-    )
-
-fun createEndringIOpptjeningAutoDtoEndringIOpptjeningBoolean() =
-    EndringIOpptjeningAutoDto.EndringIOpptjeningBoolean(
-        brukerBorInorge = false,
-        harBeloepOekt = false,
-        harBeloepRedusert = true,
-        harDelvisUfoeregrad = true,
-        harFullUfoeregrad = false,
-        harFullUtbetalingsgrad = false,
-        harInntektEtterUfoere = true,
-        harUtbetalingsgrad = true,
-        harUfoeretrygdUtbetalt = true,
     )
 
 fun createEndringIOpptjeningAutoDtoBarnetilleggFellesbarn() =
