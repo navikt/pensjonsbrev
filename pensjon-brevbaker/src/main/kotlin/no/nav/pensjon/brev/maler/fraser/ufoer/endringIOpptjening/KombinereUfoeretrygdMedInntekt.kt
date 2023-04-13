@@ -1,6 +1,29 @@
 package no.nav.pensjon.brev.maler.fraser.ufoer.endringIOpptjening
 
 import no.nav.pensjon.brev.api.model.Kroner
+import no.nav.pensjon.brev.api.model.maler.AvkortningsinformasjonSelectors.beloepsgrense
+import no.nav.pensjon.brev.api.model.maler.AvkortningsinformasjonSelectors.forventetInntekt
+import no.nav.pensjon.brev.api.model.maler.AvkortningsinformasjonSelectors.harFullUtbetalingsgrad
+import no.nav.pensjon.brev.api.model.maler.AvkortningsinformasjonSelectors.harInntektEtterUfoere
+import no.nav.pensjon.brev.api.model.maler.AvkortningsinformasjonSelectors.inntektsgrense
+import no.nav.pensjon.brev.api.model.maler.AvkortningsinformasjonSelectors.inntektsgrenseNesteAar
+import no.nav.pensjon.brev.api.model.maler.AvkortningsinformasjonSelectors.inntektstak
+import no.nav.pensjon.brev.api.model.maler.AvkortningsinformasjonSelectors.kompensasjonsgrad
+import no.nav.pensjon.brev.api.model.maler.AvkortningsinformasjonSelectors.oppjustertInntektEtterUfoere
+import no.nav.pensjon.brev.api.model.maler.AvkortningsinformasjonSelectors.oppjustertInntektFoerUfoere80prosent
+import no.nav.pensjon.brev.api.model.maler.AvkortningsinformasjonSelectors.utbetalingsgrad
+import no.nav.pensjon.brev.api.model.maler.BeregningUfoereEndringIOpptjeningSelectors.grunnbeloep
+import no.nav.pensjon.brev.api.model.maler.BeregningUfoereEndringIOpptjeningSelectors.harBeloepOekt
+import no.nav.pensjon.brev.api.model.maler.BeregningUfoereEndringIOpptjeningSelectors.harBeloepRedusert
+import no.nav.pensjon.brev.api.model.maler.BeregningUfoereEndringIOpptjeningSelectors.harDelvisUfoeregrad
+import no.nav.pensjon.brev.api.model.maler.BeregningUfoereEndringIOpptjeningSelectors.harFullUfoeregrad
+import no.nav.pensjon.brev.api.model.maler.BeregningUfoereEndringIOpptjeningSelectors.nettoAkkumulerteBeloepUtbetalt
+import no.nav.pensjon.brev.api.model.maler.BeregningUfoereEndringIOpptjeningSelectors.nettoAkkumulertePlussNettoRestAar
+import no.nav.pensjon.brev.api.model.maler.BeregningUfoereEndringIOpptjeningSelectors.nettoUfoeretrygdUtbetaltPerMaaned
+import no.nav.pensjon.brev.api.model.maler.BeregningUfoereEndringIOpptjeningSelectors.ufoeregrad
+import no.nav.pensjon.brev.api.model.maler.EndringIOpptjeningAutoDto
+import no.nav.pensjon.brev.api.model.maler.EndringIOpptjeningAutoDtoSelectors.avkortningsinformasjon
+import no.nav.pensjon.brev.api.model.maler.EndringIOpptjeningAutoDtoSelectors.beregningUfoereEndringIOpptjening
 import no.nav.pensjon.brev.maler.fraser.common.Constants
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Expression
@@ -16,20 +39,19 @@ object KombinereUfoeretrygdMedInntekt {
 
     // TBU1201, TBBU1203
     data class KombinereUfoeretrygdOgInntektOverskrift(
-        val harDelvisUfoeregrad: Expression<Boolean>,
-        val harFullUfoeregrad: Expression<Boolean>,
-        val harFullUtbetalingsgrad: Expression<Boolean>,
+        val avkortningsinformasjon: Expression<EndringIOpptjeningAutoDto.Avkortningsinformasjon>,
+        val beregningUfoereEndringIOpptjening: Expression<EndringIOpptjeningAutoDto.BeregningUfoereEndringIOpptjening>,
 
         ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             title1 {
-                showIf(harFullUfoeregrad and harFullUtbetalingsgrad) {
+                showIf(beregningUfoereEndringIOpptjening.harFullUfoeregrad and avkortningsinformasjon.harFullUtbetalingsgrad) {
                     text(
                         Bokmal to "Skal du kombinere uføretrygd og inntekt?",
                         Nynorsk to "Skal du kombinere uføretrygd og inntekt?",
                         English to "Will you combine disability benefit with income?"
                     )
-                }.orShowIf(harDelvisUfoeregrad) {
+                }.orShowIf(beregningUfoereEndringIOpptjening.harDelvisUfoeregrad) {
                     text(
                         Bokmal to "For deg som kombinerer uføretrygd og inntekt",
                         Nynorsk to "For deg som kombinerer uføretrygd og inntekt",
@@ -42,12 +64,12 @@ object KombinereUfoeretrygdMedInntekt {
 
     // TBU1204, TBU2251
     data class InntektVedSidenAvUfoeretrygd(
-        val ufoeregrad: Expression<Int>,
-        val utbetalingsgrad: Expression<Int>,
+        val avkortningsinformasjon: Expression<EndringIOpptjeningAutoDto.Avkortningsinformasjon>,
+        val beregningUfoereEndringIOpptjening: Expression<EndringIOpptjeningAutoDto.BeregningUfoereEndringIOpptjening>,
 
         ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-            showIf(ufoeregrad.equalTo(utbetalingsgrad)) {
+            showIf(beregningUfoereEndringIOpptjening.ufoeregrad.equalTo(avkortningsinformasjon.utbetalingsgrad)) {
                 paragraph {
                     text(
                         Bokmal to "Du har mulighet til å ha inntekt ved siden av uføretrygden din. Det lønner seg å jobbe, fordi inntekt og uføretrygd alltid vil være høyere enn uføretrygd alene.",
@@ -55,7 +77,7 @@ object KombinereUfoeretrygdMedInntekt {
                         English to "You have the possibilty to earn an income in addition to your disability benefit. It pays to work, your income and disabiltiy benefit combined will always be higher than disability benefit alone."
                     )
                 }
-            }.orShowIf(utbetalingsgrad.lessThan(ufoeregrad)) {
+            }.orShowIf(avkortningsinformasjon.utbetalingsgrad.lessThan(beregningUfoereEndringIOpptjening.ufoeregrad)) {
                 paragraph {
                     text(
                         Bokmal to "Utbetalingen av uføretrygden din er redusert fordi du har inntekt utover inntektsgrensen. Det lønner seg likevel å jobbe, fordi inntekt og uføretrygd alltid vil være høyere enn uføretrygd alene.",
@@ -69,52 +91,51 @@ object KombinereUfoeretrygdMedInntekt {
 
     // TBU1205, TBU1206  (TBU1296 er ikke tatt med - konvertering til UT utgikk 31. desember 2018) Dermed endres flette logikk for TBU1205.
     data class Inntektsgrense(
-        val beloepsgrense: Expression<Kroner>,
-        val grunnbeloep: Expression<Kroner>,
-        val harFullUfoeregrad: Expression<Boolean>,
-        val harInntektEtterUfoere: Expression<Boolean>,
-        val inntektsgrense: Expression<Kroner>,
-        val inntektsgrenseNesteAar: Expression<Kroner>,
-        val ufoeregrad: Expression<Int>,
+        val avkortningsinformasjon: Expression<EndringIOpptjeningAutoDto.Avkortningsinformasjon>,
+        val beregningUfoereEndringIOpptjening: Expression<EndringIOpptjeningAutoDto.BeregningUfoereEndringIOpptjening>,
 
         ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-            val inntektsgrenseFaktisk = inntektsgrenseNesteAar.greaterThan(0)
+            val inntektsgrenseFaktisk = avkortningsinformasjon.inntektsgrenseNesteAar.greaterThan(0)
+            val inntektsgrenseNesteAar = avkortningsinformasjon.inntektsgrenseNesteAar.format()
+            val inntektsgrense = avkortningsinformasjon.inntektsgrense.format()
             // inntektsgrenseFaktisk = if inntektsgrenseNesteAar > 0 -> inntektsgrenseNesteAar, else -> inntektsgrense
             showIf(
-                harFullUfoeregrad and not(harInntektEtterUfoere) and (beloepsgrense.notEqualTo(grunnbeloep))
+                beregningUfoereEndringIOpptjening.harFullUfoeregrad and not(avkortningsinformasjon.harInntektEtterUfoere) and (avkortningsinformasjon.beloepsgrense.notEqualTo(
+                    beregningUfoereEndringIOpptjening.grunnbeloep
+                ))
             ) {
                 paragraph {
                     textExpr(
                         Bokmal to "Du kan ha en årlig inntekt på 40 prosent av folketrygdens grunnbeløp, uten at uføretrygden din blir redusert. I dag er dette ".expr() +
                                 ifElse(
                                     inntektsgrenseFaktisk,
-                                    ifTrue = inntektsgrenseNesteAar.format(),
-                                    ifFalse = inntektsgrense.format()
+                                    ifTrue = inntektsgrenseNesteAar,
+                                    ifFalse = inntektsgrense
                                 ) + " kroner. Dette er inntektsgrensen din.".expr(),
                         Nynorsk to "Du kan ha ei årleg inntekt på 40 prosent av grunnbeløpet i folketrygda utan at uføretrygda di blir redusert. I dag er dette ".expr() +
                                 ifElse(
                                     inntektsgrenseFaktisk,
-                                    ifTrue = inntektsgrenseNesteAar.format(),
-                                    ifFalse = inntektsgrense.format()
+                                    ifTrue = inntektsgrenseNesteAar,
+                                    ifFalse = inntektsgrense
                                 ) + " kroner. Dette er inntektsgrensa di.".expr(),
                         English to "You can have a yearly income that is 40 percent of National Insurance Scheme basic amount, without your disability benefit being reduced. This amount is currently NOK ".expr() +
                                 ifElse(
                                     inntektsgrenseFaktisk,
-                                    ifTrue = inntektsgrenseNesteAar.format(),
-                                    ifFalse = inntektsgrense.format()
+                                    ifTrue = inntektsgrenseNesteAar,
+                                    ifFalse = inntektsgrense
                                 ) + ". This is your income limit before disability benefit is reduced.".expr()
                     )
                 }
-            }.orShowIf(grunnbeloep.equalTo(beloepsgrense)) {
+            }.orShowIf(beregningUfoereEndringIOpptjening.grunnbeloep.equalTo(avkortningsinformasjon.beloepsgrense)) {
                 paragraph {
                     textExpr(
                         Bokmal to "Du kan ha en årlig inntekt på folketrygdens grunnbeløp fordi du er i varig tilrettelagt arbeid, uten at uføretrygden din blir redusert. I dag er dette ".expr() +
-                                inntektsgrense.format() + " kroner. Dette er inntektsgrensen din.".expr(),
+                                inntektsgrense + " kroner. Dette er inntektsgrensen din.".expr(),
                         Nynorsk to "Du kan ha ei årleg inntekt på grunnbeløpet i folketrygda mens du er i varig tilrettelagt arbeid, utan at uføretrygda di blir redusert. I dag er dette ".expr() +
-                                inntektsgrense.format() + " kroner. Dette er inntektsgrensa di.".expr(),
+                                inntektsgrense + " kroner. Dette er inntektsgrensa di.".expr(),
                         English to "You can have a yearly income that is the same as the National Insurance Scheme basic amount because you are in permanent adapted work, without your disability benefit being reduced. This amount is currently NOK ".expr() +
-                                inntektsgrense.format() + ". This is your income limit before disability benefit is reduced."
+                                inntektsgrense + ". This is your income limit before disability benefit is reduced."
 
                     )
                 }
@@ -124,40 +145,40 @@ object KombinereUfoeretrygdMedInntekt {
 
     // TBU1207   (TBU1296, TBU2357 er ikke tatt med - konvertering til UT utgikk 31. desember 2018) Dermed endres flette logikk for TBU1205.
     data class InntektsgrenseLagtTilGrunn(
-        val beloepsgrense: Expression<Kroner>,
-        val grunnbeloep: Expression<Kroner>,
-        val harDelvisUfoeregrad: Expression<Boolean>,
-        val harFullUfoeregrad: Expression<Boolean>,
-        val harInntektEtterUfoere: Expression<Boolean>,
-        val inntektsgrense: Expression<Kroner>,
-        val inntektsgrenseNesteAar: Expression<Kroner>,
-        val oppjustertInntektEtterUfoere: Expression<Kroner>,
-        val ufoeregrad: Expression<Int>,
+        val avkortningsinformasjon: Expression<EndringIOpptjeningAutoDto.Avkortningsinformasjon>,
+        val beregningUfoereEndringIOpptjening: Expression<EndringIOpptjeningAutoDto.BeregningUfoereEndringIOpptjening>,
 
         ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-            val inntektsgrenseFaktisk = inntektsgrenseNesteAar.greaterThan(0)
+            val inntektsgrenseFaktisk = avkortningsinformasjon.inntektsgrenseNesteAar.greaterThan(0)
+            val inntektsgrenseNesteAar = avkortningsinformasjon.inntektsgrenseNesteAar.format()
+            val inntektsgrense = avkortningsinformasjon.inntektsgrense.format()
+            val oppjustertInntektEtterUfoere = avkortningsinformasjon.oppjustertInntektEtterUfoere.format()
 
-            showIf(beloepsgrense.notEqualTo(grunnbeloep) and (harDelvisUfoeregrad or (harInntektEtterUfoere and harFullUfoeregrad))) {
+            showIf(
+                avkortningsinformasjon.beloepsgrense.notEqualTo(beregningUfoereEndringIOpptjening.grunnbeloep)
+                        and (beregningUfoereEndringIOpptjening.harDelvisUfoeregrad or (avkortningsinformasjon.harInntektEtterUfoere
+                        and beregningUfoereEndringIOpptjening.harFullUfoeregrad))
+            ) {
                 paragraph {
                     textExpr(
-                        Bokmal to "Vi har lagt til grunn at du framover skal ha en inntekt på ".expr() + oppjustertInntektEtterUfoere.format() + " kroner per år. Du kan i tillegg ha en årlig inntekt på 40 prosent av folketrygdens grunnbeløp, uten at uføretrygden din blir redusert. Inntektsgrensen din blir derfor ".expr() +
+                        Bokmal to "Vi har lagt til grunn at du framover skal ha en inntekt på ".expr() + oppjustertInntektEtterUfoere + " kroner per år. Du kan i tillegg ha en årlig inntekt på 40 prosent av folketrygdens grunnbeløp, uten at uføretrygden din blir redusert. Inntektsgrensen din blir derfor ".expr() +
                                 ifElse(
                                     inntektsgrenseFaktisk,
-                                    ifTrue = inntektsgrenseNesteAar.format(),
-                                    ifFalse = inntektsgrense.format()
+                                    ifTrue = inntektsgrenseNesteAar,
+                                    ifFalse = inntektsgrense
                                 ) + " kroner.".expr(),
-                        Nynorsk to "Vi har lagt til grunn at du framover skal ha ei inntekt på ".expr() + oppjustertInntektEtterUfoere.format() + " kroner per år. Du kan i tillegg ha ei årleg inntekt på 40 prosent av grunnbeløpet i folketrygda utan at uføretrygda di blir redusert. Inntektsgrensa di blir difor ".expr() +
+                        Nynorsk to "Vi har lagt til grunn at du framover skal ha ei inntekt på ".expr() + oppjustertInntektEtterUfoere + " kroner per år. Du kan i tillegg ha ei årleg inntekt på 40 prosent av grunnbeløpet i folketrygda utan at uføretrygda di blir redusert. Inntektsgrensa di blir difor ".expr() +
                                 ifElse(
                                     inntektsgrenseFaktisk,
-                                    ifTrue = inntektsgrenseNesteAar.format(),
-                                    ifFalse = inntektsgrense.format()
+                                    ifTrue = inntektsgrenseNesteAar,
+                                    ifFalse = inntektsgrense
                                 ) + " kroner.".expr(),
-                        English to "We have assumed that you will have an income of NOK ".expr() + oppjustertInntektEtterUfoere.format() + " per year. You can in addition have an annual income of 40 percent of the National Insurance Scheme basic amount, without your disability benefit being reduced. This amount is currently NOK ".expr() +
+                        English to "We have assumed that you will have an income of NOK ".expr() + oppjustertInntektEtterUfoere + " per year. You can in addition have an annual income of 40 percent of the National Insurance Scheme basic amount, without your disability benefit being reduced. This amount is currently NOK ".expr() +
                                 ifElse(
                                     inntektsgrenseFaktisk,
-                                    ifTrue = inntektsgrenseNesteAar.format(),
-                                    ifFalse = inntektsgrense.format()
+                                    ifTrue = inntektsgrenseNesteAar,
+                                    ifFalse = inntektsgrense
                                 ) + ".".expr()
                     )
                 }
@@ -167,16 +188,17 @@ object KombinereUfoeretrygdMedInntekt {
 
     // TBU1208
     data class Kompensasjonsgrad(
-        val inntektsgrense: Expression<Kroner>,
-        val inntektsgrenseNesteAar: Expression<Kroner>,
-        val oppjustertInntektFoerUfoere80prosent: Expression<Kroner>,
-        val kompensasjonsgrad: Expression<Double>,
+        val avkortningsinformasjon: Expression<EndringIOpptjeningAutoDto.Avkortningsinformasjon>,
+        val beregningUfoereEndringIOpptjening: Expression<EndringIOpptjeningAutoDto.BeregningUfoereEndringIOpptjening>,
 
         ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-            val inntektsgrenseFaktisk = inntektsgrenseNesteAar.greaterThan(0)
+            val inntektsgrenseFaktisk = avkortningsinformasjon.inntektsgrenseNesteAar.greaterThan(0)
+            val inntektsgrenseNesteAar = avkortningsinformasjon.inntektsgrenseNesteAar.format()
+            val inntektsgrense = avkortningsinformasjon.inntektsgrense.format()
+            val kompensasjonsgrad = avkortningsinformasjon.kompensasjonsgrad.format()
 
-            showIf(inntektsgrense.lessThan(oppjustertInntektFoerUfoere80prosent)) {
+            showIf(inntektsgrense.lessThan(avkortningsinformasjon.oppjustertInntektFoerUfoere80prosent.format())) {
                 paragraph {
                     text(
                         Bokmal to "Vi bruker en fastsatt prosentandel når vi justerer uføretrygden din ut fra inntekt. Denne prosentandelen kaller vi kompensasjonsgrad.",
@@ -186,35 +208,35 @@ object KombinereUfoeretrygdMedInntekt {
                 }
                 paragraph {
                     textExpr(
-                        Bokmal to "For deg utgjør kompensasjonsgraden ".expr() + kompensasjonsgrad.format() + " prosent. Det er bare den delen av inntekten din som overstiger ".expr() +
+                        Bokmal to "For deg utgjør kompensasjonsgraden ".expr() + kompensasjonsgrad + " prosent. Det er bare den delen av inntekten din som overstiger ".expr() +
                                 ifElse(
                                     inntektsgrenseFaktisk,
-                                    ifTrue = inntektsgrenseNesteAar.format(),
-                                    ifFalse = inntektsgrense.format()
+                                    ifTrue = inntektsgrenseNesteAar,
+                                    ifFalse = inntektsgrense
                                 ) + " kroner, som vi justerer uføretrygden din ut fra. Det betyr at et beløp som tilsvarer ".expr() +
-                                kompensasjonsgrad.format() + " prosent av den inntekten du har over ".expr() +
+                                kompensasjonsgrad + " prosent av den inntekten du har over ".expr() +
                                 ifElse(
                                     inntektsgrenseFaktisk,
-                                    ifTrue = inntektsgrenseNesteAar.format(),
-                                    ifFalse = inntektsgrense.format()
+                                    ifTrue = inntektsgrenseNesteAar,
+                                    ifFalse = inntektsgrense
                                 ) + " kroner trekkes fra uføretrygden din.".expr(),
-                        Nynorsk to "For deg utgjer kompensasjongraden ".expr() + kompensasjonsgrad.format() + " prosent. Det er berre den delen av inntekta di som overstig ".expr() +
+                        Nynorsk to "For deg utgjer kompensasjongraden ".expr() + kompensasjonsgrad + " prosent. Det er berre den delen av inntekta di som overstig ".expr() +
                                 ifElse(
                                     inntektsgrenseFaktisk,
-                                    ifTrue = inntektsgrenseNesteAar.format(),
-                                    ifFalse = inntektsgrense.format()
+                                    ifTrue = inntektsgrenseNesteAar,
+                                    ifFalse = inntektsgrense
                                 ) + " kroner, som vi justerer uføretrygda di ut frå. Det betyr at eit beløp som svarer til ".expr() +
-                                kompensasjonsgrad.format() + " prosent av inntekta du har over ".expr() +
+                                kompensasjonsgrad + " prosent av inntekta du har over ".expr() +
                                 ifElse(
                                     inntektsgrenseFaktisk,
-                                    ifTrue = inntektsgrenseNesteAar.format(),
-                                    ifFalse = inntektsgrense.format()
+                                    ifTrue = inntektsgrenseNesteAar,
+                                    ifFalse = inntektsgrense
                                 ) + " kroner blir trekt frå uføretrygda di.".expr(),
-                        English to "For you, the adjustment rate is ".expr() + kompensasjonsgrad.format() + " percent. It is only the part of your income that exceeds NOK ".expr() +
+                        English to "For you, the adjustment rate is ".expr() + kompensasjonsgrad + " percent. It is only the part of your income that exceeds NOK ".expr() +
                                 ifElse(
                                     inntektsgrenseFaktisk,
-                                    ifTrue = inntektsgrenseNesteAar.format(),
-                                    ifFalse = inntektsgrense.format()
+                                    ifTrue = inntektsgrenseNesteAar,
+                                    ifFalse = inntektsgrense
                                 ) + " that is subtracted from your disability benefit.".expr()
                     )
                 }
@@ -224,38 +246,32 @@ object KombinereUfoeretrygdMedInntekt {
 
     // TBU2361, TBU2362, TBU2363
     data class OekeUfoereUtbetalingForRestenAvKalenderAaret(
-        val forventetInntekt: Expression<Kroner>,
-        val harBeloepOekt: Expression<Boolean>,
-        val harBeloepRedusert: Expression<Boolean>,
-        val inntektsgrense: Expression<Kroner>,
-        val inntektstak: Expression<Kroner>,
-        val oppjustertInntektFoerUfoere80prosent: Expression<Kroner>,
-        val ufoeregrad: Expression<Int>,
-        val utbetalingsgrad: Expression<Int>,
+        val avkortningsinformasjon: Expression<EndringIOpptjeningAutoDto.Avkortningsinformasjon>,
+        val beregningUfoereEndringIOpptjening: Expression<EndringIOpptjeningAutoDto.BeregningUfoereEndringIOpptjening>,
 
         ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+            val forventetInntekt = avkortningsinformasjon.forventetInntekt.format()
 
             paragraph {
                 showIf(
-                    utbetalingsgrad.lessThan(ufoeregrad) and inntektsgrense.lessThan(
-                        oppjustertInntektFoerUfoere80prosent
-                    )
+                    avkortningsinformasjon.utbetalingsgrad.lessThan(beregningUfoereEndringIOpptjening.ufoeregrad)
+                            and avkortningsinformasjon.inntektsgrense.lessThan(avkortningsinformasjon.oppjustertInntektFoerUfoere80prosent)
                 ) {
-                    showIf(forventetInntekt.greaterThan(inntektsgrense)) {
+                    showIf(forventetInntekt.greaterThan(avkortningsinformasjon.inntektsgrense.format())) {
                         textExpr(
-                            Bokmal to "Du har tidligere meldt fra om en inntekt på ".expr() + forventetInntekt.format() + " kroner for i år.".expr(),
-                            Nynorsk to "Du har tidlegare meldt frå om ein inntekt på ".expr() + forventetInntekt.format() + " kroner for i år.".expr(),
-                            English to "You have previously reported an income of NOK ".expr() + forventetInntekt.format() + " for this year.".expr()
+                            Bokmal to "Du har tidligere meldt fra om en inntekt på ".expr() + forventetInntekt + " kroner for i år.".expr(),
+                            Nynorsk to "Du har tidlegare meldt frå om ein inntekt på ".expr() + forventetInntekt + " kroner for i år.".expr(),
+                            English to "You have previously reported an income of NOK ".expr() + forventetInntekt + " for this year.".expr()
                         )
                     }
-                    showIf(harBeloepRedusert) {
+                    showIf(beregningUfoereEndringIOpptjening.harBeloepRedusert) {
                         text(
                             Bokmal to " Vi har derfor redusert utbetalingen av uføretrygden din for resten av kalenderåret.",
                             Nynorsk to " Vi har difor redusert utbetalinga av uføretrygda di for resten av kalenderåret.",
                             English to " We have therefore redused the payment of your disability benefit for the rest of the calendar year."
                         )
-                    }.orShowIf(harBeloepOekt) {
+                    }.orShowIf(beregningUfoereEndringIOpptjening.harBeloepOekt) {
                         text(
                             Bokmal to " Vi har derfor økt utbetalingen av uføretrygden din for resten av kalenderåret.",
                             Nynorsk to " Vi har difor auka utbetalinga av uføretrygda di for resten av kalendaråret.",
@@ -270,31 +286,36 @@ object KombinereUfoeretrygdMedInntekt {
 
     // TBU2261
     data class ReduksjonAvInntektUfoere(
-        val inntektsgrense: Expression<Kroner>,
-        val nettoAkkumulerteBeloepUtbetalt: Expression<Kroner>,
-        val nettoAkkumulertePlussNettoRestAar: Expression<Kroner>,
-        val nettoUfoeretrygdUtbetaltPerMaaned: Expression<Kroner>,
-        val oppjustertInntektFoerUfoere80prosent: Expression<Kroner>,
-        val ufoeregrad: Expression<Int>,
-        val utbetalingsgrad: Expression<Int>,
+        val avkortningsinformasjon: Expression<EndringIOpptjeningAutoDto.Avkortningsinformasjon>,
+        val beregningUfoereEndringIOpptjening: Expression<EndringIOpptjeningAutoDto.BeregningUfoereEndringIOpptjening>,
 
         ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-            showIf(utbetalingsgrad.lessThan(ufoeregrad) and inntektsgrense.lessThan(oppjustertInntektFoerUfoere80prosent)) {
+            val nettoAkkumulerteBeloepUtbetalt =
+                beregningUfoereEndringIOpptjening.nettoAkkumulerteBeloepUtbetalt.format()
+            val nettoAkkumulertePlussNettoRestAar =
+                beregningUfoereEndringIOpptjening.nettoAkkumulertePlussNettoRestAar.format()
+            val nettoUfoeretrygdUtbetaltPerMaaned =
+                beregningUfoereEndringIOpptjening.nettoUfoeretrygdUtbetaltPerMaaned.format()
+
+            showIf(
+                avkortningsinformasjon.utbetalingsgrad.lessThan(beregningUfoereEndringIOpptjening.ufoeregrad)
+                        and avkortningsinformasjon.inntektsgrense.lessThan(avkortningsinformasjon.oppjustertInntektFoerUfoere80prosent)
+            ) {
                 paragraph {
                     textExpr(
                         Bokmal to "Ut fra den årlige inntekten din vil uføretrygden utgjøre ".expr() +
-                                nettoAkkumulertePlussNettoRestAar.format() + " kroner. Hittil i år har du fått utbetalt ".expr() +
-                                nettoAkkumulerteBeloepUtbetalt.format() + " kroner. Du har derfor rett til en utbetaling av uføretrygd på ".expr() +
-                                nettoUfoeretrygdUtbetaltPerMaaned.format() + " kroner per måned for resten av året.".expr(),
+                                nettoAkkumulertePlussNettoRestAar + " kroner. Hittil i år har du fått utbetalt ".expr() +
+                                nettoAkkumulerteBeloepUtbetalt + " kroner. Du har derfor rett til en utbetaling av uføretrygd på ".expr() +
+                                nettoUfoeretrygdUtbetaltPerMaaned + " kroner per måned for resten av året.".expr(),
                         Nynorsk to "Ut frå den årlege inntekta di vil uføretrygda utgjera ".expr() +
-                                nettoAkkumulertePlussNettoRestAar.format() + " kroner. Hittil i år har du fått utbetalt ".expr() +
-                                nettoAkkumulerteBeloepUtbetalt.format() + " kroner. Du har derfor rett til ein utbetaling av uføretrygd på ".expr() +
-                                nettoUfoeretrygdUtbetaltPerMaaned.format() + " kroner per månad for resten av året.".expr(),
+                                nettoAkkumulertePlussNettoRestAar + " kroner. Hittil i år har du fått utbetalt ".expr() +
+                                nettoAkkumulerteBeloepUtbetalt + " kroner. Du har derfor rett til ein utbetaling av uføretrygd på ".expr() +
+                                nettoUfoeretrygdUtbetaltPerMaaned + " kroner per månad for resten av året.".expr(),
                         English to "Given your annual income, your disabililty benefit will be NOK ".expr() +
-                                nettoAkkumulertePlussNettoRestAar.format() + ". To date this year, you have been paid NOK ".expr() +
-                                nettoAkkumulerteBeloepUtbetalt.format() + ". You are therefore entitled to a disability payment of NOK ".expr() +
-                                nettoUfoeretrygdUtbetaltPerMaaned.format() + " per calendar month for the rest of the year.".expr()
+                                nettoAkkumulertePlussNettoRestAar + ". To date this year, you have been paid NOK ".expr() +
+                                nettoAkkumulerteBeloepUtbetalt + ". You are therefore entitled to a disability payment of NOK ".expr() +
+                                nettoUfoeretrygdUtbetaltPerMaaned + " per calendar month for the rest of the year.".expr()
                     )
                 }
             }
@@ -322,16 +343,16 @@ object KombinereUfoeretrygdMedInntekt {
 
     // TBU2366, TBU2367, TBU2279, TBU3740, TBU2280
     data class MeldeFraOmEndringerIInntekten(
-        val forventetInntekt: Expression<Kroner>,
-        val inntektsgrense: Expression<Kroner>,
-        val inntektstak: Expression<Kroner>,
-        val oppjustertInntektFoerUfoere80prosent: Expression<Kroner>,
-        val ufoeregrad: Expression<Int>,
-        val utbetalingsgrad: Expression<Int>,
+        val avkortningsinformasjon: Expression<EndringIOpptjeningAutoDto.Avkortningsinformasjon>,
+        val beregningUfoereEndringIOpptjening: Expression<EndringIOpptjeningAutoDto.BeregningUfoereEndringIOpptjening>,
 
         ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-            showIf(utbetalingsgrad.lessThan(ufoeregrad)) {
+            val oppjustertInntektFoerUfoere80prosent =
+                avkortningsinformasjon.oppjustertInntektFoerUfoere80prosent.format()
+            val inntektsgrense = avkortningsinformasjon.inntektsgrense.format()
+
+            showIf(avkortningsinformasjon.utbetalingsgrad.lessThan(beregningUfoereEndringIOpptjening.ufoeregrad)) {
                 title1 {
                     text(
                         Bokmal to "Du må melde fra om endringer i inntekten",
@@ -346,32 +367,35 @@ object KombinereUfoeretrygdMedInntekt {
                         English to "You can register changes in income under the option «uføretrygd» at ${Constants.NAV_URL}. You can register how much you expect to earn in the calendar year. You will then be able to see how much disabilty benefit you will receive. In order for you to receive even payments of disability benefit, it is important that you register income changes as soon as possible."
                     )
                 }
-                showIf(inntektsgrense.lessThan(oppjustertInntektFoerUfoere80prosent)) {
+                showIf(avkortningsinformasjon.inntektsgrense.format().lessThan(oppjustertInntektFoerUfoere80prosent)) {
                     paragraph {
                         textExpr(
                             Bokmal to "Vi gjør oppmerksom på at det ikke utbetales uføretrygd når inntekten din utgjør mer enn 80 prosent av oppjustert inntekt før du ble ufør, det vil si ".expr() +
-                                    oppjustertInntektFoerUfoere80prosent.format() + " kroner per år.".expr(),
+                                    oppjustertInntektFoerUfoere80prosent + " kroner per år.".expr(),
                             Nynorsk to "Ver merksom på at det ikkje utbetales uføretrygd når inntekta di utgjer meir enn 80 prosent av oppjustert inntekt før du ble ufør, det vil si ".expr() +
-                                    oppjustertInntektFoerUfoere80prosent.format() + " kroner per år.".expr(),
+                                    oppjustertInntektFoerUfoere80prosent + " kroner per år.".expr(),
                             English to "We wish to point out that disability benefit payments stop when you earn more than 80 percent of the upwards adjusted income you had before you had a disability, which is NOK ".expr() +
-                                    oppjustertInntektFoerUfoere80prosent.format() + " per year.".expr()
+                                    oppjustertInntektFoerUfoere80prosent + " per year.".expr()
                         )
                     }
                 }
             }
-            showIf(forventetInntekt.lessThan(inntektstak) and inntektstak.lessThanOrEqual(inntektsgrense)) {
+            showIf(
+                avkortningsinformasjon.forventetInntekt.lessThan(avkortningsinformasjon.inntektstak)
+                        and avkortningsinformasjon.inntektstak.lessThanOrEqual(avkortningsinformasjon.inntektsgrense)
+            ) {
                 paragraph {
                     textExpr(
                         Bokmal to "Vi gjør oppmerksom på at det ikke utbetales uføretrygd når inntekten din utgjør mer enn inntektsgrensen din, det vil si ".expr() +
-                                inntektsgrense.format() + " kroner per år.".expr(),
+                                inntektsgrense + " kroner per år.".expr(),
                         Nynorsk to "Ver merksom på at det ikkje utbetales uføretrygd når inntekta di utgjer meir enn inntektsgrensa di, det vil si ".expr() +
-                                inntektsgrense.format() + " kroner per år.".expr(),
+                                inntektsgrense + " kroner per år.".expr(),
                         English to "We wish to point out that disability benefit payments stop when you earn more than your income limit, which is NOK ".expr() +
-                                inntektsgrense.format() + " per year.".expr()
+                                inntektsgrense + " per year.".expr()
                     )
                 }
             }
-            showIf(utbetalingsgrad.lessThan(ufoeregrad)) {
+            showIf(avkortningsinformasjon.utbetalingsgrad.lessThan(beregningUfoereEndringIOpptjening.ufoeregrad)) {
                 paragraph {
                     text(
                         Bokmal to "Vi vil foreta et etteroppgjør dersom du har fått utbetalt for mye eller for lite uføretrygd. Dette gjør vi når likningen fra Skatteetaten er klar. Du kan lese mer om dette i vedlegget «Opplysninger om beregningen».",

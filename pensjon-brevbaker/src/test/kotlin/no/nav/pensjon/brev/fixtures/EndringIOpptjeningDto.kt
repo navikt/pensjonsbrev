@@ -10,6 +10,7 @@ import java.time.LocalDate
 fun createEndringIOpptjeningAutoDto() =
     EndringIOpptjeningAutoDto(
         avkortningsinformasjon = Fixtures.create(),
+        beregningUfoereEndringIOpptjening = Fixtures.create(),
         fellesbarnTillegg = Fixtures.create(),
         harEktefelletilleggInnvilget = true,
         harGjenlevendetilleggInnvilget = true,
@@ -20,36 +21,40 @@ fun createEndringIOpptjeningAutoDto() =
         saerkullsbarnTillegg = Fixtures.create(),
         sivilstand = Sivilstand.GIFT,
         virkningsDato = LocalDate.of(2023, 1, 1),
+        brukerBorInorge = true
     )
 
-fun createEndringIOpptjeningAutoDtoEndringIOpptjening() =
+fun createEndringIOpptjeningAutoDtoAkortningsinformasjon() =
     EndringIOpptjeningAutoDto.Avkortningsinformasjon(
         beloepsgrense = Kroner(60000),
-        brukerBorInorge = false,
         forventetInntekt = Kroner(400000),
-        grunnbeloep = Kroner(111477),  // 1G 2023
-        harBeloepOekt = false,
-        harBeloepRedusert = true,
-        harDelvisUfoeregrad = true,
-        harFullUfoeregrad = false,
         harFullUtbetalingsgrad = false,
         harInntektEtterUfoere = true,
-        harUfoeretrygdUtbetalt = true,
         harUtbetalingsgrad = true,
         inntektsgrense = Kroner(300000),
         inntektsgrenseNesteAar = Kroner(380000),
         inntektstak = Kroner(0),
         kompensasjonsgrad = 60.00,
+        oppjustertInntektEtterUfoere = Kroner(320000),
+        oppjustertInntektFoerUfoere = Kroner(0),
+        oppjustertInntektFoerUfoere80prosent = Kroner(260000),
+        utbetalingsgrad = 80,
+    )
+
+fun createEndringIOpptjeningAutoDtoBeregningUfoereEndringIOpptjening() =
+    EndringIOpptjeningAutoDto.BeregningUfoereEndringIOpptjening(
+        grunnbeloep = Kroner(111477),  // 1G 2023
+        harBeloepOekt = false,
+        harBeloepRedusert = true,
+        harDelvisUfoeregrad = true,
+        harFullUfoeregrad = false,
+        harUfoeretrygdUtbetalt = true,
         nettoAkkumulerteBeloepUtbetalt = Kroner(380000),
         nettoAkkumulertePlussNettoRestAar = Kroner(80000),
         nettoTilUtbetalingRestenAvAaret = Kroner(55000),
         nettoUfoeretrygdUtbetaltPerMaaned = Kroner(12000),
-        oppjustertInntektEtterUfoere = Kroner(320000),
-        oppjustertInntektFoerUfoere = Kroner(0),
-        oppjustertInntektFoerUfoere80prosent = Kroner(260000),
         ufoeregrad = 80,
         ufoertrygdUtbetalt = Kroner(2000000),
-        utbetalingsgrad = 80,
         utbetaltPerMaaned = Kroner(16000),
     )
 

@@ -1,33 +1,21 @@
 package no.nav.pensjon.brev.maler
 
 import no.nav.pensjon.brev.api.model.LetterMetadata
-import no.nav.pensjon.brev.api.model.maler.AvkortningsinformasjonSelectors.beloepsgrense
-import no.nav.pensjon.brev.api.model.maler.AvkortningsinformasjonSelectors.brukerBorInorge
 import no.nav.pensjon.brev.api.model.maler.AvkortningsinformasjonSelectors.forventetInntekt
-import no.nav.pensjon.brev.api.model.maler.AvkortningsinformasjonSelectors.grunnbeloep
-import no.nav.pensjon.brev.api.model.maler.AvkortningsinformasjonSelectors.harBeloepOekt
-import no.nav.pensjon.brev.api.model.maler.AvkortningsinformasjonSelectors.harBeloepRedusert
-import no.nav.pensjon.brev.api.model.maler.AvkortningsinformasjonSelectors.harDelvisUfoeregrad
-import no.nav.pensjon.brev.api.model.maler.AvkortningsinformasjonSelectors.harFullUfoeregrad
-import no.nav.pensjon.brev.api.model.maler.AvkortningsinformasjonSelectors.harFullUtbetalingsgrad
-import no.nav.pensjon.brev.api.model.maler.AvkortningsinformasjonSelectors.harInntektEtterUfoere
-import no.nav.pensjon.brev.api.model.maler.AvkortningsinformasjonSelectors.harUfoeretrygdUtbetalt
 import no.nav.pensjon.brev.api.model.maler.AvkortningsinformasjonSelectors.harUtbetalingsgrad
 import no.nav.pensjon.brev.api.model.maler.AvkortningsinformasjonSelectors.inntektsgrense
-import no.nav.pensjon.brev.api.model.maler.AvkortningsinformasjonSelectors.inntektsgrenseNesteAar
-import no.nav.pensjon.brev.api.model.maler.AvkortningsinformasjonSelectors.inntektstak
-import no.nav.pensjon.brev.api.model.maler.AvkortningsinformasjonSelectors.kompensasjonsgrad
-import no.nav.pensjon.brev.api.model.maler.AvkortningsinformasjonSelectors.nettoAkkumulerteBeloepUtbetalt
-import no.nav.pensjon.brev.api.model.maler.AvkortningsinformasjonSelectors.nettoAkkumulertePlussNettoRestAar_safe
-import no.nav.pensjon.brev.api.model.maler.AvkortningsinformasjonSelectors.nettoUfoeretrygdUtbetaltPerMaaned
-import no.nav.pensjon.brev.api.model.maler.AvkortningsinformasjonSelectors.oppjustertInntektEtterUfoere
-import no.nav.pensjon.brev.api.model.maler.AvkortningsinformasjonSelectors.oppjustertInntektFoerUfoere80prosent_safe
-import no.nav.pensjon.brev.api.model.maler.AvkortningsinformasjonSelectors.ufoeregrad
 import no.nav.pensjon.brev.api.model.maler.AvkortningsinformasjonSelectors.utbetalingsgrad
-import no.nav.pensjon.brev.api.model.maler.AvkortningsinformasjonSelectors.utbetaltPerMaaned
+import no.nav.pensjon.brev.api.model.maler.BeregningUfoereEndringIOpptjeningSelectors.grunnbeloep
+import no.nav.pensjon.brev.api.model.maler.BeregningUfoereEndringIOpptjeningSelectors.harBeloepOekt
+import no.nav.pensjon.brev.api.model.maler.BeregningUfoereEndringIOpptjeningSelectors.harBeloepRedusert
+import no.nav.pensjon.brev.api.model.maler.BeregningUfoereEndringIOpptjeningSelectors.harUfoeretrygdUtbetalt
+import no.nav.pensjon.brev.api.model.maler.BeregningUfoereEndringIOpptjeningSelectors.ufoeregrad
+import no.nav.pensjon.brev.api.model.maler.BeregningUfoereEndringIOpptjeningSelectors.utbetaltPerMaaned
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.EndringIOpptjeningAutoDto
 import no.nav.pensjon.brev.api.model.maler.EndringIOpptjeningAutoDtoSelectors.avkortningsinformasjon
+import no.nav.pensjon.brev.api.model.maler.EndringIOpptjeningAutoDtoSelectors.beregningUfoereEndringIOpptjening
+import no.nav.pensjon.brev.api.model.maler.EndringIOpptjeningAutoDtoSelectors.brukerBorInorge
 import no.nav.pensjon.brev.api.model.maler.EndringIOpptjeningAutoDtoSelectors.fellesbarnTillegg
 import no.nav.pensjon.brev.api.model.maler.EndringIOpptjeningAutoDtoSelectors.harEktefelletilleggInnvilget
 import no.nav.pensjon.brev.api.model.maler.EndringIOpptjeningAutoDtoSelectors.harGjenlevendetilleggInnvilget
@@ -89,8 +77,8 @@ object EndringIOpptjeningAuto : AutobrevTemplate<EndringIOpptjeningAutoDto> {
 
             includePhrase(
                 EndringIOpptjening.BetydningForUfoeretrygden(
-                    harBeloepOekt = avkortningsinformasjon.harBeloepOekt,
-                    harBeloepRedusert = avkortningsinformasjon.harBeloepRedusert,
+                    harBeloepOekt = beregningUfoereEndringIOpptjening.harBeloepOekt,
+                    harBeloepRedusert = beregningUfoereEndringIOpptjening.harBeloepRedusert,
                     virkningsDato = virkningsDato,
                 )
             )
@@ -100,14 +88,14 @@ object EndringIOpptjeningAuto : AutobrevTemplate<EndringIOpptjeningAutoDto> {
                     ektefelle = harEktefelletilleggInnvilget.notNull(),
                     fellesbarn = fellesbarnTillegg.harFellesbarnInnvilget_safe.notNull(),
                     gjenlevende = harGjenlevendetilleggInnvilget.notNull(),
-                    perMaaned = avkortningsinformasjon.utbetaltPerMaaned,
+                    perMaaned = beregningUfoereEndringIOpptjening.utbetaltPerMaaned,
                     saerkullsbarn = saerkullsbarnTillegg.harSaerkullsbarnInnvilget_safe.notNull(),
                     ufoeretrygd = avkortningsinformasjon.harUtbetalingsgrad,
                 )
             )
 
             includePhrase(
-                Ufoeretrygd.UtbetalingsdatoUfoeretrygd(harUfoeretrygdUtbetalt = avkortningsinformasjon.harUfoeretrygdUtbetalt)
+                Ufoeretrygd.UtbetalingsdatoUfoeretrygd(harUfoeretrygdUtbetalt = beregningUfoereEndringIOpptjening.harUfoeretrygdUtbetalt)
             )
 
             includePhrase(Ufoeretrygd.ViktigAALeseHeleBrevet)
@@ -116,8 +104,8 @@ object EndringIOpptjeningAuto : AutobrevTemplate<EndringIOpptjeningAutoDto> {
 
             includePhrase(
                 EndringIOpptjening.EndringIOpptjeningTilUfoeretrygd(
-                    harBeloepOekt = avkortningsinformasjon.harBeloepOekt,
-                    harBeloepRedusert = avkortningsinformasjon.harBeloepRedusert,
+                    harBeloepOekt = beregningUfoereEndringIOpptjening.harBeloepOekt,
+                    harBeloepRedusert = beregningUfoereEndringIOpptjening.harBeloepRedusert,
                     virkningsDato = virkningsDato,
                 )
             )
@@ -136,174 +124,144 @@ object EndringIOpptjeningAuto : AutobrevTemplate<EndringIOpptjeningAutoDto> {
 
             includePhrase(
                 KombinereUfoeretrygdMedInntekt.KombinereUfoeretrygdOgInntektOverskrift(
-                    harDelvisUfoeregrad = avkortningsinformasjon.harDelvisUfoeregrad,
-                    harFullUfoeregrad = avkortningsinformasjon.harFullUfoeregrad,
-                    harFullUtbetalingsgrad = avkortningsinformasjon.harFullUtbetalingsgrad,
+                    avkortningsinformasjon = avkortningsinformasjon,
+                    beregningUfoereEndringIOpptjening = beregningUfoereEndringIOpptjening
                 )
             )
 
             includePhrase(
                 KombinereUfoeretrygdMedInntekt.InntektVedSidenAvUfoeretrygd(
-                    ufoeregrad = avkortningsinformasjon.ufoeregrad,
-                    utbetalingsgrad = avkortningsinformasjon.utbetalingsgrad,
+                    avkortningsinformasjon = avkortningsinformasjon,
+                    beregningUfoereEndringIOpptjening = beregningUfoereEndringIOpptjening
                 )
             )
 
             includePhrase(
                 KombinereUfoeretrygdMedInntekt.Inntektsgrense(
-                    beloepsgrense = avkortningsinformasjon.beloepsgrense,
-                    grunnbeloep = avkortningsinformasjon.grunnbeloep,
-                    harFullUfoeregrad = avkortningsinformasjon.harFullUfoeregrad,
-                    harInntektEtterUfoere = avkortningsinformasjon.harInntektEtterUfoere,
-                    inntektsgrense = avkortningsinformasjon.inntektsgrense,
-                    inntektsgrenseNesteAar = avkortningsinformasjon.inntektsgrenseNesteAar,
-                    ufoeregrad = avkortningsinformasjon.ufoeregrad,
+                    avkortningsinformasjon = avkortningsinformasjon,
+                    beregningUfoereEndringIOpptjening = beregningUfoereEndringIOpptjening
                 )
             )
 
             includePhrase(
                 KombinereUfoeretrygdMedInntekt.InntektsgrenseLagtTilGrunn(
-                    inntektsgrense = avkortningsinformasjon.inntektsgrense,
-                    inntektsgrenseNesteAar = avkortningsinformasjon.inntektsgrenseNesteAar,
-                    beloepsgrense = avkortningsinformasjon.beloepsgrense,
-                    oppjustertInntektEtterUfoere = avkortningsinformasjon.oppjustertInntektEtterUfoere,
-                    grunnbeloep = avkortningsinformasjon.grunnbeloep,
-                    ufoeregrad = avkortningsinformasjon.ufoeregrad,
-                    harInntektEtterUfoere = avkortningsinformasjon.harInntektEtterUfoere,
-                    harFullUfoeregrad = avkortningsinformasjon.harFullUfoeregrad,
-                    harDelvisUfoeregrad = avkortningsinformasjon.harDelvisUfoeregrad,
+                    avkortningsinformasjon = avkortningsinformasjon,
+                    beregningUfoereEndringIOpptjening = beregningUfoereEndringIOpptjening
                 )
             )
-            ifNotNull(
-                avkortningsinformasjon.oppjustertInntektFoerUfoere80prosent_safe,
-                avkortningsinformasjon.nettoAkkumulertePlussNettoRestAar_safe
-            ) { oppjustertInntekt, nettoAkkumulerte ->
-                includePhrase(
-                    KombinereUfoeretrygdMedInntekt.Kompensasjonsgrad(
-                        inntektsgrense = avkortningsinformasjon.inntektsgrense,
-                        inntektsgrenseNesteAar = avkortningsinformasjon.inntektsgrenseNesteAar,
-                        kompensasjonsgrad = avkortningsinformasjon.kompensasjonsgrad,
-                        oppjustertInntektFoerUfoere80prosent = oppjustertInntekt,
-                    )
-                )
 
-                includePhrase(
-                    KombinereUfoeretrygdMedInntekt.OekeUfoereUtbetalingForRestenAvKalenderAaret(
-                        forventetInntekt = avkortningsinformasjon.forventetInntekt,
-                        harBeloepOekt = avkortningsinformasjon.harBeloepOekt,
-                        harBeloepRedusert = avkortningsinformasjon.harBeloepRedusert,
-                        inntektsgrense = avkortningsinformasjon.inntektsgrense,
-                        inntektstak = avkortningsinformasjon.inntektstak,
-                        oppjustertInntektFoerUfoere80prosent = oppjustertInntekt,
-                        ufoeregrad = avkortningsinformasjon.ufoeregrad,
-                        utbetalingsgrad = avkortningsinformasjon.utbetalingsgrad,
-                    )
+            includePhrase(
+                KombinereUfoeretrygdMedInntekt.Kompensasjonsgrad(
+                    avkortningsinformasjon = avkortningsinformasjon,
+                    beregningUfoereEndringIOpptjening = beregningUfoereEndringIOpptjening
                 )
+            )
 
-                includePhrase(
-                    KombinereUfoeretrygdMedInntekt.ReduksjonAvInntektUfoere(
-                        inntektsgrense = avkortningsinformasjon.inntektsgrense,
-                        nettoAkkumulerteBeloepUtbetalt = avkortningsinformasjon.nettoAkkumulerteBeloepUtbetalt,
-                        nettoAkkumulertePlussNettoRestAar = nettoAkkumulerte,
-                        nettoUfoeretrygdUtbetaltPerMaaned = avkortningsinformasjon.nettoUfoeretrygdUtbetaltPerMaaned,
-                        oppjustertInntektFoerUfoere80prosent = oppjustertInntekt,
-                        ufoeregrad = avkortningsinformasjon.ufoeregrad,
-                        utbetalingsgrad = avkortningsinformasjon.utbetalingsgrad,
-                    )
+            includePhrase(
+                KombinereUfoeretrygdMedInntekt.OekeUfoereUtbetalingForRestenAvKalenderAaret(
+                    avkortningsinformasjon = avkortningsinformasjon,
+                    beregningUfoereEndringIOpptjening = beregningUfoereEndringIOpptjening
                 )
+            )
 
-                includePhrase(
-                    KombinereUfoeretrygdMedInntekt.BeholderUfoeregraden(
-                        ufoeregrad = avkortningsinformasjon.ufoeregrad
-                    )
+            includePhrase(
+                KombinereUfoeretrygdMedInntekt.ReduksjonAvInntektUfoere(
+                    avkortningsinformasjon = avkortningsinformasjon,
+                    beregningUfoereEndringIOpptjening = beregningUfoereEndringIOpptjening
                 )
+            )
 
-                showIf(avkortningsinformasjon.utbetalingsgrad.format().equalTo(avkortningsinformasjon.ufoeregrad.format()))
-                {
-                    includePhrase(Ufoeretrygd.MeldeFraOmEventuellInntektOverskrift)
-                    includePhrase(Ufoeretrygd.MeldeFraOmEventuellInntekt)
-                }
-
-                includePhrase(
-                    KombinereUfoeretrygdMedInntekt.MeldeFraOmEndringerIInntekten(
-                        forventetInntekt = avkortningsinformasjon.forventetInntekt,
-                        inntektsgrense = avkortningsinformasjon.inntektsgrense,
-                        inntektstak = avkortningsinformasjon.inntektstak,
-                        oppjustertInntektFoerUfoere80prosent = oppjustertInntekt,
-                        ufoeregrad = avkortningsinformasjon.ufoeregrad,
-                        utbetalingsgrad = avkortningsinformasjon.utbetalingsgrad,
-                    )
+            includePhrase(
+                KombinereUfoeretrygdMedInntekt.BeholderUfoeregraden(
+                    ufoeregrad = beregningUfoereEndringIOpptjening.ufoeregrad
                 )
-            }
-            ifNotNull(
-                fellesbarnTillegg, saerkullsbarnTillegg
-            ) { fellesbarnTillegg, saerkullsbarnTillegg ->
-                showIf(fellesbarnTillegg.harFellesbarnInnvilget or saerkullsbarnTillegg.harSaerkullsbarnInnvilget) {
-                    includePhrase(
-                        BarnetilleggEndringIOpptjening(
-                            barnetilleggFellesbarn = fellesbarnTillegg,
-                            barnetilleggSaerkullsbarn = saerkullsbarnTillegg,
-                            grunnbeloep = avkortningsinformasjon.grunnbeloep,
-                            sivilstand = sivilstand
-                        )
-                    )
-                }
+            )
+
+            showIf(
+                avkortningsinformasjon.utbetalingsgrad.format()
+                    .equalTo(beregningUfoereEndringIOpptjening.ufoeregrad.format())
+            )
+            {
+                includePhrase(Ufoeretrygd.MeldeFraOmEventuellInntektOverskrift)
+                includePhrase(Ufoeretrygd.MeldeFraOmEventuellInntekt)
             }
 
             includePhrase(
-                Gjenlevendetillegg.HarGjenlevendetillegg(
-                    forventetInntekt = avkortningsinformasjon.forventetInntekt,
-                    harGjenlevendetilleggInnvilget = harGjenlevendetilleggInnvilget.notNull(),
-                    inntektsgrense = avkortningsinformasjon.inntektsgrense,
+                KombinereUfoeretrygdMedInntekt.MeldeFraOmEndringerIInntekten(
+                    avkortningsinformasjon = avkortningsinformasjon,
+                    beregningUfoereEndringIOpptjening = beregningUfoereEndringIOpptjening
                 )
             )
 
-            includePhrase(
-                EndringIOpptjening.EtterbetalingAvUfoeretrygd(
-                    harBeloepOekt = avkortningsinformasjon.harBeloepOekt,
-                    ufoeregrad = avkortningsinformasjon.ufoeregrad,
-                    utbetalingsgrad = avkortningsinformasjon.utbetalingsgrad,
-                    virkningsDato = virkningsDato
-
+        ifNotNull(
+            fellesbarnTillegg, saerkullsbarnTillegg
+        ) { fellesbarnTillegg, saerkullsbarnTillegg ->
+            showIf(fellesbarnTillegg.harFellesbarnInnvilget or saerkullsbarnTillegg.harSaerkullsbarnInnvilget) {
+                includePhrase(
+                    BarnetilleggEndringIOpptjening(
+                        barnetilleggFellesbarn = fellesbarnTillegg,
+                        barnetilleggSaerkullsbarn = saerkullsbarnTillegg,
+                        grunnbeloep = beregningUfoereEndringIOpptjening.grunnbeloep,
+                        sivilstand = sivilstand
+                    )
                 )
-            )
-            includePhrase(
-                EndringIOpptjening.TilbakekrevingAvUfoeretrygd(
-                    harBeloepRedusert = avkortningsinformasjon.harBeloepRedusert
-                )
-            )
-            includePhrase(Ufoeretrygd.MeldeFraOmEndringer)
-            includePhrase(Ufoeretrygd.RettTilAAKlage)
-            includePhrase(Felles.RettTilInnsynPesys)
-            includePhrase(Ufoeretrygd.SjekkUtbetalingene)
-            includePhrase(Ufoeretrygd.Skattekort)
-
-            includePhrase(
-                Ufoeretrygd.SkattForDegSomBorIUtlandet(
-                    brukerBorInorge = this.avkortningsinformasjon.brukerBorInorge
-                )
-            )
+            }
         }
 
-
-        includeAttachment(vedleggMaanedligUfoeretrygdFoerSkatt, maanedligUfoeretrygdFoerSkatt)
-
-        includeAttachment(
-            createVedleggOpplysningerBruktIBeregningUT(
-                skalViseMinsteytelse = false,
-                skalViseBarnetillegg = true,
-                skalViseAvdoed = true,
-                skalViseSlikBeregnerViUfoeretrygdenDin = true,
-                skalViseTabellInntekteneBruktIBeregningen = true,
-                skalViseTabellInntekteneBruktIBeregningenAvdoed = true,
-                skalViseSlikBeregnerViGjenlevendetillegg = true,
-                skalViseForDegSomMottarEktefelletillegg = true,
-                skalViseEtteroppgjoerAvUfoeretrygdOgBarnetillegg = true,
-                ), opplysningerBruktIBeregningUT
+        includePhrase(
+            Gjenlevendetillegg.HarGjenlevendetillegg(
+                forventetInntekt = avkortningsinformasjon.forventetInntekt,
+                harGjenlevendetilleggInnvilget = harGjenlevendetilleggInnvilget.notNull(),
+                inntektsgrense = avkortningsinformasjon.inntektsgrense,
+            )
         )
 
-        includeAttachment(vedleggDineRettigheterOgPlikterUfoere, orienteringOmRettigheterUfoere)
+        includePhrase(
+            EndringIOpptjening.EtterbetalingAvUfoeretrygd(
+                harBeloepOekt = beregningUfoereEndringIOpptjening.harBeloepOekt,
+                ufoeregrad = beregningUfoereEndringIOpptjening.ufoeregrad,
+                utbetalingsgrad = avkortningsinformasjon.utbetalingsgrad,
+                virkningsDato = virkningsDato
 
+            )
+        )
+        includePhrase(
+            EndringIOpptjening.TilbakekrevingAvUfoeretrygd(
+                harBeloepRedusert = beregningUfoereEndringIOpptjening.harBeloepRedusert
+            )
+        )
+        includePhrase(Ufoeretrygd.MeldeFraOmEndringer)
+        includePhrase(Ufoeretrygd.RettTilAAKlage)
+        includePhrase(Felles.RettTilInnsynPesys)
+        includePhrase(Ufoeretrygd.SjekkUtbetalingene)
+        includePhrase(Ufoeretrygd.Skattekort)
+
+        includePhrase(
+            Ufoeretrygd.SkattForDegSomBorIUtlandet(
+                brukerBorInorge = this.brukerBorInorge
+            )
+        )
     }
+
+
+    includeAttachment(vedleggMaanedligUfoeretrygdFoerSkatt, maanedligUfoeretrygdFoerSkatt)
+
+    includeAttachment(
+    createVedleggOpplysningerBruktIBeregningUT(
+    skalViseMinsteytelse = false,
+    skalViseBarnetillegg = true,
+    skalViseAvdoed = true,
+    skalViseSlikBeregnerViUfoeretrygdenDin = true,
+    skalViseTabellInntekteneBruktIBeregningen = true,
+    skalViseTabellInntekteneBruktIBeregningenAvdoed = true,
+    skalViseSlikBeregnerViGjenlevendetillegg = true,
+    skalViseForDegSomMottarEktefelletillegg = true,
+    skalViseEtteroppgjoerAvUfoeretrygdOgBarnetillegg = true,
+    ), opplysningerBruktIBeregningUT
+    )
+
+    includeAttachment(vedleggDineRettigheterOgPlikterUfoere, orienteringOmRettigheterUfoere)
+
+}
 
 }
