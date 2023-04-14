@@ -19,10 +19,7 @@ import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brev.template.dsl.expression.*
 
 data class TabellTrygdetiden(
-    val beregnetUTPerManedGjeldende: Expression<OpplysningerBruktIBeregningUTDto.BeregnetUTPerManedGjeldende>,
     val norskTrygdetid: Expression<List<OpplysningerBruktIBeregningUTDto.NorskTrygdetid>>,
-    val trygdetidGjeldende: Expression<OpplysningerBruktIBeregningUTDto.TrygdetidGjeldende>,
-    val trygdetidsdetaljerGjeldende: Expression<OpplysningerBruktIBeregningUTDto.TrygdetidsdetaljerGjeldende>,
     val utenlandskTrygdetidBilateral: Expression<List<OpplysningerBruktIBeregningUTDto.UtenlandskTrygdetidBilateral>>,
     val utenlandskTrygdetidEOS: Expression<List<OpplysningerBruktIBeregningUTDto.UtenlandskTrygdetidEOS>>,
 

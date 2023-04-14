@@ -21,6 +21,7 @@ data class OpplysningerBruktIBeregningUTDto(
     val kravAarsakType: KravAarsakType,  // TODO: PE_Vedtaksdata_Kravhode_KravArsakType
     val minsteytelseGjeldende_sats: Double?,
     val norskTrygdetid: List<NorskTrygdetid>, // TODO
+    val norskTrygdetidAvdoed: List<NorskTrygdetidAvdoed>,  // TODO
     val sivilstand: Sivilstand,
     val trygdetidGjeldende: TrygdetidGjeldende,
     val trygdetidsdetaljerGjeldende: TrygdetidsdetaljerGjeldende,
@@ -28,7 +29,9 @@ data class OpplysningerBruktIBeregningUTDto(
     val ufoeretrygdOrdinaer: UfoeretrygdOrdinaer, // TODO
     val ungUfoerGjeldende_erUnder20Aar: Boolean?,
     val utenlandskTrygdetidBilateral: List<UtenlandskTrygdetidBilateral>, // TODO
+    val utenlandskTrygdetidBilateralAvdoed: List<UtenlandskTrygdetidBilateralAvdoed>, // TODO
     val utenlandskTrygdetidEOS: List<UtenlandskTrygdetidEOS>, // TODO
+    val utenlandskTrygdetidEOSAvdoed: List<UtenlandskTrygdetidEOSAvdoed>, // TODO
     val yrkesskadeGjeldende: YrkesskadeGjeldende?,
     val opptjeningUfoeretrygd: OpptjeningUfoeretrygd?,
     val opptjeningUfoeretrygdAvdoed: OpptjeningUfoeretrygdAvdoed?,
@@ -185,16 +188,33 @@ data class OpplysningerBruktIBeregningUTDto(
         val trygdetidTom: LocalDate
     )
 
+    data class NorskTrygdetidAvdoed(
+        val trygdetidFomAvdoed: LocalDate,  // <PE_Grunnlag_PersongrunnlagAvdod_TrygdetidsgrunnlagListeNor_Trygdetidsgrunnlag_TrygdetidFom>
+        val trygdetidTomAvdoed: LocalDate
+    )
+
     data class UtenlandskTrygdetidEOS(
         val trygdetidEOSLand: String,
         val trygdetidFom: LocalDate,
         val trygdetidTom: LocalDate,
     )
 
+    data class UtenlandskTrygdetidEOSAvdoed(
+        val trygdetidEOSLandAvdoed: String,  // <PE_Grunnlag_PersongrunnlagAvdod_TrygdetidsgrunnlagEOS_TrygdetidEOSLand>
+        val trygdetidFomAvdoed: LocalDate,
+        val trygdetidTomAvdoed: LocalDate,
+    )
+
     data class UtenlandskTrygdetidBilateral(
         val trygdetidBilateralLand: String,
         val trygdetidFom: LocalDate,
         val trygdetidTom: LocalDate,
+    )
+
+    data class UtenlandskTrygdetidBilateralAvdoed(
+        val trygdetidBilateralLandAvdoed: String,  // <PE_Grunnlag_PersongrunnlagAvdod_TrygdetidsgrunnlagListeBilateral_TrygdetidsgrunnlagBilateral_TrygdetidBilateralLand>
+        val trygdetidFomAvdoed: LocalDate,
+        val trygdetidTomAvdoed: LocalDate,
     )
 
 
