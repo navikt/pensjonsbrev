@@ -100,7 +100,7 @@ fun createOpplysningerBruktIBeregningUTDtoBeregnetUTPerManedGjeldende() =
 fun createOpplysningerBruktIBeregningUTDtoInntektFoerUfoereGjeldende() =
     OpplysningerBruktIBeregningUTDto.InntektFoerUfoereGjeldende(
         erSannsynligEndret = false,
-        ifuInntekt = Kroner(0),
+        inntektFoerUfoer = Kroner(0),
         oifuInntekt = Kroner(0),
     )
 

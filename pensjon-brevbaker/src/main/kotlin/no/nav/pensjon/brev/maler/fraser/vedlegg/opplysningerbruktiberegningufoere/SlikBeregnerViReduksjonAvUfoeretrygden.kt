@@ -1,7 +1,15 @@
 package no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningufoere
 
 import no.nav.pensjon.brev.api.model.KravAarsakType
-import no.nav.pensjon.brev.api.model.Kroner
+import no.nav.pensjon.brev.api.model.vedlegg.BeregningUfoereSelectors.harGammelUTBeloepUlikNyUTBeloep
+import no.nav.pensjon.brev.api.model.vedlegg.BeregningUfoereSelectors.harInntektsgrenseLessThanInntektstak
+import no.nav.pensjon.brev.api.model.vedlegg.BeregningUfoereSelectors.nettoPerAarReduksjonUT
+import no.nav.pensjon.brev.api.model.vedlegg.BeregningUfoereSelectors.overskytendeInntekt
+import no.nav.pensjon.brev.api.model.vedlegg.InntektsAvkortingGjeldendeSelectors.forventetInntektAar
+import no.nav.pensjon.brev.api.model.vedlegg.InntektsAvkortingGjeldendeSelectors.inntektsgrenseAar
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDto
+import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdGjeldendeSelectors.kompensasjonsgrad
+import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdOrdinaerSelectors.harNyUTBeloep
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Expression
@@ -22,22 +30,23 @@ brevkode <> PE_UT_04_108, PE_UT_04_109,
 AND
 harNyUTBeloep */
 data class SlikBeregnerViReduksjonAvUfoeretrygden(
-    val forventetInntektAar: Expression<Kroner>,
-    val harGammelUTBeloepUlikNyUTBeloep: Expression<Boolean>,
-    val harInntektsgrenseLessThanInntektstak: Expression<Boolean>,
-    val harNyUTBeloep: Expression<Boolean>,
-    val inntektsgrenseAar: Expression<Kroner>,
-    val kompensasjonsgrad: Expression<Double>,
+    val beregningUfoere: Expression<OpplysningerBruktIBeregningUTDto.BeregningUfoere>,
+    val inntektsAvkortingGjeldende: Expression<OpplysningerBruktIBeregningUTDto.InntektsAvkortingGjeldende>,
     val kravAarsakType: Expression<KravAarsakType>,
-    val nettoPerAarReduksjonUT: Expression<Kroner>,
-    val overskytendeInntekt: Expression<Kroner>,
+    val ufoeretrygdGjeldende: Expression<OpplysningerBruktIBeregningUTDto.UfoeretrygdGjeldende>,
+    val ufoeretrygdOrdinaer: Expression<OpplysningerBruktIBeregningUTDto.UfoeretrygdOrdinaer>,
 
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+        val kompensasjonsgrad = ufoeretrygdGjeldende.kompensasjonsgrad.format()
+        val nettoPerAarReduksjonUT = beregningUfoere.nettoPerAarReduksjonUT.format()
+        val overskytendeInntekt = beregningUfoere.overskytendeInntekt.format()
+
         showIf(
-            (kravAarsakType.isOneOf(KravAarsakType.ENDRET_INNTEKT)) and harGammelUTBeloepUlikNyUTBeloep and forventetInntektAar.greaterThanOrEqual(
-                inntektsgrenseAar
-            ) and harInntektsgrenseLessThanInntektstak and harNyUTBeloep) {
+            (kravAarsakType.isOneOf(KravAarsakType.ENDRET_INNTEKT)) and beregningUfoere.harGammelUTBeloepUlikNyUTBeloep
+                    and inntektsAvkortingGjeldende.forventetInntektAar.greaterThanOrEqual(inntektsAvkortingGjeldende.inntektsgrenseAar)
+                    and beregningUfoere.harInntektsgrenseLessThanInntektstak and ufoeretrygdOrdinaer.harNyUTBeloep
+        ) {
             title1 {
                 text(
                     Bokmal to "Slik beregner vi reduksjonen av uføretrygden",
@@ -47,9 +56,9 @@ data class SlikBeregnerViReduksjonAvUfoeretrygden(
             }
             paragraph {
                 textExpr(
-                    Bokmal to "".expr() + overskytendeInntekt.format() + " kr x ".expr() + kompensasjonsgrad.format() + " % = ".expr() + nettoPerAarReduksjonUT.format() + " kroner i reduksjon for året".expr(),
-                    Nynorsk to "".expr() + overskytendeInntekt.format() + " kr x ".expr() + kompensasjonsgrad.format() + " % = ".expr() + nettoPerAarReduksjonUT.format() + " kroner i reduksjon for året".expr(),
-                    English to "NOK ".expr() + overskytendeInntekt.format() + " kr x ".expr() + kompensasjonsgrad.format() + " % = NOK ".expr() + nettoPerAarReduksjonUT.format() + " in reductions for the year".expr()
+                    Bokmal to "".expr() + overskytendeInntekt + " kr x ".expr() + kompensasjonsgrad + " % = ".expr() + nettoPerAarReduksjonUT + " kroner i reduksjon for året".expr(),
+                    Nynorsk to "".expr() + overskytendeInntekt + " kr x ".expr() + kompensasjonsgrad + " % = ".expr() + nettoPerAarReduksjonUT + " kroner i reduksjon for året".expr(),
+                    English to "NOK ".expr() + overskytendeInntekt + " kr x ".expr() + kompensasjonsgrad + " % = NOK ".expr() + nettoPerAarReduksjonUT + " in reductions for the year".expr()
                 )
             }
         }

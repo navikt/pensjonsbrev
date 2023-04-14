@@ -2,6 +2,13 @@ package no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningufoe
 
 import no.nav.pensjon.brev.api.model.vedlegg.BeregnetUTPerManedGjeldendeSelectors.brukerErFlyktning
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDto
+import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidGjeldendeSelectors.fastsattTrygdetid
+import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidGjeldendeSelectors.har40AarFastsattTrygdetid
+import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidGjeldendeSelectors.harFramtidigTrygdetidEOS
+import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidGjeldendeSelectors.harFramtidigTrygdetidNorsk
+import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidGjeldendeSelectors.harLikUfoeregradOgYrkesskadegrad
+import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidGjeldendeSelectors.harTrygdetidsgrunnlag
+import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidGjeldendeSelectors.harYrkesskadeOppfylt
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.Expression
@@ -12,18 +19,15 @@ import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brev.template.dsl.expression.*
 
 data class TrygdetidenDin(
-    val fastsattTrygdetid: Expression<Int>,  // (<FaTTNorge> + <FramtidigTTNorge>)/12
-    val har40AarFastsattTrygdetid: Expression<Boolean>,
-    val beregnetUTPerManedGjeldende: Expression<OpplysningerBruktIBeregningUTDto.BeregnetUTPerManedGjeldende>,
-    val harFramtidigTrygdetidEOS: Expression<Boolean>,
-    val harFramtidigTrygdetidNorsk: Expression<Boolean>,
-    val harLikUfoeregradOgYrkesskadegrad: Expression<Boolean>,
-    val harTrygdetidsgrunnlag: Expression<Boolean>,  // PE_Grunnlag_Persongrunnlagsliste_TrygdetidsgrunnlagListeNor_Trygdetidsgrunnlag_TrygdetidFom
-    val harYrkesskadeOppfylt: Expression<Boolean>,  // YrkesskadeResultat = Oppfylt / Finnes andre YrkesskadeResultat koder? Se TBU043V
 
-) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    val beregnetUTPerManedGjeldende: Expression<OpplysningerBruktIBeregningUTDto.BeregnetUTPerManedGjeldende>,
+    val trygdetidGjeldende: Expression<OpplysningerBruktIBeregningUTDto.TrygdetidGjeldende>,
+
+    ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-        val harFramtidigTrygdetid = harFramtidigTrygdetidNorsk or harFramtidigTrygdetidEOS
+        val harFramtidigTrygdetid =
+            trygdetidGjeldende.harFramtidigTrygdetidNorsk or trygdetidGjeldende.harFramtidigTrygdetidEOS
+        val fastsattTrygdetid = trygdetidGjeldende.fastsattTrygdetid.format()
 
         // TBU039V
         title1 {
@@ -69,7 +73,7 @@ data class TrygdetidenDin(
         }
 
         // TBU040V
-        showIf(har40AarFastsattTrygdetid) {
+        showIf(trygdetidGjeldende.har40AarFastsattTrygdetid) {
             paragraph {
                 text(
                     Bokmal to "Trygdetiden din er fastsatt til 40 år.",
@@ -91,8 +95,9 @@ data class TrygdetidenDin(
         }
         // TBU075V
         showIf(
-            harYrkesskadeOppfylt and not(har40AarFastsattTrygdetid) and not(beregnetUTPerManedGjeldende.brukerErFlyktning) and not(
-                harLikUfoeregradOgYrkesskadegrad
+            trygdetidGjeldende.harYrkesskadeOppfylt and not(trygdetidGjeldende.har40AarFastsattTrygdetid)
+                    and not(beregnetUTPerManedGjeldende.brukerErFlyktning) and not(
+                trygdetidGjeldende.harLikUfoeregradOgYrkesskadegrad
             )
         ) {
             paragraph {
@@ -105,11 +110,11 @@ data class TrygdetidenDin(
             // TBU076V
             paragraph {
                 textExpr(
-                    Bokmal to "Trygdetiden i folketrygden er fastsatt til ".expr() + fastsattTrygdetid.format() + " år for den delen av uførheten din som ikke skyldes en godkjent yrkesskade eller yrkessykdom.".expr(),
-                    Nynorsk to "Trygdetida i folketrygda er fastsett til ".expr() + fastsattTrygdetid.format() + " år for den delen av uføretrygda di som ikkje skuldas ein godkjend yrkesskade eller yrkessjukdom.".expr(),
-                    English to "The period of national insurance coverage has been set to ".expr() + fastsattTrygdetid.format() + " years for the part of your disability that is not caused by an approved occupational injury or occupational illness.".expr(),
+                    Bokmal to "Trygdetiden i folketrygden er fastsatt til ".expr() + fastsattTrygdetid + " år for den delen av uførheten din som ikke skyldes en godkjent yrkesskade eller yrkessykdom.".expr(),
+                    Nynorsk to "Trygdetida i folketrygda er fastsett til ".expr() + fastsattTrygdetid + " år for den delen av uføretrygda di som ikkje skuldas ein godkjend yrkesskade eller yrkessjukdom.".expr(),
+                    English to "The period of national insurance coverage has been set to ".expr() + fastsattTrygdetid + " years for the part of your disability that is not caused by an approved occupational injury or occupational illness.".expr(),
                 )
-                showIf(harTrygdetidsgrunnlag) {
+                showIf(trygdetidGjeldende.harTrygdetidsgrunnlag) {
                     text(
                         Bokmal to " Den faktiske trygdetiden din i denne perioden er fastsatt på grunnlag av følgende perioder:",
                         Nynorsk to " Den faktiske trygdetida di i denne perioden er fastsett på grunnlag av følgjande periodar:",
@@ -119,7 +124,10 @@ data class TrygdetidenDin(
             }
         }
         // TBU042V
-        showIf(harYrkesskadeOppfylt and harLikUfoeregradOgYrkesskadegrad and not(beregnetUTPerManedGjeldende.brukerErFlyktning)) {
+        showIf(
+            trygdetidGjeldende.harYrkesskadeOppfylt and trygdetidGjeldende.harLikUfoeregradOgYrkesskadegrad
+                    and not(beregnetUTPerManedGjeldende.brukerErFlyktning)
+        ) {
             paragraph {
                 text(
                     Bokmal to "Trygdetiden din er fastsatt til 40 år, fordi du er innvilget uføretrygd etter særbestemmelser for yrkesskade eller yrkessykdom.",
@@ -129,14 +137,19 @@ data class TrygdetidenDin(
             }
         }
         // TBU043V
-        showIf(not(harLikUfoeregradOgYrkesskadegrad) and not(beregnetUTPerManedGjeldende.brukerErFlyktning) and not(harYrkesskadeOppfylt)) {
+        showIf(
+            not(trygdetidGjeldende.harLikUfoeregradOgYrkesskadegrad) and not(beregnetUTPerManedGjeldende.brukerErFlyktning)
+                    and not(trygdetidGjeldende.harYrkesskadeOppfylt)
+        ) {
             paragraph {
                 textExpr(
-                    Bokmal to "Trygdetiden din i folketrygden er fastsatt til ".expr() + fastsattTrygdetid.format() + " år.".expr(),
-                    Nynorsk to "Trygdetida di i folketrygda er fastsett til ".expr() + fastsattTrygdetid.format() + " år.".expr(),
-                    English to "Your period of national insurance coverage has been set to ".expr() + fastsattTrygdetid.format() + " years.".expr()
+                    Bokmal to "Trygdetiden din i folketrygden er fastsatt til ".expr() + fastsattTrygdetid + " år.".expr(),
+                    Nynorsk to "Trygdetida di i folketrygda er fastsett til ".expr() + fastsattTrygdetid + " år.".expr(),
+                    English to "Your period of national insurance coverage has been set to ".expr() + fastsattTrygdetid + " years.".expr()
                 )
-                showIf(harTrygdetidsgrunnlag) {
+                showIf(
+                    trygdetidGjeldende.harTrygdetidsgrunnlag
+                ) {
                     text(
                         Bokmal to " Den faktiske trygdetiden din er fastsatt på grunnlag av følgende perioder:",
                         Nynorsk to " Den faktiske trygdetida di er fastsett på grunnlag av følgjande periodar:",

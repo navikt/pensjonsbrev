@@ -2,6 +2,14 @@ package no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningufoe
 
 import no.nav.pensjon.brev.api.model.KravAarsakType
 import no.nav.pensjon.brev.api.model.Kroner
+import no.nav.pensjon.brev.api.model.vedlegg.BeregningUfoereSelectors.harGammelUTBeloepUlikNyUTBeloep
+import no.nav.pensjon.brev.api.model.vedlegg.BeregningUfoereSelectors.harInntektsgrenseLessThanInntektstak
+import no.nav.pensjon.brev.api.model.vedlegg.BeregningUfoereSelectors.overskytendeInntekt
+import no.nav.pensjon.brev.api.model.vedlegg.InntektsAvkortingGjeldendeSelectors.forventetInntektAar
+import no.nav.pensjon.brev.api.model.vedlegg.InntektsAvkortingGjeldendeSelectors.inntektsgrenseAar
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDto
+import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdGjeldendeSelectors.kompensasjonsgrad
+import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdOrdinaerSelectors.harNyUTBeloep
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Expression
@@ -20,22 +28,23 @@ AND not(brevkode PE_UT_04_108, PE_UT_04_109, PE_UT_04_500, PE_UT_07_200, PE_UT_0
 OR (brevkode = PE_UT_04_102 AND KravArsakType <> "TILST_DOD")
 THEN INCLUDE */
 data class SlikBeregnerViUtbetalingAvUfoeretrygdenNaarInntektenDinEndres(
-    val forventetInntektAar: Expression<Kroner>,
-    val harGammelUTBeloepUlikNyUTBeloep: Expression<Boolean>,
-    val harInntektsgrenseLessThanInntektstak: Expression<Boolean>,
-    val harNyUtBeloep: Expression<Boolean>,
-    val inntektsgrenseAar: Expression<Kroner>,
-    val kompensasjonsgrad: Expression<Double>,
+    val beregningUfoere: Expression<OpplysningerBruktIBeregningUTDto.BeregningUfoere>,
+    val inntektsAvkortingGjeldende: Expression<OpplysningerBruktIBeregningUTDto.InntektsAvkortingGjeldende>,
     val kravAarsakType: Expression<KravAarsakType>,
-    val overskytendeInntekt: Expression<Kroner>,
-
+    val ufoeretrygdGjeldende: Expression<OpplysningerBruktIBeregningUTDto.UfoeretrygdGjeldende>,
+    val ufoeretrygdOrdinaer: Expression<OpplysningerBruktIBeregningUTDto.UfoeretrygdOrdinaer>,
 
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+        val forventetInntektAar = inntektsAvkortingGjeldende.forventetInntektAar.format()
+        val inntektsgrenseAar = inntektsAvkortingGjeldende.inntektsgrenseAar.format()
+        val kompensasjonsgrad = ufoeretrygdGjeldende.kompensasjonsgrad.format()
+        val overskytendeInntekt = beregningUfoere.overskytendeInntekt.format()
+
         showIf(
             (kravAarsakType.isOneOf(
                 KravAarsakType.ENDRET_INNTEKT
-            )) and harGammelUTBeloepUlikNyUTBeloep and harInntektsgrenseLessThanInntektstak
+            )) and beregningUfoere.harGammelUTBeloepUlikNyUTBeloep and beregningUfoere.harInntektsgrenseLessThanInntektstak
         ) {
             title1 {
                 text(
@@ -51,19 +60,19 @@ data class SlikBeregnerViUtbetalingAvUfoeretrygdenNaarInntektenDinEndres(
                     English to "Your disability benefit payment has been recalculated, because your income has changed. It is your reported income and the disability benefit you have been paid so far this year that determine how much you will be paid for the remainder of the calendar year."
                 )
             }
-            showIf(forventetInntektAar.greaterThanOrEqual(inntektsgrenseAar) and harNyUtBeloep) {
+            showIf(inntektsAvkortingGjeldende.forventetInntektAar.greaterThanOrEqual(inntektsAvkortingGjeldende.inntektsgrenseAar) and ufoeretrygdOrdinaer.harNyUTBeloep) {
                 paragraph {
                     textExpr(
-                        Bokmal to "Uføretrygden reduseres med ".expr() + kompensasjonsgrad.format() + " prosent av inntekten over ".expr() + inntektsgrenseAar.format() + " kroner fordi du har en kompensasjonsgrad som er ".expr() + kompensasjonsgrad.format() + " prosent.".expr(),
-                        Nynorsk to "Uføretrygda blir redusert med ".expr() + kompensasjonsgrad.format() + " prosent av inntekta over ".expr() + inntektsgrenseAar.format() + " kroner fordi du har ein kompensasjonsgrad som er ".expr() + kompensasjonsgrad.format() + " prosent.".expr(),
-                        English to "Your disability benefit is reduced by ".expr() + kompensasjonsgrad.format() + " percent of your income in excess of NOK ".expr() + inntektsgrenseAar.format() + ", because your degree of compensation is ".expr() + kompensasjonsgrad.format() + " percent.".expr()
+                        Bokmal to "Uføretrygden reduseres med ".expr() + kompensasjonsgrad + " prosent av inntekten over ".expr() + inntektsgrenseAar + " kroner fordi du har en kompensasjonsgrad som er ".expr() + kompensasjonsgrad + " prosent.".expr(),
+                        Nynorsk to "Uføretrygda blir redusert med ".expr() + kompensasjonsgrad + " prosent av inntekta over ".expr() + inntektsgrenseAar + " kroner fordi du har ein kompensasjonsgrad som er ".expr() + kompensasjonsgrad + " prosent.".expr(),
+                        English to "Your disability benefit is reduced by ".expr() + kompensasjonsgrad + " percent of your income in excess of NOK ".expr() + inntektsgrenseAar + ", because your degree of compensation is ".expr() + kompensasjonsgrad + " percent.".expr()
                     )
                 }
                 paragraph {
                     textExpr(
-                        Bokmal to "Du har en inntektsgrense på ".expr() + inntektsgrenseAar.format() + " kroner og den innmeldte inntekten din er ".expr() + forventetInntektAar.format() + " kroner. Dette betyr at overskytende inntekt er ".expr() + overskytendeInntekt.format() + " kroner.".expr(),
-                        Nynorsk to "Du har ei inntektsgrense på ".expr() + inntektsgrenseAar.format() + " kroner, og den innmelde inntekta di er ".expr() + forventetInntektAar.format() + " kroner. Dette vil seie at overskytande inntekt er ".expr() + overskytendeInntekt.format() + " kroner.".expr(),
-                        English to "Your income cap is NOK ".expr() + inntektsgrenseAar.format() + ", and your reported income is NOK ".expr() + forventetInntektAar.format() + ". This means that your excess income is NOK ".expr() + overskytendeInntekt.format() + ".".expr()
+                        Bokmal to "Du har en inntektsgrense på ".expr() + inntektsgrenseAar + " kroner og den innmeldte inntekten din er ".expr() + forventetInntektAar + " kroner. Dette betyr at overskytende inntekt er ".expr() + overskytendeInntekt + " kroner.".expr(),
+                        Nynorsk to "Du har ei inntektsgrense på ".expr() + inntektsgrenseAar + " kroner, og den innmelde inntekta di er ".expr() + forventetInntektAar + " kroner. Dette vil seie at overskytande inntekt er ".expr() + overskytendeInntekt + " kroner.".expr(),
+                        English to "Your income cap is NOK ".expr() + inntektsgrenseAar + ", and your reported income is NOK ".expr() + forventetInntektAar + ". This means that your excess income is NOK ".expr() + overskytendeInntekt + ".".expr()
                     )
                 }
             }

@@ -11,7 +11,6 @@ data class OpplysningerBruktIBeregningUTDto(
     val fraOgMedDatoErNesteAar: Boolean,
     val opplysningerAvdoed: OpplysningerAvdoed?,
     val harBarnetilleggInnvilget: Boolean?,  // (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true) OR (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true)
-    val harBrukerKonvertertUP: Boolean,
     val harEktefelletilleggInnvilget: Boolean?,  // TODO: PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_Ektefelletillegg_ETinnvilget = true
     val harKravaarsakEndringInntekt: Boolean,
     val inntektEtterUfoereGjeldende_beloepIEU: Kroner?,
@@ -123,7 +122,7 @@ data class OpplysningerBruktIBeregningUTDto(
         val kompensasjonsgrad: Double,
         val ufoeregrad: Int,
         val ufoeretidspunkt: LocalDate,
-        val ugradertBruttoPerAar: Kroner,
+        val fullUfoeretrygdPerAar: Kroner,  // ugradertBruttoPerAar
     )
 
     data class InntektsAvkortingGjeldende(
@@ -136,8 +135,8 @@ data class OpplysningerBruktIBeregningUTDto(
 
     data class InntektFoerUfoereGjeldende(
         val erSannsynligEndret: Boolean,
-        val ifuInntekt: Kroner,
-        val oifuInntekt: Kroner,
+        val inntektFoerUfoer: Kroner,
+        val oppjustertInntektFoerUfoer: Kroner,
     )
 
     data class OpptjeningUfoeretrygd(
@@ -174,7 +173,7 @@ data class OpplysningerBruktIBeregningUTDto(
     )
 
     data class TrygdetidGjeldende(
-        val fastsattTrygdetid: Int,
+        val fastsattTrygdetid: Int,  //  TODO: (<FaTTNorge> + <FramtidigTTNorge>)/12
         val har40AarFastsattTrygdetid: Boolean,
         val harFramtidigTrygdetidEOS: Boolean,
         val harFramtidigTrygdetidNorsk: Boolean,
@@ -219,7 +218,7 @@ data class OpplysningerBruktIBeregningUTDto(
 
 
     data class UfoeretrygdOrdinaer(
-        val fradrag: Kroner,
+        val reduksjonIUfoeretrygd: Kroner,  // fradrag
         val harBeloepRedusert: Boolean,  // PE_Vedtaksdata_BeregningsData_BeregningUfore_BelopRedusert
         val harNyUTBeloep: Boolean, // TODO: Ny / PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopNyUT
         val harTotalNettoUT: Boolean,  // PE_Vedtaksdata_BeregningsData_BeregningUfore_TotalNetto
