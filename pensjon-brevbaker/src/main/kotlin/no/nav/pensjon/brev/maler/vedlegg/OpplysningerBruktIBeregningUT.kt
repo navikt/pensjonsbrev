@@ -43,12 +43,6 @@ import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSel
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.yrkesskadeGjeldende
 import no.nav.pensjon.brev.api.model.vedlegg.OpptjeningUfoeretrygdSelectors.harFoerstegangstjenesteOpptjening_safe
 import no.nav.pensjon.brev.api.model.vedlegg.OpptjeningUfoeretrygdSelectors.harOmsorgsopptjening_safe
-import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidGjeldendeSelectors.fastsattTrygdetid
-import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidGjeldendeSelectors.har40AarFastsattTrygdetid
-import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidGjeldendeSelectors.harFramtidigTrygdetidEOS
-import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidGjeldendeSelectors.harFramtidigTrygdetidNorsk
-import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidGjeldendeSelectors.harLikUfoeregradOgYrkesskadegrad
-import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidGjeldendeSelectors.harTrygdetidsgrunnlag
 import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidGjeldendeSelectors.harYrkesskadeOppfylt
 import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidsdetaljerGjeldendeSelectors.anvendtTT
 import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidsdetaljerGjeldendeSelectors.beregningsmetode
