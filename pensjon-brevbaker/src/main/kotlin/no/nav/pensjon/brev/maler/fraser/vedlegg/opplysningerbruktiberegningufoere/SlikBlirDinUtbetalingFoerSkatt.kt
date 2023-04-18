@@ -28,6 +28,15 @@ import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 
+/*
+HVIS
+<Utbetalingsgrad> < <Uforegrad> OG <KravArsakType> <> soknad_bt
+OG
+Brevkode <> PE_UT_04_108 OG Brevkode <> PE_UT_04_109 OG Brevkode <> PE_UT_07_200
+ELLER
+Brevkode <> PE_UT_06_300
+ */
+
 // TBU062V, TBU063V, TBU064V, TBU074V, TBU600V, TBU065V
 data class TabellSlikBlirDinUtbetalingFoerSkatt(
     val beregningUfoere: Expression<OpplysningerBruktIBeregningUTDto.BeregningUfoere>,

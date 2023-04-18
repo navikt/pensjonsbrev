@@ -1,5 +1,7 @@
 package no.nav.pensjon.brev.maler.fraser.ufoer
 
+import io.ktor.http.*
+import no.nav.pensjon.brev.api.model.KravAarsakType
 import no.nav.pensjon.brev.api.model.Kroner
 import no.nav.pensjon.brev.api.model.Sivilstand
 import no.nav.pensjon.brev.maler.fraser.common.Constants
@@ -566,21 +568,21 @@ object Barnetillegg {
                                 " not live together with both parents because your income on its own is higher than NOK " +
                                 inntektstakSaerkullsbarn.format() + ". Your income exceeds the income limit to receive child supplement.".expr()
                     )
-                       }.orShowIf(fellesInnvilget and not(fellesUtbetalt) and not(saerkullInnvilget)) {
-                           textExpr(// TBU1286.2
-                               Bokmal to "Barnetillegget for ".expr() +
-                                       ifElse(harFlereFellesBarn, "barna", "barnet") +
-                                       " blir ikke utbetalt fordi dere har en samlet inntekt som er høyere enn " +
-                                       inntektstakFellesbarn.format() + " kroner. De samlede inntektene er over grensen for å få utbetalt barnetillegg.".expr(),
-                               Nynorsk to "Barnetillegget for ".expr() +
-                                       ifElse(harFlereFellesBarn, "barna", "barnet") +
-                                       " blir ikkje utbetalt fordi dei har ei samla inntekt som er høgare enn " +
-                                       inntektstakFellesbarn.format() + " kroner. Dei samla inntektene er over grensa for å få utbetalt barnetillegg.".expr(),
-                               English to "You will not receive child supplement for the ".expr() +
-                                       ifElse(harFlereFellesBarn, "children", "child") +
-                                       " because your combined incomes is higher than NOK " +
-                                       inntektstakFellesbarn.format() + ". Your combined incomes exceed the income limit to receive child supplement.".expr()
-                           )
+                }.orShowIf(fellesInnvilget and not(fellesUtbetalt) and not(saerkullInnvilget)) {
+                    textExpr(// TBU1286.2
+                        Bokmal to "Barnetillegget for ".expr() +
+                                ifElse(harFlereFellesBarn, "barna", "barnet") +
+                                " blir ikke utbetalt fordi dere har en samlet inntekt som er høyere enn " +
+                                inntektstakFellesbarn.format() + " kroner. De samlede inntektene er over grensen for å få utbetalt barnetillegg.".expr(),
+                        Nynorsk to "Barnetillegget for ".expr() +
+                                ifElse(harFlereFellesBarn, "barna", "barnet") +
+                                " blir ikkje utbetalt fordi dei har ei samla inntekt som er høgare enn " +
+                                inntektstakFellesbarn.format() + " kroner. Dei samla inntektene er over grensa for å få utbetalt barnetillegg.".expr(),
+                        English to "You will not receive child supplement for the ".expr() +
+                                ifElse(harFlereFellesBarn, "children", "child") +
+                                " because your combined incomes is higher than NOK " +
+                                inntektstakFellesbarn.format() + ". Your combined incomes exceed the income limit to receive child supplement.".expr()
+                    )
                 }.orShowIf(fellesInnvilget and not(fellesUtbetalt) and saerkullInnvilget) {
                     textExpr(// TBU1286.2
                         Bokmal to "Barnetillegget for ".expr() +
@@ -664,7 +666,97 @@ object Barnetillegg {
             }
         }
     }
+
+    // TBU601V
+    data class BarnetilleggInntektsavkortning(
+        val kravAarsakType: Expression<KravAarsakType>,
+    ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+            title1 {
+                text(
+                    Bokmal to "Slik reduserer vi barnetillegget ut fra inntekt",
+                    Nynorsk to "Slik reduserer vi barnetillegget ut frå inntekt",
+                    English to "This is how the reduction of your child supplement is calculated"
+                )
+            }
+            paragraph {
+                text(
+                    Bokmal to "Størrelsen på barnetillegget er avhengig av inntekt.",
+                    Nynorsk to "Storleiken på barnetillegget er avhengig av inntekt.",
+                    English to "The amount of child supplement depends on your income."
+                )
+            }
+            paragraph {
+                text(
+                    Bokmal to "Barnetillegget blir redusert ut fra personinntekt. Dette kan for eksempel være:",
+                    Nynorsk to "Barnetillegget kan bli redusert ut frå personinntekt. Dette kan til dømes være:",
+                    English to "The child supplement is reduced on the basis of personal income. This can be for example:"
+                )
+                list {
+                    item {
+                        text(
+                            Bokmal to "uføretrygd",
+                            Nynorsk to "uføretrygd",
+                            English to "disability benefits",
+                        )
+                    }
+                    item {
+                        text(
+                            Bokmal to "arbeidsinntekt",
+                            Nynorsk to "arbeidsinntekt",
+                            English to "income from employment",
+                        )
+                    }
+                    item {
+                        text(
+                            Bokmal to "næringsinntekt",
+                            Nynorsk to "næringsinntekt",
+                            English to "income from self-employment",
+                        )
+                    }
+                    item {
+                        text(
+                            Bokmal to "inntekt fra utlandet",
+                            Nynorsk to "inntekt frå utlandet",
+                            English to "income from abroad"
+                        )
+                    }
+                    item {
+                        text(
+                            Bokmal to "ytelser/pensjon fra Norge",
+                            Nynorsk to "ytingar/pensjon frå Noreg",
+                            English to "payments/pensions from Norway",
+                        )
+                    }
+                    item {
+                        text(
+                            Bokmal to "pensjon fra utlandet",
+                            Nynorsk to "pensjon frå utlandet",
+                            English to "pensions from abroad",
+                        )
+                    }
+                }
+            }
+            paragraph {
+                text(
+                    Bokmal to "Du kan lese mer om personinntekt på skatteetaten.no.",
+                    Nynorsk to "Du kan lese meir om personinntekt på skatteetaten.no.",
+                    English to "You can read more about personal income at skatteetaten.no."
+                )
+            }
+
+            // TBU602V
+            paragraph {
+                textExpr(
+                    Bokmal to "Det er inntekten ".expr(),
+                    Nynorsk to "".expr(),
+                    English to "".expr()
+                )
+            }
+        }
+    }
 }
+
 
 
 

@@ -15,7 +15,6 @@ fun createOpplysningerBruktIBeregningUTDto() =
         fraOgMedDatoErNesteAar = false,
         opplysningerAvdoed = Fixtures.create(),
         harBarnetilleggInnvilget = false,
-        harBrukerKonvertertUP = false,
         harEktefelletilleggInnvilget = false,
         harKravaarsakEndringInntekt = true,
         inntektEtterUfoereGjeldende_beloepIEU = Kroner(0),
@@ -101,7 +100,7 @@ fun createOpplysningerBruktIBeregningUTDtoInntektFoerUfoereGjeldende() =
     OpplysningerBruktIBeregningUTDto.InntektFoerUfoereGjeldende(
         erSannsynligEndret = false,
         inntektFoerUfoer = Kroner(0),
-        oifuInntekt = Kroner(0),
+        oppjustertInntektFoerUfoer = Kroner(0),
     )
 
 fun createOpplysningerBruktIBeregningUTDtoInntektsAvkortingGjeldende() =
@@ -147,7 +146,7 @@ fun createOpplysningerBruktIBeregningUTDtoUfoeretrygdGjeldende() =
         kompensasjonsgrad = 0.0,
         ufoeregrad = 0,
         ufoeretidspunkt = LocalDate.of(2020, 1, 1),
-        ugradertBruttoPerAar = Kroner(0),
+        fullUfoeretrygdPerAar = Kroner(0),
     )
 
 fun createOpplysningerBruktIBeregningUTDtoYrkesskadeGjeldende() =
@@ -278,7 +277,7 @@ fun createOpplysningerBruktIBeregningUTDtoGjenlevendetilleggInformasjon() =
 
 fun createOpplysningerBruktIBeregningUTDtoUfoeretrygdOrdinaer() =
     OpplysningerBruktIBeregningUTDto.UfoeretrygdOrdinaer(
-        fradrag = Kroner(80000),
+        reduksjonIUfoeretrygd = Kroner(80000),
         harBeloepRedusert = true,
         harNyUTBeloep = true,
         harTotalNettoUT = true,

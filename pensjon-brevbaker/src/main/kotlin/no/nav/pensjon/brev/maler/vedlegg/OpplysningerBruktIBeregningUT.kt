@@ -48,6 +48,7 @@ import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidsdetaljerGjeldendeSelector
 import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidsdetaljerGjeldendeSelectors.beregningsmetode
 import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdGjeldendeSelectors.harDelvisUfoeregrad
 import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdGjeldendeSelectors.ufoeretidspunkt
+import no.nav.pensjon.brev.maler.fraser.ufoer.Gjenlevendetillegg
 import no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningufoere.*
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
@@ -65,6 +66,7 @@ fun createVedleggOpplysningerBruktIBeregningUT(
     skalViseSlikBeregnerViUfoeretrygdenDin: Boolean,
     skalViseTabellInntekteneBruktIBeregningen: Boolean,
     skalViseTabellInntekteneBruktIBeregningenAvdoed: Boolean,
+    skalViseSlikBeregnerViGjenlevendetilleggHarNyttTillegg: Boolean,
     skalViseSlikBeregnerViGjenlevendetillegg: Boolean,
     skalViseForDegSomMottarEktefelletillegg: Boolean,
     skalViseEtteroppgjoerAvUfoeretrygdOgBarnetillegg: Boolean,
@@ -233,7 +235,7 @@ fun createVedleggOpplysningerBruktIBeregningUT(
                 ufoeretrygdGjeldende = ufoeretrygdGjeldende,
                 ufoeretrygdOrdinaer = ufoeretrygdOrdinaer,
 
-            )
+                )
         )
 
         includePhrase(
@@ -253,7 +255,7 @@ fun createVedleggOpplysningerBruktIBeregningUT(
                 kravAarsakType = kravAarsakType,
                 ufoeretrygdGjeldende = ufoeretrygdGjeldende,
                 ufoeretrygdOrdinaer = ufoeretrygdOrdinaer,
-                )
+            )
         )
 
         includePhrase(
@@ -281,10 +283,10 @@ fun createVedleggOpplysningerBruktIBeregningUT(
             }
         }
 
-        if (skalViseSlikBeregnerViGjenlevendetillegg) {
+        if (skalViseSlikBeregnerViGjenlevendetilleggHarNyttTillegg) {
             ifNotNull(opplysningerAvdoed) { gjenlevendetillegg ->
                 includePhrase(
-                    SlikBeregnerViGjenlevendetillegg(
+                    HarNyttGjenlevendetillegg(
                         harGjenlevendetillegg = gjenlevendetillegg.notNull(),
                         harNyttGjenlevendetillegg = opplysningerAvdoed.harNyttGjenlevendetillegg_safe.ifNull(
                             then = false
@@ -293,6 +295,20 @@ fun createVedleggOpplysningerBruktIBeregningUT(
                 )
             }
         }
+
+        if (skalViseSlikBeregnerViGjenlevendetillegg) {
+            ifNotNull(opplysningerAvdoed) { gjenlevendetillegg ->
+                includePhrase(
+                    NotNyttGjenlevendetillegg(
+                        harGjenlevendetillegg = gjenlevendetillegg.notNull(),
+                        harNyttGjenlevendetillegg = opplysningerAvdoed.harNyttGjenlevendetillegg_safe.ifNull(
+                            then = false
+                        )
+                    )
+                )
+            }
+        }
+
         if (skalViseForDegSomMottarEktefelletillegg) {
             ifNotNull(harEktefelletilleggInnvilget) { ektefelletillegg ->
                 includePhrase(

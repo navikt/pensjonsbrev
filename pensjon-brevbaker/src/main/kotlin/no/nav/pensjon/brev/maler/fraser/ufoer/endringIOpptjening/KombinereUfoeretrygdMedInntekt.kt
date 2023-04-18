@@ -1,6 +1,5 @@
 package no.nav.pensjon.brev.maler.fraser.ufoer.endringIOpptjening
 
-import no.nav.pensjon.brev.api.model.Kroner
 import no.nav.pensjon.brev.api.model.maler.AvkortningsinformasjonSelectors.beloepsgrense
 import no.nav.pensjon.brev.api.model.maler.AvkortningsinformasjonSelectors.forventetInntekt
 import no.nav.pensjon.brev.api.model.maler.AvkortningsinformasjonSelectors.harFullUtbetalingsgrad
@@ -22,8 +21,6 @@ import no.nav.pensjon.brev.api.model.maler.BeregningUfoereEndringIOpptjeningSele
 import no.nav.pensjon.brev.api.model.maler.BeregningUfoereEndringIOpptjeningSelectors.nettoUfoeretrygdUtbetaltPerMaaned
 import no.nav.pensjon.brev.api.model.maler.BeregningUfoereEndringIOpptjeningSelectors.ufoeregrad
 import no.nav.pensjon.brev.api.model.maler.EndringIOpptjeningAutoDto
-import no.nav.pensjon.brev.api.model.maler.EndringIOpptjeningAutoDtoSelectors.avkortningsinformasjon
-import no.nav.pensjon.brev.api.model.maler.EndringIOpptjeningAutoDtoSelectors.beregningUfoereEndringIOpptjening
 import no.nav.pensjon.brev.maler.fraser.common.Constants
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Expression

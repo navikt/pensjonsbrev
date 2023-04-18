@@ -254,6 +254,7 @@ object EndringIOpptjeningAuto : AutobrevTemplate<EndringIOpptjeningAutoDto> {
     skalViseSlikBeregnerViUfoeretrygdenDin = true,
     skalViseTabellInntekteneBruktIBeregningen = true,
     skalViseTabellInntekteneBruktIBeregningenAvdoed = true,
+    skalViseSlikBeregnerViGjenlevendetilleggHarNyttTillegg = true,
     skalViseSlikBeregnerViGjenlevendetillegg = true,
     skalViseForDegSomMottarEktefelletillegg = true,
     skalViseEtteroppgjoerAvUfoeretrygdOgBarnetillegg = true,

@@ -9,6 +9,40 @@ import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.isOneOf
 import no.nav.pensjon.brev.template.dsl.text
 
+/*
+Hvis
+((brevkode <> «PE_UT_07_100»
+OG
+Brevkode <> PE_UT_05_100 OG brevkode <> PE_UT_04_115
+OG Brevkode <> PE_UT_04_103 OG Brevkode <> PE_UT_06_100
+OG Brevkode <> PE_UT_04_300 OG Brevkode <> PE_UT_14_300
+OG
+(IFUBegrunnelse <> «» ELLER IEUBegrunnelse <> «»))
+ELLER
+<Brevkode> = PE_UT_04_500
+ELLER
+(KravArsakType = sivilstandsendring
+OG mottarminsteytelse = true))
+
+OG <KravArsakType> <> soknad_bt
+OG
+<KravarsakType> <> endring_ifu
+ELLER
+((Brevkode = PE_UT_04_108 ELLER Brevkode = PE_UT_04 109)
+OG
+<AndelYtelseAvOIFU> > 95 %
+OG
+<KravArsakType> <> soknad_bt
+OG
+<KravarsakType> <> endring_ifu
+)
+OG
+Brevkode <> PE_UT_07_200
+ELLER
+Brevkode <> PE_UT_06_300
+ */
+
+
 data class SlikFastsetterViInntektenDinFoerDuBleUfoer(
     val harDelvisUfoergrad: Expression<Boolean>,
     val inntektFoerUfoereBegrunnelse: Expression<InntektFoerUfoereBegrunnelse>,

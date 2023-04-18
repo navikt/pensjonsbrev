@@ -16,7 +16,7 @@ import no.nav.pensjon.brev.api.model.vedlegg.FellesbarnSelectors.fribeloep
 import no.nav.pensjon.brev.api.model.vedlegg.FellesbarnSelectors.inntektAnnenForelder
 import no.nav.pensjon.brev.api.model.vedlegg.FellesbarnSelectors.inntektBruktIAvkortning_safe
 import no.nav.pensjon.brev.api.model.vedlegg.FellesbarnSelectors.inntektstak_safe
-import no.nav.pensjon.brev.api.model.vedlegg.InntektFoerUfoereGjeldendeSelectors.ifuInntekt
+import no.nav.pensjon.brev.api.model.vedlegg.InntektFoerUfoereGjeldendeSelectors.inntektFoerUfoer
 import no.nav.pensjon.brev.api.model.vedlegg.InntektsAvkortingGjeldendeSelectors.forventetInntektAar
 import no.nav.pensjon.brev.api.model.vedlegg.InntektsAvkortingGjeldendeSelectors.inntektsgrenseAar
 import no.nav.pensjon.brev.api.model.vedlegg.InntektsAvkortingGjeldendeSelectors.inntektstak
@@ -135,7 +135,7 @@ data class TabellUfoereOpplysninger(
                         }
                     }
                 }
-                showIf(inntektFoerUfoereGjeldende.ifuInntekt.greaterThan(0)) {
+                showIf(inntektFoerUfoereGjeldende.inntektFoerUfoer.greaterThan(0)) {
                     row {
                         cell {
                             text(
@@ -145,7 +145,7 @@ data class TabellUfoereOpplysninger(
                             )
                         }
                         cell {
-                            includePhrase(Felles.KronerText(inntektFoerUfoereGjeldende.ifuInntekt))
+                            includePhrase(Felles.KronerText(inntektFoerUfoereGjeldende.inntektFoerUfoer))
                         }
                     }
                 }

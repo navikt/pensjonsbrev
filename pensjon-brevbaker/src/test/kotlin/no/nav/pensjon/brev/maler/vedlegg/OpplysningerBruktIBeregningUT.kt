@@ -21,8 +21,17 @@ class OpplysningerBruktIBeregningUTTest {
     @Test
     fun testVedlegg() {
         val template = createVedleggTestTemplate(
-            createVedleggOpplysningerBruktIBeregningUT(skalViseMinsteytelse = true, skalViseBarnetillegg = true,
-                skalViseAvdoed = true, skalViseSlikBeregnerViUfoeretrygdenDin = true, skalViseTabellInntekteneBruktIBeregningen = true, skalViseTabellInntekteneBruktIBeregningenAvdoed = true, skalViseSlikBeregnerViGjenlevendetillegg = true, skalViseForDegSomMottarEktefelletillegg = true, skalViseEtteroppgjoerAvUfoeretrygdOgBarnetillegg = true),
+            createVedleggOpplysningerBruktIBeregningUT(
+                skalViseMinsteytelse = true,
+                skalViseBarnetillegg = true,
+                skalViseAvdoed = true,
+                skalViseSlikBeregnerViUfoeretrygdenDin = true,
+                skalViseTabellInntekteneBruktIBeregningen = true,
+                skalViseTabellInntekteneBruktIBeregningenAvdoed = true,
+                skalViseSlikBeregnerViGjenlevendetilleggHarNyttTillegg = true,
+                skalViseSlikBeregnerViGjenlevendetillegg = true,
+                skalViseForDegSomMottarEktefelletillegg = true,
+                skalViseEtteroppgjoerAvUfoeretrygdOgBarnetillegg = true),
             Fixtures.create(OpplysningerBruktIBeregningUTDto::class).expr()
         )
         Letter(
