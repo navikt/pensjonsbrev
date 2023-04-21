@@ -10,27 +10,42 @@ import java.time.LocalDate
 fun createEndringIOpptjeningAutoDto() =
     EndringIOpptjeningAutoDto(
         avkortningsinformasjon = Fixtures.create(),
-        beregningUfoereEndringIOpptjening = Fixtures.create(),
+        brukerBorInorge = true,
         fellesbarnTillegg = Fixtures.create(),
+        grunnbeloep = Kroner(111477),
         harEktefelletilleggInnvilget = true,
         harGjenlevendetilleggInnvilget = true,
+        harOektUtbetaling = false,
+        harRedusertUtbetaling = false,
         harYrkesskadeOppfylt = false,
         maanedligUfoeretrygdFoerSkatt = Fixtures.create(),
         opplysningerBruktIBeregningUT = Fixtures.create(),
         orienteringOmRettigheterUfoere = Fixtures.create(),
         saerkullsbarnTillegg = Fixtures.create(),
         sivilstand = Sivilstand.GIFT,
+        ufoeregrad = 100,
+        ufoeretrygdOrdinaer = Fixtures.create(),
+        ufoertrygdUtbetalt = Kroner(0),
+        utbetaltPerMaaned = Kroner(0),
         virkningsDato = LocalDate.of(2023, 1, 1),
-        brukerBorInorge = true
+
+
+    )
+
+fun createEndringIOpptjeningAutoDtoUfoeretrygdOrdinaer()=
+    EndringIOpptjeningAutoDto.UfoeretrygdOrdinaer(
+        avkortningsinformasjon = createEndringIOpptjeningAutoDtoAkortningsinformasjon(),
+        nettoAkkumulerteBeloepPlussNettoTilUtbetalingRestenAvAaret = Kroner(0),
+        nettoAkkumulerteBeloepUtbetalt = Kroner(0),
+        nettoTilUtbetalingRestenAvAaret = Kroner(0),
+        nettoUfoeretrygdUtbetaltPerMaaned = Kroner(0),
     )
 
 fun createEndringIOpptjeningAutoDtoAkortningsinformasjon() =
     EndringIOpptjeningAutoDto.Avkortningsinformasjon(
         beloepsgrense = Kroner(60000),
         forventetInntekt = Kroner(400000),
-        harFullUtbetalingsgrad = false,
         harInntektEtterUfoere = true,
-        harUtbetalingsgrad = true,
         inntektsgrense = Kroner(300000),
         inntektsgrenseNesteAar = Kroner(380000),
         inntektstak = Kroner(0),
@@ -39,23 +54,6 @@ fun createEndringIOpptjeningAutoDtoAkortningsinformasjon() =
         oppjustertInntektFoerUfoere = Kroner(0),
         oppjustertInntektFoerUfoere80prosent = Kroner(260000),
         utbetalingsgrad = 80,
-    )
-
-fun createEndringIOpptjeningAutoDtoBeregningUfoereEndringIOpptjening() =
-    EndringIOpptjeningAutoDto.BeregningUfoereEndringIOpptjening(
-        grunnbeloep = Kroner(111477),  // 1G 2023
-        harBeloepOekt = false,
-        harBeloepRedusert = true,
-        harDelvisUfoeregrad = true,
-        harFullUfoeregrad = false,
-        harUfoeretrygdUtbetalt = true,
-        nettoAkkumulerteBeloepUtbetalt = Kroner(380000),
-        nettoAkkumulertePlussNettoRestAar = Kroner(80000),
-        nettoTilUtbetalingRestenAvAaret = Kroner(55000),
-        nettoUfoeretrygdUtbetaltPerMaaned = Kroner(12000),
-        ufoeregrad = 80,
-        ufoertrygdUtbetalt = Kroner(2000000),
-        utbetaltPerMaaned = Kroner(16000),
     )
 
 fun createEndringIOpptjeningAutoDtoBarnetilleggFellesbarn() =

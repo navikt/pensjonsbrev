@@ -42,7 +42,6 @@ object Fixtures {
         when (letterDataType) {
             EgenerklaeringOmsorgsarbeidDto::class -> createEgenerklaeringOmsorgsarbeidDto() as T
             EndringIOpptjeningAutoDto.Avkortningsinformasjon::class -> createEndringIOpptjeningAutoDtoAkortningsinformasjon() as T
-            EndringIOpptjeningAutoDto.BeregningUfoereEndringIOpptjening::class -> createEndringIOpptjeningAutoDtoBeregningUfoereEndringIOpptjening() as T
             EndringIOpptjeningAutoDto.FellesbarnTillegg::class -> createEndringIOpptjeningAutoDtoBarnetilleggFellesbarn() as T
             EndringIOpptjeningAutoDto.SaerkullsbarnTillegg::class -> createEndringIOpptjeningAutoDtoBarnetilleggSaerkullsbarn() as T
             EndringIOpptjeningAutoDto::class -> createEndringIOpptjeningAutoDto() as T

@@ -1,12 +1,18 @@
 package no.nav.pensjon.brev.maler.fraser.ufoer.endringIOpptjening
 
-import java.time.LocalDate
+import no.nav.pensjon.brev.api.model.maler.AvkortningsinformasjonSelectors.utbetalingsgrad
+import no.nav.pensjon.brev.api.model.maler.EndringIOpptjeningAutoDto
+import no.nav.pensjon.brev.api.model.maler.EndringIOpptjeningAutoDtoSelectors.harOektUtbetaling
+import no.nav.pensjon.brev.api.model.maler.EndringIOpptjeningAutoDtoSelectors.harRedusertUtbetaling
+import no.nav.pensjon.brev.api.model.maler.EndringIOpptjeningAutoDtoSelectors.ufoeregrad
+import no.nav.pensjon.brev.api.model.maler.EndringIOpptjeningAutoDtoSelectors.virkningsDato
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
+import java.time.LocalDate
 
 object EndringIOpptjening {
     // TBU2220
@@ -24,13 +30,15 @@ object EndringIOpptjening {
 
     // TBU2221, TBU2222
     data class BetydningForUfoeretrygden(
-        val harBeloepOekt: Expression<Boolean>,
-        val harBeloepRedusert: Expression<Boolean>,
+        val harOektUtbetaling: Expression<Boolean>,
+        val harRedusertUtbetaling: Expression<Boolean>,
         val virkningsDato: Expression<LocalDate>,
-    ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+
+        ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+
             paragraph {
-                showIf(harBeloepOekt or harBeloepRedusert) {
+                showIf(harOektUtbetaling or harRedusertUtbetaling) {
                     textExpr(
                         Bokmal to "Utbetalingen er endret med virkning fra ".expr() + virkningsDato.format() + ".".expr(),
                         Nynorsk to "Utbetalinga er endra med virkning frå ".expr() + virkningsDato.format() + ".".expr(),
@@ -86,19 +94,21 @@ object EndringIOpptjening {
 
     // TBU2225, TBU2226
     data class EndringIOpptjeningTilUfoeretrygd(
-        val harBeloepOekt: Expression<Boolean>,
-        val harBeloepRedusert: Expression<Boolean>,
+        val harOektUtbetaling: Expression<Boolean>,
+        val harRedusertUtbetaling: Expression<Boolean>,
         val virkningsDato: Expression<LocalDate>,
-    ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+
+        ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+
             paragraph {
-                showIf(harBeloepOekt) {
+                showIf(harOektUtbetaling) {
                     textExpr(
                         Bokmal to "Du har fått en endring i opptjeningen din før du ble ufør. Dette gir deg en økt uføretrygd fra ".expr() + virkningsDato.format() + ". Du vil derfor motta en etterbetaling fra NAV.".expr(),
                         Nynorsk to "Du har fått ein endring i oppteninga di før du ble ufør. Dette gir deg ein auka uføretrygd frå ".expr() + virkningsDato.format() + ". Du vil difor motta ein etterbetaling frå NAV.".expr(),
                         English to "You have had a change in earnings before you became eligible for disability benefit. This gives you an increase in disability benefit from ".expr() + virkningsDato.format() + ". You will therefore receive an arrears payment from NAV.".expr()
                     )
-                }.orShowIf(harBeloepRedusert) {
+                }.orShowIf(harRedusertUtbetaling) {
                     textExpr(
                         Bokmal to "Du har fått en endring i opptjeningen din før du ble ufør. Dette gir deg en redusert uføretrygd fra ".expr() + virkningsDato.format() + ".".expr(),
                         Nynorsk to "Du har fått ein endring i oppteninga di før du ble ufør. Dette gir deg ein redusert uføretrygd frå ".expr() + virkningsDato.format() + ".".expr(),
@@ -111,14 +121,17 @@ object EndringIOpptjening {
 
     // TBU3224
     data class EtterbetalingAvUfoeretrygd(
-        val harBeloepOekt: Expression<Boolean>,
+        val avkortningsinformasjon: Expression<EndringIOpptjeningAutoDto.Avkortningsinformasjon>,
+        val harOektUtbetaling: Expression<Boolean>,
         val ufoeregrad: Expression<Int>,
-        val utbetalingsgrad: Expression<Int>,
         val virkningsDato: Expression<LocalDate>,
 
         ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-            showIf(harBeloepOekt and utbetalingsgrad.equalTo(ufoeregrad)) {
+
+            showIf(
+                harOektUtbetaling and avkortningsinformasjon.utbetalingsgrad.equalTo(ufoeregrad)
+            ) {
                 title1 {
                     text(
                         Bokmal to "Etterbetaling av uføretrygd",
@@ -139,11 +152,12 @@ object EndringIOpptjening {
 
     // TBU2530
     data class TilbakekrevingAvUfoeretrygd(
-        val harBeloepRedusert: Expression<Boolean>
+        val harOektUtbetaling: Expression<Boolean>
+
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
 
-            showIf(harBeloepRedusert) {
+            showIf(harOektUtbetaling) {
                 title1 {
                     text(
                         Bokmal to "Tilbakekreving av uføretrygd",
