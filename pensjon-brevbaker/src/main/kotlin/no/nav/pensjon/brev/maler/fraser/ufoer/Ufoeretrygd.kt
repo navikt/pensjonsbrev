@@ -169,9 +169,8 @@ object Ufoeretrygd {
     }
 
     // TBU2223
-    data class UtbetalingsdatoUfoeretrygd(val harUfoeretrygdUtbetalt: Expression<Boolean>) : OutlinePhrase<LangBokmalNynorskEnglish>() {
-        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-            showIf(harUfoeretrygdUtbetalt) {
+    object UtbetalingsdatoUfoeretrygd : OutlinePhrase<LangBokmalNynorskEnglish>() {
+            override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
                 paragraph {
                     text(
                         Bokmal to "Uføretrygden blir fortsatt utbetalt senest den 20. hver måned.",
@@ -181,7 +180,7 @@ object Ufoeretrygd {
                 }
             }
         }
-    }
+
 
     // TBU1128, TBU1091
     object ViktigAALeseHeleBrevet : OutlinePhrase<LangBokmalNynorskEnglish>() {
@@ -289,7 +288,7 @@ object Ufoeretrygd {
     }
 
     // TBU1228, SkattekortOverskrift_001, SkattekortUT_001
-    object Skattekort: OutlinePhrase<LangBokmalNynorskEnglish>() {
+    object Skattekort : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             title1 {
                 text(
