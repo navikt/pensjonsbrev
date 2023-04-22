@@ -1,11 +1,9 @@
 package no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningufoere
 
 import no.nav.pensjon.brev.api.model.KravAarsakType
-import no.nav.pensjon.brev.api.model.vedlegg.BeregningUfoereSelectors.harInntektsgrenseLessThanInntektstak
 import no.nav.pensjon.brev.api.model.vedlegg.BeregningUfoereSelectors.nettoAkkumulertePlussNettoRestAar
 import no.nav.pensjon.brev.api.model.vedlegg.BeregningUfoereSelectors.ufoeretrygdPlussInntekt
-import no.nav.pensjon.brev.api.model.vedlegg.InntektsAvkortingGjeldendeSelectors.harForventetInntektLargerThanInntektstak
-import no.nav.pensjon.brev.api.model.vedlegg.InntektsAvkortingGjeldendeSelectors.harInntektsgrenseLargerThanOrEqualToInntektstak
+import no.nav.pensjon.brev.api.model.vedlegg.InntektsAvkortingGjeldendeSelectors.forventetInntektAar
 import no.nav.pensjon.brev.api.model.vedlegg.InntektsAvkortingGjeldendeSelectors.inntektsgrenseAar
 import no.nav.pensjon.brev.api.model.vedlegg.InntektsAvkortingGjeldendeSelectors.inntektstak
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDto
@@ -48,6 +46,7 @@ data class TabellSlikBlirDinUtbetalingFoerSkatt(
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         val bruttoBeregnetUfoeretrygd = beregningUfoere.nettoAkkumulertePlussNettoRestAar.format()
+        val harInntektsgrenseLessThanInntektstak = inntektsAvkortingGjeldende.inntektsgrenseAar.lessThan(inntektsAvkortingGjeldende.inntektstak)
         val inntektsgrenseAar = inntektsAvkortingGjeldende.inntektsgrenseAar.format()
         val inntektstak = inntektsAvkortingGjeldende.inntektstak.format()
         val reduksjonIUfoeretrygd = ufoeretrygdOrdinaer.reduksjonIUfoeretrygd.format()
@@ -55,6 +54,8 @@ data class TabellSlikBlirDinUtbetalingFoerSkatt(
         val ufoeretrygdPlussInntekt = beregningUfoere.ufoeretrygdPlussInntekt.format()
         val ufoeretrygdUtbetaltRestenAvAaret = ufoeretrygdOrdinaer.nettoTilUtbetalingRestenAvAaret.format()
         val utbetaltUfoeretrygd = ufoeretrygdOrdinaer.nettoAkkumulerteBeloepUtbetalt.format()
+        val harInntektsgrenseLargerThanOrEqualToInntektstak = inntektsAvkortingGjeldende.inntektsgrenseAar.greaterThanOrEqual(inntektsAvkortingGjeldende.inntektstak)
+val harForventetInntektLargerThanInntektstak = inntektsAvkortingGjeldende.forventetInntektAar.greaterThan(inntektsAvkortingGjeldende.inntektstak)
 
         showIf(ufoeretrygdGjeldende.harUtbetalingsgradLessThanUfoeregrad and kravAarsakType.isNotAnyOf(KravAarsakType.SOKNAD_BT)) {
             title1 {
@@ -136,7 +137,7 @@ data class TabellSlikBlirDinUtbetalingFoerSkatt(
         // TBU063V  / brevkode not(PE_UT_04_108, PE_UT_04_109, PE_UT_06_300)
         showIf(
             ufoeretrygdOrdinaer.harBeloepRedusert and ufoeretrygdOrdinaer.harTotalNettoUT
-                    and beregningUfoere.harInntektsgrenseLessThanInntektstak and ufoeretrygdOrdinaer.harNyUTBeloep
+                    and harInntektsgrenseLessThanInntektstak and ufoeretrygdOrdinaer.harNyUTBeloep
         ) {
             paragraph {
                 textExpr(
@@ -156,7 +157,7 @@ data class TabellSlikBlirDinUtbetalingFoerSkatt(
         }
         // TBU074V  / brevkode not(PE_UT_04_108, PE_UT_04_109, PE_UT_06_300, PE_UT_07_200)
         showIf(
-            inntektsAvkortingGjeldende.harInntektsgrenseLargerThanOrEqualToInntektstak and ufoeretrygdGjeldende.harUtbetalingsgradLessThanUfoeregrad
+            harInntektsgrenseLargerThanOrEqualToInntektstak and ufoeretrygdGjeldende.harUtbetalingsgradLessThanUfoeregrad
                     and not(ufoeretrygdOrdinaer.harNyUTBeloep)
         ) {
             paragraph {
@@ -169,7 +170,7 @@ data class TabellSlikBlirDinUtbetalingFoerSkatt(
             }
         }
         // TBU600V
-        showIf(not(ufoeretrygdOrdinaer.harNyUTBeloep) and beregningUfoere.harInntektsgrenseLessThanInntektstak and inntektsAvkortingGjeldende.harForventetInntektLargerThanInntektstak) {
+        showIf(not(ufoeretrygdOrdinaer.harNyUTBeloep) and harInntektsgrenseLessThanInntektstak and harForventetInntektLargerThanInntektstak) {
             paragraph {
                 textExpr(
                     Bokmal to "Du får ikke utbetalt uføretrygd siden inntekten din er høyere enn 80 prosent av inntekten du hadde før du ble ufør, det vil si ".expr() + inntektstak + " kroner.".expr(),
