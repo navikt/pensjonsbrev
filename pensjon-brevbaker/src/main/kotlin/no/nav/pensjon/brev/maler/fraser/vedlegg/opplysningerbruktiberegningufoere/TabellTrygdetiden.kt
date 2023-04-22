@@ -1,14 +1,14 @@
 package no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningufoere
 
-import no.nav.pensjon.brev.api.model.vedlegg.NorskTrygdetidSelectors.trygdetidFom
-import no.nav.pensjon.brev.api.model.vedlegg.NorskTrygdetidSelectors.trygdetidTom
+import no.nav.pensjon.brev.api.model.vedlegg.NorskTrygdetidPeriodeSelectors.trygdetidFom
+import no.nav.pensjon.brev.api.model.vedlegg.NorskTrygdetidPeriodeSelectors.trygdetidTom
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDto
-import no.nav.pensjon.brev.api.model.vedlegg.UtenlandskTrygdetidBilateralSelectors.trygdetidBilateralLand
-import no.nav.pensjon.brev.api.model.vedlegg.UtenlandskTrygdetidBilateralSelectors.trygdetidFom
-import no.nav.pensjon.brev.api.model.vedlegg.UtenlandskTrygdetidBilateralSelectors.trygdetidTom
-import no.nav.pensjon.brev.api.model.vedlegg.UtenlandskTrygdetidEOSSelectors.trygdetidEOSLand
-import no.nav.pensjon.brev.api.model.vedlegg.UtenlandskTrygdetidEOSSelectors.trygdetidFom
-import no.nav.pensjon.brev.api.model.vedlegg.UtenlandskTrygdetidEOSSelectors.trygdetidTom
+import no.nav.pensjon.brev.api.model.vedlegg.UtenlandskTrygdetidBilateralPeriodeSelectors.trygdetidBilateralLand
+import no.nav.pensjon.brev.api.model.vedlegg.UtenlandskTrygdetidBilateralPeriodeSelectors.trygdetidFom
+import no.nav.pensjon.brev.api.model.vedlegg.UtenlandskTrygdetidBilateralPeriodeSelectors.trygdetidTom
+import no.nav.pensjon.brev.api.model.vedlegg.UtenlandskTrygdetidEOSPeriodeSelectors.trygdetidEOSLand
+import no.nav.pensjon.brev.api.model.vedlegg.UtenlandskTrygdetidEOSPeriodeSelectors.trygdetidFom
+import no.nav.pensjon.brev.api.model.vedlegg.UtenlandskTrygdetidEOSPeriodeSelectors.trygdetidTom
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.Expression
@@ -19,9 +19,9 @@ import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brev.template.dsl.expression.*
 
 data class TabellTrygdetiden(
-    val norskTrygdetid: Expression<List<OpplysningerBruktIBeregningUTDto.NorskTrygdetid>>,
-    val utenlandskTrygdetidBilateral: Expression<List<OpplysningerBruktIBeregningUTDto.UtenlandskTrygdetidBilateral>>,
-    val utenlandskTrygdetidEOS: Expression<List<OpplysningerBruktIBeregningUTDto.UtenlandskTrygdetidEOS>>,
+    val norskTrygdetidPerioder: Expression<List<OpplysningerBruktIBeregningUTDto.NorskTrygdetidPeriode>>,
+    val utenlandskTrygdetidBilateralPerioder: Expression<List<OpplysningerBruktIBeregningUTDto.UtenlandskTrygdetidBilateralPeriode>>,
+    val utenlandskTrygdetidEOSPerioder: Expression<List<OpplysningerBruktIBeregningUTDto.UtenlandskTrygdetidEOSPeriode>>,
 
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
@@ -49,7 +49,7 @@ data class TabellTrygdetiden(
                 }
             }) {
                 forEach(
-                    norskTrygdetid
+                    norskTrygdetidPerioder
                 ) { periode ->
                     row {
                         cell {
@@ -92,7 +92,7 @@ data class TabellTrygdetiden(
                 }
             }) {
                 forEach(
-                    utenlandskTrygdetidEOS
+                    utenlandskTrygdetidEOSPerioder
                 ) { periode ->
                     row {
                         cell {
@@ -142,7 +142,7 @@ data class TabellTrygdetiden(
                 }
             }) {
                 forEach(
-                    utenlandskTrygdetidBilateral
+                    utenlandskTrygdetidBilateralPerioder
                 ) { periode ->
                     row {
                         cell {
