@@ -2,11 +2,11 @@ package no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningufoe
 
 import no.nav.pensjon.brev.api.model.KravAarsakType
 import no.nav.pensjon.brev.api.model.vedlegg.BeregningUfoereSelectors.harGammelUTBeloepUlikNyUTBeloep
-import no.nav.pensjon.brev.api.model.vedlegg.BeregningUfoereSelectors.harInntektsgrenseLessThanInntektstak
 import no.nav.pensjon.brev.api.model.vedlegg.BeregningUfoereSelectors.nettoPerAarReduksjonUT
 import no.nav.pensjon.brev.api.model.vedlegg.BeregningUfoereSelectors.overskytendeInntekt
 import no.nav.pensjon.brev.api.model.vedlegg.InntektsAvkortingGjeldendeSelectors.forventetInntektAar
 import no.nav.pensjon.brev.api.model.vedlegg.InntektsAvkortingGjeldendeSelectors.inntektsgrenseAar
+import no.nav.pensjon.brev.api.model.vedlegg.InntektsAvkortingGjeldendeSelectors.inntektstak
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDto
 import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdGjeldendeSelectors.kompensasjonsgrad
 import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdOrdinaerSelectors.harNyUTBeloep
@@ -41,11 +41,12 @@ data class SlikBeregnerViReduksjonAvUfoeretrygden(
         val kompensasjonsgrad = ufoeretrygdGjeldende.kompensasjonsgrad.format()
         val nettoPerAarReduksjonUT = beregningUfoere.nettoPerAarReduksjonUT.format()
         val overskytendeInntekt = beregningUfoere.overskytendeInntekt.format()
+        val harInntektsgrenseLessThanInntektstak = inntektsAvkortingGjeldende.inntektsgrenseAar.lessThan(inntektsAvkortingGjeldende.inntektstak)
 
         showIf(
             (kravAarsakType.isOneOf(KravAarsakType.ENDRET_INNTEKT)) and beregningUfoere.harGammelUTBeloepUlikNyUTBeloep
                     and inntektsAvkortingGjeldende.forventetInntektAar.greaterThanOrEqual(inntektsAvkortingGjeldende.inntektsgrenseAar)
-                    and beregningUfoere.harInntektsgrenseLessThanInntektstak and ufoeretrygdOrdinaer.harNyUTBeloep
+                    and harInntektsgrenseLessThanInntektstak and ufoeretrygdOrdinaer.harNyUTBeloep
         ) {
             title1 {
                 text(
