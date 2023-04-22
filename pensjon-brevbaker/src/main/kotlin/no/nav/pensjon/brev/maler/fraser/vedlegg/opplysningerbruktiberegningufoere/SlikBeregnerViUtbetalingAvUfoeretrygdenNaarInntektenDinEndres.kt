@@ -1,12 +1,11 @@
 package no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningufoere
 
 import no.nav.pensjon.brev.api.model.KravAarsakType
-import no.nav.pensjon.brev.api.model.Kroner
 import no.nav.pensjon.brev.api.model.vedlegg.BeregningUfoereSelectors.harGammelUTBeloepUlikNyUTBeloep
-import no.nav.pensjon.brev.api.model.vedlegg.BeregningUfoereSelectors.harInntektsgrenseLessThanInntektstak
 import no.nav.pensjon.brev.api.model.vedlegg.BeregningUfoereSelectors.overskytendeInntekt
 import no.nav.pensjon.brev.api.model.vedlegg.InntektsAvkortingGjeldendeSelectors.forventetInntektAar
 import no.nav.pensjon.brev.api.model.vedlegg.InntektsAvkortingGjeldendeSelectors.inntektsgrenseAar
+import no.nav.pensjon.brev.api.model.vedlegg.InntektsAvkortingGjeldendeSelectors.inntektstak
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDto
 import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdGjeldendeSelectors.kompensasjonsgrad
 import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdOrdinaerSelectors.harNyUTBeloep
@@ -40,11 +39,13 @@ data class SlikBeregnerViUtbetalingAvUfoeretrygdenNaarInntektenDinEndres(
         val inntektsgrenseAar = inntektsAvkortingGjeldende.inntektsgrenseAar.format()
         val kompensasjonsgrad = ufoeretrygdGjeldende.kompensasjonsgrad.format()
         val overskytendeInntekt = beregningUfoere.overskytendeInntekt.format()
+        val harInntektsgrenseLessThanInntektstak = inntektsAvkortingGjeldende.inntektsgrenseAar.lessThan(inntektsAvkortingGjeldende.inntektstak)
+
 
         showIf(
             (kravAarsakType.isOneOf(
                 KravAarsakType.ENDRET_INNTEKT
-            )) and beregningUfoere.harGammelUTBeloepUlikNyUTBeloep and beregningUfoere.harInntektsgrenseLessThanInntektstak
+            )) and beregningUfoere.harGammelUTBeloepUlikNyUTBeloep and harInntektsgrenseLessThanInntektstak
         ) {
             title1 {
                 text(
