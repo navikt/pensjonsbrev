@@ -2,13 +2,13 @@ package no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningufoe
 
 import no.nav.pensjon.brev.api.model.vedlegg.BeregnetUTPerManedGjeldendeSelectors.brukerErFlyktning
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDto
-import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidGjeldendeSelectors.fastsattTrygdetid
-import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidGjeldendeSelectors.har40AarFastsattTrygdetid
-import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidGjeldendeSelectors.harFramtidigTrygdetidEOS
-import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidGjeldendeSelectors.harFramtidigTrygdetidNorsk
-import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidGjeldendeSelectors.harLikUfoeregradOgYrkesskadegrad
-import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidGjeldendeSelectors.harTrygdetidsgrunnlag
-import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidGjeldendeSelectors.harYrkesskadeOppfylt
+import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidsdetaljerGjeldende1Selectors.fastsattTrygdetid_safe
+import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidsdetaljerGjeldende1Selectors.framtidigTTEOS_safe
+import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidsdetaljerGjeldende1Selectors.harTrygdetidsgrunnlag
+import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidsdetaljerGjeldendeSelectors.framtidigTTNorsk_safe
+import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdGjeldendeSelectors.ufoeregrad
+import no.nav.pensjon.brev.api.model.vedlegg.YrkesskadeGjeldendeSelectors.yrkesskadegrad
+import no.nav.pensjon.brev.api.model.vedlegg.YrkesskadeGjeldendeSelectors.yrkesskadegrad_safe
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.Expression
@@ -19,15 +19,22 @@ import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brev.template.dsl.expression.*
 
 data class TrygdetidenDin(
-
     val beregnetUTPerManedGjeldende: Expression<OpplysningerBruktIBeregningUTDto.BeregnetUTPerManedGjeldende>,
-    val trygdetidGjeldende: Expression<OpplysningerBruktIBeregningUTDto.TrygdetidGjeldende>,
+    val trygdetidsdetaljerGjeldende1: Expression<OpplysningerBruktIBeregningUTDto.TrygdetidsdetaljerGjeldende1>,
+    val trygdetidsdetaljerGjeldende: Expression<OpplysningerBruktIBeregningUTDto.TrygdetidsdetaljerGjeldende>,
+    val ufoeregradGjeldende: Expression<OpplysningerBruktIBeregningUTDto.UfoeretrygdGjeldende>,
+    val yrkesskadeGjeldende: Expression<OpplysningerBruktIBeregningUTDto.YrkesskadeGjeldende>,
 
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-        val harFramtidigTrygdetid =
-            trygdetidGjeldende.harFramtidigTrygdetidNorsk or trygdetidGjeldende.harFramtidigTrygdetidEOS
-        val fastsattTrygdetid = trygdetidGjeldende.fastsattTrygdetid.format()
+        val framtidigTTEOS = trygdetidsdetaljerGjeldende1.framtidigTTEOS_safe
+        val framtigTTNorsk = trygdetidsdetaljerGjeldende.framtidigTTNorsk_safe
+        val har40AarfastsattTrygdetid = trygdetidsdetaljerGjeldende1.fastsattTrygdetid_safe.equalTo(40)
+        val harFramtidigTrygdetid = framtigTTNorsk.notEqualTo(0) or framtidigTTEOS.notEqualTo(0)
+        val harYrkesskade = yrkesskadeGjeldende.yrkesskadegrad.greaterThan(0)
+        val harLikUfoeregradOgYrkesskadegrad =
+            ufoeregradGjeldende.ufoeregrad.equalTo(yrkesskadeGjeldende.yrkesskadegrad_safe)
+        val fastsattTrygdetid = trygdetidsdetaljerGjeldende1.fastsattTrygdetid_safe.ifNull(0)
 
         // TBU039V
         title1 {
@@ -73,7 +80,7 @@ data class TrygdetidenDin(
         }
 
         // TBU040V
-        showIf(trygdetidGjeldende.har40AarFastsattTrygdetid) {
+        showIf(har40AarfastsattTrygdetid) {
             paragraph {
                 text(
                     Bokmal to "Trygdetiden din er fastsatt til 40 år.",
@@ -94,69 +101,75 @@ data class TrygdetidenDin(
             }
         }
         // TBU075V
-        showIf(
-            trygdetidGjeldende.harYrkesskadeOppfylt and not(trygdetidGjeldende.har40AarFastsattTrygdetid)
-                    and not(beregnetUTPerManedGjeldende.brukerErFlyktning) and not(
-                trygdetidGjeldende.harLikUfoeregradOgYrkesskadegrad
-            )
-        ) {
-            paragraph {
-                text(
-                    Bokmal to "Trygdetiden din er fastsatt til 40 år, for den delen du er innvilget uføretrygd etter særbestemmelser for yrkesskade eller yrkessykdom.",
-                    Nynorsk to "Trygdetida di er fastsett til 40 år for den delen du er innvilga uføretrygd etter særreglar for yrkesskade eller yrkessjukdom.",
-                    English to "Your period of national insurance coverage has been set to 40 years, for the part you have been granted disability benefit pursuant to special rules relating to occupational injury or occupational illness."
+        ifNotNull(harYrkesskade) { harYrkesskade ->
+            showIf(
+                harYrkesskade and not(har40AarfastsattTrygdetid)
+                        and not(beregnetUTPerManedGjeldende.brukerErFlyktning) and not(
+                    harLikUfoeregradOgYrkesskadegrad
                 )
-            }
-            // TBU076V
-            paragraph {
-                textExpr(
-                    Bokmal to "Trygdetiden i folketrygden er fastsatt til ".expr() + fastsattTrygdetid + " år for den delen av uførheten din som ikke skyldes en godkjent yrkesskade eller yrkessykdom.".expr(),
-                    Nynorsk to "Trygdetida i folketrygda er fastsett til ".expr() + fastsattTrygdetid + " år for den delen av uføretrygda di som ikkje skuldas ein godkjend yrkesskade eller yrkessjukdom.".expr(),
-                    English to "The period of national insurance coverage has been set to ".expr() + fastsattTrygdetid + " years for the part of your disability that is not caused by an approved occupational injury or occupational illness.".expr(),
-                )
-                showIf(trygdetidGjeldende.harTrygdetidsgrunnlag) {
+            ) {
+                paragraph {
                     text(
-                        Bokmal to " Den faktiske trygdetiden din i denne perioden er fastsatt på grunnlag av følgende perioder:",
-                        Nynorsk to " Den faktiske trygdetida di i denne perioden er fastsett på grunnlag av følgjande periodar:",
-                        English to " Your actual period of national insurance coverage in this period has been determined on the basis of the following periods of coverage:"
+                        Bokmal to "Trygdetiden din er fastsatt til 40 år, for den delen du er innvilget uføretrygd etter særbestemmelser for yrkesskade eller yrkessykdom.",
+                        Nynorsk to "Trygdetida di er fastsett til 40 år for den delen du er innvilga uføretrygd etter særreglar for yrkesskade eller yrkessjukdom.",
+                        English to "Your period of national insurance coverage has been set to 40 years, for the part you have been granted disability benefit pursuant to special rules relating to occupational injury or occupational illness."
                     )
                 }
             }
-        }
-        // TBU042V
-        showIf(
-            trygdetidGjeldende.harYrkesskadeOppfylt and trygdetidGjeldende.harLikUfoeregradOgYrkesskadegrad
-                    and not(beregnetUTPerManedGjeldende.brukerErFlyktning)
-        ) {
-            paragraph {
-                text(
-                    Bokmal to "Trygdetiden din er fastsatt til 40 år, fordi du er innvilget uføretrygd etter særbestemmelser for yrkesskade eller yrkessykdom.",
-                    Nynorsk to "Trygdetida di er fastsett til 40 år fordi du er innvilga uføretrygd etter særreglar for yrkesskade eller yrkessjukdom.",
-                    English to "Your period of national insurance coverage has been set to 40 years, because you have been granted disability benefit pursuant to special rules relating to occupational injury or occupational illness."
-                )
-            }
-        }
-        // TBU043V
-        showIf(
-            not(trygdetidGjeldende.harLikUfoeregradOgYrkesskadegrad) and not(beregnetUTPerManedGjeldende.brukerErFlyktning)
-                    and not(trygdetidGjeldende.harYrkesskadeOppfylt)
-        ) {
-            paragraph {
-                textExpr(
-                    Bokmal to "Trygdetiden din i folketrygden er fastsatt til ".expr() + fastsattTrygdetid + " år.".expr(),
-                    Nynorsk to "Trygdetida di i folketrygda er fastsett til ".expr() + fastsattTrygdetid + " år.".expr(),
-                    English to "Your period of national insurance coverage has been set to ".expr() + fastsattTrygdetid + " years.".expr()
-                )
-                showIf(
-                    trygdetidGjeldende.harTrygdetidsgrunnlag
-                ) {
-                    text(
-                        Bokmal to " Den faktiske trygdetiden din er fastsatt på grunnlag av følgende perioder:",
-                        Nynorsk to " Den faktiske trygdetida di er fastsett på grunnlag av følgjande periodar:",
-                        English to " Your actual period of national insurance coverage has been determined on the basis of the following periods of coverage:"
+                // TBU076V
+                paragraph {
+                    textExpr(
+                        Bokmal to "Trygdetiden i folketrygden er fastsatt til ".expr() + fastsattTrygdetid.format() + " år for den delen av uførheten din som ikke skyldes en godkjent yrkesskade eller yrkessykdom.".expr(),
+                        Nynorsk to "Trygdetida i folketrygda er fastsett til ".expr() + fastsattTrygdetid.format() + " år for den delen av uføretrygda di som ikkje skuldas ein godkjend yrkesskade eller yrkessjukdom.".expr(),
+                        English to "The period of national insurance coverage has been set to ".expr() + fastsattTrygdetid.format() + " years for the part of your disability that is not caused by an approved occupational injury or occupational illness.".expr(),
                     )
+                    showIf(trygdetidsdetaljerGjeldende1.harTrygdetidsgrunnlag) {
+                        text(
+                            Bokmal to " Den faktiske trygdetiden din i denne perioden er fastsatt på grunnlag av følgende perioder:",
+                            Nynorsk to " Den faktiske trygdetida di i denne perioden er fastsett på grunnlag av følgjande periodar:",
+                            English to " Your actual period of national insurance coverage in this period has been determined on the basis of the following periods of coverage:"
+                        )
+                    }
+                }
+            }
+
+        ifNotNull(harYrkesskade) { harYrkesskade ->
+            // TBU042V
+            showIf(
+                harYrkesskade and harLikUfoeregradOgYrkesskadegrad
+                        and not(beregnetUTPerManedGjeldende.brukerErFlyktning)
+            ) {
+                paragraph {
+                    text(
+                        Bokmal to "Trygdetiden din er fastsatt til 40 år, fordi du er innvilget uføretrygd etter særbestemmelser for yrkesskade eller yrkessykdom.",
+                        Nynorsk to "Trygdetida di er fastsett til 40 år fordi du er innvilga uføretrygd etter særreglar for yrkesskade eller yrkessjukdom.",
+                        English to "Your period of national insurance coverage has been set to 40 years, because you have been granted disability benefit pursuant to special rules relating to occupational injury or occupational illness."
+                    )
+                }
+            }
+            // TBU043V
+            showIf(
+                not(harLikUfoeregradOgYrkesskadegrad) and not(beregnetUTPerManedGjeldende.brukerErFlyktning)
+                        and not(harYrkesskade)
+            ) {
+                paragraph {
+                    textExpr(
+                        Bokmal to "Trygdetiden din i folketrygden er fastsatt til ".expr() + fastsattTrygdetid.format() + " år.".expr(),
+                        Nynorsk to "Trygdetida di i folketrygda er fastsett til ".expr() + fastsattTrygdetid.format() + " år.".expr(),
+                        English to "Your period of national insurance coverage has been set to ".expr() + fastsattTrygdetid.format() + " years.".expr()
+                    )
+                    showIf(
+                        trygdetidsdetaljerGjeldende1.harTrygdetidsgrunnlag
+                    ) {
+                        text(
+                            Bokmal to " Den faktiske trygdetiden din er fastsatt på grunnlag av følgende perioder:",
+                            Nynorsk to " Den faktiske trygdetida di er fastsett på grunnlag av følgjande periodar:",
+                            English to " Your actual period of national insurance coverage has been determined on the basis of the following periods of coverage:"
+                        )
+                    }
                 }
             }
         }
     }
 }
+
