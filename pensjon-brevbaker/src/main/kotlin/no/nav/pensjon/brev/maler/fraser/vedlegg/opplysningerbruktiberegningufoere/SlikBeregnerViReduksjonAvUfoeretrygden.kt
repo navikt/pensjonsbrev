@@ -44,11 +44,11 @@ data class SlikBeregnerViReduksjonAvUfoeretrygden(
         ifNotNull(
             ufoeretrygdOrdinaer.harGammelUTBeloepUlikNyUTBeloep_safe,
             ufoeretrygdOrdinaer.harNyUTBeloep_safe
-        ) { harUlikeBeloep, harNyBeloep ->
+        ) { harUlikeBeloep, harNyttBeloep ->
             showIf(
                 (kravAarsakType.isOneOf(KravAarsakType.ENDRET_INNTEKT)) and harUlikeBeloep
                         and inntektsAvkortingGjeldende.forventetInntektAar.greaterThanOrEqual(inntektsAvkortingGjeldende.inntektsgrenseAar)
-                        and harInntektsgrenseLessThanInntektstak and harNyBeloep
+                        and harInntektsgrenseLessThanInntektstak and harNyttBeloep
             ) {
                 title1 {
                     text(
