@@ -11,7 +11,7 @@ import no.nav.pensjon.brev.api.model.vedlegg.BarnetilleggGjeldendeSelectors.saer
 import no.nav.pensjon.brev.api.model.vedlegg.BarnetilleggGjeldendeSelectors.saerkullsbarn_safe
 import no.nav.pensjon.brev.api.model.vedlegg.BeregnetUTPerManedGjeldendeSelectors.brukerErFlyktning
 import no.nav.pensjon.brev.api.model.vedlegg.BeregnetUTPerManedGjeldendeSelectors.brukersSivilstand
-import no.nav.pensjon.brev.api.model.vedlegg.FellesbarnSelectors.beloepNetto_safe
+import no.nav.pensjon.brev.api.model.vedlegg.FellesbarnSelectors.beloepFratrukketAnnenForeldersInntekt
 import no.nav.pensjon.brev.api.model.vedlegg.FellesbarnSelectors.fribeloep
 import no.nav.pensjon.brev.api.model.vedlegg.FellesbarnSelectors.inntektAnnenForelder
 import no.nav.pensjon.brev.api.model.vedlegg.FellesbarnSelectors.inntektBruktIAvkortning_safe
@@ -21,7 +21,6 @@ import no.nav.pensjon.brev.api.model.vedlegg.InntektsAvkortingGjeldendeSelectors
 import no.nav.pensjon.brev.api.model.vedlegg.InntektsAvkortingGjeldendeSelectors.inntektsgrenseAar
 import no.nav.pensjon.brev.api.model.vedlegg.InntektsAvkortingGjeldendeSelectors.inntektstak
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDto
-import no.nav.pensjon.brev.api.model.vedlegg.SaerkullsbarnSelectors.beloepNetto_safe
 import no.nav.pensjon.brev.api.model.vedlegg.SaerkullsbarnSelectors.fribeloep
 import no.nav.pensjon.brev.api.model.vedlegg.SaerkullsbarnSelectors.inntektBruktIAvkortning_safe
 import no.nav.pensjon.brev.api.model.vedlegg.SaerkullsbarnSelectors.inntektstak_safe
@@ -50,8 +49,11 @@ import no.nav.pensjon.brev.api.model.vedlegg.YrkesskadeGjeldendeSelectors.skadet
 import no.nav.pensjon.brev.api.model.vedlegg.YrkesskadeGjeldendeSelectors.yrkesskadegrad
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.model.tableFormat
-import no.nav.pensjon.brev.template.*
+import no.nav.pensjon.brev.template.Element
+import no.nav.pensjon.brev.template.Expression
+import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.*
+import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.text
@@ -84,7 +86,10 @@ data class TabellUfoereOpplysninger(
                             Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
                         )
                     }
-                    column(columnSpan = 2, alignment = Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT) {
+                    column(
+                        columnSpan = 2,
+                        alignment = Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT
+                    ) {
                     }
                 }
             ) {
@@ -657,6 +662,7 @@ data class TabellUfoereOpplysninger(
                         }
                     }
 
+
                     //førstegangsbehandling bruker bor i utlandet
                     //TODO manglende felt år med inntekt
                     //TODO år med inntekt brukt i beregningen
@@ -664,123 +670,137 @@ data class TabellUfoereOpplysninger(
                 }
 
                 ifNotNull(barnetilleggGjeldende) { barnetillegg ->
-                    showIf(
-                        barnetillegg.saerkullsbarn_safe.beloepNetto_safe.ifNull(Kroner(0)).greaterThan(0)
-                                or barnetillegg.fellesbarn_safe.beloepNetto_safe.ifNull(Kroner(0)).greaterThan(0)
-                    ) {
+                    // TODO vis fribeløp
+                    row {
+                        cell {
+                            text(
+                                Bokmal to "Totalt antall barn du har barnetillegg for",
+                                Nynorsk to "Totalt antall barn du har barnetillegg for",
+                                English to "Total number of children for whom you receive child supplement"
+                            )
+                        }
+                        val totaltAntallBarn = barnetillegg.foedselsdatoPaaBarnTilleggetGjelder.size()
+                        cell {
+                            textExpr(
+                                Bokmal to totaltAntallBarn.format(),
+                                Nynorsk to totaltAntallBarn.format(),
+                                English to totaltAntallBarn.format(),
+                            )
+                        }
+                    }
+                    ifNotNull(barnetillegg.saerkullsbarn) { saerkullsbarn ->
                         row {
                             cell {
                                 text(
-                                    Bokmal to "Totalt antall barn du har barnetillegg for",
-                                    Nynorsk to "Totalt antall barn du har barnetillegg for",
-                                    English to "Total number of children for whom you receive child supplement"
+                                    Bokmal to "Fribeløp for særkullsbarn",
+                                    Nynorsk to "Fribeløp for særkullsbarn",
+                                    English to "Exemption amount for children from a previous relationship"
                                 )
                             }
-                            val totaltAntallBarn = barnetillegg.foedselsdatoPaaBarnTilleggetGjelder.size()
                             cell {
-                                textExpr(
-                                    Bokmal to totaltAntallBarn.format(),
-                                    Nynorsk to totaltAntallBarn.format(),
-                                    English to totaltAntallBarn.format(),
+                                includePhrase(Felles.KronerText(saerkullsbarn.fribeloep))
+                            }
+                        }
+                    }
+                    ifNotNull(barnetillegg.fellesbarn) { fellesbarn ->
+                        row {
+                            cell {
+                                text(
+                                    Bokmal to "Fribeløp for fellesbarn",
+                                    Nynorsk to "Fribeløp for fellessbarn",
+                                    English to "Exemption amount for joint children"
                                 )
                             }
-                        }
-                        ifNotNull(barnetillegg.saerkullsbarn) { saerkullsbarn ->
-                            row {
-                                cell {
-                                    text(
-                                        Bokmal to "Fribeløp for særkullsbarn",
-                                        Nynorsk to "Fribeløp for særkullsbarn",
-                                        English to "Exemption amount for children from a previous relationship"
-                                    )
-                                }
-                                cell {
-                                    includePhrase(Felles.KronerText(saerkullsbarn.fribeloep))
-                                }
+                            cell {
+                                includePhrase(Felles.KronerText(fellesbarn.fribeloep))
                             }
                         }
-                        ifNotNull(barnetillegg.fellesbarn) { fellesbarn ->
-                            row {
-                                cell {
-                                    text(
-                                        Bokmal to "Fribeløp for fellesbarn",
-                                        Nynorsk to "Fribeløp for fellessbarn",
-                                        English to "Exemption amount for joint children"
-                                    )
-                                }
-                                cell {
-                                    includePhrase(Felles.KronerText(fellesbarn.fribeloep))
-                                }
-                            }
-                        }
+                    }
 
-                        val inntektBruktIAvkortningFelles = barnetillegg.fellesbarn_safe.inntektBruktIAvkortning_safe.ifNull(Kroner(0))
-                        val inntektBruktIAvkortningSaerkull = barnetillegg.saerkullsbarn_safe.inntektBruktIAvkortning_safe.ifNull(Kroner(0))
-                        showIf(inntektBruktIAvkortningFelles.greaterThan(0) or inntektBruktIAvkortningSaerkull.greaterThan(0)) {
-                            row {
-                                cell {
-                                    text(
-                                        Bokmal to "Samlet inntekt som er brukt i fastsettelse av barnetillegg",
-                                        Nynorsk to "Samla inntekt som er brukt i fastsetjinga av barnetillegg",
-                                        English to "Your income, which is used to calculate child supplement"
-                                    )
-                                }
-                                cell {
-                                    showIf(inntektBruktIAvkortningFelles.greaterThan(0)) {
-                                        includePhrase(Felles.KronerText(inntektBruktIAvkortningFelles))
-                                    }.orShow {
-                                        includePhrase(Felles.KronerText(inntektBruktIAvkortningSaerkull))
-                                    }
-                                }
+                    val inntektBruktIAvkortningFelles =
+                        barnetillegg.fellesbarn_safe.inntektBruktIAvkortning_safe.ifNull(Kroner(0))
+                    val inntektBruktIAvkortningSaerkull =
+                        barnetillegg.saerkullsbarn_safe.inntektBruktIAvkortning_safe.ifNull(Kroner(0))
+                    showIf(inntektBruktIAvkortningFelles.greaterThan(0) or inntektBruktIAvkortningSaerkull.greaterThan(0)) {
+                        row {
+                            cell {
+                                text(
+                                    Bokmal to "Samlet inntekt som er brukt i fastsettelse av barnetillegg",
+                                    Nynorsk to "Samla inntekt som er brukt i fastsetjinga av barnetillegg",
+                                    English to "Your income, which is used to calculate child supplement"
+                                )
                             }
-                        }
-
-                        ifNotNull(barnetillegg.fellesbarn) { fellesbarn ->
-                            row {
-                                cell {
-                                    text(
-                                        Bokmal to "Samlet inntekt til annen forelder som er brukt i fastsettelse av barnetillegg",
-                                        Nynorsk to "Samla inntekt til annen forelder som er brukt i fastsetjinga av barnetillegg",
-                                        English to "Income of the other parent, which is used to calculate child supplement"
-                                    )
-                                }
-                                cell {
-                                    includePhrase(Felles.KronerText(fellesbarn.inntektAnnenForelder))
-                                }
-                            }
-                        }
-
-                        val inntektstakFelles = barnetillegg.fellesbarn_safe.inntektstak_safe.ifNull(Kroner(0))
-                        val inntektstakSaerkull = barnetillegg.saerkullsbarn_safe.inntektstak_safe.ifNull(Kroner(0))
-                        showIf(inntektstakSaerkull.greaterThan(0)) {
-                            row {
-                                cell {
-                                    text(
-                                        Bokmal to "Samlet inntekt for deg som gjør at barnetillegget ikke blir utbetalt",
-                                        Nynorsk to "Samla inntekt for deg som gjer at barnetillegget ikkje blir utbetalt",
-                                        English to "Your income which means that no child supplement is received"
-                                    )
-                                }
-                                cell {
-                                    includePhrase(Felles.KronerText(inntektstakSaerkull))
-                                }
-                            }
-                        }
-                        showIf(inntektstakFelles.greaterThan(0)) {
-                            row {
-                                cell {
-                                    text(
-                                        Bokmal to "Samlet inntekt for deg og annen forelder som gjør at barnetillegget ikke blir utbetalt",
-                                        Nynorsk to "Samla inntekt for deg og annan forelder som gjer at barnetillegget ikkje blir utbetalt",
-                                        English to "Total combined income which means that no child supplement is received"
-                                    )
-                                }
-                                cell {
-                                    includePhrase(Felles.KronerText(inntektstakFelles))
+                            cell {
+                                showIf(inntektBruktIAvkortningFelles.greaterThan(0)) {
+                                    includePhrase(Felles.KronerText(inntektBruktIAvkortningFelles))
+                                }.orShow {
+                                    includePhrase(Felles.KronerText(inntektBruktIAvkortningSaerkull))
                                 }
                             }
                         }
                     }
+
+                    ifNotNull(barnetillegg.fellesbarn) { fellesbarn ->
+                        row {
+                            cell {
+                                text(
+                                    Bokmal to "Samlet inntekt til annen forelder som er brukt i fastsettelse av barnetillegg",
+                                    Nynorsk to "Samla inntekt til annen forelder som er brukt i fastsetjinga av barnetillegg",
+                                    English to "Income of the other parent, which is used to calculate child supplement"
+                                )
+                            }
+                            cell {
+                                includePhrase(Felles.KronerText(fellesbarn.inntektAnnenForelder))
+                            }
+                        }
+                    }
+
+                    val inntektstakFelles = barnetillegg.fellesbarn_safe.inntektstak_safe.ifNull(Kroner(0))
+                    val inntektstakSaerkull = barnetillegg.saerkullsbarn_safe.inntektstak_safe.ifNull(Kroner(0))
+                    showIf(inntektstakSaerkull.greaterThan(0)) {
+                        row {
+                            cell {
+                                text(
+                                    Bokmal to "Samlet inntekt for deg som gjør at barnetillegget ikke blir utbetalt",
+                                    Nynorsk to "Samla inntekt for deg som gjer at barnetillegget ikkje blir utbetalt",
+                                    English to "Your income which means that no child supplement is received"
+                                )
+                            }
+                            cell {
+                                includePhrase(Felles.KronerText(inntektstakSaerkull))
+                            }
+                        }
+                    }
+                    ifNotNull(barnetillegg.fellesbarn) { fellesBarn ->
+                        row {
+                            cell {
+                                text(
+                                    Bokmal to "Beløp som er trukket fra annen forelders inntekt (inntil 1G)",
+                                    Nynorsk to "Beløp som er trekt frå inntekta til ein annan forelder (inntil 1G)",
+                                    English to "Amount deducted from the other parent's income (up to 1G)",
+                                )
+                            }
+                            cell {
+                                includePhrase(Felles.KronerText(fellesBarn.beloepFratrukketAnnenForeldersInntekt))
+                            }
+                        }
+                    }
+
+                    showIf(inntektstakFelles.greaterThan(0)) {
+                        row {
+                            cell {
+                                text(
+                                    Bokmal to "Samlet inntekt for deg og annen forelder som gjør at barnetillegget ikke blir utbetalt",
+                                    Nynorsk to "Samla inntekt for deg og annan forelder som gjer at barnetillegget ikkje blir utbetalt",
+                                    English to "Total combined income which means that no child supplement is received"
+                                )
+                            }
+                            cell {
+                                includePhrase(Felles.KronerText(inntektstakFelles))
+                            }
+                        }
+                    }
+
                 }
             }
         }
