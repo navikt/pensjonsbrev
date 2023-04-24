@@ -6,8 +6,7 @@ import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidsdetaljerGjeldende1Selecto
 import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidsdetaljerGjeldende1Selectors.framtidigTTEOS_safe
 import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidsdetaljerGjeldende1Selectors.harTrygdetidsgrunnlag
 import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidsdetaljerGjeldendeSelectors.framtidigTTNorsk_safe
-import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdGjeldendeSelectors.ufoeregrad
-import no.nav.pensjon.brev.api.model.vedlegg.YrkesskadeGjeldendeSelectors.yrkesskadegrad_safe
+import no.nav.pensjon.brev.api.model.vedlegg.YrkesskadeGjeldendeSelectors.yrkesskadegrad
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.Expression
@@ -21,8 +20,8 @@ data class TrygdetidenDin(
     val beregnetUTPerManedGjeldende: Expression<OpplysningerBruktIBeregningUTDto.BeregnetUTPerManedGjeldende>,
     val trygdetidsdetaljerGjeldende: Expression<OpplysningerBruktIBeregningUTDto.TrygdetidsdetaljerGjeldende>,
     val trygdetidsdetaljerGjeldende1: Expression<OpplysningerBruktIBeregningUTDto.TrygdetidsdetaljerGjeldende1>,
-    val ufoeregradGjeldende: Expression<OpplysningerBruktIBeregningUTDto.UfoeretrygdGjeldende>,
-    val yrkesskadeGjeldende: Expression<OpplysningerBruktIBeregningUTDto.YrkesskadeGjeldende?>,
+    val ufoeregrad: Expression<OpplysningerBruktIBeregningUTDto.UfoeretrygdGjeldende>,
+    val yrkesskadegrad: Expression<OpplysningerBruktIBeregningUTDto.YrkesskadeGjeldende?>,
 
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
@@ -30,8 +29,7 @@ data class TrygdetidenDin(
         val framtigTTNorsk = trygdetidsdetaljerGjeldende.framtidigTTNorsk_safe
         val har40AarfastsattTrygdetid = trygdetidsdetaljerGjeldende1.fastsattTrygdetid_safe.equalTo(40)
         val harFramtidigTrygdetid = framtigTTNorsk.notEqualTo(0) or framtidigTTEOS.notEqualTo(0)
-        val harLikUfoeregradOgYrkesskadegrad =
-            ufoeregradGjeldende.ufoeregrad.equalTo(yrkesskadeGjeldende.yrkesskadegrad_safe)
+        val harLikUfoeregradOgYrkesskadegrad = ufoeregrad.equalTo(yrkesskadegrad)
         val fastsattTrygdetid = trygdetidsdetaljerGjeldende1.fastsattTrygdetid_safe.ifNull(0)
 
         // TBU039V
@@ -99,9 +97,9 @@ data class TrygdetidenDin(
             }
         }
         // TBU075V
-        ifNotNull(yrkesskadeGjeldende.yrkesskadegrad_safe) { yrkesskadegrad ->
+        ifNotNull(yrkesskadegrad) { yrkesskade ->
             showIf(
-                yrkesskadegrad.greaterThan(0) and not(har40AarfastsattTrygdetid)
+                yrkesskade.yrkesskadegrad.greaterThan(0) and not(har40AarfastsattTrygdetid)
                         and not(beregnetUTPerManedGjeldende.brukerErFlyktning) and not(
                     harLikUfoeregradOgYrkesskadegrad
                 )
@@ -132,7 +130,7 @@ data class TrygdetidenDin(
 
             // TBU042V
             showIf(
-                yrkesskadegrad.greaterThan(0) and harLikUfoeregradOgYrkesskadegrad
+                yrkesskade.yrkesskadegrad.greaterThan(0) and harLikUfoeregradOgYrkesskadegrad
                         and not(beregnetUTPerManedGjeldende.brukerErFlyktning)
             ) {
                 paragraph {
@@ -146,7 +144,7 @@ data class TrygdetidenDin(
             // TBU043V
             showIf(
                 not(harLikUfoeregradOgYrkesskadegrad) and not(beregnetUTPerManedGjeldende.brukerErFlyktning)
-                        and yrkesskadegrad.equalTo(0)
+                        and yrkesskade.yrkesskadegrad.equalTo(0)
             ) {
                 paragraph {
                     textExpr(
