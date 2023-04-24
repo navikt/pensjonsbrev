@@ -55,7 +55,7 @@ data class TabellUfoereOpplysningerAvdoed(
     val opplysningerAvdoed: Expression<OpplysningerBruktIBeregningUTDto.OpplysningerAvdoed?>,
     val trygdetidsdetaljer: Expression<OpplysningerBruktIBeregningUTDto.OpplysningerAvdoed.Trygdetidsdetaljer1>,
     val ufoeretrygdGjeldende: Expression<OpplysningerBruktIBeregningUTDto.OpplysningerAvdoed.UfoeretrygdGjeldende1>,
-    val yrkesskadeGjeldene1: Expression<OpplysningerBruktIBeregningUTDto.OpplysningerAvdoed.YrkesskadeGjeldene1?>,
+    val yrkesskadeGjeldende: Expression<OpplysningerBruktIBeregningUTDto.OpplysningerAvdoed.YrkesskadeGjeldene1?>,
 
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
@@ -203,7 +203,7 @@ data class TabellUfoereOpplysningerAvdoed(
                     }
                 }
             }
-            ifNotNull(yrkesskadeGjeldene1.yrkesskadegrad_safe) { yrkesskadegrad ->
+            ifNotNull(yrkesskadeGjeldende.yrkesskadegrad_safe) { yrkesskadegrad ->
                 showIf(yrkesskadegrad.greaterThan(0)) {
                     row {
                         cell {
@@ -216,7 +216,7 @@ data class TabellUfoereOpplysningerAvdoed(
                         cell { includePhrase((Felles.ProsentText(yrkesskadegrad))) }
                     }
                 }
-                ifNotNull(yrkesskadeGjeldene1.beregningsgrunnlagBeloepAarYrkesskade_safe) { beloep ->
+                ifNotNull(yrkesskadeGjeldende.beregningsgrunnlagBeloepAarYrkesskade_safe) { beloep ->
                     showIf(beloep.greaterThan(0)) {
                         row {
                             cell {
@@ -230,7 +230,7 @@ data class TabellUfoereOpplysningerAvdoed(
                         }
                     }
                 }
-                ifNotNull(yrkesskadeGjeldene1.inntektVedSkadetidspunkt_safe) { inntekt ->
+                ifNotNull(yrkesskadeGjeldende.inntektVedSkadetidspunkt_safe) { inntekt ->
                     showIf(inntekt.greaterThan(0)) {
                         row {
                             cell {
