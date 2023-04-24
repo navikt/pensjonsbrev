@@ -19,9 +19,9 @@ import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brev.template.dsl.expression.*
 
 data class TabellTrygdetiden(
-    val norskTrygdetidPerioder: Expression<List<OpplysningerBruktIBeregningUTDto.NorskTrygdetidPeriode>>,
-    val utenlandskTrygdetidBilateralPerioder: Expression<List<OpplysningerBruktIBeregningUTDto.UtenlandskTrygdetidBilateralPeriode>>,
-    val utenlandskTrygdetidEOSPerioder: Expression<List<OpplysningerBruktIBeregningUTDto.UtenlandskTrygdetidEOSPeriode>>,
+    val norskTrygdetidPeriode: Expression<List<OpplysningerBruktIBeregningUTDto.NorskTrygdetidPeriode>>,
+    val utenlandskTrygdetidBilateralPeriode: Expression<List<OpplysningerBruktIBeregningUTDto.UtenlandskTrygdetidBilateralPeriode>>,
+    val utenlandskTrygdetidEOSPeriode: Expression<List<OpplysningerBruktIBeregningUTDto.UtenlandskTrygdetidEOSPeriode>>,
 
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
@@ -49,7 +49,7 @@ data class TabellTrygdetiden(
                 }
             }) {
                 forEach(
-                    norskTrygdetidPerioder
+                    norskTrygdetidPeriode
                 ) { periode ->
                     row {
                         cell {
@@ -92,7 +92,7 @@ data class TabellTrygdetiden(
                 }
             }) {
                 forEach(
-                    utenlandskTrygdetidEOSPerioder
+                    utenlandskTrygdetidEOSPeriode
                 ) { periode ->
                     row {
                         cell {
@@ -142,7 +142,7 @@ data class TabellTrygdetiden(
                 }
             }) {
                 forEach(
-                    utenlandskTrygdetidBilateralPerioder
+                    utenlandskTrygdetidBilateralPeriode
                 ) { periode ->
                     row {
                         cell {

@@ -1,14 +1,14 @@
 package no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningufoere
 
-import no.nav.pensjon.brev.api.model.vedlegg.NorskTrygdetidAvdoedPeriodeSelectors.trygdetidFomAvdoed
-import no.nav.pensjon.brev.api.model.vedlegg.NorskTrygdetidAvdoedPeriodeSelectors.trygdetidTomAvdoed
+import no.nav.pensjon.brev.api.model.vedlegg.NorskTrygdetidPeriodeAvdoedSelectors.trygdetidFom
+import no.nav.pensjon.brev.api.model.vedlegg.NorskTrygdetidPeriodeAvdoedSelectors.trygdetidTom
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDto
-import no.nav.pensjon.brev.api.model.vedlegg.UtenlandskTrygdetidBilateralAvdoedPeriodeSelectors.trygdetidBilateralLandAvdoed
-import no.nav.pensjon.brev.api.model.vedlegg.UtenlandskTrygdetidBilateralAvdoedPeriodeSelectors.trygdetidFomAvdoed
-import no.nav.pensjon.brev.api.model.vedlegg.UtenlandskTrygdetidBilateralAvdoedPeriodeSelectors.trygdetidTomAvdoed
-import no.nav.pensjon.brev.api.model.vedlegg.UtenlandskTrygdetidEOSAvdoedPeriodeSelectors.trygdetidEOSLandAvdoed
-import no.nav.pensjon.brev.api.model.vedlegg.UtenlandskTrygdetidEOSAvdoedPeriodeSelectors.trygdetidFomAvdoed
-import no.nav.pensjon.brev.api.model.vedlegg.UtenlandskTrygdetidEOSAvdoedPeriodeSelectors.trygdetidTomAvdoed
+import no.nav.pensjon.brev.api.model.vedlegg.UtenlandskTrygdetidBilateralPeriodeAvdoedSelectors.trygdetidBilateralLand
+import no.nav.pensjon.brev.api.model.vedlegg.UtenlandskTrygdetidBilateralPeriodeAvdoedSelectors.trygdetidFom
+import no.nav.pensjon.brev.api.model.vedlegg.UtenlandskTrygdetidBilateralPeriodeAvdoedSelectors.trygdetidTom
+import no.nav.pensjon.brev.api.model.vedlegg.UtenlandskTrygdetidEOSPeriodeAvdoedSelectors.trygdetidEOSLand
+import no.nav.pensjon.brev.api.model.vedlegg.UtenlandskTrygdetidEOSPeriodeAvdoedSelectors.trygdetidFom
+import no.nav.pensjon.brev.api.model.vedlegg.UtenlandskTrygdetidEOSPeriodeAvdoedSelectors.trygdetidTom
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.Expression
@@ -19,9 +19,9 @@ import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brev.template.dsl.expression.*
 
 data class TabellTrygdetidenAvdoed(
-    val norskTrygdetidAvdoedPeriode: Expression<List<OpplysningerBruktIBeregningUTDto.NorskTrygdetidAvdoedPeriode>>,
-    val utenlandskTrygdetidBilateralAvdoedPeriode: Expression<List<OpplysningerBruktIBeregningUTDto.UtenlandskTrygdetidBilateralAvdoedPeriode>>,
-    val utenlandskTrygdetidEOSAvdoedPeriode: Expression<List<OpplysningerBruktIBeregningUTDto.UtenlandskTrygdetidEOSAvdoedPeriode>>,
+    val norskTrygdetidPeriode: Expression<List<OpplysningerBruktIBeregningUTDto.NorskTrygdetidPeriodeAvdoed>>,
+    val utenlandskTrygdetidBilateralPeriode: Expression<List<OpplysningerBruktIBeregningUTDto.UtenlandskTrygdetidBilateralPeriodeAvdoed>>,
+    val utenlandskTrygdetidEOSPeriode: Expression<List<OpplysningerBruktIBeregningUTDto.UtenlandskTrygdetidEOSPeriodeAvdoed>>,
 
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
@@ -49,21 +49,21 @@ data class TabellTrygdetidenAvdoed(
                 }
             }) {
                 forEach(
-                    norskTrygdetidAvdoedPeriode
+                    norskTrygdetidPeriode
                 ) { periode ->
                     row {
                         cell {
                             textExpr(
-                                Bokmal to periode.trygdetidFomAvdoed.format(),
-                                Nynorsk to periode.trygdetidFomAvdoed.format(),
-                                English to periode.trygdetidFomAvdoed.format()
+                                Bokmal to periode.trygdetidFom.format(),
+                                Nynorsk to periode.trygdetidFom.format(),
+                                English to periode.trygdetidFom.format()
                             )
                         }
                         cell {
                             textExpr(
-                                Bokmal to periode.trygdetidTomAvdoed.format(),
-                                Nynorsk to periode.trygdetidTomAvdoed.format(),
-                                English to periode.trygdetidTomAvdoed.format()
+                                Bokmal to periode.trygdetidTom.format(),
+                                Nynorsk to periode.trygdetidTom.format(),
+                                English to periode.trygdetidTom.format()
                             )
                         }
                     }
@@ -92,28 +92,28 @@ data class TabellTrygdetidenAvdoed(
                 }
             }) {
                 forEach(
-                    utenlandskTrygdetidEOSAvdoedPeriode
+                    utenlandskTrygdetidEOSPeriode
                 ) { periode ->
                     row {
                         cell {
                             textExpr(
-                                Bokmal to periode.trygdetidEOSLandAvdoed,
-                                Nynorsk to periode.trygdetidEOSLandAvdoed,
-                                English to periode.trygdetidEOSLandAvdoed,
+                                Bokmal to periode.trygdetidEOSLand,
+                                Nynorsk to periode.trygdetidEOSLand,
+                                English to periode.trygdetidEOSLand,
                             )
                         }
                         cell {
                             textExpr(
-                                Bokmal to periode.trygdetidFomAvdoed.format(),
-                                Nynorsk to periode.trygdetidFomAvdoed.format(),
-                                English to periode.trygdetidFomAvdoed.format()
+                                Bokmal to periode.trygdetidFom.format(),
+                                Nynorsk to periode.trygdetidFom.format(),
+                                English to periode.trygdetidFom.format()
                             )
                         }
                         cell {
                             textExpr(
-                                Bokmal to periode.trygdetidTomAvdoed.format(),
-                                Nynorsk to periode.trygdetidTomAvdoed.format(),
-                                English to periode.trygdetidTomAvdoed.format()
+                                Bokmal to periode.trygdetidTom.format(),
+                                Nynorsk to periode.trygdetidTom.format(),
+                                English to periode.trygdetidTom.format()
                             )
                         }
                     }
@@ -142,28 +142,28 @@ data class TabellTrygdetidenAvdoed(
                 }
             }) {
                 forEach(
-                    utenlandskTrygdetidBilateralAvdoedPeriode
+                    utenlandskTrygdetidBilateralPeriode
                 ) { periode ->
                     row {
                         cell {
                             textExpr(
-                                Bokmal to periode.trygdetidBilateralLandAvdoed,
-                                Nynorsk to periode.trygdetidBilateralLandAvdoed,
-                                English to periode.trygdetidBilateralLandAvdoed,
+                                Bokmal to periode.trygdetidBilateralLand,
+                                Nynorsk to periode.trygdetidBilateralLand,
+                                English to periode.trygdetidBilateralLand,
                             )
                         }
                         cell {
                             textExpr(
-                                Bokmal to periode.trygdetidFomAvdoed.format(),
-                                Nynorsk to periode.trygdetidFomAvdoed.format(),
-                                English to periode.trygdetidFomAvdoed.format()
+                                Bokmal to periode.trygdetidFom.format(),
+                                Nynorsk to periode.trygdetidFom.format(),
+                                English to periode.trygdetidFom.format()
                             )
                         }
                         cell {
                             textExpr(
-                                Bokmal to periode.trygdetidTomAvdoed.format(),
-                                Nynorsk to periode.trygdetidTomAvdoed.format(),
-                                English to periode.trygdetidTomAvdoed.format()
+                                Bokmal to periode.trygdetidTom.format(),
+                                Nynorsk to periode.trygdetidTom.format(),
+                                English to periode.trygdetidTom.format()
                             )
                         }
                     }

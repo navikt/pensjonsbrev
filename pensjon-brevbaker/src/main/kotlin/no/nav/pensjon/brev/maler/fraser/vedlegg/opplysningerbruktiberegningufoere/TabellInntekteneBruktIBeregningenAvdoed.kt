@@ -1,15 +1,15 @@
 package no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningufoere
 
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDto
-import no.nav.pensjon.brev.api.model.vedlegg.OpptjeningUfoeretrygdAvdoedSelectors.harFoerstegangstjenesteOpptjeningAvdoed_safe
-import no.nav.pensjon.brev.api.model.vedlegg.OpptjeningUfoeretrygdAvdoedSelectors.harOmsorgsopptjeningAvdoed_safe
-import no.nav.pensjon.brev.api.model.vedlegg.OpptjeningUfoeretrygdAvdoedSelectors.opptjeningsperioderAvdoed
-import no.nav.pensjon.brev.api.model.vedlegg.OpptjeningsperiodeAvdoedSelectors.aarAvdoed
-import no.nav.pensjon.brev.api.model.vedlegg.OpptjeningsperiodeAvdoedSelectors.harFoerstegangstjenesteOpptjeningAvdoed
-import no.nav.pensjon.brev.api.model.vedlegg.OpptjeningsperiodeAvdoedSelectors.harInntektAvtalelandAvdoed
-import no.nav.pensjon.brev.api.model.vedlegg.OpptjeningsperiodeAvdoedSelectors.harOmsorgsopptjeningAvdoed
-import no.nav.pensjon.brev.api.model.vedlegg.OpptjeningsperiodeAvdoedSelectors.justertPensjonsgivendeInntektAvdoed
-import no.nav.pensjon.brev.api.model.vedlegg.OpptjeningsperiodeAvdoedSelectors.pensjonsgivendeInntektAvdoed
+import no.nav.pensjon.brev.api.model.vedlegg.OpptjeningUfoeretrygdAvdoedSelectors.harFoerstegangstjenesteOpptjening_safe
+import no.nav.pensjon.brev.api.model.vedlegg.OpptjeningUfoeretrygdAvdoedSelectors.harOmsorgsopptjening_safe
+import no.nav.pensjon.brev.api.model.vedlegg.OpptjeningUfoeretrygdAvdoedSelectors.opptjeningsperiode
+import no.nav.pensjon.brev.api.model.vedlegg.OpptjeningsperiodeAvdoedSelectors.aar
+import no.nav.pensjon.brev.api.model.vedlegg.OpptjeningsperiodeAvdoedSelectors.harFoerstegangstjenesteOpptjening
+import no.nav.pensjon.brev.api.model.vedlegg.OpptjeningsperiodeAvdoedSelectors.harInntektAvtaleland
+import no.nav.pensjon.brev.api.model.vedlegg.OpptjeningsperiodeAvdoedSelectors.harOmsorgsopptjening
+import no.nav.pensjon.brev.api.model.vedlegg.OpptjeningsperiodeAvdoedSelectors.justertPensjonsgivendeInntekt
+import no.nav.pensjon.brev.api.model.vedlegg.OpptjeningsperiodeAvdoedSelectors.pensjonsgivendeInntekt
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
@@ -70,34 +70,34 @@ data class TabellInntekteneBruktIBeregningenAvdoed(
             }) {
                 ifNotNull(opptjeningUfoeretrygdAvdoed) { opptjeningUfoeretrygdAvdoed ->
                         forEach(
-                            opptjeningUfoeretrygdAvdoed.opptjeningsperioderAvdoed
-                        ) { opptjeningAvdoed ->
+                            opptjeningUfoeretrygdAvdoed.opptjeningsperiode
+                        ) { periode ->
                             row {
                                 cell {
                                     textExpr(
-                                        Bokmal to opptjeningAvdoed.aarAvdoed.format(),
-                                        Nynorsk to opptjeningAvdoed.aarAvdoed.format(),
-                                        English to opptjeningAvdoed.aarAvdoed.format()
+                                        Bokmal to periode.aar.format(),
+                                        Nynorsk to periode.aar.format(),
+                                        English to periode.aar.format()
                                     )
                                 }
                                 cell {
                                     textExpr(
-                                        Bokmal to opptjeningAvdoed.pensjonsgivendeInntektAvdoed.format(),
-                                        Nynorsk to opptjeningAvdoed.pensjonsgivendeInntektAvdoed.format(),
-                                        English to opptjeningAvdoed.pensjonsgivendeInntektAvdoed.format()
+                                        Bokmal to periode.pensjonsgivendeInntekt.format(),
+                                        Nynorsk to periode.pensjonsgivendeInntekt.format(),
+                                        English to periode.pensjonsgivendeInntekt.format()
                                     )
                                 }
                                 cell {
                                     textExpr(
-                                        Bokmal to opptjeningAvdoed.justertPensjonsgivendeInntektAvdoed.format() + "**",
-                                        Nynorsk to opptjeningAvdoed.justertPensjonsgivendeInntektAvdoed.format() + "**",
-                                        English to opptjeningAvdoed.justertPensjonsgivendeInntektAvdoed.format() + "**"
+                                        Bokmal to periode.justertPensjonsgivendeInntekt.format() + "**",
+                                        Nynorsk to periode.justertPensjonsgivendeInntekt.format() + "**",
+                                        English to periode.justertPensjonsgivendeInntekt.format() + "**"
                                     )
                                 }
                                 cell {
 
                                     showIf(
-                                        opptjeningAvdoed.harFoerstegangstjenesteOpptjeningAvdoed
+                                        periode.harFoerstegangstjenesteOpptjening
                                     ) {
                                         text(
                                             Bokmal to "Førstegangstjeneste* ",
@@ -106,7 +106,7 @@ data class TabellInntekteneBruktIBeregningenAvdoed(
                                         )
                                     }
                                     showIf(
-                                        opptjeningAvdoed.harOmsorgsopptjeningAvdoed
+                                        periode.harOmsorgsopptjening
                                     ) {
                                         text(
                                             Bokmal to "Omsorgsår* ",
@@ -114,7 +114,7 @@ data class TabellInntekteneBruktIBeregningenAvdoed(
                                             English to "Care work* "
                                         )
                                     }
-                                    showIf(opptjeningAvdoed.harInntektAvtalelandAvdoed) {
+                                    showIf(periode.harInntektAvtaleland) {
                                         text(
                                             Bokmal to "Inntekt i utland* ",
                                             Nynorsk to "Inntekt i utland* ",
@@ -129,7 +129,7 @@ data class TabellInntekteneBruktIBeregningenAvdoed(
             }
         paragraph {
             showIf(
-                opptjeningUfoeretrygdAvdoed.harOmsorgsopptjeningAvdoed_safe.ifNull(false) and opptjeningUfoeretrygdAvdoed.harFoerstegangstjenesteOpptjeningAvdoed_safe.ifNull(
+                opptjeningUfoeretrygdAvdoed.harOmsorgsopptjening_safe.ifNull(false) and opptjeningUfoeretrygdAvdoed.harFoerstegangstjenesteOpptjening_safe.ifNull(
                     false
                 )
             ) {
@@ -140,8 +140,8 @@ data class TabellInntekteneBruktIBeregningenAvdoed(
                 )
             }
             showIf(
-                opptjeningUfoeretrygdAvdoed.harOmsorgsopptjeningAvdoed_safe.ifNull(false) and not(
-                    opptjeningUfoeretrygdAvdoed.harFoerstegangstjenesteOpptjeningAvdoed_safe.ifNull(
+                opptjeningUfoeretrygdAvdoed.harOmsorgsopptjening_safe.ifNull(false) and not(
+                    opptjeningUfoeretrygdAvdoed.harFoerstegangstjenesteOpptjening_safe.ifNull(
                         false
                     )
                 )
@@ -153,8 +153,8 @@ data class TabellInntekteneBruktIBeregningenAvdoed(
                 )
             }
             showIf(
-                opptjeningUfoeretrygdAvdoed.harFoerstegangstjenesteOpptjeningAvdoed_safe.ifNull(false) and not(
-                    opptjeningUfoeretrygdAvdoed.harOmsorgsopptjeningAvdoed_safe.ifNull(false)
+                opptjeningUfoeretrygdAvdoed.harFoerstegangstjenesteOpptjening_safe.ifNull(false) and not(
+                    opptjeningUfoeretrygdAvdoed.harOmsorgsopptjening_safe.ifNull(false)
                 )
             ) {
                 text(

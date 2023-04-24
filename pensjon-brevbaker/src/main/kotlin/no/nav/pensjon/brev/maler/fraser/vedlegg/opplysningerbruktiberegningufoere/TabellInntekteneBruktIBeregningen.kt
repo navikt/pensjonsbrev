@@ -3,7 +3,7 @@ package no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningufoe
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDto
 import no.nav.pensjon.brev.api.model.vedlegg.OpptjeningUfoeretrygdSelectors.harFoerstegangstjenesteOpptjening_safe
 import no.nav.pensjon.brev.api.model.vedlegg.OpptjeningUfoeretrygdSelectors.harOmsorgsopptjening_safe
-import no.nav.pensjon.brev.api.model.vedlegg.OpptjeningUfoeretrygdSelectors.opptjeningsperioder
+import no.nav.pensjon.brev.api.model.vedlegg.OpptjeningUfoeretrygdSelectors.opptjeningsperiode
 import no.nav.pensjon.brev.api.model.vedlegg.OpptjeningsperiodeSelectors.aar
 import no.nav.pensjon.brev.api.model.vedlegg.OpptjeningsperiodeSelectors.harFoerstegangstjenesteOpptjening
 import no.nav.pensjon.brev.api.model.vedlegg.OpptjeningsperiodeSelectors.harInntektAvtaleland
@@ -70,33 +70,33 @@ data class TabellInntekteneBruktIBeregningen(
             }) {
                 ifNotNull(opptjeningUfoeretrygd) { opptjeningUfoeretrygd ->
                         forEach(
-                            opptjeningUfoeretrygd.opptjeningsperioder
-                        ) { opptjening ->
+                            opptjeningUfoeretrygd.opptjeningsperiode
+                        ) { periode ->
                             row {
                                 cell {
                                     textExpr(
-                                        Bokmal to opptjening.aar.format(),
-                                        Nynorsk to opptjening.aar.format(),
-                                        English to opptjening.aar.format()
+                                        Bokmal to periode.aar.format(),
+                                        Nynorsk to periode.aar.format(),
+                                        English to periode.aar.format()
                                     )
                                 }
                                 cell {
                                     textExpr(
-                                        Bokmal to opptjening.pensjonsgivendeInntekt.format(),
-                                        Nynorsk to opptjening.pensjonsgivendeInntekt.format(),
-                                        English to opptjening.pensjonsgivendeInntekt.format()
+                                        Bokmal to periode.pensjonsgivendeInntekt.format(),
+                                        Nynorsk to periode.pensjonsgivendeInntekt.format(),
+                                        English to periode.pensjonsgivendeInntekt.format()
                                     )
                                 }
                                 cell {
                                     textExpr(
-                                        Bokmal to opptjening.justertPensjonsgivendeInntekt.format() + "**",
-                                        Nynorsk to opptjening.justertPensjonsgivendeInntekt.format() + "**",
-                                        English to opptjening.justertPensjonsgivendeInntekt.format() + "**"
+                                        Bokmal to periode.justertPensjonsgivendeInntekt.format() + "**",
+                                        Nynorsk to periode.justertPensjonsgivendeInntekt.format() + "**",
+                                        English to periode.justertPensjonsgivendeInntekt.format() + "**"
                                     )
                                 }
                                 cell {
                                     showIf(
-                                        opptjening.harFoerstegangstjenesteOpptjening
+                                        periode.harFoerstegangstjenesteOpptjening
                                     ) {
                                         text(
                                             Bokmal to "Førstegangstjeneste* ",
@@ -105,7 +105,7 @@ data class TabellInntekteneBruktIBeregningen(
                                         )
                                     }
                                     showIf(
-                                        opptjening.harOmsorgsopptjening
+                                        periode.harOmsorgsopptjening
                                     ) {
                                         text(
                                             Bokmal to "Omsorgsår* ",
@@ -113,7 +113,7 @@ data class TabellInntekteneBruktIBeregningen(
                                             English to "Care work* "
                                         )
                                     }
-                                    showIf(opptjening.harInntektAvtaleland) {
+                                    showIf(periode.harInntektAvtaleland) {
                                         text(
                                             Bokmal to "Inntekt i utland* ",
                                             Nynorsk to "Inntekt i utland* ",
