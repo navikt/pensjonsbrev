@@ -69,15 +69,17 @@ object Fixtures {
             Unit::class -> Unit as T
             OpplysningerBruktIBeregningUTDto.OpptjeningUfoeretrygd::class -> createOpplysningerBruktIBeregningUTDtoOpptjeningUfoeretrygd() as T
             OpplysningerBruktIBeregningUTDto.Opptjeningsperiode::class -> createOpplysningerBruktIBeregningUTDtoOpptjeningsperiode() as T
-            OpplysningerBruktIBeregningUTDto.TrygdetidGjeldende::class -> createOpplysningerBruktIBeregningUTDtoTrygdetidGjeldende() as T
-            OpplysningerBruktIBeregningUTDto.NorskTrygdetid::class -> createOpplysningerBruktIBeregningUTDtoNorskTrygdetid() as T
-            OpplysningerBruktIBeregningUTDto.UtenlandskTrygdetidEOS::class -> createOpplysningerBruktIBeregningUTDtoUtenlandskTrygdetidEOS() as T
-            OpplysningerBruktIBeregningUTDto.UtenlandskTrygdetidBilateral::class -> createOpplysningerBruktIBeregningUTDtoUtenlandskTrygdetidBilateral() as T
-            OpplysningerBruktIBeregningUTDto.OpplysningerAvdoed::class -> createOpplysningerBruktIBeregningUTDtoGjenlevendetilleggInformasjon() as T
+            OpplysningerBruktIBeregningUTDto.NorskTrygdetidPeriode::class -> createOpplysningerBruktIBeregningUTDtoNorskTrygdetidPeriode() as T
+            OpplysningerBruktIBeregningUTDto.NorskTrygdetidPeriodeAvdoed::class -> createOpplysningerBruktIBeregningUTDtoNorskTrygdetidAvdoedPeriode() as T
+            OpplysningerBruktIBeregningUTDto.UtenlandskTrygdetidEOSPeriode::class -> createOpplysningerBruktIBeregningUTDtoUtenlandskTrygdetidEOSPeriode() as T
+            OpplysningerBruktIBeregningUTDto.UtenlandskTrygdetidEOSPeriodeAvdoed::class -> createOpplysningerBruktIBeregningUTDtoUtenlandskTrygdetidEOSAvdoedPeriode() as T
+            OpplysningerBruktIBeregningUTDto.UtenlandskTrygdetidBilateralPeriode::class -> createOpplysningerBruktIBeregningUTDtoUtenlandskTrygdetidBilateralPeriode() as T
+            OpplysningerBruktIBeregningUTDto.UtenlandskTrygdetidBilateralPeriodeAvdoed::class -> createOpplysningerBruktIBeregningUTDtoUtenlandskTrygdetidBilateralAvdoedPeriode() as T
+            OpplysningerBruktIBeregningUTDto.OpplysningerAvdoed::class -> createOpplysningerBruktIBeregningUTDtoOpplysningerAvdoed() as T
             OpplysningerBruktIBeregningUTDto.UfoeretrygdOrdinaer::class -> createOpplysningerBruktIBeregningUTDtoUfoeretrygdOrdinaer() as T
-            OpplysningerBruktIBeregningUTDto.BeregningUfoere::class -> createOpplysningerBruktIBeregningUTDtoBeregningUfoere() as T
             OpplysningerBruktIBeregningUTDto.OpptjeningUfoeretrygdAvdoed::class -> createOpplysningerBruktIBeregningUTDtoOpptjeningUfoeretrygdAvdoed() as T
             OpplysningerBruktIBeregningUTDto.OpptjeningsperiodeAvdoed::class -> createOpplysningerBruktIBeregningUTDtoOpptjeningsperiodeAvdoede() as T
+
 
             else -> throw IllegalArgumentException("Don't know how to construct: ${letterDataType.qualifiedName}")
         }

@@ -6,34 +6,36 @@ import java.time.LocalDate
 data class OpplysningerBruktIBeregningUTDto(
     val barnetilleggGjeldende: BarnetilleggGjeldende?,
     val beregnetUTPerManedGjeldende: BeregnetUTPerManedGjeldende,
-    val beregningUfoere: BeregningUfoere,
     val borIUtlandet: Boolean,  // PE_Grunnlag_Persongrunnlagsliste_PersonBostedsland <> "nor" AND PE_Grunnlag_Persongrunnlagsliste_PersonBostedsland <> ""
     val fraOgMedDatoErNesteAar: Boolean,
-    val opplysningerAvdoed: OpplysningerAvdoed?,
     val harBarnetilleggInnvilget: Boolean?,  // (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true) OR (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true)
-    val harEktefelletilleggInnvilget: Boolean?,  // TODO: PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_Ektefelletillegg_ETinnvilget = true
+    val harEktefelletilleggInnvilget: Boolean?,
     val harKravaarsakEndringInntekt: Boolean,
     val inntektEtterUfoereGjeldende_beloepIEU: Kroner?,
     val inntektFoerUfoereBegrunnelse: InntektFoerUfoereBegrunnelse,
     val inntektFoerUfoereGjeldende: InntektFoerUfoereGjeldende,
     val inntektsAvkortingGjeldende: InntektsAvkortingGjeldende,
-    val kravAarsakType: KravAarsakType,  // TODO: PE_Vedtaksdata_Kravhode_KravArsakType
+    val kravAarsakType: KravAarsakType,
     val minsteytelseGjeldende_sats: Double?,
-    val norskTrygdetid: List<NorskTrygdetid>, // TODO
-    val norskTrygdetidAvdoed: List<NorskTrygdetidAvdoed>,  // TODO
-    val sivilstand: Sivilstand,
-    val trygdetidGjeldende: TrygdetidGjeldende,
-    val trygdetidsdetaljerGjeldende: TrygdetidsdetaljerGjeldende,
-    val ufoeretrygdGjeldende: UfoeretrygdGjeldende,
-    val ufoeretrygdOrdinaer: UfoeretrygdOrdinaer, // TODO
-    val ungUfoerGjeldende_erUnder20Aar: Boolean?,
-    val utenlandskTrygdetidBilateral: List<UtenlandskTrygdetidBilateral>, // TODO
-    val utenlandskTrygdetidBilateralAvdoed: List<UtenlandskTrygdetidBilateralAvdoed>, // TODO
-    val utenlandskTrygdetidEOS: List<UtenlandskTrygdetidEOS>, // TODO
-    val utenlandskTrygdetidEOSAvdoed: List<UtenlandskTrygdetidEOSAvdoed>, // TODO
-    val yrkesskadeGjeldende: YrkesskadeGjeldende?,
+    val norskTrygdetidPerioder: List<NorskTrygdetidPeriode>,
+    val norskTrygdetidPerioderAvdoed: List<NorskTrygdetidPeriodeAvdoed>,
+    val opplysningerAvdoed: OpplysningerAvdoed?,
     val opptjeningUfoeretrygd: OpptjeningUfoeretrygd?,
     val opptjeningUfoeretrygdAvdoed: OpptjeningUfoeretrygdAvdoed?,
+    val sivilstand: Sivilstand,
+    val trygdetidsdetaljer1: OpplysningerAvdoed.Trygdetidsdetaljer1,
+    val trygdetidsdetaljerGjeldende1: TrygdetidsdetaljerGjeldende1,
+    val trygdetidsdetaljerGjeldende: TrygdetidsdetaljerGjeldende,
+    val ufoeretrygdGjeldende1: OpplysningerAvdoed.UfoeretrygdGjeldende1,
+    val ufoeretrygdGjeldende: UfoeretrygdGjeldende,
+    val ufoeretrygdOrdinaer: UfoeretrygdOrdinaer,
+    val ungUfoerGjeldende_erUnder20Aar: Boolean?,
+    val utenlandskTrygdetidBilateralPerioder: List<UtenlandskTrygdetidBilateralPeriode>,
+    val utenlandskTrygdetidBilateralPerioderAvdoed: List<UtenlandskTrygdetidBilateralPeriodeAvdoed>,
+    val utenlandskTrygdetidEOSPerioder: List<UtenlandskTrygdetidEOSPeriode>,
+    val utenlandskTrygdetidEOSPerioderAvdoed: List<UtenlandskTrygdetidEOSPeriodeAvdoed>,
+    val yrkesskadeGjeldende: YrkesskadeGjeldende?,
+    val yrkesskadeGjeldene1: OpplysningerAvdoed.YrkesskadeGjeldene1?,
 ) {
 
     data class YrkesskadeGjeldende(
@@ -105,6 +107,12 @@ data class OpplysningerBruktIBeregningUTDto(
         )
     }
 
+    data class TrygdetidsdetaljerGjeldende1(
+        val framtidigTTEOS: Int?,
+        val fastsattTrygdetid: Int?,  //  TODO: (<FaTTNorge> + <FramtidigTTNorge>)/12
+        val harTrygdetidsgrunnlag: Boolean,  // TODO: If a trygdeperiod exists, true
+    )
+
     data class BeregnetUTPerManedGjeldende(
         val brukerErFlyktning: Boolean,
         val brukersSivilstand: Sivilstand,
@@ -127,8 +135,6 @@ data class OpplysningerBruktIBeregningUTDto(
 
     data class InntektsAvkortingGjeldende(
         val forventetInntektAar: Kroner,
-        val harForventetInntektLargerThanInntektstak: Boolean,
-        val harInntektsgrenseLargerThanOrEqualToInntektstak: Boolean,
         val inntektsgrenseAar: Kroner,
         val inntektstak: Kroner,
     )
@@ -142,126 +148,122 @@ data class OpplysningerBruktIBeregningUTDto(
     data class OpptjeningUfoeretrygd(
         val harFoerstegangstjenesteOpptjening: Boolean,
         val harOmsorgsopptjening: Boolean,
-        val opptjeningsperioder: List<Opptjeningsperiode>,
+        val opptjeningsperiode: List<Opptjeningsperiode>,
     )
 
     data class Opptjeningsperiode(
         val aar: Year,
-        val erBrukt: Boolean,  //?
-        val harBeregningsmetodeFolketrygd: Boolean,  //?
+        val erBrukt: Boolean,
         val harFoerstegangstjenesteOpptjening: Boolean,
         val harInntektAvtaleland: Boolean,
         val harOmsorgsopptjening: Boolean,
-        val inntektAvkortet: Kroner,  //?
         val justertPensjonsgivendeInntekt: Kroner,
         val pensjonsgivendeInntekt: Kroner,
     )
 
     data class OpptjeningUfoeretrygdAvdoed(
-        val harFoerstegangstjenesteOpptjeningAvdoed: Boolean,
-        val harOmsorgsopptjeningAvdoed: Boolean,
-        val opptjeningsperioderAvdoed: List<OpptjeningsperiodeAvdoed>,
+        val harFoerstegangstjenesteOpptjening: Boolean,
+        val harOmsorgsopptjening: Boolean,
+        val opptjeningsperiode: List<OpptjeningsperiodeAvdoed>,
     )
 
     data class OpptjeningsperiodeAvdoed(
-        val aarAvdoed: Year,
-        val harFoerstegangstjenesteOpptjeningAvdoed: Boolean,
-        val harInntektAvtalelandAvdoed: Boolean,
-        val harOmsorgsopptjeningAvdoed: Boolean,
-        val justertPensjonsgivendeInntektAvdoed: Kroner,
-        val pensjonsgivendeInntektAvdoed: Kroner,
+        val aar: Year,
+        val harFoerstegangstjenesteOpptjening: Boolean,
+        val harInntektAvtaleland: Boolean,
+        val harOmsorgsopptjening: Boolean,
+        val justertPensjonsgivendeInntekt: Kroner,
+        val pensjonsgivendeInntekt: Kroner,
     )
 
-    data class TrygdetidGjeldende(
-        val fastsattTrygdetid: Int,  //  TODO: (<FaTTNorge> + <FramtidigTTNorge>)/12
-        val har40AarFastsattTrygdetid: Boolean,
-        val harFramtidigTrygdetidEOS: Boolean,
-        val harFramtidigTrygdetidNorsk: Boolean,
-        val harLikUfoeregradOgYrkesskadegrad: Boolean,
-        val harTrygdetidsgrunnlag: Boolean,
-        val harYrkesskadeOppfylt: Boolean,
-    )
-
-    data class NorskTrygdetid(
+    data class NorskTrygdetidPeriode(
         val trygdetidFom: LocalDate,
         val trygdetidTom: LocalDate
     )
 
-    data class NorskTrygdetidAvdoed(
-        val trygdetidFomAvdoed: LocalDate,  // <PE_Grunnlag_PersongrunnlagAvdod_TrygdetidsgrunnlagListeNor_Trygdetidsgrunnlag_TrygdetidFom>
-        val trygdetidTomAvdoed: LocalDate
+    data class NorskTrygdetidPeriodeAvdoed(
+        val trygdetidFom: LocalDate,  // <PE_Grunnlag_PersongrunnlagAvdod_TrygdetidsgrunnlagListeNor_Trygdetidsgrunnlag_TrygdetidFom>
+        val trygdetidTom: LocalDate
     )
 
-    data class UtenlandskTrygdetidEOS(
+    data class UtenlandskTrygdetidEOSPeriode(
         val trygdetidEOSLand: String,
         val trygdetidFom: LocalDate,
         val trygdetidTom: LocalDate,
     )
 
-    data class UtenlandskTrygdetidEOSAvdoed(
-        val trygdetidEOSLandAvdoed: String,  // <PE_Grunnlag_PersongrunnlagAvdod_TrygdetidsgrunnlagEOS_TrygdetidEOSLand>
-        val trygdetidFomAvdoed: LocalDate,
-        val trygdetidTomAvdoed: LocalDate,
+    data class UtenlandskTrygdetidEOSPeriodeAvdoed(
+        val trygdetidEOSLand: String,  // <PE_Grunnlag_PersongrunnlagAvdod_TrygdetidsgrunnlagEOS_TrygdetidEOSLand>
+        val trygdetidFom: LocalDate,
+        val trygdetidTom: LocalDate,
     )
 
-    data class UtenlandskTrygdetidBilateral(
+    data class UtenlandskTrygdetidBilateralPeriode(
         val trygdetidBilateralLand: String,
         val trygdetidFom: LocalDate,
         val trygdetidTom: LocalDate,
     )
 
-    data class UtenlandskTrygdetidBilateralAvdoed(
-        val trygdetidBilateralLandAvdoed: String,  // <PE_Grunnlag_PersongrunnlagAvdod_TrygdetidsgrunnlagListeBilateral_TrygdetidsgrunnlagBilateral_TrygdetidBilateralLand>
-        val trygdetidFomAvdoed: LocalDate,
-        val trygdetidTomAvdoed: LocalDate,
+    data class UtenlandskTrygdetidBilateralPeriodeAvdoed(
+        val trygdetidBilateralLand: String,  // <PE_Grunnlag_PersongrunnlagAvdod_TrygdetidsgrunnlagListeBilateral_TrygdetidsgrunnlagBilateral_TrygdetidBilateralLand>
+        val trygdetidFom: LocalDate,
+        val trygdetidTom: LocalDate,
     )
 
-
     data class UfoeretrygdOrdinaer(
-        val reduksjonIUfoeretrygd: Kroner,  // fradrag
         val harBeloepRedusert: Boolean,  // PE_Vedtaksdata_BeregningsData_BeregningUfore_BelopRedusert
         val harNyUTBeloep: Boolean, // TODO: Ny / PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopNyUT
         val harTotalNettoUT: Boolean,  // PE_Vedtaksdata_BeregningsData_BeregningUfore_TotalNetto
-        val nettoAkkumulerteBeloepUtbetalt: Kroner,  // NettoAkk
-        val nettoTilUtbetalingRestenAvAaret: Kroner,  // NettoRestAr
-    )
-
-    data class BeregningUfoere(
+        val nettoAkkumulerteBeloepUtbetalt: Kroner?,  // NettoAkk
+        val nettoTilUtbetalingRestenAvAaret: Kroner?,  // NettoRestAr
+        val reduksjonIUfoeretrygd: Kroner?,  // fradrag
         val harGammelUTBeloepUlikNyUTBeloep: Boolean, // TODO: PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopGammelUT <> PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopNyUT
-        val harInntektsgrenseLessThanInntektstak: Boolean,  // TODO: PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektsgrense < PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektstak
-        val nettoAkkumulertePlussNettoRestAar: Kroner,  // TODO: Summeres i Exstream: NettoAkk + NettoRestAr
-        val nettoPerAarReduksjonUT: Kroner, // TODO: Summeres i Exstream: overskytenedeInntekt X kompensasjonsgrad
-        val overskytendeInntekt: Kroner,  // TODO: Summeres i Exstream: PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_ForventetInntekt - PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektsgrense
-        val ufoeretrygdPlussInntekt: Kroner,  // TODO: Summeres i Exstream: NettoAkk + NettoRestAr + ForventetInntekt
+        val nettoAkkumulertePlussNettoRestAar: Kroner?,  // TODO: Summeres i Exstream: NettoAkk + NettoRestAr
+        val nettoPerAarReduksjonUT: Kroner?, // TODO: Summeres i Exstream: overskytenedeInntekt X kompensasjonsgrad
+        val overskytendeInntekt: Kroner?,  // TODO: Summeres i Exstream: PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_ForventetInntekt - PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektsgrense
+        val ufoeretrygdPlussInntekt: Kroner?,  // TODO: Summeres i Exstream: NettoAkk + NettoRestAr + ForventetInntekt
     )
 
     data class OpplysningerAvdoed(
-        val anvendtTTAvdoed: Int,  // PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GjenlevendetilleggInformasjon_AnvendtTrygdetid
-        val beregningsgrunnlagBeloepAarAvdoed: Kroner,  // PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GjenlevendetilleggInformasjon_BeregningsgrunnlagAvdod
-        val beregningsgrunnlagBeloepAarYrkesskadeAvdoed: Kroner?, // PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GjenlevendetilleggInformasjon_BeregningsgrunnlagAvdodYrkesskadeArsbelop
-        val erFlyktningAvdoed: Boolean,  // PE_Grunnlag_PersongrunnlagAvdod_BrukerFlyktning
-        val erUngUfoerAvdoed: Boolean, // PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GjenlevendetilleggInformasjon_MinsteYtelseBenyttetUngUfor
-        val faktiskTTBilateralAvdoed: Int?,  // PE_Vedtaksdata_TrygdetidAvdod_TTUtlandTrygdeAvtale_FaTTBilateral
-        val faktiskTTEOSAvdoed: Int?,
-        val faktiskTTNordiskKonvAvdoed: Int?,
-        val faktiskTTNorgeAvdoed: Int?,  // PE_Vedtaksdata_TrygdetidAvdod_FaTTNorge
-        val faktiskTTNorgePlusFaktiskBilateralAvdoed: Int?, // TODO: Summeres i Extream: PE_Vedtaksdata_TrygdetidAvdod_FaTTNorge + PE_Vedtaksdata_TrygdetidAvdod_TTUtlandTrygdeAvtale_FaTTBilateral
-        val faktiskTTNorgePlusfaktiskTTEOSAvdoed: Int?,  // TODO: Summeres i Exstream: PE_Vedtaksdata_TrygdetidAvdod_FaTTNorge + PE_Vedtaksdata_TrygdetidAvdod_TTUtlandTrygdeAvtale_FaTTEOS
-        val foedselsnummerAvdoed: Foedselsnummer,
-        val framtidigTTAvtalelandAvdoed: Int?,
-        val framtidigTTEOSAvdoed: Int?,  // PE_Vedtaksdata_TrygdetidAvdod_FramtidigTTEOS
-        val framtidigTTNorskAvdoed: Int?, // PE_Vedtaksdata_TrygdetidAvdod_FramtidigTTNorsk
+        val erFlyktning: Boolean,  // PE_Grunnlag_PersongrunnlagAvdod_BrukerFlyktning
+        val erUngUfoer: Boolean, // PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GjenlevendetilleggInformasjon_MinsteYtelseBenyttetUngUfor
+        val foedselsnummer: Foedselsnummer,
         val harNyttGjenlevendetillegg: Boolean,  // PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_NyttGjenlevendetillegg
-        val inntektVedSkadetidspunktAvdoed: Kroner?, // PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GjenlevendetilleggInformasjon_InntektVedSkadetidspunkt
-        val nevnerTTBilateralProRataAvdoed: Int?,
-        val nevnerTTEOSAvdoed: Int?,  // PE_Vedtaksdata_TrygdetidAvdod_TTNevnerEOS
-        val nevnerTTNordiskKonvAvdoed: Int?,  // PE_Vedtaksdata_TrygdetidAvdod_TTNevnerNordisk
-        val samletTTNordiskKonvAvdoed: Int?,  // TODO: Summeres i Exstream:  FaTTNorge + FaTT_A10netto
-        val samletTrygdetidEtterAvkortingAvdoed: Int?,  // TODO: Summeres i Exstream: PE_Vedtaksdata_TrygdetidAvdod_FaTTNorge +
-        val tellerTTBilateralProRataAvdoed: Int?,
-        val tellerTTEOSAvdoed: Int?,  // PE_Vedtaksdata_TrygdetidAvdod_TTTellerEOS
-        val tellerTTNordiskKonvAvdoed: Int?,  // PE_Vedtaksdata_TrygdetidAvdod_TTTellerNordisk
-        val ufoeretidspunktAvdoed: LocalDate?,  // PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GjenlevendetilleggInformasjon_Uforetidspunkt
-        val yrkesskadegradAvdoed: Int?,  // PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GjenlevendetilleggInformasjon_Yrkesskadegrad
-    )
+        val trygdetidsdetaljer1: Trygdetidsdetaljer1,
+        val ufoeretrygdGjeldende1: UfoeretrygdGjeldende1,
+        val yrkesskadeGjeldene1: YrkesskadeGjeldene1?,
+    ) {
+        data class Trygdetidsdetaljer1(
+            val anvendtTT: Int,
+            val beregningsmetode: Beregningsmetode,
+            val faktiskTTBilateral: Int?,
+            val faktiskTTEOS: Int?,
+            val faktiskTTNordiskKonv: Int?,
+            val faktiskTTNorge: Int?,
+            val faktiskTTNorgePlusFaktiskBilateral: Int?, // TODO: Summeres i Extream: PE_Vedtaksdata_TrygdetidAvdod_FaTTNorge + PE_Vedtaksdata_TrygdetidAvdod_TTUtlandTrygdeAvtale_FaTTBilateral
+            val faktiskTTNorgePlusfaktiskTTEOS: Int?,  // TODO: Summeres i Exstream: PE_Vedtaksdata_TrygdetidAvdod_FaTTNorge + PE_Vedtaksdata_TrygdetidAvdod_TTUtlandTrygdeAvtale_FaTTEOS
+            val framtidigTTAvtaleland: Int?,
+            val framtidigTTEOS: Int?,  // PE_Vedtaksdata_TrygdetidAvdod_FramtidigTTEOS
+            val framtidigTTNorsk: Int?,
+            val nevnerTTBilateralProRata: Int?,
+            val nevnerTTEOS: Int?,
+            val nevnerTTNordiskKonv: Int?,
+            val samletTTNordiskKonv: Int?,
+            val tellerTTBilateralProRata: Int?,
+            val tellerTTEOS: Int?,
+            val tellerTTNordiskKonv: Int?,
+        )
+
+        data class UfoeretrygdGjeldende1(
+            val beregningsgrunnlagBeloepAar: Kroner,
+            val ufoeregrad: Int,
+            val ufoeretidspunkt: LocalDate,
+        )
+
+        data class YrkesskadeGjeldene1(
+            val yrkesskadegrad: Int,  // PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GjenlevendetilleggInformasjon_Yrkesskadegrad
+            val inntektVedSkadetidspunkt: Kroner, // PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GjenlevendetilleggInformasjon_InntektVedSkadetidspunkt
+            val beregningsgrunnlagBeloepAarYrkesskade: Kroner, // PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GjenlevendetilleggInformasjon_BeregningsgrunnlagAvdodYrkesskadeArsbelop
+        )
+    }
 }

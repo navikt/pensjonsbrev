@@ -1,7 +1,6 @@
 package no.nav.pensjon.brev.maler.vedlegg
 
 
-import kotlinx.html.B
 import no.nav.pensjon.brev.api.model.Beregningsmetode
 import no.nav.pensjon.brev.api.model.KravAarsakType
 import no.nav.pensjon.brev.api.model.vedlegg.BarnetilleggGjeldendeSelectors.fellesbarn_safe
@@ -13,7 +12,6 @@ import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerAvdoedSelectors.harNytt
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDto
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.barnetilleggGjeldende
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.beregnetUTPerManedGjeldende
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.beregningUfoere
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.borIUtlandet
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.fraOgMedDatoErNesteAar
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.opplysningerAvdoed
@@ -26,29 +24,31 @@ import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSel
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.inntektsAvkortingGjeldende
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.kravAarsakType
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.minsteytelseGjeldende_sats
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.norskTrygdetid
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.norskTrygdetidAvdoed
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.norskTrygdetidPerioder
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.norskTrygdetidPerioderAvdoed
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.opptjeningUfoeretrygd
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.opptjeningUfoeretrygdAvdoed
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.sivilstand
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.trygdetidGjeldende
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.trygdetidsdetaljer1
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.trygdetidsdetaljerGjeldende
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.trygdetidsdetaljerGjeldende1
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.ufoeretrygdGjeldende
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.ufoeretrygdGjeldende1
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.ufoeretrygdOrdinaer
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.ungUfoerGjeldende_erUnder20Aar
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.utenlandskTrygdetidBilateral
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.utenlandskTrygdetidBilateralAvdoed
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.utenlandskTrygdetidEOS
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.utenlandskTrygdetidEOSAvdoed
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.utenlandskTrygdetidBilateralPerioder
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.utenlandskTrygdetidBilateralPerioderAvdoed
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.utenlandskTrygdetidEOSPerioder
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.utenlandskTrygdetidEOSPerioderAvdoed
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.yrkesskadeGjeldende
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.yrkesskadeGjeldene1
 import no.nav.pensjon.brev.api.model.vedlegg.OpptjeningUfoeretrygdSelectors.harFoerstegangstjenesteOpptjening_safe
 import no.nav.pensjon.brev.api.model.vedlegg.OpptjeningUfoeretrygdSelectors.harOmsorgsopptjening_safe
-import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidGjeldendeSelectors.harYrkesskadeOppfylt
 import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidsdetaljerGjeldendeSelectors.anvendtTT
 import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidsdetaljerGjeldendeSelectors.beregningsmetode
 import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdGjeldendeSelectors.harDelvisUfoeregrad
 import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdGjeldendeSelectors.ufoeretidspunkt
-import no.nav.pensjon.brev.maler.fraser.ufoer.Gjenlevendetillegg
+import no.nav.pensjon.brev.api.model.vedlegg.YrkesskadeGjeldendeSelectors.yrkesskadegrad_safe
 import no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningufoere.*
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
@@ -123,6 +123,9 @@ fun createVedleggOpplysningerBruktIBeregningUT(
                     TabellUfoereOpplysningerAvdoed(
                         beregnetUTPerManedGjeldende = beregnetUTPerManedGjeldende,
                         opplysningerAvdoed = opplysningerAvdoed,
+                        trygdetidsdetaljer = trygdetidsdetaljer1,
+                        ufoeretrygdGjeldende = ufoeretrygdGjeldende1,
+                        yrkesskadeGjeldende = yrkesskadeGjeldene1,
                     )
                 )
             }
@@ -159,175 +162,176 @@ fun createVedleggOpplysningerBruktIBeregningUT(
             }
         }
 
-        showIf(kravAarsakType.isNotAnyOf(KravAarsakType.SOKNAD_BT) and trygdetidGjeldende.harYrkesskadeOppfylt) {
-            includePhrase(BeregningAvUfoeretrygdSomSkyldesYrkesskadeEllerYrkessykdom.YrkesskadeEllerYrkessykdom)
-        }
+        ifNotNull(yrkesskadeGjeldende.yrkesskadegrad_safe) { yrkesskadegrad ->
+            showIf(kravAarsakType.isNotAnyOf(KravAarsakType.SOKNAD_BT) and yrkesskadegrad.greaterThan(0)) {
+                includePhrase(BeregningAvUfoeretrygdSomSkyldesYrkesskadeEllerYrkessykdom.YrkesskadeEllerYrkessykdom)
+            }
 
-        if (skalViseTabellInntekteneBruktIBeregningen) {
-            showIf(kravAarsakType.isNotAnyOf(KravAarsakType.SOKNAD_BT)) {
-                ifNotNull(opptjeningUfoeretrygd) { opptjening ->
-                    includePhrase(
-                        TabellInntekteneBruktIBeregningen(
-                            beregningGjeldendeFraOgMed = beregnetUTPerManedGjeldende.virkDatoFom,
-                            opptjeningUfoeretrygd = opptjening,
+            if (skalViseTabellInntekteneBruktIBeregningen) {
+                showIf(kravAarsakType.isNotAnyOf(KravAarsakType.SOKNAD_BT)) {
+                    ifNotNull(opptjeningUfoeretrygd) { opptjening ->
+                        includePhrase(
+                            TabellInntekteneBruktIBeregningen(
+                                beregningGjeldendeFraOgMed = beregnetUTPerManedGjeldende.virkDatoFom,
+                                opptjeningUfoeretrygd = opptjening,
+                            )
                         )
-                    )
+                    }
                 }
             }
-        }
 
-        if (skalViseTabellInntekteneBruktIBeregningenAvdoed) {
-            val harAvdoed = true.expr()
-            showIf(harAvdoed and kravAarsakType.isNotAnyOf(KravAarsakType.SOKNAD_BT)) {
-                ifNotNull(opptjeningUfoeretrygdAvdoed) { opptjeningAvdoed ->
-                    includePhrase(
-                        TabellInntekteneBruktIBeregningenAvdoed(
-                            beregningGjeldendeFraOgMed = beregnetUTPerManedGjeldende.virkDatoFom,
-                            opptjeningUfoeretrygdAvdoed = opptjeningAvdoed
+            if (skalViseTabellInntekteneBruktIBeregningenAvdoed) {
+                val harAvdoed = true.expr()
+                showIf(harAvdoed and kravAarsakType.isNotAnyOf(KravAarsakType.SOKNAD_BT)) {
+                    ifNotNull(opptjeningUfoeretrygdAvdoed) { opptjeningAvdoed ->
+                        includePhrase(
+                            TabellInntekteneBruktIBeregningenAvdoed(
+                                beregningGjeldendeFraOgMed = beregnetUTPerManedGjeldende.virkDatoFom,
+                                opptjeningUfoeretrygdAvdoed = opptjeningAvdoed
+                            )
                         )
-                    )
+                    }
                 }
             }
-        }
 
-        includePhrase(
-            TrygdetidenDin(
-                beregnetUTPerManedGjeldende = beregnetUTPerManedGjeldende,
-                trygdetidGjeldende = trygdetidGjeldende,
-            )
-        )
-
-        includePhrase(
-            TabellTrygdetiden(
-                norskTrygdetid = norskTrygdetid,
-                utenlandskTrygdetidBilateral = utenlandskTrygdetidBilateral,
-                utenlandskTrygdetidEOS = utenlandskTrygdetidEOS,
-            )
-        )
-
-        includePhrase(
-            TabellTrygdetidenAvdoed(
-                norskTrygdetidAvdoed = norskTrygdetidAvdoed,
-                utenlandskTrygdetidEOSAvdoed = utenlandskTrygdetidEOSAvdoed,
-                utenlandskTrygdetidBilateralAvdoed = utenlandskTrygdetidBilateralAvdoed,
-            )
-        )
-
-        showIf(kravAarsakType.isOneOf(KravAarsakType.ENDRET_IFU)) {
-            includePhrase(SlikHarViFastsattDenNyeInntektsgrensenDin.DenNyeInntektsgrensenDin)
-        }
-
-        includePhrase(
-            SlikFastsetterViInntektenDinFoerDuBleUfoer(
-                harDelvisUfoergrad = ufoeretrygdGjeldende.harDelvisUfoeregrad,
-                inntektFoerUfoereBegrunnelse = inntektFoerUfoereBegrunnelse,
-            )
-        )
-
-        includePhrase(SlikFastsetterViInntektenDinEtterDuBleUfoer)
-
-        includePhrase(
-            SlikHarViFastsattKompensasjonsgradenDin(
-                beregningUfoere = beregningUfoere,
-                inntektsAvkortingGjeldende = inntektsAvkortingGjeldende,
-                inntektFoerUfoereGjeldende = inntektFoerUfoereGjeldende,
-                kravAarsakType = kravAarsakType,
-                ufoeretrygdGjeldende = ufoeretrygdGjeldende,
-                ufoeretrygdOrdinaer = ufoeretrygdOrdinaer,
-
-                )
-        )
-
-        includePhrase(
-            SlikBeregnerViUtbetalingAvUfoeretrygdenNaarInntektenDinEndres(
-                beregningUfoere = beregningUfoere,
-                inntektsAvkortingGjeldende = inntektsAvkortingGjeldende,
-                kravAarsakType = kravAarsakType,
-                ufoeretrygdGjeldende = ufoeretrygdGjeldende,
-                ufoeretrygdOrdinaer = ufoeretrygdOrdinaer,
-            )
-        )
-
-        includePhrase(
-            SlikBeregnerViReduksjonAvUfoeretrygden(
-                beregningUfoere = beregningUfoere,
-                inntektsAvkortingGjeldende = inntektsAvkortingGjeldende,
-                kravAarsakType = kravAarsakType,
-                ufoeretrygdGjeldende = ufoeretrygdGjeldende,
-                ufoeretrygdOrdinaer = ufoeretrygdOrdinaer,
-            )
-        )
-
-        includePhrase(
-            TabellSlikBlirDinUtbetalingFoerSkatt(
-                beregningUfoere = beregningUfoere,
-                inntektsAvkortingGjeldende = inntektsAvkortingGjeldende,
-                kravAarsakType = kravAarsakType,
-                ufoeretrygdGjeldende = ufoeretrygdGjeldende,
-                ufoeretrygdOrdinaer = ufoeretrygdOrdinaer,
-            )
-        )
-
-        if (skalViseBarnetillegg) {
-            ifNotNull(barnetilleggGjeldende) { barnetillegg ->
-                includePhrase(
-                    OpplysningerOmBarnetillegg(
-                        barnetillegg = barnetillegg,
-                        sivilstand = sivilstand,
-                        anvendtTrygdetid = trygdetidsdetaljerGjeldende.anvendtTT,
-                        harYrkesskade = yrkesskadeGjeldende.notNull(),
-                        harKravaarsakEndringInntekt = harKravaarsakEndringInntekt,
-                        fraOgMedDatoErNesteAar = fraOgMedDatoErNesteAar,
-                    )
-                )
-            }
-        }
-
-        if (skalViseSlikBeregnerViGjenlevendetilleggHarNyttTillegg) {
-            ifNotNull(opplysningerAvdoed) { gjenlevendetillegg ->
-                includePhrase(
-                    HarNyttGjenlevendetillegg(
-                        harGjenlevendetillegg = gjenlevendetillegg.notNull(),
-                        harNyttGjenlevendetillegg = opplysningerAvdoed.harNyttGjenlevendetillegg_safe.ifNull(
-                            then = false
-                        )
-                    )
-                )
-            }
-        }
-
-        if (skalViseSlikBeregnerViGjenlevendetillegg) {
-            ifNotNull(opplysningerAvdoed) { gjenlevendetillegg ->
-                includePhrase(
-                    NotNyttGjenlevendetillegg(
-                        harGjenlevendetillegg = gjenlevendetillegg.notNull(),
-                        harNyttGjenlevendetillegg = opplysningerAvdoed.harNyttGjenlevendetillegg_safe.ifNull(
-                            then = false
-                        )
-                    )
-                )
-            }
-        }
-
-        if (skalViseForDegSomMottarEktefelletillegg) {
-            ifNotNull(harEktefelletilleggInnvilget) { ektefelletillegg ->
-                includePhrase(
-                    ForDegSomMottarEktefelletillegg(
-                        harEktefelletilleggInnvilget = ektefelletillegg,
-                    )
-                )
-            }
-        }
-
-        if (skalViseEtteroppgjoerAvUfoeretrygdOgBarnetillegg) {
             includePhrase(
-                EtteroppgjoerAvUfoeretrygdOgBarnetillegg(
-                    sivilstand = sivilstand,
-                    harBarnetilleggInnvilget = harBarnetilleggInnvilget.notNull(),
-                    harFellesbarn = barnetilleggGjeldende.fellesbarn_safe.notNull(),
-                    borIUtlandet = borIUtlandet,
+                TrygdetidenDin(
+                    beregnetUTPerManedGjeldende = beregnetUTPerManedGjeldende,
+                    trygdetidsdetaljerGjeldende = trygdetidsdetaljerGjeldende,
+                    trygdetidsdetaljerGjeldende1 = trygdetidsdetaljerGjeldende1,
+                    ufoeregrad = ufoeretrygdGjeldende,
+                    yrkesskadegrad = yrkesskadeGjeldende
                 )
             )
+
+            includePhrase(
+                TabellTrygdetiden(
+                    norskTrygdetidPeriode = norskTrygdetidPerioder,
+                    utenlandskTrygdetidBilateralPeriode = utenlandskTrygdetidBilateralPerioder,
+                    utenlandskTrygdetidEOSPeriode = utenlandskTrygdetidEOSPerioder
+                )
+            )
+
+            includePhrase(
+                TabellTrygdetidenAvdoed(
+                    norskTrygdetidPeriode = norskTrygdetidPerioderAvdoed,
+                    utenlandskTrygdetidEOSPeriode = utenlandskTrygdetidEOSPerioderAvdoed,
+                    utenlandskTrygdetidBilateralPeriode = utenlandskTrygdetidBilateralPerioderAvdoed,
+                )
+            )
+
+            showIf(kravAarsakType.isOneOf(KravAarsakType.ENDRET_IFU)) {
+                includePhrase(SlikHarViFastsattDenNyeInntektsgrensenDin.DenNyeInntektsgrensenDin)
+            }
+
+            includePhrase(
+                SlikFastsetterViInntektenDinFoerDuBleUfoer(
+                    harDelvisUfoergrad = ufoeretrygdGjeldende.harDelvisUfoeregrad,
+                    inntektFoerUfoereBegrunnelse = inntektFoerUfoereBegrunnelse,
+                )
+            )
+
+            includePhrase(SlikFastsetterViInntektenDinEtterDuBleUfoer)
+
+            includePhrase(
+                SlikHarViFastsattKompensasjonsgradenDin(
+                    inntektsAvkortingGjeldende = inntektsAvkortingGjeldende,
+                    inntektFoerUfoereGjeldende = inntektFoerUfoereGjeldende,
+                    kravAarsakType = kravAarsakType,
+                    ufoeretrygdGjeldende = ufoeretrygdGjeldende,
+                    ufoeretrygdOrdinaer = ufoeretrygdOrdinaer,
+
+                    )
+            )
+
+            includePhrase(
+                SlikBeregnerViUtbetalingAvUfoeretrygdenNaarInntektenDinEndres(
+                    inntektsAvkortingGjeldende = inntektsAvkortingGjeldende,
+                    kravAarsakType = kravAarsakType,
+                    ufoeretrygdGjeldende = ufoeretrygdGjeldende,
+                    ufoeretrygdOrdinaer = ufoeretrygdOrdinaer,
+                )
+            )
+
+            includePhrase(
+                SlikBeregnerViReduksjonAvUfoeretrygden(
+                    inntektsAvkortingGjeldende = inntektsAvkortingGjeldende,
+                    kravAarsakType = kravAarsakType,
+                    ufoeretrygdGjeldende = ufoeretrygdGjeldende,
+                    ufoeretrygdOrdinaer = ufoeretrygdOrdinaer,
+                )
+            )
+
+            includePhrase(
+                TabellSlikBlirDinUtbetalingFoerSkatt(
+                    inntektsAvkortingGjeldende = inntektsAvkortingGjeldende,
+                    kravAarsakType = kravAarsakType,
+                    ufoeretrygdGjeldende = ufoeretrygdGjeldende,
+                    ufoeretrygdOrdinaer = ufoeretrygdOrdinaer,
+                )
+            )
+
+            if (skalViseBarnetillegg) {
+                ifNotNull(barnetilleggGjeldende) { barnetillegg ->
+                    includePhrase(
+                        OpplysningerOmBarnetillegg(
+                            barnetillegg = barnetillegg,
+                            sivilstand = sivilstand,
+                            anvendtTrygdetid = trygdetidsdetaljerGjeldende.anvendtTT,
+                            harYrkesskade = yrkesskadeGjeldende.notNull(),
+                            harKravaarsakEndringInntekt = harKravaarsakEndringInntekt,
+                            fraOgMedDatoErNesteAar = fraOgMedDatoErNesteAar,
+                        )
+                    )
+                }
+            }
+
+            if (skalViseSlikBeregnerViGjenlevendetilleggHarNyttTillegg) {
+                ifNotNull(opplysningerAvdoed) { gjenlevendetillegg ->
+                    includePhrase(
+                        HarNyttGjenlevendetillegg(
+                            harGjenlevendetillegg = gjenlevendetillegg.notNull(),
+                            harNyttGjenlevendetillegg = opplysningerAvdoed.harNyttGjenlevendetillegg_safe.ifNull(
+                                then = false
+                            )
+                        )
+                    )
+                }
+            }
+
+            if (skalViseSlikBeregnerViGjenlevendetillegg) {
+                ifNotNull(opplysningerAvdoed) { gjenlevendetillegg ->
+                    includePhrase(
+                        NotNyttGjenlevendetillegg(
+                            harGjenlevendetillegg = gjenlevendetillegg.notNull(),
+                            harNyttGjenlevendetillegg = opplysningerAvdoed.harNyttGjenlevendetillegg_safe.ifNull(
+                                then = false
+                            )
+                        )
+                    )
+                }
+            }
+
+            if (skalViseForDegSomMottarEktefelletillegg) {
+                ifNotNull(harEktefelletilleggInnvilget) { ektefelletillegg ->
+                    includePhrase(
+                        ForDegSomMottarEktefelletillegg(
+                            harEktefelletilleggInnvilget = ektefelletillegg,
+                        )
+                    )
+                }
+            }
+
+            if (skalViseEtteroppgjoerAvUfoeretrygdOgBarnetillegg) {
+                includePhrase(
+                    EtteroppgjoerAvUfoeretrygdOgBarnetillegg(
+                        sivilstand = sivilstand,
+                        harBarnetilleggInnvilget = harBarnetilleggInnvilget.notNull(),
+                        harFellesbarn = barnetilleggGjeldende.fellesbarn_safe.notNull(),
+                        borIUtlandet = borIUtlandet,
+                    )
+                )
+            }
         }
     }
 

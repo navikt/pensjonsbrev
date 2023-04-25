@@ -10,10 +10,8 @@ fun createOpplysningerBruktIBeregningUTDto() =
         //listOf(createOpplysningerBruktIBeregningUTDtoNorskTrygdetid(), createOpplysningerBruktIBeregningUTDtoNorskTrygdetid(), createOpplysningerBruktIBeregningUTDtoNorskTrygdetid())
         barnetilleggGjeldende = Fixtures.create(),
         beregnetUTPerManedGjeldende = Fixtures.create(),
-        beregningUfoere = Fixtures.create(),
         borIUtlandet = false,
         fraOgMedDatoErNesteAar = false,
-        opplysningerAvdoed = Fixtures.create(),
         harBarnetilleggInnvilget = false,
         harEktefelletilleggInnvilget = false,
         harKravaarsakEndringInntekt = true,
@@ -23,21 +21,25 @@ fun createOpplysningerBruktIBeregningUTDto() =
         inntektsAvkortingGjeldende = Fixtures.create(),
         kravAarsakType = KravAarsakType.ENDRET_OPPTJENING,
         minsteytelseGjeldende_sats = 0.0,
-        norskTrygdetid = listOf(createOpplysningerBruktIBeregningUTDtoNorskTrygdetid()),
-        norskTrygdetidAvdoed = listOf(createOpplysningerBruktIBeregningUTDtoNorskTrygdetidAvdoed()),
+        norskTrygdetidPerioder = listOf(createOpplysningerBruktIBeregningUTDtoNorskTrygdetidPeriode()),
+        norskTrygdetidPerioderAvdoed = listOf(createOpplysningerBruktIBeregningUTDtoNorskTrygdetidAvdoedPeriode()),
+        opplysningerAvdoed = Fixtures.create(),
         opptjeningUfoeretrygd = Fixtures.create(),
+        opptjeningUfoeretrygdAvdoed = Fixtures.create(),
         sivilstand = Sivilstand.PARTNER,
-        trygdetidGjeldende = Fixtures.create(),
+        trygdetidsdetaljer1 = Fixtures.create(),
         trygdetidsdetaljerGjeldende = Fixtures.create(),
+        trygdetidsdetaljerGjeldende1 = Fixtures.create(),
         ufoeretrygdGjeldende = Fixtures.create(),
+        ufoeretrygdGjeldende1 = Fixtures.create(),
         ufoeretrygdOrdinaer = Fixtures.create(),
         ungUfoerGjeldende_erUnder20Aar = false,
-        utenlandskTrygdetidBilateral = (1..3).map { createOpplysningerBruktIBeregningUTDtoUtenlandskTrygdetidBilateral() },
-        utenlandskTrygdetidBilateralAvdoed = (1..3).map { createOpplysningerBruktIBeregningUTDtoUtenlandskTrygdetidBilateralAvdoed() },
-        utenlandskTrygdetidEOS = (1..3).map { createOpplysningerBruktIBeregningUTDtoUtenlandskTrygdetidEOS() },
-        utenlandskTrygdetidEOSAvdoed = (1..3).map { createOpplysningerBruktIBeregningUTDtoUtenlandskTrygdetidEOSAvdoed() },
+        utenlandskTrygdetidBilateralPerioder = (1..3).map { createOpplysningerBruktIBeregningUTDtoUtenlandskTrygdetidBilateralPeriode() },
+        utenlandskTrygdetidBilateralPerioderAvdoed = (1..3).map { createOpplysningerBruktIBeregningUTDtoUtenlandskTrygdetidBilateralAvdoedPeriode() },
+        utenlandskTrygdetidEOSPerioder = (1..3).map { createOpplysningerBruktIBeregningUTDtoUtenlandskTrygdetidEOSPeriode() },
+        utenlandskTrygdetidEOSPerioderAvdoed = (1..3).map { createOpplysningerBruktIBeregningUTDtoUtenlandskTrygdetidEOSAvdoedPeriode() },
         yrkesskadeGjeldende = Fixtures.create(),
-        opptjeningUfoeretrygdAvdoed = Fixtures.create(),
+        yrkesskadeGjeldene1 = Fixtures.create(),
     )
 
 fun createOpplysningerBruktIBeregningUTDtoBarnetilleggGjeldende() =
@@ -45,10 +47,10 @@ fun createOpplysningerBruktIBeregningUTDtoBarnetilleggGjeldende() =
         fellesbarn = Fixtures.create(),
         saerkullsbarn = Fixtures.create(),
         foedselsdatoPaaBarnTilleggetGjelder = listOf(
-            LocalDate.of(2000,1,1),
-            LocalDate.of(2000,2,2),
-            LocalDate.of(2000,3,3),
-            LocalDate.of(2000,4,4),
+            LocalDate.of(2000, 1, 1),
+            LocalDate.of(2000, 2, 2),
+            LocalDate.of(2000, 3, 3),
+            LocalDate.of(2000, 4, 4),
         )
     )
 
@@ -106,8 +108,6 @@ fun createOpplysningerBruktIBeregningUTDtoInntektFoerUfoereGjeldende() =
 fun createOpplysningerBruktIBeregningUTDtoInntektsAvkortingGjeldende() =
     OpplysningerBruktIBeregningUTDto.InntektsAvkortingGjeldende(
         forventetInntektAar = Kroner(0),
-        harForventetInntektLargerThanInntektstak = false,
-        harInntektsgrenseLargerThanOrEqualToInntektstak = false,
         inntektsgrenseAar = Kroner(0),
         inntektstak = Kroner(0),
     )
@@ -161,140 +161,135 @@ fun createOpplysningerBruktIBeregningUTDtoOpptjeningUfoeretrygd() =
     OpplysningerBruktIBeregningUTDto.OpptjeningUfoeretrygd(
         harFoerstegangstjenesteOpptjening = false,
         harOmsorgsopptjening = true,
-        opptjeningsperioder = listOf(Fixtures.create(), Fixtures.create()),
+        opptjeningsperiode = listOf(Fixtures.create(), Fixtures.create()),
     )
 
 fun createOpplysningerBruktIBeregningUTDtoOpptjeningsperiode() =
     OpplysningerBruktIBeregningUTDto.Opptjeningsperiode(
         aar = Year(2022),
         erBrukt = false,
-        harBeregningsmetodeFolketrygd = false,
         harFoerstegangstjenesteOpptjening = false,
         harInntektAvtaleland = true,
         harOmsorgsopptjening = true,
-        inntektAvkortet = Kroner(0),
         justertPensjonsgivendeInntekt = Kroner(0),
         pensjonsgivendeInntekt = Kroner(0),
     )
 
 fun createOpplysningerBruktIBeregningUTDtoOpptjeningUfoeretrygdAvdoed() =
     OpplysningerBruktIBeregningUTDto.OpptjeningUfoeretrygdAvdoed(
-        harFoerstegangstjenesteOpptjeningAvdoed = true,
-        harOmsorgsopptjeningAvdoed = false,
-        opptjeningsperioderAvdoed = listOf(Fixtures.create(), Fixtures.create()),
+        harFoerstegangstjenesteOpptjening = true,
+        harOmsorgsopptjening = false,
+        opptjeningsperiode = listOf(Fixtures.create(), Fixtures.create()),
     )
 
 fun createOpplysningerBruktIBeregningUTDtoOpptjeningsperiodeAvdoede() =
     OpplysningerBruktIBeregningUTDto.OpptjeningsperiodeAvdoed(
-       aarAvdoed = Year(2021),
-        harFoerstegangstjenesteOpptjeningAvdoed = true,
-        harInntektAvtalelandAvdoed = true,
-        harOmsorgsopptjeningAvdoed = false,
-        justertPensjonsgivendeInntektAvdoed = Kroner(400000),
-        pensjonsgivendeInntektAvdoed = Kroner(300000),
+        aar = Year(2021),
+        harFoerstegangstjenesteOpptjening = true,
+        harInntektAvtaleland = true,
+        harOmsorgsopptjening = false,
+        justertPensjonsgivendeInntekt = Kroner(400000),
+        pensjonsgivendeInntekt = Kroner(300000),
     )
 
-fun createOpplysningerBruktIBeregningUTDtoTrygdetidGjeldende() =
-    OpplysningerBruktIBeregningUTDto.TrygdetidGjeldende(
-        fastsattTrygdetid = 0,
-        har40AarFastsattTrygdetid = false,
-        harFramtidigTrygdetidEOS = false,
-        harFramtidigTrygdetidNorsk = false,
-        harLikUfoeregradOgYrkesskadegrad = false,
-        harTrygdetidsgrunnlag = false,
-        harYrkesskadeOppfylt = false,
-    )
-
-fun createOpplysningerBruktIBeregningUTDtoNorskTrygdetid() =
-    OpplysningerBruktIBeregningUTDto.NorskTrygdetid(
+fun createOpplysningerBruktIBeregningUTDtoNorskTrygdetidPeriode() =
+    OpplysningerBruktIBeregningUTDto.NorskTrygdetidPeriode(
         trygdetidFom = LocalDate.of(2020, 1, 1),
         trygdetidTom = LocalDate.of(2020, 1, 1),
     )
-fun createOpplysningerBruktIBeregningUTDtoNorskTrygdetidAvdoed() =
-    OpplysningerBruktIBeregningUTDto.NorskTrygdetidAvdoed(
-        trygdetidFomAvdoed = LocalDate.of(2020, 1, 1),
-        trygdetidTomAvdoed = LocalDate.of(2020, 1, 1),
+
+fun createOpplysningerBruktIBeregningUTDtoNorskTrygdetidAvdoedPeriode() =
+    OpplysningerBruktIBeregningUTDto.NorskTrygdetidPeriodeAvdoed(
+        trygdetidFom = LocalDate.of(2020, 1, 1),
+        trygdetidTom = LocalDate.of(2020, 1, 1),
     )
 
-fun createOpplysningerBruktIBeregningUTDtoUtenlandskTrygdetidEOS() =
-    OpplysningerBruktIBeregningUTDto.UtenlandskTrygdetidEOS(
+fun createOpplysningerBruktIBeregningUTDtoUtenlandskTrygdetidEOSPeriode() =
+    OpplysningerBruktIBeregningUTDto.UtenlandskTrygdetidEOSPeriode(
         trygdetidEOSLand = "Nederland",
         trygdetidFom = LocalDate.of(2020, 1, 1),
         trygdetidTom = LocalDate.of(2020, 1, 1),
     )
 
-fun createOpplysningerBruktIBeregningUTDtoUtenlandskTrygdetidEOSAvdoed() =
-    OpplysningerBruktIBeregningUTDto.UtenlandskTrygdetidEOSAvdoed(
-        trygdetidEOSLandAvdoed = "Nederland",
-        trygdetidFomAvdoed = LocalDate.of(2020, 1, 1),
-        trygdetidTomAvdoed = LocalDate.of(2020, 1, 1),
+fun createOpplysningerBruktIBeregningUTDtoUtenlandskTrygdetidEOSAvdoedPeriode() =
+    OpplysningerBruktIBeregningUTDto.UtenlandskTrygdetidEOSPeriodeAvdoed(
+        trygdetidEOSLand = "Nederland",
+        trygdetidFom = LocalDate.of(2020, 1, 1),
+        trygdetidTom = LocalDate.of(2020, 1, 1),
     )
 
-fun createOpplysningerBruktIBeregningUTDtoUtenlandskTrygdetidBilateral() =
-    OpplysningerBruktIBeregningUTDto.UtenlandskTrygdetidBilateral(
+fun createOpplysningerBruktIBeregningUTDtoUtenlandskTrygdetidBilateralPeriode() =
+    OpplysningerBruktIBeregningUTDto.UtenlandskTrygdetidBilateralPeriode(
         trygdetidBilateralLand = "Storbritannia",
         trygdetidFom = LocalDate.of(2020, 1, 1),
         trygdetidTom = LocalDate.of(2020, 1, 1),
     )
 
-fun createOpplysningerBruktIBeregningUTDtoUtenlandskTrygdetidBilateralAvdoed() =
-    OpplysningerBruktIBeregningUTDto.UtenlandskTrygdetidBilateralAvdoed(
-        trygdetidBilateralLandAvdoed = "Storbritannia",
-        trygdetidFomAvdoed = LocalDate.of(2020, 1, 1),
-        trygdetidTomAvdoed = LocalDate.of(2020, 1, 1),
-    )
-
-fun createOpplysningerBruktIBeregningUTDtoGjenlevendetilleggInformasjon() =
-    OpplysningerBruktIBeregningUTDto.OpplysningerAvdoed(
-        anvendtTTAvdoed = 40,
-        beregningsgrunnlagBeloepAarAvdoed = Kroner(400000),
-        beregningsgrunnlagBeloepAarYrkesskadeAvdoed = Kroner(370000),
-        erFlyktningAvdoed = true,
-        erUngUfoerAvdoed = false,
-        faktiskTTBilateralAvdoed = 12,
-        faktiskTTEOSAvdoed = 8,
-        faktiskTTNordiskKonvAvdoed = 0,
-        faktiskTTNorgeAvdoed = 200,
-        faktiskTTNorgePlusFaktiskBilateralAvdoed = 200,
-        faktiskTTNorgePlusfaktiskTTEOSAvdoed = 240,
-        foedselsnummerAvdoed = Foedselsnummer("01014512345"),
-        framtidigTTAvtalelandAvdoed = 0,
-        framtidigTTEOSAvdoed = 16,
-        framtidigTTNorskAvdoed = 0,
-        harNyttGjenlevendetillegg = true,
-        inntektVedSkadetidspunktAvdoed = Kroner(0),
-        nevnerTTBilateralProRataAvdoed = 0,
-        nevnerTTEOSAvdoed = 0,
-        nevnerTTNordiskKonvAvdoed = 0,
-        samletTTNordiskKonvAvdoed = 0,
-        samletTrygdetidEtterAvkortingAvdoed = 0,
-        tellerTTBilateralProRataAvdoed = 0,
-        tellerTTEOSAvdoed = 0,
-        tellerTTNordiskKonvAvdoed = 0,
-        ufoeretidspunktAvdoed = LocalDate.of(2020,1,1),
-        yrkesskadegradAvdoed = 0,
+fun createOpplysningerBruktIBeregningUTDtoUtenlandskTrygdetidBilateralAvdoedPeriode() =
+    OpplysningerBruktIBeregningUTDto.UtenlandskTrygdetidBilateralPeriodeAvdoed(
+        trygdetidBilateralLand = "Storbritannia",
+        trygdetidFom = LocalDate.of(2020, 1, 1),
+        trygdetidTom = LocalDate.of(2020, 1, 1),
     )
 
 fun createOpplysningerBruktIBeregningUTDtoUfoeretrygdOrdinaer() =
     OpplysningerBruktIBeregningUTDto.UfoeretrygdOrdinaer(
-        reduksjonIUfoeretrygd = Kroner(80000),
         harBeloepRedusert = true,
         harNyUTBeloep = true,
         harTotalNettoUT = true,
         nettoAkkumulerteBeloepUtbetalt = Kroner(200000),
         nettoTilUtbetalingRestenAvAaret = Kroner(100000),
-
-        )
-
-fun createOpplysningerBruktIBeregningUTDtoBeregningUfoere() =
-    OpplysningerBruktIBeregningUTDto.BeregningUfoere(
+        reduksjonIUfoeretrygd = Kroner(80000),
         harGammelUTBeloepUlikNyUTBeloep = false,
-        harInntektsgrenseLessThanInntektstak = true,
         nettoAkkumulertePlussNettoRestAar = Kroner(300000),
         nettoPerAarReduksjonUT = Kroner(0),
         overskytendeInntekt = Kroner(0),
         ufoeretrygdPlussInntekt = Kroner(500000),
+
+        )
+
+fun createOpplysningerBruktIBeregningUTDtoOpplysningerAvdoed() =
+    OpplysningerBruktIBeregningUTDto.OpplysningerAvdoed(
+        erFlyktning = false,
+        erUngUfoer = false,
+        foedselsnummer = Foedselsnummer("01125512345"),
+        harNyttGjenlevendetillegg = false,
+        trygdetidsdetaljer1 = OpplysningerBruktIBeregningUTDto.OpplysningerAvdoed.Trygdetidsdetaljer1(
+            anvendtTT = 0,
+            beregningsmetode = Beregningsmetode.FOLKETRYGD,
+            faktiskTTBilateral = 0,
+            faktiskTTEOS = 0,
+            faktiskTTNordiskKonv = 0,
+            faktiskTTNorge = 0,
+            faktiskTTNorgePlusFaktiskBilateral = 0,
+            faktiskTTNorgePlusfaktiskTTEOS = 0,
+            framtidigTTAvtaleland = 0,
+            framtidigTTEOS = 0,
+            framtidigTTNorsk = 0,
+            nevnerTTBilateralProRata = 0,
+            nevnerTTEOS = 0,
+            nevnerTTNordiskKonv = 0,
+            samletTTNordiskKonv = 0,
+            tellerTTBilateralProRata = 0,
+            tellerTTEOS = 0,
+            tellerTTNordiskKonv = 0,
+        ),
+        ufoeretrygdGjeldende1 = OpplysningerBruktIBeregningUTDto.OpplysningerAvdoed.UfoeretrygdGjeldende1(
+            beregningsgrunnlagBeloepAar = Kroner(0),
+            ufoeregrad = 0,
+            ufoeretidspunkt = LocalDate.of(2020, 1, 1),
+        ),
+        yrkesskadeGjeldene1 = OpplysningerBruktIBeregningUTDto.OpplysningerAvdoed.YrkesskadeGjeldene1(
+            yrkesskadegrad = 0,
+            inntektVedSkadetidspunkt = Kroner(0),
+            beregningsgrunnlagBeloepAarYrkesskade = Kroner(0),
+        ),
     )
+
+
+
+
+
 
 
 
