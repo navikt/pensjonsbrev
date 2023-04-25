@@ -9,6 +9,9 @@ import no.nav.pensjon.brev.api.model.vedlegg.BeregnetUTPerManedGjeldendeSelector
 import no.nav.pensjon.brev.api.model.vedlegg.InntektsAvkortingGjeldendeSelectors.inntektsgrenseAar
 import no.nav.pensjon.brev.api.model.vedlegg.InntektsAvkortingGjeldendeSelectors.inntektstak
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerAvdoedSelectors.harNyttGjenlevendetillegg_safe
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerAvdoedSelectors.trygdetidsdetaljer1
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerAvdoedSelectors.ufoeretrygdGjeldende1
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerAvdoedSelectors.yrkesskadeGjeldene1_safe
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDto
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.barnetilleggGjeldende
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.beregnetUTPerManedGjeldende
@@ -29,11 +32,8 @@ import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSel
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.opptjeningUfoeretrygd
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.opptjeningUfoeretrygdAvdoed
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.sivilstand
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.trygdetidsdetaljer1
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.trygdetidsdetaljerGjeldende
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.trygdetidsdetaljerGjeldende1
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.ufoeretrygdGjeldende
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.ufoeretrygdGjeldende1
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.ufoeretrygdOrdinaer
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.ungUfoerGjeldende_erUnder20Aar
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.utenlandskTrygdetidBilateralPerioder
@@ -41,7 +41,6 @@ import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSel
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.utenlandskTrygdetidEOSPerioder
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.utenlandskTrygdetidEOSPerioderAvdoed
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.yrkesskadeGjeldende
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.yrkesskadeGjeldene1
 import no.nav.pensjon.brev.api.model.vedlegg.OpptjeningUfoeretrygdSelectors.harFoerstegangstjenesteOpptjening_safe
 import no.nav.pensjon.brev.api.model.vedlegg.OpptjeningUfoeretrygdSelectors.harOmsorgsopptjening_safe
 import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidsdetaljerGjeldendeSelectors.anvendtTT
@@ -119,15 +118,18 @@ fun createVedleggOpplysningerBruktIBeregningUT(
                 )
             )
             {
-                includePhrase(
-                    TabellUfoereOpplysningerAvdoed(
-                        beregnetUTPerManedGjeldende = beregnetUTPerManedGjeldende,
-                        opplysningerAvdoed = opplysningerAvdoed,
-                        trygdetidsdetaljer = trygdetidsdetaljer1,
-                        ufoeretrygdGjeldende = ufoeretrygdGjeldende1,
-                        yrkesskadeGjeldende = yrkesskadeGjeldene1,
+
+                ifNotNull(opplysningerAvdoed) { opplysningerAvdoed ->
+                    includePhrase(
+                        TabellUfoereOpplysningerAvdoed(
+                            beregnetUTPerManedGjeldende = beregnetUTPerManedGjeldende,
+                            opplysningerAvdoed = opplysningerAvdoed,
+                            trygdetidsdetaljer1 = opplysningerAvdoed.trygdetidsdetaljer1,
+                            ufoeretrygdGjeldende1 = opplysningerAvdoed.ufoeretrygdGjeldende1,
+                            yrkesskadeGjeldende1 = opplysningerAvdoed.yrkesskadeGjeldene1_safe,
+                        )
                     )
-                )
+                }
             }
         }
 
@@ -198,7 +200,6 @@ fun createVedleggOpplysningerBruktIBeregningUT(
                 TrygdetidenDin(
                     beregnetUTPerManedGjeldende = beregnetUTPerManedGjeldende,
                     trygdetidsdetaljerGjeldende = trygdetidsdetaljerGjeldende,
-                    trygdetidsdetaljerGjeldende1 = trygdetidsdetaljerGjeldende1,
                     ufoeregrad = ufoeretrygdGjeldende,
                     yrkesskadegrad = yrkesskadeGjeldende
                 )

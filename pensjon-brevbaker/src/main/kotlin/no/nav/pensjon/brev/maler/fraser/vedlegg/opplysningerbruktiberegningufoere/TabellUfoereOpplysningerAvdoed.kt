@@ -52,9 +52,9 @@ THEN INCLUDE
 data class TabellUfoereOpplysningerAvdoed(
     val beregnetUTPerManedGjeldende: Expression<OpplysningerBruktIBeregningUTDto.BeregnetUTPerManedGjeldende>,
     val opplysningerAvdoed: Expression<OpplysningerBruktIBeregningUTDto.OpplysningerAvdoed?>,
-    val trygdetidsdetaljer: Expression<OpplysningerBruktIBeregningUTDto.OpplysningerAvdoed.Trygdetidsdetaljer1>,
-    val ufoeretrygdGjeldende: Expression<OpplysningerBruktIBeregningUTDto.OpplysningerAvdoed.UfoeretrygdGjeldende1>,
-    val yrkesskadeGjeldende: Expression<OpplysningerBruktIBeregningUTDto.OpplysningerAvdoed.YrkesskadeGjeldene1?>,
+    val trygdetidsdetaljer1: Expression<OpplysningerBruktIBeregningUTDto.OpplysningerAvdoed.Trygdetidsdetaljer1>,
+    val ufoeretrygdGjeldende1: Expression<OpplysningerBruktIBeregningUTDto.OpplysningerAvdoed.UfoeretrygdGjeldende1>,
+    val yrkesskadeGjeldende1: Expression<OpplysningerBruktIBeregningUTDto.OpplysningerAvdoed.YrkesskadeGjeldene1?>,
 
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
@@ -117,13 +117,13 @@ data class TabellUfoereOpplysningerAvdoed(
                     }
                     cell {
                         textExpr(
-                            Language.Bokmal to ufoeretrygdGjeldende.ufoeretidspunkt.format(),
-                            Language.Nynorsk to ufoeretrygdGjeldende.ufoeretidspunkt.format(),
-                            Language.English to ufoeretrygdGjeldende.ufoeretidspunkt.format()
+                            Language.Bokmal to ufoeretrygdGjeldende1.ufoeretidspunkt.format(),
+                            Language.Nynorsk to ufoeretrygdGjeldende1.ufoeretidspunkt.format(),
+                            Language.English to ufoeretrygdGjeldende1.ufoeretidspunkt.format()
                         )
                     }
                 }
-                showIf(ufoeretrygdGjeldende.beregningsgrunnlagBeloepAar.greaterThan(0)) {
+                showIf(ufoeretrygdGjeldende1.beregningsgrunnlagBeloepAar.greaterThan(0)) {
                     row {
                         cell {
                             text(
@@ -132,7 +132,7 @@ data class TabellUfoereOpplysningerAvdoed(
                                 Language.English to "Basis for calculation"
                             )
                         }
-                        cell { includePhrase(Felles.KronerText(ufoeretrygdGjeldende.beregningsgrunnlagBeloepAar)) }
+                        cell { includePhrase(Felles.KronerText(ufoeretrygdGjeldende1.beregningsgrunnlagBeloepAar)) }
                     }
                 }
                 row {
@@ -179,7 +179,7 @@ data class TabellUfoereOpplysningerAvdoed(
                             )
                         }
                         cell {
-                            val anvendtTT = trygdetidsdetaljer.anvendtTT
+                            val anvendtTT = trygdetidsdetaljer1.anvendtTT
                             includePhrase(Felles.AarText(anvendtTT.ifNull(0)))
                         }
                     }
@@ -202,7 +202,7 @@ data class TabellUfoereOpplysningerAvdoed(
                         }
                     }
                 }
-                ifNotNull(yrkesskadeGjeldende.yrkesskadegrad_safe) { yrkesskadegrad ->
+                ifNotNull(yrkesskadeGjeldende1.yrkesskadegrad_safe) { yrkesskadegrad ->
                     showIf(yrkesskadegrad.greaterThan(0)) {
                         row {
                             cell {
@@ -215,7 +215,7 @@ data class TabellUfoereOpplysningerAvdoed(
                             cell { includePhrase((Felles.ProsentText(yrkesskadegrad))) }
                         }
                     }
-                    ifNotNull(yrkesskadeGjeldende.beregningsgrunnlagBeloepAarYrkesskade_safe) { beloep ->
+                    ifNotNull(yrkesskadeGjeldende1.beregningsgrunnlagBeloepAarYrkesskade_safe) { beloep ->
                         showIf(beloep.greaterThan(0)) {
                             row {
                                 cell {
@@ -229,7 +229,7 @@ data class TabellUfoereOpplysningerAvdoed(
                             }
                         }
                     }
-                    ifNotNull(yrkesskadeGjeldende.inntektVedSkadetidspunkt_safe) { inntekt ->
+                    ifNotNull(yrkesskadeGjeldende1.inntektVedSkadetidspunkt_safe) { inntekt ->
                         showIf(inntekt.greaterThan(0)) {
                             row {
                                 cell {
@@ -245,8 +245,8 @@ data class TabellUfoereOpplysningerAvdoed(
                     }
                 }
                 ifNotNull(
-                    trygdetidsdetaljer.faktiskTTNorge_safe,
-                    trygdetidsdetaljer.faktiskTTEOS_safe
+                    trygdetidsdetaljer1.faktiskTTNorge_safe,
+                    trygdetidsdetaljer1.faktiskTTEOS_safe
                 ) { faktiskTTNorge, faktiskTTEOS ->
                     showIf(faktiskTTNorge.greaterThan(0)) {
                         row {
@@ -276,7 +276,7 @@ data class TabellUfoereOpplysningerAvdoed(
                         }
                     }
 
-                    ifNotNull(trygdetidsdetaljer.framtidigTTEOS_safe) { framtidigTTEOS ->
+                    ifNotNull(trygdetidsdetaljer1.framtidigTTEOS_safe) { framtidigTTEOS ->
                         showIf(framtidigTTEOS.greaterThan(0)) {
                             row {
                                 cell {
@@ -302,15 +302,15 @@ data class TabellUfoereOpplysningerAvdoed(
                             }
                             cell {
                                 val faktiskTrygdetid =
-                                    trygdetidsdetaljer.faktiskTTNorgePlusfaktiskTTEOS_safe
+                                    trygdetidsdetaljer1.faktiskTTNorgePlusfaktiskTTEOS_safe
                                 includePhrase(Felles.MaanederText(faktiskTrygdetid.ifNull(then = 0)))
                             }
                         }
                     }
                 }
                 ifNotNull(
-                    trygdetidsdetaljer.tellerTTEOS_safe,
-                    trygdetidsdetaljer.nevnerTTEOS_safe
+                    trygdetidsdetaljer1.tellerTTEOS_safe,
+                    trygdetidsdetaljer1.nevnerTTEOS_safe
                 ) { tellerTTEOS, nevnerTTEOS ->
                     showIf(tellerTTEOS.greaterThan(0) and nevnerTTEOS.greaterThan(0)) {
                         row {
@@ -331,7 +331,7 @@ data class TabellUfoereOpplysningerAvdoed(
                         }
                     }
                 }
-                ifNotNull(trygdetidsdetaljer.faktiskTTNordiskKonv_safe) { faktiskTTNordiskKonv ->
+                ifNotNull(trygdetidsdetaljer1.faktiskTTNordiskKonv_safe) { faktiskTTNordiskKonv ->
                     // showIf?
                     row {
                         cell {
@@ -344,7 +344,7 @@ data class TabellUfoereOpplysningerAvdoed(
                         cell { includePhrase(Felles.MaanederText(faktiskTTNordiskKonv.ifNull(then = 0))) }
                     }
                 }
-                ifNotNull(trygdetidsdetaljer.framtidigTTNorsk_safe) { framtidigTTNorsk ->
+                ifNotNull(trygdetidsdetaljer1.framtidigTTNorsk_safe) { framtidigTTNorsk ->
                     showIf(
                         framtidigTTNorsk.greaterThan(0) and framtidigTTNorsk.lessThan(480)
                     ) {
@@ -361,8 +361,8 @@ data class TabellUfoereOpplysningerAvdoed(
                     }
                 }
                 ifNotNull(
-                    trygdetidsdetaljer.tellerTTNordiskKonv_safe,
-                    trygdetidsdetaljer.nevnerTTNordiskKonv_safe
+                    trygdetidsdetaljer1.tellerTTNordiskKonv_safe,
+                    trygdetidsdetaljer1.nevnerTTNordiskKonv_safe
                 ) { tellerTTNordiskKonv, nevnerTTNordiskKonv ->
                     showIf(tellerTTNordiskKonv.greaterThan(0) and nevnerTTNordiskKonv.greaterThan(0)) {
                         row {
@@ -383,7 +383,7 @@ data class TabellUfoereOpplysningerAvdoed(
                         }
                     }
                 }
-                ifNotNull(trygdetidsdetaljer.samletTTNordiskKonv_safe) { samletTTNordiskKonv ->
+                ifNotNull(trygdetidsdetaljer1.samletTTNordiskKonv_safe) { samletTTNordiskKonv ->
                     showIf(samletTTNordiskKonv.greaterThan(0)) {
                         row {
                             cell {
@@ -397,7 +397,7 @@ data class TabellUfoereOpplysningerAvdoed(
                         }
                     }
                 }
-                ifNotNull(trygdetidsdetaljer.faktiskTTBilateral_safe) { faktiskTTBilateral ->
+                ifNotNull(trygdetidsdetaljer1.faktiskTTBilateral_safe) { faktiskTTBilateral ->
                     showIf(faktiskTTBilateral.greaterThan(0)) {
                         row {
                             cell {
@@ -411,7 +411,7 @@ data class TabellUfoereOpplysningerAvdoed(
                         }
                     }
                 }
-                ifNotNull(trygdetidsdetaljer.framtidigTTAvtaleland_safe) { framtidigTTAvtaleland ->
+                ifNotNull(trygdetidsdetaljer1.framtidigTTAvtaleland_safe) { framtidigTTAvtaleland ->
                     showIf(framtidigTTAvtaleland.greaterThan(0)) {
                         row {
                             cell {
@@ -426,8 +426,8 @@ data class TabellUfoereOpplysningerAvdoed(
                     }
                 }
                 ifNotNull(
-                    trygdetidsdetaljer.faktiskTTNorge_safe,
-                    trygdetidsdetaljer.faktiskTTBilateral_safe
+                    trygdetidsdetaljer1.faktiskTTNorge_safe,
+                    trygdetidsdetaljer1.faktiskTTBilateral_safe
                 ) { faktiskTTNorge, faktiskTTBilateral ->
                     showIf(faktiskTTNorge.greaterThan(0) and faktiskTTBilateral.greaterThan(0)) {
                         row {
@@ -440,7 +440,7 @@ data class TabellUfoereOpplysningerAvdoed(
                             }
                             cell {
                                 val faktiskTrygdetidINorgePlusAvtaleland =
-                                    trygdetidsdetaljer.faktiskTTNorgePlusFaktiskBilateral_safe
+                                    trygdetidsdetaljer1.faktiskTTNorgePlusFaktiskBilateral_safe
                                 includePhrase(
                                     Felles.MaanederText(
                                         faktiskTrygdetidINorgePlusAvtaleland.ifNull(
@@ -453,8 +453,8 @@ data class TabellUfoereOpplysningerAvdoed(
                     }
                 }
                 ifNotNull(
-                    trygdetidsdetaljer.tellerTTBilateralProRata_safe,
-                    trygdetidsdetaljer.nevnerTTBilateralProRata_safe
+                    trygdetidsdetaljer1.tellerTTBilateralProRata_safe,
+                    trygdetidsdetaljer1.nevnerTTBilateralProRata_safe
                 ) { tellerProRata, nevnerProRata ->
                     showIf(tellerProRata.greaterThan(0) and nevnerProRata.greaterThan(0)) {
                         row {
