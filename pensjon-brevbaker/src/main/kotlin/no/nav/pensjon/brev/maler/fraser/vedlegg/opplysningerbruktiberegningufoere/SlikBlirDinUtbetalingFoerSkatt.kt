@@ -56,14 +56,12 @@ data class TabellSlikBlirDinUtbetalingFoerSkatt(
             inntektsAvkortingGjeldende.inntektsgrenseAar.lessThan(inntektsAvkortingGjeldende.inntektstak)
         val inntektsgrenseAar = inntektsAvkortingGjeldende.inntektsgrenseAar.format()
         val inntektstak = inntektsAvkortingGjeldende.inntektstak.format()
-        val reduksjonIUfoeretrygd = ufoeretrygdOrdinaer.reduksjonIUfoeretrygd_safe
         val ufoeregrad = ufoeretrygdGjeldende.ufoeregrad.format()
         val harInntektsgrenseLargerThanOrEqualToInntektstak =
             inntektsAvkortingGjeldende.inntektsgrenseAar.greaterThanOrEqual(inntektsAvkortingGjeldende.inntektstak)
         val harForventetInntektLargerThanInntektstak =
             inntektsAvkortingGjeldende.forventetInntektAar.greaterThan(inntektsAvkortingGjeldende.inntektstak)
 
-//  ufoeretrygdOrdinaer.ufoeretrygdPlussInntekt_safe, ufoeretrygdPlussInntekt
         ifNotNull(
             ufoeretrygdOrdinaer.nettoAkkumulertePlussNettoRestAar_safe,
             ufoeretrygdOrdinaer.nettoAkkumulerteBeloepUtbetalt_safe,
