@@ -31,7 +31,8 @@ class OpplysningerBruktIBeregningUTTest {
                 skalViseSlikBeregnerViGjenlevendetilleggHarNyttTillegg = true,
                 skalViseSlikBeregnerViGjenlevendetillegg = true,
                 skalViseForDegSomMottarEktefelletillegg = true,
-                skalViseEtteroppgjoerAvUfoeretrygdOgBarnetillegg = true),
+                skalViseEtteroppgjoerAvUfoeretrygdOgBarnetillegg = true
+            ),
             Fixtures.create(OpplysningerBruktIBeregningUTDto::class).expr()
         )
         Letter(
