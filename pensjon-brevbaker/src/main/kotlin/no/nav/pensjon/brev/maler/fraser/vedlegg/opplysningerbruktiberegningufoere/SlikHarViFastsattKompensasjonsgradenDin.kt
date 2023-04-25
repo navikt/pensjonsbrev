@@ -1,7 +1,6 @@
 package no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningufoere
 
 import no.nav.pensjon.brev.api.model.KravAarsakType
-import no.nav.pensjon.brev.api.model.vedlegg.BeregningUfoereSelectors.harGammelUTBeloepUlikNyUTBeloep
 import no.nav.pensjon.brev.api.model.vedlegg.InntektFoerUfoereGjeldendeSelectors.inntektFoerUfoer
 import no.nav.pensjon.brev.api.model.vedlegg.InntektFoerUfoereGjeldendeSelectors.oppjustertInntektFoerUfoer
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDto
@@ -10,6 +9,7 @@ import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdGjeldendeSelectors.harDe
 import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdGjeldendeSelectors.harFullUfoeregrad
 import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdGjeldendeSelectors.kompensasjonsgrad
 import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdGjeldendeSelectors.ufoeregrad
+import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdOrdinaerSelectors.harGammelUTBeloepUlikNyUTBeloep
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Expression
@@ -28,7 +28,6 @@ AND <KravArsakType> <> <SOKNAD_BT> */
 
 
 data class SlikHarViFastsattKompensasjonsgradenDin(
-    val beregningUfoere: Expression<OpplysningerBruktIBeregningUTDto.BeregningUfoere>,
     val inntektFoerUfoereGjeldende: Expression<OpplysningerBruktIBeregningUTDto.InntektFoerUfoereGjeldende>,
     val inntektsAvkortingGjeldende: Expression<OpplysningerBruktIBeregningUTDto.InntektsAvkortingGjeldende>,
     val kravAarsakType: Expression<KravAarsakType>,
@@ -48,7 +47,7 @@ data class SlikHarViFastsattKompensasjonsgradenDin(
             (
                     kravAarsakType.isOneOf(
                         KravAarsakType.ENDRET_INNTEKT
-                    )) and beregningUfoere.harGammelUTBeloepUlikNyUTBeloep and not(
+                    )) and ufoeretrygdOrdinaer.harGammelUTBeloepUlikNyUTBeloep and not(
                 kravAarsakType.isOneOf(
                     KravAarsakType.SOKNAD_BT
                 )
