@@ -8,15 +8,12 @@ import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerAvdoedSelectors.foedsel
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDto
 import no.nav.pensjon.brev.api.model.vedlegg.Trygdetidsdetaljer1Selectors.anvendtTT
 import no.nav.pensjon.brev.api.model.vedlegg.Trygdetidsdetaljer1Selectors.faktiskTTBilateral_safe
-import no.nav.pensjon.brev.api.model.vedlegg.Trygdetidsdetaljer1Selectors.faktiskTTEOS
 import no.nav.pensjon.brev.api.model.vedlegg.Trygdetidsdetaljer1Selectors.faktiskTTEOS_safe
 import no.nav.pensjon.brev.api.model.vedlegg.Trygdetidsdetaljer1Selectors.faktiskTTNordiskKonv_safe
-import no.nav.pensjon.brev.api.model.vedlegg.Trygdetidsdetaljer1Selectors.faktiskTTNorge
 import no.nav.pensjon.brev.api.model.vedlegg.Trygdetidsdetaljer1Selectors.faktiskTTNorgePlusFaktiskBilateral_safe
 import no.nav.pensjon.brev.api.model.vedlegg.Trygdetidsdetaljer1Selectors.faktiskTTNorgePlusfaktiskTTEOS_safe
 import no.nav.pensjon.brev.api.model.vedlegg.Trygdetidsdetaljer1Selectors.faktiskTTNorge_safe
 import no.nav.pensjon.brev.api.model.vedlegg.Trygdetidsdetaljer1Selectors.framtidigTTAvtaleland_safe
-import no.nav.pensjon.brev.api.model.vedlegg.Trygdetidsdetaljer1Selectors.framtidigTTEOS
 import no.nav.pensjon.brev.api.model.vedlegg.Trygdetidsdetaljer1Selectors.framtidigTTEOS_safe
 import no.nav.pensjon.brev.api.model.vedlegg.Trygdetidsdetaljer1Selectors.framtidigTTNorsk_safe
 import no.nav.pensjon.brev.api.model.vedlegg.Trygdetidsdetaljer1Selectors.nevnerTTBilateralProRata_safe
