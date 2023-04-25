@@ -1,14 +1,15 @@
 import LetterEditor from "../modules/LetterEditor/LetterEditor"
 import {NextPage} from "next"
-import React, {useEffect, useState} from "react"
+import React, {Dispatch, SetStateAction, useEffect, useState} from "react"
 import {initObjectFromSpec, ObjectValue} from "../modules/ModelEditor/model"
-import {EditedLetter, RedigerbarTemplateDescription} from "../modules/LetterEditor/model/api"
+import {RedigerbarTemplateDescription} from "../modules/LetterEditor/model/api"
 import {useMsal} from "@azure/msal-react"
 import SkribentenAPI from "../lib/services/skribenten"
 import {SkribentenConfig} from "./_app"
 import ModelEditor from "../modules/ModelEditor/ModelEditor"
 import styles from "./rediger.module.css"
-import {EditedLetterAction} from "../modules/LetterEditor/actions/letter"
+import Actions from "../modules/LetterEditor/actions"
+import {LetterEditorState} from "../modules/LetterEditor/model/state"
 
 const BREVKODE = "INFORMASJON_OM_SAKSBEHANDLINGSTID"
 
@@ -17,7 +18,7 @@ const RedigerBrev: NextPage<SkribentenConfig> = (props) => {
 
     const [modelSpec, setModelSpec] = useState<RedigerbarTemplateDescription | null>(null)
     const [modelValue, setModelValue] = useState<ObjectValue>({})
-    const [editedLetter, setEditedLetter] = useState<EditedLetter | null>(null)
+    const [editorState, setEditorState] = useState<LetterEditorState | null>(null)
 
     const msal = useMsal()
 
@@ -33,13 +34,28 @@ const RedigerBrev: NextPage<SkribentenConfig> = (props) => {
     /* eslint-enable react-hooks/exhaustive-deps */
 
     const renderLetter = () => {
-        api.renderLetter(msal, BREVKODE, modelValue, editedLetter).then(letter => {
-            if(editedLetter === null) {
-                setEditedLetter(EditedLetterAction.create(letter))
+        api.renderLetter(msal, BREVKODE, modelValue, editorState?.editedLetter).then(letter => {
+            if(editorState === null) {
+                setEditorState(Actions.create(letter))
             } else {
-                setEditedLetter(EditedLetterAction.updateLetter(editedLetter, letter))
+                setEditorState(Actions.updateLetter(editorState, letter))
             }
         })
+    }
+
+    const updateState: Dispatch<SetStateAction<LetterEditorState>> = (update) => {
+        if (typeof update === 'function') {
+            setEditorState((prevState) => {
+                if (prevState !== null) {
+                    return update(prevState)
+                } else {
+                    console.error("cannot update letterEditorState: received null prevState ")
+                    return null
+                }
+            })
+        } else {
+            setEditorState(update)
+        }
     }
 
     if (modelSpec === null) {
@@ -51,7 +67,7 @@ const RedigerBrev: NextPage<SkribentenConfig> = (props) => {
                     <ModelEditor spec={modelSpec.modelSpecification} value={modelValue} updateValue={setModelValue}/>
                     <button type="button" onClick={renderLetter}>Oppdater variabler</button>
                 </div>
-                {editedLetter !== null ? <LetterEditor editedLetter={editedLetter} updateLetter={setEditedLetter}/> : <div/>}
+                {editorState !== null ? <LetterEditor editorState={editorState} updateState={updateState}/> : <div/>}
             </div>
         )
     }
