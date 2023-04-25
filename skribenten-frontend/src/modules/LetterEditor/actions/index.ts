@@ -7,7 +7,7 @@ import {focusStolen} from "./focusStolen"
 import {create} from "./common"
 import {updateLetter} from "./updateLetter"
 
-export default {
+const Actions = {
     create,
     focusStolen,
     merge,
@@ -16,3 +16,4 @@ export default {
     updateContentText,
     updateLetter,
 }
+export default Actions

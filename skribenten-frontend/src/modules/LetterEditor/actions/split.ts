@@ -29,8 +29,8 @@ export const split: Action<LetterEditorState, [splitId: ContentId, offset: numbe
                     editable: true,
                     content: [
                         {...content, id: getId(content.id, isNew), text: cleanseText(content.text.substring(offset))},
-                        ...block.content.slice(splitId.contentId + 1).map(c => ({...c, id: getId(c.id, isNew)}))
-                    ]
+                        ...block.content.slice(splitId.contentId + 1).map(c => ({...c, id: getId(c.id, isNew)})),
+                    ],
                 }
                 letter.blocks.splice(splitId.blockId + 1, 0, nextBlock)
                 draft.stealFocus[splitId.blockId + 1] = {contentId: 0, startOffset: 0}
@@ -93,7 +93,7 @@ export const split: Action<LetterEditorState, [splitId: ContentId, offset: numbe
                         item: {
                             id: splitId.itemId + 1,
                             contentId: 0,
-                        }
+                        },
                     }
                 }
             } else {

@@ -30,20 +30,20 @@ export const merge: Action<LetterEditorState, [mergeId: ContentId, target: Merge
                         draft.stealFocus[mergeId.blockId] = {
                             contentId: mergeId.contentId,
                             startOffset: 0,
-                            item: {id: firstId, contentId: 0}
+                            item: {id: firstId, contentId: 0},
                         }
                         itemList.items.splice(firstId, 1)
                     } else if (isEmptyItem(second)) {
                         draft.stealFocus[mergeId.blockId] = {
                             contentId: mergeId.contentId,
-                            startOffset: first.content[first.content.length - 1].text.length, item: {id: firstId, contentId: first.content.length - 1}
+                            startOffset: first.content[first.content.length - 1].text.length, item: {id: firstId, contentId: first.content.length - 1},
                         }
                         itemList.items.splice(secondId, 1)
                     } else {
                         draft.stealFocus[mergeId.blockId] = {
                             contentId: mergeId.contentId,
                             startOffset: first.content[first.content.length - 1].text.length,
-                            item: {id: firstId, contentId: first.content.length - 1}
+                            item: {id: firstId, contentId: first.content.length - 1},
                         }
                         first.content = mergeContentArrays(first.content, second.content)
                         itemList.items.splice(secondId, 1)
@@ -64,13 +64,13 @@ export const merge: Action<LetterEditorState, [mergeId: ContentId, target: Merge
                 draft.stealFocus[mergeId.blockId] = {
                     contentId: mergeId.contentId - 1,
                     startOffset: lastContentOfLastItem.text.length,
-                    item: { id: lastItemId, contentId: lastItem.content.length - 1}
+                    item: { id: lastItemId, contentId: lastItem.content.length - 1},
                 }
             } else {
                 draft.stealFocus[mergeId.blockId] = {
                     contentId: mergeId.contentId - 1,
                     startOffset: 0,
-                    item: { id: lastItemId, contentId: lastItem.content.length}
+                    item: { id: lastItemId, contentId: lastItem.content.length},
                 }
             }
 

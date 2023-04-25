@@ -10,7 +10,7 @@ export const switchType: Action<LetterEditorState, [blockId: number, toType: typ
         switch (toType) {
             case PARAGRAPH:
                 block.type = toType
-                break;
+                break
 
             case TITLE1:
                 if(block.content.every(isTextContent)) {
