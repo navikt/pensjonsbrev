@@ -97,15 +97,15 @@ object PensjonHTMLRenderer : LetterRenderer<RenderedHtmlLetter>() {
             if (signerende != null) {
                 div(classes("closing-manuell")) {
                     val saksbehandlerTekst = languageSettings.settings[LanguageSetting.Closing.saksbehandler]!!
+                    if (brevtype == VEDTAKSBREV && signerende.attesterendeSaksbehandler != null) {
+                        div(classes("closing-saksbehandler")) {
+                            div { text(signerende.attesterendeSaksbehandler!!) }
+                            div { renderText(scope, saksbehandlerTekst) }
+                        }
+                    }
                     div(classes("closing-saksbehandler")) {
                         div { text(signerende.saksbehandler) }
                         div { renderText(scope, saksbehandlerTekst) }
-                    }
-                    if (brevtype == VEDTAKSBREV) {
-                        div(classes("closing-saksbehandler")) {
-                            div { text(signerende.attesterendeSaksbehandler) }
-                            div { renderText(scope, saksbehandlerTekst) }
-                        }
                     }
                 }
             } else {

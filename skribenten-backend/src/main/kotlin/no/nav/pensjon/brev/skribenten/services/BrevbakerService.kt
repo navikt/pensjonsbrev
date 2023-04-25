@@ -53,7 +53,7 @@ class BrevbakerService(config: Config, authService: AzureADService) {
                         avsenderEnhet = NAVEnhet("nav.no", "NAV Familie- og pensjonsytelser Porsgrunn", Telefonnummer("22225555")),
                         bruker = Bruker(Foedselsnummer("12345678910"), LocalDate.of(2000, Month.JANUARY, 1), "Test", null, "Testeson"),
                         vergeNavn = null,
-                        signerendeSaksbehandlere = SignerendeSaksbehandlere("Ole Saksbehandler", "")
+                        signerendeSaksbehandlere = SignerendeSaksbehandlere("Ole Saksbehandler")
                     ),
                     language = LanguageCode.BOKMAL,
                 )

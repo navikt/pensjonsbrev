@@ -51,13 +51,13 @@ object PensjonLatexRenderer : LetterRenderer<RenderedLatexLetter>() {
         brevtype: LetterMetadata.Brevtype,
     ) {
         pensjonLatexSettings.writeLanguageSettings { settingName, settingValue ->
-            printNewCmd("felt$settingName") {
+            appendNewCmd("felt$settingName") {
                 renderText(scope, settingValue)
             }
         }
 
-        println("\\def\\pdfcreationdate{\\string ${pdfCreationTime()}}", escape = false)
-        printNewCmd("feltsaksnummer", scope.felles.saksnummer)
+        appendln("\\def\\pdfcreationdate{\\string ${pdfCreationTime()}}", escape = false)
+        appendNewCmd("feltsaksnummer", scope.felles.saksnummer)
 
         vedleggCommand(scope, attachments)
 
@@ -65,51 +65,55 @@ object PensjonLatexRenderer : LetterRenderer<RenderedLatexLetter>() {
             brukerCommands(bruker)
             saksinfoCommands(vergeNavn)
             navEnhetCommands(avsenderEnhet)
-            printNewCmd("feltdato", dokumentDato.format(dateFormatter(scope.language, FormatStyle.LONG)))
+            appendNewCmd("feltdato", dokumentDato.format(dateFormatter(scope.language, FormatStyle.LONG)))
             signaturCommands(signerendeSaksbehandlere, brevtype)
         }
     }
 
     private fun LatexAppendable.appendXmpData(scope: ExpressionScope<*, *>, template: LetterTemplate<*, *>) {
-        printCmd("Title") { arg { renderText(scope, template.title) } }
-        printCmd("Language", scope.language.locale().toLanguageTag())
-        printCmd("Publisher", scope.felles.avsenderEnhet.navn)
-        printCmd("Date", scope.felles.dokumentDato.format(DateTimeFormatter.ISO_LOCAL_DATE))
-        printCmd("Producer", DOCUMENT_PRODUCER)
-        printCmd("Creator", DOCUMENT_PRODUCER)
+        appenCmd("Title") { arg { renderText(scope, template.title) } }
+        appenCmd("Language", scope.language.locale().toLanguageTag())
+        appenCmd("Publisher", scope.felles.avsenderEnhet.navn)
+        appenCmd("Date", scope.felles.dokumentDato.format(DateTimeFormatter.ISO_LOCAL_DATE))
+        appenCmd("Producer", DOCUMENT_PRODUCER)
+        appenCmd("Creator", DOCUMENT_PRODUCER)
     }
 
     private fun LatexAppendable.renderLetterTemplate(scope: ExpressionScope<*, *>, template: LetterTemplate<*, *>) {
-        println("""\documentclass{pensjonsbrev_v3}""", escape = false)
-        printCmd("begin", "document")
-        printCmd("firstpage")
-        printCmd("tittel") { arg { renderText(scope, template.title) } }
+        appendln("""\documentclass{pensjonsbrev_v3}""", escape = false)
+        appenCmd("begin", "document")
+        appenCmd("firstpage")
+        appenCmd("tittel") { arg { renderText(scope, template.title) } }
         renderOutline(scope, template.outline)
-        printCmd("closing")
+        appenCmd("closing")
         render(scope, template.attachments) { _, id, _ ->
-            printCmd("input", "attachment_$id", escape = false)
+            appenCmd("input", "attachment_$id", escape = false)
         }
-        printCmd("end", "document")
+        appenCmd("end", "document")
     }
 
     private fun LatexAppendable.signaturCommands(saksbehandlere: SignerendeSaksbehandlere?, brevtype: LetterMetadata.Brevtype) {
-        printNewCmd("closingbehandlet") {
+        appendNewCmd("closingbehandlet") {
             if (saksbehandlere != null) {
-                print("""\parbox[t]{0.5\linewidth}{${saksbehandlere.saksbehandler} \\ \feltclosingsaksbehandlersuffix}""", escape = false)
-                if (brevtype == LetterMetadata.Brevtype.VEDTAKSBREV) {
-                    println("""\parbox[t]{0.5\linewidth}{${saksbehandlere.attesterendeSaksbehandler} \\ \feltclosingsaksbehandlersuffix}""", escape = false)
-                }
-                printCmd("par")
-                printCmd("vspace*{12pt}")
-                printCmd("feltnavenhet")
-            } else {
-                printCmd("feltnavenhet")
-                printCmd("par")
-                printCmd("vspace*{12pt}")
-                if (brevtype == LetterMetadata.Brevtype.VEDTAKSBREV) {
-                    printCmd("feltclosingautomatisktextvedtaksbrev")
+                if (brevtype == LetterMetadata.Brevtype.VEDTAKSBREV && saksbehandlere.attesterendeSaksbehandler != null) {
+                    appenCmd("doublesignature"){
+                        arg { append(saksbehandlere.attesterendeSaksbehandler!!) }
+                        arg { append(saksbehandlere.saksbehandler) }
+                    }
                 } else {
-                    printCmd("feltclosingautomatisktextinfobrev")
+                    append("""${saksbehandlere.saksbehandler} \\ \feltclosingsaksbehandlersuffix""", escape = false)
+                }
+                appenCmd("par")
+                appenCmd("vspace*{12pt}")
+                appenCmd("feltnavenhet")
+            } else {
+                appenCmd("feltnavenhet")
+                appenCmd("par")
+                appenCmd("vspace*{12pt}")
+                if (brevtype == LetterMetadata.Brevtype.VEDTAKSBREV) {
+                    appenCmd("feltclosingautomatisktextvedtaksbrev")
+                } else {
+                    appenCmd("feltclosingautomatisktextinfobrev")
                 }
             }
         }
@@ -117,42 +121,42 @@ object PensjonLatexRenderer : LetterRenderer<RenderedLatexLetter>() {
 
     private fun LatexAppendable.brukerCommands(bruker: Bruker) =
         with(bruker) {
-            printNewCmd("feltfoedselsnummerbruker", foedselsnummer.format())
-            printNewCmd("feltnavnbruker", fulltNavn())
+            appendNewCmd("feltfoedselsnummerbruker", foedselsnummer.format())
+            appendNewCmd("feltnavnbruker", fulltNavn())
         }
 
     private fun LatexAppendable.saksinfoCommands(verge: String?) {
-        verge?.also { printNewCmd("feltvergenavn", it) }
-        printNewCmd("saksinfomottaker") {
-            printCmd("begin", "saksinfotable", "")
+        verge?.also { appendNewCmd("feltvergenavn", it) }
+        appendNewCmd("saksinfomottaker") {
+            appenCmd("begin", "saksinfotable", "")
             verge?.let {
-                println("""\feltvergenavnprefix & \feltvergenavn \\""", escape = false)
-                println(
+                appendln("""\feltvergenavnprefix & \feltvergenavn \\""", escape = false)
+                appendln(
                     """\felt${LanguageSetting.Sakspart.gjelderNavn} & \feltnavnbruker \\""",
                     escape = false
                 )
-            } ?: println(
+            } ?: appendln(
                 """\felt${LanguageSetting.Sakspart.navn} & \feltnavnbruker \\""",
                 escape = false
             )
-            println(
+            appendln(
                 """\felt${LanguageSetting.Sakspart.foedselsnummer} & \feltfoedselsnummerbruker \\""",
                 escape = false
             )
-            println(
+            appendln(
                 """\felt${LanguageSetting.Sakspart.saksnummer} & \feltsaksnummer \hfill \letterdate\\""",
                 escape = false
             )
 
-            printCmd("end", "saksinfotable")
+            appenCmd("end", "saksinfotable")
         }
     }
 
     private fun LatexAppendable.navEnhetCommands(navEnhet: NAVEnhet) =
         with(navEnhet) {
-            printNewCmd("feltnavenhet", navn)
-            printNewCmd("feltnavenhettlf", telefonnummer.format())
-            printNewCmd("feltnavenhetnettside", nettside)
+            appendNewCmd("feltnavenhet", navn)
+            appendNewCmd("feltnavenhettlf", telefonnummer.format())
+            appendNewCmd("feltnavenhetnettside", nettside)
         }
 
     private fun pdfCreationTime(): String {
@@ -162,27 +166,27 @@ object PensjonLatexRenderer : LetterRenderer<RenderedLatexLetter>() {
     }
 
     private fun LatexAppendable.vedleggCommand(scope: ExpressionScope<*, *>, attachments: List<IncludeAttachment<*, *>>) {
-        printNewCmd("feltclosingvedlegg") {
+        appendNewCmd("feltclosingvedlegg") {
             val includedAttachments = attachments.filter { it.predicate.eval(scope) }
             if (includedAttachments.isNotEmpty()) {
-                printCmd("begin", "attachmentList")
+                appenCmd("begin", "attachmentList")
 
                 render(scope, attachments) { attachmentScope, _, attachment ->
-                    print("""\item """, escape = false)
+                    append("""\item """, escape = false)
                     renderText(attachmentScope, listOf(attachment.title))
                 }
-                printCmd("end", "attachmentList")
+                appenCmd("end", "attachmentList")
             }
         }
     }
 
     private fun LatexAppendable.renderAttachment(scope: ExpressionScope<*, *>, attachment: AttachmentTemplate<*, *>) {
-        printCmd("startvedlegg") {
+        appenCmd("startvedlegg") {
             arg { renderText(scope, listOf(attachment.title)) }
-            arg { if (attachment.includeSakspart) printCmd("sakspart") }
+            arg { if (attachment.includeSakspart) appenCmd("sakspart") }
         }
         renderOutline(scope, attachment.outline)
-        printCmd("sluttvedlegg")
+        appenCmd("sluttvedlegg")
     }
 
     //
@@ -197,7 +201,7 @@ object PensjonLatexRenderer : LetterRenderer<RenderedLatexLetter>() {
     private fun LatexAppendable.renderOutlineContent(scope: ExpressionScope<*, *>, element: Element.OutlineContent<*>): Unit =
         when (element) {
             is Element.OutlineContent.Paragraph -> renderParagraph(scope, element)
-            is Element.OutlineContent.Title1 -> printCmd("lettersectiontitle") {
+            is Element.OutlineContent.Title1 -> appenCmd("lettersectiontitle") {
                 arg { renderText(scope, element.text) }
             }
         }
@@ -206,7 +210,7 @@ object PensjonLatexRenderer : LetterRenderer<RenderedLatexLetter>() {
         scope: ExpressionScope<*, *>,
         element: Element.OutlineContent.Paragraph<*>
     ): Unit =
-        printCmd("templateparagraph") {
+        appenCmd("templateparagraph") {
             arg {
                 render(scope, element.paragraph) { pScope, element ->
                     renderParagraphContent(pScope, element)
@@ -227,12 +231,12 @@ object PensjonLatexRenderer : LetterRenderer<RenderedLatexLetter>() {
         list: ItemList<*>
     ) {
         if (hasAnyContent(scope, list.items)) {
-            printCmd("begin", "itemize")
+            appenCmd("begin", "itemize")
             render(scope, list.items) { itemScope, item ->
-                print("""\item """, escape = false)
+                append("""\item """, escape = false)
                 renderText(itemScope, item.text)
             }
-            printCmd("end", "itemize")
+            appenCmd("end", "itemize")
         }
     }
 
@@ -240,14 +244,14 @@ object PensjonLatexRenderer : LetterRenderer<RenderedLatexLetter>() {
         if (hasAnyContent(scope, table.rows)) {
             val columnSpec = table.header.colSpec
 
-            printCmd("begin", "letterTable", columnHeadersLatexString(columnSpec))
+            appenCmd("begin", "letterTable", columnHeadersLatexString(columnSpec))
 
             renderTableCells(scope, columnSpec.map { it.headerContent }, columnSpec)
             render(scope, table.rows) { rowScope, row ->
                 renderTableCells(rowScope, row.cells, columnSpec)
             }
 
-            printCmd("end", "letterTable")
+            appenCmd("end", "letterTable")
         }
     }
 
@@ -259,17 +263,17 @@ object PensjonLatexRenderer : LetterRenderer<RenderedLatexLetter>() {
         cells.forEachIndexed { index, cell ->
             val columnSpan = colSpec[index].columnSpan
             if (columnSpan > 1) {
-                print("\\SetCell[c=$columnSpan]{}", escape = false)
+                append("\\SetCell[c=$columnSpan]{}", escape = false)
             }
             renderText(scope, cell.text)
             if (columnSpan > 1) {
-                print(" ${"& ".repeat(columnSpan - 1)}", escape = false)
+                append(" ${"& ".repeat(columnSpan - 1)}", escape = false)
             }
             if (index < cells.lastIndex) {
-                print("&", escape = false)
+                append("&", escape = false)
             }
         }
-        print("""\\""", escape = false)
+        append("""\\""", escape = false)
     }
 
     private fun columnHeadersLatexString(columnSpec: List<Table.ColumnSpec<LanguageSupport>>): String =
@@ -289,7 +293,7 @@ object PensjonLatexRenderer : LetterRenderer<RenderedLatexLetter>() {
             is Text.Expression.ByLanguage -> renderTextLiteral(element.expr(scope.language).eval(scope), element.fontType)
             is Text.Expression -> renderTextLiteral(element.expression.eval(scope), element.fontType)
             is Text.Literal -> renderTextLiteral(element.text(scope.language), element.fontType)
-            is Text.NewLine -> printCmd("newline")
+            is Text.NewLine -> appenCmd("newline")
         }
 
     private fun LatexAppendable.renderTextLiteral(
@@ -297,37 +301,37 @@ object PensjonLatexRenderer : LetterRenderer<RenderedLatexLetter>() {
         fontType: FontType
     ): Unit =
         when (fontType) {
-            FontType.PLAIN -> print(textLiteral)
-            FontType.BOLD -> printCmd("textbf") { arg { print(textLiteral) } }
-            FontType.ITALIC -> printCmd("textit") { arg { print(textLiteral) } }
+            FontType.PLAIN -> append(textLiteral)
+            FontType.BOLD -> appenCmd("textbf") { arg { append(textLiteral) } }
+            FontType.ITALIC -> appenCmd("textit") { arg { append(textLiteral) } }
         }
 
     private fun LatexAppendable.renderForm(scope: ExpressionScope<*, *>, element: Form<*>): Unit =
         when (element) {
             is Form.MultipleChoice -> {
                 if (element.vspace) {
-                    printCmd("formvspace")
+                    appenCmd("formvspace")
                 }
 
-                printCmd("begin") {
-                    arg { print("formChoice") }
+                appenCmd("begin") {
+                    arg { append("formChoice") }
                     arg { renderText(scope, listOf(element.prompt)) }
                 }
 
                 element.choices.forEach {
-                    printCmd("item")
+                    appenCmd("item")
                     renderTextContent(scope, it)
                 }
 
-                printCmd("end", "formChoice")
+                appenCmd("end", "formChoice")
             }
 
             is Form.Text -> {
                 if (element.vspace) {
-                    printCmd("formvspace")
+                    appenCmd("formvspace")
                 }
 
-                printCmd("formText") {
+                appenCmd("formText") {
                     arg {
                         val size = when (element.size) {
                             Size.NONE -> 0
@@ -335,7 +339,7 @@ object PensjonLatexRenderer : LetterRenderer<RenderedLatexLetter>() {
                             Size.LONG -> 60
                         }
                         renderText(scope, listOf(element.prompt))
-                        print(" ${".".repeat(size)}")
+                        append(" ${".".repeat(size)}")
                     }
                 }
             }
