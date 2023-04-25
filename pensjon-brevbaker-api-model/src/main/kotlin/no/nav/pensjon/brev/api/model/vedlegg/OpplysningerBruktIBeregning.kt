@@ -19,14 +19,10 @@ data class OpplysningerBruktIBeregningUTDto(
     val minsteytelseGjeldende_sats: Double?,
     val norskTrygdetidPerioder: List<NorskTrygdetidPeriode>,
     val norskTrygdetidPerioderAvdoed: List<NorskTrygdetidPeriodeAvdoed>,
-    val opplysningerAvdoed: OpplysningerAvdoed?,
     val opptjeningUfoeretrygd: OpptjeningUfoeretrygd?,
     val opptjeningUfoeretrygdAvdoed: OpptjeningUfoeretrygdAvdoed?,
     val sivilstand: Sivilstand,
-    val trygdetidsdetaljer1: OpplysningerAvdoed.Trygdetidsdetaljer1,
-    val trygdetidsdetaljerGjeldende1: TrygdetidsdetaljerGjeldende1,
     val trygdetidsdetaljerGjeldende: TrygdetidsdetaljerGjeldende,
-    val ufoeretrygdGjeldende1: OpplysningerAvdoed.UfoeretrygdGjeldende1,
     val ufoeretrygdGjeldende: UfoeretrygdGjeldende,
     val ufoeretrygdOrdinaer: UfoeretrygdOrdinaer,
     val ungUfoerGjeldende_erUnder20Aar: Boolean?,
@@ -35,7 +31,7 @@ data class OpplysningerBruktIBeregningUTDto(
     val utenlandskTrygdetidEOSPerioder: List<UtenlandskTrygdetidEOSPeriode>,
     val utenlandskTrygdetidEOSPerioderAvdoed: List<UtenlandskTrygdetidEOSPeriodeAvdoed>,
     val yrkesskadeGjeldende: YrkesskadeGjeldende?,
-    val yrkesskadeGjeldene1: OpplysningerAvdoed.YrkesskadeGjeldene1?,
+    val opplysningerAvdoed: OpplysningerAvdoed?,
 ) {
 
     data class YrkesskadeGjeldende(
@@ -98,6 +94,10 @@ data class OpplysningerBruktIBeregningUTDto(
         val tellerTTEOS: Int?,
         val tellerTTNordiskKonv: Int?,
         val utenforEOSogNorden: UtenforEOSogNorden?,
+        val framtidigTTEOS: Int?,
+        val fastsattTrygdetid: Int?,  //  TODO: (<FaTTNorge> + <FramtidigTTNorge>)/12
+        val harTrygdetidsgrunnlag: Boolean,  // TODO: If a trygdeperiod exists, true
+
     ) {
 
         data class UtenforEOSogNorden(
@@ -106,12 +106,6 @@ data class OpplysningerBruktIBeregningUTDto(
             val nevnerProRata: Int,
         )
     }
-
-    data class TrygdetidsdetaljerGjeldende1(
-        val framtidigTTEOS: Int?,
-        val fastsattTrygdetid: Int?,  //  TODO: (<FaTTNorge> + <FramtidigTTNorge>)/12
-        val harTrygdetidsgrunnlag: Boolean,  // TODO: If a trygdeperiod exists, true
-    )
 
     data class BeregnetUTPerManedGjeldende(
         val brukerErFlyktning: Boolean,

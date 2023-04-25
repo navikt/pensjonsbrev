@@ -2,10 +2,10 @@ package no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningufoe
 
 import no.nav.pensjon.brev.api.model.vedlegg.BeregnetUTPerManedGjeldendeSelectors.brukerErFlyktning
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDto
-import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidsdetaljerGjeldende1Selectors.fastsattTrygdetid_safe
-import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidsdetaljerGjeldende1Selectors.framtidigTTEOS_safe
-import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidsdetaljerGjeldende1Selectors.harTrygdetidsgrunnlag
+import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidsdetaljerGjeldendeSelectors.fastsattTrygdetid_safe
+import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidsdetaljerGjeldendeSelectors.framtidigTTEOS_safe
 import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidsdetaljerGjeldendeSelectors.framtidigTTNorsk_safe
+import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidsdetaljerGjeldendeSelectors.harTrygdetidsgrunnlag
 import no.nav.pensjon.brev.api.model.vedlegg.YrkesskadeGjeldendeSelectors.yrkesskadegrad
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.text
@@ -19,18 +19,17 @@ import no.nav.pensjon.brev.template.dsl.expression.*
 data class TrygdetidenDin(
     val beregnetUTPerManedGjeldende: Expression<OpplysningerBruktIBeregningUTDto.BeregnetUTPerManedGjeldende>,
     val trygdetidsdetaljerGjeldende: Expression<OpplysningerBruktIBeregningUTDto.TrygdetidsdetaljerGjeldende>,
-    val trygdetidsdetaljerGjeldende1: Expression<OpplysningerBruktIBeregningUTDto.TrygdetidsdetaljerGjeldende1>,
     val ufoeregrad: Expression<OpplysningerBruktIBeregningUTDto.UfoeretrygdGjeldende>,
     val yrkesskadegrad: Expression<OpplysningerBruktIBeregningUTDto.YrkesskadeGjeldende?>,
 
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-        val framtidigTTEOS = trygdetidsdetaljerGjeldende1.framtidigTTEOS_safe
+        val framtidigTTEOS = trygdetidsdetaljerGjeldende.framtidigTTEOS_safe
         val framtigTTNorsk = trygdetidsdetaljerGjeldende.framtidigTTNorsk_safe
-        val har40AarfastsattTrygdetid = trygdetidsdetaljerGjeldende1.fastsattTrygdetid_safe.equalTo(40)
+        val har40AarfastsattTrygdetid = trygdetidsdetaljerGjeldende.fastsattTrygdetid_safe.equalTo(40)
         val harFramtidigTrygdetid = framtigTTNorsk.notEqualTo(0) or framtidigTTEOS.notEqualTo(0)
         val harLikUfoeregradOgYrkesskadegrad = ufoeregrad.equalTo(yrkesskadegrad)
-        val fastsattTrygdetid = trygdetidsdetaljerGjeldende1.fastsattTrygdetid_safe.ifNull(0)
+        val fastsattTrygdetid = trygdetidsdetaljerGjeldende.fastsattTrygdetid_safe.ifNull(0)
 
         // TBU039V
         title1 {
@@ -119,7 +118,7 @@ data class TrygdetidenDin(
                         Nynorsk to "Trygdetida i folketrygda er fastsett til ".expr() + fastsattTrygdetid.format() + " år for den delen av uføretrygda di som ikkje skuldas ein godkjend yrkesskade eller yrkessjukdom.".expr(),
                         English to "The period of national insurance coverage has been set to ".expr() + fastsattTrygdetid.format() + " years for the part of your disability that is not caused by an approved occupational injury or occupational illness.".expr(),
                     )
-                    showIf(trygdetidsdetaljerGjeldende1.harTrygdetidsgrunnlag) {
+                    showIf(trygdetidsdetaljerGjeldende.harTrygdetidsgrunnlag) {
                         text(
                             Bokmal to " Den faktiske trygdetiden din i denne perioden er fastsatt på grunnlag av følgende perioder:",
                             Nynorsk to " Den faktiske trygdetida di i denne perioden er fastsett på grunnlag av følgjande periodar:",
@@ -153,7 +152,7 @@ data class TrygdetidenDin(
                         English to "Your period of national insurance coverage has been set to ".expr() + fastsattTrygdetid.format() + " years.".expr()
                     )
                     showIf(
-                        trygdetidsdetaljerGjeldende1.harTrygdetidsgrunnlag
+                        trygdetidsdetaljerGjeldende.harTrygdetidsgrunnlag
                     ) {
                         text(
                             Bokmal to " Den faktiske trygdetiden din er fastsatt på grunnlag av følgende perioder:",

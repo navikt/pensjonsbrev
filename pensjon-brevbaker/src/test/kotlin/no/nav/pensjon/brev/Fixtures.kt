@@ -81,6 +81,7 @@ object Fixtures {
             OpplysningerBruktIBeregningUTDto.OpptjeningsperiodeAvdoed::class -> createOpplysningerBruktIBeregningUTDtoOpptjeningsperiodeAvdoede() as T
 
 
+
             else -> throw IllegalArgumentException("Don't know how to construct: ${letterDataType.qualifiedName}")
         }
 }
