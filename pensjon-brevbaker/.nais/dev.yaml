@@ -2,6 +2,7 @@ app-name: "pensjon-brevbaker"
 pdf-bygger-app: "pensjon-pdf-bygger"
 ingresses:
   - "https://pensjon-brevbaker.dev.intern.nav.no"
+  - "https://pensjon-brevbaker.intern.dev.nav.no"
 env:
   - name: PDF_BUILDER_URL
     value: "http://pensjon-pdf-bygger:8080"
@@ -18,6 +19,9 @@ preAuthorized:
     cluster: dev-fss
   - name: pensjon-pen-q2
     namespace: teampensjon
+    cluster: dev-fss
+  - name: penbatch
+    namespace: pensjon-batch
     cluster: dev-fss
   - name: pensjon-pen-q4
     namespace: teampensjon
