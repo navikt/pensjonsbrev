@@ -95,7 +95,7 @@ data class OpplysningerBruktIBeregningUTDto(
         val tellerTTNordiskKonv: Int?,
         val utenforEOSogNorden: UtenforEOSogNorden?,
         val framtidigTTEOS: Int?,
-        val fastsattTrygdetid: Int?,  //  TODO: (<FaTTNorge> + <FramtidigTTNorge>)/12
+        val fastsattTrygdetid: Int?,  //  TODO: Beregnes i Exstream: (<FaTTNorge> + <FramtidigTTNorge>)/12
         val harTrygdetidsgrunnlag: Boolean,  // TODO: If a trygdeperiod exists, true
 
     ) {
@@ -206,12 +206,12 @@ data class OpplysningerBruktIBeregningUTDto(
 
     data class UfoeretrygdOrdinaer(
         val harBeloepRedusert: Boolean,  // PE_Vedtaksdata_BeregningsData_BeregningUfore_BelopRedusert
-        val harNyUTBeloep: Boolean, // TODO: Ny / PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopNyUT
+        val harNyUTBeloep: Boolean, // PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopNyUT
         val harTotalNettoUT: Boolean,  // PE_Vedtaksdata_BeregningsData_BeregningUfore_TotalNetto
         val nettoAkkumulerteBeloepUtbetalt: Kroner?,  // NettoAkk
         val nettoTilUtbetalingRestenAvAaret: Kroner?,  // NettoRestAr
         val reduksjonIUfoeretrygd: Kroner?,  // fradrag
-        val harGammelUTBeloepUlikNyUTBeloep: Boolean, // TODO: PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopGammelUT <> PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopNyUT
+        val harGammelUTBeloepUlikNyUTBeloep: Boolean, // TODO: Regnes ut i Exstream: PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopGammelUT <> PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_UforetrygdOrdinerYK_BelopNyUT
         val nettoAkkumulertePlussNettoRestAar: Kroner?,  // TODO: Summeres i Exstream: NettoAkk + NettoRestAr
         val nettoPerAarReduksjonUT: Kroner?, // TODO: Summeres i Exstream: overskytenedeInntekt X kompensasjonsgrad
         val overskytendeInntekt: Kroner?,  // TODO: Summeres i Exstream: PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_ForventetInntekt - PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektsgrense
@@ -219,10 +219,10 @@ data class OpplysningerBruktIBeregningUTDto(
     )
 
     data class OpplysningerAvdoed(
-        val erFlyktning: Boolean,  // PE_Grunnlag_PersongrunnlagAvdod_BrukerFlyktning
-        val erUngUfoer: Boolean, // PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GjenlevendetilleggInformasjon_MinsteYtelseBenyttetUngUfor
+        val erFlyktning: Boolean,
+        val erUngUfoer: Boolean,
         val foedselsnummer: Foedselsnummer,
-        val harNyttGjenlevendetillegg: Boolean,  // PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_NyttGjenlevendetillegg
+        val harNyttGjenlevendetillegg: Boolean,
         val trygdetidsdetaljer1: Trygdetidsdetaljer1,
         val ufoeretrygdGjeldende1: UfoeretrygdGjeldende1,
         val yrkesskadeGjeldene1: YrkesskadeGjeldene1?,
@@ -237,7 +237,7 @@ data class OpplysningerBruktIBeregningUTDto(
             val faktiskTTNorgePlusFaktiskBilateral: Int?, // TODO: Summeres i Extream: PE_Vedtaksdata_TrygdetidAvdod_FaTTNorge + PE_Vedtaksdata_TrygdetidAvdod_TTUtlandTrygdeAvtale_FaTTBilateral
             val faktiskTTNorgePlusfaktiskTTEOS: Int?,  // TODO: Summeres i Exstream: PE_Vedtaksdata_TrygdetidAvdod_FaTTNorge + PE_Vedtaksdata_TrygdetidAvdod_TTUtlandTrygdeAvtale_FaTTEOS
             val framtidigTTAvtaleland: Int?,
-            val framtidigTTEOS: Int?,  // PE_Vedtaksdata_TrygdetidAvdod_FramtidigTTEOS
+            val framtidigTTEOS: Int?,
             val framtidigTTNorsk: Int?,
             val nevnerTTBilateralProRata: Int?,
             val nevnerTTEOS: Int?,
@@ -255,9 +255,9 @@ data class OpplysningerBruktIBeregningUTDto(
         )
 
         data class YrkesskadeGjeldene1(
-            val yrkesskadegrad: Int,  // PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GjenlevendetilleggInformasjon_Yrkesskadegrad
-            val inntektVedSkadetidspunkt: Kroner, // PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GjenlevendetilleggInformasjon_InntektVedSkadetidspunkt
-            val beregningsgrunnlagBeloepAarYrkesskade: Kroner, // PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GjenlevendetilleggInformasjon_BeregningsgrunnlagAvdodYrkesskadeArsbelop
+            val yrkesskadegrad: Int,
+            val inntektVedSkadetidspunkt: Kroner,
+            val beregningsgrunnlagBeloepAarYrkesskade: Kroner,
         )
     }
 }

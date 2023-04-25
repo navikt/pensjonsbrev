@@ -252,9 +252,9 @@ fun createOpplysningerBruktIBeregningUTDtoOpplysningerAvdoed() =
         erFlyktning = false,
         erUngUfoer = false,
         foedselsnummer = Foedselsnummer("01125512345"),
-        harNyttGjenlevendetillegg = false,
+        harNyttGjenlevendetillegg = true,
         trygdetidsdetaljer1 = OpplysningerBruktIBeregningUTDto.OpplysningerAvdoed.Trygdetidsdetaljer1(
-            anvendtTT = 0,
+            anvendtTT = 100000,
             beregningsmetode = Beregningsmetode.FOLKETRYGD,
             faktiskTTBilateral = 0,
             faktiskTTEOS = 0,
@@ -274,14 +274,14 @@ fun createOpplysningerBruktIBeregningUTDtoOpplysningerAvdoed() =
             tellerTTNordiskKonv = 0,
         ),
         ufoeretrygdGjeldende1 = OpplysningerBruktIBeregningUTDto.OpplysningerAvdoed.UfoeretrygdGjeldende1(
-            beregningsgrunnlagBeloepAar = Kroner(0),
-            ufoeregrad = 0,
+            beregningsgrunnlagBeloepAar = Kroner(150000),
+            ufoeregrad = 80,
             ufoeretidspunkt = LocalDate.of(2020, 1, 1),
         ),
         yrkesskadeGjeldene1 = OpplysningerBruktIBeregningUTDto.OpplysningerAvdoed.YrkesskadeGjeldene1(
-            yrkesskadegrad = 0,
-            inntektVedSkadetidspunkt = Kroner(0),
-            beregningsgrunnlagBeloepAarYrkesskade = Kroner(0),
+            yrkesskadegrad = 20,
+            inntektVedSkadetidspunkt = Kroner(50000),
+            beregningsgrunnlagBeloepAarYrkesskade = Kroner(275000),
         ),
     )
 
