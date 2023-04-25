@@ -9,6 +9,7 @@ import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDto
 import no.nav.pensjon.brev.api.model.vedlegg.Trygdetidsdetaljer1Selectors.anvendtTT
 import no.nav.pensjon.brev.api.model.vedlegg.Trygdetidsdetaljer1Selectors.faktiskTTBilateral_safe
 import no.nav.pensjon.brev.api.model.vedlegg.Trygdetidsdetaljer1Selectors.faktiskTTEOS
+import no.nav.pensjon.brev.api.model.vedlegg.Trygdetidsdetaljer1Selectors.faktiskTTEOS_safe
 import no.nav.pensjon.brev.api.model.vedlegg.Trygdetidsdetaljer1Selectors.faktiskTTNordiskKonv_safe
 import no.nav.pensjon.brev.api.model.vedlegg.Trygdetidsdetaljer1Selectors.faktiskTTNorge
 import no.nav.pensjon.brev.api.model.vedlegg.Trygdetidsdetaljer1Selectors.faktiskTTNorgePlusFaktiskBilateral_safe
@@ -16,6 +17,7 @@ import no.nav.pensjon.brev.api.model.vedlegg.Trygdetidsdetaljer1Selectors.faktis
 import no.nav.pensjon.brev.api.model.vedlegg.Trygdetidsdetaljer1Selectors.faktiskTTNorge_safe
 import no.nav.pensjon.brev.api.model.vedlegg.Trygdetidsdetaljer1Selectors.framtidigTTAvtaleland_safe
 import no.nav.pensjon.brev.api.model.vedlegg.Trygdetidsdetaljer1Selectors.framtidigTTEOS
+import no.nav.pensjon.brev.api.model.vedlegg.Trygdetidsdetaljer1Selectors.framtidigTTEOS_safe
 import no.nav.pensjon.brev.api.model.vedlegg.Trygdetidsdetaljer1Selectors.framtidigTTNorsk_safe
 import no.nav.pensjon.brev.api.model.vedlegg.Trygdetidsdetaljer1Selectors.nevnerTTBilateralProRata_safe
 import no.nav.pensjon.brev.api.model.vedlegg.Trygdetidsdetaljer1Selectors.nevnerTTEOS_safe
@@ -136,162 +138,162 @@ data class TabellUfoereOpplysningerAvdoed(
                         cell { includePhrase(Felles.KronerText(ufoeretrygdGjeldende.beregningsgrunnlagBeloepAar)) }
                     }
                 }
-            row {
-                cell {
-                    text(
-                        Language.Bokmal to "Uføregrad",
-                        Language.Nynorsk to "Uføregrad",
-                        Language.English to "Degree of disability"
-                    )
-                }
-                cell {
-                    text(
-                        Language.Bokmal to "100 %",
-                        Language.Nynorsk to "100 %",
-                        Language.English to "100 %"
-                    )
-                }
-            }
-            showIf(opplysningerAvdoed.erFlyktning_safe.ifNull(then = false)) {
                 row {
                     cell {
                         text(
-                            Language.Bokmal to "Avdøde var innvilget flyktningstatus fra UDI",
-                            Language.Nynorsk to "Avdøde var innvilga flyktningstatus frå UDI",
-                            Language.English to "Deceased was granted refugee status by the Norwegian Directorate of Immigration (UDI)"
+                            Language.Bokmal to "Uføregrad",
+                            Language.Nynorsk to "Uføregrad",
+                            Language.English to "Degree of disability"
                         )
                     }
                     cell {
                         text(
-                            Language.Bokmal to "Ja",
-                            Language.Nynorsk to "Ja",
-                            Language.English to "Yes"
+                            Language.Bokmal to "100 %",
+                            Language.Nynorsk to "100 %",
+                            Language.English to "100 %"
                         )
                     }
                 }
-            }
-            showIf(not(opplysningerAvdoed.erFlyktning_safe.ifNull(then = false))) {
-                row {
-                    cell {
-                        text(
-                            Language.Bokmal to "Trygdetid (maksimalt 40 år)",
-                            Language.Nynorsk to "Trygdetid (maksimalt 40 år)",
-                            Language.English to "Insurance period (maximum 40 years)"
-                        )
-                    }
-                    cell {
-                        val anvendtTT = trygdetidsdetaljer.anvendtTT
-                        includePhrase(Felles.AarText(anvendtTT.ifNull(0)))
-                    }
-                }
-            }
-            showIf(opplysningerAvdoed.erUngUfoer_safe.ifNull(then = false)) {
-                row {
-                    cell {
-                        text(
-                            Language.Bokmal to "Ung ufør",
-                            Language.Nynorsk to "Ung ufør",
-                            Language.English to "Young disabled"
-                        )
-                    }
-                    cell {
-                        text(
-                            Language.Bokmal to "Ja",
-                            Language.Nynorsk to "Ja",
-                            Language.English to "Yes"
-                        )
-                    }
-                }
-            }
-            ifNotNull(yrkesskadeGjeldende.yrkesskadegrad_safe) { yrkesskadegrad ->
-                showIf(yrkesskadegrad.greaterThan(0)) {
+                showIf(opplysningerAvdoed.erFlyktning_safe.ifNull(then = false)) {
                     row {
                         cell {
                             text(
-                                Language.Bokmal to "Yrkesskadegrad",
-                                Language.Nynorsk to "Yrkesskadegrad",
-                                Language.English to "Degree of disability due to occupational injury"
+                                Language.Bokmal to "Avdøde var innvilget flyktningstatus fra UDI",
+                                Language.Nynorsk to "Avdøde var innvilga flyktningstatus frå UDI",
+                                Language.English to "Deceased was granted refugee status by the Norwegian Directorate of Immigration (UDI)"
                             )
                         }
-                        cell { includePhrase((Felles.ProsentText(yrkesskadegrad))) }
-                    }
-                }
-                ifNotNull(yrkesskadeGjeldende.beregningsgrunnlagBeloepAarYrkesskade_safe) { beloep ->
-                    showIf(beloep.greaterThan(0)) {
-                        row {
-                            cell {
-                                text(
-                                    Language.Bokmal to "Beregningsgrunnlag yrkesskade",
-                                    Language.Nynorsk to "Utrekningsgrunnlag yrkesskade",
-                                    Language.English to "Basis for calculation due to occupational injury"
-                                )
-                            }
-                            cell { includePhrase(Felles.KronerText(beloep)) }
+                        cell {
+                            text(
+                                Language.Bokmal to "Ja",
+                                Language.Nynorsk to "Ja",
+                                Language.English to "Yes"
+                            )
                         }
                     }
                 }
-                ifNotNull(yrkesskadeGjeldende.inntektVedSkadetidspunkt_safe) { inntekt ->
-                    showIf(inntekt.greaterThan(0)) {
-                        row {
-                            cell {
-                                text(
-                                    Language.Bokmal to "Årlig arbeidsinntekt på skadetidspunktet",
-                                    Language.Nynorsk to "Årleg arbeidsinntekt på skadetidspunktet",
-                                    Language.English to "Annual income at the date of injury"
-                                )
-                            }
-                            cell { includePhrase(Felles.KronerText(inntekt)) }
-                        }
-                    }
-                }
-            }
-                ifNotNull(trygdetidsdetaljer.faktiskTTNorge) { faktiskTTNorge ->
-                showIf(faktiskTTNorge.greaterThan(0)) {
+                showIf(not(opplysningerAvdoed.erFlyktning_safe.ifNull(then = false))) {
                     row {
                         cell {
                             text(
-                                Language.Bokmal to "Faktisk trygdetid i Norge",
-                                Language.Nynorsk to "Faktisk trygdetid i Noreg",
-                                Language.English to "Actual insurance period in Norway"
+                                Language.Bokmal to "Trygdetid (maksimalt 40 år)",
+                                Language.Nynorsk to "Trygdetid (maksimalt 40 år)",
+                                Language.English to "Insurance period (maximum 40 years)"
                             )
                         }
                         cell {
-                            includePhrase(Felles.MaanederText(faktiskTTNorge))
+                            val anvendtTT = trygdetidsdetaljer.anvendtTT
+                            includePhrase(Felles.AarText(anvendtTT.ifNull(0)))
                         }
                     }
                 }
-            }
-            ifNotNull(trygdetidsdetaljer.faktiskTTEOS) { faktiskTTEOS ->
-                showIf(faktiskTTEOS.greaterThan(0)) {
+                showIf(opplysningerAvdoed.erUngUfoer_safe.ifNull(then = false)) {
                     row {
                         cell {
                             text(
-                                Language.Bokmal to "Faktisk trygdetid i andre EØS-land",
-                                Language.Nynorsk to "Faktisk trygdetid i andre EØS-land",
-                                Language.English to "Actual insurance period(s) in other EEA countries"
+                                Language.Bokmal to "Ung ufør",
+                                Language.Nynorsk to "Ung ufør",
+                                Language.English to "Young disabled"
                             )
                         }
-                        cell { includePhrase(Felles.MaanederText(faktiskTTEOS)) }
+                        cell {
+                            text(
+                                Language.Bokmal to "Ja",
+                                Language.Nynorsk to "Ja",
+                                Language.English to "Yes"
+                            )
+                        }
                     }
                 }
-                ifNotNull(trygdetidsdetaljer.framtidigTTEOS) { framtidigTTEOS ->
-                    showIf(framtidigTTEOS.greaterThan(0)) {
+                ifNotNull(yrkesskadeGjeldende.yrkesskadegrad_safe) { yrkesskadegrad ->
+                    showIf(yrkesskadegrad.greaterThan(0)) {
                         row {
                             cell {
                                 text(
-                                    Language.Bokmal to "Faktisk trygdetid i Norge og EØS-land (maksimalt 40 år)",
-                                    Language.Nynorsk to "Faktisk trygdetid i Noreg og EØS-land (maksimalt 40 år)",
-                                    Language.English to "Actual insurance period in Norway and EEA countries (maximum 40 years)"
+                                    Language.Bokmal to "Yrkesskadegrad",
+                                    Language.Nynorsk to "Yrkesskadegrad",
+                                    Language.English to "Degree of disability due to occupational injury"
                                 )
                             }
-                            cell { includePhrase(Felles.MaanederText(framtidigTTEOS)) }
+                            cell { includePhrase((Felles.ProsentText(yrkesskadegrad))) }
+                        }
+                    }
+                    ifNotNull(yrkesskadeGjeldende.beregningsgrunnlagBeloepAarYrkesskade_safe) { beloep ->
+                        showIf(beloep.greaterThan(0)) {
+                            row {
+                                cell {
+                                    text(
+                                        Language.Bokmal to "Beregningsgrunnlag yrkesskade",
+                                        Language.Nynorsk to "Utrekningsgrunnlag yrkesskade",
+                                        Language.English to "Basis for calculation due to occupational injury"
+                                    )
+                                }
+                                cell { includePhrase(Felles.KronerText(beloep)) }
+                            }
+                        }
+                    }
+                    ifNotNull(yrkesskadeGjeldende.inntektVedSkadetidspunkt_safe) { inntekt ->
+                        showIf(inntekt.greaterThan(0)) {
+                            row {
+                                cell {
+                                    text(
+                                        Language.Bokmal to "Årlig arbeidsinntekt på skadetidspunktet",
+                                        Language.Nynorsk to "Årleg arbeidsinntekt på skadetidspunktet",
+                                        Language.English to "Annual income at the date of injury"
+                                    )
+                                }
+                                cell { includePhrase(Felles.KronerText(inntekt)) }
+                            }
                         }
                     }
                 }
                 ifNotNull(
-                    trygdetidsdetaljer.faktiskTTNorge,
-                    trygdetidsdetaljer.faktiskTTEOS
+                    trygdetidsdetaljer.faktiskTTNorge_safe,
+                    trygdetidsdetaljer.faktiskTTEOS_safe
                 ) { faktiskTTNorge, faktiskTTEOS ->
+                    showIf(faktiskTTNorge.greaterThan(0)) {
+                        row {
+                            cell {
+                                text(
+                                    Language.Bokmal to "Faktisk trygdetid i Norge",
+                                    Language.Nynorsk to "Faktisk trygdetid i Noreg",
+                                    Language.English to "Actual insurance period in Norway"
+                                )
+                            }
+                            cell {
+                                includePhrase(Felles.MaanederText(faktiskTTNorge))
+                            }
+                        }
+                    }
+
+                    showIf(faktiskTTEOS.greaterThan(0)) {
+                        row {
+                            cell {
+                                text(
+                                    Language.Bokmal to "Faktisk trygdetid i andre EØS-land",
+                                    Language.Nynorsk to "Faktisk trygdetid i andre EØS-land",
+                                    Language.English to "Actual insurance period(s) in other EEA countries"
+                                )
+                            }
+                            cell { includePhrase(Felles.MaanederText(faktiskTTEOS)) }
+                        }
+                    }
+
+                    ifNotNull(trygdetidsdetaljer.framtidigTTEOS_safe) { framtidigTTEOS ->
+                        showIf(framtidigTTEOS.greaterThan(0)) {
+                            row {
+                                cell {
+                                    text(
+                                        Language.Bokmal to "Faktisk trygdetid i Norge og EØS-land (maksimalt 40 år)",
+                                        Language.Nynorsk to "Faktisk trygdetid i Noreg og EØS-land (maksimalt 40 år)",
+                                        Language.English to "Actual insurance period in Norway and EEA countries (maximum 40 years)"
+                                    )
+                                }
+                                cell { includePhrase(Felles.MaanederText(framtidigTTEOS)) }
+                            }
+                        }
+                    }
+
                     showIf(faktiskTTNorge.greaterThan(0) and faktiskTTEOS.greaterThan(0)) {
                         row {
                             cell {
@@ -332,153 +334,152 @@ data class TabellUfoereOpplysningerAvdoed(
                         }
                     }
                 }
-            }
-            ifNotNull(trygdetidsdetaljer.faktiskTTNordiskKonv_safe) { faktiskTTNordiskKonv ->
-                // showIf?
-                row {
-                    cell {
-                        text(
-                            Language.Bokmal to "Faktisk trygdetid i annet nordisk land som brukes i beregning av framtidig trygdetid",
-                            Language.Nynorsk to "Faktisk trygdetid i anna nordisk land som blir brukt i utrekning av framtidig trygdetid",
-                            Language.English to "Actual insurance period in another Nordic country, applied in calculation of future insurance period(s)"
-                        )
-                    }
-                    cell { includePhrase(Felles.MaanederText(faktiskTTNordiskKonv.ifNull(then = 0))) }
-                }
-            }
-            ifNotNull(trygdetidsdetaljer.framtidigTTNorsk_safe) { framtidigTTNorsk ->
-                showIf(
-                    framtidigTTNorsk.greaterThan(0) and framtidigTTNorsk.lessThan(480)
-                ) {
+                ifNotNull(trygdetidsdetaljer.faktiskTTNordiskKonv_safe) { faktiskTTNordiskKonv ->
+                    // showIf?
                     row {
                         cell {
                             text(
-                                Language.Bokmal to "Norsk framtidig trygdetid",
-                                Language.Nynorsk to "Norsk framtidig trygdetid",
-                                Language.English to "Future insurance period in Norway"
+                                Language.Bokmal to "Faktisk trygdetid i annet nordisk land som brukes i beregning av framtidig trygdetid",
+                                Language.Nynorsk to "Faktisk trygdetid i anna nordisk land som blir brukt i utrekning av framtidig trygdetid",
+                                Language.English to "Actual insurance period in another Nordic country, applied in calculation of future insurance period(s)"
                             )
                         }
-                        cell { includePhrase(Felles.MaanederText(framtidigTTNorsk)) }
+                        cell { includePhrase(Felles.MaanederText(faktiskTTNordiskKonv.ifNull(then = 0))) }
                     }
                 }
-            }
-            ifNotNull(
-                trygdetidsdetaljer.tellerTTNordiskKonv_safe,
-                trygdetidsdetaljer.nevnerTTNordiskKonv_safe
-            ) { tellerTTNordiskKonv, nevnerTTNordiskKonv ->
-                showIf(tellerTTNordiskKonv.greaterThan(0) and nevnerTTNordiskKonv.greaterThan(0)) {
-                    row {
-                        cell {
-                            text(
-                                Language.Bokmal to "Forholdstallet brukt i reduksjon av norsk framtidig trygdetid",
-                                Language.Nynorsk to "Forholdstalet brukt i reduksjon av norsk framtidig trygdetid",
-                                Language.English to "Ratio applied in reduction of future Norwegian insurance period"
-                            )
-                        }
-                        cell {
-                            textExpr(
-                                Language.Bokmal to tellerTTNordiskKonv.format() + " / " + nevnerTTNordiskKonv.format(),
-                                Language.Nynorsk to tellerTTNordiskKonv.format() + " / " + nevnerTTNordiskKonv.format(),
-                                Language.English to tellerTTNordiskKonv.format() + " / " + nevnerTTNordiskKonv.format()
-                            )
+                ifNotNull(trygdetidsdetaljer.framtidigTTNorsk_safe) { framtidigTTNorsk ->
+                    showIf(
+                        framtidigTTNorsk.greaterThan(0) and framtidigTTNorsk.lessThan(480)
+                    ) {
+                        row {
+                            cell {
+                                text(
+                                    Language.Bokmal to "Norsk framtidig trygdetid",
+                                    Language.Nynorsk to "Norsk framtidig trygdetid",
+                                    Language.English to "Future insurance period in Norway"
+                                )
+                            }
+                            cell { includePhrase(Felles.MaanederText(framtidigTTNorsk)) }
                         }
                     }
                 }
-            }
-            ifNotNull(trygdetidsdetaljer.samletTTNordiskKonv_safe) { samletTTNordiskKonv ->
-                showIf(samletTTNordiskKonv.greaterThan(0)) {
-                    row {
-                        cell {
-                            text(
-                                Language.Bokmal to "Samlet trygdetid brukt i beregning av uføretrygd etter reduksjon av framtidig trygdetid",
-                                Language.Nynorsk to "Samla trygdetid brukt i utrekning av uføretrygd etter reduksjon av framtidig trygdetid",
-                                Language.English to "Total insurance period applied in calculating disability benefit after reduction of future insurance period(s"
-                            )
+                ifNotNull(
+                    trygdetidsdetaljer.tellerTTNordiskKonv_safe,
+                    trygdetidsdetaljer.nevnerTTNordiskKonv_safe
+                ) { tellerTTNordiskKonv, nevnerTTNordiskKonv ->
+                    showIf(tellerTTNordiskKonv.greaterThan(0) and nevnerTTNordiskKonv.greaterThan(0)) {
+                        row {
+                            cell {
+                                text(
+                                    Language.Bokmal to "Forholdstallet brukt i reduksjon av norsk framtidig trygdetid",
+                                    Language.Nynorsk to "Forholdstalet brukt i reduksjon av norsk framtidig trygdetid",
+                                    Language.English to "Ratio applied in reduction of future Norwegian insurance period"
+                                )
+                            }
+                            cell {
+                                textExpr(
+                                    Language.Bokmal to tellerTTNordiskKonv.format() + " / " + nevnerTTNordiskKonv.format(),
+                                    Language.Nynorsk to tellerTTNordiskKonv.format() + " / " + nevnerTTNordiskKonv.format(),
+                                    Language.English to tellerTTNordiskKonv.format() + " / " + nevnerTTNordiskKonv.format()
+                                )
+                            }
                         }
-                        cell { includePhrase(Felles.MaanederText(samletTTNordiskKonv)) }
                     }
                 }
-            }
-            ifNotNull(trygdetidsdetaljer.faktiskTTBilateral_safe) { faktiskTTBilateral ->
-                showIf(faktiskTTBilateral.greaterThan(0)) {
-                    row {
-                        cell {
-                            text(
-                                Language.Bokmal to "Faktisk trygdetid i annet avtaleland",
-                                Language.Nynorsk to "Faktisk trygdetid i anna avtaleland",
-                                Language.English to "Actual insurance period(s) in another partner country"
-                            )
+                ifNotNull(trygdetidsdetaljer.samletTTNordiskKonv_safe) { samletTTNordiskKonv ->
+                    showIf(samletTTNordiskKonv.greaterThan(0)) {
+                        row {
+                            cell {
+                                text(
+                                    Language.Bokmal to "Samlet trygdetid brukt i beregning av uføretrygd etter reduksjon av framtidig trygdetid",
+                                    Language.Nynorsk to "Samla trygdetid brukt i utrekning av uføretrygd etter reduksjon av framtidig trygdetid",
+                                    Language.English to "Total insurance period applied in calculating disability benefit after reduction of future insurance period(s"
+                                )
+                            }
+                            cell { includePhrase(Felles.MaanederText(samletTTNordiskKonv)) }
                         }
-                        cell { includePhrase(Felles.MaanederText(faktiskTTBilateral)) }
                     }
                 }
-            }
-            ifNotNull(trygdetidsdetaljer.framtidigTTAvtaleland_safe) { framtidigTTAvtaleland ->
-                showIf(framtidigTTAvtaleland.greaterThan(0)) {
-                    row {
-                        cell {
-                            text(
-                                Language.Bokmal to "Framtidig trygdetid",
-                                Language.Nynorsk to "Framtidig trygdetid",
-                                Language.English to "Future insurance period in Norway"
-                            )
+                ifNotNull(trygdetidsdetaljer.faktiskTTBilateral_safe) { faktiskTTBilateral ->
+                    showIf(faktiskTTBilateral.greaterThan(0)) {
+                        row {
+                            cell {
+                                text(
+                                    Language.Bokmal to "Faktisk trygdetid i annet avtaleland",
+                                    Language.Nynorsk to "Faktisk trygdetid i anna avtaleland",
+                                    Language.English to "Actual insurance period(s) in another partner country"
+                                )
+                            }
+                            cell { includePhrase(Felles.MaanederText(faktiskTTBilateral)) }
                         }
-                        cell { includePhrase(Felles.MaanederText(framtidigTTAvtaleland)) }
                     }
                 }
-            }
-            ifNotNull(
-                trygdetidsdetaljer.faktiskTTNorge_safe,
-                trygdetidsdetaljer.faktiskTTBilateral_safe
-            ) { faktiskTTNorge, faktiskTTBilateral ->
-                showIf(faktiskTTNorge.greaterThan(0) and faktiskTTBilateral.greaterThan(0)) {
-                    row {
-                        cell {
-                            text(
-                                Language.Bokmal to "Faktisk trygdetid i Norge og avtaleland (maksimalt 40 år)",
-                                Language.Nynorsk to "Faktisk trygdetid i Noreg og avtaleland (maksimalt 40 år)",
-                                Language.English to "Actual insurance period in Norway and partner countries (maximum 40 years)"
-                            )
+                ifNotNull(trygdetidsdetaljer.framtidigTTAvtaleland_safe) { framtidigTTAvtaleland ->
+                    showIf(framtidigTTAvtaleland.greaterThan(0)) {
+                        row {
+                            cell {
+                                text(
+                                    Language.Bokmal to "Framtidig trygdetid",
+                                    Language.Nynorsk to "Framtidig trygdetid",
+                                    Language.English to "Future insurance period in Norway"
+                                )
+                            }
+                            cell { includePhrase(Felles.MaanederText(framtidigTTAvtaleland)) }
                         }
-                        cell {
-                            val faktiskTrygdetidINorgePlusAvtaleland =
-                                trygdetidsdetaljer.faktiskTTNorgePlusFaktiskBilateral_safe
-                            includePhrase(
-                                Felles.MaanederText(
-                                    faktiskTrygdetidINorgePlusAvtaleland.ifNull(
-                                        then = 0
+                    }
+                }
+                ifNotNull(
+                    trygdetidsdetaljer.faktiskTTNorge_safe,
+                    trygdetidsdetaljer.faktiskTTBilateral_safe
+                ) { faktiskTTNorge, faktiskTTBilateral ->
+                    showIf(faktiskTTNorge.greaterThan(0) and faktiskTTBilateral.greaterThan(0)) {
+                        row {
+                            cell {
+                                text(
+                                    Language.Bokmal to "Faktisk trygdetid i Norge og avtaleland (maksimalt 40 år)",
+                                    Language.Nynorsk to "Faktisk trygdetid i Noreg og avtaleland (maksimalt 40 år)",
+                                    Language.English to "Actual insurance period in Norway and partner countries (maximum 40 years)"
+                                )
+                            }
+                            cell {
+                                val faktiskTrygdetidINorgePlusAvtaleland =
+                                    trygdetidsdetaljer.faktiskTTNorgePlusFaktiskBilateral_safe
+                                includePhrase(
+                                    Felles.MaanederText(
+                                        faktiskTrygdetidINorgePlusAvtaleland.ifNull(
+                                            then = 0
+                                        )
                                     )
                                 )
-                            )
+                            }
                         }
                     }
                 }
-            }
-            ifNotNull(
-                trygdetidsdetaljer.tellerTTBilateralProRata_safe,
-                trygdetidsdetaljer.nevnerTTBilateralProRata_safe
-            ) { tellerProRata, nevnerProRata ->
-                showIf(tellerProRata.greaterThan(0) and nevnerProRata.greaterThan(0)) {
-                    row {
-                        cell {
-                            text(
-                                Language.Bokmal to "Forholdstallet brukt i beregning av uføretrygd",
-                                Language.Nynorsk to "Forholdstalet brukt i utrekning av uføretrygd",
-                                Language.English to "Ratio applied in calculation of insurance period"
-                            )
-                        }
-                        cell {
-                            textExpr(
-                                Language.Bokmal to tellerProRata.format() + " / " + nevnerProRata.format(),
-                                Language.Nynorsk to tellerProRata.format() + " / " + nevnerProRata.format(),
-                                Language.English to tellerProRata.format() + " / " + nevnerProRata.format()
-                            )
+                ifNotNull(
+                    trygdetidsdetaljer.tellerTTBilateralProRata_safe,
+                    trygdetidsdetaljer.nevnerTTBilateralProRata_safe
+                ) { tellerProRata, nevnerProRata ->
+                    showIf(tellerProRata.greaterThan(0) and nevnerProRata.greaterThan(0)) {
+                        row {
+                            cell {
+                                text(
+                                    Language.Bokmal to "Forholdstallet brukt i beregning av uføretrygd",
+                                    Language.Nynorsk to "Forholdstalet brukt i utrekning av uføretrygd",
+                                    Language.English to "Ratio applied in calculation of insurance period"
+                                )
+                            }
+                            cell {
+                                textExpr(
+                                    Language.Bokmal to tellerProRata.format() + " / " + nevnerProRata.format(),
+                                    Language.Nynorsk to tellerProRata.format() + " / " + nevnerProRata.format(),
+                                    Language.English to tellerProRata.format() + " / " + nevnerProRata.format()
+                                )
+                            }
                         }
                     }
                 }
             }
         }
     }
-}
 }
 
