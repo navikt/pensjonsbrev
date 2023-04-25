@@ -6,7 +6,9 @@ import no.nav.pensjon.brev.api.model.vedlegg.InntektsAvkortingGjeldendeSelectors
 import no.nav.pensjon.brev.api.model.vedlegg.InntektsAvkortingGjeldendeSelectors.inntektstak
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDto
 import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdGjeldendeSelectors.kompensasjonsgrad
+import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdOrdinaerSelectors.harGammelUTBeloepUlikNyUTBeloep
 import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdOrdinaerSelectors.harGammelUTBeloepUlikNyUTBeloep_safe
+import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdOrdinaerSelectors.harNyUTBeloep
 import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdOrdinaerSelectors.harNyUTBeloep_safe
 import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdOrdinaerSelectors.nettoPerAarReduksjonUT_safe
 import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdOrdinaerSelectors.overskytendeInntekt_safe
@@ -41,38 +43,34 @@ data class SlikBeregnerViReduksjonAvUfoeretrygden(
         val harInntektsgrenseLessThanInntektstak =
             inntektsAvkortingGjeldende.inntektsgrenseAar.lessThan(inntektsAvkortingGjeldende.inntektstak)
 
-        ifNotNull(
-            ufoeretrygdOrdinaer.harGammelUTBeloepUlikNyUTBeloep_safe,
-            ufoeretrygdOrdinaer.harNyUTBeloep_safe
-        ) { harUlikeBeloep, harNyttBeloep ->
-            showIf(
-                (kravAarsakType.isOneOf(KravAarsakType.ENDRET_INNTEKT)) and harUlikeBeloep
-                        and inntektsAvkortingGjeldende.forventetInntektAar.greaterThanOrEqual(inntektsAvkortingGjeldende.inntektsgrenseAar)
-                        and harInntektsgrenseLessThanInntektstak and harNyttBeloep
-            ) {
-                title1 {
-                    text(
-                        Bokmal to "Slik beregner vi reduksjonen av uføretrygden",
-                        Nynorsk to "Slik bereknar vi reduksjonen av uføretrygda",
-                        English to "This is how the reduction in your disability benefit is calculated"
+        showIf(
+            (kravAarsakType.isOneOf(KravAarsakType.ENDRET_INNTEKT)) and ufoeretrygdOrdinaer.harGammelUTBeloepUlikNyUTBeloep
+                    and inntektsAvkortingGjeldende.forventetInntektAar.greaterThanOrEqual(inntektsAvkortingGjeldende.inntektsgrenseAar)
+                    and harInntektsgrenseLessThanInntektstak and ufoeretrygdOrdinaer.harNyUTBeloep
+        ) {
+            title1 {
+                text(
+                    Bokmal to "Slik beregner vi reduksjonen av uføretrygden",
+                    Nynorsk to "Slik bereknar vi reduksjonen av uføretrygda",
+                    English to "This is how the reduction in your disability benefit is calculated"
+                )
+            }
+            ifNotNull(
+                ufoeretrygdOrdinaer.overskytendeInntekt_safe,
+                ufoeretrygdOrdinaer.nettoPerAarReduksjonUT_safe
+            ) { overskytendeInntekt, nettoPerAarReduksjonUT ->
+                paragraph {
+                    textExpr(
+                        Bokmal to "".expr() + overskytendeInntekt.format() + " kr x ".expr() + kompensasjonsgrad + " % = ".expr() +
+                                nettoPerAarReduksjonUT.format() + " kroner i reduksjon for året".expr(),
+                        Nynorsk to "".expr() + overskytendeInntekt.format() + " kr x ".expr() + kompensasjonsgrad + " % = ".expr() +
+                                nettoPerAarReduksjonUT.format() + " kroner i reduksjon for året".expr(),
+                        English to "NOK ".expr() + overskytendeInntekt.format() + " kr x ".expr() + kompensasjonsgrad + " % = NOK ".expr() +
+                                nettoPerAarReduksjonUT.format() + " in reductions for the year".expr()
                     )
-                }
-                ifNotNull(
-                    ufoeretrygdOrdinaer.overskytendeInntekt_safe,
-                    ufoeretrygdOrdinaer.nettoPerAarReduksjonUT_safe
-                ) { overskytendeInntekt, nettoPerAarReduksjonUT ->
-                    paragraph {
-                        textExpr(
-                            Bokmal to "".expr() + overskytendeInntekt.format() + " kr x ".expr() + kompensasjonsgrad + " % = ".expr() +
-                                    nettoPerAarReduksjonUT.format() + " kroner i reduksjon for året".expr(),
-                            Nynorsk to "".expr() + overskytendeInntekt.format() + " kr x ".expr() + kompensasjonsgrad + " % = ".expr() +
-                                    nettoPerAarReduksjonUT.format() + " kroner i reduksjon for året".expr(),
-                            English to "NOK ".expr() + overskytendeInntekt.format() + " kr x ".expr() + kompensasjonsgrad + " % = NOK ".expr() +
-                                    nettoPerAarReduksjonUT.format() + " in reductions for the year".expr()
-                        )
-                    }
                 }
             }
         }
     }
 }
+
