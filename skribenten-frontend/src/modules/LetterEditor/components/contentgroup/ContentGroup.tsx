@@ -1,26 +1,32 @@
 import React, {MouseEventHandler} from "react"
 import Text from "../text/Text"
 import styles from "./Content.module.css"
-import {Content, ITEM_LIST, LITERAL, TextContent, VARIABLE, ItemList as ItemListModel, LiteralValue} from "../../model/api"
-import {SplitAtContent, UpdateContent} from "../../BlockProps"
+import {Content, ITEM_LIST, LITERAL, TextContent, VARIABLE} from "../../model/api"
 import EditableText from "../text/EditableText"
 import {SelectionService} from "../../services/SelectionService"
-import {BoundAction, combine} from "../../../../lib/actions"
+import {applyAction, bindActionWithCallback, BoundAction, CallbackReceiver, combine} from "../../../../lib/actions"
 import ItemList from "../itemlist/ItemList"
-import {MergeTarget} from "../../actions/common"
 import {isTextContent} from "../../model/utils"
-import {CursorPosition} from "../../model/state"
+import {CursorPosition, LetterEditorState} from "../../model/state"
+import {ContentId, MergeTarget} from "../../actions/model"
+import Actions from "../../actions"
 
-const selectService = new SelectionService()
+const selectService = new SelectionService(true)
 
 type ContentGroupState = never
 
+export type BlockID = { blockId: number }
+export type ItemID = { blockId: number, contentId: number, itemId: number }
+
+function toContentId(id: BlockID | ItemID, contentId: number): ContentId {
+    return "itemId" in id ? {...id, itemContentId: contentId} : {...id, contentId: contentId}
+}
+
 export interface ContentGroupProps<T extends Content> {
+    id: BlockID | ItemID
+    updateLetter: CallbackReceiver<LetterEditorState>
     content: T[]
     editable: boolean | undefined
-    updateContent: UpdateContent<T>
-    mergeWith: BoundAction<[target: MergeTarget]>
-    splitAtContent: SplitAtContent
     stealFocus: CursorPosition | undefined
     focusStolen: BoundAction<[]>
     onFocus: BoundAction<[]>
@@ -47,11 +53,15 @@ class ContentGroup<T extends Content | TextContent> extends React.Component<Cont
 
             // Første node skal ha backspaceHandler og siste node skal ha deleteHandler. Dette kan være samme node.
             if (contentId === 0) {
-                keyHandler = combine(keyHandler, this.backspaceHandler)
+                keyHandler = combine(keyHandler, this.backspaceHandler.bind(this, 0))
             }
             if (contentId === this.props.content.length - 1) {
                 keyHandler = combine(keyHandler, this.deleteHandler)
             }
+            if (this.props.content[contentId - 1]?.type === ITEM_LIST) {
+                keyHandler = combine(keyHandler, this.backspaceHandler.bind(this, contentId))
+            }
+
             node.onkeydown = keyHandler
 
             if (this.props.stealFocus && this.props.stealFocus.contentId === contentId) {
@@ -69,13 +79,18 @@ class ContentGroup<T extends Content | TextContent> extends React.Component<Cont
     componentDidUpdate() {
         const span = this.props.stealFocus != null ? this.childRefs[this.props.stealFocus.contentId] : null
         if (this.props.stealFocus && span) {
-            selectService.focusAtOffset(span.childNodes[0], this.props.stealFocus.startOffset, this.props.focusStolen)
+            if (span.childNodes.length === 0) {
+                selectService.focusStartOfNode(span, this.props.focusStolen)
+            } else {
+                selectService.focusAtOffset(span.childNodes[0], this.props.stealFocus.startOffset, this.props.focusStolen)
+            }
         }
     }
 
     stealFocusHandler: MouseEventHandler<HTMLDivElement> = (e) => {
         if (e.target === e.currentTarget) {
             const nodes = Object.entries(this.childRefs).map(e => e[1]).filter((n): n is HTMLElement => n != null)
+
             if (nodes.length > 0) {
                 selectService.focusEndOfClickedLine(nodes, {x: e.clientX, y: e.clientY}, this.props.focusStolen)
             } else {
@@ -87,31 +102,37 @@ class ContentGroup<T extends Content | TextContent> extends React.Component<Cont
     enterHandler = (contentId: number, e: KeyboardEvent) => {
         if (e.key === "Enter") {
             e.preventDefault()
-            this.props.splitAtContent(contentId, selectService.getCursorOffset())
+            const offset = selectService.getCursorOffset()
+
+            applyAction(Actions.split, this.props.updateLetter, toContentId(this.props.id, contentId), offset)
         }
     }
 
-    backspaceHandler = (e: KeyboardEvent) => {
+    backspaceHandler = (contentId: number, e: KeyboardEvent) => {
         if (e.key === "Backspace") {
-            if (selectService.getCursorOffset() === 0) {
+            const span = this.childRefs[contentId]
+            const cursorPosition = selectService.getCursorOffset()
+            // If the cursor is at the beginning of the content (while we ignore any ZWSP)
+            if (cursorPosition === 0 || (span?.textContent?.startsWith("​") && cursorPosition === 1)) {
                 e.preventDefault()
-                this.props.mergeWith(MergeTarget.PREVIOUS)
+                applyAction(Actions.merge, this.props.updateLetter, toContentId(this.props.id, contentId), MergeTarget.PREVIOUS)
             }
         }
     }
 
     deleteHandler = (e: KeyboardEvent) => {
         if (e.key === "Delete") {
-            const lastContent = this.props.content[this.props.content.length - 1]
+            const lastContentId = this.props.content.length - 1
+            const lastContent = this.props.content[lastContentId]
             if (isTextContent(lastContent) && selectService.getCursorOffset() >= lastContent.text.length) {
                 e.preventDefault()
-                this.props.mergeWith(MergeTarget.NEXT)
+                applyAction(Actions.merge, this.props.updateLetter, toContentId(this.props.id, lastContentId), MergeTarget.NEXT)
             }
         }
     }
 
     render() {
-        const {content, editable, updateContent, onFocus} = this.props
+        const {id, content, editable, onFocus, updateLetter, focusStolen} = this.props
         if (!editable) {
             return (
                 <div className={styles.notEditable}>
@@ -121,7 +142,7 @@ class ContentGroup<T extends Content | TextContent> extends React.Component<Cont
                             case VARIABLE:
                                 return <Text key={contentId} content={c}/>
                             case ITEM_LIST:
-                                return <ItemList key={contentId} editable={false} itemList={c} updateList={(l: ItemListModel) => updateContent(contentId, l as T)}/>
+                                return <ItemList key={contentId} id={{...id, contentId}} editable={false} itemList={c} updateLetter={updateLetter} focusStolen={focusStolen} onFocus={onFocus}/>
                         }
                     })}
                 </div>
@@ -134,13 +155,21 @@ class ContentGroup<T extends Content | TextContent> extends React.Component<Cont
                                 case LITERAL:
                                     return <EditableText key={contentId}
                                                          content={c}
-                                                         updateContent={(c: LiteralValue) => updateContent(contentId, c as T)}
+                                                         updateText={bindActionWithCallback(Actions.updateContentText, updateLetter, toContentId(id, contentId))}
                                                          innerRef={this.setChildRef.bind(this, contentId)}
                                     />
                                 case VARIABLE:
                                     return <Text key={contentId} content={c}/>
                                 case ITEM_LIST:
-                                    return <ItemList key={contentId} editable={editable} itemList={c} updateList={(l: ItemListModel) => updateContent(contentId, l as T)}/>
+                                    return <ItemList key={contentId}
+                                                     id={{...id, contentId}}
+                                                     editable={editable}
+                                                     itemList={c}
+                                                     updateLetter={updateLetter}
+                                                     stealFocus={this.props.stealFocus?.contentId === contentId ? this.props.stealFocus : undefined}
+                                                     focusStolen={focusStolen}
+                                                     onFocus={onFocus}
+                                    />
                             }
                         }
                     )}

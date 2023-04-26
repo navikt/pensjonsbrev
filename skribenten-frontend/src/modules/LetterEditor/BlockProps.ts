@@ -1,17 +1,11 @@
-import {AnyBlock, Content} from "./model/api"
-import {BoundAction} from "../../lib/actions"
-import {MergeTarget} from "./actions/common"
-import {CursorPosition} from "./model/state"
-
-export type Unlock = BoundAction<[]>
-export type UpdateContent<T extends Content> = BoundAction<[contentId: number, content: T]>
-export type SplitAtContent = BoundAction<[contentId: number, offset: number]>
+import {AnyBlock} from "./model/api"
+import {BoundAction, CallbackReceiver} from "../../lib/actions"
+import {CursorPosition, LetterEditorState} from "./model/state"
 
 export interface BlockProps<T extends AnyBlock> {
     block: T
-    updateContent: UpdateContent<Content>
-    mergeWith: BoundAction<[target: MergeTarget]>
-    splitBlockAtContent: SplitAtContent
+    blockId: number
+    updateLetter: CallbackReceiver<LetterEditorState>
     blockStealFocus: CursorPosition | undefined
     blockFocusStolen: BoundAction<[]>
     onFocus: BoundAction<[]>

@@ -93,8 +93,8 @@ fun Application.brevbakerRouting(authenticationNames: Array<String>) =
 
             }
             get("/ping_authorized") {
-                val principal = call.authentication.principal as JWTPrincipal
-                call.respondText("Authorized as: ${principal.subject}")
+                val principal = call.authentication.principal<JWTPrincipal>()
+                call.respondText("Authorized as: ${principal?.subject}")
             }
             route("etterlatte") {
                 etterlatteRouting(latexCompilerService)
