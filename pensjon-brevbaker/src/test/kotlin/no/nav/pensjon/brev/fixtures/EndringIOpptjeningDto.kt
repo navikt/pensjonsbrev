@@ -31,7 +31,7 @@ fun createEndringIOpptjeningAutoDto() =
 
         )
 
-fun createEndringIOpptjeningAutoDtoUfoeretrygdOrdinaer() =
+fun createEndringIOpptjeningAutoDtoUfoeretrygdOrdinaer1() =
     EndringIOpptjeningAutoDto.UfoeretrygdOrdinaer1(
         nettoAkkumulerteBeloepPlussNettoTilUtbetalingRestenAvAaret = Kroner(0),
         nettoAkkumulerteBeloepUtbetalt = Kroner(0),
