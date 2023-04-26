@@ -12,9 +12,9 @@ import no.nav.pensjon.brev.api.model.maler.AvkortningsinformasjonSelectors.oppju
 import no.nav.pensjon.brev.api.model.maler.AvkortningsinformasjonSelectors.oppjustertInntektFoerUfoere80prosent
 import no.nav.pensjon.brev.api.model.maler.AvkortningsinformasjonSelectors.utbetalingsgrad
 import no.nav.pensjon.brev.api.model.maler.EndringIOpptjeningAutoDto
-import no.nav.pensjon.brev.api.model.maler.UfoeretrygdOrdinaerSelectors.nettoAkkumulerteBeloepPlussNettoTilUtbetalingRestenAvAaret
-import no.nav.pensjon.brev.api.model.maler.UfoeretrygdOrdinaerSelectors.nettoAkkumulerteBeloepUtbetalt
-import no.nav.pensjon.brev.api.model.maler.UfoeretrygdOrdinaerSelectors.nettoUfoeretrygdUtbetaltPerMaaned
+import no.nav.pensjon.brev.api.model.maler.UfoeretrygdOrdinaer1Selectors.nettoAkkumulerteBeloepPlussNettoTilUtbetalingRestenAvAaret
+import no.nav.pensjon.brev.api.model.maler.UfoeretrygdOrdinaer1Selectors.nettoAkkumulerteBeloepUtbetalt
+import no.nav.pensjon.brev.api.model.maler.UfoeretrygdOrdinaer1Selectors.nettoUfoeretrygdUtbetaltPerMaaned
 import no.nav.pensjon.brev.maler.fraser.common.Constants
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Expression
@@ -30,7 +30,7 @@ object KombinereUfoeretrygdMedInntekt {
 
     // TBU1201, TBBU1203
     data class KombinereUfoeretrygdOgInntektOverskrift(
-        val avkortningsinformasjon: Expression<EndringIOpptjeningAutoDto.Avkortningsinformasjon>,
+        val avkortningsinformasjon: Expression<EndringIOpptjeningAutoDto.UfoeretrygdOrdinaer1.Avkortningsinformasjon>,
         val ufoeregrad: Expression<Int>,
 
 
@@ -58,7 +58,7 @@ object KombinereUfoeretrygdMedInntekt {
 
     // TBU1204, TBU2251
     data class InntektVedSidenAvUfoeretrygd(
-        val avkortningsinformasjon: Expression<EndringIOpptjeningAutoDto.Avkortningsinformasjon>,
+        val avkortningsinformasjon: Expression<EndringIOpptjeningAutoDto.UfoeretrygdOrdinaer1.Avkortningsinformasjon>,
         val ufoeregrad: Expression<Int>,
 
         ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
@@ -85,7 +85,7 @@ object KombinereUfoeretrygdMedInntekt {
 
     // TBU1205, TBU1206  (TBU1296 er ikke tatt med - konvertering til UT utgikk 31. desember 2018) Dermed endres flette logikk for TBU1205.
     data class Inntektsgrense(
-        val avkortningsinformasjon: Expression<EndringIOpptjeningAutoDto.Avkortningsinformasjon>,
+        val avkortningsinformasjon: Expression<EndringIOpptjeningAutoDto.UfoeretrygdOrdinaer1.Avkortningsinformasjon>,
         val grunnbeloep: Expression<Kroner>,
         val ufoeregrad: Expression<Int>,
 
@@ -140,7 +140,7 @@ object KombinereUfoeretrygdMedInntekt {
 
     // TBU1207   (TBU1296, TBU2357 er ikke tatt med - konvertering til UT utgikk 31. desember 2018) Dermed endres flette logikk for TBU1205.
     data class InntektsgrenseLagtTilGrunn(
-        val avkortningsinformasjon: Expression<EndringIOpptjeningAutoDto.Avkortningsinformasjon>,
+        val avkortningsinformasjon: Expression<EndringIOpptjeningAutoDto.UfoeretrygdOrdinaer1.Avkortningsinformasjon>,
         val grunnbeloep: Expression<Kroner>,
         val ufoeregrad: Expression<Int>,
 
@@ -189,7 +189,7 @@ object KombinereUfoeretrygdMedInntekt {
 
     // TBU1208
     data class Kompensasjonsgrad(
-        val avkortningsinformasjon: Expression<EndringIOpptjeningAutoDto.Avkortningsinformasjon>,
+        val avkortningsinformasjon: Expression<EndringIOpptjeningAutoDto.UfoeretrygdOrdinaer1.Avkortningsinformasjon>,
 
         ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
@@ -246,7 +246,7 @@ object KombinereUfoeretrygdMedInntekt {
 
     // TBU2361, TBU2362, TBU2363
     data class OekeUfoereUtbetalingForRestenAvKalenderAaret(
-        val avkortningsinformasjon: Expression<EndringIOpptjeningAutoDto.Avkortningsinformasjon>,
+        val avkortningsinformasjon: Expression<EndringIOpptjeningAutoDto.UfoeretrygdOrdinaer1.Avkortningsinformasjon>,
         val harOektUtbetaling: Expression<Boolean>,
         val harRedusertUtbetaling: Expression<Boolean>,
         val ufoeregrad: Expression<Int>,
@@ -288,18 +288,18 @@ object KombinereUfoeretrygdMedInntekt {
 
     // TBU2261
     data class ReduksjonAvInntektUfoere(
-        val avkortningsinformasjon: Expression<EndringIOpptjeningAutoDto.Avkortningsinformasjon>,
+        val avkortningsinformasjon: Expression<EndringIOpptjeningAutoDto.UfoeretrygdOrdinaer1.Avkortningsinformasjon>,
         val ufoeregrad: Expression<Int>,
-        val ufoeretrygdOrdinaer: Expression<EndringIOpptjeningAutoDto.UfoeretrygdOrdinaer>,
+        val ufoeretrygdOrdinaer1: Expression<EndringIOpptjeningAutoDto.UfoeretrygdOrdinaer1>,
 
         ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             val nettoAkkumulerteBeloepUtbetalt =
-                ufoeretrygdOrdinaer.nettoAkkumulerteBeloepUtbetalt.format()
+                ufoeretrygdOrdinaer1.nettoAkkumulerteBeloepUtbetalt.format()
             val nettoAkkumulerteBeloepTilUtbetalingRestenAar =
-                ufoeretrygdOrdinaer.nettoAkkumulerteBeloepPlussNettoTilUtbetalingRestenAvAaret.format()
+                ufoeretrygdOrdinaer1.nettoAkkumulerteBeloepPlussNettoTilUtbetalingRestenAvAaret.format()
             val nettoUfoeretrygdUtbetaltPerMaaned =
-                ufoeretrygdOrdinaer.nettoUfoeretrygdUtbetaltPerMaaned.format()
+                ufoeretrygdOrdinaer1.nettoUfoeretrygdUtbetaltPerMaaned.format()
 
             showIf(
                 avkortningsinformasjon.utbetalingsgrad.lessThan(ufoeregrad)
@@ -346,7 +346,7 @@ object KombinereUfoeretrygdMedInntekt {
 
     // TBU2366, TBU2367, TBU2279, TBU3740, TBU2280
     data class MeldeFraOmEndringerIInntekten(
-        val avkortningsinformasjon: Expression<EndringIOpptjeningAutoDto.Avkortningsinformasjon>,
+        val avkortningsinformasjon: Expression<EndringIOpptjeningAutoDto.UfoeretrygdOrdinaer1.Avkortningsinformasjon>,
         val ufoeregrad: Expression<Int>,
 
         ) : OutlinePhrase<LangBokmalNynorskEnglish>() {

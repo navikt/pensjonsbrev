@@ -41,9 +41,9 @@ object Fixtures {
     fun <T: Any> create(letterDataType: KClass<T>): T =
         when (letterDataType) {
             EgenerklaeringOmsorgsarbeidDto::class -> createEgenerklaeringOmsorgsarbeidDto() as T
-            EndringIOpptjeningAutoDto.Avkortningsinformasjon::class -> createEndringIOpptjeningAutoDtoAkortningsinformasjon() as T
-            EndringIOpptjeningAutoDto.FellesbarnTillegg::class -> createEndringIOpptjeningAutoDtoBarnetilleggFellesbarn() as T
-            EndringIOpptjeningAutoDto.SaerkullsbarnTillegg::class -> createEndringIOpptjeningAutoDtoBarnetilleggSaerkullsbarn() as T
+            EndringIOpptjeningAutoDto.Fellesbarn1::class -> createEndringIOpptjeningAutoDtoBarnetilleggFellesbarn() as T
+            EndringIOpptjeningAutoDto.Saerkullsbarn1::class -> createEndringIOpptjeningAutoDtoBarnetilleggSaerkullsbarn() as T
+            EndringIOpptjeningAutoDto.UfoeretrygdOrdinaer1::class -> createEndringIOpptjeningAutoDtoUfoeretrygdOrdinaer() as T
             EndringIOpptjeningAutoDto::class -> createEndringIOpptjeningAutoDto() as T
             InformasjonOmSaksbehandlingstidDto::class -> createInformasjonOmSaksbehandlingstidDto() as T
             LetterExampleDto::class -> createLetterExampleDto() as T

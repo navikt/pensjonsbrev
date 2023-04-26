@@ -9,53 +9,51 @@ import java.time.LocalDate
 
 @Suppress("unused")
 data class EndringIOpptjeningAutoDto(
-    val avkortningsinformasjon: Avkortningsinformasjon,
     val brukerBorInorge: Boolean,
-    val fellesbarnTillegg: FellesbarnTillegg?,
-    val grunnbeloep: Kroner,  // Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Grunnbelop,
-    val harEktefelletilleggInnvilget: Boolean,  // Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Ektefelletillegg
-    val harGjenlevendetilleggInnvilget: Boolean,  // Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg
+    val fellesbarn1: Fellesbarn1?,
+    val grunnbeloep: Kroner,
+    val harEktefelletilleggInnvilget: Boolean,
+    val harGjenlevendetilleggInnvilget: Boolean,
     val harOektUtbetaling: Boolean,  // Vedtaksdata_BeregningsData_BeregningUfore_BelopOkt  TODO: FJERNE? Nei, this is a boolean in Pesys, netto utbetaling av uføretrygd økes for resten av året.
     val harRedusertUtbetaling: Boolean,  // Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Uforegrad AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BelopRedusert  TODO: FJERNE? Nei, netto utbetaling av uføretrygd reduseres for resten av året.
-    val harYrkesskadeOppfylt: Boolean,  // Uforetrygdberegning.Yrkesskadegrad
+    val harYrkesskadeOppfylt: Boolean,
     val maanedligUfoeretrygdFoerSkatt: MaanedligUfoeretrygdFoerSkattDto,
     val opplysningerBruktIBeregningUT: OpplysningerBruktIBeregningUTDto,
     val orienteringOmRettigheterUfoere: OrienteringOmRettigheterUfoereDto,
-    val saerkullsbarnTillegg: SaerkullsbarnTillegg?,
+    val saerkullsbarn1: Saerkullsbarn1?,
     val sivilstand: Sivilstand,
-    val ufoeregrad: Int, // Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegningu_ufoeregrad
-    val ufoeretrygdOrdinaer: UfoeretrygdOrdinaer,
+    val ufoeregrad: Int,
+    val ufoeretrygdOrdinaer1: UfoeretrygdOrdinaer1,
     val ufoertrygdUtbetalt: Kroner,
     val utbetaltPerMaaned: Kroner,
     val virkningsDato: LocalDate,
     ) {
 
-    data class UfoeretrygdOrdinaer(
+    data class UfoeretrygdOrdinaer1(
         val avkortningsinformasjon: Avkortningsinformasjon,
         val nettoAkkumulerteBeloepPlussNettoTilUtbetalingRestenAvAaret: Kroner,  // TODO: Beregnes i Exstream: <NettoAkk> + <NettoRestAr> Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_NettoRestAr
         val nettoAkkumulerteBeloepUtbetalt: Kroner,  // <NettoAkk> Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_NettoAkk
-        val nettoTilUtbetalingRestenAvAaret: Kroner,  // Kan bli et negativt tall <NettoRestAr> edtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_NettoRestAr
-        val nettoUfoeretrygdUtbetaltPerMaaned: Kroner,  // Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_Netto
+        val nettoTilUtbetalingRestenAvAaret: Kroner,  // <NettoRestAr> Kan bli et negativt tall
+        val nettoUfoeretrygdUtbetaltPerMaaned: Kroner,  // <Netto>
 
-    )
+    ) {
 
     data class Avkortningsinformasjon(
-        val beloepsgrense: Kroner,  // Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Belopsgrense
-        val forventetInntekt: Kroner,  //  Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_ForventetInntekt
-        val harInntektEtterUfoere: Boolean,  // IEU Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektsgrense
-        val inntektsgrense: Kroner,  // Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektsgrense
-        val inntektsgrenseNesteAar: Kroner,  // Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektsgrense
-        val inntektstak: Kroner,  // Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektstak
-        val kompensasjonsgrad: Double,  // Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Kompensasjonsgrad
-        val oppjustertInntektEtterUfoere: Kroner,  // <Oieu> Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Oieu
-        val oppjustertInntektFoerUfoere: Kroner,  // <Oifu> Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Oifu
+        val beloepsgrense: Kroner,
+        val forventetInntekt: Kroner,
+        val harInntektEtterUfoere: Boolean,
+        val inntektsgrense: Kroner,
+        val inntektsgrenseNesteAar: Kroner,
+        val inntektstak: Kroner,
+        val kompensasjonsgrad: Double,
+        val oppjustertInntektEtterUfoere: Kroner,  // <Oieu>
+        val oppjustertInntektFoerUfoere: Kroner,  // <Oifu>
         val oppjustertInntektFoerUfoere80prosent: Kroner,  // TODO: Beregnes i Exstream: <Oifu * 0.8) : Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Oifu
-        val utbetalingsgrad: Int, // Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_utbetalingsgrad
+        val utbetalingsgrad: Int,
 
-    )
+    ) }
 
-    data class FellesbarnTillegg(
-        // Fellesbarn1
+    data class Fellesbarn1(
         val beloepBrutto: Kroner,
         val beloepNetto: Kroner,
         val fribeloep: Kroner,
@@ -69,8 +67,7 @@ data class EndringIOpptjeningAutoDto(
         val inntektstak: Kroner,
     )
 
-    data class SaerkullsbarnTillegg(
-        // Saerkullsbarn1
+    data class Saerkullsbarn1(
         val beloepBrutto: Kroner,
         val beloepNetto: Kroner,
         val fribeloep: Kroner,

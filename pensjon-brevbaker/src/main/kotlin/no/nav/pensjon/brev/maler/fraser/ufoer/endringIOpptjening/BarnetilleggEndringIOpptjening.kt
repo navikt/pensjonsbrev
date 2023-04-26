@@ -4,30 +4,30 @@ import no.nav.pensjon.brev.api.model.Kroner
 import no.nav.pensjon.brev.api.model.KronerSelectors.value_safe
 import no.nav.pensjon.brev.api.model.Sivilstand
 import no.nav.pensjon.brev.api.model.maler.EndringIOpptjeningAutoDto
-import no.nav.pensjon.brev.api.model.maler.FellesbarnTilleggSelectors.beloepBrutto
-import no.nav.pensjon.brev.api.model.maler.FellesbarnTilleggSelectors.beloepNetto
-import no.nav.pensjon.brev.api.model.maler.FellesbarnTilleggSelectors.beloepNetto_safe
-import no.nav.pensjon.brev.api.model.maler.FellesbarnTilleggSelectors.fribeloep
-import no.nav.pensjon.brev.api.model.maler.FellesbarnTilleggSelectors.gjelderFlereBarn
-import no.nav.pensjon.brev.api.model.maler.FellesbarnTilleggSelectors.gjelderFlereBarn_safe
-import no.nav.pensjon.brev.api.model.maler.FellesbarnTilleggSelectors.harFradrag
-import no.nav.pensjon.brev.api.model.maler.FellesbarnTilleggSelectors.harFratrukketBeloepFraAnnenForelder
-import no.nav.pensjon.brev.api.model.maler.FellesbarnTilleggSelectors.harJusteringsbeloep
-import no.nav.pensjon.brev.api.model.maler.FellesbarnTilleggSelectors.inntektAnnenForelder
-import no.nav.pensjon.brev.api.model.maler.FellesbarnTilleggSelectors.inntektBruktIAvkortning
-import no.nav.pensjon.brev.api.model.maler.FellesbarnTilleggSelectors.inntektstak
-import no.nav.pensjon.brev.api.model.maler.FellesbarnTilleggSelectors.inntektstak_safe
-import no.nav.pensjon.brev.api.model.maler.SaerkullsbarnTilleggSelectors.beloepBrutto
-import no.nav.pensjon.brev.api.model.maler.SaerkullsbarnTilleggSelectors.beloepNetto
-import no.nav.pensjon.brev.api.model.maler.SaerkullsbarnTilleggSelectors.beloepNetto_safe
-import no.nav.pensjon.brev.api.model.maler.SaerkullsbarnTilleggSelectors.fribeloep
-import no.nav.pensjon.brev.api.model.maler.SaerkullsbarnTilleggSelectors.gjelderFlereBarn
-import no.nav.pensjon.brev.api.model.maler.SaerkullsbarnTilleggSelectors.gjelderFlereBarn_safe
-import no.nav.pensjon.brev.api.model.maler.SaerkullsbarnTilleggSelectors.harFradrag
-import no.nav.pensjon.brev.api.model.maler.SaerkullsbarnTilleggSelectors.harJusteringsbeloep
-import no.nav.pensjon.brev.api.model.maler.SaerkullsbarnTilleggSelectors.inntektBruktIAvkortning
-import no.nav.pensjon.brev.api.model.maler.SaerkullsbarnTilleggSelectors.inntektstak
-import no.nav.pensjon.brev.api.model.maler.SaerkullsbarnTilleggSelectors.inntektstak_safe
+import no.nav.pensjon.brev.api.model.maler.Fellesbarn1Selectors.beloepBrutto
+import no.nav.pensjon.brev.api.model.maler.Fellesbarn1Selectors.beloepNetto
+import no.nav.pensjon.brev.api.model.maler.Fellesbarn1Selectors.beloepNetto_safe
+import no.nav.pensjon.brev.api.model.maler.Fellesbarn1Selectors.fribeloep
+import no.nav.pensjon.brev.api.model.maler.Fellesbarn1Selectors.gjelderFlereBarn
+import no.nav.pensjon.brev.api.model.maler.Fellesbarn1Selectors.gjelderFlereBarn_safe
+import no.nav.pensjon.brev.api.model.maler.Fellesbarn1Selectors.harFradrag
+import no.nav.pensjon.brev.api.model.maler.Fellesbarn1Selectors.harFratrukketBeloepFraAnnenForelder
+import no.nav.pensjon.brev.api.model.maler.Fellesbarn1Selectors.harJusteringsbeloep
+import no.nav.pensjon.brev.api.model.maler.Fellesbarn1Selectors.inntektAnnenForelder
+import no.nav.pensjon.brev.api.model.maler.Fellesbarn1Selectors.inntektBruktIAvkortning
+import no.nav.pensjon.brev.api.model.maler.Fellesbarn1Selectors.inntektstak
+import no.nav.pensjon.brev.api.model.maler.Fellesbarn1Selectors.inntektstak_safe
+import no.nav.pensjon.brev.api.model.maler.Saerkullsbarn1Selectors.beloepBrutto
+import no.nav.pensjon.brev.api.model.maler.Saerkullsbarn1Selectors.beloepNetto
+import no.nav.pensjon.brev.api.model.maler.Saerkullsbarn1Selectors.beloepNetto_safe
+import no.nav.pensjon.brev.api.model.maler.Saerkullsbarn1Selectors.fribeloep
+import no.nav.pensjon.brev.api.model.maler.Saerkullsbarn1Selectors.gjelderFlereBarn
+import no.nav.pensjon.brev.api.model.maler.Saerkullsbarn1Selectors.gjelderFlereBarn_safe
+import no.nav.pensjon.brev.api.model.maler.Saerkullsbarn1Selectors.harFradrag
+import no.nav.pensjon.brev.api.model.maler.Saerkullsbarn1Selectors.harJusteringsbeloep
+import no.nav.pensjon.brev.api.model.maler.Saerkullsbarn1Selectors.inntektBruktIAvkortning
+import no.nav.pensjon.brev.api.model.maler.Saerkullsbarn1Selectors.inntektstak
+import no.nav.pensjon.brev.api.model.maler.Saerkullsbarn1Selectors.inntektstak_safe
 import no.nav.pensjon.brev.maler.fraser.ufoer.Barnetillegg
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
@@ -35,8 +35,8 @@ import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.text
 
 data class BarnetilleggEndringIOpptjening(
-    val barnetilleggFellesbarn: Expression<EndringIOpptjeningAutoDto.FellesbarnTillegg?>,
-    val barnetilleggSaerkullsbarn: Expression<EndringIOpptjeningAutoDto.SaerkullsbarnTillegg?>,
+    val barnetilleggFellesbarn: Expression<EndringIOpptjeningAutoDto.Fellesbarn1?>,
+    val barnetilleggSaerkullsbarn: Expression<EndringIOpptjeningAutoDto.Saerkullsbarn1?>,
     val grunnbeloep: Expression<Kroner>,
     val sivilstand: Expression<Sivilstand>,
 

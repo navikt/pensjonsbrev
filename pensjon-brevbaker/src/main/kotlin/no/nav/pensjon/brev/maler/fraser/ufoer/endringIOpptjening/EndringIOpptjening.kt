@@ -2,10 +2,6 @@ package no.nav.pensjon.brev.maler.fraser.ufoer.endringIOpptjening
 
 import no.nav.pensjon.brev.api.model.maler.AvkortningsinformasjonSelectors.utbetalingsgrad
 import no.nav.pensjon.brev.api.model.maler.EndringIOpptjeningAutoDto
-import no.nav.pensjon.brev.api.model.maler.EndringIOpptjeningAutoDtoSelectors.harOektUtbetaling
-import no.nav.pensjon.brev.api.model.maler.EndringIOpptjeningAutoDtoSelectors.harRedusertUtbetaling
-import no.nav.pensjon.brev.api.model.maler.EndringIOpptjeningAutoDtoSelectors.ufoeregrad
-import no.nav.pensjon.brev.api.model.maler.EndringIOpptjeningAutoDtoSelectors.virkningsDato
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
@@ -121,7 +117,7 @@ object EndringIOpptjening {
 
     // TBU3224
     data class EtterbetalingAvUfoeretrygd(
-        val avkortningsinformasjon: Expression<EndringIOpptjeningAutoDto.Avkortningsinformasjon>,
+        val avkortningsinformasjon: Expression<EndringIOpptjeningAutoDto.UfoeretrygdOrdinaer1.Avkortningsinformasjon>,
         val harOektUtbetaling: Expression<Boolean>,
         val ufoeregrad: Expression<Int>,
         val virkningsDato: Expression<LocalDate>,
