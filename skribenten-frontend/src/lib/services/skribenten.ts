@@ -50,7 +50,7 @@ class SkribentenAPI {
         ).then(resp => resp.json())
     }
 
-    async renderLetter(msal: IMsalContext, brevkode: string, data: ObjectValue, editedLetter: EditedLetter | null | undefined): Promise<RenderedLetter> {
+    async renderLetter(msal: IMsalContext, brevkode: string, data: ObjectValue, editedLetter: EditedLetter | undefined): Promise<RenderedLetter> {
         return withAuthorization(msal, this.config.scope).then(auth =>
             fetch(`${this.config.url}/letter/${brevkode}`, {
                 headers: {
