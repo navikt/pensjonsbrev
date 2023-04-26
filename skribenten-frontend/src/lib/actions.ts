@@ -110,3 +110,14 @@ export function combine<Args extends any[]>(...boundActions: BoundAction<Args>[]
 export function combine(...receivers: ((...args: any[]) => void)[]): (...args: any[]) => void {
     return (...args: any[]) => receivers.forEach(r => r(...args))
 }
+
+/**
+ * Applies an action as a callback to the CallbackReceiver.
+ *
+ * @param action to apply
+ * @param to the callbackReceiver the action should be applied to
+ * @param args the arguments for the action.
+ */
+export function applyAction<T, Args extends any[]>(action: Action<T, Args>, to: CallbackReceiver<T>, ...args: Args): void {
+    to(target => action(target, ...args))
+}

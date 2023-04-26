@@ -1,6 +1,5 @@
 export interface Identifiable {
     readonly id: number
-    readonly location: string[]
 }
 
 export const LITERAL = 'LITERAL'
@@ -68,6 +67,10 @@ export interface RenderedLetter {
     readonly signatur: Signatur
 }
 
+export interface EditedLetter {
+    readonly letter: RenderedLetter
+    readonly deletedBlocks: number[]
+}
 
 export type LanguageCode = 'BOKMAL' | 'NYNORSK' | 'ENGLISH'
 export type Distribusjonstype = 'VEDTAK' | 'VIKTIG' | 'ANNET'

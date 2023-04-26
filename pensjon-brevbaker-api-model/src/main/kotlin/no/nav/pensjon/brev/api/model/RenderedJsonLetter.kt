@@ -1,8 +1,5 @@
 package no.nav.pensjon.brev.api.model
 
-
-typealias TreeLocation = List<String>
-
 @Suppress("unused")
 data class RenderedJsonLetter(val title: String, val sakspart: Sakspart, val blocks: List<Block>, val signatur: Signatur) {
 
@@ -15,13 +12,13 @@ data class RenderedJsonLetter(val title: String, val sakspart: Sakspart, val blo
         val navAvsenderEnhet: String,
     )
 
-    sealed class Block(open val id: Int, open val type: Type, open val location: TreeLocation, open val editable: Boolean = true) {
+    sealed class Block(open val id: Int, open val type: Type, open val editable: Boolean = true) {
         enum class Type {
             TITLE1, PARAGRAPH,
         }
 
-        data class Title1(override val id: Int, override val location: TreeLocation, override val editable: Boolean, val content: List<ParagraphContent.Text>) : Block(id, Type.TITLE1, location, editable)
-        data class Paragraph(override val id: Int, override val location: TreeLocation, override val editable: Boolean, val content: List<ParagraphContent>) : Block(id, Type.PARAGRAPH, location, editable)
+        data class Title1(override val id: Int, override val editable: Boolean, val content: List<ParagraphContent.Text>) : Block(id, Type.TITLE1, editable)
+        data class Paragraph(override val id: Int, override val editable: Boolean, val content: List<ParagraphContent>) : Block(id, Type.PARAGRAPH, editable)
     }
 
     sealed class ParagraphContent(open val id: Int, open val type: Type) {

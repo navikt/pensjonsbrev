@@ -5,13 +5,12 @@ import ContentGroup from "../contentgroup/ContentGroup"
 import {BlockProps} from "../../BlockProps"
 
 const Paragraph: FC<BlockProps<ParagraphBlock>> =
-    ({block, updateContent, splitBlockAtContent, mergeWith, blockStealFocus, blockFocusStolen, onFocus}) => (
+    ({block, blockId, updateLetter, blockStealFocus, blockFocusStolen, onFocus}) => (
         <div className={styles.paragraph}>
-            <ContentGroup content={block.content}
+            <ContentGroup id={{blockId}}
+                          updateLetter={updateLetter}
+                          content={block.content}
                           editable={block.editable}
-                          updateContent={updateContent}
-                          splitAtContent={splitBlockAtContent}
-                          mergeWith={mergeWith}
                           stealFocus={blockStealFocus}
                           focusStolen={blockFocusStolen}
                           onFocus={onFocus}
