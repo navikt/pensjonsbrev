@@ -16,6 +16,7 @@ import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.latex.LaTeXCompilerService
 import no.nav.pensjon.brev.template.TemplateModelSpecification
 import no.nav.pensjon.brev.template.render.*
+import no.nav.pensjon.etterlatte.etterlatteRouting
 
 private val latexCompilerService = LaTeXCompilerService(requireEnv("PDF_BUILDER_URL"))
 private val letterResource = LetterResource()
@@ -94,6 +95,9 @@ fun Application.brevbakerRouting(authenticationNames: Array<String>) =
             get("/ping_authorized") {
                 val principal = call.authentication.principal as JWTPrincipal
                 call.respondText("Authorized as: ${principal.subject}")
+            }
+            route("etterlatte") {
+                etterlatteRouting(latexCompilerService)
             }
         }
 
