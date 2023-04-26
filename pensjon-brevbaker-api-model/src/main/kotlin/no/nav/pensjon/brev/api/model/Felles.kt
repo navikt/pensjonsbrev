@@ -11,7 +11,7 @@ data class Felles(
     val signerendeSaksbehandlere: SignerendeSaksbehandlere? = null,
 )
 
-data class SignerendeSaksbehandlere(val saksbehandler: String, val attesterendeSaksbehandler: String)
+data class SignerendeSaksbehandlere(val saksbehandler: String, val attesterendeSaksbehandler: String? = null)
 
 data class Bruker(
     val foedselsnummer: Foedselsnummer,

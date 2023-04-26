@@ -8,32 +8,32 @@ annotation class LatexAppendableMarker
 @LatexAppendableMarker
 class LatexAppendable(private val output: Appendable) {
 
-    fun print(s: String, escape: Boolean = true) {
+    fun append(s: String, escape: Boolean = true) {
         output.append(latexString(s, escape))
     }
 
-    fun println(s: String, escape: Boolean = true) {
+    fun appendln(s: String, escape: Boolean = true) {
         output.appendLine(latexString(s, escape))
     }
 
-    fun printCmd(cmd: String, vararg args: String, escape: Boolean = true) {
+    fun appenCmd(cmd: String, vararg args: String, escape: Boolean = true) {
         output.append("""\$cmd""")
         args.map { latexString(it, escape) }
             .forEach { output.append("""{$it}""") }
         output.appendLine()
     }
 
-    fun printCmd(cmd: String, argBuilder: CommandBuilder.() -> Unit) {
+    fun appenCmd(cmd: String, argBuilder: CommandBuilder.() -> Unit) {
         output.append("""\$cmd""")
         CommandBuilder(this).argBuilder()
         output.appendLine()
     }
 
-    fun printNewCmd(name: String, body: String, escape: Boolean = true) {
+    fun appendNewCmd(name: String, body: String, escape: Boolean = true) {
         output.appendLine("""\newcommand{\$name}{${latexString(body, escape)}}""")
     }
 
-    fun printNewCmd(name: String, writeBody: LatexAppendable.() -> Unit) {
+    fun appendNewCmd(name: String, writeBody: LatexAppendable.() -> Unit) {
         output.append("""\newcommand{\$name}{""")
         writeBody()
         output.appendLine("}")
