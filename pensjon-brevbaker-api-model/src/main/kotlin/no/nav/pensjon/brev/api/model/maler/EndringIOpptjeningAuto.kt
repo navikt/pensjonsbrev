@@ -58,7 +58,6 @@ data class EndringIOpptjeningAutoDto(
         val beloepNetto: Kroner,
         val fribeloep: Kroner,
         val gjelderFlereBarn: Boolean,
-        val harFellesbarnInnvilget: Boolean,
         val harFradrag: Boolean,
         val harFratrukketBeloepFraAnnenForelder: Boolean,
         val harJusteringsbeloep: Boolean,
@@ -74,7 +73,6 @@ data class EndringIOpptjeningAutoDto(
         val gjelderFlereBarn: Boolean,
         val harFradrag: Boolean,
         val harJusteringsbeloep: Boolean,
-        val harSaerkullsbarnInnvilget: Boolean,
         val inntektBruktIAvkortning: Kroner,
         val inntektstak: Kroner,
     )
