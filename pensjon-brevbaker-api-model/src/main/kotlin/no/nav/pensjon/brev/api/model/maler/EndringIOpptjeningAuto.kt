@@ -46,8 +46,8 @@ data class EndringIOpptjeningAutoDto(
         val inntektsgrenseNesteAar: Kroner,
         val inntektstak: Kroner,
         val kompensasjonsgrad: Double,
-        val oppjustertInntektEtterUfoere: Kroner,  // <Oieu>
-        val oppjustertInntektFoerUfoere: Kroner,  // <Oifu>
+        val inntektsgrenseEtterUfoere: Kroner,  // <Oieu>
+        val inntektsgrenseFoerUfoere: Kroner,  // <Oifu>
         val oppjustertInntektFoerUfoere80prosent: Kroner,  // TODO: Beregnes i Exstream: <Oifu * 0.8) : Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Oifu
         val utbetalingsgrad: Int,
 
