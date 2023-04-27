@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningufoe
 
 
 import no.nav.pensjon.brev.api.model.Sivilstand
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDto
 import no.nav.pensjon.brev.maler.fraser.common.Constants
 import no.nav.pensjon.brev.model.bestemtForm
 import no.nav.pensjon.brev.model.ubestemtForm
@@ -22,7 +23,7 @@ THEN INCLUDE */
 data class EtteroppgjoerAvUfoeretrygdOgBarnetillegg(
     val borIUtlandet: Expression<Boolean>,
     val harBarnetilleggInnvilget: Expression<Boolean>,
-    val harFellesbarn: Expression<Boolean>,
+    val harFellesbarn: Expression<OpplysningerBruktIBeregningUTDto.BarnetilleggGjeldende.Fellesbarn?>,
     val sivilstand: Expression<Sivilstand>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
@@ -44,20 +45,20 @@ data class EtteroppgjoerAvUfoeretrygdOgBarnetillegg(
                 Language.Nynorsk to "Kvart år når likninga er klar får vi opplysningar om inntekta ",
                 Language.English to "Once the tax assessment for the year in question is complete, we will receive information about "
             )
-            showIf(not(harFellesbarn)) {
-                text(
-                    Language.Bokmal to "din fra Skatteetaten.",
-                    Language.Nynorsk to "di frå Skatteetaten.",
-                    Language.English to "your income from the Tax Administration."
-                )
+            showIf(harFellesbarn.notNull()) {
+                    textExpr(
+                        Language.Bokmal to "til deg og din ".expr() + sivilstand.ubestemtForm() + " fra Skatteetaten.".expr(),
+                        Language.Nynorsk to "til deg og ".expr() + sivilstand.bestemtForm() + " di frå Skatteetaten.".expr(),
+                        Language.English to "your and your ".expr() + sivilstand.ubestemtForm() + "'s income from the Tax Administration.".expr()
+                    )
+            } orShow {
+                    text(
+                        Language.Bokmal to "din fra Skatteetaten.",
+                        Language.Nynorsk to "di frå Skatteetaten.",
+                        Language.English to "your income from the Tax Administration."
+                    )
             }
-            showIf(harFellesbarn) {
-                textExpr(
-                    Language.Bokmal to "til deg og din ".expr() + sivilstand.ubestemtForm() + " fra Skatteetaten.".expr(),
-                    Language.Nynorsk to "til deg og ".expr() + sivilstand.bestemtForm() + " di frå Skatteetaten.".expr(),
-                    Language.English to "your and your ".expr() + sivilstand.ubestemtForm() + "'s income from the Tax Administration.".expr()
-                )
-            }
+
             textExpr(
                 Language.Bokmal to " Vi bruker likningsopplysningene til å beregne riktig utbetaling av uføretrygd".expr() +
                         ifElse(
