@@ -5,7 +5,6 @@ import no.nav.pensjon.brev.api.model.vedlegg.InntektFoerUfoereGjeldendeSelectors
 import no.nav.pensjon.brev.api.model.vedlegg.InntektFoerUfoereGjeldendeSelectors.oppjustertInntektFoerUfoer
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDto
 import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdGjeldendeSelectors.fullUfoeretrygdPerAar
-import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdGjeldendeSelectors.harDelvisUfoeregrad
 import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdGjeldendeSelectors.kompensasjonsgrad
 import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdGjeldendeSelectors.ufoeregrad
 import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdOrdinaerSelectors.harGammelUTBeloepUlikNyUTBeloep
@@ -35,7 +34,8 @@ data class SlikHarViFastsattKompensasjonsgradenDin(
 
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-        val harFullUfoeregrad = ufoeretrygdGjeldende.ufoeregrad.equalTo(100)
+        val harDelvisUfoeregrad = ufoeretrygdGjeldende.ufoeregrad.greaterThan(0) and ufoeretrygdGjeldende.ufoeregrad.lessThan(100)
+        val harFullUfoeregrad = ufoeretrygdGjeldende . ufoeregrad . equalTo (100)
         val inntektFoerUfoer = inntektFoerUfoereGjeldende.inntektFoerUfoer.format()
         val oppjustertInntektFoerUfoer = inntektFoerUfoereGjeldende.oppjustertInntektFoerUfoer.format()
         val fullUfoeretrygdPerAar = ufoeretrygdGjeldende.fullUfoeretrygdPerAar.format()
@@ -103,7 +103,7 @@ data class SlikHarViFastsattKompensasjonsgradenDin(
                     )
                 }
             }
-            showIf(ufoeretrygdGjeldende.harDelvisUfoeregrad) {
+            showIf(harDelvisUfoeregrad) {
                 paragraph {
                     textExpr(
                         Bokmal to "Du har rett til ".expr() + ufoeregrad + " prosent uføretrygd. Regnet om til 100 prosent uføretrygd, utgjør dette ".expr() + fullUfoeretrygdPerAar + " kroner per år.".expr(),
