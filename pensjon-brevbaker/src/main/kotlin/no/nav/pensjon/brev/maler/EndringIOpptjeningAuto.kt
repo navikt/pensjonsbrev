@@ -24,10 +24,6 @@ import no.nav.pensjon.brev.api.model.maler.EndringIOpptjeningAutoDtoSelectors.uf
 import no.nav.pensjon.brev.api.model.maler.EndringIOpptjeningAutoDtoSelectors.ufoertrygdUtbetalt
 import no.nav.pensjon.brev.api.model.maler.EndringIOpptjeningAutoDtoSelectors.utbetaltPerMaaned
 import no.nav.pensjon.brev.api.model.maler.EndringIOpptjeningAutoDtoSelectors.virkningsDato
-import no.nav.pensjon.brev.api.model.maler.Fellesbarn1Selectors.harFellesbarnInnvilget
-import no.nav.pensjon.brev.api.model.maler.Fellesbarn1Selectors.harFellesbarnInnvilget_safe
-import no.nav.pensjon.brev.api.model.maler.Saerkullsbarn1Selectors.harSaerkullsbarnInnvilget
-import no.nav.pensjon.brev.api.model.maler.Saerkullsbarn1Selectors.harSaerkullsbarnInnvilget_safe
 import no.nav.pensjon.brev.api.model.maler.UfoeretrygdOrdinaer1Selectors.avkortningsinformasjon
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.fraser.ufoer.HjemlerFolketrygdloven
@@ -85,10 +81,10 @@ object EndringIOpptjeningAuto : AutobrevTemplate<EndringIOpptjeningAutoDto> {
             includePhrase(
                 Ufoeretrygd.Beloep(
                     ektefelle = harEktefelletilleggInnvilget.notNull(),
-                    fellesbarn = fellesbarn1.harFellesbarnInnvilget_safe.notNull(),
+                    fellesbarn = fellesbarn1.notNull(),
                     gjenlevende = harGjenlevendetilleggInnvilget.notNull(),
                     perMaaned = utbetaltPerMaaned,
-                    saerkullsbarn = saerkullsbarn1.harSaerkullsbarnInnvilget_safe.notNull(),
+                    saerkullsbarn = saerkullsbarn1.notNull(),
                     ufoeretrygd = ufoertrygdUtbetalt.greaterThan(0),
                 )
             )
@@ -114,10 +110,10 @@ object EndringIOpptjeningAuto : AutobrevTemplate<EndringIOpptjeningAutoDto> {
             includePhrase(
                 HjemlerFolketrygdloven.Folketrygdloven(
                     harEktefelletilleggInnvilget = harEktefelletilleggInnvilget.notNull(),
-                    harFellesbarntilleggInnvilget = fellesbarn1.harFellesbarnInnvilget_safe.notNull(),
+                    harFellesbarntilleggInnvilget = fellesbarn1.notNull(),
                     harGjenlevendetilleggInnvilget = harGjenlevendetilleggInnvilget.notNull(),
                     harYrkesskadeOppfylt = harYrkesskadeOppfylt.notNull(),
-                    harSaerkullsbarntilleggInnvilget = saerkullsbarn1.harSaerkullsbarnInnvilget_safe.notNull(),
+                    harSaerkullsbarntilleggInnvilget = saerkullsbarn1.notNull(),
                 )
             )
 
@@ -193,12 +189,12 @@ object EndringIOpptjeningAuto : AutobrevTemplate<EndringIOpptjeningAutoDto> {
 
             ifNotNull(
                 fellesbarn1, saerkullsbarn1
-            ) { fellesbarnTillegg, saerkullsbarnTillegg ->
-                showIf(fellesbarnTillegg.harFellesbarnInnvilget or saerkullsbarnTillegg.harSaerkullsbarnInnvilget) {
+            ) { fellesbarn, saerkullsbarn ->
+                showIf(fellesbarn.notNull() or saerkullsbarn.notNull()) {
                     includePhrase(
                         BarnetilleggEndringIOpptjening(
-                            barnetilleggFellesbarn = fellesbarnTillegg,
-                            barnetilleggSaerkullsbarn = saerkullsbarnTillegg,
+                            barnetilleggFellesbarn = fellesbarn,
+                            barnetilleggSaerkullsbarn = saerkullsbarn,
                             grunnbeloep = grunnbeloep,
                             sivilstand = sivilstand
                         )
