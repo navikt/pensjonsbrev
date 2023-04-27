@@ -30,7 +30,7 @@ class EndringIOpptjeningAutoTest {
             Fixtures.fellesAuto
         )
             .let { PensjonLatexRenderer.render(it) }
-            .let { runBlocking { LaTeXCompilerService(PDF_BUILDER_URL).producePDF(it, "test").base64PDF } }
+            .let { runBlocking { LaTeXCompilerService(PDF_BUILDER_URL, 100_000).producePDF(it, "test1").base64PDF } }
             .also { writeTestPDF("UT_ENDR_OPPTJ_AUTO_BOKMAL", it) }
     }
 
