@@ -27,8 +27,6 @@ fun createEndringIOpptjeningAutoDto() =
         ufoertrygdUtbetalt = Kroner(0),
         utbetaltPerMaaned = Kroner(0),
         virkningsDato = LocalDate.of(2023, 1, 1),
-
-
         )
 
 fun createEndringIOpptjeningAutoDtoUfoeretrygdOrdinaer1() =
@@ -45,20 +43,19 @@ fun createEndringIOpptjeningAutoDtoUfoeretrygdOrdinaer1() =
             inntektsgrenseNesteAar = Kroner(380000),
             inntektstak = Kroner(0),
             kompensasjonsgrad = 60.00,
-            oppjustertInntektEtterUfoere = Kroner(320000),
-            oppjustertInntektFoerUfoere = Kroner(0),
-            oppjustertInntektFoerUfoere80prosent = Kroner(260000),
+            inntektsgrenseEtterUfoeretrygd = Kroner(320000),
+            inntektsgrenseFoerUfoeretrygd = Kroner(0),
+            inntektsgrenseFoerUfoeretrygd80prosent = Kroner(260000),
             utbetalingsgrad = 80,
         )
     )
 
-fun createEndringIOpptjeningAutoDtoBarnetilleggFellesbarn() =
+fun createEndringIOpptjeningAutoDtoBarnetilleggFellesbarn1() =
     EndringIOpptjeningAutoDto.Fellesbarn1(
         beloepBrutto = Kroner(50000),
         beloepNetto = Kroner(0),
         fribeloep = Kroner(200000),
         gjelderFlereBarn = true,
-        harFellesbarnInnvilget = true,
         harFradrag = true,
         harFratrukketBeloepFraAnnenForelder = true,
         harJusteringsbeloep = false,
@@ -67,7 +64,7 @@ fun createEndringIOpptjeningAutoDtoBarnetilleggFellesbarn() =
         inntektstak = Kroner(300000),
     )
 
-fun createEndringIOpptjeningAutoDtoBarnetilleggSaerkullsbarn() =
+fun createEndringIOpptjeningAutoDtoBarnetilleggSaerkullsbarn1() =
     EndringIOpptjeningAutoDto.Saerkullsbarn1(
         beloepBrutto = Kroner(80000),
         beloepNetto = Kroner(0),
@@ -75,7 +72,6 @@ fun createEndringIOpptjeningAutoDtoBarnetilleggSaerkullsbarn() =
         gjelderFlereBarn = false,
         harFradrag = false,
         harJusteringsbeloep = false,
-        harSaerkullsbarnInnvilget = true,
         inntektBruktIAvkortning = Kroner(500000),
         inntektstak = Kroner(300000),
     )
