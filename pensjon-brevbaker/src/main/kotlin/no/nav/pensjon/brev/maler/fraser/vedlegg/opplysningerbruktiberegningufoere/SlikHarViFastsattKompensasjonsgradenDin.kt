@@ -6,7 +6,6 @@ import no.nav.pensjon.brev.api.model.vedlegg.InntektFoerUfoereGjeldendeSelectors
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDto
 import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdGjeldendeSelectors.fullUfoeretrygdPerAar
 import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdGjeldendeSelectors.harDelvisUfoeregrad
-import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdGjeldendeSelectors.harFullUfoeregrad
 import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdGjeldendeSelectors.kompensasjonsgrad
 import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdGjeldendeSelectors.ufoeregrad
 import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdOrdinaerSelectors.harGammelUTBeloepUlikNyUTBeloep
@@ -36,7 +35,7 @@ data class SlikHarViFastsattKompensasjonsgradenDin(
 
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-        val harFullUfoeregrad = ufoeretrygdGjeldende.harFullUfoeregrad
+        val harFullUfoeregrad = ufoeretrygdGjeldende.ufoeregrad.equalTo(100)
         val inntektFoerUfoer = inntektFoerUfoereGjeldende.inntektFoerUfoer.format()
         val oppjustertInntektFoerUfoer = inntektFoerUfoereGjeldende.oppjustertInntektFoerUfoer.format()
         val fullUfoeretrygdPerAar = ufoeretrygdGjeldende.fullUfoeretrygdPerAar.format()
