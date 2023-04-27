@@ -19,7 +19,7 @@ data class PDFCompilationOutput(val base64PDF: String)
 class LatexCompileException(msg: String, cause: Throwable? = null) : Exception(msg, cause)
 class LatexTimeoutException(msg: String) : Exception(msg)
 
-class LaTeXCompilerService(private val pdfByggerUrl: String) {
+class LaTeXCompilerService(private val pdfByggerUrl: String, timeout: Long = 60_000) {
     private val objectmapper = jacksonObjectMapper()
     private val httpClient = HttpClient(CIO) {
         install(ContentNegotiation) {
@@ -53,7 +53,7 @@ class LaTeXCompilerService(private val pdfByggerUrl: String) {
         expectSuccess = true
 
         engine {
-            requestTimeout = 60_000
+            requestTimeout = timeout
         }
     }
 
