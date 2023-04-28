@@ -1,12 +1,17 @@
 package no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningufoere
 
 import no.nav.pensjon.brev.api.model.InntektFoerUfoereBegrunnelse
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDto
+import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdGjeldendeSelectors.ufoeregrad
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
+import no.nav.pensjon.brev.template.dsl.expression.and
+import no.nav.pensjon.brev.template.dsl.expression.greaterThan
 import no.nav.pensjon.brev.template.dsl.expression.isOneOf
+import no.nav.pensjon.brev.template.dsl.expression.lessThan
 import no.nav.pensjon.brev.template.dsl.text
 
 /*
@@ -44,10 +49,11 @@ Brevkode <> PE_UT_06_300
 
 
 data class SlikFastsetterViInntektenDinFoerDuBleUfoer(
-    val harDelvisUfoergrad: Expression<Boolean>,
+    val ufoeretrygdGjeldende: Expression<OpplysningerBruktIBeregningUTDto.UfoeretrygdGjeldende>,
     val inntektFoerUfoereBegrunnelse: Expression<InntektFoerUfoereBegrunnelse>,
 
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    val harDelvisUfoeregrad = ufoeretrygdGjeldende.ufoeregrad.greaterThan(0) and ufoeretrygdGjeldende.ufoeregrad.lessThan(100)
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         title1 {
             text(
@@ -86,7 +92,7 @@ data class SlikFastsetterViInntektenDinFoerDuBleUfoer(
                 English to "As a main rule, your income prior to disability equals your ability to have an income before the time of disability. We will in most cases use your pensionable income the year prior to your illness or the base of calculation for your sickness benefit."
             )
             // TBU049V
-            showIf(harDelvisUfoergrad) {
+            showIf(harDelvisUfoeregrad) {
                 text(
                     Bokmal to "Hvis du er i arbeid kan vi fastsette inntekten din før du ble ufør ut fra din nåværende stillingsandel. Inntekten du har skal regnes om til en årsinntekt i full stilling. Årsinntekten blir deretter justert tilbake til uføretidspunktet ditt og vil tilsvare inntekten din før du ble ufør. Dette gjør vi for at du skal få riktig uføregrad.",
                     Nynorsk to "Dersom du er i arbeid kan vi fastsetje inntekta di før du blei ufør ut frå den nåværande stillingsdelen din. Inntekta skal reknas om til ei årsinntekt i full stilling. Årsinntekta blir deretter justert tilbake til uføretidspunktet ditt og vil tilsvare inntekta di før du blei ufør. Dette gjer vi for at du skal få riktig uføregrad.",
@@ -148,7 +154,7 @@ data class SlikFastsetterViInntektenDinFoerDuBleUfoer(
         }
 
         // TBU053
-        showIf(harDelvisUfoergrad) {
+        showIf(harDelvisUfoeregrad) {
             paragraph {
                 text(
                     Bokmal to "Endring av inntekt før du ble ufør",
