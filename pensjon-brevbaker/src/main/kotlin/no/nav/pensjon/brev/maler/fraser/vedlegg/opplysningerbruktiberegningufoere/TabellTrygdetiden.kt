@@ -3,12 +3,10 @@ package no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningufoe
 import no.nav.pensjon.brev.api.model.vedlegg.NorskTrygdetidPeriodeSelectors.trygdetidFom
 import no.nav.pensjon.brev.api.model.vedlegg.NorskTrygdetidPeriodeSelectors.trygdetidTom
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDto
-import no.nav.pensjon.brev.api.model.vedlegg.UtenlandskTrygdetidBilateralPeriodeSelectors.trygdetidBilateralLand
-import no.nav.pensjon.brev.api.model.vedlegg.UtenlandskTrygdetidBilateralPeriodeSelectors.trygdetidFom
-import no.nav.pensjon.brev.api.model.vedlegg.UtenlandskTrygdetidBilateralPeriodeSelectors.trygdetidTom
-import no.nav.pensjon.brev.api.model.vedlegg.UtenlandskTrygdetidEOSPeriodeSelectors.trygdetidEOSLand
-import no.nav.pensjon.brev.api.model.vedlegg.UtenlandskTrygdetidEOSPeriodeSelectors.trygdetidFom
-import no.nav.pensjon.brev.api.model.vedlegg.UtenlandskTrygdetidEOSPeriodeSelectors.trygdetidTom
+import no.nav.pensjon.brev.api.model.vedlegg.UtenlandskTrygdetidPeriodeSelectors.trygdetidBilateralLand
+import no.nav.pensjon.brev.api.model.vedlegg.UtenlandskTrygdetidPeriodeSelectors.trygdetidEOSLand
+import no.nav.pensjon.brev.api.model.vedlegg.UtenlandskTrygdetidPeriodeSelectors.trygdetidFom
+import no.nav.pensjon.brev.api.model.vedlegg.UtenlandskTrygdetidPeriodeSelectors.trygdetidTom
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.Expression
@@ -20,8 +18,8 @@ import no.nav.pensjon.brev.template.dsl.expression.*
 
 data class TabellTrygdetiden(
     val norskTrygdetidPeriode: Expression<List<OpplysningerBruktIBeregningUTDto.NorskTrygdetidPeriode>>,
-    val utenlandskTrygdetidBilateralPeriode: Expression<List<OpplysningerBruktIBeregningUTDto.UtenlandskTrygdetidBilateralPeriode>>,
-    val utenlandskTrygdetidEOSPeriode: Expression<List<OpplysningerBruktIBeregningUTDto.UtenlandskTrygdetidEOSPeriode>>,
+    val utenlandskTrygdetidBilateralPeriode: Expression<List<OpplysningerBruktIBeregningUTDto.UtenlandskTrygdetidPeriode>>,
+    val utenlandskTrygdetidEOSPeriode: Expression<List<OpplysningerBruktIBeregningUTDto.UtenlandskTrygdetidPeriode>>,
 
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
