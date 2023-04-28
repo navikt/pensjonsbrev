@@ -10,69 +10,49 @@ import no.nav.pensjon.brev.template.*
 import java.time.format.FormatStyle
 import java.util.*
 
-class PensjonJsonRendererException(msg: String): Exception(msg)
+class PensjonJsonRendererException(msg: String) : Exception(msg)
 
-object PensjonJsonRenderer {
+object PensjonJsonRenderer : LetterRenderer<RenderedJsonLetter>() {
     private val languageSettings = pensjonHTMLSettings
 
-    fun render(letter: Letter<*>): RenderedJsonLetter =
-        letter.toScope().let { scope ->
-            RenderedJsonLetter(
-                title = renderText(scope, letter.template.title, emptyList()).joinToString { it.text },
-                sakspart = Sakspart(
-                    gjelderNavn = scope.felles.bruker.fulltNavn(),
-                    gjelderFoedselsnummer = scope.felles.bruker.foedselsnummer.value,
-                    saksnummer = scope.felles.saksnummer,
-                    dokumentDato = scope.felles.dokumentDato.format(dateFormatter(scope.language, FormatStyle.SHORT)),
-                ),
-                blocks = renderOutline(scope, letter.template.outline),
-                // TODO: Attesterende saksbehandler må kunne være null for informasjonsskriv som ikke attesteres
-                signatur = scope.felles.signerendeSaksbehandlere.let { sign ->
-                    Signatur(
-                        hilsenTekst = renderText(scope, languageSettings.settings[LanguageSetting.Closing.greeting]!!, emptyList()).joinToString { it.text },
-                        saksbehandlerRolleTekst = renderText(scope, languageSettings.settings[LanguageSetting.Closing.saksbehandler]!!, emptyList()).joinToString { it.text },
-                        saksbehandlerNavn = sign?.saksbehandler ?: "",
-                        attesterendeSaksbehandlerNavn = sign?.attesterendeSaksbehandler ?: "",
-                        navAvsenderEnhet = scope.felles.avsenderEnhet.navn,
-                    )
-                }
-            )
-        }
-
-    private fun <C : Element<*>> render(scope: ExpressionScope<*, *>, elements: List<ContentOrControlStructure<*, C>>, location: TreeLocation, renderBlock: (scope: ExpressionScope<*, *>, element: C, location: TreeLocation) -> Unit) {
-        elements.forEach { controlStructure(scope, it, location, renderBlock) }
-    }
-
-    private fun <C : Element<*>> controlStructure(scope: ExpressionScope<*, *>, element: ContentOrControlStructure<*, C>, location: TreeLocation, block: (s: ExpressionScope<*, *>, e: C, location: TreeLocation) -> Unit) {
-        when (element) {
-            is ContentOrControlStructure.Content -> block(scope, element.content, location)
-
-            is ContentOrControlStructure.Conditional -> {
-                val body = if (element.predicate.eval(scope)) element.showIf else element.showElse
-                render(scope, body, location + "c", block)
+    override fun renderLetter(scope: ExpressionScope<*, *>, template: LetterTemplate<*, *>): RenderedJsonLetter =
+        RenderedJsonLetter(
+            title = renderText(scope, template.title).joinToString { it.text },
+            sakspart = Sakspart(
+                gjelderNavn = scope.felles.bruker.fulltNavn(),
+                gjelderFoedselsnummer = scope.felles.bruker.foedselsnummer.value,
+                saksnummer = scope.felles.saksnummer,
+                dokumentDato = scope.felles.dokumentDato.format(dateFormatter(scope.language, FormatStyle.SHORT)),
+            ),
+            blocks = renderOutline(scope, template.outline),
+            // TODO: Attesterende saksbehandler må kunne være null for informasjonsskriv som ikke attesteres
+            signatur = scope.felles.signerendeSaksbehandlere.let { sign ->
+                Signatur(
+                    hilsenTekst = renderText(scope, languageSettings.settings[LanguageSetting.Closing.greeting]!!).joinToString { it.text },
+                    saksbehandlerRolleTekst = renderText(scope, languageSettings.settings[LanguageSetting.Closing.saksbehandler]!!).joinToString { it.text },
+                    saksbehandlerNavn = sign?.saksbehandler ?: "",
+                    attesterendeSaksbehandlerNavn = sign?.attesterendeSaksbehandler ?: "",
+                    navAvsenderEnhet = scope.felles.avsenderEnhet.navn,
+                )
             }
-
-            is ContentOrControlStructure.ForEach<*, C, *> -> element.render(scope) { s, e -> controlStructure(s, e, location + "c", block) }
-        }
-    }
+        )
 
     private fun renderOutline(scope: ExpressionScope<*, *>, outline: List<OutlineElement<*>>): List<Block> =
         mutableListOf<Block>().apply {
-            var siblingCounter = 0
-            render(scope, outline, emptyList()) { outlineScope, element, location ->
-                add(renderOutlineContent(outlineScope, element, location + (siblingCounter++).toString()))
+            render(scope, outline) { outlineScope, element ->
+                add(renderOutlineContent(outlineScope, element))
             }
         }
 
-    private fun renderOutlineContent(scope: ExpressionScope<*, *>, element: Element.OutlineContent<*>, location: TreeLocation): Block =
+    private fun renderOutlineContent(scope: ExpressionScope<*, *>, element: Element.OutlineContent<*>): Block =
         when (element) {
-            is Element.OutlineContent.Paragraph -> renderParagraph(scope, element, location)
-            is Element.OutlineContent.Title1 -> Block.Title1(element.hashCode(), location, true, renderText(scope, element.text, location))
+            is Element.OutlineContent.Paragraph -> renderParagraph(scope, element)
+            is Element.OutlineContent.Title1 -> Block.Title1(element.hashCode(), true, renderText(scope, element.text))
         }
 
-    private fun renderParagraph(scope: ExpressionScope<*, *>, paragraph: Element.OutlineContent.Paragraph<*>, currentLocation: TreeLocation): Paragraph =
-        Paragraph(paragraph.hashCode(), currentLocation, true, mutableListOf<ParagraphContent>().apply {
-            render(scope, paragraph.paragraph, currentLocation) { pScope, element, _ ->
+    private fun renderParagraph(scope: ExpressionScope<*, *>, paragraph: Element.OutlineContent.Paragraph<*>): Paragraph =
+        Paragraph(paragraph.hashCode(), true, mutableListOf<ParagraphContent>().apply {
+            render(scope, paragraph.paragraph) { pScope, element ->
                 addAll(renderParagraphContent(pScope, element))
             }
         })
@@ -87,8 +67,8 @@ object PensjonJsonRenderer {
 
     private fun renderItemList(scope: ExpressionScope<*, *>, itemList: Element.OutlineContent.ParagraphContent.ItemList<*>): ParagraphContent.ItemList =
         ParagraphContent.ItemList(itemList.hashCode(), mutableListOf<ParagraphContent.ItemList.Item>().apply {
-            render(scope, itemList.items, emptyList()) { inner, item, _ ->
-                add(ParagraphContent.ItemList.Item(renderText(inner, item.text, emptyList())))
+            render(scope, itemList.items) { inner, item ->
+                add(ParagraphContent.ItemList.Item(renderText(inner, item.text)))
             }
         })
 
@@ -100,9 +80,9 @@ object PensjonJsonRenderer {
             is Element.OutlineContent.ParagraphContent.Text.NewLine -> throw PensjonJsonRendererException("Can't render unsupported element: NewLine")
         }
 
-    private fun renderText(scope: ExpressionScope<*, *>, elements: List<TextElement<*>>, currentLocation: TreeLocation): List<Text> =
+    private fun renderText(scope: ExpressionScope<*, *>, elements: List<TextElement<*>>): List<Text> =
         mutableListOf<Text>().apply {
-            render(scope, elements, currentLocation) { inner, text, _ ->
+            render(scope, elements) { inner, text ->
                 addAll(renderTextContent(inner, text))
             }
         }

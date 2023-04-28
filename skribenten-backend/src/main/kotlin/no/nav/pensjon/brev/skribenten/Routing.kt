@@ -14,7 +14,8 @@ import no.nav.pensjon.brev.skribenten.auth.*
 import no.nav.pensjon.brev.skribenten.services.*
 import java.util.Base64
 
-data class RenderLetterRequest(val letterData: Any, val editedLetter: RenderedJsonLetter?)
+data class RenderLetterRequest(val letterData: Any, val editedLetter: EditedJsonLetter?)
+data class EditedJsonLetter(val letter: RenderedJsonLetter, val deletedBlocks: Set<Int>)
 
 fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config) {
     val authService = AzureADService(authConfig)

@@ -2,7 +2,7 @@ package no.nav.pensjon.brev.template.render
 
 import no.nav.pensjon.brev.template.*
 
-abstract class LetterRenderer<R : RenderedLetter> {
+abstract class LetterRenderer<R : Any> {
 
     fun render(letter: Letter<*>): R = renderLetter(letter.toScope(), letter.template)
 

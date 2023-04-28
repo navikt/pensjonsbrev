@@ -5,6 +5,8 @@ val ktorVersion: String by System.getProperties()
 val logbackVersion: String by project
 val logstashVersion: String by project
 val micrometerVersion: String by project
+val apiModelVersion: String by project
+val jacksonJsr310Version: String by project
 
 plugins {
     application
@@ -69,14 +71,14 @@ dependencies {
     implementation("io.ktor:ktor-server-netty-jvm:$ktorVersion")
     implementation("io.ktor:ktor-server-status-pages:$ktorVersion")
 
-    implementation("no.nav.pensjon.brev:pensjon-brevbaker-api-model:3.5.29")
+    implementation("no.nav.pensjon.brev:pensjon-brevbaker-api-model:$apiModelVersion")
 
     // Logging
     implementation("ch.qos.logback:logback-classic:$logbackVersion")
     implementation("net.logstash.logback:logstash-logback-encoder:$logstashVersion")
 
     // Necessary for java.time.LocalDate
-    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.14.0")
+    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jacksonJsr310Version")
 
     // Metrics
     implementation("io.ktor:ktor-server-metrics:$ktorVersion")
