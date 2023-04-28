@@ -157,7 +157,6 @@ data class OpplysningerOmBarnetillegg(
             }
         }.orShow {
             //TBU605V
-            // toggle ut
             includePhrase(
                 PeriodisertInntektInnledning(
                     sivilstand = sivilstand,
@@ -166,7 +165,6 @@ data class OpplysningerOmBarnetillegg(
                 )
             )
 
-            // toggle ut
             includePhrase(
                 PeriodisertInntektOverFribeloepEttTillegg(
                     inntektEllerFribeloepErPeriodisert = inntektEllerFribeloepErPeriodisert,

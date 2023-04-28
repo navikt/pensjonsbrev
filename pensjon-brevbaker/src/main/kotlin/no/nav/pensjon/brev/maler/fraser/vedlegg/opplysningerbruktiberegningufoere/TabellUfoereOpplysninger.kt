@@ -86,11 +86,7 @@ data class TabellUfoereOpplysninger(
                             Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
                         )
                     }
-                    column(
-                        columnSpan = 2,
-                        alignment = Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT
-                    ) {
-                    }
+                    column(columnSpan = 2,alignment = Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT) {}
                 }
             ) {
                 row {
@@ -662,7 +658,6 @@ data class TabellUfoereOpplysninger(
                         }
                     }
 
-
                     //førstegangsbehandling bruker bor i utlandet
                     //TODO manglende felt år med inntekt
                     //TODO år med inntekt brukt i beregningen
@@ -670,7 +665,6 @@ data class TabellUfoereOpplysninger(
                 }
 
                 ifNotNull(barnetilleggGjeldende) { barnetillegg ->
-                    // TODO vis fribeløp
                     row {
                         cell {
                             text(
@@ -772,16 +766,18 @@ data class TabellUfoereOpplysninger(
                         }
                     }
                     ifNotNull(barnetillegg.fellesbarn) { fellesBarn ->
-                        row {
-                            cell {
-                                text(
-                                    Bokmal to "Beløp som er trukket fra annen forelders inntekt (inntil 1G)",
-                                    Nynorsk to "Beløp som er trekt frå inntekta til ein annan forelder (inntil 1G)",
-                                    English to "Amount deducted from the other parent's income (up to 1G)",
-                                )
-                            }
-                            cell {
-                                includePhrase(Felles.KronerText(fellesBarn.beloepFratrukketAnnenForeldersInntekt))
+                        showIf(fellesBarn.beloepFratrukketAnnenForeldersInntekt.greaterThan(0)) {
+                            row {
+                                cell {
+                                    text(
+                                        Bokmal to "Beløp som er trukket fra annen forelders inntekt (inntil 1G)",
+                                        Nynorsk to "Beløp som er trekt frå inntekta til ein annan forelder (inntil 1G)",
+                                        English to "Amount deducted from the other parent's income (up to 1G)",
+                                    )
+                                }
+                                cell {
+                                    includePhrase(Felles.KronerText(fellesBarn.beloepFratrukketAnnenForeldersInntekt))
+                                }
                             }
                         }
                     }
@@ -800,7 +796,6 @@ data class TabellUfoereOpplysninger(
                             }
                         }
                     }
-
                 }
             }
         }
