@@ -156,7 +156,7 @@ data class OpplysningerBruktIBeregningUTDto(
         val trygdetidEOSLand: String,
         val trygdetidFom: LocalDate,
         val trygdetidTom: LocalDate,
-        )
+    )
 
     data class UfoeretrygdOrdinaer(
         val harBeloepRedusert: Boolean,  // PE_Vedtaksdata_BeregningsData_BeregningUfore_BelopRedusert
@@ -188,11 +188,13 @@ data class OpplysningerBruktIBeregningUTDto(
             val trygdetidFom: LocalDate,  // <PE_Grunnlag_PersongrunnlagAvdod_TrygdetidsgrunnlagListeNor_Trygdetidsgrunnlag_TrygdetidFom>
             val trygdetidTom: LocalDate
         )
+
         data class OpptjeningUfoeretrygdAvdoed(
             val harFoerstegangstjenesteOpptjening: Boolean,
             val harOmsorgsopptjening: Boolean,
             val opptjeningsperiode: List<Opptjeningsperiode>,
         )
+
         data class TrygdetidsdetaljerAvdoed(
             val anvendtTT: Int,
             val beregningsmetode: Beregningsmetode,
@@ -213,17 +215,20 @@ data class OpplysningerBruktIBeregningUTDto(
             val tellerTTEOS: Int?,
             val tellerTTNordiskKonv: Int?,
         )
+
         data class UfoeretrygdGjeldendeAvdoed(
             val beregningsgrunnlagBeloepAar: Kroner,
             val ufoeregrad: Int,
             val ufoeretidspunkt: LocalDate,
         )
+
         data class UtenlandskTrygdetidPeriodeAvdoed(
             val trygdetidBilateralLand: String,  // <PE_Grunnlag_PersongrunnlagAvdod_TrygdetidsgrunnlagListeBilateral_TrygdetidsgrunnlagBilateral_TrygdetidBilateralLand>
             val trygdetidEOSLand: String,
             val trygdetidFom: LocalDate,
             val trygdetidTom: LocalDate,
         )
+
         data class YrkesskadeGjeldeneAvdoed(
             val yrkesskadegrad: Int,
             val inntektVedSkadetidspunkt: Kroner,
