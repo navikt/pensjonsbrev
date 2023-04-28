@@ -9,9 +9,12 @@ import no.nav.pensjon.brev.api.model.vedlegg.BeregnetUTPerManedGjeldendeSelector
 import no.nav.pensjon.brev.api.model.vedlegg.InntektsAvkortingGjeldendeSelectors.inntektsgrenseAar
 import no.nav.pensjon.brev.api.model.vedlegg.InntektsAvkortingGjeldendeSelectors.inntektstak
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerAvdoedSelectors.harNyttGjenlevendetillegg_safe
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerAvdoedSelectors.trygdetidsdetaljer1
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerAvdoedSelectors.ufoeretrygdGjeldende1
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerAvdoedSelectors.yrkesskadeGjeldene1_safe
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerAvdoedSelectors.norskTrygdetidPeriodeAvdoed_safe
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerAvdoedSelectors.opptjeningUfoeretrygdAvdoed_safe
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerAvdoedSelectors.trygdetidsdetaljerAvdoed
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerAvdoedSelectors.ufoeretrygdGjeldendeAvdoed
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerAvdoedSelectors.utenlandskTrygdePeriodeAvdoed_safe
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerAvdoedSelectors.yrkesskadeGjeldeneAvdoed
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDto
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.barnetilleggGjeldende
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.beregnetUTPerManedGjeldende
@@ -27,25 +30,19 @@ import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSel
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.inntektsAvkortingGjeldende
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.kravAarsakType
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.minsteytelseGjeldende_sats
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.norskTrygdetidPerioder
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.norskTrygdetidPerioderAvdoed
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.norskTrygdetidPeriode
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.opptjeningUfoeretrygd
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.opptjeningUfoeretrygdAvdoed
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.sivilstand
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.trygdetidsdetaljerGjeldende
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.ufoeretrygdGjeldende
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.ufoeretrygdOrdinaer
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.ungUfoerGjeldende_erUnder20Aar
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.utenlandskTrygdetidBilateralPerioder
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.utenlandskTrygdetidBilateralPerioderAvdoed
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.utenlandskTrygdetidEOSPerioder
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.utenlandskTrygdetidEOSPerioderAvdoed
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.utenlandskTrygdetidPeriode
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.yrkesskadeGjeldende
 import no.nav.pensjon.brev.api.model.vedlegg.OpptjeningUfoeretrygdSelectors.harFoerstegangstjenesteOpptjening_safe
 import no.nav.pensjon.brev.api.model.vedlegg.OpptjeningUfoeretrygdSelectors.harOmsorgsopptjening_safe
 import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidsdetaljerGjeldendeSelectors.anvendtTT
 import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidsdetaljerGjeldendeSelectors.beregningsmetode
-import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdGjeldendeSelectors.harDelvisUfoeregrad
 import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdGjeldendeSelectors.ufoeretidspunkt
 import no.nav.pensjon.brev.api.model.vedlegg.YrkesskadeGjeldendeSelectors.yrkesskadegrad_safe
 import no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningufoere.*
@@ -124,9 +121,9 @@ fun createVedleggOpplysningerBruktIBeregningUT(
                         TabellUfoereOpplysningerAvdoed(
                             beregnetUTPerManedGjeldende = beregnetUTPerManedGjeldende,
                             opplysningerAvdoed = opplysningerAvdoed,
-                            trygdetidsdetaljer1 = opplysningerAvdoed.trygdetidsdetaljer1,
-                            ufoeretrygdGjeldende1 = opplysningerAvdoed.ufoeretrygdGjeldende1,
-                            yrkesskadeGjeldende1 = opplysningerAvdoed.yrkesskadeGjeldene1_safe,
+                            trygdetidsdetaljerAvdoed = opplysningerAvdoed.trygdetidsdetaljerAvdoed,
+                            ufoeretrygdGjeldendeAvdoed = opplysningerAvdoed.ufoeretrygdGjeldendeAvdoed,
+                            yrkesskadeGjeldendeAvdoed = opplysningerAvdoed.yrkesskadeGjeldeneAvdoed
                         )
                     )
                 }
@@ -185,7 +182,7 @@ fun createVedleggOpplysningerBruktIBeregningUT(
             if (skalViseTabellInntekteneBruktIBeregningenAvdoed) {
                 val harAvdoed = true.expr()
                 showIf(harAvdoed and kravAarsakType.isNotAnyOf(KravAarsakType.SOKNAD_BT)) {
-                    ifNotNull(opptjeningUfoeretrygdAvdoed) { opptjeningAvdoed ->
+                    ifNotNull(opplysningerAvdoed.opptjeningUfoeretrygdAvdoed_safe) { opptjeningAvdoed ->
                         includePhrase(
                             TabellInntekteneBruktIBeregningenAvdoed(
                                 beregningGjeldendeFraOgMed = beregnetUTPerManedGjeldende.virkDatoFom,
@@ -201,25 +198,28 @@ fun createVedleggOpplysningerBruktIBeregningUT(
                     beregnetUTPerManedGjeldende = beregnetUTPerManedGjeldende,
                     trygdetidsdetaljerGjeldende = trygdetidsdetaljerGjeldende,
                     ufoeregrad = ufoeretrygdGjeldende,
-                    yrkesskadegrad = yrkesskadeGjeldende
+                    yrkesskadegrad = yrkesskadeGjeldende,
+                    norskTrygdetidPeriode = norskTrygdetidPeriode,
                 )
             )
 
             includePhrase(
                 TabellTrygdetiden(
-                    norskTrygdetidPeriode = norskTrygdetidPerioder,
-                    utenlandskTrygdetidBilateralPeriode = utenlandskTrygdetidBilateralPerioder,
-                    utenlandskTrygdetidEOSPeriode = utenlandskTrygdetidEOSPerioder
+                    norskTrygdetidPeriode = norskTrygdetidPeriode,
+                    utenlandskTrygdetidBilateralPeriode = utenlandskTrygdetidPeriode,
+                    utenlandskTrygdetidEOSPeriode = utenlandskTrygdetidPeriode
                 )
             )
-
-            includePhrase(
-                TabellTrygdetidenAvdoed(
-                    norskTrygdetidPeriode = norskTrygdetidPerioderAvdoed,
-                    utenlandskTrygdetidEOSPeriode = utenlandskTrygdetidEOSPerioderAvdoed,
-                    utenlandskTrygdetidBilateralPeriode = utenlandskTrygdetidBilateralPerioderAvdoed,
-                )
-            )
+ifNotNull(opplysningerAvdoed.norskTrygdetidPeriodeAvdoed_safe, opplysningerAvdoed.utenlandskTrygdePeriodeAvdoed_safe ) {
+        norskPeriode, utenlandskPeriode ->
+    includePhrase(
+        TabellTrygdetidenAvdoed(
+            norskTrygdetidPeriode = norskPeriode,
+            utenlandskTrygdetidEOSPeriode = utenlandskPeriode,
+            utenlandskTrygdetidBilateralPeriode = utenlandskPeriode
+        )
+    )
+}
 
             showIf(kravAarsakType.isOneOf(KravAarsakType.ENDRET_IFU)) {
                 includePhrase(SlikHarViFastsattDenNyeInntektsgrensenDin.DenNyeInntektsgrensenDin)
@@ -227,7 +227,7 @@ fun createVedleggOpplysningerBruktIBeregningUT(
 
             includePhrase(
                 SlikFastsetterViInntektenDinFoerDuBleUfoer(
-                    harDelvisUfoergrad = ufoeretrygdGjeldende.harDelvisUfoeregrad,
+                    ufoeretrygdGjeldende = ufoeretrygdGjeldende,
                     inntektFoerUfoereBegrunnelse = inntektFoerUfoereBegrunnelse,
                 )
             )
@@ -328,8 +328,8 @@ fun createVedleggOpplysningerBruktIBeregningUT(
                     EtteroppgjoerAvUfoeretrygdOgBarnetillegg(
                         sivilstand = sivilstand,
                         harBarnetilleggInnvilget = harBarnetilleggInnvilget.notNull(),
-                        harFellesbarn = barnetilleggGjeldende.fellesbarn_safe.notNull(),
                         borIUtlandet = borIUtlandet,
+                        harFellesbarn = barnetilleggGjeldende.fellesbarn_safe,
                     )
                 )
             }

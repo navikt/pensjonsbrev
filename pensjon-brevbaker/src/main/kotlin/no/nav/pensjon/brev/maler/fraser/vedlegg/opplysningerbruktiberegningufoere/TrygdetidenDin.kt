@@ -17,7 +17,7 @@ import no.nav.pensjon.brev.template.dsl.expression.*
 
 data class TrygdetidenDin(
     val beregnetUTPerManedGjeldende: Expression<OpplysningerBruktIBeregningUTDto.BeregnetUTPerManedGjeldende>,
-    val norskTrygdetidPeriode: Expression<OpplysningerBruktIBeregningUTDto.NorskTrygdetidPeriode>,
+    val norskTrygdetidPeriode: Expression<List<OpplysningerBruktIBeregningUTDto.NorskTrygdetidPeriode>>,
     val trygdetidsdetaljerGjeldende: Expression<OpplysningerBruktIBeregningUTDto.TrygdetidsdetaljerGjeldende>,
     val ufoeregrad: Expression<OpplysningerBruktIBeregningUTDto.UfoeretrygdGjeldende>,
     val yrkesskadegrad: Expression<OpplysningerBruktIBeregningUTDto.YrkesskadeGjeldende?>,
