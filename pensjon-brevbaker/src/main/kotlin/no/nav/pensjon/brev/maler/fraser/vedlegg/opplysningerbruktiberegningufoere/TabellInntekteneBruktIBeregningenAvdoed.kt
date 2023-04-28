@@ -4,12 +4,12 @@ import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDto
 import no.nav.pensjon.brev.api.model.vedlegg.OpptjeningUfoeretrygdAvdoedSelectors.harFoerstegangstjenesteOpptjening_safe
 import no.nav.pensjon.brev.api.model.vedlegg.OpptjeningUfoeretrygdAvdoedSelectors.harOmsorgsopptjening_safe
 import no.nav.pensjon.brev.api.model.vedlegg.OpptjeningUfoeretrygdAvdoedSelectors.opptjeningsperiode
-import no.nav.pensjon.brev.api.model.vedlegg.OpptjeningsperiodeAvdoedSelectors.aar
-import no.nav.pensjon.brev.api.model.vedlegg.OpptjeningsperiodeAvdoedSelectors.harFoerstegangstjenesteOpptjening
-import no.nav.pensjon.brev.api.model.vedlegg.OpptjeningsperiodeAvdoedSelectors.harInntektAvtaleland
-import no.nav.pensjon.brev.api.model.vedlegg.OpptjeningsperiodeAvdoedSelectors.harOmsorgsopptjening
-import no.nav.pensjon.brev.api.model.vedlegg.OpptjeningsperiodeAvdoedSelectors.justertPensjonsgivendeInntekt
-import no.nav.pensjon.brev.api.model.vedlegg.OpptjeningsperiodeAvdoedSelectors.pensjonsgivendeInntekt
+import no.nav.pensjon.brev.api.model.vedlegg.OpptjeningsperiodeSelectors.aar
+import no.nav.pensjon.brev.api.model.vedlegg.OpptjeningsperiodeSelectors.harFoerstegangstjenesteOpptjening
+import no.nav.pensjon.brev.api.model.vedlegg.OpptjeningsperiodeSelectors.harInntektAvtaleland
+import no.nav.pensjon.brev.api.model.vedlegg.OpptjeningsperiodeSelectors.harOmsorgsopptjening
+import no.nav.pensjon.brev.api.model.vedlegg.OpptjeningsperiodeSelectors.justertPensjonsgivendeInntekt
+import no.nav.pensjon.brev.api.model.vedlegg.OpptjeningsperiodeSelectors.pensjonsgivendeInntekt
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
@@ -25,7 +25,7 @@ import no.nav.pensjon.brev.template.dsl.expression.*
 
 data class TabellInntekteneBruktIBeregningenAvdoed(
     val beregningGjeldendeFraOgMed: Expression<LocalDate>,
-    val opptjeningUfoeretrygdAvdoed: Expression<OpplysningerBruktIBeregningUTDto.OpptjeningUfoeretrygdAvdoed?>,
+    val opptjeningUfoeretrygdAvdoed: Expression<OpplysningerBruktIBeregningUTDto.OpplysningerAvdoed.OpptjeningUfoeretrygdAvdoed>,
 
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
