@@ -6,28 +6,28 @@ import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerAvdoedSelectors.erFlykt
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerAvdoedSelectors.erUngUfoer_safe
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerAvdoedSelectors.foedselsnummer_safe
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDto
-import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidsdetaljerAvdoedSelectors.anvendtTT
-import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidsdetaljerAvdoedSelectors.faktiskTTBilateral_safe
-import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidsdetaljerAvdoedSelectors.faktiskTTEOS_safe
-import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidsdetaljerAvdoedSelectors.faktiskTTNordiskKonv_safe
-import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidsdetaljerAvdoedSelectors.faktiskTTNorgePlusFaktiskBilateral_safe
-import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidsdetaljerAvdoedSelectors.faktiskTTNorgePlusfaktiskTTEOS_safe
-import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidsdetaljerAvdoedSelectors.faktiskTTNorge_safe
-import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidsdetaljerAvdoedSelectors.framtidigTTAvtaleland_safe
-import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidsdetaljerAvdoedSelectors.framtidigTTEOS_safe
-import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidsdetaljerAvdoedSelectors.framtidigTTNorsk_safe
-import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidsdetaljerAvdoedSelectors.nevnerTTBilateralProRata_safe
-import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidsdetaljerAvdoedSelectors.nevnerTTEOS_safe
-import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidsdetaljerAvdoedSelectors.nevnerTTNordiskKonv_safe
-import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidsdetaljerAvdoedSelectors.samletTTNordiskKonv_safe
-import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidsdetaljerAvdoedSelectors.tellerTTBilateralProRata_safe
-import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidsdetaljerAvdoedSelectors.tellerTTEOS_safe
-import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidsdetaljerAvdoedSelectors.tellerTTNordiskKonv_safe
-import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdGjeldendeAvdoedSelectors.beregningsgrunnlagBeloepAar
-import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdGjeldendeAvdoedSelectors.ufoeretidspunkt
-import no.nav.pensjon.brev.api.model.vedlegg.YrkesskadeGjeldeneAvdoedSelectors.beregningsgrunnlagBeloepAarYrkesskade_safe
-import no.nav.pensjon.brev.api.model.vedlegg.YrkesskadeGjeldeneAvdoedSelectors.inntektVedSkadetidspunkt_safe
-import no.nav.pensjon.brev.api.model.vedlegg.YrkesskadeGjeldeneAvdoedSelectors.yrkesskadegrad_safe
+import no.nav.pensjon.brev.api.model.vedlegg.Trygdetidsdetaljer1Selectors.anvendtTT
+import no.nav.pensjon.brev.api.model.vedlegg.Trygdetidsdetaljer1Selectors.faktiskTTBilateral_safe
+import no.nav.pensjon.brev.api.model.vedlegg.Trygdetidsdetaljer1Selectors.faktiskTTEOS_safe
+import no.nav.pensjon.brev.api.model.vedlegg.Trygdetidsdetaljer1Selectors.faktiskTTNordiskKonv_safe
+import no.nav.pensjon.brev.api.model.vedlegg.Trygdetidsdetaljer1Selectors.faktiskTTNorgePlusFaktiskBilateral_safe
+import no.nav.pensjon.brev.api.model.vedlegg.Trygdetidsdetaljer1Selectors.faktiskTTNorgePlusfaktiskTTEOS_safe
+import no.nav.pensjon.brev.api.model.vedlegg.Trygdetidsdetaljer1Selectors.faktiskTTNorge_safe
+import no.nav.pensjon.brev.api.model.vedlegg.Trygdetidsdetaljer1Selectors.framtidigTTAvtaleland_safe
+import no.nav.pensjon.brev.api.model.vedlegg.Trygdetidsdetaljer1Selectors.framtidigTTEOS_safe
+import no.nav.pensjon.brev.api.model.vedlegg.Trygdetidsdetaljer1Selectors.framtidigTTNorsk_safe
+import no.nav.pensjon.brev.api.model.vedlegg.Trygdetidsdetaljer1Selectors.nevnerTTBilateralProRata_safe
+import no.nav.pensjon.brev.api.model.vedlegg.Trygdetidsdetaljer1Selectors.nevnerTTEOS_safe
+import no.nav.pensjon.brev.api.model.vedlegg.Trygdetidsdetaljer1Selectors.nevnerTTNordiskKonv_safe
+import no.nav.pensjon.brev.api.model.vedlegg.Trygdetidsdetaljer1Selectors.samletTTNordiskKonv_safe
+import no.nav.pensjon.brev.api.model.vedlegg.Trygdetidsdetaljer1Selectors.tellerTTBilateralProRata_safe
+import no.nav.pensjon.brev.api.model.vedlegg.Trygdetidsdetaljer1Selectors.tellerTTEOS_safe
+import no.nav.pensjon.brev.api.model.vedlegg.Trygdetidsdetaljer1Selectors.tellerTTNordiskKonv_safe
+import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdGjeldende1Selectors.beregningsgrunnlagBeloepAar
+import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdGjeldende1Selectors.ufoeretidspunkt
+import no.nav.pensjon.brev.api.model.vedlegg.YrkesskadeGjeldene1Selectors.beregningsgrunnlagBeloepAarYrkesskade_safe
+import no.nav.pensjon.brev.api.model.vedlegg.YrkesskadeGjeldene1Selectors.inntektVedSkadetidspunkt_safe
+import no.nav.pensjon.brev.api.model.vedlegg.YrkesskadeGjeldene1Selectors.yrkesskadegrad_safe
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.*
@@ -52,9 +52,9 @@ THEN INCLUDE
 data class TabellUfoereOpplysningerAvdoed(
     val beregnetUTPerManedGjeldende: Expression<OpplysningerBruktIBeregningUTDto.BeregnetUTPerManedGjeldende>,
     val opplysningerAvdoed: Expression<OpplysningerBruktIBeregningUTDto.OpplysningerAvdoed?>,
-    val trygdetidsdetaljerAvdoed: Expression<OpplysningerBruktIBeregningUTDto.OpplysningerAvdoed.TrygdetidsdetaljerAvdoed>,
-    val ufoeretrygdGjeldendeAvdoed: Expression<OpplysningerBruktIBeregningUTDto.OpplysningerAvdoed.UfoeretrygdGjeldendeAvdoed>,
-    val yrkesskadeGjeldendeAvdoed: Expression<OpplysningerBruktIBeregningUTDto.OpplysningerAvdoed.YrkesskadeGjeldeneAvdoed?>,
+    val trygdetidsdetaljer: Expression<OpplysningerBruktIBeregningUTDto.OpplysningerAvdoed.Trygdetidsdetaljer1>,
+    val ufoeretrygdGjeldende: Expression<OpplysningerBruktIBeregningUTDto.OpplysningerAvdoed.UfoeretrygdGjeldende1>,
+    val yrkesskadeGjeldende: Expression<OpplysningerBruktIBeregningUTDto.OpplysningerAvdoed.YrkesskadeGjeldene1?>,
 
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
@@ -117,13 +117,13 @@ data class TabellUfoereOpplysningerAvdoed(
                     }
                     cell {
                         textExpr(
-                            Language.Bokmal to ufoeretrygdGjeldendeAvdoed.ufoeretidspunkt.format(),
-                            Language.Nynorsk to ufoeretrygdGjeldendeAvdoed.ufoeretidspunkt.format(),
-                            Language.English to ufoeretrygdGjeldendeAvdoed.ufoeretidspunkt.format()
+                            Language.Bokmal to ufoeretrygdGjeldende.ufoeretidspunkt.format(),
+                            Language.Nynorsk to ufoeretrygdGjeldende.ufoeretidspunkt.format(),
+                            Language.English to ufoeretrygdGjeldende.ufoeretidspunkt.format()
                         )
                     }
                 }
-                showIf(ufoeretrygdGjeldendeAvdoed.beregningsgrunnlagBeloepAar.greaterThan(0)) {
+                showIf(ufoeretrygdGjeldende.beregningsgrunnlagBeloepAar.greaterThan(0)) {
                     row {
                         cell {
                             text(
@@ -132,7 +132,7 @@ data class TabellUfoereOpplysningerAvdoed(
                                 Language.English to "Basis for calculation"
                             )
                         }
-                        cell { includePhrase(Felles.KronerText(ufoeretrygdGjeldendeAvdoed.beregningsgrunnlagBeloepAar)) }
+                        cell { includePhrase(Felles.KronerText(ufoeretrygdGjeldende.beregningsgrunnlagBeloepAar)) }
                     }
                 }
                 row {
@@ -179,7 +179,7 @@ data class TabellUfoereOpplysningerAvdoed(
                             )
                         }
                         cell {
-                            val anvendtTT = trygdetidsdetaljerAvdoed.anvendtTT
+                            val anvendtTT = trygdetidsdetaljer.anvendtTT
                             includePhrase(Felles.AarText(anvendtTT.ifNull(0)))
                         }
                     }
@@ -202,7 +202,7 @@ data class TabellUfoereOpplysningerAvdoed(
                         }
                     }
                 }
-                ifNotNull(yrkesskadeGjeldendeAvdoed.yrkesskadegrad_safe) { yrkesskadegrad ->
+                ifNotNull(yrkesskadeGjeldende.yrkesskadegrad_safe) { yrkesskadegrad ->
                     showIf(yrkesskadegrad.greaterThan(0)) {
                         row {
                             cell {
@@ -215,7 +215,7 @@ data class TabellUfoereOpplysningerAvdoed(
                             cell { includePhrase((Felles.ProsentText(yrkesskadegrad))) }
                         }
                     }
-                    ifNotNull(yrkesskadeGjeldendeAvdoed.beregningsgrunnlagBeloepAarYrkesskade_safe) { beloep ->
+                    ifNotNull(yrkesskadeGjeldende.beregningsgrunnlagBeloepAarYrkesskade_safe) { beloep ->
                         showIf(beloep.greaterThan(0)) {
                             row {
                                 cell {
@@ -229,7 +229,7 @@ data class TabellUfoereOpplysningerAvdoed(
                             }
                         }
                     }
-                    ifNotNull(yrkesskadeGjeldendeAvdoed.inntektVedSkadetidspunkt_safe) { inntekt ->
+                    ifNotNull(yrkesskadeGjeldende.inntektVedSkadetidspunkt_safe) { inntekt ->
                         showIf(inntekt.greaterThan(0)) {
                             row {
                                 cell {
@@ -245,8 +245,8 @@ data class TabellUfoereOpplysningerAvdoed(
                     }
                 }
                 ifNotNull(
-                    trygdetidsdetaljerAvdoed.faktiskTTNorge_safe,
-                    trygdetidsdetaljerAvdoed.faktiskTTEOS_safe
+                    trygdetidsdetaljer.faktiskTTNorge_safe,
+                    trygdetidsdetaljer.faktiskTTEOS_safe
                 ) { faktiskTTNorge, faktiskTTEOS ->
                     showIf(faktiskTTNorge.greaterThan(0)) {
                         row {
@@ -276,7 +276,7 @@ data class TabellUfoereOpplysningerAvdoed(
                         }
                     }
 
-                    ifNotNull(trygdetidsdetaljerAvdoed.framtidigTTEOS_safe) { framtidigTTEOS ->
+                    ifNotNull(trygdetidsdetaljer.framtidigTTEOS_safe) { framtidigTTEOS ->
                         showIf(framtidigTTEOS.greaterThan(0)) {
                             row {
                                 cell {
@@ -302,15 +302,15 @@ data class TabellUfoereOpplysningerAvdoed(
                             }
                             cell {
                                 val faktiskTrygdetid =
-                                    trygdetidsdetaljerAvdoed.faktiskTTNorgePlusfaktiskTTEOS_safe
+                                    trygdetidsdetaljer.faktiskTTNorgePlusfaktiskTTEOS_safe
                                 includePhrase(Felles.MaanederText(faktiskTrygdetid.ifNull(then = 0)))
                             }
                         }
                     }
                 }
                 ifNotNull(
-                    trygdetidsdetaljerAvdoed.tellerTTEOS_safe,
-                    trygdetidsdetaljerAvdoed.nevnerTTEOS_safe
+                    trygdetidsdetaljer.tellerTTEOS_safe,
+                    trygdetidsdetaljer.nevnerTTEOS_safe
                 ) { tellerTTEOS, nevnerTTEOS ->
                     showIf(tellerTTEOS.greaterThan(0) and nevnerTTEOS.greaterThan(0)) {
                         row {
@@ -331,7 +331,7 @@ data class TabellUfoereOpplysningerAvdoed(
                         }
                     }
                 }
-                ifNotNull(trygdetidsdetaljerAvdoed.faktiskTTNordiskKonv_safe) { faktiskTTNordiskKonv ->
+                ifNotNull(trygdetidsdetaljer.faktiskTTNordiskKonv_safe) { faktiskTTNordiskKonv ->
                     // showIf?
                     row {
                         cell {
@@ -344,7 +344,7 @@ data class TabellUfoereOpplysningerAvdoed(
                         cell { includePhrase(Felles.MaanederText(faktiskTTNordiskKonv.ifNull(then = 0))) }
                     }
                 }
-                ifNotNull(trygdetidsdetaljerAvdoed.framtidigTTNorsk_safe) { framtidigTTNorsk ->
+                ifNotNull(trygdetidsdetaljer.framtidigTTNorsk_safe) { framtidigTTNorsk ->
                     showIf(
                         framtidigTTNorsk.greaterThan(0) and framtidigTTNorsk.lessThan(480)
                     ) {
@@ -361,8 +361,8 @@ data class TabellUfoereOpplysningerAvdoed(
                     }
                 }
                 ifNotNull(
-                    trygdetidsdetaljerAvdoed.tellerTTNordiskKonv_safe,
-                    trygdetidsdetaljerAvdoed.nevnerTTNordiskKonv_safe
+                    trygdetidsdetaljer.tellerTTNordiskKonv_safe,
+                    trygdetidsdetaljer.nevnerTTNordiskKonv_safe
                 ) { tellerTTNordiskKonv, nevnerTTNordiskKonv ->
                     showIf(tellerTTNordiskKonv.greaterThan(0) and nevnerTTNordiskKonv.greaterThan(0)) {
                         row {
@@ -383,7 +383,7 @@ data class TabellUfoereOpplysningerAvdoed(
                         }
                     }
                 }
-                ifNotNull(trygdetidsdetaljerAvdoed.samletTTNordiskKonv_safe) { samletTTNordiskKonv ->
+                ifNotNull(trygdetidsdetaljer.samletTTNordiskKonv_safe) { samletTTNordiskKonv ->
                     showIf(samletTTNordiskKonv.greaterThan(0)) {
                         row {
                             cell {
@@ -397,7 +397,7 @@ data class TabellUfoereOpplysningerAvdoed(
                         }
                     }
                 }
-                ifNotNull(trygdetidsdetaljerAvdoed.faktiskTTBilateral_safe) { faktiskTTBilateral ->
+                ifNotNull(trygdetidsdetaljer.faktiskTTBilateral_safe) { faktiskTTBilateral ->
                     showIf(faktiskTTBilateral.greaterThan(0)) {
                         row {
                             cell {
@@ -411,7 +411,7 @@ data class TabellUfoereOpplysningerAvdoed(
                         }
                     }
                 }
-                ifNotNull(trygdetidsdetaljerAvdoed.framtidigTTAvtaleland_safe) { framtidigTTAvtaleland ->
+                ifNotNull(trygdetidsdetaljer.framtidigTTAvtaleland_safe) { framtidigTTAvtaleland ->
                     showIf(framtidigTTAvtaleland.greaterThan(0)) {
                         row {
                             cell {
@@ -426,8 +426,8 @@ data class TabellUfoereOpplysningerAvdoed(
                     }
                 }
                 ifNotNull(
-                    trygdetidsdetaljerAvdoed.faktiskTTNorge_safe,
-                    trygdetidsdetaljerAvdoed.faktiskTTBilateral_safe
+                    trygdetidsdetaljer.faktiskTTNorge_safe,
+                    trygdetidsdetaljer.faktiskTTBilateral_safe
                 ) { faktiskTTNorge, faktiskTTBilateral ->
                     showIf(faktiskTTNorge.greaterThan(0) and faktiskTTBilateral.greaterThan(0)) {
                         row {
@@ -440,7 +440,7 @@ data class TabellUfoereOpplysningerAvdoed(
                             }
                             cell {
                                 val faktiskTrygdetidINorgePlusAvtaleland =
-                                    trygdetidsdetaljerAvdoed.faktiskTTNorgePlusFaktiskBilateral_safe
+                                    trygdetidsdetaljer.faktiskTTNorgePlusFaktiskBilateral_safe
                                 includePhrase(
                                     Felles.MaanederText(
                                         faktiskTrygdetidINorgePlusAvtaleland.ifNull(
@@ -453,8 +453,8 @@ data class TabellUfoereOpplysningerAvdoed(
                     }
                 }
                 ifNotNull(
-                    trygdetidsdetaljerAvdoed.tellerTTBilateralProRata_safe,
-                    trygdetidsdetaljerAvdoed.nevnerTTBilateralProRata_safe
+                    trygdetidsdetaljer.tellerTTBilateralProRata_safe,
+                    trygdetidsdetaljer.nevnerTTBilateralProRata_safe
                 ) { tellerProRata, nevnerProRata ->
                     showIf(tellerProRata.greaterThan(0) and nevnerProRata.greaterThan(0)) {
                         row {
