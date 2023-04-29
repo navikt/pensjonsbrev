@@ -41,8 +41,8 @@ object Fixtures {
     fun <T: Any> create(letterDataType: KClass<T>): T =
         when (letterDataType) {
             EgenerklaeringOmsorgsarbeidDto::class -> createEgenerklaeringOmsorgsarbeidDto() as T
-            EndringIOpptjeningAutoDto.Fellesbarn1::class -> createEndringIOpptjeningAutoDtoBarnetilleggFellesbarn() as T
-            EndringIOpptjeningAutoDto.Saerkullsbarn1::class -> createEndringIOpptjeningAutoDtoBarnetilleggSaerkullsbarn() as T
+            EndringIOpptjeningAutoDto.Fellesbarn1::class -> createEndringIOpptjeningAutoDtoBarnetilleggFellesbarn1() as T
+            EndringIOpptjeningAutoDto.Saerkullsbarn1::class -> createEndringIOpptjeningAutoDtoBarnetilleggSaerkullsbarn1() as T
             EndringIOpptjeningAutoDto.UfoeretrygdOrdinaer1::class -> createEndringIOpptjeningAutoDtoUfoeretrygdOrdinaer1() as T
             EndringIOpptjeningAutoDto::class -> createEndringIOpptjeningAutoDto() as T
             InformasjonOmSaksbehandlingstidDto::class -> createInformasjonOmSaksbehandlingstidDto() as T
@@ -57,9 +57,14 @@ object Fixtures {
             OpplysningerBruktIBeregningUTDto.BeregnetUTPerManedGjeldende::class -> createOpplysningerBruktIBeregningUTDtoBeregnetUTPerManedGjeldende() as T
             OpplysningerBruktIBeregningUTDto.InntektFoerUfoereGjeldende::class -> createOpplysningerBruktIBeregningUTDtoInntektFoerUfoereGjeldende() as T
             OpplysningerBruktIBeregningUTDto.InntektsAvkortingGjeldende::class -> createOpplysningerBruktIBeregningUTDtoInntektsAvkortingGjeldende() as T
+            OpplysningerBruktIBeregningUTDto.NorskTrygdetidPeriode::class -> createOpplysningerBruktIBeregningUTDtoNorskTrygdetidPeriode() as T
+            OpplysningerBruktIBeregningUTDto.OpplysningerAvdoed::class -> createOpplysningerBruktIBeregningUTDtoOpplysningerAvdoed() as T
+            OpplysningerBruktIBeregningUTDto.OpptjeningUfoeretrygd::class -> createOpplysningerBruktIBeregningUTDtoOpptjeningUfoeretrygd() as T
+            OpplysningerBruktIBeregningUTDto.Opptjeningsperiode::class -> createOpplysningerBruktIBeregningUTDtoOpptjeningsperiode() as T
             OpplysningerBruktIBeregningUTDto.TrygdetidsdetaljerGjeldende.UtenforEOSogNorden::class -> createOpplysningerBruktIBeregningUTDtoTrygdetidsdetaljerGjeldendeUtenforEOSogNorden() as T
             OpplysningerBruktIBeregningUTDto.TrygdetidsdetaljerGjeldende::class -> createOpplysningerBruktIBeregningUTDtoTrygdetidsdetaljerGjeldende() as T
             OpplysningerBruktIBeregningUTDto.UfoeretrygdGjeldende::class -> createOpplysningerBruktIBeregningUTDtoUfoeretrygdGjeldende() as T
+            OpplysningerBruktIBeregningUTDto.UfoeretrygdOrdinaer::class -> createOpplysningerBruktIBeregningUTDtoUfoeretrygdOrdinaer() as T
             OpplysningerBruktIBeregningUTDto.YrkesskadeGjeldende::class -> createOpplysningerBruktIBeregningUTDtoYrkesskadeGjeldende() as T
             OpplysningerBruktIBeregningUTDto::class -> createOpplysningerBruktIBeregningUTDto() as T
             OpptjeningVedForhoeyetHjelpesatsDto::class -> OpptjeningVedForhoeyetHjelpesatsDto(Year(2021)) as T
@@ -67,18 +72,6 @@ object Fixtures {
             UfoerOmregningEnsligDto::class -> createUfoerOmregningEnsligDto() as T
             UngUfoerAutoDto::class -> createUngUfoerAutoDto() as T
             Unit::class -> Unit as T
-            OpplysningerBruktIBeregningUTDto.OpptjeningUfoeretrygd::class -> createOpplysningerBruktIBeregningUTDtoOpptjeningUfoeretrygd() as T
-            OpplysningerBruktIBeregningUTDto.Opptjeningsperiode::class -> createOpplysningerBruktIBeregningUTDtoOpptjeningsperiode() as T
-            OpplysningerBruktIBeregningUTDto.NorskTrygdetidPeriode::class -> createOpplysningerBruktIBeregningUTDtoNorskTrygdetidPeriode() as T
-            OpplysningerBruktIBeregningUTDto.NorskTrygdetidPeriodeAvdoed::class -> createOpplysningerBruktIBeregningUTDtoNorskTrygdetidAvdoedPeriode() as T
-            OpplysningerBruktIBeregningUTDto.UtenlandskTrygdetidEOSPeriode::class -> createOpplysningerBruktIBeregningUTDtoUtenlandskTrygdetidEOSPeriode() as T
-            OpplysningerBruktIBeregningUTDto.UtenlandskTrygdetidEOSPeriodeAvdoed::class -> createOpplysningerBruktIBeregningUTDtoUtenlandskTrygdetidEOSAvdoedPeriode() as T
-            OpplysningerBruktIBeregningUTDto.UtenlandskTrygdetidBilateralPeriode::class -> createOpplysningerBruktIBeregningUTDtoUtenlandskTrygdetidBilateralPeriode() as T
-            OpplysningerBruktIBeregningUTDto.UtenlandskTrygdetidBilateralPeriodeAvdoed::class -> createOpplysningerBruktIBeregningUTDtoUtenlandskTrygdetidBilateralAvdoedPeriode() as T
-            OpplysningerBruktIBeregningUTDto.OpplysningerAvdoed::class -> createOpplysningerBruktIBeregningUTDtoOpplysningerAvdoed() as T
-            OpplysningerBruktIBeregningUTDto.UfoeretrygdOrdinaer::class -> createOpplysningerBruktIBeregningUTDtoUfoeretrygdOrdinaer() as T
-            OpplysningerBruktIBeregningUTDto.OpptjeningUfoeretrygdAvdoed::class -> createOpplysningerBruktIBeregningUTDtoOpptjeningUfoeretrygdAvdoed() as T
-            OpplysningerBruktIBeregningUTDto.OpptjeningsperiodeAvdoed::class -> createOpplysningerBruktIBeregningUTDtoOpptjeningsperiodeAvdoede() as T
 
 
 
