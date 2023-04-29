@@ -9,12 +9,12 @@ import no.nav.pensjon.brev.api.model.vedlegg.BeregnetUTPerManedGjeldendeSelector
 import no.nav.pensjon.brev.api.model.vedlegg.InntektsAvkortingGjeldendeSelectors.inntektsgrenseAar
 import no.nav.pensjon.brev.api.model.vedlegg.InntektsAvkortingGjeldendeSelectors.inntektstak
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerAvdoedSelectors.harNyttGjenlevendetillegg_safe
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerAvdoedSelectors.norskTrygdetidPeriodeAvdoed_safe
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerAvdoedSelectors.norskTrygdetidPeriode1_safe
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerAvdoedSelectors.opptjeningUfoeretrygdAvdoed_safe
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerAvdoedSelectors.trygdetidsdetaljerAvdoed
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerAvdoedSelectors.ufoeretrygdGjeldendeAvdoed
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerAvdoedSelectors.trygdetidsdetaljer1
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerAvdoedSelectors.ufoeretrygdGjeldende1
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerAvdoedSelectors.utenlandskTrygdePeriodeAvdoed_safe
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerAvdoedSelectors.yrkesskadeGjeldeneAvdoed
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerAvdoedSelectors.yrkesskadeGjeldene1
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDto
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.barnetilleggGjeldende
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.beregnetUTPerManedGjeldende
@@ -121,9 +121,9 @@ fun createVedleggOpplysningerBruktIBeregningUT(
                         TabellUfoereOpplysningerAvdoed(
                             beregnetUTPerManedGjeldende = beregnetUTPerManedGjeldende,
                             opplysningerAvdoed = opplysningerAvdoed,
-                            trygdetidsdetaljerAvdoed = opplysningerAvdoed.trygdetidsdetaljerAvdoed,
-                            ufoeretrygdGjeldendeAvdoed = opplysningerAvdoed.ufoeretrygdGjeldendeAvdoed,
-                            yrkesskadeGjeldendeAvdoed = opplysningerAvdoed.yrkesskadeGjeldeneAvdoed
+                            trygdetidsdetaljer = opplysningerAvdoed.trygdetidsdetaljer1,
+                            ufoeretrygdGjeldende = opplysningerAvdoed.ufoeretrygdGjeldende1,
+                            yrkesskadeGjeldende = opplysningerAvdoed.yrkesskadeGjeldene1
                         )
                     )
                 }
@@ -210,7 +210,7 @@ fun createVedleggOpplysningerBruktIBeregningUT(
                     utenlandskTrygdetidEOSPeriode = utenlandskTrygdetidPeriode
                 )
             )
-ifNotNull(opplysningerAvdoed.norskTrygdetidPeriodeAvdoed_safe, opplysningerAvdoed.utenlandskTrygdePeriodeAvdoed_safe ) {
+ifNotNull(opplysningerAvdoed.norskTrygdetidPeriode1_safe, opplysningerAvdoed.utenlandskTrygdePeriodeAvdoed_safe ) {
         norskPeriode, utenlandskPeriode ->
     includePhrase(
         TabellTrygdetidenAvdoed(
