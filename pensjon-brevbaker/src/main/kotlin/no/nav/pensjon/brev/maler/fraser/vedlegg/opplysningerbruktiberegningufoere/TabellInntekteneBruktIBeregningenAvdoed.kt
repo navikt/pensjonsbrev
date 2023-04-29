@@ -1,9 +1,9 @@
 package no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningufoere
 
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDto
-import no.nav.pensjon.brev.api.model.vedlegg.OpptjeningUfoeretrygdAvdoedSelectors.harFoerstegangstjenesteOpptjening_safe
-import no.nav.pensjon.brev.api.model.vedlegg.OpptjeningUfoeretrygdAvdoedSelectors.harOmsorgsopptjening_safe
-import no.nav.pensjon.brev.api.model.vedlegg.OpptjeningUfoeretrygdAvdoedSelectors.opptjeningsperiode
+import no.nav.pensjon.brev.api.model.vedlegg.OpptjeningUfoeretrygd1Selectors.harFoerstegangstjenesteOpptjening_safe
+import no.nav.pensjon.brev.api.model.vedlegg.OpptjeningUfoeretrygd1Selectors.harOmsorgsopptjening_safe
+import no.nav.pensjon.brev.api.model.vedlegg.OpptjeningUfoeretrygd1Selectors.opptjeningsperiode
 import no.nav.pensjon.brev.api.model.vedlegg.OpptjeningsperiodeSelectors.aar
 import no.nav.pensjon.brev.api.model.vedlegg.OpptjeningsperiodeSelectors.harFoerstegangstjenesteOpptjening
 import no.nav.pensjon.brev.api.model.vedlegg.OpptjeningsperiodeSelectors.harInntektAvtaleland
@@ -25,7 +25,7 @@ import no.nav.pensjon.brev.template.dsl.expression.*
 
 data class TabellInntekteneBruktIBeregningenAvdoed(
     val beregningGjeldendeFraOgMed: Expression<LocalDate>,
-    val opptjeningUfoeretrygdAvdoed: Expression<OpplysningerBruktIBeregningUTDto.OpplysningerAvdoed.OpptjeningUfoeretrygdAvdoed>,
+    val opptjeningUfoeretrygdAvdoed: Expression<OpplysningerBruktIBeregningUTDto.OpplysningerAvdoed.OpptjeningUfoeretrygd1>,
 
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
