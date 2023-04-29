@@ -192,7 +192,16 @@ data class OpplysningerBruktIBeregningUTDto(
         data class OpptjeningUfoeretrygd1(
             val harFoerstegangstjenesteOpptjening: Boolean,
             val harOmsorgsopptjening: Boolean,
-            val opptjeningsperiode: List<Opptjeningsperiode>,
+            val opptjeningsperiode: List<Opptjeningsperiode1>,
+        )
+
+        data class Opptjeningsperiode1(
+            val aar: Year,
+            val harFoerstegangstjenesteOpptjening: Boolean,
+            val harInntektAvtaleland: Boolean,
+            val harOmsorgsopptjening: Boolean,
+            val justertPensjonsgivendeInntekt: Kroner,
+            val pensjonsgivendeInntekt: Kroner,
         )
 
         data class Trygdetidsdetaljer1(

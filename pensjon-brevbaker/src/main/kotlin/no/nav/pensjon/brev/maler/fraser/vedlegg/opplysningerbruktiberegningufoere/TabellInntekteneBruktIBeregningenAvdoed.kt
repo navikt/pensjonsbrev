@@ -4,12 +4,12 @@ import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDto
 import no.nav.pensjon.brev.api.model.vedlegg.OpptjeningUfoeretrygd1Selectors.harFoerstegangstjenesteOpptjening_safe
 import no.nav.pensjon.brev.api.model.vedlegg.OpptjeningUfoeretrygd1Selectors.harOmsorgsopptjening_safe
 import no.nav.pensjon.brev.api.model.vedlegg.OpptjeningUfoeretrygd1Selectors.opptjeningsperiode
-import no.nav.pensjon.brev.api.model.vedlegg.OpptjeningsperiodeSelectors.aar
-import no.nav.pensjon.brev.api.model.vedlegg.OpptjeningsperiodeSelectors.harFoerstegangstjenesteOpptjening
-import no.nav.pensjon.brev.api.model.vedlegg.OpptjeningsperiodeSelectors.harInntektAvtaleland
-import no.nav.pensjon.brev.api.model.vedlegg.OpptjeningsperiodeSelectors.harOmsorgsopptjening
-import no.nav.pensjon.brev.api.model.vedlegg.OpptjeningsperiodeSelectors.justertPensjonsgivendeInntekt
-import no.nav.pensjon.brev.api.model.vedlegg.OpptjeningsperiodeSelectors.pensjonsgivendeInntekt
+import no.nav.pensjon.brev.api.model.vedlegg.Opptjeningsperiode1Selectors.aar
+import no.nav.pensjon.brev.api.model.vedlegg.Opptjeningsperiode1Selectors.harFoerstegangstjenesteOpptjening
+import no.nav.pensjon.brev.api.model.vedlegg.Opptjeningsperiode1Selectors.harInntektAvtaleland
+import no.nav.pensjon.brev.api.model.vedlegg.Opptjeningsperiode1Selectors.harOmsorgsopptjening
+import no.nav.pensjon.brev.api.model.vedlegg.Opptjeningsperiode1Selectors.justertPensjonsgivendeInntekt
+import no.nav.pensjon.brev.api.model.vedlegg.Opptjeningsperiode1Selectors.pensjonsgivendeInntekt
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
@@ -25,7 +25,7 @@ import no.nav.pensjon.brev.template.dsl.expression.*
 
 data class TabellInntekteneBruktIBeregningenAvdoed(
     val beregningGjeldendeFraOgMed: Expression<LocalDate>,
-    val opptjeningUfoeretrygdAvdoed: Expression<OpplysningerBruktIBeregningUTDto.OpplysningerAvdoed.OpptjeningUfoeretrygd1>,
+    val opptjeningUfoeretrygd: Expression<OpplysningerBruktIBeregningUTDto.OpplysningerAvdoed.OpptjeningUfoeretrygd1>,
 
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
@@ -68,9 +68,9 @@ data class TabellInntekteneBruktIBeregningenAvdoed(
                     )
                 }
             }) {
-                ifNotNull(opptjeningUfoeretrygdAvdoed) { opptjeningUfoeretrygdAvdoed ->
+                ifNotNull(opptjeningUfoeretrygd) { opptjeningUfoeretrygd1 ->
                         forEach(
-                            opptjeningUfoeretrygdAvdoed.opptjeningsperiode
+                            opptjeningUfoeretrygd1.opptjeningsperiode
                         ) { periode ->
                             row {
                                 cell {
@@ -129,7 +129,7 @@ data class TabellInntekteneBruktIBeregningenAvdoed(
             }
         paragraph {
             showIf(
-                opptjeningUfoeretrygdAvdoed.harOmsorgsopptjening_safe.ifNull(false) and opptjeningUfoeretrygdAvdoed.harFoerstegangstjenesteOpptjening_safe.ifNull(
+                opptjeningUfoeretrygd.harOmsorgsopptjening_safe.ifNull(false) and opptjeningUfoeretrygd.harFoerstegangstjenesteOpptjening_safe.ifNull(
                     false
                 )
             ) {
@@ -140,8 +140,8 @@ data class TabellInntekteneBruktIBeregningenAvdoed(
                 )
             }
             showIf(
-                opptjeningUfoeretrygdAvdoed.harOmsorgsopptjening_safe.ifNull(false) and not(
-                    opptjeningUfoeretrygdAvdoed.harFoerstegangstjenesteOpptjening_safe.ifNull(
+                opptjeningUfoeretrygd.harOmsorgsopptjening_safe.ifNull(false) and not(
+                    opptjeningUfoeretrygd.harFoerstegangstjenesteOpptjening_safe.ifNull(
                         false
                     )
                 )
@@ -153,8 +153,8 @@ data class TabellInntekteneBruktIBeregningenAvdoed(
                 )
             }
             showIf(
-                opptjeningUfoeretrygdAvdoed.harFoerstegangstjenesteOpptjening_safe.ifNull(false) and not(
-                    opptjeningUfoeretrygdAvdoed.harOmsorgsopptjening_safe.ifNull(false)
+                opptjeningUfoeretrygd.harFoerstegangstjenesteOpptjening_safe.ifNull(false) and not(
+                    opptjeningUfoeretrygd.harOmsorgsopptjening_safe.ifNull(false)
                 )
             ) {
                 text(
