@@ -177,11 +177,12 @@ data class OpplysningerBruktIBeregningUTDto(
         val erUngUfoer: Boolean,
         val foedselsnummer: Foedselsnummer,
         val harNyttGjenlevendetillegg: Boolean,
-        val norskTrygdetidPeriode: NorskTrygdetidPeriode1,
+        val norskTrygdetidPeriode: NorskTrygdetidPeriode1?,
         val opptjeningUfoeretrygd: OpptjeningUfoeretrygd1,
+        val opptjeningsperiode: Opptjeningsperiode1,
         val trygdetidsdetaljer: Trygdetidsdetaljer1,
         val ufoeretrygdGjeldende: UfoeretrygdGjeldende1,
-        val utenlandskTrygdePeriode: List<UtenlandskTrygdetidPeriode1>,
+        val utenlandskTrygdePeriode: UtenlandskTrygdetidPeriode1?,
         val yrkesskadeGjeldene: YrkesskadeGjeldene1?,
     ) {
         data class NorskTrygdetidPeriode1(
