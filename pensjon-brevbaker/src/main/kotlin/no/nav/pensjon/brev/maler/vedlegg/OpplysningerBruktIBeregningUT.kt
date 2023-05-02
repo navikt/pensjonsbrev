@@ -210,16 +210,14 @@ fun createVedleggOpplysningerBruktIBeregningUT(
                     utenlandskTrygdetidEOSPeriode = utenlandskTrygdetidPeriode
                 )
             )
-
             ifNotNull(
-                opplysningerAvdoed.norskTrygdetidPeriode_safe,
-                opplysningerAvdoed.utenlandskTrygdePeriode_safe
-            ) { norskPeriode, utenlandskPeriode ->
+                opplysningerAvdoed,
+            ) { periode ->
                 includePhrase(
                     TabellTrygdetidenAvdoed(
-                        norskTrygdetidPeriode = norskPeriode.norskTrygdetidPeriode,
-                        utenlandskTrygdetidEOSPeriode = utenlandskPeriode.utenlandskTrygdetidPeriode,
-                        utenlandskTrygdetidBilateralPeriode = utenlandskPeriode.uten
+                        norskTrygdetidPeriode = periode.norskTrygdetidPeriode_safe,
+                        utenlandskTrygdetidEOSPeriode = periode.utenlandskTrygdePeriode_safe,
+                        utenlandskTrygdetidBilateralPeriode = periode.utenlandskTrygdePeriode_safe,
                     )
                 )
             }
