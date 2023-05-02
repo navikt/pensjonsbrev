@@ -17,8 +17,8 @@ data class OpplysningerBruktIBeregningUTDto(
     val inntektsAvkortingGjeldende: InntektsAvkortingGjeldende,
     val kravAarsakType: KravAarsakType,
     val minsteytelseGjeldende_sats: Double?,
-    val norskTrygdetidPeriode: List<NorskTrygdetidPeriode>,
-    val utenlandskTrygdetidPeriode: List<UtenlandskTrygdetidPeriode>,
+    val norskTrygdetidPerioder: List<NorskTrygdetidPeriode>,
+    val utenlandskTrygdetidPerioder: List<UtenlandskTrygdetidPeriode>,
     val opptjeningUfoeretrygd: OpptjeningUfoeretrygd?,
     val sivilstand: Sivilstand,
     val trygdetidsdetaljerGjeldende: TrygdetidsdetaljerGjeldende,
@@ -26,7 +26,7 @@ data class OpplysningerBruktIBeregningUTDto(
     val ufoeretrygdOrdinaer: UfoeretrygdOrdinaer,
     val ungUfoerGjeldende_erUnder20Aar: Boolean?,
     val yrkesskadeGjeldende: YrkesskadeGjeldende?,
-    val opplysningerAvdoed: OpplysningerAvdoed?,
+    val avdoed: OpplysningerBruktIBeregningUTAvdoed?,
 ) {
 
     data class YrkesskadeGjeldende(
@@ -147,15 +147,15 @@ data class OpplysningerBruktIBeregningUTDto(
     )
 
     data class NorskTrygdetidPeriode(
-        val trygdetidFom: LocalDate,
-        val trygdetidTom: LocalDate
+        val trygdetidFom: LocalDate?,
+        val trygdetidTom: LocalDate?
     )
 
     data class UtenlandskTrygdetidPeriode(
-        val trygdetidBilateralLand: String,
-        val trygdetidEOSLand: String,
-        val trygdetidFom: LocalDate,
-        val trygdetidTom: LocalDate,
+        val trygdetidBilateralLand: String?,
+        val trygdetidEOSLand: String?,
+        val trygdetidFom: LocalDate?,
+        val trygdetidTom: LocalDate?,
     )
 
     data class UfoeretrygdOrdinaer(
@@ -172,38 +172,19 @@ data class OpplysningerBruktIBeregningUTDto(
         val ufoeretrygdPlussInntekt: Kroner?,  // TODO: Summeres i Exstream: NettoAkk + NettoRestAr + ForventetInntekt
     )
 
-    data class OpplysningerAvdoed(
+    data class Avdoed(
         val erFlyktning: Boolean,  // PE_Grunnlag_PersongrunnlagAvdod_BrukerFlyktning
         val erUngUfoer: Boolean,
         val foedselsnummer: Foedselsnummer,
         val harNyttGjenlevendetillegg: Boolean,
-        val norskTrygdetidPeriode: NorskTrygdetidPeriode1,
-        val opptjeningUfoeretrygd: OpptjeningUfoeretrygd1,
-        val opptjeningsperiode: Opptjeningsperiode1,
+        val norskTrygdetidPeriode: NorskTrygdetidPeriode,
+        val opptjeningUfoeretrygd: OpptjeningUfoeretrygd,
+        val opptjeningsperiode: Opptjeningsperiode,
         val trygdetidsdetaljer: Trygdetidsdetaljer1,
         val ufoeretrygdGjeldende: UfoeretrygdGjeldende1,
-        val utenlandskTrygdePeriode: UtenlandskTrygdetidPeriode1,
+        val utenlandskTrygdePeriode: UtenlandskTrygdetidPeriode,
         val yrkesskadeGjeldene: YrkesskadeGjeldene1?,
     ) {
-        data class NorskTrygdetidPeriode1(
-            val trygdetidFom: LocalDate,  // <PE_Grunnlag_PersongrunnlagAvdod_TrygdetidsgrunnlagListeNor_Trygdetidsgrunnlag_TrygdetidFom>
-            val trygdetidTom: LocalDate
-        )
-
-        data class OpptjeningUfoeretrygd1(
-            val harFoerstegangstjenesteOpptjening: Boolean,
-            val harOmsorgsopptjening: Boolean,
-            val opptjeningsperiode: List<Opptjeningsperiode1>,
-        )
-
-        data class Opptjeningsperiode1(
-            val aar: Year,
-            val harFoerstegangstjenesteOpptjening: Boolean,
-            val harInntektAvtaleland: Boolean,
-            val harOmsorgsopptjening: Boolean,
-            val justertPensjonsgivendeInntekt: Kroner,
-            val pensjonsgivendeInntekt: Kroner,
-        )
 
         data class Trygdetidsdetaljer1(
             val anvendtTT: Int,
@@ -232,12 +213,6 @@ data class OpplysningerBruktIBeregningUTDto(
             val ufoeretidspunkt: LocalDate,
         )
 
-        data class UtenlandskTrygdetidPeriode1(
-            val trygdetidBilateralLand: String,  // <PE_Grunnlag_PersongrunnlagAvdod_TrygdetidsgrunnlagListeBilateral_TrygdetidsgrunnlagBilateral_TrygdetidBilateralLand>
-            val trygdetidEOSLand: String,
-            val trygdetidFom: LocalDate,
-            val trygdetidTom: LocalDate,
-        )
 
         data class YrkesskadeGjeldene1(
             val yrkesskadegrad: Int,
