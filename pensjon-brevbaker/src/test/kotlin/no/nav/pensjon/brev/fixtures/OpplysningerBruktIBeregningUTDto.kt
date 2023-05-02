@@ -54,6 +54,7 @@ fun createOpplysningerBruktIBeregningUTDtoBarnetilleggGjeldendeFellesbarn() =
         inntektOverFribeloep = Kroner(25000),
         inntektstak = Kroner(200000),
         justeringsbeloepAar = Kroner(120000),
+        samletInntektBruktIAvkortning = Kroner(500000),
     )
 
 fun createOpplysningerBruktIBeregningUTDtoBarnetilleggGjeldendeSaerkullsbarn() =

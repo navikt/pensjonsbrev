@@ -164,6 +164,7 @@ data class OpplysningerOmBarnetillegg(
                     harFlereTillegg = false.expr(),
                 )
             )
+
             includePhrase(
                 PeriodisertInntektOverFribeloepEttTillegg(
                     inntektEllerFribeloepErPeriodisert = inntektEllerFribeloepErPeriodisert,

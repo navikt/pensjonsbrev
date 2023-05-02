@@ -82,7 +82,7 @@ object Barnetillegg {
                             English to " We call this limit the exemption amount."
                         )
                     }
-                    showIf(sivilstand.isNotAnyOf(Sivilstand.ENSLIG)) {
+                    showIf(sivilstand.isNotAnyOf(Sivilstand.ENSLIG, Sivilstand.ENKE, Sivilstand.SEPARERT)) {
                         textExpr(
                             Bokmal to " Inntekten til ".expr() + sivilstand.bestemtForm() + " din har ikke betydning for størrelsen på barnetillegget.",
                             Nynorsk to " Inntekta til ".expr() + sivilstand.bestemtForm() + " din har ikkje noko å seie for storleiken på barnetillegget.",
@@ -173,20 +173,19 @@ object Barnetillegg {
         val grunnbeloep: Expression<Kroner>,
         val harBarnetilleggSaerkullsbarn: Expression<Boolean>,
         val inntektAnnenForelderFellesbarn: Expression<Kroner>,
-        val inntektBruktiAvkortningFellesbarn: Expression<Kroner>,
+        val brukersInntektBruktiAvkortningFellesbarn: Expression<Kroner>,
         val harJusteringsbeloepFellesbarn: Expression<Boolean>,
         val sivilstand: Expression<Sivilstand>
 
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-            val inntektLavereEnnFribeloep = inntektBruktiAvkortningFellesbarn.lessThanOrEqual(fribeloepFellesbarn)
             val grunnbeloep = grunnbeloep.format()
 
             paragraph {
                 textExpr(
-                    Bokmal to "Inntekten din er ".expr() + inntektBruktiAvkortningFellesbarn.format() + " kroner og inntekten til " + sivilstand.bestemtForm() + " din er " + inntektAnnenForelderFellesbarn.format() + " kroner.",
-                    Nynorsk to "Inntekta di er ".expr() + inntektBruktiAvkortningFellesbarn.format() + " kroner, og inntekta til " + sivilstand.bestemtForm() + " din er " + inntektAnnenForelderFellesbarn.format() + " kroner.",
-                    English to "Your income is NOK ".expr() + inntektBruktiAvkortningFellesbarn.format() + " and your " + sivilstand.bestemtForm() + "'s income is NOK " + inntektAnnenForelderFellesbarn.format() + ".",
+                    Bokmal to "Inntekten din er ".expr() + brukersInntektBruktiAvkortningFellesbarn.format() + " kroner og inntekten til " + sivilstand.bestemtForm() + " din er " + inntektAnnenForelderFellesbarn.format() + " kroner.",
+                    Nynorsk to "Inntekta di er ".expr() + brukersInntektBruktiAvkortningFellesbarn.format() + " kroner, og inntekta til " + sivilstand.bestemtForm() + " din er " + inntektAnnenForelderFellesbarn.format() + " kroner.",
+                    English to "Your income is NOK ".expr() + brukersInntektBruktiAvkortningFellesbarn.format() + " and your " + sivilstand.bestemtForm() + "'s income is NOK " + inntektAnnenForelderFellesbarn.format() + ".",
                 )
 
                 showIf(harBeloepFratrukketAnnenForelder) {
@@ -203,18 +202,18 @@ object Barnetillegg {
                 showIf(not(harBarnetilleggSaerkullsbarn) and not(harJusteringsbeloepFellesbarn) and faarUtbetaltBarnetilleggFellesBarn) {
                     textExpr(
                         Bokmal to " Til sammen er inntektene ".expr() +
-                                ifElse(inntektLavereEnnFribeloep, "lavere", "høyere") +
+                                ifElse(harFradragFellesbarn, "høyere", "lavere") +
                                 " enn fribeløpet ditt på " + fribeloepFellesbarn.format() + " kroner. Barnetillegget ditt er derfor" +
                                 ifElse(harFradragFellesbarn, "", " ikke") + " redusert ut fra inntekt.",
 
                         Nynorsk to " Til saman er inntektene ".expr() +
-                                ifElse(inntektLavereEnnFribeloep, "lågare", "høgare") +
+                                ifElse(harFradragFellesbarn, "høgare", "lågare") +
                                 " enn fribeløpet ditt på " + fribeloepFellesbarn.format() + " kroner. Barnetillegget ditt er derfor" +
                                 ifElse(harFradragFellesbarn, "", " ikkje") +
                                 " redusert ut frå inntekt.",
 
                         English to " Together, the incomes are ".expr() +
-                                ifElse(inntektLavereEnnFribeloep, "lower", "higher") +
+                                ifElse(harFradragFellesbarn, "higher", "lower") +
                                 " than your exemption amount of NOK " + fribeloepFellesbarn.format() +
                                 ". Therefore, your child supplement has" +
                                 ifElse(harFradragFellesbarn, "", " not") +
@@ -222,7 +221,6 @@ object Barnetillegg {
                     )
                 }
 
-                // har justeringsbeløp og ikke innvilget barnetillegg særkullsbarn
                 showIf(harJusteringsbeloepFellesbarn and not(harBarnetilleggSaerkullsbarn)) {
                     includePhrase(DuHarFaattUtbetaltBarnetilleggTidligereIAar)
                     text(
@@ -336,7 +334,7 @@ object Barnetillegg {
         val harTilleggForFlereFellesbarn: Expression<Boolean>,
         val sivilstand: Expression<Sivilstand>,
         val inntektBruktIAvkortningSaerkullsbarn: Expression<Kroner>,
-        val inntektBruktiAvkortningFellesbarn: Expression<Kroner>,
+        val samletInntektBruktiAvkortningFellesbarn: Expression<Kroner>,
 
         ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
@@ -346,8 +344,6 @@ object Barnetillegg {
                 inntektBruktIAvkortningSaerkullsbarn.greaterThan(fribeloepSaerkullsbarn)
 
             val faarUtbetaltBarnetilleggFellesbarn = beloepNettoFellesbarn.greaterThan(0)
-            val inntektErHoyereEnnFribeloepFellesBarn =
-                inntektBruktiAvkortningFellesbarn.greaterThan(fribeloepFellesbarn)
             val barnetilleggFellesbarnIkkeRedusert = beloepNettoFellesbarn.equalTo(beloepBruttoFellesbarn)
 
             val harFradragForEnBarnetilleggYtelse = (harFradragSaerkullsbarn and not(harFradragFellesbarn)) or
@@ -394,6 +390,7 @@ object Barnetillegg {
                     showIf(faarUtbetaltBarnetilleggFellesbarn and not(harJusteringsbeloepFellesbarn)) {
 
                         val ogsaa = not(harFradragForEnBarnetilleggYtelse)
+                        val inntektErHoyereEnnFribeloepFellesBarn = samletInntektBruktiAvkortningFellesbarn.greaterThan(fribeloepFellesbarn)
                         textExpr(
                             Bokmal to " Til sammen er ".expr() +
                                     ifElse(ogsaa, "også inntektene", "inntektene") +
