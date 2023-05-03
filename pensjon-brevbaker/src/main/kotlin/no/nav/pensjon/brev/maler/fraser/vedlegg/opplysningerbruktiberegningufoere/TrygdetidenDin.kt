@@ -2,7 +2,7 @@ package no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningufoe
 
 import no.nav.pensjon.brev.api.model.vedlegg.BeregnetUTPerManedSelectors.brukerErFlyktning
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDto
-import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidsdetaljerSelectors.fastsattTrygdetid_safe
+import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidsdetaljerSelectors.fastsattNorskTrygdetid_safe
 import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidsdetaljerSelectors.framtidigTTEOS_safe
 import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidsdetaljerSelectors.framtidigTTNorsk_safe
 import no.nav.pensjon.brev.api.model.vedlegg.YrkesskadeSelectors.yrkesskadegrad
@@ -18,16 +18,16 @@ import no.nav.pensjon.brev.template.dsl.expression.*
 data class TrygdetidenDin(
     val beregnetUTPerManed: Expression<OpplysningerBruktIBeregningUTDto.BeregnetUTPerManed>,
     val norskTrygdetidPerioder: Expression<List<OpplysningerBruktIBeregningUTDto.NorskTrygdetidPeriode>>,
-    val trygdetidsdetaljer: Expression<OpplysningerBruktIBeregningUTDto.Trygdetidsdetaljer>,
+    val trygdetidsdetaljer: Expression<OpplysningerBruktIBeregningUTDto.Trygdetid.Trygdetidsdetaljer>,
     val ufoeregrad: Expression<OpplysningerBruktIBeregningUTDto.Ufoeretrygd>,
     val yrkesskadegrad: Expression<OpplysningerBruktIBeregningUTDto.Yrkesskade?>,
 
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-        val fastsattTrygdetid = trygdetidsdetaljer.fastsattTrygdetid_safe.ifNull(0)
+        val fastsattTrygdetid = trygdetidsdetaljer.fastsattNorskTrygdetid_safe.ifNull(0)
         val framtidigTTEOS = trygdetidsdetaljer.framtidigTTEOS_safe
         val framtigTTNorsk = trygdetidsdetaljer.framtidigTTNorsk_safe
-        val har40AarfastsattTrygdetid = trygdetidsdetaljer.fastsattTrygdetid_safe.equalTo(40)
+        val har40AarfastsattTrygdetid = trygdetidsdetaljer.fastsattNorskTrygdetid_safe.equalTo(40)
         val harFramtidigTrygdetid = framtigTTNorsk.notEqualTo(0) or framtidigTTEOS.notEqualTo(0)
         val harLikUfoeregradOgYrkesskadegrad = ufoeregrad.equalTo(yrkesskadegrad)
         val harTrygdetidsgrunnlag = norskTrygdetidPerioder.notNull()
