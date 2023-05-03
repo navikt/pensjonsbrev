@@ -1,11 +1,11 @@
 package no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningufoere
 
-import no.nav.pensjon.brev.api.model.vedlegg.BeregnetUTPerManedGjeldendeSelectors.brukerErFlyktning
+import no.nav.pensjon.brev.api.model.vedlegg.BeregnetUTPerManedSelectors.brukerErFlyktning
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDto
-import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidsdetaljerGjeldendeSelectors.fastsattTrygdetid_safe
-import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidsdetaljerGjeldendeSelectors.framtidigTTEOS_safe
-import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidsdetaljerGjeldendeSelectors.framtidigTTNorsk_safe
-import no.nav.pensjon.brev.api.model.vedlegg.YrkesskadeGjeldendeSelectors.yrkesskadegrad
+import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidsdetaljerSelectors.fastsattTrygdetid_safe
+import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidsdetaljerSelectors.framtidigTTEOS_safe
+import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidsdetaljerSelectors.framtidigTTNorsk_safe
+import no.nav.pensjon.brev.api.model.vedlegg.YrkesskadeSelectors.yrkesskadegrad
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.Expression
@@ -16,11 +16,11 @@ import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brev.template.dsl.expression.*
 
 data class TrygdetidenDin(
-    val beregnetUTPerManedGjeldende: Expression<OpplysningerBruktIBeregningUTDto.BeregnetUTPerManedGjeldende>,
+    val beregnetUTPerManedGjeldende: Expression<OpplysningerBruktIBeregningUTDto.BeregnetUTPerManed>,
     val norskTrygdetidPeriode: Expression<List<OpplysningerBruktIBeregningUTDto.NorskTrygdetidPeriode>>,
-    val trygdetidsdetaljerGjeldende: Expression<OpplysningerBruktIBeregningUTDto.TrygdetidsdetaljerGjeldende>,
-    val ufoeregrad: Expression<OpplysningerBruktIBeregningUTDto.UfoeretrygdGjeldende>,
-    val yrkesskadegrad: Expression<OpplysningerBruktIBeregningUTDto.YrkesskadeGjeldende?>,
+    val trygdetidsdetaljerGjeldende: Expression<OpplysningerBruktIBeregningUTDto.Trygdetidsdetaljer>,
+    val ufoeregrad: Expression<OpplysningerBruktIBeregningUTDto.Ufoeretrygd>,
+    val yrkesskadegrad: Expression<OpplysningerBruktIBeregningUTDto.Yrkesskade?>,
 
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
