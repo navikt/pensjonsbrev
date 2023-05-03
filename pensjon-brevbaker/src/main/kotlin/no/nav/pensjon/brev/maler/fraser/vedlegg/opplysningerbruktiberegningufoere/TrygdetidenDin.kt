@@ -15,6 +15,22 @@ import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brev.template.dsl.expression.*
 
+/* Hvis
+Brevkode = PE_UT_04_101 ELLER Brevkode = PE_UT_04_114
+ELLER
+(brevkode <> «PE_UT_07_100»
+OG
+brevkode <> PE_UT_05_100 OG AnvendtTrygdetid < 40)
+OG <KravArsakType> <> soknad_bt
+OG
+Brevkode <> PE_UT_04_108
+OG
+Brevkode <> PE_UT_04_109
+OG
+Brevkode <> PE_UT_07_200
+ELLER
+Brevkode <> PE_UT_06_300 */
+
 data class TrygdetidenDin(
     val beregnetUTPerManed: Expression<OpplysningerBruktIBeregningUTDto.BeregnetUTPerManed>,
     val norskTrygdetidPerioder: Expression<List<OpplysningerBruktIBeregningUTDto.NorskTrygdetidPeriode>>,

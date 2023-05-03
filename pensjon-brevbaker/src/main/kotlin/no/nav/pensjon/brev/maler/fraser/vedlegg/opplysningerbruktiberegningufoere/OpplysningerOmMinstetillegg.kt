@@ -1,8 +1,8 @@
 package no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningufoere
 
-import no.nav.pensjon.brev.api.model.vedlegg.InntektFoerUfoereGjeldendeSelectors.erSannsynligEndret
+import no.nav.pensjon.brev.api.model.vedlegg.InntektFoerUfoereSelectors.erSannsynligEndret
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDto
-import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdGjeldendeSelectors.erKonvertert
+import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdSelectors.erKonvertert
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language
@@ -12,13 +12,21 @@ import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 
+
+/*   IF(PE_pebrevkode <> "PE_UT_07_100" AND PE_pebrevkode <> "PE_UT_05_100" AND PE_pebrevkode <> "PE_UT_04_300" AND PE_pebrevkode <> "PE_UT_14_300" AND
+PE_pebrevkode <> "PE_UT_04_103" AND PE_Vedtaksdata_Kravhode_KravArsakType <> "soknad_bt" AND PE_pebrevkode <> "PE_UT_04_108" AND PE_pebrevkode <> "PE_UT_04_109"
+AND PE_pebrevkode <> "PE_UT_07_200" AND PE_pebrevkode <> "PE_UT_06_300") THEN
+INCLUDE */
+
+
 data class OpplysningerOmMinstetillegg(
     val minsteytelseGjeldendeSats: Expression<Double?>,
     val ungUfoerGjeldende_erUnder20Aar: Expression<Boolean?>,
-    val ufoeretrygdGjeldende: Expression<OpplysningerBruktIBeregningUTDto.UfoeretrygdGjeldende>,
-    val inntektFoerUfoereGjeldende: Expression<OpplysningerBruktIBeregningUTDto.InntektFoerUfoereGjeldende>,
+    val ufoeretrygd: Expression<OpplysningerBruktIBeregningUTDto.Ufoeretrygd>,
+    val inntektFoerUfoere: Expression<OpplysningerBruktIBeregningUTDto.InntektFoerUfoere>,
     val inntektsgrenseErUnderTak: Expression<Boolean>,
-): OutlinePhrase<LangBokmalNynorskEnglish>() {
+
+    ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         val harMinsteytelseSats = minsteytelseGjeldendeSats.ifNull(0.0).greaterThan(0.0)
         showIf(harMinsteytelseSats) {
@@ -36,7 +44,7 @@ data class OpplysningerOmMinstetillegg(
                     includePhrase(VedleggBeregnUTInfoMYUngUfor)
                 }
             }.orShow {
-                showIf(ufoeretrygdGjeldende.erKonvertert) {
+                showIf(ufoeretrygd.erKonvertert) {
                     includePhrase(VedleggBeregnUTInfoMY2)
                 }.orShow {
                     includePhrase(VedleggBeregnUTInfoMY)
@@ -50,13 +58,13 @@ data class OpplysningerOmMinstetillegg(
             }
         }
 
-        showIf(inntektFoerUfoereGjeldende.erSannsynligEndret) {
+        showIf(inntektFoerUfoere.erSannsynligEndret) {
             includePhrase(VedleggBeregnUTMinsteIFU)
         }
 
         showIf(
             harMinsteytelseSats
-                    and inntektFoerUfoereGjeldende.erSannsynligEndret
+                    and inntektFoerUfoere.erSannsynligEndret
                     and inntektsgrenseErUnderTak
         ) {
 
@@ -69,7 +77,7 @@ data class OpplysningerOmMinstetillegg(
             }
             includePhrase(VedleggBeregnUTKompGrad)
 
-            showIf(ufoeretrygdGjeldende.erKonvertert) {
+            showIf(ufoeretrygd.erKonvertert) {
                 includePhrase(VedleggBeregnUTKompGradGjsnttKonvUT)
             }.orShow {
                 includePhrase(VedleggBeregnUTKompGradGjsntt)
@@ -122,7 +130,8 @@ data class OpplysningerOmMinstetillegg(
     }
 
 
-    data class VedleggBeregnUTDinMY(val sats_minsteytelseGjeldende: Expression<Double>) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    data class VedleggBeregnUTDinMY(val sats_minsteytelseGjeldende: Expression<Double>) :
+        OutlinePhrase<LangBokmalNynorskEnglish>() {
 
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
             paragraph {
