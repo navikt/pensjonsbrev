@@ -16,21 +16,21 @@ import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brev.template.dsl.expression.*
 
 data class TrygdetidenDin(
-    val beregnetUTPerManedGjeldende: Expression<OpplysningerBruktIBeregningUTDto.BeregnetUTPerManed>,
-    val norskTrygdetidPeriode: Expression<List<OpplysningerBruktIBeregningUTDto.NorskTrygdetidPeriode>>,
-    val trygdetidsdetaljerGjeldende: Expression<OpplysningerBruktIBeregningUTDto.Trygdetidsdetaljer>,
+    val beregnetUTPerManed: Expression<OpplysningerBruktIBeregningUTDto.BeregnetUTPerManed>,
+    val norskTrygdetidPerioder: Expression<List<OpplysningerBruktIBeregningUTDto.NorskTrygdetidPeriode>>,
+    val trygdetidsdetaljer: Expression<OpplysningerBruktIBeregningUTDto.Trygdetidsdetaljer>,
     val ufoeregrad: Expression<OpplysningerBruktIBeregningUTDto.Ufoeretrygd>,
     val yrkesskadegrad: Expression<OpplysningerBruktIBeregningUTDto.Yrkesskade?>,
 
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-        val fastsattTrygdetid = trygdetidsdetaljerGjeldende.fastsattTrygdetid_safe.ifNull(0)
-        val framtidigTTEOS = trygdetidsdetaljerGjeldende.framtidigTTEOS_safe
-        val framtigTTNorsk = trygdetidsdetaljerGjeldende.framtidigTTNorsk_safe
-        val har40AarfastsattTrygdetid = trygdetidsdetaljerGjeldende.fastsattTrygdetid_safe.equalTo(40)
+        val fastsattTrygdetid = trygdetidsdetaljer.fastsattTrygdetid_safe.ifNull(0)
+        val framtidigTTEOS = trygdetidsdetaljer.framtidigTTEOS_safe
+        val framtigTTNorsk = trygdetidsdetaljer.framtidigTTNorsk_safe
+        val har40AarfastsattTrygdetid = trygdetidsdetaljer.fastsattTrygdetid_safe.equalTo(40)
         val harFramtidigTrygdetid = framtigTTNorsk.notEqualTo(0) or framtidigTTEOS.notEqualTo(0)
         val harLikUfoeregradOgYrkesskadegrad = ufoeregrad.equalTo(yrkesskadegrad)
-        val harTrygdetidsgrunnlag = norskTrygdetidPeriode.notNull()
+        val harTrygdetidsgrunnlag = norskTrygdetidPerioder.notNull()
 
         // TBU039V
         title1 {
@@ -87,7 +87,7 @@ data class TrygdetidenDin(
         }
 
         // TBU041V
-        showIf(beregnetUTPerManedGjeldende.brukerErFlyktning) {
+        showIf(beregnetUTPerManed.brukerErFlyktning) {
             paragraph {
                 text(
                     Bokmal to "Trygdetiden din er fastsatt til 40 år, fordi du er innvilget flyktningstatus fra Utlendingsdirektoratet. Du beholder uføretrygden beregnet med 40 års trygdetid så lenge du er bosatt i Norge.",
@@ -100,7 +100,7 @@ data class TrygdetidenDin(
         ifNotNull(yrkesskadegrad) { yrkesskade ->
             showIf(
                 yrkesskade.yrkesskadegrad.greaterThan(0) and not(har40AarfastsattTrygdetid)
-                        and not(beregnetUTPerManedGjeldende.brukerErFlyktning) and not(
+                        and not(beregnetUTPerManed.brukerErFlyktning) and not(
                     harLikUfoeregradOgYrkesskadegrad
                 )
             ) {
@@ -131,7 +131,7 @@ data class TrygdetidenDin(
             // TBU042V
             showIf(
                 yrkesskade.yrkesskadegrad.greaterThan(0) and harLikUfoeregradOgYrkesskadegrad
-                        and not(beregnetUTPerManedGjeldende.brukerErFlyktning)
+                        and not(beregnetUTPerManed.brukerErFlyktning)
             ) {
                 paragraph {
                     text(
@@ -143,7 +143,7 @@ data class TrygdetidenDin(
             }
             // TBU043V
             showIf(
-                not(harLikUfoeregradOgYrkesskadegrad) and not(beregnetUTPerManedGjeldende.brukerErFlyktning)
+                not(harLikUfoeregradOgYrkesskadegrad) and not(beregnetUTPerManed.brukerErFlyktning)
                         and yrkesskade.yrkesskadegrad.equalTo(0)
             ) {
                 paragraph {
