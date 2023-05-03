@@ -20,15 +20,15 @@ INCLUDE */
 
 
 data class OpplysningerOmMinstetillegg(
-    val minsteytelseGjeldendeSats: Expression<Double?>,
-    val ungUfoerGjeldende_erUnder20Aar: Expression<Boolean?>,
+    val minsteytelseSats: Expression<Double?>,
+    val ungUfoer_erUnder20Aar: Expression<Boolean?>,
     val ufoeretrygd: Expression<OpplysningerBruktIBeregningUTDto.Ufoeretrygd>,
     val inntektFoerUfoere: Expression<OpplysningerBruktIBeregningUTDto.InntektFoerUfoere>,
     val inntektsgrenseErUnderTak: Expression<Boolean>,
 
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-        val harMinsteytelseSats = minsteytelseGjeldendeSats.ifNull(0.0).greaterThan(0.0)
+        val harMinsteytelseSats = minsteytelseSats.ifNull(0.0).greaterThan(0.0)
         showIf(harMinsteytelseSats) {
             title1 {
                 text(
@@ -37,7 +37,7 @@ data class OpplysningerOmMinstetillegg(
                     Language.English to "You have been granted minimum benefit"
                 )
             }
-            ifNotNull(ungUfoerGjeldende_erUnder20Aar) { erUnder20Aar ->
+            ifNotNull(ungUfoer_erUnder20Aar) { erUnder20Aar ->
                 showIf(erUnder20Aar) {
                     includePhrase(VedleggBeregnUTInfoMYUngUforUnder20)
                 }.orShow {
@@ -52,7 +52,7 @@ data class OpplysningerOmMinstetillegg(
             }
         }
 
-        ifNotNull(minsteytelseGjeldendeSats) {
+        ifNotNull(minsteytelseSats) {
             showIf(harMinsteytelseSats) {
                 includePhrase(VedleggBeregnUTDinMY(it))
             }
