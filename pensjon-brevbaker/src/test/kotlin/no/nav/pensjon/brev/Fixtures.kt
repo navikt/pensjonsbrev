@@ -61,8 +61,9 @@ object Fixtures {
             OpplysningerBruktIBeregningUTDto.OpplysningerAvdoed::class -> createOpplysningerBruktIBeregningUTDtoOpplysningerAvdoed() as T
             OpplysningerBruktIBeregningUTDto.OpptjeningUfoeretrygd::class -> createOpplysningerBruktIBeregningUTDtoOpptjeningUfoeretrygd() as T
             OpplysningerBruktIBeregningUTDto.Opptjeningsperiode::class -> createOpplysningerBruktIBeregningUTDtoOpptjeningsperiode() as T
-            OpplysningerBruktIBeregningUTDto.TrygdetidsdetaljerGjeldende.UtenforEOSogNorden::class -> createOpplysningerBruktIBeregningUTDtoTrygdetidsdetaljerGjeldendeUtenforEOSogNorden() as T
-            OpplysningerBruktIBeregningUTDto.TrygdetidsdetaljerGjeldende::class -> createOpplysningerBruktIBeregningUTDtoTrygdetidsdetaljerGjeldende() as T
+            OpplysningerBruktIBeregningUTDto.Trygdetid.Trygdetidsdetaljer.UtenforEOSogNorden::class -> createOpplysningerBruktIBeregningUTDtoTrygdetidTrygdetidsdetaljerUtenforEOSogNorden() as T
+            OpplysningerBruktIBeregningUTDto.Trygdetid.Trygdetidsdetaljer::class -> createOpplysningerBruktIBeregningUTDtoTrygdetidTrygdetidsdetaljer() as T
+            OpplysningerBruktIBeregningUTDto.Trygdetid::class -> createOpplysningerBruktIBeregningUTDtoTrygdetid() as T
             OpplysningerBruktIBeregningUTDto.UfoeretrygdGjeldende::class -> createOpplysningerBruktIBeregningUTDtoUfoeretrygdGjeldende() as T
             OpplysningerBruktIBeregningUTDto.UfoeretrygdOrdinaer::class -> createOpplysningerBruktIBeregningUTDtoUfoeretrygdOrdinaer() as T
             OpplysningerBruktIBeregningUTDto.YrkesskadeGjeldende::class -> createOpplysningerBruktIBeregningUTDtoYrkesskadeGjeldende() as T

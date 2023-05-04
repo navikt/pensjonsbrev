@@ -19,9 +19,12 @@ import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brev.template.dsl.expression.*
 
 data class TabellTrygdetidenAvdoed(
-    val norskTrygdetidPerioder: Expression<List<OpplysningerBruktIBeregningUTDto.NorskTrygdetidPeriode>>,
-    val bilateralTrygdetidPerioder: Expression<List<OpplysningerBruktIBeregningUTDto.BilateralTrygdetidPeriode>>,
+    val norskTrygdetidPerioder: Expression<List<OpplysningerBruktIBeregningUTDto.OpplysningerBruktIBeregningUTAvdoed>>,
+    val bilateralTrygdetidPerioder: Expression<List<OpplysningerBruktIBeregningUTDto.OpplysningerBruktIBeregningUTAvdoed>>,
     val eosTrygdetidPerioder: Expression<List<OpplysningerBruktIBeregningUTDto.EOSTrygdetidPeriode>>,
+    val fastsattNorskTrygdetid: Expression<Int?>,
+    val harBoddArbeidUtland: Expression<Boolean>,
+    val brukerErFlyktning: Expression<Boolean>,
 
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {

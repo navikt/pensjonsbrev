@@ -242,7 +242,8 @@ object EndringIOpptjeningAuto : AutobrevTemplate<EndringIOpptjeningAutoDto> {
 
         includeAttachment(
             createVedleggOpplysningerBruktIBeregningUT(
-                skalViseMinsteytelse = false,
+                skalViseTrygdetidenDin = true,
+                skalViseMinsteytelse = true,
                 skalViseBarnetillegg = true,
                 skalViseAvdoed = true,
                 skalViseSlikBeregnerViUfoeretrygdenDin = true,

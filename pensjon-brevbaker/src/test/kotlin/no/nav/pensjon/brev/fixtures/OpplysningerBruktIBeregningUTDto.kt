@@ -25,7 +25,7 @@ fun createOpplysningerBruktIBeregningUTDto() =
         opplysningerAvdoed = Fixtures.create(),
         opptjeningUfoeretrygd = Fixtures.create(),
         sivilstand = Sivilstand.PARTNER,
-        trygdetidsdetaljerGjeldende = Fixtures.create(),
+        trygdetid = Fixtures.create(),
         ufoeretrygdGjeldende = Fixtures.create(),
         ufoeretrygdOrdinaer = Fixtures.create(),
         ungUfoerGjeldende_erUnder20Aar = false,
@@ -83,8 +83,8 @@ fun createOpplysningerBruktIBeregningUTDtoBarnetilleggGjeldendeSaerkullsbarn() =
         justeringsbeloepAar = Kroner(15000),
     )
 
-fun createOpplysningerBruktIBeregningUTDtoBeregnetUTPerManedGjeldende() =
-    OpplysningerBruktIBeregningUTDto.BeregnetUTPerManedGjeldende(
+fun createOpplysningerBruktIBeregningUTDtoBeregnetUTPerManed() =
+    OpplysningerBruktIBeregningUTDto.BeregnetUTPerManedG(
         brukerErFlyktning = false,
         brukersSivilstand = Sivilstand.GIFT,
         grunnbeloep = Kroner(111477),
@@ -105,16 +105,25 @@ fun createOpplysningerBruktIBeregningUTDtoInntektsAvkortingGjeldende() =
         inntektstak = Kroner(0),
     )
 
-fun createOpplysningerBruktIBeregningUTDtoTrygdetidsdetaljerGjeldende() =
-    OpplysningerBruktIBeregningUTDto.TrygdetidsdetaljerGjeldende(
+fun createOpplysningerBruktIBeregningUTDtoTrygdetid() =
+    OpplysningerBruktIBeregningUTDto.Trygdetid(
+        norskTrygdetidPerioder = listOf(Fixtures.create(), Fixtures.create()),
+        bilateralTrygdePerioder = listOf(Fixtures.create(), Fixtures.create()),
+        eosTrygdePerioder = listOf(Fixtures.create(), Fixtures.create()),
+        trygdetidsdetaljer = Fixtures.create(),
+    )
+
+fun createOpplysningerBruktIBeregningUTDtoTrygdetidTrygdetidsdetaljer() =
+    OpplysningerBruktIBeregningUTDto.Trygdetid.Trygdetidsdetaljer(
         anvendtTT = 40,
         beregningsmetode = Beregningsmetode.FOLKETRYGD,
         faktiskTTEOS = 0,
         faktiskTTNordiskKonv = 0,
         faktiskTTNorge = 0,
-        fastsattTrygdetid = 0,
+        fastsattNorskTrygdetid = 0,
         framtidigTTEOS = 0,
         framtidigTTNorsk = 0,
+        harBoddArbeidUtland = false,
         nevnerTTEOS = 0,
         nevnerTTNordiskKonv = 0,
         samletTTNordiskKonv = 0,
@@ -123,8 +132,8 @@ fun createOpplysningerBruktIBeregningUTDtoTrygdetidsdetaljerGjeldende() =
         utenforEOSogNorden = Fixtures.create(),
     )
 
-fun createOpplysningerBruktIBeregningUTDtoTrygdetidsdetaljerGjeldendeUtenforEOSogNorden() =
-    OpplysningerBruktIBeregningUTDto.TrygdetidsdetaljerGjeldende.UtenforEOSogNorden(
+fun createOpplysningerBruktIBeregningUTDtoTrygdetidTrygdetidsdetaljerUtenforEOSogNorden() =
+    OpplysningerBruktIBeregningUTDto.Trygdetid.Trygdetidsdetaljer.UtenforEOSogNorden(
         faktiskTTBilateral = 0,
         nevnerProRata = 0,
         tellerProRata = 0,

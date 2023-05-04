@@ -277,6 +277,7 @@ object OpphoerBarnetilleggAuto : AutobrevTemplate<OpphoerBarnetilleggAutoDto> {
         includeAttachmentIfNotNull(vedleggMaanedligUfoeretrygdFoerSkatt, maanedligUfoeretrygdFoerSkatt)
         includeAttachment(
             createVedleggOpplysningerBruktIBeregningUT(
+                skalViseTrygdetidenDin = false,
                 skalViseMinsteytelse = false,
                 skalViseBarnetillegg = true,
                 skalViseAvdoed = false,

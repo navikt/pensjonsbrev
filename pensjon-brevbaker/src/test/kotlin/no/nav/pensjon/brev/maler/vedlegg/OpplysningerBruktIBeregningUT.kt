@@ -22,6 +22,7 @@ class OpplysningerBruktIBeregningUTTest {
     fun testVedlegg() {
         val template = createVedleggTestTemplate(
             createVedleggOpplysningerBruktIBeregningUT(
+                skalViseTrygdetidenDin = true,
                 skalViseMinsteytelse = true,
                 skalViseBarnetillegg = true,
                 skalViseAvdoed = true,
