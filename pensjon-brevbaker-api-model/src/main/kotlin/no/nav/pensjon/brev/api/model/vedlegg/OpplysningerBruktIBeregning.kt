@@ -72,8 +72,8 @@ data class OpplysningerBruktIBeregningUTDto(
 
     data class Trygdetid(
         val norskTrygdetidPerioder: List<NorskTrygdetidPeriode>,
-        val bilateralTrygdePerioder: List<BilateralTrygdetidPeriode>,
-        val eosTrygdePerioder: List<EOSTrygdetidPeriode>,
+        val bilateralTrygdePerioder: List<UtendlandsTrygdetidPeriode>,
+        val eosTrygdePerioder: List<UtendlandsTrygdetidPeriode>,
         val trygdetidsdetaljer: Trygdetidsdetaljer,
         ) {
         data class Trygdetidsdetaljer(
@@ -156,6 +156,12 @@ data class OpplysningerBruktIBeregningUTDto(
         val trygdetidTom: LocalDate,
     )
 
+    data class UtendlandsTrygdetidPeriode(
+        val trygdetidBilateralLand: String,
+        val trygdetidFom: LocalDate,
+        val trygdetidTom: LocalDate,
+    )
+
     data class BilateralTrygdetidPeriode(
         val trygdetidBilateralLand: String,
         val trygdetidFom: LocalDate,
@@ -192,8 +198,8 @@ data class OpplysningerBruktIBeregningUTDto(
         val opptjeningsperioder: List<Opptjeningsperiode>,
         val trygdetidsdetaljer: TrygdetidsdetaljerAvdoed,
         val ufoeretrygd: Ufoeretrygd1,
-        val bilateralTrygdePerioder: List<BilateralTrygdetidPeriode>,
-        val eosTrygdePerioder: List<EOSTrygdetidPeriode>,
+        val bilateralTrygdePerioder: List<UtendlandsTrygdetidPeriode>,
+        val eosTrygdePerioder: List<UtendlandsTrygdetidPeriode>,
         val yrkesskadeGjeldene: YrkesskadeGjeldene1?,
     ) {
         data class TrygdetidsdetaljerAvdoed(

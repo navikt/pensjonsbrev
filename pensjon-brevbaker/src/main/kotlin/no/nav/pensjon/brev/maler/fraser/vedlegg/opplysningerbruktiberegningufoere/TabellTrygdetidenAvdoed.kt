@@ -19,8 +19,8 @@ import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brev.template.dsl.expression.*
 
 data class TabellTrygdetidenAvdoed(
-    val norskTrygdetidPerioder: Expression<List<OpplysningerBruktIBeregningUTDto.OpplysningerBruktIBeregningUTAvdoed>>,
-    val bilateralTrygdetidPerioder: Expression<List<OpplysningerBruktIBeregningUTDto.OpplysningerBruktIBeregningUTAvdoed>>,
+    val norskTrygdetidPerioder: Expression<List<OpplysningerBruktIBeregningUTDto.NorskTrygdetidPeriode>>,
+    val bilateralTrygdetidPerioder: Expression<List<OpplysningerBruktIBeregningUTDto>>,
     val eosTrygdetidPerioder: Expression<List<OpplysningerBruktIBeregningUTDto.EOSTrygdetidPeriode>>,
     val fastsattNorskTrygdetid: Expression<Int?>,
     val harBoddArbeidUtland: Expression<Boolean>,
@@ -57,7 +57,7 @@ data class TabellTrygdetidenAvdoed(
                     row {
                         cell {
                             textExpr(
-                                Bokmal to periode.trygdetidFom.format(),
+                                Bokmal to periode,
                                 Nynorsk to periode.trygdetidFom.format(),
                                 English to periode.trygdetidFom.format()
                             )

@@ -27,8 +27,8 @@ import no.nav.pensjon.brev.template.dsl.expression.greaterThan
 data class TabellTrygdetiden(
     val anvendtTT: Expression<Int>,
     val brukerErFlyktning: Expression<Boolean>,
-    val bilateralTrygdetidPerioder: Expression<List<OpplysningerBruktIBeregningUTDto.BilateralTrygdetidPeriode>>,
-    val eosTrygdetidPerioder: Expression<List<OpplysningerBruktIBeregningUTDto.EOSTrygdetidPeriode>>,
+    val bilateralTrygdetidPerioder: Expression<List<OpplysningerBruktIBeregningUTDto.UtendlandsTrygdetidPeriode>>,
+    val eosTrygdetidPerioder: Expression<List<OpplysningerBruktIBeregningUTDto.UtendlandsTrygdetidPeriode>>,
     val faktiskTTEOS: Expression<Int?>,
     val fastsattNorskTrygdetid: Expression<Int?>,
     val harBoddArbeidUtland: Expression<Boolean>,
