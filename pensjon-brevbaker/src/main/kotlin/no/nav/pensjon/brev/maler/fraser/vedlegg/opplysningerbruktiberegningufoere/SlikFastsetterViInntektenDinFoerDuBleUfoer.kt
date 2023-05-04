@@ -1,8 +1,7 @@
 package no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningufoere
 
-import no.nav.pensjon.brev.api.model.InntektFoerUfoereBegrunnelse
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDto
-import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdGjeldendeSelectors.ufoeregrad
+import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdSelectors.ufoeregrad
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.*
@@ -10,7 +9,6 @@ import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.expression.greaterThan
-import no.nav.pensjon.brev.template.dsl.expression.isOneOf
 import no.nav.pensjon.brev.template.dsl.expression.lessThan
 import no.nav.pensjon.brev.template.dsl.text
 
@@ -49,11 +47,11 @@ Brevkode <> PE_UT_06_300
 
 
 data class SlikFastsetterViInntektenDinFoerDuBleUfoer(
-    val ufoeretrygdGjeldende: Expression<OpplysningerBruktIBeregningUTDto.UfoeretrygdGjeldende>,
-    val inntektFoerUfoereBegrunnelse: Expression<InntektFoerUfoereBegrunnelse>,
+    val harStandardBegrunnelse: Expression<Boolean>,
+    val ufoeretrygd: Expression<OpplysningerBruktIBeregningUTDto.Ufoeretrygd>,
 
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    val harDelvisUfoeregrad = ufoeretrygdGjeldende.ufoeregrad.greaterThan(0) and ufoeretrygdGjeldende.ufoeregrad.lessThan(100)
+    val harDelvisUfoeregrad = ufoeretrygd.ufoeregrad.greaterThan(0) and ufoeretrygd.ufoeregrad.lessThan(100)
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         title1 {
             text(
@@ -116,7 +114,7 @@ data class SlikFastsetterViInntektenDinFoerDuBleUfoer(
         }
 
         // TBU201V / INCLUDE IF brevkode = "PE_UT_04_500 OR
-        showIf(inntektFoerUfoereBegrunnelse.isOneOf(InntektFoerUfoereBegrunnelse.STDBEGR_12_8_2_3, InntektFoerUfoereBegrunnelse.STDBEGR_12_8_2_4, InntektFoerUfoereBegrunnelse.STDBEGR_12_8_2_5)) {
+        showIf(harStandardBegrunnelse) {
             paragraph {
                 text(
                     Bokmal to "Minstenivå på inntekt før uførhet ",
