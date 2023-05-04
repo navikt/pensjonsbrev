@@ -18,9 +18,9 @@ import no.nav.pensjon.brev.template.dsl.text
 
 data class SlikFastsetterViInntektenDinFoerDuBleUfoer(
     val inntektFoerUfoereBegrunnelse: Expression<InntektFoerUfoereBegrunnelse?>,
-    val ufoeretrygd: Expression<OpplysningerBruktIBeregningUTDto.Ufoeretrygd>,
     val kravAarsakType: Expression<KravAarsakType>,
     val minsteytelse_sats: Expression<Double?>,
+    val ufoeretrygd: Expression<OpplysningerBruktIBeregningUTDto.Ufoeretrygd>,
 
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     val harDelvisUfoeregrad = ufoeretrygd.ufoeregrad.greaterThan(0) and ufoeretrygd.ufoeregrad.lessThan(100)

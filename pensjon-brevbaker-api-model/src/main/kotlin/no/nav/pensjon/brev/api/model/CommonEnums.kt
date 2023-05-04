@@ -45,10 +45,17 @@ enum class Beregningsmetode {
 }
 
 enum class KravAarsakType {
+    ENDRET_IFU,
+    ENDRET_INNTEKT,
+    ENDRET_OPPTJENING,
+    SIVILSTANDSENDRING,
     SOKNAD_BT,
     TILST_DOD,
-    ENDRET_OPPTJENING,
-    ENDRET_INNTEKT,
-    ENDRET_IFU,
+}
+
+enum class InntektFoerUfoereBegrunnelse {
+    STDBEGR_12_8_2_3, // Forskrift standardbegrunnelser. Bruker får minsteIFU. Inntekt før uførhet fastsettes til minstenivå på 3,5 ganger grunnbeløpet fordi bruker har hatt lav eller ingen inntekt før uførhet.
+    STDBEGR_12_8_2_4, // Bruker er ung ufør og får ung ufør IFU. Inntekt før uførehet fastsettes til minstenivå på 4,5 ganger grunnbeløpet fordi bruker er innvilget rettighet som ung ufør.
+    STDBEGR_12_8_2_5, // Bruker får endret inntekt før uførhet til gjennomsnittet av de tre beste av de fem siste år før uførhet.
 }
 
