@@ -1,16 +1,13 @@
 package no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningufoere
 
 import no.nav.pensjon.brev.api.model.KravAarsakType
-import no.nav.pensjon.brev.api.model.vedlegg.BeregnetUTPerManedSelectors.brukerErFlyktning
-import no.nav.pensjon.brev.api.model.vedlegg.BilateralTrygdetidPeriodeSelectors.trygdetidBilateralLand
-import no.nav.pensjon.brev.api.model.vedlegg.BilateralTrygdetidPeriodeSelectors.trygdetidFom
-import no.nav.pensjon.brev.api.model.vedlegg.BilateralTrygdetidPeriodeSelectors.trygdetidTom
-import no.nav.pensjon.brev.api.model.vedlegg.EOSTrygdetidPeriodeSelectors.trygdetidEOSLand
-import no.nav.pensjon.brev.api.model.vedlegg.EOSTrygdetidPeriodeSelectors.trygdetidFom
-import no.nav.pensjon.brev.api.model.vedlegg.EOSTrygdetidPeriodeSelectors.trygdetidTom
 import no.nav.pensjon.brev.api.model.vedlegg.NorskTrygdetidPeriodeSelectors.trygdetidFom
 import no.nav.pensjon.brev.api.model.vedlegg.NorskTrygdetidPeriodeSelectors.trygdetidTom
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDto
+import no.nav.pensjon.brev.api.model.vedlegg.UtendlandsTrygdetidPeriodeSelectors.trygdetidBilateralLand
+import no.nav.pensjon.brev.api.model.vedlegg.UtendlandsTrygdetidPeriodeSelectors.trygdetidEOSLand
+import no.nav.pensjon.brev.api.model.vedlegg.UtendlandsTrygdetidPeriodeSelectors.trygdetidFom
+import no.nav.pensjon.brev.api.model.vedlegg.UtendlandsTrygdetidPeriodeSelectors.trygdetidTom
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.Expression
