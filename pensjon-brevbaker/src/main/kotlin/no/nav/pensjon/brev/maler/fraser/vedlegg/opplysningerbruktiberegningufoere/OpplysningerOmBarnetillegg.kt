@@ -249,6 +249,12 @@ data class OpplysningerOmBarnetillegg(
                             fellesTillegg.beloepBrutto,
                         )
                     )
+                }.orShowIf(not(faarUtbetaltBarnetilleggFellesBarn)){
+                    // Tabellen får mye 0-verdier, så den kan erstattes med tekst når vi ikke har utbetalt barnetillegg
+                    includePhrase(InntektsGrenseBarnetillegg(
+                        inntektstak = fellesTillegg.inntektstak,
+                        inntektBruktIAvkortning = fellesTillegg.inntektBruktIAvkortning
+                    ))
                 }
                 showIf(faarUtbetaltBarnetilleggFellesBarn) {
                     includePhrase(
@@ -264,8 +270,6 @@ data class OpplysningerOmBarnetillegg(
                             nettoBeloepFellesbarn = fellesTillegg.beloepNetto,
                             harJusteringsbeloep = harJusteringsbeloepFellesBarn,
                             harFlereBarn = fellesTillegg.harFlereBarn,
-                            inntektstak = fellesTillegg.inntektstak,
-                            inntektBruktIAvkortning = fellesTillegg.inntektBruktIAvkortning,
                             harInnvilgetBarnetilleggSaerkullsbarn = harInnvilgetBarnetilleggSaerkullsbarn
                         )
                     )
@@ -301,6 +305,13 @@ data class OpplysningerOmBarnetillegg(
                             saerkullTillegg.beloepBrutto,
                         )
                     )
+                }.orShowIf(not(faarUtbetaltbarnetilleggSaerkullsbarn)){
+                    // Tabellen får mye 0-verdier, så den kan erstattes med tekst når vi ikke har utbetalt barnetillegg
+                    //TODO skal vi bruke denne for særkull også?
+                    includePhrase(InntektsGrenseBarnetillegg(
+                        inntektstak = saerkullTillegg.inntektstak,
+                        inntektBruktIAvkortning = saerkullTillegg.inntektBruktIAvkortning
+                    ))
                 }
 
                 showIf(faarUtbetaltbarnetilleggSaerkullsbarn) {
@@ -496,6 +507,26 @@ data class OpplysningerOmBarnetillegg(
                                 inntektOverFribeloep.format(),
                     )
                 }
+            }
+        }
+    }
+
+    data class InntektsGrenseBarnetillegg(
+        val inntektstak: Expression<Kroner>,
+        val inntektBruktIAvkortning: Expression<Kroner>,
+    ):OutlinePhrase<LangBokmalNynorskEnglish>(){
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+            paragraph {
+                textExpr(
+                    Bokmal to "Grensen for å få utbetalt barnetillegg er ".expr() + inntektstak.format() +
+                            " kroner. Samlet inntekt brukt i fastsettelse av barnetillegget er " + inntektBruktIAvkortning.format() + " kroner.",
+
+                    Nynorsk to "Grensa for å få utbetalt barnetillegg er ".expr() + inntektstak.format() +
+                            " kroner. Samla inntekt brukt i fastsetjinga av barnetillegget er " + inntektBruktIAvkortning.format() + " kroner.",
+
+                    English to "The income threshold for receiving child supplement is NOK ".expr() + inntektstak.format() +
+                            ". Total income used in determining child supplement is NOK" + inntektBruktIAvkortning.format() + ".",
+                )
             }
         }
     }
@@ -704,7 +735,6 @@ data class OpplysningerOmBarnetillegg(
         val harInnvilgetBarnetilleggFellesbarn: Expression<Boolean>,
         ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-            //TODO skal vi legge inn ett avsnitt her om inntektsgrensen når vi filtrerer ut tabellen?
             paragraph {
                 showIf(harInnvilgetBarnetilleggFellesbarn) {
                     textExpr(
@@ -807,19 +837,9 @@ data class OpplysningerOmBarnetillegg(
         val nettoBeloepFellesbarn: Expression<Kroner>,
         val harFlereBarn: Expression<Boolean>,
         val harJusteringsbeloep: Expression<Boolean>,
-        val inntektstak: Expression<Kroner>,
-        val inntektBruktIAvkortning: Expression<Kroner>,
         val harInnvilgetBarnetilleggSaerkullsbarn: Expression<Boolean>,
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-            paragraph {
-                textExpr(
-                    Bokmal to "Grensen for å få utbetalt barnetillegg er ".expr() + inntektstak.format() + " kroner. Samlet inntekt brukt i fastsettelse av barnetillegget er " + inntektBruktIAvkortning.format() + " kroner.",
-                    Nynorsk to "Grensa for å få utbetalt barnetillegg er ".expr() + inntektstak.format() + " kroner. Samla inntekt brukt i fastsetjinga av barnetillegget er " + inntektBruktIAvkortning.format() + " kroner. ",
-                    English to "The income threshold for receiving child supplement is NOK ".expr() + inntektstak.format() + ". Total income used in determining child supplement is NOK" + inntektBruktIAvkortning.format() + ".",
-                )
-            }
-
             paragraph {
                 showIf(harJusteringsbeloep) {
                     text(
