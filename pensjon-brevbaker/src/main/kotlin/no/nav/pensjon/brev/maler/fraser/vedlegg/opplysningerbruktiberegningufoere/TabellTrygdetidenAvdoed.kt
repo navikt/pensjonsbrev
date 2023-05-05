@@ -1,14 +1,12 @@
 package no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningufoere
 
-import no.nav.pensjon.brev.api.model.vedlegg.BilateralTrygdetidPeriodeSelectors.trygdetidBilateralLand
-import no.nav.pensjon.brev.api.model.vedlegg.BilateralTrygdetidPeriodeSelectors.trygdetidFom
-import no.nav.pensjon.brev.api.model.vedlegg.BilateralTrygdetidPeriodeSelectors.trygdetidTom
-import no.nav.pensjon.brev.api.model.vedlegg.EOSTrygdetidPeriodeSelectors.trygdetidEOSLand
-import no.nav.pensjon.brev.api.model.vedlegg.EOSTrygdetidPeriodeSelectors.trygdetidFom
-import no.nav.pensjon.brev.api.model.vedlegg.EOSTrygdetidPeriodeSelectors.trygdetidTom
 import no.nav.pensjon.brev.api.model.vedlegg.NorskTrygdetidPeriodeSelectors.trygdetidFom
 import no.nav.pensjon.brev.api.model.vedlegg.NorskTrygdetidPeriodeSelectors.trygdetidTom
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDto
+import no.nav.pensjon.brev.api.model.vedlegg.UtendlandsTrygdetidPeriodeSelectors.trygdetidBilateralLand
+import no.nav.pensjon.brev.api.model.vedlegg.UtendlandsTrygdetidPeriodeSelectors.trygdetidEOSLand
+import no.nav.pensjon.brev.api.model.vedlegg.UtendlandsTrygdetidPeriodeSelectors.trygdetidFom
+import no.nav.pensjon.brev.api.model.vedlegg.UtendlandsTrygdetidPeriodeSelectors.trygdetidTom
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.Expression
@@ -20,8 +18,8 @@ import no.nav.pensjon.brev.template.dsl.expression.*
 
 data class TabellTrygdetidenAvdoed(
     val norskTrygdetidPerioder: Expression<List<OpplysningerBruktIBeregningUTDto.NorskTrygdetidPeriode>>,
-    val bilateralTrygdetidPerioder: Expression<List<OpplysningerBruktIBeregningUTDto>>,
-    val eosTrygdetidPerioder: Expression<List<OpplysningerBruktIBeregningUTDto.EOSTrygdetidPeriode>>,
+    val bilateralTrygdetidPerioder: Expression<List<OpplysningerBruktIBeregningUTDto.UtendlandsTrygdetidPeriode>>,
+    val eosTrygdetidPerioder: Expression<List<OpplysningerBruktIBeregningUTDto.UtendlandsTrygdetidPeriode>>,
     val fastsattNorskTrygdetid: Expression<Int?>,
     val harBoddArbeidUtland: Expression<Boolean>,
     val brukerErFlyktning: Expression<Boolean>,
@@ -57,7 +55,7 @@ data class TabellTrygdetidenAvdoed(
                     row {
                         cell {
                             textExpr(
-                                Bokmal to periode,
+                                Bokmal to periode.trygdetidFom.format(),
                                 Nynorsk to periode.trygdetidFom.format(),
                                 English to periode.trygdetidFom.format()
                             )
