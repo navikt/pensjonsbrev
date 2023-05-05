@@ -13,9 +13,7 @@ import no.nav.pensjon.brev.template.dsl.text
 import java.time.LocalDate
 
 
-/* Include IF brevkode not(PE_UT_05_100, PE_UT_04_300, PE_UT_07_100)
-AND kravAarsakType <> soknad_bt
-AND IF brevkode not(PE_UT_04_108, PE_UT_04_109, PE_UT_06_300, PE_UT_07_200, PE_UT_14_300) */
+// <> brevkode PE_UT_04_108, PE_UT_04_109, PE_UT_04_300, PE_UT_05_100, PE_UT_06_300, PE_UT_07_100 PE_UT_07_200, PE_UT_14_300
 
 data class SlikBeregnerViUfoeretrygdenDin(
     val beregningsmetode: Expression<Beregningsmetode>,
