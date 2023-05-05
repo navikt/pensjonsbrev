@@ -1,13 +1,13 @@
 package no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningufoere
 
 import no.nav.pensjon.brev.api.model.KravAarsakType
-import no.nav.pensjon.brev.api.model.vedlegg.InntektFoerUfoereGjeldendeSelectors.inntektFoerUfoer
-import no.nav.pensjon.brev.api.model.vedlegg.InntektFoerUfoereGjeldendeSelectors.oppjustertInntektFoerUfoer
+import no.nav.pensjon.brev.api.model.vedlegg.InntektFoerUfoereSelectors.inntektFoerUfoer
+import no.nav.pensjon.brev.api.model.vedlegg.InntektFoerUfoereSelectors.oppjustertInntektFoerUfoer
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDto
-import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdGjeldendeSelectors.fullUfoeretrygdPerAar
-import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdGjeldendeSelectors.kompensasjonsgrad
-import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdGjeldendeSelectors.ufoeregrad
 import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdOrdinaerSelectors.harGammelUTBeloepUlikNyUTBeloep
+import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdSelectors.fullUfoeretrygdPerAar
+import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdSelectors.kompensasjonsgrad
+import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdSelectors.ufoeregrad
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Expression
@@ -26,21 +26,21 @@ AND <KravArsakType> <> <SOKNAD_BT> */
 
 
 data class SlikHarViFastsattKompensasjonsgradenDin(
-    val inntektFoerUfoereGjeldende: Expression<OpplysningerBruktIBeregningUTDto.InntektFoerUfoereGjeldende>,
-    val inntektsAvkortingGjeldende: Expression<OpplysningerBruktIBeregningUTDto.InntektsAvkortingGjeldende>,
+    val inntektFoerUfoere: Expression<OpplysningerBruktIBeregningUTDto.InntektFoerUfoere>,
+    val inntektsAvkorting: Expression<OpplysningerBruktIBeregningUTDto.InntektsAvkorting>,
     val kravAarsakType: Expression<KravAarsakType>,
-    val ufoeretrygdGjeldende: Expression<OpplysningerBruktIBeregningUTDto.UfoeretrygdGjeldende>,
+    val ufoeretrygd: Expression<OpplysningerBruktIBeregningUTDto.Ufoeretrygd>,
     val ufoeretrygdOrdinaer: Expression<OpplysningerBruktIBeregningUTDto.UfoeretrygdOrdinaer>,
 
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-        val harDelvisUfoeregrad = ufoeretrygdGjeldende.ufoeregrad.greaterThan(0) and ufoeretrygdGjeldende.ufoeregrad.lessThan(100)
-        val harFullUfoeregrad = ufoeretrygdGjeldende . ufoeregrad . equalTo (100)
-        val inntektFoerUfoer = inntektFoerUfoereGjeldende.inntektFoerUfoer.format()
-        val oppjustertInntektFoerUfoer = inntektFoerUfoereGjeldende.oppjustertInntektFoerUfoer.format()
-        val fullUfoeretrygdPerAar = ufoeretrygdGjeldende.fullUfoeretrygdPerAar.format()
-        val ufoeregrad = ufoeretrygdGjeldende.ufoeregrad.format()
-        val kompensasjonsgrad = ufoeretrygdGjeldende.kompensasjonsgrad.format()
+        val harDelvisUfoeregrad = ufoeretrygd.ufoeregrad.greaterThan(0) and ufoeretrygd.ufoeregrad.lessThan(100)
+        val harFullUfoeregrad = ufoeretrygd . ufoeregrad . equalTo (100)
+        val inntektFoerUfoer = inntektFoerUfoere.inntektFoerUfoer.format()
+        val oppjustertInntektFoerUfoer = inntektFoerUfoere.oppjustertInntektFoerUfoer.format()
+        val fullUfoeretrygdPerAar = ufoeretrygd.fullUfoeretrygdPerAar.format()
+        val ufoeregrad = ufoeretrygd.ufoeregrad.format()
+        val kompensasjonsgrad = ufoeretrygd.kompensasjonsgrad.format()
 
         showIf(
             (
