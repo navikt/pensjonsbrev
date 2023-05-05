@@ -19,12 +19,11 @@ import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.textExpr
-import java.time.LocalDate
+
 import no.nav.pensjon.brev.template.dsl.expression.*
 
 
 data class TabellInntekteneBruktIBeregningen(
-    val beregningGjeldendeFraOgMed: Expression<LocalDate>,
     val opptjeningUfoeretrygd: Expression<OpplysningerBruktIBeregningUTDto.OpptjeningUfoeretrygd?>,
 
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
@@ -32,10 +31,10 @@ data class TabellInntekteneBruktIBeregningen(
 
         // TBU036V
         title1 {
-            textExpr(
-                Bokmal to "Inntekt lagt til grunn for beregning av uføretrygden din fra ".expr() + beregningGjeldendeFraOgMed.format(),
-                Nynorsk to "Inntekt lagd til grunn for berekning av uføretrygda di frå ".expr() + beregningGjeldendeFraOgMed.format(),
-                English to "Income on which to calculate your disability benefit from ".expr() + beregningGjeldendeFraOgMed.format()
+            text(
+                Bokmal to "Inntekt lagt til grunn for beregning av uføretrygden din fra ",
+                Nynorsk to "Inntekt lagd til grunn for berekning av uføretrygda di frå ",
+                English to "Income on which to calculate your disability benefit from "
             )
         }
         // TBU037V
