@@ -58,17 +58,17 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 
 data class TabellUfoereOpplysninger(
-    val ufoeretrygd: Expression<OpplysningerBruktIBeregningUTDto.Ufoeretrygd>,
-    val yrkesskade: Expression<OpplysningerBruktIBeregningUTDto.Yrkesskade?>,
+    val barnetillegg: Expression<OpplysningerBruktIBeregningUTDto.Barnetillegg?>,
+    val beregnetUTPerManed: Expression<OpplysningerBruktIBeregningUTDto.BeregnetUTPerManed>,
+    val erUngUfoer: Expression<Boolean>,
+    val inntektEtterUfoereBeloep: Expression<Kroner?>,
     val inntektFoerUfoere: Expression<OpplysningerBruktIBeregningUTDto.InntektFoerUfoere>,
     val inntektsAvkorting: Expression<OpplysningerBruktIBeregningUTDto.InntektsAvkorting>,
     val inntektsgrenseErUnderTak: Expression<Boolean>,
-    val beregnetUTPerManed: Expression<OpplysningerBruktIBeregningUTDto.BeregnetUTPerManed>,
-    val inntektEtterUfoereBeloep: Expression<Kroner?>,
-    val erUngUfoer: Expression<Boolean>,
+    val minsteytelseSats: Expression<Double?>,
     val trygdetidsdetaljer: Expression<OpplysningerBruktIBeregningUTDto.Trygdetid.Trygdetidsdetaljer>,
-    val barnetillegg: Expression<OpplysningerBruktIBeregningUTDto.Barnetillegg?>,
-    val harMinsteytelse: Expression<Boolean>,
+    val ufoeretrygd: Expression<OpplysningerBruktIBeregningUTDto.Ufoeretrygd>,
+    val yrkesskade: Expression<OpplysningerBruktIBeregningUTDto.Yrkesskade?>,
 
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
@@ -84,7 +84,10 @@ data class TabellUfoereOpplysninger(
                             Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
                         )
                     }
-                    column(columnSpan = 2, alignment = Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT) {
+                    column(
+                        columnSpan = 2,
+                        alignment = Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT
+                    ) {
                     }
                 }
             ) {
@@ -256,523 +259,531 @@ data class TabellUfoereOpplysninger(
                         }
                     }
                 }
-
-                showIf(harMinsteytelse) {
-                    row {
-                        cell {
-                            text(
-                                Bokmal to "Sivilstatus lagt til grunn i beregningen",
-                                Nynorsk to "Sivilstatus lagt til grunn i utrekninga",
-                                English to "Marital status applied to calculation"
-                            )
-                        }
-                        cell {
-                            textExpr(
-                                Bokmal to brukersSivilstand.tableFormat(),
-                                Nynorsk to brukersSivilstand.tableFormat(),
-                                English to brukersSivilstand.tableFormat()
-                            )
-                        }
-                    }
-                }
-
-                showIf(brukersSivilstand.isOneOf(GIFT_LEVER_ADSKILT, PARTNER_LEVER_ADSKILT)) {
-                    val erGift = brukersSivilstand.isOneOf(GIFT_LEVER_ADSKILT)
-                    row {
-                        cell {
-                            //Du eller partnaren er registrert med annan bustad, eller er på institusjon
-                            textExpr(
-                                Bokmal to "Du eller ".expr()
-                                        + ifElse(erGift,"ektefellen","partneren") +
-                                        " er registrert med annet bosted, eller er på institusjon",
-                                Nynorsk to "Du eller ".expr()
-                                        + ifElse(erGift,"ektefellen","partnaren") +
-                                        " er registrert med annan bustad, eller er på institusjon",
-                                English to "You or your ".expr()
-                                        + ifElse(erGift,"spouse","partner") +
-                                        " have been registered as having a different address, or as living in an institution",
-                            )
-                        }
-                        cell {
-                            text(
-                                Bokmal to "Ja",
-                                Nynorsk to "Ja",
-                                English to "Yes",
-                            )
-                        }
-                    }
-
-                }
-                showIf(erUngUfoer) {
-                    row {
-                        cell {
-                            text(
-                                Bokmal to "Ung ufør",
-                                Nynorsk to "Ung ufør",
-                                English to "Young disabled"
-                            )
-                        }
-                        cell {
-                            text(
-                                Bokmal to "Ja",
-                                Nynorsk to "Ja",
-                                English to "Yes"
-                            )
-                        }
-                    }
-                }
-
-                ifNotNull(yrkesskade) { yrkesskade ->
-                    showIf(yrkesskade.yrkesskadegrad.greaterThan(0)) {
+                ifNotNull(minsteytelseSats) { minsteytelse ->
+                    showIf(minsteytelse.greaterThan(0.0)) {
                         row {
                             cell {
                                 text(
-                                    Bokmal to "Yrkesskadegrad",
-                                    Nynorsk to "Yrkesskadegrad",
-                                    English to "Degree of disability due to occupational injury"
-                                )
-                            }
-                            cell {
-                                val yrkesskadegrad = yrkesskade.yrkesskadegrad.format()
-                                textExpr(
-                                    Bokmal to yrkesskadegrad + " %",
-                                    Nynorsk to yrkesskadegrad + " %",
-                                    English to yrkesskadegrad + " %"
-                                )
-                            }
-                        }
-                    }
-                    row {
-                        cell {
-                            text(
-                                Bokmal to "Skadetidspunktet for yrkesskaden",
-                                Nynorsk to "Skadetidspunktet for yrkesskaden",
-                                English to "Date of injury"
-                            )
-                        }
-                        cell {
-                            val skadetidspunkt = yrkesskade.skadetidspunkt.format()
-                            textExpr(
-                                Bokmal to skadetidspunkt,
-                                Nynorsk to skadetidspunkt,
-                                English to skadetidspunkt
-                            )
-                        }
-                    }
-                    showIf(yrkesskade.inntektVedSkadetidspunkt.greaterThan(0)) {
-                        row {
-                            cell {
-                                text(
-                                    Bokmal to "Årlig arbeidsinntekt på skadetidspunktet",
-                                    Nynorsk to "Årleg arbeidsinntekt på skadetidspunktet",
-                                    English to "Annual income at the date of injury"
-                                )
-                            }
-                            cell {
-                                includePhrase(Felles.KronerText(yrkesskade.inntektVedSkadetidspunkt))
-                            }
-                        }
-                    }
-                }
-
-                val beregningsmetode = trygdetidsdetaljer.beregningsmetode
-
-                showIf(beregnetUTPerManed.brukerErFlyktning) {
-                    row {
-                        cell {
-                            text(
-                                Bokmal to "Du er innvilget flyktningstatus fra UDI",
-                                Nynorsk to "Du er innvilga flyktningstatus frå UDI",
-                                English to "You have been granted status as a refugee by the Norwegian Directorate of Immigration (UDI)"
-                            )
-                        }
-                        cell {
-                            text(
-                                Bokmal to "Ja",
-                                Nynorsk to "Ja",
-                                English to "Yes"
-                            )
-                        }
-                    }
-                }
-                showIf(beregningsmetode.isOneOf(Beregningsmetode.FOLKETRYGD)) {
-                    row {
-                        cell {
-                            text(
-                                Bokmal to "Trygdetid (maksimalt 40 år)",
-                                Nynorsk to "Trygdetid (maksimalt 40 år)",
-                                English to "Insurance period (maximum 40 years)"
-                            )
-                        }
-                        cell {
-                            val anvendtTT = trygdetidsdetaljer.anvendtTT.format()
-                            textExpr(
-                                Bokmal to anvendtTT + " år",
-                                Nynorsk to anvendtTT + " år",
-                                English to anvendtTT + " years"
-                            )
-                        }
-                    }
-
-                }
-
-                showIf(beregningsmetode.isOneOf(Beregningsmetode.EOS, Beregningsmetode.NORDISK)) {
-                    row {
-                        cell {
-                            text(
-                                Bokmal to "Teoretisk trygdetid i Norge og andre EØS-land som er brukt i beregningen (maksimalt 40 år)",
-                                Nynorsk to "Teoretisk trygdetid i Noreg og andre EØS-land som er brukt i utrekninga (maksimalt 40 år)",
-                                English to "Theoretical insurance period in Norway and other EEA countries used in the calculation (maximum 40 years)"
-                            )
-                        }
-                        // Implement logic for year/years
-                        cell {
-                            val anvendtTT = trygdetidsdetaljer.anvendtTT.format()
-                            textExpr(
-                                Bokmal to anvendtTT + " år",
-                                Nynorsk to anvendtTT + " år",
-                                English to anvendtTT + " years"
-                            )
-                        }
-                    }
-                }
-                showIf(
-                    not(
-                        beregningsmetode.isOneOf(
-                            Beregningsmetode.EOS,
-                            Beregningsmetode.NORDISK,
-                            Beregningsmetode.FOLKETRYGD
-                        )
-                    )
-                ) {
-                    row {
-                        cell {
-                            text(
-                                Bokmal to "Teoretisk trygdetid i Norge og andre avtaleland som er brukt i beregningen (maksimalt 40 år)",
-                                Nynorsk to "Teoretisk trygdetid i Noreg og andre avtaleland som er brukt i utrekninga (maksimalt 40 år)",
-                                English to "Theoretical insurance period in Norway and other partner countries used in the calculation (maximum 40 years)"
-                            )
-                        }
-                        cell {
-                            val anvendtTT = trygdetidsdetaljer.anvendtTT.format()
-                            textExpr(
-                                Bokmal to anvendtTT + " år",
-                                Nynorsk to anvendtTT + " år",
-                                English to anvendtTT + " years"
-                            )
-                        }
-                    }
-                }
-                ifNotNull(trygdetidsdetaljer.faktiskTTNorge) {
-                    showIf(beregningsmetode.isNotAnyOf(Beregningsmetode.FOLKETRYGD)) {
-                        row {
-                            cell {
-                                text(
-                                    Bokmal to "Faktisk trygdetid i Norge",
-                                    Nynorsk to "Faktisk trygdetid i Noreg",
-                                    English to "Actual insurance period in Norway"
-                                )
-                            }
-                            cell {
-                                includePhrase(Felles.MaanederText(it))
-                            }
-                        }
-                    }
-                }
-
-                showIf(beregningsmetode.isOneOf(Beregningsmetode.EOS)) {
-                    ifNotNull(trygdetidsdetaljer.faktiskTTEOS) { faktiskTTEOS ->
-                        row {
-                            cell {
-                                text(
-                                    Bokmal to "Faktisk trygdetid i andre EØS-land",
-                                    Nynorsk to "Faktisk trygdetid i andre EØS-land",
-                                    English to "Actual insurance period(s) in other EEA countries"
-                                )
-                            }
-                            cell {
-                                includePhrase(Felles.MaanederText(faktiskTTEOS))
-                            }
-                        }
-                    }
-
-                    ifNotNull(trygdetidsdetaljer.nevnerTTEOS) { nevnerTTEOS ->
-                        row {
-                            cell {
-                                text(
-                                    Bokmal to "Faktisk trygdetid i Norge og EØS-land (maksimalt 40 år)",
-                                    Nynorsk to "Faktisk trygdetid i Noreg og EØS-land (maksimalt 40 år)",
-                                    English to "Actual insurance period in Norway and EEA countries (maximum 40 years)"
-                                )
-                            }
-                            cell { includePhrase(Felles.MaanederText(nevnerTTEOS)) }
-                        }
-                    }
-
-                    ifNotNull(
-                        trygdetidsdetaljer.tellerTTEOS,
-                        trygdetidsdetaljer.nevnerTTEOS
-                    ) { tellerTTEOS, nevnerTTEOS ->
-                        row {
-                            cell {
-                                text(
-                                    Bokmal to "Forholdstallet brukt i beregning av trygdetid",
-                                    Nynorsk to "Forholdstalet brukt i utrekning av trygdetid",
-                                    English to "Ratio applied in calculation of insurance period"
+                                    Bokmal to "Sivilstatus lagt til grunn i beregningen",
+                                    Nynorsk to "Sivilstatus lagt til grunn i utrekninga",
+                                    English to "Marital status applied to calculation"
                                 )
                             }
                             cell {
                                 textExpr(
-                                    Bokmal to tellerTTEOS.format() + " / " + nevnerTTEOS.format(),
-                                    Nynorsk to tellerTTEOS.format() + " / " + nevnerTTEOS.format(),
-                                    English to tellerTTEOS.format() + " / " + nevnerTTEOS.format()
+                                    Bokmal to brukersSivilstand.tableFormat(),
+                                    Nynorsk to brukersSivilstand.tableFormat(),
+                                    English to brukersSivilstand.tableFormat()
                                 )
                             }
                         }
                     }
                 }
 
-                showIf(beregningsmetode.isOneOf(Beregningsmetode.NORDISK)) {
-                    ifNotNull(trygdetidsdetaljer.faktiskTTNordiskKonv) { faktiskTTNordiskKonv ->
+                    showIf(brukersSivilstand.isOneOf(GIFT_LEVER_ADSKILT, PARTNER_LEVER_ADSKILT)) {
+                        val erGift = brukersSivilstand.isOneOf(GIFT_LEVER_ADSKILT)
+                        row {
+                            cell {
+                                //Du eller partnaren er registrert med annan bustad, eller er på institusjon
+                                textExpr(
+                                    Bokmal to "Du eller ".expr()
+                                            + ifElse(erGift, "ektefellen", "partneren") +
+                                            " er registrert med annet bosted, eller er på institusjon",
+                                    Nynorsk to "Du eller ".expr()
+                                            + ifElse(erGift, "ektefellen", "partnaren") +
+                                            " er registrert med annan bustad, eller er på institusjon",
+                                    English to "You or your ".expr()
+                                            + ifElse(erGift, "spouse", "partner") +
+                                            " have been registered as having a different address, or as living in an institution",
+                                )
+                            }
+                            cell {
+                                text(
+                                    Bokmal to "Ja",
+                                    Nynorsk to "Ja",
+                                    English to "Yes",
+                                )
+                            }
+                        }
+
+                    }
+                    showIf(erUngUfoer) {
                         row {
                             cell {
                                 text(
-                                    Bokmal to "Faktisk trygdetid i annet nordisk land som brukes i beregning av framtidig trygdetid",
-                                    Nynorsk to "Faktisk trygdetid i anna nordisk land som blir brukt i utrekning av framtidig trygdetid",
-                                    English to "Actual insurance period in another Nordic country, applied in calculation of future insurance period(s)"
+                                    Bokmal to "Ung ufør",
+                                    Nynorsk to "Ung ufør",
+                                    English to "Young disabled"
                                 )
                             }
-                            cell { includePhrase(Felles.MaanederText(faktiskTTNordiskKonv)) }
+                            cell {
+                                text(
+                                    Bokmal to "Ja",
+                                    Nynorsk to "Ja",
+                                    English to "Yes"
+                                )
+                            }
                         }
                     }
-                }
-                ifNotNull(trygdetidsdetaljer.framtidigTTNorsk) { framtidigTTNorsk ->
+
+                    ifNotNull(yrkesskade) { yrkesskade ->
+                        showIf(yrkesskade.yrkesskadegrad.greaterThan(0)) {
+                            row {
+                                cell {
+                                    text(
+                                        Bokmal to "Yrkesskadegrad",
+                                        Nynorsk to "Yrkesskadegrad",
+                                        English to "Degree of disability due to occupational injury"
+                                    )
+                                }
+                                cell {
+                                    val yrkesskadegrad = yrkesskade.yrkesskadegrad.format()
+                                    textExpr(
+                                        Bokmal to yrkesskadegrad + " %",
+                                        Nynorsk to yrkesskadegrad + " %",
+                                        English to yrkesskadegrad + " %"
+                                    )
+                                }
+                            }
+                        }
+                        row {
+                            cell {
+                                text(
+                                    Bokmal to "Skadetidspunktet for yrkesskaden",
+                                    Nynorsk to "Skadetidspunktet for yrkesskaden",
+                                    English to "Date of injury"
+                                )
+                            }
+                            cell {
+                                val skadetidspunkt = yrkesskade.skadetidspunkt.format()
+                                textExpr(
+                                    Bokmal to skadetidspunkt,
+                                    Nynorsk to skadetidspunkt,
+                                    English to skadetidspunkt
+                                )
+                            }
+                        }
+                        showIf(yrkesskade.inntektVedSkadetidspunkt.greaterThan(0)) {
+                            row {
+                                cell {
+                                    text(
+                                        Bokmal to "Årlig arbeidsinntekt på skadetidspunktet",
+                                        Nynorsk to "Årleg arbeidsinntekt på skadetidspunktet",
+                                        English to "Annual income at the date of injury"
+                                    )
+                                }
+                                cell {
+                                    includePhrase(Felles.KronerText(yrkesskade.inntektVedSkadetidspunkt))
+                                }
+                            }
+                        }
+                    }
+
+                    val beregningsmetode = trygdetidsdetaljer.beregningsmetode
+
+                    showIf(beregnetUTPerManed.brukerErFlyktning) {
+                        row {
+                            cell {
+                                text(
+                                    Bokmal to "Du er innvilget flyktningstatus fra UDI",
+                                    Nynorsk to "Du er innvilga flyktningstatus frå UDI",
+                                    English to "You have been granted status as a refugee by the Norwegian Directorate of Immigration (UDI)"
+                                )
+                            }
+                            cell {
+                                text(
+                                    Bokmal to "Ja",
+                                    Nynorsk to "Ja",
+                                    English to "Yes"
+                                )
+                            }
+                        }
+                    }
+                    showIf(beregningsmetode.isOneOf(Beregningsmetode.FOLKETRYGD)) {
+                        row {
+                            cell {
+                                text(
+                                    Bokmal to "Trygdetid (maksimalt 40 år)",
+                                    Nynorsk to "Trygdetid (maksimalt 40 år)",
+                                    English to "Insurance period (maximum 40 years)"
+                                )
+                            }
+                            cell {
+                                val anvendtTT = trygdetidsdetaljer.anvendtTT.format()
+                                textExpr(
+                                    Bokmal to anvendtTT + " år",
+                                    Nynorsk to anvendtTT + " år",
+                                    English to anvendtTT + " years"
+                                )
+                            }
+                        }
+
+                    }
+
+                    showIf(beregningsmetode.isOneOf(Beregningsmetode.EOS, Beregningsmetode.NORDISK)) {
+                        row {
+                            cell {
+                                text(
+                                    Bokmal to "Teoretisk trygdetid i Norge og andre EØS-land som er brukt i beregningen (maksimalt 40 år)",
+                                    Nynorsk to "Teoretisk trygdetid i Noreg og andre EØS-land som er brukt i utrekninga (maksimalt 40 år)",
+                                    English to "Theoretical insurance period in Norway and other EEA countries used in the calculation (maximum 40 years)"
+                                )
+                            }
+                            // Implement logic for year/years
+                            cell {
+                                val anvendtTT = trygdetidsdetaljer.anvendtTT.format()
+                                textExpr(
+                                    Bokmal to anvendtTT + " år",
+                                    Nynorsk to anvendtTT + " år",
+                                    English to anvendtTT + " years"
+                                )
+                            }
+                        }
+                    }
                     showIf(
-                        beregningsmetode.isOneOf(
-                            Beregningsmetode.NORDISK,
-                            Beregningsmetode.FOLKETRYGD
-                        ) and framtidigTTNorsk.lessThan(480)
-                    ) {
-                        row {
-                            cell {
-                                text(
-                                    Bokmal to "Norsk framtidig trygdetid",
-                                    Nynorsk to "Norsk framtidig trygdetid",
-                                    English to "Future insurance period in Norway"
-                                )
-                            }
-                            cell {
-                                includePhrase(Felles.MaanederText(framtidigTTNorsk))
-                            }
-                        }
-                    }
-                }
-                showIf(beregningsmetode.isOneOf(Beregningsmetode.NORDISK)) {
-                    ifNotNull(
-                        trygdetidsdetaljer.tellerTTNordiskKonv,
-                        trygdetidsdetaljer.nevnerTTNordiskKonv
-                    ) { tellerTTNordiskKonv, nevnerTTNordiskKonv ->
-                        row {
-                            cell {
-                                text(
-                                    Bokmal to "Forholdstallet brukt i reduksjon av norsk framtidig trygdetid",
-                                    Nynorsk to "Forholdstalet brukt i reduksjon av norsk framtidig trygdetid",
-                                    English to "Ratio applied in reduction of future Norwegian insurance period"
-                                )
-                            }
-                            cell {
-                                textExpr(
-                                    Bokmal to tellerTTNordiskKonv.format() + " / " + nevnerTTNordiskKonv.format(),
-                                    Nynorsk to tellerTTNordiskKonv.format() + " / " + nevnerTTNordiskKonv.format(),
-                                    English to tellerTTNordiskKonv.format() + " / " + nevnerTTNordiskKonv.format()
-                                )
-                            }
-                        }
-                    }
-
-                    ifNotNull(trygdetidsdetaljer.samletTTNordiskKonv) { samletTTNordiskKonv ->
-                        row {
-                            cell {
-                                text(
-                                    Bokmal to "Samlet trygdetid brukt i beregning av uføretrygd etter reduksjon av framtidig trygdetid",
-                                    Nynorsk to "Samla trygdetid brukt i utrekning av uføretrygd etter reduksjon av framtidig trygdetid",
-                                    English to "Total insurance period applied in calculating disability benefit after reduction of future insurance period(s"
-                                )
-                            }
-                            cell { includePhrase(Felles.MaanederText(samletTTNordiskKonv)) }
-                        }
-                    }
-                }
-
-                ifNotNull(trygdetidsdetaljer.utenforEOSogNorden) {
-
-                    val faktiskTTBilateral = it.faktiskTTBilateral
-                    val nevnerProRata = it.nevnerProRata
-                    val tellerProRata = it.tellerProRata
-
-                    showIf(
-                        beregningsmetode.isNotAnyOf(
-                            Beregningsmetode.FOLKETRYGD,
-                            Beregningsmetode.NORDISK,
-                            Beregningsmetode.EOS
+                        not(
+                            beregningsmetode.isOneOf(
+                                Beregningsmetode.EOS,
+                                Beregningsmetode.NORDISK,
+                                Beregningsmetode.FOLKETRYGD
+                            )
                         )
                     ) {
                         row {
                             cell {
                                 text(
-                                    Bokmal to "Faktisk trygdetid i annet avtaleland",
-                                    Nynorsk to "Faktisk trygdetid i anna avtaleland",
-                                    English to "Actual insurance period(s) in another partner country"
+                                    Bokmal to "Teoretisk trygdetid i Norge og andre avtaleland som er brukt i beregningen (maksimalt 40 år)",
+                                    Nynorsk to "Teoretisk trygdetid i Noreg og andre avtaleland som er brukt i utrekninga (maksimalt 40 år)",
+                                    English to "Theoretical insurance period in Norway and other partner countries used in the calculation (maximum 40 years)"
                                 )
                             }
                             cell {
-                                includePhrase(Felles.MaanederText(faktiskTTBilateral))
-                            }
-                        }
-                        row {
-                            cell {
-                                text(
-                                    Bokmal to "Faktisk trygdetid i Norge og avtaleland (maksimalt 40 år)",
-                                    Nynorsk to "Faktisk trygdetid i Noreg og avtaleland (maksimalt 40 år)",
-                                    English to "Actual insurance period in Norway and partner countries (maximum 40 years)"
-                                )
-                            }
-                            cell {
-                                includePhrase(Felles.MaanederText(nevnerProRata))
-                            }
-                        }
-                        row {
-                            cell {
-                                text(
-                                    Bokmal to "Forholdstallet brukt i beregning av uføretrygd",
-                                    Nynorsk to "Forholdstalet brukt i utrekning av uføretrygd",
-                                    English to "Ratio applied in calculation of insurance period"
-                                )
-                            }
-                            cell {
+                                val anvendtTT = trygdetidsdetaljer.anvendtTT.format()
                                 textExpr(
-                                    Bokmal to tellerProRata.format() + " / " + nevnerProRata.format(),
-                                    Nynorsk to tellerProRata.format() + " / " + nevnerProRata.format(),
-                                    English to tellerProRata.format() + " / " + nevnerProRata.format()
+                                    Bokmal to anvendtTT + " år",
+                                    Nynorsk to anvendtTT + " år",
+                                    English to anvendtTT + " years"
                                 )
                             }
                         }
                     }
-                }
+                    ifNotNull(trygdetidsdetaljer.faktiskTTNorge) {
+                        showIf(beregningsmetode.isNotAnyOf(Beregningsmetode.FOLKETRYGD)) {
+                            row {
+                                cell {
+                                    text(
+                                        Bokmal to "Faktisk trygdetid i Norge",
+                                        Nynorsk to "Faktisk trygdetid i Noreg",
+                                        English to "Actual insurance period in Norway"
+                                    )
+                                }
+                                cell {
+                                    includePhrase(Felles.MaanederText(it))
+                                }
+                            }
+                        }
+                    }
 
-                ifNotNull(barnetillegg) { barnetillegg ->
-                    showIf(
-                        barnetillegg.saerkullsbarn_safe.beloepNetto_safe.ifNull(Kroner(0)).greaterThan(0)
-                                or barnetillegg.fellesbarn_safe.beloepNetto_safe.ifNull(Kroner(0)).greaterThan(0)
-                    ) {
-                        row {
-                            cell {
-                                text(
-                                    Bokmal to "Totalt antall barn du har barnetillegg for",
-                                    Nynorsk to "Totalt antall barn du har barnetillegg for",
-                                    English to "Total number of children for whom you receive child supplement"
-                                )
-                            }
-                            val totaltAntallBarn = barnetillegg.foedselsdatoPaaBarnTilleggetGjelder.size()
-                            cell {
-                                textExpr(
-                                    Bokmal to totaltAntallBarn.format(),
-                                    Nynorsk to totaltAntallBarn.format(),
-                                    English to totaltAntallBarn.format(),
-                                )
-                            }
-                        }
-                        ifNotNull(barnetillegg.saerkullsbarn) { saerkullsbarn ->
+                    showIf(beregningsmetode.isOneOf(Beregningsmetode.EOS)) {
+                        ifNotNull(trygdetidsdetaljer.faktiskTTEOS) { faktiskTTEOS ->
                             row {
                                 cell {
                                     text(
-                                        Bokmal to "Fribeløp for særkullsbarn",
-                                        Nynorsk to "Fribeløp for særkullsbarn",
-                                        English to "Exemption amount for children from a previous relationship"
+                                        Bokmal to "Faktisk trygdetid i andre EØS-land",
+                                        Nynorsk to "Faktisk trygdetid i andre EØS-land",
+                                        English to "Actual insurance period(s) in other EEA countries"
                                     )
                                 }
                                 cell {
-                                    includePhrase(Felles.KronerText(saerkullsbarn.fribeloep))
-                                }
-                            }
-                        }
-                        ifNotNull(barnetillegg.fellesbarn) { fellesbarn ->
-                            row {
-                                cell {
-                                    text(
-                                        Bokmal to "Fribeløp for fellesbarn",
-                                        Nynorsk to "Fribeløp for fellessbarn",
-                                        English to "Exemption amount for joint children"
-                                    )
-                                }
-                                cell {
-                                    includePhrase(Felles.KronerText(fellesbarn.fribeloep))
+                                    includePhrase(Felles.MaanederText(faktiskTTEOS))
                                 }
                             }
                         }
 
-                        val inntektBruktIAvkortningFelles = barnetillegg.fellesbarn_safe.inntektBruktIAvkortning_safe.ifNull(Kroner(0))
-                        val inntektBruktIAvkortningSaerkull = barnetillegg.saerkullsbarn_safe.inntektBruktIAvkortning_safe.ifNull(Kroner(0))
-                        showIf(inntektBruktIAvkortningFelles.greaterThan(0) or inntektBruktIAvkortningSaerkull.greaterThan(0)) {
+                        ifNotNull(trygdetidsdetaljer.nevnerTTEOS) { nevnerTTEOS ->
                             row {
                                 cell {
                                     text(
-                                        Bokmal to "Samlet inntekt som er brukt i fastsettelse av barnetillegg",
-                                        Nynorsk to "Samla inntekt som er brukt i fastsetjinga av barnetillegg",
-                                        English to "Your income, which is used to calculate child supplement"
+                                        Bokmal to "Faktisk trygdetid i Norge og EØS-land (maksimalt 40 år)",
+                                        Nynorsk to "Faktisk trygdetid i Noreg og EØS-land (maksimalt 40 år)",
+                                        English to "Actual insurance period in Norway and EEA countries (maximum 40 years)"
+                                    )
+                                }
+                                cell { includePhrase(Felles.MaanederText(nevnerTTEOS)) }
+                            }
+                        }
+
+                        ifNotNull(
+                            trygdetidsdetaljer.tellerTTEOS,
+                            trygdetidsdetaljer.nevnerTTEOS
+                        ) { tellerTTEOS, nevnerTTEOS ->
+                            row {
+                                cell {
+                                    text(
+                                        Bokmal to "Forholdstallet brukt i beregning av trygdetid",
+                                        Nynorsk to "Forholdstalet brukt i utrekning av trygdetid",
+                                        English to "Ratio applied in calculation of insurance period"
                                     )
                                 }
                                 cell {
-                                    showIf(inntektBruktIAvkortningFelles.greaterThan(0)) {
-                                        includePhrase(Felles.KronerText(inntektBruktIAvkortningFelles))
-                                    }.orShow {
-                                        includePhrase(Felles.KronerText(inntektBruktIAvkortningSaerkull))
+                                    textExpr(
+                                        Bokmal to tellerTTEOS.format() + " / " + nevnerTTEOS.format(),
+                                        Nynorsk to tellerTTEOS.format() + " / " + nevnerTTEOS.format(),
+                                        English to tellerTTEOS.format() + " / " + nevnerTTEOS.format()
+                                    )
+                                }
+                            }
+                        }
+                    }
+
+                    showIf(beregningsmetode.isOneOf(Beregningsmetode.NORDISK)) {
+                        ifNotNull(trygdetidsdetaljer.faktiskTTNordiskKonv) { faktiskTTNordiskKonv ->
+                            row {
+                                cell {
+                                    text(
+                                        Bokmal to "Faktisk trygdetid i annet nordisk land som brukes i beregning av framtidig trygdetid",
+                                        Nynorsk to "Faktisk trygdetid i anna nordisk land som blir brukt i utrekning av framtidig trygdetid",
+                                        English to "Actual insurance period in another Nordic country, applied in calculation of future insurance period(s)"
+                                    )
+                                }
+                                cell { includePhrase(Felles.MaanederText(faktiskTTNordiskKonv)) }
+                            }
+                        }
+                    }
+                    ifNotNull(trygdetidsdetaljer.framtidigTTNorsk) { framtidigTTNorsk ->
+                        showIf(
+                            beregningsmetode.isOneOf(
+                                Beregningsmetode.NORDISK,
+                                Beregningsmetode.FOLKETRYGD
+                            ) and framtidigTTNorsk.lessThan(480)
+                        ) {
+                            row {
+                                cell {
+                                    text(
+                                        Bokmal to "Norsk framtidig trygdetid",
+                                        Nynorsk to "Norsk framtidig trygdetid",
+                                        English to "Future insurance period in Norway"
+                                    )
+                                }
+                                cell {
+                                    includePhrase(Felles.MaanederText(framtidigTTNorsk))
+                                }
+                            }
+                        }
+                    }
+                    showIf(beregningsmetode.isOneOf(Beregningsmetode.NORDISK)) {
+                        ifNotNull(
+                            trygdetidsdetaljer.tellerTTNordiskKonv,
+                            trygdetidsdetaljer.nevnerTTNordiskKonv
+                        ) { tellerTTNordiskKonv, nevnerTTNordiskKonv ->
+                            row {
+                                cell {
+                                    text(
+                                        Bokmal to "Forholdstallet brukt i reduksjon av norsk framtidig trygdetid",
+                                        Nynorsk to "Forholdstalet brukt i reduksjon av norsk framtidig trygdetid",
+                                        English to "Ratio applied in reduction of future Norwegian insurance period"
+                                    )
+                                }
+                                cell {
+                                    textExpr(
+                                        Bokmal to tellerTTNordiskKonv.format() + " / " + nevnerTTNordiskKonv.format(),
+                                        Nynorsk to tellerTTNordiskKonv.format() + " / " + nevnerTTNordiskKonv.format(),
+                                        English to tellerTTNordiskKonv.format() + " / " + nevnerTTNordiskKonv.format()
+                                    )
+                                }
+                            }
+                        }
+
+                        ifNotNull(trygdetidsdetaljer.samletTTNordiskKonv) { samletTTNordiskKonv ->
+                            row {
+                                cell {
+                                    text(
+                                        Bokmal to "Samlet trygdetid brukt i beregning av uføretrygd etter reduksjon av framtidig trygdetid",
+                                        Nynorsk to "Samla trygdetid brukt i utrekning av uføretrygd etter reduksjon av framtidig trygdetid",
+                                        English to "Total insurance period applied in calculating disability benefit after reduction of future insurance period(s"
+                                    )
+                                }
+                                cell { includePhrase(Felles.MaanederText(samletTTNordiskKonv)) }
+                            }
+                        }
+                    }
+
+                    ifNotNull(trygdetidsdetaljer.utenforEOSogNorden) {
+
+                        val faktiskTTBilateral = it.faktiskTTBilateral
+                        val nevnerProRata = it.nevnerProRata
+                        val tellerProRata = it.tellerProRata
+
+                        showIf(
+                            beregningsmetode.isNotAnyOf(
+                                Beregningsmetode.FOLKETRYGD,
+                                Beregningsmetode.NORDISK,
+                                Beregningsmetode.EOS
+                            )
+                        ) {
+                            row {
+                                cell {
+                                    text(
+                                        Bokmal to "Faktisk trygdetid i annet avtaleland",
+                                        Nynorsk to "Faktisk trygdetid i anna avtaleland",
+                                        English to "Actual insurance period(s) in another partner country"
+                                    )
+                                }
+                                cell {
+                                    includePhrase(Felles.MaanederText(faktiskTTBilateral))
+                                }
+                            }
+                            row {
+                                cell {
+                                    text(
+                                        Bokmal to "Faktisk trygdetid i Norge og avtaleland (maksimalt 40 år)",
+                                        Nynorsk to "Faktisk trygdetid i Noreg og avtaleland (maksimalt 40 år)",
+                                        English to "Actual insurance period in Norway and partner countries (maximum 40 years)"
+                                    )
+                                }
+                                cell {
+                                    includePhrase(Felles.MaanederText(nevnerProRata))
+                                }
+                            }
+                            row {
+                                cell {
+                                    text(
+                                        Bokmal to "Forholdstallet brukt i beregning av uføretrygd",
+                                        Nynorsk to "Forholdstalet brukt i utrekning av uføretrygd",
+                                        English to "Ratio applied in calculation of insurance period"
+                                    )
+                                }
+                                cell {
+                                    textExpr(
+                                        Bokmal to tellerProRata.format() + " / " + nevnerProRata.format(),
+                                        Nynorsk to tellerProRata.format() + " / " + nevnerProRata.format(),
+                                        English to tellerProRata.format() + " / " + nevnerProRata.format()
+                                    )
+                                }
+                            }
+                        }
+                    }
+
+                    ifNotNull(barnetillegg) { barnetillegg ->
+                        showIf(
+                            barnetillegg.saerkullsbarn_safe.beloepNetto_safe.ifNull(Kroner(0)).greaterThan(0)
+                                    or barnetillegg.fellesbarn_safe.beloepNetto_safe.ifNull(Kroner(0)).greaterThan(0)
+                        ) {
+                            row {
+                                cell {
+                                    text(
+                                        Bokmal to "Totalt antall barn du har barnetillegg for",
+                                        Nynorsk to "Totalt antall barn du har barnetillegg for",
+                                        English to "Total number of children for whom you receive child supplement"
+                                    )
+                                }
+                                val totaltAntallBarn = barnetillegg.foedselsdatoPaaBarnTilleggetGjelder.size()
+                                cell {
+                                    textExpr(
+                                        Bokmal to totaltAntallBarn.format(),
+                                        Nynorsk to totaltAntallBarn.format(),
+                                        English to totaltAntallBarn.format(),
+                                    )
+                                }
+                            }
+                            ifNotNull(barnetillegg.saerkullsbarn) { saerkullsbarn ->
+                                row {
+                                    cell {
+                                        text(
+                                            Bokmal to "Fribeløp for særkullsbarn",
+                                            Nynorsk to "Fribeløp for særkullsbarn",
+                                            English to "Exemption amount for children from a previous relationship"
+                                        )
+                                    }
+                                    cell {
+                                        includePhrase(Felles.KronerText(saerkullsbarn.fribeloep))
                                     }
                                 }
                             }
-                        }
-
-                        ifNotNull(barnetillegg.fellesbarn) { fellesbarn ->
-                            row {
-                                cell {
-                                    text(
-                                        Bokmal to "Samlet inntekt til annen forelder som er brukt i fastsettelse av barnetillegg",
-                                        Nynorsk to "Samla inntekt til annen forelder som er brukt i fastsetjinga av barnetillegg",
-                                        English to "Income of the other parent, which is used to calculate child supplement"
-                                    )
-                                }
-                                cell {
-                                    includePhrase(Felles.KronerText(fellesbarn.inntektAnnenForelder))
-                                }
-                            }
-                        }
-
-                        val inntektstakFelles = barnetillegg.fellesbarn_safe.inntektstak_safe.ifNull(Kroner(0))
-                        val inntektstakSaerkull = barnetillegg.saerkullsbarn_safe.inntektstak_safe.ifNull(Kroner(0))
-                        showIf(inntektstakSaerkull.greaterThan(0)) {
-                            row {
-                                cell {
-                                    text(
-                                        Bokmal to "Samlet inntekt for deg som gjør at barnetillegget ikke blir utbetalt",
-                                        Nynorsk to "Samla inntekt for deg som gjer at barnetillegget ikkje blir utbetalt",
-                                        English to "Your income which means that no child supplement is received"
-                                    )
-                                }
-                                cell {
-                                    includePhrase(Felles.KronerText(inntektstakSaerkull))
+                            ifNotNull(barnetillegg.fellesbarn) { fellesbarn ->
+                                row {
+                                    cell {
+                                        text(
+                                            Bokmal to "Fribeløp for fellesbarn",
+                                            Nynorsk to "Fribeløp for fellessbarn",
+                                            English to "Exemption amount for joint children"
+                                        )
+                                    }
+                                    cell {
+                                        includePhrase(Felles.KronerText(fellesbarn.fribeloep))
+                                    }
                                 }
                             }
-                        }.orShowIf(inntektstakFelles.greaterThan(0)) {
-                            row {
-                                cell {
-                                    text(
-                                        Bokmal to "Samlet inntekt for deg og annen forelder som gjør at barnetillegget ikke blir utbetalt",
-                                        Nynorsk to "Samla inntekt for deg og annan forelder som gjer at barnetillegget ikkje blir utbetalt",
-                                        English to "Total combined income which means that no child supplement is received"
-                                    )
+
+                            val inntektBruktIAvkortningFelles =
+                                barnetillegg.fellesbarn_safe.inntektBruktIAvkortning_safe.ifNull(Kroner(0))
+                            val inntektBruktIAvkortningSaerkull =
+                                barnetillegg.saerkullsbarn_safe.inntektBruktIAvkortning_safe.ifNull(Kroner(0))
+                            showIf(
+                                inntektBruktIAvkortningFelles.greaterThan(0) or inntektBruktIAvkortningSaerkull.greaterThan(
+                                    0
+                                )
+                            ) {
+                                row {
+                                    cell {
+                                        text(
+                                            Bokmal to "Samlet inntekt som er brukt i fastsettelse av barnetillegg",
+                                            Nynorsk to "Samla inntekt som er brukt i fastsetjinga av barnetillegg",
+                                            English to "Your income, which is used to calculate child supplement"
+                                        )
+                                    }
+                                    cell {
+                                        showIf(inntektBruktIAvkortningFelles.greaterThan(0)) {
+                                            includePhrase(Felles.KronerText(inntektBruktIAvkortningFelles))
+                                        }.orShow {
+                                            includePhrase(Felles.KronerText(inntektBruktIAvkortningSaerkull))
+                                        }
+                                    }
                                 }
-                                cell {
-                                    includePhrase(Felles.KronerText(inntektstakFelles))
+                            }
+
+                            ifNotNull(barnetillegg.fellesbarn) { fellesbarn ->
+                                row {
+                                    cell {
+                                        text(
+                                            Bokmal to "Samlet inntekt til annen forelder som er brukt i fastsettelse av barnetillegg",
+                                            Nynorsk to "Samla inntekt til annen forelder som er brukt i fastsetjinga av barnetillegg",
+                                            English to "Income of the other parent, which is used to calculate child supplement"
+                                        )
+                                    }
+                                    cell {
+                                        includePhrase(Felles.KronerText(fellesbarn.inntektAnnenForelder))
+                                    }
+                                }
+                            }
+
+                            val inntektstakFelles = barnetillegg.fellesbarn_safe.inntektstak_safe.ifNull(Kroner(0))
+                            val inntektstakSaerkull = barnetillegg.saerkullsbarn_safe.inntektstak_safe.ifNull(Kroner(0))
+                            showIf(inntektstakSaerkull.greaterThan(0)) {
+                                row {
+                                    cell {
+                                        text(
+                                            Bokmal to "Samlet inntekt for deg som gjør at barnetillegget ikke blir utbetalt",
+                                            Nynorsk to "Samla inntekt for deg som gjer at barnetillegget ikkje blir utbetalt",
+                                            English to "Your income which means that no child supplement is received"
+                                        )
+                                    }
+                                    cell {
+                                        includePhrase(Felles.KronerText(inntektstakSaerkull))
+                                    }
+                                }
+                            }.orShowIf(inntektstakFelles.greaterThan(0)) {
+                                row {
+                                    cell {
+                                        text(
+                                            Bokmal to "Samlet inntekt for deg og annen forelder som gjør at barnetillegget ikke blir utbetalt",
+                                            Nynorsk to "Samla inntekt for deg og annan forelder som gjer at barnetillegget ikkje blir utbetalt",
+                                            English to "Total combined income which means that no child supplement is received"
+                                        )
+                                    }
+                                    cell {
+                                        includePhrase(Felles.KronerText(inntektstakFelles))
+                                    }
                                 }
                             }
                         }
@@ -781,4 +792,3 @@ data class TabellUfoereOpplysninger(
             }
         }
     }
-}
