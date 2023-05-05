@@ -6,14 +6,9 @@ import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.text
 
-/* TBU035V
-IF Yrkesskadegrad > 0
-AND KravArsakType <> soknad_bt
-AND not(brevkode PE_UT_04_108, PE_UT_04_109_ PE_UT_07_200, PE_UT_06_300)
-INCLUDE
-*/
+// PE_UT_04_108, PE_UT_04_109, PE_UT_06_300, PE_UT_07_200,
 
-
+// TBU035V
 object BeregningAvUfoeretrygdSomSkyldesYrkesskadeEllerYrkessykdom {
     object YrkesskadeEllerYrkessykdom : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
