@@ -21,7 +21,7 @@ INCLUDE */
 
 data class OpplysningerOmMinstetillegg(
     val minsteytelseSats: Expression<Double?>,
-    val ungUfoer_erUnder20Aar: Expression<Boolean?>,
+    val ungUfoerErUnder20Aar: Expression<Boolean>,
     val ufoeretrygd: Expression<OpplysningerBruktIBeregningUTDto.Ufoeretrygd>,
     val inntektFoerUfoere: Expression<OpplysningerBruktIBeregningUTDto.InntektFoerUfoere>,
     val inntektsgrenseErUnderTak: Expression<Boolean>,
@@ -37,7 +37,7 @@ data class OpplysningerOmMinstetillegg(
                     Language.English to "You have been granted minimum benefit"
                 )
             }
-            ifNotNull(ungUfoer_erUnder20Aar) { erUnder20Aar ->
+            ifNotNull(ungUfoerErUnder20Aar) { erUnder20Aar ->
                 showIf(erUnder20Aar) {
                     includePhrase(VedleggBeregnUTInfoMYUngUforUnder20)
                 }.orShow {

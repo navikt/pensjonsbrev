@@ -283,7 +283,6 @@ object OpphoerBarnetilleggAuto : AutobrevTemplate<OpphoerBarnetilleggAutoDto> {
                 skalViseAvdoed = false,
                 skalViseSlikBeregnerViUfoeretrygdenDin = false,
                 skalViseTabellInntekteneBruktIBeregningen = false,
-                skalViseTabellInntekteneBruktIBeregningenAvdoed = false,
                 skalViseSlikBeregnerViGjenlevendetilleggHarNyttTillegg = false,
                 skalViseSlikBeregnerViGjenlevendetillegg = false,
                 skalViseForDegSomMottarEktefelletillegg = false,

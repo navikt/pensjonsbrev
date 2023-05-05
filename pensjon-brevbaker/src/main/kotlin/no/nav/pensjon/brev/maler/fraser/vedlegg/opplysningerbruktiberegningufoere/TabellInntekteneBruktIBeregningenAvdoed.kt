@@ -1,15 +1,15 @@
 package no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningufoere
 
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDto
-import no.nav.pensjon.brev.api.model.vedlegg.OpptjeningUfoeretrygd1Selectors.harFoerstegangstjenesteOpptjening_safe
-import no.nav.pensjon.brev.api.model.vedlegg.OpptjeningUfoeretrygd1Selectors.harOmsorgsopptjening_safe
-import no.nav.pensjon.brev.api.model.vedlegg.OpptjeningUfoeretrygd1Selectors.opptjeningsperiode
-import no.nav.pensjon.brev.api.model.vedlegg.Opptjeningsperiode1Selectors.aar
-import no.nav.pensjon.brev.api.model.vedlegg.Opptjeningsperiode1Selectors.harFoerstegangstjenesteOpptjening
-import no.nav.pensjon.brev.api.model.vedlegg.Opptjeningsperiode1Selectors.harInntektAvtaleland
-import no.nav.pensjon.brev.api.model.vedlegg.Opptjeningsperiode1Selectors.harOmsorgsopptjening
-import no.nav.pensjon.brev.api.model.vedlegg.Opptjeningsperiode1Selectors.justertPensjonsgivendeInntekt
-import no.nav.pensjon.brev.api.model.vedlegg.Opptjeningsperiode1Selectors.pensjonsgivendeInntekt
+import no.nav.pensjon.brev.api.model.vedlegg.OpptjeningUfoeretrygdSelectors.harFoerstegangstjenesteOpptjening_safe
+import no.nav.pensjon.brev.api.model.vedlegg.OpptjeningUfoeretrygdSelectors.harOmsorgsopptjening_safe
+import no.nav.pensjon.brev.api.model.vedlegg.OpptjeningUfoeretrygdSelectors.opptjeningsperiode
+import no.nav.pensjon.brev.api.model.vedlegg.OpptjeningsperiodeSelectors.aar
+import no.nav.pensjon.brev.api.model.vedlegg.OpptjeningsperiodeSelectors.harFoerstegangstjenesteOpptjening
+import no.nav.pensjon.brev.api.model.vedlegg.OpptjeningsperiodeSelectors.harInntektAvtaleland
+import no.nav.pensjon.brev.api.model.vedlegg.OpptjeningsperiodeSelectors.harOmsorgsopptjening
+import no.nav.pensjon.brev.api.model.vedlegg.OpptjeningsperiodeSelectors.justertPensjonsgivendeInntekt
+import no.nav.pensjon.brev.api.model.vedlegg.OpptjeningsperiodeSelectors.pensjonsgivendeInntekt
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
@@ -19,23 +19,22 @@ import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.textExpr
-import java.time.LocalDate
 import no.nav.pensjon.brev.template.dsl.expression.*
 
+// <> brevkode PE_UT_04_102, PE_UT_04_108, PE_UT_04_109, PE_UT_04_500, PE_UT_05_100, PE_UT_06_300, PE_UT_07_100, PE_UT_07_200,
 
 data class TabellInntekteneBruktIBeregningenAvdoed(
-    val beregningGjeldendeFraOgMed: Expression<LocalDate>,
-    val opptjeningUfoeretrygd: Expression<OpplysningerBruktIBeregningUTDto.OpplysningerAvdoed.OpptjeningUfoeretrygd1>,
+    val opptjeningUfoeretrygd: Expression<OpplysningerBruktIBeregningUTDto.OpptjeningUfoeretrygd>,
 
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
 
         // TBU036V
         title1 {
-            textExpr(
-                Bokmal to "Inntekt lagt til grunn for beregning av avdødes uføretrygd fra ".expr() + beregningGjeldendeFraOgMed.format(),
-                Nynorsk to "Inntekt lagd til grunn for berekning av avdødes uføretrygd frå ".expr() + beregningGjeldendeFraOgMed.format(),
-                English to "Income on which to calculate the disability benefit for the deceased from ".expr() + beregningGjeldendeFraOgMed.format()
+            text(
+                Bokmal to "Inntekt lagt til grunn for beregning av avdødes uføretrygd fra ",
+                Nynorsk to "Inntekt lagd til grunn for berekning av avdødes uføretrygd frå ",
+                English to "Income on which to calculate the disability benefit for the deceased from "
             )
         }
         // TBU037V
@@ -68,9 +67,9 @@ data class TabellInntekteneBruktIBeregningenAvdoed(
                     )
                 }
             }) {
-                ifNotNull(opptjeningUfoeretrygd) { opptjeningUfoeretrygd1 ->
+                ifNotNull(opptjeningUfoeretrygd) { opptjening ->
                         forEach(
-                            opptjeningUfoeretrygd1.opptjeningsperiode
+                            opptjening.opptjeningsperiode
                         ) { periode ->
                             row {
                                 cell {
