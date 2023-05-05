@@ -18,7 +18,7 @@ data class BarnepensjonVedtakDTO(
 ) {
 
     data class Utbetalingsinfo(
-        val antallBarn: Int? = null,
+        val antallBarn: Int,
         val beloep: Kroner,
         val soeskenjustering: Boolean,
         val virkningsdato: LocalDate,
