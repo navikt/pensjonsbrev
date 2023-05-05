@@ -16,13 +16,14 @@ import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brev.template.dsl.expression.*
 
+// <> brevkode PE_UT_04_108, PE_UT_04_109, PE_UT_04_500, PE_UT_05_100, PE_UT_06_300, PE_UT_07_100, PE_UT_07_200,
+
 data class TabellTrygdetidenAvdoed(
     val norskTrygdetidPerioder: Expression<List<OpplysningerBruktIBeregningUTDto.NorskTrygdetidPeriode>>,
     val bilateralTrygdetidPerioder: Expression<List<OpplysningerBruktIBeregningUTDto.UtendlandsTrygdetidPeriode>>,
     val eosTrygdetidPerioder: Expression<List<OpplysningerBruktIBeregningUTDto.UtendlandsTrygdetidPeriode>>,
     val fastsattNorskTrygdetid: Expression<Int?>,
     val harBoddArbeidUtland: Expression<Boolean>,
-    val brukerErFlyktning: Expression<Boolean>,
 
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {

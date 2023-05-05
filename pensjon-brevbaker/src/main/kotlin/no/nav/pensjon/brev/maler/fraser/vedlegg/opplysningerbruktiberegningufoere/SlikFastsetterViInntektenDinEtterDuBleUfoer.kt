@@ -18,17 +18,15 @@ data class SlikFastsetterViInntektenDinEtterDuBleUfoer(
     val inntektFoerUfoereBegrunnelse: Expression<InntektFoerUfoereBegrunnelse?>,
     val ufoeretrygd: Expression<OpplysningerBruktIBeregningUTDto.Ufoeretrygd>,
     val kravAarsakType: Expression<KravAarsakType>,
-    val minsteytelse_sats: Expression<Double?>,
+    val minsteytelseSats: Expression<Double?>,
 
-) : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    val harMinsteytelseSats = minsteytelse_sats.notNull()
+    ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    val harMinsteytelseSats = minsteytelseSats.notNull()
 
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         showIf(
             ((inntektFoerUfoereBegrunnelse.notNull() or ufoeretrygd.harInntektEtterUfoereBegrunnelse) or
-                    (kravAarsakType.isOneOf(KravAarsakType.SIVILSTANDSENDRING) and harMinsteytelseSats)) and kravAarsakType.isNotAnyOf(
-                KravAarsakType.ENDRET_IFU
-            )
+                    (kravAarsakType.isOneOf(KravAarsakType.SIVILSTANDSENDRING) and harMinsteytelseSats))
         ) {
             title1 {
                 text(
