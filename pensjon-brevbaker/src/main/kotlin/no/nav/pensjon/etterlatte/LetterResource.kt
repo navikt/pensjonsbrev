@@ -11,7 +11,7 @@ class LetterResource(private val templateResource: TemplateResource = TemplateRe
     private val objectMapper = jacksonObjectMapper()
 
     fun create(letterRequest: EtterlatteBrevRequest): Letter<*> {
-        val template: LetterTemplate<*, *> = templateResource.getAutoBrev(letterRequest.kode)
+        val template: LetterTemplate<*, *> = templateResource.getRedigerbartBrev(letterRequest.kode)
             ?: throw NotFoundException("Template '${letterRequest.kode}' doesn't exist")
 
         return create(template, letterRequest.language.toLanguage(), letterRequest.letterData, letterRequest.felles)
