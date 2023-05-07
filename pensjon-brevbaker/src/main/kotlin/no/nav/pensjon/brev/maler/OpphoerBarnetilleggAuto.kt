@@ -277,16 +277,23 @@ object OpphoerBarnetilleggAuto : AutobrevTemplate<OpphoerBarnetilleggAutoDto> {
         includeAttachmentIfNotNull(vedleggMaanedligUfoeretrygdFoerSkatt, maanedligUfoeretrygdFoerSkatt)
         includeAttachment(
             createVedleggOpplysningerBruktIBeregningUT(
-                skalViseTrygdetidenDin = false,
-                skalViseMinsteytelse = false,
-                skalViseBarnetillegg = true,
                 skalViseAvdoed = false,
+                skalViseBarnetillegg = true,
+                skalViseDinUtbetalingFoerSkatt = false,
+                skalViseEtteroppgjoerAvUfoeretrygdOgBarnetillegg = false,
+                skalViseForDegSomMottarEktefelletillegg = false,
+                skalViseInntektEtterUfoer = false,
+                skalViseInntektFoerUfoer = false,
+                skalViseKompensasjonsgrad = false,
+                skalViseMinsteytelse = false,
+                skalViseReduksjonAvUfoeretrygden = false,
+                skalViseSlikBeregnerViGjenlevendetillegg = false,
+                skalViseSlikBeregnerViGjenlevendetilleggHarNyttTillegg = false,
                 skalViseSlikBeregnerViUfoeretrygdenDin = false,
                 skalViseTabellInntekteneBruktIBeregningen = false,
-                skalViseSlikBeregnerViGjenlevendetilleggHarNyttTillegg = false,
-                skalViseSlikBeregnerViGjenlevendetillegg = false,
-                skalViseForDegSomMottarEktefelletillegg = false,
-                skalViseEtteroppgjoerAvUfoeretrygdOgBarnetillegg = false,
+                skalViseTrygdetidenDin = false,
+                skalViseUtbetalingAvUTNaarInntektEndres = false,
+                skalViseYrkesskadeEllerYrkessykdom = false,
             ), opplysningerBruktIBeregningUT,
             harBarnetillegg
         )
