@@ -3,9 +3,9 @@ package no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningufoe
 import no.nav.pensjon.brev.api.model.Kroner
 import no.nav.pensjon.brev.api.model.KronerSelectors.value
 import no.nav.pensjon.brev.api.model.Sivilstand
-import no.nav.pensjon.brev.api.model.vedlegg.BarnetilleggGjeldendeSelectors.fellesbarn_safe
-import no.nav.pensjon.brev.api.model.vedlegg.BarnetilleggGjeldendeSelectors.foedselsdatoPaaBarnTilleggetGjelder
-import no.nav.pensjon.brev.api.model.vedlegg.BarnetilleggGjeldendeSelectors.saerkullsbarn_safe
+import no.nav.pensjon.brev.api.model.vedlegg.BarnetilleggSelectors.fellesbarn_safe
+import no.nav.pensjon.brev.api.model.vedlegg.BarnetilleggSelectors.foedselsdatoPaaBarnTilleggetGjelder
+import no.nav.pensjon.brev.api.model.vedlegg.BarnetilleggSelectors.saerkullsbarn_safe
 import no.nav.pensjon.brev.api.model.vedlegg.FellesbarnSelectors.avkortningsbeloepAar
 import no.nav.pensjon.brev.api.model.vedlegg.FellesbarnSelectors.avkortningsbeloepAar_safe
 import no.nav.pensjon.brev.api.model.vedlegg.FellesbarnSelectors.beloepAarBrutto
@@ -53,12 +53,13 @@ import no.nav.pensjon.brev.template.dsl.textExpr
 import java.time.LocalDate
 
 data class OpplysningerOmBarnetillegg(
-    val barnetillegg: Expression<OpplysningerBruktIBeregningUTDto.BarnetilleggGjeldende>,
+    val barnetillegg: Expression<OpplysningerBruktIBeregningUTDto.Barnetillegg>,
     val sivilstand: Expression<Sivilstand>,
     val anvendtTrygdetid: Expression<Int>,
     val harYrkesskade: Expression<Boolean>,
     val harKravaarsakEndringInntekt: Expression<Boolean>,
     val fraOgMedDatoErNesteAar: Expression<Boolean>,
+
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         val harAnvendtTrygdetidUnder40 = anvendtTrygdetid.lessThan(40)
