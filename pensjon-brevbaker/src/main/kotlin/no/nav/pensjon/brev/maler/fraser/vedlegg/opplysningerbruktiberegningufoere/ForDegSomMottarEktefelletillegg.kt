@@ -8,13 +8,8 @@ import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.text
 
 
-/* IF brevkode <> PE_UT_04_101, PE_UT_04_500
-AND (Brevkode <> PE_UT_04_102 OR PE_UT_04_102 AND <KravArsakType> <> TILST_DOD)
-AND
-<ETInnvilget> = true
-AND <KravArsakType> <> soknad_bt
-AND brevkode <> PE_UT_04_108, PE_UT_04_109, PE_UT_07_200, PE_UT_06_300,
-THEN INCLUDE */
+// Brevkode <> PE_UT_04_101, PE_UT_04_102, PE_UT_04_102, PE_UT_04_108, PE_UT_04_109, PE_UT_04_500, PE_UT_06_300, PE_UT_07_200,
+
 data class ForDegSomMottarEktefelletillegg(
     val harEktefelletilleggInnvilget: Expression<Boolean>,
 
