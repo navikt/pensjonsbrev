@@ -4,23 +4,23 @@ import no.nav.pensjon.brev.api.model.*
 import java.time.LocalDate
 
 data class OpplysningerBruktIBeregningUTDto(
+    val avdoed: OpplysningerBruktIBeregningUTAvdoed?,
     val barnetillegg: Barnetillegg?,
     val beregnetUTPerManed: BeregnetUTPerManed,
     val borIUtlandet: Boolean,  // PE_Grunnlag_Persongrunnlagsliste_PersonBostedsland <> "nor" AND PE_Grunnlag_Persongrunnlagsliste_PersonBostedsland <> ""
     val fraOgMedDatoErNesteAar: Boolean,
     val harEktefelletilleggInnvilget: Boolean,
     val harKravaarsakEndringInntekt: Boolean,
-    val inntektEtterUfoere_beloepIEU: Kroner?,
+    val inntektEtterUfoereBeloepIEU: Kroner?,
     val inntektFoerUfoere: InntektFoerUfoere,
     val inntektsAvkorting: InntektsAvkorting,
     val kravAarsakType: KravAarsakType,
-    val minsteytelse_sats: Double?,
+    val minsteytelseSats: Double?,
     val sivilstand: Sivilstand,
     val trygdetid: Trygdetid,
     val ufoeretrygd: Ufoeretrygd,
-    val ungUfoer_erUnder20Aar: Boolean?,
+    val ungUfoerErUnder20Aar: Boolean,
     val yrkesskade: Yrkesskade?,
-    val avdoed: OpplysningerBruktIBeregningUTAvdoed?,
 ) {
 
     data class Yrkesskade(
@@ -112,13 +112,13 @@ data class OpplysningerBruktIBeregningUTDto(
         val beloepsgrense: Kroner,
         val beregningsgrunnlagBeloepAar: Kroner,
         val erKonvertert: Boolean,
+        val fullUfoeretrygdPerAar: Kroner,  // ugradertBruttoPerAar
+        val harInntektEtterUfoereBegrunnelse: Boolean,
         val harUtbetalingsgradLessThanUfoeregrad: Boolean,
         val kompensasjonsgrad: Double,
         val ufoeregrad: Int,
         val ufoeretidspunkt: LocalDate,
-        val fullUfoeretrygdPerAar: Kroner,  // ugradertBruttoPerAar
         val ufoeretrygdOrdinaer: UfoeretrygdOrdinaer,
-
         )
 
     data class InntektsAvkorting(
@@ -128,12 +128,11 @@ data class OpplysningerBruktIBeregningUTDto(
     )
 
     data class InntektFoerUfoere(
-        val begrunnelse: InntektFoerUfoereBegrunnelse,
         val erSannsynligEndret: Boolean,
         val inntektFoerUfoer: Kroner,
+        val inntektFoerUfoereBegrunnelse: InntektFoerUfoereBegrunnelse?,
         val oppjustertInntektFoerUfoer: Kroner,
         val opptjeningUfoeretrygd: OpptjeningUfoeretrygd?,
-
         )
 
     data class OpptjeningUfoeretrygd(
@@ -158,17 +157,6 @@ data class OpplysningerBruktIBeregningUTDto(
 
     data class UtendlandsTrygdetidPeriode(
         val trygdetidBilateralLand: String,
-        val trygdetidFom: LocalDate,
-        val trygdetidTom: LocalDate,
-    )
-
-    data class BilateralTrygdetidPeriode(
-        val trygdetidBilateralLand: String,
-        val trygdetidFom: LocalDate,
-        val trygdetidTom: LocalDate,
-    )
-
-    data class EOSTrygdetidPeriode(
         val trygdetidEOSLand: String,
         val trygdetidFom: LocalDate,
         val trygdetidTom: LocalDate,
@@ -215,6 +203,7 @@ data class OpplysningerBruktIBeregningUTDto(
             val framtidigTTAvtaleland: Int?,
             val framtidigTTEOS: Int?,
             val framtidigTTNorsk: Int?,
+            val harBoddArbeidUtland: Boolean,
             val nevnerTTBilateralProRata: Int?,
             val nevnerTTEOS: Int?,
             val nevnerTTNordiskKonv: Int?,
