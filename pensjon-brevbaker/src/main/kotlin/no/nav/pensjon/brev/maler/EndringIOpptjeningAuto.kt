@@ -242,17 +242,23 @@ object EndringIOpptjeningAuto : AutobrevTemplate<EndringIOpptjeningAutoDto> {
 
         includeAttachment(
             createVedleggOpplysningerBruktIBeregningUT(
-                skalViseTrygdetidenDin = true,
-                skalViseMinsteytelse = true,
-                skalViseBarnetillegg = true,
                 skalViseAvdoed = true,
+                skalViseBarnetillegg = false,
+                skalViseDinUtbetalingFoerSkatt = true,
+                skalViseEtteroppgjoerAvUfoeretrygdOgBarnetillegg = true,
+                skalViseForDegSomMottarEktefelletillegg = true,
+                skalViseInntektEtterUfoer = true,
+                skalViseInntektFoerUfoer = true,
+                skalViseKompensasjonsgrad = true,
+                skalViseMinsteytelse = true,
+                skalViseReduksjonAvUfoeretrygden = true,
+                skalViseSlikBeregnerViGjenlevendetillegg = true,
+                skalViseSlikBeregnerViGjenlevendetilleggHarNyttTillegg = true,
                 skalViseSlikBeregnerViUfoeretrygdenDin = true,
                 skalViseTabellInntekteneBruktIBeregningen = true,
-                skalViseTabellInntekteneBruktIBeregningenAvdoed = true,
-                skalViseSlikBeregnerViGjenlevendetilleggHarNyttTillegg = true,
-                skalViseSlikBeregnerViGjenlevendetillegg = true,
-                skalViseForDegSomMottarEktefelletillegg = true,
-                skalViseEtteroppgjoerAvUfoeretrygdOgBarnetillegg = true,
+                skalViseTrygdetidenDin = true,
+                skalViseUtbetalingAvUTNaarInntektEndres = true,
+                skalViseYrkesskadeEllerYrkessykdom = true,
             ), opplysningerBruktIBeregningUT
         )
 
