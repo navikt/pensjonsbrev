@@ -14,7 +14,7 @@ import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 
-// brevkode <> PE_UT_04_108, PE_UT_04_109,
+// Brevkode <> PE_UT_04_108, PE_UT_04_109,
 // TBU062V
 data class SlikBeregnerViReduksjonAvUfoeretrygden(
     val ufoeretrygd: Expression<OpplysningerBruktIBeregningUTDto.Ufoeretrygd>,
