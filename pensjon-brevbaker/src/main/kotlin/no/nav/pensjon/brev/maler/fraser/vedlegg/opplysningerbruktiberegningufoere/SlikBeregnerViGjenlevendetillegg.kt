@@ -10,12 +10,8 @@ import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.text
 
 
-/* IF GTInnvilget = true
-AND brevkode <> PE_UT_04_300, PE_UT_14_300,
-AND KravArsakType <> "soknad_bt"
-AND NyttGjenlevendetillegg = true
-AND brevkode <> PE_UT_100, PE_UT_07_100, PE_UT_04_108, PE_UT_04_109, PE_UT_04_500, PE_UT_07_200
-THEN INCLUDE */
+// Brevkode <> PE_UT_04_108, PE_UT_04_109, PE_UT_04_300, PE_UT_04_500, PE_UT_05_100, PE_UT_07_100, PE_UT_07_200, PE_UT_14_300,
+
 
 data class HarNyttGjenlevendetillegg(
     val harGjenlevendetillegg: Expression<Boolean>,
@@ -66,13 +62,8 @@ data class HarNyttGjenlevendetillegg(
 }
 
 
-/* IF
-    <GTinnvilget> = true
-    AND
-    (brevkode = pe_ut_04_300
-    OR
-    Brevkode = pe_ut_14_300)
-    INCLUDE */
+// IF brevkode = PE_UT_04_300, PE_UT_14_300
+
 data class NotNyttGjenlevendetillegg(
     val harGjenlevendetillegg: Expression<Boolean>,
     val harNyttGjenlevendetillegg: Expression<Boolean>,

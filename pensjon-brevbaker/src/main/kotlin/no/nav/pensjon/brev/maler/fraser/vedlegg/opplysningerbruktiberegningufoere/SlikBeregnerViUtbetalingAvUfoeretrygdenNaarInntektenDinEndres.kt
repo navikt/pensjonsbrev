@@ -22,7 +22,6 @@ import no.nav.pensjon.brev.template.dsl.textExpr
 // TBU057V, TBU058V, TBU059V, TBU060V
 data class SlikBeregnerViUtbetalingAvUfoeretrygdenNaarInntektenDinEndres(
     val inntektsAvkorting: Expression<OpplysningerBruktIBeregningUTDto.InntektsAvkorting>,
-    val kravAarsakType: Expression<KravAarsakType>,
     val ufoeretrygd: Expression<OpplysningerBruktIBeregningUTDto.Ufoeretrygd>,
     val ufoeretrygdOrdinaer: Expression<OpplysningerBruktIBeregningUTDto.UfoeretrygdOrdinaer>,
 

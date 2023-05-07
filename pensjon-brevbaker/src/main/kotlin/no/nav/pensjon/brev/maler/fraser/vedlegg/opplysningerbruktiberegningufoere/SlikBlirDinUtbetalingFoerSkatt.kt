@@ -1,12 +1,10 @@
 package no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningufoere
 
 import no.nav.pensjon.brev.api.model.KravAarsakType
-import no.nav.pensjon.brev.api.model.vedlegg.InntektsAvkortingGjeldendeSelectors.forventetInntektAar
-import no.nav.pensjon.brev.api.model.vedlegg.InntektsAvkortingGjeldendeSelectors.inntektsgrenseAar
-import no.nav.pensjon.brev.api.model.vedlegg.InntektsAvkortingGjeldendeSelectors.inntektstak
+import no.nav.pensjon.brev.api.model.vedlegg.InntektsAvkortingSelectors.forventetInntektAar
+import no.nav.pensjon.brev.api.model.vedlegg.InntektsAvkortingSelectors.inntektsgrenseAar
+import no.nav.pensjon.brev.api.model.vedlegg.InntektsAvkortingSelectors.inntektstak
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDto
-import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdGjeldendeSelectors.harUtbetalingsgradLessThanUfoeregrad
-import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdGjeldendeSelectors.ufoeregrad
 import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdOrdinaerSelectors.harBeloepRedusert
 import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdOrdinaerSelectors.harNyUTBeloep
 import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdOrdinaerSelectors.harTotalNettoUT
@@ -15,6 +13,8 @@ import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdOrdinaerSelectors.nettoA
 import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdOrdinaerSelectors.nettoTilUtbetalingRestenAvAaret_safe
 import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdOrdinaerSelectors.reduksjonIUfoeretrygd_safe
 import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdOrdinaerSelectors.ufoeretrygdPlussInntekt_safe
+import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdSelectors.harUtbetalingsgradLessThanUfoeregrad
+import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdSelectors.ufoeregrad
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Element
 import no.nav.pensjon.brev.template.Expression
@@ -34,25 +34,24 @@ Brevkode <> PE_UT_04_108 OG Brevkode <> PE_UT_04_109 OG Brevkode <> PE_UT_07_200
 ELLER
 Brevkode <> PE_UT_06_300
  */
-
+// Need to make
 // TBU062V, TBU063V, TBU064V, TBU074V, TBU600V, TBU065V
 data class TabellSlikBlirDinUtbetalingFoerSkatt(
-    val inntektsAvkortingGjeldende: Expression<OpplysningerBruktIBeregningUTDto.InntektsAvkortingGjeldende>,
-    val kravAarsakType: Expression<KravAarsakType>,
-    val ufoeretrygdGjeldende: Expression<OpplysningerBruktIBeregningUTDto.UfoeretrygdGjeldende>,
+    val inntektsAvkorting: Expression<OpplysningerBruktIBeregningUTDto.InntektsAvkorting>,
+    val ufoeretrygd: Expression<OpplysningerBruktIBeregningUTDto.Ufoeretrygd>,
     val ufoeretrygdOrdinaer: Expression<OpplysningerBruktIBeregningUTDto.UfoeretrygdOrdinaer>,
 
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         val harInntektsgrenseLessThanInntektstak =
-            inntektsAvkortingGjeldende.inntektsgrenseAar.lessThan(inntektsAvkortingGjeldende.inntektstak)
-        val inntektsgrenseAar = inntektsAvkortingGjeldende.inntektsgrenseAar.format()
-        val inntektstak = inntektsAvkortingGjeldende.inntektstak.format()
-        val ufoeregrad = ufoeretrygdGjeldende.ufoeregrad.format()
+            inntektsAvkorting.inntektsgrenseAar.lessThan(inntektsAvkorting.inntektstak)
+        val inntektsgrenseAar = inntektsAvkorting.inntektsgrenseAar.format()
+        val inntektstak = inntektsAvkorting.inntektstak.format()
+        val ufoeregrad = ufoeretrygd.ufoeregrad.format()
         val harInntektsgrenseLargerThanOrEqualToInntektstak =
-            inntektsAvkortingGjeldende.inntektsgrenseAar.greaterThanOrEqual(inntektsAvkortingGjeldende.inntektstak)
+            inntektsAvkorting.inntektsgrenseAar.greaterThanOrEqual(inntektsAvkorting.inntektstak)
         val harForventetInntektLargerThanInntektstak =
-            inntektsAvkortingGjeldende.forventetInntektAar.greaterThan(inntektsAvkortingGjeldende.inntektstak)
+            inntektsAvkorting.forventetInntektAar.greaterThan(inntektsAvkorting.inntektstak)
 
         ifNotNull(
             ufoeretrygdOrdinaer.nettoAkkumulertePlussNettoRestAar_safe,
@@ -61,9 +60,7 @@ data class TabellSlikBlirDinUtbetalingFoerSkatt(
         ) { bruttoBeregnetUfoeretrygd, utbetaltUfoeretrygd, ufoeretrygdUtbetaltRestenAvAaret ->
 
             showIf(
-                ufoeretrygdGjeldende.harUtbetalingsgradLessThanUfoeregrad and kravAarsakType.isNotAnyOf(
-                    KravAarsakType.SOKNAD_BT
-                )
+                ufoeretrygd.harUtbetalingsgradLessThanUfoeregrad
             ) {
                 title1 {
                     text(
@@ -170,7 +167,7 @@ data class TabellSlikBlirDinUtbetalingFoerSkatt(
         }
             // TBU074V  / brevkode not(PE_UT_04_108, PE_UT_04_109, PE_UT_06_300, PE_UT_07_200)
             showIf(
-                harInntektsgrenseLargerThanOrEqualToInntektstak and ufoeretrygdGjeldende.harUtbetalingsgradLessThanUfoeregrad
+                harInntektsgrenseLargerThanOrEqualToInntektstak and ufoeretrygd.harUtbetalingsgradLessThanUfoeregrad
                         and not(ufoeretrygdOrdinaer.harNyUTBeloep)
             ) {
                 paragraph {
@@ -193,7 +190,7 @@ data class TabellSlikBlirDinUtbetalingFoerSkatt(
                 }
             }
             // TBU064V  / brevkode not(PE_UT_04_108, PE_UT_04_109, PE_UT_06_300, PE_UT_07_200)
-            showIf(ufoeretrygdGjeldende.harUtbetalingsgradLessThanUfoeregrad) {
+            showIf(ufoeretrygd.harUtbetalingsgradLessThanUfoeregrad) {
                 paragraph {
                     textExpr(
                         Bokmal to "Du vil få tilbake ".expr() + ufoeregrad + " prosent uføretrygd uten søknad, dersom du tjener mindre enn inntektsgrensen din. Hvis du allerede har fått utbetalt det du har rett til i uføretrygd for kalenderåret, vil du ikke få utbetalt uføretrygd med den opprinnelige uføregraden din før neste kalenderår.".expr(),
