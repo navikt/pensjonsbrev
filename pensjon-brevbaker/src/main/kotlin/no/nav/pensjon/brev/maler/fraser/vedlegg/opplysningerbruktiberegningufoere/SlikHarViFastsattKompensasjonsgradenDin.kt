@@ -17,7 +17,7 @@ import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 
-// Brevkode <> PE_UT_04_101, PE_UT_04_102, PE_UT_04_114, PE_UT_04_116, PE_UT_04_300, PE_UT_04_500, PE_UT_14_300
+// <> brevkode PE_UT_04_101, PE_UT_04_102, PE_UT_04_114, PE_UT_04_116, PE_UT_04_300, PE_UT_04_500, PE_UT_14_300
 
 // TBU056V
 
