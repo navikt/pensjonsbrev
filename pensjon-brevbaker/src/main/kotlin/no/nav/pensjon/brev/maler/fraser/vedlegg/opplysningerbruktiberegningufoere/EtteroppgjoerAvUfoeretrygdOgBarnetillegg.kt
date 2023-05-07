@@ -15,15 +15,12 @@ import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 
-/* IF (KravArsakType <> SOKNAD_BT
-AND brevkode <> PE_UT_04_108, PE_UT_04_109, PE_UT_04_500, PE_UT_07_200, (PE_UT_04_102 AND KravArsakType <> TILST_DOD))
-OR brevkode = PE_UT_06_300
-THEN INCLUDE */
+// PE_UT_04_108, PE_UT_04_109, PE_UT_04_500, PE_UT_06_300, PE_UT_07_200
 
 data class EtteroppgjoerAvUfoeretrygdOgBarnetillegg(
     val borIUtlandet: Expression<Boolean>,
     val harBarnetilleggInnvilget: Expression<Boolean>,
-    val harFellesbarn: Expression<OpplysningerBruktIBeregningUTDto.BarnetilleggGjeldende.Fellesbarn?>,
+    val harFellesbarn: Expression<OpplysningerBruktIBeregningUTDto.Barnetillegg.Fellesbarn?>,
     val sivilstand: Expression<Sivilstand>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
