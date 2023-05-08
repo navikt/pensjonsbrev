@@ -249,8 +249,7 @@ data class OpplysningerOmBarnetillegg(
                             fellesTillegg.beloepBrutto,
                         )
                     )
-                }.orShowIf(not(faarUtbetaltBarnetilleggFellesBarn)){
-                    // Tabellen får mye 0-verdier, så den kan erstattes med tekst når vi ikke har utbetalt barnetillegg
+                }.orShow {
                     includePhrase(InntektsGrenseBarnetillegg(
                         inntektstak = fellesTillegg.inntektstak,
                         inntektBruktIAvkortning = fellesTillegg.inntektBruktIAvkortning
@@ -289,30 +288,23 @@ data class OpplysningerOmBarnetillegg(
                                 + ifElse(fraOgMedDatoErNesteAar, "for next year", "for this year"),
                     )
                 }
-                showIf(faarUtbetaltbarnetilleggSaerkullsbarn or harJusteringsbeloepSaerkullsbarn) {
-                    includePhrase(
-                        OpplysningerOmBarnetilleggTabell(
-                            saerkullTillegg.avkortningsbeloepAar,
-                            saerkullTillegg.beloepAarBrutto,
-                            saerkullTillegg.beloepAarNetto,
-                            saerkullTillegg.erRedusertMotinntekt,
-                            saerkullTillegg.fribeloep,
-                            saerkullTillegg.inntektBruktIAvkortning,
-                            saerkullTillegg.inntektOverFribeloep,
-                            saerkullTillegg.inntektstak,
-                            saerkullTillegg.justeringsbeloepAar,
-                            saerkullTillegg.beloepNetto,
-                            saerkullTillegg.beloepBrutto,
-                        )
+
+                //TODO avventer avklaring på om vi skal legge inn en alternativ frase til tabellen når vi mye 0-verdier i tabellen for særkull også -HH
+                includePhrase(
+                    OpplysningerOmBarnetilleggTabell(
+                        saerkullTillegg.avkortningsbeloepAar,
+                        saerkullTillegg.beloepAarBrutto,
+                        saerkullTillegg.beloepAarNetto,
+                        saerkullTillegg.erRedusertMotinntekt,
+                        saerkullTillegg.fribeloep,
+                        saerkullTillegg.inntektBruktIAvkortning,
+                        saerkullTillegg.inntektOverFribeloep,
+                        saerkullTillegg.inntektstak,
+                        saerkullTillegg.justeringsbeloepAar,
+                        saerkullTillegg.beloepNetto,
+                        saerkullTillegg.beloepBrutto,
                     )
-                }.orShowIf(not(faarUtbetaltbarnetilleggSaerkullsbarn)){
-                    // Tabellen får mye 0-verdier, så den kan erstattes med tekst når vi ikke har utbetalt barnetillegg
-                    //TODO skal vi bruke denne for særkull også?
-                    includePhrase(InntektsGrenseBarnetillegg(
-                        inntektstak = saerkullTillegg.inntektstak,
-                        inntektBruktIAvkortning = saerkullTillegg.inntektBruktIAvkortning
-                    ))
-                }
+                )
 
                 showIf(faarUtbetaltbarnetilleggSaerkullsbarn) {
                     includePhrase(
