@@ -3,10 +3,10 @@ package no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningufoe
 import no.nav.pensjon.brev.api.model.vedlegg.NorskTrygdetidPeriodeSelectors.trygdetidFom
 import no.nav.pensjon.brev.api.model.vedlegg.NorskTrygdetidPeriodeSelectors.trygdetidTom
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDto
-import no.nav.pensjon.brev.api.model.vedlegg.UtendlandsTrygdetidPeriodeSelectors.trygdetidBilateralLand
-import no.nav.pensjon.brev.api.model.vedlegg.UtendlandsTrygdetidPeriodeSelectors.trygdetidEOSLand
-import no.nav.pensjon.brev.api.model.vedlegg.UtendlandsTrygdetidPeriodeSelectors.trygdetidFom
-import no.nav.pensjon.brev.api.model.vedlegg.UtendlandsTrygdetidPeriodeSelectors.trygdetidTom
+import no.nav.pensjon.brev.api.model.vedlegg.UtenlandsTrygdetidPeriodeSelectors.trygdetidBilateralLand
+import no.nav.pensjon.brev.api.model.vedlegg.UtenlandsTrygdetidPeriodeSelectors.trygdetidEOSLand
+import no.nav.pensjon.brev.api.model.vedlegg.UtenlandsTrygdetidPeriodeSelectors.trygdetidFom
+import no.nav.pensjon.brev.api.model.vedlegg.UtenlandsTrygdetidPeriodeSelectors.trygdetidTom
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.Expression
@@ -20,8 +20,8 @@ import no.nav.pensjon.brev.template.dsl.expression.*
 
 data class TabellTrygdetidenAvdoed(
     val norskTrygdetidPerioder: Expression<List<OpplysningerBruktIBeregningUTDto.NorskTrygdetidPeriode>>,
-    val bilateralTrygdetidPerioder: Expression<List<OpplysningerBruktIBeregningUTDto.UtendlandsTrygdetidPeriode>>,
-    val eosTrygdetidPerioder: Expression<List<OpplysningerBruktIBeregningUTDto.UtendlandsTrygdetidPeriode>>,
+    val bilateralTrygdetidPerioder: Expression<List<OpplysningerBruktIBeregningUTDto.UtenlandsTrygdetidPeriode>>,
+    val eosTrygdetidPerioder: Expression<List<OpplysningerBruktIBeregningUTDto.UtenlandsTrygdetidPeriode>>,
     val fastsattNorskTrygdetid: Expression<Int?>,
     val harBoddArbeidUtland: Expression<Boolean>,
 
