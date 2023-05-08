@@ -17,11 +17,11 @@ import no.nav.pensjon.brev.api.model.vedlegg.FellesbarnSelectors.fribeloep
 import no.nav.pensjon.brev.api.model.vedlegg.FellesbarnSelectors.fribeloepEllerInntektErPeriodisert
 import no.nav.pensjon.brev.api.model.vedlegg.FellesbarnSelectors.fribeloepEllerInntektErPeriodisert_safe
 import no.nav.pensjon.brev.api.model.vedlegg.FellesbarnSelectors.harFlereBarn
-import no.nav.pensjon.brev.api.model.vedlegg.FellesbarnSelectors.inntektBruktIAvkortning
 import no.nav.pensjon.brev.api.model.vedlegg.FellesbarnSelectors.inntektOverFribeloep
 import no.nav.pensjon.brev.api.model.vedlegg.FellesbarnSelectors.inntektstak
 import no.nav.pensjon.brev.api.model.vedlegg.FellesbarnSelectors.justeringsbeloepAar
 import no.nav.pensjon.brev.api.model.vedlegg.FellesbarnSelectors.justeringsbeloepAar_safe
+import no.nav.pensjon.brev.api.model.vedlegg.FellesbarnSelectors.samletInntektBruktIAvkortning
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDto
 import no.nav.pensjon.brev.api.model.vedlegg.SaerkullsbarnSelectors.avkortningsbeloepAar
 import no.nav.pensjon.brev.api.model.vedlegg.SaerkullsbarnSelectors.beloepAarBrutto
@@ -236,23 +236,23 @@ data class OpplysningerOmBarnetillegg(
                 showIf(faarUtbetaltBarnetilleggFellesBarn or harJusteringsbeloepFellesBarn) {
                     includePhrase(
                         OpplysningerOmBarnetilleggTabell(
-                            fellesTillegg.avkortningsbeloepAar,
-                            fellesTillegg.beloepAarBrutto,
-                            fellesTillegg.beloepAarNetto,
-                            fellesTillegg.erRedusertMotinntekt,
-                            fellesTillegg.fribeloep,
-                            fellesTillegg.inntektBruktIAvkortning,
-                            fellesTillegg.inntektOverFribeloep,
-                            fellesTillegg.inntektstak,
-                            fellesTillegg.justeringsbeloepAar,
-                            fellesTillegg.beloepNetto,
-                            fellesTillegg.beloepBrutto,
+                            avkortningsbeloepAar = fellesTillegg.avkortningsbeloepAar,
+                            beloepAarBrutto = fellesTillegg.beloepAarBrutto,
+                            beloepAarNetto = fellesTillegg.beloepAarNetto,
+                            erRedusertMotinntekt = fellesTillegg.erRedusertMotinntekt,
+                            fribeloep = fellesTillegg.fribeloep,
+                            inntektBruktIAvkortning = fellesTillegg.samletInntektBruktIAvkortning,
+                            inntektOverFribeloep = fellesTillegg.inntektOverFribeloep,
+                            inntektstak = fellesTillegg.inntektstak,
+                            justeringsbeloepAar = fellesTillegg.justeringsbeloepAar,
+                            beloepNetto = fellesTillegg.beloepNetto,
+                            beloepBrutto = fellesTillegg.beloepBrutto,
                         )
                     )
                 }.orShow {
                     includePhrase(InntektsGrenseBarnetillegg(
                         inntektstak = fellesTillegg.inntektstak,
-                        inntektBruktIAvkortning = fellesTillegg.inntektBruktIAvkortning
+                        samletInntektBruktIAvkortning = fellesTillegg.samletInntektBruktIAvkortning
                     ))
                 }
                 showIf(faarUtbetaltBarnetilleggFellesBarn) {
@@ -292,17 +292,17 @@ data class OpplysningerOmBarnetillegg(
                 //TODO avventer avklaring på om vi skal legge inn en alternativ frase til tabellen når vi mye 0-verdier i tabellen for særkull også -HH
                 includePhrase(
                     OpplysningerOmBarnetilleggTabell(
-                        saerkullTillegg.avkortningsbeloepAar,
-                        saerkullTillegg.beloepAarBrutto,
-                        saerkullTillegg.beloepAarNetto,
-                        saerkullTillegg.erRedusertMotinntekt,
-                        saerkullTillegg.fribeloep,
-                        saerkullTillegg.inntektBruktIAvkortning,
-                        saerkullTillegg.inntektOverFribeloep,
-                        saerkullTillegg.inntektstak,
-                        saerkullTillegg.justeringsbeloepAar,
-                        saerkullTillegg.beloepNetto,
-                        saerkullTillegg.beloepBrutto,
+                        avkortningsbeloepAar = saerkullTillegg.avkortningsbeloepAar,
+                        beloepAarBrutto = saerkullTillegg.beloepAarBrutto,
+                        beloepAarNetto = saerkullTillegg.beloepAarNetto,
+                        erRedusertMotinntekt = saerkullTillegg.erRedusertMotinntekt,
+                        fribeloep = saerkullTillegg.fribeloep,
+                        inntektBruktIAvkortning = saerkullTillegg.inntektBruktIAvkortning,
+                        inntektOverFribeloep = saerkullTillegg.inntektOverFribeloep,
+                        inntektstak = saerkullTillegg.inntektstak,
+                        justeringsbeloepAar = saerkullTillegg.justeringsbeloepAar,
+                        beloepNetto = saerkullTillegg.beloepNetto,
+                        beloepBrutto = saerkullTillegg.beloepBrutto,
                     )
                 )
 
@@ -505,19 +505,19 @@ data class OpplysningerOmBarnetillegg(
 
     data class InntektsGrenseBarnetillegg(
         val inntektstak: Expression<Kroner>,
-        val inntektBruktIAvkortning: Expression<Kroner>,
+        val samletInntektBruktIAvkortning: Expression<Kroner>,
     ):OutlinePhrase<LangBokmalNynorskEnglish>(){
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             paragraph {
                 textExpr(
                     Bokmal to "Grensen for å få utbetalt barnetillegg er ".expr() + inntektstak.format() +
-                            " kroner. Samlet inntekt brukt i fastsettelse av barnetillegget er " + inntektBruktIAvkortning.format() + " kroner.",
+                            " kroner. Samlet inntekt brukt i fastsettelse av barnetillegget er " + samletInntektBruktIAvkortning.format() + " kroner.",
 
                     Nynorsk to "Grensa for å få utbetalt barnetillegg er ".expr() + inntektstak.format() +
-                            " kroner. Samla inntekt brukt i fastsetjinga av barnetillegget er " + inntektBruktIAvkortning.format() + " kroner.",
+                            " kroner. Samla inntekt brukt i fastsetjinga av barnetillegget er " + samletInntektBruktIAvkortning.format() + " kroner.",
 
                     English to "The income threshold for receiving child supplement is NOK ".expr() + inntektstak.format() +
-                            ". Total income used in determining child supplement is NOK" + inntektBruktIAvkortning.format() + ".",
+                            ". Total income used in determining child supplement is NOK" + samletInntektBruktIAvkortning.format() + ".",
                 )
             }
         }
