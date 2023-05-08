@@ -4,10 +4,10 @@ import no.nav.pensjon.brev.api.model.KravAarsakType
 import no.nav.pensjon.brev.api.model.vedlegg.NorskTrygdetidPeriodeSelectors.trygdetidFom
 import no.nav.pensjon.brev.api.model.vedlegg.NorskTrygdetidPeriodeSelectors.trygdetidTom
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDto
-import no.nav.pensjon.brev.api.model.vedlegg.UtendlandsTrygdetidPeriodeSelectors.trygdetidBilateralLand
-import no.nav.pensjon.brev.api.model.vedlegg.UtendlandsTrygdetidPeriodeSelectors.trygdetidEOSLand
-import no.nav.pensjon.brev.api.model.vedlegg.UtendlandsTrygdetidPeriodeSelectors.trygdetidFom
-import no.nav.pensjon.brev.api.model.vedlegg.UtendlandsTrygdetidPeriodeSelectors.trygdetidTom
+import no.nav.pensjon.brev.api.model.vedlegg.UtenlandsTrygdetidPeriodeSelectors.trygdetidBilateralLand
+import no.nav.pensjon.brev.api.model.vedlegg.UtenlandsTrygdetidPeriodeSelectors.trygdetidEOSLand
+import no.nav.pensjon.brev.api.model.vedlegg.UtenlandsTrygdetidPeriodeSelectors.trygdetidFom
+import no.nav.pensjon.brev.api.model.vedlegg.UtenlandsTrygdetidPeriodeSelectors.trygdetidTom
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.Expression
@@ -24,8 +24,8 @@ import no.nav.pensjon.brev.template.dsl.expression.greaterThan
 data class TabellTrygdetiden(
     val anvendtTT: Expression<Int>,
     val brukerErFlyktning: Expression<Boolean>,
-    val bilateralTrygdetidPerioder: Expression<List<OpplysningerBruktIBeregningUTDto.UtendlandsTrygdetidPeriode>>,
-    val eosTrygdetidPerioder: Expression<List<OpplysningerBruktIBeregningUTDto.UtendlandsTrygdetidPeriode>>,
+    val bilateralTrygdetidPerioder: Expression<List<OpplysningerBruktIBeregningUTDto.UtenlandsTrygdetidPeriode>>,
+    val eosTrygdetidPerioder: Expression<List<OpplysningerBruktIBeregningUTDto.UtenlandsTrygdetidPeriode>>,
     val faktiskTTEOS: Expression<Int?>,
     val fastsattNorskTrygdetid: Expression<Int?>,
     val harBoddArbeidUtland: Expression<Boolean>,
