@@ -551,7 +551,7 @@ data class OpplysningerOmBarnetillegg(
 
             paragraph {
                 text(
-                    Bokmal to "Barnetillegget kan utgjøre opptil 40 prosent av folketrygdens grunnbeløp for hvert barn du forsørger. Du har rett til barnetillegg så lenge du forsørger barn som er under 18 år. Barnetillegget opphører når barnet fyller 18 år. ",
+                    Bokmal to "Barnetillegget kan utgjøre opptil 40 prosent av folketrygdens grunnbeløp for hvert barn du forsørger. Du har rett til barnetillegg så lenge du forsørger barn som er under 18 år. Barnetillegget opphører når barnet fyller 18 år.",
                     Nynorsk to "Barnetillegget kan utgjere opptil 40 prosent av grunnbeløpet i folketrygda for kvart barn du forsørgjer. Du har rett til barnetillegg så lenge du forsørgjer barn som er under 18 år.  Barnetillegget opphøyrer når barnet fyller 18 år.",
                     English to "The child supplement may be up to 40 percent of the national insurance basic amount for each child you support. You are entitled to child supplement as long as you support children under 18 years of age. Payment of child supplement stops when the child turns 18."
                 )
@@ -567,7 +567,7 @@ data class OpplysningerOmBarnetillegg(
 
             paragraph {
                 text(
-                    Bokmal to "Dersom et barn får egen inntekt eller kapitalinntekt i løpet av et år som er høyere enn folketrygdens grunnbeløp, så har du ikke rett til barnetillegg for dette barnet. ",
+                    Bokmal to "Dersom et barn får egen inntekt eller kapitalinntekt i løpet av et år som er høyere enn folketrygdens grunnbeløp, så har du ikke rett til barnetillegg for dette barnet.",
                     Nynorsk to "Dersom eit barn får eiga inntekt eller kapitalinntekt som er høgare enn grunnbeløpet i folketrygda gjennom eit år, så har du ikkje rett til barnetillegg for dette barnet.",
                     English to "If a child has its own income or capital income in a year that is higher than the national insurance basic amount, you are not entitled to child supplement for this child."
                 )
@@ -763,7 +763,7 @@ data class OpplysningerOmBarnetillegg(
                 showIf(harJusteringsbeloep) {
                     text(
                         Bokmal to "Du har allerede fått utbetalt det du har rett til i år, og får derfor ikke utbetalt barnetillegg for resten av året.",
-                        Nynorsk to "Du har allereie fått utbetalt det du har rett til i år, og får difor ikkje utbetalt barnetillegg for resten av året",
+                        Nynorsk to "Du har allereie fått utbetalt det du har rett til i år, og får difor ikkje utbetalt barnetillegg for resten av året.",
                         English to "You have already received what you are entitled to this year, therefore you will not receive any child supplement for the remainder of the year."
                     )
                 }.orShowIf(harInnvilgetBarnetilleggFellesbarn) {
