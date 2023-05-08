@@ -359,18 +359,16 @@ data class OpplysningerOmBarnetillegg(
                         }
                     }
                 ) {
-                    showIf(beloepNetto.notEqualTo(beloepBrutto)) {
-                        row {
-                            cell {
-                                text(
-                                    Bokmal to "Årlig barnetillegg før reduksjon ut fra inntekt",
-                                    Nynorsk to "Årleg barnetillegg før reduksjon ut frå inntekt",
-                                    English to "Yearly child supplement before income reduction"
-                                )
-                            }
-                            cell {
-                                includePhrase(Felles.KronerText(beloepAarBrutto))
-                            }
+                    row {
+                        cell {
+                            text(
+                                Bokmal to "Årlig barnetillegg før reduksjon ut fra inntekt",
+                                Nynorsk to "Årleg barnetillegg før reduksjon ut frå inntekt",
+                                English to "Yearly child supplement before income reduction"
+                            )
+                        }
+                        cell {
+                            includePhrase(Felles.KronerText(beloepAarBrutto))
                         }
                     }
 
