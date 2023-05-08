@@ -23,9 +23,9 @@ import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidsdetaljerAvdoedSelectors.t
 import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidsdetaljerAvdoedSelectors.tellerTTNordiskKonv_safe
 import no.nav.pensjon.brev.api.model.vedlegg.Ufoeretrygd1Selectors.beregningsgrunnlagBeloepAar
 import no.nav.pensjon.brev.api.model.vedlegg.Ufoeretrygd1Selectors.ufoeretidspunkt
-import no.nav.pensjon.brev.api.model.vedlegg.YrkesskadeGjeldene1Selectors.beregningsgrunnlagBeloepAarYrkesskade_safe
-import no.nav.pensjon.brev.api.model.vedlegg.YrkesskadeGjeldene1Selectors.inntektVedSkadetidspunkt_safe
-import no.nav.pensjon.brev.api.model.vedlegg.YrkesskadeGjeldene1Selectors.yrkesskadegrad_safe
+import no.nav.pensjon.brev.api.model.vedlegg.Yrkesskade1Selectors.beregningsgrunnlagBeloepAarYrkesskade_safe
+import no.nav.pensjon.brev.api.model.vedlegg.Yrkesskade1Selectors.inntektVedSkadetidspunkt_safe
+import no.nav.pensjon.brev.api.model.vedlegg.Yrkesskade1Selectors.yrkesskadegrad_safe
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.*
@@ -45,7 +45,7 @@ data class TabellUfoereOpplysningerAvdoed(
     val avdoed: Expression<OpplysningerBruktIBeregningUTDto.OpplysningerBruktIBeregningUTAvdoed?>,
     val trygdetidsdetaljer: Expression<OpplysningerBruktIBeregningUTDto.OpplysningerBruktIBeregningUTAvdoed.TrygdetidsdetaljerAvdoed>,
     val ufoeretrygd: Expression<OpplysningerBruktIBeregningUTDto.OpplysningerBruktIBeregningUTAvdoed.Ufoeretrygd1>,
-    val yrkesskade: Expression<OpplysningerBruktIBeregningUTDto.OpplysningerBruktIBeregningUTAvdoed.YrkesskadeGjeldene1?>,
+    val yrkesskade: Expression<OpplysningerBruktIBeregningUTDto.OpplysningerBruktIBeregningUTAvdoed.Yrkesskade1?>,
 
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
