@@ -51,23 +51,23 @@ object Fixtures {
             MaanedligUfoeretrygdFoerSkattDto::class -> createMaanedligUfoeretrygdFoerSkattDto() as T
             OmsorgEgenAutoDto::class -> createOmsorgEgenAutoDto() as T
             OpphoerBarnetilleggAutoDto::class -> createOpphoerBarnetilleggAutoDto() as T
-            OpplysningerBruktIBeregningUTDto.BarnetilleggGjeldende.Fellesbarn::class -> createOpplysningerBruktIBeregningUTDtoBarnetilleggGjeldendeFellesbarn() as T
-            OpplysningerBruktIBeregningUTDto.BarnetilleggGjeldende.Saerkullsbarn::class -> createOpplysningerBruktIBeregningUTDtoBarnetilleggGjeldendeSaerkullsbarn() as T
-            OpplysningerBruktIBeregningUTDto.BarnetilleggGjeldende::class -> createOpplysningerBruktIBeregningUTDtoBarnetilleggGjeldende() as T
-            OpplysningerBruktIBeregningUTDto.BeregnetUTPerManedGjeldende::class -> createOpplysningerBruktIBeregningUTDtoBeregnetUTPerManedGjeldende() as T
-            OpplysningerBruktIBeregningUTDto.InntektFoerUfoereGjeldende::class -> createOpplysningerBruktIBeregningUTDtoInntektFoerUfoereGjeldende() as T
-            OpplysningerBruktIBeregningUTDto.InntektsAvkortingGjeldende::class -> createOpplysningerBruktIBeregningUTDtoInntektsAvkortingGjeldende() as T
+            OpplysningerBruktIBeregningUTDto.Barnetillegg.Fellesbarn::class -> createOpplysningerBruktIBeregningUTDtoBarnetilleggFellesbarn() as T
+            OpplysningerBruktIBeregningUTDto.Barnetillegg.Saerkullsbarn::class -> createOpplysningerBruktIBeregningUTDtoBarnetilleggSaerkullsbarn() as T
+            OpplysningerBruktIBeregningUTDto.Barnetillegg::class -> createOpplysningerBruktIBeregningUTDtoBarnetillegg() as T
+            OpplysningerBruktIBeregningUTDto.BeregnetUTPerManed::class -> createOpplysningerBruktIBeregningUTDtoBeregnetUTPerManed() as T
+            OpplysningerBruktIBeregningUTDto.InntektFoerUfoere::class -> createOpplysningerBruktIBeregningUTDtoInntektFoerUfoere() as T
+            OpplysningerBruktIBeregningUTDto.InntektsAvkorting::class -> createOpplysningerBruktIBeregningUTDtoInntektsAvkorting() as T
             OpplysningerBruktIBeregningUTDto.NorskTrygdetidPeriode::class -> createOpplysningerBruktIBeregningUTDtoNorskTrygdetidPeriode() as T
-            OpplysningerBruktIBeregningUTDto.OpplysningerAvdoed::class -> createOpplysningerBruktIBeregningUTDtoOpplysningerAvdoed() as T
+            OpplysningerBruktIBeregningUTDto.OpplysningerBruktIBeregningUTAvdoed::class -> createOpplysningerBruktIBeregningUTDtoOpplysningerBruktIBeregningUTAvdoed() as T
             OpplysningerBruktIBeregningUTDto.OpptjeningUfoeretrygd::class -> createOpplysningerBruktIBeregningUTDtoOpptjeningUfoeretrygd() as T
             OpplysningerBruktIBeregningUTDto.Opptjeningsperiode::class -> createOpplysningerBruktIBeregningUTDtoOpptjeningsperiode() as T
             OpplysningerBruktIBeregningUTDto.Trygdetid.Trygdetidsdetaljer.UtenforEOSogNorden::class -> createOpplysningerBruktIBeregningUTDtoTrygdetidTrygdetidsdetaljerUtenforEOSogNorden() as T
             OpplysningerBruktIBeregningUTDto.Trygdetid.Trygdetidsdetaljer::class -> createOpplysningerBruktIBeregningUTDtoTrygdetidTrygdetidsdetaljer() as T
             OpplysningerBruktIBeregningUTDto.Trygdetid::class -> createOpplysningerBruktIBeregningUTDtoTrygdetid() as T
-            OpplysningerBruktIBeregningUTDto.UfoeretrygdGjeldende::class -> createOpplysningerBruktIBeregningUTDtoUfoeretrygdGjeldende() as T
+            OpplysningerBruktIBeregningUTDto.Ufoeretrygd::class -> createOpplysningerBruktIBeregningUTDtoUfoeretrygd() as T
             OpplysningerBruktIBeregningUTDto.UfoeretrygdOrdinaer::class -> createOpplysningerBruktIBeregningUTDtoUfoeretrygdOrdinaer() as T
-            OpplysningerBruktIBeregningUTDto.YrkesskadeGjeldende::class -> createOpplysningerBruktIBeregningUTDtoYrkesskadeGjeldende() as T
-            OpplysningerBruktIBeregningUTDto.UtenlandskTrygdetidPeriode::class -> createOpplysningerBruktIBeregningUTDtoUtenlandskTrygdetidPeriode() as T
+            OpplysningerBruktIBeregningUTDto.Yrkesskade::class -> createOpplysningerBruktIBeregningUTDtoYrkesskade() as T
+            OpplysningerBruktIBeregningUTDto.UtenlandsTrygdetidPeriode::class -> createOpplysningerBruktIBeregningUTDtoUtenlandsTrygdetidPeriode () as T
             OpplysningerBruktIBeregningUTDto::class -> createOpplysningerBruktIBeregningUTDto() as T
             OpptjeningVedForhoeyetHjelpesatsDto::class -> OpptjeningVedForhoeyetHjelpesatsDto(Year(2021)) as T
             OrienteringOmRettigheterUfoereDto::class -> createOrienteringOmRettigheterUfoereDto() as T

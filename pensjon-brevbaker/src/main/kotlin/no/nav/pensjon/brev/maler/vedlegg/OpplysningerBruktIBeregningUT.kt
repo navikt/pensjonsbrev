@@ -16,14 +16,13 @@ import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTAvdoed
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTAvdoedSelectors.eosTrygdePerioder
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTAvdoedSelectors.erFlyktning
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTAvdoedSelectors.erUngUfoer
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTAvdoedSelectors.erUngUfoer_safe
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTAvdoedSelectors.foedselsnummer
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTAvdoedSelectors.harNyttGjenlevendetillegg_safe
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTAvdoedSelectors.norskTrygdetidPerioder
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTAvdoedSelectors.opptjeningUfoeretrygd_safe
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTAvdoedSelectors.trygdetidsdetaljer
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTAvdoedSelectors.ufoeretrygd
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTAvdoedSelectors.yrkesskadeGjeldene
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTAvdoedSelectors.yrkesskade
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDto
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.avdoed
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.barnetillegg
@@ -146,7 +145,7 @@ fun createVedleggOpplysningerBruktIBeregningUT(
                             foedselsnummer = opplysningerAvdoed.foedselsnummer,
                             trygdetidsdetaljer = opplysningerAvdoed.trygdetidsdetaljer,
                             ufoeretrygd = opplysningerAvdoed.ufoeretrygd,
-                            yrkesskade = opplysningerAvdoed.yrkesskadeGjeldene,
+                            yrkesskade = opplysningerAvdoed.yrkesskade,
                         )
                     )
                 }
