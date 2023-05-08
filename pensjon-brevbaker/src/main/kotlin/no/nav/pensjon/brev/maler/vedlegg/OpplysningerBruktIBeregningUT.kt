@@ -14,6 +14,10 @@ import no.nav.pensjon.brev.api.model.vedlegg.InntektsAvkortingSelectors.inntekts
 import no.nav.pensjon.brev.api.model.vedlegg.InntektsAvkortingSelectors.inntektstak
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTAvdoedSelectors.bilateralTrygdePerioder
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTAvdoedSelectors.eosTrygdePerioder
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTAvdoedSelectors.erFlyktning
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTAvdoedSelectors.erUngUfoer
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTAvdoedSelectors.erUngUfoer_safe
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTAvdoedSelectors.foedselsnummer
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTAvdoedSelectors.harNyttGjenlevendetillegg_safe
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTAvdoedSelectors.norskTrygdetidPerioder
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTAvdoedSelectors.opptjeningUfoeretrygd_safe
@@ -67,23 +71,23 @@ import no.nav.pensjon.brev.template.dsl.textExpr
 
 
 fun createVedleggOpplysningerBruktIBeregningUT(
-    skalViseTrygdetidenDin: Boolean,
-    skalViseMinsteytelse: Boolean,
-    skalViseBarnetillegg: Boolean,
-    skalViseYrkesskadeEllerYrkessykdom: Boolean,
     skalViseAvdoed: Boolean,
+    skalViseBarnetillegg: Boolean,
+    skalViseDinUtbetalingFoerSkatt: Boolean,
+    skalViseEtteroppgjoerAvUfoeretrygdOgBarnetillegg: Boolean,
+    skalViseForDegSomMottarEktefelletillegg: Boolean,
+    skalViseInntektEtterUfoer: Boolean,
+    skalViseInntektFoerUfoer: Boolean,
+    skalViseKompensasjonsgrad: Boolean,
+    skalViseMinsteytelse: Boolean,
+    skalViseReduksjonAvUfoeretrygden: Boolean,
+    skalViseSlikBeregnerViGjenlevendetillegg: Boolean,
+    skalViseSlikBeregnerViGjenlevendetilleggHarNyttTillegg: Boolean,
     skalViseSlikBeregnerViUfoeretrygdenDin: Boolean,
     skalViseTabellInntekteneBruktIBeregningen: Boolean,
-    skalViseInntektFoerUfoer: Boolean,
-    skalViseInntektEtterUfoer: Boolean,
-    skalViseKompensasjonsgrad: Boolean,
+    skalViseTrygdetidenDin: Boolean,
     skalViseUtbetalingAvUTNaarInntektEndres: Boolean,
-    skalViseReduksjonAvUfoeretrygden: Boolean,
-    skalViseDinUtbetalingFoerSkatt: Boolean,
-    skalViseSlikBeregnerViGjenlevendetilleggHarNyttTillegg: Boolean,
-    skalViseSlikBeregnerViGjenlevendetillegg: Boolean,
-    skalViseForDegSomMottarEktefelletillegg: Boolean,
-    skalViseEtteroppgjoerAvUfoeretrygdOgBarnetillegg: Boolean,
+    skalViseYrkesskadeEllerYrkessykdom: Boolean,
 ) =
     createAttachment<LangBokmalNynorskEnglish, OpplysningerBruktIBeregningUTDto>(
         title = newText(
@@ -135,11 +139,14 @@ fun createVedleggOpplysningerBruktIBeregningUT(
                 ifNotNull(avdoed) { opplysningerAvdoed ->
                     includePhrase(
                         TabellUfoereOpplysningerAvdoed(
-                            beregnetUTPerManedGjeldende = beregnetUTPerManed,
-                            opplysningerAvdoed = opplysningerAvdoed,
+                            avdoed = opplysningerAvdoed,
+                            beregnetUTPerManed = beregnetUTPerManed,
+                            erFlyktning = opplysningerAvdoed.erFlyktning,
+                            erUngUfoer = opplysningerAvdoed.erUngUfoer,
+                            foedselsnummer = opplysningerAvdoed.foedselsnummer,
                             trygdetidsdetaljer = opplysningerAvdoed.trygdetidsdetaljer,
-                            ufoeretrygdGjeldende = opplysningerAvdoed.ufoeretrygd,
-                            yrkesskadeGjeldende = opplysningerAvdoed.yrkesskadeGjeldene
+                            ufoeretrygd = opplysningerAvdoed.ufoeretrygd,
+                            yrkesskade = opplysningerAvdoed.yrkesskadeGjeldene,
                         )
                     )
                 }
