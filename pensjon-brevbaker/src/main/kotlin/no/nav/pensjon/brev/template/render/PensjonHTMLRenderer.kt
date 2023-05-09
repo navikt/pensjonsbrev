@@ -2,11 +2,11 @@ package no.nav.pensjon.brev.template.render
 
 import kotlinx.html.*
 import kotlinx.html.stream.appendHTML
-import no.nav.pensjon.brev.api.model.LetterMetadata
-import no.nav.pensjon.brev.api.model.LetterMetadata.Brevtype.VEDTAKSBREV
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.render.LanguageSetting.Closing.automatiskInformasjonsbrev
 import no.nav.pensjon.brev.template.render.LanguageSetting.Closing.automatiskVedtaksbrev
+import no.nav.pensjon.brevbaker.api.model.LetterMetadata
+import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Brevtype.VEDTAKSBREV
 import java.time.format.FormatStyle
 import java.util.*
 

@@ -1,11 +1,10 @@
 package no.nav.pensjon.brev.template.dsl
 
-import no.nav.pensjon.brev.api.model.Felles
-import no.nav.pensjon.brev.api.model.LetterMetadata
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
+import no.nav.pensjon.brevbaker.api.model.*
 import kotlin.reflect.KClass
 
 fun <Lang : LanguageSupport, LetterData : Any> createTemplate(

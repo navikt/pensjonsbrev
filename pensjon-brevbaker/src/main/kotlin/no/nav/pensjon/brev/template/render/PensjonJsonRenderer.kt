@@ -1,12 +1,11 @@
 package no.nav.pensjon.brev.template.render
 
-import com.fasterxml.jackson.annotation.*
-import no.nav.pensjon.brev.api.model.*
-import no.nav.pensjon.brev.api.model.RenderedJsonLetter.*
-import no.nav.pensjon.brev.api.model.RenderedJsonLetter.Block.Paragraph
-import no.nav.pensjon.brev.api.model.RenderedJsonLetter.ParagraphContent.Text
-import no.nav.pensjon.brev.api.model.RenderedJsonLetter.ParagraphContent.Text.*
 import no.nav.pensjon.brev.template.*
+import no.nav.pensjon.brevbaker.api.model.RenderedJsonLetter
+import no.nav.pensjon.brevbaker.api.model.RenderedJsonLetter.*
+import no.nav.pensjon.brevbaker.api.model.RenderedJsonLetter.Block.Paragraph
+import no.nav.pensjon.brevbaker.api.model.RenderedJsonLetter.ParagraphContent.Text
+import no.nav.pensjon.brevbaker.api.model.RenderedJsonLetter.ParagraphContent.Text.*
 import java.time.format.FormatStyle
 import java.util.*
 

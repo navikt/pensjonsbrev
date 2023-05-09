@@ -1,11 +1,11 @@
 package no.nav.pensjon.brev
 
-import no.nav.pensjon.brev.api.model.*
 import no.nav.pensjon.brev.api.model.maler.*
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmSaksbehandlingstidDto
 import no.nav.pensjon.brev.api.model.vedlegg.*
 import no.nav.pensjon.brev.fixtures.*
-import no.nav.pensjon.brev.maler.example.*
+import no.nav.pensjon.brev.maler.example.LetterExampleDto
+import no.nav.pensjon.brevbaker.api.model.*
 import java.time.LocalDate
 import kotlin.reflect.KClass
 

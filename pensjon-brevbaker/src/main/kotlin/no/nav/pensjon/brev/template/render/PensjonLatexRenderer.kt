@@ -1,9 +1,5 @@
 package no.nav.pensjon.brev.template.render
 
-import no.nav.pensjon.brev.api.model.Bruker
-import no.nav.pensjon.brev.api.model.LetterMetadata
-import no.nav.pensjon.brev.api.model.NAVEnhet
-import no.nav.pensjon.brev.api.model.SignerendeSaksbehandlere
 import no.nav.pensjon.brev.latex.LatexAppendable
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.*
@@ -12,9 +8,9 @@ import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.*
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Form.Text.Size
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
+import no.nav.pensjon.brevbaker.api.model.*
 import java.time.ZonedDateTime
-import java.time.format.DateTimeFormatter
-import java.time.format.FormatStyle
+import java.time.format.*
 
 private const val DOCUMENT_PRODUCER = "brevbaker / pdf-bygger med LaTeX"
 

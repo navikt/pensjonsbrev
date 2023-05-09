@@ -1,8 +1,5 @@
 package no.nav.pensjon.brev.maler.fraser
 
-import no.nav.pensjon.brev.api.model.*
-import no.nav.pensjon.brev.api.model.FellesSelectors.avsenderEnhet
-import no.nav.pensjon.brev.api.model.NAVEnhetSelectors.nettside
 import no.nav.pensjon.brev.maler.fraser.common.Constants
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
 import no.nav.pensjon.brev.model.format
@@ -10,6 +7,9 @@ import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brev.template.dsl.expression.*
+import no.nav.pensjon.brevbaker.api.model.FellesSelectors.avsenderEnhet
+import no.nav.pensjon.brevbaker.api.model.NAVEnhetSelectors.nettside
+import no.nav.pensjon.brevbaker.api.model.Year
 
 object Omsorgsopptjening {
     // omsorgsopptjenHjelpestInnledn_001

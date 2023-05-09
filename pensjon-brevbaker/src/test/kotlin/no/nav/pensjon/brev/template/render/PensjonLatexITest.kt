@@ -4,15 +4,14 @@ import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.isEmpty
 import kotlinx.coroutines.runBlocking
 import no.nav.pensjon.brev.*
-import no.nav.pensjon.brev.api.model.LetterMetadata
 import no.nav.pensjon.brev.latex.LaTeXCompilerService
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.render.TestTemplateDtoSelectors.etNavn
-import org.junit.jupiter.api.Tag
-import org.junit.jupiter.api.Test
+import no.nav.pensjon.brevbaker.api.model.LetterMetadata
+import org.junit.jupiter.api.*
 import org.opentest4j.AssertionFailedError
 import org.slf4j.LoggerFactory
 
