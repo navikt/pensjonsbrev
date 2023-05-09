@@ -1,4 +1,4 @@
-package no.nav.pensjon.brev.api.model
+package no.nav.pensjon.brevbaker.api.model
 
 @Suppress("unused")
 data class RenderedJsonLetter(val title: String, val sakspart: Sakspart, val blocks: List<Block>, val signatur: Signatur) {
