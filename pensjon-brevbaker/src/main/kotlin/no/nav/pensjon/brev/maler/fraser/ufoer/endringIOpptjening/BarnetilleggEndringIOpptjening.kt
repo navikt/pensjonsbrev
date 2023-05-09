@@ -165,8 +165,8 @@ data class BarnetilleggEndringIOpptjening(
                     fellesInnvilget = barnetilleggFellesbarn.notNull(),
                     fellesUtbetalt = barnetilleggFellesbarn.beloepNetto_safe.value_safe.ifNull(0)
                         .greaterThan(0),
-                    harTilleggForFlereFellesbarn = barnetilleggFellesbarn.gjelderFlereBarn,
-                    harTilleggForFlereSaerkullsbarn = barnetilleggSaerkullsbarn.gjelderFlereBarn,
+                    harFlereFellesbarn = barnetilleggFellesbarn.gjelderFlereBarn,
+                    harFlereSaerkullsbarn = barnetilleggSaerkullsbarn.gjelderFlereBarn,
                     inntektstakFellesbarn = barnetilleggFellesbarn.inntektstak,
                     inntektstakSaerkullsbarn = barnetilleggSaerkullsbarn.inntektstak,
                     saerkullInnvilget = barnetilleggSaerkullsbarn.notNull(),
