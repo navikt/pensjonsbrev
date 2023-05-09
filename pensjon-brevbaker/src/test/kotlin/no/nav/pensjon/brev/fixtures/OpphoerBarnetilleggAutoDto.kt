@@ -29,7 +29,13 @@ fun createOpphoerBarnetilleggAutoDto() =
             inntektAnnenForelder = Kroner(550000),
             inntektBruktIAvkortning = Kroner(375000),
             inntektstak = Kroner(320000),
+<<<<<<< HEAD
             samletInntektBruktIAvkortning = Kroner(0),
+=======
+            harJusteringsbeloep = true,
+            samletInntektBruktIAvkortning = Kroner(500000),
+            brukersIntektBruktIAvkortning = Kroner(250000),
+>>>>>>> main
         ),
         barnetilleggSaerkullsbarn = BarnetilleggSaerkullsbarn(
             gjelderFlereBarn = false,

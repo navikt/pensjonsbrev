@@ -1,6 +1,6 @@
 import {IMsalContext} from "@azure/msal-react/dist/MsalContext"
 import {withAuthorization} from "./msal"
-import {RedigerbarTemplateDescription, RenderedLetter} from "../../modules/LetterEditor/model/api"
+import {EditedLetter, RedigerbarTemplateDescription, RenderedLetter} from "../../modules/LetterEditor/model/api"
 import {ObjectValue} from "../../modules/ModelEditor/model"
 
 export interface SkribentenAPIConfig {
@@ -50,7 +50,7 @@ class SkribentenAPI {
         ).then(resp => resp.json())
     }
 
-    async renderLetter(msal: IMsalContext, brevkode: string, data: ObjectValue, editedLetter: RenderedLetter | null): Promise<RenderedLetter> {
+    async renderLetter(msal: IMsalContext, brevkode: string, data: ObjectValue, editedLetter: EditedLetter | undefined): Promise<RenderedLetter> {
         return withAuthorization(msal, this.config.scope).then(auth =>
             fetch(`${this.config.url}/letter/${brevkode}`, {
                 headers: {

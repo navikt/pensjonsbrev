@@ -165,6 +165,7 @@ data class OpplysningerOmBarnetillegg(
                     harFlereTillegg = false.expr(),
                 )
             )
+
             includePhrase(
                 PeriodisertInntektOverFribeloepEttTillegg(
                     inntektEllerFribeloepErPeriodisert = inntektEllerFribeloepErPeriodisert,
@@ -587,6 +588,7 @@ data class OpplysningerOmBarnetillegg(
                                 "er 50 prosent av den inntekten som overstiger fribeløpet"
                             )
                             + " ".expr() + avkortningsbeloepAarSaerkullsbarn.format() + " kroner.".expr(),
+
                     Nynorsk to "For ".expr() +
                             ifElse(harTilleggForFlereSaerkullsbarn, "barna", "barnet")
                             + " som ikkje bur med begge foreldra ".expr() +
@@ -596,6 +598,7 @@ data class OpplysningerOmBarnetillegg(
                                 "er 50 prosent av den inntekta som overstig fribeløpet"
                             )
                             + " ".expr() + avkortningsbeloepAarSaerkullsbarn.format() + " kroner.".expr(),
+
                     English to "For ".expr() +
                             ifElse(
                                 harTilleggForFlereSaerkullsbarn,
@@ -630,25 +633,15 @@ data class OpplysningerOmBarnetillegg(
                 paragraph {
                     textExpr(
                         Bokmal to "Vi tar hensyn til hvordan barnetillegget eventuelt har vært redusert tidligere, og vi har derfor ".expr() +
-                                ifElse(
-                                    oekeReduksjonenAvTilleggetSaerkullsbarn,
-                                    "lagt til",
-                                    "trukket fra"
-                                )
+                                ifElse(oekeReduksjonenAvTilleggetSaerkullsbarn, "lagt til", "trukket fra")
                                 + " ".expr() + justeringsbeloep.format() + " kroner i beløpet vi reduserer barnetillegget med for resten av året.".expr(),
+
                         Nynorsk to "Vi tek omsyn til korleis eit barnetillegg eventuelt har vore redusert tidlegare, og har derfor ".expr() +
-                                ifElse(
-                                    oekeReduksjonenAvTilleggetSaerkullsbarn,
-                                    "lagt til",
-                                    "trekt frå"
-                                )
+                                ifElse(oekeReduksjonenAvTilleggetSaerkullsbarn, "lagt til", "trekt frå")
                                 + " ".expr() + justeringsbeloep.format() + " kroner i beløpet vi reduserer barnetillegget med for resten av året.".expr(),
+
                         English to "We take into account how the child supplement has been reduced earlier this year. The amount with which your child supplement will be reduced for the rest of the year has therefore been ".expr() +
-                                ifElse(
-                                    oekeReduksjonenAvTilleggetSaerkullsbarn,
-                                    "increased",
-                                    "reduced"
-                                )
+                                ifElse(oekeReduksjonenAvTilleggetSaerkullsbarn, "increased", "reduced")
                                 + " with NOK ".expr() + justeringsbeloep.format() + ".".expr()
                     )
                 }
@@ -703,9 +696,11 @@ data class OpplysningerOmBarnetillegg(
                     Bokmal to "Du vil få utbetalt ".expr() + barnetilleggFellesbarn.format() + " kroner i måneden før skatt i barnetillegg for ".expr() +
                             ifElse(harFlereBarn, "barna", "barnet") +
                             " som bor med begge sine foreldre".expr(),
+
                     Nynorsk to "Du vil få utbetalt ".expr() + barnetilleggFellesbarn.format() + " kroner i månaden før skatt i barnetillegg for ".expr() +
                             ifElse(harFlereBarn, "barna", "barnet") +
                             " som bur saman med begge foreldra sine.".expr(),
+
                     English to "You will receive a monthly child supplement payment of NOK ".expr() + barnetilleggFellesbarn.format() + " for the ".expr() +
                             ifElse(harFlereBarn, "children who live", "child who lives") +
                             " together with both parents.".expr()
@@ -730,9 +725,11 @@ data class OpplysningerOmBarnetillegg(
                         Bokmal to "Du får ikke utbetalt barnetillegget for ".expr() +
                                 ifElse(harFlereBarn, "barna", "barnet") +
                                 " som bor med begge sine foreldre fordi samlet inntekt er over grensen for å få utbetalt barnetillegg. Du har allerede fått utbetalt det du har rett til i år, og får derfor ikke utbetalt barnetillegg for resten av året.".expr(),
+
                         Nynorsk to "Du får ikkje utbetalt barnetillegget for ".expr() +
                                 ifElse(harFlereBarn, "barna", "barnet") +
                                 " som bur saman med begge foreldra sine fordi samla inntekt er over grensa for å få utbetalt barnetillegg. Du har allereie fått utbetalt det du har rett til i år, og får derfor ikkje utbetalt barnetillegg for resten av året. ".expr(),
+
                         English to "You will not receive a child supplement for the ".expr() +
                                 ifElse(harFlereBarn, "children who live", "child who lives") +
                                 " together with both parents because your income is over the income limit for receiving a child supplement. You have already received what you are entitled to this year, therefore you will not receive any child supplement for the remainder of the year.".expr()
@@ -922,7 +919,7 @@ data class OpplysningerOmBarnetillegg(
                     )
                     showIf(harFlereTillegg) {
                         textExpr(
-                            Bokmal to "til deg eller ".expr() + sivilstand.bestemtForm() + " din" ,
+                            Bokmal to "til deg eller ".expr() + sivilstand.bestemtForm() + " din",
                             Nynorsk to "til deg eller ".expr() + sivilstand.bestemtForm() + " din",
                             English to "your or your ".expr() + sivilstand.ubestemtForm() + "'s",
                         )
@@ -961,9 +958,11 @@ data class OpplysningerOmBarnetillegg(
                     Bokmal to "50 prosent av den inntekten som overstiger fribeløpet for ".expr()
                             + ifElse(harTilleggForFlereFellesbarn, "barna", "barnet") +
                             " som bor med begge sine foreldre ".expr(),
+
                     Nynorsk to "50 prosent av inntekta som overstig fribeløpet for ".expr()
                             + ifElse(harTilleggForFlereFellesbarn, "barna", "barnet") +
                             " som bur med begge foreldra sine ".expr(),
+
                     English to "50 percent of income that exceeds the exemption amount for the ".expr()
                             + ifElse(harTilleggForFlereFellesbarn, "children", "child") +
                             " that " + ifElse(harTilleggForFlereFellesbarn, "live", "lives") +

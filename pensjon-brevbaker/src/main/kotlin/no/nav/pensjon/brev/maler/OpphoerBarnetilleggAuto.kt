@@ -7,6 +7,7 @@ import no.nav.pensjon.brev.api.model.LetterMetadata.Brevtype.VEDTAKSBREV
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.beloepBrutto
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.beloepNetto
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.beloepNetto_safe
+import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.brukersIntektBruktIAvkortning
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.fribeloep
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.gjelderFlereBarn
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.gjelderFlereBarn_safe
@@ -14,8 +15,8 @@ import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.harFr
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.harFratrukketBeloepFraAnnenForelder
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.harJusteringsbeloep
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.inntektAnnenForelder
-import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.inntektBruktIAvkortning
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.inntektstak_safe
+import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.samletInntektBruktIAvkortning
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarnSelectors.beloepBrutto
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarnSelectors.beloepNetto
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarnSelectors.beloepNetto_safe
@@ -110,8 +111,8 @@ object OpphoerBarnetilleggAuto : AutobrevTemplate<OpphoerBarnetilleggAutoDto> {
                     ufoeretrygd = ufoeretrygd.harUtbetalingsgrad,
                     ektefelle = ufoeretrygd.ektefelletilleggUtbeltalt_safe.notNull(),
                     gjenlevende = ufoeretrygd.gjenlevendetilleggUtbetalt_safe.notNull(),
-                    fellesbarn = harBarnetilleggFellesbarn,
-                    saerkullsbarn = harBarnetilleggSaerkullsbarn,
+                    fellesbarn = barnetilleggFellesbarn.beloepNetto_safe.ifNull(Kroner(0)).greaterThan(0),
+                    saerkullsbarn = barnetilleggSaerkullsbarn.beloepNetto_safe.ifNull(Kroner(0)).greaterThan(0),
                 )
             )
 
@@ -191,6 +192,12 @@ object OpphoerBarnetilleggAuto : AutobrevTemplate<OpphoerBarnetilleggAutoDto> {
                         Barnetillegg.InntektTilAvkortningFellesbarn(
                             faarUtbetaltBarnetilleggFellesBarn = barnetilleggFellesbarn.beloepNetto.greaterThan(0),
                             fribeloepFellesbarn = barnetilleggFellesbarn.fribeloep,
+<<<<<<< HEAD
+=======
+                            inntektAnnenForelderFellesbarn = barnetilleggFellesbarn.inntektAnnenForelder,
+                            brukersInntektBruktiAvkortningFellesbarn = barnetilleggFellesbarn.brukersIntektBruktIAvkortning,
+                            harJusteringsbeloepFellesbarn = barnetilleggFellesbarn.harJusteringsbeloep,
+>>>>>>> main
                             grunnbeloep = grunnbeloep,
                             harBarnetilleggSaerkullsbarn = harBarnetilleggSaerkullsbarn,
                             harBeloepFratrukketAnnenForelder = barnetilleggFellesbarn.harFratrukketBeloepFraAnnenForelder,
@@ -234,8 +241,13 @@ object OpphoerBarnetilleggAuto : AutobrevTemplate<OpphoerBarnetilleggAutoDto> {
                             beloepNettoFellesbarn = barnetilleggFellesbarn.beloepNetto,
                             fribeloepFellesbarn = barnetilleggFellesbarn.fribeloep,
                             harJusteringsbeloepFellesbarn = barnetilleggFellesbarn.harJusteringsbeloep,
+<<<<<<< HEAD
                             harFlereFellesbarn = barnetilleggFellesbarn.gjelderFlereBarn,
                             inntektBruktiAvkortningFellesbarn = barnetilleggFellesbarn.inntektBruktIAvkortning,
+=======
+                            harTilleggForFlereFellesbarn = barnetilleggFellesbarn.gjelderFlereBarn,
+                            samletInntektBruktiAvkortningFellesbarn = barnetilleggFellesbarn.samletInntektBruktIAvkortning,
+>>>>>>> main
                             sivilstand = sivilstand,
                         )
                     )

@@ -8,9 +8,8 @@ import no.nav.pensjon.brev.api.model.RenderedJsonLetter.Block
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.dsl.*
-import no.nav.pensjon.brev.template.dsl.expression.expr
-import org.junit.jupiter.api.*
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Test
 
 class PensjonJsonRendererTest {
 
@@ -19,7 +18,6 @@ class PensjonJsonRendererTest {
             jacksonObjectMapper().writeValue(System.out, it.blocks)
         }
 
-    @Disabled
     @Test
     fun `outline root elements are rendered in same order`() {
         val result = renderTemplate(Unit) {
@@ -79,68 +77,6 @@ class PensjonJsonRendererTest {
         }
 
         assertEquals(listOf("first", "second"), result.blocks.first().textInOrder())
-    }
-
-    @Test
-    fun `repeated equal elements are distinguishable by location`() {
-        val (p1, p2) = renderTemplate(Unit) {
-            paragraph { text(Bokmal to "hei") }
-            paragraph { text(Bokmal to "hei") }
-        }.blocks
-
-        assertEquals(p1.id, p2.id)
-        assertNotEquals(p1.location, p2.location)
-    }
-
-    //TODO: Følgende tester er deaktivert fordi jeg ikke vet om location er nødvendig enda, ei hvordan det bør fungere.
-    @Disabled
-    @Test
-    fun `control structures adds step to location but still counts blocks in outer scope`() {
-        val result = renderTemplate(Unit) {
-            paragraph {
-                text(Bokmal to "before")
-                forEach(listOf("hei", "joda").expr()) {
-                    text(Bokmal to "abc")
-                }
-                text(Bokmal to "after")
-            }
-        }
-
-        assertEquals(listOf("0"), result.blocks[0].location)
-        assertEquals(listOf("c", "1"), result.blocks[1].location)
-        assertEquals(listOf("c", "2"), result.blocks[2].location)
-        assertEquals(listOf("3"), result.blocks[3].location)
-    }
-
-    @Disabled
-    @Test
-    fun `forEach rendering adds step to location`() {
-        val result = renderTemplate(Unit) {
-            paragraph {
-                forEach(listOf("hei", "joda").expr()) {
-                    text(Bokmal to "abc")
-                }
-            }
-        }
-
-        assertEquals(2, result.blocks.size)
-        assertEquals(listOf("c", "0"), result.blocks[0].location)
-        assertEquals(listOf("c", "1"), result.blocks[1].location)
-    }
-
-    @Disabled
-    @Test
-    fun `showIf rendering adds step to location`() {
-        val result = renderTemplate(Unit) {
-            showIf(true.expr()) {
-                paragraph {
-                    text(Bokmal to "abc")
-                }
-            }
-        }
-
-        assertEquals(1, result.blocks.size)
-        assertEquals(listOf("c", "0"), result.blocks[0].location)
     }
 
     private fun List<Block>.textInOrder(): List<String> =

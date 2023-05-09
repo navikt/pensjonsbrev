@@ -1,69 +1,51 @@
-import {FC, useState} from "react"
+import {FC} from "react"
 import * as Model from "../../model/api"
-import ContentGroup from "../contentgroup/ContentGroup"
-import {bindAction, BoundAction, combine} from "../../../../lib/actions"
-import {ItemListAction} from "../../actions/itemlist"
-import {MergeTarget} from "../../actions/common"
-import {StealFocusAction} from "../../actions/stealfocus"
-import {CursorPosition, StealFocus} from "../../model/state"
+import ContentGroup, {ItemID} from "../contentgroup/ContentGroup"
+import {BoundAction, CallbackReceiver} from "../../../../lib/actions"
+import {CursorPosition, LetterEditorState} from "../../model/state"
 
 interface ItemProps {
+    id: ItemID
+    updateLetter: CallbackReceiver<LetterEditorState>
     item: Model.Item
     editable: boolean | undefined
-    stealFocus: CursorPosition | undefined
+    stealFocus?: CursorPosition
     focusStolen: BoundAction<[]>
-    updateItem: BoundAction<[item: Model.Item]>
-    mergeWith: BoundAction<[target: MergeTarget]>
-    splitAtContent: BoundAction<[contentId: number, offset: number]>
+    onFocus: BoundAction<[]>
 }
-// Deactivate rule for onFocus.
-/* eslint-disable @typescript-eslint/no-empty-function */
-const Item: FC<ItemProps> = ({item, editable, stealFocus, focusStolen, updateItem, mergeWith, splitAtContent}) => (
+const Item: FC<ItemProps> = ({id, updateLetter, item, editable, stealFocus, focusStolen, onFocus}) => (
     <li>
         <ContentGroup content={item.content}
+                      id={id}
+                      updateLetter={updateLetter}
                       editable={editable}
-                      updateContent={bindAction(ItemListAction.updateItemContent, updateItem, item)}
-                      mergeWith={mergeWith}
-                      splitAtContent={splitAtContent}
                       stealFocus={stealFocus}
                       focusStolen={focusStolen}
-                      onFocus={() => {}}/>
+                      onFocus={onFocus}/>
     </li>
 )
-/* eslint-disable @typescript-eslint/no-empty-function */
 
 interface ItemListProps {
+    id: { blockId: number, contentId: number }
     itemList: Model.ItemList
     editable: boolean | undefined
-    updateList: BoundAction<[list: Model.ItemList]>
+    updateLetter: CallbackReceiver<LetterEditorState>
+    stealFocus?: CursorPosition
+    focusStolen: BoundAction<[]>
+    onFocus: BoundAction<[]>
 }
 
-const ItemList: FC<ItemListProps> = ({itemList, editable, updateList}) => {
-    const [stealFocus, setStealFocus] = useState<StealFocus>({})
-
-    const updateItems = bindAction(ItemListAction.updateItems, updateList, itemList)
-
-    const mergeWithAndStealFocus = combine(
-        bindAction(ItemListAction.mergeWith, updateItems),
-        bindAction(StealFocusAction.onMerge, setStealFocus, stealFocus),
-    ).bind(null, itemList.items)
-
-
-    const splitAndStealFocus = combine(
-        bindAction(ItemListAction.splitItem, updateItems),
-        bindAction(StealFocusAction.onSplit, setStealFocus, stealFocus)
-    ).bind(null, itemList.items)
-
+const ItemList: FC<ItemListProps> = ({ id, itemList, editable, updateLetter, stealFocus, focusStolen, onFocus}) => {
     return (
         <ul>{itemList.items.map((item, itemId) =>
             <Item key={itemId}
+                  id={{...id, itemId}}
+                  updateLetter={updateLetter}
                   editable={editable}
                   item={item}
-                  stealFocus={stealFocus[itemId]}
-                  focusStolen={bindAction(StealFocusAction.focusStolen, setStealFocus, stealFocus, itemId)}
-                  updateItem={bindAction(ItemListAction.updateItem, updateList, itemList, itemId)}
-                  mergeWith={mergeWithAndStealFocus.bind(null, itemId)}
-                  splitAtContent={splitAndStealFocus.bind(null, itemId)}
+                  stealFocus={stealFocus?.item?.id === itemId ? {contentId: stealFocus.item.contentId, startOffset: stealFocus.startOffset} : undefined}
+                  focusStolen={focusStolen}
+                  onFocus={onFocus}
             />
         )}</ul>
     )

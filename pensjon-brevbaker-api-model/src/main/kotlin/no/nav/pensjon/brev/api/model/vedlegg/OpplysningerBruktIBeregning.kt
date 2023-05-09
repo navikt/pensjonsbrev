@@ -15,7 +15,7 @@ data class OpplysningerBruktIBeregningUTDto(
     val inntektFoerUfoere: InntektFoerUfoere,
     val inntektsAvkorting: InntektsAvkorting,
     val kravAarsakType: KravAarsakType,
-    val minsteytelseSats: Double?,
+    val harMinsteytelse: Boolean,
     val sivilstand: Sivilstand,
     val trygdetid: Trygdetid,
     val ufoeretrygd: Ufoeretrygd,
@@ -63,7 +63,8 @@ data class OpplysningerBruktIBeregningUTDto(
             val fribeloepEllerInntektErPeriodisert: Boolean,
             val harFlereBarn: Boolean,
             val inntektAnnenForelder: Kroner,
-            val inntektBruktIAvkortning: Kroner,
+            val inntektBruktIAvkortning: Kroner, // TODO fjern i neste versjon
+            val samletInntektBruktIAvkortning: Kroner,
             val inntektOverFribeloep: Kroner,
             val inntektstak: Kroner,
             val justeringsbeloepAar: Kroner,
