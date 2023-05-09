@@ -1,6 +1,5 @@
 package no.nav.pensjon.brev.maler.fraser.ufoer
 
-import io.ktor.http.*
 import no.nav.pensjon.brev.api.model.KravAarsakType
 import no.nav.pensjon.brev.api.model.Kroner
 import no.nav.pensjon.brev.api.model.Sivilstand
@@ -351,14 +350,14 @@ object Barnetillegg {
         val harFradragFellesbarn: Expression<Boolean>,
         val fribeloepSaerkullsbarn: Expression<Kroner>,
         val harJusteringsbeloepSaerkullsbarn: Expression<Boolean>,
-        val harTilleggForFlereSaerkullsbarn: Expression<Boolean>,
+        val harFlereSaerkullsbarn: Expression<Boolean>,
         val harBarnetilleggSaerkullsbarn: Expression<Boolean>,
         val beloepBruttoFellesbarn: Expression<Kroner>,
         val harBarnetilleggFellesbarn: Expression<Boolean>,
         val beloepNettoFellesbarn: Expression<Kroner>,
         val fribeloepFellesbarn: Expression<Kroner>,
         val harJusteringsbeloepFellesbarn: Expression<Boolean>,
-        val harTilleggForFlereFellesbarn: Expression<Boolean>,
+        val harFlereFellesbarn: Expression<Boolean>,
         val sivilstand: Expression<Sivilstand>,
         val inntektBruktIAvkortningSaerkullsbarn: Expression<Kroner>,
         val inntektBruktiAvkortningFellesbarn: Expression<Kroner>,
@@ -384,20 +383,20 @@ object Barnetillegg {
                         Bokmal to "Inntekten din er ".expr() +
                                 ifElse(inntektOverFribeloepSaerkullsbarn, "høyere", "lavere") +
                                 " enn ".expr() + fribeloepSaerkullsbarn.format() + " kroner, som er fribeløpet for barnetillegget til ".expr() +
-                                ifElse(harTilleggForFlereSaerkullsbarn, "barna", "barnet") +
+                                ifElse(harFlereSaerkullsbarn, "barna", "barnet") +
                                 " som ikke bor sammen med begge foreldrene. ".expr(),
 
                         Nynorsk to "Inntekta di er ".expr() +
                                 ifElse(inntektOverFribeloepSaerkullsbarn, "høgare", "lågare") +
                                 " enn ".expr() + fribeloepSaerkullsbarn.format() + " kroner, som er fribeløpet for barnetillegget til ".expr() +
-                                ifElse(harTilleggForFlereSaerkullsbarn, "barna", "barnet") +
+                                ifElse(harFlereSaerkullsbarn, "barna", "barnet") +
                                 " som ikkje bur saman med begge foreldra. ".expr(),
 
                         English to "Your income is ".expr() +
                                 ifElse(inntektOverFribeloepSaerkullsbarn, "higher", "lower") +
                                 " higher than NOK ".expr() + fribeloepSaerkullsbarn.format() +
                                 ", which is the exemption amount for the child supplement for the ".expr() +
-                                ifElse(harTilleggForFlereSaerkullsbarn, "children who do", "child who does") +
+                                ifElse(harFlereSaerkullsbarn, "children who do", "child who does") +
                                 " not live together with both parents. ".expr()
                     )
 
@@ -423,7 +422,7 @@ object Barnetillegg {
                                     " til deg og ".expr() + sivilstand.bestemtForm() + " din ".expr() +
                                     ifElse(inntektErHoyereEnnFribeloepFellesBarn, "høyere", "lavere") +
                                     " enn ".expr() + fribeloepFellesbarn.format() + " kroner, som er fribeløpet for barnetillegget til ".expr() +
-                                    ifElse(harTilleggForFlereFellesbarn, "barna", "barnet") +
+                                    ifElse(harFlereFellesbarn, "barna", "barnet") +
                                     " som bor med begge sine foreldre. ".expr(),
 
                             Nynorsk to "Til saman er ".expr() +
@@ -431,13 +430,13 @@ object Barnetillegg {
                                     " til deg og ".expr() + sivilstand.bestemtForm() + " din ".expr() +
                                     ifElse(inntektErHoyereEnnFribeloepFellesBarn, "høgare", "lagare") +
                                     " enn ".expr() + fribeloepFellesbarn.format() + " kroner, som er fribeløpet for barnetillegget til ".expr() +
-                                    ifElse(harTilleggForFlereFellesbarn, "barna", "barnet") +
+                                    ifElse(harFlereFellesbarn, "barna", "barnet") +
                                     " som bur saman med begge foreldra sine. ".expr(),
 
                             English to "Together, your income and your ".expr() + sivilstand.bestemtForm() + "'s income is ".expr() +
                                     ifElse(inntektErHoyereEnnFribeloepFellesBarn, "higher", "lower") +
                                     " than NOK ".expr() + fribeloepFellesbarn.format() + ", which is the exemption amount for the child supplement for the ".expr() +
-                                    ifElse(harTilleggForFlereFellesbarn, "children who live", "child who lives") +
+                                    ifElse(harFlereFellesbarn, "children who live", "child who lives") +
                                     " together with both parents. ".expr(),
                         )
 
@@ -478,15 +477,15 @@ object Barnetillegg {
                     includePhrase(DuHarFaattUtbetaltBarnetilleggTidligereIAar)
                     textExpr(
                         Bokmal to " Dette ble tatt hensyn til da vi endret barnetillegget for ".expr() +
-                                ifElse(harTilleggForFlereFellesbarn, "barna", "barnet") +
+                                ifElse(harFlereFellesbarn, "barna", "barnet") +
                                 " som bor med begge sine foreldre.".expr(),
 
                         Nynorsk to " Dette har vi teke omsyn til når vi endra barnetillegget for ".expr() +
-                                ifElse(harTilleggForFlereFellesbarn, "barna", "barnet") +
+                                ifElse(harFlereFellesbarn, "barna", "barnet") +
                                 " som bur saman med begge foreldra sine.".expr(),
 
                         English to " We took this in to account when we changed your child supplement for the ".expr() +
-                                ifElse(harTilleggForFlereFellesbarn, "children who live", "child who lives") +
+                                ifElse(harFlereFellesbarn, "children who live", "child who lives") +
                                 " together with both parents.".expr()
                     )
                     showIf(not(faarUtbetaltBarnetilleggFellesbarn)) {
@@ -504,13 +503,13 @@ object Barnetillegg {
                     includePhrase(DuHarFaattUtbetaltBarnetilleggTidligereIAar)
                     textExpr(
                         Bokmal to " Dette ble tatt hensyn til da vi endret barnetillegget for ".expr() +
-                                ifElse(harTilleggForFlereSaerkullsbarn, "barna", "barnet") +
+                                ifElse(harFlereSaerkullsbarn, "barna", "barnet") +
                                 " som ikke bor sammen med begge foreldrene.".expr(),
                         Nynorsk to " Dette har vi teke omsyn til når vi endra barnetillegget for ".expr() +
-                                ifElse(harTilleggForFlereSaerkullsbarn, "barna", "barnet") +
+                                ifElse(harFlereSaerkullsbarn, "barna", "barnet") +
                                 " som ikkje bur saman med begge foreldra. ".expr(),
                         English to " We took this in to account when we changed your child supplement for the ".expr() +
-                                ifElse(harTilleggForFlereSaerkullsbarn, "children who live", "child who lives") +
+                                ifElse(harFlereSaerkullsbarn, "children who live", "child who lives") +
                                 " together with both parents.".expr()
                     )
                     showIf(not(faarUtbetaltBarnetilleggSaerkullsbarn)) {

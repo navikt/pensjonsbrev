@@ -225,7 +225,7 @@ object OpphoerBarnetilleggAuto : AutobrevTemplate<OpphoerBarnetilleggAutoDto> {
                             harFradragSaerkullsbarn = barnetilleggSaerkullsbarn.harFradrag,
                             fribeloepSaerkullsbarn = barnetilleggSaerkullsbarn.fribeloep,
                             harJusteringsbeloepSaerkullsbarn = barnetilleggSaerkullsbarn.harJusteringsbeloep,
-                            harTilleggForFlereSaerkullsbarn = barnetilleggSaerkullsbarn.gjelderFlereBarn,
+                            harFlereSaerkullsbarn = barnetilleggSaerkullsbarn.gjelderFlereBarn,
                             harBarnetilleggSaerkullsbarn = harBarnetilleggSaerkullsbarn,
                             inntektBruktIAvkortningSaerkullsbarn = barnetilleggSaerkullsbarn.inntektBruktIAvkortning,
                             harFradragFellesbarn = barnetilleggFellesbarn.harFradrag,
@@ -234,7 +234,7 @@ object OpphoerBarnetilleggAuto : AutobrevTemplate<OpphoerBarnetilleggAutoDto> {
                             beloepNettoFellesbarn = barnetilleggFellesbarn.beloepNetto,
                             fribeloepFellesbarn = barnetilleggFellesbarn.fribeloep,
                             harJusteringsbeloepFellesbarn = barnetilleggFellesbarn.harJusteringsbeloep,
-                            harTilleggForFlereFellesbarn = barnetilleggFellesbarn.gjelderFlereBarn,
+                            harFlereFellesbarn = barnetilleggFellesbarn.gjelderFlereBarn,
                             inntektBruktiAvkortningFellesbarn = barnetilleggFellesbarn.inntektBruktIAvkortning,
                             sivilstand = sivilstand,
                         )
