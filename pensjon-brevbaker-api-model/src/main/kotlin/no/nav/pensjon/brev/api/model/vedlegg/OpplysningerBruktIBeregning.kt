@@ -177,7 +177,7 @@ data class OpplysningerBruktIBeregningUTDto(
     )
 
     data class OpplysningerBruktIBeregningUTAvdoed(
-        val erFlyktning: Boolean,  // PE_Grunnlag_PersongrunnlagAvdod_BrukerFlyktning
+        val erFlyktning: Boolean,
         val erUngUfoer: Boolean,
         val foedselsnummer: Foedselsnummer,
         val harNyttGjenlevendetillegg: Boolean,
