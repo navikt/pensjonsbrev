@@ -17,7 +17,7 @@ repositories {
 
 dependencies {
     compileOnly(kotlin("stdlib"))
-    implementation(project(":brevbaker-api-model-common"))
+    api("no.nav.pensjon.brevbaker:brevbaker-api-model-common:1.0.0")
 }
 
 publishing {
