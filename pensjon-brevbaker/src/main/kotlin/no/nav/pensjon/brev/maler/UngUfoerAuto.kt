@@ -1,13 +1,10 @@
 package no.nav.pensjon.brev.maler
 
-import no.nav.pensjon.brev.api.model.Kroner
-import no.nav.pensjon.brev.api.model.LetterMetadata
+import no.nav.pensjon.brev.api.model.maler.*
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggSelectors.gjelderFlereBarn_safe
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggSelectors.inntektstak_safe
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggSelectors.utbetalt_safe
-import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.InnvilgetTilleggSelectors.utbetalt_safe
-import no.nav.pensjon.brev.api.model.maler.UngUfoerAutoDto
 import no.nav.pensjon.brev.api.model.maler.UngUfoerAutoDtoSelectors.ektefelle
 import no.nav.pensjon.brev.api.model.maler.UngUfoerAutoDtoSelectors.fellesbarn
 import no.nav.pensjon.brev.api.model.maler.UngUfoerAutoDtoSelectors.gjenlevende
@@ -18,22 +15,17 @@ import no.nav.pensjon.brev.api.model.maler.UngUfoerAutoDtoSelectors.orienteringO
 import no.nav.pensjon.brev.api.model.maler.UngUfoerAutoDtoSelectors.saerkullsbarn
 import no.nav.pensjon.brev.api.model.maler.UngUfoerAutoDtoSelectors.totaltUfoerePerMnd
 import no.nav.pensjon.brev.maler.fraser.UngUfoer
+import no.nav.pensjon.brev.maler.fraser.common.*
 import no.nav.pensjon.brev.maler.fraser.common.Felles
-import no.nav.pensjon.brev.maler.fraser.ufoer.Barnetillegg
+import no.nav.pensjon.brev.maler.fraser.ufoer.*
 import no.nav.pensjon.brev.maler.fraser.ufoer.Ufoeretrygd
-import no.nav.pensjon.brev.maler.fraser.common.Vedtak
-import no.nav.pensjon.brev.maler.vedlegg.vedleggMaanedligUfoeretrygdFoerSkatt
-import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgPlikterUfoere
-import no.nav.pensjon.brev.template.Language.Bokmal
-import no.nav.pensjon.brev.template.Language.Nynorsk
+import no.nav.pensjon.brev.maler.vedlegg.*
 import no.nav.pensjon.brev.template.AutobrevTemplate
-import no.nav.pensjon.brev.template.dsl.createTemplate
-import no.nav.pensjon.brev.template.dsl.expression.expr
-import no.nav.pensjon.brev.template.dsl.expression.ifNull
-import no.nav.pensjon.brev.template.dsl.expression.notNull
+import no.nav.pensjon.brev.template.Language.*
+import no.nav.pensjon.brev.template.dsl.*
+import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
-import no.nav.pensjon.brev.template.dsl.languages
-import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brevbaker.api.model.*
 
 // BrevTypeKode: PE_BA_04_505
 @TemplateModelHelpers

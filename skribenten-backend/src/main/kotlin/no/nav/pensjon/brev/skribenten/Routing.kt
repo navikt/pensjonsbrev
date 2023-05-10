@@ -8,11 +8,11 @@ import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.util.*
-import no.nav.pensjon.brev.api.model.RenderedJsonLetter
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.skribenten.auth.*
 import no.nav.pensjon.brev.skribenten.services.*
-import java.util.Base64
+import no.nav.pensjon.brevbaker.api.model.RenderedJsonLetter
+import java.util.*
 
 data class RenderLetterRequest(val letterData: Any, val editedLetter: EditedJsonLetter?)
 data class EditedJsonLetter(val letter: RenderedJsonLetter, val deletedBlocks: Set<Int>)

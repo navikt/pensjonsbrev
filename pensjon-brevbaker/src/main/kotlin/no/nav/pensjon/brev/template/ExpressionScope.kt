@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.template
 
-import no.nav.pensjon.brev.api.model.Felles
+import no.nav.pensjon.brevbaker.api.model.Felles
 
 open class ExpressionScope<Argument : Any, Lang : Language>(val argument: Argument, val felles: Felles, val language: Lang)
 

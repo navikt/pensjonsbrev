@@ -1,4 +1,4 @@
-package no.nav.pensjon.brev.maler
+package no.nav.pensjon.etterlatte.maler
 
 import kotlinx.coroutines.runBlocking
 import no.nav.pensjon.brev.PDF_BUILDER_URL
@@ -9,7 +9,7 @@ import no.nav.pensjon.brev.template.render.*
 import no.nav.pensjon.brev.writeTestHTML
 import no.nav.pensjon.brev.writeTestPDF
 import no.nav.pensjon.etterlatte.Fixtures
-import no.nav.pensjon.etterlatte.maler.BarnepensjonVedtakDTO
+import no.nav.pensjon.etterlatte.maler.*
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 

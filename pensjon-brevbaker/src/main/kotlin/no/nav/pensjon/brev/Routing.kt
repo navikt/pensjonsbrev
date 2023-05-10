@@ -16,6 +16,7 @@ import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.latex.LaTeXCompilerService
 import no.nav.pensjon.brev.template.TemplateModelSpecification
 import no.nav.pensjon.brev.template.render.*
+import no.nav.pensjon.brevbaker.api.model.TemplateDescription
 import no.nav.pensjon.etterlatte.etterlatteRouting
 
 private val latexCompilerService = LaTeXCompilerService(requireEnv("PDF_BUILDER_URL"))

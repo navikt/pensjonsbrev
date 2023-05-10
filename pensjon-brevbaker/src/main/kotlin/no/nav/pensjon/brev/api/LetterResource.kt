@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.api
 import io.ktor.server.plugins.*
 import no.nav.pensjon.brev.api.model.*
 import no.nav.pensjon.brev.template.*
+import no.nav.pensjon.brevbaker.api.model.Felles
 
 class ParseLetterDataException(msg: String, cause: Exception): Exception(msg, cause)
 

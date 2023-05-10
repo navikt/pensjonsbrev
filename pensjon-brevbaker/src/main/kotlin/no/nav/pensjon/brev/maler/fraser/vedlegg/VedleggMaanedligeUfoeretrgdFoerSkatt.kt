@@ -1,6 +1,5 @@
 package no.nav.pensjon.brev.maler.fraser.vedlegg
 
-import no.nav.pensjon.brev.api.model.Kroner
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligUfoeretrygdFoerSkattDto
 import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdPerMaanedSelectors.annetBelop
 import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdPerMaanedSelectors.barnetilleggFellesbarnBrutto
@@ -29,6 +28,7 @@ import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brev.template.dsl.expression.*
+import no.nav.pensjon.brevbaker.api.model.Kroner
 import java.time.LocalDate
 
 object VedleggMaanedligeUfoeretrgdFoerSkatt {

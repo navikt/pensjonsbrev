@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.template
 
-import no.nav.pensjon.brev.api.model.LetterMetadata
+import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import kotlin.reflect.KClass
 
 data class LetterTemplate<Lang : LanguageSupport, LetterData : Any>(

@@ -1,7 +1,6 @@
 package no.nav.pensjon.brev.template.dsl
 
 import no.nav.pensjon.brev.Fixtures.felles
-import no.nav.pensjon.brev.api.model.LetterMetadata
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.ContentOrControlStructure.*
 import no.nav.pensjon.brev.template.Language.*
@@ -9,6 +8,7 @@ import no.nav.pensjon.brev.template.dsl.NullBrevDtoSelectors.test1
 import no.nav.pensjon.brev.template.dsl.NullBrevDtoSelectors.test2
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
+import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested

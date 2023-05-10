@@ -1,14 +1,10 @@
 package no.nav.pensjon.brev.template
 
 import no.nav.pensjon.brev.Fixtures
-import no.nav.pensjon.brev.api.model.Kroner
-import no.nav.pensjon.brev.template.dsl.expression.absoluteValue
-import no.nav.pensjon.brev.template.dsl.expression.expr
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertNotEquals
-import org.junit.jupiter.api.DisplayName
-import org.junit.jupiter.api.Nested
-import org.junit.jupiter.api.Test
+import no.nav.pensjon.brev.template.dsl.expression.*
+import no.nav.pensjon.brevbaker.api.model.Kroner
+import org.junit.jupiter.api.*
+import org.junit.jupiter.api.Assertions.*
 
 class OperationsTest {
 

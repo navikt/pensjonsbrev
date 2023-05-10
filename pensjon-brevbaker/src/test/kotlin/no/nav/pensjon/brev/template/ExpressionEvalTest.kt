@@ -1,12 +1,12 @@
 package no.nav.pensjon.brev.template
 
 import no.nav.pensjon.brev.Fixtures
-import no.nav.pensjon.brev.api.model.FellesSelectors.saksnummer
 import no.nav.pensjon.brev.template.SomeDtoSelectors.kortNavn
 import no.nav.pensjon.brev.template.SomeDtoSelectors.name
 import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
+import no.nav.pensjon.brevbaker.api.model.FellesSelectors.saksnummer
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 

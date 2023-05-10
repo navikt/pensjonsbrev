@@ -7,11 +7,10 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.micrometer.core.instrument.Tag
 import no.nav.pensjon.brev.Metrics
-import no.nav.pensjon.brev.api.model.LetterMetadata
 import no.nav.pensjon.brev.api.model.LetterResponse
 import no.nav.pensjon.brev.latex.LaTeXCompilerService
-import no.nav.pensjon.brev.template.render.PensjonHTMLRenderer
-import no.nav.pensjon.brev.template.render.PensjonLatexRenderer
+import no.nav.pensjon.brev.template.render.*
+import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 private val letterResource = LetterResource()
 

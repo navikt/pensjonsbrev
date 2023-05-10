@@ -9,6 +9,7 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmSaksbehandlin
 import no.nav.pensjon.brev.maler.*
 import no.nav.pensjon.brev.maler.redigerbar.InformasjonOmSaksbehandlingstid
 import no.nav.pensjon.brev.template.jacksonObjectMapper
+import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.assertEquals
 

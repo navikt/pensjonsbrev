@@ -1,8 +1,8 @@
 package no.nav.pensjon.brev.template.dsl.expression
 
-import no.nav.pensjon.brev.api.model.Kroner
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.expression.*
+import no.nav.pensjon.brevbaker.api.model.Kroner
 
 fun <T> Expression<Collection<T>>.containsAll(vararg items: T): Expression<Boolean> =
     Expression.BinaryInvoke(

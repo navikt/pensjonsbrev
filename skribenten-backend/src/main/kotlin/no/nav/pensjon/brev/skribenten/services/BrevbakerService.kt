@@ -1,8 +1,7 @@
 package no.nav.pensjon.brev.skribenten.services
 
 import com.fasterxml.jackson.core.JsonParser
-import com.fasterxml.jackson.databind.DeserializationContext
-import com.fasterxml.jackson.databind.JsonNode
+import com.fasterxml.jackson.databind.*
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer
 import com.fasterxml.jackson.databind.module.SimpleModule
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
@@ -14,10 +13,11 @@ import io.ktor.http.*
 import io.ktor.serialization.jackson.*
 import io.ktor.server.application.*
 import no.nav.pensjon.brev.api.model.*
-import no.nav.pensjon.brev.api.model.Year
 import no.nav.pensjon.brev.api.model.maler.*
 import no.nav.pensjon.brev.api.model.vedlegg.*
 import no.nav.pensjon.brev.skribenten.auth.*
+import no.nav.pensjon.brevbaker.api.model.*
+import no.nav.pensjon.brevbaker.api.model.Year
 import java.time.*
 
 class BrevbakerServiceException(msg: String): Exception(msg)
