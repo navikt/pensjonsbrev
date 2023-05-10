@@ -1,7 +1,7 @@
 package no.nav.pensjon.brev.api.model.maler
 
 import no.nav.pensjon.brev.api.model.Institusjon
-import no.nav.pensjon.brev.api.model.Kroner
+import no.nav.pensjon.brevbaker.api.model.Kroner
 import no.nav.pensjon.brev.api.model.Sivilstand
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligUfoeretrygdFoerSkattDto
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDto

@@ -1,4 +1,4 @@
-package no.nav.pensjon.brev.api.model
+package no.nav.pensjon.brevbaker.api.model
 
 interface IntValue {
     val value: Int

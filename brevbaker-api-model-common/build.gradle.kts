@@ -3,8 +3,8 @@ plugins {
     `maven-publish`
 }
 
-group = "no.nav.pensjon.brev"
-version = "33"
+group = "no.nav.pensjon.brevbaker"
+version = "1.0.1"
 
 java {
     withSourcesJar()
@@ -17,7 +17,6 @@ repositories {
 
 dependencies {
     compileOnly(kotlin("stdlib"))
-    api("no.nav.pensjon.brevbaker:brevbaker-api-model-common:1.0.1")
 }
 
 publishing {
