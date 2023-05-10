@@ -336,23 +336,23 @@ object Barnetillegg {
 
     // TBU1286
     data class BarnetilleggReduksjonSaerkullsbarnFellesbarn(
-        val beloepNettoSaerkullsbarn: Expression<Kroner>,
-        val beloepBruttoSaerkullsbarn: Expression<Kroner>,
-        val harFradragSaerkullsbarn: Expression<Boolean>,
-        val harFradragFellesbarn: Expression<Boolean>,
-        val fribeloepSaerkullsbarn: Expression<Kroner>,
-        val harJusteringsbeloepSaerkullsbarn: Expression<Boolean>,
-        val harFlereSaerkullsbarn: Expression<Boolean>,
-        val harBarnetilleggSaerkullsbarn: Expression<Boolean>,
         val beloepBruttoFellesbarn: Expression<Kroner>,
-        val harBarnetilleggFellesbarn: Expression<Boolean>,
+        val beloepBruttoSaerkullsbarn: Expression<Kroner>,
         val beloepNettoFellesbarn: Expression<Kroner>,
+        val beloepNettoSaerkullsbarn: Expression<Kroner>,
         val fribeloepFellesbarn: Expression<Kroner>,
-        val harJusteringsbeloepFellesbarn: Expression<Boolean>,
+        val fribeloepSaerkullsbarn: Expression<Kroner>,
+        val harBarnetilleggFellesbarn: Expression<Boolean>,
+        val harBarnetilleggSaerkullsbarn: Expression<Boolean>,
         val harFlereFellesbarn: Expression<Boolean>,
-        val sivilstand: Expression<Sivilstand>,
+        val harFlereSaerkullsbarn: Expression<Boolean>,
+        val harFradragFellesbarn: Expression<Boolean>,
+        val harFradragSaerkullsbarn: Expression<Boolean>,
+        val harJusteringsbeloepFellesbarn: Expression<Boolean>,
+        val harJusteringsbeloepSaerkullsbarn: Expression<Boolean>,
         val inntektBruktIAvkortningSaerkullsbarn: Expression<Kroner>,
         val samletInntektBruktiAvkortningFellesbarn: Expression<Kroner>,
+        val sivilstand: Expression<Sivilstand>,
 
         ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
