@@ -14,8 +14,8 @@ import no.nav.pensjon.brev.api.model.vedlegg.BeregnetUTPerManedGjeldendeSelector
 import no.nav.pensjon.brev.api.model.vedlegg.FellesbarnSelectors.beloepFratrukketAnnenForeldersInntekt
 import no.nav.pensjon.brev.api.model.vedlegg.FellesbarnSelectors.fribeloep
 import no.nav.pensjon.brev.api.model.vedlegg.FellesbarnSelectors.inntektAnnenForelder
-import no.nav.pensjon.brev.api.model.vedlegg.FellesbarnSelectors.inntektBruktIAvkortning_safe
 import no.nav.pensjon.brev.api.model.vedlegg.FellesbarnSelectors.inntektstak_safe
+import no.nav.pensjon.brev.api.model.vedlegg.FellesbarnSelectors.samletInntektBruktIAvkortning_safe
 import no.nav.pensjon.brev.api.model.vedlegg.InntektFoerUfoereGjeldendeSelectors.ifuInntekt
 import no.nav.pensjon.brev.api.model.vedlegg.InntektsAvkortingGjeldendeSelectors.forventetInntektAar
 import no.nav.pensjon.brev.api.model.vedlegg.InntektsAvkortingGjeldendeSelectors.inntektsgrenseAar
@@ -711,11 +711,11 @@ data class TabellUfoereOpplysninger(
                         }
                     }
 
-                    val inntektBruktIAvkortningFelles =
-                        barnetillegg.fellesbarn_safe.inntektBruktIAvkortning_safe.ifNull(Kroner(0))
+                    val samletInntektBruktIAvkortningFelles =
+                        barnetillegg.fellesbarn_safe.samletInntektBruktIAvkortning_safe.ifNull(Kroner(0))
                     val inntektBruktIAvkortningSaerkull =
                         barnetillegg.saerkullsbarn_safe.inntektBruktIAvkortning_safe.ifNull(Kroner(0))
-                    showIf(inntektBruktIAvkortningFelles.greaterThan(0) or inntektBruktIAvkortningSaerkull.greaterThan(0)) {
+                    showIf(samletInntektBruktIAvkortningFelles.greaterThan(0) or inntektBruktIAvkortningSaerkull.greaterThan(0)) {
                         row {
                             cell {
                                 text(
@@ -725,8 +725,8 @@ data class TabellUfoereOpplysninger(
                                 )
                             }
                             cell {
-                                showIf(inntektBruktIAvkortningFelles.greaterThan(0)) {
-                                    includePhrase(Felles.KronerText(inntektBruktIAvkortningFelles))
+                                showIf(samletInntektBruktIAvkortningFelles.greaterThan(0)) {
+                                    includePhrase(Felles.KronerText(samletInntektBruktIAvkortningFelles))
                                 }.orShow {
                                     includePhrase(Felles.KronerText(inntektBruktIAvkortningSaerkull))
                                 }
