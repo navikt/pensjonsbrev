@@ -6,6 +6,7 @@ import no.nav.pensjon.brev.latex.LaTeXCompilerService
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.render.PensjonLatexRenderer
 import no.nav.pensjon.etterlatte.*
+import no.nav.pensjon.etterlatte.Fixtures
 import org.junit.jupiter.api.*
 
 @Tag(TestTags.PDF_BYGGER)

@@ -7,15 +7,17 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.micrometer.core.instrument.Tag
 import no.nav.pensjon.brev.Metrics
+import no.nav.pensjon.brev.api.model.LetterMetadata
 import no.nav.pensjon.brev.api.model.LetterResponse
 import no.nav.pensjon.brev.latex.LaTeXCompilerService
+import no.nav.pensjon.brev.template.render.PensjonHTMLRenderer
 import no.nav.pensjon.brev.template.render.PensjonLatexRenderer
 
 private val letterResource = LetterResource()
 
 fun Route.etterlatteRouting(latexCompilerService: LaTeXCompilerService) {
 
-    post("/hvaennderevilha") {
+    post("/pdf") {
         val letterRequest = call.receive<EtterlatteBrevRequest>()
 
         val letter = letterResource.create(letterRequest)
@@ -30,4 +32,15 @@ fun Route.etterlatteRouting(latexCompilerService: LaTeXCompilerService) {
             listOf(Tag.of("brevkode", letterRequest.kode.name))
         ).increment()
     }
+
+    post("/html") {
+        val letterRequest = call.receive<EtterlatteBrevRequest>()
+        val letter = letterResource.create(letterRequest)
+        val html = PensjonHTMLRenderer.render(letter)
+
+        // egen response eller noe sånnt. Html brev går veldig fort å rendre.
+        call.respond(HTMLResponse(html.base64EncodedFiles(), letter.template.letterMetadata))
+    }
 }
+
+data class HTMLResponse(val html: Map<String, String>, val letterMetadata: LetterMetadata)
