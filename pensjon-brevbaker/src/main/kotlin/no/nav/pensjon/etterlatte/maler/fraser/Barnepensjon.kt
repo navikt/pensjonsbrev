@@ -15,6 +15,7 @@ import no.nav.pensjon.etterlatte.maler.BeregningsperiodeSelectors.datoFOM
 import no.nav.pensjon.etterlatte.maler.BeregningsperiodeSelectors.datoTOM
 import no.nav.pensjon.etterlatte.maler.BeregningsperiodeSelectors.grunnbeloep
 import no.nav.pensjon.etterlatte.maler.BeregningsperiodeSelectors.utbetaltBeloep
+import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
 import java.time.LocalDate
 
 object Barnepensjon {
@@ -48,7 +49,7 @@ object Barnepensjon {
             }
             paragraph {
                 text(
-                    Language.Bokmal to "Pensjonen blir utbetalt innen den 20. i hver måned. Du finner utbetalingsdatoer på nav.no/utbetalinger."
+                    Language.Bokmal to "Pensjonen blir utbetalt innen den 20. i hver måned. Du finner utbetalingsdatoer på ${Constants.UTBETALING_URL}."
                 )
             }
             paragraph {
@@ -170,7 +171,7 @@ object Barnepensjon {
                 text(
                     Language.Bokmal to "Du er ansvarlig for å holde deg orientert om bevegelser på kontoen for utbetaling av barnepensjon, " +
                             "og du må straks melde fra om eventuelle feil til NAV. Er det utbetalt for mye barnepensjon fordi " +
-                            "NAV ikke har fått beskjed, må pengene vanligvis betales tilbake. "
+                            "NAV ikke har fått beskjed, må pengene vanligvis betales tilbake."
                 )
             }
         }
@@ -186,7 +187,7 @@ object Barnepensjon {
             paragraph {
                 text(
                     Language.Bokmal to "Ved endring av kontonummer for utbetaling av barnepensjon til barn under 18 år, " +
-                            "kan du som forelder sende melding via nav.no/skrivtiloss eller sende skjema for melding om nytt " +
+                            "kan du som forelder sende melding via ${Constants.SKRIVTILOSS_URL} eller sende skjema for melding om nytt " +
                             "kontonummer per post. Du må da legge ved kopi av gyldig legitimasjon."
                 )
             }
@@ -197,7 +198,7 @@ object Barnepensjon {
             }
             paragraph {
                 text(
-                    Language.Bokmal to "Du finner mer informasjon og lenke til riktig skjema på nav.no/kontonummer."
+                    Language.Bokmal to "Du finner mer informasjon og lenke til riktig skjema på ${Constants.KONTONUMMER_URL}."
                 )
             }
         }
@@ -213,13 +214,13 @@ object Barnepensjon {
             paragraph {
                 text(
                     Language.Bokmal to "Barnepensjon er skattepliktig, men vi trekker ikke skatt for inneværende år " +
-                            "uten å få beskjed om dette. Du kan lese mer om frivillig skattetrekk på nav.no/skattetrekk#skatt-pengestotte."
+                            "uten å få beskjed om dette. Du kan lese mer om frivillig skattetrekk på ${Constants.SKATTETREKK_PENGESTOETTE_URL}."
                 )
             }
             paragraph {
                 text(
                     Language.Bokmal to "Ved etterbetaling som gjelder tidligere år trekker NAV skatt etter Skatteetatens standardsatser. " +
-                            "Du kan lese mer om satsene på nav.no/skattetrekk#etterbetaling. "
+                            "Du kan lese mer om satsene på ${Constants.SKATTETREKK_ETTERBETALING_URL}."
                 )
             }
         }
@@ -235,7 +236,7 @@ object Barnepensjon {
             paragraph {
                 text(
                     Language.Bokmal to "Hvis du mener vedtaket er feil, kan du klage innen seks uker fra den datoen " +
-                            "du mottok vedtaket. Klagen skal være skriftlig. Du finner skjema og informasjon på nav.no/klage."
+                            "du mottok vedtaket. Klagen skal være skriftlig. Du finner skjema og informasjon på ${Constants.KLAGE_URL}."
                 )
             }
         }
@@ -252,7 +253,7 @@ object Barnepensjon {
                 text(
                     Language.Bokmal to "Du har som hovedregel rett til å se dokumentene i saken din etter" +
                             " bestemmelsene i forvaltningsloven § 18. Hvis du ønsker innsyn, må du kontakte oss på " +
-                            "telefon eller per post. "
+                            "telefon eller per post."
                 )
             }
         }
@@ -267,7 +268,7 @@ object Barnepensjon {
             }
             paragraph {
                 text(
-                    Language.Bokmal to "Du kan finne svar på nav.no. Du kan også kontakte oss på telefon 55 55 33 34." +
+                    Language.Bokmal to "Du kan finne svar på ${Constants.NAV_URL}. Du kan også kontakte oss på telefon 55 55 33 34." +
                             " Om du oppgir fødselsnummer til barnet, kan vi lettere gi deg rask og god hjelp."
                 )
             }
