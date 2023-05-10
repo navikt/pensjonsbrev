@@ -4,7 +4,7 @@ plugins {
 }
 
 group = "no.nav.pensjon.brev"
-version = "32"
+version = "33"
 
 java {
     withSourcesJar()
@@ -17,7 +17,7 @@ repositories {
 
 dependencies {
     compileOnly(kotlin("stdlib"))
-    api("no.nav.pensjon.brevbaker:brevbaker-api-model-common:1.0.0")
+    api("no.nav.pensjon.brevbaker:brevbaker-api-model-common:1.0.1")
 }
 
 publishing {
@@ -41,5 +41,8 @@ publishing {
 tasks {
     compileKotlin {
         kotlinOptions.jvmTarget = "1.8"
+    }
+    compileJava {
+        targetCompatibility = "1.8"
     }
 }
