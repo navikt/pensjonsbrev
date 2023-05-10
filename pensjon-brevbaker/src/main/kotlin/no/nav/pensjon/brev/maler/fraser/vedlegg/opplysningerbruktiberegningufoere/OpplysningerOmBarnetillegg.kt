@@ -463,7 +463,7 @@ data class OpplysningerOmBarnetillegg(
                                 )
                             }
                             cell {
-                                includePhrase(Felles.KronerText(beloepAarNetto))
+                                includePhrase(Felles.KronerText(beloepAarNetto, BOLD))
                             }
                         }
                     }
