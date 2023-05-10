@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningufoe
 import no.nav.pensjon.brev.api.model.vedlegg.InntektFoerUfoereSelectors.erSannsynligEndret
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDto
 import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdSelectors.erKonvertert
+import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdSelectors.minsteytelseSats
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language
@@ -12,19 +13,16 @@ import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 
-
-/*   IF(PE_pebrevkode <> "PE_UT_07_100" AND PE_pebrevkode <> "PE_UT_05_100" AND PE_pebrevkode <> "PE_UT_04_300" AND PE_pebrevkode <> "PE_UT_14_300" AND
-PE_pebrevkode <> "PE_UT_04_103" AND PE_Vedtaksdata_Kravhode_KravArsakType <> "soknad_bt" AND PE_pebrevkode <> "PE_UT_04_108" AND PE_pebrevkode <> "PE_UT_04_109"
-AND PE_pebrevkode <> "PE_UT_07_200" AND PE_pebrevkode <> "PE_UT_06_300") THEN
-INCLUDE */
+// <> brevkode PE_UT_04_103, PE_UT_04_108, PE_UT_04_109, PE_UT_04_300, PE_UT_06_300, PE_UT_07_100, PE_UT_07_200, PE_UT_14_300
 
 
 data class OpplysningerOmMinstetillegg(
     val harMinsteytelse: Expression<Boolean>,
-    val ungUfoerErUnder20Aar: Expression<Boolean>,
-    val ufoeretrygd: Expression<OpplysningerBruktIBeregningUTDto.Ufoeretrygd>,
     val inntektFoerUfoere: Expression<OpplysningerBruktIBeregningUTDto.InntektFoerUfoere>,
     val inntektsgrenseErUnderTak: Expression<Boolean>,
+    val minsteytelseSats: Expression<Double>,
+    val ufoeretrygd: Expression<OpplysningerBruktIBeregningUTDto.Ufoeretrygd>,
+    val ungUfoerErUnder20Aar: Expression<Boolean>,
 
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
@@ -51,9 +49,13 @@ data class OpplysningerOmMinstetillegg(
             }
         }
 
-        ifNotNull(harMinsteytelse) {
+        ifNotNull(minsteytelseSats) {
             showIf(harMinsteytelse) {
-                includePhrase(VedleggBeregnUTDinMY)
+                includePhrase(
+                    VedleggBeregnUTDinMY(
+                        minsteytelseSats = ufoeretrygd.minsteytelseSats
+                    )
+                )
             }
         }
 
