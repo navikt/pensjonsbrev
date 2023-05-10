@@ -33,9 +33,9 @@ object Barnepensjon {
                 val formatertDoedsdato = doedsdato.format()
                 textExpr(
                     Language.Bokmal to "Du er innvilget barnepensjon fra ".expr() + formatertVirkningsdato +
-                            " fordi ".expr() + avdoedNavn + " er registrert død ".expr() + formatertDoedsdato + ". ".expr() +
-                            "Du får ".expr() + beloep.format() + " kroner hver måned før skatt. Barnepensjonen utbetales til og med den ".expr() +
-                            "kalendermåneden du fyller 18 år. Vedtaket er gjort etter folketrygdloven kapittel 18 og 22.".expr(),
+                            " fordi " + avdoedNavn + " er registrert død " + formatertDoedsdato + ". " +
+                            "Du får " + beloep.format() + " kroner hver måned før skatt. Barnepensjonen utbetales til og med den " +
+                            "kalendermåneden du fyller 18 år. Vedtaket er gjort etter folketrygdloven kapittel 18 og 22.",
                 )
             }
     }
@@ -76,8 +76,8 @@ object Barnepensjon {
                 paragraph {
                     textExpr(
                         Language.Bokmal to "Det gjøres en samlet beregning av pensjon for barn som oppdras sammen. ".expr() +
-                                "For denne beregningen har vi lagt til grunn at dere er ".expr() + antallBarn.format() +
-                                " barn som oppdras sammen.".expr(),
+                                "For denne beregningen har vi lagt til grunn at dere er " + antallBarn.format() +
+                                " barn som oppdras sammen.",
                     )
                 }
                 paragraph {
@@ -141,7 +141,7 @@ object Barnepensjon {
     data class PeriodeITabell(val datoFOM: Expression<LocalDate>, val datoTOM: Expression<LocalDate?>) :
         TextOnlyPhrase<LangBokmal>() {
         override fun TextOnlyScope<LangBokmal, Unit>.template() =
-            showIf(datoTOM.notNull()) {
+            ifNotNull(datoTOM) {
                 textExpr(
                     Language.Bokmal to datoFOM.format(true) + " - " + (datoTOM as Expression<LocalDate>).format(true)
                 )
