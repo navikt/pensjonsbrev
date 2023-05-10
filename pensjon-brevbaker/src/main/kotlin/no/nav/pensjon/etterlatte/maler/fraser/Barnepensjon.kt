@@ -1,14 +1,11 @@
 package no.nav.pensjon.etterlatte.maler.fraser
 
-import no.nav.pensjon.brev.api.model.Kroner
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.*
-import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
-import no.nav.pensjon.brev.template.dsl.TextOnlyScope
+import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brev.template.dsl.expression.*
-import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.template.dsl.textExpr
+import no.nav.pensjon.brevbaker.api.model.Kroner
 import no.nav.pensjon.etterlatte.maler.BarnepensjonVedtakDTO
 import no.nav.pensjon.etterlatte.maler.BeregningsperiodeSelectors.antallBarn
 import no.nav.pensjon.etterlatte.maler.BeregningsperiodeSelectors.datoFOM

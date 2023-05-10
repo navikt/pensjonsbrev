@@ -1,9 +1,7 @@
 package no.nav.pensjon.etterlatte
 
-import no.nav.pensjon.brev.api.model.maler.Brevkode
-import no.nav.pensjon.brev.maler.BarnepensjonVedtak
 import no.nav.pensjon.brev.template.LetterTemplate
-import no.nav.pensjon.etterlatte.maler.EtterlatteBrev
+import no.nav.pensjon.etterlatte.maler.*
 
 
 val prodAutobrevTemplates: Set<EtterlatteTemplate<*>> = setOf(EtterlatteBrev)

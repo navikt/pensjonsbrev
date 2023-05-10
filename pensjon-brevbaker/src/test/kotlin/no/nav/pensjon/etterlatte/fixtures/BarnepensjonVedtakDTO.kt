@@ -1,7 +1,6 @@
-package no.nav.pensjon.brev.fixtures
+package no.nav.pensjon.etterlatte.fixtures
 
-import no.nav.pensjon.brev.api.model.Kroner
-import no.nav.pensjon.brev.api.model.Telefonnummer
+import no.nav.pensjon.brevbaker.api.model.*
 import no.nav.pensjon.etterlatte.maler.BarnepensjonVedtakDTO
 import java.time.LocalDate
 

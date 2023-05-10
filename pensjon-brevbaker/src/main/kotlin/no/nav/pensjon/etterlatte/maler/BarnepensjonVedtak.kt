@@ -1,17 +1,12 @@
-package no.nav.pensjon.brev.maler
+package no.nav.pensjon.etterlatte.maler
 
-import no.nav.pensjon.brev.api.model.LetterMetadata
-import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
-import no.nav.pensjon.etterlatte.maler.fraser.Barnepensjon
 import no.nav.pensjon.brev.template.Language
-import no.nav.pensjon.brev.template.dsl.createTemplate
-import no.nav.pensjon.brev.template.dsl.languages
-import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.etterlatte.EtterlatteBrevKode
-import no.nav.pensjon.etterlatte.EtterlatteTemplate
+import no.nav.pensjon.brev.template.dsl.*
+import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
+import no.nav.pensjon.brevbaker.api.model.LetterMetadata
+import no.nav.pensjon.etterlatte.*
 import no.nav.pensjon.etterlatte.maler.AvdoedEYBSelectors.doedsdato
 import no.nav.pensjon.etterlatte.maler.AvdoedEYBSelectors.navn
-import no.nav.pensjon.etterlatte.maler.BarnepensjonVedtakDTO
 import no.nav.pensjon.etterlatte.maler.BarnepensjonVedtakDTOSelectors.avdoed
 import no.nav.pensjon.etterlatte.maler.BarnepensjonVedtakDTOSelectors.utbetalingsinfo
 import no.nav.pensjon.etterlatte.maler.UtbetalingsinfoSelectors.antallBarn
@@ -19,6 +14,7 @@ import no.nav.pensjon.etterlatte.maler.UtbetalingsinfoSelectors.beloep
 import no.nav.pensjon.etterlatte.maler.UtbetalingsinfoSelectors.beregningsperioder
 import no.nav.pensjon.etterlatte.maler.UtbetalingsinfoSelectors.soeskenjustering
 import no.nav.pensjon.etterlatte.maler.UtbetalingsinfoSelectors.virkningsdato
+import no.nav.pensjon.etterlatte.maler.fraser.Barnepensjon
 import no.nav.pensjon.etterlatte.maler.fraser.common.Vedtak
 
 @TemplateModelHelpers

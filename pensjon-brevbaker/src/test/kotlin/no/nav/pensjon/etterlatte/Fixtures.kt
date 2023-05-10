@@ -1,10 +1,7 @@
 package no.nav.pensjon.etterlatte
 
-import no.nav.pensjon.brev.api.model.*
-import no.nav.pensjon.brev.api.model.maler.*
-import no.nav.pensjon.brev.api.model.vedlegg.*
-import no.nav.pensjon.brev.fixtures.*
-import no.nav.pensjon.brev.maler.example.*
+import no.nav.pensjon.etterlatte.fixtures.createBarnepensjonVedtakDTO
+import no.nav.pensjon.brevbaker.api.model.*
 import no.nav.pensjon.etterlatte.maler.BarnepensjonVedtakDTO
 import java.time.LocalDate
 import kotlin.reflect.KClass
