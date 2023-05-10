@@ -21,7 +21,7 @@ object Fixtures {
         ),
         bruker = Bruker(
             fornavn = "Test",
-            mellomnavn = "\"bruker\"",
+            mellomnavn = "bruker",
             etternavn = "Testerson",
             foedselsnummer = Foedselsnummer("01019878910"),
             foedselsdato = LocalDate.of(1998, 1, 1),
