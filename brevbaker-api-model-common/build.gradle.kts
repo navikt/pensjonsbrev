@@ -4,7 +4,7 @@ plugins {
 }
 
 group = "no.nav.pensjon.brevbaker"
-version = "1.0.0"
+version = "1.0.1"
 
 java {
     withSourcesJar()
@@ -40,5 +40,8 @@ publishing {
 tasks {
     compileKotlin {
         kotlinOptions.jvmTarget = "1.8"
+    }
+    compileJava {
+        targetCompatibility = "1.8"
     }
 }
