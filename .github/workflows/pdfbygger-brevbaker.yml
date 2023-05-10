@@ -111,6 +111,7 @@ jobs:
           "java-version": "17"
       - name: "run integration tests"
         run: |
+          ./gradlew :brevbaker-api-model-common:publishToMavenLocal 
           ./gradlew :pensjon-brevbaker-api-model:publishToMavenLocal 
           ./gradlew :pensjon-brevbaker:integrationTest
         env:

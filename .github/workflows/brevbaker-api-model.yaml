@@ -48,6 +48,8 @@ jobs:
           "java-version": "17"
       - name: "compile and run tests"
         run: "./gradlew :pensjon-brevbaker-api-model:build"
+        env:
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
       - name: "Release maven artifact"
         run: "./gradlew :pensjon-brevbaker-api-model:publish"
         env:
