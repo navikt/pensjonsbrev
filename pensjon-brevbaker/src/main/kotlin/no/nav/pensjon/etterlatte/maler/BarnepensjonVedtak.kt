@@ -1,17 +1,7 @@
 package no.nav.pensjon.brev.maler
 
 import no.nav.pensjon.brev.api.model.LetterMetadata
-import no.nav.pensjon.brev.api.model.maler.AvdoedEYBSelectors.doedsdato
-import no.nav.pensjon.brev.api.model.maler.AvdoedEYBSelectors.navn
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
-import no.nav.pensjon.brev.api.model.maler.BarnepensjonVedtakDTO
-import no.nav.pensjon.brev.api.model.maler.BarnepensjonVedtakDTOSelectors.avdoed
-import no.nav.pensjon.brev.api.model.maler.BarnepensjonVedtakDTOSelectors.utbetalingsinfo
-import no.nav.pensjon.brev.api.model.maler.UtbetalingsinfoSelectors.antallBarn
-import no.nav.pensjon.brev.api.model.maler.UtbetalingsinfoSelectors.beloep
-import no.nav.pensjon.brev.api.model.maler.UtbetalingsinfoSelectors.beregningsperioder
-import no.nav.pensjon.brev.api.model.maler.UtbetalingsinfoSelectors.soeskenjustering
-import no.nav.pensjon.brev.api.model.maler.UtbetalingsinfoSelectors.virkningsdato
 import no.nav.pensjon.brev.maler.fraser.common.Vedtak
 import no.nav.pensjon.etterlatte.maler.fraser.Barnepensjon
 import no.nav.pensjon.brev.template.Language
@@ -20,6 +10,16 @@ import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
+import no.nav.pensjon.etterlatte.maler.AvdoedEYBSelectors.doedsdato
+import no.nav.pensjon.etterlatte.maler.AvdoedEYBSelectors.navn
+import no.nav.pensjon.etterlatte.maler.BarnepensjonVedtakDTO
+import no.nav.pensjon.etterlatte.maler.BarnepensjonVedtakDTOSelectors.avdoed
+import no.nav.pensjon.etterlatte.maler.BarnepensjonVedtakDTOSelectors.utbetalingsinfo
+import no.nav.pensjon.etterlatte.maler.UtbetalingsinfoSelectors.antallBarn
+import no.nav.pensjon.etterlatte.maler.UtbetalingsinfoSelectors.beloep
+import no.nav.pensjon.etterlatte.maler.UtbetalingsinfoSelectors.beregningsperioder
+import no.nav.pensjon.etterlatte.maler.UtbetalingsinfoSelectors.soeskenjustering
+import no.nav.pensjon.etterlatte.maler.UtbetalingsinfoSelectors.virkningsdato
 
 @TemplateModelHelpers
 object BarnepensjonVedtak : EtterlatteTemplate<BarnepensjonVedtakDTO> {

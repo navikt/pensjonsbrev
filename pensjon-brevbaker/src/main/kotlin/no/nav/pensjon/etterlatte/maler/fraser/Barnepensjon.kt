@@ -1,12 +1,6 @@
 package no.nav.pensjon.etterlatte.maler.fraser
 
 import no.nav.pensjon.brev.api.model.Kroner
-import no.nav.pensjon.brev.api.model.maler.BarnepensjonVedtakDTO
-import no.nav.pensjon.brev.api.model.maler.BeregningsperiodeSelectors.antallBarn
-import no.nav.pensjon.brev.api.model.maler.BeregningsperiodeSelectors.datoFOM
-import no.nav.pensjon.brev.api.model.maler.BeregningsperiodeSelectors.datoTOM
-import no.nav.pensjon.brev.api.model.maler.BeregningsperiodeSelectors.grunnbeloep
-import no.nav.pensjon.brev.api.model.maler.BeregningsperiodeSelectors.utbetaltBeloep
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.*
@@ -15,6 +9,12 @@ import no.nav.pensjon.brev.template.dsl.TextOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
+import no.nav.pensjon.etterlatte.maler.BarnepensjonVedtakDTO
+import no.nav.pensjon.etterlatte.maler.BeregningsperiodeSelectors.antallBarn
+import no.nav.pensjon.etterlatte.maler.BeregningsperiodeSelectors.datoFOM
+import no.nav.pensjon.etterlatte.maler.BeregningsperiodeSelectors.datoTOM
+import no.nav.pensjon.etterlatte.maler.BeregningsperiodeSelectors.grunnbeloep
+import no.nav.pensjon.etterlatte.maler.BeregningsperiodeSelectors.utbetaltBeloep
 import java.time.LocalDate
 
 object Barnepensjon {
@@ -76,7 +76,7 @@ object Barnepensjon {
                     textExpr(
                         Language.Bokmal to "Det gjøres en samlet beregning av pensjon for barn som oppdras sammen. ".expr() +
                                 "For denne beregningen har vi lagt til grunn at dere er ".expr() + antallBarn.format() +
-                                " barn som oppdras sammen.".expr()
+                                " barn som oppdras sammen.".expr(),
                     )
                 }
                 paragraph {
