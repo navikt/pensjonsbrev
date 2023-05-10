@@ -141,9 +141,9 @@ object Barnepensjon {
     data class PeriodeITabell(val datoFOM: Expression<LocalDate>, val datoTOM: Expression<LocalDate?>) :
         TextOnlyPhrase<LangBokmal>() {
         override fun TextOnlyScope<LangBokmal, Unit>.template() =
-            ifNotNull(datoTOM) {
+            ifNotNull(datoTOM) { datoTOM ->
                 textExpr(
-                    Language.Bokmal to datoFOM.format(true) + " - " + (datoTOM as Expression<LocalDate>).format(true)
+                    Language.Bokmal to datoFOM.format(true) + " - " + datoTOM.format(true)
                 )
             } orShow {
                 textExpr(
