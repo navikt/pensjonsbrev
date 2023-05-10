@@ -15,18 +15,17 @@ import no.nav.pensjon.brev.template.dsl.text
 //TBU054V, TBU055V
 // IF brevkode not(PE_UT_04_108) and not(PE_UT_04_109), THEN INCLUDE
 data class SlikFastsetterViInntektenDinEtterDuBleUfoer(
-    val inntektFoerUfoereBegrunnelse: Expression<InntektFoerUfoereBegrunnelse?>,
+    val inntektFoerUfoereBegrunnelse: Expression<InntektFoerUfoereBegrunnelse>,
     val ufoeretrygd: Expression<OpplysningerBruktIBeregningUTDto.Ufoeretrygd>,
     val kravAarsakType: Expression<KravAarsakType>,
-    val minsteytelseSats: Expression<Double?>,
+    val harMinsteytelse: Expression<Boolean>,
 
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    val harMinsteytelseSats = minsteytelseSats.notNull()
 
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         showIf(
             ((inntektFoerUfoereBegrunnelse.notNull() or ufoeretrygd.harInntektEtterUfoereBegrunnelse) or
-                    (kravAarsakType.isOneOf(KravAarsakType.SIVILSTANDSENDRING) and harMinsteytelseSats))
+                    (kravAarsakType.isOneOf(KravAarsakType.SIVILSTANDSENDRING) and harMinsteytelse))
         ) {
             title1 {
                 text(

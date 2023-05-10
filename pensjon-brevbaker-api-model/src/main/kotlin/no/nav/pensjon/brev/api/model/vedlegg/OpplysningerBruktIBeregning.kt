@@ -117,6 +117,7 @@ data class OpplysningerBruktIBeregningUTDto(
         val harInntektEtterUfoereBegrunnelse: Boolean,
         val harUtbetalingsgradLessThanUfoeregrad: Boolean,
         val kompensasjonsgrad: Double,
+        val minsteytelseSats: Double,
         val ufoeregrad: Int,
         val ufoeretidspunkt: LocalDate,
         val ufoeretrygdOrdinaer: UfoeretrygdOrdinaer,
@@ -131,7 +132,7 @@ data class OpplysningerBruktIBeregningUTDto(
     data class InntektFoerUfoere(
         val erSannsynligEndret: Boolean,
         val inntektFoerUfoer: Kroner,
-        val inntektFoerUfoereBegrunnelse: InntektFoerUfoereBegrunnelse?,
+        val inntektFoerUfoereBegrunnelse: InntektFoerUfoereBegrunnelse,
         val oppjustertInntektFoerUfoer: Kroner,
         val opptjeningUfoeretrygd: OpptjeningUfoeretrygd?,
         )

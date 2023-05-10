@@ -98,7 +98,7 @@ data class BarnetilleggEndringIOpptjening(
                     harFradragFellesbarn = barnetilleggFellesbarn.harFradrag,
                     harJusteringsbeloepFellesbarn = barnetilleggFellesbarn.harJusteringsbeloep,
                     inntektAnnenForelderFellesbarn = barnetilleggFellesbarn.inntektAnnenForelder,
-                    inntektBruktiAvkortningFellesbarn = barnetilleggFellesbarn.inntektBruktIAvkortning,
+                    brukersInntektBruktiAvkortningFellesbarn = barnetilleggFellesbarn.inntektBruktIAvkortning,
                     sivilstand = sivilstand,
                 )
             )

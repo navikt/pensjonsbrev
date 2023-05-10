@@ -7,7 +7,7 @@ import no.nav.pensjon.brev.api.model.vedlegg.BarnetilleggSelectors.fellesbarn_sa
 import no.nav.pensjon.brev.api.model.vedlegg.BeregnetUTPerManedSelectors.brukerErFlyktning
 import no.nav.pensjon.brev.api.model.vedlegg.BeregnetUTPerManedSelectors.grunnbeloep
 import no.nav.pensjon.brev.api.model.vedlegg.BeregnetUTPerManedSelectors.virkDatoFom
-import no.nav.pensjon.brev.api.model.vedlegg.InntektFoerUfoereSelectors.inntektFoerUfoereBegrunnelse_safe
+import no.nav.pensjon.brev.api.model.vedlegg.InntektFoerUfoereSelectors.inntektFoerUfoereBegrunnelse
 import no.nav.pensjon.brev.api.model.vedlegg.InntektFoerUfoereSelectors.opptjeningUfoeretrygd_safe
 import no.nav.pensjon.brev.api.model.vedlegg.InntektsAvkortingSelectors.forventetInntektAar
 import no.nav.pensjon.brev.api.model.vedlegg.InntektsAvkortingSelectors.inntektsgrenseAar
@@ -31,11 +31,11 @@ import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSel
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.fraOgMedDatoErNesteAar
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.harEktefelletilleggInnvilget
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.harKravaarsakEndringInntekt
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.harMinsteytelse
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.inntektEtterUfoereBeloepIEU
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.inntektFoerUfoere
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.inntektsAvkorting
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.kravAarsakType
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.minsteytelseSats
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.sivilstand
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.trygdetid
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.ufoeretrygd
@@ -111,17 +111,18 @@ fun createVedleggOpplysningerBruktIBeregningUT(
 
         includePhrase(
             TabellUfoereOpplysninger(
-                ufoeretrygd = ufoeretrygd,
-                yrkesskade = yrkesskade,
+                barnetillegg = barnetillegg,
+                beregnetUTPerManed = beregnetUTPerManed,
+                beregningsmetode = trygdetid.trygdetidsdetaljer.beregningsmetode,
+                erUngUfoer = ungUfoerErUnder20Aar,
+                harMinsteytelse = harMinsteytelse,
+                inntektEtterUfoereBeloep = inntektEtterUfoereBeloepIEU,
                 inntektFoerUfoere = inntektFoerUfoere,
                 inntektsAvkorting = inntektsAvkorting,
                 inntektsgrenseErUnderTak = inntektsgrenseErUnderTak,
-                beregnetUTPerManed = beregnetUTPerManed,
-                inntektEtterUfoereBeloep = inntektEtterUfoereBeloepIEU,
-                erUngUfoer = ungUfoerErUnder20Aar,
                 trygdetidsdetaljer = trygdetid.trygdetidsdetaljer,
-                barnetillegg = barnetillegg,
-                minsteytelseSats = minsteytelseSats,
+                ufoeretrygd = ufoeretrygd,
+                yrkesskade = yrkesskade,
             )
         )
 
@@ -171,11 +172,10 @@ fun createVedleggOpplysningerBruktIBeregningUT(
         }
 
         if (skalViseMinsteytelse) {
-            val harMinsteytelseSats = minsteytelseSats.ifNull(0.0).greaterThan(0.0)
-            showIf(harMinsteytelseSats) {
+            showIf(harMinsteytelse) {
                 includePhrase(
                     OpplysningerOmMinstetillegg(
-                        minsteytelseSats = minsteytelseSats,
+                        harMinsteytelse = harMinsteytelse,
                         ungUfoerErUnder20Aar = ungUfoerErUnder20Aar,
                         ufoeretrygd = ufoeretrygd,
                         inntektFoerUfoere = inntektFoerUfoere,
@@ -289,9 +289,9 @@ fun createVedleggOpplysningerBruktIBeregningUT(
                 if (skalViseInntektFoerUfoer) {
                     includePhrase(
                         SlikFastsetterViInntektenDinFoerDuBleUfoer(
-                            inntektFoerUfoereBegrunnelse = inntektFoerUfoere.inntektFoerUfoereBegrunnelse_safe,
+                            inntektFoerUfoereBegrunnelse = inntektFoerUfoere.inntektFoerUfoereBegrunnelse,
                             kravAarsakType = kravAarsakType,
-                            minsteytelseSats = minsteytelseSats,
+                            harMinsteytelse = harMinsteytelse,
                             ufoeretrygd = ufoeretrygd,
                         )
                     )
@@ -300,9 +300,9 @@ fun createVedleggOpplysningerBruktIBeregningUT(
                 if (skalViseInntektEtterUfoer) {
                     includePhrase(
                         SlikFastsetterViInntektenDinEtterDuBleUfoer(
-                            inntektFoerUfoereBegrunnelse = inntektFoerUfoere.inntektFoerUfoereBegrunnelse_safe,
+                            harMinsteytelse = harMinsteytelse,
+                            inntektFoerUfoereBegrunnelse = inntektFoerUfoere.inntektFoerUfoereBegrunnelse,
                             kravAarsakType = kravAarsakType,
-                            minsteytelseSats = minsteytelseSats,
                             ufoeretrygd = ufoeretrygd,
                         )
                     )

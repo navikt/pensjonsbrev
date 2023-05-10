@@ -39,7 +39,6 @@ data class BarnetilleggFellesbarn(
     val harFratrukketBeloepFraAnnenForelder: Boolean,
     val harJusteringsbeloep: Boolean,
     val inntektAnnenForelder: Kroner,
-    val inntektBruktIAvkortning: Kroner, // TODO fjern i neste versjon
     val inntektstak: Kroner,
     val brukersInntektBruktIAvkortning: Kroner,
     val samletInntektBruktIAvkortning: Kroner,
@@ -52,6 +51,6 @@ data class BarnetilleggSaerkullsbarn(
     val gjelderFlereBarn: Boolean,
     val harFradrag: Boolean,
     val harJusteringsbeloep: Boolean,
-    val inntektBruktIAvkortning: Kroner,
+    val brukersInntektBruktIAvkortning: Kroner,
     val inntektstak: Kroner,
 )

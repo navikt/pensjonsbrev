@@ -17,18 +17,18 @@ import no.nav.pensjon.brev.template.dsl.text
 // PE_UT_06_100, PE_UT_06_300, PE_UT_07_100, PE_UT_07_200, PE_UT_14_300
 
 data class SlikFastsetterViInntektenDinFoerDuBleUfoer(
-    val inntektFoerUfoereBegrunnelse: Expression<InntektFoerUfoereBegrunnelse?>,
+    val inntektFoerUfoereBegrunnelse: Expression<InntektFoerUfoereBegrunnelse>,
     val kravAarsakType: Expression<KravAarsakType>,
-    val minsteytelseSats: Expression<Double?>,
+    val harMinsteytelse: Expression<Boolean>,
     val ufoeretrygd: Expression<OpplysningerBruktIBeregningUTDto.Ufoeretrygd>,
 
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     val harDelvisUfoeregrad = ufoeretrygd.ufoeregrad.greaterThan(0) and ufoeretrygd.ufoeregrad.lessThan(100)
-    val harMinsteytelseSats = minsteytelseSats.notNull()
+
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         showIf(
             ((inntektFoerUfoereBegrunnelse.notNull() or ufoeretrygd.harInntektEtterUfoereBegrunnelse) or
-                    (kravAarsakType.isOneOf(KravAarsakType.SIVILSTANDSENDRING) and harMinsteytelseSats))
+                    (kravAarsakType.isOneOf(KravAarsakType.SIVILSTANDSENDRING) and harMinsteytelse))
         ) {
             title1 {
                 text(

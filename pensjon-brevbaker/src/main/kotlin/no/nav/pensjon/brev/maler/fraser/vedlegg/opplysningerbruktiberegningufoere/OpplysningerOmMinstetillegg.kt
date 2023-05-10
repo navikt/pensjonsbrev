@@ -20,7 +20,7 @@ INCLUDE */
 
 
 data class OpplysningerOmMinstetillegg(
-    val minsteytelseSats: Expression<Double?>,
+    val harMinsteytelse: Expression<Boolean>,
     val ungUfoerErUnder20Aar: Expression<Boolean>,
     val ufoeretrygd: Expression<OpplysningerBruktIBeregningUTDto.Ufoeretrygd>,
     val inntektFoerUfoere: Expression<OpplysningerBruktIBeregningUTDto.InntektFoerUfoere>,
@@ -28,8 +28,7 @@ data class OpplysningerOmMinstetillegg(
 
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-        val harMinsteytelseSats = minsteytelseSats.ifNull(0.0).greaterThan(0.0)
-        showIf(harMinsteytelseSats) {
+        showIf(harMinsteytelse) {
             title1 {
                 text(
                     Language.Bokmal to "For deg som har rett til minsteytelse",
@@ -52,9 +51,9 @@ data class OpplysningerOmMinstetillegg(
             }
         }
 
-        ifNotNull(minsteytelseSats) {
-            showIf(harMinsteytelseSats) {
-                includePhrase(VedleggBeregnUTDinMY(it))
+        ifNotNull(harMinsteytelse) {
+            showIf(harMinsteytelse) {
+                includePhrase(VedleggBeregnUTDinMY)
             }
         }
 
@@ -63,7 +62,7 @@ data class OpplysningerOmMinstetillegg(
         }
 
         showIf(
-            harMinsteytelseSats
+            harMinsteytelse
                     and inntektFoerUfoere.erSannsynligEndret
                     and inntektsgrenseErUnderTak
         ) {
@@ -130,15 +129,15 @@ data class OpplysningerOmMinstetillegg(
     }
 
 
-    data class VedleggBeregnUTDinMY(val sats_minsteytelseGjeldende: Expression<Double>) :
+    data class VedleggBeregnUTDinMY(val minsteytelseSats: Expression<Double>) :
         OutlinePhrase<LangBokmalNynorskEnglish>() {
 
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
             paragraph {
                 textExpr(
-                    Language.Bokmal to "For deg vil minsteytelse utgjøre ".expr() + sats_minsteytelseGjeldende.format() + " ganger folketrygdens grunnbeløp. Er uføregraden din under 100 prosent, vil minsteytelsen bli justert ut fra uføregraden. Vi justerer også minsteytelsen ut fra trygdetid hvis du har mindre enn 40 års trygdetid. Dersom sivilstanden din endrer seg, kan det medføre at uføretrygden endres.",
-                    Language.Nynorsk to "For deg vil minsteytinga utgjera ".expr() + sats_minsteytelseGjeldende.format() + " gonger grunnbeløpet i folketrygda. Er di uføregrad under 100 prosent, vil minsteytinga bli justert ut frå uføregrad. Vi justerer også minsteytinga ut frå trygdetid dersom du har mindre enn 40 års trygdetid. Dersom sivilstanden din endrar seg, kan det føre til at uføretrygda vert endra.",
-                    Language.English to "For you, the minimum benefit is equal to ".expr() + sats_minsteytelseGjeldende.format() + " times the National Insurance basic amount. If your degree of disability is lower than 100 percent, the minimum benefit will be adjusted for your degree of disability. We will also adjust the minimum benefit if your period of national insurance coverage is less than 40 years. In case of changes in your marital status your disability benefit might change."
+                    Language.Bokmal to "For deg vil minsteytelse utgjøre ".expr() + minsteytelseSats.format() + " ganger folketrygdens grunnbeløp. Er uføregraden din under 100 prosent, vil minsteytelsen bli justert ut fra uføregraden. Vi justerer også minsteytelsen ut fra trygdetid hvis du har mindre enn 40 års trygdetid. Dersom sivilstanden din endrer seg, kan det medføre at uføretrygden endres.",
+                    Language.Nynorsk to "For deg vil minsteytinga utgjera ".expr() + minsteytelseSats.format() + " gonger grunnbeløpet i folketrygda. Er di uføregrad under 100 prosent, vil minsteytinga bli justert ut frå uføregrad. Vi justerer også minsteytinga ut frå trygdetid dersom du har mindre enn 40 års trygdetid. Dersom sivilstanden din endrar seg, kan det føre til at uføretrygda vert endra.",
+                    Language.English to "For you, the minimum benefit is equal to ".expr() + minsteytelseSats.format() + " times the National Insurance basic amount. If your degree of disability is lower than 100 percent, the minimum benefit will be adjusted for your degree of disability. We will also adjust the minimum benefit if your period of national insurance coverage is less than 40 years. In case of changes in your marital status your disability benefit might change."
                 )
             }
     }
