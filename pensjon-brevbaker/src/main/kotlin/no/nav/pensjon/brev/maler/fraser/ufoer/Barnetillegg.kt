@@ -184,15 +184,15 @@ object Barnetillegg {
 
     // TBU1284
     data class InntektTilAvkortningFellesbarn(
-        val harBeloepFratrukketAnnenForelder: Expression<Boolean>,
+        val brukersInntektBruktiAvkortningFellesbarn: Expression<Kroner>,
         val faarUtbetaltBarnetilleggFellesBarn: Expression<Boolean>,
-        val harFradragFellesbarn: Expression<Boolean>,
         val fribeloepFellesbarn: Expression<Kroner>,
         val grunnbeloep: Expression<Kroner>,
         val harBarnetilleggSaerkullsbarn: Expression<Boolean>,
-        val inntektAnnenForelderFellesbarn: Expression<Kroner>,
-        val brukersInntektBruktiAvkortningFellesbarn: Expression<Kroner>,
+        val harBeloepFratrukketAnnenForelder: Expression<Boolean>,
+        val harFradragFellesbarn: Expression<Boolean>,
         val harJusteringsbeloepFellesbarn: Expression<Boolean>,
+        val inntektAnnenForelderFellesbarn: Expression<Kroner>,
         val sivilstand: Expression<Sivilstand>
 
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {

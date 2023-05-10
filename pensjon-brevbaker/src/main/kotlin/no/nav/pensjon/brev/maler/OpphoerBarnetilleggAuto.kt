@@ -7,7 +7,7 @@ import no.nav.pensjon.brev.api.model.LetterMetadata.Brevtype.VEDTAKSBREV
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.beloepBrutto
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.beloepNetto
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.beloepNetto_safe
-import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.brukersIntektBruktIAvkortning
+import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.brukersInntektBruktIAvkortning
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.fribeloep
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.gjelderFlereBarn
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.gjelderFlereBarn_safe
@@ -190,21 +190,15 @@ object OpphoerBarnetilleggAuto : AutobrevTemplate<OpphoerBarnetilleggAutoDto> {
                 ifNotNull(barnetilleggFellesbarn) { barnetilleggFellesbarn ->
                     includePhrase(
                         Barnetillegg.InntektTilAvkortningFellesbarn(
+                            brukersInntektBruktiAvkortningFellesbarn = barnetilleggFellesbarn.brukersInntektBruktIAvkortning,
                             faarUtbetaltBarnetilleggFellesBarn = barnetilleggFellesbarn.beloepNetto.greaterThan(0),
                             fribeloepFellesbarn = barnetilleggFellesbarn.fribeloep,
-<<<<<<< HEAD
-=======
-                            inntektAnnenForelderFellesbarn = barnetilleggFellesbarn.inntektAnnenForelder,
-                            brukersInntektBruktiAvkortningFellesbarn = barnetilleggFellesbarn.brukersIntektBruktIAvkortning,
-                            harJusteringsbeloepFellesbarn = barnetilleggFellesbarn.harJusteringsbeloep,
->>>>>>> main
                             grunnbeloep = grunnbeloep,
                             harBarnetilleggSaerkullsbarn = harBarnetilleggSaerkullsbarn,
                             harBeloepFratrukketAnnenForelder = barnetilleggFellesbarn.harFratrukketBeloepFraAnnenForelder,
                             harFradragFellesbarn = barnetilleggFellesbarn.harFradrag,
                             harJusteringsbeloepFellesbarn = barnetilleggFellesbarn.harJusteringsbeloep,
                             inntektAnnenForelderFellesbarn = barnetilleggFellesbarn.inntektAnnenForelder,
-                            inntektBruktiAvkortningFellesbarn = barnetilleggFellesbarn.inntektBruktIAvkortning,
                             sivilstand = sivilstand,
                         )
                     )
@@ -241,13 +235,8 @@ object OpphoerBarnetilleggAuto : AutobrevTemplate<OpphoerBarnetilleggAutoDto> {
                             beloepNettoFellesbarn = barnetilleggFellesbarn.beloepNetto,
                             fribeloepFellesbarn = barnetilleggFellesbarn.fribeloep,
                             harJusteringsbeloepFellesbarn = barnetilleggFellesbarn.harJusteringsbeloep,
-<<<<<<< HEAD
                             harFlereFellesbarn = barnetilleggFellesbarn.gjelderFlereBarn,
-                            inntektBruktiAvkortningFellesbarn = barnetilleggFellesbarn.inntektBruktIAvkortning,
-=======
-                            harTilleggForFlereFellesbarn = barnetilleggFellesbarn.gjelderFlereBarn,
                             samletInntektBruktiAvkortningFellesbarn = barnetilleggFellesbarn.samletInntektBruktIAvkortning,
->>>>>>> main
                             sivilstand = sivilstand,
                         )
                     )
