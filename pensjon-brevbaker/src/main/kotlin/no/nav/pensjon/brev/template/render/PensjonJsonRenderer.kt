@@ -47,6 +47,7 @@ object PensjonJsonRenderer : LetterRenderer<RenderedJsonLetter>() {
         when (element) {
             is Element.OutlineContent.Paragraph -> renderParagraph(scope, element)
             is Element.OutlineContent.Title1 -> Block.Title1(element.hashCode(), true, renderText(scope, element.text))
+            is Element.OutlineContent.Title2 -> Block.Title2(element.hashCode(), true, renderText(scope, element.text))
         }
 
     private fun renderParagraph(scope: ExpressionScope<*, *>, paragraph: Element.OutlineContent.Paragraph<*>): Paragraph =

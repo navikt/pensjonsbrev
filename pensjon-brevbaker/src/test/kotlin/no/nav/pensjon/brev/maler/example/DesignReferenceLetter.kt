@@ -92,11 +92,17 @@ object DesignReferenceLetter : AutobrevTemplate<LetterExampleDto> {
                 }
             }
 
-            title1 {
-                text(Bokmal to "Tittel", Nynorsk to "Tittel")
+            title2 {
+                text(Bokmal to "Tittel 2", Nynorsk to "Tittel 2")
             }
 
             paragraph {
+                text(
+                    Bokmal to "Du har fått innvilget pensjon.",
+                    Nynorsk to "Du har fått innvilget pensjon.",
+                    FontType.BOLD
+                )
+
                 text(
                     Bokmal to "Du har fått innvilget pensjon. Dette er grunnen til det. Dette er grunnen til det. Dette er grunnen til" +
                             "det. Dette er grunnen til det. Dette er grunnen til det. Dette er grunnen til det. Du får 16 000 kroner i" +
