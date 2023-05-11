@@ -237,7 +237,7 @@ object OpphoerBarnetilleggAuto : AutobrevTemplate<OpphoerBarnetilleggAutoDto> {
                             fribeloepFellesbarn = barnetilleggFellesbarn.fribeloep,
                             harJusteringsbeloepFellesbarn = barnetilleggFellesbarn.harJusteringsbeloep,
                             harFlereFellesbarn = barnetilleggFellesbarn.gjelderFlereBarn,
-                            samletInntektBruktiAvkortningFellesbarn = barnetilleggFellesbarn.samletInntektBruktIAvkortning,
+                            samletInntektBruktIAvkortningFellesbarn = barnetilleggFellesbarn.samletInntektBruktIAvkortning,
                             sivilstand = sivilstand,
                         )
                     )

@@ -7,6 +7,7 @@ import no.nav.pensjon.brev.api.model.maler.EndringIOpptjeningAutoDto
 import no.nav.pensjon.brev.api.model.maler.Fellesbarn1Selectors.beloepBrutto
 import no.nav.pensjon.brev.api.model.maler.Fellesbarn1Selectors.beloepNetto
 import no.nav.pensjon.brev.api.model.maler.Fellesbarn1Selectors.beloepNetto_safe
+import no.nav.pensjon.brev.api.model.maler.Fellesbarn1Selectors.brukersInntektBruktIAvkortning
 import no.nav.pensjon.brev.api.model.maler.Fellesbarn1Selectors.fribeloep
 import no.nav.pensjon.brev.api.model.maler.Fellesbarn1Selectors.gjelderFlereBarn
 import no.nav.pensjon.brev.api.model.maler.Fellesbarn1Selectors.gjelderFlereBarn_safe
@@ -14,18 +15,18 @@ import no.nav.pensjon.brev.api.model.maler.Fellesbarn1Selectors.harFradrag
 import no.nav.pensjon.brev.api.model.maler.Fellesbarn1Selectors.harFratrukketBeloepFraAnnenForelder
 import no.nav.pensjon.brev.api.model.maler.Fellesbarn1Selectors.harJusteringsbeloep
 import no.nav.pensjon.brev.api.model.maler.Fellesbarn1Selectors.inntektAnnenForelder
-import no.nav.pensjon.brev.api.model.maler.Fellesbarn1Selectors.inntektBruktIAvkortning
 import no.nav.pensjon.brev.api.model.maler.Fellesbarn1Selectors.inntektstak
 import no.nav.pensjon.brev.api.model.maler.Fellesbarn1Selectors.inntektstak_safe
+import no.nav.pensjon.brev.api.model.maler.Fellesbarn1Selectors.samletInntektBruktIAvkortning
 import no.nav.pensjon.brev.api.model.maler.Saerkullsbarn1Selectors.beloepBrutto
 import no.nav.pensjon.brev.api.model.maler.Saerkullsbarn1Selectors.beloepNetto
 import no.nav.pensjon.brev.api.model.maler.Saerkullsbarn1Selectors.beloepNetto_safe
+import no.nav.pensjon.brev.api.model.maler.Saerkullsbarn1Selectors.brukersInntektBruktIAvkortning
 import no.nav.pensjon.brev.api.model.maler.Saerkullsbarn1Selectors.fribeloep
 import no.nav.pensjon.brev.api.model.maler.Saerkullsbarn1Selectors.gjelderFlereBarn
 import no.nav.pensjon.brev.api.model.maler.Saerkullsbarn1Selectors.gjelderFlereBarn_safe
 import no.nav.pensjon.brev.api.model.maler.Saerkullsbarn1Selectors.harFradrag
 import no.nav.pensjon.brev.api.model.maler.Saerkullsbarn1Selectors.harJusteringsbeloep
-import no.nav.pensjon.brev.api.model.maler.Saerkullsbarn1Selectors.inntektBruktIAvkortning
 import no.nav.pensjon.brev.api.model.maler.Saerkullsbarn1Selectors.inntektstak
 import no.nav.pensjon.brev.api.model.maler.Saerkullsbarn1Selectors.inntektstak_safe
 import no.nav.pensjon.brev.maler.fraser.ufoer.Barnetillegg
@@ -98,7 +99,7 @@ data class BarnetilleggEndringIOpptjening(
                     harFradragFellesbarn = barnetilleggFellesbarn.harFradrag,
                     harJusteringsbeloepFellesbarn = barnetilleggFellesbarn.harJusteringsbeloep,
                     inntektAnnenForelderFellesbarn = barnetilleggFellesbarn.inntektAnnenForelder,
-                    brukersInntektBruktiAvkortningFellesbarn = barnetilleggFellesbarn.inntektBruktIAvkortning,
+                    brukersInntektBruktiAvkortningFellesbarn = barnetilleggFellesbarn.brukersInntektBruktIAvkortning,
                     sivilstand = sivilstand,
                 )
             )
@@ -110,7 +111,7 @@ data class BarnetilleggEndringIOpptjening(
                     beloepNettoSaerkullsbarn = barnetilleggSaerkullsbarn.beloepNetto,
                     fribeloepSaerkullsbarn = barnetilleggSaerkullsbarn.fribeloep,
                     harJusteringsbeloepSaerkullsbarn = barnetilleggSaerkullsbarn.harJusteringsbeloep,
-                    inntektBruktIAvkortningSaerkullsbarn = barnetilleggSaerkullsbarn.inntektBruktIAvkortning,
+                    brukersInntektBruktIAvkortningSaerkullsbarn = barnetilleggSaerkullsbarn.brukersInntektBruktIAvkortning,
                 )
             )
         }
@@ -135,8 +136,8 @@ data class BarnetilleggEndringIOpptjening(
                     harFradragSaerkullsbarn = barnetilleggSaerkullsbarn.harFradrag,
                     harJusteringsbeloepFellesbarn = barnetilleggFellesbarn.harJusteringsbeloep,
                     harJusteringsbeloepSaerkullsbarn = barnetilleggSaerkullsbarn.harJusteringsbeloep,
-                    inntektBruktIAvkortningSaerkullsbarn = barnetilleggSaerkullsbarn.inntektBruktIAvkortning,
-                    samletInntektBruktiAvkortningFellesbarn = barnetilleggFellesbarn.
+                    brukersInntektBruktIAvkortningSaerkullsbarn = barnetilleggSaerkullsbarn.brukersInntektBruktIAvkortning,
+                    samletInntektBruktIAvkortningFellesbarn = barnetilleggFellesbarn.samletInntektBruktIAvkortning,
                     sivilstand = sivilstand,
                 )
             )

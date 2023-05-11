@@ -350,7 +350,7 @@ object Barnetillegg {
         val harFradragSaerkullsbarn: Expression<Boolean>,
         val harJusteringsbeloepFellesbarn: Expression<Boolean>,
         val harJusteringsbeloepSaerkullsbarn: Expression<Boolean>,
-        val samletInntektBruktiAvkortningFellesbarn: Expression<Kroner>,
+        val samletInntektBruktIAvkortningFellesbarn: Expression<Kroner>,
         val sivilstand: Expression<Sivilstand>,
 
         ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
@@ -408,7 +408,7 @@ object Barnetillegg {
 
                         val ogsaa = not(harFradragForEnBarnetilleggYtelse)
                         val inntektErHoyereEnnFribeloepFellesBarn =
-                            samletInntektBruktiAvkortningFellesbarn.greaterThan(fribeloepFellesbarn)
+                            samletInntektBruktIAvkortningFellesbarn.greaterThan(fribeloepFellesbarn)
                         textExpr(
                             Bokmal to " Til sammen er ".expr() +
                                     ifElse(ogsaa, "også inntektene", "inntektene") +
