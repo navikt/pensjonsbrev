@@ -18,7 +18,6 @@ fun createOpplysningerBruktIBeregningUTDto() =
         inntektFoerUfoere = Fixtures.create(),
         inntektsAvkorting = Fixtures.create(),
         kravAarsakType = KravAarsakType.ENDRET_OPPTJENING,
-        minsteytelseSats = 0.0,
         sivilstand = Sivilstand.PARTNER,
         trygdetid = Fixtures.create(),
         ufoeretrygd = Fixtures.create(),
@@ -158,6 +157,7 @@ fun createOpplysningerBruktIBeregningUTDtoUfoeretrygd() =
         harInntektEtterUfoereBegrunnelse = false,
         harUtbetalingsgradLessThanUfoeregrad = true,
         kompensasjonsgrad = 0.0,
+        minsteytelseSats = 50.0,
         ufoeregrad = 0,
         ufoeretidspunkt = LocalDate.of(2020, 1, 1),
         ufoeretrygdOrdinaer = Fixtures.create(),
@@ -166,15 +166,15 @@ fun createOpplysningerBruktIBeregningUTDtoUfoeretrygd() =
 fun createOpplysningerBruktIBeregningUTDtoUfoeretrygdOrdinaer() =
     OpplysningerBruktIBeregningUTDto.UfoeretrygdOrdinaer(
         harBeloepRedusert = true,
+        harGammelUTBeloepUlikNyUTBeloep = false,
         harNyUTBeloep = true,
         harTotalNettoUT = true,
         nettoAkkumulerteBeloepUtbetalt = Kroner(200000),
-        nettoTilUtbetalingRestenAvAaret = Kroner(100000),
-        reduksjonIUfoeretrygd = Kroner(80000),
-        harGammelUTBeloepUlikNyUTBeloep = false,
         nettoAkkumulertePlussNettoRestAar = Kroner(300000),
         nettoPerAarReduksjonUT = Kroner(0),
+        nettoTilUtbetalingRestenAvAaret = Kroner(100000),
         overskytendeInntekt = Kroner(0),
+        reduksjonIUfoeretrygd = Kroner(80000),
         ufoeretrygdPlussInntekt = Kroner(500000),
     )
 
