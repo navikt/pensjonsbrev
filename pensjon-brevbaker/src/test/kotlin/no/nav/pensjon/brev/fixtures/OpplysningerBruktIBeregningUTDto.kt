@@ -14,6 +14,7 @@ fun createOpplysningerBruktIBeregningUTDto() =
         fraOgMedDatoErNesteAar = false,
         harEktefelletilleggInnvilget = false,
         harKravaarsakEndringInntekt = true,
+        harMinsteytelse = true,
         inntektEtterUfoereBeloepIEU = Kroner(0),
         inntektFoerUfoere = Fixtures.create(),
         inntektsAvkorting = Fixtures.create(),
