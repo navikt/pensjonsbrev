@@ -91,14 +91,16 @@ object PensjonLatexRenderer : LetterRenderer<RenderedLatexLetter>() {
     private fun LatexAppendable.signaturCommands(saksbehandlere: SignerendeSaksbehandlere?, brevtype: LetterMetadata.Brevtype) {
         appendNewCmd("closingbehandlet") {
             if (saksbehandlere != null) {
-                saksbehandlere.attesterendeSaksbehandler?.takeIf { brevtype == LetterMetadata.Brevtype.VEDTAKSBREV }
-                    ?.let { attestant ->
+                val attestant = saksbehandlere.attesterendeSaksbehandler?.takeIf { brevtype == LetterMetadata.Brevtype.VEDTAKSBREV }
+                    if(attestant != null){
                         appenCmd("doublesignature") {
                             arg { append(attestant) }
                             arg { append(saksbehandlere.saksbehandler) }
                         }
-                    } ?: append("""${saksbehandlere.saksbehandler} \\ \feltclosingsaksbehandlersuffix""",escape = false)
-
+                    } else {
+                        append(saksbehandlere.saksbehandler)
+                        appendln(""" \\ \feltclosingsaksbehandlersuffix """)
+                    }
                 appenCmd("par")
                 appenCmd("vspace*{12pt}")
                 appenCmd("feltnavenhet")
