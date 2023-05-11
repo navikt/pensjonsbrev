@@ -56,6 +56,7 @@ import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidsdetaljerSelectors.fastsat
 import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidsdetaljerSelectors.harBoddArbeidUtland
 import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdOrdinaerSelectors.harGammelUTBeloepUlikNyUTBeloep
 import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdOrdinaerSelectors.harNyUTBeloep
+import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdSelectors.minsteytelseSats
 import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdSelectors.ufoeretidspunkt
 import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdSelectors.ufoeretrygdOrdinaer
 import no.nav.pensjon.brev.api.model.vedlegg.YrkesskadeSelectors.yrkesskadegrad_safe
@@ -176,10 +177,11 @@ fun createVedleggOpplysningerBruktIBeregningUT(
                 includePhrase(
                     OpplysningerOmMinstetillegg(
                         harMinsteytelse = harMinsteytelse,
-                        ungUfoerErUnder20Aar = ungUfoerErUnder20Aar,
-                        ufoeretrygd = ufoeretrygd,
                         inntektFoerUfoere = inntektFoerUfoere,
                         inntektsgrenseErUnderTak = inntektsgrenseErUnderTak,
+                        minsteytelseSats = ufoeretrygd.minsteytelseSats,
+                        ufoeretrygd = ufoeretrygd,
+                        ungUfoerErUnder20Aar = ungUfoerErUnder20Aar,
                     )
                 )
             }
