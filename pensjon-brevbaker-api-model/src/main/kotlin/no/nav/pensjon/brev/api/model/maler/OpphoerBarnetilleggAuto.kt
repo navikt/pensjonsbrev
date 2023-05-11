@@ -33,6 +33,7 @@ data class Ufoeretrygd(
 data class BarnetilleggFellesbarn(
     val beloepBrutto: Kroner,
     val beloepNetto: Kroner,
+    val brukersInntektBruktIAvkortning: Kroner,
     val fribeloep: Kroner,
     val gjelderFlereBarn: Boolean,
     val harFradrag: Boolean,
@@ -40,17 +41,16 @@ data class BarnetilleggFellesbarn(
     val harJusteringsbeloep: Boolean,
     val inntektAnnenForelder: Kroner,
     val inntektstak: Kroner,
-    val brukersInntektBruktIAvkortning: Kroner,
     val samletInntektBruktIAvkortning: Kroner,
 )
 
 data class BarnetilleggSaerkullsbarn(
     val beloepBrutto: Kroner,
     val beloepNetto: Kroner,
+    val brukersInntektBruktIAvkortning: Kroner,
     val fribeloep: Kroner,
     val gjelderFlereBarn: Boolean,
     val harFradrag: Boolean,
     val harJusteringsbeloep: Boolean,
-    val brukersInntektBruktIAvkortning: Kroner,
     val inntektstak: Kroner,
 )

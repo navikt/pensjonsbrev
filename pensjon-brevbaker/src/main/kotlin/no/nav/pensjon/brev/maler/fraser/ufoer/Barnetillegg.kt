@@ -273,26 +273,25 @@ object Barnetillegg {
     data class InntektTilAvkortningSaerkullsbarn(
         val beloepNettoSaerkullsbarn: Expression<Kroner>,
         val fribeloepSaerkullsbarn: Expression<Kroner>,
-        val inntektBruktIAvkortningSaerkullsbarn: Expression<Kroner>,
+        val brukersInntektBruktIAvkortningSaerkullsbarn: Expression<Kroner>,
         val harJusteringsbeloepSaerkullsbarn: Expression<Boolean>
 
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
 
             val fribeloep = fribeloepSaerkullsbarn.format()
-            val inntektBruktiAvkortning = inntektBruktIAvkortningSaerkullsbarn.format()
-            val hoeyereLavere = inntektBruktIAvkortningSaerkullsbarn.lessThanOrEqual(fribeloepSaerkullsbarn)
+            val hoeyereLavere = brukersInntektBruktIAvkortningSaerkullsbarn.lessThanOrEqual(fribeloepSaerkullsbarn)
             val inntektLavereEnnFribeloep =
-                inntektBruktIAvkortningSaerkullsbarn.lessThanOrEqual(fribeloepSaerkullsbarn)
+                brukersInntektBruktIAvkortningSaerkullsbarn.lessThanOrEqual(fribeloepSaerkullsbarn)
 
             val faarUtbetaltBarnetilleggSaerkullsbarn = beloepNettoSaerkullsbarn.greaterThan(0)
             showIf(harJusteringsbeloepSaerkullsbarn) {
                 paragraph {
 
                     textExpr(
-                        Bokmal to "Inntekten din er ".expr() + inntektBruktiAvkortning + " kroner.",
-                        Nynorsk to "Inntekta di er ".expr() + inntektBruktiAvkortning + " kroner.",
-                        English to "Your income is NOK ".expr() + inntektBruktiAvkortning + "."
+                        Bokmal to "Inntekten din er ".expr() + brukersInntektBruktIAvkortningSaerkullsbarn.format() + " kroner.",
+                        Nynorsk to "Inntekta di er ".expr() + brukersInntektBruktIAvkortningSaerkullsbarn.format() + " kroner.",
+                        English to "Your income is NOK ".expr() + brukersInntektBruktIAvkortningSaerkullsbarn.format() + "."
                     )
                     includePhrase(DuHarFaattUtbetaltBarnetilleggTidligereIAar)
                     text(
@@ -311,17 +310,17 @@ object Barnetillegg {
             }.orShowIf(faarUtbetaltBarnetilleggSaerkullsbarn) {
                 paragraph {
                     textExpr(
-                        Bokmal to "Inntekten din på ".expr() + inntektBruktiAvkortning + " kroner er " +
+                        Bokmal to "Inntekten din på ".expr() + brukersInntektBruktIAvkortningSaerkullsbarn.format() + " kroner er " +
                                 ifElse(hoeyereLavere, "lavere", "høyere") +
                                 " enn fribeløpet ditt på " + fribeloep + " kroner. Barnetillegget ditt er derfor " +
                                 ifElse(inntektLavereEnnFribeloep, "ikke ", "") + "redusert ut fra inntekt.",
 
-                        Nynorsk to "Inntekta di på ".expr() + inntektBruktiAvkortning + " kroner er " +
+                        Nynorsk to "Inntekta di på ".expr() + brukersInntektBruktIAvkortningSaerkullsbarn.format() + " kroner er " +
                                 ifElse(hoeyereLavere, "lågare", "høgare") +
                                 " enn fribeløpet ditt på " + fribeloep + " kroner. Barnetillegget ditt er derfor " +
                                 ifElse(inntektLavereEnnFribeloep, "ikkje ", "") + "redusert ut frå inntekt.",
 
-                        English to "Your income of NOK ".expr() + inntektBruktiAvkortning + " is " +
+                        English to "Your income of NOK ".expr() + brukersInntektBruktIAvkortningSaerkullsbarn.format() + " is " +
                                 ifElse(hoeyereLavere, "lower", "higher") +
                                 " than your exemption amount of NOK " +
                                 fribeloep + ". Therefore your child supplement has " +
@@ -340,6 +339,7 @@ object Barnetillegg {
         val beloepBruttoSaerkullsbarn: Expression<Kroner>,
         val beloepNettoFellesbarn: Expression<Kroner>,
         val beloepNettoSaerkullsbarn: Expression<Kroner>,
+        val brukersInntektBruktIAvkortningSaerkullsbarn: Expression<Kroner>,
         val fribeloepFellesbarn: Expression<Kroner>,
         val fribeloepSaerkullsbarn: Expression<Kroner>,
         val harBarnetilleggFellesbarn: Expression<Boolean>,
@@ -350,7 +350,6 @@ object Barnetillegg {
         val harFradragSaerkullsbarn: Expression<Boolean>,
         val harJusteringsbeloepFellesbarn: Expression<Boolean>,
         val harJusteringsbeloepSaerkullsbarn: Expression<Boolean>,
-        val inntektBruktIAvkortningSaerkullsbarn: Expression<Kroner>,
         val samletInntektBruktiAvkortningFellesbarn: Expression<Kroner>,
         val sivilstand: Expression<Sivilstand>,
 
@@ -359,7 +358,7 @@ object Barnetillegg {
             val faarUtbetaltBarnetilleggSaerkullsbarn = beloepNettoSaerkullsbarn.greaterThan(0)
             val barnetilleggSaerkullsbarnIkkeRedusert = beloepNettoSaerkullsbarn.equalTo(beloepBruttoSaerkullsbarn)
             val inntektOverFribeloepSaerkullsbarn =
-                inntektBruktIAvkortningSaerkullsbarn.greaterThan(fribeloepSaerkullsbarn)
+                brukersInntektBruktIAvkortningSaerkullsbarn.greaterThan(fribeloepSaerkullsbarn)
 
             val faarUtbetaltBarnetilleggFellesbarn = beloepNettoFellesbarn.greaterThan(0)
             val barnetilleggFellesbarnIkkeRedusert = beloepNettoFellesbarn.equalTo(beloepBruttoFellesbarn)

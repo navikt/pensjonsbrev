@@ -129,14 +129,14 @@ data class BarnetilleggEndringIOpptjening(
                     fribeloepSaerkullsbarn = barnetilleggSaerkullsbarn.fribeloep,
                     harBarnetilleggFellesbarn = harBarnetilleggFellesbarn,
                     harBarnetilleggSaerkullsbarn = harBarnetilleggSaerkullsbarn,
+                    harFlereFellesbarn = barnetilleggFellesbarn.gjelderFlereBarn,
+                    harFlereSaerkullsbarn = barnetilleggSaerkullsbarn.gjelderFlereBarn,
                     harFradragFellesbarn = barnetilleggFellesbarn.harFradrag,
                     harFradragSaerkullsbarn = barnetilleggSaerkullsbarn.harFradrag,
                     harJusteringsbeloepFellesbarn = barnetilleggFellesbarn.harJusteringsbeloep,
                     harJusteringsbeloepSaerkullsbarn = barnetilleggSaerkullsbarn.harJusteringsbeloep,
-                    harFlereFellesbarn = barnetilleggFellesbarn.gjelderFlereBarn,
-                    harFlereSaerkullsbarn = barnetilleggSaerkullsbarn.gjelderFlereBarn,
                     inntektBruktIAvkortningSaerkullsbarn = barnetilleggSaerkullsbarn.inntektBruktIAvkortning,
-                    inntektBruktiAvkortningFellesbarn = barnetilleggFellesbarn.inntektBruktIAvkortning,
+                    samletInntektBruktiAvkortningFellesbarn = barnetilleggFellesbarn.
                     sivilstand = sivilstand,
                 )
             )

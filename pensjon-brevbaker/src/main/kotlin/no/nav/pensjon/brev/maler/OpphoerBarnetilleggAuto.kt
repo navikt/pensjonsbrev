@@ -20,12 +20,12 @@ import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.samle
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarnSelectors.beloepBrutto
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarnSelectors.beloepNetto
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarnSelectors.beloepNetto_safe
+import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarnSelectors.brukersInntektBruktIAvkortning
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarnSelectors.fribeloep
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarnSelectors.gjelderFlereBarn
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarnSelectors.gjelderFlereBarn_safe
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarnSelectors.harFradrag
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarnSelectors.harJusteringsbeloep
-import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarnSelectors.inntektBruktIAvkortning
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarnSelectors.inntektstak_safe
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.OpphoerBarnetilleggAutoDto
@@ -52,6 +52,7 @@ import no.nav.pensjon.brev.maler.fraser.ufoer.Ufoeretrygd
 import no.nav.pensjon.brev.maler.vedlegg.createVedleggOpplysningerBruktIBeregningUT
 import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgPlikterUfoere
 import no.nav.pensjon.brev.maler.vedlegg.vedleggMaanedligUfoeretrygdFoerSkatt
+import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.dsl.createTemplate
@@ -209,7 +210,7 @@ object OpphoerBarnetilleggAuto : AutobrevTemplate<OpphoerBarnetilleggAutoDto> {
                         Barnetillegg.InntektTilAvkortningSaerkullsbarn(
                             beloepNettoSaerkullsbarn = barnetilleggSaerkullsbarn.beloepNetto,
                             fribeloepSaerkullsbarn = barnetilleggSaerkullsbarn.fribeloep,
-                            inntektBruktIAvkortningSaerkullsbarn = barnetilleggSaerkullsbarn.inntektBruktIAvkortning,
+                            brukersInntektBruktIAvkortningSaerkullsbarn =  barnetilleggSaerkullsbarn.brukersInntektBruktIAvkortning,
                             harJusteringsbeloepSaerkullsbarn = barnetilleggSaerkullsbarn.harJusteringsbeloep,
                         )
                     )
@@ -228,7 +229,7 @@ object OpphoerBarnetilleggAuto : AutobrevTemplate<OpphoerBarnetilleggAutoDto> {
                             harJusteringsbeloepSaerkullsbarn = barnetilleggSaerkullsbarn.harJusteringsbeloep,
                             harFlereSaerkullsbarn = barnetilleggSaerkullsbarn.gjelderFlereBarn,
                             harBarnetilleggSaerkullsbarn = harBarnetilleggSaerkullsbarn,
-                            inntektBruktIAvkortningSaerkullsbarn = barnetilleggSaerkullsbarn.inntektBruktIAvkortning,
+                            brukersInntektBruktIAvkortningSaerkullsbarn = barnetilleggSaerkullsbarn.brukersInntektBruktIAvkortning,
                             harFradragFellesbarn = barnetilleggFellesbarn.harFradrag,
                             beloepBruttoFellesbarn = barnetilleggFellesbarn.beloepBrutto,
                             harBarnetilleggFellesbarn = harBarnetilleggFellesbarn,
