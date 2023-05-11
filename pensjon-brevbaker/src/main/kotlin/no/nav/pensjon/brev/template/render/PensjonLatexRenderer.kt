@@ -92,15 +92,15 @@ object PensjonLatexRenderer : LetterRenderer<RenderedLatexLetter>() {
         appendNewCmd("closingbehandlet") {
             if (saksbehandlere != null) {
                 val attestant = saksbehandlere.attesterendeSaksbehandler?.takeIf { brevtype == LetterMetadata.Brevtype.VEDTAKSBREV }
-                    if(attestant != null){
-                        appenCmd("doublesignature") {
-                            arg { append(attestant) }
-                            arg { append(saksbehandlere.saksbehandler) }
-                        }
-                    } else {
-                        append(saksbehandlere.saksbehandler)
-                        appendln(""" \\ \feltclosingsaksbehandlersuffix """)
+                if (attestant != null) {
+                    appenCmd("doublesignature") {
+                        arg { append(attestant) }
+                        arg { append(saksbehandlere.saksbehandler) }
                     }
+                } else {
+                    append(saksbehandlere.saksbehandler)
+                    appendln(""" \\ \feltclosingsaksbehandlersuffix """, escape = false)
+                }
                 appenCmd("par")
                 appenCmd("vspace*{12pt}")
                 appenCmd("feltnavenhet")
