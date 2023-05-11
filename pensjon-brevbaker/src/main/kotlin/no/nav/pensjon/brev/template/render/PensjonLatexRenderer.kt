@@ -99,7 +99,7 @@ object PensjonLatexRenderer : LetterRenderer<RenderedLatexLetter>() {
                         }
                     } else {
                         append(saksbehandlere.saksbehandler)
-                        appendln(""" \\ \feltclosingsaksbehandlersuffix """)
+                        appendln(""" \\ \feltclosingsaksbehandlersuffix """, escape = false)
                     }
                 appenCmd("par")
                 appenCmd("vspace*{12pt}")
