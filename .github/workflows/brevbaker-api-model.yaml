@@ -5,10 +5,12 @@ on:
       - "main"
     paths:
       - "pensjon-brevbaker-api-model/**"
+      - "brevbaker-api-model-common/**"
       - ".github/workflows/brevbaker-api-model.yaml"
 
 jobs:
-  "release":
+
+  "release-common":
     name: "build"
     runs-on: "ubuntu-latest"
     steps:
@@ -23,7 +25,31 @@ jobs:
         with:
           "java-version": "17"
       - name: "compile and run tests"
+        run: "./gradlew :brevbaker-api-model-common:build"
+      - name: "Release maven artifact"
+        run: "./gradlew :brevbaker-api-model-common:publish"
+        env:
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+
+  "release-pensjon":
+    name: "build"
+    runs-on: "ubuntu-latest"
+    needs: [ release-common ]
+    steps:
+      - uses: "actions/checkout@v2"
+      - uses: "gradle/wrapper-validation-action@v1"
+      - uses: "actions/cache@v2"
+        with:
+          "path": "~/.gradle/caches"
+          "key": "${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle.kts') }}"
+          "restore-keys": "${{ runner.os }}-gradle-"
+      - uses: "actions/setup-java@v1"
+        with:
+          "java-version": "17"
+      - name: "compile and run tests"
         run: "./gradlew :pensjon-brevbaker-api-model:build"
+        env:
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
       - name: "Release maven artifact"
         run: "./gradlew :pensjon-brevbaker-api-model:publish"
         env:

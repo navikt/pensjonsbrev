@@ -92,8 +92,9 @@ dependencies {
     implementation(project(mapOf("path" to ":pensjon-brevbaker-api-model")))
     ksp(project(":template-model-generator"))
 
-    // Necessary for java.time.LocalDate
-    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jacksonJsr310Version")
+    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jacksonJsr310Version") {
+        because("we require deserialization/serialization of java.time.LocalDate")
+    }
 
     // Metrics
     implementation("io.ktor:ktor-server-metrics:$ktorVersion")

@@ -1,7 +1,7 @@
 package no.nav.pensjon.brev.skribenten
 
-import no.nav.pensjon.brev.api.model.*
-import no.nav.pensjon.brev.api.model.RenderedJsonLetter.*
+import no.nav.pensjon.brevbaker.api.model.RenderedJsonLetter
+import no.nav.pensjon.brevbaker.api.model.RenderedJsonLetter.*
 
 fun updatedEditedLetter(editedLetter: EditedJsonLetter, renderedLetter: RenderedJsonLetter): RenderedJsonLetter =
     renderedLetter.copy(blocks = merge(editedLetter.letter.blocks, renderedLetter.blocks, editedLetter.deletedBlocks))

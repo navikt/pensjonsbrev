@@ -4,6 +4,7 @@ import no.nav.pensjon.brev.api.model.*
 import no.nav.pensjon.brev.maler.fraser.common.*
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.expression.*
+import no.nav.pensjon.brevbaker.api.model.IntValue
 
 val intValueSelector = object : TemplateModelSelector<IntValue, Int> {
     override val className: String = "no.nav.pensjon.brev.api.model.IntValue"

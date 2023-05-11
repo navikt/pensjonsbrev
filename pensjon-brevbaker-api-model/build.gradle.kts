@@ -1,12 +1,10 @@
-val jupiterVersion: String by project
-
 plugins {
     kotlin("jvm")
     `maven-publish`
 }
 
 group = "no.nav.pensjon.brev"
-version = "3.5.31"
+version = "33"
 
 java {
     withSourcesJar()
@@ -19,6 +17,7 @@ repositories {
 
 dependencies {
     compileOnly(kotlin("stdlib"))
+    api("no.nav.pensjon.brevbaker:brevbaker-api-model-common:1.0.1")
 }
 
 publishing {
@@ -42,5 +41,8 @@ publishing {
 tasks {
     compileKotlin {
         kotlinOptions.jvmTarget = "1.8"
+    }
+    compileJava {
+        targetCompatibility = "1.8"
     }
 }

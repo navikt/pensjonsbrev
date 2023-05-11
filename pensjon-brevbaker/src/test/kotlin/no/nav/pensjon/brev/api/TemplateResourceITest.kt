@@ -4,9 +4,8 @@ import no.nav.pensjon.brev.*
 import no.nav.pensjon.brev.api.model.*
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.template.LetterTemplate
-import org.junit.jupiter.api.Tag
-import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.fail
+import no.nav.pensjon.brevbaker.api.model.LanguageCode
+import org.junit.jupiter.api.*
 import kotlin.reflect.KClass
 
 @Tag(TestTags.PDF_BYGGER)

@@ -1,10 +1,5 @@
 package no.nav.pensjon.brev.maler.example
 
-import no.nav.pensjon.brev.api.model.BrukerSelectors.fornavn
-import no.nav.pensjon.brev.api.model.FellesSelectors.bruker
-import no.nav.pensjon.brev.api.model.FellesSelectors.dokumentDato
-import no.nav.pensjon.brev.api.model.Kroner
-import no.nav.pensjon.brev.api.model.LetterMetadata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.maler.example.LetterExampleDtoSelectors.datoAvslaatt
 import no.nav.pensjon.brev.maler.example.LetterExampleDtoSelectors.datoInnvilget
@@ -18,11 +13,14 @@ import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
-import no.nav.pensjon.brev.template.Language.Bokmal
-import no.nav.pensjon.brev.template.Language.Nynorsk
+import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
+import no.nav.pensjon.brevbaker.api.model.*
+import no.nav.pensjon.brevbaker.api.model.BrukerSelectors.fornavn
+import no.nav.pensjon.brevbaker.api.model.FellesSelectors.bruker
+import no.nav.pensjon.brevbaker.api.model.FellesSelectors.dokumentDato
 import java.time.LocalDate
 
 @TemplateModelHelpers

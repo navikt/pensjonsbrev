@@ -3,11 +3,11 @@ package no.nav.pensjon.brev.template.render
 import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.isA
 import no.nav.pensjon.brev.Fixtures.felles
-import no.nav.pensjon.brev.api.model.RenderedJsonLetter
-import no.nav.pensjon.brev.api.model.RenderedJsonLetter.Block
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.dsl.*
+import no.nav.pensjon.brevbaker.api.model.RenderedJsonLetter
+import no.nav.pensjon.brevbaker.api.model.RenderedJsonLetter.Block
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 

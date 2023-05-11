@@ -5,6 +5,7 @@ import no.nav.pensjon.brev.api.model.Sivilstand.*
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.dsl.expression.*
+import no.nav.pensjon.brevbaker.api.model.*
 
 fun Telefonnummer.format() =
     "([0-9][0-9])".toRegex().replace(value, "$1 ").trim()

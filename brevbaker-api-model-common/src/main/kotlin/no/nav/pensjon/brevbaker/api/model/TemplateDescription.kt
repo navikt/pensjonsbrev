@@ -1,6 +1,6 @@
 @file:Suppress("unused")
 
-package no.nav.pensjon.brev.api.model
+package no.nav.pensjon.brevbaker.api.model
 
 data class TemplateDescription(
     val name: String,

@@ -1,9 +1,7 @@
 package no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningufoere
 
 import no.nav.pensjon.brev.api.model.Beregningsmetode
-import no.nav.pensjon.brev.api.model.Kroner
-import no.nav.pensjon.brev.api.model.Sivilstand.GIFT_LEVER_ADSKILT
-import no.nav.pensjon.brev.api.model.Sivilstand.PARTNER_LEVER_ADSKILT
+import no.nav.pensjon.brev.api.model.Sivilstand.*
 import no.nav.pensjon.brev.api.model.vedlegg.BarnetilleggSelectors.fellesbarn
 import no.nav.pensjon.brev.api.model.vedlegg.BarnetilleggSelectors.fellesbarn_safe
 import no.nav.pensjon.brev.api.model.vedlegg.BarnetilleggSelectors.foedselsdatoPaaBarnTilleggetGjelder
@@ -15,8 +13,8 @@ import no.nav.pensjon.brev.api.model.vedlegg.FellesbarnSelectors.beloepNetto_saf
 import no.nav.pensjon.brev.api.model.vedlegg.FellesbarnSelectors.beloepFratrukketAnnenForeldersInntekt
 import no.nav.pensjon.brev.api.model.vedlegg.FellesbarnSelectors.fribeloep
 import no.nav.pensjon.brev.api.model.vedlegg.FellesbarnSelectors.inntektAnnenForelder
-import no.nav.pensjon.brev.api.model.vedlegg.FellesbarnSelectors.inntektBruktIAvkortning_safe
 import no.nav.pensjon.brev.api.model.vedlegg.FellesbarnSelectors.inntektstak_safe
+import no.nav.pensjon.brev.api.model.vedlegg.FellesbarnSelectors.samletInntektBruktIAvkortning_safe
 import no.nav.pensjon.brev.api.model.vedlegg.InntektFoerUfoereSelectors.inntektFoerUfoer
 import no.nav.pensjon.brev.api.model.vedlegg.InntektsAvkortingSelectors.forventetInntektAar
 import no.nav.pensjon.brev.api.model.vedlegg.InntektsAvkortingSelectors.inntektsgrenseAar
@@ -51,15 +49,11 @@ import no.nav.pensjon.brev.api.model.vedlegg.YrkesskadeSelectors.skadetidspunkt
 import no.nav.pensjon.brev.api.model.vedlegg.YrkesskadeSelectors.yrkesskadegrad
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.model.tableFormat
-import no.nav.pensjon.brev.template.Element
-import no.nav.pensjon.brev.template.Expression
-import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
+import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Language.*
-import no.nav.pensjon.brev.template.OutlinePhrase
-import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
+import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brev.template.dsl.expression.*
-import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.template.dsl.textExpr
+import no.nav.pensjon.brevbaker.api.model.Kroner
 
 data class TabellUfoereOpplysninger(
     val barnetillegg: Expression<OpplysningerBruktIBeregningUTDto.Barnetillegg?>,
@@ -981,32 +975,28 @@ data class TabellUfoereOpplysninger(
                             }
                         }
 
-                        val inntektBruktIAvkortningFelles =
-                            barnetillegg.fellesbarn_safe.inntektBruktIAvkortning_safe.ifNull(Kroner(0))
-                        val inntektBruktIAvkortningSaerkull =
-                            barnetillegg.saerkullsbarn_safe.inntektBruktIAvkortning_safe.ifNull(Kroner(0))
-                        showIf(
-                            inntektBruktIAvkortningFelles.greaterThan(0) or inntektBruktIAvkortningSaerkull.greaterThan(
-                                0
-                            )
-                        ) {
-                            row {
-                                cell {
-                                    text(
-                                        Bokmal to "Samlet inntekt som er brukt i fastsettelse av barnetillegg",
-                                        Nynorsk to "Samla inntekt som er brukt i fastsetjinga av barnetillegg",
-                                        English to "Your income, which is used to calculate child supplement"
-                                    )
-                                }
-                                cell {
-                                    showIf(inntektBruktIAvkortningFelles.greaterThan(0)) {
-                                        includePhrase(Felles.KronerText(inntektBruktIAvkortningFelles))
-                                    }.orShow {
-                                        includePhrase(Felles.KronerText(inntektBruktIAvkortningSaerkull))
-                                    }
+                    val samletInntektBruktIAvkortningFelles =
+                        barnetillegg.fellesbarn_safe.samletInntektBruktIAvkortning_safe.ifNull(Kroner(0))
+                    val inntektBruktIAvkortningSaerkull =
+                        barnetillegg.saerkullsbarn_safe.inntektBruktIAvkortning_safe.ifNull(Kroner(0))
+                    showIf(samletInntektBruktIAvkortningFelles.greaterThan(0) or inntektBruktIAvkortningSaerkull.greaterThan(0)) {
+                        row {
+                            cell {
+                                text(
+                                    Bokmal to "Samlet inntekt som er brukt i fastsettelse av barnetillegg",
+                                    Nynorsk to "Samla inntekt som er brukt i fastsetjinga av barnetillegg",
+                                    English to "Your income, which is used to calculate child supplement"
+                                )
+                            }
+                            cell {
+                                showIf(samletInntektBruktIAvkortningFelles.greaterThan(0)) {
+                                    includePhrase(Felles.KronerText(samletInntektBruktIAvkortningFelles))
+                                }.orShow {
+                                    includePhrase(Felles.KronerText(inntektBruktIAvkortningSaerkull))
                                 }
                             }
                         }
+                    }
 
                         ifNotNull(barnetillegg.fellesbarn) { fellesbarn ->
                             row {

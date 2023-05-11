@@ -1,8 +1,8 @@
 package no.nav.pensjon.brev.template
 
-import no.nav.pensjon.brev.api.model.*
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.expression.Predicate
+import no.nav.pensjon.brevbaker.api.model.*
 import java.text.NumberFormat
 import java.time.LocalDate
 import java.time.format.FormatStyle
