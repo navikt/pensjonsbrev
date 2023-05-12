@@ -13,6 +13,7 @@ import no.nav.pensjon.etterlatte.maler.BarnepensjonVedtakDTOSelectors.Beregnings
 import no.nav.pensjon.etterlatte.maler.BarnepensjonVedtakDTOSelectors.BeregningsperiodeSelectors.grunnbeloep
 import no.nav.pensjon.etterlatte.maler.BarnepensjonVedtakDTOSelectors.BeregningsperiodeSelectors.utbetaltBeloep
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
+import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
 import java.time.LocalDate
 
 object Barnepensjon {
@@ -93,15 +94,13 @@ object Barnepensjon {
                 }
             }
 
-            title1 {
-                text(
-                    Language.Bokmal to "Opplysninger om beregning av pensjonen din",
-                )
-            }
             paragraph {
+                text(
+                    Language.Bokmal to "Opplysninger om beregning av pensjonen din", FontType.BOLD
+                )
                 table(
                     header = {
-                        column(1) {
+                        column(2) {
                             text(Language.Bokmal to "Periode")
                         }
                         column(1) {
@@ -110,7 +109,7 @@ object Barnepensjon {
                         column(1) {
                             text(Language.Bokmal to "Grunnbeløp (G)")
                         }
-                        column(1) {
+                        column(2) {
                             text(Language.Bokmal to "Brutto utbetaling per måned")
                         }
                     }
@@ -147,6 +146,16 @@ object Barnepensjon {
                     Language.Bokmal to datoFOM.format(true) + " - "
                 )
             }
+    }
+
+    object InformasjonTilDegOverskrift : OutlinePhrase<LangBokmal>() {
+        override fun OutlineOnlyScope<LangBokmal, Unit>.template() {
+            title1 {
+                text(
+                    Language.Bokmal to "Informasjon til deg som handler på vegne av barnet",
+                )
+            }
+        }
     }
 
     object MeldFraOmEndringer : OutlinePhrase<LangBokmal>() {

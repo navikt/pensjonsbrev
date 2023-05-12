@@ -34,7 +34,7 @@ object BarnepensjonVedtak : EtterlatteTemplate<BarnepensjonVedtakDTO> {
     ) {
         title {
             text(
-                Language.Bokmal to "Vi har innvilget søknaded din om barnepensjon",
+                Language.Bokmal to "Vi har innvilget søknaden din om barnepensjon",
             )
         }
 
@@ -58,6 +58,8 @@ object BarnepensjonVedtak : EtterlatteTemplate<BarnepensjonVedtakDTO> {
                     utbetalingsinfo.antallBarn
                 )
             )
+
+            includePhrase(Barnepensjon.InformasjonTilDegOverskrift)
             includePhrase(Barnepensjon.MeldFraOmEndringer)
             includePhrase(Barnepensjon.EndringAvKontonummer)
             includePhrase(Barnepensjon.SkattetrekkPaaBarnepensjon)
