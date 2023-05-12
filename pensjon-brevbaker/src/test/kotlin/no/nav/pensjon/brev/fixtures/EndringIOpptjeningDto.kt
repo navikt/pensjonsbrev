@@ -1,7 +1,7 @@
 package no.nav.pensjon.brev.fixtures
 
 import no.nav.pensjon.brev.Fixtures
-import no.nav.pensjon.brev.api.model.Kroner
+import no.nav.pensjon.brevbaker.api.model.Kroner
 import no.nav.pensjon.brev.api.model.Sivilstand
 import no.nav.pensjon.brev.api.model.maler.EndringIOpptjeningAutoDto
 import java.time.LocalDate

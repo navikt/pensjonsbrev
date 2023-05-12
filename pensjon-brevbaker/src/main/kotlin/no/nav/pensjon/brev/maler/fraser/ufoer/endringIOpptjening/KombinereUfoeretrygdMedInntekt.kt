@@ -1,6 +1,5 @@
 package no.nav.pensjon.brev.maler.fraser.ufoer.endringIOpptjening
 
-import no.nav.pensjon.brev.api.model.Kroner
 import no.nav.pensjon.brev.api.model.maler.AvkortningsinformasjonSelectors.beloepsgrense
 import no.nav.pensjon.brev.api.model.maler.AvkortningsinformasjonSelectors.forventetInntekt
 import no.nav.pensjon.brev.api.model.maler.AvkortningsinformasjonSelectors.harInntektEtterUfoere
@@ -25,6 +24,7 @@ import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
+import no.nav.pensjon.brevbaker.api.model.Kroner
 
 object KombinereUfoeretrygdMedInntekt {
 

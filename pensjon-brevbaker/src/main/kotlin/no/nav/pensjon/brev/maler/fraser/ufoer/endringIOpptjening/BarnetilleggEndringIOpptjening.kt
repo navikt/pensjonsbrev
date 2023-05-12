@@ -1,7 +1,5 @@
 package no.nav.pensjon.brev.maler.fraser.ufoer.endringIOpptjening
 
-import no.nav.pensjon.brev.api.model.Kroner
-import no.nav.pensjon.brev.api.model.KronerSelectors.value_safe
 import no.nav.pensjon.brev.api.model.Sivilstand
 import no.nav.pensjon.brev.api.model.maler.EndringIOpptjeningAutoDto
 import no.nav.pensjon.brev.api.model.maler.Fellesbarn1Selectors.beloepBrutto
@@ -34,6 +32,8 @@ import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brevbaker.api.model.Kroner
+import no.nav.pensjon.brevbaker.api.model.KronerSelectors.value_safe
 
 data class BarnetilleggEndringIOpptjening(
     val barnetilleggFellesbarn: Expression<EndringIOpptjeningAutoDto.Fellesbarn1?>,

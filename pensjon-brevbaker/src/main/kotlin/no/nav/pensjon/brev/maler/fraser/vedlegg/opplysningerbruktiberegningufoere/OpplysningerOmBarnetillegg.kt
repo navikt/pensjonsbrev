@@ -276,8 +276,8 @@ data class OpplysningerOmBarnetillegg(
 
     data class EndringInntektFlereTillegg(
         val sivilstand: Expression<Sivilstand>,
-        val fellesTillegg: Expression<OpplysningerBruktIBeregningUTDto.BarnetilleggGjeldende.Fellesbarn>,
-        val saerkullTillegg: Expression<OpplysningerBruktIBeregningUTDto.BarnetilleggGjeldende.Saerkullsbarn>,
+        val fellesTillegg: Expression<OpplysningerBruktIBeregningUTDto.Barnetillegg.Fellesbarn>,
+        val saerkullTillegg: Expression<OpplysningerBruktIBeregningUTDto.Barnetillegg.Saerkullsbarn>,
         val harKravaarsakEndringInntekt: Expression<Boolean>,
         val inntektEllerFribeloepErPeriodisert: Expression<Boolean>,
     ) : OutlinePhrase<LangBokmalNynorskEnglish>(){

@@ -1,7 +1,9 @@
 package no.nav.pensjon.brev.api.model.vedlegg
 
 import no.nav.pensjon.brev.api.model.*
+import no.nav.pensjon.brevbaker.api.model.Foedselsnummer
 import no.nav.pensjon.brevbaker.api.model.Kroner
+import no.nav.pensjon.brevbaker.api.model.Year
 import java.time.LocalDate
 
 data class OpplysningerBruktIBeregningUTDto(
@@ -16,11 +18,11 @@ data class OpplysningerBruktIBeregningUTDto(
     val inntektFoerUfoere: InntektFoerUfoere,
     val inntektsAvkorting: InntektsAvkorting,
     val kravAarsakType: KravAarsakType,
-    val harMinsteytelse: Boolean,
+    val minsteytelseSats: Double?,  // Bruk denne istedenfor harMinsteytelse boolean. Null betyr at man ikke har minsteytelse
     val sivilstand: Sivilstand,
     val trygdetid: Trygdetid,
     val ufoeretrygd: Ufoeretrygd,
-    val ungUfoerErUnder20Aar: Boolean,
+    val ungUfoerErUnder20Aar: Boolean?,  // Null betyr at man ikke har ungUfoer
     val yrkesskade: Yrkesskade?,
 ) {
 
@@ -118,7 +120,6 @@ data class OpplysningerBruktIBeregningUTDto(
         val harInntektEtterUfoereBegrunnelse: Boolean,
         val harUtbetalingsgradLessThanUfoeregrad: Boolean,
         val kompensasjonsgrad: Double,
-        val minsteytelseSats: Double,
         val ufoeregrad: Int,
         val ufoeretidspunkt: LocalDate,
         val ufoeretrygdOrdinaer: UfoeretrygdOrdinaer,

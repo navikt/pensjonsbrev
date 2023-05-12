@@ -3,7 +3,9 @@ package no.nav.pensjon.brev.fixtures
 import no.nav.pensjon.brev.Fixtures
 import no.nav.pensjon.brev.api.model.*
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDto
+import no.nav.pensjon.brevbaker.api.model.Foedselsnummer
 import no.nav.pensjon.brevbaker.api.model.Kroner
+import no.nav.pensjon.brevbaker.api.model.Year
 import java.time.LocalDate
 
 fun createOpplysningerBruktIBeregningUTDto() =
@@ -15,11 +17,11 @@ fun createOpplysningerBruktIBeregningUTDto() =
         fraOgMedDatoErNesteAar = false,
         harEktefelletilleggInnvilget = false,
         harKravaarsakEndringInntekt = true,
-        harMinsteytelse = true,
         inntektEtterUfoereBeloepIEU = Kroner(0),
         inntektFoerUfoere = Fixtures.create(),
         inntektsAvkorting = Fixtures.create(),
         kravAarsakType = KravAarsakType.ENDRET_OPPTJENING,
+        minsteytelseSats = 50.0,
         sivilstand = Sivilstand.PARTNER,
         trygdetid = Fixtures.create(),
         ufoeretrygd = Fixtures.create(),
@@ -159,7 +161,6 @@ fun createOpplysningerBruktIBeregningUTDtoUfoeretrygd() =
         harInntektEtterUfoereBegrunnelse = false,
         harUtbetalingsgradLessThanUfoeregrad = true,
         kompensasjonsgrad = 0.0,
-        minsteytelseSats = 50.0,
         ufoeregrad = 0,
         ufoeretidspunkt = LocalDate.of(2020, 1, 1),
         ufoeretrygdOrdinaer = Fixtures.create(),

@@ -31,11 +31,11 @@ import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSel
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.fraOgMedDatoErNesteAar
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.harEktefelletilleggInnvilget
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.harKravaarsakEndringInntekt
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.harMinsteytelse
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.inntektEtterUfoereBeloepIEU
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.inntektFoerUfoere
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.inntektsAvkorting
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.kravAarsakType
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.minsteytelseSats
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.sivilstand
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.trygdetid
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.ufoeretrygd
@@ -56,7 +56,6 @@ import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidsdetaljerSelectors.fastsat
 import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidsdetaljerSelectors.harBoddArbeidUtland
 import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdOrdinaerSelectors.harGammelUTBeloepUlikNyUTBeloep
 import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdOrdinaerSelectors.harNyUTBeloep
-import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdSelectors.minsteytelseSats
 import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdSelectors.ufoeretidspunkt
 import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdSelectors.ufoeretrygdOrdinaer
 import no.nav.pensjon.brev.api.model.vedlegg.YrkesskadeSelectors.yrkesskadegrad_safe
@@ -100,6 +99,7 @@ fun createVedleggOpplysningerBruktIBeregningUT(
         val inntektsgrenseErUnderTak =
             inntektsAvkorting.inntektsgrenseAar.lessThan(inntektsAvkorting.inntektstak)
         val grunnbeloep = beregnetUTPerManed.grunnbeloep.format()
+        val harMinsteytelse = minsteytelseSats.notNull()
 
         paragraph {
             val virkDatoFom = beregnetUTPerManed.virkDatoFom.format()
@@ -114,8 +114,7 @@ fun createVedleggOpplysningerBruktIBeregningUT(
             TabellUfoereOpplysninger(
                 barnetillegg = barnetillegg,
                 beregnetUTPerManed = beregnetUTPerManed,
-                beregningsmetode = trygdetid.trygdetidsdetaljer.beregningsmetode,
-                erUngUfoer = ungUfoerErUnder20Aar,
+                erUngUfoer = ungUfoerErUnder20Aar.notNull(),
                 harMinsteytelse = harMinsteytelse,
                 inntektEtterUfoereBeloep = inntektEtterUfoereBeloepIEU,
                 inntektFoerUfoere = inntektFoerUfoere,
@@ -173,15 +172,15 @@ fun createVedleggOpplysningerBruktIBeregningUT(
         }
 
         if (skalViseMinsteytelse) {
-            showIf(harMinsteytelse) {
+            ifNotNull(minsteytelseSats) {minsteytelseSats ->
                 includePhrase(
                     OpplysningerOmMinstetillegg(
                         harMinsteytelse = harMinsteytelse,
                         inntektFoerUfoere = inntektFoerUfoere,
                         inntektsgrenseErUnderTak = inntektsgrenseErUnderTak,
-                        minsteytelseSats = ufoeretrygd.minsteytelseSats,
+                        minsteytelseSats = minsteytelseSats,
                         ufoeretrygd = ufoeretrygd,
-                        ungUfoerErUnder20Aar = ungUfoerErUnder20Aar,
+                        ungUfoerErUnder20Aar = ungUfoerErUnder20Aar.ifNull(false),
                     )
                 )
             }

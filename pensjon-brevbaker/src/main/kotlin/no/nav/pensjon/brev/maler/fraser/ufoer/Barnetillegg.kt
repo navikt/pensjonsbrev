@@ -1,7 +1,6 @@
 package no.nav.pensjon.brev.maler.fraser.ufoer
 
 import no.nav.pensjon.brev.api.model.KravAarsakType
-import no.nav.pensjon.brev.api.model.Kroner
 import no.nav.pensjon.brev.api.model.Sivilstand
 import no.nav.pensjon.brev.maler.fraser.common.*
 import no.nav.pensjon.brev.model.*
@@ -9,6 +8,7 @@ import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brev.template.dsl.expression.*
+import no.nav.pensjon.brevbaker.api.model.Kroner
 import java.time.LocalDate
 
 

@@ -3,7 +3,6 @@ package no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningufoe
 import no.nav.pensjon.brev.api.model.vedlegg.InntektFoerUfoereSelectors.erSannsynligEndret
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDto
 import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdSelectors.erKonvertert
-import no.nav.pensjon.brev.api.model.vedlegg.UfoeretrygdSelectors.minsteytelseSats
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language
@@ -49,14 +48,10 @@ data class OpplysningerOmMinstetillegg(
             }
         }
 
-        ifNotNull(minsteytelseSats) {
-            showIf(harMinsteytelse) {
-                includePhrase(
-                    VedleggBeregnUTDinMY(
-                        minsteytelseSats = ufoeretrygd.minsteytelseSats
-                    )
-                )
-            }
+        ifNotNull(minsteytelseSats) {minsteytelseSats ->
+            includePhrase(
+                VedleggBeregnUTDinMY(minsteytelseSats = minsteytelseSats)
+            )
         }
 
         showIf(inntektFoerUfoere.erSannsynligEndret) {

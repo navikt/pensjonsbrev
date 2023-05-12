@@ -1,6 +1,5 @@
 package no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningufoere
 
-import no.nav.pensjon.brev.api.model.Foedselsnummer
 import no.nav.pensjon.brev.api.model.vedlegg.BeregnetUTPerManedSelectors.grunnbeloep
 import no.nav.pensjon.brev.api.model.vedlegg.BeregnetUTPerManedSelectors.virkDatoFom
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDto
@@ -33,6 +32,7 @@ import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
+import no.nav.pensjon.brevbaker.api.model.Foedselsnummer
 
 // <> brevkode PE_UT_04_108, PE_UT_04_109, PE_UT_04_500, PE_UT_05_100, PE_UT_06_300, PE_UT_07_100, PE_UT_07_200,
 
