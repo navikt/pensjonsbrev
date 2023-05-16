@@ -4,11 +4,11 @@ import no.nav.pensjon.brev.api.model.Institusjon.*
 import no.nav.pensjon.brev.api.model.Sivilstand.ENKE
 import no.nav.pensjon.brev.api.model.Sivilstand.ENSLIG
 import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterUfoereDto
-import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterUfoereDtoSelectors.avdoed_sivilstand
 import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterUfoereDtoSelectors.bruker_borINorge
 import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterUfoereDtoSelectors.harInnvilgetBarnetillegg
 import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterUfoereDtoSelectors.harTilleggForFlereBarn
 import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterUfoereDtoSelectors.institusjon_gjeldende
+import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterUfoereDtoSelectors.sivilstand
 import no.nav.pensjon.brev.maler.fraser.vedlegg.*
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.*
@@ -46,7 +46,7 @@ val vedleggDineRettigheterOgPlikterUfoere =
 
                 item { includePhrase(VedleggPlikterUT5) }
 
-                showIf(avdoed_sivilstand.isOneOf(ENSLIG, ENKE)) {
+                showIf(sivilstand.isOneOf(ENSLIG, ENKE)) {
                     item { includePhrase(VedleggPlikterUT6) }
                 }
 

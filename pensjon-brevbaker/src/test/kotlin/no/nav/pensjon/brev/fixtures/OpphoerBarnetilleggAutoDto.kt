@@ -22,7 +22,6 @@ fun createOpphoerBarnetilleggAutoDto() =
             beloepNetto = Kroner(5000),
             fribeloep = Kroner(10000),
             inntektAnnenForelder = Kroner(550000),
-            inntektBruktIAvkortning = Kroner(375000),
             inntektstak = Kroner(320000),
             harJusteringsbeloep = true,
             samletInntektBruktIAvkortning = Kroner(500000),
