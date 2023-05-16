@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       common: ${{ steps.changes.outputs.common }}
-      brevbaker: ${{ steps.changes.outputs.brevbaker }}
+      pensjonsbrev: ${{ steps.changes.outputs.pensjonsbrev }}
     steps:
       - uses: actions/checkout@v3
       - uses: dorny/paths-filter@v2
