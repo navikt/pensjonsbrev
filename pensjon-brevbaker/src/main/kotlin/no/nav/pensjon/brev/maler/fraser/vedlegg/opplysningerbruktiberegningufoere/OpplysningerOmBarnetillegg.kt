@@ -292,8 +292,8 @@ data class OpplysningerOmBarnetillegg(
                 includePhrase(
                     PeriodisertInntektOverFribeloepFellesTillegg(
                         inntektEllerFribeloepErPeriodisert = fellesTillegg.inntektErPeriodisert or fellesTillegg.fribeloepErPeriodisert,
-                        avkortningsbeloepAarFelles = fellesTillegg.avkortningsbeloepAar,
-                        harJusteringsbeloepFelles = fellesTillegg.justeringsbeloepAar.notEqualTo(0),
+                        avkortningsbeloepAar = fellesTillegg.avkortningsbeloepAar,
+                        harJusteringsbeloep = fellesTillegg.justeringsbeloepAar.notEqualTo(0),
                         harTilleggForFlereFellesbarn = fellesTillegg.harFlereBarn,
                     )
                 )
@@ -1059,8 +1059,8 @@ data class OpplysningerOmBarnetillegg(
     }
 
     data class PeriodisertInntektOverFribeloepFellesTillegg(
-        val avkortningsbeloepAarFelles: Expression<Kroner>,
-        val harJusteringsbeloepFelles: Expression<Boolean>,
+        val avkortningsbeloepAar: Expression<Kroner>,
+        val harJusteringsbeloep: Expression<Boolean>,
         val inntektEllerFribeloepErPeriodisert: Expression<Boolean>,
         val harTilleggForFlereFellesbarn: Expression<Boolean>
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
@@ -1094,14 +1094,14 @@ data class OpplysningerOmBarnetillegg(
                     )
                 }
 
-                showIf(avkortningsbeloepAarFelles.greaterThan(0)) {
+                showIf(avkortningsbeloepAar.greaterThan(0)) {
                     textExpr(
-                        Bokmal to " ".expr() + avkortningsbeloepAarFelles.format() + " kroner.",
-                        Nynorsk to " ".expr() + avkortningsbeloepAarFelles.format() + " kroner.",
-                        English to " NOK ".expr() + avkortningsbeloepAarFelles.format() + ".",
+                        Bokmal to " ".expr() + avkortningsbeloepAar.format() + " kroner.",
+                        Nynorsk to " ".expr() + avkortningsbeloepAar.format() + " kroner.",
+                        English to " NOK ".expr() + avkortningsbeloepAar.format() + ".",
                     )
                 }
-                showIf(not(harJusteringsbeloepFelles)) {
+                showIf(not(harJusteringsbeloep)) {
                     text(
                         Bokmal to " Dette beløpet bruker vi til å redusere dette barnetillegget for hele året.",
                         Nynorsk to " Dette beløpet bruker vi til å redusere dette barnetillegget for heile året.",
