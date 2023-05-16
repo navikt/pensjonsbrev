@@ -305,7 +305,7 @@ data class OpplysningerOmBarnetillegg(
                 includePhrase(
                     PeriodisertInntektSaerkullsbarn(
                         avkortningsbeloepAar = saerkullTillegg.avkortningsbeloepAar,
-                        fribeloepEllerInntektErPeriodisert = saerkullTillegg.inntektErPeriodisert or saerkullTillegg.inntektErPeriodisert,
+                        fribeloepEllerInntektErPeriodisert = saerkullTillegg.fribeloepErPeriodisert or saerkullTillegg.inntektErPeriodisert,
                         harFlereSaerkullsbarn = saerkullTillegg.harFlereBarn,
                         harJusteringsbeloep = saerkullTillegg.justeringsbeloepAar.notEqualTo(0),
                         sivilstand = sivilstand,
