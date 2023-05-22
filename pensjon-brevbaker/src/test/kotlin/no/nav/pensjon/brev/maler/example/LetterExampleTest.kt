@@ -30,12 +30,7 @@ class LetterExampleTest {
             DesignReferenceLetter.template,
             Fixtures.create<LetterExampleDto>(),
             Language.Bokmal,
-            Fixtures.fellesAuto.copy(
-                signerendeSaksbehandlere = SignerendeSaksbehandlere(
-                    saksbehandler = "bla",
-                    attesterendeSaksbehandler = null
-                )
-            )
+            Fixtures.fellesAuto
         )
             .let { PensjonLatexRenderer.render(it) }
             .let { runBlocking { LaTeXCompilerService(PDF_BUILDER_URL).producePDF(it, "test").base64PDF } }
