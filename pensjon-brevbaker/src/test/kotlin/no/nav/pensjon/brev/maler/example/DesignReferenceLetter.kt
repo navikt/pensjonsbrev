@@ -214,6 +214,14 @@ object DesignReferenceLetter : AutobrevTemplate<LetterExampleDto> {
                 }
             }
 
+            title1 {
+                text(Bokmal to "Tittel 1", Nynorsk to "Tittel 1")
+            }
+
+            title2 {
+                text(Bokmal to "Tittel 2", Nynorsk to "Tittel 2")
+            }
+
         }
     }
 }

@@ -1,8 +1,9 @@
 import Title1 from "./components/title1/Title1"
+import Title2 from "./components/title2/Title2"
 import Paragraph from "./components/paragraph/Paragraph"
 import styles from "./LetterEditor.module.css"
 import {Dispatch, FC, SetStateAction, useState} from "react"
-import {AnyBlock} from "./model/api"
+import {AnyBlock, PARAGRAPH, TITLE1, TITLE2} from "./model/api"
 import {bindActionWithCallback, BoundAction, CallbackReceiver} from "../../lib/actions"
 import SakspartView from "./components/sakspart/SakspartView"
 import SignaturView from "./components/signatur/SignaturView"
@@ -21,7 +22,7 @@ interface AnyBlockProps {
 
 const AnyBlockView: FC<AnyBlockProps> = ({block, blockId, updateLetter, stealFocus, blockFocusStolen, onFocus}) => {
     switch (block.type) {
-        case 'TITLE1':
+        case TITLE1:
             return <Title1 block={block}
                            blockId={blockId}
                            updateLetter={updateLetter}
@@ -29,7 +30,15 @@ const AnyBlockView: FC<AnyBlockProps> = ({block, blockId, updateLetter, stealFoc
                            blockFocusStolen={blockFocusStolen}
                            onFocus={onFocus}
             />
-        case 'PARAGRAPH':
+        case TITLE2:
+            return <Title2 block={block}
+                           blockId={blockId}
+                           updateLetter={updateLetter}
+                           blockStealFocus={stealFocus}
+                           blockFocusStolen={blockFocusStolen}
+                           onFocus={onFocus}
+            />
+        case PARAGRAPH:
             return <Paragraph block={block}
                               blockId={blockId}
                               updateLetter={updateLetter}

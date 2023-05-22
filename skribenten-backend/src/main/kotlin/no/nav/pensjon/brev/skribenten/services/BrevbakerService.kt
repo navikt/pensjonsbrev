@@ -51,7 +51,7 @@ class BrevbakerService(config: Config, authService: AzureADService) {
                         dokumentDato = LocalDate.now(),
                         saksnummer = "1234",
                         avsenderEnhet = NAVEnhet("nav.no", "NAV Familie- og pensjonsytelser Porsgrunn", Telefonnummer("22225555")),
-                        bruker = Bruker(Foedselsnummer("12345678910"), LocalDate.of(2000, Month.JANUARY, 1), "Test", null, "Testeson"),
+                        bruker = Bruker(Foedselsnummer("12345678910"), "Test", null, "Testeson"),
                         vergeNavn = null,
                         signerendeSaksbehandlere = SignerendeSaksbehandlere("Ole Saksbehandler")
                     ),
@@ -77,7 +77,7 @@ class BrevbakerService(config: Config, authService: AzureADService) {
                         dokumentDato = LocalDate.now(),
                         saksnummer = "1234",
                         avsenderEnhet = NAVEnhet("nav.no", "NAV", Telefonnummer("22225555")),
-                        bruker = Bruker(Foedselsnummer("12345678910"), LocalDate.of(2000, Month.JANUARY, 1), "Test", null, "Testeson"),
+                        bruker = Bruker(Foedselsnummer("12345678910"), "Test", null, "Testeson"),
                         vergeNavn = null,
                     ),
                     language = LanguageCode.BOKMAL,
@@ -99,6 +99,7 @@ object RenderedJsonLetterModule : SimpleModule() {
                 val node = p.codec.readTree<JsonNode>(p)
                 val type =  when(RenderedJsonLetter.Block.Type.valueOf(node.get("type").textValue())) {
                     RenderedJsonLetter.Block.Type.TITLE1 -> RenderedJsonLetter.Block.Title1::class.java
+                    RenderedJsonLetter.Block.Type.TITLE2 -> RenderedJsonLetter.Block.Title2::class.java
                     RenderedJsonLetter.Block.Type.PARAGRAPH -> RenderedJsonLetter.Block.Paragraph::class.java
                 }
                 return p.codec.treeToValue(node, type)
