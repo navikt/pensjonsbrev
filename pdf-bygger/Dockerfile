@@ -1,4 +1,4 @@
-FROM ghcr.io/navikt/baseimages/temurin:17
+FROM --platform=linux/amd64 ghcr.io/navikt/baseimages/temurin:17
 USER root
 ENV DEBIAN_FRONTEND="noninteractive" TZ="Europe/London"
 ENV PATH="${PATH}:/app/tex/bin/x86_64-linux/"

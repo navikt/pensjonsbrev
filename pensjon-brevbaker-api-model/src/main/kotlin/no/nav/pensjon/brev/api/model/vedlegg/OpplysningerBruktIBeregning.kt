@@ -41,7 +41,9 @@ data class OpplysningerBruktIBeregningUTDto(
             val beloepAarBrutto: Kroner,
             val erRedusertMotinntekt: Boolean,
             val fribeloep: Kroner,
-            val fribeloepEllerInntektErPeriodisert: Boolean,
+            val fribeloepEllerInntektErPeriodisert: Boolean, // TODO fjern i neste versjon
+            val fribeloepErPeriodisert: Boolean,
+            val inntektErPeriodisert: Boolean,
             val harFlereBarn: Boolean,
             val inntektBruktIAvkortning: Kroner,
             val inntektOverFribeloep: Kroner,
@@ -57,10 +59,11 @@ data class OpplysningerBruktIBeregningUTDto(
             val beloepFratrukketAnnenForeldersInntekt: Kroner,
             val erRedusertMotinntekt: Boolean,
             val fribeloep: Kroner,
-            val fribeloepEllerInntektErPeriodisert: Boolean,
+            val fribeloepEllerInntektErPeriodisert: Boolean, // TODO fjern i neste versjon
+            val fribeloepErPeriodisert: Boolean,
+            val inntektErPeriodisert: Boolean,
             val harFlereBarn: Boolean,
             val inntektAnnenForelder: Kroner,
-            val inntektBruktIAvkortning: Kroner, // TODO fjern i neste versjon
             val samletInntektBruktIAvkortning: Kroner,
             val inntektOverFribeloep: Kroner,
             val inntektstak: Kroner,
