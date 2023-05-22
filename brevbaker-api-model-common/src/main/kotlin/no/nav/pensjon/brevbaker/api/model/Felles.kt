@@ -15,7 +15,6 @@ data class SignerendeSaksbehandlere(val saksbehandler: String, val attesterendeS
 
 data class Bruker(
     val foedselsnummer: Foedselsnummer,
-    val foedselsdato: LocalDate,
     val fornavn: String,
     val mellomnavn: String?,
     val etternavn: String,

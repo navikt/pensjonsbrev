@@ -146,6 +146,7 @@ object PensjonHTMLRenderer : LetterRenderer<RenderedHtmlLetter>() {
         when (element) {
             is Element.OutlineContent.Paragraph -> renderParagraph(scope, element)
             is Element.OutlineContent.Title1 -> h2(classes("title1")) { renderText(scope, element.text) }
+            is Element.OutlineContent.Title2 -> h3(classes("title2")) { renderText(scope, element.text) }
         }
 
     private fun FlowContent.renderParagraph(

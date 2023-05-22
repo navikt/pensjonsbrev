@@ -5,6 +5,7 @@ import no.nav.pensjon.brev.*
 import no.nav.pensjon.brev.latex.LaTeXCompilerService
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.render.PensjonLatexRenderer
+import no.nav.pensjon.brevbaker.api.model.SignerendeSaksbehandlere
 import org.junit.jupiter.api.*
 
 @Tag(TestTags.PDF_BYGGER)

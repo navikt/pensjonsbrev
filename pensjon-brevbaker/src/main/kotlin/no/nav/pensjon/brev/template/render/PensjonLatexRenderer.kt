@@ -199,7 +199,10 @@ object PensjonLatexRenderer : LetterRenderer<RenderedLatexLetter>() {
     private fun LatexAppendable.renderOutlineContent(scope: ExpressionScope<*, *>, element: Element.OutlineContent<*>): Unit =
         when (element) {
             is Element.OutlineContent.Paragraph -> renderParagraph(scope, element)
-            is Element.OutlineContent.Title1 -> appenCmd("lettersectiontitle") {
+            is Element.OutlineContent.Title1 -> appenCmd("lettersectiontitleone") {
+                arg { renderText(scope, element.text) }
+            }
+            is Element.OutlineContent.Title2 -> appenCmd("lettersectiontitletwo") {
                 arg { renderText(scope, element.text) }
             }
         }

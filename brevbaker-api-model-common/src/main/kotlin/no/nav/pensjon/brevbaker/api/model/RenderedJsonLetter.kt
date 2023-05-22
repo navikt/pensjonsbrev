@@ -14,10 +14,11 @@ data class RenderedJsonLetter(val title: String, val sakspart: Sakspart, val blo
 
     sealed class Block(open val id: Int, open val type: Type, open val editable: Boolean = true) {
         enum class Type {
-            TITLE1, PARAGRAPH,
+            TITLE1, TITLE2, PARAGRAPH,
         }
 
         data class Title1(override val id: Int, override val editable: Boolean, val content: List<ParagraphContent.Text>) : Block(id, Type.TITLE1, editable)
+        data class Title2(override val id: Int, override val editable: Boolean, val content: List<ParagraphContent.Text>) : Block(id, Type.TITLE2, editable)
         data class Paragraph(override val id: Int, override val editable: Boolean, val content: List<ParagraphContent>) : Block(id, Type.PARAGRAPH, editable)
     }
 

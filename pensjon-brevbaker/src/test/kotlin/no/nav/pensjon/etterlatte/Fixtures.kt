@@ -21,7 +21,6 @@ object Fixtures {
             mellomnavn = "bruker",
             etternavn = "Testerson",
             foedselsnummer = Foedselsnummer("01019878910"),
-            foedselsdato = LocalDate.of(1998, 1, 1),
         ),
         signerendeSaksbehandlere = SignerendeSaksbehandlere(
             saksbehandler = "Ole Saksbehandler",

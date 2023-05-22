@@ -82,6 +82,15 @@ private fun mergeBlocks(editedBlocks: List<Block>, renderedBlock: Block): List<B
                     add(Block.Paragraph(edited.id, true, merged))
                 }
             }
+            is Block.Title2 -> {
+                // If we're able to keep the edited block as Title2.
+                if (merged.all { it is ParagraphContent.Text }) {
+                    add(edited.copy(content = merged.filterIsInstance<ParagraphContent.Text>()))
+                } else {
+                    add(Block.Paragraph(edited.id, true, merged))
+                }
+            }
+
             is Block.Paragraph -> {
                 add(edited.copy(content = merged))
             }
@@ -135,4 +144,5 @@ private fun Block.content(): List<ParagraphContent> =
     when (this) {
         is Block.Paragraph -> content
         is Block.Title1 -> content
+        is Block.Title2 -> content
     }

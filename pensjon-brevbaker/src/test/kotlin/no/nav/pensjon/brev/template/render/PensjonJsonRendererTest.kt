@@ -86,6 +86,7 @@ class PensjonJsonRendererTest {
         when(this) {
             is Block.Paragraph -> content.flatMap { it.textInOrder() }
             is Block.Title1 -> content.map { it.text }
+            is Block.Title2 -> content.map { it.text }
         }
 
     private fun RenderedJsonLetter.ParagraphContent.textInOrder(): List<String> =

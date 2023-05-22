@@ -131,6 +131,8 @@ sealed class Element<out Lang : LanguageSupport> {
     sealed class OutlineContent<out Lang : LanguageSupport> : Element<Lang>() {
         data class Title1<out Lang : LanguageSupport>(val text: List<TextElement<Lang>>) : OutlineContent<Lang>()
 
+        data class Title2<out Lang : LanguageSupport>(val text: List<TextElement<Lang>>) : OutlineContent<Lang>()
+
         data class Paragraph<out Lang : LanguageSupport>(val paragraph: List<ParagraphContentElement<Lang>>) : OutlineContent<Lang>()
 
         sealed class ParagraphContent<out Lang : LanguageSupport> : Element<Lang>() {
