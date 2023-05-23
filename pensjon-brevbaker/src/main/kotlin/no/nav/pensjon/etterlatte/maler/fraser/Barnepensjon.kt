@@ -40,7 +40,7 @@ object Barnepensjon {
 
     object UtbetalingOverskrift : OutlinePhrase<LangBokmal>() {
         override fun OutlineOnlyScope<LangBokmal, Unit>.template() {
-            title1 {
+            title2 {
                 text(
                     Language.Bokmal to "Utbetaling",
                 )
@@ -65,7 +65,7 @@ object Barnepensjon {
     ) :
         OutlinePhrase<LangBokmal>() {
         override fun OutlineOnlyScope<LangBokmal, Unit>.template() {
-            title1 {
+            title2 {
                 text(
                     Language.Bokmal to "Slik har vi beregnet pensjonen din",
                 )
@@ -128,7 +128,7 @@ object Barnepensjon {
                     }
                 }
                 text(
-                    Language.Bokmal to "Grunnbeløpet blir regulert 1. mai hvert år.  Økningen blir vanligvis etterbetalt i juni."
+                    Language.Bokmal to "Grunnbeløpet blir regulert 1. mai hvert år. Økningen blir vanligvis etterbetalt i juni."
                 )
             }
         }
@@ -160,7 +160,7 @@ object Barnepensjon {
 
     object MeldFraOmEndringer : OutlinePhrase<LangBokmal>() {
         override fun OutlineOnlyScope<LangBokmal, Unit>.template() {
-            title1 {
+            title2 {
                 text(
                     Language.Bokmal to "Meld fra om endringer",
                 )
@@ -185,7 +185,7 @@ object Barnepensjon {
 
     object EndringAvKontonummer : OutlinePhrase<LangBokmal>() {
         override fun OutlineOnlyScope<LangBokmal, Unit>.template() {
-            title1 {
+            title2 {
                 text(
                     Language.Bokmal to "Endring av kontonummer",
                 )
@@ -212,7 +212,7 @@ object Barnepensjon {
 
     object SkattetrekkPaaBarnepensjon : OutlinePhrase<LangBokmal>() {
         override fun OutlineOnlyScope<LangBokmal, Unit>.template() {
-            title1 {
+            title2 {
                 text(
                     Language.Bokmal to "Skattetrekk på barnepensjon",
                 )
@@ -234,7 +234,7 @@ object Barnepensjon {
 
     object DuHarRettTilAaKlage : OutlinePhrase<LangBokmal>() {
         override fun OutlineOnlyScope<LangBokmal, Unit>.template() {
-            title1 {
+            title2 {
                 text(
                     Language.Bokmal to "Du har rett til å klage",
                 )
@@ -250,7 +250,7 @@ object Barnepensjon {
 
     object DuHarRettTilInnsyn : OutlinePhrase<LangBokmal>() {
         override fun OutlineOnlyScope<LangBokmal, Unit>.template() {
-            title1 {
+            title2 {
                 text(
                     Language.Bokmal to "Du har rett til innsyn",
                 )
@@ -267,7 +267,7 @@ object Barnepensjon {
 
     object HarDuSpoersmaal : OutlinePhrase<LangBokmal>() {
         override fun OutlineOnlyScope<LangBokmal, Unit>.template() {
-            title1 {
+            title2 {
                 text(
                     Language.Bokmal to "Har du spørsmål?",
                 )
