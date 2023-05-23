@@ -46,7 +46,14 @@ export interface Title1Block extends Block {
     readonly type: typeof TITLE1
     readonly content: TextContent[]
 }
-export type AnyBlock = Title1Block | ParagraphBlock
+
+export const TITLE2 = 'TITLE2'
+export interface Title2Block extends Block {
+    readonly type: typeof TITLE2
+    readonly content: TextContent[]
+}
+
+export type AnyBlock = Title1Block | Title2Block | ParagraphBlock
 export interface Sakspart {
     readonly gjelderNavn: string
     readonly gjelderFoedselsnummer: string

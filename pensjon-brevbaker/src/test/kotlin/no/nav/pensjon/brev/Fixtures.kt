@@ -24,7 +24,6 @@ object Fixtures {
             mellomnavn = "\"bruker\"",
             etternavn = "Testerson",
             foedselsnummer = Foedselsnummer("01019878910"),
-            foedselsdato = LocalDate.of(1998, 1, 1),
         ),
         signerendeSaksbehandlere = SignerendeSaksbehandlere(
             saksbehandler = "Ole Saksbehandler",
@@ -56,7 +55,7 @@ object Fixtures {
             OpplysningerBruktIBeregningUTDto.TrygdetidsdetaljerGjeldende.UtenforEOSogNorden::class -> createOpplysningerBruktIBeregningUTDtoTrygdetidsdetaljerGjeldendeUtenforEOSogNorden() as T
             OpplysningerBruktIBeregningUTDto.UfoeretrygdGjeldende::class -> createOpplysningerBruktIBeregningUTDtoUfoeretrygdGjeldende() as T
             OpplysningerBruktIBeregningUTDto.YrkesskadeGjeldende::class -> createOpplysningerBruktIBeregningUTDtoYrkesskadeGjeldende() as T
-            OpptjeningVedForhoeyetHjelpesatsDto::class -> OpptjeningVedForhoeyetHjelpesatsDto(Year(2021)) as T
+            OpptjeningVedForhoeyetHjelpesatsDto::class -> OpptjeningVedForhoeyetHjelpesatsDto(Year(2021), false) as T
             OrienteringOmRettigheterUfoereDto::class -> createOrienteringOmRettigheterUfoereDto() as T
             UfoerOmregningEnsligDto::class -> createUfoerOmregningEnsligDto() as T
             UngUfoerAutoDto::class -> createUngUfoerAutoDto() as T

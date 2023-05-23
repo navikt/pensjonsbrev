@@ -91,14 +91,16 @@ object PensjonLatexRenderer : LetterRenderer<RenderedLatexLetter>() {
     private fun LatexAppendable.signaturCommands(saksbehandlere: SignerendeSaksbehandlere?, brevtype: LetterMetadata.Brevtype) {
         appendNewCmd("closingbehandlet") {
             if (saksbehandlere != null) {
-                saksbehandlere.attesterendeSaksbehandler?.takeIf { brevtype == LetterMetadata.Brevtype.VEDTAKSBREV }
-                    ?.let { attestant ->
-                        appenCmd("doublesignature") {
-                            arg { append(attestant) }
-                            arg { append(saksbehandlere.saksbehandler) }
-                        }
-                    } ?: append("""${saksbehandlere.saksbehandler} \\ \feltclosingsaksbehandlersuffix""",escape = false)
-
+                val attestant = saksbehandlere.attesterendeSaksbehandler?.takeIf { brevtype == LetterMetadata.Brevtype.VEDTAKSBREV }
+                if (attestant != null) {
+                    appenCmd("doublesignature") {
+                        arg { append(attestant) }
+                        arg { append(saksbehandlere.saksbehandler) }
+                    }
+                } else {
+                    append(saksbehandlere.saksbehandler)
+                    appendln(""" \\ \feltclosingsaksbehandlersuffix """, escape = false)
+                }
                 appenCmd("par")
                 appenCmd("vspace*{12pt}")
                 appenCmd("feltnavenhet")
@@ -197,7 +199,10 @@ object PensjonLatexRenderer : LetterRenderer<RenderedLatexLetter>() {
     private fun LatexAppendable.renderOutlineContent(scope: ExpressionScope<*, *>, element: Element.OutlineContent<*>): Unit =
         when (element) {
             is Element.OutlineContent.Paragraph -> renderParagraph(scope, element)
-            is Element.OutlineContent.Title1 -> appenCmd("lettersectiontitle") {
+            is Element.OutlineContent.Title1 -> appenCmd("lettersectiontitleone") {
+                arg { renderText(scope, element.text) }
+            }
+            is Element.OutlineContent.Title2 -> appenCmd("lettersectiontitletwo") {
                 arg { renderText(scope, element.text) }
             }
         }
