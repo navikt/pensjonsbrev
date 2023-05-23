@@ -30,7 +30,7 @@ class TemplateModelVisitorTest {
                     import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
                     import no.nav.pensjon.brev.template.dsl.helpers.NestedModel
                     import no.nav.pensjon.brev.template.dsl.helpers.NestedModelSelectors.second
-                    import no.nav.pensjon.brev.template.dsl.helpers.SecondModelSelectors.lastName
+                    import no.nav.pensjon.brev.template.dsl.helpers.NestedModelSelectors.SecondModelSelectors.lastName
 
                     @TemplateModelHelpers
                     object MyClass : HasModel<NestedModel> {
@@ -57,7 +57,7 @@ class TemplateModelVisitorTest {
                     import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
                     import no.nav.pensjon.brev.template.dsl.helpers.NestedModelWithRepetition
                     import no.nav.pensjon.brev.template.dsl.helpers.NestedModelWithRepetitionSelectors.second
-                    import no.nav.pensjon.brev.template.dsl.helpers.SubModelSelectors.lastName
+                    import no.nav.pensjon.brev.template.dsl.helpers.NestedModelWithRepetitionSelectors.SubModelSelectors.lastName
 
                     @TemplateModelHelpers
                     object MyClass : HasModel<NestedModelWithRepetition> {
@@ -204,4 +204,5 @@ class TemplateModelVisitorTest {
         assertThat(result.generatedFiles, anyElement(has(File::getName, containsSubstring("SimpleModelSelectors"))))
         assertThat(result.generatedFiles, anyElement(has(File::getName, containsSubstring("ANameSelectors"))))
     }
+
 }

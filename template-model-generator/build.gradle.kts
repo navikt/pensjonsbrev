@@ -29,7 +29,7 @@ dependencies {
     implementation("ch.qos.logback:logback-classic:$logbackVersion")
 
     testImplementation("org.junit.jupiter:junit-jupiter-api:$jupiterVersion")
-    testImplementation("com.github.tschuchortdev:kotlin-compile-testing-ksp:1.4.9")
+    testImplementation("com.github.tschuchortdev:kotlin-compile-testing-ksp:1.5.0")
     testImplementation("com.natpryce:hamkrest:$hamkrestVersion")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$jupiterVersion")
 }

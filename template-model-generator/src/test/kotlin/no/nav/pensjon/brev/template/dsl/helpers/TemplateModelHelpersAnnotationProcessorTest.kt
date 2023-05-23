@@ -64,15 +64,15 @@ class TemplateModelHelpersAnnotationProcessorTest {
                     import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
                     import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpersAnnotationProcessorTest
                     import no.nav.pensjon.brev.template.dsl.TemplateGlobalScope
-                    import no.nav.pensjon.brev.template.dsl.helpers.AModelSelectors.navn
-                    import no.nav.pensjon.brev.template.dsl.helpers.AModelSelectors
+                    import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpersAnnotationProcessorTestSelectors.AModelSelectors.navn
+                    import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpersAnnotationProcessorTestSelectors.AModelSelectors.navnSelector
 
                     @TemplateModelHelpers
                     object MyClass : HasModel<TemplateModelHelpersAnnotationProcessorTest.AModel> {
                         fun someusage() {
                             val fromScope: Expression<String> = TemplateGlobalScope<TemplateModelHelpersAnnotationProcessorTest.AModel>().navn
                             val fromOtherExpression: Expression<String> = Expression.Literal(TemplateModelHelpersAnnotationProcessorTest.AModel("jadda")).navn
-                            val actualSelector: TemplateModelSelector<TemplateModelHelpersAnnotationProcessorTest.AModel, String> = AModelSelectors.navnSelector
+                            val actualSelector: TemplateModelSelector<TemplateModelHelpersAnnotationProcessorTest.AModel, String> = navnSelector
                         }
                     }
                     """.trimIndent()
@@ -98,7 +98,7 @@ class TemplateModelHelpersAnnotationProcessorTest {
         assertThat(
             result.messages, hasKspErrorMessages("e: [ksp] $unsupportedAnnotationTarget: Annotation $annotationName does not support target class kind CLASS (only supports OBJECT): MyClass")
         )
-        assertThat(result.generatedFiles, hasOnlySourceAndNoHelpers())
+        assertThat(result.exitCode, equalTo(KotlinCompilation.ExitCode.COMPILATION_ERROR))
     }
 
     @Test
@@ -112,7 +112,7 @@ class TemplateModelHelpersAnnotationProcessorTest {
                 """.trimIndent()
         ).compile()
 
-        assertThat(result.generatedFiles, hasOnlySourceAndNoHelpers())
+        assertThat(result.exitCode, equalTo(KotlinCompilation.ExitCode.COMPILATION_ERROR))
         assertThat(result.messages, hasKspErrorMessages("e: [ksp] $invalidObjectTarget: $annotationName annotated target OBJECT must extend $hasModelName: MyClass"))
     }
 
@@ -283,7 +283,7 @@ class TemplateModelHelpersAnnotationProcessorTest {
     }
 
     @Test
-    fun `generates helpers for multiple nested levels of models`() {
+    fun `generates helpers for multiple levels of models`() {
         val result = SourceFile.kotlin(
             "MyClass.kt", """
                     import no.nav.pensjon.brev.template.HasModel
@@ -345,5 +345,141 @@ class TemplateModelHelpersAnnotationProcessorTest {
 
         assertThat(result.exitCode, equalTo(KotlinCompilation.ExitCode.OK))
         assertThat(result.generatedFiles, hasSize(greaterThan(3)) and anyElement(has(File::getName, containsSubstring("AnotherModelSelectors"))))
+    }
+
+    @Test
+    fun `generates heklpers for additionalModels when target is interface`() {
+        val result = SourceFile.kotlin(
+            "MyClass.kt", """
+                    import AnotherModelSelectors.age
+                    import no.nav.pensjon.brev.template.HasModel
+                    import no.nav.pensjon.brev.template.Expression
+                    import no.nav.pensjon.brev.template.dsl.TemplateGlobalScope
+                    import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
+                    import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpersAnnotationProcessorTest
+
+                    data class AnotherModel(val age: Int)
+
+                    @TemplateModelHelpers([AnotherModel::class])
+                    interface MyInterface 
+                    val x: Expression<Int> = Expression.Literal(AnotherModel(35)).age
+                    """.trimIndent()
+        ).compile()
+
+        assertThat(result.exitCode, equalTo(KotlinCompilation.ExitCode.OK))
+        assertThat(result.generatedFiles, hasSize(greaterThan(3)) and anyElement(has(File::getName, containsSubstring("AnotherModelSelectors"))))
+    }
+
+
+    @Test
+    fun `generates helpers for models referenced in submodel`() {
+        val result = SourceFile.kotlin(
+            "MyClass.kt", """
+                    import no.nav.pensjon.brev.template.HasModel
+                    import no.nav.pensjon.brev.template.Expression
+                    import no.nav.pensjon.brev.template.dsl.TemplateGlobalScope
+                    import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
+                    import no.nav.pensjon.brev.template.thirdpkg.SimpleModel
+                    import ParentModelSelectors.child
+                    import ParentModelSelectors.ChildModelSelectors.uncle
+                    import UncleModelSelectors.name
+                    
+                    data class UncleModel(val name: String)
+            
+                    data class ParentModel(val child: ChildModel) {
+                        data class ChildModel(val uncle: UncleModel)                    
+                    }
+
+                    @TemplateModelHelpers
+                    object MyClass : HasModel<ParentModel> {
+                        val data: Expression<ParentModel> = Expression.Literal(ParentModel(ParentModel.ChildModel(UncleModel("Scrooge"))))
+                        val child: Expression<ParentModel.ChildModel> = data.child
+                        val uncleName: Expression<String> = child.uncle.name
+                    }
+                    """.trimIndent()
+        ).compile()
+
+        assertThat(result.exitCode, equalTo(KotlinCompilation.ExitCode.OK))
+        assertThat(result.generatedFiles, allOf(
+            hasSize(greaterThan(3)),
+            anyElement(has(File::getName, containsSubstring("ParentModelSelectors"))),
+            anyElement(has(File::getName, containsSubstring("UncleModelSelectors"))),
+        ))
+    }
+
+    @Test
+    fun `does not fail when a model is referenced in a nested model and is used in another place`() {
+        val result = SourceFile.kotlin(
+            "MyClass.kt", """
+                    import no.nav.pensjon.brev.template.HasModel
+                    import no.nav.pensjon.brev.template.Expression
+                    import no.nav.pensjon.brev.template.dsl.TemplateGlobalScope
+                    import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
+                    import no.nav.pensjon.brev.template.thirdpkg.SimpleModel
+                    import ParentModelSelectors.child
+                    import ParentModelSelectors.ChildModelSelectors.uncle
+                    import UncleModelSelectors.name
+                    
+                    data class UncleModel(val name: String)
+            
+                    data class ParentModel(val child: ChildModel) {
+                        data class ChildModel(val uncle: UncleModel)                    
+                    }
+
+                    @TemplateModelHelpers
+                    object MyClass : HasModel<ParentModel> {
+                        val data: Expression<ParentModel> = Expression.Literal(ParentModel(ParentModel.ChildModel(UncleModel("Scrooge"))))
+                        val child: Expression<ParentModel.ChildModel> = data.child
+                        val uncleName: Expression<String> = child.uncle.name
+                    }
+                    @TemplateModelHelpers
+                    object ReUse : HasModel<UncleModel> {
+                        val uncleName: Expression<String> = Expression.Literal(UncleModel("Scrooge")).name
+                    }
+                    """.trimIndent()
+        ).compile()
+
+        assertThat(result.exitCode, equalTo(KotlinCompilation.ExitCode.OK))
+    }
+
+    @Test
+    fun `referencing a model in another nested model should result in complete hierarchy and not a top-level selector`() {
+        val result = SourceFile.kotlin(
+            "MyClass.kt", """
+                    import no.nav.pensjon.brev.template.HasModel
+                    import no.nav.pensjon.brev.template.Expression
+                    import no.nav.pensjon.brev.template.dsl.TemplateGlobalScope
+                    import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
+                    import no.nav.pensjon.brev.template.thirdpkg.SimpleModel
+                    import ParentModelSelectors.child
+                    import ParentModelSelectors.ChildModelSelectors.uncle
+                    import AMotherSelectors.UncleModelSelectors.name
+                    
+                    data class AMother(val child: UncleModel) {
+                        data class UncleModel(val name: String)
+                    }
+            
+                    data class ParentModel(val child: ChildModel) {
+                        data class ChildModel(val uncle: AMother.UncleModel)                    
+                    }
+
+                    @TemplateModelHelpers
+                    object MyClass : HasModel<ParentModel> {
+                        val data: Expression<ParentModel> = Expression.Literal(ParentModel(ParentModel.ChildModel(AMother.UncleModel("Scrooge"))))
+                        val child: Expression<ParentModel.ChildModel> = data.child
+                        val uncleName: Expression<String> = child.uncle.name
+                    }
+                    @TemplateModelHelpers
+                    object ReUse : HasModel<AMother.UncleModel> {
+                        val uncleName: Expression<String> = Expression.Literal(AMother.UncleModel("Scrooge")).name
+                    }
+                    """.trimIndent()
+        ).compile()
+
+        assertThat(result.exitCode, equalTo(KotlinCompilation.ExitCode.OK))
+        assertThat(result.generatedFiles, allOf(
+            anyElement(has(File::getName, startsWith("AMotherSelectors\$UncleModelSelectors"))),
+            allElements(has(File::getName, startsWith("UncleModelSelectors").not()))
+        ))
     }
 }
