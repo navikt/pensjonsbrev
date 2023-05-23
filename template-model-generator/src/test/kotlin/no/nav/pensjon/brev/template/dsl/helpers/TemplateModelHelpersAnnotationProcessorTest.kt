@@ -96,7 +96,7 @@ class TemplateModelHelpersAnnotationProcessorTest {
 
 
         assertThat(
-            result.messages, hasKspErrorMessages("e: [ksp] $unsupportedAnnotationTarget: Annotation $annotationName does not support target class kind CLASS (only supports OBJECT): MyClass")
+            result.messages, hasKspErrorMessages("e: [ksp] $unsupportedAnnotationTarget: @$annotationName does not support target class kind CLASS (only supports OBJECT): MyClass")
         )
         assertThat(result.exitCode, equalTo(KotlinCompilation.ExitCode.COMPILATION_ERROR))
     }
@@ -113,7 +113,7 @@ class TemplateModelHelpersAnnotationProcessorTest {
         ).compile()
 
         assertThat(result.exitCode, equalTo(KotlinCompilation.ExitCode.COMPILATION_ERROR))
-        assertThat(result.messages, hasKspErrorMessages("e: [ksp] $invalidObjectTarget: $annotationName annotated target OBJECT must extend $hasModelName: MyClass"))
+        assertThat(result.messages, hasKspErrorMessages("e: [ksp] $invalidObjectTarget: @$annotationName annotated target OBJECT must extend $hasModelName"))
     }
 
     @Test

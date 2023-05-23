@@ -1,26 +1,40 @@
 package no.nav.pensjon.brev.template.dsl.helpers
 
+import com.google.devtools.ksp.processing.KSPLogger
 import com.google.devtools.ksp.symbol.*
 import com.google.devtools.ksp.visitor.KSDefaultVisitor
-import org.slf4j.LoggerFactory
 
-private val logger = LoggerFactory.getLogger(TemplateModelVisitor::class.java)
+private val SKIPPED_NO_WARN_PACKAGES = setOf("kotlin", "java.util", "java.time")
+
+private fun KSPLogger.logSkipped(classDeclaration: KSClassDeclaration) {
+    val message = "Skipping $classDeclaration: can only generate helpers for data classes"
+
+    if (classDeclaration.packageName.asString() in SKIPPED_NO_WARN_PACKAGES
+        || classDeclaration.classKind == ClassKind.ENUM_CLASS
+    ) {
+        info(message, classDeclaration)
+    } else {
+        warn(message, classDeclaration)
+    }
+}
 
 internal class TemplateModelVisitor(
     private val iterableDeclaration: KSType,
+    private val logger: KSPLogger,
+    private val dependency: KSFile?,
 ) : KSDefaultVisitor<SelectorModels, SelectorModels>() {
 
     override fun defaultHandler(node: KSNode, data: SelectorModels): SelectorModels {
-        throw MissingImplementation("Couldn't process node $node at: ${node.location}")
+        throw MissingImplementation("Couldn't process node $node at: ${node.location}", node)
     }
 
     override fun visitClassDeclaration(classDeclaration: KSClassDeclaration, data: SelectorModels): SelectorModels =
         if (data.isVisited(classDeclaration)) {
-            data
+            data.withDependency(classDeclaration, dependency)
         } else if (classDeclaration.classKind == ClassKind.CLASS && classDeclaration.modifiers.contains(Modifier.DATA)) {
-            classDeclaration.getAllProperties().toList().foldAccept(data.withNeeded(classDeclaration), this)
+            classDeclaration.getAllProperties().toList().foldAccept(data.withNeeded(classDeclaration, dependency), this)
         } else {
-            logger.warn("Skipping $classDeclaration: can only generate helpers for data classes")
+            logger.logSkipped(classDeclaration)
             data.withVisited(classDeclaration)
         }
 
@@ -51,7 +65,7 @@ internal class TemplateModelVisitor(
             }
 
             else -> {
-                throw MissingImplementation("Processed type $typeDeclaration: property type kind ${typeDeclaration::class} is not supported")
+                throw MissingImplementation("Processed type $typeDeclaration: property type kind ${typeDeclaration::class} is not supported", typeDeclaration)
             }
         }
     }

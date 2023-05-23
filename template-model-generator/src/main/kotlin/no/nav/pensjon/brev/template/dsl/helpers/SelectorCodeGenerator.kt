@@ -10,32 +10,34 @@ private val templateModelSelectorName = TemplateModelSelector::class.qualifiedNa
     ?: throw InitializationError("Couldn't determine qualified name of ${TemplateModelSelector::class.simpleName}")
 private const val INDENT = "    "
 
-internal class SelectorCodeGenerator(needed: Set<KSClassDeclaration>) {
+internal class SelectorCodeGenerator(needed: Map<KSClassDeclaration, Set<KSFile>>) {
     private data class Node(val decl: KSClassDeclaration, var include: Boolean, val children: MutableMap<KSClassDeclaration, Node> = mutableMapOf())
+    private data class Root(val node: Node, val dependencies: MutableSet<KSFile>)
 
-    private val roots: MutableMap<KSClassDeclaration, Node> = mutableMapOf()
+    private val roots: MutableMap<KSClassDeclaration, Root> = mutableMapOf()
 
     init {
-        needed.forEach {
-            findOrCreateBranches(it).include = true
+        needed.forEach { (decl, dependencies) ->
+            findOrCreateBranches(decl, dependencies).include = true
         }
     }
 
-    private fun findOrCreateBranches(branch: KSClassDeclaration): Node {
-        val parentBranch = when (val parent = branch.parentDeclaration) {
-            null -> roots.computeIfAbsent(branch) { Node(branch, false) }
-            is KSClassDeclaration -> findOrCreateBranches(parent).children.computeIfAbsent(branch) { Node(branch, false) }
+    private fun findOrCreateBranches(branch: KSClassDeclaration, dependencies: Set<KSFile>): Node =
+        when (val parent = branch.parentDeclaration) {
+            null -> {
+                roots[branch]?.apply { this.dependencies += dependencies }?.node
+                    ?: Root(Node(branch, false), dependencies.toMutableSet()).also { roots[branch] = it }.node
+            }
+
+            is KSClassDeclaration -> findOrCreateBranches(parent, dependencies).children.computeIfAbsent(branch) { Node(branch, false) }
 
             else -> throw InvalidModel("Cannot build SelectorTree for $branch: parent is not a class $parent")
         }
 
-        return parentBranch
-    }
-
     fun generateCode(codeGenerator: CodeGenerator) {
         roots.values.forEach { root ->
-            createFile(codeGenerator, root.decl) { writer ->
-                generateSelectors(root, "", writer)
+            createFile(codeGenerator, root) { writer ->
+                generateSelectors(root.node, "", writer)
             }
         }
     }
@@ -93,12 +95,11 @@ internal class SelectorCodeGenerator(needed: Set<KSClassDeclaration>) {
             )
         }
 
-        private fun <T> createFile(codeGenerator: CodeGenerator, classDeclaration: KSClassDeclaration, useBlock: (PrintWriter) -> T): T {
-            val className = classDeclaration.simpleName.asString()
-            val pkg = classDeclaration.packageName.asString()
+        private fun <T> createFile(codeGenerator: CodeGenerator, root: Root, useBlock: (PrintWriter) -> T): T {
+            val className = root.node.decl.simpleName.asString()
+            val pkg = root.node.decl.packageName.asString()
 
-            // TODO: Sjekk at dependencies fungerer.
-            return PrintWriter(codeGenerator.createNewFile(Dependencies(true), pkg, "${className}Selectors")).use { writer ->
+            return PrintWriter(codeGenerator.createNewFile(Dependencies(true, *root.dependencies.toTypedArray()), pkg, "${className}Selectors")).use { writer ->
                 writer.println(
                     """
                 ${if (pkg.isNotBlank()) "package $pkg" else ""}
