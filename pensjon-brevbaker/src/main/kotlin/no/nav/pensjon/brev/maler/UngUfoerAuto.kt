@@ -1,10 +1,10 @@
 package no.nav.pensjon.brev.maler
 
 import no.nav.pensjon.brev.api.model.maler.*
-import no.nav.pensjon.brev.api.model.maler.BarnetilleggSelectors.gjelderFlereBarn_safe
-import no.nav.pensjon.brev.api.model.maler.BarnetilleggSelectors.inntektstak_safe
-import no.nav.pensjon.brev.api.model.maler.BarnetilleggSelectors.utbetalt_safe
-import no.nav.pensjon.brev.api.model.maler.InnvilgetTilleggSelectors.utbetalt_safe
+import no.nav.pensjon.brev.api.model.maler.UngUfoerAutoDtoSelectors.BarnetilleggSelectors.gjelderFlereBarn_safe
+import no.nav.pensjon.brev.api.model.maler.UngUfoerAutoDtoSelectors.BarnetilleggSelectors.inntektstak_safe
+import no.nav.pensjon.brev.api.model.maler.UngUfoerAutoDtoSelectors.BarnetilleggSelectors.utbetalt_safe
+import no.nav.pensjon.brev.api.model.maler.UngUfoerAutoDtoSelectors.InnvilgetTilleggSelectors.utbetalt_safe
 import no.nav.pensjon.brev.api.model.maler.UngUfoerAutoDtoSelectors.ektefelle
 import no.nav.pensjon.brev.api.model.maler.UngUfoerAutoDtoSelectors.fellesbarn
 import no.nav.pensjon.brev.api.model.maler.UngUfoerAutoDtoSelectors.gjenlevende

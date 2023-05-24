@@ -3,9 +3,8 @@ package no.nav.pensjon.brev.maler.vedlegg
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligUfoeretrygdFoerSkattDto
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligUfoeretrygdFoerSkattDtoSelectors.ufoeretrygdPerioder
 import no.nav.pensjon.brev.maler.fraser.vedlegg.VedleggMaanedligeUfoeretrgdFoerSkatt
-import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
+import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Language.*
-import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.newText
 
 val vedleggMaanedligUfoeretrygdFoerSkatt = createAttachment<LangBokmalNynorskEnglish, MaanedligUfoeretrygdFoerSkattDto>(
