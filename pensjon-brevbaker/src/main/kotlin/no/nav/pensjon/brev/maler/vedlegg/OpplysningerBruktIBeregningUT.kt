@@ -87,7 +87,6 @@ fun createVedleggOpplysningerBruktIBeregningUT(skalViseMinsteytelse: Boolean, sk
                 includePhrase(
                     OpplysningerOmBarnetillegg(
                         barnetillegg = barnetillegg,
-                        sivilstand = sivilstand,
                         anvendtTrygdetid = trygdetidsdetaljerGjeldende.anvendtTT,
                         harYrkesskade = yrkesskadeGjeldende.notNull(),
                         harKravaarsakEndringInntekt = harKravaarsakEndringInntekt,

@@ -1,6 +1,5 @@
 package no.nav.pensjon.brev.model
 
-import kotlinx.html.B
 import no.nav.pensjon.brev.api.model.*
 import no.nav.pensjon.brev.api.model.Sivilstand.*
 import no.nav.pensjon.brev.template.*
@@ -122,15 +121,6 @@ object FormatBorMedSivilstandTabell : BinaryOperation<BorMedSivilstand, Language
 @JvmName("formatSivilstandBestemtForm")
 fun Expression<Sivilstand>.bestemtForm() =
     Expression.BinaryInvoke(this, Expression.FromScope(ExpressionScope<Any, *>::language), SivilstandEpsBestemt)
-
-@JvmName("formatSivilstandUbestemtForm")
-fun Expression<Sivilstand>.ubestemtForm() =
-    Expression.BinaryInvoke(this, Expression.FromScope(ExpressionScope<Any, *>::language), SivilstandEpsUbestemt)
-
-@Deprecated("Bruk bormed sivilstand istedenfor")
-object SivilstandEpsUbestemt : BinaryOperation<Sivilstand, Language, String>() {
-    override fun apply(first: Sivilstand, second: Language): String = sivilstand(first, second, false)
-}
 
 @Deprecated("Bruk bormed sivilstand istedenfor")
 object SivilstandEpsBestemt : BinaryOperation<Sivilstand, Language, String>() {
