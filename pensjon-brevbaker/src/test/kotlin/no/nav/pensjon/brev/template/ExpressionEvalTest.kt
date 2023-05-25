@@ -1,8 +1,8 @@
 package no.nav.pensjon.brev.template
 
 import no.nav.pensjon.brev.Fixtures
-import no.nav.pensjon.brev.template.SomeDtoSelectors.kortNavn
-import no.nav.pensjon.brev.template.SomeDtoSelectors.name
+import no.nav.pensjon.brev.template.ExpressionEvalTestSelectors.SomeDtoSelectors.kortNavn
+import no.nav.pensjon.brev.template.ExpressionEvalTestSelectors.SomeDtoSelectors.name
 import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers

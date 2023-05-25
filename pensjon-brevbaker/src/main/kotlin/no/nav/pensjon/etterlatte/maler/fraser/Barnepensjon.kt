@@ -7,11 +7,11 @@ import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import no.nav.pensjon.etterlatte.maler.BarnepensjonVedtakDTO
-import no.nav.pensjon.etterlatte.maler.BeregningsperiodeSelectors.antallBarn
-import no.nav.pensjon.etterlatte.maler.BeregningsperiodeSelectors.datoFOM
-import no.nav.pensjon.etterlatte.maler.BeregningsperiodeSelectors.datoTOM
-import no.nav.pensjon.etterlatte.maler.BeregningsperiodeSelectors.grunnbeloep
-import no.nav.pensjon.etterlatte.maler.BeregningsperiodeSelectors.utbetaltBeloep
+import no.nav.pensjon.etterlatte.maler.BarnepensjonVedtakDTOSelectors.BeregningsperiodeSelectors.antallBarn
+import no.nav.pensjon.etterlatte.maler.BarnepensjonVedtakDTOSelectors.BeregningsperiodeSelectors.datoFOM
+import no.nav.pensjon.etterlatte.maler.BarnepensjonVedtakDTOSelectors.BeregningsperiodeSelectors.datoTOM
+import no.nav.pensjon.etterlatte.maler.BarnepensjonVedtakDTOSelectors.BeregningsperiodeSelectors.grunnbeloep
+import no.nav.pensjon.etterlatte.maler.BarnepensjonVedtakDTOSelectors.BeregningsperiodeSelectors.utbetaltBeloep
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
 import java.time.LocalDate
 

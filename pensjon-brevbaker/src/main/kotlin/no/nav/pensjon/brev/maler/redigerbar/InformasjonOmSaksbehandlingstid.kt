@@ -2,13 +2,13 @@ package no.nav.pensjon.brev.maler.redigerbar
 
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmSaksbehandlingstidDto
+import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmSaksbehandlingstidDtoSelectors.InkluderVenterSvarAFPSelectors.uttakAlderspensjonProsent
+import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmSaksbehandlingstidDtoSelectors.InkluderVenterSvarAFPSelectors.uttaksDato
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmSaksbehandlingstidDtoSelectors.inkluderVenterSvarAFP
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmSaksbehandlingstidDtoSelectors.land
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmSaksbehandlingstidDtoSelectors.mottattSoeknad
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmSaksbehandlingstidDtoSelectors.svartidUker
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmSaksbehandlingstidDtoSelectors.ytelse
-import no.nav.pensjon.brev.api.model.maler.redigerbar.InkluderVenterSvarAFPSelectors.uttakAlderspensjonProsent
-import no.nav.pensjon.brev.api.model.maler.redigerbar.InkluderVenterSvarAFPSelectors.uttaksDato
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.dsl.*
