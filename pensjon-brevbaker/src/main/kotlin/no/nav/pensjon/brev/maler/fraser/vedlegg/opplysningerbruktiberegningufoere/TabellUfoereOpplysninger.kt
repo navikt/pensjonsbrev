@@ -1,14 +1,14 @@
 package no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningufoere
 
 import no.nav.pensjon.brev.api.model.Beregningsmetode
-import no.nav.pensjon.brev.api.model.Sivilstand.*
+import no.nav.pensjon.brev.api.model.BorMedSivilstand
+import no.nav.pensjon.brev.api.model.Sivilstand
 import no.nav.pensjon.brev.api.model.vedlegg.BarnetilleggGjeldendeSelectors.fellesbarn
 import no.nav.pensjon.brev.api.model.vedlegg.BarnetilleggGjeldendeSelectors.fellesbarn_safe
 import no.nav.pensjon.brev.api.model.vedlegg.BarnetilleggGjeldendeSelectors.foedselsdatoPaaBarnTilleggetGjelder
 import no.nav.pensjon.brev.api.model.vedlegg.BarnetilleggGjeldendeSelectors.saerkullsbarn
 import no.nav.pensjon.brev.api.model.vedlegg.BarnetilleggGjeldendeSelectors.saerkullsbarn_safe
 import no.nav.pensjon.brev.api.model.vedlegg.BeregnetUTPerManedGjeldendeSelectors.brukerErFlyktning
-import no.nav.pensjon.brev.api.model.vedlegg.BeregnetUTPerManedGjeldendeSelectors.brukersSivilstand
 import no.nav.pensjon.brev.api.model.vedlegg.FellesbarnSelectors.beloepFratrukketAnnenForeldersInntekt
 import no.nav.pensjon.brev.api.model.vedlegg.FellesbarnSelectors.fribeloep
 import no.nav.pensjon.brev.api.model.vedlegg.FellesbarnSelectors.inntektAnnenForelder
@@ -65,11 +65,11 @@ data class TabellUfoereOpplysninger(
     val trygdetidsdetaljerGjeldende: Expression<OpplysningerBruktIBeregningUTDto.TrygdetidsdetaljerGjeldende>,
     val barnetilleggGjeldende: Expression<OpplysningerBruktIBeregningUTDto.BarnetilleggGjeldende?>,
     val harMinsteytelse: Expression<Boolean>,
-
+    val brukersSivilstand: Expression<Sivilstand>,
+    val borMedSivilstand: Expression<BorMedSivilstand?>,
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         paragraph {
-            val brukersSivilstand = beregnetUTPerManedGjeldende.brukersSivilstand
             table(
                 header = {
                     column(3) {
@@ -262,38 +262,49 @@ data class TabellUfoereOpplysninger(
                             )
                         }
                         cell {
-                            textExpr(
-                                Bokmal to brukersSivilstand.tableFormat(),
-                                Nynorsk to brukersSivilstand.tableFormat(),
-                                English to brukersSivilstand.tableFormat()
-                            )
+                            ifNotNull(borMedSivilstand){
+                                textExpr(
+                                    Bokmal to it.tableFormat(),
+                                    Nynorsk to it.tableFormat(),
+                                    English to it.tableFormat()
+                                )
+                            }.orShow {
+                                textExpr(
+                                    Bokmal to brukersSivilstand.tableFormat(),
+                                    Nynorsk to brukersSivilstand.tableFormat(),
+                                    English to brukersSivilstand.tableFormat()
+                                )
+                            }
                         }
                     }
 
-                    showIf(brukersSivilstand.isOneOf(GIFT_LEVER_ADSKILT, PARTNER_LEVER_ADSKILT)) {
-                        val erGift = brukersSivilstand.isOneOf(GIFT_LEVER_ADSKILT)
-                        row {
-                            cell {
-                                textExpr(
-                                    Bokmal to "Du eller ".expr()
-                                            + ifElse(erGift, "ektefellen", "partneren") +
-                                            " er registrert med annet bosted, eller er på institusjon",
-                                    Nynorsk to "Du eller ".expr()
-                                            + ifElse(erGift, "ektefellen", "partnaren") +
-                                            " er registrert med annan bustad, eller er på institusjon",
-                                    English to "You or your ".expr()
-                                            + ifElse(erGift, "spouse", "partner") +
-                                            " have been registered as having a different address, or as living in an institution",
-                                )
-                            }
-                            cell {
-                                text(
-                                    Bokmal to "Ja",
-                                    Nynorsk to "Ja",
-                                    English to "Yes",
-                                )
+                    ifNotNull(borMedSivilstand){ borMedSivilstand->
+                        showIf(borMedSivilstand.isOneOf(BorMedSivilstand.GIFT_LEVER_ADSKILT, BorMedSivilstand.PARTNER_LEVER_ADSKILT)) {
+                            val erGift = borMedSivilstand.isOneOf(BorMedSivilstand.GIFT_LEVER_ADSKILT)
+                            row {
+                                cell {
+                                    textExpr(
+                                        Bokmal to "Du eller ".expr()
+                                                + ifElse(erGift, "ektefellen", "partneren") +
+                                                " er registrert med annet bosted, eller er på institusjon",
+                                        Nynorsk to "Du eller ".expr()
+                                                + ifElse(erGift, "ektefellen", "partnaren") +
+                                                " er registrert med annan bustad, eller er på institusjon",
+                                        English to "You or your ".expr()
+                                                + ifElse(erGift, "spouse", "partner") +
+                                                " have been registered as having a different address, or as living in an institution",
+                                    )
+                                }
+                                cell {
+                                    text(
+                                        Bokmal to "Ja",
+                                        Nynorsk to "Ja",
+                                        English to "Yes",
+                                    )
+                                }
                             }
                         }
+
                     }
                 }
 

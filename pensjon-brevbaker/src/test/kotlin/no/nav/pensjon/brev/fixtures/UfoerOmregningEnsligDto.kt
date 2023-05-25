@@ -15,7 +15,7 @@ fun createUfoerOmregningEnsligDto() =
         avdoed = UfoerOmregningEnsligDto.Avdoed(
             navn = "Avdod Person",
             ektefelletilleggOpphoert = false,
-            sivilstand = Sivilstand.SAMBOER3_2,
+            sivilstand = SivilstandAvdoed.SAMBOER3_2,
             harFellesBarnUtenBarnetillegg = false,
         ),
         krav_virkningsDatoFraOgMed = LocalDate.of(2020, 1, 1),

@@ -255,11 +255,11 @@ object UfoerOmregningEnslig : AutobrevTemplate<UfoerOmregningEnsligDto> {
                 }
             }
 
-            showIf(avdoed.sivilstand.isOneOf(Sivilstand.SAMBOER3_2)) {
+            showIf(avdoed.sivilstand.isOneOf(SivilstandAvdoed.SAMBOER3_2)) {
                 includePhrase(GjenlevenderettSamboerOverskrift(avdoed.navn))
                 includePhrase(GjenlevenderettUfoeretrygdSamboer)
             }
-            showIf(avdoed.sivilstand.isOneOf(Sivilstand.GIFT, Sivilstand.PARTNER, Sivilstand.SAMBOER1_5)) {
+            showIf(avdoed.sivilstand.isOneOf(SivilstandAvdoed.GIFT, SivilstandAvdoed.PARTNER, SivilstandAvdoed.SAMBOER1_5)) {
                 includePhrase(RettTilGjenlevendetilleggOverskrift)
                 includePhrase(HvemHarRettTilGjenlevendetilleggVilkaar)
                 includePhrase(HvordanSoekerDuOverskrift)
