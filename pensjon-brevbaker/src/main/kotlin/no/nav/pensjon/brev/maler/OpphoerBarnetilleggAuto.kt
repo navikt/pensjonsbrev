@@ -4,6 +4,7 @@ import no.nav.pensjon.brev.api.model.maler.*
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.beloepBrutto
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.beloepNetto
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.beloepNetto_safe
+import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.brukerBorMed
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.brukersIntektBruktIAvkortning
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.fribeloep
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.gjelderFlereBarn
@@ -17,6 +18,7 @@ import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.samle
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarnSelectors.beloepBrutto
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarnSelectors.beloepNetto
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarnSelectors.beloepNetto_safe
+import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarnSelectors.brukerBorMed
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarnSelectors.fribeloep
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarnSelectors.gjelderFlereBarn
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarnSelectors.gjelderFlereBarn_safe
@@ -33,7 +35,6 @@ import no.nav.pensjon.brev.api.model.maler.OpphoerBarnetilleggAutoDtoSelectors.m
 import no.nav.pensjon.brev.api.model.maler.OpphoerBarnetilleggAutoDtoSelectors.oensketVirkningsDato
 import no.nav.pensjon.brev.api.model.maler.OpphoerBarnetilleggAutoDtoSelectors.opplysningerBruktIBeregningUT
 import no.nav.pensjon.brev.api.model.maler.OpphoerBarnetilleggAutoDtoSelectors.orienteringOmRettigheterUfoere
-import no.nav.pensjon.brev.api.model.maler.OpphoerBarnetilleggAutoDtoSelectors.sivilstand
 import no.nav.pensjon.brev.api.model.maler.OpphoerBarnetilleggAutoDtoSelectors.ufoeretrygd
 import no.nav.pensjon.brev.api.model.maler.UfoeretrygdSelectors.ektefelletilleggUtbeltalt_safe
 import no.nav.pensjon.brev.api.model.maler.UfoeretrygdSelectors.gjenlevendetilleggUtbetalt_safe
@@ -150,7 +151,7 @@ object OpphoerBarnetilleggAuto : AutobrevTemplate<OpphoerBarnetilleggAutoDto> {
                         Barnetillegg.InntektHarBetydningForSaerkullsbarnTillegg(
                             harBarnetilleggFellesbarn = harBarnetilleggFellesbarn,
                             harBarnetilleggSaerkullsbarn = harBarnetilleggSaerkullsbarn,
-                            sivilstand = sivilstand,
+                            borMedSivilstand = barnetilleggSaerkullsbarn.brukerBorMed,
                             faarUtbetaltBarnetilleggSaerkullsbarn = barnetilleggSaerkullsbarn.beloepNetto.greaterThan(0),
                         )
                     )
@@ -162,7 +163,7 @@ object OpphoerBarnetilleggAuto : AutobrevTemplate<OpphoerBarnetilleggAutoDto> {
                             faarUtbetaltBarnetilleggFellesbarn = barnetilleggFellesBarn.beloepNetto.greaterThan(0),
                             harBarnetilleggFellesbarn = harBarnetilleggFellesbarn,
                             harBarnetilleggSaerkullsbarn = harBarnetilleggSaerkullsbarn,
-                            sivilstand = sivilstand
+                            borMedSivilstand = barnetilleggFellesBarn.brukerBorMed
                         )
                     )
                 }
@@ -170,9 +171,8 @@ object OpphoerBarnetilleggAuto : AutobrevTemplate<OpphoerBarnetilleggAutoDto> {
 
                 includePhrase(
                     Barnetillegg.BetydningAvInntektEndringer(
-                        harBarnetilleggFellesbarn = harBarnetilleggFellesbarn,
+                        barnetilleggFellesbarn = barnetilleggFellesbarn,
                         harBarnetilleggSaerkullsbarn = harBarnetilleggSaerkullsbarn,
-                        sivilstand = sivilstand
                     )
                 )
 
@@ -188,7 +188,7 @@ object OpphoerBarnetilleggAuto : AutobrevTemplate<OpphoerBarnetilleggAutoDto> {
                             harJusteringsbeloepFellesbarn = barnetilleggFellesbarn.harJusteringsbeloep,
                             grunnbeloep = grunnbeloep,
                             harBarnetilleggSaerkullsbarn = harBarnetilleggSaerkullsbarn,
-                            sivilstand = sivilstand,
+                            borMedSivilstand = barnetilleggFellesbarn.brukerBorMed,
                         )
                     )
                 }
@@ -226,7 +226,7 @@ object OpphoerBarnetilleggAuto : AutobrevTemplate<OpphoerBarnetilleggAutoDto> {
                             harJusteringsbeloepFellesbarn = barnetilleggFellesbarn.harJusteringsbeloep,
                             harTilleggForFlereFellesbarn = barnetilleggFellesbarn.gjelderFlereBarn,
                             samletInntektBruktiAvkortningFellesbarn = barnetilleggFellesbarn.samletInntektBruktIAvkortning,
-                            sivilstand = sivilstand,
+                            borMed = barnetilleggFellesbarn.brukerBorMed,
                         )
                     )
                 }

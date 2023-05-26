@@ -9,6 +9,7 @@ import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSel
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.TrygdetidsdetaljerGjeldendeSelectors.anvendtTT
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.barnetilleggGjeldende
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.beregnetUTPerManedGjeldende
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.borMedSivilstand
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.fraOgMedDatoErNesteAar
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.harKravaarsakEndringInntekt
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.inntektEtterUfoereGjeldende_beloepIEU
@@ -62,6 +63,8 @@ fun createVedleggOpplysningerBruktIBeregningUT(skalViseMinsteytelse: Boolean, sk
                 trygdetidsdetaljerGjeldende = trygdetidsdetaljerGjeldende,
                 barnetilleggGjeldende = barnetilleggGjeldende,
                 harMinsteytelse = minsteytelseGjeldende_sats.notNull(),
+                borMedSivilstand = borMedSivilstand,
+                brukersSivilstand = sivilstand,
             )
         )
         if(skalViseMinsteytelse) {
@@ -84,7 +87,6 @@ fun createVedleggOpplysningerBruktIBeregningUT(skalViseMinsteytelse: Boolean, sk
                 includePhrase(
                     OpplysningerOmBarnetillegg(
                         barnetillegg = barnetillegg,
-                        sivilstand = sivilstand,
                         anvendtTrygdetid = trygdetidsdetaljerGjeldende.anvendtTT,
                         harYrkesskade = yrkesskadeGjeldende.notNull(),
                         harKravaarsakEndringInntekt = harKravaarsakEndringInntekt,
