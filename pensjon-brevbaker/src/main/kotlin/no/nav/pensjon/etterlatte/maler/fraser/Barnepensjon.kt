@@ -159,11 +159,6 @@ object Barnepensjon {
                     Language.Bokmal to "Grunnbeløpet blir regulert 1. mai hvert år. Økningen blir vanligvis etterbetalt i juni."
                 )
             }
-            paragraph {
-                text(
-                    Language.Bokmal to "\n"
-                )
-            }
         }
     }
 
