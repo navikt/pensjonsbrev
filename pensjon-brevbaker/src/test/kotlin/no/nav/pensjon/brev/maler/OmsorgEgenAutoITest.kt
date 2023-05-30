@@ -1,6 +1,5 @@
 package no.nav.pensjon.brev.maler
 
-import kotlinx.coroutines.runBlocking
 import no.nav.pensjon.brev.*
 import no.nav.pensjon.brev.api.model.maler.OmsorgEgenAutoDto
 import no.nav.pensjon.brev.latex.*
@@ -18,10 +17,7 @@ class OmsorgEgenAutoITest {
             Fixtures.create<OmsorgEgenAutoDto>(),
             Language.Bokmal,
             Fixtures.fellesAuto
-        )
-            .let { PensjonLatexRenderer.render(it) }
-            .let { runBlocking { LaTeXCompilerService(PDF_BUILDER_URL).producePDF(it, "test").base64PDF } }
-            .also { writeTestPDF("OMSORG_EGEN_AUTO_BOKMAL", it) }
+        ).renderTestPDF("OMSORG_EGEN_AUTO_BOKMAL")
     }
 
     @Test

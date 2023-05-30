@@ -55,6 +55,12 @@ tasks {
             includeTags = integrationTests
         }
     }
+    task<Test>("designTest") {
+        group = LifecycleBasePlugin.VERIFICATION_GROUP
+        useJUnitPlatform {
+            includeTags = setOf("design-test")
+        }
+    }
 
 }
 

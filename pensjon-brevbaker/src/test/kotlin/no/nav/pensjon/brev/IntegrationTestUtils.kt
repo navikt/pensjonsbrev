@@ -10,21 +10,29 @@ import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.serialization.jackson.*
 import kotlinx.coroutines.runBlocking
-import no.nav.pensjon.brev.api.model.*
+import no.nav.pensjon.brev.api.model.AutobrevRequest
+import no.nav.pensjon.brev.api.model.LetterResponse
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.latex.LaTeXCompilerService
-import no.nav.pensjon.brev.template.render.*
+import no.nav.pensjon.brev.template.Letter
+import no.nav.pensjon.brev.template.render.PensjonHTMLRenderer
+import no.nav.pensjon.brev.template.render.PensjonLatexRenderer
+import no.nav.pensjon.brev.template.render.RenderedHtmlLetter
+import no.nav.pensjon.brev.template.render.RenderedLatexLetter
 import java.io.File
 import java.util.*
 import kotlin.io.path.Path
 
 val BREVBAKER_URL = System.getenv("BREVBAKER_URL") ?: "http://localhost:8080"
 const val PDF_BUILDER_URL = "http://localhost:8081"
+
 object TestTags {
     const val PDF_BYGGER = "pdf-bygger"
+    const val DESIGN_TEST = "design-test"
 }
+
 val httpClient = HttpClient(CIO) {
-    install(HttpTimeout){
+    install(HttpTimeout) {
         requestTimeoutMillis = 40000
     }
     install(ContentNegotiation) {
@@ -53,6 +61,13 @@ fun writeTestPDF(pdfFileName: String, pdf: String) {
     println("Test-file written to file:${"\\".repeat(3)}${file.absolutePath}".replace('\\', '/'))
 }
 
+fun <ParameterType : Any> Letter<ParameterType>.renderTestPDF(pdfFileName: String): Letter<ParameterType> {
+    PensjonLatexRenderer.render(this)
+        .let { runBlocking { LaTeXCompilerService(PDF_BUILDER_URL).producePDF(it, "test").base64PDF } }
+        .also { writeTestPDF(pdfFileName, it) }
+    return this
+}
+
 fun writeTestHTML(letterName: String, htmlLetter: RenderedHtmlLetter, buildSubDir: String = "test_html") {
     val dir = Path("build/$buildSubDir/$letterName")
     dir.toFile().mkdirs()
@@ -62,6 +77,10 @@ fun writeTestHTML(letterName: String, htmlLetter: RenderedHtmlLetter, buildSubDi
             println("""Test index-html written to file://${dir.resolve(it.fileName).toAbsolutePath()}""")
         }
 }
+
+fun <ParameterType : Any> Letter<ParameterType>.renderTestHtml(htmlFileName: String): Letter<ParameterType> =
+    this.also { writeTestHTML(htmlFileName, PensjonHTMLRenderer.render(this)) }
+
 
 
 fun LaTeXCompilerService.producePdfSync(latexLetter: RenderedLatexLetter) =

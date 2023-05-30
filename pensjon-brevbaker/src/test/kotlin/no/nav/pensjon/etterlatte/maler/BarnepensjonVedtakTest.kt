@@ -1,13 +1,8 @@
 package no.nav.pensjon.etterlatte.maler
 
-import kotlinx.coroutines.runBlocking
-import no.nav.pensjon.brev.PDF_BUILDER_URL
-import no.nav.pensjon.brev.TestTags
-import no.nav.pensjon.brev.latex.LaTeXCompilerService
+import no.nav.pensjon.brev.*
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.render.*
-import no.nav.pensjon.brev.writeTestHTML
-import no.nav.pensjon.brev.writeTestPDF
 import no.nav.pensjon.etterlatte.Fixtures
 import no.nav.pensjon.etterlatte.maler.*
 import org.junit.jupiter.api.Tag
@@ -24,9 +19,7 @@ class BarnepensjonVedtakITest {
             Fixtures.create<BarnepensjonVedtakDTO>(),
             Language.Bokmal,
             Fixtures.felles
-        ).let { PensjonLatexRenderer.render(it) }
-            .let { runBlocking { LaTeXCompilerService(PDF_BUILDER_URL).producePDF(it, "test").base64PDF } }
-            .also { writeTestPDF("BARNEPENSJON_VEDTAK", it) }
+        ).renderTestPDF("BARNEPENSJON_VEDTAK")
     }
 
     @Test
