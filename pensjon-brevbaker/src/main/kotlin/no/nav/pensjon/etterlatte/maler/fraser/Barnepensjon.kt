@@ -6,14 +6,13 @@ import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brevbaker.api.model.Kroner
-import no.nav.pensjon.etterlatte.maler.BarnepensjonVedtakDTO
-import no.nav.pensjon.etterlatte.maler.BarnepensjonVedtakDTOSelectors.BeregningsperiodeSelectors.antallBarn
-import no.nav.pensjon.etterlatte.maler.BarnepensjonVedtakDTOSelectors.BeregningsperiodeSelectors.datoFOM
-import no.nav.pensjon.etterlatte.maler.BarnepensjonVedtakDTOSelectors.BeregningsperiodeSelectors.datoTOM
-import no.nav.pensjon.etterlatte.maler.BarnepensjonVedtakDTOSelectors.BeregningsperiodeSelectors.grunnbeloep
-import no.nav.pensjon.etterlatte.maler.BarnepensjonVedtakDTOSelectors.BeregningsperiodeSelectors.utbetaltBeloep
+import no.nav.pensjon.etterlatte.maler.BarnepensjonInnvilgelseDTO
+import no.nav.pensjon.etterlatte.maler.BarnepensjonInnvilgelseDTOSelectors.BeregningsperiodeSelectors.antallBarn
+import no.nav.pensjon.etterlatte.maler.BarnepensjonInnvilgelseDTOSelectors.BeregningsperiodeSelectors.datoFOM
+import no.nav.pensjon.etterlatte.maler.BarnepensjonInnvilgelseDTOSelectors.BeregningsperiodeSelectors.datoTOM
+import no.nav.pensjon.etterlatte.maler.BarnepensjonInnvilgelseDTOSelectors.BeregningsperiodeSelectors.grunnbeloep
+import no.nav.pensjon.etterlatte.maler.BarnepensjonInnvilgelseDTOSelectors.BeregningsperiodeSelectors.utbetaltBeloep
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
-import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
 import java.time.LocalDate
 
 object Barnepensjon {
@@ -38,28 +37,18 @@ object Barnepensjon {
             }
     }
 
-    object UtbetalingOverskrift : OutlinePhrase<LangBokmal>() {
+    object BeregningOgUtbetalingOverskrift : OutlinePhrase<LangBokmal>() {
         override fun OutlineOnlyScope<LangBokmal, Unit>.template() {
-            title2 {
+            title1 {
                 text(
-                    Language.Bokmal to "Utbetaling",
-                )
-            }
-            paragraph {
-                text(
-                    Language.Bokmal to "Pensjonen blir utbetalt innen den 20. i hver måned. Du finner utbetalingsdatoer på ${Constants.UTBETALING_URL}."
-                )
-            }
-            paragraph {
-                text(
-                    Language.Bokmal to "Etterbetaling av pensjon vil vanligvis bli utbetalt i løpet av tre uker. "
+                    Language.Bokmal to "Beregning og utbetaling",
                 )
             }
         }
     }
 
     data class SlikHarViBeregnetPensjonenDin(
-        val beregningsperioder: Expression<List<BarnepensjonVedtakDTO.Beregningsperiode>>,
+        val beregningsperioder: Expression<List<BarnepensjonInnvilgelseDTO.Beregningsperiode>>,
         val soeskenjustering: Expression<Boolean>,
         val antallBarn: Expression<Int>
     ) :
@@ -93,18 +82,11 @@ object Barnepensjon {
                     )
                 }
             }
-
             paragraph {
-                text(
-                    Language.Bokmal to "Opplysninger om beregning av pensjonen din", FontType.BOLD
-                )
                 table(
                     header = {
                         column(2) {
                             text(Language.Bokmal to "Periode")
-                        }
-                        column(1) {
-                            text(Language.Bokmal to "Beregning gjelder")
                         }
                         column(1) {
                             text(Language.Bokmal to "Grunnbeløp (G)")
@@ -117,20 +99,16 @@ object Barnepensjon {
                     forEach(beregningsperioder) {
                         row {
                             cell { includePhrase(PeriodeITabell(it.datoFOM, it.datoTOM)) }
-                            cell {
-                                textExpr(
-                                    Language.Bokmal to it.antallBarn.format() + " barn".expr(),
-                                )
-                            }
                             cell { includePhrase(Felles.KronerText(it.grunnbeloep)) }
                             cell { includePhrase(Felles.KronerText(it.utbetaltBeloep)) }
                         }
                     }
                 }
                 text(
-                    Language.Bokmal to "Grunnbeløpet blir regulert 1. mai hvert år. Økningen blir vanligvis etterbetalt i juni."
+                    Language.Bokmal to "Tabellen viser hvor mye du får i barnepensjon før skatt."
                 )
             }
+
         }
     }
 
@@ -146,6 +124,47 @@ object Barnepensjon {
                     Language.Bokmal to datoFOM.format(true) + " - "
                 )
             }
+    }
+
+    object Utbetaling : OutlinePhrase<LangBokmal>() {
+        override fun OutlineOnlyScope<LangBokmal, Unit>.template() {
+            title2 {
+                text(
+                    Language.Bokmal to "Utbetaling",
+                )
+            }
+            paragraph {
+                text(
+                    Language.Bokmal to "Pensjonen blir utbetalt innen den 20. i hver måned. " +
+                            "Du finner utbetalingsdatoer på ${Constants.UTBETALING_URL}."
+                )
+            }
+            paragraph {
+                text(
+                    Language.Bokmal to "Har du rett til etterbetaling, vil du vanligvis få dette i løpet av tre uker."
+                )
+            }
+        }
+    }
+
+    object Regulering : OutlinePhrase<LangBokmal>() {
+        override fun OutlineOnlyScope<LangBokmal, Unit>.template() {
+            title2 {
+                text(
+                    Language.Bokmal to "Regulering",
+                )
+            }
+            paragraph {
+                text(
+                    Language.Bokmal to "Grunnbeløpet blir regulert 1. mai hvert år. Økningen blir vanligvis etterbetalt i juni."
+                )
+            }
+            paragraph {
+                text(
+                    Language.Bokmal to "\n"
+                )
+            }
+        }
     }
 
     object InformasjonTilDegOverskrift : OutlinePhrase<LangBokmal>() {
@@ -219,14 +238,17 @@ object Barnepensjon {
             }
             paragraph {
                 text(
-                    Language.Bokmal to "Barnepensjon er skattepliktig, men vi trekker ikke skatt for inneværende år " +
-                            "uten å få beskjed om dette. Du kan lese mer om frivillig skattetrekk på ${Constants.SKATTETREKK_PENGESTOETTE_URL}."
+                    Language.Bokmal to "Barnepensjon er skattepliktig, men vi trekker ikke skatt uten å få " +
+                            "beskjed om dette. Hvis du opplyste om ønsket skattetrekk i søknaden, har vi registrert " +
+                            "dette for i år. Du må selv sjekke om dette skattetrekket overføres ved årsskiftet. " +
+                            "Du kan lese mer om frivillig skattetrekk på ${Constants.SKATTETREKK_PENGESTOETTE_URL}."
                 )
             }
             paragraph {
                 text(
-                    Language.Bokmal to "Ved etterbetaling som gjelder tidligere år trekker NAV skatt etter Skatteetatens standardsatser. " +
-                            "Du kan lese mer om satsene på ${Constants.SKATTETREKK_ETTERBETALING_URL}."
+                    Language.Bokmal to "Ved etterbetaling som gjelder tidligere år trekker NAV skatt etter " +
+                            "Skatteetatens standardsatser. Du kan lese mer om satsene " +
+                            "på ${Constants.SKATTETREKK_ETTERBETALING_URL}."
                 )
             }
         }
@@ -274,8 +296,9 @@ object Barnepensjon {
             }
             paragraph {
                 text(
-                    Language.Bokmal to "Du kan finne svar på ${Constants.NAV_URL}. Du kan også kontakte oss på telefon 55 55 33 34." +
-                            " Om du oppgir fødselsnummer til barnet, kan vi lettere gi deg rask og god hjelp."
+                    Language.Bokmal to "Du kan finne svar på ${Constants.BARNEPENSJON_URL}. Du kan også kontakte " +
+                            "oss på telefon 55 55 33 34. Om du oppgir fødselsnummer til barnet, kan vi lettere gi deg " +
+                            "rask og god hjelp."
                 )
             }
         }

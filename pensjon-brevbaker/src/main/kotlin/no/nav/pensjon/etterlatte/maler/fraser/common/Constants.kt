@@ -2,6 +2,7 @@ package no.nav.pensjon.etterlatte.maler.fraser.common
 
 object Constants {
     const val NAV_URL = "nav.no"
+    const val BARNEPENSJON_URL = "$NAV_URL/barnepensjon"
     const val UTBETALING_URL = "$NAV_URL/utbetalinger"
     const val SKRIVTILOSS_URL = "$NAV_URL/skrivtiloss"
     const val KONTONUMMER_URL = "$NAV_URL/kontonummer"
