@@ -1,8 +1,7 @@
 package no.nav.pensjon.brev.skribenten.services
 
 import com.fasterxml.jackson.core.JsonParser
-import com.fasterxml.jackson.databind.DeserializationContext
-import com.fasterxml.jackson.databind.JsonNode
+import com.fasterxml.jackson.databind.*
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer
 import com.fasterxml.jackson.databind.module.SimpleModule
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
@@ -14,10 +13,11 @@ import io.ktor.http.*
 import io.ktor.serialization.jackson.*
 import io.ktor.server.application.*
 import no.nav.pensjon.brev.api.model.*
-import no.nav.pensjon.brev.api.model.Year
 import no.nav.pensjon.brev.api.model.maler.*
 import no.nav.pensjon.brev.api.model.vedlegg.*
 import no.nav.pensjon.brev.skribenten.auth.*
+import no.nav.pensjon.brevbaker.api.model.*
+import no.nav.pensjon.brevbaker.api.model.Year
 import java.time.*
 
 class BrevbakerServiceException(msg: String): Exception(msg)
@@ -51,9 +51,9 @@ class BrevbakerService(config: Config, authService: AzureADService) {
                         dokumentDato = LocalDate.now(),
                         saksnummer = "1234",
                         avsenderEnhet = NAVEnhet("nav.no", "NAV Familie- og pensjonsytelser Porsgrunn", Telefonnummer("22225555")),
-                        bruker = Bruker(Foedselsnummer("12345678910"), LocalDate.of(2000, Month.JANUARY, 1), "Test", null, "Testeson"),
+                        bruker = Bruker(Foedselsnummer("12345678910"), "Test", null, "Testeson"),
                         vergeNavn = null,
-                        signerendeSaksbehandlere = SignerendeSaksbehandlere("Ole Saksbehandler", "")
+                        signerendeSaksbehandlere = SignerendeSaksbehandlere("Ole Saksbehandler")
                     ),
                     language = LanguageCode.BOKMAL,
                 )
@@ -77,7 +77,7 @@ class BrevbakerService(config: Config, authService: AzureADService) {
                         dokumentDato = LocalDate.now(),
                         saksnummer = "1234",
                         avsenderEnhet = NAVEnhet("nav.no", "NAV", Telefonnummer("22225555")),
-                        bruker = Bruker(Foedselsnummer("12345678910"), LocalDate.of(2000, Month.JANUARY, 1), "Test", null, "Testeson"),
+                        bruker = Bruker(Foedselsnummer("12345678910"), "Test", null, "Testeson"),
                         vergeNavn = null,
                     ),
                     language = LanguageCode.BOKMAL,
@@ -99,6 +99,7 @@ object RenderedJsonLetterModule : SimpleModule() {
                 val node = p.codec.readTree<JsonNode>(p)
                 val type =  when(RenderedJsonLetter.Block.Type.valueOf(node.get("type").textValue())) {
                     RenderedJsonLetter.Block.Type.TITLE1 -> RenderedJsonLetter.Block.Title1::class.java
+                    RenderedJsonLetter.Block.Type.TITLE2 -> RenderedJsonLetter.Block.Title2::class.java
                     RenderedJsonLetter.Block.Type.PARAGRAPH -> RenderedJsonLetter.Block.Paragraph::class.java
                 }
                 return p.codec.treeToValue(node, type)

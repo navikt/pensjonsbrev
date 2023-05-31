@@ -8,6 +8,6 @@ fun createOrienteringOmRettigheterUfoereDto() =
         bruker_borINorge = false,
         harTilleggForFlereBarn = true,
         institusjon_gjeldende = Institusjon.INGEN,
-        avdoed_sivilstand = Sivilstand.ENSLIG,
+        sivilstand = Sivilstand.ENSLIG,
         harInnvilgetBarnetillegg = true,
     )

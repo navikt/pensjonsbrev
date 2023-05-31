@@ -1,32 +1,31 @@
 package no.nav.pensjon.brev.maler
 
-import no.nav.pensjon.brev.api.model.Institusjon
-import no.nav.pensjon.brev.api.model.LetterMetadata
-import no.nav.pensjon.brev.api.model.LetterMetadata.Brevtype.VEDTAKSBREV
-import no.nav.pensjon.brev.api.model.Sivilstand
-import no.nav.pensjon.brev.api.model.maler.AvdoedSelectors.ektefelletilleggOpphoert
-import no.nav.pensjon.brev.api.model.maler.AvdoedSelectors.harFellesBarnUtenBarnetillegg
-import no.nav.pensjon.brev.api.model.maler.AvdoedSelectors.navn
-import no.nav.pensjon.brev.api.model.maler.AvdoedSelectors.sivilstand
-import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarnVedvirkSelectors.barnOverfoertTilSaerkullsbarn
-import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarnVedvirkSelectors.barnOverfoertTilSaerkullsbarn_safe
-import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarnVedvirkSelectors.barnTidligereSaerkullsbarn
-import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarnVedvirkSelectors.barnTidligereSaerkullsbarn_safe
-import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarnVedvirkSelectors.beloep
-import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarnVedvirkSelectors.erRedusertMotInntekt
-import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarnVedvirkSelectors.erRedusertMotInntekt_safe
-import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarnVedvirkSelectors.fribeloepVedvirk
-import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarnVedvirkSelectors.inntektBruktIAvkortning
-import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarnVedvirkSelectors.inntektstak
-import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarnVedvirkSelectors.justeringsbeloepAar
-import no.nav.pensjon.brev.api.model.maler.Brevkode
-import no.nav.pensjon.brev.api.model.maler.BrukerSelectors.borIAvtaleLand
-import no.nav.pensjon.brev.api.model.maler.BrukerSelectors.borINorge
-import no.nav.pensjon.brev.api.model.maler.InntektFoerUfoerhetVedVirkSelectors.beloep
-import no.nav.pensjon.brev.api.model.maler.InntektFoerUfoerhetVedVirkSelectors.erMinsteinntekt
-import no.nav.pensjon.brev.api.model.maler.InntektFoerUfoerhetVedVirkSelectors.erSannsynligEndret
-import no.nav.pensjon.brev.api.model.maler.InntektFoerUfoerhetVedVirkSelectors.oppjustertBeloep
-import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDto
+import no.nav.pensjon.brev.api.model.*
+import no.nav.pensjon.brev.api.model.maler.*
+import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDtoSelectors.AvdoedSelectors.ektefelletilleggOpphoert
+import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDtoSelectors.AvdoedSelectors.harFellesBarnUtenBarnetillegg
+import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDtoSelectors.AvdoedSelectors.navn
+import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDtoSelectors.AvdoedSelectors.sivilstand
+import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDtoSelectors.BarnetilleggSaerkullsbarnVedvirkSelectors.barnOverfoertTilSaerkullsbarn
+import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDtoSelectors.BarnetilleggSaerkullsbarnVedvirkSelectors.barnOverfoertTilSaerkullsbarn_safe
+import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDtoSelectors.BarnetilleggSaerkullsbarnVedvirkSelectors.barnTidligereSaerkullsbarn
+import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDtoSelectors.BarnetilleggSaerkullsbarnVedvirkSelectors.barnTidligereSaerkullsbarn_safe
+import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDtoSelectors.BarnetilleggSaerkullsbarnVedvirkSelectors.beloep
+import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDtoSelectors.BarnetilleggSaerkullsbarnVedvirkSelectors.erRedusertMotInntekt
+import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDtoSelectors.BarnetilleggSaerkullsbarnVedvirkSelectors.erRedusertMotInntekt_safe
+import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDtoSelectors.BarnetilleggSaerkullsbarnVedvirkSelectors.fribeloepVedvirk
+import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDtoSelectors.BarnetilleggSaerkullsbarnVedvirkSelectors.inntektBruktIAvkortning
+import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDtoSelectors.BarnetilleggSaerkullsbarnVedvirkSelectors.inntektstak
+import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDtoSelectors.BarnetilleggSaerkullsbarnVedvirkSelectors.justeringsbeloepAar
+import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDtoSelectors.BrukerSelectors.borIAvtaleLand
+import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDtoSelectors.BrukerSelectors.borINorge
+import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDtoSelectors.InntektFoerUfoerhetVedVirkSelectors.beloep
+import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDtoSelectors.InntektFoerUfoerhetVedVirkSelectors.erMinsteinntekt
+import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDtoSelectors.InntektFoerUfoerhetVedVirkSelectors.erSannsynligEndret
+import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDtoSelectors.InntektFoerUfoerhetVedVirkSelectors.oppjustertBeloep
+import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDtoSelectors.UfoeretrygdVedVirkSelectors.erInntektsavkortet
+import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDtoSelectors.UfoeretrygdVedVirkSelectors.kompensasjonsgrad
+import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDtoSelectors.UfoeretrygdVedVirkSelectors.totalUfoereMaanedligBeloep
 import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDtoSelectors.avdoed
 import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDtoSelectors.barnetilleggSaerkullsbarnVedVirk
 import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDtoSelectors.beregnetUTPerMaaned_antallBeregningsperioderPaaVedtak
@@ -40,23 +39,17 @@ import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDtoSelectors.mins
 import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDtoSelectors.opplysningerBruktIBeregningUT
 import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDtoSelectors.orienteringOmRettigheterOgPlikter
 import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDtoSelectors.ufoeretrygdVedVirk
-import no.nav.pensjon.brev.api.model.maler.UfoeretrygdVedVirkSelectors.erInntektsavkortet
-import no.nav.pensjon.brev.api.model.maler.UfoeretrygdVedVirkSelectors.kompensasjonsgrad
-import no.nav.pensjon.brev.api.model.maler.UfoeretrygdVedVirkSelectors.totalUfoereMaanedligBeloep
 import no.nav.pensjon.brev.maler.fraser.*
-import no.nav.pensjon.brev.maler.fraser.common.Felles
-import no.nav.pensjon.brev.maler.fraser.common.Vedtak
+import no.nav.pensjon.brev.maler.fraser.common.*
 import no.nav.pensjon.brev.maler.fraser.ufoer.Ufoeretrygd
-import no.nav.pensjon.brev.maler.vedlegg.createVedleggOpplysningerBruktIBeregningUT
-import no.nav.pensjon.brev.maler.vedlegg.vedleggMaanedligUfoeretrygdFoerSkatt
-import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgPlikterUfoere
-import no.nav.pensjon.brev.template.Language.*
+import no.nav.pensjon.brev.maler.vedlegg.*
 import no.nav.pensjon.brev.template.AutobrevTemplate
-import no.nav.pensjon.brev.template.dsl.createTemplate
+import no.nav.pensjon.brev.template.Language.*
+import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
-import no.nav.pensjon.brev.template.dsl.languages
-import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brevbaker.api.model.LetterMetadata
+import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Brevtype.VEDTAKSBREV
 
 // 000073
 @TemplateModelHelpers
@@ -262,11 +255,11 @@ object UfoerOmregningEnslig : AutobrevTemplate<UfoerOmregningEnsligDto> {
                 }
             }
 
-            showIf(avdoed.sivilstand.isOneOf(Sivilstand.SAMBOER3_2)) {
+            showIf(avdoed.sivilstand.isOneOf(SivilstandAvdoed.SAMBOER3_2)) {
                 includePhrase(GjenlevenderettSamboerOverskrift(avdoed.navn))
                 includePhrase(GjenlevenderettUfoeretrygdSamboer)
             }
-            showIf(avdoed.sivilstand.isOneOf(Sivilstand.GIFT, Sivilstand.PARTNER, Sivilstand.SAMBOER1_5)) {
+            showIf(avdoed.sivilstand.isOneOf(SivilstandAvdoed.GIFT, SivilstandAvdoed.PARTNER, SivilstandAvdoed.SAMBOER1_5)) {
                 includePhrase(RettTilGjenlevendetilleggOverskrift)
                 includePhrase(HvemHarRettTilGjenlevendetilleggVilkaar)
                 includePhrase(HvordanSoekerDuOverskrift)

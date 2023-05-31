@@ -5,20 +5,17 @@ import styles from "./Title1.module.css"
 import {BlockProps} from "../../BlockProps"
 
 const Title1: FC<BlockProps<Title1Block>> =
-    ({block, updateContent, splitBlockAtContent, mergeWith, blockStealFocus, blockFocusStolen, onFocus}) => {
-        return (
-            <h2 className={styles.container}>
-                <ContentGroup content={block.content}
-                              editable={block.editable}
-                              updateContent={updateContent}
-                              splitAtContent={splitBlockAtContent}
-                              mergeWith={mergeWith}
-                              stealFocus={blockStealFocus}
-                              focusStolen={blockFocusStolen}
-                              onFocus={onFocus}
-                />
-            </h2>
-        )
-    }
+    ({block, blockId, updateLetter, blockStealFocus, blockFocusStolen, onFocus}) => (
+        <h2 className={styles.container}>
+            <ContentGroup id={{blockId}}
+                          updateLetter={updateLetter}
+                          content={block.content}
+                          editable={block.editable}
+                          stealFocus={blockStealFocus}
+                          focusStolen={blockFocusStolen}
+                          onFocus={onFocus}
+            />
+        </h2>
+    )
 
 export default Title1

@@ -1,12 +1,9 @@
 package no.nav.pensjon.brev.template.dsl.expression
 
 import no.nav.pensjon.brev.Fixtures
-import no.nav.pensjon.brev.api.model.Foedselsnummer
-import no.nav.pensjon.brev.api.model.FoedselsnummerSelectors.valueSelector
-import no.nav.pensjon.brev.template.BinaryOperation
-import no.nav.pensjon.brev.template.ExpressionScope
-import no.nav.pensjon.brev.template.Language
-import no.nav.pensjon.brev.template.UnaryOperation
+import no.nav.pensjon.brev.template.*
+import no.nav.pensjon.brevbaker.api.model.Foedselsnummer
+import no.nav.pensjon.brevbaker.api.model.FoedselsnummerSelectors.valueSelector
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 

@@ -1,9 +1,7 @@
 package no.nav.pensjon.brev.api
 
-import no.nav.pensjon.brev.api.model.LanguageCode
-import no.nav.pensjon.brev.api.model.TemplateDescription
-import no.nav.pensjon.brev.template.Language
-import no.nav.pensjon.brev.template.LetterTemplate
+import no.nav.pensjon.brev.template.*
+import no.nav.pensjon.brevbaker.api.model.*
 
 fun LetterTemplate<*, *>.description() =
     TemplateDescription(

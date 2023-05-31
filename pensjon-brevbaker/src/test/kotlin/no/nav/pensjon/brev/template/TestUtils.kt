@@ -1,10 +1,8 @@
 package no.nav.pensjon.brev.template
 
-import no.nav.pensjon.brev.api.model.LetterMetadata
-import no.nav.pensjon.brev.template.dsl.createTemplate
-import no.nav.pensjon.brev.template.dsl.languages
-import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brev.template.render.PensjonLatexRenderer
+import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import org.junit.jupiter.api.Assertions
 import java.nio.charset.Charset
 import java.util.*

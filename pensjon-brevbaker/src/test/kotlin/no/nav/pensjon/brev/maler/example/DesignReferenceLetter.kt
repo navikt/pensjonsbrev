@@ -1,15 +1,12 @@
 package no.nav.pensjon.brev.maler.example
 
-import no.nav.pensjon.brev.api.model.LetterMetadata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
+import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
-import no.nav.pensjon.brev.template.Language.Bokmal
-import no.nav.pensjon.brev.template.Language.Nynorsk
-import no.nav.pensjon.brev.template.AutobrevTemplate
-import no.nav.pensjon.brev.template.dsl.createTemplate
-import no.nav.pensjon.brev.template.dsl.languages
-import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.Language.*
+import no.nav.pensjon.brev.template.dsl.*
+import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 object DesignReferenceLetter : AutobrevTemplate<LetterExampleDto> {
 
@@ -95,11 +92,17 @@ object DesignReferenceLetter : AutobrevTemplate<LetterExampleDto> {
                 }
             }
 
-            title1 {
-                text(Bokmal to "Tittel", Nynorsk to "Tittel")
+            title2 {
+                text(Bokmal to "Tittel 2", Nynorsk to "Tittel 2")
             }
 
             paragraph {
+                text(
+                    Bokmal to "Du har fått innvilget pensjon.",
+                    Nynorsk to "Du har fått innvilget pensjon.",
+                    FontType.BOLD
+                )
+
                 text(
                     Bokmal to "Du har fått innvilget pensjon. Dette er grunnen til det. Dette er grunnen til det. Dette er grunnen til" +
                             "det. Dette er grunnen til det. Dette er grunnen til det. Dette er grunnen til det. Du får 16 000 kroner i" +
@@ -209,6 +212,14 @@ object DesignReferenceLetter : AutobrevTemplate<LetterExampleDto> {
                         )
                     }
                 }
+            }
+
+            title1 {
+                text(Bokmal to "Tittel 1", Nynorsk to "Tittel 1")
+            }
+
+            title2 {
+                text(Bokmal to "Tittel 2", Nynorsk to "Tittel 2")
             }
 
         }

@@ -1,20 +1,18 @@
 package no.nav.pensjon.brev.maler
 
-import no.nav.pensjon.brev.api.model.*
-import no.nav.pensjon.brev.api.model.BrukerSelectors.foedselsdato
-import no.nav.pensjon.brev.api.model.FellesSelectors.bruker
-import no.nav.pensjon.brev.api.model.LetterMetadata.Brevtype.VEDTAKSBREV
 import no.nav.pensjon.brev.api.model.maler.*
 import no.nav.pensjon.brev.api.model.maler.OpptjeningVedForhoeyetHjelpesatsDtoSelectors.aarInnvilgetOmrsorgspoeng
-import no.nav.pensjon.brev.maler.fraser.*
-import no.nav.pensjon.brev.maler.fraser.common.Felles
-import no.nav.pensjon.brev.maler.fraser.common.Vedtak
+import no.nav.pensjon.brev.api.model.maler.OpptjeningVedForhoeyetHjelpesatsDtoSelectors.foedtEtter1953
+import no.nav.pensjon.brev.maler.fraser.Omsorgsopptjening
+import no.nav.pensjon.brev.maler.fraser.common.*
 import no.nav.pensjon.brev.model.format
-import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.AutobrevTemplate
+import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
+import no.nav.pensjon.brevbaker.api.model.LetterMetadata
+import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Brevtype.VEDTAKSBREV
 
 // BrevTypeKode: MF_000094
 @TemplateModelHelpers
@@ -46,7 +44,6 @@ object OpptjeningVedForhoeyetHjelpesats : AutobrevTemplate<OpptjeningVedForhoeye
 
             includePhrase(Omsorgsopptjening.HjelpestoenadInnledn(aarInnvilgetOmrsorgspoeng))
 
-            val foedtEtter1953 = felles.bruker.foedselsdato.year.greaterThan(1953)
             showIf(foedtEtter1953) {
                 includePhrase(Omsorgsopptjening.HjelpestKap20Hjemmel)
             } orShow {

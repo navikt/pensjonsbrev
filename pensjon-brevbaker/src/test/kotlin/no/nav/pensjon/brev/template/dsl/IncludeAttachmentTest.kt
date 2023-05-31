@@ -5,12 +5,10 @@ import com.natpryce.hamkrest.equalTo
 import no.nav.pensjon.brev.Fixtures
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Language.Nynorsk
-import no.nav.pensjon.brev.template.dsl.NullDataSelectors.test
-import no.nav.pensjon.brev.template.dsl.expression.expr
-import no.nav.pensjon.brev.template.dsl.expression.notNull
+import no.nav.pensjon.brev.template.dsl.IncludeAttachmentTestSelectors.NullDataSelectors.test
+import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
-import org.junit.jupiter.api.Nested
-import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.*
 
 class IncludeAttachmentTest {
     @Test

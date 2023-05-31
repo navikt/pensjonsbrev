@@ -1,7 +1,8 @@
 package no.nav.pensjon.brev.api.model.vedlegg
 
 import no.nav.pensjon.brev.api.model.Beregningsmetode
-import no.nav.pensjon.brev.api.model.Kroner
+import no.nav.pensjon.brev.api.model.BorMedSivilstand
+import no.nav.pensjon.brevbaker.api.model.Kroner
 import no.nav.pensjon.brev.api.model.Sivilstand
 import java.time.LocalDate
 
@@ -15,6 +16,7 @@ data class OpplysningerBruktIBeregningUTDto(
     val inntektsAvkortingGjeldende: InntektsAvkortingGjeldende,
     val minsteytelseGjeldende_sats: Double?,
     val sivilstand: Sivilstand,
+    val borMedSivilstand: BorMedSivilstand?,
     val trygdetidsdetaljerGjeldende: TrygdetidsdetaljerGjeldende,
     val ufoeretrygdGjeldende: UfoeretrygdGjeldende,
     val ungUfoerGjeldende_erUnder20Aar: Boolean?,
@@ -41,13 +43,15 @@ data class OpplysningerBruktIBeregningUTDto(
             val beloepAarBrutto: Kroner,
             val erRedusertMotinntekt: Boolean,
             val fribeloep: Kroner,
-            val fribeloepEllerInntektErPeriodisert: Boolean,
+            val fribeloepErPeriodisert: Boolean,
+            val inntektErPeriodisert: Boolean,
             val harFlereBarn: Boolean,
             val inntektBruktIAvkortning: Kroner,
             val inntektOverFribeloep: Kroner,
             val inntektstak: Kroner,
             val justeringsbeloepAar: Kroner,
         )
+
         data class Fellesbarn(
             val avkortningsbeloepAar: Kroner,
             val beloepNetto: Kroner,
@@ -57,13 +61,15 @@ data class OpplysningerBruktIBeregningUTDto(
             val beloepFratrukketAnnenForeldersInntekt: Kroner,
             val erRedusertMotinntekt: Boolean,
             val fribeloep: Kroner,
-            val fribeloepEllerInntektErPeriodisert: Boolean,
+            val fribeloepErPeriodisert: Boolean,
+            val inntektErPeriodisert: Boolean,
             val harFlereBarn: Boolean,
             val inntektAnnenForelder: Kroner,
-            val inntektBruktIAvkortning: Kroner,
+            val samletInntektBruktIAvkortning: Kroner,
             val inntektOverFribeloep: Kroner,
             val inntektstak: Kroner,
             val justeringsbeloepAar: Kroner,
+            val borMedSivilstand: BorMedSivilstand,
         )
     }
 
@@ -91,6 +97,7 @@ data class OpplysningerBruktIBeregningUTDto(
 
     data class BeregnetUTPerManedGjeldende(
         val brukerErFlyktning: Boolean,
+        @Deprecated("Bruk borMedSivilstand og sivilstand i OpplysningerBruktIBeregningUTDto(topp-nivaa)")
         val brukersSivilstand: Sivilstand,
         val grunnbeloep: Kroner,
         val virkDatoFom: LocalDate,

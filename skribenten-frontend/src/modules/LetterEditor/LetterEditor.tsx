@@ -1,49 +1,47 @@
 import Title1 from "./components/title1/Title1"
+import Title2 from "./components/title2/Title2"
 import Paragraph from "./components/paragraph/Paragraph"
 import styles from "./LetterEditor.module.css"
-import {FC, useState} from "react"
-import {AnyBlock, RenderedLetter} from "./model/api"
-import {bindAction, BoundAction, combine} from "../../lib/actions"
-import {BlocksAction} from "./actions/blocks"
-import {BlockAction} from "./actions/block"
+import {Dispatch, FC, SetStateAction, useState} from "react"
+import {AnyBlock, PARAGRAPH, TITLE1, TITLE2} from "./model/api"
+import {bindActionWithCallback, BoundAction, CallbackReceiver} from "../../lib/actions"
 import SakspartView from "./components/sakspart/SakspartView"
 import SignaturView from "./components/signatur/SignaturView"
-import {RenderedLetterAction} from "./actions/letter"
-import {SplitAtContent} from "./BlockProps"
 import EditorMenu from "./components/editormenu/EditorMenu"
-import {StealFocusAction} from "./actions/stealfocus"
-import {MergeTarget} from "./actions/common"
-import {CursorPosition, StealFocus} from "./model/state"
+import {CursorPosition, LetterEditorState} from "./model/state"
+import Actions from "./actions"
 
 interface AnyBlockProps {
     block: AnyBlock,
-    splitBlock: SplitAtContent
-    mergeWith: BoundAction<[target: MergeTarget]>
-    updateBlock: BoundAction<[block: AnyBlock]>
+    blockId: number,
+    updateLetter: CallbackReceiver<LetterEditorState>
     stealFocus?: CursorPosition
     blockFocusStolen: BoundAction<[]>
     onFocus: BoundAction<[]>
 }
 
-const AnyBlockView: FC<AnyBlockProps> = ({block, splitBlock, mergeWith, updateBlock, stealFocus, blockFocusStolen, onFocus}) => {
-
-    const updateBlockContent = bindAction(BlockAction.updateBlockContent, updateBlock, block)
-
+const AnyBlockView: FC<AnyBlockProps> = ({block, blockId, updateLetter, stealFocus, blockFocusStolen, onFocus}) => {
     switch (block.type) {
-        case 'TITLE1':
+        case TITLE1:
             return <Title1 block={block}
-                           updateContent={updateBlockContent}
-                           splitBlockAtContent={splitBlock}
-                           mergeWith={mergeWith}
+                           blockId={blockId}
+                           updateLetter={updateLetter}
                            blockStealFocus={stealFocus}
                            blockFocusStolen={blockFocusStolen}
                            onFocus={onFocus}
             />
-        case 'PARAGRAPH':
+        case TITLE2:
+            return <Title2 block={block}
+                           blockId={blockId}
+                           updateLetter={updateLetter}
+                           blockStealFocus={stealFocus}
+                           blockFocusStolen={blockFocusStolen}
+                           onFocus={onFocus}
+            />
+        case PARAGRAPH:
             return <Paragraph block={block}
-                              updateContent={updateBlockContent}
-                              splitBlockAtContent={splitBlock}
-                              mergeWith={mergeWith}
+                              blockId={blockId}
+                              updateLetter={updateLetter}
                               blockStealFocus={stealFocus}
                               blockFocusStolen={blockFocusStolen}
                               onFocus={onFocus}
@@ -52,53 +50,37 @@ const AnyBlockView: FC<AnyBlockProps> = ({block, splitBlock, mergeWith, updateBl
 }
 
 export interface LetterEditorProps {
-    letter: RenderedLetter
-    updateLetter: BoundAction<[letter: RenderedLetter]>
+    editorState: LetterEditorState
+    updateState: Dispatch<SetStateAction<LetterEditorState>>
 }
 
-const LetterEditor: FC<LetterEditorProps> = ({letter, updateLetter}) => {
-    const blocks = letter.blocks
+const LetterEditor: FC<LetterEditorProps> = ({editorState, updateState}) => {
+    const blocks = editorState.editedLetter.letter.blocks
 
-    const [stealFocus, setStealFocus] = useState<StealFocus>({})
     const [currentBlock, setCurrentBlock] = useState(0)
 
-    const updateBlocks = bindAction(RenderedLetterAction.updateBlocks, updateLetter, letter)
-    const updateBlock = bindAction(BlocksAction.updateBlock, updateBlocks, blocks)
-
-    const mergeWithAndStealFocus = combine(
-        bindAction(BlocksAction.mergeWith, updateBlocks),
-        bindAction(StealFocusAction.onMerge, setStealFocus, stealFocus)
-    ).bind(null, blocks)
-
-    const splitBlockAndStealFocus = combine(
-        bindAction(BlocksAction.splitBlock, updateBlocks),
-        bindAction(StealFocusAction.onSplit, setStealFocus, stealFocus),
-    ).bind(null, blocks)
-
-    const focusStolen = bindAction(StealFocusAction.focusStolen, setStealFocus, stealFocus)
-
-    const switchType = bindAction(BlockAction.switchType, updateBlock.bind(null, currentBlock), blocks[currentBlock])
+    const focusStolen = bindActionWithCallback(Actions.focusStolen, updateState)
+    const switchType = bindActionWithCallback(Actions.switchType, updateState, currentBlock)
 
     return (
         <div className={styles.container}>
-            <EditorMenu switchType={switchType} />
+            <EditorMenu switchType={switchType}/>
             <div className={styles.letter}>
-                <SakspartView sakspart={letter.sakspart}/>
-                <h1>{letter.title}</h1>
+                <SakspartView sakspart={editorState.editedLetter.letter.sakspart}/>
+                <h1>{editorState.editedLetter.letter.title}</h1>
                 {blocks.map((block, blockId) =>
                     <AnyBlockView key={blockId}
-                              block={block}
-                              splitBlock={splitBlockAndStealFocus.bind(null, blockId)}
-                              mergeWith={mergeWithAndStealFocus.bind(null, blockId)}
-                              updateBlock={updateBlock.bind(null, blockId)}
-                              stealFocus={stealFocus[blockId]}
-                              blockFocusStolen={focusStolen.bind(null, blockId)}
-                              onFocus={setCurrentBlock.bind(null, blockId)}
+                                  block={block}
+                                  blockId={blockId}
+                                  updateLetter={updateState}
+                                  stealFocus={editorState.stealFocus[blockId]}
+                                  blockFocusStolen={focusStolen.bind(null, blockId)}
+                                  onFocus={setCurrentBlock.bind(null, blockId)}
                     />
                 )}
-                <SignaturView signatur={letter.signatur}/>
+                <SignaturView signatur={editorState.editedLetter.letter.signatur}/>
             </div>
-            <button onClick={() => console.log(blocks)}>Save</button>
+            <button onClick={() => console.log(editorState.editedLetter)}>Save</button>
         </div>
     )
 }

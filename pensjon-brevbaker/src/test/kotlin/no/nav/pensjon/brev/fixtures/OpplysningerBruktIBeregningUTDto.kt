@@ -1,10 +1,9 @@
 package no.nav.pensjon.brev.fixtures
 
 import no.nav.pensjon.brev.Fixtures
-import no.nav.pensjon.brev.api.model.Beregningsmetode
-import no.nav.pensjon.brev.api.model.Kroner
-import no.nav.pensjon.brev.api.model.Sivilstand
+import no.nav.pensjon.brev.api.model.*
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDto
+import no.nav.pensjon.brevbaker.api.model.Kroner
 import java.time.LocalDate
 
 fun createOpplysningerBruktIBeregningUTDto() =
@@ -16,13 +15,14 @@ fun createOpplysningerBruktIBeregningUTDto() =
         inntektFoerUfoereGjeldende = Fixtures.create(),
         inntektsAvkortingGjeldende = Fixtures.create(),
         minsteytelseGjeldende_sats = 0.0,
-        sivilstand = Sivilstand.PARTNER,
+        sivilstand = Sivilstand.PARTNER, // TODO remove in next version
         trygdetidsdetaljerGjeldende = Fixtures.create(),
         ufoeretrygdGjeldende = Fixtures.create(),
         ungUfoerGjeldende_erUnder20Aar = false,
         yrkesskadeGjeldende = Fixtures.create(),
         harKravaarsakEndringInntekt = true,
-        fraOgMedDatoErNesteAar = false
+        fraOgMedDatoErNesteAar = false,
+        borMedSivilstand = BorMedSivilstand.PARTNER,
     )
 
 fun createOpplysningerBruktIBeregningUTDtoBarnetilleggGjeldende() =
@@ -47,13 +47,15 @@ fun createOpplysningerBruktIBeregningUTDtoBarnetilleggGjeldendeFellesbarn() =
         beloepFratrukketAnnenForeldersInntekt = Kroner(35000),
         erRedusertMotinntekt = true,
         fribeloep = Kroner(20000),
-        fribeloepEllerInntektErPeriodisert = false,
         harFlereBarn = true,
         inntektAnnenForelder = Kroner(200000),
-        inntektBruktIAvkortning = Kroner(50000),
         inntektOverFribeloep = Kroner(25000),
         inntektstak = Kroner(200000),
         justeringsbeloepAar = Kroner(120000),
+        samletInntektBruktIAvkortning = Kroner(500000),
+        fribeloepErPeriodisert = false,
+        inntektErPeriodisert = false,
+        borMedSivilstand = BorMedSivilstand.PARTNER
     )
 
 fun createOpplysningerBruktIBeregningUTDtoBarnetilleggGjeldendeSaerkullsbarn() =
@@ -65,12 +67,13 @@ fun createOpplysningerBruktIBeregningUTDtoBarnetilleggGjeldendeSaerkullsbarn() =
         beloepAarBrutto = Kroner(240000),
         erRedusertMotinntekt = true,
         fribeloep = Kroner(35000),
-        fribeloepEllerInntektErPeriodisert = false,
         harFlereBarn = true,
         inntektBruktIAvkortning = Kroner(200000),
         inntektOverFribeloep = Kroner(40000),
         inntektstak = Kroner(220000),
         justeringsbeloepAar = Kroner(15000),
+        fribeloepErPeriodisert = false,
+        inntektErPeriodisert = false,
     )
 
 fun createOpplysningerBruktIBeregningUTDtoBeregnetUTPerManedGjeldende() =

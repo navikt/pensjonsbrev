@@ -1,12 +1,10 @@
 package no.nav.pensjon.brev.fixtures
 
 import no.nav.pensjon.brev.Fixtures
-import no.nav.pensjon.brev.api.model.Kroner
+import no.nav.pensjon.brev.api.model.BorMedSivilstand
 import no.nav.pensjon.brev.api.model.Sivilstand
-import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarn
-import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarn
-import no.nav.pensjon.brev.api.model.maler.OpphoerBarnetilleggAutoDto
-import no.nav.pensjon.brev.api.model.maler.Ufoeretrygd
+import no.nav.pensjon.brev.api.model.maler.*
+import no.nav.pensjon.brevbaker.api.model.Kroner
 import java.time.LocalDate
 
 fun createOpphoerBarnetilleggAutoDto() =
@@ -25,9 +23,11 @@ fun createOpphoerBarnetilleggAutoDto() =
             beloepNetto = Kroner(5000),
             fribeloep = Kroner(10000),
             inntektAnnenForelder = Kroner(550000),
-            inntektBruktIAvkortning = Kroner(375000),
             inntektstak = Kroner(320000),
             harJusteringsbeloep = true,
+            samletInntektBruktIAvkortning = Kroner(500000),
+            brukersIntektBruktIAvkortning = Kroner(250000),
+            brukerBorMed = BorMedSivilstand.EKTEFELLE
         ),
         barnetilleggSaerkullsbarn = BarnetilleggSaerkullsbarn(
             gjelderFlereBarn = true,
@@ -38,10 +38,10 @@ fun createOpphoerBarnetilleggAutoDto() =
             inntektBruktIAvkortning = Kroner(8000),
             inntektstak = Kroner(350000),
             harJusteringsbeloep = true,
+            brukerBorMed = BorMedSivilstand.EKTEFELLE
         ),
         brukerBorInorge =true,
         grunnbeloep = Kroner(98000),
-        sivilstand = Sivilstand.SAMBOER1_5,
         ufoeretrygd = Ufoeretrygd(
             ufoertrygdUtbetalt = Kroner(80),
             utbetaltPerMaaned = Kroner(345000),
@@ -51,5 +51,6 @@ fun createOpphoerBarnetilleggAutoDto() =
         ),
         maanedligUfoeretrygdFoerSkatt = Fixtures.create(),
         opplysningerBruktIBeregningUT = Fixtures.create(),
-        orienteringOmRettigheterUfoere = Fixtures.create()
+        orienteringOmRettigheterUfoere = Fixtures.create(),
+        sivilstand = Sivilstand.GIFT // TODO remove in next version
     )

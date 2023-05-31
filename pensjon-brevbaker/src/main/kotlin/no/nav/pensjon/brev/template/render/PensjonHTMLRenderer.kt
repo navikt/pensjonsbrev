@@ -2,11 +2,11 @@ package no.nav.pensjon.brev.template.render
 
 import kotlinx.html.*
 import kotlinx.html.stream.appendHTML
-import no.nav.pensjon.brev.api.model.LetterMetadata
-import no.nav.pensjon.brev.api.model.LetterMetadata.Brevtype.VEDTAKSBREV
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.render.LanguageSetting.Closing.automatiskInformasjonsbrev
 import no.nav.pensjon.brev.template.render.LanguageSetting.Closing.automatiskVedtaksbrev
+import no.nav.pensjon.brevbaker.api.model.LetterMetadata
+import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Brevtype.VEDTAKSBREV
 import java.time.format.FormatStyle
 import java.util.*
 
@@ -23,7 +23,8 @@ object PensjonHTMLRenderer : LetterRenderer<RenderedHtmlLetter>() {
 
     private val languageSettings = pensjonHTMLSettings
     private val css = getResource("html/style.css").toString(Charsets.UTF_8)
-    private val navLogoImg = "data:image/png;base64,${Base64.getEncoder().encodeToString(getResource("html/nav-logo.png"))}"
+    private val navLogoImg =
+        "data:image/png;base64,${Base64.getEncoder().encodeToString(getResource("html/nav-logo.png"))}"
     private val fontBinary = listOf(fontFaceCss("normal", 400), fontFaceCss("italic", 400), fontFaceCss("normal", 700))
 
     private fun fontFaceCss(style: String, weight: Int) =
@@ -32,7 +33,9 @@ object PensjonHTMLRenderer : LetterRenderer<RenderedHtmlLetter>() {
             font-family: 'Source Sans Pro';
             font-style: $style;
             font-weight: $weight;
-            src: url(data:font/woff2;charset=utf-8;base64,${Base64.getEncoder().encodeToString(getResource("html/SourceSansPro-latin-$style-$weight.woff2"))}) format('woff2');
+            src: url(data:font/woff2;charset=utf-8;base64,${
+            Base64.getEncoder().encodeToString(getResource("html/SourceSansPro-latin-$style-$weight.woff2"))
+        }) format('woff2');
             unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
         }
         """.trimIndent()
@@ -97,20 +100,23 @@ object PensjonHTMLRenderer : LetterRenderer<RenderedHtmlLetter>() {
             if (signerende != null) {
                 div(classes("closing-manuell")) {
                     val saksbehandlerTekst = languageSettings.settings[LanguageSetting.Closing.saksbehandler]!!
+                    signerende.attesterendeSaksbehandler?.takeIf { brevtype == VEDTAKSBREV }?.let {
+                        div(classes("closing-saksbehandler")) {
+                            div { text(it) }
+                            div { renderText(scope, saksbehandlerTekst) }
+                        }
+                    }
                     div(classes("closing-saksbehandler")) {
                         div { text(signerende.saksbehandler) }
                         div { renderText(scope, saksbehandlerTekst) }
                     }
-                    if (brevtype == VEDTAKSBREV) {
-                        div(classes("closing-saksbehandler")) {
-                            div { text(signerende.attesterendeSaksbehandler) }
-                            div { renderText(scope, saksbehandlerTekst) }
-                        }
-                    }
                 }
             } else {
                 div(classes("closing-automatisk")) {
-                    renderText(scope, languageSettings.settings[if (brevtype == VEDTAKSBREV) automatiskVedtaksbrev else automatiskInformasjonsbrev]!!)
+                    renderText(
+                        scope,
+                        languageSettings.settings[if (brevtype == VEDTAKSBREV) automatiskVedtaksbrev else automatiskInformasjonsbrev]!!
+                    )
                 }
             }
         }
@@ -140,6 +146,7 @@ object PensjonHTMLRenderer : LetterRenderer<RenderedHtmlLetter>() {
         when (element) {
             is Element.OutlineContent.Paragraph -> renderParagraph(scope, element)
             is Element.OutlineContent.Title1 -> h2(classes("title1")) { renderText(scope, element.text) }
+            is Element.OutlineContent.Title2 -> h3(classes("title2")) { renderText(scope, element.text) }
         }
 
     private fun FlowContent.renderParagraph(

@@ -35,6 +35,14 @@ interface OutlineScope<Lang : LanguageSupport, LetterData : Any> {
             .also { addOutlineContent(it) }
     }
 
+    fun title2(create: TextOnlyScope<Lang, LetterData>.() -> Unit) {
+        TextOnlyScope<Lang, LetterData>().apply(create)
+            .let { Element.OutlineContent.Title2(it.elements) }
+            .let { ContentOrControlStructure.Content(it) }
+            .also { addOutlineContent(it) }
+    }
+
+
     fun paragraph(create: ParagraphOnlyScope<Lang, LetterData>.() -> Unit) {
         ParagraphOnlyScope<Lang, LetterData>().apply(create)
             .let { Element.OutlineContent.Paragraph(it.elements) }

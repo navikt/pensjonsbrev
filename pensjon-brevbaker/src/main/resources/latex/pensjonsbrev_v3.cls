@@ -49,8 +49,9 @@
 % Global font commands
 \newcommand{\standardtextsize}{11.45pt}
 \newcommand{\standardtextspacing}{18.5pt}
-\newcommand{\titletextsize}{15.3pt}
-\newcommand{\titletwotextsize}{13.4pt}
+\newcommand{\titletextsize}{17pt}
+\newcommand{\titleonetextsize}{15.5pt}
+\newcommand{\titletwotextsize}{13pt}
 \newcommand{\pagenumbertext}[1]{{\primaryFont \fontsize{10pt}{10pt} \selectfont #1}}
 \setlength{\parindent}{0em} % indentations before first line in paragraph
 \setlength{\parskip}{1em} % space between paragraphs

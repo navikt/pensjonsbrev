@@ -1,11 +1,11 @@
 package no.nav.pensjon.brev
 
-import no.nav.pensjon.brev.api.model.*
 import no.nav.pensjon.brev.api.model.maler.*
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmSaksbehandlingstidDto
 import no.nav.pensjon.brev.api.model.vedlegg.*
 import no.nav.pensjon.brev.fixtures.*
-import no.nav.pensjon.brev.maler.example.*
+import no.nav.pensjon.brev.maler.example.LetterExampleDto
+import no.nav.pensjon.brevbaker.api.model.*
 import java.time.LocalDate
 import kotlin.reflect.KClass
 
@@ -24,7 +24,6 @@ object Fixtures {
             mellomnavn = "\"bruker\"",
             etternavn = "Testerson",
             foedselsnummer = Foedselsnummer("01019878910"),
-            foedselsdato = LocalDate.of(1998, 1, 1),
         ),
         signerendeSaksbehandlere = SignerendeSaksbehandlere(
             saksbehandler = "Ole Saksbehandler",
@@ -56,7 +55,7 @@ object Fixtures {
             OpplysningerBruktIBeregningUTDto.TrygdetidsdetaljerGjeldende.UtenforEOSogNorden::class -> createOpplysningerBruktIBeregningUTDtoTrygdetidsdetaljerGjeldendeUtenforEOSogNorden() as T
             OpplysningerBruktIBeregningUTDto.UfoeretrygdGjeldende::class -> createOpplysningerBruktIBeregningUTDtoUfoeretrygdGjeldende() as T
             OpplysningerBruktIBeregningUTDto.YrkesskadeGjeldende::class -> createOpplysningerBruktIBeregningUTDtoYrkesskadeGjeldende() as T
-            OpptjeningVedForhoeyetHjelpesatsDto::class -> OpptjeningVedForhoeyetHjelpesatsDto(Year(2021)) as T
+            OpptjeningVedForhoeyetHjelpesatsDto::class -> OpptjeningVedForhoeyetHjelpesatsDto(Year(2021), false) as T
             OrienteringOmRettigheterUfoereDto::class -> createOrienteringOmRettigheterUfoereDto() as T
             UfoerOmregningEnsligDto::class -> createUfoerOmregningEnsligDto() as T
             UngUfoerAutoDto::class -> createUngUfoerAutoDto() as T

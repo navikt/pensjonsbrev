@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.api.model.maler
 
-import no.nav.pensjon.brev.api.model.Kroner
+import no.nav.pensjon.brev.api.model.BorMedSivilstand
+import no.nav.pensjon.brevbaker.api.model.Kroner
 import no.nav.pensjon.brev.api.model.Sivilstand
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligUfoeretrygdFoerSkattDto
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDto
@@ -15,7 +16,7 @@ data class OpphoerBarnetilleggAutoDto(
     val barnetilleggSaerkullsbarn: BarnetilleggSaerkullsbarn?,
     val brukerBorInorge: Boolean,
     val grunnbeloep: Kroner,
-    val sivilstand: Sivilstand,
+    val sivilstand: Sivilstand, // TODO remove in next version
     val ufoeretrygd: Ufoeretrygd,
     val maanedligUfoeretrygdFoerSkatt: MaanedligUfoeretrygdFoerSkattDto?,
     val opplysningerBruktIBeregningUT: OpplysningerBruktIBeregningUTDto,
@@ -31,6 +32,7 @@ data class Ufoeretrygd(
     )
 
 data class BarnetilleggFellesbarn(
+    val brukerBorMed: BorMedSivilstand,
     val gjelderFlereBarn: Boolean,
     val inntektstak: Kroner,
     val beloepBrutto: Kroner,
@@ -40,10 +42,12 @@ data class BarnetilleggFellesbarn(
     val harFratrukketBeloepFraAnnenForelder: Boolean,
     val harJusteringsbeloep: Boolean,
     val inntektAnnenForelder: Kroner,
-    val inntektBruktIAvkortning: Kroner,
+    val brukersIntektBruktIAvkortning: Kroner,
+    val samletInntektBruktIAvkortning: Kroner,
 )
 
 data class BarnetilleggSaerkullsbarn(
+    val brukerBorMed: BorMedSivilstand?,
     val gjelderFlereBarn: Boolean,
     val inntektstak: Kroner,
     val beloepBrutto: Kroner,

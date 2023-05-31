@@ -8,17 +8,17 @@ import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.util.*
-import io.ktor.util.pipeline.*
-import no.nav.pensjon.brev.api.model.RenderedJsonLetter
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.skribenten.auth.AzureADService
 import no.nav.pensjon.brev.skribenten.auth.JwtConfig
 import no.nav.pensjon.brev.skribenten.auth.UnauthorizedException
 import no.nav.pensjon.brev.skribenten.auth.UserPrincipal
 import no.nav.pensjon.brev.skribenten.services.*
+import no.nav.pensjon.brevbaker.api.model.RenderedJsonLetter
 import java.util.*
 
-data class RenderLetterRequest(val letterData: Any, val editedLetter: RenderedJsonLetter?)
+data class RenderLetterRequest(val letterData: Any, val editedLetter: EditedJsonLetter?)
+data class EditedJsonLetter(val letter: RenderedJsonLetter, val deletedBlocks: Set<Int>)
 
 fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config) {
     val authService = AzureADService(authConfig)

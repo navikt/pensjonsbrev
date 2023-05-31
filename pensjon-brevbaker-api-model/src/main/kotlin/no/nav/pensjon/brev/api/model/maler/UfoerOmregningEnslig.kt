@@ -1,8 +1,8 @@
 package no.nav.pensjon.brev.api.model.maler
 
 import no.nav.pensjon.brev.api.model.Institusjon
-import no.nav.pensjon.brev.api.model.Kroner
-import no.nav.pensjon.brev.api.model.Sivilstand
+import no.nav.pensjon.brevbaker.api.model.Kroner
+import no.nav.pensjon.brev.api.model.SivilstandAvdoed
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligUfoeretrygdFoerSkattDto
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDto
 import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterUfoereDto
@@ -28,7 +28,7 @@ data class UfoerOmregningEnsligDto(
     data class Avdoed(
         val navn: String,
         val ektefelletilleggOpphoert: Boolean,
-        val sivilstand: Sivilstand,
+        val sivilstand: SivilstandAvdoed,
         val harFellesBarnUtenBarnetillegg: Boolean,
     )
 
