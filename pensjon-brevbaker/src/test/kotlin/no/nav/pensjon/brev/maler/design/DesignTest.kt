@@ -10,7 +10,7 @@ import no.nav.pensjon.brev.template.outlineTestTemplate
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 
-@Tag(TestTags.DESIGN_TEST)
+@Tag(TestTags.VISUAL_TEST)
 class DesignTest {
     @Test
     fun `test tittel 1 sammen med ulikt innhold`() {
@@ -31,9 +31,6 @@ class DesignTest {
                 paragraph {
                     includePhrase(DesignTestUtils.Table)
                 }
-
-
-
             }, Unit, Language.Bokmal, Fixtures.fellesAuto
         ).renderTestPDF(fileName).renderTestHtml(fileName)
     }

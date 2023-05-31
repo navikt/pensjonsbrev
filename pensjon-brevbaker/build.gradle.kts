@@ -41,7 +41,7 @@ tasks {
         kotlinOptions.jvmTarget = "17"
     }
 
-    val integrationTests = setOf("pdf-bygger")
+    val integrationTests = setOf("pdf-bygger", "visual-test")
 
     test {
         useJUnitPlatform {
@@ -55,10 +55,10 @@ tasks {
             includeTags = integrationTests
         }
     }
-    task<Test>("designTest") {
+    task<Test>("visualTest") {
         group = LifecycleBasePlugin.VERIFICATION_GROUP
         useJUnitPlatform {
-            includeTags = setOf("design-test")
+            includeTags = setOf("visual-test")
         }
     }
 

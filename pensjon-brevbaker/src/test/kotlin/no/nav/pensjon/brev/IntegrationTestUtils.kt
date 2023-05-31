@@ -28,7 +28,8 @@ const val PDF_BUILDER_URL = "http://localhost:8081"
 
 object TestTags {
     const val PDF_BYGGER = "pdf-bygger"
-    const val DESIGN_TEST = "design-test"
+    // For visual inspection of documents/design
+    const val VISUAL_TEST = "visual-test"
 }
 
 val httpClient = HttpClient(CIO) {

@@ -11,7 +11,7 @@ import no.nav.pensjon.brev.template.render.PensjonLatexRenderer
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 
-@Tag(TestTags.PDF_BYGGER)
+@Tag(TestTags.VISUAL_TEST)
 class AdhocTest {
     fun testHtml(template: LetterTemplate<*, *>, htmlName: String) {
         Letter(template, Unit, Language.Bokmal, Fixtures.fellesAuto)
