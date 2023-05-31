@@ -1,7 +1,8 @@
 package no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningufoere
 
 import no.nav.pensjon.brev.api.model.Beregningsmetode
-import no.nav.pensjon.brev.api.model.Sivilstand.*
+import no.nav.pensjon.brev.api.model.BorMedSivilstand
+import no.nav.pensjon.brev.api.model.Sivilstand
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDto
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.BarnetilleggGjeldendeSelectors.FellesbarnSelectors.beloepFratrukketAnnenForeldersInntekt
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.BarnetilleggGjeldendeSelectors.FellesbarnSelectors.fribeloep
@@ -17,7 +18,6 @@ import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSel
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.BarnetilleggGjeldendeSelectors.saerkullsbarn
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.BarnetilleggGjeldendeSelectors.saerkullsbarn_safe
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.BeregnetUTPerManedGjeldendeSelectors.brukerErFlyktning
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.BeregnetUTPerManedGjeldendeSelectors.brukersSivilstand
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.InntektFoerUfoereGjeldendeSelectors.ifuInntekt
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.InntektsAvkortingGjeldendeSelectors.forventetInntektAar
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.InntektsAvkortingGjeldendeSelectors.inntektsgrenseAar
@@ -47,10 +47,15 @@ import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSel
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.YrkesskadeGjeldendeSelectors.yrkesskadegrad
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.model.tableFormat
-import no.nav.pensjon.brev.template.*
+import no.nav.pensjon.brev.template.Element
+import no.nav.pensjon.brev.template.Expression
+import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.*
-import no.nav.pensjon.brev.template.dsl.*
+import no.nav.pensjon.brev.template.OutlinePhrase
+import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.*
+import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.Kroner
 
 data class TabellUfoereOpplysninger(
@@ -65,11 +70,11 @@ data class TabellUfoereOpplysninger(
     val trygdetidsdetaljerGjeldende: Expression<OpplysningerBruktIBeregningUTDto.TrygdetidsdetaljerGjeldende>,
     val barnetilleggGjeldende: Expression<OpplysningerBruktIBeregningUTDto.BarnetilleggGjeldende?>,
     val harMinsteytelse: Expression<Boolean>,
-
+    val brukersSivilstand: Expression<Sivilstand>,
+    val borMedSivilstand: Expression<BorMedSivilstand?>,
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         paragraph {
-            val brukersSivilstand = beregnetUTPerManedGjeldende.brukersSivilstand
             table(
                 header = {
                     column(3) {
@@ -262,38 +267,49 @@ data class TabellUfoereOpplysninger(
                             )
                         }
                         cell {
-                            textExpr(
-                                Bokmal to brukersSivilstand.tableFormat(),
-                                Nynorsk to brukersSivilstand.tableFormat(),
-                                English to brukersSivilstand.tableFormat()
-                            )
+                            ifNotNull(borMedSivilstand){
+                                textExpr(
+                                    Bokmal to it.tableFormat(),
+                                    Nynorsk to it.tableFormat(),
+                                    English to it.tableFormat()
+                                )
+                            }.orShow {
+                                textExpr(
+                                    Bokmal to brukersSivilstand.tableFormat(),
+                                    Nynorsk to brukersSivilstand.tableFormat(),
+                                    English to brukersSivilstand.tableFormat()
+                                )
+                            }
                         }
                     }
 
-                    showIf(brukersSivilstand.isOneOf(GIFT_LEVER_ADSKILT, PARTNER_LEVER_ADSKILT)) {
-                        val erGift = brukersSivilstand.isOneOf(GIFT_LEVER_ADSKILT)
-                        row {
-                            cell {
-                                textExpr(
-                                    Bokmal to "Du eller ".expr()
-                                            + ifElse(erGift, "ektefellen", "partneren") +
-                                            " er registrert med annet bosted, eller er på institusjon",
-                                    Nynorsk to "Du eller ".expr()
-                                            + ifElse(erGift, "ektefellen", "partnaren") +
-                                            " er registrert med annan bustad, eller er på institusjon",
-                                    English to "You or your ".expr()
-                                            + ifElse(erGift, "spouse", "partner") +
-                                            " have been registered as having a different address, or as living in an institution",
-                                )
-                            }
-                            cell {
-                                text(
-                                    Bokmal to "Ja",
-                                    Nynorsk to "Ja",
-                                    English to "Yes",
-                                )
+                    ifNotNull(borMedSivilstand){ borMedSivilstand->
+                        showIf(borMedSivilstand.isOneOf(BorMedSivilstand.GIFT_LEVER_ADSKILT, BorMedSivilstand.PARTNER_LEVER_ADSKILT)) {
+                            val erGift = borMedSivilstand.isOneOf(BorMedSivilstand.GIFT_LEVER_ADSKILT)
+                            row {
+                                cell {
+                                    textExpr(
+                                        Bokmal to "Du eller ".expr()
+                                                + ifElse(erGift, "ektefellen", "partneren") +
+                                                " er registrert med annet bosted, eller er på institusjon",
+                                        Nynorsk to "Du eller ".expr()
+                                                + ifElse(erGift, "ektefellen", "partnaren") +
+                                                " er registrert med annan bustad, eller er på institusjon",
+                                        English to "You or your ".expr()
+                                                + ifElse(erGift, "spouse", "partner") +
+                                                " have been registered as having a different address, or as living in an institution",
+                                    )
+                                }
+                                cell {
+                                    text(
+                                        Bokmal to "Ja",
+                                        Nynorsk to "Ja",
+                                        English to "Yes",
+                                    )
+                                }
                             }
                         }
+
                     }
                 }
 
