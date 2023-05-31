@@ -10,34 +10,35 @@ import no.nav.pensjon.brev.writeTestHTML
 import no.nav.pensjon.brev.writeTestPDF
 import no.nav.pensjon.etterlatte.Fixtures
 import no.nav.pensjon.etterlatte.maler.*
+import no.nav.pensjon.etterlatte.maler.barnepensjon.BarnepensjonInnvilgelse
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 
 
 @Tag(TestTags.PDF_BYGGER)
-class BarnepensjonVedtakITest {
+class BarnepensjonInnvilgelseITest {
 
     @Test
     fun pdftest() {
         Letter(
-            BarnepensjonVedtak.template,
-            Fixtures.create<BarnepensjonVedtakDTO>(),
+            BarnepensjonInnvilgelse.template,
+            Fixtures.create<BarnepensjonInnvilgelseDTO>(),
             Language.Bokmal,
             Fixtures.felles
         ).let { PensjonLatexRenderer.render(it) }
             .let { runBlocking { LaTeXCompilerService(PDF_BUILDER_URL).producePDF(it, "test").base64PDF } }
-            .also { writeTestPDF("BARNEPENSJON_VEDTAK", it) }
+            .also { writeTestPDF("BARNEPENSJON_INNVILGELSE", it) }
     }
 
     @Test
     fun testHtml() {
         Letter(
-            BarnepensjonVedtak.template,
-            Fixtures.create<BarnepensjonVedtakDTO>(),
+            BarnepensjonInnvilgelse.template,
+            Fixtures.create<BarnepensjonInnvilgelseDTO>(),
             Language.Bokmal,
             Fixtures.felles
         ).let { PensjonHTMLRenderer.render(it) }
-            .also { writeTestHTML("BARNEPENSJON_VEDTAK", it) }
+            .also { writeTestHTML("BARNEPENSJON_INNVILGELSE", it) }
     }
 
 }

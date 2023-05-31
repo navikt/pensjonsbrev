@@ -1,8 +1,8 @@
 package no.nav.pensjon.etterlatte
 
-import no.nav.pensjon.etterlatte.fixtures.createBarnepensjonVedtakDTO
+import no.nav.pensjon.etterlatte.fixtures.createBarnepensjonInnvilgelseDTO
 import no.nav.pensjon.brevbaker.api.model.*
-import no.nav.pensjon.etterlatte.maler.BarnepensjonVedtakDTO
+import no.nav.pensjon.etterlatte.maler.BarnepensjonInnvilgelseDTO
 import java.time.LocalDate
 import kotlin.reflect.KClass
 
@@ -36,7 +36,7 @@ object Fixtures {
     @Suppress("UNCHECKED_CAST")
     fun <T : Any> create(letterDataType: KClass<T>): T =
         when (letterDataType) {
-            BarnepensjonVedtakDTO::class -> createBarnepensjonVedtakDTO() as T
+            BarnepensjonInnvilgelseDTO::class -> createBarnepensjonInnvilgelseDTO() as T
             Unit::class -> Unit as T
 
             else -> throw IllegalArgumentException("Don't know how to construct: ${letterDataType.qualifiedName}")

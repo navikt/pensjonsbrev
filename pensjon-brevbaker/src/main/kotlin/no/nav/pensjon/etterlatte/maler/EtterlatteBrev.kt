@@ -11,7 +11,7 @@ import java.time.LocalDate
 
 data class EtterlatteBrevDto(val navn: String)
 
-data class BarnepensjonVedtakDTO(
+data class BarnepensjonInnvilgelseDTO(
     val utbetalingsinfo: Utbetalingsinfo,
     val avdoed: AvdoedEYB,
     val avsender: Avsender,
