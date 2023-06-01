@@ -1,5 +1,6 @@
 package no.nav.pensjon.etterlatte.maler
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonValue
 import no.nav.pensjon.brev.template.Element
@@ -23,12 +24,11 @@ data class ManueltBrevDTO(
     )
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JsonIgnoreProperties(ignoreUnknown = true)
     data class InnerElement(
         val type: ElementType? = null,
         val text: String? = null,
         val children: List<InnerElement>? = null,
-        // TODO: Sjekk på at denne ikke finnes ved ferdigstilling av PDF
-        val placeholder: Boolean? = null
     )
 
     enum class ElementType(@JsonValue val value: String) {
