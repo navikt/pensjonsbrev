@@ -51,8 +51,7 @@ object OMSInnvilgelseManuell : EtterlatteTemplate<ManueltBrevDTO> {
                             }
                         }
                     }
-                }
-                showIf(element.type.equalTo(ManueltBrevDTO.ElementType.HEADING_THREE)) {
+                }.orShowIf(element.type.equalTo(ManueltBrevDTO.ElementType.HEADING_THREE)) {
                     forEach(element.children) { inner ->
                         title2 {
                             ifNotNull(inner.text) {
@@ -60,8 +59,7 @@ object OMSInnvilgelseManuell : EtterlatteTemplate<ManueltBrevDTO> {
                             }
                         }
                     }
-                }
-                showIf(element.type.equalTo(ManueltBrevDTO.ElementType.PARAGRAPH)) {
+                }.orShowIf(element.type.equalTo(ManueltBrevDTO.ElementType.PARAGRAPH)) {
                     forEach(element.children) { inner ->
                         paragraph {
                             ifNotNull(inner.text) {
@@ -69,8 +67,7 @@ object OMSInnvilgelseManuell : EtterlatteTemplate<ManueltBrevDTO> {
                             }
                         }
                     }
-                }
-                showIf(element.type.equalTo(ManueltBrevDTO.ElementType.BULLETED_LIST)) {
+                }.orShowIf(element.type.equalTo(ManueltBrevDTO.ElementType.BULLETED_LIST)) {
                     paragraph {
                         list {
                             forEach(element.children) { inner ->
