@@ -7,7 +7,6 @@ import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import no.nav.pensjon.etterlatte.maler.BarnepensjonInnvilgelseDTO
-import no.nav.pensjon.etterlatte.maler.BarnepensjonInnvilgelseDTOSelectors.BeregningsperiodeSelectors.antallBarn
 import no.nav.pensjon.etterlatte.maler.BarnepensjonInnvilgelseDTOSelectors.BeregningsperiodeSelectors.datoFOM
 import no.nav.pensjon.etterlatte.maler.BarnepensjonInnvilgelseDTOSelectors.BeregningsperiodeSelectors.datoTOM
 import no.nav.pensjon.etterlatte.maler.BarnepensjonInnvilgelseDTOSelectors.BeregningsperiodeSelectors.grunnbeloep

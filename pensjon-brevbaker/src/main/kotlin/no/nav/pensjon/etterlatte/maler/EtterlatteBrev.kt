@@ -1,5 +1,8 @@
 package no.nav.pensjon.etterlatte.maler
 
+import com.fasterxml.jackson.annotation.JsonInclude
+import com.fasterxml.jackson.annotation.JsonValue
+import no.nav.pensjon.brev.template.Element
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brev.template.dsl.expression.*
@@ -10,6 +13,33 @@ import no.nav.pensjon.etterlatte.maler.EtterlatteBrevDtoSelectors.navn
 import java.time.LocalDate
 
 data class EtterlatteBrevDto(val navn: String)
+
+data class ManueltBrevDTO(
+    val innhold: List<Element> = emptyList()
+) {
+    data class Element(
+        val type: ElementType,
+        val children: List<InnerElement> = emptyList()
+    )
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    data class InnerElement(
+        val type: ElementType? = null,
+        val text: String? = null,
+        val children: List<InnerElement>? = null,
+        // TODO: Sjekk på at denne ikke finnes ved ferdigstilling av PDF
+        val placeholder: Boolean? = null
+    )
+
+    enum class ElementType(@JsonValue val value: String) {
+        HEADING_TWO("heading-two"),
+        HEADING_THREE("heading-three"),
+        PARAGRAPH("paragraph"),
+        BULLETED_LIST("bulleted-list"),
+        LIST_ITEM("list-item")
+
+    }
+}
 
 data class BarnepensjonInnvilgelseDTO(
     val utbetalingsinfo: Utbetalingsinfo,

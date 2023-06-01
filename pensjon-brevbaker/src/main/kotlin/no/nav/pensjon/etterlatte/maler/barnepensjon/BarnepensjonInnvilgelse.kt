@@ -27,7 +27,7 @@ object BarnepensjonInnvilgelse : EtterlatteTemplate<BarnepensjonInnvilgelseDTO> 
         letterDataType = BarnepensjonInnvilgelseDTO::class,
         languages = languages(Language.Bokmal),
         letterMetadata = LetterMetadata(
-            displayTitle = "Vedtak - endring av uføretrygd fordi du fyller 20 år",
+            displayTitle = "Vedtak - innvilget søknad om barnepensjon",
             isSensitiv = true,
             distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
