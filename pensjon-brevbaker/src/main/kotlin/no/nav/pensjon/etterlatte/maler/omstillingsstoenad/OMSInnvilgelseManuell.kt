@@ -60,8 +60,8 @@ object OMSInnvilgelseManuell : EtterlatteTemplate<ManueltBrevDTO> {
                         }
                     }
                 }.orShowIf(element.type.equalTo(ManueltBrevDTO.ElementType.PARAGRAPH)) {
-                    forEach(element.children) { inner ->
-                        paragraph {
+                    paragraph {
+                        forEach(element.children) { inner ->
                             ifNotNull(inner.text) {
                                 textExpr(Language.Bokmal to it)
                             }
