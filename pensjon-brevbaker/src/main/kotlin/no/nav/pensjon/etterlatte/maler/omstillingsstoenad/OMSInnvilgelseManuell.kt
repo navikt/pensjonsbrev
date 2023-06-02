@@ -13,6 +13,7 @@ import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.ManueltBrevDTO
 import no.nav.pensjon.etterlatte.maler.ManueltBrevDTOSelectors.ElementSelectors.children
 import no.nav.pensjon.etterlatte.maler.ManueltBrevDTOSelectors.ElementSelectors.type
+import no.nav.pensjon.etterlatte.maler.ManueltBrevDTOSelectors.InnerElementSelectors.children
 import no.nav.pensjon.etterlatte.maler.ManueltBrevDTOSelectors.InnerElementSelectors.text
 import no.nav.pensjon.etterlatte.maler.ManueltBrevDTOSelectors.innhold
 import no.nav.pensjon.etterlatte.maler.fraser.Barnepensjon
@@ -71,14 +72,17 @@ object OMSInnvilgelseManuell : EtterlatteTemplate<ManueltBrevDTO> {
                     paragraph {
                         list {
                             forEach(element.children) { inner ->
-                                ifNotNull(inner.text) {
-                                    item {
-                                        textExpr(Language.Bokmal to it)
+                                item {
+                                    ifNotNull(inner.children) {
+                                        forEach(it) { inner2 ->
+                                            ifNotNull(inner2.text) { text ->
+                                                textExpr(Language.Bokmal to text)
+                                            }
+                                        }
                                     }
                                 }
                             }
                         }
-
                     }
                 }
             }

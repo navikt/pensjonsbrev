@@ -41,15 +41,23 @@ fun createManueltBrevDTO() =
                 children = listOf(
                     InnerElement(
                         type = ElementType.LIST_ITEM,
-                        text = "Listeting 1"
+                        children = listOf(
+                            InnerElement(text = "Listeting 1 "),
+                            InnerElement(text = "med ekstra "),
+                            InnerElement(text = "tekst!"),
+                        )
                     ),
                     InnerElement(
                         type = ElementType.LIST_ITEM,
-                        text = "Listeting 2"
+                        children = listOf(
+                            InnerElement(text = "Listeting 2")
+                        )
                     ),
                     InnerElement(
                         type = ElementType.LIST_ITEM,
-                        text = "Listeting 3"
+                        children = listOf(
+                            InnerElement(text = "Listeting 3")
+                        )
                     )
                 )
             )
