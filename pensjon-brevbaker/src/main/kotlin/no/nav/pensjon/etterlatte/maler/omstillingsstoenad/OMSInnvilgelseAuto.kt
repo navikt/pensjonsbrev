@@ -23,7 +23,7 @@ import no.nav.pensjon.etterlatte.maler.fraser.common.Vedtak
 
 @TemplateModelHelpers
 object OMSInnvilgelseAuto : EtterlatteTemplate<OMSInnvilgelseDTO> {
-    override val kode: EtterlatteBrevKode = EtterlatteBrevKode.OMS_INNVILGELSE_MANUELL
+    override val kode: EtterlatteBrevKode = EtterlatteBrevKode.OMS_INNVILGELSE_AUTO
 
     override val template = createTemplate(
         name = kode.name,
