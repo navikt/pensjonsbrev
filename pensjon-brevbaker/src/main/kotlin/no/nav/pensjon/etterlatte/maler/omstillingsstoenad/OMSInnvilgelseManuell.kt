@@ -15,7 +15,7 @@ import no.nav.pensjon.etterlatte.maler.ManueltBrevDTOSelectors.ElementSelectors.
 import no.nav.pensjon.etterlatte.maler.ManueltBrevDTOSelectors.ElementSelectors.type
 import no.nav.pensjon.etterlatte.maler.ManueltBrevDTOSelectors.InnerElementSelectors.text
 import no.nav.pensjon.etterlatte.maler.ManueltBrevDTOSelectors.innhold
-import no.nav.pensjon.etterlatte.maler.fraser.Barnepensjon
+import no.nav.pensjon.etterlatte.maler.fraser.common.OMSFelles
 import no.nav.pensjon.etterlatte.maler.fraser.common.Vedtak
 
 @TemplateModelHelpers
@@ -83,13 +83,10 @@ object OMSInnvilgelseManuell : EtterlatteTemplate<ManueltBrevDTO> {
                 }
             }
 
-            includePhrase(Barnepensjon.InformasjonTilDegOverskrift)
-            includePhrase(Barnepensjon.MeldFraOmEndringer)
-            includePhrase(Barnepensjon.EndringAvKontonummer)
-            includePhrase(Barnepensjon.SkattetrekkPaaBarnepensjon)
-            includePhrase(Barnepensjon.DuHarRettTilAaKlage)
-            includePhrase(Barnepensjon.DuHarRettTilInnsyn)
-            includePhrase(Barnepensjon.HarDuSpoersmaal)
+            includePhrase(OMSFelles.MeldFraOmEndringer)
+            includePhrase(OMSFelles.DuHarRettTilAaKlage)
+            includePhrase(OMSFelles.DuHarRettTilInnsyn)
+            includePhrase(OMSFelles.HarDuSpoersmaal)
         }
 
     }
