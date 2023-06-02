@@ -11,35 +11,36 @@ import no.nav.pensjon.brev.writeTestPDF
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.Fixtures
 import no.nav.pensjon.etterlatte.maler.*
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.OMSInnvilgelseAuto
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.OMSInnvilgelseManuell
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 
 
 @Tag(TestTags.PDF_BYGGER)
-class OMSInnvilgelseManuellITest {
+class OMSInnvilgelseAutoITest {
 
     @Test
     fun pdftest() {
         Letter(
-            OMSInnvilgelseManuell.template,
-            Fixtures.create<ManueltBrevDTO>(),
+            OMSInnvilgelseAuto.template,
+            Fixtures.create<OMSInnvilgelseDTO>(),
             Language.Bokmal,
             Fixtures.felles
         ).let { PensjonLatexRenderer.render(it) }
             .let { runBlocking { LaTeXCompilerService(PDF_BUILDER_URL).producePDF(it, "test").base64PDF } }
-            .also { writeTestPDF(EtterlatteBrevKode.OMS_INNVILGELSE_MANUELL.name, it) }
+            .also { writeTestPDF(EtterlatteBrevKode.OMS_INNVILGELSE_AUTO.name, it) }
     }
 
     @Test
     fun testHtml() {
         Letter(
-            OMSInnvilgelseManuell.template,
-            Fixtures.create<ManueltBrevDTO>(),
+            OMSInnvilgelseAuto.template,
+            Fixtures.create<OMSInnvilgelseDTO>(),
             Language.Bokmal,
             Fixtures.felles
         ).let { PensjonHTMLRenderer.render(it) }
-            .also { writeTestHTML(EtterlatteBrevKode.OMS_INNVILGELSE_MANUELL.name, it) }
+            .also { writeTestHTML(EtterlatteBrevKode.OMS_INNVILGELSE_AUTO.name, it) }
     }
 
 }

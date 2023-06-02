@@ -3,11 +3,13 @@ package no.nav.pensjon.etterlatte
 import no.nav.pensjon.brev.template.LetterTemplate
 import no.nav.pensjon.etterlatte.maler.*
 import no.nav.pensjon.etterlatte.maler.barnepensjon.BarnepensjonInnvilgelse
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.OMSInnvilgelseAuto
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.OMSInnvilgelseManuell
 
 
 val prodAutobrevTemplates: Set<EtterlatteTemplate<*>> = setOf(EtterlatteBrev)
-val prodRedigerbareTemplates: Set<EtterlatteTemplate<*>> = setOf(BarnepensjonInnvilgelse, OMSInnvilgelseManuell)
+val prodRedigerbareTemplates: Set<EtterlatteTemplate<*>> =
+    setOf(BarnepensjonInnvilgelse, OMSInnvilgelseManuell, OMSInnvilgelseAuto)
 
 class TemplateResource(
     autobrevTemplates: Set<EtterlatteTemplate<*>> = prodAutobrevTemplates,

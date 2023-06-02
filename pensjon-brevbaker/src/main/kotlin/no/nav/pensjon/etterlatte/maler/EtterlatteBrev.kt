@@ -41,6 +41,39 @@ data class ManueltBrevDTO(
     }
 }
 
+data class OMSInnvilgelseDTO(
+    val utbetalingsinfo: Utbetalingsinfo,
+    val avdoed: AvdoedEYO,
+    val attestant: Attestant? = null,
+) {
+
+    data class Utbetalingsinfo(
+        val beloep: Kroner,
+        val inntekt: Kroner,
+        val virkningsdato: LocalDate,
+        val grunnbeloep: Kroner,
+        val beregningsperioder: List<Beregningsperiode>,
+    )
+
+    data class Beregningsperiode(
+        val datoFOM: LocalDate,
+        val datoTOM: LocalDate?,
+        val inntekt: Kroner,
+        var utbetaltBeloep: Kroner,
+    )
+
+    data class AvdoedEYO(
+        val navn: String,
+        val doedsdato: LocalDate,
+    )
+
+    data class Attestant(
+        val navn: String,
+        val kontor: String,
+    )
+
+}
+
 data class BarnepensjonInnvilgelseDTO(
     val utbetalingsinfo: Utbetalingsinfo,
     val avdoed: AvdoedEYB,
@@ -94,14 +127,19 @@ data class BarnepensjonInnvilgelseDTO(
 }
 
 @TemplateModelHelpers
-object EtterlatteBrev: EtterlatteTemplate<EtterlatteBrevDto> {
+object EtterlatteBrev : EtterlatteTemplate<EtterlatteBrevDto> {
     override val kode = EtterlatteBrevKode.A_LETTER
 
     override val template = createTemplate(
         name = kode.name,
-        letterDataType =  EtterlatteBrevDto::class,
+        letterDataType = EtterlatteBrevDto::class,
         languages = languages(Bokmal),
-        letterMetadata = LetterMetadata("Et etterlatte brev", false, LetterMetadata.Distribusjonstype.VEDTAK, LetterMetadata.Brevtype.VEDTAKSBREV),
+        letterMetadata = LetterMetadata(
+            "Et etterlatte brev",
+            false,
+            LetterMetadata.Distribusjonstype.VEDTAK,
+            LetterMetadata.Brevtype.VEDTAKSBREV
+        ),
     ) {
         title { text(Bokmal to "Et eksempel brev") }
 
