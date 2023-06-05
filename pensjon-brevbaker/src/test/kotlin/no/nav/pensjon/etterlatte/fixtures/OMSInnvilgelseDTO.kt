@@ -1,6 +1,7 @@
 package no.nav.pensjon.etterlatte.fixtures
 
 import no.nav.pensjon.brevbaker.api.model.*
+import no.nav.pensjon.etterlatte.maler.Avdoed
 import no.nav.pensjon.etterlatte.maler.OMSInnvilgelseDTO
 import java.time.LocalDate
 
@@ -26,12 +27,8 @@ fun createOMSInnvilgelseDTO() =
                 )
             )
         ),
-        avdoed = OMSInnvilgelseDTO.AvdoedEYO(
+        avdoed = Avdoed(
             navn = "Avdoed Avdoedesen",
             doedsdato = LocalDate.now()
-        ),
-        attestant = OMSInnvilgelseDTO.Attestant(
-            navn = "Attestant Attestantesen",
-            kontor = "NAV Familie- og pensjonsytelser Ålesund"
         )
     )
