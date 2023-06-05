@@ -8,9 +8,9 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
+import no.nav.pensjon.etterlatte.maler.AvdoedSelectors.doedsdato
+import no.nav.pensjon.etterlatte.maler.AvdoedSelectors.navn
 import no.nav.pensjon.etterlatte.maler.OMSInnvilgelseDTO
-import no.nav.pensjon.etterlatte.maler.OMSInnvilgelseDTOSelectors.AvdoedEYOSelectors.doedsdato
-import no.nav.pensjon.etterlatte.maler.OMSInnvilgelseDTOSelectors.AvdoedEYOSelectors.navn
 import no.nav.pensjon.etterlatte.maler.OMSInnvilgelseDTOSelectors.UtbetalingsinfoSelectors.beregningsperioder
 import no.nav.pensjon.etterlatte.maler.OMSInnvilgelseDTOSelectors.UtbetalingsinfoSelectors.grunnbeloep
 import no.nav.pensjon.etterlatte.maler.OMSInnvilgelseDTOSelectors.UtbetalingsinfoSelectors.inntekt

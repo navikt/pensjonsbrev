@@ -1,13 +1,16 @@
 package no.nav.pensjon.etterlatte.maler.barnepensjon
 
 import no.nav.pensjon.brev.template.Language
-import no.nav.pensjon.brev.template.dsl.*
+import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
+import no.nav.pensjon.brev.template.dsl.languages
+import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
-import no.nav.pensjon.etterlatte.*
+import no.nav.pensjon.etterlatte.EtterlatteBrevKode
+import no.nav.pensjon.etterlatte.EtterlatteTemplate
+import no.nav.pensjon.etterlatte.maler.AvdoedSelectors.doedsdato
+import no.nav.pensjon.etterlatte.maler.AvdoedSelectors.navn
 import no.nav.pensjon.etterlatte.maler.BarnepensjonInnvilgelseDTO
-import no.nav.pensjon.etterlatte.maler.BarnepensjonInnvilgelseDTOSelectors.AvdoedEYBSelectors.doedsdato
-import no.nav.pensjon.etterlatte.maler.BarnepensjonInnvilgelseDTOSelectors.AvdoedEYBSelectors.navn
 import no.nav.pensjon.etterlatte.maler.BarnepensjonInnvilgelseDTOSelectors.UtbetalingsinfoSelectors.antallBarn
 import no.nav.pensjon.etterlatte.maler.BarnepensjonInnvilgelseDTOSelectors.UtbetalingsinfoSelectors.beloep
 import no.nav.pensjon.etterlatte.maler.BarnepensjonInnvilgelseDTOSelectors.UtbetalingsinfoSelectors.beregningsperioder
