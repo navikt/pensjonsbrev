@@ -8,10 +8,9 @@ import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.OMSInnvilgelseManuell
 
 
 val prodAutobrevTemplates: Set<EtterlatteTemplate<*>> =
-    setOf(BarnepensjonInnvilgelse, OMSInnvilgelseAuto)
+    setOf(BarnepensjonInnvilgelse, OMSInnvilgelseAuto, OMSInnvilgelseManuell)
 
-val prodRedigerbareTemplates: Set<EtterlatteTemplate<*>> =
-    setOf(OMSInnvilgelseManuell)
+val prodRedigerbareTemplates: Set<EtterlatteTemplate<*>> = emptySet()
 
 class TemplateResource(
     autobrevTemplates: Set<EtterlatteTemplate<*>> = prodAutobrevTemplates,
