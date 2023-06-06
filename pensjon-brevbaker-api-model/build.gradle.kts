@@ -22,6 +22,7 @@ dependencies {
 
 publishing {
     repositories {
+
         maven {
             name = "GitHubPackages"
             url = uri("https://maven.pkg.github.com/navikt/pensjonsbrev")
