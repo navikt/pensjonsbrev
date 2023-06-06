@@ -1,3 +1,4 @@
+val javaTarget: String by System.getProperties()
 val ktorVersion: String by System.getProperties()
 val logbackVersion: String by project
 val logstashVersion: String by project
@@ -14,11 +15,15 @@ version="0.0.1-SNAPSHOT"
 
 tasks {
     compileKotlin {
-        kotlinOptions.jvmTarget = "17"
+        kotlinOptions.jvmTarget = javaTarget
     }
 
     compileTestKotlin {
-        kotlinOptions.jvmTarget = "17"
+        kotlinOptions.jvmTarget = javaTarget
+    }
+
+    compileJava {
+        targetCompatibility = javaTarget
     }
 
     shadowJar {

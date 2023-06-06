@@ -1,3 +1,4 @@
+val javaTarget: String by System.getProperties()
 val logbackVersion: String by project
 val ktorVersion: String by System.getProperties()
 val jupiterVersion: String by project
@@ -25,20 +26,21 @@ repositories {
     maven { url = uri("https://maven.pkg.jetbrains.space/public/p/kotlinx-html/maven") }
 }
 
-
 tasks {
     compileKotlin {
-        kotlinOptions.jvmTarget = "17"
+        kotlinOptions.jvmTarget = javaTarget
+    }
+    compileTestKotlin {
+        kotlinOptions.jvmTarget = javaTarget
+    }
+    compileJava {
+        targetCompatibility = javaTarget
     }
 
     shadowJar {
         archiveBaseName.set(project.name)
         archiveClassifier.set("")
         archiveVersion.set("")
-    }
-
-    compileTestKotlin {
-        kotlinOptions.jvmTarget = "17"
     }
 
     test {
