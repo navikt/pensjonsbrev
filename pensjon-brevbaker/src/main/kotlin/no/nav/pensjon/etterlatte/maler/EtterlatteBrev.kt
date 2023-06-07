@@ -33,46 +33,44 @@ data class ManueltBrevDTO(
 
 data class OMSInnvilgelseDTO(
     val utbetalingsinfo: Utbetalingsinfo,
+    val avkortingsinfo: Avkortingsinfo,
     val avdoed: Avdoed
-) {
-
-    data class Utbetalingsinfo(
-        val beloep: Kroner,
-        val inntekt: Kroner,
-        val virkningsdato: LocalDate,
-        val grunnbeloep: Kroner,
-        val beregningsperioder: List<Beregningsperiode>,
-    )
-
-    data class Beregningsperiode(
-        val datoFOM: LocalDate,
-        val datoTOM: LocalDate?,
-        val inntekt: Kroner,
-        var utbetaltBeloep: Kroner,
-    )
-}
+)
 
 data class BarnepensjonInnvilgelseDTO(
     val utbetalingsinfo: Utbetalingsinfo,
+    val avkortingsinfo: Avkortingsinfo? = null,
     val avdoed: Avdoed
-) {
+)
 
-    data class Utbetalingsinfo(
-        val antallBarn: Int,
-        val beloep: Kroner,
-        val soeskenjustering: Boolean,
-        val virkningsdato: LocalDate,
-        val beregningsperioder: List<Beregningsperiode>,
-    )
+data class Avkortingsinfo(
+    val inntekt: Kroner,
+    val virkningsdato: LocalDate,
+    val beregningsperioder: List<AvkortetBeregningsperiode>
+)
 
-    data class Beregningsperiode(
-        val datoFOM: LocalDate,
-        val datoTOM: LocalDate?,
-        val grunnbeloep: Kroner,
-        val antallBarn: Int,
-        var utbetaltBeloep: Kroner,
-    )
-}
+data class AvkortetBeregningsperiode(
+    val datoFOM: LocalDate,
+    val datoTOM: LocalDate?,
+    val inntekt: Kroner,
+    val utbetaltBeloep: Kroner
+)
+data class Utbetalingsinfo(
+    val antallBarn: Int,
+    val beloep: Kroner,
+    val grunnbeloep: Kroner,
+    val soeskenjustering: Boolean,
+    val virkningsdato: LocalDate,
+    val beregningsperioder: List<Beregningsperiode>,
+)
+
+data class Beregningsperiode(
+    val datoFOM: LocalDate,
+    val datoTOM: LocalDate?,
+    val grunnbeloep: Kroner,
+    val antallBarn: Int,
+    var utbetaltBeloep: Kroner,
+)
 
 data class Avdoed(
     val navn: String,
