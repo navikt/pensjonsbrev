@@ -74,9 +74,22 @@ jobs:
         env:
           "GITHUB_TOKEN": "${{ secrets.GITHUB_TOKEN }}"
 
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      latex: ${{ steps.changes.outputs.latex }}
+    steps:
+      - uses: actions/checkout@v3
+      - uses: dorny/paths-filter@v2
+        id: changes
+        with:
+          filters: |
+            latex:
+              - 'pensjon-brevbaker/src/main/resources/latex/**'
+
   runIntegrationTests:
     name: "Integration tests"
-    needs: [ build-brevbaker, build-pdfbygger ]
+    needs: [ build-brevbaker, build-pdfbygger, changes ]
     services:
       pdf-bygger:
         ports:
@@ -123,6 +136,22 @@ jobs:
           fail_if_no_tests: true
           fail_on_test_failures: true
           report_paths: '**/build/test-results/integrationTest/TEST-*.xml'
+      - name: Convert visual-test pdfs
+        uses: jruipinto/ImageMagick-action@v1
+        if: ${{ needs.changes.outputs.latex == 'true' }}
+        with:
+          command: mogrify -path pensjon-brevbaker/build/test_visual -format png -background white -alpha remove -alpha off -density 300 -quality 85 'pensjon-brevbaker/build/test_visual/pdf/*.pdf'
+      - uses: actions/setup-node@v3
+        if: ${{ needs.changes.outputs.latex == 'true' }}
+        with:
+          node-version: '14'
+      - run: npm install --save-dev @percy/cli
+        if: ${{ needs.changes.outputs.latex == 'true' }}
+      - name: Publish visual-tests to percy
+        if: ${{ needs.changes.outputs.latex == 'true' }}
+        run: npx percy upload pensjon-brevbaker/build/test_visual/
+        env:
+          PERCY_TOKEN: ${{ secrets.PERCY_TOKEN }}
 
   "deployBrevbakerToDev":
     name: "Deploy brevbaker to dev"
