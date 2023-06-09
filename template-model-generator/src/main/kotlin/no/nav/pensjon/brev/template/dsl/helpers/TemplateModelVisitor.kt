@@ -38,10 +38,15 @@ internal class TemplateModelVisitor(
             data.withVisited(classDeclaration)
         }
 
-    override fun visitPropertyDeclaration(property: KSPropertyDeclaration, data: SelectorModels): SelectorModels =
-        findModel(property.type.resolve())
-            ?.accept(this, data)
-            ?: data
+    override fun visitPropertyDeclaration(property: KSPropertyDeclaration, data: SelectorModels): SelectorModels {
+        val fromProp = findModel(property.type.resolve())?.accept(this, data)
+        return if (fromProp != null) {
+            fromProp
+        } else {
+            logger.warn("Failed to create selectors for type of property '$property' of '${property.parentDeclaration}': ${property.type}")
+            data
+        }
+    }
 
     private fun findModel(resolvedType: KSType): KSClassDeclaration? {
         return when (val typeDeclaration = resolvedType.declaration) {
