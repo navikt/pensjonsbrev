@@ -136,11 +136,6 @@ jobs:
           fail_if_no_tests: true
           fail_on_test_failures: true
           report_paths: '**/build/test-results/integrationTest/TEST-*.xml'
-      - name: Debug
-        run: |
-          ls -l
-          ls -l pensjon-brevbaker/build
-          ls -l pensjon-brevbaker/build/test_visual
       - name: Convert visual-test pdfs
         uses: jruipinto/ImageMagick-action@v1
         if: ${{ needs.changes.outputs.latex == 'true' }}
