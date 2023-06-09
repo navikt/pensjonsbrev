@@ -11,13 +11,13 @@ import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.AvdoedSelectors.doedsdato
 import no.nav.pensjon.etterlatte.maler.AvdoedSelectors.navn
 import no.nav.pensjon.etterlatte.maler.BarnepensjonInnvilgelseDTO
-import no.nav.pensjon.etterlatte.maler.BarnepensjonInnvilgelseDTOSelectors.UtbetalingsinfoSelectors.antallBarn
-import no.nav.pensjon.etterlatte.maler.BarnepensjonInnvilgelseDTOSelectors.UtbetalingsinfoSelectors.beloep
-import no.nav.pensjon.etterlatte.maler.BarnepensjonInnvilgelseDTOSelectors.UtbetalingsinfoSelectors.beregningsperioder
-import no.nav.pensjon.etterlatte.maler.BarnepensjonInnvilgelseDTOSelectors.UtbetalingsinfoSelectors.soeskenjustering
-import no.nav.pensjon.etterlatte.maler.BarnepensjonInnvilgelseDTOSelectors.UtbetalingsinfoSelectors.virkningsdato
 import no.nav.pensjon.etterlatte.maler.BarnepensjonInnvilgelseDTOSelectors.avdoed
 import no.nav.pensjon.etterlatte.maler.BarnepensjonInnvilgelseDTOSelectors.utbetalingsinfo
+import no.nav.pensjon.etterlatte.maler.UtbetalingsinfoSelectors.antallBarn
+import no.nav.pensjon.etterlatte.maler.UtbetalingsinfoSelectors.beloep
+import no.nav.pensjon.etterlatte.maler.UtbetalingsinfoSelectors.beregningsperioder
+import no.nav.pensjon.etterlatte.maler.UtbetalingsinfoSelectors.soeskenjustering
+import no.nav.pensjon.etterlatte.maler.UtbetalingsinfoSelectors.virkningsdato
 import no.nav.pensjon.etterlatte.maler.fraser.Barnepensjon
 import no.nav.pensjon.etterlatte.maler.fraser.common.Vedtak
 
