@@ -6,11 +6,11 @@ import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brevbaker.api.model.Kroner
-import no.nav.pensjon.etterlatte.maler.BarnepensjonInnvilgelseDTO
-import no.nav.pensjon.etterlatte.maler.BarnepensjonInnvilgelseDTOSelectors.BeregningsperiodeSelectors.datoFOM
-import no.nav.pensjon.etterlatte.maler.BarnepensjonInnvilgelseDTOSelectors.BeregningsperiodeSelectors.datoTOM
-import no.nav.pensjon.etterlatte.maler.BarnepensjonInnvilgelseDTOSelectors.BeregningsperiodeSelectors.grunnbeloep
-import no.nav.pensjon.etterlatte.maler.BarnepensjonInnvilgelseDTOSelectors.BeregningsperiodeSelectors.utbetaltBeloep
+import no.nav.pensjon.etterlatte.maler.Beregningsperiode
+import no.nav.pensjon.etterlatte.maler.BeregningsperiodeSelectors.datoFOM
+import no.nav.pensjon.etterlatte.maler.BeregningsperiodeSelectors.datoTOM
+import no.nav.pensjon.etterlatte.maler.BeregningsperiodeSelectors.grunnbeloep
+import no.nav.pensjon.etterlatte.maler.BeregningsperiodeSelectors.utbetaltBeloep
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
 import java.time.LocalDate
 
@@ -47,7 +47,7 @@ object Barnepensjon {
     }
 
     data class SlikHarViBeregnetPensjonenDin(
-        val beregningsperioder: Expression<List<BarnepensjonInnvilgelseDTO.Beregningsperiode>>,
+        val beregningsperioder: Expression<List<Beregningsperiode>>,
         val soeskenjustering: Expression<Boolean>,
         val antallBarn: Expression<Int>
     ) :

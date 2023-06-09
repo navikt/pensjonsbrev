@@ -10,11 +10,13 @@ import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.serialization.jackson.*
 import kotlinx.coroutines.runBlocking
-import no.nav.pensjon.brev.api.model.*
+import no.nav.pensjon.brev.api.model.AutobrevRequest
+import no.nav.pensjon.brev.api.model.LetterResponse
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.latex.LaTeXCompilerService
-import no.nav.pensjon.brev.template.render.*
-import java.io.File
+import no.nav.pensjon.brev.template.render.RenderedHtmlLetter
+import no.nav.pensjon.brev.template.render.RenderedLatexLetter
+import java.nio.file.Path
 import java.util.*
 import kotlin.io.path.Path
 
@@ -46,8 +48,8 @@ fun requestTemplates(): Set<Brevkode.AutoBrev> = runBlocking {
     httpClient.get("$BREVBAKER_URL/templates/autobrev").body()
 }
 
-fun writeTestPDF(pdfFileName: String, pdf: String) {
-    val file = File("build/test_pdf/$pdfFileName.pdf")
+fun writeTestPDF(pdfFileName: String, pdf: String, path: Path = Path.of("build", "test_pdf")) {
+    val file = path.resolve("$pdfFileName.pdf").toFile()
     file.parentFile.mkdirs()
     file.writeBytes(Base64.getDecoder().decode(pdf))
     println("Test-file written to file:${"\\".repeat(3)}${file.absolutePath}".replace('\\', '/'))
