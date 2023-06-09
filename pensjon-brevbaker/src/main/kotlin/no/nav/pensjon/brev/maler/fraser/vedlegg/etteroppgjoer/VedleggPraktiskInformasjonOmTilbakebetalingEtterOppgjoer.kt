@@ -9,13 +9,6 @@ import no.nav.pensjon.brev.template.dsl.expression.*
 
 object InnledningPraktiskInformasjon : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-        title1 {
-            text(
-                Bokmal to "Praktisk informasjon",
-                Nynorsk to "Praktisk informasjon",
-                English to "Practical information"
-            )
-        }
         paragraph {
             text(
                 Bokmal to "Du vil motta betalingsinformasjon fra NAV Innkreving på én av følgende måter:",
