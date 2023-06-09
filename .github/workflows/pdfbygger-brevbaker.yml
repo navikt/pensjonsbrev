@@ -140,7 +140,7 @@ jobs:
         uses: jruipinto/ImageMagick-action@v1
         if: ${{ needs.changes.outputs.latex == 'true' }}
         with:
-          command: ls -l; ls -l pensjon-brevbaker/build; mogrify -path pensjon-brevbaker/build/test_visual -format png -background white -alpha remove -alpha off -density 300 -quality 85 'pensjon-brevbaker/build/test_visual/pdf/*.pdf'
+          command: ls -l && ls -l pensjon-brevbaker/build && mogrify -path pensjon-brevbaker/build/test_visual -format png -background white -alpha remove -alpha off -density 300 -quality 85 'pensjon-brevbaker/build/test_visual/pdf/*.pdf'
       - uses: actions/setup-node@v3
         if: ${{ needs.changes.outputs.latex == 'true' }}
         with:
