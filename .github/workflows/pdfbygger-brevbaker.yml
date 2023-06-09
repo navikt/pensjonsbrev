@@ -136,11 +136,16 @@ jobs:
           fail_if_no_tests: true
           fail_on_test_failures: true
           report_paths: '**/build/test-results/integrationTest/TEST-*.xml'
+      - name: Debug
+        run: |
+          ls -l
+          ls -l pensjon-brevbaker/build
+          ls -l pensjon-brevbaker/build/test_visual
       - name: Convert visual-test pdfs
         uses: jruipinto/ImageMagick-action@v1
         if: ${{ needs.changes.outputs.latex == 'true' }}
         with:
-          command: ls -l && ls -l pensjon-brevbaker/build && mogrify -path pensjon-brevbaker/build/test_visual -format png -background white -alpha remove -alpha off -density 300 -quality 85 'pensjon-brevbaker/build/test_visual/pdf/*.pdf'
+          command: mogrify -path pensjon-brevbaker/build/test_visual -format png -background white -alpha remove -alpha off -density 300 -quality 85 pensjon-brevbaker/build/test_visual/pdf/*.pdf
       - uses: actions/setup-node@v3
         if: ${{ needs.changes.outputs.latex == 'true' }}
         with:
