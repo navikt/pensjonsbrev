@@ -1,11 +1,8 @@
 package no.nav.pensjon.brev.maler.fraser.vedlegg.etteroppgjoer
 
-import no.nav.pensjon.brev.api.prodAutobrevTemplates
-import no.nav.pensjon.brev.model.*
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.dsl.*
-import no.nav.pensjon.brev.template.dsl.expression.*
 
 object InnledningPraktiskInformasjon : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
