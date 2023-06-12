@@ -14,12 +14,12 @@ import no.nav.pensjon.brev.api.model.AutobrevRequest
 import no.nav.pensjon.brev.api.model.LetterResponse
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.latex.LaTeXCompilerService
+import no.nav.pensjon.brev.template.render.RenderedHtmlLetter
+import no.nav.pensjon.brev.template.render.RenderedLatexLetter
+import java.nio.file.Path
 import no.nav.pensjon.brev.template.Letter
 import no.nav.pensjon.brev.template.render.PensjonHTMLRenderer
 import no.nav.pensjon.brev.template.render.PensjonLatexRenderer
-import no.nav.pensjon.brev.template.render.RenderedHtmlLetter
-import no.nav.pensjon.brev.template.render.RenderedLatexLetter
-import java.io.File
 import java.util.*
 import kotlin.io.path.Path
 
@@ -55,8 +55,8 @@ fun requestTemplates(): Set<Brevkode.AutoBrev> = runBlocking {
     httpClient.get("$BREVBAKER_URL/templates/autobrev").body()
 }
 
-fun writeTestPDF(pdfFileName: String, pdf: String) {
-    val file = File("build/test_pdf/$pdfFileName.pdf")
+fun writeTestPDF(pdfFileName: String, pdf: String, path: Path = Path.of("build", "test_pdf")) {
+    val file = path.resolve("$pdfFileName.pdf").toFile()
     file.parentFile.mkdirs()
     file.writeBytes(Base64.getDecoder().decode(pdf))
     println("Test-file written to file:${"\\".repeat(3)}${file.absolutePath}".replace('\\', '/'))

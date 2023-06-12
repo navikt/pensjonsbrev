@@ -1,14 +1,11 @@
 package no.nav.pensjon.etterlatte.fixtures
 
 import no.nav.pensjon.brevbaker.api.model.*
-import no.nav.pensjon.etterlatte.maler.Avdoed
-import no.nav.pensjon.etterlatte.maler.BarnepensjonInnvilgelseDTO
-import no.nav.pensjon.etterlatte.maler.Beregningsperiode
-import no.nav.pensjon.etterlatte.maler.Utbetalingsinfo
+import no.nav.pensjon.etterlatte.maler.*
 import java.time.LocalDate
 
-fun createBarnepensjonInnvilgelseDTO() =
-    BarnepensjonInnvilgelseDTO(
+fun createOMSInnvilgelseDTO() =
+    OMSInnvilgelseDTO(
         utbetalingsinfo = Utbetalingsinfo(
             antallBarn = 2,
             beloep = Kroner(1234),
@@ -32,7 +29,24 @@ fun createBarnepensjonInnvilgelseDTO() =
                 )
             )
         ),
-        avkortingsinfo = null,
+        avkortingsinfo = Avkortingsinfo(
+            inntekt = Kroner(550000),
+            virkningsdato = LocalDate.now(),
+            beregningsperioder = listOf(
+                AvkortetBeregningsperiode(
+                    datoFOM = LocalDate.now(),
+                    datoTOM = LocalDate.now(),
+                    inntekt = Kroner(550000),
+                    utbetaltBeloep = Kroner(0)
+                ),
+                AvkortetBeregningsperiode(
+                    datoFOM = LocalDate.now(),
+                    datoTOM = null,
+                    inntekt = Kroner(550000),
+                    utbetaltBeloep = Kroner(0)
+                )
+            )
+        ),
         avdoed = Avdoed(
             navn = "Avdoed Avdoedesen",
             doedsdato = LocalDate.now()
