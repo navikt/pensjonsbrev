@@ -149,9 +149,18 @@ jobs:
         if: ${{ needs.changes.outputs.latex == 'true' }}
       - name: Publish visual-tests to percy
         if: ${{ needs.changes.outputs.latex == 'true' }}
-        run: npx percy upload pensjon-brevbaker/build/test_visual/
+        run: |
+          npx percy upload pensjon-brevbaker/build/test_visual/ > percy.log
+          cat percy.log
+          cat percy.log | grep -e "build #[0-9]\+:" | sed 's/^.*build #[0-9]\+: //g' > percy-build-url
         env:
           PERCY_TOKEN: ${{ secrets.PERCY_TOKEN }}
+      - name: Comment percy review link
+        uses: peter-evans/create-or-update-comment@v3
+        if: ${{ needs.changes.outputs.latex == 'true' && github.event_name == 'pull_request' }}
+        with:
+          issue-number: ${{ github.event.number }}
+          body-path: percy-build-url
 
   "deployBrevbakerToDev":
     name: "Deploy brevbaker to dev"
