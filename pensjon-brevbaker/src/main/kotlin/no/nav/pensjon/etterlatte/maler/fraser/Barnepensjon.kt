@@ -7,6 +7,7 @@ import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import no.nav.pensjon.etterlatte.maler.Beregningsperiode
+import no.nav.pensjon.etterlatte.maler.BarnepensjonSoeskenjusteringGrunn
 import no.nav.pensjon.etterlatte.maler.BeregningsperiodeSelectors.datoFOM
 import no.nav.pensjon.etterlatte.maler.BeregningsperiodeSelectors.datoTOM
 import no.nav.pensjon.etterlatte.maler.BeregningsperiodeSelectors.grunnbeloep
@@ -16,7 +17,7 @@ import java.time.LocalDate
 
 object Barnepensjon {
 
-    data class Vedtak(
+    data class Foerstegangsbehandlingsvedtak(
         val virkningsdato: Expression<LocalDate>,
         val avdoedNavn: Expression<String>,
         val doedsdato: Expression<LocalDate>,
@@ -36,6 +37,81 @@ object Barnepensjon {
             }
     }
 
+    data class RevurderingSoeskenjusteringBehandlingsvedtak(
+        val virkningsdato: Expression<LocalDate>,
+        val soeskenjusteringType: Expression<BarnepensjonSoeskenjusteringGrunn>,
+        val beloep: Expression<Kroner>
+    ) : OutlinePhrase<LangBokmal>() {
+        private val formatertVirkningsdato = virkningsdato.format()
+
+        override fun OutlineOnlyScope<LangBokmal, Unit>.template() {
+            paragraph {
+                showIf(soeskenjusteringType.isOneOf(BarnepensjonSoeskenjusteringGrunn.NYTT_SOESKEN)) {
+                    textExpr(
+                        Language.Bokmal to "Barnepensjonen din reduseres fra ".expr() + formatertVirkningsdato +
+                                " fordi du har et søsken som er innvilget barnepensjon. Søsken skal tas med i " +
+                                "beregningen av pensjonen din. Du får " + beloep.format() + " kroner hver måned før skatt."
+                    )
+                }
+
+                showIf(soeskenjusteringType.isOneOf(BarnepensjonSoeskenjusteringGrunn.SOESKEN_DOER)) {
+                    textExpr(
+                        Language.Bokmal to "Barnepensjonen din reduseres fra ".expr() + formatertVirkningsdato +
+                                " fordi du har et søsken som er innvilget barnepensjon. Søsken skal tas med i beregningen" +
+                                " av pensjonen din. Du får " + beloep.format() + " kroner hver måned før skatt."
+                    )
+                }
+
+                showIf(soeskenjusteringType.isOneOf(BarnepensjonSoeskenjusteringGrunn.SOESKEN_INN_INSTITUSJON_ENDRING)) {
+                    textExpr(
+                        Language.Bokmal to "Barnepensjonen din økes fra ".expr() + formatertVirkningsdato +
+                                " fordi et søsken har fått opphold i institusjon og skal ikke lenger være med i " +
+                                "beregningen. Du får " + beloep.format() + " kroner hver måned før skatt."
+                    )
+                }
+
+                showIf(soeskenjusteringType.isOneOf(BarnepensjonSoeskenjusteringGrunn.SOESKEN_INN_INSTITUSJON_INGEN_ENDRING)) {
+                    textExpr(
+                        Language.Bokmal to "Barnepensjonen din er vurdert fra ".expr() + formatertVirkningsdato +
+                                " fordi et søsken har fått opphold i institusjon. Institusjonsoppholdet fører ikke til" +
+                                " endring i pensjonen din. Du får fortsatt " + beloep.format() + " kroner hver måned før skatt."
+                    )
+                }
+
+                showIf(soeskenjusteringType.isOneOf(BarnepensjonSoeskenjusteringGrunn.FORPLEID_ETTER_BARNEVERNSLOVEN)) {
+                    textExpr(
+                        Language.Bokmal to "Barnepensjonen din økes fra ".expr() + formatertVirkningsdato +
+                                " fordi søsken blir forpleid etter barnevernsloven. Søsken skal ikke tas med i " +
+                                "beregningen av pensjonen. Du får " + beloep.format() + " kroner hver måned før skatt."
+                    )
+                }
+
+                showIf(soeskenjusteringType.isOneOf(BarnepensjonSoeskenjusteringGrunn.SOESKEN_UT_INSTITUSJON)) {
+                    textExpr(
+                        Language.Bokmal to "Barnepensjonen din reduseres fra ".expr() + formatertVirkningsdato +
+                                " fordi et søsken er ute av et institusjonsopphold, og skal nå " +
+                                "være med i beregningen. Du får " + beloep.format() + " kroner hver måned før skatt."
+                    )
+                }
+
+                showIf(soeskenjusteringType.isOneOf(BarnepensjonSoeskenjusteringGrunn.SOESKEN_BLIR_ADOPTERT)) {
+                    textExpr(
+                        Language.Bokmal to "Barnepensjonen din økes fra ".expr() + formatertVirkningsdato +
+                                " fordi du har et søsken som er blitt adoptert. Søsken skal derfor ikke tas med i" +
+                                " beregningen av pensjonen. Du får " + beloep.format() + " kroner hver måned før skatt."
+                    )
+                }
+            }
+
+            paragraph {
+                text(
+                    Language.Bokmal to "Barnepensjonen din utbetales til og med den kalendermåneden du fyller " +
+                            "18 år. Vedtaket er gjort etter folketrygdloven kapittel 18 og 22."
+                )
+            }
+        }
+    }
+
     object BeregningOgUtbetalingOverskrift : OutlinePhrase<LangBokmal>() {
         override fun OutlineOnlyScope<LangBokmal, Unit>.template() {
             title1 {
@@ -50,8 +126,7 @@ object Barnepensjon {
         val beregningsperioder: Expression<List<Beregningsperiode>>,
         val soeskenjustering: Expression<Boolean>,
         val antallBarn: Expression<Int>
-    ) :
-        OutlinePhrase<LangBokmal>() {
+    ) : OutlinePhrase<LangBokmal>() {
         override fun OutlineOnlyScope<LangBokmal, Unit>.template() {
             title2 {
                 text(
@@ -218,6 +293,29 @@ object Barnepensjon {
             paragraph {
                 text(
                     Language.Bokmal to "Du finner mer informasjon og lenke til riktig skjema på ${Constants.KONTONUMMER_URL}."
+                )
+            }
+        }
+    }
+
+    object SkattetrekkPaaBarnepensjonRevurdering : OutlinePhrase<LangBokmal>() {
+        override fun OutlineOnlyScope<LangBokmal, Unit>.template() {
+            title2 {
+                text(
+                    Language.Bokmal to "Skattetrekk på barnepensjon",
+                )
+            }
+            paragraph {
+                text(
+                    Language.Bokmal to "Barnepensjon er skattepliktig. " +
+                            "Du kan lese mer om frivillig skattetrekk på ${Constants.SKATTETREKK_PENGESTOETTE_URL}."
+                )
+            }
+            paragraph {
+                text(
+                    Language.Bokmal to "Ved etterbetaling som gjelder tidligere år trekker NAV skatt etter "
+                            + "Skatteetatens standardsatser. Du kan lese mer om satsene "
+                            + "på ${Constants.SKATTETREKK_ETTERBETALING_URL}."
                 )
             }
         }
