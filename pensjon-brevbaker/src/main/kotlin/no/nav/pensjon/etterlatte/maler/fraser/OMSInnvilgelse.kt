@@ -11,11 +11,11 @@ import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.Kroner
-import no.nav.pensjon.etterlatte.maler.OMSInnvilgelseDTO
-import no.nav.pensjon.etterlatte.maler.OMSInnvilgelseDTOSelectors.BeregningsperiodeSelectors.datoFOM
-import no.nav.pensjon.etterlatte.maler.OMSInnvilgelseDTOSelectors.BeregningsperiodeSelectors.datoTOM
-import no.nav.pensjon.etterlatte.maler.OMSInnvilgelseDTOSelectors.BeregningsperiodeSelectors.inntekt
-import no.nav.pensjon.etterlatte.maler.OMSInnvilgelseDTOSelectors.BeregningsperiodeSelectors.utbetaltBeloep
+import no.nav.pensjon.etterlatte.maler.AvkortetBeregningsperiode
+import no.nav.pensjon.etterlatte.maler.AvkortetBeregningsperiodeSelectors.datoFOM
+import no.nav.pensjon.etterlatte.maler.AvkortetBeregningsperiodeSelectors.datoTOM
+import no.nav.pensjon.etterlatte.maler.AvkortetBeregningsperiodeSelectors.inntekt
+import no.nav.pensjon.etterlatte.maler.AvkortetBeregningsperiodeSelectors.utbetaltBeloep
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
 import java.time.LocalDate
 
@@ -48,7 +48,7 @@ object OMSInnvilgelse {
 
     data class BeregningOgUtbetaling(
         val grunnbeloep: Expression<Kroner>,
-        val beregningsperioder: Expression<List<OMSInnvilgelseDTO.Beregningsperiode>>
+        val beregningsperioder: Expression<List<AvkortetBeregningsperiode>>
     ) : OutlinePhrase<LangBokmal>() {
         override fun OutlineOnlyScope<LangBokmal, Unit>.template() {
             title1 {
