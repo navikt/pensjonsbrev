@@ -12,7 +12,6 @@ fun createBarnepensjonInnvilgelseDTO() =
         utbetalingsinfo = Utbetalingsinfo(
             antallBarn = 2,
             beloep = Kroner(1234),
-            grunnbeloep = Kroner(118000),
             soeskenjustering = true,
             virkningsdato = LocalDate.now(),
             beregningsperioder = listOf(
