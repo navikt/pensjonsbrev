@@ -42,7 +42,7 @@ object BarnepensjonInnvilgelse : EtterlatteTemplate<BarnepensjonInnvilgelseDTO> 
         outline {
             includePhrase(Vedtak.Overskrift)
             includePhrase(
-                Barnepensjon.Vedtak(
+                Barnepensjon.Foerstegangsbehandlingsvedtak(
                     utbetalingsinfo.virkningsdato,
                     avdoed.navn,
                     avdoed.doedsdato,

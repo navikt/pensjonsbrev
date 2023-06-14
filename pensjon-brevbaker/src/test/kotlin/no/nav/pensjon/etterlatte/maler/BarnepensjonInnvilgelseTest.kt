@@ -16,7 +16,7 @@ import org.junit.jupiter.api.Test
 
 
 @Tag(TestTags.PDF_BYGGER)
-class BarnepensjonInnvilgelseITest {
+class BarnepensjonInnvilgelseTest {
 
     @Test
     fun pdftest() {

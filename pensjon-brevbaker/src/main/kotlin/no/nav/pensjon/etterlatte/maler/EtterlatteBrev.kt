@@ -3,7 +3,6 @@ package no.nav.pensjon.etterlatte.maler
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonValue
-import no.nav.pensjon.brev.template.Element
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brev.template.dsl.expression.*
@@ -73,6 +72,25 @@ data class OMSInnvilgelseDTO(
     )
 
 }
+
+enum class EndringIUtbetaling {
+    OEKES, REDUSERES, SAMME
+}
+
+enum class BarnepensjonSoeskenjusteringGrunn(val endring: EndringIUtbetaling) {
+    NYTT_SOESKEN(EndringIUtbetaling.REDUSERES),
+    SOESKEN_DOER(EndringIUtbetaling.OEKES),
+    SOESKEN_INN_INSTITUSJON_INGEN_ENDRING(EndringIUtbetaling.SAMME),
+    SOESKEN_INN_INSTITUSJON_ENDRING(EndringIUtbetaling.OEKES),
+    SOESKEN_UT_INSTITUSJON(EndringIUtbetaling.REDUSERES),
+    FORPLEID_ETTER_BARNEVERNSLOVEN(EndringIUtbetaling.OEKES),
+    SOESKEN_BLIR_ADOPTERT(EndringIUtbetaling.OEKES)
+}
+
+data class BarnepensjonRevurderingSoeskenjusteringDTO(
+    val utbetalingsinfo: BarnepensjonInnvilgelseDTO.Utbetalingsinfo,
+    val grunnForJustering: BarnepensjonSoeskenjusteringGrunn
+)
 
 data class BarnepensjonInnvilgelseDTO(
     val utbetalingsinfo: Utbetalingsinfo,
