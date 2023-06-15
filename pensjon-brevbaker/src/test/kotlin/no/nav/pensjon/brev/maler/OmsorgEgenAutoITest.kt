@@ -17,7 +17,7 @@ class OmsorgEgenAutoITest {
             Fixtures.create<OmsorgEgenAutoDto>(),
             Language.Bokmal,
             Fixtures.fellesAuto
-        ).renderTestPDF("OMSORG_EGEN_AUTO_BOK MAL")
+        ).renderTestPDF("OMSORG_EGEN_AUTO_BOKMAL")
     }
 
     @Test
