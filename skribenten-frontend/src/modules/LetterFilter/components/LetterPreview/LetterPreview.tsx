@@ -1,56 +1,40 @@
-import {FC, useState} from "react"
+import {FC} from "react"
 import styles from "./LetterPreview.module.css"
-import ImageWithZoom from "./ImageWithZoom/ImageWithZoom"
-import {StarFillIcon, StarIcon, ZoomMinusIcon, ZoomPlusIcon} from "@navikt/aksel-icons"
+import {StarFillIcon, StarIcon} from "@navikt/aksel-icons"
 import {Button} from "@navikt/ds-react"
+import Image from "next/image"
+import {LetterSelection} from "../../model/skribenten";
 
 
 interface LetterPreviewProps {
-    selectedLetter: string | null
+    selectedLetter: LetterSelection | null
     onAddToFavourites: () => void
     selectedIsFavourite: boolean
 }
 
 const LetterPreview: FC<LetterPreviewProps> = ({selectedLetter, selectedIsFavourite, onAddToFavourites}) => {
-    const [scale, setScale] = useState(1)
-
-    const zoomInHandler = () => {
-        setScale((prevScale) => prevScale * 1.2)
-    }
-
-    const zoomOutHandler = () => {
-        setScale((prevScale) => {
-            const newScale = prevScale / 1.2
-            return newScale < 1 ? 1 : newScale
-        })
-    }
-
-    // TODO
-    const reset = () => {
-        setScale(1)
-    }
-
+    const topBarDisabled = selectedLetter === null
     return (
         //TODO Should we get an example of all different kinds of old letters? Where do we get that?
         <div className={styles.previewContainer}>
-            <div className={styles.topMenu}>
-
-                <ZoomMinusIcon onClick={zoomOutHandler} className={styles.zoomButton}/>
-                <ZoomPlusIcon onClick={zoomInHandler} className={styles.zoomButton}/>
-                <Button variant="secondary" className={styles.addToFavourites} onClick={onAddToFavourites}>
+            <div className={`${topBarDisabled ? styles.topMenuDisabled : ""} ${styles.topMenu}`}>
+                <div className={styles.letterTitle}>
+                    {selectedLetter?.name || ""}
+                </div>
+                <Button disabled={topBarDisabled} variant="secondary" className={styles.addToFavourites} onClick={onAddToFavourites}>
                     {selectedIsFavourite?
                         (<StarFillIcon className={styles.starIcon} fontSize={"1.5rem"}/>)
                         :(<StarIcon className={styles.starIcon} fontSize={"1.5rem"}/>)
                         }
                     { (selectedIsFavourite?(<>Fjern som favoritt</>):(<>Legg til som favoritt</>))}
                 </Button>
-
-
             </div>
-            <ImageWithZoom
+            <Image
+                className={styles.previewImage}
                 src={'/pdfpreview/4/output_page1.svg'}
                 alt="letter example"
-                scale={scale}/>
+                width={807}
+                height={1048}/>
         </div>
     )
 }

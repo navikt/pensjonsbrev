@@ -1,10 +1,11 @@
 
 export interface LetterCategory {
     readonly name: string
-    readonly templates: LetterMetadata[]
+    readonly templates: LetterSelection[]
 }
 
-export interface LetterMetadata {
+export interface LetterSelection {
     readonly name: string
     readonly id: string
+    readonly spraak: string[]
 }

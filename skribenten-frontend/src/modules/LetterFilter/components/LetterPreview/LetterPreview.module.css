@@ -1,41 +1,39 @@
 
 .previewContainer {
-    border: 0.0625rem solid #00000030;
-    display: flex;
-    background-color: var(--a-white);
-    border-radius: 0.25rem;
-    flex-direction: column;
+    background-color: var(--a-gray-100);
+    width: 100%;
 }
 
 .pdfViewer {
-    background-color: var(--a-white);
+    background-color: var(--a-gray-100);
 }
 
 .previewImage {
-    vertical-align: top;
+    background-color: var(--a-white);
+    display: block;
+    margin: auto;
+    min-width: 50%;
+    max-width: 100%;
 }
 
 .topMenu {
-    display: block;
+    padding: 0.5rem 1rem;
+    display: flex;
+    justify-content: space-between;
     height: 3rem;
-    background-color: var(--a-blue-100);
-    border-bottom: 0.0625rem solid var(--a-gray-300);
+    background-color: var(--a-surface-action-selected);
+    border-bottom: 0.0625rem solid var(--a-border-on-inverted);
 }
 
-.zoomButton {
-    user-select: none;
-    font-size: 2rem;
-    display: block;
-    text-transform: none;
-    float: right;
-    margin: 0.5rem 0.75rem 0.5rem 0;
+.topMenuDisabled {
+    background-color: var(--a-gray-300);
 }
 
 .addToFavourites {
     background-color: var(--a-white);
     display: block;
     float: right;
-    margin: 0.5rem 2rem 0.5rem 0;
+    margin: 0;
     padding: 0.25rem 0.75rem;
 }
 
@@ -47,4 +45,12 @@
 .starIcon {
     float: left;
     padding-right: 0.375rem;
+}
+
+.letterTitle {
+    color: var(--a-text-on-inverted, #FFF);
+    /* BodyShort/— Medium Strong */
+    font-size: 1.125rem;
+    font-weight: 600;
+    line-height: 2rem;
 }

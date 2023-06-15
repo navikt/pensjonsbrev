@@ -1,16 +1,14 @@
 .brevvelgerContainer {
+    display: inline-block;
     box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
     padding: 1.5rem 1rem;
     gap: 1.5rem;
     background: var(--a-white);
-    border: 0.0625rem solid rgba(0, 0, 0, 0.19);
-    border-radius: 0.25rem;
+    border-right: 0.0625rem solid var(--a-border-on-inverted);
     max-height: inherit;
-    min-width: 20rem;
-    max-width: 30rem;
+    width: 30rem;
+    min-width: 30rem;
+    max-width: 40rem;
 }
 
 .sectionHeading {

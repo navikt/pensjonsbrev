@@ -16,7 +16,7 @@ data class BrevdataDto(
     val dekode: String?,
     val brevkategori: String?,
     val dokType: String?,
-    val sprak: List<String>?,
+    val sprak: List<SpraakKode>?,
     val visIPselv: Boolean?,
     val utland: String?,
     val brevregeltype: String?,
@@ -29,6 +29,16 @@ data class BrevdataDto(
     val brevsystem: String?,
 )
 
+
+enum class SpraakKode {
+    EN, // Engelsk
+    FR, // Fransk
+    NB, // Bokml
+    NN, // Nynorsk
+    SE // Nordsamisk
+}
+
+
 data class LetterCategory(
     val name: String,
     val templates: List<LetterMetadata>,
@@ -37,6 +47,7 @@ data class LetterCategory(
 data class LetterMetadata(
     val name: String,
     val id: String,
+    val spraak: List<SpraakKode>?
 )
 
 
@@ -64,7 +75,7 @@ class BrevmetadataService(config: Config) {
     private fun mapToCategories(metadata: List<BrevdataDto>) =
         metadata
             .filter { it.redigerbart ?: false }
-            .groupBy {it.brevkategori}
+            .groupBy { it.brevkategori }
             .map {
                 LetterCategory(
                     name = it.key ?: "Annet",
@@ -77,6 +88,7 @@ class BrevmetadataService(config: Config) {
             LetterMetadata(
                 name = template.dekode ?: "MissingName",
                 id = template.brevkodeIBrevsystem ?: "MissingCode",
+                spraak = template.sprak?: emptyList()
             )
         }
 
@@ -87,9 +99,8 @@ class BrevmetadataService(config: Config) {
         return metadata.filter { it.redigerbart ?: false }.mapToMetadata()
     }
 
-    suspend fun getMetadataForLetters(letterCodes: Collection<String>): List<LetterMetadata>
-        = getRedigerbareBrev().filter { letterCodes.contains(it.id) }
-
+    suspend fun getMetadataForLetters(letterCodes: Collection<String>): List<LetterMetadata> =
+        getRedigerbareBrev().filter { letterCodes.contains(it.id) }
 
 
 }

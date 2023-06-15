@@ -8,7 +8,10 @@
 
 .innterContainer{
     display: flex;
-    justify-content: center;
-    gap: 1.125rem;
-    padding: 0.625rem;
+}
+
+.languageSelection {
+    display: block;
+    float: right;
+    width: 10%;
 }

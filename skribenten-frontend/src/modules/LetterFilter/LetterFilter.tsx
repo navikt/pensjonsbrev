@@ -3,11 +3,11 @@ import styles from "./LetterFilter.module.css"
 import {Button, Heading, Loader, Search} from "@navikt/ds-react"
 import LetterCategories from "./components/LetterCategories/LetterCategories"
 import LetterPicker from "./components/LetterPicker/LetterPicker"
-import {LetterCategory, LetterMetadata} from "./model/skribenten"
+import {LetterCategory, LetterSelection} from "./model/skribenten"
 
 export interface LetterFilterProps {
     categories: LetterCategory[] | null
-    favourites: LetterMetadata[] | null
+    favourites: LetterSelection[] | null
     selectedLetter: string | null,
     onLetterSelected: (id: string | null) => void
 }
