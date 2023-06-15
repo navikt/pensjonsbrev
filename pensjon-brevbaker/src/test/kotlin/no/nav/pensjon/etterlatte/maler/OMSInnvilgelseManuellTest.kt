@@ -16,7 +16,7 @@ import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 
 
-@Tag(TestTags.PDF_BYGGER)
+@Tag(TestTags.INTEGRATION_TEST)
 class OMSInnvilgelseManuellITest {
 
     @Test

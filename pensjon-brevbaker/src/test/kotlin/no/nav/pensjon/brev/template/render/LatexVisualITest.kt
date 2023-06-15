@@ -11,7 +11,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import org.junit.jupiter.api.*
 import java.nio.file.Path
 
-@Tag(TestTags.PDF_BYGGER)
+@Tag(TestTags.INTEGRATION_TEST)
 class LatexVisualITest {
 
     private fun render(overrideName: String? = null, outlineInit: OutlineOnlyScope<LangBokmal, Unit>.() -> Unit) {
