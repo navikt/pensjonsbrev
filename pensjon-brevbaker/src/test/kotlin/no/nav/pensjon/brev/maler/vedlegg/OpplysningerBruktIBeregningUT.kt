@@ -9,7 +9,7 @@ import no.nav.pensjon.brev.template.dsl.expression.expr
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 
-@Tag(TestTags.VISUAL_TEST)
+@Tag(TestTags.MANUAL_TEST)
 class OpplysningerBruktIBeregningUTTest {
 
     @Test

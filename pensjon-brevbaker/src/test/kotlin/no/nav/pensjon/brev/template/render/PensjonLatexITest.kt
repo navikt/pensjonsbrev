@@ -22,7 +22,7 @@ object Helpers : HasModel<TestTemplateDto>
 
 private const val FIND_FAILING_CHARACTERS = false
 
-@Tag(TestTags.PDF_BYGGER)
+@Tag(TestTags.INTEGRATION_TEST)
 class PensjonLatexITest {
     private val logger = LoggerFactory.getLogger(PensjonLatexITest::class.java)
     private val brevData = TestTemplateDto("Ole")

@@ -4,11 +4,10 @@ import no.nav.pensjon.brev.*
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.Letter
 import no.nav.pensjon.brev.template.LetterTemplate
-import no.nav.pensjon.brev.template.render.PensjonHTMLRenderer
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 
-@Tag(TestTags.VISUAL_TEST)
+@Tag(TestTags.MANUAL_TEST)
 class AdhocTest {
     fun testHtml(template: LetterTemplate<*, *>, htmlName: String) {
         Letter(template, Unit, Language.Bokmal, Fixtures.fellesAuto).renderTestHtml(htmlName)

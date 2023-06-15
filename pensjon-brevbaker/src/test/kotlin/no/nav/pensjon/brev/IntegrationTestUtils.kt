@@ -27,9 +27,9 @@ val BREVBAKER_URL = System.getenv("BREVBAKER_URL") ?: "http://localhost:8080"
 const val PDF_BUILDER_URL = "http://localhost:8081"
 
 object TestTags {
-    const val PDF_BYGGER = "pdf-bygger"
+    const val INTEGRATION_TEST = "integration-test"
     // For visual inspection of documents/design
-    const val VISUAL_TEST = "visual-test"
+    const val MANUAL_TEST = "manual-test"
 }
 
 val httpClient = HttpClient(CIO) {

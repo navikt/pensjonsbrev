@@ -1,18 +1,16 @@
 package no.nav.pensjon.brev.maler.redigerbar
 
-import kotlinx.coroutines.runBlocking
 import no.nav.pensjon.brev.*
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmSaksbehandlingstidDto
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmSaksbehandlingstidDto.InkluderVenterSvarAFP
 import no.nav.pensjon.brev.api.toLanguage
-import no.nav.pensjon.brev.latex.LaTeXCompilerService
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.render.*
 import no.nav.pensjon.brevbaker.api.model.LanguageCode.*
 import org.junit.jupiter.api.*
 import java.time.LocalDate
 
-@Tag(TestTags.PDF_BYGGER)
+@Tag(TestTags.INTEGRATION_TEST)
 class InformasjonOmSaksbehandlingstidITest {
 
     private val data = InformasjonOmSaksbehandlingstidDto(LocalDate.now().minusWeeks(1), "AFP", null, null, 10)

@@ -7,7 +7,7 @@ import no.nav.pensjon.brev.template.Letter
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 
-@Tag(TestTags.VISUAL_TEST)
+@Tag(TestTags.MANUAL_TEST)
 class OpphoerBarnetilleggAutoTest {
 
     @Test

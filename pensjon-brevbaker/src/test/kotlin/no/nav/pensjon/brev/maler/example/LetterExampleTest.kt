@@ -4,7 +4,7 @@ import no.nav.pensjon.brev.*
 import no.nav.pensjon.brev.template.*
 import org.junit.jupiter.api.*
 
-@Tag(TestTags.PDF_BYGGER)
+@Tag(TestTags.INTEGRATION_TEST)
 class LetterExampleTest {
 
     @Test

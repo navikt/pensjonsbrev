@@ -12,7 +12,7 @@ import no.nav.pensjon.brevbaker.api.model.Kroner
 import org.junit.jupiter.api.*
 import java.time.LocalDate
 
-@Tag(TestTags.VISUAL_TEST)
+@Tag(TestTags.MANUAL_TEST)
 class MaanedligUfoeretrygdFoerSkattITest {
     val ufoeretrygdPerMaaned = Fixtures.create(UfoeretrygdPerMaaned::class)
         .copy(

@@ -7,7 +7,7 @@ import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.render.*
 import org.junit.jupiter.api.*
 
-@Tag(TestTags.VISUAL_TEST)
+@Tag(TestTags.MANUAL_TEST)
 class UngUfoerAutoITest {
 
     @Test

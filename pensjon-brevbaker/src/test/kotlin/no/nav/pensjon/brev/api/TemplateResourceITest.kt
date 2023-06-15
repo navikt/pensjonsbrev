@@ -8,7 +8,7 @@ import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import org.junit.jupiter.api.*
 import kotlin.reflect.KClass
 
-@Tag(TestTags.PDF_BYGGER)
+@Tag(TestTags.INTEGRATION_TEST)
 class TemplateResourceITest {
     private val templateResource = TemplateResource()
 
