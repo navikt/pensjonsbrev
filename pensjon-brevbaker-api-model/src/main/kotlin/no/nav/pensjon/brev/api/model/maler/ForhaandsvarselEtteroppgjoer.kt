@@ -14,6 +14,9 @@ data class ForrigeEtteroppgjoer(
     val tidligereEOIverksatt: Boolean,
     val harEtterbetaling: Boolean, // PE_Vedtaksbrev_Vedtaksdata_ForrigeEO_ResultatForrigeEO = 'etterbet'
     val harTilbakePenger: Boolean, // PE_Vedtaksbrev_Vedtaksdata_ForrigeEO_ResultatForrigeEO = 'tilbakekr'
-    val endretPersonGrunnlagInntekt: Boolean
+    val endretPersonGrunnlagInntektBruker: Boolean,
+    val endretPersonGrunnlagInntektEPS: Boolean,
+    val endretPensjonOgAndreYtelserBruker: Boolean,
+    val endretPensjonOgAndreYtelserEPS: Boolean,
 )
 }

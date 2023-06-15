@@ -1,7 +1,14 @@
 package no.nav.pensjon.brev.maler
 
 import no.nav.pensjon.brev.api.model.maler.*
+import no.nav.pensjon.brev.api.model.maler.ForhaandsvarselEtteroppgjoerDtoSelectors.ForrigeEtteroppgjoerSelectors.endretPensjonOgAndreYtelserBruker
+import no.nav.pensjon.brev.api.model.maler.ForhaandsvarselEtteroppgjoerDtoSelectors.ForrigeEtteroppgjoerSelectors.endretPensjonOgAndreYtelserEPS
+import no.nav.pensjon.brev.api.model.maler.ForhaandsvarselEtteroppgjoerDtoSelectors.ForrigeEtteroppgjoerSelectors.endretPersonGrunnlagInntekt
+import no.nav.pensjon.brev.api.model.maler.ForhaandsvarselEtteroppgjoerDtoSelectors.ForrigeEtteroppgjoerSelectors.endretPersonGrunnlagInntektBruker
+import no.nav.pensjon.brev.api.model.maler.ForhaandsvarselEtteroppgjoerDtoSelectors.ForrigeEtteroppgjoerSelectors.endretPersonGrunnlagInntektEPS
 import no.nav.pensjon.brev.api.model.maler.ForhaandsvarselEtteroppgjoerDtoSelectors.ForrigeEtteroppgjoerSelectors.harEtterbetaling
+import no.nav.pensjon.brev.api.model.maler.ForhaandsvarselEtteroppgjoerDtoSelectors.ForrigeEtteroppgjoerSelectors.harTilbakePenger
+import no.nav.pensjon.brev.api.model.maler.ForhaandsvarselEtteroppgjoerDtoSelectors.ForrigeEtteroppgjoerSelectors.tidligereEOIverksatt
 import no.nav.pensjon.brev.api.model.maler.ForhaandsvarselEtteroppgjoerDtoSelectors.forrigeEtteroppgjoer
 import no.nav.pensjon.brev.maler.fraser.common.*
 import no.nav.pensjon.brev.maler.fraser.common.Felles
@@ -13,6 +20,7 @@ import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brevbaker.api.model.*
+import java.time.LocalDate
 
 @TemplateModelHelpers
 object ForhaandsvarselEtteroppgjoer : AutobrevTemplate<ForhaandsvarselEtteroppgjoerDto> {
@@ -32,9 +40,11 @@ object ForhaandsvarselEtteroppgjoer : AutobrevTemplate<ForhaandsvarselEtteroppgj
             )
         ) {
             title {
-                showIf(forrigeEtteroppgjoer.harEtterbetaling) {
+                val periodeFom: Expression
+                showIf(forrigeEtteroppgjoer.tidligereEOIverksatt and (forrigeEtteroppgjoer.harEtterbetaling or forrigeEtteroppgjoer.harTilbakePenger) and
+                        (forrigeEtteroppgjoer.endretPersonGrunnlagInntektBruker or forrigeEtteroppgjoer.endretPersonGrunnlagInntektEPS or forrigeEtteroppgjoer.endretPensjonOgAndreYtelserBruker or forrigeEtteroppgjoer.endretPensjonOgAndreYtelserEPS)){
                     textExpr(
-                        Bokmal to "Nytt forhåndsvarsel om etteroppgjør av uføretrygd for <PeriodeFom>".expr(),
+                        Bokmal to "Nytt forhåndsvarsel om etteroppgjør av uføretrygd for ".expr() + <periodeFom>".expr(),
                         Nynorsk to "Nytt førehandsvarsel om etteroppgjer av uføretrygd for <PeriodeFom>".expr(),
                         English to "New advance notice of settlement of disability benefit for <PeriodeFom>".expr()
                     )
