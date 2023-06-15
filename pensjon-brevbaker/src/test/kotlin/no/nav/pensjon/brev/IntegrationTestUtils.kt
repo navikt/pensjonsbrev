@@ -15,7 +15,6 @@ import no.nav.pensjon.brev.api.model.LetterResponse
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.latex.LaTeXCompilerService
 import no.nav.pensjon.brev.template.render.RenderedHtmlLetter
-import no.nav.pensjon.brev.template.render.RenderedLatexLetter
 import java.nio.file.Path
 import no.nav.pensjon.brev.template.Letter
 import no.nav.pensjon.brev.template.render.PensjonHTMLRenderer
@@ -79,10 +78,7 @@ fun writeTestHTML(letterName: String, htmlLetter: RenderedHtmlLetter, buildSubDi
         }
 }
 
-fun <ParameterType : Any> Letter<ParameterType>.renderTestHtml(htmlFileName: String): Letter<ParameterType> =
-    this.also { writeTestHTML(htmlFileName, PensjonHTMLRenderer.render(this)) }
-
-
-
-fun LaTeXCompilerService.producePdfSync(latexLetter: RenderedLatexLetter) =
-    runBlocking { producePDF(latexLetter, "fra-tester") }
+fun <ParameterType : Any> Letter<ParameterType>.renderTestHtml(htmlFileName: String): Letter<ParameterType> {
+    writeTestHTML(htmlFileName, PensjonHTMLRenderer.render(this))
+    return this
+}
