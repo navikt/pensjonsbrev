@@ -13,3 +13,6 @@ preAuthorized:
   - name: etterlatte-brev-api
     namespace: etterlatte
     cluster: prod-gcp
+  - name: penbatch
+    namespace: pensjon-batch
+    cluster: prod-fss
