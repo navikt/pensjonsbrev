@@ -27,8 +27,6 @@ class OmsorgEgenAutoITest {
             Fixtures.create<OmsorgEgenAutoDto>(),
             Language.Bokmal,
             Fixtures.fellesAuto
-        )
-            .let { PensjonHTMLRenderer.render(it) }
-            .also { writeTestHTML("OMSORG_EGEN_AUTO_BOKMAL", it) }
+        ).renderTestHtml("OMSORG_EGEN_AUTO_BOKMAL")
     }
 }

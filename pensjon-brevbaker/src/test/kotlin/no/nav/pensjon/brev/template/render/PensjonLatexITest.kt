@@ -48,10 +48,7 @@ class PensjonLatexITest {
                 }
             }
         }
-        Letter(template, brevData, Bokmal, Fixtures.felles)
-            .let { PensjonLatexRenderer.render(it) }
-            .let { LaTeXCompilerService(PDF_BUILDER_URL).producePdfSync(it).base64PDF }
-            .also { writeTestPDF("pensjonLatexITest_canRender", it) }
+        Letter(template, brevData, Bokmal, Fixtures.felles).renderTestPDF("pensjonLatexITest_canRender")
     }
 
     @Test

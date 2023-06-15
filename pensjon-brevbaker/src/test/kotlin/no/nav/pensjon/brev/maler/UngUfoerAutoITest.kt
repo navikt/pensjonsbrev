@@ -27,8 +27,7 @@ class UngUfoerAutoITest {
             Fixtures.create<UngUfoerAutoDto>(),
             Language.Nynorsk,
             Fixtures.fellesAuto
-        ).let { PensjonHTMLRenderer.render(it) }
-            .also { writeTestHTML("UNG_UFOER_AUTO_BOKMAL", it) }
+        ).renderTestHtml("UNG_UFOER_AUTO_BOKMAL")
     }
 
 }

@@ -26,8 +26,6 @@ class UfoerOmregningEnsligITest {
             Fixtures.create<UfoerOmregningEnsligDto>(),
             Language.Bokmal,
             Fixtures.fellesAuto,
-        )
-            .let { PensjonHTMLRenderer.render(it) }
-            .also { writeTestHTML("UT_DOD_ENSLIG_AUTO_BOKMAL", it) }
+        ).renderTestHtml("UT_DOD_ENSLIG_AUTO_BOKMAL")
     }
 }

@@ -39,10 +39,7 @@ class InformasjonOmSaksbehandlingstidITest {
                 data,
                 lang.toLanguage(),
                 Fixtures.felles
-            )
-                .let { PensjonLatexRenderer.render(it) }
-                .let { runBlocking { LaTeXCompilerService(PDF_BUILDER_URL).producePDF(it, "test").base64PDF } }
-                .also { writeTestPDF("000130-$testNavn-${lang.name}", it) }
+            ).renderTestPDF("000130-$testNavn-${lang.name}")
         }
     }
 

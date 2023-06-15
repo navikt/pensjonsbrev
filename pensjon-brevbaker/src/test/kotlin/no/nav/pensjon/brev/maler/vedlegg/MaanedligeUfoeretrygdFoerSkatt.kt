@@ -72,7 +72,6 @@ class MaanedligUfoeretrygdFoerSkattITest {
             Unit,
             Bokmal,
             Fixtures.fellesAuto
-        ).let { PensjonHTMLRenderer.render(it) }
-            .also { writeTestHTML("MaanedligUfoeretrygdFoerSkatt", it) }
+        ).renderTestHtml("MaanedligUfoeretrygdFoerSkatt")
     }
 }
