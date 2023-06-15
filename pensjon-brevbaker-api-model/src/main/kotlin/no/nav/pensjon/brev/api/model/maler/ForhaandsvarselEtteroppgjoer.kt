@@ -8,6 +8,7 @@ import java.time.LocalDate
 @Suppress("unused")
 data class ForhaandsvarselEtteroppgjoerDto(
     val periodeFom: LocalDate,
+    val forrigeEtteroppgjoer: ForrigeEtteroppgjoer,
 ) {
 data class ForrigeEtteroppgjoer(
     val tidligereEOIverksatt: Boolean,

@@ -1,6 +1,8 @@
 package no.nav.pensjon.brev.maler
 
 import no.nav.pensjon.brev.api.model.maler.*
+import no.nav.pensjon.brev.api.model.maler.ForhaandsvarselEtteroppgjoerDtoSelectors.ForrigeEtteroppgjoerSelectors.harEtterbetaling
+import no.nav.pensjon.brev.api.model.maler.ForhaandsvarselEtteroppgjoerDtoSelectors.forrigeEtteroppgjoer
 import no.nav.pensjon.brev.maler.fraser.common.*
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.fraser.ufoer.*
@@ -29,9 +31,8 @@ object ForhaandsvarselEtteroppgjoer : AutobrevTemplate<ForhaandsvarselEtteroppgj
                 brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
             )
         ) {
-
             title {
-                showIf() {
+                showIf(forrigeEtteroppgjoer.harEtterbetaling) {
                     textExpr(
                         Bokmal to "Nytt forhåndsvarsel om etteroppgjør av uføretrygd for <PeriodeFom>".expr(),
                         Nynorsk to "Nytt førehandsvarsel om etteroppgjer av uføretrygd for <PeriodeFom>".expr(),
