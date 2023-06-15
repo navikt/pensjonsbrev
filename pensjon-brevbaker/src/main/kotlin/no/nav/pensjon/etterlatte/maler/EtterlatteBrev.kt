@@ -3,7 +3,10 @@ package no.nav.pensjon.etterlatte.maler
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonValue
-import no.nav.pensjon.brevbaker.api.model.Kroner
+import no.nav.pensjon.brev.template.dsl.*
+import no.nav.pensjon.brev.template.dsl.expression.*
+import no.nav.pensjon.brevbaker.api.model.*
+import no.nav.pensjon.etterlatte.*
 import java.time.LocalDate
 
 data class ManueltBrevDTO(
@@ -47,6 +50,25 @@ data class Avkortingsinfo(
     val inntekt: Kroner,
     val virkningsdato: LocalDate,
     val beregningsperioder: List<AvkortetBeregningsperiode>
+)
+
+enum class EndringIUtbetaling {
+    OEKES, REDUSERES, SAMME
+}
+
+enum class BarnepensjonSoeskenjusteringGrunn(val endring: EndringIUtbetaling) {
+    NYTT_SOESKEN(EndringIUtbetaling.REDUSERES),
+    SOESKEN_DOER(EndringIUtbetaling.OEKES),
+    SOESKEN_INN_INSTITUSJON_INGEN_ENDRING(EndringIUtbetaling.SAMME),
+    SOESKEN_INN_INSTITUSJON_ENDRING(EndringIUtbetaling.OEKES),
+    SOESKEN_UT_INSTITUSJON(EndringIUtbetaling.REDUSERES),
+    FORPLEID_ETTER_BARNEVERNSLOVEN(EndringIUtbetaling.OEKES),
+    SOESKEN_BLIR_ADOPTERT(EndringIUtbetaling.OEKES)
+}
+
+data class BarnepensjonRevurderingSoeskenjusteringDTO(
+    val utbetalingsinfo: Utbetalingsinfo,
+    val grunnForJustering: BarnepensjonSoeskenjusteringGrunn
 )
 
 data class AvkortetBeregningsperiode(
