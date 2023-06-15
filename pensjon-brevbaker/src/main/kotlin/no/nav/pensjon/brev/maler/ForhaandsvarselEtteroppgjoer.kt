@@ -29,22 +29,21 @@ object ForhaandsvarselEtteroppgjoer : AutobrevTemplate<ForhaandsvarselEtteroppgj
                 brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
             )
         ) {
-            val harTilbakePenger: Expression<Boolean>,
-            val tidligereEOIverksatt: Expression<Boolean>,
-            val endretPersonGrunnlagInntekt: Expression<Boolean>,
 
             title {
-                showIf(harEtterbetaling) {
-                    text(
-                        Bokmal to "Nytt forhåndsvarsel om etteroppgjør av uføretrygd for <PeriodeFom>",
-                        Nynorsk to "Nytt førehandsvarsel om etteroppgjer av uføretrygd for <PeriodeFom>",
-                        English to "New advance notice of settlement of disability benefit for <PeriodeFom>"
+                showIf() {
+                    textExpr(
+                        Bokmal to "Nytt forhåndsvarsel om etteroppgjør av uføretrygd for <PeriodeFom>".expr(),
+                        Nynorsk to "Nytt førehandsvarsel om etteroppgjer av uføretrygd for <PeriodeFom>".expr(),
+                        English to "New advance notice of settlement of disability benefit for <PeriodeFom>".expr()
                     )
                 }.orShow {
-                Bokmal to "Forhåndsvarsel om etteroppgjør av uføretrygd for <PeriodeFom>",
-                    Nynorsk to "Førehandsvarsel om etteroppgjer av uføretrygd for <PeriodeFom>",
-                    English to "Advance notice of settlement of disability benefit for <PeriodeFom>"
-
+                    textExpr(
+                        Bokmal to "Forhåndsvarsel om etteroppgjør av uføretrygd for <PeriodeFom>".expr(),
+                        Nynorsk to "Førehandsvarsel om etteroppgjer av uføretrygd for <PeriodeFom>".expr(),
+                        English to "Advance notice of settlement of disability benefit for <PeriodeFom>".expr()
+                    )
                 }
             }
         }
+}
