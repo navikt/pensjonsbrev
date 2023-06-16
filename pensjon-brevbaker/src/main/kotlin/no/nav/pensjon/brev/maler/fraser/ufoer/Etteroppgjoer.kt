@@ -12,7 +12,7 @@ import java.time.LocalDate
 
 //TBU3323
 data class Innledning(
-    val etteroppgjoerResultat: ForhaandsvarselEtteroppgjoerDto.EtteroppgjoerResultat,
+    val avviksbeloep: Expression<Kroner>,  // PE_UT_AvviksbelopUtenMinus
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         paragraph {
@@ -24,9 +24,9 @@ data class Innledning(
         }
         paragraph {
             textExpr(
-                Bokmal to "Vår beregning viser at du har fått <Avviksbelop> kroner for mye utbetalt.".expr(),
-                Nynorsk to "Utrekninga vår viser at du har fått utbetalt <Avviksbelop> kroner for mykje.".expr(),
-                English to "Our calculations show that you have received an overpayment of NOK <Aaviksbelop>.".expr()
+                Bokmal to "Vår beregning viser at du har fått ".expr() + avviksbeloep.format() + " kroner for mye utbetalt.".expr(),
+                Nynorsk to "Utrekninga vår viser at du har fått utbetalt ".expr() +  avviksbeloep.format() + " kroner for mykje.".expr(),
+                English to "Our calculations show that you have received an overpayment of NOK ".expr() + avviksbeloep.format() + ".".expr()
             )
         }
     }
@@ -104,6 +104,54 @@ val periodeFom: Expression<LocalDate>
                 English to "It may be the case that you do not need to repay the whole/part of the amount that you have been overpaid. We will assess this. This is on the premise that your income at the beginning of the year was below the income threshold, ref. National Insurance Act Section 4-1. If this is relevant to you, you will receive a separate letter."
             )
         }
+        paragraph {
+            textExpr(
+                Bokmal to "For 2022 var 80 prosent av inntekten din før du ble ufør, <beløp>.".expr(),
+                Nynorsk to "For 2022 var 80 prosent av inntekta di før du blei ufør, <beløp>.".expr(),
+                English to "For 2022, 80 percent of your income before you received disability benefit was <beløp>.".expr()
+            )
+        }
     }
+}
 
+data class SoekOmNyInntektsgrense(
+    val periodeFom: Expression<LocalDate>
+) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+        title1 {
+            text(
+                Bokmal to "Søke om ny inntektsgrense",
+                Nynorsk to "Søkje om ny inntektsgrense",
+                English to "Apply for new income threshold"
+            )
+        }
+        paragraph {
+            textExpr(
+                Bokmal to "Er du arbeidstaker og har gradert uføretrygd, kan du søke om ny inntektsgrense. Dette gjelder hvis du har hatt høy lønnsøkning, uten at det skyldes overtidsjobbing, ekstravakter eller høyere stillingsprosent. Din inntektsgrense for <år> er <inntektsgrensebeløpår>.".expr(),
+                Nynorsk to "Dersom du er arbeidstakar og har gradert uføretrygd, kan du søkje om ny inntektsgrense. Dette gjeld viss du har hatt høg lønsauke, utan at det skuldast overtidsjobbing, ekstravakter eller høgare stillingsprosent. Inntektsgrensa di for <år> er <inntektsgrensebeløpår>.".expr(),
+                English to "If you are an employee and have graduated disability benefit, you can apply for a new income threshold. This will apply if you have had a large wage increase, and this is not due to working overtime, additional shifts or a greater percentage of full-time. Your income threshold for <år> is <inntektsgrensebeløpår>.".expr()
+            )
+        }
+    }
+}
+
+data class FlereVedtakOmEtteroppgjoer(
+    val periodeFom: Expression<LocalDate>
+) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+        title1 {
+            text(
+                Bokmal to "For deg som har fått flere vedtak om etteroppgjør for samme år",
+                Nynorsk to "For deg som har fått fleire vedtak om etteroppgjer for same år",
+                English to "If you have received several decisions concerning settlement for the same year"
+            )
+        }
+        paragraph {
+            text(
+                Bokmal to "I noen tilfeller gjør vi flere etteroppgjør for samme år. Alle oppgjør er gyldige. Vi sammenligner dem for å se om du må betale tilbake, eller om du har penger til gode.",
+                Nynorsk to "I enkelte tilfelle utfører vi fleire etteroppgjer for same år. Alle oppgjer er gyldige. Vi samanliknar dei for å sjå om du må betale tilbake, eller om du har pengar til gode.",
+                English to "In some cases we carry out several settlements for the same year. All settlements apply. We compare them to see whether you must repay money, or whether you are owed any money."
+            )
+        }
+    }
 }
