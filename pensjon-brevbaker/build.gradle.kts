@@ -41,18 +41,22 @@ tasks {
         kotlinOptions.jvmTarget = "17"
     }
 
-    val integrationTests = setOf("pdf-bygger")
-
     test {
         useJUnitPlatform {
-            excludeTags = integrationTests
+            excludeTags = setOf("integration-test", "manual-test")
         }
     }
 
     task<Test>("integrationTest") {
         group = LifecycleBasePlugin.VERIFICATION_GROUP
         useJUnitPlatform {
-            includeTags = integrationTests
+            includeTags = setOf("integration-test")
+        }
+    }
+    task<Test>("manualTest") {
+        group = LifecycleBasePlugin.VERIFICATION_GROUP
+        useJUnitPlatform {
+            includeTags = setOf("manual-test")
         }
     }
 
