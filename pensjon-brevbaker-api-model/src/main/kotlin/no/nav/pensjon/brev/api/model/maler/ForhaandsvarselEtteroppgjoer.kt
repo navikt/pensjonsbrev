@@ -4,11 +4,12 @@ import no.nav.pensjon.brev.api.model.vedlegg.*
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import java.time.LocalDate
 
-// PE_UT_23_001 Varsel - etteroppgjør av uføretrygd ved feilutbetaling (auto)
+
 @Suppress("unused")
 data class ForhaandsvarselEtteroppgjoerDto(
-    val periodeFom: LocalDate,
     val forrigeEtteroppgjoer: ForrigeEtteroppgjoer,
+    val etteroppgjoerResultat: EtteroppgjoerResultat,
+    val ufoeretrygdEtteroppgjoer: UfoeretrygdEtteroppgjoer,
 ) {
 data class ForrigeEtteroppgjoer(
     val tidligereEOIverksatt: Boolean,
@@ -19,4 +20,15 @@ data class ForrigeEtteroppgjoer(
     val endretPensjonOgAndreYtelserBruker: Boolean,
     val endretPensjonOgAndreYtelserEPS: Boolean,
 )
+
+    data class EtteroppgjoerResultat(
+        val avviksbeloep: Kroner, // TODO: Fjern minus tegn fra Pesys
+    )
+
+    data class UfoeretrygdEtteroppgjoer(
+        val periodeFom: LocalDate,
+        val inntektOverInntektstak: Boolean,
+        val inntektsgrensebeloepAar: Kroner,
+
+    )
 }
