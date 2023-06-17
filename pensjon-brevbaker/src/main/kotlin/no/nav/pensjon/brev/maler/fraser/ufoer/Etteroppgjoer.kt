@@ -25,7 +25,7 @@ data class Innledning(
         paragraph {
             textExpr(
                 Bokmal to "Vår beregning viser at du har fått ".expr() + avviksbeloep.format() + " kroner for mye utbetalt.".expr(),
-                Nynorsk to "Utrekninga vår viser at du har fått utbetalt ".expr() +  avviksbeloep.format() + " kroner for mykje.".expr(),
+                Nynorsk to "Utrekninga vår viser at du har fått utbetalt ".expr() + avviksbeloep.format() + " kroner for mykje.".expr(),
                 English to "Our calculations show that you have received an overpayment of NOK ".expr() + avviksbeloep.format() + ".".expr()
             )
         }
@@ -85,11 +85,13 @@ object HvordanDuBetaleTilbake : OutlinePhrase<LangBokmalNynorskEnglish>() {
     }
 }
 
-// Hvis bruker har hatt inntekt over 80% av OIFU
-data class InntektOverInntektstak(
-val periodeFom: Expression<LocalDate>
+// Show if bruker has an income (80% av OIFU) greater than inntektsgrense
+data class InntektOverInntektsgrense(
+    val oppjustertInntektFoerUfoere: Expression<Kroner>,
+    val periodeFom: Expression<LocalDate>
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+        // TODO: Show if (OIFU * 0,8) isGreaterThan inntektsgrense
         title1 {
             text(
                 Bokmal to "Du har tjent over 80 prosent av inntekten du hadde før du ble ufør",
@@ -104,11 +106,12 @@ val periodeFom: Expression<LocalDate>
                 English to "It may be the case that you do not need to repay the whole/part of the amount that you have been overpaid. We will assess this. This is on the premise that your income at the beginning of the year was below the income threshold, ref. National Insurance Act Section 4-1. If this is relevant to you, you will receive a separate letter."
             )
         }
+        // TODO: <oppjustertInntektFoerUfoere> = OIFU * 0,8
         paragraph {
             textExpr(
-                Bokmal to "For 2022 var 80 prosent av inntekten din før du ble ufør, <beløp>.".expr(),
-                Nynorsk to "For 2022 var 80 prosent av inntekta di før du blei ufør, <beløp>.".expr(),
-                English to "For 2022, 80 percent of your income before you received disability benefit was <beløp>.".expr()
+                Bokmal to "For 2022 var 80 prosent av inntekten din før du ble ufør, ".expr() + oppjustertInntektFoerUfoere.format() + " kroner.".expr(),
+                Nynorsk to "For 2022 var 80 prosent av inntekta di før du blei ufør, ".expr() + oppjustertInntektFoerUfoere.format() + " kroner.".expr(),
+                English to "For 2022, 80 percent of your income before you received disability benefit was NOK ".expr() + oppjustertInntektFoerUfoere.format() + ".".expr()
             )
         }
     }
