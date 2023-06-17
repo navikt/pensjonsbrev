@@ -91,7 +91,7 @@ data class InntektOverInntektsgrense(
     val periodeFom: Expression<LocalDate>
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-        // TODO: Show if (OIFU * 0,8) isGreaterThan inntektsgrense
+        // TODO: Show if (OIFU * 0,8) isGreaterThan inntektsgrense or is it inntektstak?
         title1 {
             text(
                 Bokmal to "Du har tjent over 80 prosent av inntekten du hadde før du ble ufør",
