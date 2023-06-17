@@ -2,7 +2,9 @@ package no.nav.pensjon.brev.maler
 
 import no.nav.pensjon.brev.api.model.maler.*
 import no.nav.pensjon.brev.api.model.maler.ForhaandsvarselEtteroppgjoerDtoSelectors.AvkortningsinformasjonSelectors.inntektsgrense
+import no.nav.pensjon.brev.api.model.maler.ForhaandsvarselEtteroppgjoerDtoSelectors.AvkortningsinformasjonSelectors.inntektsgrense_safe
 import no.nav.pensjon.brev.api.model.maler.ForhaandsvarselEtteroppgjoerDtoSelectors.AvkortningsinformasjonSelectors.oppjustertInntektFoerUfoere
+import no.nav.pensjon.brev.api.model.maler.ForhaandsvarselEtteroppgjoerDtoSelectors.AvkortningsinformasjonSelectors.oppjustertInntektFoerUfoere_safe
 import no.nav.pensjon.brev.api.model.maler.ForhaandsvarselEtteroppgjoerDtoSelectors.ResultatEtterOppgjoerSelectors.avviksbeloep
 import no.nav.pensjon.brev.api.model.maler.ForhaandsvarselEtteroppgjoerDtoSelectors.ResultatEtterOppgjoerSelectors.endretPensjonOgAndreYtelserBruker
 import no.nav.pensjon.brev.api.model.maler.ForhaandsvarselEtteroppgjoerDtoSelectors.ResultatEtterOppgjoerSelectors.endretPensjonOgAndreYtelserEPS
@@ -75,11 +77,19 @@ object ForhaandsvarselEtteroppgjoer : AutobrevTemplate<ForhaandsvarselEtteroppgj
                 includePhrase(SjekkBeregning)
                 includePhrase(HvordanDuBetaleTilbake)
 
-                ifNotNull(avkortningsinformasjon.inntektsgrense, avkortningsinformasjon.oppjustertInntektFoerUfoere) {
-                    inntektsgrense, oppjustertInntekt ->
+                ifNotNull(
+                    avkortningsinformasjon.inntektsgrense_safe,
+                    avkortningsinformasjon.oppjustertInntektFoerUfoere_safe
+                ) { inntektsgrense, oppjustertInntekt ->
+                    showIf(oppjustertInntekt.greaterThan(inntektsgrense)) {
+                        includePhrase(
+                            InntektOverInntektsgrense(
+                                oppjustertInntektFoerUfoere = oppjustertInntekt,
+                                periodeFom = ufoeretrygdEtteroppgjoer.periodeFom
+                            )
+                        )
+                    }
                 }
-                showIf(avkortningsinformasjon.oppjustertInntektFoerUfoere.)
-
             }
         }
 }
