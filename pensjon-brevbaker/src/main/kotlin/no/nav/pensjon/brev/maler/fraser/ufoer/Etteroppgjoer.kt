@@ -118,9 +118,10 @@ data class InntektOverInntektsgrense(
 }
 
 data class SoekOmNyInntektsgrense(
-    val periodeFom: Expression<LocalDate>
+    val inntektsgrensebeloepAar: Expression<Kroner>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+        // <år> hvilket år? Kan jeg bruk periodeFom (2022)?
         title1 {
             text(
                 Bokmal to "Søke om ny inntektsgrense",
@@ -130,17 +131,15 @@ data class SoekOmNyInntektsgrense(
         }
         paragraph {
             textExpr(
-                Bokmal to "Er du arbeidstaker og har gradert uføretrygd, kan du søke om ny inntektsgrense. Dette gjelder hvis du har hatt høy lønnsøkning, uten at det skyldes overtidsjobbing, ekstravakter eller høyere stillingsprosent. Din inntektsgrense for <år> er <inntektsgrensebeløpår>.".expr(),
-                Nynorsk to "Dersom du er arbeidstakar og har gradert uføretrygd, kan du søkje om ny inntektsgrense. Dette gjeld viss du har hatt høg lønsauke, utan at det skuldast overtidsjobbing, ekstravakter eller høgare stillingsprosent. Inntektsgrensa di for <år> er <inntektsgrensebeløpår>.".expr(),
-                English to "If you are an employee and have graduated disability benefit, you can apply for a new income threshold. This will apply if you have had a large wage increase, and this is not due to working overtime, additional shifts or a greater percentage of full-time. Your income threshold for <år> is <inntektsgrensebeløpår>.".expr()
+                Bokmal to "Er du arbeidstaker og har gradert uføretrygd, kan du søke om ny inntektsgrense. Dette gjelder hvis du har hatt høy lønnsøkning, uten at det skyldes overtidsjobbing, ekstravakter eller høyere stillingsprosent. Din inntektsgrense for <år> er ".expr() + inntektsgrensebeloepAar.format() + " kroner.".expr(),
+                Nynorsk to "Dersom du er arbeidstakar og har gradert uføretrygd, kan du søkje om ny inntektsgrense. Dette gjeld viss du har hatt høg lønsauke, utan at det skuldast overtidsjobbing, ekstravakter eller høgare stillingsprosent. Inntektsgrensa di for <år> er ".expr() + inntektsgrensebeloepAar.format() + " kroner.".expr(),
+                English to "If you are an employee and have graduated disability benefit, you can apply for a new income threshold. This will apply if you have had a large wage increase, and this is not due to working overtime, additional shifts or a greater percentage of full-time. Your income threshold for <år> is NOK ".expr() + inntektsgrensebeloepAar.format() + ".".expr()
             )
         }
     }
 }
 
-data class FlereVedtakOmEtteroppgjoer(
-    val periodeFom: Expression<LocalDate>
-) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+object FlereVedtakOmEtteroppgjoer : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         title1 {
             text(
@@ -154,6 +153,75 @@ data class FlereVedtakOmEtteroppgjoer(
                 Bokmal to "I noen tilfeller gjør vi flere etteroppgjør for samme år. Alle oppgjør er gyldige. Vi sammenligner dem for å se om du må betale tilbake, eller om du har penger til gode.",
                 Nynorsk to "I enkelte tilfelle utfører vi fleire etteroppgjer for same år. Alle oppgjer er gyldige. Vi samanliknar dei for å sjå om du må betale tilbake, eller om du har pengar til gode.",
                 English to "In some cases we carry out several settlements for the same year. All settlements apply. We compare them to see whether you must repay money, or whether you are owed any money."
+            )
+        }
+    }
+}
+
+object MeldeFraOmEndringerEO : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+        title1 {
+            text(
+                Bokmal to "Du må melde fra om endringer",
+                Nynorsk to "Husk å melde frå om endringar",
+                English to "You must report any changes"
+            )
+        }
+        paragraph {
+            text(
+                Bokmal to "For at du skal få utbetalt riktig uføretrygd fremover, er det viktig at du oppdaterer inntekten din. Dette gjør du på nav.no/inntektsplanleggeren. I vedlegget “Dine rettigheter og plikter” ser du hvilke endringer du må si fra om.",
+                Nynorsk to "For at du skal få utbetalt rett uføretrygd framover, er det viktig at du oppdaterer inntekta di. Dette gjer du på nav.no/inntektsplanleggeren. I vedlegget «Rettane og pliktene dine» ser du kva endringar du må seie frå om.",
+                English to "To be paid the correct amount of disability benefit in the future, it is important that you update your income. You can do this at: nav.no/inntektsplanleggeren. In the appendix «Your rights and obligations» you can see which changes you need to report."
+            )
+        }
+    }
+}
+
+object FristerOpplysningerKlage : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+        title1 {
+            text(
+                Bokmal to "Frister for å sende inn nye opplysninger og klage",
+                Nynorsk to "Fristar for å sende inn nye opplysningar og klage",
+                English to "Deadlines for sending in new information and appeals"
+            )
+        }
+        paragraph {
+            text(
+                Bokmal to "Hvis du mener at beregningene i vedlegg 1 er feil, må du melde fra til oss innen 3 uker fra du fikk dette brevet. Du vil da få en ny vurdering og et nytt vedtak.",
+                Nynorsk to "Dersom du meiner at utrekningane i vedlegg 1 er feil, må du melde frå til oss innan 3 veker frå du fekk dette brevet. Du vil då få ei ny vurdering og eit nytt vedtak.",
+                English to "If you believe that the calculations in Appendix 1 are incorrect, you must notify us within 3 weeks of the date you received this letter. In such case you will receive a new assessment and a new decision."
+            )
+        }
+        paragraph {
+            text(
+                Bokmal to "Hvis vi ikke hører fra deg innen fristen, tar vi utgangspunkt i at beregningene våre er korrekte, og sender saken videre til Skatteetaten. Beregningen blir gjort om til et vedtak etter 4 uker fra du mottok dette brevet. Du vil ikke motta et nytt vedtak.",
+                Nynorsk to "Dersom vi ikkje høyrer frå deg innan fristen, tek vi utgangspunkt i at utrekningane våre er korrekte, og sender saka vidare til Skatteetaten. Utrekninga blir gjort om til vedtak 4 veker etter at du har fått dette brevet. Du får ikkje eit nytt vedtak.",
+                English to "If we do not hear from you within this deadline, we will take a starting point in that our calculations are correct and forward the case to the Tax Office. The calculation will be converted into a decision 4 weeks after you received this letter. You will not receive a new decision."
+            )
+        }
+        paragraph {
+            text(
+                Bokmal to "Klagefristen på vedtaket er 6 uker etter at saken er sendt til Skatteetaten. Du finner skjema og informasjon om hvordan du klager på nav.no/klage. Du må som hovedregel begynne å betale tilbake selv om du klager på vedtaket, se forvaltningsloven § 42.",
+                Nynorsk to "Klagefristen på vedtaket er 6 veker etter at saka er send til Skatteetaten. Du finn skjema og informasjon om korleis du klagar, på nav.no/klage. Du må som hovudregel byrje å betale tilbake sjølv om du klagar på vedtaket, jf. forvaltingslova § 42.",
+                English to "The deadline for submitting an appeal against the decision is 6 weeks after the case has been forwarded to the Tax Office. You will find a form and information about how to appeal at: nav.no/klage. As a general rule you must begin to repay any amounts owed even if you appeal against the decision, see Public Administration Act Section 42."
+            )
+        }
+    }
+}
+
+object HarDuSpoesmaal : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+        title1 {
+            text(
+                Bokmal to "Har du spørsmål?",
+                Nynorsk to "Har du spørsmål?",
+                English to "Do you have any questions?"
+            )
+            text(
+                Bokmal to "Du finner mer informasjon på nav.no/etteroppgjor. På nav.no/kontakt kan du chatte eller skrive til oss. Hvis du ikke finner svar på nav.no, kan du ringe oss på telefon 55 55 33 33, hverdager kl. 09.00 - 15.00.",
+                Nynorsk to "Du finn meir informasjon på nav.no/etteroppgjor. Du kan chatte med eller skrive til oss på nav.no/kontakt. Dersom du ikkje finn svar på nav.no, kan du ringje oss på telefon 55 55 33 33, kvardagar kl. 09:00 til 15:00.",
+                English to "You can find further information at: nav.no/etteroppgjor. At nav.no/kontakt you can chat or write to us. If you do not find answers at nav.no, you can call us on +47 55 55 33 33, weekdays 09.00 - 15.00."
             )
         }
     }

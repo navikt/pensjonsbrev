@@ -1,9 +1,7 @@
 package no.nav.pensjon.brev.maler
 
 import no.nav.pensjon.brev.api.model.maler.*
-import no.nav.pensjon.brev.api.model.maler.ForhaandsvarselEtteroppgjoerDtoSelectors.AvkortningsinformasjonSelectors.inntektsgrense
 import no.nav.pensjon.brev.api.model.maler.ForhaandsvarselEtteroppgjoerDtoSelectors.AvkortningsinformasjonSelectors.inntektsgrense_safe
-import no.nav.pensjon.brev.api.model.maler.ForhaandsvarselEtteroppgjoerDtoSelectors.AvkortningsinformasjonSelectors.oppjustertInntektFoerUfoere
 import no.nav.pensjon.brev.api.model.maler.ForhaandsvarselEtteroppgjoerDtoSelectors.AvkortningsinformasjonSelectors.oppjustertInntektFoerUfoere_safe
 import no.nav.pensjon.brev.api.model.maler.ForhaandsvarselEtteroppgjoerDtoSelectors.ResultatEtterOppgjoerSelectors.avviksbeloep
 import no.nav.pensjon.brev.api.model.maler.ForhaandsvarselEtteroppgjoerDtoSelectors.ResultatEtterOppgjoerSelectors.endretPensjonOgAndreYtelserBruker
@@ -13,22 +11,20 @@ import no.nav.pensjon.brev.api.model.maler.ForhaandsvarselEtteroppgjoerDtoSelect
 import no.nav.pensjon.brev.api.model.maler.ForhaandsvarselEtteroppgjoerDtoSelectors.ResultatEtterOppgjoerSelectors.harEtterbetaling
 import no.nav.pensjon.brev.api.model.maler.ForhaandsvarselEtteroppgjoerDtoSelectors.ResultatEtterOppgjoerSelectors.harTilbakePenger
 import no.nav.pensjon.brev.api.model.maler.ForhaandsvarselEtteroppgjoerDtoSelectors.ResultatEtterOppgjoerSelectors.tidligereEOIverksatt
+import no.nav.pensjon.brev.api.model.maler.ForhaandsvarselEtteroppgjoerDtoSelectors.UfoeretrygdEtteroppgjoerSelectors.inntektsgrensebeloepAar
 import no.nav.pensjon.brev.api.model.maler.ForhaandsvarselEtteroppgjoerDtoSelectors.UfoeretrygdEtteroppgjoerSelectors.periodeFom
 import no.nav.pensjon.brev.api.model.maler.ForhaandsvarselEtteroppgjoerDtoSelectors.avkortningsinformasjon
 import no.nav.pensjon.brev.api.model.maler.ForhaandsvarselEtteroppgjoerDtoSelectors.resultatEtterOppgjoer
 import no.nav.pensjon.brev.api.model.maler.ForhaandsvarselEtteroppgjoerDtoSelectors.ufoeretrygdEtteroppgjoer
-import no.nav.pensjon.brev.maler.fraser.common.*
-import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.fraser.ufoer.*
 import no.nav.pensjon.brev.maler.vedlegg.*
-import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brevbaker.api.model.*
-import java.time.LocalDate
+
 
 // PE_UT_23_001 Varsel - etteroppgjør av uføretrygd ved feilutbetaling (auto)
 // Brevet bestilles av BPEN092 (Etteroppgjør Uføre), brevet går ut til de som har fått for mye uføretrygd utbetalt
@@ -53,9 +49,9 @@ object ForhaandsvarselEtteroppgjoer : AutobrevTemplate<ForhaandsvarselEtteroppgj
             title {
                 val periodeFom = ufoeretrygdEtteroppgjoer.periodeFom.format()
                 showIf(
-                    resultatEtterOppgjoer.tidligereEOIverksatt and (resultatEtterOppgjoer.harEtterbetaling or resultatEtterOppgjoer.harTilbakePenger) and
-                            (resultatEtterOppgjoer.endretPersonGrunnlagInntektBruker or resultatEtterOppgjoer.endretPersonGrunnlagInntektEPS
-                                    or resultatEtterOppgjoer.endretPensjonOgAndreYtelserBruker or resultatEtterOppgjoer.endretPensjonOgAndreYtelserEPS)
+                    resultatEtterOppgjoer.tidligereEOIverksatt and (resultatEtterOppgjoer.harEtterbetaling or resultatEtterOppgjoer.harTilbakePenger)
+                            and (resultatEtterOppgjoer.endretPersonGrunnlagInntektBruker or resultatEtterOppgjoer.endretPersonGrunnlagInntektEPS
+                            or resultatEtterOppgjoer.endretPensjonOgAndreYtelserBruker or resultatEtterOppgjoer.endretPensjonOgAndreYtelserEPS)
                 ) {
                     textExpr(
                         Bokmal to "Nytt forhåndsvarsel om etteroppgjør av uføretrygd for ".expr() + periodeFom,
@@ -90,6 +86,23 @@ object ForhaandsvarselEtteroppgjoer : AutobrevTemplate<ForhaandsvarselEtteroppgj
                         )
                     }
                 }
+                showIf(
+                    resultatEtterOppgjoer.tidligereEOIverksatt and (resultatEtterOppgjoer.harEtterbetaling or resultatEtterOppgjoer.harTilbakePenger)
+                            and (resultatEtterOppgjoer.endretPersonGrunnlagInntektBruker or resultatEtterOppgjoer.endretPersonGrunnlagInntektEPS
+                            or resultatEtterOppgjoer.endretPensjonOgAndreYtelserBruker or resultatEtterOppgjoer.endretPensjonOgAndreYtelserEPS)
+                ) {
+                    includePhrase(FlereVedtakOmEtteroppgjoer)
+                }
+// TODO: Flettelogikk
+                includePhrase(
+                    SoekOmNyInntektsgrense(
+                        inntektsgrensebeloepAar = ufoeretrygdEtteroppgjoer.inntektsgrensebeloepAar
+                    )
+                )
+
+                includePhrase(MeldeFraOmEndringerEO)
+                includePhrase(FristerOpplysningerKlage)
+                includePhrase(HarDuSpoesmaal)
             }
         }
 }

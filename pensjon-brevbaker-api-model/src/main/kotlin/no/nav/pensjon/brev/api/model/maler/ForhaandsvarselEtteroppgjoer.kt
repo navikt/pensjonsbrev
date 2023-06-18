@@ -28,8 +28,9 @@ data class ResultatEtterOppgjoer(
         val inntektsgrensebeloepAar: Kroner,
     )
     data class Avkortningsinformasjon(
-        val inntektsgrense: Kroner?,
-        val oppjustertInntektFoerUfoere: Kroner? // TODO: OIFU * 0,8
+        val inntektsgrense: Kroner,
+        val oppjustertInntektFoerUfoere: Kroner, // TODO: OIFU * 0,8
+        val inntektsgrensebeloepAar: Kroner,
     )
 }
 // TODO:

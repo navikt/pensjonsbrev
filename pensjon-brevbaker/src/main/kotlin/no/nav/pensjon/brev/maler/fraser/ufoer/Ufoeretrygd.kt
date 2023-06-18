@@ -163,7 +163,8 @@ object Ufoeretrygd {
     }
 
     // TBU2223
-    data class UtbetalingsdatoUfoeretrygd(val faarUtbetaltUfoeretrygd: Expression<Boolean>) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    data class UtbetalingsdatoUfoeretrygd(val faarUtbetaltUfoeretrygd: Expression<Boolean>) :
+        OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             showIf(faarUtbetaltUfoeretrygd) {
                 paragraph {
@@ -283,7 +284,7 @@ object Ufoeretrygd {
     }
 
     // TBU1228, SkattekortOverskrift_001, SkattekortUT_001
-    object Skattekort: OutlinePhrase<LangBokmalNynorskEnglish>() {
+    object Skattekort : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             title1 {
                 text(
