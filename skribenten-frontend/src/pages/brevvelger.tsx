@@ -4,16 +4,16 @@ import {SkribentenConfig} from "./_app"
 
 import "@navikt/ds-css"
 import "@navikt/ds-css-internal"
-import LetterFilter from "../modules/LetterFilter/LetterFilter"
+import LetterFilter from "../modules/LetterPicker/LetterFilter"
 import styles from './brevvelger.module.css'
-import LetterPreview from "../modules/LetterFilter/components/LetterPreview/LetterPreview"
+import LetterPreview from "../modules/LetterPicker/components/LetterPreview/LetterPreview"
 import SkribentenAPI from "../lib/services/skribenten"
 import {useMsal} from "@azure/msal-react"
-import {LetterCategory, LetterSelection} from "../modules/LetterFilter/model/skribenten"
+import {LetterCategory, LetterSelection} from "../modules/LetterPicker/model/skribenten"
 import NavBar from "../components/navbar/NavBar"
 import CaseContextBar from "../components/casecontextbar/CaseContextBar"
-import BottomMenu from "../components/bottom-menu/BottomMenu"
-import {Select} from "@navikt/ds-react"
+import LetterPickerActionBar from "../modules/LetterPicker/components/ActionBar/ActionBar"
+import {useSearchParams} from "next/navigation"
 
 const Brevvelger: NextPage<SkribentenConfig> = (props) => {
     const [selectedLetter, setSelectedLetter] = useState<LetterSelection | null>(null)
@@ -32,6 +32,8 @@ const Brevvelger: NextPage<SkribentenConfig> = (props) => {
     }
     const skribentApi = new SkribentenAPI(props.api)
     const msal = useMsal()
+    const queryParams = useSearchParams()
+    const caseNumber = queryParams.get("saksnummer")
 
     const addToFavouritesHandler = async () => {
         if (selectedLetter) {
@@ -88,28 +90,10 @@ const Brevvelger: NextPage<SkribentenConfig> = (props) => {
                                selectedIsFavourite={selectedLetterIsFavourite()}
                                onAddToFavourites={addToFavouritesHandler}/>
             </div>
-            <BottomMenu>
-                <Select label="Språklag" className={styles.languageSelection} hideLabel>
-                    {
-                        selectedLetter?.spraak.map( sprak =>
-                            (<option key={sprak}>{sprakTekst(sprak)}</option>)
-                        )
-                    }
-                </Select>
-            </BottomMenu>
+            <LetterPickerActionBar selectedLetter={selectedLetter}/>
         </div>
     )
 }
 
-//TODO i18n?
-function sprakTekst (sprak:string){
-    switch (sprak) {
-        case "NN": return "Nynorsk"
-        case "NB": return "Bokmål"
-        case "EN": return "Engelsk"
-        case "SE": return "Nordsamisk"
-        case "FR": return "Fransk"
-    }
-}
 
 export default Brevvelger

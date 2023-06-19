@@ -11,7 +11,7 @@
 .previewImage {
     background-color: var(--a-white);
     display: block;
-    margin: auto;
+    margin: 1.25rem auto;
     min-width: 50%;
     max-width: 100%;
 }

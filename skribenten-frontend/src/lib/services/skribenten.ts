@@ -2,7 +2,7 @@ import {IMsalContext} from "@azure/msal-react/dist/MsalContext"
 import {withAuthorization} from "./msal"
 import {EditedLetter, RedigerbarTemplateDescription, RenderedLetter} from "../../modules/LetterEditor/model/api"
 import {ObjectValue} from "../../modules/ModelEditor/model"
-import {LetterCategory, LetterSelection} from "../../modules/LetterFilter/model/skribenten"
+import {LetterCategory, LetterSelection} from "../../modules/LetterPicker/model/skribenten"
 
 export interface SkribentenAPIConfig {
     url: string
