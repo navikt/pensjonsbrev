@@ -1,14 +1,12 @@
 package no.nav.pensjon.brev.maler.fraser.ufoer
 
-import no.nav.pensjon.brev.api.model.maler.ForhaandsvarselEtteroppgjoerDto
-import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brevbaker.api.model.Kroner
-import java.time.LocalDate
+
 
 //TBU3323
 data class Innledning(
@@ -85,13 +83,11 @@ object HvordanDuBetaleTilbake : OutlinePhrase<LangBokmalNynorskEnglish>() {
     }
 }
 
-// Show if bruker has an income (80% av OIFU) greater than inntektsgrense
 data class InntektOverInntektsgrense(
     val oppjustertInntektFoerUfoere: Expression<Kroner>,
-    val periodeFom: Expression<LocalDate>
+    val periodeFomAar: Expression<Int>
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-        // TODO: Show if (OIFU * 0,8) isGreaterThan inntektsgrense or is it inntektstak?
         title1 {
             text(
                 Bokmal to "Du har tjent over 80 prosent av inntekten du hadde før du ble ufør",
@@ -106,12 +102,11 @@ data class InntektOverInntektsgrense(
                 English to "It may be the case that you do not need to repay the whole/part of the amount that you have been overpaid. We will assess this. This is on the premise that your income at the beginning of the year was below the income threshold, ref. National Insurance Act Section 4-1. If this is relevant to you, you will receive a separate letter."
             )
         }
-        // TODO: <oppjustertInntektFoerUfoere> = OIFU * 0,8
         paragraph {
             textExpr(
-                Bokmal to "For 2022 var 80 prosent av inntekten din før du ble ufør, ".expr() + oppjustertInntektFoerUfoere.format() + " kroner.".expr(),
-                Nynorsk to "For 2022 var 80 prosent av inntekta di før du blei ufør, ".expr() + oppjustertInntektFoerUfoere.format() + " kroner.".expr(),
-                English to "For 2022, 80 percent of your income before you received disability benefit was NOK ".expr() + oppjustertInntektFoerUfoere.format() + ".".expr()
+                Bokmal to "For ".expr() + periodeFomAar.format() + " var 80 prosent av inntekten din før du ble ufør, ".expr() + oppjustertInntektFoerUfoere.format() + " kroner.".expr(),
+                Nynorsk to "For ".expr() + periodeFomAar.format() + " var 80 prosent av inntekta di før du blei ufør, ".expr() + oppjustertInntektFoerUfoere.format() + " kroner.".expr(),
+                English to "For ".expr() + periodeFomAar.format() + ", 80 percent of your income before you received disability benefit was NOK ".expr() + oppjustertInntektFoerUfoere.format() + ".".expr()
             )
         }
     }
@@ -119,6 +114,7 @@ data class InntektOverInntektsgrense(
 
 data class SoekOmNyInntektsgrense(
     val inntektsgrensebeloepAar: Expression<Kroner>,
+    val periodeFomAar: Expression<Int>
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         // <år> hvilket år? Kan jeg bruk periodeFom (2022)?
@@ -131,9 +127,9 @@ data class SoekOmNyInntektsgrense(
         }
         paragraph {
             textExpr(
-                Bokmal to "Er du arbeidstaker og har gradert uføretrygd, kan du søke om ny inntektsgrense. Dette gjelder hvis du har hatt høy lønnsøkning, uten at det skyldes overtidsjobbing, ekstravakter eller høyere stillingsprosent. Din inntektsgrense for <år> er ".expr() + inntektsgrensebeloepAar.format() + " kroner.".expr(),
-                Nynorsk to "Dersom du er arbeidstakar og har gradert uføretrygd, kan du søkje om ny inntektsgrense. Dette gjeld viss du har hatt høg lønsauke, utan at det skuldast overtidsjobbing, ekstravakter eller høgare stillingsprosent. Inntektsgrensa di for <år> er ".expr() + inntektsgrensebeloepAar.format() + " kroner.".expr(),
-                English to "If you are an employee and have graduated disability benefit, you can apply for a new income threshold. This will apply if you have had a large wage increase, and this is not due to working overtime, additional shifts or a greater percentage of full-time. Your income threshold for <år> is NOK ".expr() + inntektsgrensebeloepAar.format() + ".".expr()
+                Bokmal to "Er du arbeidstaker og har gradert uføretrygd, kan du søke om ny inntektsgrense. Dette gjelder hvis du har hatt høy lønnsøkning, uten at det skyldes overtidsjobbing, ekstravakter eller høyere stillingsprosent. Din inntektsgrense for ".expr() + periodeFomAar.format() + " er ".expr() + inntektsgrensebeloepAar.format() + " kroner.".expr(),
+                Nynorsk to "Dersom du er arbeidstakar og har gradert uføretrygd, kan du søkje om ny inntektsgrense. Dette gjeld viss du har hatt høg lønsauke, utan at det skuldast overtidsjobbing, ekstravakter eller høgare stillingsprosent. Inntektsgrensa di for ".expr() + periodeFomAar.format() + " er ".expr() + inntektsgrensebeloepAar.format() + " kroner.".expr(),
+                English to "If you are an employee and have graduated disability benefit, you can apply for a new income threshold. This will apply if you have had a large wage increase, and this is not due to working overtime, additional shifts or a greater percentage of full-time. Your income threshold for ".expr() + periodeFomAar.format() + " is NOK ".expr() + inntektsgrensebeloepAar.format() + ".".expr()
             )
         }
     }
@@ -158,7 +154,7 @@ object FlereVedtakOmEtteroppgjoer : OutlinePhrase<LangBokmalNynorskEnglish>() {
     }
 }
 
-object MeldeFraOmEndringerEO : OutlinePhrase<LangBokmalNynorskEnglish>() {
+object MeldeFraOmEndringerEtteroppgjoer : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         title1 {
             text(
