@@ -3,7 +3,7 @@ import styles from "./LetterPreview.module.css"
 import {StarFillIcon, StarIcon} from "@navikt/aksel-icons"
 import {Button} from "@navikt/ds-react"
 import Image from "next/image"
-import {LetterSelection} from "../../model/skribenten";
+import {LetterSelection} from "../../model/skribenten"
 
 
 interface LetterPreviewProps {
