@@ -51,7 +51,6 @@ val vedleggDineRettigheterOgPlikterUfoere =
                 }
 
                 showIf(harInnvilgetBarnetillegg) {
-                    item { includePhrase(VedleggPlikterAP7) }
                     item { includePhrase(VedleggPlikterUT7(harTilleggForFlereBarn)) }
                     item { includePhrase(VedleggPlikterUT13(harTilleggForFlereBarn)) }
                     item { includePhrase(VedleggPlikterUT14(harTilleggForFlereBarn)) }
