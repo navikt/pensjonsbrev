@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.api.model.maler
 import no.nav.pensjon.brev.api.model.vedlegg.*
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import java.time.LocalDate
+import no.nav.pensjon.brevbaker.api.model.Year
 
 
 @Suppress("unused")
@@ -23,11 +24,11 @@ data class ForhaandsvarselEtteroppgjoerDto(
     )
 
     data class UfoeretrygdEtteroppgjoer(
+        val aarPeriodeFom: Year,  // TODO: Use YYYY from periodeFom
         val inntektOverInntektstak: Boolean,
         val inntektsgrensebeloepAar: Kroner,
         val oppjustertInntektFoerUfoere: Kroner, // TODO: OIFU * 0,8
         val periodeFom: LocalDate,
-        val periodeFomAar: Int,  // TODO: Use YYYY from periodeFom
         val ufoeregrad: Int,  // PE_Vedtaksdata_Beregningsdata_BeregningUfore_Uforetrygdberegning_Uforegrad
     )
 }

@@ -6,6 +6,7 @@ import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brevbaker.api.model.Kroner
+import no.nav.pensjon.brevbaker.api.model.Year
 
 
 //TBU3323
@@ -84,8 +85,8 @@ object HvordanDuBetaleTilbake : OutlinePhrase<LangBokmalNynorskEnglish>() {
 }
 
 data class InntektOverInntektsgrense(
+    val aarPeriodeFom: Expression<Year>,
     val oppjustertInntektFoerUfoere: Expression<Kroner>,
-    val periodeFomAar: Expression<Int>
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         title1 {
@@ -104,17 +105,17 @@ data class InntektOverInntektsgrense(
         }
         paragraph {
             textExpr(
-                Bokmal to "For ".expr() + periodeFomAar.format() + " var 80 prosent av inntekten din før du ble ufør, ".expr() + oppjustertInntektFoerUfoere.format() + " kroner.".expr(),
-                Nynorsk to "For ".expr() + periodeFomAar.format() + " var 80 prosent av inntekta di før du blei ufør, ".expr() + oppjustertInntektFoerUfoere.format() + " kroner.".expr(),
-                English to "For ".expr() + periodeFomAar.format() + ", 80 percent of your income before you received disability benefit was NOK ".expr() + oppjustertInntektFoerUfoere.format() + ".".expr()
+                Bokmal to "For ".expr() + aarPeriodeFom.format() + " var 80 prosent av inntekten din før du ble ufør, ".expr() + oppjustertInntektFoerUfoere.format() + " kroner.".expr(),
+                Nynorsk to "For ".expr() + aarPeriodeFom.format() + " var 80 prosent av inntekta di før du blei ufør, ".expr() + oppjustertInntektFoerUfoere.format() + " kroner.".expr(),
+                English to "For ".expr() + aarPeriodeFom.format() + ", 80 percent of your income before you received disability benefit was NOK ".expr() + oppjustertInntektFoerUfoere.format() + ".".expr()
             )
         }
     }
 }
 
 data class SoekOmNyInntektsgrense(
+    val aarPeriodeFom: Expression<Year>,
     val inntektsgrensebeloepAar: Expression<Kroner>,
-    val periodeFomAar: Expression<Int>
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         // <år> hvilket år? Kan jeg bruk periodeFom (2022)?
@@ -127,9 +128,9 @@ data class SoekOmNyInntektsgrense(
         }
         paragraph {
             textExpr(
-                Bokmal to "Er du arbeidstaker og har gradert uføretrygd, kan du søke om ny inntektsgrense. Dette gjelder hvis du har hatt høy lønnsøkning, uten at det skyldes overtidsjobbing, ekstravakter eller høyere stillingsprosent. Din inntektsgrense for ".expr() + periodeFomAar.format() + " er ".expr() + inntektsgrensebeloepAar.format() + " kroner.".expr(),
-                Nynorsk to "Dersom du er arbeidstakar og har gradert uføretrygd, kan du søkje om ny inntektsgrense. Dette gjeld viss du har hatt høg lønsauke, utan at det skuldast overtidsjobbing, ekstravakter eller høgare stillingsprosent. Inntektsgrensa di for ".expr() + periodeFomAar.format() + " er ".expr() + inntektsgrensebeloepAar.format() + " kroner.".expr(),
-                English to "If you are an employee and have graduated disability benefit, you can apply for a new income threshold. This will apply if you have had a large wage increase, and this is not due to working overtime, additional shifts or a greater percentage of full-time. Your income threshold for ".expr() + periodeFomAar.format() + " is NOK ".expr() + inntektsgrensebeloepAar.format() + ".".expr()
+                Bokmal to "Er du arbeidstaker og har gradert uføretrygd, kan du søke om ny inntektsgrense. Dette gjelder hvis du har hatt høy lønnsøkning, uten at det skyldes overtidsjobbing, ekstravakter eller høyere stillingsprosent. Din inntektsgrense for ".expr() + aarPeriodeFom.format() + " er ".expr() + inntektsgrensebeloepAar.format() + " kroner.".expr(),
+                Nynorsk to "Dersom du er arbeidstakar og har gradert uføretrygd, kan du søkje om ny inntektsgrense. Dette gjeld viss du har hatt høg lønsauke, utan at det skuldast overtidsjobbing, ekstravakter eller høgare stillingsprosent. Inntektsgrensa di for ".expr() + aarPeriodeFom.format() + " er ".expr() + inntektsgrensebeloepAar.format() + " kroner.".expr(),
+                English to "If you are an employee and have graduated disability benefit, you can apply for a new income threshold. This will apply if you have had a large wage increase, and this is not due to working overtime, additional shifts or a greater percentage of full-time. Your income threshold for ".expr() + aarPeriodeFom.format() + " is NOK ".expr() + inntektsgrensebeloepAar.format() + ".".expr()
             )
         }
     }

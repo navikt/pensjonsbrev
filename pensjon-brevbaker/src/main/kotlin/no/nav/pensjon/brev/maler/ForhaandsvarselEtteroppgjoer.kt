@@ -9,11 +9,11 @@ import no.nav.pensjon.brev.api.model.maler.ForhaandsvarselEtteroppgjoerDtoSelect
 import no.nav.pensjon.brev.api.model.maler.ForhaandsvarselEtteroppgjoerDtoSelectors.ResultatEtteroppgjoerSelectors.harEtterbetaling
 import no.nav.pensjon.brev.api.model.maler.ForhaandsvarselEtteroppgjoerDtoSelectors.ResultatEtteroppgjoerSelectors.harTilbakePenger
 import no.nav.pensjon.brev.api.model.maler.ForhaandsvarselEtteroppgjoerDtoSelectors.ResultatEtteroppgjoerSelectors.tidligereEOIverksatt
+import no.nav.pensjon.brev.api.model.maler.ForhaandsvarselEtteroppgjoerDtoSelectors.UfoeretrygdEtteroppgjoerSelectors.aarPeriodeFom
 import no.nav.pensjon.brev.api.model.maler.ForhaandsvarselEtteroppgjoerDtoSelectors.UfoeretrygdEtteroppgjoerSelectors.inntektOverInntektstak
 import no.nav.pensjon.brev.api.model.maler.ForhaandsvarselEtteroppgjoerDtoSelectors.UfoeretrygdEtteroppgjoerSelectors.inntektsgrensebeloepAar
 import no.nav.pensjon.brev.api.model.maler.ForhaandsvarselEtteroppgjoerDtoSelectors.UfoeretrygdEtteroppgjoerSelectors.oppjustertInntektFoerUfoere
 import no.nav.pensjon.brev.api.model.maler.ForhaandsvarselEtteroppgjoerDtoSelectors.UfoeretrygdEtteroppgjoerSelectors.periodeFom
-import no.nav.pensjon.brev.api.model.maler.ForhaandsvarselEtteroppgjoerDtoSelectors.UfoeretrygdEtteroppgjoerSelectors.periodeFomAar
 import no.nav.pensjon.brev.api.model.maler.ForhaandsvarselEtteroppgjoerDtoSelectors.UfoeretrygdEtteroppgjoerSelectors.ufoeregrad
 import no.nav.pensjon.brev.api.model.maler.ForhaandsvarselEtteroppgjoerDtoSelectors.resultatEtteroppgjoer
 import no.nav.pensjon.brev.api.model.maler.ForhaandsvarselEtteroppgjoerDtoSelectors.ufoeretrygdEtteroppgjoer
@@ -33,7 +33,7 @@ import no.nav.pensjon.brevbaker.api.model.*
 @TemplateModelHelpers
 object ForhaandsvarselEtteroppgjoer : AutobrevTemplate<ForhaandsvarselEtteroppgjoerDto> {
 
-    override val kode: Brevkode.AutoBrev = Brevkode.AutoBrev.UT_FORHAANDSVARSEL_EO_AUTO
+    override val kode: Brevkode.AutoBrev = Brevkode.AutoBrev.UT_EO_FORHAANDSVARSEL_AUTO
 
     override val template: LetterTemplate<LanguageSupport.Triple<Bokmal, Nynorsk, English>, ForhaandsvarselEtteroppgjoerDto>
         get() = createTemplate(
@@ -78,7 +78,7 @@ object ForhaandsvarselEtteroppgjoer : AutobrevTemplate<ForhaandsvarselEtteroppgj
                     includePhrase(
                         InntektOverInntektsgrense(
                             oppjustertInntektFoerUfoere = ufoeretrygdEtteroppgjoer.oppjustertInntektFoerUfoere,
-                            periodeFomAar = ufoeretrygdEtteroppgjoer.periodeFomAar
+                            aarPeriodeFom = ufoeretrygdEtteroppgjoer.aarPeriodeFom
                         )
                     )
                 }
@@ -89,7 +89,7 @@ object ForhaandsvarselEtteroppgjoer : AutobrevTemplate<ForhaandsvarselEtteroppgj
                     includePhrase(
                         SoekOmNyInntektsgrense(
                             inntektsgrensebeloepAar = ufoeretrygdEtteroppgjoer.inntektsgrensebeloepAar,
-                            periodeFomAar = ufoeretrygdEtteroppgjoer.periodeFomAar
+                            aarPeriodeFom = ufoeretrygdEtteroppgjoer.aarPeriodeFom
                         )
                     )
                 }
