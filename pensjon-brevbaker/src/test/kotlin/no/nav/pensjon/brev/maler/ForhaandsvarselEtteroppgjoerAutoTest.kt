@@ -2,18 +2,19 @@ package no.nav.pensjon.brev.maler
 
 import kotlinx.coroutines.runBlocking
 import no.nav.pensjon.brev.*
-import no.nav.pensjon.brev.api.model.maler.ForhaandsvarselEtteroppgjoerDto
+import no.nav.pensjon.brev.api.model.maler.ForhaandsvarselEtteroppgjoerAutoDto
+
 import no.nav.pensjon.brev.latex.*
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.render.*
 import org.junit.jupiter.api.*
 @Tag(TestTags.PDF_BYGGER)
-class ForhaandsvarselEtteroppgjoer {
+class ForhaandsvarselEtteroppgjoerAutoTest {
     @Test
     fun testPdf() {
         Letter(
-            OmsorgEgenAuto.template,
-            Fixtures.create<ForhaandsvarselEtteroppgjoerDto>(),
+            ForhaandsvarselEtteroppgjoerAuto.template,
+            Fixtures.create<ForhaandsvarselEtteroppgjoerAutoDto>(),
             Language.Bokmal,
             Fixtures.fellesAuto
         )
@@ -24,8 +25,8 @@ class ForhaandsvarselEtteroppgjoer {
     @Test
     fun testHtml() {
         Letter(
-            UngUfoerAuto.template,
-            Fixtures.create<ForhaandsvarselEtteroppgjoerDto>(),
+            ForhaandsvarselEtteroppgjoerAuto.template,
+            Fixtures.create<ForhaandsvarselEtteroppgjoerAutoDto>(),
             Language.Bokmal,
             Fixtures.fellesAuto
         ).let { PensjonHTMLRenderer.render(it) }

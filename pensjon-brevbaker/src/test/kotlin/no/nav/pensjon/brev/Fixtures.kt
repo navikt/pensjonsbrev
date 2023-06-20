@@ -4,7 +4,7 @@ import no.nav.pensjon.brev.api.model.maler.*
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmSaksbehandlingstidDto
 import no.nav.pensjon.brev.api.model.vedlegg.*
 import no.nav.pensjon.brev.fixtures.*
-import no.nav.pensjon.brev.maler.ForhaandsvarselEtteroppgjoer
+import no.nav.pensjon.brev.maler.ForhaandsvarselEtteroppgjoerAuto
 import no.nav.pensjon.brev.maler.example.LetterExampleDto
 import no.nav.pensjon.brevbaker.api.model.*
 import java.time.LocalDate
@@ -40,9 +40,9 @@ object Fixtures {
     @Suppress("UNCHECKED_CAST")
     fun <T: Any> create(letterDataType: KClass<T>): T =
         when (letterDataType) {
-            ForhaandsvarselEtteroppgjoerDto::class -> createForhaandsvarselEtteroppgjoerDto() as T
-            ForhaandsvarselEtteroppgjoerDto.ResultatEtteroppgjoer::class -> createResultatEtteroppgjoer() as T
-            ForhaandsvarselEtteroppgjoerDto.UfoeretrygdEtteroppgjoer::class -> createUfoeretrygdEtteroppgjoer() as T
+            ForhaandsvarselEtteroppgjoerAutoDto::class -> createForhaandsvarselEtteroppgjoerDto() as T
+            ForhaandsvarselEtteroppgjoerAutoDto.ResultatEtteroppgjoer::class -> createResultatEtteroppgjoer() as T
+            ForhaandsvarselEtteroppgjoerAutoDto.UfoeretrygdEtteroppgjoer::class -> createUfoeretrygdEtteroppgjoer() as T
             InformasjonOmSaksbehandlingstidDto::class -> createInformasjonOmSaksbehandlingstidDto() as T
             LetterExampleDto::class -> createLetterExampleDto() as T
             MaanedligUfoeretrygdFoerSkattDto::class -> createMaanedligUfoeretrygdFoerSkattDto() as T

@@ -84,9 +84,9 @@ object HvordanDuBetaleTilbake : OutlinePhrase<LangBokmalNynorskEnglish>() {
     }
 }
 
-data class InntektOverInntektsgrense(
+data class InntektOverInntektstak(
     val aarPeriodeFom: Expression<Year>,
-    val oppjustertInntektFoerUfoere: Expression<Kroner>,
+    val oppjustertInntektFoerUfoerhet: Expression<Kroner>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         title1 {
@@ -105,9 +105,9 @@ data class InntektOverInntektsgrense(
         }
         paragraph {
             textExpr(
-                Bokmal to "For ".expr() + aarPeriodeFom.format() + " var 80 prosent av inntekten din før du ble ufør, ".expr() + oppjustertInntektFoerUfoere.format() + " kroner.".expr(),
-                Nynorsk to "For ".expr() + aarPeriodeFom.format() + " var 80 prosent av inntekta di før du blei ufør, ".expr() + oppjustertInntektFoerUfoere.format() + " kroner.".expr(),
-                English to "For ".expr() + aarPeriodeFom.format() + ", 80 percent of your income before you received disability benefit was NOK ".expr() + oppjustertInntektFoerUfoere.format() + ".".expr()
+                Bokmal to "For ".expr() + aarPeriodeFom.format() + " var 80 prosent av inntekten din før du ble ufør, ".expr() + oppjustertInntektFoerUfoerhet.format() + " kroner.".expr(),
+                Nynorsk to "For ".expr() + aarPeriodeFom.format() + " var 80 prosent av inntekta di før du blei ufør, ".expr() + oppjustertInntektFoerUfoerhet.format() + " kroner.".expr(),
+                English to "For ".expr() + aarPeriodeFom.format() + ", 80 percent of your income before you received disability benefit was NOK ".expr() + oppjustertInntektFoerUfoerhet.format() + ".".expr()
             )
         }
     }
@@ -166,7 +166,7 @@ object MeldeFraOmEndringerEtteroppgjoer : OutlinePhrase<LangBokmalNynorskEnglish
         }
         paragraph {
             text(
-                Bokmal to "For at du skal få utbetalt riktig uføretrygd fremover, er det viktig at du oppdaterer inntekten din. Dette gjør du på nav.no/inntektsplanleggeren. I vedlegget “Dine rettigheter og plikter” ser du hvilke endringer du må si fra om.",
+                Bokmal to "For at du skal få utbetalt riktig uføretrygd fremover, er det viktig at du oppdaterer inntekten din. Dette gjør du på nav.no/inntektsplanleggeren. I vedlegget «Dine rettigheter og plikter» ser du hvilke endringer du må si fra om.",
                 Nynorsk to "For at du skal få utbetalt rett uføretrygd framover, er det viktig at du oppdaterer inntekta di. Dette gjer du på nav.no/inntektsplanleggeren. I vedlegget «Rettane og pliktene dine» ser du kva endringar du må seie frå om.",
                 English to "To be paid the correct amount of disability benefit in the future, it is important that you update your income. You can do this at: nav.no/inntektsplanleggeren. In the appendix «Your rights and obligations» you can see which changes you need to report."
             )
@@ -185,9 +185,9 @@ object FristerOpplysningerKlage : OutlinePhrase<LangBokmalNynorskEnglish>() {
         }
         paragraph {
             text(
-                Bokmal to "Hvis du mener at beregningene i vedlegg 1 er feil, må du melde fra til oss innen 3 uker fra du fikk dette brevet. Du vil da få en ny vurdering og et nytt vedtak.",
-                Nynorsk to "Dersom du meiner at utrekningane i vedlegg 1 er feil, må du melde frå til oss innan 3 veker frå du fekk dette brevet. Du vil då få ei ny vurdering og eit nytt vedtak.",
-                English to "If you believe that the calculations in Appendix 1 are incorrect, you must notify us within 3 weeks of the date you received this letter. In such case you will receive a new assessment and a new decision."
+                Bokmal to "Hvis du mener at beregningene i vedlegg «Beregning av etteroppgjøret er feil», må du melde fra til oss innen 3 uker fra du fikk dette brevet. Du vil da få en ny vurdering og et nytt vedtak.",
+                Nynorsk to "Dersom du meiner at utrekningane i vedlegg «Beregning av etteroppgjøret er feil», må du melde frå til oss innan 3 veker frå du fekk dette brevet. Du vil då få ei ny vurdering og eit nytt vedtak.",
+                English to "If you believe that the calculations in appendix «Calculation of settlement are incorrect», you must notify us within 3 weeks of the date you received this letter. In such case you will receive a new assessment and a new decision."
             )
         }
         paragraph {
@@ -215,6 +215,8 @@ object HarDuSpoersmaal : OutlinePhrase<LangBokmalNynorskEnglish>() {
                 Nynorsk to "Har du spørsmål?",
                 English to "Do you have any questions?"
             )
+        }
+        paragraph {
             text(
                 Bokmal to "Du finner mer informasjon på nav.no/etteroppgjor. På nav.no/kontakt kan du chatte eller skrive til oss. Hvis du ikke finner svar på nav.no, kan du ringe oss på telefon 55 55 33 33, hverdager kl. 09.00 - 15.00.",
                 Nynorsk to "Du finn meir informasjon på nav.no/etteroppgjor. Du kan chatte med eller skrive til oss på nav.no/kontakt. Dersom du ikkje finn svar på nav.no, kan du ringje oss på telefon 55 55 33 33, kvardagar kl. 09:00 til 15:00.",
