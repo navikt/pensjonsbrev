@@ -14,8 +14,6 @@ data class ForhaandsvarselEtteroppgjoerAutoDto(
     data class ResultatEtteroppgjoer(
         val avviksbeloep: Kroner, // TODO: Fjern minus tegn fra Pesys
         val harNyttEtteroppgjoer: Boolean,
-        val harEtterbetaling: Boolean, // TODO: PE_Vedtaksbrev_Vedtaksdata_ForrigeEO_ResultatForrigeEO = 'etterbet'
-        val harTilbakePenger: Boolean, // TODO: PE_Vedtaksbrev_Vedtaksdata_ForrigeEO_ResultatForrigeEO = 'tilbakekr'
     )
 
     data class UfoeretrygdEtteroppgjoer(

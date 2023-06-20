@@ -2,9 +2,7 @@ package no.nav.pensjon.brev.maler
 
 import no.nav.pensjon.brev.api.model.maler.*
 import no.nav.pensjon.brev.api.model.maler.ForhaandsvarselEtteroppgjoerAutoDtoSelectors.ResultatEtteroppgjoerSelectors.avviksbeloep
-import no.nav.pensjon.brev.api.model.maler.ForhaandsvarselEtteroppgjoerAutoDtoSelectors.ResultatEtteroppgjoerSelectors.harEtterbetaling
 import no.nav.pensjon.brev.api.model.maler.ForhaandsvarselEtteroppgjoerAutoDtoSelectors.ResultatEtteroppgjoerSelectors.harNyttEtteroppgjoer
-import no.nav.pensjon.brev.api.model.maler.ForhaandsvarselEtteroppgjoerAutoDtoSelectors.ResultatEtteroppgjoerSelectors.harTilbakePenger
 import no.nav.pensjon.brev.api.model.maler.ForhaandsvarselEtteroppgjoerAutoDtoSelectors.UfoeretrygdEtteroppgjoerSelectors.aarPeriodeFom
 import no.nav.pensjon.brev.api.model.maler.ForhaandsvarselEtteroppgjoerAutoDtoSelectors.UfoeretrygdEtteroppgjoerSelectors.inntektOverInntektstak
 import no.nav.pensjon.brev.api.model.maler.ForhaandsvarselEtteroppgjoerAutoDtoSelectors.UfoeretrygdEtteroppgjoerSelectors.inntektsgrensebeloepAar
@@ -24,7 +22,8 @@ import no.nav.pensjon.brevbaker.api.model.*
 
 
 // PE_UT_23_001 Varsel - etteroppgjør av uføretrygd ved feilutbetaling (auto)
-// Brevet bestilles av BPEN092 (Etteroppgjør Uføre), brevet går ut til de som har fått for mye uføretrygd utbetalt
+// Brevet bestilles av BPEN092 (Etteroppgjør Uføre), brevet går ut til de som har fått for mye uføretrygd utbetalt.
+// The conditional for showing the letter is: ResultatEO/ResultatForrigeEO = 'tilbakekr'
 
 @TemplateModelHelpers
 object ForhaandsvarselEtteroppgjoerAuto : AutobrevTemplate<ForhaandsvarselEtteroppgjoerAutoDto> {

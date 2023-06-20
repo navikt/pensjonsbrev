@@ -15,8 +15,6 @@ fun createForhaandsvarselEtteroppgjoerDto() =
 fun createResultatEtteroppgjoer() =
     ForhaandsvarselEtteroppgjoerAutoDto.ResultatEtteroppgjoer(
         avviksbeloep = Kroner(25000),
-        harEtterbetaling = false,
-        harTilbakePenger = false,
         harNyttEtteroppgjoer = false,
     )
 
