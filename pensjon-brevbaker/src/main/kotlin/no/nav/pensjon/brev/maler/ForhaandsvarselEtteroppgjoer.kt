@@ -104,7 +104,7 @@ object ForhaandsvarselEtteroppgjoer : AutobrevTemplate<ForhaandsvarselEtteroppgj
 
                 includePhrase(MeldeFraOmEndringerEtteroppgjoer)
                 includePhrase(FristerOpplysningerKlage)
-                includePhrase(HarDuSpoesmaal)
+                includePhrase(HarDuSpoersmaal)
             }
         }
 }

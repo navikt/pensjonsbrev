@@ -206,7 +206,7 @@ object FristerOpplysningerKlage : OutlinePhrase<LangBokmalNynorskEnglish>() {
     }
 }
 
-object HarDuSpoesmaal : OutlinePhrase<LangBokmalNynorskEnglish>() {
+object HarDuSpoersmaal : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         title1 {
             text(
