@@ -11,7 +11,6 @@ fun createBarnepensjonRevurderingSoeskenjusteringDTO() =
             antallBarn = 3,
             beloep = Kroner(1231),
             soeskenjustering = true,
-            grunnbeloep = Kroner(118000),
             virkningsdato = LocalDate.of(2022, 8, 1),
             beregningsperioder = listOf(
                 Beregningsperiode(
