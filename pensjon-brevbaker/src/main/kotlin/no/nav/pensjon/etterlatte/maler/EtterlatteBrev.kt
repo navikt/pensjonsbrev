@@ -47,6 +47,7 @@ data class BarnepensjonInnvilgelseDTO(
 )
 
 data class Avkortingsinfo(
+    val grunnbeloep: Kroner,
     val inntekt: Kroner,
     val virkningsdato: LocalDate,
     val beregningsperioder: List<AvkortetBeregningsperiode>
@@ -80,7 +81,6 @@ data class AvkortetBeregningsperiode(
 data class Utbetalingsinfo(
     val antallBarn: Int,
     val beloep: Kroner,
-    val grunnbeloep: Kroner,
     val soeskenjustering: Boolean,
     val virkningsdato: LocalDate,
     val beregningsperioder: List<Beregningsperiode>,
