@@ -6,10 +6,17 @@ import no.nav.pensjon.etterlatte.maler.barnepensjon.BarnepensjonInnvilgelse
 import no.nav.pensjon.etterlatte.maler.barnepensjon.SoeskenjusteringRevurdering
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.OMSInnvilgelseAuto
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.OMSInnvilgelseManuell
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.OMSOpphoerManuell
 
 
 val prodAutobrevTemplates: Set<EtterlatteTemplate<*>> =
-    setOf(BarnepensjonInnvilgelse, OMSInnvilgelseAuto, OMSInnvilgelseManuell, SoeskenjusteringRevurdering)
+    setOf(
+        BarnepensjonInnvilgelse,
+        OMSInnvilgelseAuto,
+        OMSInnvilgelseManuell,
+        OMSOpphoerManuell,
+        SoeskenjusteringRevurdering
+    )
 
 val prodRedigerbareTemplates: Set<EtterlatteTemplate<*>> = emptySet()
 
