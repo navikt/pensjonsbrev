@@ -58,6 +58,23 @@ object OMSFelles {
         }
     }
 
+    object DuHarRettTilAaKlageOpphoer  : OutlinePhrase<LangBokmal>() {
+        override fun OutlineOnlyScope<LangBokmal, Unit>.template() {
+            title2 {
+                text(
+                    Language.Bokmal to "Du har rett til å klage",
+                )
+            }
+            paragraph {
+                text(
+                    Language.Bokmal to "Hvis du mener vedtaket er feil, kan du klage innen seks uker " +
+                            "fra den datoen du mottok vedtaket. Klagen skal være skriftlig. Du finner " +
+                            "informasjon på ${Constants.KLAGERETTIGHETER_URL}."
+                )
+            }
+        }
+    }
+
     object DuHarRettTilInnsyn : OutlinePhrase<LangBokmal>() {
         override fun OutlineOnlyScope<LangBokmal, Unit>.template() {
             title2 {
