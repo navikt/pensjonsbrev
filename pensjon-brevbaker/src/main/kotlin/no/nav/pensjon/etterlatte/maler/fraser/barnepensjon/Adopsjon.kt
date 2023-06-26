@@ -8,16 +8,6 @@ import no.nav.pensjon.brev.template.dsl.text
 
 object Adopsjon {
 
-    object ViStanserBarnepensjonenDin : OutlinePhrase<LangBokmal>() {
-        override fun OutlineOnlyScope<LangBokmal, Unit>.template() {
-            title1 {
-                text(
-                    Language.Bokmal to "Vi stanser barnepensjonen din",
-                )
-            }
-        }
-    }
-
     object BegrunnelseForVedtaket : OutlinePhrase<LangBokmal>() {
         override fun OutlineOnlyScope<LangBokmal, Unit>.template() {
             title2 {

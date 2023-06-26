@@ -4,13 +4,13 @@ import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
+import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.BarnepensjonRevurderingAdopsjonDTO
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.Adopsjon
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.Barnepensjon
-import no.nav.pensjon.etterlatte.maler.fraser.common.Vedtak
 
 @TemplateModelHelpers
 object AdopsjonRevurdering : EtterlatteTemplate<BarnepensjonRevurderingAdopsjonDTO> {
@@ -27,8 +27,12 @@ object AdopsjonRevurdering : EtterlatteTemplate<BarnepensjonRevurderingAdopsjonD
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
         ),
     ) {
+        title {
+            text(
+                Language.Bokmal to "Vi stanser barnepensjonen din",
+            )
+        }
         outline {
-            includePhrase(Adopsjon.ViStanserBarnepensjonenDin)
             includePhrase(Adopsjon.BegrunnelseForVedtaket)
 
             includePhrase(Barnepensjon.DuHarRettTilAaKlage)
