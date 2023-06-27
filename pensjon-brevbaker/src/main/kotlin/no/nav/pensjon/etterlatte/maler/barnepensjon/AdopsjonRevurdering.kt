@@ -1,9 +1,8 @@
 package no.nav.pensjon.etterlatte.maler.barnepensjon
 
-import no.nav.pensjon.brev.template.BinaryOperation
-import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.dsl.createTemplate
+import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -42,7 +41,7 @@ object AdopsjonRevurdering : EtterlatteTemplate<BarnepensjonRevurderingAdopsjonD
             includePhrase(
                 Adopsjon.BegrunnelseForVedtaket(
                     virkningsdato = virkningsdato,
-                    navn = Expression.BinaryInvoke(adoptertAv.fornavn, adoptertAv.etternavn, ConcatMedMellomrom),
+                    navn = adoptertAv.fornavn + " " + adoptertAv.etternavn,
                 ),
             )
 
@@ -50,8 +49,5 @@ object AdopsjonRevurdering : EtterlatteTemplate<BarnepensjonRevurderingAdopsjonD
             includePhrase(Barnepensjon.DuHarRettTilInnsyn)
             includePhrase(Barnepensjon.HarDuSpoersmaal)
         }
-    }
-    object ConcatMedMellomrom : BinaryOperation<String, String, String>() {
-        override fun apply(first: String, second: String) = "$first $second"
     }
 }
