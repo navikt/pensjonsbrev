@@ -1,5 +1,7 @@
 package no.nav.pensjon.etterlatte.maler.barnepensjon
 
+import no.nav.pensjon.brev.template.BinaryOperation
+import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
@@ -9,6 +11,10 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.BarnepensjonRevurderingAdopsjonDTO
+import no.nav.pensjon.etterlatte.maler.BarnepensjonRevurderingAdopsjonDTOSelectors.adoptertAv
+import no.nav.pensjon.etterlatte.maler.BarnepensjonRevurderingAdopsjonDTOSelectors.virkningsdato
+import no.nav.pensjon.etterlatte.maler.NavnSelectors.etternavn
+import no.nav.pensjon.etterlatte.maler.NavnSelectors.fornavn
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.Adopsjon
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.Barnepensjon
 
@@ -33,11 +39,19 @@ object AdopsjonRevurdering : EtterlatteTemplate<BarnepensjonRevurderingAdopsjonD
             )
         }
         outline {
-            includePhrase(Adopsjon.BegrunnelseForVedtaket)
+            includePhrase(
+                Adopsjon.BegrunnelseForVedtaket(
+                    virkningsdato = virkningsdato,
+                    navn = Expression.BinaryInvoke(adoptertAv.fornavn, adoptertAv.etternavn, ConcatMedMellomrom),
+                ),
+            )
 
             includePhrase(Barnepensjon.DuHarRettTilAaKlage)
             includePhrase(Barnepensjon.DuHarRettTilInnsyn)
             includePhrase(Barnepensjon.HarDuSpoersmaal)
         }
+    }
+    object ConcatMedMellomrom : BinaryOperation<String, String, String>() {
+        override fun apply(first: String, second: String) = "$first $second"
     }
 }
