@@ -15,7 +15,7 @@ class ForhaandsvarselEtteroppgjoerAutoTest {
         Letter(
             ForhaandsvarselEtteroppgjoerAuto.template,
             Fixtures.create<ForhaandsvarselEtteroppgjoerAutoDto>(),
-            Language.English,
+            Language.Bokmal,
             Fixtures.fellesAuto
         )
             .let { PensjonLatexRenderer.render(it) }

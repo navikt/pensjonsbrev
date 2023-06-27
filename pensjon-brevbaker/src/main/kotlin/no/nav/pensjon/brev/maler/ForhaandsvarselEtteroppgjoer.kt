@@ -8,6 +8,7 @@ import no.nav.pensjon.brev.api.model.maler.ForhaandsvarselEtteroppgjoerAutoDtoSe
 import no.nav.pensjon.brev.api.model.maler.ForhaandsvarselEtteroppgjoerAutoDtoSelectors.UfoeretrygdEtteroppgjoerSelectors.inntektsgrensebeloepAar
 import no.nav.pensjon.brev.api.model.maler.ForhaandsvarselEtteroppgjoerAutoDtoSelectors.UfoeretrygdEtteroppgjoerSelectors.oppjustertInntektFoerUfoerhet
 import no.nav.pensjon.brev.api.model.maler.ForhaandsvarselEtteroppgjoerAutoDtoSelectors.UfoeretrygdEtteroppgjoerSelectors.ufoeregrad
+import no.nav.pensjon.brev.api.model.maler.ForhaandsvarselEtteroppgjoerAutoDtoSelectors.orienteringOmRettigheterUfoere
 import no.nav.pensjon.brev.api.model.maler.ForhaandsvarselEtteroppgjoerAutoDtoSelectors.resultatEtteroppgjoer
 import no.nav.pensjon.brev.api.model.maler.ForhaandsvarselEtteroppgjoerAutoDtoSelectors.ufoeretrygdEtteroppgjoer
 import no.nav.pensjon.brev.maler.fraser.ufoer.*
@@ -75,8 +76,10 @@ object ForhaandsvarselEtteroppgjoerAuto : AutobrevTemplate<ForhaandsvarselEttero
                 }
 
                 // showIf arbeidstaker AND
-                showIf(ufoeretrygdEtteroppgjoer.ufoeregrad.greaterThan(0)
-                        and ufoeretrygdEtteroppgjoer.ufoeregrad.lessThan(100)) {
+                showIf(
+                    ufoeretrygdEtteroppgjoer.ufoeregrad.greaterThan(0)
+                            and ufoeretrygdEtteroppgjoer.ufoeregrad.lessThan(100)
+                ) {
                     includePhrase(
                         SoekOmNyInntektsgrense(
                             inntektsgrensebeloepAar = ufoeretrygdEtteroppgjoer.inntektsgrensebeloepAar,
@@ -93,5 +96,6 @@ object ForhaandsvarselEtteroppgjoerAuto : AutobrevTemplate<ForhaandsvarselEttero
                 includePhrase(FristerOpplysningerKlage)
                 includePhrase(HarDuSpoersmaal)
             }
+            includeAttachment(vedleggDineRettigheterOgPlikterUfoere, orienteringOmRettigheterUfoere)
         }
 }

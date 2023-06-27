@@ -209,7 +209,7 @@ object FristerOpplysningerKlage : OutlinePhrase<LangBokmalNynorskEnglish>() {
 
 object HarDuSpoersmaal : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-        title1 {
+        title1{
             text(
                 Bokmal to "Har du spørsmål?",
                 Nynorsk to "Har du spørsmål?",

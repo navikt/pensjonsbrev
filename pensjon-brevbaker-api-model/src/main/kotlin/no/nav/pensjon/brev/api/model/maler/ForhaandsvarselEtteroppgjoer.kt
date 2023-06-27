@@ -9,6 +9,7 @@ import no.nav.pensjon.brevbaker.api.model.Year
 data class ForhaandsvarselEtteroppgjoerAutoDto(
     val resultatEtteroppgjoer: ResultatEtteroppgjoer,
     val ufoeretrygdEtteroppgjoer: UfoeretrygdEtteroppgjoer,
+    val orienteringOmRettigheterUfoere: OrienteringOmRettigheterUfoereDto,
 ) {
 
     data class ResultatEtteroppgjoer(

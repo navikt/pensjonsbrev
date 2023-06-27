@@ -9,7 +9,8 @@ import no.nav.pensjon.brevbaker.api.model.Year
 fun createForhaandsvarselEtteroppgjoerDto() =
     ForhaandsvarselEtteroppgjoerAutoDto(
         resultatEtteroppgjoer = Fixtures.create(),
-        ufoeretrygdEtteroppgjoer = Fixtures.create()
+        ufoeretrygdEtteroppgjoer = Fixtures.create(),
+        orienteringOmRettigheterUfoere = Fixtures.create(),
     )
 
 fun createResultatEtteroppgjoer() =
