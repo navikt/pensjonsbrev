@@ -27,12 +27,12 @@ object Adopsjon {
             val formatertVirkningsdato = virkningsdato.format()
             paragraph {
                 textExpr(
-                    Language.Bokmal to "Barnepensjonen din opphører fra".expr() + formatertVirkningsdato + ".",
+                    Language.Bokmal to "Barnepensjonen din opphører fra ".expr() + formatertVirkningsdato + ".",
                 )
             }
             paragraph {
                 textExpr(
-                    Language.Bokmal to "Vi viser til informasjon fra deg/verge om at du er adoptert av".expr() + navn + " fra " + formatertVirkningsdato + ".",
+                    Language.Bokmal to "Vi viser til informasjon fra deg/verge om at du er adoptert av ".expr() + navn + " fra " + formatertVirkningsdato + ".",
                 )
             }
             paragraph {
