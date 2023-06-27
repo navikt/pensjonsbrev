@@ -5,8 +5,11 @@ import no.nav.pensjon.brev.template.LangBokmal
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
+import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
+import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.dsl.textExpr
 import java.time.LocalDate
 
 object Adopsjon {
@@ -21,14 +24,15 @@ object Adopsjon {
                     Language.Bokmal to "Begrunnelse for vedtaket",
                 )
             }
+            val formatertVirkningsdato = virkningsdato.format()
             paragraph {
-                text(
-                    Language.Bokmal to "Barnepensjonen din opphører fra ${virkningsdato.format()}.",
+                textExpr(
+                    Language.Bokmal to "Barnepensjonen din opphører fra".expr() + formatertVirkningsdato + ".",
                 )
             }
             paragraph {
-                text(
-                    Language.Bokmal to "Vi viser til informasjon fra deg/verge om at du er adoptert av $navn fra ${virkningsdato.format()}.",
+                textExpr(
+                    Language.Bokmal to "Vi viser til informasjon fra deg/verge om at du er adoptert av".expr() + navn + " fra " + formatertVirkningsdato + ".",
                 )
             }
             paragraph {
