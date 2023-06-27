@@ -74,10 +74,12 @@ data class BarnepensjonRevurderingSoeskenjusteringDTO(
 
 data class BarnepensjonRevurderingAdopsjonDTO(
     val virkningsdato: LocalDate,
-    val adoptertAv: AdoptertAv
+    val adoptertAv: FornavnEtternavn
 )
 
-data class AdoptertAv(val navn: String)
+data class FornavnEtternavn(val fornavn: String, val etternavn: String) {
+    override fun toString() = "$fornavn $etternavn"
+}
 
 data class AvkortetBeregningsperiode(
     val datoFOM: LocalDate,
