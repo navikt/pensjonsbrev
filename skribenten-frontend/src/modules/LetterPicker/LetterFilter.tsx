@@ -4,6 +4,7 @@ import {Button, Heading, Loader, Search} from "@navikt/ds-react"
 import LetterCategories from "./components/LetterCategories/LetterCategories"
 import LetterPicker from "./components/LetterPicker/LetterPicker"
 import {LetterCategory, LetterSelection} from "./model/skribenten"
+import ChangeAddressee from "./components/ChangeAddressee/ChangeAddressee"
 
 export interface LetterFilterProps {
     categories: LetterCategory[] | null
@@ -22,6 +23,7 @@ function filterCategories(categories: LetterCategory[], searchText: string): Let
 const LetterFilter: FC<LetterFilterProps> = ({categories, favourites, selectedLetter, onLetterSelected}) => {
     const [searchFilter, setSearchFilter] = useState("")
     const [expandCategories, setExpandCategories] = useState(false)
+    const [changeAddresseeIsOpen, setChangeAddresseeIsOpen] = useState(false)
 
     const searchUpdatedHandler = (text: string) => {
         setSearchFilter(text)
@@ -34,7 +36,10 @@ const LetterFilter: FC<LetterFilterProps> = ({categories, favourites, selectedLe
             <div className={styles.mottakerCard}>
                 <div>
                     <Heading level="2" size="small" className={styles.mottakerCardHeading}>Mottaker</Heading>
-                    <Button variant="tertiary" size="xsmall">Endre mottaker</Button>
+                    <Button variant="tertiary"
+                            size="xsmall"
+                            onClick={() => setChangeAddresseeIsOpen(true)}>Endre mottaker</Button>
+                    <ChangeAddressee open={changeAddresseeIsOpen} onExit={() => setChangeAddresseeIsOpen(false)}/>
                 </div>
                 <p>Test Saksbehandlerson</p>
             </div>

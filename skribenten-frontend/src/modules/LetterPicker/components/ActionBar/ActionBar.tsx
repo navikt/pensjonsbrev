@@ -1,4 +1,4 @@
-import React, {FC} from "react"
+import React, {FC, useState} from "react"
 import {Button, Label, Select} from "@navikt/ds-react"
 import BottomMenu from "../../../../components/bottom-menu/BottomMenu"
 import {LetterSelection} from "../../model/skribenten"
@@ -6,11 +6,23 @@ import styles from "./ActionBar.module.css"
 
 interface ActionBarProps {
     selectedLetter: LetterSelection | null
+    onOrderLetter: (language: string) => void
 }
 
-const ActionBar: FC<ActionBarProps> = ({selectedLetter}) => {
+const ActionBar: FC<ActionBarProps> = ({selectedLetter, onOrderLetter}) => {
+    const [selectedLanguage, setSelectedLanguage] = useState(0)
     const disabled = selectedLetter == null
-    const selection = selectedLetter?.spraak?.map( sprak => (<option key={sprak}>{sprakTekst(sprak)}</option>))
+    const selection = selectedLetter?.spraak?.map(sprak => {
+        return (<option key={sprak}>{sprakTekst(sprak)}</option>)
+    })
+
+    const handleOrderLetter = () => {
+        console.log(selectedLetter?.spraak)
+        if (selectedLetter?.spraak && selectedLanguage !== null) {
+            console.log(selectedLetter.spraak[selectedLanguage])
+            onOrderLetter(selectedLetter.spraak[selectedLanguage])
+        }
+    }
 
     return (
         <BottomMenu>
@@ -19,13 +31,25 @@ const ActionBar: FC<ActionBarProps> = ({selectedLetter}) => {
                     <Label>
                         Språklag:
                     </Label>
-                    <Select disabled={disabled} label="Språklag" className={styles.languageSelection} hideLabel size="small">
+                    <Select disabled={disabled}
+                            label="Språklag"
+                            className={styles.languageSelection}
+                            hideLabel
+                            onChange={(event: React.ChangeEvent<HTMLSelectElement>) => setSelectedLanguage(event.target.selectedIndex)}
+                            size="small">
                         {selection}
                     </Select>
                 </div>
                 <div>
-                    <Button variant="secondary" size="small" className={styles.editLetterButton} disabled={disabled}>Rediger brev</Button>
-                    <Button size="small" className={styles.submitLetterButton} disabled={disabled}>Ferdigstill brev og gå videre</Button>
+                    <Button variant="secondary"
+                            size="small"
+                            className={styles.editLetterButton}
+                            onClick={handleOrderLetter}
+                            disabled={disabled}>Rediger brev</Button>
+
+                    <Button size="small"
+                            className={styles.submitLetterButton}
+                            disabled={disabled}>Ferdigstill brev og gå videre</Button>
                 </div>
             </div>
         </BottomMenu>
@@ -34,13 +58,18 @@ const ActionBar: FC<ActionBarProps> = ({selectedLetter}) => {
 
 
 //TODO i18n?
-function sprakTekst (sprak:string){
+function sprakTekst(sprak: string) {
     switch (sprak) {
-        case "NN": return "Nynorsk"
-        case "NB": return "Norsk Bokmål"
-        case "EN": return "Engelsk"
-        case "SE": return "Nordsamisk"
-        case "FR": return "Fransk"
+        case "NN":
+            return "Nynorsk"
+        case "NB":
+            return "Norsk Bokmål"
+        case "EN":
+            return "Engelsk"
+        case "SE":
+            return "Nordsamisk"
+        case "FR":
+            return "Fransk"
     }
 }
 

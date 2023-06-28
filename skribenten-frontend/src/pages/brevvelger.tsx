@@ -30,10 +30,20 @@ const Brevvelger: NextPage<SkribentenConfig> = (props) => {
             setSelectedLetter(selectedLetterMetadata)
         }
     }
+
+    const onOrderLetterHandler = (selectedLanguage: string) => {
+        if(selectedLetter) {
+            skribentApi.bestillExtreamBrev(
+                msal,
+                selectedLetter.id,
+                selectedLanguage
+            ).then((value: string)=> {console.log(value)})
+        }
+    }
     const skribentApi = new SkribentenAPI(props.api)
     const msal = useMsal()
     const queryParams = useSearchParams()
-    const caseNumber = queryParams.get("saksnummer")
+    const sakId = queryParams.get("sakId") || "" // TODO handle empty / invalid sakid
 
     const addToFavouritesHandler = async () => {
         if (selectedLetter) {
@@ -59,7 +69,8 @@ const Brevvelger: NextPage<SkribentenConfig> = (props) => {
         Promise.all([
             skribentApi.getLetterTemplates(msal),
             skribentApi.getFavourites(msal),
-        ]).then(([categories, favourites]) => {
+            skribentApi.getSaksinfo(msal, sakId),
+        ]).then(([categories, favourites, response]) => {
             setLetterCategories(categories)
             const metadata = categories.flatMap(cat => cat.templates)
             setLetterMetadata(metadata)
@@ -75,7 +86,7 @@ const Brevvelger: NextPage<SkribentenConfig> = (props) => {
     return (
         <div className={styles.outerContainer}>
             <NavBar/>
-            <CaseContextBar saksnummer={"1234123"}
+            <CaseContextBar saksnummer={sakId || "1234123"}
                             foedselsnummer={"0101190012345"}
                             gjelderNavn={"Test Testerson"}
                             foedselsdato={"01.01.1900"}
@@ -90,7 +101,8 @@ const Brevvelger: NextPage<SkribentenConfig> = (props) => {
                                selectedIsFavourite={selectedLetterIsFavourite()}
                                onAddToFavourites={addToFavouritesHandler}/>
             </div>
-            <LetterPickerActionBar selectedLetter={selectedLetter}/>
+            <LetterPickerActionBar selectedLetter={selectedLetter}
+                                   onOrderLetter={onOrderLetterHandler}/>
         </div>
     )
 }

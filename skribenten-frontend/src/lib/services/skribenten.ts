@@ -117,6 +117,32 @@ class SkribentenAPI {
         )
     }
 
+    async getSaksinfo(msal: IMsalContext, saksnummer: string): Promise<string> {
+        return withAuthorization(msal, this.config.scope).then((auth) =>
+            fetch(`${this.config.url}/pen/sak/${saksnummer}`, {
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${auth.accessToken}`,
+                },
+                method: 'GET',
+            })
+        ).then((res) => res.json())
+    }
+    async bestillExtreamBrev(msal: IMsalContext, brevkode: string, language: string): Promise<string> {
+        return withAuthorization(msal, this.config.scope).then((auth) =>
+            fetch(`${this.config.url}/pen/orderExtreamLetter`, {
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${auth.accessToken}`,
+                },
+                method: 'POST',
+                body: JSON.stringify({brevkode: brevkode, spraakKode: language}),
+            })
+        ).then((res) => res.json()).then(JSON.stringify)
+    }
+
 }
 
 export default SkribentenAPI

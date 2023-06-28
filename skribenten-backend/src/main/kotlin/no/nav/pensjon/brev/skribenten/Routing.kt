@@ -20,6 +20,10 @@ import java.util.*
 
 data class RenderLetterRequest(val letterData: Any, val editedLetter: EditedJsonLetter?)
 data class EditedJsonLetter(val letter: RenderedJsonLetter, val deletedBlocks: Set<Int>)
+data class OrderLetterRequest(
+    val brevkode: String,
+    val spraakKode: SpraakKode,
+)
 
 fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config) {
     val authService = AzureADService(authConfig)
@@ -39,8 +43,37 @@ fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config
 
         authenticate(authConfig.name) {
             post("/test/pen") {
-                val sak = penService.hentSak(call, 22958874)
+                val sak =
+                    penService.bestillExtreamBrev(call, 22972355, spraak = SpraakKode.NB, brevkode = "PE_IY_05_300")
                 respondWithResult(sak)
+            }
+
+            post("/pen/orderExtreamLetter") {
+                val request = call.receive<OrderLetterRequest>()
+                val journalpostId = penService.bestillExtreamBrev(
+                    call,
+                    22972355,
+                    brevkode = request.brevkode,
+                    spraak = request.spraakKode,
+                )
+                respondWithResult(journalpostId)
+            }
+
+            post("/pen/orderDoksysLetter") {
+                val journalpostId =
+                    penService.bestillExtreamBrev(call, 22972355, spraak = SpraakKode.NB, brevkode = "PE_IY_05_300")
+                respondWithResult(journalpostId)
+            }
+
+            get("/pen/sak/{sakId}"){
+                val sakId = call.parameters["sakId"]?.toLongOrNull()
+                if (sakId != null ) {
+                    when(val sakInfo = penService.hentSak(call, sakId )) {
+                        is ServiceResult.AuthorizationError -> TODO()
+                        is ServiceResult.Error -> TODO()
+                        is ServiceResult.Ok -> call.respondText(sakInfo.result.gjelderFnr, ContentType.Application.Json)
+                    }
+                }
             }
 
             get("/test/brevbaker") {
