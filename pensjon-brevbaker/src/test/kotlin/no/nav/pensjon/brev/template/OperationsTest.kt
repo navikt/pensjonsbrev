@@ -1,8 +1,10 @@
 package no.nav.pensjon.brev.template
 
 import no.nav.pensjon.brev.Fixtures
+import no.nav.pensjon.brev.template.UnaryOperation.SizeOf.format
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brevbaker.api.model.Kroner
+import no.nav.pensjon.etterlatte.maler.Navn
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.*
 
@@ -73,6 +75,18 @@ class OperationsTest {
         fun `absoluteValue returns positive value if positive value`(){
             val expr = Kroner(123).expr().absoluteValue()
             assertEquals(expr.eval(scope), Kroner(123))
+        }
+
+        @Test
+        fun `formatNavn returns givenname lastname if no middle name`() {
+            val navn = Navn(fornavn = "Navn", etternavn = "Navnesen").expr()
+            assertEquals(navn.format().eval(scope), "Navn Navnesen")
+        }
+
+        @Test
+        fun `formatNavn returns givenname middle name lastname if middle name`() {
+            val navn = Navn(fornavn = "Navn", mellomnavn = "Navnish", etternavn = "Navnesen").expr()
+            assertEquals(navn.format().eval(scope), "Navn Navnish Navnesen")
         }
     }
 }

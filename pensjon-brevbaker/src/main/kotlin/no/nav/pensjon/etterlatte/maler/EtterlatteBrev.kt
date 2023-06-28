@@ -77,9 +77,7 @@ data class BarnepensjonRevurderingAdopsjonDTO(
     val adoptertAv: Navn
 )
 
-data class Navn(val fornavn: String, val etternavn: String) {
-    fun fornavnEtternavn() = "$fornavn $etternavn"
-}
+data class Navn(val fornavn: String, val mellomnavn: String? = null, val etternavn: String)
 
 data class AvkortetBeregningsperiode(
     val datoFOM: LocalDate,

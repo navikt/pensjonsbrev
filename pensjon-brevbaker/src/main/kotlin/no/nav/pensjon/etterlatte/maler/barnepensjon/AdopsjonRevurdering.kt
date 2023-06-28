@@ -1,8 +1,8 @@
 package no.nav.pensjon.etterlatte.maler.barnepensjon
 
 import no.nav.pensjon.brev.template.Language
+import no.nav.pensjon.brev.template.UnaryOperation.SizeOf.format
 import no.nav.pensjon.brev.template.dsl.createTemplate
-import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -12,8 +12,6 @@ import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.BarnepensjonRevurderingAdopsjonDTO
 import no.nav.pensjon.etterlatte.maler.BarnepensjonRevurderingAdopsjonDTOSelectors.adoptertAv
 import no.nav.pensjon.etterlatte.maler.BarnepensjonRevurderingAdopsjonDTOSelectors.virkningsdato
-import no.nav.pensjon.etterlatte.maler.NavnSelectors.etternavn
-import no.nav.pensjon.etterlatte.maler.NavnSelectors.fornavn
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.Adopsjon
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.Barnepensjon
 
@@ -38,10 +36,11 @@ object AdopsjonRevurdering : EtterlatteTemplate<BarnepensjonRevurderingAdopsjonD
             )
         }
         outline {
+            val navn = adoptertAv.format()
             includePhrase(
                 Adopsjon.BegrunnelseForVedtaket(
                     virkningsdato = virkningsdato,
-                    navn = adoptertAv.fornavn + " " + adoptertAv.etternavn,
+                    navn = navn,
                 ),
             )
 

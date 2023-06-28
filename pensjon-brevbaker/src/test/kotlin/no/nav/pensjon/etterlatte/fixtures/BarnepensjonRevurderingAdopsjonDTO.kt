@@ -8,5 +8,5 @@ import java.time.Month
 fun createBarnepensjonRevurderingAdopsjonDTO() =
     BarnepensjonRevurderingAdopsjonDTO(
         virkningsdato = LocalDate.of(2023, Month.MARCH, 8),
-        adoptertAv = Navn("Navn", "Navnesen"),
+        adoptertAv = Navn(fornavn = "Navn", mellomnavn = "Navnish", etternavn = "Navnesen"),
     )

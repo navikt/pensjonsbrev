@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.template
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.expression.Predicate
 import no.nav.pensjon.brevbaker.api.model.*
+import no.nav.pensjon.etterlatte.maler.Navn
 import java.text.NumberFormat
 import java.time.LocalDate
 import java.time.format.FormatStyle
@@ -66,6 +67,11 @@ sealed class UnaryOperation<In, out Out> : Operation() {
     data class MapCollection<In, Out>(val mapper: UnaryOperation<In, Out>): UnaryOperation<Collection<In>, Collection<Out>>() {
         override fun apply(input: Collection<In>): Collection<Out> = input.map { mapper.apply(it) }
     }
+
+    object FormatNavn : UnaryOperation<Navn, String>() {
+        override fun apply(input: Navn) = listOfNotNull(input.fornavn, input.mellomnavn, input.etternavn).joinToString(" ")
+    }
+    fun Expression<Navn>.format() = Expression.UnaryInvoke(this, FormatNavn)
 }
 
 abstract class BinaryOperation<in In1, in In2, out Out> : Operation() {
