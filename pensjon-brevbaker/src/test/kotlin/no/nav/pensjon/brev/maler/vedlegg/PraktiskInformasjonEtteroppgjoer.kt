@@ -4,7 +4,7 @@ import kotlinx.coroutines.runBlocking
 import no.nav.pensjon.brev.Fixtures
 import no.nav.pensjon.brev.PDF_BUILDER_URL
 import no.nav.pensjon.brev.TestTags
-import no.nav.pensjon.brev.api.model.vedlegg.PraktiskInformasjonEtterOppgjoerDto
+import no.nav.pensjon.brev.api.model.vedlegg.PraktiskInformasjonEtteroppgjoerDto
 import no.nav.pensjon.brev.latex.LaTeXCompilerService
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.Letter
@@ -16,13 +16,13 @@ import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 
 @Tag(TestTags.PDF_BYGGER)
-class PraktiskInformasjonEtterOppgjoerTest {
+class PraktiskInformasjonEtteroppgjoerTest {
 
     @Test
     fun testVedlegg() {
         val template = createVedleggTestTemplate(
-            vedleggPraktiskInformasjonEtterOppgjoer,
-            Fixtures.create(PraktiskInformasjonEtterOppgjoerDto::class).expr()
+            vedleggPraktiskInformasjonEtteroppgjoer,
+            Fixtures.create(PraktiskInformasjonEtteroppgjoerDto::class).expr()
         )
         Letter(
             template,

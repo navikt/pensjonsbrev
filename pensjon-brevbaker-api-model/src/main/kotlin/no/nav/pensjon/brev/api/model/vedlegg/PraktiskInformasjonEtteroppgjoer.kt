@@ -4,6 +4,6 @@ import java.time.LocalDate
 
 
 @Suppress("unused")
-data class PraktiskInformasjonEtterOppgjoerDto(
+data class PraktiskInformasjonEtteroppgjoerDto(
     val ufoeretrygdEtterOppgjoerPeriodeFom: LocalDate
 )

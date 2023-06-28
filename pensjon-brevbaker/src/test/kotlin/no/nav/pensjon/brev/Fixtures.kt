@@ -59,7 +59,7 @@ object Fixtures {
             OpplysningerBruktIBeregningUTDto::class -> createOpplysningerBruktIBeregningUTDto() as T
             OpptjeningVedForhoeyetHjelpesatsDto::class -> OpptjeningVedForhoeyetHjelpesatsDto(Year(2021), false) as T
             OrienteringOmRettigheterUfoereDto::class -> createOrienteringOmRettigheterUfoereDto() as T
-            PraktiskInformasjonEtterOppgjoerDto::class -> createPraktiskInformasjonEtterOppgjoerDto() as T
+            PraktiskInformasjonEtteroppgjoerDto::class -> createPraktiskInformasjonEtteroppgjoerDto() as T
             UfoerOmregningEnsligDto::class -> createUfoerOmregningEnsligDto() as T
             UngUfoerAutoDto::class -> createUngUfoerAutoDto() as T
             Unit::class -> Unit as T
