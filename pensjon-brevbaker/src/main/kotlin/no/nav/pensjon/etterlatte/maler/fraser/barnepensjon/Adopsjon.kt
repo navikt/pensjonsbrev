@@ -11,9 +11,7 @@ import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.etterlatte.maler.Navn
-import no.nav.pensjon.etterlatte.maler.NavnSelectors.etternavn
-import no.nav.pensjon.etterlatte.maler.NavnSelectors.fornavn
-import no.nav.pensjon.etterlatte.maler.NavnSelectors.mellomnavn
+import no.nav.pensjon.etterlatte.maler.fraser.common.formaterNavn
 import java.time.LocalDate
 
 object Adopsjon {
@@ -35,14 +33,11 @@ object Adopsjon {
                 )
             }
             paragraph {
-                textExpr(
-                    Language.Bokmal to "Vi viser til informasjon fra deg/verge om at du er adoptert av ".expr() +
-                            navn.fornavn + " ",
+                text(
+                    Language.Bokmal to "Vi viser til informasjon fra deg/verge om at du er adoptert av ",
                 )
-                ifNotNull(navn.mellomnavn) { mellomnavn -> textExpr(Language.Bokmal to mellomnavn + " ")}
-                textExpr(
-                    Language.Bokmal to navn.etternavn + " fra " + formatertVirkningsdato + ".",
-                )
+                formaterNavn(Language.Bokmal, navn)
+                textExpr(Language.Bokmal to " fra ".expr() + formatertVirkningsdato + ".")
             }
             paragraph {
                 text(
