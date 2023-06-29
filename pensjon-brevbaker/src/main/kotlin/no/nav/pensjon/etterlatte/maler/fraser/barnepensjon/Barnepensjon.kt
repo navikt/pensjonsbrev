@@ -5,9 +5,11 @@ import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmal
 import no.nav.pensjon.brev.template.Language
+import no.nav.pensjon.brev.template.LanguageSupport
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.TextOnlyPhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
+import no.nav.pensjon.brev.template.dsl.TemplateRootScope
 import no.nav.pensjon.brev.template.dsl.TextOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
@@ -16,6 +18,7 @@ import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.Kroner
+import no.nav.pensjon.etterlatte.maler.BarnepensjonRevurderingOmgjoeringAvFarskapDTO
 import no.nav.pensjon.etterlatte.maler.BarnepensjonSoeskenjusteringGrunn
 import no.nav.pensjon.etterlatte.maler.Beregningsperiode
 import no.nav.pensjon.etterlatte.maler.BeregningsperiodeSelectors.datoFOM
@@ -406,4 +409,38 @@ object Barnepensjon {
         }
     }
 
+    object Folketrygdloven18ogforvaltningsloven35_1_c : OutlinePhrase<LangBokmal>() {
+        override fun OutlineOnlyScope<LangBokmal, Unit>.template() {
+            paragraph {
+                text(
+                    Language.Bokmal to "Vedtaket er gjort etter bestemmelsene i folketrygdloven kapittel 18 og forvaltningsloven § 35 første ledd bokstav c.",
+                )
+            }
+        }
+    }
+
+    object Feilutbetaling : OutlinePhrase<LangBokmal>() {
+        override fun OutlineOnlyScope<LangBokmal, Unit>.template() {
+            title2 {
+                text(
+                    Language.Bokmal to "Feilutbetaling",
+                )
+            }
+            paragraph {
+                text(
+                    Language.Bokmal to "Siden pensjonen din er opphørt tilbake i tid, medfører dette at du har fått utbetalt for mye i pensjon i denne perioden. Du vil få eget forhåndsvarsel om eventuell tilbakekreving av det feilutbetalte beløpet.",
+                )
+            }
+        }
+    }
+
+    data class BarnepensjonenDinErDerforOpphoert(val virkningsdato: Expression<LocalDate>) : OutlinePhrase<LangBokmal>() {
+        override fun OutlineOnlyScope<LangBokmal, Unit>.template() {
+            paragraph {
+                textExpr(
+                    Language.Bokmal to "Barnepensjonen din er derfor opphørt fra ".expr() + virkningsdato.format(),
+                )
+            }
+        }
+    }
 }
