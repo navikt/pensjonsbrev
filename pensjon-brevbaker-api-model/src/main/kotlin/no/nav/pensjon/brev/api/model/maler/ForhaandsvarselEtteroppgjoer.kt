@@ -19,8 +19,8 @@ data class ForhaandsvarselEtteroppgjoerAutoDto(
 
     data class UfoeretrygdEtteroppgjoer(
         val aarPeriodeFom: Year,  // TODO: Use YYYY from periodeFom
+        val hoeyesteInntektsgrense: Kroner,
         val inntektOverInntektstak: Boolean,
-        val inntektsgrensebeloepAar: Kroner,
         val oppjustertInntektFoerUfoerhet: Kroner, // TODO: OIFU * 0,8
         val ufoeregrad: Int,  // PE_Vedtaksdata_Beregningsdata_BeregningUfore_Uforetrygdberegning_Uforegrad
     )

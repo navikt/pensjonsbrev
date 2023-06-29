@@ -5,7 +5,6 @@ import no.nav.pensjon.brev.api.model.maler.ForhaandsvarselEtteroppgjoerAutoDtoSe
 import no.nav.pensjon.brev.api.model.maler.ForhaandsvarselEtteroppgjoerAutoDtoSelectors.ResultatEtteroppgjoerSelectors.harNyttEtteroppgjoer
 import no.nav.pensjon.brev.api.model.maler.ForhaandsvarselEtteroppgjoerAutoDtoSelectors.UfoeretrygdEtteroppgjoerSelectors.aarPeriodeFom
 import no.nav.pensjon.brev.api.model.maler.ForhaandsvarselEtteroppgjoerAutoDtoSelectors.UfoeretrygdEtteroppgjoerSelectors.inntektOverInntektstak
-import no.nav.pensjon.brev.api.model.maler.ForhaandsvarselEtteroppgjoerAutoDtoSelectors.UfoeretrygdEtteroppgjoerSelectors.inntektsgrensebeloepAar
 import no.nav.pensjon.brev.api.model.maler.ForhaandsvarselEtteroppgjoerAutoDtoSelectors.UfoeretrygdEtteroppgjoerSelectors.oppjustertInntektFoerUfoerhet
 import no.nav.pensjon.brev.api.model.maler.ForhaandsvarselEtteroppgjoerAutoDtoSelectors.UfoeretrygdEtteroppgjoerSelectors.ufoeregrad
 import no.nav.pensjon.brev.api.model.maler.ForhaandsvarselEtteroppgjoerAutoDtoSelectors.orienteringOmRettigheterUfoere
@@ -82,7 +81,6 @@ object ForhaandsvarselEtteroppgjoerAuto : AutobrevTemplate<ForhaandsvarselEttero
                 ) {
                     includePhrase(
                         SoekOmNyInntektsgrense(
-                            inntektsgrensebeloepAar = ufoeretrygdEtteroppgjoer.inntektsgrensebeloepAar,
                             aarPeriodeFom = ufoeretrygdEtteroppgjoer.aarPeriodeFom
                         )
                     )

@@ -115,7 +115,7 @@ data class InntektOverInntektstak(
 
 data class SoekOmNyInntektsgrense(
     val aarPeriodeFom: Expression<Year>,
-    val inntektsgrensebeloepAar: Expression<Kroner>,
+    val hoeyesteInntektsgrense: Expression<Kroner>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         // <år> hvilket år? Kan jeg bruk periodeFom (2022)?
@@ -128,13 +128,21 @@ data class SoekOmNyInntektsgrense(
         }
         paragraph {
             textExpr(
-                Bokmal to "Er du arbeidstaker og har gradert uføretrygd, kan du søke om ny inntektsgrense. Dette gjelder hvis du har hatt høy lønnsøkning, uten at det skyldes overtidsjobbing, ekstravakter eller høyere stillingsprosent. Din inntektsgrense for ".expr() + aarPeriodeFom.format() + " er ".expr() + inntektsgrensebeloepAar.format() + " kroner.".expr(),
-                Nynorsk to "Dersom du er arbeidstakar og har gradert uføretrygd, kan du søkje om ny inntektsgrense. Dette gjeld viss du har hatt høg lønsauke, utan at det skuldast overtidsjobbing, ekstravakter eller høgare stillingsprosent. Inntektsgrensa di for ".expr() + aarPeriodeFom.format() + " er ".expr() + inntektsgrensebeloepAar.format() + " kroner.".expr(),
-                English to "If you are an employee and have graduated disability benefit, you can apply for a new income threshold. This will apply if you have had a large wage increase, and this is not due to working overtime, additional shifts or a greater percentage of full-time. Your income threshold for ".expr() + aarPeriodeFom.format() + " is NOK ".expr() + inntektsgrensebeloepAar.format() + ".".expr()
+                Bokmal to "Er du arbeidstaker og har gradert uføretrygd, kan du søke om ny inntektsgrense. Dette gjelder hvis du har hatt høy lønnsøkning, uten at det skyldes overtidsjobbing, ekstravakter eller høyere stillingsprosent. Vi har brukt den høyeste inntektsgrensen du hadde i ".expr() + aarPeriodeFom.format() + " i berengingen av etteroppgjøret.",
+                Nynorsk to "Dersom du er arbeidstakar og har gradert uføretrygd, kan du søkje om ny inntektsgrense. Dette gjeld viss du har hatt høg lønsauke, utan at det skuldast overtidsjobbing, ekstravakter eller høgare stillingsprosent. Vi har brukt den høgeste inntektsgrensen du hadde i ".expr() + aarPeriodeFom.format() + " i berekningen av etteroppgjøret.",
+                English to "If you are an employee and have graduated disability benefit, you can apply for a new income threshold. This will apply if you have had a large wage increase, and this is not due to working overtime, additional shifts or a greater percentage of full-time. We have used the highest income threshold you had in ".expr() + aarPeriodeFom.format() + " in the settlement calculation.",
+            )
+        }
+        paragraph {
+            textExpr(
+                Bokmal to "I ".expr() + aarPeriodeFom.format() + " var din inntektsgrense ".expr() + hoeyesteInntektsgrense.format() + " kroner.",
+                Nynorsk to "I ".expr() + aarPeriodeFom.format() + "var di inntektsgrense ".expr() + hoeyesteInntektsgrense.format() + " kroner.",
+                English to "In ".expr() + aarPeriodeFom.format() + "your income threshold was NOK ".expr() + hoeyesteInntektsgrense.format() + "."
             )
         }
     }
 }
+
 
 object FlereVedtakOmEtteroppgjoer : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
@@ -185,9 +193,9 @@ object FristerOpplysningerKlage : OutlinePhrase<LangBokmalNynorskEnglish>() {
         }
         paragraph {
             text(
-                Bokmal to "Hvis du mener at beregningene i vedlegg «Beregning av etteroppgjøret er feil», må du melde fra til oss innen 3 uker fra du fikk dette brevet. Du vil da få en ny vurdering og et nytt vedtak.",
-                Nynorsk to "Dersom du meiner at utrekningane i vedlegg «Beregning av etteroppgjøret er feil», må du melde frå til oss innan 3 veker frå du fekk dette brevet. Du vil då få ei ny vurdering og eit nytt vedtak.",
-                English to "If you believe that the calculations in appendix «Calculation of settlement are incorrect», you must notify us within 3 weeks of the date you received this letter. In such case you will receive a new assessment and a new decision."
+                Bokmal to "Hvis du mener at beregningene i vedlegg «Beregning av etteroppgjøret» er feil, må du melde fra til oss innen 3 uker fra du fikk dette brevet. Du vil da få en ny vurdering og et nytt vedtak.",
+                Nynorsk to "Dersom du meiner at utrekningane i vedlegg «Beregning av etteroppgjøret» er feil, må du melde frå til oss innan 3 veker frå du fekk dette brevet. Du vil då få ei ny vurdering og eit nytt vedtak.",
+                English to "If you believe that the calculations in appendix «Calculation of settlement» are incorrect, you must notify us within 3 weeks of the date you received this letter. In such case you will receive a new assessment and a new decision."
             )
         }
         paragraph {
@@ -209,7 +217,7 @@ object FristerOpplysningerKlage : OutlinePhrase<LangBokmalNynorskEnglish>() {
 
 object HarDuSpoersmaal : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-        title1{
+        title1 {
             text(
                 Bokmal to "Har du spørsmål?",
                 Nynorsk to "Har du spørsmål?",
