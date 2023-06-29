@@ -13,8 +13,7 @@ import no.nav.pensjon.brev.writeTestPDF
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.Fixtures
 import no.nav.pensjon.etterlatte.maler.BarnepensjonRevurderingAdopsjonDTO
-import no.nav.pensjon.etterlatte.maler.BarnepensjonRevurderingSoeskenjusteringDTO
-import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.Adopsjon
+import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.AdopsjonRevurdering
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 

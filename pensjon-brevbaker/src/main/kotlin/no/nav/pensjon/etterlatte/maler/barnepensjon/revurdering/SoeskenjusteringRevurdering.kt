@@ -1,4 +1,4 @@
-package no.nav.pensjon.etterlatte.maler.barnepensjon
+package no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering
 
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.dsl.createTemplate
