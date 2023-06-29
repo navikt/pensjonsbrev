@@ -72,6 +72,13 @@ data class BarnepensjonRevurderingSoeskenjusteringDTO(
     val grunnForJustering: BarnepensjonSoeskenjusteringGrunn
 )
 
+data class BarnepensjonRevurderingAdopsjonDTO(
+    val virkningsdato: LocalDate,
+    val adoptertAv: Navn
+)
+
+data class Navn(val fornavn: String, val mellomnavn: String? = null, val etternavn: String)
+
 data class AvkortetBeregningsperiode(
     val datoFOM: LocalDate,
     val datoTOM: LocalDate?,
