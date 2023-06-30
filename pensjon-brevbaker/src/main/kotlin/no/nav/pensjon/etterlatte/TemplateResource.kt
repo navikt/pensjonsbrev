@@ -3,6 +3,7 @@ package no.nav.pensjon.etterlatte
 import no.nav.pensjon.brev.template.LetterTemplate
 import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.AdopsjonRevurdering
 import no.nav.pensjon.etterlatte.maler.barnepensjon.BarnepensjonInnvilgelse
+import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.OmgjoeringAvFarskapRevurdering
 import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.SoeskenjusteringRevurdering
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.OMSInnvilgelseAuto
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.OMSInnvilgelseManuell
@@ -16,6 +17,7 @@ val prodAutobrevTemplates: Set<EtterlatteTemplate<*>> =
         OMSInnvilgelseManuell,
         OMSOpphoerManuell,
         AdopsjonRevurdering,
+        OmgjoeringAvFarskapRevurdering,
         SoeskenjusteringRevurdering
     )
 
