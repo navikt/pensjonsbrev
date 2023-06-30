@@ -9,20 +9,35 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
-import no.nav.pensjon.etterlatte.maler.BarnepensjonRevurderingSoeskenjusteringDTO
-import no.nav.pensjon.etterlatte.maler.BarnepensjonRevurderingSoeskenjusteringDTOSelectors.grunnForJustering
-import no.nav.pensjon.etterlatte.maler.BarnepensjonRevurderingSoeskenjusteringDTOSelectors.utbetalingsinfo
-import no.nav.pensjon.etterlatte.maler.BarnepensjonSoeskenjusteringGrunn
 import no.nav.pensjon.etterlatte.maler.EndringIUtbetaling
+import no.nav.pensjon.etterlatte.maler.Utbetalingsinfo
 import no.nav.pensjon.etterlatte.maler.UtbetalingsinfoSelectors.antallBarn
 import no.nav.pensjon.etterlatte.maler.UtbetalingsinfoSelectors.beloep
 import no.nav.pensjon.etterlatte.maler.UtbetalingsinfoSelectors.beregningsperioder
 import no.nav.pensjon.etterlatte.maler.UtbetalingsinfoSelectors.soeskenjustering
 import no.nav.pensjon.etterlatte.maler.UtbetalingsinfoSelectors.virkningsdato
+import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingSoeskenjusteringDTOSelectors.grunnForJustering
+import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingSoeskenjusteringDTOSelectors.utbetalingsinfo
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.Barnepensjon
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.Lover
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.Soeskenjustering
 import no.nav.pensjon.etterlatte.maler.fraser.common.Vedtak
+
+
+enum class BarnepensjonSoeskenjusteringGrunn(val endring: EndringIUtbetaling) {
+    NYTT_SOESKEN(EndringIUtbetaling.REDUSERES),
+    SOESKEN_DOER(EndringIUtbetaling.OEKES),
+    SOESKEN_INN_INSTITUSJON_INGEN_ENDRING(EndringIUtbetaling.SAMME),
+    SOESKEN_INN_INSTITUSJON_ENDRING(EndringIUtbetaling.OEKES),
+    SOESKEN_UT_INSTITUSJON(EndringIUtbetaling.REDUSERES),
+    FORPLEID_ETTER_BARNEVERNSLOVEN(EndringIUtbetaling.OEKES),
+    SOESKEN_BLIR_ADOPTERT(EndringIUtbetaling.OEKES)
+}
+
+data class BarnepensjonRevurderingSoeskenjusteringDTO(
+    val utbetalingsinfo: Utbetalingsinfo,
+    val grunnForJustering: BarnepensjonSoeskenjusteringGrunn
+)
 
 @TemplateModelHelpers
 object SoeskenjusteringRevurdering : EtterlatteTemplate<BarnepensjonRevurderingSoeskenjusteringDTO> {

@@ -1,13 +1,13 @@
 package no.nav.pensjon.etterlatte.fixtures
 
-import no.nav.pensjon.etterlatte.maler.BarnepensjonRevurderingOmgjoeringAvFarskapDTO
 import no.nav.pensjon.etterlatte.maler.Navn
+import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingOmgjoeringAvFarskapDTO
 import java.time.LocalDate
 import java.time.Month
 
 fun createBarnepensjonRevurderingOmgjoeringAvFarskapDTO() = BarnepensjonRevurderingOmgjoeringAvFarskapDTO(
     vedtaksdato = LocalDate.of(2023, Month.MAY, 15),
-    virkningsdato = LocalDate.of(2023, java.time.Month.MAY, 1),
+    virkningsdato = LocalDate.of(2023, Month.MAY, 1),
     naavaerendeFar = Navn(
         fornavn = "Peder",
         etternavn = "Ås",

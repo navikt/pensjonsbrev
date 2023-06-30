@@ -57,34 +57,6 @@ enum class EndringIUtbetaling {
     OEKES, REDUSERES, SAMME
 }
 
-enum class BarnepensjonSoeskenjusteringGrunn(val endring: EndringIUtbetaling) {
-    NYTT_SOESKEN(EndringIUtbetaling.REDUSERES),
-    SOESKEN_DOER(EndringIUtbetaling.OEKES),
-    SOESKEN_INN_INSTITUSJON_INGEN_ENDRING(EndringIUtbetaling.SAMME),
-    SOESKEN_INN_INSTITUSJON_ENDRING(EndringIUtbetaling.OEKES),
-    SOESKEN_UT_INSTITUSJON(EndringIUtbetaling.REDUSERES),
-    FORPLEID_ETTER_BARNEVERNSLOVEN(EndringIUtbetaling.OEKES),
-    SOESKEN_BLIR_ADOPTERT(EndringIUtbetaling.OEKES)
-}
-
-data class BarnepensjonRevurderingSoeskenjusteringDTO(
-    val utbetalingsinfo: Utbetalingsinfo,
-    val grunnForJustering: BarnepensjonSoeskenjusteringGrunn
-)
-
-data class BarnepensjonRevurderingAdopsjonDTO(
-    val virkningsdato: LocalDate,
-    val adoptertAv: Navn
-)
-
-data class BarnepensjonRevurderingOmgjoeringAvFarskapDTO(
-    val vedtaksdato: LocalDate,
-    val virkningsdato: LocalDate,
-    val naavaerendeFar: Navn,
-    var forrigeFar: Navn,
-    val forrigeVirkningsdato: LocalDate
-)
-
 data class Navn(val fornavn: String, val mellomnavn: String? = null, val etternavn: String)
 
 data class AvkortetBeregningsperiode(

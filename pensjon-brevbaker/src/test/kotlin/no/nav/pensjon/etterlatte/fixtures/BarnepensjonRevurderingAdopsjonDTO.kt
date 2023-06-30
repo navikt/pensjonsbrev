@@ -1,7 +1,7 @@
 package no.nav.pensjon.etterlatte.fixtures
 
-import no.nav.pensjon.etterlatte.maler.BarnepensjonRevurderingAdopsjonDTO
 import no.nav.pensjon.etterlatte.maler.Navn
+import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingAdopsjonDTO
 import java.time.LocalDate
 import java.time.Month
 

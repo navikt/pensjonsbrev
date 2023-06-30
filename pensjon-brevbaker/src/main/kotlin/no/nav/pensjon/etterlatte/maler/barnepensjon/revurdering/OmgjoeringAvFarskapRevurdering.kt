@@ -8,15 +8,24 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
-import no.nav.pensjon.etterlatte.maler.BarnepensjonRevurderingOmgjoeringAvFarskapDTO
-import no.nav.pensjon.etterlatte.maler.BarnepensjonRevurderingOmgjoeringAvFarskapDTOSelectors.forrigeFar
-import no.nav.pensjon.etterlatte.maler.BarnepensjonRevurderingOmgjoeringAvFarskapDTOSelectors.forrigeVirkningsdato
-import no.nav.pensjon.etterlatte.maler.BarnepensjonRevurderingOmgjoeringAvFarskapDTOSelectors.naavaerendeFar
-import no.nav.pensjon.etterlatte.maler.BarnepensjonRevurderingOmgjoeringAvFarskapDTOSelectors.vedtaksdato
-import no.nav.pensjon.etterlatte.maler.BarnepensjonRevurderingOmgjoeringAvFarskapDTOSelectors.virkningsdato
+import no.nav.pensjon.etterlatte.maler.Navn
+import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingOmgjoeringAvFarskapDTOSelectors.forrigeFar
+import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingOmgjoeringAvFarskapDTOSelectors.forrigeVirkningsdato
+import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingOmgjoeringAvFarskapDTOSelectors.naavaerendeFar
+import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingOmgjoeringAvFarskapDTOSelectors.vedtaksdato
+import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingOmgjoeringAvFarskapDTOSelectors.virkningsdato
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.Barnepensjon
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.Lover
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.OmgjoeringAvFarskap
+import java.time.LocalDate
+
+data class BarnepensjonRevurderingOmgjoeringAvFarskapDTO(
+    val vedtaksdato: LocalDate,
+    val virkningsdato: LocalDate,
+    val naavaerendeFar: Navn,
+    var forrigeFar: Navn,
+    val forrigeVirkningsdato: LocalDate,
+)
 
 @TemplateModelHelpers
 object OmgjoeringAvFarskapRevurdering : EtterlatteTemplate<BarnepensjonRevurderingOmgjoeringAvFarskapDTO> {

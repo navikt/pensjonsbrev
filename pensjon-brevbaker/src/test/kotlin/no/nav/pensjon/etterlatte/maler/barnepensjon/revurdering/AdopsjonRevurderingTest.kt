@@ -12,7 +12,6 @@ import no.nav.pensjon.brev.writeTestHTML
 import no.nav.pensjon.brev.writeTestPDF
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.Fixtures
-import no.nav.pensjon.etterlatte.maler.BarnepensjonRevurderingAdopsjonDTO
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 

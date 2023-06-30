@@ -10,10 +10,9 @@ import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.isOneOf
 import no.nav.pensjon.brev.template.dsl.expression.plus
-import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.Kroner
-import no.nav.pensjon.etterlatte.maler.BarnepensjonSoeskenjusteringGrunn
+import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonSoeskenjusteringGrunn
 import java.time.LocalDate
 
 object Soeskenjustering {
