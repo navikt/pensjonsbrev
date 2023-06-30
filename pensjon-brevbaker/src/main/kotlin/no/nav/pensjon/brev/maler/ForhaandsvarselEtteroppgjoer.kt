@@ -75,7 +75,7 @@ object ForhaandsvarselEtteroppgjoerAuto : AutobrevTemplate<ForhaandsvarselEttero
                     )
                 }
 
-                // showIf arbeidstaker AND
+                // TODO: showIf arbeidstaker AND
                 showIf(
                     ufoeretrygdEtteroppgjoer.ufoeregrad.greaterThan(0)
                             and ufoeretrygdEtteroppgjoer.ufoeregrad.lessThan(100)
@@ -97,5 +97,7 @@ object ForhaandsvarselEtteroppgjoerAuto : AutobrevTemplate<ForhaandsvarselEttero
                 includePhrase(HarDuSpoersmaal)
             }
             includeAttachment(vedleggDineRettigheterOgPlikterUfoere, orienteringOmRettigheterUfoere)
+            // TODO: Include a total of 4 attachments in the order of:
+            // Beregning av etteroppgjøret, Opplysninger om beregningen, Praktisk informasjon om tilbakebetaling av etteroppgjøret, Dine rettigheter og plikter
         }
 }

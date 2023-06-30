@@ -7,9 +7,12 @@ import no.nav.pensjon.brevbaker.api.model.Year
 
 @Suppress("unused")
 data class ForhaandsvarselEtteroppgjoerAutoDto(
+    // TODO: Include attachment BeregningAvEtteroppgjoeret
+    // TODO: Include attachment OpplysningerOmBeregningen
+    // TODO: Include attachment PraktiskInformasjonEtteroppgjoeret
+    val orienteringOmRettigheterUfoere: OrienteringOmRettigheterUfoereDto,
     val resultatEtteroppgjoer: ResultatEtteroppgjoer,
     val ufoeretrygdEtteroppgjoer: UfoeretrygdEtteroppgjoer,
-    val orienteringOmRettigheterUfoere: OrienteringOmRettigheterUfoereDto,
 ) {
 
     data class ResultatEtteroppgjoer(
@@ -19,9 +22,9 @@ data class ForhaandsvarselEtteroppgjoerAutoDto(
 
     data class UfoeretrygdEtteroppgjoer(
         val aarPeriodeFom: Year,  // TODO: Use YYYY from periodeFom
-        val hoeyesteInntektsgrense: Kroner,
-        val inntektOverInntektstak: Boolean,
-        val oppjustertInntektFoerUfoerhet: Kroner, // TODO: OIFU * 0,8
-        val ufoeregrad: Int,  // PE_Vedtaksdata_Beregningsdata_BeregningUfore_Uforetrygdberegning_Uforegrad
+        val hoeyesteInntektsgrense: Kroner,  // TODO: Finnes ikke i dagensbrev
+        val inntektOverInntektstak: Boolean,  // TODO: Finnes ikke i dagensbrev
+        val oppjustertInntektFoerUfoerhet: Kroner, // TODO: OIFU * 0,8 (beregningen er gjort i Exstream). Finnes ikke i dagensbrev
+        val ufoeregrad: Int,  // PE_Vedtaksdata_Beregningsdata_BeregningUfore_Uforetrygdberegning_Uforegrad  // TODO: Finnes ikke i dagensbrev
     )
 }

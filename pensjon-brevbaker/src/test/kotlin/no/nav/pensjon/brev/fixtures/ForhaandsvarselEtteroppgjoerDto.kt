@@ -2,15 +2,17 @@ package no.nav.pensjon.brev.fixtures
 
 import no.nav.pensjon.brev.Fixtures
 import no.nav.pensjon.brev.api.model.maler.ForhaandsvarselEtteroppgjoerAutoDto
-import no.nav.pensjon.brev.api.model.vedlegg.*
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import no.nav.pensjon.brevbaker.api.model.Year
 
 fun createForhaandsvarselEtteroppgjoerDto() =
     ForhaandsvarselEtteroppgjoerAutoDto(
+        // TODO: Include attachment BeregningAvEtteroppgjoeret
+        // TODO: Include attachment OpplysningerOmBeregningen
+        // TODO: Include attachment PraktiskInformasjonEtteroppgjoeret
+        orienteringOmRettigheterUfoere = Fixtures.create(),
         resultatEtteroppgjoer = Fixtures.create(),
         ufoeretrygdEtteroppgjoer = Fixtures.create(),
-        orienteringOmRettigheterUfoere = Fixtures.create(),
     )
 
 fun createResultatEtteroppgjoer() =
@@ -22,8 +24,8 @@ fun createResultatEtteroppgjoer() =
 fun createUfoeretrygdEtteroppgjoer() =
     ForhaandsvarselEtteroppgjoerAutoDto.UfoeretrygdEtteroppgjoer(
         aarPeriodeFom = Year(2022),
+        hoeyesteInntektsgrense = Kroner(0),
         inntektOverInntektstak = false,
-        inntektsgrensebeloepAar = Kroner(0),
         oppjustertInntektFoerUfoerhet = Kroner(0),
-        ufoeregrad = 0
+        ufoeregrad = 0,
     )
