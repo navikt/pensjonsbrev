@@ -1,19 +1,19 @@
 package no.nav.pensjon.brev.maler.vedlegg
 
 import no.nav.pensjon.brev.api.model.vedlegg.PraktiskInformasjonEtteroppgjoerDto
-import no.nav.pensjon.brev.maler.fraser.vedlegg.etteroppgjoer.EttersendeDokumentasjon
-import no.nav.pensjon.brev.maler.fraser.vedlegg.etteroppgjoer.InnledningPraktiskInformasjon
-import no.nav.pensjon.brev.maler.fraser.vedlegg.etteroppgjoer.InntekterSomKanHoldesUtenforEtteroppgjoeret
-import no.nav.pensjon.brev.maler.fraser.vedlegg.etteroppgjoer.SlikBetalerDuTilbake
+import no.nav.pensjon.brev.maler.fraser.vedlegg.EttersendeDokumentasjon
+import no.nav.pensjon.brev.maler.fraser.vedlegg.InnledningPraktiskInformasjon
+import no.nav.pensjon.brev.maler.fraser.vedlegg.InntekterSomKanHoldesUtenforEtteroppgjoeret
+import no.nav.pensjon.brev.maler.fraser.vedlegg.SlikBetalerDuTilbake
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.newText
 
-// Conditional for showing the attachment is that PE_UT_23_001 Varsel - etteroppgjør av uføretrygd ved feil utbetaling produseres
-@TemplateModelHelpers
+// TODO: Conditional for showing the attachment is that letter UT_EO_FORHAANDSVARSEL_AUTO produseres
 
+@TemplateModelHelpers
 val vedleggPraktiskInformasjonEtteroppgjoer =
     createAttachment<LangBokmalNynorskEnglish, PraktiskInformasjonEtteroppgjoerDto>(
         title = newText(
