@@ -20,6 +20,7 @@ import no.nav.pensjon.etterlatte.maler.UtbetalingsinfoSelectors.beregningsperiod
 import no.nav.pensjon.etterlatte.maler.UtbetalingsinfoSelectors.soeskenjustering
 import no.nav.pensjon.etterlatte.maler.UtbetalingsinfoSelectors.virkningsdato
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.Barnepensjon
+import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.Lover
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.Soeskenjustering
 import no.nav.pensjon.etterlatte.maler.fraser.common.Vedtak
 
@@ -60,6 +61,7 @@ object SoeskenjusteringRevurdering : EtterlatteTemplate<BarnepensjonRevurderingS
                     beloep = utbetalingsinfo.beloep
                 )
             )
+            includePhrase(Lover.Folketrygdloven18og22)
 
 
             includePhrase(Barnepensjon.BeregningOgUtbetalingOverskrift)

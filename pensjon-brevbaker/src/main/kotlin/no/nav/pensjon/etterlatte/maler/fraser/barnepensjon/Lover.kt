@@ -27,4 +27,14 @@ object Lover {
             }
         }
     }
+
+    object Folketrygdloven18og22 : OutlinePhrase<LangBokmal>() {
+        override fun OutlineOnlyScope<LangBokmal, Unit>.template() {
+            paragraph {
+                text(
+                    Language.Bokmal to "Vedtaket er gjort etter folketrygdloven kapittel 18 og 22.",
+                )
+            }
+        }
+    }
 }

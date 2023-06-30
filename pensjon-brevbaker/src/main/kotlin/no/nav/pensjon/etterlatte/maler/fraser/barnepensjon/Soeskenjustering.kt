@@ -85,8 +85,7 @@ object Soeskenjustering {
 
             paragraph {
                 text(
-                    Language.Bokmal to "Barnepensjonen din utbetales til og med den kalendermåneden du fyller " +
-                        "18 år. Vedtaket er gjort etter folketrygdloven kapittel 18 og 22.",
+                    Language.Bokmal to "Barnepensjonen din utbetales til og med den kalendermåneden du fyller 18 år.",
                 )
             }
         }
