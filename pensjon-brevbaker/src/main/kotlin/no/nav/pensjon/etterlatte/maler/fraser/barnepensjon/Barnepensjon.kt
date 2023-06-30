@@ -334,16 +334,6 @@ object Barnepensjon {
         }
     }
 
-    object Folketrygdloven18ogforvaltningsloven35_1_c : OutlinePhrase<LangBokmal>() {
-        override fun OutlineOnlyScope<LangBokmal, Unit>.template() {
-            paragraph {
-                text(
-                    Language.Bokmal to "Vedtaket er gjort etter bestemmelsene i folketrygdloven kapittel 18 og forvaltningsloven § 35 første ledd bokstav c.",
-                )
-            }
-        }
-    }
-
     object Feilutbetaling : OutlinePhrase<LangBokmal>() {
         override fun OutlineOnlyScope<LangBokmal, Unit>.template() {
             title2 {

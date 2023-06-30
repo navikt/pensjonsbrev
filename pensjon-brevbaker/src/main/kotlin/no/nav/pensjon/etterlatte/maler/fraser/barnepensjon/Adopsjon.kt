@@ -46,11 +46,6 @@ object Adopsjon {
                         "Barnepensjonen faller bort fra og med måneden etter at adopsjonen er vedtatt.",
                 )
             }
-            paragraph {
-                text(
-                    Language.Bokmal to "Vedtaket er gjort etter bestemmelsene i folketrygdloven § 18-7 og § 22-12.",
-                )
-            }
         }
     }
 }

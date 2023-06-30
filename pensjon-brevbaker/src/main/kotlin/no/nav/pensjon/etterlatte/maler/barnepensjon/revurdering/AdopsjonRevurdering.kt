@@ -13,6 +13,7 @@ import no.nav.pensjon.etterlatte.maler.BarnepensjonRevurderingAdopsjonDTOSelecto
 import no.nav.pensjon.etterlatte.maler.BarnepensjonRevurderingAdopsjonDTOSelectors.virkningsdato
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.Adopsjon
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.Barnepensjon
+import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.Lover
 
 @TemplateModelHelpers
 object AdopsjonRevurdering : EtterlatteTemplate<BarnepensjonRevurderingAdopsjonDTO> {
@@ -42,6 +43,7 @@ object AdopsjonRevurdering : EtterlatteTemplate<BarnepensjonRevurderingAdopsjonD
                 ),
             )
 
+            includePhrase(Lover.Folketrygdloven18_7og22_12)
             includePhrase(Barnepensjon.DuHarRettTilAaKlage)
             includePhrase(Barnepensjon.DuHarRettTilInnsyn)
             includePhrase(Barnepensjon.HarDuSpoersmaal)

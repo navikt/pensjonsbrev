@@ -14,6 +14,7 @@ import no.nav.pensjon.etterlatte.maler.BarnepensjonRevurderingOmgjoeringAvFarska
 import no.nav.pensjon.etterlatte.maler.BarnepensjonRevurderingOmgjoeringAvFarskapDTOSelectors.naavaerendeFar
 import no.nav.pensjon.etterlatte.maler.BarnepensjonRevurderingOmgjoeringAvFarskapDTOSelectors.virkningsdato
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.Barnepensjon
+import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.Lover
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.OmgjoeringAvFarskap
 
 @TemplateModelHelpers
@@ -47,7 +48,7 @@ object OmgjoeringAvFarskapRevurdering : EtterlatteTemplate<BarnepensjonRevurderi
             )
 
             includePhrase(Barnepensjon.BarnepensjonenDinErDerforOpphoert(virkningsdato))
-            includePhrase(Barnepensjon.Folketrygdloven18ogforvaltningsloven35_1_c)
+            includePhrase(Lover.Folketrygdloven18ogforvaltningsloven35_1_c)
             includePhrase(Barnepensjon.Feilutbetaling)
             includePhrase(Barnepensjon.DuHarRettTilAaKlage)
             includePhrase(Barnepensjon.DuHarRettTilInnsyn)
