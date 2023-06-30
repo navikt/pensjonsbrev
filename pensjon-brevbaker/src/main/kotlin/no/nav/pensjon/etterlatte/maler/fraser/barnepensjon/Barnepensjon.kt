@@ -358,4 +358,14 @@ object Barnepensjon {
             }
         }
     }
+
+    object TilOgMedKalendermaaneden18Aar : OutlinePhrase<LangBokmal>() {
+        override fun OutlineOnlyScope<LangBokmal, Unit>.template() {
+            paragraph {
+                text(
+                    Language.Bokmal to "Barnepensjonen din utbetales til og med den kalendermåneden du fyller 18 år.",
+                )
+            }
+        }
+    }
 }

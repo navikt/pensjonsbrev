@@ -82,12 +82,6 @@ object Soeskenjustering {
                     )
                 }
             }
-
-            paragraph {
-                text(
-                    Language.Bokmal to "Barnepensjonen din utbetales til og med den kalendermåneden du fyller 18 år.",
-                )
-            }
         }
     }
 }

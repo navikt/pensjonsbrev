@@ -61,6 +61,7 @@ object SoeskenjusteringRevurdering : EtterlatteTemplate<BarnepensjonRevurderingS
                     beloep = utbetalingsinfo.beloep
                 )
             )
+            includePhrase(Barnepensjon.TilOgMedKalendermaaneden18Aar)
             includePhrase(Lover.Folketrygdloven18og22)
 
 
