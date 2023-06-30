@@ -78,6 +78,7 @@ data class BarnepensjonRevurderingAdopsjonDTO(
 )
 
 data class BarnepensjonRevurderingOmgjoeringAvFarskapDTO(
+    val vedtaksdato: LocalDate,
     val virkningsdato: LocalDate,
     val naavaerendeFar: Navn,
     var forrigeFar: Navn,

@@ -12,6 +12,7 @@ import no.nav.pensjon.etterlatte.maler.BarnepensjonRevurderingOmgjoeringAvFarska
 import no.nav.pensjon.etterlatte.maler.BarnepensjonRevurderingOmgjoeringAvFarskapDTOSelectors.forrigeFar
 import no.nav.pensjon.etterlatte.maler.BarnepensjonRevurderingOmgjoeringAvFarskapDTOSelectors.forrigeVirkningsdato
 import no.nav.pensjon.etterlatte.maler.BarnepensjonRevurderingOmgjoeringAvFarskapDTOSelectors.naavaerendeFar
+import no.nav.pensjon.etterlatte.maler.BarnepensjonRevurderingOmgjoeringAvFarskapDTOSelectors.vedtaksdato
 import no.nav.pensjon.etterlatte.maler.BarnepensjonRevurderingOmgjoeringAvFarskapDTOSelectors.virkningsdato
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.Barnepensjon
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.Lover
@@ -40,6 +41,7 @@ object OmgjoeringAvFarskapRevurdering : EtterlatteTemplate<BarnepensjonRevurderi
         outline {
             includePhrase(
                 OmgjoeringAvFarskap.BegrunnelseForVedtaket(
+                    vedtaksdato = vedtaksdato,
                     virkningsdato = virkningsdato,
                     naaevaerendeFar = naavaerendeFar,
                     forrigeFar = forrigeFar,
