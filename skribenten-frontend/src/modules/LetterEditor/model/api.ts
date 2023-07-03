@@ -79,6 +79,13 @@ export interface EditedLetter {
     readonly deletedBlocks: number[]
 }
 
+export interface Sak {
+    readonly sakId: number,
+    readonly foedselsnr: string,
+    readonly foedselsdato: string,
+    readonly sakType: string,
+}
+
 export type LanguageCode = 'BOKMAL' | 'NYNORSK' | 'ENGLISH'
 export type Distribusjonstype = 'VEDTAK' | 'VIKTIG' | 'ANNET'
 export interface LetterMetadata {

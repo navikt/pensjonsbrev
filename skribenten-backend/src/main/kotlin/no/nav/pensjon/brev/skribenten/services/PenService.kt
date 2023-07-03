@@ -1,6 +1,9 @@
 package no.nav.pensjon.brev.skribenten.services
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.databind.DeserializationFeature
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
+import com.fasterxml.jackson.datatype.jsr310.deser.JSR310DateTimeDeserializerBase
 import com.fasterxml.jackson.module.kotlin.jsonMapper
 import com.typesafe.config.Config
 import io.ktor.client.plugins.*
@@ -23,7 +26,9 @@ class PenService(config: Config, authService: AzureADService) {
             url(penUrl)
         }
         install(ContentNegotiation) {
-            jackson()
+            jackson{
+                registerModule(JavaTimeModule())
+            }
         }
     }
 
@@ -36,31 +41,21 @@ class PenService(config: Config, authService: AzureADService) {
     // person navn
     // fødselsdato
 
-    data class PidDto(
-        val fnr: String
-    )
-
+    @JsonIgnoreProperties(ignoreUnknown = true)
     data class PenPersonDto(
         val fodselsdato: LocalDate,
-        val fnr: PidDto,
+        val fnr: String,
     )
-
+    @JsonIgnoreProperties(ignoreUnknown = true)
     data class Sak(
         val sakId: Long,
         val penPerson: PenPersonDto,
-        val gjelderFnr: String,
-        val navEnhetId: String,
-        val navEnhetNavn: String,
-        val gjelderNavn: String,
+        val sakType: String,
     )
 
+
     suspend fun hentSak(call: ApplicationCall, sakId: Long): ServiceResult<Sak, Any> =
-        client.get(call, "sak/$sakId") {
-            jsonMapper {
-                SakTypeKode
-                configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-            }
-        }.toServiceResult()
+        client.get(call, "sak/$sakId").toServiceResult()
 
     private data class BestillBrevRequest(
         val sakId: Long? = null,

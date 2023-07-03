@@ -1,0 +1,2 @@
+schema: pdl.graphql # kun for lokal auto-complete. Kan oppdateres fra https://github.com/navikt/pdl/blob/master/apps/api/src/main/resources/schemas/pdl.graphqls
+documents: './*.graphql'

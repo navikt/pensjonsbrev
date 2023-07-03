@@ -16,6 +16,8 @@ import no.nav.pensjon.brev.skribenten.auth.UnauthorizedException
 import no.nav.pensjon.brev.skribenten.auth.UserPrincipal
 import no.nav.pensjon.brev.skribenten.services.*
 import no.nav.pensjon.brevbaker.api.model.RenderedJsonLetter
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import java.util.*
 
 data class RenderLetterRequest(val letterData: Any, val editedLetter: EditedJsonLetter?)
@@ -28,6 +30,7 @@ data class OrderLetterRequest(
 fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config) {
     val authService = AzureADService(authConfig)
     val penService = PenService(skribentenConfig.getConfig("services.pen"), authService)
+    val pdlService = PdlService(skribentenConfig.getConfig("services.pdl"), authService)
     val brevbakerService = BrevbakerService(skribentenConfig.getConfig("services.brevbaker"), authService)
     val brevmetadataService = BrevmetadataService(skribentenConfig.getConfig("services.brevmetadata"))
     val databaseService = SkribentenFakeDatabaseService(brevmetadataService)
@@ -48,6 +51,10 @@ fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config
                 respondWithResult(sak)
             }
 
+            get("/test/pdl") {
+                respondWithResult(pdlService.hentNavn(call, "09417320595"))
+            }
+
             post("/pen/orderExtreamLetter") {
                 val request = call.receive<OrderLetterRequest>()
                 val journalpostId = penService.bestillExtreamBrev(
@@ -65,13 +72,28 @@ fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config
                 respondWithResult(journalpostId)
             }
 
-            get("/pen/sak/{sakId}"){
+            data class SakSelection(
+                val sakId: Long,
+                val foedselsnr: String,
+                val foedselsdato: String,
+                val sakType: String,
+            )
+            get("/pen/sak/{sakId}") {
                 val sakId = call.parameters["sakId"]?.toLongOrNull()
-                if (sakId != null ) {
-                    when(val sakInfo = penService.hentSak(call, sakId )) {
+                if (sakId != null) {
+                    when (val sakInfo = penService.hentSak(call, sakId)) {
                         is ServiceResult.AuthorizationError -> TODO()
                         is ServiceResult.Error -> TODO()
-                        is ServiceResult.Ok -> call.respondText(sakInfo.result.gjelderFnr, ContentType.Application.Json)
+                        is ServiceResult.Ok -> call.respond(
+                            sakInfo.result.let {
+                                SakSelection(
+                                    sakId = it.sakId,
+                                    foedselsnr = it.penPerson.fnr,
+                                    foedselsdato = it.penPerson.fodselsdato.format(DateTimeFormatter.ISO_DATE.localizedBy(Locale.forLanguageTag("NB-no"))),
+                                    sakType = it.sakType,
+                                )
+                            }
+                        )
                     }
                 }
             }

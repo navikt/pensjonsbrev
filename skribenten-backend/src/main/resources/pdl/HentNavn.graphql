@@ -1,0 +1,9 @@
+
+query PdlNavnQuery($ident: ID!) {
+    hentPerson(ident: $ident) {
+        navn {
+            forkortetNavn
+            mellomnavn
+        }
+    }
+}

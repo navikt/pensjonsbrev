@@ -1,6 +1,6 @@
 import {IMsalContext} from "@azure/msal-react/dist/MsalContext"
 import {withAuthorization} from "./msal"
-import {EditedLetter, RedigerbarTemplateDescription, RenderedLetter} from "../../modules/LetterEditor/model/api"
+import {EditedLetter, RedigerbarTemplateDescription, RenderedLetter, Sak} from "../../modules/LetterEditor/model/api"
 import {ObjectValue} from "../../modules/ModelEditor/model"
 import {LetterCategory, LetterSelection} from "../../modules/LetterPicker/model/skribenten"
 
@@ -117,7 +117,7 @@ class SkribentenAPI {
         )
     }
 
-    async getSaksinfo(msal: IMsalContext, saksnummer: string): Promise<string> {
+    async getSaksinfo(msal: IMsalContext, saksnummer: string): Promise<Sak> {
         return withAuthorization(msal, this.config.scope).then((auth) =>
             fetch(`${this.config.url}/pen/sak/${saksnummer}`, {
                 headers: {
@@ -141,6 +141,17 @@ class SkribentenAPI {
                 body: JSON.stringify({brevkode: brevkode, spraakKode: language}),
             })
         ).then((res) => res.json()).then(JSON.stringify)
+    }
+
+    async hentNavn(msal: IMsalContext, fnr: string): Promise<string> {
+        return withAuthorization(msal, this.config.scope).then((auth) =>
+            fetch(`${this.config.url}/test/pdl`, {
+                headers: {
+                    'Authorization': `Bearer ${auth.accessToken}`,
+                },
+                method: 'GET',
+            })
+        ).then((res) => res.text())
     }
 
 }

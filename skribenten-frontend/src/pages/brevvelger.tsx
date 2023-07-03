@@ -14,12 +14,14 @@ import NavBar from "../components/navbar/NavBar"
 import CaseContextBar from "../components/casecontextbar/CaseContextBar"
 import LetterPickerActionBar from "../modules/LetterPicker/components/ActionBar/ActionBar"
 import {useSearchParams} from "next/navigation"
+import {Sak} from "../modules/LetterEditor/model/api"
 
 const Brevvelger: NextPage<SkribentenConfig> = (props) => {
     const [selectedLetter, setSelectedLetter] = useState<LetterSelection | null>(null)
     const [letterCategories, setLetterCategories] = useState<LetterCategory[] | null>(null)
     const [favourites, setFavourites] = useState<LetterSelection[] | null>(null)
     const [letterMetadata, setLetterMetadata] = useState<LetterSelection[] | null>()
+    const [sak, setSak] = useState<Sak | null>(null)
 
 
     const letterSelectedHandler = (id: string | null) => {
@@ -70,7 +72,7 @@ const Brevvelger: NextPage<SkribentenConfig> = (props) => {
             skribentApi.getLetterTemplates(msal),
             skribentApi.getFavourites(msal),
             skribentApi.getSaksinfo(msal, sakId),
-        ]).then(([categories, favourites, response]) => {
+        ]).then(([categories, favourites, sakResponse]) => {
             setLetterCategories(categories)
             const metadata = categories.flatMap(cat => cat.templates)
             setLetterMetadata(metadata)
@@ -79,6 +81,9 @@ const Brevvelger: NextPage<SkribentenConfig> = (props) => {
             } else {
                 setFavourites([])
             }
+            setSak(sakResponse)
+            skribentApi.hentNavn(msal, sakResponse.foedselsnr)
+                .then((response)=> console.log(response))
         })
     }, [])
 
@@ -86,11 +91,11 @@ const Brevvelger: NextPage<SkribentenConfig> = (props) => {
     return (
         <div className={styles.outerContainer}>
             <NavBar/>
-            <CaseContextBar saksnummer={sakId || "1234123"}
-                            foedselsnummer={"0101190012345"}
-                            gjelderNavn={"Test Testerson"}
-                            foedselsdato={"01.01.1900"}
-                            sakstype={"Uføretrygd"}
+            <CaseContextBar saksnummer={sak?.sakId.toString() || ""}
+                            foedselsnummer={sak?.foedselsnr || ""}
+                            gjelderNavn={"TODO test testerson"} // TODO
+                            foedselsdato={sak?.foedselsdato || ""}
+                            sakstype={sak?.sakType || ""} //TODO legg in map for forskjellige sakstyper
             />
             <div className={styles.innterContainer}>
                 <LetterFilter categories={letterCategories}
