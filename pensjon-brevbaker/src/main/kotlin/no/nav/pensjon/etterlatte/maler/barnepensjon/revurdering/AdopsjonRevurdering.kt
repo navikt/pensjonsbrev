@@ -9,7 +9,8 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.Navn
-import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingAdopsjonDTOSelectors.adoptertAv
+import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingAdopsjonDTOSelectors.adoptertAv1
+import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingAdopsjonDTOSelectors.adoptertAv2
 import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingAdopsjonDTOSelectors.virkningsdato
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.Adopsjon
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.Barnepensjon
@@ -18,7 +19,8 @@ import java.time.LocalDate
 
 data class BarnepensjonRevurderingAdopsjonDTO(
     val virkningsdato: LocalDate,
-    val adoptertAv: Navn,
+    val adoptertAv1: Navn,
+    val adoptertAv2: Navn? = null,
 )
 
 @TemplateModelHelpers
@@ -45,7 +47,8 @@ object AdopsjonRevurdering : EtterlatteTemplate<BarnepensjonRevurderingAdopsjonD
             includePhrase(
                 Adopsjon.BegrunnelseForVedtaket(
                     virkningsdato = virkningsdato,
-                    navn = adoptertAv,
+                    adoptertAv1 = adoptertAv1,
+                    adoptertAv2 = adoptertAv2,
                 ),
             )
 
