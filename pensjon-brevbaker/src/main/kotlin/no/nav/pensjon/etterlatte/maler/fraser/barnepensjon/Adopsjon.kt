@@ -18,7 +18,8 @@ object Adopsjon {
 
     data class BegrunnelseForVedtaket(
         val virkningsdato: Expression<LocalDate>,
-        val navn: Expression<Navn>,
+        val adoptertAv1: Expression<Navn>,
+        val adoptertAv2: Expression<Navn?>,
     ) : OutlinePhrase<LangBokmal>() {
         override fun OutlineOnlyScope<LangBokmal, Unit>.template() {
             title2 {
@@ -36,7 +37,9 @@ object Adopsjon {
                 text(
                     Language.Bokmal to "Vi viser til informasjon fra deg/verge om at du er adoptert av ",
                 )
-                formaterNavn(Language.Bokmal, navn)
+                formaterNavn(Language.Bokmal, adoptertAv1)
+                ifNotNull(adoptertAv2) { text(Language.Bokmal to " og ") }
+                ifNotNull(adoptertAv2) { ad2 -> formaterNavn(Language.Bokmal, ad2) }
                 textExpr(Language.Bokmal to " fra ".expr() + formatertVirkningsdato + ".")
             }
             paragraph {
