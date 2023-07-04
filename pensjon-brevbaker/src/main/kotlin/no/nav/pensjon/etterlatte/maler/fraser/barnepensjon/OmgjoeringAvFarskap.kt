@@ -17,7 +17,6 @@ import java.time.LocalDate
 object OmgjoeringAvFarskap {
 
     data class BegrunnelseForVedtaket(
-        val vedtaksdato: Expression<LocalDate>,
         val virkningsdato: Expression<LocalDate>,
         val naaevaerendeFar: Expression<Navn>,
         val forrigeFar: Expression<Navn>,
@@ -33,7 +32,7 @@ object OmgjoeringAvFarskap {
             paragraph {
                 textExpr(
                     Language.Bokmal to
-                        "Vi viser til vedtak av ".expr() + vedtaksdato.format() + ". " +
+                        "Vi viser til vedtak av ".expr() + innvilgelsesdato.format() + ". " +
                         "Vi har omgjort dette vedtaket fordi vi har fått informasjon om at det er fastslått at ",
                 )
                 formaterNavn(Language.Bokmal, naaevaerendeFar)
@@ -41,8 +40,8 @@ object OmgjoeringAvFarskap {
                     Language.Bokmal to " er din far og at dette gjelder fra du ble født. ",
                 )
                 formaterNavn(Language.Bokmal, naaevaerendeFar)
-                textExpr(
-                    Language.Bokmal to " er ikke død. Barnepensjonen din opphører fra ".expr() + formatertVirkningsdato + ".",
+                text(
+                    Language.Bokmal to " er ikke død."
                 )
             }
             paragraph {
@@ -51,10 +50,15 @@ object OmgjoeringAvFarskap {
                         "Du er ikke lenger gjenlevende barn etter ",
                 )
                 formaterNavn(Language.Bokmal, forrigeFar)
+                text(
+                    Language.Bokmal to
+                        ". Begge foreldrene dine lever, og du har derfor ikke rett til barnepensjon. Som en følge av dette er tidligere vedtak om innvilget barnepensjon ugyldig.",
+                )
+            }
+            paragraph {
                 textExpr(
                     Language.Bokmal to
-                        ". Begge foreldrene dine lever, og du har derfor ikke rett til barnepensjon. Som en følge av dette er tidligere vedtak om innvilget barnepensjon av ".expr() +
-                        innvilgelsesdato.format() +" ugyldig.",
+                    "Barnepensjonen din opphører fra ".expr() + formatertVirkningsdato + "."
                 )
             }
 

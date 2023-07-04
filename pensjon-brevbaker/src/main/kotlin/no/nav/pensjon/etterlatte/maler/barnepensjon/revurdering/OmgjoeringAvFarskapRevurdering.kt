@@ -12,7 +12,6 @@ import no.nav.pensjon.etterlatte.maler.Navn
 import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingOmgjoeringAvFarskapDTOSelectors.forrigeFar
 import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingOmgjoeringAvFarskapDTOSelectors.innvilgelsesdato
 import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingOmgjoeringAvFarskapDTOSelectors.naavaerendeFar
-import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingOmgjoeringAvFarskapDTOSelectors.vedtaksdato
 import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingOmgjoeringAvFarskapDTOSelectors.virkningsdato
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.Barnepensjon
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.Lover
@@ -20,7 +19,6 @@ import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.OmgjoeringAvFarskap
 import java.time.LocalDate
 
 data class BarnepensjonRevurderingOmgjoeringAvFarskapDTO(
-    val vedtaksdato: LocalDate,
     val virkningsdato: LocalDate,
     val naavaerendeFar: Navn,
     var forrigeFar: Navn,
@@ -50,7 +48,6 @@ object OmgjoeringAvFarskapRevurdering : EtterlatteTemplate<BarnepensjonRevurderi
         outline {
             includePhrase(
                 OmgjoeringAvFarskap.BegrunnelseForVedtaket(
-                    vedtaksdato = vedtaksdato,
                     virkningsdato = virkningsdato,
                     naaevaerendeFar = naavaerendeFar,
                     forrigeFar = forrigeFar,
