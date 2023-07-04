@@ -17,7 +17,6 @@ import java.time.LocalDate
 object OmgjoeringAvFarskap {
 
     data class BegrunnelseForVedtaket(
-        val virkningsdato: Expression<LocalDate>,
         val naaevaerendeFar: Expression<Navn>,
         val forrigeFar: Expression<Navn>,
         val opprinneligInnvilgelsesdato: Expression<LocalDate>,
@@ -28,7 +27,6 @@ object OmgjoeringAvFarskap {
                     Language.Bokmal to "Begrunnelse for vedtaket",
                 )
             }
-            val formatertVirkningsdato = virkningsdato.format()
             paragraph {
                 textExpr(
                     Language.Bokmal to
@@ -52,19 +50,7 @@ object OmgjoeringAvFarskap {
                 formaterNavn(Language.Bokmal, forrigeFar)
                 text(
                     Language.Bokmal to
-                        ". Begge foreldrene dine lever, og du har derfor ikke rett til barnepensjon. Som en følge av dette er tidligere vedtak om innvilget barnepensjon ugyldig.",
-                )
-            }
-            paragraph {
-                textExpr(
-                    Language.Bokmal to
-                    "Barnepensjonen din opphører fra ".expr() + formatertVirkningsdato + "."
-                )
-            }
-
-            paragraph {
-                text(
-                    Language.Bokmal to "Vedtaket er gjort etter bestemmelsene i folketrygdloven § 18-7 og § 22-12.",
+                        ". Begge foreldrene dine lever, og du har derfor ikke rett til barnepensjon. Som en følge av dette er tidligere vedtak om innvilget barnepensjon omgjort.",
                 )
             }
         }

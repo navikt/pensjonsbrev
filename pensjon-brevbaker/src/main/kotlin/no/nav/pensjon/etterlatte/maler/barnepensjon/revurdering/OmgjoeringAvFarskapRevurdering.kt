@@ -48,7 +48,6 @@ object OmgjoeringAvFarskapRevurdering : EtterlatteTemplate<BarnepensjonRevurderi
         outline {
             includePhrase(
                 OmgjoeringAvFarskap.BegrunnelseForVedtaket(
-                    virkningsdato = virkningsdato,
                     naaevaerendeFar = naavaerendeFar,
                     forrigeFar = forrigeFar,
                     opprinneligInnvilgelsesdato = opprinneligInnvilgelsesdato,
