@@ -6,7 +6,6 @@ import java.time.LocalDate
 import java.time.Month
 
 fun createBarnepensjonRevurderingOmgjoeringAvFarskapDTO() = BarnepensjonRevurderingOmgjoeringAvFarskapDTO(
-    vedtaksdato = LocalDate.of(2023, Month.MAY, 15),
     virkningsdato = LocalDate.of(2023, Month.MAY, 1),
     naavaerendeFar = Navn(
         fornavn = "Peder",
@@ -16,5 +15,5 @@ fun createBarnepensjonRevurderingOmgjoeringAvFarskapDTO() = BarnepensjonRevurder
         fornavn = "Lars",
         etternavn = "Holm",
     ),
-    forrigeVedtaksdato = LocalDate.of(2022, Month.JUNE, 1),
+    opprinneligInnvilgelsesdato = LocalDate.of(2022, Month.JUNE, 1),
 )
