@@ -16,5 +16,5 @@ fun createBarnepensjonRevurderingOmgjoeringAvFarskapDTO() = BarnepensjonRevurder
         fornavn = "Lars",
         etternavn = "Holm",
     ),
-    forrigeVedtaksdato = LocalDate.of(2022, Month.JUNE, 1),
+    innvilgelsesdato = LocalDate.of(2022, Month.JUNE, 1),
 )

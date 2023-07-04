@@ -21,7 +21,7 @@ object OmgjoeringAvFarskap {
         val virkningsdato: Expression<LocalDate>,
         val naaevaerendeFar: Expression<Navn>,
         val forrigeFar: Expression<Navn>,
-        val forrigeVedtaksdato: Expression<LocalDate>,
+        val innvilgelsesdato: Expression<LocalDate>,
     ) : OutlinePhrase<LangBokmal>() {
         override fun OutlineOnlyScope<LangBokmal, Unit>.template() {
             title2 {
@@ -54,7 +54,7 @@ object OmgjoeringAvFarskap {
                 textExpr(
                     Language.Bokmal to
                         ". Begge foreldrene dine lever, og du har derfor ikke rett til barnepensjon. Som en følge av dette er tidligere vedtak om innvilget barnepensjon av ".expr() +
-                        forrigeVedtaksdato.format() +" ugyldig.",
+                        innvilgelsesdato.format() +" ugyldig.",
                 )
             }
 
