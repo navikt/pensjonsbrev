@@ -10,8 +10,8 @@ import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.Navn
 import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingOmgjoeringAvFarskapDTOSelectors.forrigeFar
-import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingOmgjoeringAvFarskapDTOSelectors.innvilgelsesdato
 import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingOmgjoeringAvFarskapDTOSelectors.naavaerendeFar
+import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingOmgjoeringAvFarskapDTOSelectors.opprinneligInnvilgelsesdato
 import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingOmgjoeringAvFarskapDTOSelectors.virkningsdato
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.Barnepensjon
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.Lover
@@ -22,7 +22,7 @@ data class BarnepensjonRevurderingOmgjoeringAvFarskapDTO(
     val virkningsdato: LocalDate,
     val naavaerendeFar: Navn,
     var forrigeFar: Navn,
-    val innvilgelsesdato: LocalDate,
+    val opprinneligInnvilgelsesdato: LocalDate,
 )
 
 @TemplateModelHelpers
@@ -51,7 +51,7 @@ object OmgjoeringAvFarskapRevurdering : EtterlatteTemplate<BarnepensjonRevurderi
                     virkningsdato = virkningsdato,
                     naaevaerendeFar = naavaerendeFar,
                     forrigeFar = forrigeFar,
-                    innvilgelsesdato = innvilgelsesdato,
+                    opprinneligInnvilgelsesdato = opprinneligInnvilgelsesdato,
                 ),
             )
 

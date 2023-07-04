@@ -20,7 +20,7 @@ object OmgjoeringAvFarskap {
         val virkningsdato: Expression<LocalDate>,
         val naaevaerendeFar: Expression<Navn>,
         val forrigeFar: Expression<Navn>,
-        val innvilgelsesdato: Expression<LocalDate>,
+        val opprinneligInnvilgelsesdato: Expression<LocalDate>,
     ) : OutlinePhrase<LangBokmal>() {
         override fun OutlineOnlyScope<LangBokmal, Unit>.template() {
             title2 {
@@ -32,7 +32,7 @@ object OmgjoeringAvFarskap {
             paragraph {
                 textExpr(
                     Language.Bokmal to
-                        "Vi viser til vedtak av ".expr() + innvilgelsesdato.format() + ". " +
+                        "Vi viser til vedtak av ".expr() + opprinneligInnvilgelsesdato.format() + ". " +
                         "Vi har omgjort dette vedtaket fordi vi har fått informasjon om at det er fastslått at ",
                 )
                 formaterNavn(Language.Bokmal, naaevaerendeFar)
