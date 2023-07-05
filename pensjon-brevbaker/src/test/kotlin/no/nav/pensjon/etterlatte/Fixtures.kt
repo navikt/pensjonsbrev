@@ -8,9 +8,11 @@ import no.nav.pensjon.etterlatte.fixtures.createBarnepensjonRevurderingSoeskenju
 import no.nav.pensjon.etterlatte.fixtures.createManueltBrevDTO
 import no.nav.pensjon.etterlatte.fixtures.createOMSInnvilgelseDTO
 import no.nav.pensjon.etterlatte.maler.*
+import no.nav.pensjon.etterlatte.maler.barnepensjon.BarnepensjonInnvilgelseDTO
 import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingAdopsjonDTO
 import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingOmgjoeringAvFarskapDTO
 import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingSoeskenjusteringDTO
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.OMSInnvilgelseDTO
 import java.time.LocalDate
 import kotlin.reflect.KClass
 

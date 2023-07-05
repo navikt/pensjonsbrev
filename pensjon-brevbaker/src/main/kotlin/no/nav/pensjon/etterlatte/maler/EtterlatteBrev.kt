@@ -34,18 +34,6 @@ data class ManueltBrevDTO(
     }
 }
 
-data class OMSInnvilgelseDTO(
-    val utbetalingsinfo: Utbetalingsinfo,
-    val avkortingsinfo: Avkortingsinfo,
-    val avdoed: Avdoed
-)
-
-data class BarnepensjonInnvilgelseDTO(
-    val utbetalingsinfo: Utbetalingsinfo,
-    val avkortingsinfo: Avkortingsinfo? = null,
-    val avdoed: Avdoed
-)
-
 data class Avkortingsinfo(
     val grunnbeloep: Kroner,
     val inntekt: Kroner,

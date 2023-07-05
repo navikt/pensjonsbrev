@@ -11,7 +11,6 @@ import no.nav.pensjon.brev.template.render.PensjonLatexRenderer
 import no.nav.pensjon.brev.writeTestHTML
 import no.nav.pensjon.brev.writeTestPDF
 import no.nav.pensjon.etterlatte.Fixtures
-import no.nav.pensjon.etterlatte.maler.BarnepensjonInnvilgelseDTO
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 
