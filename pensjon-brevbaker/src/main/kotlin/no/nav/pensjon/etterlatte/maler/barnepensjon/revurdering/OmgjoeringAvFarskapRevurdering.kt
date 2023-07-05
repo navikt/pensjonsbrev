@@ -42,13 +42,12 @@ object OmgjoeringAvFarskapRevurdering : EtterlatteTemplate<BarnepensjonRevurderi
     ) {
         title {
             text(
-                Language.Bokmal to "Vi stanser barnepensjonen din",
+                Language.Bokmal to "Vi opphører barnepensjonen din",
             )
         }
         outline {
             includePhrase(
                 OmgjoeringAvFarskap.BegrunnelseForVedtaket(
-                    virkningsdato = virkningsdato,
                     naaevaerendeFar = naavaerendeFar,
                     forrigeFar = forrigeFar,
                     opprinneligInnvilgelsesdato = opprinneligInnvilgelsesdato,

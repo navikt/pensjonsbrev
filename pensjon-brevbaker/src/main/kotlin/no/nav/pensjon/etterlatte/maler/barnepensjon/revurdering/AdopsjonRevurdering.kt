@@ -40,7 +40,7 @@ object AdopsjonRevurdering : EtterlatteTemplate<BarnepensjonRevurderingAdopsjonD
     ) {
         title {
             text(
-                Language.Bokmal to "Vi stanser barnepensjonen din",
+                Language.Bokmal to "Vi opphører barnepensjonen din",
             )
         }
         outline {
