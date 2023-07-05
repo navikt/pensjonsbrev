@@ -42,7 +42,7 @@ object OmgjoeringAvFarskapRevurdering : EtterlatteTemplate<BarnepensjonRevurderi
     ) {
         title {
             text(
-                Language.Bokmal to "Vi stanser barnepensjonen din",
+                Language.Bokmal to "Vi opphører barnepensjonen din",
             )
         }
         outline {
