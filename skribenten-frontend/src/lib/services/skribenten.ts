@@ -1,15 +1,23 @@
 import {IMsalContext} from "@azure/msal-react/dist/MsalContext"
 import {withAuthorization} from "./msal"
-import {EditedLetter, RedigerbarTemplateDescription, RenderedLetter, Sak} from "../../modules/LetterEditor/model/api"
+import {
+    EditedLetter,
+    RedigerbarTemplateDescription,
+    RenderedLetter,
+    Sak,
+    SkribentServiceResult,
+} from "../../modules/LetterEditor/model/api"
 import {ObjectValue} from "../../modules/ModelEditor/model"
-import {LetterCategory, LetterSelection} from "../../modules/LetterPicker/model/skribenten"
+import {LetterCategory} from "../../modules/LetterPicker/model/skribenten"
 
 export interface SkribentenAPIConfig {
     url: string
     scope: string
 }
+
 class SkribentenAPI {
-    constructor(readonly config: SkribentenAPIConfig) {}
+    constructor(readonly config: SkribentenAPIConfig) {
+    }
 
     async testPesys(msal: IMsalContext): Promise<string> {
         return withAuthorization(msal, this.config.scope).then((auth) =>
@@ -117,7 +125,7 @@ class SkribentenAPI {
         )
     }
 
-    async getSaksinfo(msal: IMsalContext, saksnummer: string): Promise<Sak> {
+    async getSaksinfo(msal: IMsalContext, saksnummer: string): Promise<SkribentServiceResult<Sak>> {
         return withAuthorization(msal, this.config.scope).then((auth) =>
             fetch(`${this.config.url}/pen/sak/${saksnummer}`, {
                 headers: {
@@ -127,8 +135,20 @@ class SkribentenAPI {
                 },
                 method: 'GET',
             })
-        ).then((res) => res.json())
+        ).then((res): SkribentServiceResult<Sak> => {
+            if (res.status == 404) {
+                return {result: null, errorMessage: "sak not found"}
+            } else if (res.status !== 200) {
+                return {result: null, errorMessage: `Error while fetching sak: Error code ${res.status}`}
+            }
+            res.json().then((value)=>{
+                return {result: value, errorMessage: null}
+            }).catch((reason)=>{
+                return {result: null, errorMessage: reason.message}
+            })
+        })
     }
+
     async bestillExtreamBrev(msal: IMsalContext, brevkode: string, language: string): Promise<string> {
         return withAuthorization(msal, this.config.scope).then((auth) =>
             fetch(`${this.config.url}/pen/orderExtreamLetter`, {
@@ -153,7 +173,6 @@ class SkribentenAPI {
             })
         ).then((res) => res.text())
     }
-
 }
 
 export default SkribentenAPI

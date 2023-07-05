@@ -9,9 +9,11 @@ import com.typesafe.config.Config
 import io.ktor.client.plugins.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
+import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.serialization.jackson.*
 import io.ktor.server.application.*
+import no.nav.pensjon.brev.skribenten.auth.AuthorizedHttpClientResult
 import no.nav.pensjon.brev.skribenten.auth.AzureADOnBehalfOfAuthorizedHttpClient
 import no.nav.pensjon.brev.skribenten.auth.AzureADService
 import java.time.LocalDate
@@ -54,8 +56,8 @@ class PenService(config: Config, authService: AzureADService) {
     )
 
 
-    suspend fun hentSak(call: ApplicationCall, sakId: Long): ServiceResult<Sak, Any> =
-        client.get(call, "sak/$sakId").toServiceResult()
+    suspend fun hentSak(call: ApplicationCall, sakId: Long): AuthorizedHttpClientResult =
+        client.get(call, "sak/$sakId")
 
     private data class BestillBrevRequest(
         val sakId: Long? = null,
@@ -88,12 +90,12 @@ class PenService(config: Config, authService: AzureADService) {
         sakId: Long,
         brevkode: String,
         spraak: SpraakKode,
-    ): ServiceResult<String, Any> =
+    ): AuthorizedHttpClientResult =
         client.post(call, "sak/$sakId/extreamBrev") {
             setBody(
                 BestillExtreamBrevDto(
-                    letterCode = brevkode, // TODO fill with actual value
-                    language = spraak,  // TODO fill with actual value
+                    letterCode = brevkode,
+                    language = spraak,
                     vedtaksId = null, // TODO fill with actual value
                     gjelderPid = "09417320595", // TODO fill with actual value. Can't it allways be set from sakid?
                     mottakerPid = null, // TODO fill with actual value
@@ -103,9 +105,9 @@ class PenService(config: Config, authService: AzureADService) {
                 )
             )
             contentType(ContentType.Application.Json)
-        }.toServiceResult()
+        }
 
-    suspend fun bestillDoksysBrev(call: ApplicationCall, sakId: Long): ServiceResult<String, Any> =
+    suspend fun bestillDoksysBrev(call: ApplicationCall, sakId: Long): AuthorizedHttpClientResult =
         client.post(call, "sak/$sakId/extreamBrev") {
             setBody(
                 BestillExtreamBrevDto(
@@ -120,7 +122,7 @@ class PenService(config: Config, authService: AzureADService) {
                 )
             )
             contentType(ContentType.Application.Json)
-        }.toServiceResult()
+        }
 
     ///{sakId}/redigerbrev
 }

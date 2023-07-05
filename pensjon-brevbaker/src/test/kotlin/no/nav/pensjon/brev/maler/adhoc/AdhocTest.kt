@@ -14,7 +14,7 @@ class AdhocTest {
     }
 
     fun testAdhocPdf(template: LetterTemplate<*, *>, pdfName: String) {
-        Letter(template, Unit, Language.Bokmal, Fixtures.fellesAuto).renderTestPDF(pdfName)
+        Letter(template, Unit, Language.Bokmal, Fixtures.fellesAuto.copy(vergeNavn = "Verge vergeson")).renderTestPDF(pdfName)
     }
 
     @Test

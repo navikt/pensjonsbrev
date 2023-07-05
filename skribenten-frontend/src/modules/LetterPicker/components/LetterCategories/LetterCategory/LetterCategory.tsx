@@ -14,15 +14,6 @@ export interface LetterCategoryProps {
 const LetterCategory: FC<LetterCategoryProps> = ({category, isExpanded, selectedLetter, onLetterSelected}) => {
     const [isActive, setIsActive] = useState(false)
     const expanded = isActive || isExpanded
-    const categoryIsSelected = (): boolean => {
-        if (expanded && !selectedLetter) {
-            return true
-        } else if (selectedLetter && category.templates.some(c => c.id === selectedLetter)) {
-            return true
-        }
-        return false
-    }
-
 
     const content = (expanded && (
         <div className={`${styles.letterCategoryContainer}`}>
@@ -38,7 +29,7 @@ const LetterCategory: FC<LetterCategoryProps> = ({category, isExpanded, selected
                     onClick={() => setIsActive(!expanded)}>
 
                 <h2 className={`${expanded ? styles.expansionHeaderOpen : ""} ${styles.expansionHeader}`}>
-                    {category.name}
+                    {letterCategoryToName(category.name)}
                 </h2>
 
                 {expanded && <ChevronUpIcon title="a11y-title" fontSize="1rem" className={styles.expansionArrow}/>}
@@ -50,3 +41,17 @@ const LetterCategory: FC<LetterCategoryProps> = ({category, isExpanded, selected
 }
 
 export default LetterCategory
+
+function letterCategoryToName(category: string | null): string{
+    switch (category) {
+        case "BREV_MED_SKJEMA": return "Brev med skjema"
+        case "INFORMASJON": return "Informasjon"
+        case "INNHENTE_OPPL": return "Innhente opplysninger"
+        case "NOTAT": return "Notat"
+        case "OVRIG": return "Øvrig"
+        case "VARSEL": return "Varsel"
+        case "VEDTAK": return "Vedtak"
+        case null: return "Annet"
+        default: return category
+    }
+}

@@ -86,6 +86,11 @@ export interface Sak {
     readonly sakType: string,
 }
 
+export interface SkribentServiceResult<ResultType> {
+    readonly result: ResultType | null
+    readonly errorMessage: string | null
+}
+
 export type LanguageCode = 'BOKMAL' | 'NYNORSK' | 'ENGLISH'
 export type Distribusjonstype = 'VEDTAK' | 'VIKTIG' | 'ANNET'
 export interface LetterMetadata {

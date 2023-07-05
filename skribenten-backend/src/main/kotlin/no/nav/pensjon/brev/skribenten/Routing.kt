@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.skribenten
 
 import com.typesafe.config.Config
+import io.ktor.client.call.*
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
@@ -10,14 +11,11 @@ import io.ktor.server.routing.*
 import io.ktor.server.util.*
 import io.ktor.util.pipeline.*
 import no.nav.pensjon.brev.api.model.maler.Brevkode
-import no.nav.pensjon.brev.skribenten.auth.AzureADService
-import no.nav.pensjon.brev.skribenten.auth.JwtConfig
-import no.nav.pensjon.brev.skribenten.auth.UnauthorizedException
-import no.nav.pensjon.brev.skribenten.auth.UserPrincipal
+import no.nav.pensjon.brev.skribenten.auth.*
 import no.nav.pensjon.brev.skribenten.services.*
 import no.nav.pensjon.brevbaker.api.model.RenderedJsonLetter
-import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
 import java.util.*
 
 data class RenderLetterRequest(val letterData: Any, val editedLetter: EditedJsonLetter?)
@@ -46,9 +44,9 @@ fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config
 
         authenticate(authConfig.name) {
             post("/test/pen") {
-                val sak =
+                val result =
                     penService.bestillExtreamBrev(call, 22972355, spraak = SpraakKode.NB, brevkode = "PE_IY_05_300")
-                respondWithResult(sak)
+                respondWithResult(result.toServiceResult())
             }
 
             get("/test/pdl") {
@@ -63,13 +61,13 @@ fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config
                     brevkode = request.brevkode,
                     spraak = request.spraakKode,
                 )
-                respondWithResult(journalpostId)
+                respondWithResult(journalpostId.toServiceResult())
             }
 
             post("/pen/orderDoksysLetter") {
                 val journalpostId =
                     penService.bestillExtreamBrev(call, 22972355, spraak = SpraakKode.NB, brevkode = "PE_IY_05_300")
-                respondWithResult(journalpostId)
+                respondWithResult(journalpostId.toServiceResult())
             }
 
             data class SakSelection(
@@ -81,19 +79,30 @@ fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config
             get("/pen/sak/{sakId}") {
                 val sakId = call.parameters["sakId"]?.toLongOrNull()
                 if (sakId != null) {
-                    when (val sakInfo = penService.hentSak(call, sakId)) {
-                        is ServiceResult.AuthorizationError -> TODO()
-                        is ServiceResult.Error -> TODO()
-                        is ServiceResult.Ok -> call.respond(
-                            sakInfo.result.let {
-                                SakSelection(
-                                    sakId = it.sakId,
-                                    foedselsnr = it.penPerson.fnr,
-                                    foedselsdato = it.penPerson.fodselsdato.format(DateTimeFormatter.ISO_DATE.localizedBy(Locale.forLanguageTag("NB-no"))),
-                                    sakType = it.sakType,
+                    when (val result = penService.hentSak(call, sakId)) {
+                        is AuthorizedHttpClientResult.Error -> {
+                            call.respond(HttpStatusCode.InternalServerError, "Kunne ikke hente sak")
+                        }
+
+                        is AuthorizedHttpClientResult.Response -> {
+                            if (result.response.status.isSuccess()) {
+                                call.respond(
+                                    result.response.body<PenService.Sak>().let {
+                                        SakSelection(
+                                            sakId = it.sakId,
+                                            foedselsnr = it.penPerson.fnr,
+                                            foedselsdato = it.penPerson.fodselsdato.format(
+                                                DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT)
+                                                    .withLocale(Locale.forLanguageTag("no"))
+                                            ),
+                                            sakType = it.sakType,
+                                        )
+                                    }
                                 )
+                            } else {
+                                call.respond(result.response.status)
                             }
-                        )
+                        }
                     }
                 }
             }
@@ -128,9 +137,7 @@ fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config
                 }
             }
             get("/lettertemplates") {
-                //TODO supplement the data with extra data from brevbaker
                 //TODO fetch templates from brevbaker
-                val userId = getLoggedInUserId()
                 call.respond(brevmetadataService.getRedigerbareBrevKategorier("UFOREP"))
             }
 
