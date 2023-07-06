@@ -289,7 +289,7 @@ object Barnepensjon {
             paragraph {
                 text(
                     Language.Bokmal to "Hvis du mener vedtaket er feil, kan du klage innen seks uker fra den datoen " +
-                            "du mottok vedtaket. Klagen skal være skriftlig. Du finner skjema og informasjon på ${Constants.KLAGE_URL}."
+                            "du mottok vedtaket. Du kan lese mer om hvordan du klager i vedlegget «Informasjon om klage og anke»"
                 )
             }
         }
