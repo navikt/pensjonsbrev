@@ -23,12 +23,6 @@ import no.nav.pensjon.etterlatte.maler.barnepensjon.BarnepensjonInnvilgelseDTOSe
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.Barnepensjon
 import no.nav.pensjon.etterlatte.maler.fraser.common.Vedtak
 
-data class BarnepensjonInnvilgelseDTO(
-    val utbetalingsinfo: Utbetalingsinfo,
-    val avkortingsinfo: Avkortingsinfo? = null,
-    val avdoed: Avdoed
-)
-
 @TemplateModelHelpers
 object BarnepensjonInnvilgelse : EtterlatteTemplate<BarnepensjonInnvilgelseDTO> {
     override val kode: EtterlatteBrevKode = EtterlatteBrevKode.BARNEPENSJON_INNVILGELSE

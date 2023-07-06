@@ -10,7 +10,6 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.EndringIUtbetaling
-import no.nav.pensjon.etterlatte.maler.Utbetalingsinfo
 import no.nav.pensjon.etterlatte.maler.UtbetalingsinfoSelectors.antallBarn
 import no.nav.pensjon.etterlatte.maler.UtbetalingsinfoSelectors.beloep
 import no.nav.pensjon.etterlatte.maler.UtbetalingsinfoSelectors.beregningsperioder
@@ -22,22 +21,6 @@ import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.Barnepensjon
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.Lover
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.Soeskenjustering
 import no.nav.pensjon.etterlatte.maler.fraser.common.Vedtak
-
-
-enum class BarnepensjonSoeskenjusteringGrunn(val endring: EndringIUtbetaling) {
-    NYTT_SOESKEN(EndringIUtbetaling.REDUSERES),
-    SOESKEN_DOER(EndringIUtbetaling.OEKES),
-    SOESKEN_INN_INSTITUSJON_INGEN_ENDRING(EndringIUtbetaling.SAMME),
-    SOESKEN_INN_INSTITUSJON_ENDRING(EndringIUtbetaling.OEKES),
-    SOESKEN_UT_INSTITUSJON(EndringIUtbetaling.REDUSERES),
-    FORPLEID_ETTER_BARNEVERNSLOVEN(EndringIUtbetaling.OEKES),
-    SOESKEN_BLIR_ADOPTERT(EndringIUtbetaling.OEKES)
-}
-
-data class BarnepensjonRevurderingSoeskenjusteringDTO(
-    val utbetalingsinfo: Utbetalingsinfo,
-    val grunnForJustering: BarnepensjonSoeskenjusteringGrunn
-)
 
 @TemplateModelHelpers
 object SoeskenjusteringRevurdering : EtterlatteTemplate<BarnepensjonRevurderingSoeskenjusteringDTO> {
@@ -51,8 +34,8 @@ object SoeskenjusteringRevurdering : EtterlatteTemplate<BarnepensjonRevurderingS
             displayTitle = "Vedtak - endring i barnepensjon",
             isSensitiv = true,
             distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
-            brevtype = LetterMetadata.Brevtype.VEDTAKSBREV
-        )
+            brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
+        ),
     ) {
         val (endringIBarnepensjon, kunVurdert) = BarnepensjonSoeskenjusteringGrunn.values()
             .partition { it.endring != EndringIUtbetaling.SAMME }
@@ -73,20 +56,19 @@ object SoeskenjusteringRevurdering : EtterlatteTemplate<BarnepensjonRevurderingS
                 Soeskenjustering.RevurderingSoeskenjusteringBehandlingsvedtak(
                     virkningsdato = utbetalingsinfo.virkningsdato,
                     soeskenjusteringType = grunnForJustering,
-                    beloep = utbetalingsinfo.beloep
-                )
+                    beloep = utbetalingsinfo.beloep,
+                ),
             )
             includePhrase(Barnepensjon.TilOgMedKalendermaaneden18Aar)
             includePhrase(Lover.Folketrygdloven18og22)
-
 
             includePhrase(Barnepensjon.BeregningOgUtbetalingOverskrift)
             includePhrase(
                 Barnepensjon.SlikHarViBeregnetPensjonenDin(
                     beregningsperioder = utbetalingsinfo.beregningsperioder,
                     soeskenjustering = utbetalingsinfo.soeskenjustering,
-                    antallBarn = utbetalingsinfo.antallBarn
-                )
+                    antallBarn = utbetalingsinfo.antallBarn,
+                ),
             )
 
             includePhrase(Barnepensjon.Utbetaling)
@@ -100,6 +82,5 @@ object SoeskenjusteringRevurdering : EtterlatteTemplate<BarnepensjonRevurderingS
             includePhrase(Barnepensjon.DuHarRettTilInnsyn)
             includePhrase(Barnepensjon.HarDuSpoersmaal)
         }
-
     }
 }
