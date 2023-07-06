@@ -3,6 +3,7 @@ package no.nav.pensjon.etterlatte
 import no.nav.pensjon.brevbaker.api.model.*
 
 enum class EtterlatteBrevKode {
+    BARNEPENSJON_AVSLAG,
     BARNEPENSJON_INNVILGELSE,
     BARNEPENSJON_REVURDERING_ADOPSJON,
     BARNEPENSJON_REVURDERING_OMGJOERING_AV_FARSKAP,
