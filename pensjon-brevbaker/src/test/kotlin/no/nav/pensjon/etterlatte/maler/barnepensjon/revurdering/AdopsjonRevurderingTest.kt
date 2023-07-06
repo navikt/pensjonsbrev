@@ -12,6 +12,7 @@ import no.nav.pensjon.brev.writeTestHTML
 import no.nav.pensjon.brev.writeTestPDF
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.Fixtures
+import no.nav.pensjon.etterlatte.maler.ManueltBrevDTO
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 
@@ -22,7 +23,7 @@ class AdopsjonRevurderingTest {
     fun pdftest() {
         Letter(
             AdopsjonRevurdering.template,
-            Fixtures.create<BarnepensjonRevurderingAdopsjonDTO>(),
+            Fixtures.create<ManueltBrevDTO>(),
             Language.Bokmal,
             Fixtures.felles,
         ).let { PensjonLatexRenderer.render(it) }
@@ -34,7 +35,7 @@ class AdopsjonRevurderingTest {
     fun testHtml() {
         Letter(
             AdopsjonRevurdering.template,
-            Fixtures.create<BarnepensjonRevurderingAdopsjonDTO>(),
+            Fixtures.create<ManueltBrevDTO>(),
             Language.Bokmal,
             Fixtures.felles,
         ).let { PensjonHTMLRenderer.render(it) }

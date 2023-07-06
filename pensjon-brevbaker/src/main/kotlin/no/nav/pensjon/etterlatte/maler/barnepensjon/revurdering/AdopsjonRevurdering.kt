@@ -8,28 +8,17 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
-import no.nav.pensjon.etterlatte.maler.Navn
-import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingAdopsjonDTOSelectors.adoptertAv1
-import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingAdopsjonDTOSelectors.adoptertAv2
-import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingAdopsjonDTOSelectors.virkningsdato
-import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.Adopsjon
+import no.nav.pensjon.etterlatte.maler.ManueltBrevDTO
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.Barnepensjon
-import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.Lover
-import java.time.LocalDate
-
-data class BarnepensjonRevurderingAdopsjonDTO(
-    val virkningsdato: LocalDate,
-    val adoptertAv1: Navn,
-    val adoptertAv2: Navn? = null,
-)
+import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
 
 @TemplateModelHelpers
-object AdopsjonRevurdering : EtterlatteTemplate<BarnepensjonRevurderingAdopsjonDTO> {
+object AdopsjonRevurdering : EtterlatteTemplate<ManueltBrevDTO> {
     override val kode: EtterlatteBrevKode = EtterlatteBrevKode.BARNEPENSJON_REVURDERING_ADOPSJON
 
     override val template = createTemplate(
         name = kode.name,
-        letterDataType = BarnepensjonRevurderingAdopsjonDTO::class,
+        letterDataType = ManueltBrevDTO::class,
         languages = languages(Language.Bokmal),
         letterMetadata = LetterMetadata(
             displayTitle = "Vedtak - opphør på grunn av adopsjon",
@@ -44,15 +33,8 @@ object AdopsjonRevurdering : EtterlatteTemplate<BarnepensjonRevurderingAdopsjonD
             )
         }
         outline {
-            includePhrase(
-                Adopsjon.BegrunnelseForVedtaket(
-                    virkningsdato = virkningsdato,
-                    adoptertAv1 = adoptertAv1,
-                    adoptertAv2 = adoptertAv2,
-                ),
-            )
+            konverterElementerTilBrevbakerformat(Language.Bokmal)
 
-            includePhrase(Lover.Folketrygdloven18_7og22_12)
             includePhrase(Barnepensjon.DuHarRettTilAaKlage)
             includePhrase(Barnepensjon.DuHarRettTilInnsyn)
             includePhrase(Barnepensjon.HarDuSpoersmaal)
