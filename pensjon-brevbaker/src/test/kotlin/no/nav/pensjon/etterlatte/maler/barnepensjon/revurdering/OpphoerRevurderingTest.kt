@@ -12,32 +12,33 @@ import no.nav.pensjon.brev.writeTestHTML
 import no.nav.pensjon.brev.writeTestPDF
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.Fixtures
+import no.nav.pensjon.etterlatte.maler.ManueltBrevDTO
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 
 @Tag(TestTags.INTEGRATION_TEST)
-class OmgjoeringAvFarskapRevurderingTest {
+class OpphoerRevurderingTest {
 
     @Test
     fun pdftest() {
         Letter(
-            OmgjoeringAvFarskapRevurdering.template,
-            Fixtures.create<BarnepensjonRevurderingOmgjoeringAvFarskapDTO>(),
+            OpphoerRevurdering.template,
+            Fixtures.create<ManueltBrevDTO>(),
             Language.Bokmal,
             Fixtures.felles,
         ).let { PensjonLatexRenderer.render(it) }
             .let { runBlocking { LaTeXCompilerService(PDF_BUILDER_URL).producePDF(it, "test").base64PDF } }
-            .also { writeTestPDF(EtterlatteBrevKode.BARNEPENSJON_REVURDERING_OMGJOERING_AV_FARSKAP.name, it) }
+            .also { writeTestPDF(EtterlatteBrevKode.BARNEPENSJON_REVURDERING_OPPHOER.name, it) }
     }
 
     @Test
     fun testHtml() {
         Letter(
-            OmgjoeringAvFarskapRevurdering.template,
-            Fixtures.create<BarnepensjonRevurderingOmgjoeringAvFarskapDTO>(),
+            OpphoerRevurdering.template,
+            Fixtures.create<ManueltBrevDTO>(),
             Language.Bokmal,
             Fixtures.felles,
         ).let { PensjonHTMLRenderer.render(it) }
-            .also { writeTestHTML(EtterlatteBrevKode.BARNEPENSJON_REVURDERING_OMGJOERING_AV_FARSKAP.name, it) }
+            .also { writeTestHTML(EtterlatteBrevKode.BARNEPENSJON_REVURDERING_OPPHOER.name, it) }
     }
 }

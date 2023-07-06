@@ -1,14 +1,12 @@
 package no.nav.pensjon.etterlatte
 
 import no.nav.pensjon.brev.template.LetterTemplate
-import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.AdopsjonRevurdering
 import no.nav.pensjon.etterlatte.maler.barnepensjon.BarnepensjonInnvilgelse
-import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.OmgjoeringAvFarskapRevurdering
+import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.OpphoerRevurdering
 import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.SoeskenjusteringRevurdering
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.OMSInnvilgelseAuto
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.OMSInnvilgelseManuell
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.OMSOpphoerManuell
-
 
 val prodAutobrevTemplates: Set<EtterlatteTemplate<*>> =
     setOf(
@@ -16,9 +14,8 @@ val prodAutobrevTemplates: Set<EtterlatteTemplate<*>> =
         OMSInnvilgelseAuto,
         OMSInnvilgelseManuell,
         OMSOpphoerManuell,
-        AdopsjonRevurdering,
-        OmgjoeringAvFarskapRevurdering,
-        SoeskenjusteringRevurdering
+        OpphoerRevurdering,
+        SoeskenjusteringRevurdering,
     )
 
 val prodRedigerbareTemplates: Set<EtterlatteTemplate<*>> = emptySet()

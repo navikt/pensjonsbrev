@@ -13,15 +13,15 @@ import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.Barnepensjon
 import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
 
 @TemplateModelHelpers
-object AdopsjonRevurdering : EtterlatteTemplate<ManueltBrevDTO> {
-    override val kode: EtterlatteBrevKode = EtterlatteBrevKode.BARNEPENSJON_REVURDERING_ADOPSJON
+object OpphoerRevurdering : EtterlatteTemplate<ManueltBrevDTO> {
+    override val kode: EtterlatteBrevKode = EtterlatteBrevKode.BARNEPENSJON_REVURDERING_OPPHOER
 
     override val template = createTemplate(
         name = kode.name,
         letterDataType = ManueltBrevDTO::class,
         languages = languages(Language.Bokmal),
         letterMetadata = LetterMetadata(
-            displayTitle = "Vedtak - opphør på grunn av adopsjon",
+            displayTitle = "Vedtak - opphør",
             isSensitiv = true,
             distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
