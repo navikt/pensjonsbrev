@@ -125,7 +125,7 @@ class SkribentenAPI {
         )
     }
 
-    async getSaksinfo(msal: IMsalContext, saksnummer: string): Promise<SkribentServiceResult<Sak>> {
+    async getSaksinfo(msal: IMsalContext, saksnummer: number): Promise<SkribentServiceResult<Sak>> {
         return withAuthorization(msal, this.config.scope).then((auth) =>
             fetch(`${this.config.url}/pen/sak/${saksnummer}`, {
                 headers: {
@@ -135,21 +135,25 @@ class SkribentenAPI {
                 },
                 method: 'GET',
             })
-        ).then((res): SkribentServiceResult<Sak> => {
+        ).then(async (res): Promise<SkribentServiceResult<Sak>> => {
             if (res.status == 404) {
-                return {result: null, errorMessage: "sak not found"}
+                return {result: null, errorMessage: `fant ikke sak med saksnummer ${saksnummer.toString()}`}
             } else if (res.status !== 200) {
                 return {result: null, errorMessage: `Error while fetching sak: Error code ${res.status}`}
             }
-            res.json().then((value)=>{
+            return await res.json().then((value) => {
                 return {result: value, errorMessage: null}
-            }).catch((reason)=>{
+            }).catch((reason) => {
                 return {result: null, errorMessage: reason.message}
             })
         })
     }
 
-    async bestillExtreamBrev(msal: IMsalContext, brevkode: string, language: string): Promise<string> {
+    async bestillExtreamBrev(msal: IMsalContext,
+                             brevkode: string,
+                             sakId: string,
+                             gjelderPid: string,
+                             spraak: string): Promise<string> {
         return withAuthorization(msal, this.config.scope).then((auth) =>
             fetch(`${this.config.url}/pen/orderExtreamLetter`, {
                 headers: {
@@ -158,7 +162,7 @@ class SkribentenAPI {
                     'Authorization': `Bearer ${auth.accessToken}`,
                 },
                 method: 'POST',
-                body: JSON.stringify({brevkode: brevkode, spraakKode: language}),
+                body: JSON.stringify({brevkode: brevkode, sakId: sakId, spraak: spraak, gjelderPid: gjelderPid}),
             })
         ).then((res) => res.json()).then(JSON.stringify)
     }

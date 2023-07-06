@@ -22,7 +22,9 @@ data class RenderLetterRequest(val letterData: Any, val editedLetter: EditedJson
 data class EditedJsonLetter(val letter: RenderedJsonLetter, val deletedBlocks: Set<Int>)
 data class OrderLetterRequest(
     val brevkode: String,
-    val spraakKode: SpraakKode,
+    val spraak: SpraakKode,
+    val sakId: Long,
+    val gjelderPid: String,
 )
 
 fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config) {
@@ -44,9 +46,7 @@ fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config
 
         authenticate(authConfig.name) {
             post("/test/pen") {
-                val result =
-                    penService.bestillExtreamBrev(call, 22972355, spraak = SpraakKode.NB, brevkode = "PE_IY_05_300")
-                respondWithResult(result.toServiceResult())
+                respondWithResult(penService.redigerExtreamBrev(call, "453840176"))
             }
 
             get("/test/pdl") {
@@ -55,19 +55,26 @@ fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config
 
             post("/pen/orderExtreamLetter") {
                 val request = call.receive<OrderLetterRequest>()
-                val journalpostId = penService.bestillExtreamBrev(
+                respondWithResult(penService.bestillExtreamBrev(
                     call,
-                    22972355,
+                    sakId = request.sakId,
                     brevkode = request.brevkode,
-                    spraak = request.spraakKode,
-                )
-                respondWithResult(journalpostId.toServiceResult())
+                    spraak = request.spraak,
+                    gjelderPid = request.gjelderPid
+                ))
+            }
+
+            get("/pen/redigerExtreamBrev/{journalpostId}") {
+                val journalpostId = call.parameters["journalpostId"]
+                if(journalpostId != null) {
+                    respondWithResult(penService.redigerExtreamBrev(call, journalpostId))
+                }
             }
 
             post("/pen/orderDoksysLetter") {
-                val journalpostId =
-                    penService.bestillExtreamBrev(call, 22972355, spraak = SpraakKode.NB, brevkode = "PE_IY_05_300")
-                respondWithResult(journalpostId.toServiceResult())
+//                val journalpostId =
+//                    penService.bestillDoksysBrev(call, 22972355, spraak = SpraakKode.NB, brevkode = "PE_IY_05_300")
+//                respondWithResult(journalpostId.toServiceResult())
             }
 
             data class SakSelection(
@@ -104,6 +111,8 @@ fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config
                             }
                         }
                     }
+                } else {
+                    call.respond(HttpStatusCode.BadRequest, "Missing or invalid sakId")
                 }
             }
 

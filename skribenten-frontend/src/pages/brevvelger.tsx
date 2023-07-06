@@ -10,13 +10,9 @@ import LetterPreview from "../modules/LetterPicker/components/LetterPreview/Lett
 import SkribentenAPI from "../lib/services/skribenten"
 import {useMsal} from "@azure/msal-react"
 import {LetterCategory, LetterSelection} from "../modules/LetterPicker/model/skribenten"
-import NavBar from "../components/navbar/NavBar"
-import CaseContextBar from "../components/casecontextbar/CaseContextBar"
 import LetterPickerActionBar from "../modules/LetterPicker/components/ActionBar/ActionBar"
-import {useSearchParams} from "next/navigation"
-import {Sak, SkribentServiceResult} from "../modules/LetterEditor/model/api"
-import SelectSakid from "../modules/SelectSakId/SelectSakid"
-import {useRouter} from "next/router"
+import SakContext from "../components/casecontextpage/CaseContextPage"
+import {Sak} from "../modules/LetterEditor/model/api"
 
 const Brevvelger: NextPage<SkribentenConfig> = (props) => {
     const [selectedLetter, setSelectedLetter] = useState<LetterSelection | null>(null)
@@ -24,10 +20,6 @@ const Brevvelger: NextPage<SkribentenConfig> = (props) => {
     const [favourites, setFavourites] = useState<LetterSelection[] | null>(null)
     const [letterMetadata, setLetterMetadata] = useState<LetterSelection[] | null>()
     const [sak, setSak] = useState<Sak | null>(null)
-    const [errorMessage, setErrorMessage] = useState<string | null>()
-    const queryParams = useSearchParams()
-    const sakId = queryParams.get("sakId") || null // TODO handle empty / invalid sakid
-    const router = useRouter()
 
     const letterSelectedHandler = (id: string | null) => {
         if (id === selectedLetter?.id) {
@@ -39,11 +31,13 @@ const Brevvelger: NextPage<SkribentenConfig> = (props) => {
     }
 
     const onOrderLetterHandler = (selectedLanguage: string) => {
-        if (selectedLetter) {
+        if (selectedLetter && sak) {
             skribentApi.bestillExtreamBrev(
                 msal,
                 selectedLetter.id,
-                selectedLanguage
+                sak.sakId.toString(),
+                sak.foedselsnr,
+                selectedLanguage,
             ).then((value: string) => {
                 console.log(value)
             })
@@ -88,46 +82,22 @@ const Brevvelger: NextPage<SkribentenConfig> = (props) => {
         })
     }, [])
 
-    useEffect(() => {
-        sakId && skribentApi.getSaksinfo(msal, sakId).then((response: SkribentServiceResult<Sak>) => {
-                if (response.result) {
-                    setSak(response.result)
-                } else {
-                    console.log(response.errorMessage)
-                    setErrorMessage(response.errorMessage)
-                }
-            }
-        )
-    }, [sakId])
-
     //TODO extract universal page (header and background)
-    if (sakId && !errorMessage) {
-        return (<div className={styles.outerContainer}>
-                <NavBar/>
-                <CaseContextBar saksnummer={sak?.sakId.toString()}
-                                foedselsnummer={sak?.foedselsnr}
-                                gjelderNavn={"TODO test testerson"} // TODO få inn navn fra pdl
-                                foedselsdato={sak?.foedselsdato}
-                                sakstype={sak?.sakType} //TODO legg in map for forskjellige sakstyper
-                />
-                <div className={styles.innterContainer}>
-                    <LetterFilter categories={letterCategories}
-                                  favourites={favourites}
-                                  onLetterSelected={letterSelectedHandler}
-                                  selectedLetter={selectedLetter?.id || null}/>
-                    <LetterPreview selectedLetter={selectedLetter}
-                                   selectedIsFavourite={selectedLetterIsFavourite()}
-                                   onAddToFavourites={addToFavouritesHandler}/>
-                </div>
-                <LetterPickerActionBar selectedLetter={selectedLetter}
-                                       onOrderLetter={onOrderLetterHandler}/>
+    return (<SakContext skribentApi={skribentApi} msal={msal} onSakChanged={setSak}>
+        <div className={styles.outerContainer}>
+            <div className={styles.innterContainer}>
+                <LetterFilter categories={letterCategories}
+                              favourites={favourites}
+                              onLetterSelected={letterSelectedHandler}
+                              selectedLetter={selectedLetter?.id || null}/>
+                <LetterPreview selectedLetter={selectedLetter}
+                               selectedIsFavourite={selectedLetterIsFavourite()}
+                               onAddToFavourites={addToFavouritesHandler}/>
             </div>
-        )
-    } else return (
-        <SelectSakid onSubmit={(sakId: number) => router.push(`brevvelger?sakId=${sakId}`,
-            undefined,
-            {shallow: true})}/>
-    )
+            <LetterPickerActionBar selectedLetter={selectedLetter}
+                                   onOrderLetter={onOrderLetterHandler}/>
+        </div>
+    </SakContext>)
 }
 
 

@@ -90,40 +90,46 @@ class PenService(config: Config, authService: AzureADService) {
         sakId: Long,
         brevkode: String,
         spraak: SpraakKode,
-    ): AuthorizedHttpClientResult =
-        client.post(call, "sak/$sakId/extreamBrev") {
+        gjelderPid: String,
+    ): ServiceResult<String, String> =
+        client.post(call, "brev/extream/$sakId") {
             setBody(
                 BestillExtreamBrevDto(
                     letterCode = brevkode,
                     language = spraak,
                     vedtaksId = null, // TODO fill with actual value
-                    gjelderPid = "09417320595", // TODO fill with actual value. Can't it allways be set from sakid?
+                    gjelderPid = gjelderPid, // TODO fill with actual value. Can't it allways be set from sakid?
                     mottakerPid = null, // TODO fill with actual value
                     saksbehanlderNavn = "Saksbehandler Saksbehandlerson",  // TODO fill with actual value
-                    saksbehanlderId = "ZBLABLAHH",  // TODO fill with actual value
+                    saksbehanlderId = "ZTest",  // TODO fill with actual value
                     isSensitivt = false,  // TODO fill with actual value
                 )
             )
             contentType(ContentType.Application.Json)
-        }
+        }.toServiceResult<String, String>()
 
-    suspend fun bestillDoksysBrev(call: ApplicationCall, sakId: Long): AuthorizedHttpClientResult =
-        client.post(call, "sak/$sakId/extreamBrev") {
-            setBody(
-                BestillExtreamBrevDto(
-                    letterCode = "PE_IY_05_300",
-                    language = SpraakKode.NB,
-                    vedtaksId = null,
-                    gjelderPid = "09417320595",
-                    mottakerPid = null,
-                    saksbehanlderNavn = "Saksbehandler Saksbehandlerson",
-                    saksbehanlderId = "ZBLABLAHH",
-                    isSensitivt = false,
-                )
-            )
-            contentType(ContentType.Application.Json)
-        }
+//    suspend fun bestillDoksysBrev(call: ApplicationCall, sakId: Long): AuthorizedHttpClientResult =
+//        client.post(call, "sak/$sakId/doksysBrev") {
+//            setBody(
+//                BestillExtreamBrevDto(
+//                    letterCode = "PE_IY_05_300",
+//                    language = SpraakKode.NB,
+//                    vedtaksId = null,
+//                    gjelderPid = "09417320595",
+//                    mottakerPid = null,
+//                    saksbehanlderNavn = "Saksbehandler Saksbehandlerson",
+//                    saksbehanlderId = "ZBLABLAHH",
+//                    isSensitivt = false,
+//                )
+//            )
+//            contentType(ContentType.Application.Json)
+//        }
 
+    suspend fun redigerExtreamBrev(call: ApplicationCall, journalposId: String): ServiceResult<String, String> =
+        client.get(call, "brev/rediger/extream/${journalposId}").toServiceResult()
+
+    suspend fun redigerDoksysBrev(call: ApplicationCall, journalposId: String): AuthorizedHttpClientResult =
+        client.get(call, "brev/rediger/doksys/${journalposId}")
     ///{sakId}/redigerbrev
 }
 

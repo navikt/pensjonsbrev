@@ -47,9 +47,9 @@ const ActionBar: FC<ActionBarProps> = ({selectedLetter, onOrderLetter}) => {
                             onClick={handleOrderLetter}
                             disabled={disabled}>Rediger brev</Button>
 
-                    <Button size="small"
-                            className={styles.submitLetterButton}
-                            disabled={disabled}>Ferdigstill brev og gå videre</Button>
+                    {/*<Button size="small"
+                            className={styles.submitLetterButton}*
+                            disabled={disabled}>Ferdigstill brev og gå videre</Button>*/}
                 </div>
             </div>
         </BottomMenu>
