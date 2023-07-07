@@ -4,7 +4,10 @@ import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmal
+import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language
+import no.nav.pensjon.brev.template.Language.English
+import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.TextOnlyPhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
@@ -279,51 +282,63 @@ object Barnepensjon {
         }
     }
 
-    object DuHarRettTilAaKlage : OutlinePhrase<LangBokmal>() {
-        override fun OutlineOnlyScope<LangBokmal, Unit>.template() {
+    object DuHarRettTilAaKlage : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             title2 {
                 text(
                     Language.Bokmal to "Du har rett til å klage",
+                    Nynorsk to "Du har rett til å klage",
+                    English to "TODO"
                 )
             }
             paragraph {
                 text(
                     Language.Bokmal to "Hvis du mener vedtaket er feil, kan du klage innen seks uker fra den datoen " +
-                            "du mottok vedtaket. Du kan lese mer om hvordan du klager i vedlegget «Informasjon om klage og anke»"
+                            "du mottok vedtaket. Du kan lese mer om hvordan du klager i vedlegget «Informasjon om klage og anke»",
+                    Nynorsk to "TODO nynorsk",
+                    English to "TODO engelsk"
                 )
             }
         }
     }
 
-    object DuHarRettTilInnsyn : OutlinePhrase<LangBokmal>() {
-        override fun OutlineOnlyScope<LangBokmal, Unit>.template() {
+    object DuHarRettTilInnsyn : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             title2 {
                 text(
                     Language.Bokmal to "Du har rett til innsyn",
+                    Nynorsk to "TODO nynorsk",
+                    English to "TODO english"
                 )
             }
             paragraph {
                 text(
                     Language.Bokmal to "Du har som hovedregel rett til å se dokumentene i saken din etter" +
                             " bestemmelsene i forvaltningsloven § 18. Hvis du ønsker innsyn, må du kontakte oss på " +
-                            "telefon eller per post."
+                            "telefon eller per post.",
+                    Nynorsk to "TODO nynorsk",
+                    English to "TODO engelsk"
                 )
             }
         }
     }
 
-    object HarDuSpoersmaal : OutlinePhrase<LangBokmal>() {
-        override fun OutlineOnlyScope<LangBokmal, Unit>.template() {
+    object HarDuSpoersmaal : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             title2 {
                 text(
                     Language.Bokmal to "Har du spørsmål?",
+                    Nynorsk to "Har du spørsmål?",
+                    English to "TODO engelsk"
                 )
             }
             paragraph {
                 text(
                     Language.Bokmal to "Du kan finne svar på ${Constants.BARNEPENSJON_URL}. Du kan også kontakte " +
                             "oss på telefon 55 55 33 34. Om du oppgir fødselsnummer til barnet, kan vi lettere gi deg " +
-                            "rask og god hjelp."
+                            "rask og god hjelp.",
+                    Nynorsk to "TODO nynorsk",
+                    English to "TODO engelsk"
                 )
             }
         }

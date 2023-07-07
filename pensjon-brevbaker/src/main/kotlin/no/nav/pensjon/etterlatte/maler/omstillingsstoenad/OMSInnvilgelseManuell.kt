@@ -20,7 +20,7 @@ object OMSInnvilgelseManuell : EtterlatteTemplate<ManueltBrevDTO> {
     override val template = createTemplate(
         name = kode.name,
         letterDataType = ManueltBrevDTO::class,
-        languages = languages(Language.Bokmal),
+        languages = languages(Language.Bokmal, Language.Nynorsk, Language.English),
         letterMetadata = LetterMetadata(
             displayTitle = "Vedtak - Manuelt brev for omstillingsstønad",
             isSensitiv = true,
@@ -31,13 +31,15 @@ object OMSInnvilgelseManuell : EtterlatteTemplate<ManueltBrevDTO> {
         title {
             text(
                 Language.Bokmal to "Vi har innvilget søknaden din om omstillingsstoenad",
+                Language.Nynorsk to "TODO nynorsk",
+                Language.English to "TODO engelsk"
             )
         }
 
         outline {
             includePhrase(Vedtak.Overskrift)
 
-            konverterElementerTilBrevbakerformat(Language.Bokmal)
+            konverterElementerTilBrevbakerformat()
 
             includePhrase(OMSFelles.MeldFraOmEndringer)
             includePhrase(OMSFelles.DuHarRettTilAaKlage)

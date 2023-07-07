@@ -1,6 +1,8 @@
 package no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering
 
-import no.nav.pensjon.brev.template.Language
+import no.nav.pensjon.brev.template.Language.Bokmal
+import no.nav.pensjon.brev.template.Language.English
+import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
@@ -19,7 +21,7 @@ object AdopsjonRevurdering : EtterlatteTemplate<ManueltBrevDTO> {
     override val template = createTemplate(
         name = kode.name,
         letterDataType = ManueltBrevDTO::class,
-        languages = languages(Language.Bokmal),
+        languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(
             displayTitle = "Vedtak - opphør på grunn av adopsjon",
             isSensitiv = true,
@@ -29,11 +31,13 @@ object AdopsjonRevurdering : EtterlatteTemplate<ManueltBrevDTO> {
     ) {
         title {
             text(
-                Language.Bokmal to "Vi opphører barnepensjonen din",
+                Bokmal to "Vi opphører barnepensjonen din",
+                Nynorsk to "Vi stansar barnepensjonen din",
+                English to "We cease your child pension",
             )
         }
         outline {
-            konverterElementerTilBrevbakerformat(Language.Bokmal)
+            konverterElementerTilBrevbakerformat()
 
             includePhrase(Barnepensjon.DuHarRettTilAaKlage)
             includePhrase(Barnepensjon.DuHarRettTilInnsyn)
