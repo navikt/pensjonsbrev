@@ -19,7 +19,7 @@ const CaseContextBar: FC<CaseContextBarProps> = ({saksnummer, foedselsnummer, gj
                         copyText={foedselsnummer || ""}
                         className={styles.copyButton}/>
             <div>/</div>
-            <div> {gjelderNavn || "TODO Test testerson"} </div>
+            <div> {gjelderNavn || <Loader/>} </div>
             <div>/</div>
             <div> Født: {foedselsdato|| <Loader/>} </div>
             <div>/</div>

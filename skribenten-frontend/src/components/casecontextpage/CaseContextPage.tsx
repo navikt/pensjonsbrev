@@ -37,7 +37,7 @@ const CaseContextPage: FC<CaseContextPageProps> = ({children, skribentApi, msal,
                     if(onSakChanged !== undefined) {
                         onSakChanged(response.result)
                     }
-                    // skribentApi.hentNavn(msal, response.result.foedselsnr).then(setNavn) // TODO kommenter inn når tilgang til PDL er i orden.
+                    skribentApi.hentNavn(msal, response.result.foedselsnr).then(setNavn) // TODO kommenter inn når tilgang til PDL er i orden.
                     setErrorMessage(null)
                     router.push(`${router.basePath}?sakId=${sakId}`, undefined, {shallow: true})
                     setIsLoadingSak(false)

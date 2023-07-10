@@ -1,14 +1,16 @@
 package no.nav.pensjon.brev.skribenten.services
 
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.typesafe.config.Config
 import io.ktor.client.plugins.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
+import io.ktor.http.*
 import io.ktor.serialization.jackson.*
 import io.ktor.server.application.*
 import no.nav.pensjon.brev.skribenten.auth.AzureADOnBehalfOfAuthorizedHttpClient
 import no.nav.pensjon.brev.skribenten.auth.AzureADService
+
+private const val HENT_NAVN_QUERY_RESOURCE = "/pdl/HentNavn.graphql"
 
 class PdlService(config: Config, authService: AzureADService) {
     private val pdlUrl = config.getString("url")
@@ -17,11 +19,13 @@ class PdlService(config: Config, authService: AzureADService) {
     private val client = AzureADOnBehalfOfAuthorizedHttpClient(pdlScope, authService) {
         defaultRequest {
             url(pdlUrl)
+            headers {
+                // TODO vi har to behandlinger, skal vi sende med begge?
+                set("Behandlingsnummer", "B280")
+            }
         }
         install(ContentNegotiation) {
-            jackson{
-                registerModule(JavaTimeModule())
-            }
+            jackson()
         }
     }
 
@@ -36,14 +40,32 @@ class PdlService(config: Config, authService: AzureADService) {
         val historikk: Boolean = false
     )
 
-    val hentNavnQuery = PdlService::class.java.getResource("/pdl/HentNavn.graphql")?.readText()!!
-    suspend fun hentNavn(call: ApplicationCall, fnr: String): ServiceResult<String, Any> {
-        return client.post(call, ""){
-            setBody(PersonGraphqlQuery(
-                query = hentNavnQuery,
-                variables = FnrVariables(fnr)
-            ))
-        }.toServiceResult<String, String>()
+    data class HentPdlPersonMedNavnResponse(
+        val data: DataWrapperPersonMedNavn?,
+        val errors: List<String>? = null
+    )
+
+    data class DataWrapperPersonMedNavn(val hentPerson: PersonMedNavn?)
+    data class PersonMedNavn(val navn: List<Navn>? = null)
+    data class Navn(val fornavn: String, val mellomnavn: String?, val etternavn: String)
+
+    val hentNavnQuery = PdlService::class.java.getResource(HENT_NAVN_QUERY_RESOURCE)?.readText()
+        ?: throw IllegalStateException("Kunne ikke hente query ressurs $HENT_NAVN_QUERY_RESOURCE")
+
+    suspend fun hentNavn(call: ApplicationCall, fnr: String): ServiceResult<HentPdlPersonMedNavnResponse, String> {
+        return client.post(call, "") {
+            contentType(ContentType.Application.Json)
+            accept(ContentType.Application.Json)
+            headers {
+                set("Tema", "PEN")
+            }
+            setBody(
+                PersonGraphqlQuery(
+                    query = hentNavnQuery,
+                    variables = FnrVariables(fnr)
+                )
+            )
+        }.toServiceResult<HentPdlPersonMedNavnResponse, String>()
     }
 
 }

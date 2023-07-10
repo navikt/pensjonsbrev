@@ -13,6 +13,7 @@ import {LetterCategory, LetterSelection} from "../modules/LetterPicker/model/skr
 import LetterPickerActionBar from "../modules/LetterPicker/components/ActionBar/ActionBar"
 import SakContext from "../components/casecontextpage/CaseContextPage"
 import {Sak} from "../modules/LetterEditor/model/api"
+import {useRouter} from "next/router"
 
 const Brevvelger: NextPage<SkribentenConfig> = (props) => {
     const [selectedLetter, setSelectedLetter] = useState<LetterSelection | null>(null)
@@ -20,6 +21,8 @@ const Brevvelger: NextPage<SkribentenConfig> = (props) => {
     const [favourites, setFavourites] = useState<LetterSelection[] | null>(null)
     const [letterMetadata, setLetterMetadata] = useState<LetterSelection[] | null>()
     const [sak, setSak] = useState<Sak | null>(null)
+
+    const router = useRouter()
 
     const letterSelectedHandler = (id: string | null) => {
         if (id === selectedLetter?.id) {
@@ -38,8 +41,9 @@ const Brevvelger: NextPage<SkribentenConfig> = (props) => {
                 sak.sakId.toString(),
                 sak.foedselsnr,
                 selectedLanguage,
-            ).then((value: string) => {
-                console.log(value)
+            ).then((url: string) => {
+                console.log(url)
+                window.open(url)
             })
         }
     }

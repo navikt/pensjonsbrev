@@ -1,5 +1,5 @@
 import React, {FC, useState} from "react"
-import {Button, Label, Select} from "@navikt/ds-react"
+import {Button, Label, Link, Select} from "@navikt/ds-react"
 import BottomMenu from "../../../../components/bottom-menu/BottomMenu"
 import {LetterSelection} from "../../model/skribenten"
 import styles from "./ActionBar.module.css"
@@ -19,7 +19,6 @@ const ActionBar: FC<ActionBarProps> = ({selectedLetter, onOrderLetter}) => {
     const handleOrderLetter = () => {
         console.log(selectedLetter?.spraak)
         if (selectedLetter?.spraak && selectedLanguage !== null) {
-            console.log(selectedLetter.spraak[selectedLanguage])
             onOrderLetter(selectedLetter.spraak[selectedLanguage])
         }
     }
@@ -43,6 +42,7 @@ const ActionBar: FC<ActionBarProps> = ({selectedLetter, onOrderLetter}) => {
                 <div>
                     <Button variant="secondary"
                             size="small"
+
                             className={styles.editLetterButton}
                             onClick={handleOrderLetter}
                             disabled={disabled}>Rediger brev</Button>

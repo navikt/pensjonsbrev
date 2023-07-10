@@ -164,12 +164,12 @@ class SkribentenAPI {
                 method: 'POST',
                 body: JSON.stringify({brevkode: brevkode, sakId: sakId, spraak: spraak, gjelderPid: gjelderPid}),
             })
-        ).then((res) => res.json()).then(JSON.stringify)
+        ).then((res) => res.text())
     }
 
     async hentNavn(msal: IMsalContext, fnr: string): Promise<string> {
         return withAuthorization(msal, this.config.scope).then((auth) =>
-            fetch(`${this.config.url}/test/pdl`, {
+            fetch(`${this.config.url}/pdl/navn/${fnr}`, {
                 headers: {
                     'Authorization': `Bearer ${auth.accessToken}`,
                 },

@@ -27,10 +27,12 @@ data class OrderLetterRequest(
     val gjelderPid: String,
 )
 
+// TODO innfør nav-call id på ulike kall for feilsøking
 fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config) {
     val authService = AzureADService(authConfig)
     val penService = PenService(skribentenConfig.getConfig("services.pen"), authService)
     val pdlService = PdlService(skribentenConfig.getConfig("services.pdl"), authService)
+    val safService = SafService(skribentenConfig.getConfig("services.saf"), authService)
     val brevbakerService = BrevbakerService(skribentenConfig.getConfig("services.brevbaker"), authService)
     val brevmetadataService = BrevmetadataService(skribentenConfig.getConfig("services.brevmetadata"))
     val databaseService = SkribentenFakeDatabaseService(brevmetadataService)
@@ -46,27 +48,58 @@ fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config
 
         authenticate(authConfig.name) {
             post("/test/pen") {
-                respondWithResult(penService.redigerExtreamBrev(call, "453840176"))
+                //respondWithResult(penService.redigerExtreamBrev(call, "453840176"))
+                respondWithResult(safService.getStatus(call, "453840176"))
             }
 
+
             get("/test/pdl") {
-                respondWithResult(pdlService.hentNavn(call, "09417320595"))
+                respondWithResult(pdlService.hentNavn(call, "09417320595"),
+                    onOk = { result ->
+                        // TODO håndter paralelle sannheter i pdl. Skal vi evt vise begge de gyldige navnene?
+                        result.data?.hentPerson?.navn?.firstOrNull()?.let {
+                            call.respond("${it.fornavn} ${it.mellomnavn?.plus(" ") ?: ""}${it.etternavn}")
+                        }
+                    })
             }
 
             post("/pen/orderExtreamLetter") {
-                val request = call.receive<OrderLetterRequest>()
-                respondWithResult(penService.bestillExtreamBrev(
-                    call,
-                    sakId = request.sakId,
-                    brevkode = request.brevkode,
-                    spraak = request.spraak,
-                    gjelderPid = request.gjelderPid
-                ))
+//                val request = call.receive<OrderLetterRequest>()
+//                val response = penService.bestillExtreamBrev(
+//                    call,
+//                    sakId = request.sakId,
+//                    brevkode = request.brevkode,
+//                    spraak = request.spraak,
+//                    gjelderPid = request.gjelderPid
+//                )
+//                when(response) {
+//                    is ServiceResult.Ok -> {
+//                        val journalpostId = response.result
+//                        val error = safService.waitForJournalpostStatusUnderArbeid(call, journalpostId)
+//                        if (error != null) {
+//                            if (error == "Timeout") {
+//                                call.respond(HttpStatusCode.OK)
+//                            }
+//                            call.respondText(text = error, status = HttpStatusCode.InternalServerError)
+//                        } else {
+//                            respondWithResult(penService.redigerExtreamBrev(call, journalpostId))
+//                        }
+//                    }
+//                    is ServiceResult.AuthorizationError -> {
+//                        call.respond(response.error)
+//                        return@post
+//                    }
+//                    is ServiceResult.Error -> {
+//                        call.respond(response.error)
+//                        return@post
+//                    }
+//                }
+                respondWithResult(penService.redigerExtreamBrev(call, "453840176"))
             }
 
             get("/pen/redigerExtreamBrev/{journalpostId}") {
                 val journalpostId = call.parameters["journalpostId"]
-                if(journalpostId != null) {
+                if (journalpostId != null) {
                     respondWithResult(penService.redigerExtreamBrev(call, journalpostId))
                 }
             }
@@ -83,6 +116,7 @@ fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config
                 val foedselsdato: String,
                 val sakType: String,
             )
+
             get("/pen/sak/{sakId}") {
                 val sakId = call.parameters["sakId"]?.toLongOrNull()
                 if (sakId != null) {
@@ -113,6 +147,22 @@ fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config
                     }
                 } else {
                     call.respond(HttpStatusCode.BadRequest, "Missing or invalid sakId")
+                }
+            }
+
+            get("/pdl/navn/{fnr}") {
+                // TODO validate fnr?
+                val fnr: String? = call.parameters["fnr"]
+                if (fnr != null) {
+                    respondWithResult(pdlService.hentNavn(call, fnr),
+                        onOk = { result ->
+                            // TODO håndter paralelle sannheter i pdl. Skal vi evt vise begge de gyldige navnene?
+                            result.data?.hentPerson?.navn?.firstOrNull()?.let {
+                                call.respond("${it.fornavn} ${it.mellomnavn?.plus(" ") ?: ""}${it.etternavn}")
+                            }
+                        })
+                } else {
+                    call.respond(HttpStatusCode.BadRequest, "Missing fnr parameter")
                 }
             }
 
