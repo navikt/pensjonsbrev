@@ -19,7 +19,7 @@ object AvslagFoerstegangsbehandling : EtterlatteTemplate<ManueltBrevDTO> {
     override val template = createTemplate(
         name = kode.name,
         letterDataType = ManueltBrevDTO::class,
-        languages = languages(Language.Bokmal),
+        languages = languages(Language.Bokmal, Language.Nynorsk, Language.English),
         letterMetadata = LetterMetadata(
             displayTitle = "Vedtak - avslag",
             isSensitiv = true,
@@ -30,10 +30,12 @@ object AvslagFoerstegangsbehandling : EtterlatteTemplate<ManueltBrevDTO> {
         title {
             text(
                 Language.Bokmal to "Vi har avslått søknaden din om barnepensjon",
+                Language.Nynorsk to "",
+                Language.English to ""
             )
         }
         outline {
-            konverterElementerTilBrevbakerformat(Language.Bokmal)
+            konverterElementerTilBrevbakerformat()
 
             includePhrase(Barnepensjon.DuHarRettTilAaKlage)
             includePhrase(Barnepensjon.DuHarRettTilInnsyn)
