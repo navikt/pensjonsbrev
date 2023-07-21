@@ -23,7 +23,7 @@ const SelectSakid: FC<SelectSakIdProps> = ({onSubmit, error = null}) => {
             <TextField value={saksnummer || ""}
                        onInput={handleInput}
                        label={"Saksnummer"}
-                       error={error && (<div>{error}</div>)}
+                       error={error}
                        type="text"/>
             <Button onClick={()=>saksnummer && onSubmit(saksnummer)}>Åpne brevvelger</Button>
         </div>

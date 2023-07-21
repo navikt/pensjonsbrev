@@ -1,7 +1,6 @@
 package no.nav.pensjon.brev.skribenten
 
 import com.typesafe.config.Config
-import io.ktor.client.call.*
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
@@ -11,11 +10,12 @@ import io.ktor.server.routing.*
 import io.ktor.server.util.*
 import io.ktor.util.pipeline.*
 import no.nav.pensjon.brev.api.model.maler.Brevkode
-import no.nav.pensjon.brev.skribenten.auth.*
+import no.nav.pensjon.brev.skribenten.auth.AzureADService
+import no.nav.pensjon.brev.skribenten.auth.JwtConfig
+import no.nav.pensjon.brev.skribenten.auth.UnauthorizedException
+import no.nav.pensjon.brev.skribenten.auth.UserPrincipal
 import no.nav.pensjon.brev.skribenten.services.*
 import no.nav.pensjon.brevbaker.api.model.RenderedJsonLetter
-import java.time.format.DateTimeFormatter
-import java.time.format.FormatStyle
 import java.util.*
 
 data class RenderLetterRequest(val letterData: Any, val editedLetter: EditedJsonLetter?)
@@ -30,9 +30,9 @@ data class OrderLetterRequest(
 // TODO innfør nav-call id på ulike kall for feilsøking
 fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config) {
     val authService = AzureADService(authConfig)
+    val safService = SafService(skribentenConfig.getConfig("services.saf"), authService)
     val penService = PenService(skribentenConfig.getConfig("services.pen"), authService)
     val pdlService = PdlService(skribentenConfig.getConfig("services.pdl"), authService)
-    val safService = SafService(skribentenConfig.getConfig("services.saf"), authService)
     val brevbakerService = BrevbakerService(skribentenConfig.getConfig("services.brevbaker"), authService)
     val brevmetadataService = BrevmetadataService(skribentenConfig.getConfig("services.brevmetadata"))
     val databaseService = SkribentenFakeDatabaseService(brevmetadataService)
@@ -52,52 +52,35 @@ fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config
                 respondWithResult(safService.getStatus(call, "453840176"))
             }
 
-
-            get("/test/pdl") {
-                respondWithResult(pdlService.hentNavn(call, "09417320595"),
-                    onOk = { result ->
-                        // TODO håndter paralelle sannheter i pdl. Skal vi evt vise begge de gyldige navnene?
-                        result.data?.hentPerson?.navn?.firstOrNull()?.let {
-                            call.respond("${it.fornavn} ${it.mellomnavn?.plus(" ") ?: ""}${it.etternavn}")
+            post("/pen/extream") {
+                val request = call.receive<OrderLetterRequest>()
+                when (val response = penService.bestillExtreamBrev(call, request)) {
+                    is ServiceResult.Ok -> {
+                        val journalpostId = response.result
+                        val error = safService.waitForJournalpostStatusUnderArbeid(call, journalpostId)
+                        if (error != null) {
+                            if (error.type == SafService.JournalpostLoadingError.ErrorType.TIMEOUT) {
+                                call.respond(HttpStatusCode.RequestTimeout, error.error)
+                            } else {
+                                call.respondText(text = error.error, status = HttpStatusCode.InternalServerError)
+                            }
+                        } else {
+                            respondWithResult(penService.redigerExtreamBrev(call, journalpostId))
                         }
-                    })
+                    }
+
+                    is ServiceResult.AuthorizationError -> {
+                        call.respond(response.error)
+                    }
+
+                    is ServiceResult.Error -> {
+                        call.respond(response.error)
+                    }
+                }
             }
 
-            post("/pen/orderExtreamLetter") {
-//                val request = call.receive<OrderLetterRequest>()
-//                val response = penService.bestillExtreamBrev(
-//                    call,
-//                    sakId = request.sakId,
-//                    brevkode = request.brevkode,
-//                    spraak = request.spraak,
-//                    gjelderPid = request.gjelderPid
-//                )
-//                when(response) {
-//                    is ServiceResult.Ok -> {
-//                        val journalpostId = response.result
-//                        val error = safService.waitForJournalpostStatusUnderArbeid(call, journalpostId)
-//                        if (error != null) {
-//                            if (error == "Timeout") {
-//                                call.respond(HttpStatusCode.OK)
-//                            }
-//                            call.respondText(text = error, status = HttpStatusCode.InternalServerError)
-//                        } else {
-//                            respondWithResult(penService.redigerExtreamBrev(call, journalpostId))
-//                        }
-//                    }
-//                    is ServiceResult.AuthorizationError -> {
-//                        call.respond(response.error)
-//                        return@post
-//                    }
-//                    is ServiceResult.Error -> {
-//                        call.respond(response.error)
-//                        return@post
-//                    }
-//                }
-                respondWithResult(penService.redigerExtreamBrev(call, "453840176"))
-            }
-
-            get("/pen/redigerExtreamBrev/{journalpostId}") {
+            get("/pen/extream/rediger/{journalpostId}") {
+                // TODO slå opp dokumentId i skribenten så vi kan sjekke at brukeren har tilgang til dokumentet først.
                 val journalpostId = call.parameters["journalpostId"]
                 if (journalpostId != null) {
                     respondWithResult(penService.redigerExtreamBrev(call, journalpostId))
@@ -110,60 +93,15 @@ fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config
 //                respondWithResult(journalpostId.toServiceResult())
             }
 
-            data class SakSelection(
-                val sakId: Long,
-                val foedselsnr: String,
-                val foedselsdato: String,
-                val sakType: String,
-            )
-
             get("/pen/sak/{sakId}") {
-                val sakId = call.parameters["sakId"]?.toLongOrNull()
-                if (sakId != null) {
-                    when (val result = penService.hentSak(call, sakId)) {
-                        is AuthorizedHttpClientResult.Error -> {
-                            call.respond(HttpStatusCode.InternalServerError, "Kunne ikke hente sak")
-                        }
-
-                        is AuthorizedHttpClientResult.Response -> {
-                            if (result.response.status.isSuccess()) {
-                                call.respond(
-                                    result.response.body<PenService.Sak>().let {
-                                        SakSelection(
-                                            sakId = it.sakId,
-                                            foedselsnr = it.penPerson.fnr,
-                                            foedselsdato = it.penPerson.fodselsdato.format(
-                                                DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT)
-                                                    .withLocale(Locale.forLanguageTag("no"))
-                                            ),
-                                            sakType = it.sakType,
-                                        )
-                                    }
-                                )
-                            } else {
-                                call.respond(result.response.status)
-                            }
-                        }
-                    }
-                } else {
-                    call.respond(HttpStatusCode.BadRequest, "Missing or invalid sakId")
-                }
+                val sakId = call.parameters.getOrFail("sakId")
+                respondWithResult(penService.hentSak(call, sakId))
             }
 
             get("/pdl/navn/{fnr}") {
-                // TODO validate fnr?
-                val fnr: String? = call.parameters["fnr"]
-                if (fnr != null) {
-                    respondWithResult(pdlService.hentNavn(call, fnr),
-                        onOk = { result ->
-                            // TODO håndter paralelle sannheter i pdl. Skal vi evt vise begge de gyldige navnene?
-                            result.data?.hentPerson?.navn?.firstOrNull()?.let {
-                                call.respond("${it.fornavn} ${it.mellomnavn?.plus(" ") ?: ""}${it.etternavn}")
-                            }
-                        })
-                } else {
-                    call.respond(HttpStatusCode.BadRequest, "Missing fnr parameter")
-                }
+                // TODO validate fnr
+                val fnr = call.parameters.getOrFail("fnr")
+                respondWithResult(pdlService.hentNavn(call, fnr))
             }
 
             get("/test/brevbaker") {
@@ -182,6 +120,7 @@ fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config
                     is ServiceResult.Ok -> call.respondText(template.result, ContentType.Application.Json)
                 }
             }
+
             post("/letter/{brevkode}") {
                 val brevkode = call.parameters.getOrFail<Brevkode.Redigerbar>("brevkode")
                 val request = call.receive<RenderLetterRequest>()
@@ -195,9 +134,10 @@ fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config
                     )
                 }
             }
-            get("/lettertemplates") {
-                //TODO fetch templates from brevbaker
-                call.respond(brevmetadataService.getRedigerbareBrevKategorier("UFOREP"))
+
+            get("/lettertemplates/{sakType}") {
+                val sakType = call.parameters.getOrFail("sakType")
+                call.respond(brevmetadataService.getRedigerbareBrevKategorier(sakType))
             }
 
             post("/favourites") {

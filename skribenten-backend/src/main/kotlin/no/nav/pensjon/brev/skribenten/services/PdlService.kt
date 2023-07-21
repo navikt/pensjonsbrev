@@ -7,6 +7,7 @@ import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.serialization.jackson.*
 import io.ktor.server.application.*
+import io.ktor.server.response.*
 import no.nav.pensjon.brev.skribenten.auth.AzureADOnBehalfOfAuthorizedHttpClient
 import no.nav.pensjon.brev.skribenten.auth.AzureADService
 
@@ -20,7 +21,7 @@ class PdlService(config: Config, authService: AzureADService) {
         defaultRequest {
             url(pdlUrl)
             headers {
-                // TODO vi har to behandlinger, skal vi sende med begge?
+                // TODO vi har to behandlinger, skal vi sende med begge?, Skal vi sende ulik avhengig av tema?
                 set("Behandlingsnummer", "B280")
             }
         }
@@ -52,7 +53,7 @@ class PdlService(config: Config, authService: AzureADService) {
     val hentNavnQuery = PdlService::class.java.getResource(HENT_NAVN_QUERY_RESOURCE)?.readText()
         ?: throw IllegalStateException("Kunne ikke hente query ressurs $HENT_NAVN_QUERY_RESOURCE")
 
-    suspend fun hentNavn(call: ApplicationCall, fnr: String): ServiceResult<HentPdlPersonMedNavnResponse, String> {
+    suspend fun hentNavn(call: ApplicationCall, fnr: String): ServiceResult<String, String> {
         return client.post(call, "") {
             contentType(ContentType.Application.Json)
             accept(ContentType.Application.Json)
@@ -66,6 +67,9 @@ class PdlService(config: Config, authService: AzureADService) {
                 )
             )
         }.toServiceResult<HentPdlPersonMedNavnResponse, String>()
+            .map { it.data?.hentPerson?.navn?.firstOrNull()?.let {
+                "${it.fornavn} ${it.mellomnavn?.plus(" ") ?: ""}${it.etternavn}"} ?:"" // TODO hvordan får vi error her?
+            }
     }
 
 }

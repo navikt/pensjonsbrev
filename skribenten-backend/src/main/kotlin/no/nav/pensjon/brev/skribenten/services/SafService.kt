@@ -14,6 +14,7 @@ import no.nav.pensjon.brev.skribenten.auth.AzureADService
 private const val HENT_JOURNAL_STATUS_QUERY_RESOURCE = "/saf/HentJournalpostStatus.graphql"
 private val hentJournalStatusQuery = SafService::class.java.getResource(HENT_JOURNAL_STATUS_QUERY_RESOURCE)?.readText()
     ?: throw IllegalStateException("Kunne ikke hente query ressurs $HENT_JOURNAL_STATUS_QUERY_RESOURCE")
+private const val EXTREAM_TIMEOUT = 60
 
 data class JournalVariables(val journalpostId: String)
 data class JournalQuery(
@@ -55,29 +56,28 @@ class SafService(config: Config, authService: AzureADService) {
             )
         }.toServiceResult<HentJournalStatusResponse, String>()
 
+    data class JournalpostLoadingError(val error: String, val type: ErrorType){
+        enum class ErrorType{ERROR, TIMEOUT}
+    }
 
-    //TODO replace string return with a class or something. Better error handling and some cleanup.
-    suspend fun waitForJournalpostStatusUnderArbeid(call: ApplicationCall, journalpostId: String): String? {
-        for (i in 1..10) {
-            println("venter på journalpost $journalpostId runde $i")
+    suspend fun waitForJournalpostStatusUnderArbeid(call: ApplicationCall, journalpostId: String): JournalpostLoadingError? {
+        for (i in 1..EXTREAM_TIMEOUT) {
+            delay(1000)
             when (val result = getStatus(call, journalpostId)) {
                 is ServiceResult.Ok -> {
                     if (result.result.data.journalpost.journalstatus == Journalstatus.UNDER_ARBEID) {
                         return null
                     }
                 }
-
                 is ServiceResult.Error -> {
-                    return result.error
+                    return JournalpostLoadingError(result.error, JournalpostLoadingError.ErrorType.ERROR)
                 }
-
                 is ServiceResult.AuthorizationError -> {
-                    return result.error.error
+                    return JournalpostLoadingError(result.error.error, JournalpostLoadingError.ErrorType.ERROR)
                 }
             }
-            delay(3000)
         }
-        return "Timeout"
+        return JournalpostLoadingError("Timed out", JournalpostLoadingError.ErrorType.TIMEOUT)
     }
 
 }

@@ -13,7 +13,6 @@ import {LetterCategory, LetterSelection} from "../modules/LetterPicker/model/skr
 import LetterPickerActionBar from "../modules/LetterPicker/components/ActionBar/ActionBar"
 import SakContext from "../components/casecontextpage/CaseContextPage"
 import {Sak} from "../modules/LetterEditor/model/api"
-import {useRouter} from "next/router"
 
 const Brevvelger: NextPage<SkribentenConfig> = (props) => {
     const [selectedLetter, setSelectedLetter] = useState<LetterSelection | null>(null)
@@ -22,7 +21,24 @@ const Brevvelger: NextPage<SkribentenConfig> = (props) => {
     const [letterMetadata, setLetterMetadata] = useState<LetterSelection[] | null>()
     const [sak, setSak] = useState<Sak | null>(null)
 
-    const router = useRouter()
+    const onChangeSakHandler = (newSak: Sak | null) => {
+        setSak(newSak)
+        if (newSak) {
+            Promise.all([
+                skribentApi.getLetterTemplates(msal, newSak.sakType),
+                skribentApi.getFavourites(msal),
+            ]).then(([categories, favourites]) => {
+                setLetterCategories(categories)
+                const metadata = categories.flatMap(cat => cat.templates)
+                setLetterMetadata(metadata)
+                if (favourites) {
+                    setFavourites(metadata.filter(m => favourites.includes(m.id)))
+                } else {
+                    setFavourites([])
+                }
+            })
+        }
+    }
 
     const letterSelectedHandler = (id: string | null) => {
         if (id === selectedLetter?.id) {
@@ -69,25 +85,8 @@ const Brevvelger: NextPage<SkribentenConfig> = (props) => {
         } else return false
     }
 
-
-    useEffect(() => {
-        Promise.all([
-            skribentApi.getLetterTemplates(msal),
-            skribentApi.getFavourites(msal),
-        ]).then(([categories, favourites]) => {
-            setLetterCategories(categories)
-            const metadata = categories.flatMap(cat => cat.templates)
-            setLetterMetadata(metadata)
-            if (favourites) {
-                setFavourites(metadata.filter(m => favourites.includes(m.id)))
-            } else {
-                setFavourites([])
-            }
-        })
-    }, [])
-
     //TODO extract universal page (header and background)
-    return (<SakContext skribentApi={skribentApi} msal={msal} onSakChanged={setSak}>
+    return (<SakContext skribentApi={skribentApi} msal={msal} onSakChanged={onChangeSakHandler}>
         <div className={styles.outerContainer}>
             <div className={styles.innterContainer}>
                 <LetterFilter categories={letterCategories}

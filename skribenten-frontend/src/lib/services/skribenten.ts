@@ -4,7 +4,7 @@ import {
     EditedLetter,
     RedigerbarTemplateDescription,
     RenderedLetter,
-    Sak,
+    Sak, SakType,
     SkribentServiceResult,
 } from "../../modules/LetterEditor/model/api"
 import {ObjectValue} from "../../modules/ModelEditor/model"
@@ -75,9 +75,9 @@ class SkribentenAPI {
     }
 
 
-    async getLetterTemplates(msal: IMsalContext): Promise<LetterCategory[]> {
+    async getLetterTemplates(msal: IMsalContext, sakType: SakType): Promise<LetterCategory[]> {
         return withAuthorization(msal, this.config.scope).then(auth =>
-            fetch(`${this.config.url}/lettertemplates`, {
+            fetch(`${this.config.url}/lettertemplates/${sakType}`, {
                 headers: {
                     'Accept': 'application/json',
                     'Authorization': `Bearer ${auth.accessToken}`,
@@ -155,7 +155,7 @@ class SkribentenAPI {
                              gjelderPid: string,
                              spraak: string): Promise<string> {
         return withAuthorization(msal, this.config.scope).then((auth) =>
-            fetch(`${this.config.url}/pen/orderExtreamLetter`, {
+            fetch(`${this.config.url}/pen/extream`, {
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json',

@@ -83,8 +83,10 @@ export interface Sak {
     readonly sakId: number,
     readonly foedselsnr: string,
     readonly foedselsdato: string,
-    readonly sakType: string,
+    readonly sakType: SakType,
 }
+
+export type SakType = 'AFP' |  'AFP_PRIVAT' |  'ALDER' |  'BARNEP' |  'FAM_PL' |  'GAM_YRK' |  'GENRL' |  'GJENLEV' |  'GRBL' |  'KRIGSP' |  'OMSORG' |  'UFOREP'
 
 export interface SkribentServiceResult<ResultType> {
     readonly result: ResultType | null
@@ -93,6 +95,7 @@ export interface SkribentServiceResult<ResultType> {
 
 export type LanguageCode = 'BOKMAL' | 'NYNORSK' | 'ENGLISH'
 export type Distribusjonstype = 'VEDTAK' | 'VIKTIG' | 'ANNET'
+
 export interface LetterMetadata {
     readonly displayTitle: string
     readonly isSensitiv: boolean

@@ -44,9 +44,12 @@ data class LetterCategory(
     val templates: List<LetterMetadata>,
 )
 
+enum class BrevSystem { EXTERAM, DOKSYS, BREVBAKER }
+
 data class LetterMetadata(
     val name: String,
     val id: String,
+    val brevsystem: BrevSystem,
     val spraak: List<SpraakKode>?
 )
 
@@ -88,7 +91,12 @@ class BrevmetadataService(config: Config) {
             LetterMetadata(
                 name = template.dekode ?: "MissingName",
                 id = template.brevkodeIBrevsystem ?: "MissingCode",
-                spraak = template.sprak?: emptyList()
+                spraak = template.sprak ?: emptyList(),
+                brevsystem = when (template.brevsystem) {
+                    "DOKSYS" -> BrevSystem.DOKSYS
+                    "GAMMEL" -> BrevSystem.EXTERAM
+                    else -> throw IllegalStateException("Malformed metadata. Must be doksys or extream.")
+                }
             )
         }
 
@@ -104,3 +112,4 @@ class BrevmetadataService(config: Config) {
 
 
 }
+
