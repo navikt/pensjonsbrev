@@ -344,26 +344,32 @@ object Barnepensjon {
         }
     }
 
-    object Feilutbetaling : OutlinePhrase<LangBokmal>() {
-        override fun OutlineOnlyScope<LangBokmal, Unit>.template() {
+    object Feilutbetaling : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             title2 {
                 text(
                     Language.Bokmal to "Feilutbetaling",
+                    Nynorsk to "",
+                    English to ""
                 )
             }
             paragraph {
                 text(
                     Language.Bokmal to "Siden pensjonen din er opphørt tilbake i tid, medfører dette at du har fått utbetalt for mye i pensjon i denne perioden. Du vil få eget forhåndsvarsel om eventuell tilbakekreving av det feilutbetalte beløpet.",
+                    Nynorsk to "",
+                    English to ""
                 )
             }
         }
     }
 
-    data class BarnepensjonenDinErDerforOpphoert(val virkningsdato: Expression<LocalDate>) : OutlinePhrase<LangBokmal>() {
-        override fun OutlineOnlyScope<LangBokmal, Unit>.template() {
+    data class BarnepensjonenDinErDerforOpphoert(val virkningsdato: Expression<LocalDate>) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             paragraph {
                 textExpr(
                     Language.Bokmal to "Barnepensjonen din er derfor opphørt fra ".expr() + virkningsdato.format(),
+                    Nynorsk to "".expr(),
+                    English to "".expr()
                 )
             }
         }
