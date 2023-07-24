@@ -1,44 +1,13 @@
 package no.nav.pensjon.etterlatte.maler
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties
-import com.fasterxml.jackson.annotation.JsonInclude
-import com.fasterxml.jackson.annotation.JsonValue
-import no.nav.pensjon.brev.template.dsl.*
-import no.nav.pensjon.brev.template.dsl.expression.*
-import no.nav.pensjon.brevbaker.api.model.*
-import no.nav.pensjon.etterlatte.*
+import no.nav.pensjon.brevbaker.api.model.Kroner
 import java.time.LocalDate
-
-data class ManueltBrevDTO(
-    val innhold: List<Element> = emptyList()
-) {
-    data class Element(
-        val type: ElementType,
-        val children: List<InnerElement> = emptyList()
-    )
-
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    @JsonIgnoreProperties(ignoreUnknown = true)
-    data class InnerElement(
-        val type: ElementType? = null,
-        val text: String? = null,
-        val children: List<InnerElement>? = null,
-    )
-
-    enum class ElementType(@JsonValue val value: String) {
-        HEADING_TWO("heading-two"),
-        HEADING_THREE("heading-three"),
-        PARAGRAPH("paragraph"),
-        BULLETED_LIST("bulleted-list"),
-        LIST_ITEM("list-item")
-    }
-}
 
 data class Avkortingsinfo(
     val grunnbeloep: Kroner,
     val inntekt: Kroner,
     val virkningsdato: LocalDate,
-    val beregningsperioder: List<AvkortetBeregningsperiode>
+    val beregningsperioder: List<AvkortetBeregningsperiode>,
 )
 
 enum class EndringIUtbetaling {
@@ -51,8 +20,9 @@ data class AvkortetBeregningsperiode(
     val datoFOM: LocalDate,
     val datoTOM: LocalDate?,
     val inntekt: Kroner,
-    val utbetaltBeloep: Kroner
+    val utbetaltBeloep: Kroner,
 )
+
 data class Utbetalingsinfo(
     val antallBarn: Int,
     val beloep: Kroner,

@@ -9,6 +9,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.ManueltBrevDTO
+import no.nav.pensjon.etterlatte.maler.ManueltBrevDTOSelectors.innhold
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.Barnepensjon
 import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
 
@@ -35,7 +36,7 @@ object AvslagFoerstegangsbehandling : EtterlatteTemplate<ManueltBrevDTO> {
             )
         }
         outline {
-            konverterElementerTilBrevbakerformat()
+            konverterElementerTilBrevbakerformat(innhold)
 
             includePhrase(Barnepensjon.DuHarRettTilAaKlage)
             includePhrase(Barnepensjon.DuHarRettTilInnsyn)
