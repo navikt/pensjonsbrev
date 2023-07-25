@@ -11,6 +11,7 @@ import no.nav.pensjon.brev.api.model.LetterResponse
 import no.nav.pensjon.brev.latex.LaTeXCompilerService
 import no.nav.pensjon.brev.template.render.*
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
+import no.nav.pensjon.brevbaker.api.model.RenderedJsonLetter
 
 private val letterResource = LetterResource()
 
@@ -45,8 +46,10 @@ fun Route.etterlatteRouting(latexCompilerService: LaTeXCompilerService) {
         val letterRequest = call.receive<EtterlatteBrevRequest>()
         val letter = letterResource.create(letterRequest)
 
-        call.respond(PensjonJsonRenderer.render(letter))
+        call.respond(JSONResponse(PensjonJsonRenderer.render(letter), letter.template.letterMetadata))
     }
 }
 
 data class HTMLResponse(val html: Map<String, String>, val letterMetadata: LetterMetadata)
+
+data class JSONResponse(val json: RenderedJsonLetter, val letterMetadata: LetterMetadata)
