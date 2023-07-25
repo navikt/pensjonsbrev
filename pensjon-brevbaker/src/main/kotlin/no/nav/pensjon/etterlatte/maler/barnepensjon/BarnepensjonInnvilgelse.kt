@@ -1,6 +1,7 @@
 package no.nav.pensjon.etterlatte.maler.barnepensjon
 
 import no.nav.pensjon.brev.template.Language
+import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
@@ -36,7 +37,7 @@ object BarnepensjonInnvilgelse : EtterlatteTemplate<BarnepensjonInnvilgelseDTO> 
     override val template = createTemplate(
         name = kode.name,
         letterDataType = BarnepensjonInnvilgelseDTO::class,
-        languages = languages(Language.Bokmal),
+        languages = languages(Bokmal),
         letterMetadata = LetterMetadata(
             displayTitle = "Vedtak - innvilget søknad om barnepensjon",
             isSensitiv = true,
@@ -46,7 +47,7 @@ object BarnepensjonInnvilgelse : EtterlatteTemplate<BarnepensjonInnvilgelseDTO> 
     ) {
         title {
             text(
-                Language.Bokmal to "Vi har innvilget søknaden din om barnepensjon",
+                Bokmal to "Vi har innvilget søknaden din om barnepensjon",
             )
         }
 

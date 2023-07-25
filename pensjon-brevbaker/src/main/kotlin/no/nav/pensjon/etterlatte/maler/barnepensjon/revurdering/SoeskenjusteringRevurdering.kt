@@ -1,6 +1,7 @@
 package no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering
 
 import no.nav.pensjon.brev.template.Language
+import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.isOneOf
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
@@ -46,7 +47,7 @@ object SoeskenjusteringRevurdering : EtterlatteTemplate<BarnepensjonRevurderingS
     override val template = createTemplate(
         name = kode.name,
         letterDataType = BarnepensjonRevurderingSoeskenjusteringDTO::class,
-        languages = languages(Language.Bokmal),
+        languages = languages(Bokmal),
         letterMetadata = LetterMetadata(
             displayTitle = "Vedtak - endring i barnepensjon",
             isSensitiv = true,
@@ -59,11 +60,11 @@ object SoeskenjusteringRevurdering : EtterlatteTemplate<BarnepensjonRevurderingS
         title {
             showIf(grunnForJustering.isOneOf(*endringIBarnepensjon.toTypedArray())) {
                 text(
-                    Language.Bokmal to "Vi har endret barnepensjonen din",
+                    Bokmal to "Vi har endret barnepensjonen din",
                 )
             }
             showIf(grunnForJustering.isOneOf(*kunVurdert.toTypedArray())) {
-                text(Language.Bokmal to "Vi har vurdert barnepensjonen din")
+                text(Bokmal to "Vi har vurdert barnepensjonen din")
             }
         }
 

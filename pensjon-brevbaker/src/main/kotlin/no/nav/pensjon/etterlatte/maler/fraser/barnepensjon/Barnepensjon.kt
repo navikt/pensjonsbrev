@@ -6,6 +6,7 @@ import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmal
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language
+import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.OutlinePhrase
@@ -40,7 +41,7 @@ object Barnepensjon {
                 val formatertVirkningsdato = virkningsdato.format()
                 val formatertDoedsdato = doedsdato.format()
                 textExpr(
-                    Language.Bokmal to "Du er innvilget barnepensjon fra ".expr() + formatertVirkningsdato +
+                    Bokmal to "Du er innvilget barnepensjon fra ".expr() + formatertVirkningsdato +
                             " fordi " + avdoedNavn + " er registrert død " + formatertDoedsdato + ". " +
                             "Du får " + beloep.format() + " kroner hver måned før skatt. Barnepensjonen utbetales til og med den " +
                             "kalendermåneden du fyller 18 år. Vedtaket er gjort etter folketrygdloven kapittel 18 og 22.",
@@ -52,7 +53,7 @@ object Barnepensjon {
         override fun OutlineOnlyScope<LangBokmal, Unit>.template() {
             title1 {
                 text(
-                    Language.Bokmal to "Beregning og utbetaling",
+                    Bokmal to "Beregning og utbetaling",
                 )
             }
         }
@@ -66,7 +67,7 @@ object Barnepensjon {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             title2 {
                 text(
-                    Language.Bokmal to "Slik har vi beregnet pensjonen din",
+                    Bokmal to "Slik har vi beregnet pensjonen din",
                     Nynorsk to "",
                     English to ""
                 )
@@ -74,7 +75,7 @@ object Barnepensjon {
             showIf(soeskenjustering) {
                 paragraph {
                     textExpr(
-                        Language.Bokmal to "Det gjøres en samlet beregning av pensjon for barn som oppdras sammen. ".expr() +
+                        Bokmal to "Det gjøres en samlet beregning av pensjon for barn som oppdras sammen. ".expr() +
                                 "For denne beregningen har vi lagt til grunn at dere er " + antallBarn.format() +
                                 " barn som oppdras sammen.",
                         Nynorsk to "".expr(),
@@ -83,7 +84,7 @@ object Barnepensjon {
                 }
                 paragraph {
                     text(
-                        Language.Bokmal to "Barnepensjon utgjør 40 prosent av folketrygdens grunnbeløp (G) for det " +
+                        Bokmal to "Barnepensjon utgjør 40 prosent av folketrygdens grunnbeløp (G) for det " +
                                 "første barnet i søskenflokken. For hvert av de øvrige barna legges det til 25 prosent av G. " +
                                 "Summen deles på antall barn, og pensjonen utbetales med likt beløp til hvert av barna. " +
                                 "Pensjonen fordeles på 12 utbetalinger i året.",
@@ -94,7 +95,7 @@ object Barnepensjon {
             } orShow {
                 paragraph {
                     text(
-                        Language.Bokmal to "Barnepensjonen utgjør 40 prosent av folketrygdens grunnbeløp (G) og fordeles på 12 utbetalinger i året.",
+                        Bokmal to "Barnepensjonen utgjør 40 prosent av folketrygdens grunnbeløp (G) og fordeles på 12 utbetalinger i året.",
                         Nynorsk to "",
                         English to ""
                     )
@@ -112,13 +113,13 @@ object Barnepensjon {
                 table(
                     header = {
                         column(2) {
-                            text(Language.Bokmal to "Periode", Nynorsk to "", English to "")
+                            text(Bokmal to "Periode", Nynorsk to "", English to "")
                         }
                         column(1) {
-                            text(Language.Bokmal to "Grunnbeløp (G)", Nynorsk to "", English to "")
+                            text(Bokmal to "Grunnbeløp (G)", Nynorsk to "", English to "")
                         }
                         column(2) {
-                            text(Language.Bokmal to "Brutto utbetaling per måned", Nynorsk to "", English to "")
+                            text(Bokmal to "Brutto utbetaling per måned", Nynorsk to "", English to "")
                         }
                     }
                 ) {
@@ -131,7 +132,7 @@ object Barnepensjon {
                     }
                 }
                 text(
-                    Language.Bokmal to "Tabellen viser hvor mye du får i barnepensjon før skatt.",
+                    Bokmal to "Tabellen viser hvor mye du får i barnepensjon før skatt.",
                     Nynorsk to "",
                     English to ""
                 )
@@ -145,13 +146,13 @@ object Barnepensjon {
         override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
             ifNotNull(datoTOM) { datoTOM ->
                 textExpr(
-                    Language.Bokmal to datoFOM.format(true) + " - " + datoTOM.format(true),
+                    Bokmal to datoFOM.format(true) + " - " + datoTOM.format(true),
                     Nynorsk to "".expr(),
                     English to "".expr()
                 )
             } orShow {
                 textExpr(
-                    Language.Bokmal to datoFOM.format(true) + " - ",
+                    Bokmal to datoFOM.format(true) + " - ",
                     Nynorsk to "".expr(),
                     English to "".expr()
                 )
@@ -162,18 +163,18 @@ object Barnepensjon {
         override fun OutlineOnlyScope<LangBokmal, Unit>.template() {
             title2 {
                 text(
-                    Language.Bokmal to "Utbetaling",
+                    Bokmal to "Utbetaling",
                 )
             }
             paragraph {
                 text(
-                    Language.Bokmal to "Pensjonen blir utbetalt innen den 20. i hver måned. " +
+                    Bokmal to "Pensjonen blir utbetalt innen den 20. i hver måned. " +
                             "Du finner utbetalingsdatoer på ${Constants.UTBETALING_URL}."
                 )
             }
             paragraph {
                 text(
-                    Language.Bokmal to "Har du rett til etterbetaling, vil du vanligvis få dette i løpet av tre uker."
+                    Bokmal to "Har du rett til etterbetaling, vil du vanligvis få dette i løpet av tre uker."
                 )
             }
         }
@@ -183,12 +184,12 @@ object Barnepensjon {
         override fun OutlineOnlyScope<LangBokmal, Unit>.template() {
             title2 {
                 text(
-                    Language.Bokmal to "Regulering",
+                    Bokmal to "Regulering",
                 )
             }
             paragraph {
                 text(
-                    Language.Bokmal to "Grunnbeløpet blir regulert 1. mai hvert år. Økningen blir vanligvis etterbetalt i juni."
+                    Bokmal to "Grunnbeløpet blir regulert 1. mai hvert år. Økningen blir vanligvis etterbetalt i juni."
                 )
             }
         }
@@ -198,7 +199,7 @@ object Barnepensjon {
         override fun OutlineOnlyScope<LangBokmal, Unit>.template() {
             title1 {
                 text(
-                    Language.Bokmal to "Informasjon til deg som handler på vegne av barnet",
+                    Bokmal to "Informasjon til deg som handler på vegne av barnet",
                 )
             }
         }
@@ -208,20 +209,20 @@ object Barnepensjon {
         override fun OutlineOnlyScope<LangBokmal, Unit>.template() {
             title2 {
                 text(
-                    Language.Bokmal to "Meld fra om endringer",
+                    Bokmal to "Meld fra om endringer",
                 )
             }
             paragraph {
                 text(
-                    Language.Bokmal to "Du må melde fra med en gang det skjer viktige endringer i barnets liv, som"
+                    Bokmal to "Du må melde fra med en gang det skjer viktige endringer i barnets liv, som"
                 )
                 list {
-                    item { text(Language.Bokmal to "endringer av nåværende familie- eller omsorgsforhold") }
-                    item { text(Language.Bokmal to "flytting eller opphold i et annet land over tid") }
-                    item { text(Language.Bokmal to "varig opphold i institusjon") }
+                    item { text(Bokmal to "endringer av nåværende familie- eller omsorgsforhold") }
+                    item { text(Bokmal to "flytting eller opphold i et annet land over tid") }
+                    item { text(Bokmal to "varig opphold i institusjon") }
                 }
                 text(
-                    Language.Bokmal to "Du er ansvarlig for å holde deg orientert om bevegelser på kontoen for utbetaling av barnepensjon, " +
+                    Bokmal to "Du er ansvarlig for å holde deg orientert om bevegelser på kontoen for utbetaling av barnepensjon, " +
                             "og du må straks melde fra om eventuelle feil til NAV. Er det utbetalt for mye barnepensjon fordi " +
                             "NAV ikke har fått beskjed, må pengene vanligvis betales tilbake."
                 )
@@ -233,24 +234,24 @@ object Barnepensjon {
         override fun OutlineOnlyScope<LangBokmal, Unit>.template() {
             title2 {
                 text(
-                    Language.Bokmal to "Endring av kontonummer",
+                    Bokmal to "Endring av kontonummer",
                 )
             }
             paragraph {
                 text(
-                    Language.Bokmal to "Ved endring av kontonummer for utbetaling av barnepensjon til barn under 18 år, " +
+                    Bokmal to "Ved endring av kontonummer for utbetaling av barnepensjon til barn under 18 år, " +
                             "kan du som forelder sende melding via ${Constants.SKRIVTILOSS_URL} eller sende skjema for melding om nytt " +
                             "kontonummer per post. Du må da legge ved kopi av gyldig legitimasjon."
                 )
             }
             paragraph {
                 text(
-                    Language.Bokmal to "Oppnevnt verge må melde om endring via post. Det må legges ved kopi av egen legitimasjon og vergefullmakt."
+                    Bokmal to "Oppnevnt verge må melde om endring via post. Det må legges ved kopi av egen legitimasjon og vergefullmakt."
                 )
             }
             paragraph {
                 text(
-                    Language.Bokmal to "Du finner mer informasjon og lenke til riktig skjema på ${Constants.KONTONUMMER_URL}."
+                    Bokmal to "Du finner mer informasjon og lenke til riktig skjema på ${Constants.KONTONUMMER_URL}."
                 )
             }
         }
@@ -260,18 +261,18 @@ object Barnepensjon {
         override fun OutlineOnlyScope<LangBokmal, Unit>.template() {
             title2 {
                 text(
-                    Language.Bokmal to "Skattetrekk på barnepensjon",
+                    Bokmal to "Skattetrekk på barnepensjon",
                 )
             }
             paragraph {
                 text(
-                    Language.Bokmal to "Barnepensjon er skattepliktig. " +
+                    Bokmal to "Barnepensjon er skattepliktig. " +
                             "Du kan lese mer om frivillig skattetrekk på ${Constants.SKATTETREKK_PENGESTOETTE_URL}."
                 )
             }
             paragraph {
                 text(
-                    Language.Bokmal to "Ved etterbetaling som gjelder tidligere år trekker NAV skatt etter "
+                    Bokmal to "Ved etterbetaling som gjelder tidligere år trekker NAV skatt etter "
                             + "Skatteetatens standardsatser. Du kan lese mer om satsene "
                             + "på ${Constants.SKATTETREKK_ETTERBETALING_URL}."
                 )
@@ -283,12 +284,12 @@ object Barnepensjon {
         override fun OutlineOnlyScope<LangBokmal, Unit>.template() {
             title2 {
                 text(
-                    Language.Bokmal to "Skattetrekk på barnepensjon",
+                    Bokmal to "Skattetrekk på barnepensjon",
                 )
             }
             paragraph {
                 text(
-                    Language.Bokmal to "Barnepensjon er skattepliktig, men vi trekker ikke skatt uten å få " +
+                    Bokmal to "Barnepensjon er skattepliktig, men vi trekker ikke skatt uten å få " +
                             "beskjed om dette. Hvis du opplyste om ønsket skattetrekk i søknaden, har vi registrert " +
                             "dette for i år. Du må selv sjekke om dette skattetrekket overføres ved årsskiftet. " +
                             "Du kan lese mer om frivillig skattetrekk på ${Constants.SKATTETREKK_PENGESTOETTE_URL}."
@@ -296,7 +297,7 @@ object Barnepensjon {
             }
             paragraph {
                 text(
-                    Language.Bokmal to "Ved etterbetaling som gjelder tidligere år trekker NAV skatt etter " +
+                    Bokmal to "Ved etterbetaling som gjelder tidligere år trekker NAV skatt etter " +
                             "Skatteetatens standardsatser. Du kan lese mer om satsene " +
                             "på ${Constants.SKATTETREKK_ETTERBETALING_URL}."
                 )
@@ -308,14 +309,14 @@ object Barnepensjon {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             title2 {
                 text(
-                    Language.Bokmal to "Du har rett til å klage",
+                    Bokmal to "Du har rett til å klage",
                     Nynorsk to "Du har rett til å klage",
                     English to "TODO"
                 )
             }
             paragraph {
                 text(
-                    Language.Bokmal to "Hvis du mener vedtaket er feil, kan du klage innen seks uker fra den datoen " +
+                    Bokmal to "Hvis du mener vedtaket er feil, kan du klage innen seks uker fra den datoen " +
                             "du mottok vedtaket. Du kan lese mer om hvordan du klager i vedlegget «Informasjon om klage og anke»",
                     Nynorsk to "TODO nynorsk",
                     English to "TODO engelsk"
@@ -328,14 +329,14 @@ object Barnepensjon {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             title2 {
                 text(
-                    Language.Bokmal to "Du har rett til innsyn",
+                    Bokmal to "Du har rett til innsyn",
                     Nynorsk to "TODO nynorsk",
                     English to "TODO english"
                 )
             }
             paragraph {
                 text(
-                    Language.Bokmal to "Du har som hovedregel rett til å se dokumentene i saken din etter" +
+                    Bokmal to "Du har som hovedregel rett til å se dokumentene i saken din etter" +
                             " bestemmelsene i forvaltningsloven § 18. Hvis du ønsker innsyn, må du kontakte oss på " +
                             "telefon eller per post.",
                     Nynorsk to "TODO nynorsk",
@@ -349,14 +350,14 @@ object Barnepensjon {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             title2 {
                 text(
-                    Language.Bokmal to "Har du spørsmål?",
+                    Bokmal to "Har du spørsmål?",
                     Nynorsk to "Har du spørsmål?",
                     English to "TODO engelsk"
                 )
             }
             paragraph {
                 text(
-                    Language.Bokmal to "Du kan finne svar på ${Constants.BARNEPENSJON_URL}. Du kan også kontakte " +
+                    Bokmal to "Du kan finne svar på ${Constants.BARNEPENSJON_URL}. Du kan også kontakte " +
                             "oss på telefon ${Constants.KONTAKTTELEFON}. Om du oppgir fødselsnummer til barnet, kan vi lettere gi deg " +
                             "rask og god hjelp.",
                     Nynorsk to "TODO nynorsk",
@@ -370,14 +371,14 @@ object Barnepensjon {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             title2 {
                 text(
-                    Language.Bokmal to "Feilutbetaling",
+                    Bokmal to "Feilutbetaling",
                     Nynorsk to "",
                     English to ""
                 )
             }
             paragraph {
                 text(
-                    Language.Bokmal to "Siden pensjonen din er opphørt tilbake i tid, medfører dette at du har fått utbetalt for mye i pensjon i denne perioden. Du vil få eget forhåndsvarsel om eventuell tilbakekreving av det feilutbetalte beløpet.",
+                    Bokmal to "Siden pensjonen din er opphørt tilbake i tid, medfører dette at du har fått utbetalt for mye i pensjon i denne perioden. Du vil få eget forhåndsvarsel om eventuell tilbakekreving av det feilutbetalte beløpet.",
                     Nynorsk to "",
                     English to ""
                 )
@@ -389,7 +390,7 @@ object Barnepensjon {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             paragraph {
                 textExpr(
-                    Language.Bokmal to "Barnepensjonen din er derfor opphørt fra ".expr() + virkningsdato.format(),
+                    Bokmal to "Barnepensjonen din er derfor opphørt fra ".expr() + virkningsdato.format(),
                     Nynorsk to "".expr(),
                     English to "".expr()
                 )
@@ -401,7 +402,7 @@ object Barnepensjon {
         override fun OutlineOnlyScope<LangBokmal, Unit>.template() {
             paragraph {
                 text(
-                    Language.Bokmal to "Barnepensjonen din utbetales til og med den kalendermåneden du fyller 18 år.",
+                    Bokmal to "Barnepensjonen din utbetales til og med den kalendermåneden du fyller 18 år.",
                 )
             }
         }

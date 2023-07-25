@@ -3,6 +3,9 @@ package no.nav.pensjon.etterlatte.maler.fraser.barnepensjon
 import no.nav.pensjon.brev.template.LangBokmal
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language
+import no.nav.pensjon.brev.template.Language.Bokmal
+import no.nav.pensjon.brev.template.Language.English
+import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.text
@@ -13,9 +16,9 @@ object Lover {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             paragraph {
                 text(
-                    Language.Bokmal to "Vedtaket er gjort etter bestemmelsene i folketrygdloven kapittel 18 og forvaltningsloven § 35 første ledd bokstav c.",
-                    Language.Nynorsk to "",
-                    Language.English to ""
+                    Bokmal to "Vedtaket er gjort etter bestemmelsene i folketrygdloven kapittel 18 og forvaltningsloven § 35 første ledd bokstav c.",
+                    Nynorsk to "",
+                    English to ""
                 )
             }
         }
@@ -25,9 +28,9 @@ object Lover {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             paragraph {
                 text(
-                    Language.Bokmal to "Vedtaket er gjort etter bestemmelsene i folketrygdloven § 18-7 og § 22-12.",
-                    Language.Nynorsk to "",
-                    Language.English to ""
+                    Bokmal to "Vedtaket er gjort etter bestemmelsene i folketrygdloven § 18-7 og § 22-12.",
+                    Nynorsk to "",
+                    English to ""
                 )
             }
         }
@@ -37,7 +40,7 @@ object Lover {
         override fun OutlineOnlyScope<LangBokmal, Unit>.template() {
             paragraph {
                 text(
-                    Language.Bokmal to "Vedtaket er gjort etter folketrygdloven kapittel 18 og 22.",
+                    Bokmal to "Vedtaket er gjort etter folketrygdloven kapittel 18 og 22.",
                 )
             }
         }

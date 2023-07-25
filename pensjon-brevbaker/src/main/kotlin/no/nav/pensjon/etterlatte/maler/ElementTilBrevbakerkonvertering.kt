@@ -2,7 +2,9 @@ package no.nav.pensjon.etterlatte.maler
 
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
-import no.nav.pensjon.brev.template.Language
+import no.nav.pensjon.brev.template.Language.Bokmal
+import no.nav.pensjon.brev.template.Language.English
+import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.textExpr
@@ -20,9 +22,9 @@ fun <D : BrevDTO> OutlineOnlyScope<LangBokmalNynorskEnglish, D>.konverterElement
                 title1 {
                     ifNotNull(inner.text) {
                         textExpr(
-                            Language.Bokmal to it,
-                            Language.Nynorsk to it,
-                            Language.English to it,
+                            Bokmal to it,
+                            Nynorsk to it,
+                            English to it,
                         )
                     }
                 }
@@ -32,9 +34,9 @@ fun <D : BrevDTO> OutlineOnlyScope<LangBokmalNynorskEnglish, D>.konverterElement
                 title2 {
                     ifNotNull(inner.text) {
                         textExpr(
-                            Language.Bokmal to it,
-                            Language.Nynorsk to it,
-                            Language.English to it,
+                            Bokmal to it,
+                            Nynorsk to it,
+                            English to it,
                         )
                     }
                 }
@@ -44,9 +46,9 @@ fun <D : BrevDTO> OutlineOnlyScope<LangBokmalNynorskEnglish, D>.konverterElement
                 forEach(element.children) { inner ->
                     ifNotNull(inner.text) {
                         textExpr(
-                            Language.Bokmal to it,
-                            Language.Nynorsk to it,
-                            Language.English to it,
+                            Bokmal to it,
+                            Nynorsk to it,
+                            English to it,
                         )
                     }
                 }
@@ -60,9 +62,9 @@ fun <D : BrevDTO> OutlineOnlyScope<LangBokmalNynorskEnglish, D>.konverterElement
                                 forEach(it) { inner2 ->
                                     ifNotNull(inner2.text) { text ->
                                         textExpr(
-                                            Language.Bokmal to text,
-                                            Language.Nynorsk to text,
-                                            Language.English to text,
+                                            Bokmal to text,
+                                            Nynorsk to text,
+                                            English to text,
                                         )
                                     }
                                 }

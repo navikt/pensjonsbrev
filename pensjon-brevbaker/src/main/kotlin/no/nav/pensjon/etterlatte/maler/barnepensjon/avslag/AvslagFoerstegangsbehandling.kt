@@ -1,6 +1,9 @@
 package no.nav.pensjon.etterlatte.maler.barnepensjon.avslag
 
 import no.nav.pensjon.brev.template.Language
+import no.nav.pensjon.brev.template.Language.Bokmal
+import no.nav.pensjon.brev.template.Language.English
+import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
@@ -20,7 +23,7 @@ object AvslagFoerstegangsbehandling : EtterlatteTemplate<ManueltBrevDTO> {
     override val template = createTemplate(
         name = kode.name,
         letterDataType = ManueltBrevDTO::class,
-        languages = languages(Language.Bokmal, Language.Nynorsk, Language.English),
+        languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(
             displayTitle = "Vedtak - avslag",
             isSensitiv = true,
@@ -30,9 +33,9 @@ object AvslagFoerstegangsbehandling : EtterlatteTemplate<ManueltBrevDTO> {
     ) {
         title {
             text(
-                Language.Bokmal to "Vi har avslått søknaden din om barnepensjon",
-                Language.Nynorsk to "",
-                Language.English to ""
+                Bokmal to "Vi har avslått søknaden din om barnepensjon",
+                Nynorsk to "",
+                English to ""
             )
         }
         outline {
