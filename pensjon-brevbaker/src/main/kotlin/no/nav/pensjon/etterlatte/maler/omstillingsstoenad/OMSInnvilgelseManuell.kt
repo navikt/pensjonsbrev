@@ -1,6 +1,5 @@
 package no.nav.pensjon.etterlatte.maler.omstillingsstoenad
 
-import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
