@@ -1,4 +1,4 @@
-package no.nav.pensjon.etterlatte.maler.barnepensjon.avslag
+package no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering
 
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.dsl.createTemplate
@@ -14,15 +14,15 @@ import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.Barnepensjon
 import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
 
 @TemplateModelHelpers
-object AvslagFoerstegangsbehandling : EtterlatteTemplate<ManueltBrevDTO> {
-    override val kode = EtterlatteBrevKode.BARNEPENSJON_AVSLAG
+object OpphoerRevurdering : EtterlatteTemplate<ManueltBrevDTO> {
+    override val kode: EtterlatteBrevKode = EtterlatteBrevKode.BARNEPENSJON_REVURDERING_OPPHOER
 
     override val template = createTemplate(
         name = kode.name,
         letterDataType = ManueltBrevDTO::class,
         languages = languages(Language.Bokmal, Language.Nynorsk, Language.English),
         letterMetadata = LetterMetadata(
-            displayTitle = "Vedtak - avslag",
+            displayTitle = "Vedtak - opphør",
             isSensitiv = true,
             distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
@@ -30,9 +30,9 @@ object AvslagFoerstegangsbehandling : EtterlatteTemplate<ManueltBrevDTO> {
     ) {
         title {
             text(
-                Language.Bokmal to "Vi har avslått søknaden din om barnepensjon",
-                Language.Nynorsk to "",
-                Language.English to ""
+                Language.Bokmal to "Vi opphører barnepensjonen din",
+                Language.Nynorsk to "Vi stansar barnepensjonen din",
+                Language.English to "We cease your child pension",
             )
         }
         outline {

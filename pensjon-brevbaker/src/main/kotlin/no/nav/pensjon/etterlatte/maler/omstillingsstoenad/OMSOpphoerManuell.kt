@@ -40,7 +40,7 @@ object OMSOpphoerManuell : EtterlatteTemplate<ManueltBrevDTO> {
         }
 
         outline {
-            konverterElementerTilBrevbakerformat()
+            konverterElementerTilBrevbakerformat(innhold)
 
             includePhrase(OMSFelles.DuHarRettTilAaKlageOpphoer)
             includePhrase(OMSFelles.DuHarRettTilInnsyn)

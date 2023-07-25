@@ -32,7 +32,7 @@ object OmgjoeringAvFarskapRevurdering : EtterlatteTemplate<BarnepensjonRevurderi
     override val template = createTemplate(
         name = kode.name,
         letterDataType = BarnepensjonRevurderingOmgjoeringAvFarskapDTO::class,
-        languages = languages(Language.Bokmal),
+        languages = languages(Language.Bokmal, Language.Nynorsk, Language.English),
         letterMetadata = LetterMetadata(
             displayTitle = "Vedtak - opphør på grunn av omgjøring av farskap",
             isSensitiv = true,
@@ -43,6 +43,8 @@ object OmgjoeringAvFarskapRevurdering : EtterlatteTemplate<BarnepensjonRevurderi
         title {
             text(
                 Language.Bokmal to "Vi opphører barnepensjonen din",
+                Language.Nynorsk to "Vi stansar barnepensjonen din",
+                Language.English to "We cease your child pension",
             )
         }
         outline {
@@ -57,9 +59,6 @@ object OmgjoeringAvFarskapRevurdering : EtterlatteTemplate<BarnepensjonRevurderi
             includePhrase(Barnepensjon.BarnepensjonenDinErDerforOpphoert(virkningsdato))
             includePhrase(Lover.Folketrygdloven18ogforvaltningsloven35_1_c)
             includePhrase(Barnepensjon.Feilutbetaling)
-            includePhrase(Barnepensjon.DuHarRettTilAaKlage)
-            includePhrase(Barnepensjon.DuHarRettTilInnsyn)
-            includePhrase(Barnepensjon.HarDuSpoersmaal)
         }
     }
 }
