@@ -13,10 +13,11 @@ import no.nav.pensjon.etterlatte.maler.NavnSelectors.fornavn
 import no.nav.pensjon.etterlatte.maler.NavnSelectors.mellomnavn
 
 fun ParagraphOnlyScope<LangBokmalNynorskEnglish, Unit>.formaterNavn(navn: Expression<Navn>) {
-    fun allLanguages(tekst: StringExpression) {
-        textExpr(Language.Bokmal to tekst, Language.Nynorsk to tekst, Language.English to tekst)
-    }
     allLanguages(navn.fornavn + " ")
     ifNotNull(navn.mellomnavn) { mellomnavn -> allLanguages(mellomnavn + " ") }
     allLanguages(navn.etternavn)
+}
+
+private fun ParagraphOnlyScope<LangBokmalNynorskEnglish, Unit>.allLanguages(tekst: StringExpression) {
+    textExpr(Language.Bokmal to tekst, Language.Nynorsk to tekst, Language.English to tekst)
 }
