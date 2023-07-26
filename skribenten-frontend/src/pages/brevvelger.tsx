@@ -51,16 +51,16 @@ const Brevvelger: NextPage<SkribentenConfig> = (props) => {
 
     const onOrderLetterHandler = (selectedLanguage: string) => {
         if (selectedLetter && sak) {
-            skribentApi.bestillExtreamBrev(
-                msal,
-                selectedLetter.id,
-                sak.sakId.toString(),
-                sak.foedselsnr,
-                selectedLanguage,
-            ).then((url: string) => {
-                console.log(url)
-                window.open(url)
-            })
+            if (selectedLetter.brevsystem == "EXTERAM") {
+                skribentApi.bestillExtreamBrev(msal, selectedLetter.id, sak.sakId.toString(), sak.foedselsnr, selectedLanguage,)
+                    .then((url: string) => {
+                        console.log(url)
+                        window.open(url)
+                    })
+            } else if (selectedLetter.brevsystem == "DOKSYS") {
+                skribentApi.bestillDoksysBrev(msal, selectedLetter.id, sak.sakId.toString(), sak.foedselsnr, selectedLanguage,)
+            }
+
         }
     }
     const skribentApi = new SkribentenAPI(props.api)

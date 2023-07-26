@@ -78,21 +78,7 @@ class PenService(config: Config, authService: AzureADService) {
                 ),
                 sakType = it.sakType,
             )
-    }
-
-    private data class BestillBrevRequest(
-        val sakId: Long? = null,
-        val brevType: String? = null,
-        val mottaker: String? = null,
-        val saksbehandlerNavn: String? = null,
-        val saksbehandlerIdent: String? = null,
-        val journalfoerendeEnhet: String? = null,
-        val sensitivePersonopplysninger: Boolean? = null,
-        val sprakKode: String? = null,
-        val automatiskBehandlet: Boolean? = null,
-        val gjelder: String? = null,
-        val vedtakId: Long? = null,
-    )
+        }
 
     private data class BestillExtreamBrevDto(
         val letterCode: String,
@@ -106,45 +92,72 @@ class PenService(config: Config, authService: AzureADService) {
     )
 
 
-    suspend fun bestillExtreamBrev(call: ApplicationCall, request: OrderLetterRequest): ServiceResult<String, String> =
+    suspend fun bestillExtreamBrev(
+        call: ApplicationCall,
+        request: OrderLetterRequest,
+        saksbehandlerNavn: String,
+        saksbehandlerBrukernavn: String
+    ): ServiceResult<String, String> =
         client.post(call, "brev/extream/${request.sakId}") {
             setBody(
                 BestillExtreamBrevDto(
                     letterCode = request.brevkode,
                     language = request.spraak,
-                    vedtaksId = null, // TODO fill with actual value
-                    gjelderPid = request.gjelderPid, // TODO fill with actual value. Can't it allways be set from sakid?
-                    mottakerPid = null, // TODO fill with actual value
-                    saksbehanlderNavn = "Saksbehandler Saksbehandlerson",  // TODO fill with actual value
-                    saksbehanlderId = "ZTest",  // TODO fill with actual value
-                    isSensitivt = false,  // TODO fill with actual value
+                    vedtaksId = null, // TODO fill with actual value. When do we do this? check psak
+                    gjelderPid = request.gjelderPid,
+                    mottakerPid = null, // TODO fill with actual value when chosen.
+                    saksbehanlderNavn = saksbehandlerNavn,
+                    saksbehanlderId = saksbehandlerBrukernavn,
+                    isSensitivt = false,  // TODO add choice to relevant letters and fill in.
                 )
             )
             contentType(ContentType.Application.Json)
         }.toServiceResult<String, String>()
 
-//    suspend fun bestillDoksysBrev(call: ApplicationCall, sakId: Long): AuthorizedHttpClientResult =
-//        client.post(call, "sak/$sakId/doksysBrev") {
-//            setBody(
-//                BestillExtreamBrevDto(
-//                    letterCode = "PE_IY_05_300",
-//                    language = SpraakKode.NB,
-//                    vedtaksId = null,
-//                    gjelderPid = "09417320595",
-//                    mottakerPid = null,
-//                    saksbehanlderNavn = "Saksbehandler Saksbehandlerson",
-//                    saksbehanlderId = "ZBLABLAHH",
-//                    isSensitivt = false,
-//                )
-//            )
-//            contentType(ContentType.Application.Json)
-//        }
 
-    suspend fun redigerExtreamBrev(call: ApplicationCall, journalposId: String): ServiceResult<String, String> =
-        client.get(call, "brev/rediger/extream/${journalposId}").toServiceResult()
+    private data class BestillDoksysBrevRequest(
+        val sakId: Long,
+        val brevType: String? = null, // Brevkode.
+        val mottaker: String? = null, //annen mottaker enn gjelder
+        val saksbehandlerNavn: String,
+        val saksbehandlerIdent: String,
+        val journalfoerendeEnhet: String,
+        val sensitivePersonopplysninger: Boolean,
+        val sprakKode: SpraakKode,
+        val automatiskBehandlet: Boolean,
+        val gjelder: String,
+        val vedtakId: Long? = null, // TODO Når settes disse?
+    )
 
-    suspend fun redigerDoksysBrev(call: ApplicationCall, journalposId: String): AuthorizedHttpClientResult =
-        client.get(call, "brev/rediger/doksys/${journalposId}")
-    ///{sakId}/redigerbrev
+    suspend fun bestillDoksysBrev(
+        call: ApplicationCall,
+        request: OrderLetterRequest,
+        saksbehandlerNavn: String,
+        saksbehandlerBrukernavn: String
+    ): ServiceResult<String, String> =
+        client.post(call, "sak/${request.sakId}/brev/doksys") {
+            setBody(
+                BestillDoksysBrevRequest(
+                    sakId = request.sakId,
+                    brevType = request.brevkode,
+                    mottaker = null, // TODO
+                    saksbehandlerNavn = saksbehandlerNavn,
+                    saksbehandlerIdent = saksbehandlerBrukernavn,
+                    journalfoerendeEnhet = "TODO enhet", // TODO
+                    sensitivePersonopplysninger = false, // TODO
+                    sprakKode = request.spraak,
+                    automatiskBehandlet = false, // TODO fra metadata
+                    gjelder = request.gjelderPid,
+                    vedtakId = null, //TODO
+                )
+            )
+            contentType(ContentType.Application.Json)
+        }.toServiceResult<String, String>()
+
+    suspend fun redigerExtreamBrev(call: ApplicationCall, journalpostId: String): ServiceResult<String, String> =
+        client.get(call, "brev/rediger/extream/${journalpostId}").toServiceResult()
+
+    suspend fun redigerDoksysBrev(call: ApplicationCall, journalpostId: String): ServiceResult<String, String> =
+        client.get(call, "brev/rediger/doksys/${journalpostId}").toServiceResult<String, String>()
 }
 

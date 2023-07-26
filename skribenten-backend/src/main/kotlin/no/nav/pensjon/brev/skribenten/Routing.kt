@@ -33,6 +33,8 @@ fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config
     val safService = SafService(skribentenConfig.getConfig("services.saf"), authService)
     val penService = PenService(skribentenConfig.getConfig("services.pen"), authService)
     val pdlService = PdlService(skribentenConfig.getConfig("services.pdl"), authService)
+    val microsoftGraphService =
+        MicrosoftGraphService(skribentenConfig.getConfig("services.microsoftgraph"), authService)
     val brevbakerService = BrevbakerService(skribentenConfig.getConfig("services.brevbaker"), authService)
     val brevmetadataService = BrevmetadataService(skribentenConfig.getConfig("services.brevmetadata"))
     val databaseService = SkribentenFakeDatabaseService(brevmetadataService)
@@ -48,51 +50,63 @@ fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config
 
         authenticate(authConfig.name) {
             post("/test/pen") {
-                //respondWithResult(penService.redigerExtreamBrev(call, "453840176"))
                 respondWithResult(safService.getStatus(call, "453840176"))
             }
 
             post("/pen/extream") {
+                // TODO skal vi validere metadata?
                 val request = call.receive<OrderLetterRequest>()
-                when (val response = penService.bestillExtreamBrev(call, request)) {
-                    is ServiceResult.Ok -> {
-                        val journalpostId = response.result
-                        val error = safService.waitForJournalpostStatusUnderArbeid(call, journalpostId)
-                        if (error != null) {
-                            if (error.type == SafService.JournalpostLoadingError.ErrorType.TIMEOUT) {
-                                call.respond(HttpStatusCode.RequestTimeout, error.error)
-                            } else {
-                                call.respondText(text = error.error, status = HttpStatusCode.InternalServerError)
-                            }
-                        } else {
-                            respondWithResult(penService.redigerExtreamBrev(call, journalpostId))
+                val name = getClaim("name") ?: throw UnauthorizedException("Could not find name of user")
+
+                // TODO create respond on error or similar function to avoid boilerplate. RespondOnError?
+                val onPremisesSamAccountName: String =
+                    when (val response = microsoftGraphService.getOnPremisesSamAccountName(call)) {
+                        is ServiceResult.Ok -> response.result
+                        is ServiceResult.Error, is ServiceResult.AuthorizationError -> {
+                            respondWithResult(response)
+                            return@post
                         }
                     }
 
-                    is ServiceResult.AuthorizationError -> {
-                        call.respond(response.error)
-                    }
-
-                    is ServiceResult.Error -> {
-                        call.respond(response.error)
+                //TODO better error handling.
+                penService.bestillExtreamBrev(call, request, name, onPremisesSamAccountName).map { journalpostId ->
+                    val error = safService.waitForJournalpostStatusUnderArbeid(call, journalpostId)
+                    if (error != null) {
+                        if (error.type == SafService.JournalpostLoadingError.ErrorType.TIMEOUT) {
+                            call.respond(HttpStatusCode.RequestTimeout, error.error)
+                        } else {
+                            call.respondText(text = error.error, status = HttpStatusCode.InternalServerError)
+                        }
+                    } else {
+                        respondWithResult(penService.redigerExtreamBrev(call, journalpostId))
                     }
                 }
             }
 
-            get("/pen/extream/rediger/{journalpostId}") {
-                // TODO slå opp dokumentId i skribenten så vi kan sjekke at brukeren har tilgang til dokumentet først.
-                val journalpostId = call.parameters["journalpostId"]
-                if (journalpostId != null) {
-                    respondWithResult(penService.redigerExtreamBrev(call, journalpostId))
+            post("/pen/doksys") {
+                val name = getClaim("name") ?: throw UnauthorizedException("Could not find name of user")
+                val request = call.receive<OrderLetterRequest>()
+                val onPremisesSamAccountName: String =
+                    when (val response = microsoftGraphService.getOnPremisesSamAccountName(call)) {
+                        is ServiceResult.Ok -> response.result
+                        is ServiceResult.Error, is ServiceResult.AuthorizationError -> {
+                            respondWithResult(response)
+                            return@post
+                        }
+                    }
+                when (val response = penService.bestillDoksysBrev(call, request, name, onPremisesSamAccountName)){
+                    is ServiceResult.Ok -> {
+                        val journalpostId = response.result
+                        respondWithResult(penService.redigerDoksysBrev(call, journalpostId))
+                    }
+                    is ServiceResult.Error, is ServiceResult.AuthorizationError -> {
+                        respondWithResult(response)
+                        return@post
+                    }
                 }
             }
 
-            post("/pen/orderDoksysLetter") {
-//                val journalpostId =
-//                    penService.bestillDoksysBrev(call, 22972355, spraak = SpraakKode.NB, brevkode = "PE_IY_05_300")
-//                respondWithResult(journalpostId.toServiceResult())
-            }
-
+            //TODO Check access using /tilganger(?). Is there an on behalf of endpoint which checks access?
             get("/pen/sak/{sakId}") {
                 val sakId = call.parameters.getOrFail("sakId")
                 respondWithResult(penService.hentSak(call, sakId))
@@ -141,20 +155,25 @@ fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config
             }
 
             post("/favourites") {
-                call.respond(databaseService.addFavourite(getLoggedInUserId(), call.receive<String>()))
+                getLoggedInUserId()?.let { call.respond(databaseService.addFavourite(it, call.receive<String>())) }
+                    ?: call.respond(HttpStatusCode.Unauthorized)
             }
 
             delete("/favourites") {
-                call.respond(databaseService.removeFavourite(getLoggedInUserId(), call.receive<String>()))
+                getLoggedInUserId()?.let { call.respond(databaseService.removeFavourite(it, call.receive<String>())) }
+                    ?: call.respond(HttpStatusCode.Unauthorized)
             }
 
             get("/favourites") {
-                call.respond(databaseService.getFavourites(getLoggedInUserId()))
+                getLoggedInUserId()?.let { call.respond(databaseService.getFavourites(it)) }
+                    ?: call.respond(HttpStatusCode.Unauthorized)
             }
         }
     }
 }
 
-private fun PipelineContext<Unit, ApplicationCall>.getLoggedInUserId(): String =
-    (call.authentication.principal<UserPrincipal>()?.getUserId()
-        ?: throw UnauthorizedException("Missing user principal"))
+private fun PipelineContext<Unit, ApplicationCall>.getLoggedInUserId(): String? =
+    call.authentication.principal<UserPrincipal>()?.getUserId()
+
+private fun PipelineContext<Unit, ApplicationCall>.getClaim(claim: String): String? =
+    call.authentication.principal<UserPrincipal>()?.jwtPayload?.getClaim(claim)?.asString()

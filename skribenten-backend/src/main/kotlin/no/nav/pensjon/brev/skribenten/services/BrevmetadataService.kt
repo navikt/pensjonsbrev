@@ -11,6 +11,59 @@ import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.serialization.jackson.*
 
+class BrevmetadataService(config: Config) {
+    private val brevmetadataUrl = config.getString("url")
+    private val httpClient = HttpClient(CIO) {
+        defaultRequest {
+            url(brevmetadataUrl)
+        }
+        install(ContentNegotiation) {
+            jackson {
+                disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+            }
+        }
+    }
+
+    suspend fun getRedigerbareBrevKategorier(sakstype: String): List<LetterCategory> {
+        val metadata: List<BrevdataDto> =
+            httpClient.get("/api/brevdata/brevdataForSaktype/$sakstype?includeXsd=false") {
+                contentType(ContentType.Application.Json)
+            }.body()
+        return mapToCategories(metadata)
+    }
+
+    private fun mapToCategories(metadata: List<BrevdataDto>) =
+        metadata
+            .filter { it.redigerbart ?: false }
+            .groupBy { it.brevkategori }
+            .map {
+                LetterCategory(
+                    name = it.key ?: "Annet",
+                    templates = it.value.map { template -> template.mapToMetadata() }
+                )
+            }
+
+    private fun BrevdataDto.mapToMetadata() =
+        LetterMetadata(
+            name = dekode ?: "MissingName",
+            id = brevkodeIBrevsystem ?: "MissingCode",
+            spraak = sprak ?: emptyList(),
+            brevsystem = when (brevsystem) {
+                "DOKSYS" -> BrevSystem.DOKSYS
+                "GAMMEL" -> BrevSystem.EXTERAM
+                else -> throw IllegalStateException("Malformed metadata. Must be doksys or extream.")
+            }
+        )
+
+
+    suspend fun getRedigerbareBrev(): List<LetterMetadata> {
+        val metadata: List<BrevdataDto> = httpClient.get("/api/brevdata/allbrev/?includeXsd=false") {
+            contentType(ContentType.Application.Json)
+        }.body()
+        return metadata.filter { it.redigerbart ?: false }.map { it.mapToMetadata() }
+    }
+}
+
 data class BrevdataDto(
     val redigerbart: Boolean?,
     val dekode: String?,
@@ -52,64 +105,4 @@ data class LetterMetadata(
     val brevsystem: BrevSystem,
     val spraak: List<SpraakKode>?
 )
-
-
-class BrevmetadataService(config: Config) {
-    private val brevmetadataUrl = config.getString("url")
-    private val httpClient = HttpClient(CIO) {
-        defaultRequest {
-            url(brevmetadataUrl)
-        }
-        install(ContentNegotiation) {
-            jackson {
-                disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
-            }
-        }
-    }
-
-    suspend fun getRedigerbareBrevKategorier(sakstype: String): List<LetterCategory> {
-        val metadata: List<BrevdataDto> =
-            httpClient.get("/api/brevdata/brevdataForSaktype/$sakstype?includeXsd=false") {
-                contentType(ContentType.Application.Json)
-            }.body()
-        return mapToCategories(metadata)
-    }
-
-    private fun mapToCategories(metadata: List<BrevdataDto>) =
-        metadata
-            .filter { it.redigerbart ?: false }
-            .groupBy { it.brevkategori }
-            .map {
-                LetterCategory(
-                    name = it.key ?: "Annet",
-                    templates = it.value.mapToMetadata()
-                )
-            }
-
-    private fun List<BrevdataDto>.mapToMetadata() =
-        map { template ->
-            LetterMetadata(
-                name = template.dekode ?: "MissingName",
-                id = template.brevkodeIBrevsystem ?: "MissingCode",
-                spraak = template.sprak ?: emptyList(),
-                brevsystem = when (template.brevsystem) {
-                    "DOKSYS" -> BrevSystem.DOKSYS
-                    "GAMMEL" -> BrevSystem.EXTERAM
-                    else -> throw IllegalStateException("Malformed metadata. Must be doksys or extream.")
-                }
-            )
-        }
-
-    suspend fun getRedigerbareBrev(): List<LetterMetadata> {
-        val metadata: List<BrevdataDto> = httpClient.get("/api/brevdata/allbrev/?includeXsd=false") {
-            contentType(ContentType.Application.Json)
-        }.body()
-        return metadata.filter { it.redigerbart ?: false }.mapToMetadata()
-    }
-
-    suspend fun getMetadataForLetters(letterCodes: Collection<String>): List<LetterMetadata> =
-        getRedigerbareBrev().filter { letterCodes.contains(it.id) }
-
-
-}
 

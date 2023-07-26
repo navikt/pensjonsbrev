@@ -12,7 +12,7 @@ sealed class ServiceResult<out Result: Any, out Err: Any> {
     data class AuthorizationError<out Result: Any, out Error: Any>(val error: TokenResponse.ErrorResponse): ServiceResult<Result, Error>()
     data class Error<out Result: Any, out Error: Any>(val error: Error): ServiceResult<Result, Error>()
 
-    fun <T : Any> map(func: (Result) -> T): ServiceResult<T, Err> = when (this) {
+    inline fun <T : Any> map(func: (Result) -> T): ServiceResult<T, Err> = when (this) {
         is Ok -> Ok(func(this.result))
         is Error -> Error(this.error)
         is AuthorizationError -> AuthorizationError(this.error)

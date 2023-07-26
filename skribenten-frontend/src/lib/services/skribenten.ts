@@ -167,6 +167,26 @@ class SkribentenAPI {
         ).then((res) => res.text())
     }
 
+
+    bestillDoksysBrev(msal: IMsalContext,
+                      brevkode: string,
+                      sakId: string,
+                      gjelderPid: string,
+                      spraak: string): Promise<string> {
+        return withAuthorization(msal, this.config.scope)
+            .then((auth) => fetch(`${this.config.url}/pen/doksys`, {
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${auth.accessToken}`,
+                    },
+                    method: 'POST',
+                    body: JSON.stringify({brevkode: brevkode, sakId: sakId, spraak: spraak, gjelderPid: gjelderPid}),
+                })
+            ).then((res) => res.text())
+
+    }
+
     async hentNavn(msal: IMsalContext, fnr: string): Promise<string> {
         return withAuthorization(msal, this.config.scope).then((auth) =>
             fetch(`${this.config.url}/pdl/navn/${fnr}`, {
