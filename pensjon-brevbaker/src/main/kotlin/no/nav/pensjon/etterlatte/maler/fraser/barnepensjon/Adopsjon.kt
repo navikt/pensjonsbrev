@@ -20,6 +20,7 @@ object Adopsjon {
 
     data class BegrunnelseForVedtaket(
         val virkningsdato: Expression<LocalDate>,
+        val adopsjonsdato: Expression<LocalDate>,
         val adoptertAv1: Expression<Navn>,
         val adoptertAv2: Expression<Navn?>,
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
@@ -41,7 +42,7 @@ object Adopsjon {
             }
             paragraph {
                 text(
-                    Bokmal to "Vi viser til informasjon fra deg/verge om at du er adoptert av ",
+                    Bokmal to "Vi viser til informasjon om at du er adoptert av ",
                     Nynorsk to "",
                     English to "",
                 )
@@ -49,7 +50,7 @@ object Adopsjon {
                 ifNotNull(adoptertAv2) { text(Bokmal to " og ", Nynorsk to " og ", English to " and ") }
                 ifNotNull(adoptertAv2) { ad2 -> formaterNavn(ad2) }
                 textExpr(
-                    Bokmal to " fra ".expr() + formatertVirkningsdato + ".",
+                    Bokmal to " fra ".expr() + adopsjonsdato.format() + ".",
                     Nynorsk to "".expr(),
                     English to "".expr(),
                 )
