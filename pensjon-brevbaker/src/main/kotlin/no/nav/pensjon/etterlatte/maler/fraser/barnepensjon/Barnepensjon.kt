@@ -406,4 +406,23 @@ object Barnepensjon {
             }
         }
     }
+
+    object DuMaaMeldeFraOmEndringer : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+            title2 {
+                text(
+                    Language.Bokmal to "Du må melde fra om endringer",
+                    Nynorsk to "",
+                    English to "",
+                )
+            }
+            paragraph {
+                text(
+                    Language.Bokmal to "Du har plikt til å melde fra til oss om endringer som har betydning for utbetalingen av barnepensjon, eller retten til å få barnepensjon. I vedlegget «Dine rettigheter og plikter» ser du hvilke endringer du må si fra om.",
+                    Nynorsk to "",
+                    English to "",
+                )
+            }
+        }
+    }
 }
