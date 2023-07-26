@@ -8,10 +8,8 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
-import no.nav.pensjon.etterlatte.maler.Utbetalingsinfo
 import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonFengselsoppholdDTOSelectors.fraDato
 import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonFengselsoppholdDTOSelectors.tilDato
-import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonFengselsoppholdDTOSelectors.utbetalingsinfo
 import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonFengselsoppholdDTOSelectors.virkningsdato
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.Fengselsoppholdfraser
 import no.nav.pensjon.etterlatte.maler.fraser.common.Vedtak
@@ -21,7 +19,6 @@ data class BarnepensjonFengselsoppholdDTO(
     val virkningsdato: LocalDate,
     val fraDato: LocalDate,
     val tilDato: LocalDate,
-    val utbetalingsinfo: Utbetalingsinfo,
 )
 
 @TemplateModelHelpers
@@ -53,7 +50,6 @@ object Fengselsopphold : EtterlatteTemplate<BarnepensjonFengselsoppholdDTO> {
                     virkningsdato = virkningsdato,
                     fraDato = fraDato,
                     tilDato = tilDato,
-                    utbetalingsinfo = utbetalingsinfo,
                 ),
             )
         }

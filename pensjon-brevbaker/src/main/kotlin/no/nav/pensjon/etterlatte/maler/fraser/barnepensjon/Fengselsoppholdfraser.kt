@@ -20,7 +20,6 @@ object Fengselsoppholdfraser {
         val virkningsdato: Expression<LocalDate>,
         val fraDato: Expression<LocalDate>,
         val tilDato: Expression<LocalDate>,
-        val utbetalingsinfo: Expression<Utbetalingsinfo>,
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             paragraph {
