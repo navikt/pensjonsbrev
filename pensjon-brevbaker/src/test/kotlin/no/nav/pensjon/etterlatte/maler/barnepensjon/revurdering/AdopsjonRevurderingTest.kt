@@ -23,7 +23,7 @@ class AdopsjonRevurderingTest {
     fun pdftest() {
         Letter(
             AdopsjonRevurdering.template,
-            Fixtures.create<ManueltBrevDTO>(),
+            Fixtures.create<BarnepensjonRevurderingAdopsjonDTO>(),
             Language.Bokmal,
             Fixtures.felles,
         ).let { PensjonLatexRenderer.render(it) }
@@ -35,7 +35,7 @@ class AdopsjonRevurderingTest {
     fun testHtml() {
         Letter(
             AdopsjonRevurdering.template,
-            Fixtures.create<ManueltBrevDTO>(),
+            Fixtures.create<BarnepensjonRevurderingAdopsjonDTO>(),
             Language.Bokmal,
             Fixtures.felles,
         ).let { PensjonHTMLRenderer.render(it) }

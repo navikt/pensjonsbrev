@@ -21,11 +21,13 @@ object Lover {
         }
     }
 
-    object Folketrygdloven18_7og22_12 : OutlinePhrase<LangBokmal>() {
-        override fun OutlineOnlyScope<LangBokmal, Unit>.template() {
+    object Folketrygdloven18_7og22_12 : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             paragraph {
                 text(
                     Language.Bokmal to "Vedtaket er gjort etter bestemmelsene i folketrygdloven § 18-7 og § 22-12.",
+                    Language.Nynorsk to "",
+                    Language.English to ""
                 )
             }
         }
