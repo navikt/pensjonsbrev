@@ -357,7 +357,7 @@ object Barnepensjon {
             paragraph {
                 text(
                     Bokmal to "Du kan finne svar på ${Constants.BARNEPENSJON_URL}. Du kan også kontakte " +
-                            "oss på telefon ${Constants.KONTAKTTELEFON}. Om du oppgir fødselsnummer til barnet, kan vi lettere gi deg " +
+                            "oss på telefon ${Constants.KONTAKTTELEFON_PENSJON}. Om du oppgir fødselsnummer til barnet, kan vi lettere gi deg " +
                             "rask og god hjelp.",
                     Nynorsk to "TODO nynorsk",
                     English to "TODO engelsk"
