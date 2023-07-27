@@ -17,4 +17,6 @@ object Constants {
     const val OMS_HVORMYE_URL = "$NAV_URL/omstillingsstønad#hvor-mye"
     const val OMS_KLAGE_URL = "klage.$NAV_URL/nb/pensjon/omstillingsstønad"
     const val OMS_URL = "klage.$NAV_URL/omstillingsstønad"
+    const val POSTADRESSE = "NAV Familie- og Pensjonsytelser, Postboks 6600 Etterstad, 0607 OSLO"
+    const val KONTAKTTELEFON = "55 55 33 34"
 }

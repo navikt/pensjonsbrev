@@ -62,11 +62,13 @@ object Barnepensjon {
         val beregningsperioder: Expression<List<Beregningsperiode>>,
         val soeskenjustering: Expression<Boolean>,
         val antallBarn: Expression<Int>
-    ) : OutlinePhrase<LangBokmal>() {
-        override fun OutlineOnlyScope<LangBokmal, Unit>.template() {
+    ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             title2 {
                 text(
                     Language.Bokmal to "Slik har vi beregnet pensjonen din",
+                    Nynorsk to "",
+                    English to ""
                 )
             }
             showIf(soeskenjustering) {
@@ -75,6 +77,8 @@ object Barnepensjon {
                         Language.Bokmal to "Det gjøres en samlet beregning av pensjon for barn som oppdras sammen. ".expr() +
                                 "For denne beregningen har vi lagt til grunn at dere er " + antallBarn.format() +
                                 " barn som oppdras sammen.",
+                        Nynorsk to "".expr(),
+                        English to "".expr()
                     )
                 }
                 paragraph {
@@ -82,27 +86,39 @@ object Barnepensjon {
                         Language.Bokmal to "Barnepensjon utgjør 40 prosent av folketrygdens grunnbeløp (G) for det " +
                                 "første barnet i søskenflokken. For hvert av de øvrige barna legges det til 25 prosent av G. " +
                                 "Summen deles på antall barn, og pensjonen utbetales med likt beløp til hvert av barna. " +
-                                "Pensjonen fordeles på 12 utbetalinger i året."
+                                "Pensjonen fordeles på 12 utbetalinger i året.",
+                        Nynorsk to "",
+                        English to ""
                     )
                 }
             } orShow {
                 paragraph {
                     text(
-                        Language.Bokmal to "Barnepensjonen utgjør 40 prosent av folketrygdens grunnbeløp (G) og fordeles på 12 utbetalinger i året."
+                        Language.Bokmal to "Barnepensjonen utgjør 40 prosent av folketrygdens grunnbeløp (G) og fordeles på 12 utbetalinger i året.",
+                        Nynorsk to "",
+                        English to ""
                     )
                 }
             }
+            BeregnetPensjonTabell(beregningsperioder)
+        }
+    }
+
+    data class BeregnetPensjonTabell(
+        val beregningsperioder: Expression<List<Beregningsperiode>>
+    ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             paragraph {
                 table(
                     header = {
                         column(2) {
-                            text(Language.Bokmal to "Periode")
+                            text(Language.Bokmal to "Periode", Nynorsk to "", English to "")
                         }
                         column(1) {
-                            text(Language.Bokmal to "Grunnbeløp (G)")
+                            text(Language.Bokmal to "Grunnbeløp (G)", Nynorsk to "", English to "")
                         }
                         column(2) {
-                            text(Language.Bokmal to "Brutto utbetaling per måned")
+                            text(Language.Bokmal to "Brutto utbetaling per måned", Nynorsk to "", English to "")
                         }
                     }
                 ) {
@@ -115,23 +131,29 @@ object Barnepensjon {
                     }
                 }
                 text(
-                    Language.Bokmal to "Tabellen viser hvor mye du får i barnepensjon før skatt."
+                    Language.Bokmal to "Tabellen viser hvor mye du får i barnepensjon før skatt.",
+                    Nynorsk to "",
+                    English to ""
                 )
             }
-
         }
+
     }
 
     data class PeriodeITabell(val datoFOM: Expression<LocalDate>, val datoTOM: Expression<LocalDate?>) :
-        TextOnlyPhrase<LangBokmal>() {
-        override fun TextOnlyScope<LangBokmal, Unit>.template() =
+        TextOnlyPhrase<LangBokmalNynorskEnglish>() {
+        override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
             ifNotNull(datoTOM) { datoTOM ->
                 textExpr(
-                    Language.Bokmal to datoFOM.format(true) + " - " + datoTOM.format(true)
+                    Language.Bokmal to datoFOM.format(true) + " - " + datoTOM.format(true),
+                    Nynorsk to "".expr(),
+                    English to "".expr()
                 )
             } orShow {
                 textExpr(
-                    Language.Bokmal to datoFOM.format(true) + " - "
+                    Language.Bokmal to datoFOM.format(true) + " - ",
+                    Nynorsk to "".expr(),
+                    English to "".expr()
                 )
             }
     }
@@ -335,7 +357,7 @@ object Barnepensjon {
             paragraph {
                 text(
                     Language.Bokmal to "Du kan finne svar på ${Constants.BARNEPENSJON_URL}. Du kan også kontakte " +
-                            "oss på telefon 55 55 33 34. Om du oppgir fødselsnummer til barnet, kan vi lettere gi deg " +
+                            "oss på telefon ${Constants.KONTAKTTELEFON}. Om du oppgir fødselsnummer til barnet, kan vi lettere gi deg " +
                             "rask og god hjelp.",
                     Nynorsk to "TODO nynorsk",
                     English to "TODO engelsk"
@@ -380,6 +402,25 @@ object Barnepensjon {
             paragraph {
                 text(
                     Language.Bokmal to "Barnepensjonen din utbetales til og med den kalendermåneden du fyller 18 år.",
+                )
+            }
+        }
+    }
+
+    object DuMaaMeldeFraOmEndringer : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+            title2 {
+                text(
+                    Language.Bokmal to "Du må melde fra om endringer",
+                    Nynorsk to "",
+                    English to "",
+                )
+            }
+            paragraph {
+                text(
+                    Language.Bokmal to "Du har plikt til å melde fra til oss om endringer som har betydning for utbetalingen av barnepensjon, eller retten til å få barnepensjon. I vedlegget «Dine rettigheter og plikter» ser du hvilke endringer du må si fra om.",
+                    Nynorsk to "",
+                    English to "",
                 )
             }
         }
