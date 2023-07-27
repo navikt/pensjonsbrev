@@ -13,14 +13,9 @@ import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.BrevDTO
 import no.nav.pensjon.etterlatte.maler.Element
-import no.nav.pensjon.etterlatte.maler.Utbetalingsinfo
-import no.nav.pensjon.etterlatte.maler.UtbetalingsinfoSelectors.antallBarn
-import no.nav.pensjon.etterlatte.maler.UtbetalingsinfoSelectors.beregningsperioder
-import no.nav.pensjon.etterlatte.maler.UtbetalingsinfoSelectors.soeskenjustering
 import no.nav.pensjon.etterlatte.maler.barnepensjon.endring.EndringDTOSelectors.erEndret
 import no.nav.pensjon.etterlatte.maler.barnepensjon.endring.EndringDTOSelectors.etterbetaling
 import no.nav.pensjon.etterlatte.maler.barnepensjon.endring.EndringDTOSelectors.innhold
-import no.nav.pensjon.etterlatte.maler.barnepensjon.endring.EndringDTOSelectors.utbetalingsinfo
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.Barnepensjon
 import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
 import no.nav.pensjon.etterlatte.maler.vedlegg.dineRettigheterOgPlikter
@@ -44,7 +39,6 @@ data class Etterbetalingsperiode(
 )
 
 data class EndringDTO(
-    val utbetalingsinfo: Utbetalingsinfo,
     val erEndret: Boolean,
     val etterbetaling: EtterbetalingDTO,
     override val innhold: List<Element>,
@@ -93,14 +87,6 @@ object Endring : EtterlatteTemplate<EndringDTO> {
         }
         outline {
             konverterElementerTilBrevbakerformat(innhold)
-
-            includePhrase(
-                Barnepensjon.SlikHarViBeregnetPensjonenDin(
-                    utbetalingsinfo.beregningsperioder,
-                    utbetalingsinfo.soeskenjustering,
-                    utbetalingsinfo.antallBarn,
-                ),
-            )
             includePhrase(Barnepensjon.UtbetalingOgRegulering)
             includePhrase(Barnepensjon.DuMaaMeldeFraOmEndringer)
             includePhrase(Barnepensjon.DuHarRettTilAaKlage)

@@ -459,4 +459,17 @@ object Barnepensjon {
             }
         }
     }
+
+    object FyllInnHer : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+            paragraph {
+                text(
+                    Language.Bokmal to "FYLL INN HER",
+                    Nynorsk to "",
+                    English to "",
+                )
+            }
+        }
+
+    }
 }

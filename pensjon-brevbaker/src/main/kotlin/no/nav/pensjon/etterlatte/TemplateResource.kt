@@ -5,6 +5,7 @@ import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.AdopsjonRevurder
 import no.nav.pensjon.etterlatte.maler.barnepensjon.BarnepensjonInnvilgelse
 import no.nav.pensjon.etterlatte.maler.barnepensjon.avslag.AvslagFoerstegangsbehandling
 import no.nav.pensjon.etterlatte.maler.barnepensjon.endring.Endring
+import no.nav.pensjon.etterlatte.maler.barnepensjon.endring.UtAvFengselsopphold
 import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.Fengselsopphold
 import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.HarStanset
 import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.OmgjoeringAvFarskapRevurdering
@@ -28,7 +29,8 @@ val prodAutobrevTemplates: Set<EtterlatteTemplate<*>> =
         HarStanset,
         OmgjoeringAvFarskapRevurdering,
         OpphoerRevurdering,
-        SoeskenjusteringRevurdering
+        SoeskenjusteringRevurdering,
+        UtAvFengselsopphold
     )
 
 val prodRedigerbareTemplates: Set<EtterlatteTemplate<*>> = emptySet()
