@@ -132,6 +132,17 @@ object VedleggPlikterAP17 : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
         )
 }
 
+object VedleggPlikterEndretSivilstatus:TextOnlyPhrase<LangBokmalNynorskEnglish>(){
+    override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+        text(
+            Bokmal to "sivilstanden din endrer seg",
+            Nynorsk to "sivilstanden din endrar seg",
+            English to "your civil status changes",
+        )
+    }
+
+}
+
 // VedleggPlikterAP19_001
 object VedleggPlikterAP19 : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
     override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =

@@ -17,6 +17,6 @@ class OpphoerBarnetilleggAutoTest {
             Fixtures.create<OpphoerBarnetilleggAutoDto>(),
             Language.Bokmal,
             Fixtures.fellesAuto,
-        ).renderTestPDF("UT_OPPHOERER_BARNETILLEGG")
+        ).renderTestHtml("UT_OPPHOERER_BARNETILLEGG")
     }
 }
