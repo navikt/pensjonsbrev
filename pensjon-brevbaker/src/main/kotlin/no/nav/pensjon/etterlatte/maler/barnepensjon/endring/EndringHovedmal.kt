@@ -14,9 +14,9 @@ import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.BrevDTO
 import no.nav.pensjon.etterlatte.maler.Element
 import no.nav.pensjon.etterlatte.maler.Hovedmal
-import no.nav.pensjon.etterlatte.maler.barnepensjon.endring.EndringDTOSelectors.erEndret
-import no.nav.pensjon.etterlatte.maler.barnepensjon.endring.EndringDTOSelectors.etterbetaling
-import no.nav.pensjon.etterlatte.maler.barnepensjon.endring.EndringDTOSelectors.innhold
+import no.nav.pensjon.etterlatte.maler.barnepensjon.endring.EndringHovedmalDTOSelectors.erEndret
+import no.nav.pensjon.etterlatte.maler.barnepensjon.endring.EndringHovedmalDTOSelectors.etterbetaling
+import no.nav.pensjon.etterlatte.maler.barnepensjon.endring.EndringHovedmalDTOSelectors.innhold
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.Barnepensjon
 import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
 import no.nav.pensjon.etterlatte.maler.vedlegg.dineRettigheterOgPlikter
@@ -39,7 +39,7 @@ data class Etterbetalingsperiode(
     var utbetaltBeloep: Kroner,
 )
 
-data class EndringDTO(
+data class EndringHovedmalDTO(
     val erEndret: Boolean,
     val etterbetaling: EtterbetalingDTO,
     override val innhold: List<Element>,
@@ -47,12 +47,12 @@ data class EndringDTO(
     BrevDTO
 
 @TemplateModelHelpers
-object Endring : EtterlatteTemplate<EndringDTO>, Hovedmal {
+object Endring : EtterlatteTemplate<EndringHovedmalDTO>, Hovedmal {
     override val kode: EtterlatteBrevKode = EtterlatteBrevKode.BARNEPENSJON_REVURDERING_ENDRING
 
     override val template = createTemplate(
         name = kode.name,
-        letterDataType = EndringDTO::class,
+        letterDataType = EndringHovedmalDTO::class,
         languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(
             displayTitle = "Vedtak - endring",
