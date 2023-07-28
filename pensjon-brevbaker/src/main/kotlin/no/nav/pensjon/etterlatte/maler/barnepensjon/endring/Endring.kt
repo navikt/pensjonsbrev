@@ -13,6 +13,7 @@ import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.BrevDTO
 import no.nav.pensjon.etterlatte.maler.Element
+import no.nav.pensjon.etterlatte.maler.Hovedmal
 import no.nav.pensjon.etterlatte.maler.barnepensjon.endring.EndringDTOSelectors.erEndret
 import no.nav.pensjon.etterlatte.maler.barnepensjon.endring.EndringDTOSelectors.etterbetaling
 import no.nav.pensjon.etterlatte.maler.barnepensjon.endring.EndringDTOSelectors.innhold
@@ -46,7 +47,7 @@ data class EndringDTO(
     BrevDTO
 
 @TemplateModelHelpers
-object Endring : EtterlatteTemplate<EndringDTO> {
+object Endring : EtterlatteTemplate<EndringDTO>, Hovedmal {
     override val kode: EtterlatteBrevKode = EtterlatteBrevKode.BARNEPENSJON_REVURDERING_ENDRING
 
     override val template = createTemplate(

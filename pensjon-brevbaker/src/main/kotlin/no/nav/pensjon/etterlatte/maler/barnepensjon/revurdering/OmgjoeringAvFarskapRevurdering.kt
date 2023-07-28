@@ -10,6 +10,7 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
+import no.nav.pensjon.etterlatte.maler.Delmal
 import no.nav.pensjon.etterlatte.maler.Navn
 import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingOmgjoeringAvFarskapDTOSelectors.forrigeFar
 import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingOmgjoeringAvFarskapDTOSelectors.naavaerendeFar
@@ -28,7 +29,7 @@ data class BarnepensjonRevurderingOmgjoeringAvFarskapDTO(
 )
 
 @TemplateModelHelpers
-object OmgjoeringAvFarskapRevurdering : EtterlatteTemplate<BarnepensjonRevurderingOmgjoeringAvFarskapDTO> {
+object OmgjoeringAvFarskapRevurdering : EtterlatteTemplate<BarnepensjonRevurderingOmgjoeringAvFarskapDTO>, Delmal {
     override val kode: EtterlatteBrevKode = EtterlatteBrevKode.BARNEPENSJON_REVURDERING_OMGJOERING_AV_FARSKAP
 
     override val template = createTemplate(

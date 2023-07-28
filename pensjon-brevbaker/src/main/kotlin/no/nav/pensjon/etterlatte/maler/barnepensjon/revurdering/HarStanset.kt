@@ -10,6 +10,7 @@ import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.BrevDTO
 import no.nav.pensjon.etterlatte.maler.Element
+import no.nav.pensjon.etterlatte.maler.Hovedmal
 import no.nav.pensjon.etterlatte.maler.Utbetalingsinfo
 import no.nav.pensjon.etterlatte.maler.UtbetalingsinfoSelectors.beregningsperioder
 import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.HarStansetDTOSelectors.innhold
@@ -23,7 +24,7 @@ import no.nav.pensjon.etterlatte.maler.vedlegg.klageOgAnke
 data class HarStansetDTO(val utbetalingsinfo: Utbetalingsinfo, override val innhold: List<Element>) : BrevDTO
 
 @TemplateModelHelpers
-object HarStanset : EtterlatteTemplate<HarStansetDTO> {
+object HarStanset : EtterlatteTemplate<HarStansetDTO>, Hovedmal {
     override val kode: EtterlatteBrevKode = EtterlatteBrevKode.BARNEPENSJON_REVURDERING_HAR_STANSET
 
     override val template = createTemplate(
