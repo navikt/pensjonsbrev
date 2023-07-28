@@ -14,12 +14,15 @@ import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.Delmal
 import no.nav.pensjon.etterlatte.maler.Utbetalingsinfo
 import no.nav.pensjon.etterlatte.maler.UtbetalingsinfoSelectors.antallBarn
+import no.nav.pensjon.etterlatte.maler.UtbetalingsinfoSelectors.beloep
 import no.nav.pensjon.etterlatte.maler.UtbetalingsinfoSelectors.beregningsperioder
 import no.nav.pensjon.etterlatte.maler.UtbetalingsinfoSelectors.soeskenjustering
 import no.nav.pensjon.etterlatte.maler.barnepensjon.endring.BarnepensjonUtAvFengselsoppholdDTOSelectors.erEtterbetalingMerEnnTreeMaaneder
 import no.nav.pensjon.etterlatte.maler.barnepensjon.endring.BarnepensjonUtAvFengselsoppholdDTOSelectors.utbetalingsinfo
+import no.nav.pensjon.etterlatte.maler.barnepensjon.endring.BarnepensjonUtAvFengselsoppholdDTOSelectors.virkningsdato
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.Barnepensjon
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.Lover
+import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.UtAvFengselsoppholdfraser
 import no.nav.pensjon.etterlatte.maler.fraser.common.Vedtak
 import java.time.LocalDate
 
@@ -27,8 +30,6 @@ data class BarnepensjonUtAvFengselsoppholdDTO(
     val utbetalingsinfo: Utbetalingsinfo,
     val erEtterbetalingMerEnnTreeMaaneder: Boolean,
     val virkningsdato: LocalDate,
-    val fraDato: LocalDate,
-    val tilDato: LocalDate,
 )
 
 @TemplateModelHelpers
@@ -55,7 +56,7 @@ object UtAvFengselsopphold : EtterlatteTemplate<BarnepensjonUtAvFengselsoppholdD
         }
         outline {
             includePhrase(Vedtak.BegrunnelseForVedtaket)
-            includePhrase(Barnepensjon.FyllInnHer)
+            includePhrase(UtAvFengselsoppholdfraser.Begrunnelse(virkningsdato, utbetalingsinfo.beloep))
             includePhrase(
                 Lover.MuligEtterbetaling(
                     paragraf = Expression.Literal("FYLL INN HER"),
