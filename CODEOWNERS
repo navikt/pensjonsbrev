@@ -1,1 +1,3 @@
 * @navikt/pensjonsbrev
+/pensjon-brevbaker/src/main/kotlin/no/nav/pensjon/etterlatte @navikt/etterlatte @navikt/pensjonsbrev
+/pensjon-brevbaker/src/test/kotlin/no/nav/pensjon/etterlatte @navikt/etterlatte @navikt/pensjonsbrev

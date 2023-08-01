@@ -28,14 +28,6 @@ fun Expression<Kroner>.format() =
 fun Expression<IntValue>.format() =
     select(intValueSelector).format()
 
-@JvmName("formatBrukersSivilstandTabell")
-fun Expression<Sivilstand>.tableFormat() =
-    Expression.BinaryInvoke(
-        this,
-        Expression.FromScope(ExpressionScope<Any, *>::language),
-        FormatBrukersSivilstandTabell,
-    )
-
 @JvmName("formatBormedSivilstandTabell")
 fun Expression<BorMedSivilstand>.tableFormat() =
     Expression.BinaryInvoke(
@@ -43,50 +35,6 @@ fun Expression<BorMedSivilstand>.tableFormat() =
         Expression.FromScope(ExpressionScope<Any, *>::language),
         FormatBorMedSivilstandTabell,
     )
-
-object FormatBrukersSivilstandTabell : BinaryOperation<Sivilstand, Language, String>() {
-    override fun apply(first: Sivilstand, second: Language): String =
-        when (first) {
-            ENKE -> when (second) {
-                Bokmal -> "Enke/Enkemann"
-                Nynorsk -> "Enkje/Enkjemann"
-                English -> "Widow/widower"
-            }
-
-            ENSLIG -> when (second) {
-                Bokmal -> "Enslig"
-                Nynorsk -> "Einsleg"
-                English -> "Single"
-            }
-
-            GIFT,
-            GIFT_LEVER_ADSKILT,
-            SEPARERT -> when (second) {
-                Bokmal, Nynorsk -> "Gift"
-                English -> "Married"
-            }
-
-            PARTNER,
-            PARTNER_LEVER_ADSKILT,
-            SEPARERT_PARTNER -> when (second) {
-                Bokmal -> "Partner"
-                Nynorsk -> "Partnar"
-                English -> "Partnership"
-            }
-
-            SAMBOER1_5 -> when (second) {
-                Bokmal -> "Samboer (jf. Folketrygdloven § 1-5)"
-                Nynorsk -> "Sambuar (jf. folketrygdlova § 1-5)"
-                English -> "Cohabitation (cf. Section 1-5 of the National Insurance Act)"
-            }
-
-            SAMBOER3_2 -> when (second) {
-                Bokmal -> "Samboer (jf. Folketrygdloven § 12-13)"
-                Nynorsk -> "Sambuar (jf. Folketrygdlova § 12-13)"
-                English -> "Cohabitation (cf. Section 12-13 of the National Insurance Act)"
-            }
-        }
-}
 
 object FormatBorMedSivilstandTabell : BinaryOperation<BorMedSivilstand, Language, String>() {
     override fun apply(first: BorMedSivilstand, second: Language): String =

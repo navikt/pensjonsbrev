@@ -1,29 +1,20 @@
 package no.nav.pensjon.brev.maler.adhoc
 
-import kotlinx.coroutines.runBlocking
 import no.nav.pensjon.brev.*
-import no.nav.pensjon.brev.latex.LaTeXCompilerService
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.Letter
 import no.nav.pensjon.brev.template.LetterTemplate
-import no.nav.pensjon.brev.template.render.PensjonHTMLRenderer
-import no.nav.pensjon.brev.template.render.PensjonLatexRenderer
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 
-@Tag(TestTags.PDF_BYGGER)
+@Tag(TestTags.MANUAL_TEST)
 class AdhocTest {
     fun testHtml(template: LetterTemplate<*, *>, htmlName: String) {
-        Letter(template, Unit, Language.Bokmal, Fixtures.fellesAuto)
-            .let { PensjonHTMLRenderer.render(it) }
-            .also { writeTestHTML(htmlName, it) }
+        Letter(template, Unit, Language.Bokmal, Fixtures.fellesAuto).renderTestHtml(htmlName)
     }
 
     fun testAdhocPdf(template: LetterTemplate<*, *>, pdfName: String) {
-        Letter(template, Unit, Language.Bokmal, Fixtures.fellesAuto)
-            .let { PensjonLatexRenderer.render(it) }
-            .let { runBlocking { LaTeXCompilerService(PDF_BUILDER_URL).producePDF(it, "test").base64PDF } }
-            .also { writeTestPDF(pdfName, it) }
+        Letter(template, Unit, Language.Bokmal, Fixtures.fellesAuto).renderTestPDF(pdfName)
     }
 
     @Test

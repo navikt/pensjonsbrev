@@ -8,18 +8,26 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
+import no.nav.pensjon.etterlatte.maler.Avdoed
 import no.nav.pensjon.etterlatte.maler.AvdoedSelectors.doedsdato
 import no.nav.pensjon.etterlatte.maler.AvdoedSelectors.navn
-import no.nav.pensjon.etterlatte.maler.BarnepensjonInnvilgelseDTO
-import no.nav.pensjon.etterlatte.maler.BarnepensjonInnvilgelseDTOSelectors.UtbetalingsinfoSelectors.antallBarn
-import no.nav.pensjon.etterlatte.maler.BarnepensjonInnvilgelseDTOSelectors.UtbetalingsinfoSelectors.beloep
-import no.nav.pensjon.etterlatte.maler.BarnepensjonInnvilgelseDTOSelectors.UtbetalingsinfoSelectors.beregningsperioder
-import no.nav.pensjon.etterlatte.maler.BarnepensjonInnvilgelseDTOSelectors.UtbetalingsinfoSelectors.soeskenjustering
-import no.nav.pensjon.etterlatte.maler.BarnepensjonInnvilgelseDTOSelectors.UtbetalingsinfoSelectors.virkningsdato
-import no.nav.pensjon.etterlatte.maler.BarnepensjonInnvilgelseDTOSelectors.avdoed
-import no.nav.pensjon.etterlatte.maler.BarnepensjonInnvilgelseDTOSelectors.utbetalingsinfo
-import no.nav.pensjon.etterlatte.maler.fraser.Barnepensjon
+import no.nav.pensjon.etterlatte.maler.Avkortingsinfo
+import no.nav.pensjon.etterlatte.maler.Utbetalingsinfo
+import no.nav.pensjon.etterlatte.maler.UtbetalingsinfoSelectors.antallBarn
+import no.nav.pensjon.etterlatte.maler.UtbetalingsinfoSelectors.beloep
+import no.nav.pensjon.etterlatte.maler.UtbetalingsinfoSelectors.beregningsperioder
+import no.nav.pensjon.etterlatte.maler.UtbetalingsinfoSelectors.soeskenjustering
+import no.nav.pensjon.etterlatte.maler.UtbetalingsinfoSelectors.virkningsdato
+import no.nav.pensjon.etterlatte.maler.barnepensjon.BarnepensjonInnvilgelseDTOSelectors.avdoed
+import no.nav.pensjon.etterlatte.maler.barnepensjon.BarnepensjonInnvilgelseDTOSelectors.utbetalingsinfo
+import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.Barnepensjon
 import no.nav.pensjon.etterlatte.maler.fraser.common.Vedtak
+
+data class BarnepensjonInnvilgelseDTO(
+    val utbetalingsinfo: Utbetalingsinfo,
+    val avkortingsinfo: Avkortingsinfo? = null,
+    val avdoed: Avdoed
+)
 
 @TemplateModelHelpers
 object BarnepensjonInnvilgelse : EtterlatteTemplate<BarnepensjonInnvilgelseDTO> {
@@ -45,7 +53,7 @@ object BarnepensjonInnvilgelse : EtterlatteTemplate<BarnepensjonInnvilgelseDTO> 
         outline {
             includePhrase(Vedtak.Overskrift)
             includePhrase(
-                Barnepensjon.Vedtak(
+                Barnepensjon.Foerstegangsbehandlingsvedtak(
                     utbetalingsinfo.virkningsdato,
                     avdoed.navn,
                     avdoed.doedsdato,
