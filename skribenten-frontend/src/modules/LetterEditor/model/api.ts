@@ -86,6 +86,19 @@ export interface Sak {
     readonly sakType: SakType,
 }
 
+//    data class PersonSoekResponse(val totalHits: Int, val resultat: List<Result>) {
+//         data class Result(val navn: String)
+//     }
+
+export interface PersonSoekResponse {
+    readonly totalHits: number,
+    readonly resultat: PersonSoekResultat[],
+}
+
+export interface PersonSoekResultat {
+    readonly navn: string,
+}
+
 export type SakType = 'AFP' |  'AFP_PRIVAT' |  'ALDER' |  'BARNEP' |  'FAM_PL' |  'GAM_YRK' |  'GENRL' |  'GJENLEV' |  'GRBL' |  'KRIGSP' |  'OMSORG' |  'UFOREP'
 
 export interface SkribentServiceResult<ResultType> {

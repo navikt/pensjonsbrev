@@ -1,0 +1,21 @@
+.content {
+    margin-top: 1.56rem;
+    margin-left: 2.56rem;
+    margin-right: 2.56rem;
+}
+
+.filters {
+    display: flex;
+    justify-content: space-between;
+}
+
+.filterButton {
+    line-height: 1rem; /* 125% */
+    letter-spacing: 0.002rem;
+    margin-top: 0.88rem;
+}
+
+.filterGroup {
+    width: 50%;
+    margin-top: 0.75rem;
+}

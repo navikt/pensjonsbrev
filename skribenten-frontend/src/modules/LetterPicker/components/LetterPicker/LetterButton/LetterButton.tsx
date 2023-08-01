@@ -27,7 +27,6 @@ const LetterButton: FC<LetterButtonProps> = ({text, id, isSelected = false, onCl
     const stopHoverHandler = () => {
         setShowPopover(false)
     }
-    console.log(brevsystem)
 
     return <li className={styles.buttonElement}>
         <button className={`${isSelected ? styles.letterButtonOpen : ""} ${styles.letterButton}`}

@@ -2,21 +2,23 @@ import {FC, useState} from "react"
 import {Button, Modal, Tabs} from "@navikt/ds-react"
 import styles from "./ChangeAddressee.module.css"
 import {XMarkIcon} from "@navikt/aksel-icons"
-import AddresseeSearch from "./AddresseeSearch/AddresseeSearch"
+import AddresseeSearch, {SearchRequest} from "./AddresseeSearch/AddresseeSearch"
+import {PersonSoekResponse, SkribentServiceResult} from "../../../LetterEditor/model/api"
 
 interface ChangeAddresseeProps {
     open: boolean,
-    onExit: ()=>void
+    onSearchForRecipient: (request: SearchRequest) => Promise<SkribentServiceResult<PersonSoekResponse>>
+    onExit: () => void
 }
 
-const ChangeAddressee : FC<ChangeAddresseeProps> = ({open, onExit}) => {
+const ChangeAddressee: FC<ChangeAddresseeProps> = ({open, onExit, onSearchForRecipient}) => {
     return (
         <Modal open={open} onClose={onExit} closeButton={false}>
             <Modal.Content className={styles.content}>
                 <div className={styles.banner}>
                     <p className={styles.bannerText}>Mottaker</p>
                     <Button
-                        onClick={()=>onExit()}
+                        onClick={() => onExit()}
                         className={styles.exitButton}
                         icon={<XMarkIcon/>} variant="tertiary"/>
                 </div>
@@ -35,7 +37,9 @@ const ChangeAddressee : FC<ChangeAddresseeProps> = ({open, onExit}) => {
                             label="Legg til mottaker manuelt"
                         />
                     </Tabs.List>
-                    <AddresseeSearch/>
+                    <Tabs.Panel value="addresseesearch">
+                        <AddresseeSearch onSearchForRecipient={onSearchForRecipient}/>
+                    </Tabs.Panel>
                 </Tabs>
 
                 <div className={styles.actionBar}>

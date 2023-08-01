@@ -1,7 +1,7 @@
 import {IMsalContext} from "@azure/msal-react/dist/MsalContext"
 import {withAuthorization} from "./msal"
 import {
-    EditedLetter,
+    EditedLetter, PersonSoekResponse,
     RedigerbarTemplateDescription,
     RenderedLetter,
     Sak, SakType,
@@ -9,6 +9,7 @@ import {
 } from "../../modules/LetterEditor/model/api"
 import {ObjectValue} from "../../modules/ModelEditor/model"
 import {LetterCategory} from "../../modules/LetterPicker/model/skribenten"
+import {SearchRequest} from "../../modules/LetterPicker/components/ChangeAddressee/AddresseeSearch/AddresseeSearch"
 
 export interface SkribentenAPIConfig {
     url: string
@@ -168,7 +169,7 @@ class SkribentenAPI {
     }
 
 
-    bestillDoksysBrev(msal: IMsalContext,
+    async bestillDoksysBrev(msal: IMsalContext,
                       brevkode: string,
                       sakId: string,
                       gjelderPid: string,
@@ -196,6 +197,29 @@ class SkribentenAPI {
                 method: 'GET',
             })
         ).then((res) => res.text())
+    }
+
+    async searchForRecipient(msal: IMsalContext, request: SearchRequest): Promise<SkribentServiceResult<PersonSoekResponse>> {
+        return withAuthorization(msal, this.config.scope).then((auth) =>
+            fetch(`${this.config.url}/pdl/soekmottaker`, {
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${auth.accessToken}`,
+                },
+                method: 'POST',
+                body: JSON.stringify(request),
+            })
+        ).then(async (res): Promise<SkribentServiceResult<PersonSoekResponse>> => {
+            if (res.status !== 200) {
+                return {result: null, errorMessage: `Error while fetching sak: Error code ${res.body}`}
+            }
+            return await res.json().then((value) => {
+                return {result: value, errorMessage: null}
+            }).catch((reason) => {
+                return {result: null, errorMessage: reason.message}
+            })
+        })
     }
 }
 

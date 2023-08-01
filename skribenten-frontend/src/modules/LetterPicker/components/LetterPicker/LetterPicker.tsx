@@ -12,7 +12,6 @@ interface LetterPickerProps {
 const LetterPicker: FC<LetterPickerProps> = ({letters, selectedLetter, onLetterSelected}) =>
     <ul className={styles.letterList}>
         {letters.map(letterData => {
-            console.log(letterData)
                 return (<LetterButton text={letterData.name}
                               brevsystem={letterData.brevsystem}
                               isSelected={letterData.id === selectedLetter}

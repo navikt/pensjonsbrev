@@ -19,6 +19,12 @@ import no.nav.pensjon.brevbaker.api.model.RenderedJsonLetter
 import java.util.*
 
 data class RenderLetterRequest(val letterData: Any, val editedLetter: EditedJsonLetter?)
+
+data class MottakerSearchRequest(val soeketekst: String, val recipientType: RecipientType?, val place: Place?) {
+    enum class Place { INNLAND, UTLAND }
+    enum class RecipientType { PERSON, SAMHANDLER }
+}
+
 data class EditedJsonLetter(val letter: RenderedJsonLetter, val deletedBlocks: Set<Int>)
 data class OrderLetterRequest(
     val brevkode: String,
@@ -94,11 +100,12 @@ fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config
                             return@post
                         }
                     }
-                when (val response = penService.bestillDoksysBrev(call, request, name, onPremisesSamAccountName)){
+                when (val response = penService.bestillDoksysBrev(call, request, name, onPremisesSamAccountName)) {
                     is ServiceResult.Ok -> {
                         val journalpostId = response.result
                         respondWithResult(penService.redigerDoksysBrev(call, journalpostId))
                     }
+
                     is ServiceResult.Error, is ServiceResult.AuthorizationError -> {
                         respondWithResult(response)
                         return@post
@@ -116,6 +123,12 @@ fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config
                 // TODO validate fnr
                 val fnr = call.parameters.getOrFail("fnr")
                 respondWithResult(pdlService.hentNavn(call, fnr))
+            }
+
+            post("/pdl/soekmottaker") {
+                val request = call.receive<MottakerSearchRequest>()
+
+                respondWithResult(pdlService.personSoek(call, request))
             }
 
             get("/test/brevbaker") {

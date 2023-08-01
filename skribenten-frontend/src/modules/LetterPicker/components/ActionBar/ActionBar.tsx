@@ -17,7 +17,6 @@ const ActionBar: FC<ActionBarProps> = ({selectedLetter, onOrderLetter}) => {
     })
 
     const handleOrderLetter = () => {
-        console.log(selectedLetter?.spraak)
         if (selectedLetter?.spraak && selectedLanguage !== null) {
             onOrderLetter(selectedLetter.spraak[selectedLanguage])
         }

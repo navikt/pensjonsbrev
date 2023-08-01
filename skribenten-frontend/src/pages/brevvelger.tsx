@@ -12,7 +12,8 @@ import {useMsal} from "@azure/msal-react"
 import {LetterCategory, LetterSelection} from "../modules/LetterPicker/model/skribenten"
 import LetterPickerActionBar from "../modules/LetterPicker/components/ActionBar/ActionBar"
 import SakContext from "../components/casecontextpage/CaseContextPage"
-import {Sak} from "../modules/LetterEditor/model/api"
+import {PersonSoekResponse, Sak, SkribentServiceResult} from "../modules/LetterEditor/model/api"
+import {SearchRequest} from "../modules/LetterPicker/components/ChangeAddressee/AddresseeSearch/AddresseeSearch"
 
 const Brevvelger: NextPage<SkribentenConfig> = (props) => {
     const [selectedLetter, setSelectedLetter] = useState<LetterSelection | null>(null)
@@ -39,6 +40,9 @@ const Brevvelger: NextPage<SkribentenConfig> = (props) => {
             })
         }
     }
+
+    const onSearchForRecipient = (request: SearchRequest): Promise<SkribentServiceResult<PersonSoekResponse>> =>
+        skribentApi.searchForRecipient(msal, request)
 
     const letterSelectedHandler = (id: string | null) => {
         if (id === selectedLetter?.id) {
@@ -92,6 +96,7 @@ const Brevvelger: NextPage<SkribentenConfig> = (props) => {
                 <LetterFilter categories={letterCategories}
                               favourites={favourites}
                               onLetterSelected={letterSelectedHandler}
+                              onSearchForRecipient={onSearchForRecipient}
                               selectedLetter={selectedLetter?.id || null}/>
                 <LetterPreview selectedLetter={selectedLetter}
                                selectedIsFavourite={selectedLetterIsFavourite()}
