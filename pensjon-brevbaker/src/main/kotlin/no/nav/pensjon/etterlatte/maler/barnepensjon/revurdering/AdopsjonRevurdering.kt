@@ -10,18 +10,29 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
-import no.nav.pensjon.etterlatte.maler.ManueltBrevDTO
-import no.nav.pensjon.etterlatte.maler.ManueltBrevDTOSelectors.innhold
-import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.Barnepensjon
-import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
+import no.nav.pensjon.etterlatte.maler.Navn
+import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingAdopsjonDTOSelectors.adopsjonsdato
+import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingAdopsjonDTOSelectors.adoptertAv1
+import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingAdopsjonDTOSelectors.adoptertAv2
+import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingAdopsjonDTOSelectors.virkningsdato
+import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.Adopsjon
+import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.Lover
+import java.time.LocalDate
+
+data class BarnepensjonRevurderingAdopsjonDTO(
+    val virkningsdato: LocalDate,
+    val adopsjonsdato: LocalDate,
+    val adoptertAv1: Navn,
+    val adoptertAv2: Navn? = null,
+)
 
 @TemplateModelHelpers
-object AdopsjonRevurdering : EtterlatteTemplate<ManueltBrevDTO> {
+object AdopsjonRevurdering : EtterlatteTemplate<BarnepensjonRevurderingAdopsjonDTO> {
     override val kode: EtterlatteBrevKode = EtterlatteBrevKode.BARNEPENSJON_REVURDERING_ADOPSJON
 
     override val template = createTemplate(
         name = kode.name,
-        letterDataType = ManueltBrevDTO::class,
+        letterDataType = BarnepensjonRevurderingAdopsjonDTO::class,
         languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(
             displayTitle = "Vedtak - opphør på grunn av adopsjon",
@@ -38,11 +49,16 @@ object AdopsjonRevurdering : EtterlatteTemplate<ManueltBrevDTO> {
             )
         }
         outline {
-            konverterElementerTilBrevbakerformat(innhold)
+            includePhrase(
+                Adopsjon.BegrunnelseForVedtaket(
+                    virkningsdato = virkningsdato,
+                    adopsjonsdato = adopsjonsdato,
+                    adoptertAv1 = adoptertAv1,
+                    adoptertAv2 = adoptertAv2,
+                ),
+            )
 
-            includePhrase(Barnepensjon.DuHarRettTilAaKlage)
-            includePhrase(Barnepensjon.DuHarRettTilInnsyn)
-            includePhrase(Barnepensjon.HarDuSpoersmaal)
+            includePhrase(Lover.Folketrygdloven18_7og22_12)
         }
     }
 }
