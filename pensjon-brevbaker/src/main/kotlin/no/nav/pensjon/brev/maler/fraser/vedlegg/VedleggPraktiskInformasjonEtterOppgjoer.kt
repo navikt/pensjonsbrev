@@ -8,9 +8,9 @@ object InnledningPraktiskInformasjon : OutlinePhrase<LangBokmalNynorskEnglish>()
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         paragraph {
             text(
-                Bokmal to "Du vil motta betalingsinformasjon fra NAV Innkreving på én av følgende måter:",
-                Nynorsk to "Du får betalingsinformasjon frå NAV Innkrevjing på éin av følgjande måtar:",
-                English to "You will receive payment information from NAV Collection Agency via one of the following methods:"
+                Bokmal to "Du vil motta betalingsinformasjon fra Skatteetaten på én av følgende måter:",
+                Nynorsk to "Du får betalingsinformasjon frå Skatteetaten på éin av følgjande måtar:",
+                English to "You will receive payment information from the Norwegian Tax Administration via one of the following methods:"
             )
             list {
                 item {
@@ -79,9 +79,9 @@ object SlikBetalerDuTilbake :
         }
         paragraph {
             text(
-                Bokmal to "Du kan avtale å betale tilbake beløpet i avdrag. Ta kontakt med Innkrevingssentralen for bidrag og tilbakebetalingskrav hvis du ønsker å betale i avdrag, eller hvis du ønsker å øke eller redusere trekkprosenten.",
-                Nynorsk to "Du kan avtale å betale tilbake beløpet i avdrag. Kontakt Innkrevingssentralen for bidrag og tilbakebetalingskrav dersom du ønskjer å betale i avdrag, eller dersom du ønskjer å auke eller redusere trekkprosenten.",
-                English to "You can agree to pay back the sum in instalments. Please contact the National Collections Agency for maintenance and repayment claims if you wish to pay in instalments, or if you wish to increase or reduce the deduction percentage."
+                Bokmal to "Du kan avtale å betale tilbake beløpet i avdrag. Ta kontakt med Skatteetaten hvis du ønsker å betale i avdrag, eller hvis du ønsker å øke eller redusere trekkprosenten.",
+                Nynorsk to "Du kan avtale å betale tilbake beløpet i avdrag. Ta kontakt med Skatteetaten dersom du ønskjer å betale i avdrag, eller dersom du ønskjer å auke eller redusere trekkprosenten.",
+                English to "You can agree to pay back the sum in instalments. Please contact the Norwegian Tax Administration if you wish to pay in instalments, or if you wish to increase or reduce the deduction percentage."
             )
         }
         title2 {
@@ -127,9 +127,9 @@ object InntekterSomKanHoldesUtenforEtteroppgjoeret :
         }
         paragraph {
             text(
-                Bokmal to "Har du inntekter som kan holdes utenfor etteroppgjøret, må du sende oss dokumentasjon på det i posten innen 3 uker. Eksempler på dette er:",
-                Nynorsk to "Dersom du har inntekter som kan haldast utanfor etteroppgjeret, må du sende oss dokumentasjon på desse i posten innan 3 veker. Døme på slike inntekter er:",
-                English to "If you have income that can be kept outside of the settlement, you must send us documentation of this income by regular post, within 3 weeks. Examples of this are:"
+                Bokmal to "Har du inntekter som kan holdes utenfor etteroppgjøret som ikke allerede er tatt med i beregningen, må du sende oss dokumentasjon på det i posten innen 3 uker. Eksempler på dette er:",
+                Nynorsk to "Dersom du har inntekter som kan haldast utanfor etteroppgjeret som ikkje allerede er tatt med i berekningen, må du sende oss dokumentasjon på desse i posten innan 3 veker. Døme på slike inntekter er:",
+                English to "If you have income that can be kept outside of the settlement which is not already included in the settlement calculation, you must send us documentation of this income by regular post, within 3 weeks. Examples of this are:"
             )
         }
         paragraph {
@@ -159,23 +159,23 @@ object InntekterSomKanHoldesUtenforEtteroppgjoeret :
             list {
                 item {
                     text(
-                        Bokmal to "Lønnsslip",
-                        Nynorsk to "Lønsslipp ",
-                        English to "Wage slips"
+                        Bokmal to "lønnsslip",
+                        Nynorsk to "lønsslipp ",
+                        English to "wage slips"
                     )
                 }
                 item {
                     text(
-                        Bokmal to "Dokumentasjon fra regnskapsfører",
-                        Nynorsk to "Dokumentasjon frå rekneskapsførar",
-                        English to "Documentation from an accountant"
+                        Bokmal to "dokumentasjon fra regnskapsfører",
+                        Nynorsk to "dokumentasjon frå rekneskapsførar",
+                        English to "documentation from an accountant"
                     )
                 }
                 item {
                     text(
-                        Bokmal to "Kopi av vedtak for erstatning ",
-                        Nynorsk to "Kopi av vedtak om erstatning",
-                        English to "Copy of the decision regarding compensation"
+                        Bokmal to "kopi av vedtak for erstatning ",
+                        Nynorsk to "kopi av vedtak om erstatning",
+                        English to "copy of the decision regarding compensation"
                     )
                 }
             }
@@ -195,9 +195,9 @@ object EttersendeDokumentasjon :
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         title1 {
             text(
-                Bokmal to "Ettersende dokumentasjon",
-                Nynorsk to "Ettersende dokumentasjon",
-                English to "Forwarding documentation"
+                Bokmal to "Hvordan ettersende dokumentasjon",
+                Nynorsk to "Hvordan ettersende dokumentasjon",
+                English to "How to forward documentation"
             )
         }
         paragraph {

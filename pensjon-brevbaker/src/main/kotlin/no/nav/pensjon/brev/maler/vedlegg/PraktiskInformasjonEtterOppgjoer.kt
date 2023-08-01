@@ -17,9 +17,9 @@ import no.nav.pensjon.brev.template.dsl.newText
 val vedleggPraktiskInformasjonEtteroppgjoer =
     createAttachment<LangBokmalNynorskEnglish, PraktiskInformasjonEtteroppgjoerDto>(
         title = newText(
-            Bokmal to "Praktisk informasjon",
-            Nynorsk to "Praktisk informasjon",
-            English to "Practical information"
+            Bokmal to "Praktisk informasjon om etteroppgjør",
+            Nynorsk to "Praktisk informasjon om etteroppgjør",
+            English to "Practical information about the settlement"
         ),
         includeSakspart = false,
     ) {
