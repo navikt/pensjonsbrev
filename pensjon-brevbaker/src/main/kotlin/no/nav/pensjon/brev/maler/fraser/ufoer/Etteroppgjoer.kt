@@ -43,9 +43,9 @@ object SjekkBeregning : OutlinePhrase<LangBokmalNynorskEnglish>() {
         }
         paragraph {
             text(
-                Bokmal to "Dette brevet er et forhåndsvarsel, slik at du kan sjekke at beregningene i vedlegg 1 er korrekte, og melde fra til oss hvis noe er feil eller mangler.",
-                Nynorsk to "Dette brevet er eit førehandsvarsel, og du har såleis høve til å sjekke at utrekningane i vedlegg 1 er korrekte, og melde frå til oss dersom noko er feil eller manglar.",
-                English to "We are writing to inform you in advance before we make a final decision. Please review the calculations in Appendix 1 carefully. Check if there are any mistakes or missing information. If you find any errors, let us know as soon as possible."
+                Bokmal to "Dette brevet er et forhåndsvarsel, slik at du kan sjekke at beregningene i vedlegg <Opplysninger om etteroppgjøret> er korrekte, og melde fra til oss hvis noe er feil eller mangler.",
+                Nynorsk to "Dette brevet er eit førehandsvarsel, og du har såleis høve til å sjekke at utrekningane i vedlegg <Opplysninger om etteroppgjøret> er korrekte, og melde frå til oss dersom noko er feil eller manglar.",
+                English to "We are writing to inform you in advance before we make a final decision. Please review the calculations in appendix <Calculation of settlement> carefully. Check if there are any mistakes or missing information. If you find any errors, let us know as soon as possible."
             )
         }
         paragraph {
@@ -76,9 +76,16 @@ object HvordanDuBetaleTilbake : OutlinePhrase<LangBokmalNynorskEnglish>() {
         }
         paragraph {
             text(
-                Bokmal to "Fordi du har betalt skatt av det du har fått for mye utbetalt, vil vi trekke fra skatt fra beløpet du skal betale tilbake. I betalingsinformasjonen fra Skatteetaten står det hvor mye du faktisk skal betale tilbake.",
-                Nynorsk to "Ettersom du har betalt skatt av det du har fått for mykje utbetalt, vil vi trekkje frå skatten frå beløpet du skal betale tilbake. I betalingsinformasjonen frå Skatteetaten står det kor mykje du faktisk skal betale tilbake.",
+                Bokmal to "Fordi du har betalt skatt av det du har fått for mye utbetalt, vil vi trekke fra skatt fra beløpet du skal betale tilbake. I betalingsinformasjonen du får fra Skatteetaten står det hvor mye du faktisk skal betale tilbake.",
+                Nynorsk to "Ettersom du har betalt skatt av det du har fått for mykje utbetalt, vil vi trekkje frå skatten frå beløpet du skal betale tilbake. I betalingsinformasjonen du får frå Skatteetaten står det kor mykje du faktisk skal betale tilbake.",
                 English to "As you have paid tax on the amount you have been overpaid, we will deduct tax from the amount you have to repay. The payment information from the Tax Office will state how much you must actually repay."
+            )
+        }
+        paragraph {
+            text(
+                Bokmal to "Du kan lese mer om tilbakebetaling i vedlegget <Praktisk informasjon om etteroppgjør>.",
+                Nynorsk to "Du kan lese meir om tilbakebetaling i vedlegget <Praktisk informasjon om etteroppgjør>.",
+                English to "You can read more about repaying in the appendix <Practical information>."
             )
         }
     }
@@ -87,6 +94,7 @@ object HvordanDuBetaleTilbake : OutlinePhrase<LangBokmalNynorskEnglish>() {
 data class InntektOverInntektstak(
     val aarPeriodeFom: Expression<Year>,
     val oppjustertInntektFoerUfoerhet: Expression<Kroner>,
+    val sumInntektUt: Expression<Kroner>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         title1 {
@@ -105,42 +113,37 @@ data class InntektOverInntektstak(
         }
         paragraph {
             textExpr(
-                Bokmal to "For ".expr() + aarPeriodeFom.format() + " var 80 prosent av inntekten din før du ble ufør, ".expr() + oppjustertInntektFoerUfoerhet.format() + " kroner.".expr(),
-                Nynorsk to "For ".expr() + aarPeriodeFom.format() + " var 80 prosent av inntekta di før du blei ufør, ".expr() + oppjustertInntektFoerUfoerhet.format() + " kroner.".expr(),
-                English to "For ".expr() + aarPeriodeFom.format() + ", 80 percent of your income before you received disability benefit was NOK ".expr() + oppjustertInntektFoerUfoerhet.format() + ".".expr()
+                Bokmal to "I ".expr() + aarPeriodeFom.format() + " var 80 prosent av inntekten din før du ble ufør, ".expr() + oppjustertInntektFoerUfoerhet.format() + " kroner. ".expr(),
+                Nynorsk to "I ".expr() + aarPeriodeFom.format() + " var 80 prosent av inntekta di før du blei ufør, ".expr() + oppjustertInntektFoerUfoerhet.format() + " kroner. ".expr(),
+                English to "I ".expr() + aarPeriodeFom.format() + ", 80 percent of your income before you received disability benefit was NOK ".expr() + oppjustertInntektFoerUfoerhet.format() + ". ".expr()
+            )
+            textExpr(
+                Bokmal to "Du tjente ".expr() + sumInntektUt.format() + " kroner i ".expr() + aarPeriodeFom.format() + ".",
+                Nynorsk to "Du tente ".expr() + sumInntektUt.format() + " kroner i ".expr() + aarPeriodeFom.format() + ".",
+                English to "You earned ".expr() + sumInntektUt.format() + " kroner i ".expr() + aarPeriodeFom.format() + "."
             )
         }
     }
 }
 
 data class SoekOmNyInntektsgrense(
-    val aarPeriodeFom: Expression<Year>,
-    val hoeyesteInntektsgrense: Expression<Kroner>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         // <år> hvilket år? Kan jeg bruk periodeFom (2022)?
         title1 {
             text(
-                Bokmal to "Søke om ny inntektsgrense",
-                Nynorsk to "Søkje om ny inntektsgrense",
-                English to "Apply for new income threshold"
+                Bokmal to "Du kan søke om ny inntektsgrense",
+                Nynorsk to "Du kan søkje om ny inntektsgrense",
+                English to "You can apply for new income threshold"
             )
         }
         paragraph {
-            textExpr(
-                Bokmal to "Er du arbeidstaker og har gradert uføretrygd, kan du søke om ny inntektsgrense. Dette gjelder hvis du har hatt høy lønnsøkning, uten at det skyldes overtidsjobbing, ekstravakter eller høyere stillingsprosent. Vi har brukt den høyeste inntektsgrensen du hadde i ".expr() + aarPeriodeFom.format() + " i berengingen av etteroppgjøret.",
-                Nynorsk to "Dersom du er arbeidstakar og har gradert uføretrygd, kan du søkje om ny inntektsgrense. Dette gjeld viss du har hatt høg lønsauke, utan at det skuldast overtidsjobbing, ekstravakter eller høgare stillingsprosent. Vi har brukt den høgeste inntektsgrensen du hadde i ".expr() + aarPeriodeFom.format() + " i berekningen av etteroppgjøret.",
-                English to "If you are an employee and have graduated disability benefit, you can apply for a new income threshold. This will apply if you have had a large wage increase, and this is not due to working overtime, additional shifts or a greater percentage of full-time. We have used the highest income threshold you had in ".expr() + aarPeriodeFom.format() + " in the settlement calculation.",
+            text(
+                Bokmal to "Er du arbeidstaker og har gradert uføretrygd, kan du søke om ny inntektsgrense. Dette gjelder hvis du har hatt høy lønnsøkning, uten at det skyldes overtidsjobbing, ekstravakter eller høyere stillingsprosent.",
+                Nynorsk to "Dersom du er arbeidstakar og har gradert uføretrygd, kan du søkje om ny inntektsgrense. Dette gjeld viss du har hatt høg lønsauke, utan at det skuldast overtidsjobbing, ekstravakter eller høgare stillingsprosent.",
+                English to "If you are an employee and have graduated disability benefit, you can apply for a new income threshold. This will apply if you have had a large wage increase, and this is not due to working overtime, additional shifts or a greater percentage of full-time.",
             )
         }
-        paragraph {
-            textExpr(
-                Bokmal to "I ".expr() + aarPeriodeFom.format() + " var din inntektsgrense ".expr() + hoeyesteInntektsgrense.format() + " kroner.",
-                Nynorsk to "I ".expr() + aarPeriodeFom.format() + "var di inntektsgrense ".expr() + hoeyesteInntektsgrense.format() + " kroner.",
-                English to "In ".expr() + aarPeriodeFom.format() + "your income threshold was NOK ".expr() + hoeyesteInntektsgrense.format() + "."
-            )
-        }
-    }
 }
 
 
