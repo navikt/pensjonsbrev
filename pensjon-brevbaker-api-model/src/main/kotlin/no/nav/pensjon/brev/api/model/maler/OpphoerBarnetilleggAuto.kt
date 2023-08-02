@@ -16,7 +16,6 @@ data class OpphoerBarnetilleggAutoDto(
     val barnetilleggSaerkullsbarn: BarnetilleggSaerkullsbarn?,
     val brukerBorInorge: Boolean,
     val grunnbeloep: Kroner,
-    val sivilstand: Sivilstand, // TODO remove in next version
     val ufoeretrygd: Ufoeretrygd,
     val maanedligUfoeretrygdFoerSkatt: MaanedligUfoeretrygdFoerSkattDto?,
     val opplysningerBruktIBeregningUT: OpplysningerBruktIBeregningUTDto,
