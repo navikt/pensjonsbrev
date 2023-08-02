@@ -62,6 +62,14 @@ val pensjonLatexSettings = languageSettings {
         )
     }
 
+    setting("sidesaksnummerprefix") {
+        text(
+            Bokmal to "saksnummer: ",
+            Nynorsk to "saksnummer: ",
+            English to "case number: ",
+        )
+    }
+
     setting("sideprefix") {
         text(
             Bokmal to "side",

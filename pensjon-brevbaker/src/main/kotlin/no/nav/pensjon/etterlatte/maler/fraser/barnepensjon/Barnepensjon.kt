@@ -1,10 +1,22 @@
-package no.nav.pensjon.etterlatte.maler.fraser
+package no.nav.pensjon.etterlatte.maler.fraser.barnepensjon
 
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.model.format
-import no.nav.pensjon.brev.template.*
-import no.nav.pensjon.brev.template.dsl.*
-import no.nav.pensjon.brev.template.dsl.expression.*
+import no.nav.pensjon.brev.template.Expression
+import no.nav.pensjon.brev.template.LangBokmal
+import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
+import no.nav.pensjon.brev.template.Language
+import no.nav.pensjon.brev.template.Language.English
+import no.nav.pensjon.brev.template.Language.Nynorsk
+import no.nav.pensjon.brev.template.OutlinePhrase
+import no.nav.pensjon.brev.template.TextOnlyPhrase
+import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
+import no.nav.pensjon.brev.template.dsl.TextOnlyScope
+import no.nav.pensjon.brev.template.dsl.expression.expr
+import no.nav.pensjon.brev.template.dsl.expression.format
+import no.nav.pensjon.brev.template.dsl.expression.plus
+import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import no.nav.pensjon.etterlatte.maler.Beregningsperiode
 import no.nav.pensjon.etterlatte.maler.BeregningsperiodeSelectors.datoFOM
@@ -16,7 +28,7 @@ import java.time.LocalDate
 
 object Barnepensjon {
 
-    data class Vedtak(
+    data class Foerstegangsbehandlingsvedtak(
         val virkningsdato: Expression<LocalDate>,
         val avdoedNavn: Expression<String>,
         val doedsdato: Expression<LocalDate>,
@@ -50,12 +62,13 @@ object Barnepensjon {
         val beregningsperioder: Expression<List<Beregningsperiode>>,
         val soeskenjustering: Expression<Boolean>,
         val antallBarn: Expression<Int>
-    ) :
-        OutlinePhrase<LangBokmal>() {
-        override fun OutlineOnlyScope<LangBokmal, Unit>.template() {
+    ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             title2 {
                 text(
                     Language.Bokmal to "Slik har vi beregnet pensjonen din",
+                    Nynorsk to "",
+                    English to ""
                 )
             }
             showIf(soeskenjustering) {
@@ -64,6 +77,8 @@ object Barnepensjon {
                         Language.Bokmal to "Det gjøres en samlet beregning av pensjon for barn som oppdras sammen. ".expr() +
                                 "For denne beregningen har vi lagt til grunn at dere er " + antallBarn.format() +
                                 " barn som oppdras sammen.",
+                        Nynorsk to "".expr(),
+                        English to "".expr()
                     )
                 }
                 paragraph {
@@ -71,27 +86,39 @@ object Barnepensjon {
                         Language.Bokmal to "Barnepensjon utgjør 40 prosent av folketrygdens grunnbeløp (G) for det " +
                                 "første barnet i søskenflokken. For hvert av de øvrige barna legges det til 25 prosent av G. " +
                                 "Summen deles på antall barn, og pensjonen utbetales med likt beløp til hvert av barna. " +
-                                "Pensjonen fordeles på 12 utbetalinger i året."
+                                "Pensjonen fordeles på 12 utbetalinger i året.",
+                        Nynorsk to "",
+                        English to ""
                     )
                 }
             } orShow {
                 paragraph {
                     text(
-                        Language.Bokmal to "Barnepensjonen utgjør 40 prosent av folketrygdens grunnbeløp (G) og fordeles på 12 utbetalinger i året."
+                        Language.Bokmal to "Barnepensjonen utgjør 40 prosent av folketrygdens grunnbeløp (G) og fordeles på 12 utbetalinger i året.",
+                        Nynorsk to "",
+                        English to ""
                     )
                 }
             }
+            BeregnetPensjonTabell(beregningsperioder)
+        }
+    }
+
+    data class BeregnetPensjonTabell(
+        val beregningsperioder: Expression<List<Beregningsperiode>>
+    ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             paragraph {
                 table(
                     header = {
                         column(2) {
-                            text(Language.Bokmal to "Periode")
+                            text(Language.Bokmal to "Periode", Nynorsk to "", English to "")
                         }
                         column(1) {
-                            text(Language.Bokmal to "Grunnbeløp (G)")
+                            text(Language.Bokmal to "Grunnbeløp (G)", Nynorsk to "", English to "")
                         }
                         column(2) {
-                            text(Language.Bokmal to "Brutto utbetaling per måned")
+                            text(Language.Bokmal to "Brutto utbetaling per måned", Nynorsk to "", English to "")
                         }
                     }
                 ) {
@@ -104,23 +131,29 @@ object Barnepensjon {
                     }
                 }
                 text(
-                    Language.Bokmal to "Tabellen viser hvor mye du får i barnepensjon før skatt."
+                    Language.Bokmal to "Tabellen viser hvor mye du får i barnepensjon før skatt.",
+                    Nynorsk to "",
+                    English to ""
                 )
             }
-
         }
+
     }
 
     data class PeriodeITabell(val datoFOM: Expression<LocalDate>, val datoTOM: Expression<LocalDate?>) :
-        TextOnlyPhrase<LangBokmal>() {
-        override fun TextOnlyScope<LangBokmal, Unit>.template() =
+        TextOnlyPhrase<LangBokmalNynorskEnglish>() {
+        override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
             ifNotNull(datoTOM) { datoTOM ->
                 textExpr(
-                    Language.Bokmal to datoFOM.format(true) + " - " + datoTOM.format(true)
+                    Language.Bokmal to datoFOM.format(true) + " - " + datoTOM.format(true),
+                    Nynorsk to "".expr(),
+                    English to "".expr()
                 )
             } orShow {
                 textExpr(
-                    Language.Bokmal to datoFOM.format(true) + " - "
+                    Language.Bokmal to datoFOM.format(true) + " - ",
+                    Nynorsk to "".expr(),
+                    English to "".expr()
                 )
             }
     }
@@ -223,6 +256,29 @@ object Barnepensjon {
         }
     }
 
+    object SkattetrekkPaaBarnepensjonRevurdering : OutlinePhrase<LangBokmal>() {
+        override fun OutlineOnlyScope<LangBokmal, Unit>.template() {
+            title2 {
+                text(
+                    Language.Bokmal to "Skattetrekk på barnepensjon",
+                )
+            }
+            paragraph {
+                text(
+                    Language.Bokmal to "Barnepensjon er skattepliktig. " +
+                            "Du kan lese mer om frivillig skattetrekk på ${Constants.SKATTETREKK_PENGESTOETTE_URL}."
+                )
+            }
+            paragraph {
+                text(
+                    Language.Bokmal to "Ved etterbetaling som gjelder tidligere år trekker NAV skatt etter "
+                            + "Skatteetatens standardsatser. Du kan lese mer om satsene "
+                            + "på ${Constants.SKATTETREKK_ETTERBETALING_URL}."
+                )
+            }
+        }
+    }
+
     object SkattetrekkPaaBarnepensjon : OutlinePhrase<LangBokmal>() {
         override fun OutlineOnlyScope<LangBokmal, Unit>.template() {
             title2 {
@@ -248,54 +304,125 @@ object Barnepensjon {
         }
     }
 
-    object DuHarRettTilAaKlage : OutlinePhrase<LangBokmal>() {
-        override fun OutlineOnlyScope<LangBokmal, Unit>.template() {
+    object DuHarRettTilAaKlage : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             title2 {
                 text(
                     Language.Bokmal to "Du har rett til å klage",
+                    Nynorsk to "Du har rett til å klage",
+                    English to "TODO"
                 )
             }
             paragraph {
                 text(
                     Language.Bokmal to "Hvis du mener vedtaket er feil, kan du klage innen seks uker fra den datoen " +
-                            "du mottok vedtaket. Klagen skal være skriftlig. Du finner skjema og informasjon på ${Constants.KLAGE_URL}."
+                            "du mottok vedtaket. Du kan lese mer om hvordan du klager i vedlegget «Informasjon om klage og anke»",
+                    Nynorsk to "TODO nynorsk",
+                    English to "TODO engelsk"
                 )
             }
         }
     }
 
-    object DuHarRettTilInnsyn : OutlinePhrase<LangBokmal>() {
-        override fun OutlineOnlyScope<LangBokmal, Unit>.template() {
+    object DuHarRettTilInnsyn : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             title2 {
                 text(
                     Language.Bokmal to "Du har rett til innsyn",
+                    Nynorsk to "TODO nynorsk",
+                    English to "TODO english"
                 )
             }
             paragraph {
                 text(
                     Language.Bokmal to "Du har som hovedregel rett til å se dokumentene i saken din etter" +
                             " bestemmelsene i forvaltningsloven § 18. Hvis du ønsker innsyn, må du kontakte oss på " +
-                            "telefon eller per post."
+                            "telefon eller per post.",
+                    Nynorsk to "TODO nynorsk",
+                    English to "TODO engelsk"
                 )
             }
         }
     }
 
-    object HarDuSpoersmaal : OutlinePhrase<LangBokmal>() {
-        override fun OutlineOnlyScope<LangBokmal, Unit>.template() {
+    object HarDuSpoersmaal : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             title2 {
                 text(
                     Language.Bokmal to "Har du spørsmål?",
+                    Nynorsk to "Har du spørsmål?",
+                    English to "TODO engelsk"
                 )
             }
             paragraph {
                 text(
                     Language.Bokmal to "Du kan finne svar på ${Constants.BARNEPENSJON_URL}. Du kan også kontakte " +
-                            "oss på telefon 55 55 33 34. Om du oppgir fødselsnummer til barnet, kan vi lettere gi deg " +
-                            "rask og god hjelp."
+                            "oss på telefon ${Constants.KONTAKTTELEFON}. Om du oppgir fødselsnummer til barnet, kan vi lettere gi deg " +
+                            "rask og god hjelp.",
+                    Nynorsk to "TODO nynorsk",
+                    English to "TODO engelsk"
                 )
             }
         }
     }
 
+    object Feilutbetaling : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+            title2 {
+                text(
+                    Language.Bokmal to "Feilutbetaling",
+                    Nynorsk to "",
+                    English to ""
+                )
+            }
+            paragraph {
+                text(
+                    Language.Bokmal to "Siden pensjonen din er opphørt tilbake i tid, medfører dette at du har fått utbetalt for mye i pensjon i denne perioden. Du vil få eget forhåndsvarsel om eventuell tilbakekreving av det feilutbetalte beløpet.",
+                    Nynorsk to "",
+                    English to ""
+                )
+            }
+        }
+    }
+
+    data class BarnepensjonenDinErDerforOpphoert(val virkningsdato: Expression<LocalDate>) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+            paragraph {
+                textExpr(
+                    Language.Bokmal to "Barnepensjonen din er derfor opphørt fra ".expr() + virkningsdato.format(),
+                    Nynorsk to "".expr(),
+                    English to "".expr()
+                )
+            }
+        }
+    }
+
+    object TilOgMedKalendermaaneden18Aar : OutlinePhrase<LangBokmal>() {
+        override fun OutlineOnlyScope<LangBokmal, Unit>.template() {
+            paragraph {
+                text(
+                    Language.Bokmal to "Barnepensjonen din utbetales til og med den kalendermåneden du fyller 18 år.",
+                )
+            }
+        }
+    }
+
+    object DuMaaMeldeFraOmEndringer : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+            title2 {
+                text(
+                    Language.Bokmal to "Du må melde fra om endringer",
+                    Nynorsk to "",
+                    English to "",
+                )
+            }
+            paragraph {
+                text(
+                    Language.Bokmal to "Du har plikt til å melde fra til oss om endringer som har betydning for utbetalingen av barnepensjon, eller retten til å få barnepensjon. I vedlegget «Dine rettigheter og plikter» ser du hvilke endringer du må si fra om.",
+                    Nynorsk to "",
+                    English to "",
+                )
+            }
+        }
+    }
 }

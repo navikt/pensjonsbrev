@@ -17,4 +17,15 @@ object Vedtak {
                 )
             }
     }
+
+    object BegrunnelseForVedtaket : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
+            title2 {
+                text(
+                    Bokmal to "Begrunnelse for vedtaket",
+                    Nynorsk to "Grunngiving for vedtaket",
+                    English to "Grounds for the decision",
+                )
+            }
+    }
 }

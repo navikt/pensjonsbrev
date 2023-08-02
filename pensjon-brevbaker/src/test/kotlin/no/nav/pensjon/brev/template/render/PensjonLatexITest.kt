@@ -22,7 +22,7 @@ object Helpers : HasModel<TestTemplateDto>
 
 private const val FIND_FAILING_CHARACTERS = false
 
-@Tag(TestTags.PDF_BYGGER)
+@Tag(TestTags.INTEGRATION_TEST)
 class PensjonLatexITest {
     private val logger = LoggerFactory.getLogger(PensjonLatexITest::class.java)
     private val brevData = TestTemplateDto("Ole")
@@ -48,10 +48,7 @@ class PensjonLatexITest {
                 }
             }
         }
-        Letter(template, brevData, Bokmal, Fixtures.felles)
-            .let { PensjonLatexRenderer.render(it) }
-            .let { LaTeXCompilerService(PDF_BUILDER_URL).producePdfSync(it).base64PDF }
-            .also { writeTestPDF("pensjonLatexITest_canRender", it) }
+        Letter(template, brevData, Bokmal, Fixtures.felles).renderTestPDF("pensjonLatexITest_canRender")
     }
 
     @Test
@@ -121,9 +118,7 @@ class PensjonLatexITest {
             }
 
             Letter(testTemplate, brevData, Bokmal, Fixtures.felles)
-                .let { PensjonLatexRenderer.render(it) }
-                .let { LaTeXCompilerService(PDF_BUILDER_URL).producePdfSync(it).base64PDF }
-                .also { writeTestPDF("LATEX_ESCAPE_TEST_$startChar-$endChar", it) }
+                .renderTestPDF("LATEX_ESCAPE_TEST_$startChar-$endChar")
 
             return true
         } catch (e: Throwable) {

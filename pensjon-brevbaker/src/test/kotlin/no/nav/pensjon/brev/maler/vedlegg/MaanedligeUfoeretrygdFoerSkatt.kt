@@ -1,11 +1,9 @@
 package no.nav.pensjon.brev.maler.vedlegg
 
 import io.ktor.util.date.*
-import kotlinx.coroutines.runBlocking
 import no.nav.pensjon.brev.*
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligUfoeretrygdFoerSkattDto
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligUfoeretrygdFoerSkattDto.UfoeretrygdPerMaaned
-import no.nav.pensjon.brev.latex.LaTeXCompilerService
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.dsl.expression.expr
@@ -14,7 +12,7 @@ import no.nav.pensjon.brevbaker.api.model.Kroner
 import org.junit.jupiter.api.*
 import java.time.LocalDate
 
-@Tag(TestTags.PDF_BYGGER)
+@Tag(TestTags.MANUAL_TEST)
 class MaanedligUfoeretrygdFoerSkattITest {
     val ufoeretrygdPerMaaned = Fixtures.create(UfoeretrygdPerMaaned::class)
         .copy(
@@ -64,9 +62,7 @@ class MaanedligUfoeretrygdFoerSkattITest {
             Unit,
             Bokmal,
             Fixtures.fellesAuto
-        ).let { PensjonLatexRenderer.render(it) }
-            .let { runBlocking { LaTeXCompilerService(PDF_BUILDER_URL).producePDF(it, "test").base64PDF } }
-            .also { writeTestPDF("MaanedligUfoeretrygdFoerSkatt", it) }
+        ).renderTestPDF("MaanedligUfoeretrygdFoerSkatt")
     }
 
     @Test
@@ -76,7 +72,6 @@ class MaanedligUfoeretrygdFoerSkattITest {
             Unit,
             Bokmal,
             Fixtures.fellesAuto
-        ).let { PensjonHTMLRenderer.render(it) }
-            .also { writeTestHTML("MaanedligUfoeretrygdFoerSkatt", it) }
+        ).renderTestHtml("MaanedligUfoeretrygdFoerSkatt")
     }
 }

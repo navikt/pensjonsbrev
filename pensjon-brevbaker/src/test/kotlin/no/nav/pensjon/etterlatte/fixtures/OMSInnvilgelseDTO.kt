@@ -2,6 +2,7 @@ package no.nav.pensjon.etterlatte.fixtures
 
 import no.nav.pensjon.brevbaker.api.model.*
 import no.nav.pensjon.etterlatte.maler.*
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.OMSInnvilgelseDTO
 import java.time.LocalDate
 
 fun createOMSInnvilgelseDTO() =
@@ -9,7 +10,6 @@ fun createOMSInnvilgelseDTO() =
         utbetalingsinfo = Utbetalingsinfo(
             antallBarn = 2,
             beloep = Kroner(1234),
-            grunnbeloep = Kroner(118000),
             soeskenjustering = true,
             virkningsdato = LocalDate.now(),
             beregningsperioder = listOf(
@@ -30,6 +30,7 @@ fun createOMSInnvilgelseDTO() =
             )
         ),
         avkortingsinfo = Avkortingsinfo(
+            grunnbeloep = Kroner(118000),
             inntekt = Kroner(550000),
             virkningsdato = LocalDate.now(),
             beregningsperioder = listOf(

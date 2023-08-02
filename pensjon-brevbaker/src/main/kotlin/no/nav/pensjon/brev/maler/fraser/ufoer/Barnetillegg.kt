@@ -97,7 +97,8 @@ object Barnetillegg {
         val faarUtbetaltBarnetilleggFellesbarn: Expression<Boolean>,
         val harBarnetilleggFellesbarn: Expression<Boolean>,
         val harBarnetilleggSaerkullsbarn: Expression<Boolean>,
-        val borMedSivilstand: Expression<BorMedSivilstand>
+        val borMedSivilstand: Expression<BorMedSivilstand>,
+        val barnetilleggSaerkullsbarnGjelderFlereBarn: Expression<Boolean>
 
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
@@ -114,10 +115,17 @@ object Barnetillegg {
                             Nynorsk to " Denne grensa kallar vi for fribeløp.",
                             English to " We call this limit the exemption amount."
                         )
-                    }.orShowIf(harBarnetilleggSaerkullsbarn) {
+                    }
+                    showIf(harBarnetilleggSaerkullsbarn) {
                         textExpr(
-                            Bokmal to " Inntekten til ".expr() + borMedSivilstand.bestemtForm() + " din har kun betydning for størrelsen på barnetillegget til barna som bor sammen med begge sine foreldre.",
-                            Nynorsk to " Inntekta til ".expr() + borMedSivilstand.bestemtForm() + " din har berre betydning for storleiken på barnetillegget til barna som bur saman med begge foreldra sine.",
+                            Bokmal to " Inntekten til ".expr() + borMedSivilstand.bestemtForm() + " din har kun betydning for størrelsen på barnetillegget til "
+                                    + ifElse(barnetilleggSaerkullsbarnGjelderFlereBarn, "barna", "barnet")
+                                    + " som bor sammen med begge sine foreldre.",
+
+                            Nynorsk to " Inntekta til ".expr() + borMedSivilstand.bestemtForm() + " din har berre betydning for storleiken på barnetillegget til "
+                                    + ifElse(barnetilleggSaerkullsbarnGjelderFlereBarn, "barna", "barnet")
+                                    + " som bur saman med begge foreldra sine.",
+
                             English to " The income of your ".expr() + borMedSivilstand.bestemtForm() + " only affects the size of the child supplement for the children who live together with both parents.",
                         )
                     }

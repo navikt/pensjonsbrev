@@ -163,7 +163,8 @@ object OpphoerBarnetilleggAuto : AutobrevTemplate<OpphoerBarnetilleggAutoDto> {
                             faarUtbetaltBarnetilleggFellesbarn = barnetilleggFellesBarn.beloepNetto.greaterThan(0),
                             harBarnetilleggFellesbarn = harBarnetilleggFellesbarn,
                             harBarnetilleggSaerkullsbarn = harBarnetilleggSaerkullsbarn,
-                            borMedSivilstand = barnetilleggFellesBarn.brukerBorMed
+                            borMedSivilstand = barnetilleggFellesBarn.brukerBorMed,
+                            barnetilleggSaerkullsbarnGjelderFlereBarn = barnetilleggSaerkullsbarn.gjelderFlereBarn_safe.ifNull(false),
                         )
                     )
                 }
@@ -193,17 +194,6 @@ object OpphoerBarnetilleggAuto : AutobrevTemplate<OpphoerBarnetilleggAutoDto> {
                     )
                 }
 
-                ifNotNull(barnetilleggSaerkullsbarn) { barnetilleggSaerkullsbarn ->
-                    includePhrase(
-                        Barnetillegg.InntektTilAvkortningSaerkullsbarn(
-                            beloepNettoSaerkullsbarn = barnetilleggSaerkullsbarn.beloepNetto,
-                            fribeloepSaerkullsbarn = barnetilleggSaerkullsbarn.fribeloep,
-                            inntektBruktIAvkortningSaerkullsbarn = barnetilleggSaerkullsbarn.inntektBruktIAvkortning,
-                            harJusteringsbeloepSaerkullsbarn = barnetilleggSaerkullsbarn.harJusteringsbeloep,
-                        )
-                    )
-                }
-
                 ifNotNull(
                     barnetilleggFellesbarn,
                     barnetilleggSaerkullsbarn
@@ -227,6 +217,15 @@ object OpphoerBarnetilleggAuto : AutobrevTemplate<OpphoerBarnetilleggAutoDto> {
                             harTilleggForFlereFellesbarn = barnetilleggFellesbarn.gjelderFlereBarn,
                             samletInntektBruktiAvkortningFellesbarn = barnetilleggFellesbarn.samletInntektBruktIAvkortning,
                             borMed = barnetilleggFellesbarn.brukerBorMed,
+                        )
+                    )
+                }.orIfNotNull(barnetilleggSaerkullsbarn) { barnetilleggSaerkullsbarn ->
+                    includePhrase(
+                        Barnetillegg.InntektTilAvkortningSaerkullsbarn(
+                            beloepNettoSaerkullsbarn = barnetilleggSaerkullsbarn.beloepNetto,
+                            fribeloepSaerkullsbarn = barnetilleggSaerkullsbarn.fribeloep,
+                            inntektBruktIAvkortningSaerkullsbarn = barnetilleggSaerkullsbarn.inntektBruktIAvkortning,
+                            harJusteringsbeloepSaerkullsbarn = barnetilleggSaerkullsbarn.harJusteringsbeloep,
                         )
                     )
                 }

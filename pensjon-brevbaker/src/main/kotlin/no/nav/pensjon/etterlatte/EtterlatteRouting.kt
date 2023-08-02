@@ -40,6 +40,13 @@ fun Route.etterlatteRouting(latexCompilerService: LaTeXCompilerService) {
         // egen response eller noe sånnt. Html brev går veldig fort å rendre.
         call.respond(HTMLResponse(html.base64EncodedFiles(), letter.template.letterMetadata))
     }
+
+    post("/json") {
+        val letterRequest = call.receive<EtterlatteBrevRequest>()
+        val letter = letterResource.create(letterRequest)
+
+        call.respond(PensjonJsonRenderer.render(letter))
+    }
 }
 
 data class HTMLResponse(val html: Map<String, String>, val letterMetadata: LetterMetadata)
