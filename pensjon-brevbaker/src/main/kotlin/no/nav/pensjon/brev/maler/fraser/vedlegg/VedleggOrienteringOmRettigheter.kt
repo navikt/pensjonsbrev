@@ -140,7 +140,6 @@ object VedleggPlikterEndretSivilstatus:TextOnlyPhrase<LangBokmalNynorskEnglish>(
             English to "your civil status changes",
         )
     }
-
 }
 
 // VedleggPlikterAP19_001
@@ -527,14 +526,14 @@ object VedleggPlikterUT5 : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
         )
 }
 
-// VedleggPlikterUT6_001
-object VedleggPlikterUT6 : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
-    override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
+object VedleggPlikterEndretInntektBarnetillegg: TextOnlyPhrase<LangBokmalNynorskEnglish>(){
+    override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         text(
-            Bokmal to "du gifter deg eller inngår samboerskap",
-            Nynorsk to "du giftar deg eller inngår sambuarskap",
-            English to "you get married or get a cohabitant"
+            Bokmal to "din ektefelle, partner eller samboers inntekt endrer seg og du har barnetillegg for felles barn",
+            Nynorsk to "inntekta til ektefellen, partnaren eller sambuaren din endrar seg, og du har barnetillegg for felles barn",
+            English to "the income of your spouse, partner or cohabitant changes, and you are receiving a child supplement for your joint child(ren)",
         )
+    }
 }
 
 // VedleggPlikterUT7_001
