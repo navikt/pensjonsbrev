@@ -8,11 +8,11 @@ import no.nav.pensjon.brev.template.render.*
 import org.junit.jupiter.api.*
 
 @Tag(TestTags.INTEGRATION_TEST)
-class ForhaandsvarselEtteroppgjoerAutoTest {
+class ForhaandsvarselEtteroppgjoerUfoeretrygdAutoTest {
     @Test
     fun testPdf() {
         Letter(
-            ForhaandsvarselEtteroppgjoerAuto.template,
+            ForhaandsvarselEtteroppgjoerUfoeretrygdAuto.template,
             Fixtures.create<ForhaandsvarselEtteroppgjoerAutoDto>(),
             Language.Bokmal,
             Fixtures.fellesAuto
@@ -22,7 +22,7 @@ class ForhaandsvarselEtteroppgjoerAutoTest {
     @Test
     fun testHtml() {
         Letter(
-            ForhaandsvarselEtteroppgjoerAuto.template,
+            ForhaandsvarselEtteroppgjoerUfoeretrygdAuto.template,
             Fixtures.create<ForhaandsvarselEtteroppgjoerAutoDto>(),
             Language.Bokmal,
             Fixtures.fellesAuto
