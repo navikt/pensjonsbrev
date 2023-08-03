@@ -11,7 +11,7 @@ import no.nav.pensjon.brevbaker.api.model.Year
 
 //TBU3323
 data class Innledning(
-    val avviksbeloep: Expression<Kroner>,  // PE_UT_AvviksbelopUtenMinus
+    val totaltAvvik: Expression<Kroner>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         paragraph {
@@ -23,9 +23,9 @@ data class Innledning(
         }
         paragraph {
             textExpr(
-                Bokmal to "Vår beregning viser at du har fått ".expr() + avviksbeloep.format() + " kroner for mye utbetalt.".expr(),
-                Nynorsk to "Utrekninga vår viser at du har fått utbetalt ".expr() + avviksbeloep.format() + " kroner for mykje.".expr(),
-                English to "Our calculations show that you have received an overpayment of NOK ".expr() + avviksbeloep.format() + ".".expr()
+                Bokmal to "Vår beregning viser at du har fått ".expr() + totaltAvvik.format() + " kroner for mye utbetalt.".expr(),
+                Nynorsk to "Utrekninga vår viser at du har fått utbetalt ".expr() + totaltAvvik.format() + " kroner for mykje.".expr(),
+                English to "Our calculations show that you have received an overpayment of NOK ".expr() + totaltAvvik.format() + ".".expr()
             )
         }
     }
@@ -92,9 +92,9 @@ object HvordanDuBetaleTilbake : OutlinePhrase<LangBokmalNynorskEnglish>() {
 }
 
 data class InntektOverInntektstak(
-    val aarPeriodeFom: Expression<Year>,
+    val periode: Expression<Year>,
     val oppjustertInntektFoerUfoerhet: Expression<Kroner>,
-    val sumInntektUt: Expression<Kroner>,
+    val pensjonsgivendeInntektBruktIBeregningen: Expression<Kroner>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         title1 {
@@ -113,14 +113,14 @@ data class InntektOverInntektstak(
         }
         paragraph {
             textExpr(
-                Bokmal to "I ".expr() + aarPeriodeFom.format() + " var 80 prosent av inntekten din før du ble ufør, ".expr() + oppjustertInntektFoerUfoerhet.format() + " kroner. ".expr(),
-                Nynorsk to "I ".expr() + aarPeriodeFom.format() + " var 80 prosent av inntekta di før du blei ufør, ".expr() + oppjustertInntektFoerUfoerhet.format() + " kroner. ".expr(),
-                English to "I ".expr() + aarPeriodeFom.format() + ", 80 percent of your income before you received disability benefit was NOK ".expr() + oppjustertInntektFoerUfoerhet.format() + ". ".expr()
+                Bokmal to "I ".expr() + periode.format() + " var 80 prosent av inntekten din før du ble ufør, ".expr() + oppjustertInntektFoerUfoerhet.format() + " kroner. ".expr(),
+                Nynorsk to "I ".expr() + periode.format() + " var 80 prosent av inntekta di før du blei ufør, ".expr() + oppjustertInntektFoerUfoerhet.format() + " kroner. ".expr(),
+                English to "I ".expr() + periode.format() + ", 80 percent of your income before you received disability benefit was NOK ".expr() + oppjustertInntektFoerUfoerhet.format() + ". ".expr()
             )
             textExpr(
-                Bokmal to "Du tjente ".expr() + sumInntektUt.format() + " kroner i ".expr() + aarPeriodeFom.format() + ".",
-                Nynorsk to "Du tente ".expr() + sumInntektUt.format() + " kroner i ".expr() + aarPeriodeFom.format() + ".",
-                English to "You earned ".expr() + sumInntektUt.format() + " kroner i ".expr() + aarPeriodeFom.format() + "."
+                Bokmal to "Du tjente ".expr() + pensjonsgivendeInntektBruktIBeregningen.format() + " kroner i ".expr() + periode.format() + ".",
+                Nynorsk to "Du tente ".expr() + pensjonsgivendeInntektBruktIBeregningen.format() + " kroner i ".expr() + periode.format() + ".",
+                English to "You earned ".expr() + pensjonsgivendeInntektBruktIBeregningen.format() + " kroner i ".expr() + periode.format() + "."
             )
         }
     }
