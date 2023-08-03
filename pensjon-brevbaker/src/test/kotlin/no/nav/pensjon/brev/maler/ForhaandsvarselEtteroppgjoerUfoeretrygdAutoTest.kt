@@ -1,7 +1,7 @@
 package no.nav.pensjon.brev.maler
 
 import no.nav.pensjon.brev.*
-import no.nav.pensjon.brev.api.model.maler.ForhaandsvarselEtteroppgjoerAutoDto
+import no.nav.pensjon.brev.api.model.maler.ForhaandsvarselEtteroppgjoerUfoeretrygdDto
 import no.nav.pensjon.brev.latex.*
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.render.*
@@ -13,7 +13,7 @@ class ForhaandsvarselEtteroppgjoerUfoeretrygdAutoTest {
     fun testPdf() {
         Letter(
             ForhaandsvarselEtteroppgjoerUfoeretrygdAuto.template,
-            Fixtures.create<ForhaandsvarselEtteroppgjoerAutoDto>(),
+            Fixtures.create<ForhaandsvarselEtteroppgjoerUfoeretrygdDto>(),
             Language.Bokmal,
             Fixtures.fellesAuto
         ).renderTestPDF("UT_EO_FORHAANDSVARSEL_AUTO")
@@ -23,7 +23,7 @@ class ForhaandsvarselEtteroppgjoerUfoeretrygdAutoTest {
     fun testHtml() {
         Letter(
             ForhaandsvarselEtteroppgjoerUfoeretrygdAuto.template,
-            Fixtures.create<ForhaandsvarselEtteroppgjoerAutoDto>(),
+            Fixtures.create<ForhaandsvarselEtteroppgjoerUfoeretrygdDto>(),
             Language.Bokmal,
             Fixtures.fellesAuto
         ).renderTestHtml("UT_EO_FORHAANDSVARSEL_AUTO")
