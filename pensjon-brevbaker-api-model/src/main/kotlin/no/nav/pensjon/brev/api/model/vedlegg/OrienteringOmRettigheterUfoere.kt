@@ -7,7 +7,6 @@ data class OrienteringOmRettigheterUfoereDto(
     val sivilstand: Sivilstand,
     val bruker_borINorge: Boolean,
     val harTilleggForFlereBarn: Boolean,
-    val harInnvilgetBarnetillegg: Boolean, // TODO remove in next version
     val harInnvilgetBarnetilleggFellesBarn: Boolean,
     val harInnvilgetBarnetilleggSaerkullsbarn: Boolean,
     val institusjon_gjeldende: Institusjon,

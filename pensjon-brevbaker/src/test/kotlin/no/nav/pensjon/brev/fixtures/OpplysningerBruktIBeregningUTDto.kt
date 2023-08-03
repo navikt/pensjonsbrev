@@ -15,7 +15,6 @@ fun createOpplysningerBruktIBeregningUTDto() =
         inntektFoerUfoereGjeldende = Fixtures.create(),
         inntektsAvkortingGjeldende = Fixtures.create(),
         minsteytelseGjeldende_sats = 0.0,
-        sivilstand = Sivilstand.PARTNER, // TODO remove in next version
         trygdetidsdetaljerGjeldende = Fixtures.create(),
         ufoeretrygdGjeldende = Fixtures.create(),
         ungUfoerGjeldende_erUnder20Aar = false,
@@ -23,6 +22,7 @@ fun createOpplysningerBruktIBeregningUTDto() =
         harKravaarsakEndringInntekt = true,
         fraOgMedDatoErNesteAar = false,
         borMedSivilstand = BorMedSivilstand.PARTNER,
+        sivilstand = Sivilstand.PARTNER,
     )
 
 fun createOpplysningerBruktIBeregningUTDtoBarnetilleggGjeldende() =

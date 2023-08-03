@@ -3,7 +3,8 @@ package no.nav.pensjon.brev.maler.vedlegg
 import no.nav.pensjon.brev.api.model.Institusjon.*
 import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterUfoereDto
 import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterUfoereDtoSelectors.bruker_borINorge
-import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterUfoereDtoSelectors.harInnvilgetBarnetillegg
+import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterUfoereDtoSelectors.harInnvilgetBarnetilleggFellesBarn
+import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterUfoereDtoSelectors.harInnvilgetBarnetilleggSaerkullsbarn
 import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterUfoereDtoSelectors.harTilleggForFlereBarn
 import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterUfoereDtoSelectors.institusjon_gjeldende
 import no.nav.pensjon.brev.maler.fraser.vedlegg.*
@@ -12,6 +13,7 @@ import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.expression.isNotAnyOf
+import no.nav.pensjon.brev.template.dsl.expression.or
 import no.nav.pensjon.brev.template.dsl.newText
 
 // Conditional for showing the attachment is: sakstype = UFOEREP && vedtakResultat = AVSLG
@@ -26,6 +28,7 @@ val vedleggDineRettigheterOgPlikterUfoere =
         includeSakspart = false,
     ) {
         includePhrase(VedleggPlikter)
+        val harInnvilgetBarnetillegg = harInnvilgetBarnetilleggFellesBarn or harInnvilgetBarnetilleggSaerkullsbarn
 
         paragraph {
             list {
@@ -43,8 +46,11 @@ val vedleggDineRettigheterOgPlikterUfoere =
                 item { includePhrase(VedleggPlikterUT5) }
                 item { includePhrase(VedleggPlikterEndretSivilstatus)}
 
-                showIf(harInnvilgetBarnetillegg) {
+                showIf(harInnvilgetBarnetilleggFellesBarn) {
                     item { includePhrase(VedleggPlikterEndretInntektBarnetillegg)}
+                }
+
+                showIf(harInnvilgetBarnetillegg) {
                     item { includePhrase(VedleggPlikterUT7(harTilleggForFlereBarn)) }
                     item { includePhrase(VedleggPlikterUT13(harTilleggForFlereBarn)) }
                     item { includePhrase(VedleggPlikterUT14(harTilleggForFlereBarn)) }

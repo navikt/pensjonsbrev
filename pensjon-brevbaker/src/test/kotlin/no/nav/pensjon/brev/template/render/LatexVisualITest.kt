@@ -74,7 +74,7 @@ class LatexVisualITest {
     }
 
     @Test
-    fun `Title1 withh ingress text then table`() {
+    fun `Title1 with ingress text then table`() {
         render {
             title1 { text(Bokmal to "A table title") }
             paragraph {
