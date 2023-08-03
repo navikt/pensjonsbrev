@@ -7,6 +7,7 @@ import no.nav.pensjon.brev.api.model.maler.ForhaandsvarselEtteroppgjoerAutoDtoSe
 import no.nav.pensjon.brev.api.model.maler.ForhaandsvarselEtteroppgjoerAutoDtoSelectors.UfoeretrygdEtteroppgjoerSelectors.hoeyesteInntektsgrense
 import no.nav.pensjon.brev.api.model.maler.ForhaandsvarselEtteroppgjoerAutoDtoSelectors.UfoeretrygdEtteroppgjoerSelectors.inntektOverInntektstak
 import no.nav.pensjon.brev.api.model.maler.ForhaandsvarselEtteroppgjoerAutoDtoSelectors.UfoeretrygdEtteroppgjoerSelectors.oppjustertInntektFoerUfoerhet
+import no.nav.pensjon.brev.api.model.maler.ForhaandsvarselEtteroppgjoerAutoDtoSelectors.UfoeretrygdEtteroppgjoerSelectors.sumInntektUt
 import no.nav.pensjon.brev.api.model.maler.ForhaandsvarselEtteroppgjoerAutoDtoSelectors.UfoeretrygdEtteroppgjoerSelectors.ufoeregrad
 import no.nav.pensjon.brev.api.model.maler.ForhaandsvarselEtteroppgjoerAutoDtoSelectors.orienteringOmRettigheterUfoere
 import no.nav.pensjon.brev.api.model.maler.ForhaandsvarselEtteroppgjoerAutoDtoSelectors.resultatEtteroppgjoer
@@ -70,7 +71,8 @@ object ForhaandsvarselEtteroppgjoerAuto : AutobrevTemplate<ForhaandsvarselEttero
                     includePhrase(
                         InntektOverInntektstak(
                             oppjustertInntektFoerUfoerhet = ufoeretrygdEtteroppgjoer.oppjustertInntektFoerUfoerhet,
-                            aarPeriodeFom = ufoeretrygdEtteroppgjoer.aarPeriodeFom
+                            aarPeriodeFom = ufoeretrygdEtteroppgjoer.aarPeriodeFom,
+                            sumInntektUt = ufoeretrygdEtteroppgjoer.sumInntektUt
                         )
                     )
                 }
@@ -80,12 +82,7 @@ object ForhaandsvarselEtteroppgjoerAuto : AutobrevTemplate<ForhaandsvarselEttero
                     ufoeretrygdEtteroppgjoer.ufoeregrad.greaterThan(0)
                             and ufoeretrygdEtteroppgjoer.ufoeregrad.lessThan(100)
                 ) {
-                    includePhrase(
-                        SoekOmNyInntektsgrense(
-                            aarPeriodeFom = ufoeretrygdEtteroppgjoer.aarPeriodeFom,
-                            hoeyesteInntektsgrense = ufoeretrygdEtteroppgjoer.hoeyesteInntektsgrense
-                        )
-                    )
+                    includePhrase(SoekOmNyInntektsgrense)
                 }
 
                 showIf(resultatEtteroppgjoer.harNyttEtteroppgjoer) {

@@ -28,4 +28,5 @@ fun createUfoeretrygdEtteroppgjoer() =
         inntektOverInntektstak = false,
         oppjustertInntektFoerUfoerhet = Kroner(0),
         ufoeregrad = 0,
+        sumInntektUt = Kroner(0),
     )

@@ -25,6 +25,7 @@ data class ForhaandsvarselEtteroppgjoerAutoDto(
         val hoeyesteInntektsgrense: Kroner,  // TODO: Finnes ikke i dagensbrev
         val inntektOverInntektstak: Boolean,  // TODO: Finnes ikke i dagensbrev
         val oppjustertInntektFoerUfoerhet: Kroner, // TODO: OIFU * 0,8 (beregningen er gjort i Exstream). Finnes ikke i dagensbrev
+        val sumInntektUt: Kroner,
         val ufoeregrad: Int,  // PE_Vedtaksdata_Beregningsdata_BeregningUfore_Uforetrygdberegning_Uforegrad  // TODO: Finnes ikke i dagensbrev
     )
 }

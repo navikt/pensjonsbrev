@@ -43,9 +43,9 @@ object SjekkBeregning : OutlinePhrase<LangBokmalNynorskEnglish>() {
         }
         paragraph {
             text(
-                Bokmal to "Dette brevet er et forhåndsvarsel, slik at du kan sjekke at beregningene i vedlegg <Opplysninger om etteroppgjøret> er korrekte, og melde fra til oss hvis noe er feil eller mangler.",
-                Nynorsk to "Dette brevet er eit førehandsvarsel, og du har såleis høve til å sjekke at utrekningane i vedlegg <Opplysninger om etteroppgjøret> er korrekte, og melde frå til oss dersom noko er feil eller manglar.",
-                English to "We are writing to inform you in advance before we make a final decision. Please review the calculations in appendix <Calculation of settlement> carefully. Check if there are any mistakes or missing information. If you find any errors, let us know as soon as possible."
+                Bokmal to "Dette brevet er et forhåndsvarsel, slik at du kan sjekke at beregningene i vedlegg «Opplysninger om etteroppgjøret» er korrekte, og melde fra til oss hvis noe er feil eller mangler.",
+                Nynorsk to "Dette brevet er eit førehandsvarsel, og du har såleis høve til å sjekke at utrekningane i vedlegg «Opplysninger om etteroppgjøret» er korrekte, og melde frå til oss dersom noko er feil eller manglar.",
+                English to "We are writing to inform you in advance before we make a final decision. Please review the calculations in appendix «Calculation of settlement» carefully. Check if there are any mistakes or missing information. If you find any errors, let us know as soon as possible."
             )
         }
         paragraph {
@@ -83,9 +83,9 @@ object HvordanDuBetaleTilbake : OutlinePhrase<LangBokmalNynorskEnglish>() {
         }
         paragraph {
             text(
-                Bokmal to "Du kan lese mer om tilbakebetaling i vedlegget <Praktisk informasjon om etteroppgjør>.",
-                Nynorsk to "Du kan lese meir om tilbakebetaling i vedlegget <Praktisk informasjon om etteroppgjør>.",
-                English to "You can read more about repaying in the appendix <Practical information>."
+                Bokmal to "Du kan lese mer om tilbakebetaling i vedlegget «Praktisk informasjon om etteroppgjør».",
+                Nynorsk to "Du kan lese meir om tilbakebetaling i vedlegget «Praktisk informasjon om etteroppgjør».",
+                English to "You can read more about repaying in the appendix «Practical information»."
             )
         }
     }
@@ -126,10 +126,8 @@ data class InntektOverInntektstak(
     }
 }
 
-data class SoekOmNyInntektsgrense(
-) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+object SoekOmNyInntektsgrense : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-        // <år> hvilket år? Kan jeg bruk periodeFom (2022)?
         title1 {
             text(
                 Bokmal to "Du kan søke om ny inntektsgrense",
@@ -144,6 +142,7 @@ data class SoekOmNyInntektsgrense(
                 English to "If you are an employee and have graduated disability benefit, you can apply for a new income threshold. This will apply if you have had a large wage increase, and this is not due to working overtime, additional shifts or a greater percentage of full-time.",
             )
         }
+    }
 }
 
 
@@ -203,13 +202,6 @@ object FristerOpplysningerKlage : OutlinePhrase<LangBokmalNynorskEnglish>() {
         }
         paragraph {
             text(
-                Bokmal to "Hvis vi ikke hører fra deg innen fristen, tar vi utgangspunkt i at beregningene våre er korrekte, og sender saken videre til Skatteetaten. Beregningen blir gjort om til et vedtak etter 4 uker fra du mottok dette brevet. Du vil ikke motta et nytt vedtak.",
-                Nynorsk to "Dersom vi ikkje høyrer frå deg innan fristen, tek vi utgangspunkt i at utrekningane våre er korrekte, og sender saka vidare til Skatteetaten. Utrekninga blir gjort om til vedtak 4 veker etter at du har fått dette brevet. Du får ikkje eit nytt vedtak.",
-                English to "If we do not hear from you within this deadline, we will take a starting point in that our calculations are correct and forward the case to the Tax Office. The calculation will be converted into a decision 4 weeks after you received this letter. You will not receive a new decision."
-            )
-        }
-        paragraph {
-            text(
                 Bokmal to "Klagefristen på vedtaket er 6 uker etter at saken er sendt til Skatteetaten. Du finner skjema og informasjon om hvordan du klager på nav.no/klage. Du må som hovedregel begynne å betale tilbake selv om du klager på vedtaket, se forvaltningsloven § 42.",
                 Nynorsk to "Klagefristen på vedtaket er 6 veker etter at saka er send til Skatteetaten. Du finn skjema og informasjon om korleis du klagar, på nav.no/klage. Du må som hovudregel byrje å betale tilbake sjølv om du klagar på vedtaket, jf. forvaltingslova § 42.",
                 English to "The deadline for submitting an appeal against the decision is 6 weeks after the case has been forwarded to the Tax Office. You will find a form and information about how to appeal at: nav.no/klage. As a general rule you must begin to repay any amounts owed even if you appeal against the decision, see Public Administration Act Section 42."
@@ -236,3 +228,4 @@ object HarDuSpoersmaal : OutlinePhrase<LangBokmalNynorskEnglish>() {
         }
     }
 }
+
