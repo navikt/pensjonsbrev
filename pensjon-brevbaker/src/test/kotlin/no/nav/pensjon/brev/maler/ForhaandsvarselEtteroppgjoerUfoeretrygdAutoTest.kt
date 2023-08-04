@@ -14,9 +14,9 @@ class ForhaandsvarselEtteroppgjoerUfoeretrygdAutoTest {
         Letter(
             ForhaandsvarselEtteroppgjoerUfoeretrygdAuto.template,
             Fixtures.create<ForhaandsvarselEtteroppgjoerUfoeretrygdDto>(),
-            Language.Nynorsk,
+            Language.Bokmal,
             Fixtures.fellesAuto
-        ).renderTestPDF("UT_EO_FORHAANDSVARSEL_AUTO")
+        ).renderTestPDF("UT_EO_FORHAANDSVARSEL_FEILUTBETALING_AUTO")
     }
 
     @Test
@@ -26,6 +26,6 @@ class ForhaandsvarselEtteroppgjoerUfoeretrygdAutoTest {
             Fixtures.create<ForhaandsvarselEtteroppgjoerUfoeretrygdDto>(),
             Language.Bokmal,
             Fixtures.fellesAuto
-        ).renderTestHtml("UT_EO_FORHAANDSVARSEL_AUTO")
+        ).renderTestHtml("UT_EO_FORHAANDSVARSEL_FEILUTBETALING_AUTO")
     }
 }

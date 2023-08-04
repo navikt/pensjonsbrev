@@ -33,7 +33,7 @@ object ForhaandsvarselEtteroppgjoerUfoeretrygdAuto : AutobrevTemplate<Forhaandsv
 
     override val template: LetterTemplate<LanguageSupport.Triple<Bokmal, Nynorsk, English>, ForhaandsvarselEtteroppgjoerUfoeretrygdDto>
         get() = createTemplate(
-            name = ForhaandsvarselEtteroppgjoerUfoeretrygdAuto.kode.name,
+            name = kode.name,
             letterDataType = ForhaandsvarselEtteroppgjoerUfoeretrygdDto::class,
             languages = languages(Bokmal, Nynorsk, English),
             letterMetadata = LetterMetadata(
