@@ -52,5 +52,4 @@ fun createOpphoerBarnetilleggAutoDto() =
         maanedligUfoeretrygdFoerSkatt = Fixtures.create(),
         opplysningerBruktIBeregningUT = Fixtures.create(),
         orienteringOmRettigheterUfoere = Fixtures.create(),
-        sivilstand = Sivilstand.GIFT // TODO remove in next version
     )

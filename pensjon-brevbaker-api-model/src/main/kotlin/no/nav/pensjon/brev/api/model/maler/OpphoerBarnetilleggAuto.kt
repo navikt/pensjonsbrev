@@ -2,7 +2,6 @@ package no.nav.pensjon.brev.api.model.maler
 
 import no.nav.pensjon.brev.api.model.BorMedSivilstand
 import no.nav.pensjon.brevbaker.api.model.Kroner
-import no.nav.pensjon.brev.api.model.Sivilstand
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligUfoeretrygdFoerSkattDto
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDto
 import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterUfoereDto
@@ -16,7 +15,6 @@ data class OpphoerBarnetilleggAutoDto(
     val barnetilleggSaerkullsbarn: BarnetilleggSaerkullsbarn?,
     val brukerBorInorge: Boolean,
     val grunnbeloep: Kroner,
-    val sivilstand: Sivilstand, // TODO remove in next version
     val ufoeretrygd: Ufoeretrygd,
     val maanedligUfoeretrygdFoerSkatt: MaanedligUfoeretrygdFoerSkattDto?,
     val opplysningerBruktIBeregningUT: OpplysningerBruktIBeregningUTDto,

@@ -9,5 +9,6 @@ fun createOrienteringOmRettigheterUfoereDto() =
         harTilleggForFlereBarn = true,
         institusjon_gjeldende = Institusjon.INGEN,
         sivilstand = Sivilstand.ENSLIG,
-        harInnvilgetBarnetillegg = true,
+        harInnvilgetBarnetilleggFellesBarn = true,
+        harInnvilgetBarnetilleggSaerkullsbarn = true,
     )
