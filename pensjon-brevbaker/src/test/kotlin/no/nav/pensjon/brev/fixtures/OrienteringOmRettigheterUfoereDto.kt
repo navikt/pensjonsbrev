@@ -6,9 +6,11 @@ import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterUfoereDto
 fun createOrienteringOmRettigheterUfoereDto() =
     OrienteringOmRettigheterUfoereDto(
         bruker_borINorge = false,
-        harTilleggForFlereBarn = true,
+        harInnvilgetBarnetillegg = false,
+        harInnvilgetBarnetilleggFellesBarn = false,
+        harInnvilgetBarnetilleggSaerkullsbarn = false,
+        harTilleggForFlereBarn = false,
         institusjon_gjeldende = Institusjon.INGEN,
         sivilstand = Sivilstand.ENSLIG,
-        harInnvilgetBarnetilleggFellesBarn = true,
-        harInnvilgetBarnetilleggSaerkullsbarn = true,
+        harInnvilgetBarnetillegg = true,
     )

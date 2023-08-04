@@ -21,7 +21,7 @@ class OrienteringOmRettigheterUfoereTest {
         Letter(
             template,
             Unit,
-            Nynorsk,
+            Bokmal,
             Fixtures.fellesAuto
         ).renderTestPDF("OrienteringOmRettigheterUfoere")
 

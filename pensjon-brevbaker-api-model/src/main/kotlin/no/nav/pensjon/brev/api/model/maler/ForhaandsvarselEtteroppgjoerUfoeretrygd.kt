@@ -7,9 +7,9 @@ import no.nav.pensjon.brevbaker.api.model.Kroner
 @Suppress("unused")
 data class ForhaandsvarselEtteroppgjoerUfoeretrygdDto(
     val erNyttEtteroppgjoer: Boolean,
-    val oppjustertInntektFoerUfoerhet: Kroner,
     val harTjentOver80prosentAvOIFU: Boolean,
     val kanSoekeOmNyInntektsgrense: Boolean,
+    val oppjustertInntektFoerUfoerhet: Kroner,
     val opplysningerOmEtteroppgjoret: OpplysningerOmEtteroppgjoeretDto,
-    val orienteringOmRettigheterUfoereDto: OrienteringOmRettigheterUfoereDto,
+    val orienteringOmRettigheterUfoere: OrienteringOmRettigheterUfoereDto,
 )
