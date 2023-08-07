@@ -15,7 +15,7 @@ class PraktiskInformasjonEtteroppgjoerTest {
     @Test
     fun testVedlegg() {
         val template = createVedleggTestTemplate(
-            vedleggPraktiskInformasjonEtteroppgjoer,
+            vedleggPraktiskInformasjonEtteroppgjoerUfoeretrygd,
             Fixtures.create(PraktiskInformasjonEtteroppgjoerDto::class).expr()
         )
         Letter(

@@ -11,10 +11,11 @@ import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.newText
 
-// TODO: Conditional for showing the attachment is that letter UT_EO_FORHAANDSVARSEL_AUTO produseres
+// TODO: Conditional - this attachment is mandatory with letter UT_EO_FORHAANDSVARSEL_FEILUTBETALING_AUTO
+// The conditional for showing the letter is: ResultatEO or ResultatForrigeEO = 'tilbakekr'
 
 @TemplateModelHelpers
-val vedleggPraktiskInformasjonEtteroppgjoer =
+val vedleggPraktiskInformasjonEtteroppgjoerUfoeretrygd =
     createAttachment<LangBokmalNynorskEnglish, PraktiskInformasjonEtteroppgjoerDto>(
         title = newText(
             Bokmal to "Praktisk informasjon om etteroppgjør",

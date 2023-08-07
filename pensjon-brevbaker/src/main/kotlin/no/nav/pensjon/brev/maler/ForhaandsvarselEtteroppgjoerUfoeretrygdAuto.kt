@@ -5,11 +5,11 @@ import no.nav.pensjon.brev.api.model.maler.ForhaandsvarselEtteroppgjoerUfoeretry
 import no.nav.pensjon.brev.api.model.maler.ForhaandsvarselEtteroppgjoerUfoeretrygdDtoSelectors.harTjentOver80prosentAvOIFU
 import no.nav.pensjon.brev.api.model.maler.ForhaandsvarselEtteroppgjoerUfoeretrygdDtoSelectors.kanSoekeOmNyInntektsgrense
 import no.nav.pensjon.brev.api.model.maler.ForhaandsvarselEtteroppgjoerUfoeretrygdDtoSelectors.oppjustertInntektFoerUfoerhet
-import no.nav.pensjon.brev.api.model.maler.ForhaandsvarselEtteroppgjoerUfoeretrygdDtoSelectors.opplysningerOmEtteroppgjoret
+import no.nav.pensjon.brev.api.model.maler.ForhaandsvarselEtteroppgjoerUfoeretrygdDtoSelectors.opplysningerOmEtteroppgjoeretUfoeretrygd
 import no.nav.pensjon.brev.api.model.maler.ForhaandsvarselEtteroppgjoerUfoeretrygdDtoSelectors.orienteringOmRettigheterUfoere
+import no.nav.pensjon.brev.api.model.maler.ForhaandsvarselEtteroppgjoerUfoeretrygdDtoSelectors.praktiskInformasjonEtteroppgjoerUfoeretrygd
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSelectors.pensjonsgivendeInntektBruktIBeregningen
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSelectors.periode
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSelectors.periodeSelector
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSelectors.totaltAvvik
 import no.nav.pensjon.brev.maler.fraser.ufoer.*
 import no.nav.pensjon.brev.maler.vedlegg.*
@@ -44,7 +44,7 @@ object ForhaandsvarselEtteroppgjoerUfoeretrygdAuto : AutobrevTemplate<Forhaandsv
             )
         ) {
             title {
-                val periode = opplysningerOmEtteroppgjoret.periode.format()
+                val periode = opplysningerOmEtteroppgjoeretUfoeretrygd.periode.format()
                 showIf(erNyttEtteroppgjoer) {
                     textExpr(
                         Bokmal to "Nytt forhåndsvarsel om etteroppgjør av uføretrygd for ".expr() + periode,
@@ -61,7 +61,7 @@ object ForhaandsvarselEtteroppgjoerUfoeretrygdAuto : AutobrevTemplate<Forhaandsv
             }
             outline {
                 includePhrase(
-                    Innledning(opplysningerOmEtteroppgjoret.totaltAvvik)
+                    Innledning(opplysningerOmEtteroppgjoeretUfoeretrygd.totaltAvvik)
                 )
                 includePhrase(SjekkBeregning)
                 includePhrase(HvordanDuBetaleTilbake)
@@ -70,8 +70,8 @@ object ForhaandsvarselEtteroppgjoerUfoeretrygdAuto : AutobrevTemplate<Forhaandsv
                     includePhrase(
                         InntektOverInntektstak(
                             oppjustertInntektFoerUfoerhet = oppjustertInntektFoerUfoerhet,
-                            pensjonsgivendeInntektBruktIBeregningen = opplysningerOmEtteroppgjoret.pensjonsgivendeInntektBruktIBeregningen,
-                            periode = opplysningerOmEtteroppgjoret.periode,
+                            pensjonsgivendeInntektBruktIBeregningen = opplysningerOmEtteroppgjoeretUfoeretrygd.pensjonsgivendeInntektBruktIBeregningen,
+                            periode = opplysningerOmEtteroppgjoeretUfoeretrygd.periode,
                         )
                     )
                 }
@@ -88,8 +88,8 @@ object ForhaandsvarselEtteroppgjoerUfoeretrygdAuto : AutobrevTemplate<Forhaandsv
                 includePhrase(FristerOpplysningerKlage)
                 includePhrase(HarDuSpoersmaal)
             }
+            // TODO: includeAttachment(OpplysningerOmBeregningEtteroppgjoerUfoeretrygd)
+            includeAttachment(vedleggPraktiskInformasjonEtteroppgjoerUfoeretrygd, praktiskInformasjonEtteroppgjoerUfoeretrygd)
             includeAttachment(vedleggDineRettigheterOgPlikterUfoere, orienteringOmRettigheterUfoere)
-            // TODO: Include a total of 4 attachments in the order of:
-            // Beregning av etteroppgjøret, Opplysninger om beregningen, Praktisk informasjon om tilbakebetaling av etteroppgjøret, Dine rettigheter og plikter
         }
 }
