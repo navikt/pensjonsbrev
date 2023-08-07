@@ -1,6 +1,8 @@
 package no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering
 
-import no.nav.pensjon.brev.template.Language
+import no.nav.pensjon.brev.template.Language.Bokmal
+import no.nav.pensjon.brev.template.Language.English
+import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
@@ -32,7 +34,7 @@ object OmgjoeringAvFarskapRevurdering : EtterlatteTemplate<BarnepensjonRevurderi
     override val template = createTemplate(
         name = kode.name,
         letterDataType = BarnepensjonRevurderingOmgjoeringAvFarskapDTO::class,
-        languages = languages(Language.Bokmal, Language.Nynorsk, Language.English),
+        languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(
             displayTitle = "Vedtak - opphør på grunn av omgjøring av farskap",
             isSensitiv = true,
@@ -42,9 +44,9 @@ object OmgjoeringAvFarskapRevurdering : EtterlatteTemplate<BarnepensjonRevurderi
     ) {
         title {
             text(
-                Language.Bokmal to "Vi opphører barnepensjonen din",
-                Language.Nynorsk to "Vi stansar barnepensjonen din",
-                Language.English to "We cease your child pension",
+                Bokmal to "Vi opphører barnepensjonen din",
+                Nynorsk to "Vi stansar barnepensjonen din",
+                English to "We cease your child pension",
             )
         }
         outline {

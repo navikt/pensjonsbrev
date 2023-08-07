@@ -2,7 +2,9 @@ package no.nav.pensjon.etterlatte.maler.fraser.common
 
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
-import no.nav.pensjon.brev.template.Language
+import no.nav.pensjon.brev.template.Language.Bokmal
+import no.nav.pensjon.brev.template.Language.English
+import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.StringExpression
 import no.nav.pensjon.brev.template.dsl.ParagraphOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.plus
@@ -19,5 +21,5 @@ fun ParagraphOnlyScope<LangBokmalNynorskEnglish, Unit>.formaterNavn(navn: Expres
 }
 
 private fun ParagraphOnlyScope<LangBokmalNynorskEnglish, Unit>.allLanguages(tekst: StringExpression) {
-    textExpr(Language.Bokmal to tekst, Language.Nynorsk to tekst, Language.English to tekst)
+    textExpr(Bokmal to tekst, Nynorsk to tekst, English to tekst)
 }

@@ -1,6 +1,7 @@
 package no.nav.pensjon.etterlatte
 
-import no.nav.pensjon.brevbaker.api.model.*
+import no.nav.pensjon.brevbaker.api.model.Felles
+import no.nav.pensjon.brevbaker.api.model.LanguageCode
 
 enum class EtterlatteBrevKode {
     BARNEPENSJON_AVSLAG,

@@ -1,6 +1,8 @@
 package no.nav.pensjon.etterlatte.maler.omstillingsstoenad
 
-import no.nav.pensjon.brev.template.Language
+import no.nav.pensjon.brev.template.Language.Bokmal
+import no.nav.pensjon.brev.template.Language.English
+import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
@@ -21,7 +23,7 @@ object OMSInnvilgelseManuell : EtterlatteTemplate<ManueltBrevDTO> {
     override val template = createTemplate(
         name = kode.name,
         letterDataType = ManueltBrevDTO::class,
-        languages = languages(Language.Bokmal, Language.Nynorsk, Language.English),
+        languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(
             displayTitle = "Vedtak - Manuelt brev for omstillingsstønad",
             isSensitiv = true,
@@ -31,9 +33,9 @@ object OMSInnvilgelseManuell : EtterlatteTemplate<ManueltBrevDTO> {
     ) {
         title {
             text(
-                Language.Bokmal to "Vi har innvilget søknaden din om omstillingsstoenad",
-                Language.Nynorsk to "TODO nynorsk",
-                Language.English to "TODO engelsk"
+                Bokmal to "Vi har innvilget søknaden din om omstillingsstoenad",
+                Nynorsk to "TODO nynorsk",
+                English to "TODO engelsk"
             )
         }
 
