@@ -158,6 +158,40 @@ object Barnepensjon {
             }
     }
 
+    object UtbetalingOgRegulering : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+            title2 {
+                text(
+                    Bokmal to "Utbetaling og regulering",
+                    Nynorsk to "",
+                    English to ""
+                )
+            }
+            paragraph {
+                text(
+                    Bokmal to "Pensjonen blir utbetalt innen den 20. i hver måned. " +
+                            "Du finner utbetalingsdatoer på ${Constants.UTBETALING_URL}.",
+                    Nynorsk to "",
+                    English to ""
+                )
+            }
+            paragraph {
+                text(
+                    Bokmal to "Har du rett til etterbetaling, vil du vanligvis få dette i løpet av tre uker.  Du finner mer informasjon om etterbetaling i vedlegget «Etterbetaling av barnepensjon»",
+                    Nynorsk to "",
+                    English to ""
+                )
+            }
+            paragraph {
+                text(
+                    Bokmal to "Grunnbeløpet blir regulert 1. mai hvert år.  Økningen blir vanligvis etterbetalt i juni. ",
+                    Nynorsk to "",
+                    English to ""
+                )
+            }
+        }
+    }
+
     object Utbetaling : OutlinePhrase<LangBokmal>() {
         override fun OutlineOnlyScope<LangBokmal, Unit>.template() {
             title2 {
@@ -357,7 +391,7 @@ object Barnepensjon {
             paragraph {
                 text(
                     Bokmal to "Du kan finne svar på ${Constants.BARNEPENSJON_URL}. Du kan også kontakte " +
-                            "oss på telefon ${Constants.KONTAKTTELEFON}. Om du oppgir fødselsnummer til barnet, kan vi lettere gi deg " +
+                            "oss på telefon ${Constants.KONTAKTTELEFON_PENSJON}. Om du oppgir fødselsnummer til barnet, kan vi lettere gi deg " +
                             "rask og god hjelp.",
                     Nynorsk to "TODO nynorsk",
                     English to "TODO engelsk"
@@ -425,4 +459,5 @@ object Barnepensjon {
             }
         }
     }
+
 }

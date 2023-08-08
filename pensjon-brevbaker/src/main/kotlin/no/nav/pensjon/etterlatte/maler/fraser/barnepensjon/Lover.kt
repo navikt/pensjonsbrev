@@ -1,5 +1,6 @@
 package no.nav.pensjon.etterlatte.maler.fraser.barnepensjon
 
+import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmal
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.Bokmal
@@ -43,5 +44,28 @@ object Lover {
                 )
             }
         }
+    }
+
+    data class MuligEtterbetaling(val paragraf: Expression<String>, val erEtterbetaling: Expression<Boolean>) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+            showIf(erEtterbetaling) {
+                paragraph {
+                    text(
+                        Bokmal to "Vedtaket er gjort etter bestemmelsene om barnepensjon i folketrygdloven § $paragraf, § 22-12 og § 22-13.",
+                        Nynorsk to "",
+                        English to ""
+                    )
+                }
+            } orShow {
+                paragraph {
+                    text(
+                        Bokmal to "Vedtaket er gjort etter bestemmelsene om barnepensjon i folketrygdloven § $paragraf og § 22-12.",
+                        Nynorsk to "",
+                        English to ""
+                    )
+                }
+            }
+        }
+
     }
 }
