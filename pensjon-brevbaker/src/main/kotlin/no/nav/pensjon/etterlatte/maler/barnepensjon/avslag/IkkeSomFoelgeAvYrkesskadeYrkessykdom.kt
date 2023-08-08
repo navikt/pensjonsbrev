@@ -10,6 +10,7 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
+import no.nav.pensjon.etterlatte.maler.Delmal
 import no.nav.pensjon.etterlatte.maler.barnepensjon.avslag.BarnepensjonAvslagIkkeYrkesskadeDTOSelectors.dinForelder
 import no.nav.pensjon.etterlatte.maler.barnepensjon.avslag.BarnepensjonAvslagIkkeYrkesskadeDTOSelectors.doedsdato
 import no.nav.pensjon.etterlatte.maler.barnepensjon.avslag.BarnepensjonAvslagIkkeYrkesskadeDTOSelectors.yrkesskadeEllerYrkessykdom
@@ -23,7 +24,7 @@ data class BarnepensjonAvslagIkkeYrkesskadeDTO(
 )
 
 @TemplateModelHelpers
-object IkkeSomFoelgeAvYrkesskadeYrkessykdom : EtterlatteTemplate<BarnepensjonAvslagIkkeYrkesskadeDTO> {
+object IkkeSomFoelgeAvYrkesskadeYrkessykdom : EtterlatteTemplate<BarnepensjonAvslagIkkeYrkesskadeDTO>, Delmal {
     override val kode: EtterlatteBrevKode = EtterlatteBrevKode.BARNEPENSJON_AVSLAG_IKKEYRKESSKADE
 
     override val template = createTemplate(
