@@ -1,6 +1,8 @@
 package no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering
 
-import no.nav.pensjon.brev.template.Language
+import no.nav.pensjon.brev.template.Language.Bokmal
+import no.nav.pensjon.brev.template.Language.English
+import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
@@ -30,7 +32,7 @@ object HarStanset : EtterlatteTemplate<HarStansetDTO>, Hovedmal {
     override val template = createTemplate(
         name = kode.name,
         letterDataType = HarStansetDTO::class,
-        languages = languages(Language.Bokmal, Language.Nynorsk, Language.English),
+        languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(
             displayTitle = "Vedtak - har stanset",
             isSensitiv = true,
@@ -40,9 +42,9 @@ object HarStanset : EtterlatteTemplate<HarStansetDTO>, Hovedmal {
     ) {
         title {
             text(
-                Language.Bokmal to "Vi har stanset barnepensjonen din",
-                Language.Nynorsk to "",
-                Language.English to "",
+                Bokmal to "Vi har stanset barnepensjonen din",
+                Nynorsk to "",
+                English to "",
             )
         }
         outline {
