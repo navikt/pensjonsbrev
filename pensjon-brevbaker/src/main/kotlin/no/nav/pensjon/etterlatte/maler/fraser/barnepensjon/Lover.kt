@@ -51,17 +51,17 @@ object Lover {
             showIf(erEtterbetaling) {
                 paragraph {
                     text(
-                        Language.Bokmal to "Vedtaket er gjort etter bestemmelsene om barnepensjon i folketrygdloven § $paragraf, § 22-12 og § 22-13.",
-                        Language.Nynorsk to "",
-                        Language.English to ""
+                        Bokmal to "Vedtaket er gjort etter bestemmelsene om barnepensjon i folketrygdloven § $paragraf, § 22-12 og § 22-13.",
+                        Nynorsk to "",
+                        English to ""
                     )
                 }
             } orShow {
                 paragraph {
                     text(
-                        Language.Bokmal to "Vedtaket er gjort etter bestemmelsene om barnepensjon i folketrygdloven § $paragraf og § 22-12.",
-                        Language.Nynorsk to "",
-                        Language.English to ""
+                        Bokmal to "Vedtaket er gjort etter bestemmelsene om barnepensjon i folketrygdloven § $paragraf og § 22-12.",
+                        Nynorsk to "",
+                        English to ""
                     )
                 }
             }

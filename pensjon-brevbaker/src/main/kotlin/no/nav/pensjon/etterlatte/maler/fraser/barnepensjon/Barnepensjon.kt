@@ -162,14 +162,14 @@ object Barnepensjon {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             title2 {
                 text(
-                    Language.Bokmal to "Utbetaling og regulering",
+                    Bokmal to "Utbetaling og regulering",
                     Nynorsk to "",
                     English to ""
                 )
             }
             paragraph {
                 text(
-                    Language.Bokmal to "Pensjonen blir utbetalt innen den 20. i hver måned. " +
+                    Bokmal to "Pensjonen blir utbetalt innen den 20. i hver måned. " +
                             "Du finner utbetalingsdatoer på ${Constants.UTBETALING_URL}.",
                     Nynorsk to "",
                     English to ""
@@ -177,14 +177,14 @@ object Barnepensjon {
             }
             paragraph {
                 text(
-                    Language.Bokmal to "Har du rett til etterbetaling, vil du vanligvis få dette i løpet av tre uker.  Du finner mer informasjon om etterbetaling i vedlegget «Etterbetaling av barnepensjon»",
+                    Bokmal to "Har du rett til etterbetaling, vil du vanligvis få dette i løpet av tre uker.  Du finner mer informasjon om etterbetaling i vedlegget «Etterbetaling av barnepensjon»",
                     Nynorsk to "",
                     English to ""
                 )
             }
             paragraph {
                 text(
-                    Language.Bokmal to "Grunnbeløpet blir regulert 1. mai hvert år.  Økningen blir vanligvis etterbetalt i juni. ",
+                    Bokmal to "Grunnbeløpet blir regulert 1. mai hvert år.  Økningen blir vanligvis etterbetalt i juni. ",
                     Nynorsk to "",
                     English to ""
                 )
