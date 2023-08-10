@@ -33,11 +33,11 @@ class YrkesskadeRevurderingTest {
     @Test
     fun testHtml() {
         Letter(
-            AdopsjonRevurdering.template,
-            Fixtures.create<BarnepensjonRevurderingAdopsjonDTO>(),
+            YrkesskadeRevurdering.template,
+            Fixtures.create<BarnepensjonRevurderingYrkesskadeDTO>(),
             Language.Bokmal,
             Fixtures.felles,
         ).let { PensjonHTMLRenderer.render(it) }
-            .also { writeTestHTML(EtterlatteBrevKode.BARNEPENSJON_REVURDERING_ADOPSJON.name, it) }
+            .also { writeTestHTML(EtterlatteBrevKode.BARNEPENSJON_REVURDERING_YRKESSKADE.name, it) }
     }
 }
