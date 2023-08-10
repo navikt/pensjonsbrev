@@ -10,13 +10,15 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
+import no.nav.pensjon.etterlatte.maler.Hovedmal
 import no.nav.pensjon.etterlatte.maler.ManueltBrevDTO
 import no.nav.pensjon.etterlatte.maler.ManueltBrevDTOSelectors.innhold
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.Barnepensjon
 import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
+import no.nav.pensjon.etterlatte.maler.vedlegg.klageOgAnke
 
 @TemplateModelHelpers
-object AvslagFoerstegangsbehandling : EtterlatteTemplate<ManueltBrevDTO> {
+object AvslagFoerstegangsbehandling : EtterlatteTemplate<ManueltBrevDTO>, Hovedmal {
     override val kode = EtterlatteBrevKode.BARNEPENSJON_AVSLAG
 
     override val template = createTemplate(
@@ -34,7 +36,7 @@ object AvslagFoerstegangsbehandling : EtterlatteTemplate<ManueltBrevDTO> {
             text(
                 Bokmal to "Vi har avslått søknaden din om barnepensjon",
                 Nynorsk to "",
-                English to ""
+                English to "",
             )
         }
         outline {
@@ -44,5 +46,6 @@ object AvslagFoerstegangsbehandling : EtterlatteTemplate<ManueltBrevDTO> {
             includePhrase(Barnepensjon.DuHarRettTilInnsyn)
             includePhrase(Barnepensjon.HarDuSpoersmaal)
         }
+        includeAttachment(klageOgAnke, innhold)
     }
 }
