@@ -23,13 +23,17 @@ import no.nav.pensjon.etterlatte.maler.UtbetalingsinfoSelectors.beloep
 import no.nav.pensjon.etterlatte.maler.UtbetalingsinfoSelectors.beregningsperioder
 import no.nav.pensjon.etterlatte.maler.UtbetalingsinfoSelectors.soeskenjustering
 import no.nav.pensjon.etterlatte.maler.UtbetalingsinfoSelectors.virkningsdato
+import no.nav.pensjon.etterlatte.maler.barnepensjon.endring.EtterbetalingDTO
 import no.nav.pensjon.etterlatte.maler.barnepensjon.ny.BarnepensjonInnvilgelseNyDTOSelectors.avdoed
+import no.nav.pensjon.etterlatte.maler.barnepensjon.ny.BarnepensjonInnvilgelseNyDTOSelectors.etterbetalingDTO
 import no.nav.pensjon.etterlatte.maler.barnepensjon.ny.BarnepensjonInnvilgelseNyDTOSelectors.innhold
 import no.nav.pensjon.etterlatte.maler.barnepensjon.ny.BarnepensjonInnvilgelseNyDTOSelectors.utbetalingsinfo
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.Barnepensjon
+import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.BarnepensjonInnvilgelseFraser
 import no.nav.pensjon.etterlatte.maler.fraser.common.Vedtak
 import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
 import no.nav.pensjon.etterlatte.maler.vedlegg.dineRettigheterOgPlikter
+import no.nav.pensjon.etterlatte.maler.vedlegg.etterbetalingAvBarnepensjon
 import no.nav.pensjon.etterlatte.maler.vedlegg.informasjonOmYrkesskade
 import no.nav.pensjon.etterlatte.maler.vedlegg.informasjonTilDegSomHandlerPaaVegneAvBarnet
 
@@ -37,6 +41,7 @@ data class BarnepensjonInnvilgelseNyDTO(
     val utbetalingsinfo: Utbetalingsinfo,
     val avkortingsinfo: Avkortingsinfo? = null,
     val avdoed: Avdoed,
+    val etterbetalingDTO: EtterbetalingDTO? = null,
     override val innhold: List<Element>,
 ) : BrevDTO
 
@@ -85,12 +90,13 @@ object BarnepensjonInnvilgelseNy : EtterlatteTemplate<BarnepensjonInnvilgelseNyD
             )
 
             includePhrase(Barnepensjon.UtbetalingOgRegulering)
-            includePhrase(Barnepensjon.MeldFraOmEndringer)
-            includePhrase(Barnepensjon.DuHarRettTilAaKlage)
+            includePhrase(BarnepensjonInnvilgelseFraser.MeldFraOmEndringer)
+            includePhrase(BarnepensjonInnvilgelseFraser.DuHarRettTilAaKlage)
             includePhrase(Barnepensjon.HarDuSpoersmaal)
         }
         includeAttachment(informasjonTilDegSomHandlerPaaVegneAvBarnet, innhold)
         includeAttachment(dineRettigheterOgPlikter, innhold)
         includeAttachment(informasjonOmYrkesskade, innhold)
+        includeAttachmentIfNotNull(etterbetalingAvBarnepensjon, etterbetalingDTO)
     }
 }
