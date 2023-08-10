@@ -3,6 +3,7 @@ package no.nav.pensjon.etterlatte
 import no.nav.pensjon.brevbaker.api.model.*
 import no.nav.pensjon.etterlatte.fixtures.createBarnepensjonAvslagIkkeYrkesskadeDTO
 import no.nav.pensjon.etterlatte.fixtures.createBarnepensjonInnvilgelseDTO
+import no.nav.pensjon.etterlatte.fixtures.createBarnepensjonInnvilgelseNyDTO
 import no.nav.pensjon.etterlatte.fixtures.createBarnepensjonRevurderingAdopsjonDTO
 import no.nav.pensjon.etterlatte.fixtures.createBarnepensjonRevurderingOmgjoeringAvFarskapDTO
 import no.nav.pensjon.etterlatte.fixtures.createBarnepensjonRevurderingSoeskenjusteringDTO
@@ -11,6 +12,7 @@ import no.nav.pensjon.etterlatte.fixtures.createOMSInnvilgelseDTO
 import no.nav.pensjon.etterlatte.maler.*
 import no.nav.pensjon.etterlatte.maler.barnepensjon.BarnepensjonInnvilgelseDTO
 import no.nav.pensjon.etterlatte.maler.barnepensjon.avslag.BarnepensjonAvslagIkkeYrkesskadeDTO
+import no.nav.pensjon.etterlatte.maler.barnepensjon.ny.BarnepensjonInnvilgelseNyDTO
 import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingAdopsjonDTO
 import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingOmgjoeringAvFarskapDTO
 import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingSoeskenjusteringDTO
@@ -49,6 +51,7 @@ object Fixtures {
     fun <T : Any> create(letterDataType: KClass<T>): T =
         when (letterDataType) {
             BarnepensjonInnvilgelseDTO::class -> createBarnepensjonInnvilgelseDTO() as T
+            BarnepensjonInnvilgelseNyDTO::class -> createBarnepensjonInnvilgelseNyDTO() as T
             ManueltBrevDTO::class -> createManueltBrevDTO() as T
             OMSInnvilgelseDTO::class -> createOMSInnvilgelseDTO() as T
             BarnepensjonRevurderingAdopsjonDTO::class -> createBarnepensjonRevurderingAdopsjonDTO() as T

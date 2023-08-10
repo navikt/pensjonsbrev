@@ -37,7 +37,6 @@ data class BarnepensjonInnvilgelseNyDTO(
     val utbetalingsinfo: Utbetalingsinfo,
     val avkortingsinfo: Avkortingsinfo? = null,
     val avdoed: Avdoed,
-    val etterbetalingMerEnnTreMaaneder: Boolean,
     override val innhold: List<Element>,
 ) : BrevDTO
 
