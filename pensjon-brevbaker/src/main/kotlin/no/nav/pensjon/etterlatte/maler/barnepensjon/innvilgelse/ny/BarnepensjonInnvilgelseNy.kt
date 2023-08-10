@@ -1,6 +1,8 @@
 package no.nav.pensjon.etterlatte.maler.barnepensjon.ny
 
-import no.nav.pensjon.brev.template.Language
+import no.nav.pensjon.brev.template.Language.Bokmal
+import no.nav.pensjon.brev.template.Language.English
+import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
@@ -14,6 +16,7 @@ import no.nav.pensjon.etterlatte.maler.AvdoedSelectors.navn
 import no.nav.pensjon.etterlatte.maler.Avkortingsinfo
 import no.nav.pensjon.etterlatte.maler.BrevDTO
 import no.nav.pensjon.etterlatte.maler.Element
+import no.nav.pensjon.etterlatte.maler.Hovedmal
 import no.nav.pensjon.etterlatte.maler.Utbetalingsinfo
 import no.nav.pensjon.etterlatte.maler.UtbetalingsinfoSelectors.antallBarn
 import no.nav.pensjon.etterlatte.maler.UtbetalingsinfoSelectors.beloep
@@ -25,6 +28,7 @@ import no.nav.pensjon.etterlatte.maler.barnepensjon.ny.BarnepensjonInnvilgelseNy
 import no.nav.pensjon.etterlatte.maler.barnepensjon.ny.BarnepensjonInnvilgelseNyDTOSelectors.utbetalingsinfo
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.Barnepensjon
 import no.nav.pensjon.etterlatte.maler.fraser.common.Vedtak
+import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
 import no.nav.pensjon.etterlatte.maler.vedlegg.dineRettigheterOgPlikter
 import no.nav.pensjon.etterlatte.maler.vedlegg.informasjonOmYrkesskade
 import no.nav.pensjon.etterlatte.maler.vedlegg.informasjonTilDegSomHandlerPaaVegneAvBarnet
@@ -38,13 +42,13 @@ data class BarnepensjonInnvilgelseNyDTO(
 ) : BrevDTO
 
 @TemplateModelHelpers
-object BarnepensjonInnvilgelseNy : EtterlatteTemplate<BarnepensjonInnvilgelseNyDTO> {
+object BarnepensjonInnvilgelseNy : EtterlatteTemplate<BarnepensjonInnvilgelseNyDTO>, Hovedmal {
     override val kode: EtterlatteBrevKode = EtterlatteBrevKode.BARNEPENSJON_INNVILGELSE_NY
 
     override val template = createTemplate(
         name = kode.name,
         letterDataType = BarnepensjonInnvilgelseNyDTO::class,
-        languages = languages(Language.Bokmal),
+        languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(
             displayTitle = "Vedtak - innvilget søknad om barnepensjon",
             isSensitiv = true,
@@ -54,12 +58,16 @@ object BarnepensjonInnvilgelseNy : EtterlatteTemplate<BarnepensjonInnvilgelseNyD
     ) {
         title {
             text(
-                Language.Bokmal to "Vi har innvilget søknaden din om barnepensjon",
+                Bokmal to "Vi har innvilget søknaden din om barnepensjon",
+                Nynorsk to "",
+                English to "",
             )
         }
 
         outline {
             includePhrase(Vedtak.BegrunnelseForVedtaket)
+            konverterElementerTilBrevbakerformat(innhold)
+
             includePhrase(
                 Barnepensjon.Foerstegangsbehandlingsvedtak(
                     utbetalingsinfo.virkningsdato,
