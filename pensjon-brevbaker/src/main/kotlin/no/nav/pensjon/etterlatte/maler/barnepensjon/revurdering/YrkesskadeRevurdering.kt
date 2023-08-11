@@ -16,6 +16,7 @@ import no.nav.pensjon.etterlatte.maler.UtbetalingsinfoSelectors.beregningsperiod
 import no.nav.pensjon.etterlatte.maler.UtbetalingsinfoSelectors.soeskenjustering
 import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingYrkesskadeDTOSelectors.utbetalingsinfo
 import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingYrkesskadeDTOSelectors.virkningsdato
+import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingYrkesskadeDTOSelectors.yrkesskadeErDokumentert
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.Barnepensjon
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.RevurderingYrkesskadeFraser
 import no.nav.pensjon.etterlatte.maler.fraser.common.Vedtak
@@ -23,7 +24,7 @@ import java.time.LocalDate
 
 data class BarnepensjonRevurderingYrkesskadeDTO(
     val utbetalingsinfo: Utbetalingsinfo,
-    val erGodkjent: Boolean,
+    val yrkesskadeErDokumentert: Boolean,
     val virkningsdato: LocalDate,
 )
 
@@ -43,15 +44,23 @@ object YrkesskadeRevurdering : EtterlatteTemplate<BarnepensjonRevurderingYrkessk
         ),
     ) {
         title {
-            text(
-                Bokmal to "Vi har endret barnepensjonen din",
-                Language.Nynorsk to "",
-                Language.English to "",
-            )
+            showIf(yrkesskadeErDokumentert) {
+                text(
+                    Bokmal to "Vi har endret barnepensjonen din",
+                    Language.Nynorsk to "",
+                    Language.English to "",
+                )
+            }.orShow {
+                text(
+                    Bokmal to "Vi har vurdert barnepensjonen din",
+                    Language.Nynorsk to "",
+                    Language.English to "",
+                )
+            }
         }
         outline {
             includePhrase(Vedtak.BegrunnelseForVedtaket)
-            includePhrase(RevurderingYrkesskadeFraser.Begrunnelse(virkningsdato, utbetalingsinfo.beloep))
+            includePhrase(RevurderingYrkesskadeFraser.Begrunnelse(yrkesskadeErDokumentert, virkningsdato, utbetalingsinfo.beloep))
             includePhrase(
                 Barnepensjon.SlikHarViBeregnetPensjonenDin(
                     utbetalingsinfo.beregningsperioder,
