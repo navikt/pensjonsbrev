@@ -92,7 +92,7 @@ dependencies {
     implementation("io.ktor:ktor-client-encoding:$ktorVersion")
     implementation("net.logstash.logback:logstash-logback-encoder:$logstashVersion")
     implementation("no.nav.pensjon.brev:pensjon-brevbaker-api-model:$apiModelVersion")
-    implementation("org.jetbrains.kotlinx:kotlinx-html-jvm:0.8.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-html-jvm:0.9.1")
 
     implementation(project(":template-model-generator"))
     ksp(project(":template-model-generator"))
