@@ -205,4 +205,34 @@ class TemplateModelVisitorTest {
         assertThat(result.generatedFiles, anyElement(has(File::getName, containsSubstring("ANameSelectors"))))
     }
 
+    @Test
+    fun `generates helpers for nullable collection element types`() {
+        val result = SourceFile.kotlin(
+            "MyClass.kt", """
+                    import no.nav.pensjon.brev.template.HasModel
+                    import no.nav.pensjon.brev.template.Expression
+                    import no.nav.pensjon.brev.template.dsl.TemplateGlobalScope
+                    import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
+                    import no.nav.pensjon.brev.template.thirdpkg.SimpleModel
+                    import ANameSelectors.first
+                    import no.nav.pensjon.brev.template.thirdpkg.SimpleModelSelectors.name
+                    
+            
+                    data class AName(val first: String, val second: String)
+                    data class ModelWithList(val theList: List<SimpleModel>?, val theCollection: Collection<AName>?)
+
+                    @TemplateModelHelpers
+                    object MyClass : HasModel<ModelWithList> {
+                        val aName: Expression<String> = Expression.Literal(AName("firstname", "secondname")).first
+                        val simple: Expression<String> = Expression.Literal(SimpleModel("hello")).name
+                    }
+                    """.trimIndent()
+        ).compile()
+
+        assertThat(result.exitCode, equalTo(KotlinCompilation.ExitCode.OK))
+        assertThat(result.generatedFiles, hasSize(greaterThan(2)))
+        assertThat(result.generatedFiles, anyElement(has(File::getName, containsSubstring("SimpleModelSelectors"))))
+        assertThat(result.generatedFiles, anyElement(has(File::getName, containsSubstring("ANameSelectors"))))
+    }
+
 }

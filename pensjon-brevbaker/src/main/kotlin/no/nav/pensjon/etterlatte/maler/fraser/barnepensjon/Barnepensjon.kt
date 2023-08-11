@@ -28,8 +28,8 @@ object Barnepensjon {
         val doedsdato: Expression<LocalDate>,
         val beloep: Expression<Kroner>,
     ) :
-        OutlinePhrase<LangBokmal>() {
-        override fun OutlineOnlyScope<LangBokmal, Unit>.template() =
+        OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
             paragraph {
                 val formatertVirkningsdato = virkningsdato.format()
                 val formatertDoedsdato = doedsdato.format()
@@ -38,6 +38,8 @@ object Barnepensjon {
                             " fordi " + avdoedNavn + " er registrert død " + formatertDoedsdato + ". " +
                             "Du får " + beloep.format() + " kroner hver måned før skatt. Barnepensjonen utbetales til og med den " +
                             "kalendermåneden du fyller 18 år. Vedtaket er gjort etter folketrygdloven kapittel 18 og 22.",
+                    Nynorsk to "".expr(),
+                    English to "".expr(),
                 )
             }
     }
@@ -232,26 +234,32 @@ object Barnepensjon {
         }
     }
 
-    object MeldFraOmEndringer : OutlinePhrase<LangBokmal>() {
-        override fun OutlineOnlyScope<LangBokmal, Unit>.template() {
+    object MeldFraOmEndringer : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             title2 {
                 text(
                     Bokmal to "Meld fra om endringer",
+                    Nynorsk to "",
+                    English to ""
                 )
             }
             paragraph {
                 text(
-                    Bokmal to "Du må melde fra med en gang det skjer viktige endringer i barnets liv, som"
+                    Bokmal to "Du må melde fra med en gang det skjer viktige endringer i barnets liv, som ",
+                    Nynorsk to "",
+                    English to "",
                 )
                 list {
-                    item { text(Bokmal to "endringer av nåværende familie- eller omsorgsforhold") }
-                    item { text(Bokmal to "flytting eller opphold i et annet land over tid") }
-                    item { text(Bokmal to "varig opphold i institusjon") }
+                    item { text(Bokmal to "endringer av nåværende familie- eller omsorgsforhold", Nynorsk to "", English to "") }
+                    item { text(Bokmal to "flytting eller opphold i et annet land over tid", Nynorsk to "", English to "") }
+                    item { text(Bokmal to "varig opphold i institusjon", Nynorsk to "", English to "") }
                 }
                 text(
                     Bokmal to "Du er ansvarlig for å holde deg orientert om bevegelser på kontoen for utbetaling av barnepensjon, " +
                             "og du må straks melde fra om eventuelle feil til NAV. Er det utbetalt for mye barnepensjon fordi " +
-                            "NAV ikke har fått beskjed, må pengene vanligvis betales tilbake."
+                            "NAV ikke har fått beskjed, må pengene vanligvis betales tilbake.",
+                    Nynorsk to "",
+                    English to "",
                 )
             }
         }
