@@ -1,10 +1,12 @@
+val apiModelJavaTarget: String by System.getProperties()
+
 plugins {
     kotlin("jvm")
     `maven-publish`
 }
 
 group = "no.nav.pensjon.brevbaker"
-version = "1.0.2"
+version = "1.1.0"
 
 java {
     withSourcesJar()
@@ -39,9 +41,9 @@ publishing {
 
 tasks {
     compileKotlin {
-        kotlinOptions.jvmTarget = "1.8"
+        kotlinOptions.jvmTarget = apiModelJavaTarget
     }
     compileJava {
-        targetCompatibility = "1.8"
+        targetCompatibility = apiModelJavaTarget
     }
 }

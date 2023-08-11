@@ -54,7 +54,7 @@ internal class TemplateModelVisitor(
                 if (typeDeclaration.typeParameters.isEmpty()) {
                     logger.info("Processed type $typeDeclaration: it's a class, we may need a generator for it")
                     typeDeclaration
-                } else if (iterableDeclaration.isAssignableFrom(resolvedType)) {
+                } else if (iterableDeclaration.isAssignableFrom(resolvedType) || iterableDeclaration.isAssignableFrom(resolvedType.makeNotNullable())) {
                     val elementType = resolvedType.arguments.firstOrNull()?.type?.resolve()
                     logger.info("Processed type $typeDeclaration: it's an Iterable, we may need a generator for the element type $elementType")
                     elementType?.let { findModel(it) }
