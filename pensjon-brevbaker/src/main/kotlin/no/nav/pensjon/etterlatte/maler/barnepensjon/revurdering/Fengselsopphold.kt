@@ -1,6 +1,8 @@
 package no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering
 
-import no.nav.pensjon.brev.template.Language
+import no.nav.pensjon.brev.template.Language.Bokmal
+import no.nav.pensjon.brev.template.Language.English
+import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
@@ -8,6 +10,7 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
+import no.nav.pensjon.etterlatte.maler.Delmal
 import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonFengselsoppholdDTOSelectors.fraDato
 import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonFengselsoppholdDTOSelectors.tilDato
 import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonFengselsoppholdDTOSelectors.virkningsdato
@@ -22,13 +25,13 @@ data class BarnepensjonFengselsoppholdDTO(
 )
 
 @TemplateModelHelpers
-object Fengselsopphold : EtterlatteTemplate<BarnepensjonFengselsoppholdDTO> {
+object Fengselsopphold : EtterlatteTemplate<BarnepensjonFengselsoppholdDTO>, Delmal {
     override val kode: EtterlatteBrevKode = EtterlatteBrevKode.BARNEPENSJON_REVURDERING_FENGSELSOPPHOLD
 
     override val template = createTemplate(
         name = kode.name,
         letterDataType = BarnepensjonFengselsoppholdDTO::class,
-        languages = languages(Language.Bokmal, Language.Nynorsk, Language.English),
+        languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(
             displayTitle = "Vedtak - opphør på grunn av omgjøring av farskap",
             isSensitiv = true,
@@ -38,9 +41,9 @@ object Fengselsopphold : EtterlatteTemplate<BarnepensjonFengselsoppholdDTO> {
     ) {
         title {
             text(
-                Language.Bokmal to "Vi har stanset barnepensjonen din",
-                Language.Nynorsk to "Vi har stansa barnepensjonen din",
-                Language.English to "We have ceased your child pension",
+                Bokmal to "Vi har stanset barnepensjonen din",
+                Nynorsk to "Vi har stansa barnepensjonen din",
+                English to "We have ceased your child pension",
             )
         }
         outline {

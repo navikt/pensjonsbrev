@@ -1,6 +1,8 @@
 package no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering
 
-import no.nav.pensjon.brev.template.Language
+import no.nav.pensjon.brev.template.Language.Bokmal
+import no.nav.pensjon.brev.template.Language.English
+import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
@@ -10,6 +12,7 @@ import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.BrevDTO
 import no.nav.pensjon.etterlatte.maler.Element
+import no.nav.pensjon.etterlatte.maler.Hovedmal
 import no.nav.pensjon.etterlatte.maler.Utbetalingsinfo
 import no.nav.pensjon.etterlatte.maler.UtbetalingsinfoSelectors.beregningsperioder
 import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.HarStansetDTOSelectors.innhold
@@ -23,13 +26,13 @@ import no.nav.pensjon.etterlatte.maler.vedlegg.klageOgAnke
 data class HarStansetDTO(val utbetalingsinfo: Utbetalingsinfo, override val innhold: List<Element>) : BrevDTO
 
 @TemplateModelHelpers
-object HarStanset : EtterlatteTemplate<HarStansetDTO> {
+object HarStanset : EtterlatteTemplate<HarStansetDTO>, Hovedmal {
     override val kode: EtterlatteBrevKode = EtterlatteBrevKode.BARNEPENSJON_REVURDERING_HAR_STANSET
 
     override val template = createTemplate(
         name = kode.name,
         letterDataType = HarStansetDTO::class,
-        languages = languages(Language.Bokmal, Language.Nynorsk, Language.English),
+        languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(
             displayTitle = "Vedtak - har stanset",
             isSensitiv = true,
@@ -39,9 +42,9 @@ object HarStanset : EtterlatteTemplate<HarStansetDTO> {
     ) {
         title {
             text(
-                Language.Bokmal to "Vi har stanset barnepensjonen din",
-                Language.Nynorsk to "",
-                Language.English to "",
+                Bokmal to "Vi har stanset barnepensjonen din",
+                Nynorsk to "",
+                English to "",
             )
         }
         outline {

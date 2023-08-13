@@ -1,3 +1,4 @@
+val javaTarget: String by System.getProperties()
 val kotlinVersion: String by System.getProperties()
 val kspVersion: String by System.getProperties()
 val jupiterVersion: String by project
@@ -15,10 +16,13 @@ tasks {
         useJUnitPlatform()
     }
     compileKotlin {
-        kotlinOptions.jvmTarget = "17"
+        kotlinOptions.jvmTarget = javaTarget
     }
     compileTestKotlin {
-        kotlinOptions.jvmTarget = "17"
+        kotlinOptions.jvmTarget = javaTarget
+    }
+    compileJava {
+        targetCompatibility = javaTarget
     }
 }
 
