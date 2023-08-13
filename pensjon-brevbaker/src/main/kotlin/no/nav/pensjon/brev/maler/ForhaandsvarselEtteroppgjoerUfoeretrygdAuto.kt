@@ -31,8 +31,7 @@ object ForhaandsvarselEtteroppgjoerUfoeretrygdAuto : AutobrevTemplate<Forhaandsv
 
     override val kode: Brevkode.AutoBrev = Brevkode.AutoBrev.UT_EO_FORHAANDSVARSEL_FEILUTBETALING_AUTO
 
-    override val template: LetterTemplate<LanguageSupport.Triple<Bokmal, Nynorsk, English>, ForhaandsvarselEtteroppgjoerUfoeretrygdDto>
-        get() = createTemplate(
+    override val template = createTemplate(
             name = kode.name,
             letterDataType = ForhaandsvarselEtteroppgjoerUfoeretrygdDto::class,
             languages = languages(Bokmal, Nynorsk, English),
@@ -64,7 +63,7 @@ object ForhaandsvarselEtteroppgjoerUfoeretrygdAuto : AutobrevTemplate<Forhaandsv
                     Innledning(opplysningerOmEtteroppgjoeretUfoeretrygd.totaltAvvik)
                 )
                 includePhrase(SjekkBeregning)
-                includePhrase(HvordanDuBetaleTilbake)
+                includePhrase(HvordanDuBetalerTilbake)
 
                 showIf(harTjentOver80prosentAvOIFU) {
                     includePhrase(

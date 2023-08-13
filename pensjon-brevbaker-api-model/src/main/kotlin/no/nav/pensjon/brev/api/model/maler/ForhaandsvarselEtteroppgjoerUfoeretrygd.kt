@@ -2,7 +2,6 @@ package no.nav.pensjon.brev.api.model.maler
 
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDto
 import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterUfoereDto
-import no.nav.pensjon.brev.api.model.vedlegg.PraktiskInformasjonEtteroppgjoerDto
 import no.nav.pensjon.brevbaker.api.model.Kroner
 
 @Suppress("unused")
@@ -12,6 +11,5 @@ data class ForhaandsvarselEtteroppgjoerUfoeretrygdDto(
     val kanSoekeOmNyInntektsgrense: Boolean,
     val oppjustertInntektFoerUfoerhet: Kroner,
     val orienteringOmRettigheterUfoere: OrienteringOmRettigheterUfoereDto,
-    val praktiskInformasjonEtteroppgjoerUfoeretrygd: PraktiskInformasjonEtteroppgjoerDto,
     val opplysningerOmEtteroppgjoeretUfoeretrygd: OpplysningerOmEtteroppgjoeretDto,
 )

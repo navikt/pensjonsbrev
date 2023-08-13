@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.maler.fraser.vedlegg
 
+import no.nav.pensjon.brev.maler.fraser.common.Constants
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.dsl.*
@@ -216,9 +217,9 @@ object EttersendeDokumentasjon :
         }
         paragraph {
             text(
-                Bokmal to "For å sende dokumentasjon digitalt, gå inn på nav.no/uføre-ettersende.",
-                Nynorsk to "For å sende dokumentasjon digitalt går du inn på nav.no/uføre-ettersende.",
-                English to "To submit information digitally, go to: nav.no/uføre-ettersende."
+                Bokmal to "For å sende dokumentasjon digitalt, gå inn på ${Constants.UFOERE_ETTERSENDE_URL}.",
+                Nynorsk to "For å sende dokumentasjon digitalt går du inn på ${Constants.UFOERE_ETTERSENDE_URL}.",
+                English to "To submit information digitally, go to: ${Constants.UFOERE_ETTERSENDE_URL}."
             )
         }
         title2 {
@@ -230,16 +231,16 @@ object EttersendeDokumentasjon :
         }
         paragraph {
             text(
-                Bokmal to "Når du sender inn dokumenter i posten, må du sende med en førsteside for innsending. Den finner du ved å gå inn på nav.no/uføre-ettersende-post.",
-                Nynorsk to "Når du sender dokument i posten, må du leggje ved ei førsteside for innsending. Du finn denne på nav.no/uføre-ettersende-post.",
-                English to "When you send in documents by regular post, you must include a cover letter. You can find this at: nav.no/uføre-ettersende-post."
+                Bokmal to "Når du sender inn dokumenter i posten, må du sende med en førsteside for innsending. Den finner du ved å gå inn på ${Constants.UFOERE_ETTERSENDE_POST_URL}.",
+                Nynorsk to "Når du sender dokument i posten, må du leggje ved ei førsteside for innsending. Du finn denne på ${Constants.UFOERE_ETTERSENDE_POST_URL}.",
+                English to "When you send in documents by regular post, you must include a cover letter. You can find this at: ${Constants.UFOERE_ETTERSENDE_POST_URL}."
             )
         }
         paragraph {
             text(
                 Bokmal to "Når vi har mottatt dokumentasjon fra deg, vil vi vurdere om inntekten skal holdes utenfor. Du får et nytt brev når vi har gjort et nytt etteroppgjør.",
                 Nynorsk to "Når vi har fått dokumentasjon frå deg, vil vi vurdere om inntekta skal haldast utanfor. Du får eit nytt brev når vi har utført eit nytt etteroppgjer.",
-                English to "When you send in documents by regular post, you must include a cover letter. You can find this at: nav.no/uføre-ettersende-post."
+                English to "When we have received your documentation, we will evaluate if income is to be kept outside of the settlement calculation. You will receive a new letter when we have done a new settlement."
             )
         }
         paragraph {
@@ -251,9 +252,9 @@ object EttersendeDokumentasjon :
         }
         paragraph {
             text(
-                Bokmal to "Du kan lese mer om etteroppgjør på nav.no/etteroppgjor.",
-                Nynorsk to "Du kan lese meir om etteroppgjer på nav.no/etteroppgjor.",
-                English to "Du kan lese mer om etteroppgjør på nav.no/etteroppgjor."
+                Bokmal to "Du kan lese mer om etteroppgjør på ${Constants.ETTEROPPGJOR_URL}.",
+                Nynorsk to "Du kan lese meir om etteroppgjer på ${Constants.ETTEROPPGJOR_URL}.",
+                English to "Du kan lese mer om etteroppgjør på ${Constants.ETTEROPPGJOR_URL}."
             )
         }
     }

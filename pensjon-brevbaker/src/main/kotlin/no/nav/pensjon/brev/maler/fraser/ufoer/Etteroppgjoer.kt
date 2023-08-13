@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.maler.fraser.ufoer
 
+import no.nav.pensjon.brev.maler.fraser.common.Constants
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Language.*
@@ -58,7 +59,7 @@ object SjekkBeregning : OutlinePhrase<LangBokmalNynorskEnglish>() {
     }
 }
 
-object HvordanDuBetaleTilbake : OutlinePhrase<LangBokmalNynorskEnglish>() {
+object HvordanDuBetalerTilbake : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         title1 {
             text(
@@ -176,9 +177,9 @@ object MeldeFraOmEndringerEtteroppgjoer : OutlinePhrase<LangBokmalNynorskEnglish
         }
         paragraph {
             text(
-                Bokmal to "For at du skal få utbetalt riktig uføretrygd fremover, er det viktig at du oppdaterer inntekten din. Dette gjør du på nav.no/inntektsplanleggeren. I vedlegget «Dine rettigheter og plikter» ser du hvilke endringer du må si fra om.",
-                Nynorsk to "For at du skal få utbetalt rett uføretrygd framover, er det viktig at du oppdaterer inntekta di. Dette gjer du på nav.no/inntektsplanleggeren. I vedlegget «Rettane og pliktene dine» ser du kva endringar du må seie frå om.",
-                English to "To be paid the correct amount of disability benefit in the future, it is important that you update your income. You can do this at: nav.no/inntektsplanleggeren. In the appendix «Your rights and obligations» you can see which changes you need to report."
+                Bokmal to "For at du skal få utbetalt riktig uføretrygd fremover, er det viktig at du oppdaterer inntekten din. Dette gjør du på ${Constants.INNTEKTSPLANLEGGEREN_URL}. I vedlegget «Dine rettigheter og plikter» ser du hvilke endringer du må si fra om.",
+                Nynorsk to "For at du skal få utbetalt rett uføretrygd framover, er det viktig at du oppdaterer inntekta di. Dette gjer du på ${Constants.INNTEKTSPLANLEGGEREN_URL}. I vedlegget «Rettane og pliktene dine» ser du kva endringar du må seie frå om.",
+                English to "To be paid the correct amount of disability benefit in the future, it is important that you update your income. You can do this at: ${Constants.INNTEKTSPLANLEGGEREN_URL}. In the appendix «Your rights and obligations» you can see which changes you need to report."
             )
         }
     }
@@ -221,9 +222,9 @@ object HarDuSpoersmaal : OutlinePhrase<LangBokmalNynorskEnglish>() {
         }
         paragraph {
             text(
-                Bokmal to "Du finner mer informasjon på nav.no/etteroppgjor. På nav.no/kontakt kan du chatte eller skrive til oss. Hvis du ikke finner svar på nav.no, kan du ringe oss på telefon 55 55 33 33, hverdager kl. 09.00 - 15.00.",
-                Nynorsk to "Du finn meir informasjon på nav.no/etteroppgjor. Du kan chatte med eller skrive til oss på nav.no/kontakt. Dersom du ikkje finn svar på nav.no, kan du ringje oss på telefon 55 55 33 33, kvardagar kl. 09:00 til 15:00.",
-                English to "You can find further information at: nav.no/etteroppgjor. At nav.no/kontakt you can chat or write to us. If you do not find answers at nav.no, you can call us on +47 55 55 33 33, weekdays 09.00 - 15.00."
+                Bokmal to "Du finner mer informasjon på ${Constants.ETTEROPPGJOR_URL}. På ${Constants.KONTAKT_URL} kan du chatte eller skrive til oss. Hvis du ikke finner svar på nav.no, kan du ringe oss på telefon 55 55 33 33, hverdager kl. 09.00 - 15.00.",
+                Nynorsk to "Du finn meir informasjon på ${Constants.ETTEROPPGJOR_URL}. Du kan chatte med eller skrive til oss på ${Constants.KONTAKT_URL}. Dersom du ikkje finn svar på nav.no, kan du ringje oss på telefon 55 55 33 33, kvardagar kl. 09:00 til 15:00.",
+                English to "You can find further information at: ${Constants.ETTEROPPGJOR_URL}. At ${Constants.KONTAKT_URL} you can chat or write to us. If you do not find answers at nav.no, you can call us on +47 55 55 33 33, weekdays 09.00 - 15.00."
             )
         }
     }
