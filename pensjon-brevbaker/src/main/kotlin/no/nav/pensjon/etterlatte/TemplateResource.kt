@@ -7,7 +7,6 @@ import no.nav.pensjon.etterlatte.maler.barnepensjon.avslag.IkkeSomFoelgeAvYrkess
 import no.nav.pensjon.etterlatte.maler.barnepensjon.endring.Endring
 import no.nav.pensjon.etterlatte.maler.barnepensjon.endring.UtAvFengselsopphold
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.ny.BarnepensjonInnvilgelseEnkel
-import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.ny.BarnepensjonInnvilgelseInstitusjonsopphold
 import no.nav.pensjon.etterlatte.maler.barnepensjon.ny.BarnepensjonInnvilgelseNy
 import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.AdopsjonRevurdering
 import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.Fengselsopphold
@@ -29,7 +28,6 @@ val prodAutobrevTemplates: Set<EtterlatteTemplate<*>> =
         BarnepensjonInnvilgelse,
         BarnepensjonInnvilgelseEnkel,
         BarnepensjonInnvilgelseNy,
-        BarnepensjonInnvilgelseInstitusjonsopphold,
         OMSInnvilgelseAuto,
         OMSInnvilgelseManuell,
         OMSOpphoerManuell,
