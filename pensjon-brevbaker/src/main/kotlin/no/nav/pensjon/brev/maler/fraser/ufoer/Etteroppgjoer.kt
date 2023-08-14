@@ -196,9 +196,9 @@ object FristerOpplysningerKlage : OutlinePhrase<LangBokmalNynorskEnglish>() {
         }
         paragraph {
             text(
-                Bokmal to "Hvis du mener at beregningene i vedlegg «Beregning av etteroppgjøret» er feil, må du melde fra til oss innen 3 uker fra du fikk dette brevet. Du vil da få en ny vurdering og et nytt vedtak.",
-                Nynorsk to "Dersom du meiner at utrekningane i vedlegg «Beregning av etteroppgjøret» er feil, må du melde frå til oss innan 3 veker frå du fekk dette brevet. Du vil då få ei ny vurdering og eit nytt vedtak.",
-                English to "If you believe that the calculations in appendix «Calculation of settlement» are incorrect, you must notify us within 3 weeks of the date you received this letter. In such case you will receive a new assessment and a new decision."
+                Bokmal to "Hvis du mener at beregningene i vedlegg «Opplysninger om etteroppgjøret» er feil, må du melde fra til oss innen 3 uker fra du fikk dette brevet. Du vil da få en ny vurdering og et nytt vedtak.",
+                Nynorsk to "Dersom du meiner at utrekningane i vedlegg «Opplysninger om etteroppgjøret» er feil, må du melde frå til oss innan 3 veker frå du fekk dette brevet. Du vil då få ei ny vurdering og eit nytt vedtak.",
+                English to "If you believe that the calculations in appendix «Information about the settlement» are incorrect, you must notify us within 3 weeks of the date you received this letter. In such case you will receive a new assessment and a new decision."
             )
         }
         paragraph {
