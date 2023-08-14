@@ -22,7 +22,7 @@ import no.nav.pensjon.etterlatte.maler.barnepensjon.endring.EndringHovedmalDTOSe
 import no.nav.pensjon.etterlatte.maler.barnepensjon.endring.EndringHovedmalDTOSelectors.utbetalingsinfo
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.Barnepensjon
 import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
-import no.nav.pensjon.etterlatte.maler.vedlegg.dineRettigheterOgPlikter
+import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.dineRettigheterOgPlikter
 import no.nav.pensjon.etterlatte.maler.vedlegg.etterbetalingAvBarnepensjon
 import no.nav.pensjon.etterlatte.maler.vedlegg.informasjonOmYrkesskade
 import no.nav.pensjon.etterlatte.maler.vedlegg.informasjonTilDegSomHandlerPaaVegneAvBarnet

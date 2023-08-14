@@ -145,7 +145,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, A
         }
         text(
             Bokmal to "NAV kan hjelpe deg med å skrive ned klagen. Trenger du hjelp, er du velkommen til " +
-                    "å ringe oss på telefon ${Constants.KONTAKTTELEFON}.",
+                    "å ringe oss på telefon ${Constants.KONTAKTTELEFON_PENSJON}.",
             Nynorsk to "",
             English to "",
         )

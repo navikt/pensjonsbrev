@@ -1,6 +1,8 @@
 package no.nav.pensjon.etterlatte.maler.omstillingsstoenad.foerstegangsvedtak
 
 import no.nav.pensjon.brev.template.Language.Bokmal
+import no.nav.pensjon.brev.template.Language.English
+import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
@@ -21,23 +23,26 @@ import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.foerstegangsvedtak.OMS
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.foerstegangsvedtak.OMSInnvilgelseFoerstegangsvedtakDTOSelectors.beregningsinfo
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.foerstegangsvedtak.OMSInnvilgelseFoerstegangsvedtakDTOSelectors.etterbetalinginfo
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.*
+import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.foerstegangsvedtak.OMSInnvilgelseFoerstegangsvedtakDTOSelectors.innhold
 
 data class OMSInnvilgelseFoerstegangsvedtakDTO(
+    override val innhold: List<Element>,
     val utbetalingsinfo: Utbetalingsinfo,
     val avkortingsinfo: Avkortingsinfo,
     val etterbetalinginfo: EtterbetalingDTO,
     val beregningsinfo: Beregningsinfo,
-    val avdoed: Avdoed
-)
+    val avdoed: Avdoed,
+): BrevDTO
 
 @TemplateModelHelpers
-object InnvilgelseFoerstegangsvedtak  : EtterlatteTemplate<OMSInnvilgelseFoerstegangsvedtakDTO> {
+object InnvilgelseFoerstegangsvedtak  : EtterlatteTemplate<OMSInnvilgelseFoerstegangsvedtakDTO>, Hovedmal {
     override val kode: EtterlatteBrevKode = EtterlatteBrevKode.OMS_INNVILGELSE_FOERSTEGANGSVEDTAK
 
     override val template = createTemplate(
         name = kode.name,
         letterDataType = OMSInnvilgelseFoerstegangsvedtakDTO::class,
-        languages = languages(Bokmal),
+        languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(
             displayTitle = "Vedtak - Innvilget omstillingsstønad",
             isSensitiv = true,
@@ -48,11 +53,15 @@ object InnvilgelseFoerstegangsvedtak  : EtterlatteTemplate<OMSInnvilgelseFoerste
         title {
             text(
                 Bokmal to "Vi har innvilget søknaden din om omstillingsstønad",
+                Nynorsk to "",
+                English to "",
             )
         }
 
         outline {
             includePhrase(Vedtak.Overskrift)
+
+            konverterElementerTilBrevbakerformat(innhold)
 
             includePhrase(
                 OMSInnvilgelse.Vedtak(
