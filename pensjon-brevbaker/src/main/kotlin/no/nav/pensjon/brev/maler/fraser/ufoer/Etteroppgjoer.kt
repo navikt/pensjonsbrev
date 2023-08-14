@@ -114,14 +114,14 @@ data class InntektOverInntektstak(
         }
         paragraph {
             textExpr(
-                Bokmal to "I ".expr() + periode.format() + " var 80 prosent av inntekten din før du ble ufør, ".expr() + oppjustertInntektFoerUfoerhet.format() + " kroner. ",
-                Nynorsk to "I ".expr() + periode.format() + " var 80 prosent av inntekta di før du blei ufør, ".expr() + oppjustertInntektFoerUfoerhet.format() + " kroner. ",
-                English to "In ".expr() + periode.format() + ", 80 percent of your income before you received disability benefit was NOK ".expr() + oppjustertInntektFoerUfoerhet.format() + ". "
+                Bokmal to "I ".expr() + periode.format() + " var 80 prosent av inntekten din før du ble ufør, "+ oppjustertInntektFoerUfoerhet.format() + " kroner. ",
+                Nynorsk to "I ".expr() + periode.format() + " var 80 prosent av inntekta di før du blei ufør, "+ oppjustertInntektFoerUfoerhet.format() + " kroner. ",
+                English to "In ".expr() + periode.format() + ", 80 percent of your income before you received disability benefit was NOK "+ oppjustertInntektFoerUfoerhet.format() + ". "
             )
             textExpr(
-                Bokmal to "Du tjente ".expr() + pensjonsgivendeInntektBruktIBeregningen.format() + " kroner i ".expr() + periode.format() + ".",
-                Nynorsk to "Du tente ".expr() + pensjonsgivendeInntektBruktIBeregningen.format() + " kroner i ".expr() + periode.format() + ".",
-                English to "You earned ".expr() + pensjonsgivendeInntektBruktIBeregningen.format() + " kroner i ".expr() + periode.format() + "."
+                Bokmal to "Du tjente ".expr() + pensjonsgivendeInntektBruktIBeregningen.format() + " kroner i "+ periode.format() + ".",
+                Nynorsk to "Du tente ".expr() + pensjonsgivendeInntektBruktIBeregningen.format() + " kroner i "+ periode.format() + ".",
+                English to "You earned ".expr() + pensjonsgivendeInntektBruktIBeregningen.format() + " kroner i "+ periode.format() + "."
             )
         }
     }
