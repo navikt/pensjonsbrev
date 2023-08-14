@@ -121,7 +121,7 @@ data class InntektOverInntektstak(
             textExpr(
                 Bokmal to "Du tjente ".expr() + pensjonsgivendeInntektBruktIBeregningen.format() + " kroner i "+ periode.format() + ".",
                 Nynorsk to "Du tente ".expr() + pensjonsgivendeInntektBruktIBeregningen.format() + " kroner i "+ periode.format() + ".",
-                English to "You earned ".expr() + pensjonsgivendeInntektBruktIBeregningen.format() + " kroner i "+ periode.format() + "."
+                English to "You earned NOK ".expr() + pensjonsgivendeInntektBruktIBeregningen.format() + " in "+ periode.format() + "."
             )
         }
     }
