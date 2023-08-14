@@ -78,7 +78,7 @@ object Institusjonsoppholdfraser {
         OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             val formatertVirkningsdato = virkningsdato.format()
-            paragraph {
+            title1 {
                 text(
                     Bokmal to "Innlagt – har dokumenterte utgift – barnepensjon blir redusert med mindre enn 90% ",
                     Nynorsk to "",
@@ -98,6 +98,143 @@ object Institusjonsoppholdfraser {
             paragraph {
                 text(
                     Bokmal to "Når du blir innlagt i institusjon skal barnepensjonen som hovedregel utbetales med 10 prosent av grunnbeløpet (G). Siden du har dokumentert nødvendige utgifter til bolig vil pensjonen din utbetales med <mer enn 10 prosent> av grunnbeløpet.",
+                    Nynorsk to "",
+                    English to "",
+                )
+            }
+        }
+    }
+
+    data class InnlagtVanligSats(
+        val virkningsdato: Expression<LocalDate>,
+        val kronebeloep: Expression<Kroner>,
+    ) :
+        OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+            val formatertVirkningsdato = virkningsdato.format()
+            title1 {
+                text(
+                    Bokmal to "Innlagt – vanlig sats",
+                    Nynorsk to "",
+                    English to "",
+                )
+            }
+            paragraph {
+                textExpr(
+                    Bokmal to "Barnepensjonen din er redusert fra ".expr() + formatertVirkningsdato + " fordi du er blitt innlagt i helseinstitusjon. " +
+                        "Du får " + kronebeloep.format() + " kroner hver måned.",
+                    Nynorsk to "".expr(),
+                    English to "".expr(),
+                )
+            }
+            paragraph {
+                text(
+                    Bokmal to "Vi har vurdert mottatt dokumentasjon på utgifter til bolig. [fritekst med begrunnelse på hvorfor dokumentasjon ikke er hensyntatt].",
+                    Nynorsk to "",
+                    English to "",
+                )
+            }
+
+            includePhrase(LoverEndring)
+            includePhrase(Barnepensjon.SlikHarViBeregnetPensjonenDinTittel)
+            paragraph {
+                text(
+                    Bokmal to "Når du blir innlagt i institusjon reduseres barnepensjonen din fra den fjerde måneden etter innleggelse. Barnepensjonen utgjør 10 prosent av folketrygdens grunnbeløp (G) og fordeles på 12 utbetalinger i året.",
+                    Nynorsk to "",
+                    English to "",
+                )
+            }
+        }
+    }
+
+    data class InnlagtPaaNyttInnen3Maaneder(
+        val innlagtdato: Expression<LocalDate>,
+        val virkningsdato: Expression<LocalDate>,
+        val kronebeloep: Expression<Kroner>,
+    ) :
+        OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+            val formatertInnlagtdato = innlagtdato.format()
+            val formatertVirkningsdato = virkningsdato.format()
+            title1 {
+                text(
+                    Bokmal to "Innlagt – innlagt på nytt innen 3 mnd",
+                    Nynorsk to "",
+                    English to "",
+                )
+            }
+            title2 {
+                text(
+                    Bokmal to "Alternativ 1 (behandles som et nytt beh.opp (4. mnd)",
+                    Nynorsk to "",
+                    English to "",
+                )
+            }
+            paragraph {
+                textExpr(
+                    Bokmal to "Du er blitt innlagt i helseinstitusjon på nytt fra ".expr() + formatertInnlagtdato + " og barnepensjonen skal etter hovedregelen reduseres fra " +
+                        formatertVirkningsdato + ". Du får " + kronebeloep.format() + " kroner hver måned.",
+                    Nynorsk to "".expr(),
+                    English to "".expr(),
+                )
+            }
+            paragraph {
+                text(
+                    Bokmal to "Barnepensjonen reduseres fra og med fjerde måned etter innleggelsesmåneden når forrige institusjonsopphold ikke førte til reduksjon i barnepensjonen. Barnepensjonen utgjør 10 prosent av folketrygdens grunnbeløp (G) og fordeles på 12 utbetalinger i året.",
+                    Nynorsk to "",
+                    English to "",
+                )
+            }
+            paragraph {
+                text(
+                    Bokmal to "Alternativ 2 (behandles som fortsettelse av innleggelse (fra mnd etter ny innleggelse)",
+                    Nynorsk to "",
+                    English to "",
+                )
+            }
+            paragraph {
+                textExpr(
+                    Bokmal to "Du har på nytt blitt innlagt i helseinstitusjon fra ".expr() + formatertInnlagtdato + " og barnepensjonen skal etter hovedregel reduseres fra " +
+                        formatertVirkningsdato + ". Du får " + kronebeloep.format() + " kroner hver måned.",
+                    Nynorsk to "".expr(),
+                    English to "".expr(),
+                )
+            }
+            paragraph {
+                text(
+                    Bokmal to "Barnepensjonen reduseres fra og med måneden etter ny innleggelsesdato fordi du er innlagt innen tre måneder etter forrige opphold i helseinstitusjon som ga reduksjon i barnepensjonen. Barnepensjonen utgjør 10 prosent av folketrygdens grunnbeløp (G) og fordeles på 12 utbetalinger i året.",
+                    Nynorsk to "",
+                    English to "",
+                )
+            }
+
+            includePhrase(LoverEndring)
+
+            includePhrase(Barnepensjon.SlikHarViBeregnetPensjonenDinTittel)
+            title2 {
+                text(
+                    Bokmal to "Alternativ 1",
+                    Nynorsk to "",
+                    English to "",
+                )
+            }
+            paragraph {
+                text(
+                    Bokmal to "Når du blir innlagt i institusjon reduseres barnepensjonen din fra den fjerde måneden etter innleggelse. Barnepensjonen utgjør 10 prosent av folketrygdens grunnbeløp (G) og fordeles på 12 utbetalinger i året.",
+                    Nynorsk to "",
+                    English to "",
+                )
+            }
+            title2 {
+                text(
+                    Bokmal to "Alternativ 2",
+                    Nynorsk to "",
+                    English to "",
+                )
+            }
+            paragraph {
+                text(
+                    Bokmal to "Når du blir innlagt i institusjon på nytt reduseres barnepensjonen din fra måneden etter ny innleggelse. Barnepensjonen utgjør 10 prosent av folketrygdens grunnbeløp (G) og fordeles på 12 utbetalinger i året.",
                     Nynorsk to "",
                     English to "",
                 )

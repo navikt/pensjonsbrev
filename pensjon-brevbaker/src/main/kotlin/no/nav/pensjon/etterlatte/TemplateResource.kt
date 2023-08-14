@@ -5,6 +5,7 @@ import no.nav.pensjon.etterlatte.maler.barnepensjon.BarnepensjonInnvilgelse
 import no.nav.pensjon.etterlatte.maler.barnepensjon.avslag.AvslagFoerstegangsbehandling
 import no.nav.pensjon.etterlatte.maler.barnepensjon.avslag.IkkeSomFoelgeAvYrkesskadeYrkessykdom
 import no.nav.pensjon.etterlatte.maler.barnepensjon.endring.Endring
+import no.nav.pensjon.etterlatte.maler.barnepensjon.endring.EndringInstitusjonsopphold
 import no.nav.pensjon.etterlatte.maler.barnepensjon.endring.UtAvFengselsopphold
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.ny.BarnepensjonInnvilgelseEnkel
 import no.nav.pensjon.etterlatte.maler.barnepensjon.ny.BarnepensjonInnvilgelseNy
@@ -33,6 +34,7 @@ val prodAutobrevTemplates: Set<EtterlatteTemplate<*>> =
         OMSOpphoerManuell,
         AdopsjonRevurdering,
         Endring,
+        EndringInstitusjonsopphold,
         Fengselsopphold,
         HarStanset,
         OmgjoeringAvFarskapRevurdering,

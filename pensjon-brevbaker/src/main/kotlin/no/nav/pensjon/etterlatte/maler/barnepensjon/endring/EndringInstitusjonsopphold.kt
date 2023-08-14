@@ -13,6 +13,7 @@ import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.Delmal
 import no.nav.pensjon.etterlatte.maler.Utbetalingsinfo
+import no.nav.pensjon.etterlatte.maler.barnepensjon.endring.BarnepensjonEndringInstitusjonsoppholdDTOSelectors.innlagtdato
 import no.nav.pensjon.etterlatte.maler.barnepensjon.endring.BarnepensjonEndringInstitusjonsoppholdDTOSelectors.kronebeloep
 import no.nav.pensjon.etterlatte.maler.barnepensjon.endring.BarnepensjonEndringInstitusjonsoppholdDTOSelectors.prosent
 import no.nav.pensjon.etterlatte.maler.barnepensjon.endring.BarnepensjonEndringInstitusjonsoppholdDTOSelectors.virkningsdato
@@ -24,8 +25,9 @@ data class BarnepensjonEndringInstitusjonsoppholdDTO(
     val utbetalingsinfo: Utbetalingsinfo,
     val erEtterbetalingMerEnnTreMaaneder: Boolean,
     val virkningsdato: LocalDate,
-    val prosent: Int,
+    val prosent: Int?,
     val kronebeloep: Kroner,
+    val innlagtdato: LocalDate?,
 )
 
 @TemplateModelHelpers
@@ -52,13 +54,30 @@ object EndringInstitusjonsopphold : EtterlatteTemplate<BarnepensjonEndringInstit
         }
         outline {
             includePhrase(Vedtak.BegrunnelseForVedtaket)
+            ifNotNull(prosent) {
+                includePhrase(
+                    Institusjonsoppholdfraser.HarDokumentertUtgiftBarnepensjonBlirRedusertMedMindreEnn90Prosent(
+                        virkningsdato,
+                        it,
+                        kronebeloep,
+                    ),
+                )
+            }
             includePhrase(
-                Institusjonsoppholdfraser.HarDokumentertUtgiftBarnepensjonBlirRedusertMedMindreEnn90Prosent(
+                Institusjonsoppholdfraser.InnlagtVanligSats(
                     virkningsdato,
-                    prosent,
                     kronebeloep,
                 ),
             )
+            ifNotNull(innlagtdato) {
+                includePhrase(
+                    Institusjonsoppholdfraser.InnlagtPaaNyttInnen3Maaneder(
+                        it,
+                        virkningsdato,
+                        kronebeloep,
+                    ),
+                )
+            }
         }
     }
 }
