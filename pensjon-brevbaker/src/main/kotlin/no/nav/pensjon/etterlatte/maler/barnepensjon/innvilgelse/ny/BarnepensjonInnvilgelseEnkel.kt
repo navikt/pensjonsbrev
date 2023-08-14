@@ -17,7 +17,7 @@ import no.nav.pensjon.etterlatte.maler.Utbetalingsinfo
 import no.nav.pensjon.etterlatte.maler.UtbetalingsinfoSelectors.beloep
 import no.nav.pensjon.etterlatte.maler.UtbetalingsinfoSelectors.virkningsdato
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.ny.BarnepensjonInnvilgelseEnkelDTOSelectors.avdoed
-import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.ny.BarnepensjonInnvilgelseEnkelDTOSelectors.erEtterbetalingMerEnnTreeMaaneder
+import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.ny.BarnepensjonInnvilgelseEnkelDTOSelectors.erEtterbetalingMerEnnTreMaaneder
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.ny.BarnepensjonInnvilgelseEnkelDTOSelectors.erInstitusjonsopphold
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.ny.BarnepensjonInnvilgelseEnkelDTOSelectors.utbetalingsinfo
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.Barnepensjon
@@ -28,7 +28,7 @@ import no.nav.pensjon.etterlatte.maler.fraser.common.Vedtak
 data class BarnepensjonInnvilgelseEnkelDTO(
     val utbetalingsinfo: Utbetalingsinfo,
     val avdoed: Avdoed,
-    val erEtterbetalingMerEnnTreeMaaneder: Boolean,
+    val erEtterbetalingMerEnnTreMaaneder: Boolean,
     val erInstitusjonsopphold: Boolean,
 )
 
@@ -70,12 +70,12 @@ object BarnepensjonInnvilgelseEnkel : EtterlatteTemplate<BarnepensjonInnvilgelse
                 includePhrase(
                     Institusjonsoppholdfraser.Innvilgelse,
                 )
-                includePhrase(Institusjonsoppholdfraser.Lover(erEtterbetalingMerEnnTreeMaaneder))
+                includePhrase(Institusjonsoppholdfraser.Lover(erEtterbetalingMerEnnTreMaaneder))
             }.orShow {
                 includePhrase(
                     Lover.MuligEtterbetaling(
                         paragraf = Expression.Literal("FYLL INN HER"),
-                        erEtterbetaling = erEtterbetalingMerEnnTreeMaaneder,
+                        erEtterbetaling = erEtterbetalingMerEnnTreMaaneder,
                     ),
                 )
             }
