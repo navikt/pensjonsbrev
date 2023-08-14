@@ -24,9 +24,9 @@ data class Innledning(
         }
         paragraph {
             textExpr(
-                Bokmal to "Vår beregning viser at du har fått ".expr() + totaltAvvik.format() + " kroner for mye utbetalt.".expr(),
-                Nynorsk to "Utrekninga vår viser at du har fått utbetalt ".expr() + totaltAvvik.format() + " kroner for mykje.".expr(),
-                English to "Our calculations show that you have received an overpayment of NOK ".expr() + totaltAvvik.format() + ".".expr()
+                Bokmal to "Vår beregning viser at du har fått ".expr() + totaltAvvik.format() + " kroner for mye utbetalt.",
+                Nynorsk to "Utrekninga vår viser at du har fått utbetalt ".expr() + totaltAvvik.format() + " kroner for mykje.",
+                English to "Our calculations show that you have received an overpayment of NOK ".expr() + totaltAvvik.format() + "."
             )
         }
     }
@@ -114,9 +114,9 @@ data class InntektOverInntektstak(
         }
         paragraph {
             textExpr(
-                Bokmal to "I ".expr() + periode.format() + " var 80 prosent av inntekten din før du ble ufør, ".expr() + oppjustertInntektFoerUfoerhet.format() + " kroner. ".expr(),
-                Nynorsk to "I ".expr() + periode.format() + " var 80 prosent av inntekta di før du blei ufør, ".expr() + oppjustertInntektFoerUfoerhet.format() + " kroner. ".expr(),
-                English to "I ".expr() + periode.format() + ", 80 percent of your income before you received disability benefit was NOK ".expr() + oppjustertInntektFoerUfoerhet.format() + ". ".expr()
+                Bokmal to "I ".expr() + periode.format() + " var 80 prosent av inntekten din før du ble ufør, ".expr() + oppjustertInntektFoerUfoerhet.format() + " kroner. ",
+                Nynorsk to "I ".expr() + periode.format() + " var 80 prosent av inntekta di før du blei ufør, ".expr() + oppjustertInntektFoerUfoerhet.format() + " kroner. ",
+                English to "I ".expr() + periode.format() + ", 80 percent of your income before you received disability benefit was NOK ".expr() + oppjustertInntektFoerUfoerhet.format() + ". "
             )
             textExpr(
                 Bokmal to "Du tjente ".expr() + pensjonsgivendeInntektBruktIBeregningen.format() + " kroner i ".expr() + periode.format() + ".",
