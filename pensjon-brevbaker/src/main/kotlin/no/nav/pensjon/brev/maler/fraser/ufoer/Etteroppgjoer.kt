@@ -203,9 +203,9 @@ object FristerOpplysningerKlage : OutlinePhrase<LangBokmalNynorskEnglish>() {
         }
         paragraph {
             text(
-                Bokmal to "Klagefristen på vedtaket er 6 uker etter at saken er sendt til Skatteetaten. Du finner skjema og informasjon om hvordan du klager på nav.no/klage. Du må som hovedregel begynne å betale tilbake selv om du klager på vedtaket, se forvaltningsloven § 42.",
-                Nynorsk to "Klagefristen på vedtaket er 6 veker etter at saka er send til Skatteetaten. Du finn skjema og informasjon om korleis du klagar, på nav.no/klage. Du må som hovudregel byrje å betale tilbake sjølv om du klagar på vedtaket, jf. forvaltingslova § 42.",
-                English to "The deadline for submitting an appeal against the decision is 6 weeks after the case has been forwarded to the Tax Office. You will find a form and information about how to appeal at: nav.no/klage. As a general rule you must begin to repay any amounts owed even if you appeal against the decision, see Public Administration Act Section 42."
+                Bokmal to "Klagefristen på vedtaket er 6 uker etter at saken er sendt til Skatteetaten. Du finner skjema og informasjon om hvordan du klager på ${Constants.KLAGE_URL}. Du må som hovedregel begynne å betale tilbake selv om du klager på vedtaket, se forvaltningsloven § 42.",
+                Nynorsk to "Klagefristen på vedtaket er 6 veker etter at saka er send til Skatteetaten. Du finn skjema og informasjon om korleis du klagar, på ${Constants.KLAGE_URL}. Du må som hovudregel byrje å betale tilbake sjølv om du klagar på vedtaket, jf. forvaltingslova § 42.",
+                English to "The deadline for submitting an appeal against the decision is 6 weeks after the case has been forwarded to the Tax Office. You will find a form and information about how to appeal at: ${Constants.KLAGE_URL}. As a general rule you must begin to repay any amounts owed even if you appeal against the decision, see Public Administration Act Section 42."
             )
         }
     }
