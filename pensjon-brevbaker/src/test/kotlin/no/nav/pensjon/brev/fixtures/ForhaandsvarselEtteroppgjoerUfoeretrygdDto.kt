@@ -18,7 +18,6 @@ fun createForhaandsvarselEtteroppgjoerUfoeretrygdDto() =
         oppjustertInntektFoerUfoerhet = Kroner(0),
         opplysningerOmEtteroppgjoeretUfoeretrygd = Fixtures.create(),
         orienteringOmRettigheterUfoere = Fixtures.create(),
-        praktiskInformasjonEtteroppgjoerUfoeretrygd = Fixtures.create(),
     )
 
 fun createForhaandsvarselEtteroppgjoerUfoeretrygdDtoOpplysningerOmEtteroppgjoret() =

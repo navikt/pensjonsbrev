@@ -245,13 +245,6 @@ object EttersendeDokumentasjon :
         }
         paragraph {
             text(
-                Bokmal to "",
-                Nynorsk to "",
-                English to ""
-            )
-        }
-        paragraph {
-            text(
                 Bokmal to "Du kan lese mer om etteroppgjør på ${Constants.ETTEROPPGJOR_URL}.",
                 Nynorsk to "Du kan lese meir om etteroppgjer på ${Constants.ETTEROPPGJOR_URL}.",
                 English to "Du kan lese mer om etteroppgjør på ${Constants.ETTEROPPGJOR_URL}."

@@ -7,7 +7,6 @@ import no.nav.pensjon.brev.api.model.maler.ForhaandsvarselEtteroppgjoerUfoeretry
 import no.nav.pensjon.brev.api.model.maler.ForhaandsvarselEtteroppgjoerUfoeretrygdDtoSelectors.oppjustertInntektFoerUfoerhet
 import no.nav.pensjon.brev.api.model.maler.ForhaandsvarselEtteroppgjoerUfoeretrygdDtoSelectors.opplysningerOmEtteroppgjoeretUfoeretrygd
 import no.nav.pensjon.brev.api.model.maler.ForhaandsvarselEtteroppgjoerUfoeretrygdDtoSelectors.orienteringOmRettigheterUfoere
-import no.nav.pensjon.brev.api.model.maler.ForhaandsvarselEtteroppgjoerUfoeretrygdDtoSelectors.praktiskInformasjonEtteroppgjoerUfoeretrygd
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSelectors.pensjonsgivendeInntektBruktIBeregningen
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSelectors.periode
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSelectors.totaltAvvik
@@ -88,7 +87,7 @@ object ForhaandsvarselEtteroppgjoerUfoeretrygdAuto : AutobrevTemplate<Forhaandsv
                 includePhrase(HarDuSpoersmaal)
             }
             // TODO: includeAttachment(OpplysningerOmBeregningEtteroppgjoerUfoeretrygd)
-            includeAttachment(vedleggPraktiskInformasjonEtteroppgjoerUfoeretrygd, praktiskInformasjonEtteroppgjoerUfoeretrygd)
+            includeAttachment(vedleggPraktiskInformasjonEtteroppgjoerUfoeretrygd)
             includeAttachment(vedleggDineRettigheterOgPlikterUfoere, orienteringOmRettigheterUfoere)
         }
 }
