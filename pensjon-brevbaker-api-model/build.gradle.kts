@@ -6,7 +6,7 @@ plugins {
 }
 
 group = "no.nav.pensjon.brev"
-version = "42"
+version = "43"
 
 java {
     withSourcesJar()
@@ -24,6 +24,7 @@ dependencies {
 
 publishing {
     repositories {
+
         maven {
             name = "GitHubPackages"
             url = uri("https://maven.pkg.github.com/navikt/pensjonsbrev")

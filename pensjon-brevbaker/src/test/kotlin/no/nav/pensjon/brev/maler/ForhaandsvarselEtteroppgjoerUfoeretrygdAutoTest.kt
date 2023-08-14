@@ -1,0 +1,31 @@
+package no.nav.pensjon.brev.maler
+
+import no.nav.pensjon.brev.*
+import no.nav.pensjon.brev.api.model.maler.ForhaandsvarselEtteroppgjoerUfoeretrygdDto
+import no.nav.pensjon.brev.latex.*
+import no.nav.pensjon.brev.template.*
+import no.nav.pensjon.brev.template.render.*
+import org.junit.jupiter.api.*
+
+@Tag(TestTags.INTEGRATION_TEST)
+class ForhaandsvarselEtteroppgjoerUfoeretrygdAutoTest {
+    @Test
+    fun testPdf() {
+        Letter(
+            ForhaandsvarselEtteroppgjoerUfoeretrygdAuto.template,
+            Fixtures.create<ForhaandsvarselEtteroppgjoerUfoeretrygdDto>(),
+            Language.Bokmal,
+            Fixtures.fellesAuto
+        ).renderTestPDF("UT_EO_FORHAANDSVARSEL_FEILUTBETALING_AUTO")
+    }
+
+    @Test
+    fun testHtml() {
+        Letter(
+            ForhaandsvarselEtteroppgjoerUfoeretrygdAuto.template,
+            Fixtures.create<ForhaandsvarselEtteroppgjoerUfoeretrygdDto>(),
+            Language.Bokmal,
+            Fixtures.fellesAuto
+        ).renderTestHtml("UT_EO_FORHAANDSVARSEL_FEILUTBETALING_AUTO")
+    }
+}
