@@ -176,11 +176,7 @@ val vedleggOpplysningerOmEtteroppgjoeret = createAttachment<LangBokmal, Opplysni
 
     paragraph {
         textExpr(
-            Bokmal to "Du har fått ".expr() + totaltAvvik.format() + " kroner for " + ifElse(
-                harFaattForMye,
-                "mye",
-                "lite"
-            ) + " i uføretrygd",
+            Bokmal to "Du har fått ".expr() + totaltAvvik.format() + " kroner for " + ifElse(harFaattForMye, "mye", "lite") + " i uføretrygd",
         )
         showIf(barnetillegg.notNull() and harGjenlevendeTillegg) {
             text(
@@ -202,20 +198,13 @@ val vedleggOpplysningerOmEtteroppgjoeret = createAttachment<LangBokmal, Opplysni
 
     title1 {
         textExpr(
-            Bokmal to "Om beregningen av uføretrygd".expr() + ifElse(
-                harGjenlevendeTillegg,
-                " og gjenlevendetillegg",
-                ""
-            ),
+            Bokmal to "Om beregningen av uføretrygd".expr() + ifElse(harGjenlevendeTillegg," og gjenlevendetillegg",""),
         )
     }
     paragraph {
         textExpr(
-            Bokmal to "Det er pensjonsgivende inntekt som avgjør hvor mye du får i uføretrygd".expr() + ifElse(
-                harGjenlevendeTillegg,
-                " og gjenlevendetillegg",
-                ""
-            )
+            Bokmal to "Det er pensjonsgivende inntekt som avgjør hvor mye du får i uføretrygd".expr()
+                    + ifElse(harGjenlevendeTillegg, " og gjenlevendetillegg", "")
                     + ". Dette står i § 3-15 i folketrygdloven. Pensjonsgivende inntekt er blant annet:",
         )
         list {
@@ -520,11 +509,7 @@ val vedleggOpplysningerOmEtteroppgjoeret = createAttachment<LangBokmal, Opplysni
             // TODO: Må fikses på når jeg har funnet ut av hvordan avvik skal representeres
             textExpr(
                 Bokmal to "Du har fått utbetalt ".expr() + fikkUtbetalt.format() + " kroner i barnetillegg. Du har fått " +
-                        totaltAvvik.format() + " kroner for " + ifElse(
-                    harFaattForMye,
-                    "mye",
-                    "lite"
-                ) + " i barnetillegg.",
+                        totaltAvvik.format() + " kroner for " + ifElse(harFaattForMye, "mye", "lite") + " i barnetillegg.",
             )
         }
 
@@ -532,8 +517,8 @@ val vedleggOpplysningerOmEtteroppgjoeret = createAttachment<LangBokmal, Opplysni
 
         paragraph {
             textExpr(
-                Bokmal to "Tabellene under viser inntektene du".expr() + ifElse(harFellesTillegg," og annen forelder","") +
-                        " har hatt i perioden " + ifElse(harFellesTillegg,"dere","du") + " hadde rett til barnetillegg" +
+                Bokmal to "Tabellene under viser inntektene du".expr() + ifElse(harFellesTillegg, " og annen forelder", "") +
+                        " har hatt i perioden " + ifElse(harFellesTillegg, "dere", "du") + " hadde rett til barnetillegg" +
                         "Det er disse inntektene vi har brukt for å beregne barnetillegget.",
             )
         }

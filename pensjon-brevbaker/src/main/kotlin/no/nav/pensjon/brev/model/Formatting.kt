@@ -56,8 +56,7 @@ object FormatBorMedSivilstandTabell : LocalizedFormatter<BorMedSivilstand>() {
 
 
 @JvmName("formatSivilstandBestemtForm")
-fun Expression<Sivilstand>.bestemtForm() =
-    Expression.BinaryInvoke(this, Expression.FromScope(ExpressionScope<Any, *>::language), SivilstandEpsBestemt)
+fun Expression<Sivilstand>.bestemtForm() = format(SivilstandEpsBestemt)
 
 @Deprecated("Bruk bormed sivilstand istedenfor")
 object SivilstandEpsBestemt : LocalizedFormatter<Sivilstand>() {
