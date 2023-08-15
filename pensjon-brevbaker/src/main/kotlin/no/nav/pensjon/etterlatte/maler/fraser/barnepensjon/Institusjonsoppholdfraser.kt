@@ -97,7 +97,7 @@ object Institusjonsoppholdfraser {
             includePhrase(Barnepensjon.SlikHarViBeregnetPensjonenDinTittel)
             paragraph {
                 text(
-                    Bokmal to "Når du blir innlagt i institusjon skal barnepensjonen som hovedregel utbetales med 10 prosent av grunnbeløpet (G). Siden du har dokumentert nødvendige utgifter til bolig vil pensjonen din utbetales med <mer enn 10 prosent> av grunnbeløpet.",
+                    Bokmal to "Når du blir innlagt i institusjon skal barnepensjonen som hovedregel utbetales med 10 prosent av grunnbeløpet (G). Siden du har dokumentert nødvendige utgifter til bolig vil pensjonen din utbetales med ${prosent.format()} av grunnbeløpet.",
                     Nynorsk to "",
                     English to "",
                 )
@@ -246,6 +246,7 @@ object Institusjonsoppholdfraser {
         val innlagtdato: Expression<LocalDate>,
         val virkningsdato: Expression<LocalDate>,
         val kronebeloep: Expression<Kroner>,
+        val antallBarnSomOppdrasSammen: Expression<Int>,
     ) :
         OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
@@ -291,7 +292,7 @@ object Institusjonsoppholdfraser {
             }
             paragraph {
                 text(
-                    Bokmal to "Det gjøres en samlet beregning av pensjon for barn som oppdras sammen. For denne beregningen har vi lagt til grunn at dere er <antall barn> barn som oppdras sammen.",
+                    Bokmal to "Det gjøres en samlet beregning av pensjon for barn som oppdras sammen. For denne beregningen har vi lagt til grunn at dere er $antallBarnSomOppdrasSammen barn som oppdras sammen.",
                     Nynorsk to "",
                     English to "",
                 )
@@ -309,6 +310,7 @@ object Institusjonsoppholdfraser {
     data class UtskrevetVanligSats(
         val virkningsdato: Expression<LocalDate>,
         val kronebeloep: Expression<Kroner>,
+        val antallBarnSomOppdrasSammen: Expression<Int>,
     ) :
         OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
@@ -352,7 +354,7 @@ object Institusjonsoppholdfraser {
             }
             paragraph {
                 text(
-                    Bokmal to "Det gjøres en samlet beregning av pensjon for barn som oppdras sammen. For denne beregningen har vi lagt til grunn at dere er <antall barn> barn som oppdras sammen.",
+                    Bokmal to "Det gjøres en samlet beregning av pensjon for barn som oppdras sammen. For denne beregningen har vi lagt til grunn at dere er $antallBarnSomOppdrasSammen barn som oppdras sammen.",
                     Nynorsk to "",
                     English to "",
                 )
@@ -371,6 +373,7 @@ object Institusjonsoppholdfraser {
         val utskrevetdato: Expression<LocalDate>,
         val virkningsdato: Expression<LocalDate>,
         val kronebeloep: Expression<Kroner>,
+        val antallBarnSomOppdrasSammen: Expression<Int>,
     ) :
         OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
@@ -416,7 +419,7 @@ object Institusjonsoppholdfraser {
             }
             paragraph {
                 text(
-                    Bokmal to "Det gjøres en samlet beregning av pensjon for barn som oppdras sammen. For denne beregningen har vi lagt til grunn at dere er <antall barn> barn som oppdras sammen.",
+                    Bokmal to "Det gjøres en samlet beregning av pensjon for barn som oppdras sammen. For denne beregningen har vi lagt til grunn at dere er $antallBarnSomOppdrasSammen barn som oppdras sammen.",
                     Nynorsk to "",
                     English to "",
                 )

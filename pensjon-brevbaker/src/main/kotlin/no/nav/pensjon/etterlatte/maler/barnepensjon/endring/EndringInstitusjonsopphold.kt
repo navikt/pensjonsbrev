@@ -13,6 +13,7 @@ import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.Delmal
 import no.nav.pensjon.etterlatte.maler.Utbetalingsinfo
+import no.nav.pensjon.etterlatte.maler.barnepensjon.endring.BarnepensjonEndringInstitusjonsoppholdDTOSelectors.antallBarnSomOppdrasSammen
 import no.nav.pensjon.etterlatte.maler.barnepensjon.endring.BarnepensjonEndringInstitusjonsoppholdDTOSelectors.innlagtdato
 import no.nav.pensjon.etterlatte.maler.barnepensjon.endring.BarnepensjonEndringInstitusjonsoppholdDTOSelectors.kronebeloep
 import no.nav.pensjon.etterlatte.maler.barnepensjon.endring.BarnepensjonEndringInstitusjonsoppholdDTOSelectors.prosent
@@ -28,6 +29,7 @@ data class BarnepensjonEndringInstitusjonsoppholdDTO(
     val virkningsdato: LocalDate,
     val prosent: Int?,
     val kronebeloep: Kroner,
+    val antallBarnSomOppdrasSammen: Int,
     val innlagtdato: LocalDate?,
     val utskrevetdato: LocalDate?,
 )
@@ -86,16 +88,24 @@ object EndringInstitusjonsopphold : EtterlatteTemplate<BarnepensjonEndringInstit
                         it,
                         virkningsdato,
                         kronebeloep,
+                        antallBarnSomOppdrasSammen,
                     ),
                 )
             }
-            includePhrase(Institusjonsoppholdfraser.UtskrevetVanligSats(virkningsdato, kronebeloep))
+            includePhrase(
+                Institusjonsoppholdfraser.UtskrevetVanligSats(
+                    virkningsdato,
+                    kronebeloep,
+                    antallBarnSomOppdrasSammen,
+                ),
+            )
             ifNotNull(utskrevetdato) {
                 includePhrase(
                     Institusjonsoppholdfraser.UtskrevetHarDokumenterteUtgiftIngenReduksjonHarVaertVanligUtbetaling(
                         it,
                         virkningsdato,
                         kronebeloep,
+                        antallBarnSomOppdrasSammen,
                     ),
                 )
             }
