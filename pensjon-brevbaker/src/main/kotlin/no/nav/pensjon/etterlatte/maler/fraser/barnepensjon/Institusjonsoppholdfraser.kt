@@ -87,11 +87,11 @@ object Institusjonsoppholdfraser {
                     English to "",
                 )
             }
-            val prosent = prosent.format()
+            val prosentformatert = prosent.format() + " prosent"
             paragraph {
                 textExpr(
                     Bokmal to "Barnepensjonen din endres fra ".expr() + formatertVirkningsdato + " fordi du er blitt innlagt i helseinstitusjon. " +
-                        "Du har dokumentert nødvendige utgifter til bolig og barnepensjonen din vil bli redusert til " + prosent + " av grunnbeløpet (G). Du får " + kronebeloep.format() + " kroner hver måned.",
+                        "Du har dokumentert nødvendige utgifter til bolig og barnepensjonen din vil bli redusert til " + prosentformatert + " av grunnbeløpet (G). Du får " + kronebeloep.format() + " kroner hver måned.",
                     Nynorsk to "".expr(),
                     English to "".expr(),
                 )
@@ -99,10 +99,10 @@ object Institusjonsoppholdfraser {
             includePhrase(LoverEndring)
             includePhrase(Barnepensjon.SlikHarViBeregnetPensjonenDinTittel)
             paragraph {
-                text(
-                    Bokmal to "Når du blir innlagt i institusjon skal barnepensjonen som hovedregel utbetales med 10 prosent av grunnbeløpet (G). Siden du har dokumentert nødvendige utgifter til bolig vil pensjonen din utbetales med " + prosent + " av grunnbeløpet.",
-                    Nynorsk to "",
-                    English to "",
+                textExpr(
+                    Bokmal to "Når du blir innlagt i institusjon skal barnepensjonen som hovedregel utbetales med 10 prosent av grunnbeløpet (G). Siden du har dokumentert nødvendige utgifter til bolig vil pensjonen din utbetales med ".expr() + prosentformatert + " av grunnbeløpet.",
+                    Nynorsk to "".expr(),
+                    English to "".expr(),
                 )
             }
         }
@@ -283,7 +283,7 @@ object Institusjonsoppholdfraser {
             }.orShowIf(antallBarnSomOppdrasSammen.greaterThanOrEqual(2)) {
                 paragraph {
                     textExpr(
-                        Bokmal to "Det gjøres en samlet beregning av pensjon for barn som oppdras sammen. For denne beregningen har vi lagt til grunn at dere er ".expr() + antallBarnSomOppdrasSammen.toString() + " barn som oppdras sammen.",
+                        Bokmal to "Det gjøres en samlet beregning av pensjon for barn som oppdras sammen. For denne beregningen har vi lagt til grunn at dere er ".expr() + antallBarnSomOppdrasSammen.format() + " barn som oppdras sammen.",
                         Nynorsk to "".expr(),
                         English to "".expr(),
                     )
@@ -333,10 +333,10 @@ object Institusjonsoppholdfraser {
                 }
             }.orShowIf(antallBarnSomOppdrasSammen.greaterThanOrEqual(2)) {
                 paragraph {
-                    text(
-                        Bokmal to "Det gjøres en samlet beregning av pensjon for barn som oppdras sammen. For denne beregningen har vi lagt til grunn at dere er $antallBarnSomOppdrasSammen barn som oppdras sammen.",
-                        Nynorsk to "",
-                        English to "",
+                    textExpr(
+                        Bokmal to "Det gjøres en samlet beregning av pensjon for barn som oppdras sammen. For denne beregningen har vi lagt til grunn at dere er ".expr() + antallBarnSomOppdrasSammen.format() + " barn som oppdras sammen.",
+                        Nynorsk to "".expr(),
+                        English to "".expr(),
                     )
                 }
                 paragraph {
@@ -387,10 +387,10 @@ object Institusjonsoppholdfraser {
                 }
             }.orShowIf(antallBarnSomOppdrasSammen.greaterThanOrEqual(2)) {
                 paragraph {
-                    text(
-                        Bokmal to "Det gjøres en samlet beregning av pensjon for barn som oppdras sammen. For denne beregningen har vi lagt til grunn at dere er $antallBarnSomOppdrasSammen barn som oppdras sammen.",
-                        Nynorsk to "",
-                        English to "",
+                    textExpr(
+                        Bokmal to "Det gjøres en samlet beregning av pensjon for barn som oppdras sammen. For denne beregningen har vi lagt til grunn at dere er ".expr() + antallBarnSomOppdrasSammen.format() + " barn som oppdras sammen.",
+                        Nynorsk to "".expr(),
+                        English to "".expr(),
                     )
                 }
                 paragraph {
