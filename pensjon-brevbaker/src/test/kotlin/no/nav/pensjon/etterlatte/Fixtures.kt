@@ -11,6 +11,8 @@ import no.nav.pensjon.etterlatte.maler.ManueltBrevDTO
 import no.nav.pensjon.etterlatte.maler.barnepensjon.BarnepensjonInnvilgelseDTO
 import no.nav.pensjon.etterlatte.maler.barnepensjon.avslag.BarnepensjonAvslagIkkeYrkesskadeDTO
 import no.nav.pensjon.etterlatte.maler.barnepensjon.endring.EndringHovedmalDTO
+import no.nav.pensjon.etterlatte.maler.barnepensjon.endring.BarnepensjonEndringInstitusjonsoppholdDTO
+import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.ny.BarnepensjonInnvilgelseEnkelDTO
 import no.nav.pensjon.etterlatte.maler.barnepensjon.ny.BarnepensjonInnvilgelseNyDTO
 import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingAdopsjonDTO
 import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingOmgjoeringAvFarskapDTO
@@ -54,8 +56,10 @@ object Fixtures {
         when (letterDataType) {
             BarnepensjonInnvilgelseDTO::class -> createBarnepensjonInnvilgelseDTO() as T
             BarnepensjonInnvilgelseNyDTO::class -> createBarnepensjonInnvilgelseNyDTO() as T
+            BarnepensjonInnvilgelseEnkelDTO::class -> createBarnepensjonInnvilgelseEnkelDTO() as T
             ManueltBrevDTO::class -> createManueltBrevDTO() as T
             OMSInnvilgelseDTO::class -> createOMSInnvilgelseDTO() as T
+            BarnepensjonEndringInstitusjonsoppholdDTO::class -> createBarnepensjonEndringInstitusjonsoppholdDTO() as T
             EndringHovedmalDTO::class -> createEndringHovedmalDTO() as T
             OMSInnvilgelseFoerstegangsvedtakDTO::class -> createOMSInnvilgelseFoerstegangsvedtakDTO() as T
             FoerstegangsvedtakUtfallDTO::class -> createOMSFoerstegangsvedtakUtfallDTO() as T
