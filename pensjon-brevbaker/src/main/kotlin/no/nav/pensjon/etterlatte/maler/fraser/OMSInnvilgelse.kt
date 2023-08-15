@@ -17,7 +17,7 @@ import no.nav.pensjon.etterlatte.maler.AvkortetBeregningsperiodeSelectors.datoFO
 import no.nav.pensjon.etterlatte.maler.AvkortetBeregningsperiodeSelectors.datoTOM
 import no.nav.pensjon.etterlatte.maler.AvkortetBeregningsperiodeSelectors.inntekt
 import no.nav.pensjon.etterlatte.maler.AvkortetBeregningsperiodeSelectors.utbetaltBeloep
-import no.nav.pensjon.etterlatte.maler.Etterbetalingsperiode
+import no.nav.pensjon.etterlatte.maler.EtterbetalingDTO
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
 import java.time.LocalDate
 
@@ -27,7 +27,7 @@ object OMSInnvilgelse {
         val virkningsdato: Expression<LocalDate>,
         val avdoedNavn: Expression<String>,
         val doedsdato: Expression<LocalDate>,
-        val etterbetalingsperioder: Expression<List<Etterbetalingsperiode>>
+        val etterbetalingsinfo: Expression<EtterbetalingDTO?>
     ) :
         OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
@@ -54,7 +54,7 @@ object OMSInnvilgelse {
                 )
             }
             paragraph {
-                showIf (etterbetalingsperioder.isEmpty()) {
+                ifNotNull(etterbetalingsinfo) {
                     text(
                         Bokmal to "Vedtaket er gjort etter bestemmelsene om omstillingstid i folketrygdloven " +
                                 "§ 17-2, § 17-3, § 17-4, § 17-5, § 17-6, § 17-9 og § 22-12.",

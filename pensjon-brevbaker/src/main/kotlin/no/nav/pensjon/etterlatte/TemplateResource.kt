@@ -17,6 +17,7 @@ import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.YrkesskadeRevurd
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.OMSInnvilgelseAuto
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.OMSInnvilgelseManuell
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.OMSOpphoerManuell
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.foerstegangsvedtak.FoerstegangsvedtakUtfall
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.foerstegangsvedtak.InnvilgelseFoerstegangsvedtak
 
 val prodAutobrevTemplates: Set<EtterlatteTemplate<*>> =
@@ -37,7 +38,8 @@ val prodAutobrevTemplates: Set<EtterlatteTemplate<*>> =
         SoeskenjusteringRevurdering,
         UtAvFengselsopphold,
         YrkesskadeRevurdering,
-        InnvilgelseFoerstegangsvedtak
+        InnvilgelseFoerstegangsvedtak,
+        FoerstegangsvedtakUtfall
     )
 
 val prodRedigerbareTemplates: Set<EtterlatteTemplate<*>> = emptySet()

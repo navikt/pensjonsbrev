@@ -14,7 +14,6 @@ import no.nav.pensjon.etterlatte.maler.*
 import no.nav.pensjon.etterlatte.maler.AvdoedSelectors.doedsdato
 import no.nav.pensjon.etterlatte.maler.AvdoedSelectors.navn
 import no.nav.pensjon.etterlatte.maler.AvkortingsinfoSelectors.virkningsdato
-import no.nav.pensjon.etterlatte.maler.EtterbetalingDTOSelectors.beregningsperioder
 import no.nav.pensjon.etterlatte.maler.fraser.OMSInnvilgelse
 import no.nav.pensjon.etterlatte.maler.fraser.common.OMSFelles
 import no.nav.pensjon.etterlatte.maler.fraser.common.Vedtak
@@ -30,7 +29,7 @@ data class OMSInnvilgelseFoerstegangsvedtakDTO(
     override val innhold: List<Element>,
     val utbetalingsinfo: Utbetalingsinfo,
     val avkortingsinfo: Avkortingsinfo,
-    val etterbetalinginfo: EtterbetalingDTO,
+    val etterbetalinginfo: EtterbetalingDTO? = null,
     val beregningsinfo: Beregningsinfo,
     val avdoed: Avdoed,
 ): BrevDTO
@@ -68,7 +67,7 @@ object InnvilgelseFoerstegangsvedtak  : EtterlatteTemplate<OMSInnvilgelseFoerste
                     avkortingsinfo.virkningsdato,
                     avdoed.navn,
                     avdoed.doedsdato,
-                    etterbetalinginfo.beregningsperioder
+                    etterbetalinginfo
                 )
             )
             includePhrase(OMSInnvilgelse.Utbetaling)
@@ -84,7 +83,7 @@ object InnvilgelseFoerstegangsvedtak  : EtterlatteTemplate<OMSInnvilgelseFoerste
         includeAttachment(informasjonOmOvergangsstoenad, avkortingsinfo)
         includeAttachment(dineRettigheterOgPlikterOMS, avkortingsinfo)
         includeAttachment(informasjonOmYrkesskade, avkortingsinfo)
-        includeAttachment(etterbetaling, etterbetalinginfo)
+        includeAttachmentIfNotNull(etterbetaling, etterbetalinginfo)
 
     }
 }

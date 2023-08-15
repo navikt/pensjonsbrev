@@ -15,7 +15,6 @@ import no.nav.pensjon.etterlatte.maler.AvkortingsinfoSelectors.beregningsperiode
 import no.nav.pensjon.etterlatte.maler.AvkortingsinfoSelectors.grunnbeloep
 import no.nav.pensjon.etterlatte.maler.AvkortingsinfoSelectors.inntekt
 import no.nav.pensjon.etterlatte.maler.AvkortingsinfoSelectors.virkningsdato
-import no.nav.pensjon.etterlatte.maler.EtterbetalingDTOSelectors.beregningsperioder
 import no.nav.pensjon.etterlatte.maler.fraser.OMSInnvilgelse
 import no.nav.pensjon.etterlatte.maler.fraser.common.OMSFelles
 import no.nav.pensjon.etterlatte.maler.fraser.common.Vedtak
@@ -54,7 +53,7 @@ object OMSInnvilgelseAuto : EtterlatteTemplate<OMSInnvilgelseDTO> {
         outline {
             includePhrase(Vedtak.Overskrift)
 
-            includePhrase(OMSInnvilgelse.Vedtak(avkortingsinfo.virkningsdato, avdoed.navn, avdoed.doedsdato, etterbetalingsinfo.beregningsperioder))
+            includePhrase(OMSInnvilgelse.Vedtak(avkortingsinfo.virkningsdato, avdoed.navn, avdoed.doedsdato, etterbetalingsinfo))
             includePhrase(OMSInnvilgelse.BeregningOgUtbetaling(avkortingsinfo.grunnbeloep, avkortingsinfo.beregningsperioder))
             includePhrase(OMSInnvilgelse.Beregningsgrunnlag(avkortingsinfo.inntekt))
             includePhrase(OMSInnvilgelse.Utbetaling)

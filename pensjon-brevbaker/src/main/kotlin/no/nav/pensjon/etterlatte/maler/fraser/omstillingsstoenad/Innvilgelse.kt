@@ -48,6 +48,13 @@ object Innvilgelse {
 
             // Gift i minst 5 år
             paragraph {
+                text(
+                    Bokmal to "GIFT I MINST 5 ÅR",
+                    Nynorsk to "",
+                    English to "",
+                )
+            }
+            paragraph {
                 textExpr(
                     Bokmal to "Du får omstillingsstønad fordi du har vært gift med ".expr() + avdoed.navn +
                             " i minst fem år. Avdøde har vært medlem i folketrygden, eller mottatt pensjon eller " +
@@ -58,6 +65,13 @@ object Innvilgelse {
             }
 
             // Gift og har felles barn
+            paragraph {
+                text(
+                    Bokmal to "GIFT OG HAR FELLES BARN",
+                    Nynorsk to "",
+                    English to "",
+                )
+            }
             paragraph {
                 textExpr(
                     Bokmal to "Du får omstillingsstønad fordi du har vært gift og har felles barn med ".expr() +
@@ -70,6 +84,13 @@ object Innvilgelse {
 
             // Samboere og felles barn
             paragraph {
+                text(
+                    Bokmal to "SAMBOERE OG FELLES BARN",
+                    Nynorsk to "",
+                    English to "",
+                )
+            }
+            paragraph {
                 textExpr(
                     Bokmal to "Du får omstillingsstønad fordi du var samboer og har felles barn med ".expr() +
                             avdoed.navn + " på tidspunktet for dødsfallet. Avdøde har vært medlem i folketrygden, " +
@@ -80,6 +101,13 @@ object Innvilgelse {
             }
 
             // Omsorg for barn -  Gift under 5 år - ingen felles barn
+            paragraph {
+                text(
+                    Bokmal to "OMSORG FOR BARN - GIFT UNDER 5 ÅR - INGEN FELLES BARN",
+                    Nynorsk to "",
+                    English to "",
+                )
+            }
             paragraph {
                 textExpr(
                     Bokmal to "Du får omstillingsstønad fordi du var gift med ".expr() + avdoed.navn +
@@ -93,6 +121,13 @@ object Innvilgelse {
 
             // Omsorg for barn – Samboer med tidligere ektefelle/felles barn
             paragraph {
+                text(
+                    Bokmal to "OMSORG FOR BARN - SAMBOER MED TIDLIGERE EKTEFELLE/FELLES BARN",
+                    Nynorsk to "",
+                    English to "",
+                )
+            }
+            paragraph {
                 textExpr(
                     Bokmal to "Du får omstillingsstønad fordi du var samboer med ".expr() + avdoed.navn +
                             " som du tidligere har [vært gift med/hatt barn og bodd sammen med], og fordi du " +
@@ -103,6 +138,13 @@ object Innvilgelse {
             }
 
             // Fraskilt – Ekteskap varte i minst 15 år og felles barn
+            paragraph {
+                text(
+                    Bokmal to "FRASKILT - EKTESKAP VARTE I MINST 15 ÅR OG FELLES BARN",
+                    Nynorsk to "",
+                    English to "",
+                )
+            }
             paragraph {
                 textExpr(
                     Bokmal to "Du får omstillingsstønad fordi du var gift med ".expr() + avdoed.navn +
@@ -115,6 +157,13 @@ object Innvilgelse {
             }
 
             // Skilt – Ekteskapet varte i minst 25 år
+            paragraph {
+                text(
+                    Bokmal to "SKILT - EKTESKAPET VARTE I MINST 25 ÅR",
+                    Nynorsk to "",
+                    English to "",
+                )
+            }
             paragraph {
                 textExpr(
                     Bokmal to "Du får om stillingsstønad fordi du var gift med ".expr() + avdoed.navn +
