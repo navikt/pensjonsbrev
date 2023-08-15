@@ -7,16 +7,16 @@ import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brevbaker.api.model.Kroner
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.Delmal
 import no.nav.pensjon.etterlatte.maler.Utbetalingsinfo
+import no.nav.pensjon.etterlatte.maler.UtbetalingsinfoSelectors.beloep
 import no.nav.pensjon.etterlatte.maler.barnepensjon.endring.BarnepensjonEndringInstitusjonsoppholdDTOSelectors.antallBarnSomOppdrasSammen
 import no.nav.pensjon.etterlatte.maler.barnepensjon.endring.BarnepensjonEndringInstitusjonsoppholdDTOSelectors.innlagtdato
-import no.nav.pensjon.etterlatte.maler.barnepensjon.endring.BarnepensjonEndringInstitusjonsoppholdDTOSelectors.kronebeloep
 import no.nav.pensjon.etterlatte.maler.barnepensjon.endring.BarnepensjonEndringInstitusjonsoppholdDTOSelectors.prosent
+import no.nav.pensjon.etterlatte.maler.barnepensjon.endring.BarnepensjonEndringInstitusjonsoppholdDTOSelectors.utbetalingsinfo
 import no.nav.pensjon.etterlatte.maler.barnepensjon.endring.BarnepensjonEndringInstitusjonsoppholdDTOSelectors.utskrevetdato
 import no.nav.pensjon.etterlatte.maler.barnepensjon.endring.BarnepensjonEndringInstitusjonsoppholdDTOSelectors.virkningsdato
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.Institusjonsoppholdfraser
@@ -28,7 +28,6 @@ data class BarnepensjonEndringInstitusjonsoppholdDTO(
     val erEtterbetalingMerEnnTreMaaneder: Boolean,
     val virkningsdato: LocalDate,
     val prosent: Int?,
-    val kronebeloep: Kroner,
     val antallBarnSomOppdrasSammen: Int,
     val innlagtdato: LocalDate?,
     val utskrevetdato: LocalDate?,
@@ -63,14 +62,14 @@ object EndringInstitusjonsopphold : EtterlatteTemplate<BarnepensjonEndringInstit
                     Institusjonsoppholdfraser.HarDokumentertUtgiftBarnepensjonBlirRedusertMedMindreEnn90Prosent(
                         virkningsdato,
                         it,
-                        kronebeloep,
+                        utbetalingsinfo.beloep,
                     ),
                 )
             }
             includePhrase(
                 Institusjonsoppholdfraser.InnlagtVanligSats(
                     virkningsdato,
-                    kronebeloep,
+                    utbetalingsinfo.beloep,
                 ),
             )
             ifNotNull(innlagtdato) {
@@ -78,7 +77,7 @@ object EndringInstitusjonsopphold : EtterlatteTemplate<BarnepensjonEndringInstit
                     Institusjonsoppholdfraser.InnlagtPaaNyttInnen3Maaneder(
                         it,
                         virkningsdato,
-                        kronebeloep,
+                        utbetalingsinfo.beloep,
                     ),
                 )
             }
@@ -87,7 +86,7 @@ object EndringInstitusjonsopphold : EtterlatteTemplate<BarnepensjonEndringInstit
                     Institusjonsoppholdfraser.HarDokumentertUtgiftIngenReduksjonVanligUtbetaling(
                         it,
                         virkningsdato,
-                        kronebeloep,
+                        utbetalingsinfo.beloep,
                         antallBarnSomOppdrasSammen,
                     ),
                 )
@@ -95,7 +94,7 @@ object EndringInstitusjonsopphold : EtterlatteTemplate<BarnepensjonEndringInstit
             includePhrase(
                 Institusjonsoppholdfraser.UtskrevetVanligSats(
                     virkningsdato,
-                    kronebeloep,
+                    utbetalingsinfo.beloep,
                     antallBarnSomOppdrasSammen,
                 ),
             )
@@ -104,7 +103,7 @@ object EndringInstitusjonsopphold : EtterlatteTemplate<BarnepensjonEndringInstit
                     Institusjonsoppholdfraser.UtskrevetHarDokumenterteUtgiftIngenReduksjonHarVaertVanligUtbetaling(
                         it,
                         virkningsdato,
-                        kronebeloep,
+                        utbetalingsinfo.beloep,
                         antallBarnSomOppdrasSammen,
                     ),
                 )

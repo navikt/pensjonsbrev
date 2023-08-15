@@ -33,7 +33,6 @@ fun createBarnepensjonEndringInstitusjonsoppholdDTO() = BarnepensjonEndringInsti
     erEtterbetalingMerEnnTreMaaneder = false,
     virkningsdato = LocalDate.of(2020, Month.APRIL, 15),
     prosent = 15,
-    kronebeloep = Kroner(2500),
     antallBarnSomOppdrasSammen = 3,
     innlagtdato = LocalDate.of(2021, Month.MAY, 8),
     utskrevetdato = LocalDate.of(2022, Month.JUNE, 10),
