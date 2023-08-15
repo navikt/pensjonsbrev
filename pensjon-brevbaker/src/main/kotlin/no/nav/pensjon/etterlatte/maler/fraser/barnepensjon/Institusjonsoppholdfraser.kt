@@ -8,8 +8,10 @@ import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
+import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
+import no.nav.pensjon.brev.template.dsl.expression.greaterThanOrEqual
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
@@ -85,10 +87,11 @@ object Institusjonsoppholdfraser {
                     English to "",
                 )
             }
+            val prosent = prosent.format()
             paragraph {
                 textExpr(
                     Bokmal to "Barnepensjonen din endres fra ".expr() + formatertVirkningsdato + " fordi du er blitt innlagt i helseinstitusjon. " +
-                        "Du har dokumentert nødvendige utgifter til bolig og barnepensjonen din vil bli redusert til " + prosent.format() + " av grunnbeløpet (G). Du får " + kronebeloep.format() + " kroner hver måned.",
+                        "Du har dokumentert nødvendige utgifter til bolig og barnepensjonen din vil bli redusert til " + prosent + " av grunnbeløpet (G). Du får " + kronebeloep.format() + " kroner hver måned.",
                     Nynorsk to "".expr(),
                     English to "".expr(),
                 )
@@ -97,7 +100,7 @@ object Institusjonsoppholdfraser {
             includePhrase(Barnepensjon.SlikHarViBeregnetPensjonenDinTittel)
             paragraph {
                 text(
-                    Bokmal to "Når du blir innlagt i institusjon skal barnepensjonen som hovedregel utbetales med 10 prosent av grunnbeløpet (G). Siden du har dokumentert nødvendige utgifter til bolig vil pensjonen din utbetales med ${prosent.format()} av grunnbeløpet.",
+                    Bokmal to "Når du blir innlagt i institusjon skal barnepensjonen som hovedregel utbetales med 10 prosent av grunnbeløpet (G). Siden du har dokumentert nødvendige utgifter til bolig vil pensjonen din utbetales med " + prosent + " av grunnbeløpet.",
                     Nynorsk to "",
                     English to "",
                 )
@@ -269,40 +272,29 @@ object Institusjonsoppholdfraser {
             }
             includePhrase(LoverEndring)
             includePhrase(Barnepensjon.SlikHarViBeregnetPensjonenDinTittel)
-            title2 {
-                text(
-                    Bokmal to "(ett barn)",
-                    Nynorsk to "",
-                    English to "",
-                )
-            }
-            paragraph {
-                text(
-                    Bokmal to "Barnepensjonen beregnes for ett barn og utgjør 40 prosent av folketrygdens grunnbeløp (G) og fordeles på 12 utbetalinger i året.",
-                    Nynorsk to "",
-                    English to "",
-                )
-            }
-            title2 {
-                text(
-                    Bokmal to "(To eller flere barn)",
-                    Nynorsk to "",
-                    English to "",
-                )
-            }
-            paragraph {
-                text(
-                    Bokmal to "Det gjøres en samlet beregning av pensjon for barn som oppdras sammen. For denne beregningen har vi lagt til grunn at dere er $antallBarnSomOppdrasSammen barn som oppdras sammen.",
-                    Nynorsk to "",
-                    English to "",
-                )
-            }
-            paragraph {
-                text(
-                    Bokmal to "Barnepensjon utgjør 40 prosent av folketrygdens grunnbeløp (G) for det første barnet i søskenflokken. For hvert av de øvrige barna legges det til 25 prosent av G. Summen deles på antall barn, og pensjonen utbetales med likt beløp til hvert av barna. Pensjonen fordeles på 12 utbetalinger i året.",
-                    Nynorsk to "",
-                    English to "",
-                )
+            showIf(antallBarnSomOppdrasSammen.equalTo(1)) {
+                paragraph {
+                    text(
+                        Bokmal to "Barnepensjonen beregnes for ett barn og utgjør 40 prosent av folketrygdens grunnbeløp (G) og fordeles på 12 utbetalinger i året.",
+                        Nynorsk to "",
+                        English to "",
+                    )
+                }
+            }.orShowIf(antallBarnSomOppdrasSammen.greaterThanOrEqual(2)) {
+                paragraph {
+                    textExpr(
+                        Bokmal to "Det gjøres en samlet beregning av pensjon for barn som oppdras sammen. For denne beregningen har vi lagt til grunn at dere er ".expr() + antallBarnSomOppdrasSammen.toString() + " barn som oppdras sammen.",
+                        Nynorsk to "".expr(),
+                        English to "".expr(),
+                    )
+                }
+                paragraph {
+                    text(
+                        Bokmal to "Barnepensjon utgjør 40 prosent av folketrygdens grunnbeløp (G) for det første barnet i søskenflokken. For hvert av de øvrige barna legges det til 25 prosent av G. Summen deles på antall barn, og pensjonen utbetales med likt beløp til hvert av barna. Pensjonen fordeles på 12 utbetalinger i året.",
+                        Nynorsk to "",
+                        English to "",
+                    )
+                }
             }
         }
     }
@@ -331,40 +323,29 @@ object Institusjonsoppholdfraser {
             }
             includePhrase(LoverEndring)
             includePhrase(Barnepensjon.SlikHarViBeregnetPensjonenDinTittel)
-            title2 {
-                text(
-                    Bokmal to "(ett barn)",
-                    Nynorsk to "",
-                    English to "",
-                )
-            }
-            paragraph {
-                text(
-                    Bokmal to "Barnepensjonen beregnes for ett barn og utgjør 40 prosent av folketrygdens grunnbeløp (G) og fordeles på 12 utbetalinger i året.",
-                    Nynorsk to "",
-                    English to "",
-                )
-            }
-            title2 {
-                text(
-                    Bokmal to "(To eller flere barn)",
-                    Nynorsk to "",
-                    English to "",
-                )
-            }
-            paragraph {
-                text(
-                    Bokmal to "Det gjøres en samlet beregning av pensjon for barn som oppdras sammen. For denne beregningen har vi lagt til grunn at dere er $antallBarnSomOppdrasSammen barn som oppdras sammen.",
-                    Nynorsk to "",
-                    English to "",
-                )
-            }
-            paragraph {
-                text(
-                    Bokmal to "Barnepensjon utgjør 40 prosent av folketrygdens grunnbeløp (G) for det første barnet i søskenflokken. For hvert av de øvrige barna legges det til 25 prosent av G. Summen deles på antall barn, og pensjonen utbetales med likt beløp til hvert av barna. Pensjonen fordeles på 12 utbetalinger i året.",
-                    Nynorsk to "",
-                    English to "",
-                )
+            showIf(antallBarnSomOppdrasSammen.equalTo(1)) {
+                paragraph {
+                    text(
+                        Bokmal to "Barnepensjonen beregnes for ett barn og utgjør 40 prosent av folketrygdens grunnbeløp (G) og fordeles på 12 utbetalinger i året.",
+                        Nynorsk to "",
+                        English to "",
+                    )
+                }
+            }.orShowIf(antallBarnSomOppdrasSammen.greaterThanOrEqual(2)) {
+                paragraph {
+                    text(
+                        Bokmal to "Det gjøres en samlet beregning av pensjon for barn som oppdras sammen. For denne beregningen har vi lagt til grunn at dere er $antallBarnSomOppdrasSammen barn som oppdras sammen.",
+                        Nynorsk to "",
+                        English to "",
+                    )
+                }
+                paragraph {
+                    text(
+                        Bokmal to "Barnepensjon utgjør 40 prosent av folketrygdens grunnbeløp (G) for det første barnet i søskenflokken. For hvert av de øvrige barna legges det til 25 prosent av G. Summen deles på antall barn, og pensjonen utbetales med likt beløp til hvert av barna. Pensjonen fordeles på 12 utbetalinger i året.",
+                        Nynorsk to "",
+                        English to "",
+                    )
+                }
             }
         }
     }
@@ -396,40 +377,29 @@ object Institusjonsoppholdfraser {
             }
             includePhrase(LoverEndring)
             includePhrase(Barnepensjon.SlikHarViBeregnetPensjonenDinTittel)
-            title2 {
-                text(
-                    Bokmal to "(ett barn)",
-                    Nynorsk to "",
-                    English to "",
-                )
-            }
-            paragraph {
-                text(
-                    Bokmal to "Barnepensjonen beregnes for ett barn og utgjør 40 prosent av folketrygdens grunnbeløp (G) og fordeles på 12 utbetalinger i året.",
-                    Nynorsk to "",
-                    English to "",
-                )
-            }
-            title2 {
-                text(
-                    Bokmal to "(To eller flere barn)",
-                    Nynorsk to "",
-                    English to "",
-                )
-            }
-            paragraph {
-                text(
-                    Bokmal to "Det gjøres en samlet beregning av pensjon for barn som oppdras sammen. For denne beregningen har vi lagt til grunn at dere er $antallBarnSomOppdrasSammen barn som oppdras sammen.",
-                    Nynorsk to "",
-                    English to "",
-                )
-            }
-            paragraph {
-                text(
-                    Bokmal to "Barnepensjon utgjør 40 prosent av folketrygdens grunnbeløp (G) for det første barnet i søskenflokken. For hvert av de øvrige barna legges det til 25 prosent av G. Summen deles på antall barn, og pensjonen utbetales med likt beløp til hvert av barna. Pensjonen fordeles på 12 utbetalinger i året.",
-                    Nynorsk to "",
-                    English to "",
-                )
+            showIf(antallBarnSomOppdrasSammen.equalTo(1)) {
+                paragraph {
+                    text(
+                        Bokmal to "Barnepensjonen beregnes for ett barn og utgjør 40 prosent av folketrygdens grunnbeløp (G) og fordeles på 12 utbetalinger i året.",
+                        Nynorsk to "",
+                        English to "",
+                    )
+                }
+            }.orShowIf(antallBarnSomOppdrasSammen.greaterThanOrEqual(2)) {
+                paragraph {
+                    text(
+                        Bokmal to "Det gjøres en samlet beregning av pensjon for barn som oppdras sammen. For denne beregningen har vi lagt til grunn at dere er $antallBarnSomOppdrasSammen barn som oppdras sammen.",
+                        Nynorsk to "",
+                        English to "",
+                    )
+                }
+                paragraph {
+                    text(
+                        Bokmal to "Barnepensjon utgjør 40 prosent av folketrygdens grunnbeløp (G) for det første barnet i søskenflokken. For hvert av de øvrige barna legges det til 25 prosent av G. Summen deles på antall barn, og pensjonen utbetales med likt beløp til hvert av barna. Pensjonen fordeles på 12 utbetalinger i året.",
+                        Nynorsk to "",
+                        English to "",
+                    )
+                }
             }
         }
     }
