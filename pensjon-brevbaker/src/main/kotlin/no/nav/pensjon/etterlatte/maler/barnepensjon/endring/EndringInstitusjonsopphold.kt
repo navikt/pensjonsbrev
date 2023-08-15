@@ -12,8 +12,8 @@ import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.Delmal
 import no.nav.pensjon.etterlatte.maler.Utbetalingsinfo
+import no.nav.pensjon.etterlatte.maler.UtbetalingsinfoSelectors.antallBarn
 import no.nav.pensjon.etterlatte.maler.UtbetalingsinfoSelectors.beloep
-import no.nav.pensjon.etterlatte.maler.barnepensjon.endring.BarnepensjonEndringInstitusjonsoppholdDTOSelectors.antallBarnSomOppdrasSammen
 import no.nav.pensjon.etterlatte.maler.barnepensjon.endring.BarnepensjonEndringInstitusjonsoppholdDTOSelectors.innlagtdato
 import no.nav.pensjon.etterlatte.maler.barnepensjon.endring.BarnepensjonEndringInstitusjonsoppholdDTOSelectors.prosent
 import no.nav.pensjon.etterlatte.maler.barnepensjon.endring.BarnepensjonEndringInstitusjonsoppholdDTOSelectors.utbetalingsinfo
@@ -28,7 +28,6 @@ data class BarnepensjonEndringInstitusjonsoppholdDTO(
     val erEtterbetalingMerEnnTreMaaneder: Boolean,
     val virkningsdato: LocalDate,
     val prosent: Int?,
-    val antallBarnSomOppdrasSammen: Int,
     val innlagtdato: LocalDate?,
     val utskrevetdato: LocalDate?,
 )
@@ -87,7 +86,7 @@ object EndringInstitusjonsopphold : EtterlatteTemplate<BarnepensjonEndringInstit
                         it,
                         virkningsdato,
                         utbetalingsinfo.beloep,
-                        antallBarnSomOppdrasSammen,
+                        utbetalingsinfo.antallBarn,
                     ),
                 )
             }
@@ -95,7 +94,7 @@ object EndringInstitusjonsopphold : EtterlatteTemplate<BarnepensjonEndringInstit
                 Institusjonsoppholdfraser.UtskrevetVanligSats(
                     virkningsdato,
                     utbetalingsinfo.beloep,
-                    antallBarnSomOppdrasSammen,
+                    utbetalingsinfo.antallBarn,
                 ),
             )
             ifNotNull(utskrevetdato) {
@@ -104,7 +103,7 @@ object EndringInstitusjonsopphold : EtterlatteTemplate<BarnepensjonEndringInstit
                         it,
                         virkningsdato,
                         utbetalingsinfo.beloep,
-                        antallBarnSomOppdrasSammen,
+                        utbetalingsinfo.antallBarn,
                     ),
                 )
             }
