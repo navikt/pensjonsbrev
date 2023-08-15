@@ -241,4 +241,193 @@ object Institusjonsoppholdfraser {
             }
         }
     }
+
+    data class HarDokumentertUtgiftIngenReduksjonVanligUtbetaling(
+        val innlagtdato: Expression<LocalDate>,
+        val virkningsdato: Expression<LocalDate>,
+        val kronebeloep: Expression<Kroner>,
+    ) :
+        OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+            val formatertInnlagtdato = innlagtdato.format()
+            val formatertVirkningsdato = virkningsdato.format()
+            title1 {
+                text(
+                    Bokmal to "Innlagt – har dokumenterte utgift - ingen reduksjon (vanlig utbetaling)",
+                    Nynorsk to "",
+                    English to "",
+                )
+            }
+            paragraph {
+                textExpr(
+                    Bokmal to "Du er blitt innlagt i helseinstitusjon  fra ".expr() + formatertInnlagtdato + " og barnepensjonen skal etter hovedregelen reduseres fra " +
+                        formatertVirkningsdato + ". Du har dokumentert nødvendige utgifter til bolig og barnepensjonen din vil derfor ikke reduseres på grunn av oppholdet. Du får fortsatt " + kronebeloep.format() + " kroner hver måned.",
+                    Nynorsk to "".expr(),
+                    English to "".expr(),
+                )
+            }
+            includePhrase(LoverEndring)
+            includePhrase(Barnepensjon.SlikHarViBeregnetPensjonenDinTittel)
+            title2 {
+                text(
+                    Bokmal to "(ett barn)",
+                    Nynorsk to "",
+                    English to "",
+                )
+            }
+            paragraph {
+                text(
+                    Bokmal to "Barnepensjonen beregnes for ett barn og utgjør 40 prosent av folketrygdens grunnbeløp (G) og fordeles på 12 utbetalinger i året.",
+                    Nynorsk to "",
+                    English to "",
+                )
+            }
+            title2 {
+                text(
+                    Bokmal to "(To eller flere barn)",
+                    Nynorsk to "",
+                    English to "",
+                )
+            }
+            paragraph {
+                text(
+                    Bokmal to "Det gjøres en samlet beregning av pensjon for barn som oppdras sammen. For denne beregningen har vi lagt til grunn at dere er <antall barn> barn som oppdras sammen.",
+                    Nynorsk to "",
+                    English to "",
+                )
+            }
+            paragraph {
+                text(
+                    Bokmal to "Barnepensjon utgjør 40 prosent av folketrygdens grunnbeløp (G) for det første barnet i søskenflokken. For hvert av de øvrige barna legges det til 25 prosent av G. Summen deles på antall barn, og pensjonen utbetales med likt beløp til hvert av barna. Pensjonen fordeles på 12 utbetalinger i året.",
+                    Nynorsk to "",
+                    English to "",
+                )
+            }
+        }
+    }
+
+    data class UtskrevetVanligSats(
+        val virkningsdato: Expression<LocalDate>,
+        val kronebeloep: Expression<Kroner>,
+    ) :
+        OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+            val formatertVirkningsdato = virkningsdato.format()
+            title1 {
+                text(
+                    Bokmal to "Utskrevet - vanlig sats",
+                    Nynorsk to "",
+                    English to "",
+                )
+            }
+            paragraph {
+                textExpr(
+                    Bokmal to "Barnepensjonen din øker fra ".expr() + formatertVirkningsdato + " fordi du er kommet hjem fra helseinstitusjon. Barnepensjonen øker fra og med utskrivingsmåneden. Du får " + kronebeloep.format() + " kroner hver måned.",
+                    Nynorsk to "".expr(),
+                    English to "".expr(),
+                )
+            }
+            includePhrase(LoverEndring)
+            includePhrase(Barnepensjon.SlikHarViBeregnetPensjonenDinTittel)
+            title2 {
+                text(
+                    Bokmal to "(ett barn)",
+                    Nynorsk to "",
+                    English to "",
+                )
+            }
+            paragraph {
+                text(
+                    Bokmal to "Barnepensjonen beregnes for ett barn og utgjør 40 prosent av folketrygdens grunnbeløp (G) og fordeles på 12 utbetalinger i året.",
+                    Nynorsk to "",
+                    English to "",
+                )
+            }
+            title2 {
+                text(
+                    Bokmal to "(To eller flere barn)",
+                    Nynorsk to "",
+                    English to "",
+                )
+            }
+            paragraph {
+                text(
+                    Bokmal to "Det gjøres en samlet beregning av pensjon for barn som oppdras sammen. For denne beregningen har vi lagt til grunn at dere er <antall barn> barn som oppdras sammen.",
+                    Nynorsk to "",
+                    English to "",
+                )
+            }
+            paragraph {
+                text(
+                    Bokmal to "Barnepensjon utgjør 40 prosent av folketrygdens grunnbeløp (G) for det første barnet i søskenflokken. For hvert av de øvrige barna legges det til 25 prosent av G. Summen deles på antall barn, og pensjonen utbetales med likt beløp til hvert av barna. Pensjonen fordeles på 12 utbetalinger i året.",
+                    Nynorsk to "",
+                    English to "",
+                )
+            }
+        }
+    }
+
+    data class UtskrevetHarDokumenterteUtgiftIngenReduksjonHarVaertVanligUtbetaling(
+        val utskrevetdato: Expression<LocalDate>,
+        val virkningsdato: Expression<LocalDate>,
+        val kronebeloep: Expression<Kroner>,
+    ) :
+        OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+            val formatertUtskrevetdato = utskrevetdato.format()
+            val formatertVirkningsdato = virkningsdato.format()
+            title1 {
+                text(
+                    Bokmal to "Utskrevet – har dokumenterte utgift - ingen reduksjon (har vært vanlig utbetaling)",
+                    Nynorsk to "",
+                    English to "",
+                )
+            }
+            paragraph {
+                textExpr(
+                    Bokmal to "Du er kommet hjem fra opphold i helseinstitusjon ".expr() + formatertUtskrevetdato + " og barnepensjonen skal etter hovedregelen økes fra " +
+                        formatertVirkningsdato + ". Du dokumenterte nødvendige utgifter til bolig under institusjonsoppholdet og barnepensjonen har ikke vært redusert i perioden. Barnepensjonen endres dermed ikke når du er kommet hjem. Du får fortsatt " + kronebeloep.format() + " kroner hver måned.",
+                    Nynorsk to "".expr(),
+                    English to "".expr(),
+                )
+            }
+            includePhrase(LoverEndring)
+            includePhrase(Barnepensjon.SlikHarViBeregnetPensjonenDinTittel)
+            title2 {
+                text(
+                    Bokmal to "(ett barn)",
+                    Nynorsk to "",
+                    English to "",
+                )
+            }
+            paragraph {
+                text(
+                    Bokmal to "Barnepensjonen beregnes for ett barn og utgjør 40 prosent av folketrygdens grunnbeløp (G) og fordeles på 12 utbetalinger i året.",
+                    Nynorsk to "",
+                    English to "",
+                )
+            }
+            title2 {
+                text(
+                    Bokmal to "(To eller flere barn)",
+                    Nynorsk to "",
+                    English to "",
+                )
+            }
+            paragraph {
+                text(
+                    Bokmal to "Det gjøres en samlet beregning av pensjon for barn som oppdras sammen. For denne beregningen har vi lagt til grunn at dere er <antall barn> barn som oppdras sammen.",
+                    Nynorsk to "",
+                    English to "",
+                )
+            }
+            paragraph {
+                text(
+                    Bokmal to "Barnepensjon utgjør 40 prosent av folketrygdens grunnbeløp (G) for det første barnet i søskenflokken. For hvert av de øvrige barna legges det til 25 prosent av G. Summen deles på antall barn, og pensjonen utbetales med likt beløp til hvert av barna. Pensjonen fordeles på 12 utbetalinger i året.",
+                    Nynorsk to "",
+                    English to "",
+                )
+            }
+        }
+    }
 }

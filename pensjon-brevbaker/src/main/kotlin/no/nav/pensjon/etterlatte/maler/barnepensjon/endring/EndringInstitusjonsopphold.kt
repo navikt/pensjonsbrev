@@ -16,6 +16,7 @@ import no.nav.pensjon.etterlatte.maler.Utbetalingsinfo
 import no.nav.pensjon.etterlatte.maler.barnepensjon.endring.BarnepensjonEndringInstitusjonsoppholdDTOSelectors.innlagtdato
 import no.nav.pensjon.etterlatte.maler.barnepensjon.endring.BarnepensjonEndringInstitusjonsoppholdDTOSelectors.kronebeloep
 import no.nav.pensjon.etterlatte.maler.barnepensjon.endring.BarnepensjonEndringInstitusjonsoppholdDTOSelectors.prosent
+import no.nav.pensjon.etterlatte.maler.barnepensjon.endring.BarnepensjonEndringInstitusjonsoppholdDTOSelectors.utskrevetdato
 import no.nav.pensjon.etterlatte.maler.barnepensjon.endring.BarnepensjonEndringInstitusjonsoppholdDTOSelectors.virkningsdato
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.Institusjonsoppholdfraser
 import no.nav.pensjon.etterlatte.maler.fraser.common.Vedtak
@@ -28,6 +29,7 @@ data class BarnepensjonEndringInstitusjonsoppholdDTO(
     val prosent: Int?,
     val kronebeloep: Kroner,
     val innlagtdato: LocalDate?,
+    val utskrevetdato: LocalDate?,
 )
 
 @TemplateModelHelpers
@@ -72,6 +74,25 @@ object EndringInstitusjonsopphold : EtterlatteTemplate<BarnepensjonEndringInstit
             ifNotNull(innlagtdato) {
                 includePhrase(
                     Institusjonsoppholdfraser.InnlagtPaaNyttInnen3Maaneder(
+                        it,
+                        virkningsdato,
+                        kronebeloep,
+                    ),
+                )
+            }
+            ifNotNull(innlagtdato) {
+                includePhrase(
+                    Institusjonsoppholdfraser.HarDokumentertUtgiftIngenReduksjonVanligUtbetaling(
+                        it,
+                        virkningsdato,
+                        kronebeloep,
+                    ),
+                )
+            }
+            includePhrase(Institusjonsoppholdfraser.UtskrevetVanligSats(virkningsdato, kronebeloep))
+            ifNotNull(utskrevetdato) {
+                includePhrase(
+                    Institusjonsoppholdfraser.UtskrevetHarDokumenterteUtgiftIngenReduksjonHarVaertVanligUtbetaling(
                         it,
                         virkningsdato,
                         kronebeloep,
