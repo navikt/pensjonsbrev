@@ -3,10 +3,12 @@ package no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering
 import kotlinx.coroutines.runBlocking
 import no.nav.pensjon.brev.PDF_BUILDER_URL
 import no.nav.pensjon.brev.TestTags
+import no.nav.pensjon.brev.api.objectMapper
 import no.nav.pensjon.brev.latex.LaTeXCompilerService
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.Letter
 import no.nav.pensjon.brev.template.render.PensjonHTMLRenderer
+import no.nav.pensjon.brev.template.render.PensjonJsonRenderer
 import no.nav.pensjon.brev.template.render.PensjonLatexRenderer
 import no.nav.pensjon.brev.writeTestHTML
 import no.nav.pensjon.brev.writeTestPDF
@@ -16,6 +18,8 @@ import no.nav.pensjon.etterlatte.maler.barnepensjon.endring.BarnepensjonEndringI
 import no.nav.pensjon.etterlatte.maler.barnepensjon.endring.EndringInstitusjonsopphold
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
+import java.nio.file.Files
+import java.nio.file.Paths
 
 @Tag(TestTags.INTEGRATION_TEST)
 class InstitusjonsoppholdTest {
@@ -41,5 +45,21 @@ class InstitusjonsoppholdTest {
             Fixtures.felles,
         ).let { PensjonHTMLRenderer.render(it) }
             .also { writeTestHTML(EtterlatteBrevKode.BARNEPENSJON_REVURDERING_INSTITUSJONSOPPHOLD.name, it) }
+    }
+
+    @Test
+    fun testJson() {
+        Letter(
+            EndringInstitusjonsopphold.template,
+            Fixtures.create<BarnepensjonEndringInstitusjonsoppholdDTO>(),
+            Language.Bokmal,
+            Fixtures.felles,
+        ).let { PensjonJsonRenderer.render(it) }
+            .also { json ->
+                Paths.get("build/test_json")
+                    .also { Files.createDirectories(it) }
+                    .resolve((Paths.get("${EtterlatteBrevKode.BARNEPENSJON_REVURDERING_INSTITUSJONSOPPHOLD.name}.json")))
+                    .let { Files.writeString(it, objectMapper.writeValueAsString(json)) }
+            }
     }
 }
