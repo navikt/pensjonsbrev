@@ -42,8 +42,12 @@ class OpplysningerOmEtteropgjoeretTest {
                         resultat = AvviksResultat(skulleFaatt = Kroner(10), fikk = Kroner(14), avvik = Kroner(-4)),
                         personinntektAnnenForelder = InntektOgFratrekk(
                             inntekt = Inntekt(
-                                inntekter = emptyList(),
-                                sum = Kroner(0)
+                                inntekter = listOf(
+                                    InntektLinje(InntektLinje.InntektType.ARBEIDSINNTEKT, InntektLinje.Kilde.OPPGITT_AV_SKATTEETATEN, Kroner(10)),
+                                    InntektLinje(InntektLinje.InntektType.NAERINGSINNTEKT, InntektLinje.Kilde.OPPGITT_AV_BRUKER, Kroner(10)),
+                                    InntektLinje(InntektLinje.InntektType.FORVENTET_PENSJON_FRA_UTLANDET, InntektLinje.Kilde.OPPGITT_AV_BRUKER, Kroner(10)),
+                                ),
+                                sum = Kroner(30),
                             ),
                             fratrekk = Fratrekk(fratrekk = emptyList(), sum = Kroner(0))
                         )
@@ -54,7 +58,15 @@ class OpplysningerOmEtteropgjoeretTest {
                         resultat = AvviksResultat(skulleFaatt = Kroner(10), fikk = Kroner(14), avvik = Kroner(-4))
                     ),
                     personinntekt = InntektOgFratrekk(
-                        inntekt = Inntekt(inntekter = emptyList(), sum = Kroner(0)),
+                        inntekt = Inntekt(
+                            inntekter = listOf(
+                                InntektLinje(InntektLinje.InntektType.ARBEIDSINNTEKT, InntektLinje.Kilde.OPPGITT_AV_SKATTEETATEN, Kroner(10)),
+                                InntektLinje(InntektLinje.InntektType.NAERINGSINNTEKT, InntektLinje.Kilde.OPPGITT_AV_BRUKER, Kroner(10)),
+                                InntektLinje(InntektLinje.InntektType.FORVENTET_PENSJON_FRA_UTLANDET, InntektLinje.Kilde.OPPGITT_AV_BRUKER, Kroner(10)),
+                                InntektLinje(InntektLinje.InntektType.UFOERETRYGD, InntektLinje.Kilde.OPPGITT_AV_BRUKER, Kroner(10)),
+                            ),
+                            sum = Kroner(40),
+                        ),
                         fratrekk = Fratrekk(fratrekk = emptyList(), sum = Kroner(0))
                     ),
                     mindreEnn40AarTrygdetid = true,

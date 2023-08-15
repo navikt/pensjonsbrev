@@ -21,6 +21,7 @@ data class LetterTemplate<Lang : LanguageSupport, LetterData : Any>(
     }
 }
 
+class PreventToStringForExpressionException() : Exception("To prevent incorrect usage of Expression in Text.Literal elements, it's toString fails.")
 sealed class Expression<out Out> {
 
     abstract fun eval(scope: ExpressionScope<*, *>): Out
@@ -52,6 +53,9 @@ sealed class Expression<out Out> {
         override fun eval(scope: ExpressionScope<*, *>): Out = operation.apply(first.eval(scope), second.eval(scope))
     }
 
+    final override fun toString(): String {
+        throw PreventToStringForExpressionException()
+    }
 }
 
 typealias StringExpression = Expression<String>
