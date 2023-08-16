@@ -89,6 +89,7 @@ object BarnepensjonInnvilgelseNy : EtterlatteTemplate<BarnepensjonInnvilgelseNyD
                 ),
             )
 
+            includePhrase(Barnepensjon.BeregnetPensjonTabell(utbetalingsinfo.beregningsperioder))
             includePhrase(Barnepensjon.UtbetalingOgRegulering)
             includePhrase(BarnepensjonInnvilgelseFraser.MeldFraOmEndringer)
             includePhrase(BarnepensjonInnvilgelseFraser.DuHarRettTilAaKlage)
