@@ -33,6 +33,8 @@ data class OpplysningerOmEtteroppgjoeretDto(
             val isFribeloepRedusert: Boolean,
             val resultat: AvviksResultat,
             val personinntektAnnenForelder: InntektOgFratrekk,
+            val harSamletInntektOverInntektstak: Boolean,
+            val inntektstakSamletInntekt: Kroner,
         )
 
         data class Saerkullsbarn(
@@ -49,15 +51,19 @@ data class OpplysningerOmEtteroppgjoeretDto(
     ) {
         data class Inntekt(val inntekter: List<InntektLinje>, val sum: Kroner) {
             data class InntektLinje(val type: InntektType, val registerKilde: Kilde, val beloep: Kroner) {
+                @Suppress("unused")
                 enum class InntektType { NAERINGSINNTEKT, UTLANDSINNTEKT, ARBEIDSINNTEKT, UFOERETRYGD, ANDRE_PENSJONER_OG_YTELSER, FORVENTET_PENSJON_FRA_UTLANDET }
+                @Suppress("unused")
                 enum class Kilde { INNMELDT_AV_ARBEIDSGIVER, OPPGITT_AV_SKATTEETATEN, OPPGITT_AV_BRUKER, NAV }
             }
         }
 
         data class Fratrekk(val fratrekk: List<FratrekkLinje>, val sum: Kroner) {
             data class FratrekkLinje(val type: InntektType, val aarsak: Aarsak, val beloep: Kroner) {
+                @Suppress("unused")
                 enum class InntektType { NAERINGSINNTEKT, UTLANDSINNTEKT, ARBEIDSINNTEKT, INNTEKT, FRATREKKBAR_INNTEKT, FORVENTET_PENSJON_FRA_UTLANDET, ANDRE_PENSJONER_OG_YTELSER }
-                enum class Aarsak { FOER_INNVILGET_UFOERETRYGD, ETTER_OPPHOERT_UFOERETRYGD, ERSTATNING_INNTEKTSTAP_ERSTATNINGSOPPGJOER, ETTERSLEP_AVSLUTTET_ARBEID_ELLER_VIRKSOMHET, ANNET, ETTERBETALING_FRA_NAV }
+                @Suppress("unused")
+                enum class Aarsak { FOER_INNVILGET_UFOERETRYGD, ETTER_OPPHOERT_UFOERETRYGD, ERSTATNING_INNTEKTSTAP_ERSTATNINGSOPPGJOER, ETTERSLEP_AVSLUTTET_ARBEID_ELLER_VIRKSOMHET, ANNET, ETTERBETALING_FRA_NAV, INNTEKT_INNTIL_1G }
             }
         }
 
