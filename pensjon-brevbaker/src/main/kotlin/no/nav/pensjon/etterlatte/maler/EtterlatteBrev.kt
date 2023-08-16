@@ -34,7 +34,9 @@ data class AvkortetBeregningsperiode(
     val datoFOM: LocalDate,
     val datoTOM: LocalDate?,
     val inntekt: Kroner,
+    val ytelseFoerAvkorting: Kroner,
     val utbetaltBeloep: Kroner,
+    val trygdetid: Int,
 )
 
 data class Beregningsinfo(

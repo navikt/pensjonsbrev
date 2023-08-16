@@ -39,13 +39,17 @@ fun createOMSInnvilgelseFoerstegangsvedtakDTO() =
                     datoFOM = LocalDate.now(),
                     datoTOM = LocalDate.now(),
                     inntekt = Kroner(550000),
-                    utbetaltBeloep = Kroner(0)
+                    utbetaltBeloep = Kroner(0),
+                    ytelseFoerAvkorting = Kroner(100),
+                    trygdetid = 40
                 ),
                 AvkortetBeregningsperiode(
                     datoFOM = LocalDate.now(),
                     datoTOM = null,
                     inntekt = Kroner(550000),
-                    utbetaltBeloep = Kroner(0)
+                    utbetaltBeloep = Kroner(0),
+                    ytelseFoerAvkorting = Kroner(100),
+                    trygdetid = 40
                 )
             )
         ),
