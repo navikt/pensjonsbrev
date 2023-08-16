@@ -15,15 +15,14 @@ import no.nav.pensjon.brev.writeTestHTML
 import no.nav.pensjon.brev.writeTestPDF
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.Fixtures
-import no.nav.pensjon.etterlatte.maler.barnepensjon.endring.BarnepensjonEndringInstitusjonsoppholdDTO
 import org.junit.jupiter.api.Test
 import java.nio.file.Files
 import java.nio.file.Paths
 
-abstract class EtterlatteMalTest(
-    val template: LetterTemplate<LanguageSupport.Triple<Language.Bokmal, Language.Nynorsk, Language.English>, BarnepensjonEndringInstitusjonsoppholdDTO>,
+abstract class EtterlatteMalTest<T : Any>(
+    val template: LetterTemplate<LanguageSupport.Triple<Language.Bokmal, Language.Nynorsk, Language.English>, T>,
     private val etterlatteBrevKode: EtterlatteBrevKode,
-    val fixtures: BarnepensjonEndringInstitusjonsoppholdDTO,
+    val fixtures: T,
 ) {
 
     @Test
