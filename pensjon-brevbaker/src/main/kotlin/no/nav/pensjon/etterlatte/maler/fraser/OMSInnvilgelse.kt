@@ -26,33 +26,10 @@ object OMSInnvilgelse {
     data class Vedtak(
         val virkningsdato: Expression<LocalDate>,
         val avdoedNavn: Expression<String>,
-        val doedsdato: Expression<LocalDate>,
         val etterbetalingsinfo: Expression<EtterbetalingDTO?>
     ) :
         OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-            paragraph {
-                val formatertVirkningsdato = virkningsdato.format()
-                val formatertDoedsdato = doedsdato.format()
-                textExpr(
-                    Bokmal to "Du er innvilget omstillingsstønad fra ".expr() + formatertVirkningsdato +
-                            " fordi " + avdoedNavn + " er registrert død " + formatertDoedsdato + ". " +
-                            "Du vil ikke få utbetalt omstillingsstønad fordi inntekten din er høyere enn " +
-                            "grensen for å få utbetalt stønaden.",
-                    Nynorsk to "".expr(),
-                    English to "".expr(),
-                )
-            }
-            paragraph {
-                text(
-                    Bokmal to "Omstillingsstønad innvilges vanligvis for inntil tre år. Stønaden reduseres " +
-                            "på grunnlag av arbeidsinntekten din. Se hvordan stønaden din er beregnet under " +
-                            "beregning av omstillingsstønaden. Der går det også frem hvilken inntekt stønaden " +
-                            "din er redusert etter.",
-                    Nynorsk to "",
-                    English to "",
-                )
-            }
             paragraph {
                 ifNotNull(etterbetalingsinfo) {
                     text(

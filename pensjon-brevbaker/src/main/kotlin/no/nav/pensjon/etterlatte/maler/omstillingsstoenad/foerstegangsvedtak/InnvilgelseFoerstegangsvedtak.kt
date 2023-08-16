@@ -66,7 +66,6 @@ object InnvilgelseFoerstegangsvedtak  : EtterlatteTemplate<OMSInnvilgelseFoerste
                 OMSInnvilgelse.Vedtak(
                     avkortingsinfo.virkningsdato,
                     avdoed.navn,
-                    avdoed.doedsdato,
                     etterbetalinginfo
                 )
             )

@@ -53,7 +53,7 @@ object OMSInnvilgelseAuto : EtterlatteTemplate<OMSInnvilgelseDTO> {
         outline {
             includePhrase(Vedtak.Overskrift)
 
-            includePhrase(OMSInnvilgelse.Vedtak(avkortingsinfo.virkningsdato, avdoed.navn, avdoed.doedsdato, etterbetalingsinfo))
+            includePhrase(OMSInnvilgelse.Vedtak(avkortingsinfo.virkningsdato, avdoed.navn, etterbetalingsinfo))
             includePhrase(OMSInnvilgelse.BeregningOgUtbetaling(avkortingsinfo.grunnbeloep, avkortingsinfo.beregningsperioder))
             includePhrase(OMSInnvilgelse.Beregningsgrunnlag(avkortingsinfo.inntekt))
             includePhrase(OMSInnvilgelse.Utbetaling)

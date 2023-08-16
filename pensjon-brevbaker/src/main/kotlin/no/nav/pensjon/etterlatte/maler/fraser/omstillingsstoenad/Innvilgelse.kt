@@ -8,6 +8,7 @@ import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
+import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.plus
@@ -34,145 +35,172 @@ object Innvilgelse {
                     English to "",
                 )
             }
-            val formatertVirkningsdato = virkningsdato.format()
-            paragraph {
-                textExpr(
-                    Bokmal to "Du er innvilget omstillingsstønad fra ".expr() + formatertVirkningsdato +
-                            " fordi " + avdoed.navn + " døde " + avdoed.doedsdato.format() + ". Du får " +
-                            utbetalingsbeloep.format() + " kroner i stønad hver måned før skatt. " +
-                            "(Du får ikke utbetalt omstillingsstønad fordi inntekt er for høy).",
-                    Nynorsk to "".expr(),
-                    English to "".expr(),
-                )
-            }
 
-            // Gift i minst 5 år
-            paragraph {
-                text(
-                    Bokmal to "GIFT I MINST 5 ÅR",
-                    Nynorsk to "",
-                    English to "",
-                )
-            }
-            paragraph {
-                textExpr(
-                    Bokmal to "Du får omstillingsstønad fordi du har vært gift med ".expr() + avdoed.navn +
-                            " i minst fem år. Avdøde har vært medlem i folketrygden, eller mottatt pensjon eller " +
-                            "uføretrygd fra folketrygden de siste fem årene før dødsfallet.",
-                    Nynorsk to "".expr(),
-                    English to "".expr(),
-                )
-            }
+            showIf(utbetalingsbeloep.equalTo(0)){
+                paragraph {
+                    val formatertVirkningsdato = virkningsdato.format()
+                    val formatertDoedsdato = avdoed.doedsdato.format()
+                    textExpr(
+                        Bokmal to "Du er innvilget omstillingsstønad fra ".expr() + formatertVirkningsdato +
+                                " fordi " + avdoed.navn + " er registrert død " + formatertDoedsdato + ". " +
+                                "Du vil ikke få utbetalt omstillingsstønad fordi inntekten din er høyere enn " +
+                                "grensen for å få utbetalt stønaden.",
+                        Nynorsk to "".expr(),
+                        English to "".expr(),
+                    )
+                }
 
-            // Gift og har felles barn
-            paragraph {
-                text(
-                    Bokmal to "GIFT OG HAR FELLES BARN",
-                    Nynorsk to "",
-                    English to "",
-                )
-            }
-            paragraph {
-                textExpr(
-                    Bokmal to "Du får omstillingsstønad fordi du har vært gift og har felles barn med ".expr() +
-                            avdoed.navn + ". Avdøde har vært medlem i folketrygden, eller mottatt pensjon eller " +
-                            "uføretrygd fra folketrygden de siste fem årene før dødsfallet.",
-                    Nynorsk to "".expr(),
-                    English to "".expr(),
-                )
-            }
+                paragraph {
+                    text(
+                        Bokmal to "Omstillingsstønad innvilges vanligvis for inntil tre år. Stønaden reduseres " +
+                                "på grunnlag av arbeidsinntekten din. Se hvordan stønaden din er beregnet under " +
+                                "beregning av omstillingsstønaden. Der går det også frem hvilken inntekt stønaden " +
+                                "din er redusert etter.",
+                        Nynorsk to "",
+                        English to "",
+                    )
+                }
+            } orShow {
+                paragraph {
+                    val formatertVirkningsdato = virkningsdato.format()
+                    val formatertDoedsdato = avdoed.doedsdato.format()
+                    textExpr(
+                        Bokmal to "Du er innvilget omstillingsstønad fra ".expr() + formatertVirkningsdato +
+                                " fordi " + avdoed.navn + " døde " + formatertDoedsdato + ". Du får " +
+                                utbetalingsbeloep.format() + " kroner i stønad hver måned før skatt. ",
+                        Nynorsk to "".expr(),
+                        English to "".expr(),
+                    )
+                }
 
-            // Samboere og felles barn
-            paragraph {
-                text(
-                    Bokmal to "SAMBOERE OG FELLES BARN",
-                    Nynorsk to "",
-                    English to "",
-                )
-            }
-            paragraph {
-                textExpr(
-                    Bokmal to "Du får omstillingsstønad fordi du var samboer og har felles barn med ".expr() +
-                            avdoed.navn + " på tidspunktet for dødsfallet. Avdøde har vært medlem i folketrygden, " +
-                            "eller mottatt pensjon eller uføretrygd fra folketrygden de siste fem årene før dødsfallet.",
-                    Nynorsk to "".expr(),
-                    English to "".expr(),
-                )
-            }
+                // Gift i minst 5 år
+                paragraph {
+                    text(
+                        Bokmal to "GIFT I MINST 5 ÅR",
+                        Nynorsk to "",
+                        English to "",
+                    )
+                }
+                paragraph {
+                    textExpr(
+                        Bokmal to "Du får omstillingsstønad fordi du har vært gift med ".expr() + avdoed.navn +
+                                " i minst fem år. Avdøde har vært medlem i folketrygden, eller mottatt pensjon eller " +
+                                "uføretrygd fra folketrygden de siste fem årene før dødsfallet.",
+                        Nynorsk to "".expr(),
+                        English to "".expr(),
+                    )
+                }
 
-            // Omsorg for barn -  Gift under 5 år - ingen felles barn
-            paragraph {
-                text(
-                    Bokmal to "OMSORG FOR BARN - GIFT UNDER 5 ÅR - INGEN FELLES BARN",
-                    Nynorsk to "",
-                    English to "",
-                )
-            }
-            paragraph {
-                textExpr(
-                    Bokmal to "Du får omstillingsstønad fordi du var gift med ".expr() + avdoed.navn +
-                            " og har omsorg for barn under 18 år med minst halvparten av full tid på dødstidspunktet. " +
-                            "Avdøde har vært medlem i folketrygden, eller mottatt pensjon eller uføretrygd fra " +
-                            "folketrygden de siste fem årene før dødsfallet.",
-                    Nynorsk to "".expr(),
-                    English to "".expr(),
-                )
-            }
+                // Gift og har felles barn
+                paragraph {
+                    text(
+                        Bokmal to "GIFT OG HAR FELLES BARN",
+                        Nynorsk to "",
+                        English to "",
+                    )
+                }
+                paragraph {
+                    textExpr(
+                        Bokmal to "Du får omstillingsstønad fordi du har vært gift og har felles barn med ".expr() +
+                                avdoed.navn + ". Avdøde har vært medlem i folketrygden, eller mottatt pensjon eller " +
+                                "uføretrygd fra folketrygden de siste fem årene før dødsfallet.",
+                        Nynorsk to "".expr(),
+                        English to "".expr(),
+                    )
+                }
 
-            // Omsorg for barn – Samboer med tidligere ektefelle/felles barn
-            paragraph {
-                text(
-                    Bokmal to "OMSORG FOR BARN - SAMBOER MED TIDLIGERE EKTEFELLE/FELLES BARN",
-                    Nynorsk to "",
-                    English to "",
-                )
-            }
-            paragraph {
-                textExpr(
-                    Bokmal to "Du får omstillingsstønad fordi du var samboer med ".expr() + avdoed.navn +
-                            " som du tidligere har [vært gift med/hatt barn og bodd sammen med], og fordi du " +
-                            "på dødstidspunktet har omsorg for barn under 18 år med minst halvparten av full tid.",
-                    Nynorsk to "".expr(),
-                    English to "".expr(),
-                )
-            }
+                // Samboere og felles barn
+                paragraph {
+                    text(
+                        Bokmal to "SAMBOERE OG FELLES BARN",
+                        Nynorsk to "",
+                        English to "",
+                    )
+                }
+                paragraph {
+                    textExpr(
+                        Bokmal to "Du får omstillingsstønad fordi du var samboer og har felles barn med ".expr() +
+                                avdoed.navn + " på tidspunktet for dødsfallet. Avdøde har vært medlem i folketrygden, " +
+                                "eller mottatt pensjon eller uføretrygd fra folketrygden de siste fem årene før dødsfallet.",
+                        Nynorsk to "".expr(),
+                        English to "".expr(),
+                    )
+                }
 
-            // Fraskilt – Ekteskap varte i minst 15 år og felles barn
-            paragraph {
-                text(
-                    Bokmal to "FRASKILT - EKTESKAP VARTE I MINST 15 ÅR OG FELLES BARN",
-                    Nynorsk to "",
-                    English to "",
-                )
-            }
-            paragraph {
-                textExpr(
-                    Bokmal to "Du får omstillingsstønad fordi du var gift med ".expr() + avdoed.navn +
-                            " i minst 15 år, hadde felles barn og du har vært [fritekst: helt eller delvis] " +
-                            "forsørget av bidrag fra avdøde. Avdøde har vært medlem i folketrygden, " +
-                            "eller mottatt pensjon eller uføretrygd fra folketrygden de siste fem årene før dødsfallet.",
-                    Nynorsk to "".expr(),
-                    English to "".expr(),
-                )
-            }
+                // Omsorg for barn -  Gift under 5 år - ingen felles barn
+                paragraph {
+                    text(
+                        Bokmal to "OMSORG FOR BARN - GIFT UNDER 5 ÅR - INGEN FELLES BARN",
+                        Nynorsk to "",
+                        English to "",
+                    )
+                }
+                paragraph {
+                    textExpr(
+                        Bokmal to "Du får omstillingsstønad fordi du var gift med ".expr() + avdoed.navn +
+                                " og har omsorg for barn under 18 år med minst halvparten av full tid på dødstidspunktet. " +
+                                "Avdøde har vært medlem i folketrygden, eller mottatt pensjon eller uføretrygd fra " +
+                                "folketrygden de siste fem årene før dødsfallet.",
+                        Nynorsk to "".expr(),
+                        English to "".expr(),
+                    )
+                }
 
-            // Skilt – Ekteskapet varte i minst 25 år
-            paragraph {
-                text(
-                    Bokmal to "SKILT - EKTESKAPET VARTE I MINST 25 ÅR",
-                    Nynorsk to "",
-                    English to "",
-                )
-            }
-            paragraph {
-                textExpr(
-                    Bokmal to "Du får om stillingsstønad fordi du var gift med ".expr() + avdoed.navn +
-                            " i minst 25 år og du har vært [fritekst: helt eller delvis] forsørget av bidrag " +
-                            "fra avdøde. Avdøde har vært medlem i folketrygden, eller mottatt pensjon eller " +
-                            "uføretrygd fra folketrygden de siste fem årene før dødsfallet.",
-                    Nynorsk to "".expr(),
-                    English to "".expr(),
-                )
+                // Omsorg for barn – Samboer med tidligere ektefelle/felles barn
+                paragraph {
+                    text(
+                        Bokmal to "OMSORG FOR BARN - SAMBOER MED TIDLIGERE EKTEFELLE/FELLES BARN",
+                        Nynorsk to "",
+                        English to "",
+                    )
+                }
+                paragraph {
+                    textExpr(
+                        Bokmal to "Du får omstillingsstønad fordi du var samboer med ".expr() + avdoed.navn +
+                                " som du tidligere har [vært gift med/hatt barn og bodd sammen med], og fordi du " +
+                                "på dødstidspunktet har omsorg for barn under 18 år med minst halvparten av full tid.",
+                        Nynorsk to "".expr(),
+                        English to "".expr(),
+                    )
+                }
+
+                // Fraskilt – Ekteskap varte i minst 15 år og felles barn
+                paragraph {
+                    text(
+                        Bokmal to "FRASKILT - EKTESKAP VARTE I MINST 15 ÅR OG FELLES BARN",
+                        Nynorsk to "",
+                        English to "",
+                    )
+                }
+                paragraph {
+                    textExpr(
+                        Bokmal to "Du får omstillingsstønad fordi du var gift med ".expr() + avdoed.navn +
+                                " i minst 15 år, hadde felles barn og du har vært [fritekst: helt eller delvis] " +
+                                "forsørget av bidrag fra avdøde. Avdøde har vært medlem i folketrygden, " +
+                                "eller mottatt pensjon eller uføretrygd fra folketrygden de siste fem årene før dødsfallet.",
+                        Nynorsk to "".expr(),
+                        English to "".expr(),
+                    )
+                }
+
+                // Skilt – Ekteskapet varte i minst 25 år
+                paragraph {
+                    text(
+                        Bokmal to "SKILT - EKTESKAPET VARTE I MINST 25 ÅR",
+                        Nynorsk to "",
+                        English to "",
+                    )
+                }
+                paragraph {
+                    textExpr(
+                        Bokmal to "Du får om stillingsstønad fordi du var gift med ".expr() + avdoed.navn +
+                                " i minst 25 år og du har vært [fritekst: helt eller delvis] forsørget av bidrag " +
+                                "fra avdøde. Avdøde har vært medlem i folketrygden, eller mottatt pensjon eller " +
+                                "uføretrygd fra folketrygden de siste fem årene før dødsfallet.",
+                        Nynorsk to "".expr(),
+                        English to "".expr(),
+                    )
+                }
             }
 
         }
