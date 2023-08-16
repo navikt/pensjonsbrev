@@ -45,7 +45,7 @@ object SjekkBeregning : OutlinePhrase<LangBokmalNynorskEnglish>() {
         paragraph {
             text(
                 Bokmal to "Dette brevet er et forhåndsvarsel, slik at du kan sjekke at beregningene i vedlegg «Opplysninger om etteroppgjøret» er korrekte, og melde fra til oss hvis noe er feil eller mangler.",
-                Nynorsk to "Dette brevet er eit førehandsvarsel, og du har såleis høve til å sjekke at utrekningane i vedlegg «Opplysninger om etteroppgjøret» er korrekte, og melde frå til oss dersom noko er feil eller manglar.",
+                Nynorsk to "Dette brevet er eit førehandsvarsel, og du har såleis høve til å sjekke at utrekningane i vedlegg «Opplysningar om etteroppgjeret» er korrekte, og melde frå til oss dersom noko er feil eller manglar.",
                 English to "We are writing to inform you in advance before we make a final decision. Please review the calculations in appendix «Calculation of settlement» carefully. Check if there are any mistakes or missing information. If you find any errors, let us know as soon as possible."
             )
         }
@@ -197,7 +197,7 @@ object FristerOpplysningerKlage : OutlinePhrase<LangBokmalNynorskEnglish>() {
         paragraph {
             text(
                 Bokmal to "Hvis du mener at beregningene i vedlegg «Opplysninger om etteroppgjøret» er feil, må du melde fra til oss innen 3 uker fra du fikk dette brevet. Du vil da få en ny vurdering og et nytt vedtak.",
-                Nynorsk to "Dersom du meiner at utrekningane i vedlegg «Opplysninger om etteroppgjøret» er feil, må du melde frå til oss innan 3 veker frå du fekk dette brevet. Du vil då få ei ny vurdering og eit nytt vedtak.",
+                Nynorsk to "Dersom du meiner at utrekningane i vedlegg «Opplysningar om etteroppgjeret» er feil, må du melde frå til oss innan 3 veker frå du fekk dette brevet. Du vil då få ei ny vurdering og eit nytt vedtak.",
                 English to "If you believe that the calculations in appendix «Information about the settlement» are incorrect, you must notify us within 3 weeks of the date you received this letter. In such case you will receive a new assessment and a new decision."
             )
         }
