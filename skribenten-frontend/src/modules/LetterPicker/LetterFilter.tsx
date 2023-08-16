@@ -5,15 +5,12 @@ import LetterCategories from "./components/LetterCategories/LetterCategories"
 import LetterPicker from "./components/LetterPicker/LetterPicker"
 import {LetterCategory, LetterSelection} from "./model/skribenten"
 import ChangeAddressee from "./components/ChangeAddressee/ChangeAddressee"
-import {SearchRequest} from "./components/ChangeAddressee/AddresseeSearch/AddresseeSearch"
-import {PersonSoekResponse, SkribentServiceResult} from "../LetterEditor/model/api"
 
 export interface LetterFilterProps {
     categories: LetterCategory[] | null
     favourites: LetterSelection[] | null
     selectedLetter: string | null,
     onLetterSelected: (id: string | null) => void,
-    onSearchForRecipient: (request: SearchRequest) => Promise<SkribentServiceResult<PersonSoekResponse>>,
 }
 
 function filterCategories(categories: LetterCategory[], searchText: string): LetterCategory[] {
@@ -23,7 +20,7 @@ function filterCategories(categories: LetterCategory[], searchText: string): Let
     )
 }
 
-const LetterFilter: FC<LetterFilterProps> = ({categories, favourites, selectedLetter, onLetterSelected, onSearchForRecipient}) => {
+const LetterFilter: FC<LetterFilterProps> = ({categories, favourites, selectedLetter, onLetterSelected}) => {
     const [searchFilter, setSearchFilter] = useState("")
     const [expandCategories, setExpandCategories] = useState(false)
     const [changeAddresseeIsOpen, setChangeAddresseeIsOpen] = useState(false)
@@ -43,7 +40,6 @@ const LetterFilter: FC<LetterFilterProps> = ({categories, favourites, selectedLe
                             size="xsmall"
                             onClick={() => setChangeAddresseeIsOpen(true)}>Endre mottaker</Button>
                     <ChangeAddressee open={changeAddresseeIsOpen}
-                                     onSearchForRecipient={onSearchForRecipient}
                                      onExit={() => setChangeAddresseeIsOpen(false)}/>
                 </div>
                 <p>Test Saksbehandlerson</p>

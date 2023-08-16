@@ -1,17 +1,18 @@
-import {FC, useState} from "react"
+import {FC} from "react"
 import {Button, Modal, Tabs} from "@navikt/ds-react"
 import styles from "./ChangeAddressee.module.css"
 import {XMarkIcon} from "@navikt/aksel-icons"
-import AddresseeSearch, {SearchRequest} from "./AddresseeSearch/AddresseeSearch"
-import {PersonSoekResponse, SkribentServiceResult} from "../../../LetterEditor/model/api"
+import AddresseeSearch from "./AddresseeSearch/AddresseeSearch"
 
 interface ChangeAddresseeProps {
     open: boolean,
-    onSearchForRecipient: (request: SearchRequest) => Promise<SkribentServiceResult<PersonSoekResponse>>
     onExit: () => void
 }
 
-const ChangeAddressee: FC<ChangeAddresseeProps> = ({open, onExit, onSearchForRecipient}) => {
+const ChangeAddressee: FC<ChangeAddresseeProps> = ({open, onExit}) => {
+    const handleMottakerChanged = (pid: string) =>{ //TODO use address instead
+
+    }
     return (
         <Modal open={open} onClose={onExit} closeButton={false}>
             <Modal.Content className={styles.content}>
@@ -37,15 +38,10 @@ const ChangeAddressee: FC<ChangeAddresseeProps> = ({open, onExit, onSearchForRec
                             label="Legg til mottaker manuelt"
                         />
                     </Tabs.List>
-                    <Tabs.Panel value="addresseesearch">
-                        <AddresseeSearch onSearchForRecipient={onSearchForRecipient}/>
+                    <Tabs.Panel value="addresseesearch" className={styles.tabContent}>
+                        <AddresseeSearch onMottakerChosen={handleMottakerChanged}/>
                     </Tabs.Panel>
                 </Tabs>
-
-                <div className={styles.actionBar}>
-                    <Button size="small" variant="secondary">Avbryt</Button>
-                    <Button size="small">Ferdig</Button>
-                </div>
             </Modal.Content>
         </Modal>
     )

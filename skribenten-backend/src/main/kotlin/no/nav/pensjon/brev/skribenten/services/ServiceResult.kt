@@ -35,5 +35,7 @@ suspend inline fun <reified R: Any, reified E: Any> PipelineContext<Unit, Applic
 suspend inline fun <reified R: Any, reified E: Any> AuthorizedHttpClientResult.toServiceResult(): ServiceResult<R, E> =
     when (this) {
         is AuthorizedHttpClientResult.Error -> ServiceResult.AuthorizationError(error)
-        is AuthorizedHttpClientResult.Response -> ServiceResult.Ok(response.body())
+        is AuthorizedHttpClientResult.Response ->
+            if (response.status.isSuccess()) {ServiceResult.Ok(response.body())}
+            else {ServiceResult.Error(response.body())}
     }

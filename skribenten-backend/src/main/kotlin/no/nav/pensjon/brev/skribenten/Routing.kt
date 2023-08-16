@@ -20,7 +20,13 @@ import java.util.*
 
 data class RenderLetterRequest(val letterData: Any, val editedLetter: EditedJsonLetter?)
 
-data class MottakerSearchRequest(val soeketekst: String, val recipientType: RecipientType?, val place: Place?) {
+data class MottakerSearchRequest(
+    val soeketekst: String,
+    val recipientType: RecipientType?,
+    val place: Place?,
+    val kommuneNummer: String?,
+    val land: String?,
+) {
     enum class Place { INNLAND, UTLAND }
     enum class RecipientType { PERSON, SAMHANDLER }
 }
@@ -100,6 +106,10 @@ fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config
                             return@post
                         }
                     }
+                respondWithResult(penService.bestillDoksysBrev(call, request, name, onPremisesSamAccountName),
+                    onError = {
+
+                    })
                 when (val response = penService.bestillDoksysBrev(call, request, name, onPremisesSamAccountName)) {
                     is ServiceResult.Ok -> {
                         val journalpostId = response.result
@@ -127,8 +137,17 @@ fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config
 
             post("/pdl/soekmottaker") {
                 val request = call.receive<MottakerSearchRequest>()
-
                 respondWithResult(pdlService.personSoek(call, request))
+            }
+
+            get("/pdl/adresser/{pid}") {
+                val pid = call.parameters.getOrFail("pid")
+                respondWithResult(pdlService.hentAdresseForPersonFake(call, pid))
+            }
+
+            get("/pdl/forslag/kommune/{kommune}") {
+                val searchText = call.parameters.getOrFail("kommune")
+                respondWithResult(pdlService.hentKommuneForslag(call, searchText))
             }
 
             get("/test/brevbaker") {

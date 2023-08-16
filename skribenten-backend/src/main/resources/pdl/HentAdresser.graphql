@@ -1,0 +1,31 @@
+query hentAdresserQuery($ident: ID!) {
+    hentPerson(ident: $ident) {,
+        bostedsadresse(historikk: false) {
+            vegadresse {
+                adressenavn
+                husnummer
+                husbokstav
+                postnummer
+                bruksenhetsnummer
+            }
+        }
+        kontaktadresse(historikk: false){
+            vegadresse {
+                adressenavn
+                husnummer
+                husbokstav
+                postnummer
+                bruksenhetsnummer
+            }
+        }
+        oppholdsadresse(historikk: false) {
+            vegadresse {
+                adressenavn
+                husnummer
+                husbokstav
+                postnummer
+                bruksenhetsnummer
+            }
+        }
+    }
+}

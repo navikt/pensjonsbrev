@@ -1,32 +1,30 @@
-import React, {FC, useEffect, useState} from 'react'
+import React, {FC, useContext, useEffect, useState} from 'react'
 
 import "@navikt/ds-css"
 import "@navikt/ds-css-internal"
 import {Sak, SkribentServiceResult} from "../../modules/LetterEditor/model/api"
-import SkribentenAPI from "../../lib/services/skribenten"
 import SelectSakid, {SAKID_REGEX} from "../../modules/SelectSakId/SelectSakid"
-import {IMsalContext} from "@azure/msal-react/dist/MsalContext"
 import {useSearchParams} from "next/navigation"
 import {Header} from "@navikt/ds-react-internal"
 import {useRouter} from "next/router"
 import NavBar from "../navbar/NavBar"
 import CaseContextBar from "../casecontextbar/CaseContextBar"
-
+import {SkribentContext} from "../../pages/brevvelger"
 
 interface CaseContextPageProps {
     children?: React.ReactNode,
-    skribentApi: SkribentenAPI,
-    msal: IMsalContext,
     onSakChanged?: (sak: Sak | null) => void,
 }
 
-const CaseContextPage: FC<CaseContextPageProps> = ({children, skribentApi, msal, onSakChanged}) => {
+
+const CaseContextPage: FC<CaseContextPageProps> = ({children, onSakChanged}) => {
     const [sak, setSak] = useState<Sak | null>(null)
     const [navn, setNavn] = useState<string | null>(null)
-    // TODO
     const [isLoadingSak, setIsLoadingSak] = useState<boolean>(false)
     const [errorMessage, setErrorMessage] = useState<string | null>()
     const queryParams = useSearchParams()
+
+    const {msal, skribentApi} = useContext(SkribentContext) as SkribentContext
 
     const router = useRouter()
 
@@ -37,7 +35,7 @@ const CaseContextPage: FC<CaseContextPageProps> = ({children, skribentApi, msal,
                     if(onSakChanged !== undefined) {
                         onSakChanged(response.result)
                     }
-                    skribentApi.hentNavn(msal, response.result.foedselsnr).then(setNavn) // TODO kommenter inn når tilgang til PDL er i orden.
+                    skribentApi.hentNavn(msal, response.result.foedselsnr).then(setNavn)
                     setErrorMessage(null)
                     router.push(`${router.basePath}?sakId=${sakId}`, undefined, {shallow: true})
                     setIsLoadingSak(false)

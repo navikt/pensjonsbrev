@@ -9,7 +9,10 @@ import {
 } from "../../modules/LetterEditor/model/api"
 import {ObjectValue} from "../../modules/ModelEditor/model"
 import {LetterCategory} from "../../modules/LetterPicker/model/skribenten"
-import {SearchRequest} from "../../modules/LetterPicker/components/ChangeAddressee/AddresseeSearch/AddresseeSearch"
+import {
+    AddressResult,
+    SearchRequest
+} from "../../modules/LetterPicker/components/ChangeAddressee/AddresseeSearch/AddresseeSearch"
 
 export interface SkribentenAPIConfig {
     url: string
@@ -97,7 +100,7 @@ class SkribentenAPI {
                 },
                 method: 'GET',
             })
-        ).then(resp => resp.json()).catch(res => console.log(res))
+        ).then(resp => resp.json())
     }
 
     async addFavourite(msal: IMsalContext, letterId: string) {
@@ -170,10 +173,10 @@ class SkribentenAPI {
 
 
     async bestillDoksysBrev(msal: IMsalContext,
-                      brevkode: string,
-                      sakId: string,
-                      gjelderPid: string,
-                      spraak: string): Promise<string> {
+                            brevkode: string,
+                            sakId: string,
+                            gjelderPid: string,
+                            spraak: string): Promise<string> {
         return withAuthorization(msal, this.config.scope)
             .then((auth) => fetch(`${this.config.url}/pen/doksys`, {
                     headers: {
@@ -199,7 +202,7 @@ class SkribentenAPI {
         ).then((res) => res.text())
     }
 
-    async searchForRecipient(msal: IMsalContext, request: SearchRequest): Promise<SkribentServiceResult<PersonSoekResponse>> {
+    async soekEtterMottaker(msal: IMsalContext, request: SearchRequest): Promise<SkribentServiceResult<PersonSoekResponse>> {
         return withAuthorization(msal, this.config.scope).then((auth) =>
             fetch(`${this.config.url}/pdl/soekmottaker`, {
                 headers: {
@@ -212,7 +215,7 @@ class SkribentenAPI {
             })
         ).then(async (res): Promise<SkribentServiceResult<PersonSoekResponse>> => {
             if (res.status !== 200) {
-                return {result: null, errorMessage: `Error while fetching sak: Error code ${res.body}`}
+                return {result: null, errorMessage: `Error while seraching for addressee: Error code ${res.body}`}
             }
             return await res.json().then((value) => {
                 return {result: value, errorMessage: null}
@@ -220,6 +223,28 @@ class SkribentenAPI {
                 return {result: null, errorMessage: reason.message}
             })
         })
+    }
+
+    async hentAdresser(msal: IMsalContext, fnr: string): Promise<AddressResult> {
+        return withAuthorization(msal, this.config.scope).then(auth =>
+            fetch(`${this.config.url}/pdl/adresser/${fnr}`, {
+                headers: {
+                    'Authorization': `Bearer ${auth.accessToken}`,
+                },
+                method: 'GET',
+            })
+        ).then((res) => res.json())
+    }
+
+    async hentKommuneForslag(msal: IMsalContext, searchText: string): Promise<string> {
+        return withAuthorization(msal, this.config.scope).then(auth =>
+            fetch(`${this.config.url}/pdl/forslag/kommune/${searchText}`, {
+                headers: {
+                    'Authorization': `Bearer ${auth.accessToken}`,
+                },
+                method: 'GET',
+            })
+        ).then(res => res.text())
     }
 }
 

@@ -97,6 +97,8 @@ export interface PersonSoekResponse {
 
 export interface PersonSoekResultat {
     readonly navn: string,
+    readonly id: string,
+    readonly foedselsdato: string,
 }
 
 export type SakType = 'AFP' |  'AFP_PRIVAT' |  'ALDER' |  'BARNEP' |  'FAM_PL' |  'GAM_YRK' |  'GENRL' |  'GJENLEV' |  'GRBL' |  'KRIGSP' |  'OMSORG' |  'UFOREP'

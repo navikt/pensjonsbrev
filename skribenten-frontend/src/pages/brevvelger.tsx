@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react'
+import React, {createContext, useState} from 'react'
 import {NextPage} from "next"
 import {SkribentenConfig} from "./_app"
 
@@ -12,8 +12,16 @@ import {useMsal} from "@azure/msal-react"
 import {LetterCategory, LetterSelection} from "../modules/LetterPicker/model/skribenten"
 import LetterPickerActionBar from "../modules/LetterPicker/components/ActionBar/ActionBar"
 import SakContext from "../components/casecontextpage/CaseContextPage"
-import {PersonSoekResponse, Sak, SkribentServiceResult} from "../modules/LetterEditor/model/api"
-import {SearchRequest} from "../modules/LetterPicker/components/ChangeAddressee/AddresseeSearch/AddresseeSearch"
+
+import {Sak} from "../modules/LetterEditor/model/api"
+import {IMsalContext} from "@azure/msal-react/dist/MsalContext"
+
+export type SkribentContext = {
+    skribentApi: SkribentenAPI,
+    msal: IMsalContext
+}
+
+export const SkribentContext = createContext<SkribentContext | null>(null)
 
 const Brevvelger: NextPage<SkribentenConfig> = (props) => {
     const [selectedLetter, setSelectedLetter] = useState<LetterSelection | null>(null)
@@ -21,6 +29,9 @@ const Brevvelger: NextPage<SkribentenConfig> = (props) => {
     const [favourites, setFavourites] = useState<LetterSelection[] | null>(null)
     const [letterMetadata, setLetterMetadata] = useState<LetterSelection[] | null>()
     const [sak, setSak] = useState<Sak | null>(null)
+
+    const skribentApi = new SkribentenAPI(props.api)
+    const msal = useMsal()
 
     const onChangeSakHandler = (newSak: Sak | null) => {
         setSak(newSak)
@@ -40,9 +51,6 @@ const Brevvelger: NextPage<SkribentenConfig> = (props) => {
             })
         }
     }
-
-    const onSearchForRecipient = (request: SearchRequest): Promise<SkribentServiceResult<PersonSoekResponse>> =>
-        skribentApi.searchForRecipient(msal, request)
 
     const letterSelectedHandler = (id: string | null) => {
         if (id === selectedLetter?.id) {
@@ -67,8 +75,6 @@ const Brevvelger: NextPage<SkribentenConfig> = (props) => {
 
         }
     }
-    const skribentApi = new SkribentenAPI(props.api)
-    const msal = useMsal()
 
     const addToFavouritesHandler = async () => {
         if (selectedLetter) {
@@ -89,23 +95,25 @@ const Brevvelger: NextPage<SkribentenConfig> = (props) => {
         } else return false
     }
 
-    //TODO extract universal page (header and background)
-    return (<SakContext skribentApi={skribentApi} msal={msal} onSakChanged={onChangeSakHandler}>
-        <div className={styles.outerContainer}>
-            <div className={styles.innterContainer}>
-                <LetterFilter categories={letterCategories}
-                              favourites={favourites}
-                              onLetterSelected={letterSelectedHandler}
-                              onSearchForRecipient={onSearchForRecipient}
-                              selectedLetter={selectedLetter?.id || null}/>
-                <LetterPreview selectedLetter={selectedLetter}
-                               selectedIsFavourite={selectedLetterIsFavourite()}
-                               onAddToFavourites={addToFavouritesHandler}/>
-            </div>
-            <LetterPickerActionBar selectedLetter={selectedLetter}
-                                   onOrderLetter={onOrderLetterHandler}/>
-        </div>
-    </SakContext>)
+    return (
+        <SkribentContext.Provider value={{skribentApi: skribentApi, msal: msal}}>
+            <SakContext onSakChanged={onChangeSakHandler}>
+                <div className={styles.outerContainer}>
+                    <div className={styles.innterContainer}>
+                        <LetterFilter categories={letterCategories}
+                                      favourites={favourites}
+                                      onLetterSelected={letterSelectedHandler}
+                                      selectedLetter={selectedLetter?.id || null}/>
+                        <LetterPreview selectedLetter={selectedLetter}
+                                       selectedIsFavourite={selectedLetterIsFavourite()}
+                                       onAddToFavourites={addToFavouritesHandler}/>
+                    </div>
+                    <LetterPickerActionBar selectedLetter={selectedLetter}
+                                           onOrderLetter={onOrderLetterHandler}/>
+                </div>
+            </SakContext>
+        </SkribentContext.Provider>
+    )
 }
 
 

@@ -1,7 +1,5 @@
 .content {
-    margin-top: 1.56rem;
-    margin-left: 2.56rem;
-    margin-right: 2.56rem;
+
 }
 
 .filters {
@@ -18,4 +16,11 @@
 .filterGroup {
     width: 50%;
     margin-top: 0.75rem;
+}
+
+.lastSearchedText {
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+    font-weight: 600;
+    line-height: 1.25rem;
 }

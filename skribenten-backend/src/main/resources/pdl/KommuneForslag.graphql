@@ -1,0 +1,5 @@
+query($parameters:CompletionParameters){
+    forslagAdresse(parameters: {completionField: "vegadresse.kommune"}) {
+        suggestions
+    }
+}

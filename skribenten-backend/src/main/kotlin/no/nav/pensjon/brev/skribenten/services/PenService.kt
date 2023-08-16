@@ -33,14 +33,8 @@ class PenService(config: Config, authService: AzureADService) {
         }
     }
 
-    // Demo request
-    // TODO: Handle ResponseException and wrap in ServiceResult.Error. Design a type for possible errors.
-
-    // gjelder fnr
-    // nav enhet tilhørlighet(og egen valgt?)
-    // sakstype
-    // person navn
-    // fødselsdato
+    @JsonIgnoreProperties(ignoreUnknown = true) // ignorer merknader som ikke er relevant for våres kall.
+    data class PenError(val feilmelding:String)
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     data class PenPersonDto(
@@ -64,8 +58,8 @@ class PenService(config: Config, authService: AzureADService) {
     )
 
 
-    private suspend fun fetchSak(call: ApplicationCall, sakId: String): ServiceResult<Sak, String> =
-        client.get(call, "sak/$sakId").toServiceResult<Sak, String>()
+    private suspend fun fetchSak(call: ApplicationCall, sakId: String): ServiceResult<Sak, PenError> =
+        client.get(call, "sak/$sakId").toServiceResult<Sak, PenError>()
 
     suspend fun hentSak(call: ApplicationCall, sakId: String) =
         fetchSak(call, sakId).map {
@@ -97,7 +91,7 @@ class PenService(config: Config, authService: AzureADService) {
         request: OrderLetterRequest,
         saksbehandlerNavn: String,
         saksbehandlerBrukernavn: String
-    ): ServiceResult<String, String> =
+    ): ServiceResult<String, PenError> =
         client.post(call, "brev/extream/${request.sakId}") {
             setBody(
                 BestillExtreamBrevDto(
@@ -112,7 +106,7 @@ class PenService(config: Config, authService: AzureADService) {
                 )
             )
             contentType(ContentType.Application.Json)
-        }.toServiceResult<String, String>()
+        }.toServiceResult<String, PenError>()
 
 
     private data class BestillDoksysBrevRequest(
@@ -134,7 +128,7 @@ class PenService(config: Config, authService: AzureADService) {
         request: OrderLetterRequest,
         saksbehandlerNavn: String,
         saksbehandlerBrukernavn: String
-    ): ServiceResult<String, String> =
+    ): ServiceResult<String, PenError> =
         client.post(call, "sak/${request.sakId}/brev/doksys") {
             setBody(
                 BestillDoksysBrevRequest(
@@ -143,21 +137,21 @@ class PenService(config: Config, authService: AzureADService) {
                     mottaker = null, // TODO
                     saksbehandlerNavn = saksbehandlerNavn,
                     saksbehandlerIdent = saksbehandlerBrukernavn,
-                    journalfoerendeEnhet = "TODO enhet", // TODO
+                    journalfoerendeEnhet = "4849", // TODO
                     sensitivePersonopplysninger = false, // TODO
                     sprakKode = request.spraak,
                     automatiskBehandlet = false, // TODO fra metadata
                     gjelder = request.gjelderPid,
-                    vedtakId = null, //TODO
+                    vedtakId = 42806043, //TODO fyll inn fra query param
                 )
             )
             contentType(ContentType.Application.Json)
-        }.toServiceResult<String, String>()
+        }.toServiceResult<String, PenError>()
 
     suspend fun redigerExtreamBrev(call: ApplicationCall, journalpostId: String): ServiceResult<String, String> =
         client.get(call, "brev/rediger/extream/${journalpostId}").toServiceResult()
 
     suspend fun redigerDoksysBrev(call: ApplicationCall, journalpostId: String): ServiceResult<String, String> =
-        client.get(call, "brev/rediger/doksys/${journalpostId}").toServiceResult<String, String>()
+        client.post(call, "brev/rediger/doksys/${journalpostId}").toServiceResult<String, String>()
 }
 
