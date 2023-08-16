@@ -69,6 +69,7 @@ object BarnepensjonInnvilgelse : EtterlatteTemplate<BarnepensjonInnvilgelseDTO> 
                     utbetalingsinfo.antallBarn
                 )
             )
+            includePhrase(Barnepensjon.BeregnetPensjonTabell(utbetalingsinfo.beregningsperioder))
             includePhrase(Barnepensjon.Utbetaling)
             includePhrase(Barnepensjon.Regulering)
 

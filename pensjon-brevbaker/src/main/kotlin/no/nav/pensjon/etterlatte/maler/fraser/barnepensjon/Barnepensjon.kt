@@ -96,7 +96,6 @@ object Barnepensjon {
                     )
                 }
             }
-            includePhrase(BeregnetPensjonTabell(beregningsperioder))
         }
     }
 
