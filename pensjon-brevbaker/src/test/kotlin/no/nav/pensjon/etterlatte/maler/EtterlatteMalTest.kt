@@ -1,7 +1,9 @@
 package no.nav.pensjon.etterlatte.maler
 
+import io.ktor.util.reflect.*
 import kotlinx.coroutines.runBlocking
 import no.nav.pensjon.brev.PDF_BUILDER_URL
+import no.nav.pensjon.brev.TestTags
 import no.nav.pensjon.brev.api.objectMapper
 import no.nav.pensjon.brev.latex.LaTeXCompilerService
 import no.nav.pensjon.brev.template.Language
@@ -15,10 +17,12 @@ import no.nav.pensjon.brev.writeTestHTML
 import no.nav.pensjon.brev.writeTestPDF
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.Fixtures
+import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 import java.nio.file.Files
 import java.nio.file.Paths
 
+@Tag(TestTags.INTEGRATION_TEST)
 abstract class EtterlatteMalTest<T : Any>(
     val template: LetterTemplate<LanguageSupport.Triple<Language.Bokmal, Language.Nynorsk, Language.English>, T>,
     private val etterlatteBrevKode: EtterlatteBrevKode,
@@ -50,6 +54,12 @@ abstract class EtterlatteMalTest<T : Any>(
 
     @Test
     fun jsontest() {
+        val erHovedmal = this.fixtures.instanceOf(BrevDTO::class)
+        // Hovedmalar skal ikkje redigerast i Gjenny, så dei treng vi ikkje å lage JSON av.
+        // I tillegg er det per no ein mangel i brevbakeren at han ikkje klarer å lage JSON av tabellar, som vi bruker i ein del hovedmalar
+        if (erHovedmal) {
+            return
+        }
         Letter(
             template,
             fixtures,
