@@ -14,6 +14,7 @@ import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSel
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSelectors.BarnetilleggSelectors.FellesbarnSelectors.grunnbelop
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSelectors.BarnetilleggSelectors.FellesbarnSelectors.isFribeloepRedusert
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSelectors.BarnetilleggSelectors.FellesbarnSelectors.personinntektAnnenForelder
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSelectors.BarnetilleggSelectors.FellesbarnSelectors.resultat
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSelectors.BarnetilleggSelectors.FellesbarnSelectors.resultat_safe
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSelectors.BarnetilleggSelectors.FellesbarnSelectors.sivilstand
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSelectors.BarnetilleggSelectors.SaerkullsbarnSelectors.fribeloep
@@ -371,14 +372,19 @@ private fun OutlineOnlyScope<LangBokmal, *>.omBeregningAvBarnetillegg(
                 )
             )
         }
-
-        title2 {
+        paragraph {
             text(
-                Bokmal to "Beløp som er trukket fra annen forelder sin personinntekt",
+                Bokmal to "Mottar annen forelder uføretrygd eller alderspensjon fra NAV, regnes dette også med som personinntekt.",
             )
         }
-        paragraph {
-            showIf(fellesbarn.personinntektAnnenForelder.fratrekk.fratrekk.isNotEmpty()) {
+
+        showIf(fellesbarn.personinntektAnnenForelder.fratrekk.fratrekk.isNotEmpty()) {
+            title2 {
+                text(
+                    Bokmal to "Beløp som er trukket fra annen forelder sin personinntekt",
+                )
+            }
+            paragraph {
                 includePhrase(
                     FratrekkTabell(
                         fellesbarn.personinntektAnnenForelder.fratrekk,
@@ -388,26 +394,26 @@ private fun OutlineOnlyScope<LangBokmal, *>.omBeregningAvBarnetillegg(
                         ),
                     )
                 )
-            } orShow {
+            }
+
+            showIf(
+                fellesbarn.resultat.avvik.notEqualTo(0)
+                        and fellesbarn.personinntektAnnenForelder.inntekt.sum.greaterThan(fellesbarn.personinntektAnnenForelder.fratrekk.sum)
+            ) {
+                paragraph {
+                    textExpr(
+                        Bokmal to "Folketrygdens grunnbeløp på inntil ".expr() + fellesbarn.grunnbelop.format() + " kroner er holdt utenfor inntekten til annen forelder.",
+                    )
+                }
+            }
+        } orShow {
+            paragraph {
                 textExpr(
                     Bokmal to "Annen forelder har ikke hatt inntekt som er trukket fra sin personinntekt i ".expr() + periode.format() + ".",
                 )
             }
         }
 
-        paragraph {
-            text(
-                Bokmal to "Mottar annen forelder uføretrygd eller alderspensjon fra NAV, regnes dette også med som personinntekt.",
-            )
-        }
-
-        showIf(fellesbarn.personinntektAnnenForelder.inntekt.sum.greaterThan(fellesbarn.personinntektAnnenForelder.fratrekk.sum)) {
-            paragraph {
-                textExpr(
-                    Bokmal to "Folketrygdens grunnbeløp på inntil ".expr() + fellesbarn.grunnbelop.format() + " kroner er holdt utenfor inntekten til annen forelder.",
-                )
-            }
-        }
     }
 
     // TODO Skal ha en betingelse for visning
