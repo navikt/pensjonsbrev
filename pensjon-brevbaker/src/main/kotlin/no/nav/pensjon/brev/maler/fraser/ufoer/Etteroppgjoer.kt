@@ -24,9 +24,9 @@ data class Innledning(
         }
         paragraph {
             textExpr(
-                Bokmal to "Vår beregning viser at du har fått ".expr() + totaltAvvik.format() + " kroner for mye utbetalt.",
-                Nynorsk to "Utrekninga vår viser at du har fått utbetalt ".expr() + totaltAvvik.format() + " kroner for mykje.",
-                English to "Our calculations show that you have received an overpayment of NOK ".expr() + totaltAvvik.format() + "."
+                Bokmal to "Vår beregning viser at du har fått ".expr() + totaltAvvik.absoluteValue().format() + " kroner for mye utbetalt.",
+                Nynorsk to "Utrekninga vår viser at du har fått utbetalt ".expr() + totaltAvvik.absoluteValue().format() + " kroner for mykje.",
+                English to "Our calculations show that you have received an overpayment of NOK ".expr() + totaltAvvik.absoluteValue().format() + "."
             )
         }
     }

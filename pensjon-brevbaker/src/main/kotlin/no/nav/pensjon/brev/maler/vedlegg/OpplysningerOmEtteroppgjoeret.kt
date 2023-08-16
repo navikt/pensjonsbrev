@@ -591,7 +591,7 @@ private fun OutlineOnlyScope<LangBokmal, *>.duHarFaattAvviksBeloep(
 ) {
     paragraph {
         textExpr(
-            Bokmal to "Du har fått ".expr() + totaltAvvik.format() + " kroner for " + ifElse(harFaattForMye, "mye", "lite") + " i uføretrygd",
+            Bokmal to "Du har fått ".expr() + totaltAvvik.absoluteValue().format() + " kroner for " + ifElse(harFaattForMye, "mye", "lite") + " i uføretrygd",
         )
         showIf(harBarnetillegg and harGjenlevendeTillegg) {
             text(
@@ -646,8 +646,8 @@ private fun OutlineOnlyScope<LangBokmal, *>.fikkSkulleFaattTabell(
                     )
                 }
                 column(columnSpan = 4, alignment = ColumnAlignment.RIGHT) {
-                    textExpr(
-                        Bokmal to "For ".expr() + ifElse(harFaattForMye, "mye", "lite") + " beløp",
+                    text(
+                        Bokmal to "Avviksbeløp",
                         fontType = FontType.BOLD,
                     )
                 }
