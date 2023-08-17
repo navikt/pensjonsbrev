@@ -30,7 +30,6 @@ data class OpplysningerOmEtteroppgjoeretDto(
             val sivilstand: BorMedSivilstand,
             val grunnbelop: Kroner,
             val fribeloep: Kroner,
-            val isFribeloepRedusert: Boolean,
             val resultat: AvviksResultat,
             val personinntektAnnenForelder: InntektOgFratrekk,
             val harSamletInntektOverInntektstak: Boolean,
@@ -39,10 +38,8 @@ data class OpplysningerOmEtteroppgjoeretDto(
 
         data class Saerkullsbarn(
             val fribeloep: Kroner,
-            val isFribeloepRedusert: Boolean,
             val resultat: AvviksResultat,
         )
-
     }
 
     data class InntektOgFratrekk(
