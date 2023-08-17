@@ -2,7 +2,6 @@ package no.nav.pensjon.etterlatte.maler.fraser
 
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.model.format
-import no.nav.pensjon.brev.template.Element
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmal
 import no.nav.pensjon.brev.template.Language.Bokmal
@@ -10,9 +9,7 @@ import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.TextOnlyPhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.TextOnlyScope
-import no.nav.pensjon.brev.template.dsl.expression.expr
-import no.nav.pensjon.brev.template.dsl.expression.format
-import no.nav.pensjon.brev.template.dsl.expression.plus
+import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.Kroner
@@ -21,6 +18,7 @@ import no.nav.pensjon.etterlatte.maler.AvkortetBeregningsperiodeSelectors.datoFO
 import no.nav.pensjon.etterlatte.maler.AvkortetBeregningsperiodeSelectors.datoTOM
 import no.nav.pensjon.etterlatte.maler.AvkortetBeregningsperiodeSelectors.inntekt
 import no.nav.pensjon.etterlatte.maler.AvkortetBeregningsperiodeSelectors.utbetaltBeloep
+import no.nav.pensjon.etterlatte.maler.Etterbetalingsperiode
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
 import java.time.LocalDate
 
@@ -30,6 +28,7 @@ object OMSInnvilgelse {
         val virkningsdato: Expression<LocalDate>,
         val avdoedNavn: Expression<String>,
         val doedsdato: Expression<LocalDate>,
+        val etterbetalingsperioder: Expression<List<Etterbetalingsperiode>>
     ) :
         OutlinePhrase<LangBokmal>() {
         override fun OutlineOnlyScope<LangBokmal, Unit>.template() {
@@ -45,8 +44,25 @@ object OMSInnvilgelse {
             }
             paragraph {
                 text(
-                    Bokmal to "Omstillingsstønad innvilges vanligvis for inntil tre år.",
+                    Bokmal to "Omstillingsstønad innvilges vanligvis for inntil tre år. Stønaden reduseres " +
+                            "på grunnlag av arbeidsinntekten din. Se hvordan stønaden din er beregnet under " +
+                            "beregning av omstillingsstønaden. Der går det også frem hvilken inntekt stønaden " +
+                            "din er redusert etter.",
                 )
+            }
+            paragraph {
+                showIf (etterbetalingsperioder.isEmpty()) {
+                    text(
+                        Bokmal to "Vedtaket er gjort etter bestemmelsene om omstillingstid i folketrygdloven " +
+                                "§ 17-2, § 17-3, § 17-4, § 17-5, § 17-6, § 17-9 og § 22-12.",
+                    )
+                } orShow {
+                    text(
+                        Bokmal to "Vedtaket er gjort etter bestemmelsene om omstillingstid i folketrygdloven " +
+                                "§ 17-2, § 17-3, § 17-4, § 17-5, § 17-6, § 17-9, § 22-12 og § 22-13.",
+                    )
+                }
+
             }
         }
     }
@@ -213,7 +229,7 @@ object OMSInnvilgelse {
         override fun OutlineOnlyScope<LangBokmal, Unit>.template() {
             title2 {
                 text(
-                    Bokmal to "Aktivitetsplikt",
+                    Bokmal to "Du må være i aktivitet",
                 )
             }
             paragraph {
@@ -244,21 +260,21 @@ object OMSInnvilgelse {
         override fun OutlineOnlyScope<LangBokmal, Unit>.template() {
             title2 {
                 text(
-                    Bokmal to "Inntektsendring",
+                    Bokmal to "Du må melde fra hvis inntekten din endrer seg",
                 )
             }
             paragraph {
                 text(
-                    Bokmal to "Du må si ifra til oss hvis årsinntekten din endrer seg og blir " +
-                            "lavere enn <MAKSBELOEP>. Da må vi vurdere om du kan ha rett til " +
-                            "utbetaling av omstillingsstønad."
+                    Bokmal to "For at du skal motta korrekt omstillingsstønad, er det viktig at du informerer " +
+                            "oss hvis inntekten din endrer seg. Vi vil justere omstillingsstønaden fra måneden etter " +
+                            "at du har gitt beskjed, og beregne inntekten din basert på det du har tjent så langt i år. " +
+                            "Du kan lese mer om inntektsendring i vedlegget «Informasjon til deg som mottar overgangsstønad»."
                 )
             }
             paragraph {
                 text(
-                    Bokmal to "Du sier ifra om endringer i inntekt ved å skrive en beskjed til " +
-                            "oss på ${Constants.SKRIVTILOSS_URL} eller sende informasjon til " +
-                            "NAV Familie- og pensjonsytelser, Postboks 6600, 0607 OSLO."
+                    Bokmal to "Du kan også finne mer informasjon om hvordan vi beregner inntekten din på " +
+                            "${Constants.OMS_HVORMYE_URL}."
                 )
             }
         }
@@ -273,34 +289,10 @@ object OMSInnvilgelse {
             }
             paragraph {
                 text(
-                    Bokmal to "Selv om du ikke har utbetalt omstillingsstønad vil vi hver høst " +
-                            "sjekke inntektsopplysningene i skatteoppgjøret ditt for å se om du har " +
-                            "fått utbetalt riktig beløp i stønad året før."
-                )
-            }
-            paragraph {
-                text(
-                    Bokmal to "Dersom du ikke har hatt utbetalt omstillingsstønad i kalenderåret vi " +
-                            "sjekker vil du ikke motta brev om etteroppgjør fra oss. Viser skatteoppgjøret at du har " +
-                            "hatt en annen inntekt enn den inntekten vi brukte da vi beregnet omstillingstønaden din, " +
-                            "vil vi gjøre en ny beregning. Dette kalles etteroppgjør."
-                )
-            }
-            paragraph {
-                text(
-                    Bokmal to "Hvis du har fått for lite utbetalt, får du en etterbetaling. " +
-                            "Har du fått for mye utbetalt, må du betale tilbake."
-                )
-            }
-            paragraph {
-                text(
-                    Bokmal to "Mer informasjon om hvordan vi har behandlet vedtaket",
-                    Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
-                )
-            }
-            paragraph {
-                text(
-                    Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 17-2 til 17-9 og 22-12/22-13."
+                    Bokmal to "Hver høst sjekker NAV inntektsopplysningene i skatteoppgjøret ditt for å se " +
+                            "om du har fått utbetalt riktig beløp i omstillingsstønad året før. Hvis du har fått " +
+                            "for lite utbetalt, får du en etterbetaling. Har du fått for mye utbetalt, må du betale " +
+                            "tilbake. Du kan finne mer informasjon om etteroppgjør på ${Constants.OMS_ETTEROPPGJOER_URL}."
                 )
             }
         }
