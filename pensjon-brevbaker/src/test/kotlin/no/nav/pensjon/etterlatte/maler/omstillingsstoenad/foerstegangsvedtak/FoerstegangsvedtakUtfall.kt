@@ -14,7 +14,6 @@ import no.nav.pensjon.etterlatte.maler.*
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 
-
 @Tag(TestTags.INTEGRATION_TEST)
 class OMSFoerstegangsvedtakUtfallITest {
 
@@ -27,7 +26,7 @@ class OMSFoerstegangsvedtakUtfallITest {
             Fixtures.felles
         ).let { PensjonLatexRenderer.render(it) }
             .let { runBlocking { LaTeXCompilerService(PDF_BUILDER_URL).producePDF(it, "test").base64PDF } }
-            .also { writeTestPDF(EtterlatteBrevKode.OMS_INNVILGELSE_FOERSTEGANGSVEDTAK_UTFALL.name, it) }
+            .also { writeTestPDF(EtterlatteBrevKode.OMS_FOERSTEGANGSVEDTAK_INNVILGELSE_UTFALL.name, it) }
     }
 
     @Test
@@ -38,7 +37,7 @@ class OMSFoerstegangsvedtakUtfallITest {
             Language.Bokmal,
             Fixtures.felles
         ).let { PensjonHTMLRenderer.render(it) }
-            .also { writeTestHTML(EtterlatteBrevKode.OMS_INNVILGELSE_FOERSTEGANGSVEDTAK_UTFALL.name, it) }
+            .also { writeTestHTML(EtterlatteBrevKode.OMS_FOERSTEGANGSVEDTAK_INNVILGELSE_UTFALL.name, it) }
     }
 
 }

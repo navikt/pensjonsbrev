@@ -11,7 +11,6 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.*
-import no.nav.pensjon.etterlatte.maler.AvdoedSelectors.doedsdato
 import no.nav.pensjon.etterlatte.maler.AvdoedSelectors.navn
 import no.nav.pensjon.etterlatte.maler.AvkortingsinfoSelectors.virkningsdato
 import no.nav.pensjon.etterlatte.maler.fraser.OMSInnvilgelse
@@ -36,7 +35,7 @@ data class OMSInnvilgelseFoerstegangsvedtakDTO(
 
 @TemplateModelHelpers
 object InnvilgelseFoerstegangsvedtak  : EtterlatteTemplate<OMSInnvilgelseFoerstegangsvedtakDTO>, Hovedmal {
-    override val kode: EtterlatteBrevKode = EtterlatteBrevKode.OMS_INNVILGELSE_FOERSTEGANGSVEDTAK
+    override val kode: EtterlatteBrevKode = EtterlatteBrevKode.OMS_FOERSTEGANGSVEDTAK_INNVILGELSE
 
     override val template = createTemplate(
         name = kode.name,

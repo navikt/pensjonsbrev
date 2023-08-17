@@ -27,7 +27,7 @@ data class FoerstegangsvedtakUtfallDTO(
 
 @TemplateModelHelpers
 object FoerstegangsvedtakUtfall : EtterlatteTemplate<FoerstegangsvedtakUtfallDTO>, Delmal {
-    override val kode: EtterlatteBrevKode = EtterlatteBrevKode.OMS_INNVILGELSE_FOERSTEGANGSVEDTAK_UTFALL
+    override val kode: EtterlatteBrevKode = EtterlatteBrevKode.OMS_FOERSTEGANGSVEDTAK_INNVILGELSE_UTFALL
 
     override val template = createTemplate(
         name = kode.name,
