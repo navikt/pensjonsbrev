@@ -14,38 +14,16 @@ object OMSFelles {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             title2 {
                 text(
-                    Bokmal to "Meld fra om endringer",
+                    Bokmal to "Du må melde fra om endringer",
                     Nynorsk to "",
                     English to ""
                 )
             }
             paragraph {
                 text(
-                    Bokmal to "Hvis det skjer endringer som kan ha betydning for stønaden din, må " +
-                            "du si ifra til oss. Vi vil ha melding dersom du",
-                    Nynorsk to "",
-                    English to ""
-                )
-                list {
-                    item { text(Bokmal to "gifter deg eller blir samboer med en du tidligere har vært gift med", Nynorsk to "", English to "") }
-                    item { text(Bokmal to "blir samboer med en du har eller har hatt felles barn med", Nynorsk to "", English to "") }
-                    item { text(Bokmal to "får felles barn med en ny samboer", Nynorsk to "", English to "") }
-                    item { text(Bokmal to "flytter eller oppholder deg i et annet land i 6 måneder eller mer", Nynorsk to "", English to "") }
-                    item { text(Bokmal to "får varig opphold i institusjon", Nynorsk to "", English to "") }
-                }
-                text(
-                    Bokmal to "Du sier ifra om endringer ved å skrive en beskjed til oss på " +
-                            "${Constants.SKRIVTILOSS_URL} eller ved å sende brev til oss på " +
-                            "NAV Familie- og pensjonsytelser, postboks 6600 Etterstad, 0607 OSLO.",
-                    Nynorsk to "",
-                    English to ""
-                )
-            }
-            paragraph {
-                text(
-                    Bokmal to "Du er ansvarlig for å holde deg orientert om utbetaling av " +
-                            "omstillingsstønaden, og du må straks melde fra om eventuelle feil til NAV. " +
-                            "Du kan lese mer om endringer på ${Constants.OMS_ENDRING_URL}.",
+                    Bokmal to "Du har plikt til å melde fra til oss om endringer som har betydning for " +
+                            "utbetalingen av omstillingsstønaden din, eller retten til å få omstillingsstønad. " +
+                            "I vedlegget «Dine rettigheter og plikter» ser du hvilke endringer du må si fra om.",
                     Nynorsk to "",
                     English to ""
                 )
@@ -66,7 +44,7 @@ object OMSFelles {
                 text(
                     Bokmal to "Hvis du mener vedtaket er feil, kan du klage innen seks uker " +
                             "fra den datoen du mottok vedtaket. Klagen skal være skriftlig. Du finner skjema " +
-                            "og informasjon på ${Constants.OMS_KLAGE_URL}.",
+                            "og informasjon på ${Constants.KLAGE_URL}.",
                     Nynorsk to "",
                     English to ""
                 )
@@ -127,21 +105,15 @@ object OMSFelles {
             }
             paragraph {
                 text(
-                    Bokmal to "Du kan finne svar på ${Constants.OMS_URL}.",
+                    Bokmal to "Du kan finne svar på ${Constants.OMS_URL}. På ${Constants.KONTAKT_URL} kan du " +
+                            "chatte eller skrive til oss.",
                     Nynorsk to "",
                     English to ""
                 )
             }
             paragraph {
                 text(
-                    Bokmal to "På ${Constants.KONTAKT_URL} kan du chatte eller skrive til oss.",
-                    Nynorsk to "",
-                    English to ""
-                )
-            }
-            paragraph {
-                text(
-                    Bokmal to "Du kan også kontakte oss på telefon 55 55 33 34, hverdager 09.00-15.00. " +
+                    Bokmal to "Du kan også kontakte oss på telefon ${Constants.KONTAKTTELEFON_PENSJON}, hverdager 09.00-15.00. " +
                             "Hvis du oppgir fødselsnummer, kan vi lettere gi deg rask og god hjelp.",
                     Nynorsk to "",
                     English to ""

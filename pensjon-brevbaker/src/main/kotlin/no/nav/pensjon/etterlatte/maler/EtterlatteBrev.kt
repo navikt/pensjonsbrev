@@ -3,6 +3,20 @@ package no.nav.pensjon.etterlatte.maler
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import java.time.LocalDate
 
+data class EtterbetalingDTO(
+    val fraDato: LocalDate,
+    val tilDato: LocalDate,
+    val beregningsperioder: List<Etterbetalingsperiode>
+)
+
+data class Etterbetalingsperiode(
+    val datoFOM: LocalDate,
+    val datoTOM: LocalDate?,
+    val grunnbeloep: Kroner,
+    val stoenadFoerReduksjon: Kroner,
+    var utbetaltBeloep: Kroner
+)
+
 data class Avkortingsinfo(
     val grunnbeloep: Kroner,
     val inntekt: Kroner,
@@ -20,7 +34,29 @@ data class AvkortetBeregningsperiode(
     val datoFOM: LocalDate,
     val datoTOM: LocalDate?,
     val inntekt: Kroner,
+    val ytelseFoerAvkorting: Kroner,
     val utbetaltBeloep: Kroner,
+    val trygdetid: Int,
+)
+
+data class Beregningsinfo(
+    val grunnbeloep: Kroner,
+    val beregningsperioder: List<NyBeregningsperiode>,
+    val trygdetidsperioder: List<Trygdetidsperiode>,
+)
+
+data class NyBeregningsperiode(
+    val inntekt: Kroner,
+    val trygdetid: Int,
+    val stoenadFoerReduksjon: Kroner,
+    var utbetaltBeloep: Kroner,
+)
+
+data class Trygdetidsperiode(
+    val datoFOM: LocalDate,
+    val datoTOM: LocalDate?,
+    val land: String,
+    val opptjeningsperiode: String,
 )
 
 data class Utbetalingsinfo(

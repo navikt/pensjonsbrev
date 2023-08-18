@@ -8,25 +8,25 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
-import no.nav.pensjon.etterlatte.maler.Avdoed
+import no.nav.pensjon.etterlatte.maler.*
 import no.nav.pensjon.etterlatte.maler.AvdoedSelectors.doedsdato
 import no.nav.pensjon.etterlatte.maler.AvdoedSelectors.navn
-import no.nav.pensjon.etterlatte.maler.Avkortingsinfo
 import no.nav.pensjon.etterlatte.maler.AvkortingsinfoSelectors.beregningsperioder
 import no.nav.pensjon.etterlatte.maler.AvkortingsinfoSelectors.grunnbeloep
 import no.nav.pensjon.etterlatte.maler.AvkortingsinfoSelectors.inntekt
 import no.nav.pensjon.etterlatte.maler.AvkortingsinfoSelectors.virkningsdato
-import no.nav.pensjon.etterlatte.maler.Utbetalingsinfo
 import no.nav.pensjon.etterlatte.maler.fraser.OMSInnvilgelse
 import no.nav.pensjon.etterlatte.maler.fraser.common.OMSFelles
 import no.nav.pensjon.etterlatte.maler.fraser.common.Vedtak
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.OMSInnvilgelseDTOSelectors.avdoed
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.OMSInnvilgelseDTOSelectors.avkortingsinfo
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.OMSInnvilgelseDTOSelectors.etterbetalingsinfo
 
 data class OMSInnvilgelseDTO(
     val utbetalingsinfo: Utbetalingsinfo,
     val avkortingsinfo: Avkortingsinfo,
-    val avdoed: Avdoed
+    val avdoed: Avdoed,
+    val etterbetalingsinfo: EtterbetalingDTO
 )
 
 @TemplateModelHelpers
@@ -53,7 +53,7 @@ object OMSInnvilgelseAuto : EtterlatteTemplate<OMSInnvilgelseDTO> {
         outline {
             includePhrase(Vedtak.Overskrift)
 
-            includePhrase(OMSInnvilgelse.Vedtak(avkortingsinfo.virkningsdato, avdoed.navn, avdoed.doedsdato))
+            includePhrase(OMSInnvilgelse.Vedtak(avkortingsinfo.virkningsdato, avdoed.navn, etterbetalingsinfo))
             includePhrase(OMSInnvilgelse.BeregningOgUtbetaling(avkortingsinfo.grunnbeloep, avkortingsinfo.beregningsperioder))
             includePhrase(OMSInnvilgelse.Beregningsgrunnlag(avkortingsinfo.inntekt))
             includePhrase(OMSInnvilgelse.Utbetaling)
