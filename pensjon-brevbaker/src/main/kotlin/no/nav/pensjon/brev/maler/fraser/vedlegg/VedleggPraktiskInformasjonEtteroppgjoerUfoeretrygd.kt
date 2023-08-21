@@ -160,7 +160,7 @@ object InntekterSomKanHoldesUtenforEtteroppgjoeret :
             list {
                 item {
                     text(
-                        Bokmal to "lønnsslip",
+                        Bokmal to "lønnsslipp",
                         Nynorsk to "lønsslipp ",
                         English to "wage slips"
                     )
