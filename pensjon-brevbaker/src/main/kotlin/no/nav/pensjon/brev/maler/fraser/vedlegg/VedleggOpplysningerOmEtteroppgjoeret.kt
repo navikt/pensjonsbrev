@@ -2,25 +2,29 @@ package no.nav.pensjon.brev.maler.fraser.vedlegg
 
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDto
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSelectors.AvviksResultatSelectors.avvik
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSelectors.AvviksResultatSelectors.avvik_safe
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSelectors.AvviksResultatSelectors.fikk
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSelectors.AvviksResultatSelectors.fikk_safe
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSelectors.AvviksResultatSelectors.harFaattForMye
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSelectors.AvviksResultatSelectors.skulleFaatt
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSelectors.AvviksResultatSelectors.skulleFaatt_safe
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSelectors.BarnetilleggSelectors.FellesbarnSelectors.fribeloep
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSelectors.BarnetilleggSelectors.FellesbarnSelectors.grunnbelop
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSelectors.BarnetilleggSelectors.FellesbarnSelectors.inntektstakSamletInntekt
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSelectors.BarnetilleggSelectors.FellesbarnSelectors.personinntektAnnenForelder
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSelectors.BarnetilleggSelectors.FellesbarnSelectors.resultat
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSelectors.BarnetilleggSelectors.FellesbarnSelectors.resultat_safe
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSelectors.BarnetilleggSelectors.FellesbarnSelectors.samletInntekt
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSelectors.BarnetilleggSelectors.FellesbarnSelectors.sivilstand
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSelectors.BarnetilleggSelectors.SaerkullsbarnSelectors.fribeloep
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSelectors.BarnetilleggSelectors.SaerkullsbarnSelectors.inntektstakSamletInntekt
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSelectors.BarnetilleggSelectors.SaerkullsbarnSelectors.resultat_safe
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSelectors.BarnetilleggSelectors.SaerkullsbarnSelectors.samletInntekt
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSelectors.BarnetilleggSelectors.felles
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSelectors.BarnetilleggSelectors.felles_safe
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSelectors.BarnetilleggSelectors.mindreEnn40AarTrygdetid
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSelectors.BarnetilleggSelectors.personinntekt
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSelectors.BarnetilleggSelectors.saerkull
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSelectors.BarnetilleggSelectors.saerkull_safe
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSelectors.BarnetilleggSelectors.totaltResultat
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSelectors.InntektOgFratrekkSelectors.FratrekkSelectors.FratrekkLinjeSelectors.aarsak
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSelectors.InntektOgFratrekkSelectors.FratrekkSelectors.FratrekkLinjeSelectors.beloep
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSelectors.InntektOgFratrekkSelectors.FratrekkSelectors.FratrekkLinjeSelectors.type
@@ -38,6 +42,7 @@ import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.model.ubestemtForm
 import no.nav.pensjon.brev.template.*
+import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brevbaker.api.model.Kroner
@@ -47,14 +52,14 @@ data class Introduksjon(val periode: Expression<Year>) : OutlinePhrase<LangBokma
     override fun OutlineOnlyScope<LangBokmal, Unit>.template() {
         paragraph {
             textExpr(
-                Language.Bokmal to "Vi bruker opplysningene som du selv legger inn som inntekt på ${Constants.INNTEKTSPLANLEGGEREN_URL}, og opplysninger fra Skatteetaten. ".expr() +
+                Bokmal to "Vi bruker opplysningene som du selv legger inn som inntekt på ${Constants.INNTEKTSPLANLEGGEREN_URL}, og opplysninger fra Skatteetaten. ".expr() +
                         "Vi har gjort en ny beregning av uføretrygden din for " + periode.format() + " etter opplysninger fra Skatteetaten. " +
                         "Du kan se skatteoppgjøret ditt på ${Constants.SKATTEETATEN_URL}.",
             )
         }
         paragraph {
             text(
-                Language.Bokmal to "Husk at du må melde fra til oss innen 3 uker hvis du mener beregningene feil.",
+                Bokmal to "Husk at du må melde fra til oss innen 3 uker hvis du mener beregningene feil.",
             )
         }
     }
@@ -70,7 +75,7 @@ data class FikkSkulleFaattTabell(
     override fun OutlineOnlyScope<LangBokmal, Unit>.template() {
         title1 {
             text(
-                Language.Bokmal to "Hva du fikk utbetalt og hva du skulle fått utbetalt",
+                Bokmal to "Hva du fikk utbetalt og hva du skulle fått utbetalt",
             )
         }
         paragraph {
@@ -78,25 +83,25 @@ data class FikkSkulleFaattTabell(
                 header = {
                     column(columnSpan = 5) {
                         text(
-                            Language.Bokmal to "Type stønad",
+                            Bokmal to "Type stønad",
                             fontType = Element.OutlineContent.ParagraphContent.Text.FontType.BOLD,
                         )
                     }
                     column(columnSpan = 4, alignment = Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT) {
                         text(
-                            Language.Bokmal to "Dette skulle du fått",
+                            Bokmal to "Dette skulle du fått",
                             fontType = Element.OutlineContent.ParagraphContent.Text.FontType.BOLD,
                         )
                     }
                     column(columnSpan = 4, alignment = Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT) {
                         text(
-                            Language.Bokmal to "Dette fikk du",
+                            Bokmal to "Dette fikk du",
                             fontType = Element.OutlineContent.ParagraphContent.Text.FontType.BOLD,
                         )
                     }
                     column(columnSpan = 4, alignment = Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT) {
                         text(
-                            Language.Bokmal to "Avviksbeløp",
+                            Bokmal to "Avviksbeløp",
                             fontType = Element.OutlineContent.ParagraphContent.Text.FontType.BOLD,
                         )
                     }
@@ -113,17 +118,17 @@ data class FikkSkulleFaattTabell(
                             }
                             cell {
                                 textExpr(
-                                    Language.Bokmal to it.skulleFaatt.format() + " kr",
+                                    Bokmal to it.skulleFaatt.format() + " kr",
                                 )
                             }
                             cell {
                                 textExpr(
-                                    Language.Bokmal to it.fikk.format() + " kr",
+                                    Bokmal to it.fikk.format() + " kr",
                                 )
                             }
                             cell {
                                 textExpr(
-                                    Language.Bokmal to it.avvik.format() + " kr",
+                                    Bokmal to it.avvik.format() + " kr",
                                 )
                             }
                         }
@@ -131,26 +136,26 @@ data class FikkSkulleFaattTabell(
                 }
                 avviksResultatRad(
                     newTextExpr(
-                        Language.Bokmal to "Uføretrygd".expr() + ifElse(harGjenlevendeTillegg, " og gjenlevendetillegg", ""),
+                        Bokmal to "Uføretrygd".expr() + ifElse(harGjenlevendeTillegg, " og gjenlevendetillegg", ""),
                     ),
                     ufoeretrygd,
                 )
                 avviksResultatRad(
                     newText(
-                        Language.Bokmal to "Barnetillegg særkullsbarn",
+                        Bokmal to "Barnetillegg særkullsbarn",
                     ),
                     barnetillegg.saerkull_safe.resultat_safe,
                 )
                 avviksResultatRad(
                     newText(
-                        Language.Bokmal to "Barnetillegg fellesbarn",
+                        Bokmal to "Barnetillegg fellesbarn",
                     ),
                     barnetillegg.felles_safe.resultat_safe,
                 )
                 row {
                     cell {
                         textExpr(
-                            Language.Bokmal to "Beløp du har fått for ".expr() + ifElse(harFaattForMye, "mye", "lite"),
+                            Bokmal to "Beløp du har fått for ".expr() + ifElse(harFaattForMye, "mye", "lite"),
                             fontType = Element.OutlineContent.ParagraphContent.Text.FontType.BOLD,
                         )
                     }
@@ -158,7 +163,7 @@ data class FikkSkulleFaattTabell(
                     cell { }
                     cell {
                         textExpr(
-                            Language.Bokmal to totaltAvvik.format() + " kr",
+                            Bokmal to totaltAvvik.format() + " kr",
                             fontType = Element.OutlineContent.ParagraphContent.Text.FontType.BOLD,
                         )
                     }
@@ -178,24 +183,24 @@ data class DuHarFaattAvviksBeloep(
     override fun OutlineOnlyScope<LangBokmal, Unit>.template() {
         paragraph {
             textExpr(
-                Language.Bokmal to "Du har fått ".expr() + totaltAvvik.absoluteValue().format() + " kroner for " +
+                Bokmal to "Du har fått ".expr() + totaltAvvik.absoluteValue().format() + " kroner for " +
                         ifElse(harFaattForMye, "mye", "lite") + " i uføretrygd",
             )
             showIf(harBarnetillegg and harGjenlevendeTillegg) {
                 text(
-                    Language.Bokmal to ", barnetillegg og gjenlevendetillegg",
+                    Bokmal to ", barnetillegg og gjenlevendetillegg",
                 )
             }.orShowIf(harBarnetillegg) {
                 text(
-                    Language.Bokmal to " og barnetillegg",
+                    Bokmal to " og barnetillegg",
                 )
             }.orShowIf(harGjenlevendeTillegg) {
                 text(
-                    Language.Bokmal to " og gjenlevendetillegg"
+                    Bokmal to " og gjenlevendetillegg"
                 )
             }
             textExpr(
-                Language.Bokmal to " i perioden ".expr() + periode.format(),
+                Bokmal to " i perioden ".expr() + periode.format(),
             )
         }
     }
@@ -208,37 +213,37 @@ data class OmBeregningAvBarnetillegg(
     override fun OutlineOnlyScope<LangBokmal, Unit>.template() {
         title1 {
             text(
-                Language.Bokmal to "Om beregning av barnetillegg",
+                Bokmal to "Om beregning av barnetillegg",
             )
         }
         paragraph {
             text(
-                Language.Bokmal to "Det er personinntekt som avgjør hvor mye du får i barnetillegg. Dette står i §12-2 i skatteloven. Personinntekter omfatter:",
+                Bokmal to "Det er personinntekt som avgjør hvor mye du får i barnetillegg. Dette står i §12-2 i skatteloven. Personinntekter omfatter:",
             )
             list {
                 item {
                     text(
-                        Language.Bokmal to "pensjonsgivende inntekt",
+                        Bokmal to "pensjonsgivende inntekt",
                     )
                 }
                 item {
                     text(
-                        Language.Bokmal to "uføretrygd",
+                        Bokmal to "uføretrygd",
                     )
                 }
                 item {
                     text(
-                        Language.Bokmal to "alderspensjon fra folketrygden",
+                        Bokmal to "alderspensjon fra folketrygden",
                     )
                 }
                 item {
                     text(
-                        Language.Bokmal to "andre pensjoner og ytelser, også fra utlandet",
+                        Bokmal to "andre pensjoner og ytelser, også fra utlandet",
                     )
                 }
             }
             text(
-                Language.Bokmal to "Hvis personinntekten din overstiger et visst beløp (fribeløp), blir barnetillegget redusert eller faller helt bort." +
+                Bokmal to "Hvis personinntekten din overstiger et visst beløp (fribeløp), blir barnetillegget redusert eller faller helt bort." +
                         "Fikk du innvilget barnetillegg i løpet av året, eller barnetillegget opphørte i løpet av året" +
                         ", er det bare inntekten for perioden med rett til barnetillegg som har betydning.",
             )
@@ -247,36 +252,36 @@ data class OmBeregningAvBarnetillegg(
         ifNotNull(barnetillegg.felles) { fellesbarn ->
             title2 {
                 text(
-                    Language.Bokmal to "For barn som bor sammen med begge foreldrene:",
+                    Bokmal to "For barn som bor sammen med begge foreldrene:",
                 )
             }
             paragraph {
                 list {
                     item {
                         textExpr(
-                            Language.Bokmal to "Barnetillegget beregnes ut fra inntekten til deg og din ".expr() + fellesbarn.sivilstand.ubestemtForm() + ".",
+                            Bokmal to "Barnetillegget beregnes ut fra inntekten til deg og din ".expr() + fellesbarn.sivilstand.ubestemtForm() + ".",
                         )
                     }
                     item {
                         textExpr(
-                            Language.Bokmal to "Fribeløpet er 4,6 ganger folketrygdens grunnbeløp. I ".expr() + periode.format() + " var fribeløpet " + fellesbarn.fribeloep.format() + " kroner.",
+                            Bokmal to "Fribeløpet er 4,6 ganger folketrygdens grunnbeløp. I ".expr() + periode.format() + " var fribeløpet " + fellesbarn.fribeloep.format() + " kroner.",
                         )
                     }
                     item {
                         text(
-                            Language.Bokmal to "Fribeløpet øker med 40% av folketrygdens grunnbeløp for hvert ekstra barn.",
+                            Bokmal to "Fribeløpet øker med 40% av folketrygdens grunnbeløp for hvert ekstra barn.",
                         )
                     }
                     showIf(barnetillegg.mindreEnn40AarTrygdetid) {
                         item {
                             text(
-                                Language.Bokmal to "Fribeløpet blir redusert ut fra trygdetiden du har.",
+                                Bokmal to "Fribeløpet blir redusert ut fra trygdetiden du har.",
                             )
                         }
                     }
                     item {
                         text(
-                            Language.Bokmal to "Barnetillegget blir redusert med 50 prosent av inntekten som overstiger fribeløpet.",
+                            Bokmal to "Barnetillegget blir redusert med 50 prosent av inntekten som overstiger fribeløpet.",
                         )
                     }
                 }
@@ -286,41 +291,41 @@ data class OmBeregningAvBarnetillegg(
         ifNotNull(barnetillegg.saerkull) { saerkull ->
             title2 {
                 text(
-                    Language.Bokmal to "For barn som ikke bor sammen med begge foreldrene:",
+                    Bokmal to "For barn som ikke bor sammen med begge foreldrene:",
                 )
             }
             paragraph {
                 list {
                     item {
                         text(
-                            Language.Bokmal to "Barnetillegget beregnes ut fra inntekten din.",
+                            Bokmal to "Barnetillegget beregnes ut fra inntekten din.",
                         )
                     }
                     item {
                         textExpr(
-                            Language.Bokmal to "Fribeløpet er 3,1 ganger folketrygdens grunnbeløp. I ".expr() + periode.format() + " var fribeløpet " + saerkull.fribeloep.format() + " kroner.",
+                            Bokmal to "Fribeløpet er 3,1 ganger folketrygdens grunnbeløp. I ".expr() + periode.format() + " var fribeløpet " + saerkull.fribeloep.format() + " kroner.",
                         )
                     }
                     item {
                         text(
-                            Language.Bokmal to "Fribeløpet øker med 40% av folketrygdens grunnbeløp for hvert ekstra barn.",
+                            Bokmal to "Fribeløpet øker med 40% av folketrygdens grunnbeløp for hvert ekstra barn.",
                         )
                     }
                     showIf(barnetillegg.mindreEnn40AarTrygdetid) {
                         item {
                             text(
-                                Language.Bokmal to "Fribeløpet blir redusert ut fra trygdetiden du har.",
+                                Bokmal to "Fribeløpet blir redusert ut fra trygdetiden du har.",
                             )
                         }
                     }
                     item {
                         text(
-                            Language.Bokmal to "Barnetillegget blir redusert med 50 prosent av inntekten som overstiger fribeløpet.",
+                            Bokmal to "Barnetillegget blir redusert med 50 prosent av inntekten som overstiger fribeløpet.",
                         )
                     }
                     item {
                         text(
-                            Language.Bokmal to "Inntekten til en ektefelle/parner/samboer som ikke er forelder for barnet, har ingen betydning."
+                            Bokmal to "Inntekten til en ektefelle/parner/samboer som ikke er forelder for barnet, har ingen betydning."
                         )
                     }
                 }
@@ -334,43 +339,34 @@ data class OmBeregningAvBarnetillegg(
                     Kroner(0)
                 )
             textExpr(
-                Language.Bokmal to "Ved beregning av barnetillegg har vi først oppdatert hvor mye du skulle hatt i uføretrygd. ".expr() +
+                Bokmal to "Ved beregning av barnetillegg har vi først oppdatert hvor mye du skulle hatt i uføretrygd. ".expr() +
                         "Etter denne beregningen er gjort, blir ditt barnetillegg " + skulleFaatt.format() + " kroner for " + periode.format() + ".",
             )
         }
 
         paragraph {
-            val fikkUtbetalt =
-                barnetillegg.saerkull.resultat_safe.fikk_safe.ifNull(Kroner(0)) + barnetillegg.felles.resultat_safe.fikk_safe.ifNull(
-                    Kroner(0)
-                )
-            val totaltAvvik =
-                barnetillegg.saerkull.resultat_safe.avvik_safe.ifNull(Kroner(0)) + barnetillegg.felles.resultat_safe.avvik_safe.ifNull(
-                    Kroner(0)
-                )
-            // TODO: Må bruke felt fra dto
-            val harFaattForMye = totaltAvvik.lessThanOrEqual(0)
             textExpr(
-                Language.Bokmal to "Du har fått utbetalt ".expr() + fikkUtbetalt.format() + " kroner i barnetillegg. Du har fått " +
-                        totaltAvvik.format() + " kroner for " + ifElse(harFaattForMye, "mye", "lite") + " i barnetillegg.",
+                Bokmal to "Du har fått utbetalt ".expr() + barnetillegg.totaltResultat.fikk.format() + " kroner i barnetillegg. Du har fått " +
+                        barnetillegg.totaltResultat.avvik.absoluteValue().format() + " kroner for " +
+                        ifElse(barnetillegg.totaltResultat.harFaattForMye, "mye", "lite") + " i barnetillegg.",
             )
         }
 
         title2 {
             text(
-                Language.Bokmal to "Beregningene er gjort hver for seg hvis",
+                Bokmal to "Beregningene er gjort hver for seg hvis",
             )
         }
         paragraph {
             list {
                 item {
                     text(
-                        Language.Bokmal to "du har flere barn som har ulike bosituasjoner.",
+                        Bokmal to "du har flere barn som har ulike bosituasjoner.",
                     )
                 }
                 item {
                     text(
-                        Language.Bokmal to "barnet bor med begge foreldre i deler av året, og en av foreldrene resten av året.",
+                        Bokmal to "barnet bor med begge foreldre i deler av året, og en av foreldrene resten av året.",
                     )
                 }
             }
@@ -380,7 +376,7 @@ data class OmBeregningAvBarnetillegg(
 
         paragraph {
             textExpr(
-                Language.Bokmal to "Tabellene under viser inntektene du".expr() + ifElse(harFellesTillegg, " og annen forelder", "") +
+                Bokmal to "Tabellene under viser inntektene du".expr() + ifElse(harFellesTillegg, " og annen forelder", "") +
                         " har hatt i perioden " + ifElse(harFellesTillegg, "dere", "du") + " hadde rett til barnetillegg" +
                         "Det er disse inntektene vi har brukt for å beregne barnetillegget.",
             )
@@ -388,7 +384,7 @@ data class OmBeregningAvBarnetillegg(
 
         title2 {
             text(
-                Language.Bokmal to "Din personinntekt",
+                Bokmal to "Din personinntekt",
             )
         }
         paragraph {
@@ -396,7 +392,7 @@ data class OmBeregningAvBarnetillegg(
                 InntektTabell(
                     barnetillegg.personinntekt.inntekt,
                     newText(
-                        Language.Bokmal to "Total personinntekt",
+                        Bokmal to "Total personinntekt",
                         fontType = Element.OutlineContent.ParagraphContent.Text.FontType.BOLD,
                     ),
                 )
@@ -405,7 +401,7 @@ data class OmBeregningAvBarnetillegg(
 
         title2 {
             text(
-                Language.Bokmal to "Beløp som er trukket fra personinntekten din",
+                Bokmal to "Beløp som er trukket fra personinntekten din",
             )
         }
         paragraph {
@@ -414,14 +410,14 @@ data class OmBeregningAvBarnetillegg(
                     FratrekkTabell(
                         barnetillegg.personinntekt.fratrekk,
                         newText(
-                            Language.Bokmal to "Totalbeløp som er trukket fra personinntekten din",
+                            Bokmal to "Totalbeløp som er trukket fra personinntekten din",
                             fontType = Element.OutlineContent.ParagraphContent.Text.FontType.BOLD,
                         ),
                     )
                 )
             } orShow {
                 textExpr(
-                    Language.Bokmal to "Du har ikke hatt inntekter som er trukket fra personinntekten din i ".expr() + periode.format() +
+                    Bokmal to "Du har ikke hatt inntekter som er trukket fra personinntekten din i ".expr() + periode.format() +
                             ". Hvis du har hatt inntekter som kan trekkes fra, må du sende oss dokumentasjon på det innen 3 uker.",
                 )
             }
@@ -430,7 +426,7 @@ data class OmBeregningAvBarnetillegg(
         ifNotNull(barnetillegg.felles) { fellesbarn ->
             title2 {
                 text(
-                    Language.Bokmal to "Personinntekt til annen forelder",
+                    Bokmal to "Personinntekt til annen forelder",
                 )
             }
             paragraph {
@@ -438,7 +434,7 @@ data class OmBeregningAvBarnetillegg(
                     InntektTabell(
                         fellesbarn.personinntektAnnenForelder.inntekt,
                         newText(
-                            Language.Bokmal to "Total personinntekt til annen forelder",
+                            Bokmal to "Total personinntekt til annen forelder",
                             fontType = Element.OutlineContent.ParagraphContent.Text.FontType.BOLD,
                         ),
                     )
@@ -446,14 +442,14 @@ data class OmBeregningAvBarnetillegg(
             }
             paragraph {
                 text(
-                    Language.Bokmal to "Mottar annen forelder uføretrygd eller alderspensjon fra NAV, regnes dette også med som personinntekt.",
+                    Bokmal to "Mottar annen forelder uføretrygd eller alderspensjon fra NAV, regnes dette også med som personinntekt.",
                 )
             }
 
             showIf(fellesbarn.personinntektAnnenForelder.fratrekk.fratrekk.isNotEmpty()) {
                 title2 {
                     text(
-                        Language.Bokmal to "Beløp som er trukket fra annen forelder sin personinntekt",
+                        Bokmal to "Beløp som er trukket fra annen forelder sin personinntekt",
                     )
                 }
                 paragraph {
@@ -461,7 +457,7 @@ data class OmBeregningAvBarnetillegg(
                         FratrekkTabell(
                             fellesbarn.personinntektAnnenForelder.fratrekk,
                             newText(
-                                Language.Bokmal to "Totalbeløp som er trukket fra personinntekten til annen forelder",
+                                Bokmal to "Totalbeløp som er trukket fra personinntekten til annen forelder",
                                 fontType = Element.OutlineContent.ParagraphContent.Text.FontType.BOLD,
                             ),
                         )
@@ -474,28 +470,53 @@ data class OmBeregningAvBarnetillegg(
                 ) {
                     paragraph {
                         textExpr(
-                            Language.Bokmal to "Folketrygdens grunnbeløp på inntil ".expr() + fellesbarn.grunnbelop.format() + " kroner er holdt utenfor inntekten til annen forelder.",
+                            Bokmal to "Folketrygdens grunnbeløp på inntil ".expr() + fellesbarn.grunnbelop.format() + " kroner er holdt utenfor inntekten til annen forelder.",
                         )
                     }
                 }
             } orShow {
                 paragraph {
                     textExpr(
-                        Language.Bokmal to "Annen forelder har ikke hatt inntekt som er trukket fra sin personinntekt i ".expr() + periode.format() + ".",
+                        Bokmal to "Annen forelder har ikke hatt inntekt som er trukket fra sin personinntekt i ".expr() + periode.format() + ".",
                     )
                 }
             }
 
         }
 
-        // TODO Skal ha en betingelse for visning: harSamletInntektOverInntektstak, inntektstakSamletInntekt
-        paragraph {
-            textExpr(
-                Language.Bokmal to ifElse(harFellesTillegg, "Dere", "Du") + " hadde for høy" + ifElse(harFellesTillegg, " samlet", "") +
-                        " inntekt i " + periode.format() + " for å ha rett på barnetillegg."
-            )
+        ifNotNull(barnetillegg.saerkull) { saerkull ->
+            includePhrase(ForHoeyInntektBarnetillegg(false, periode, saerkull.samletInntekt, saerkull.inntektstakSamletInntekt))
+        }
+
+        ifNotNull(barnetillegg.felles) { fellesbarn ->
+            includePhrase(ForHoeyInntektBarnetillegg(true, periode, fellesbarn.samletInntekt, fellesbarn.inntektstakSamletInntekt))
         }
     }
+}
+
+private data class ForHoeyInntektBarnetillegg(
+    val gjelderFlerePersonersInntekt: Boolean,
+    val periode: Expression<Year>,
+    val samletInntekt: Expression<Kroner>,
+    val inntektstak: Expression<Kroner>,
+) : OutlinePhrase<LangBokmal>() {
+    override fun OutlineOnlyScope<LangBokmal, Unit>.template() =
+        paragraph {
+            if (gjelderFlerePersonersInntekt) {
+                text(
+                    Bokmal to "Du ",
+                )
+            } else {
+                text(
+                    Bokmal to "Dere ",
+                )
+            }
+            textExpr(
+                Bokmal to "hadde for høy samlet inntekt i ".expr() + periode.format() + " for å få utbetalt barnetillegg for særkullsbarn. " +
+                        "Sum av samlet inntekt som gjør at barnetillegget ikke blir utbetalt var " + samletInntekt.format() + " kroner. " +
+                        "Inntektstaket for å få utbetalt barnetillegg for særkullsbarn var " + inntektstak.format() + " kroner.",
+            )
+        }
 }
 
 data class OmBeregningAvUfoeretrygd(
@@ -508,99 +529,98 @@ data class OmBeregningAvUfoeretrygd(
     override fun OutlineOnlyScope<LangBokmal, Unit>.template() {
         title1 {
             textExpr(
-                Language.Bokmal to "Om beregningen av uføretrygd".expr() + ifElse(harGjenlevendeTillegg, " og gjenlevendetillegg", ""),
+                Bokmal to "Om beregningen av uføretrygd".expr() + ifElse(harGjenlevendeTillegg, " og gjenlevendetillegg", ""),
             )
         }
         paragraph {
             textExpr(
-                Language.Bokmal to "Det er pensjonsgivende inntekt som avgjør hvor mye du får i uføretrygd".expr()
+                Bokmal to "Det er pensjonsgivende inntekt som avgjør hvor mye du får i uføretrygd".expr()
                         + ifElse(harGjenlevendeTillegg, " og gjenlevendetillegg", "")
                         + ". Dette står i § 3-15 i folketrygdloven. Pensjonsgivende inntekt er blant annet:",
             )
             list {
                 item {
                     text(
-                        Language.Bokmal to "brutto lønnsinntekt fra Norge inkludert feriepenger",
+                        Bokmal to "brutto lønnsinntekt fra Norge inkludert feriepenger",
                     )
                 }
                 item {
                     text(
-                        Language.Bokmal to "lønnsinntekt fra utlandet",
+                        Bokmal to "lønnsinntekt fra utlandet",
                     )
                 }
                 item {
                     text(
-                        Language.Bokmal to "inntekt fra selvstendig næringsvirksomhet",
+                        Bokmal to "inntekt fra selvstendig næringsvirksomhet",
                     )
                 }
                 item {
                     text(
-                        Language.Bokmal to "inntekt som fosterforelder",
+                        Bokmal to "inntekt som fosterforelder",
                     )
                 }
                 item {
                     text(
-                        Language.Bokmal to "omsorgslønn",
+                        Bokmal to "omsorgslønn",
                     )
                 }
             }
 
             val inntektFoerFratrekk = pensjonsgivendeInntekt.inntekt.sum.format()
             textExpr(
-                Language.Bokmal to "Din pensjonsgivende inntekt har i perioden ".expr() + periode.format() + " vært " + inntektFoerFratrekk + " kroner.",
+                Bokmal to "Din pensjonsgivende inntekt har i perioden ".expr() + periode.format() + " vært " + inntektFoerFratrekk + " kroner.",
             )
         }
 
         paragraph {
             text(
-                Language.Bokmal to "Hva kan bli trukket fra den pensjonsgivende inntekten din?",
+                Bokmal to "Hva kan bli trukket fra den pensjonsgivende inntekten din?",
             )
             list {
                 item {
                     text(
-                        Language.Bokmal to "inntekt før du ble uføretrygdet",
+                        Bokmal to "inntekt før du ble uføretrygdet",
                     )
                 }
                 item {
                     text(
-                        Language.Bokmal to "inntekt etter at uføretrygden din opphørte",
+                        Bokmal to "inntekt etter at uføretrygden din opphørte",
                     )
                 }
                 item {
                     text(
-                        Language.Bokmal to "erstatning for inntektstap (erstatningsoppgjør)",
+                        Bokmal to "erstatning for inntektstap (erstatningsoppgjør)",
                     )
                 }
                 item {
                     text(
-                        Language.Bokmal to "inntekt fra helt avsluttet arbeid eller virksomhet",
+                        Bokmal to "inntekt fra helt avsluttet arbeid eller virksomhet",
                     )
                 }
                 item {
                     text(
-                        Language.Bokmal to "etterbetaling du har fått fra NAV",
+                        Bokmal to "etterbetaling du har fått fra NAV",
                     )
                 }
             }
 
             val inntektEtterFratrekk = pensjonsgivendeInntektBruktIBeregningen.format()
             textExpr(
-                Language.Bokmal to "Etter beregningen er gjort, har du ".expr() + inntektEtterFratrekk + " kroner i pensjonsgivende inntekt.",
-            )
-        }
-
-        paragraph {
-            // TODO: Må håndtere mye/lite her, og potensielt avvik som absolutt.
-            textExpr(
-                Language.Bokmal to "Du skulle ha fått ".expr() + ufoeretrygd.skulleFaatt.format() + " kroner i uføretrygd i " + periode.format()
-                        + ". Du fikk imidlertid " + ufoeretrygd.fikk.format() + " kroner. Du har derfor fått " + ufoeretrygd.avvik.format()
-                        + " kroner for mye/lite i uføretrygd.",
+                Bokmal to "Etter beregningen er gjort, har du ".expr() + inntektEtterFratrekk + " kroner i pensjonsgivende inntekt.",
             )
         }
 
         paragraph {
             textExpr(
-                Language.Bokmal to "Tabellene under viser inntektene du har hatt i ".expr() + periode.format()
+                Bokmal to "Du skulle ha fått ".expr() + ufoeretrygd.skulleFaatt.format() + " kroner i uføretrygd i " + periode.format()
+                        + ". Du fikk imidlertid " + ufoeretrygd.fikk.format() + " kroner. Du har derfor fått " + ufoeretrygd.avvik.absoluteValue().format()
+                        + " kroner for " + ifElse(ufoeretrygd.harFaattForMye, "mye", "lite") + " i uføretrygd.",
+            )
+        }
+
+        paragraph {
+            textExpr(
+                Bokmal to "Tabellene under viser inntektene du har hatt i ".expr() + periode.format()
                         + ". Det er disse inntektene vi har brukt for å beregne uføretrygden din"
                         + ifElse(harGjenlevendeTillegg, " og gjenlevendetillegget ditt.", "."),
             )
@@ -608,7 +628,7 @@ data class OmBeregningAvUfoeretrygd(
 
         title1 {
             text(
-                Language.Bokmal to "Din pensjonsgivende inntekt",
+                Bokmal to "Din pensjonsgivende inntekt",
             )
         }
         showIf(pensjonsgivendeInntekt.inntekt.inntekter.isNotEmpty()) {
@@ -617,7 +637,7 @@ data class OmBeregningAvUfoeretrygd(
                     InntektTabell(
                         pensjonsgivendeInntekt.inntekt,
                         newText(
-                            Language.Bokmal to "Total pensjonsgivende inntekt",
+                            Bokmal to "Total pensjonsgivende inntekt",
                             fontType = Element.OutlineContent.ParagraphContent.Text.FontType.BOLD,
                         ),
                     ),
@@ -626,7 +646,7 @@ data class OmBeregningAvUfoeretrygd(
 
             title1 {
                 text(
-                    Language.Bokmal to "Beløp som er trukket fra den pensjonsgivende inntekten din",
+                    Bokmal to "Beløp som er trukket fra den pensjonsgivende inntekten din",
                 )
             }
             paragraph {
@@ -635,14 +655,14 @@ data class OmBeregningAvUfoeretrygd(
                         FratrekkTabell(
                             pensjonsgivendeInntekt.fratrekk,
                             newText(
-                                Language.Bokmal to "Totalbeløp som er trukket fra",
+                                Bokmal to "Totalbeløp som er trukket fra",
                                 fontType = Element.OutlineContent.ParagraphContent.Text.FontType.BOLD,
                             )
                         )
                     )
                 } orShow {
                     textExpr(
-                        Language.Bokmal to "Du har ikke hatt inntekter som er trukket fra den pensjonsgivende inntekten din i ".expr()
+                        Bokmal to "Du har ikke hatt inntekter som er trukket fra den pensjonsgivende inntekten din i ".expr()
                                 + periode.format() + ". Hvis du har hatt inntekter som kan trekkes fra, må du sende oss dokumentasjon på det innen 3 uker.",
                     )
                 }
@@ -650,7 +670,7 @@ data class OmBeregningAvUfoeretrygd(
         } orShow {
             paragraph {
                 textExpr(
-                    Language.Bokmal to "Du har ikke hatt pensjonsgivende inntekt i ".expr() + periode.format() + ".",
+                    Bokmal to "Du har ikke hatt pensjonsgivende inntekt i ".expr() + periode.format() + ".",
                 )
             }
         }
@@ -663,34 +683,34 @@ data class ErOpplysningeneOmInntektFeil(
     override fun OutlineOnlyScope<LangBokmal, Unit>.template() {
         title1 {
             text(
-                Language.Bokmal to "Er opplysningene om inntekt feil?",
+                Bokmal to "Er opplysningene om inntekt feil?",
             )
         }
         paragraph {
             text(
-                Language.Bokmal to "Mener du at inntektsopplysningene i skatteoppgjøret er feil, er det Skatteetaten som skal vurdere om inntekten kan endres.",
+                Bokmal to "Mener du at inntektsopplysningene i skatteoppgjøret er feil, er det Skatteetaten som skal vurdere om inntekten kan endres.",
             )
         }
         paragraph {
             text(
-                Language.Bokmal to "Vi gjør et nytt etteroppgjør automatisk hvis Skatteetaten endrer inntekten din. Du får tilbakemelding hvis endringen påvirker etteroppgjøret ditt.",
+                Bokmal to "Vi gjør et nytt etteroppgjør automatisk hvis Skatteetaten endrer inntekten din. Du får tilbakemelding hvis endringen påvirker etteroppgjøret ditt.",
             )
         }
 
         showIf(harFellesTillegg) {
             title2 {
                 text(
-                    Language.Bokmal to "Barnetillegg og feil i den andre forelderens inntektsopplysninger",
+                    Bokmal to "Barnetillegg og feil i den andre forelderens inntektsopplysninger",
                 )
             }
             paragraph {
                 text(
-                    Language.Bokmal to "Hvis du mener inntektsopplysningene for den andre forelderen er feil, må den andre forelderen kontakte Skatteetaten.",
+                    Bokmal to "Hvis du mener inntektsopplysningene for den andre forelderen er feil, må den andre forelderen kontakte Skatteetaten.",
                 )
             }
             paragraph {
                 text(
-                    Language.Bokmal to "Vi oppdaterer ikke automatisk etteroppgjøret ditt når vi får en korrigering fra Skatteetaten som gjelder den andre forelderen. " +
+                    Bokmal to "Vi oppdaterer ikke automatisk etteroppgjøret ditt når vi får en korrigering fra Skatteetaten som gjelder den andre forelderen. " +
                             "Du må derfor gi beskjed til oss. Vi gjør da et manuelt etteroppgjør. Du trenger ikke å sende inn dokumentasjon.",
                 )
             }
@@ -698,12 +718,12 @@ data class ErOpplysningeneOmInntektFeil(
 
         title2 {
             text(
-                Language.Bokmal to "Endringer i pensjonsytelser",
+                Bokmal to "Endringer i pensjonsytelser",
             )
         }
         paragraph {
             text(
-                Language.Bokmal to "Hvis inntekten din fra pensjonsytelser utenom NAV blir endret, må du gi beskjed til oss når endringen er gjort. " +
+                Bokmal to "Hvis inntekten din fra pensjonsytelser utenom NAV blir endret, må du gi beskjed til oss når endringen er gjort. " +
                         "Vi gjør da et nytt etteroppgjør. Du kan gi beskjed ved å skrive til oss på ${Constants.SKRIV_TIL_OSS_URL} " +
                         "eller ringe oss på telefon ${Constants.NAV_KONTAKTSENTER_TELEFON}.",
             )
@@ -719,17 +739,17 @@ data class FratrekkTabell(val fratrekk: Expression<OpplysningerOmEtteroppgjoeret
             header = {
                 column(columnSpan = 3) {
                     text(
-                        Language.Bokmal to "Type inntekt",
+                        Bokmal to "Type inntekt",
                     )
                 }
                 column(columnSpan = 3) {
                     text(
-                        Language.Bokmal to "Årsak til trekk",
+                        Bokmal to "Årsak til trekk",
                     )
                 }
                 column(columnSpan = 2, alignment = Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT) {
                     text(
-                        Language.Bokmal to "Beløp",
+                        Bokmal to "Beløp",
                     )
                 }
             }
@@ -764,7 +784,7 @@ data class FratrekkTabell(val fratrekk: Expression<OpplysningerOmEtteroppgjoeret
                 OpplysningerOmEtteroppgjoeretDto.InntektOgFratrekk.Fratrekk.FratrekkLinje.Aarsak.ETTERSLEP_AVSLUTTET_ARBEID_ELLER_VIRKSOMHET -> "Inntekt fra helt avsluttet arbeid eller virksomhet"
                 OpplysningerOmEtteroppgjoeretDto.InntektOgFratrekk.Fratrekk.FratrekkLinje.Aarsak.ANNET -> "Annet"
                 OpplysningerOmEtteroppgjoeretDto.InntektOgFratrekk.Fratrekk.FratrekkLinje.Aarsak.ETTERBETALING_FRA_NAV -> "Etterbetaling fra NAV"
-                OpplysningerOmEtteroppgjoeretDto.InntektOgFratrekk.Fratrekk.FratrekkLinje.Aarsak.INNTEKT_INNTIL_1G -> TODO()
+                OpplysningerOmEtteroppgjoeretDto.InntektOgFratrekk.Fratrekk.FratrekkLinje.Aarsak.INNTEKT_INNTIL_1G -> "Inntekt inntil ett grunnbeløp"
             }
     }
 
@@ -792,17 +812,17 @@ data class InntektTabell(val inntekt: Expression<OpplysningerOmEtteroppgjoeretDt
             header = {
                 column(columnSpan = 3) {
                     text(
-                        Language.Bokmal to "Type inntekt",
+                        Bokmal to "Type inntekt",
                     )
                 }
                 column(columnSpan = 3) {
                     text(
-                        Language.Bokmal to "Mottatt av",
+                        Bokmal to "Mottatt av",
                     )
                 }
                 column(columnSpan = 2, alignment = Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT) {
                     text(
-                        Language.Bokmal to "Registrert inntekt",
+                        Bokmal to "Registrert inntekt",
                     )
                 }
             }

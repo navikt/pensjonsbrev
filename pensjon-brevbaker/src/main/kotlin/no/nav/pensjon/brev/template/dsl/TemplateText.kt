@@ -29,7 +29,6 @@ interface TextScope<Lang : LanguageSupport, LetterData : Any> : TemplateGlobalSc
 
     fun addTextContent(e: TextElement<Lang>)
 
-    // TODO: Consider removing this since textExpr already supports this, or renaming to allLanguagesExpr (or something similar).
     fun eval(expression: StringExpression, fontType: FontType = FontType.PLAIN) {
         addTextContent(Content(Element.OutlineContent.ParagraphContent.Text.Expression(expression, fontType)))
     }

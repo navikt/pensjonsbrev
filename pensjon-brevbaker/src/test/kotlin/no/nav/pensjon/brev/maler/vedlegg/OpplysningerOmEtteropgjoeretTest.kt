@@ -32,13 +32,13 @@ class OpplysningerOmEtteropgjoeretTest {
             OpplysningerOmEtteroppgjoeretDto(
                 periode = Year(2022),
                 harGjenlevendeTillegg = true,
-                ufoeretrygd = AvviksResultat(skulleFaatt = Kroner(10), fikk = Kroner(14), avvik = Kroner(-4)),
+                ufoeretrygd = AvviksResultat(skulleFaatt = Kroner(10), fikk = Kroner(14), avvik = Kroner(-4), harFaattForMye = true),
                 barnetillegg = Barnetillegg(
                     felles = Fellesbarn(
                         sivilstand = BorMedSivilstand.EKTEFELLE,
                         grunnbelop = Kroner(117_000),
                         fribeloep = Kroner(1),
-                        resultat = AvviksResultat(skulleFaatt = Kroner(10), fikk = Kroner(14), avvik = Kroner(-4)),
+                        resultat = AvviksResultat(skulleFaatt = Kroner(10), fikk = Kroner(14), avvik = Kroner(-4), harFaattForMye = true),
                         personinntektAnnenForelder = InntektOgFratrekk(
                             inntekt = Inntekt(
                                 inntekter = listOf(
@@ -51,11 +51,15 @@ class OpplysningerOmEtteropgjoeretTest {
                             fratrekk = Fratrekk(fratrekk = emptyList(), sum = Kroner(0))
                         ),
                         harSamletInntektOverInntektstak = true,
-                        inntektstakSamletInntekt = Kroner(10)
+                        inntektstakSamletInntekt = Kroner(10),
+                        samletInntekt = Kroner(12),
                     ),
                     saerkull = Saerkullsbarn(
                         fribeloep = Kroner(1),
-                        resultat = AvviksResultat(skulleFaatt = Kroner(10), fikk = Kroner(14), avvik = Kroner(-4))
+                        resultat = AvviksResultat(skulleFaatt = Kroner(10), fikk = Kroner(14), avvik = Kroner(-4), harFaattForMye = true),
+                        harSamletInntektOverInntektstak = true,
+                        inntektstakSamletInntekt = Kroner(8),
+                        samletInntekt = Kroner(10),
                     ),
                     personinntekt = InntektOgFratrekk(
                         inntekt = Inntekt(
@@ -70,6 +74,12 @@ class OpplysningerOmEtteropgjoeretTest {
                         fratrekk = Fratrekk(fratrekk = emptyList(), sum = Kroner(0))
                     ),
                     mindreEnn40AarTrygdetid = true,
+                    totaltResultat = AvviksResultat(
+                        skulleFaatt = Kroner(20),
+                        fikk = Kroner(28),
+                        avvik = Kroner(-8),
+                        harFaattForMye = true,
+                    )
                 ),
                 harFaattForMye = true,
                 totaltAvvik = Kroner(4),

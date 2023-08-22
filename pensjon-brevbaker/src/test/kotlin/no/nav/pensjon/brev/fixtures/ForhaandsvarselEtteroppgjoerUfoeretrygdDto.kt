@@ -36,5 +36,6 @@ fun createForhaandsvarselEtteroppgjoerUfoeretrygdDtoOpplysningerOmEtteroppgjoret
             skulleFaatt = Kroner(100000),
             fikk = Kroner(150000),
             avvik = Kroner(50000),
+            harFaattForMye = false,
         ),
     )

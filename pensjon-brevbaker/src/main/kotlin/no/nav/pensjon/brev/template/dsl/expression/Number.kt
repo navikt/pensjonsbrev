@@ -33,7 +33,6 @@ operator fun <T : IntValue> Expression<T>.plus(other: Expression<T>): Expression
     )
 
 
-// TODO: Skriv tester på disse
 fun <T: Comparable<T>> Expression<T>.greaterThan(compareTo: Expression<T>): Expression<Boolean> =
     Expression.BinaryInvoke(
         first = this,
