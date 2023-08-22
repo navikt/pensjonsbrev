@@ -82,7 +82,7 @@ object Institusjonsoppholdfraser {
             val formatertVirkningsdato = virkningsdato.format()
             title1 {
                 text(
-                    Bokmal to "Innlagt – har dokumenterte utgift – barnepensjon blir redusert med mindre enn 90% ",
+                    Bokmal to "Innlagt – har dokumenterte utgifter – barnepensjon blir redusert med mindre enn 90% ",
                     Nynorsk to "",
                     English to "",
                 )
@@ -257,7 +257,7 @@ object Institusjonsoppholdfraser {
             val formatertVirkningsdato = virkningsdato.format()
             title1 {
                 text(
-                    Bokmal to "Innlagt – har dokumenterte utgift - ingen reduksjon (vanlig utbetaling)",
+                    Bokmal to "Innlagt – har dokumenterte utgifter - ingen reduksjon (vanlig utbetaling)",
                     Nynorsk to "",
                     English to "",
                 )
@@ -350,7 +350,7 @@ object Institusjonsoppholdfraser {
         }
     }
 
-    data class UtskrevetHarDokumenterteUtgiftIngenReduksjonHarVaertVanligUtbetaling(
+    data class UtskrevetHarDokumentertUtgiftIngenReduksjonHarVaertVanligUtbetaling(
         val utskrevetdato: Expression<LocalDate>,
         val virkningsdato: Expression<LocalDate>,
         val kronebeloep: Expression<Kroner>,
@@ -362,7 +362,7 @@ object Institusjonsoppholdfraser {
             val formatertVirkningsdato = virkningsdato.format()
             title1 {
                 text(
-                    Bokmal to "Utskrevet – har dokumenterte utgift - ingen reduksjon (har vært vanlig utbetaling)",
+                    Bokmal to "Utskrevet – har dokumenterte utgifter - ingen reduksjon (har vært vanlig utbetaling)",
                     Nynorsk to "",
                     English to "",
                 )

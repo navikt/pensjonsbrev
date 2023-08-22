@@ -79,8 +79,6 @@ object EndringInstitusjonsopphold : EtterlatteTemplate<BarnepensjonEndringInstit
                         utbetalingsinfo.beloep,
                     ),
                 )
-            }
-            ifNotNull(innlagtdato) {
                 includePhrase(
                     Institusjonsoppholdfraser.HarDokumentertUtgiftIngenReduksjonVanligUtbetaling(
                         it,
@@ -99,7 +97,7 @@ object EndringInstitusjonsopphold : EtterlatteTemplate<BarnepensjonEndringInstit
             )
             ifNotNull(utskrevetdato) {
                 includePhrase(
-                    Institusjonsoppholdfraser.UtskrevetHarDokumenterteUtgiftIngenReduksjonHarVaertVanligUtbetaling(
+                    Institusjonsoppholdfraser.UtskrevetHarDokumentertUtgiftIngenReduksjonHarVaertVanligUtbetaling(
                         it,
                         virkningsdato,
                         utbetalingsinfo.beloep,
