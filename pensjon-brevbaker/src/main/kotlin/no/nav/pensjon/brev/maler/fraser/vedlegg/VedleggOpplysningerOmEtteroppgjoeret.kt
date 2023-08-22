@@ -9,16 +9,15 @@ import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSel
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSelectors.AvviksResultatSelectors.skulleFaatt_safe
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSelectors.BarnetilleggSelectors.FellesbarnSelectors.fribeloep
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSelectors.BarnetilleggSelectors.FellesbarnSelectors.grunnbelop
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSelectors.BarnetilleggSelectors.FellesbarnSelectors.isFribeloepRedusert
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSelectors.BarnetilleggSelectors.FellesbarnSelectors.personinntektAnnenForelder
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSelectors.BarnetilleggSelectors.FellesbarnSelectors.resultat
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSelectors.BarnetilleggSelectors.FellesbarnSelectors.resultat_safe
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSelectors.BarnetilleggSelectors.FellesbarnSelectors.sivilstand
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSelectors.BarnetilleggSelectors.SaerkullsbarnSelectors.fribeloep
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSelectors.BarnetilleggSelectors.SaerkullsbarnSelectors.isFribeloepRedusert
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSelectors.BarnetilleggSelectors.SaerkullsbarnSelectors.resultat_safe
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSelectors.BarnetilleggSelectors.felles
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSelectors.BarnetilleggSelectors.felles_safe
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSelectors.BarnetilleggSelectors.mindreEnn40AarTrygdetid
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSelectors.BarnetilleggSelectors.personinntekt
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSelectors.BarnetilleggSelectors.saerkull
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSelectors.BarnetilleggSelectors.saerkull_safe
@@ -268,7 +267,7 @@ data class OmBeregningAvBarnetillegg(
                             Language.Bokmal to "Fribeløpet øker med 40% av folketrygdens grunnbeløp for hvert ekstra barn.",
                         )
                     }
-                    showIf(fellesbarn.isFribeloepRedusert) {
+                    showIf(barnetillegg.mindreEnn40AarTrygdetid) {
                         item {
                             text(
                                 Language.Bokmal to "Fribeløpet blir redusert ut fra trygdetiden du har.",
@@ -307,7 +306,7 @@ data class OmBeregningAvBarnetillegg(
                             Language.Bokmal to "Fribeløpet øker med 40% av folketrygdens grunnbeløp for hvert ekstra barn.",
                         )
                     }
-                    showIf(saerkull.isFribeloepRedusert) {
+                    showIf(barnetillegg.mindreEnn40AarTrygdetid) {
                         item {
                             text(
                                 Language.Bokmal to "Fribeløpet blir redusert ut fra trygdetiden du har.",
@@ -489,7 +488,7 @@ data class OmBeregningAvBarnetillegg(
 
         }
 
-        // TODO Skal ha en betingelse for visning
+        // TODO Skal ha en betingelse for visning: harSamletInntektOverInntektstak, inntektstakSamletInntekt
         paragraph {
             textExpr(
                 Language.Bokmal to ifElse(harFellesTillegg, "Dere", "Du") + " hadde for høy" + ifElse(harFellesTillegg, " samlet", "") +

@@ -38,7 +38,6 @@ class OpplysningerOmEtteropgjoeretTest {
                         sivilstand = BorMedSivilstand.EKTEFELLE,
                         grunnbelop = Kroner(117_000),
                         fribeloep = Kroner(1),
-                        isFribeloepRedusert = true,
                         resultat = AvviksResultat(skulleFaatt = Kroner(10), fikk = Kroner(14), avvik = Kroner(-4)),
                         personinntektAnnenForelder = InntektOgFratrekk(
                             inntekt = Inntekt(
@@ -50,11 +49,12 @@ class OpplysningerOmEtteropgjoeretTest {
                                 sum = Kroner(30),
                             ),
                             fratrekk = Fratrekk(fratrekk = emptyList(), sum = Kroner(0))
-                        )
+                        ),
+                        harSamletInntektOverInntektstak = true,
+                        inntektstakSamletInntekt = Kroner(10)
                     ),
                     saerkull = Saerkullsbarn(
                         fribeloep = Kroner(1),
-                        isFribeloepRedusert = true,
                         resultat = AvviksResultat(skulleFaatt = Kroner(10), fikk = Kroner(14), avvik = Kroner(-4))
                     ),
                     personinntekt = InntektOgFratrekk(
