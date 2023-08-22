@@ -42,6 +42,9 @@ data class OpplysningerOmEtteroppgjoeretDto(
         data class Saerkullsbarn(
             val fribeloep: Kroner,
             val resultat: AvviksResultat,
+            val harSamletInntektOverInntektstak: Boolean,
+            val samletInntekt: Kroner,
+            val inntektstakSamletInntekt: Kroner,
         )
     }
 
