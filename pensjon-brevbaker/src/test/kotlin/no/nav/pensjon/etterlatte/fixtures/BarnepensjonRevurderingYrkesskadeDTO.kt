@@ -30,9 +30,10 @@ fun createBarnepensjonRevurderingYrkesskadeDTO(): BarnepensjonRevurderingYrkessk
                     antallBarn = 1,
                     utbetaltBeloep = Kroner(495),
                 )
-            )
+            ),
         ), yrkesskadeErDokumentert = true,
         virkningsdato = virkningsdato,
-        stoenadHarOekt = false
+        stoenadHarOekt = true,
+        dinForelder = "din far"
     )
 }

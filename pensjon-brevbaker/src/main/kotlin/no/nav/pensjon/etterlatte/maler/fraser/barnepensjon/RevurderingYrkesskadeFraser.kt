@@ -9,6 +9,7 @@ import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.expr
+import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
@@ -17,6 +18,7 @@ import java.time.LocalDate
 
 object RevurderingYrkesskadeFraser {
     data class Begrunnelse(
+        val dinForelder: Expression<String>,
         val yrkesskadeErDokumentert: Expression<Boolean>,
         val virkningsdato: Expression<LocalDate>,
         val kronebeloep: Expression<Kroner>,
@@ -25,15 +27,19 @@ object RevurderingYrkesskadeFraser {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             showIf(yrkesskadeErDokumentert) {
                 paragraph {
-                    val dinForelder = "<din mor/din far>"
+                    val virkningsdatoExpr = virkningsdato.format()
                     showIf(stoenadHarOekt) {
                         textExpr(
-                            Bokmal to ("Barnepensjonen din øker fra $virkningsdato".expr()
-                                + " fordi det nå er dokumentert at $dinForelder døde som følge av yrkesskade. "),
+                            Bokmal to "Barnepensjonen din øker fra ".expr() + virkningsdatoExpr
+                                    + " fordi det nå er dokumentert at ".expr() + dinForelder
+                                    + " døde som følge av yrkesskade. ",
                             Nynorsk to "".expr(),
-                            English to "".expr())
+                            English to "".expr()
+                        )
                     }.orShow {
-                        textExpr(Bokmal to "Det er nå er dokumentert at $dinForelder døde som følge av yrkesskade. ".expr(),
+                        textExpr(
+                            Bokmal to "Det er nå dokumentert at ".expr() + dinForelder
+                                    + " døde som følge av yrkesskade. ",
                             Nynorsk to "".expr(),
                             English to "".expr()
                         )
@@ -63,19 +69,20 @@ object RevurderingYrkesskadeFraser {
             }.orShow {
                 paragraph {
                     textExpr(
-                        Bokmal to ("Barnepensjonen din er vurdert på nytt. " +
-                                "Det blir ingen endring av din pensjon. ").expr() +
-                                "Du får fortsatt " + kronebeloep.format() + " kroner hver måned før skatt.",
+                        Bokmal to "Barnepensjonen din er vurdert på nytt. ".expr()
+                                + "Det blir ingen endring av din pensjon. "
+                                + "Du får fortsatt " + kronebeloep.format() + " kroner hver måned før skatt.",
                         Nynorsk to "".expr(),
                         English to "".expr()
                     )
                 }
                 paragraph {
-                    text(
-                        Bokmal to "Det er dokumentert med vedtak fra NAV at <din mor/din far> ikke døde som følge " +
-                                "av yrkesskade/yrkessykdom. Det blir derfor ingen endring av barnepensjonen.",
-                        Nynorsk to "",
-                        English to ""
+                    textExpr(
+                        Bokmal to "Det er dokumentert med vedtak fra NAV at ".expr() + dinForelder
+                                + " ikke døde som følge av yrkesskade/yrkessykdom. " +
+                                "Det blir derfor ingen endring av barnepensjonen.",
+                        Nynorsk to "".expr(),
+                        English to "".expr()
                     )
                 }
                 paragraph {
