@@ -463,8 +463,8 @@ data class OmBeregningAvBarnetillegg(
                         " har hatt i " + periode.format() + ". Det er disse inntektene vi har brukt for å beregne barnetillegget.",
                 Nynorsk to "Tabellene under viser inntektene du".expr() + ifElse(harFellesTillegg, " og anna forelder", "") +
                         " har hatt i " + periode.format() + ". Det er desse inntektene vi har brukt for å rekne ut barnetillegget.",
-                English to "The tables below display the personal incomes you had in ".expr() + periode.format() +
-                        ". These incomes were used to calculate your child supplement.",
+                English to "The tables below display the personal incomes you".expr() + ifElse(harFellesTillegg, " and the other parent", "") +
+                        " had in ".expr() + periode.format() + ". These incomes were used to calculate your child supplement.",
             )
         }
 
