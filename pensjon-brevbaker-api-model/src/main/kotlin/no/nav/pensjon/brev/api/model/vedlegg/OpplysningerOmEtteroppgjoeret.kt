@@ -18,6 +18,7 @@ data class OpplysningerOmEtteroppgjoeretDto(
         val skulleFaatt: Kroner,
         val fikk: Kroner,
         val avvik: Kroner,
+        val harFaattForMye: Boolean,
     )
 
     data class Barnetillegg(
@@ -25,6 +26,7 @@ data class OpplysningerOmEtteroppgjoeretDto(
         val saerkull: Saerkullsbarn?,
         val personinntekt: InntektOgFratrekk,
         val mindreEnn40AarTrygdetid: Boolean,
+        val totaltResultat: AvviksResultat,
     ) {
         data class Fellesbarn(
             val sivilstand: BorMedSivilstand,
@@ -33,12 +35,16 @@ data class OpplysningerOmEtteroppgjoeretDto(
             val resultat: AvviksResultat,
             val personinntektAnnenForelder: InntektOgFratrekk,
             val harSamletInntektOverInntektstak: Boolean,
+            val samletInntekt: Kroner,
             val inntektstakSamletInntekt: Kroner,
         )
 
         data class Saerkullsbarn(
             val fribeloep: Kroner,
             val resultat: AvviksResultat,
+            val harSamletInntektOverInntektstak: Boolean,
+            val samletInntekt: Kroner,
+            val inntektstakSamletInntekt: Kroner,
         )
     }
 

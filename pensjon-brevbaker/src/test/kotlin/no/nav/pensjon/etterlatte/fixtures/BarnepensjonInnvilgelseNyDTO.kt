@@ -1,7 +1,6 @@
 package no.nav.pensjon.etterlatte.fixtures
 
 import no.nav.pensjon.brevbaker.api.model.Kroner
-import no.nav.pensjon.etterlatte.maler.Avdoed
 import no.nav.pensjon.etterlatte.maler.Beregningsperiode
 import no.nav.pensjon.etterlatte.maler.Utbetalingsinfo
 import no.nav.pensjon.etterlatte.maler.barnepensjon.ny.BarnepensjonInnvilgelseNyDTO
@@ -32,9 +31,5 @@ fun createBarnepensjonInnvilgelseNyDTO() =
             ),
         ),
         avkortingsinfo = null,
-        avdoed = Avdoed(
-            navn = "Avdoed Avdoedesen",
-            doedsdato = LocalDate.now().minusMonths(1),
-        ),
         innhold = listOf(),
     )

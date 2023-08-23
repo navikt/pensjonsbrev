@@ -14,6 +14,8 @@ import no.nav.pensjon.etterlatte.maler.UtbetalingsinfoSelectors.antallBarn
 import no.nav.pensjon.etterlatte.maler.UtbetalingsinfoSelectors.beloep
 import no.nav.pensjon.etterlatte.maler.UtbetalingsinfoSelectors.beregningsperioder
 import no.nav.pensjon.etterlatte.maler.UtbetalingsinfoSelectors.soeskenjustering
+import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingYrkesskadeDTOSelectors.dinForelder
+import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingYrkesskadeDTOSelectors.stoenadHarOekt
 import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingYrkesskadeDTOSelectors.utbetalingsinfo
 import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingYrkesskadeDTOSelectors.virkningsdato
 import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingYrkesskadeDTOSelectors.yrkesskadeErDokumentert
@@ -23,9 +25,11 @@ import no.nav.pensjon.etterlatte.maler.fraser.common.Vedtak
 import java.time.LocalDate
 
 data class BarnepensjonRevurderingYrkesskadeDTO(
+    val dinForelder: String,
     val utbetalingsinfo: Utbetalingsinfo,
+    val stoenadHarOekt: Boolean,
     val yrkesskadeErDokumentert: Boolean,
-    val virkningsdato: LocalDate,
+    val virkningsdato: LocalDate
 )
 
 @TemplateModelHelpers
@@ -60,7 +64,13 @@ object YrkesskadeRevurdering : EtterlatteTemplate<BarnepensjonRevurderingYrkessk
         }
         outline {
             includePhrase(Vedtak.BegrunnelseForVedtaket)
-            includePhrase(RevurderingYrkesskadeFraser.Begrunnelse(yrkesskadeErDokumentert, virkningsdato, utbetalingsinfo.beloep))
+            includePhrase(RevurderingYrkesskadeFraser.Begrunnelse(
+                dinForelder,
+                yrkesskadeErDokumentert,
+                virkningsdato,
+                utbetalingsinfo.beloep,
+                stoenadHarOekt
+            ))
             includePhrase(
                 Barnepensjon.SlikHarViBeregnetPensjonenDin(
                     utbetalingsinfo.beregningsperioder,
