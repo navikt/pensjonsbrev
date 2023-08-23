@@ -12,15 +12,17 @@ import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSel
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSelectors.ufoeretrygd
 import no.nav.pensjon.brev.maler.fraser.vedlegg.*
 import no.nav.pensjon.brev.template.*
-import no.nav.pensjon.brev.template.Language.Bokmal
+import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 
 @TemplateModelHelpers
-val vedleggOpplysningerOmEtteroppgjoeret = createAttachment<LangBokmal, OpplysningerOmEtteroppgjoeretDto>(
+val vedleggOpplysningerOmEtteroppgjoeret = createAttachment<LangBokmalNynorskEnglish, OpplysningerOmEtteroppgjoeretDto>(
     title = newText(
         Bokmal to "Opplysninger om etteroppgjøret",
+        Nynorsk to "Opplysningar om etteroppgjer",
+        English to "Information about the settlement",
     ),
     includeSakspart = true,
 ) {
