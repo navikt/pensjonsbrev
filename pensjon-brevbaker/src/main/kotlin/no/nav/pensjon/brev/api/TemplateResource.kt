@@ -9,6 +9,7 @@ import no.nav.pensjon.brev.template.*
 
 
 val prodAutobrevTemplates: Set<AutobrevTemplate<*>> = setOf(
+    ForhaandsvarselEtteroppgjoerUfoeretrygdAuto,
     GjenlevendeInfoEtter1970,
     GjenlevendeInfoFoer1971,
     OmsorgEgenAuto,

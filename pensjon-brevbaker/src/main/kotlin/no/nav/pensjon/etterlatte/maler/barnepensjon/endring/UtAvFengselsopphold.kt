@@ -17,7 +17,7 @@ import no.nav.pensjon.etterlatte.maler.UtbetalingsinfoSelectors.antallBarn
 import no.nav.pensjon.etterlatte.maler.UtbetalingsinfoSelectors.beloep
 import no.nav.pensjon.etterlatte.maler.UtbetalingsinfoSelectors.beregningsperioder
 import no.nav.pensjon.etterlatte.maler.UtbetalingsinfoSelectors.soeskenjustering
-import no.nav.pensjon.etterlatte.maler.barnepensjon.endring.BarnepensjonUtAvFengselsoppholdDTOSelectors.erEtterbetalingMerEnnTreeMaaneder
+import no.nav.pensjon.etterlatte.maler.barnepensjon.endring.BarnepensjonUtAvFengselsoppholdDTOSelectors.erEtterbetalingMerEnnTreMaaneder
 import no.nav.pensjon.etterlatte.maler.barnepensjon.endring.BarnepensjonUtAvFengselsoppholdDTOSelectors.utbetalingsinfo
 import no.nav.pensjon.etterlatte.maler.barnepensjon.endring.BarnepensjonUtAvFengselsoppholdDTOSelectors.virkningsdato
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.Barnepensjon
@@ -28,7 +28,7 @@ import java.time.LocalDate
 
 data class BarnepensjonUtAvFengselsoppholdDTO(
     val utbetalingsinfo: Utbetalingsinfo,
-    val erEtterbetalingMerEnnTreeMaaneder: Boolean,
+    val erEtterbetalingMerEnnTreMaaneder: Boolean,
     val virkningsdato: LocalDate,
 )
 
@@ -60,7 +60,7 @@ object UtAvFengselsopphold : EtterlatteTemplate<BarnepensjonUtAvFengselsoppholdD
             includePhrase(
                 Lover.MuligEtterbetaling(
                     paragraf = Expression.Literal("FYLL INN HER"),
-                    erEtterbetaling = erEtterbetalingMerEnnTreeMaaneder,
+                    erEtterbetaling = erEtterbetalingMerEnnTreMaaneder,
                 ),
             )
             includePhrase(

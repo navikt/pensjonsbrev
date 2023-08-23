@@ -14,12 +14,15 @@ import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.BrevDTO
 import no.nav.pensjon.etterlatte.maler.Element
 import no.nav.pensjon.etterlatte.maler.Hovedmal
+import no.nav.pensjon.etterlatte.maler.Utbetalingsinfo
+import no.nav.pensjon.etterlatte.maler.UtbetalingsinfoSelectors.beregningsperioder
 import no.nav.pensjon.etterlatte.maler.barnepensjon.endring.EndringHovedmalDTOSelectors.erEndret
 import no.nav.pensjon.etterlatte.maler.barnepensjon.endring.EndringHovedmalDTOSelectors.etterbetaling
 import no.nav.pensjon.etterlatte.maler.barnepensjon.endring.EndringHovedmalDTOSelectors.innhold
+import no.nav.pensjon.etterlatte.maler.barnepensjon.endring.EndringHovedmalDTOSelectors.utbetalingsinfo
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.Barnepensjon
 import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
-import no.nav.pensjon.etterlatte.maler.vedlegg.dineRettigheterOgPlikter
+import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.dineRettigheterOgPlikter
 import no.nav.pensjon.etterlatte.maler.vedlegg.etterbetalingAvBarnepensjon
 import no.nav.pensjon.etterlatte.maler.vedlegg.informasjonOmYrkesskade
 import no.nav.pensjon.etterlatte.maler.vedlegg.informasjonTilDegSomHandlerPaaVegneAvBarnet
@@ -42,6 +45,7 @@ data class Etterbetalingsperiode(
 data class EndringHovedmalDTO(
     val erEndret: Boolean,
     val etterbetaling: EtterbetalingDTO,
+    val utbetalingsinfo: Utbetalingsinfo,
     override val innhold: List<Element>,
 ) :
     BrevDTO
@@ -88,6 +92,7 @@ object Endring : EtterlatteTemplate<EndringHovedmalDTO>, Hovedmal {
         }
         outline {
             konverterElementerTilBrevbakerformat(innhold)
+            includePhrase(Barnepensjon.BeregnetPensjonTabell(utbetalingsinfo.beregningsperioder))
             includePhrase(Barnepensjon.UtbetalingOgRegulering)
             includePhrase(Barnepensjon.DuMaaMeldeFraOmEndringer)
             includePhrase(Barnepensjon.DuHarRettTilAaKlage)

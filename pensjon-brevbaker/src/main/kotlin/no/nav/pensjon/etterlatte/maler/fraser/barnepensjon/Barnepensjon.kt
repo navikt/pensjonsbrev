@@ -54,19 +54,25 @@ object Barnepensjon {
         }
     }
 
+    object SlikHarViBeregnetPensjonenDinTittel : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+            title2 {
+                text(
+                    Bokmal to "Slik har vi beregnet pensjonen din",
+                    Nynorsk to "",
+                    English to "",
+                )
+            }
+        }
+    }
+
     data class SlikHarViBeregnetPensjonenDin(
         val beregningsperioder: Expression<List<Beregningsperiode>>,
         val soeskenjustering: Expression<Boolean>,
         val antallBarn: Expression<Int>
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-            title2 {
-                text(
-                    Bokmal to "Slik har vi beregnet pensjonen din",
-                    Nynorsk to "",
-                    English to ""
-                )
-            }
+            includePhrase(SlikHarViBeregnetPensjonenDinTittel)
             showIf(soeskenjustering) {
                 paragraph {
                     textExpr(
@@ -96,7 +102,6 @@ object Barnepensjon {
                     )
                 }
             }
-            includePhrase(BeregnetPensjonTabell(beregningsperioder))
         }
     }
 

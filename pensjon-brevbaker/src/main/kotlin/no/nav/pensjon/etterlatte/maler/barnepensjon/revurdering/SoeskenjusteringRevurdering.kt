@@ -88,6 +88,7 @@ object SoeskenjusteringRevurdering : EtterlatteTemplate<BarnepensjonRevurderingS
                     antallBarn = utbetalingsinfo.antallBarn
                 )
             )
+            includePhrase(Barnepensjon.BeregnetPensjonTabell(utbetalingsinfo.beregningsperioder))
 
             includePhrase(Barnepensjon.Utbetaling)
             includePhrase(Barnepensjon.Regulering)

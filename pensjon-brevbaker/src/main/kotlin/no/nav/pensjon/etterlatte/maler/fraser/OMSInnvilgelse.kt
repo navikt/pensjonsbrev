@@ -2,17 +2,13 @@ package no.nav.pensjon.etterlatte.maler.fraser
 
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.model.format
-import no.nav.pensjon.brev.template.Element
-import no.nav.pensjon.brev.template.Expression
-import no.nav.pensjon.brev.template.LangBokmal
+import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Language.Bokmal
-import no.nav.pensjon.brev.template.OutlinePhrase
-import no.nav.pensjon.brev.template.TextOnlyPhrase
+import no.nav.pensjon.brev.template.Language.English
+import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.TextOnlyScope
-import no.nav.pensjon.brev.template.dsl.expression.expr
-import no.nav.pensjon.brev.template.dsl.expression.format
-import no.nav.pensjon.brev.template.dsl.expression.plus
+import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.Kroner
@@ -21,6 +17,7 @@ import no.nav.pensjon.etterlatte.maler.AvkortetBeregningsperiodeSelectors.datoFO
 import no.nav.pensjon.etterlatte.maler.AvkortetBeregningsperiodeSelectors.datoTOM
 import no.nav.pensjon.etterlatte.maler.AvkortetBeregningsperiodeSelectors.inntekt
 import no.nav.pensjon.etterlatte.maler.AvkortetBeregningsperiodeSelectors.utbetaltBeloep
+import no.nav.pensjon.etterlatte.maler.EtterbetalingDTO
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
 import java.time.LocalDate
 
@@ -29,24 +26,27 @@ object OMSInnvilgelse {
     data class Vedtak(
         val virkningsdato: Expression<LocalDate>,
         val avdoedNavn: Expression<String>,
-        val doedsdato: Expression<LocalDate>,
+        val etterbetalingsinfo: Expression<EtterbetalingDTO?>
     ) :
-        OutlinePhrase<LangBokmal>() {
-        override fun OutlineOnlyScope<LangBokmal, Unit>.template() {
+        OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             paragraph {
-                val formatertVirkningsdato = virkningsdato.format()
-                val formatertDoedsdato = doedsdato.format()
-                textExpr(
-                    Bokmal to "Du er innvilget omstillingsstønad fra ".expr() + formatertVirkningsdato +
-                            " fordi " + avdoedNavn + " er registrert død " + formatertDoedsdato + ". " +
-                            "Du vil ikke få utbetalt omstillingsstønad fordi inntekten din er høyere enn " +
-                            "grensen for å få utbetalt stønaden.",
-                )
-            }
-            paragraph {
-                text(
-                    Bokmal to "Omstillingsstønad innvilges vanligvis for inntil tre år.",
-                )
+                ifNotNull(etterbetalingsinfo) {
+                    text(
+                        Bokmal to "Vedtaket er gjort etter bestemmelsene om omstillingstid i folketrygdloven " +
+                                "§ 17-2, § 17-3, § 17-4, § 17-5, § 17-6, § 17-9 og § 22-12.",
+                        Nynorsk to "",
+                        English to "",
+                    )
+                } orShow {
+                    text(
+                        Bokmal to "Vedtaket er gjort etter bestemmelsene om omstillingstid i folketrygdloven " +
+                                "§ 17-2, § 17-3, § 17-4, § 17-5, § 17-6, § 17-9, § 22-12 og § 22-13.",
+                        Nynorsk to "",
+                        English to "",
+                    )
+                }
+
             }
         }
     }
@@ -122,11 +122,13 @@ object OMSInnvilgelse {
 
     data class Beregningsgrunnlag(
         val inntekt: Expression<Kroner>,
-    ) : OutlinePhrase<LangBokmal>() {
-        override fun OutlineOnlyScope<LangBokmal, Unit>.template() {
+    ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             title2 {
                 text(
-                    Bokmal to "Beregningsgrunnlag"
+                    Bokmal to "Beregningsgrunnlag",
+                    Nynorsk to "",
+                    English to "",
                 )
             }
             paragraph {
@@ -136,22 +138,28 @@ object OMSInnvilgelse {
                             formatertInntekt + " i inneværende kalenderår. Dette beløpet er høyere enn grensen " +
                             "for å få utbetalt omstillingsstønad. Du kan lese mer om beløpsgrense og hvordan " +
                             "vi beregner inntekt på ${Constants.OMS_HVORMYE_URL}.",
+                    Nynorsk to "".expr(),
+                    English to "".expr(),
                 )
             }
         }
     }
 
-    object Utbetaling : OutlinePhrase<LangBokmal>() {
-        override fun OutlineOnlyScope<LangBokmal, Unit>.template() {
+    object Utbetaling : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             title2 {
                 text(
                     Bokmal to "Utbetaling",
+                    Nynorsk to "",
+                    English to "",
                 )
             }
             paragraph {
                 text(
                     Bokmal to "Pensjonen blir utbetalt innen den 20. i hver måned. " +
-                            "Du finner utbetalingsdatoer på ${Constants.UTBETALING_URL}."
+                            "Du finner utbetalingsdatoer på ${Constants.UTBETALING_URL}.",
+                    Nynorsk to "",
+                    English to "",
                 )
             }
         }
@@ -159,11 +167,13 @@ object OMSInnvilgelse {
 
     data class EtterbetalingOgSkatt(
         val virkningsdato: Expression<LocalDate>,
-    ) : OutlinePhrase<LangBokmal>() {
-        override fun OutlineOnlyScope<LangBokmal, Unit>.template() {
+    ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             title2 {
                 text(
-                    Bokmal to "Etterbetaling og skatt"
+                    Bokmal to "Etterbetaling og skatt",
+                    Nynorsk to "",
+                    English to "",
                 )
             }
             paragraph {
@@ -171,6 +181,8 @@ object OMSInnvilgelse {
                 textExpr(
                     Bokmal to "Du får etterbetalt pensjon fra".expr() + formatertVirkningsdato + ". " +
                             "Det trekkes vanligvis skatt av etterbetaling.",
+                    Nynorsk to "".expr(),
+                    English to "".expr(),
                 )
             }
             paragraph {
@@ -180,6 +192,8 @@ object OMSInnvilgelse {
                             "Skatteetaten eller andre ordninger har krav i etterbetalingen kan utbetalingen bli " +
                             "forsinket. Hvis du får fradrag i etterbetalingen, vil det gå frem av " +
                             "utbetalingsmeldingen din.",
+                    Nynorsk to "",
+                    English to "",
                 )
             }
             paragraph {
@@ -187,40 +201,50 @@ object OMSInnvilgelse {
                     Bokmal to "Gjelder etterbetalingen tidligere år trekker NAV skatt etter " +
                             "Skatteetatens standardsatser. Du kan lese mer om satsene på " +
                             "${Constants.SKATTETREKK_ETTERBETALING_URL}",
+                    Nynorsk to "",
+                    English to "",
                 )
             }
         }
     }
 
-    object Regulering : OutlinePhrase<LangBokmal>() {
-        override fun OutlineOnlyScope<LangBokmal, Unit>.template() {
+    object Regulering : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             title2 {
                 text(
                     Bokmal to "Regulering",
+                    Nynorsk to "",
+                    English to "",
                 )
             }
             paragraph {
                 text(
                     Bokmal to "Grunnbeløpet blir regulert 1. mai hvert år. Økningen i stønaden " +
                             "din blir vanligvis etterbetalt i juni. Du kan lese mer om regulering på " +
-                            "${Constants.OMS_REGULERING_URL}."
+                            "${Constants.OMS_REGULERING_URL}.",
+                    Nynorsk to "",
+                    English to "",
                 )
             }
         }
     }
 
-    object Aktivitetsplikt : OutlinePhrase<LangBokmal>() {
-        override fun OutlineOnlyScope<LangBokmal, Unit>.template() {
+    object Aktivitetsplikt : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             title2 {
                 text(
-                    Bokmal to "Aktivitetsplikt",
+                    Bokmal to "Du må være i aktivitet",
+                    Nynorsk to "",
+                    English to "",
                 )
             }
             paragraph {
                 text(
                     Bokmal to "Formålet med omstillingsstønad er å sikre inntekt for gjenlevende og " +
                             "gi hjelp til selvhjelp, slik at de etter en omstillingsperiode etter dødsfallet " +
-                            "kan bli i stand til å forsørge seg selv ved eget arbeid."
+                            "kan bli i stand til å forsørge seg selv ved eget arbeid.",
+                    Nynorsk to "",
+                    English to "",
                 )
             }
             paragraph {
@@ -228,79 +252,69 @@ object OMSInnvilgelse {
                     Bokmal to "Det første halvåret etter dødsfallet stilles det ikke krav til at " +
                             "den gjenlevende er i arbeid eller arbeidsrettet aktivitet. Etter seks måneder er det " +
                             "et vilkår for å fortsatt ha rett til omstillingsstønad at den gjenlevende er i minst " +
-                            "50 prosent aktivitet."
+                            "50 prosent aktivitet.",
+                    Nynorsk to "",
+                    English to "",
                 )
             }
             paragraph {
                 text(
                     Bokmal to "Når det er gått ett år etter dødsfallet, kan det stilles krav om " +
-                            "at den gjenlevende er i arbeid eller arbeidsrettet aktivitet på full tid."
+                            "at den gjenlevende er i arbeid eller arbeidsrettet aktivitet på full tid.",
+                    Nynorsk to "",
+                    English to "",
                 )
             }
         }
     }
 
-    object Inntektsendring : OutlinePhrase<LangBokmal>() {
-        override fun OutlineOnlyScope<LangBokmal, Unit>.template() {
+    object Inntektsendring : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             title2 {
                 text(
-                    Bokmal to "Inntektsendring",
+                    Bokmal to "Du må melde fra hvis inntekten din endrer seg",
+                    Nynorsk to "",
+                    English to "",
                 )
             }
             paragraph {
                 text(
-                    Bokmal to "Du må si ifra til oss hvis årsinntekten din endrer seg og blir " +
-                            "lavere enn <MAKSBELOEP>. Da må vi vurdere om du kan ha rett til " +
-                            "utbetaling av omstillingsstønad."
+                    Bokmal to "For at du skal motta korrekt omstillingsstønad, er det viktig at du informerer " +
+                            "oss hvis inntekten din endrer seg. Vi vil justere omstillingsstønaden fra måneden etter " +
+                            "at du har gitt beskjed, og beregne inntekten din basert på det du har tjent så langt i år. " +
+                            "Du kan lese mer om inntektsendring i vedlegget «Informasjon til deg som mottar overgangsstønad».",
+                    Nynorsk to "",
+                    English to "",
                 )
             }
             paragraph {
                 text(
-                    Bokmal to "Du sier ifra om endringer i inntekt ved å skrive en beskjed til " +
-                            "oss på ${Constants.SKRIVTILOSS_URL} eller sende informasjon til " +
-                            "NAV Familie- og pensjonsytelser, Postboks 6600, 0607 OSLO."
+                    Bokmal to "Du kan også finne mer informasjon om hvordan vi beregner inntekten din på " +
+                            "${Constants.OMS_HVORMYE_URL}.",
+                    Nynorsk to "",
+                    English to "",
                 )
             }
         }
     }
 
-    object Etteroppgjoer : OutlinePhrase<LangBokmal>() {
-        override fun OutlineOnlyScope<LangBokmal, Unit>.template() {
+    object Etteroppgjoer : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             title2 {
                 text(
                     Bokmal to "Etteroppgjør",
+                    Nynorsk to "",
+                    English to "",
                 )
             }
             paragraph {
                 text(
-                    Bokmal to "Selv om du ikke har utbetalt omstillingsstønad vil vi hver høst " +
-                            "sjekke inntektsopplysningene i skatteoppgjøret ditt for å se om du har " +
-                            "fått utbetalt riktig beløp i stønad året før."
-                )
-            }
-            paragraph {
-                text(
-                    Bokmal to "Dersom du ikke har hatt utbetalt omstillingsstønad i kalenderåret vi " +
-                            "sjekker vil du ikke motta brev om etteroppgjør fra oss. Viser skatteoppgjøret at du har " +
-                            "hatt en annen inntekt enn den inntekten vi brukte da vi beregnet omstillingstønaden din, " +
-                            "vil vi gjøre en ny beregning. Dette kalles etteroppgjør."
-                )
-            }
-            paragraph {
-                text(
-                    Bokmal to "Hvis du har fått for lite utbetalt, får du en etterbetaling. " +
-                            "Har du fått for mye utbetalt, må du betale tilbake."
-                )
-            }
-            paragraph {
-                text(
-                    Bokmal to "Mer informasjon om hvordan vi har behandlet vedtaket",
-                    Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
-                )
-            }
-            paragraph {
-                text(
-                    Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 17-2 til 17-9 og 22-12/22-13."
+                    Bokmal to "Hver høst sjekker NAV inntektsopplysningene i skatteoppgjøret ditt for å se " +
+                            "om du har fått utbetalt riktig beløp i omstillingsstønad året før. Hvis du har fått " +
+                            "for lite utbetalt, får du en etterbetaling. Har du fått for mye utbetalt, må du betale " +
+                            "tilbake. Du kan finne mer informasjon om etteroppgjør på ${Constants.OMS_ETTEROPPGJOER_URL}.",
+                    Nynorsk to "",
+                    English to "",
                 )
             }
         }
