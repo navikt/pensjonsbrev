@@ -3,7 +3,9 @@ package no.nav.pensjon.etterlatte.maler.fraser.barnepensjon
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
-import no.nav.pensjon.brev.template.Language.*
+import no.nav.pensjon.brev.template.Language.Bokmal
+import no.nav.pensjon.brev.template.Language.English
+import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.expr
@@ -16,18 +18,34 @@ import java.time.LocalDate
 
 object RevurderingYrkesskadeFraser {
     data class Begrunnelse(
+        val dinForelder: Expression<String>,
         val yrkesskadeErDokumentert: Expression<Boolean>,
         val virkningsdato: Expression<LocalDate>,
         val kronebeloep: Expression<Kroner>,
+        val stoenadHarOekt: Expression<Boolean>
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             showIf(yrkesskadeErDokumentert) {
                 paragraph {
-                    val format = virkningsdato.format()
+                    val virkningsdatoExpr = virkningsdato.format()
+                    showIf(stoenadHarOekt) {
+                        textExpr(
+                            Bokmal to "Barnepensjonen din øker fra ".expr() + virkningsdatoExpr
+                                    + " fordi det nå er dokumentert at ".expr() + dinForelder
+                                    + " døde som følge av yrkesskade. ",
+                            Nynorsk to "".expr(),
+                            English to "".expr()
+                        )
+                    }.orShow {
+                        textExpr(
+                            Bokmal to "Det er nå dokumentert at ".expr() + dinForelder
+                                    + " døde som følge av yrkesskade. ",
+                            Nynorsk to "".expr(),
+                            English to "".expr()
+                        )
+                    }
                     textExpr(
-                        Bokmal to "Barnepensjonen din øker fra ".expr() + format +
-                                (" fordi det nå er dokumentert at <din mor/din far> døde som følge av yrkesskade. " +
-                                        "Du får ").expr() + kronebeloep.format() + " kroner hver måned før skatt.",
+                        Bokmal to "Du får ".expr() + kronebeloep.format() + " kroner hver måned før skatt.",
                         Nynorsk to "".expr(),
                         English to "".expr(),
                     )
@@ -51,18 +69,20 @@ object RevurderingYrkesskadeFraser {
             }.orShow {
                 paragraph {
                     textExpr(
-                        Bokmal to "Barnepensjon din er vurdert på nytt. Det blir ingen endring av din pensjon. ".expr() +
-                                "Du får fortsatt " + kronebeloep.format() + " kroner hver måned før skatt.",
+                        Bokmal to "Barnepensjonen din er vurdert på nytt. ".expr()
+                                + "Det blir ingen endring av din pensjon. "
+                                + "Du får fortsatt " + kronebeloep.format() + " kroner hver måned før skatt.",
                         Nynorsk to "".expr(),
                         English to "".expr()
                     )
                 }
                 paragraph {
-                    text(
-                        Bokmal to "Det er dokumentert med vedtak fra NAV at <din mor/din far> ikke døde som følge " +
-                                "av yrkesskade/yrkessykdom. Det blir derfor ingen endring av barnepensjonen.",
-                        Nynorsk to "",
-                        English to ""
+                    textExpr(
+                        Bokmal to "Det er dokumentert med vedtak fra NAV at ".expr() + dinForelder
+                                + " ikke døde som følge av yrkesskade/yrkessykdom. " +
+                                "Det blir derfor ingen endring av barnepensjonen.",
+                        Nynorsk to "".expr(),
+                        English to "".expr()
                     )
                 }
                 paragraph {
