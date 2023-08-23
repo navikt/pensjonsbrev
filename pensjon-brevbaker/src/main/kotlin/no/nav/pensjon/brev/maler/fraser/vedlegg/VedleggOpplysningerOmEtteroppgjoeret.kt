@@ -303,8 +303,7 @@ data class OmBeregningAvBarnetillegg(
                         textExpr(
                             Bokmal to "Barnetillegget beregnes ut fra inntekten til deg og din ".expr() + fellesbarn.sivilstand.ubestemtForm() + ".",
                             Nynorsk to "Barnetillegget blir rekna ut med utgangspunkt i di eiga inntekt og inntekta til ".expr() + fellesbarn.sivilstand.ubestemtForm() + ".",
-                            // TODO: Dette er litt feil engelsk, bør fikses
-                            English to "Child supplement is calculated based on you and your ".expr() + fellesbarn.sivilstand.ubestemtForm() + " total income."
+                            English to "Child supplement is calculated based on the total income of you and your ".expr() + fellesbarn.sivilstand.ubestemtForm() + "."
                         )
                     }
                     item {
