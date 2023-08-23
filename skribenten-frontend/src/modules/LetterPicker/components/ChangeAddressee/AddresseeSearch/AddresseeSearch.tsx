@@ -1,9 +1,9 @@
-import {Button, Radio, RadioGroup, Search, Table, UNSAFE_Combobox} from "@navikt/ds-react"
-import {FC, FormEvent, useContext, useState} from "react"
+import {Button, Radio, RadioGroup, Search, Select, Table} from "@navikt/ds-react"
+import React, {FC, FormEvent, useContext, useEffect, useState} from "react"
 import styles from './AddresseeSearch.module.css'
 import {PersonSoekResponse} from "../../../../LetterEditor/model/api"
 import {SkribentContext} from "../../../../../pages/brevvelger"
-import {Combobox} from "@navikt/ds-react/src/form/combobox"
+import {Selection} from "@navikt/ds-react/src/table/stories/table.stories"
 
 export type RecipientType = 'PERSON' | 'SAMHANDLER'
 export type Place = 'INNLAND' | 'UTLAND'
@@ -12,7 +12,7 @@ export type SearchRequest = {
     soeketekst: string,
     recipientType: RecipientType | null,
     place: Place | null,
-    kommuneNummer: string | null,
+    kommunenummer: string[] | null,
     land: string | null,
 }
 
@@ -20,6 +20,11 @@ export type SearchRequest = {
 export type AddressResult = {
     addressName: string,
     addressLines: string[]
+}
+
+export type KommuneResult = {
+    kommunenummer: string[],
+    kommunenavn: string,
 }
 
 interface AddresseeSearchProps {
@@ -35,8 +40,14 @@ const AddresseeSearch: FC<AddresseeSearchProps> = ({onMottakerChosen}) => {
     const [recipientType, setRecipientType] = useState<RecipientType | null>(null)
     const [place, setPlace] = useState<Place | null>(null)
     const [errorMessage, setErrorMessage] = useState<string | null>(null)
+    const [kommuner, setKommuner] = useState<KommuneResult[]>([])
+    const [selectedKommune, setSelectedKommune] = useState<string[] | null>(null)
     const {msal, skribentApi} = useContext(SkribentContext) as SkribentContext
 
+    useEffect(() => {
+        skribentApi.hentKommuneForslag(msal).then(
+            res => setKommuner(res))
+    }, [])
     const handleSearch = () => {
         if (isSearching) return
         if (searchText.length < 3) {
@@ -46,11 +57,11 @@ const AddresseeSearch: FC<AddresseeSearchProps> = ({onMottakerChosen}) => {
 
         setErrorMessage(null)
         setIsSearching(true)
-        const request = {
+        const request: SearchRequest = {
             recipientType: recipientType,
             place: place,
             soeketekst: searchText,
-            kommuneNummer: "0301",
+            kommunenummer: selectedKommune,
             land: null,
         }
         skribentApi.soekEtterMottaker(msal, request).then(
@@ -65,6 +76,12 @@ const AddresseeSearch: FC<AddresseeSearchProps> = ({onMottakerChosen}) => {
     const handleFormSubmit = (form: FormEvent<HTMLFormElement>) => {
         form.preventDefault()
         handleSearch()
+    }
+
+    const handleKommuneSelected = (option: string) => {
+        const kommune = kommuner.find((value) => value.kommunenavn.toLowerCase() == option.toLowerCase())
+        setSelectedKommune(kommune?.kommunenummer || null)
+        console.log(kommune)
     }
 
     const error = (errorMessage && <div>{errorMessage}</div>)
@@ -95,18 +112,17 @@ const AddresseeSearch: FC<AddresseeSearchProps> = ({onMottakerChosen}) => {
                             <Radio value="UTLAND">Utland</Radio>
                         </RadioGroup>
                         {place == "INNLAND" &&
-                            <UNSAFE_Combobox
+                            <Select
                                 label="Kommune"
-                                options={[]}
-                                shouldAutocomplete={true}
-                            />
+                                size="small"
+                                onChange={(event: React.ChangeEvent<HTMLSelectElement>) => handleKommuneSelected(event.target.value)}>
+                                {kommuner.map(opt => (<option key={opt.kommunenavn}>{opt.kommunenavn}</option>))}</Select>
                         }
                     </div>
-
                 </div>
             )}
 
-            {latestSearch && results && results.resultat.length > 0  &&
+            {latestSearch && results && results.resultat.length > 0 &&
                 <div className={styles.lastSearchedText}>Søkeresultater for “{latestSearch.soeketekst}”</div>}
             {results && results.resultat.length > 0 && <Table size="small">
                 <Table.Header>

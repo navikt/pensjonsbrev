@@ -2,8 +2,10 @@ package no.nav.pensjon.brev.skribenten
 
 import com.typesafe.config.Config
 import io.ktor.http.*
+import io.ktor.http.content.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
+import io.ktor.server.plugins.cachingheaders.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
@@ -24,7 +26,7 @@ data class MottakerSearchRequest(
     val soeketekst: String,
     val recipientType: RecipientType?,
     val place: Place?,
-    val kommuneNummer: String?,
+    val kommunenummer: List<String>?,
     val land: String?,
 ) {
     enum class Place { INNLAND, UTLAND }
@@ -44,13 +46,13 @@ fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config
     val authService = AzureADService(authConfig)
     val safService = SafService(skribentenConfig.getConfig("services.saf"), authService)
     val penService = PenService(skribentenConfig.getConfig("services.pen"), authService)
+    val kodeverkService = KodeverkService(skribentenConfig.getConfig("services.kodeverk"))
     val pdlService = PdlService(skribentenConfig.getConfig("services.pdl"), authService)
     val microsoftGraphService =
         MicrosoftGraphService(skribentenConfig.getConfig("services.microsoftgraph"), authService)
     val brevbakerService = BrevbakerService(skribentenConfig.getConfig("services.brevbaker"), authService)
     val brevmetadataService = BrevmetadataService(skribentenConfig.getConfig("services.brevmetadata"))
     val databaseService = SkribentenFakeDatabaseService(brevmetadataService)
-
     routing {
         get("/isAlive") {
             call.respondText("Alive!", ContentType.Text.Plain, HttpStatusCode.OK)
@@ -142,13 +144,19 @@ fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config
 
             get("/pdl/adresser/{pid}") {
                 val pid = call.parameters.getOrFail("pid")
+                // TODO integrate with pensjon-persjon's address service.
                 respondWithResult(pdlService.hentAdresseForPersonFake(call, pid))
             }
 
-            get("/pdl/forslag/kommune/{kommune}") {
-                val searchText = call.parameters.getOrFail("kommune")
-                respondWithResult(pdlService.hentKommuneForslag(call, searchText))
+            route("/kodeverk") {
+                install(CachingHeaders) {
+                    options { _, _ -> CachingOptions(CacheControl.MaxAge(maxAgeSeconds = 86400)) }
+                }
+                get("/kommune") {
+                    call.respond(kodeverkService.getKommuner(call))
+                }
             }
+
 
             get("/test/brevbaker") {
                 val brev = brevbakerService.genererBrev(call)

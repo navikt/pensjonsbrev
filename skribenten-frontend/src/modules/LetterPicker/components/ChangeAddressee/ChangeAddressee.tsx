@@ -26,10 +26,6 @@ const ChangeAddressee: FC<ChangeAddresseeProps> = ({open, onExit}) => {
                 <Tabs>
                     <Tabs.List>
                         <Tabs.Tab
-                            value="favourites"
-                            label="Favoritter"
-                        />
-                        <Tabs.Tab
                             value="addresseesearch"
                             label="Søk mottaker"
                         />

@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.skribenten.services
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+import com.fasterxml.jackson.databind.JsonNode
 import com.typesafe.config.Config
 import io.ktor.client.plugins.*
 import io.ktor.client.plugins.contentnegotiation.*
@@ -15,7 +15,6 @@ import no.nav.pensjon.brev.skribenten.auth.AzureADOnBehalfOfAuthorizedHttpClient
 import no.nav.pensjon.brev.skribenten.auth.AzureADService
 import no.nav.pensjon.brev.skribenten.services.PdlService.Criteria.CriteriaLogic
 import no.nav.pensjon.brev.skribenten.services.PdlService.Criteria.Criterion
-import no.nav.pensjon.brev.skribenten.services.PdlService.PdlCompletionParameters.FieldValue
 
 private const val HENT_NAVN_QUERY_RESOURCE = "/pdl/HentNavn.graphql"
 private const val SOEK_MOTTAKER_QUERY_RESOURCE = "/pdl/PersonSoek.graphql"
@@ -48,9 +47,10 @@ class PdlService(config: Config, authService: AzureADService) {
         val historikk: Boolean = false
     )
 
-    @JsonIgnoreProperties(ignoreUnknown = true)
     private data class PDLResponse<T : Any>(
         val data: T?,
+        val errors: JsonNode?,
+        val extensions: JsonNode?,
     )
 
     private data class DataWrapperPersonMedNavn(val hentPerson: PersonMedNavn?)
@@ -108,7 +108,7 @@ class PdlService(config: Config, authService: AzureADService) {
     private data class PersonSoekVariables(val paging: Paging, val criteria: List<Criteria>)
     private data class Paging(val pageNumber: Int, val resultsPerPage: Int)
 
-    private data class PersonSoekResult(val sokPerson: SokPerson) {
+    private data class PDLPersonSoekResult(val sokPerson: SokPerson?) {
         data class SokPerson(val pageNumber: Int, val totalHits: Int, val hits: List<Hit>)
 
         data class Hit(val person: Person)
@@ -122,109 +122,88 @@ class PdlService(config: Config, authService: AzureADService) {
     }
 
 
-    data class PersonSoekResponse(val totalHits: Int, val resultat: List<Result>) {
-        data class Result(val navn: String, val id: String, val foedselsdato: String)
+    data class PersonSoekResponse(val totalHits: Int, val resultat: List<Hit>) {
+        data class Hit(val navn: String, val id: String, val foedselsdato: String)
+
     }
 
     suspend fun personSoek(
         call: ApplicationCall,
         request: MottakerSearchRequest
     ): ServiceResult<PersonSoekResponse, String> {
-        return client.post(call, "") {
+        val result = client.post(call, "") {
             contentType(ContentType.Application.Json)
             accept(ContentType.Application.Json)
+
+            //TODO variable header for UFO/PEN?
             headers {
                 set("Tema", "PEN")
             }
 
             val searchCriteria = mutableListOf<Criteria>(
-                Criterion(
-                    fieldName = "fritekst.navn",
-                    searchRule = SearchRule(contains = request.soeketekst),
-                    searchHistorical = false
-                ),
+                Criterion("fritekst.navn", SearchRule(contains = request.soeketekst), false),
             )
 
-            if (request.place == INNLAND && request.kommuneNummer != null) {
-                searchCriteria.add(CriteriaLogic(
-                    or = listOf(
-                        "person.oppholdsadresse.vegadresse.kommunenummer",
-                        "person.bostedsadresse.vegadresse.kommunenummer",
-                        "person.kontaktadresse.vegadresse.kommunenummer"
-                    ).map {
-                        Criterion(fieldName = it, SearchRule(equals = request.kommuneNummer.toString()))
-                    }
-                ))
+            if (request.place == INNLAND) {
+                request.kommunenummer?.forEach { kommunenummer ->
+                    searchCriteria.add(CriteriaLogic(
+                        or = listOf(
+                            "person.oppholdsadresse.vegadresse.kommunenummer",
+                            "person.bostedsadresse.vegadresse.kommunenummer",
+                            "person.kontaktadresse.vegadresse.kommunenummer"
+                        ).map { fieldName ->
+                            Criterion(fieldName = fieldName, SearchRule(contains = kommunenummer))
+                        }
+                    ))
+                }
             } else if (request.place == UTLAND && request.land != null) {
                 searchCriteria.add(
-                    Criterion(
-                        fieldName = "fritekst.adresser",
-                        searchRule = SearchRule(contains = request.land)
-                    )
+                    Criterion("fritekst.adresser", SearchRule(contains = request.land))
                 )
             }
 
             setBody(
                 PDLQuery(
-                    query = personSoekQuery,
-                    variables = PersonSoekVariables(
-                        paging = Paging(pageNumber = 1, resultsPerPage = 20),
-                        listOf(CriteriaLogic(and = searchCriteria))
-                    ),
+                    personSoekQuery, PersonSoekVariables(
+                        Paging(1, 10), listOf(CriteriaLogic(and = searchCriteria))
+                    )
                 )
             )
-        }.toServiceResult<PDLResponse<PersonSoekResult>, String>()
-            .map { result ->
-                val data = result.data!!.sokPerson
-                //TODO error handling
-                PersonSoekResponse(
-                    totalHits = data.totalHits,
-                    resultat = data.hits.mapNotNull {
-                        PersonSoekResponse.Result(
-                            foedselsdato = it.person.foedsel.firstOrNull()?.foedselsdato ?: return@mapNotNull null,
-                            navn = it.person.navn.firstOrNull()?.format() ?: return@mapNotNull null,
-                            id = it.person.folkeregisteridentifikator.firstOrNull()?.identifikasjonsnummer
-                                ?: return@mapNotNull null
-                        )
-                    }
-                )
-            }
-    }
+        }.toServiceResult<PDLResponse<PDLPersonSoekResult>, PDLResponse<PDLPersonSoekResult>>()
+        return when (result) {
+            is ServiceResult.Ok -> {
+                // TODO remove.
+                if (result.result.errors != null || result.result.extensions != null) {
+                    println(
+                        """
+                        Extension message: ${result.result.extensions}                        
+                        Error message: ${result.result.errors}                        
+                    """.trimIndent()
+                    )
+                }
 
-    // TODO delete this if we end up using pensjon-person's address service
-//    private val hentAdresserQuery = PdlService::class.java.getResource(SOEK_MOTTAKER_QUERY_RESOURCE)?.readText()
-//        ?: throw IllegalStateException("Kunne ikke hente query ressurs $SOEK_MOTTAKER_QUERY_RESOURCE")
-//
-//    private data class HentAdresserVariables(val fnr: String, val historikk: Boolean = false)
-//
-//    private data class HentAdresserPdlResponse(val hentPerson: Person) {
-//        data class Person(
-//            val bostedsadresse: Adresse?,
-//            val kontaktadresse: Adresse?,
-//            val oppholdsadresse: Adresse?,
-//        )
-//
-//        abstract class Adresse {
-//            abstract fun format(): List<String>
-//            abstract fun type(): String
-//        }
-//
-//        data class VegAdresse(
-//            val adressenavn: String?,
-//            val husnummer: String?,
-//            val husbokstav: String?,
-//            val postnummer: String?,
-//            val bruksenhetsnummer: String?,
-//        ) : Adresse() {
-//            override fun format(): List<String> {
-//
-//            }
-//
-//            override fun type(): String {
-//                TODO("Not yet implemented")
-//            }
-//        }
-//    }
+
+                result.result.data?.sokPerson?.let { data ->
+                    ServiceResult.Ok(PersonSoekResponse(
+                        data.totalHits, data.hits.mapNotNull {
+                            PersonSoekResponse.Hit(
+                                foedselsdato = it.person.foedsel.firstOrNull()?.foedselsdato
+                                    ?: return@mapNotNull null,
+                                navn = it.person.navn.firstOrNull()?.format()
+                                    ?: return@mapNotNull null,
+                                id = it.person.folkeregisteridentifikator.firstOrNull()?.identifikasjonsnummer
+                                    ?: return@mapNotNull null
+                            )
+                        }
+                    ))
+                } ?: result.result.errors?.let { ServiceResult.Error(it.toPrettyString()) }
+                ?: ServiceResult.Error("Missing data in response from PDL")
+            }
+
+            is ServiceResult.Error -> ServiceResult.Error(result.error.errors.toString())
+            is ServiceResult.AuthorizationError -> ServiceResult.Error(result.error.error)
+        }
+    }
 
     data class HentAdresserResponse(val addressLine: List<String>)
 
@@ -241,46 +220,5 @@ class PdlService(config: Config, authService: AzureADService) {
                 )
             )
         )
-    }
-
-    //      "completionField": "vegadresse.adressenavn",
-    //      "maxSuggestions": 10,
-    //      "fieldValues": [
-    //        {"fieldName": "vegadresse.adressenavn", "fieldValue": "oslo"}
-    //      ]
-    private data class PdlCompletionParameters(
-        val completionField: String,
-        val maxSuggestions: Int,
-        val fieldValues: List<FieldValue>
-    ){
-        data class FieldValue(
-            val fieldName: String,
-            val fieldValue: String,
-        )
-    }
-
-    suspend fun hentKommuneForslag(call: ApplicationCall, searchText: String): ServiceResult<String, String> {
-        return client.post(call, "") {
-            contentType(ContentType.Application.Json)
-            accept(ContentType.Application.Json)
-            headers {
-                set("Tema", "PEN")
-            }
-            setBody(
-                PDLQuery(
-                    query = hentNavnQuery,
-                    variables = PdlCompletionParameters(
-                        completionField = "vegadresse.kommunenummer",
-                        maxSuggestions = 10,
-                        fieldValues = listOf(
-                            FieldValue(
-                                fieldName = "vegadresse.kommunenummer",
-                                fieldValue = searchText
-                            )
-                        )
-                    )
-                )
-            )
-        }.toServiceResult<String, String>()
     }
 }

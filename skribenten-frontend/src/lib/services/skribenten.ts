@@ -10,7 +10,7 @@ import {
 import {ObjectValue} from "../../modules/ModelEditor/model"
 import {LetterCategory} from "../../modules/LetterPicker/model/skribenten"
 import {
-    AddressResult,
+    AddressResult, KommuneResult,
     SearchRequest
 } from "../../modules/LetterPicker/components/ChangeAddressee/AddresseeSearch/AddresseeSearch"
 
@@ -194,9 +194,7 @@ class SkribentenAPI {
     async hentNavn(msal: IMsalContext, fnr: string): Promise<string> {
         return withAuthorization(msal, this.config.scope).then((auth) =>
             fetch(`${this.config.url}/pdl/navn/${fnr}`, {
-                headers: {
-                    'Authorization': `Bearer ${auth.accessToken}`,
-                },
+                headers: {'Authorization': `Bearer ${auth.accessToken}`},
                 method: 'GET',
             })
         ).then((res) => res.text())
@@ -228,23 +226,19 @@ class SkribentenAPI {
     async hentAdresser(msal: IMsalContext, fnr: string): Promise<AddressResult> {
         return withAuthorization(msal, this.config.scope).then(auth =>
             fetch(`${this.config.url}/pdl/adresser/${fnr}`, {
-                headers: {
-                    'Authorization': `Bearer ${auth.accessToken}`,
-                },
+                headers: {'Authorization': `Bearer ${auth.accessToken}`},
                 method: 'GET',
             })
         ).then((res) => res.json())
     }
 
-    async hentKommuneForslag(msal: IMsalContext, searchText: string): Promise<string> {
+    async hentKommuneForslag(msal: IMsalContext): Promise<KommuneResult[]> {
         return withAuthorization(msal, this.config.scope).then(auth =>
-            fetch(`${this.config.url}/pdl/forslag/kommune/${searchText}`, {
-                headers: {
-                    'Authorization': `Bearer ${auth.accessToken}`,
-                },
+            fetch(`${this.config.url}/kodeverk/kommune`, {
+                headers: {'Authorization': `Bearer ${auth.accessToken}`},
                 method: 'GET',
             })
-        ).then(res => res.text())
+        ).then(res => res.json())
     }
 }
 
