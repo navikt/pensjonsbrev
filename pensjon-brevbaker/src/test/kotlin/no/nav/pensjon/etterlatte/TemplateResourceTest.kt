@@ -3,6 +3,7 @@ package no.nav.pensjon.etterlatte
 import io.ktor.util.reflect.*
 import kotlinx.coroutines.runBlocking
 import no.nav.pensjon.brev.PDF_BUILDER_URL
+import no.nav.pensjon.brev.TestTags
 import no.nav.pensjon.brev.api.objectMapper
 import no.nav.pensjon.brev.latex.LaTeXCompilerService
 import no.nav.pensjon.brev.template.Language
@@ -15,6 +16,7 @@ import no.nav.pensjon.brev.template.render.PensjonLatexRenderer
 import no.nav.pensjon.brev.writeTestHTML
 import no.nav.pensjon.brev.writeTestPDF
 import no.nav.pensjon.etterlatte.maler.BrevDTO
+import org.junit.jupiter.api.Tag
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
@@ -23,6 +25,7 @@ import java.nio.file.Paths
 
 class TemplateResourceTest {
 
+    @Tag(TestTags.INTEGRATION_TEST)
     @ParameterizedTest(name = "{index} => template={0}, etterlatteBrevKode={1}, fixtures={2}")
     @MethodSource("alleMalene")
     fun <T : Any> testPdf(
