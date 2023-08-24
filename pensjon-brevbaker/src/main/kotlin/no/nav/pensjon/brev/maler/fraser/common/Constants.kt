@@ -15,6 +15,7 @@ object Constants {
     const val KONTAKT_URL = "$NAV_URL/kontakt"
     const val SKATTEETATEN_URL = "skatteetaten.no"
     const val SKJEMA_URL = "$NAV_URL/skjema"
+    const val SKRIV_TIL_OSS_URL = "$NAV_URL/skriv-til-oss"
     const val UFOERE_ETTERSENDE_POST_URL = "$NAV_URL/uføre-ettersende-post"
     const val UFOERE_ETTERSENDE_URL = "$NAV_URL/uføre-ettersende"
 }
