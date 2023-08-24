@@ -69,7 +69,7 @@ data class Introduksjon(val periode: Expression<Year>) : OutlinePhrase<LangBokma
             text(
                 Bokmal to "Husk at du må melde fra til oss innen 3 uker hvis du mener beregningene feil.",
                 Nynorsk to "Hugs at du må melde frå til oss innan 3 veker om du meiner berekningane er feil.",
-                English to "Please remember to inform us within 3 weeks if you believe the calculations are incorrect.",
+                English to "Please inform us within 3 weeks if you believe the calculations are incorrect.",
             )
         }
     }
@@ -237,7 +237,7 @@ data class OmBeregningAvBarnetillegg(
             text(
                 Bokmal to "Om beregning av barnetillegg",
                 Nynorsk to "Om utrekning av barnetillegg",
-                English to "Child supplement",
+                English to "Child supplement calculation",
             )
         }
         paragraph {
@@ -645,7 +645,7 @@ data class OmBeregningAvUfoeretrygd(
             textExpr(
                 Bokmal to "Om beregningen av uføretrygd".expr() + ifElse(harGjenlevendeTillegg, " og gjenlevendetillegg", ""),
                 Nynorsk to "Om utrekning av uføretrygd".expr() + ifElse(harGjenlevendeTillegg, " og attlevandetillegg", ""),
-                English to "Disability benefit".expr() + ifElse(harGjenlevendeTillegg, " and survivor supplement", ""),
+                English to "Disability benefit".expr() + ifElse(harGjenlevendeTillegg, " and survivor supplement", "") + " calculation",
             )
         }
         paragraph {
