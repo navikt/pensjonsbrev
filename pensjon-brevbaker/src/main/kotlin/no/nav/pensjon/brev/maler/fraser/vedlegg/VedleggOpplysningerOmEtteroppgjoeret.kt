@@ -42,6 +42,7 @@ import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.model.ubestemtForm
 import no.nav.pensjon.brev.template.*
+import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.dsl.*
@@ -59,7 +60,7 @@ data class Introduksjon(val periode: Expression<Year>) : OutlinePhrase<LangBokma
                 Nynorsk to "Vi nyttar opplysningane som du legg sjølv inn som inntekt på ${Constants.INNTEKTSPLANLEGGEREN_URL}, og opplysningar frå Skatteetaten. ".expr() +
                         "Vi har gjort ei ny utrekning av uføretrygda di for " + periode.format() + " etter opplysningar frå Skatteetaten. " +
                         "Du kan sjå skatteoppgjeret ditt på ${Constants.SKATTEETATEN_URL}.",
-                English to "We use  the information that you input as income on ${Constants.INNTEKTSPLANLEGGEREN_URL}, as well as information from  the Tax Office".expr() +
+                English to "We use the information that you input as income on ${Constants.INNTEKTSPLANLEGGEREN_URL}, as well as information from the Tax Office".expr() +
                         "We have recalculated your disability benefit for " + periode.format() + " based on your tax settlement provided by the Tax Office. " +
                         "You can see your tax settlement at ${Constants.SKATTEETATEN_URL}.",
             )
@@ -101,7 +102,7 @@ data class FikkSkulleFaattTabell(
                             fontType = FontType.BOLD,
                         )
                     }
-                    column(columnSpan = 4, alignment = Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT) {
+                    column(columnSpan = 4, alignment = ColumnAlignment.RIGHT) {
                         text(
                             Bokmal to "Dette skulle du fått",
                             Nynorsk to "Dette skulle du fått",
@@ -109,7 +110,7 @@ data class FikkSkulleFaattTabell(
                             fontType = FontType.BOLD,
                         )
                     }
-                    column(columnSpan = 4, alignment = Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT) {
+                    column(columnSpan = 4, alignment = ColumnAlignment.RIGHT) {
                         text(
                             Bokmal to "Dette fikk du",
                             Nynorsk to "Dette fekk du",
@@ -117,7 +118,7 @@ data class FikkSkulleFaattTabell(
                             fontType = FontType.BOLD,
                         )
                     }
-                    column(columnSpan = 4, alignment = Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT) {
+                    column(columnSpan = 4, alignment = ColumnAlignment.RIGHT) {
                         text(
                             Bokmal to "Avviksbeløp",
                             Nynorsk to "Avviksbeløp",
@@ -425,7 +426,8 @@ data class OmBeregningAvBarnetillegg(
                         barnetillegg.totaltResultat.avvik.absoluteValue().format() + " kroner for " +
                         ifElse(barnetillegg.totaltResultat.harFaattForMye, "mykje", "lite") + " i barnetillegg.",
                 English to "You have received NOK ".expr() + barnetillegg.totaltResultat.fikk.format() + " in child supplement. You have been " +
-                        ifElse(barnetillegg.totaltResultat.harFaattForMye, "overpaid", "underpaid") + " in child supplement.",
+                        ifElse(barnetillegg.totaltResultat.harFaattForMye, "overpaid", "underpaid") + " NOK " +
+                        barnetillegg.totaltResultat.avvik.format() + " in child supplement.",
             )
         }
 
@@ -953,7 +955,7 @@ data class FratrekkTabell(val fratrekk: Expression<OpplysningerOmEtteroppgjoeret
                         fontType = FontType.BOLD,
                     )
                 }
-                column(columnSpan = 2, alignment = Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT) {
+                column(columnSpan = 2, alignment = ColumnAlignment.RIGHT) {
                     text(
                         Bokmal to "Beløp",
                         Nynorsk to "Beløp",
@@ -1101,7 +1103,7 @@ data class InntektTabell(val inntekt: Expression<OpplysningerOmEtteroppgjoeretDt
                         fontType = FontType.BOLD,
                     )
                 }
-                column(columnSpan = 2, alignment = Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT) {
+                column(columnSpan = 2, alignment = ColumnAlignment.RIGHT) {
                     text(
                         Bokmal to "Registrert inntekt",
                         Nynorsk to "Registrert inntekt",
