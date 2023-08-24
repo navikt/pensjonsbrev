@@ -772,7 +772,7 @@ data class OmBeregningAvUfoeretrygd(
             textExpr(
                 Bokmal to "Etter beregningen er gjort, har du ".expr() + inntektEtterFratrekk + " kroner i pensjonsgivende inntekt.",
                 Nynorsk to "Utrekninga vår viser at du har ".expr() + inntektEtterFratrekk + " kroner i pensjonsgivande inntekt.",
-                English to "After the calculation, your pensionable income is NOK ".expr() + inntektEtterFratrekk + ".",
+                English to "By our calculation, your pensionable income is NOK ".expr() + inntektEtterFratrekk + ".",
             )
         }
 
@@ -895,7 +895,7 @@ data class ErOpplysningeneOmInntektFeil(
             text(
                 Bokmal to "Vi gjør et nytt etteroppgjør automatisk hvis Skatteetaten endrer inntekten din. Du får tilbakemelding hvis endringen påvirker etteroppgjøret ditt.",
                 Nynorsk to "Vi utfører automatisk eit nytt etteroppgjer dersom Skatteetaten endrar inntekta di. Du får tilbakemelding dersom endringa påverker etteroppgjeret ditt.",
-                English to "We will issue a new post-settlement automatically if the Tax Office amends your income. You will be notified if any changes affect your post-settlement.",
+                English to "We will issue a new settlement automatically if the Tax Office amends your income. You will be notified if any changes affect your post-settlement.",
             )
         }
 
@@ -944,7 +944,7 @@ data class ErOpplysningeneOmInntektFeil(
                         "eller ringje til oss på telefon ${Constants.NAV_KONTAKTSENTER_TELEFON}.",
 
                 English to "If your income pensions outside of NAV changes, you must notify us once the changes have been made. " +
-                        "We will then conduct a manual post-settlement. You can notify us by writing to us at ${Constants.SKRIV_TIL_OSS_URL} " +
+                        "We will then conduct a new settlement. You can notify us by writing to us at ${Constants.SKRIV_TIL_OSS_URL} " +
                         "or by calling us at +47 ${Constants.NAV_KONTAKTSENTER_TELEFON}.",
             )
         }
@@ -1027,9 +1027,9 @@ data class FratrekkTabell(
                 }
 
                 OpplysningerOmEtteroppgjoeretDto.InntektOgFratrekk.Fratrekk.FratrekkLinje.Aarsak.ETTERSLEP_AVSLUTTET_ARBEID_ELLER_VIRKSOMHET -> when (second) {
-                    Bokmal -> "Inntekt fra helt avsluttet arbeid eller virksomhet"
-                    Nynorsk -> "Inntekt frå heilt avslutta arbeid eller verksemd"
-                    English -> "Income from completely terminated work or business"
+                    Bokmal -> "Inntekt fra avsluttet arbeidforhold eller virksomhet"
+                    Nynorsk -> "Inntekt frå avslutta arbeidforhold eller verksemd"
+                    English -> "Income from terminated employment or business"
                 }
 
                 OpplysningerOmEtteroppgjoeretDto.InntektOgFratrekk.Fratrekk.FratrekkLinje.Aarsak.ANNET -> when (second) {
