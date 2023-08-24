@@ -279,7 +279,7 @@ data class OmBeregningAvBarnetillegg(
                 }
             }
             text(
-                Bokmal to "Hvis personinntekten din overstiger et visst beløp (fribeløp), blir barnetillegget redusert eller falle helt bort. " +
+                Bokmal to "Hvis personinntekten din overstiger et visst beløp (fribeløp), blir barnetillegget redusert eller faller helt bort. " +
                         "Fikk du innvilget barnetillegg i løpet av året, eller barnetillegget opphørte i løpet av året" +
                         ", er det bare inntekten for perioden med rett til barnetillegg som har betydning.",
 
