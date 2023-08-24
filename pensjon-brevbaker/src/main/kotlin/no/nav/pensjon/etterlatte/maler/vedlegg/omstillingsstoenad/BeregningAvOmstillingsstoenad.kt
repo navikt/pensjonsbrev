@@ -10,6 +10,7 @@ import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.etterlatte.maler.Beregningsinfo
 import no.nav.pensjon.etterlatte.maler.BeregningsinfoSelectors.beregningsperioder
 import no.nav.pensjon.etterlatte.maler.BeregningsinfoSelectors.grunnbeloep
+import no.nav.pensjon.etterlatte.maler.BeregningsinfoSelectors.innhold
 import no.nav.pensjon.etterlatte.maler.BeregningsinfoSelectors.trygdetidsperioder
 import no.nav.pensjon.etterlatte.maler.NyBeregningsperiodeSelectors.inntekt
 import no.nav.pensjon.etterlatte.maler.NyBeregningsperiodeSelectors.stoenadFoerReduksjon
@@ -19,6 +20,7 @@ import no.nav.pensjon.etterlatte.maler.TrygdetidsperiodeSelectors.datoFOM
 import no.nav.pensjon.etterlatte.maler.TrygdetidsperiodeSelectors.datoTOM
 import no.nav.pensjon.etterlatte.maler.TrygdetidsperiodeSelectors.land
 import no.nav.pensjon.etterlatte.maler.TrygdetidsperiodeSelectors.opptjeningsperiode
+import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
 
 @TemplateModelHelpers
 val beregningAvOmstillingsstoenad = createAttachment<LangBokmalNynorskEnglish, Beregningsinfo>(
@@ -57,6 +59,8 @@ val beregningAvOmstillingsstoenad = createAttachment<LangBokmalNynorskEnglish, B
             English to "",
         )
     }
+
+    konverterElementerTilBrevbakerformat(innhold)
 
     title2 {
         text(

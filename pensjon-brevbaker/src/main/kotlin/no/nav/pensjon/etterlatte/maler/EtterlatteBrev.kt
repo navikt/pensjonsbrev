@@ -40,10 +40,11 @@ data class AvkortetBeregningsperiode(
 )
 
 data class Beregningsinfo(
+    override val innhold: List<Element>,
     val grunnbeloep: Kroner,
     val beregningsperioder: List<NyBeregningsperiode>,
     val trygdetidsperioder: List<Trygdetidsperiode>,
-)
+) : BrevDTO
 
 data class NyBeregningsperiode(
     val inntekt: Kroner,
