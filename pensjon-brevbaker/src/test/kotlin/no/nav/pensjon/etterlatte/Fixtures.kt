@@ -12,12 +12,15 @@ import no.nav.pensjon.etterlatte.maler.barnepensjon.BarnepensjonInnvilgelseDTO
 import no.nav.pensjon.etterlatte.maler.barnepensjon.avslag.BarnepensjonAvslagIkkeYrkesskadeDTO
 import no.nav.pensjon.etterlatte.maler.barnepensjon.endring.EndringHovedmalDTO
 import no.nav.pensjon.etterlatte.maler.barnepensjon.endring.BarnepensjonEndringInstitusjonsoppholdDTO
+import no.nav.pensjon.etterlatte.maler.barnepensjon.endring.BarnepensjonUtAvFengselsoppholdDTO
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.ny.BarnepensjonInnvilgelseEnkelDTO
 import no.nav.pensjon.etterlatte.maler.barnepensjon.ny.BarnepensjonInnvilgelseNyDTO
+import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonFengselsoppholdDTO
 import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingAdopsjonDTO
 import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingOmgjoeringAvFarskapDTO
 import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingSoeskenjusteringDTO
 import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingYrkesskadeDTO
+import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.HarStansetDTO
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.OMSInnvilgelseDTO
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.foerstegangsvedtak.FoerstegangsvedtakUtfallDTO
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.foerstegangsvedtak.OMSInnvilgelseFoerstegangsvedtakDTO
@@ -64,10 +67,13 @@ object Fixtures {
             OMSInnvilgelseFoerstegangsvedtakDTO::class -> createOMSInnvilgelseFoerstegangsvedtakDTO() as T
             FoerstegangsvedtakUtfallDTO::class -> createOMSFoerstegangsvedtakUtfallDTO() as T
             BarnepensjonRevurderingAdopsjonDTO::class -> createBarnepensjonRevurderingAdopsjonDTO() as T
+            BarnepensjonFengselsoppholdDTO::class -> createBarnepensjonFengselsoppholdDTO() as T
             BarnepensjonRevurderingSoeskenjusteringDTO::class -> createBarnepensjonRevurderingSoeskenjusteringDTO() as T
             BarnepensjonRevurderingOmgjoeringAvFarskapDTO::class -> createBarnepensjonRevurderingOmgjoeringAvFarskapDTO() as T
             BarnepensjonRevurderingYrkesskadeDTO::class -> createBarnepensjonRevurderingYrkesskadeDTO() as T
             BarnepensjonAvslagIkkeYrkesskadeDTO::class -> createBarnepensjonAvslagIkkeYrkesskadeDTO() as T
+            BarnepensjonUtAvFengselsoppholdDTO::class -> createBarnepensjonUtAvFengselsoppholdDTO() as T
+            HarStansetDTO::class -> createHarStansetDTO() as T
             Unit::class -> Unit as T
 
             else -> throw IllegalArgumentException("Don't know how to construct: ${letterDataType.qualifiedName}")
