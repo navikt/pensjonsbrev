@@ -517,8 +517,8 @@ data class OmBeregningAvBarnetillegg(
                             ". Hvis du har hatt inntekter som kan trekkes fra, må du sende oss dokumentasjon på det innen 3 uker.",
                     Nynorsk to "Du har ikkje hatt inntekter som er trekte frå personinntekta di i ".expr() + periode.format() +
                             ". Dersom du har hatt inntekter som kan trekkjast frå, må du sende oss dokumentasjon på dette innan 3 veker.",
-                    English to "You have not had income deducted from your personal income in ".expr() + periode.format() +
-                            ". If you have had income that can be deducted, you must provide us with documentation within 3 weeks.",
+                    English to "None of your personal income in ".expr() + periode.format() + " has been deducted. "+
+                            "If you have had income that can be deducted, you must provide us with documentation within 3 weeks.",
                 )
             }
         }
@@ -592,7 +592,7 @@ data class OmBeregningAvBarnetillegg(
                     textExpr(
                         Bokmal to "Annen forelder har ikke hatt inntekt som er trukket fra sin personinntekt i ".expr() + periode.format() + ".",
                         Nynorsk to "Den andre forelderen har ikkje hatt inntekt som er trekt frå sin personinntekt i ".expr() + periode.format() + ".",
-                        English to "The other parent has not had income deducted from their personal income in ".expr() + periode.format() + "."
+                        English to "No income was deducted from the other parent's income in ".expr() + periode.format() + "."
                     )
                 }
             }
@@ -839,8 +839,8 @@ data class OmBeregningAvUfoeretrygd(
                                 + periode.format() + ". Hvis du har hatt inntekter som kan trekkes fra, må du sende oss dokumentasjon på det innen 3 uker.",
                         Nynorsk to "Du har ikkje hatt inntekter som er trekte frå den pensjonsgivande inntekta di i ".expr()
                                 + periode.format() + ". Dersom du har hatt inntekter som kan trekkjast frå, må du sende oss dokumentasjon på dette innan 3 veker.",
-                        English to "You have not had income deducted from your pensionable income in ".expr()
-                                + periode.format() + ". If you have had income that can be deducted, you must provide us with documentation within 3 weeks.",
+                        English to "No income was deducted from your pensionable income in ".expr() + periode.format()
+                                + ". If you have had deductable income, you must provide us with documentation within 3 weeks.",
                     )
                 }
             }
