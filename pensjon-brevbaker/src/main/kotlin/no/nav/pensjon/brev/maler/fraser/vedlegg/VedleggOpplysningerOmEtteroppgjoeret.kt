@@ -8,6 +8,7 @@ import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSel
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSelectors.AvviksResultatSelectors.skulleFaatt_safe
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSelectors.BarnetilleggSelectors.FellesbarnSelectors.fribeloep
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSelectors.BarnetilleggSelectors.FellesbarnSelectors.grunnbelop
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSelectors.BarnetilleggSelectors.FellesbarnSelectors.harSamletInntektOverInntektstak
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSelectors.BarnetilleggSelectors.FellesbarnSelectors.inntektstakSamletInntekt
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSelectors.BarnetilleggSelectors.FellesbarnSelectors.personinntektAnnenForelder
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSelectors.BarnetilleggSelectors.FellesbarnSelectors.resultat
@@ -15,6 +16,7 @@ import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSel
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSelectors.BarnetilleggSelectors.FellesbarnSelectors.samletInntekt
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSelectors.BarnetilleggSelectors.FellesbarnSelectors.sivilstand
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSelectors.BarnetilleggSelectors.SaerkullsbarnSelectors.fribeloep
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSelectors.BarnetilleggSelectors.SaerkullsbarnSelectors.harSamletInntektOverInntektstak
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSelectors.BarnetilleggSelectors.SaerkullsbarnSelectors.inntektstakSamletInntekt
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSelectors.BarnetilleggSelectors.SaerkullsbarnSelectors.resultat_safe
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSelectors.BarnetilleggSelectors.SaerkullsbarnSelectors.samletInntekt
@@ -206,7 +208,7 @@ data class DuHarFaattAvviksBeloep(
                 text(
                     Bokmal to ", barnetillegg og gjenlevendetillegg",
                     Nynorsk to ", barnetillegg og attlevandetillegg",
-                    English to ", child supplement and survivor supplement",
+                    English to ", child supplement and survivor's supplement",
                 )
             }.orShowIf(harBarnetillegg) {
                 text(
@@ -218,7 +220,7 @@ data class DuHarFaattAvviksBeloep(
                 text(
                     Bokmal to " og gjenlevendetillegg",
                     Nynorsk to " og attlevandetillegg",
-                    English to " and survivor supplement"
+                    English to " and survivor's supplement"
                 )
             }
             textExpr(
@@ -279,7 +281,7 @@ data class OmBeregningAvBarnetillegg(
                 }
             }
             text(
-                Bokmal to "Hvis personinntekten din overstiger et visst beløp (fribeløp), blir barnetillegget redusert eller falle helt bort. " +
+                Bokmal to "Hvis personinntekten din overstiger et visst beløp (fribeløp), blir barnetillegget redusert eller faller helt bort. " +
                         "Fikk du innvilget barnetillegg i løpet av året, eller barnetillegget opphørte i løpet av året" +
                         ", er det bare inntekten for perioden med rett til barnetillegg som har betydning.",
 
@@ -523,7 +525,7 @@ data class OmBeregningAvBarnetillegg(
                             ". Hvis du har hatt inntekter som kan trekkes fra, må du sende oss dokumentasjon på det innen 3 uker.",
                     Nynorsk to "Du har ikkje hatt inntekter som er trekte frå personinntekta di i ".expr() + periode.format() +
                             ". Dersom du har hatt inntekter som kan trekkjast frå, må du sende oss dokumentasjon på dette innan 3 veker.",
-                    English to "None of your personal income in ".expr() + periode.format() + " has been deducted. "+
+                    English to "None of your personal income in ".expr() + periode.format() + " has been deducted. " +
                             "If you have had income that can be deducted, you must provide us with documentation within 3 weeks.",
                 )
             }
@@ -606,38 +608,42 @@ data class OmBeregningAvBarnetillegg(
         }
 
         ifNotNull(barnetillegg.saerkull) { saerkull ->
-            paragraph {
-                textExpr(
-                    Bokmal to "Du hadde for høy samlet inntekt i ".expr() + periode.format() + " for å få utbetalt barnetillegg for særkullsbarn. " +
-                            "Sum av samlet inntekt som gjør at barnetillegget ikke blir utbetalt var " + saerkull.samletInntekt.format() + " kroner. " +
-                            "Inntektstaket for å få utbetalt barnetillegg for særkullsbarn var " + saerkull.inntektstakSamletInntekt.format() + " kroner.",
+            showIf(saerkull.harSamletInntektOverInntektstak) {
+                paragraph {
+                    textExpr(
+                        Bokmal to "Du hadde for høy samlet inntekt i ".expr() + periode.format() + " for å få utbetalt barnetillegg for særkullsbarn. " +
+                                "Sum av samlet inntekt som gjør at barnetillegget ikke blir utbetalt var " + saerkull.samletInntekt.format() + " kroner. " +
+                                "Inntektstaket for å få utbetalt barnetillegg for særkullsbarn var " + saerkull.inntektstakSamletInntekt.format() + " kroner.",
 
-                    Nynorsk to "Du hadde for høg samla inntekt i ".expr() + periode.format() + " til å få utbetalt barnetillegg for særkullsbarn. " +
-                            "Summen av den samla inntekta som gjer at barnetillegget ikkje blir utbetalt, var " + saerkull.samletInntekt.format() + " kroner. " +
-                            "Inntektstaket for å få utbetalt barnetillegg for særkullsbarn var " + saerkull.inntektstakSamletInntekt.format() + " kroner.",
+                        Nynorsk to "Du hadde for høg samla inntekt i ".expr() + periode.format() + " til å få utbetalt barnetillegg for særkullsbarn. " +
+                                "Summen av den samla inntekta som gjer at barnetillegget ikkje blir utbetalt, var " + saerkull.samletInntekt.format() + " kroner. " +
+                                "Inntektstaket for å få utbetalt barnetillegg for særkullsbarn var " + saerkull.inntektstakSamletInntekt.format() + " kroner.",
 
-                    English to "In ".expr() + periode.format() + " your income was too high to receive child supplement. The amount preventing the " +
-                            "payment of the child supplement was NOK " + saerkull.samletInntekt.format() + ". The income threshold to receive child supplement " +
-                            "for children from a previous relationship was NOK " + saerkull.inntektstakSamletInntekt.format() + ".",
-                )
+                        English to "In ".expr() + periode.format() + " your income was too high to receive child supplement. The amount preventing the " +
+                                "payment of the child supplement was NOK " + saerkull.samletInntekt.format() + ". The income threshold to receive child supplement " +
+                                "for children from a previous relationship was NOK " + saerkull.inntektstakSamletInntekt.format() + ".",
+                    )
+                }
             }
         }
 
         ifNotNull(barnetillegg.felles) { fellesbarn ->
-            paragraph {
-                textExpr(
-                    Bokmal to "Dere hadde for høy samlet inntekt i ".expr() + periode.format() + " for å få utbetalt barnetillegg for fellesbarn. " +
-                            "Sum av samlet inntekt som gjør at barnetillegget ikke blir utbetalt var " + fellesbarn.samletInntekt.format() + " kroner. " +
-                            "Inntektstaket for å få utbetalt barnetillegg for fellessbarn var " + fellesbarn.inntektstakSamletInntekt.format() + " kroner.",
+            showIf(fellesbarn.harSamletInntektOverInntektstak) {
+                paragraph {
+                    textExpr(
+                        Bokmal to "Dere hadde for høy samlet inntekt i ".expr() + periode.format() + " for å få utbetalt barnetillegg for fellesbarn. " +
+                                "Sum av samlet inntekt som gjør at barnetillegget ikke blir utbetalt var " + fellesbarn.samletInntekt.format() + " kroner. " +
+                                "Inntektstaket for å få utbetalt barnetillegg for fellessbarn var " + fellesbarn.inntektstakSamletInntekt.format() + " kroner.",
 
-                    Nynorsk to "Dere hadde for høg samla inntekt i ".expr() + periode.format() + " til å få utbetalt barnetillegg for fellesbarn. " +
-                            "Summen av den samla inntekta som gjer at barnetillegget ikkje blir utbetalt, var " + fellesbarn.samletInntekt.format() + " kroner. " +
-                            "Inntektstaket for å få utbetalt barnetillegg for fellesbarn var " + fellesbarn.inntektstakSamletInntekt.format() + " kroner.",
+                        Nynorsk to "Dere hadde for høg samla inntekt i ".expr() + periode.format() + " til å få utbetalt barnetillegg for fellesbarn. " +
+                                "Summen av den samla inntekta som gjer at barnetillegget ikkje blir utbetalt, var " + fellesbarn.samletInntekt.format() + " kroner. " +
+                                "Inntektstaket for å få utbetalt barnetillegg for fellesbarn var " + fellesbarn.inntektstakSamletInntekt.format() + " kroner.",
 
-                    English to "In ".expr() + periode.format() + " your combined income was too high to receive child supplement. The amount preventing the " +
-                            "payment of the child supplement was NOK " + fellesbarn.samletInntekt.format() + ". The income threshold to receive child supplement " +
-                            "for joint children was NOK " + fellesbarn.inntektstakSamletInntekt.format() + ".",
-                )
+                        English to "In ".expr() + periode.format() + " your combined income was too high to receive child supplement. The amount preventing the " +
+                                "payment of the child supplement was NOK " + fellesbarn.samletInntekt.format() + ". The income threshold to receive child supplement " +
+                                "for joint children was NOK " + fellesbarn.inntektstakSamletInntekt.format() + ".",
+                    )
+                }
             }
         }
     }
@@ -655,7 +661,7 @@ data class OmBeregningAvUfoeretrygd(
             textExpr(
                 Bokmal to "Om beregningen av uføretrygd".expr() + ifElse(harGjenlevendeTillegg, " og gjenlevendetillegg", ""),
                 Nynorsk to "Om utrekning av uføretrygd".expr() + ifElse(harGjenlevendeTillegg, " og attlevandetillegg", ""),
-                English to "Disability benefit".expr() + ifElse(harGjenlevendeTillegg, " and survivor supplement", "") + " calculation",
+                English to "Disability benefit".expr() + ifElse(harGjenlevendeTillegg, " and survivor's supplement", "") + " calculation",
             )
         }
         paragraph {
@@ -669,7 +675,7 @@ data class OmBeregningAvUfoeretrygd(
                         + ". Dette står i § 3-15 i folketrygdlova. Døme på pensjonsgivande inntekt:",
 
                 English to "The pensionable income determines how much you receive in disability benefit".expr()
-                        + ifElse(harGjenlevendeTillegg, " and survivor supplement", "")
+                        + ifElse(harGjenlevendeTillegg, " and survivor's supplement", "")
                         + ". This is stated in § 3-15 of the National Insurance Act. Pensionable income includes:",
             )
             list {
@@ -684,7 +690,7 @@ data class OmBeregningAvUfoeretrygd(
                     text(
                         Bokmal to "lønnsinntekt fra utlandet",
                         Nynorsk to "lønsinntekt frå utlandet",
-                        English to "income from emplyment abroad",
+                        English to "income from employment abroad",
                     )
                 }
                 item {
@@ -766,7 +772,7 @@ data class OmBeregningAvUfoeretrygd(
             textExpr(
                 Bokmal to "Etter beregningen er gjort, har du ".expr() + inntektEtterFratrekk + " kroner i pensjonsgivende inntekt.",
                 Nynorsk to "Utrekninga vår viser at du har ".expr() + inntektEtterFratrekk + " kroner i pensjonsgivande inntekt.",
-                English to "After the calculation, your pensionable income is NOK ".expr() + inntektEtterFratrekk + ".",
+                English to "By our calculation, your pensionable income is NOK ".expr() + inntektEtterFratrekk + ".",
             )
         }
 
@@ -797,7 +803,7 @@ data class OmBeregningAvUfoeretrygd(
 
                 English to "The tables below show the pensionable incomes you had in ".expr() + periode.format()
                         + ". These incomes were used to calculate your disability benefit"
-                        + ifElse(harGjenlevendeTillegg, " and survivor supplement.", "."),
+                        + ifElse(harGjenlevendeTillegg, " and survivor's supplement.", "."),
             )
         }
 
@@ -889,7 +895,7 @@ data class ErOpplysningeneOmInntektFeil(
             text(
                 Bokmal to "Vi gjør et nytt etteroppgjør automatisk hvis Skatteetaten endrer inntekten din. Du får tilbakemelding hvis endringen påvirker etteroppgjøret ditt.",
                 Nynorsk to "Vi utfører automatisk eit nytt etteroppgjer dersom Skatteetaten endrar inntekta di. Du får tilbakemelding dersom endringa påverker etteroppgjeret ditt.",
-                English to "We will issue a new post-settlement automatically if the Tax Office amends your income. You will be notified if any changes affect your post-settlement.",
+                English to "We will issue a new settlement automatically if the Tax Office amends your income. You will be notified if any changes affect your post-settlement.",
             )
         }
 
@@ -938,15 +944,17 @@ data class ErOpplysningeneOmInntektFeil(
                         "eller ringje til oss på telefon ${Constants.NAV_KONTAKTSENTER_TELEFON}.",
 
                 English to "If your income pensions outside of NAV changes, you must notify us once the changes have been made. " +
-                        "We will then conduct a manual post-settlement. You can notify us by writing to us at ${Constants.SKRIV_TIL_OSS_URL} " +
+                        "We will then conduct a new settlement. You can notify us by writing to us at ${Constants.SKRIV_TIL_OSS_URL} " +
                         "or by calling us at +47 ${Constants.NAV_KONTAKTSENTER_TELEFON}.",
             )
         }
     }
 }
 
-data class FratrekkTabell(val fratrekk: Expression<OpplysningerOmEtteroppgjoeretDto.InntektOgFratrekk.Fratrekk>, val sumText: TextElement<LangBokmalNynorskEnglish>) :
-    ParagraphPhrase<LangBokmalNynorskEnglish>() {
+data class FratrekkTabell(
+    val fratrekk: Expression<OpplysningerOmEtteroppgjoeretDto.InntektOgFratrekk.Fratrekk>,
+    val sumText: TextElement<LangBokmalNynorskEnglish>
+) : ParagraphPhrase<LangBokmalNynorskEnglish>() {
 
     override fun ParagraphOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         table(
@@ -1019,9 +1027,9 @@ data class FratrekkTabell(val fratrekk: Expression<OpplysningerOmEtteroppgjoeret
                 }
 
                 OpplysningerOmEtteroppgjoeretDto.InntektOgFratrekk.Fratrekk.FratrekkLinje.Aarsak.ETTERSLEP_AVSLUTTET_ARBEID_ELLER_VIRKSOMHET -> when (second) {
-                    Bokmal -> "Inntekt fra helt avsluttet arbeid eller virksomhet"
-                    Nynorsk -> "Inntekt frå heilt avslutta arbeid eller verksemd"
-                    English -> "Income from completely terminated work or business"
+                    Bokmal -> "Inntekt fra avsluttet arbeidforhold eller virksomhet"
+                    Nynorsk -> "Inntekt frå avslutta arbeidforhold eller verksemd"
+                    English -> "Income from terminated employment or business"
                 }
 
                 OpplysningerOmEtteroppgjoeretDto.InntektOgFratrekk.Fratrekk.FratrekkLinje.Aarsak.ANNET -> when (second) {
@@ -1093,8 +1101,10 @@ data class FratrekkTabell(val fratrekk: Expression<OpplysningerOmEtteroppgjoeret
     }
 }
 
-data class InntektTabell(val inntekt: Expression<OpplysningerOmEtteroppgjoeretDto.InntektOgFratrekk.Inntekt>, val sumText: TextElement<LangBokmalNynorskEnglish>) :
-    ParagraphPhrase<LangBokmalNynorskEnglish>() {
+data class InntektTabell(
+    val inntekt: Expression<OpplysningerOmEtteroppgjoeretDto.InntektOgFratrekk.Inntekt>,
+    val sumText: TextElement<LangBokmalNynorskEnglish>
+) : ParagraphPhrase<LangBokmalNynorskEnglish>() {
 
     override fun ParagraphOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         table(
