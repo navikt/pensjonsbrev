@@ -8,6 +8,7 @@ import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSel
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSelectors.AvviksResultatSelectors.skulleFaatt_safe
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSelectors.BarnetilleggSelectors.FellesbarnSelectors.fribeloep
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSelectors.BarnetilleggSelectors.FellesbarnSelectors.grunnbelop
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSelectors.BarnetilleggSelectors.FellesbarnSelectors.harSamletInntektOverInntektstak
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSelectors.BarnetilleggSelectors.FellesbarnSelectors.inntektstakSamletInntekt
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSelectors.BarnetilleggSelectors.FellesbarnSelectors.personinntektAnnenForelder
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSelectors.BarnetilleggSelectors.FellesbarnSelectors.resultat
@@ -15,6 +16,7 @@ import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSel
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSelectors.BarnetilleggSelectors.FellesbarnSelectors.samletInntekt
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSelectors.BarnetilleggSelectors.FellesbarnSelectors.sivilstand
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSelectors.BarnetilleggSelectors.SaerkullsbarnSelectors.fribeloep
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSelectors.BarnetilleggSelectors.SaerkullsbarnSelectors.harSamletInntektOverInntektstak
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSelectors.BarnetilleggSelectors.SaerkullsbarnSelectors.inntektstakSamletInntekt
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSelectors.BarnetilleggSelectors.SaerkullsbarnSelectors.resultat_safe
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSelectors.BarnetilleggSelectors.SaerkullsbarnSelectors.samletInntekt
@@ -523,7 +525,7 @@ data class OmBeregningAvBarnetillegg(
                             ". Hvis du har hatt inntekter som kan trekkes fra, må du sende oss dokumentasjon på det innen 3 uker.",
                     Nynorsk to "Du har ikkje hatt inntekter som er trekte frå personinntekta di i ".expr() + periode.format() +
                             ". Dersom du har hatt inntekter som kan trekkjast frå, må du sende oss dokumentasjon på dette innan 3 veker.",
-                    English to "None of your personal income in ".expr() + periode.format() + " has been deducted. "+
+                    English to "None of your personal income in ".expr() + periode.format() + " has been deducted. " +
                             "If you have had income that can be deducted, you must provide us with documentation within 3 weeks.",
                 )
             }
@@ -606,38 +608,42 @@ data class OmBeregningAvBarnetillegg(
         }
 
         ifNotNull(barnetillegg.saerkull) { saerkull ->
-            paragraph {
-                textExpr(
-                    Bokmal to "Du hadde for høy samlet inntekt i ".expr() + periode.format() + " for å få utbetalt barnetillegg for særkullsbarn. " +
-                            "Sum av samlet inntekt som gjør at barnetillegget ikke blir utbetalt var " + saerkull.samletInntekt.format() + " kroner. " +
-                            "Inntektstaket for å få utbetalt barnetillegg for særkullsbarn var " + saerkull.inntektstakSamletInntekt.format() + " kroner.",
+            showIf(saerkull.harSamletInntektOverInntektstak) {
+                paragraph {
+                    textExpr(
+                        Bokmal to "Du hadde for høy samlet inntekt i ".expr() + periode.format() + " for å få utbetalt barnetillegg for særkullsbarn. " +
+                                "Sum av samlet inntekt som gjør at barnetillegget ikke blir utbetalt var " + saerkull.samletInntekt.format() + " kroner. " +
+                                "Inntektstaket for å få utbetalt barnetillegg for særkullsbarn var " + saerkull.inntektstakSamletInntekt.format() + " kroner.",
 
-                    Nynorsk to "Du hadde for høg samla inntekt i ".expr() + periode.format() + " til å få utbetalt barnetillegg for særkullsbarn. " +
-                            "Summen av den samla inntekta som gjer at barnetillegget ikkje blir utbetalt, var " + saerkull.samletInntekt.format() + " kroner. " +
-                            "Inntektstaket for å få utbetalt barnetillegg for særkullsbarn var " + saerkull.inntektstakSamletInntekt.format() + " kroner.",
+                        Nynorsk to "Du hadde for høg samla inntekt i ".expr() + periode.format() + " til å få utbetalt barnetillegg for særkullsbarn. " +
+                                "Summen av den samla inntekta som gjer at barnetillegget ikkje blir utbetalt, var " + saerkull.samletInntekt.format() + " kroner. " +
+                                "Inntektstaket for å få utbetalt barnetillegg for særkullsbarn var " + saerkull.inntektstakSamletInntekt.format() + " kroner.",
 
-                    English to "In ".expr() + periode.format() + " your income was too high to receive child supplement. The amount preventing the " +
-                            "payment of the child supplement was NOK " + saerkull.samletInntekt.format() + ". The income threshold to receive child supplement " +
-                            "for children from a previous relationship was NOK " + saerkull.inntektstakSamletInntekt.format() + ".",
-                )
+                        English to "In ".expr() + periode.format() + " your income was too high to receive child supplement. The amount preventing the " +
+                                "payment of the child supplement was NOK " + saerkull.samletInntekt.format() + ". The income threshold to receive child supplement " +
+                                "for children from a previous relationship was NOK " + saerkull.inntektstakSamletInntekt.format() + ".",
+                    )
+                }
             }
         }
 
         ifNotNull(barnetillegg.felles) { fellesbarn ->
-            paragraph {
-                textExpr(
-                    Bokmal to "Dere hadde for høy samlet inntekt i ".expr() + periode.format() + " for å få utbetalt barnetillegg for fellesbarn. " +
-                            "Sum av samlet inntekt som gjør at barnetillegget ikke blir utbetalt var " + fellesbarn.samletInntekt.format() + " kroner. " +
-                            "Inntektstaket for å få utbetalt barnetillegg for fellessbarn var " + fellesbarn.inntektstakSamletInntekt.format() + " kroner.",
+            showIf(fellesbarn.harSamletInntektOverInntektstak) {
+                paragraph {
+                    textExpr(
+                        Bokmal to "Dere hadde for høy samlet inntekt i ".expr() + periode.format() + " for å få utbetalt barnetillegg for fellesbarn. " +
+                                "Sum av samlet inntekt som gjør at barnetillegget ikke blir utbetalt var " + fellesbarn.samletInntekt.format() + " kroner. " +
+                                "Inntektstaket for å få utbetalt barnetillegg for fellessbarn var " + fellesbarn.inntektstakSamletInntekt.format() + " kroner.",
 
-                    Nynorsk to "Dere hadde for høg samla inntekt i ".expr() + periode.format() + " til å få utbetalt barnetillegg for fellesbarn. " +
-                            "Summen av den samla inntekta som gjer at barnetillegget ikkje blir utbetalt, var " + fellesbarn.samletInntekt.format() + " kroner. " +
-                            "Inntektstaket for å få utbetalt barnetillegg for fellesbarn var " + fellesbarn.inntektstakSamletInntekt.format() + " kroner.",
+                        Nynorsk to "Dere hadde for høg samla inntekt i ".expr() + periode.format() + " til å få utbetalt barnetillegg for fellesbarn. " +
+                                "Summen av den samla inntekta som gjer at barnetillegget ikkje blir utbetalt, var " + fellesbarn.samletInntekt.format() + " kroner. " +
+                                "Inntektstaket for å få utbetalt barnetillegg for fellesbarn var " + fellesbarn.inntektstakSamletInntekt.format() + " kroner.",
 
-                    English to "In ".expr() + periode.format() + " your combined income was too high to receive child supplement. The amount preventing the " +
-                            "payment of the child supplement was NOK " + fellesbarn.samletInntekt.format() + ". The income threshold to receive child supplement " +
-                            "for joint children was NOK " + fellesbarn.inntektstakSamletInntekt.format() + ".",
-                )
+                        English to "In ".expr() + periode.format() + " your combined income was too high to receive child supplement. The amount preventing the " +
+                                "payment of the child supplement was NOK " + fellesbarn.samletInntekt.format() + ". The income threshold to receive child supplement " +
+                                "for joint children was NOK " + fellesbarn.inntektstakSamletInntekt.format() + ".",
+                    )
+                }
             }
         }
     }
@@ -945,8 +951,10 @@ data class ErOpplysningeneOmInntektFeil(
     }
 }
 
-data class FratrekkTabell(val fratrekk: Expression<OpplysningerOmEtteroppgjoeretDto.InntektOgFratrekk.Fratrekk>, val sumText: TextElement<LangBokmalNynorskEnglish>) :
-    ParagraphPhrase<LangBokmalNynorskEnglish>() {
+data class FratrekkTabell(
+    val fratrekk: Expression<OpplysningerOmEtteroppgjoeretDto.InntektOgFratrekk.Fratrekk>,
+    val sumText: TextElement<LangBokmalNynorskEnglish>
+) : ParagraphPhrase<LangBokmalNynorskEnglish>() {
 
     override fun ParagraphOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         table(
@@ -1093,8 +1101,10 @@ data class FratrekkTabell(val fratrekk: Expression<OpplysningerOmEtteroppgjoeret
     }
 }
 
-data class InntektTabell(val inntekt: Expression<OpplysningerOmEtteroppgjoeretDto.InntektOgFratrekk.Inntekt>, val sumText: TextElement<LangBokmalNynorskEnglish>) :
-    ParagraphPhrase<LangBokmalNynorskEnglish>() {
+data class InntektTabell(
+    val inntekt: Expression<OpplysningerOmEtteroppgjoeretDto.InntektOgFratrekk.Inntekt>,
+    val sumText: TextElement<LangBokmalNynorskEnglish>
+) : ParagraphPhrase<LangBokmalNynorskEnglish>() {
 
     override fun ParagraphOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         table(
