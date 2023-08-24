@@ -684,7 +684,7 @@ data class OmBeregningAvUfoeretrygd(
                     text(
                         Bokmal to "lønnsinntekt fra utlandet",
                         Nynorsk to "lønsinntekt frå utlandet",
-                        English to "income from emplyment abroad",
+                        English to "income from employment abroad",
                     )
                 }
                 item {
