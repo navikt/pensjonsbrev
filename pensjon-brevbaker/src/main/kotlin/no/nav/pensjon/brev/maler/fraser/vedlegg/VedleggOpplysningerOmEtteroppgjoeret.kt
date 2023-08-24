@@ -206,7 +206,7 @@ data class DuHarFaattAvviksBeloep(
                 text(
                     Bokmal to ", barnetillegg og gjenlevendetillegg",
                     Nynorsk to ", barnetillegg og attlevandetillegg",
-                    English to ", child supplement and survivor supplement",
+                    English to ", child supplement and survivor's supplement",
                 )
             }.orShowIf(harBarnetillegg) {
                 text(
@@ -218,7 +218,7 @@ data class DuHarFaattAvviksBeloep(
                 text(
                     Bokmal to " og gjenlevendetillegg",
                     Nynorsk to " og attlevandetillegg",
-                    English to " and survivor supplement"
+                    English to " and survivor's supplement"
                 )
             }
             textExpr(
@@ -655,7 +655,7 @@ data class OmBeregningAvUfoeretrygd(
             textExpr(
                 Bokmal to "Om beregningen av uføretrygd".expr() + ifElse(harGjenlevendeTillegg, " og gjenlevendetillegg", ""),
                 Nynorsk to "Om utrekning av uføretrygd".expr() + ifElse(harGjenlevendeTillegg, " og attlevandetillegg", ""),
-                English to "Disability benefit".expr() + ifElse(harGjenlevendeTillegg, " and survivor supplement", "") + " calculation",
+                English to "Disability benefit".expr() + ifElse(harGjenlevendeTillegg, " and survivor's supplement", "") + " calculation",
             )
         }
         paragraph {
@@ -669,7 +669,7 @@ data class OmBeregningAvUfoeretrygd(
                         + ". Dette står i § 3-15 i folketrygdlova. Døme på pensjonsgivande inntekt:",
 
                 English to "The pensionable income determines how much you receive in disability benefit".expr()
-                        + ifElse(harGjenlevendeTillegg, " and survivor supplement", "")
+                        + ifElse(harGjenlevendeTillegg, " and survivor's supplement", "")
                         + ". This is stated in § 3-15 of the National Insurance Act. Pensionable income includes:",
             )
             list {
@@ -797,7 +797,7 @@ data class OmBeregningAvUfoeretrygd(
 
                 English to "The tables below show the pensionable incomes you had in ".expr() + periode.format()
                         + ". These incomes were used to calculate your disability benefit"
-                        + ifElse(harGjenlevendeTillegg, " and survivor supplement.", "."),
+                        + ifElse(harGjenlevendeTillegg, " and survivor's supplement.", "."),
             )
         }
 
