@@ -106,7 +106,7 @@ data class FikkSkulleFaattTabell(
                         text(
                             Bokmal to "Dette skulle du fått",
                             Nynorsk to "Dette skulle du fått",
-                            English to "Amount you should have received",
+                            English to "You should have received",
                             fontType = FontType.BOLD,
                         )
                     }
@@ -114,7 +114,7 @@ data class FikkSkulleFaattTabell(
                         text(
                             Bokmal to "Dette fikk du",
                             Nynorsk to "Dette fekk du",
-                            English to "Amount you received",
+                            English to "You received",
                             fontType = FontType.BOLD,
                         )
                     }
@@ -145,7 +145,7 @@ data class FikkSkulleFaattTabell(
                     newTextExpr(
                         Bokmal to "Uføretrygd".expr() + ifElse(harGjenlevendeTillegg, " og gjenlevendetillegg", ""),
                         Nynorsk to "Uføretrygd".expr() + ifElse(harGjenlevendeTillegg, " og attlevandetillegg", ""),
-                        English to "Disability benefit".expr() + ifElse(harGjenlevendeTillegg, " and survivor supplement", ""),
+                        English to "Disability benefit".expr() + ifElse(harGjenlevendeTillegg, " and survivor's supplement", ""),
                     ),
                     ufoeretrygd,
                 )
