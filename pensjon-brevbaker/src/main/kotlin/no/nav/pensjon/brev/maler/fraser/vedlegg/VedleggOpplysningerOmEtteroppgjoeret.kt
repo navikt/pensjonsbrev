@@ -495,7 +495,7 @@ data class OmBeregningAvBarnetillegg(
             text(
                 Bokmal to "Beløp som er trukket fra personinntekten din",
                 Nynorsk to "Beløp som er trekt frå personinntekta di",
-                English to "Amount deducted from your personal income",
+                English to "Amounts deducted from your personal income",
             )
         }
         paragraph {
@@ -557,7 +557,7 @@ data class OmBeregningAvBarnetillegg(
                     text(
                         Bokmal to "Beløp som er trukket fra annen forelder sin personinntekt",
                         Nynorsk to "Beløp som er trekt frå personinntekta til den andre forelderen",
-                        English to "Amount deducted from the other parent's personal income"
+                        English to "Amounts deducted from the other parent's personal income"
                     )
                 }
                 paragraph {
