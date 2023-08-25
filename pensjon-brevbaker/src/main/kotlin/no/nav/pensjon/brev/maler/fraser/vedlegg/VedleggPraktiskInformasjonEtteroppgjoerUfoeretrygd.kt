@@ -53,7 +53,7 @@ object SlikBetalerDuTilbake :
         paragraph {
             text(
                 Bokmal to "Du kan betale tilbake hele beløpet med en gang, eller du kan be om å få dele opp beløpet. Husk at du ikke kan betale tilbake før du har fått brevet fra Skatteetaten. Hvis du ikke betaler, har Skatteetaten mulighet til å trekke deg i lønn etter bidragsinnkrevingsloven § 11.",
-                Nynorsk to "Du kan betale tilbake heile beløpet med ein gong, eller du kan be om å få dele opp beløpet. Hugs at du ikkje kan betale tilbake før du har fått brevet frå Skatteetaten for bidrag og tilbakebetalingskrav. Dersom du ikkje betaler, kan Innkrevingssentralen trekkje deg i løn etter lova om innkrevjing av bidrag § 11.",
+                Nynorsk to "Du kan betale tilbake heile beløpet med ein gong, eller du kan be om å få dele opp beløpet. Hugs at du ikkje kan betale tilbake før du har fått brevet frå Skatteetaten. Dersom du ikkje betaler, kan Skatteetaten trekkje deg i løn etter lova om innkrevjing av bidrag § 11.",
                 English to "You can repay the full amount in one payment, or you can request to pay in instalments. Remember that you cannot repay until you have received the letter from the Norwegian Tax Administration. If you fail to make the payment, the Norwegian Tax Administration has the right to make deductions in your wages, ref. Maintenance Recovery Act Section 11."
             )
         }
@@ -66,8 +66,8 @@ object SlikBetalerDuTilbake :
         }
         paragraph {
             text(
-                Bokmal to "Du betaler hele beløpet i faktura fra Skatteetaten for bidrag og tilbakebetalingskrav.",
-                Nynorsk to "Du betaler heile beløpet på fakturaen frå Innkrevingssentralen for bidrag og tilbakebetalingskrav.",
+                Bokmal to "Du betaler hele beløpet i faktura fra Skatteetaten.",
+                Nynorsk to "Du betaler heile beløpet på fakturaen frå Skatteetaten.",
                 English to "You pay the full amount using the invoice from the Norwegian Tax Administration."
             )
         }
@@ -81,7 +81,7 @@ object SlikBetalerDuTilbake :
         paragraph {
             text(
                 Bokmal to "Du kan avtale å betale tilbake beløpet i avdrag. Ta kontakt med Skatteetaten hvis du ønsker å betale i avdrag, eller hvis du ønsker å øke eller redusere trekkprosenten.",
-                Nynorsk to "Du kan avtale å betale tilbake beløpet i avdrag. Ta kontakt med Skatteetaten dersom du ønskjer å betale i avdrag, eller dersom du ønskjer å auke eller redusere trekkprosenten.",
+                Nynorsk to "Du kan avtale å betale tilbake beløpet i avdrag. Kontakt Skatteetaten dersom du ønskjer å betale i avdrag, eller dersom du ønskjer å auke eller redusere trekkprosenten.",
                 English to "You can arrange to pay back the amount in instalments. Please contact the Norwegian Tax Administration if you wish to pay in instalments, or if you wish to increase or reduce the deduction percentage."
             )
         }
@@ -129,7 +129,7 @@ object InntekterSomKanHoldesUtenforEtteroppgjoeret :
         paragraph {
             text(
                 Bokmal to "Har du inntekter som kan holdes utenfor etteroppgjøret som ikke allerede er tatt med i beregningen, må du sende oss dokumentasjon på det i posten innen 3 uker. Eksempler på dette er:",
-                Nynorsk to "Dersom du har inntekter som kan haldast utanfor etteroppgjeret som ikkje allerede er tatt med i berekningen, må du sende oss dokumentasjon på desse i posten innan 3 veker. Døme på slike inntekter er:",
+                Nynorsk to "Dersom du har inntekter som kan haldast utanfor etteroppgjeret som ikkje allereie er teke med i berekningen, må du sende oss dokumentasjon på desse i posten innan 3 veker. Døme på slike inntekter er:",
                 English to "If you have income that can be excluded from the settlement and has not already been considered, you must send us documentation within 3 weeks. Examples of this include:"
             )
         }
@@ -197,7 +197,7 @@ object EttersendeDokumentasjon :
         title1 {
             text(
                 Bokmal to "Hvordan ettersende dokumentasjon",
-                Nynorsk to "Hvordan ettersende dokumentasjon",
+                Nynorsk to "Ettersende dokumentasjon",
                 English to "Submitting documentation"
             )
         }
