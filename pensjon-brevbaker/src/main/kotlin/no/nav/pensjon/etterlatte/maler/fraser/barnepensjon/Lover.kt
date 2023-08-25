@@ -8,7 +8,10 @@ import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
+import no.nav.pensjon.brev.template.dsl.expression.expr
+import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.dsl.textExpr
 
 object Lover {
 
@@ -50,18 +53,18 @@ object Lover {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             showIf(erEtterbetaling) {
                 paragraph {
-                    text(
-                        Bokmal to "Vedtaket er gjort etter bestemmelsene om barnepensjon i folketrygdloven § $paragraf, § 22-12 og § 22-13.",
-                        Nynorsk to "",
-                        English to ""
+                    textExpr(
+                        Bokmal to "Vedtaket er gjort etter bestemmelsene om barnepensjon i folketrygdloven § ".expr() + paragraf + ", § 22-12 og § 22-13.",
+                        Nynorsk to "".expr(),
+                        English to "".expr()
                     )
                 }
             } orShow {
                 paragraph {
-                    text(
-                        Bokmal to "Vedtaket er gjort etter bestemmelsene om barnepensjon i folketrygdloven § $paragraf og § 22-12.",
-                        Nynorsk to "",
-                        English to ""
+                    textExpr(
+                        Bokmal to "Vedtaket er gjort etter bestemmelsene om barnepensjon i folketrygdloven §".expr() + paragraf + "og § 22-12.",
+                        Nynorsk to "".expr(),
+                        English to "".expr()
                     )
                 }
             }

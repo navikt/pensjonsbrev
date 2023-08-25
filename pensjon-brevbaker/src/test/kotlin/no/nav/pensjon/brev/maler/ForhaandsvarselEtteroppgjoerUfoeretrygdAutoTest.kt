@@ -1,13 +1,16 @@
 package no.nav.pensjon.brev.maler
 
-import no.nav.pensjon.brev.*
+import no.nav.pensjon.brev.Fixtures
+import no.nav.pensjon.brev.TestTags
 import no.nav.pensjon.brev.api.model.maler.ForhaandsvarselEtteroppgjoerUfoeretrygdDto
-import no.nav.pensjon.brev.latex.*
-import no.nav.pensjon.brev.template.*
-import no.nav.pensjon.brev.template.render.*
-import org.junit.jupiter.api.*
+import no.nav.pensjon.brev.renderTestHtml
+import no.nav.pensjon.brev.renderTestPDF
+import no.nav.pensjon.brev.template.Language
+import no.nav.pensjon.brev.template.Letter
+import org.junit.jupiter.api.Tag
+import org.junit.jupiter.api.Test
 
-@Tag(TestTags.INTEGRATION_TEST)
+@Tag(TestTags.MANUAL_TEST)
 class ForhaandsvarselEtteroppgjoerUfoeretrygdAutoTest {
     @Test
     fun testPdf() {

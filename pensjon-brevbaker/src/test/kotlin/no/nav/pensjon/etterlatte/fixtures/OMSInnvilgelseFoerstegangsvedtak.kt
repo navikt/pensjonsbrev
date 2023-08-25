@@ -79,6 +79,24 @@ fun createOMSInnvilgelseFoerstegangsvedtakDTO() =
         ),
         beregningsinfo = Beregningsinfo(
             grunnbeloep = Kroner(118000),
+            innhold = listOf(
+                Element(
+                    type = ElementType.HEADING_TWO,
+                    children = listOf(
+                        InnerElement(
+                            text = "<INSERT UTFALL HERE>"
+                        )
+                    )
+                ),
+                Element(
+                    type = ElementType.PARAGRAPH,
+                    children = listOf(
+                        InnerElement(
+                            text = "Her kommer det valgfri tekst om utfallene til beregning av stønaden"
+                        )
+                    )
+                )
+            ),
             beregningsperioder = listOf(
                 NyBeregningsperiode(
                     inntekt = Kroner(650000),

@@ -1,13 +1,12 @@
 package no.nav.pensjon.brev.maler.vedlegg
 
-import io.ktor.util.date.*
 import no.nav.pensjon.brev.*
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligUfoeretrygdFoerSkattDto
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligUfoeretrygdFoerSkattDto.UfoeretrygdPerMaaned
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.dsl.expression.expr
-import no.nav.pensjon.brev.template.render.*
+import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import org.junit.jupiter.api.*
 import java.time.LocalDate
@@ -52,7 +51,8 @@ class MaanedligUfoeretrygdFoerSkattITest {
                     virkningTilOgMed = LocalDate.of(2020, 1, 31)
                 ),
             ),
-        ).expr()
+        ).expr(),
+        languages(Bokmal, Nynorsk, English),
     )
 
     @Test

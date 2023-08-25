@@ -60,8 +60,8 @@ object Felles {
             textExpr(
                 Bokmal to kroner.format() + " kr",
                 Nynorsk to kroner.format() + " kr",
-                English to kroner.format() + " NOK",
-                fontType
+                English to "NOK ".expr() + kroner.format(),
+                fontType,
             )
     }
 

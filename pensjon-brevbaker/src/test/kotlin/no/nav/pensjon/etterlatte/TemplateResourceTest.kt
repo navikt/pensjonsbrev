@@ -1,4 +1,4 @@
-package no.nav.pensjon.etterlatte.maler
+package no.nav.pensjon.etterlatte
 
 import io.ktor.util.reflect.*
 import kotlinx.coroutines.runBlocking
@@ -15,22 +15,24 @@ import no.nav.pensjon.brev.template.render.PensjonJsonRenderer
 import no.nav.pensjon.brev.template.render.PensjonLatexRenderer
 import no.nav.pensjon.brev.writeTestHTML
 import no.nav.pensjon.brev.writeTestPDF
-import no.nav.pensjon.etterlatte.EtterlatteBrevKode
-import no.nav.pensjon.etterlatte.Fixtures
+import no.nav.pensjon.etterlatte.maler.BrevDTO
 import org.junit.jupiter.api.Tag
-import org.junit.jupiter.api.Test
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.Arguments
+import org.junit.jupiter.params.provider.MethodSource
 import java.nio.file.Files
 import java.nio.file.Paths
 
-@Tag(TestTags.INTEGRATION_TEST)
-abstract class EtterlatteMalTest<T : Any>(
-    val template: LetterTemplate<LanguageSupport.Triple<Language.Bokmal, Language.Nynorsk, Language.English>, T>,
-    private val etterlatteBrevKode: EtterlatteBrevKode,
-    val fixtures: T,
-) {
+class TemplateResourceTest {
 
-    @Test
-    fun testPdf() {
+    @Tag(TestTags.INTEGRATION_TEST)
+    @ParameterizedTest(name = "{index} => template={0}, etterlatteBrevKode={1}, fixtures={2}")
+    @MethodSource("alleMalene")
+    fun <T : Any> testPdf(
+        template: LetterTemplate<LanguageSupport.Triple<Language.Bokmal, Language.Nynorsk, Language.English>, T>,
+        etterlatteBrevKode: EtterlatteBrevKode,
+        fixtures: T,
+    ) {
         Letter(
             template,
             fixtures,
@@ -41,8 +43,13 @@ abstract class EtterlatteMalTest<T : Any>(
             .also { writeTestPDF(etterlatteBrevKode.name, it) }
     }
 
-    @Test
-    fun htmltest() {
+    @ParameterizedTest(name = "{index} => template={0}, etterlatteBrevKode={1}, fixtures={2}")
+    @MethodSource("alleMalene")
+    fun <T : Any> testHtml(
+        template: LetterTemplate<LanguageSupport.Triple<Language.Bokmal, Language.Nynorsk, Language.English>, T>,
+        etterlatteBrevKode: EtterlatteBrevKode,
+        fixtures: T,
+    ) {
         Letter(
             template,
             fixtures,
@@ -52,12 +59,25 @@ abstract class EtterlatteMalTest<T : Any>(
             .also { writeTestHTML(etterlatteBrevKode.name, it) }
     }
 
-    @Test
-    fun jsontest() {
-        val erHovedmal = this.fixtures.instanceOf(BrevDTO::class)
+    @ParameterizedTest(name = "{index} => template={0}, etterlatteBrevKode={1}, fixtures={2}")
+    @MethodSource("alleMalene")
+    fun <T : Any> jsontest(
+        template: LetterTemplate<LanguageSupport.Triple<Language.Bokmal, Language.Nynorsk, Language.English>, T>,
+        etterlatteBrevKode: EtterlatteBrevKode,
+        fixtures: T,
+    ) {
+        val erHovedmal = fixtures.instanceOf(BrevDTO::class)
         // Hovedmalar skal ikkje redigerast i Gjenny, så dei treng vi ikkje å lage JSON av.
         // I tillegg er det per no ein mangel i brevbakeren at han ikkje klarer å lage JSON av tabellar, som vi bruker i ein del hovedmalar
         if (erHovedmal) {
+            return
+        }
+        val foreloepigIkkeStoettaIJSON = setOf(
+            EtterlatteBrevKode.BARNEPENSJON_INNVILGELSE,
+            EtterlatteBrevKode.BARNEPENSJON_REVURDERING_SOESKENJUSTERING,
+            EtterlatteBrevKode.OMS_INNVILGELSE_AUTO,
+        )
+        if (foreloepigIkkeStoettaIJSON.contains(etterlatteBrevKode)) {
             return
         }
         Letter(
@@ -71,6 +91,18 @@ abstract class EtterlatteMalTest<T : Any>(
                     .also { Files.createDirectories(it) }
                     .resolve((Paths.get("${etterlatteBrevKode.name}.json")))
                     .let { Files.writeString(it, objectMapper.writeValueAsString(json)) }
+            }
+    }
+
+    companion object {
+        @JvmStatic
+        fun alleMalene() =
+            prodAutobrevTemplates.map {
+                Arguments.of(
+                    it.template,
+                    it.kode,
+                    Fixtures.create(it.template.letterDataType),
+                )
             }
     }
 }
