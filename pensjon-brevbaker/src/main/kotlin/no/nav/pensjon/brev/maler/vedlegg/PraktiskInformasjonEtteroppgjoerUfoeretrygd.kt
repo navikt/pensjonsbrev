@@ -19,7 +19,7 @@ val vedleggPraktiskInformasjonEtteroppgjoerUfoeretrygd =
         title = newText(
             Bokmal to "Praktisk informasjon om etteroppgjør",
             Nynorsk to "Praktisk informasjon om etteroppgjør",
-            English to "Practical information about the settlement"
+            English to "Practical information about the post-settlement"
         ),
         includeSakspart = false,
     ) {
