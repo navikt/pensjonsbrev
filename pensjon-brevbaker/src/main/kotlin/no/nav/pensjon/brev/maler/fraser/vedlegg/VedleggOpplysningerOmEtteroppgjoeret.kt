@@ -71,7 +71,7 @@ data class Introduksjon(val periode: Expression<Year>) : OutlinePhrase<LangBokma
         }
         paragraph {
             text(
-                Bokmal to "Husk at du må melde fra til oss innen 3 uker hvis du mener beregningene feil.",
+                Bokmal to "Husk at du må melde fra til oss innen 3 uker hvis du mener beregningene er feil.",
                 Nynorsk to "Hugs at du må melde frå til oss innan 3 veker om du meiner berekningane er feil.",
                 English to "Please inform us within 3 weeks if you believe the calculations are incorrect.",
             )
