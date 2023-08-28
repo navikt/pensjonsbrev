@@ -47,13 +47,13 @@ object ForhaandsvarselEtteroppgjoerUfoeretrygdAuto : AutobrevTemplate<Forhaandsv
                     textExpr(
                         Bokmal to "Nytt forhåndsvarsel om etteroppgjør av uføretrygd for ".expr() + periode,
                         Nynorsk to "Nytt førehandsvarsel om etteroppgjer av uføretrygd for ".expr() + periode,
-                        English to "New advance notice of settlement of disability benefit for ".expr() + periode
+                        English to "New notice of settlement for disability benefit for ".expr() + periode
                     )
                 }.orShow {
                     textExpr(
                         Bokmal to "Forhåndsvarsel om etteroppgjør av uføretrygd for ".expr() + periode,
                         Nynorsk to "Førehandsvarsel om etteroppgjer av uføretrygd for ".expr() + periode,
-                        English to "Advance notice of settlement of disability benefit for ".expr() + periode
+                        English to "Notice of settlement for disability benefit for ".expr() + periode
                     )
                 }
             }
