@@ -131,9 +131,9 @@ object SoekOmNyInntektsgrense : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         title1 {
             text(
-                Bokmal to "Du kan søke om ny inntektsgrense",
+                Bokmal to "Søke om ny inntektsgrense",
                 Nynorsk to "Søkje om ny inntektsgrense",
-                English to "You can apply for a new income threshold"
+                English to "Applying for a new income threshold"
             )
         }
         paragraph {
