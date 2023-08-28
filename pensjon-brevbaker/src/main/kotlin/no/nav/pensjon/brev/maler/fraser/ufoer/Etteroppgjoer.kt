@@ -46,7 +46,7 @@ object SjekkBeregning : OutlinePhrase<LangBokmalNynorskEnglish>() {
             text(
                 Bokmal to "Dette brevet er et forhåndsvarsel, slik at du kan sjekke at beregningene i vedlegg «Opplysninger om etteroppgjøret» er korrekte, og melde fra til oss hvis noe er feil eller mangler.",
                 Nynorsk to "Dette brevet er eit førehandsvarsel, og du har såleis høve til å sjekke at utrekningane i vedlegg «Opplysningar om etteroppgjer» er korrekte, og melde frå til oss dersom noko er feil eller manglar.",
-                English to "This letter is an advance notice regarding the calculations provided in the appendix «Information about the post-settlement». Please review the calculations carefully and inform us of any errors or missing information."
+                English to "This letter is an advance notice regarding the calculations provided in the appendix «Information about the settlement». Please review the calculations carefully and inform us of any errors or missing information."
             )
         }
         paragraph {
@@ -131,9 +131,9 @@ object SoekOmNyInntektsgrense : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         title1 {
             text(
-                Bokmal to "Du kan søke om ny inntektsgrense",
+                Bokmal to "Søke om ny inntektsgrense",
                 Nynorsk to "Søkje om ny inntektsgrense",
-                English to "You can apply for a new income threshold"
+                English to "Applying for a new income threshold"
             )
         }
         paragraph {
@@ -198,7 +198,7 @@ object FristerOpplysningerKlage : OutlinePhrase<LangBokmalNynorskEnglish>() {
             text(
                 Bokmal to "Hvis du mener at beregningene i vedlegg «Opplysninger om etteroppgjøret» er feil, må du melde fra til oss innen 3 uker fra du fikk dette brevet. Du vil da få en ny vurdering og et nytt vedtak.",
                 Nynorsk to "Dersom du meiner at utrekningane i vedlegg «Opplysningar om etteroppgjer» er feil, må du melde frå til oss innan 3 veker frå du fekk dette brevet. Du vil då få ei ny vurdering og eit nytt vedtak.",
-                English to "If you believe that the calculations in appendix «Information about the post-settlement» are incorrect, please notify us within 3 weeks from the date you received this letter. You will then receive a new assessment and a new decision."
+                English to "If you believe that the calculations in appendix «Information about the settlement» are incorrect, please notify us within 3 weeks from the date you received this letter. You will then receive a new assessment and a new decision."
             )
         }
         paragraph {
