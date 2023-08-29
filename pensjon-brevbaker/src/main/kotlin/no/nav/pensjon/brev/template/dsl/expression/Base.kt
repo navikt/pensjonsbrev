@@ -25,6 +25,9 @@ fun <T : Enum<T>> Expression<Enum<T>>.isOneOf(vararg enums: Enum<T>): Expression
 
 fun <T : Enum<T>> Expression<Enum<T>>.isNotAnyOf(vararg enums: Enum<T>): Expression<Boolean> = not(isOneOf(*enums))
 
+operator fun Expression<Boolean>.not(): Expression<Boolean> =
+    not(this)
+
 fun not(expr: Expression<Boolean>): Expression<Boolean> =
     Expression.UnaryInvoke(expr, UnaryOperation.Not)
 
