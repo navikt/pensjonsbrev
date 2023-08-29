@@ -179,7 +179,7 @@ object MeldeFraOmEndringerEtteroppgjoer : OutlinePhrase<LangBokmalNynorskEnglish
             text(
                 Bokmal to "For at du skal få utbetalt riktig uføretrygd fremover, er det viktig at du oppdaterer inntekten din. Dette gjør du på ${Constants.INNTEKTSPLANLEGGEREN_URL}. I vedlegget «Dine rettigheter og plikter» ser du hvilke endringer du må si fra om.",
                 Nynorsk to "For at du skal få utbetalt rett uføretrygd framover, er det viktig at du oppdaterer inntekta di. Dette gjer du på ${Constants.INNTEKTSPLANLEGGEREN_URL}. I vedlegget «Rettane og pliktene dine» ser du kva endringar du må seie frå om.",
-                English to "To ensure that you receive the correct amount of disability benefit in the future, it is important that you update your income. You can do this at ${Constants.INNTEKTSPLANLEGGEREN_URL}. In the appendix «Your rights and obligations», you can find the changes you need to report."
+                English to "To ensure that you receive the correct amount of disability benefit in the future, it is important that you update your income information. You can do this at ${Constants.INNTEKTSPLANLEGGEREN_URL}. In the appendix «Your rights and obligations», you can find the changes you need to report."
             )
         }
     }
