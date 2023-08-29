@@ -459,7 +459,7 @@ data class OmBeregningAvBarnetillegg(
                     text(
                         Bokmal to "barnet bor med begge foreldre i deler av året, og en av foreldrene resten av året.",
                         Nynorsk to "barnet bur med begge foreldra delar av året, og en av foreldra resten av året.",
-                        English to "the child lives with both parents part of the year, and one of the parents the rest."
+                        English to "the child lives with both parents for part of the year and with one parent for the remainder of the year."
                     )
                 }
             }
