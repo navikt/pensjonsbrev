@@ -64,7 +64,7 @@ data class Introduksjon(val periode: Expression<Year>) : OutlinePhrase<LangBokma
                         "Vi har gjort ei ny utrekning av uføretrygda di for " + periode.format() + " etter opplysningar frå Skatteetaten. " +
                         "Du kan sjå skatteoppgjeret ditt på ${Constants.SKATTEETATEN_URL}.",
 
-                English to "We use the income information you input on ${Constants.INNTEKTSPLANLEGGEREN_URL} and information from the Norwegian Tax Administration".expr() +
+                English to "We use the income information you input on ${Constants.INNTEKTSPLANLEGGEREN_URL} and information from the Norwegian Tax Administration. ".expr() +
                         "Your disability benefit for " + periode.format() + " has been recalculated based on the tax settlement provided by the Norwegian Tax Administration. " +
                         "You can find your tax settlement at ${Constants.SKATTEETATEN_URL}.",
             )

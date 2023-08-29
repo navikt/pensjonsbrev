@@ -140,7 +140,7 @@ object SoekOmNyInntektsgrense : OutlinePhrase<LangBokmalNynorskEnglish>() {
             text(
                 Bokmal to "Er du arbeidstaker og har gradert uføretrygd, kan du søke om ny inntektsgrense. Dette gjelder hvis du har hatt høy lønnsøkning, uten at det skyldes overtidsjobbing, ekstravakter eller høyere stillingsprosent.",
                 Nynorsk to "Dersom du er arbeidstakar og har gradert uføretrygd, kan du søkje om ny inntektsgrense. Dette gjeld viss du har hatt høg lønsauke, utan at det skuldast overtidsjobbing, ekstravakter eller høgare stillingsprosent.",
-                English to "If you are an employee receiving partial disability benefits, you can apply for a new income limit. This applies if your wage has significantly increased, unrelated to working overtime, extra shifts, or a higher job percentage.",
+                English to "If you are an employee receiving partial disability benefits, you can apply for a new income threshold. This applies if your wage has significantly increased, unrelated to working overtime, extra shifts, or a higher job percentage.",
             )
         }
     }
@@ -172,7 +172,7 @@ object MeldeFraOmEndringerEtteroppgjoer : OutlinePhrase<LangBokmalNynorskEnglish
             text(
                 Bokmal to "Du må melde fra om endringer",
                 Nynorsk to "Hugs å melde frå om endringar",
-                English to "Update your income changes"
+                English to "Update your income information"
             )
         }
         paragraph {
