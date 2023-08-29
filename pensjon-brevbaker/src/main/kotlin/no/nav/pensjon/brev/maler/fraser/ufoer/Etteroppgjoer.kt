@@ -140,7 +140,7 @@ object SoekOmNyInntektsgrense : OutlinePhrase<LangBokmalNynorskEnglish>() {
             text(
                 Bokmal to "Er du arbeidstaker og har gradert uføretrygd, kan du søke om ny inntektsgrense. Dette gjelder hvis du har hatt høy lønnsøkning, uten at det skyldes overtidsjobbing, ekstravakter eller høyere stillingsprosent.",
                 Nynorsk to "Dersom du er arbeidstakar og har gradert uføretrygd, kan du søkje om ny inntektsgrense. Dette gjeld viss du har hatt høg lønsauke, utan at det skuldast overtidsjobbing, ekstravakter eller høgare stillingsprosent.",
-                English to "If you are an employee receiving partial disability benefits, you can apply for a new income limit. This applies if your wage has significantly increased, unrelated to working overtime, extra shifts, or a higher job percentage.",
+                English to "If you are an employee receiving partial disability benefits, you can apply for a new income threshold. This applies if your wage has significantly increased, unrelated to working overtime, extra shifts, or a higher job percentage.",
             )
         }
     }
@@ -172,14 +172,14 @@ object MeldeFraOmEndringerEtteroppgjoer : OutlinePhrase<LangBokmalNynorskEnglish
             text(
                 Bokmal to "Du må melde fra om endringer",
                 Nynorsk to "Hugs å melde frå om endringar",
-                English to "You must report any changes"
+                English to "Update your income information"
             )
         }
         paragraph {
             text(
                 Bokmal to "For at du skal få utbetalt riktig uføretrygd fremover, er det viktig at du oppdaterer inntekten din. Dette gjør du på ${Constants.INNTEKTSPLANLEGGEREN_URL}. I vedlegget «Dine rettigheter og plikter» ser du hvilke endringer du må si fra om.",
                 Nynorsk to "For at du skal få utbetalt rett uføretrygd framover, er det viktig at du oppdaterer inntekta di. Dette gjer du på ${Constants.INNTEKTSPLANLEGGEREN_URL}. I vedlegget «Rettane og pliktene dine» ser du kva endringar du må seie frå om.",
-                English to "To ensure that you receive the correct amount of disability benefit in the future, it is important that you update your income. You can do this at ${Constants.INNTEKTSPLANLEGGEREN_URL}. In the appendix «Your rights and obligations», you can find the changes you need to report."
+                English to "To ensure that you receive the correct amount of disability benefit in the future, it is important that you update your income information. You can do this at ${Constants.INNTEKTSPLANLEGGEREN_URL}. In the appendix «Your rights and obligations», you can find the changes you need to report."
             )
         }
     }
