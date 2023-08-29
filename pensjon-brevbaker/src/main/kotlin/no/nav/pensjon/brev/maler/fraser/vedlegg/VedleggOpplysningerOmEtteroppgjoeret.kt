@@ -720,7 +720,7 @@ data class OmBeregningAvUfoeretrygd(
             textExpr(
                 Bokmal to "Din pensjonsgivende inntekt har i ".expr() + periode.format() + " vært " + inntektFoerFratrekk + " kroner.",
                 Nynorsk to "Den pensjonsgivande inntekta di i ".expr() + periode.format() + " var " + inntektFoerFratrekk + " kroner.",
-                English to "Your pensionable income during the period ".expr() + periode.format() + " has been NOK " + inntektFoerFratrekk + ".",
+                English to "Your pensionable income for ".expr() + periode.format() + " was NOK " + inntektFoerFratrekk + ".",
             )
         }
 
