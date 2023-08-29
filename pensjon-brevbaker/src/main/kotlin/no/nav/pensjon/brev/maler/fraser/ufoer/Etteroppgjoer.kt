@@ -172,7 +172,7 @@ object MeldeFraOmEndringerEtteroppgjoer : OutlinePhrase<LangBokmalNynorskEnglish
             text(
                 Bokmal to "Du må melde fra om endringer",
                 Nynorsk to "Hugs å melde frå om endringar",
-                English to "You must report any changes"
+                English to "Update your income changes"
             )
         }
         paragraph {
