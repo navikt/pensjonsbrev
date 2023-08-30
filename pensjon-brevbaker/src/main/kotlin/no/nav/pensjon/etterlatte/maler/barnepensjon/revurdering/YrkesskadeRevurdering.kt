@@ -3,6 +3,7 @@ package no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.dsl.createTemplate
+import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -48,7 +49,7 @@ object YrkesskadeRevurdering : EtterlatteTemplate<BarnepensjonRevurderingYrkessk
         ),
     ) {
         title {
-            showIf(yrkesskadeErDokumentert) {
+            showIf(yrkesskadeErDokumentert and stoenadHarOekt) {
                 text(
                     Bokmal to "Vi har endret barnepensjonen din",
                     Language.Nynorsk to "",
