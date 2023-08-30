@@ -8,9 +8,9 @@ import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
-import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
+import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
@@ -62,7 +62,7 @@ object RevurderingYrkesskadeFraser {
                     Nynorsk to "",
                     English to "",
                 )
-                showIf(stoenadHarOekt.equalTo(false)) {
+                showIf(not(stoenadHarOekt)) {
                     text(
                         Bokmal to " Dette fører imidlertid ikke til endring av din pensjon da vilkårene "
                                 + "for full barnepensjon er oppfylt uavhengig av at dødsfallet skyldes "

@@ -49,7 +49,7 @@ object YrkesskadeRevurdering : EtterlatteTemplate<BarnepensjonRevurderingYrkessk
         ),
     ) {
         title {
-            showIf(yrkesskadeErDokumentert.and(stoenadHarOekt)) {
+            showIf(yrkesskadeErDokumentert and stoenadHarOekt) {
                 text(
                     Bokmal to "Vi har endret barnepensjonen din",
                     Language.Nynorsk to "",
