@@ -290,8 +290,8 @@ data class OmBeregningAvBarnetillegg(
                         "barnetillegg som har betydning.",
 
                 English to "The limit for what you can earn before child supplement is reduced is called the free allowance. If your personal income " +
-                        "exceeds the free allowance, the child supplement will be reduced or cease completely. If you were granted a child supplement " +
-                        "during the year, or if the child supplement ceased during the year, only the income for the period when you were eligible " +
+                        "exceeds the free allowance, the child supplement will be reduced or cease completely. If you were granted child supplement, " +
+                        "or if the child supplement ceased during the year, only the income for the period you were eligible " +
                         "for the child supplement matters."
             )
         }
@@ -459,7 +459,7 @@ data class OmBeregningAvBarnetillegg(
                     text(
                         Bokmal to "barnet bor med begge foreldre i deler av året, og en av foreldrene resten av året.",
                         Nynorsk to "barnet bur med begge foreldra delar av året, og en av foreldra resten av året.",
-                        English to "the child lives with both parents part of the year, and one of the parents the rest."
+                        English to "the child lives with both parents for part of the year and with one parent for the remainder of the year."
                     )
                 }
             }
@@ -720,7 +720,7 @@ data class OmBeregningAvUfoeretrygd(
             textExpr(
                 Bokmal to "Din pensjonsgivende inntekt har i ".expr() + periode.format() + " vært " + inntektFoerFratrekk + " kroner.",
                 Nynorsk to "Den pensjonsgivande inntekta di i ".expr() + periode.format() + " var " + inntektFoerFratrekk + " kroner.",
-                English to "Your pensionable income during the period ".expr() + periode.format() + " has been NOK " + inntektFoerFratrekk + ".",
+                English to "Your pensionable income for ".expr() + periode.format() + " was NOK " + inntektFoerFratrekk + ".",
             )
         }
 
@@ -887,7 +887,7 @@ data class ErOpplysningeneOmInntektFeil(
             text(
                 Bokmal to "Mener du at inntektsopplysningene i skatteoppgjøret er feil, er det Skatteetaten som skal vurdere om inntekten kan endres.",
                 Nynorsk to "Dersom du meiner at inntektsopplysningane i skatteoppgjeret er feil, er det Skatteetaten som skal vurdere om inntekta kan endrast.",
-                English to "If you believe that the income information in your tax settlement is incorrect, it is the Tax Office that must assess whether " +
+                English to "If you believe that the income information in your tax settlement is incorrect, it is the Norwegian Tax Administration that must assess whether " +
                         "your income can be amended.",
             )
         }
@@ -895,7 +895,7 @@ data class ErOpplysningeneOmInntektFeil(
             text(
                 Bokmal to "Vi gjør et nytt etteroppgjør automatisk hvis Skatteetaten endrer inntekten din. Du får tilbakemelding hvis endringen påvirker etteroppgjøret ditt.",
                 Nynorsk to "Vi utfører automatisk eit nytt etteroppgjer dersom Skatteetaten endrar inntekta di. Du får tilbakemelding dersom endringa påverker etteroppgjeret ditt.",
-                English to "We will issue a new settlement automatically if the Tax Office amends your income. You will be notified if any changes affect your post-settlement.",
+                English to "We will issue a new settlement automatically if the Norwegian Tax Administration amends your income. You will be notified if any changes affect your post-settlement.",
             )
         }
 
@@ -911,7 +911,7 @@ data class ErOpplysningeneOmInntektFeil(
                 text(
                     Bokmal to "Hvis du mener inntektsopplysningene for den andre forelderen er feil, må den andre forelderen kontakte Skatteetaten.",
                     Nynorsk to "Dersom du meiner at inntektsopplysningane til den andre forelderen er feil, må den andre forelderen kontakte Skatteetaten.",
-                    English to "If you believe that the income information for the other parent is incorrect, the other parent must contact the Tax Office.",
+                    English to "If you believe that the income information for the other parent is incorrect, the other parent must contact the Norwegian Tax Administration.",
                 )
             }
             paragraph {
@@ -920,7 +920,7 @@ data class ErOpplysningeneOmInntektFeil(
                             "Du må derfor gi beskjed til oss. Vi gjør da et manuelt etteroppgjør. Du trenger ikke å sende inn dokumentasjon.",
                     Nynorsk to "Vi oppdaterer ikkje automatisk etteroppgjeret ditt når vi får ei korrigering frå Skatteetaten som gjeld den andre forelderen. " +
                             "Du må difor gi beskjed til oss. Vi utfører då eit etteroppgjer manuelt. Du treng ikkje sende inn dokumentasjon.",
-                    English to "We do not automatically update your settlement when we receive a correction from the the Tax Office regarding the other parent. " +
+                    English to "We do not automatically update your settlement when we receive a correction from the the Norwegian Tax Administration regarding the other parent. " +
                             "Therefore, you need to inform us. We will then conduct a manual post-settlement. You do not need to submit documentation.",
                 )
             }
@@ -1167,7 +1167,7 @@ data class InntektTabell(
                 OpplysningerOmEtteroppgjoeretDto.InntektOgFratrekk.Inntekt.InntektLinje.Kilde.OPPGITT_AV_SKATTEETATEN -> when (second) {
                     Bokmal -> "Oppgitt av Skatteetaten"
                     Nynorsk -> "Oppgjeva av Skatteetaten"
-                    English -> "Reported by the Tax Office"
+                    English -> "Reported by the Norwegian Tax Administration"
                 }
 
                 OpplysningerOmEtteroppgjoeretDto.InntektOgFratrekk.Inntekt.InntektLinje.Kilde.OPPGITT_AV_BRUKER -> when (second) {
