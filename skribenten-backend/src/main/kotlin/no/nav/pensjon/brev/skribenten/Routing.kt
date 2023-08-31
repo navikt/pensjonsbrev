@@ -39,6 +39,8 @@ data class OrderLetterRequest(
     val spraak: SpraakKode,
     val sakId: Long,
     val gjelderPid: String,
+    val landkode: String? = null,
+    val mottakerText: String? = null,
 )
 
 // TODO innfør nav-call id på ulike kall for feilsøking
@@ -70,6 +72,7 @@ fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config
             post("/pen/extream") {
                 // TODO skal vi validere metadata?
                 val request = call.receive<OrderLetterRequest>()
+                //TODO try to get extra claims when authorizing user instead of using graph service.
                 val name = getClaim("name") ?: throw UnauthorizedException("Could not find name of user")
 
                 // TODO create respond on error or similar function to avoid boilerplate. RespondOnError?
@@ -83,6 +86,7 @@ fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config
                     }
 
                 //TODO better error handling.
+                // TODO access controls for e-blanketter
                 penService.bestillExtreamBrev(call, request, name, onPremisesSamAccountName).map { journalpostId ->
                     val error = safService.waitForJournalpostStatusUnderArbeid(call, journalpostId)
                     if (error != null) {
@@ -155,6 +159,9 @@ fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config
                 get("/kommune") {
                     call.respond(kodeverkService.getKommuner(call))
                 }
+                get("/avtaleland") {
+                    respondWithResult(penService.hentAvtaleland(call))
+                }
             }
 
 
@@ -189,9 +196,14 @@ fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config
                 }
             }
 
+            data class LetterTemplatesResponse(val kategorier: List<LetterCategory>, val eblanketter: List<LetterMetadata>)
             get("/lettertemplates/{sakType}") {
                 val sakType = call.parameters.getOrFail("sakType")
-                call.respond(brevmetadataService.getRedigerbareBrevKategorier(sakType))
+                call.respond(LetterTemplatesResponse(
+                    brevmetadataService.getRedigerbareBrevKategorier(sakType),
+                    //TODO figure out who has access to e-blanketter and filter them out. then only display eblanketter when you get the metadata back.
+                    brevmetadataService.getEblanketter()
+                ))
             }
 
             post("/favourites") {

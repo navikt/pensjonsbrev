@@ -34,11 +34,11 @@ class BrevmetadataService(config: Config) {
 
     private fun mapToCategories(metadata: List<BrevdataDto>) =
         metadata
-            .filter { it.redigerbart ?: false }
+            .filter { it.redigerbart }
             .groupBy { it.brevkategori }
             .map {
                 LetterCategory(
-                    name = it.key ?: "Annet",
+                    name = it.key?.toString() ?: "Annet",
                     templates = it.value.map { template -> template.mapToMetadata() }
                 )
             }
@@ -52,22 +52,26 @@ class BrevmetadataService(config: Config) {
                 "DOKSYS" -> BrevSystem.DOKSYS
                 "GAMMEL" -> BrevSystem.EXTERAM
                 else -> throw IllegalStateException("Malformed metadata. Must be doksys or extream.")
-            }
+            },
+            isVedtaksbrev = this.brevkategori == BrevdataDto.BrevkategoriCode.VEDTAK,
+            isEblankett = this.dokumentkategori == BrevdataDto.DokumentkategoriCode.E_BLANKETT,
         )
 
 
-    suspend fun getRedigerbareBrev(): List<LetterMetadata> {
-        val metadata: List<BrevdataDto> = httpClient.get("/api/brevdata/allbrev/?includeXsd=false") {
-            contentType(ContentType.Application.Json)
-        }.body()
-        return metadata.filter { it.redigerbart ?: false }.map { it.mapToMetadata() }
+    suspend fun getEblanketter(): List<LetterMetadata> {
+        return httpClient.get("/api/brevdata/allBrev?includeXsd=false") {
+                contentType(ContentType.Application.Json)
+            }.body<List<BrevdataDto>>()
+                .filter { it.redigerbart }
+                .filter { it.dokumentkategori == BrevdataDto.DokumentkategoriCode.E_BLANKETT }
+            .map { it.mapToMetadata() }
     }
 }
 
 data class BrevdataDto(
-    val redigerbart: Boolean?,
+    val redigerbart: Boolean,
     val dekode: String?,
-    val brevkategori: String?,
+    val brevkategori: BrevkategoriCode?,
     val dokType: String?,
     val sprak: List<SpraakKode>?,
     val visIPselv: Boolean?,
@@ -75,12 +79,15 @@ data class BrevdataDto(
     val brevregeltype: String?,
     val brevkravtype: String?,
     val brevkontekst: String?,
-    val dokumentkategori: String?,
+    val dokumentkategori: DokumentkategoriCode?,
     val synligForVeileder: Boolean?,
     val prioritet: Int?,
     val brevkodeIBrevsystem: String?,
     val brevsystem: String?,
-)
+) {
+    enum class DokumentkategoriCode { B, EP, ES, E_BLANKETT, F, IB, IS, KD, KM, KS, SED, TS, VB }
+    enum class BrevkategoriCode { BREV_MED_SKJEMA, INFORMASJON, INNHENTE_OPPL, NOTAT, OVRIG, VARSEL, VEDTAK }
+}
 
 
 enum class SpraakKode {
@@ -103,6 +110,8 @@ data class LetterMetadata(
     val name: String,
     val id: String,
     val brevsystem: BrevSystem,
-    val spraak: List<SpraakKode>?
+    val spraak: List<SpraakKode>,
+    val isVedtaksbrev: Boolean,
+    val isEblankett: Boolean,
 )
 

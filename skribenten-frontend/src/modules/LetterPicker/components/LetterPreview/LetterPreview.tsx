@@ -3,25 +3,24 @@ import styles from "./LetterPreview.module.css"
 import {StarFillIcon, StarIcon} from "@navikt/aksel-icons"
 import {Button} from "@navikt/ds-react"
 import Image from "next/image"
-import {LetterSelection} from "../../model/skribenten"
+import {LetterMetadata} from "../../model/skribenten"
 
 
 interface LetterPreviewProps {
-    selectedLetter: LetterSelection | null
+    selectedLetter: LetterMetadata | undefined
     onAddToFavourites: () => void
     selectedIsFavourite: boolean
 }
 
 const LetterPreview: FC<LetterPreviewProps> = ({selectedLetter, selectedIsFavourite, onAddToFavourites}) => {
-    const topBarDisabled = selectedLetter === null
     return (
         //TODO Should we get an example of all different kinds of old letters? Where do we get that?
         <div className={styles.previewContainer}>
-            <div className={`${topBarDisabled ? styles.topMenuDisabled : ""} ${styles.topMenu}`}>
+            <div className={`${!selectedLetter ? styles.topMenuDisabled : ""} ${styles.topMenu}`}>
                 <div className={styles.letterTitle}>
                     {selectedLetter?.name || ""}
                 </div>
-                <Button disabled={topBarDisabled} variant="secondary" className={styles.addToFavourites} onClick={onAddToFavourites}>
+                <Button disabled={!selectedLetter || selectedLetter.isEblankett} variant="secondary" className={styles.addToFavourites} onClick={onAddToFavourites}>
                     {selectedIsFavourite?
                         (<StarFillIcon className={styles.starIcon} fontSize={"1.5rem"}/>)
                         :(<StarIcon className={styles.starIcon} fontSize={"1.5rem"}/>)

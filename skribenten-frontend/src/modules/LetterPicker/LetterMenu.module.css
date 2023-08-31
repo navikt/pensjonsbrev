@@ -28,7 +28,7 @@
     font-size: var(--a-font-size-heading-medium);
 }
 
-.brevvelgerContainer hr{
+.brevvelgerContainer hr {
     margin-left: 0.0625rem;
     margin-right: 0.0625rem;
     width: 98%;
@@ -62,7 +62,7 @@
     margin: 0;
 }
 
-.letterGroupHeader{
+.letterGroupHeader {
     padding: 0 0 0 0.25rem;
     font-weight: normal;
     font-size: var(--a-font-size-medium);

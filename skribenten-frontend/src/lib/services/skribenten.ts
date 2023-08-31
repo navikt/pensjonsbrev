@@ -8,11 +8,12 @@ import {
     SkribentServiceResult,
 } from "../../modules/LetterEditor/model/api"
 import {ObjectValue} from "../../modules/ModelEditor/model"
-import {LetterCategory} from "../../modules/LetterPicker/model/skribenten"
+import {LetterCategory, LetterMetadataResponse} from "../../modules/LetterPicker/model/skribenten"
 import {
-    AddressResult, KommuneResult,
+    AddressResult, Avtaleland, KommuneResult,
     SearchRequest
 } from "../../modules/LetterPicker/components/ChangeAddressee/AddresseeSearch/AddresseeSearch"
+import {LetterSelection} from "../../pages/brevvelger"
 
 export interface SkribentenAPIConfig {
     url: string
@@ -78,8 +79,7 @@ class SkribentenAPI {
         ).then(resp => resp.json())
     }
 
-
-    async getLetterTemplates(msal: IMsalContext, sakType: SakType): Promise<LetterCategory[]> {
+    async getLetterTemplates(msal: IMsalContext, sakType: SakType): Promise<LetterMetadataResponse> {
         return withAuthorization(msal, this.config.scope).then(auth =>
             fetch(`${this.config.url}/lettertemplates/${sakType}`, {
                 headers: {
@@ -153,9 +153,10 @@ class SkribentenAPI {
         })
     }
 
+
     async bestillExtreamBrev(msal: IMsalContext,
-                             brevkode: string,
-                             sakId: string,
+                             selectedLetter: LetterSelection,
+                             sak: Sak,
                              gjelderPid: string,
                              spraak: string): Promise<string> {
         return withAuthorization(msal, this.config.scope).then((auth) =>
@@ -166,7 +167,14 @@ class SkribentenAPI {
                     'Authorization': `Bearer ${auth.accessToken}`,
                 },
                 method: 'POST',
-                body: JSON.stringify({brevkode: brevkode, sakId: sakId, spraak: spraak, gjelderPid: gjelderPid}),
+                body: JSON.stringify({
+                    brevkode: selectedLetter.metadata.id,
+                    gjelderPid: gjelderPid,
+                    sakId: sak.sakId,
+                    spraak: spraak,
+                    landkode: selectedLetter.landkode,
+                    mottakerText: selectedLetter.mottakerText,
+                }),
             })
         ).then((res) => res.text())
     }
@@ -235,6 +243,15 @@ class SkribentenAPI {
     async hentKommuneForslag(msal: IMsalContext): Promise<KommuneResult[]> {
         return withAuthorization(msal, this.config.scope).then(auth =>
             fetch(`${this.config.url}/kodeverk/kommune`, {
+                headers: {'Authorization': `Bearer ${auth.accessToken}`},
+                method: 'GET',
+            })
+        ).then(res => res.json())
+    }
+
+    async hentAvtaleland(msal: IMsalContext): Promise<Avtaleland[]> {
+        return withAuthorization(msal, this.config.scope).then(auth =>
+            fetch(`${this.config.url}/kodeverk/avtaleland`, {
                 headers: {'Authorization': `Bearer ${auth.accessToken}`},
                 method: 'GET',
             })

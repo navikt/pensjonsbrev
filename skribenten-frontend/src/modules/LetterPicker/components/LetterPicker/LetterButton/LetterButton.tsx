@@ -7,11 +7,11 @@ interface LetterButtonProps {
     text: string,
     id: string,
     isSelected: boolean,
-    onClicked: (id: string | null) => void,
+    onClick: (id: string) => void,
     brevsystem: Brevsystem,
 }
 
-const LetterButton: FC<LetterButtonProps> = ({text, id, isSelected = false, onClicked, brevsystem}) => {
+const LetterButton: FC<LetterButtonProps> = ({text, id, isSelected = false, onClick, brevsystem}) => {
     const [showPopover, setShowPopover] = useState(false)
     const ref = useRef<HTMLButtonElement>(null)
     function checkIfOverflowing(): boolean {
@@ -32,7 +32,7 @@ const LetterButton: FC<LetterButtonProps> = ({text, id, isSelected = false, onCl
         <button className={`${isSelected ? styles.letterButtonOpen : ""} ${styles.letterButton}`}
                 onMouseOver={startHoverHandler}
                 onMouseLeave={stopHoverHandler}
-                onClick={() => onClicked(isSelected ? null : id)}>
+                onClick={() => onClick(id)}>
             {brevsystem && (<div className={styles.tag}>{systemLetter(brevsystem)}</div>)}
             <span ref={ref} className={styles.buttonText}>
                 {text}
@@ -58,7 +58,7 @@ const systemLetter = (system: Brevsystem): JSX.Element => {
         </svg>
         case "DOKSYS": return <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
             <circle cx="8" cy="8" r="7.5" fill="#E0D8E9" stroke="#412B5D"/>
-            <path d="M6.00002 11.9981L6.00004 4.00193C7.95313 4.00193 11 3.78336 11 7.99995C11 12.2165 7.56249 11.9981 6.00002 11.9981Z" stroke="#412B5D" stroke-width="1.71543"/>
+            <path d="M6.00002 11.9981L6.00004 4.00193C7.95313 4.00193 11 3.78336 11 7.99995C11 12.2165 7.56249 11.9981 6.00002 11.9981Z" stroke="#412B5D" strokeWidth="1.71543"/>
         </svg>
         case "BREVBAKER": return <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
             <circle cx="8" cy="8" r="7.5" fill="#D9E366" stroke="#474E00"/>

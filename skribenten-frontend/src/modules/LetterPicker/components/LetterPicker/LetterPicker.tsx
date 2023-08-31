@@ -1,25 +1,26 @@
 import {FC} from "react"
 import styles from "./LetterPicker.module.css"
 import LetterButton from "./LetterButton/LetterButton"
-import {LetterSelection} from "../../model/skribenten"
+import {LetterMetadata} from "../../model/skribenten"
 
 interface LetterPickerProps {
-    letters: LetterSelection[]
+    letters: LetterMetadata[]
     selectedLetter: string | null,
-    onLetterSelected: (id: string | null) => void
+    onLetterSelected: (id: string) => void
 }
 
 const LetterPicker: FC<LetterPickerProps> = ({letters, selectedLetter, onLetterSelected}) =>
     <ul className={styles.letterList}>
-        {letters.map(letterData => {
-                return (<LetterButton text={letterData.name}
+        {letters
+            .sort((a, b) => a.name.localeCompare(b.name))
+            .map(letterData =>
+                <LetterButton text={letterData.name}
                               brevsystem={letterData.brevsystem}
                               isSelected={letterData.id === selectedLetter}
                               id={letterData.id}
                               key={letterData.id}
-                              onClicked={onLetterSelected}/>)
-            }
-        )}
+                              onClick={onLetterSelected}/>
+            )}
     </ul>
 
 export default LetterPicker

@@ -1,17 +1,17 @@
 import React, {FC, useState} from "react"
-import {Button, Label, Link, Select} from "@navikt/ds-react"
+import {Button, Label, Select} from "@navikt/ds-react"
 import BottomMenu from "../../../../components/bottom-menu/BottomMenu"
-import {LetterSelection} from "../../model/skribenten"
+import {LetterMetadata} from "../../model/skribenten"
 import styles from "./ActionBar.module.css"
 
 interface ActionBarProps {
-    selectedLetter: LetterSelection | null
+    selectedLetter: LetterMetadata | undefined
     onOrderLetter: (language: string) => void
 }
 
 const ActionBar: FC<ActionBarProps> = ({selectedLetter, onOrderLetter}) => {
     const [selectedLanguage, setSelectedLanguage] = useState(0)
-    const disabled = selectedLetter == null
+    const disabled = !selectedLetter
     const selection = selectedLetter?.spraak?.map(sprak => {
         return (<option key={sprak}>{sprakTekst(sprak)}</option>)
     })

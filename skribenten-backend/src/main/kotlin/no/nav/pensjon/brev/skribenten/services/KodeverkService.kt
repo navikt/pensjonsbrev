@@ -12,9 +12,6 @@ import io.ktor.client.request.headers
 import io.ktor.serialization.jackson.*
 import io.ktor.server.application.*
 import io.ktor.server.plugins.callid.*
-import io.netty.handler.codec.DateFormatter
-import java.text.SimpleDateFormat
-import java.time.Instant
 import java.time.LocalDate
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
@@ -54,8 +51,8 @@ class KodeverkService(config: Config) {
                     it.tekst to kommuneNrEntry.key
                 }
             }
-        }.groupBy({it.first}, {it.second})
-            .map {KommuneResultat(it.key, it.value)}
+        }.groupBy({ it.first }, { it.second })
+            .map { KommuneResultat(it.key, it.value) }
     }
 
     private suspend fun getKommunenummer(call: ApplicationCall): KodeverkResponse {

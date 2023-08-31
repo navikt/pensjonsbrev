@@ -34,7 +34,7 @@ class PenService(config: Config, authService: AzureADService) {
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true) // ignorer merknader som ikke er relevant for våres kall.
-    data class PenError(val feilmelding:String)
+    data class PenError(val feilmelding: String)
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     data class PenPersonDto(
@@ -83,8 +83,10 @@ class PenService(config: Config, authService: AzureADService) {
         val saksbehanlderNavn: String,
         val saksbehanlderId: String,
         val isSensitivt: Boolean,
-    )
-
+        val eblankett: ElankettBestilling? = null
+    ) {
+        data class ElankettBestilling(val landkode: String, val mottakerText: String)
+    }
 
     suspend fun bestillExtreamBrev(
         call: ApplicationCall,
@@ -103,6 +105,9 @@ class PenService(config: Config, authService: AzureADService) {
                     saksbehanlderNavn = saksbehandlerNavn,
                     saksbehanlderId = saksbehandlerBrukernavn,
                     isSensitivt = false,  // TODO add choice to relevant letters and fill in.
+                    eblankett = if(request.landkode != null && request.mottakerText!= null) {
+                        BestillExtreamBrevDto.ElankettBestilling(request.landkode, request.mottakerText)
+                    } else null
                 )
             )
             contentType(ContentType.Application.Json)
@@ -142,7 +147,7 @@ class PenService(config: Config, authService: AzureADService) {
                     sprakKode = request.spraak,
                     automatiskBehandlet = false, // TODO fra metadata
                     gjelder = request.gjelderPid,
-                    vedtakId = 42806043, //TODO fyll inn fra query param
+                    vedtakId = 42806043, //TODO fyll inn fra query param / lag select?
                 )
             )
             contentType(ContentType.Application.Json)
@@ -153,5 +158,10 @@ class PenService(config: Config, authService: AzureADService) {
 
     suspend fun redigerDoksysBrev(call: ApplicationCall, journalpostId: String): ServiceResult<String, String> =
         client.post(call, "brev/rediger/doksys/${journalpostId}").toServiceResult<String, String>()
+
+    data class Avtaleland(val navn: String, val kode: String)
+
+    suspend fun hentAvtaleland(call: ApplicationCall): ServiceResult<List<Avtaleland>, String> =
+        client.get(call, "brev/brevdata/avtaleland").toServiceResult<List<Avtaleland>, String>()
 }
 

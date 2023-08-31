@@ -27,6 +27,11 @@ export type KommuneResult = {
     kommunenavn: string,
 }
 
+export type Avtaleland = {
+    navn: string,
+    kode: string,
+}
+
 interface AddresseeSearchProps {
     onMottakerChosen: (pid: string) => void,
 }
@@ -86,6 +91,7 @@ const AddresseeSearch: FC<AddresseeSearchProps> = ({onMottakerChosen}) => {
 
     const error = (errorMessage && <div>{errorMessage}</div>)
 
+    // TODO split out filters into a component? It's getting stuffy in here.
     return (
         <div className={styles.content}>
             <form role="search" className={styles.searchBar} onSubmit={handleFormSubmit}>
@@ -131,7 +137,7 @@ const AddresseeSearch: FC<AddresseeSearchProps> = ({onMottakerChosen}) => {
                         {(latestSearch?.recipientType == "PERSON" &&
                             <Table.HeaderCell scope="col" align="right">Fødselsdato</Table.HeaderCell>)}
                         {(!latestSearch?.recipientType &&
-                            <Table.HeaderCell scope="col" align="right">Samhandlertype</Table.HeaderCell>)}
+                            <Table.HeaderCell scope="col" align="left">Samhandlertype</Table.HeaderCell>)}
                         <Table.HeaderCell scope="col" align="right"/>
                     </Table.Row>
                 </Table.Header>
@@ -145,7 +151,7 @@ const AddresseeSearch: FC<AddresseeSearchProps> = ({onMottakerChosen}) => {
                                 <Table.DataCell scope="row" align="right">{result.foedselsdato}</Table.DataCell>)}
 
                             {(!latestSearch?.recipientType &&
-                                <Table.DataCell scope="row" align="right">Person</Table.DataCell>)}
+                                <Table.DataCell scope="row" align="left">Person</Table.DataCell>)}
 
                             <Table.DataCell scope="row" align="right">
                                 <Button size="xsmall"
