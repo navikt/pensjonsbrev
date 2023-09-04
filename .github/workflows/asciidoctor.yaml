@@ -10,6 +10,8 @@ jobs:
   build_site:
     name: "build asciidoc for github pages"
     runs-on: ubuntu-latest
+    permissions:
+      pages: write
     defaults:
       run:
         shell: bash

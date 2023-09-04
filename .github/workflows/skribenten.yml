@@ -26,6 +26,8 @@ jobs:
   build-skribenten-backend:
     name: "Build skribenten backend"
     runs-on: "ubuntu-latest"
+    permissions:
+      packages: write
     steps:
       - uses: "actions/checkout@v3"
       - uses: "gradle/wrapper-validation-action@v1"
@@ -49,6 +51,8 @@ jobs:
   build-skribenten-frontend:
     name: "Build skribenten frontend"
     runs-on: "ubuntu-latest"
+    permissions:
+      packages: write
     steps:
       - uses: "actions/checkout@v3"
       - name: "Build and publish Docker image"

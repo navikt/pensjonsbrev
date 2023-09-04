@@ -7,6 +7,8 @@ jobs:
   "build-container":
     name: "build latest texlive/XeTeX version from ctan"
     runs-on: "ubuntu-latest"
+    permissions:
+      packages: write
     steps:
       - name: Create image tag
         run: |

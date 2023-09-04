@@ -26,6 +26,8 @@ jobs:
   "build-brevbaker":
     name: "build brevbaker"
     runs-on: "ubuntu-latest"
+    permissions:
+      packages: write
     steps:
       - uses: "actions/checkout@v3"
       - uses: "gradle/wrapper-validation-action@v1"
@@ -55,6 +57,8 @@ jobs:
   "build-pdfbygger":
     name: "build pdfbygger"
     runs-on: "ubuntu-latest"
+    permissions:
+      packages: write
     steps:
       - uses: "actions/checkout@v3"
       - uses: "gradle/wrapper-validation-action@v1"
@@ -114,6 +118,11 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
     runs-on: ubuntu-latest
+    permissions:
+      statuses: write
+      checks: write
+      pull-requests: write
+      packages: write
     steps:
       - uses: "actions/checkout@v3"
       - uses: "actions/cache@v3"
