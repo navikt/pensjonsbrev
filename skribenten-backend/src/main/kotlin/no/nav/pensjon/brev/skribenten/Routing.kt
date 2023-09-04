@@ -196,14 +196,19 @@ fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config
                 }
             }
 
-            data class LetterTemplatesResponse(val kategorier: List<LetterCategory>, val eblanketter: List<LetterMetadata>)
+            data class LetterTemplatesResponse(
+                val kategorier: List<LetterCategory>,
+                val eblanketter: List<LetterMetadata>
+            )
             get("/lettertemplates/{sakType}") {
                 val sakType = call.parameters.getOrFail("sakType")
-                call.respond(LetterTemplatesResponse(
-                    brevmetadataService.getRedigerbareBrevKategorier(sakType),
-                    //TODO figure out who has access to e-blanketter and filter them out. then only display eblanketter when you get the metadata back.
-                    brevmetadataService.getEblanketter()
-                ))
+                call.respond(
+                    LetterTemplatesResponse(
+                        brevmetadataService.getRedigerbareBrevKategorier(sakType),
+                        //TODO figure out who has access to e-blanketter and filter them out. then only display eblanketter when you get the metadata back.
+                        brevmetadataService.getEblanketter()
+                    )
+                )
             }
 
             post("/favourites") {

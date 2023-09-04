@@ -37,12 +37,12 @@ const Letterfilter: FC<LetterfilterProps> = ({categories, eblanketter, selectedL
     const [expandCategories, setExpandCategories] = useState(false)
 
     const [avtalelandOptions, setAvtalelandOptions] = useState<Avtaleland[] | null>(null)
-    const [avtalelandSelectedIndex, setAvtalelandSelectedIndex] = useState<number>(0)
+    const [avtaleland, setAvtaleland] = useState<string | null>(null)
     const [mottakerText, setMottakerText] = useState<string| null>(null)
 
     const handleAvtalelandChanged = (event: ChangeEvent<HTMLSelectElement>) =>{
         setAvtalelandError(event ? null : "Vennligst velg avtaleland")
-        setAvtalelandSelectedIndex(event.target.selectedIndex)
+        setAvtaleland(event.target.value)
     }
 
     const handleMottakerTextChanged = (mottakerText: string) => {
@@ -54,7 +54,6 @@ const Letterfilter: FC<LetterfilterProps> = ({categories, eblanketter, selectedL
         if (eblanketter && eblanketter.length > 0) {
             skribentApi.hentAvtaleland(msal)
                 .then(setAvtalelandOptions)
-            setAvtalelandSelectedIndex(0)
         }
     }, [eblanketter])
 
@@ -64,16 +63,16 @@ const Letterfilter: FC<LetterfilterProps> = ({categories, eblanketter, selectedL
     }
 
     const handleEblankettSelected = (id: string) => {
-        if (avtalelandOptions && avtalelandSelectedIndex != 0 && mottakerText && mottakerText.length > 0 && id) {
+        if (avtaleland && mottakerText && mottakerText.length > 0 && id) {
             setAvtalelandError(null)
             setMottakerError(null)
-            onLetterSelected({letterCode: id, countryCode: avtalelandOptions[avtalelandSelectedIndex].kode, recipientText: mottakerText})
+            onLetterSelected({letterCode: id, countryCode: avtaleland, recipientText: mottakerText})
         }
         setAvtalelandError(avtaleland ? null : "Vennligst velg avtaleland")
         setMottakerError(mottakerText && mottakerText.length > 0 ? null : "Vennligst skriv inn mottaker")
     }
 
-    let letterPickerPanel =
+    let letterCategoriesPanel =
         <><Search
             label="Søk alle NAV sine sider"
             variant="simple"
@@ -92,27 +91,28 @@ const Letterfilter: FC<LetterfilterProps> = ({categories, eblanketter, selectedL
                                       }}/>)
                 : (<Loader/>)}
         </>
+
     if (eblanketter && eblanketter.length > 0) {
-        letterPickerPanel =
+        letterCategoriesPanel =
             <Tabs defaultValue="brevmaler">
                 <Tabs.List>
                     <Tabs.Tab value="brevmaler" label="Brevmaler"/>
                     <Tabs.Tab value="eblanketter" label="E-blanketter"/>
                 </Tabs.List>
                 <Tabs.Panel value="brevmaler">
-                    {letterPickerPanel}
+                    {letterCategoriesPanel}
                 </Tabs.Panel>
                 <Tabs.Panel value="eblanketter">
                     <div className={styles.eblanketter}>
                         <Select label="Land"
                                 size="small"
+                                defaultValue={avtaleland || undefined}
                                 error={avtalelandError}
                                 hideLabel
-                                value={}
                                 onChange={handleAvtalelandChanged}>
                             <option value="">Velg land</option>
-                            {avtalelandOptions && avtalelandOptions?.map(land => <option key={land.kode}
-                                                                                         value={land.kode}>{land.navn}</option>)}
+                            {avtalelandOptions && avtalelandOptions
+                                ?.map(land => <option key={land.kode} value={land.kode}>{land.navn}</option>)}
                         </Select>
 
                         <TextField label="Mottaker" size="small" hideLabel
@@ -125,11 +125,7 @@ const Letterfilter: FC<LetterfilterProps> = ({categories, eblanketter, selectedL
                 </Tabs.Panel>
             </Tabs>
     }
-    return (
-        <>
-            {letterPickerPanel}
-        </>
-    )
+    return <>{letterCategoriesPanel}</>
 }
 
 export default Letterfilter
