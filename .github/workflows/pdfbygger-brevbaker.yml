@@ -125,6 +125,7 @@ jobs:
       pull-requests: write
       id-token: write
       contents: read
+      packages: write
     steps:
       - uses: "actions/checkout@v3"
       - uses: "actions/cache@v3"
