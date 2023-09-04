@@ -119,7 +119,6 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
     runs-on: ubuntu-latest
     permissions:
-      issues: write
       statuses: write
       checks: write
       pull-requests: write
