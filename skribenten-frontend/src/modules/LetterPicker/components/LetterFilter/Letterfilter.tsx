@@ -1,4 +1,4 @@
-import React, {FC, useContext, useEffect, useState} from "react"
+import React, {ChangeEvent, FC, useContext, useEffect, useState} from "react"
 import styles from "./Letterfilter.module.css"
 import {Loader, Search, Select, Tabs, TextField} from "@navikt/ds-react"
 import LetterCategories from "../LetterCategories/LetterCategories"
@@ -29,19 +29,20 @@ function filterCategories(categories: LetterCategory[], searchText: string): Let
 
 const Letterfilter: FC<LetterfilterProps> = ({categories, eblanketter, selectedLetter, onLetterSelected}) => {
     const {msal, skribentApi} = useContext(SkribentContext) as SkribentContext
-    const [avtalelandError, setAvtalelandError] = useState<null | string>(null)
-    const [mottakerError, setMottakerError] = useState<null | string>(null)
+
+    const [avtalelandError, setAvtalelandError] = useState<string| null>(null)
+    const [mottakerError, setMottakerError] = useState<string| null>(null)
 
     const [searchFilter, setSearchFilter] = useState("")
     const [expandCategories, setExpandCategories] = useState(false)
 
     const [avtalelandOptions, setAvtalelandOptions] = useState<Avtaleland[] | null>(null)
-    const [avtaleland, setAvtaleland] = useState<string | null>(null)
-    const [mottakerText, setMottakerText] = useState<null | string>(null)
+    const [avtalelandSelectedIndex, setAvtalelandSelectedIndex] = useState<number>(0)
+    const [mottakerText, setMottakerText] = useState<string| null>(null)
 
-    const handleAvtalelandChanged = (avtalelandKode: string) =>{
-        setAvtalelandError(avtalelandKode ? null : "Vennligst velg avtaleland")
-        setAvtaleland(avtalelandKode)
+    const handleAvtalelandChanged = (event: ChangeEvent<HTMLSelectElement>) =>{
+        setAvtalelandError(event ? null : "Vennligst velg avtaleland")
+        setAvtalelandSelectedIndex(event.target.selectedIndex)
     }
 
     const handleMottakerTextChanged = (mottakerText: string) => {
@@ -53,6 +54,7 @@ const Letterfilter: FC<LetterfilterProps> = ({categories, eblanketter, selectedL
         if (eblanketter && eblanketter.length > 0) {
             skribentApi.hentAvtaleland(msal)
                 .then(setAvtalelandOptions)
+            setAvtalelandSelectedIndex(0)
         }
     }, [eblanketter])
 
@@ -62,10 +64,10 @@ const Letterfilter: FC<LetterfilterProps> = ({categories, eblanketter, selectedL
     }
 
     const handleEblankettSelected = (id: string) => {
-        if (avtaleland && mottakerText && mottakerText.length > 0 && id) {
+        if (avtalelandOptions && avtalelandSelectedIndex != 0 && mottakerText && mottakerText.length > 0 && id) {
             setAvtalelandError(null)
             setMottakerError(null)
-            onLetterSelected({letterCode: id, countryCode: avtaleland, recipientText: mottakerText})
+            onLetterSelected({letterCode: id, countryCode: avtalelandOptions[avtalelandSelectedIndex].kode, recipientText: mottakerText})
         }
         setAvtalelandError(avtaleland ? null : "Vennligst velg avtaleland")
         setMottakerError(mottakerText && mottakerText.length > 0 ? null : "Vennligst skriv inn mottaker")
@@ -106,13 +108,16 @@ const Letterfilter: FC<LetterfilterProps> = ({categories, eblanketter, selectedL
                                 size="small"
                                 error={avtalelandError}
                                 hideLabel
-                                onChange={event => handleAvtalelandChanged(event.target.value)}>
+                                value={}
+                                onChange={handleAvtalelandChanged}>
                             <option value="">Velg land</option>
                             {avtalelandOptions && avtalelandOptions?.map(land => <option key={land.kode}
                                                                                          value={land.kode}>{land.navn}</option>)}
                         </Select>
+
                         <TextField label="Mottaker" size="small" hideLabel
                                    onChange={el => handleMottakerTextChanged(el.target.value)}
+                                   value={mottakerText || "" }
                                    error={mottakerError}/>
                         <LetterPicker letters={eblanketter} selectedLetter={selectedLetter}
                                       onLetterSelected={handleEblankettSelected}/>
