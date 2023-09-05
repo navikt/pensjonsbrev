@@ -2,8 +2,7 @@ package no.nav.pensjon.brev.maler.adhoc
 
 import no.nav.pensjon.brev.*
 import no.nav.pensjon.brev.template.Language
-import no.nav.pensjon.brev.template.Language.Bokmal
-import no.nav.pensjon.brev.template.Language.Nynorsk
+import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.Letter
 import no.nav.pensjon.brev.template.LetterTemplate
 import org.junit.jupiter.api.Tag
@@ -36,11 +35,13 @@ class AdhocTest {
     fun `testGjenlevendeEtter1970 pdf`() {
         testAdhocPdf(GjenlevendeInfoEtter1970.template, "ADHOC_GJENLEVENDEINFOETTER1970", Bokmal)
         testAdhocPdf(GjenlevendeInfoEtter1970.template, "ADHOC_GJENLEVENDEINFOETTER1970", Nynorsk)
+        testAdhocPdf(GjenlevendeInfoEtter1970.template, "ADHOC_GJENLEVENDEINFOETTER1970", English)
     }
 
     @Test
     fun `testGjenlevendeEtter1970 html`() {
         testHtml(GjenlevendeInfoEtter1970.template, "ADHOC_GJENLEVENDEINFOETTER1970", Bokmal)
         testHtml(GjenlevendeInfoEtter1970.template, "ADHOC_GJENLEVENDEINFOETTER1970", Nynorsk)
+        testHtml(GjenlevendeInfoEtter1970.template, "ADHOC_GJENLEVENDEINFOETTER1970", English)
     }
 }

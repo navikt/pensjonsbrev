@@ -5,6 +5,7 @@ import no.nav.pensjon.brev.maler.fraser.common.Constants.ARBEID_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.GJENLEVENDEPENSJON_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.GJENLEVENDE_TILLEGGSSTOENADER_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.HELSE_URL
+import no.nav.pensjon.brev.maler.fraser.common.Constants.KONTAKT_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_KONTAKTSENTER_AAPNINGSTID
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_KONTAKTSENTER_TELEFON_PENSJON
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
@@ -151,11 +152,19 @@ object GjenlevendeInfoEtter1970 : AutobrevTemplate<Unit> {
                     English to "You can find more information online: $GJENLEVENDEPENSJON_URL.",
                 )
             }
+            
+            paragraph {
+                text(
+                    Bokmal to "På $KONTAKT_URL kan du chatte eller skrive til oss.",
+                    Nynorsk to "Du kan chatte med oss eller skrive til oss på $KONTAKT_URL.",
+                    English to "At $KONTAKT_URL you can chat or write us a message.",
+                )
+            }
             paragraph {
                 text(
                     Bokmal to "Hvis du ikke finner svar på $NAV_URL, kan du ringe oss på telefon $NAV_KONTAKTSENTER_TELEFON_PENSJON hverdager $NAV_KONTAKTSENTER_AAPNINGSTID.",
                     Nynorsk to "Dersom du ikkje finn svar på $NAV_URL, kan du ringje oss på telefon $NAV_KONTAKTSENTER_TELEFON_PENSJON, kvardagar kl. $NAV_KONTAKTSENTER_AAPNINGSTID.",
-                    English to "We offer a chat service at $NAV_URL/kontakt or send us an SMS message. If you cannot find answers at nav.no, you can call us at +47 $NAV_KONTAKTSENTER_TELEFON_PENSJON, Monday to Friday $NAV_KONTAKTSENTER_AAPNINGSTID.",
+                    English to "If you cannot find answers at $NAV_URL, you can call us at $NAV_KONTAKTSENTER_TELEFON_PENSJON, Monday to Friday $NAV_KONTAKTSENTER_AAPNINGSTID.",
                 )
             }
         }
