@@ -8,12 +8,8 @@ import {
     SkribentServiceResult,
 } from "../../modules/LetterEditor/model/api"
 import {ObjectValue} from "../../modules/ModelEditor/model"
-import {LetterCategory, LetterMetadataResponse} from "../../modules/LetterPicker/model/skribenten"
-import {
-    AddressResult, Avtaleland, KommuneResult,
-    SearchRequest
-} from "../../modules/LetterPicker/components/ChangeAddressee/AddresseeSearch/AddresseeSearch"
-import {LetterSelection} from "../../pages/brevvelger"
+import { LetterMetadata, LetterMetadataResponse} from "../../modules/LetterPicker/model/skribenten"
+import {AddressResult, Avtaleland, KommuneResult,SearchRequest} from "../../modules/LetterPicker/components/ChangeAddressee/AddresseeSearch/AddresseeSearch"
 
 export interface SkribentenAPIConfig {
     url: string
@@ -155,10 +151,13 @@ class SkribentenAPI {
 
 
     async bestillExtreamBrev(msal: IMsalContext,
-                             selectedLetter: LetterSelection,
+                             metadata: LetterMetadata,
                              sak: Sak,
                              gjelderPid: string,
-                             spraak: string): Promise<string> {
+                             spraak: string,
+                             landkode?: string,
+                             mottakerText?: string,
+    ): Promise<string> {
         return withAuthorization(msal, this.config.scope).then((auth) =>
             fetch(`${this.config.url}/pen/extream`, {
                 headers: {
@@ -168,12 +167,12 @@ class SkribentenAPI {
                 },
                 method: 'POST',
                 body: JSON.stringify({
-                    brevkode: selectedLetter.metadata.id,
+                    brevkode: metadata.id,
                     gjelderPid: gjelderPid,
                     sakId: sak.sakId,
                     spraak: spraak,
-                    landkode: selectedLetter.landkode,
-                    mottakerText: selectedLetter.mottakerText,
+                    landkode: landkode,
+                    mottakerText: mottakerText,
                 }),
             })
         ).then((res) => res.text())

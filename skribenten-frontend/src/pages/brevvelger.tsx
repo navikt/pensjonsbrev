@@ -76,13 +76,17 @@ const Brevvelger: NextPage<SkribentenConfig> = (props) => {
         if (selectedLetter && sak) {
             const metadata = selectedLetter.metadata
             if (metadata.brevsystem == "EXTERAM") {
-                skribentApi.bestillExtreamBrev(msal, selectedLetter, sak, selectedLanguage)
+                skribentApi.bestillExtreamBrev(msal, selectedLetter.metadata, sak, sak.foedselsnr, selectedLanguage,  selectedLetter.landkode, selectedLetter.mottakerText)
                     .then((url: string) => {
-                        console.log(url)
+                        console.log(`Fikk URL tilbake fra extream ${url}`)
                         window.open(url)
                     })
             } else if (metadata.brevsystem == "DOKSYS") {
                 skribentApi.bestillDoksysBrev(msal, metadata.id, sak.sakId.toString(), sak.foedselsnr, selectedLanguage,)
+                    .then((url: string) => {
+                        console.log(`Fikk URL tilbake fra doksys ${url}`)
+                        window.open(url)
+                    })
             }
         }
     }
