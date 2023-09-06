@@ -6,13 +6,10 @@ import no.nav.pensjon.etterlatte.maler.Utbetalingsinfo
 import no.nav.pensjon.etterlatte.maler.barnepensjon.endring.EndringHovedmalDTO
 import no.nav.pensjon.etterlatte.maler.barnepensjon.endring.EtterbetalingDTO
 import java.time.LocalDate
-import java.time.Month
 
 fun createEndringHovedmalDTO() = EndringHovedmalDTO(
     erEndret = true,
     etterbetaling = EtterbetalingDTO(
-        fraDato = LocalDate.of(2022, Month.MARCH, 5),
-        tilDato = LocalDate.of(2022, Month.OCTOBER, 30),
         beregningsperioder = listOf(),
     ),
     utbetalingsinfo = Utbetalingsinfo(
