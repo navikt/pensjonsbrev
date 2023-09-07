@@ -1,4 +1,4 @@
-package no.nav.pensjon.etterlatte.maler.vedlegg
+package no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon
 
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.template.Language.Bokmal
