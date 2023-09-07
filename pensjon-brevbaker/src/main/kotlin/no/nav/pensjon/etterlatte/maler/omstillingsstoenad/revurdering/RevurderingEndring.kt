@@ -16,11 +16,11 @@ import no.nav.pensjon.etterlatte.maler.fraser.common.OMSFelles
 import no.nav.pensjon.etterlatte.maler.fraser.common.Vedtak
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.*
 import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OMSRevurderingDTOSelectors.avkortingsinfo
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OMSRevurderingDTOSelectors.beregningsinfo
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OMSRevurderingDTOSelectors.erEndret
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OMSRevurderingDTOSelectors.etterbetalinginfo
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OMSRevurderingDTOSelectors.innhold
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OMSRevurderingEndringDTOSelectors.avkortingsinfo
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OMSRevurderingEndringDTOSelectors.beregningsinfo
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OMSRevurderingEndringDTOSelectors.erEndret
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OMSRevurderingEndringDTOSelectors.etterbetalinginfo
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OMSRevurderingEndringDTOSelectors.innhold
 
 data class OMSRevurderingEndringDTO(
     override val innhold: List<Element>,
