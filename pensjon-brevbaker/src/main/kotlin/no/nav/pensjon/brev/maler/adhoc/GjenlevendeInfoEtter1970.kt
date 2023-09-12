@@ -96,7 +96,7 @@ object GjenlevendeInfoEtter1970 : AutobrevTemplate<Unit> {
                 text(
                     Bokmal to "Hvis du trenger utdanning som blir godkjent av NAV, eller du får arbeidstrening via NAV, kan du søke om skolepenger og tilleggsstønad. Du finner mer informasjon om disse stønadene på $GJENLEVENDE_TILLEGGSSTOENADER_URL.",
                     Nynorsk to "Viss du treng utdanning som blir godkjent av NAV, eller viss du får arbeidstrening via NAV, kan du søkje om skolepengar eller tilleggsstønad. Du finn meir informasjon om desse stønadene på $GJENLEVENDE_TILLEGGSSTOENADER_URL.",
-                    English to "If you need to attain additional education and NAV approves your education plan, or if you are under employment training from NAV, you can apply to have tuition fees or other supplementary benefits covered by NAV. You can find more information about these benefits at $GJENLEVENDE_TILLEGGSSTOENADER_URL.",
+                    English to "If you need to attain additional education and NAV approves your education plan, or if you are participating in employment training from NAV, you can apply to have tuition fees or other supplementary benefits covered by NAV. You can find more information about these benefits at $GJENLEVENDE_TILLEGGSSTOENADER_URL.",
                 )
             }
 
@@ -119,7 +119,7 @@ object GjenlevendeInfoEtter1970 : AutobrevTemplate<Unit> {
                 text(
                     Bokmal to "Hvis du har helseutfordringer, kan du undersøke mulighetene for andre ytelser eller støtteordninger ved ditt lokale NAV-kontor og på $HELSE_URL.",
                     Nynorsk to "Viss du har helseutfordringar, kan du undersøkje om du kan få andre ytingar eller støtteordningar ved det lokale NAV-kontoret ditt og på $HELSE_URL.",
-                    English to "If you have health issues, you can check if you are eligible for other benefits or support schemes through your local NAV office, or check at $HELSE_URL.",
+                    English to "If you have health issues, you can check if you are eligible for other benefits or support schemes through your local NAV office, or see $HELSE_URL.",
                 )
             }
 
