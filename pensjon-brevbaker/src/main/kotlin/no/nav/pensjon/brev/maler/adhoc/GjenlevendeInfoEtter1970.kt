@@ -81,7 +81,7 @@ object GjenlevendeInfoEtter1970 : AutobrevTemplate<Unit> {
                 text(
                     Bokmal to "NAV tilbyr ulike tjenester og støtteordninger for deg som trenger hjelp til å få jobb. Du kan finne jobbsøkertips og lenke til ledige jobber på $ARBEID_URL.",
                     Nynorsk to "NAV tilbyr ulike tenester og støtteordningar for deg som treng hjelp til å få jobb. Du kan finne jobbsøkjartips og lenkje til ledige jobbar på $ARBEID_URL.",
-                    English to "The Norwegian Labour and Welfare Administration (NAV) offers various services and support schemes for those who need help to find employment. You can find jobseeker tips and links to available jobs at $ARBEID_URL",
+                    English to "The Norwegian Labour and Welfare Administration (NAV) offers various services and support schemes for those who need help to find employment. You can find jobseeker tips and links to available jobs at $ARBEID_URL.",
                 )
             }
             paragraph {
@@ -119,7 +119,7 @@ object GjenlevendeInfoEtter1970 : AutobrevTemplate<Unit> {
                 text(
                     Bokmal to "Hvis du har helseutfordringer, kan du undersøke mulighetene for andre ytelser eller støtteordninger ved ditt lokale NAV-kontor og på $HELSE_URL.",
                     Nynorsk to "Viss du har helseutfordringar, kan du undersøkje om du kan få andre ytingar eller støtteordningar ved det lokale NAV-kontoret ditt og på $HELSE_URL.",
-                    English to "If you have health issues, you can check if you are eligible for other benefits or support schemes through your local NAV office, or see at $HELSE_URL.",
+                    English to "If you have health issues, you can check if you are eligible for other benefits or support schemes through your local NAV office, or check at $HELSE_URL.",
                 )
             }
 
