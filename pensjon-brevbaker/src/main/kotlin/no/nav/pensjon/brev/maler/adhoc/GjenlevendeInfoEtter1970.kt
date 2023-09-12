@@ -156,14 +156,14 @@ object GjenlevendeInfoEtter1970 : AutobrevTemplate<Unit> {
             paragraph {
                 text(
                     Bokmal to "På $KONTAKT_URL kan du chatte eller skrive til oss.",
-                    Nynorsk to "Du kan chatte med oss eller skrive til oss på $KONTAKT_URL.",
+                    Nynorsk to "På $KONTAKT_URL kan du chatte eller skrive til oss.",
                     English to "At $KONTAKT_URL you can chat or write to us.",
                 )
             }
             paragraph {
                 text(
                     Bokmal to "Hvis du ikke finner svar på $NAV_URL, kan du ringe oss på telefon $NAV_KONTAKTSENTER_TELEFON_PENSJON hverdager $NAV_KONTAKTSENTER_AAPNINGSTID.",
-                    Nynorsk to "Dersom du ikkje finn svar på $NAV_URL, kan du ringje oss på telefon $NAV_KONTAKTSENTER_TELEFON_PENSJON, kvardagar kl. $NAV_KONTAKTSENTER_AAPNINGSTID.",
+                    Nynorsk to "Om du ikkje finn svar på $NAV_URL, kan du ringe oss på telefon $NAV_KONTAKTSENTER_TELEFON_PENSJON, kvardagar $NAV_KONTAKTSENTER_AAPNINGSTID.",
                     English to "If you do not find the answer at $NAV_URL, you can call us at: +47 $NAV_KONTAKTSENTER_TELEFON_PENSJON, weekdays $NAV_KONTAKTSENTER_AAPNINGSTID.",
                 )
             }
