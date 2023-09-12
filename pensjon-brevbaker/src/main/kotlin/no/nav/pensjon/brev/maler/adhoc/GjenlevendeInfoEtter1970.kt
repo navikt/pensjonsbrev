@@ -43,7 +43,7 @@ object GjenlevendeInfoEtter1970 : AutobrevTemplate<Unit> {
                 text(
                     Bokmal to "Stortinget har vedtatt nye regler for gjenlevendepensjon fra 1. januar 2024.",
                     Nynorsk to "Stortinget har vedtatt nye reglar for attlevandepensjon frå 1. januar 2024.",
-                    English to "The Norwegian Parliament has adopted new rules regarding the survivor's pension starting on 01 January 2024.",
+                    English to "The Norwegian Parliament has adopted new rules regarding survivor's pension from 1 January 2024.",
                 )
             }
 
@@ -58,7 +58,7 @@ object GjenlevendeInfoEtter1970 : AutobrevTemplate<Unit> {
                 text(
                     Bokmal to "Du beholder gjenlevendepensjonen som den er i dag, men du får den bare i tre år fra 1. januar 2024.",
                     Nynorsk to "Du vil få attlevandepensjonen som den er i dag, men du får den berre i tre år frå 1. januar 2024.",
-                    English to "You will keep the survivor's pension as it is today, but you will only receive it for three years as of 01 January 2024.",
+                    English to "You will keep the survivor's pension as it is today, but you will only receive it for three years as of 1 January 2024.",
                 )
             }
             paragraph {
@@ -73,7 +73,7 @@ object GjenlevendeInfoEtter1970 : AutobrevTemplate<Unit> {
                 text(
                     Bokmal to "Trenger du hjelp til å få ny jobb eller jobbe mer?",
                     Nynorsk to "Treng du hjelp til å få ny jobb eller jobb meir?",
-                    English to "Do you need help getting a new job or more work?",
+                    English to "Do you need help to get employment?",
                 )
             }
 
@@ -81,14 +81,14 @@ object GjenlevendeInfoEtter1970 : AutobrevTemplate<Unit> {
                 text(
                     Bokmal to "NAV tilbyr ulike tjenester og støtteordninger for deg som trenger hjelp til å få jobb. Du kan finne jobbsøkertips og lenke til ledige jobber på $ARBEID_URL.",
                     Nynorsk to "NAV tilbyr ulike tenester og støtteordningar for deg som treng hjelp til å få jobb. Du kan finne jobbsøkjartips og lenkje til ledige jobbar på $ARBEID_URL.",
-                    English to "The Norwegian Labour and Welfare Administration (NAV) offers various services and support schemes for those who need help finding a job. You can find jobseeker tips and links to available jobs at $ARBEID_URL",
+                    English to "The Norwegian Labour and Welfare Administration (NAV) offers various services and support schemes for those who need help to find employment. You can find jobseeker tips and links to available jobs at $ARBEID_URL",
                 )
             }
             paragraph {
                 text(
                     Bokmal to "Vi kan snakke med deg om ulike muligheter i arbeidsmarkedet, utdanning eller andre tiltak.",
                     Nynorsk to "Vi kan snakke med deg om ulike moglegheiter i arbeidsmarknaden, utdanning eller andre tiltak.",
-                    English to "We are available for a conversation about the various opportunities available to you in the labour market, education or other initiatives.",
+                    English to "We can give advice about the opportunities available to you, whether it be employment, education or other initiatives.",
                 )
             }
 
@@ -96,7 +96,7 @@ object GjenlevendeInfoEtter1970 : AutobrevTemplate<Unit> {
                 text(
                     Bokmal to "Hvis du trenger utdanning som blir godkjent av NAV, eller du får arbeidstrening via NAV, kan du søke om skolepenger og tilleggsstønad. Du finner mer informasjon om disse stønadene på $GJENLEVENDE_TILLEGGSSTOENADER_URL.",
                     Nynorsk to "Viss du treng utdanning som blir godkjent av NAV, eller viss du får arbeidstrening via NAV, kan du søkje om skolepengar eller tilleggsstønad. Du finn meir informasjon om desse stønadene på $GJENLEVENDE_TILLEGGSSTOENADER_URL.",
-                    English to "If you need to get an education and NAV approves your education plan, or you are under employment training from NAV, you can apply to have tuition fees covered, and maybe receive other supplementary benefits. You can find more information about these benefits online: $GJENLEVENDE_TILLEGGSSTOENADER_URL.",
+                    English to "If you need to attain additional education and NAV approves your education plan, or if you are under employment training from NAV, you can apply to have tuition fees or other supplementary benefits covered by NAV. You can find more information about these benefits at $GJENLEVENDE_TILLEGGSSTOENADER_URL.",
                 )
             }
 
@@ -112,14 +112,14 @@ object GjenlevendeInfoEtter1970 : AutobrevTemplate<Unit> {
                 text(
                     Bokmal to "Har du helseutfordringer?",
                     Nynorsk to "Har du helseutfordringar?",
-                    English to "Do you have health challenges?",
+                    English to "Do you have health issues?",
                 )
             }
             paragraph {
                 text(
                     Bokmal to "Hvis du har helseutfordringer, kan du undersøke mulighetene for andre ytelser eller støtteordninger ved ditt lokale NAV-kontor og på $HELSE_URL.",
                     Nynorsk to "Viss du har helseutfordringar, kan du undersøkje om du kan få andre ytingar eller støtteordningar ved det lokale NAV-kontoret ditt og på $HELSE_URL.",
-                    English to "If you are faced with health challenges, you can investigate the possibilities for other benefits or support schemes through your local NAV office or check out various opportunities online: $HELSE_URL.",
+                    English to "If you have health issues, you can check if you are eligible for other benefits or support schemes through your local NAV office, or see at $HELSE_URL.",
                 )
             }
 
@@ -134,14 +134,14 @@ object GjenlevendeInfoEtter1970 : AutobrevTemplate<Unit> {
                 text(
                     Bokmal to "Hvis du får endringer i inntekt, familiesituasjon, jobbsituasjon eller planlegger å flytte til et annet land, kan det påvirke gjenlevendepensjonen din. I slike tilfeller må du derfor straks melde fra til NAV.",
                     Nynorsk to "Får du endra inntekta di, familie- eller jobbsituasjonen din? Eller har du planar om å flytte til eit anna land? Meld i så fall frå til NAV straks sidan det kan verke inn på attlevandepensjonen din.",
-                    English to "If you have experienced a change in income, changes to your family or job situation, or plan to move to another country, this may affect your survivor's pension. You are obligated to notify NAV as soon as you are aware of any of these changes or situations.",
+                    English to "If you have experienced a change in income, changes to your family or job situation, or plan to move to another country, this may affect your survivor's pension. You are obligated to notify NAV as soon as you are aware of any of these changes.",
                 )
             }
             title2 {
                 text(
                     Bokmal to "Har du spørsmål?",
                     Nynorsk to "Har du spørsmål?",
-                    English to "Do you have any questions?",
+                    English to "Do you have questions?",
                 )
             }
 
@@ -149,7 +149,7 @@ object GjenlevendeInfoEtter1970 : AutobrevTemplate<Unit> {
                 text(
                     Bokmal to "Du finner mer informasjon på $GJENLEVENDEPENSJON_URL.",
                     Nynorsk to "Du finn meir informasjon på $GJENLEVENDEPENSJON_URL.",
-                    English to "You can find more information online: $GJENLEVENDEPENSJON_URL.",
+                    English to "You can find more information at $GJENLEVENDEPENSJON_URL.",
                 )
             }
             
@@ -157,14 +157,14 @@ object GjenlevendeInfoEtter1970 : AutobrevTemplate<Unit> {
                 text(
                     Bokmal to "På $KONTAKT_URL kan du chatte eller skrive til oss.",
                     Nynorsk to "Du kan chatte med oss eller skrive til oss på $KONTAKT_URL.",
-                    English to "At $KONTAKT_URL you can chat or write us a message.",
+                    English to "At $KONTAKT_URL you can chat or write to us.",
                 )
             }
             paragraph {
                 text(
                     Bokmal to "Hvis du ikke finner svar på $NAV_URL, kan du ringe oss på telefon $NAV_KONTAKTSENTER_TELEFON_PENSJON hverdager $NAV_KONTAKTSENTER_AAPNINGSTID.",
                     Nynorsk to "Dersom du ikkje finn svar på $NAV_URL, kan du ringje oss på telefon $NAV_KONTAKTSENTER_TELEFON_PENSJON, kvardagar kl. $NAV_KONTAKTSENTER_AAPNINGSTID.",
-                    English to "If you cannot find answers at $NAV_URL, you can call us at $NAV_KONTAKTSENTER_TELEFON_PENSJON, Monday to Friday $NAV_KONTAKTSENTER_AAPNINGSTID.",
+                    English to "If you do not find the answer at $NAV_URL, you can call us at: +47 $NAV_KONTAKTSENTER_TELEFON_PENSJON, weekdays $NAV_KONTAKTSENTER_AAPNINGSTID.",
                 )
             }
         }
