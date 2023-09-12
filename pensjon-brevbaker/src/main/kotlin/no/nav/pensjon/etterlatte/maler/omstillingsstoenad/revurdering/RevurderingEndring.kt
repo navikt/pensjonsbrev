@@ -84,9 +84,9 @@ object RevurderingEndring : EtterlatteTemplate<OMSRevurderingEndringDTO>, Hovedm
         }
 
         includeAttachment(beregningAvOmstillingsstoenad, beregningsinfo)
-        includeAttachment(informasjonOmOvergangsstoenad, avkortingsinfo)
-        includeAttachment(dineRettigheterOgPlikterOMS, avkortingsinfo)
-        includeAttachment(informasjonOmYrkesskade, avkortingsinfo)
+        includeAttachment(informasjonOmOvergangsstoenad, innhold)
+        includeAttachment(dineRettigheterOgPlikterOMS, innhold)
+        includeAttachment(informasjonOmYrkesskade, innhold)
         includeAttachmentIfNotNull(etterbetaling, etterbetalinginfo)
 
     }
