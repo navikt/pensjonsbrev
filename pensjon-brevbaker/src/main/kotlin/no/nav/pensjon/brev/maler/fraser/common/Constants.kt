@@ -16,7 +16,7 @@ object Constants {
     const val INNTEKTSPLANLEGGEREN_URL = "$NAV_URL/inntektsplanleggeren"
     const val KLAGE_URL = "$NAV_URL/klage"
     const val KONTAKT_URL = "$NAV_URL/kontakt"
-    const val NAV_KONTAKTSENTER_AAPNINGSTID = "09:00 - 15:00"
+    const val NAV_KONTAKTSENTER_AAPNINGSTID = "09:00-15:00"
     const val NAV_KONTAKTSENTER_TELEFON = "55 55 33 33"
     const val NAV_KONTAKTSENTER_TELEFON_PENSJON = "55 55 33 34"
     const val SKATTEETATEN_URL = "skatteetaten.no"
