@@ -1,6 +1,7 @@
 package no.nav.pensjon.etterlatte
 
 import no.nav.pensjon.brev.template.LetterTemplate
+import no.nav.pensjon.etterlatte.maler.TomMal
 import no.nav.pensjon.etterlatte.maler.barnepensjon.BarnepensjonInnvilgelse
 import no.nav.pensjon.etterlatte.maler.barnepensjon.avslag.AvslagFoerstegangsbehandling
 import no.nav.pensjon.etterlatte.maler.barnepensjon.avslag.IkkeSomFoelgeAvYrkesskadeYrkessykdom
@@ -21,6 +22,7 @@ import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.OMSInnvilgelseManuell
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.OMSOpphoerManuell
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.foerstegangsvedtak.FoerstegangsvedtakUtfall
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.foerstegangsvedtak.InnvilgelseFoerstegangsvedtak
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.RevurderingEndring
 
 val prodAutobrevTemplates: Set<EtterlatteTemplate<*>> =
     setOf(
@@ -43,7 +45,9 @@ val prodAutobrevTemplates: Set<EtterlatteTemplate<*>> =
         UtAvFengselsopphold,
         YrkesskadeRevurdering,
         InnvilgelseFoerstegangsvedtak,
-        FoerstegangsvedtakUtfall
+        FoerstegangsvedtakUtfall,
+        RevurderingEndring,
+        TomMal
     )
 
 val prodRedigerbareTemplates: Set<EtterlatteTemplate<*>> = emptySet()
