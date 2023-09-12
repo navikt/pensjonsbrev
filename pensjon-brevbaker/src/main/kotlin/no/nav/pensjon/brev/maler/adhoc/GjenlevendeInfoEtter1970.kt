@@ -159,7 +159,7 @@ object GjenlevendeInfoEtter1970 : AutobrevTemplate<Unit> {
                 )
                 newline()
                 text(
-                    Bokmal to "Hvis du ikke finner svar på $NAV_URL, kan du ringe oss på telefon $NAV_KONTAKTSENTER_TELEFON_PENSJON hverdager $NAV_KONTAKTSENTER_AAPNINGSTID.",
+                    Bokmal to "Hvis du ikke finner svar på $NAV_URL, kan du ringe oss på telefon $NAV_KONTAKTSENTER_TELEFON_PENSJON, hverdager $NAV_KONTAKTSENTER_AAPNINGSTID.",
                     Nynorsk to "Om du ikkje finn svar på $NAV_URL, kan du ringe oss på telefon $NAV_KONTAKTSENTER_TELEFON_PENSJON, kvardagar $NAV_KONTAKTSENTER_AAPNINGSTID.",
                     English to "If you do not find the answer at $NAV_URL, you can call us at: +47 $NAV_KONTAKTSENTER_TELEFON_PENSJON, weekdays $NAV_KONTAKTSENTER_AAPNINGSTID.",
                 )
