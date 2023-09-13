@@ -301,7 +301,7 @@ data class OmBeregningAvBarnetillegg(
                 text(
                     Bokmal to "For barn som bor sammen med begge foreldrene:",
                     Nynorsk to "For barn som bur saman med begge foreldra:",
-                    English to "When the child lives together with both parents:"
+                    English to "Child supplement for children living with both parents:"
                 )
             }
             paragraph {
@@ -353,7 +353,7 @@ data class OmBeregningAvBarnetillegg(
                 text(
                     Bokmal to "For barn som ikke bor sammen med begge foreldrene:",
                     Nynorsk to "For barn som ikkje bur saman med begge foreldra:",
-                    English to "When the child lives together with one parent:",
+                    English to "Child supplement for children living with one parent:",
                 )
             }
             paragraph {
@@ -888,14 +888,14 @@ data class ErOpplysningeneOmInntektFeil(
                 Bokmal to "Mener du at inntektsopplysningene i skatteoppgjøret er feil, er det Skatteetaten som skal vurdere om inntekten kan endres.",
                 Nynorsk to "Dersom du meiner at inntektsopplysningane i skatteoppgjeret er feil, er det Skatteetaten som skal vurdere om inntekta kan endrast.",
                 English to "If you believe that the income information in your tax settlement is incorrect, it is the Norwegian Tax Administration that must assess whether " +
-                        "your income can be amended.",
+                        "your income can be changed.",
             )
         }
         paragraph {
             text(
                 Bokmal to "Vi gjør et nytt etteroppgjør automatisk hvis Skatteetaten endrer inntekten din. Du får tilbakemelding hvis endringen påvirker etteroppgjøret ditt.",
                 Nynorsk to "Vi utfører automatisk eit nytt etteroppgjer dersom Skatteetaten endrar inntekta di. Du får tilbakemelding dersom endringa påverker etteroppgjeret ditt.",
-                English to "We will issue a new settlement automatically if the Norwegian Tax Administration amends your income. You will be notified if any changes affect your post-settlement.",
+                English to "We will issue a new settlement automatically if the Norwegian Tax Administration changes your income. You will be notified if any changes affect your post-settlement.",
             )
         }
 
@@ -1119,9 +1119,9 @@ data class InntektTabell(
                 }
                 column(columnSpan = 3) {
                     text(
-                        Bokmal to "Mottatt av",
-                        Nynorsk to "Motteke av",
-                        English to "Received by",
+                        Bokmal to "Kilde",
+                        Nynorsk to "Kjelde",
+                        English to "Source",
                         fontType = FontType.BOLD,
                     )
                 }
@@ -1165,9 +1165,9 @@ data class InntektTabell(
                 }
 
                 OpplysningerOmEtteroppgjoeretDto.InntektOgFratrekk.Inntekt.InntektLinje.Kilde.OPPGITT_AV_SKATTEETATEN -> when (second) {
-                    Bokmal -> "Oppgitt av Skatteetaten"
-                    Nynorsk -> "Oppgjeva av Skatteetaten"
-                    English -> "Reported by the Norwegian Tax Administration"
+                    Bokmal -> "Skatteetaten"
+                    Nynorsk -> "Skatteetaten"
+                    English -> "The Norwegian Tax Administration"
                 }
 
                 OpplysningerOmEtteroppgjoeretDto.InntektOgFratrekk.Inntekt.InntektLinje.Kilde.OPPGITT_AV_BRUKER -> when (second) {
