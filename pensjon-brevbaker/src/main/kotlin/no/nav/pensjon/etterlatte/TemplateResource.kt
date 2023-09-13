@@ -22,6 +22,8 @@ import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.OMSInnvilgelseManuell
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.OMSOpphoerManuell
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.foerstegangsvedtak.FoerstegangsvedtakUtfall
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.foerstegangsvedtak.InnvilgelseFoerstegangsvedtak
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.opphoer.Opphoer
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.opphoer.OpphoerGenerell
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.RevurderingEndring
 
 val prodAutobrevTemplates: Set<EtterlatteTemplate<*>> =
@@ -47,6 +49,8 @@ val prodAutobrevTemplates: Set<EtterlatteTemplate<*>> =
         InnvilgelseFoerstegangsvedtak,
         FoerstegangsvedtakUtfall,
         RevurderingEndring,
+        Opphoer,
+        OpphoerGenerell,
         TomMal
     )
 
