@@ -20,9 +20,9 @@ import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.ny.BarnepensjonI
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.ny.BarnepensjonInnvilgelseEnkelDTOSelectors.erEtterbetalingMerEnnTreMaaneder
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.ny.BarnepensjonInnvilgelseEnkelDTOSelectors.erInstitusjonsopphold
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.ny.BarnepensjonInnvilgelseEnkelDTOSelectors.utbetalingsinfo
-import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.Barnepensjon
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.Institusjonsoppholdfraser
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.Lover
+import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.innvilgelse.BarnepensjonInnvilgelseEnkelFraser
 import no.nav.pensjon.etterlatte.maler.fraser.common.Vedtak
 
 data class BarnepensjonInnvilgelseEnkelDTO(
@@ -58,7 +58,7 @@ object BarnepensjonInnvilgelseEnkel : EtterlatteTemplate<BarnepensjonInnvilgelse
             includePhrase(Vedtak.BegrunnelseForVedtaket)
 
             includePhrase(
-                Barnepensjon.Foerstegangsbehandlingsvedtak(
+                BarnepensjonInnvilgelseEnkelFraser.Foerstegangsbehandlingsvedtak(
                     utbetalingsinfo.virkningsdato,
                     avdoed.navn,
                     avdoed.doedsdato,

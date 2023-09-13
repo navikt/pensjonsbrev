@@ -193,7 +193,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, A
         text(
             Bokmal to "Får du medhold, kan du få dekket vesentlige utgifter som har vært nødvendige for å " +
                     "få endret vedtaket. Du kan ha krav på fri rettshjelp etter rettshjelploven. Informasjon om " +
-                    "denne ordningen kan du få hos fylkesmannen, advokater eller NAV.",
+                    "denne ordningen kan du få hos statsforvalter, advokater eller NAV.",
             Nynorsk to "",
             English to "",
         )

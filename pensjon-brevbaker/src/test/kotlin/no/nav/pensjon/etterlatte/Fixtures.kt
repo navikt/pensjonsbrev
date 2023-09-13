@@ -8,6 +8,7 @@ import no.nav.pensjon.brevbaker.api.model.SignerendeSaksbehandlere
 import no.nav.pensjon.brevbaker.api.model.Telefonnummer
 import no.nav.pensjon.etterlatte.fixtures.*
 import no.nav.pensjon.etterlatte.maler.ManueltBrevDTO
+import no.nav.pensjon.etterlatte.maler.TomMal
 import no.nav.pensjon.etterlatte.maler.barnepensjon.BarnepensjonInnvilgelseDTO
 import no.nav.pensjon.etterlatte.maler.barnepensjon.avslag.BarnepensjonAvslagIkkeYrkesskadeDTO
 import no.nav.pensjon.etterlatte.maler.barnepensjon.endring.EndringHovedmalDTO
@@ -24,6 +25,8 @@ import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.HarStansetDTO
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.OMSInnvilgelseDTO
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.foerstegangsvedtak.FoerstegangsvedtakUtfallDTO
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.foerstegangsvedtak.OMSInnvilgelseFoerstegangsvedtakDTO
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.opphoer.OMSOpphoerDTO
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OMSRevurderingEndringDTO
 import java.time.LocalDate
 import kotlin.reflect.KClass
 
@@ -65,6 +68,8 @@ object Fixtures {
             BarnepensjonEndringInstitusjonsoppholdDTO::class -> createBarnepensjonEndringInstitusjonsoppholdDTO() as T
             EndringHovedmalDTO::class -> createEndringHovedmalDTO() as T
             OMSInnvilgelseFoerstegangsvedtakDTO::class -> createOMSInnvilgelseFoerstegangsvedtakDTO() as T
+            OMSRevurderingEndringDTO::class -> createOMSRevurderingEndringDTO() as T
+            OMSOpphoerDTO::class -> createOMSOpphoerDTO() as T
             FoerstegangsvedtakUtfallDTO::class -> createOMSFoerstegangsvedtakUtfallDTO() as T
             BarnepensjonRevurderingAdopsjonDTO::class -> createBarnepensjonRevurderingAdopsjonDTO() as T
             BarnepensjonFengselsoppholdDTO::class -> createBarnepensjonFengselsoppholdDTO() as T
@@ -74,6 +79,7 @@ object Fixtures {
             BarnepensjonAvslagIkkeYrkesskadeDTO::class -> createBarnepensjonAvslagIkkeYrkesskadeDTO() as T
             BarnepensjonUtAvFengselsoppholdDTO::class -> createBarnepensjonUtAvFengselsoppholdDTO() as T
             HarStansetDTO::class -> createHarStansetDTO() as T
+            TomMal::class -> createTomMal() as T
             Unit::class -> Unit as T
 
             else -> throw IllegalArgumentException("Don't know how to construct: ${letterDataType.qualifiedName}")
