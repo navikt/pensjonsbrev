@@ -25,6 +25,7 @@ import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.HarStansetDTO
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.OMSInnvilgelseDTO
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.foerstegangsvedtak.FoerstegangsvedtakUtfallDTO
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.foerstegangsvedtak.OMSInnvilgelseFoerstegangsvedtakDTO
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.opphoer.OMSOpphoerDTO
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OMSRevurderingEndringDTO
 import java.time.LocalDate
 import kotlin.reflect.KClass
@@ -68,6 +69,7 @@ object Fixtures {
             EndringHovedmalDTO::class -> createEndringHovedmalDTO() as T
             OMSInnvilgelseFoerstegangsvedtakDTO::class -> createOMSInnvilgelseFoerstegangsvedtakDTO() as T
             OMSRevurderingEndringDTO::class -> createOMSRevurderingEndringDTO() as T
+            OMSOpphoerDTO::class -> createOMSOpphoerDTO() as T
             FoerstegangsvedtakUtfallDTO::class -> createOMSFoerstegangsvedtakUtfallDTO() as T
             BarnepensjonRevurderingAdopsjonDTO::class -> createBarnepensjonRevurderingAdopsjonDTO() as T
             BarnepensjonFengselsoppholdDTO::class -> createBarnepensjonFengselsoppholdDTO() as T
