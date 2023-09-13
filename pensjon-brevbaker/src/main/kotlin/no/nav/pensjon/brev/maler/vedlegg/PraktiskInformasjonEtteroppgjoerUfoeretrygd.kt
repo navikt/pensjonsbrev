@@ -18,7 +18,7 @@ val vedleggPraktiskInformasjonEtteroppgjoerUfoeretrygd =
     createAttachment<LangBokmalNynorskEnglish, Unit>(
         title = newText(
             Bokmal to "Praktisk informasjon om etteroppgjør",
-            Nynorsk to "Praktisk informasjon om etteroppgjør",
+            Nynorsk to "Praktisk informasjon om etteroppgjer",
             English to "Practical information about the post-settlement"
         ),
         includeSakspart = false,
