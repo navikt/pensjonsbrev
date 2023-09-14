@@ -81,7 +81,7 @@ object GjenlevendeInfoEtter1970 : AutobrevTemplate<Unit> {
                 text(
                     Bokmal to "NAV tilbyr ulike tjenester og støtteordninger for deg som trenger hjelp til å få jobb. Du kan finne jobbsøkertips og lenke til ledige jobber på $ARBEID_URL.",
                     Nynorsk to "NAV tilbyr ulike tenester og støtteordningar for deg som treng hjelp til å få jobb. Du kan finne jobbsøkjartips og lenkje til ledige jobbar på $ARBEID_URL.",
-                    English to "The Norwegian Labour and Welfare Administration (NAV) offers various services and support schemes for those who need help finding a job. You can find job search tips and a hyperlink to open jobs online at $ARBEID_URL.",
+                    English to "The Norwegian Labour and Welfare Administration (NAV) offers various services and support schemes for those who need help finding a job. You can find job search tips and a hyperlink to available jobs online at $ARBEID_URL.",
                 )
             }
             paragraph {
