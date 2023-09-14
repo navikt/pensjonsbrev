@@ -79,7 +79,7 @@ object GjenlevendeInfoFoer1971 : AutobrevTemplate<Unit> {
                 text(
                     Bokmal to "Det er arbeidsinntekten din i årene 2019-2023 som avgjør om du kan beholde utbetaling.",
                     Nynorsk to "Det er arbeidsinntekta di i åra 2019-2023 som avgjer om du kan behalde utbetaling.",
-                    English to "Your income from employment in the years 2019-2023 determine if you can keep the payments."
+                    English to "Your income from employment in the years 2019-2023 will determine if you can keep the payments."
                 )
             }
             paragraph {
