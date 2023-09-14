@@ -43,7 +43,7 @@ object GjenlevendeInfoEtter1970 : AutobrevTemplate<Unit> {
                 text(
                     Bokmal to "Stortinget har vedtatt nye regler for gjenlevendepensjon fra 1. januar 2024.",
                     Nynorsk to "Stortinget har vedtatt nye reglar for attlevandepensjon frå 1. januar 2024.",
-                    English to "The Norwegian Parliament has adopted new rules regarding survivor's pension from 1 January 2024.",
+                    English to "The Norwegian Parliament has adopted new rules regarding the survivor's pension through the National Insurance Act from 1 January 2024.",
                 )
             }
 
@@ -73,7 +73,7 @@ object GjenlevendeInfoEtter1970 : AutobrevTemplate<Unit> {
                 text(
                     Bokmal to "Trenger du hjelp til å få ny jobb eller jobbe mer?",
                     Nynorsk to "Treng du hjelp til å få ny jobb eller jobb meir?",
-                    English to "Do you need help to get employment?",
+                    English to "Do you need help getting a new job or more work?",
                 )
             }
 
@@ -81,14 +81,14 @@ object GjenlevendeInfoEtter1970 : AutobrevTemplate<Unit> {
                 text(
                     Bokmal to "NAV tilbyr ulike tjenester og støtteordninger for deg som trenger hjelp til å få jobb. Du kan finne jobbsøkertips og lenke til ledige jobber på $ARBEID_URL.",
                     Nynorsk to "NAV tilbyr ulike tenester og støtteordningar for deg som treng hjelp til å få jobb. Du kan finne jobbsøkjartips og lenkje til ledige jobbar på $ARBEID_URL.",
-                    English to "The Norwegian Labour and Welfare Administration (NAV) offers various services and support schemes for those who need help to find employment. You can find jobseeker tips and links to available jobs at $ARBEID_URL.",
+                    English to "The Norwegian Labour and Welfare Administration (NAV) offers various services and support schemes for those who need help finding a job. You can find job search tips and a hyperlink to open jobs online at $ARBEID_URL.",
                 )
             }
             paragraph {
                 text(
                     Bokmal to "Vi kan snakke med deg om ulike muligheter i arbeidsmarkedet, utdanning eller andre tiltak.",
                     Nynorsk to "Vi kan snakke med deg om ulike moglegheiter i arbeidsmarknaden, utdanning eller andre tiltak.",
-                    English to "We can give advice about the opportunities available to you, whether it be employment, education or other initiatives.",
+                    English to "We are available for a conversation about the various opportunities available to you in the labour market, education, or other initiatives.",
                 )
             }
 
@@ -96,7 +96,7 @@ object GjenlevendeInfoEtter1970 : AutobrevTemplate<Unit> {
                 text(
                     Bokmal to "Hvis du trenger utdanning som blir godkjent av NAV, eller du får arbeidstrening via NAV, kan du søke om skolepenger og tilleggsstønad. Du finner mer informasjon om disse stønadene på $GJENLEVENDE_TILLEGGSSTOENADER_URL.",
                     Nynorsk to "Viss du treng utdanning som blir godkjent av NAV, eller viss du får arbeidstrening via NAV, kan du søkje om skolepengar eller tilleggsstønad. Du finn meir informasjon om desse stønadene på $GJENLEVENDE_TILLEGGSSTOENADER_URL.",
-                    English to "If you need to attain additional education and NAV approves your education plan, or if you are participating in employment training from NAV, you can apply to have tuition fees or other supplementary benefits covered by NAV. You can find more information about these benefits at $GJENLEVENDE_TILLEGGSSTOENADER_URL.",
+                    English to "If you are undertaking an education that NAV means is necessary for you to get a job and support yourself, you may get additional benefits. The same applies if you are registered as a jobseeker with NAV. You can find more information about these benefits at $GJENLEVENDE_TILLEGGSSTOENADER_URL.",
                 )
             }
 
@@ -104,7 +104,7 @@ object GjenlevendeInfoEtter1970 : AutobrevTemplate<Unit> {
                 text(
                     Bokmal to "Hvis du fortsatt tar utdanning eller har arbeidstrening fra 1. januar 2027, kan du søke om å få pensjonen din forlenget med opptil to år.",
                     Nynorsk to "Om du framleis tar utdanning eller har arbeidstrening frå 1. januar 2027, kan du søkje om å få pensjonen din forlenga med inntil to år.",
-                    English to "If you are still studying or have work training from 1 January 2027, you can apply to have your pension extended by up to two years.",
+                    English to "If you are still undertaking an education or require help to find a job as of 1 January 2027, you can apply to have your pension extended by up to two years.",
                 )
             }
 
@@ -119,7 +119,7 @@ object GjenlevendeInfoEtter1970 : AutobrevTemplate<Unit> {
                 text(
                     Bokmal to "Hvis du har helseutfordringer, kan du undersøke mulighetene for andre ytelser eller støtteordninger ved ditt lokale NAV-kontor og på $HELSE_URL.",
                     Nynorsk to "Viss du har helseutfordringar, kan du undersøkje om du kan få andre ytingar eller støtteordningar ved det lokale NAV-kontoret ditt og på $HELSE_URL.",
-                    English to "If you have health issues, you can check if you are eligible for other benefits or support schemes through your local NAV office, or see $HELSE_URL.",
+                    English to "If you have health issues, you can check if you are eligible for other benefits or support schemes through your local NAV office or see $HELSE_URL.",
                 )
             }
 
