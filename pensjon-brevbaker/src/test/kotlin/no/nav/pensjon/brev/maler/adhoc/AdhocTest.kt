@@ -25,6 +25,8 @@ class AdhocTest {
     @Test
     fun `testGjenlevendeFoer1970 pdf`() {
         testAdhocPdf(GjenlevendeInfoFoer1971.template, "ADHOC_GJENLEVENDEINFOFOER1971", Bokmal)
+        testAdhocPdf(GjenlevendeInfoFoer1971.template, "ADHOC_GJENLEVENDEINFOFOER1971", Nynorsk)
+        testAdhocPdf(GjenlevendeInfoFoer1971.template, "ADHOC_GJENLEVENDEINFOFOER1971", English)
     }
     @Test
     fun `testGjenlevendeFoer1970 html`() {

@@ -58,31 +58,35 @@ object GjenlevendeInfoFoer1971 : AutobrevTemplate<Unit> {
                 text(
                     Bokmal to "Du beholder gjenlevendepensjonen som den er i dag, men du får den bare i tre år fra 1. januar 2024. Det kan bety at siste utbetaling av pensjonen din blir i desember 2026.",
                     Nynorsk to "Du vil få attlevandepensjonen som den er i dag, men du får den berre i tre år frå 1. januar 2024. Det kan bety at den siste utbetalinga av pensjonen din blir i desember 2026.",
-                    English to "You will keep the survivor's pension as it is today, but you will only receive it for three years as of 01 January 2024. The last payment of your survivor's pension will be in December 2026.",
+                    English to "You will keep the survivor's pension as it is today, but you will only receive it for three years as of 1 January 2024. The last payment of your survivor's pension will be in December 2026.",
                 )
             }
             paragraph {
                 text(
                     Bokmal to "Hvis du har hatt lav eller ingen arbeidsinntekt de siste fem årene, kan du beholde utbetaling til du blir 67 år.",
                     Nynorsk to "Viss du har hatt låg eller inga arbeidsinntekt dei siste fem åra, kan du få utbetaling til du blir 67 år.",
+                    English to "If you have had a low or no employment income during the last five years, you can keep the payments until you are age 67 years."
                 )
             }
             title2 {
                 text(
                     Bokmal to "Hvem kan beholde utbetaling til 67 år?",
                     Nynorsk to "Kven kan få utbetaling fram til dei er 67 år?",
+                    English to "Who can keep the payments to age 67 years?"
                 )
             }
             paragraph {
                 text(
                     Bokmal to "Det er arbeidsinntekten din i årene 2019-2023 som avgjør om du kan beholde utbetaling.",
                     Nynorsk to "Det er arbeidsinntekta di i åra 2019-2023 som avgjer om du kan behalde utbetaling.",
+                    English to "Your income from employment in the years 2019-2023 determine if you can keep the payments."
                 )
             }
             paragraph {
                 text(
                     Bokmal to "Den gjennomsnittlige arbeidsinntekten din kan ikke være høyere enn to ganger grunnbeløpet i folketrygden i disse årene. I tillegg kan ikke arbeidsinntekten din være høyere enn tre ganger grunnbeløpet i årene 2022 eller 2023. Du kan se en oversikt over hva som regnes som lav inntekt på $GJENLEVENDEPENSJON_URL.",
                     Nynorsk to "Den gjennomsnittlege arbeidsinntekta di kan ikkje vere høgare enn to gonger grunnbeløpet i folketrygda i desse åra. I tillegg kan ikkje arbeidsinntekta di vere høgare enn tre gonger grunnbeløpet i åra 2022 eller 2023. Du kan sjå ei oversikt over kva som blir rekna som låg inntekt på $GJENLEVENDEPENSJON_URL.",
+                    English to "Your average employment income cannot be higher than two times the basic National Insurance minimum benefit amount in these years. In addition, your employment income cannot be higher than three times the minimum benefit amount in the years 2022 or 2023. You can see an overview of what is considered as low income at $GJENLEVENDEPENSJON_URL."
                 )
             }
 
@@ -90,12 +94,14 @@ object GjenlevendeInfoFoer1971 : AutobrevTemplate<Unit> {
                 text(
                     Bokmal to "Hvis inntekten din har vært lavere enn dette, beholder du utbetaling av gjenlevendepensjonen din til og med 31. desember 2028. Så vil pensjonen regnes ut på nytt til omstillingsstønad fra 1. januar 2029. Det kan bety at du får en lavere utbetaling fra 2029.",
                     Nynorsk to "Viss inntekta di har vore lågare enn dette, vil du få attlevandepensjonen til og med 31. desember 2028. Så vil pensjonen bli rekna ut på nytt til omstillingsstønad frå 1. januar 2029. Det kan bety at du får lågare utbetaling frå desember 2029.",
+                    English to "If your income has been lower than this, you will keep your survivor’s pension payments up to and including 31 December 2028. Thereafter, your pension will be recalculated to an adjustment allowance from 1 January 2029. This can mean that you will receive lower payments in 2029."
                 )
             }
             paragraph {
                 text(
                     Bokmal to "NAV må vite inntekten din for 2023 for å kunne vurdere om du kan beholde utbetaling til du er 67 år. Vi kan tidligst se om du har rett til utbetaling når tallene fra Skatteetaten er klare. Du vil få et brev om dette mot slutten av 2024.",
                     Nynorsk to "NAV må vite inntekta di for 2023 for å kunne vurdere om du kan få utbetaling til du er 67 år. Vi kan tidlegast sjå om du har rett til utbetaling når tala frå Skatteetaten er klare. Du vil få brev om dette mot slutten av 2024.",
+                    English to "NAV must have your income for 2023 in order to evaluate if you can keep the payments until you are age 67 years. We can earliest see if you can be granted the payments when The Norwegian Tax Administration has completed their assessments. You will receive a letter towards the end of 2024."
                 )
             }
 
