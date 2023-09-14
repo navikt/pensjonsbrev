@@ -41,9 +41,9 @@ object GjenlevendeInfoEtter1970 : AutobrevTemplate<Unit> {
         outline {
             paragraph {
                 text(
-                    Bokmal to "Stortinget har vedtatt nye regler for gjenlevendepensjon fra 1. januar 2024.",
-                    Nynorsk to "Stortinget har vedtatt nye reglar for attlevandepensjon frå 1. januar 2024.",
-                    English to "The Norwegian Parliament has adopted new rules regarding the survivor's pension through the National Insurance Act from 1 January 2024.",
+                    Bokmal to "Stortinget har vedtatt nye regler for gjenlevendepensjon fra folketrygden fra 1. januar 2024.",
+                    Nynorsk to "Stortinget har vedtatt nye reglar for attlevandepensjon frå folketrygda frå 1. januar 2024.",
+                    English to "The Norwegian Parliament has adopted new rules regarding the survivor's pension through the National Insurance Act from 1 January 2024.",
                 )
             }
 
@@ -56,9 +56,9 @@ object GjenlevendeInfoEtter1970 : AutobrevTemplate<Unit> {
             }
             paragraph {
                 text(
-                    Bokmal to "Du beholder gjenlevendepensjonen som den er i dag, men du får den bare i tre år fra 1. januar 2024.",
-                    Nynorsk to "Du vil få attlevandepensjonen som den er i dag, men du får den berre i tre år frå 1. januar 2024.",
-                    English to "You will keep the survivor's pension as it is today, but you will only receive it for three years as of 1 January 2024.",
+                    Bokmal to "Du beholder gjenlevendepensjonen som den er i dag, men du får den bare i tre år fra 1. januar 2024.",
+                    Nynorsk to "Du vil få attlevandepensjonen som den er i dag, men du får den berre i tre år frå 1. januar 2024.",
+                    English to "You will keep the survivor's pension as it is today, but you will only receive it for three years as of 1 January 2024.",
                 )
             }
             paragraph {
@@ -94,17 +94,17 @@ object GjenlevendeInfoEtter1970 : AutobrevTemplate<Unit> {
 
             paragraph {
                 text(
-                    Bokmal to "Hvis du trenger utdanning som blir godkjent av NAV, eller du får arbeidstrening via NAV, kan du søke om skolepenger og tilleggsstønad. Du finner mer informasjon om disse stønadene på $GJENLEVENDE_TILLEGGSSTOENADER_URL.",
-                    Nynorsk to "Viss du treng utdanning som blir godkjent av NAV, eller viss du får arbeidstrening via NAV, kan du søkje om skolepengar eller tilleggsstønad. Du finn meir informasjon om desse stønadene på $GJENLEVENDE_TILLEGGSSTOENADER_URL.",
+                    Bokmal to "Hvis du tar en utdanning som NAV mener er nødvendig for at du skal kunne få jobb og forsørge deg selv, kan du få tilleggsstønader. Det samme gjelder hvis du er registrert som arbeidssøker hos NAV. Du finner mer informasjon om disse stønadene på $GJENLEVENDE_TILLEGGSSTOENADER_URL.",
+                    Nynorsk to "Viss du tar utdanning som NAV meiner er naudsynt for at du skal få jobb og forsørge deg sjølv, kan du få tilleggsstønader. Det same gjeld om du er registrert som arbeidssøkjar hos NAV. Du finn meir informasjon om desse stønadene på $GJENLEVENDE_TILLEGGSSTOENADER_URL.",
                     English to "If you are undertaking an education that NAV means is necessary for you to get a job and support yourself, you may get additional benefits. The same applies if you are registered as a jobseeker with NAV. You can find more information about these benefits at $GJENLEVENDE_TILLEGGSSTOENADER_URL.",
                 )
             }
 
             paragraph {
                 text(
-                    Bokmal to "Hvis du fortsatt tar utdanning eller har arbeidstrening fra 1. januar 2027, kan du søke om å få pensjonen din forlenget med opptil to år.",
-                    Nynorsk to "Om du framleis tar utdanning eller har arbeidstrening frå 1. januar 2027, kan du søkje om å få pensjonen din forlenga med inntil to år.",
-                    English to "If you are still undertaking an education or require help to find a job as of 1 January 2027, you can apply to have your pension extended by up to two years.",
+                    Bokmal to "Hvis du fortsatt tar nødvendig utdanning eller trenger hjelp til å få jobb fra 1. januar 2027, kan du søke om å få pensjonen din forlenget med opptil to år.",
+                    Nynorsk to "Om du framleis tar naudsynt utdanning eller treng hjelp til å få jobb frå 1. januar 2027, kan du søkje om å få pensjonen din forlenga med inntil to år.",
+                    English to "If you are still undertaking an education or require help to find a job as of 1 January 2027, you can apply to have your pension extended by up to two years.",
                 )
             }
 
