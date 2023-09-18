@@ -52,5 +52,5 @@ echo "All secrets are fetched and stored in the \"secrets\" folder."
 cat secrets/azuread.json | jq --raw-output 'to_entries[] | select(.key | test("AZURE_APP_TENANT_ID|AZURE_APP_CLIENT_ID")) | "\(.key)=\(.value)"' > .env.local
 echo ".env.local updated from secret"
 
-echo "SKRIBENTEN_API_URL=https://pensjon-skribenten.dev.intern.nav.no" >> .env.local
+echo "SKRIBENTEN_API_URL=https://pensjon-skribenten.intern.dev.nav.no" >> .env.local
 echo "SKRIBENTEN_API_SCOPE=api://dev-gcp.pensjonsbrev.skribenten-backend-lokal/.default" >> .env.local
