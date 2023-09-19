@@ -1,16 +1,16 @@
 app-name: "skribenten-backend"
 brevbaker-app: "pensjon-brevbaker"
 ingresses:
-  - "https://pensjon-skribenten-api.dev.intern.nav.no"
+  - "https://pensjon-skribenten-api.intern.dev.nav.no"
 env:
   - name: CORS_ALLOW_HOST
-    value: "pensjon-skribenten.dev.intern.nav.no"
+    value: "pensjon-skribenten.intern.dev.nav.no"
   - name: PEN_URL
     value: "https://pensjon-pen-q2.dev.adeo.no/pen/springapi/"
   - name: PEN_SCOPE
     value: "api://dev-fss.teampensjon.pensjon-pen-q2/.default"
   - name: BREVBAKER_URL
-    value: "https://pensjon-brevbaker.dev.intern.nav.no"
+    value: "https://pensjon-brevbaker.intern.dev.nav.no"
   - name: BREVBAKER_SCOPE
     value: "api://dev-gcp.pensjonsbrev.pensjon-brevbaker/.default"
 
