@@ -29,6 +29,8 @@ import no.nav.pensjon.etterlatte.maler.vedlegg.informasjonTilDegSomHandlerPaaVeg
 import java.time.LocalDate
 
 data class EtterbetalingDTO(
+    val fraDato: LocalDate,
+    val tilDato: LocalDate,
     val beregningsperioder: List<Etterbetalingsperiode>,
 )
 
