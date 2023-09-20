@@ -2,9 +2,9 @@ package no.nav.pensjon.etterlatte.fixtures
 
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import no.nav.pensjon.etterlatte.maler.Beregningsperiode
+import no.nav.pensjon.etterlatte.maler.EtterbetalingDTO
 import no.nav.pensjon.etterlatte.maler.Utbetalingsinfo
 import no.nav.pensjon.etterlatte.maler.barnepensjon.endring.EndringHovedmalDTO
-import no.nav.pensjon.etterlatte.maler.barnepensjon.endring.EtterbetalingDTO
 import java.time.LocalDate
 import java.time.Month
 

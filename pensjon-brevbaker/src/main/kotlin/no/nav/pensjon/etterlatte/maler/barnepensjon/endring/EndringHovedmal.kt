@@ -12,7 +12,6 @@ import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.BrevDTO
 import no.nav.pensjon.etterlatte.maler.Element
-import no.nav.pensjon.etterlatte.maler.Etterbetalingsperiode
 import no.nav.pensjon.etterlatte.maler.Hovedmal
 import no.nav.pensjon.etterlatte.maler.Utbetalingsinfo
 import no.nav.pensjon.etterlatte.maler.UtbetalingsinfoSelectors.beregningsperioder
@@ -26,17 +25,10 @@ import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.dineRettigheterOgPli
 import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.etterbetalingAvBarnepensjon
 import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.informasjonOmYrkesskade
 import no.nav.pensjon.etterlatte.maler.vedlegg.informasjonTilDegSomHandlerPaaVegneAvBarnet
-import java.time.LocalDate
-
-data class EtterbetalingDTO(
-    val fraDato: LocalDate,
-    val tilDato: LocalDate,
-    val beregningsperioder: List<Etterbetalingsperiode>,
-)
 
 data class EndringHovedmalDTO(
     val erEndret: Boolean,
-    val etterbetaling: EtterbetalingDTO,
+    val etterbetaling: no.nav.pensjon.etterlatte.maler.EtterbetalingDTO,
     val utbetalingsinfo: Utbetalingsinfo,
     override val innhold: List<Element>,
 ) :
