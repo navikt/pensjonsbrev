@@ -173,7 +173,7 @@ data class FikkSkulleFaattTabell(
                     cell {
                         textExpr(
                             Bokmal to "Beløp du har fått for ".expr() + ifElse(harFaattForMye, "mye", "lite"),
-                            Nynorsk to "Belop du har fått for ".expr() + ifElse(harFaattForMye, "mykje", "lite"),
+                            Nynorsk to "Beløp du har fått for ".expr() + ifElse(harFaattForMye, "mykje", "lite"),
                             English to "Amount you were paid too ".expr() + ifElse(harFaattForMye, "much", "little"),
                             fontType = FontType.BOLD,
                         )
