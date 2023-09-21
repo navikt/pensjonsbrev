@@ -39,11 +39,22 @@ class AdhocTest {
         testAdhocPdf(GjenlevendeInfoEtter1970.template, "ADHOC_GJENLEVENDEINFOETTER1970", Nynorsk)
         testAdhocPdf(GjenlevendeInfoEtter1970.template, "ADHOC_GJENLEVENDEINFOETTER1970", English)
     }
-
     @Test
     fun `testGjenlevendeEtter1970 html`() {
         testHtml(GjenlevendeInfoEtter1970.template, "ADHOC_GJENLEVENDEINFOETTER1970", Bokmal)
         testHtml(GjenlevendeInfoEtter1970.template, "ADHOC_GJENLEVENDEINFOETTER1970", Nynorsk)
         testHtml(GjenlevendeInfoEtter1970.template, "ADHOC_GJENLEVENDEINFOETTER1970", English)
     }
+
+    @Test
+    fun `testRegelendring pdf`() {
+        testAdhocPdf(AdhocRegelendretGjenlevendetillegg.template, "ADHOC_AdhocRegelendretGjenlevendetillegg", Bokmal)
+        testAdhocPdf(AdhocRegelendretGjenlevendetillegg.template, "ADHOC_AdhocRegelendretGjenlevendetillegg", Nynorsk)
+        testAdhocPdf(AdhocRegelendretGjenlevendetillegg.template, "ADHOC_AdhocRegelendretGjenlevendetillegg", English)
+    }
+    @Test
+    fun `testRegelendring html`() {
+        testHtml(AdhocRegelendretGjenlevendetillegg.template, "ADHOC_AdhocRegelendretGjenlevendetillegg", Bokmal)
+    }
+
 }

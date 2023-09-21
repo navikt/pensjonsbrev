@@ -10,6 +10,7 @@ object Brevkode {
         UT_OPPHOER_BT_AUTO("PE_UT_07_200", "OPPHOR_ENDRING_UT_BT"),
         UT_UNG_UFOER_20_AAR_AUTO("PE_BA_04_505", "UP_FULLTT_BELOPENDR"),
         UT_EO_FORHAANDSVARSEL_FEILUTBETALING_AUTO("PE_UT_23_001", "UT_EO_VARSEL_FU"),
+        UT_2023_INFO_REGLERENDRET_GJT_12_18 ("ADHOC_2023_UT1"),
         ;
 
         val brevkoder: Set<String> = koder.toSet()
