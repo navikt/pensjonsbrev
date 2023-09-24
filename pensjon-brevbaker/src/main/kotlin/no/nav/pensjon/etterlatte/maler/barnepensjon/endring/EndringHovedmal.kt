@@ -7,7 +7,6 @@ import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brevbaker.api.model.Kroner
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
@@ -23,28 +22,13 @@ import no.nav.pensjon.etterlatte.maler.barnepensjon.endring.EndringHovedmalDTOSe
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.Barnepensjon
 import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
 import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.dineRettigheterOgPlikter
-import no.nav.pensjon.etterlatte.maler.vedlegg.etterbetalingAvBarnepensjon
-import no.nav.pensjon.etterlatte.maler.vedlegg.informasjonOmYrkesskade
+import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.etterbetalingAvBarnepensjon
+import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.informasjonOmYrkesskade
 import no.nav.pensjon.etterlatte.maler.vedlegg.informasjonTilDegSomHandlerPaaVegneAvBarnet
-import java.time.LocalDate
-
-data class EtterbetalingDTO(
-    val fraDato: LocalDate,
-    val tilDato: LocalDate,
-    val beregningsperioder: List<Etterbetalingsperiode>,
-)
-
-data class Etterbetalingsperiode(
-    val datoFOM: LocalDate,
-    val datoTOM: LocalDate?,
-    val grunnbeloep: Kroner,
-    val stoenadFoerReduksjon: Kroner,
-    var utbetaltBeloep: Kroner,
-)
 
 data class EndringHovedmalDTO(
     val erEndret: Boolean,
-    val etterbetaling: EtterbetalingDTO,
+    val etterbetaling: no.nav.pensjon.etterlatte.maler.EtterbetalingDTO,
     val utbetalingsinfo: Utbetalingsinfo,
     override val innhold: List<Element>,
 ) :

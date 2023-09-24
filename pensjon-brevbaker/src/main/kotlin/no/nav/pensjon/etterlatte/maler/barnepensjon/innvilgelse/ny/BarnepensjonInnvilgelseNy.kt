@@ -13,12 +13,12 @@ import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.Avkortingsinfo
 import no.nav.pensjon.etterlatte.maler.BrevDTO
 import no.nav.pensjon.etterlatte.maler.Element
+import no.nav.pensjon.etterlatte.maler.EtterbetalingDTO
 import no.nav.pensjon.etterlatte.maler.Hovedmal
 import no.nav.pensjon.etterlatte.maler.Utbetalingsinfo
 import no.nav.pensjon.etterlatte.maler.UtbetalingsinfoSelectors.antallBarn
 import no.nav.pensjon.etterlatte.maler.UtbetalingsinfoSelectors.beregningsperioder
 import no.nav.pensjon.etterlatte.maler.UtbetalingsinfoSelectors.soeskenjustering
-import no.nav.pensjon.etterlatte.maler.barnepensjon.endring.EtterbetalingDTO
 import no.nav.pensjon.etterlatte.maler.barnepensjon.ny.BarnepensjonInnvilgelseNyDTOSelectors.etterbetalingDTO
 import no.nav.pensjon.etterlatte.maler.barnepensjon.ny.BarnepensjonInnvilgelseNyDTOSelectors.innhold
 import no.nav.pensjon.etterlatte.maler.barnepensjon.ny.BarnepensjonInnvilgelseNyDTOSelectors.utbetalingsinfo
@@ -26,8 +26,8 @@ import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.Barnepensjon
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.BarnepensjonInnvilgelseFraser
 import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
 import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.dineRettigheterOgPlikter
-import no.nav.pensjon.etterlatte.maler.vedlegg.etterbetalingAvBarnepensjon
-import no.nav.pensjon.etterlatte.maler.vedlegg.informasjonOmYrkesskade
+import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.etterbetalingAvBarnepensjon
+import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.informasjonOmYrkesskade
 import no.nav.pensjon.etterlatte.maler.vedlegg.informasjonTilDegSomHandlerPaaVegneAvBarnet
 
 data class BarnepensjonInnvilgelseNyDTO(

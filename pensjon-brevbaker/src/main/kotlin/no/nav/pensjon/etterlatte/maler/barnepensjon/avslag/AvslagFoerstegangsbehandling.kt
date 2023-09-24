@@ -15,7 +15,7 @@ import no.nav.pensjon.etterlatte.maler.ManueltBrevDTO
 import no.nav.pensjon.etterlatte.maler.ManueltBrevDTOSelectors.innhold
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.Barnepensjon
 import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
-import no.nav.pensjon.etterlatte.maler.vedlegg.klageOgAnke
+import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.klageOgAnke
 
 @TemplateModelHelpers
 object AvslagFoerstegangsbehandling : EtterlatteTemplate<ManueltBrevDTO>, Hovedmal {
