@@ -71,18 +71,6 @@ object BarnepensjonInnvilgelseNy : EtterlatteTemplate<BarnepensjonInnvilgelseNyD
             includePhrase(BarnepensjonInnvilgelseFraser.MeldFraOmEndringer)
             includePhrase(BarnepensjonInnvilgelseFraser.DuHarRettTilAaKlage)
             includePhrase(BarnepensjonInnvilgelseFraser.HarDuSpoersmaal)
-
-
-
-
-
-
-
-
-
-
-            includePhrase(Barnepensjon.BeregnetPensjonTabell(utbetalingsinfo.beregningsperioder))
-            includePhrase(Barnepensjon.UtbetalingOgRegulering)
         }
         includeAttachment(informasjonTilDegSomHandlerPaaVegneAvBarnet, innhold)
         includeAttachment(dineRettigheterOgPlikter, innhold)
