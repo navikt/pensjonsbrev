@@ -1,6 +1,5 @@
 package no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.ny
 
-import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
@@ -18,16 +17,16 @@ import no.nav.pensjon.etterlatte.maler.UtbetalingsinfoSelectors.beloep
 import no.nav.pensjon.etterlatte.maler.UtbetalingsinfoSelectors.virkningsdato
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.ny.BarnepensjonInnvilgelseEnkelDTOSelectors.avdoed
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.ny.BarnepensjonInnvilgelseEnkelDTOSelectors.erEtterbetalingMerEnnTreMaaneder
-import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.ny.BarnepensjonInnvilgelseEnkelDTOSelectors.erInstitusjonsopphold
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.ny.BarnepensjonInnvilgelseEnkelDTOSelectors.utbetalingsinfo
-import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.Institusjonsoppholdfraser
-import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.Lover
+import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.ny.BarnepensjonInnvilgelseEnkelDTOSelectors.vedtaksdato
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.innvilgelse.BarnepensjonInnvilgelseEnkelFraser
 import no.nav.pensjon.etterlatte.maler.fraser.common.Vedtak
+import java.time.LocalDate
 
 data class BarnepensjonInnvilgelseEnkelDTO(
     val utbetalingsinfo: Utbetalingsinfo,
     val avdoed: Avdoed,
+    val vedtaksdato: LocalDate,
     val erEtterbetalingMerEnnTreMaaneder: Boolean,
     val erInstitusjonsopphold: Boolean,
 )
@@ -63,22 +62,10 @@ object BarnepensjonInnvilgelseEnkel : EtterlatteTemplate<BarnepensjonInnvilgelse
                     avdoed.navn,
                     avdoed.doedsdato,
                     utbetalingsinfo.beloep,
+                    vedtaksdato,
+                    erEtterbetalingMerEnnTreMaaneder
                 ),
             )
-
-            showIf(erInstitusjonsopphold) {
-                includePhrase(
-                    Institusjonsoppholdfraser.Innvilgelse,
-                )
-                includePhrase(Institusjonsoppholdfraser.Lover(erEtterbetalingMerEnnTreMaaneder))
-            }.orShow {
-                includePhrase(
-                    Lover.MuligEtterbetaling(
-                        paragraf = Expression.Literal("FYLL INN HER"),
-                        erEtterbetaling = erEtterbetalingMerEnnTreMaaneder,
-                    ),
-                )
-            }
         }
     }
 }
