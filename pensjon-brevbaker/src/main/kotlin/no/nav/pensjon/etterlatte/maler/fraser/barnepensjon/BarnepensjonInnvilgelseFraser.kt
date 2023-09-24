@@ -108,4 +108,25 @@ object BarnepensjonInnvilgelseFraser {
             }
         }
     }
+
+    object HarDuSpoersmaal : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+            title2 {
+                text(
+                    Language.Bokmal to "Har du spørsmål?",
+                    Language.Nynorsk to "Har du spørsmål?",
+                    Language.English to "TODO engelsk"
+                )
+            }
+            paragraph {
+                text(
+                    Language.Bokmal to "Du finner mer informasjon på ${Constants.BARNEPENSJON_URL}. " +
+                            "Hvis du ikke finner svar på spørsmålet ditt, kan du ringe oss på telefon ${Constants.KONTAKTTELEFON_PENSJON} " +
+                            "hverdager 9-15. Om du oppgir fødselsnummer til barnet, kan vi lettere gi deg rask og god hjelp.",
+                    Language.Nynorsk to "TODO nynorsk",
+                    Language.English to "TODO engelsk"
+                )
+            }
+        }
+    }
 }

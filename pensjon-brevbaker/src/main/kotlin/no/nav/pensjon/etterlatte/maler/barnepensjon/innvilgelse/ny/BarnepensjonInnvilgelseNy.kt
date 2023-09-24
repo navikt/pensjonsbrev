@@ -68,6 +68,14 @@ object BarnepensjonInnvilgelseNy : EtterlatteTemplate<BarnepensjonInnvilgelseNyD
                     etterbetalingDTO
                 )
             )
+            includePhrase(BarnepensjonInnvilgelseFraser.MeldFraOmEndringer)
+            includePhrase(BarnepensjonInnvilgelseFraser.DuHarRettTilAaKlage)
+            includePhrase(BarnepensjonInnvilgelseFraser.HarDuSpoersmaal)
+
+
+
+
+
 
 
 
@@ -75,9 +83,6 @@ object BarnepensjonInnvilgelseNy : EtterlatteTemplate<BarnepensjonInnvilgelseNyD
 
             includePhrase(Barnepensjon.BeregnetPensjonTabell(utbetalingsinfo.beregningsperioder))
             includePhrase(Barnepensjon.UtbetalingOgRegulering)
-            includePhrase(BarnepensjonInnvilgelseFraser.MeldFraOmEndringer)
-            includePhrase(BarnepensjonInnvilgelseFraser.DuHarRettTilAaKlage)
-            includePhrase(Barnepensjon.HarDuSpoersmaal)
         }
         includeAttachment(informasjonTilDegSomHandlerPaaVegneAvBarnet, innhold)
         includeAttachment(dineRettigheterOgPlikter, innhold)
