@@ -4,6 +4,7 @@ import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.dsl.createTemplate
+import no.nav.pensjon.brev.template.dsl.expression.notNull
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -16,9 +17,7 @@ import no.nav.pensjon.etterlatte.maler.Element
 import no.nav.pensjon.etterlatte.maler.EtterbetalingDTO
 import no.nav.pensjon.etterlatte.maler.Hovedmal
 import no.nav.pensjon.etterlatte.maler.Utbetalingsinfo
-import no.nav.pensjon.etterlatte.maler.UtbetalingsinfoSelectors.antallBarn
 import no.nav.pensjon.etterlatte.maler.UtbetalingsinfoSelectors.beregningsperioder
-import no.nav.pensjon.etterlatte.maler.UtbetalingsinfoSelectors.soeskenjustering
 import no.nav.pensjon.etterlatte.maler.barnepensjon.ny.BarnepensjonInnvilgelseNyDTOSelectors.etterbetalingDTO
 import no.nav.pensjon.etterlatte.maler.barnepensjon.ny.BarnepensjonInnvilgelseNyDTOSelectors.innhold
 import no.nav.pensjon.etterlatte.maler.barnepensjon.ny.BarnepensjonInnvilgelseNyDTOSelectors.utbetalingsinfo
@@ -64,12 +63,15 @@ object BarnepensjonInnvilgelseNy : EtterlatteTemplate<BarnepensjonInnvilgelseNyD
             konverterElementerTilBrevbakerformat(innhold)
 
             includePhrase(
-                Barnepensjon.SlikHarViBeregnetPensjonenDin(
+                BarnepensjonInnvilgelseFraser.UtbetalingAvBarnepensjon(
                     utbetalingsinfo.beregningsperioder,
-                    utbetalingsinfo.soeskenjustering,
-                    utbetalingsinfo.antallBarn,
-                ),
+                    etterbetalingDTO
+                )
             )
+
+
+
+
 
             includePhrase(Barnepensjon.BeregnetPensjonTabell(utbetalingsinfo.beregningsperioder))
             includePhrase(Barnepensjon.UtbetalingOgRegulering)
