@@ -86,7 +86,6 @@ object BarnepensjonInnvilgelseNy : EtterlatteTemplate<BarnepensjonInnvilgelseNyD
         }
         includeAttachment(informasjonTilDegSomHandlerPaaVegneAvBarnet, innhold)
         includeAttachment(dineRettigheterOgPlikter, innhold)
-        includeAttachment(informasjonOmYrkesskade, innhold)
         includeAttachmentIfNotNull(etterbetalingAvBarnepensjon, etterbetalingDTO)
     }
 }
