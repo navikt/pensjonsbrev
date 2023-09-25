@@ -133,7 +133,7 @@ object VedleggPlikterAP17 : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
         )
 }
 
-object VedleggPlikterEndretSivilstatus:TextOnlyPhrase<LangBokmalNynorskEnglish>(){
+object VedleggPlikterEndretSivilstatus : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
     override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         text(
             Bokmal to "sivilstanden din endrer seg",
@@ -527,7 +527,7 @@ object VedleggPlikterUT5 : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
         )
 }
 
-object VedleggPlikterEndretInntektBarnetillegg: TextOnlyPhrase<LangBokmalNynorskEnglish>(){
+object VedleggPlikterEndretInntektBarnetillegg : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
     override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         text(
             Bokmal to "din ektefelle, partner eller samboers inntekt endrer seg og du har barnetillegg for felles barn",
@@ -946,16 +946,22 @@ object VedleggKlagePesys : OutlinePhrase<LangBokmalNynorskEnglish>() {
                         Nynorsk to "namn, fødselsnummer og adresse",
                         English to "name, national identity number and address"
                     )
+                }
+                item {
                     text(
                         Bokmal to "hvilket vedtak du klager på",
                         Nynorsk to "kva vedtak du klagar på",
                         English to "which decision you are appealing"
                     )
+                }
+                item {
                     text(
                         Bokmal to "hvilken endring i vedtaket du ber om",
                         Nynorsk to "kva endring i vedtaket du ber om",
                         English to "how you believe the decision should be amended"
                     )
+                }
+                item {
                     text(
                         Bokmal to "din underskrift",
                         Nynorsk to "di underskrift",
@@ -979,6 +985,8 @@ object VedleggKlagePesys : OutlinePhrase<LangBokmalNynorskEnglish>() {
                         Nynorsk to "skrive kvifor du meiner vedtaket er feil",
                         English to "why you believe the decision is wrong"
                     )
+                }
+                item {
                     text(
                         Bokmal to "nødvendige erklæringer og andre dokumenter",
                         Nynorsk to "nemne erklæringar og andre dokument som du legg ved klaga",
