@@ -44,7 +44,7 @@ object AdhocRegelendretGjenlevendetilleggKonvertert : AutobrevTemplate<Unit> {
                     Nynorsk to "Stortinget har vedtatt nye reglar for attlevandetillegg til uføretrygda frå 1. januar 2024.",
                 )
             }
-            title2 {
+            title1 {
                 text(
                     Bokmal to "Hva betyr endringene for deg?",
                     Nynorsk to "Kva betyr endringane for deg?",
@@ -94,8 +94,8 @@ object AdhocRegelendretGjenlevendetilleggKonvertert : AutobrevTemplate<Unit> {
             }
             paragraph {
                 text(
-                    Bokmal to "Hvis du får endringer i inntekt, familiesituasjon, jobbsituasjon eller planlegger opphold i et annet land, kan det påvirke utbetalingen din. I slike tilfeller må du derfor straks melde fra til NAV.  Se hva du må melde fra om på $UFORETRYGD_ENDRING_URL.",
-                    Nynorsk to "Viss du får endringar i inntekt, familiesituasjon, jobbsituasjon eller planlegg opphald i eit anna land, kan det verke inn på utbetalinga di. I slike tilfelle må du derfor straks melde frå til NAV.  Sjå kva du må melde frå om på $UFORETRYGD_ENDRING_URL.",
+                    Bokmal to "Hvis du får endringer i inntekt, familiesituasjon, jobbsituasjon eller planlegger opphold i et annet land, kan det påvirke utbetalingen din. I slike tilfeller må du derfor straks melde fra til NAV. Se hva du må melde fra om på $UFORETRYGD_ENDRING_URL.",
+                    Nynorsk to "Viss du får endringar i inntekt, familiesituasjon, jobbsituasjon eller planlegg opphald i eit anna land, kan det verke inn på utbetalinga di. I slike tilfelle må du derfor straks melde frå til NAV. Sjå kva du må melde frå om på $UFORETRYGD_ENDRING_URL.",
                 )
             }
             paragraph {
