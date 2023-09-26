@@ -37,22 +37,6 @@ fun createBarnepensjonInnvilgelseNyDTO() =
         innhold = listOf(),
         etterbetalingDTO = EtterbetalingDTO(
             fraDato = LocalDate.of(2020, Month.JANUARY, 1),
-            tilDato = LocalDate.of(2023, Month.JULY, 31),
-            beregningsperioder = listOf(
-                Etterbetalingsperiode(
-                    datoFOM = LocalDate.of(2020, Month.JANUARY, 1),
-                    datoTOM = LocalDate.of(2023, Month.JANUARY, 1),
-                    grunnbeloep = Kroner(118000),
-                    stoenadFoerReduksjon = Kroner(9000),
-                    utbetaltBeloep = Kroner(3080)
-                ),
-                Etterbetalingsperiode(
-                    datoFOM = LocalDate.of(2023, Month.JANUARY, 2),
-                    datoTOM = null,
-                    grunnbeloep = Kroner(150000),
-                    stoenadFoerReduksjon = Kroner(11000),
-                    utbetaltBeloep = Kroner(2000)
-                )
-            )
+            tilDato = LocalDate.of(2023, Month.JULY, 31)
         )
     )

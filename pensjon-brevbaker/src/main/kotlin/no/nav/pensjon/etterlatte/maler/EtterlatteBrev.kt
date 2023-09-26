@@ -5,8 +5,7 @@ import java.time.LocalDate
 
 data class EtterbetalingDTO(
     val fraDato: LocalDate,
-    val tilDato: LocalDate,
-    val beregningsperioder: List<Etterbetalingsperiode> = emptyList()
+    val tilDato: LocalDate
 )
 
 data class Etterbetalingsperiode(

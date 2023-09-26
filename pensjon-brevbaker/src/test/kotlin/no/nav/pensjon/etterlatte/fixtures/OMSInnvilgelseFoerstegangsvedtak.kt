@@ -59,23 +59,7 @@ fun createOMSInnvilgelseFoerstegangsvedtakDTO() =
         ),
         etterbetalinginfo = EtterbetalingDTO(
             fraDato = LocalDate.now(),
-            tilDato = LocalDate.now(),
-            beregningsperioder = listOf(
-                Etterbetalingsperiode(
-                    datoFOM = LocalDate.now(),
-                    datoTOM = LocalDate.now(),
-                    grunnbeloep = Kroner(118000),
-                    stoenadFoerReduksjon = Kroner(9000),
-                    utbetaltBeloep = Kroner(3080)
-                ),
-                Etterbetalingsperiode(
-                    datoFOM = LocalDate.now(),
-                    datoTOM = null,
-                    grunnbeloep = Kroner(118000),
-                    stoenadFoerReduksjon = Kroner(11000),
-                    utbetaltBeloep = Kroner(2000)
-                )
-            )
+            tilDato = LocalDate.now()
         ),
         beregningsinfo = Beregningsinfo(
             grunnbeloep = Kroner(118000),

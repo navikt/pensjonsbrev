@@ -11,7 +11,6 @@ import java.time.Month
 fun createEndringHovedmalDTO() = EndringHovedmalDTO(
     erEndret = true,
     etterbetaling = EtterbetalingDTO(
-        beregningsperioder = listOf(),
         fraDato = LocalDate.of(2020, Month.JANUARY, 1),
         tilDato = LocalDate.of(2023, Month.DECEMBER, 31),
     ),
