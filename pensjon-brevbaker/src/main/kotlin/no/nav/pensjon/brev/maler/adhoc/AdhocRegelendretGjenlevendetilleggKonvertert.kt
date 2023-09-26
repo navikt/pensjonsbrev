@@ -4,7 +4,6 @@ import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.maler.fraser.common.Constants.DIN_UFORETRYGD_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.GJENLEVENDETILLEGG_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.INNTEKTSPLANLEGGEREN_URL
-import no.nav.pensjon.brev.maler.fraser.common.Constants.KLAGE_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.KONTAKT_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_KONTAKTSENTER_AAPNINGSTID
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_KONTAKTSENTER_TELEFON
@@ -18,25 +17,26 @@ import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
-object AdhocRegelendretGjenlevendetillegg : AutobrevTemplate<Unit> {
-    override val kode = Brevkode.AutoBrev.UT_2023_INFO_REGLERENDRET_GJT_12_18
+object AdhocRegelendretGjenlevendetilleggKonvertert : AutobrevTemplate<Unit> {
+    override val kode = Brevkode.AutoBrev.UT_2023_INFO_REGLERENDRET_GJT_KONVERTERT2015
     override val template: LetterTemplate<*, Unit> = createTemplate(
         name = kode.name,
         letterDataType = Unit::class,
         languages = languages(Bokmal, Nynorsk),
         letterMetadata = LetterMetadata(
-            displayTitle = "Vedtak - forlengelse av gjenlevendetillegg i uføretrygden din",
+            displayTitle = "Nye regler for gjenlevendetillegg til uføretrygden din",
             isSensitiv = false,
-            distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
-            brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
+            distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
+            brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
         )
     ) {
         title {
             text(
-                Bokmal to "Vi forlenger gjenlevendetillegget i uføretrygden din",
-                Nynorsk to "Vi forlengjer attlevandetillegget i uføretrygda di",
+                Bokmal to "Gjenlevendetillegget til uføretrygden din blir ikke lenger regulert",
+                Nynorsk to "Attlevandetillegget til uføretrygda di blir ikkje lenger regulert",
             )
         }
+
         outline {
             paragraph {
                 text(
@@ -44,22 +44,10 @@ object AdhocRegelendretGjenlevendetillegg : AutobrevTemplate<Unit> {
                     Nynorsk to "Stortinget har vedtatt nye reglar for attlevandetillegg til uføretrygda frå 1. januar 2024.",
                 )
             }
-            paragraph {
-                text(
-                    Bokmal to "Du har hatt tidsbegrenset gjenlevendetillegg i uføretrygden din. Gjenlevendetillegget skal ikke lenger være tidsbegrenset.",
-                    Nynorsk to "Du har hatt tidsavgrensa attlevandetillegg i uføretrygda di. Attlevandetillegget skal ikkje lenger vere tidsavgrensa.",
-                )
-            }
-            paragraph {
-                text(
-                    Bokmal to "Vedtaket er gjort etter folketrygdloven § 12-18.",
-                    Nynorsk to "Vedtaket er gjort etter folketrygdlova § 12-18.",
-                )
-            }
             title1 {
                 text(
-                    Bokmal to "Hvilke andre endringer får betydning for deg?",
-                    Nynorsk to "Kva andre endringar får noko å seie for deg?",
+                    Bokmal to "Hva betyr endringene for deg?",
+                    Nynorsk to "Kva betyr endringane for deg?",
                 )
             }
             paragraph {
@@ -100,8 +88,8 @@ object AdhocRegelendretGjenlevendetillegg : AutobrevTemplate<Unit> {
             }
             paragraph {
                 text(
-                    Bokmal to "Du mister gjenlevendetillegget hvis du gifter deg igjen eller får barn med en samboer.",
-                    Nynorsk to "Du mistar attlevandetillegget viss du giftar deg att eller får barn med ein sambuar.",
+                    Bokmal to "Du mister tillegget hvis du gifter deg igjen eller får barn med en samboer.",
+                    Nynorsk to "Du mistar tillegget viss du giftar deg att eller får barn med ein sambuar.",
                 )
             }
             paragraph {
@@ -118,41 +106,12 @@ object AdhocRegelendretGjenlevendetillegg : AutobrevTemplate<Unit> {
             }
             title1 {
                 text(
-                    Bokmal to "Du har rett til å klage ",
-                    Nynorsk to "Du har rett til å klage ",
-                )
-            }
-            paragraph {
-                text(
-                    Bokmal to "Hvis du mener vedtaket er feil, kan du klage innen seks uker fra den datoen du mottok vedtaket. Klagen skal være skriftlig. Du finner skjema og informasjon på $KLAGE_URL.",
-                    Nynorsk to "Viss du meiner vedtaket er feil, kan du klage innan seks veker frå den datoen du fekk vedtaket. Klagen skal vere skriftleg. Du finn skjema og informasjon på $KLAGE_URL.",
-                )
-            }
-            paragraph {
-                text(
-                    Bokmal to "I vedlegget får du vite mer om hvordan du går fram.",
-                    Nynorsk to "I vedlegget får du vite meir om korleis du går fram.",
-                )
-            }
-            title1 {
-                text(
-                    Bokmal to "Du har rett til innsyn",
-                    Nynorsk to "Du har rett til innsyn",
-                )
-            }
-            paragraph {
-                text(
-                    Bokmal to "Du har rett til å se dokumentene i saken din. I vedlegget får du vite hvordan du går fram.",
-                    Nynorsk to "Du har rett til å sjå dokumenta i saka di. I vedlegget får du vite korleis du går fram.",
-                )
-            }
-            title1 {
-                text(
                     Bokmal to "Har du spørsmål?",
                     Nynorsk to "Har du spørsmål?",
                     //English to "Do you have questions?",
                 )
             }
+
             paragraph {
                 text(
                     Bokmal to "Du finner mer informasjon på $GJENLEVENDETILLEGG_URL.",
@@ -173,6 +132,7 @@ object AdhocRegelendretGjenlevendetillegg : AutobrevTemplate<Unit> {
                 )
             }
         }
-        includeAttachment(dineRettigheterOgMulighetTilAaKlageAdhoc)
     }
+
+
 }
