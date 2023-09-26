@@ -106,8 +106,8 @@ abstract class BinaryOperation<in In1, in In2, out Out> : Operation() {
         override fun apply(first: String, second: String): String = first + second
     }
 
-    object IntPlus : BinaryOperation<Int, Int, Int>() {
-        override fun apply(first: Int, second: Int): Int = first + second
+    class IntPlus<T : IntValue>(val constructor: (Int) -> T) : BinaryOperation<T, T, T>() {
+        override fun apply(first: T, second: T): T = constructor(first.value + second.value)
     }
 
     object LocalizedShortDateFormat : LocalizedFormatter<LocalDate>() {
