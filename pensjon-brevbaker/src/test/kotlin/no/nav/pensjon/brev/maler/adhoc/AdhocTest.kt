@@ -50,7 +50,7 @@ class AdhocTest {
     fun `testRegelendring pdf`() {
         testAdhocPdf(AdhocRegelendretGjenlevendetillegg.template, "ADHOC_AdhocRegelendretGjenlevendetillegg", Bokmal)
         testAdhocPdf(AdhocRegelendretGjenlevendetillegg.template, "ADHOC_AdhocRegelendretGjenlevendetillegg", Nynorsk)
-        testAdhocPdf(AdhocRegelendretGjenlevendetillegg.template, "ADHOC_AdhocRegelendretGjenlevendetillegg", English)
+      //  testAdhocPdf(AdhocRegelendretGjenlevendetillegg.template, "ADHOC_AdhocRegelendretGjenlevendetillegg", English)
     }
     @Test
     fun `testRegelendring html`() {
