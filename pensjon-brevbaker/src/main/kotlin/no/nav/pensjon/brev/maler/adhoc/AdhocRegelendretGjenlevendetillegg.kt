@@ -9,7 +9,7 @@ import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
-object AdhocRegelendretGjenlevendetillegg:AutobrevTemplate<Unit>{
+object AdhocRegelendretGjenlevendetillegg : AutobrevTemplate<Unit> {
     override val kode = Brevkode.AutoBrev.UT_2023_INFO_REGLERENDRET_GJT_12_18
     override val template: LetterTemplate<*, Unit> = createTemplate(
         name = kode.name,
