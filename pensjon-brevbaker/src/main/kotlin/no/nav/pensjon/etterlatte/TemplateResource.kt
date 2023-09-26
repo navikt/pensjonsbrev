@@ -6,13 +6,9 @@ import no.nav.pensjon.etterlatte.maler.barnepensjon.BarnepensjonInnvilgelse
 import no.nav.pensjon.etterlatte.maler.barnepensjon.avslag.AvslagFoerstegangsbehandling
 import no.nav.pensjon.etterlatte.maler.barnepensjon.avslag.IkkeSomFoelgeAvYrkesskadeYrkessykdom
 import no.nav.pensjon.etterlatte.maler.barnepensjon.endring.Endring
-import no.nav.pensjon.etterlatte.maler.barnepensjon.endring.EndringInstitusjonsopphold
-import no.nav.pensjon.etterlatte.maler.barnepensjon.endring.UtAvFengselsopphold
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.ny.BarnepensjonInnvilgelseEnkel
 import no.nav.pensjon.etterlatte.maler.barnepensjon.ny.BarnepensjonInnvilgelseNy
 import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.AdopsjonRevurdering
-import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.Fengselsopphold
-import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.HarStanset
 import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.OmgjoeringAvFarskapRevurdering
 import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.OpphoerRevurdering
 import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.SoeskenjusteringRevurdering
@@ -38,13 +34,9 @@ val prodAutobrevTemplates: Set<EtterlatteTemplate<*>> =
         OMSOpphoerManuell,
         AdopsjonRevurdering,
         Endring,
-        EndringInstitusjonsopphold,
-        Fengselsopphold,
-        HarStanset,
         OmgjoeringAvFarskapRevurdering,
         OpphoerRevurdering,
         SoeskenjusteringRevurdering,
-        UtAvFengselsopphold,
         YrkesskadeRevurdering,
         InnvilgelseFoerstegangsvedtak,
         FoerstegangsvedtakUtfall,
