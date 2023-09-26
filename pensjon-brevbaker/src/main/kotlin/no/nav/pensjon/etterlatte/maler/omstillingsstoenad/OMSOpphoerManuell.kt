@@ -14,7 +14,7 @@ import no.nav.pensjon.etterlatte.maler.ManueltBrevDTO
 import no.nav.pensjon.etterlatte.maler.ManueltBrevDTOSelectors.innhold
 import no.nav.pensjon.etterlatte.maler.fraser.common.OMSFelles
 import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
-import no.nav.pensjon.etterlatte.maler.vedlegg.klageOgAnke
+import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.klageOgAnke
 
 @TemplateModelHelpers
 object OMSOpphoerManuell : EtterlatteTemplate<ManueltBrevDTO> {

@@ -20,8 +20,8 @@ import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.HarStansetDTOSel
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.Barnepensjon
 import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
 import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.dineRettigheterOgPlikter
+import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.klageOgAnke
 import no.nav.pensjon.etterlatte.maler.vedlegg.informasjonTilDegSomHandlerPaaVegneAvBarnet
-import no.nav.pensjon.etterlatte.maler.vedlegg.klageOgAnke
 
 data class HarStansetDTO(val utbetalingsinfo: Utbetalingsinfo, override val innhold: List<Element>) : BrevDTO
 

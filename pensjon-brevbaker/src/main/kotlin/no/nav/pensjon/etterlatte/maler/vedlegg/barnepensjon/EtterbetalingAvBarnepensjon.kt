@@ -1,6 +1,7 @@
-package no.nav.pensjon.etterlatte.maler.vedlegg
+package no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon
 
 import no.nav.pensjon.brev.maler.fraser.common.Felles
+import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
@@ -8,17 +9,18 @@ import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.etterlatte.maler.barnepensjon.endring.EtterbetalingDTOSelectors.beregningsperioder
-import no.nav.pensjon.etterlatte.maler.barnepensjon.endring.EtterbetalingsperiodeSelectors.datoFOM
-import no.nav.pensjon.etterlatte.maler.barnepensjon.endring.EtterbetalingsperiodeSelectors.datoTOM
-import no.nav.pensjon.etterlatte.maler.barnepensjon.endring.EtterbetalingsperiodeSelectors.grunnbeloep
-import no.nav.pensjon.etterlatte.maler.barnepensjon.endring.EtterbetalingsperiodeSelectors.stoenadFoerReduksjon
-import no.nav.pensjon.etterlatte.maler.barnepensjon.endring.EtterbetalingsperiodeSelectors.utbetaltBeloep
+import no.nav.pensjon.etterlatte.maler.EtterbetalingDTO
+import no.nav.pensjon.etterlatte.maler.EtterbetalingDTOSelectors.beregningsperioder
+import no.nav.pensjon.etterlatte.maler.EtterbetalingsperiodeSelectors.datoFOM
+import no.nav.pensjon.etterlatte.maler.EtterbetalingsperiodeSelectors.datoTOM
+import no.nav.pensjon.etterlatte.maler.EtterbetalingsperiodeSelectors.grunnbeloep
+import no.nav.pensjon.etterlatte.maler.EtterbetalingsperiodeSelectors.stoenadFoerReduksjon
+import no.nav.pensjon.etterlatte.maler.EtterbetalingsperiodeSelectors.utbetaltBeloep
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.Barnepensjon
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
 
 @TemplateModelHelpers
-val etterbetalingAvBarnepensjon = createAttachment(
+val etterbetalingAvBarnepensjon = createAttachment<LangBokmalNynorskEnglish, EtterbetalingDTO>(
     title = newText(
         Bokmal to "Etterbetaling av barnepensjon",
         Nynorsk to "",
