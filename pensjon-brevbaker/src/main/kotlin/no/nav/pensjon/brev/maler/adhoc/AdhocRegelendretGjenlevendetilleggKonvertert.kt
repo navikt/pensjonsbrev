@@ -68,8 +68,7 @@ object AdhocRegelendretGjenlevendetilleggKonvertert : AutobrevTemplate<Unit> {
                     Nynorsk to "Beløpet du får utbetalt vil framleis bli redusert viss du har inntekt over inntektsgrensa for uføretrygda di.",
                 )
             }
-            
-            title2 {
+            title1 {
                 text(
                     Bokmal to "Lurer du på hva du har utbetalt?",
                     Nynorsk to "Lurar du på kva du har utbetalt?",
@@ -81,7 +80,7 @@ object AdhocRegelendretGjenlevendetilleggKonvertert : AutobrevTemplate<Unit> {
                     Nynorsk to "Du kan logge deg på $DIN_UFORETRYGD_URL for å sjå utbetalingane dine.",
                 )
             }
-            title2 {
+            title1 {
                 text(
                     Bokmal to "Du må melde fra om endringer",
                     Nynorsk to "Du må melde frå om endringar",
@@ -105,8 +104,7 @@ object AdhocRegelendretGjenlevendetilleggKonvertert : AutobrevTemplate<Unit> {
                     Nynorsk to "Du kan oppdatere inntekta di på $INNTEKTSPLANLEGGEREN_URL.",
                 )
             }
-
-            title2 {
+            title1 {
                 text(
                     Bokmal to "Har du spørsmål?",
                     Nynorsk to "Har du spørsmål?",
