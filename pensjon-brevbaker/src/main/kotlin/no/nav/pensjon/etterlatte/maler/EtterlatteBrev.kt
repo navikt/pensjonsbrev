@@ -8,14 +8,6 @@ data class EtterbetalingDTO(
     val tilDato: LocalDate
 )
 
-data class Etterbetalingsperiode(
-    val datoFOM: LocalDate,
-    val datoTOM: LocalDate?,
-    val grunnbeloep: Kroner,
-    val stoenadFoerReduksjon: Kroner,
-    var utbetaltBeloep: Kroner
-)
-
 data class Avkortingsinfo(
     val grunnbeloep: Kroner,
     val inntekt: Kroner,
