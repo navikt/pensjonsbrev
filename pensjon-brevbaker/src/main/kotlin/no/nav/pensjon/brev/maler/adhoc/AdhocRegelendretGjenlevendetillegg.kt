@@ -52,7 +52,7 @@ object AdhocRegelendretGjenlevendetillegg : AutobrevTemplate<Unit> {
                     English to ""
                 )
             }
-            title2 {
+            title1 {
                 text(
                     Bokmal to "Hvilke andre endringer får betydning for deg?",
                     Nynorsk to "Kva andre endringar får noko å seie for deg?",
@@ -80,7 +80,7 @@ object AdhocRegelendretGjenlevendetillegg : AutobrevTemplate<Unit> {
                     English to ""
                 )
             }
-            title2 {
+            title1 {
                 text(
                     Bokmal to "Lurer du på hva du har utbetalt?",
                     Nynorsk to "Lurar du på kva du har utbetalt?",
@@ -94,7 +94,7 @@ object AdhocRegelendretGjenlevendetillegg : AutobrevTemplate<Unit> {
                     English to ""
                 )
             }
-            title2 {
+            title1 {
                 text(
                     Bokmal to "Du må melde fra om endringer",
                     Nynorsk to "Du må melde frå om endringar",
@@ -122,7 +122,7 @@ object AdhocRegelendretGjenlevendetillegg : AutobrevTemplate<Unit> {
                     English to ""
                 )
             }
-            title2 {
+            title1 {
                 text(
                     Bokmal to "Du har rett til å klage ",
                     Nynorsk to "Du har rett til å klage ",
@@ -143,7 +143,7 @@ object AdhocRegelendretGjenlevendetillegg : AutobrevTemplate<Unit> {
                     English to ""
                 )
             }
-            title2 {
+            title1 {
                 text(
                     Bokmal to "Du har rett til innsyn",
                     Nynorsk to "Du har rett til innsyn",
@@ -157,7 +157,7 @@ object AdhocRegelendretGjenlevendetillegg : AutobrevTemplate<Unit> {
                     English to ""
                 )
             }
-            title2 {
+            title1 {
                 text(
                     Bokmal to "Har du spørsmål?",
                     Nynorsk to "Har du spørsmål?",
