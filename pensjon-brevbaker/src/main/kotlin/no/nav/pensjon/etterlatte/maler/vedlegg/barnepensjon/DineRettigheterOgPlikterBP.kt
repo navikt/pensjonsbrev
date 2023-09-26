@@ -9,6 +9,7 @@ import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
 import no.nav.pensjon.etterlatte.maler.fraser.common.Felles
 
 @TemplateModelHelpers
@@ -44,7 +45,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, A
         list {
             item {
                 text(
-                    Bokmal to "endringer av nåværende familie- eller omsorgsforhold",
+                    Bokmal to "endringer av familie- eller omsorgsforhold",
                     Nynorsk to "",
                     English to "",
                 )
@@ -103,7 +104,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, A
     }
     paragraph {
         text(
-            Bokmal to "Du har som hovedregel rett til å se dokumentene i saken din. Hvis du ønsker innsyn, så du kontakte oss på telefon eller per post.",
+            Bokmal to "Du har som hovedregel rett til å se dokumentene i saken din. Hvis du ønsker innsyn, kan du kontakte oss på telefon eller per post.",
             Nynorsk to "",
             English to "",
         )
@@ -122,6 +123,15 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, A
         text(
             Bokmal to "Du kan klage på vedtaket innen seks uker fra du mottok det. Kontoret som har " +
                 "fattet vedtaket vil da vurdere saken din på nytt.",
+            Nynorsk to "",
+            English to "",
+        )
+    }
+    paragraph {
+        text(
+            Bokmal to "Klagen må være skriftlig og inneholde navn, fødselsnummer og adresse. " +
+                    "Bruk gjerne skjemaet som du finner på ${Constants.KLAGE_URL}. " +
+                    "Trenger du hjelp, er du velkommen til å ringe oss på telefon ${Constants.KONTAKTTELEFON_PENSJON}.",
             Nynorsk to "",
             English to "",
         )
