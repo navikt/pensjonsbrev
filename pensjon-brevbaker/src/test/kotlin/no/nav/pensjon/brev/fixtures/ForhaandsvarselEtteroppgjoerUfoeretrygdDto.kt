@@ -3,8 +3,8 @@ package no.nav.pensjon.brev.fixtures
 import no.nav.pensjon.brev.Fixtures
 import no.nav.pensjon.brev.api.model.maler.ForhaandsvarselEtteroppgjoerUfoeretrygdDto
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDto
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDto.AvviksResultat
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDto.InntektOgFratrekk
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDto.*
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDto.Barnetillegg.Saerkullsbarn
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDto.InntektOgFratrekk.Fratrekk
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDto.InntektOgFratrekk.Inntekt
 import no.nav.pensjon.brevbaker.api.model.Kroner
@@ -22,7 +22,19 @@ fun createForhaandsvarselEtteroppgjoerUfoeretrygdDto() =
 
 fun createForhaandsvarselEtteroppgjoerUfoeretrygdDtoOpplysningerOmEtteroppgjoret() =
     OpplysningerOmEtteroppgjoeretDto(
-        barnetillegg = null,
+        barnetillegg = Barnetillegg(
+            felles = null,
+            saerkull = Saerkullsbarn(
+                fribeloep = Kroner(10),
+                resultat = AvviksResultat(Kroner(10), Kroner(8), Kroner(-2), false),
+                harSamletInntektOverInntektstak = false,
+                samletInntekt = Kroner(10),
+                inntektstakSamletInntekt = Kroner(12),
+            ),
+            personinntekt = InntektOgFratrekk(Inntekt(emptyList(), Kroner(0)), Fratrekk(emptyList(), Kroner(0))),
+            mindreEnn40AarTrygdetid = true,
+            totaltResultat = AvviksResultat(Kroner(10), Kroner(8), Kroner(-2), false),
+        ),
         harGjenlevendeTillegg = false,
         harFaattForMye = true,
         pensjonsgivendeInntekt = InntektOgFratrekk(

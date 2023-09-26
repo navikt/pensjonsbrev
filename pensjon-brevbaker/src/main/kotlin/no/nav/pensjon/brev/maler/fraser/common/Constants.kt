@@ -12,6 +12,7 @@ object Constants {
     const val FULLMAKT_URL = "$NAV_URL/fullmakt"
     const val GJENLEVENDETILLEGG_URL = "$NAV_URL/gjenlevendetillegg"
     const val GJENLEVENDEPENSJON_URL = "$NAV_URL/gjenlevendepensjon"
+    const val GJENLEVENDETILLEGG_URL = "$NAV_URL/gjenlevendetillegg"
     const val GJENLEVENDE_SKJEMA_URL = "$NAV_URL/gjenlevendeektefelle"
     const val GJENLEVENDE_TILLEGGSSTOENADER_URL= "$NAV_URL/tilleggsstonader-gjenlevende"
     const val HELSE_URL= "$NAV_URL/helse"
