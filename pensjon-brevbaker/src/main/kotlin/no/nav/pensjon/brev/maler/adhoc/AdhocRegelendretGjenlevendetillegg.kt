@@ -4,6 +4,7 @@ import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.maler.fraser.common.Constants.DIN_UFORETRYGD_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.GJENLEVENDETILLEGG_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.INNTEKTSPLANLEGGEREN_URL
+import no.nav.pensjon.brev.maler.fraser.common.Constants.KLAGE_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.KONTAKT_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_KONTAKTSENTER_AAPNINGSTID
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_KONTAKTSENTER_TELEFON
@@ -123,8 +124,8 @@ object AdhocRegelendretGjenlevendetillegg : AutobrevTemplate<Unit> {
             }
             paragraph {
                 text(
-                    Bokmal to "Hvis du mener vedtaket er feil, kan du klage innen seks uker fra den datoen du mottok vedtaket. Klagen skal være skriftlig. Du finner skjema og informasjon på nav.no/klage.",
-                    Nynorsk to "Viss du meiner vedtaket er feil, kan du klage innan seks veker frå den datoen du fekk vedtaket. Klagen skal vere skriftleg. Du finn skjema og informasjon på nav.no/klage.",
+                    Bokmal to "Hvis du mener vedtaket er feil, kan du klage innen seks uker fra den datoen du mottok vedtaket. Klagen skal være skriftlig. Du finner skjema og informasjon på $KLAGE_URL.",
+                    Nynorsk to "Viss du meiner vedtaket er feil, kan du klage innan seks veker frå den datoen du fekk vedtaket. Klagen skal vere skriftleg. Du finn skjema og informasjon på $KLAGE_URL.",
                 )
             }
             paragraph {
