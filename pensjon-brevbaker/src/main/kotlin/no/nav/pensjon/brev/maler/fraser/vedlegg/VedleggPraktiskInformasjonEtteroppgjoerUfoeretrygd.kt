@@ -23,16 +23,16 @@ object InnledningPraktiskInformasjon : OutlinePhrase<LangBokmalNynorskEnglish>()
                 }
                 item {
                     text(
-                        Bokmal to "Hvis du ikke har takket ja til eFaktura i nettbanken din, får du brevet med betalingsinformasjon i Altinn.",
-                        Nynorsk to "Dersom du ikkje har takka ja til eFaktura i nettbanken, får du brevet med betalingsinformasjon i Altinn.",
-                        English to "If you have not accepted eFaktura in your online banking, you will receive a letter containing payment information in Altinn."
+                        Bokmal to "Hvis du ikke har takket ja til eFaktura i nettbanken din, får du fakturaen med betalingsinformasjon i Altinn.",
+                        Nynorsk to "Dersom du ikkje har takka ja til eFaktura i nettbanken, får du fakturaen med betalingsinformasjon i Altinn.",
+                        English to "If you have not accepted eFaktura in your online banking, you will receive an invoice containing payment information in Altinn."
                     )
                 }
                 item {
                     text(
-                        Bokmal to "Har du reservert deg mot digital post, får du brevet i posten.",
-                        Nynorsk to "Har du reservert deg mot digital post, får du brevet i posten.",
-                        English to "If you have opted out of digital mail, you will receive a letter by regular post."
+                        Bokmal to "Har du reservert deg mot digital post, får du fakturaen i posten.",
+                        Nynorsk to "Har du reservert deg mot digital post, får du fakturaen i posten.",
+                        English to "If you have opted out of digital mail, you will receive an invoice by regular post."
                     )
                 }
             }
