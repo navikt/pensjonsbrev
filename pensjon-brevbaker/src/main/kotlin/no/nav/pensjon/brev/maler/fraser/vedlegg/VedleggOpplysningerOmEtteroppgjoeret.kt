@@ -480,7 +480,7 @@ data class OmBeregningAvBarnetillegg(
 
         title2 {
             text(
-                Bokmal to "Din personinntekt",
+                Bokmal to "Personinntekten din",
                 Nynorsk to "Personinntekta di",
                 English to "Your personal income",
             )
@@ -534,7 +534,7 @@ data class OmBeregningAvBarnetillegg(
         ifNotNull(barnetillegg.felles) { fellesbarn ->
             title2 {
                 text(
-                    Bokmal to "Personinntekt til annen forelder",
+                    Bokmal to "Personinntekten til annen forelder",
                     Nynorsk to "Personinntekta til den andre forelderen",
                     English to "Personal income of the other parent",
                 )
@@ -770,9 +770,9 @@ data class OmBeregningAvUfoeretrygd(
 
             val inntektEtterFratrekk = pensjonsgivendeInntektBruktIBeregningen.format()
             textExpr(
-                Bokmal to "Etter beregningen er gjort, har du ".expr() + inntektEtterFratrekk + " kroner i pensjonsgivende inntekt.",
+                Bokmal to "Beregningen vår viser at du har ".expr() + inntektEtterFratrekk + " kroner i pensjonsgivende inntekt.",
                 Nynorsk to "Utrekninga vår viser at du har ".expr() + inntektEtterFratrekk + " kroner i pensjonsgivande inntekt.",
-                English to "By our calculation, your pensionable income is NOK ".expr() + inntektEtterFratrekk + ".",
+                English to "Our calculation shows your pensionable income is NOK ".expr() + inntektEtterFratrekk + ".",
             )
         }
 

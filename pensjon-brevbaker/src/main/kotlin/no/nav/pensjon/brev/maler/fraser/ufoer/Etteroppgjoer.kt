@@ -116,7 +116,7 @@ data class InntektOverInntektstak(
             textExpr(
                 Bokmal to "I ".expr() + periode.format() + " var 80 prosent av inntekten din før du ble ufør, "+ oppjustertInntektFoerUfoerhet.format() + " kroner. ",
                 Nynorsk to "I ".expr() + periode.format() + " var 80 prosent av inntekta di før du blei ufør, "+ oppjustertInntektFoerUfoerhet.format() + " kroner. ",
-                English to "In ".expr() + periode.format() + ", 80 percent of your pre-disability benefit income was NOK "+ oppjustertInntektFoerUfoerhet.format() + ". "
+                English to "In ".expr() + periode.format() + ", 80 percent of your pre-disability benefit income was NOK "+ oppjustertInntektFoerUfoerhet.format() + ". "
             )
             textExpr(
                 Bokmal to "Du tjente ".expr() + pensjonsgivendeInntektBruktIBeregningen.format() + " kroner i "+ periode.format() + ".",
