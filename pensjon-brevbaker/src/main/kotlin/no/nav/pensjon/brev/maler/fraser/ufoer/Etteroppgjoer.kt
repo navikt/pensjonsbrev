@@ -85,7 +85,7 @@ object HvordanDuBetalerTilbake : OutlinePhrase<LangBokmalNynorskEnglish>() {
         paragraph {
             text(
                 Bokmal to "Du kan lese mer om tilbakebetaling i vedlegget «Praktisk informasjon om etteroppgjør».",
-                Nynorsk to "Du kan lese meir om tilbakebetaling i vedlegget «Praktisk informasjon om etteroppgjør».",
+                Nynorsk to "Du kan lese meir om tilbakebetaling i vedlegget «Praktisk informasjon om etteroppgjer».",
                 English to "You can read more about repayment in the appendix «Practical information about post-settlement»."
             )
         }
