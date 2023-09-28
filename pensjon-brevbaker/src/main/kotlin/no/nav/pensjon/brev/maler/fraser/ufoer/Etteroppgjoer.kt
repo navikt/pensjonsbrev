@@ -230,7 +230,7 @@ object HarDuSpoersmaalEtteroppgjoer : OutlinePhrase<LangBokmalNynorskEnglish>() 
             text(
                 Bokmal to "På ${Constants.KONTAKT_URL} kan du chatte eller skrive til oss.",
                 Nynorsk to "Du kan chatte med eller skrive til oss på ${Constants.KONTAKT_URL}.",
-                English to "At ${Constants.KONTAKT_URL}, you can chat or write us a message."
+                English to "At ${Constants.KONTAKT_URL}, you can chat or write a message to us."
             )
             newline()
             text(
