@@ -6,6 +6,7 @@ import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.Letter
 import no.nav.pensjon.brev.template.createVedleggTestTemplate
 import no.nav.pensjon.brev.template.dsl.expression.expr
+import no.nav.pensjon.brev.template.dsl.languages
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 
@@ -16,12 +17,13 @@ class OrienteringOmRettigheterUfoereTest {
     fun testVedlegg() {
         val template = createVedleggTestTemplate(
             vedleggDineRettigheterOgPlikterUfoere,
-            Fixtures.create(OrienteringOmRettigheterUfoereDto::class).expr()
+            Fixtures.create(OrienteringOmRettigheterUfoereDto::class).expr(),
+            languages(Bokmal, Nynorsk, English),
         )
         Letter(
             template,
             Unit,
-            Nynorsk,
+            Bokmal,
             Fixtures.fellesAuto
         ).renderTestPDF("OrienteringOmRettigheterUfoere")
 

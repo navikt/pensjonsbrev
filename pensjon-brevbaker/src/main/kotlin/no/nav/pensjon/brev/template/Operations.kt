@@ -68,6 +68,8 @@ sealed class UnaryOperation<In, out Out> : Operation() {
     }
 }
 
+typealias LocalizedFormatter<T> = BinaryOperation<T, Language, String>
+
 abstract class BinaryOperation<in In1, in In2, out Out> : Operation() {
 
     abstract fun apply(first: In1, second: In2): Out
@@ -104,34 +106,38 @@ abstract class BinaryOperation<in In1, in In2, out Out> : Operation() {
         override fun apply(first: String, second: String): String = first + second
     }
 
-    object LocalizedShortDateFormat : BinaryOperation<LocalDate, Language, String>() {
+    class IntPlus<T : IntValue>(val constructor: (Int) -> T) : BinaryOperation<T, T, T>() {
+        override fun apply(first: T, second: T): T = constructor(first.value + second.value)
+    }
+
+    object LocalizedShortDateFormat : LocalizedFormatter<LocalDate>() {
         override fun apply(first: LocalDate, second: Language): String =
             first.format(dateFormatter(second, FormatStyle.SHORT)).replace(' ', ' ') //space to non braking space
     }
 
-    object LocalizedDateFormat : BinaryOperation<LocalDate, Language, String>() {
+    object LocalizedDateFormat : LocalizedFormatter<LocalDate>() {
         override fun apply(first: LocalDate, second: Language): String =
             first.format(dateFormatter(second, FormatStyle.LONG)).replace(' ', ' ') //space to non braking space
     }
 
-    object LocalizedDoubleFormat : BinaryOperation<Double, Language, String>() {
+    object LocalizedDoubleFormat : LocalizedFormatter<Double>() {
         override fun apply(first: Double, second: Language): String =
             String.format(second.locale(), "%.2f", first)
     }
 
-    object LocalizedIntFormat : BinaryOperation<Int, Language, String>() {
+    object LocalizedIntFormat : LocalizedFormatter<Int>() {
         override fun apply(first: Int, second: Language): String =
             String.format(second.locale(), "%d", first)
     }
 
-    object LocalizedCurrencyFormat : BinaryOperation<Int, Language, String>() {
+    object LocalizedCurrencyFormat : LocalizedFormatter<Int>() {
         override fun apply(first: Int, second: Language): String =
             NumberFormat.getNumberInstance(second.locale())
                 .apply { maximumFractionDigits = 0 }
                 .format(first)
     }
 
-    object LocalizedCollectionFormat : BinaryOperation<Collection<String>, Language, String>() {
+    object LocalizedCollectionFormat : LocalizedFormatter<Collection<String>>() {
         override fun apply(first: Collection<String>, second: Language): String {
             return if (first.size == 1) {
                 first.first()

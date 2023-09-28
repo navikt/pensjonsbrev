@@ -17,78 +17,15 @@ fun Expression<Telefonnummer>.format() =
     Expression.UnaryInvoke(this, UnaryOperation.FormatPhoneNumber)
 
 @JvmName("formatKroner")
-fun Expression<Kroner>.format() =
-    Expression.BinaryInvoke(
-        select(intValueSelector),
-        Expression.FromScope(ExpressionScope<Any, *>::language),
-        BinaryOperation.LocalizedCurrencyFormat
-    )
+fun Expression<Kroner>.format() = select(intValueSelector).format(formatter = BinaryOperation.LocalizedCurrencyFormat)
 
 @JvmName("formatIntValue")
-fun Expression<IntValue>.format() =
-    select(intValueSelector).format()
-
-@JvmName("formatBrukersSivilstandTabell")
-fun Expression<Sivilstand>.tableFormat() =
-    Expression.BinaryInvoke(
-        this,
-        Expression.FromScope(ExpressionScope<Any, *>::language),
-        FormatBrukersSivilstandTabell,
-    )
+fun Expression<IntValue>.format() = select(intValueSelector).format()
 
 @JvmName("formatBormedSivilstandTabell")
-fun Expression<BorMedSivilstand>.tableFormat() =
-    Expression.BinaryInvoke(
-        this,
-        Expression.FromScope(ExpressionScope<Any, *>::language),
-        FormatBorMedSivilstandTabell,
-    )
+fun Expression<BorMedSivilstand>.tableFormat() = format(formatter = FormatBorMedSivilstandTabell)
 
-object FormatBrukersSivilstandTabell : BinaryOperation<Sivilstand, Language, String>() {
-    override fun apply(first: Sivilstand, second: Language): String =
-        when (first) {
-            ENKE -> when (second) {
-                Bokmal -> "Enke/Enkemann"
-                Nynorsk -> "Enkje/Enkjemann"
-                English -> "Widow/widower"
-            }
-
-            ENSLIG -> when (second) {
-                Bokmal -> "Enslig"
-                Nynorsk -> "Einsleg"
-                English -> "Single"
-            }
-
-            GIFT,
-            GIFT_LEVER_ADSKILT,
-            SEPARERT -> when (second) {
-                Bokmal, Nynorsk -> "Gift"
-                English -> "Married"
-            }
-
-            PARTNER,
-            PARTNER_LEVER_ADSKILT,
-            SEPARERT_PARTNER -> when (second) {
-                Bokmal -> "Partner"
-                Nynorsk -> "Partnar"
-                English -> "Partnership"
-            }
-
-            SAMBOER1_5 -> when (second) {
-                Bokmal -> "Samboer (jf. Folketrygdloven § 1-5)"
-                Nynorsk -> "Sambuar (jf. folketrygdlova § 1-5)"
-                English -> "Cohabitation (cf. Section 1-5 of the National Insurance Act)"
-            }
-
-            SAMBOER3_2 -> when (second) {
-                Bokmal -> "Samboer (jf. Folketrygdloven § 12-13)"
-                Nynorsk -> "Sambuar (jf. Folketrygdlova § 12-13)"
-                English -> "Cohabitation (cf. Section 12-13 of the National Insurance Act)"
-            }
-        }
-}
-
-object FormatBorMedSivilstandTabell : BinaryOperation<BorMedSivilstand, Language, String>() {
+object FormatBorMedSivilstandTabell : LocalizedFormatter<BorMedSivilstand>() {
     override fun apply(first: BorMedSivilstand, second: Language): String =
         when (first) {
             BorMedSivilstand.GIFT_LEVER_ADSKILT,
@@ -119,11 +56,10 @@ object FormatBorMedSivilstandTabell : BinaryOperation<BorMedSivilstand, Language
 
 
 @JvmName("formatSivilstandBestemtForm")
-fun Expression<Sivilstand>.bestemtForm() =
-    Expression.BinaryInvoke(this, Expression.FromScope(ExpressionScope<Any, *>::language), SivilstandEpsBestemt)
+fun Expression<Sivilstand>.bestemtForm() = format(SivilstandEpsBestemt)
 
 @Deprecated("Bruk bormed sivilstand istedenfor")
-object SivilstandEpsBestemt : BinaryOperation<Sivilstand, Language, String>() {
+object SivilstandEpsBestemt : LocalizedFormatter<Sivilstand>() {
     override fun apply(first: Sivilstand, second: Language): String = sivilstand(first, second, true)
 }
 
@@ -158,20 +94,16 @@ private fun sivilstand(sivilstand: Sivilstand, language: Language, bestemtForm: 
 
 
 @JvmName("formatBorMedSivilstandBestemtForm")
-fun Expression<BorMedSivilstand>.bestemtForm() =
-    Expression.BinaryInvoke(this, Expression.FromScope(ExpressionScope<Any, *>::language), BorMedSivilstandBestemt)
+fun Expression<BorMedSivilstand>.bestemtForm() = format(formatter = BorMedSivilstandBestemt)
 
 @JvmName("formatBorMedSivilstandUbestemtForm")
-fun Expression<BorMedSivilstand>.ubestemtForm() =
-    Expression.BinaryInvoke(this, Expression.FromScope(ExpressionScope<Any, *>::language), BorMedSivilstandUbestemt)
+fun Expression<BorMedSivilstand>.ubestemtForm() = format(formatter = BorMedSivilstandUbestemt)
 
-
-
-object BorMedSivilstandUbestemt : BinaryOperation<BorMedSivilstand, Language, String>() {
+object BorMedSivilstandUbestemt : LocalizedFormatter<BorMedSivilstand>() {
     override fun apply(first: BorMedSivilstand, second: Language): String = borMedSivilstand(first, second, false)
 }
 
-object BorMedSivilstandBestemt : BinaryOperation<BorMedSivilstand, Language, String>() {
+object BorMedSivilstandBestemt : LocalizedFormatter<BorMedSivilstand>() {
     override fun apply(first: BorMedSivilstand, second: Language): String = borMedSivilstand(first, second, true)
 }
 private fun borMedSivilstand(sivilstand: BorMedSivilstand, language: Language, bestemtForm: Boolean): String =

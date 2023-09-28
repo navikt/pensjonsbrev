@@ -63,12 +63,7 @@ fun <In1, In2, Out> Expression<Collection<In2>>.map(
 fun <In> Expression<Collection<In>>.map(mapper: BinaryOperation<In, Language, String>): Expression<Collection<String>> =
     map(mapper, Expression.FromScope(ExpressionScope<Any, *>::language))
 
-fun Expression<Collection<String>>.format(): StringExpression =
-    Expression.BinaryInvoke(
-        first = this,
-        second = Expression.FromScope(ExpressionScope<Any, *>::language),
-        operation = BinaryOperation.LocalizedCollectionFormat
-    )
+fun Expression<Collection<String>>.format(): StringExpression = format(formatter = BinaryOperation.LocalizedCollectionFormat)
 
 /**
  * Collection contains at least one of the listed items.

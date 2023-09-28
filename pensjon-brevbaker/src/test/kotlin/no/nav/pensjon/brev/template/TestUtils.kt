@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.template
 
-import no.nav.pensjon.brev.template.dsl.*
+import no.nav.pensjon.brev.template.dsl.createTemplate
+import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.render.PensjonLatexRenderer
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import org.junit.jupiter.api.Assertions
@@ -31,13 +32,14 @@ private fun <Param : Any> Letter<Param>.renderLetterAndAttachments(): String {
 }
 
 
-fun <AttachmentData : Any> createVedleggTestTemplate(
-    template: AttachmentTemplate<LangBokmalNynorskEnglish, AttachmentData>,
-    attachmentData: Expression<AttachmentData>
+fun <AttachmentData : Any, Lang: LanguageSupport> createVedleggTestTemplate(
+    template: AttachmentTemplate<Lang, AttachmentData>,
+    attachmentData: Expression<AttachmentData>,
+    languages: Lang,
 ) = createTemplate(
     name = "test-template",
     letterDataType = Unit::class,
-    languages = languages(Language.Bokmal, Language.Nynorsk, Language.English),
+    languages = languages,
     letterMetadata = LetterMetadata(
         "test mal",
         isSensitiv = false,
@@ -46,11 +48,7 @@ fun <AttachmentData : Any> createVedleggTestTemplate(
     ),
 ) {
     title {
-        text(
-            Language.Bokmal to "Tittel",
-            Language.Nynorsk to "Tittel",
-            Language.English to "Title"
-        )
+        eval("Tittel".expr())
     }
 
     outline {}

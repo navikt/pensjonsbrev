@@ -1,10 +1,12 @@
+val apiModelJavaTarget: String by System.getProperties()
+
 plugins {
     kotlin("jvm")
     `maven-publish`
 }
 
 group = "no.nav.pensjon.brev"
-version = "36"
+version = "51"
 
 java {
     withSourcesJar()
@@ -17,11 +19,12 @@ repositories {
 
 dependencies {
     compileOnly(kotlin("stdlib"))
-    api("no.nav.pensjon.brevbaker:brevbaker-api-model-common:1.0.2")
+    api("no.nav.pensjon.brevbaker:brevbaker-api-model-common:1.1.0")
 }
 
 publishing {
     repositories {
+
         maven {
             name = "GitHubPackages"
             url = uri("https://maven.pkg.github.com/navikt/pensjonsbrev")
@@ -40,9 +43,9 @@ publishing {
 
 tasks {
     compileKotlin {
-        kotlinOptions.jvmTarget = "1.8"
+        kotlinOptions.jvmTarget = apiModelJavaTarget
     }
     compileJava {
-        targetCompatibility = "1.8"
+        targetCompatibility = apiModelJavaTarget
     }
 }

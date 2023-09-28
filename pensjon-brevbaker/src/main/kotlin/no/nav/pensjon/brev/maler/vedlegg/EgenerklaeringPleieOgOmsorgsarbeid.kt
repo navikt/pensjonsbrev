@@ -73,7 +73,7 @@ val egenerklaeringPleieOgOmsorgsarbeid = createAttachment<LangBokmalNynorskEngli
         }
     }
 
-    title1 {
+    title2 {
         text(
             Bokmal to "Hvis omsorgsforholdet har opphørt i løpet av året:",
             Nynorsk to "Om omsorgsforholdet er blitt avslutta under året:",
@@ -100,16 +100,12 @@ val egenerklaeringPleieOgOmsorgsarbeid = createAttachment<LangBokmalNynorskEngli
             )
         )
 
-        repeat(2) { newline() }
-
         formText(size = Size.SHORT, prompt = newText(Bokmal to "Dato:", Nynorsk to "Dato:", English to "Date"))
         formText(
             size = Size.LONG,
             vspace = false,
             prompt = newText(Bokmal to "Underskrift:", Nynorsk to "Underskrift:", English to "Signature:")
         )
-
-        repeat(2) { newline() }
     }
 
     paragraph {

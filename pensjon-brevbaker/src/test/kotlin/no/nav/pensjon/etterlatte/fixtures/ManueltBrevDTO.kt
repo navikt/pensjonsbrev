@@ -1,7 +1,9 @@
 package no.nav.pensjon.etterlatte.fixtures
 
+import no.nav.pensjon.etterlatte.maler.Element
+import no.nav.pensjon.etterlatte.maler.ElementType
+import no.nav.pensjon.etterlatte.maler.InnerElement
 import no.nav.pensjon.etterlatte.maler.ManueltBrevDTO
-import no.nav.pensjon.etterlatte.maler.ManueltBrevDTO.*
 
 fun createManueltBrevDTO() =
     ManueltBrevDTO(

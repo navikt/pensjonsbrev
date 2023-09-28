@@ -7,7 +7,6 @@ on:
       - "pensjon-brevbaker-api-model/**"
       - "brevbaker-api-model-common/**"
       - ".github/workflows/brevbaker-api-model.yaml"
-# TODO: @hconhegg skulle ikke workflow yaml fjernes fra on.push.paths og fra filters i jobs.changes?
 jobs:
   changes:
     runs-on: ubuntu-latest
@@ -24,22 +23,24 @@ jobs:
               - 'brevbaker-api-model-common/**'
             pensjonsbrev:
               - 'pensjon-brevbaker-api-model/**'
-              - '.github/workflows/brevbaker-api-model.yaml'
   "release-common":
     name: "build"
     runs-on: "ubuntu-latest"
+    permissions:
+      packages: write
     needs: [ changes ]
     if: ${{ needs.changes.outputs.common == 'true' }}
     steps:
-      - uses: "actions/checkout@v2"
+      - uses: "actions/checkout@v3"
       - uses: "gradle/wrapper-validation-action@v1"
-      - uses: "actions/cache@v2"
+      - uses: "actions/cache@v3"
         with:
           "path": "~/.gradle/caches"
           "key": "${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle.kts') }}"
           "restore-keys": "${{ runner.os }}-gradle-"
-      - uses: "actions/setup-java@v1"
+      - uses: "actions/setup-java@v3"
         with:
+          "distribution": "temurin"
           "java-version": "17"
       - name: "compile and run tests"
         run: "./gradlew :brevbaker-api-model-common:build"
@@ -51,21 +52,24 @@ jobs:
   "release-pensjon":
     name: "build"
     runs-on: "ubuntu-latest"
+    permissions:
+      packages: write
     needs: [ release-common, changes ]
     if: |
       ${{ always() &&
       needs.changes.outputs.pensjonsbrev == 'true' &&
       (needs.release-common.result == 'success' || needs.release-common.result == 'skipped') }}
     steps:
-      - uses: "actions/checkout@v2"
+      - uses: "actions/checkout@v3"
       - uses: "gradle/wrapper-validation-action@v1"
-      - uses: "actions/cache@v2"
+      - uses: "actions/cache@v3"
         with:
           "path": "~/.gradle/caches"
           "key": "${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle.kts') }}"
           "restore-keys": "${{ runner.os }}-gradle-"
-      - uses: "actions/setup-java@v1"
+      - uses: "actions/setup-java@v3"
         with:
+          "distribution": "temurin"
           "java-version": "17"
       - name: "compile and run tests"
         run: "./gradlew :pensjon-brevbaker-api-model:build"

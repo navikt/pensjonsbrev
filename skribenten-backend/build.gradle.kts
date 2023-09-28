@@ -1,5 +1,6 @@
 import io.ktor.plugin.features.*
 
+val javaTarget: String by System.getProperties()
 val kotlinVersion: String by System.getProperties()
 val ktorVersion: String by System.getProperties()
 val logbackVersion: String by project
@@ -41,10 +42,13 @@ ktor {
 
 tasks {
     compileKotlin {
-        kotlinOptions.jvmTarget = "17"
+        kotlinOptions.jvmTarget = javaTarget
     }
     compileTestKotlin {
-        kotlinOptions.jvmTarget = "17"
+        kotlinOptions.jvmTarget = javaTarget
+    }
+    compileJava {
+        targetCompatibility = javaTarget
     }
 }
 

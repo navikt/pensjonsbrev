@@ -25,6 +25,10 @@ fun <T : Enum<T>> Expression<Enum<T>>.isOneOf(vararg enums: Enum<T>): Expression
 
 fun <T : Enum<T>> Expression<Enum<T>>.isNotAnyOf(vararg enums: Enum<T>): Expression<Boolean> = not(isOneOf(*enums))
 
+@JvmName("notOperator")
+operator fun Expression<Boolean>.not(): Expression<Boolean> =
+    not(this)
+
 fun not(expr: Expression<Boolean>): Expression<Boolean> =
     Expression.UnaryInvoke(expr, UnaryOperation.Not)
 
@@ -95,4 +99,11 @@ infix fun <T> Expression<T>.equalTo(other: Expression<T>) =
         first = this,
         second = other,
         operation = BinaryOperation.Equal()
+    )
+
+fun <T> Expression<T>.format(formatter: LocalizedFormatter<T>): StringExpression =
+    Expression.BinaryInvoke(
+        first = this,
+        second = Expression.FromScope(ExpressionScope<Any, *>::language),
+        operation = formatter,
     )

@@ -5,6 +5,7 @@ import no.nav.pensjon.brev.maler.fraser.common.Constants.BESKJED_TIL_NAV_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.ETTERSENDELSE_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.FULLMAKT_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.KLAGE_URL
+import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_KONTAKTSENTER_TELEFON
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
 import no.nav.pensjon.brev.model.*
 import no.nav.pensjon.brev.template.*
@@ -130,6 +131,16 @@ object VedleggPlikterAP17 : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
             Nynorsk to "du får barn med sambuaren din",
             English to "you and your cohabiting partner have a child together"
         )
+}
+
+object VedleggPlikterEndretSivilstatus : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
+    override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+        text(
+            Bokmal to "sivilstanden din endrer seg",
+            Nynorsk to "sivilstanden din endrar seg",
+            English to "your civil status changes",
+        )
+    }
 }
 
 // VedleggPlikterAP19_001
@@ -516,14 +527,14 @@ object VedleggPlikterUT5 : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
         )
 }
 
-// VedleggPlikterUT6_001
-object VedleggPlikterUT6 : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
-    override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
+object VedleggPlikterEndretInntektBarnetillegg : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
+    override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         text(
-            Bokmal to "du gifter deg eller inngår samboerskap",
-            Nynorsk to "du giftar deg eller inngår sambuarskap",
-            English to "you get married or get a cohabitant"
+            Bokmal to "din ektefelle, partner eller samboers inntekt endrer seg og du har barnetillegg for felles barn",
+            Nynorsk to "inntekta til ektefellen, partnaren eller sambuaren din endrar seg, og du har barnetillegg for felles barn",
+            English to "the income of your spouse, partner or cohabitant changes, and you are receiving a child supplement for your joint child(ren)",
         )
+    }
 }
 
 // VedleggPlikterUT7_001
@@ -770,7 +781,6 @@ object VedleggInnsynSakPensjon : OutlinePhrase<LangBokmalNynorskEnglish>() {
 // VedleggInnsynSakUTPesys_001
 object VedleggInnsynSakUfoeretrygdPesys : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-        val telefonNummer = felles.avsenderEnhet.telefonnummer
         title1 {
             text(
                 Bokmal to "Innsyn i saken din - forvaltningsloven § 18",
@@ -780,9 +790,9 @@ object VedleggInnsynSakUfoeretrygdPesys : OutlinePhrase<LangBokmalNynorskEnglish
         }
         paragraph {
             textExpr(
-                Bokmal to "Med få unntak har du rett til å se dokumentene i saken din. Du kan logge deg inn via $NAV_URL for å se dokumenter i saken din. Du kan også ringe oss på telefon ".expr() + telefonNummer.format() + ".".expr(),
-                Nynorsk to "Med få unntak har du rett til å sjå dokumenta i saka di. Du kan logge deg inn via $NAV_URL for å sjå dokumenter i saka di. Du kan også ringje oss på telefon ".expr() + telefonNummer.format() + ".".expr(),
-                English to "With some exceptions, you are entitled to access the documents relating to your case. Log on to $NAV_URL to review the documents in connection with your case. You can also call us at tel.: ".expr() + telefonNummer.format() + ".".expr()
+                Bokmal to "Med få unntak har du rett til å se dokumentene i saken din. Du kan logge deg inn via $NAV_URL for å se dokumenter i saken din. Du kan også ringe oss på telefon $NAV_KONTAKTSENTER_TELEFON.".expr(),
+                Nynorsk to "Med få unntak har du rett til å sjå dokumenta i saka di. Du kan logge deg inn via $NAV_URL for å sjå dokumenter i saka di. Du kan også ringje oss på telefon $NAV_KONTAKTSENTER_TELEFON.".expr(),
+                English to "With some exceptions, you are entitled to access the documents relating to your case. Log on to $NAV_URL to review the documents in connection with your case. You can also call us at tel.: $NAV_KONTAKTSENTER_TELEFON.".expr()
             )
         }
     }
@@ -935,16 +945,22 @@ object VedleggKlagePesys : OutlinePhrase<LangBokmalNynorskEnglish>() {
                         Nynorsk to "namn, fødselsnummer og adresse",
                         English to "name, national identity number and address"
                     )
+                }
+                item {
                     text(
                         Bokmal to "hvilket vedtak du klager på",
                         Nynorsk to "kva vedtak du klagar på",
                         English to "which decision you are appealing"
                     )
+                }
+                item {
                     text(
                         Bokmal to "hvilken endring i vedtaket du ber om",
                         Nynorsk to "kva endring i vedtaket du ber om",
                         English to "how you believe the decision should be amended"
                     )
+                }
+                item {
                     text(
                         Bokmal to "din underskrift",
                         Nynorsk to "di underskrift",
@@ -968,6 +984,8 @@ object VedleggKlagePesys : OutlinePhrase<LangBokmalNynorskEnglish>() {
                         Nynorsk to "skrive kvifor du meiner vedtaket er feil",
                         English to "why you believe the decision is wrong"
                     )
+                }
+                item {
                     text(
                         Bokmal to "nødvendige erklæringer og andre dokumenter",
                         Nynorsk to "nemne erklæringar og andre dokument som du legg ved klaga",

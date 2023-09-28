@@ -1,29 +1,29 @@
 package no.nav.pensjon.brev.maler.vedlegg
 
 import no.nav.pensjon.brev.*
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDto
-import no.nav.pensjon.brev.template.Language
+import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.Letter
 import no.nav.pensjon.brev.template.createVedleggTestTemplate
 import no.nav.pensjon.brev.template.dsl.expression.expr
+import no.nav.pensjon.brev.template.dsl.languages
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 
-@Tag(TestTags.MANUAL_TEST)
-class OpplysningerBruktIBeregningUTTest {
+@Tag(TestTags.INTEGRATION_TEST)
+class PraktiskInformasjonEtteroppgjoerTest {
 
     @Test
     fun testVedlegg() {
         val template = createVedleggTestTemplate(
-            createVedleggOpplysningerBruktIBeregningUT(skalViseMinsteytelse = true, skalViseBarnetillegg = true),
-            Fixtures.create(OpplysningerBruktIBeregningUTDto::class).expr()
+            vedleggPraktiskInformasjonEtteroppgjoerUfoeretrygd,
+            Unit.expr(),
+            languages(Bokmal)
         )
         Letter(
             template,
             Unit,
-            Language.Bokmal,
+            Bokmal,
             Fixtures.fellesAuto
-        ).renderTestPDF("OpplysningerBruktIBeregningUfoere")
-
+        ).renderTestPDF("PraktiskInformasjonEtteroppgjoer")
     }
 }

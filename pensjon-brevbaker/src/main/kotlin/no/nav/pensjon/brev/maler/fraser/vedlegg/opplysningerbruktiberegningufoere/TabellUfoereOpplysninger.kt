@@ -273,11 +273,17 @@ data class TabellUfoereOpplysninger(
                                     Nynorsk to it.tableFormat(),
                                     English to it.tableFormat()
                                 )
+                            }.orShowIf(brukersSivilstand.isOneOf(Sivilstand.ENKE)) {
+                                text(
+                                    Bokmal to "Enke/Enkemann",
+                                    Nynorsk to "Enkje/Enkjemann",
+                                    English to "Widow/widower",
+                                )
                             }.orShow {
-                                textExpr(
-                                    Bokmal to brukersSivilstand.tableFormat(),
-                                    Nynorsk to brukersSivilstand.tableFormat(),
-                                    English to brukersSivilstand.tableFormat()
+                                text(
+                                    Bokmal to "Enslig",
+                                    Nynorsk to "Einsleg",
+                                    English to "Single",
                                 )
                             }
                         }
