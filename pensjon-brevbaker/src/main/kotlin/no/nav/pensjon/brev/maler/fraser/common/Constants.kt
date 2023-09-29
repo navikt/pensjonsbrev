@@ -3,7 +3,9 @@ package no.nav.pensjon.brev.maler.fraser.common
 object Constants {
     const val NAV_URL = "nav.no"
 
+    const val ARBEID_URL= "$NAV_URL/arbeid"
     const val BESKJED_TIL_NAV_URL = "$NAV_URL/beskjedtilnav"
+    const val DIN_UFORETRYGD_URL = "$NAV_URL/dinuføretrygd"
     const val DITT_NAV = "$NAV_URL/dittnav"
     const val ETTEROPPGJOR_URL = "$NAV_URL/etteroppgjor"
     const val ETTERSENDELSE_URL = "$NAV_URL/ettersendelse"
@@ -13,7 +15,6 @@ object Constants {
     const val GJENLEVENDE_SKJEMA_URL = "$NAV_URL/gjenlevendeektefelle"
     const val GJENLEVENDE_TILLEGGSSTOENADER_URL= "$NAV_URL/tilleggsstonader-gjenlevende"
     const val HELSE_URL= "$NAV_URL/helse"
-    const val ARBEID_URL= "$NAV_URL/arbeid"
     const val INNTEKTSPLANLEGGEREN_URL = "$NAV_URL/inntektsplanleggeren"
     const val KLAGE_URL = "$NAV_URL/klage"
     const val KONTAKT_URL = "$NAV_URL/kontakt"
@@ -25,4 +26,5 @@ object Constants {
     const val SKRIV_TIL_OSS_URL = "$NAV_URL/skriv-til-oss"
     const val UFOERE_ETTERSENDE_POST_URL = "$NAV_URL/uføre-ettersende-post"
     const val UFOERE_ETTERSENDE_URL = "$NAV_URL/uføre-ettersende"
+    const val UFORETRYGD_ENDRING_URL = "$NAV_URL/uforetrygd-endring"
 }

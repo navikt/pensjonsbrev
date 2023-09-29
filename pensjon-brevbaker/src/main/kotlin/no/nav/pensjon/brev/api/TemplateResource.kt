@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.api
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.maler.*
 import no.nav.pensjon.brev.maler.adhoc.AdhocRegelendretGjenlevendetillegg
+import no.nav.pensjon.brev.maler.adhoc.AdhocRegelendretGjenlevendetilleggKonvertert
 import no.nav.pensjon.brev.maler.adhoc.GjenlevendeInfoEtter1970
 import no.nav.pensjon.brev.maler.adhoc.GjenlevendeInfoFoer1971
 import no.nav.pensjon.brev.maler.redigerbar.InformasjonOmSaksbehandlingstid
@@ -13,6 +14,7 @@ val prodAutobrevTemplates: Set<AutobrevTemplate<*>> = setOf(
     ForhaandsvarselEtteroppgjoerUfoeretrygdAuto,
     GjenlevendeInfoEtter1970,
     GjenlevendeInfoFoer1971,
+    AdhocRegelendretGjenlevendetilleggKonvertert,
     AdhocRegelendretGjenlevendetillegg,
     OmsorgEgenAuto,
     OpphoerBarnetilleggAuto,
