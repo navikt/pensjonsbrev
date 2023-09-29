@@ -35,7 +35,7 @@ object AdhocRegelendretGjenlevendetilleggKonvertert : AutobrevTemplate<Unit> {
             text(
                 Bokmal to "Gjenlevendetillegget til uføretrygden din blir ikke lenger regulert",
                 Nynorsk to "Attlevandetillegget til uføretrygda di blir ikkje lenger regulert",
-                English to "The survivor supplement to your disability benefits will no longer be adjusted annually"
+                English to "The survivor supplement in your disability benefit will no longer be adjusted annually"
             )
         }
 
@@ -58,7 +58,7 @@ object AdhocRegelendretGjenlevendetilleggKonvertert : AutobrevTemplate<Unit> {
                 text(
                     Bokmal to "Du får fortsatt gjenlevendetillegg til uføretrygden din. Du beholder gjenlevendetillegget du har rett til i desember 2023.",
                     Nynorsk to "Du får framleis attlevandetillegg til uføretrygda di. Du beheld attlevandetillegget du har rett til i desember 2023.",
-                    English to "You will continue to receive the survivor supplement to your disability benefits. You will continue to receive the survivor supplement determined for December 2023."
+                    English to "You will continue to receive the survivor supplement in your disability benefit. You will still receive the survivor supplement determined for December 2023."
                 )
             }
             paragraph {
@@ -72,7 +72,7 @@ object AdhocRegelendretGjenlevendetilleggKonvertert : AutobrevTemplate<Unit> {
                 text(
                     Bokmal to "Beløpet du får utbetalt vil fortsatt bli redusert hvis du har inntekt over inntektsgrensen for uføretrygden din.",
                     Nynorsk to "Beløpet du får utbetalt vil framleis bli redusert viss du har inntekt over inntektsgrensa for uføretrygda di.",
-                    English to "The amount you receive will still be reduced if you earn an income above the income limit for receiving disability benefits."
+                    English to "The amount you receive will still be reduced if you earn an income above the income limit for receiving disability benefit."
                 )
             }
             title1 {
@@ -100,7 +100,7 @@ object AdhocRegelendretGjenlevendetilleggKonvertert : AutobrevTemplate<Unit> {
                 text(
                     Bokmal to "Du mister tillegget hvis du gifter deg igjen eller får barn med en samboer.",
                     Nynorsk to "Du mistar tillegget viss du giftar deg att eller får barn med ein sambuar.",
-                    English to "You will lose the survivors supplement if you remarry or have children with a cohabitant."
+                    English to "You will lose the survivor supplement if you remarry or have children with a cohabitant."
                 )
             }
             paragraph {
