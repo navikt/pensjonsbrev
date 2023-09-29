@@ -3,7 +3,6 @@ import {NextPage} from "next"
 import {SkribentenConfig} from "./_app"
 
 import "@navikt/ds-css"
-import "@navikt/ds-css-internal"
 import LetterMenu from "../modules/LetterPicker/LetterMenu"
 import styles from './brevvelger.module.css'
 import LetterPreview from "../modules/LetterPicker/components/LetterPreview/LetterPreview"

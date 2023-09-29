@@ -14,8 +14,8 @@ const ChangeAddressee: FC<ChangeAddresseeProps> = ({open, onExit}) => {
 
     }
     return (
-        <Modal open={open} onClose={onExit} closeButton={false}>
-            <Modal.Content className={styles.content}>
+        <Modal open={open} onClose={onExit}>
+            <Modal.Body className={styles.content}>
                 <div className={styles.banner}>
                     <p className={styles.bannerText}>Mottaker</p>
                     <Button
@@ -38,7 +38,7 @@ const ChangeAddressee: FC<ChangeAddresseeProps> = ({open, onExit}) => {
                         <AddresseeSearch onMottakerChosen={handleMottakerChanged}/>
                     </Tabs.Panel>
                 </Tabs>
-            </Modal.Content>
+            </Modal.Body>
         </Modal>
     )
 }

@@ -1,17 +1,16 @@
 import React, {FC, FunctionComponent} from "react"
-import styles from "./NavBar.module.css"
-import {Header} from "@navikt/ds-react-internal"
+import {InternalHeader} from "@navikt/ds-react"
 
 interface NavBarProps {
 
 }
 const NavBar: FC<NavBarProps> = () => {
     return (
-        <Header>
-            <Header.Title as="h1">Skribenten</Header.Title>
-            <Header.Button>Brevvelger</Header.Button>
-            <Header.Button>Brevbehandler</Header.Button>
-        </Header>
+        <InternalHeader>
+            <InternalHeader.Title as="h1">Skribenten</InternalHeader.Title>
+            <InternalHeader.Button>Brevvelger</InternalHeader.Button>
+            <InternalHeader.Button>Brevbehandler</InternalHeader.Button>
+        </InternalHeader>
     )
 }
 

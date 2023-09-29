@@ -1,15 +1,14 @@
 import React, {FC, useContext, useEffect, useState} from 'react'
 
 import "@navikt/ds-css"
-import "@navikt/ds-css-internal"
 import {Sak, SkribentServiceResult} from "../../modules/LetterEditor/model/api"
 import SelectSakid, {SAKID_REGEX} from "../../modules/SelectSakId/SelectSakid"
 import {useSearchParams} from "next/navigation"
-import {Header} from "@navikt/ds-react-internal"
 import {useRouter} from "next/router"
 import NavBar from "../navbar/NavBar"
 import CaseContextBar from "../casecontextbar/CaseContextBar"
 import {SkribentContext} from "../../pages/brevvelger"
+import {InternalHeader} from "@navikt/ds-react"
 
 interface CaseContextPageProps {
     children?: React.ReactNode,
@@ -55,7 +54,6 @@ const CaseContextPage: FC<CaseContextPageProps> = ({children, onSakChanged}) => 
         }
     },[])
 
-    //TODO extract universal page (header and background)
     if (isLoadingSak || sak ) {
         return (
             <div>
@@ -71,10 +69,9 @@ const CaseContextPage: FC<CaseContextPageProps> = ({children, onSakChanged}) => 
         )
     } else return (
         <div>
-            <Header>
-                <Header.Title as="h1">Skribenten</Header.Title>
-            </Header>
-
+            <InternalHeader>
+                <InternalHeader.Title as="h1">Skribenten</InternalHeader.Title>
+            </InternalHeader>
             <SelectSakid
                 error={errorMessage}
                 onSubmit={handleSakIdChanged}/>

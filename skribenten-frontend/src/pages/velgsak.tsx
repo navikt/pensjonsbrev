@@ -1,9 +1,7 @@
 import type {NextPage} from 'next'
 import "@navikt/ds-css"
-import "@navikt/ds-css-internal"
-import {Header} from "@navikt/ds-react-internal"
 import React, {FormEvent, useState} from "react"
-import {Button, TextField} from "@navikt/ds-react"
+import {Button, InternalHeader, TextField} from "@navikt/ds-react"
 import styles from './velgsak.module.css'
 
 const VelgSak: NextPage = () => {
@@ -16,9 +14,9 @@ const VelgSak: NextPage = () => {
     }
     return (
         <div>
-            <Header>
-                <Header.Title as="h1">Skribenten</Header.Title>
-            </Header>
+            <InternalHeader>
+                <InternalHeader.Title as="h1">Skribenten</InternalHeader.Title>
+            </InternalHeader>
             <div className={styles.container}>
                 <h1 className={styles.header}>Skribenten</h1>
                 <TextField value={saksnummer || ""}
