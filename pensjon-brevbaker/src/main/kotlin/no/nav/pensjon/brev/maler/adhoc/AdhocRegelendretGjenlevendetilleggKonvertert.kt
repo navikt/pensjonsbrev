@@ -44,7 +44,7 @@ object AdhocRegelendretGjenlevendetilleggKonvertert : AutobrevTemplate<Unit> {
                 text(
                     Bokmal to "Stortinget har vedtatt nye regler for gjenlevendetillegg til uføretrygden fra 1. januar 2024.",
                     Nynorsk to "Stortinget har vedtatt nye reglar for attlevandetillegg til uføretrygda frå 1. januar 2024.",
-                    English to "The Norwegian Parliament has decided new rules regarding survivor supplement from 1 January 2024."
+                    English to "The Norwegian Parliament has decided new rules regarding survivor supplement from 1 January 2024."
                 )
             }
             title1 {
@@ -114,7 +114,7 @@ object AdhocRegelendretGjenlevendetilleggKonvertert : AutobrevTemplate<Unit> {
                 text(
                     Bokmal to "Du kan oppdatere inntekten din på $INNTEKTSPLANLEGGEREN_URL.",
                     Nynorsk to "Du kan oppdatere inntekta di på $INNTEKTSPLANLEGGEREN_URL.",
-                    English to "You can update your income status at $INNTEKTSPLANLEGGEREN_URL. "
+                    English to "You can update your income at $INNTEKTSPLANLEGGEREN_URL. "
                 )
             }
             title1 {
