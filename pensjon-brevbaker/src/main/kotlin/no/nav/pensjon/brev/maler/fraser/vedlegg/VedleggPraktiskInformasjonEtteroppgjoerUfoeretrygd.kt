@@ -68,7 +68,7 @@ object SlikBetalerDuTilbake :
             text(
                 Bokmal to "Du betaler hele beløpet i faktura fra Skatteetaten.",
                 Nynorsk to "Du betaler heile beløpet på fakturaen frå Skatteetaten.",
-                English to "You pay the full amount using the invoice from the Norwegian Tax Administration."
+                English to "You pay the full amount on the invoice from the Norwegian Tax Administration."
             )
         }
         title2 {
@@ -89,7 +89,7 @@ object SlikBetalerDuTilbake :
             text(
                 Bokmal to "3. Du kan få trekk i støtte fra NAV",
                 Nynorsk to "3. Du kan få trekk i støtte frå NAV",
-                English to "3. You can have deductions made from benefits from NAV "
+                English to "3. You can have deductions made from benefits from NAV"
             )
         }
         paragraph {
@@ -174,7 +174,7 @@ object InntekterSomKanHoldesUtenforEtteroppgjoeret :
                 }
                 item {
                     text(
-                        Bokmal to "kopi av vedtak for erstatning ",
+                        Bokmal to "kopi av vedtak for erstatning",
                         Nynorsk to "kopi av vedtak om erstatning",
                         English to "copy of the compensation decision"
                     )
@@ -218,7 +218,7 @@ object EttersendeDokumentasjon :
         paragraph {
             text(
                 Bokmal to "For å sende dokumentasjon digitalt, gå inn på ${Constants.UFOERE_ETTERSENDE_URL}.",
-                Nynorsk to "For å sende dokumentasjon digitalt går du inn på ${Constants.UFOERE_ETTERSENDE_URL}.",
+                Nynorsk to "For å sende dokumentasjon digitalt, går du inn på ${Constants.UFOERE_ETTERSENDE_URL}.",
                 English to "To digitally submit information, please visit ${Constants.UFOERE_ETTERSENDE_URL}."
             )
         }
