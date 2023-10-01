@@ -113,7 +113,7 @@ object AdhocRegelendretGjenlevendetillegg : AutobrevTemplate<Unit> {
                 text(
                     Bokmal to "Du mister gjenlevendetillegget hvis du gifter deg igjen eller får barn med en samboer.",
                     Nynorsk to "Du mistar attlevandetillegget viss du giftar deg att eller får barn med ein sambuar.",
-                    English to "You will lose the survivor supplement if you remarry or have children with a cohabitant"
+                    English to "You will lose the survivor supplement if you remarry or have children with a cohabitee"
                 )
             }
             paragraph {
