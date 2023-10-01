@@ -57,7 +57,7 @@ object AdhocRegelendretGjenlevendetillegg : AutobrevTemplate<Unit> {
                 text(
                     Bokmal to "Vedtaket er gjort etter folketrygdloven § 12-18.",
                     Nynorsk to "Vedtaket er gjort etter folketrygdlova § 12-18.",
-                    English to "This decision has been made pursuant to Section 12-18 of the National Insurance Act"
+                    English to "This decision has been made pursuant to Section 12-18 of the National Insurance Act."
                 )
             }
             title1 {
@@ -99,7 +99,7 @@ object AdhocRegelendretGjenlevendetillegg : AutobrevTemplate<Unit> {
                 text(
                     Bokmal to "Du kan logge deg på $DIN_UFORETRYGD_URL for å se utbetalingene dine.",
                     Nynorsk to "Du kan logge deg på $DIN_UFORETRYGD_URL for å sjå utbetalingane dine.",
-                    English to "Log in to $DIN_UFORETRYGD_URL to see your payments"
+                    English to "Log in to $DIN_UFORETRYGD_URL to see your payments."
                 )
             }
             title1 {
@@ -113,7 +113,7 @@ object AdhocRegelendretGjenlevendetillegg : AutobrevTemplate<Unit> {
                 text(
                     Bokmal to "Du mister gjenlevendetillegget hvis du gifter deg igjen eller får barn med en samboer.",
                     Nynorsk to "Du mistar attlevandetillegget viss du giftar deg att eller får barn med ein sambuar.",
-                    English to "You will lose the survivor supplement if you remarry or have children with a cohabitee"
+                    English to "You will lose the survivor supplement if you remarry or have children with a cohabitee."
                 )
             }
             paragraph {
@@ -132,8 +132,8 @@ object AdhocRegelendretGjenlevendetillegg : AutobrevTemplate<Unit> {
             }
             title1 {
                 text(
-                    Bokmal to "Du har rett til å klage ",
-                    Nynorsk to "Du har rett til å klage ",
+                    Bokmal to "Du har rett til å klage",
+                    Nynorsk to "Du har rett til å klage",
                     English to "You have the right to appeal"
                 )
             }
