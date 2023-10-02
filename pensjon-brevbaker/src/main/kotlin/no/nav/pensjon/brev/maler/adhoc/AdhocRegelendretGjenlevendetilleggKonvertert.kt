@@ -7,7 +7,6 @@ import no.nav.pensjon.brev.maler.fraser.common.Constants.INNTEKTSPLANLEGGEREN_UR
 import no.nav.pensjon.brev.maler.fraser.common.Constants.KONTAKT_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_KONTAKTSENTER_AAPNINGSTID
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_KONTAKTSENTER_TELEFON
-import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_KONTAKTSENTER_TELEFON_PENSJON
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.UFORETRYGD_ENDRING_URL
 import no.nav.pensjon.brev.template.AutobrevTemplate
@@ -42,8 +41,8 @@ object AdhocRegelendretGjenlevendetilleggKonvertert : AutobrevTemplate<Unit> {
         outline {
             paragraph {
                 text(
-                    Bokmal to "Stortinget har vedtatt nye regler for gjenlevendetillegg til uføretrygden fra 1. januar 2024.",
-                    Nynorsk to "Stortinget har vedtatt nye reglar for attlevandetillegg til uføretrygda frå 1. januar 2024.",
+                    Bokmal to "Stortinget har vedtatt nye regler for gjenlevendetillegg til uføretrygden fra 1. januar 2024.",
+                    Nynorsk to "Stortinget har vedtatt nye reglar for attlevandetillegg til uføretrygda frå 1. januar 2024.",
                     English to "The Norwegian Parliament has decided new rules regarding survivor supplement from 1 January 2024."
                 )
             }
@@ -114,7 +113,7 @@ object AdhocRegelendretGjenlevendetilleggKonvertert : AutobrevTemplate<Unit> {
                 text(
                     Bokmal to "Du kan oppdatere inntekten din på $INNTEKTSPLANLEGGEREN_URL.",
                     Nynorsk to "Du kan oppdatere inntekta di på $INNTEKTSPLANLEGGEREN_URL.",
-                    English to "You can update your income at $INNTEKTSPLANLEGGEREN_URL. "
+                    English to "You can update your income at $INNTEKTSPLANLEGGEREN_URL."
                 )
             }
             title1 {

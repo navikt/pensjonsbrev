@@ -64,7 +64,7 @@ object AdhocRegelendretGjenlevendetillegg : AutobrevTemplate<Unit> {
                 text(
                     Bokmal to "Hvilke andre endringer får betydning for deg?",
                     Nynorsk to "Kva andre endringar får noko å seie for deg?",
-                    English to "What do the changes mean for you?"
+                    English to "What other changes may be of significance to you?"
                 )
             }
             paragraph {
