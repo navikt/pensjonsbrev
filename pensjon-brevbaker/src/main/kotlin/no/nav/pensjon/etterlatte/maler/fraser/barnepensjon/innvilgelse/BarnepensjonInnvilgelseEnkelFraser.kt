@@ -24,7 +24,7 @@ object BarnepensjonInnvilgelseEnkelFraser {
         val doedsdato: Expression<LocalDate>,
         val beloep: Expression<Kroner>,
         val vedtaksdato: Expression<LocalDate>,
-        val erEtterbetalingMerEnnTreMaaneder: Expression<Boolean>,
+        val erEtterbetaling: Expression<Boolean>,
     ) :
         OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
@@ -50,7 +50,7 @@ object BarnepensjonInnvilgelseEnkelFraser {
                     English to "",
                 )
             }
-            showIf(erEtterbetalingMerEnnTreMaaneder) {
+            showIf(erEtterbetaling) {
                 includePhrase(Etterbetaling)
             }.orShow {
                 paragraph {
