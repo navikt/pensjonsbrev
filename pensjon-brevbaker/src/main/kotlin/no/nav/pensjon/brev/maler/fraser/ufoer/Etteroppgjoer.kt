@@ -222,17 +222,15 @@ object HarDuSpoersmaalEtteroppgjoer : OutlinePhrase<LangBokmalNynorskEnglish>() 
         }
         paragraph {
             text(
-                Bokmal to "Du finner mer informasjon på ${Constants.ETTEROPPGJOR_URL}.",
-                Nynorsk to "Du finn meir informasjon på ${Constants.ETTEROPPGJOR_URL}.",
-                English to "You can find more information at ${Constants.ETTEROPPGJOR_URL}."
+                Bokmal to "Du finner mer informasjon på ${Constants.ETTEROPPGJOR_URL}. ",
+                Nynorsk to "Du finn meir informasjon på ${Constants.ETTEROPPGJOR_URL}. ",
+                English to "You can find more information at ${Constants.ETTEROPPGJOR_URL}. "
             )
-            newline()
             text(
-                Bokmal to "På ${Constants.KONTAKT_URL} kan du chatte eller skrive til oss.",
-                Nynorsk to "Du kan chatte med eller skrive til oss på ${Constants.KONTAKT_URL}.",
-                English to "At ${Constants.KONTAKT_URL} you can chat or write to us."
+                Bokmal to "På ${Constants.KONTAKT_URL} kan du chatte eller skrive til oss. ",
+                Nynorsk to "Du kan chatte med eller skrive til oss på ${Constants.KONTAKT_URL}. ",
+                English to "At ${Constants.KONTAKT_URL} you can chat or write to us. "
             )
-            newline()
             text(
                 Bokmal to "Hvis du ikke finner svar på ${Constants.NAV_URL}, kan du ringe oss på telefon ${Constants.NAV_KONTAKTSENTER_TELEFON}, hverdager ${Constants.NAV_KONTAKTSENTER_AAPNINGSTID}.",
                 Nynorsk to "Dersom du ikkje finn svar på ${Constants.NAV_URL}, kan du ringje oss på telefon ${Constants.NAV_KONTAKTSENTER_TELEFON}, kvardagar ${Constants.NAV_KONTAKTSENTER_AAPNINGSTID}.",
