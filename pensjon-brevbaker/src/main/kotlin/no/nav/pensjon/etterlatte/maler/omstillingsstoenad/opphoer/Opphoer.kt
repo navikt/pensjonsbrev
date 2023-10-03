@@ -50,7 +50,7 @@ object Opphoer : EtterlatteTemplate<OMSOpphoerDTO>, Hovedmal {
 
             konverterElementerTilBrevbakerformat(innhold)
 
-            includePhrase(OMSFelles.DuHarRettTilAaKlage)
+            includePhrase(OMSFelles.DuHarRettTilAaKlageOpphoer)
             includePhrase(OMSFelles.DuHarRettTilInnsyn)
             includePhrase(OMSFelles.HarDuSpoersmaal)
         }
