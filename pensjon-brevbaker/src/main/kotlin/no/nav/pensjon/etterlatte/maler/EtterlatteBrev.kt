@@ -5,16 +5,7 @@ import java.time.LocalDate
 
 data class EtterbetalingDTO(
     val fraDato: LocalDate,
-    val tilDato: LocalDate,
-    val beregningsperioder: List<Etterbetalingsperiode>
-)
-
-data class Etterbetalingsperiode(
-    val datoFOM: LocalDate,
-    val datoTOM: LocalDate?,
-    val grunnbeloep: Kroner,
-    val stoenadFoerReduksjon: Kroner,
-    var utbetaltBeloep: Kroner
+    val tilDato: LocalDate
 )
 
 data class Avkortingsinfo(
