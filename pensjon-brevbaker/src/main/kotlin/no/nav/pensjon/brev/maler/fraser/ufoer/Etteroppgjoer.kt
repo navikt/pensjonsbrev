@@ -222,19 +222,9 @@ object HarDuSpoersmaalEtteroppgjoer : OutlinePhrase<LangBokmalNynorskEnglish>() 
         }
         paragraph {
             text(
-                Bokmal to "Du finner mer informasjon på ${Constants.ETTEROPPGJOR_URL}. ",
-                Nynorsk to "Du finn meir informasjon på ${Constants.ETTEROPPGJOR_URL}. ",
-                English to "You can find more information at ${Constants.ETTEROPPGJOR_URL}. "
-            )
-            text(
-                Bokmal to "På ${Constants.KONTAKT_URL} kan du chatte eller skrive til oss. ",
-                Nynorsk to "Du kan chatte med eller skrive til oss på ${Constants.KONTAKT_URL}. ",
-                English to "At ${Constants.KONTAKT_URL} you can chat or write to us. "
-            )
-            text(
-                Bokmal to "Hvis du ikke finner svar på ${Constants.NAV_URL}, kan du ringe oss på telefon ${Constants.NAV_KONTAKTSENTER_TELEFON}, hverdager ${Constants.NAV_KONTAKTSENTER_AAPNINGSTID}.",
-                Nynorsk to "Dersom du ikkje finn svar på ${Constants.NAV_URL}, kan du ringje oss på telefon ${Constants.NAV_KONTAKTSENTER_TELEFON}, kvardagar ${Constants.NAV_KONTAKTSENTER_AAPNINGSTID}.",
-                English to "If you cannot find answers at ${Constants.NAV_URL}, you can call us at: +47 ${Constants.NAV_KONTAKTSENTER_TELEFON}, weekdays ${Constants.NAV_KONTAKTSENTER_AAPNINGSTID}."
+                Bokmal to "Du finner mer informasjon på ${Constants.ETTEROPPGJOR_URL}. På ${Constants.KONTAKT_URL} kan du chatte eller skrive til oss. Hvis du ikke finner svar på ${Constants.NAV_URL}, kan du ringe oss på telefon ${Constants.NAV_KONTAKTSENTER_TELEFON}, hverdager ${Constants.NAV_KONTAKTSENTER_AAPNINGSTID}.",
+                Nynorsk to "Du finn meir informasjon på ${Constants.ETTEROPPGJOR_URL}. Du kan chatte med eller skrive til oss på ${Constants.KONTAKT_URL}. Dersom du ikkje finn svar på ${Constants.NAV_URL}, kan du ringje oss på telefon ${Constants.NAV_KONTAKTSENTER_TELEFON}, kvardagar ${Constants.NAV_KONTAKTSENTER_AAPNINGSTID}.",
+                English to "You can find more information at ${Constants.ETTEROPPGJOR_URL}. At ${Constants.KONTAKT_URL} you can chat or write to us. If you cannot find answers at ${Constants.NAV_URL}, you can call us at: +47 ${Constants.NAV_KONTAKTSENTER_TELEFON}, weekdays ${Constants.NAV_KONTAKTSENTER_AAPNINGSTID}."
             )
         }
     }

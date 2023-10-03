@@ -17,7 +17,7 @@ class ForhaandsvarselEtteroppgjoerUfoeretrygdAutoTest {
         Letter(
             ForhaandsvarselEtteroppgjoerUfoeretrygdAuto.template,
             Fixtures.create<ForhaandsvarselEtteroppgjoerUfoeretrygdDto>(),
-            Language.Bokmal,
+            Language.English,
             Fixtures.fellesAuto
         ).renderTestPDF("UT_EO_FORHAANDSVARSEL_FEILUTBETALING_AUTO")
     }
