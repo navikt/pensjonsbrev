@@ -60,7 +60,7 @@ data class Introduksjon(val periode: Expression<Year>) : OutlinePhrase<LangBokma
                         "Vi har gjort en ny beregning av uføretrygden din for " + periode.format() + " etter opplysninger fra Skatteetaten. " +
                         "Du kan se skatteoppgjøret ditt på ${Constants.SKATTEETATEN_URL}.",
 
-                Nynorsk to "Vi nyttar opplysningane som du legg sjølv inn som inntekt på ${Constants.INNTEKTSPLANLEGGEREN_URL}, og opplysningar frå Skatteetaten. ".expr() +
+                Nynorsk to "Vi nyttar opplysningane som du legg inn sjølv som inntekt på ${Constants.INNTEKTSPLANLEGGEREN_URL}, og opplysningar frå Skatteetaten. ".expr() +
                         "Vi har gjort ei ny utrekning av uføretrygda di for " + periode.format() + " etter opplysningar frå Skatteetaten. " +
                         "Du kan sjå skatteoppgjeret ditt på ${Constants.SKATTEETATEN_URL}.",
 
@@ -473,14 +473,14 @@ data class OmBeregningAvBarnetillegg(
                         " har hatt i " + periode.format() + ". Det er disse inntektene vi har brukt for å beregne barnetillegget.",
                 Nynorsk to "Tabellene under viser inntektene du".expr() + ifElse(harFellesTillegg, " og anna forelder", "") +
                         " har hatt i " + periode.format() + ". Det er desse inntektene vi har brukt for å rekne ut barnetillegget.",
-                English to "The tables below display the personal incomes you".expr() + ifElse(harFellesTillegg, " and the other parent", "") +
+                English to "The tables below show the personal incomes you".expr() + ifElse(harFellesTillegg, " and the other parent", "") +
                         " had in ".expr() + periode.format() + ". These incomes were used to calculate your child supplement.",
             )
         }
 
         title2 {
             text(
-                Bokmal to "Din personinntekt",
+                Bokmal to "Personinntekten din",
                 Nynorsk to "Personinntekta di",
                 English to "Your personal income",
             )
@@ -534,7 +534,7 @@ data class OmBeregningAvBarnetillegg(
         ifNotNull(barnetillegg.felles) { fellesbarn ->
             title2 {
                 text(
-                    Bokmal to "Personinntekt til annen forelder",
+                    Bokmal to "Personinntekten til annen forelder",
                     Nynorsk to "Personinntekta til den andre forelderen",
                     English to "Personal income of the other parent",
                 )
@@ -770,9 +770,9 @@ data class OmBeregningAvUfoeretrygd(
 
             val inntektEtterFratrekk = pensjonsgivendeInntektBruktIBeregningen.format()
             textExpr(
-                Bokmal to "Etter beregningen er gjort, har du ".expr() + inntektEtterFratrekk + " kroner i pensjonsgivende inntekt.",
+                Bokmal to "Beregningen vår viser at du har ".expr() + inntektEtterFratrekk + " kroner i pensjonsgivende inntekt.",
                 Nynorsk to "Utrekninga vår viser at du har ".expr() + inntektEtterFratrekk + " kroner i pensjonsgivande inntekt.",
-                English to "By our calculation, your pensionable income is NOK ".expr() + inntektEtterFratrekk + ".",
+                English to "Our calculation shows your pensionable income is NOK ".expr() + inntektEtterFratrekk + ".",
             )
         }
 
@@ -895,7 +895,7 @@ data class ErOpplysningeneOmInntektFeil(
             text(
                 Bokmal to "Vi gjør et nytt etteroppgjør automatisk hvis Skatteetaten endrer inntekten din. Du får tilbakemelding hvis endringen påvirker etteroppgjøret ditt.",
                 Nynorsk to "Vi utfører automatisk eit nytt etteroppgjer dersom Skatteetaten endrar inntekta di. Du får tilbakemelding dersom endringa påverker etteroppgjeret ditt.",
-                English to "We will issue a new settlement automatically if the Norwegian Tax Administration changes your income. You will be notified if any changes affect your post-settlement.",
+                English to "We will automatically issue a new settlement if the Norwegian Tax Administration changes your income. You will be notified if any changes affect your post-settlement.",
             )
         }
 

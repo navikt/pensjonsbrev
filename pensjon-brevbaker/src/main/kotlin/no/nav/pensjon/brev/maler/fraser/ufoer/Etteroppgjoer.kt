@@ -72,7 +72,7 @@ object HvordanDuBetalerTilbake : OutlinePhrase<LangBokmalNynorskEnglish>() {
             text(
                 Bokmal to "Du vil få informasjon fra Skatteetaten etter 4 uker om når og hvordan du kan betale tilbake pengene. Før du kan få svar på spørsmål om saken din eller kan betale tilbake, må du ha mottatt betalingsinformasjon fra Skatteetaten.",
                 Nynorsk to "Når det har gått 4 veker, vil Skatteetaten sende deg informasjon om når og korleis du kan betale tilbake pengane. Før du kan få svar på spørsmål om saka di eller betale tilbake, må du ha fått betalingsinformasjon frå Skatteetaten.",
-                English to "After a period of 4 weeks, you will receive information from the Norwegian Tax Administration about how and when to repay the overpaid amount. Please note that you must receive the information from the Norwegian Tax Administration before you can get answers to questions regarding your case or start repaying the amount owed."
+                English to "After 4 weeks, you will receive information from the Norwegian Tax Administration about how and when to repay the overpaid amount. Please note that you must receive this information before we can answer any questions regarding your case, or for you to start repaying the amount owed."
             )
         }
         paragraph {
@@ -85,7 +85,7 @@ object HvordanDuBetalerTilbake : OutlinePhrase<LangBokmalNynorskEnglish>() {
         paragraph {
             text(
                 Bokmal to "Du kan lese mer om tilbakebetaling i vedlegget «Praktisk informasjon om etteroppgjør».",
-                Nynorsk to "Du kan lese meir om tilbakebetaling i vedlegget «Praktisk informasjon om etteroppgjør».",
+                Nynorsk to "Du kan lese meir om tilbakebetaling i vedlegget «Praktisk informasjon om etteroppgjer».",
                 English to "You can read more about repayment in the appendix «Practical information about post-settlement»."
             )
         }
@@ -121,7 +121,7 @@ data class InntektOverInntektstak(
             textExpr(
                 Bokmal to "Du tjente ".expr() + pensjonsgivendeInntektBruktIBeregningen.format() + " kroner i "+ periode.format() + ".",
                 Nynorsk to "Du tente ".expr() + pensjonsgivendeInntektBruktIBeregningen.format() + " kroner i "+ periode.format() + ".",
-                English to "You earned NOK ".expr() + pensjonsgivendeInntektBruktIBeregningen.format() + " in "+ periode.format() + "."
+                English to "You earned NOK ".expr() + pensjonsgivendeInntektBruktIBeregningen.format() + " in "+ periode.format() + "."
             )
         }
     }
@@ -211,20 +211,32 @@ object FristerOpplysningerKlage : OutlinePhrase<LangBokmalNynorskEnglish>() {
     }
 }
 
-object HarDuSpoersmaal : OutlinePhrase<LangBokmalNynorskEnglish>() {
+object HarDuSpoersmaalEtteroppgjoer : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         title1 {
             text(
                 Bokmal to "Har du spørsmål?",
                 Nynorsk to "Har du spørsmål?",
-                English to "Do you have any questions?"
+                English to "Do you have questions?"
             )
         }
         paragraph {
             text(
-                Bokmal to "Du finner mer informasjon på ${Constants.ETTEROPPGJOR_URL}. På ${Constants.KONTAKT_URL} kan du chatte eller skrive til oss. Hvis du ikke finner svar på ${Constants.NAV_URL}, kan du ringe oss på telefon ${Constants.NAV_KONTAKTSENTER_TELEFON}, hverdager kl. ${Constants.NAV_KONTAKTSENTER_AAPNINGSTID}.",
-                Nynorsk to "Du finn meir informasjon på ${Constants.ETTEROPPGJOR_URL}. Du kan chatte med eller skrive til oss på ${Constants.KONTAKT_URL}. Dersom du ikkje finn svar på ${Constants.NAV_URL}, kan du ringje oss på telefon ${Constants.NAV_KONTAKTSENTER_TELEFON}, kvardagar kl. ${Constants.NAV_KONTAKTSENTER_AAPNINGSTID}.",
-                English to "You can find more information at ${Constants.ETTEROPPGJOR_URL}. At ${Constants.KONTAKT_URL} you can chat or write us a message. If you cannot find answers at ${Constants.NAV_URL}, you can call us on +47 ${Constants.NAV_KONTAKTSENTER_TELEFON}, Monday to Friday from ${Constants.NAV_KONTAKTSENTER_AAPNINGSTID}."
+                Bokmal to "Du finner mer informasjon på ${Constants.ETTEROPPGJOR_URL}.",
+                Nynorsk to "Du finn meir informasjon på ${Constants.ETTEROPPGJOR_URL}.",
+                English to "You can find more information at ${Constants.ETTEROPPGJOR_URL}."
+            )
+            newline()
+            text(
+                Bokmal to "På ${Constants.KONTAKT_URL} kan du chatte eller skrive til oss.",
+                Nynorsk to "Du kan chatte med eller skrive til oss på ${Constants.KONTAKT_URL}.",
+                English to "At ${Constants.KONTAKT_URL} you can chat or write to us."
+            )
+            newline()
+            text(
+                Bokmal to "Hvis du ikke finner svar på ${Constants.NAV_URL}, kan du ringe oss på telefon ${Constants.NAV_KONTAKTSENTER_TELEFON}, hverdager ${Constants.NAV_KONTAKTSENTER_AAPNINGSTID}.",
+                Nynorsk to "Dersom du ikkje finn svar på ${Constants.NAV_URL}, kan du ringje oss på telefon ${Constants.NAV_KONTAKTSENTER_TELEFON}, kvardagar ${Constants.NAV_KONTAKTSENTER_AAPNINGSTID}.",
+                English to "If you cannot find answers at ${Constants.NAV_URL}, you can call us at: +47 ${Constants.NAV_KONTAKTSENTER_TELEFON}, weekdays ${Constants.NAV_KONTAKTSENTER_AAPNINGSTID}."
             )
         }
     }
