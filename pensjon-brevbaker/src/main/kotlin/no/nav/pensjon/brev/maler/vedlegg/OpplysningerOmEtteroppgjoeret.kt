@@ -21,7 +21,7 @@ import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 val vedleggOpplysningerOmEtteroppgjoeret = createAttachment<LangBokmalNynorskEnglish, OpplysningerOmEtteroppgjoeretDto>(
     title = newText(
         Bokmal to "Opplysninger om etteroppgjøret",
-        Nynorsk to "Opplysningar om etteroppgjer",
+        Nynorsk to "Opplysningar om etteroppgjeret",
         English to "Information about the settlement",
     ),
     includeSakspart = true,

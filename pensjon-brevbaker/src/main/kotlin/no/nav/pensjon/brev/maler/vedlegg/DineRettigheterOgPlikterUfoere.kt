@@ -22,7 +22,7 @@ val vedleggDineRettigheterOgPlikterUfoere =
     createAttachment<LangBokmalNynorskEnglish, OrienteringOmRettigheterUfoereDto>(
         title = newText(
             Bokmal to "Dine rettigheter og plikter",
-            Nynorsk to "Dine rettar og plikter",
+            Nynorsk to "Rettane og pliktene dine",
             English to "Your rights and obligations"
         ),
         includeSakspart = false,
