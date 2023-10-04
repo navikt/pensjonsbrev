@@ -29,7 +29,7 @@ object OpphoerGenerell : EtterlatteTemplate<ManueltBrevDTO>, Delmal {
     ) {
         title {
             text(
-                Bokmal to "",
+                Bokmal to "A: (utfall jamfør tekstbibliotek)",
                 Nynorsk to "",
                 English to "",
             )

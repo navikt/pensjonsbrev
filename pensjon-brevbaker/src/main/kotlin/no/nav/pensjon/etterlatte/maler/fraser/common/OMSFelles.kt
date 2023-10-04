@@ -64,8 +64,8 @@ object OMSFelles {
             paragraph {
                 text(
                     Bokmal to "Hvis du mener vedtaket er feil, kan du klage innen seks uker " +
-                            "fra den datoen du mottok vedtaket. Klagen skal være skriftlig. Du finner " +
-                            "informasjon på ${Constants.KLAGERETTIGHETER_URL}.",
+                            "fra den datoen du mottok vedtaket. Du kan lese mer om hvordan du klager i " +
+                            "vedlegget «Informasjon om klage og anke».",
                     Nynorsk to "",
                     English to ""
                 )
