@@ -5,6 +5,7 @@ import no.nav.pensjon.etterlatte.maler.Beregningsperiode
 import no.nav.pensjon.etterlatte.maler.EtterbetalingDTO
 import no.nav.pensjon.etterlatte.maler.Utbetalingsinfo
 import no.nav.pensjon.etterlatte.maler.barnepensjon.ny.BarnepensjonInnvilgelseNyDTO
+import no.nav.pensjon.etterlatte.maler.barnepensjon.ny.BeregningsinfoBP
 import java.time.LocalDate
 import java.time.Month
 
@@ -37,5 +38,13 @@ fun createBarnepensjonInnvilgelseNyDTO() =
         etterbetalingDTO = EtterbetalingDTO(
             fraDato = LocalDate.of(2020, Month.JANUARY, 1),
             tilDato = LocalDate.of(2023, Month.JULY, 31)
+        ),
+        beregningsinfo = BeregningsinfoBP(
+            innhold = listOf(),
+            grunnbeloep = Kroner(199),
+            beregningsperioder = listOf(),
+            antallBarn = 4,
+            samlaTrygdetid = "12y 3m",
+            trygdetidsperioder = listOf()
         )
     )
