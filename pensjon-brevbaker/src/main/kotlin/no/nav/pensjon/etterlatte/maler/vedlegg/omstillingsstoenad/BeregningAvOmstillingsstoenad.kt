@@ -20,6 +20,7 @@ import no.nav.pensjon.etterlatte.maler.TrygdetidsperiodeSelectors.datoFOM
 import no.nav.pensjon.etterlatte.maler.TrygdetidsperiodeSelectors.datoTOM
 import no.nav.pensjon.etterlatte.maler.TrygdetidsperiodeSelectors.land
 import no.nav.pensjon.etterlatte.maler.TrygdetidsperiodeSelectors.opptjeningsperiode
+import no.nav.pensjon.etterlatte.maler.fraser.common.PeriodeITabell
 import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
 
 @TemplateModelHelpers
