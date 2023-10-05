@@ -64,7 +64,7 @@ data class Introduksjon(val periode: Expression<Year>) : OutlinePhrase<LangBokma
                         "Vi har gjort ei ny utrekning av uføretrygda di for " + periode.format() + " etter opplysningar frå Skatteetaten. " +
                         "Du kan sjå skatteoppgjeret ditt på ${Constants.SKATTEETATEN_URL}.",
 
-                English to "We use the income information you input on ${Constants.INNTEKTSPLANLEGGEREN_URL} and information from the Norwegian Tax Administration. ".expr() +
+                English to "We use the income information you have registered on ${Constants.INNTEKTSPLANLEGGEREN_URL} and information from the Norwegian Tax Administration. ".expr() +
                         "Your disability benefit for " + periode.format() + " has been recalculated based on the tax settlement provided by the Norwegian Tax Administration. " +
                         "You can find your tax settlement at ${Constants.SKATTEETATEN_URL}.",
             )
@@ -149,7 +149,7 @@ data class FikkSkulleFaattTabell(
                     newTextExpr(
                         Bokmal to "Uføretrygd".expr() + ifElse(harGjenlevendeTillegg, " og gjenlevendetillegg", ""),
                         Nynorsk to "Uføretrygd".expr() + ifElse(harGjenlevendeTillegg, " og attlevandetillegg", ""),
-                        English to "Disability benefit".expr() + ifElse(harGjenlevendeTillegg, " and survivor's supplement", ""),
+                        English to "Disability benefit".expr() + ifElse(harGjenlevendeTillegg, " and survivor supplement", ""),
                     ),
                     ufoeretrygd,
                 )
@@ -201,14 +201,14 @@ data class DuHarFaattAvviksBeloep(
                         ifElse(harFaattForMye, "mye", "lite") + " i uføretrygd",
                 Nynorsk to "Du har fått ".expr() + totaltAvvik.absoluteValue().format() + " kroner for " +
                         ifElse(harFaattForMye, "mykje", "lite") + " i uføretrygd",
-                English to "You received NOK ".expr() + totaltAvvik.absoluteValue().format() + " too " +
+                English to "You have received NOK ".expr() + totaltAvvik.absoluteValue().format() + " too " +
                         ifElse(harFaattForMye, "much", "little") + " in disability benefit",
             )
             showIf(harBarnetillegg and harGjenlevendeTillegg) {
                 text(
                     Bokmal to ", barnetillegg og gjenlevendetillegg",
                     Nynorsk to ", barnetillegg og attlevandetillegg",
-                    English to ", child supplement and survivor's supplement",
+                    English to ", child supplement and survivor supplement",
                 )
             }.orShowIf(harBarnetillegg) {
                 text(
@@ -220,7 +220,7 @@ data class DuHarFaattAvviksBeloep(
                 text(
                     Bokmal to " og gjenlevendetillegg",
                     Nynorsk to " og attlevandetillegg",
-                    English to " and survivor's supplement"
+                    English to " and survivor supplement"
                 )
             }
             textExpr(
@@ -459,7 +459,7 @@ data class OmBeregningAvBarnetillegg(
                     text(
                         Bokmal to "barnet bor med begge foreldre i deler av året, og en av foreldrene resten av året.",
                         Nynorsk to "barnet bur med begge foreldra delar av året, og en av foreldra resten av året.",
-                        English to "the child lives with both parents for part of the year and with one parent for the remainder of the year."
+                        English to "the child lives with both parents for part of the year and with one of the parents for the remainder of the year."
                     )
                 }
             }
