@@ -56,7 +56,7 @@ const AddresseeSearch: FC<AddresseeSearchProps> = ({onMottakerChosen}) => {
     const handleSearch = () => {
         if (isSearching) return
         if (searchText.length < 3) {
-            setErrorMessage("Søk må være minst 3 lang")
+            setErrorMessage("Søketeksten må være minst 3 bokstaver lang")
             return
         }
 
@@ -87,6 +87,10 @@ const AddresseeSearch: FC<AddresseeSearchProps> = ({onMottakerChosen}) => {
         const kommune = kommuner.find((value) => value.kommunenavn.toLowerCase() == option.toLowerCase())
         setSelectedKommune(kommune?.kommunenummer || null)
         console.log(kommune)
+    }
+
+    const handleMottakerChosen = (pid: string ) => {
+        console.log(skribentApi.hentAdresse(msal, pid))
     }
 
     const error = (errorMessage && <div>{errorMessage}</div>)
@@ -156,7 +160,7 @@ const AddresseeSearch: FC<AddresseeSearchProps> = ({onMottakerChosen}) => {
                             <Table.DataCell scope="row" align="right">
                                 <Button size="xsmall"
                                         variant="secondary"
-                                        onClick={() => onMottakerChosen(result.id)}>Velg</Button></Table.DataCell>
+                                        onClick={() => handleMottakerChosen(result.id)}>Velg</Button></Table.DataCell>
                         </Table.Row>
                     ))}
                 </Table.Body>

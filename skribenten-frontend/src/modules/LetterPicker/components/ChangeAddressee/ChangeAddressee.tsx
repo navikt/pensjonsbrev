@@ -23,7 +23,7 @@ const ChangeAddressee: FC<ChangeAddresseeProps> = ({open, onExit}) => {
                         className={styles.exitButton}
                         icon={<XMarkIcon/>} variant="tertiary"/>
                 </div>
-                <Tabs>
+                <Tabs defaultValue="addresseesearch">
                     <Tabs.List>
                         <Tabs.Tab
                             value="addresseesearch"

@@ -48,6 +48,7 @@ fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config
     val authService = AzureADService(authConfig)
     val safService = SafService(skribentenConfig.getConfig("services.saf"), authService)
     val penService = PenService(skribentenConfig.getConfig("services.pen"), authService)
+    val pensjonPersonDataService = PensjonPersonDataService(skribentenConfig.getConfig("services.pensjon_persondata"), authService)
     val kodeverkService = KodeverkService(skribentenConfig.getConfig("services.kodeverk"))
     val pdlService = PdlService(skribentenConfig.getConfig("services.pdl"), authService)
     val microsoftGraphService =
@@ -146,10 +147,9 @@ fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config
                 respondWithResult(pdlService.personSoek(call, request))
             }
 
-            get("/pdl/adresser/{pid}") {
+            get("/adresse/{pid}") {
                 val pid = call.parameters.getOrFail("pid")
-                // TODO integrate with pensjon-persjon's address service.
-                respondWithResult(pdlService.hentAdresseForPersonFake(call, pid))
+                respondWithResult(pensjonPersonDataService.hentAdresse(call, pid))
             }
 
             route("/kodeverk") {

@@ -230,15 +230,6 @@ class SkribentenAPI {
         })
     }
 
-    async hentAdresser(msal: IMsalContext, fnr: string): Promise<AddressResult> {
-        return withAuthorization(msal, this.config.scope).then(auth =>
-            fetch(`${this.config.url}/pdl/adresser/${fnr}`, {
-                headers: {'Authorization': `Bearer ${auth.accessToken}`},
-                method: 'GET',
-            })
-        ).then((res) => res.json())
-    }
-
     async hentKommuneForslag(msal: IMsalContext): Promise<KommuneResult[]> {
         return withAuthorization(msal, this.config.scope).then(auth =>
             fetch(`${this.config.url}/kodeverk/kommune`, {
@@ -251,6 +242,15 @@ class SkribentenAPI {
     async hentAvtaleland(msal: IMsalContext): Promise<Avtaleland[]> {
         return withAuthorization(msal, this.config.scope).then(auth =>
             fetch(`${this.config.url}/kodeverk/avtaleland`, {
+                headers: {'Authorization': `Bearer ${auth.accessToken}`},
+                method: 'GET',
+            })
+        ).then(res => res.json())
+    }
+
+    async hentAdresse(msal: IMsalContext, pid: string) : Promise<AddressResult> {
+        return withAuthorization(msal, this.config.scope).then(auth =>
+            fetch(`${this.config.url}/adresse/${pid}`, {
                 headers: {'Authorization': `Bearer ${auth.accessToken}`},
                 method: 'GET',
             })
