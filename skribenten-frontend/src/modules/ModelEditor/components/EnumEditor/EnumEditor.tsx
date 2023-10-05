@@ -1,4 +1,4 @@
-import {TEnum} from "../../../LetterEditor/model/api"
+import {TEnum} from "../../../../lib/model/skribenten"
 import {FieldValue} from "../../model"
 import {BoundAction} from "../../../../lib/actions"
 import {FC} from "react"

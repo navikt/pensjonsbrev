@@ -1,20 +1,8 @@
 import {Button, Radio, RadioGroup, Search, Select, Table} from "@navikt/ds-react"
-import React, {FC, FormEvent, useContext, useEffect, useState} from "react"
+import React, {FC, FormEvent, useCallback, useContext, useEffect, useState} from "react"
 import styles from './RecipientSearch.module.css'
-import {PersonSoekResponse} from "../../../../LetterEditor/model/api"
+import {PersonSoekResponse, RecipientType, SearchRequest, Location} from "../../../../../lib/model/skribenten"
 import {SkribentContext} from "../../../../../pages/brevvelger"
-
-export type RecipientType = 'PERSON' | 'SAMHANDLER'
-export type Place = 'INNLAND' | 'UTLAND'
-
-export type SearchRequest = {
-    soeketekst: string,
-    recipientType: RecipientType | null,
-    place: Place | null,
-    kommunenummer: string[] | null,
-    land: string | null,
-}
-
 
 export type AddressResult = {
     addressName: string,
@@ -42,7 +30,7 @@ const RecipientSearch: FC<RecipientSearchProps> = ({onMottakerChosen}) => {
     const [latestSearch, setlatestSearch] = useState<SearchRequest | null>(null)
     const [results, setResults] = useState<PersonSoekResponse | null>(null)
     const [recipientType, setRecipientType] = useState<RecipientType | null>(null)
-    const [place, setPlace] = useState<Place | null>(null)
+    const [location, setLocation] = useState<Location | null>(null)
     const [errorMessage, setErrorMessage] = useState<string | null>(null)
     const [kommuner, setKommuner] = useState<KommuneResult[]>([])
     const [selectedKommune, setSelectedKommune] = useState<string[] | null>(null)
@@ -52,7 +40,8 @@ const RecipientSearch: FC<RecipientSearchProps> = ({onMottakerChosen}) => {
         skribentApi.hentKommuneForslag().then(
             res => setKommuner(res))
     }, [])
-    const handleSearch = () => {
+
+    const handleSearch = useCallback(() => {
         if (isSearching) return
         if (searchText.length < 3) {
             setErrorMessage("Søketeksten må være minst 3 bokstaver lang")
@@ -63,7 +52,7 @@ const RecipientSearch: FC<RecipientSearchProps> = ({onMottakerChosen}) => {
         setIsSearching(true)
         const request: SearchRequest = {
             recipientType: recipientType,
-            place: place,
+            location: location,
             soeketekst: searchText,
             kommunenummer: selectedKommune,
             land: null,
@@ -74,8 +63,8 @@ const RecipientSearch: FC<RecipientSearchProps> = ({onMottakerChosen}) => {
                 setlatestSearch(request)
                 setIsSearching(false)
             }
-        )
-    }
+        )// TODO error handling
+    },[isSearching, location, recipientType, searchText, selectedKommune, skribentApi])
 
     const handleFormSubmit = (form: FormEvent<HTMLFormElement>) => {
         form.preventDefault()
@@ -116,11 +105,11 @@ const RecipientSearch: FC<RecipientSearchProps> = ({onMottakerChosen}) => {
                         </RadioGroup>
                     </div>
                     <div className={styles.filterGroup}>
-                        <RadioGroup onChange={setPlace} size="small" legend="Inn-/utland">
+                        <RadioGroup onChange={setLocation} size="small" legend="Inn-/utland">
                             <Radio value="INNLAND">Innland</Radio>
                             <Radio value="UTLAND">Utland</Radio>
                         </RadioGroup>
-                        {place == "INNLAND" &&
+                        {location == "INNLAND" &&
                             <Select
                                 label="Kommune"
                                 size="small"

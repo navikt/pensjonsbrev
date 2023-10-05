@@ -1,15 +1,15 @@
 import React, {FC, useState} from 'react'
 import styles from "./LetterMenu.module.css"
-import {Button, Heading, Loader, Search, Tabs} from "@navikt/ds-react"
+import {Button, Heading, Loader} from "@navikt/ds-react"
 import LetterPicker from "./components/LetterPicker/LetterPicker"
-import {LetterCategory, LetterMetadata} from "./model/skribenten"
+import {LetterCategory, Metadata} from "../../lib/model/skribenten"
 import ChangeRecipient from "./components/ChangeRecipient/ChangeRecipient"
 import Letterfilter, {LetterSelectionEvent} from "./components/LetterFilter/Letterfilter"
 
 export interface LetterMenuProps {
     categories: LetterCategory[] | null
-    favourites: LetterMetadata[] | null
-    eblanketter: LetterMetadata[] | null
+    favourites: Metadata[] | null
+    eblanketter: Metadata[] | null
     selectedLetter: string | null,
     onLetterSelected: (id: LetterSelectionEvent) => void,
 }

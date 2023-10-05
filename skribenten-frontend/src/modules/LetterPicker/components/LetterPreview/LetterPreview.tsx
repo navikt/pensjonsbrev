@@ -3,11 +3,11 @@ import styles from "./LetterPreview.module.css"
 import {StarFillIcon, StarIcon} from "@navikt/aksel-icons"
 import {Button} from "@navikt/ds-react"
 import Image from "next/image"
-import {LetterMetadata} from "../../model/skribenten"
+import {Metadata} from "../../../../lib/model/skribenten"
 
 
 interface LetterPreviewProps {
-    selectedLetter: LetterMetadata | undefined
+    selectedLetter: Metadata | undefined
     onAddToFavourites: () => void
     selectedIsFavourite: boolean
 }

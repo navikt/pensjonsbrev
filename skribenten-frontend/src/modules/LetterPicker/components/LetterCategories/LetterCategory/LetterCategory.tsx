@@ -1,7 +1,7 @@
 import React, {FC, useState} from 'react'
 import styles from "./LetterCategory.module.css"
 import {ChevronDownIcon, ChevronUpIcon} from "@navikt/aksel-icons"
-import {LetterCategory as Category} from "../../../model/skribenten"
+import {LetterCategory as Category} from "../../../../../lib/model/skribenten/skribenten"
 import LetterPicker from "../../LetterPicker/LetterPicker"
 
 export interface LetterCategoryProps {

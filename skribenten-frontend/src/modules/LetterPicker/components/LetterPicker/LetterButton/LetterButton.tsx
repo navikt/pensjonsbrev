@@ -1,7 +1,7 @@
 import React, {FC, useRef, useState} from 'react'
 import styles from "./LetterButton.module.css"
 import {Popover} from "@navikt/ds-react"
-import {Brevsystem} from "../../../model/skribenten"
+import {Brevsystem} from "../../../../../lib/model/skribenten"
 
 interface LetterButtonProps {
     text: string,

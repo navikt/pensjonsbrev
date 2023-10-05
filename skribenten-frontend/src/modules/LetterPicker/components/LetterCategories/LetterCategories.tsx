@@ -1,6 +1,6 @@
 import React, {FC} from "react"
 import styles from "./LetterCategories.module.css"
-import {LetterCategory as Category} from "../../model/skribenten"
+import {LetterCategory as Category} from "../../../../lib/model/skribenten/skribenten"
 import LetterCategory from "./LetterCategory/LetterCategory"
 
 interface LetterCategoriesProps {

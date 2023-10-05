@@ -1,7 +1,7 @@
 import React, {FC, useCallback, useContext, useEffect, useState} from 'react'
 
 import "@navikt/ds-css"
-import {Sak, SkribentServiceResult} from "../../modules/LetterEditor/model/api"
+import {Sak, SkribentServiceResult} from "../../lib/model/skribenten"
 import SelectSakid, {SAKID_REGEX} from "../../modules/SelectSakId/SelectSakid"
 import {useSearchParams} from "next/navigation"
 import {useRouter} from "next/router"

@@ -1,5 +1,5 @@
 import {FC} from "react"
-import * as Model from "../../model/api"
+import * as Model from "../../../../lib/model/skribenten/letter"
 import ContentGroup, {ItemID} from "../contentgroup/ContentGroup"
 import {BoundAction, CallbackReceiver} from "../../../../lib/actions"
 import {CursorPosition, LetterEditorState} from "../../model/state"

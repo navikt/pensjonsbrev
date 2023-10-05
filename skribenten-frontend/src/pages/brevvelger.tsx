@@ -8,11 +8,10 @@ import styles from './brevvelger.module.css'
 import LetterPreview from "../modules/LetterPicker/components/LetterPreview/LetterPreview"
 import SkribentenAPI from "../lib/services/skribenten"
 import {useMsal} from "@azure/msal-react"
-import {LetterCategory, LetterMetadata} from "../modules/LetterPicker/model/skribenten"
+import {LetterCategory, Metadata, Sak} from "../lib/model/skribenten"
 import LetterPickerActionBar from "../modules/LetterPicker/components/ActionBar/ActionBar"
 import SakContext from "../components/casecontextpage/CaseContextPage"
 
-import {Sak} from "../modules/LetterEditor/model/api"
 import {LetterSelectionEvent} from "../modules/LetterPicker/components/LetterFilter/Letterfilter"
 
 export type SkribentContext = {
@@ -22,7 +21,7 @@ export type SkribentContext = {
 export const SkribentContext = createContext<SkribentContext | null>(null)
 
 export type LetterSelection = {
-    metadata: LetterMetadata,
+    metadata: Metadata,
     landkode?: string,
     mottakerText?: string,
 }
@@ -30,9 +29,9 @@ export type LetterSelection = {
 const Brevvelger: NextPage<SkribentenConfig> = (props) => {
     const [selectedLetter, setSelectedLetter] = useState<LetterSelection | undefined>()
     const [letterCategories, setLetterCategories] = useState<LetterCategory[] | null>(null)
-    const [eblanketter, setEblanketter] = useState<LetterMetadata[] | null>(null)
-    const [favourites, setFavourites] = useState<LetterMetadata[] | null>(null)
-    const [letterMetadata, setLetterMetadata] = useState<LetterMetadata[] | null>()
+    const [eblanketter, setEblanketter] = useState<Metadata[] | null>(null)
+    const [favourites, setFavourites] = useState<Metadata[] | null>(null)
+    const [letterMetadata, setLetterMetadata] = useState<Metadata[] | null>()
     const [sak, setSak] = useState<Sak | null>(null)
 
     const msal = useMsal()

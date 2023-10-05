@@ -1,3 +1,5 @@
+import {TemplateDescription} from "./brevbaker"
+
 export interface Identifiable {
     readonly id: number
 }
@@ -79,49 +81,6 @@ export interface EditedLetter {
     readonly deletedBlocks: number[]
 }
 
-export interface Sak {
-    readonly sakId: number,
-    readonly foedselsnr: string,
-    readonly foedselsdato: string,
-    readonly sakType: SakType,
-}
-
-//    data class PersonSoekResponse(val totalHits: Int, val resultat: List<Result>) {
-//         data class Result(val navn: String)
-//     }
-
-export interface PersonSoekResponse {
-    readonly totalHits: number,
-    readonly resultat: PersonSoekResultat[],
-}
-
-export interface PersonSoekResultat {
-    readonly navn: string,
-    readonly id: string,
-    readonly foedselsdato: string,
-}
-
-export type SakType = 'AFP' |  'AFP_PRIVAT' |  'ALDER' |  'BARNEP' |  'FAM_PL' |  'GAM_YRK' |  'GENRL' |  'GJENLEV' |  'GRBL' |  'KRIGSP' |  'OMSORG' |  'UFOREP'
-
-export interface SkribentServiceResult<ResultType> {
-    readonly result: ResultType | null
-    readonly errorMessage: string | null
-}
-
-export type LanguageCode = 'BOKMAL' | 'NYNORSK' | 'ENGLISH'
-export type Distribusjonstype = 'VEDTAK' | 'VIKTIG' | 'ANNET'
-
-export interface LetterMetadata {
-    readonly displayTitle: string
-    readonly isSensitiv: boolean
-    readonly distribusjonstype: Distribusjonstype
-}
-export interface TemplateDescription {
-    readonly name: string
-    readonly letterDataClass: string
-    readonly languages: LanguageCode[]
-    readonly metadata: LetterMetadata
-}
 export type ScalarKind = 'NUMBER' | 'DOUBLE' | 'STRING' | 'BOOLEAN' | 'DATE'
 export interface TScalar {
     readonly type: 'scalar'

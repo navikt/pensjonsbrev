@@ -1,4 +1,4 @@
-import {AnyBlock, Content, Item, ITEM_LIST, ItemList, LITERAL, LiteralValue, PARAGRAPH, ParagraphBlock, TextContent, TITLE1, Title1Block, VARIABLE, VariableValue} from "../../../src/modules/LetterEditor/model/api"
+import {AnyBlock, Content, Item, ITEM_LIST, ItemList, LITERAL, LiteralValue, PARAGRAPH, ParagraphBlock, TextContent, TITLE1, Title1Block, VARIABLE, VariableValue} from "../../../src/lib/model/api"
 import * as Actions from "../../../src/modules/LetterEditor/actions/model"
 
 import {LetterEditorState} from "../../../src/modules/LetterEditor/model/state"

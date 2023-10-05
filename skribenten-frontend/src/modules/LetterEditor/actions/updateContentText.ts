@@ -1,6 +1,6 @@
 import {Action} from "../../../lib/actions"
 import produce from "immer"
-import {ITEM_LIST, LITERAL} from "../model/api"
+import {ITEM_LIST, LITERAL} from "../../../lib/model/skribenten"
 import {ContentId} from "./model"
 import {cleanseText} from "./common"
 import {LetterEditorState} from "../model/state"

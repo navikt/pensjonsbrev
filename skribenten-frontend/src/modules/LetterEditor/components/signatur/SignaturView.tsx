@@ -1,4 +1,4 @@
-import {Signatur} from "../../model/api"
+import {Signatur} from "../../../../lib/model/skribenten"
 import {FC} from "react"
 import styles from "./SignaturView.module.css"
 

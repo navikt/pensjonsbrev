@@ -1,4 +1,4 @@
-import {Content, EditedLetter} from "./api"
+import {Content, EditedLetter} from "../../../lib/model/skribenten"
 
 export type CursorPosition = {
     contentId: number,

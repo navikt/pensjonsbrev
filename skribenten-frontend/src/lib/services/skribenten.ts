@@ -4,12 +4,16 @@ import {
     EditedLetter, PersonSoekResponse,
     RedigerbarTemplateDescription,
     RenderedLetter,
-    Sak, SakType,
+    Sak, SakType, SearchRequest,
     SkribentServiceResult,
-} from "../../modules/LetterEditor/model/api"
+} from "../model/skribenten"
 import {ObjectValue} from "../../modules/ModelEditor/model"
-import { LetterMetadata, LetterMetadataResponse} from "../../modules/LetterPicker/model/skribenten"
-import {AddressResult, Avtaleland, KommuneResult,SearchRequest} from "../../modules/LetterPicker/components/ChangeRecipient/RecipientSearch/RecipientSearch"
+import {Metadata, LetterMetadataResponse} from "../model/skribenten"
+import {
+    AddressResult,
+    Avtaleland,
+    KommuneResult,
+} from "../../modules/LetterPicker/components/ChangeRecipient/RecipientSearch/RecipientSearch"
 
 export interface SkribentenAPIConfig {
     url: string
@@ -48,7 +52,7 @@ class SkribentenAPI {
         ).then(resp => resp.blob())
     }
 
-    async getRedigerbarTemplateDescription( brevkode: string): Promise<RedigerbarTemplateDescription> {
+    async getRedigerbarTemplateDescription(brevkode: string): Promise<RedigerbarTemplateDescription> {
         return withAuthorization(this.msal, this.config.scope).then(auth =>
             fetch(`${this.config.url}/template/${brevkode}`, {
                 headers: {
@@ -61,7 +65,7 @@ class SkribentenAPI {
         ).then(resp => resp.json())
     }
 
-    async renderLetter( brevkode: string, data: ObjectValue, editedLetter: EditedLetter | undefined): Promise<RenderedLetter> {
+    async renderLetter(brevkode: string, data: ObjectValue, editedLetter: EditedLetter | undefined): Promise<RenderedLetter> {
         return withAuthorization(this.msal, this.config.scope).then(auth =>
             fetch(`${this.config.url}/letter/${brevkode}`, {
                 headers: {
@@ -75,7 +79,7 @@ class SkribentenAPI {
         ).then(resp => resp.json())
     }
 
-    async getLetterTemplates( sakType: SakType): Promise<LetterMetadataResponse> {
+    async getLetterTemplates(sakType: SakType): Promise<LetterMetadataResponse> {
         return withAuthorization(this.msal, this.config.scope).then(auth =>
             fetch(`${this.config.url}/lettertemplates/${sakType}`, {
                 headers: {
@@ -99,7 +103,7 @@ class SkribentenAPI {
         ).then(resp => resp.json())
     }
 
-    async addFavourite( letterId: string) {
+    async addFavourite(letterId: string) {
         return withAuthorization(this.msal, this.config.scope).then(auth =>
             fetch(`${this.config.url}/favourites`, {
                 headers: {
@@ -112,7 +116,7 @@ class SkribentenAPI {
         )
     }
 
-    async removeFavourite( letterId: string) {
+    async removeFavourite(letterId: string) {
         return withAuthorization(this.msal, this.config.scope).then(auth =>
             fetch(`${this.config.url}/favourites`, {
                 headers: {
@@ -125,7 +129,7 @@ class SkribentenAPI {
         )
     }
 
-    async getSaksinfo( saksnummer: number): Promise<SkribentServiceResult<Sak>> {
+    async getSaksinfo(saksnummer: number): Promise<SkribentServiceResult<Sak>> {
         return withAuthorization(this.msal, this.config.scope).then((auth) =>
             fetch(`${this.config.url}/pen/sak/${saksnummer}`, {
                 headers: {
@@ -151,12 +155,12 @@ class SkribentenAPI {
 
 
     async bestillExtreamBrev(
-                             metadata: LetterMetadata,
-                             sak: Sak,
-                             gjelderPid: string,
-                             spraak: string,
-                             landkode?: string,
-                             mottakerText?: string,
+        metadata: Metadata,
+        sak: Sak,
+        gjelderPid: string,
+        spraak: string,
+        landkode?: string,
+        mottakerText?: string,
     ): Promise<string> {
         return withAuthorization(this.msal, this.config.scope).then((auth) =>
             fetch(`${this.config.url}/pen/extream`, {
@@ -180,10 +184,10 @@ class SkribentenAPI {
 
 
     async bestillDoksysBrev(
-                            brevkode: string,
-                            sakId: string,
-                            gjelderPid: string,
-                            spraak: string): Promise<string> {
+        brevkode: string,
+        sakId: string,
+        gjelderPid: string,
+        spraak: string): Promise<string> {
         return withAuthorization(this.msal, this.config.scope)
             .then((auth) => fetch(`${this.config.url}/pen/doksys`, {
                     headers: {
@@ -198,7 +202,7 @@ class SkribentenAPI {
 
     }
 
-    async hentNavn( fnr: string): Promise<string> {
+    async hentNavn(fnr: string): Promise<string> {
         return withAuthorization(this.msal, this.config.scope).then((auth) =>
             fetch(`${this.config.url}/pdl/navn/${fnr}`, {
                 headers: {'Authorization': `Bearer ${auth.accessToken}`},
@@ -207,7 +211,7 @@ class SkribentenAPI {
         ).then((res) => res.text())
     }
 
-    async soekEtterMottaker( request: SearchRequest): Promise<SkribentServiceResult<PersonSoekResponse>> {
+    async soekEtterMottaker(request: SearchRequest): Promise<SkribentServiceResult<PersonSoekResponse>> {
         return withAuthorization(this.msal, this.config.scope).then((auth) =>
             fetch(`${this.config.url}/pdl/soekmottaker`, {
                 headers: {
@@ -248,7 +252,7 @@ class SkribentenAPI {
         ).then(res => res.json())
     }
 
-    async hentAdresse( pid: string) : Promise<AddressResult> {
+    async hentAdresse(pid: string): Promise<AddressResult> {
         return withAuthorization(this.msal, this.config.scope).then(auth =>
             fetch(`${this.config.url}/adresse/${pid}`, {
                 headers: {'Authorization': `Bearer ${auth.accessToken}`},

@@ -1,11 +1,11 @@
 import React, {FC, useState} from "react"
 import {Button, Label, Select} from "@navikt/ds-react"
 import BottomMenu from "../../../../components/bottom-menu/BottomMenu"
-import {LetterMetadata} from "../../model/skribenten"
+import {Metadata} from "../../../../lib/model/skribenten"
 import styles from "./ActionBar.module.css"
 
 interface ActionBarProps {
-    selectedLetter: LetterMetadata | undefined
+    selectedLetter: Metadata | undefined
     onOrderLetter: (language: string) => void
 }
 

@@ -1,10 +1,10 @@
 import {FC} from "react"
 import styles from "./LetterPicker.module.css"
 import LetterButton from "./LetterButton/LetterButton"
-import {LetterMetadata} from "../../model/skribenten"
+import {Metadata} from "../../../../lib/model/skribenten"
 
 interface LetterPickerProps {
-    letters: LetterMetadata[]
+    letters: Metadata[]
     selectedLetter: string | null,
     onLetterSelected: (id: string) => void
 }

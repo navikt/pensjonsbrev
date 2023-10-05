@@ -1,7 +1,7 @@
 import {afterEach, beforeEach, describe, expect, test, vi} from "vitest"
 import {cleanup, render, screen} from "@testing-library/react"
 import ContentGroup from "../../../../../src/modules/LetterEditor/components/contentgroup/ContentGroup"
-import {LITERAL, LiteralValue, PARAGRAPH, ParagraphBlock} from "../../../../../src/modules/LetterEditor/model/api"
+import {LITERAL, LiteralValue, PARAGRAPH, ParagraphBlock} from "../../../../../src/lib/model/api"
 import {boundActionStub} from "../../../../testUtils"
 import userEvent from "@testing-library/user-event"
 import Actions from "../../../../../src/modules/LetterEditor/actions"

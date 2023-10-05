@@ -1,5 +1,5 @@
 import {FC} from "react"
-import {Title1Block} from "../../model/api"
+import {Title1Block} from "../../../../lib/model/skribenten"
 import ContentGroup from "../contentgroup/ContentGroup"
 import styles from "./Title1.module.css"
 import {BlockProps} from "../../BlockProps"

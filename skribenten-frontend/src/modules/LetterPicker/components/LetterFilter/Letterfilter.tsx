@@ -3,13 +3,13 @@ import styles from "./Letterfilter.module.css"
 import {Loader, Search, Select, Tabs, TextField} from "@navikt/ds-react"
 import LetterCategories from "../LetterCategories/LetterCategories"
 import LetterPicker from "../LetterPicker/LetterPicker"
-import {LetterCategory, LetterMetadata} from "../../model/skribenten"
+import {LetterCategory, Metadata} from "../../../../lib/model/skribenten"
 import {SkribentContext} from "../../../../pages/brevvelger"
 import {Avtaleland} from "../ChangeRecipient/RecipientSearch/RecipientSearch"
 
 interface LetterfilterProps {
     categories: LetterCategory[] | null
-    eblanketter: LetterMetadata[] | null
+    eblanketter: Metadata[] | null
     selectedLetter: string | null,
     onLetterSelected: (id: LetterSelectionEvent) => void,
 }

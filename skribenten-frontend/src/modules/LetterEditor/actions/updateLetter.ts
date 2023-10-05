@@ -1,5 +1,5 @@
 import {Action} from "../../../lib/actions"
-import {RenderedLetter} from "../model/api"
+import {RenderedLetter} from "../../../lib/model/skribenten"
 import produce from "immer"
 import {LetterEditorState} from "../model/state"
 
