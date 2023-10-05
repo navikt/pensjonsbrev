@@ -103,7 +103,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, B
             )
         }
     }
-    includePhrase(Beregningsperiodetabell(beregningsperioder, grunnbeloep, antallBarn))
+    includePhrase(Beregningsperiodetabell(beregningsperioder))
 }
 
 private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, BeregningsinfoBP>.trygdetid(
