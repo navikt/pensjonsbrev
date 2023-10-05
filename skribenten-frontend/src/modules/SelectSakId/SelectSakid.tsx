@@ -30,6 +30,6 @@ const SelectSakid: FC<SelectSakIdProps> = ({onSubmit, error = null}) => {
     )
 }
 
-export const SAKID_REGEX = RegExp("^[0-9]{0,15}$",)
+export const SAKID_REGEX = RegExp("^[0-9]{1,15}$",)
 
 export default SelectSakid

@@ -13,12 +13,10 @@ import LetterPickerActionBar from "../modules/LetterPicker/components/ActionBar/
 import SakContext from "../components/casecontextpage/CaseContextPage"
 
 import {Sak} from "../modules/LetterEditor/model/api"
-import {IMsalContext} from "@azure/msal-react/dist/MsalContext"
 import {LetterSelectionEvent} from "../modules/LetterPicker/components/LetterFilter/Letterfilter"
 
 export type SkribentContext = {
-    skribentApi: SkribentenAPI,
-    msal: IMsalContext
+    skribentApi: SkribentenAPI
 }
 
 export const SkribentContext = createContext<SkribentContext | null>(null)
@@ -37,15 +35,15 @@ const Brevvelger: NextPage<SkribentenConfig> = (props) => {
     const [letterMetadata, setLetterMetadata] = useState<LetterMetadata[] | null>()
     const [sak, setSak] = useState<Sak | null>(null)
 
-    const skribentApi = new SkribentenAPI(props.api)
     const msal = useMsal()
+    const skribentApi = new SkribentenAPI(props.api, msal)
 
     const onChangeSakHandler = (newSak: Sak | null) => {
         setSak(newSak)
         if (newSak) {
             Promise.all([
-                skribentApi.getLetterTemplates(msal, newSak.sakType),
-                skribentApi.getFavourites(msal),
+                skribentApi.getLetterTemplates(newSak.sakType),
+                skribentApi.getFavourites(),
             ]).then(([letterMetadata, favourites]) => {
                 setLetterCategories(letterMetadata.kategorier)
                 const metadata = letterMetadata.kategorier.flatMap(cat => cat.templates)
@@ -65,8 +63,12 @@ const Brevvelger: NextPage<SkribentenConfig> = (props) => {
             setSelectedLetter(undefined)
         } else {
             const selectedLetterMetadata = letterMetadata?.find(el => el.id === selectionEvent.letterCode)
-            if(selectedLetterMetadata) {
-                setSelectedLetter({metadata: selectedLetterMetadata, landkode: selectionEvent.countryCode, mottakerText: selectionEvent.recipientText})
+            if (selectedLetterMetadata) {
+                setSelectedLetter({
+                    metadata: selectedLetterMetadata,
+                    landkode: selectionEvent.countryCode,
+                    mottakerText: selectionEvent.recipientText,
+                })
             }
         }
     }
@@ -75,13 +77,13 @@ const Brevvelger: NextPage<SkribentenConfig> = (props) => {
         if (selectedLetter && sak) {
             const metadata = selectedLetter.metadata
             if (metadata.brevsystem == "EXTERAM") {
-                skribentApi.bestillExtreamBrev(msal, selectedLetter.metadata, sak, sak.foedselsnr, selectedLanguage,  selectedLetter.landkode, selectedLetter.mottakerText)
+                skribentApi.bestillExtreamBrev(selectedLetter.metadata, sak, sak.foedselsnr, selectedLanguage, selectedLetter.landkode, selectedLetter.mottakerText)
                     .then((url: string) => {
                         console.log(`Fikk URL tilbake fra extream ${url}`)
                         window.open(url)
                     })
             } else if (metadata.brevsystem == "DOKSYS") {
-                skribentApi.bestillDoksysBrev(msal, metadata.id, sak.sakId.toString(), sak.foedselsnr, selectedLanguage,)
+                skribentApi.bestillDoksysBrev(metadata.id, sak.sakId.toString(), sak.foedselsnr, selectedLanguage)
                     .then((url: string) => {
                         console.log(`Fikk URL tilbake fra doksys ${url}`)
                         window.open(url)
@@ -97,10 +99,10 @@ const Brevvelger: NextPage<SkribentenConfig> = (props) => {
             const isFavourite = favourites?.includes(metadata)
             if (isFavourite) {
                 setFavourites(fav => fav ? fav.filter(f => f.id !== metadata.id) : null)
-                await skribentApi.removeFavourite(msal, metadata.id)
+                await skribentApi.removeFavourite(metadata.id)
             } else {
                 setFavourites(fav => fav ? [...fav, metadata] : [metadata])
-                await skribentApi.addFavourite(msal, metadata.id)
+                await skribentApi.addFavourite(metadata.id)
             }
         }
     }
@@ -112,8 +114,8 @@ const Brevvelger: NextPage<SkribentenConfig> = (props) => {
     }
 
     return (
-        <SkribentContext.Provider value={{skribentApi: skribentApi, msal: msal}}>
-            <SakContext onSakChanged={onChangeSakHandler}>
+        <SkribentContext.Provider value={{skribentApi: skribentApi}}>
+            <SakContext onSakChanged={onChangeSakHandler} sak={sak}>
                 <div className={styles.outerContainer}>
                     <div className={styles.innterContainer}>
                         <LetterMenu categories={letterCategories}

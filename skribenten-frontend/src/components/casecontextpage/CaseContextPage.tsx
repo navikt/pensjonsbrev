@@ -1,4 +1,4 @@
-import React, {FC, useContext, useEffect, useState} from 'react'
+import React, {FC, useCallback, useContext, useEffect, useState} from 'react'
 
 import "@navikt/ds-css"
 import {Sak, SkribentServiceResult} from "../../modules/LetterEditor/model/api"
@@ -12,49 +12,50 @@ import {InternalHeader} from "@navikt/ds-react"
 
 interface CaseContextPageProps {
     children?: React.ReactNode,
-    onSakChanged?: (sak: Sak | null) => void,
+    onSakChanged: (sak: Sak | null) => void,
+    sak: Sak | null,
 }
 
 
-const CaseContextPage: FC<CaseContextPageProps> = ({children, onSakChanged}) => {
-    const [sak, setSak] = useState<Sak | null>(null)
+const CaseContextPage: FC<CaseContextPageProps> = ({children, onSakChanged, sak}) => {
     const [navn, setNavn] = useState<string | null>(null)
     const [isLoadingSak, setIsLoadingSak] = useState<boolean>(false)
     const [errorMessage, setErrorMessage] = useState<string | null>()
     const queryParams = useSearchParams()
 
-    const {msal, skribentApi} = useContext(SkribentContext) as SkribentContext
+    const { skribentApi} = useContext(SkribentContext) as SkribentContext
 
     const router = useRouter()
 
-    const handleSakIdChanged = (sakId: number) => {
-        skribentApi.getSaksinfo(msal, sakId).then((response: SkribentServiceResult<Sak>) => {
-                if (response.result) {
-                    setSak(response.result)
-                    if(onSakChanged !== undefined) {
-                        onSakChanged(response.result)
-                    }
-                    skribentApi.hentNavn(msal, response.result.foedselsnr).then(setNavn)
-                    setErrorMessage(null)
-                    router.push(`${router.basePath}?sakId=${sakId}`, undefined, {shallow: true})
-                    setIsLoadingSak(false)
-                } else {
-                    setIsLoadingSak(false)
-                    setErrorMessage(response.errorMessage)
-                }
-            }
-        )
-    }
-    useEffect(()=>{
+    const handleSakSubmitted = useCallback((sakId: number) => {
+        router.push(`${router.basePath}?sakId=${sakId}`, undefined, {shallow: true})
+    }, [router])
+
+    useEffect(() => {
         const querySakId = queryParams.get("sakId")
 
-        if(querySakId && SAKID_REGEX.test(querySakId)) {
+        if (querySakId && SAKID_REGEX.test(querySakId) && parseInt(querySakId) !== sak?.sakId) {
             setIsLoadingSak(true)
-            handleSakIdChanged(parseInt(querySakId))
+            skribentApi.getSaksinfo(parseInt(querySakId)).then((response: SkribentServiceResult<Sak>) => {
+                    if (response.result) {
+                        if (onSakChanged !== undefined) {
+                            onSakChanged(response.result)
+                        }
+                        skribentApi.hentNavn(response.result.foedselsnr).then(setNavn)
+                        setErrorMessage(null)
+                        setIsLoadingSak(false)
+                    } else {
+                        setIsLoadingSak(false)
+                        setErrorMessage(response.errorMessage)
+                    }
+                }
+            )
+        } else {
+            setErrorMessage(`Ugyldig saksnummer: ${querySakId}`)
         }
-    },[])
+    }, [skribentApi,queryParams, sak])
 
-    if (isLoadingSak || sak ) {
+    if (isLoadingSak || sak) {
         return (
             <div>
                 <NavBar/>
@@ -74,7 +75,7 @@ const CaseContextPage: FC<CaseContextPageProps> = ({children, onSakChanged}) => 
             </InternalHeader>
             <SelectSakid
                 error={errorMessage}
-                onSubmit={handleSakIdChanged}/>
+                onSubmit={handleSakSubmitted}/>
         </div>
     )
 }

@@ -62,7 +62,7 @@ function sprakTekst(sprak: string) {
         case "NN":
             return "Nynorsk"
         case "NB":
-            return "Norsk Bokmål"
+            return "Bokmål"
         case "EN":
             return "Engelsk"
         case "SE":

@@ -1,15 +1,15 @@
 import {FC} from "react"
 import {Button, Modal, Tabs} from "@navikt/ds-react"
-import styles from "./ChangeAddressee.module.css"
+import styles from "./ChangeRecipient.module.css"
 import {XMarkIcon} from "@navikt/aksel-icons"
-import AddresseeSearch from "./AddresseeSearch/AddresseeSearch"
+import RecipientSearch from "./RecipientSearch/RecipientSearch"
 
-interface ChangeAddresseeProps {
+interface ChangeRecipientProps {
     open: boolean,
     onExit: () => void
 }
 
-const ChangeAddressee: FC<ChangeAddresseeProps> = ({open, onExit}) => {
+const ChangeRecipient: FC<ChangeRecipientProps> = ({open, onExit}) => {
     const handleMottakerChanged = (pid: string) =>{ //TODO use address instead
 
     }
@@ -23,19 +23,19 @@ const ChangeAddressee: FC<ChangeAddresseeProps> = ({open, onExit}) => {
                         className={styles.exitButton}
                         icon={<XMarkIcon/>} variant="tertiary"/>
                 </div>
-                <Tabs defaultValue="addresseesearch">
+                <Tabs defaultValue="recipientsearch">
                     <Tabs.List>
                         <Tabs.Tab
-                            value="addresseesearch"
+                            value="recipientsearch"
                             label="Søk mottaker"
                         />
                         <Tabs.Tab
-                            value="manualaddressee"
+                            value="manualrecipient"
                             label="Legg til mottaker manuelt"
                         />
                     </Tabs.List>
-                    <Tabs.Panel value="addresseesearch" className={styles.tabContent}>
-                        <AddresseeSearch onMottakerChosen={handleMottakerChanged}/>
+                    <Tabs.Panel value="recipientsearch" className={styles.tabContent}>
+                        <RecipientSearch onMottakerChosen={handleMottakerChanged}/>
                     </Tabs.Panel>
                 </Tabs>
             </Modal.Body>
@@ -43,4 +43,4 @@ const ChangeAddressee: FC<ChangeAddresseeProps> = ({open, onExit}) => {
     )
 }
 
-export default ChangeAddressee
+export default ChangeRecipient

@@ -3,7 +3,7 @@ import styles from "./LetterMenu.module.css"
 import {Button, Heading, Loader, Search, Tabs} from "@navikt/ds-react"
 import LetterPicker from "./components/LetterPicker/LetterPicker"
 import {LetterCategory, LetterMetadata} from "./model/skribenten"
-import ChangeAddressee from "./components/ChangeAddressee/ChangeAddressee"
+import ChangeRecipient from "./components/ChangeRecipient/ChangeRecipient"
 import Letterfilter, {LetterSelectionEvent} from "./components/LetterFilter/Letterfilter"
 
 export interface LetterMenuProps {
@@ -22,7 +22,7 @@ const LetterMenu: FC<LetterMenuProps> =
          selectedLetter,
          onLetterSelected,
      }) => {
-        const [changeAddresseeIsOpen, setChangeAddresseeIsOpen] = useState(false)
+        const [showRecipientModal, setShowRecipientModal] = useState(false)
 
         return (
             <div className={styles.brevvelgerContainer}>
@@ -32,9 +32,9 @@ const LetterMenu: FC<LetterMenuProps> =
                         <Heading level="2" size="small" className={styles.mottakerCardHeading}>Mottaker</Heading>
                         <Button variant="tertiary"
                                 size="xsmall"
-                                onClick={() => setChangeAddresseeIsOpen(true)}>Endre mottaker</Button>
-                        <ChangeAddressee open={changeAddresseeIsOpen}
-                                         onExit={() => setChangeAddresseeIsOpen(false)}/>
+                                onClick={() => setShowRecipientModal(true)}>Endre mottaker</Button>
+                        <ChangeRecipient open={showRecipientModal}
+                                         onExit={() => setShowRecipientModal(false)}/>
                     </div>
                     <p>Test Saksbehandlerson</p>
                 </div>

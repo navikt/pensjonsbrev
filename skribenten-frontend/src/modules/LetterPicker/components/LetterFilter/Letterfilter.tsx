@@ -5,7 +5,7 @@ import LetterCategories from "../LetterCategories/LetterCategories"
 import LetterPicker from "../LetterPicker/LetterPicker"
 import {LetterCategory, LetterMetadata} from "../../model/skribenten"
 import {SkribentContext} from "../../../../pages/brevvelger"
-import {Avtaleland} from "../ChangeAddressee/AddresseeSearch/AddresseeSearch"
+import {Avtaleland} from "../ChangeRecipient/RecipientSearch/RecipientSearch"
 
 interface LetterfilterProps {
     categories: LetterCategory[] | null
@@ -28,7 +28,7 @@ function filterCategories(categories: LetterCategory[], searchText: string): Let
 }
 
 const Letterfilter: FC<LetterfilterProps> = ({categories, eblanketter, selectedLetter, onLetterSelected}) => {
-    const {msal, skribentApi} = useContext(SkribentContext) as SkribentContext
+    const {skribentApi} = useContext(SkribentContext) as SkribentContext
 
     const [avtalelandError, setAvtalelandError] = useState<string| null>(null)
     const [mottakerError, setMottakerError] = useState<string| null>(null)
@@ -52,7 +52,7 @@ const Letterfilter: FC<LetterfilterProps> = ({categories, eblanketter, selectedL
 
     useEffect(() => {
         if (eblanketter && eblanketter.length > 0) {
-            skribentApi.hentAvtaleland(msal)
+            skribentApi.hentAvtaleland()
                 .then(setAvtalelandOptions)
         }
     }, [eblanketter])

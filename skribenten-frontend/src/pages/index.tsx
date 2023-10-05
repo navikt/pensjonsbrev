@@ -32,10 +32,11 @@ const PdfFileLink = ({pdfFile}: PdfFileLinkProps) => {
 }
 
 const Home: NextPage<SkribentenConfig> = (props) => {
-    const skribentenAPI = new SkribentenAPI(props.api)
+    const msal = useMsal()
+    const skribentenAPI = new SkribentenAPI(props.api, msal)
+
     const [penData, setPenData] = useState("unknown")
     const [brevbakerData, setBrevbakerData] = useState<Blob>()
-    const msal = useMsal()
 
     return (
         <div className={styles.container}>
@@ -48,9 +49,9 @@ const Home: NextPage<SkribentenConfig> = (props) => {
                 <p>This will only render if a user is signed-in.</p>
                 <WelcomeUser/>
                 <p>Fetch from pesys: {penData}</p>
-                <button onClick={() => skribentenAPI.testPesys(msal).then(setPenData)}>Test Pesys</button>
+                <button onClick={() => skribentenAPI.testPesys().then(setPenData)}>Test Pesys</button>
                 <p>Generated brev: <PdfFileLink pdfFile={brevbakerData}/></p>
-                <button onClick={() => skribentenAPI.testBrevbaker(msal).then(setBrevbakerData)}>Test brevbaker</button>
+                <button onClick={() => skribentenAPI.testBrevbaker().then(setBrevbakerData)}>Test brevbaker</button>
             </AuthenticatedTemplate>
             <UnauthenticatedTemplate>
                 <p>This will only render if a user is not signed-in.</p>

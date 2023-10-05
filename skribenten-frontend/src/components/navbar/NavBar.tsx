@@ -1,10 +1,7 @@
-import React, {FC, FunctionComponent} from "react"
+import React, {FC} from "react"
 import {InternalHeader} from "@navikt/ds-react"
 
-interface NavBarProps {
-
-}
-const NavBar: FC<NavBarProps> = () => {
+const NavBar: FC = () => {
     return (
         <InternalHeader>
             <InternalHeader.Title as="h1">Skribenten</InternalHeader.Title>

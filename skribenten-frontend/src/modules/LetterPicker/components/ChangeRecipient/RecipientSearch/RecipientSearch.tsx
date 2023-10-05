@@ -1,9 +1,8 @@
 import {Button, Radio, RadioGroup, Search, Select, Table} from "@navikt/ds-react"
 import React, {FC, FormEvent, useContext, useEffect, useState} from "react"
-import styles from './AddresseeSearch.module.css'
+import styles from './RecipientSearch.module.css'
 import {PersonSoekResponse} from "../../../../LetterEditor/model/api"
 import {SkribentContext} from "../../../../../pages/brevvelger"
-import {Selection} from "@navikt/ds-react/src/table/stories/table.stories"
 
 export type RecipientType = 'PERSON' | 'SAMHANDLER'
 export type Place = 'INNLAND' | 'UTLAND'
@@ -32,11 +31,11 @@ export type Avtaleland = {
     kode: string,
 }
 
-interface AddresseeSearchProps {
+interface RecipientSearchProps {
     onMottakerChosen: (pid: string) => void,
 }
 
-const AddresseeSearch: FC<AddresseeSearchProps> = ({onMottakerChosen}) => {
+const RecipientSearch: FC<RecipientSearchProps> = ({onMottakerChosen}) => {
     const [showFilter, setShowFilter] = useState(false)
     const [searchText, setSearchText] = useState("")
     const [isSearching, setIsSearching] = useState(false)
@@ -47,10 +46,10 @@ const AddresseeSearch: FC<AddresseeSearchProps> = ({onMottakerChosen}) => {
     const [errorMessage, setErrorMessage] = useState<string | null>(null)
     const [kommuner, setKommuner] = useState<KommuneResult[]>([])
     const [selectedKommune, setSelectedKommune] = useState<string[] | null>(null)
-    const {msal, skribentApi} = useContext(SkribentContext) as SkribentContext
+    const {skribentApi} = useContext(SkribentContext) as SkribentContext
 
     useEffect(() => {
-        skribentApi.hentKommuneForslag(msal).then(
+        skribentApi.hentKommuneForslag().then(
             res => setKommuner(res))
     }, [])
     const handleSearch = () => {
@@ -69,7 +68,7 @@ const AddresseeSearch: FC<AddresseeSearchProps> = ({onMottakerChosen}) => {
             kommunenummer: selectedKommune,
             land: null,
         }
-        skribentApi.soekEtterMottaker(msal, request).then(
+        skribentApi.soekEtterMottaker(request).then(
             res => {
                 setResults(res.result)
                 setlatestSearch(request)
@@ -90,7 +89,7 @@ const AddresseeSearch: FC<AddresseeSearchProps> = ({onMottakerChosen}) => {
     }
 
     const handleMottakerChosen = (pid: string ) => {
-        console.log(skribentApi.hentAdresse(msal, pid))
+        console.log(skribentApi.hentAdresse(pid))
     }
 
     const error = (errorMessage && <div>{errorMessage}</div>)
@@ -170,4 +169,4 @@ const AddresseeSearch: FC<AddresseeSearchProps> = ({onMottakerChosen}) => {
     )
 }
 
-export default AddresseeSearch
+export default RecipientSearch

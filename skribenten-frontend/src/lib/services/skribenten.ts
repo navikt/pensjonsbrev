@@ -9,7 +9,7 @@ import {
 } from "../../modules/LetterEditor/model/api"
 import {ObjectValue} from "../../modules/ModelEditor/model"
 import { LetterMetadata, LetterMetadataResponse} from "../../modules/LetterPicker/model/skribenten"
-import {AddressResult, Avtaleland, KommuneResult,SearchRequest} from "../../modules/LetterPicker/components/ChangeAddressee/AddresseeSearch/AddresseeSearch"
+import {AddressResult, Avtaleland, KommuneResult,SearchRequest} from "../../modules/LetterPicker/components/ChangeRecipient/RecipientSearch/RecipientSearch"
 
 export interface SkribentenAPIConfig {
     url: string
@@ -17,11 +17,11 @@ export interface SkribentenAPIConfig {
 }
 
 class SkribentenAPI {
-    constructor(readonly config: SkribentenAPIConfig) {
+    constructor(readonly config: SkribentenAPIConfig, readonly msal: IMsalContext) {
     }
 
-    async testPesys(msal: IMsalContext): Promise<string> {
-        return withAuthorization(msal, this.config.scope).then((auth) =>
+    async testPesys(): Promise<string> {
+        return withAuthorization(this.msal, this.config.scope).then((auth) =>
             fetch(`${this.config.url}/test/pen`, {
                 headers: {
                     'Accept': 'application/json',
@@ -34,9 +34,9 @@ class SkribentenAPI {
         ).then((res) => res.json()).then(JSON.stringify)
     }
 
-    async testBrevbaker(msal: IMsalContext): Promise<Blob> {
+    async testBrevbaker(): Promise<Blob> {
         console.log(this.config.url)
-        return withAuthorization(msal, this.config.scope).then((auth) =>
+        return withAuthorization(this.msal, this.config.scope).then((auth) =>
             fetch(`${this.config.url}/test/brevbaker`, {
                 headers: {
                     'Accept': 'application/json',
@@ -48,8 +48,8 @@ class SkribentenAPI {
         ).then(resp => resp.blob())
     }
 
-    async getRedigerbarTemplateDescription(msal: IMsalContext, brevkode: string): Promise<RedigerbarTemplateDescription> {
-        return withAuthorization(msal, this.config.scope).then(auth =>
+    async getRedigerbarTemplateDescription( brevkode: string): Promise<RedigerbarTemplateDescription> {
+        return withAuthorization(this.msal, this.config.scope).then(auth =>
             fetch(`${this.config.url}/template/${brevkode}`, {
                 headers: {
                     'Accept': 'application/json',
@@ -61,8 +61,8 @@ class SkribentenAPI {
         ).then(resp => resp.json())
     }
 
-    async renderLetter(msal: IMsalContext, brevkode: string, data: ObjectValue, editedLetter: EditedLetter | undefined): Promise<RenderedLetter> {
-        return withAuthorization(msal, this.config.scope).then(auth =>
+    async renderLetter( brevkode: string, data: ObjectValue, editedLetter: EditedLetter | undefined): Promise<RenderedLetter> {
+        return withAuthorization(this.msal, this.config.scope).then(auth =>
             fetch(`${this.config.url}/letter/${brevkode}`, {
                 headers: {
                     'Accept': 'application/json',
@@ -75,8 +75,8 @@ class SkribentenAPI {
         ).then(resp => resp.json())
     }
 
-    async getLetterTemplates(msal: IMsalContext, sakType: SakType): Promise<LetterMetadataResponse> {
-        return withAuthorization(msal, this.config.scope).then(auth =>
+    async getLetterTemplates( sakType: SakType): Promise<LetterMetadataResponse> {
+        return withAuthorization(this.msal, this.config.scope).then(auth =>
             fetch(`${this.config.url}/lettertemplates/${sakType}`, {
                 headers: {
                     'Accept': 'application/json',
@@ -87,8 +87,8 @@ class SkribentenAPI {
         ).then(resp => resp.json())
     }
 
-    async getFavourites(msal: IMsalContext): Promise<string[]> {
-        return withAuthorization(msal, this.config.scope).then(auth =>
+    async getFavourites(): Promise<string[]> {
+        return withAuthorization(this.msal, this.config.scope).then(auth =>
             fetch(`${this.config.url}/favourites`, {
                 headers: {
                     'Accept': 'application/json',
@@ -99,8 +99,8 @@ class SkribentenAPI {
         ).then(resp => resp.json())
     }
 
-    async addFavourite(msal: IMsalContext, letterId: string) {
-        return withAuthorization(msal, this.config.scope).then(auth =>
+    async addFavourite( letterId: string) {
+        return withAuthorization(this.msal, this.config.scope).then(auth =>
             fetch(`${this.config.url}/favourites`, {
                 headers: {
                     'Accept': 'application/json',
@@ -112,8 +112,8 @@ class SkribentenAPI {
         )
     }
 
-    async removeFavourite(msal: IMsalContext, letterId: string) {
-        return withAuthorization(msal, this.config.scope).then(auth =>
+    async removeFavourite( letterId: string) {
+        return withAuthorization(this.msal, this.config.scope).then(auth =>
             fetch(`${this.config.url}/favourites`, {
                 headers: {
                     'Accept': 'application/json',
@@ -125,8 +125,8 @@ class SkribentenAPI {
         )
     }
 
-    async getSaksinfo(msal: IMsalContext, saksnummer: number): Promise<SkribentServiceResult<Sak>> {
-        return withAuthorization(msal, this.config.scope).then((auth) =>
+    async getSaksinfo( saksnummer: number): Promise<SkribentServiceResult<Sak>> {
+        return withAuthorization(this.msal, this.config.scope).then((auth) =>
             fetch(`${this.config.url}/pen/sak/${saksnummer}`, {
                 headers: {
                     'Accept': 'application/json',
@@ -150,7 +150,7 @@ class SkribentenAPI {
     }
 
 
-    async bestillExtreamBrev(msal: IMsalContext,
+    async bestillExtreamBrev(
                              metadata: LetterMetadata,
                              sak: Sak,
                              gjelderPid: string,
@@ -158,7 +158,7 @@ class SkribentenAPI {
                              landkode?: string,
                              mottakerText?: string,
     ): Promise<string> {
-        return withAuthorization(msal, this.config.scope).then((auth) =>
+        return withAuthorization(this.msal, this.config.scope).then((auth) =>
             fetch(`${this.config.url}/pen/extream`, {
                 headers: {
                     'Accept': 'application/json',
@@ -179,12 +179,12 @@ class SkribentenAPI {
     }
 
 
-    async bestillDoksysBrev(msal: IMsalContext,
+    async bestillDoksysBrev(
                             brevkode: string,
                             sakId: string,
                             gjelderPid: string,
                             spraak: string): Promise<string> {
-        return withAuthorization(msal, this.config.scope)
+        return withAuthorization(this.msal, this.config.scope)
             .then((auth) => fetch(`${this.config.url}/pen/doksys`, {
                     headers: {
                         'Accept': 'application/json',
@@ -198,8 +198,8 @@ class SkribentenAPI {
 
     }
 
-    async hentNavn(msal: IMsalContext, fnr: string): Promise<string> {
-        return withAuthorization(msal, this.config.scope).then((auth) =>
+    async hentNavn( fnr: string): Promise<string> {
+        return withAuthorization(this.msal, this.config.scope).then((auth) =>
             fetch(`${this.config.url}/pdl/navn/${fnr}`, {
                 headers: {'Authorization': `Bearer ${auth.accessToken}`},
                 method: 'GET',
@@ -207,8 +207,8 @@ class SkribentenAPI {
         ).then((res) => res.text())
     }
 
-    async soekEtterMottaker(msal: IMsalContext, request: SearchRequest): Promise<SkribentServiceResult<PersonSoekResponse>> {
-        return withAuthorization(msal, this.config.scope).then((auth) =>
+    async soekEtterMottaker( request: SearchRequest): Promise<SkribentServiceResult<PersonSoekResponse>> {
+        return withAuthorization(this.msal, this.config.scope).then((auth) =>
             fetch(`${this.config.url}/pdl/soekmottaker`, {
                 headers: {
                     'Accept': 'application/json',
@@ -220,7 +220,7 @@ class SkribentenAPI {
             })
         ).then(async (res): Promise<SkribentServiceResult<PersonSoekResponse>> => {
             if (res.status !== 200) {
-                return {result: null, errorMessage: `Error while seraching for addressee: Error code ${res.body}`}
+                return {result: null, errorMessage: `Error while seraching for recipient: Error code ${res.body}`}
             }
             return await res.json().then((value) => {
                 return {result: value, errorMessage: null}
@@ -230,8 +230,8 @@ class SkribentenAPI {
         })
     }
 
-    async hentKommuneForslag(msal: IMsalContext): Promise<KommuneResult[]> {
-        return withAuthorization(msal, this.config.scope).then(auth =>
+    async hentKommuneForslag(): Promise<KommuneResult[]> {
+        return withAuthorization(this.msal, this.config.scope).then(auth =>
             fetch(`${this.config.url}/kodeverk/kommune`, {
                 headers: {'Authorization': `Bearer ${auth.accessToken}`},
                 method: 'GET',
@@ -239,8 +239,8 @@ class SkribentenAPI {
         ).then(res => res.json())
     }
 
-    async hentAvtaleland(msal: IMsalContext): Promise<Avtaleland[]> {
-        return withAuthorization(msal, this.config.scope).then(auth =>
+    async hentAvtaleland(): Promise<Avtaleland[]> {
+        return withAuthorization(this.msal, this.config.scope).then(auth =>
             fetch(`${this.config.url}/kodeverk/avtaleland`, {
                 headers: {'Authorization': `Bearer ${auth.accessToken}`},
                 method: 'GET',
@@ -248,8 +248,8 @@ class SkribentenAPI {
         ).then(res => res.json())
     }
 
-    async hentAdresse(msal: IMsalContext, pid: string) : Promise<AddressResult> {
-        return withAuthorization(msal, this.config.scope).then(auth =>
+    async hentAdresse( pid: string) : Promise<AddressResult> {
+        return withAuthorization(this.msal, this.config.scope).then(auth =>
             fetch(`${this.config.url}/adresse/${pid}`, {
                 headers: {'Authorization': `Bearer ${auth.accessToken}`},
                 method: 'GET',

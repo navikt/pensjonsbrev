@@ -14,18 +14,18 @@ import {LetterEditorState} from "../modules/LetterEditor/model/state"
 const BREVKODE = "INFORMASJON_OM_SAKSBEHANDLINGSTID"
 
 const RedigerBrev: NextPage<SkribentenConfig> = (props) => {
-    const api = new SkribentenAPI(props.api)
+    const msal = useMsal()
+    const api = new SkribentenAPI(props.api, msal)
 
     const [modelSpec, setModelSpec] = useState<RedigerbarTemplateDescription | null>(null)
     const [modelValue, setModelValue] = useState<ObjectValue>({})
     const [editorState, setEditorState] = useState<LetterEditorState | null>(null)
 
-    const msal = useMsal()
 
     // We only want this effect to trigger once, so we don't pass any deps.
     /* eslint-disable react-hooks/exhaustive-deps */
     useEffect(() => {
-        api.getRedigerbarTemplateDescription(msal, BREVKODE).then(d => {
+        api.getRedigerbarTemplateDescription(BREVKODE).then(d => {
             const inited = initObjectFromSpec(d.modelSpecification.types, d.modelSpecification.types[d.modelSpecification.letterModelTypeName])
             setModelValue({...inited, mottattSoeknad: "2023-03-01", ytelse: "alderspensjon"})
             setModelSpec(d)
@@ -34,7 +34,7 @@ const RedigerBrev: NextPage<SkribentenConfig> = (props) => {
     /* eslint-enable react-hooks/exhaustive-deps */
 
     const renderLetter = () => {
-        api.renderLetter(msal, BREVKODE, modelValue, editorState?.editedLetter).then(letter => {
+        api.renderLetter(BREVKODE, modelValue, editorState?.editedLetter).then(letter => {
             if(editorState === null) {
                 setEditorState(Actions.create(letter))
             } else {

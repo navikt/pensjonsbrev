@@ -55,7 +55,7 @@ fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config
         MicrosoftGraphService(skribentenConfig.getConfig("services.microsoftgraph"), authService)
     val brevbakerService = BrevbakerService(skribentenConfig.getConfig("services.brevbaker"), authService)
     val brevmetadataService = BrevmetadataService(skribentenConfig.getConfig("services.brevmetadata"))
-    val databaseService = SkribentenFakeDatabaseService(brevmetadataService)
+    val databaseService = SkribentenFakeDatabaseService()
     routing {
         get("/isAlive") {
             call.respondText("Alive!", ContentType.Text.Plain, HttpStatusCode.OK)
