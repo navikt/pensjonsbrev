@@ -19,7 +19,7 @@ data class OpphoerBarnetilleggAutoDto(
     val maanedligUfoeretrygdFoerSkatt: MaanedligUfoeretrygdFoerSkattDto?,
     val opplysningerBruktIBeregningUT: OpplysningerBruktIBeregningUTDto,
     val orienteringOmRettigheterUfoere: OrienteringOmRettigheterUfoereDto,
-)
+) : BrevbakerBrevdata
 
 data class Ufoeretrygd(
     val ufoertrygdUtbetalt: Kroner,
@@ -27,7 +27,7 @@ data class Ufoeretrygd(
     val ektefelletilleggUtbeltalt: Kroner?,
     val gjenlevendetilleggUtbetalt: Kroner?,
     val harUtbetalingsgrad: Boolean,
-    )
+)
 
 data class BarnetilleggFellesbarn(
     val brukerBorMed: BorMedSivilstand,
