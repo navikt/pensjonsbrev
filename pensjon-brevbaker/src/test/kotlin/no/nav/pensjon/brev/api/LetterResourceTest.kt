@@ -16,11 +16,13 @@ import org.junit.jupiter.api.Assertions.assertEquals
 val objectMapper = jacksonObjectMapper()
 
 class LetterResourceTest {
+    private class GenericBrevdata : LinkedHashMap<String, Any>(), BrevbakerBrevdata
+
     private val testLetterResource = LetterResource()
     private val vedtakTemplate = OmsorgEgenAuto
-    private val omsorgEgenAutoDto = objectMapper.convertValue<Map<String, Any>>(Fixtures.create<OmsorgEgenAutoDto>())
+    private val omsorgEgenAutoDto = objectMapper.convertValue<GenericBrevdata>(Fixtures.create<OmsorgEgenAutoDto>())
     private val redigerbarTemplate = InformasjonOmSaksbehandlingstid
-    private val redigerbarData = objectMapper.convertValue<Map<String, Any>>(Fixtures.create<InformasjonOmSaksbehandlingstidDto>())
+    private val redigerbarData = objectMapper.convertValue<GenericBrevdata>(Fixtures.create<InformasjonOmSaksbehandlingstidDto>())
 
     @Test
     fun `create autobrev finds correct template`() {
@@ -86,7 +88,7 @@ class LetterResourceTest {
             testLetterResource.create(
                 AutobrevRequest(
                     vedtakTemplate.kode,
-                    emptyMap<String, String>(),
+                    GenericBrevdata(),
                     Fixtures.felles,
                     LanguageCode.BOKMAL
                 )
@@ -112,7 +114,7 @@ class LetterResourceTest {
     @Test
     fun `create fails when letterData is invalid`() {
         assertThrows<ParseLetterDataException> {
-            testLetterResource.create(AutobrevRequest(vedtakTemplate.kode, mapOf("pensjonInnvilget" to true), Fixtures.felles, LanguageCode.BOKMAL))
+            testLetterResource.create(AutobrevRequest(vedtakTemplate.kode, GenericBrevdata().apply { put("pensjonInnvilget", true) }, Fixtures.felles, LanguageCode.BOKMAL))
         }
     }
 
