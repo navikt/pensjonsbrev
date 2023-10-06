@@ -38,7 +38,7 @@ data class Trygdetidstabell(
                     }
                     column(2) {
                         text(
-                            Language.Bokmal to "Opptjeningsperiode",
+                            Language.Bokmal to "Beregnet trygdetid",
                             Language.Nynorsk to "",
                             Language.English to "",
                         )
