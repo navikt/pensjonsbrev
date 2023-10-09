@@ -37,16 +37,16 @@ object SjekkBeregning : OutlinePhrase<LangBokmalNynorskEnglish>() {
 
         title1 {
             text(
-                Bokmal to "Sjekk inntektsbeløpene og meld fra hvis noe er feil",
-                Nynorsk to "Sjekk inntektsbeløpa og meld frå dersom noko er feil",
-                English to "Check the income amounts and inform us of any errors"
+                Bokmal to "Sjekk beregningen og meld fra hvis noe er feil",
+                Nynorsk to "Sjekk utrekninga og meld frå dersom noko er feil",
+                English to "Check the calculation and inform us of any errors",
             )
         }
         paragraph {
             text(
                 Bokmal to "Dette brevet er et forhåndsvarsel, slik at du kan sjekke at beregningene i vedlegg «Opplysninger om etteroppgjøret» er korrekte, og melde fra til oss hvis noe er feil eller mangler.",
                 Nynorsk to "Dette brevet er eit førehandsvarsel, og du har såleis høve til å sjekke at utrekningane i vedlegget «Opplysningar om etteroppgjeret» er korrekte, og melde frå til oss dersom noko er feil eller manglar.",
-                English to "This letter is an advance notice regarding the calculations provided in the appendix «Information about the settlement». Please review the income amounts we have based our calculations on and inform us of any errors or missing information."
+                English to "This letter is an advance notice regarding the calculations provided in the appendix «Information about the settlement». Please review the calculations and inform us of any errors or missing information.",
             )
         }
         paragraph {
