@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.maler.adhoc
 
 import no.nav.pensjon.brev.api.model.maler.Brevkode
+import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.maler.fraser.common.Constants.DIN_UFORETRYGD_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.GJENLEVENDETILLEGG_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.INNTEKTSPLANLEGGEREN_URL
@@ -17,11 +18,11 @@ import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
-object AdhocRegelendretGjenlevendetilleggKonvertert : AutobrevTemplate<Unit> {
+object AdhocRegelendretGjenlevendetilleggKonvertert : AutobrevTemplate<EmptyBrevdata> {
     override val kode = Brevkode.AutoBrev.UT_2023_INFO_REGLERENDRET_GJT_KONVERTERT2015
-    override val template: LetterTemplate<*, Unit> = createTemplate(
+    override val template: LetterTemplate<*, EmptyBrevdata> = createTemplate(
         name = kode.name,
-        letterDataType = Unit::class,
+        letterDataType = EmptyBrevdata::class,
         languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(
             displayTitle = "Nye regler for gjenlevendetillegg til uføretrygden din",
