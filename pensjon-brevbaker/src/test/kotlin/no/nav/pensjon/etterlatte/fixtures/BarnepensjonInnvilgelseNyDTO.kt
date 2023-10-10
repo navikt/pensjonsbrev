@@ -53,7 +53,8 @@ fun createBarnepensjonInnvilgelseNyDTO() =
                 )
             ),
             antallBarn = 4,
-            samlaTrygdetid = "12y 3m",
+            aarTrygdetid = 12,
+            maanederTrygdetid = 3,
             trygdetidsperioder = listOf(
                 Trygdetidsperiode(
                     datoFOM = LocalDate.of(2020, Month.JANUARY, 1),
