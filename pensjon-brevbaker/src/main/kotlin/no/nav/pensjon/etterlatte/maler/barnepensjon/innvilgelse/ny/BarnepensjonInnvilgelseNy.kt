@@ -39,13 +39,13 @@ data class BarnepensjonInnvilgelseNyDTO(
     override val innhold: List<Element>,
 ) : BrevDTO
 
-
 data class BeregningsinfoBP(
     override val innhold: List<Element>,
     val grunnbeloep: Kroner,
     val beregningsperioder: List<Beregningsperiode>,
     val antallBarn: Int,
-    val samlaTrygdetid: String,
+    val aarTrygdetid: Int,
+    val maanederTrygdetid: Int,
     val trygdetidsperioder: List<Trygdetidsperiode>,
 ) : BrevDTO
 
