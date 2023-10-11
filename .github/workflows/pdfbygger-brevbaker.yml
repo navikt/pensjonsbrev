@@ -131,7 +131,7 @@ jobs:
       pdf-bygger:
         ports:
           - 8081:8080
-        image: ${{ env.IMAGE_PDF_BYGGER }}
+        image: "ghcr.io/${{ github.repository }}/pdf-bygger:${{ github.sha }}"
         credentials:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
@@ -144,7 +144,7 @@ jobs:
           JAVA_OPTS: "-Dio.ktor.development=true"
         ports:
           - 8080:8080
-        image: ${{ env.IMAGE_BREVBAKER }}
+        image: "ghcr.io/${{ github.repository }}/brevbaker:${{ github.sha }}"
         credentials:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
