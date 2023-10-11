@@ -116,7 +116,7 @@ jobs:
       pdf-bygger:
         ports:
           - 8081:8080
-        image: "ghcr.io/${{ github.repository }}/pensjon-pdf-bygger:${{ github.sha }}"
+        image: ${{ needs.build-pdfbygger.outputs.image }}
         credentials:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
@@ -129,7 +129,7 @@ jobs:
           JAVA_OPTS: "-Dio.ktor.development=true"
         ports:
           - 8080:8080
-        image: "ghcr.io/${{ github.repository }}/pensjon-brevbaker:${{ github.sha }}"
+        image: ${{ needs.build-brevbaker.outputs.image }}
         credentials:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
