@@ -20,8 +20,9 @@ on:
       - "pdf-bygger/**"
       - ".github/workflows/pdfbygger-brevbaker.yml"
 env:
-  "IMAGE_BREVBAKER": "ghcr.io/${{ github.repository }}/pensjon-brevbaker:${{ github.sha }}"
-  "IMAGE_PDF_BUILDER": "ghcr.io/${{ github.repository }}/pensjon-pdf-bygger:${{ github.sha }}"
+  "IMAGE_BREVBAKER": "ghcr.io/${{ github.repository }}/brevbaker:${{ github.sha }}"
+  "IMAGE_PDF_BYGGER": "ghcr.io/${{ github.repository }}/pdf-bygger:${{ github.sha }}"
+
 jobs:
   "build-brevbaker":
     name: "build brevbaker"
@@ -29,6 +30,8 @@ jobs:
     permissions:
       packages: "write"
       id-token: "write"
+    outputs:
+      image: ${{ steps.docker-push.outputs.image }}
     steps:
       - uses: "actions/checkout@v3"
       - uses: "gradle/wrapper-validation-action@v1"
@@ -48,10 +51,22 @@ jobs:
           ./gradlew :pensjon-brevbaker:build
         env:
           "GITHUB_TOKEN": "${{ secrets.GITHUB_TOKEN }}"
-      - name: "Build and publish Docker image"
-        run: "docker build --pull --tag ${IMAGE_BREVBAKER} pensjon-brevbaker && echo $GITHUB_TOKEN | docker login\
-        \ --username $GITHUB_REPOSITORY --password-stdin https://ghcr.io\
-        \ && docker push ${IMAGE_BREVBAKER}"
+      - name: "Build and publish container image to GAR"
+        uses: nais/docker-build-push@v0
+        id: docker-push
+        with:
+          team: pensjonsbrev
+          tag: brevbaker
+          push_image: true
+          pull: true
+          docker_context: ./pensjon-brevbaker
+          dockerfile: pensjon-brevbaker/Dockerfile
+          project_id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
+          identity_provider: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
+      - name: "Publish container image to ghcr.io"
+        run: "echo $GITHUB_TOKEN | docker login --username $GITHUB_REPOSITORY --password-stdin https://ghcr.io\
+        \ && docker pull ${{ steps.docker-push.outputs.image }}\
+        \ && docker tag ${{ steps.docker-push.outputs.image }} ${IMAGE_BREVBAKER} && docker push ${IMAGE_BREVBAKER}"
         env:
           "GITHUB_TOKEN": "${{ secrets.GITHUB_TOKEN }}"
 
@@ -61,6 +76,8 @@ jobs:
     permissions:
       packages: "write"
       id-token: "write"
+    outputs:
+      image: ${{ steps.docker-push.outputs.image }}
     steps:
       - uses: "actions/checkout@v3"
       - uses: "gradle/wrapper-validation-action@v1"
@@ -75,10 +92,22 @@ jobs:
           "java-version": "17"
       - name: "compile and run tests"
         run: "./gradlew :pdf-bygger:build"
-      - name: "Build and publish Docker image"
-        run: "docker build --pull --tag ${IMAGE_PDF_BUILDER} pdf-bygger && echo $GITHUB_TOKEN | docker login\
-        \ --username $GITHUB_REPOSITORY --password-stdin https://ghcr.io\
-        \ && docker push ${IMAGE_PDF_BUILDER}"
+      - name: "Build and publish container image"
+        uses: nais/docker-build-push@v0
+        id: docker-push
+        with:
+          team: pensjonsbrev
+          tag: pdf-bygger
+          push_image: true
+          pull: true
+          docker_context: ./pdf-bygger
+          dockerfile: pdf-bygger/Dockerfile
+          project_id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
+          identity_provider: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
+      - name: "Publish container image to ghcr.io"
+        run: "echo $GITHUB_TOKEN | docker login --username $GITHUB_REPOSITORY --password-stdin https://ghcr.io\
+        \ && docker pull ${{ steps.docker-push.outputs.image }}\
+        \ && docker tag ${{ steps.docker-push.outputs.image }} ${IMAGE_PDF_BYGGER} && docker push ${IMAGE_PDF_BYGGER}"
         env:
           "GITHUB_TOKEN": "${{ secrets.GITHUB_TOKEN }}"
 
@@ -102,7 +131,7 @@ jobs:
       pdf-bygger:
         ports:
           - 8081:8080
-        image: "ghcr.io/${{ github.repository }}/pensjon-pdf-bygger:${{ github.sha }}"
+        image: "ghcr.io/${{ github.repository }}/pdf-bygger:${{ github.sha }}"
         credentials:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
@@ -115,7 +144,7 @@ jobs:
           JAVA_OPTS: "-Dio.ktor.development=true"
         ports:
           - 8080:8080
-        image: "ghcr.io/${{ github.repository }}/pensjon-brevbaker:${{ github.sha }}"
+        image: "ghcr.io/${{ github.repository }}/brevbaker:${{ github.sha }}"
         credentials:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
@@ -179,41 +208,39 @@ jobs:
   "deployBrevbakerToDev":
     name: "Deploy brevbaker to dev"
     if: (github.event_name == 'push' && github.ref == 'refs/heads/main') || github.event_name == 'workflow_dispatch'
-    needs: "runIntegrationTests"
+    needs: ["runIntegrationTests", "build-brevbaker"]
     runs-on: "ubuntu-latest"
     steps:
       - uses: "actions/checkout@v3"
       - name: "Deploy to DEV"
         uses: "nais/deploy/actions/deploy@v1"
-
         env:
           "APIKEY": "${{ secrets.NAIS_DEPLOY_APIKEY }}"
           "CLUSTER": "dev-gcp"
           "RESOURCE": "pensjon-brevbaker/.nais/nais.yaml"
-          "VAR": image=${{ env.IMAGE_BREVBAKER }}
+          "VAR": image=${{ needs.build-brevbaker.outputs.image }}
           "VARS": "pensjon-brevbaker/.nais/dev.yaml"
 
   "deployPdfByggerToDev":
     name: "Deploy pdf-bygger to dev"
     if: (github.event_name == 'push' && github.ref == 'refs/heads/main') || github.event_name == 'workflow_dispatch'
-    needs: "runIntegrationTests"
+    needs: ["runIntegrationTests", "build-pdfbygger"]
     runs-on: "ubuntu-latest"
     steps:
       - uses: "actions/checkout@v3"
       - name: "Deploy to DEV"
         uses: "nais/deploy/actions/deploy@v1"
-
         env:
           "APIKEY": "${{ secrets.NAIS_DEPLOY_APIKEY }}"
           "CLUSTER": "dev-gcp"
           "RESOURCE": "pdf-bygger/.nais/nais.yaml"
-          "VAR": image=${{ env.IMAGE_PDF_BUILDER }}
+          "VAR": image=${{ needs.build-pdfbygger.outputs.image }}
           "VARS": "pdf-bygger/.nais/dev.yaml"
 
   "deployBrevbakerToProduction":
     name: "Deploy brevbaker to production"
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    needs: "runIntegrationTests"
+    needs: ["runIntegrationTests", "build-brevbaker"]
     runs-on: "ubuntu-latest"
     steps:
       - uses: "actions/checkout@v3"
@@ -223,13 +250,13 @@ jobs:
           "APIKEY": "${{ secrets.NAIS_DEPLOY_APIKEY }}"
           "CLUSTER": "prod-gcp"
           "RESOURCE": "pensjon-brevbaker/.nais/nais.yaml"
-          "VAR": image=${{ env.IMAGE_BREVBAKER }}
+          "VAR": image=${{ needs.build-brevbaker.outputs.image }}
           "VARS": "pensjon-brevbaker/.nais/prod.yaml"
 
   "deployPdfByggerToProduction":
     name: "Deploy pdf-bygger to production"
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    needs: "runIntegrationTests"
+    needs: ["runIntegrationTests", "build-pdfbygger"]
     runs-on: "ubuntu-latest"
     steps:
       - uses: "actions/checkout@v3"
@@ -239,5 +266,5 @@ jobs:
           "APIKEY": "${{ secrets.NAIS_DEPLOY_APIKEY }}"
           "CLUSTER": "prod-gcp"
           "RESOURCE": "pdf-bygger/.nais/nais.yaml"
-          "VAR": image=${{ env.IMAGE_PDF_BUILDER }}
+          "VAR": image=${{ needs.build-pdfbygger.outputs.image }}
           "VARS": "pdf-bygger/.nais/prod.yaml"
