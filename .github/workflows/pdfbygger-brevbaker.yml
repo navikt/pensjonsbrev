@@ -22,6 +22,7 @@ on:
 env:
   "IMAGE_BREVBAKER": "ghcr.io/${{ github.repository }}/brevbaker:${{ github.sha }}"
   "IMAGE_PDF_BYGGER": "ghcr.io/${{ github.repository }}/pdf-bygger:${{ github.sha }}"
+
 jobs:
   "build-brevbaker":
     name: "build brevbaker"
@@ -128,7 +129,7 @@ jobs:
       pdf-bygger:
         ports:
           - 8081:8080
-        image: ${{ env.IMAGE_PDF_BYGGER }}
+        image: $IMAGE_PDF_BYGGER
         credentials:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
@@ -141,7 +142,7 @@ jobs:
           JAVA_OPTS: "-Dio.ktor.development=true"
         ports:
           - 8080:8080
-        image: ${{ env.IMAGE_BREVBAKER }}
+        image: $IMAGE_BREVBAKER
         credentials:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
