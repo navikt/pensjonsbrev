@@ -65,6 +65,7 @@ jobs:
           identity_provider: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
       - name: "Publish container image to ghcr.io"
         run: "echo $GITHUB_TOKEN | docker login --username $GITHUB_REPOSITORY --password-stdin https://ghcr.io\
+        \ && docker pull ${{ steps.docker-push.outputs.image }}\
         \ && docker tag ${{ steps.docker-push.outputs.image }} ${IMAGE_BREVBAKER} && docker push ${IMAGE_BREVBAKER}"
         env:
           "GITHUB_TOKEN": "${{ secrets.GITHUB_TOKEN }}"
@@ -105,6 +106,7 @@ jobs:
           identity_provider: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
       - name: "Publish container image to ghcr.io"
         run: "echo $GITHUB_TOKEN | docker login --username $GITHUB_REPOSITORY --password-stdin https://ghcr.io\
+        \ && docker pull ${{ steps.docker-push.outputs.image }}\
         \ && docker tag ${{ steps.docker-push.outputs.image }} ${IMAGE_PDF_BYGGER} && docker push ${IMAGE_PDF_BYGGER}"
         env:
           "GITHUB_TOKEN": "${{ secrets.GITHUB_TOKEN }}"
