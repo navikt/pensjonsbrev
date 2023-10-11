@@ -56,6 +56,7 @@ jobs:
           push_image: true
           pull: true
           docker_context: ./pensjon-brevbaker
+          dockerfile: pensjon-brevbaker/Dockerfile
           image_suffix: ${{ github.ref != 'refs/heads/main' && '-tmp' || '' }}
           project_id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
           identity_provider: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
@@ -90,6 +91,7 @@ jobs:
           push_image: true
           pull: true
           docker_context: ./pdf-bygger
+          dockerfile: pdf-bygger/Dockerfile
           image_suffix: ${{ github.ref != 'refs/heads/main' && '-tmp' || '' }}
           project_id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
           identity_provider: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
