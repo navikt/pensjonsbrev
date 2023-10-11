@@ -131,7 +131,7 @@ jobs:
       pdf-bygger:
         ports:
           - 8081:8080
-        image: $IMAGE_PDF_BYGGER
+        image: ${{ env.IMAGE_PDF_BYGGER }}
         credentials:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
@@ -144,7 +144,7 @@ jobs:
           JAVA_OPTS: "-Dio.ktor.development=true"
         ports:
           - 8080:8080
-        image: $IMAGE_BREVBAKER
+        image: ${{ env.IMAGE_BREVBAKER }}
         credentials:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
