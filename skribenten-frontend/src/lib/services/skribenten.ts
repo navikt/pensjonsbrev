@@ -1,6 +1,7 @@
 import {IMsalContext} from "@azure/msal-react/dist/MsalContext"
 import {withAuthorization} from "./msal"
 import {
+    AddressResult,
     EditedLetter, PersonSoekResponse,
     RedigerbarTemplateDescription,
     RenderedLetter,
@@ -10,7 +11,6 @@ import {
 import {ObjectValue} from "../../modules/ModelEditor/model"
 import {Metadata, LetterMetadataResponse} from "../model/skribenten"
 import {
-    AddressResult,
     Avtaleland,
     KommuneResult,
 } from "../../modules/LetterPicker/components/ChangeRecipient/RecipientSearch/RecipientSearch"

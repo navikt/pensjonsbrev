@@ -7,11 +7,11 @@ import ChangeRecipient from "./components/ChangeRecipient/ChangeRecipient"
 import Letterfilter, {LetterSelectionEvent} from "./components/LetterFilter/Letterfilter"
 
 export interface LetterMenuProps {
-    categories: LetterCategory[] | null
-    favourites: Metadata[] | null
-    eblanketter: Metadata[] | null
+    categories: LetterCategory[] | null,
+    favourites: Metadata[] | null,
+    eblanketter: Metadata[] | null,
     selectedLetter: string | null,
-    onLetterSelected: (id: LetterSelectionEvent) => void,
+    onLetterSelected: (letterSelectionEvent: LetterSelectionEvent) => void,
 }
 
 const LetterMenu: FC<LetterMenuProps> =
@@ -41,8 +41,10 @@ const LetterMenu: FC<LetterMenuProps> =
                 <div>
                     <h2 className={styles.sectionHeading}>Favoritter</h2>
                     <hr/>
-                    {favourites != null ? (<LetterPicker letters={favourites} selectedLetter={selectedLetter}
-                                                         onLetterSelected={id => id && {id: id}}/>)
+                    {favourites != null ? (<LetterPicker letters={favourites}
+                                                         selectedLetter={selectedLetter}
+                                                         onLetterSelected={id => {onLetterSelected({letterCode: id})}}
+                        />)
                         : (<Loader/>)}
                 </div>
                 <Letterfilter categories={categories}

@@ -1,29 +1,42 @@
-import {FC} from "react"
+import {FC, useState} from "react"
 import {Button, Modal, Tabs} from "@navikt/ds-react"
 import styles from "./ChangeRecipient.module.css"
 import {XMarkIcon} from "@navikt/aksel-icons"
 import RecipientSearch from "./RecipientSearch/RecipientSearch"
+import ConfirmChange from "./ConfirmChange/ConfirmChange"
 
 interface ChangeRecipientProps {
     open: boolean,
     onExit: () => void
 }
 
-const ChangeRecipient: FC<ChangeRecipientProps> = ({open, onExit}) => {
-    const handleMottakerChanged = (pid: string) =>{ //TODO use address instead
+export type AddressContext = "recipientsearch" | "manualrecipient"
+export type RecipientChange = {
+    recipientName: string,
+    addressContext: AddressContext,
+    addressLines: string[]
+}
 
+const ChangeRecipient: FC<ChangeRecipientProps> = ({open, onExit}) => {
+    const [recipientChange, setRecipientChange] = useState<RecipientChange | null>(null)
+
+    const handleExit = () =>{
+        setRecipientChange(null)
+        onExit()
     }
     return (
         <Modal open={open} onClose={onExit}>
             <Modal.Body className={styles.content}>
                 <div className={styles.banner}>
-                    <p className={styles.bannerText}>Mottaker</p>
+                    <p className={styles.bannerText}>Endre mottaker</p>
                     <Button
-                        onClick={() => onExit()}
+                        onClick={handleExit}
                         className={styles.exitButton}
                         icon={<XMarkIcon/>} variant="tertiary"/>
                 </div>
-                <Tabs defaultValue="recipientsearch">
+                {recipientChange && recipientChange.addressLines ? (
+                    <ConfirmChange recipientChange={recipientChange} onConfirm={()=>setRecipientChange(null)}/>
+                ): (<Tabs defaultValue="recipientsearch">
                     <Tabs.List>
                         <Tabs.Tab
                             value="recipientsearch"
@@ -35,9 +48,10 @@ const ChangeRecipient: FC<ChangeRecipientProps> = ({open, onExit}) => {
                         />
                     </Tabs.List>
                     <Tabs.Panel value="recipientsearch" className={styles.tabContent}>
-                        <RecipientSearch onMottakerChosen={handleMottakerChanged}/>
+                        <RecipientSearch onMottakerChosen={setRecipientChange}/>
                     </Tabs.Panel>
-                </Tabs>
+                </Tabs>)}
+
             </Modal.Body>
         </Modal>
     )

@@ -144,7 +144,7 @@ class PdlService(config: Config, authService: AzureADService) {
                 Criterion("fritekst.navn", SearchRule(contains = request.soeketekst), false),
             )
 
-            if (request.place == INNLAND) {
+            if (request.location == INNLAND) {
                 request.kommunenummer?.forEach { kommunenummer ->
                     searchCriteria.add(CriteriaLogic(
                         or = listOf(
@@ -156,7 +156,7 @@ class PdlService(config: Config, authService: AzureADService) {
                         }
                     ))
                 }
-            } else if (request.place == UTLAND && request.land != null) {
+            } else if (request.location == UTLAND && request.land != null) {
                 searchCriteria.add(
                     Criterion("fritekst.adresser", SearchRule(contains = request.land))
                 )

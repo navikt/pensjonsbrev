@@ -7,7 +7,7 @@ export type SearchRequest = {
     soeketekst: string,
     recipientType: RecipientType | null,
     location: Location | null,
-    kommunenummer: string[] | null,
+    kommunenummer: number[],
     land: string | null,
 }
 
@@ -20,4 +20,9 @@ export interface PersonSoekResultat {
     readonly navn: string,
     readonly id: string,
     readonly foedselsdato: string,
+}
+
+export type AddressResult = {
+    addressName: string,
+    adresselinjer: string[]
 }

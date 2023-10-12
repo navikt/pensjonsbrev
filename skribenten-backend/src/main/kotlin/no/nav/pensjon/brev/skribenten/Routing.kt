@@ -25,7 +25,7 @@ data class RenderLetterRequest(val letterData: Any, val editedLetter: EditedJson
 data class MottakerSearchRequest(
     val soeketekst: String,
     val recipientType: RecipientType?,
-    val place: Place?,
+    val location: Place?,
     val kommunenummer: List<String>?,
     val land: String?,
 ) {
