@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.api
 
 import no.nav.pensjon.brev.*
 import no.nav.pensjon.brev.api.model.*
+import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.template.LetterTemplate
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
@@ -39,8 +40,9 @@ class TemplateResourceITest {
         }
     }
 
-    private fun createArgument(letterDataType: KClass<out Any>): Any {
-        return Fixtures.create(letterDataType)
+    private fun createArgument(letterDataType: KClass<out Any>): BrevbakerBrevdata {
+        @Suppress("UNCHECKED_CAST")
+        return Fixtures.create(letterDataType as KClass<out BrevbakerBrevdata>)
     }
 
 }

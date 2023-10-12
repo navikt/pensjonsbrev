@@ -5,6 +5,7 @@ import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.hasElement
 import no.nav.pensjon.brev.Fixtures
 import no.nav.pensjon.brev.api.model.maler.Brevkode
+import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.maler.*
 import no.nav.pensjon.brev.maler.redigerbar.InformasjonOmSaksbehandlingstid
 import no.nav.pensjon.brev.template.*
@@ -65,7 +66,7 @@ class TemplateResourceTest {
     fun `all autobrev templates have letterDataType which are data class`() {
         val templatesWithoutDataClass: Map<Brevkode.AutoBrev, LetterTemplate<*, *>> = templateResource.getAutoBrev()
             .associateWith { templateResource.getAutoBrev(it)!! }
-            .filterValues { it.letterDataType != Unit::class }
+            .filterValues { it.letterDataType != EmptyBrevdata::class }
             .filterValues { !it.letterDataType.isData }
 
         assertEquals(emptySet<Brevkode.AutoBrev>(), templatesWithoutDataClass.keys)
@@ -125,7 +126,7 @@ class TemplateResourceTest {
         val jackson = jacksonObjectMapper()
         templateResource.getAutoBrev()
             .map { templateResource.getAutoBrev(it)!! }
-            .filter { it.letterDataType != Unit::class }
+            .filter { it.letterDataType != EmptyBrevdata::class }
             .forEach {
                 val data = Fixtures.create(it.letterDataType)
                 val json = jackson.writeValueAsString(data)

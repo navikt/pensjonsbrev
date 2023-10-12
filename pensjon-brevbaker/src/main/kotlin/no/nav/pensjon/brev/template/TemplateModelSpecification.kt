@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.template
 
 import com.fasterxml.jackson.annotation.*
+import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import kotlin.reflect.*
 import kotlin.reflect.full.primaryConstructor
 
@@ -31,7 +32,7 @@ class LetterModelSpecificationFactory(val from: KClass<*>) {
     private val toProcess = mutableListOf<KClass<*>>()
 
     fun build(): TemplateModelSpecification =
-        if (from.objectInstance == Unit) {
+        if (from.objectInstance == Unit || from.objectInstance == EmptyBrevdata) {
             TemplateModelSpecification(emptyMap(), null)
         } else if (from.primaryConstructor == null) {
             throw LetterModelSpecificationError("Cannot create specification of class without primary constructor: ${from.qualifiedName}")

@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.maler.adhoc
 
 import no.nav.pensjon.brev.api.model.maler.Brevkode
+import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.maler.fraser.common.Constants.ARBEID_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.GJENLEVENDEPENSJON_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.GJENLEVENDE_TILLEGGSSTOENADER_URL
@@ -16,13 +17,13 @@ import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers
-object GjenlevendeInfoFoer1971 : AutobrevTemplate<Unit> {
+object GjenlevendeInfoFoer1971 : AutobrevTemplate<EmptyBrevdata> {
 
     override val kode: Brevkode.AutoBrev = Brevkode.AutoBrev.PE_ADHOC_2023_04_GJENLEVENDEINFOFOER1971
 
     override val template = createTemplate(
         name = kode.name,
-        letterDataType = Unit::class,
+        letterDataType = EmptyBrevdata::class,
         languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(
             displayTitle = "Gjenlevendepensjonen din kan bli tidsbegrenset",
