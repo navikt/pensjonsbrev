@@ -8,6 +8,7 @@ import io.ktor.client.plugins.*
 import io.ktor.client.plugins.compression.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
+import io.ktor.client.utils.*
 import io.ktor.http.*
 import io.ktor.serialization.jackson.*
 import no.nav.pensjon.brev.template.jacksonObjectMapper
@@ -42,9 +43,10 @@ class LaTeXCompilerService(private val pdfByggerUrl: String) {
             maxRetries = 10
             exponentialDelay()
             retryOnExceptionIf { _, cause ->
-                cause is HttpRequestTimeoutException
-                        || cause is ConnectTimeoutException
-                        || cause is ServerResponseException
+                val actualCause = cause.unwrapCancellationException()
+                actualCause is HttpRequestTimeoutException
+                        || actualCause is ConnectTimeoutException
+                        || actualCause is ServerResponseException
             }
         }
         install(ContentEncoding) {

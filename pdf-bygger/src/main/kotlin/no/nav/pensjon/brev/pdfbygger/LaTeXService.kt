@@ -1,14 +1,28 @@
 package no.nav.pensjon.brev.pdfbygger
 
+import org.slf4j.Logger
 import java.io.File
 import java.nio.file.Path
 import java.util.*
 import java.util.concurrent.TimeUnit
+import kotlin.Long
+import kotlin.String
+import kotlin.Throwable
+import kotlin.apply
+import kotlin.getOrElse
 import kotlin.io.path.createTempDirectory
+import kotlin.let
+import kotlin.runCatching
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
 
 private const val COMPILATION_RUNS = 2
 
-class LaTeXService {
+class LaTeXService(
+    private val logger: Logger,
+    private val latexCommand: String = "xelatex --interaction=nonstopmode -halt-on-error",
+    private val timeout: Duration = 60.seconds,
+) {
     private val decoder = Base64.getDecoder()
     private val encoder = Base64.getEncoder()
 
@@ -29,14 +43,8 @@ class LaTeXService {
         }
     }
 
-    private fun createLetter(executionFolder: Path): PDFCompilationResponse {
-
-        //Compile multiple times to resolve references such as number of pages
-        val result = (1..COMPILATION_RUNS)
-            .map { executeCompileProcess(executionFolder) }
-            .lastOrNull() ?: throw IllegalStateException("Did not attempt to compile pdf from latex, compilation runs: ${1..COMPILATION_RUNS}")
-
-        return when (result) {
+    private fun createLetter(executionFolder: Path): PDFCompilationResponse =
+        when (val result: Execution = compile(executionFolder)) {
             is Execution.Success ->
                 result.pdf.toFile().readBytes()
                     .let { encoder.encodeToString(it) }
@@ -46,32 +54,43 @@ class LaTeXService {
                 PDFCompilationResponse.Failure.Client(reason = "PDF compilation failed", output = result.output, error = result.error)
 
             is Execution.Failure.Execution -> {
-                PDFCompilationResponse.Failure.Server(reason = "Compilation process execution failed: see logs")
+                logger.error("latexCommand failed", result.cause)
+                PDFCompilationResponse.Failure.Server(reason = "Compilation process execution failed: $latexCommand")
             }
 
             is Execution.Failure.Timeout ->
-                PDFCompilationResponse.Failure.Server(reason = "Compilation timed out - spent more than: ${result.timeout} ${result.unit}")
+                PDFCompilationResponse.Failure.Timeout(reason = "Compilation timed out - spent more than: ${result.timeout} ${result.unit}")
+
         }
+
+    private fun compile(executionFolder: Path): Execution {
+        var result: Execution = executeCompileProcess(executionFolder)
+        repeat(COMPILATION_RUNS - 1) {
+            if (result is Execution.Success) {
+                result = executeCompileProcess(executionFolder)
+            } else {
+                return@repeat
+            }
+        }
+        return result
     }
 
     private fun executeCompileProcess(
         workingDir: Path,
         texFilename: String = "letter",
-        timeout: Long = 60,
-        timeoutUnit: TimeUnit = TimeUnit.SECONDS,
         output: Path = workingDir.resolve("process.out"),
         error: Path = workingDir.resolve("process.err"),
     ): Execution =
         runCatching {
-            ProcessBuilder(*("xelatex --interaction=nonstopmode -halt-on-error $texFilename.tex").split(" ").toTypedArray())
+            ProcessBuilder(*("$latexCommand $texFilename.tex").split(" ").toTypedArray())
                 .directory(workingDir.toFile())
-                .redirectOutput(output.toFile())
-                .redirectError(error.toFile())
+                .redirectOutput(ProcessBuilder.Redirect.appendTo(output.toFile()))
+                .redirectError(ProcessBuilder.Redirect.appendTo(error.toFile()))
                 .start()
                 .let {
-                    if (!it.waitFor(timeout, timeoutUnit)) {
+                    if (!it.waitFor(timeout.inWholeMilliseconds, TimeUnit.MILLISECONDS)) {
                         it.destroy()
-                        Execution.Failure.Timeout(timeout, timeoutUnit)
+                        Execution.Failure.Timeout(timeout.inWholeMilliseconds, TimeUnit.MILLISECONDS)
                     } else if (it.exitValue() == 0) {
                         Execution.Success(pdf = workingDir.resolve("${File(texFilename).nameWithoutExtension}.pdf"))
                     } else {
