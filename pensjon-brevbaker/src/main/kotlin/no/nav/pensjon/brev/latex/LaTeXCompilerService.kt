@@ -49,6 +49,9 @@ class LaTeXCompilerService(private val pdfByggerUrl: String) {
                         || actualCause is ServerResponseException
             }
         }
+        install(HttpSend) {
+            maxSendCount = 300
+        }
         install(ContentEncoding) {
             gzip()
         }
