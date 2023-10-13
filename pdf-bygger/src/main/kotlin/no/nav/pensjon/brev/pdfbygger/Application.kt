@@ -17,13 +17,16 @@ import io.ktor.server.routing.*
 import io.micrometer.core.instrument.Clock
 import io.micrometer.prometheus.*
 import io.prometheus.client.CollectorRegistry
+import kotlinx.coroutines.withTimeout
+import kotlin.time.Duration.Companion.seconds
 
-val laTeXService = LaTeXService()
 
 fun main(args: Array<String>) = EngineMain.main(args)
 
 @Suppress("unused")
 fun Application.module() {
+    val laTeXService = LaTeXService(this.log, timeout = 300.seconds)
+
     this.log.info("Tilgjengelige kjerner: " + Runtime.getRuntime().availableProcessors().toString())
     install(ContentNegotiation) {
         jackson()
@@ -75,8 +78,10 @@ fun Application.module() {
         post("/compile") {
             val logger = call.application.environment.log
 
-            val result = call.receive<PdfCompilationInput>()
-                .let { laTeXService.producePDF(it.files) }
+            val input = call.receive<PdfCompilationInput>()
+            val result = withTimeout(300.seconds) {
+                laTeXService.producePDF(input.files)
+            }
 
             when(result) {
                 is PDFCompilationResponse.Base64PDF -> call.respond(result)

@@ -31,12 +31,13 @@ spec:
     enabled: true
     path: "/metrics"
     port: "8080"
-  requests:
-    cpu: "200m"
-    memory: "256Mi"
-  limits:
-    cpu: "300m"
-    memory: "512Mi"
+  resources:
+    requests:
+      cpu: "200m"
+      memory: "256Mi"
+    limits:
+      cpu: "500m"
+      memory: "512Mi"
 
   azure:
     application:

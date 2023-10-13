@@ -40,8 +40,8 @@ class LaTeXCompilerService(private val pdfByggerUrl: String) {
             }
         }
         install(HttpRequestRetry) {
-            maxRetries = 10
-            exponentialDelay()
+            maxRetries = 300
+            exponentialDelay(maxDelayMs = 1000)
             retryOnExceptionIf { _, cause ->
                 val actualCause = cause.unwrapCancellationException()
                 actualCause is HttpRequestTimeoutException
@@ -53,10 +53,6 @@ class LaTeXCompilerService(private val pdfByggerUrl: String) {
             gzip()
         }
         expectSuccess = true
-
-        engine {
-            requestTimeout = 60_000
-        }
     }
 
     suspend fun producePDF(latexLetter: RenderedLatexLetter, callId: String?): PDFCompilationOutput =
