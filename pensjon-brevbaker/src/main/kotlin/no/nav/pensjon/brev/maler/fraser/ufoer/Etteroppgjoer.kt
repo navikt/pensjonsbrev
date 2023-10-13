@@ -24,9 +24,12 @@ data class Innledning(
         }
         paragraph {
             textExpr(
-                Bokmal to "Vår beregning viser at du har fått ".expr() + totaltAvvik.absoluteValue().format() + " kroner for mye utbetalt.",
-                Nynorsk to "Utrekninga vår viser at du har fått utbetalt ".expr() + totaltAvvik.absoluteValue().format() + " kroner for mykje.",
-                English to "Our calculations show that you have received an overpayment of NOK ".expr() + totaltAvvik.absoluteValue().format() + "."
+                Bokmal to "Vår beregning viser at du har fått ".expr() + totaltAvvik.absoluteValue()
+                    .format() + " kroner for mye utbetalt.",
+                Nynorsk to "Utrekninga vår viser at du har fått utbetalt ".expr() + totaltAvvik.absoluteValue()
+                    .format() + " kroner for mykje.",
+                English to "Our calculations show that you have received an overpayment of NOK ".expr() + totaltAvvik.absoluteValue()
+                    .format() + "."
             )
         }
     }
@@ -114,14 +117,14 @@ data class InntektOverInntektstak(
         }
         paragraph {
             textExpr(
-                Bokmal to "I ".expr() + periode.format() + " var 80 prosent av inntekten din før du ble ufør "+ oppjustertInntektFoerUfoerhet.format() + " kroner. ",
-                Nynorsk to "I ".expr() + periode.format() + " var 80 prosent av inntekta di før du blei ufør "+ oppjustertInntektFoerUfoerhet.format() + " kroner. ",
-                English to "In ".expr() + periode.format() + ", 80 percent of your pre-disability benefit income was NOK "+ oppjustertInntektFoerUfoerhet.format() + ". "
+                Bokmal to "I ".expr() + periode.format() + " var 80 prosent av inntekten din før du ble ufør " + oppjustertInntektFoerUfoerhet.format() + " kroner. ",
+                Nynorsk to "I ".expr() + periode.format() + " var 80 prosent av inntekta di før du blei ufør " + oppjustertInntektFoerUfoerhet.format() + " kroner. ",
+                English to "In ".expr() + periode.format() + ", 80 percent of your pre-disability benefit income was NOK " + oppjustertInntektFoerUfoerhet.format() + ". "
             )
             textExpr(
-                Bokmal to "Du tjente ".expr() + pensjonsgivendeInntektBruktIBeregningen.format() + " kroner i "+ periode.format() + ".",
-                Nynorsk to "Du tente ".expr() + pensjonsgivendeInntektBruktIBeregningen.format() + " kroner i "+ periode.format() + ".",
-                English to "You earned NOK ".expr() + pensjonsgivendeInntektBruktIBeregningen.format() + " in "+ periode.format() + "."
+                Bokmal to "Du tjente ".expr() + pensjonsgivendeInntektBruktIBeregningen.format() + " kroner i " + periode.format() + ".",
+                Nynorsk to "Du tente ".expr() + pensjonsgivendeInntektBruktIBeregningen.format() + " kroner i " + periode.format() + ".",
+                English to "You earned NOK ".expr() + pensjonsgivendeInntektBruktIBeregningen.format() + " in " + periode.format() + "."
             )
         }
     }
@@ -222,9 +225,9 @@ object FristKlageOpplysninger : OutlinePhrase<LangBokmalNynorskEnglish>() {
         }
         paragraph {
             text(
-            Bokmal to "Klagefristen på vedtaket er 6 uker etter at saken er sendt til Skatteetaten. Du finner skjema og informasjon om hvordan du klager på ${Constants.KLAGE_URL}. Du må som hovedregel begynne å betale tilbake selv om du klager på vedtaket, se forvaltningsloven § 42.",
-            Nynorsk to "Klagefristen på vedtaket er 6 veker etter at saka er send til Skatteetaten. Du finn skjema og informasjon om korleis du klagar, på ${Constants.KLAGE_URL}. Du må som hovudregel byrje å betale tilbake sjølv om du klagar på vedtaket, jf. forvaltingslova § 42.",
-            English to "The deadline for appealing the decision is 6 weeks after the case has been forwarded to the Norwegian Tax Administration. You can find forms and information about how to appeal at ${Constants.KLAGE_URL}. As a rule, you are required to start repaying even if you appeal the decision, as stated in section 42 of the Public Administration Act."
+                Bokmal to "Klagefristen på vedtaket er 6 uker etter at saken er sendt til Skatteetaten. Du finner skjema og informasjon om hvordan du klager på ${Constants.KLAGE_URL}. Du må som hovedregel begynne å betale tilbake selv om du klager på vedtaket, se forvaltningsloven § 42.",
+                Nynorsk to "Klagefristen på vedtaket er 6 veker etter at saka er send til Skatteetaten. Du finn skjema og informasjon om korleis du klagar, på ${Constants.KLAGE_URL}. Du må som hovudregel byrje å betale tilbake sjølv om du klagar på vedtaket, jf. forvaltingslova § 42.",
+                English to "The deadline for appealing the decision is 6 weeks after the case has been forwarded to the Norwegian Tax Administration. You can find forms and information about how to appeal at ${Constants.KLAGE_URL}. As a rule, you are required to start repaying even if you appeal the decision, as stated in section 42 of the Public Administration Act."
             )
         }
     }
