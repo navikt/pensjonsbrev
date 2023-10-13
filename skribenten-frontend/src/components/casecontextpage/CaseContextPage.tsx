@@ -1,7 +1,7 @@
 import React, {FC, useCallback, useContext, useEffect, useState} from 'react'
 
 import "@navikt/ds-css"
-import {Sak, SkribentServiceResult} from "../../lib/model/skribenten"
+import {SakDto, SakType, SkribentServiceResult} from "../../lib/model/skribenten"
 import SelectSakid, {SAKID_REGEX} from "../../modules/SelectSakId/SelectSakid"
 import {useSearchParams} from "next/navigation"
 import {useRouter} from "next/router"
@@ -16,14 +16,21 @@ interface CaseContextPageProps {
     sak: Sak | null,
 }
 
+export type Sak = {
+    readonly sakId: number | undefined,
+    readonly foedselsnr: string | undefined,
+    readonly foedselsdato: string | undefined,
+    readonly navn: string | undefined,
+    readonly sakType: SakType | undefined,
+}
+
 
 const CaseContextPage: FC<CaseContextPageProps> = ({children, onSakChanged, sak}) => {
-    const [navn, setNavn] = useState<string | null>(null)
     const [isLoadingSak, setIsLoadingSak] = useState<boolean>(false)
     const [errorMessage, setErrorMessage] = useState<string | null>()
     const queryParams = useSearchParams()
 
-    const { skribentApi} = useContext(SkribentContext) as SkribentContext
+    const {skribentApi} = useContext(SkribentContext) as SkribentContext
 
     const router = useRouter()
 
@@ -36,12 +43,32 @@ const CaseContextPage: FC<CaseContextPageProps> = ({children, onSakChanged, sak}
 
         if (querySakId && SAKID_REGEX.test(querySakId) && parseInt(querySakId) !== sak?.sakId) {
             setIsLoadingSak(true)
-            skribentApi.getSaksinfo(parseInt(querySakId)).then((response: SkribentServiceResult<Sak>) => {
-                    if (response.result) {
-                        if (onSakChanged !== undefined) {
-                            onSakChanged(response.result)
+            skribentApi.getSaksinfo(parseInt(querySakId)).then((response: SkribentServiceResult<SakDto>) => {
+                    const sakResponse = response.result
+                    if (sakResponse !== null) {
+                        const newSak = {
+                            sakId: sakResponse?.sakId,
+                            navn: sak?.navn,
+                            sakType: sakResponse.sakType,
+                            foedselsdato: sakResponse.foedselsdato,
+                            foedselsnr: sakResponse.foedselsnr,
                         }
-                        skribentApi.hentNavn(response.result.foedselsnr).then(setNavn)
+                        if (onSakChanged !== undefined) {
+                            onSakChanged(newSak)
+                            if (newSak?.foedselsnr !== sak?.foedselsnr) {
+                                skribentApi.hentNavn(sakResponse.foedselsnr).then(navn => {
+                                        if (sak) {
+                                            onSakChanged({...sak, navn: navn})
+                                        } else {
+                                            onSakChanged({
+                                                ...newSak,
+                                                navn: navn,
+                                            })
+                                        }
+                                    }
+                                )
+                            }
+                        }
                         setErrorMessage(null)
                         setIsLoadingSak(false)
                     } else {
@@ -53,15 +80,15 @@ const CaseContextPage: FC<CaseContextPageProps> = ({children, onSakChanged, sak}
         } else {
             setErrorMessage(`Ugyldig saksnummer: ${querySakId}`)
         }
-    }, [skribentApi,queryParams, sak])
+    }, [skribentApi, queryParams, sak, onSakChanged])
 
     if (isLoadingSak || sak) {
         return (
             <div>
                 <NavBar/>
-                <CaseContextBar saksnummer={sak?.sakId.toString()}
+                <CaseContextBar saksnummer={sak?.sakId?.toString()}
                                 foedselsnummer={sak?.foedselsnr}
-                                gjelderNavn={navn || undefined} // TODO få inn navn fra pdl
+                                gjelderNavn={sak?.navn} // TODO få inn navn fra pdl
                                 foedselsdato={sak?.foedselsdato}
                                 sakstype={sak?.sakType} //TODO legg in map for forskjellige sakstyper
                 />

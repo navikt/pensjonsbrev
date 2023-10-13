@@ -7,7 +7,8 @@ import ConfirmChange from "./ConfirmChange/ConfirmChange"
 
 interface ChangeRecipientProps {
     open: boolean,
-    onExit: () => void
+    onExit: () => void,
+    onChange: (recipientChange: RecipientChange | null) => void,
 }
 
 export type AddressContext = "recipientsearch" | "manualrecipient"
@@ -17,8 +18,15 @@ export type RecipientChange = {
     addressLines: string[]
 }
 
-const ChangeRecipient: FC<ChangeRecipientProps> = ({open, onExit}) => {
+const ChangeRecipient: FC<ChangeRecipientProps> = ({open, onExit, onChange}) => {
     const [recipientChange, setRecipientChange] = useState<RecipientChange | null>(null)
+    const handleRecipientChanged = () => {
+        if(recipientChange) {
+            onChange(recipientChange)
+            setRecipientChange(null)
+        }
+        onExit()
+    }
 
     const handleExit = () =>{
         setRecipientChange(null)
@@ -35,7 +43,9 @@ const ChangeRecipient: FC<ChangeRecipientProps> = ({open, onExit}) => {
                         icon={<XMarkIcon/>} variant="tertiary"/>
                 </div>
                 {recipientChange && recipientChange.addressLines ? (
-                    <ConfirmChange recipientChange={recipientChange} onConfirm={()=>setRecipientChange(null)}/>
+                    <ConfirmChange recipientChange={recipientChange}
+                                   //TODO on cancel
+                                   onConfirm={handleRecipientChanged}/>
                 ): (<Tabs defaultValue="recipientsearch">
                     <Tabs.List>
                         <Tabs.Tab

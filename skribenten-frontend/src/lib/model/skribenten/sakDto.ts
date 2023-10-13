@@ -1,4 +1,4 @@
-export interface Sak {
+export interface SakDto {
     readonly sakId: number,
     readonly foedselsnr: string,
     readonly foedselsdato: string,

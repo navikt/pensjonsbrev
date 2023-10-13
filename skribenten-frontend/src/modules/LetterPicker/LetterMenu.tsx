@@ -3,7 +3,7 @@ import styles from "./LetterMenu.module.css"
 import {Button, Heading, Loader} from "@navikt/ds-react"
 import LetterPicker from "./components/LetterPicker/LetterPicker"
 import {LetterCategory, Metadata} from "../../lib/model/skribenten"
-import ChangeRecipient from "./components/ChangeRecipient/ChangeRecipient"
+import ChangeRecipient, {RecipientChange} from "./components/ChangeRecipient/ChangeRecipient"
 import Letterfilter, {LetterSelectionEvent} from "./components/LetterFilter/Letterfilter"
 
 export interface LetterMenuProps {
@@ -12,6 +12,13 @@ export interface LetterMenuProps {
     eblanketter: Metadata[] | null,
     selectedLetter: string | null,
     onLetterSelected: (letterSelectionEvent: LetterSelectionEvent) => void,
+    onRecipientChanged: (change: Recipient | null) => void,
+    recipient: Recipient | null,
+}
+
+export type Recipient = {
+    recipientName: string,
+    addressLines: string[]
 }
 
 const LetterMenu: FC<LetterMenuProps> =
@@ -21,8 +28,19 @@ const LetterMenu: FC<LetterMenuProps> =
          eblanketter,
          selectedLetter,
          onLetterSelected,
+         onRecipientChanged,
+         recipient,
      }) => {
         const [showRecipientModal, setShowRecipientModal] = useState(false)
+
+        const handleRecipientChange = (change: RecipientChange | null) => {
+            console.log(change)
+            if (change) {
+                onRecipientChanged({recipientName: change.recipientName, addressLines: change.addressLines})
+            } else {
+                onRecipientChanged(null)
+            }
+        }
 
         return (
             <div className={styles.brevvelgerContainer}>
@@ -34,16 +52,19 @@ const LetterMenu: FC<LetterMenuProps> =
                                 size="xsmall"
                                 onClick={() => setShowRecipientModal(true)}>Endre mottaker</Button>
                         <ChangeRecipient open={showRecipientModal}
+                                         onChange={handleRecipientChange}
                                          onExit={() => setShowRecipientModal(false)}/>
                     </div>
-                    <p>Test Saksbehandlerson</p>
+                    {recipient ? (<p>{recipient.recipientName}</p>): (<Loader/>)}
                 </div>
                 <div>
                     <h2 className={styles.sectionHeading}>Favoritter</h2>
                     <hr/>
                     {favourites != null ? (<LetterPicker letters={favourites}
                                                          selectedLetter={selectedLetter}
-                                                         onLetterSelected={id => {onLetterSelected({letterCode: id})}}
+                                                         onLetterSelected={id => {
+                                                             onLetterSelected({letterCode: id})
+                                                         }}
                         />)
                         : (<Loader/>)}
                 </div>

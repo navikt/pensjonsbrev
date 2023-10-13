@@ -5,7 +5,7 @@ import {
     EditedLetter, PersonSoekResponse,
     RedigerbarTemplateDescription,
     RenderedLetter,
-    Sak, SakType, SearchRequest,
+    SakDto, SakType, SearchRequest,
     SkribentServiceResult,
 } from "../model/skribenten"
 import {ObjectValue} from "../../modules/ModelEditor/model"
@@ -14,6 +14,7 @@ import {
     Avtaleland,
     KommuneResult,
 } from "../../modules/LetterPicker/components/ChangeRecipient/RecipientSearch/RecipientSearch"
+import {Sak} from "../../components/casecontextpage/CaseContextPage"
 
 export interface SkribentenAPIConfig {
     url: string
@@ -129,7 +130,7 @@ class SkribentenAPI {
         )
     }
 
-    async getSaksinfo(saksnummer: number): Promise<SkribentServiceResult<Sak>> {
+    async getSaksinfo(saksnummer: number): Promise<SkribentServiceResult<SakDto>> {
         return withAuthorization(this.msal, this.config.scope).then((auth) =>
             fetch(`${this.config.url}/pen/sak/${saksnummer}`, {
                 headers: {
@@ -139,7 +140,7 @@ class SkribentenAPI {
                 },
                 method: 'GET',
             })
-        ).then(async (res): Promise<SkribentServiceResult<Sak>> => {
+        ).then(async (res): Promise<SkribentServiceResult<SakDto>> => {
             if (res.status == 404) {
                 return {result: null, errorMessage: `fant ikke sak med saksnummer ${saksnummer.toString()}`}
             } else if (res.status !== 200) {
