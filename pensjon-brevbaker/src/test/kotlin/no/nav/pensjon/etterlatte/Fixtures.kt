@@ -15,6 +15,7 @@ import no.nav.pensjon.etterlatte.fixtures.createBarnepensjonRevurderingOmgjoerin
 import no.nav.pensjon.etterlatte.fixtures.createBarnepensjonRevurderingSoeskenjusteringDTO
 import no.nav.pensjon.etterlatte.fixtures.createEndringHovedmalDTO
 import no.nav.pensjon.etterlatte.fixtures.createManueltBrevDTO
+import no.nav.pensjon.etterlatte.fixtures.createOMSAvslagDTO
 import no.nav.pensjon.etterlatte.fixtures.createOMSFoerstegangsvedtakUtfallDTO
 import no.nav.pensjon.etterlatte.fixtures.createOMSInnvilgelseDTO
 import no.nav.pensjon.etterlatte.fixtures.createOMSInnvilgelseFoerstegangsvedtakDTO
@@ -32,6 +33,7 @@ import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevu
 import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingOmgjoeringAvFarskapDTO
 import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingSoeskenjusteringDTO
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.OMSInnvilgelseDTO
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.avslag.OMSAvslagDTO
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.foerstegangsvedtak.FoerstegangsvedtakUtfallDTO
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.foerstegangsvedtak.OMSInnvilgelseFoerstegangsvedtakDTO
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.opphoer.OMSOpphoerDTO
@@ -78,6 +80,7 @@ object Fixtures {
             OMSInnvilgelseFoerstegangsvedtakDTO::class -> createOMSInnvilgelseFoerstegangsvedtakDTO() as T
             OMSRevurderingEndringDTO::class -> createOMSRevurderingEndringDTO() as T
             OMSOpphoerDTO::class -> createOMSOpphoerDTO() as T
+            OMSAvslagDTO::class -> createOMSAvslagDTO() as T
             FoerstegangsvedtakUtfallDTO::class -> createOMSFoerstegangsvedtakUtfallDTO() as T
             BarnepensjonRevurderingAdopsjonDTO::class -> createBarnepensjonRevurderingAdopsjonDTO() as T
             BarnepensjonRevurderingSoeskenjusteringDTO::class -> createBarnepensjonRevurderingSoeskenjusteringDTO() as T

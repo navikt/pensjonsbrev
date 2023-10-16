@@ -15,6 +15,8 @@ import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.Soeskenjustering
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.OMSInnvilgelseAuto
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.OMSInnvilgelseManuell
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.OMSOpphoerManuell
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.avslag.OMSAvslag
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.avslag.OMSAvslagBegrunnelse
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.foerstegangsvedtak.FoerstegangsvedtakUtfall
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.foerstegangsvedtak.InnvilgelseFoerstegangsvedtak
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.opphoer.Opphoer
@@ -31,6 +33,8 @@ val prodAutobrevTemplates: Set<EtterlatteTemplate<*>> =
         OMSInnvilgelseAuto,
         OMSInnvilgelseManuell,
         OMSOpphoerManuell,
+        OMSAvslag,
+        OMSAvslagBegrunnelse,
         AdopsjonRevurdering,
         Endring,
         OmgjoeringAvFarskapRevurdering,
