@@ -25,9 +25,11 @@ fun main(args: Array<String>) = EngineMain.main(args)
 
 @Suppress("unused")
 fun Application.module() {
+    val parallelism = Runtime.getRuntime().availableProcessors()
+    val activityCounter = ActiveCounter()
     val laTeXService = LaTeXService(this.log, timeout = 300.seconds)
 
-    this.log.info("Tilgjengelige kjerner: " + Runtime.getRuntime().availableProcessors().toString())
+    this.log.info("Tilgjengelige kjerner: $parallelism")
     install(ContentNegotiation) {
         jackson()
     }
@@ -79,16 +81,19 @@ fun Application.module() {
             val logger = call.application.environment.log
 
             val input = call.receive<PdfCompilationInput>()
-            val result = withTimeout(300.seconds) {
-                laTeXService.producePDF(input.files)
+            val result = activityCounter.count {
+                withTimeout(300.seconds) {
+                    laTeXService.producePDF(input.files)
+                }
             }
 
-            when(result) {
+            when (result) {
                 is PDFCompilationResponse.Base64PDF -> call.respond(result)
                 is PDFCompilationResponse.Failure.Client -> {
                     logger.info("Client error: $result")
                     call.respond(HttpStatusCode.BadRequest, result)
                 }
+
                 is PDFCompilationResponse.Failure.Server -> {
                     logger.error("Server error: $result")
                     call.respond(HttpStatusCode.InternalServerError, result)
@@ -106,7 +111,15 @@ fun Application.module() {
         }
 
         get("/isReady") {
-            call.respondText("Ready!", ContentType.Text.Plain, HttpStatusCode.OK)
+            val currentActivity = activityCounter.currentCount()
+            val msg = "Activity: $currentActivity, Target: $parallelism"
+            call.application.log.info(msg)
+
+            if (currentActivity > parallelism) {
+                call.respondText(msg, ContentType.Text.Plain, HttpStatusCode.ServiceUnavailable)
+            } else {
+                call.respondText("Ready!", ContentType.Text.Plain, HttpStatusCode.OK)
+            }
         }
 
         get("/metrics") {
