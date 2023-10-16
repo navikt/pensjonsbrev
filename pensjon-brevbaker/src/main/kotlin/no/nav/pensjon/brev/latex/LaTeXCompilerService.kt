@@ -64,9 +64,15 @@ class LaTeXCompilerService(private val pdfByggerUrl: String, maxRetries: Int = 3
                 exponentialDelay(maxDelayMs = 10_000)
                 retryOnExceptionIf { _, cause ->
                     val actualCause = cause.unwrapCancellationException()
-                    actualCause is HttpRequestTimeoutException
+                    val doRetry
+                            = actualCause is HttpRequestTimeoutException
                             || actualCause is ConnectTimeoutException
                             || actualCause is ServerResponseException
+
+                    if (!doRetry) {
+                        logger.error("Won't retry for exception: ${actualCause.message}", actualCause)
+                    }
+                    doRetry
                 }
             }
             install(HttpSend) {
