@@ -61,12 +61,13 @@ class PensjonLatexITest {
     @Test
     fun `try different characters to attempt escaping LaTeX`() {
         val invalidCharacters = ArrayList<Int>()
+
         // split in multiple parts so that it doesn't time out the letter compilation
-        val partSize = Char.MAX_VALUE.code / 4
-        isValidCharacters(0, partSize, invalidCharacters)
-        isValidCharacters(partSize + 1, partSize * 2, invalidCharacters)
-        isValidCharacters((partSize * 2) + 1, partSize * 3, invalidCharacters)
-        isValidCharacters((partSize * 3) + 1, partSize * 4, invalidCharacters)
+        val parts = 4
+        val partSize = Char.MAX_VALUE.code / parts
+        repeat(parts) {
+            isValidCharacters(it * partSize, ((it + 1) * partSize + it).coerceAtMost(Char.MAX_VALUE.code), invalidCharacters)
+        }
 
         if (invalidCharacters.isNotEmpty()) {
             throw AssertionFailedError(
