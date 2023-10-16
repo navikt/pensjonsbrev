@@ -44,9 +44,9 @@ class LaTeXCompilerService(private val pdfByggerUrl: String, maxRetries: Int = 3
         }
         expectSuccess = true
 
-        if (withRetry) {
+        if (maxRetries > 0) {
             install(HttpRequestRetry) {
-                maxRetries = 300
+                this.maxRetries = maxRetries
                 exponentialDelay(maxDelayMs = 1000)
                 retryOnExceptionIf { _, cause ->
                     val actualCause = cause.unwrapCancellationException()
@@ -56,7 +56,9 @@ class LaTeXCompilerService(private val pdfByggerUrl: String, maxRetries: Int = 3
                 }
             }
             install(HttpSend) {
-                maxSendCount = 300
+                // It is important that maxSendCount exceeds maxRetries.
+                // If not the client will fail with SendCountExceeded-exception instead of the server response.
+                maxSendCount = maxRetries + 20
             }
         }
     }
@@ -75,7 +77,5 @@ class LaTeXCompilerService(private val pdfByggerUrl: String, maxRetries: Int = 3
             setBody(objectmapper.writeValueAsBytes(PdfCompilationInput(latexLetter.base64EncodedFiles())))
         }.body()
 
-    suspend fun ping() {
-        httpClient.get("$pdfByggerUrl/isAlive")
-    }
+    suspend fun ping(): Boolean = httpClient.get("$pdfByggerUrl/isAlive").status.isSuccess()
 }
