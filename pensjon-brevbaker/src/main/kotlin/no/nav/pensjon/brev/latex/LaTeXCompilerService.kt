@@ -54,6 +54,10 @@ class LaTeXCompilerService(private val pdfByggerUrl: String, maxRetries: Int = 3
             gzip()
         }
 
+        engine {
+            requestTimeout = 0
+        }
+
         if (maxRetries > 0) {
             install(HttpRequestRetry) {
                 this.maxRetries = maxRetries
