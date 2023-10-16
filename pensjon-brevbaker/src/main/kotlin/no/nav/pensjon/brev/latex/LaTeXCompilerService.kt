@@ -32,21 +32,20 @@ class LaTeXCompilerService(private val pdfByggerUrl: String, maxRetries: Int = 3
         }
         HttpResponseValidator {
             validateResponse { response ->
-                val body = response.body<String>()
                 when (response.status) {
                     HttpStatusCode.BadRequest -> {
-                        logger.warn("Rendered latex is invalid, couldn't compile pdf: $body")
-                        throw LatexInvalidException("Rendered latex is invalid, couldn't compile pdf: $body")
+                        logger.warn("Rendered latex is invalid, couldn't compile pdf: ${response.body<String>()}")
+                        throw LatexInvalidException("Rendered latex is invalid, couldn't compile pdf: ${response.body<String>()}")
                     }
 
                     HttpStatusCode.InternalServerError -> {
-                        logger.warn("Couldn't compile latex to pdf due to server error: $body")
-                        throw LatexCompileException("Couldn't compile latex to pdf due to server error: $body")
+                        logger.warn("Couldn't compile latex to pdf due to server error: ${response.body<String>()}")
+                        throw LatexCompileException("Couldn't compile latex to pdf due to server error: ${response.body<String>()}")
                     }
 
                     HttpStatusCode.GatewayTimeout -> {
-                        logger.warn("Latex compilation failed with timout: $body")
-                        throw LatexTimeoutException("Compile latex to pdf timed out: $body")
+                        logger.warn("Latex compilation failed with timout: ${response.body<String>()}")
+                        throw LatexTimeoutException("Compile latex to pdf timed out: ${response.body<String>()}")
                     }
                 }
             }
