@@ -1,13 +1,10 @@
 package no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad
 
-import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
-import no.nav.pensjon.brev.template.TextOnlyPhrase
 import no.nav.pensjon.brev.template.createAttachment
-import no.nav.pensjon.brev.template.dsl.TextOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.plus
@@ -19,7 +16,6 @@ import no.nav.pensjon.etterlatte.maler.EtterbetalingDTO
 import no.nav.pensjon.etterlatte.maler.EtterbetalingDTOSelectors.fraDato
 import no.nav.pensjon.etterlatte.maler.EtterbetalingDTOSelectors.tilDato
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
-import java.time.LocalDate
 
 
 @TemplateModelHelpers
@@ -73,23 +69,4 @@ val etterbetaling = createAttachment<LangBokmalNynorskEnglish, EtterbetalingDTO>
             English to "",
         )
     }
-}
-
-
-data class PeriodeITabell(val datoFOM: Expression<LocalDate>, val datoTOM: Expression<LocalDate?>) :
-    TextOnlyPhrase<LangBokmalNynorskEnglish>() {
-    override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
-        ifNotNull(datoTOM) { datoTOM ->
-            textExpr(
-                Bokmal to datoFOM.format(true) + " - " + datoTOM.format(true),
-                Nynorsk to datoFOM.format(true) + " - " + datoTOM.format(true),
-                English to datoFOM.format(true) + " - " + datoTOM.format(true),
-            )
-        } orShow {
-            textExpr(
-                Bokmal to datoFOM.format(true) + " - ",
-                Nynorsk to datoFOM.format(true) + " - ",
-                English to datoFOM.format(true) + " - ",
-            )
-        }
 }

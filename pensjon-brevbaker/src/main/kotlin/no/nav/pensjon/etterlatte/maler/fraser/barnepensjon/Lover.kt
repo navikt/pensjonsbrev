@@ -1,6 +1,5 @@
 package no.nav.pensjon.etterlatte.maler.fraser.barnepensjon
 
-import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmal
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.Bokmal
@@ -8,10 +7,7 @@ import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
-import no.nav.pensjon.brev.template.dsl.expression.expr
-import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.template.dsl.textExpr
 
 object Lover {
 
@@ -49,26 +45,4 @@ object Lover {
         }
     }
 
-    data class MuligEtterbetaling(val paragraf: Expression<String>, val erEtterbetaling: Expression<Boolean>) : OutlinePhrase<LangBokmalNynorskEnglish>() {
-        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-            showIf(erEtterbetaling) {
-                paragraph {
-                    textExpr(
-                        Bokmal to "Vedtaket er gjort etter bestemmelsene om barnepensjon i folketrygdloven § ".expr() + paragraf + ", § 22-12 og § 22-13.",
-                        Nynorsk to "".expr(),
-                        English to "".expr()
-                    )
-                }
-            } orShow {
-                paragraph {
-                    textExpr(
-                        Bokmal to "Vedtaket er gjort etter bestemmelsene om barnepensjon i folketrygdloven §".expr() + paragraf + "og § 22-12.",
-                        Nynorsk to "".expr(),
-                        English to "".expr()
-                    )
-                }
-            }
-        }
-
-    }
 }
