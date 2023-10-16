@@ -13,14 +13,18 @@ import io.ktor.http.*
 import io.ktor.serialization.jackson.*
 import no.nav.pensjon.brev.template.jacksonObjectMapper
 import no.nav.pensjon.brev.template.render.RenderedLatexLetter
+import org.slf4j.LoggerFactory
 
 data class PdfCompilationInput(val files: Map<String, String>)
 data class PDFCompilationOutput(val base64PDF: String)
 
 class LatexCompileException(msg: String, cause: Throwable? = null) : Exception(msg, cause)
-class LatexTimeoutException(msg: String) : Exception(msg)
+class LatexTimeoutException(msg: String, cause: Throwable? = null) : Exception(msg, cause)
+class LatexInvalidException(msg: String, cause: Throwable? = null) : Exception(msg, cause)
 
 class LaTeXCompilerService(private val pdfByggerUrl: String, maxRetries: Int = 30) {
+    // TODO: Verifiser at denne logger med correlationId
+    private val logger = LoggerFactory.getLogger(this::class.java)
     private val objectmapper = jacksonObjectMapper()
     private val httpClient = HttpClient(CIO) {
         install(ContentNegotiation) {
@@ -28,13 +32,21 @@ class LaTeXCompilerService(private val pdfByggerUrl: String, maxRetries: Int = 3
         }
         HttpResponseValidator {
             validateResponse { response ->
+                val body = response.body<String>()
                 when (response.status) {
                     HttpStatusCode.BadRequest -> {
-                        throw LatexCompileException("Rendered latex is invalid, couldn't compile pdf: ${response.body<String>()}")
+                        logger.warn("Rendered latex is invalid, couldn't compile pdf: $body")
+                        throw LatexInvalidException("Rendered latex is invalid, couldn't compile pdf: $body")
                     }
 
                     HttpStatusCode.InternalServerError -> {
-                        throw LatexCompileException("Couldn't compile latex to pdf due to server error: ${response.body<String>()}")
+                        logger.warn("Couldn't compile latex to pdf due to server error: $body")
+                        throw LatexCompileException("Couldn't compile latex to pdf due to server error: $body")
+                    }
+
+                    HttpStatusCode.GatewayTimeout -> {
+                        logger.warn("Latex compilation failed with timout: $body")
+                        throw LatexTimeoutException("Compile latex to pdf timed out: $body")
                     }
                 }
             }
@@ -42,7 +54,6 @@ class LaTeXCompilerService(private val pdfByggerUrl: String, maxRetries: Int = 3
         install(ContentEncoding) {
             gzip()
         }
-        expectSuccess = true
 
         if (maxRetries > 0) {
             install(HttpRequestRetry) {

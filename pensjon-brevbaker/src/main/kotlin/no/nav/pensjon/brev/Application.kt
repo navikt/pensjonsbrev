@@ -5,7 +5,6 @@ import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.http.*
 import io.ktor.serialization.jackson.*
-import io.ktor.server.metrics.micrometer.*
 import io.ktor.server.plugins.*
 import io.ktor.server.plugins.callid.*
 import io.ktor.server.plugins.callloging.*
@@ -15,6 +14,8 @@ import io.ktor.server.request.*
 import io.ktor.server.response.*
 import no.nav.pensjon.brev.Metrics.configureMetrics
 import no.nav.pensjon.brev.api.ParseLetterDataException
+import no.nav.pensjon.brev.latex.LatexCompileException
+import no.nav.pensjon.brev.latex.LatexInvalidException
 import no.nav.pensjon.brev.latex.LatexTimeoutException
 import no.nav.pensjon.brev.template.brevbakerConfig
 
@@ -48,7 +49,16 @@ fun Application.module() {
             }
         }
         exception<LatexTimeoutException>{ call, cause ->
-            call.respond(HttpStatusCode.ServiceUnavailable, cause.message ?: "Timed out while compiling latex")
+            call.application.log.info("Latex compilation timed out", cause)
+            call.respond(HttpStatusCode.GatewayTimeout, cause.message ?: "Timed out while compiling latex")
+        }
+        exception<LatexCompileException>{ call, cause ->
+            call.application.log.info("Latex compilation failed with internal server error", cause)
+            call.respond(HttpStatusCode.GatewayTimeout, cause.message ?: "Latex compilation failed")
+        }
+        exception<LatexInvalidException>{ call, cause ->
+            call.application.log.info("Latex compilation failed due to invalid latex", cause)
+            call.respond(HttpStatusCode.GatewayTimeout, cause.message ?: "Latex compilation failed due to invalid latex")
         }
         exception<ParameterConversionException> { call, cause ->
             call.respond(HttpStatusCode.BadRequest, cause.message?: "Failed to convert path parameter to required type: unknown cause")
