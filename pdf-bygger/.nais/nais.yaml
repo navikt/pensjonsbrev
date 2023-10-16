@@ -23,7 +23,7 @@ spec:
     timeout: 5
   replicas:
     min: 12
-    max: 200
+    max: 300
     cpuThresholdPercentage: 50
   prometheus:
     enabled: true
@@ -33,6 +33,9 @@ spec:
     requests:
       cpu: "2"
       memory: "600Mi"
+    limits:
+      cpu: "4"
+      memory: "1024Mi"
   accessPolicy:
     inbound:
       rules:

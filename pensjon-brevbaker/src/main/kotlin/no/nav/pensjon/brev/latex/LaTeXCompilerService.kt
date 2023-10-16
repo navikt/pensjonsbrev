@@ -11,6 +11,7 @@ import io.ktor.client.request.*
 import io.ktor.client.utils.*
 import io.ktor.http.*
 import io.ktor.serialization.jackson.*
+import io.ktor.utils.io.errors.*
 import no.nav.pensjon.brev.template.jacksonObjectMapper
 import no.nav.pensjon.brev.template.render.RenderedLatexLetter
 import org.slf4j.LoggerFactory
@@ -68,6 +69,7 @@ class LaTeXCompilerService(private val pdfByggerUrl: String, maxRetries: Int = 3
                             = actualCause is HttpRequestTimeoutException
                             || actualCause is ConnectTimeoutException
                             || actualCause is ServerResponseException
+                            || actualCause is IOException
 
                     if (!doRetry) {
                         logger.error("Won't retry for exception: ${actualCause.message}", actualCause)
