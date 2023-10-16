@@ -20,7 +20,7 @@ data class PDFCompilationOutput(val base64PDF: String)
 class LatexCompileException(msg: String, cause: Throwable? = null) : Exception(msg, cause)
 class LatexTimeoutException(msg: String) : Exception(msg)
 
-class LaTeXCompilerService(private val pdfByggerUrl: String) {
+class LaTeXCompilerService(private val pdfByggerUrl: String, withRetry: Boolean = true) {
     private val objectmapper = jacksonObjectMapper()
     private val httpClient = HttpClient(CIO) {
         install(ContentNegotiation) {
@@ -39,23 +39,26 @@ class LaTeXCompilerService(private val pdfByggerUrl: String) {
                 }
             }
         }
-        install(HttpRequestRetry) {
-            maxRetries = 300
-            exponentialDelay(maxDelayMs = 1000)
-            retryOnExceptionIf { _, cause ->
-                val actualCause = cause.unwrapCancellationException()
-                actualCause is HttpRequestTimeoutException
-                        || actualCause is ConnectTimeoutException
-                        || actualCause is ServerResponseException
-            }
-        }
-        install(HttpSend) {
-            maxSendCount = 300
-        }
         install(ContentEncoding) {
             gzip()
         }
         expectSuccess = true
+
+        if (withRetry) {
+            install(HttpRequestRetry) {
+                maxRetries = 300
+                exponentialDelay(maxDelayMs = 1000)
+                retryOnExceptionIf { _, cause ->
+                    val actualCause = cause.unwrapCancellationException()
+                    actualCause is HttpRequestTimeoutException
+                            || actualCause is ConnectTimeoutException
+                            || actualCause is ServerResponseException
+                }
+            }
+            install(HttpSend) {
+                maxSendCount = 300
+            }
+        }
     }
 
     suspend fun producePDF(latexLetter: RenderedLatexLetter, callId: String?): PDFCompilationOutput =
