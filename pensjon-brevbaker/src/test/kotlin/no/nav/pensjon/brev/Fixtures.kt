@@ -5,7 +5,6 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmSaksbehandlin
 import no.nav.pensjon.brev.api.model.vedlegg.*
 import no.nav.pensjon.brev.fixtures.*
 import no.nav.pensjon.brev.maler.example.LetterExampleDto
-import no.nav.pensjon.brev.maler.vedlegg.PraktiskInformasjonEtteroppgjoerTest
 import no.nav.pensjon.brevbaker.api.model.*
 import java.time.LocalDate
 import kotlin.reflect.KClass
@@ -38,7 +37,7 @@ object Fixtures {
     inline fun <reified T: Any> create(): T = create(T::class)
 
     @Suppress("UNCHECKED_CAST")
-    fun <T: Any> create(letterDataType: KClass<T>): T =
+    fun <T : Any> create(letterDataType: KClass<T>): T =
         when (letterDataType) {
             EgenerklaeringOmsorgsarbeidDto::class -> createEgenerklaeringOmsorgsarbeidDto() as T
             ForhaandsvarselEtteroppgjoerUfoeretrygdDto::class -> createForhaandsvarselEtteroppgjoerUfoeretrygdDto() as T
@@ -64,7 +63,7 @@ object Fixtures {
             OrienteringOmRettigheterUfoereDto::class -> createOrienteringOmRettigheterUfoereDto() as T
             UfoerOmregningEnsligDto::class -> createUfoerOmregningEnsligDto() as T
             UngUfoerAutoDto::class -> createUngUfoerAutoDto() as T
-            Unit::class -> Unit as T
+            EmptyBrevdata::class -> EmptyBrevdata as T
 
             else -> throw IllegalArgumentException("Don't know how to construct: ${letterDataType.qualifiedName}")
         }

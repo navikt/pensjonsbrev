@@ -24,7 +24,6 @@ object BarnepensjonInnvilgelseEnkelFraser {
         val doedsdato: Expression<LocalDate>,
         val beloep: Expression<Kroner>,
         val vedtaksdato: Expression<LocalDate>,
-        val erEtterbetalingMerEnnTreMaaneder: Expression<Boolean>,
     ) :
         OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
@@ -50,25 +49,9 @@ object BarnepensjonInnvilgelseEnkelFraser {
                     English to "",
                 )
             }
-            showIf(erEtterbetalingMerEnnTreMaaneder) {
-                includePhrase(Etterbetaling)
-            }.orShow {
-                paragraph {
-                    text(
-                        Bokmal to "Vedtaket er gjort etter bestemmelsene om barnepensjon i folketrygdloven §§ 18-2, 18-3, 18-4, 18-5 og 22-12.",
-                        Nynorsk to "",
-                        English to "",
-                    )
-                }
-            }
-        }
-    }
-
-    object Etterbetaling : OutlinePhrase<LangBokmalNynorskEnglish>() {
-        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             paragraph {
                 text(
-                    Bokmal to "Vedtaket er gjort etter bestemmelsene om barnepensjon i folketrygdloven §§ 18-2, 18-3, 18-4, 18-5, § 22-12 og § 22-13.",
+                    Bokmal to "Vedtaket er gjort etter bestemmelsene om barnepensjon i folketrygdloven §§ <sett inn paragrafer fra tekstbiblioteket her>.",
                     Nynorsk to "",
                     English to "",
                 )

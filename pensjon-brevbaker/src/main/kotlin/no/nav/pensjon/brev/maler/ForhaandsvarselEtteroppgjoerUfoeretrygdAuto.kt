@@ -83,8 +83,9 @@ object ForhaandsvarselEtteroppgjoerUfoeretrygdAuto : AutobrevTemplate<Forhaandsv
                 }
 
                 includePhrase(MeldeFraOmEndringerEtteroppgjoer)
-                includePhrase(FristerOpplysningerKlage)
-                includePhrase(HarDuSpoersmaal)
+                includePhrase(FristNyeOpplysninger)
+                includePhrase(FristKlageOpplysninger)
+                includePhrase(HarDuSpoersmaalEtteroppgjoer)
             }
             includeAttachment(vedleggOpplysningerOmEtteroppgjoeret, opplysningerOmEtteroppgjoeretUfoeretrygd)
             includeAttachment(vedleggPraktiskInformasjonEtteroppgjoerUfoeretrygd)

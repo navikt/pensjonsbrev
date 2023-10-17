@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.maler.example
 
+import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.maler.example.ExampleTilleggDtoSelectors.navn
 import no.nav.pensjon.brev.maler.example.ExampleTilleggDtoSelectors.tillegg1
@@ -246,7 +247,7 @@ data class LetterExampleDto(
     val tilleggEksempel: List<ExampleTilleggDto>,
     val datoAvslaatt: LocalDate?,
     val pensjonBeloep: Int?,
-)
+) : BrevbakerBrevdata
 
 data class ExampleTilleggDto(
     val navn: String,

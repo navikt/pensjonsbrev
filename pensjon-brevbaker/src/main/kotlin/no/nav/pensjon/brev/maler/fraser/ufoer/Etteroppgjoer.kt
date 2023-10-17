@@ -24,9 +24,12 @@ data class Innledning(
         }
         paragraph {
             textExpr(
-                Bokmal to "Vår beregning viser at du har fått ".expr() + totaltAvvik.absoluteValue().format() + " kroner for mye utbetalt.",
-                Nynorsk to "Utrekninga vår viser at du har fått utbetalt ".expr() + totaltAvvik.absoluteValue().format() + " kroner for mykje.",
-                English to "Our calculations show that you have received an overpayment of NOK ".expr() + totaltAvvik.absoluteValue().format() + "."
+                Bokmal to "Vår beregning viser at du har fått ".expr() + totaltAvvik.absoluteValue()
+                    .format() + " kroner for mye utbetalt.",
+                Nynorsk to "Utrekninga vår viser at du har fått utbetalt ".expr() + totaltAvvik.absoluteValue()
+                    .format() + " kroner for mykje.",
+                English to "Our calculations show that you have received an overpayment of NOK ".expr() + totaltAvvik.absoluteValue()
+                    .format() + "."
             )
         }
     }
@@ -39,14 +42,14 @@ object SjekkBeregning : OutlinePhrase<LangBokmalNynorskEnglish>() {
             text(
                 Bokmal to "Sjekk beregningen og meld fra hvis noe er feil",
                 Nynorsk to "Sjekk utrekninga og meld frå dersom noko er feil",
-                English to "Check the calculation and inform us of any errors"
+                English to "Check the calculation and inform us of any errors",
             )
         }
         paragraph {
             text(
                 Bokmal to "Dette brevet er et forhåndsvarsel, slik at du kan sjekke at beregningene i vedlegg «Opplysninger om etteroppgjøret» er korrekte, og melde fra til oss hvis noe er feil eller mangler.",
-                Nynorsk to "Dette brevet er eit førehandsvarsel, og du har såleis høve til å sjekke at utrekningane i vedlegg «Opplysningar om etteroppgjer» er korrekte, og melde frå til oss dersom noko er feil eller manglar.",
-                English to "This letter is an advance notice regarding the calculations provided in the appendix «Information about the settlement». Please review the calculations carefully and inform us of any errors or missing information."
+                Nynorsk to "Dette brevet er eit førehandsvarsel, og du har såleis høve til å sjekke at utrekningane i vedlegget «Opplysningar om etteroppgjeret» er korrekte, og melde frå til oss dersom noko er feil eller manglar.",
+                English to "This letter is an advance notice regarding the calculations provided in the appendix «Information about the settlement». Please review the calculations and inform us of any errors or missing information.",
             )
         }
         paragraph {
@@ -70,23 +73,23 @@ object HvordanDuBetalerTilbake : OutlinePhrase<LangBokmalNynorskEnglish>() {
         }
         paragraph {
             text(
-                Bokmal to "Du vil få informasjon fra Skatteetaten etter 4 uker om når og hvordan du kan betale tilbake pengene. Før du kan få svar på spørsmål om saken din eller kan betale tilbake, må du ha mottatt betalingsinformasjon fra Skatteetaten.",
-                Nynorsk to "Når det har gått 4 veker, vil Skatteetaten sende deg informasjon om når og korleis du kan betale tilbake pengane. Før du kan få svar på spørsmål om saka di eller betale tilbake, må du ha fått betalingsinformasjon frå Skatteetaten.",
-                English to "After a period of 4 weeks, you will receive information from the Norwegian Tax Administration about how and when to repay the overpaid amount. Please note that you must receive the information from the Norwegian Tax Administration before you can get answers to questions regarding your case or start repaying the amount owed."
+                Bokmal to "Du vil få en faktura med informasjon fra Skatteetaten etter 4 uker om når og hvordan du kan betale tilbake pengene. Før du kan få svar på spørsmål om saken din eller kan betale tilbake, må du ha mottatt betalingsinformasjon fra Skatteetaten.",
+                Nynorsk to "Når det har gått 4 veker, vil Skatteetaten sende deg en faktura med informasjon om når og korleis du kan betale tilbake pengane. Før du kan få svar på spørsmål om saka di eller betale tilbake, må du ha fått betalingsinformasjon frå Skatteetaten.",
+                English to "After 4 weeks, you will receive an invoice from the Norwegian Tax Administration with information about how and when to repay the overpaid amount. Please note that you must receive this information before we can answer any questions regarding your case, or for you to start repaying the amount owed."
             )
         }
         paragraph {
             text(
                 Bokmal to "Fordi du har betalt skatt av det du har fått for mye utbetalt, vil vi trekke fra skatt fra beløpet du skal betale tilbake. I betalingsinformasjonen du får fra Skatteetaten står det hvor mye du faktisk skal betale tilbake.",
                 Nynorsk to "Ettersom du har betalt skatt av det du har fått for mykje utbetalt, vil vi trekkje frå skatten frå beløpet du skal betale tilbake. I betalingsinformasjonen frå Skatteetaten står det kor mykje du faktisk skal betale tilbake.",
-                English to "As you have paid tax on the overpaid amount, tax will be deducted from the amount you are required to repay. The payment information provided by the Norwegian Tax Administration will specify the exact amount you are required to repay."
+                English to "As you have already paid tax on the overpaid amount, tax will be deducted from the amount you are required to repay. The payment information provided by the Norwegian Tax Administration will specify the exact amount you are required to repay."
             )
         }
         paragraph {
             text(
-                Bokmal to "Du kan lese mer om tilbakebetaling i vedlegget «Praktisk informasjon om etteroppgjør».",
-                Nynorsk to "Du kan lese meir om tilbakebetaling i vedlegget «Praktisk informasjon om etteroppgjør».",
-                English to "You can read more about repayment in the appendix «Practical information about post-settlement»."
+                Bokmal to "Du kan lese mer om tilbakebetaling i vedlegget «Praktisk informasjon om etteroppgjøret».",
+                Nynorsk to "Du kan lese meir om tilbakebetaling i vedlegget «Praktisk informasjon om etteroppgjeret».",
+                English to "You can read more about repayment in the appendix «Practical information about settlement»."
             )
         }
     }
@@ -114,14 +117,14 @@ data class InntektOverInntektstak(
         }
         paragraph {
             textExpr(
-                Bokmal to "I ".expr() + periode.format() + " var 80 prosent av inntekten din før du ble ufør, "+ oppjustertInntektFoerUfoerhet.format() + " kroner. ",
-                Nynorsk to "I ".expr() + periode.format() + " var 80 prosent av inntekta di før du blei ufør, "+ oppjustertInntektFoerUfoerhet.format() + " kroner. ",
-                English to "In ".expr() + periode.format() + ", 80 percent of your pre-disability benefit income was NOK "+ oppjustertInntektFoerUfoerhet.format() + ". "
+                Bokmal to "I ".expr() + periode.format() + " var 80 prosent av inntekten din før du ble ufør " + oppjustertInntektFoerUfoerhet.format() + " kroner. ",
+                Nynorsk to "I ".expr() + periode.format() + " var 80 prosent av inntekta di før du blei ufør " + oppjustertInntektFoerUfoerhet.format() + " kroner. ",
+                English to "In ".expr() + periode.format() + ", 80 percent of your pre-disability benefit income was NOK " + oppjustertInntektFoerUfoerhet.format() + ". "
             )
             textExpr(
-                Bokmal to "Du tjente ".expr() + pensjonsgivendeInntektBruktIBeregningen.format() + " kroner i "+ periode.format() + ".",
-                Nynorsk to "Du tente ".expr() + pensjonsgivendeInntektBruktIBeregningen.format() + " kroner i "+ periode.format() + ".",
-                English to "You earned NOK ".expr() + pensjonsgivendeInntektBruktIBeregningen.format() + " in "+ periode.format() + "."
+                Bokmal to "Du tjente ".expr() + pensjonsgivendeInntektBruktIBeregningen.format() + " kroner i " + periode.format() + ".",
+                Nynorsk to "Du tente ".expr() + pensjonsgivendeInntektBruktIBeregningen.format() + " kroner i " + periode.format() + ".",
+                English to "You earned NOK ".expr() + pensjonsgivendeInntektBruktIBeregningen.format() + " in " + periode.format() + "."
             )
         }
     }
@@ -140,7 +143,7 @@ object SoekOmNyInntektsgrense : OutlinePhrase<LangBokmalNynorskEnglish>() {
             text(
                 Bokmal to "Er du arbeidstaker og har gradert uføretrygd, kan du søke om ny inntektsgrense. Dette gjelder hvis du har hatt høy lønnsøkning, uten at det skyldes overtidsjobbing, ekstravakter eller høyere stillingsprosent.",
                 Nynorsk to "Dersom du er arbeidstakar og har gradert uføretrygd, kan du søkje om ny inntektsgrense. Dette gjeld viss du har hatt høg lønsauke, utan at det skuldast overtidsjobbing, ekstravakter eller høgare stillingsprosent.",
-                English to "If you are an employee receiving partial disability benefits, you can apply for a new income threshold. This applies if your wage has significantly increased, unrelated to working overtime, extra shifts, or a higher job percentage.",
+                English to "If you are an employee receiving partial disability benefit, you can apply for a new income threshold. This applies if your wage has significantly increased, unrelated to working overtime, extra shifts, or a higher job percentage.",
             )
         }
     }
@@ -185,13 +188,13 @@ object MeldeFraOmEndringerEtteroppgjoer : OutlinePhrase<LangBokmalNynorskEnglish
     }
 }
 
-object FristerOpplysningerKlage : OutlinePhrase<LangBokmalNynorskEnglish>() {
+object FristNyeOpplysninger : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         title1 {
             text(
-                Bokmal to "Frister for å sende inn nye opplysninger og klage",
-                Nynorsk to "Fristar for å sende inn nye opplysningar og klage",
-                English to "Deadlines for submitting new information and appeals"
+                Bokmal to "Frist for å sende inn nye opplysninger",
+                Nynorsk to "Frist for å sende inn nye opplysningar",
+                English to "Deadline for submitting new information"
             )
         }
         paragraph {
@@ -203,28 +206,47 @@ object FristerOpplysningerKlage : OutlinePhrase<LangBokmalNynorskEnglish>() {
         }
         paragraph {
             text(
-                Bokmal to "Klagefristen på vedtaket er 6 uker etter at saken er sendt til Skatteetaten. Du finner skjema og informasjon om hvordan du klager på ${Constants.KLAGE_URL}. Du må som hovedregel begynne å betale tilbake selv om du klager på vedtaket, se forvaltningsloven § 42.",
-                Nynorsk to "Klagefristen på vedtaket er 6 veker etter at saka er send til Skatteetaten. Du finn skjema og informasjon om korleis du klagar, på ${Constants.KLAGE_URL}. Du må som hovudregel byrje å betale tilbake sjølv om du klagar på vedtaket, jf. forvaltingslova § 42.",
-                English to "The deadline for appealing against the decision is 6 weeks after the case has been forwarded to the Norwegian Tax Administration. You can find forms and information about how to appeal at ${Constants.KLAGE_URL}. As a rule, you are required to start repaying even if you appeal against the decision, as stated in section 42 of the Public Administration Act."
+                Bokmal to "I vedlegget «Praktisk informasjon om etteroppgjøret» kan du lese om hvordan du ettersender dokumentasjon.",
+                Nynorsk to "I vedlegget «Praktisk informasjon om etteroppgjeret» kan du lese om korleis du ettersendar dokumentasjon.",
+                English to "You can read about how to submit documentation in the appendix «Practical information about the settlement»."
             )
         }
     }
 }
 
-object HarDuSpoersmaal : OutlinePhrase<LangBokmalNynorskEnglish>() {
+object FristKlageOpplysninger : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+        title1 {
+            text(
+                Bokmal to "Frist for å klage",
+                Nynorsk to "Frist for å klage",
+                English to "Deadline for submitting an appeal"
+            )
+        }
+        paragraph {
+            text(
+                Bokmal to "Klagefristen på vedtaket er 6 uker etter at saken er sendt til Skatteetaten. Du finner skjema og informasjon om hvordan du klager på ${Constants.KLAGE_URL}. Du må som hovedregel begynne å betale tilbake selv om du klager på vedtaket, se forvaltningsloven § 42.",
+                Nynorsk to "Klagefristen på vedtaket er 6 veker etter at saka er send til Skatteetaten. Du finn skjema og informasjon om korleis du klagar, på ${Constants.KLAGE_URL}. Du må som hovudregel byrje å betale tilbake sjølv om du klagar på vedtaket, jf. forvaltingslova § 42.",
+                English to "The deadline for appealing the decision is 6 weeks after the case has been forwarded to the Norwegian Tax Administration. You can find forms and information about how to appeal at ${Constants.KLAGE_URL}. As a rule, you are required to start repaying even if you appeal the decision, as stated in section 42 of the Public Administration Act."
+            )
+        }
+    }
+}
+
+object HarDuSpoersmaalEtteroppgjoer : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         title1 {
             text(
                 Bokmal to "Har du spørsmål?",
                 Nynorsk to "Har du spørsmål?",
-                English to "Do you have any questions?"
+                English to "Do you have questions?"
             )
         }
         paragraph {
             text(
-                Bokmal to "Du finner mer informasjon på ${Constants.ETTEROPPGJOR_URL}. På ${Constants.KONTAKT_URL} kan du chatte eller skrive til oss. Hvis du ikke finner svar på ${Constants.NAV_URL}, kan du ringe oss på telefon ${Constants.NAV_KONTAKTSENTER_TELEFON}, hverdager kl. ${Constants.NAV_KONTAKTSENTER_AAPNINGSTID}.",
-                Nynorsk to "Du finn meir informasjon på ${Constants.ETTEROPPGJOR_URL}. Du kan chatte med eller skrive til oss på ${Constants.KONTAKT_URL}. Dersom du ikkje finn svar på ${Constants.NAV_URL}, kan du ringje oss på telefon ${Constants.NAV_KONTAKTSENTER_TELEFON}, kvardagar kl. ${Constants.NAV_KONTAKTSENTER_AAPNINGSTID}.",
-                English to "You can find more information at ${Constants.ETTEROPPGJOR_URL}. At ${Constants.KONTAKT_URL} you can chat or write us a message. If you cannot find answers at ${Constants.NAV_URL}, you can call us on +47 ${Constants.NAV_KONTAKTSENTER_TELEFON}, Monday to Friday from ${Constants.NAV_KONTAKTSENTER_AAPNINGSTID}."
+                Bokmal to "Du finner mer informasjon på ${Constants.ETTEROPPGJOR_URL}. På ${Constants.KONTAKT_URL} kan du chatte eller skrive til oss. Hvis du ikke finner svar på ${Constants.NAV_URL}, kan du ringe oss på telefon ${Constants.NAV_KONTAKTSENTER_TELEFON}, hverdager ${Constants.NAV_KONTAKTSENTER_AAPNINGSTID}.",
+                Nynorsk to "Du finn meir informasjon på ${Constants.ETTEROPPGJOR_URL}. Du kan chatte med eller skrive til oss på ${Constants.KONTAKT_URL}. Dersom du ikkje finn svar på ${Constants.NAV_URL}, kan du ringje oss på telefon ${Constants.NAV_KONTAKTSENTER_TELEFON}, kvardagar ${Constants.NAV_KONTAKTSENTER_AAPNINGSTID}.",
+                English to "You can find more information at ${Constants.ETTEROPPGJOR_URL}. At ${Constants.KONTAKT_URL} you can chat or write to us. If you cannot find answers at ${Constants.NAV_URL}, you can call us at: +47 ${Constants.NAV_KONTAKTSENTER_TELEFON}, weekdays ${Constants.NAV_KONTAKTSENTER_AAPNINGSTID}."
             )
         }
     }

@@ -35,6 +35,4 @@ fun createBarnepensjonInnvilgelseEnkelDTO() = BarnepensjonInnvilgelseEnkelDTO(
         doedsdato = LocalDate.now().minusMonths(1),
     ),
     vedtaksdato = LocalDate.now(),
-    erEtterbetalingMerEnnTreMaaneder = true,
-    erInstitusjonsopphold = true,
 )

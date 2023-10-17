@@ -11,7 +11,6 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.*
-import no.nav.pensjon.etterlatte.maler.fraser.OMSInnvilgelse
 import no.nav.pensjon.etterlatte.maler.fraser.common.OMSFelles
 import no.nav.pensjon.etterlatte.maler.fraser.common.Vedtak
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.*
@@ -51,7 +50,7 @@ object Opphoer : EtterlatteTemplate<OMSOpphoerDTO>, Hovedmal {
 
             konverterElementerTilBrevbakerformat(innhold)
 
-            includePhrase(OMSFelles.DuHarRettTilAaKlage)
+            includePhrase(OMSFelles.DuHarRettTilAaKlageOpphoer)
             includePhrase(OMSFelles.DuHarRettTilInnsyn)
             includePhrase(OMSFelles.HarDuSpoersmaal)
         }

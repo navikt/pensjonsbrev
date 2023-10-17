@@ -1,22 +1,21 @@
 package no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad
 
-import no.nav.pensjon.brev.maler.fraser.common.Felles
-import no.nav.pensjon.brev.template.*
-import no.nav.pensjon.brev.template.Language.*
-import no.nav.pensjon.brev.template.dsl.*
-import no.nav.pensjon.brev.template.dsl.expression.*
+import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
+import no.nav.pensjon.brev.template.Language.Bokmal
+import no.nav.pensjon.brev.template.Language.English
+import no.nav.pensjon.brev.template.Language.Nynorsk
+import no.nav.pensjon.brev.template.createAttachment
+import no.nav.pensjon.brev.template.dsl.expression.expr
+import no.nav.pensjon.brev.template.dsl.expression.format
+import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
+import no.nav.pensjon.brev.template.dsl.newText
+import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.etterlatte.maler.EtterbetalingDTO
-import no.nav.pensjon.etterlatte.maler.EtterbetalingDTOSelectors.beregningsperioder
 import no.nav.pensjon.etterlatte.maler.EtterbetalingDTOSelectors.fraDato
 import no.nav.pensjon.etterlatte.maler.EtterbetalingDTOSelectors.tilDato
-import no.nav.pensjon.etterlatte.maler.EtterbetalingsperiodeSelectors.datoFOM
-import no.nav.pensjon.etterlatte.maler.EtterbetalingsperiodeSelectors.datoTOM
-import no.nav.pensjon.etterlatte.maler.EtterbetalingsperiodeSelectors.grunnbeloep
-import no.nav.pensjon.etterlatte.maler.EtterbetalingsperiodeSelectors.stoenadFoerReduksjon
-import no.nav.pensjon.etterlatte.maler.EtterbetalingsperiodeSelectors.utbetaltBeloep
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
-import java.time.LocalDate
 
 
 @TemplateModelHelpers
@@ -31,7 +30,7 @@ val etterbetaling = createAttachment<LangBokmalNynorskEnglish, EtterbetalingDTO>
 
     paragraph {
         textExpr(
-            Bokmal to "Du får etterbetalt stønad fra ".expr() + fraDato.format() + " til " + tilDato.format()  +
+            Bokmal to "Du får etterbetalt stønad fra ".expr() + fraDato.format() + " til " + tilDato.format() +
                     ". Vanligvis vil du få denne etterbetalingen i løpet av tre uker. ",
             Nynorsk to "".expr(),
             English to "".expr(),
@@ -70,63 +69,4 @@ val etterbetaling = createAttachment<LangBokmalNynorskEnglish, EtterbetalingDTO>
             English to "",
         )
     }
-
-    paragraph {
-        table(
-            header = {
-                column(2) {
-                    text(Bokmal to "Periode",
-                        Nynorsk to "",
-                        English to "",
-                    )
-                }
-                column(1) {
-                    text(Bokmal to "Grunnbeløp (G)",
-                        Nynorsk to "",
-                        English to "",
-                    )
-                }
-                column(2) {
-                    text(Bokmal to "Stønad før reduksjon",
-                    Nynorsk to "",
-                    English to "",
-                    )
-                }
-                column(2) {
-                    text(Bokmal to "Brutto utbetaling per måned",
-                        Nynorsk to "",
-                        English to "",
-                    )
-                }
-            }
-        ) {
-            forEach(beregningsperioder) {
-                row {
-                    cell { includePhrase(PeriodeITabell(it.datoFOM, it.datoTOM)) }
-                    cell { includePhrase(Felles.KronerText(it.grunnbeloep)) }
-                    cell { includePhrase(Felles.KronerText(it.stoenadFoerReduksjon)) }
-                    cell { includePhrase(Felles.KronerText(it.utbetaltBeloep)) }
-                }
-            }
-        }
-    }
-}
-
-
-data class PeriodeITabell(val datoFOM: Expression<LocalDate>, val datoTOM: Expression<LocalDate?>) :
-    TextOnlyPhrase<LangBokmalNynorskEnglish>() {
-    override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
-        ifNotNull(datoTOM) { datoTOM ->
-            textExpr(
-                Bokmal to datoFOM.format(true) + " - " + datoTOM.format(true),
-                Nynorsk to datoFOM.format(true) + " - " + datoTOM.format(true),
-                English to datoFOM.format(true) + " - " + datoTOM.format(true),
-            )
-        } orShow {
-            textExpr(
-                Bokmal to datoFOM.format(true) + " - ",
-                Nynorsk to datoFOM.format(true) + " - ",
-                English to datoFOM.format(true) + " - ",
-            )
-        }
 }

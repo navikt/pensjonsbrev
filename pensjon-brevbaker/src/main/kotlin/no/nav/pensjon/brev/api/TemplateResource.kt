@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.api
 
+import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.maler.*
 import no.nav.pensjon.brev.maler.adhoc.AdhocRegelendretGjenlevendetillegg
@@ -43,7 +44,7 @@ class TemplateResource(
     fun getAutoBrev(): Set<Brevkode.AutoBrev> =
         autoBrevMap.keys
 
-    fun getAutoBrev(kode: Brevkode.AutoBrev): LetterTemplate<*, *>? =
+    fun getAutoBrev(kode: Brevkode.AutoBrev): LetterTemplate<*, out BrevbakerBrevdata>? =
         autoBrevMap[kode]?.template
 
     fun getRedigerbareBrev(): Set<Brevkode.Redigerbar> =
@@ -52,6 +53,6 @@ class TemplateResource(
     fun getRedigerbareBrevMedMetadata(): Map<Brevkode.Redigerbar, LetterMetadata> =
         redigerbareBrevMap.mapValues { (_, v) -> v.template.letterMetadata }
 
-    fun getRedigerbartBrev(kode: Brevkode.Redigerbar): LetterTemplate<*, *>? =
+    fun getRedigerbartBrev(kode: Brevkode.Redigerbar): LetterTemplate<*, out BrevbakerBrevdata>? =
         redigerbareBrevMap[kode]?.template
 }

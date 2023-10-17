@@ -21,6 +21,13 @@ object BarnepensjonInnvilgelseFraser {
         val etterbetalingDTO: Expression<EtterbetalingDTO?>,
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+            title2 {
+                text(
+                    Language.Bokmal to "Utbetaling av barnepensjon",
+                    Language.Nynorsk to "",
+                    Language.English to "",
+                )
+            }
             paragraph {
                 table(
                     header = {

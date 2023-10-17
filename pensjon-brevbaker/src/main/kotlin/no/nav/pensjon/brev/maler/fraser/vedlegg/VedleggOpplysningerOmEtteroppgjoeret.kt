@@ -60,11 +60,11 @@ data class Introduksjon(val periode: Expression<Year>) : OutlinePhrase<LangBokma
                         "Vi har gjort en ny beregning av uføretrygden din for " + periode.format() + " etter opplysninger fra Skatteetaten. " +
                         "Du kan se skatteoppgjøret ditt på ${Constants.SKATTEETATEN_URL}.",
 
-                Nynorsk to "Vi nyttar opplysningane som du legg sjølv inn som inntekt på ${Constants.INNTEKTSPLANLEGGEREN_URL}, og opplysningar frå Skatteetaten. ".expr() +
+                Nynorsk to "Vi nyttar opplysningane som du legg inn sjølv som inntekt på ${Constants.INNTEKTSPLANLEGGEREN_URL}, og opplysningar frå Skatteetaten. ".expr() +
                         "Vi har gjort ei ny utrekning av uføretrygda di for " + periode.format() + " etter opplysningar frå Skatteetaten. " +
                         "Du kan sjå skatteoppgjeret ditt på ${Constants.SKATTEETATEN_URL}.",
 
-                English to "We use the income information you input on ${Constants.INNTEKTSPLANLEGGEREN_URL} and information from the Norwegian Tax Administration. ".expr() +
+                English to "We use the income information you have registered on ${Constants.INNTEKTSPLANLEGGEREN_URL} and information from the Norwegian Tax Administration. ".expr() +
                         "Your disability benefit for " + periode.format() + " has been recalculated based on the tax settlement provided by the Norwegian Tax Administration. " +
                         "You can find your tax settlement at ${Constants.SKATTEETATEN_URL}.",
             )
@@ -149,7 +149,11 @@ data class FikkSkulleFaattTabell(
                     newTextExpr(
                         Bokmal to "Uføretrygd".expr() + ifElse(harGjenlevendeTillegg, " og gjenlevendetillegg", ""),
                         Nynorsk to "Uføretrygd".expr() + ifElse(harGjenlevendeTillegg, " og attlevandetillegg", ""),
-                        English to "Disability benefit".expr() + ifElse(harGjenlevendeTillegg, " and survivor's supplement", ""),
+                        English to "Disability benefit".expr() + ifElse(
+                            harGjenlevendeTillegg,
+                            " and survivor supplement",
+                            ""
+                        ),
                     ),
                     ufoeretrygd,
                 )
@@ -201,14 +205,14 @@ data class DuHarFaattAvviksBeloep(
                         ifElse(harFaattForMye, "mye", "lite") + " i uføretrygd",
                 Nynorsk to "Du har fått ".expr() + totaltAvvik.absoluteValue().format() + " kroner for " +
                         ifElse(harFaattForMye, "mykje", "lite") + " i uføretrygd",
-                English to "You received NOK ".expr() + totaltAvvik.absoluteValue().format() + " too " +
+                English to "You have received NOK ".expr() + totaltAvvik.absoluteValue().format() + " too " +
                         ifElse(harFaattForMye, "much", "little") + " in disability benefit",
             )
             showIf(harBarnetillegg and harGjenlevendeTillegg) {
                 text(
                     Bokmal to ", barnetillegg og gjenlevendetillegg",
                     Nynorsk to ", barnetillegg og attlevandetillegg",
-                    English to ", child supplement and survivor's supplement",
+                    English to ", child supplement and survivor supplement",
                 )
             }.orShowIf(harBarnetillegg) {
                 text(
@@ -220,7 +224,7 @@ data class DuHarFaattAvviksBeloep(
                 text(
                     Bokmal to " og gjenlevendetillegg",
                     Nynorsk to " og attlevandetillegg",
-                    English to " and survivor's supplement"
+                    English to " and survivor supplement"
                 )
             }
             textExpr(
@@ -422,21 +426,35 @@ data class OmBeregningAvBarnetillegg(
                         "After this calculation, your child supplement is NOK " + skulleFaatt.format() + " for " + periode.format() + ".",
             )
         }
+        showIf(barnetillegg.totaltResultat.avvik.notEqualTo(Kroner(0))) {
+            paragraph {
+                textExpr(
+                    Bokmal to "Du har fått utbetalt ".expr() + barnetillegg.totaltResultat.fikk.format() + " kroner i barnetillegg. Du har fått " +
+                            barnetillegg.totaltResultat.avvik.absoluteValue().format() + " kroner for " +
+                            ifElse(barnetillegg.totaltResultat.harFaattForMye, "mye", "lite") + " i barnetillegg.",
 
-        paragraph {
-            textExpr(
-                Bokmal to "Du har fått utbetalt ".expr() + barnetillegg.totaltResultat.fikk.format() + " kroner i barnetillegg. Du har fått " +
-                        barnetillegg.totaltResultat.avvik.absoluteValue().format() + " kroner for " +
-                        ifElse(barnetillegg.totaltResultat.harFaattForMye, "mye", "lite") + " i barnetillegg.",
+                    Nynorsk to "Du har fått utbetalt ".expr() + barnetillegg.totaltResultat.fikk.format() + " kroner i barnetillegg. Du har fått " +
+                            barnetillegg.totaltResultat.avvik.absoluteValue().format() + " kroner for " +
+                            ifElse(barnetillegg.totaltResultat.harFaattForMye, "mykje", "lite") + " i barnetillegg.",
+                    English to "You have received NOK ".expr() + barnetillegg.totaltResultat.fikk.format() + " in child supplement. You have been " +
 
-                Nynorsk to "Du har fått utbetalt ".expr() + barnetillegg.totaltResultat.fikk.format() + " kroner i barnetillegg. Du har fått " +
-                        barnetillegg.totaltResultat.avvik.absoluteValue().format() + " kroner for " +
-                        ifElse(barnetillegg.totaltResultat.harFaattForMye, "mykje", "lite") + " i barnetillegg.",
-                English to "You have received NOK ".expr() + barnetillegg.totaltResultat.fikk.format() + " in child supplement. You have been " +
+                            ifElse(barnetillegg.totaltResultat.harFaattForMye, "overpaid", "underpaid") + " NOK " +
+                            barnetillegg.totaltResultat.avvik.format() + " in child supplement.",
+                )
+            }
+        }
 
-                        ifElse(barnetillegg.totaltResultat.harFaattForMye, "overpaid", "underpaid") + " NOK " +
-                        barnetillegg.totaltResultat.avvik.format() + " in child supplement.",
-            )
+        showIf(barnetillegg.totaltResultat.avvik.equalTo(Kroner(0))) {
+            paragraph {
+                textExpr(
+                    Bokmal to "Barnetillegget ditt har vært riktig beregnet ut fra inntekt i ".expr()
+                            + periode.format() + ",og utgjorde totalt " + barnetillegg.totaltResultat.fikk.format() + " kroner.",
+                    Nynorsk to "Barnetillegget ditt har vært riktig berekna ut frå inntekt i ".expr()
+                            + periode.format() + ",og utgjorde totalt " + barnetillegg.totaltResultat.fikk.format() + " koroner.",
+                    English to "Your child supplement has been correctly calculated in relation to your income in ".expr()
+                            + periode.format() + ", and totalled NOK " + barnetillegg.totaltResultat.fikk.format() + "."
+                )
+            }
         }
 
         title2 {
@@ -459,7 +477,7 @@ data class OmBeregningAvBarnetillegg(
                     text(
                         Bokmal to "barnet bor med begge foreldre i deler av året, og en av foreldrene resten av året.",
                         Nynorsk to "barnet bur med begge foreldra delar av året, og en av foreldra resten av året.",
-                        English to "the child lives with both parents for part of the year and with one parent for the remainder of the year."
+                        English to "the child lives with both parents for part of the year and with one of the parents for the remainder of the year."
                     )
                 }
             }
@@ -469,18 +487,30 @@ data class OmBeregningAvBarnetillegg(
 
         paragraph {
             textExpr(
-                Bokmal to "Tabellene under viser inntektene du".expr() + ifElse(harFellesTillegg, " og annen forelder", "") +
+                Bokmal to "Tabellene under viser inntektene du".expr() + ifElse(
+                    harFellesTillegg,
+                    " og annen forelder",
+                    ""
+                ) +
                         " har hatt i " + periode.format() + ". Det er disse inntektene vi har brukt for å beregne barnetillegget.",
-                Nynorsk to "Tabellene under viser inntektene du".expr() + ifElse(harFellesTillegg, " og anna forelder", "") +
+                Nynorsk to "Tabellene under viser inntektene du".expr() + ifElse(
+                    harFellesTillegg,
+                    " og anna forelder",
+                    ""
+                ) +
                         " har hatt i " + periode.format() + ". Det er desse inntektene vi har brukt for å rekne ut barnetillegget.",
-                English to "The tables below display the personal incomes you".expr() + ifElse(harFellesTillegg, " and the other parent", "") +
+                English to "The tables below show the personal incomes you".expr() + ifElse(
+                    harFellesTillegg,
+                    " and the other parent",
+                    ""
+                ) +
                         " had in ".expr() + periode.format() + ". These incomes were used to calculate your child supplement.",
             )
         }
 
         title2 {
             text(
-                Bokmal to "Din personinntekt",
+                Bokmal to "Personinntekten din",
                 Nynorsk to "Personinntekta di",
                 English to "Your personal income",
             )
@@ -534,7 +564,7 @@ data class OmBeregningAvBarnetillegg(
         ifNotNull(barnetillegg.felles) { fellesbarn ->
             title2 {
                 text(
-                    Bokmal to "Personinntekt til annen forelder",
+                    Bokmal to "Personinntekten til annen forelder",
                     Nynorsk to "Personinntekta til den andre forelderen",
                     English to "Personal income of the other parent",
                 )
@@ -659,9 +689,21 @@ data class OmBeregningAvUfoeretrygd(
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         title1 {
             textExpr(
-                Bokmal to "Om beregningen av uføretrygd".expr() + ifElse(harGjenlevendeTillegg, " og gjenlevendetillegg", ""),
-                Nynorsk to "Om utrekning av uføretrygd".expr() + ifElse(harGjenlevendeTillegg, " og attlevandetillegg", ""),
-                English to "Disability benefit".expr() + ifElse(harGjenlevendeTillegg, " and survivor's supplement", "") + " calculation",
+                Bokmal to "Om beregningen av uføretrygd".expr() + ifElse(
+                    harGjenlevendeTillegg,
+                    " og gjenlevendetillegg",
+                    ""
+                ),
+                Nynorsk to "Om utrekning av uføretrygd".expr() + ifElse(
+                    harGjenlevendeTillegg,
+                    " og attlevandetillegg",
+                    ""
+                ),
+                English to "Disability benefit".expr() + ifElse(
+                    harGjenlevendeTillegg,
+                    " and survivor's supplement",
+                    ""
+                ) + " calculation",
             )
         }
         paragraph {
@@ -718,9 +760,9 @@ data class OmBeregningAvUfoeretrygd(
 
             val inntektFoerFratrekk = pensjonsgivendeInntekt.inntekt.sum.format()
             textExpr(
-                Bokmal to "Din pensjonsgivende inntekt har i ".expr() + periode.format() + " vært " + inntektFoerFratrekk + " kroner.",
-                Nynorsk to "Den pensjonsgivande inntekta di i ".expr() + periode.format() + " var " + inntektFoerFratrekk + " kroner.",
-                English to "Your pensionable income for ".expr() + periode.format() + " was NOK " + inntektFoerFratrekk + ".",
+                Bokmal to "I ".expr() + periode.format() + " var den pensjonsgivende inntekten din " + inntektFoerFratrekk + " kroner.",
+                Nynorsk to "I ".expr() + periode.format() + " var den pensjonsgivande inntekta di" + inntektFoerFratrekk + " kroner.",
+                English to "In ".expr() + periode.format() + ", your pensionable income was NOK " + inntektFoerFratrekk + ".",
             )
         }
 
@@ -770,25 +812,49 @@ data class OmBeregningAvUfoeretrygd(
 
             val inntektEtterFratrekk = pensjonsgivendeInntektBruktIBeregningen.format()
             textExpr(
-                Bokmal to "Etter beregningen er gjort, har du ".expr() + inntektEtterFratrekk + " kroner i pensjonsgivende inntekt.",
+                Bokmal to "Beregningen vår viser at du har ".expr() + inntektEtterFratrekk + " kroner i pensjonsgivende inntekt.",
                 Nynorsk to "Utrekninga vår viser at du har ".expr() + inntektEtterFratrekk + " kroner i pensjonsgivande inntekt.",
-                English to "By our calculation, your pensionable income is NOK ".expr() + inntektEtterFratrekk + ".",
+                English to "Our calculation shows your pensionable income is NOK ".expr() + inntektEtterFratrekk + ".",
             )
         }
 
-        paragraph {
-            val avvikAbsolutt = ufoeretrygd.avvik.absoluteValue().format()
-            textExpr(
-                Bokmal to "Du skulle ha fått ".expr() + ufoeretrygd.skulleFaatt.format() + " kroner i uføretrygd i " + periode.format()
-                        + ". Du fikk imidlertid " + ufoeretrygd.fikk.format() + " kroner. Du har derfor fått " + avvikAbsolutt
-                        + " kroner for " + ifElse(ufoeretrygd.harFaattForMye, "mye", "lite") + " i uføretrygd.",
-                Nynorsk to "Du skulle ha fått ".expr() + ufoeretrygd.skulleFaatt.format() + " kroner i uføretrygd i " + periode.format()
-                        + ". Du fekk derimot " + ufoeretrygd.fikk.format() + " kroner. Du har derfor fått " + avvikAbsolutt
-                        + " kroner for " + ifElse(ufoeretrygd.harFaattForMye, "mykje", "lite") + " i uføretrygd.",
-                English to "You were supposed to receive NOK ".expr() + ufoeretrygd.skulleFaatt.format() + " in disability benefit for " + periode.format()
-                        + ". However, you received NOK ".expr() + ufoeretrygd.fikk.format() + ". Therefore, you have received NOK " + avvikAbsolutt
-                        + " too " + ifElse(ufoeretrygd.harFaattForMye, "much", "little") + " in disability benefit.",
-            )
+        showIf(ufoeretrygd.avvik.notEqualTo(Kroner(0))) {
+            paragraph {
+                val avvikAbsolutt = ufoeretrygd.avvik.absoluteValue().format()
+                textExpr(
+                    Bokmal to "Du skulle ha fått ".expr() + ufoeretrygd.skulleFaatt.format() + " kroner i uføretrygd".expr()
+                            + ifElse(harGjenlevendeTillegg, " og gjenlevendetillegg", "") + " i " + periode.format()
+                            + ". Du fikk imidlertid " + ufoeretrygd.fikk.format() + " kroner. Du har derfor fått " + avvikAbsolutt
+                            + " kroner for " + ifElse(ufoeretrygd.harFaattForMye, "mye", "lite") + " i uføretrygd".expr()
+                            + ifElse(harGjenlevendeTillegg, " og gjenlevendetillegg", "") + ".",
+                    Nynorsk to "Du skulle ha fått ".expr() + ufoeretrygd.skulleFaatt.format() + " kroner i uføretrygd".expr()
+                            + ifElse(harGjenlevendeTillegg, " og gjenlevendetillegg", "") + " i " + periode.format()
+                            + ". Du fekk derimot " + ufoeretrygd.fikk.format() + " kroner. Du har derfor fått " + avvikAbsolutt
+                            + " kroner for " + ifElse(ufoeretrygd.harFaattForMye, "mykje", "lite") + " i uføretrygd".expr()
+                            + ifElse(harGjenlevendeTillegg, " og gjenlevendetillegg", "") + ".",
+                    English to "You were supposed to receive NOK ".expr() + ufoeretrygd.skulleFaatt.format() + " in disability benefit".expr()
+                            + ifElse(harGjenlevendeTillegg, " and survivor's supplement", "") + " for " + periode.format()
+                            + ". However, you received NOK ".expr() + ufoeretrygd.fikk.format() + ". Therefore, you have received NOK " + avvikAbsolutt
+                            + " too " + ifElse(ufoeretrygd.harFaattForMye, "much", "little") + " in disability benefit".expr()
+                            + ifElse(harGjenlevendeTillegg, " and survivor's supplement", "") + ".",
+                )
+            }
+        }
+
+        showIf(ufoeretrygd.avvik.equalTo(Kroner(0))) {
+            paragraph {
+                textExpr(
+                    Bokmal to "Uføretrygden din".expr()
+                            + ifElse(harGjenlevendeTillegg, " og gjenlevendetillegg", "") + " har vært riktig beregnet ut fra inntekt i "
+                            + periode.format() + ", og utgjorde ".expr() + ufoeretrygd.fikk.format() + " kroner.",
+                    Nynorsk to "Uføretrygda di".expr()
+                            + ifElse(harGjenlevendeTillegg, " og gjenlevendetillegg", "") + " har vært riktig berekna ut frå inntekt i "
+                            + periode.format() + ", og utgjorde ".expr() + ufoeretrygd.fikk.format() + " kroner.",
+                    English to "Your disability benefit".expr()
+                            + ifElse(harGjenlevendeTillegg, " and survivor's supplement", "") + " has been correctly calculated in relation to your income in "
+                            + periode.format() + ", and totalled NOK ".expr() + ufoeretrygd.fikk.format() + "."
+                )
+            }
         }
 
         paragraph {
@@ -895,7 +961,7 @@ data class ErOpplysningeneOmInntektFeil(
             text(
                 Bokmal to "Vi gjør et nytt etteroppgjør automatisk hvis Skatteetaten endrer inntekten din. Du får tilbakemelding hvis endringen påvirker etteroppgjøret ditt.",
                 Nynorsk to "Vi utfører automatisk eit nytt etteroppgjer dersom Skatteetaten endrar inntekta di. Du får tilbakemelding dersom endringa påverker etteroppgjeret ditt.",
-                English to "We will issue a new settlement automatically if the Norwegian Tax Administration changes your income. You will be notified if any changes affect your post-settlement.",
+                English to "We will automatically issue a new settlement if the Norwegian Tax Administration changes your income. You will be notified if any changes affect your post-settlement.",
             )
         }
 
@@ -1005,8 +1071,12 @@ data class FratrekkTabell(
             }
         }
 
-    object LocalizedAarsak : LocalizedFormatter<OpplysningerOmEtteroppgjoeretDto.InntektOgFratrekk.Fratrekk.FratrekkLinje.Aarsak>() {
-        override fun apply(first: OpplysningerOmEtteroppgjoeretDto.InntektOgFratrekk.Fratrekk.FratrekkLinje.Aarsak, second: Language): String =
+    object LocalizedAarsak :
+        LocalizedFormatter<OpplysningerOmEtteroppgjoeretDto.InntektOgFratrekk.Fratrekk.FratrekkLinje.Aarsak>() {
+        override fun apply(
+            first: OpplysningerOmEtteroppgjoeretDto.InntektOgFratrekk.Fratrekk.FratrekkLinje.Aarsak,
+            second: Language
+        ): String =
             when (first) {
                 OpplysningerOmEtteroppgjoeretDto.InntektOgFratrekk.Fratrekk.FratrekkLinje.Aarsak.FOER_INNVILGET_UFOERETRYGD -> when (second) {
                     Bokmal -> "Inntekt før uføretrygden ble innvilget"
@@ -1052,8 +1122,12 @@ data class FratrekkTabell(
             }
     }
 
-    object LocalizedFratrekkType : LocalizedFormatter<OpplysningerOmEtteroppgjoeretDto.InntektOgFratrekk.Fratrekk.FratrekkLinje.InntektType>() {
-        override fun apply(first: OpplysningerOmEtteroppgjoeretDto.InntektOgFratrekk.Fratrekk.FratrekkLinje.InntektType, second: Language): String =
+    object LocalizedFratrekkType :
+        LocalizedFormatter<OpplysningerOmEtteroppgjoeretDto.InntektOgFratrekk.Fratrekk.FratrekkLinje.InntektType>() {
+        override fun apply(
+            first: OpplysningerOmEtteroppgjoeretDto.InntektOgFratrekk.Fratrekk.FratrekkLinje.InntektType,
+            second: Language
+        ): String =
             when (first) {
                 OpplysningerOmEtteroppgjoeretDto.InntektOgFratrekk.Fratrekk.FratrekkLinje.InntektType.ARBEIDSINNTEKT -> when (second) {
                     Bokmal -> "Arbeidsinntekt"
@@ -1155,8 +1229,12 @@ data class InntektTabell(
             }
         }
 
-    object LocalizedKilde : LocalizedFormatter<OpplysningerOmEtteroppgjoeretDto.InntektOgFratrekk.Inntekt.InntektLinje.Kilde>() {
-        override fun apply(first: OpplysningerOmEtteroppgjoeretDto.InntektOgFratrekk.Inntekt.InntektLinje.Kilde, second: Language): String =
+    object LocalizedKilde :
+        LocalizedFormatter<OpplysningerOmEtteroppgjoeretDto.InntektOgFratrekk.Inntekt.InntektLinje.Kilde>() {
+        override fun apply(
+            first: OpplysningerOmEtteroppgjoeretDto.InntektOgFratrekk.Inntekt.InntektLinje.Kilde,
+            second: Language
+        ): String =
             when (first) {
                 OpplysningerOmEtteroppgjoeretDto.InntektOgFratrekk.Inntekt.InntektLinje.Kilde.INNMELDT_AV_ARBEIDSGIVER -> when (second) {
                     Bokmal -> "Elektronisk innmeldt fra arbeidsgiver"
@@ -1180,8 +1258,12 @@ data class InntektTabell(
             }
     }
 
-    object LocalizedInntektType : LocalizedFormatter<OpplysningerOmEtteroppgjoeretDto.InntektOgFratrekk.Inntekt.InntektLinje.InntektType>() {
-        override fun apply(first: OpplysningerOmEtteroppgjoeretDto.InntektOgFratrekk.Inntekt.InntektLinje.InntektType, second: Language): String =
+    object LocalizedInntektType :
+        LocalizedFormatter<OpplysningerOmEtteroppgjoeretDto.InntektOgFratrekk.Inntekt.InntektLinje.InntektType>() {
+        override fun apply(
+            first: OpplysningerOmEtteroppgjoeretDto.InntektOgFratrekk.Inntekt.InntektLinje.InntektType,
+            second: Language
+        ): String =
             when (first) {
                 OpplysningerOmEtteroppgjoeretDto.InntektOgFratrekk.Inntekt.InntektLinje.InntektType.ARBEIDSINNTEKT -> when (second) {
                     Bokmal -> "Arbeidsinntekt"
