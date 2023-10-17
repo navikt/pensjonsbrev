@@ -24,7 +24,6 @@ class LatexTimeoutException(msg: String, cause: Throwable? = null) : Exception(m
 class LatexInvalidException(msg: String, cause: Throwable? = null) : Exception(msg, cause)
 
 class LaTeXCompilerService(private val pdfByggerUrl: String, maxRetries: Int = 30) {
-    // TODO: Verifiser at denne logger med correlationId
     private val logger = LoggerFactory.getLogger(this::class.java)
     private val objectmapper = jacksonObjectMapper()
     private val httpClient = HttpClient(CIO) {
@@ -88,7 +87,7 @@ class LaTeXCompilerService(private val pdfByggerUrl: String, maxRetries: Int = 3
     suspend fun producePDF(latexLetter: RenderedLatexLetter, callId: String?): PDFCompilationOutput =
         httpClient.post("$pdfByggerUrl/compile") {
             contentType(ContentType.Application.Json)
-            header("Nav-Call-Id", callId)
+            header("X-Request-ID", callId)
             //TODO unresolved bug. There is a bug where simultanious requests will lock up the requests for this http client
             // If the body is set using an object, it will use the content-negotiation strategy which also uses a jackson object-mapper
             // for some unknown reason, this results in all requests being halted for around 5 minutes.

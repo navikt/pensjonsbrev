@@ -27,6 +27,10 @@ fun requireEnv(key: String) =
 @Suppress("unused") // Referenced in application.conf
 fun Application.module() {
 
+    environment.monitor.subscribe(ApplicationStopPreparing) {
+        it.log.info("Application preparing to shutdown gracefully")
+    }
+
     install(CallLogging) {
         callIdMdc("x_correlationId")
         disableDefaultColors()

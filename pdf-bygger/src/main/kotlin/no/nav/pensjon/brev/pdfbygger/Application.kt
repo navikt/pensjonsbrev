@@ -27,9 +27,13 @@ fun main(args: Array<String>) = EngineMain.main(args)
 fun Application.module() {
     val parallelism = Runtime.getRuntime().availableProcessors()
     val activityCounter = ActiveCounter()
-    val laTeXService = LaTeXService(this.log, timeout = 300.seconds)
+    val laTeXService = LaTeXService(log, timeout = 300.seconds)
 
-    this.log.info("Tilgjengelige kjerner: $parallelism")
+    log.info("Available processors: $parallelism")
+    environment.monitor.subscribe(ApplicationStopPreparing) {
+        it.log.info("Application preparing to shutdown gracefully")
+    }
+
     install(ContentNegotiation) {
         jackson()
     }
@@ -71,7 +75,7 @@ fun Application.module() {
     }
 
     install(CallId) {
-        retrieveFromHeader("Nav-Call-Id")
+        retrieveFromHeader("X-Request-ID")
         generate()
         verify { it.isNotEmpty() }
     }
@@ -112,10 +116,9 @@ fun Application.module() {
 
         get("/isReady") {
             val currentActivity = activityCounter.currentCount()
-            val msg = "Activity: $currentActivity, Target: $parallelism"
-            call.application.log.info(msg)
-
             if (currentActivity > parallelism) {
+                val msg = "Application not ready: pdf compilation activity of $currentActivity above target of $parallelism"
+                call.application.log.info(msg)
                 call.respondText(msg, ContentType.Text.Plain, HttpStatusCode.ServiceUnavailable)
             } else {
                 call.respondText("Ready!", ContentType.Text.Plain, HttpStatusCode.OK)

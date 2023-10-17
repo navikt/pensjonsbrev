@@ -8,6 +8,7 @@ metadata:
 spec:
   image: {{image}}
   port: 8080
+  terminationGracePeriodSeconds: 60
   service:
     port: 8080
     protocol: http
