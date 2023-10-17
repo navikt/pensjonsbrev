@@ -70,6 +70,7 @@ fun Application.module() {
 
     install(CallId) {
         retrieveFromHeader("Nav-Call-Id")
+        retrieveFromHeader("X-Request-ID")
         generate()
         verify { it.isNotEmpty() }
     }
