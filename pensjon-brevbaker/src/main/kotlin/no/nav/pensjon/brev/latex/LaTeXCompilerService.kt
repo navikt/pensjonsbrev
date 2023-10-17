@@ -42,11 +42,6 @@ class LaTeXCompilerService(private val pdfByggerUrl: String, maxRetries: Int = 3
                         logger.warn("Couldn't compile latex to pdf due to server error: ${response.body<String>()}")
                         throw LatexCompileException("Couldn't compile latex to pdf due to server error: ${response.body<String>()}")
                     }
-
-                    HttpStatusCode.GatewayTimeout -> {
-                        logger.warn("Latex compilation failed with timout: ${response.body<String>()}")
-                        throw LatexTimeoutException("Compile latex to pdf timed out: ${response.body<String>()}")
-                    }
                 }
             }
         }

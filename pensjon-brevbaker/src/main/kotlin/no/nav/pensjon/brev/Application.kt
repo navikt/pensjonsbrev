@@ -54,15 +54,15 @@ fun Application.module() {
         }
         exception<LatexTimeoutException>{ call, cause ->
             call.application.log.info("Latex compilation timed out", cause)
-            call.respond(HttpStatusCode.GatewayTimeout, cause.message ?: "Timed out while compiling latex")
+            call.respond(HttpStatusCode.InternalServerError, cause.message ?: "Timed out while compiling latex")
         }
         exception<LatexCompileException>{ call, cause ->
             call.application.log.info("Latex compilation failed with internal server error", cause)
-            call.respond(HttpStatusCode.GatewayTimeout, cause.message ?: "Latex compilation failed")
+            call.respond(HttpStatusCode.InternalServerError, cause.message ?: "Latex compilation failed")
         }
         exception<LatexInvalidException>{ call, cause ->
             call.application.log.info("Latex compilation failed due to invalid latex", cause)
-            call.respond(HttpStatusCode.GatewayTimeout, cause.message ?: "Latex compilation failed due to invalid latex")
+            call.respond(HttpStatusCode.InternalServerError, cause.message ?: "Latex compilation failed due to invalid latex")
         }
         exception<ParameterConversionException> { call, cause ->
             call.respond(HttpStatusCode.BadRequest, cause.message?: "Failed to convert path parameter to required type: unknown cause")
