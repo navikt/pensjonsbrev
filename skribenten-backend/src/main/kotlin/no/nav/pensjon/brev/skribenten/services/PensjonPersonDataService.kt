@@ -15,8 +15,7 @@ import no.nav.pensjon.brev.skribenten.auth.AzureADService
 data class AdresseResponse(
     val adresseString : String,
     val adresselinjer : List<String>,
-) {
-}
+)
 class PensjonPersonDataService(config: Config, authService: AzureADService) {
 
     private val url = config.getString("url")
