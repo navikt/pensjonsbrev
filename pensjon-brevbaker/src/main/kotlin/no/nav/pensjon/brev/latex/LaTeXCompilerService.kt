@@ -34,13 +34,15 @@ class LaTeXCompilerService(private val pdfByggerUrl: String, maxRetries: Int = 3
             validateResponse { response ->
                 when (response.status) {
                     HttpStatusCode.BadRequest -> {
-                        logger.warn("Rendered latex is invalid, couldn't compile pdf: ${response.body<String>()}")
-                        throw LatexInvalidException("Rendered latex is invalid, couldn't compile pdf: ${response.body<String>()}")
+                        val body = response.body<String>()
+                        logger.warn("Rendered latex is invalid, couldn't compile pdf: $body")
+                        throw LatexInvalidException("Rendered latex is invalid, couldn't compile pdf: $body")
                     }
 
                     HttpStatusCode.InternalServerError -> {
-                        logger.warn("Couldn't compile latex to pdf due to server error: ${response.body<String>()}")
-                        throw LatexCompileException("Couldn't compile latex to pdf due to server error: ${response.body<String>()}")
+                        val body = response.body<String>()
+                        logger.warn("Couldn't compile latex to pdf due to server error: $body")
+                        throw LatexCompileException("Couldn't compile latex to pdf due to server error: $body")
                     }
                 }
             }
