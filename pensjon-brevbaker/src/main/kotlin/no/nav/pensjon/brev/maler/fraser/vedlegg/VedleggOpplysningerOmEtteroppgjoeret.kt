@@ -448,9 +448,9 @@ data class OmBeregningAvBarnetillegg(
             paragraph {
                 textExpr(
                     Bokmal to "Barnetillegget ditt har vært riktig beregnet ut fra inntekt i ".expr()
-                            + periode.format() + ",og utgjorde totalt " + barnetillegg.totaltResultat.fikk.format() + " kroner.",
+                            + periode.format() + ", og utgjorde totalt " + barnetillegg.totaltResultat.fikk.format() + " kroner.",
                     Nynorsk to "Barnetillegget ditt har vært riktig berekna ut frå inntekt i ".expr()
-                            + periode.format() + ",og utgjorde totalt " + barnetillegg.totaltResultat.fikk.format() + " koroner.",
+                            + periode.format() + ", og utgjorde totalt " + barnetillegg.totaltResultat.fikk.format() + " koroner.",
                     English to "Your child supplement has been correctly calculated in relation to your income in ".expr()
                             + periode.format() + ", and totalled NOK " + barnetillegg.totaltResultat.fikk.format() + "."
                 )
