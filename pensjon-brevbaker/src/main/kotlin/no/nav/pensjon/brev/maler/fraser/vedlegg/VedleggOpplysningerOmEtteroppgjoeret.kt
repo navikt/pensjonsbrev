@@ -837,10 +837,10 @@ data class OmBeregningAvUfoeretrygd(
         }
 
         title1 {
-            text(
-                Bokmal to "Din pensjonsgivende inntekt",
-                Nynorsk to "Di pensjonsgivande inntekt",
-                English to "Your pensionable income",
+            textExpr(
+                Bokmal to "Din pensjonsgivende inntekt i ".expr() + periode.format() + "",
+                Nynorsk to "Di pensjonsgivande inntekt i ".expr() + periode.format() + "",
+                English to "Your pensionable income in ".expr() + periode.format() + "",
             )
         }
         showIf(pensjonsgivendeInntekt.inntekt.inntekter.isNotEmpty()) {
@@ -859,10 +859,13 @@ data class OmBeregningAvUfoeretrygd(
             }
 
             title1 {
-                text(
-                    Bokmal to "Beløp som er trukket fra den pensjonsgivende inntekten din",
-                    Nynorsk to "Beløp som er trekt frå den pensjonsgivande inntekta di",
-                    English to "Amounts deducted from your pensionable income"
+                textExpr(
+                    Bokmal to "Beløp som er trukket fra den pensjonsgivende inntekten din for ".expr()
+                    + periode.format() + "",
+                    Nynorsk to "Beløp som er trekt frå den pensjonsgivande inntekta di for ".expr()
+                    + periode.format() + "",
+                    English to "Amounts deducted from your pensionable income for ".expr()
+                    + periode.format() + ""
                 )
             }
             paragraph {
@@ -879,22 +882,22 @@ data class OmBeregningAvUfoeretrygd(
                         )
                     )
                 } orShow {
-                    textExpr(
-                        Bokmal to "Du har ikke hatt inntekter som er trukket fra den pensjonsgivende inntekten din i ".expr()
-                                + periode.format() + ". Hvis du har hatt inntekter som kan trekkes fra, må du sende oss dokumentasjon på det innen 3 uker.",
-                        Nynorsk to "Du har ikkje hatt inntekter som er trekte frå den pensjonsgivande inntekta di i ".expr()
-                                + periode.format() + ". Dersom du har hatt inntekter som kan trekkjast frå, må du sende oss dokumentasjon på dette innan 3 veker.",
-                        English to "No income was deducted from your pensionable income in ".expr() + periode.format()
-                                + ". If you have had deductable income, you must provide us with documentation within 3 weeks.",
+                    text(
+                        Bokmal to "Du har ikke hatt inntekter som er trukket fra den pensjonsgivende inntekten din."
+                                + " Hvis du har hatt inntekter som kan trekkes fra, må du sende oss dokumentasjon på det innen 3 uker.",
+                        Nynorsk to "Du har ikkje hatt inntekter som er trekte frå den pensjonsgivande inntekta di."
+                                + " Dersom du har hatt inntekter som kan trekkjast frå, må du sende oss dokumentasjon på dette innan 3 veker.",
+                        English to "No income has been deducted from your pensionable income."
+                                + " If you have had deductable income, you must provide us with documentation within 3 weeks.",
                     )
                 }
             }
         } orShow {
             paragraph {
-                textExpr(
-                    Bokmal to "Du har ikke hatt pensjonsgivende inntekt i ".expr() + periode.format() + ".",
-                    Nynorsk to "Du har ikkje hatt pensjonsgivande inntekt i ".expr() + periode.format() + ".",
-                    English to "You have not had any pensionable income in ".expr() + periode.format() + ".",
+                text(
+                    Bokmal to "Du har ikke hatt pensjonsgivende inntekt.",
+                    Nynorsk to "Du har ikkje hatt pensjonsgivande inntekt.",
+                    English to "You have not had any pensionable income."
                 )
             }
         }
