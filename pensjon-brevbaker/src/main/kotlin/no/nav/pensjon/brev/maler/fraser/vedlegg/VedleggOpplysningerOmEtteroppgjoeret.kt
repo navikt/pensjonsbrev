@@ -228,6 +228,45 @@ data class OmBeregningAvBarnetillegg(
             )
         }
         paragraph {
+            val skulleFaatt =
+                barnetillegg.saerkull.resultat_safe.skulleFaatt_safe.ifNull(Kroner(0)) + barnetillegg.felles.resultat_safe.skulleFaatt_safe.ifNull(
+                    Kroner(0)
+                )
+            textExpr(
+                Bokmal to "Ved beregning av barnetillegg har vi først oppdatert hvor mye du skulle hatt i uføretrygd. ".expr() +
+                        "Etter denne beregningen er gjort, blir ditt barnetillegg " + skulleFaatt.format() + " kroner for " + periode.format() + ".",
+                Nynorsk to "Når vi reknar ut barnetillegg, byrjar vi med å oppdatere kor mykje du skulle hatt i uføretrygd. ".expr() +
+                        "Etter denne utrekninga, blir barnetillegget ditt " + skulleFaatt.format() + " kroner for " + periode.format() + ".",
+                English to "In calculating the child supplement, we first updated the amount you should have received in disability benefit. ".expr() +
+                        "After this calculation, your child supplement is NOK " + skulleFaatt.format() + " for " + periode.format() + ".",
+            )
+        }
+        paragraph {
+            text(
+                Bokmal to "Beregningene er gjort hver for seg hvis:",
+                Nynorsk to "Utrekningane er gjort kvar for seg viss:",
+                English to "The calculations are done separately for each child if:"
+            )
+        }
+        paragraph {
+            list {
+                item {
+                    text(
+                        Bokmal to "du har flere barn som har ulike bosituasjoner.",
+                        Nynorsk to "du har fleire barn som har ulike busituasjoner.",
+                        English to "you have multiple children with different living arrangements."
+                    )
+                }
+                item {
+                    text(
+                        Bokmal to "barnet bor med begge foreldre i deler av året, og en av foreldrene resten av året.",
+                        Nynorsk to "barnet bur med begge foreldra delar av året, og en av foreldra resten av året.",
+                        English to "the child lives with both parents for part of the year and with one of the parents for the remainder of the year."
+                    )
+                }
+            }
+        }
+        paragraph {
             text(
                 Bokmal to "Det er personinntekt som avgjør hvor mye du får i barnetillegg. Dette står i §12-2 i skatteloven. Personinntekter omfatter:",
                 Nynorsk to "Det er personinntekta som avgjer kor mykje du får i barnetillegg. Dette står i §12-2 i skattelova. Personinntekter omfattar:",
@@ -390,21 +429,6 @@ data class OmBeregningAvBarnetillegg(
             }
         }
 
-
-        paragraph {
-            val skulleFaatt =
-                barnetillegg.saerkull.resultat_safe.skulleFaatt_safe.ifNull(Kroner(0)) + barnetillegg.felles.resultat_safe.skulleFaatt_safe.ifNull(
-                    Kroner(0)
-                )
-            textExpr(
-                Bokmal to "Ved beregning av barnetillegg har vi først oppdatert hvor mye du skulle hatt i uføretrygd. ".expr() +
-                        "Etter denne beregningen er gjort, blir ditt barnetillegg " + skulleFaatt.format() + " kroner for " + periode.format() + ".",
-                Nynorsk to "Når vi reknar ut barnetillegg, byrjar vi med å oppdatere kor mykje du skulle hatt i uføretrygd. ".expr() +
-                        "Etter denne utrekninga, blir barnetillegget ditt " + skulleFaatt.format() + " kroner for " + periode.format() + ".",
-                English to "In calculating the child supplement, we first updated the amount you should have received in disability benefit. ".expr() +
-                        "After this calculation, your child supplement is NOK " + skulleFaatt.format() + " for " + periode.format() + ".",
-            )
-        }
         showIf(barnetillegg.totaltResultat.avvik.notEqualTo(Kroner(0))) {
             paragraph {
                 textExpr(
@@ -433,32 +457,6 @@ data class OmBeregningAvBarnetillegg(
                     English to "Your child supplement has been correctly calculated in relation to your income in ".expr()
                             + periode.format() + ", and totalled NOK " + barnetillegg.totaltResultat.fikk.format() + "."
                 )
-            }
-        }
-
-        title2 {
-            text(
-                Bokmal to "Beregningene er gjort hver for seg hvis:",
-                Nynorsk to "Utrekningane er gjort kvar for seg viss:",
-                English to "The calculations are done separately for each child if:"
-            )
-        }
-        paragraph {
-            list {
-                item {
-                    text(
-                        Bokmal to "du har flere barn som har ulike bosituasjoner.",
-                        Nynorsk to "du har fleire barn som har ulike busituasjoner.",
-                        English to "you have multiple children with different living arrangements."
-                    )
-                }
-                item {
-                    text(
-                        Bokmal to "barnet bor med begge foreldre i deler av året, og en av foreldrene resten av året.",
-                        Nynorsk to "barnet bur med begge foreldra delar av året, og en av foreldra resten av året.",
-                        English to "the child lives with both parents for part of the year and with one of the parents for the remainder of the year."
-                    )
-                }
             }
         }
 
