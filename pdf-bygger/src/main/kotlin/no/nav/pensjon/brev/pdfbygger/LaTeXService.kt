@@ -1,32 +1,35 @@
 package no.nav.pensjon.brev.pdfbygger
 
-import org.slf4j.Logger
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.sync.Semaphore
+import kotlinx.coroutines.sync.withPermit
+import kotlinx.coroutines.withContext
+import kotlinx.coroutines.withTimeoutOrNull
+import org.slf4j.LoggerFactory
 import java.io.File
+import java.io.IOException
 import java.nio.file.Path
 import java.util.*
-import java.util.concurrent.TimeUnit
-import kotlin.Long
-import kotlin.String
-import kotlin.Throwable
-import kotlin.apply
-import kotlin.getOrElse
 import kotlin.io.path.createTempDirectory
-import kotlin.let
-import kotlin.runCatching
 import kotlin.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 
 private const val COMPILATION_RUNS = 2
 
 class LaTeXService(
-    private val logger: Logger,
-    private val latexCommand: String = "xelatex --interaction=nonstopmode -halt-on-error",
+    latexCommand: String,
+    latexParallelism: Int,
     private val timeout: Duration = 60.seconds,
 ) {
+    private val logger = LoggerFactory.getLogger(this::class.java)
     private val decoder = Base64.getDecoder()
     private val encoder = Base64.getEncoder()
+    private val latexCommand = latexCommand.split(" ").filter { it.isNotBlank() } + "letter.tex"
+    private val parallelismSemaphore = latexParallelism.takeIf { it > 0 }?.let { Semaphore(it) }
 
-    fun producePDF(latexFiles: Map<String, String>): PDFCompilationResponse {
+    suspend fun producePDF(latexFiles: Map<String, String>): PDFCompilationResponse {
         val tmpDir = createTempDirectory()
 
         latexFiles.forEach {
@@ -37,13 +40,17 @@ class LaTeXService(
         }
 
         return try {
-            createLetter(tmpDir)
+            withTimeoutOrNull(timeout) {
+                parallelismSemaphore?.withPermit {
+                    createLetter(tmpDir)
+                } ?: createLetter(tmpDir)
+            } ?: PDFCompilationResponse.Failure.Timeout(reason = "Compilation timed out - spent more than: $timeout")
         } finally {
             tmpDir.toFile().deleteRecursively()
         }
     }
 
-    private fun createLetter(executionFolder: Path): PDFCompilationResponse =
+    private suspend fun createLetter(executionFolder: Path): PDFCompilationResponse =
         when (val result: Execution = compile(executionFolder)) {
             is Execution.Success ->
                 result.pdf.toFile().readBytes()
@@ -57,14 +64,11 @@ class LaTeXService(
                 logger.error("latexCommand failed", result.cause)
                 PDFCompilationResponse.Failure.Server(reason = "Compilation process execution failed: $latexCommand")
             }
-
-            is Execution.Failure.Timeout ->
-                PDFCompilationResponse.Failure.Timeout(reason = "Compilation timed out - spent more than: ${result.timeout} ${result.unit}")
-
         }
 
-    private fun compile(executionFolder: Path): Execution {
+    private suspend fun compile(executionFolder: Path): Execution {
         var result: Execution = executeCompileProcess(executionFolder)
+
         repeat(COMPILATION_RUNS - 1) {
             if (result is Execution.Success) {
                 result = executeCompileProcess(executionFolder)
@@ -75,35 +79,42 @@ class LaTeXService(
         return result
     }
 
-    private fun executeCompileProcess(
+    private suspend fun executeCompileProcess(
         workingDir: Path,
         texFilename: String = "letter",
         output: Path = workingDir.resolve("process.out"),
         error: Path = workingDir.resolve("process.err"),
-    ): Execution =
-        runCatching {
-            ProcessBuilder(*("$latexCommand $texFilename.tex").split(" ").toTypedArray())
-                .directory(workingDir.toFile())
-                .redirectOutput(ProcessBuilder.Redirect.appendTo(output.toFile()))
-                .redirectError(ProcessBuilder.Redirect.appendTo(error.toFile()))
-                .start()
-                .let {
-                    if (!it.waitFor(timeout.inWholeMilliseconds, TimeUnit.MILLISECONDS)) {
-                        it.destroy()
-                        Execution.Failure.Timeout(timeout.inWholeMilliseconds, TimeUnit.MILLISECONDS)
-                    } else if (it.exitValue() == 0) {
-                        Execution.Success(pdf = workingDir.resolve("${File(texFilename).nameWithoutExtension}.pdf"))
-                    } else {
-                        Execution.Failure.Compilation(output = output.toFile().readText(), error = error.toFile().readText())
-                    }
+    ): Execution {
+        return withContext(Dispatchers.IO) {
+            var process: Process? = null
+            try {
+                process = ProcessBuilder(latexCommand)
+                    .directory(workingDir.toFile())
+                    .redirectOutput(ProcessBuilder.Redirect.appendTo(output.toFile()))
+                    .redirectError(ProcessBuilder.Redirect.appendTo(error.toFile()))
+                    .start()
+
+                while (process.isAlive) {
+                    delay(50.milliseconds)
                 }
-        }.getOrElse { Execution.Failure.Execution(it) }
+
+                if (process.exitValue() == 0) {
+                    Execution.Success(pdf = workingDir.resolve("${File(texFilename).nameWithoutExtension}.pdf"))
+                } else {
+                    Execution.Failure.Compilation(output = output.toFile().readText(), error = error.toFile().readText())
+                }
+            } catch (e: IOException) {
+                Execution.Failure.Execution(e)
+            } finally {
+                process?.destroyForcibly()
+            }
+        }
+    }
 }
 
 private sealed class Execution {
     data class Success(val pdf: Path) : Execution()
     sealed class Failure : Execution() {
-        data class Timeout(val timeout: Long, val unit: TimeUnit) : Failure()
         data class Compilation(val output: String, val error: String) : Failure()
         data class Execution(val cause: Throwable) : Failure()
     }

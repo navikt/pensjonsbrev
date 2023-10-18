@@ -15,19 +15,28 @@ import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.micrometer.core.instrument.Clock
-import io.micrometer.prometheus.*
+import io.micrometer.prometheus.PrometheusConfig
+import io.micrometer.prometheus.PrometheusMeterRegistry
 import io.prometheus.client.CollectorRegistry
-import kotlinx.coroutines.withTimeout
 import kotlin.time.Duration.Companion.seconds
 
 
 fun main(args: Array<String>) = EngineMain.main(args)
 
+private val prometheusMeterRegistry = PrometheusMeterRegistry(PrometheusConfig.DEFAULT, CollectorRegistry.defaultRegistry, Clock.SYSTEM)
+
+private fun Application.getProperty(name: String): String? =
+    environment.config.propertyOrNull(name)?.getString()
+
 @Suppress("unused")
 fun Application.module() {
     val parallelism = Runtime.getRuntime().availableProcessors()
     val activityCounter = ActiveCounter()
-    val laTeXService = LaTeXService(log, timeout = 300.seconds)
+    val laTeXService = LaTeXService(
+        timeout = getProperty("pdfBygger.compileTimeoutSeconds")?.toLong()?.seconds ?: 300.seconds,
+        latexParallelism = getProperty("pdfBygger.latexParallelism")?.toInt() ?: parallelism,
+        latexCommand = getProperty("pdfBygger.latexCommand") ?: "xelatex --interaction=nonstopmode -halt-on-error"
+    )
 
     log.info("Available processors: $parallelism")
     environment.monitor.subscribe(ApplicationStopPreparing) {
@@ -54,7 +63,6 @@ fun Application.module() {
         }
     }
 
-    val prometheusMeterRegistry = PrometheusMeterRegistry(PrometheusConfig.DEFAULT, CollectorRegistry.defaultRegistry, Clock.SYSTEM)
     install(MicrometerMetrics) {
         registry = prometheusMeterRegistry
     }
@@ -86,9 +94,7 @@ fun Application.module() {
 
             val input = call.receive<PdfCompilationInput>()
             val result = activityCounter.count {
-                withTimeout(300.seconds) {
-                    laTeXService.producePDF(input.files)
-                }
+                laTeXService.producePDF(input.files)
             }
 
             when (result) {
@@ -130,5 +136,4 @@ fun Application.module() {
         }
     }
 }
-
 
