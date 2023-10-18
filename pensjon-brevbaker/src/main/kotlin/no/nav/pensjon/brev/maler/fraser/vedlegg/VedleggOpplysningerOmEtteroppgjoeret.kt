@@ -194,39 +194,18 @@ data class FikkSkulleFaattTabell(
 data class DuHarFaattAvviksBeloep(
     val totaltAvvik: Expression<Kroner>,
     val harFaattForMye: Expression<Boolean>,
-    val harBarnetillegg: Expression<Boolean>,
-    val harGjenlevendeTillegg: Expression<Boolean>,
     val periode: Expression<Year>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         paragraph {
             textExpr(
-                Bokmal to "Du har fått ".expr() + totaltAvvik.absoluteValue().format() + " kroner for " +
-                        ifElse(harFaattForMye, "mye", "lite") + " i uføretrygd",
-                Nynorsk to "Du har fått ".expr() + totaltAvvik.absoluteValue().format() + " kroner for " +
-                        ifElse(harFaattForMye, "mykje", "lite") + " i uføretrygd",
-                English to "You have received NOK ".expr() + totaltAvvik.absoluteValue().format() + " too " +
-                        ifElse(harFaattForMye, "much", "little") + " in disability benefit",
+                Bokmal to "Totalt fikk du utbetalt ".expr() + totaltAvvik.absoluteValue().format() + " kroner for " +
+                        ifElse(harFaattForMye, "mye", "lite") + "",
+                Nynorsk to "Totalt fekk du utbetalt ".expr() + totaltAvvik.absoluteValue().format() + " kroner for " +
+                        ifElse(harFaattForMye, "mykje", "lite") + "",
+                English to "In total, you have received NOK ".expr() + totaltAvvik.absoluteValue().format() + " too " +
+                        ifElse(harFaattForMye, "much", "little") + "",
             )
-            showIf(harBarnetillegg and harGjenlevendeTillegg) {
-                text(
-                    Bokmal to ", barnetillegg og gjenlevendetillegg",
-                    Nynorsk to ", barnetillegg og attlevandetillegg",
-                    English to ", child supplement and survivor supplement",
-                )
-            }.orShowIf(harBarnetillegg) {
-                text(
-                    Bokmal to " og barnetillegg",
-                    Nynorsk to " og barnetillegg",
-                    English to " and child supplement",
-                )
-            }.orShowIf(harGjenlevendeTillegg) {
-                text(
-                    Bokmal to " og gjenlevendetillegg",
-                    Nynorsk to " og attlevandetillegg",
-                    English to " and survivor supplement"
-                )
-            }
             textExpr(
                 Bokmal to " i ".expr() + periode.format() + ".",
                 Nynorsk to " i ".expr() + periode.format() + ".",
