@@ -21,7 +21,7 @@ private const val COMPILATION_RUNS = 2
 class LaTeXService(
     latexCommand: String,
     latexParallelism: Int,
-    private val timeout: Duration = 60.seconds,
+    private val timeout: Duration,
 ) {
     private val logger = LoggerFactory.getLogger(this::class.java)
     private val decoder = Base64.getDecoder()

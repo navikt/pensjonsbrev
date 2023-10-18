@@ -95,7 +95,7 @@ class LatexServiceTest {
 
     @Test
     fun `producePDF fails when command does not exist`() {
-        val service = LaTeXService(latexCommand = "_non_existing.sh", latexParallelism = 1)
+        val service = LaTeXService(latexCommand = "_non_existing.sh", latexParallelism = 1, timeout = 60.seconds)
         runBlocking {
             assertResult<Failure.Server>(service.producePDF(emptyMap())) {
                 assertThat(it.reason, containsSubstring("Compilation process execution failed"))
@@ -105,7 +105,7 @@ class LatexServiceTest {
 
     @Test
     fun `producePDF trims extra spaces in command`() {
-        val service = LaTeXService(latexCommand = "/usr/bin/env bash ${getScriptPath("simpleCompile.sh")}" + " ", latexParallelism = 1)
+        val service = LaTeXService(latexCommand = "/usr/bin/env bash ${getScriptPath("simpleCompile.sh")}" + " ", latexParallelism = 1, timeout = 60.seconds)
         runBlocking {
             assertResult<Base64PDF>(service.producePDF(emptyMap()))
         }

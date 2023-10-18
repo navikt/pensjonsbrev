@@ -14,6 +14,7 @@ import io.ktor.server.request.*
 import io.ktor.server.response.*
 import no.nav.pensjon.brev.Metrics.configureMetrics
 import no.nav.pensjon.brev.api.ParseLetterDataException
+import no.nav.pensjon.brev.latex.LaTeXCompilerService
 import no.nav.pensjon.brev.latex.LatexCompileException
 import no.nav.pensjon.brev.latex.LatexInvalidException
 import no.nav.pensjon.brev.latex.LatexTimeoutException
@@ -92,6 +93,11 @@ fun Application.module() {
         }
     }
 
+    val latexCompilerService = LaTeXCompilerService(
+        pdfByggerUrl = environment.config.property("brevbaker.pdfByggerUrl").getString(),
+        maxRetries = environment.config.propertyOrNull("brevbaker.pdfByggerMaxRetries")?.getString()?.toInt() ?: 30,
+    )
+
     configureMetrics()
-    brevbakerRouting(jwtConfigs.map { it.name }.toTypedArray())
+    brevbakerRouting(jwtConfigs.map { it.name }.toTypedArray(), latexCompilerService)
 }

@@ -56,7 +56,7 @@ jobs:
         id: docker-push
         with:
           team: pensjonsbrev
-          tag: brevbaker
+          image_suffix: brevbaker
           push_image: true
           pull: true
           docker_context: ./pensjon-brevbaker
@@ -97,7 +97,7 @@ jobs:
         id: docker-push
         with:
           team: pensjonsbrev
-          tag: pdf-bygger
+          image_suffix: pdf-bygger
           push_image: true
           pull: true
           docker_context: ./pdf-bygger

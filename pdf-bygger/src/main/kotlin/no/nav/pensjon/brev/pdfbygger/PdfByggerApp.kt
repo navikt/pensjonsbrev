@@ -30,15 +30,15 @@ private fun Application.getProperty(name: String): String? =
 
 @Suppress("unused")
 fun Application.module() {
-    val parallelism = Runtime.getRuntime().availableProcessors()
+    val parallelism = getProperty("pdfBygger.latexParallelism")?.toInt() ?: Runtime.getRuntime().availableProcessors()
     val activityCounter = ActiveCounter()
     val laTeXService = LaTeXService(
         timeout = getProperty("pdfBygger.compileTimeoutSeconds")?.toLong()?.seconds ?: 300.seconds,
-        latexParallelism = getProperty("pdfBygger.latexParallelism")?.toInt() ?: parallelism,
+        latexParallelism = parallelism,
         latexCommand = getProperty("pdfBygger.latexCommand") ?: "xelatex --interaction=nonstopmode -halt-on-error"
     )
 
-    log.info("Available processors: $parallelism")
+    log.info("Target parallelism : $parallelism")
     environment.monitor.subscribe(ApplicationStopPreparing) {
         it.log.info("Application preparing to shutdown gracefully")
     }
