@@ -685,6 +685,24 @@ data class OmBeregningAvUfoeretrygd(
                 ) + " calculation",
             )
         }
+
+        paragraph {
+            val inntektFoerFratrekk = pensjonsgivendeInntekt.inntekt.sum.format()
+            textExpr(
+                Bokmal to "I ".expr() + periode.format() + " var den pensjonsgivende inntekten din " + inntektFoerFratrekk + " kroner.",
+                Nynorsk to "I ".expr() + periode.format() + " var den pensjonsgivande inntekta di " + inntektFoerFratrekk + " kroner.",
+                English to "In ".expr() + periode.format() + ", your pensionable income was NOK " + inntektFoerFratrekk + ".",
+            )
+            showIf(pensjonsgivendeInntekt.fratrekk.fratrekk.isNotEmpty()) {
+                val inntektEtterFratrekk = pensjonsgivendeInntektBruktIBeregningen.format()
+                textExpr(
+                    Bokmal to " Etter fratrekk, viser beregningen vår at du hadde ".expr() + inntektEtterFratrekk + " kroner i pensjonsgivende inntekt.",
+                    Nynorsk to " Etter fråtrekk, viser berekninga vår at du hadde ".expr() + inntektEtterFratrekk + " kroner i pensjonsgjevande inntekt.",
+                    English to " After deductions, our calculation shows that you had a pensionable income of NOK ".expr() + inntektEtterFratrekk + ".",
+                )
+            }
+        }
+
         paragraph {
             textExpr(
                 Bokmal to "Det er pensjonsgivende inntekt som avgjør hvor mye du får i uføretrygd".expr()
@@ -736,13 +754,6 @@ data class OmBeregningAvUfoeretrygd(
                     )
                 }
             }
-
-            val inntektFoerFratrekk = pensjonsgivendeInntekt.inntekt.sum.format()
-            textExpr(
-                Bokmal to "I ".expr() + periode.format() + " var den pensjonsgivende inntekten din " + inntektFoerFratrekk + " kroner.",
-                Nynorsk to "I ".expr() + periode.format() + " var den pensjonsgivande inntekta di" + inntektFoerFratrekk + " kroner.",
-                English to "In ".expr() + periode.format() + ", your pensionable income was NOK " + inntektFoerFratrekk + ".",
-            )
         }
 
         paragraph {
@@ -788,13 +799,6 @@ data class OmBeregningAvUfoeretrygd(
                     )
                 }
             }
-
-            val inntektEtterFratrekk = pensjonsgivendeInntektBruktIBeregningen.format()
-            textExpr(
-                Bokmal to "Beregningen vår viser at du har ".expr() + inntektEtterFratrekk + " kroner i pensjonsgivende inntekt.",
-                Nynorsk to "Utrekninga vår viser at du har ".expr() + inntektEtterFratrekk + " kroner i pensjonsgivande inntekt.",
-                English to "Our calculation shows your pensionable income is NOK ".expr() + inntektEtterFratrekk + ".",
-            )
         }
 
         showIf(ufoeretrygd.avvik.notEqualTo(Kroner(0))) {
