@@ -1,5 +1,5 @@
 import {describe, expect, test} from "vitest"
-import {Content, LITERAL, PARAGRAPH, TextContent} from "../../../../src/lib/model/api"
+import {Content, LITERAL, PARAGRAPH, TextContent} from "../../../../src/lib/model/skribenten"
 import {letter, select} from "../utils"
 import Actions from "../../../../src/modules/LetterEditor/actions"
 
