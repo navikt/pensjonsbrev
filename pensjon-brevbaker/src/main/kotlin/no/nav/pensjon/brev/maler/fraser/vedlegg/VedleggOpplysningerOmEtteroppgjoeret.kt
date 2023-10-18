@@ -800,60 +800,40 @@ data class OmBeregningAvUfoeretrygd(
                 }
             }
         }
-
-        showIf(ufoeretrygd.avvik.notEqualTo(Kroner(0))) {
+        showIf(pensjonsgivendeInntekt.inntekt.inntekter.isNotEmpty() and pensjonsgivendeInntekt.fratrekk.fratrekk.isNotEmpty()) {
             paragraph {
-                val avvikAbsolutt = ufoeretrygd.avvik.absoluteValue().format()
                 textExpr(
-                    Bokmal to "Du skulle ha fått ".expr() + ufoeretrygd.skulleFaatt.format() + " kroner i uføretrygd".expr()
-                            + ifElse(harGjenlevendeTillegg, " og gjenlevendetillegg", "") + " i " + periode.format()
-                            + ". Du fikk imidlertid " + ufoeretrygd.fikk.format() + " kroner. Du har derfor fått " + avvikAbsolutt
-                            + " kroner for " + ifElse(ufoeretrygd.harFaattForMye, "mye", "lite") + " i uføretrygd".expr()
-                            + ifElse(harGjenlevendeTillegg, " og gjenlevendetillegg", "") + ".",
-                    Nynorsk to "Du skulle ha fått ".expr() + ufoeretrygd.skulleFaatt.format() + " kroner i uføretrygd".expr()
-                            + ifElse(harGjenlevendeTillegg, " og gjenlevendetillegg", "") + " i " + periode.format()
-                            + ". Du fekk derimot " + ufoeretrygd.fikk.format() + " kroner. Du har derfor fått " + avvikAbsolutt
-                            + " kroner for " + ifElse(ufoeretrygd.harFaattForMye, "mykje", "lite") + " i uføretrygd".expr()
-                            + ifElse(harGjenlevendeTillegg, " og gjenlevendetillegg", "") + ".",
-                    English to "You were supposed to receive NOK ".expr() + ufoeretrygd.skulleFaatt.format() + " in disability benefit".expr()
-                            + ifElse(harGjenlevendeTillegg, " and survivor's supplement", "") + " for " + periode.format()
-                            + ". However, you received NOK ".expr() + ufoeretrygd.fikk.format() + ". Therefore, you have received NOK " + avvikAbsolutt
-                            + " too " + ifElse(ufoeretrygd.harFaattForMye, "much", "little") + " in disability benefit".expr()
-                            + ifElse(harGjenlevendeTillegg, " and survivor's supplement", "") + ".",
+                    Bokmal to "Tabellene under viser inntektene du har hatt i ".expr() + periode.format()
+                            + ". Det er disse inntektene vi har brukt for å beregne uføretrygden din"
+                            + ifElse(harGjenlevendeTillegg, " og gjenlevendetillegget ditt.", "."),
+
+                    Nynorsk to "Tabellane under viser inntektene du har hatt i løpet av ".expr() + periode.format()
+                            + ". Det er desse inntektene vi har nytta for å berekne uføretrygda di"
+                            + ifElse(harGjenlevendeTillegg, " og attlevandetillegget ditt.", "."),
+
+                    English to "The tables below show the pensionable incomes you had in ".expr() + periode.format()
+                            + ". These incomes were used to calculate your disability benefit"
+                            + ifElse(harGjenlevendeTillegg, " and survivor's supplement.", "."),
                 )
             }
         }
 
-        showIf(ufoeretrygd.avvik.equalTo(Kroner(0))) {
+        showIf(pensjonsgivendeInntekt.inntekt.inntekter.isNotEmpty() and pensjonsgivendeInntekt.fratrekk.fratrekk.isEmpty()) {
             paragraph {
                 textExpr(
-                    Bokmal to "Uføretrygden din".expr()
-                            + ifElse(harGjenlevendeTillegg, " og gjenlevendetillegg", "") + " har vært riktig beregnet ut fra inntekt i "
-                            + periode.format() + ", og utgjorde ".expr() + ufoeretrygd.fikk.format() + " kroner.",
-                    Nynorsk to "Uføretrygda di".expr()
-                            + ifElse(harGjenlevendeTillegg, " og gjenlevendetillegg", "") + " har vært riktig berekna ut frå inntekt i "
-                            + periode.format() + ", og utgjorde ".expr() + ufoeretrygd.fikk.format() + " kroner.",
-                    English to "Your disability benefit".expr()
-                            + ifElse(harGjenlevendeTillegg, " and survivor's supplement", "") + " has been correctly calculated in relation to your income in "
-                            + periode.format() + ", and totalled NOK ".expr() + ufoeretrygd.fikk.format() + "."
+                    Bokmal to "Tabellen under viser inntektene du har hatt i ".expr() + periode.format()
+                            + ". Det er disse inntektene vi har brukt for å beregne uføretrygden din"
+                            + ifElse(harGjenlevendeTillegg, " og gjenlevendetillegget ditt.", "."),
+
+                    Nynorsk to "Tabellan under viser inntektene du har hatt i løpet av ".expr() + periode.format()
+                            + ". Det er desse inntektene vi har nytta for å berekne uføretrygda di"
+                            + ifElse(harGjenlevendeTillegg, " og attlevandetillegget ditt.", "."),
+
+                    English to "The table below show the pensionable incomes you had in ".expr() + periode.format()
+                            + ". These incomes were used to calculate your disability benefit"
+                            + ifElse(harGjenlevendeTillegg, " and survivor's supplement.", "."),
                 )
             }
-        }
-
-        paragraph {
-            textExpr(
-                Bokmal to "Tabellene under viser inntektene du har hatt i ".expr() + periode.format()
-                        + ". Det er disse inntektene vi har brukt for å beregne uføretrygden din"
-                        + ifElse(harGjenlevendeTillegg, " og gjenlevendetillegget ditt.", "."),
-
-                Nynorsk to "Tabellane under viser inntektene du har hatt i løpet av ".expr() + periode.format()
-                        + ". Det er desse inntektene vi har nytta for å berekne uføretrygda di"
-                        + ifElse(harGjenlevendeTillegg, " og attlevandetillegget ditt.", "."),
-
-                English to "The tables below show the pensionable incomes you had in ".expr() + periode.format()
-                        + ". These incomes were used to calculate your disability benefit"
-                        + ifElse(harGjenlevendeTillegg, " and survivor's supplement.", "."),
-            )
         }
 
         title1 {
