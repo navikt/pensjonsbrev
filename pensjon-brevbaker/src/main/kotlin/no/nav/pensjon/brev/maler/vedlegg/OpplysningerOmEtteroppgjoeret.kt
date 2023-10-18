@@ -32,7 +32,7 @@ val vedleggOpplysningerOmEtteroppgjoeret = createAttachment<LangBokmalNynorskEng
     includePhrase(DuHarFaattAvviksBeloep(totaltAvvik, harFaattForMye, periode))
     includePhrase(OmBeregningAvUfoeretrygd(harGjenlevendeTillegg, pensjonsgivendeInntekt, periode, pensjonsgivendeInntektBruktIBeregningen, ufoeretrygd))
     ifNotNull(barnetillegg) {
-        includePhrase(OmBeregningAvBarnetillegg(it, periode))
+        includePhrase(OmBeregningAvBarnetillegg(it, periode, pensjonsgivendeInntekt))
     }
     includePhrase(ErOpplysningeneOmInntektFeil(barnetillegg.felles_safe.notNull()))
 }

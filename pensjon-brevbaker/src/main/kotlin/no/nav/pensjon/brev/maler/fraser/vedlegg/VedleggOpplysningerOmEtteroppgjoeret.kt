@@ -3,7 +3,6 @@ package no.nav.pensjon.brev.maler.fraser.vedlegg
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDto
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSelectors.AvviksResultatSelectors.avvik
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSelectors.AvviksResultatSelectors.fikk
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSelectors.AvviksResultatSelectors.harFaattForMye
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSelectors.AvviksResultatSelectors.skulleFaatt
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSelectors.AvviksResultatSelectors.skulleFaatt_safe
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSelectors.BarnetilleggSelectors.FellesbarnSelectors.fribeloep
@@ -26,7 +25,6 @@ import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSel
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSelectors.BarnetilleggSelectors.personinntekt
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSelectors.BarnetilleggSelectors.saerkull
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSelectors.BarnetilleggSelectors.saerkull_safe
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSelectors.BarnetilleggSelectors.totaltResultat
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSelectors.InntektOgFratrekkSelectors.FratrekkSelectors.FratrekkLinjeSelectors.aarsak
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSelectors.InntektOgFratrekkSelectors.FratrekkSelectors.FratrekkLinjeSelectors.beloep
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSelectors.InntektOgFratrekkSelectors.FratrekkSelectors.FratrekkLinjeSelectors.type
@@ -218,6 +216,7 @@ data class DuHarFaattAvviksBeloep(
 data class OmBeregningAvBarnetillegg(
     val barnetillegg: Expression<OpplysningerOmEtteroppgjoeretDto.Barnetillegg>,
     val periode: Expression<Year>,
+    val pensjonsgivendeInntekt: Expression<OpplysningerOmEtteroppgjoeretDto.InntektOgFratrekk>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         title1 {
@@ -429,60 +428,30 @@ data class OmBeregningAvBarnetillegg(
             }
         }
 
-        showIf(barnetillegg.totaltResultat.avvik.notEqualTo(Kroner(0))) {
-            paragraph {
-                textExpr(
-                    Bokmal to "Du har fått utbetalt ".expr() + barnetillegg.totaltResultat.fikk.format() + " kroner i barnetillegg. Du har fått " +
-                            barnetillegg.totaltResultat.avvik.absoluteValue().format() + " kroner for " +
-                            ifElse(barnetillegg.totaltResultat.harFaattForMye, "mye", "lite") + " i barnetillegg.",
-
-                    Nynorsk to "Du har fått utbetalt ".expr() + barnetillegg.totaltResultat.fikk.format() + " kroner i barnetillegg. Du har fått " +
-                            barnetillegg.totaltResultat.avvik.absoluteValue().format() + " kroner for " +
-                            ifElse(barnetillegg.totaltResultat.harFaattForMye, "mykje", "lite") + " i barnetillegg.",
-                    English to "You have received NOK ".expr() + barnetillegg.totaltResultat.fikk.format() + " in child supplement. You have been " +
-
-                            ifElse(barnetillegg.totaltResultat.harFaattForMye, "overpaid", "underpaid") + " NOK " +
-                            barnetillegg.totaltResultat.avvik.format() + " in child supplement.",
-                )
-            }
-        }
-
-        showIf(barnetillegg.totaltResultat.avvik.equalTo(Kroner(0))) {
-            paragraph {
-                textExpr(
-                    Bokmal to "Barnetillegget ditt har vært riktig beregnet ut fra inntekt i ".expr()
-                            + periode.format() + ", og utgjorde totalt " + barnetillegg.totaltResultat.fikk.format() + " kroner.",
-                    Nynorsk to "Barnetillegget ditt har vært riktig berekna ut frå inntekt i ".expr()
-                            + periode.format() + ", og utgjorde totalt " + barnetillegg.totaltResultat.fikk.format() + " koroner.",
-                    English to "Your child supplement has been correctly calculated in relation to your income in ".expr()
-                            + periode.format() + ", and totalled NOK " + barnetillegg.totaltResultat.fikk.format() + "."
-                )
-            }
-        }
-
         val harFellesTillegg = barnetillegg.felles.notNull()
-
-        paragraph {
-            textExpr(
-                Bokmal to "Tabellene under viser inntektene du".expr() + ifElse(
-                    harFellesTillegg,
-                    " og annen forelder",
-                    ""
-                ) +
-                        " har hatt i " + periode.format() + ". Det er disse inntektene vi har brukt for å beregne barnetillegget.",
-                Nynorsk to "Tabellene under viser inntektene du".expr() + ifElse(
-                    harFellesTillegg,
-                    " og anna forelder",
-                    ""
-                ) +
-                        " har hatt i " + periode.format() + ". Det er desse inntektene vi har brukt for å rekne ut barnetillegget.",
-                English to "The tables below show the personal incomes you".expr() + ifElse(
-                    harFellesTillegg,
-                    " and the other parent",
-                    ""
-                ) +
-                        " had in ".expr() + periode.format() + ". These incomes were used to calculate your child supplement.",
-            )
+        showIf(pensjonsgivendeInntekt.inntekt.inntekter.isNotEmpty()
+                and (pensjonsgivendeInntekt.fratrekk.fratrekk.isNotEmpty() or harFellesTillegg))  {
+            paragraph {
+                textExpr(
+                    Bokmal to "Tabellene under viser inntektene du".expr() + ifElse(
+                        harFellesTillegg, " og annen forelder", "")
+                            + " har hatt i " + periode.format() + ". Det er disse inntektene vi har brukt for å beregne barnetillegget.",
+                    Nynorsk to "Tabellene under viser inntektene du".expr() + ifElse(harFellesTillegg, " og anna forelder", ""
+                    ) + " har hatt i " + periode.format() + ". Det er desse inntektene vi har brukt for å rekne ut barnetillegget.",
+                    English to "The tables below show the personal incomes you".expr() + ifElse(harFellesTillegg, " and the other parent", ""
+                    ) + " had in ".expr() + periode.format() + ". These incomes were used to calculate your child supplement.",
+                )
+            }
+        }.orShow {
+            paragraph {
+                textExpr(
+                    Bokmal to "Tabellen under viser inntekten du har hatt i ".expr()
+                            + periode.format() + ". Det er denne inntekten vi har brukt for å beregne barnetillegget.",
+                    Nynorsk to "Tabellen under viser inntekten di har hatt i ".expr()
+                            + periode.format() + ". Det er denne inntekten vi har brukt for å rekne ut barnetillegget.",
+                    English to "The table below shows the personal income you had in ".expr() + periode.format() + ". This income was used to calculate your child supplement."
+                )
+            }
         }
 
         title2 {
