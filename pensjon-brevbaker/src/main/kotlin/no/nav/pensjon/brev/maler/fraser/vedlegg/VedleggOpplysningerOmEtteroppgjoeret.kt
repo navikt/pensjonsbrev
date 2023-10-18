@@ -445,11 +445,11 @@ data class OmBeregningAvBarnetillegg(
         }.orShow {
             paragraph {
                 textExpr(
-                    Bokmal to "Tabellen under viser inntekten du har hatt i ".expr()
-                            + periode.format() + ". Det er denne inntekten vi har brukt for å beregne barnetillegget.",
-                    Nynorsk to "Tabellen under viser inntekten di har hatt i ".expr()
-                            + periode.format() + ". Det er denne inntekten vi har brukt for å rekne ut barnetillegget.",
-                    English to "The table below shows the personal income you had in ".expr() + periode.format() + ". This income was used to calculate your child supplement."
+                    Bokmal to "Tabellen under viser inntektene du har hatt i ".expr()
+                            + periode.format() + ". Det er disse inntektene vi har brukt for å beregne barnetillegget.",
+                    Nynorsk to "Tabellen under viser inntektene du har hatt i ".expr()
+                            + periode.format() + ". Det er desse inntekten vi har brukt for å rekne ut barnetillegget.",
+                    English to "The table below shows the personal incomes you had in ".expr() + periode.format() + ". These incomes were used to calculate your child supplement."
                 )
             }
         }
@@ -774,7 +774,7 @@ data class OmBeregningAvUfoeretrygd(
                             + ". Det er disse inntektene vi har brukt for å beregne uføretrygden din"
                             + ifElse(harGjenlevendeTillegg, " og gjenlevendetillegget ditt.", "."),
 
-                    Nynorsk to "Tabellane under viser inntektene du har hatt i løpet av ".expr() + periode.format()
+                    Nynorsk to "Tabellene under viser inntektene du har hatt i løpet av ".expr() + periode.format()
                             + ". Det er desse inntektene vi har nytta for å berekne uføretrygda di"
                             + ifElse(harGjenlevendeTillegg, " og attlevandetillegget ditt.", "."),
 
@@ -783,16 +783,14 @@ data class OmBeregningAvUfoeretrygd(
                             + ifElse(harGjenlevendeTillegg, " and survivor's supplement.", "."),
                 )
             }
-        }
-
-        showIf(pensjonsgivendeInntekt.inntekt.inntekter.isNotEmpty() and pensjonsgivendeInntekt.fratrekk.fratrekk.isEmpty()) {
+        }.orShow {
             paragraph {
                 textExpr(
                     Bokmal to "Tabellen under viser inntektene du har hatt i ".expr() + periode.format()
                             + ". Det er disse inntektene vi har brukt for å beregne uføretrygden din"
                             + ifElse(harGjenlevendeTillegg, " og gjenlevendetillegget ditt.", "."),
 
-                    Nynorsk to "Tabellan under viser inntektene du har hatt i løpet av ".expr() + periode.format()
+                    Nynorsk to "Tabellen under viser inntektene du har hatt i løpet av ".expr() + periode.format()
                             + ". Det er desse inntektene vi har nytta for å berekne uføretrygda di"
                             + ifElse(harGjenlevendeTillegg, " og attlevandetillegget ditt.", "."),
 
