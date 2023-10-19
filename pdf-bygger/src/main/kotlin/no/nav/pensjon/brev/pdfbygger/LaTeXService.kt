@@ -30,56 +30,56 @@ class LaTeXService(
     private val parallelismSemaphore = latexParallelism.takeIf { it > 0 }?.let { Semaphore(it) }
 
     suspend fun producePDF(latexFiles: Map<String, String>): PDFCompilationResponse {
-        // TODO: Filskriving burde skje etter køen
-        val tmpDir = createTempDirectory()
-
-        latexFiles.forEach {
-            tmpDir.resolve(it.key).toFile().apply {
-                createNewFile()
-                writeBytes(decoder.decode(it.value))
+        return if (parallelismSemaphore != null) {
+            val permit = withTimeoutOrNull(queueWaitTimeout) {
+                parallelismSemaphore.acquire()
             }
-        }
-
-        return try {
-            if (parallelismSemaphore != null) {
-                val permit = withTimeoutOrNull(queueWaitTimeout) {
-                    parallelismSemaphore.acquire()
-                }
-                if (permit != null) {
-                    try {
-                        createLetter(tmpDir)
-                    } finally {
-                        parallelismSemaphore.release()
-                    }
-                } else {
-                    PDFCompilationResponse.Failure.ServiceUnavailable(reason = "Compilation queue wait timed out: waited for $queueWaitTimeout")
+            if (permit != null) {
+                try {
+                    createLetter(latexFiles)
+                } finally {
+                    parallelismSemaphore.release()
                 }
             } else {
-                createLetter(tmpDir)
+                PDFCompilationResponse.Failure.ServiceUnavailable(reason = "Compilation queue wait timed out: waited for $queueWaitTimeout")
+            }
+        } else {
+            createLetter(latexFiles)
+        }
+    }
+
+    private suspend fun createLetter(latexFiles: Map<String, String>): PDFCompilationResponse {
+        val tmpDir = createTempDirectory()
+
+        return try {
+            latexFiles.forEach {
+                tmpDir.resolve(it.key).toFile().apply {
+                    createNewFile()
+                    writeBytes(decoder.decode(it.value))
+                }
+            }
+
+            when (val result: Execution = compile(tmpDir)) {
+                is Execution.Success ->
+                    result.pdf.toFile().readBytes()
+                        .let { encoder.encodeToString(it) }
+                        .let { PDFCompilationResponse.Base64PDF(it) }
+
+                is Execution.Failure.Compilation ->
+                    PDFCompilationResponse.Failure.Client(reason = "PDF compilation failed", output = result.output, error = result.error)
+
+                is Execution.Failure.Execution -> {
+                    logger.error("latexCommand failed", result.cause)
+                    PDFCompilationResponse.Failure.Server(reason = "Compilation process execution failed: $latexCommand")
+                }
+
+                is Execution.Failure.Timeout ->
+                    PDFCompilationResponse.Failure.Timeout("Compilation timed out in ${result.timeout}: completed ${result.completedRuns} runs")
             }
         } finally {
             tmpDir.toFile().deleteRecursively()
         }
     }
-
-    private suspend fun createLetter(executionFolder: Path): PDFCompilationResponse =
-        when (val result: Execution = compile(executionFolder)) {
-            is Execution.Success ->
-                result.pdf.toFile().readBytes()
-                    .let { encoder.encodeToString(it) }
-                    .let { PDFCompilationResponse.Base64PDF(it) }
-
-            is Execution.Failure.Compilation ->
-                PDFCompilationResponse.Failure.Client(reason = "PDF compilation failed", output = result.output, error = result.error)
-
-            is Execution.Failure.Execution -> {
-                logger.error("latexCommand failed", result.cause)
-                PDFCompilationResponse.Failure.Server(reason = "Compilation process execution failed: $latexCommand")
-            }
-
-            is Execution.Failure.Timeout ->
-                PDFCompilationResponse.Failure.Timeout("Compilation timed out in ${result.timeout}: completed ${result.completedRuns} runs")
-        }
 
     private suspend fun compile(executionFolder: Path): Execution {
         var runs = 0

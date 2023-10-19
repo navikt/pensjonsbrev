@@ -70,7 +70,6 @@ fun Application.module() {
         registry = prometheusMeterRegistry
     }
 
-    // TODO: improve formatting
     install(CallLogging) {
         callIdMdc("x_correlationId")
         disableDefaultColors()
