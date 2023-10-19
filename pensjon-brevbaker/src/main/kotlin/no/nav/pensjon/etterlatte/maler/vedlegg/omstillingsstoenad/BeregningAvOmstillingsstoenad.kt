@@ -16,11 +16,8 @@ import no.nav.pensjon.etterlatte.maler.NyBeregningsperiodeSelectors.inntekt
 import no.nav.pensjon.etterlatte.maler.NyBeregningsperiodeSelectors.stoenadFoerReduksjon
 import no.nav.pensjon.etterlatte.maler.NyBeregningsperiodeSelectors.trygdetid
 import no.nav.pensjon.etterlatte.maler.NyBeregningsperiodeSelectors.utbetaltBeloep
-import no.nav.pensjon.etterlatte.maler.TrygdetidsperiodeSelectors.datoFOM
-import no.nav.pensjon.etterlatte.maler.TrygdetidsperiodeSelectors.datoTOM
-import no.nav.pensjon.etterlatte.maler.TrygdetidsperiodeSelectors.land
-import no.nav.pensjon.etterlatte.maler.TrygdetidsperiodeSelectors.opptjeningsperiode
 import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
+import no.nav.pensjon.etterlatte.maler.vedlegg.Trygdetidstabell
 
 @TemplateModelHelpers
 val beregningAvOmstillingsstoenad = createAttachment<LangBokmalNynorskEnglish, Beregningsinfo>(
@@ -134,45 +131,6 @@ val beregningAvOmstillingsstoenad = createAttachment<LangBokmalNynorskEnglish, B
             Nynorsk to "",
             English to "",
         )
-        table(
-            header = {
-                column(2) {
-                    text(Bokmal to "Periode",
-                        Nynorsk to "",
-                        English to "",
-                    )
-                }
-                column(1) {
-                    text(Bokmal to "Land",
-                        Nynorsk to "",
-                        English to "",
-                    )
-                }
-                column(2) {
-                    text(Bokmal to "Opptjeningsperiode",
-                        Nynorsk to "",
-                        English to "",
-                    )
-                }
-            }
-        ) {
-            forEach(trygdetidsperioder) {
-                row {
-                    cell { includePhrase(PeriodeITabell(it.datoFOM, it.datoTOM)) }
-                    cell { textExpr(
-                        Bokmal to it.land,
-                        Nynorsk to "".expr(),
-                        English to "".expr(),
-                    )
-                    }
-                    cell { textExpr(
-                        Bokmal to it.opptjeningsperiode,
-                        Nynorsk to "".expr(),
-                        English to "".expr(),
-                        )
-                    }
-                }
-            }
-        }
     }
+    includePhrase(Trygdetidstabell(trygdetidsperioder))
 }
