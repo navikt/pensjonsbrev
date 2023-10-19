@@ -12,9 +12,11 @@ import io.ktor.client.utils.*
 import io.ktor.http.*
 import io.ktor.serialization.jackson.*
 import io.ktor.utils.io.errors.*
+import kotlinx.coroutines.withTimeout
 import no.nav.pensjon.brev.template.jacksonObjectMapper
 import no.nav.pensjon.brev.template.render.RenderedLatexLetter
 import org.slf4j.LoggerFactory
+import kotlin.time.Duration.Companion.seconds
 
 data class PdfCompilationInput(val files: Map<String, String>)
 data class PDFCompilationOutput(val base64PDF: String)
@@ -91,18 +93,21 @@ class LaTeXCompilerService(private val pdfByggerUrl: String, maxRetries: Int = 3
         }
     }
 
+    // Ekstraher 300.seconds til en constant et sted, slik at den er mer synlig
     suspend fun producePDF(latexLetter: RenderedLatexLetter, callId: String?): PDFCompilationOutput =
-        httpClient.post("$pdfByggerUrl/compile") {
-            contentType(ContentType.Application.Json)
-            header("X-Request-ID", callId)
-            //TODO unresolved bug. There is a bug where simultanious requests will lock up the requests for this http client
-            // If the body is set using an object, it will use the content-negotiation strategy which also uses a jackson object-mapper
-            // for some unknown reason, this results in all requests being halted for around 5 minutes.
-            // To test if the bug is present, run 10 simultanious requests to brevbaker and see if it starts producing letters.
-            // The solution is to seemingly do the same, but with creating a objectmapper outside of content-negotiation instead of simply using the following line:
-            // setBody(PdfCompilationInput(latexLetter.base64EncodedFiles()))
-            // this needs further investigation
-            setBody(objectmapper.writeValueAsBytes(PdfCompilationInput(latexLetter.base64EncodedFiles())))
+        withTimeout(300.seconds) {
+            httpClient.post("$pdfByggerUrl/compile") {
+                contentType(ContentType.Application.Json)
+                header("X-Request-ID", callId)
+                //TODO unresolved bug. There is a bug where simultanious requests will lock up the requests for this http client
+                // If the body is set using an object, it will use the content-negotiation strategy which also uses a jackson object-mapper
+                // for some unknown reason, this results in all requests being halted for around 5 minutes.
+                // To test if the bug is present, run 10 simultanious requests to brevbaker and see if it starts producing letters.
+                // The solution is to seemingly do the same, but with creating a objectmapper outside of content-negotiation instead of simply using the following line:
+                // setBody(PdfCompilationInput(latexLetter.base64EncodedFiles()))
+                // this needs further investigation
+                setBody(objectmapper.writeValueAsBytes(PdfCompilationInput(latexLetter.base64EncodedFiles())))
+            }
         }.body()
 
     suspend fun ping(): Boolean = httpClient.get("$pdfByggerUrl/isAlive").status.isSuccess()
