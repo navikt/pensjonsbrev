@@ -16,6 +16,7 @@ import no.nav.pensjon.etterlatte.maler.Utbetalingsinfo
 import no.nav.pensjon.etterlatte.maler.UtbetalingsinfoSelectors.beloep
 import no.nav.pensjon.etterlatte.maler.UtbetalingsinfoSelectors.virkningsdato
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.ny.BarnepensjonInnvilgelseEnkelDTOSelectors.avdoed
+import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.ny.BarnepensjonInnvilgelseEnkelDTOSelectors.erEtterbetaling
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.ny.BarnepensjonInnvilgelseEnkelDTOSelectors.utbetalingsinfo
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.ny.BarnepensjonInnvilgelseEnkelDTOSelectors.vedtaksdato
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.innvilgelse.BarnepensjonInnvilgelseEnkelFraser
@@ -26,6 +27,7 @@ data class BarnepensjonInnvilgelseEnkelDTO(
     val utbetalingsinfo: Utbetalingsinfo,
     val avdoed: Avdoed,
     val vedtaksdato: LocalDate,
+    val erEtterbetaling: Boolean,
 )
 
 @TemplateModelHelpers
@@ -60,6 +62,7 @@ object BarnepensjonInnvilgelseEnkel : EtterlatteTemplate<BarnepensjonInnvilgelse
                     avdoed.doedsdato,
                     utbetalingsinfo.beloep,
                     vedtaksdato,
+                    erEtterbetaling,
                 ),
             )
         }
