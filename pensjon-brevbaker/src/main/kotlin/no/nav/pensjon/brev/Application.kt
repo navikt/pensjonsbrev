@@ -12,6 +12,7 @@ import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.plugins.statuspages.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
+import io.ktor.util.date.*
 import no.nav.pensjon.brev.Metrics.configureMetrics
 import no.nav.pensjon.brev.api.ParseLetterDataException
 import no.nav.pensjon.brev.latex.LaTeXCompilerService
@@ -39,6 +40,8 @@ fun Application.module() {
         filter {
             !ignorePaths.contains(it.request.path())
         }
+        mdc("status_code") { it.response.status()?.value?.toString() ?: "-" }
+        mdc("response_time") { "${it.processingTimeMillis(::getTimeMillis)}ms" }
     }
 
     install(StatusPages) {

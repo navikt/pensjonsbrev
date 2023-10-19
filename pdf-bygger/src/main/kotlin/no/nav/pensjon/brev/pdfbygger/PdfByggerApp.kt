@@ -14,6 +14,7 @@ import io.ktor.server.plugins.statuspages.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import io.ktor.util.date.*
 import io.micrometer.core.instrument.Clock
 import io.micrometer.prometheus.PrometheusConfig
 import io.micrometer.prometheus.PrometheusMeterRegistry
@@ -77,6 +78,8 @@ fun Application.module() {
         filter {
             !ignorePaths.contains(it.request.path())
         }
+        mdc("status_code") { it.response.status()?.value?.toString() ?: "-" }
+        mdc("response_time") { "${it.processingTimeMillis(::getTimeMillis)}ms" }
     }
 
     install(StatusPages) {
