@@ -69,5 +69,16 @@ class AdhocTest {
         testHtml(AdhocRegelendretGjenlevendetilleggKonvertert.template, "ADHOC_AdhocRegelendretGjenlevendetilleggKonvertert", Bokmal)
     }
 
+    @Test
+    fun `testFeilUtsendingGjenlevenderett pdf`() {
+        testAdhocPdf(FeilUtsendingAvGjenlevenderett.template, "ADHOC_FeilUtsendingAvGjenlevenderett", Bokmal)
+        testAdhocPdf(FeilUtsendingAvGjenlevenderett.template, "ADHOC_FeilUtsendingAvGjenlevenderett", Nynorsk)
+        testAdhocPdf(FeilUtsendingAvGjenlevenderett.template, "ADHOC_FeilUtsendingAvGjenlevenderett", English)
+    }
+    @Test
+    fun `testFeilUtsendingGjenlevenderett html`() {
+        testHtml(FeilUtsendingAvGjenlevenderett.template, "ADHOC_FeilUtsendingAvGjenlevenderett", Bokmal)
+    }
+
 
 }

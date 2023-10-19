@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.api.model.maler
 
 object Brevkode {
     enum class AutoBrev(vararg koder: String) {
+        PE_ADHOC_FEILUTSENDING_GJENLEVENDERETT("ADHOC_FEILUTSENDING_GJR"),
         PE_ADHOC_2023_04_GJENLEVENDEINFOETTER1970("ADHOC_2023_04_GJP1"),
         PE_ADHOC_2023_04_GJENLEVENDEINFOFOER1971("ADHOC_2023_04_GJP2"),
         PE_OMSORG_HJELPESTOENAD_AUTO("OMSORG_HJST_AUTO"),
