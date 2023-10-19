@@ -429,30 +429,32 @@ data class OmBeregningAvBarnetillegg(
         }
 
         val harFellesTillegg = barnetillegg.felles.notNull()
-        showIf(pensjonsgivendeInntekt.inntekt.inntekter.isNotEmpty()
-                and (pensjonsgivendeInntekt.fratrekk.fratrekk.isNotEmpty() or harFellesTillegg))  {
             paragraph {
+                showIf(
+                    pensjonsgivendeInntekt.inntekt.inntekter.isNotEmpty()
+                            and (pensjonsgivendeInntekt.fratrekk.fratrekk.isNotEmpty() or harFellesTillegg)
+                ) {
+                    textExpr(
+                        Bokmal to "Tabellene under viser inntektene du".expr()
+                                + ifElse(harFellesTillegg, " og annen forelder", "") + "",
+                        Nynorsk to "Tabellene under viser inntektene du".expr()
+                                + ifElse(harFellesTillegg, " og anna forelder", "") + "",
+                        English to "The tables below show the personal incomes you".expr()
+                                + ifElse(harFellesTillegg, " and the other parent", "") + ""
+                    )
+                }.orShow {
+                    text(
+                        Bokmal to "Tabellen under viser inntektene du",
+                        Nynorsk to "Tabellen under viser inntektene du",
+                        English to "The table below shows the personal incomes you"
+                    )
+                }
                 textExpr(
-                    Bokmal to "Tabellene under viser inntektene du".expr() + ifElse(
-                        harFellesTillegg, " og annen forelder", "")
-                            + " har hatt i " + periode.format() + ". Det er disse inntektene vi har brukt for å beregne barnetillegget.",
-                    Nynorsk to "Tabellene under viser inntektene du".expr() + ifElse(harFellesTillegg, " og anna forelder", ""
-                    ) + " har hatt i " + periode.format() + ". Det er desse inntektene vi har brukt for å rekne ut barnetillegget.",
-                    English to "The tables below show the personal incomes you".expr() + ifElse(harFellesTillegg, " and the other parent", ""
-                    ) + " had in ".expr() + periode.format() + ". These incomes were used to calculate your child supplement.",
+                    Bokmal to " har hatt i ".expr() + periode.format() + ". Det er disse inntektene vi har brukt for å beregne barnetillegget.",
+                    Nynorsk to " har hatt i ".expr() + periode.format() + ". Det er desse inntektene vi har brukt for å rekne ut barnetillegget.",
+                    English to " have in ".expr() + periode.format() + ". These incomes were used to calculate your child supplement."
                 )
             }
-        }.orShow {
-            paragraph {
-                textExpr(
-                    Bokmal to "Tabellen under viser inntektene du har hatt i ".expr()
-                            + periode.format() + ". Det er disse inntektene vi har brukt for å beregne barnetillegget.",
-                    Nynorsk to "Tabellen under viser inntektene du har hatt i ".expr()
-                            + periode.format() + ". Det er desse inntekten vi har brukt for å rekne ut barnetillegget.",
-                    English to "The table below shows the personal incomes you had in ".expr() + periode.format() + ". These incomes were used to calculate your child supplement."
-                )
-            }
-        }
 
         title2 {
             text(
