@@ -25,6 +25,7 @@ import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSel
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSelectors.BarnetilleggSelectors.personinntekt
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSelectors.BarnetilleggSelectors.saerkull
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSelectors.BarnetilleggSelectors.saerkull_safe
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSelectors.BarnetilleggSelectors.totaltResultat
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSelectors.InntektOgFratrekkSelectors.FratrekkSelectors.FratrekkLinjeSelectors.aarsak
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSelectors.InntektOgFratrekkSelectors.FratrekkSelectors.FratrekkLinjeSelectors.beloep
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSelectors.InntektOgFratrekkSelectors.FratrekkSelectors.FratrekkLinjeSelectors.type
@@ -198,11 +199,11 @@ data class DuHarFaattAvviksBeloep(
         paragraph {
             textExpr(
                 Bokmal to "Totalt fikk du utbetalt ".expr() + totaltAvvik.absoluteValue().format() + " kroner for " +
-                        ifElse(harFaattForMye, "mye", "lite") + "",
+                        ifElse(harFaattForMye, "mye", "lite"),
                 Nynorsk to "Totalt fekk du utbetalt ".expr() + totaltAvvik.absoluteValue().format() + " kroner for " +
-                        ifElse(harFaattForMye, "mykje", "lite") + "",
+                        ifElse(harFaattForMye, "mykje", "lite"),
                 English to "In total, you have received NOK ".expr() + totaltAvvik.absoluteValue().format() + " too " +
-                        ifElse(harFaattForMye, "much", "little") + "",
+                        ifElse(harFaattForMye, "much", "little"),
             )
             textExpr(
                 Bokmal to " i ".expr() + periode.format() + ".",
@@ -216,7 +217,6 @@ data class DuHarFaattAvviksBeloep(
 data class OmBeregningAvBarnetillegg(
     val barnetillegg: Expression<OpplysningerOmEtteroppgjoeretDto.Barnetillegg>,
     val periode: Expression<Year>,
-    val pensjonsgivendeInntekt: Expression<OpplysningerOmEtteroppgjoeretDto.InntektOgFratrekk>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         title1 {
@@ -228,9 +228,7 @@ data class OmBeregningAvBarnetillegg(
         }
         paragraph {
             val skulleFaatt =
-                barnetillegg.saerkull.resultat_safe.skulleFaatt_safe.ifNull(Kroner(0)) + barnetillegg.felles.resultat_safe.skulleFaatt_safe.ifNull(
-                    Kroner(0)
-                )
+                barnetillegg.totaltResultat.skulleFaatt_safe.ifNull(Kroner(0))
             textExpr(
                 Bokmal to "Ved beregning av barnetillegg har vi først oppdatert hvor mye du skulle hatt i uføretrygd. ".expr() +
                         "Etter denne beregningen er gjort, blir ditt barnetillegg " + skulleFaatt.format() + " kroner for " + periode.format() + ".",
@@ -429,32 +427,26 @@ data class OmBeregningAvBarnetillegg(
         }
 
         val harFellesTillegg = barnetillegg.felles.notNull()
-            paragraph {
-                showIf(
-                    pensjonsgivendeInntekt.inntekt.inntekter.isNotEmpty()
-                            and (pensjonsgivendeInntekt.fratrekk.fratrekk.isNotEmpty() or harFellesTillegg)
-                ) {
-                    textExpr(
-                        Bokmal to "Tabellene under viser inntektene du".expr()
-                                + ifElse(harFellesTillegg, " og annen forelder", "") + "",
-                        Nynorsk to "Tabellene under viser inntektene du".expr()
-                                + ifElse(harFellesTillegg, " og anna forelder", "") + "",
-                        English to "The tables below show the personal incomes you".expr()
-                                + ifElse(harFellesTillegg, " and the other parent", "") + ""
-                    )
-                }.orShow {
-                    text(
-                        Bokmal to "Tabellen under viser inntektene du",
-                        Nynorsk to "Tabellen under viser inntektene du",
-                        English to "The table below shows the personal incomes you"
-                    )
-                }
-                textExpr(
-                    Bokmal to " har hatt i ".expr() + periode.format() + ". Det er disse inntektene vi har brukt for å beregne barnetillegget.",
-                    Nynorsk to " har hatt i ".expr() + periode.format() + ". Det er desse inntektene vi har brukt for å rekne ut barnetillegget.",
-                    English to " have in ".expr() + periode.format() + ". These incomes were used to calculate your child supplement."
-                )
-            }
+        paragraph {
+            val erflereTabellerPersonInntekt = (barnetillegg.personinntekt.inntekt.inntekter.isNotEmpty()
+                    and (barnetillegg.personinntekt.fratrekk.fratrekk.isNotEmpty() or harFellesTillegg))
+            textExpr(
+                Bokmal to ifElse(erflereTabellerPersonInntekt, "Tabellene", "Tabellen")
+                        + " under viser inntektene du".expr()
+                        + ifElse(harFellesTillegg, " og annen forelder", ""),
+                Nynorsk to ifElse(erflereTabellerPersonInntekt, "Tabellene", "Tabellen")
+                        + " under viser inntektene du".expr()
+                        + ifElse(harFellesTillegg, " og anna forelder", ""),
+                English to ifElse(erflereTabellerPersonInntekt, "The tables under show", "The table under shows")
+                        + " the personal incomes you".expr()
+                        + ifElse(harFellesTillegg, " and the other parent", "")
+            )
+            textExpr(
+                Bokmal to " har hatt i ".expr() + periode.format() + ". Det er disse inntektene vi har brukt for å beregne barnetillegget.",
+                Nynorsk to " har hatt i ".expr() + periode.format() + ". Det er desse inntektene vi har brukt for å rekne ut barnetillegget.",
+                English to " have in ".expr() + periode.format() + ". These incomes were used to calculate your child supplement."
+            )
+        }
 
         title2 {
             text(
@@ -637,21 +629,9 @@ data class OmBeregningAvUfoeretrygd(
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         title1 {
             textExpr(
-                Bokmal to "Om beregningen av uføretrygd".expr() + ifElse(
-                    harGjenlevendeTillegg,
-                    " og gjenlevendetillegg",
-                    ""
-                ),
-                Nynorsk to "Om utrekning av uføretrygd".expr() + ifElse(
-                    harGjenlevendeTillegg,
-                    " og attlevandetillegg",
-                    ""
-                ),
-                English to "Disability benefit".expr() + ifElse(
-                    harGjenlevendeTillegg,
-                    " and survivor's supplement",
-                    ""
-                ) + " calculation",
+                Bokmal to "Om beregningen av uføretrygd".expr() + ifElse(harGjenlevendeTillegg," og gjenlevendetillegg",""),
+                Nynorsk to "Om utrekning av uføretrygd".expr() + ifElse(harGjenlevendeTillegg, " og attlevandetillegg",""),
+                English to "Disability benefit".expr() + ifElse(harGjenlevendeTillegg," and survivor's supplement","") + " calculation",
             )
         }
 
@@ -769,40 +749,34 @@ data class OmBeregningAvUfoeretrygd(
                 }
             }
         }
-            paragraph {
-                showIf(pensjonsgivendeInntekt.inntekt.inntekter.isNotEmpty() and pensjonsgivendeInntekt.fratrekk.fratrekk.isNotEmpty()) {
-                    text(
-                        Bokmal to "Tabellene",
-                        Nynorsk to "Tabellene",
-                        English to "The tables"
-                    )
-                }.orShow {
-                    text(
-                        Bokmal to "Tabellen",
-                        Nynorsk to "Tabellen",
-                        English to "The table"
-                    )
-                }
-                textExpr(
-                    Bokmal to " under viser inntektene du har hatt i ".expr() + periode.format()
-                            + ". Det er disse inntektene vi har brukt for å beregne uføretrygden din"
-                            + ifElse(harGjenlevendeTillegg, " og gjenlevendetillegget ditt.", "."),
+        paragraph {
+            val erFlereTabellerPensjonsgivendeInntekt =
+                (pensjonsgivendeInntekt.inntekt.inntekter.isNotEmpty() and pensjonsgivendeInntekt.fratrekk.fratrekk.isNotEmpty())
+            textExpr(
+                Bokmal to ifElse(erFlereTabellerPensjonsgivendeInntekt, "Tabellene", "Tabellen"),
+                Nynorsk to ifElse(erFlereTabellerPensjonsgivendeInntekt, "Tabellene", "Tabellen"),
+                English to ifElse(erFlereTabellerPensjonsgivendeInntekt, "The tables below show", "The table below show")
+            )
+            textExpr(
+                Bokmal to " under viser inntektene du har hatt i ".expr() + periode.format()
+                        + ". Det er disse inntektene vi har brukt for å beregne uføretrygden din"
+                        + ifElse(harGjenlevendeTillegg, " og gjenlevendetillegget ditt.", "."),
 
-                    Nynorsk to " under viser inntektene du har hatt i løpet av ".expr() + periode.format()
-                            + ". Det er desse inntektene vi har nytta for å berekne uføretrygda di"
-                            + ifElse(harGjenlevendeTillegg, " og attlevandetillegget ditt.", "."),
+                Nynorsk to " under viser inntektene du har hatt i løpet av ".expr() + periode.format()
+                        + ". Det er desse inntektene vi har nytta for å berekne uføretrygda di"
+                        + ifElse(harGjenlevendeTillegg, " og attlevandetillegget ditt.", "."),
 
-                    English to " below show the pensionable incomes you had in ".expr() + periode.format()
-                            + ". These incomes were used to calculate your disability benefit"
-                            + ifElse(harGjenlevendeTillegg, " and survivor's supplement.", "."),
-                )
-            }
+                English to " the pensionable incomes you had in ".expr() + periode.format()
+                        + ". These incomes were used to calculate your disability benefit"
+                        + ifElse(harGjenlevendeTillegg, " and survivor's supplement.", "."),
+            )
+        }
 
         title1 {
             textExpr(
-                Bokmal to "Din pensjonsgivende inntekt i ".expr() + periode.format() + "",
-                Nynorsk to "Di pensjonsgivande inntekt i ".expr() + periode.format() + "",
-                English to "Your pensionable income in ".expr() + periode.format() + "",
+                Bokmal to "Din pensjonsgivende inntekt i ".expr() + periode.format(),
+                Nynorsk to "Di pensjonsgivande inntekt i ".expr() + periode.format(),
+                English to "Your pensionable income in ".expr() + periode.format(),
             )
         }
         showIf(pensjonsgivendeInntekt.inntekt.inntekter.isNotEmpty()) {
@@ -823,11 +797,11 @@ data class OmBeregningAvUfoeretrygd(
             title1 {
                 textExpr(
                     Bokmal to "Beløp som er trukket fra den pensjonsgivende inntekten din for ".expr()
-                    + periode.format() + "",
+                            + periode.format(),
                     Nynorsk to "Beløp som er trekt frå den pensjonsgivande inntekta di for ".expr()
-                    + periode.format() + "",
+                            + periode.format(),
                     English to "Amounts deducted from your pensionable income for ".expr()
-                    + periode.format() + ""
+                            + periode.format()
                 )
             }
             paragraph {
