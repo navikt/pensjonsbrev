@@ -5,6 +5,7 @@ object Constants {
     const val BARNEPENSJON_URL = "$NAV_URL/barnepensjon"
     const val FULLMAKT_URL = "$NAV_URL/fullmakt"
     const val UTBETALING_URL = "$NAV_URL/utbetalinger"
+    const val UTBETALINGSDATOER_URL = "$NAV_URL/utbetalingsdatoer"
     const val SKRIVTILOSS_URL = "$NAV_URL/skrivtiloss"
     const val KONTONUMMER_URL = "$NAV_URL/kontonummer"
     const val ENDRING_KONTONUMMER_URL = "$NAV_URL/start/soknad-endring-bankkontonummer"
