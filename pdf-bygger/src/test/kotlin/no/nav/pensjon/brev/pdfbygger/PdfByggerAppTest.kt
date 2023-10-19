@@ -10,6 +10,9 @@ import io.ktor.server.testing.*
 import kotlinx.coroutines.*
 import org.junit.Test
 import kotlin.test.assertEquals
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.Duration.Companion.seconds
 
 class PdfByggerAppTest {
     private val compileRequest = this::class.java.classLoader.getResource("pdfbygger-request.json")!!.readText()
@@ -25,7 +28,7 @@ class PdfByggerAppTest {
     @Test
     fun `app can compile latex to pdf`() {
         testApplication {
-            appConfig(getScriptPath("simpleCompile.sh"))
+            appConfig(latexCommand = getScriptPath("simpleCompile.sh"), parallelism = 1, compileTimeout = 1.seconds, queueTimeout = 1.seconds)
 
             val response = client.post("/compile") {
                 contentType(ContentType.Application.Json)
@@ -38,7 +41,7 @@ class PdfByggerAppTest {
     @Test
     fun `compile times out when exceeding timeout`() {
         testApplication {
-            appConfig(getScriptPath("neverEndingCompile.sh"), 1)
+            appConfig(latexCommand = getScriptPath(name = "neverEndingCompile.sh"), parallelism = 1, compileTimeout = 1.seconds, queueTimeout = 1.seconds)
 
             val response = client.post("/compile") {
                 contentType(ContentType.Application.Json)
@@ -52,14 +55,20 @@ class PdfByggerAppTest {
     @Test
     fun `compile enforces max limit of parallel latex processes`() {
         val parallelismFactor = 10
-        val parallelism = Runtime.getRuntime().availableProcessors()
-        val compileTime = 1
+        val parallelism = 2
 
         runBlocking {
             testApplication {
-                appConfig("${getScriptPath("compileInSeconds.sh")} $compileTime", compileTime * 2 + 1)
+                appConfig(
+                    latexCommand = "${getScriptPath("compileInSeconds.sh")} 0.1",
+                    parallelism = parallelism,
+                    // 100 * 2: two runs, 500: allow for some wiggle room
+                    compileTimeout = (500 + 100 * 2).milliseconds,
+                    // ensure that all other compilations time out
+                    queueTimeout = 10.milliseconds,
+                )
 
-                val requests = (0..(parallelism * parallelismFactor)).map {
+                val requests = List(parallelism * parallelismFactor) {
                     async(Dispatchers.Default) {
                         client.post("/compile") {
                             contentType(ContentType.Application.Json)
@@ -69,21 +78,23 @@ class PdfByggerAppTest {
                 }
 
                 val responses = requests.awaitAll()
-                val successful = responses.filter { it.status == HttpStatusCode.OK }.size
-                val timedOut = responses.filter { it.status == HttpStatusCode.InternalServerError }.size
+                val successful = responses.filter { it.status == HttpStatusCode.OK }
+                val queueTimedOut = responses.filter { it.status == HttpStatusCode.ServiceUnavailable }
 
-                assertThat(successful, isWithin(IntRange(parallelism, parallelism + 1)))
-                assertThat(timedOut, equalTo(requests.size - successful))
+                assertThat(successful, hasSize(isWithin(IntRange(parallelism, parallelism * 2))))
+                assertThat(queueTimedOut, hasSize(equalTo(requests.size - successful.size)))
             }
         }
     }
 
-    private fun ApplicationTestBuilder.appConfig(latexCommand: String, timeoutSeconds: Int = 1) =
+    private fun ApplicationTestBuilder.appConfig(latexCommand: String, parallelism: Int, compileTimeout: Duration, queueTimeout: Duration) =
         environment {
             config = ApplicationConfig(null).mergeWith(
                 MapApplicationConfig(
                     "pdfBygger.latexCommand" to "/usr/bin/env bash $latexCommand",
-                    "pdfBygger.compileTimeoutSeconds" to "$timeoutSeconds"
+                    "pdfBygger.latexParallelism" to "$parallelism",
+                    "pdfBygger.compileTimeout" to "$compileTimeout",
+                    "pdfBygger.compileQueueWaitTimeout" to "$queueTimeout",
                 )
             )
         }

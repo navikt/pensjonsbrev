@@ -18,6 +18,7 @@ import io.micrometer.core.instrument.Clock
 import io.micrometer.prometheus.PrometheusConfig
 import io.micrometer.prometheus.PrometheusMeterRegistry
 import io.prometheus.client.CollectorRegistry
+import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
 
@@ -33,7 +34,8 @@ fun Application.module() {
     val parallelism = getProperty("pdfBygger.latexParallelism")?.toInt() ?: Runtime.getRuntime().availableProcessors()
     val activityCounter = ActiveCounter()
     val laTeXService = LaTeXService(
-        timeout = getProperty("pdfBygger.compileTimeoutSeconds")?.toLong()?.seconds ?: 300.seconds,
+        compileTimeout = getProperty("pdfBygger.compileTimeout")?.let { Duration.parse(it) } ?: 300.seconds,
+        queueWaitTimeout = getProperty("pdfBygger.compileQueueWaitTimeout")?.let { Duration.parse(it) } ?: 4.seconds,
         latexParallelism = parallelism,
         latexCommand = getProperty("pdfBygger.latexCommand") ?: "xelatex --interaction=nonstopmode -halt-on-error"
     )
@@ -67,6 +69,7 @@ fun Application.module() {
         registry = prometheusMeterRegistry
     }
 
+    // TODO: improve formatting
     install(CallLogging) {
         callIdMdc("x_correlationId")
         disableDefaultColors()
@@ -100,18 +103,23 @@ fun Application.module() {
             when (result) {
                 is PDFCompilationResponse.Base64PDF -> call.respond(result)
                 is PDFCompilationResponse.Failure.Client -> {
-                    logger.info("Client error: $result")
+                    logger.info("Client error: ${result.reason}")
                     call.respond(HttpStatusCode.BadRequest, result)
                 }
 
                 is PDFCompilationResponse.Failure.Server -> {
-                    logger.error("Server error: $result")
+                    logger.error(result.reason)
                     call.respond(HttpStatusCode.InternalServerError, result)
                 }
 
                 is PDFCompilationResponse.Failure.Timeout -> {
-                    logger.error("Server error: $result")
+                    logger.error(result.reason)
                     call.respond(HttpStatusCode.InternalServerError, result)
+                }
+
+                is PDFCompilationResponse.Failure.ServiceUnavailable -> {
+                    logger.error(result.reason)
+                    call.respond(HttpStatusCode.ServiceUnavailable, result)
                 }
             }
         }

@@ -3,7 +3,6 @@ package no.nav.pensjon.brev.pdfbygger
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.sync.Semaphore
-import kotlinx.coroutines.sync.withPermit
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeoutOrNull
 import org.slf4j.LoggerFactory
@@ -14,14 +13,15 @@ import java.util.*
 import kotlin.io.path.createTempDirectory
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
-import kotlin.time.Duration.Companion.seconds
 
 private const val COMPILATION_RUNS = 2
 
+// TODO: Sett opp slik at statiske filer ligger i pdf-bygger
 class LaTeXService(
     latexCommand: String,
     latexParallelism: Int,
-    private val timeout: Duration,
+    private val compileTimeout: Duration,
+    private val queueWaitTimeout: Duration,
 ) {
     private val logger = LoggerFactory.getLogger(this::class.java)
     private val decoder = Base64.getDecoder()
@@ -30,6 +30,7 @@ class LaTeXService(
     private val parallelismSemaphore = latexParallelism.takeIf { it > 0 }?.let { Semaphore(it) }
 
     suspend fun producePDF(latexFiles: Map<String, String>): PDFCompilationResponse {
+        // TODO: Filskriving burde skje etter køen
         val tmpDir = createTempDirectory()
 
         latexFiles.forEach {
@@ -40,11 +41,22 @@ class LaTeXService(
         }
 
         return try {
-            withTimeoutOrNull(timeout) {
-                parallelismSemaphore?.withPermit {
-                    createLetter(tmpDir)
-                } ?: createLetter(tmpDir)
-            } ?: PDFCompilationResponse.Failure.Timeout(reason = "Compilation timed out - spent more than: $timeout")
+            if (parallelismSemaphore != null) {
+                val permit = withTimeoutOrNull(queueWaitTimeout) {
+                    parallelismSemaphore.acquire()
+                }
+                if (permit != null) {
+                    try {
+                        createLetter(tmpDir)
+                    } finally {
+                        parallelismSemaphore.release()
+                    }
+                } else {
+                    PDFCompilationResponse.Failure.ServiceUnavailable(reason = "Compilation queue wait timed out: waited for $queueWaitTimeout")
+                }
+            } else {
+                createLetter(tmpDir)
+            }
         } finally {
             tmpDir.toFile().deleteRecursively()
         }
@@ -64,19 +76,27 @@ class LaTeXService(
                 logger.error("latexCommand failed", result.cause)
                 PDFCompilationResponse.Failure.Server(reason = "Compilation process execution failed: $latexCommand")
             }
+
+            is Execution.Failure.Timeout ->
+                PDFCompilationResponse.Failure.Timeout("Compilation timed out in ${result.timeout}: completed ${result.completedRuns} runs")
         }
 
     private suspend fun compile(executionFolder: Path): Execution {
-        var result: Execution = executeCompileProcess(executionFolder)
+        var runs = 0
+        return withTimeoutOrNull(compileTimeout) {
+            var result: Execution = executeCompileProcess(executionFolder)
+            runs++
 
-        repeat(COMPILATION_RUNS - 1) {
-            if (result is Execution.Success) {
-                result = executeCompileProcess(executionFolder)
-            } else {
-                return@repeat
+            repeat(COMPILATION_RUNS - 1) {
+                if (result is Execution.Success) {
+                    result = executeCompileProcess(executionFolder)
+                    runs++
+                } else {
+                    return@repeat
+                }
             }
-        }
-        return result
+            return@withTimeoutOrNull result
+        } ?: Execution.Failure.Timeout(completedRuns = runs, timeout = compileTimeout)
     }
 
     private suspend fun executeCompileProcess(
@@ -117,5 +137,6 @@ private sealed class Execution {
     sealed class Failure : Execution() {
         data class Compilation(val output: String, val error: String) : Failure()
         data class Execution(val cause: Throwable) : Failure()
+        data class Timeout(val completedRuns: Int, val timeout: Duration) : Failure()
     }
 }

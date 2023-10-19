@@ -23,6 +23,9 @@ class LatexCompileException(msg: String, cause: Throwable? = null) : Exception(m
 class LatexTimeoutException(msg: String, cause: Throwable? = null) : Exception(msg, cause)
 class LatexInvalidException(msg: String, cause: Throwable? = null) : Exception(msg, cause)
 
+// TODO: Øk maksimum retries, men sett på en total timeout
+// TODO: Vi har noen feil som lekker gjennom på et vis. De logges som Timeout av brevbaker, men ingenting plukkes opp og logges av brevbaker.
+//  x_correlationId : "586a2dd0-ef89-4334-a8ae-71b3eb022e85"
 class LaTeXCompilerService(private val pdfByggerUrl: String, maxRetries: Int = 30) {
     private val logger = LoggerFactory.getLogger(this::class.java)
     private val objectmapper = jacksonObjectMapper()
