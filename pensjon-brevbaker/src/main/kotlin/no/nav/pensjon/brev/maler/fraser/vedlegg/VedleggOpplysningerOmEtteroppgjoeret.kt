@@ -4,7 +4,6 @@ import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDto
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSelectors.AvviksResultatSelectors.avvik
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSelectors.AvviksResultatSelectors.fikk
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSelectors.AvviksResultatSelectors.skulleFaatt
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSelectors.AvviksResultatSelectors.skulleFaatt_safe
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSelectors.BarnetilleggSelectors.FellesbarnSelectors.fribeloep
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSelectors.BarnetilleggSelectors.FellesbarnSelectors.grunnbelop
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSelectors.BarnetilleggSelectors.FellesbarnSelectors.harSamletInntektOverInntektstak
@@ -227,8 +226,7 @@ data class OmBeregningAvBarnetillegg(
             )
         }
         paragraph {
-            val skulleFaatt =
-                barnetillegg.totaltResultat.skulleFaatt_safe.ifNull(Kroner(0))
+            val skulleFaatt = barnetillegg.totaltResultat.skulleFaatt
             textExpr(
                 Bokmal to "Ved beregning av barnetillegg har vi først oppdatert hvor mye du skulle hatt i uføretrygd. ".expr() +
                         "Etter denne beregningen er gjort, blir ditt barnetillegg " + skulleFaatt.format() + " kroner for " + periode.format() + ".",
@@ -428,8 +426,7 @@ data class OmBeregningAvBarnetillegg(
 
         val harFellesTillegg = barnetillegg.felles.notNull()
         paragraph {
-            val erflereTabellerPersonInntekt = (barnetillegg.personinntekt.inntekt.inntekter.isNotEmpty()
-                    and (barnetillegg.personinntekt.fratrekk.fratrekk.isNotEmpty() or harFellesTillegg))
+            val erflereTabellerPersonInntekt = (barnetillegg.personinntekt.fratrekk.fratrekk.isNotEmpty() or harFellesTillegg)
             textExpr(
                 Bokmal to ifElse(erflereTabellerPersonInntekt, "Tabellene", "Tabellen")
                         + " under viser inntektene du".expr()
