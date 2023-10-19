@@ -138,7 +138,7 @@ class LatexServiceTest {
             }.awaitAll()
 
             val success = results.filterIsInstance<Base64PDF>()
-            val timedOut = results.filterIsInstance<Failure.Timeout>()
+            val timedOut = results.filterIsInstance<Failure.QueueTimeout>()
 
             // Because of two runs per compilation we expect each to take ~200ms, and queue wait timeout is less, thus ~2 successes
             assertThat(success, hasSize(isWithin(1..3)))
@@ -171,7 +171,7 @@ class LatexServiceTest {
 
             assertNotNull(compilationQueueWait, "Expected queued compilation to be cancelled by LatexService, but was cancelled by timeout in test")
             assertThat(compilationQueueWait, isWithin(50L..100L))
-            assertResult<Failure.Timeout>(result) {
+            assertResult<Failure.QueueTimeout>(result) {
                 assertThat(it.reason, containsSubstring("queue wait timed out"))
             }
         }

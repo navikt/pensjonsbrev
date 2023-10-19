@@ -41,7 +41,7 @@ class LaTeXService(
                     parallelismSemaphore.release()
                 }
             } else {
-                PDFCompilationResponse.Failure.ServiceUnavailable(reason = "Compilation queue wait timed out: waited for $queueWaitTimeout")
+                PDFCompilationResponse.Failure.QueueTimeout(reason = "Compilation queue wait timed out: waited for $queueWaitTimeout")
             }
         } else {
             createLetter(latexFiles)

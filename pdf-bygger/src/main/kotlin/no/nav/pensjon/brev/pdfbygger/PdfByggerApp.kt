@@ -119,7 +119,7 @@ fun Application.module() {
                     call.respond(HttpStatusCode.InternalServerError, result)
                 }
 
-                is PDFCompilationResponse.Failure.ServiceUnavailable -> {
+                is PDFCompilationResponse.Failure.QueueTimeout -> {
                     logger.error(result.reason)
                     call.respond(HttpStatusCode.ServiceUnavailable, result)
                 }
