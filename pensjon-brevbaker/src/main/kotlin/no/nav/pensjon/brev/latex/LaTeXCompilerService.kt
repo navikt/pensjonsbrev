@@ -74,6 +74,7 @@ class LaTeXCompilerService(private val pdfByggerUrl: String, maxRetries: Int = 3
                             = actualCause is HttpRequestTimeoutException
                             || actualCause is ConnectTimeoutException
                             || actualCause is ServerResponseException
+                            || (actualCause is ClientRequestException && actualCause.response.status == HttpStatusCode.BadRequest )
                             || actualCause is IOException
 
                     if (!doRetry) {
