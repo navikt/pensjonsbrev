@@ -197,11 +197,11 @@ data class DuHarFaattAvviksBeloep(
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         paragraph {
             textExpr(
-                Bokmal to "Totalt fikk du utbetalt ".expr() + totaltAvvik.absoluteValue().format() + " kroner for " +
+                Bokmal to "Du fikk utbetalt ".expr() + totaltAvvik.absoluteValue().format() + " kroner for " +
                         ifElse(harFaattForMye, "mye", "lite"),
-                Nynorsk to "Totalt fekk du utbetalt ".expr() + totaltAvvik.absoluteValue().format() + " kroner for " +
+                Nynorsk to "Du fekk utbetalt ".expr() + totaltAvvik.absoluteValue().format() + " kroner for " +
                         ifElse(harFaattForMye, "mykje", "lite"),
-                English to "In total, you have received NOK ".expr() + totaltAvvik.absoluteValue().format() + " too " +
+                English to "You have received NOK ".expr() + totaltAvvik.absoluteValue().format() + " too " +
                         ifElse(harFaattForMye, "much", "little"),
             )
             textExpr(
