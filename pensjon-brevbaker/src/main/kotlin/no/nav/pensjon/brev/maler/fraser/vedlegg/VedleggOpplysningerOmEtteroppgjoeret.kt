@@ -769,39 +769,34 @@ data class OmBeregningAvUfoeretrygd(
                 }
             }
         }
-        showIf(pensjonsgivendeInntekt.inntekt.inntekter.isNotEmpty() and pensjonsgivendeInntekt.fratrekk.fratrekk.isNotEmpty()) {
             paragraph {
+                showIf(pensjonsgivendeInntekt.inntekt.inntekter.isNotEmpty() and pensjonsgivendeInntekt.fratrekk.fratrekk.isNotEmpty()) {
+                    text(
+                        Bokmal to "Tabellene",
+                        Nynorsk to "Tabellene",
+                        English to "The tables"
+                    )
+                }.orShow {
+                    text(
+                        Bokmal to "Tabellen",
+                        Nynorsk to "Tabellen",
+                        English to "The table"
+                    )
+                }
                 textExpr(
-                    Bokmal to "Tabellene under viser inntektene du har hatt i ".expr() + periode.format()
+                    Bokmal to " under viser inntektene du har hatt i ".expr() + periode.format()
                             + ". Det er disse inntektene vi har brukt for å beregne uføretrygden din"
                             + ifElse(harGjenlevendeTillegg, " og gjenlevendetillegget ditt.", "."),
 
-                    Nynorsk to "Tabellene under viser inntektene du har hatt i løpet av ".expr() + periode.format()
+                    Nynorsk to " under viser inntektene du har hatt i løpet av ".expr() + periode.format()
                             + ". Det er desse inntektene vi har nytta for å berekne uføretrygda di"
                             + ifElse(harGjenlevendeTillegg, " og attlevandetillegget ditt.", "."),
 
-                    English to "The tables below show the pensionable incomes you had in ".expr() + periode.format()
+                    English to " below show the pensionable incomes you had in ".expr() + periode.format()
                             + ". These incomes were used to calculate your disability benefit"
                             + ifElse(harGjenlevendeTillegg, " and survivor's supplement.", "."),
                 )
             }
-        }.orShow {
-            paragraph {
-                textExpr(
-                    Bokmal to "Tabellen under viser inntektene du har hatt i ".expr() + periode.format()
-                            + ". Det er disse inntektene vi har brukt for å beregne uføretrygden din"
-                            + ifElse(harGjenlevendeTillegg, " og gjenlevendetillegget ditt.", "."),
-
-                    Nynorsk to "Tabellen under viser inntektene du har hatt i løpet av ".expr() + periode.format()
-                            + ". Det er desse inntektene vi har nytta for å berekne uføretrygda di"
-                            + ifElse(harGjenlevendeTillegg, " og attlevandetillegget ditt.", "."),
-
-                    English to "The table below show the pensionable incomes you had in ".expr() + periode.format()
-                            + ". These incomes were used to calculate your disability benefit"
-                            + ifElse(harGjenlevendeTillegg, " and survivor's supplement.", "."),
-                )
-            }
-        }
 
         title1 {
             textExpr(
