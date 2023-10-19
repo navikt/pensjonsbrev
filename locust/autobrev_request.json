@@ -1,12 +1,8 @@
 {
-  "kode": "UNG_UFOER_AUTO",
+  "kode": "UT_UNG_UFOER_20_AAR_AUTO",
   "language": "BOKMAL",
   "letterData": {
-    "kravVirkningFraOgMed": [
-      2022,
-      9,
-      29
-    ],
+    "kravVirkningFraOgMed": [ 2023, 10, 9 ],
     "totaltUfoerePerMnd": {
       "value": 9000
     },
@@ -16,119 +12,104 @@
     },
     "fellesbarn": {
       "utbetalt": false,
-      "antallBarn": 1,
       "inntektstak": {
         "value": 10000
-      }
+      },
+      "gjelderFlereBarn": false
     },
     "saerkullsbarn": {
       "utbetalt": true,
-      "antallBarn": 2,
       "inntektstak": {
         "value": 10000
-      }
+      },
+      "gjelderFlereBarn": true
     },
     "minsteytelseVedVirkSats": 2.91,
     "maanedligUfoeretrygdFoerSkatt": {
-      "gjeldendeBeregnetUTPerMaaned": {
+      "ufoeretrygdPerioder": [ {
         "annetBelop": {
           "value": 0
         },
         "barnetilleggSaerkullsbarnBrutto": {
-          "value": 0
+          "value": 3
         },
         "barnetilleggSaerkullsbarnNetto": {
-          "value": 0
+          "value": 4
         },
         "barnetilleggFellesbarnBrutto": {
-          "value": 0
+          "value": 1
         },
         "barnetilleggFellesbarnNetto": {
-          "value": 0
+          "value": 2
         },
         "gjenlevendetilleggBrutto": {
-          "value": 0
+          "value": 10
         },
         "gjenlevendetilleggNetto": {
-          "value": 0
+          "value": 11
         },
         "ektefelletilleggBrutto": {
-          "value": 0
+          "value": 6
         },
         "ektefelletilleggNetto": {
-          "value": 0
+          "value": 7
         },
         "dekningFasteUtgifter": {
-          "value": 0
+          "value": 5
         },
         "erAvkortet": true,
         "garantitilleggNordisk27Brutto": {
-          "value": 0
+          "value": 8
         },
         "garantitilleggNordisk27Netto": {
-          "value": 0
+          "value": 9
         },
         "grunnbeloep": {
-          "value": 0
+          "value": 12
         },
         "ordinaerUTBeloepBrutto": {
-          "value": 0
+          "value": 13
         },
         "ordinaerUTBeloepNetto": {
-          "value": 0
+          "value": 14
         },
         "totalUTBeloepBrutto": {
-          "value": 0
+          "value": 15
         },
         "totalUTBeloepNetto": {
-          "value": 0
+          "value": 16
         },
-        "virkningFraOgMed": [
-          2020,
-          1,
-          1
-        ],
-        "virkningTilOgMed": [
-          2020,
-          1,
-          2
-        ]
-      },
-      "krav_virkningsDatoFraOgMed": [
-        2020,
-        1,
-        1
-      ],
-      "tidligereUfoeretrygdPerioder": []
+        "virkningFraOgMed": [ 2020, 1, 1 ],
+        "virkningTilOgMed": [ 2020, 1, 2 ]
+      } ]
     },
     "orienteringOmRettigheterUfoere": {
-      "bruker_borINorge": false,
-      "institusjon_gjeldende": "INGEN",
-      "avdoed_sivilstand": "ENSLIG",
-      "ufoeretrygdPerMaaned_barnetilleggGjeldende": {
-        "value": 0
-      }
+      "sivilstand": "ENSLIG",
+      "bruker_borINorge": true,
+      "harTilleggForFlereBarn": false,
+      "harInnvilgetBarnetilleggFellesBarn": false,
+      "harInnvilgetBarnetilleggSaerkullsbarn": false,
+      "institusjon_gjeldende": "INGEN"
     }
   },
   "felles": {
-    "dokumentDato" : [ 2020, 1, 1 ],
-    "saksnummer" : "1337123",
-    "avsenderEnhet" : {
-      "nettside" : "nav.no",
-      "navn" : "NAV Familie- og pensjonsytelser Porsgrunn",
-      "telefonnummer" : {
-        "value" : "55553334"
+    "dokumentDato": [ 2020, 1, 1 ],
+    "saksnummer": "1337123",
+    "avsenderEnhet": {
+      "nettside": "nav.no",
+      "navn": "NAV Familie- og pensjonsytelser Porsgrunn",
+      "telefonnummer": {
+        "value": "55553334"
       }
     },
-    "bruker" : {
-      "foedselsnummer" : {
-        "value" : "01019878910"
+    "bruker": {
+      "foedselsnummer": {
+        "value": "01019878910"
       },
-      "foedselsdato" : [ 1998, 1, 1 ],
-      "fornavn" : "Testerson",
-      "mellomnavn" : "\"bruker\"",
-      "etternavn" : "Test"
+      "fornavn": "Testerson",
+      "mellomnavn": "\"bruker\"",
+      "etternavn": "Test"
     },
-    "signerendeSaksbehandlere" : null
+    "signerendeSaksbehandlere": null
   }
 }
