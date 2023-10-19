@@ -23,7 +23,7 @@ class LatexCompileException(msg: String, cause: Throwable? = null) : Exception(m
 class LatexTimeoutException(msg: String, cause: Throwable? = null) : Exception(msg, cause)
 class LatexInvalidException(msg: String, cause: Throwable? = null) : Exception(msg, cause)
 
-// TODO: Øk maksimum retries, men sett på en total timeout
+// TODO: Sett på en total timeout
 // TODO: Vi har noen feil som lekker gjennom på et vis. De logges som Timeout av brevbaker, men ingenting plukkes opp og logges av brevbaker.
 //  x_correlationId : "586a2dd0-ef89-4334-a8ae-71b3eb022e85"
 class LaTeXCompilerService(private val pdfByggerUrl: String, maxRetries: Int = 30) {
@@ -46,6 +46,12 @@ class LaTeXCompilerService(private val pdfByggerUrl: String, maxRetries: Int = 3
                         val body = response.body<String>()
                         logger.warn("Couldn't compile latex to pdf due to server error: $body")
                         throw LatexCompileException("Couldn't compile latex to pdf due to server error: $body")
+                    }
+
+                    HttpStatusCode.ServiceUnavailable -> {
+                        val body = response.body<String>()
+                        logger.warn("Service unavalailable - couldn't compile latex to pdf: $body")
+                        throw LatexCompileException("Service unavalailable - couldn't compile latex to pdf: $body")
                     }
                 }
             }
