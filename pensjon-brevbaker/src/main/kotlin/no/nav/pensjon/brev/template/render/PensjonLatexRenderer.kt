@@ -15,18 +15,6 @@ import java.time.format.*
 private const val DOCUMENT_PRODUCER = "brevbaker / pdf-bygger med LaTeX"
 
 object PensjonLatexRenderer : LetterRenderer<RenderedLatexLetter>() {
-    private val letterResourceFiles: List<RenderedFile> = listOf(
-        RenderedFile.Binary("nav-logo.pdf", getResource("latex/nav-logo.pdf")),
-        RenderedFile.PlainText("nav-logo.pdf_tex", getResource("latex/nav-logo.pdf_tex").toString(Charsets.UTF_8)),
-        RenderedFile.PlainText(
-            "pensjonsbrev_v3.cls",
-            getResource("latex/pensjonsbrev_v3.cls").toString(Charsets.UTF_8)
-        ),
-        RenderedFile.PlainText("firstpage.tex", getResource("latex/firstpage.tex").toString(Charsets.UTF_8)),
-        RenderedFile.PlainText("attachment.tex", getResource("latex/attachment.tex").toString(Charsets.UTF_8)),
-        RenderedFile.PlainText("closing.tex", getResource("latex/closing.tex").toString(Charsets.UTF_8)),
-        RenderedFile.PlainText("content.tex", getResource("latex/content.tex").toString(Charsets.UTF_8)),
-    )
 
     override fun renderLetter(scope: ExpressionScope<*, *>, template: LetterTemplate<*, *>): RenderedLatexLetter =
         RenderedLatexLetter().apply {
@@ -38,7 +26,6 @@ object PensjonLatexRenderer : LetterRenderer<RenderedLatexLetter>() {
             render(scope, template.attachments) { attachmentScope, id, attachment ->
                 newLatexFile("attachment_${id}.tex") { renderAttachment(attachmentScope, attachment) }
             }
-            addFiles(letterResourceFiles)
         }
 
     private fun LatexAppendable.appendMasterTemplateParameters(

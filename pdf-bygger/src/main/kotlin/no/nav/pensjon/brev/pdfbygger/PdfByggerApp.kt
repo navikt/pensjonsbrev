@@ -77,8 +77,9 @@ fun Application.module() {
         filter {
             !ignorePaths.contains(it.request.path())
         }
-        mdc("status_code") { it.response.status()?.value?.toString() ?: "-" }
-        mdc("response_time") { "${it.processingTimeMillis(::getTimeMillis)}ms" }
+        // TODO: Legg til når jeg har funnet ut av hvorfor loggene forsvant fra kibana
+//        mdc("status_code") { it.response.status()?.value?.toString() ?: "-" }
+//        mdc("response_time") { "${it.processingTimeMillis(::getTimeMillis)}ms" }
     }
 
     install(StatusPages) {

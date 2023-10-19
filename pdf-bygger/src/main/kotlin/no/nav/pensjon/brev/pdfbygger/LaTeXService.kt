@@ -112,6 +112,7 @@ class LaTeXService(
                     .directory(workingDir.toFile())
                     .redirectOutput(ProcessBuilder.Redirect.appendTo(output.toFile()))
                     .redirectError(ProcessBuilder.Redirect.appendTo(error.toFile()))
+                    .apply { environment()["TEXINPUTS"] = ".:/app/pensjonsbrev_latex//:" }
                     .start()
 
                 while (process.isAlive) {

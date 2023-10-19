@@ -8,6 +8,7 @@ RUN apt -y install tzdata perl-tk
 
 #To update TeXLive/XeLaTeX version, run the github workflow and replace the --from argument to newest release
 COPY --from=ghcr.io/navikt/pensjonsbrev/pensjon-latex:2022-09-15-12_53 /app /app
+COPY src/main/resources/latex /app/pensjonsbrev_latex
 USER apprunner
 
 COPY  build/libs/pdf-bygger.jar /app/app.jar
