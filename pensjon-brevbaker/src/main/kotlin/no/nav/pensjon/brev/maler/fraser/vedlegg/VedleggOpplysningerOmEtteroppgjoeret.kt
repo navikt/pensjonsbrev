@@ -219,10 +219,10 @@ data class OmBeregningAvBarnetillegg(
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         title1 {
-            text(
-                Bokmal to "Om beregning av barnetillegg",
-                Nynorsk to "Om utrekning av barnetillegg",
-                English to "Child supplement calculation",
+            textExpr(
+                Bokmal to "Om beregning av barnetillegg for ".expr() + periode.format(),
+                Nynorsk to "Om utrekning av barnetillegg for ".expr() + periode.format(),
+                English to "Child supplement calculation for ".expr() + periode.format(),
             )
         }
         paragraph {
@@ -626,9 +626,12 @@ data class OmBeregningAvUfoeretrygd(
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         title1 {
             textExpr(
-                Bokmal to "Om beregningen av uføretrygd".expr() + ifElse(harGjenlevendeTillegg," og gjenlevendetillegg",""),
-                Nynorsk to "Om utrekning av uføretrygd".expr() + ifElse(harGjenlevendeTillegg, " og attlevandetillegg",""),
-                English to "Disability benefit".expr() + ifElse(harGjenlevendeTillegg," and survivor's supplement","") + " calculation",
+                Bokmal to "Om beregningen av uføretrygd".expr() + ifElse(harGjenlevendeTillegg," og gjenlevendetillegg","")
+                        + " for ".expr() + periode.format(),
+                Nynorsk to "Om utrekning av uføretrygd".expr() + ifElse(harGjenlevendeTillegg, " og attlevandetillegg","")
+                        + " for ".expr() + periode.format(),
+                English to "Disability benefit".expr() + ifElse(harGjenlevendeTillegg," and survivor's supplement","")
+                        + " calculation for ".expr() + periode.format(),
             )
         }
 
@@ -770,10 +773,10 @@ data class OmBeregningAvUfoeretrygd(
         }
 
         title1 {
-            textExpr(
-                Bokmal to "Din pensjonsgivende inntekt i ".expr() + periode.format(),
-                Nynorsk to "Di pensjonsgivande inntekt i ".expr() + periode.format(),
-                English to "Your pensionable income in ".expr() + periode.format(),
+            text(
+                Bokmal to "Din pensjonsgivende inntekt",
+                Nynorsk to "Di pensjonsgivande inntekt",
+                English to "Your pensionable income",
             )
         }
         showIf(pensjonsgivendeInntekt.inntekt.inntekter.isNotEmpty()) {
@@ -792,13 +795,10 @@ data class OmBeregningAvUfoeretrygd(
             }
 
             title1 {
-                textExpr(
-                    Bokmal to "Beløp som er trukket fra den pensjonsgivende inntekten din for ".expr()
-                            + periode.format(),
-                    Nynorsk to "Beløp som er trekt frå den pensjonsgivande inntekta di for ".expr()
-                            + periode.format(),
-                    English to "Amounts deducted from your pensionable income for ".expr()
-                            + periode.format()
+                text(
+                    Bokmal to "Beløp som er trukket fra den pensjonsgivende inntekten din",
+                    Nynorsk to "Beløp som er trekt frå den pensjonsgivande inntekta di",
+                    English to "Amounts deducted from your pensionable income"
                 )
             }
             paragraph {
@@ -815,22 +815,22 @@ data class OmBeregningAvUfoeretrygd(
                         )
                     )
                 } orShow {
-                    text(
-                        Bokmal to "Du har ikke hatt inntekter som er trukket fra den pensjonsgivende inntekten din."
-                                + " Hvis du har hatt inntekter som kan trekkes fra, må du sende oss dokumentasjon på det innen 3 uker.",
-                        Nynorsk to "Du har ikkje hatt inntekter som er trekte frå den pensjonsgivande inntekta di."
-                                + " Dersom du har hatt inntekter som kan trekkjast frå, må du sende oss dokumentasjon på dette innan 3 veker.",
-                        English to "No income has been deducted from your pensionable income."
-                                + " If you have had deductable income, you must provide us with documentation within 3 weeks.",
+                    textExpr(
+                        Bokmal to "Du har ikke hatt inntekter som er trukket fra den pensjonsgivende inntekten din i ".expr()
+                                + periode.format() + ". Hvis du har hatt inntekter som kan trekkes fra, må du sende oss dokumentasjon på det innen 3 uker.",
+                        Nynorsk to "Du har ikkje hatt inntekter som er trekte frå den pensjonsgivande inntekta di i ".expr()
+                                + periode.format() + ". Dersom du har hatt inntekter som kan trekkjast frå, må du sende oss dokumentasjon på dette innan 3 veker.",
+                        English to "No income has been deducted from your pensionable income in ".expr()
+                                + periode.format() + ". If you have had deductable income, you must provide us with documentation within 3 weeks.",
                     )
                 }
             }
         } orShow {
             paragraph {
-                text(
-                    Bokmal to "Du har ikke hatt pensjonsgivende inntekt.",
-                    Nynorsk to "Du har ikkje hatt pensjonsgivande inntekt.",
-                    English to "You have not had any pensionable income."
+                textExpr(
+                    Bokmal to "Du har ikke hatt pensjonsgivende inntekt i ".expr() + periode.format() + ".",
+                    Nynorsk to "Du har ikkje hatt pensjonsgivande inntekt i ".expr() + periode.format() + ".",
+                    English to "You have not had any pensionable income in ".expr() + periode.format() + "."
                 )
             }
         }
