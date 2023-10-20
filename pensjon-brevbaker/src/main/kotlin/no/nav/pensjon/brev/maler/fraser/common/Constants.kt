@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.maler.fraser.common
 object Constants {
     const val NAV_URL = "nav.no"
 
+    const val ALDERSPENSJON_GJENLEVENDE_URL = "$NAV_URL/alderspensjon-gjenlevende"
     const val ARBEID_URL= "$NAV_URL/arbeid"
     const val BESKJED_TIL_NAV_URL = "$NAV_URL/beskjedtilnav"
     const val DIN_UFORETRYGD_URL = "$NAV_URL/dinuføretrygd"
