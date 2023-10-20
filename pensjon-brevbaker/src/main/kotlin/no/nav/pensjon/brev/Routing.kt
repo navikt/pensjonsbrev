@@ -71,6 +71,7 @@ fun Application.brevbakerRouting(authenticationNames: Array<String>, latexCompil
             route("/letter") {
 
                 post("/autobrev") {
+                    call.application.log.info("Received /letter/autobrev request")
                     val letterRequest = call.receive<AutobrevRequest>()
 
                     val letter = letterResource.create(letterRequest)

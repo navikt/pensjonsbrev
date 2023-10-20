@@ -203,6 +203,28 @@ class LatexServiceTest {
         }
     }
 
+    @Test
+    fun `LatexService will not enforce any parallelism limit when set to less than 1`() {
+        val service = LaTeXService(
+            latexCommand = "/usr/bin/env bash ${getScriptPath("simpleCompile.sh")}" + " ",
+            latexParallelism = 0,
+            compileTimeout = 500.milliseconds,
+            queueWaitTimeout = 1.seconds,
+        )
+        runBlocking {
+            val requests = List(Runtime.getRuntime().availableProcessors() * 10) {
+                async { service.producePDF(emptyMap()) }
+            }
+            val compilationTime = withTimeoutOrNull(10.seconds) {
+                measureTimeMillis { requests.awaitAll() }
+            }
+            assertNotNull(compilationTime, "Test timed out")
+            println(compilationTime)
+            assertThat(compilationTime, isWithin(1L..1000L))
+        }
+
+    }
+
     private inline fun <reified ToBe : PDFCompilationResponse> assertResult(result: PDFCompilationResponse?, assertBody: (ToBe) -> Unit = {}) {
         assertIs<ToBe>(result)
         assertBody(result)

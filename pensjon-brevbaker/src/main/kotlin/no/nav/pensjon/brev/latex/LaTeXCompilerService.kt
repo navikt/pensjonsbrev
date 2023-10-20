@@ -12,10 +12,11 @@ import io.ktor.client.utils.*
 import io.ktor.http.*
 import io.ktor.serialization.jackson.*
 import io.ktor.utils.io.errors.*
-import kotlinx.coroutines.withTimeout
+import kotlinx.coroutines.withTimeoutOrNull
 import no.nav.pensjon.brev.template.jacksonObjectMapper
 import no.nav.pensjon.brev.template.render.RenderedLatexLetter
 import org.slf4j.LoggerFactory
+import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
 data class PdfCompilationInput(val files: Map<String, String>)
@@ -25,10 +26,7 @@ class LatexCompileException(msg: String, cause: Throwable? = null) : Exception(m
 class LatexTimeoutException(msg: String, cause: Throwable? = null) : Exception(msg, cause)
 class LatexInvalidException(msg: String, cause: Throwable? = null) : Exception(msg, cause)
 
-// TODO: Sett på en total timeout
-// TODO: Vi har noen feil som lekker gjennom på et vis. De logges som Timeout av brevbaker, men ingenting plukkes opp og logges av brevbaker.
-//  x_correlationId : "586a2dd0-ef89-4334-a8ae-71b3eb022e85"
-class LaTeXCompilerService(private val pdfByggerUrl: String, maxRetries: Int = 30) {
+class LaTeXCompilerService(private val pdfByggerUrl: String, maxRetries: Int = 30, private val timeout: Duration = 300.seconds) {
     private val logger = LoggerFactory.getLogger(this::class.java)
     private val objectmapper = jacksonObjectMapper()
     private val httpClient = HttpClient(CIO) {
@@ -72,11 +70,10 @@ class LaTeXCompilerService(private val pdfByggerUrl: String, maxRetries: Int = 3
                 exponentialDelay(maxDelayMs = 10_000)
                 retryOnExceptionIf { _, cause ->
                     val actualCause = cause.unwrapCancellationException()
-                    val doRetry
-                            = actualCause is HttpRequestTimeoutException
+                    val doRetry = actualCause is HttpRequestTimeoutException
                             || actualCause is ConnectTimeoutException
                             || actualCause is ServerResponseException
-                            || (actualCause is ClientRequestException && actualCause.response.status == HttpStatusCode.BadRequest )
+                            || (actualCause is ClientRequestException && actualCause.response.status == HttpStatusCode.BadRequest)
                             || actualCause is IOException
 
                     if (!doRetry) {
@@ -93,9 +90,8 @@ class LaTeXCompilerService(private val pdfByggerUrl: String, maxRetries: Int = 3
         }
     }
 
-    // Ekstraher 300.seconds til en constant et sted, slik at den er mer synlig
     suspend fun producePDF(latexLetter: RenderedLatexLetter, callId: String?): PDFCompilationOutput =
-        withTimeout(300.seconds) {
+        withTimeoutOrNull(timeout) {
             httpClient.post("$pdfByggerUrl/compile") {
                 contentType(ContentType.Application.Json)
                 header("X-Request-ID", callId)
@@ -107,8 +103,8 @@ class LaTeXCompilerService(private val pdfByggerUrl: String, maxRetries: Int = 3
                 // setBody(PdfCompilationInput(latexLetter.base64EncodedFiles()))
                 // this needs further investigation
                 setBody(objectmapper.writeValueAsBytes(PdfCompilationInput(latexLetter.base64EncodedFiles())))
-            }
-        }.body()
+            }.body()
+        } ?: throw LatexTimeoutException("Spent more than $timeout trying to compile latex to pdf")
 
     suspend fun ping(): Boolean = httpClient.get("$pdfByggerUrl/isAlive").status.isSuccess()
 }
