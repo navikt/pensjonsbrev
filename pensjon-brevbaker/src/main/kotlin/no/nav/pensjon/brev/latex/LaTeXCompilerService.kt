@@ -16,6 +16,8 @@ import kotlinx.coroutines.withTimeoutOrNull
 import no.nav.pensjon.brev.template.jacksonObjectMapper
 import no.nav.pensjon.brev.template.render.RenderedLatexLetter
 import org.slf4j.LoggerFactory
+import kotlin.math.pow
+import kotlin.random.Random
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
@@ -67,7 +69,10 @@ class LaTeXCompilerService(private val pdfByggerUrl: String, maxRetries: Int = 3
         if (maxRetries > 0) {
             install(HttpRequestRetry) {
                 this.maxRetries = maxRetries
-                exponentialDelay(maxDelayMs = 10_000)
+//                exponentialDelay(maxDelayMs = 10_000)
+                delayMillis {
+                    minOf(2.0.pow(it).toLong(), 1000L) + Random.nextLong(100)
+                }
                 retryOnExceptionIf { _, cause ->
                     val actualCause = cause.unwrapCancellationException()
                     val doRetry = actualCause is HttpRequestTimeoutException
@@ -75,9 +80,10 @@ class LaTeXCompilerService(private val pdfByggerUrl: String, maxRetries: Int = 3
                             || actualCause is ServerResponseException
                             || (actualCause is ClientRequestException && actualCause.response.status == HttpStatusCode.BadRequest)
                             || actualCause is IOException
-
                     if (!doRetry) {
                         logger.error("Won't retry for exception: ${actualCause.message}", actualCause)
+                    } else {
+                        logger.info("Retrying compile")
                     }
                     doRetry
                 }

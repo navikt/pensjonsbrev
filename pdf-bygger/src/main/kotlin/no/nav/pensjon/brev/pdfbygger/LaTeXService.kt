@@ -16,7 +16,6 @@ import kotlin.time.Duration.Companion.milliseconds
 
 private const val COMPILATION_RUNS = 2
 
-// TODO: Sett opp slik at statiske filer ligger i pdf-bygger
 class LaTeXService(
     latexCommand: String,
     latexParallelism: Int,
