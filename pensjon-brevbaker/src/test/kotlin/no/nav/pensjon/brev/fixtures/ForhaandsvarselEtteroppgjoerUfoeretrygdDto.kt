@@ -41,7 +41,7 @@ fun createForhaandsvarselEtteroppgjoerUfoeretrygdDtoOpplysningerOmEtteroppgjoret
             inntekt = Inntekt(emptyList(), Kroner(0)),
             fratrekk = Fratrekk(emptyList(), Kroner(0)),
         ),
-        pensjonsgivendeInntektBruktIBeregningen = Kroner(0),
+        pensjonsgivendeInntektBruktIBeregningen = Kroner(400000),
         periode = Year(2022),
         totaltAvvik = Kroner(50000),
         ufoeretrygd = AvviksResultat(
