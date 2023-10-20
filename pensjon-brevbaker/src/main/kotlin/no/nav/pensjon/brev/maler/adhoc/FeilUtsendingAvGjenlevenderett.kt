@@ -12,7 +12,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 @TemplateModelHelpers
 object FeilUtsendingAvGjenlevenderett : AutobrevTemplate<EmptyBrevdata> {
 
-    override val kode: Brevkode.AutoBrev = Brevkode.AutoBrev.PE_ADHOC_FEILUTSENDING_GJENLEVENDERETT
+    override val kode: Brevkode.AutoBrev = Brevkode.AutoBrev.PE_2023_FEIL_INFOBREV_AP_SENDT_BRUKER
 
     override val template = createTemplate(
         name = kode.name,
