@@ -636,12 +636,14 @@ data class OmBeregningAvUfoeretrygd(
         }
 
         paragraph {
-            val inntektFoerFratrekk = pensjonsgivendeInntekt.inntekt.sum.format()
-            textExpr(
-                Bokmal to "I ".expr() + periode.format() + " var den pensjonsgivende inntekten din " + inntektFoerFratrekk + " kroner.",
-                Nynorsk to "I ".expr() + periode.format() + " var den pensjonsgivande inntekta di " + inntektFoerFratrekk + " kroner.",
-                English to "In ".expr() + periode.format() + ", your pensionable income was NOK " + inntektFoerFratrekk + ".",
-            )
+            showIf(pensjonsgivendeInntekt.inntekt.inntekter.isNotEmpty()) {
+                val inntektFoerFratrekk = pensjonsgivendeInntekt.inntekt.sum.format()
+                textExpr(
+                    Bokmal to "I ".expr() + periode.format() + " var den pensjonsgivende inntekten din " + inntektFoerFratrekk + " kroner.",
+                    Nynorsk to "I ".expr() + periode.format() + " var den pensjonsgivande inntekta di " + inntektFoerFratrekk + " kroner.",
+                    English to "In ".expr() + periode.format() + ", your pensionable income was NOK " + inntektFoerFratrekk + ".",
+                )
+            }
             showIf(pensjonsgivendeInntekt.fratrekk.fratrekk.isNotEmpty()) {
                 val inntektEtterFratrekk = pensjonsgivendeInntektBruktIBeregningen.format()
                 textExpr(
