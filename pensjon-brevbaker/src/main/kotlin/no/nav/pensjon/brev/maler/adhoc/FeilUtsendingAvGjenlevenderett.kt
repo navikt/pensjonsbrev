@@ -21,7 +21,7 @@ object FeilUtsendingAvGjenlevenderett : AutobrevTemplate<EmptyBrevdata> {
         letterMetadata = LetterMetadata(
             displayTitle = "NAV har sendt deg feil brev",
             isSensitiv = false,
-            distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
+            distribusjonstype = LetterMetadata.Distribusjonstype.ANNET,
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
         )
     ) {
@@ -38,7 +38,7 @@ object FeilUtsendingAvGjenlevenderett : AutobrevTemplate<EmptyBrevdata> {
                     Bokmal to "11. oktober 2023 sendte NAV deg et brev om nye regler for gjenlevenderett i alderspensjonen."
                             + " De nye reglene gjelder ikke for deg som har alderspensjon basert på egen opptjening.",
                     Nynorsk to "11. oktober 2023 sendte NAV deg eit brev om nye reglar for attlevenderett i alderspensjonen."
-                            + " De nye reglane gjelder ikkje for deg som har alderspensjon basert på eiga opptening.",
+                            + " Dei nye reglane gjeld ikkje for deg som har alderspensjon basert på eiga opptening.",
                     English to "11 October 2023, NAV sent a letter to you informing about the new rules for survivor's rights in the retirement pension."
                             + " The new rules do not apply to you, as your current retirement pension is based on your earned pension rights."
                 )
@@ -46,14 +46,14 @@ object FeilUtsendingAvGjenlevenderett : AutobrevTemplate<EmptyBrevdata> {
             paragraph {
                 text(
                     Bokmal to "Du kan derfor se bort fra det brevet du fikk. Du vil heller ikke få noe vedtak om dette senere i år.",
-                    Nynorsk to "Du kan difor se bort frå det brevet du fikk. Du vil heller ikkje få noe vedtak om dette senere i år.",
+                    Nynorsk to "Du kan difor sjå vekk frå det brevet du fekk. Du vil heller ikkje få noko vedtak om dette seinare i år.",
                     English to "You can therefore disregard the letter you received. Also, you will not receive a decision letter later in the year."
                 )
             }
             paragraph {
                 text(
                     Bokmal to "Vi beklager feilen!",
-                    Nynorsk to "Vi beklager feilen!",
+                    Nynorsk to "Vi orsakar feilen!",
                     English to "We apologise for the error."
                 )
             }
