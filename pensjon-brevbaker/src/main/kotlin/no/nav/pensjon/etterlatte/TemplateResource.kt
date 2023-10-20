@@ -22,7 +22,8 @@ import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.foerstegangsvedtak.Inn
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.opphoer.Opphoer
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.opphoer.OpphoerGenerell
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.RevurderingEndring
-import no.nav.pensjon.etterlatte.maler.tilbakekreving.Tilbakekreving
+import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingFerdig
+import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingInnhold
 
 val prodAutobrevTemplates: Set<EtterlatteTemplate<*>> =
     setOf(
@@ -46,7 +47,8 @@ val prodAutobrevTemplates: Set<EtterlatteTemplate<*>> =
         RevurderingEndring,
         Opphoer,
         OpphoerGenerell,
-        Tilbakekreving,
+        TilbakekrevingInnhold,
+        TilbakekrevingFerdig,
         TomMal
     )
 

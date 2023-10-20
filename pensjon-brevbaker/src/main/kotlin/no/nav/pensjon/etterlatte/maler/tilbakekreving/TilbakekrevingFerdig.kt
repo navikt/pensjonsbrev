@@ -14,22 +14,28 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
+import no.nav.pensjon.etterlatte.maler.BrevDTO
+import no.nav.pensjon.etterlatte.maler.Element
+import no.nav.pensjon.etterlatte.maler.Hovedmal
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
-import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingDTOSelectors.erBP
-import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingDTOSelectors.erOMS
+import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
+import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingFerdigDTOSelectors.erBP
+import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingFerdigDTOSelectors.erOMS
+import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingFerdigDTOSelectors.innhold
 
-data class TilbakekrevingDTO(
+data class TilbakekrevingFerdigDTO(
+    override val innhold: List<Element>,
     val erOMS: Boolean,
     val erBP: Boolean,
-)
+) : BrevDTO
 
 @TemplateModelHelpers
-object Tilbakekreving : EtterlatteTemplate<TilbakekrevingDTO> {
-    override val kode: EtterlatteBrevKode = EtterlatteBrevKode.TILBAKEKREVING
+object TilbakekrevingFerdig : EtterlatteTemplate<TilbakekrevingFerdigDTO>, Hovedmal {
+    override val kode: EtterlatteBrevKode = EtterlatteBrevKode.TILBAKEKREVING_FERDIG
 
     override val template = createTemplate(
         name = kode.name,
-        letterDataType = TilbakekrevingDTO::class,
+        letterDataType = TilbakekrevingFerdigDTO::class,
         languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(
             displayTitle = "Vedtak - Tilbakekreving",
@@ -41,30 +47,20 @@ object Tilbakekreving : EtterlatteTemplate<TilbakekrevingDTO> {
         title {
             text(
                 Bokmal to "Du må betale tilbake gjenlevendepensjon",
-                Nynorsk to "TODO nynorsk",
-                English to "TODO engelsk"
+                Nynorsk to "Du må betale tilbake gjenlevendepensjon",
+                English to "Du må betale tilbake gjenlevendepensjon"
             )
         }
         outline {
-            includePhrase(TilbakekrevingInnhold)
+
+            konverterElementerTilBrevbakerformat(innhold)
+
             includePhrase(DuHarRettTilAaKlage)
             includePhrase(DuHarRettTilInnsyn)
             includePhrase(HarDuSpoersmaal(erOMS, erBP))
         }
-    }
-}
 
-private object TilbakekrevingInnhold : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-        paragraph {
-            text(
-                Bokmal to """
-                    HER KOMMER INNHOLD TIL TILBAKEKREVINGSBREV
-               """.trimIndent(), // TODO
-                Nynorsk to "",
-                English to ""
-            )
-        }
+        // TODO EY-2806 VEDLEGG
     }
 }
 
@@ -92,7 +88,7 @@ Klagen sendes til ${Constants.POSTADRESSE}.
         }
         paragraph {
             text(
-                Bokmal to "RESTERENDE FOR KLAGE KOMMER", // TODO
+                Bokmal to "RESTERENDE FOR KLAGE KOMMER", // TODO EY-2806
                 Nynorsk to "",
                 English to "",
             )
