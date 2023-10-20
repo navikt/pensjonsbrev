@@ -21,6 +21,8 @@ import no.nav.pensjon.etterlatte.fixtures.createOMSInnvilgelseDTO
 import no.nav.pensjon.etterlatte.fixtures.createOMSInnvilgelseFoerstegangsvedtakDTO
 import no.nav.pensjon.etterlatte.fixtures.createOMSOpphoerDTO
 import no.nav.pensjon.etterlatte.fixtures.createOMSRevurderingEndringDTO
+import no.nav.pensjon.etterlatte.fixtures.createTilbakekrevingFerdigDTO
+import no.nav.pensjon.etterlatte.fixtures.createTilbakekrevingInnholdDTO
 import no.nav.pensjon.etterlatte.fixtures.createTomMal
 import no.nav.pensjon.etterlatte.maler.ManueltBrevDTO
 import no.nav.pensjon.etterlatte.maler.TomMal
@@ -38,6 +40,8 @@ import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.foerstegangsvedtak.Foe
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.foerstegangsvedtak.OMSInnvilgelseFoerstegangsvedtakDTO
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.opphoer.OMSOpphoerDTO
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OMSRevurderingEndringDTO
+import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingFerdigDTO
+import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingInnholdDTO
 import java.time.LocalDate
 import kotlin.reflect.KClass
 
@@ -86,6 +90,8 @@ object Fixtures {
             BarnepensjonRevurderingSoeskenjusteringDTO::class -> createBarnepensjonRevurderingSoeskenjusteringDTO() as T
             BarnepensjonRevurderingOmgjoeringAvFarskapDTO::class -> createBarnepensjonRevurderingOmgjoeringAvFarskapDTO() as T
             BarnepensjonAvslagIkkeYrkesskadeDTO::class -> createBarnepensjonAvslagIkkeYrkesskadeDTO() as T
+            TilbakekrevingInnholdDTO::class -> createTilbakekrevingInnholdDTO() as T
+            TilbakekrevingFerdigDTO::class -> createTilbakekrevingFerdigDTO() as T
             TomMal::class -> createTomMal() as T
             Unit::class -> Unit as T
 
