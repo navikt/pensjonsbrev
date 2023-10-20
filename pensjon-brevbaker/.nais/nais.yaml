@@ -59,8 +59,6 @@ spec:
        - {{url}}
       {{/each}}
   env:
-    - name: PDF_BYGGER_MAX_RETRIES
-      value: "250"
     {{#each env as |e|}}
        - name: {{e.name }}
          value: {{{e.value }}}

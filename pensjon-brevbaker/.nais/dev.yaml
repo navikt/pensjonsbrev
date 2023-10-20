@@ -5,6 +5,8 @@ ingresses:
 env:
   - name: PDF_BUILDER_URL
     value: "http://pensjon-pdf-bygger:8080"
+  - name: PDF_BYGGER_MAX_RETRIES
+    value: "250"
 
 preAuthorized:
   - name: pensjon-pen-q0
