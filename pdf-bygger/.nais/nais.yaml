@@ -33,16 +33,17 @@ spec:
   resources:
     requests:
       cpu: "2"
-      memory: "600Mi"
+      memory: "2048Mi"
     limits:
-      cpu: "4"
-      memory: "1024Mi"
+      memory: "8192Mi"
   accessPolicy:
     inbound:
       rules:
         - application: {{brevbaker-app}}
-#  env:
-#    {{#each env as |e|}}
-#       - name: {{e.name }}
-#         value: {{{e.value }}}
-#    {{/each}}
+  env:
+    - name: PDF_BYGGER_COMPILE_TIMEOUT
+      value: "120s"
+    - name: PDF_BYGGER_LATEX_PARALLELISM
+      value: "16"
+    - name: PDF_BYGGER_COMPILE_QUEUE_WAIT_TIMEOUT
+      value: "4s"
