@@ -59,7 +59,7 @@ spec:
        - {{url}}
       {{/each}}
   env:
-    {{#each env as |e|}}
-       - name: {{e.name }}
-         value: {{{e.value }}}
-    {{/each}}
+    - name: PDF_BUILDER_URL
+      value: "http://pensjon-pdf-bygger:8080"
+    - name: PDF_BYGGER_MAX_RETRIES
+      value: "250"
