@@ -54,6 +54,7 @@ fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config
     val pensjonPersonDataService = PensjonPersonDataService(skribentenConfig.getConfig("services.pensjon_persondata"), authService)
     val kodeverkService = KodeverkService(skribentenConfig.getConfig("services.kodeverk"))
     val pdlService = PdlService(skribentenConfig.getConfig("services.pdl"), authService)
+    val krrService = KrrService(skribentenConfig.getConfig("services.krr"), authService)
     val microsoftGraphService =
         MicrosoftGraphService(skribentenConfig.getConfig("services.microsoftgraph"), authService)
     val brevbakerService = BrevbakerService(skribentenConfig.getConfig("services.brevbaker"), authService)
