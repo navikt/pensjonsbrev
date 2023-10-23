@@ -54,9 +54,10 @@ jobs:
       - name: "Build and publish container image to GAR"
         uses: nais/docker-build-push@v0
         id: docker-push
+        if: (github.event_name == 'push' && github.ref == 'refs/heads/main') || github.event_name == 'workflow_dispatch'
         with:
           team: pensjonsbrev
-          tag: brevbaker
+          image_suffix: brevbaker
           push_image: true
           pull: true
           docker_context: ./pensjon-brevbaker
@@ -64,9 +65,10 @@ jobs:
           project_id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
           identity_provider: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
       - name: "Publish container image to ghcr.io"
-        run: "echo $GITHUB_TOKEN | docker login --username $GITHUB_REPOSITORY --password-stdin https://ghcr.io\
-        \ && docker pull ${{ steps.docker-push.outputs.image }}\
-        \ && docker tag ${{ steps.docker-push.outputs.image }} ${IMAGE_BREVBAKER} && docker push ${IMAGE_BREVBAKER}"
+        run: |
+          echo $GITHUB_TOKEN | docker login --username $GITHUB_REPOSITORY --password-stdin https://ghcr.io
+          [ -n "${{ steps.docker-push.outputs.image }}" ] && docker pull ${{ steps.docker-push.outputs.image }} && docker tag ${{ steps.docker-push.outputs.image }} ${IMAGE_BREVBAKER} || docker build --pull --tag ${IMAGE_BREVBAKER} pensjon-brevbaker
+          docker push ${IMAGE_BREVBAKER}
         env:
           "GITHUB_TOKEN": "${{ secrets.GITHUB_TOKEN }}"
 
@@ -92,12 +94,13 @@ jobs:
           "java-version": "17"
       - name: "compile and run tests"
         run: "./gradlew :pdf-bygger:build"
-      - name: "Build and publish container image"
+      - name: "Build and publish container image to GAR"
         uses: nais/docker-build-push@v0
         id: docker-push
+        if: (github.event_name == 'push' && github.ref == 'refs/heads/main') || github.event_name == 'workflow_dispatch'
         with:
           team: pensjonsbrev
-          tag: pdf-bygger
+          image_suffix: pdf-bygger
           push_image: true
           pull: true
           docker_context: ./pdf-bygger
@@ -105,9 +108,10 @@ jobs:
           project_id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
           identity_provider: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
       - name: "Publish container image to ghcr.io"
-        run: "echo $GITHUB_TOKEN | docker login --username $GITHUB_REPOSITORY --password-stdin https://ghcr.io\
-        \ && docker pull ${{ steps.docker-push.outputs.image }}\
-        \ && docker tag ${{ steps.docker-push.outputs.image }} ${IMAGE_PDF_BYGGER} && docker push ${IMAGE_PDF_BYGGER}"
+        run: |
+          echo $GITHUB_TOKEN | docker login --username $GITHUB_REPOSITORY --password-stdin https://ghcr.io
+          [ -n "${{ steps.docker-push.outputs.image }}" ] && docker pull ${{ steps.docker-push.outputs.image }} && docker tag ${{ steps.docker-push.outputs.image }} ${IMAGE_PDF_BYGGER}  || docker build --pull --tag ${IMAGE_PDF_BYGGER} pdf-bygger
+          docker push ${IMAGE_PDF_BYGGER}
         env:
           "GITHUB_TOKEN": "${{ secrets.GITHUB_TOKEN }}"
 
@@ -122,13 +126,15 @@ jobs:
         with:
           filters: |
             latex:
-              - 'pensjon-brevbaker/src/main/resources/latex/**'
+              - 'containerFiles/latex/**'
 
   runIntegrationTests:
     name: "Integration tests"
     needs: [ build-brevbaker, build-pdfbygger, changes ]
     services:
       pdf-bygger:
+        env:
+          PDF_BYGGER_COMPILE_TMP_DIR: "/tmp"
         ports:
           - 8081:8080
         image: "ghcr.io/${{ github.repository }}/pdf-bygger:${{ github.sha }}"
@@ -181,17 +187,17 @@ jobs:
           report_paths: '**/build/test-results/integrationTest/TEST-*.xml'
       - name: Convert visual-test pdfs
         uses: jruipinto/ImageMagick-action@v1
-        if: ${{ needs.changes.outputs.latex == 'true' }}
+        if: ${{ needs.changes.outputs.latex == 'true' || github.ref == 'refs/heads/main' }}
         with:
           command: mogrify -path pensjon-brevbaker/build/test_visual -format png -background white -alpha remove -alpha off -density 300 -quality 85 pensjon-brevbaker/build/test_visual/pdf/*.pdf
       - uses: actions/setup-node@v3
-        if: ${{ needs.changes.outputs.latex == 'true' }}
+        if: ${{ needs.changes.outputs.latex == 'true' || github.ref == 'refs/heads/main' }}
         with:
           node-version: '14'
       - run: npm install --save-dev @percy/cli
-        if: ${{ needs.changes.outputs.latex == 'true' }}
+        if: ${{ needs.changes.outputs.latex == 'true' || github.ref == 'refs/heads/main' }}
       - name: Publish visual-tests to percy
-        if: ${{ needs.changes.outputs.latex == 'true' }}
+        if: ${{ needs.changes.outputs.latex == 'true' || github.ref == 'refs/heads/main' }}
         run: |
           npx percy upload pensjon-brevbaker/build/test_visual/ > percy.log
           cat percy.log

@@ -2,9 +2,6 @@ app-name: "pensjon-brevbaker"
 pdf-bygger-app: "pensjon-pdf-bygger"
 ingresses:
   - "https://pensjon-brevbaker.intern.nav.no"
-env:
-  - name: PDF_BUILDER_URL
-    value: "http://pensjon-pdf-bygger:8080"
 
 preAuthorized:
   - name: pensjon-pen
