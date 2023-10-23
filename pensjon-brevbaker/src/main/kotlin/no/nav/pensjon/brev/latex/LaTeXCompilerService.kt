@@ -69,7 +69,6 @@ class LaTeXCompilerService(private val pdfByggerUrl: String, maxRetries: Int = 3
         if (maxRetries > 0) {
             install(HttpRequestRetry) {
                 this.maxRetries = maxRetries
-//                exponentialDelay(maxDelayMs = 10_000)
                 delayMillis {
                     minOf(2.0.pow(it).toLong(), 1000L) + Random.nextLong(100)
                 }
@@ -81,8 +80,6 @@ class LaTeXCompilerService(private val pdfByggerUrl: String, maxRetries: Int = 3
                             || actualCause is IOException
                     if (!doRetry) {
                         logger.error("Won't retry for exception: ${actualCause.message}", actualCause)
-                    } else {
-                        logger.info("Retrying compile")
                     }
                     doRetry
                 }
@@ -107,7 +104,8 @@ class LaTeXCompilerService(private val pdfByggerUrl: String, maxRetries: Int = 3
                 // The solution is to seemingly do the same, but with creating a objectmapper outside of content-negotiation instead of simply using the following line:
                 // setBody(PdfCompilationInput(latexLetter.base64EncodedFiles()))
                 // this needs further investigation
-                setBody(objectmapper.writeValueAsBytes(PdfCompilationInput(latexLetter.base64EncodedFiles())))
+                setBody(PdfCompilationInput(latexLetter.base64EncodedFiles()))
+//                setBody(objectmapper.writeValueAsBytes(PdfCompilationInput(latexLetter.base64EncodedFiles())))
             }.body()
         } ?: throw LatexTimeoutException("Spent more than $timeout trying to compile latex to pdf")
 

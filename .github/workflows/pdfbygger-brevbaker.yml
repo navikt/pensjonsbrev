@@ -129,6 +129,8 @@ jobs:
     needs: [ build-brevbaker, build-pdfbygger, changes ]
     services:
       pdf-bygger:
+        env:
+          PDF_BYGGER_COMPILE_TMP_DIR: "/tmp"
         ports:
           - 8081:8080
         image: "ghcr.io/${{ github.repository }}/pdf-bygger:${{ github.sha }}"

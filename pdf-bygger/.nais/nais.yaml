@@ -48,6 +48,8 @@ spec:
     - name: PDF_BYGGER_COMPILE_TIMEOUT
       value: "120s"
     - name: PDF_BYGGER_LATEX_PARALLELISM
-      value: "16"
+      value: "8"
     - name: PDF_BYGGER_COMPILE_QUEUE_WAIT_TIMEOUT
-      value: "4s"
+      value: "1s"
+    - name: PDF_BYGGER_COMPILE_TMP_DIR
+      value: "/app/tmp"
