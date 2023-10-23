@@ -12,7 +12,7 @@ plugins {
     application
     kotlin("jvm")
     id("com.google.devtools.ksp")
-    id("com.github.johnrengelman.shadow")
+    id("io.ktor.plugin")
 }
 
 group = "no.nav.pensjon.brev"
@@ -20,6 +20,12 @@ version = "0.0.1-SNAPSHOT"
 
 application {
     mainClass.set("io.ktor.server.netty.EngineMain")
+}
+
+ktor {
+    fatJar {
+        archiveFileName.set("${project.name}.jar")
+    }
 }
 
 repositories {
@@ -35,12 +41,6 @@ tasks {
     }
     compileJava {
         targetCompatibility = javaTarget
-    }
-
-    shadowJar {
-        archiveBaseName.set(project.name)
-        archiveClassifier.set("")
-        archiveVersion.set("")
     }
 
     test {

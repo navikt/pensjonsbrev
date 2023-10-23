@@ -9,7 +9,7 @@ val micrometerVersion: String by project
 plugins {
     kotlin("jvm")
     application
-    id("com.github.johnrengelman.shadow")
+    id("io.ktor.plugin")
 }
 
 group="no.nav.pensjon.brev"
@@ -26,12 +26,6 @@ tasks {
 
     compileJava {
         targetCompatibility = javaTarget
-    }
-
-    shadowJar {
-        archiveBaseName.set(project.name)
-        archiveClassifier.set("")
-        archiveVersion.set("")
     }
 }
 
@@ -61,4 +55,10 @@ dependencies {
 
 application {
     mainClass.set("io.ktor.server.netty.EngineMain")
+}
+
+ktor {
+    fatJar {
+        archiveFileName.set("${project.name}.jar")
+    }
 }
