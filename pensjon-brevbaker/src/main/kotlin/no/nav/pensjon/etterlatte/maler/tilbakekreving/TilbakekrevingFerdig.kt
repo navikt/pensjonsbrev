@@ -60,6 +60,7 @@ object TilbakekrevingFerdig : EtterlatteTemplate<TilbakekrevingFerdigDTO>, Hoved
             includePhrase(HarDuSpoersmaal(data.erOMS, data.erBP))
         }
 
+        includeAttachment(tilbakekrevingVedlegg, data)
     }
 }
 
