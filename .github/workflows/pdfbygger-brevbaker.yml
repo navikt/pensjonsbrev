@@ -23,7 +23,6 @@ env:
   "IMAGE_BREVBAKER": "ghcr.io/${{ github.repository }}/brevbaker:${{ github.sha }}"
   "IMAGE_PDF_BYGGER": "ghcr.io/${{ github.repository }}/pdf-bygger:${{ github.sha }}"
 
-# TODO: Endre slik at bilder kun publiseres til GAR om det er fra main.
 jobs:
   "build-brevbaker":
     name: "build brevbaker"
@@ -55,6 +54,7 @@ jobs:
       - name: "Build and publish container image to GAR"
         uses: nais/docker-build-push@v0
         id: docker-push
+        if: (github.event_name == 'push' && github.ref == 'refs/heads/main') || github.event_name == 'workflow_dispatch'
         with:
           team: pensjonsbrev
           image_suffix: brevbaker
@@ -65,9 +65,10 @@ jobs:
           project_id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
           identity_provider: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
       - name: "Publish container image to ghcr.io"
-        run: "echo $GITHUB_TOKEN | docker login --username $GITHUB_REPOSITORY --password-stdin https://ghcr.io\
-        \ && docker pull ${{ steps.docker-push.outputs.image }}\
-        \ && docker tag ${{ steps.docker-push.outputs.image }} ${IMAGE_BREVBAKER} && docker push ${IMAGE_BREVBAKER}"
+        run: |
+          echo $GITHUB_TOKEN | docker login --username $GITHUB_REPOSITORY --password-stdin https://ghcr.io
+          docker pull ${{ steps.docker-push.outputs.image }} && docker tag ${{ steps.docker-push.outputs.image }} ${IMAGE_BREVBAKER} || docker build --pull --tag ${IMAGE_BREVBAKER} pensjon-brevbaker
+          docker push ${IMAGE_BREVBAKER}
         env:
           "GITHUB_TOKEN": "${{ secrets.GITHUB_TOKEN }}"
 
@@ -96,6 +97,7 @@ jobs:
       - name: "Build and publish container image to GAR"
         uses: nais/docker-build-push@v0
         id: docker-push
+        if: (github.event_name == 'push' && github.ref == 'refs/heads/main') || github.event_name == 'workflow_dispatch'
         with:
           team: pensjonsbrev
           image_suffix: pdf-bygger
@@ -106,9 +108,10 @@ jobs:
           project_id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
           identity_provider: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
       - name: "Publish container image to ghcr.io"
-        run: "echo $GITHUB_TOKEN | docker login --username $GITHUB_REPOSITORY --password-stdin https://ghcr.io\
-        \ && docker pull ${{ steps.docker-push.outputs.image }}\
-        \ && docker tag ${{ steps.docker-push.outputs.image }} ${IMAGE_PDF_BYGGER} && docker push ${IMAGE_PDF_BYGGER}"
+        run: |
+          echo $GITHUB_TOKEN | docker login --username $GITHUB_REPOSITORY --password-stdin https://ghcr.io
+          docker pull ${{ steps.docker-push.outputs.image }} && docker tag ${{ steps.docker-push.outputs.image }} ${IMAGE_PDF_BYGGER}  || docker build --pull --tag ${IMAGE_PDF_BUILDER} pdf-bygger
+          docker push ${IMAGE_PDF_BYGGER}"
         env:
           "GITHUB_TOKEN": "${{ secrets.GITHUB_TOKEN }}"
 
