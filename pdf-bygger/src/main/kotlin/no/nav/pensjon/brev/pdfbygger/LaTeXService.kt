@@ -15,6 +15,7 @@ import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 
 private const val COMPILATION_RUNS = 2
+private val TMP_DIR = Path.of("/app/tmp")
 
 class LaTeXService(
     latexCommand: String,
@@ -48,7 +49,7 @@ class LaTeXService(
     }
 
     private suspend fun createLetter(latexFiles: Map<String, String>): PDFCompilationResponse {
-        val tmpDir = createTempDirectory()
+        val tmpDir = createTempDirectory(TMP_DIR)
 
         return try {
             latexFiles.forEach {

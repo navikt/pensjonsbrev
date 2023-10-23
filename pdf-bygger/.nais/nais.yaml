@@ -40,6 +40,10 @@ spec:
     inbound:
       rules:
         - application: {{brevbaker-app}}
+  filesFrom:
+    - emptyDir:
+        medium: Memory
+      mountPath: /app/tmp
   env:
     - name: PDF_BYGGER_COMPILE_TIMEOUT
       value: "120s"
