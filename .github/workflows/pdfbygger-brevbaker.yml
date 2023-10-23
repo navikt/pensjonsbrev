@@ -23,6 +23,7 @@ env:
   "IMAGE_BREVBAKER": "ghcr.io/${{ github.repository }}/brevbaker:${{ github.sha }}"
   "IMAGE_PDF_BYGGER": "ghcr.io/${{ github.repository }}/pdf-bygger:${{ github.sha }}"
 
+# TODO: Endre slik at bilder kun publiseres til GAR om det er fra main.
 jobs:
   "build-brevbaker":
     name: "build brevbaker"
@@ -92,7 +93,7 @@ jobs:
           "java-version": "17"
       - name: "compile and run tests"
         run: "./gradlew :pdf-bygger:build"
-      - name: "Build and publish container image"
+      - name: "Build and publish container image to GAR"
         uses: nais/docker-build-push@v0
         id: docker-push
         with:

@@ -104,8 +104,7 @@ class LaTeXCompilerService(private val pdfByggerUrl: String, maxRetries: Int = 3
                 // The solution is to seemingly do the same, but with creating a objectmapper outside of content-negotiation instead of simply using the following line:
                 // setBody(PdfCompilationInput(latexLetter.base64EncodedFiles()))
                 // this needs further investigation
-                setBody(PdfCompilationInput(latexLetter.base64EncodedFiles()))
-//                setBody(objectmapper.writeValueAsBytes(PdfCompilationInput(latexLetter.base64EncodedFiles())))
+                setBody(objectmapper.writeValueAsBytes(PdfCompilationInput(latexLetter.base64EncodedFiles())))
             }.body()
         } ?: throw LatexTimeoutException("Spent more than $timeout trying to compile latex to pdf")
 
