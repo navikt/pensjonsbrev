@@ -70,6 +70,7 @@ class LatexServiceTest {
                     latexParallelism = 1,
                     compileTimeout = 100.milliseconds,
                     queueWaitTimeout = 1.seconds,
+                    tmpBaseDir = null,
                 )
                 assertResult<Failure.Timeout>(service.producePDF(emptyMap()))
 
@@ -100,6 +101,7 @@ class LatexServiceTest {
             latexParallelism = 1,
             compileTimeout = 60.seconds,
             queueWaitTimeout = 60.seconds,
+            tmpBaseDir = null,
         )
         runBlocking {
             assertResult<Failure.Server>(service.producePDF(emptyMap())) {
@@ -115,6 +117,7 @@ class LatexServiceTest {
             latexParallelism = 1,
             compileTimeout = 60.seconds,
             queueWaitTimeout = 60.seconds,
+            tmpBaseDir = null,
         )
         runBlocking {
             assertResult<Base64PDF>(service.producePDF(emptyMap()))
@@ -128,6 +131,7 @@ class LatexServiceTest {
             latexParallelism = 1,
             compileTimeout = 500.milliseconds,
             queueWaitTimeout = 100.milliseconds,
+            tmpBaseDir = null,
         )
 
         runBlocking {
@@ -154,6 +158,7 @@ class LatexServiceTest {
             latexParallelism = 1,
             compileTimeout = 300.seconds,
             queueWaitTimeout = 50.milliseconds,
+            tmpBaseDir = null,
         )
         runBlocking {
             val blockingCompilation = launch { service.producePDF(emptyMap()) }
@@ -184,6 +189,7 @@ class LatexServiceTest {
             latexParallelism = 1,
             compileTimeout = 500.milliseconds,
             queueWaitTimeout = 1.seconds,
+            tmpBaseDir = null,
         )
         runBlocking {
             val blockingCompilation = launch { service.producePDF(emptyMap()) }
@@ -210,6 +216,7 @@ class LatexServiceTest {
             latexParallelism = 0,
             compileTimeout = 500.milliseconds,
             queueWaitTimeout = 1.seconds,
+            tmpBaseDir = null,
         )
         runBlocking {
             val requests = List(Runtime.getRuntime().availableProcessors() * 10) {
@@ -232,7 +239,7 @@ class LatexServiceTest {
 
     private fun producePdf(scriptName: String, files: Map<String, String> = emptyMap(), timeout: Duration = 60.seconds): PDFCompilationResponse =
         runBlocking {
-            LaTeXService(latexCommand = "/usr/bin/env bash ${getScriptPath(scriptName)}", compileTimeout = timeout, queueWaitTimeout = timeout, latexParallelism = 1).producePDF(files)
+            LaTeXService(latexCommand = "/usr/bin/env bash ${getScriptPath(scriptName)}", compileTimeout = timeout, queueWaitTimeout = timeout, latexParallelism = 1, tmpBaseDir = null).producePDF(files)
         }
 
     private fun Base64PDF.decodePlaintext(): String =

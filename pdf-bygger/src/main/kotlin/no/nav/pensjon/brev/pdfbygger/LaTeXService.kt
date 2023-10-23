@@ -15,13 +15,13 @@ import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 
 private const val COMPILATION_RUNS = 2
-private val TMP_DIR = Path.of("/app/tmp")
 
 class LaTeXService(
     latexCommand: String,
     latexParallelism: Int,
     private val compileTimeout: Duration,
     private val queueWaitTimeout: Duration,
+    private val tmpBaseDir: Path? =  Path.of("/app/tmp")
 ) {
     private val logger = LoggerFactory.getLogger(this::class.java)
     private val decoder = Base64.getDecoder()
@@ -49,7 +49,7 @@ class LaTeXService(
     }
 
     private suspend fun createLetter(latexFiles: Map<String, String>): PDFCompilationResponse {
-        val tmpDir = createTempDirectory(TMP_DIR)
+        val tmpDir = createTempDirectory(tmpBaseDir)
 
         return try {
             latexFiles.forEach {
