@@ -19,6 +19,7 @@ import io.micrometer.core.instrument.Clock
 import io.micrometer.prometheus.PrometheusConfig
 import io.micrometer.prometheus.PrometheusMeterRegistry
 import io.prometheus.client.CollectorRegistry
+import java.nio.file.Path
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
@@ -38,7 +39,8 @@ fun Application.module() {
         compileTimeout = getProperty("pdfBygger.compileTimeout")?.let { Duration.parse(it) } ?: 300.seconds,
         queueWaitTimeout = getProperty("pdfBygger.compileQueueWaitTimeout")?.let { Duration.parse(it) } ?: 4.seconds,
         latexParallelism = parallelism,
-        latexCommand = getProperty("pdfBygger.latexCommand") ?: "xelatex --interaction=nonstopmode -halt-on-error"
+        latexCommand = getProperty("pdfBygger.latexCommand") ?: "xelatex --interaction=nonstopmode -halt-on-error",
+        tmpBaseDir = Path.of(environment.config.property("pdfBygger.compileTmpDir").getString()),
     )
 
     log.info("Target parallelism : $parallelism")

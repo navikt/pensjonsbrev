@@ -20,6 +20,8 @@ class PdfByggerAppTest {
     @Test
     fun appRuns() {
         testApplication {
+            appConfig()
+
             val response = client.get("/isAlive")
             assertEquals(HttpStatusCode.OK, response.status)
         }
@@ -87,16 +89,16 @@ class PdfByggerAppTest {
         }
     }
 
-    private fun ApplicationTestBuilder.appConfig(latexCommand: String, parallelism: Int, compileTimeout: Duration, queueTimeout: Duration) =
+    private fun ApplicationTestBuilder.appConfig(latexCommand: String? = null, parallelism: Int? = null, compileTimeout: Duration? = null, queueTimeout: Duration? = null) =
         environment {
-            config = ApplicationConfig(null).mergeWith(
-                MapApplicationConfig(
-                    "pdfBygger.latexCommand" to "/usr/bin/env bash $latexCommand",
-                    "pdfBygger.latexParallelism" to "$parallelism",
-                    "pdfBygger.compileTimeout" to "$compileTimeout",
-                    "pdfBygger.compileQueueWaitTimeout" to "$queueTimeout",
-                )
+            val overrides = listOfNotNull(
+                latexCommand?.let { "pdfBygger.latexCommand" to "/usr/bin/env bash $it" },
+                parallelism?.let { "pdfBygger.latexParallelism" to "$it" },
+                compileTimeout?.let { "pdfBygger.compileTimeout" to "$it" },
+                queueTimeout?.let { "pdfBygger.compileQueueWaitTimeout" to "$it" },
+                "pdfBygger.compileTmpDir" to "/tmp",
             )
+            config = ApplicationConfig(null).mergeWith(MapApplicationConfig(overrides))
         }
 
 }
