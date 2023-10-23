@@ -110,7 +110,7 @@ jobs:
       - name: "Publish container image to ghcr.io"
         run: |
           echo $GITHUB_TOKEN | docker login --username $GITHUB_REPOSITORY --password-stdin https://ghcr.io
-          [ -n "${{ steps.docker-push.outputs.image }}" ] && docker pull ${{ steps.docker-push.outputs.image }} && docker tag ${{ steps.docker-push.outputs.image }} ${IMAGE_PDF_BYGGER}  || docker build --pull --tag ${IMAGE_PDF_BUILDER} pdf-bygger
+          [ -n "${{ steps.docker-push.outputs.image }}" ] && docker pull ${{ steps.docker-push.outputs.image }} && docker tag ${{ steps.docker-push.outputs.image }} ${IMAGE_PDF_BYGGER}  || docker build --pull --tag ${IMAGE_PDF_BYGGER} pdf-bygger
           docker push ${IMAGE_PDF_BYGGER}"
         env:
           "GITHUB_TOKEN": "${{ secrets.GITHUB_TOKEN }}"
