@@ -11,14 +11,37 @@ import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brevbaker.api.model.Kroner
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.Delmal
 import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingInnholdDTOSelectors.harRenter
+import java.time.LocalDate
+import java.time.YearMonth
 
 data class TilbakekrevingInnholdDTO(
-    val harRenter: Boolean // TODO EY-2806
+    val erOMS: Boolean,
+    val erBP: Boolean,
+    val harRenter: Boolean,
+    val harStrafferettslig: Boolean,
+    val harForeldelse: Boolean,
+    val perioder: List<TilbakekrevingPeriode>,
+    val summer: TilbakekrevingBeloeper
+)
+
+data class TilbakekrevingPeriode(
+    val maaned: LocalDate,
+    val beloeper: TilbakekrevingBeloeper,
+    val resulatat: String
+)
+
+data class TilbakekrevingBeloeper(
+    val feilutbetaling: Kroner,
+    val bruttoTilbakekreving: Kroner,
+    val nettoTilbakekreving: Kroner,
+    val fradragSkatt: Kroner,
+    val renteTillegg: Kroner
 )
 
 @TemplateModelHelpers

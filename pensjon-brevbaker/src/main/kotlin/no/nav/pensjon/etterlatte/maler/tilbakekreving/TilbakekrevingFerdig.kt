@@ -19,14 +19,14 @@ import no.nav.pensjon.etterlatte.maler.Element
 import no.nav.pensjon.etterlatte.maler.Hovedmal
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
 import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
-import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingFerdigDTOSelectors.erBP
-import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingFerdigDTOSelectors.erOMS
+import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingFerdigDTOSelectors.data
 import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingFerdigDTOSelectors.innhold
+import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingInnholdDTOSelectors.erBP
+import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingInnholdDTOSelectors.erOMS
 
 data class TilbakekrevingFerdigDTO(
     override val innhold: List<Element>,
-    val erOMS: Boolean,
-    val erBP: Boolean,
+    val data: TilbakekrevingInnholdDTO
 ) : BrevDTO
 
 @TemplateModelHelpers
@@ -57,10 +57,9 @@ object TilbakekrevingFerdig : EtterlatteTemplate<TilbakekrevingFerdigDTO>, Hoved
 
             includePhrase(DuHarRettTilAaKlage)
             includePhrase(DuHarRettTilInnsyn)
-            includePhrase(HarDuSpoersmaal(erOMS, erBP))
+            includePhrase(HarDuSpoersmaal(data.erOMS, data.erBP))
         }
 
-        // TODO EY-2806 VEDLEGG
     }
 }
 
