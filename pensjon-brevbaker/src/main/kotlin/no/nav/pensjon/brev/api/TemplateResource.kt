@@ -9,12 +9,8 @@ import no.nav.pensjon.brev.template.*
 
 
 val prodAutobrevTemplates: Set<AutobrevTemplate<*>> = setOf(
-    FeilUtsendingAvGjenlevenderett,
+    AdhocGjenlevenderettFoed1954Til1957,
     ForhaandsvarselEtteroppgjoerUfoeretrygdAuto,
-    GjenlevendeInfoEtter1970,
-    GjenlevendeInfoFoer1971,
-    AdhocRegelendretGjenlevendetilleggKonvertert,
-    AdhocRegelendretGjenlevendetillegg,
     OmsorgEgenAuto,
     OpphoerBarnetilleggAuto,
     OpptjeningVedForhoeyetHjelpesats,
