@@ -81,7 +81,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, B
         }
         paragraph {
             textExpr(
-                Bokmal to "Folketrygdens grunnbeløp er per i dag ".expr() + grunnbeloep.format() + ". " +
+                Bokmal to "Folketrygdens grunnbeløp er per i dag ".expr() + grunnbeloep.format() + " kroner. " +
                         "Grunnbeløpet blir regulert 1. mai hvert år. Økningen etterbetales vanligvis juni hvert år.",
                 Nynorsk to "".expr(),
                 English to "".expr(),
@@ -91,7 +91,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, B
         paragraph {
             textExpr(
                 Bokmal to "Barnepensjonen utgjør 40 prosent av folketrygdens grunnbeløp (G) og fordeles på 12 utbetalinger i året. ".expr() +
-                        "Folketrygdens grunnbeløp er per i dag " + grunnbeloep.format() + ".",
+                        "Folketrygdens grunnbeløp er per i dag " + grunnbeloep.format() + " kroner.",
                 Nynorsk to "".expr(),
                 English to "".expr(),
             )

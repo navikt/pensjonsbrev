@@ -53,7 +53,7 @@ object BarnepensjonInnvilgelseFraser {
             }
             paragraph {
                 text(
-                    Language.Bokmal to "Pensjonen blir utbetalt innen den 20. i hver måned. Du finner utbetalingsdatoer på ${Constants.UTBETALING_URL}.",
+                    Language.Bokmal to "Pensjonen blir utbetalt innen den 20. i hver måned. Du finner utbetalingsdatoer på ${Constants.UTBETALINGSDATOER_URL}.",
                     Language.Nynorsk to "",
                     Language.English to "",
                 )

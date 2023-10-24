@@ -6,6 +6,7 @@ import no.nav.pensjon.etterlatte.maler.Beregningsperiode
 import no.nav.pensjon.etterlatte.maler.Utbetalingsinfo
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.ny.BarnepensjonInnvilgelseEnkelDTO
 import java.time.LocalDate
+import java.time.YearMonth
 
 fun createBarnepensjonInnvilgelseEnkelDTO() = BarnepensjonInnvilgelseEnkelDTO(
     utbetalingsinfo = Utbetalingsinfo(
@@ -34,5 +35,6 @@ fun createBarnepensjonInnvilgelseEnkelDTO() = BarnepensjonInnvilgelseEnkelDTO(
         navn = "Avdoed Avdoedesen",
         doedsdato = LocalDate.now().minusMonths(1),
     ),
-    vedtaksdato = LocalDate.now(),
+    vedtaksdato = YearMonth.now().atDay(1),
+    erEtterbetaling = true,
 )
