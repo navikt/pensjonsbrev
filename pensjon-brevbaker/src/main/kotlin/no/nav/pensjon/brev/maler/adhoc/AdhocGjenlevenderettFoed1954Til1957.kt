@@ -128,7 +128,7 @@ object AdhocGjenlevenderettFoed1954Til1957 : AutobrevTemplate<EmptyBrevdata> {
                 text(
                     Bokmal to "Du mister gjenlevenderetten hvis du gifter deg, flytter sammen med en du tidligere har vært gift med eller har barn med, eller får barn med en samboer.",
                     Nynorsk to "Du mistar attlevandetillegget om du giftar deg, flytter saman med ein du tidlegare har vore gift med eller har barn med, eller får barn med ein sambuar.",
-                    English to "You lose the right to survivor's rights if you marry, move in with a person with whom you were previously married, or give birth to a child with your cohabitee."
+                    English to "You forfeit survivor's rights if you marry, cohabit with a former spouse or parent of your children, or have children with a cohabitee."
                 )
             }
             paragraph {
