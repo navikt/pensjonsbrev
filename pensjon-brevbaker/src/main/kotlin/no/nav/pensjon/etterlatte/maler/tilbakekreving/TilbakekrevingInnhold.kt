@@ -1,24 +1,54 @@
 package no.nav.pensjon.etterlatte.maler.tilbakekreving
 
-import no.nav.pensjon.brev.template.Expression
-import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
+import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.Language.English
-import no.nav.pensjon.brev.template.OutlinePhrase
-import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.createTemplate
+import no.nav.pensjon.brev.template.dsl.expression.expr
+import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.dsl.textExpr
+import no.nav.pensjon.brevbaker.api.model.Kroner
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.Delmal
+import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingBeloeperSelectors.feilutbetaling
+import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingInnholdDTOSelectors.harForeldelse
 import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingInnholdDTOSelectors.harRenter
+import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingInnholdDTOSelectors.harStrafferettslig
+import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingInnholdDTOSelectors.summer
+import java.time.LocalDate
 
 data class TilbakekrevingInnholdDTO(
-    val harRenter: Boolean // TODO EY-2806
+    val sakType: SakType,
+    val harRenter: Boolean,
+    val harStrafferettslig: Boolean,
+    val harForeldelse: Boolean,
+    val perioder: List<TilbakekrevingPeriode>,
+    val summer: TilbakekrevingBeloeper
+)
+
+enum class SakType {
+    BP,
+    OMS
+}
+
+data class TilbakekrevingPeriode(
+    val maaned: LocalDate,
+    val beloeper: TilbakekrevingBeloeper,
+    val resulatat: String
+)
+
+data class TilbakekrevingBeloeper(
+    val feilutbetaling: Kroner,
+    val bruttoTilbakekreving: Kroner,
+    val nettoTilbakekreving: Kroner,
+    val fradragSkatt: Kroner,
+    val renteTillegg: Kroner
 )
 
 @TemplateModelHelpers
@@ -44,39 +74,58 @@ object TilbakekrevingInnhold : EtterlatteTemplate<TilbakekrevingInnholdDTO>, Del
             )
         }
         outline {
-            includePhrase(RedigerbartInnhold(harRenter))
-        }
-    }
-}
-
-private data class RedigerbartInnhold(
-    val harRenter: Expression<Boolean>
-) : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-        paragraph {
-            text(
-                Bokmal to """
-                    INNHOLD KAN FYLLES INN HER
-                """.trimIndent(),
-                Nynorsk to """
-                    INNHOLD KAN FYLLES INN HER
-                """.trimIndent(),
-                English to """
-                    INNHOLD KAN FYLLES INN HER
-                """.trimIndent()
-            )
-            showIf(harRenter) {
-                text(
-                    Bokmal to """
-                    INNHOLD OM RENTER..
-                """.trimIndent(),
-                    Nynorsk to """
-                    INNHOLD OM RENTER..
-                """.trimIndent(),
-                    English to """
-                    INNHOLD OM RENTER..
-                """.trimIndent()
+            paragraph {
+                val feilutbetaling = summer.feilutbetaling.format()
+                textExpr(
+                    Bokmal to "Det feilutbetalte beløpet er ".expr() + feilutbetaling + " kroner inkludert skatt.",
+                    Nynorsk to "Det feilutbetalte beløpet er ".expr() + feilutbetaling + " kroner inkludert skatt.",
+                    English to "Det feilutbetalte beløpet er ".expr() + feilutbetaling + " kroner inkludert skatt.",
                 )
+            }
+            showIf(harRenter) {
+                title2 {
+                    text(
+                        Bokmal to """
+                    INNHOLD OM RENTER..
+                """.trimIndent(),
+                        Nynorsk to """
+                    INNHOLD OM RENTER..
+                """.trimIndent(),
+                        English to """
+                    INNHOLD OM RENTER..
+                """.trimIndent()
+                    )
+                }
+            }
+            showIf(harStrafferettslig) {
+                title2 {
+                    text(
+                        Bokmal to """
+                    INNHOLD OM STRAFFERETTSLIG
+                """.trimIndent(),
+                        Nynorsk to """
+                    INNHOLD OM STRAFFERETTSLIG
+                """.trimIndent(),
+                        English to """
+                    INNHOLD OM STRAFFERETTSLIG
+                """.trimIndent()
+                    )
+                }
+                showIf(harForeldelse) {
+                    paragraph {
+                        text(
+                            Bokmal to """
+                    INNHOLD OM FORELDELSE
+                """.trimIndent(),
+                            Nynorsk to """
+                    INNHOLD OM FORELDELSE
+                """.trimIndent(),
+                            English to """
+                    INNHOLD OM FORELDELSE
+                """.trimIndent()
+                        )
+                    }
+                }
             }
         }
     }
