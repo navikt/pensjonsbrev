@@ -8,6 +8,7 @@ import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.createTemplate
+import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -21,8 +22,7 @@ import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
 import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
 import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingFerdigDTOSelectors.data
 import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingFerdigDTOSelectors.innhold
-import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingInnholdDTOSelectors.erBP
-import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingInnholdDTOSelectors.erOMS
+import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingInnholdDTOSelectors.sakType
 
 data class TilbakekrevingFerdigDTO(
     override val innhold: List<Element>,
@@ -45,11 +45,20 @@ object TilbakekrevingFerdig : EtterlatteTemplate<TilbakekrevingFerdigDTO>, Hoved
         ),
     ) {
         title {
-            text(
-                Bokmal to "Du må betale tilbake gjenlevendepensjon",
-                Nynorsk to "Du må betale tilbake gjenlevendepensjon",
-                English to "Du må betale tilbake gjenlevendepensjon"
-            )
+            showIf(data.sakType.equalTo(SakType.BP)) {
+                text(
+                    Bokmal to "Du må betale tilbake barnepensjon",
+                    Nynorsk to "Du må betale tilbake barnepensjon",
+                    English to "Du må betale tilbake barnepensjon"
+                )
+            }
+            showIf(data.sakType.equalTo(SakType.OMS)) {
+                text(
+                    Bokmal to "Du må betale tilbake omstillingstønad",
+                    Nynorsk to "Du må betale tilbake omstillingstønad",
+                    English to "Du må betale tilbake omstillingstønad"
+                )
+            }
         }
         outline {
 
@@ -57,7 +66,7 @@ object TilbakekrevingFerdig : EtterlatteTemplate<TilbakekrevingFerdigDTO>, Hoved
 
             includePhrase(DuHarRettTilAaKlage)
             includePhrase(DuHarRettTilInnsyn)
-            includePhrase(HarDuSpoersmaal(data.erOMS, data.erBP))
+            includePhrase(HarDuSpoersmaal(data.sakType))
         }
 
         includeAttachment(tilbakekrevingVedlegg, data)
@@ -118,10 +127,7 @@ På nav.no/Min side kan du se dokumentene i saken din.
     }
 }
 
-private data class HarDuSpoersmaal(
-    val erOMS: Expression<Boolean>,
-    val erBP: Expression<Boolean>
-) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+private data class HarDuSpoersmaal(val sakType: Expression<SakType>) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         title2 {
             text(
@@ -131,14 +137,14 @@ private data class HarDuSpoersmaal(
             )
         }
         paragraph {
-            showIf(erOMS) {
+            showIf(sakType.equalTo(SakType.OMS)) {
                 text(
                     Bokmal to "Du kan finne svar på ${Constants.OMS_URL} ",
                     Nynorsk to "",
                     English to "",
                 )
             }
-            showIf(erBP) {
+            showIf(sakType.equalTo(SakType.BP)) {
                 text(
                     Bokmal to "Du kan finne svar på ${Constants.BARNEPENSJON_URL} ",
                     Nynorsk to "",

@@ -24,14 +24,18 @@ import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingInnholdDTOSe
 import java.time.LocalDate
 
 data class TilbakekrevingInnholdDTO(
-    val erOMS: Boolean,
-    val erBP: Boolean,
+    val sakType: SakType,
     val harRenter: Boolean,
     val harStrafferettslig: Boolean,
     val harForeldelse: Boolean,
     val perioder: List<TilbakekrevingPeriode>,
     val summer: TilbakekrevingBeloeper
 )
+
+enum class SakType {
+    BP,
+    OMS
+}
 
 data class TilbakekrevingPeriode(
     val maaned: LocalDate,

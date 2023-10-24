@@ -4,13 +4,13 @@ import no.nav.pensjon.brevbaker.api.model.Kroner
 import no.nav.pensjon.etterlatte.maler.Element
 import no.nav.pensjon.etterlatte.maler.ElementType
 import no.nav.pensjon.etterlatte.maler.InnerElement
+import no.nav.pensjon.etterlatte.maler.tilbakekreving.SakType
 import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingBeloeper
 import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingFerdigDTO
 import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingInnholdDTO
 
 fun createTilbakekrevingInnholdDTO() = TilbakekrevingInnholdDTO(
-    erOMS = true,
-    erBP = false,
+    sakType = SakType.OMS,
     harRenter = true,
     harStrafferettslig = true,
     harForeldelse = true,
