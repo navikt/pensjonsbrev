@@ -25,9 +25,9 @@ class AdhocTest {
 
     @Test
     fun `testAdhocGJRfoed1954Til1957 pdf`() {
-        testAdhocPdf(AdhocGjenlevenderettFoed1954Til1957.template, "ADHOC_FeilUtsendingAvGjenlevenderett", Bokmal)
-        testAdhocPdf(AdhocGjenlevenderettFoed1954Til1957.template, "ADHOC_FeilUtsendingAvGjenlevenderett", Nynorsk)
-        testAdhocPdf(AdhocGjenlevenderettFoed1954Til1957.template, "ADHOC_FeilUtsendingAvGjenlevenderett", English)
+        testAdhocPdf(AdhocGjenlevenderettFoed1954Til1957.template, "ADHOC_GjenlevenderettFoed1954Til1957", Bokmal)
+        testAdhocPdf(AdhocGjenlevenderettFoed1954Til1957.template, "ADHOC_GjenlevenderettFoed1954Til1957", Nynorsk)
+        testAdhocPdf(AdhocGjenlevenderettFoed1954Til1957.template, "ADHOC_GjenlevenderettFoed1954Til1957", English)
     }
     @Test
     fun `testAdhocGJRfoed1954Til1957 html`() {

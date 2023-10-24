@@ -45,7 +45,7 @@ object AdhocGjenlevenderettFoed1954Til1957 : AutobrevTemplate<EmptyBrevdata> {
                 text(
                     Bokmal to "Du har gjenlevenderett i alderspensjonen din beregnet med en andel etter både gamle (kapittel 19) og nye regler (kapittel 20) i folketrygdloven.",
                     Nynorsk to "Du har attlevanderett i alderspensjonen din berekna med ein del etter både gamle (kapittel 19) og nye reglar (kapittel 20) i folketrygdlova.",
-                    English to "You have survivor’s rights in your retirement pension calculated in part after both the old Chapter 19 rules and the new Chapter 20 rules of the National Insurance Act."
+                    English to "You have survivor’s rights in your retirement pension, calculated in part, after both the old Chapter 19 rules and the new Chapter 20 rules of the National Insurance Act."
                 )
             }
             paragraph {
@@ -70,7 +70,7 @@ object AdhocGjenlevenderettFoed1954Til1957 : AutobrevTemplate<EmptyBrevdata> {
                 text(
                     Bokmal to "Gjenlevendetillegget etter nye regler blir utfaset",
                     Nynorsk to "Attlevandetillegget etter nye reglar blir fasa ut",
-                    English to "New rules survivor's supplement phases out"
+                    English to "Survivor's supplement based on new rules phases out"
                 )
             }
             paragraph {
@@ -78,7 +78,6 @@ object AdhocGjenlevenderettFoed1954Til1957 : AutobrevTemplate<EmptyBrevdata> {
                     Bokmal to "Gjenlevendetillegget i alderspensjon etter nye regler skal fases ut.",
                     Nynorsk to "Attlevandetillegget i alderspensjon etter nye reglar skal fasast ut.",
                     English to "Survivor's supplement in retirement pension calculated after the new Chapter 20 rules phases out."
-                            + ""
                 )
             }
             paragraph {
@@ -99,7 +98,7 @@ object AdhocGjenlevenderettFoed1954Til1957 : AutobrevTemplate<EmptyBrevdata> {
                     Nynorsk to "Viss du tar ut mindre enn 100 prosent alderspensjon, verkar det inn på attlevandetillegget ditt."
                             + " Viss du aukar uttaksgraden seinare, vil ikkje attlevandetillegget auke.",
                     English to "If you take out less than 100 percent retirement pension, this will affect your survivor's supplement."
-                            + "If you should later on increase the withdrawl rate, the survivor's supplement wil not increase."
+                            + " If you should later on increase the withdrawl rate of your retirement pension, the survivor's supplement wil not increase."
                 )
             }
 
@@ -135,12 +134,12 @@ object AdhocGjenlevenderettFoed1954Til1957 : AutobrevTemplate<EmptyBrevdata> {
             paragraph {
                 text(
                     Bokmal to "Hvis du får andre endringer i familiesituasjon eller planlegger opphold i et annet land, kan det påvirke utbetalingen din."
-                            + " I slike tilfeller må du derfor straks melde fra til NAV. Se hva du må melde fra om på nav.no/pensjon-endring.",
+                            + " I slike tilfeller må du derfor straks melde fra til NAV. Se hva du må melde fra om på ${Constants.PENSJON_ENDRING_URL}.",
                     Nynorsk to "Viss du får endringar i familiesituasjon eller planlegg opphald i eit anna land, kan det påverke utbetalinga di."
-                            + " I slike tilfelle må du derfor straks melde frå til NAV. Sjå kva du må melde frå om på nav.no/pensjon-endring.",
+                            + " I slike tilfelle må du derfor straks melde frå til NAV. Sjå kva du må melde frå om på ${Constants.PENSJON_ENDRING_URL}.",
                     English to "If you have other changes in your family situation or you plan to live abroad, this may influence your benefits."
                             + " You are obliged to notify NAV as soon as you are aware of any of these changes."
-                            + " You can find out what you are required to report at nav.no/pensjon-endring."
+                            + " You can find out what you are required to report at ${Constants.PENSJON_ENDRING_URL}."
                 )
             }
 
@@ -158,12 +157,12 @@ object AdhocGjenlevenderettFoed1954Til1957 : AutobrevTemplate<EmptyBrevdata> {
                             + " Hvis du ikke finner svar på ${Constants.NAV_URL}, kan du ringe oss på telefon ${Constants.NAV_KONTAKTSENTER_TELEFON_PENSJON},"
                             + " hverdager kl. ${Constants.NAV_KONTAKTSENTER_AAPNINGSTID}.",
                     Nynorsk to "Du finn meir informasjon på ${Constants.ALDERSPENSJON_GJENLEVENDE_URL}."
-                            + "På ${Constants.KONTAKT_URL} kan du chatte eller skrive til oss."
-                            + "Viss du ikkje finn svar på ${Constants.NAV_URL}, kan du ringje oss på telefon ${Constants.NAV_KONTAKTSENTER_TELEFON_PENSJON},"
-                            + " kvardagar kl. .${Constants.NAV_KONTAKTSENTER_AAPNINGSTID}.",
+                            + " På ${Constants.KONTAKT_URL} kan du chatte eller skrive til oss."
+                            + " Viss du ikkje finn svar på ${Constants.NAV_URL}, kan du ringje oss på telefon ${Constants.NAV_KONTAKTSENTER_TELEFON_PENSJON},"
+                            + " kvardagar kl. ${Constants.NAV_KONTAKTSENTER_AAPNINGSTID}.",
                     English to "You can find more information at ${Constants.ALDERSPENSJON_GJENLEVENDE_URL}."
-                            + "At ${Constants.KONTAKT_URL} you can chat or write to us."
-                            + "If you do not find the answer at ${Constants.NAV_URL}, you can call us at: +47 ${Constants.NAV_KONTAKTSENTER_TELEFON_PENSJON},"
+                            + " At ${Constants.KONTAKT_URL} you can chat or write to us."
+                            + " If you do not find the answer at ${Constants.NAV_URL}, you can call us at: +47 ${Constants.NAV_KONTAKTSENTER_TELEFON_PENSJON},"
                             + " weekdays ${Constants.NAV_KONTAKTSENTER_AAPNINGSTID}."
                 )
             }
