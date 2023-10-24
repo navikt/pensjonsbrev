@@ -5,8 +5,6 @@
     <root level="INFO">
         <appender-ref ref="stdout_json"/>
     </root>
-<!--    <logger name="org.eclipse.jetty" level="INFO"/>-->
-<!--    <logger name="io.netty" level="INFO"/>-->
     <logger name="io.ktor.auth.jwt" level="TRACE" />
     <logger name="io.netty" level="INFO"/>
 </configuration>

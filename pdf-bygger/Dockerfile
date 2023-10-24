@@ -3,6 +3,7 @@ USER root
 ENV DEBIAN_FRONTEND="noninteractive" TZ="Europe/London"
 ENV PATH="${PATH}:/app/tex/bin/x86_64-linux/"
 COPY containerFiles/fonts /usr/share/fonts
+COPY containerFiles/latex /app/pensjonsbrev_latex
 RUN apt -y --allow-releaseinfo-change -o Acquire::Check-Valid-Until=false update
 RUN apt -y install tzdata perl-tk
 

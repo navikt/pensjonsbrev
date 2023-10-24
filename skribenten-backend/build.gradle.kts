@@ -27,7 +27,7 @@ ktor {
         archiveFileName.set("app.jar")
     }
     docker {
-        jreVersion.set(JreVersion.JRE_17)
+        jreVersion.set(JavaVersion.VERSION_17)
         localImageName.set("pensjon-skribenten")
         imageTag.set(providers.environmentVariable("IMAGE_TAG").orElse("latest"))
         externalRegistry.set(

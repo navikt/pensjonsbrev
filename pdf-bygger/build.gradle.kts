@@ -1,5 +1,7 @@
 val javaTarget: String by System.getProperties()
 val ktorVersion: String by System.getProperties()
+val kotlinVersion: String by System.getProperties()
+val hamkrestVersion: String by project
 val logbackVersion: String by project
 val logstashVersion: String by project
 val micrometerVersion: String by project
@@ -7,7 +9,7 @@ val micrometerVersion: String by project
 plugins {
     kotlin("jvm")
     application
-    id("com.github.johnrengelman.shadow")
+    id("io.ktor.plugin")
 }
 
 group="no.nav.pensjon.brev"
@@ -24,12 +26,6 @@ tasks {
 
     compileJava {
         targetCompatibility = javaTarget
-    }
-
-    shadowJar {
-        archiveBaseName.set(project.name)
-        archiveClassifier.set("")
-        archiveVersion.set("")
     }
 }
 
@@ -50,8 +46,19 @@ dependencies {
     implementation("io.ktor:ktor-server-metrics:$ktorVersion")
     implementation("io.ktor:ktor-server-metrics-micrometer:$ktorVersion")
     implementation("io.micrometer:micrometer-registry-prometheus:$micrometerVersion")
+
+
+    testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlinVersion")
+    testImplementation("com.natpryce:hamkrest:$hamkrestVersion")
+    testImplementation("io.ktor:ktor-server-test-host:$ktorVersion")
 }
 
 application {
     mainClass.set("io.ktor.server.netty.EngineMain")
+}
+
+ktor {
+    fatJar {
+        archiveFileName.set("${project.name}.jar")
+    }
 }

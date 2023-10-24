@@ -1,0 +1,1 @@
+echo "kompilerer $1" >> "${1%.*}".pdf

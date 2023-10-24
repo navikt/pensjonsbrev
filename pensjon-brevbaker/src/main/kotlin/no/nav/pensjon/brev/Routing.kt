@@ -19,7 +19,6 @@ import no.nav.pensjon.brev.template.render.*
 import no.nav.pensjon.brevbaker.api.model.TemplateDescription
 import no.nav.pensjon.etterlatte.etterlatteRouting
 
-private val latexCompilerService = LaTeXCompilerService(requireEnv("PDF_BUILDER_URL"))
 private val letterResource = LetterResource()
 
 data class RedigerbarTemplateDescription(
@@ -27,7 +26,7 @@ data class RedigerbarTemplateDescription(
     val modelSpecification: TemplateModelSpecification,
 )
 
-fun Application.brevbakerRouting(authenticationNames: Array<String>) =
+fun Application.brevbakerRouting(authenticationNames: Array<String>, latexCompilerService: LaTeXCompilerService) =
     routing {
         route("/templates") {
 
@@ -84,10 +83,12 @@ fun Application.brevbakerRouting(authenticationNames: Array<String>) =
 
                 post("/autobrev") {
                     val letterRequest = call.receive<AutobrevRequest>()
+                    call.application.log.info("Received /letter/autobrev request")
 
                     val letter = letterResource.create(letterRequest)
-                    val pdfBase64 = PensjonLatexRenderer.render(letter)
-                        .let { latexCompilerService.producePDF(it, call.callId) }
+                    val latexLetter = PensjonLatexRenderer.render(letter)
+                    call.application.log.info("Latex compiled: sending to pdf-bygger")
+                    val pdfBase64 = latexCompilerService.producePDF(latexLetter, call.callId)
 
                     call.respond(LetterResponse(pdfBase64.base64PDF, letter.template.letterMetadata))
 
