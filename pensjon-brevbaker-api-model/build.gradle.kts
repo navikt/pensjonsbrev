@@ -1,4 +1,5 @@
 val apiModelJavaTarget: String by System.getProperties()
+val kotlinVersion: String by System.getProperties()
 
 plugins {
     kotlin("jvm")
@@ -6,7 +7,7 @@ plugins {
 }
 
 group = "no.nav.pensjon.brev"
-version = "54"
+version = "55"
 
 java {
     withSourcesJar()
@@ -20,6 +21,7 @@ repositories {
 dependencies {
     compileOnly(kotlin("stdlib"))
     api("no.nav.pensjon.brevbaker:brevbaker-api-model-common:1.1.0")
+    testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlinVersion")
 }
 
 publishing {
@@ -46,6 +48,12 @@ tasks {
         kotlinOptions.jvmTarget = apiModelJavaTarget
     }
     compileJava {
+        targetCompatibility = apiModelJavaTarget
+    }
+    compileTestKotlin {
+        kotlinOptions.jvmTarget = apiModelJavaTarget
+    }
+    compileTestJava {
         targetCompatibility = apiModelJavaTarget
     }
 }
