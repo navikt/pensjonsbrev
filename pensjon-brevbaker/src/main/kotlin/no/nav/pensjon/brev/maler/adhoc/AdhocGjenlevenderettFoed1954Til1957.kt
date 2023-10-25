@@ -112,7 +112,7 @@ object AdhocGjenlevenderettFoed1954Til1957 : AutobrevTemplate<EmptyBrevdata> {
             paragraph {
                 text(
                     Bokmal to "Mot slutten av dette året får du et brev som viser hva som er gjenlevendetillegg etter gamle og nye regler og hva som er alderspensjonen din.",
-                    Nynorsk to "Mot slutten av dette året får du eit brev som viser kva som er gjenlevendetillegg etter gamle og nye reglar og kva som er alderspensjonen din.",
+                    Nynorsk to "Mot slutten av dette året får du eit brev som viser kva som er attlevandetillegg etter gamle og nye reglar og kva som er alderspensjonen din.",
                     English to "Towards the end of the year, you will receive a letter that informs of what is your survivor's rights and what is your retirement pension."
                 )
             }
