@@ -2,7 +2,7 @@ import {IMsalContext} from "@azure/msal-react/dist/MsalContext"
 import {withAuthorization} from "./msal"
 import {
     AddressResult,
-    EditedLetter, PersonSoekResponse,
+    EditedLetter, KontaktinfoResponse, PersonSoekResponse,
     RedigerbarTemplateDescription,
     RenderedLetter,
     SakDto, SakType, SearchRequest,
@@ -256,6 +256,15 @@ class SkribentenAPI {
     async hentAdresse(pid: string): Promise<AddressResult> {
         return withAuthorization(this.msal, this.config.scope).then(auth =>
             fetch(`${this.config.url}/adresse/${pid}`, {
+                headers: {'Authorization': `Bearer ${auth.accessToken}`},
+                method: 'GET',
+            })
+        ).then(res => res.json())
+    }
+
+    async hentForetrukketSpraaklag(pid: string): Promise<KontaktinfoResponse> {
+        return withAuthorization(this.msal, this.config.scope).then(auth =>
+            fetch(`${this.config.url}/foretrukketSpraak/${pid}`, {
                 headers: {'Authorization': `Bearer ${auth.accessToken}`},
                 method: 'GET',
             })

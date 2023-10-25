@@ -156,6 +156,11 @@ fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config
                 respondWithResult(pensjonPersonDataService.hentAdresse(call, pid))
             }
 
+            get("/foretrukketSpraak/{pid}") {
+                val pid = call.parameters.getOrFail("pid")
+                call.respond(krrService.getPreferredLocale(call, pid))
+            }
+
             route("/kodeverk") {
                 install(CachingHeaders) {
                     options { _, _ -> CachingOptions(CacheControl.MaxAge(maxAgeSeconds = 86400)) }

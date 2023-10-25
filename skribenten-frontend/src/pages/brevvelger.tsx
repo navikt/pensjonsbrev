@@ -8,7 +8,7 @@ import styles from './brevvelger.module.css'
 import LetterPreview from "../modules/LetterPicker/components/LetterPreview/LetterPreview"
 import SkribentenAPI from "../lib/services/skribenten"
 import {useMsal} from "@azure/msal-react"
-import {LetterCategory, Metadata} from "../lib/model/skribenten"
+import {ForetrukketSpraakOgMaalForm, LetterCategory, Metadata} from "../lib/model/skribenten"
 import LetterPickerActionBar from "../modules/LetterPicker/components/ActionBar/ActionBar"
 import SakContext, {Sak} from "../components/casecontextpage/CaseContextPage"
 
@@ -35,6 +35,7 @@ const Brevvelger: NextPage<SkribentenConfig> = (props) => {
     const [sak, setSak] = useState<Sak | null>(null)
     const [recipient, setRecipient] = useState<Recipient | null>(null)
     const [recipientOverride, setRecipientOverride] = useState<Recipient | null>(null)
+    const [languagePreference, setLanguagePreference] = useState<ForetrukketSpraakOgMaalForm | null>(null)
 
     const msal = useMsal()
     const skribentApi = new SkribentenAPI(props.api, msal)
@@ -42,13 +43,16 @@ const Brevvelger: NextPage<SkribentenConfig> = (props) => {
 
     const onChangeSakHandler = (newSak: Sak | null) => {
         setSak(newSak)
-        if (newSak && newSak.sakType) {
-            if (newSak.sakId !== sak?.sakId) {
+        if (newSak && newSak.sakType && newSak.foedselsnr) {
+            if (newSak.sakId !== sak?.sakId ) {
                 Promise.all([
                     skribentApi.getLetterTemplates(newSak.sakType),
                     skribentApi.getFavourites(),
-                ]).then(([letterMetadata, favourites]) => {
+                    skribentApi.hentForetrukketSpraaklag("29129319060"),
+                ]).then(([letterMetadata, favourites, kontaktinfo]) => {
                     setLetterCategories(letterMetadata.kategorier)
+                    console.log(kontaktinfo)
+                    setLanguagePreference(kontaktinfo.spraakKode)
                     const metadata = letterMetadata.kategorier.flatMap(cat => cat.templates)
                     setLetterMetadata(metadata.concat(letterMetadata.eblanketter))
                     setEblanketter(letterMetadata.eblanketter)
