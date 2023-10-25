@@ -50,5 +50,10 @@ tasks {
     compileJava {
         targetCompatibility = apiModelJavaTarget
     }
-    compileTestKotlin
+    compileTestKotlin {
+        kotlinOptions.jvmTarget = apiModelJavaTarget
+    }
+    compileTestJava {
+        targetCompatibility = apiModelJavaTarget
+    }
 }
