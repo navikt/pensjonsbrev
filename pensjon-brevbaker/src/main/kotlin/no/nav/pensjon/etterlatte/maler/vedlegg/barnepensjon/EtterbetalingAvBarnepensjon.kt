@@ -11,6 +11,7 @@ import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
+import no.nav.pensjon.etterlatte.maler.EtterbetalingDTOSelectors.etterbetalingsperioder
 import no.nav.pensjon.etterlatte.maler.EtterbetalingDTOSelectors.fraDato
 import no.nav.pensjon.etterlatte.maler.EtterbetalingDTOSelectors.tilDato
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
@@ -63,4 +64,5 @@ val etterbetalingAvBarnepensjon = createAttachment(
             English to "",
         )
     }
+    includePhrase(Beregningsperiodetabell(etterbetalingsperioder))
 }
