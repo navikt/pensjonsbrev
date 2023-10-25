@@ -98,7 +98,7 @@ object AdhocGjenlevenderettFoed1954Til1957 : AutobrevTemplate<EmptyBrevdata> {
                     Nynorsk to "Viss du tar ut mindre enn 100 prosent alderspensjon, verkar det inn på attlevandetillegget ditt."
                             + " Viss du aukar uttaksgraden seinare, vil ikkje attlevandetillegget auke.",
                     English to "If you take out less than 100 percent retirement pension, this will affect your survivor's supplement."
-                            + " If you should later on increase the withdrawl rate of your retirement pension, the survivor's supplement wil not increase."
+                            + " If you should later increase the withdrawl rate of your retirement pension, the survivor's supplement wil not increase."
                 )
             }
 
