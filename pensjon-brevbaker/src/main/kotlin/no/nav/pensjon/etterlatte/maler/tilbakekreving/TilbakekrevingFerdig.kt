@@ -45,14 +45,14 @@ object TilbakekrevingFerdig : EtterlatteTemplate<TilbakekrevingFerdigDTO>, Hoved
         ),
     ) {
         title {
-            showIf(data.sakType.equalTo(SakType.BP)) {
+            showIf(data.sakType.equalTo(SakType.BARNEPENSJON)) {
                 text(
                     Bokmal to "Du må betale tilbake barnepensjon",
                     Nynorsk to "Du må betale tilbake barnepensjon",
                     English to "Du må betale tilbake barnepensjon"
                 )
             }
-            showIf(data.sakType.equalTo(SakType.OMS)) {
+            showIf(data.sakType.equalTo(SakType.OMSTILLINGSSTOENAD)) {
                 text(
                     Bokmal to "Du må betale tilbake omstillingstønad",
                     Nynorsk to "Du må betale tilbake omstillingstønad",
@@ -137,14 +137,14 @@ private data class HarDuSpoersmaal(val sakType: Expression<SakType>) : OutlinePh
             )
         }
         paragraph {
-            showIf(sakType.equalTo(SakType.OMS)) {
+            showIf(sakType.equalTo(SakType.OMSTILLINGSSTOENAD)) {
                 text(
                     Bokmal to "Du kan finne svar på ${Constants.OMS_URL} ",
                     Nynorsk to "",
                     English to "",
                 )
             }
-            showIf(sakType.equalTo(SakType.BP)) {
+            showIf(sakType.equalTo(SakType.BARNEPENSJON)) {
                 text(
                     Bokmal to "Du kan finne svar på ${Constants.BARNEPENSJON_URL} ",
                     Nynorsk to "",

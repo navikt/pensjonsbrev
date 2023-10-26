@@ -10,7 +10,7 @@ import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingFerdigDTO
 import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingInnholdDTO
 
 fun createTilbakekrevingInnholdDTO() = TilbakekrevingInnholdDTO(
-    sakType = SakType.OMS,
+    sakType = SakType.OMSTILLINGSSTOENAD,
     harRenter = true,
     harStrafferettslig = true,
     harForeldelse = true,
