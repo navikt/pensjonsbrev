@@ -6,8 +6,6 @@ jobs:
   cleanup-brevbaker:
     name: "Brevbaker: Fjern gamle container bilder"
     runs-on: "ubuntu-latest"
-    permissions:
-      packages: admin
     steps:
       - uses: actions/delete-package-versions@v4.1.1
         with:
