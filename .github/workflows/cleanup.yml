@@ -17,3 +17,4 @@ jobs:
             pensjon-pdf-bygger
           type: docker
           dry-run: true
+          token: "${{ secrets.GITHUB_TOKEN }}"
