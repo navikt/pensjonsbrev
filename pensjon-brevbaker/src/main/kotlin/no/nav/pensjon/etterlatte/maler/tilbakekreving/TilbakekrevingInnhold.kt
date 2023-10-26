@@ -33,14 +33,14 @@ data class TilbakekrevingInnholdDTO(
 )
 
 enum class SakType {
-    BP,
-    OMS
+    BARNEPENSJON,
+    OMSTILLINGSSTOENAD
 }
 
 data class TilbakekrevingPeriode(
     val maaned: LocalDate,
     val beloeper: TilbakekrevingBeloeper,
-    val resulatat: String
+    val resultat: String
 )
 
 data class TilbakekrevingBeloeper(
