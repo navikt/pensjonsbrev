@@ -72,6 +72,7 @@ jobs:
       - name: "Deploy Skribenten backend to DEV"
         uses: "nais/deploy/actions/deploy@v1"
         env:
+          "ENVIRONMENT": "dev-gcp:skribenten-backend"
           "APIKEY": "${{ secrets.NAIS_DEPLOY_APIKEY }}"
           "CLUSTER": "dev-gcp"
           "RESOURCE": "skribenten-backend/.nais/nais.yaml"
@@ -89,6 +90,7 @@ jobs:
       - name: "Deploy Skribenten backend to DEV"
         uses: "nais/deploy/actions/deploy@v1"
         env:
+          "ENVIRONMENT": "dev-gcp:skribenten-frontend"
           "APIKEY": "${{ secrets.NAIS_DEPLOY_APIKEY }}"
           "CLUSTER": "dev-gcp"
           "RESOURCE": "skribenten-frontend/.nais/nais.yaml"
