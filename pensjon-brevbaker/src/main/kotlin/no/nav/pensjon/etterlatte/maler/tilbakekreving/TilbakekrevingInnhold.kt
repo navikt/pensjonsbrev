@@ -40,7 +40,7 @@ enum class SakType {
 data class TilbakekrevingPeriode(
     val maaned: LocalDate,
     val beloeper: TilbakekrevingBeloeper,
-    val resulatat: String
+    val resultat: String
 )
 
 data class TilbakekrevingBeloeper(
