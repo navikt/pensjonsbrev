@@ -221,6 +221,7 @@ jobs:
       - name: "Deploy to DEV"
         uses: "nais/deploy/actions/deploy@v1"
         env:
+          "ENVIRONMENT": "dev-gcp:brevbaker"
           "APIKEY": "${{ secrets.NAIS_DEPLOY_APIKEY }}"
           "CLUSTER": "dev-gcp"
           "RESOURCE": "pensjon-brevbaker/.nais/nais.yaml"
@@ -237,6 +238,7 @@ jobs:
       - name: "Deploy to DEV"
         uses: "nais/deploy/actions/deploy@v1"
         env:
+          "ENVIRONMENT": "dev-gcp:pdf-bygger"
           "APIKEY": "${{ secrets.NAIS_DEPLOY_APIKEY }}"
           "CLUSTER": "dev-gcp"
           "RESOURCE": "pdf-bygger/.nais/nais.yaml"
@@ -253,6 +255,7 @@ jobs:
       - name: "Deploy to production"
         uses: "nais/deploy/actions/deploy@v1"
         env:
+          "ENVIRONMENT": "prod-gcp:brevbaker"
           "APIKEY": "${{ secrets.NAIS_DEPLOY_APIKEY }}"
           "CLUSTER": "prod-gcp"
           "RESOURCE": "pensjon-brevbaker/.nais/nais.yaml"
@@ -269,6 +272,7 @@ jobs:
       - name: "Deploy to production"
         uses: "nais/deploy/actions/deploy@v1"
         env:
+          "ENVIRONMENT": "prod-gcp:pdf-bygger"
           "APIKEY": "${{ secrets.NAIS_DEPLOY_APIKEY }}"
           "CLUSTER": "prod-gcp"
           "RESOURCE": "pdf-bygger/.nais/nais.yaml"
