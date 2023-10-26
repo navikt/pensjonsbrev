@@ -51,7 +51,6 @@ const Brevvelger: NextPage<SkribentenConfig> = (props) => {
                     skribentApi.hentForetrukketSpraaklag("29129319060"),
                 ]).then(([letterMetadata, favourites, kontaktinfo]) => {
                     setLetterCategories(letterMetadata.kategorier)
-                    console.log(kontaktinfo)
                     setLanguagePreference(kontaktinfo.spraakKode)
                     const metadata = letterMetadata.kategorier.flatMap(cat => cat.templates)
                     setLetterMetadata(metadata.concat(letterMetadata.eblanketter))
@@ -149,6 +148,7 @@ const Brevvelger: NextPage<SkribentenConfig> = (props) => {
                                        onAddToFavourites={addToFavouritesHandler}/>
                     </div>
                     <LetterPickerActionBar selectedLetter={selectedLetter?.metadata}
+                                           preferredLanguage={languagePreference}
                                            onOrderLetter={onOrderLetterHandler}/>
                 </div>
             </SakContext>

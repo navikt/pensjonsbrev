@@ -1,11 +1,12 @@
 import React, {FC, useState} from "react"
 import {Button, Label, Select} from "@navikt/ds-react"
 import BottomMenu from "../../../../components/bottom-menu/BottomMenu"
-import {Metadata} from "../../../../lib/model/skribenten"
+import {ForetrukketSpraakOgMaalForm, LanguageCode, Metadata} from "../../../../lib/model/skribenten"
 import styles from "./ActionBar.module.css"
 
 interface ActionBarProps {
     selectedLetter: Metadata | undefined
+    preferredLanguage: ForetrukketSpraakOgMaalForm | null
     onOrderLetter: (language: string) => void
 }
 
@@ -41,7 +42,6 @@ const ActionBar: FC<ActionBarProps> = ({selectedLetter, onOrderLetter}) => {
                 <div>
                     <Button variant="secondary"
                             size="small"
-
                             className={styles.editLetterButton}
                             onClick={handleOrderLetter}
                             disabled={disabled}>Rediger brev</Button>
