@@ -12,9 +12,8 @@ jobs:
       - uses: smartsquaregmbh/delete-old-packages@v0.7.0
         with:
           organization: navikt
-          user: pensjonsbrev
           names: |
-            pensjon-pdf-bygger
+            pensjonsbrev/pensjon-pdf-bygger
           type: docker
           dry-run: true
           token: "${{ secrets.GITHUB_TOKEN }}"
