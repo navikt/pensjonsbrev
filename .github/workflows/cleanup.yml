@@ -9,7 +9,7 @@ jobs:
     permissions:
       packages: write
     steps:
-      - uses: actions/delete-package-versions@v4
+      - uses: actions/delete-package-versions@v4.1.1
         with:
           package-name: pensjon-pdf-bygger
           package-type: container
