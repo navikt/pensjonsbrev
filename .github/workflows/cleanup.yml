@@ -9,11 +9,9 @@ jobs:
     permissions:
       packages: write
     steps:
-      - uses: smartsquaregmbh/delete-old-packages@v0.7.0
+      - uses: actions/delete-package-versions@v4
         with:
-          organization: navikt
-          names: |
-            pensjonsbrev/pensjon-pdf-bygger
-          type: docker
-          dry-run: true
+          package-name: pensjon-pdf-bygger
+          package-type: container
+          min-versions-to-keep: 5
           token: "${{ secrets.GITHUB_TOKEN }}"
