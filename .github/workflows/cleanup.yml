@@ -7,11 +7,11 @@ jobs:
     name: "Brevbaker: Fjern gamle container bilder"
     runs-on: "ubuntu-latest"
     permissions:
-      packages: write
+      packages: admin
     steps:
       - uses: actions/delete-package-versions@v4.1.1
         with:
           package-name: pensjon-pdf-bygger
           package-type: container
           min-versions-to-keep: 5
-          token: "${{ secrets.GITHUB_TOKEN }}"
+          token: "${{ secrets.DELETE_PACKAGES_TOKEN }}"
