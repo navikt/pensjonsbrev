@@ -24,6 +24,9 @@ tasks {
     compileJava {
         targetCompatibility = javaTarget
     }
+    compileTestJava {
+        targetCompatibility = javaTarget
+    }
 }
 
 dependencies {

@@ -42,6 +42,9 @@ tasks {
     compileJava {
         targetCompatibility = javaTarget
     }
+    compileTestJava {
+        targetCompatibility = javaTarget
+    }
 
     test {
         useJUnitPlatform {

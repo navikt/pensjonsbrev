@@ -1,0 +1,283 @@
+{
+  "kode" : "UT_EO_FORHAANDSVARSEL_FEILUTBETALING_AUTO",
+  "letterData" : {
+    "erNyttEtteroppgjoer" : false,
+    "harTjentOver80prosentAvOIFU" : false,
+    "kanSoekeOmNyInntektsgrense" : false,
+    "oppjustertInntektFoerUfoerhet" : {
+      "value" : 0
+    },
+    "orienteringOmRettigheterUfoere" : {
+      "sivilstand" : "ENSLIG",
+      "bruker_borINorge" : true,
+      "harTilleggForFlereBarn" : false,
+      "harInnvilgetBarnetilleggFellesBarn" : false,
+      "harInnvilgetBarnetilleggSaerkullsbarn" : false,
+      "institusjon_gjeldende" : "INGEN"
+    },
+    "opplysningerOmEtteroppgjoeretUfoeretrygd" : {
+      "periode" : {
+        "value" : 2022
+      },
+      "harGjenlevendeTillegg" : false,
+      "ufoeretrygd" : {
+        "skulleFaatt" : {
+          "value" : 100000
+        },
+        "fikk" : {
+          "value" : 150000
+        },
+        "avvik" : {
+          "value" : 50000
+        },
+        "harFaattForMye" : false
+      },
+      "barnetillegg" : {
+        "felles" : {
+          "sivilstand" : "EKTEFELLE",
+          "grunnbelop" : {
+            "value" : 10
+          },
+          "fribeloep" : {
+            "value" : 10
+          },
+          "resultat" : {
+            "skulleFaatt" : {
+              "value" : 10
+            },
+            "fikk" : {
+              "value" : 8
+            },
+            "avvik" : {
+              "value" : -2
+            },
+            "harFaattForMye" : false
+          },
+          "personinntektAnnenForelder" : {
+            "inntekt" : {
+              "inntekter" : [ {
+                "type" : "UFOERETRYGD",
+                "registerKilde" : "OPPGITT_AV_SKATTEETATEN",
+                "beloep" : {
+                  "value" : 1
+                }
+              }, {
+                "type" : "ARBEIDSINNTEKT",
+                "registerKilde" : "OPPGITT_AV_SKATTEETATEN",
+                "beloep" : {
+                  "value" : 2
+                }
+              }, {
+                "type" : "NAERINGSINNTEKT",
+                "registerKilde" : "OPPGITT_AV_SKATTEETATEN",
+                "beloep" : {
+                  "value" : 3
+                }
+              } ],
+              "sum" : {
+                "value" : 6
+              }
+            },
+            "fratrekk" : {
+              "fratrekk" : [ {
+                "type" : "ARBEIDSINNTEKT",
+                "aarsak" : "FOER_INNVILGET_UFOERETRYGD",
+                "beloep" : {
+                  "value" : 1
+                }
+              }, {
+                "type" : "NAERINGSINNTEKT",
+                "aarsak" : "FOER_INNVILGET_UFOERETRYGD",
+                "beloep" : {
+                  "value" : 2
+                }
+              }, {
+                "type" : "FRATREKKBAR_INNTEKT",
+                "aarsak" : "INNTEKT_INNTIL_1G",
+                "beloep" : {
+                  "value" : 3
+                }
+              } ],
+              "sum" : {
+                "value" : 6
+              }
+            }
+          },
+          "harSamletInntektOverInntektstak" : false,
+          "samletInntekt" : {
+            "value" : 12
+          },
+          "inntektstakSamletInntekt" : {
+            "value" : 10
+          }
+        },
+        "saerkull" : {
+          "fribeloep" : {
+            "value" : 10
+          },
+          "resultat" : {
+            "skulleFaatt" : {
+              "value" : 10
+            },
+            "fikk" : {
+              "value" : 8
+            },
+            "avvik" : {
+              "value" : -2
+            },
+            "harFaattForMye" : false
+          },
+          "harSamletInntektOverInntektstak" : false,
+          "samletInntekt" : {
+            "value" : 10
+          },
+          "inntektstakSamletInntekt" : {
+            "value" : 12
+          }
+        },
+        "personinntekt" : {
+          "inntekt" : {
+            "inntekter" : [ {
+              "type" : "UFOERETRYGD",
+              "registerKilde" : "OPPGITT_AV_SKATTEETATEN",
+              "beloep" : {
+                "value" : 1
+              }
+            }, {
+              "type" : "ARBEIDSINNTEKT",
+              "registerKilde" : "OPPGITT_AV_SKATTEETATEN",
+              "beloep" : {
+                "value" : 2
+              }
+            }, {
+              "type" : "NAERINGSINNTEKT",
+              "registerKilde" : "OPPGITT_AV_SKATTEETATEN",
+              "beloep" : {
+                "value" : 3
+              }
+            } ],
+            "sum" : {
+              "value" : 6
+            }
+          },
+          "fratrekk" : {
+            "fratrekk" : [ {
+              "type" : "ARBEIDSINNTEKT",
+              "aarsak" : "FOER_INNVILGET_UFOERETRYGD",
+              "beloep" : {
+                "value" : 1
+              }
+            }, {
+              "type" : "NAERINGSINNTEKT",
+              "aarsak" : "FOER_INNVILGET_UFOERETRYGD",
+              "beloep" : {
+                "value" : 2
+              }
+            }, {
+              "type" : "FRATREKKBAR_INNTEKT",
+              "aarsak" : "INNTEKT_INNTIL_1G",
+              "beloep" : {
+                "value" : 3
+              }
+            } ],
+            "sum" : {
+              "value" : 6
+            }
+          }
+        },
+        "mindreEnn40AarTrygdetid" : true,
+        "totaltResultat" : {
+          "skulleFaatt" : {
+            "value" : 10
+          },
+          "fikk" : {
+            "value" : 8
+          },
+          "avvik" : {
+            "value" : -2
+          },
+          "harFaattForMye" : false
+        }
+      },
+      "harFaattForMye" : true,
+      "totaltAvvik" : {
+        "value" : 50000
+      },
+      "pensjonsgivendeInntektBruktIBeregningen" : {
+        "value" : 400000
+      },
+      "pensjonsgivendeInntekt" : {
+        "inntekt" : {
+          "inntekter" : [ {
+            "type" : "UFOERETRYGD",
+            "registerKilde" : "OPPGITT_AV_SKATTEETATEN",
+            "beloep" : {
+              "value" : 1
+            }
+          }, {
+            "type" : "ARBEIDSINNTEKT",
+            "registerKilde" : "OPPGITT_AV_SKATTEETATEN",
+            "beloep" : {
+              "value" : 2
+            }
+          }, {
+            "type" : "NAERINGSINNTEKT",
+            "registerKilde" : "OPPGITT_AV_SKATTEETATEN",
+            "beloep" : {
+              "value" : 3
+            }
+          } ],
+          "sum" : {
+            "value" : 6
+          }
+        },
+        "fratrekk" : {
+          "fratrekk" : [ {
+            "type" : "ARBEIDSINNTEKT",
+            "aarsak" : "FOER_INNVILGET_UFOERETRYGD",
+            "beloep" : {
+              "value" : 1
+            }
+          }, {
+            "type" : "NAERINGSINNTEKT",
+            "aarsak" : "FOER_INNVILGET_UFOERETRYGD",
+            "beloep" : {
+              "value" : 2
+            }
+          }, {
+            "type" : "FRATREKKBAR_INNTEKT",
+            "aarsak" : "INNTEKT_INNTIL_1G",
+            "beloep" : {
+              "value" : 3
+            }
+          } ],
+          "sum" : {
+            "value" : 6
+          }
+        }
+      }
+    }
+  },
+  "felles" : {
+    "dokumentDato" : [ 2020, 1, 1 ],
+    "saksnummer" : "1337123",
+    "avsenderEnhet" : {
+      "nettside" : "nav.no",
+      "navn" : "NAV Familie- og pensjonsytelser Porsgrunn",
+      "telefonnummer" : {
+        "value" : "55553334"
+      }
+    },
+    "bruker" : {
+      "foedselsnummer" : {
+        "value" : "01019878910"
+      },
+      "fornavn" : "Test",
+      "mellomnavn" : "\"bruker\"",
+      "etternavn" : "Testerson"
+    },
+    "vergeNavn" : null,
+    "signerendeSaksbehandlere" : null
+  },
+  "language" : "BOKMAL"
+}

@@ -19,12 +19,13 @@ tasks {
     compileKotlin {
         kotlinOptions.jvmTarget = javaTarget
     }
-
     compileTestKotlin {
         kotlinOptions.jvmTarget = javaTarget
     }
-
     compileJava {
+        targetCompatibility = javaTarget
+    }
+    compileTestJava {
         targetCompatibility = javaTarget
     }
 }
