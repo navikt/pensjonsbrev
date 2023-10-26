@@ -33,8 +33,8 @@ data class TilbakekrevingInnholdDTO(
 )
 
 enum class SakType {
-    BP,
-    OMS
+    BARNEPENSJON,
+    OMSTILLINGSSTOENAD
 }
 
 data class TilbakekrevingPeriode(
