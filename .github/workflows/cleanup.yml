@@ -2,6 +2,7 @@ name: "Slett gamle/ubrukte container bilder"
 on:
   schedule:
     - cron: '0 0 * * 6'
+  workflow_dispatch:
 
 jobs:
   cleanup-brevbaker:
