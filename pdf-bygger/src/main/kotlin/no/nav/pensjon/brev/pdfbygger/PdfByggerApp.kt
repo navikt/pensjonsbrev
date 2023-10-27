@@ -108,6 +108,12 @@ fun Application.module() {
                 is PDFCompilationResponse.Base64PDF -> call.respond(result)
                 is PDFCompilationResponse.Failure.Client -> {
                     logger.info("Client error: ${result.reason}")
+                    if (result.output?.isNotBlank() == true) {
+                        logger.info(result.output)
+                    }
+                    if (result.error?.isNotBlank() == true) {
+                        logger.info(result.error)
+                    }
                     call.respond(HttpStatusCode.InternalServerError, result)
                 }
 

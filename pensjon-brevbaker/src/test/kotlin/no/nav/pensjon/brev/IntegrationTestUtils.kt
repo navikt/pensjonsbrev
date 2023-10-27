@@ -63,6 +63,7 @@ fun writeTestPDF(pdfFileName: String, pdf: String, path: Path = Path.of("build",
 
 fun <ParameterType : Any> Letter<ParameterType>.renderTestPDF(pdfFileName: String): Letter<ParameterType> {
     PensjonLatexRenderer.render(this)
+//        .also { it.files.forEach { f -> f.writeTo(Path("build/latex_test/$pdfFileName").also { d ->  d.toFile().mkdirs() }) } }
         .let { runBlocking { LaTeXCompilerService(PDF_BUILDER_URL, maxRetries = 0).producePDF(it, "test").base64PDF } }
         .also { writeTestPDF(pdfFileName, it) }
     return this
