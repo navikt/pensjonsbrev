@@ -17,7 +17,6 @@ services:
       - AZURE_APP_CLIENT_ID=brevbaker-123
       - AZURE_APP_PRE_AUTHORIZED_APPS=[{"name":"pen","clientId":"pen-AzureClientId"}]
       # Allows requests without auth-header #opens up debug port
-      - JAVA_OPTS=-Dio.ktor.development=true -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
       - JAVA_TOOL_OPTIONS=-Dio.ktor.development=true -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
     build: ./pensjon-brevbaker
     ports:
