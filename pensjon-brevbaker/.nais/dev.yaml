@@ -5,19 +5,10 @@ ingresses:
 
 preAuthorized:
   - name: pensjon-pen-q0
-    namespace: teampensjon
-    cluster: dev-fss
-  - name: pensjon-pen-q0
     namespace: pensjon-q0
     cluster: dev-fss
   - name: pensjon-pen-q1
-    namespace: teampensjon
-    cluster: dev-fss
-  - name: pensjon-pen-q1
     namespace: pensjon-q1
-    cluster: dev-fss
-  - name: pensjon-pen-q2
-    namespace: teampensjon
     cluster: dev-fss
   - name: pensjon-pen-q2
     namespace: pensjon-q2
@@ -26,13 +17,7 @@ preAuthorized:
     namespace: pensjon-batch
     cluster: dev-fss
   - name: pensjon-pen-q5
-    namespace: teampensjon
-    cluster: dev-fss
-  - name: pensjon-pen-q5
     namespace: pensjon-q5
-    cluster: dev-fss
-  - name: pensjon-psak-q2
-    namespace: teampensjon
     cluster: dev-fss
   - name: pensjon-psak-q2
     namespace: pensjon-q2
