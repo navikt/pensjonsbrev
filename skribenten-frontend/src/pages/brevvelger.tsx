@@ -8,7 +8,7 @@ import styles from './brevvelger.module.css'
 import LetterPreview from "../modules/LetterPicker/components/LetterPreview/LetterPreview"
 import SkribentenAPI from "../lib/services/skribenten"
 import {useMsal} from "@azure/msal-react"
-import {ForetrukketSpraakOgMaalForm, LetterCategory, Metadata} from "../lib/model/skribenten"
+import {SpraakKode, LetterCategory, Metadata} from "../lib/model/skribenten"
 import LetterPickerActionBar from "../modules/LetterPicker/components/ActionBar/ActionBar"
 import SakContext, {Sak} from "../components/casecontextpage/CaseContextPage"
 
@@ -35,45 +35,42 @@ const Brevvelger: NextPage<SkribentenConfig> = (props) => {
     const [sak, setSak] = useState<Sak | null>(null)
     const [recipient, setRecipient] = useState<Recipient | null>(null)
     const [recipientOverride, setRecipientOverride] = useState<Recipient | null>(null)
-    const [languagePreference, setLanguagePreference] = useState<ForetrukketSpraakOgMaalForm | null>(null)
+    const [languagePreference, setLanguagePreference] = useState<SpraakKode | null>(null)
 
     const msal = useMsal()
     const skribentApi = new SkribentenAPI(props.api, msal)
 
 
     const onChangeSakHandler = (newSak: Sak | null) => {
-        setSak(newSak)
-        if (newSak && newSak.sakType && newSak.foedselsnr) {
-            if (newSak.sakId !== sak?.sakId ) {
-                Promise.all([
-                    skribentApi.getLetterTemplates(newSak.sakType),
-                    skribentApi.getFavourites(),
-                    skribentApi.hentForetrukketSpraaklag("29129319060"),
-                ]).then(([letterMetadata, favourites, kontaktinfo]) => {
-                    setLetterCategories(letterMetadata.kategorier)
-                    setLanguagePreference(kontaktinfo.spraakKode)
-                    const metadata = letterMetadata.kategorier.flatMap(cat => cat.templates)
-                    setLetterMetadata(metadata.concat(letterMetadata.eblanketter))
-                    setEblanketter(letterMetadata.eblanketter)
-                    if (favourites) {
-                        setFavourites(metadata.filter(m => favourites.includes(m.id)))
-                    } else {
-                        setFavourites([])
-                    }
-                })
-
-                if (newSak.navn) {
-                    setRecipient({
-                        recipientName: newSak.navn,
-                        addressLines: ["TODO brukers egen adresse linje 1", "TODO brukers egen adresse linje 2"],
-                    })
+        if (newSak && newSak.sakType && newSak.foedselsnr && newSak.sakId !== sak?.sakId) {
+            setSak(newSak)
+            Promise.all([
+                skribentApi.getLetterTemplates(newSak.sakType),
+                skribentApi.getFavourites(),
+                skribentApi.hentForetrukketSpraaklag("29129319060"),
+            ]).then(([letterMetadata, favourites, kontaktinfo]) => {
+                setLetterCategories(letterMetadata.kategorier)
+                //setLanguagePreference(kontaktinfo.spraakKode)
+                const metadata = letterMetadata.kategorier.flatMap(cat => cat.templates)
+                setLetterMetadata(metadata.concat(letterMetadata.eblanketter))
+                setEblanketter(letterMetadata.eblanketter)
+                if (favourites) {
+                    setFavourites(metadata.filter(m => favourites.includes(m.id)))
                 } else {
-                    setRecipient(null)
+                    setFavourites([])
                 }
-                // TODO get addresses for the user themselves.
-            }
-        }
+            })
 
+            if (newSak.navn) {
+                setRecipient({
+                    recipientName: newSak.navn,
+                    addressLines: ["TODO brukers egen adresse linje 1", "TODO brukers egen adresse linje 2"],
+                })
+            } else {
+                setRecipient(null)
+            }
+            // TODO get addresses for the user themselves.
+        }
     }
 
     const letterSelectedHandler = (selectionEvent: LetterSelectionEvent) => {

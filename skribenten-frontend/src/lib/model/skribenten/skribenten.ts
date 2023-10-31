@@ -12,12 +12,13 @@ export interface LetterCategory {
 }
 
 export type Brevsystem = 'EXTERAM'| 'DOKSYS'| 'BREVBAKER'
+export type SpraakKode = 'EN' | 'NB' | 'NN' | 'SE' | 'FR'
 
 export interface Metadata {
     readonly name: string
     readonly id: string
     readonly brevsystem: Brevsystem
-    readonly spraak: string[]
+    readonly spraak: SpraakKode[]
     readonly isVedtaksbrev: boolean
     readonly isEblankett: boolean
 }
@@ -27,9 +28,8 @@ export interface SkribentServiceResult<ResultType> {
     readonly errorMessage: string | null
 }
 
-export type ForetrukketSpraakOgMaalForm = 'en' | 'nb' | 'nn' | 'se'
 export interface KontaktinfoResponse {
-    readonly spraakKode: ForetrukketSpraakOgMaalForm | null,
+    readonly spraakKode: SpraakKode | null,
     readonly error: string[],
 }
 /*

@@ -53,46 +53,34 @@ class KrrService(config: Config, authService: AzureADService) {
         }
     }
 
-    data class KontaktinfoResponse(
-        val spraakKode: SpraakKode?,
-        val errors: List<String>,
-    )
+    data class KontaktinfoResponse(val spraakKode: SpraakKode?)
 
-    suspend fun getPreferredLocale(call: ApplicationCall, pid: String): KontaktinfoResponse {
-        val serviceResult = client.get(call, "/rest/v1/person") {
+    suspend fun getPreferredLocale(call: ApplicationCall, pid: String): ServiceResult<KontaktinfoResponse, String> {
+        return client.get(call, "/rest/v1/person") {
             headers {
                 accept(ContentType.Application.Json)
                 header("Nav-Personident", pid)
             }
         }.toServiceResult<KontaktinfoKRRResponse, KontaktinfoKRRErrorResponse>()
-        return when (serviceResult) {
-            is ServiceResult.Ok -> {
-                val spraakKode = when (serviceResult.result.spraak) {
+            .map {
+                val spraakKode = when (it.spraak) {
                     KontaktinfoKRRResponse.SpraakKode.nb -> SpraakKode.NB
                     KontaktinfoKRRResponse.SpraakKode.nn -> SpraakKode.NN
                     KontaktinfoKRRResponse.SpraakKode.en -> SpraakKode.EN
                     KontaktinfoKRRResponse.SpraakKode.se -> SpraakKode.SE
                     null -> null
                 }
-                KontaktinfoResponse(spraakKode = spraakKode, errors = emptyList())
+                KontaktinfoResponse(spraakKode = spraakKode)
+            }.catch { error ->
+                error.errors.joinToString { it.prettyPrint() }
+                    .also {
+                        logger.error(
+                            """
+                            Error(s) from krr proxy:
+                            $it
+                            """.trimIndent()
+                        )
+                    }
             }
-
-            // TODO bedre error håndtering.
-            is ServiceResult.Error -> {
-                val errors = serviceResult.error.errors
-                logger.error(
-                    """
-                    Error(s) from krr proxy:
-                    ${errors.map { it.prettyPrint() }}
-                """.trimIndent()
-                )
-                KontaktinfoResponse(null, errors = serviceResult.error.errors.map { it.prettyPrint() })
-            }
-
-            is ServiceResult.AuthorizationError -> KontaktinfoResponse(
-                null,
-                listOf(serviceResult.error.error)
-            )
-        }
     }
 }

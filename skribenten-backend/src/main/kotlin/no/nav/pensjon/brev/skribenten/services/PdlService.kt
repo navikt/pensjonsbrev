@@ -172,17 +172,6 @@ class PdlService(config: Config, authService: AzureADService) {
         }.toServiceResult<PDLResponse<PDLPersonSoekResult>, PDLResponse<PDLPersonSoekResult>>()
         return when (result) {
             is ServiceResult.Ok -> {
-                // TODO remove.
-                if (result.result.errors != null || result.result.extensions != null) {
-                    println(
-                        """
-                        Extension message: ${result.result.extensions}                        
-                        Error message: ${result.result.errors}                        
-                    """.trimIndent()
-                    )
-                }
-
-
                 result.result.data?.sokPerson?.let { data ->
                     ServiceResult.Ok(PersonSoekResponse(
                         data.totalHits, data.hits.mapNotNull {
@@ -203,22 +192,5 @@ class PdlService(config: Config, authService: AzureADService) {
             is ServiceResult.Error -> ServiceResult.Error(result.error.errors.toString())
             is ServiceResult.AuthorizationError -> ServiceResult.Error(result.error.error)
         }
-    }
-
-    data class HentAdresserResponse(val addressLine: List<String>)
-
-    // TODO integrer mot pensjon sin egen persondata-tjeneste og hent adresse.
-    fun hentAdresseForPersonFake(call: ApplicationCall, pid: String): ServiceResult<HentAdresserResponse, String> {
-        return ServiceResult.Ok(
-            HentAdresserResponse(
-                listOf(
-                    "AdresseLinje 1",
-                    "AdresseLinje 2",
-                    "AdresseLinje 3",
-                    "AdresseLinje 4",
-                    "AdresseLinje 5",
-                )
-            )
-        )
     }
 }

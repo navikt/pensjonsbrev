@@ -158,7 +158,7 @@ fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config
 
             get("/foretrukketSpraak/{pid}") {
                 val pid = call.parameters.getOrFail("pid")
-                call.respond(krrService.getPreferredLocale(call, pid))
+                respondWithResult(krrService.getPreferredLocale(call, pid))
             }
 
             route("/kodeverk") {

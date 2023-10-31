@@ -1,20 +1,23 @@
 import React, {FC, useState} from "react"
 import {Button, Label, Select} from "@navikt/ds-react"
 import BottomMenu from "../../../../components/bottom-menu/BottomMenu"
-import {ForetrukketSpraakOgMaalForm, LanguageCode, Metadata} from "../../../../lib/model/skribenten"
+import {SpraakKode, LanguageCode, Metadata} from "../../../../lib/model/skribenten"
 import styles from "./ActionBar.module.css"
 
 interface ActionBarProps {
     selectedLetter: Metadata | undefined
-    preferredLanguage: ForetrukketSpraakOgMaalForm | null
+    preferredLanguage: SpraakKode | null
     onOrderLetter: (language: string) => void
 }
 
-const ActionBar: FC<ActionBarProps> = ({selectedLetter, onOrderLetter}) => {
+const ActionBar: FC<ActionBarProps> = ({selectedLetter, onOrderLetter, preferredLanguage}) => {
     const [selectedLanguage, setSelectedLanguage] = useState(0)
     const disabled = !selectedLetter
-    const selection = selectedLetter?.spraak?.map(sprak => {
-        return (<option key={sprak}>{sprakTekst(sprak)}</option>)
+    const selection = selectedLetter?.spraak?.map(spraak => {
+        if(spraak === preferredLanguage) {
+            return (<option key={spraak}>{sprakTekst(spraak) + " (Foretrukket)"}</option>)
+        }
+        return (<option key={spraak}>{sprakTekst(spraak)}</option>)
     })
 
     const handleOrderLetter = () => {
