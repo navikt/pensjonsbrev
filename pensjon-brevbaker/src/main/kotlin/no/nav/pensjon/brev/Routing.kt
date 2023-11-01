@@ -51,7 +51,17 @@ fun Application.brevbakerRouting(authenticationNames: Array<String>, latexCompil
 
             route("/redigerbar") {
                 get {
-                    call.respond(letterResource.templateResource.getRedigerbareBrev())
+                    val withMetadata = call.request.queryParameters["includeMetadata"] == "true"
+                    //todo add legacy metadata
+                    if (withMetadata) {
+                        call.respond(letterResource.templateResource.getRedigerbareBrevMedMetadata())
+                    } else {
+                        call.respond(letterResource.templateResource.getRedigerbareBrev())
+                    }
+                }
+
+                get("/all"){
+                    letterResource.templateResource.getRedigerbareBrev().map { it.kode }
                 }
 
                 get("/{kode}") {

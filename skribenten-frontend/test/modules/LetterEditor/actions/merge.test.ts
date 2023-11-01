@@ -2,7 +2,7 @@ import {describe, expect, test} from "vitest"
 import Actions from "../../../../src/modules/LetterEditor/actions"
 import {MergeTarget} from "../../../../src/modules/LetterEditor/actions/model"
 import {item, itemList, letter, literal, paragraph, select, variable} from "../utils"
-import {AnyBlock, Item, ItemList, ParagraphBlock, TextContent} from "../../../../src/modules/LetterEditor/model/api"
+import {AnyBlock, Item, ItemList, ParagraphBlock, TextContent} from "../../../../src/lib/model/skribenten"
 
 describe("LetterEditorActions.merge", () => {
 

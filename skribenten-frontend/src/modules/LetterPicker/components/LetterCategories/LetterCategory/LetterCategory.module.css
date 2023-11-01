@@ -1,0 +1,64 @@
+.expansionButton {
+    box-sizing: border-box;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    padding: 0.125rem;
+    background-color: var(--a-white);
+    border-radius: 0;
+    border: 0.125rem solid transparent;
+    justify-content: space-between;
+}
+
+.expansionButton:hover {
+    cursor: pointer;
+    background-color: var(--a-surface-action-subtle-hover);
+}
+
+.expansionButton:focus {
+    border: 0.125rem solid var(--a-surface-action-active)
+}
+
+.expansionButtonOpen, .expansionButtonOpen{
+    background-color: var(--a-surface-action-subtle-hover);
+}
+.expansionButtonOpen > .expansionHeader{
+    /*TODO await design changes*/
+    font-weight: 600;
+}
+.expansionButtonOpen:hover {
+    /*background-color: var(--a-surface-action-selected-hover);*/
+}
+
+.expansionHeader {
+    font-weight: var(--a-font-weight-regular);
+    font-size: var(--a-font-size-medium);
+    vertical-align: middle;
+    line-height: 1.5rem;
+    margin: 0;
+}
+
+.expansionContainer {
+    box-sizing: inherit;
+    width: 100%;
+    display: block;
+    margin-bottom: 0.25rem;
+}
+
+.expansionContainer:focus-within, .expansionContainer:hover {
+    background-color: var(--a-gray-50);
+}
+
+.expansionArrow {
+    color: #000000;
+    font-size: 1.5rem;
+}
+.letterCategoryContainer {
+    display: flex;
+    flex-direction: column;
+    padding: 0.25rem 0 0.25rem 0.5rem;
+}
+
+.letterCategoryContainer:focus-within {
+    background-color: var(--a-gray-50);
+}

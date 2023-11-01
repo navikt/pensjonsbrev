@@ -1,3 +1,5 @@
+import {TemplateDescription} from "./brevbaker"
+
 export interface Identifiable {
     readonly id: number
 }
@@ -79,19 +81,6 @@ export interface EditedLetter {
     readonly deletedBlocks: number[]
 }
 
-export type LanguageCode = 'BOKMAL' | 'NYNORSK' | 'ENGLISH'
-export type Distribusjonstype = 'VEDTAK' | 'VIKTIG' | 'ANNET'
-export interface LetterMetadata {
-    readonly displayTitle: string
-    readonly isSensitiv: boolean
-    readonly distribusjonstype: Distribusjonstype
-}
-export interface TemplateDescription {
-    readonly name: string
-    readonly letterDataClass: string
-    readonly languages: LanguageCode[]
-    readonly metadata: LetterMetadata
-}
 export type ScalarKind = 'NUMBER' | 'DOUBLE' | 'STRING' | 'BOOLEAN' | 'DATE'
 export interface TScalar {
     readonly type: 'scalar'

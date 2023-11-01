@@ -87,4 +87,6 @@ data class UserPrincipal(val accessToken: UserAccessToken, val jwtPayload: Paylo
     fun setOnBehalfOfToken(scope: String, token: TokenResponse.OnBehalfOfToken) {
         onBehalfOfTokens[scope] = token
     }
+
+    fun getUserId(): String = jwtPayload.subject
 }

@@ -1,0 +1,17 @@
+.container{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.header{
+    /* Heading/Desktop/Large */
+    font-size: 2rem;
+    font-family: Source Sans Pro;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 2.5rem;
+    letter-spacing: -0.016rem;
+}

@@ -1,6 +1,6 @@
 import {Action} from "../../../lib/actions"
 import produce from "immer"
-import {Block, ITEM_LIST, LITERAL} from "../model/api"
+import {Block, ITEM_LIST, LITERAL} from "../../../lib/model/skribenten"
 import {getMergeIds, isEmptyBlock, isEmptyItem, isTextContent, mergeContentArrays} from "../model/utils"
 import {WritableDraft} from "immer/dist/types/types-external"
 import {ContentId, MergeTarget} from "./model"

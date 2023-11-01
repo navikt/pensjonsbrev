@@ -5,7 +5,10 @@ import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.maler.*
 import no.nav.pensjon.brev.maler.adhoc.*
 import no.nav.pensjon.brev.maler.redigerbar.InformasjonOmSaksbehandlingstid
-import no.nav.pensjon.brev.template.*
+import no.nav.pensjon.brev.template.AutobrevTemplate
+import no.nav.pensjon.brev.template.LetterTemplate
+import no.nav.pensjon.brev.template.RedigerbarTemplate
+import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 
 val prodAutobrevTemplates: Set<AutobrevTemplate<*>> = setOf(
@@ -40,6 +43,9 @@ class TemplateResource(
 
     fun getRedigerbareBrev(): Set<Brevkode.Redigerbar> =
         redigerbareBrevMap.keys
+
+    fun getRedigerbareBrevMedMetadata(): Map<Brevkode.Redigerbar, LetterMetadata> =
+        redigerbareBrevMap.mapValues { (_, v) -> v.template.letterMetadata }
 
     fun getRedigerbartBrev(kode: Brevkode.Redigerbar): LetterTemplate<*, out BrevbakerBrevdata>? =
         redigerbareBrevMap[kode]?.template

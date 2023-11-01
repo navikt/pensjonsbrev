@@ -1,4 +1,4 @@
-import {FieldType, ObjectTypeSpecifications, TArray} from "../../../LetterEditor/model/api"
+import {FieldType, ObjectTypeSpecifications, TArray} from "../../../../lib/model/skribenten"
 import {bindAction, BoundAction} from "../../../../lib/actions"
 import {FieldValue, initValueFromSpec} from "../../model"
 import {FC, useState} from "react"

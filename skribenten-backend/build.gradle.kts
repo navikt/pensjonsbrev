@@ -77,6 +77,8 @@ dependencies {
     implementation("io.ktor:ktor-server-cors:$ktorVersion")
     implementation("io.ktor:ktor-server-netty-jvm:$ktorVersion")
     implementation("io.ktor:ktor-server-status-pages:$ktorVersion")
+    implementation("io.ktor:ktor-server-caching-headers:$ktorVersion")
+
 
     implementation("no.nav.pensjon.brev:pensjon-brevbaker-api-model:$apiModelVersion")
 
@@ -91,6 +93,7 @@ dependencies {
     implementation("io.ktor:ktor-server-metrics:$ktorVersion")
     implementation("io.ktor:ktor-server-metrics-micrometer:$ktorVersion")
     implementation("io.micrometer:micrometer-registry-prometheus:$micrometerVersion")
+    implementation("io.ktor:ktor-server-caching-headers-jvm:2.3.3")
 
     // Test
     testImplementation("io.ktor:ktor-server-tests-jvm:$ktorVersion")

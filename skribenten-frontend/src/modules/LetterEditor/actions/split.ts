@@ -1,6 +1,6 @@
 import {Action} from "../../../lib/actions"
 import produce from "immer"
-import {Item, ITEM_LIST, LITERAL, PARAGRAPH, ParagraphBlock} from "../model/api"
+import {Item, ITEM_LIST, LITERAL, PARAGRAPH, ParagraphBlock} from "../../../lib/model/skribenten"
 import {isEmptyBlock, isEmptyContent, isEmptyItem} from "../model/utils"
 import {cleanseText, isEditableContent} from "./common"
 import {ContentId} from "./model"

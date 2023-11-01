@@ -1,4 +1,4 @@
-import {AnyBlock, Content, Item, ITEM_LIST, LITERAL, TextContent, VARIABLE} from "./api"
+import {AnyBlock, Content, Item, ITEM_LIST, LITERAL, TextContent, VARIABLE} from "../../../lib/model/skribenten"
 import {ContentGroup} from "./state"
 import produce from "immer"
 

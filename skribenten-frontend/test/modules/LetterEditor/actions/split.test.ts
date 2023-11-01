@@ -1,6 +1,6 @@
 import {describe, expect, test} from "vitest"
 import Actions from "../../../../src/modules/LetterEditor/actions"
-import {Content, ItemList, LITERAL, ParagraphBlock, TextContent} from "../../../../src/modules/LetterEditor/model/api"
+import {Content, ItemList, LITERAL, ParagraphBlock, TextContent} from "../../../../src/lib/model/skribenten"
 import {item, itemList, letter, literal, paragraph, select, variable} from "../utils"
 
 describe('LetterEditorActions.split', () => {

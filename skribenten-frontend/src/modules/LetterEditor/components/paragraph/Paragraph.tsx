@@ -1,4 +1,4 @@
-import {ParagraphBlock} from "../../model/api"
+import {ParagraphBlock} from "../../../../lib/model/skribenten"
 import {FC} from "react"
 import styles from "./Paragraph.module.css"
 import ContentGroup from "../contentgroup/ContentGroup"

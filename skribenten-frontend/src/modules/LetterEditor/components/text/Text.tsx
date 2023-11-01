@@ -1,5 +1,5 @@
 import {FC} from "react"
-import {LITERAL, TextContent, VARIABLE} from "../../model/api"
+import {LITERAL, TextContent, VARIABLE} from "../../../../lib/model/skribenten"
 import styles from "./Text.module.css"
 
 export interface TextProps {

@@ -1,4 +1,4 @@
-import {Content, ITEM_LIST, RenderedLetter, VARIABLE} from "../model/api"
+import {Content, ITEM_LIST, RenderedLetter, VARIABLE} from "../../../lib/model/skribenten"
 
 import {LetterEditorState} from "../model/state"
 

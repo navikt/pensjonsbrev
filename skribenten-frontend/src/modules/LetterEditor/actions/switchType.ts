@@ -1,5 +1,5 @@
 import {Action} from "../../../lib/actions"
-import {PARAGRAPH, TITLE1, TITLE2} from "../model/api"
+import {PARAGRAPH, TITLE1, TITLE2} from "../../../lib/model/skribenten"
 import produce from "immer"
 import {isTextContent} from "../model/utils"
 import {LetterEditorState} from "../model/state"

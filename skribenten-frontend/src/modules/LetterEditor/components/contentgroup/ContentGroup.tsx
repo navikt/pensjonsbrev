@@ -1,7 +1,7 @@
 import React, {MouseEventHandler} from "react"
 import Text from "../text/Text"
 import styles from "./Content.module.css"
-import {Content, ITEM_LIST, LITERAL, TextContent, VARIABLE} from "../../model/api"
+import {Content, ITEM_LIST, LITERAL, TextContent, VARIABLE} from "../../../../lib/model/skribenten"
 import EditableText from "../text/EditableText"
 import {SelectionService} from "../../services/SelectionService"
 import {applyAction, bindActionWithCallback, BoundAction, CallbackReceiver, combine} from "../../../../lib/actions"

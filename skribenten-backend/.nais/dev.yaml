@@ -13,6 +13,8 @@ env:
     value: "https://pensjon-brevbaker.intern.dev.nav.no"
   - name: BREVBAKER_SCOPE
     value: "api://dev-gcp.pensjonsbrev.pensjon-brevbaker/.default"
+  - name: BREVMETADATA_URL
+    value: "https://pensjon-brevmetadata-q2.intern.dev.nav.no"
 
 preAuthorized:
   - name: skribenten-frontend

@@ -1,7 +1,7 @@
 import {Action} from "../../lib/actions"
 import produce from "immer"
 import {FieldValue} from "./model"
-import {FieldType, TArray, TObject} from "../LetterEditor/model/api"
+import {FieldType, TArray, TObject} from "../../lib/model/skribenten"
 
 const updateField = produce((draft, name, value) => {
     draft[name] = value

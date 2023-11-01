@@ -1,0 +1,10 @@
+.search {
+    margin-top: 0.37rem;
+}
+
+.eblanketter{
+    margin-top: 0.37rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.37rem;
+}

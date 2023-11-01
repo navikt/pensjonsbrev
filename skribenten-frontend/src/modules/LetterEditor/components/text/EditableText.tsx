@@ -1,5 +1,5 @@
 import React, {FC, useCallback} from "react"
-import {LiteralValue} from "../../model/api"
+import {LiteralValue} from "../../../../lib/model/skribenten"
 import ContentEditable, {ContentEditableEvent} from "react-contenteditable"
 import {BoundAction} from "../../../../lib/actions"
 import {isEmptyContent} from "../../model/utils"
