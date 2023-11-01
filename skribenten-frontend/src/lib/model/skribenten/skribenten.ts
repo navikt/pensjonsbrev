@@ -32,21 +32,3 @@ export interface KontaktinfoResponse {
     readonly spraakKode: SpraakKode | null,
     readonly error: string[],
 }
-/*
-
-@JsonIgnoreProperties(ignoreUnknown = true)
-data class KontaktinfoResponse(val spraakKode: SpraakKode? = null) {
-    enum class SpraakKode {
-        nb, // bokmål
-        nn, //nynorsk
-        en, //engelsk
-        se, //samisk
-    }
-}
-
-data class KontaktinfoErrorResponse(
-    val errors: List<Error>,
-) {
-    data class Error(val id: String, val status: String, val title: String, val detail: String)
-}
-* */

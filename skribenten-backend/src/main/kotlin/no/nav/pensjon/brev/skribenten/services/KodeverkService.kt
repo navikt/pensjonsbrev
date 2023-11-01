@@ -26,7 +26,6 @@ class KodeverkService(config: Config) {
         install(ContentNegotiation) {
             jackson {
                 registerModule(JavaTimeModule())
-                registerModule(RenderedJsonLetterModule)
             }
         }
     }

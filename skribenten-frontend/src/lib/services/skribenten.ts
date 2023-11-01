@@ -21,6 +21,7 @@ export interface SkribentenAPIConfig {
     scope: string
 }
 
+// TODO split into smaller classes
 class SkribentenAPI {
     constructor(readonly config: SkribentenAPIConfig, readonly msal: IMsalContext) {
     }

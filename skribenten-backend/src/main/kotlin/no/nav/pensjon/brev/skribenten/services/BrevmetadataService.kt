@@ -45,12 +45,13 @@ class BrevmetadataService(config: Config) {
 
     private fun BrevdataDto.mapToMetadata() =
         LetterMetadata(
-            name = dekode ?: "MissingName",
+            name = dekode ?: "MissingName",     // TODO handle missing fields in front-end instead.
             id = brevkodeIBrevsystem ?: "MissingCode",
             spraak = sprak ?: emptyList(),
             brevsystem = when (brevsystem) {
                 "DOKSYS" -> BrevSystem.DOKSYS
                 "GAMMEL" -> BrevSystem.EXTERAM
+                // TODO
                 else -> throw IllegalStateException("Malformed metadata. Must be doksys or extream.")
             },
             isVedtaksbrev = this.brevkategori == BrevdataDto.BrevkategoriCode.VEDTAK,

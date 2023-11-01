@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.skribenten.services
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.typesafe.config.Config
 import io.ktor.client.plugins.*
@@ -10,7 +10,6 @@ import io.ktor.http.*
 import io.ktor.serialization.jackson.*
 import io.ktor.server.application.*
 import no.nav.pensjon.brev.skribenten.OrderLetterRequest
-import no.nav.pensjon.brev.skribenten.auth.AuthorizedHttpClientResult
 import no.nav.pensjon.brev.skribenten.auth.AzureADOnBehalfOfAuthorizedHttpClient
 import no.nav.pensjon.brev.skribenten.auth.AzureADService
 import java.time.LocalDate
@@ -29,20 +28,18 @@ class PenService(config: Config, authService: AzureADService) {
         install(ContentNegotiation) {
             jackson {
                 registerModule(JavaTimeModule())
+                disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
             }
         }
     }
 
-    @JsonIgnoreProperties(ignoreUnknown = true) // ignorer merknader som ikke er relevant for våres kall.
     data class PenError(val feilmelding: String)
 
-    @JsonIgnoreProperties(ignoreUnknown = true)
     data class PenPersonDto(
         val fodselsdato: LocalDate,
         val fnr: String,
     )
 
-    @JsonIgnoreProperties(ignoreUnknown = true)
     data class Sak(
         val sakId: Long,
         val penPerson: PenPersonDto,

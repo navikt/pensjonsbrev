@@ -16,7 +16,7 @@ import org.slf4j.LoggerFactory
 class KrrService(config: Config, authService: AzureADService) {
     private val krrUrl = config.getString("url")
     private val krrScope = config.getString("scope")
-    private val logger = LoggerFactory.getLogger("no.nav.pensjon.brev.skribenten.services.KrrService")
+    private val logger = LoggerFactory.getLogger(this::class.java)
 
     private val client = AzureADOnBehalfOfAuthorizedHttpClient(krrScope, authService) {
         defaultRequest {
