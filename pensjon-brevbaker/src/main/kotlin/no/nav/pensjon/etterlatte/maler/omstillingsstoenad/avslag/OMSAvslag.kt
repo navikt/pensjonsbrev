@@ -25,6 +25,7 @@ import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.avslag.OMSAvslagDTOSelectors.avdoedNavn
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.avslag.OMSAvslagDTOSelectors.innhold
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.klageOgAnke
+import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.klageOgAnkeUtenTilbakekreving
 
 
 data class OMSAvslagDTO(
@@ -65,7 +66,7 @@ object OMSAvslag : EtterlatteTemplate<OMSAvslagDTO>, Hovedmal {
             includePhrase(OMSFelles.HarDuSpoersmaal)
         }
 
-        includeAttachment(klageOgAnke, innhold)
+        includeAttachment(klageOgAnkeUtenTilbakekreving, innhold)
     }
 }
 
