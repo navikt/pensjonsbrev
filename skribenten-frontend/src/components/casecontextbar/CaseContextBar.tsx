@@ -35,6 +35,7 @@ const CaseContextBar: FC<CaseContextBarProps> = ({saksnummer, foedselsnummer, gj
 
 export default CaseContextBar
 
+//TODO consider string enum
 function sakstypeToName(sakstype: string | undefined): string | undefined {
     switch (sakstype) {
         case "AFP":
