@@ -14,22 +14,37 @@ import no.nav.pensjon.etterlatte.maler.fraser.common.Felles
 
 @TemplateModelHelpers
 val klageOgAnke = createAttachment(
-    title = newText(
-        Bokmal to "Informasjon om klage og anke ",
-        Nynorsk to "",
-        English to "",
-    ),
+    title = klageOgAnkeTittel(),
     includeSakspart = false,
 ) {
+    vedleggInnhold(inkluderTilbakekreving = true)
+}
+
+
+@TemplateModelHelpers
+val klageOgAnkeUtenTilbakekreving = createAttachment(
+    title = klageOgAnkeTittel(),
+    includeSakspart = false,
+) {
+    vedleggInnhold(inkluderTilbakekreving = false)
+}
+
+private fun klageOgAnkeTittel() = newText(
+    Bokmal to "Informasjon om klage og anke ",
+    Nynorsk to "",
+    English to "",
+)
+
+private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Any>.vedleggInnhold(inkluderTilbakekreving: Boolean) {
     veiledningFraNav()
     includePhrase(Felles.HjelpFraAndreForvaltningsloven12)
     klagePaaVedtaketFolketrygdloven2112()
     hvordanSendeInnKlage()
     hvaMaaKlagenInneholde()
-    tilbakekreving()
+    if (inkluderTilbakekreving) tilbakekreving()
     duKanFaaDekketUtgifter()
-
 }
+
 
 private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Any>.veiledningFraNav() {
     title2 {
