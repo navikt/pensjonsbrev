@@ -1,2 +1,0 @@
-schema: saf.graphqls # kun for lokal auto-complete. Kan oppdateres fra https://github.com/navikt/saf/blob/master/app/src/main/resources/schemas/saf.graphqls
-documents: './*.graphql'

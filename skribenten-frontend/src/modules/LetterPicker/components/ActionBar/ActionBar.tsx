@@ -12,7 +12,7 @@ interface ActionBarProps {
 
 const ActionBar: FC<ActionBarProps> = ({selectedLetter, onOrderLetter, preferredLanguage}) => {
     const [selectedLanguage, setSelectedLanguage] = useState(0)
-    const disabled = selectedLetter !== null
+    const disabled = selectedLetter == null
     const selection = selectedLetter?.spraak?.map(spraak => {
         if(spraak === preferredLanguage) {
             return (<option key={spraak}>{sprakTekst(spraak) + " (Foretrukket)"}</option>)
@@ -25,7 +25,7 @@ const ActionBar: FC<ActionBarProps> = ({selectedLetter, onOrderLetter, preferred
             onOrderLetter(selectedLetter.spraak[selectedLanguage])
         }
     }
-
+    //TODO split dropdown into new private component.
     return (
         <BottomMenu>
             <div className={styles.actionBar}>
