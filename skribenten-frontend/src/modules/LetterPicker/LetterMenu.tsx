@@ -3,7 +3,7 @@ import styles from "./LetterMenu.module.css"
 import {Button, Heading, Loader} from "@navikt/ds-react"
 import LetterPicker from "./components/LetterPicker/LetterPicker"
 import {LetterCategory, Metadata} from "../../lib/model/skribenten"
-import ChangeRecipient, {RecipientChange} from "./components/ChangeRecipient/ChangeRecipient"
+import ChangeRecipient from "./components/ChangeRecipient/ChangeRecipient"
 import Letterfilter, {LetterSelectionEvent} from "./components/LetterFilter/Letterfilter"
 
 export interface LetterMenuProps {
@@ -33,15 +33,6 @@ const LetterMenu: FC<LetterMenuProps> =
      }) => {
         const [showRecipientModal, setShowRecipientModal] = useState(false)
 
-        const handleRecipientChange = (change: RecipientChange | null) => {
-            console.log(change)
-            if (change) {
-                onRecipientChanged({recipientName: change.recipientName, addressLines: change.addressLines})
-            } else {
-                onRecipientChanged(null)
-            }
-        }
-
         return (
             <div className={styles.brevvelgerContainer}>
                 <h1>Brevvelger</h1>
@@ -52,7 +43,7 @@ const LetterMenu: FC<LetterMenuProps> =
                                 size="xsmall"
                                 onClick={() => setShowRecipientModal(true)}>Endre mottaker</Button>
                         <ChangeRecipient open={showRecipientModal}
-                                         onChange={handleRecipientChange}
+                                         onChange={onRecipientChanged}
                                          onExit={() => setShowRecipientModal(false)}/>
                     </div>
                     {recipient ? (<p>{recipient.recipientName}</p>): (<Loader/>)}

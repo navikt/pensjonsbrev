@@ -46,7 +46,7 @@ data class OrderLetterRequest(
     val mottakerText: String? = null,
 )
 
-// TODO innfør nav-call id på ulike kall for feilsøking
+// TODO innfør X-Request-ID
 fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config) {
     val authService = AzureADService(authConfig)
     val safService = SafService(skribentenConfig.getConfig("services.saf"), authService)
@@ -58,7 +58,7 @@ fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config
     val microsoftGraphService =
         MicrosoftGraphService(skribentenConfig.getConfig("services.microsoftgraph"), authService)
     val brevbakerService = BrevbakerService(skribentenConfig.getConfig("services.brevbaker"), authService)
-    val brevmetadataService = BrevmetadataService(skribentenConfig.getConfig("services.brevmetadata"))
+    val brevmetadataService = BrevmetadataService(skribentenConfig.getConfig( "services.brevmetadata"))
     val databaseService = SkribentenFakeDatabaseService()
     routing {
         get("/isAlive") {

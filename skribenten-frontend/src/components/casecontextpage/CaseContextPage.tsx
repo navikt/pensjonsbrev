@@ -55,16 +55,12 @@ const CaseContextPage: FC<CaseContextPageProps> = ({children, onSakChanged, sak}
                         }
                         if (onSakChanged !== undefined) {
                             onSakChanged(newSak)
-                            if (newSak?.foedselsnr !== sak?.foedselsnr) {
-                                skribentApi.hentNavn(sakResponse.foedselsnr).then(navn => {
-                                        if (sak) {
-                                            onSakChanged({...sak, navn: navn})
-                                        } else {
-                                            onSakChanged({
-                                                ...newSak,
-                                                navn: navn,
-                                            })
-                                        }
+                            if (newSak?.foedselsnr !== sak?.foedselsnr && newSak.foedselsnr) {
+                                skribentApi.hentNavn(newSak.foedselsnr).then(navn => {
+                                        onSakChanged({
+                                            ...newSak,
+                                            navn: navn,
+                                        })
                                     }
                                 )
                             }

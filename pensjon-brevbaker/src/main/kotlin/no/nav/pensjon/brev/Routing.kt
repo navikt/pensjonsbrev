@@ -52,7 +52,6 @@ fun Application.brevbakerRouting(authenticationNames: Array<String>, latexCompil
             route("/redigerbar") {
                 get {
                     val withMetadata = call.request.queryParameters["includeMetadata"] == "true"
-                    val withLegacy = call.request.queryParameters["includeLegacy"] == "true"
                     //todo add legacy metadata
                     if (withMetadata) {
                         call.respond(letterResource.templateResource.getRedigerbareBrevMedMetadata())

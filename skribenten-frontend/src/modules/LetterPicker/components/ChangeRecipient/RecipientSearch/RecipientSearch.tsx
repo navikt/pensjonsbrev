@@ -38,9 +38,12 @@ const RecipientSearch: FC<RecipientSearchProps> = ({onMottakerChosen}) => {
     const {skribentApi} = useContext(SkribentContext) as SkribentContext
 
     useEffect(() => {
-        skribentApi.hentKommuneForslag().then(
-            res => setKommuner(res))
-    }, [skribentApi])
+        if(kommuner.length == 0) {
+            skribentApi.hentGyldigeKommuner().then(
+                res => setKommuner(res))
+        }
+
+    }, [skribentApi, kommuner])
 
     const handleSearch = useCallback(() => {
         if (isSearching) return

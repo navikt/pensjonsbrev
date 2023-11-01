@@ -40,7 +40,6 @@ class SkribentenAPI {
     }
 
     async testBrevbaker(): Promise<Blob> {
-        console.log(this.config.url)
         return withAuthorization(this.msal, this.config.scope).then((auth) =>
             fetch(`${this.config.url}/test/brevbaker`, {
                 headers: {
@@ -235,7 +234,7 @@ class SkribentenAPI {
         })
     }
 
-    async hentKommuneForslag(): Promise<KommuneResult[]> {
+    async hentGyldigeKommuner(): Promise<KommuneResult[]> {
         return withAuthorization(this.msal, this.config.scope).then(auth =>
             fetch(`${this.config.url}/kodeverk/kommune`, {
                 headers: {'Authorization': `Bearer ${auth.accessToken}`},

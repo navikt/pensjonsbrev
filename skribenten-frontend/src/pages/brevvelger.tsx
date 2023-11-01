@@ -42,35 +42,40 @@ const Brevvelger: NextPage<SkribentenConfig> = (props) => {
 
 
     const onChangeSakHandler = (newSak: Sak | null) => {
-        if (newSak && newSak.sakType && newSak.foedselsnr && newSak.sakId !== sak?.sakId) {
-            setSak(newSak)
-            Promise.all([
-                skribentApi.getLetterTemplates(newSak.sakType),
-                skribentApi.getFavourites(),
-                skribentApi.hentForetrukketSpraaklag("29129319060"),
-            ]).then(([letterMetadata, favourites, kontaktinfo]) => {
-                setLetterCategories(letterMetadata.kategorier)
-                //setLanguagePreference(kontaktinfo.spraakKode)
-                const metadata = letterMetadata.kategorier.flatMap(cat => cat.templates)
-                setLetterMetadata(metadata.concat(letterMetadata.eblanketter))
-                setEblanketter(letterMetadata.eblanketter)
-                if (favourites) {
-                    setFavourites(metadata.filter(m => favourites.includes(m.id)))
-                } else {
-                    setFavourites([])
+        if (newSak) {
+            setSak((prevSak) => {
+                if(prevSak?.sakId !== newSak.sakId && newSak.sakType) {
+                    Promise.all([
+                        skribentApi.getLetterTemplates(newSak.sakType),
+                        skribentApi.getFavourites(),
+                        skribentApi.hentForetrukketSpraaklag("01814797763"), //fiktivt test-fnr for KRR.
+                    ]).then(([letterMetadata, favourites, kontaktinfo]) => {
+                        setLetterCategories(letterMetadata.kategorier)
+                        setLanguagePreference(kontaktinfo.spraakKode)
+                        const metadata = letterMetadata.kategorier.flatMap(cat => cat.templates)
+                        setLetterMetadata(metadata.concat(letterMetadata.eblanketter))
+                        setEblanketter(letterMetadata.eblanketter)
+                        if (favourites) {
+                            setFavourites(metadata.filter(m => favourites.includes(m.id)))
+                        } else {
+                            setFavourites([])
+                        }
+                    })
                 }
+
+                if (newSak.navn) {
+                    setRecipient({
+                        recipientName: newSak.navn,
+                        addressLines: ["TODO brukers egen adresse linje 1", "TODO brukers egen adresse linje 2"],
+                    })
+                } else {
+                    setRecipient(null)
+                }
+                return newSak
             })
 
-            if (newSak.navn) {
-                setRecipient({
-                    recipientName: newSak.navn,
-                    addressLines: ["TODO brukers egen adresse linje 1", "TODO brukers egen adresse linje 2"],
-                })
-            } else {
-                setRecipient(null)
-            }
             // TODO get addresses for the user themselves.
-        }
+        } else setSak(null)
     }
 
     const letterSelectedHandler = (selectionEvent: LetterSelectionEvent) => {
@@ -94,13 +99,11 @@ const Brevvelger: NextPage<SkribentenConfig> = (props) => {
             if (metadata.brevsystem == "EXTERAM") {
                 skribentApi.bestillExtreamBrev(selectedLetter.metadata, sak, sak.foedselsnr, selectedLanguage, selectedLetter.landkode, selectedLetter.mottakerText)
                     .then((url: string) => {
-                        console.log(`Fikk URL tilbake fra extream ${url}`)
                         window.open(url)
                     })
             } else if (metadata.brevsystem == "DOKSYS") {
                 skribentApi.bestillDoksysBrev(metadata.id, sak.sakId.toString(), sak.foedselsnr, selectedLanguage)
                     .then((url: string) => {
-                        console.log(`Fikk URL tilbake fra doksys ${url}`)
                         window.open(url)
                     })
             }
@@ -110,7 +113,6 @@ const Brevvelger: NextPage<SkribentenConfig> = (props) => {
     const addToFavouritesHandler = async () => {
         const metadata = selectedLetter?.metadata
         if (metadata && !metadata.isEblankett) {
-            console.log(selectedLetter)
             const isFavourite = favourites?.includes(metadata)
             if (isFavourite) {
                 setFavourites(fav => fav ? fav.filter(f => f.id !== metadata.id) : null)
