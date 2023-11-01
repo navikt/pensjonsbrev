@@ -7,7 +7,7 @@ import io.ktor.server.response.*
 import io.ktor.util.pipeline.*
 import no.nav.pensjon.brev.skribenten.auth.*
 
-sealed class ServiceResult<out Result: Any, Err: Any> {
+sealed class ServiceResult<out Result: Any, out Err: Any> {
     data class Ok<out Result: Any, Error: Any>(val result: Result) : ServiceResult<Result, Error>()
     data class AuthorizationError<out Result: Any, Error: Any>(val error: TokenResponse.ErrorResponse): ServiceResult<Result, Error>()
     data class Error<out Result: Any, Error: Any>(val error: Error): ServiceResult<Result, Error>()

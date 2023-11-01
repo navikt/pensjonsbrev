@@ -51,7 +51,7 @@ class BrevmetadataService(config: Config) {
             brevsystem = when (brevsystem) {
                 "DOKSYS" -> BrevSystem.DOKSYS
                 "GAMMEL" -> BrevSystem.EXTERAM
-                // TODO
+                // TODO handle state or throw something else.
                 else -> throw IllegalStateException("Malformed metadata. Must be doksys or extream.")
             },
             isVedtaksbrev = this.brevkategori == BrevdataDto.BrevkategoriCode.VEDTAK,

@@ -18,11 +18,11 @@ data class AdresseResponse(
 )
 class PensjonPersonDataService(config: Config, authService: AzureADService) {
 
-    private val url = config.getString("url")
+    private val pensjonPersondataURL = config.getString("url")
     private val scope = config.getString("scope")
     private val client = AzureADOnBehalfOfAuthorizedHttpClient(scope, authService) {
         defaultRequest {
-            url(this@PensjonPersonDataService.url)
+            url(pensjonPersondataURL)
         }
         install(ContentNegotiation) {
             jackson {

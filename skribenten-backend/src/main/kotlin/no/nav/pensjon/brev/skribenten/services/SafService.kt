@@ -26,6 +26,7 @@ class SafService(config: Config, authService: AzureADService) {
     private val safUrl = config.getString("url")
     private val safScope = config.getString("scope")
 
+    //TODO vurder å bruke en egen client for graphql: (https://opensource.expediagroup.com/graphql-kotlin/docs/client/client-overview/)
     private val client = AzureADOnBehalfOfAuthorizedHttpClient(safScope, authService) {
         defaultRequest {
             url(safUrl)
@@ -61,6 +62,7 @@ class SafService(config: Config, authService: AzureADService) {
     }
 
     suspend fun waitForJournalpostStatusUnderArbeid(call: ApplicationCall, journalpostId: String): JournalpostLoadingError? {
+        // TODO legg inn faktisk timeout på 60s. withTimeoutOrNull f.eks.
         for (i in 1..EXTREAM_TIMEOUT) {
             delay(1000)
             when (val result = getStatus(call, journalpostId)) {

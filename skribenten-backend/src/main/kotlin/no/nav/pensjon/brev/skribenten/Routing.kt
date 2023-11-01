@@ -48,6 +48,7 @@ data class OrderLetterRequest(
 
 // TODO innfør X-Request-ID
 fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config) {
+    // TODO sett opp retry funksjonalitet for ulike tjenester.
     val authService = AzureADService(authConfig)
     val safService = SafService(skribentenConfig.getConfig("services.saf"), authService)
     val penService = PenService(skribentenConfig.getConfig("services.pen"), authService)
