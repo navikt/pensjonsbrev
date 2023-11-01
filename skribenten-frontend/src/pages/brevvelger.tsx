@@ -146,7 +146,7 @@ const Brevvelger: NextPage<SkribentenConfig> = (props) => {
                                        selectedIsFavourite={selectedLetterIsFavourite()}
                                        onAddToFavourites={addToFavouritesHandler}/>
                     </div>
-                    <LetterPickerActionBar selectedLetter={selectedLetter?.metadata}
+                    <LetterPickerActionBar selectedLetter={selectedLetter?.metadata || null}
                                            preferredLanguage={languagePreference}
                                            onOrderLetter={onOrderLetterHandler}/>
                 </div>
