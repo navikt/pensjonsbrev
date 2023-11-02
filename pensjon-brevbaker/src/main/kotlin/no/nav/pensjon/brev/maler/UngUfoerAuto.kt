@@ -92,7 +92,7 @@ object UngUfoerAuto : AutobrevTemplate<UngUfoerAutoDto> {
             includePhrase(Ufoeretrygd.RettTilAAKlage)
             includePhrase(Felles.RettTilInnsynPesys)
             includePhrase(Ufoeretrygd.SjekkUtbetalingene)
-            includePhrase(Felles.HarDuSpoersmaalPesys)
+            includePhrase(Ufoeretrygd.HarDuSpoersmaalUfoeretrygd)
         }
 
         includeAttachmentIfNotNull(vedleggMaanedligUfoeretrygdFoerSkatt, maanedligUfoeretrygdFoerSkatt)

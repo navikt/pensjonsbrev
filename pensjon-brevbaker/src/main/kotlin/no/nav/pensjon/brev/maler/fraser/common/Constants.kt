@@ -28,5 +28,6 @@ object Constants {
     const val SKRIV_TIL_OSS_URL = "$NAV_URL/skriv-til-oss"
     const val UFOERE_ETTERSENDE_POST_URL = "$NAV_URL/uføre-ettersende-post"
     const val UFOERE_ETTERSENDE_URL = "$NAV_URL/uføre-ettersende"
+    const val UFOERETRYGD_URL = "$NAV_URL/uforetrygd"
     const val UFORETRYGD_ENDRING_URL = "$NAV_URL/uforetrygd-endring"
 }

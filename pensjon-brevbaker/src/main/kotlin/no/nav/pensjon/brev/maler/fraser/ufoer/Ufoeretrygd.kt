@@ -325,6 +325,33 @@ object Ufoeretrygd {
             }
         }
     }
+
+    object HarDuSpoersmaalUfoeretrygd : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+            title1 {
+                text(
+                    Bokmal to "Har du spørsmål?",
+                    Nynorsk to "Har du spørsmål?",
+                    English to "Do you have questions?"
+                )
+            }
+            paragraph {
+                text(
+                    Bokmal to "Du finner mer informasjon på ${Constants.UFOERETRYGD_URL}."
+                            + " På ${Constants.KONTAKT_URL} kan du chatte eller skrive til oss."
+                            + " Hvis du ikke finner svar på $NAV_URL, kan du ringe oss på telefon ${Constants.NAV_KONTAKTSENTER_TELEFON},"
+                            + " hverdager kl. ${Constants.NAV_KONTAKTSENTER_AAPNINGSTID}.",
+                    Nynorsk to "Du finn meir informasjon på ${Constants.UFOERETRYGD_URL}."
+                            + " Om du ikkje finn svar på $NAV_URL, kan du ringe oss på telefon ${Constants.NAV_KONTAKTSENTER_TELEFON},"
+                            + " kvardagar kl. ${Constants.NAV_KONTAKTSENTER_AAPNINGSTID}.",
+                    English to "You can find more information at ${Constants.UFOERETRYGD_URL}."
+                            + " At ${Constants.KONTAKT_URL}, you can chat or write to us."
+                            + " If you do not find the answer at $NAV_URL, you can call us at: +47 ${Constants.NAV_KONTAKTSENTER_TELEFON},"
+                            + " weekdays ${Constants.NAV_KONTAKTSENTER_AAPNINGSTID}."
+                )
+            }
+        }
+    }
 }
 
 
