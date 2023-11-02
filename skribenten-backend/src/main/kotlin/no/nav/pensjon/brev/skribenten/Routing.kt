@@ -18,6 +18,7 @@ import no.nav.pensjon.brev.skribenten.auth.JwtConfig
 import no.nav.pensjon.brev.skribenten.auth.UnauthorizedException
 import no.nav.pensjon.brev.skribenten.auth.UserPrincipal
 import no.nav.pensjon.brev.skribenten.services.*
+import no.nav.pensjon.brev.skribenten.services.buss.TjenestebussService
 import no.nav.pensjon.brevbaker.api.model.RenderedJsonLetter
 import java.util.*
 import kotlin.collections.LinkedHashMap
@@ -56,6 +57,7 @@ fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config
     val kodeverkService = KodeverkService(skribentenConfig.getConfig("services.kodeverk"))
     val pdlService = PdlService(skribentenConfig.getConfig("services.pdl"), authService)
     val krrService = KrrService(skribentenConfig.getConfig("services.krr"), authService)
+    val tjenestebussService =  TjenestebussService(skribentenConfig.getConfig("services.tjenestebuss"))
     val microsoftGraphService =
         MicrosoftGraphService(skribentenConfig.getConfig("services.microsoftgraph"), authService)
     val brevbakerService = BrevbakerService(skribentenConfig.getConfig("services.brevbaker"), authService)
