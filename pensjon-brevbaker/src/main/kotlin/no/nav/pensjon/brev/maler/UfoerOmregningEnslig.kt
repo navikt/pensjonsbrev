@@ -327,7 +327,7 @@ object UfoerOmregningEnslig : AutobrevTemplate<UfoerOmregningEnsligDto> {
             includePhrase(Ufoeretrygd.SjekkUtbetalingene)
             includePhrase(Ufoeretrygd.Skattekort)
             includePhrase(Ufoeretrygd.SkattForDegSomBorIUtlandet(bruker.borINorge))
-            includePhrase(Felles.HarDuSpoersmaalPesys)
+            includePhrase(Ufoeretrygd.HarDuSpoersmaalUfoeretrygd)
         }
 
         includeAttachment(vedleggMaanedligUfoeretrygdFoerSkatt, maanedligUfoeretrygdFoerSkatt)
