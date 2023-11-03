@@ -70,13 +70,6 @@ object OmsorgEgenAuto : AutobrevTemplate<OmsorgEgenAutoDto> {
                     English to "You have accumulated pensionable earnings for ".expr() + aarInnvilgetOmsorgspoeng + ".",
                 )
             }
-            paragraph {
-                text(
-                    Bokmal to "",
-                    Nynorsk to "",
-                    English to ""
-                )
-            }
 
             title1 {
                 text(
