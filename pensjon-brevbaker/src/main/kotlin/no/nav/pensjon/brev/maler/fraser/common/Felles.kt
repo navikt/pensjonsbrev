@@ -54,6 +54,33 @@ object Felles {
         }
     }
 
+    object HarDuSpoersmaalOmsorgsarbeid : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+            title1 {
+                text(
+                    Bokmal to "Har du spørsmål?",
+                    Nynorsk to "Har du spørsmål?",
+                    English to "Do you have questions?"
+                )
+            }
+            paragraph {
+                text(
+                    Bokmal to "Du finner mer informasjon på ${Constants.OMSORGSOPPTJENING_URL}."
+                            + " På ${Constants.KONTAKT_URL} kan du chatte eller skrive til oss."
+                            + " Hvis du ikke finner svar på ${Constants.NAV_URL}, kan du ringe oss på telefon ${Constants.NAV_KONTAKTSENTER_TELEFON},"
+                            + " hverdager kl. ${Constants.NAV_KONTAKTSENTER_AAPNINGSTID}.",
+                    Nynorsk to "Du finn meir informasjon på ${Constants.OMSORGSOPPTJENING_URL}."
+                            + " Om du ikkje finn svar på ${Constants.NAV_URL}, kan du ringe oss på telefon ${Constants.NAV_KONTAKTSENTER_TELEFON},"
+                            + " kvardagar kl. ${Constants.NAV_KONTAKTSENTER_AAPNINGSTID}.",
+                    English to "You can find more information at ${Constants.OMSORGSOPPTJENING_URL}."
+                            + " At ${Constants.KONTAKT_URL}, you can chat or write to us."
+                            + " If you do not find the answer at ${Constants.NAV_URL}, you can call us at: +47 ${Constants.NAV_KONTAKTSENTER_TELEFON},"
+                            + " weekdays ${Constants.NAV_KONTAKTSENTER_AAPNINGSTID}."
+                )
+            }
+        }
+    }
+
     data class KronerText(val kroner: Expression<Kroner>, val fontType: FontType = FontType.PLAIN) :
         TextOnlyPhrase<LangBokmalNynorskEnglish>() {
         override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
@@ -74,9 +101,10 @@ object Felles {
             )
     }
 
-    data class TextOrList(val foedselsdatoer: Expression<Collection<String>>, val limit: Int = 2): ParagraphPhrase<LangBokmalNynorskEnglish>(){
+    data class TextOrList(val foedselsdatoer: Expression<Collection<String>>, val limit: Int = 2) :
+        ParagraphPhrase<LangBokmalNynorskEnglish>() {
         override fun ParagraphOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-            showIf(foedselsdatoer.size().lessThanOrEqual(limit)){
+            showIf(foedselsdatoer.size().lessThanOrEqual(limit)) {
                 val foedselsDato = foedselsdatoer.format()
                 textExpr(
                     Bokmal to " ".expr() + foedselsDato + ".",
@@ -86,7 +114,7 @@ object Felles {
             }.orShow {
                 text(Bokmal to ":", Nynorsk to ":", English to ":")
                 list {
-                    forEach(foedselsdatoer){
+                    forEach(foedselsdatoer) {
                         item { textExpr(Bokmal to it, Nynorsk to it, English to it) }
                     }
                 }
