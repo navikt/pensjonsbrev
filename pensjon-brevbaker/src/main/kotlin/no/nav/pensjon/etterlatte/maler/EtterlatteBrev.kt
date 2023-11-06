@@ -2,6 +2,7 @@ package no.nav.pensjon.etterlatte.maler
 
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import java.time.LocalDate
+import java.time.Period
 
 data class EtterbetalingDTO(
     val fraDato: LocalDate,
@@ -49,7 +50,7 @@ data class Trygdetidsperiode(
     val datoFOM: LocalDate,
     val datoTOM: LocalDate?,
     val land: String,
-    val opptjeningsperiode: String,
+    val opptjeningsperiode: Period?,
 )
 
 data class Utbetalingsinfo(

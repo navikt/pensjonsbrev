@@ -11,6 +11,7 @@ import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.greaterThan
+import no.nav.pensjon.brev.template.dsl.expression.isNotEmpty
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.newText
@@ -25,7 +26,6 @@ import no.nav.pensjon.etterlatte.maler.barnepensjon.ny.BeregningsinfoBPSelectors
 import no.nav.pensjon.etterlatte.maler.barnepensjon.ny.BeregningsinfoBPSelectors.beregningsperioder
 import no.nav.pensjon.etterlatte.maler.barnepensjon.ny.BeregningsinfoBPSelectors.grunnbeloep
 import no.nav.pensjon.etterlatte.maler.barnepensjon.ny.BeregningsinfoBPSelectors.innhold
-import no.nav.pensjon.etterlatte.maler.barnepensjon.ny.BeregningsinfoBPSelectors.maanederTrygdetid
 import no.nav.pensjon.etterlatte.maler.barnepensjon.ny.BeregningsinfoBPSelectors.trygdetidsperioder
 import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
 import no.nav.pensjon.etterlatte.maler.vedlegg.Trygdetidstabell
@@ -44,7 +44,7 @@ val beregningAvBarnepensjon = createAttachment(
         grunnbeloep = grunnbeloep,
         antallBarn = antallBarn
     )
-    trygdetid(aarTrygdetid, maanederTrygdetid, trygdetidsperioder)
+    trygdetid(aarTrygdetid, trygdetidsperioder)
 }
 
 private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, BeregningsinfoBP>.slikHarViBeregnetPensjonenDin(
@@ -109,7 +109,6 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, B
 
 private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, BeregningsinfoBP>.trygdetid(
     aarTrygdetid: Expression<Int>,
-    maanederTrygdetid: Expression<Int>,
     trygdetidsperioder: Expression<List<Trygdetidsperiode>>
 ) {
 
@@ -126,19 +125,22 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, B
                     "Trygdetiden tilsvarer det antall år avdøde har vært medlem i folketrygden etter fylte 16 år. " +
                     "Når avdøde var under 67 år ved dødsfallet blir det beregnet framtidig trygdetid. " +
                     "Det er vanligvis fram til og med det året avdøde ville ha fylt 66 år. " +
-                    "Avdødes samledes trygdetid er " + aarTrygdetid.format() + " år og " +
-                    maanederTrygdetid.format() + " måneder.",
+                    "Avdødes samledes trygdetid er " + aarTrygdetid.format() + " år",
             Nynorsk to "".expr(),
             English to "".expr(),
         )
     }
     konverterElementerTilBrevbakerformat(innhold)
-    includePhrase(Trygdetidstabell(trygdetidsperioder))
-    paragraph {
-        text(
-            Bokmal to "Tabellen viser når avdøde har vært medlem av folketrygden og når avdøde har bodd og/eller arbeidet i land som Norge har trygdeavtale med.",
-            Nynorsk to "",
-            English to "",
-        )
+
+    showIf(trygdetidsperioder.isNotEmpty()) {
+        includePhrase(Trygdetidstabell(trygdetidsperioder))
+        paragraph {
+            text(
+                Bokmal to "Tabellen viser når avdøde har vært medlem av folketrygden og når avdøde har bodd og/eller arbeidet i land som Norge har trygdeavtale med.",
+                Nynorsk to "",
+                English to "",
+            )
+        }
     }
+
 }

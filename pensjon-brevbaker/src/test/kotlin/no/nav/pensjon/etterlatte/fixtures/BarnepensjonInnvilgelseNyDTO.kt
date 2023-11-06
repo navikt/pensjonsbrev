@@ -9,6 +9,7 @@ import no.nav.pensjon.etterlatte.maler.barnepensjon.ny.BarnepensjonInnvilgelseNy
 import no.nav.pensjon.etterlatte.maler.barnepensjon.ny.BeregningsinfoBP
 import java.time.LocalDate
 import java.time.Month
+import java.time.Period
 
 fun createBarnepensjonInnvilgelseNyDTO() =
     BarnepensjonInnvilgelseNyDTO(
@@ -60,7 +61,7 @@ fun createBarnepensjonInnvilgelseNyDTO() =
                     datoFOM = LocalDate.of(2020, Month.JANUARY, 1),
                     datoTOM = LocalDate.of(2023, Month.JULY, 31),
                     land = "Albania",
-                    opptjeningsperiode = "3y 0m",
+                    opptjeningsperiode = Period.of(3, 0, 0),
                 )
             )
         )
