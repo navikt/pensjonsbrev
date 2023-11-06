@@ -55,7 +55,7 @@ data class Trygdetidsperiode(
 
 data class Periode(
     val aar: Int,
-    val maaaneder: Int,
+    val maaneder: Int,
     val dager: Int,
 )
 

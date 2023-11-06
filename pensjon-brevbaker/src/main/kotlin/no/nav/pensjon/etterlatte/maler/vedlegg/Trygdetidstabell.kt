@@ -17,7 +17,6 @@ import no.nav.pensjon.etterlatte.maler.TrygdetidsperiodeSelectors.datoTOM
 import no.nav.pensjon.etterlatte.maler.TrygdetidsperiodeSelectors.land
 import no.nav.pensjon.etterlatte.maler.TrygdetidsperiodeSelectors.opptjeningsperiode
 import no.nav.pensjon.etterlatte.maler.fraser.common.PeriodeITabell
-import java.time.Period
 
 data class Trygdetidstabell(
     val trygdetidsperioder: Expression<List<Trygdetidsperiode>>
@@ -91,7 +90,7 @@ object PeriodeFormatter : LocalizedFormatter<Periode>() {
                     Language.Nynorsk -> "$it"
                 }
             },
-            first.maaaneder.takeIf { it > 0 }?.let {
+            first.maaneder.takeIf { it > 0 }?.let {
                 when (second) {
                     Language.Bokmal -> "$it måneder"
                     Language.English -> ""
