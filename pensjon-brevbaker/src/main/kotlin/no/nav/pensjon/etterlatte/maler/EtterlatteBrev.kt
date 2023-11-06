@@ -50,7 +50,13 @@ data class Trygdetidsperiode(
     val datoFOM: LocalDate,
     val datoTOM: LocalDate?,
     val land: String,
-    val opptjeningsperiode: Period?,
+    val opptjeningsperiode: Periode?,
+)
+
+data class Periode(
+    val aar: Int,
+    val maaaneder: Int,
+    val dager: Int,
 )
 
 data class Utbetalingsinfo(

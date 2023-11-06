@@ -10,6 +10,7 @@ import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
+import no.nav.pensjon.etterlatte.maler.Periode
 import no.nav.pensjon.etterlatte.maler.Trygdetidsperiode
 import no.nav.pensjon.etterlatte.maler.TrygdetidsperiodeSelectors.datoFOM
 import no.nav.pensjon.etterlatte.maler.TrygdetidsperiodeSelectors.datoTOM
@@ -74,30 +75,30 @@ data class Trygdetidstabell(
     }
 }
 
-fun Expression<Period>.format() = Expression.BinaryInvoke(
+fun Expression<Periode>.format() = Expression.BinaryInvoke(
     first = this,
     second = Expression.FromScope(ExpressionScope<Any, *>::language),
-    operation = PeriodFormatter,
+    operation = PeriodeFormatter,
 )
 
-object PeriodFormatter : LocalizedFormatter<Period>() {
-    override fun apply(first: Period, second: Language): String {
+object PeriodeFormatter : LocalizedFormatter<Periode>() {
+    override fun apply(first: Periode, second: Language): String {
         val actualValues = listOfNotNull(
-            first.years.takeIf { it > 0 }?.let {
+            first.aar.takeIf { it > 0 }?.let {
                 when (second) {
                     Language.Bokmal -> "$it år"
                     Language.English -> "$it"
                     Language.Nynorsk -> "$it"
                 }
             },
-            first.months.takeIf { it > 0 }?.let {
+            first.maaaneder.takeIf { it > 0 }?.let {
                 when (second) {
                     Language.Bokmal -> "$it måneder"
                     Language.English -> ""
                     Language.Nynorsk -> ""
                 }
             },
-            first.days.takeIf { it > 0 }?.let {
+            first.dager.takeIf { it > 0 }?.let {
                 when (second) {
                     Language.Bokmal -> "$it dager"
                     Language.English -> ""
