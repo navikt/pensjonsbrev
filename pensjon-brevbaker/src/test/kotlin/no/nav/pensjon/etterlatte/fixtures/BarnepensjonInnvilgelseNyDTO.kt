@@ -3,12 +3,14 @@ package no.nav.pensjon.etterlatte.fixtures
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import no.nav.pensjon.etterlatte.maler.Beregningsperiode
 import no.nav.pensjon.etterlatte.maler.EtterbetalingDTO
+import no.nav.pensjon.etterlatte.maler.Periode
 import no.nav.pensjon.etterlatte.maler.Trygdetidsperiode
 import no.nav.pensjon.etterlatte.maler.Utbetalingsinfo
 import no.nav.pensjon.etterlatte.maler.barnepensjon.ny.BarnepensjonInnvilgelseNyDTO
 import no.nav.pensjon.etterlatte.maler.barnepensjon.ny.BeregningsinfoBP
 import java.time.LocalDate
 import java.time.Month
+import java.time.Period
 
 fun createBarnepensjonInnvilgelseNyDTO() =
     BarnepensjonInnvilgelseNyDTO(
@@ -60,7 +62,7 @@ fun createBarnepensjonInnvilgelseNyDTO() =
                     datoFOM = LocalDate.of(2020, Month.JANUARY, 1),
                     datoTOM = LocalDate.of(2023, Month.JULY, 31),
                     land = "Albania",
-                    opptjeningsperiode = "3y 0m",
+                    opptjeningsperiode = Periode(3, 0, 0),
                 )
             )
         )

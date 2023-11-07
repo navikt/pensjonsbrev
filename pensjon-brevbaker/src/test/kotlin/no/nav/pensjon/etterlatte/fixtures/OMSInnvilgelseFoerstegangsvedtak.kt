@@ -2,9 +2,9 @@ package no.nav.pensjon.etterlatte.fixtures
 
 import no.nav.pensjon.brevbaker.api.model.*
 import no.nav.pensjon.etterlatte.maler.*
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.OMSInnvilgelseDTO
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.foerstegangsvedtak.OMSInnvilgelseFoerstegangsvedtakDTO
 import java.time.LocalDate
+import java.time.Period
 
 fun createOMSInnvilgelseFoerstegangsvedtakDTO() =
     OMSInnvilgelseFoerstegangsvedtakDTO(
@@ -94,7 +94,7 @@ fun createOMSInnvilgelseFoerstegangsvedtakDTO() =
                     datoFOM = LocalDate.now(),
                     datoTOM = LocalDate.now(),
                     land = "Norge",
-                    opptjeningsperiode = "3 år?"
+                    opptjeningsperiode = Periode(3, 0, 0)
                 )
             )
         ),
