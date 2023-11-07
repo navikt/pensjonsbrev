@@ -14,9 +14,6 @@ import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.Avdoed
 import no.nav.pensjon.etterlatte.maler.Delmal
 import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.Innvilgelse
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.foerstegangsvedtak.FoerstegangsvedtakUtfallDTOSelectors.avdoed
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.foerstegangsvedtak.FoerstegangsvedtakUtfallDTOSelectors.utbetalingsbeloep
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.foerstegangsvedtak.FoerstegangsvedtakUtfallDTOSelectors.virkningsdato
 import java.time.LocalDate
 
 data class FoerstegangsvedtakUtfallDTO(
@@ -49,11 +46,7 @@ object FoerstegangsvedtakUtfall : EtterlatteTemplate<FoerstegangsvedtakUtfallDTO
         }
         outline {
             includePhrase(
-                Innvilgelse.BegrunnelseForVedtaket(
-                    virkningsdato,
-                    avdoed,
-                    utbetalingsbeloep
-                ),
+                Innvilgelse.BegrunnelseForVedtaketRedigerbart,
             )
 
         }
