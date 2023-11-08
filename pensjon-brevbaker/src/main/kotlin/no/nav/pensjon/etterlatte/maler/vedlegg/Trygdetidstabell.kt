@@ -1,13 +1,16 @@
 package no.nav.pensjon.etterlatte.maler.vedlegg
 
 import no.nav.pensjon.brev.template.Expression
+import no.nav.pensjon.brev.template.ExpressionScope
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language
+import no.nav.pensjon.brev.template.LocalizedFormatter
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
+import no.nav.pensjon.etterlatte.maler.Periode
 import no.nav.pensjon.etterlatte.maler.Trygdetidsperiode
 import no.nav.pensjon.etterlatte.maler.TrygdetidsperiodeSelectors.datoFOM
 import no.nav.pensjon.etterlatte.maler.TrygdetidsperiodeSelectors.datoTOM
@@ -51,20 +54,58 @@ data class Trygdetidstabell(
                         cell {
                             textExpr(
                                 Language.Bokmal to it.land,
-                                Language.Nynorsk to "".expr(),
-                                Language.English to "".expr(),
+                                Language.Nynorsk to it.land,
+                                Language.English to it.land,
                             )
                         }
                         cell {
-                            textExpr(
-                                Language.Bokmal to it.opptjeningsperiode,
-                                Language.Nynorsk to "".expr(),
-                                Language.English to "".expr(),
-                            )
+                            ifNotNull(it.opptjeningsperiode) {
+                                textExpr(
+                                    Language.Bokmal to it.format(),
+                                    Language.Nynorsk to "".expr(),
+                                    Language.English to "".expr()
+                                )
+                            }
                         }
                     }
                 }
             }
         }
+    }
+}
+
+fun Expression<Periode>.format() = Expression.BinaryInvoke(
+    first = this,
+    second = Expression.FromScope(ExpressionScope<Any, *>::language),
+    operation = PeriodeFormatter,
+)
+
+object PeriodeFormatter : LocalizedFormatter<Periode>() {
+    override fun apply(first: Periode, second: Language): String {
+        val actualValues = listOfNotNull(
+            first.aar.takeIf { it > 0 }?.let {
+                when (second) {
+                    Language.Bokmal -> "$it år"
+                    Language.English -> "$it"
+                    Language.Nynorsk -> "$it"
+                }
+            },
+            first.maaneder.takeIf { it > 0 }?.let {
+                when (second) {
+                    Language.Bokmal -> "$it måneder"
+                    Language.English -> ""
+                    Language.Nynorsk -> ""
+                }
+            },
+            first.dager.takeIf { it > 0 }?.let {
+                when (second) {
+                    Language.Bokmal -> "$it dager"
+                    Language.English -> ""
+                    Language.Nynorsk -> ""
+                }
+            }
+        )
+
+        return actualValues.joinToString(separator = ", ") { it }
     }
 }

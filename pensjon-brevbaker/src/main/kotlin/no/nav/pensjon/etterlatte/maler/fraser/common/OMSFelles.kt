@@ -106,15 +106,9 @@ object OMSFelles {
             paragraph {
                 text(
                     Bokmal to "Du kan finne svar på ${Constants.OMS_URL}. På ${Constants.KONTAKT_URL} kan du " +
-                            "chatte eller skrive til oss.",
-                    Nynorsk to "",
-                    English to ""
-                )
-            }
-            paragraph {
-                text(
-                    Bokmal to "Du kan også kontakte oss på telefon ${Constants.KONTAKTTELEFON_PENSJON}, hverdager 09.00-15.00. " +
-                            "Hvis du oppgir fødselsnummer, kan vi lettere gi deg rask og god hjelp.",
+                            "chatte eller skrive til oss. Du kan også kontakte oss på telefon " +
+                            "${Constants.KONTAKTTELEFON_PENSJON}, hverdager 09.00-15.00. Hvis du oppgir " +
+                            "fødselsnummer, kan vi lettere gi deg rask og god hjelp.",
                     Nynorsk to "",
                     English to ""
                 )

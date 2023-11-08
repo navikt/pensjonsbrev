@@ -9,16 +9,13 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.*
-import no.nav.pensjon.etterlatte.maler.AvdoedSelectors.doedsdato
-import no.nav.pensjon.etterlatte.maler.AvdoedSelectors.navn
 import no.nav.pensjon.etterlatte.maler.AvkortingsinfoSelectors.beregningsperioder
 import no.nav.pensjon.etterlatte.maler.AvkortingsinfoSelectors.grunnbeloep
 import no.nav.pensjon.etterlatte.maler.AvkortingsinfoSelectors.inntekt
 import no.nav.pensjon.etterlatte.maler.AvkortingsinfoSelectors.virkningsdato
-import no.nav.pensjon.etterlatte.maler.fraser.OMSInnvilgelse
+import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OMSInnvilgelse
 import no.nav.pensjon.etterlatte.maler.fraser.common.OMSFelles
 import no.nav.pensjon.etterlatte.maler.fraser.common.Vedtak
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.OMSInnvilgelseDTOSelectors.avdoed
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.OMSInnvilgelseDTOSelectors.avkortingsinfo
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.OMSInnvilgelseDTOSelectors.etterbetalingsinfo
 
@@ -53,7 +50,7 @@ object OMSInnvilgelseAuto : EtterlatteTemplate<OMSInnvilgelseDTO> {
         outline {
             includePhrase(Vedtak.Overskrift)
 
-            includePhrase(OMSInnvilgelse.Vedtak(avkortingsinfo.virkningsdato, avdoed.navn, etterbetalingsinfo))
+            includePhrase(OMSInnvilgelse.Vedtak(etterbetalingsinfo))
             includePhrase(OMSInnvilgelse.BeregningOgUtbetaling(avkortingsinfo.grunnbeloep, avkortingsinfo.beregningsperioder))
             includePhrase(OMSInnvilgelse.Beregningsgrunnlag(avkortingsinfo.inntekt))
             includePhrase(OMSInnvilgelse.Utbetaling)
