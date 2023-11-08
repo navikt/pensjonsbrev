@@ -1,11 +1,17 @@
 package no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon
+import com.typesafe.config.Config
+import com.typesafe.config.ConfigFactory
+import com.typesafe.config.ConfigParseOptions
+import com.typesafe.config.ConfigResolveOptions
+import io.ktor.server.engine.*
+import io.ktor.server.netty.*
 
-import org.springframework.boot.autoconfigure.SpringBootApplication
-import org.springframework.boot.runApplication
+fun main() {
+	val tjenestebussIntegrasjonConfig: Config = ConfigFactory.load(ConfigParseOptions.defaults(), ConfigResolveOptions.defaults().setAllowUnresolved(true))
+		.getConfig("tjenestebussintegrasjon")
+		.resolveWith(ConfigFactory.parseResources("sts/test"))
 
-@SpringBootApplication
-class TjenestebussIntegrasjonApplication
-
-fun main(args: Array<String>) {
-	runApplication<TjenestebussIntegrasjonApplication>(*args)
+	embeddedServer(Netty, port = tjenestebussIntegrasjonConfig.getInt("port"), host = "0.0.0.0") {
+		tjenestebussIntegrationApi(tjenestebussIntegrasjonConfig)
+	}.start(wait = true)
 }
