@@ -11,7 +11,7 @@ object Brevkode {
         UT_EO_FORHAANDSVARSEL_FEILUTBETALING_AUTO,
         ;
     }
-    enum class Redigerbar() {
+    enum class Redigerbar {
         INFORMASJON_OM_SAKSBEHANDLINGSTID,
         ;
     }
