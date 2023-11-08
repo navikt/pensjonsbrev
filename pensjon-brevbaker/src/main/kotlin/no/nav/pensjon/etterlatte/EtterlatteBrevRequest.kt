@@ -27,7 +27,8 @@ enum class EtterlatteBrevKode {
     OMS_REVURDERING_OPPHOER_GENERELL,
     TILBAKEKREVING_INNHOLD,
     TILBAKEKREVING_FERDIG,
-    TOM_MAL
+    TOM_MAL,
+    FORHAANDSVARSEL_MIGRERING
 }
 
 data class EtterlatteBrevRequest(val kode: EtterlatteBrevKode, val letterData: Any, val felles: Felles, val language: LanguageCode)
