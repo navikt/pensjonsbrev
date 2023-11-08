@@ -11,6 +11,7 @@ private fun KSPLogger.logSkipped(classDeclaration: KSClassDeclaration) {
 
     if (classDeclaration.packageName.asString() in SKIPPED_NO_WARN_PACKAGES
         || classDeclaration.classKind == ClassKind.ENUM_CLASS
+        || classDeclaration.qualifiedName?.asString() == "no.nav.pensjon.brev.api.model.maler.EmptyBrevdata"
     ) {
         info(message, classDeclaration)
     } else {
