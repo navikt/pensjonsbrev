@@ -87,6 +87,14 @@ repositories {
 	}
 }
 
+sourceSets {
+	main {
+		resources {
+			srcDir("secrets")
+		}
+	}
+}
+
 tasks {
 	withType<Test>{
 		useJUnitPlatform()
@@ -108,13 +116,5 @@ tasks {
 	}
 	compileTestJava {
 		targetCompatibility = javaTarget
-	}
-}
-
-sourceSets {
-	main {
-		resources {
-			srcDir("secrets")
-		}
 	}
 }

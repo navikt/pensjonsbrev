@@ -36,13 +36,14 @@ fun Application.tjenestebussIntegrationApi(config: Config) {
     routing {
         val stsService = STSService(config.getConfig("services.sts"))
         val stsSercuritySOAPHandler = STSSercuritySOAPHandler(stsService)
-        val samhandlerTjenestebussService = SamhandlerTjenestebussService(config.getConfig("services.tjenestebuss"), stsSercuritySOAPHandler)
+        val samhandlerTjenestebussService =
+            SamhandlerTjenestebussService(config.getConfig("services.tjenestebuss"), stsSercuritySOAPHandler)
         samhandlerTjenestebussService.finnSamhandler()
         get("/testHentSamhandler") {
             try {
                 val samhandler = samhandlerTjenestebussService.hentSamhandler()
                 println(samhandler)
-            }catch (e: Exception){
+            } catch (e: Exception) {
                 println(e)
             }
         }

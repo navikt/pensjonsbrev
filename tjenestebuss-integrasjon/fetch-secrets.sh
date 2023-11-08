@@ -26,6 +26,6 @@ done
 
 mkdir -p secrets/sts
 
-vault kv get -field username serviceuser/dev/srvpensjonsbrev-esb > secrets/sts
-vault kv get -field password serviceuser/dev/srvpensjonsbrev-esb > secrets/sts
+vault kv get -field username serviceuser/dev/srvpensjonsbrev-esb > secrets/sts/username
+vault kv get -field password serviceuser/dev/srvpensjonsbrev-esb > secrets/sts/password
 

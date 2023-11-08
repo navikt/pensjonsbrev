@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services
 
 import com.typesafe.config.Config
+import com.typesafe.config.ConfigException.BugOrBroken
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.engine.cio.*
@@ -31,11 +32,13 @@ data class UserToken(
 class STSService(stsConfig: Config) {
     var token: UserToken? = null
     val stsEndpointUrl: String = stsConfig.getString("url")
+    val stsUser: String = stsConfig.getString("username")
+    val stsPassword: String = stsConfig.getString("password")
     val client = HttpClient(CIO) {
         install(Auth) {
             basic {
                 credentials {
-                    BasicAuthCredentials()
+                    BasicAuthCredentials(stsUser, stsPassword)
                 }
             }
         }
@@ -65,5 +68,6 @@ class STSService(stsConfig: Config) {
             newToken
         }
     }
+
 
 }
