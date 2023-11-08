@@ -61,7 +61,7 @@ fun Application.brevbakerRouting(authenticationNames: Array<String>, latexCompil
                 }
 
                 get("/all"){
-                    letterResource.templateResource.getRedigerbareBrev().map { it.kode }
+                    letterResource.templateResource.getRedigerbareBrev().map { it.name }
                 }
 
                 get("/{kode}") {
