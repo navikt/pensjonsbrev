@@ -11,11 +11,12 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.*
-import no.nav.pensjon.etterlatte.maler.AvdoedSelectors.navn
-import no.nav.pensjon.etterlatte.maler.AvkortingsinfoSelectors.virkningsdato
-import no.nav.pensjon.etterlatte.maler.fraser.OMSInnvilgelse
+import no.nav.pensjon.etterlatte.maler.UtbetalingsinfoSelectors.beregningsperioder
+import no.nav.pensjon.etterlatte.maler.UtbetalingsinfoSelectors.virkningsdato
+import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OMSInnvilgelse
 import no.nav.pensjon.etterlatte.maler.fraser.common.OMSFelles
 import no.nav.pensjon.etterlatte.maler.fraser.common.Vedtak
+import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.Innvilgelse
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.foerstegangsvedtak.OMSInnvilgelseFoerstegangsvedtakDTOSelectors.avdoed
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.foerstegangsvedtak.OMSInnvilgelseFoerstegangsvedtakDTOSelectors.avkortingsinfo
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.foerstegangsvedtak.OMSInnvilgelseFoerstegangsvedtakDTOSelectors.beregningsinfo
@@ -23,6 +24,7 @@ import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.foerstegangsvedtak.OMS
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.*
 import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.foerstegangsvedtak.OMSInnvilgelseFoerstegangsvedtakDTOSelectors.innhold
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.foerstegangsvedtak.OMSInnvilgelseFoerstegangsvedtakDTOSelectors.utbetalingsinfo
 
 data class OMSInnvilgelseFoerstegangsvedtakDTO(
     override val innhold: List<Element>,
@@ -58,17 +60,13 @@ object InnvilgelseFoerstegangsvedtak  : EtterlatteTemplate<OMSInnvilgelseFoerste
 
         outline {
             includePhrase(Vedtak.Overskrift)
+            includePhrase(
+                Innvilgelse.BegrunnelseForVedtaket(utbetalingsinfo.virkningsdato, avdoed)
+            )
 
             konverterElementerTilBrevbakerformat(innhold)
 
-            includePhrase(
-                OMSInnvilgelse.Vedtak(
-                    avkortingsinfo.virkningsdato,
-                    avdoed.navn,
-                    etterbetalinginfo
-                )
-            )
-            includePhrase(OMSInnvilgelse.Utbetaling)
+            includePhrase(Innvilgelse.Utbetaling(utbetalingsinfo.beregningsperioder, etterbetalinginfo))
             includePhrase(OMSInnvilgelse.Aktivitetsplikt)
             includePhrase(OMSInnvilgelse.Inntektsendring)
             includePhrase(OMSInnvilgelse.Etteroppgjoer)
@@ -80,8 +78,6 @@ object InnvilgelseFoerstegangsvedtak  : EtterlatteTemplate<OMSInnvilgelseFoerste
         includeAttachment(beregningAvOmstillingsstoenad, beregningsinfo)
         includeAttachment(informasjonOmOvergangsstoenad, avkortingsinfo)
         includeAttachment(dineRettigheterOgPlikterOMS, avkortingsinfo)
-        includeAttachment(informasjonOmYrkesskade, avkortingsinfo)
         includeAttachmentIfNotNull(etterbetaling, etterbetalinginfo)
-
     }
 }

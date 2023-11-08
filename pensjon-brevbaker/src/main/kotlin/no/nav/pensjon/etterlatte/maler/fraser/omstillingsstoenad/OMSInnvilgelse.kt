@@ -1,4 +1,4 @@
-package no.nav.pensjon.etterlatte.maler.fraser
+package no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad
 
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.model.format
@@ -24,8 +24,6 @@ import java.time.LocalDate
 object OMSInnvilgelse {
 
     data class Vedtak(
-        val virkningsdato: Expression<LocalDate>,
-        val avdoedNavn: Expression<String>,
         val etterbetalingsinfo: Expression<EtterbetalingDTO?>
     ) :
         OutlinePhrase<LangBokmalNynorskEnglish>() {
@@ -240,27 +238,38 @@ object OMSInnvilgelse {
             }
             paragraph {
                 text(
-                    Bokmal to "Formålet med omstillingsstønad er å sikre inntekt for gjenlevende og " +
-                            "gi hjelp til selvhjelp, slik at de etter en omstillingsperiode etter dødsfallet " +
-                            "kan bli i stand til å forsørge seg selv ved eget arbeid.",
+                    Bokmal to "Formålet med omstillingsstønaden er å sikre deg inntekt som gjenlevende og gi " +
+                            "deg hjelp til selvhjelp, slik at du etter en omstillingsperiode etter dødsfallet kan " +
+                            "bli i stand til å forsørge deg selv ved eget arbeid.",
                     Nynorsk to "",
                     English to "",
                 )
             }
             paragraph {
                 text(
-                    Bokmal to "Det første halvåret etter dødsfallet stilles det ikke krav til at " +
-                            "den gjenlevende er i arbeid eller arbeidsrettet aktivitet. Etter seks måneder er det " +
-                            "et vilkår for å fortsatt ha rett til omstillingsstønad at den gjenlevende er i minst " +
-                            "50 prosent aktivitet.",
-                    Nynorsk to "",
-                    English to "",
-                )
-            }
-            paragraph {
-                text(
-                    Bokmal to "Når det er gått ett år etter dødsfallet, kan det stilles krav om " +
+                    Bokmal to "Det første halvåret etter dødsfallet stilles det ikke krav til at den " +
+                            "gjenlevende er i arbeid eller arbeidsrettet aktivitet. Etter seks måneder er det et " +
+                            "vilkår for å fortsatt ha rett til omstillingsstønad at den gjenlevende er i minst 50 " +
+                            "prosent aktivitet. Når det er gått ett år etter dødsfallet, kan det stilles krav om " +
                             "at den gjenlevende er i arbeid eller arbeidsrettet aktivitet på full tid.",
+                    Nynorsk to "",
+                    English to "",
+                )
+            }
+            paragraph {
+                text(
+                    Bokmal to "Dette betyr at du må være i arbeid i minst halvparten av full tid, " +
+                            "arbeidssøker eller ta utdanningen som utgjør minst halvparten av full tid. " +
+                            "I tillegg må utdanningen/opplæringen være nødvendig og hensiktsmessig for å kunne " +
+                            "få eller beholde et arbeid.",
+                    Nynorsk to "",
+                    English to "",
+                )
+            }
+            paragraph {
+                text(
+                    Bokmal to "Dersom du ikke følger opp aktivitetskravet, vil omstillingsstønaden stanses " +
+                            "inntil vilkårene for å få omstillingsstønad er oppfylt igjen.",
                     Nynorsk to "",
                     English to "",
                 )
@@ -281,8 +290,9 @@ object OMSInnvilgelse {
                 text(
                     Bokmal to "For at du skal motta korrekt omstillingsstønad, er det viktig at du informerer " +
                             "oss hvis inntekten din endrer seg. Vi vil justere omstillingsstønaden fra måneden etter " +
-                            "at du har gitt beskjed, og beregne inntekten din basert på det du har tjent så langt i år. " +
-                            "Du kan lese mer om inntektsendring i vedlegget «Informasjon til deg som mottar overgangsstønad».",
+                            "at du har gitt beskjed, og beregne inntekten din basert på det du har tjent så langt i " +
+                            "år. Du kan lese mer om inntektsendring i vedlegget «Informasjon til deg som mottar " +
+                            "overgangsstønad».",
                     Nynorsk to "",
                     English to "",
                 )
@@ -312,7 +322,8 @@ object OMSInnvilgelse {
                     Bokmal to "Hver høst sjekker NAV inntektsopplysningene i skatteoppgjøret ditt for å se " +
                             "om du har fått utbetalt riktig beløp i omstillingsstønad året før. Hvis du har fått " +
                             "for lite utbetalt, får du en etterbetaling. Har du fått for mye utbetalt, må du betale " +
-                            "tilbake. Du kan finne mer informasjon om etteroppgjør på ${Constants.OMS_ETTEROPPGJOER_URL}.",
+                            "tilbake. Du kan finne mer informasjon om etteroppgjør på " +
+                            "${Constants.OMS_ETTEROPPGJOER_URL}.",
                     Nynorsk to "",
                     English to "",
                 )
