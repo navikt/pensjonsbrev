@@ -7,9 +7,7 @@ private data class ResourceNotFoundException(override val message: String?): Run
 fun main() {
 	val tjenestebussIntegrasjonConfig: Config = ConfigFactory.load(ConfigParseOptions.defaults(), ConfigResolveOptions.defaults().setAllowUnresolved(true))
 		.getConfig("tjenestebussintegrasjon")
-		.resolveWith(ConfigFactory.parseResources("sts/password", ConfigParseOptions.defaults().apply {
-			classLoader.getResources("sts/username")
-		}))
+		.resolveWith(ConfigFactory.load("sts/auth"))
 	embeddedServer(Netty, port = tjenestebussIntegrasjonConfig.getInt("port"), host = "0.0.0.0") {
 		tjenestebussIntegrationApi(tjenestebussIntegrasjonConfig)
 	}.start(wait = true)
