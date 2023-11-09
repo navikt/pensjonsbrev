@@ -15,6 +15,18 @@ env:
     value: "api://dev-gcp.pensjonsbrev.pensjon-brevbaker/.default"
   - name: BREVMETADATA_URL
     value: "https://pensjon-brevmetadata-q2.intern.dev.nav.no"
+  - name: MICROSOFT_GRAPH_URL
+    value: "https://graph.microsoft.com/"
+  - name: MICROSOFT_GRAPH_SCOPE
+    value: "https://graph.microsoft.com/User.Read"
+  - name: PDL_URL
+    value: "https://pdl-api.dev.intern.nav.no/graphql"
+  - name: PDL_SCOPE
+    value: "api://dev-fss.pdl.pdl-api/.default"
+  - name: SAF_URL
+    value: "https://saf.dev.intern.nav.no/graphql"
+  - name: SAF_SCOPE
+    value: "api://dev-fss.teamdokumenthandtering.saf/.default"
 
 preAuthorized:
   - name: skribenten-frontend
