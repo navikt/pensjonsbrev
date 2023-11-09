@@ -20,6 +20,9 @@ preAuthorized:
   - name: skribenten-frontend
     namespace: pensjonsbrev
     cluster: dev-gcp
+  - name: skribenten-web
+    namespace: pensjonsbrev
+    cluster: dev-gcp
   - name: skribenten-frontend-lokal
     namespace: pensjonsbrev
     cluster: dev-gcp
