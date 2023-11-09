@@ -5,5 +5,5 @@ export function App() {
 }
 
 const testBackend = async () => {
-  await fetch(`${FULLMAKTSREGISTER_API_BASE_PATH}/test/pen`);
+  await fetch(`${FULLMAKTSREGISTER_API_BASE_PATH}/pen/sak/22972355`);
 };

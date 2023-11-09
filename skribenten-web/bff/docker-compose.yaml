@@ -21,7 +21,7 @@ services:
   frontend:
     build:
       context: .
-      dockerfile: "Dockerfile.dev"
+#      dockerfile: "Dockerfile.dev"
       secrets:
         - npmrc
     ports:
@@ -35,7 +35,7 @@ services:
       AZURE_OPENID_CONFIG_TOKEN_ENDPOINT: "${AZURE_OPENID_CONFIG_TOKEN_ENDPOINT}"
       AZURE_APP_JWK: "${AZURE_APP_JWK}"
       AZURE_OPENID_CONFIG_JWKS_URI: "${AZURE_OPENID_CONFIG_JWKS_URI}"
-      SKRIBENTEN_API_URL: "https://pensjon-skribenten.intern.dev.nav.no"
+      SKRIBENTEN_API_URL: "https://pensjon-skribenten-api.intern.dev.nav.no"
       SKRIBENTEN_API_SCOPE: "api://dev-gcp.pensjonsbrev.skribenten-backend/.default"
 
 secrets:

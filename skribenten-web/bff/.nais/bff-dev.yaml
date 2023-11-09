@@ -45,6 +45,10 @@ spec:
       tenant: trygdeetaten.no
       singlePageApplication: true
       allowAllUsers: true
+      claims:
+        extra:
+          - azp_name
+          - NAVident
       replyURLs:
         - "http://localhost:8080/oauth2/callback"
     sidecar:
