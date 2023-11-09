@@ -1,0 +1,58 @@
+apiVersion: "nais.io/v1alpha1"
+kind: "Application"
+metadata:
+  name: "skribenten-web"
+  namespace: "pensjonsbrev"
+  labels:
+    "team": "pensjonsbrev"
+spec:
+  image: {{image}}
+  port: 8080
+  ingresses:
+    - "https://pensjon-skribenten-eksperiment.intern.dev.nav.no"
+  replicas:
+    min: 2
+    max: 2
+    cpuThresholdPercentage: 50
+  resources:
+    limits:
+      cpu: 200m
+      memory: 256Mi
+    requests:
+      cpu: 200m
+      memory: 256Mi
+  liveness:
+    path: /internal/health/liveness
+    initialDelay: 5
+  readiness:
+    path: /internal/health/readiness
+    initialDelay: 5
+  env:
+    - name: NODE_ENV
+      value: "production"
+    - name: EXPRESS_HOST
+      value: "::"
+    - name: EXPRESS_PORT
+      value: "8080"
+    - name: SKRIBENTEN_API_URL
+      value: "https://pensjon-skribenten-api.intern.dev.nav.no"
+    - name: SKRIBENTEN_API_SCOPE
+      value: "api://dev-gcp.pensjonsbrev.skribenten-backend/.default"
+
+  azure:
+    application:
+      enabled: true
+      tenant: trygdeetaten.no
+      singlePageApplication: true
+      allowAllUsers: true
+      replyURLs:
+        - "http://localhost:8080/oauth2/callback"
+    sidecar:
+      enabled: true
+      autoLogin: true
+  accessPolicy:
+    outbound:
+      rules:
+        - application: skribenten-backend
+          namespace: pensjonsbrev
+          cluster: dev-gcp
