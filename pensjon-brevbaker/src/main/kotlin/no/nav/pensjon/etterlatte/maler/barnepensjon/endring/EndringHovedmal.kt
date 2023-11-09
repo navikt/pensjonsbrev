@@ -12,6 +12,7 @@ import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.BrevDTO
 import no.nav.pensjon.etterlatte.maler.Element
+import no.nav.pensjon.etterlatte.maler.EtterbetalingDTO
 import no.nav.pensjon.etterlatte.maler.Hovedmal
 import no.nav.pensjon.etterlatte.maler.Utbetalingsinfo
 import no.nav.pensjon.etterlatte.maler.UtbetalingsinfoSelectors.beregningsperioder
@@ -28,7 +29,7 @@ import no.nav.pensjon.etterlatte.maler.vedlegg.informasjonTilDegSomHandlerPaaVeg
 
 data class EndringHovedmalDTO(
     val erEndret: Boolean,
-    val etterbetaling: no.nav.pensjon.etterlatte.maler.EtterbetalingDTO,
+    val etterbetaling: EtterbetalingDTO? = null,
     val utbetalingsinfo: Utbetalingsinfo,
     override val innhold: List<Element>,
 ) :
@@ -85,6 +86,6 @@ object Endring : EtterlatteTemplate<EndringHovedmalDTO>, Hovedmal {
         includeAttachment(informasjonTilDegSomHandlerPaaVegneAvBarnet, innhold)
         includeAttachment(dineRettigheterOgPlikter, innhold)
         includeAttachment(informasjonOmYrkesskade, innhold)
-        includeAttachment(etterbetalingAvBarnepensjon, etterbetaling)
+        includeAttachmentIfNotNull(etterbetalingAvBarnepensjon, etterbetaling)
     }
 }
