@@ -4,5 +4,5 @@ import no.nav.pensjon.etterlatte.maler.barnepensjon.migrering.BarnepensjonOmregn
 
 fun createBarnepensjonOmregnetNyttRegelverkDTO() =
     BarnepensjonOmregnetNyttRegelverkDTO(
-        utbetaltFoerReform = 1337, utbetaltEtterReform = 31337, anvendtTrygdetid = 40
+        utbetaltFoerReform = 1337, utbetaltEtterReform = 31337, anvendtTrygdetid = 40, grunnbeloep = 400000
     )
