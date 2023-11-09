@@ -13,8 +13,8 @@ import no.nav.pensjon.etterlatte.EtterlatteTemplate
 
 
 @TemplateModelHelpers
-object ForhaandsvarselMigrering : EtterlatteTemplate<Unit> {
-    override val kode: EtterlatteBrevKode = EtterlatteBrevKode.FORHAANDSVARSEL_MIGRERING
+object ForhaandsvarselOmregningBP : EtterlatteTemplate<Unit> {
+    override val kode: EtterlatteBrevKode = EtterlatteBrevKode.BARNEPENSJON_FORHAANDSVARSEL_OMREGNING
     override val template: LetterTemplate<*, Unit> = createTemplate(
         name = kode.name,
         letterDataType = Unit::class,
