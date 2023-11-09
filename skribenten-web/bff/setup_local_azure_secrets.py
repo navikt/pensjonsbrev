@@ -44,7 +44,7 @@ def setup_skribenten_web_bff_secrets():
 
     print(f"Setting up secrets for {env_file_path}")
 
-    secrets = get_application_secrets("skribenten-frontend")
+    secrets = get_application_secrets("skribenten-web")
 
     env_object = read_existing_env(env_file_path)
 
