@@ -1,6 +1,6 @@
 package no.nav.pensjon.etterlatte
 
-import no.nav.pensjon.brev.fixtures.createBarnepensjonOmregnetNyttRegelverkDTO
+import no.nav.pensjon.etterlatte.fixtures.createBarnepensjonOmregnetNyttRegelverkDTO
 import no.nav.pensjon.brevbaker.api.model.Bruker
 import no.nav.pensjon.brevbaker.api.model.Felles
 import no.nav.pensjon.brevbaker.api.model.Foedselsnummer
