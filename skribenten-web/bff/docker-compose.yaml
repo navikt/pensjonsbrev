@@ -10,7 +10,7 @@ services:
       --openid.provider=azure
       --ingress=http://localhost:8080
       --bind-address=0.0.0.0:8080
-      --upstream-host=bff:8081
+      --upstream-host=frontend:8081
       --log-level=debug
       --log-format=text
     restart: on-failure
@@ -18,7 +18,7 @@ services:
       WONDERWALL_OPENID_CLIENT_JWK: "${AZURE_APP_JWK}"
       WONDERWALL_OPENID_CLIENT_ID: "${AZURE_APP_CLIENT_ID}"
       WONDERWALL_OPENID_WELL_KNOWN_URL: "${AZURE_APP_WELL_KNOWN_URL}"
-  bff:
+  frontend:
     build:
       context: .
       dockerfile: "Dockerfile.dev"
