@@ -27,6 +27,16 @@ env:
     value: "https://saf.dev.intern.nav.no/graphql"
   - name: SAF_SCOPE
     value: "api://dev-fss.teamdokumenthandtering.saf/.default"
+  - name: KRR_SCOPE
+    value: "api://dev-gcp.team-rocket.digdir-krr-proxy/.default"
+  - name: KRR_URL
+    value: "https://digdir-krr-proxy.intern.dev.nav.no"
+  - name: KODEVERK_SERVICE
+    value: "https://kodeverk.dev.intern.nav.no/api/v1/kodeverk/"
+  - name: PENSJON_PERSONDATA_SCOPE
+    value: "api://dev-fss.pensjon-person.pensjon-persondata-q2/.default"
+  - name: PENSJON_PERSONDATA_URL
+    value: "https://pensjon-persondata-q2.dev.intern.nav.no"
 
 preAuthorized:
   - name: skribenten-frontend
