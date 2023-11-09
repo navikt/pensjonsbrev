@@ -29,4 +29,4 @@ mkdir -p secrets/sts
 STS_USERNAME=$(vault kv get -field username serviceuser/dev/srvpensjonsbrev-esb)
 STS_PASSWORD=$(vault kv get -field password serviceuser/dev/srvpensjonsbrev-esb)
 
-jq --null-input --arg username "$STS_USERNAME" --arg password "$STS_PASSWORD" '{"username": $username, "password": $password}' > secrets/sts/auth
+jq --null-input --arg username "$STS_USERNAME" --arg password "$STS_PASSWORD" '{"STS_USERNAME": $username, "STS_PASSWORD": $password}' > secrets/sts/auth.json

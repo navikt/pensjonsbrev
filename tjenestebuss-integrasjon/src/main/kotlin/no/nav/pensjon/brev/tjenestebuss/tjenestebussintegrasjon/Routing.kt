@@ -38,7 +38,6 @@ fun Application.tjenestebussIntegrationApi(config: Config) {
         val stsSercuritySOAPHandler = STSSercuritySOAPHandler(stsService)
         val samhandlerTjenestebussService =
             SamhandlerTjenestebussService(config.getConfig("services.tjenestebuss"), stsSercuritySOAPHandler)
-        samhandlerTjenestebussService.finnSamhandler()
         get("/testHentSamhandler") {
             try {
                 val samhandler = samhandlerTjenestebussService.hentSamhandler()
