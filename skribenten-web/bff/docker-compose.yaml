@@ -1,4 +1,5 @@
 version: '3.8'
+name: "skribenten-web"
 services:
   wonderwall:
     image: ghcr.io/nais/wonderwall:latest
