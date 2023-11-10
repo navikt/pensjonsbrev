@@ -45,7 +45,22 @@ spec:
   accessPolicy:
     outbound:
       rules:
-        - application: "pensjon-brevbaker"
+        - application: pensjon-brevbaker
+          namespace: pensjonsbrev
+          cluster: dev-gcp
+        - application: pensjon-brevmetadata-q2
+          namespace: pensjonsbrev
+          cluster: dev-gcp
+        - application: digdir-krr-proxy
+          namespace: team-rocket
+          cluster: dev-gcp
+      external:
+        - host: pdl-api.dev.intern.nav.no
+        - host: pensjon-pen-q2.dev.adeo.no
+        - host: saf.dev.intern.nav.no
+        - host: kodeverk.dev.intern.nav.no
+        - host: pensjon-persondata-q2.dev.intern.nav.no
+
     inbound:
       rules:
         - name: skribenten-frontend
