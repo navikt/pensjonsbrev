@@ -4,6 +4,7 @@ import no.nav.pensjon.brev.api.model.maler.*
 import no.nav.pensjon.brev.api.model.maler.OmsorgEgenAutoDtoSelectors.aarEgenerklaringOmsorgspoeng
 import no.nav.pensjon.brev.api.model.maler.OmsorgEgenAutoDtoSelectors.aarInnvilgetOmsorgspoeng
 import no.nav.pensjon.brev.api.model.maler.OmsorgEgenAutoDtoSelectors.egenerklaeringOmsorgsarbeidDto
+import no.nav.pensjon.brev.maler.fraser.common.Constants
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.vedlegg.egenerklaeringPleieOgOmsorgsarbeid
 import no.nav.pensjon.brev.model.format
@@ -61,7 +62,6 @@ object OmsorgEgenAuto : AutobrevTemplate<OmsorgEgenAutoDto> {
                             + ". Therefore, it is required that you complete the enclosed form and return it to NAV within four weeks.",
                 )
             }
-
             paragraph {
                 val aarInnvilgetOmsorgspoeng = aarInnvilgetOmsorgspoeng.format()
                 textExpr(
@@ -70,10 +70,8 @@ object OmsorgEgenAuto : AutobrevTemplate<OmsorgEgenAutoDto> {
                     English to "You have accumulated pensionable earnings for ".expr() + aarInnvilgetOmsorgspoeng + ".",
                 )
             }
-            includePhrase(Felles.HarDuSpoersmaalPesys)
+            includePhrase(Felles.HarDuSpoersmaalOmsorgsarbeid)
         }
-
         includeAttachment(egenerklaeringPleieOgOmsorgsarbeid, egenerklaeringOmsorgsarbeidDto)
     }
-
 }

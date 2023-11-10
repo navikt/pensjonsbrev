@@ -1,7 +1,5 @@
 package no.nav.pensjon.brev.maler.fraser.common
 
-import no.nav.pensjon.brev.maler.fraser.common.Constants.KONTAKT_URL
-import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
@@ -35,20 +33,28 @@ object Felles {
         }
     }
 
-    object HarDuSpoersmaalPesys : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    object HarDuSpoersmaalOmsorgsarbeid : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             title1 {
                 text(
                     Bokmal to "Har du spørsmål?",
                     Nynorsk to "Har du spørsmål?",
-                    English to "Do you have questions?",
+                    English to "Do you have questions?"
                 )
             }
             paragraph {
                 text(
-                    Bokmal to "Du finner mer informasjon på $NAV_URL. Hvis du ikke finner svar på spørsmålet ditt, kontakt oss på $KONTAKT_URL.",
-                    Nynorsk to "Du finn meir informasjon på $NAV_URL. Om du ikkje finn svar på spørsmålet ditt, kontakt oss på $KONTAKT_URL.",
-                    English to "You can find more information at $NAV_URL. If you do not find the answer to your question, contact us at $KONTAKT_URL.",
+                    Bokmal to "Du finner mer informasjon på ${Constants.OMSORGSOPPTJENING_URL}."
+                            + " På ${Constants.KONTAKT_URL} kan du chatte eller skrive til oss."
+                            + " Hvis du ikke finner svar på ${Constants.NAV_URL}, kan du ringe oss på telefon ${Constants.NAV_KONTAKTSENTER_TELEFON_PENSJON},"
+                            + " hverdager kl. ${Constants.NAV_KONTAKTSENTER_AAPNINGSTID}.",
+                    Nynorsk to "Du finn meir informasjon på ${Constants.OMSORGSOPPTJENING_URL}."
+                            + " Om du ikkje finn svar på ${Constants.NAV_URL}, kan du ringe oss på telefon ${Constants.NAV_KONTAKTSENTER_TELEFON_PENSJON},"
+                            + " kvardagar kl. ${Constants.NAV_KONTAKTSENTER_AAPNINGSTID}.",
+                    English to "You can find more information at ${Constants.OMSORGSOPPTJENING_URL}."
+                            + " At ${Constants.KONTAKT_URL}, you can chat or write to us."
+                            + " If you do not find the answer at ${Constants.NAV_URL}, you can call us at: +47 ${Constants.NAV_KONTAKTSENTER_TELEFON_PENSJON},"
+                            + " weekdays ${Constants.NAV_KONTAKTSENTER_AAPNINGSTID}."
                 )
             }
         }
@@ -74,9 +80,10 @@ object Felles {
             )
     }
 
-    data class TextOrList(val foedselsdatoer: Expression<Collection<String>>, val limit: Int = 2): ParagraphPhrase<LangBokmalNynorskEnglish>(){
+    data class TextOrList(val foedselsdatoer: Expression<Collection<String>>, val limit: Int = 2) :
+        ParagraphPhrase<LangBokmalNynorskEnglish>() {
         override fun ParagraphOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-            showIf(foedselsdatoer.size().lessThanOrEqual(limit)){
+            showIf(foedselsdatoer.size().lessThanOrEqual(limit)) {
                 val foedselsDato = foedselsdatoer.format()
                 textExpr(
                     Bokmal to " ".expr() + foedselsDato + ".",
@@ -86,7 +93,7 @@ object Felles {
             }.orShow {
                 text(Bokmal to ":", Nynorsk to ":", English to ":")
                 list {
-                    forEach(foedselsdatoer){
+                    forEach(foedselsdatoer) {
                         item { textExpr(Bokmal to it, Nynorsk to it, English to it) }
                     }
                 }
