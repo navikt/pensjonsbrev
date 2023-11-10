@@ -36,6 +36,8 @@ spec:
     application:
       enabled: true
       singlePageApplication: true
+      allowAllUsers: {{allowAllUsers}}
+      tenant: {{tenant}}
       replyURLs:
         {{#each ingresses as |url|}}
            - {{url}}/

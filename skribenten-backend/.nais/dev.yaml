@@ -1,5 +1,7 @@
 app-name: "skribenten-backend"
 brevbaker-app: "pensjon-brevbaker"
+allowAllUsers: true
+tenant: trygdeetaten.no
 ingresses:
   - "https://pensjon-skribenten-api.intern.dev.nav.no"
 env:
