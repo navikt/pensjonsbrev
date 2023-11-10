@@ -43,7 +43,19 @@ spec:
       claims:
         extra:
           - azp_name
+
   accessPolicy:
+    inbound:
+      rules:
+        - application: skribenten-frontend
+          namespace: pensjonsbrev
+          cluster: dev-gcp
+        - application: skribenten-web
+          namespace: pensjonsbrev
+          cluster: dev-gcp
+        - application: skribenten-frontend-lokal
+          namespace: pensjonsbrev
+          cluster: dev-gcp
     outbound:
       rules:
         - application: pensjon-brevbaker
@@ -62,22 +74,11 @@ spec:
         - host: kodeverk.dev.intern.nav.no
         - host: pensjon-persondata-q2.dev.intern.nav.no
 
-    inbound:
-      rules:
-        - name: skribenten-frontend
-          namespace: pensjonsbrev
-          cluster: dev-gcp
-        - name: skribenten-web
-          namespace: pensjonsbrev
-          cluster: dev-gcp
-        - name: skribenten-frontend-lokal
-          namespace: pensjonsbrev
-          cluster: dev-gcp
   ingresses:
     - "https://pensjon-skribenten-api.intern.dev.nav.no"
   env:
     - name: CORS_ALLOW_HOST
-      value: "pensjon-skribenten.intern.dev.nav.no"
+      value: "https://pensjon-skribenten-eksperiment.intern.dev.nav.no"
     - name: PEN_URL
       value: "https://pensjon-pen-q2.dev.adeo.no/pen/springapi/"
     - name: PEN_SCOPE
