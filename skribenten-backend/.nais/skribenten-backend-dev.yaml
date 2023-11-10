@@ -106,7 +106,7 @@ spec:
     - name: KRR_URL
       value: "https://digdir-krr-proxy.intern.dev.nav.no"
     - name: KODEVERK_SERVICE
-      value: "https://kodeverk.dev.intern.nav.no/api/v1/kodeverk/"
+      value: "https://kodeverk.dev-fss-pub.nais.io/api/v1/kodeverk/"
     - name: PENSJON_PERSONDATA_SCOPE
       value: "api://dev-fss.pensjon-person.pensjon-persondata-q2/.default"
     - name: PENSJON_PERSONDATA_URL
