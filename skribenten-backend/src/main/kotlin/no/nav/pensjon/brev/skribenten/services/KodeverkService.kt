@@ -12,12 +12,14 @@ import io.ktor.client.request.headers
 import io.ktor.serialization.jackson.*
 import io.ktor.server.application.*
 import io.ktor.server.plugins.callid.*
+import org.slf4j.LoggerFactory
 import java.time.LocalDate
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
 class KodeverkService(config: Config) {
     private val kodeverkServiceUrl = config.getString("url")
+    private val logger = LoggerFactory.getLogger(this::class.java)
 
     val client = HttpClient(CIO) {
         defaultRequest {
@@ -43,7 +45,9 @@ class KodeverkService(config: Config) {
     data class KommuneResultat(val kommunenavn: String, val kommunenummer: List<String>)
 
     suspend fun getKommuner(call: ApplicationCall): List<KommuneResultat> {
+        logger.info("CHECK 1")
         val kommuner = getKommunenummer(call)
+        logger.info("CHECK 3")
         return kommuner.betydninger.flatMap { kommuneNrEntry ->
             kommuneNrEntry.value.mapNotNull { beskrivelse ->
                 beskrivelse.beskrivelser["nb"]?.let {
@@ -55,6 +59,7 @@ class KodeverkService(config: Config) {
     }
 
     private suspend fun getKommunenummer(call: ApplicationCall): KodeverkResponse {
+        logger.info("CHECK 2")
         val dateString = ZonedDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-dd"))
         return client.get("Kommuner/koder/betydninger?ekskluderUgyldige=true&oppslagsdato=$dateString&spraak=nb") {
             headers {
