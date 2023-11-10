@@ -78,7 +78,7 @@ spec:
     - "https://pensjon-skribenten-api.intern.dev.nav.no"
   env:
     - name: CORS_ALLOW_HOST
-      value: "https://pensjon-skribenten-eksperiment.intern.dev.nav.no"
+      value: "pensjon-skribenten-eksperiment.intern.dev.nav.no"
     - name: PEN_URL
       value: "https://pensjon-pen-q2.dev.adeo.no/pen/springapi/"
     - name: PEN_SCOPE
