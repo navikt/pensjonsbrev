@@ -9,6 +9,7 @@ import io.ktor.client.plugins.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
 import io.ktor.client.request.headers
+import io.ktor.http.*
 import io.ktor.serialization.jackson.*
 import io.ktor.server.application.*
 import io.ktor.server.plugins.callid.*
@@ -60,12 +61,32 @@ class KodeverkService(config: Config) {
 
     private suspend fun getKommunenummer(call: ApplicationCall): KodeverkResponse {
         logger.info("CHECK 2")
-        val dateString = ZonedDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-dd"))
-        return client.get("Kommuner/koder/betydninger?ekskluderUgyldige=true&oppslagsdato=$dateString&spraak=nb") {
-            headers {
-                call.callId?.let { append("Nav-Call-Id", it) }
-                append("Nav-Consumer-Id", "skribenten-backend-lokal")
+        try {
+            val dateString = ZonedDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-dd"))
+            val response =
+                client.get("Kommuner/koder/betydninger?ekskluderUgyldige=true&oppslagsdato=$dateString&spraak=nb") {
+                    headers {
+                        call.callId?.let { append("Nav-Call-Id", it) }
+                        append("Nav-Consumer-Id", "skribenten-backend-lokal")
+                    }
+                }
+
+            if (response.status == HttpStatusCode.OK) {
+                return response.body<KodeverkResponse>()
+            } else {
+                logger.info("Request failed with status code: ${response.status}")
             }
-        }.body<KodeverkResponse>()
+        } catch (e: ClientRequestException) {
+            // Handle exceptions related to the request itself
+            println("ClientRequestException: ${e.message}")
+        } catch (e: ServerResponseException) {
+            // Handle exceptions related to the server's response
+            println("ServerResponseException: ${e.message}")
+        } catch (e: Exception) {
+            // Handle other exceptions
+            println("An unexpected error occurred: ${e.message}")
+        }
+
+        return KodeverkResponse(betydninger = mapOf("a" to listOf()))
     }
 }
