@@ -55,7 +55,6 @@ class KodeverkService(config: Config) {
     }
 
     private suspend fun getKommunenummer(call: ApplicationCall): KodeverkResponse {
-//        println(call.callId);
         val dateString = ZonedDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-dd"))
         return client.get("Kommuner/koder/betydninger?ekskluderUgyldige=true&oppslagsdato=$dateString&spraak=nb") {
             headers {
