@@ -167,12 +167,7 @@ fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config
                     options { _, _ -> CachingOptions(CacheControl.MaxAge(maxAgeSeconds = 86400)) }
                 }
                 get("/kommune") {
-                    try {
-                        call.respond(kodeverkService.getKommuner(call))
-                    } catch (e: Exception) {
-                        // Handle the exception here
-                        call.respondText("An error occurred: ${e.message}", status = HttpStatusCode.InternalServerError)
-                    }
+                    call.respond(kodeverkService.getKommuner(call))
                 }
                 get("/avtaleland") {
                     respondWithResult(penService.hentAvtaleland(call))
