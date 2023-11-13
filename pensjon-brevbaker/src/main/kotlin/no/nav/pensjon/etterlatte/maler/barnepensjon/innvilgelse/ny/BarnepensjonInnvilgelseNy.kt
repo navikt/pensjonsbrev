@@ -67,7 +67,7 @@ object BarnepensjonInnvilgelseNy : EtterlatteTemplate<BarnepensjonInnvilgelseNyD
         title {
             text(
                 Bokmal to "Vi har innvilget søknaden din om barnepensjon",
-                Nynorsk to "",
+                Nynorsk to "Vi har innvilga søknaden din om barnepensjon",
                 English to "",
             )
         }

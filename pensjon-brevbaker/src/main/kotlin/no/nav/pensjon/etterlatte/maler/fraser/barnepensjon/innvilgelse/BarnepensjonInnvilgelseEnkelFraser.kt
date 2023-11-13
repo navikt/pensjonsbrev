@@ -37,7 +37,9 @@ object BarnepensjonInnvilgelseEnkelFraser {
                             " fordi " + avdoedNavn + " er registrert død " + formatertDoedsdato + ". " +
                             "Du får " + beloep.format() + " kroner hver måned før skatt fra " + formatertVedtaksdato + ". " +
                             "Barnepensjonen utbetales til og med den kalendermåneden du fyller 18 år.",
-                    Nynorsk to "".expr(),
+                    Nynorsk to "Du har fått innvilga barnepensjon frå ".expr() + formatertVirkningsdato +
+                            "fordi " + avdoedNavn + " er registrert død " + formatertDoedsdato +". " +
+                            "Frå og med " + formatertVedtaksdato + " får du " + beloep.format() + "kroner per månad før skatt.",
                     English to "".expr(),
                 )
             }
@@ -46,7 +48,8 @@ object BarnepensjonInnvilgelseEnkelFraser {
                     Bokmal to "Barnepensjon gis når du er medlem i folketrygden " +
                             "og når avdøde i de siste fem årene før dødsfallet var medlem i folketrygden " +
                             "eller fikk pensjon fra folketrygden.",
-                    Nynorsk to "",
+                    Nynorsk to "Barnepensjonen blir utbetalt til og med den kalendermånaden du fyller 18 år." +
+                            "Barnepensjon blir gitt når du er medlem i folketrygda og avdøde var medlem i eller fekk pensjon frå folketrygda dei siste fem åra før dødsfallet.",
                     English to "",
                 )
             }
@@ -54,7 +57,7 @@ object BarnepensjonInnvilgelseEnkelFraser {
                 paragraph {
                     text(
                         Bokmal to "Vedtaket er gjort etter bestemmelsene om barnepensjon i folketrygdloven §§ <sett inn paragrafer fra tekstbiblioteket her>.",
-                        Nynorsk to "",
+                        Nynorsk to "Vedtaket er gjort i tråd med føresegnene om barnepensjon i folketrygdlova §§ <sett inn paragrafer fra tekstbiblioteket her>.",
                         English to "",
                     )
                 }
@@ -62,7 +65,7 @@ object BarnepensjonInnvilgelseEnkelFraser {
                 paragraph {
                     text(
                         Bokmal to "Vedtaket er gjort etter bestemmelsene om barnepensjon i folketrygdloven §§ 18-2, 18-3, 18-4, 18-5 og 22-12.",
-                        Nynorsk to "",
+                        Nynorsk to "Vedtaket er gjort i tråd med føresegnene om barnepensjon i folketrygdlova §§ 18-2, 18-3, 18-4, 18-5 og 22-12.",
                         English to "",
                     )
                 }

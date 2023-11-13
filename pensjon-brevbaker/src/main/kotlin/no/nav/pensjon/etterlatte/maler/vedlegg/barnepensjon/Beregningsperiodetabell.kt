@@ -26,21 +26,21 @@ data class Beregningsperiodetabell(
                     column(2) {
                         text(
                             Language.Bokmal to "Periode",
-                            Language.Nynorsk to "",
+                            Language.Nynorsk to "Periode",
                             Language.English to "",
                         )
                     }
                     column(1) {
                         text(
                             Language.Bokmal to "Grunnbeløp",
-                            Language.Nynorsk to "",
+                            Language.Nynorsk to "Grunnbeløp",
                             Language.English to "",
                         )
                     }
                     column(2) {
                         text(
                             Language.Bokmal to "Utbetaling per måned før skatt",
-                            Language.Nynorsk to "",
+                            Language.Nynorsk to "Utbetaling per månad før skatt",
                             Language.English to "",
                         )
                     }

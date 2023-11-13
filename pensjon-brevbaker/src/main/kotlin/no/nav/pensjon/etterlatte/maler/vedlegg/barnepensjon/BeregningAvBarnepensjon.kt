@@ -34,7 +34,7 @@ import no.nav.pensjon.etterlatte.maler.vedlegg.Trygdetidstabell
 val beregningAvBarnepensjon = createAttachment(
     title = newText(
         Bokmal to "Beregning av barnepensjon",
-        Nynorsk to "",
+        Nynorsk to "Utrekning av barnepensjon",
         English to "",
     ),
     includeSakspart = false
@@ -55,7 +55,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, B
     title2 {
         text(
             Bokmal to "Slik har vi beregnet barnepensjonen din",
-            Nynorsk to "",
+            Nynorsk to "Slik har vi rekna ut barnepensjonen din",
             English to "",
         )
     }
@@ -65,7 +65,8 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, B
                 Bokmal to "NAV gjør en samlet beregning av pensjon for barn som oppdras sammen. ".expr() +
                         "For denne beregningen har vi lagt til grunn at dere er " + antallBarn.format() +
                         " barn som oppdras sammen.",
-                Nynorsk to "".expr(),
+                Nynorsk to "NAV gjer ei samla utrekning av pensjon for barn som blir oppdregne saman. ".expr() +
+                        "For denne utrekninga har vi lagt til grunn at de er " + antallBarn.format() + " barn som blir oppdregne saman.".expr(),
                 English to "".expr(),
             )
         }
@@ -75,7 +76,10 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, B
                         "første barnet i søskenflokken. For hvert av de andre barna legges det til 25 prosent av G. " +
                         "Summen deles på antall barn, og pensjonen utbetales med likt beløp til hvert av barna. " +
                         "Pensjonen fordeles på 12 utbetalinger i året.",
-                Nynorsk to "",
+                Nynorsk to "Barnepensjon utgjer 40 prosent av grunnbeløpet i folketrygda (G) for det " +
+                        "første barnet i syskenflokken. For kvart av dei andre barna blir det lagt til 25 prosent av G. " +
+                        "Summen blir delt på talet på barn, og pensjonen blir utbetalt med likt beløp til kvart av barna. " +
+                        "Pensjonen blir fordelt på 12 utbetalingar i året.",
                 English to "",
             )
         }
@@ -83,7 +87,8 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, B
             textExpr(
                 Bokmal to "Folketrygdens grunnbeløp er per i dag ".expr() + grunnbeloep.format() + " kroner. " +
                         "Grunnbeløpet blir regulert 1. mai hvert år. Økningen etterbetales vanligvis juni hvert år.",
-                Nynorsk to "".expr(),
+                Nynorsk to "Grunnbeløpet i folketrygda er per i dag ".expr() + grunnbeloep.format() + " kroner. " +
+                        "Grunnbeløpet blir regulert 1. mai kvart år. Auken blir vanlegvis etterbetalt i juni kvart år.",
                 English to "".expr(),
             )
         }
@@ -92,14 +97,15 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, B
             textExpr(
                 Bokmal to "Barnepensjonen utgjør 40 prosent av folketrygdens grunnbeløp (G) og fordeles på 12 utbetalinger i året. ".expr() +
                         "Folketrygdens grunnbeløp er per i dag " + grunnbeloep.format() + " kroner.",
-                Nynorsk to "".expr(),
+                Nynorsk to "Barnepensjonen utgjer 40 prosent av grunnbeløpet i folketrygda (G) og blir fordelt på 12 utbetalingar i året. ".expr() +
+                        "Grunnbeløpet i folketrygda er per i dag " + grunnbeloep.format() + " kroner",
                 English to "".expr(),
             )
         }
         paragraph {
             text(
                 Bokmal to "Grunnbeløpet blir regulert 1. mai hvert år. Økningen etterbetales vanligvis juni hvert år.",
-                Nynorsk to "",
+                Nynorsk to "Grunnbeløpet blir regulert 1. mai kvart år. Auken blir vanlegvis etterbetalt i juni kvart år.",
                 English to "",
             )
         }
@@ -115,7 +121,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, B
     title2 {
         text(
             Bokmal to "Trygdetid",
-            Nynorsk to "",
+            Nynorsk to "Trygdetid",
             English to "",
         )
     }
@@ -126,7 +132,11 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, B
                     "Når avdøde var under 67 år ved dødsfallet blir det beregnet framtidig trygdetid. " +
                     "Det er vanligvis fram til og med det året avdøde ville ha fylt 66 år. " +
                     "Avdødes samledes trygdetid er " + aarTrygdetid.format() + " år",
-            Nynorsk to "".expr(),
+            Nynorsk to ("For å få full pensjon må den utrekna trygdetida til avdøde vere minst 40 år. ".expr() +
+                    "Trygdetida svarer til talet på år avdøde var medlem i folketrygda etter fylte 16 år. " +
+                    "Dersom personen døde før fylte 67 år, blir det rekna ut framtidig trygdetid. " +
+                    "Det er vanlegvis fram til og med det året avdøde ville ha fylt 66 år. " +
+                    "Avdøde har ei samla trygdetid på " + aarTrygdetid.format() + ". "),
             English to "".expr(),
         )
     }
@@ -137,7 +147,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, B
         paragraph {
             text(
                 Bokmal to "Tabellen viser når avdøde har vært medlem av folketrygden og når avdøde har bodd og/eller arbeidet i land som Norge har trygdeavtale med.",
-                Nynorsk to "",
+                Nynorsk to "Tabellen viser når avdøde var medlem i folketrygda, og når avdøde budde og/eller arbeidde i land som Noreg har trygdeavtale med.",
                 English to "",
             )
         }
