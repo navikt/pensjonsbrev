@@ -33,13 +33,15 @@ class ArkivTjenestebussService(config: Config, securityHandler: STSSercuritySOAP
         return arkivClient.bestillBrev(BestillBrevRequest().apply {
             brevKode = bestillBrevDto.brevKode
             brevGruppe = bestillBrevDto.brevGruppe
-            redigerbart = JAXBElement<Boolean>(QName("setToValue"), Boolean::class.java, bestillBrevDto.isRedigerbart)
+            redigerbart = JAXBElement(QName("redigerbart"), Boolean::class.java, bestillBrevDto.isRedigerbart)
             sprakKode = bestillBrevDto.sprakkode
             sakskontekst = Sakskontekst().apply {
+                saksbehandlernavn = bestillBrevDto.sakskontekstDto.saksbehandlernavn
+                saksbehandlerId = bestillBrevDto.sakskontekstDto.saksbehandlerId
                 journalenhet = bestillBrevDto.sakskontekstDto.journalenhet
                 gjelder = bestillBrevDto.sakskontekstDto.gjelder
                 dokumenttype = bestillBrevDto.sakskontekstDto.dokumenttype
-                //   dokumentdato = bestillBrevDto.sakskontekst.dokumentdato
+                dokumentdato = bestillBrevDto.sakskontekstDto.dokumentdato
                 fagsystem = bestillBrevDto.sakskontekstDto.fagsystem
                 fagomradeKode = bestillBrevDto.sakskontekstDto.fagomradekode
                 innhold = bestillBrevDto.sakskontekstDto.innhold
@@ -70,6 +72,8 @@ class ArkivTjenestebussService(config: Config, securityHandler: STSSercuritySOAP
         val innhold: String = "Posteringsgrunnlag",
         val kategori: String = "B",
         val saksid: String = "22972355",
+        val saksbehandlernavn: String = "F_Z994249",
+        val saksbehandlerId: String = "Z994249",
         val sensitivitet: String = "false"
     )
 }
