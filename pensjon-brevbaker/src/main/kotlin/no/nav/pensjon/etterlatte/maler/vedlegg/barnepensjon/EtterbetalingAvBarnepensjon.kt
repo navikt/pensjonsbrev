@@ -21,7 +21,7 @@ val etterbetalingAvBarnepensjon = createAttachment(
     title = newText(
         Bokmal to "Etterbetaling av barnepensjon",
         Nynorsk to "Etterbetaling av barnepensjon",
-        English to "",
+        English to "Back Payments for Children's Pension",
     ),
     includeSakspart = false,
 ) {
@@ -31,7 +31,8 @@ val etterbetalingAvBarnepensjon = createAttachment(
                     ". Vanligvis vil du få denne etterbetalingen i løpet av tre uker.",
             Nynorsk to "Du får etterbetalt stønad frå ".expr() + fraDato.format() + " til " + tilDato.format() +
                     ". Vanlegvis får du denne etterbetalinga i løpet av tre veker.   ".expr(),
-            English to "".expr(),
+            English to "You will receive the back payment for your benefits for from ".expr() + fraDato.format() + " to " + tilDato.format() +
+                    "You will usually receive this back payment within three weeks.",
         )
     }
     paragraph {
@@ -43,21 +44,25 @@ val etterbetalingAvBarnepensjon = createAttachment(
                     "eller andre (t.d. tenestepensjonsordningar). " +
                     "Dersom Skatteetaten eller andre ordningar har krav i etterbetalinga, kan denne bli forseinka. " +
                     "Frådrag i etterbetalinga vil gå fram av utbetalingsmeldinga.",
-            English to "",
+            English to "Deductions may be calculated from the back payment for tax, " +
+                    "benefits you have received from NAV or others, such as occupational pension schemes. " +
+                    "If the Norwegian Tax Administration or other schemes are entitled to the back payment, " +
+                    "the payment to you may be delayed. " +
+                    "Deductions from the back payment will be stated in the disbursement notice.",
         )
     }
     title2 {
         text(
             Bokmal to "Skatt på etterbetaling",
             Nynorsk to "Skatt på etterbetaling",
-            English to "",
+            English to "Taxes on back payments",
         )
     }
     paragraph {
         text(
             Bokmal to "Det trekkes vanligvis skatt av etterbetaling.",
             Nynorsk to "Det blir vanlegvis trekt skatt av etterbetaling.",
-            English to "",
+            English to "Tax is usually deducted from back payments.",
         )
     }
     paragraph {
@@ -66,8 +71,10 @@ val etterbetalingAvBarnepensjon = createAttachment(
                     "Du kan lese mer om satsene på ${Constants.SKATTETREKK_ETTERBETALING_URL}.",
             Nynorsk to "Dersom etterbetalinga gjeld tidlegare år, " +
                     "vil NAV trekkje skatt etter standardsatsane til Skatteetaten. " +
-                    "Satsane er beskrivne nærmare på ${Constants.SKATTETREKK_ETTERBETALING_URL}.  ",
-            English to "",
+                    "Satsane er beskrivne nærmare på ${Constants.SKATTETREKK_ETTERBETALING_URL}.",
+            English to "If the back payment applies to previous years, " +
+                    "NAV will deduct the tax at the Tax Administration's standard rates. " +
+                    "You can read more about the rates here: ${Constants.SKATTETREKK_ETTERBETALING_URL}.",
         )
     }
     includePhrase(Beregningsperiodetabell(etterbetalingsperioder))
