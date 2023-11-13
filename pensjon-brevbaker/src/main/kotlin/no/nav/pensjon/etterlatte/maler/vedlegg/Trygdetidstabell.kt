@@ -7,7 +7,7 @@ import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.LocalizedFormatter
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
-import no.nav.pensjon.brev.template.dsl.expression.expr
+import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.etterlatte.maler.Periode
@@ -28,22 +28,22 @@ data class Trygdetidstabell(
                     column(2) {
                         text(
                             Language.Bokmal to "Periode",
-                            Language.Nynorsk to "",
-                            Language.English to "",
+                            Language.Nynorsk to "Periode",
+                            Language.English to "Period",
                         )
                     }
                     column(1) {
                         text(
                             Language.Bokmal to "Land",
-                            Language.Nynorsk to "",
-                            Language.English to "",
+                            Language.Nynorsk to "Land",
+                            Language.English to "Country",
                         )
                     }
                     column(2) {
                         text(
                             Language.Bokmal to "Beregnet trygdetid",
-                            Language.Nynorsk to "",
-                            Language.English to "",
+                            Language.Nynorsk to "Utrekna tid",
+                            Language.English to "Calculated time",
                         )
                     }
                 }
@@ -62,8 +62,8 @@ data class Trygdetidstabell(
                             ifNotNull(it.opptjeningsperiode) {
                                 textExpr(
                                     Language.Bokmal to it.format(),
-                                    Language.Nynorsk to "".expr(),
-                                    Language.English to "".expr()
+                                    Language.Nynorsk to it.format(),
+                                    Language.English to it.format(),
                                 )
                             }
                         }
@@ -86,22 +86,22 @@ object PeriodeFormatter : LocalizedFormatter<Periode>() {
             first.aar.takeIf { it > 0 }?.let {
                 when (second) {
                     Language.Bokmal -> "$it år"
-                    Language.English -> "$it"
-                    Language.Nynorsk -> "$it"
+                    Language.Nynorsk -> "$it år"
+                    Language.English -> "$it years"
                 }
             },
             first.maaneder.takeIf { it > 0 }?.let {
                 when (second) {
                     Language.Bokmal -> "$it måneder"
-                    Language.English -> ""
-                    Language.Nynorsk -> ""
+                    Language.Nynorsk -> "$it månadar"
+                    Language.English -> "$it months"
                 }
             },
             first.dager.takeIf { it > 0 }?.let {
                 when (second) {
                     Language.Bokmal -> "$it dager"
-                    Language.English -> ""
-                    Language.Nynorsk -> ""
+                    Language.Nynorsk -> "$it dagar"
+                    Language.English -> "$it days"
                 }
             }
         )

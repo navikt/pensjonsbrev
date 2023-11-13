@@ -21,4 +21,10 @@ object Constants {
     const val POSTADRESSE = "NAV Familie- og Pensjonsytelser, Postboks 6600 Etterstad, 0607 OSLO"
     const val KONTAKTTELEFON_PENSJON = "55 55 33 34"
     const val KONTAKTTELEFON_GENERELL = "55 55 33 33"
+
+    object Engelsk {
+        const val UTBETALINGSDATOER_URL = "${Constants.UTBETALINGSDATOER_URL}/en"
+        const val KLAGE_URL = "${Constants.KLAGE_URL}/en"
+        const val BARNEPENSJON_URL = "${Constants.BARNEPENSJON_URL}/en"
+    }
 }

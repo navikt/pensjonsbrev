@@ -49,7 +49,7 @@ object BarnepensjonInnvilgelseEnkel : EtterlatteTemplate<BarnepensjonInnvilgelse
             text(
                 Language.Bokmal to "Vi innvilger barnepensjonen din",
                 Language.Nynorsk to "Vi har innvilga søknaden din om barnepensjon",
-                Language.English to "",
+                Language.English to "We have granted your application for a children's pension",
             )
         }
         outline {

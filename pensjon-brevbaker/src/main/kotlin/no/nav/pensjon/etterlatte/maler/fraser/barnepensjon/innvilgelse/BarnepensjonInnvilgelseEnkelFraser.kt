@@ -40,7 +40,9 @@ object BarnepensjonInnvilgelseEnkelFraser {
                     Nynorsk to "Du har fått innvilga barnepensjon frå ".expr() + formatertVirkningsdato +
                             "fordi " + avdoedNavn + " er registrert død " + formatertDoedsdato +". " +
                             "Frå og med " + formatertVedtaksdato + " får du " + beloep.format() + "kroner per månad før skatt.",
-                    English to "".expr(),
+                    English to "You have been granted a children's pension ".expr() + formatertVirkningsdato +
+                            " because " + avdoedNavn + " is registered as deceased on " + formatertDoedsdato + (". " +
+                            "You will receive NOK " + beloep.format() + " each month before tax as of " + formatertVedtaksdato).expr(),
                 )
             }
             paragraph {
@@ -50,7 +52,11 @@ object BarnepensjonInnvilgelseEnkelFraser {
                             "eller fikk pensjon fra folketrygden.",
                     Nynorsk to "Barnepensjonen blir utbetalt til og med den kalendermånaden du fyller 18 år." +
                             "Barnepensjon blir gitt når du er medlem i folketrygda og avdøde var medlem i eller fekk pensjon frå folketrygda dei siste fem åra før dødsfallet.",
-                    English to "",
+                    English to "The children’s pension is paid up to and including the calendar month in which you turn 18." +
+                            "You are eligible for a children's pension because you are a member of " +
+                            "the Norwegian National Insurance Scheme, and the deceased has been a member of " +
+                            "the National Insurance Scheme in the five years prior to the death or he/she " +
+                            "has been receiving a pension from the Scheme. ",
                 )
             }
             showIf(erEtterbetaling) {
@@ -58,7 +64,7 @@ object BarnepensjonInnvilgelseEnkelFraser {
                     text(
                         Bokmal to "Vedtaket er gjort etter bestemmelsene om barnepensjon i folketrygdloven §§ <sett inn paragrafer fra tekstbiblioteket her>.",
                         Nynorsk to "Vedtaket er gjort i tråd med føresegnene om barnepensjon i folketrygdlova §§ <sett inn paragrafer fra tekstbiblioteket her>.",
-                        English to "",
+                        English to "The decision was made in accordance with the provisions for children's pensions as stated in the National Insurance Act, in sections <sett inn paragrafer fra tekstbiblioteket her>.",
                     )
                 }
             }.orShow {
@@ -66,7 +72,7 @@ object BarnepensjonInnvilgelseEnkelFraser {
                     text(
                         Bokmal to "Vedtaket er gjort etter bestemmelsene om barnepensjon i folketrygdloven §§ 18-2, 18-3, 18-4, 18-5 og 22-12.",
                         Nynorsk to "Vedtaket er gjort i tråd med føresegnene om barnepensjon i folketrygdlova §§ 18-2, 18-3, 18-4, 18-5 og 22-12.",
-                        English to "",
+                        English to "The decision was made in accordance with the provisions for children's pensions as stated in the National Insurance Act, in sections 18-2, 18-3, 18-4, 18-5 and 22-12.",
                     )
                 }
             }
