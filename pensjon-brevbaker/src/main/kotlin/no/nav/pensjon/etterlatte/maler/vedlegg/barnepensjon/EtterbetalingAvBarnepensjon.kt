@@ -20,7 +20,7 @@ import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
 val etterbetalingAvBarnepensjon = createAttachment(
     title = newText(
         Bokmal to "Etterbetaling av barnepensjon",
-        Nynorsk to "",
+        Nynorsk to "Etterbetaling av barnepensjon",
         English to "",
     ),
     includeSakspart = false,
@@ -29,7 +29,8 @@ val etterbetalingAvBarnepensjon = createAttachment(
         textExpr(
             Bokmal to "Du får etterbetalt stønad fra ".expr() + fraDato.format() + " til " + tilDato.format() +
                     ". Vanligvis vil du få denne etterbetalingen i løpet av tre uker.",
-            Nynorsk to "".expr(),
+            Nynorsk to "Du får etterbetalt stønad frå ".expr() + fraDato.format() + " til " + tilDato.format() +
+                    ". Vanlegvis får du denne etterbetalinga i løpet av tre veker.   ".expr(),
             English to "".expr(),
         )
     }
@@ -38,21 +39,24 @@ val etterbetalingAvBarnepensjon = createAttachment(
             Bokmal to "Det kan bli beregnet fradrag i etterbetalingen for skatt, ytelser du har mottatt fra NAV eller andre, som for eksempel tjenestepensjonsordninger. " +
                     "Hvis Skatteetaten eller andre ordninger har krav i etterbetalingen kan denne bli forsinket. " +
                     "Fradrag i etterbetalingen vil gå fram av utbetalingsmeldingen.",
-            Nynorsk to "",
+            Nynorsk to "Det kan bli gjort frådrag i etterbetalinga for skatt eller ytingar du har fått frå NAV " +
+                    "eller andre (t.d. tenestepensjonsordningar). " +
+                    "Dersom Skatteetaten eller andre ordningar har krav i etterbetalinga, kan denne bli forseinka. " +
+                    "Frådrag i etterbetalinga vil gå fram av utbetalingsmeldinga.",
             English to "",
         )
     }
     title2 {
         text(
             Bokmal to "Skatt på etterbetaling",
-            Nynorsk to "",
+            Nynorsk to "Skatt på etterbetaling",
             English to "",
         )
     }
     paragraph {
         text(
             Bokmal to "Det trekkes vanligvis skatt av etterbetaling.",
-            Nynorsk to "",
+            Nynorsk to "Det blir vanlegvis trekt skatt av etterbetaling.",
             English to "",
         )
     }
@@ -60,7 +64,9 @@ val etterbetalingAvBarnepensjon = createAttachment(
         text(
             Bokmal to "Gjelder etterbetalingen tidligere år, trekker NAV skatt etter Skatteetatens standardsatser. " +
                     "Du kan lese mer om satsene på ${Constants.SKATTETREKK_ETTERBETALING_URL}.",
-            Nynorsk to "",
+            Nynorsk to "Dersom etterbetalinga gjeld tidlegare år, " +
+                    "vil NAV trekkje skatt etter standardsatsane til Skatteetaten. " +
+                    "Satsane er beskrivne nærmare på ${Constants.SKATTETREKK_ETTERBETALING_URL}.  ",
             English to "",
         )
     }

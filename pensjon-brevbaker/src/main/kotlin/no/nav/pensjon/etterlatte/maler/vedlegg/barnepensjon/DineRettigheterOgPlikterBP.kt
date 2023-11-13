@@ -16,7 +16,7 @@ import no.nav.pensjon.etterlatte.maler.fraser.common.Felles
 val dineRettigheterOgPlikter = createAttachment(
     title = newText(
         Bokmal to "Dine rettigheter og plikter",
-        Nynorsk to "",
+        Nynorsk to "Rettane og pliktene dine",
         English to "",
     ),
     includeSakspart = false,
@@ -32,35 +32,35 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, A
     title2 {
         text(
             Bokmal to "Meld fra om endringer",
-            Nynorsk to "",
+            Nynorsk to "Meld frå om endringar",
             English to "",
         )
     }
     paragraph {
         text(
             Bokmal to "Du må melde fra med en gang det skjer viktige endringer i barnets liv, som",
-            Nynorsk to "",
+            Nynorsk to "Du må melde frå med ein gong det skjer viktige endringar i livet til barnet. Døme på slike endringar kan vere",
             English to "",
         )
         list {
             item {
                 text(
                     Bokmal to "endringer av familie- eller omsorgsforhold",
-                    Nynorsk to "",
+                    Nynorsk to "endra familie- eller omsorgsforhold",
                     English to "",
                 )
             }
             item {
                 text(
                     Bokmal to "flytting eller opphold i et annet land over tid",
-                    Nynorsk to "",
+                    Nynorsk to "flytting eller langvarig opphald i eit anna land",
                     English to "",
                 )
             }
             item {
                 text(
                     Bokmal to "varig opphold i institusjon",
-                    Nynorsk to "",
+                    Nynorsk to "varig opphald på ein institusjon",
                     English to "",
                 )
             }
@@ -69,7 +69,10 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, A
             Bokmal to "Du er ansvarlig for å holde deg orientert om bevegelser på kontoen for utbetaling av barnepensjon, " +
                 "og du må straks melde fra om eventuelle feil til NAV. Er det utbetalt for mye barnepensjon fordi " +
                 "NAV ikke har fått beskjed, må pengene vanligvis betales tilbake.",
-            Nynorsk to "",
+            Nynorsk to "Du er ansvarleg for å følgje med på bevegelsar på kontoen for utbetaling av barnepensjon, " +
+                    "og må straks melde frå til NAV dersom du blir merksam på feil. " +
+                    "Viss det har blitt utbetalt for mykje barnepensjon fordi NAV ikkje har fått beskjed om endringar, " +
+                    "må pengane vanlegvis betalast tilbake.",
             English to "",
         )
     }
@@ -79,7 +82,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, A
     title2 {
         text(
             Bokmal to "Veiledning fra NAV - forvaltningsloven § 11",
-            Nynorsk to "",
+            Nynorsk to "Rettleiing frå NAV – forvaltingslova § 11",
             English to "",
         )
     }
@@ -88,7 +91,9 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, A
             Bokmal to "Vi har plikt til å veilede deg om dine rettigheter og plikter i saken din, både før, " +
                 "under og etter saksbehandlingen. Dersom du har spørsmål eller er usikker på noe, vil vi gjøre " +
                 "vårt beste for å hjelpe deg.",
-            Nynorsk to "",
+            Nynorsk to "Vi pliktar å rettleie deg om rettane og pliktene du har i saka, både før, " +
+                    "under og etter saksbehandlinga. Dersom du har spørsmål eller er usikker på noko, " +
+                    "vil vi gjere vårt beste for å hjelpe deg.",
             English to "",
         )
     }
@@ -98,14 +103,14 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, A
     title2 {
         text(
             Bokmal to "Du har rett til innsyn i saken din - forvaltningsloven § 18 ",
-            Nynorsk to "",
+            Nynorsk to "Du har rett til innsyn i saka di – forvaltingslova § 18",
             English to "",
         )
     }
     paragraph {
         text(
             Bokmal to "Du har som hovedregel rett til å se dokumentene i saken din. Hvis du ønsker innsyn, kan du kontakte oss på telefon eller per post.",
-            Nynorsk to "",
+            Nynorsk to "Du har som hovudregel rett til å sjå dokumenta i saka di. Kontakt oss på telefon eller per post dersom du ønskjer innsyn.",
             English to "",
         )
     }
@@ -115,7 +120,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, A
     title2 {
         text(
             Bokmal to "Klage på vedtaket - folketrygdloven § 21-12",
-            Nynorsk to "",
+            Nynorsk to "Klage på vedtaket – folketrygdlova § 21-12",
             English to "",
         )
     }
@@ -123,7 +128,8 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, A
         text(
             Bokmal to "Du kan klage på vedtaket innen seks uker fra du mottok det. Kontoret som har " +
                 "fattet vedtaket vil da vurdere saken din på nytt.",
-            Nynorsk to "",
+            Nynorsk to "Du kan klage på vedtaket innan seks veker frå du får det. " +
+                    "Kontoret som fatta vedtaket, vil då vurdere saka di på nytt.",
             English to "",
         )
     }
@@ -132,7 +138,9 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, A
             Bokmal to "Klagen må være skriftlig og inneholde navn, fødselsnummer og adresse. " +
                     "Bruk gjerne skjemaet som du finner på ${Constants.KLAGE_URL}. " +
                     "Trenger du hjelp, er du velkommen til å ringe oss på telefon ${Constants.KONTAKTTELEFON_PENSJON}.",
-            Nynorsk to "",
+            Nynorsk to "Du må setje fram klaga skriftleg og oppgi namn, fødselsnummer og adresse. " +
+                    "Bruk gjerne skjemaet du finn på ${Constants.KLAGE_URL}. " +
+                    "Viss du treng hjelp, må du gjerne ringje oss på telefon ${Constants.KONTAKTTELEFON_PENSJON}. ",
             English to "",
         )
     }
