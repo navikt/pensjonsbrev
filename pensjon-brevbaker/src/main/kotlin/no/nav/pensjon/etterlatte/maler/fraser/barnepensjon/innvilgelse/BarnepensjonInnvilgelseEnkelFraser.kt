@@ -41,8 +41,8 @@ object BarnepensjonInnvilgelseEnkelFraser {
                             "fordi " + avdoedNavn + " er registrert død " + formatertDoedsdato +". " +
                             "Frå og med " + formatertVedtaksdato + " får du " + beloep.format() + "kroner per månad før skatt.",
                     English to "You have been granted a children's pension ".expr() + formatertVirkningsdato +
-                            " because " + avdoedNavn + " is registered as deceased on " + formatertDoedsdato + (". " +
-                            "You will receive NOK " + beloep.format() + " each month before tax as of " + formatertVedtaksdato).expr(),
+                            " because " + avdoedNavn + " is registered as deceased on " + formatertDoedsdato + ". " +
+                            "You will receive NOK " + beloep.format() + " each month before tax as of " + formatertVedtaksdato,
                 )
             }
             paragraph {
