@@ -57,6 +57,8 @@ dependencies {
 	}
 	implementation("no.nav.pensjon.pesys-esb-wsclient:psak-esb-wsclient-legacy:2023.11.01-10.31-1bc8315f412e") {
 	}
+	implementation("no.nav.pensjon.pesys-esb-wsclient:pen-arkiv-esb-wsclient-legacy:2023.11.01-10.31-1bc8315f412e") {
+	}
 	implementation("javax.xml.ws:jaxws-api:2.3.1")
 	implementation("com.sun.xml.ws:jaxws-tools:2.3.0.2")
 	implementation("com.sun.xml.bind:jaxb-impl:3.0.2")

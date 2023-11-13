@@ -17,7 +17,7 @@ allprojects {
             // Then create a gradle.properties file in $HOME/.gradle with the following:
             // gpr.user=<your github username>
             // gpr.token=<the token>
-            url = uri("https://maven.pkg.github.com/navikt")
+            url = uri("https://maven.pkg.github.com/navikt/pensjonsbrev")
             credentials {
                 username = project.findProperty("gpr.user") as String? ?: System.getenv("GITHUB_ACTOR")
                 password = project.findProperty("gpr.token") as String? ?: System.getenv("GITHUB_TOKEN")
