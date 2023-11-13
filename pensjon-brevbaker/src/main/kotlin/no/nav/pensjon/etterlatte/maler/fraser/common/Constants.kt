@@ -18,7 +18,7 @@ object Constants {
     const val OMS_ETTEROPPGJOER_URL = "$NAV_URL/omstillingsstønad#etteroppgjør"
     const val OMS_HVORMYE_URL = "$NAV_URL/omstillingsstønad#hvor-mye"
     const val OMS_URL = "$NAV_URL/omstillingsstønad"
-    const val POSTADRESSE = "NAV Familie- og Pensjonsytelser, Postboks 6600 Etterstad, 0607 OSLO"
+    const val POSTADRESSE = "NAV skanning, Postboks 1400, 0109 OSLO"
     const val KONTAKTTELEFON_PENSJON = "55 55 33 34"
     const val KONTAKTTELEFON_GENERELL = "55 55 33 33"
 
