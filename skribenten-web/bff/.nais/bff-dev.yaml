@@ -35,7 +35,7 @@ spec:
     - name: EXPRESS_PORT
       value: "8080"
     - name: SKRIBENTEN_API_URL
-      value: "https://pensjon-skribenten-api.intern.dev.nav.no"
+      value: "http://skribenten-backend"
     - name: SKRIBENTEN_API_SCOPE
       value: "api://dev-gcp.pensjonsbrev.skribenten-backend/.default"
 
