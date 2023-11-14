@@ -9,7 +9,7 @@ spec:
   image: {{image}}
   port: 8080
   ingresses:
-    - "https://pensjon-skribenten-eksperiment.intern.dev.nav.no"
+    - "https://pensjon-skribenten-web.intern.dev.nav.no"
   replicas:
     min: 2
     max: 2
