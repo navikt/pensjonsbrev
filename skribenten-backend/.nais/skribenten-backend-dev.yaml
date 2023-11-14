@@ -72,7 +72,7 @@ spec:
         - host: pensjon-pen-q2.dev-fss-pub.nais.io
         - host: saf.intern.dev.nav.no
         - host: kodeverk.dev-fss-pub.nais.io
-        - host: pensjon-persondata-q2.dev.intern.nav.no
+        - host: pensjon-persondata-q2.intern.dev.nav.no
 
   ingresses:
     - "https://pensjon-skribenten-api.intern.dev.nav.no"
@@ -110,4 +110,4 @@ spec:
     - name: PENSJON_PERSONDATA_SCOPE
       value: "api://dev-fss.pensjon-person.pensjon-persondata-q2/.default"
     - name: PENSJON_PERSONDATA_URL
-      value: "https://pensjon-persondata-q2.dev.intern.nav.no"
+      value: "https://pensjon-persondata-q2.intern.dev.nav.no"
