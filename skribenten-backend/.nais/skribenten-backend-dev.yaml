@@ -70,7 +70,7 @@ spec:
       external:
         - host: pdl-api.dev-fss-pub.nais.io
         - host: pensjon-pen-q2.dev.adeo.no
-        - host: saf.dev.intern.nav.no
+        - host: saf.intern.dev.nav.no
         - host: kodeverk.dev-fss-pub.nais.io
         - host: pensjon-persondata-q2.dev.intern.nav.no
 
@@ -98,7 +98,7 @@ spec:
     - name: PDL_SCOPE
       value: "api://dev-fss.pdl.pdl-api/.default"
     - name: SAF_URL
-      value: "https://saf.dev.intern.nav.no/graphql"
+      value: "https://saf.intern.dev.nav.no/graphql"
     - name: SAF_SCOPE
       value: "api://dev-fss.teamdokumenthandtering.saf/.default"
     - name: KRR_SCOPE
