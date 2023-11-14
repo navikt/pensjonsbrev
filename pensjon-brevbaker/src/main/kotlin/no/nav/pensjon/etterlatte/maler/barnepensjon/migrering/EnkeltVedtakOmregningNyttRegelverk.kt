@@ -28,7 +28,7 @@ object EnkeltVedtakOmregningNyttRegelverk : EtterlatteTemplate<BarnepensjonOmreg
         letterDataType = BarnepensjonOmregnetNyttRegelverkDTO::class,
         languages = languages(Language.Bokmal, Language.Nynorsk, Language.English),
         letterMetadata = LetterMetadata(
-            displayTitle = "Vedtak - endring av barnepensjon",
+            displayTitle = "Utkast til - endring av barnepensjon",
             isSensitiv = false,
             distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV
@@ -36,7 +36,7 @@ object EnkeltVedtakOmregningNyttRegelverk : EtterlatteTemplate<BarnepensjonOmreg
     ) {
         title {
             text(
-                Language.Bokmal to "Vedtak - endring av barnepensjon",
+                Language.Bokmal to "Utkast til vedtak - endring av barnepensjon",
                 Language.Nynorsk to "",
                 Language.English to "",
             )
@@ -44,7 +44,7 @@ object EnkeltVedtakOmregningNyttRegelverk : EtterlatteTemplate<BarnepensjonOmreg
         outline {
             paragraph {
                 textExpr(
-                    Language.Bokmal to "Stortinget har vedtatt endring i reglene for barnepensjon. Du får derfor høyere pensjon. Du har ".expr()
+                    Language.Bokmal to "Stortinget har vedtatt nye regler for barnepensjon. Du får høyere barnepensjon. Du har ".expr()
                             + utbetaltFoerReform.format() + " kroner per måned i pensjon til 31. desember 2023. Du får " + utbetaltEtterReform.format()
                             + " kroner før skatt per måned fra 1. januar 2024.",
                     Language.Nynorsk to "".expr(),
@@ -88,7 +88,7 @@ object EnkeltVedtakOmregningNyttRegelverk : EtterlatteTemplate<BarnepensjonOmreg
 
             title2 {
                 text(
-                    Language.Bokmal to "Hvordan pensjonen din er beregnet",
+                    Language.Bokmal to "Slik har vi beregnet pensjonen din",
                     Language.Nynorsk to "",
                     Language.English to ""
                 )
@@ -105,7 +105,7 @@ object EnkeltVedtakOmregningNyttRegelverk : EtterlatteTemplate<BarnepensjonOmreg
 
             paragraph {
                 textExpr(
-                    Language.Bokmal to "For å få full pensjon må avdødes trygdetid være beregnet til minst 40 år. Trygdetiden tilsvarer det antall år avdøde har vært medlem i folketrygden etter fylte 16 år. Når avdøde var under 67 år ved dødsfallet blir det beregnet framtidig trygdetid. Det er vanligvis fram til og med det året avdøde ville ha fylt 66 år. Barnepensjonen din er beregnet med".expr() + anvendtTrygdetid.format() + " år.",
+                    Language.Bokmal to "For å få full pensjon må avdødes trygdetid være beregnet til minst 40 år. Trygdetiden tilsvarer det antall år avdøde har vært medlem i folketrygden etter fylte 16 år. Når avdøde var under 67 år ved dødsfallet blir det beregnet framtidig trygdetid. Det er vanligvis fram til og med det året avdøde ville ha fylt 66 år. Barnepensjonen din er beregnet med ".expr() + anvendtTrygdetid.format() + " år trygdetid.",
                     Language.Nynorsk to "".expr(),
                     Language.English to "".expr()
                 )
@@ -120,7 +120,7 @@ object EnkeltVedtakOmregningNyttRegelverk : EtterlatteTemplate<BarnepensjonOmreg
             }
             paragraph {
                 text(
-                    Language.Bokmal to "Barnepensjon er skattepliktig, men vi trekker ikke skatt uten å få beskjed om dette. Du kan lese mer om skatt på barnepensjon på nav.no/skatt-pengestotte. Her finner du også informasjon om frivillig skattetrekk og hvordan du får registrert dette.",
+                    Language.Bokmal to "Barnepensjon er skattepliktig, men vi trekker ikke skatt uten at du gir beskjed om det. Du kan lese mer om skatt på barnepensjon på nav.no/skatt-pengestotte. Her finner du også informasjon om frivillig skattetrekk og hvordan du får registrert dette.",
                     Language.Nynorsk to "",
                     Language.English to ""
                 )
@@ -135,7 +135,7 @@ object EnkeltVedtakOmregningNyttRegelverk : EtterlatteTemplate<BarnepensjonOmreg
             }
             paragraph {
                 text(
-                    Language.Bokmal to "Hvis du mener vedtaket er feil, kan du klage innen seks uker fra den datoen du mottok vedtaket. Klagen skal være skriftlig. Du finner skjema og informasjon på nav.no/klage.",
+                    Language.Bokmal to "Hvis du mener vedtaket er feil, kan du klage innen seks uker fra 1. januar 2024. Klagen skal være skriftlig. Du finner skjema og informasjon på nav.no/klage.",
                     Language.Nynorsk to "",
                     Language.English to ""
                 )
@@ -143,7 +143,7 @@ object EnkeltVedtakOmregningNyttRegelverk : EtterlatteTemplate<BarnepensjonOmreg
 
             title2 {
                 text(
-                    Language.Bokmal to "Du må fortsatt melde fra om endringer",
+                    Language.Bokmal to "Du må melde fra om endringer",
                     Language.Nynorsk to "",
                     Language.English to ""
                 )
