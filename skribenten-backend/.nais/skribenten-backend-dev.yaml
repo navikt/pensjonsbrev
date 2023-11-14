@@ -69,7 +69,7 @@ spec:
           cluster: dev-gcp
       external:
         - host: pdl-api.dev-fss-pub.nais.io
-        - host: pensjon-pen-q2.dev.adeo.no
+        - host: pensjon-pen-q2.dev-fss-pub.nais.io
         - host: saf.intern.dev.nav.no
         - host: kodeverk.dev-fss-pub.nais.io
         - host: pensjon-persondata-q2.dev.intern.nav.no
@@ -80,7 +80,7 @@ spec:
     - name: CORS_ALLOW_HOST
       value: "pensjon-skribenten-eksperiment.intern.dev.nav.no"
     - name: PEN_URL
-      value: "https://pensjon-pen-q2.dev.adeo.no/pen/springapi/"
+      value: https://pensjon-pen-q2.dev-fss-pub.nais.io/pen/springapi/"
     - name: PEN_SCOPE
       value: "api://dev-fss.teampensjon.pensjon-pen-q2/.default"
     - name: BREVBAKER_URL
