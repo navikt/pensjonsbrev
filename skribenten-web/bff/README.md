@@ -1,4 +1,4 @@
-# Backend for frontend (BFF) for fullmaktsregisteret
+# Backend for frontend (BFF) for skribenten-web
 
 I hovedsak gjør applikasjonen:
 * Servere frontend
