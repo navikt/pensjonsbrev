@@ -68,7 +68,7 @@ spec:
           namespace: team-rocket
           cluster: dev-gcp
       external:
-        - host: pdl-api.dev.intern.nav.no
+        - host: pdl-api.dev-fss-pub.nais.io
         - host: pensjon-pen-q2.dev.adeo.no
         - host: saf.dev.intern.nav.no
         - host: kodeverk.dev-fss-pub.nais.io
@@ -94,7 +94,7 @@ spec:
     - name: MICROSOFT_GRAPH_SCOPE
       value: "https://graph.microsoft.com/User.Read"
     - name: PDL_URL
-      value: "https://pdl-api.dev.intern.nav.no/graphql"
+      value: "https://pdl-api.dev-fss-pub.nais.io/graphql"
     - name: PDL_SCOPE
       value: "api://dev-fss.pdl.pdl-api/.default"
     - name: SAF_URL
