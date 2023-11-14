@@ -80,7 +80,7 @@ spec:
     - name: CORS_ALLOW_HOST
       value: "pensjon-skribenten-eksperiment.intern.dev.nav.no"
     - name: PEN_URL
-      value: https://pensjon-pen-q2.dev-fss-pub.nais.io/pen/springapi/"
+      value: "https://pensjon-pen-q2.dev-fss-pub.nais.io/pen/springapi/"
     - name: PEN_SCOPE
       value: "api://dev-fss.teampensjon.pensjon-pen-q2/.default"
     - name: BREVBAKER_URL
