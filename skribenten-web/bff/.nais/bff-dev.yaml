@@ -49,8 +49,6 @@ spec:
         extra:
           - azp_name
           - NAVident
-        groups:
-          - id: "8bb9b8d1-f46a-4ade-8ee8-5895eccdf8cf"
       replyURLs:
         - "http://localhost:8080/oauth2/callback"
     sidecar:

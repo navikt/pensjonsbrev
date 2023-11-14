@@ -1,11 +1,10 @@
-const SKRIBENTEN_BACKEND_BASE_PATH = "/skribenten-backend";
-
 export function App() {
-  return <div>Skribenten web!</div>;
+  return <button onClick={testBackend}>Skribenten web!</button>;
 }
-
+//
+const SKRIBENTEN_BACKEND_BASE_PATH = "/skribenten-backend";
 const testBackend = async () => {
-  // await fetch(`${SKRIBENTEN_BACKEND_BASE_PATH}/pen/sak/22972355`);
+  await fetch(`${SKRIBENTEN_BACKEND_BASE_PATH}/pen/sak/22972355`);
   // await fetch(`${SKRIBENTEN_BACKEND_BASE_PATH}/pdl/navn/19499332788`);
   // await fetch(`${SKRIBENTEN_BACKEND_BASE_PATH}/pen/sak/22972355`);
   // await fetch(`${SKRIBENTEN_BACKEND_BASE_PATH}/test/pen`, { method: "POST" });
