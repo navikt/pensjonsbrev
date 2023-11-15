@@ -2,8 +2,14 @@ package no.nav.pensjon.etterlatte.maler.fraser.barnepensjon
 
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.model.format
-import no.nav.pensjon.brev.template.*
-import no.nav.pensjon.brev.template.Language.*
+import no.nav.pensjon.brev.template.Expression
+import no.nav.pensjon.brev.template.LangBokmal
+import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
+import no.nav.pensjon.brev.template.Language.Bokmal
+import no.nav.pensjon.brev.template.Language.English
+import no.nav.pensjon.brev.template.Language.Nynorsk
+import no.nav.pensjon.brev.template.OutlinePhrase
+import no.nav.pensjon.brev.template.TextOnlyPhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.TextOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.expr
@@ -159,40 +165,6 @@ object Barnepensjon {
             }
     }
 
-    object UtbetalingOgRegulering : OutlinePhrase<LangBokmalNynorskEnglish>() {
-        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-            title2 {
-                text(
-                    Bokmal to "Utbetaling og regulering",
-                    Nynorsk to "",
-                    English to ""
-                )
-            }
-            paragraph {
-                text(
-                    Bokmal to "Pensjonen blir utbetalt innen den 20. i hver måned. " +
-                            "Du finner utbetalingsdatoer på ${Constants.UTBETALING_URL}.",
-                    Nynorsk to "",
-                    English to ""
-                )
-            }
-            paragraph {
-                text(
-                    Bokmal to "Har du rett til etterbetaling, vil du vanligvis få dette i løpet av tre uker.  Du finner mer informasjon om etterbetaling i vedlegget «Etterbetaling av barnepensjon»",
-                    Nynorsk to "",
-                    English to ""
-                )
-            }
-            paragraph {
-                text(
-                    Bokmal to "Grunnbeløpet blir regulert 1. mai hvert år.  Økningen blir vanligvis etterbetalt i juni. ",
-                    Nynorsk to "",
-                    English to ""
-                )
-            }
-        }
-    }
-
     object Utbetaling : OutlinePhrase<LangBokmal>() {
         override fun OutlineOnlyScope<LangBokmal, Unit>.template() {
             title2 {
@@ -255,8 +227,20 @@ object Barnepensjon {
                     English to "",
                 )
                 list {
-                    item { text(Bokmal to "endringer av nåværende familie- eller omsorgsforhold", Nynorsk to "", English to "") }
-                    item { text(Bokmal to "flytting eller opphold i et annet land over tid", Nynorsk to "", English to "") }
+                    item {
+                        text(
+                            Bokmal to "endringer av nåværende familie- eller omsorgsforhold",
+                            Nynorsk to "",
+                            English to ""
+                        )
+                    }
+                    item {
+                        text(
+                            Bokmal to "flytting eller opphold i et annet land over tid",
+                            Nynorsk to "",
+                            English to ""
+                        )
+                    }
                     item { text(Bokmal to "varig opphold i institusjon", Nynorsk to "", English to "") }
                 }
                 text(
@@ -426,7 +410,8 @@ object Barnepensjon {
         }
     }
 
-    data class BarnepensjonenDinErDerforOpphoert(val virkningsdato: Expression<LocalDate>) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    data class BarnepensjonenDinErDerforOpphoert(val virkningsdato: Expression<LocalDate>) :
+        OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             paragraph {
                 textExpr(
@@ -443,25 +428,6 @@ object Barnepensjon {
             paragraph {
                 text(
                     Bokmal to "Barnepensjonen din utbetales til og med den kalendermåneden du fyller 18 år.",
-                )
-            }
-        }
-    }
-
-    object DuMaaMeldeFraOmEndringer : OutlinePhrase<LangBokmalNynorskEnglish>() {
-        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-            title2 {
-                text(
-                    Bokmal to "Du må melde fra om endringer",
-                    Nynorsk to "",
-                    English to "",
-                )
-            }
-            paragraph {
-                text(
-                    Bokmal to "Du har plikt til å melde fra til oss om endringer som har betydning for utbetalingen av barnepensjon, eller retten til å få barnepensjon. I vedlegget «Dine rettigheter og plikter» ser du hvilke endringer du må si fra om.",
-                    Nynorsk to "",
-                    English to "",
                 )
             }
         }
