@@ -75,8 +75,9 @@ jobs:
           "ENVIRONMENT": "dev-gcp:skribenten-backend"
           "APIKEY": "${{ secrets.NAIS_DEPLOY_APIKEY }}"
           "CLUSTER": "dev-gcp"
-          "RESOURCE": "skribenten-backend/.nais/skribenten-backend-dev.yaml"
+          "RESOURCE": "skribenten-backend/.nais/nais.yaml"
           "VAR": image=${{ format('{0}:{1}', env.IMAGE_SKRIBENTEN_BACKEND, env.IMAGE_TAG) }}
+          "VARS": "skribenten-backend/.nais/dev.yaml"
 
 
   deploy-skribenten-frontend-dev:

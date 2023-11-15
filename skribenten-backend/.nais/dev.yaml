@@ -1,0 +1,31 @@
+allowAllUsers: true
+
+inboundRules:
+  - application: skribenten-frontend
+    namespace: pensjonsbrev
+    cluster: dev-gcp
+  - application: skribenten-web
+    namespace: pensjonsbrev
+    cluster: dev-gcp
+  - application: skribenten-frontend-lokal
+    namespace: pensjonsbrev
+    cluster: dev-gcp
+
+outboundRules:
+  - application: pensjon-brevbaker
+    namespace: pensjonsbrev
+    cluster: dev-gcp
+  - application: pensjon-brevmetadata-q2
+    namespace: pensjonsbrev
+    cluster: dev-gcp
+  - application: digdir-krr-proxy
+    namespace: team-rocket
+    cluster: dev-gcp
+
+externalHosts:
+  - host: pdl-api.dev-fss-pub.nais.io
+  - host: pensjon-pen-q2.dev-fss-pub.nais.io
+  - host: saf.intern.dev.nav.no
+  - host: kodeverk.dev-fss-pub.nais.io
+  - host: pensjon-persondata-q2.intern.dev.nav.no
+
