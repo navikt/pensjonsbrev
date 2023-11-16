@@ -1,11 +1,11 @@
 package no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.fixtures
 
-import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.arkiv.BestillBrevDto
+import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.arkiv.BestillBrevRequestDto
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.arkiv.SakskontekstDto
 import java.util.*
 import javax.xml.datatype.DatatypeFactory
 
-fun bestillBrevDto(): BestillBrevDto {
+fun bestillBrevDto(): BestillBrevRequestDto {
     val gc = GregorianCalendar()
     val xgc = DatatypeFactory.newInstance().newXMLGregorianCalendar(gc)
 
@@ -24,7 +24,7 @@ fun bestillBrevDto(): BestillBrevDto {
         sensitivitet = "false"
     )
 
-    return BestillBrevDto(
+    return BestillBrevRequestDto(
         brevKode = "PE_OK_06_101",
         brevGruppe = "brevgr001",
         isRedigerbart = true,

@@ -13,7 +13,8 @@ import io.ktor.server.routing.*
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.*
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.arkiv.ArkivClient
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.arkiv.ArkivTjenestebussService
-import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.arkiv.BestillBrevDto
+import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.arkiv.BestillBrevRequestDto
+import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.arkiv.BestillBrevResponseDto
 
 fun Application.tjenestebussIntegrationApi(config: Config) {
     install(CallLogging) {
@@ -54,18 +55,12 @@ fun Application.tjenestebussIntegrationApi(config: Config) {
             }
         }
         post("/bestillbrev") {
-            val requestDto = call.receive<BestillBrevDto>()
-            try {
+            val requestDto = call.receive<BestillBrevRequestDto>()
                 val arkivResponse = arkivTjenestebussService.bestillBrev(requestDto)
-                val response = """
-                    {
-                        journalpostId: ${arkivResponse!!.journalpostId}
-                    }
-                """.trimIndent()
-                call.respond(HttpStatusCode.OK, response)
-
-            } catch (e: Exception) {
-                call.respond(HttpStatusCode.InternalServerError, "En feil oppstod under bestilling av brev: ${maskerFnr(e.message)}")
+            if(arkivResponse is BestillBrevResponseDto.Journalpost)
+                call.respond(HttpStatusCode.OK, arkivResponse)
+            else {
+                call.respond(HttpStatusCode.InternalServerError, arkivResponse)
             }
         }
     }
