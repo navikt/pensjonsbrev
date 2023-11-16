@@ -24,7 +24,8 @@
     "@tanstack/router-devtools": "0.0.1-beta.212",
     "axios": "1.6.0",
     "react": "18.2.0",
-    "react-dom": "18.2.0"
+    "react-dom": "18.2.0",
+    "react-hook-form": "7.48.2"
   },
   "devDependencies": {
     "@navikt/aksel-stylelint": "5.9.2",

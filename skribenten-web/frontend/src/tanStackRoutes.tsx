@@ -4,6 +4,7 @@ import React from "react";
 
 import { App } from "./App";
 import { AppHeader } from "./components/AppHeader";
+import { VelgSakPage } from "./pages/BrevVelger/VelgSakPage";
 
 const TanStackRouterDevtools =
   process.env.NODE_ENV === "production"
@@ -49,13 +50,19 @@ const indexRoute = new Route({
   component: App,
 });
 
+const saksnummerRoute = new Route({
+  getParentRoute: () => rootRoute,
+  path: "saksnummer",
+  component: VelgSakPage,
+});
+
 const notFoundRoute = new Route({
   getParentRoute: () => rootRoute,
   path: "*",
   component: () => "Siden finnes ikke",
 });
 
-const routeTree = rootRoute.addChildren([indexRoute, notFoundRoute]);
+const routeTree = rootRoute.addChildren([indexRoute, saksnummerRoute, notFoundRoute]);
 
 export const router = new Router({ routeTree });
 
