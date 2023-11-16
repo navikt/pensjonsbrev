@@ -2,6 +2,8 @@ import { css } from "@emotion/react";
 import { Dropdown, InternalHeader } from "@navikt/ds-react";
 import { Link as RouterLink } from "@tanstack/react-router";
 
+import { useUserInfo } from "../hooks/useUserInfo";
+
 export function AppHeader() {
   return (
     <InternalHeader>
@@ -24,12 +26,12 @@ export function AppHeader() {
 }
 
 function UserDropdown() {
-  // const userInfo = useUserInfo();
+  const userInfo = useUserInfo();
 
   return (
     <>
       <Dropdown>
-        <InternalHeader.UserButton as={Dropdown.Toggle} name="TODO" />
+        <InternalHeader.UserButton as={Dropdown.Toggle} name={userInfo?.name ?? ""} />
         <Dropdown.Menu>
           <Dropdown.Menu.List>
             <Dropdown.Menu.List.Item as="a" href="/bff/logout">
