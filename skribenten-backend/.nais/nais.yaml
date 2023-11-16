@@ -1,7 +1,7 @@
 apiVersion: "nais.io/v1alpha1"
 kind: "Application"
 metadata:
-  name: {{app-name}}
+  name: "skribenten-backend"
   namespace: "pensjonsbrev"
   labels:
     "team": "pensjonsbrev"
@@ -43,27 +43,33 @@ spec:
       claims:
         extra:
           - azp_name
-      replyURLs:
-        {{#each ingresses as |url|}}
-           - {{url}}/oauth2/callback
-        {{/each}}
+
   accessPolicy:
     outbound:
       rules:
-        - application: {{brevbaker-app}}
+        {{#each outboundRules as |rule|}}
+           - application: {{rule.application}}
+             namespace: {{rule.namespace}}
+             cluster: {{rule.cluster}}
+        {{/each}}
+      external:
+        {{#each externalHosts as |host|}}
+          - host: {{host}}
+        {{/each}}
+
     inbound:
       rules:
-        {{#each preAuthorized as |app|}}
-          - application: {{app.name}}
-            namespace: {{app.namespace}}
-            cluster: {{app.cluster}}
+        {{#each inboundRules as |rule|}}
+          - application: {{rule.application}}
+            namespace: {{rule.namespace}}
+            cluster: {{rule.cluster}}
         {{/each}}
   ingresses:
     {{#each ingresses as |url|}}
-      - {{url}}
+       - {{url}}
     {{/each}}
   env:
     {{#each env as |e|}}
-       - name: {{e.name }}
-         value: {{{e.value }}}
+       - name: {{e.name}}
+         value: {{{e.value}}}
     {{/each}}
