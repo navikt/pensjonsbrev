@@ -25,11 +25,11 @@ outboundRules:
     cluster: dev-gcp
 
 externalHosts:
-  - host: pdl-api.dev-fss-pub.nais.io
-  - host: pensjon-pen-q2.dev-fss-pub.nais.io
-  - host: saf.intern.dev.nav.no
-  - host: kodeverk.dev-fss-pub.nais.io
-  - host: pensjon-persondata-q2.intern.dev.nav.no
+  - pdl-api.dev-fss-pub.nais.io
+  - pensjon-pen-q2.dev-fss-pub.nais.io
+  - saf.intern.dev.nav.no
+  - kodeverk.dev-fss-pub.nais.io
+  - pensjon-persondata-q2.intern.dev.nav.no
 
 env:
   - name: CORS_ALLOW_HOST
