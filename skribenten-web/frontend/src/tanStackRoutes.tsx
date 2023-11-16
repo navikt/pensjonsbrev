@@ -1,7 +1,9 @@
 import { css } from "@emotion/react";
-import { Outlet, RootRoute, Route, Router } from "@tanstack/react-router";
+import { QueryClient } from "@tanstack/react-query";
+import { Outlet, rootRouteWithContext, Route, Router } from "@tanstack/react-router";
 import React from "react";
 
+import { getSak } from "./api/skribenten-api-endpoints";
 import { App } from "./App";
 import { AppHeader } from "./components/AppHeader";
 import { SakPage } from "./pages/Brevvelger/SakPage";
@@ -19,7 +21,11 @@ const TanStackRouterDevtools =
         })),
       );
 
-const rootRoute = new RootRoute({
+export const queryClient = new QueryClient();
+
+const rootRoute = rootRouteWithContext<{
+  queryClient: typeof queryClient;
+}>()({
   component: Root,
 });
 
@@ -57,9 +63,20 @@ const velgSaksnummerRoute = new Route({
   component: VelgSakPage,
 });
 
-const sakRoute = new Route({
+export const sakRoute = new Route({
   getParentRoute: () => rootRoute,
   path: "saksnummer/$sakId",
+  beforeLoad: ({ params: { sakId } }) => {
+    const queryOptions = {
+      queryKey: getSak.queryKey(sakId),
+      queryFn: () => getSak.queryFn(sakId),
+    };
+
+    return { queryOptions };
+  },
+  load: async ({ context: { queryClient, queryOptions } }) => {
+    await queryClient.ensureQueryData(queryOptions);
+  },
   component: SakPage,
 });
 
@@ -71,7 +88,7 @@ const notFoundRoute = new Route({
 
 const routeTree = rootRoute.addChildren([indexRoute, velgSaksnummerRoute, sakRoute, notFoundRoute]);
 
-export const router = new Router({ routeTree });
+export const router = new Router({ routeTree, defaultPreload: "intent", context: { queryClient } });
 
 declare module "@tanstack/react-router" {
   interface Register {
