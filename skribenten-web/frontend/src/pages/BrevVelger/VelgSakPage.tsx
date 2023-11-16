@@ -1,10 +1,33 @@
 import { css } from "@emotion/react";
 import { Button, TextField } from "@navikt/ds-react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useNavigate } from "@tanstack/react-router";
+import type { AxiosError } from "axios";
 import React from "react";
 import { useForm } from "react-hook-form";
 
+import { getSak } from "../../api/skribenten-api-endpoints";
+import type { SakDto } from "../../types/apiTypes";
+
 export function VelgSakPage() {
-  const { handleSubmit, register } = useForm();
+  const queryClient = useQueryClient();
+  const navigate = useNavigate();
+  const { handleSubmit, register } = useForm({
+    defaultValues: {
+      saksnummer: "22972355",
+    },
+  });
+
+  const hentSakMutation = useMutation<SakDto, AxiosError<unknown>, { saksnummer: string }>({
+    mutationFn: (values) => getSak.queryFn(values.saksnummer),
+    onSuccess: (sak, values) => {
+      queryClient.setQueryData(getSak.queryKey(values.saksnummer), sak);
+      navigate({
+        to: "/saksnummer/$sakId",
+        params: { sakId: sak.sakId.toString() },
+      });
+    },
+  });
 
   return (
     <form
@@ -16,10 +39,17 @@ export function VelgSakPage() {
         margin-top: var(--a-spacing-8);
         width: 290px;
       `}
-      onSubmit={handleSubmit((values) => console.log(values))}
+      onSubmit={handleSubmit((values) => hentSakMutation.mutate(values))}
     >
-      <TextField {...register("saksnummer")} autoComplete="off" label="Saksnummer" />
-      <Button type="submit">Åpne brevvelger</Button>
+      <TextField
+        {...register("saksnummer")}
+        autoComplete="off"
+        error={hentSakMutation.isError ? "Finner ikke saksnummer" : undefined}
+        label="Saksnummer"
+      />
+      <Button loading={hentSakMutation.isPending} type="submit">
+        Åpne brevvelger
+      </Button>
     </form>
   );
 }

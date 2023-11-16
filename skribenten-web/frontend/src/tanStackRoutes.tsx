@@ -50,10 +50,16 @@ const indexRoute = new Route({
   component: App,
 });
 
-const saksnummerRoute = new Route({
+const velgSaksnummerRoute = new Route({
   getParentRoute: () => rootRoute,
   path: "saksnummer",
   component: VelgSakPage,
+});
+
+const sakRoute = new Route({
+  getParentRoute: () => rootRoute,
+  path: "saksnummer/$sakId",
+  component: () => "hei",
 });
 
 const notFoundRoute = new Route({
@@ -62,7 +68,7 @@ const notFoundRoute = new Route({
   component: () => "Siden finnes ikke",
 });
 
-const routeTree = rootRoute.addChildren([indexRoute, saksnummerRoute, notFoundRoute]);
+const routeTree = rootRoute.addChildren([indexRoute, velgSaksnummerRoute, sakRoute, notFoundRoute]);
 
 export const router = new Router({ routeTree });
 

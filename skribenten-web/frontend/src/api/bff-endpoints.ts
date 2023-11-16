@@ -4,10 +4,7 @@
 
 import axios from "axios";
 
-export const CACHE_FOR = {
-  aDay: 1000 * 60 * 60 * 24,
-  anHour: 1000 * 60 * 60,
-};
+import { CACHE_FOR } from "./cache";
 
 const BFF_BASE_URL = "/bff";
 
