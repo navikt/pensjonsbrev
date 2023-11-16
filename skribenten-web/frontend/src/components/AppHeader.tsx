@@ -15,7 +15,7 @@ export function AppHeader() {
           `}
           to="/"
         >
-          Brevløsning
+          Skribenten
         </RouterLink>
       </InternalHeader.Title>
       <nav css={{ marginLeft: "auto", display: "flex" }}>
