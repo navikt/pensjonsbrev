@@ -3,6 +3,7 @@ import { Bleed, CopyButton } from "@navikt/ds-react";
 import { useQuery } from "@tanstack/react-query";
 import { useRouteContext } from "@tanstack/react-router";
 
+import { getNavn } from "../../api/skribenten-api-endpoints";
 import { sakRoute } from "../../tanStackRoutes";
 import type { SakDto } from "../../types/apiTypes";
 
@@ -18,6 +19,12 @@ export function SakPage() {
 }
 
 function SakInfoBreadcrumbs({ sak }: { sak?: SakDto }) {
+  const { data: navn } = useQuery({
+    queryKey: getNavn.queryKey(sak?.foedselsnr as string),
+    queryFn: () => getNavn.queryFn(sak?.foedselsnr as string),
+    enabled: !!sak,
+  });
+
   if (!sak) {
     return <></>;
   }
@@ -50,7 +57,7 @@ function SakInfoBreadcrumbs({ sak }: { sak?: SakDto }) {
         <span>
           {sak.foedselsnr} <CopyButton copyText={sak.foedselsnr} size="small" />
         </span>
-        <span>TODO NAVN</span>
+        <span>{navn ?? ""}</span>
         <span>Født: {sak.foedselsdato}</span>
         <span>Sakstype: {sak.sakType}</span>
         <span>

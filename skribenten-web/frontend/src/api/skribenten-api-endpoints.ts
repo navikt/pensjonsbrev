@@ -12,7 +12,17 @@ export const saksnummerKeys = {
   id: (sakId: string) => [...saksnummerKeys.all, sakId] as const,
 };
 
+export const navnKeys = {
+  all: ["NAVN"] as const,
+  id: (fnr: string) => [...navnKeys.all, fnr] as const,
+};
+
 export const getSak = {
   queryKey: saksnummerKeys.id,
   queryFn: async (sakId: string) => (await axios.get<SakDto>(`${SKRIBENTEN_API_BASE_PATH}/pen/sak/${sakId}`)).data,
+};
+
+export const getNavn = {
+  queryKey: navnKeys.id,
+  queryFn: async (fnr: string) => (await axios.get<string>(`${SKRIBENTEN_API_BASE_PATH}/pdl/navn/${fnr}`)).data,
 };
