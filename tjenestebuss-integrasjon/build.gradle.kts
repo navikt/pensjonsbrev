@@ -5,6 +5,7 @@ val kotlinVersion: String by System.getProperties()
 val ktorVersion: String by System.getProperties()
 val logbackVersion: String by project
 val logstashVersion: String by project
+val mockkVersion: String by project
 
 plugins {
 	application
@@ -67,6 +68,10 @@ dependencies {
 	implementation("org.apache.cxf:cxf-rt-ws-policy:$cxfVersion")
 	implementation("org.apache.cxf:cxf-rt-transports-http:$cxfVersion")
 
+	testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlinVersion")
+	testImplementation("io.mockk:mockk:${mockkVersion}")
+	testImplementation("io.ktor:ktor-server-test-host:$ktorVersion")
+
 }
 
 repositories {
@@ -98,9 +103,6 @@ sourceSets {
 }
 
 tasks {
-	withType<Test>{
-		useJUnitPlatform()
-	}
 	compileKotlin {
 		kotlinOptions{
 			jvmTarget = javaTarget
