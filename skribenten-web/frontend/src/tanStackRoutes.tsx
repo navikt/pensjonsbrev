@@ -4,7 +4,8 @@ import React from "react";
 
 import { App } from "./App";
 import { AppHeader } from "./components/AppHeader";
-import { VelgSakPage } from "./pages/BrevVelger/VelgSakPage";
+import { SakPage } from "./pages/Brevvelger/SakPage";
+import { VelgSakPage } from "./pages/Brevvelger/VelgSakPage";
 
 const TanStackRouterDevtools =
   process.env.NODE_ENV === "production"
@@ -59,7 +60,7 @@ const velgSaksnummerRoute = new Route({
 const sakRoute = new Route({
   getParentRoute: () => rootRoute,
   path: "saksnummer/$sakId",
-  component: () => "hei",
+  component: SakPage,
 });
 
 const notFoundRoute = new Route({
