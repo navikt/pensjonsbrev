@@ -52,6 +52,11 @@ spec:
              namespace: {{rule.namespace}}
              cluster: {{rule.cluster}}
         {{/each}}
+      external:
+        {{#each externalHosts as |host|}}
+          - host: {{host}}
+        {{/each}}
+
     inbound:
       rules:
         {{#each inboundRules as |rule|}}
