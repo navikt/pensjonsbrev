@@ -36,7 +36,7 @@ function Root() {
       </React.Suspense>
       <div
         css={css`
-          @media (max-width: calc(var(--largest-width + 150px))) {
+          @media (width <= 1700px) {
             --page-margins: 75px;
           }
         `}
