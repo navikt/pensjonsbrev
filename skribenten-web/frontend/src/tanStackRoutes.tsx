@@ -76,8 +76,10 @@ export const sakRoute = new Route({
 const indexRoute = new Route({
   getParentRoute: () => rootRoute,
   path: "/",
-  beforeLoad: ({ navigate }) => {
-    navigate({ to: velgSaksnummerRoute.id });
+  load: ({ navigate, preload }) => {
+    if (!preload) {
+      navigate({ to: velgSaksnummerRoute.id });
+    }
   },
   component: undefined,
 });
