@@ -2,7 +2,7 @@ import { deleteCachedTokens } from "@navikt/backend-for-frontend-utils";
 import { Express } from "express";
 import { jwtDecode } from "jwt-decode";
 
-import { getTokenFromRequestHeader } from "./tokenValidation";
+import { getTokenFromRequestHeader } from "./tokenValidation.js";
 
 export const internalRoutes = (server: Express) => {
   server.get("/bff/logout", (request, response) => {
