@@ -4,7 +4,6 @@ import { Outlet, rootRouteWithContext, Route, Router } from "@tanstack/react-rou
 import React from "react";
 
 import { getSak } from "./api/skribenten-api-endpoints";
-import { App } from "./App";
 import { AppHeader } from "./components/AppHeader";
 import { SakPage } from "./pages/Brevvelger/SakPage";
 import { VelgSakPage } from "./pages/Brevvelger/VelgSakPage";
@@ -51,12 +50,6 @@ function Root() {
   );
 }
 
-const indexRoute = new Route({
-  getParentRoute: () => rootRoute,
-  path: "/",
-  component: App,
-});
-
 const velgSaksnummerRoute = new Route({
   getParentRoute: () => rootRoute,
   path: "saksnummer",
@@ -78,6 +71,15 @@ export const sakRoute = new Route({
     await queryClient.ensureQueryData(queryOptions);
   },
   component: SakPage,
+});
+
+const indexRoute = new Route({
+  getParentRoute: () => rootRoute,
+  path: "/",
+  beforeLoad: ({ navigate }) => {
+    navigate({ to: velgSaksnummerRoute.id });
+  },
+  component: undefined,
 });
 
 const notFoundRoute = new Route({
