@@ -1,0 +1,16 @@
+body {
+    background: var(--a-gray-100);
+}
+
+:root {
+    --page-margins: auto;
+    --largest-width: 1650px;
+    --banner-height: 90px;
+}
+
+.page-margins {
+    max-width: var(--largest-width);
+    margin: 0 var(--page-margins);
+    display: flex;
+    flex-direction: column;
+}
