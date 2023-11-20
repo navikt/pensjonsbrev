@@ -11,7 +11,6 @@ import no.nav.pensjon.etterlatte.maler.barnepensjon.migrering.EnkeltVedtakOmregn
 import no.nav.pensjon.etterlatte.maler.barnepensjon.migrering.ForhaandsvarselOmregningBP
 import no.nav.pensjon.etterlatte.maler.barnepensjon.ny.BarnepensjonInnvilgelseNy
 import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.OpphoerRevurdering
-import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.SoeskenjusteringRevurdering
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.OMSInnvilgelseAuto
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.OMSInnvilgelseManuell
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.OMSOpphoerManuell
@@ -39,7 +38,6 @@ val prodAutobrevTemplates: Set<EtterlatteTemplate<*>> =
         OMSAvslagBegrunnelse,
         Endring,
         OpphoerRevurdering,
-        SoeskenjusteringRevurdering,
         InnvilgelseFoerstegangsvedtak,
         FoerstegangsvedtakUtfall,
         RevurderingEndring,

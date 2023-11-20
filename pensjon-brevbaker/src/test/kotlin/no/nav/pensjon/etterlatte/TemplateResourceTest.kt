@@ -76,7 +76,6 @@ class TemplateResourceTest {
         }
         val foreloepigIkkeStoettaIJSON = setOf(
             EtterlatteBrevKode.BARNEPENSJON_INNVILGELSE,
-            EtterlatteBrevKode.BARNEPENSJON_REVURDERING_SOESKENJUSTERING,
             EtterlatteBrevKode.OMS_INNVILGELSE_AUTO,
         )
         if (foreloepigIkkeStoettaIJSON.contains(etterlatteBrevKode)) {
