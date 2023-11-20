@@ -8,6 +8,7 @@ import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
+import no.nav.pensjon.etterlatte.maler.fraser.common.Felles
 
 @TemplateModelHelpers
 val klageOgAnke = createAttachment(
@@ -18,40 +19,8 @@ val klageOgAnke = createAttachment(
     ),
     includeSakspart = false,
 ) {
-    title2 {
-        text(
-            Bokmal to "Veiledning fra NAV - forvaltningsloven § 11",
-            Nynorsk to "",
-            English to ""
-        )
-    }
-    paragraph {
-        text(
-            Bokmal to "Vi har plikt til å veilede deg om dine rettigheter og plikter i saken din, både før, " +
-                    "under og etter saksbehandlingen. Dersom du har spørsmål eller er usikker på noe, vil vi gjøre " +
-                    "vårt beste for å hjelpe deg.",
-            Nynorsk to "",
-            English to ""
-        )
-    }
-
-    title2 {
-        text(
-            Bokmal to "Hjelp fra andre - forvaltningsloven § 12",
-            Nynorsk to "",
-            English to ""
-        )
-    }
-    paragraph {
-        text(
-            Bokmal to "Du kan be om hjelp fra andre under hele saksbehandlingen, for eksempel av advokat, " +
-                    "rettshjelper, en organisasjon du er medlem av eller en annen myndig person. Hvis den som " +
-                    "hjelper deg ikke er advokat, må du gi denne personen en skriftlig fullmakt. Bruk gjerne " +
-                    "skjemaet du finner på ${Constants.FULLMAKT_URL}.",
-            Nynorsk to "",
-            English to ""
-        )
-    }
+    includePhrase(Felles.VeiledningFraNavForvaltningsloven11)
+    includePhrase(Felles.HjelpFraAndreForvaltningsloven12)
 
     title2 {
         text(

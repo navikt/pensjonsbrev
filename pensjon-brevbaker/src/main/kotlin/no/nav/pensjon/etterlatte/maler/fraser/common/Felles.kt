@@ -10,6 +10,31 @@ import no.nav.pensjon.brev.template.dsl.text
 
 object Felles {
 
+    object VeiledningFraNavForvaltningsloven11 : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+            title2 {
+                text(
+                    Bokmal to "Veiledning fra NAV - forvaltningsloven § 11",
+                    Nynorsk to "Rettleiing frå NAV – forvaltingslova § 11",
+                    English to "Guidance from NAV – Section 11 of the Public Administration Act",
+                )
+            }
+            paragraph {
+                text(
+                    Bokmal to "Vi har plikt til å veilede deg om dine rettigheter og plikter i saken din, både før, " +
+                            "under og etter saksbehandlingen. Dersom du har spørsmål eller er usikker på noe, vil vi gjøre " +
+                            "vårt beste for å hjelpe deg.",
+                    Nynorsk to "Vi pliktar å rettleie deg om rettane og pliktene du har i saka, både før, " +
+                            "under og etter saksbehandlinga. Dersom du har spørsmål eller er usikker på noko, " +
+                            "vil vi gjere vårt beste for å hjelpe deg.",
+                    English to "We have a duty to advise you of your rights and obligations in your case – before, " +
+                            "during and after the case has been processed. " +
+                            "If you have any questions or are unsure about anything, we will do our best to help you.",
+                )
+            }
+        }
+    }
+
     object HjelpFraAndreForvaltningsloven12 : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             title2 {
