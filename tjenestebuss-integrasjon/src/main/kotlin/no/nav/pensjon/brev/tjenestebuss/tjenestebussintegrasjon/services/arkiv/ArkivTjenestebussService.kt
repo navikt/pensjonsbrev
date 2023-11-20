@@ -1,9 +1,12 @@
 package no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.arkiv
 
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.maskerFnr
+import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.arkiv.BestillBrevResponseDto.Failure
+import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.arkiv.BestillBrevResponseDto.Failure.FailureType
 import no.nav.virksomhet.tjenester.arkiv.meldinger.v1.BestillBrevRequest
 import no.nav.virksomhet.tjenester.arkiv.meldinger.v1.Sakskontekst
 import no.nav.virksomhet.tjenester.arkiv.v1.*
+import no.nav.virksomhet.tjenester.felles.v1.StelvioFault
 import org.slf4j.LoggerFactory
 import javax.xml.bind.JAXBElement
 import javax.xml.datatype.XMLGregorianCalendar
@@ -40,28 +43,41 @@ class ArkivTjenestebussService(private val arkivClient: Arkiv) {
             return BestillBrevResponseDto.Journalpost(response.journalpostId)
         } catch (ex: BestillBrevOpprettelseJournalpostFeilet) {
             logger.error("En feil oppstod under opprettelse av journalpost: ${maskerFnr(ex.faultInfo.errorMessage)}")
-            return BestillBrevResponseDto.Failure(ex.faultInfo)
+            return Failure(FailureType.OPPRETTE_JOURNALPOST, ex.faultInfo)
         } catch (ex: BestillBrevHenteBrevdataFeilet) {
             logger.error("En feil oppstod under henting av brevdata: ${maskerFnr(ex.faultInfo.errorMessage)}")
-            return BestillBrevResponseDto.Failure(ex.faultInfo)
+            return Failure(FailureType.HENTE_BREVDATA, ex.faultInfo)
         } catch (ex: BestillBrevManglerObligatoriskInput) {
             logger.error("En feil oppstod under opprettelse av brev, mangler obligatoriske felter: ${maskerFnr(ex.faultInfo.errorMessage)}")
-            return BestillBrevResponseDto.Failure(ex.faultInfo)
+            return Failure(FailureType.MANGLER_OBLIGATORISK_INPUT, ex.faultInfo)
         } catch (ex: BestillBrevAdresseIkkeRegistrert) {
             logger.error("En feil oppstod under opprettelse av brev, adresse ikke registrert: ${maskerFnr(ex.faultInfo.errorMessage)}")
-            return BestillBrevResponseDto.Failure(ex.faultInfo)
+            return Failure(FailureType.ADRESSE_MANGLER, ex.faultInfo)
         }
     }
 }
 
 sealed class BestillBrevResponseDto {
     data class Journalpost(val journalpostId: String) : BestillBrevResponseDto()
-    data class Failure(private val fault: no.nav.virksomhet.tjenester.felles.v1.StelvioFault) :
-        BestillBrevResponseDto() {
-        val message: String = fault.errorMessage
-        val source: String = fault.errorSource
-        val type: String = fault.errorType
-        val cause: String = fault.rootCause
+    data class Failure(val failureType: FailureType,
+        val message: String,
+        val source: String,
+        val type: String,
+        val cause: String,
+    ) : BestillBrevResponseDto() {
+        constructor(failureType: FailureType, stelvioFault: StelvioFault): this(
+            failureType,
+            stelvioFault.errorMessage,
+            stelvioFault.errorSource,
+            stelvioFault.errorType,
+            stelvioFault.rootCause,
+        )
+        enum class FailureType {
+            ADRESSE_MANGLER,
+            HENTE_BREVDATA,
+            MANGLER_OBLIGATORISK_INPUT,
+            OPPRETTE_JOURNALPOST,
+        }
     }
 }
 
