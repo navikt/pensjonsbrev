@@ -32,7 +32,7 @@ object AvslagFoerstegangsbehandlingEnkel : EtterlatteTemplate<ManueltBrevDTO>, D
             text(
                 Language.Bokmal to "Vi har avslått søknaden din om barnepensjon",
                 Language.Nynorsk to "Vi har avslått søknaden din om barnepensjon",
-                Language.English to "We have denied your application for a children's pension",
+                Language.English to "We have rejected your application for a children's pension",
             )
         }
         outline {
