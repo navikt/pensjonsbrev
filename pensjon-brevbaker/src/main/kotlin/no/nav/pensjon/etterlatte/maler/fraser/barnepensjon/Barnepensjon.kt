@@ -297,29 +297,6 @@ object Barnepensjon {
         }
     }
 
-    object SkattetrekkPaaBarnepensjonRevurdering : OutlinePhrase<LangBokmal>() {
-        override fun OutlineOnlyScope<LangBokmal, Unit>.template() {
-            title2 {
-                text(
-                    Bokmal to "Skattetrekk på barnepensjon",
-                )
-            }
-            paragraph {
-                text(
-                    Bokmal to "Barnepensjon er skattepliktig. " +
-                            "Du kan lese mer om frivillig skattetrekk på ${Constants.SKATTETREKK_PENGESTOETTE_URL}."
-                )
-            }
-            paragraph {
-                text(
-                    Bokmal to "Ved etterbetaling som gjelder tidligere år trekker NAV skatt etter "
-                            + "Skatteetatens standardsatser. Du kan lese mer om satsene "
-                            + "på ${Constants.SKATTETREKK_ETTERBETALING_URL}."
-                )
-            }
-        }
-    }
-
     object SkattetrekkPaaBarnepensjon : OutlinePhrase<LangBokmal>() {
         override fun OutlineOnlyScope<LangBokmal, Unit>.template() {
             title2 {
@@ -402,47 +379,6 @@ object Barnepensjon {
                             "rask og god hjelp.",
                     Nynorsk to "TODO nynorsk",
                     English to "TODO engelsk"
-                )
-            }
-        }
-    }
-
-    object Feilutbetaling : OutlinePhrase<LangBokmalNynorskEnglish>() {
-        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-            title2 {
-                text(
-                    Bokmal to "Feilutbetaling",
-                    Nynorsk to "",
-                    English to ""
-                )
-            }
-            paragraph {
-                text(
-                    Bokmal to "Siden pensjonen din er opphørt tilbake i tid, medfører dette at du har fått utbetalt for mye i pensjon i denne perioden. Du vil få eget forhåndsvarsel om eventuell tilbakekreving av det feilutbetalte beløpet.",
-                    Nynorsk to "",
-                    English to ""
-                )
-            }
-        }
-    }
-
-    data class BarnepensjonenDinErDerforOpphoert(val virkningsdato: Expression<LocalDate>) : OutlinePhrase<LangBokmalNynorskEnglish>() {
-        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-            paragraph {
-                textExpr(
-                    Bokmal to "Barnepensjonen din er derfor opphørt fra ".expr() + virkningsdato.format(),
-                    Nynorsk to "".expr(),
-                    English to "".expr()
-                )
-            }
-        }
-    }
-
-    object TilOgMedKalendermaaneden18Aar : OutlinePhrase<LangBokmal>() {
-        override fun OutlineOnlyScope<LangBokmal, Unit>.template() {
-            paragraph {
-                text(
-                    Bokmal to "Barnepensjonen din utbetales til og med den kalendermåneden du fyller 18 år.",
                 )
             }
         }
