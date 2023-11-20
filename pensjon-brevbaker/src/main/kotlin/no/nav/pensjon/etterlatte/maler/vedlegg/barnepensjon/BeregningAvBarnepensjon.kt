@@ -95,7 +95,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, B
                         "Grunnbeløpet blir regulert 1. mai hvert år. Økningen etterbetales vanligvis juni hvert år.",
                 Nynorsk to "Grunnbeløpet i folketrygda er per i dag ".expr() + grunnbeloep.format() + " kroner. " +
                         "Grunnbeløpet blir regulert 1. mai kvart år. Auken blir vanlegvis etterbetalt i juni kvart år.",
-                English to "The national insurance basic amount currently amounts to NOK ".expr() + grunnbeloep.format() + "kroner. " +
+                English to "The national insurance basic amount currently amounts to NOK ".expr() + grunnbeloep.format() + " kroner. " +
                         "The basic amount is adjusted on 1 May each year. You will receive payment of any increase in June of each year.",
             )
         }
