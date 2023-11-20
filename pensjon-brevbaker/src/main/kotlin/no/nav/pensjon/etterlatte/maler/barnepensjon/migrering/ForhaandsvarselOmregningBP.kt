@@ -44,7 +44,7 @@ object ForhaandsvarselOmregningBP : EtterlatteTemplate<BarnepensjonOmregnetNyttR
             }
             paragraph {
                 text(
-                    Language.Bokmal to "Du kan se nytt månedsbeløp i vedlegget “Utkast til vedtak- endring av barnepensjon”.",
+                    Language.Bokmal to "Du kan se nytt månedsbeløp i vedlegget “Utkast til vedtak – endring av barnepensjon”.",
                     Language.Nynorsk to "Du kan sjå det nye månadsbeløpet i vedlegget «Utkast til vedtak – endring av barnepensjon».",
                     Language.English to "The new monthly amount will appear in the attachment, Draft decision – adjustment of children's pension."
                 )

@@ -1,5 +1,6 @@
 package no.nav.pensjon.etterlatte.maler.barnepensjon.migrering
 
+import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.LetterTemplate
 import no.nav.pensjon.brev.template.dsl.createTemplate
@@ -59,7 +60,7 @@ object EnkeltVedtakOmregningNyttRegelverk : EtterlatteTemplate<BarnepensjonOmreg
             }
             paragraph {
                 text(
-                    Language.Bokmal to "Vedtaket er gjort etter lov 18. desember 2020 nr. 139 om endringer i folketrygdloven del II nr. 4, jf. Folketrygdloven § 18-4 og § 18-5.",
+                    Language.Bokmal to "Vedtaket er gjort etter lov 18. desember 2020 nr. 139 om endringer i folketrygdloven del II nr. 4, jf. folketrygdloven § 18-4 og § 18-5.",
                     Language.Nynorsk to "Vedtaket er gjort etter lov 18. desember 2020 nr. 139 om endringar i folketrygdlova del II nr. 4, jf. folketrygdlova § 18-4 og § 18-5.",
                     Language.English to "The decision was made pursuant to Act #139 of 18 December 2020 concerning Amendments to the National Insurance Act, Part II #4; cf. sections 18-4 and 18-5 of the National Insurance Act."
                 )
