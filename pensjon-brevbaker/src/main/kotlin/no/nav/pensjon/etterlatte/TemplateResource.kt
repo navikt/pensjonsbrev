@@ -4,6 +4,7 @@ import no.nav.pensjon.brev.template.LetterTemplate
 import no.nav.pensjon.etterlatte.maler.TomMal
 import no.nav.pensjon.etterlatte.maler.barnepensjon.BarnepensjonInnvilgelse
 import no.nav.pensjon.etterlatte.maler.barnepensjon.avslag.AvslagFoerstegangsbehandling
+import no.nav.pensjon.etterlatte.maler.barnepensjon.avslag.AvslagFoerstegangsbehandlingEnkel
 import no.nav.pensjon.etterlatte.maler.barnepensjon.avslag.IkkeSomFoelgeAvYrkesskadeYrkessykdom
 import no.nav.pensjon.etterlatte.maler.barnepensjon.endring.Endring
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.ny.BarnepensjonInnvilgelseEnkel
@@ -30,6 +31,7 @@ import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingInnhold
 val prodAutobrevTemplates: Set<EtterlatteTemplate<*>> =
     setOf(
         AvslagFoerstegangsbehandling,
+        AvslagFoerstegangsbehandlingEnkel,
         IkkeSomFoelgeAvYrkesskadeYrkessykdom,
         BarnepensjonInnvilgelse,
         BarnepensjonInnvilgelseEnkel,

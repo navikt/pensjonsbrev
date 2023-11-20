@@ -5,6 +5,7 @@ import no.nav.pensjon.brevbaker.api.model.LanguageCode
 
 enum class EtterlatteBrevKode {
     BARNEPENSJON_AVSLAG,
+    BARNEPENSJON_AVSLAG_ENKEL,
     BARNEPENSJON_AVSLAG_IKKEYRKESSKADE,
     BARNEPENSJON_INNVILGELSE,
     BARNEPENSJON_INNVILGELSE_ENKEL,
