@@ -1,19 +1,20 @@
 package no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon
 
 import com.typesafe.config.Config
+import io.ktor.http.*
 import io.ktor.serialization.jackson.*
 import io.ktor.server.application.*
 import io.ktor.server.plugins.callid.*
 import io.ktor.server.plugins.callloging.*
 import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.request.*
+import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.ArkivTjenestebussService
-import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.STSSercuritySOAPHandler
-import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.STSService
-import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.SamhandlerTjenestebussService
-import java.util.*
-import javax.xml.datatype.DatatypeFactory
+import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.*
+import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.arkiv.ArkivClient
+import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.arkiv.ArkivTjenestebussService
+import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.arkiv.BestillBrevRequestDto
+import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.arkiv.BestillBrevResponseDto
 
 fun Application.tjenestebussIntegrationApi(config: Config) {
     install(CallLogging) {
@@ -26,7 +27,7 @@ fun Application.tjenestebussIntegrationApi(config: Config) {
     }
 
     install(CallId) {
-        retrieveFromHeader("Nav-Call-Id")
+        retrieveFromHeader("X-Request-ID")
         generate()
         verify { it.isNotEmpty() }
     }
@@ -41,7 +42,10 @@ fun Application.tjenestebussIntegrationApi(config: Config) {
         val stsSercuritySOAPHandler = STSSercuritySOAPHandler(stsService)
         val samhandlerTjenestebussService =
             SamhandlerTjenestebussService(config.getConfig("services.tjenestebuss"), stsSercuritySOAPHandler)
-        val arkivTjenestebussService = ArkivTjenestebussService(config.getConfig("services.tjenestebuss"), stsSercuritySOAPHandler)
+
+        val arkivClient = ArkivClient(config.getConfig("services.tjenestebuss"), stsSercuritySOAPHandler).arkivClient()
+        val arkivTjenestebussService = ArkivTjenestebussService(arkivClient)
+
         get("/testHentSamhandler") {
             try {
                 val samhandler = samhandlerTjenestebussService.hentSamhandler()
@@ -50,17 +54,13 @@ fun Application.tjenestebussIntegrationApi(config: Config) {
                 println(e)
             }
         }
-        get("/testBestillbrev") {
-            val gc = GregorianCalendar()
-            gc.clear()
-            gc.timeInMillis = 1699538037186L
-
-            val xgc = DatatypeFactory.newInstance().newXMLGregorianCalendar(gc)
-            try {
-                val brev = arkivTjenestebussService.bestillBrev(ArkivTjenestebussService.BestillBrevDto(xgc))
-                println(brev!!.journalpostId)
-            } catch (e: Exception) {
-                println(e)
+        post("/bestillbrev") {
+            val requestDto = call.receive<BestillBrevRequestDto>()
+                val arkivResponse = arkivTjenestebussService.bestillBrev(requestDto)
+            if(arkivResponse is BestillBrevResponseDto.Journalpost)
+                call.respond(HttpStatusCode.OK, arkivResponse)
+            else {
+                call.respond(HttpStatusCode.InternalServerError, arkivResponse)
             }
         }
     }
