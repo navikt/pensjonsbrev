@@ -9,7 +9,7 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
-
+import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
 
 
 @TemplateModelHelpers
@@ -142,9 +142,9 @@ object ForhaandsvarselOmregningBP : EtterlatteTemplate<BarnepensjonOmregnetNyttR
             }
             paragraph {
                 text(
-                    Language.Bokmal to "Du finner mer informasjon på nav.no/barnepensjon. Hvis du ikke finner svar på spørsmålet ditt, kan du ringe oss på telefon 55 55 33 34 hverdager 9-15.",
+                    Language.Bokmal to "Du finner mer informasjon på ${Constants.BARNEPENSJON_URL}. Hvis du ikke finner svar på spørsmålet ditt, kan du ringe oss på telefon ${Constants.KONTAKTTELEFON_PENSJON} hverdager 9-15.",
                     Language.Nynorsk to "",
-                    Language.English to "For more information, visit us online: nav.no/barnepensjon. If you cannot find the answer to your question, you can call us by phone (55 55 33 34) weekdays 9-15."
+                    Language.English to "For more information, visit us online: ${Constants.Engelsk.BARNEPENSJON_URL}. If you cannot find the answer to your question, you can call us by phone (${Constants.KONTAKTTELEFON_PENSJON}) weekdays 9-15."
                 )
             }
 

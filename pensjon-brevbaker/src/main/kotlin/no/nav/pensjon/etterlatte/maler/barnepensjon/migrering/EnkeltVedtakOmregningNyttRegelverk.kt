@@ -17,6 +17,7 @@ import no.nav.pensjon.etterlatte.maler.barnepensjon.migrering.BarnepensjonOmregn
 import no.nav.pensjon.etterlatte.maler.barnepensjon.migrering.BarnepensjonOmregnetNyttRegelverkDTOSelectors.grunnbeloep
 import no.nav.pensjon.etterlatte.maler.barnepensjon.migrering.BarnepensjonOmregnetNyttRegelverkDTOSelectors.utbetaltEtterReform
 import no.nav.pensjon.etterlatte.maler.barnepensjon.migrering.BarnepensjonOmregnetNyttRegelverkDTOSelectors.utbetaltFoerReform
+import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
 import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.dineRettigheterOgPlikter
 import no.nav.pensjon.etterlatte.maler.vedlegg.informasjonTilDegSomHandlerPaaVegneAvBarnet
 
@@ -125,9 +126,9 @@ object EnkeltVedtakOmregningNyttRegelverk : EtterlatteTemplate<BarnepensjonOmreg
             }
             paragraph {
                 text(
-                    Language.Bokmal to "Barnepensjon er skattepliktig, men vi trekker ikke skatt uten at du gir beskjed om det. Du kan lese mer om skatt på barnepensjon på nav.no/skatt-pengestotte. Her finner du også informasjon om frivillig skattetrekk og hvordan du får registrert dette.",
+                    Language.Bokmal to "Barnepensjon er skattepliktig, men vi trekker ikke skatt uten at du gir beskjed om det. Du kan lese mer om skatt på barnepensjon på ${Constants.SKATTETREKK_PENGESTOETTE_URL}. Her finner du også informasjon om frivillig skattetrekk og hvordan du får registrert dette.",
                     Language.Nynorsk to "",
-                    Language.English to "Children's pensions are taxable, but we do not deduct tax without being notified. You can read more about the taxation of children's pensions online: nav.no/skatt-pengestotte. Here you will also find information about voluntary tax withholding and how to register this."
+                    Language.English to "Children's pensions are taxable, but we do not deduct tax without being notified. You can read more about the taxation of children's pensions online: ${Constants.SKATTETREKK_PENGESTOETTE_URL}. Here you will also find information about voluntary tax withholding and how to register this."
                 )
             }
 
@@ -140,9 +141,9 @@ object EnkeltVedtakOmregningNyttRegelverk : EtterlatteTemplate<BarnepensjonOmreg
             }
             paragraph {
                 text(
-                    Language.Bokmal to "Hvis du mener vedtaket er feil, kan du klage innen seks uker fra 1. januar 2024. Klagen skal være skriftlig. Du finner skjema og informasjon på nav.no/klage.",
+                    Language.Bokmal to "Hvis du mener vedtaket er feil, kan du klage innen seks uker fra 1. januar 2024. Klagen skal være skriftlig. Du finner skjema og informasjon på ${Constants.KLAGE_URL}.",
                     Language.Nynorsk to "",
-                    Language.English to "If you believe the decision is incorrect, you can appeal within six weeks after 1 January 2024. The appeal must be in writing. You can find the form and information online: nav.no/klage."
+                    Language.English to "If you believe the decision is incorrect, you can appeal within six weeks after 1 January 2024. The appeal must be in writing. You can find the form and information online: ${Constants.Engelsk.KLAGE_URL}."
                 )
             }
 
@@ -170,9 +171,9 @@ object EnkeltVedtakOmregningNyttRegelverk : EtterlatteTemplate<BarnepensjonOmreg
             }
             paragraph {
                 text(
-                    Language.Bokmal to "Du finner mer informasjon på nav.no/barnepensjon. Hvis du ikke finner svar på spørsmålet ditt, kan du ringe oss på telefon 55 55 33 34 hverdager 9-15. Om du oppgir fødselsnummer til barnet, kan vi lettere gi deg rask og god hjelp.",
+                    Language.Bokmal to "Du finner mer informasjon på ${Constants.BARNEPENSJON_URL}. Hvis du ikke finner svar på spørsmålet ditt, kan du ringe oss på telefon ${Constants.KONTAKTTELEFON_PENSJON} hverdager 9-15. Om du oppgir fødselsnummer til barnet, kan vi lettere gi deg rask og god hjelp.",
                     Language.Nynorsk to "",
-                    Language.English to "For more information, visit us online: nav.no/barnepensjon. If you cannot find the answer to your question, you can call us by phone (55 55 33 34) weekdays 9-15. If you provide your child's national identity number, we can more easily provide you with quick and good help."
+                    Language.English to "For more information, visit us online: ${Constants.Engelsk.BARNEPENSJON_URL}. If you cannot find the answer to your question, you can call us by phone (${Constants.KONTAKTTELEFON_PENSJON}) weekdays 9-15. If you provide your child's national identity number, we can more easily provide you with quick and good help."
                 )
             }
         }
