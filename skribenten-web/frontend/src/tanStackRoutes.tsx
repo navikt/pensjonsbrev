@@ -77,7 +77,17 @@ export const sakRoute = new Route({
 export const brevvelgerRoute = new Route({
   getParentRoute: () => sakRoute,
   path: "brevvelger",
-  load: async ({ context: { queryClient, getSakQueryOptions } }) => {
+  validateSearch: (search): { fane: BrevvelgerTabOptions } => ({
+    fane:
+      search.fane === BrevvelgerTabOptions.E_BLANKETTER
+        ? BrevvelgerTabOptions.E_BLANKETTER
+        : BrevvelgerTabOptions.BREVMALER,
+  }),
+  beforeLoad: ({ search }) => {
+    search.fane;
+  },
+  load: async ({ context: { queryClient, getSakQueryOptions }, search }) => {
+    search.fane;
     const { sakType } = await queryClient.ensureQueryData(getSakQueryOptions);
     await queryClient.ensureQueryData(getSakQueryOptions);
 
@@ -88,12 +98,6 @@ export const brevvelgerRoute = new Route({
 
     await queryClient.ensureQueryData(getLetterTemplateQuery);
   },
-  validateSearch: (search): { fane: BrevvelgerTabOptions } => ({
-    fane:
-      search.fane === BrevvelgerTabOptions.E_BLANKETTER
-        ? BrevvelgerTabOptions.E_BLANKETTER
-        : BrevvelgerTabOptions.BREVMALER,
-  }),
   component: BrevvelgerPage,
 });
 
