@@ -83,13 +83,8 @@ export const brevvelgerRoute = new Route({
         ? BrevvelgerTabOptions.E_BLANKETTER
         : BrevvelgerTabOptions.BREVMALER,
   }),
-  beforeLoad: ({ search }) => {
-    search.fane;
-  },
-  load: async ({ context: { queryClient, getSakQueryOptions }, search }) => {
-    search.fane;
+  load: async ({ context: { queryClient, getSakQueryOptions } }) => {
     const { sakType } = await queryClient.ensureQueryData(getSakQueryOptions);
-    await queryClient.ensureQueryData(getSakQueryOptions);
 
     const getLetterTemplateQuery = {
       queryKey: getLetterTemplate.queryKey(sakType),
