@@ -93,18 +93,20 @@ fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config
 
                 //TODO better error handling.
                 // TODO access controls for e-blanketter
-                penService.bestillExtreamBrev(call, request, name, onPremisesSamAccountName).map { journalpostId ->
-                    val error = safService.waitForJournalpostStatusUnderArbeid(call, journalpostId)
-                    if (error != null) {
-                        if (error.type == SafService.JournalpostLoadingError.ErrorType.TIMEOUT) {
-                            call.respond(HttpStatusCode.RequestTimeout, error.error)
-                        } else {
-                            call.respondText(text = error.error, status = HttpStatusCode.InternalServerError)
-                        }
-                    } else {
-                        respondWithResult(penService.redigerExtreamBrev(call, journalpostId))
-                    }
-                }
+                TODO("bestill extream brev via tjenestebuss-integrasjon")
+                //penService.bestillExtreamBrev(call, request, name, onPremisesSamAccountName).map { journalpostId ->
+                //    val error = safService.waitForJournalpostStatusUnderArbeid(call, journalpostId)
+                //    if (error != null) {
+                //        if (error.type == SafService.JournalpostLoadingError.ErrorType.TIMEOUT) {
+                //            call.respond(HttpStatusCode.RequestTimeout, error.error)
+                //        } else {
+                //            call.respondText(text = error.error, status = HttpStatusCode.InternalServerError)
+                //        }
+                //    } else {
+                //        TODO("bestill extream brev via tjenestebuss-integrasjon")
+                //        //respondWithResult(penService.redigerExtreamBrev(call, journalpostId))
+                //    }
+                //}
             }
 
             post("/pen/doksys") {
@@ -118,21 +120,20 @@ fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config
                             return@post
                         }
                     }
-                respondWithResult(penService.bestillDoksysBrev(call, request, name, onPremisesSamAccountName),
-                    onError = {
 
-                    })
-                when (val response = penService.bestillDoksysBrev(call, request, name, onPremisesSamAccountName)) {
-                    is ServiceResult.Ok -> {
-                        val journalpostId = response.result
-                        respondWithResult(penService.redigerDoksysBrev(call, journalpostId))
-                    }
+                respondWithResult(penService.bestillDoksysBrev(call, request, name, onPremisesSamAccountName))
 
-                    is ServiceResult.Error, is ServiceResult.AuthorizationError -> {
-                        respondWithResult(response)
-                        return@post
-                    }
-                }
+                // TODO rediger doksys brev via tjenestebuss-integrasjon
+                //when (val response = penService.bestillDoksysBrev(call, request, name, onPremisesSamAccountName)) {
+                //    is ServiceResult.Ok -> {
+                //        val journalpostId = response.result
+                //        //respondWithResult(penService.redigerDoksysBrev(call, journalpostId))
+                //    }
+                //    is ServiceResult.Error, is ServiceResult.AuthorizationError -> {
+                //        respondWithResult(response)
+                //        return@post
+                //    }
+                //}
             }
 
             //TODO Check access using /tilganger(?). Is there an on behalf of endpoint which checks access?

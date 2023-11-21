@@ -13,9 +13,6 @@ import no.nav.pensjon.brev.skribenten.OrderLetterRequest
 import no.nav.pensjon.brev.skribenten.auth.AzureADOnBehalfOfAuthorizedHttpClient
 import no.nav.pensjon.brev.skribenten.auth.AzureADService
 import java.time.LocalDate
-import java.time.format.DateTimeFormatter
-import java.time.format.FormatStyle
-import java.util.*
 
 class PenService(config: Config, authService: AzureADService) {
     private val penUrl = config.getString("url")
@@ -50,7 +47,7 @@ class PenService(config: Config, authService: AzureADService) {
     data class SakSelection(
         val sakId: Long,
         val foedselsnr: String,
-        val foedselsdato: String,
+        val foedselsdato: LocalDate,
         val sakType: SakType,
     )
 
@@ -63,10 +60,7 @@ class PenService(config: Config, authService: AzureADService) {
             SakSelection(
                 sakId = it.sakId,
                 foedselsnr = it.penPerson.fnr,
-                foedselsdato = it.penPerson.fodselsdato.format(
-                    DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT)
-                        .withLocale(Locale.forLanguageTag("no"))
-                ),
+                foedselsdato = it.penPerson.fodselsdato,
                 sakType = it.sakType,
             )
         }
@@ -102,7 +96,7 @@ class PenService(config: Config, authService: AzureADService) {
                     saksbehanlderNavn = saksbehandlerNavn,
                     saksbehanlderId = saksbehandlerBrukernavn,
                     isSensitivt = false,  // TODO add choice to relevant letters and fill in.
-                    eblankett = if(request.landkode != null && request.mottakerText!= null) {
+                    eblankett = if (request.landkode != null && request.mottakerText != null) {
                         BestillExtreamBrevDto.ElankettBestilling(request.landkode, request.mottakerText)
                     } else null
                 )
@@ -113,38 +107,57 @@ class PenService(config: Config, authService: AzureADService) {
 
     private data class BestillDoksysBrevRequest(
         val sakId: Long,
-        val brevType: String? = null, // Brevkode.
-        val mottaker: String? = null, //annen mottaker enn gjelder
-        val saksbehandlerNavn: String,
-        val saksbehandlerIdent: String,
-        val journalfoerendeEnhet: String,
-        val sensitivePersonopplysninger: Boolean,
-        val sprakKode: SpraakKode,
-        val automatiskBehandlet: Boolean,
-        val gjelder: String,
-        val vedtakId: Long? = null, // TODO Når settes disse?
-    )
+        val brevkode: String,
+        val mottaker: String?,
+        val saksbehandlerNavn: String?,
+        val saksbehandlerIdent: String?,
+        val journalfoerendeEnhet: String?,
+        val sensitivePersonopplysninger: Boolean?,
+        val sprakKode: String?,
+        val gjelder: String?,
+        val vedtakId: Long?,
+        val adresse: Adresse,
+    ) {
+        data class Adresse(
+            val adresselinje1: String?,
+            val adresselinje2: String?,
+            val adresselinje3: String?,
+            val poststed: String?,
+            val postnummer: String?,
+            val land: String,
+            val landkode: String,
+        )
+    }
 
     suspend fun bestillDoksysBrev(
         call: ApplicationCall,
         request: OrderLetterRequest,
         saksbehandlerNavn: String,
-        saksbehandlerBrukernavn: String
+        saksbehandlerBrukernavn: String,
     ): ServiceResult<String, PenError> =
-        client.post(call, "sak/${request.sakId}/brev/doksys") {
+        client.post(call, "brev/skribenten/doksys/sak/${request.sakId}") {
             setBody(
                 BestillDoksysBrevRequest(
                     sakId = request.sakId,
-                    brevType = request.brevkode,
+                    brevkode = request.brevkode,
                     mottaker = null, // TODO
                     saksbehandlerNavn = saksbehandlerNavn,
                     saksbehandlerIdent = saksbehandlerBrukernavn,
                     journalfoerendeEnhet = "4849", // TODO
                     sensitivePersonopplysninger = false, // TODO
-                    sprakKode = request.spraak,
-                    automatiskBehandlet = false, // TODO fra metadata
+                    sprakKode = request.spraak.name,
                     gjelder = request.gjelderPid,
                     vedtakId = 42806043, //TODO fyll inn fra query param / lag select?
+                    adresse = BestillDoksysBrevRequest.Adresse(
+                        //TODO konverter adresse til doksys format ved bestilling av brev
+                        adresselinje1 = "Adresselinje 0",
+                        adresselinje2 = "Adresselinje 1",
+                        adresselinje3 = "Adresselinje 2",
+                        poststed = "Oslo",
+                        postnummer = "0600",
+                        land = "NORGE",
+                        landkode = "NO",
+                    )
                 )
             )
             contentType(ContentType.Application.Json)
@@ -153,12 +166,9 @@ class PenService(config: Config, authService: AzureADService) {
     suspend fun redigerExtreamBrev(call: ApplicationCall, journalpostId: String): ServiceResult<String, String> =
         client.get(call, "brev/rediger/extream/${journalpostId}").toServiceResult()
 
-    suspend fun redigerDoksysBrev(call: ApplicationCall, journalpostId: String): ServiceResult<String, String> =
-        client.post(call, "brev/rediger/doksys/${journalpostId}").toServiceResult<String, String>()
-
     data class Avtaleland(val navn: String, val kode: String)
 
     suspend fun hentAvtaleland(call: ApplicationCall): ServiceResult<List<Avtaleland>, String> =
-        client.get(call, "brev/brevdata/avtaleland").toServiceResult<List<Avtaleland>, String>()
+        client.get(call, "brev/skribenten/avtaleland").toServiceResult<List<Avtaleland>, String>()
 }
 
