@@ -18,3 +18,36 @@ export type SakType =
   | "KRIGSP"
   | "OMSORG"
   | "UFOREP";
+
+export type LetterTemplatesResponse = {
+  kategorier: LetterCategory[];
+  eblanketter: LetterMetadata[];
+};
+
+export type LetterCategory = {
+  name: string;
+  templates: LetterMetadata[];
+};
+
+export type LetterMetadata = {
+  name: string;
+  id: string;
+  brevsystem: BrevSystem;
+  spraak: SpraakKode[];
+  isVedtaksbrev: boolean;
+  isEblankett: boolean;
+};
+
+// TODO: verify typo in EXTERAM?
+export enum BrevSystem {
+  Extream = "EXTERAM",
+  DokSys = "DOKSYS",
+  Brevbaker = "BREVBAKER",
+}
+export enum SpraakKode {
+  Engelsk = "EN",
+  Frank = "FR",
+  Bokmaal = "NB",
+  Nynorsk = "NN",
+  NordSamisk = "SE",
+}

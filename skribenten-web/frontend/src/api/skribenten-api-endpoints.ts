@@ -5,6 +5,7 @@
 import axios from "axios";
 
 import type { SakDto } from "../types/apiTypes";
+import type { LetterTemplatesResponse } from "../types/apiTypes";
 const SKRIBENTEN_API_BASE_PATH = "/skribenten-backend";
 
 /**
@@ -39,5 +40,5 @@ export const getNavn = {
 export const getLetterTemplate = {
   queryKey: letterTemplatesKeys.id,
   queryFn: async (sakType: string) =>
-    (await axios.get<unknown>(`${SKRIBENTEN_API_BASE_PATH}/lettertemplates/${sakType}`)).data,
+    (await axios.get<LetterTemplatesResponse>(`${SKRIBENTEN_API_BASE_PATH}/lettertemplates/${sakType}`)).data,
 };
