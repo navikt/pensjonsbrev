@@ -9,8 +9,8 @@ import { sakRoute } from "../../tanStackRoutes";
 import type { SakDto } from "../../types/apiTypes";
 
 export function SakPage() {
-  const { queryOptions } = useRouteContext({ from: sakRoute.id });
-  const sak = useQuery(queryOptions);
+  const { getSakQueryOptions } = useRouteContext({ from: sakRoute.id });
+  const sak = useQuery(getSakQueryOptions);
 
   return (
     <>

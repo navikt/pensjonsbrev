@@ -7,6 +7,10 @@ import axios from "axios";
 import type { SakDto } from "../types/apiTypes";
 const SKRIBENTEN_API_BASE_PATH = "/skribenten-backend";
 
+/**
+ * Anbefalt lesing for react-query key factory pattern: https://tkdodo.eu/blog/effective-react-query-keys
+ */
+
 export const saksnummerKeys = {
   all: ["SAK"] as const,
   id: (sakId: string) => [...saksnummerKeys.all, sakId] as const,
@@ -17,6 +21,11 @@ export const navnKeys = {
   id: (fnr: string) => [...navnKeys.all, fnr] as const,
 };
 
+export const letterTemplatesKeys = {
+  all: ["LETTER_TEMPLATES"] as const,
+  id: (sakType: string) => [...letterTemplatesKeys.all, sakType] as const,
+};
+
 export const getSak = {
   queryKey: saksnummerKeys.id,
   queryFn: async (sakId: string) => (await axios.get<SakDto>(`${SKRIBENTEN_API_BASE_PATH}/pen/sak/${sakId}`)).data,
@@ -25,4 +34,10 @@ export const getSak = {
 export const getNavn = {
   queryKey: navnKeys.id,
   queryFn: async (fnr: string) => (await axios.get<string>(`${SKRIBENTEN_API_BASE_PATH}/pdl/navn/${fnr}`)).data,
+};
+
+export const getLetterTemplate = {
+  queryKey: letterTemplatesKeys.id,
+  queryFn: async (sakType: string) =>
+    (await axios.get<unknown>(`${SKRIBENTEN_API_BASE_PATH}/lettertemplates/${sakType}`)).data,
 };

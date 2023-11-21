@@ -3,7 +3,7 @@ import { QueryClient } from "@tanstack/react-query";
 import { Outlet, rootRouteWithContext, Route, Router } from "@tanstack/react-router";
 import React from "react";
 
-import { getSak } from "./api/skribenten-api-endpoints";
+import { getLetterTemplate, getSak } from "./api/skribenten-api-endpoints";
 import { AppHeader } from "./components/AppHeader";
 import { BrevvelgerPage, BrevvelgerTabOptions } from "./pages/Brevvelger/BrevvelgerPage";
 import { SakPage } from "./pages/Brevvelger/SakPage";
@@ -61,15 +61,15 @@ export const sakRoute = new Route({
   getParentRoute: () => rootRoute,
   path: "saksnummer/$sakId",
   beforeLoad: ({ params: { sakId } }) => {
-    const queryOptions = {
+    const getSakQueryOptions = {
       queryKey: getSak.queryKey(sakId),
       queryFn: () => getSak.queryFn(sakId),
     };
 
-    return { queryOptions };
+    return { getSakQueryOptions };
   },
-  load: async ({ context: { queryClient, queryOptions } }) => {
-    await queryClient.ensureQueryData(queryOptions);
+  load: async ({ context: { queryClient, getSakQueryOptions } }) => {
+    await queryClient.ensureQueryData(getSakQueryOptions);
   },
   component: SakPage,
 });
@@ -77,6 +77,17 @@ export const sakRoute = new Route({
 export const brevvelgerRoute = new Route({
   getParentRoute: () => sakRoute,
   path: "brevvelger",
+  load: async ({ context: { queryClient, getSakQueryOptions } }) => {
+    const { sakType } = await queryClient.ensureQueryData(getSakQueryOptions);
+    await queryClient.ensureQueryData(getSakQueryOptions);
+
+    const getLetterTemplateQuery = {
+      queryKey: getLetterTemplate.queryKey(sakType),
+      queryFn: () => getLetterTemplate.queryFn(sakType),
+    };
+
+    await queryClient.ensureQueryData(getLetterTemplateQuery);
+  },
   validateSearch: (search): { fane: BrevvelgerTabOptions } => ({
     fane:
       search.fane === BrevvelgerTabOptions.E_BLANKETTER
