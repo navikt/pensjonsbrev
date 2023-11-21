@@ -1,7 +1,8 @@
 import { css } from "@emotion/react";
 import { Bleed, CopyButton } from "@navikt/ds-react";
 import { useQuery } from "@tanstack/react-query";
-import { useRouteContext } from "@tanstack/react-router";
+import { Outlet, useRouteContext } from "@tanstack/react-router";
+import React from "react";
 
 import { getNavn } from "../../api/skribenten-api-endpoints";
 import { sakRoute } from "../../tanStackRoutes";
@@ -14,6 +15,7 @@ export function SakPage() {
   return (
     <>
       <SakInfoBreadcrumbs sak={sak.data} />
+      <Outlet />
     </>
   );
 }

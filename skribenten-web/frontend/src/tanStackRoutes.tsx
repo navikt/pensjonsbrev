@@ -5,6 +5,7 @@ import React from "react";
 
 import { getSak } from "./api/skribenten-api-endpoints";
 import { AppHeader } from "./components/AppHeader";
+import { BrevvelgerPage } from "./pages/Brevvelger/BrevvelgerPage";
 import { SakPage } from "./pages/Brevvelger/SakPage";
 import { VelgSakPage } from "./pages/Brevvelger/VelgSakPage";
 
@@ -73,6 +74,12 @@ export const sakRoute = new Route({
   component: SakPage,
 });
 
+export const brevvelgerRoute = new Route({
+  getParentRoute: () => sakRoute,
+  path: "brevvelger",
+  component: BrevvelgerPage,
+});
+
 const indexRoute = new Route({
   getParentRoute: () => rootRoute,
   path: "/",
@@ -90,7 +97,12 @@ const notFoundRoute = new Route({
   component: () => "Siden finnes ikke",
 });
 
-const routeTree = rootRoute.addChildren([indexRoute, velgSaksnummerRoute, sakRoute, notFoundRoute]);
+const routeTree = rootRoute.addChildren([
+  indexRoute,
+  velgSaksnummerRoute,
+  sakRoute.addChildren([brevvelgerRoute]),
+  notFoundRoute,
+]);
 
 export const router = new Router({ routeTree, defaultPreload: "intent", context: { queryClient } });
 
