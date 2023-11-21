@@ -1,10 +1,10 @@
 import { css } from "@emotion/react";
-import { Heading, Tabs } from "@navikt/ds-react";
+import { Accordion, Button, Heading, Tabs } from "@navikt/ds-react";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate, useRouteContext, useSearch } from "@tanstack/react-router";
 
 import { getLetterTemplate } from "../../api/skribenten-api-endpoints";
-import { brevvelgerRoute, sakRoute } from "../../tanStackRoutes";
+import { brevvelgerRoute } from "../../tanStackRoutes";
 import type { LetterCategory } from "../../types/apiTypes";
 import type { LetterMetadata } from "../../types/apiTypes";
 
@@ -54,17 +54,39 @@ function Brevmaler({ kategorier }: { kategorier: LetterCategory[] }) {
       <Heading level="2" size="xsmall">
         Brevmaler
       </Heading>
-      {kategorier.map((letterCategory) => (
-        <div key={letterCategory.name}>
-          <span>{letterCategory.name}</span>
-          <ul>
-            {letterCategory.templates.map((template) => (
-              <li key={template.id}>{template.name}</li>
-            ))}
-          </ul>
-        </div>
-      ))}
+      <Accordion>
+        {kategorier.map((letterCategory) => (
+          <Accordion.Item key={letterCategory.name}>
+            <Accordion.Header>{letterCategory.name}</Accordion.Header>
+            <Accordion.Content>
+              <div
+                css={css`
+                  display: flex;
+                  flex-direction: column;
+                `}
+              >
+                {letterCategory.templates.map((template) => (
+                  <BrevmalButton key={template.id} letterMetadata={template} />
+                ))}
+              </div>
+            </Accordion.Content>
+          </Accordion.Item>
+        ))}
+      </Accordion>
     </>
+  );
+}
+
+function BrevmalButton({ letterMetadata }: { letterMetadata: LetterMetadata }) {
+  return (
+    <Button
+      css={css`
+        justify-content: flex-start;
+      `}
+      variant="tertiary"
+    >
+      {letterMetadata.name}
+    </Button>
   );
 }
 
