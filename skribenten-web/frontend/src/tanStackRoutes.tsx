@@ -5,7 +5,7 @@ import React from "react";
 
 import { getSak } from "./api/skribenten-api-endpoints";
 import { AppHeader } from "./components/AppHeader";
-import { BrevvelgerPage } from "./pages/Brevvelger/BrevvelgerPage";
+import { BrevvelgerPage, BrevvelgerTabOptions } from "./pages/Brevvelger/BrevvelgerPage";
 import { SakPage } from "./pages/Brevvelger/SakPage";
 import { VelgSakPage } from "./pages/Brevvelger/VelgSakPage";
 
@@ -77,6 +77,12 @@ export const sakRoute = new Route({
 export const brevvelgerRoute = new Route({
   getParentRoute: () => sakRoute,
   path: "brevvelger",
+  validateSearch: (search): { fane: BrevvelgerTabOptions } => ({
+    fane:
+      search.fane === BrevvelgerTabOptions.E_BLANKETTER
+        ? BrevvelgerTabOptions.E_BLANKETTER
+        : BrevvelgerTabOptions.BREVMALER,
+  }),
   component: BrevvelgerPage,
 });
 
