@@ -73,7 +73,7 @@ object ForhaandsvarselOmregningBP : EtterlatteTemplate<BarnepensjonOmregnetNyttR
             }
             paragraph {
                 text(
-                    Language.Bokmal to "Beregningen av barnepensjonen din trer i kraft som et vedtak fra fire uker fra du mottar dette forhåndsvarselet. I løpet av denne perioden kan du gi oss nye opplysninger slik at vi kan rette opp eventuelle feil i beregningen.",
+                    Language.Bokmal to "Beregningen av barnepensjonen din trer i kraft som et vedtak fire uker fra du mottar dette forhåndsvarselet. I løpet av denne perioden kan du gi oss nye opplysninger slik at vi kan rette opp eventuelle feil i beregningen.",
                     Language.Nynorsk to "Utrekninga av barnepensjonen din trer i kraft som vedtak fire veker frå du får dette førehandsvarselet. I løpet av denne perioden kan du gi oss nye opplysningar slik at vi kan rette opp eventuelle feil i utrekninga.",
                     Language.English to "The calculation of your children's pension will take effect four weeks after you receive this advance notice. During this period, feel free to provide us with any new information so we can correct any errors in our calculation."
                 )
