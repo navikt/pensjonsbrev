@@ -1,14 +1,4 @@
-package no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services
-
-import com.typesafe.config.Config
-import no.nav.inf.psak.samhandler.PSAKSamhandler
-import no.nav.lib.pen.psakpselv.asbo.samhandler.ASBOPenFinnSamhandlerRequest
-import no.nav.lib.pen.psakpselv.asbo.samhandler.ASBOPenHentSamhandlerRequest
-import no.nav.lib.pen.psakpselv.asbo.samhandler.ASBOPenSamhandler
-import no.nav.lib.pen.psakpselv.asbo.samhandler.ASBOPenSamhandlerListe
-import org.apache.cxf.jaxws.JaxWsProxyFactoryBean
-import org.apache.cxf.ws.addressing.WSAddressingFeature
-import javax.xml.namespace.QName
+package no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.samhandler.dto
 
 enum class SamhandlerTypeCode {
     AA,    // Ambulansearbeider
@@ -138,38 +128,4 @@ enum class SamhandlerTypeCode {
     X,     // Diverse
     YH,    // Yrkeshygieniker
     YM,    // Yrkesmedisiner
-}
-
-class SamhandlerTjenestebussService(config: Config, securityHandler: STSSercuritySOAPHandler) {
-    private val tjenestebussUrl = config.getString("url")
-    private val jaxWsProxyFactoryBean = JaxWsProxyFactoryBean().apply {
-        val name = "PSAKSamhandlerWSEXP_PSAKSamhandlerHttpService"
-        val portName = "PSAKSamhandlerWSEXP_PSAKSamhandlerHttpPort"
-        val namespace = "http://nav-cons-pen-psak-samhandler/no/nav/inf/Binding"
-        address = "${tjenestebussUrl}nav-cons-pen-psak-samhandlerWeb/sca/PSAKSamhandlerWSEXP"
-        wsdlURL = "wsdl/PSAKSamhandlerWSEXP_PSAKSamhandlerHttp_Service.wsdl"
-        serviceName = QName(namespace, name)
-        endpointName = QName(namespace, portName)
-        serviceClass = PSAKSamhandler::class.java
-        handlers = listOf(securityHandler)
-        features = listOf(WSAddressingFeature())        //TODO add Logging feature?
-    }
-
-    fun hentSamhandler(): ASBOPenSamhandler? {
-        // TODO do we need to create a new bean every time to get refreshed auth?
-        val psakSamhandlerClient: PSAKSamhandler = jaxWsProxyFactoryBean.create() as PSAKSamhandler
-        return psakSamhandlerClient.hentSamhandler(ASBOPenHentSamhandlerRequest().apply {
-            idTSSEkstern = "00998450349"
-            hentDetaljert = true
-        })
-    }
-
-    fun finnSamhandler(): ASBOPenSamhandlerListe? {
-        val psakSamhandlerClient: PSAKSamhandler = jaxWsProxyFactoryBean.create() as PSAKSamhandler
-        return psakSamhandlerClient.finnSamhandler(ASBOPenFinnSamhandlerRequest().apply {
-            navn = "Advokat"
-            samhandlerType = SamhandlerTypeCode.ADVO.name
-        })
-    }
-
 }
