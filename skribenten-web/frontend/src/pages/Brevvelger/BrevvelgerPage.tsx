@@ -1,7 +1,8 @@
 import { css } from "@emotion/react";
-import { Accordion, Button, Heading, Tabs } from "@navikt/ds-react";
+import { Accordion, Button, Heading, Search, Tabs } from "@navikt/ds-react";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate, useRouteContext, useSearch } from "@tanstack/react-router";
+import { useState } from "react";
 
 import { getLetterTemplate } from "../../api/skribenten-api-endpoints";
 import { brevvelgerRoute } from "../../tanStackRoutes";
@@ -49,15 +50,42 @@ export function BrevvelgerPage() {
 }
 
 function Brevmaler({ kategorier }: { kategorier: LetterCategory[] }) {
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const matchingLetterCategories = kategorier.map((category) => ({
+    ...category,
+    templates: category.templates.filter((template) => template.name.toLowerCase().includes(searchTerm.toLowerCase())),
+  }));
+
   return (
-    <>
+    <div
+      css={css`
+        display: flex;
+        flex-direction: column;
+        gap: var(--a-spacing-6);
+        margin: var(--a-spacing-6) 0;
+      `}
+    >
+      <Search
+        label="Filtrer brevmaler"
+        onChange={(value) => setSearchTerm(value)}
+        value={searchTerm}
+        variant="simple"
+      />
       <Heading level="2" size="xsmall">
         Brevmaler
       </Heading>
-      <Accordion>
-        {kategorier.map((letterCategory) => (
-          <Accordion.Item key={letterCategory.name}>
-            <Accordion.Header>{letterCategory.name}</Accordion.Header>
+      {/*<div*/}
+      {/*  css={css`*/}
+      {/*    width: 100%;*/}
+      {/*    height: 1px;*/}
+      {/*    background: var(--a-grayalpha-300);*/}
+      {/*  `}*/}
+      {/*/>*/}
+      <Accordion headingSize="xsmall" size="small">
+        {matchingLetterCategories.map((letterCategory) => (
+          <Accordion.Item key={letterCategory.name} open={searchTerm.length > 0 ? true : undefined}>
+            <Accordion.Header>{CATEGORY_TRANSLATIONS[letterCategory.name] ?? "Annet"}</Accordion.Header>
             <Accordion.Content>
               <div
                 css={css`
@@ -73,7 +101,7 @@ function Brevmaler({ kategorier }: { kategorier: LetterCategory[] }) {
           </Accordion.Item>
         ))}
       </Accordion>
-    </>
+    </div>
   );
 }
 
@@ -99,3 +127,13 @@ function Eblanketter({ eblanketter }: { eblanketter: LetterMetadata[] }) {
     </ul>
   );
 }
+
+const CATEGORY_TRANSLATIONS: Record<string, string> = {
+  BREV_MED_SKJEMA: "Brev med skjema",
+  INFORMASJON: "Informasjon",
+  INNHENTE_OPPL: "Innhente opplysninger",
+  NOTAT: "Notat",
+  OVRIG: "Øvrig",
+  VARSEL: "Varsel",
+  VEDTAK: "Vedtak",
+};
