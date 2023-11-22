@@ -1,7 +1,7 @@
 import { css } from "@emotion/react";
 import { Accordion, Button, Heading, Search, Tabs } from "@navikt/ds-react";
 import { useQuery } from "@tanstack/react-query";
-import { useNavigate, useRouteContext, useSearch } from "@tanstack/react-router";
+import { Outlet, useNavigate, useRouteContext, useSearch } from "@tanstack/react-router";
 import { useState } from "react";
 
 import { getFavoritter, getLetterTemplate } from "../../api/skribenten-api-endpoints";
@@ -39,7 +39,15 @@ export function BrevvelgerPage() {
           <Tabs.Tab label="E-blanketter" value={BrevvelgerTabOptions.E_BLANKETTER} />
         </Tabs.List>
         <Tabs.Panel value={BrevvelgerTabOptions.BREVMALER}>
-          <Brevmaler kategorier={getLetterTemplateQuery.data?.kategorier ?? []} />
+          <div
+            css={css`
+              display: flex;
+              gap: var(--a-spacing-4);
+            `}
+          >
+            <Brevmaler kategorier={getLetterTemplateQuery.data?.kategorier ?? []} />
+            <Outlet />
+          </div>
         </Tabs.Panel>
         <Tabs.Panel value={BrevvelgerTabOptions.E_BLANKETTER}>
           <Eblanketter eblanketter={getLetterTemplateQuery.data?.eblanketter ?? []} />

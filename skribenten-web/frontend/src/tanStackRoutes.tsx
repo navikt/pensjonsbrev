@@ -7,6 +7,7 @@ import { getLetterTemplate, getSak } from "./api/skribenten-api-endpoints";
 import { AppHeader } from "./components/AppHeader";
 import { BrevvelgerPage, BrevvelgerTabOptions } from "./pages/Brevvelger/BrevvelgerPage";
 import { SakPage } from "./pages/Brevvelger/SakPage";
+import { ValgtBrevmal } from "./pages/Brevvelger/ValgtBrevmal";
 import { VelgSakPage } from "./pages/Brevvelger/VelgSakPage";
 
 const TanStackRouterDevtools =
@@ -96,6 +97,12 @@ export const brevvelgerRoute = new Route({
   component: BrevvelgerPage,
 });
 
+export const brevmalRoute = new Route({
+  getParentRoute: () => brevvelgerRoute,
+  path: "$brevmalId",
+  component: ValgtBrevmal,
+});
+
 const indexRoute = new Route({
   getParentRoute: () => rootRoute,
   path: "/",
@@ -116,7 +123,7 @@ const notFoundRoute = new Route({
 const routeTree = rootRoute.addChildren([
   indexRoute,
   velgSaksnummerRoute,
-  sakRoute.addChildren([brevvelgerRoute]),
+  sakRoute.addChildren([brevvelgerRoute.addChildren([brevmalRoute])]),
   notFoundRoute,
 ]);
 
