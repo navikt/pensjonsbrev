@@ -29,8 +29,15 @@ export function BrevvelgerPage() {
   return (
     <div
       css={css`
-        padding: var(--a-spacing-6);
         background: var(--a-white);
+        display: flex;
+        gap: var(--a-spacing-4);
+        justify-content: space-between;
+
+        > :first-of-type {
+          flex: 1;
+          padding: var(--a-spacing-6);
+        }
       `}
     >
       <Tabs onChange={(value) => navigate({ search: { fane: value as BrevvelgerTabOptions } })} value={fane}>
@@ -39,20 +46,13 @@ export function BrevvelgerPage() {
           <Tabs.Tab label="E-blanketter" value={BrevvelgerTabOptions.E_BLANKETTER} />
         </Tabs.List>
         <Tabs.Panel value={BrevvelgerTabOptions.BREVMALER}>
-          <div
-            css={css`
-              display: flex;
-              gap: var(--a-spacing-4);
-            `}
-          >
-            <Brevmaler kategorier={getLetterTemplateQuery.data?.kategorier ?? []} />
-            <Outlet />
-          </div>
+          <Brevmaler kategorier={getLetterTemplateQuery.data?.kategorier ?? []} />
         </Tabs.Panel>
         <Tabs.Panel value={BrevvelgerTabOptions.E_BLANKETTER}>
           <Eblanketter eblanketter={getLetterTemplateQuery.data?.eblanketter ?? []} />
         </Tabs.Panel>
       </Tabs>
+      <Outlet />
     </div>
   );
 }

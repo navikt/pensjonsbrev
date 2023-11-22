@@ -3,19 +3,10 @@ import { StarFillIcon, StarIcon } from "@navikt/aksel-icons";
 import { BodyShort, Button, Heading } from "@navikt/ds-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useParams, useRouteContext } from "@tanstack/react-router";
-import { useContext } from "react";
 
-import {
-  addFavoritt,
-  deleteFavoritt,
-  favoritterKeys,
-  getFavoritter,
-  getLetterTemplate,
-  letterTemplatesKeys,
-} from "../../api/skribenten-api-endpoints";
+import { addFavoritt, deleteFavoritt, getFavoritter, getLetterTemplate } from "../../api/skribenten-api-endpoints";
 import { Divider } from "../../components/Divider";
-import { brevmalRoute, brevvelgerRoute } from "../../tanStackRoutes";
-import type { LetterMetadata } from "../../types/apiTypes";
+import { brevmalRoute } from "../../tanStackRoutes";
 
 export function ValgtBrevmal() {
   const { brevmalId } = useParams({ from: brevmalRoute.id });
@@ -23,7 +14,7 @@ export function ValgtBrevmal() {
   const { getSakQueryOptions } = useRouteContext({ from: brevmalRoute.id });
   const sak = useQuery(getSakQueryOptions).data;
 
-  // TODO: deling av data mellom routes må kunne gjøres enklere enn dette.
+  // TODO: deling av data mellom routes må kunne gjøres enklere enn dette??
   const letterTemplate = useQuery({
     queryKey: getLetterTemplate.queryKey(sak?.sakType as string),
     queryFn: () => getLetterTemplate.queryFn(sak?.sakType as string),
@@ -39,29 +30,42 @@ export function ValgtBrevmal() {
   }
 
   return (
-    <div>
+    <div
+      css={css`
+        display: flex;
+        width: 400px;
+        padding: var(--a-spacing-6) var(--a-spacing-4);
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--a-spacing-5);
+        border-left: 2px solid var(--a-gray-400);
+        border-right: 1px solid var(--a-gray-400);
+      `}
+    >
       <FavorittButton />
-      <Heading level="2" size="medium">
-        {letterTemplate.name}
-      </Heading>
-      <div
-        css={css`
-          display: flex;
-          align-items: center;
-          gap: var(--a-spacing-3);
-          align-self: stretch;
-        `}
-      >
+      <div>
+        <Heading level="2" size="medium">
+          {letterTemplate.name}
+        </Heading>
         <div
-          aria-hidden
           css={css`
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: var(--a-green-500);
+            display: flex;
+            align-items: center;
+            gap: var(--a-spacing-3);
+            margin-top: var(--a-spacing-2);
           `}
-        />
-        <BodyShort size="small">REDIGERBAR MAL</BodyShort>
+        >
+          <div
+            aria-hidden
+            css={css`
+              width: 8px;
+              height: 8px;
+              border-radius: 50%;
+              background: var(--a-green-500);
+            `}
+          />
+          <BodyShort size="small">REDIGERBAR MAL</BodyShort>
+        </div>
       </div>
       <Heading level="3" size="xsmall">
         Formål og målgruppe
@@ -92,6 +96,9 @@ function FavorittButton() {
   if (isFavoritt) {
     return (
       <Button
+        css={css`
+          width: fit-content;
+        `}
         icon={<StarFillIcon aria-hidden />}
         onClick={() => toggleFavoritesMutation.mutate(brevmalId)}
         size="small"
@@ -104,6 +111,9 @@ function FavorittButton() {
 
   return (
     <Button
+      css={css`
+        width: fit-content;
+      `}
       icon={<StarIcon aria-hidden />}
       onClick={() => toggleFavoritesMutation.mutate(brevmalId)}
       size="small"
