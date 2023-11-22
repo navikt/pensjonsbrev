@@ -2,13 +2,37 @@ import { css } from "@emotion/react";
 import { StarFillIcon, StarIcon } from "@navikt/aksel-icons";
 import { BodyShort, Button, Heading } from "@navikt/ds-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useParams, useRouteContext } from "@tanstack/react-router";
+import { useParams, useRouteContext, useSearch } from "@tanstack/react-router";
 
 import { addFavoritt, deleteFavoritt, getFavoritter, getLetterTemplate } from "../../api/skribenten-api-endpoints";
 import { Divider } from "../../components/Divider";
 import { brevmalRoute } from "../../tanStackRoutes";
+import type { LetterMetadata } from "../../types/apiTypes";
+import { BrevvelgerTabOptions } from "./BrevvelgerPage";
 
 export function ValgtBrevmal() {
+  const { fane } = useSearch({ from: brevmalRoute.id });
+
+  return (
+    <div
+      css={css`
+        display: flex;
+        width: 400px;
+        padding: var(--a-spacing-6) var(--a-spacing-4);
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--a-spacing-5);
+        border-left: 2px solid var(--a-gray-400);
+        border-right: 1px solid var(--a-gray-400);
+      `}
+    >
+      <FavorittButton />
+      {fane === BrevvelgerTabOptions.BREVMALER ? <Brevmal /> : <Eblankett />}
+    </div>
+  );
+}
+
+function Brevmal() {
   const { brevmalId } = useParams({ from: brevmalRoute.id });
 
   const { getSakQueryOptions } = useRouteContext({ from: brevmalRoute.id });
@@ -30,43 +54,8 @@ export function ValgtBrevmal() {
   }
 
   return (
-    <div
-      css={css`
-        display: flex;
-        width: 400px;
-        padding: var(--a-spacing-6) var(--a-spacing-4);
-        flex-direction: column;
-        align-items: flex-start;
-        gap: var(--a-spacing-5);
-        border-left: 2px solid var(--a-gray-400);
-        border-right: 1px solid var(--a-gray-400);
-      `}
-    >
-      <FavorittButton />
-      <div>
-        <Heading level="2" size="medium">
-          {letterTemplate.name}
-        </Heading>
-        <div
-          css={css`
-            display: flex;
-            align-items: center;
-            gap: var(--a-spacing-3);
-            margin-top: var(--a-spacing-2);
-          `}
-        >
-          <div
-            aria-hidden
-            css={css`
-              width: 8px;
-              height: 8px;
-              border-radius: 50%;
-              background: var(--a-green-500);
-            `}
-          />
-          <BodyShort size="small">REDIGERBAR MAL</BodyShort>
-        </div>
-      </div>
+    <>
+      <MalHeading letterTemplate={letterTemplate} />
       <Heading level="3" size="xsmall">
         Formål og målgruppe
       </Heading>
@@ -76,6 +65,65 @@ export function ValgtBrevmal() {
         Mottaker
       </Heading>
       <span>TODO</span>
+    </>
+  );
+}
+
+function Eblankett() {
+  const { brevmalId } = useParams({ from: brevmalRoute.id });
+
+  const { getSakQueryOptions } = useRouteContext({ from: brevmalRoute.id });
+  const sak = useQuery(getSakQueryOptions).data;
+
+  // TODO: deling av data mellom routes må kunne gjøres enklere enn dette??
+  const letterTemplate = useQuery({
+    queryKey: getLetterTemplate.queryKey(sak?.sakType as string),
+    queryFn: () => getLetterTemplate.queryFn(sak?.sakType as string),
+    select: (letterTemplates) => letterTemplates.eblanketter.find((letterMetadata) => letterMetadata.id === brevmalId),
+    enabled: !!sak,
+  }).data;
+
+  if (!letterTemplate) {
+    return <></>;
+  }
+
+  return (
+    <>
+      <MalHeading letterTemplate={letterTemplate} />
+      <Heading level="3" size="xsmall">
+        Formål og målgruppe
+      </Heading>
+      <BodyShort size="small">E-blankett</BodyShort>
+      <Divider />
+    </>
+  );
+}
+
+function MalHeading({ letterTemplate }: { letterTemplate: LetterMetadata }) {
+  return (
+    <div>
+      <Heading level="2" size="medium">
+        {letterTemplate.name}
+      </Heading>
+      <div
+        css={css`
+          display: flex;
+          align-items: center;
+          gap: var(--a-spacing-3);
+          margin-top: var(--a-spacing-2);
+        `}
+      >
+        <div
+          aria-hidden
+          css={css`
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--a-green-500);
+          `}
+        />
+        <BodyShort size="small">REDIGERBAR {letterTemplate.isEblankett ? "BLANKETT" : "MAL"}</BodyShort>
+      </div>
     </div>
   );
 }

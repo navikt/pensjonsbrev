@@ -16,6 +16,7 @@ export enum BrevvelgerTabOptions {
 
 export function BrevvelgerPage() {
   const { fane } = useSearch({ from: brevvelgerRoute.id });
+  const { sakId } = useParams({ from: brevvelgerRoute.id });
   const navigate = useNavigate();
   const { getSakQueryOptions } = useRouteContext({ from: brevvelgerRoute.id });
   const sak = useQuery(getSakQueryOptions).data;
@@ -40,7 +41,16 @@ export function BrevvelgerPage() {
         }
       `}
     >
-      <Tabs onChange={(value) => navigate({ search: { fane: value as BrevvelgerTabOptions } })} value={fane}>
+      <Tabs
+        onChange={(value) =>
+          navigate({
+            to: brevvelgerRoute.id,
+            params: { sakId },
+            search: { fane: value as BrevvelgerTabOptions },
+          })
+        }
+        value={fane}
+      >
         <Tabs.List>
           <Tabs.Tab label="Brevmaler" value={BrevvelgerTabOptions.BREVMALER} />
           <Tabs.Tab label="E-blanketter" value={BrevvelgerTabOptions.E_BLANKETTER} />
@@ -132,6 +142,7 @@ function BrevmalButton({ letterMetadata }: { letterMetadata: LetterMetadata }) {
       `}
       from={brevvelgerRoute.id}
       params={{ sakId, brevmalId: letterMetadata.id }}
+      search={(search: unknown) => search}
       to="$brevmalId"
       variant="tertiary"
     >
@@ -142,11 +153,17 @@ function BrevmalButton({ letterMetadata }: { letterMetadata: LetterMetadata }) {
 
 function Eblanketter({ eblanketter }: { eblanketter: LetterMetadata[] }) {
   return (
-    <ul>
+    <div
+      css={css`
+        margin-top: var(--a-spacing-6);
+        display: flex;
+        flex-direction: column;
+      `}
+    >
       {eblanketter.map((template) => (
-        <li key={template.id}>{template.name}</li>
+        <BrevmalButton key={template.id} letterMetadata={template} />
       ))}
-    </ul>
+    </div>
   );
 }
 
