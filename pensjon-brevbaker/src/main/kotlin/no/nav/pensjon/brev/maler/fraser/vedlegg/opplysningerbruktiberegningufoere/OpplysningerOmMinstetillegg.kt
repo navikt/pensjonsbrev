@@ -151,6 +151,8 @@ data class OpplysningerOmMinstetillegg(
                             Language.Nynorsk to "3,3 gonger grunnbeløpet dersom du lever saman med ektefelle/partnar/sambuar. Sambuarforholdet ditt må ha vart i minst 12 av dei siste 18 månadane.",
                             Language.English to "3.3 times the National Insurance basic amount for individuals living with a spouse or partner, or in a cohabitant relationship that has lasted no less than 12 of the last 18 months."
                         )
+                    }
+                    item {
                         text(
                             Language.Bokmal to "3,5 ganger grunnbeløpet dersom du er enslig.",
                             Language.Nynorsk to "3,5 gonger grunnbeløpet dersom du er einsleg.",
