@@ -156,8 +156,8 @@ function BrevmalButton({ letterMetadata }: { letterMetadata: LetterMetadata }) {
         `,
         templateId === letterMetadata.id &&
           css`
-            color: var(--ac-button-tertiary-active-text, var(--a-text-on-action));
-            background-color: var(--ac-button-tertiary-active-bg, var(--a-surface-action-active));
+            color: var(--a-text-on-action);
+            background-color: var(--a-surface-action-active);
           `,
       )}
       onClick={() =>
