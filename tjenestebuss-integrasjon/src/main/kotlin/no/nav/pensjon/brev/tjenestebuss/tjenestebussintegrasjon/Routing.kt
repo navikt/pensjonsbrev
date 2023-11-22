@@ -72,11 +72,6 @@ fun Application.tjenestebussIntegrationApi(config: Config) {
                 is FinnSamhandlerResponseDto.Failure -> call.respond(HttpStatusCode.InternalServerError, samhandlerResponse)
                 is FinnSamhandlerResponseDto.Success -> call.respond(HttpStatusCode.OK, samhandlerResponse)
             }
-            if(samhandlerResponse is FinnSamhandlerResponseDto.Success){
-                call.respond(HttpStatusCode.OK, samhandlerResponse)
-            } else {
-                call.respond(HttpStatusCode.InternalServerError, samhandlerResponse)
-            }
         }
         post("/bestillbrev") {
             val requestDto = call.receive<BestillBrevRequestDto>()
