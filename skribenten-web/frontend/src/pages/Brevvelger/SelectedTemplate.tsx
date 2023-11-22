@@ -6,12 +6,12 @@ import { useParams, useRouteContext, useSearch } from "@tanstack/react-router";
 
 import { addFavoritt, deleteFavoritt, getFavoritter, getLetterTemplate } from "../../api/skribenten-api-endpoints";
 import { Divider } from "../../components/Divider";
-import { brevmalRoute } from "../../tanStackRoutes";
+import { selectedTemplateRoute } from "../../tanStackRoutes";
 import type { LetterMetadata } from "../../types/apiTypes";
 import { BrevvelgerTabOptions } from "./BrevvelgerPage";
 
 export function SelectedTemplate() {
-  const { fane } = useSearch({ from: brevmalRoute.id });
+  const { fane } = useSearch({ from: selectedTemplateRoute.id });
 
   return (
     <div
@@ -33,8 +33,8 @@ export function SelectedTemplate() {
 }
 
 function Brevmal() {
-  const { brevmalId } = useParams({ from: brevmalRoute.id });
-  const { getSakQueryOptions } = useRouteContext({ from: brevmalRoute.id });
+  const { templateId } = useParams({ from: selectedTemplateRoute.id });
+  const { getSakQueryOptions } = useRouteContext({ from: selectedTemplateRoute.id });
   const sak = useQuery(getSakQueryOptions).data;
 
   // TODO: deling av data mellom routes må kunne gjøres enklere enn dette??
@@ -44,7 +44,7 @@ function Brevmal() {
     select: (letterTemplates) =>
       letterTemplates.kategorier
         .flatMap((kategori) => kategori.templates)
-        .find((letterMetadata) => letterMetadata.id === brevmalId),
+        .find((letterMetadata) => letterMetadata.id === templateId),
     enabled: !!sak,
   }).data;
 
@@ -69,16 +69,16 @@ function Brevmal() {
 }
 
 function Eblankett() {
-  const { brevmalId } = useParams({ from: brevmalRoute.id });
+  const { templateId } = useParams({ from: selectedTemplateRoute.id });
 
-  const { getSakQueryOptions } = useRouteContext({ from: brevmalRoute.id });
+  const { getSakQueryOptions } = useRouteContext({ from: selectedTemplateRoute.id });
   const sak = useQuery(getSakQueryOptions).data;
 
   // TODO: deling av data mellom routes må kunne gjøres enklere enn dette??
   const letterTemplate = useQuery({
     queryKey: getLetterTemplate.queryKey(sak?.sakType as string),
     queryFn: () => getLetterTemplate.queryFn(sak?.sakType as string),
-    select: (letterTemplates) => letterTemplates.eblanketter.find((letterMetadata) => letterMetadata.id === brevmalId),
+    select: (letterTemplates) => letterTemplates.eblanketter.find((letterMetadata) => letterMetadata.id === templateId),
     enabled: !!sak,
   }).data;
 
@@ -128,11 +128,11 @@ function LetterTemplateHeading({ letterTemplate }: { letterTemplate: LetterMetad
 }
 
 function FavoriteButton() {
-  const { brevmalId } = useParams({ from: brevmalRoute.id });
+  const { templateId } = useParams({ from: selectedTemplateRoute.id });
   const queryClient = useQueryClient();
   const isFavoritt = useQuery({
     ...getFavoritter,
-    select: (favoritter) => favoritter.includes(brevmalId),
+    select: (favoritter) => favoritter.includes(templateId),
   }).data;
 
   const toggleFavoritesMutation = useMutation<unknown, unknown, string>({
@@ -147,7 +147,7 @@ function FavoriteButton() {
           width: fit-content;
         `}
         icon={<StarFillIcon aria-hidden />}
-        onClick={() => toggleFavoritesMutation.mutate(brevmalId)}
+        onClick={() => toggleFavoritesMutation.mutate(templateId)}
         size="small"
         variant="secondary"
       >
@@ -162,7 +162,7 @@ function FavoriteButton() {
         width: fit-content;
       `}
       icon={<StarIcon aria-hidden />}
-      onClick={() => toggleFavoritesMutation.mutate(brevmalId)}
+      onClick={() => toggleFavoritesMutation.mutate(templateId)}
       size="small"
       variant="secondary"
     >

@@ -52,7 +52,7 @@ function Root() {
   );
 }
 
-const velgSaksnummerRoute = new Route({
+const chooseSakPageRoute = new Route({
   getParentRoute: () => rootRoute,
   path: "saksnummer",
   component: ChooseSakPage,
@@ -97,9 +97,9 @@ export const brevvelgerRoute = new Route({
   component: BrevvelgerPage,
 });
 
-export const brevmalRoute = new Route({
+export const selectedTemplateRoute = new Route({
   getParentRoute: () => brevvelgerRoute,
-  path: "$brevmalId",
+  path: "$templateId",
   component: SelectedTemplate,
 });
 
@@ -108,7 +108,7 @@ const indexRoute = new Route({
   path: "/",
   load: ({ navigate, preload }) => {
     if (!preload) {
-      navigate({ to: velgSaksnummerRoute.id });
+      navigate({ to: chooseSakPageRoute.id });
     }
   },
   component: undefined,
@@ -122,8 +122,8 @@ const notFoundRoute = new Route({
 
 const routeTree = rootRoute.addChildren([
   indexRoute,
-  velgSaksnummerRoute,
-  sakRoute.addChildren([brevvelgerRoute.addChildren([brevmalRoute])]),
+  chooseSakPageRoute,
+  sakRoute.addChildren([brevvelgerRoute.addChildren([selectedTemplateRoute])]),
   notFoundRoute,
 ]);
 
