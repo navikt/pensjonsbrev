@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useNavigate, useRouteContext, useSearch } from "@tanstack/react-router";
 import { useState } from "react";
 
-import { getLetterTemplate } from "../../api/skribenten-api-endpoints";
+import { getFavoritter, getLetterTemplate } from "../../api/skribenten-api-endpoints";
 import { brevvelgerRoute } from "../../tanStackRoutes";
 import type { LetterCategory } from "../../types/apiTypes";
 import type { LetterMetadata } from "../../types/apiTypes";
@@ -52,6 +52,8 @@ export function BrevvelgerPage() {
 function Brevmaler({ kategorier }: { kategorier: LetterCategory[] }) {
   const [searchTerm, setSearchTerm] = useState("");
 
+  const favoritter = useQuery(getFavoritter).data ?? [];
+
   const matchingLetterCategories = kategorier.map((category) => ({
     ...category,
     templates: category.templates.filter((template) => template.name.toLowerCase().includes(searchTerm.toLowerCase())),
@@ -72,6 +74,14 @@ function Brevmaler({ kategorier }: { kategorier: LetterCategory[] }) {
         value={searchTerm}
         variant="simple"
       />
+      <Heading level="2" size="xsmall">
+        Favoritter
+      </Heading>
+      <div>
+        {favoritter.map((favoritt) => (
+          <span key={favoritt}>{favoritt}</span>
+        ))}
+      </div>
       <Heading level="2" size="xsmall">
         Brevmaler
       </Heading>

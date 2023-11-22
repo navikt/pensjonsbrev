@@ -27,6 +27,10 @@ export const letterTemplatesKeys = {
   id: (sakType: string) => [...letterTemplatesKeys.all, sakType] as const,
 };
 
+export const favoritterKeys = {
+  all: ["FAVORITTER"] as const,
+};
+
 export const getSak = {
   queryKey: saksnummerKeys.id,
   queryFn: async (sakId: string) => (await axios.get<SakDto>(`${SKRIBENTEN_API_BASE_PATH}/pen/sak/${sakId}`)).data,
@@ -42,3 +46,12 @@ export const getLetterTemplate = {
   queryFn: async (sakType: string) =>
     (await axios.get<LetterTemplatesResponse>(`${SKRIBENTEN_API_BASE_PATH}/lettertemplates/${sakType}`)).data,
 };
+
+export const getFavoritter = {
+  queryKey: favoritterKeys.all,
+  queryFn: async () => (await axios.get<string[]>(`${SKRIBENTEN_API_BASE_PATH}/favourites`)).data,
+};
+
+export async function addFavoritt(id: string) {
+  return (await axios.post<string>(`${SKRIBENTEN_API_BASE_PATH}/favourites`, id)).data;
+}
