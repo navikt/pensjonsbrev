@@ -12,7 +12,7 @@ import java.time.LocalDate
 data class UfoerOmregningEnsligDto(
     val opplysningerBruktIBeregningUT: OpplysningerBruktIBeregningUTDto,
     val orienteringOmRettigheterOgPlikter: OrienteringOmRettigheterUfoereDto,
-    val maanedligUfoeretrygdFoerSkatt: MaanedligUfoeretrygdFoerSkattDto,
+    val maanedligUfoeretrygdFoerSkatt: MaanedligUfoeretrygdFoerSkattDto?,
     val avdoed: Avdoed,
     val minsteytelseVedvirk_sats: Double?,
     val ufoeretrygdVedVirk: UfoeretrygdVedVirk,
