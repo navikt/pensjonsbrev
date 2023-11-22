@@ -19,6 +19,7 @@ import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.arkiv.B
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.arkiv.BestillBrevResponseDto
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.arkiv.BestillBrevResponseDto.Failure.FailureType.MANGLER_OBLIGATORISK_INPUT
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.arkiv.BestillBrevResponseDto.Journalpost
+import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.samhandler.SamhandlerClient
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.samhandler.dto.FinnSamhandlerResponseDto
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.samhandler.dto.HentSamhandlerResponseDto
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.samhandler.dto.SamhandlerTypeCode
@@ -47,10 +48,10 @@ fun Application.tjenestebussIntegrationApi(config: Config) {
     routing {
         val stsService = STSService(config.getConfig("services.sts"))
         val stsSercuritySOAPHandler = STSSercuritySOAPHandler(stsService)
-        val samhandlerTjenestebussService =
-            SamhandlerTjenestebussService(config.getConfig("services.tjenestebuss"), stsSercuritySOAPHandler)
+        val samhandlerClient = SamhandlerClient(config.getConfig("services.tjenestebuss"), stsSercuritySOAPHandler).client()
+        val samhandlerTjenestebussService = SamhandlerTjenestebussService(samhandlerClient)
 
-        val arkivClient = ArkivClient(config.getConfig("services.tjenestebuss"), stsSercuritySOAPHandler).arkivClient()
+        val arkivClient = ArkivClient(config.getConfig("services.tjenestebuss"), stsSercuritySOAPHandler).client()
         val arkivTjenestebussService = ArkivTjenestebussService(arkivClient)
 
         post("/hentSamhandler") {
@@ -67,6 +68,10 @@ fun Application.tjenestebussIntegrationApi(config: Config) {
         post("/finnSamhandler") {
             val requestDto = call.receive<FinnSamhandlerRequestDto>()
             val samhandlerResponse = samhandlerTjenestebussService.finnSamhandler(requestDto)
+            when(samhandlerResponse) {
+                is FinnSamhandlerResponseDto.Failure -> call.respond(HttpStatusCode.InternalServerError, samhandlerResponse)
+                is FinnSamhandlerResponseDto.Success -> call.respond(HttpStatusCode.OK, samhandlerResponse)
+            }
             if(samhandlerResponse is FinnSamhandlerResponseDto.Success){
                 call.respond(HttpStatusCode.OK, samhandlerResponse)
             } else {
@@ -76,12 +81,15 @@ fun Application.tjenestebussIntegrationApi(config: Config) {
         post("/bestillbrev") {
             val requestDto = call.receive<BestillBrevRequestDto>()
                 val arkivResponse = arkivTjenestebussService.bestillBrev(requestDto)
-            if(arkivResponse is Journalpost)
-                call.respond(HttpStatusCode.OK, arkivResponse)
-            else if ((arkivResponse as BestillBrevResponseDto.Failure).failureType == MANGLER_OBLIGATORISK_INPUT){
-                call.respond(HttpStatusCode.BadRequest, arkivResponse)
-            } else {
-                call.respond(HttpStatusCode.InternalServerError, arkivResponse)
+            when(arkivResponse) {
+                is Journalpost -> call.respond(HttpStatusCode.OK, arkivResponse)
+                is BestillBrevResponseDto.Failure -> {
+                    if(arkivResponse.failureType == MANGLER_OBLIGATORISK_INPUT) {
+                        call.respond(HttpStatusCode.BadRequest, arkivResponse)
+                    } else {
+                        call.respond(HttpStatusCode.InternalServerError, arkivResponse)
+                    }
+                }
             }
         }
     }

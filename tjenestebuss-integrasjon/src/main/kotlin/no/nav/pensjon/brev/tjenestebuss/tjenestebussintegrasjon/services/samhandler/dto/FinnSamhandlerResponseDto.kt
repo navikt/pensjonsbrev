@@ -3,12 +3,13 @@ package no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.samhan
 import no.nav.lib.pen.psakpselv.fault.FaultPenBase
 
 sealed class FinnSamhandlerResponseDto {
-    data class Success(val samhandlere: List<Samhandler>): FinnSamhandlerResponseDto() {
+    data class Success(val samhandlere: List<Samhandler>) : FinnSamhandlerResponseDto() {
         data class Samhandler(
             val navn: String,
             val samhandlerType: String,
             val offentligId: String,
-            val idType: String) : FinnSamhandlerResponseDto()
+            val idType: String
+        )
     }
     data class Failure(
         val message: String,

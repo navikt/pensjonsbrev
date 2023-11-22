@@ -1,6 +1,5 @@
 package no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services
 
-import com.typesafe.config.Config
 import no.nav.inf.psak.samhandler.FinnSamhandlerFaultPenGeneriskMsg
 import no.nav.inf.psak.samhandler.HentSamhandlerFaultPenGeneriskMsg
 import no.nav.inf.psak.samhandler.HentSamhandlerFaultPenSamhandlerIkkeFunnetMsg
@@ -11,34 +10,16 @@ import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.FinnSamhandlerRe
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.HentSamhandlerRequestDto
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.samhandler.dto.FinnSamhandlerResponseDto
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.samhandler.dto.HentSamhandlerResponseDto
-import org.apache.cxf.jaxws.JaxWsProxyFactoryBean
-import org.apache.cxf.ws.addressing.WSAddressingFeature
 import org.slf4j.LoggerFactory
-import javax.xml.namespace.QName
 
-class SamhandlerTjenestebussService(config: Config, securityHandler: STSSercuritySOAPHandler) {
+class SamhandlerTjenestebussService(private val samhandlerClient: PSAKSamhandler) {
     private val logger = LoggerFactory.getLogger(this::class.java)
-
-    private val tjenestebussUrl = config.getString("url")
-    private val jaxWsProxyFactoryBean = JaxWsProxyFactoryBean().apply {
-        val name = "PSAKSamhandlerWSEXP_PSAKSamhandlerHttpService"
-        val portName = "PSAKSamhandlerWSEXP_PSAKSamhandlerHttpPort"
-        val namespace = "http://nav-cons-pen-psak-samhandler/no/nav/inf/Binding"
-        address = "${tjenestebussUrl}nav-cons-pen-psak-samhandlerWeb/sca/PSAKSamhandlerWSEXP"
-        wsdlURL = "wsdl/PSAKSamhandlerWSEXP_PSAKSamhandlerHttp_Service.wsdl"
-        serviceName = QName(namespace, name)
-        endpointName = QName(namespace, portName)
-        serviceClass = PSAKSamhandler::class.java
-        handlers = listOf(securityHandler)
-        features = listOf(WSAddressingFeature())        //TODO add Logging feature?
-    }
 
     fun hentSamhandler(requestDto: HentSamhandlerRequestDto): HentSamhandlerResponseDto {
         // TODO do we need to create a new bean every time to get refreshed auth?
-        val psakSamhandlerClient: PSAKSamhandler = jaxWsProxyFactoryBean.create() as PSAKSamhandler
 
         try {
-            val response =  psakSamhandlerClient.hentSamhandler(ASBOPenHentSamhandlerRequest().apply {
+            val response =  samhandlerClient.hentSamhandler(ASBOPenHentSamhandlerRequest().apply {
                 idTSSEkstern = requestDto.idTSSEkstern
                 hentDetaljert = requestDto.hentDetaljert
             })
@@ -59,9 +40,8 @@ class SamhandlerTjenestebussService(config: Config, securityHandler: STSSercurit
     }
 
     fun finnSamhandler(requestDto: FinnSamhandlerRequestDto): FinnSamhandlerResponseDto {
-        val psakSamhandlerClient: PSAKSamhandler = jaxWsProxyFactoryBean.create() as PSAKSamhandler
         try {
-            val samhandlerResponse = psakSamhandlerClient.finnSamhandler(ASBOPenFinnSamhandlerRequest().apply {
+            val samhandlerResponse = samhandlerClient.finnSamhandler(ASBOPenFinnSamhandlerRequest().apply {
                 navn = requestDto.navn
                 samhandlerType = requestDto.samhandlerType.name
             })

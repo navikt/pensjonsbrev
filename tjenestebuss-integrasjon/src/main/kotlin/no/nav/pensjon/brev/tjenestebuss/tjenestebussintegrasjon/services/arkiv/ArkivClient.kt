@@ -22,5 +22,5 @@ class ArkivClient(config: Config, securityHandler: STSSercuritySOAPHandler) {
         handlers = listOf(securityHandler)
         features = listOf(WSAddressingFeature())        //TODO add Logging feature?
     }
-    fun arkivClient(): Arkiv = jaxWsProxyFactoryBean.create() as Arkiv
+    fun client(): Arkiv = jaxWsProxyFactoryBean.create() as Arkiv
 }
