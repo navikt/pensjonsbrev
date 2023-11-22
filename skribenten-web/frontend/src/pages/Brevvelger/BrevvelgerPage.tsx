@@ -1,7 +1,7 @@
 import { css } from "@emotion/react";
 import { Accordion, Button, Heading, Search, Tabs } from "@navikt/ds-react";
 import { useQuery } from "@tanstack/react-query";
-import { Outlet, useNavigate, useRouteContext, useSearch } from "@tanstack/react-router";
+import { Link, Outlet, useNavigate, useParams, useRouteContext, useSearch } from "@tanstack/react-router";
 import { useState } from "react";
 
 import { getFavoritter, getLetterTemplate } from "../../api/skribenten-api-endpoints";
@@ -93,13 +93,6 @@ function Brevmaler({ kategorier }: { kategorier: LetterCategory[] }) {
       <Heading level="2" size="xsmall">
         Brevmaler
       </Heading>
-      {/*<div*/}
-      {/*  css={css`*/}
-      {/*    width: 100%;*/}
-      {/*    height: 1px;*/}
-      {/*    background: var(--a-grayalpha-300);*/}
-      {/*  `}*/}
-      {/*/>*/}
       <Accordion headingSize="xsmall" size="small">
         {matchingLetterCategories.map((letterCategory) => (
           <Accordion.Item key={letterCategory.name} open={searchTerm.length > 0 ? true : undefined}>
@@ -124,11 +117,22 @@ function Brevmaler({ kategorier }: { kategorier: LetterCategory[] }) {
 }
 
 function BrevmalButton({ letterMetadata }: { letterMetadata: LetterMetadata }) {
+  const { sakId } = useParams({ from: brevvelgerRoute.id });
   return (
+    // @ts-expect-error -- Aksel Buttons "as" typing clashes when using css-emotion as it also has an "as" override. Not ideal: https://aksel.nav.no/grunnleggende/kode/overridablecomponent
     <Button
+      as={Link}
       css={css`
         justify-content: flex-start;
+
+        &[data-status="active"] {
+          color: var(--ac-button-tertiary-active-text, var(--a-text-on-action));
+          background-color: var(--ac-button-tertiary-active-bg, var(--a-surface-action-active));
+        }
       `}
+      from={brevvelgerRoute.id}
+      params={{ sakId, brevmalId: letterMetadata.id }}
+      to="$brevmalId"
       variant="tertiary"
     >
       {letterMetadata.name}

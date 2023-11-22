@@ -7,11 +7,13 @@ import React from "react";
 import { useForm } from "react-hook-form";
 
 import { getSak } from "../../api/skribenten-api-endpoints";
+import { sakRoute } from "../../tanStackRoutes";
 import type { SakDto } from "../../types/apiTypes";
+import { BrevvelgerTabOptions } from "./BrevvelgerPage";
 
 export function VelgSakPage() {
   const queryClient = useQueryClient();
-  const navigate = useNavigate();
+  const navigate = useNavigate({ from: sakRoute.id });
   const { handleSubmit, register } = useForm({
     defaultValues: {
       saksnummer: "22972355",
@@ -23,8 +25,9 @@ export function VelgSakPage() {
     onSuccess: (sak, values) => {
       queryClient.setQueryData(getSak.queryKey(values.saksnummer), sak);
       navigate({
-        to: "/saksnummer/$sakId",
+        to: "/saksnummer/$sakId/brevvelger",
         params: { sakId: sak.sakId.toString() },
+        search: { fane: BrevvelgerTabOptions.BREVMALER },
       });
     },
   });
