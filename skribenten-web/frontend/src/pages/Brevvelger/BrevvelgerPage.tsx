@@ -1,7 +1,7 @@
 import { css } from "@emotion/react";
 import { Accordion, Button, Heading, Search, Tabs } from "@navikt/ds-react";
 import { useQuery } from "@tanstack/react-query";
-import { Link, Outlet, useNavigate, useParams, useRouteContext, useSearch } from "@tanstack/react-router";
+import { Outlet, useNavigate, useParams, useRouteContext, useSearch } from "@tanstack/react-router";
 import { useState } from "react";
 
 import { getFavoritter, getLetterTemplate } from "../../api/skribenten-api-endpoints";
@@ -143,23 +143,26 @@ function Eblanketter({ eblanketter }: { eblanketter: LetterMetadata[] }) {
 }
 
 function BrevmalButton({ letterMetadata }: { letterMetadata: LetterMetadata }) {
-  const { sakId } = useParams({ from: brevvelgerRoute.id });
-  return (
-    // @ts-expect-error -- Aksel Buttons "as" typing clashes when using css-emotion as it also has an "as" override. Not ideal: https://aksel.nav.no/grunnleggende/kode/overridablecomponent
-    <Button
-      as={Link}
-      css={css`
-        justify-content: flex-start;
+  const { sakId, templateId } = useParams({ from: brevvelgerRoute.id });
+  const navigate = useNavigate({ from: brevvelgerRoute.id });
 
-        &[data-status="active"] {
-          color: var(--ac-button-tertiary-active-text, var(--a-text-on-action));
-          background-color: var(--ac-button-tertiary-active-bg, var(--a-surface-action-active));
-        }
-      `}
-      from={brevvelgerRoute.id}
-      params={{ sakId, brevmalId: letterMetadata.id }}
-      search={(search: unknown) => search}
-      to="$brevmalId"
+  // Ideally we would use the Link component as it gives native <a/> features.
+  // However, when we render as many links as we do it slows down drastically. Try again when tanstack Router has developet further
+  return (
+    <Button
+      css={css(
+        css`
+          justify-content: flex-start;
+        `,
+        templateId === letterMetadata.id &&
+          css`
+            color: var(--ac-button-tertiary-active-text, var(--a-text-on-action));
+            background-color: var(--ac-button-tertiary-active-bg, var(--a-surface-action-active));
+          `,
+      )}
+      onClick={() =>
+        navigate({ to: "$templateId", params: { sakId, templateId: letterMetadata.id }, search: (s) => s })
+      }
       variant="tertiary"
     >
       {letterMetadata.name}
