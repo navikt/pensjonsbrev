@@ -11,7 +11,7 @@ import { sakRoute } from "../../tanStackRoutes";
 import type { SakDto } from "../../types/apiTypes";
 import { BrevvelgerTabOptions } from "./BrevvelgerPage";
 
-export function VelgSakPage() {
+export function ChooseSakPage() {
   const queryClient = useQueryClient();
   const navigate = useNavigate({ from: sakRoute.id });
   const { handleSubmit, register } = useForm({

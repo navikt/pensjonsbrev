@@ -10,7 +10,7 @@ import { brevmalRoute } from "../../tanStackRoutes";
 import type { LetterMetadata } from "../../types/apiTypes";
 import { BrevvelgerTabOptions } from "./BrevvelgerPage";
 
-export function ValgtBrevmal() {
+export function SelectedTemplate() {
   const { fane } = useSearch({ from: brevmalRoute.id });
 
   return (
@@ -26,7 +26,7 @@ export function ValgtBrevmal() {
         border-right: 1px solid var(--a-gray-400);
       `}
     >
-      <FavorittButton />
+      <FavoriteButton />
       {fane === BrevvelgerTabOptions.BREVMALER ? <Brevmal /> : <Eblankett />}
     </div>
   );
@@ -34,7 +34,6 @@ export function ValgtBrevmal() {
 
 function Brevmal() {
   const { brevmalId } = useParams({ from: brevmalRoute.id });
-
   const { getSakQueryOptions } = useRouteContext({ from: brevmalRoute.id });
   const sak = useQuery(getSakQueryOptions).data;
 
@@ -55,7 +54,7 @@ function Brevmal() {
 
   return (
     <>
-      <MalHeading letterTemplate={letterTemplate} />
+      <LetterTemplateHeading letterTemplate={letterTemplate} />
       <Heading level="3" size="xsmall">
         Formål og målgruppe
       </Heading>
@@ -89,7 +88,7 @@ function Eblankett() {
 
   return (
     <>
-      <MalHeading letterTemplate={letterTemplate} />
+      <LetterTemplateHeading letterTemplate={letterTemplate} />
       <Heading level="3" size="xsmall">
         Formål og målgruppe
       </Heading>
@@ -99,7 +98,7 @@ function Eblankett() {
   );
 }
 
-function MalHeading({ letterTemplate }: { letterTemplate: LetterMetadata }) {
+function LetterTemplateHeading({ letterTemplate }: { letterTemplate: LetterMetadata }) {
   return (
     <div>
       <Heading level="2" size="medium">
@@ -128,7 +127,7 @@ function MalHeading({ letterTemplate }: { letterTemplate: LetterMetadata }) {
   );
 }
 
-function FavorittButton() {
+function FavoriteButton() {
   const { brevmalId } = useParams({ from: brevmalRoute.id });
   const queryClient = useQueryClient();
   const isFavoritt = useQuery({

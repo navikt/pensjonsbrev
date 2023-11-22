@@ -126,6 +126,22 @@ function Brevmaler({ kategorier }: { kategorier: LetterCategory[] }) {
   );
 }
 
+function Eblanketter({ eblanketter }: { eblanketter: LetterMetadata[] }) {
+  return (
+    <div
+      css={css`
+        margin-top: var(--a-spacing-6);
+        display: flex;
+        flex-direction: column;
+      `}
+    >
+      {eblanketter.map((template) => (
+        <BrevmalButton key={template.id} letterMetadata={template} />
+      ))}
+    </div>
+  );
+}
+
 function BrevmalButton({ letterMetadata }: { letterMetadata: LetterMetadata }) {
   const { sakId } = useParams({ from: brevvelgerRoute.id });
   return (
@@ -148,22 +164,6 @@ function BrevmalButton({ letterMetadata }: { letterMetadata: LetterMetadata }) {
     >
       {letterMetadata.name}
     </Button>
-  );
-}
-
-function Eblanketter({ eblanketter }: { eblanketter: LetterMetadata[] }) {
-  return (
-    <div
-      css={css`
-        margin-top: var(--a-spacing-6);
-        display: flex;
-        flex-direction: column;
-      `}
-    >
-      {eblanketter.map((template) => (
-        <BrevmalButton key={template.id} letterMetadata={template} />
-      ))}
-    </div>
   );
 }
 

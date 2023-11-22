@@ -6,9 +6,9 @@ import React from "react";
 import { getLetterTemplate, getSak } from "./api/skribenten-api-endpoints";
 import { AppHeader } from "./components/AppHeader";
 import { BrevvelgerPage, BrevvelgerTabOptions } from "./pages/Brevvelger/BrevvelgerPage";
-import { SakPage } from "./pages/Brevvelger/SakPage";
-import { ValgtBrevmal } from "./pages/Brevvelger/ValgtBrevmal";
-import { VelgSakPage } from "./pages/Brevvelger/VelgSakPage";
+import { ChooseSakPage } from "./pages/Brevvelger/ChooseSakPage";
+import { SakBreadcrumbsPage } from "./pages/Brevvelger/SakBreadcrumbsPage";
+import { SelectedTemplate } from "./pages/Brevvelger/SelectedTemplate";
 
 const TanStackRouterDevtools =
   process.env.NODE_ENV === "production"
@@ -55,7 +55,7 @@ function Root() {
 const velgSaksnummerRoute = new Route({
   getParentRoute: () => rootRoute,
   path: "saksnummer",
-  component: VelgSakPage,
+  component: ChooseSakPage,
 });
 
 export const sakRoute = new Route({
@@ -72,7 +72,7 @@ export const sakRoute = new Route({
   load: async ({ context: { queryClient, getSakQueryOptions } }) => {
     await queryClient.ensureQueryData(getSakQueryOptions);
   },
-  component: SakPage,
+  component: SakBreadcrumbsPage,
 });
 
 export const brevvelgerRoute = new Route({
@@ -100,7 +100,7 @@ export const brevvelgerRoute = new Route({
 export const brevmalRoute = new Route({
   getParentRoute: () => brevvelgerRoute,
   path: "$brevmalId",
-  component: ValgtBrevmal,
+  component: SelectedTemplate,
 });
 
 const indexRoute = new Route({

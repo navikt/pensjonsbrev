@@ -8,7 +8,7 @@ import { getNavn } from "../../api/skribenten-api-endpoints";
 import { sakRoute } from "../../tanStackRoutes";
 import type { SakDto } from "../../types/apiTypes";
 
-export function SakPage() {
+export function SakBreadcrumbsPage() {
   const { getSakQueryOptions } = useRouteContext({ from: sakRoute.id });
   const sak = useQuery(getSakQueryOptions);
 
