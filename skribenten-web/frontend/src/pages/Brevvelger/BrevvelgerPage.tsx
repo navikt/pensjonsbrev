@@ -105,23 +105,29 @@ function Brevmaler({ kategorier }: { kategorier: LetterCategory[] }) {
         Brevmaler
       </Heading>
       <Accordion headingSize="xsmall" size="small">
-        {matchingLetterCategories.map((letterCategory) => (
-          <Accordion.Item key={letterCategory.name} open={searchTerm.length > 0 ? true : undefined}>
-            <Accordion.Header>{CATEGORY_TRANSLATIONS[letterCategory.name] ?? "Annet"}</Accordion.Header>
-            <Accordion.Content>
-              <div
-                css={css`
-                  display: flex;
-                  flex-direction: column;
-                `}
-              >
-                {letterCategory.templates.map((template) => (
-                  <BrevmalButton key={template.id} letterMetadata={template} />
-                ))}
-              </div>
-            </Accordion.Content>
-          </Accordion.Item>
-        ))}
+        {matchingLetterCategories.map((letterCategory) => {
+          if (letterCategory.templates.length === 0) {
+            return <></>;
+          }
+
+          return (
+            <Accordion.Item key={letterCategory.name} open={searchTerm.length > 0 ? true : undefined}>
+              <Accordion.Header>{CATEGORY_TRANSLATIONS[letterCategory.name] ?? "Annet"}</Accordion.Header>
+              <Accordion.Content>
+                <div
+                  css={css`
+                    display: flex;
+                    flex-direction: column;
+                  `}
+                >
+                  {letterCategory.templates.map((template) => (
+                    <BrevmalButton key={template.id} letterMetadata={template} />
+                  ))}
+                </div>
+              </Accordion.Content>
+            </Accordion.Item>
+          );
+        })}
       </Accordion>
     </div>
   );
