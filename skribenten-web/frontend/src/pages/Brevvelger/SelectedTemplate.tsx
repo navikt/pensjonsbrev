@@ -22,7 +22,6 @@ export function SelectedTemplate() {
         flex-direction: column;
         align-items: flex-start;
         gap: var(--a-spacing-5);
-        border-left: 2px solid var(--a-gray-400);
         border-right: 1px solid var(--a-gray-400);
       `}
     >

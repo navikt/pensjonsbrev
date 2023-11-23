@@ -31,14 +31,16 @@ export function BrevvelgerPage() {
     <div
       css={css`
         background: var(--a-white);
-        display: flex;
+        display: grid;
+        grid-template-columns: 1fr 400px;
         gap: var(--a-spacing-4);
         justify-content: space-between;
         flex: 1; // Always fill to the bottom of the page
 
         > :first-of-type {
-          flex: 1;
           padding: var(--a-spacing-6);
+          border-left: 1px solid var(--a-gray-400);
+          border-right: 1px solid var(--a-gray-400);
         }
       `}
     >
