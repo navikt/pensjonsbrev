@@ -32,7 +32,15 @@ function SakInfoBreadcrumbs({ sak }: { sak?: SakDto }) {
   }
 
   return (
-    <Bleed asChild marginInline="full">
+    <Bleed
+      asChild
+      css={css`
+        position: sticky;
+        top: 48px; // 48px to pin it below the black main header
+        z-index: var(--a-z-index-focus);
+      `}
+      marginInline="full"
+    >
       <div
         css={css`
           display: flex;
