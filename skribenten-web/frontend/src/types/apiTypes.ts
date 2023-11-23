@@ -38,9 +38,8 @@ export type LetterMetadata = {
   isEblankett: boolean;
 };
 
-// TODO: verify typo in EXTERAM?
 export enum BrevSystem {
-  Extream = "EXTERAM",
+  Extream = "EXTREAM",
   DokSys = "DOKSYS",
   Brevbaker = "BREVBAKER",
 }

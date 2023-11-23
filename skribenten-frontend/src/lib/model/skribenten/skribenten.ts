@@ -11,7 +11,7 @@ export interface LetterCategory {
     readonly templates: Metadata[]
 }
 
-export type Brevsystem = 'EXTERAM'| 'DOKSYS'| 'BREVBAKER'
+export type Brevsystem = 'EXTREAM'| 'DOKSYS'| 'BREVBAKER'
 export type SpraakKode = 'EN' | 'NB' | 'NN' | 'SE' | 'FR'
 
 export interface Metadata {
