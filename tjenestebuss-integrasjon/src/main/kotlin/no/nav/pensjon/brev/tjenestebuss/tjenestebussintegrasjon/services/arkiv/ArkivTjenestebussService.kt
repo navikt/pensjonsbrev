@@ -16,7 +16,6 @@ class ArkivTjenestebussService(private val arkivClient: Arkiv) {
     private val logger = LoggerFactory.getLogger(this::class.java)
 
     fun bestillBrev(bestillBrevRequestDto: BestillBrevRequestDto): BestillBrevResponseDto {
-        // TODO do we need to create a new bean every time to get refreshed auth?
         try {
             val response = arkivClient.bestillBrev(BestillBrevRequest().apply {
                 brevKode = bestillBrevRequestDto.brevKode

@@ -1,17 +1,14 @@
-package no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services
+package no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.soap
 
 import com.typesafe.config.Config
-import com.typesafe.config.ConfigException.BugOrBroken
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.engine.cio.*
 import io.ktor.client.plugins.*
 import io.ktor.client.plugins.auth.*
 import io.ktor.client.plugins.auth.providers.*
-import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
 import io.ktor.http.*
-import io.ktor.serialization.jackson.*
 import java.time.LocalDateTime
 
 data class UserToken(
@@ -45,9 +42,6 @@ class STSService(stsConfig: Config) {
         defaultRequest {
             url(stsEndpointUrl)
         }
-        install(ContentNegotiation) {
-            jackson()
-        }
     }
 
     suspend fun getToken(): UserToken {
@@ -68,6 +62,4 @@ class STSService(stsConfig: Config) {
             newToken
         }
     }
-
-
 }

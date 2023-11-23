@@ -10,9 +10,9 @@ import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.STSSercuritySOAPHandler
-import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.STSService
-import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.SamhandlerTjenestebussService
+import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.soap.STSSercuritySOAPHandler
+import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.soap.STSService
+import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.samhandler.SamhandlerTjenestebussService
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.arkiv.ArkivClient
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.arkiv.ArkivTjenestebussService
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.arkiv.BestillBrevRequestDto
@@ -48,7 +48,8 @@ fun Application.tjenestebussIntegrationApi(config: Config) {
     routing {
         val stsService = STSService(config.getConfig("services.sts"))
         val stsSercuritySOAPHandler = STSSercuritySOAPHandler(stsService)
-        val samhandlerClient = SamhandlerClient(config.getConfig("services.tjenestebuss"), stsSercuritySOAPHandler).client()
+        val samhandlerClient =
+            SamhandlerClient(config.getConfig("services.tjenestebuss"), stsSercuritySOAPHandler).client()
         val samhandlerTjenestebussService = SamhandlerTjenestebussService(samhandlerClient)
 
         val arkivClient = ArkivClient(config.getConfig("services.tjenestebuss"), stsSercuritySOAPHandler).client()
@@ -57,29 +58,33 @@ fun Application.tjenestebussIntegrationApi(config: Config) {
         post("/hentSamhandler") {
             val requestDto = call.receive<HentSamhandlerRequestDto>()
             val samhandlerResponse = samhandlerTjenestebussService.hentSamhandler(requestDto)
-            if(samhandlerResponse is HentSamhandlerResponseDto.Samhandler){
+            if (samhandlerResponse is HentSamhandlerResponseDto.Samhandler) {
                 call.respond(HttpStatusCode.OK, samhandlerResponse)
-            } else if((samhandlerResponse as HentSamhandlerResponseDto.Failure).failureType == HentSamhandlerResponseDto.Failure.FailureType.IKKE_FUNNET){
+            } else if ((samhandlerResponse as HentSamhandlerResponseDto.Failure).failureType == HentSamhandlerResponseDto.Failure.FailureType.IKKE_FUNNET) {
                 call.respond(HttpStatusCode.NotFound, samhandlerResponse)
             } else {
                 call.respond(HttpStatusCode.BadRequest, samhandlerResponse)
             }
         }
         post("/finnSamhandler") {
+            call.callId
             val requestDto = call.receive<FinnSamhandlerRequestDto>()
             val samhandlerResponse = samhandlerTjenestebussService.finnSamhandler(requestDto)
-            when(samhandlerResponse) {
-                is FinnSamhandlerResponseDto.Failure -> call.respond(HttpStatusCode.InternalServerError, samhandlerResponse)
+            when (samhandlerResponse) {
+                is FinnSamhandlerResponseDto.Failure -> call.respond(
+                    HttpStatusCode.InternalServerError,
+                    samhandlerResponse
+                )
+
                 is FinnSamhandlerResponseDto.Success -> call.respond(HttpStatusCode.OK, samhandlerResponse)
             }
         }
         post("/bestillbrev") {
             val requestDto = call.receive<BestillBrevRequestDto>()
-                val arkivResponse = arkivTjenestebussService.bestillBrev(requestDto)
-            when(arkivResponse) {
+            when (val arkivResponse = arkivTjenestebussService.bestillBrev(requestDto)) {
                 is Journalpost -> call.respond(HttpStatusCode.OK, arkivResponse)
                 is BestillBrevResponseDto.Failure -> {
-                    if(arkivResponse.failureType == MANGLER_OBLIGATORISK_INPUT) {
+                    if (arkivResponse.failureType == MANGLER_OBLIGATORISK_INPUT) {
                         call.respond(HttpStatusCode.BadRequest, arkivResponse)
                     } else {
                         call.respond(HttpStatusCode.InternalServerError, arkivResponse)

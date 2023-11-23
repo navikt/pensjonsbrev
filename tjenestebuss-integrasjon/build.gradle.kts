@@ -28,7 +28,7 @@ ktor {
 	}
 	docker {
 		jreVersion.set(JavaVersion.VERSION_17)
-		localImageName.set("pensjon-skribenten")
+		localImageName.set("tjenestebuss-integrasjon")
 		imageTag.set(providers.environmentVariable("IMAGE_TAG").orElse("latest"))
 		// TODO add workflow for deploying
 		//externalRegistry.set(
@@ -52,7 +52,6 @@ dependencies {
 	implementation("io.ktor:ktor-server-status-pages:$ktorVersion")
 	implementation("io.ktor:ktor-client-auth:$ktorVersion")
 	implementation("io.ktor:ktor-client-cio:$ktorVersion")
-	implementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
 
 	implementation("no.nav.pensjon.pesys-esb-wsclient:pcom-esb-wsclient-legacy:2023.11.01-10.31-1bc8315f412e") {
 	}

@@ -1,4 +1,4 @@
-package no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services
+package no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.soap
 
 import kotlinx.coroutines.runBlocking
 import org.w3c.dom.Document
@@ -26,18 +26,15 @@ class STSSercuritySOAPHandler(private val stsService: STSService) : Handler<SOAP
         }
         val decodedToken: String = base64Decoder.decode(token.access_token).decodeToString()
         val testCorrelationId = UUID.randomUUID().toString()
-        println(testCorrelationId)
-        context?.put(MessageContext.MESSAGE_OUTBOUND_PROPERTY, testCorrelationId)
-        context?.message?.soapPart?.envelope?.let { envelope ->
-            if (envelope.header == null) {
-                envelope.addHeader()
-            }
 
-            val securityHeader = generateSecurityHeader(decodedToken)
-            envelope.header.addChildElement(securityHeader)
-            return true
-        }
-        return false
+        context?.put(MessageContext.MESSAGE_OUTBOUND_PROPERTY, testCorrelationId)
+
+        return context?.message?.soapPart?.envelope?.apply {
+            if (header == null) {
+                addHeader()
+            }
+            header.addChildElement(generateSecurityHeader(decodedToken))
+        } != null
     }
 
     private fun generateSecurityHeader(decodedToken: String): SOAPElement {
@@ -60,7 +57,6 @@ class STSSercuritySOAPHandler(private val stsService: STSService) : Handler<SOAP
     }
 
     override fun close(context: MessageContext?) {
-        println(context)
     }
 
     private fun convertStringToDocument(xmlStr: String): Document {

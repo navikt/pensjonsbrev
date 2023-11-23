@@ -1,4 +1,4 @@
-package no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services
+package no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.samhandler
 
 import no.nav.inf.psak.samhandler.FinnSamhandlerFaultPenGeneriskMsg
 import no.nav.inf.psak.samhandler.HentSamhandlerFaultPenGeneriskMsg
@@ -16,8 +16,6 @@ class SamhandlerTjenestebussService(private val samhandlerClient: PSAKSamhandler
     private val logger = LoggerFactory.getLogger(this::class.java)
 
     fun hentSamhandler(requestDto: HentSamhandlerRequestDto): HentSamhandlerResponseDto {
-        // TODO do we need to create a new bean every time to get refreshed auth?
-
         try {
             val response =  samhandlerClient.hentSamhandler(ASBOPenHentSamhandlerRequest().apply {
                 idTSSEkstern = requestDto.idTSSEkstern

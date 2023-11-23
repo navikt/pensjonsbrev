@@ -2,8 +2,8 @@ package no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.samhan
 
 import com.typesafe.config.Config
 import no.nav.inf.psak.samhandler.PSAKSamhandler
-import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.STSSercuritySOAPHandler
-import no.nav.virksomhet.tjenester.arkiv.v1.Arkiv
+import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.soap.STSSercuritySOAPHandler
+import org.apache.cxf.ext.logging.LoggingFeature
 import org.apache.cxf.jaxws.JaxWsProxyFactoryBean
 import org.apache.cxf.ws.addressing.WSAddressingFeature
 import javax.xml.namespace.QName
@@ -20,7 +20,7 @@ class SamhandlerClient(config: Config, securityHandler: STSSercuritySOAPHandler)
         endpointName = QName(namespace, portName)
         serviceClass = PSAKSamhandler::class.java
         handlers = listOf(securityHandler)
-        features = listOf(WSAddressingFeature())        //TODO add Logging feature?
+        features = listOf(WSAddressingFeature(), LoggingFeature())        //TODO add Logging feature?
     }
     fun client(): PSAKSamhandler = jaxWsProxyFactoryBean.create() as PSAKSamhandler
 }
