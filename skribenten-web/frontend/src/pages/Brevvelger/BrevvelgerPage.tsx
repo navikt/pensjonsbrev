@@ -35,7 +35,7 @@ export function BrevvelgerPage() {
         grid-template-columns: 1fr 400px;
         gap: var(--a-spacing-4);
         justify-content: space-between;
-        flex: 1; // Always fill to the bottom of the page
+        flex: 1;
 
         > :first-of-type {
           padding: var(--a-spacing-6);

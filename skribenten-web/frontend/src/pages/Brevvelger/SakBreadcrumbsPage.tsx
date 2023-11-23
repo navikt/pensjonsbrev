@@ -36,7 +36,7 @@ function SakInfoBreadcrumbs({ sak }: { sak?: SakDto }) {
       asChild
       css={css`
         position: sticky;
-        top: 48px; // 48px to pin it below the black main header
+        top: 48px;
         z-index: var(--a-z-index-focus);
       `}
       marginInline="full"
