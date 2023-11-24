@@ -25,7 +25,7 @@ class SamhandlerClient(
         endpointName = QName(namespace, portName)
         serviceClass = PSAKSamhandler::class.java
         handlers = listOf(securityHandler, callIdSoapHandler)
-        features = listOf(WSAddressingFeature(), LoggingFeature())
+        features = listOf(WSAddressingFeature())
     }
 
     fun client(): PSAKSamhandler = jaxWsProxyFactoryBean.create() as PSAKSamhandler

@@ -79,12 +79,15 @@ fun Application.tjenestebussIntegrationApi(config: Config) {
 
             val samhandlerResponse = withCallId(samhandlerTjenestebussService) { hentSamhandler(requestDto) }
 
-            if (samhandlerResponse is HentSamhandlerResponseDto.Samhandler) {
-                call.respond(HttpStatusCode.OK, samhandlerResponse)
-            } else if ((samhandlerResponse as HentSamhandlerResponseDto.Failure).failureType == HentSamhandlerResponseDto.Failure.FailureType.IKKE_FUNNET) {
-                call.respond(HttpStatusCode.NotFound, samhandlerResponse)
-            } else {
-                call.respond(HttpStatusCode.BadRequest, samhandlerResponse)
+            when(samhandlerResponse) {
+                is HentSamhandlerResponseDto.Failure -> {
+                    if(samhandlerResponse.failureType == HentSamhandlerResponseDto.Failure.FailureType.IKKE_FUNNET) {
+                        call.respond(HttpStatusCode.NotFound, samhandlerResponse)
+                    } else {
+                        call.respond(HttpStatusCode.BadRequest, samhandlerResponse)
+                    }
+                }
+                is HentSamhandlerResponseDto.Samhandler -> call.respond(HttpStatusCode.OK, samhandlerResponse)
             }
         }
         post("/finnSamhandler") {

@@ -43,6 +43,8 @@ class SamhandlerTjenestebussService(config: Config, securityHandler: STSSercurit
 
     fun finnSamhandler(requestDto: FinnSamhandlerRequestDto): FinnSamhandlerResponseDto {
         try {
+            logger.info("Finn samhandler med type: ${requestDto.samhandlerType}")
+
             val samhandlerResponse = samhandlerClient.finnSamhandler(ASBOPenFinnSamhandlerRequest().apply {
                 navn = requestDto.navn
                 samhandlerType = requestDto.samhandlerType.name

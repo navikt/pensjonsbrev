@@ -54,6 +54,8 @@ dependencies {
 	implementation("io.ktor:ktor-client-auth:$ktorVersion")
 	implementation("io.ktor:ktor-client-cio:$ktorVersion")
 	implementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
+	implementation("ch.qos.logback:logback-classic:$logbackVersion")
+	implementation("net.logstash.logback:logstash-logback-encoder:$logstashVersion")
 
 	implementation("no.nav.pensjon.pesys-esb-wsclient:pcom-esb-wsclient-legacy:$esbVersion") {
 	}

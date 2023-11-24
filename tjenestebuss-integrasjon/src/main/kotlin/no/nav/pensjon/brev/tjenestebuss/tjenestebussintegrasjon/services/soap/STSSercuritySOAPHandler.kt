@@ -6,8 +6,7 @@ import org.xml.sax.InputSource
 import org.xml.sax.SAXException
 import java.io.IOException
 import java.io.StringReader
-import java.time.LocalDateTime
-import java.util.*
+import java.util.Base64
 import javax.xml.parsers.DocumentBuilderFactory
 import javax.xml.parsers.ParserConfigurationException
 import javax.xml.soap.SOAPElement
@@ -25,9 +24,6 @@ class STSSercuritySOAPHandler(private val stsService: STSService) : Handler<SOAP
             stsService.getToken()
         }
         val decodedToken: String = base64Decoder.decode(token.access_token).decodeToString()
-        val testCorrelationId = UUID.randomUUID().toString()
-
-        context?.put(MessageContext.MESSAGE_OUTBOUND_PROPERTY, testCorrelationId)
 
         return context?.message?.soapPart?.envelope?.apply {
             if (header == null) {
@@ -37,23 +33,16 @@ class STSSercuritySOAPHandler(private val stsService: STSService) : Handler<SOAP
         } != null
     }
 
-    private fun generateSecurityHeader(decodedToken: String): SOAPElement {
-        val soapFactory = SOAPFactory.newInstance()
-        val headerName = soapFactory.createName("Security", "wsse", SECURITY_URL)
-        val securityHeader = soapFactory.createElement(headerName)
-        val assertion: Document = convertStringToDocument(decodedToken)
-        val securityDoc: Document = securityHeader.ownerDocument
-        val samlNode = securityDoc.importNode(assertion.firstChild, true)
-        securityHeader.appendChild(samlNode)
-        val soapenvName = soapFactory.createName("mustUnderstand", "soapenv", "http://www.w3.org/2003/05/soap-envelope")
-        securityHeader.addAttribute(soapenvName, "1")
-        return securityHeader
-    }
+    private fun generateSecurityHeader(decodedToken: String): SOAPElement =
+        SOAPFactory.newInstance().run {
+            createElement(createName("Security", "wsse", SECURITY_URL)).apply {
+                appendChild(ownerDocument.importNode(convertStringToDocument(decodedToken).firstChild, true))
+                addAttribute(createName("mustUnderstand", "soapenv", "http://www.w3.org/2003/05/soap-envelope"), "1")
+            }
+        }
 
     override fun handleFault(context: SOAPMessageContext?): Boolean {
-        println(LocalDateTime.now())
-        println(context)
-        return false
+        return true
     }
 
     override fun close(context: MessageContext?) {
