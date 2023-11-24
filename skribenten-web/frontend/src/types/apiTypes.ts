@@ -45,8 +45,6 @@ export enum BrevSystem {
 }
 export enum SpraakKode {
   Engelsk = "EN",
-  Frank = "FR",
   Bokmaal = "NB",
   Nynorsk = "NN",
-  NordSamisk = "SE",
 }
