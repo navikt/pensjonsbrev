@@ -3,12 +3,17 @@ package no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.samhan
 import com.typesafe.config.Config
 import no.nav.inf.psak.samhandler.PSAKSamhandler
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.soap.STSSercuritySOAPHandler
+import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.soap.TjenestebussService
 import org.apache.cxf.ext.logging.LoggingFeature
 import org.apache.cxf.jaxws.JaxWsProxyFactoryBean
 import org.apache.cxf.ws.addressing.WSAddressingFeature
 import javax.xml.namespace.QName
 
-class SamhandlerClient(config: Config, securityHandler: STSSercuritySOAPHandler) {
+class SamhandlerClient(
+    config: Config,
+    securityHandler: STSSercuritySOAPHandler,
+    callIdSoapHandler: TjenestebussService.CallIdSoapHandler
+) {
     private val tjenestebussUrl = config.getString("url")
     private val jaxWsProxyFactoryBean = JaxWsProxyFactoryBean().apply {
         val name = "PSAKSamhandlerWSEXP_PSAKSamhandlerHttpService"
@@ -19,9 +24,10 @@ class SamhandlerClient(config: Config, securityHandler: STSSercuritySOAPHandler)
         serviceName = QName(namespace, name)
         endpointName = QName(namespace, portName)
         serviceClass = PSAKSamhandler::class.java
-        handlers = listOf(securityHandler)
-        features = listOf(WSAddressingFeature(), LoggingFeature())        //TODO add Logging feature?
+        handlers = listOf(securityHandler, callIdSoapHandler)
+        features = listOf(WSAddressingFeature(), LoggingFeature())
     }
+
     fun client(): PSAKSamhandler = jaxWsProxyFactoryBean.create() as PSAKSamhandler
 }
 

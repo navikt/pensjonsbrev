@@ -7,8 +7,12 @@ import io.ktor.client.engine.cio.*
 import io.ktor.client.plugins.*
 import io.ktor.client.plugins.auth.*
 import io.ktor.client.plugins.auth.providers.*
+import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
 import io.ktor.http.*
+import io.ktor.serialization.jackson.*
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import java.time.LocalDateTime
 
 data class UserToken(
@@ -27,6 +31,8 @@ data class UserToken(
 }
 
 class STSService(stsConfig: Config) {
+    val mutex = Mutex()
+
     var token: UserToken? = null
     val stsEndpointUrl: String = stsConfig.getString("url")
     val stsUser: String = stsConfig.getString("username")
@@ -42,24 +48,34 @@ class STSService(stsConfig: Config) {
         defaultRequest {
             url(stsEndpointUrl)
         }
+        install(ContentNegotiation) {
+            jackson()
+        }
     }
 
     suspend fun getToken(): UserToken {
-        val currentToken = token
-        //TODO leeway from config
-        return if (currentToken != null && currentToken.isValid(10)) {
-            currentToken
-        } else {
-            val response = client.get("/rest/v1/sts/samltoken") {
-                headers {
-                    contentType(ContentType.Application.Json)
-                }
-                parameter("grant_type", "client_credentials")
-                parameter("scope", "openid")
+        mutex.withLock {
+            val currentToken = token
+            //TODO leeway from config
+            return if (currentToken != null && currentToken.isValid(10)) {
+                currentToken
+            } else {
+                val newToken = fetchToken()
+                token = newToken
+                newToken
             }
-            val newToken = response.body<UserToken>()
-            token = newToken
-            newToken
         }
+    }
+
+    private suspend fun fetchToken(): UserToken {
+        val response = client.get("/rest/v1/sts/samltoken") {
+            headers {
+                contentType(ContentType.Application.Json)
+                accept(ContentType.Application.Json)
+            }
+            parameter("grant_type", "client_credentials")
+            parameter("scope", "openid")
+        }
+        return response.body()
     }
 }

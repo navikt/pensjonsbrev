@@ -42,6 +42,7 @@ ktor {
 }
 
 val cxfVersion = "3.6.0"
+val esbVersion = "2023.11.01-10.31-1bc8315f412e"
 dependencies {
 	implementation("io.ktor:ktor-serialization-jackson:$ktorVersion")
 	implementation("io.ktor:ktor-server-call-id:$ktorVersion")
@@ -52,12 +53,13 @@ dependencies {
 	implementation("io.ktor:ktor-server-status-pages:$ktorVersion")
 	implementation("io.ktor:ktor-client-auth:$ktorVersion")
 	implementation("io.ktor:ktor-client-cio:$ktorVersion")
+	implementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
 
-	implementation("no.nav.pensjon.pesys-esb-wsclient:pcom-esb-wsclient-legacy:2023.11.01-10.31-1bc8315f412e") {
+	implementation("no.nav.pensjon.pesys-esb-wsclient:pcom-esb-wsclient-legacy:$esbVersion") {
 	}
-	implementation("no.nav.pensjon.pesys-esb-wsclient:psak-esb-wsclient-legacy:2023.11.01-10.31-1bc8315f412e") {
+	implementation("no.nav.pensjon.pesys-esb-wsclient:psak-esb-wsclient-legacy:$esbVersion") {
 	}
-	implementation("no.nav.pensjon.pesys-esb-wsclient:pen-arkiv-esb-wsclient-legacy:2023.11.01-10.31-1bc8315f412e") {
+	implementation("no.nav.pensjon.pesys-esb-wsclient:pen-arkiv-esb-wsclient-legacy:$esbVersion") {
 	}
 	implementation("javax.xml.ws:jaxws-api:2.3.1")
 	implementation("com.sun.xml.ws:jaxws-tools:2.3.0.2")

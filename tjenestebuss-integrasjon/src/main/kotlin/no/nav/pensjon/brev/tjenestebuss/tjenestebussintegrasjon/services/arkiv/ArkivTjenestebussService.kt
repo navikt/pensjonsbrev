@@ -1,8 +1,11 @@
 package no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.arkiv
 
+import com.typesafe.config.Config
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.maskerFnr
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.arkiv.BestillBrevResponseDto.Failure
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.arkiv.BestillBrevResponseDto.Failure.FailureType
+import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.soap.STSSercuritySOAPHandler
+import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.soap.TjenestebussService
 import no.nav.virksomhet.tjenester.arkiv.meldinger.v1.BestillBrevRequest
 import no.nav.virksomhet.tjenester.arkiv.meldinger.v1.Sakskontekst
 import no.nav.virksomhet.tjenester.arkiv.v1.*
@@ -12,8 +15,10 @@ import javax.xml.bind.JAXBElement
 import javax.xml.datatype.XMLGregorianCalendar
 import javax.xml.namespace.QName
 
-class ArkivTjenestebussService(private val arkivClient: Arkiv) {
+class ArkivTjenestebussService(config: Config, securityHandler: STSSercuritySOAPHandler): TjenestebussService() {
     private val logger = LoggerFactory.getLogger(this::class.java)
+
+    private val arkivClient = ArkivClient(config, securityHandler, callIdHandler).client()
 
     fun bestillBrev(bestillBrevRequestDto: BestillBrevRequestDto): BestillBrevResponseDto {
         try {

@@ -1,19 +1,23 @@
 package no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.samhandler
 
+import com.typesafe.config.Config
 import no.nav.inf.psak.samhandler.FinnSamhandlerFaultPenGeneriskMsg
 import no.nav.inf.psak.samhandler.HentSamhandlerFaultPenGeneriskMsg
 import no.nav.inf.psak.samhandler.HentSamhandlerFaultPenSamhandlerIkkeFunnetMsg
-import no.nav.inf.psak.samhandler.PSAKSamhandler
 import no.nav.lib.pen.psakpselv.asbo.samhandler.ASBOPenFinnSamhandlerRequest
 import no.nav.lib.pen.psakpselv.asbo.samhandler.ASBOPenHentSamhandlerRequest
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.FinnSamhandlerRequestDto
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.HentSamhandlerRequestDto
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.samhandler.dto.FinnSamhandlerResponseDto
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.samhandler.dto.HentSamhandlerResponseDto
+import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.soap.STSSercuritySOAPHandler
+import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.soap.TjenestebussService
 import org.slf4j.LoggerFactory
 
-class SamhandlerTjenestebussService(private val samhandlerClient: PSAKSamhandler) {
+class SamhandlerTjenestebussService(config: Config, securityHandler: STSSercuritySOAPHandler): TjenestebussService() {
     private val logger = LoggerFactory.getLogger(this::class.java)
+
+    private val samhandlerClient = SamhandlerClient(config, securityHandler, callIdHandler).client()
 
     fun hentSamhandler(requestDto: HentSamhandlerRequestDto): HentSamhandlerResponseDto {
         try {
