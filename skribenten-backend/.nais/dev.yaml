@@ -33,7 +33,7 @@ externalHosts:
 
 env:
   - name: CORS_ALLOW_HOST
-    value: "pensjon-skribenten-eksperiment.intern.dev.nav.no"
+    value: "pensjon-skribenten-web.intern.dev.nav.no"
   - name: PEN_URL
     value: "https://pensjon-pen-q2.dev-fss-pub.nais.io/pen/springapi/"
   - name: PEN_SCOPE
