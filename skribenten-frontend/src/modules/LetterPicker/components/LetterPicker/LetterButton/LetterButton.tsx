@@ -52,7 +52,7 @@ const LetterButton: FC<LetterButtonProps> = ({text, id, isSelected = false, onCl
 
 const systemLetter = (system: Brevsystem): JSX.Element => {
     switch (system) {
-        case "EXTERAM": return <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
+        case "EXTREAM": return <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
             <circle cx="8" cy="8" r="7.5" fill="#97E6FF" stroke="#134852"/>
             <path d="M5 13L5.0001 3H10.9971L11 5H6.99189L6.98902 7H9.99581V9H6.98902L7 11H11.0081L10.997 13H5Z" fill="#134852"/>
         </svg>

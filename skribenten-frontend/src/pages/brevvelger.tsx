@@ -96,7 +96,7 @@ const Brevvelger: NextPage<SkribentenConfig> = (props) => {
     const onOrderLetterHandler = (selectedLanguage: string) => {
         if (selectedLetter && sak && sak.sakId && sak.foedselsnr) {
             const metadata = selectedLetter.metadata
-            if (metadata.brevsystem == "EXTERAM") {
+            if (metadata.brevsystem == "EXTREAM") {
                 skribentApi.bestillExtreamBrev(selectedLetter.metadata, sak, sak.foedselsnr, selectedLanguage, selectedLetter.landkode, selectedLetter.mottakerText)
                     .then((url: string) => {
                         window.open(url)

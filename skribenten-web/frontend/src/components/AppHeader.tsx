@@ -6,7 +6,13 @@ import { useUserInfo } from "../hooks/useUserInfo";
 
 export function AppHeader() {
   return (
-    <InternalHeader>
+    <InternalHeader
+      css={css`
+        position: sticky;
+        top: 0;
+        z-index: var(--a-z-index-focus);
+      `}
+    >
       <InternalHeader.Title as="h1">
         <RouterLink
           css={css`

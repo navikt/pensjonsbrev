@@ -4,13 +4,14 @@ body {
 
 :root {
     --page-margins: auto;
-    --largest-width: 1650px;
+    --largest-width: 1200px;
     --banner-height: 90px;
 }
 
 .page-margins {
     max-width: var(--largest-width);
     margin: 0 var(--page-margins);
+    min-height: calc(100vh - 48px);  /* 48px is height of the header */
     display: flex;
     flex-direction: column;
 }

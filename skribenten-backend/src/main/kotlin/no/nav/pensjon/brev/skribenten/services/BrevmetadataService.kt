@@ -50,7 +50,7 @@ class BrevmetadataService(config: Config) {
             spraak = sprak ?: emptyList(),
             brevsystem = when (brevsystem) {
                 "DOKSYS" -> BrevSystem.DOKSYS
-                "GAMMEL" -> BrevSystem.EXTERAM
+                "GAMMEL" -> BrevSystem.EXTREAM
                 // TODO handle state or throw something else.
                 else -> throw IllegalStateException("Malformed metadata. Must be doksys or extream.")
             },
@@ -105,7 +105,7 @@ data class LetterCategory(
     val templates: List<LetterMetadata>,
 )
 
-enum class BrevSystem { EXTERAM, DOKSYS, BREVBAKER }
+enum class BrevSystem { EXTREAM, DOKSYS, BREVBAKER }
 
 data class LetterMetadata(
     val name: String,

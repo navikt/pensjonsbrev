@@ -3,10 +3,12 @@ import { QueryClient } from "@tanstack/react-query";
 import { Outlet, rootRouteWithContext, Route, Router } from "@tanstack/react-router";
 import React from "react";
 
-import { getSak } from "./api/skribenten-api-endpoints";
+import { getLetterTemplate, getSak } from "./api/skribenten-api-endpoints";
 import { AppHeader } from "./components/AppHeader";
-import { SakPage } from "./pages/Brevvelger/SakPage";
-import { VelgSakPage } from "./pages/Brevvelger/VelgSakPage";
+import { BrevvelgerPage, BrevvelgerTabOptions } from "./pages/Brevvelger/BrevvelgerPage";
+import { ChooseSakPage } from "./pages/Brevvelger/ChooseSakPage";
+import { SakBreadcrumbsPage } from "./pages/Brevvelger/SakBreadcrumbsPage";
+import { SelectedTemplate } from "./pages/Brevvelger/SelectedTemplate";
 
 const TanStackRouterDevtools =
   process.env.NODE_ENV === "production"
@@ -36,7 +38,7 @@ function Root() {
       </React.Suspense>
       <div
         css={css`
-          @media (width <= 1700px) {
+          @media (width <= 1350px) {
             --page-margins: 75px;
           }
         `}
@@ -50,27 +52,55 @@ function Root() {
   );
 }
 
-const velgSaksnummerRoute = new Route({
+const chooseSakPageRoute = new Route({
   getParentRoute: () => rootRoute,
   path: "saksnummer",
-  component: VelgSakPage,
+  component: ChooseSakPage,
 });
 
 export const sakRoute = new Route({
   getParentRoute: () => rootRoute,
   path: "saksnummer/$sakId",
   beforeLoad: ({ params: { sakId } }) => {
-    const queryOptions = {
+    const getSakQueryOptions = {
       queryKey: getSak.queryKey(sakId),
       queryFn: () => getSak.queryFn(sakId),
     };
 
-    return { queryOptions };
+    return { getSakQueryOptions };
   },
-  load: async ({ context: { queryClient, queryOptions } }) => {
-    await queryClient.ensureQueryData(queryOptions);
+  load: async ({ context: { queryClient, getSakQueryOptions } }) => {
+    await queryClient.ensureQueryData(getSakQueryOptions);
   },
-  component: SakPage,
+  component: SakBreadcrumbsPage,
+});
+
+export const brevvelgerRoute = new Route({
+  getParentRoute: () => sakRoute,
+  path: "brevvelger",
+  validateSearch: (search): { fane: BrevvelgerTabOptions } => ({
+    fane:
+      search.fane === BrevvelgerTabOptions.E_BLANKETTER
+        ? BrevvelgerTabOptions.E_BLANKETTER
+        : BrevvelgerTabOptions.BREVMALER,
+  }),
+  load: async ({ context: { queryClient, getSakQueryOptions } }) => {
+    const { sakType } = await queryClient.ensureQueryData(getSakQueryOptions);
+
+    const getLetterTemplateQuery = {
+      queryKey: getLetterTemplate.queryKey(sakType),
+      queryFn: () => getLetterTemplate.queryFn(sakType),
+    };
+
+    await queryClient.ensureQueryData(getLetterTemplateQuery);
+  },
+  component: BrevvelgerPage,
+});
+
+export const selectedTemplateRoute = new Route({
+  getParentRoute: () => brevvelgerRoute,
+  path: "$templateId",
+  component: SelectedTemplate,
 });
 
 const indexRoute = new Route({
@@ -78,7 +108,7 @@ const indexRoute = new Route({
   path: "/",
   load: ({ navigate, preload }) => {
     if (!preload) {
-      navigate({ to: velgSaksnummerRoute.id });
+      navigate({ to: chooseSakPageRoute.id });
     }
   },
   component: undefined,
@@ -90,7 +120,12 @@ const notFoundRoute = new Route({
   component: () => "Siden finnes ikke",
 });
 
-const routeTree = rootRoute.addChildren([indexRoute, velgSaksnummerRoute, sakRoute, notFoundRoute]);
+const routeTree = rootRoute.addChildren([
+  indexRoute,
+  chooseSakPageRoute,
+  sakRoute.addChildren([brevvelgerRoute.addChildren([selectedTemplateRoute])]),
+  notFoundRoute,
+]);
 
 export const router = new Router({ routeTree, defaultPreload: "intent", context: { queryClient } });
 

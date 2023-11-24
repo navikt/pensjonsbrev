@@ -18,3 +18,33 @@ export type SakType =
   | "KRIGSP"
   | "OMSORG"
   | "UFOREP";
+
+export type LetterTemplatesResponse = {
+  kategorier: LetterCategory[];
+  eblanketter: LetterMetadata[];
+};
+
+export type LetterCategory = {
+  name: string;
+  templates: LetterMetadata[];
+};
+
+export type LetterMetadata = {
+  name: string;
+  id: string;
+  brevsystem: BrevSystem;
+  spraak: SpraakKode[];
+  isVedtaksbrev: boolean;
+  isEblankett: boolean;
+};
+
+export enum BrevSystem {
+  Extream = "EXTREAM",
+  DokSys = "DOKSYS",
+  Brevbaker = "BREVBAKER",
+}
+export enum SpraakKode {
+  Engelsk = "EN",
+  Bokmaal = "NB",
+  Nynorsk = "NN",
+}
