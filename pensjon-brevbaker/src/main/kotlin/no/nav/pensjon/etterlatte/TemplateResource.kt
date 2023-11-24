@@ -4,9 +4,11 @@ import no.nav.pensjon.brev.template.LetterTemplate
 import no.nav.pensjon.etterlatte.maler.TomMal
 import no.nav.pensjon.etterlatte.maler.barnepensjon.BarnepensjonInnvilgelse
 import no.nav.pensjon.etterlatte.maler.barnepensjon.avslag.AvslagFoerstegangsbehandling
-import no.nav.pensjon.etterlatte.maler.barnepensjon.avslag.IkkeSomFoelgeAvYrkesskadeYrkessykdom
+import no.nav.pensjon.etterlatte.maler.barnepensjon.avslag.AvslagFoerstegangsbehandlingEnkel
 import no.nav.pensjon.etterlatte.maler.barnepensjon.endring.Endring
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.ny.BarnepensjonInnvilgelseEnkel
+import no.nav.pensjon.etterlatte.maler.barnepensjon.migrering.EnkeltVedtakOmregningNyttRegelverk
+import no.nav.pensjon.etterlatte.maler.barnepensjon.migrering.ForhaandsvarselOmregningBP
 import no.nav.pensjon.etterlatte.maler.barnepensjon.ny.BarnepensjonInnvilgelseNy
 import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.AdopsjonRevurdering
 import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.OmgjoeringAvFarskapRevurdering
@@ -28,7 +30,7 @@ import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingInnhold
 val prodAutobrevTemplates: Set<EtterlatteTemplate<*>> =
     setOf(
         AvslagFoerstegangsbehandling,
-        IkkeSomFoelgeAvYrkesskadeYrkessykdom,
+        AvslagFoerstegangsbehandlingEnkel,
         BarnepensjonInnvilgelse,
         BarnepensjonInnvilgelseEnkel,
         BarnepensjonInnvilgelseNy,
@@ -49,7 +51,9 @@ val prodAutobrevTemplates: Set<EtterlatteTemplate<*>> =
         OpphoerGenerell,
         TilbakekrevingInnhold,
         TilbakekrevingFerdig,
-        TomMal
+        TomMal,
+        ForhaandsvarselOmregningBP,
+        EnkeltVedtakOmregningNyttRegelverk
     )
 
 val prodRedigerbareTemplates: Set<EtterlatteTemplate<*>> = emptySet()

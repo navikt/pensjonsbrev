@@ -6,10 +6,10 @@ import no.nav.pensjon.brevbaker.api.model.Foedselsnummer
 import no.nav.pensjon.brevbaker.api.model.NAVEnhet
 import no.nav.pensjon.brevbaker.api.model.SignerendeSaksbehandlere
 import no.nav.pensjon.brevbaker.api.model.Telefonnummer
-import no.nav.pensjon.etterlatte.fixtures.createBarnepensjonAvslagIkkeYrkesskadeDTO
 import no.nav.pensjon.etterlatte.fixtures.createBarnepensjonInnvilgelseDTO
 import no.nav.pensjon.etterlatte.fixtures.createBarnepensjonInnvilgelseEnkelDTO
 import no.nav.pensjon.etterlatte.fixtures.createBarnepensjonInnvilgelseNyDTO
+import no.nav.pensjon.etterlatte.fixtures.createBarnepensjonOmregnetNyttRegelverkDTO
 import no.nav.pensjon.etterlatte.fixtures.createBarnepensjonRevurderingAdopsjonDTO
 import no.nav.pensjon.etterlatte.fixtures.createBarnepensjonRevurderingOmgjoeringAvFarskapDTO
 import no.nav.pensjon.etterlatte.fixtures.createBarnepensjonRevurderingSoeskenjusteringDTO
@@ -27,9 +27,9 @@ import no.nav.pensjon.etterlatte.fixtures.createTomMal
 import no.nav.pensjon.etterlatte.maler.ManueltBrevDTO
 import no.nav.pensjon.etterlatte.maler.TomMal
 import no.nav.pensjon.etterlatte.maler.barnepensjon.BarnepensjonInnvilgelseDTO
-import no.nav.pensjon.etterlatte.maler.barnepensjon.avslag.BarnepensjonAvslagIkkeYrkesskadeDTO
 import no.nav.pensjon.etterlatte.maler.barnepensjon.endring.EndringHovedmalDTO
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.ny.BarnepensjonInnvilgelseEnkelDTO
+import no.nav.pensjon.etterlatte.maler.barnepensjon.migrering.BarnepensjonOmregnetNyttRegelverkDTO
 import no.nav.pensjon.etterlatte.maler.barnepensjon.ny.BarnepensjonInnvilgelseNyDTO
 import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingAdopsjonDTO
 import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingOmgjoeringAvFarskapDTO
@@ -89,7 +89,7 @@ object Fixtures {
             BarnepensjonRevurderingAdopsjonDTO::class -> createBarnepensjonRevurderingAdopsjonDTO() as T
             BarnepensjonRevurderingSoeskenjusteringDTO::class -> createBarnepensjonRevurderingSoeskenjusteringDTO() as T
             BarnepensjonRevurderingOmgjoeringAvFarskapDTO::class -> createBarnepensjonRevurderingOmgjoeringAvFarskapDTO() as T
-            BarnepensjonAvslagIkkeYrkesskadeDTO::class -> createBarnepensjonAvslagIkkeYrkesskadeDTO() as T
+            BarnepensjonOmregnetNyttRegelverkDTO::class -> createBarnepensjonOmregnetNyttRegelverkDTO() as T
             TilbakekrevingInnholdDTO::class -> createTilbakekrevingInnholdDTO() as T
             TilbakekrevingFerdigDTO::class -> createTilbakekrevingFerdigDTO() as T
             TomMal::class -> createTomMal() as T
