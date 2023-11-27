@@ -1,0 +1,8 @@
+app-name: "pensjonsbrev-tjenestebuss"
+ingresses:
+  - "https://pensjonsbrev-tjenestebuss.intern.dev.nav.no"
+env:
+  - name: TJENESTEBUSS_URL
+    value: "https://tjenestebuss-q2.adeo.no/"
+  - name: STS_URL
+    value: "https://security-token-service.dev.adeo.no"
