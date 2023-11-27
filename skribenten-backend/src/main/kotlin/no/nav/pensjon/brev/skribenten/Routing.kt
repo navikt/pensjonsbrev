@@ -76,24 +76,24 @@ fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config
             }
 
             post("/pen/extream") {
-                // TODO skal vi validere metadata?
-                val request = call.receive<OrderLetterRequest>()
-                //TODO try to get extra claims when authorizing user instead of using graph service.
-                val name = getClaim("name") ?: throw UnauthorizedException("Could not find name of user")
+                TODO("bestill extream brev via tjenestebuss-integrasjon")
+                //// TODO skal vi validere metadata?
+                //val request = call.receive<OrderLetterRequest>()
+                ////TODO try to get extra claims when authorizing user instead of using graph service.
+                //val name = getClaim("name") ?: throw UnauthorizedException("Could not find name of user")
 
-                // TODO create respond on error or similar function to avoid boilerplate. RespondOnError?
-                val onPremisesSamAccountName: String =
-                    when (val response = microsoftGraphService.getOnPremisesSamAccountName(call)) {
-                        is ServiceResult.Ok -> response.result
-                        is ServiceResult.Error, is ServiceResult.AuthorizationError -> {
-                            respondWithResult(response)
-                            return@post
-                        }
-                    }
+                //// TODO create respond on error or similar function to avoid boilerplate. RespondOnError?
+                //val onPremisesSamAccountName: String =
+                //    when (val response = microsoftGraphService.getOnPremisesSamAccountName(call)) {
+                //        is ServiceResult.Ok -> response.result
+                //        is ServiceResult.Error, is ServiceResult.AuthorizationError -> {
+                //            respondWithResult(response)
+                //            return@post
+                //        }
+                //    }
 
                 //TODO better error handling.
                 // TODO access controls for e-blanketter
-                TODO("bestill extream brev via tjenestebuss-integrasjon")
                 //penService.bestillExtreamBrev(call, request, name, onPremisesSamAccountName).map { journalpostId ->
                 //    val error = safService.waitForJournalpostStatusUnderArbeid(call, journalpostId)
                 //    if (error != null) {

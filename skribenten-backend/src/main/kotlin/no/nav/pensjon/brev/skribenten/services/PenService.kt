@@ -36,10 +36,10 @@ class PenService(config: Config, authService: AzureADService) {
         val fodselsdato: LocalDate,
         val fnr: String,
     )
-
     data class Sak(
         val sakId: Long,
-        val penPerson: PenPersonDto,
+        val foedselsnr: String,
+        val foedselsdato: LocalDate,
         val sakType: SakType,
     )
 
@@ -53,14 +53,14 @@ class PenService(config: Config, authService: AzureADService) {
 
 
     private suspend fun fetchSak(call: ApplicationCall, sakId: String): ServiceResult<Sak, PenError> =
-        client.get(call, "sak/$sakId").toServiceResult<Sak, PenError>()
+        client.get(call, "brev/skribenten/sak/$sakId").toServiceResult<Sak, PenError>()
 
     suspend fun hentSak(call: ApplicationCall, sakId: String): ServiceResult<SakSelection, PenError> =
         fetchSak(call, sakId).map {
             SakSelection(
                 sakId = it.sakId,
-                foedselsnr = it.penPerson.fnr,
-                foedselsdato = it.penPerson.fodselsdato,
+                foedselsnr = it.foedselsnr,
+                foedselsdato = it.foedselsdato,
                 sakType = it.sakType,
             )
         }
