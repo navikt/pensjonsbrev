@@ -1,19 +1,21 @@
 import { css } from "@emotion/react";
 import { Bleed, CopyButton } from "@navikt/ds-react";
 import { useQuery } from "@tanstack/react-query";
-import { useRouteContext } from "@tanstack/react-router";
+import { Outlet, useRouteContext } from "@tanstack/react-router";
+import React from "react";
 
 import { getNavn } from "../../api/skribenten-api-endpoints";
 import { sakRoute } from "../../tanStackRoutes";
 import type { SakDto } from "../../types/apiTypes";
 
-export function SakPage() {
-  const { queryOptions } = useRouteContext({ from: sakRoute.id });
-  const sak = useQuery(queryOptions);
+export function SakBreadcrumbsPage() {
+  const { getSakQueryOptions } = useRouteContext({ from: sakRoute.id });
+  const sak = useQuery(getSakQueryOptions);
 
   return (
     <>
       <SakInfoBreadcrumbs sak={sak.data} />
+      <Outlet />
     </>
   );
 }
@@ -30,7 +32,15 @@ function SakInfoBreadcrumbs({ sak }: { sak?: SakDto }) {
   }
 
   return (
-    <Bleed asChild marginInline="full">
+    <Bleed
+      asChild
+      css={css`
+        position: sticky;
+        top: 48px;
+        z-index: var(--a-z-index-focus);
+      `}
+      marginInline="full"
+    >
       <div
         css={css`
           display: flex;

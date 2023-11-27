@@ -22,6 +22,9 @@ allprojects {
                 username = project.findProperty("gpr.user") as String? ?: System.getenv("GITHUB_ACTOR")
                 password = project.findProperty("gpr.token") as String? ?: System.getenv("GITHUB_TOKEN")
             }
+            content {
+                includeGroup("no.nav.pensjon.brev")
+            }
         }
     }
 }

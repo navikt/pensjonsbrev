@@ -826,7 +826,7 @@ object InfoAvdoedPenFraAndre : OutlinePhrase<LangBokmalNynorskEnglish>() {
                 Nynorsk to "Dersom avdøde hadde ei privat eller offentleg pensjonsordning og du har spørsmål om dette, må du kontakte arbeidsgivaren til avdøde. " +
                         "Du kan også ta kontakt med pensjonsordninga eller forsikringsselskapet.",
                 English to "If the deceased was a member of a private or public pension scheme and you have questions about this, you must contact the deceased's employer. " +
-                        "You can also contact the pension scheme or insurance."
+                        "You can also contact the pension scheme or insurance company."
             )
         }
 }

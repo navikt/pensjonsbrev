@@ -330,7 +330,7 @@ object UfoerOmregningEnslig : AutobrevTemplate<UfoerOmregningEnsligDto> {
             includePhrase(Ufoeretrygd.HarDuSpoersmaalUfoeretrygd)
         }
 
-        includeAttachment(vedleggMaanedligUfoeretrygdFoerSkatt, maanedligUfoeretrygdFoerSkatt)
+        includeAttachmentIfNotNull(vedleggMaanedligUfoeretrygdFoerSkatt, maanedligUfoeretrygdFoerSkatt)
 
 
         includeAttachment(
