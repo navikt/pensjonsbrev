@@ -51,9 +51,7 @@ function Brevmal() {
     enabled: !!sak,
   }).data;
 
-  const methods = useForm({
-    defaultValues: {},
-  });
+  const methods = useForm();
 
   if (!letterTemplate) {
     return <></>;
@@ -68,12 +66,20 @@ function Brevmal() {
       <BodyShort size="small">TODO</BodyShort>
       <Divider />
       <Heading level="3" size="xsmall">
-        Mottaker
+        Mottaker (TODO)
       </Heading>
       <FormProvider {...methods}>
-        <form>
+        <form
+          css={css`
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            justify-content: space-between;
+          `}
+          onSubmit={methods.handleSubmit((submittedValues) => console.log("submit", submittedValues))}
+        >
           <SelectLanguage letterTemplate={letterTemplate} />
-          <Button icon={<ArrowRightIcon />} type="submit" variant="primary">
+          <Button icon={<ArrowRightIcon />} iconPosition="right" type="submit" variant="primary">
             Rediger brev
           </Button>
         </form>
@@ -85,6 +91,7 @@ function Brevmal() {
 function SelectLanguage({ letterTemplate }: { letterTemplate: LetterMetadata }) {
   const { sakId } = useParams({ from: selectedTemplateRoute.id });
   const { register, setValue } = useFormContext();
+  // TODO: prefetch this earlier
   const preferredLanguage = usePreferredLanguage(sakId);
 
   // Update selected language if preferredLanguage was not loaded before form initialization.
@@ -93,13 +100,7 @@ function SelectLanguage({ letterTemplate }: { letterTemplate: LetterMetadata }) 
   }, [preferredLanguage]);
 
   return (
-    <Select
-      {...register("spraak")}
-      css={css`
-        width: 100%;
-      `}
-      label="Språk"
-    >
+    <Select {...register("spraak")} label="Språk">
       {letterTemplate.spraak.map((spraak) => (
         <option key={spraak} value={spraak}>
           {SPRAAK_ENUM_TO_TEXT[spraak]} {preferredLanguage === spraak ? "(foretrukket språk)" : ""}
