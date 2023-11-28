@@ -6,6 +6,7 @@ val ktorVersion: String by System.getProperties()
 val logbackVersion: String by project
 val logstashVersion: String by project
 val mockkVersion: String by project
+val dokumentproduksjonVersion: String by project
 
 plugins {
 	application
@@ -63,6 +64,8 @@ dependencies {
 	}
 	implementation("no.nav.pensjon.pesys-esb-wsclient:pen-arkiv-esb-wsclient-legacy:$esbVersion") {
 	}
+	implementation("no.nav.tjenestespesifikasjoner:dokumentproduksjon-v3-tjenestespesifikasjon:$dokumentproduksjonVersion")
+
 	implementation("javax.xml.ws:jaxws-api:2.3.1")
 	implementation("com.sun.xml.ws:jaxws-tools:2.3.0.2")
 	implementation("com.sun.xml.bind:jaxb-impl:3.0.2")
@@ -93,6 +96,13 @@ repositories {
 		}
 		content {
 			includeGroup("no.nav.pensjon.pesys-esb-wsclient")
+		}
+	}
+	maven {
+		url = uri("https://maven.pkg.github.com/navikt/tjenestespesifikasjoner")
+		credentials {
+			username = project.findProperty("gpr.user") as String? ?: System.getenv("GITHUB_ACTOR")
+			password = project.findProperty("gpr.token") as String? ?: System.getenv("GITHUB_TOKEN")
 		}
 	}
 }
