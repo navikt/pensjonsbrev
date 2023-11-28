@@ -92,7 +92,6 @@ function Brevmal() {
 function SelectLanguage({ letterTemplate }: { letterTemplate: LetterMetadata }) {
   const { sakId } = useParams({ from: selectedTemplateRoute.id });
   const { register, setValue } = useFormContext();
-  // TODO: prefetch this earlier
   const preferredLanguage = usePreferredLanguage(sakId);
 
   // Update selected language if preferredLanguage was not loaded before form initialization.
