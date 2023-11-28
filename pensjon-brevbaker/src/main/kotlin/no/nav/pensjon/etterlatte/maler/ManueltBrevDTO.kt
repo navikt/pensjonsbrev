@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonValue
 
 data class ManueltBrevDTO(
     override val innhold: List<Element> = emptyList(),
+    val tittel: String? = null,
 ) : BrevDTO
 
 data class Element(
