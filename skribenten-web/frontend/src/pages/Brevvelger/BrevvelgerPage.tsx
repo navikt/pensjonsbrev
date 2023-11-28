@@ -77,7 +77,7 @@ function Brevmaler({ kategorier }: { kategorier: LetterCategory[] }) {
 
   const matchingFavoritter = kategorier
     .flatMap((category) => category.templates)
-    .filter((a) => favoritter.includes(a.id));
+    .filter(({ id }) => favoritter.includes(id));
 
   const matchingLetterCategories = kategorier.map((category) => ({
     ...category,
