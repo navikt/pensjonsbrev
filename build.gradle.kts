@@ -23,7 +23,8 @@ allprojects {
                 password = project.findProperty("gpr.token") as String? ?: System.getenv("GITHUB_TOKEN")
             }
             content {
-                includeGroup("no.nav.pensjon.brev")
+                includeGroup("no.nav.pensjon.brev") // api-model
+                includeGroup("no.nav.pensjon.brevbaker") // api-model-common
             }
         }
     }
