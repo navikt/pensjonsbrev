@@ -12,7 +12,7 @@ import no.nav.pensjon.brev.writeTestHTML
 import no.nav.pensjon.brev.writeTestPDF
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.Fixtures
-import no.nav.pensjon.etterlatte.maler.ManueltBrevDTO
+import no.nav.pensjon.etterlatte.maler.ManueltBrevMedTittelDTO
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 
@@ -23,7 +23,7 @@ internal class TomMalInformasjonsbrevTest {
     fun pdftest() {
         Letter(
             TomMalInformasjonsbrev.template,
-            Fixtures.create<ManueltBrevDTO>(),
+            Fixtures.create<ManueltBrevMedTittelDTO>(),
             Language.Bokmal,
             Fixtures.felles
         ).let { PensjonLatexRenderer.render(it) }
@@ -35,7 +35,7 @@ internal class TomMalInformasjonsbrevTest {
     fun testHtml() {
         Letter(
             TomMalInformasjonsbrev.template,
-            Fixtures.create<ManueltBrevDTO>(),
+            Fixtures.create<ManueltBrevMedTittelDTO>(),
             Language.Bokmal,
             Fixtures.felles
         ).let { PensjonHTMLRenderer.render(it) }

@@ -11,19 +11,19 @@ import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
-import no.nav.pensjon.etterlatte.maler.ManueltBrevDTO
-import no.nav.pensjon.etterlatte.maler.ManueltBrevDTOSelectors.innhold
-import no.nav.pensjon.etterlatte.maler.ManueltBrevDTOSelectors.tittel
+import no.nav.pensjon.etterlatte.maler.ManueltBrevMedTittelDTO
+import no.nav.pensjon.etterlatte.maler.ManueltBrevMedTittelDTOSelectors.innhold
+import no.nav.pensjon.etterlatte.maler.ManueltBrevMedTittelDTOSelectors.tittel
 import no.nav.pensjon.etterlatte.maler.fraser.common.OMSFelles
 import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
 
 @TemplateModelHelpers
-object TomMalInformasjonsbrev : EtterlatteTemplate<ManueltBrevDTO> {
+object TomMalInformasjonsbrev : EtterlatteTemplate<ManueltBrevMedTittelDTO> {
     override val kode: EtterlatteBrevKode = EtterlatteBrevKode.TOM_MAL_INFORMASJONSBREV
 
     override val template = createTemplate(
         name = kode.name,
-        letterDataType = ManueltBrevDTO::class,
+        letterDataType = ManueltBrevMedTittelDTO::class,
         languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(
             displayTitle = "Infomasjonsbrev",
