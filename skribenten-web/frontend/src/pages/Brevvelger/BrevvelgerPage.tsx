@@ -75,6 +75,10 @@ function Brevmaler({ kategorier }: { kategorier: LetterCategory[] }) {
 
   const favoritter = useQuery(getFavoritter).data ?? [];
 
+  const matchingFavoritter = kategorier
+    .flatMap((category) => category.templates)
+    .filter((a) => favoritter.includes(a.id));
+
   const matchingLetterCategories = kategorier.map((category) => ({
     ...category,
     templates: category.templates.filter((template) => template.name.toLowerCase().includes(searchTerm.toLowerCase())),
@@ -99,8 +103,8 @@ function Brevmaler({ kategorier }: { kategorier: LetterCategory[] }) {
         Favoritter
       </Heading>
       <div>
-        {favoritter.map((favoritt) => (
-          <span key={favoritt}>{favoritt}</span>
+        {matchingFavoritter.map((template) => (
+          <BrevmalButton key={template.id} letterMetadata={template} />
         ))}
       </div>
       <Heading level="2" size="xsmall">
