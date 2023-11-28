@@ -56,8 +56,6 @@ fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config
     val kodeverkService = KodeverkService(skribentenConfig.getConfig("services.kodeverk"))
     val pdlService = PdlService(skribentenConfig.getConfig("services.pdl"), authService)
     val krrService = KrrService(skribentenConfig.getConfig("services.krr"), authService)
-    val microsoftGraphService =
-        MicrosoftGraphService(skribentenConfig.getConfig("services.microsoftgraph"), authService)
     val brevbakerService = BrevbakerService(skribentenConfig.getConfig("services.brevbaker"), authService)
     val brevmetadataService = BrevmetadataService(skribentenConfig.getConfig( "services.brevmetadata"))
     val databaseService = SkribentenFakeDatabaseService()
@@ -110,19 +108,18 @@ fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config
             }
 
             post("/pen/doksys") {
-                val name = getClaim("name") ?: throw UnauthorizedException("Could not find name of user")
-                val request = call.receive<OrderLetterRequest>()
-                val onPremisesSamAccountName: String =
-                    when (val response = microsoftGraphService.getOnPremisesSamAccountName(call)) {
-                        is ServiceResult.Ok -> response.result
-                        is ServiceResult.Error, is ServiceResult.AuthorizationError -> {
-                            respondWithResult(response)
-                            return@post
-                        }
-                    }
-
-                respondWithResult(penService.bestillDoksysBrev(call, request, name, onPremisesSamAccountName))
-
+                TODO("rediger doksys brev via tjenestebuss-integrasjon")
+                //val name = getClaim("name") ?: throw UnauthorizedException("Could not find name of user")
+                //val request = call.receive<OrderLetterRequest>()
+                //val onPremisesSamAccountName: String =
+                //    when (val response = microsoftGraphService.getOnPremisesSamAccountName(call)) {
+                //        is ServiceResult.Ok -> response.result
+                //        is ServiceResult.Error, is ServiceResult.AuthorizationError -> {
+                //            respondWithResult(response)
+                //            return@post
+                //        }
+                //    }
+                //respondWithResult(penService.bestillDoksysBrev(call, request, name, onPremisesSamAccountName))
                 // TODO rediger doksys brev via tjenestebuss-integrasjon
                 //when (val response = penService.bestillDoksysBrev(call, request, name, onPremisesSamAccountName)) {
                 //    is ServiceResult.Ok -> {

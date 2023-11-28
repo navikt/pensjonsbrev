@@ -69,8 +69,6 @@ class PenService(config: Config, authService: AzureADService) {
         val sakId: Long,
         val brevkode: String,
         val mottaker: String?,
-        val saksbehandlerNavn: String?,
-        val saksbehandlerIdent: String?,
         val journalfoerendeEnhet: String?,
         val sensitivePersonopplysninger: Boolean?,
         val sprakKode: SpraakKode?,
@@ -80,17 +78,13 @@ class PenService(config: Config, authService: AzureADService) {
     suspend fun bestillDoksysBrev(
         call: ApplicationCall,
         request: OrderLetterRequest,
-        saksbehandlerNavn: String,
-        saksbehandlerBrukernavn: String,
-    ): ServiceResult<String, PenError> =
+    ): ServiceResult<BestillDoksysBrevResponse, BestillDoksysBrevResponse> =
         client.post(call, "brev/skribenten/doksys/sak/${request.sakId}") {
             setBody(
                 BestilDoksysBrevRequest(
                     sakId = request.sakId,
                     brevkode = request.brevkode,
                     mottaker = null, // TODO
-                    saksbehandlerNavn = saksbehandlerNavn,
-                    saksbehandlerIdent = saksbehandlerBrukernavn,
                     journalfoerendeEnhet = "4849", // TODO
                     sensitivePersonopplysninger = false, // TODO valg fra saksbehandler
                     sprakKode = request.spraak,
@@ -98,8 +92,29 @@ class PenService(config: Config, authService: AzureADService) {
                 )
             )
             contentType(ContentType.Application.Json)
-        }.toServiceResult<String, PenError>()
+        }.toServiceResult<BestillDoksysBrevResponse, BestillDoksysBrevResponse>()
     data class Avtaleland(val navn: String, val kode: String)
+
+    data class BestillDoksysBrevResponse(val journalpostId: String?, val error: Error? = null) {
+        companion object {
+            fun ok(journalpostId: String) =
+                BestillDoksysBrevResponse(journalpostId)
+
+            fun error(tekniskgrunn: String?, type: Error.ErrorType) =
+                BestillDoksysBrevResponse(null, Error(tekniskgrunn, type))
+        }
+
+        data class Error(val tekniskgrunn: String?, val type: ErrorType) {
+            enum class ErrorType {
+                ADDRESS_NOT_FOUND,
+                UNAUTHORIZED,
+                PERSON_NOT_FOUND,
+                UNEXPECTED_DOKSYS_ERROR,
+                INTERNAL_SERVICE_CALL_FAILIURE,
+                TPS_CALL_FAILIURE,
+            }
+        }
+    }
 
     suspend fun hentAvtaleland(call: ApplicationCall): ServiceResult<List<Avtaleland>, String> =
         client.get(call, "brev/skribenten/avtaleland").toServiceResult<List<Avtaleland>, String>()

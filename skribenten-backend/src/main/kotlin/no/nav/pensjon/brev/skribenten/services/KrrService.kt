@@ -35,7 +35,7 @@ class KrrService(config: Config, authService: AzureADService) {
             nb, // bokmål
             nn, //nynorsk
             en, //engelsk
-            se, //samisk
+            se, //nord-samisk
         }
     }
 
@@ -63,14 +63,15 @@ class KrrService(config: Config, authService: AzureADService) {
             }
         }.toServiceResult<KontaktinfoKRRResponse, KontaktinfoKRRErrorResponse>()
             .map {
-                val spraakKode = when (it.spraak) {
-                    KontaktinfoKRRResponse.SpraakKode.nb -> SpraakKode.NB
-                    KontaktinfoKRRResponse.SpraakKode.nn -> SpraakKode.NN
-                    KontaktinfoKRRResponse.SpraakKode.en -> SpraakKode.EN
-                    KontaktinfoKRRResponse.SpraakKode.se -> SpraakKode.SE
-                    null -> null
-                }
-                KontaktinfoResponse(spraakKode = spraakKode)
+                KontaktinfoResponse(
+                    when (it.spraak) {
+                        KontaktinfoKRRResponse.SpraakKode.nb -> SpraakKode.NB
+                        KontaktinfoKRRResponse.SpraakKode.nn -> SpraakKode.NN
+                        KontaktinfoKRRResponse.SpraakKode.en -> SpraakKode.EN
+                        KontaktinfoKRRResponse.SpraakKode.se -> SpraakKode.SE
+                        null -> null
+                    }
+                )
             }.catch { error ->
                 error.errors.joinToString { it.prettyPrint() }
                     .also {

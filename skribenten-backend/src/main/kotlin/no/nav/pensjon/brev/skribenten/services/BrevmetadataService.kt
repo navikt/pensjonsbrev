@@ -95,6 +95,8 @@ enum class SpraakKode {
     EN, // Engelsk
     NB, // Bokmaal
     NN, // Nynorsk
+    FR, // Fransk
+    SE, // Nord-samisk
 }
 
 
