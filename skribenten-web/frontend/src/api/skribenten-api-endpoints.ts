@@ -4,7 +4,7 @@
 
 import axios from "axios";
 
-import type { PreferredLanguage, LetterTemplatesResponse, SakDto } from "../types/apiTypes";
+import type { LetterTemplatesResponse, PreferredLanguage, SakDto } from "../types/apiTypes";
 const SKRIBENTEN_API_BASE_PATH = "/skribenten-backend";
 
 /**

@@ -76,6 +76,7 @@ function Brevmal() {
             height: 100%;
             justify-content: space-between;
           `}
+          // eslint-disable-next-line no-console
           onSubmit={methods.handleSubmit((submittedValues) => console.log("submit", submittedValues))}
         >
           <SelectLanguage letterTemplate={letterTemplate} />
