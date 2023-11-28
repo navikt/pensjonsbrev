@@ -43,6 +43,10 @@ export enum BrevSystem {
   DokSys = "DOKSYS",
   Brevbaker = "BREVBAKER",
 }
+export type ForetrukketSpraak = {
+  spraakKode: SpraakKode;
+};
+
 export enum SpraakKode {
   Engelsk = "EN",
   Bokmaal = "NB",
