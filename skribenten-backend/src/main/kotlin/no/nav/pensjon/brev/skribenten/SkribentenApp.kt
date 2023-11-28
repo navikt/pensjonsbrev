@@ -27,53 +27,57 @@ fun main() {
         .getConfig("skribenten")
 
     embeddedServer(Netty, port = skribentenConfig.getInt("port"), host = "0.0.0.0") {
-        install(CallLogging) {
-            callIdMdc("x_correlationId")
-            disableDefaultColors()
-            val ignorePaths = setOf("/isAlive", "/isReady", "/metrics")
-            filter {
-                !ignorePaths.contains(it.request.path())
-            }
-        }
-
-        install(CallId) {
-            retrieveFromHeader("Nav-Call-Id")
-            generate()
-            verify { it.isNotEmpty() }
-        }
-
-        install(StatusPages) {
-            exception<JacksonException> { call, cause ->
-                call.respond(HttpStatusCode.BadRequest, cause.message ?: "Failed to deserialize json body: unknown cause")
-            }
-        }
-
-        install(ContentNegotiation) {
-            jackson {
-                registerModule(JavaTimeModule())
-                registerModule(RenderedJsonLetterModule)
-            }
-        }
-
-        install(CORS) {
-            allowMethod(HttpMethod.Options)
-            allowMethod(HttpMethod.Put)
-            allowMethod(HttpMethod.Delete)
-            allowMethod(HttpMethod.Patch)
-            allowHeader(HttpHeaders.Authorization)
-            allowHeader(HttpHeaders.ContentType)
-            allowHeader("Nav-Call-Id")
-            skribentenConfig.getConfig("cors").also {
-                allowHost(it.getString("host"), schemes = it.getStringList("schemes"))
-            }
-        }
-
-        val azureADConfig = skribentenConfig.requireAzureADConfig()
-        install(Authentication) {
-            skribentenJwt(azureADConfig)
-        }
-
-        configureRouting(azureADConfig, skribentenConfig)
-        configureMetrics()
+        skribentenApp(skribentenConfig)
     }.start(wait = true)
+}
+
+private fun Application.skribentenApp(skribentenConfig: Config) {
+    install(CallLogging) {
+        callIdMdc("x_correlationId")
+        disableDefaultColors()
+        val ignorePaths = setOf("/isAlive", "/isReady", "/metrics")
+        filter {
+            !ignorePaths.contains(it.request.path())
+        }
+    }
+
+    install(CallId) {
+        retrieveFromHeader("X-Request-ID")
+        generate()
+        verify { it.isNotEmpty() }
+    }
+
+    install(StatusPages) {
+        exception<JacksonException> { call, cause ->
+            call.respond(HttpStatusCode.BadRequest, cause.message ?: "Failed to deserialize json body: unknown cause")
+        }
+    }
+
+    install(ContentNegotiation) {
+        jackson {
+            registerModule(JavaTimeModule())
+            registerModule(RenderedJsonLetterModule)
+        }
+    }
+
+    install(CORS) {
+        allowMethod(HttpMethod.Options)
+        allowMethod(HttpMethod.Put)
+        allowMethod(HttpMethod.Delete)
+        allowMethod(HttpMethod.Patch)
+        allowHeader(HttpHeaders.Authorization)
+        allowHeader(HttpHeaders.ContentType)
+        allowHeader("X-Request-ID")
+        skribentenConfig.getConfig("cors").also {
+            allowHost(it.getString("host"), schemes = it.getStringList("schemes"))
+        }
+    }
+
+    val azureADConfig = skribentenConfig.requireAzureADConfig()
+    install(Authentication) {
+        skribentenJwt(azureADConfig)
+    }
+
+    configureRouting(azureADConfig, skribentenConfig)
+    configureMetrics()
 }
