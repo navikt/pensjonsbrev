@@ -4,7 +4,7 @@
 
 import axios from "axios";
 
-import type { ForetrukketSpraak, LetterTemplatesResponse, SakDto } from "../types/apiTypes";
+import type { PreferredLanguage, LetterTemplatesResponse, SakDto } from "../types/apiTypes";
 const SKRIBENTEN_API_BASE_PATH = "/skribenten-backend";
 
 /**
@@ -48,7 +48,7 @@ export const getNavn = {
 export const getPreferredLanguage = {
   queryKey: preferredLanguageKeys.fnr,
   queryFn: async (fnr: string) =>
-    (await axios.get<ForetrukketSpraak>(`${SKRIBENTEN_API_BASE_PATH}/foretrukketSpraak/${fnr}`)).data,
+    (await axios.get<PreferredLanguage>(`${SKRIBENTEN_API_BASE_PATH}/foretrukketSpraak/${fnr}`)).data,
 };
 
 export const getLetterTemplate = {
