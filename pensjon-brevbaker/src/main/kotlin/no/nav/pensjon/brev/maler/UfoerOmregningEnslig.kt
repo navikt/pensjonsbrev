@@ -255,37 +255,25 @@ object UfoerOmregningEnslig : AutobrevTemplate<UfoerOmregningEnsligDto> {
                 }
             }
 
+            showIf(avdoed.sivilstand.isOneOf(SivilstandAvdoed.SAMBOER3_2)) {
+                includePhrase(GjenlevenderettSamboerOverskrift(avdoed.navn))
+                includePhrase(GjenlevenderettUfoeretrygdSamboer)
+            }
+            showIf(avdoed.sivilstand.isOneOf(SivilstandAvdoed.GIFT, SivilstandAvdoed.PARTNER, SivilstandAvdoed.SAMBOER1_5)) {
+                includePhrase(RettTilGjenlevendetilleggOverskrift)
+                includePhrase(HvemHarRettTilGjenlevendetilleggVilkaar)
+                includePhrase(HvordanSoekerDuOverskrift)
+                includePhrase(SoekGjenlevendetillegg)
 
-            //showIf(/*TODO om dødsfallet var før 1.des 2023, så vis følgende*/)
-                showIf(avdoed.sivilstand.isOneOf(SivilstandAvdoed.SAMBOER3_2)) {
-                    includePhrase(GjenlevenderettSamboerOverskrift(avdoed.navn))
-                    includePhrase(GjenlevenderettUfoeretrygdSamboer)
+                showIf(bruker.borIAvtaleLand) {
+                    includePhrase(SoekGjenlevendetilleggAvtaleland)
                 }
-                showIf(avdoed.sivilstand.isOneOf(SivilstandAvdoed.GIFT, SivilstandAvdoed.PARTNER, SivilstandAvdoed.SAMBOER1_5)) {
-                    includePhrase(RettTilGjenlevendetilleggOverskrift)
-                    includePhrase(HvemHarRettTilGjenlevendetilleggVilkaar)
-                    includePhrase(HvordanSoekerDuOverskrift)
-                    includePhrase(SoekGjenlevendetillegg)
 
-                    showIf(bruker.borIAvtaleLand) {
-                        includePhrase(SoekGjenlevendetilleggAvtaleland)
-                    }
-
-                    includePhrase(AvdoedBoddArbeidetIUtlandOverskrift)
-                    includePhrase(AvdoedBoddEllerArbeidetIUtland)
-                    includePhrase(PensjonFraAndreOverskrift)
-                    includePhrase(InfoAvdoedPenFraAndre)
-                }
-            //
-            // hent om avdød døde før 1des på samme måte som avdød retriever v3
-            // uføregrad
-            // virkningstidspunktet
-            // } orshow om 1.des eller senere{
-                // ny tekst + gamle fraser
-                // includePhrase(PensjonFraAndreOverskrift)
-                // includePhrase(InfoAvdoedPenFraAndre)
-
-            //}
+                includePhrase(AvdoedBoddArbeidetIUtlandOverskrift)
+                includePhrase(AvdoedBoddEllerArbeidetIUtland)
+                includePhrase(PensjonFraAndreOverskrift)
+                includePhrase(InfoAvdoedPenFraAndre)
+            }
 
             showIf(avdoed.harFellesBarnUtenBarnetillegg) {
                 includePhrase(HarBarnUnder18Overskrift)
