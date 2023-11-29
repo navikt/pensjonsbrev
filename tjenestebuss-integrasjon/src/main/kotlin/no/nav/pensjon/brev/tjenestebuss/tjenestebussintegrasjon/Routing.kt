@@ -18,6 +18,8 @@ import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.arkiv.B
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.arkiv.BestillBrevResponseDto
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.arkiv.BestillBrevResponseDto.Failure.FailureType.MANGLER_OBLIGATORISK_INPUT
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.arkiv.BestillBrevResponseDto.Journalpost
+import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.dokumentsproduksjon.DokumentproduksjonService
+import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.dokumentsproduksjon.dto.RedigerDokumentResponseDto
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.samhandler.SamhandlerTjenestebussService
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.samhandler.dto.FinnSamhandlerResponseDto
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.samhandler.dto.HentSamhandlerResponseDto
@@ -74,6 +76,9 @@ fun Application.tjenestebussIntegrationApi(config: Config) {
         val arkivTjenestebussService =
             ArkivTjenestebussService(config.getConfig("services.tjenestebuss"), stsSercuritySOAPHandler)
 
+        val dokumentProduksjonService =
+            DokumentproduksjonService(config.getConfig("services.dokumentproduksjon"), stsSercuritySOAPHandler)
+
         post("/hentSamhandler") {
             val requestDto = call.receive<HentSamhandlerRequestDto>()
 
@@ -119,6 +124,24 @@ fun Application.tjenestebussIntegrationApi(config: Config) {
                 }
             }
         }
+
+        post("/bestillbrev") {
+            val requestDto = call.receive<RedigerDokumentRequestDto>()
+
+            when (val dokumentResponse = withCallId(dokumentProduksjonService) { hentSamhandler(requestDto) }) {
+                is RedigerDokumentResponseDto.Dokument -> call.respond(HttpStatusCode.OK, dokumentResponse)
+                is RedigerDokumentResponseDto.Failure -> {
+                    when(dokumentResponse.failureType){
+                        RedigerDokumentResponseDto.Failure.FailureType.LASING -> call.respond(HttpStatusCode.InternalServerError, dokumentResponse)
+                        RedigerDokumentResponseDto.Failure.FailureType.IKKE_TILLATT -> call.respond(HttpStatusCode.Forbidden, dokumentResponse)
+                        RedigerDokumentResponseDto.Failure.FailureType.VALIDERING_FEILET -> call.respond(HttpStatusCode.BadRequest, dokumentResponse)
+                        RedigerDokumentResponseDto.Failure.FailureType.IKKE_FUNNET -> call.respond(HttpStatusCode.NotFound, dokumentResponse)
+                        RedigerDokumentResponseDto.Failure.FailureType.IKKE_TILGANG -> call.respond(HttpStatusCode.Unauthorized, dokumentResponse)
+                        RedigerDokumentResponseDto.Failure.FailureType.LUKKET -> call.respond(HttpStatusCode.Locked, dokumentResponse)
+                    }
+                }
+            }
+        }
     }
 }
 
@@ -132,3 +155,7 @@ class FinnSamhandlerRequestDto(
     val samhandlerType: SamhandlerTypeCode,
 )
 
+class RedigerDokumentRequestDto(
+    val journalpostId: String,
+    val dokumentId: String,
+)
