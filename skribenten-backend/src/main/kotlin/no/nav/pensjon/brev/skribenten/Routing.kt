@@ -10,8 +10,8 @@ import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.util.*
-import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import io.ktor.util.pipeline.*
+import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.skribenten.auth.AzureADService
 import no.nav.pensjon.brev.skribenten.auth.JwtConfig
@@ -20,7 +20,6 @@ import no.nav.pensjon.brev.skribenten.auth.UserPrincipal
 import no.nav.pensjon.brev.skribenten.services.*
 import no.nav.pensjon.brevbaker.api.model.RenderedJsonLetter
 import java.util.*
-import kotlin.collections.LinkedHashMap
 
 class GenericBrevdata : LinkedHashMap<String, Any>(), BrevbakerBrevdata
 data class RenderLetterRequest(val letterData: GenericBrevdata, val editedLetter: EditedJsonLetter?)
@@ -46,9 +45,7 @@ data class OrderLetterRequest(
     val mottakerText: String? = null,
 )
 
-// TODO innfør X-Request-ID
 fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config) {
-    // TODO sett opp retry funksjonalitet for ulike tjenester.
     val authService = AzureADService(authConfig)
     val safService = SafService(skribentenConfig.getConfig("services.saf"), authService)
     val penService = PenService(skribentenConfig.getConfig("services.pen"), authService)
@@ -118,10 +115,10 @@ fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config
                             return@post
                         }
                     }
-                respondWithResult(penService.bestillDoksysBrev(call, request, name, onPremisesSamAccountName),
-                    onError = {
-
-                    })
+                respondWithResult(
+                    penService.bestillDoksysBrev(call, request, name, onPremisesSamAccountName),
+                    onError = { _, _ -> },
+                )
                 when (val response = penService.bestillDoksysBrev(call, request, name, onPremisesSamAccountName)) {
                     is ServiceResult.Ok -> {
                         val journalpostId = response.result
@@ -167,7 +164,7 @@ fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config
                     options { _, _ -> CachingOptions(CacheControl.MaxAge(maxAgeSeconds = 86400)) }
                 }
                 get("/kommune") {
-                    call.respond(kodeverkService.getKommuner(call))
+                    respondWithResult(kodeverkService.getKommuner(call))
                 }
                 get("/avtaleland") {
                     respondWithResult(penService.hentAvtaleland(call))

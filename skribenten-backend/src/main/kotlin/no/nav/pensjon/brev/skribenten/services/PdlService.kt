@@ -170,6 +170,7 @@ class PdlService(config: Config, authService: AzureADService) {
                 )
             )
         }.toServiceResult<PDLResponse<PDLPersonSoekResult>, PDLResponse<PDLPersonSoekResult>>()
+
         return when (result) {
             is ServiceResult.Ok -> {
                 result.result.data?.sokPerson?.let { data ->
@@ -185,12 +186,12 @@ class PdlService(config: Config, authService: AzureADService) {
                             )
                         }
                     ))
-                } ?: result.result.errors?.let { ServiceResult.Error(it.toPrettyString()) }
-                ?: ServiceResult.Error("Missing data in response from PDL")
+                } ?: result.result.errors?.let { ServiceResult.Error(it.toPrettyString(), null) }
+                ?: ServiceResult.Error("Missing data in response from PDL", null)
             }
 
-            is ServiceResult.Error -> ServiceResult.Error(result.error.errors.toString())
-            is ServiceResult.AuthorizationError -> ServiceResult.Error(result.error.error)
+            is ServiceResult.Error -> ServiceResult.Error(result.error.errors.toString(), result.statusCode)
+            is ServiceResult.AuthorizationError -> ServiceResult.AuthorizationError(result.error)
         }
     }
 }
