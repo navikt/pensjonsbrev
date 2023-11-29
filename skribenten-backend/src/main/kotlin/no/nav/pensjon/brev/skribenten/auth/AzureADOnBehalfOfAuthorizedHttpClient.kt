@@ -6,7 +6,7 @@ import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.server.application.*
-import io.ktor.server.plugins.callid.*
+import no.nav.pensjon.brev.skribenten.callId
 
 sealed class AuthorizedHttpClientResult {
     class Response(val response: HttpResponse) : AuthorizedHttpClientResult()
@@ -24,7 +24,7 @@ class AzureADOnBehalfOfAuthorizedHttpClient(private val scope: String, private v
                     client.request(url) {
                         headers {
                             bearerAuth(token.accessToken)
-                            call.callId?.also { append("Nav-Call-Id", it) }
+                            callId(call)
                         }
                         block()
                         this.method = method

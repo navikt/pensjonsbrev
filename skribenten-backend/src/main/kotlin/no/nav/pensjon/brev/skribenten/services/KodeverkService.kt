@@ -8,10 +8,9 @@ import io.ktor.client.engine.cio.*
 import io.ktor.client.plugins.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
-import io.ktor.client.request.headers
 import io.ktor.serialization.jackson.*
 import io.ktor.server.application.*
-import io.ktor.server.plugins.callid.*
+import no.nav.pensjon.brev.skribenten.callId
 import java.time.LocalDate
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
@@ -58,7 +57,7 @@ class KodeverkService(config: Config) {
         val dateString = ZonedDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-dd"))
         return client.get("Kommuner/koder/betydninger?ekskluderUgyldige=true&oppslagsdato=$dateString&spraak=nb") {
             headers {
-                call.callId?.let { append("Nav-Call-Id", it) }
+                callId(call)
                 append("Nav-Consumer-Id", "skribenten-backend-lokal")
             }
         }.body<KodeverkResponse>()
