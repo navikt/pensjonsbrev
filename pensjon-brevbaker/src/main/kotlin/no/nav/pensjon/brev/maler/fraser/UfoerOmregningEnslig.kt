@@ -753,7 +753,7 @@ object SoekGjenlevendetillegg : OutlinePhrase<LangBokmalNynorskEnglish>() {
                         "Det er nye reglar for ytingar til attlevande frå 1. januar 2024. Tidspunktet for når NAV mottar søknaden din kan ha betydning for kva regler som gjeld for deg. " +
                         "Du finn informasjon og søknadsskjemaet for attlevande ektefelle, partner eller sambuar på $GJENLEVENDE_SKJEMA_URL",
                 English to "We encourage you to apply for survivor's supplement to disability benefit as soon as possible because we normally only pay retroactively for three months. " +
-                        "There are new rules for survivor benefits from January 1, 2024. The date when NAV receives your application may have significance for which rules apply to you." +
+                        "There are new rules for survivor benefits from January 1, 2024. The date when NAV receives your application may have significance for which rules apply to you. " +
                         "You will find information and the application form for a surviving spouse, partner or cohabitant at $GJENLEVENDE_SKJEMA_URL"
             )
         }
