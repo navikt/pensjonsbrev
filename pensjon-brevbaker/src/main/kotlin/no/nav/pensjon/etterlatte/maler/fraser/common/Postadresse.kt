@@ -15,23 +15,20 @@ fun OutlineOnlyScope<LanguageSupport.Triple<Language.Bokmal, Language.Nynorsk, L
             Language.Nynorsk to "NAV skanning",
             Language.English to "NAV skanning"
         )
-    }
-    paragraph {
+        newline()
         text(
             Language.Bokmal to "Postboks 1400",
             Language.Nynorsk to "Postboks 1400",
             Language.English to "Postboks 1400"
         )
-    }
-    paragraph {
+        newline()
         text(
             Language.Bokmal to "0109 OSLO",
             Language.Nynorsk to "0109 OSLO",
             Language.English to "0109 OSLO"
         )
-    }
-    showIf(utland) {
-        paragraph {
+        showIf(utland) {
+            newline()
             text(
                 Language.Bokmal to "Norge",
                 Language.Nynorsk to "Noreg",
