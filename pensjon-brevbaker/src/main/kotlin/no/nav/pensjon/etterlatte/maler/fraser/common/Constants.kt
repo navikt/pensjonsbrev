@@ -32,6 +32,8 @@ object Constants {
     }
 
     object Utland {
+        const val UTBETALING_INFO = "${NAV_URL}/utbetaling-utland"
+        const val ENDRE_KONTONUMMER_SKJEMA_URL = "${NAV_URL}/soknader/en#bank-account-number-how-to-change"
         const val KONTAKTTELEFON_PENSJON = "+47 ${Constants.KONTAKTTELEFON_PENSJON}"
         const val KONTAKTTELEFON_GENERELL = "+47 ${Constants.KONTAKTTELEFON_GENERELL}"
         const val KONTAKTTELEFON_SKATT = "+47 22 07 70 00"

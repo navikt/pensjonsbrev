@@ -10,6 +10,7 @@ import no.nav.pensjon.brev.template.dsl.ParagraphOnlyScope
 import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
+import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.expression.notNull
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
@@ -31,6 +32,7 @@ import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
 import no.nav.pensjon.etterlatte.maler.fraser.common.kontakttelefonPensjon
 import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.dineRettigheterOgPlikter
 import no.nav.pensjon.etterlatte.maler.vedlegg.informasjonTilDegSomHandlerPaaVegneAvBarnet
+import no.nav.pensjon.etterlatte.maler.vedlegg.utlandInformasjonTilDegSomHandlerPaaVegneAvBarnet
 import kotlin.math.exp
 
 
@@ -234,7 +236,8 @@ object EnkeltVedtakOmregningNyttRegelverk : EtterlatteTemplate<BarnepensjonOmreg
                 )
             }
         }
-        includeAttachment(informasjonTilDegSomHandlerPaaVegneAvBarnet, this.argument)
+        includeAttachment(utlandInformasjonTilDegSomHandlerPaaVegneAvBarnet, this.argument, erBosattUtlandet)
+        includeAttachment(informasjonTilDegSomHandlerPaaVegneAvBarnet, this.argument, erBosattUtlandet.not())
         includeAttachment(dineRettigheterOgPlikter, this.argument)
     }
 }
