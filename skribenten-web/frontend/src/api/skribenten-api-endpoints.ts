@@ -53,7 +53,11 @@ export const getFavoritter = {
 };
 
 export async function addFavoritt(id: string) {
-  return (await axios.post<string>(`${SKRIBENTEN_API_BASE_PATH}/favourites`, id)).data;
+  return (
+    await axios.post<string>(`${SKRIBENTEN_API_BASE_PATH}/favourites`, id, {
+      headers: { "Content-Type": "text/plain" },
+    })
+  ).data;
 }
 
 export async function deleteFavoritt(id: string) {
