@@ -95,8 +95,8 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, A
     }
     paragraph {
         text(
-            Bokmal to "Barnepensjonen blir utbetalt til same kontonummer som før. Dersom kontonummeret er i ein utanlandsk bank, må du vere merksam på at det blir trekt eit gebyr for kvar utbetaling. Det kan også ta litt lenger tid før pengane er på kontoen. Du finn meir informasjon om utbetaling på ${Constants.Utland.UTBETALING_INFO}.",
-            Nynorsk to "Barnepensjonen utbetales til samme kontonummer som tidligere. Hvis kontonummeret er i en utenlandsk bank, må du være oppmerksom på at det er et gebyr for hver utbetaling. Det kan også ta litt lenger tid før pengene er på kontoen. Du finner mer informasjon om utbetaling på ${Constants.Utland.UTBETALING_INFO}.",
+            Bokmal to "Barnepensjonen utbetales til samme kontonummer som tidligere. Hvis kontonummeret er i en utenlandsk bank, må du være oppmerksom på at det er et gebyr for hver utbetaling. Det kan også ta litt lenger tid før pengene er på kontoen. Du finner mer informasjon om utbetaling på ${Constants.Utland.UTBETALING_INFO}.",
+            Nynorsk to "Barnepensjonen blir utbetalt til same kontonummer som før. Dersom kontonummeret er i ein utanlandsk bank, må du vere merksam på at det blir trekt eit gebyr for kvar utbetaling. Det kan også ta litt lenger tid før pengane er på kontoen. Du finn meir informasjon om utbetaling på ${Constants.Utland.UTBETALING_INFO}.",
             English to "Your children’s pension is paid to the same bank account as before. If the bank account is held by a foreign bank, be aware that a minor fee may be charged for each payment. It will also take a little more time before the money reaches your account. More information on payments is available online: ${Constants.Utland.UTBETALING_INFO}.",
         )
     }
