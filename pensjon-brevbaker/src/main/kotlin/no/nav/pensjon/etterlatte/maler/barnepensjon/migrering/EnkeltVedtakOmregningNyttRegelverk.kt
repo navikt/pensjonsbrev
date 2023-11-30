@@ -110,7 +110,7 @@ object EnkeltVedtakOmregningNyttRegelverk : EtterlatteTemplate<BarnepensjonOmreg
                             utbetaltEtterReform.format() + " kroner per månad før skatt frå og med 1. januar 2024.",
                     Language.English to "Your children's pension will equal one times the National Insurance basic amount (G) per year. ".expr() +
                             "The basic amount in January 2024 is " + grunnbeloep.format() + " kroner. " +
-                            "This is divided by 12 months. You will therefore receive NOK <kronebeløp> per month (pre-tax) starting 1 January 2024."
+                            "This is divided by 12 months. You will therefore receive NOK " + utbetaltEtterReform.format() + " per month (pre-tax) starting 1 January 2024."
                 )
             }
 
