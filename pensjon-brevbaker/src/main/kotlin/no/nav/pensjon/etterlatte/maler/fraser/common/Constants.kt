@@ -30,4 +30,10 @@ object Constants {
         const val KONTONUMMER_URL = "${Constants.KONTONUMMER_URL}/en"
         const val FULLMAKT_URL = "${Constants.FULLMAKT_URL}/en"
     }
+
+    object Utland {
+        const val KONTAKTTELEFON_PENSJON = "+47 ${Constants.KONTAKTTELEFON_PENSJON}"
+        const val KONTAKTTELEFON_GENERELL = "+47 ${Constants.KONTAKTTELEFON_GENERELL}"
+        const val KONTAKTTELEFON_SKATT = "+47 22 07 70 00"
+    }
 }
