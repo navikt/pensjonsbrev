@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.maler
 
 import no.nav.pensjon.brev.api.model.*
 import no.nav.pensjon.brev.api.model.maler.*
+import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDtoSelectors.AvdoedSelectors.doedFoer1Desember2023
 import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDtoSelectors.AvdoedSelectors.ektefelletilleggOpphoert
 import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDtoSelectors.AvdoedSelectors.harFellesBarnUtenBarnetillegg
 import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDtoSelectors.AvdoedSelectors.navn
@@ -255,20 +256,24 @@ object UfoerOmregningEnslig : AutobrevTemplate<UfoerOmregningEnsligDto> {
                 }
             }
 
-            showIf(avdoed.sivilstand.isOneOf(SivilstandAvdoed.SAMBOER3_2)) {
-                includePhrase(GjenlevenderettSamboerOverskrift(avdoed.navn))
-                includePhrase(GjenlevenderettUfoeretrygdSamboer)
-            }
-            showIf(avdoed.sivilstand.isOneOf(SivilstandAvdoed.GIFT, SivilstandAvdoed.PARTNER, SivilstandAvdoed.SAMBOER1_5)) {
-                includePhrase(RettTilGjenlevendetilleggOverskrift)
-                includePhrase(HvemHarRettTilGjenlevendetilleggVilkaar)
-                includePhrase(HvordanSoekerDuOverskrift)
-                includePhrase(SoekGjenlevendetillegg)
-
-                showIf(bruker.borIAvtaleLand) {
-                    includePhrase(SoekGjenlevendetilleggAvtaleland)
+            showIf(avdoed.doedFoer1Desember2023){
+                showIf(avdoed.sivilstand.isOneOf(SivilstandAvdoed.SAMBOER3_2)) {
+                    includePhrase(GjenlevenderettSamboerOverskrift(avdoed.navn))
+                    includePhrase(GjenlevenderettUfoeretrygdSamboer)
                 }
+                showIf(avdoed.sivilstand.isOneOf(SivilstandAvdoed.GIFT, SivilstandAvdoed.PARTNER, SivilstandAvdoed.SAMBOER1_5)) {
+                    includePhrase(RettTilGjenlevendetilleggOverskrift)
+                    includePhrase(HvemHarRettTilGjenlevendetilleggVilkaar)
+                    includePhrase(HvordanSoekerDuOverskrift)
+                    includePhrase(SoekGjenlevendetillegg)
 
+                    showIf(bruker.borIAvtaleLand) {
+                        includePhrase(SoekGjenlevendetilleggAvtaleland)
+                    }
+                }
+            }
+
+            showIf(avdoed.sivilstand.isOneOf(SivilstandAvdoed.GIFT, SivilstandAvdoed.PARTNER, SivilstandAvdoed.SAMBOER1_5)) {
                 includePhrase(AvdoedBoddArbeidetIUtlandOverskrift)
                 includePhrase(AvdoedBoddEllerArbeidetIUtland)
                 includePhrase(PensjonFraAndreOverskrift)
