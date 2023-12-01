@@ -1,30 +1,28 @@
 package no.nav.pensjon.brev.skribenten.routes
 
-import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.request.*
-import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.util.*
-import io.ktor.util.pipeline.*
 import no.nav.pensjon.brev.skribenten.services.KrrService
 import no.nav.pensjon.brev.skribenten.services.PdlService
 import no.nav.pensjon.brev.skribenten.services.PensjonPersonDataService
 import no.nav.pensjon.brev.skribenten.services.respondWithResult
 
+
 fun Route.personRoute(pdlService: PdlService, pensjonPersonDataService: PensjonPersonDataService, krrService: KrrService) {
 
     route("/person") {
-        get("/navn") {
-            withHeaderPid { respondWithResult(pdlService.hentNavn(call, it)) }
+        post<PidRequest>("/navn") {
+            respondWithResult(pdlService.hentNavn(call, it.pid))
         }
 
-        get("/adresse") {
-            withHeaderPid { respondWithResult(pensjonPersonDataService.hentAdresse(call, it)) }
+        post<PidRequest>("/adresse") {
+            respondWithResult(pensjonPersonDataService.hentAdresse(call, it.pid))
         }
 
-        get("/foretrukketSpraak") {
-            withHeaderPid { respondWithResult(krrService.getPreferredLocale(call, it)) }
+        post<PidRequest>("/foretrukketSpraak") {
+            respondWithResult(krrService.getPreferredLocale(call, it.pid))
         }
 
         post<MottakerSearchRequest>("/soekmottaker") { request ->
@@ -56,14 +54,7 @@ fun Route.personRoute(pdlService: PdlService, pensjonPersonDataService: PensjonP
 
 }
 
-private suspend fun PipelineContext<Unit, ApplicationCall>.withHeaderPid(block: suspend PipelineContext<Unit, ApplicationCall>.(pid: String) -> Unit) {
-    val pid = call.request.header("pid")
-    if (pid?.isNotBlank() == true) {
-        block(pid)
-    } else {
-        call.respond(HttpStatusCode.BadRequest, "Missing 'pid' header (for fnr/dnr)")
-    }
-}
+data class PidRequest(val pid: String)
 
 data class MottakerSearchRequest(
     val soeketekst: String,
