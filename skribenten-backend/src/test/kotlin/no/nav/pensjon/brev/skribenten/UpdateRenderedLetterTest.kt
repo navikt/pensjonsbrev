@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.skribenten
 
+import no.nav.pensjon.brev.skribenten.routes.EditedJsonLetter
 import no.nav.pensjon.brevbaker.api.model.RenderedJsonLetter
 import no.nav.pensjon.brevbaker.api.model.RenderedJsonLetter.*
 import no.nav.pensjon.brevbaker.api.model.RenderedJsonLetter.Block.*

@@ -1,22 +1,20 @@
 package no.nav.pensjon.brev.skribenten.auth
 
-import com.fasterxml.jackson.annotation.*
+import com.fasterxml.jackson.annotation.JsonProperty
+import com.fasterxml.jackson.annotation.JsonSubTypes
+import com.fasterxml.jackson.annotation.JsonTypeInfo
 import com.fasterxml.jackson.databind.DeserializationFeature
-import com.fasterxml.jackson.module.kotlin.*
 import io.ktor.client.*
 import io.ktor.client.call.*
+import io.ktor.client.engine.*
 import io.ktor.client.engine.cio.*
-import io.ktor.client.plugins.auth.providers.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
 import io.ktor.client.request.forms.*
-import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.serialization.jackson.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
-import io.ktor.util.*
-import io.ktor.utils.io.jvm.javaio.*
 import java.time.LocalDateTime
 
 class UnauthorizedException(msg: String) : Exception(msg)
@@ -46,15 +44,14 @@ sealed class TokenResponse {
     ) : TokenResponse()
 }
 
-class AzureADService(private val jwtConfig: JwtConfig) {
-    private val client = HttpClient(CIO) {
+class AzureADService(private val jwtConfig: JwtConfig, engine: HttpClientEngine = CIO.create()) {
+    private val client = HttpClient(engine) {
         install(ContentNegotiation) {
             jackson {
                 disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
             }
         }
     }
-    private val objectMapper = jacksonObjectMapper().apply { disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES) }
 
     private suspend fun exchangeToken(accessToken: UserAccessToken, scope: String): TokenResponse {
         val response = client.submitForm(
@@ -70,8 +67,12 @@ class AzureADService(private val jwtConfig: JwtConfig) {
         ) {
             headers { append(HttpHeaders.ContentType, ContentType.Application.FormUrlEncoded) }
         }
-        // For some incomprehensible reason Ktor built-in deserialization does not work.
-        return objectMapper.readValue(response.bodyAsText())
+
+        return if (response.status.isSuccess()) {
+            response.body<TokenResponse.OnBehalfOfToken>()
+        } else {
+            response.body<TokenResponse.ErrorResponse>()
+        }
     }
 
     suspend fun getOnBehalfOfToken(call: ApplicationCall, scope: String): TokenResponse {

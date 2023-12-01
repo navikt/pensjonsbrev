@@ -8,9 +8,9 @@ import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.serialization.jackson.*
 import io.ktor.server.application.*
-import no.nav.pensjon.brev.skribenten.MottakerSearchRequest
-import no.nav.pensjon.brev.skribenten.MottakerSearchRequest.Place.INNLAND
-import no.nav.pensjon.brev.skribenten.MottakerSearchRequest.Place.UTLAND
+import no.nav.pensjon.brev.skribenten.routes.MottakerSearchRequest
+import no.nav.pensjon.brev.skribenten.routes.MottakerSearchRequest.Place.INNLAND
+import no.nav.pensjon.brev.skribenten.routes.MottakerSearchRequest.Place.UTLAND
 import no.nav.pensjon.brev.skribenten.auth.AzureADOnBehalfOfAuthorizedHttpClient
 import no.nav.pensjon.brev.skribenten.auth.AzureADService
 import no.nav.pensjon.brev.skribenten.services.PdlService.Criteria.CriteriaLogic
@@ -170,6 +170,7 @@ class PdlService(config: Config, authService: AzureADService) {
                 )
             )
         }.toServiceResult<PDLResponse<PDLPersonSoekResult>, PDLResponse<PDLPersonSoekResult>>()
+
         return when (result) {
             is ServiceResult.Ok -> {
                 result.result.data?.sokPerson?.let { data ->
@@ -185,12 +186,12 @@ class PdlService(config: Config, authService: AzureADService) {
                             )
                         }
                     ))
-                } ?: result.result.errors?.let { ServiceResult.Error(it.toPrettyString()) }
-                ?: ServiceResult.Error("Missing data in response from PDL")
+                } ?: result.result.errors?.let { ServiceResult.Error(it.toPrettyString(), null) }
+                ?: ServiceResult.Error("Missing data in response from PDL", null)
             }
 
-            is ServiceResult.Error -> ServiceResult.Error(result.error.errors.toString())
-            is ServiceResult.AuthorizationError -> ServiceResult.Error(result.error.error)
+            is ServiceResult.Error -> ServiceResult.Error(result.error.errors.toString(), result.statusCode)
+            is ServiceResult.AuthorizationError -> ServiceResult.AuthorizationError(result.error)
         }
     }
 }

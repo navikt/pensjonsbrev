@@ -8,6 +8,7 @@ val logstashVersion: String by project
 val micrometerVersion: String by project
 val apiModelVersion: String by project
 val jacksonJsr310Version: String by project
+val mockkVersion: String by project
 
 plugins {
     application
@@ -97,5 +98,7 @@ dependencies {
 
     // Test
     testImplementation("io.ktor:ktor-server-tests-jvm:$ktorVersion")
+    testImplementation("io.ktor:ktor-client-mock:$ktorVersion")
+    testImplementation("io.mockk:mockk:${mockkVersion}")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlinVersion")
 }

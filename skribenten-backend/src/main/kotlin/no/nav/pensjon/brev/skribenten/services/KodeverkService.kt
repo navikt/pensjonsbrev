@@ -3,15 +3,13 @@ package no.nav.pensjon.brev.skribenten.services
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.typesafe.config.Config
 import io.ktor.client.*
-import io.ktor.client.call.*
 import io.ktor.client.engine.cio.*
 import io.ktor.client.plugins.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
-import io.ktor.client.request.headers
 import io.ktor.serialization.jackson.*
 import io.ktor.server.application.*
-import io.ktor.server.plugins.callid.*
+import no.nav.pensjon.brev.skribenten.callId
 import java.time.LocalDate
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
@@ -34,17 +32,16 @@ class KodeverkService(config: Config) {
         data class Resultat(
             val gyldigFra: LocalDate,
             val gyldigTil: LocalDate,
-            val beskrivelser: Map<String, Besrkivelse>
+            val beskrivelser: Map<String, Beskrivelse>
         ) {
-            data class Besrkivelse(val term: String, val tekst: String)
+            data class Beskrivelse(val term: String, val tekst: String)
         }
     }
 
     data class KommuneResultat(val kommunenavn: String, val kommunenummer: List<String>)
 
-    suspend fun getKommuner(call: ApplicationCall): List<KommuneResultat> {
-        val kommuner = getKommunenummer(call)
-        return kommuner.betydninger.flatMap { kommuneNrEntry ->
+    suspend fun getKommuner(call: ApplicationCall): ServiceResult<List<KommuneResultat>, String> = getKommunenummer(call).map { kommuner ->
+        kommuner.betydninger.flatMap { kommuneNrEntry ->
             kommuneNrEntry.value.mapNotNull { beskrivelse ->
                 beskrivelse.beskrivelser["nb"]?.let {
                     it.tekst to kommuneNrEntry.key
@@ -54,13 +51,13 @@ class KodeverkService(config: Config) {
             .map { KommuneResultat(it.key, it.value) }
     }
 
-    private suspend fun getKommunenummer(call: ApplicationCall): KodeverkResponse {
+    private suspend fun getKommunenummer(call: ApplicationCall): ServiceResult<KodeverkResponse, String> {
         val dateString = ZonedDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-dd"))
         return client.get("Kommuner/koder/betydninger?ekskluderUgyldige=true&oppslagsdato=$dateString&spraak=nb") {
             headers {
-                call.callId?.let { append("Nav-Call-Id", it) }
+                callId(call)
                 append("Nav-Consumer-Id", "skribenten-backend-lokal")
             }
-        }.body<KodeverkResponse>()
+        }.toServiceResult()
     }
 }
