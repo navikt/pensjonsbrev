@@ -10,6 +10,7 @@ import no.nav.pensjon.etterlatte.fixtures.createBarnepensjonInnvilgelseDTO
 import no.nav.pensjon.etterlatte.fixtures.createBarnepensjonInnvilgelseEnkelDTO
 import no.nav.pensjon.etterlatte.fixtures.createBarnepensjonInnvilgelseNyDTO
 import no.nav.pensjon.etterlatte.fixtures.createBarnepensjonOmregnetNyttRegelverkDTO
+import no.nav.pensjon.etterlatte.fixtures.createBarnepensjonOmregnetNyttRegelverkFerdigDTO
 import no.nav.pensjon.etterlatte.fixtures.createBarnepensjonRevurderingAdopsjonDTO
 import no.nav.pensjon.etterlatte.fixtures.createBarnepensjonRevurderingOmgjoeringAvFarskapDTO
 import no.nav.pensjon.etterlatte.fixtures.createBarnepensjonRevurderingSoeskenjusteringDTO
@@ -32,6 +33,7 @@ import no.nav.pensjon.etterlatte.maler.barnepensjon.BarnepensjonInnvilgelseDTO
 import no.nav.pensjon.etterlatte.maler.barnepensjon.endring.EndringHovedmalDTO
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.ny.BarnepensjonInnvilgelseEnkelDTO
 import no.nav.pensjon.etterlatte.maler.barnepensjon.migrering.BarnepensjonOmregnetNyttRegelverkDTO
+import no.nav.pensjon.etterlatte.maler.barnepensjon.migrering.BarnepensjonOmregnetNyttRegelverkFerdigDTO
 import no.nav.pensjon.etterlatte.maler.barnepensjon.ny.BarnepensjonInnvilgelseNyDTO
 import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingAdopsjonDTO
 import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingOmgjoeringAvFarskapDTO
@@ -92,6 +94,7 @@ object Fixtures {
             BarnepensjonRevurderingSoeskenjusteringDTO::class -> createBarnepensjonRevurderingSoeskenjusteringDTO() as T
             BarnepensjonRevurderingOmgjoeringAvFarskapDTO::class -> createBarnepensjonRevurderingOmgjoeringAvFarskapDTO() as T
             BarnepensjonOmregnetNyttRegelverkDTO::class -> createBarnepensjonOmregnetNyttRegelverkDTO() as T
+            BarnepensjonOmregnetNyttRegelverkFerdigDTO::class -> createBarnepensjonOmregnetNyttRegelverkFerdigDTO() as T
             TilbakekrevingInnholdDTO::class -> createTilbakekrevingInnholdDTO() as T
             TilbakekrevingFerdigDTO::class -> createTilbakekrevingFerdigDTO() as T
             ManueltBrevMedTittelDTO::class -> createTomMalInformasjonsbrev() as T
