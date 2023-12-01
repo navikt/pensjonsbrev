@@ -56,8 +56,6 @@ fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config
     val kodeverkService = KodeverkService(skribentenConfig.getConfig("services.kodeverk"))
     val pdlService = PdlService(skribentenConfig.getConfig("services.pdl"), authService)
     val krrService = KrrService(skribentenConfig.getConfig("services.krr"), authService)
-    val microsoftGraphService =
-        MicrosoftGraphService(skribentenConfig.getConfig("services.microsoftgraph"), authService)
     val brevbakerService = BrevbakerService(skribentenConfig.getConfig("services.brevbaker"), authService)
     val brevmetadataService = BrevmetadataService(skribentenConfig.getConfig( "services.brevmetadata"))
     val databaseService = SkribentenFakeDatabaseService()
@@ -76,63 +74,63 @@ fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config
             }
 
             post("/pen/extream") {
-                // TODO skal vi validere metadata?
-                val request = call.receive<OrderLetterRequest>()
-                //TODO try to get extra claims when authorizing user instead of using graph service.
-                val name = getClaim("name") ?: throw UnauthorizedException("Could not find name of user")
+                TODO("bestill extream brev via tjenestebuss-integrasjon")
+                //// TODO skal vi validere metadata?
+                //val request = call.receive<OrderLetterRequest>()
+                ////TODO try to get extra claims when authorizing user instead of using graph service.
+                //val name = getClaim("name") ?: throw UnauthorizedException("Could not find name of user")
 
-                // TODO create respond on error or similar function to avoid boilerplate. RespondOnError?
-                val onPremisesSamAccountName: String =
-                    when (val response = microsoftGraphService.getOnPremisesSamAccountName(call)) {
-                        is ServiceResult.Ok -> response.result
-                        is ServiceResult.Error, is ServiceResult.AuthorizationError -> {
-                            respondWithResult(response)
-                            return@post
-                        }
-                    }
+                //// TODO create respond on error or similar function to avoid boilerplate. RespondOnError?
+                //val onPremisesSamAccountName: String =
+                //    when (val response = microsoftGraphService.getOnPremisesSamAccountName(call)) {
+                //        is ServiceResult.Ok -> response.result
+                //        is ServiceResult.Error, is ServiceResult.AuthorizationError -> {
+                //            respondWithResult(response)
+                //            return@post
+                //        }
+                //    }
 
                 //TODO better error handling.
                 // TODO access controls for e-blanketter
-                penService.bestillExtreamBrev(call, request, name, onPremisesSamAccountName).map { journalpostId ->
-                    val error = safService.waitForJournalpostStatusUnderArbeid(call, journalpostId)
-                    if (error != null) {
-                        if (error.type == SafService.JournalpostLoadingError.ErrorType.TIMEOUT) {
-                            call.respond(HttpStatusCode.RequestTimeout, error.error)
-                        } else {
-                            call.respondText(text = error.error, status = HttpStatusCode.InternalServerError)
-                        }
-                    } else {
-                        respondWithResult(penService.redigerExtreamBrev(call, journalpostId))
-                    }
-                }
+                //penService.bestillExtreamBrev(call, request, name, onPremisesSamAccountName).map { journalpostId ->
+                //    val error = safService.waitForJournalpostStatusUnderArbeid(call, journalpostId)
+                //    if (error != null) {
+                //        if (error.type == SafService.JournalpostLoadingError.ErrorType.TIMEOUT) {
+                //            call.respond(HttpStatusCode.RequestTimeout, error.error)
+                //        } else {
+                //            call.respondText(text = error.error, status = HttpStatusCode.InternalServerError)
+                //        }
+                //    } else {
+                //        TODO("bestill extream brev via tjenestebuss-integrasjon")
+                //        //respondWithResult(penService.redigerExtreamBrev(call, journalpostId))
+                //    }
+                //}
             }
 
             post("/pen/doksys") {
-                val name = getClaim("name") ?: throw UnauthorizedException("Could not find name of user")
-                val request = call.receive<OrderLetterRequest>()
-                val onPremisesSamAccountName: String =
-                    when (val response = microsoftGraphService.getOnPremisesSamAccountName(call)) {
-                        is ServiceResult.Ok -> response.result
-                        is ServiceResult.Error, is ServiceResult.AuthorizationError -> {
-                            respondWithResult(response)
-                            return@post
-                        }
-                    }
-                respondWithResult(penService.bestillDoksysBrev(call, request, name, onPremisesSamAccountName),
-                    onError = {
-
-                    })
-                when (val response = penService.bestillDoksysBrev(call, request, name, onPremisesSamAccountName)) {
-                    is ServiceResult.Ok -> {
-                        val journalpostId = response.result
-                        respondWithResult(penService.redigerDoksysBrev(call, journalpostId))
-                    }
-
-                    is ServiceResult.Error, is ServiceResult.AuthorizationError -> {
-                        respondWithResult(response)
-                        return@post
-                    }
-                }
+                TODO("rediger doksys brev via tjenestebuss-integrasjon")
+                //val name = getClaim("name") ?: throw UnauthorizedException("Could not find name of user")
+                //val request = call.receive<OrderLetterRequest>()
+                //val onPremisesSamAccountName: String =
+                //    when (val response = microsoftGraphService.getOnPremisesSamAccountName(call)) {
+                //        is ServiceResult.Ok -> response.result
+                //        is ServiceResult.Error, is ServiceResult.AuthorizationError -> {
+                //            respondWithResult(response)
+                //            return@post
+                //        }
+                //    }
+                //respondWithResult(penService.bestillDoksysBrev(call, request, name, onPremisesSamAccountName))
+                // TODO rediger doksys brev via tjenestebuss-integrasjon
+                //when (val response = penService.bestillDoksysBrev(call, request, name, onPremisesSamAccountName)) {
+                //    is ServiceResult.Ok -> {
+                //        val journalpostId = response.result
+                //        //respondWithResult(penService.redigerDoksysBrev(call, journalpostId))
+                //    }
+                //    is ServiceResult.Error, is ServiceResult.AuthorizationError -> {
+                //        respondWithResult(response)
+                //        return@post
+                //    }
+                //}
             }
 
             //TODO Check access using /tilganger(?). Is there an on behalf of endpoint which checks access?

@@ -93,10 +93,10 @@ data class BrevdataDto(
 
 enum class SpraakKode {
     EN, // Engelsk
-    FR, // Fransk
     NB, // Bokmaal
     NN, // Nynorsk
-    SE // Nordsamisk
+    FR, // Fransk
+    SE, // Nord-samisk
 }
 
 
