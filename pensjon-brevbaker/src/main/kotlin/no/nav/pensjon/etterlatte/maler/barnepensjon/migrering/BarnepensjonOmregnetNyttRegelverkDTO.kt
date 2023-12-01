@@ -9,5 +9,6 @@ data class BarnepensjonOmregnetNyttRegelverkDTO(
     val grunnbeloep: Kroner,
     val anvendtTrygdetid: Int,
     val prorataBroek: IntBroek?,
-    val erBosattUtlandet: Boolean
+    val erBosattUtlandet: Boolean,
+    val erYrkesskade: Boolean
 )

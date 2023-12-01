@@ -11,5 +11,6 @@ fun createBarnepensjonOmregnetNyttRegelverkDTO() =
         anvendtTrygdetid = 40,
         grunnbeloep = Kroner(400000),
         prorataBroek = IntBroek(43, 156),
-        erBosattUtlandet = true
+        erBosattUtlandet = true,
+        erYrkesskade = false
     )

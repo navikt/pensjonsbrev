@@ -18,6 +18,7 @@ import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.barnepensjon.migrering.BarnepensjonOmregnetNyttRegelverkDTOSelectors.anvendtTrygdetid
 import no.nav.pensjon.etterlatte.maler.barnepensjon.migrering.BarnepensjonOmregnetNyttRegelverkDTOSelectors.erBosattUtlandet
+import no.nav.pensjon.etterlatte.maler.barnepensjon.migrering.BarnepensjonOmregnetNyttRegelverkDTOSelectors.erYrkesskade
 import no.nav.pensjon.etterlatte.maler.barnepensjon.migrering.BarnepensjonOmregnetNyttRegelverkDTOSelectors.grunnbeloep
 import no.nav.pensjon.etterlatte.maler.barnepensjon.migrering.BarnepensjonOmregnetNyttRegelverkDTOSelectors.prorataBroek
 import no.nav.pensjon.etterlatte.maler.barnepensjon.migrering.BarnepensjonOmregnetNyttRegelverkDTOSelectors.utbetaltEtterReform
@@ -93,11 +94,19 @@ object EnkeltVedtakOmregningNyttRegelverk : EtterlatteTemplate<BarnepensjonOmreg
                         )
                     }
                     item {
-                        text(
-                            Language.Bokmal to "Du får barnepensjon til du blir 20 år.",
-                            Language.Nynorsk to "Du får barnepensjon til du fyller 20 år.",
-                            Language.English to "You will receive a children's pension until you turn 20."
-                        )
+                        showIf(erYrkesskade) {
+                            text(
+                                Language.Bokmal to "Du får barnepensjon til du blir 21 år fordi dødsfallet skyldtes yrkesskade eller yrkessykdom.",
+                                Language.Nynorsk to "Du får barnepensjon fram til fylte 21 år fordi dødsfallet var knytt til yrkesskade eller yrkessjukdom.",
+                                Language.English to "You will receive a children’s pension until you turn 21 because the death of your parent/guardian was an occupational injury/illness."
+                            )
+                        } orShow {
+                            text(
+                                Language.Bokmal to "Du får barnepensjon til du blir 20 år.",
+                                Language.Nynorsk to "Du får barnepensjon til du fyller 20 år.",
+                                Language.English to "You will receive a children's pension until you turn 20."
+                            )
+                        }
                     }
                     item {
                         text(
