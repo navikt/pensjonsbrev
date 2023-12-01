@@ -1,0 +1,25 @@
+package no.nav.pensjon.brev.skribenten.routes
+
+import io.ktor.http.*
+import io.ktor.http.content.*
+import io.ktor.server.application.*
+import io.ktor.server.plugins.cachingheaders.*
+import io.ktor.server.routing.*
+import no.nav.pensjon.brev.skribenten.services.KodeverkService
+import no.nav.pensjon.brev.skribenten.services.PenService
+import no.nav.pensjon.brev.skribenten.services.respondWithResult
+
+fun Route.kodeverkRoute(kodeverkService: KodeverkService, penService: PenService) {
+    route("/kodeverk") {
+
+        install(CachingHeaders) {
+            options { _, _ -> CachingOptions(CacheControl.MaxAge(maxAgeSeconds = 86400)) }
+        }
+        get("/kommune") {
+            respondWithResult(kodeverkService.getKommuner(call))
+        }
+        get("/avtaleland") {
+            respondWithResult(penService.hentAvtaleland(call))
+        }
+    }
+}

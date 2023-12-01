@@ -8,9 +8,9 @@ import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.serialization.jackson.*
 import io.ktor.server.application.*
-import no.nav.pensjon.brev.skribenten.MottakerSearchRequest
-import no.nav.pensjon.brev.skribenten.MottakerSearchRequest.Place.INNLAND
-import no.nav.pensjon.brev.skribenten.MottakerSearchRequest.Place.UTLAND
+import no.nav.pensjon.brev.skribenten.routes.MottakerSearchRequest
+import no.nav.pensjon.brev.skribenten.routes.MottakerSearchRequest.Place.INNLAND
+import no.nav.pensjon.brev.skribenten.routes.MottakerSearchRequest.Place.UTLAND
 import no.nav.pensjon.brev.skribenten.auth.AzureADOnBehalfOfAuthorizedHttpClient
 import no.nav.pensjon.brev.skribenten.auth.AzureADService
 import no.nav.pensjon.brev.skribenten.services.PdlService.Criteria.CriteriaLogic
