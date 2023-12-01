@@ -6,3 +6,5 @@ env:
     value: "https://tjenestebuss-q2.adeo.no/"
   - name: STS_URL
     value: "https://security-token-service.dev.adeo.no"
+  - name: DOKPROD_URL
+    value: "https://dokprod-q1.dev.intern.nav.no/dokprod/"

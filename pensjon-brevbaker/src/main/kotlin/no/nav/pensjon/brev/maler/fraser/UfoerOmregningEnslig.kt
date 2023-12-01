@@ -29,20 +29,20 @@ data class OmregnEPSInnledning(
                 showIf(harBarnetilleggForSaerkullsbarnVedVirk) {
                     textExpr(
                         Bokmal to "Vi har mottatt melding om at ".expr() + avdoedNavn + " er død, og vi har regnet om uføretrygden og barnetillegget ditt fra "
-                                + virkningsdato + " fordi sivilstanden din er endret. Vi vil også informere deg om rettigheter du kan ha etter avdøde.",
+                                + virkningsdato + " fordi sivilstanden din er endret.",
                         Nynorsk to "Vi har mottatt melding om at ".expr() + avdoedNavn + " er død, og vi har rekna om uføretrygda di og barnetillegget ditt frå "
-                                + virkningsdato + " fordi sivilstanden din har blitt endra. Vi vil også informere deg om kva rettar du kan ha etter avdøde.",
+                                + virkningsdato + " fordi sivilstanden din har blitt endra.",
                         English to "We have received notice that ".expr() + avdoedNavn + " has died, and we have recalculated your disability benefit and child supplement from "
-                                + virkningsdato + " because your marital status has changed. We would also like to inform you about rights you may have as a surviving spouse.",
+                                + virkningsdato + " because your marital status has changed.",
                     )
                 }.orShow {
                     textExpr(
                         Bokmal to "Vi har mottatt melding om at ".expr() + avdoedNavn + " er død, og vi har regnet om uføretrygden din fra "
-                                + virkningsdato + " fordi sivilstanden din er endret. Vi vil også informere deg om rettigheter du kan ha etter avdøde.",
+                                + virkningsdato + " fordi sivilstanden din er endret.",
                         Nynorsk to "Vi har mottatt melding om at ".expr() + avdoedNavn + " er død, og vi har rekna om uføretrygda di frå "
-                                + virkningsdato + " fordi sivilstanden din er endra. Vi vil også informere deg om kva rettar du kan ha etter avdøde.",
+                                + virkningsdato + " fordi sivilstanden din er endra.",
                         English to "We have received notice that ".expr() + avdoedNavn + " has died, and we have recalculated your disability benefit from "
-                                + virkningsdato + ", because your marital status has changed. We would also like to inform you about rights you may have as a surviving spouse.",
+                                + virkningsdato + ", because your marital status has changed.",
                     )
                 }
             }.orShow {
@@ -50,30 +50,30 @@ data class OmregnEPSInnledning(
                     showIf(harBarnOverfoertTilSaerkullsbarn) {
                         textExpr(
                             Bokmal to "Vi har mottatt melding om at ".expr() + avdoedNavn + " er død, og vi har regnet om barnetillegget ditt fra "
-                                    + virkningsdato + " fordi sivilstanden din er endret. Vi vil også informere deg om rettigheter du kan ha etter avdøde.",
+                                    + virkningsdato + " fordi sivilstanden din er endret.",
                             Nynorsk to "Vi har mottatt melding om at ".expr() + avdoedNavn + " er død, og vi har rekna om barnetillegget ditt frå "
-                                    + virkningsdato + " fordi sivilstanden din er endra. Vi vil også informere deg om kva rettar du kan ha etter avdøde.",
+                                    + virkningsdato + " fordi sivilstanden din er endra.",
                             English to "We have received notice that ".expr() + avdoedNavn + " has died, and we have recalculated your child supplement from "
-                                    + virkningsdato + " because your marital status has changed. We would also like to inform you about rights you may have as a surviving spouse.",
+                                    + virkningsdato + " because your marital status has changed.",
                         )
                     }.orShow {
                         textExpr(
                             Bokmal to "Vi har mottatt melding om at ".expr() + avdoedNavn
-                                    + " er død. Uføretrygden og barnetillegget ditt endres ikke, men vi vil informere deg om rettigheter du kan ha etter avdøde.",
+                                    + " er død. Uføretrygden og barnetillegget ditt endres ikke.",
                             Nynorsk to "Vi har mottatt melding om at ".expr() + avdoedNavn
-                                    + " er død. Uføretrygda di og barnetillegget ditt blir ikkje endra, men vi vil informere deg om kva rettar du kan ha etter avdøde.",
+                                    + " er død. Uføretrygda di og barnetillegget ditt blir ikkje endra.",
                             English to "We have received notice that ".expr() + avdoedNavn
-                                    + " has died. This will not affect your disability benefit or child supplement, but we would like to inform you about rights you may have as a surviving spouse.",
+                                    + " has died. This will not affect your disability benefit or child supplement.",
                         )
                     }
                 }.orShow {
                     textExpr(
                         Bokmal to "Vi har mottatt melding om at ".expr() + avdoedNavn
-                                + " er død. Uføretrygden din endres ikke, men vi vil informere deg om rettigheter du kan ha etter avdøde.",
+                                + " er død. Uføretrygden din endres ikke.",
                         Nynorsk to "Vi har mottatt melding om at ".expr() + avdoedNavn
-                                + " er død. Uføretrygda di blir ikkje endra, men vi vil informere deg om kva rettar du kan ha etter avdøde.",
+                                + " er død. Uføretrygda di blir ikkje endra.",
                         English to "We have received notice that ".expr() + avdoedNavn
-                                + " has died. This will not affect your disability benefit, but we would like to inform you about rights you may have as a surviving spouse.",
+                                + " has died. This will not affect your disability benefit.",
                     )
                 }
             }
@@ -643,7 +643,6 @@ data class GjenlevenderettSamboerOverskrift(val avdoedNavn: Expression<String>) 
                 English to "Rights you may be entitled to as a former cohabitant with ".expr() + avdoedNavn
             )
         }
-
 }
 
 // GjRettUTSamboer_001
@@ -748,10 +747,13 @@ object SoekGjenlevendetillegg : OutlinePhrase<LangBokmalNynorskEnglish>() {
         paragraph {
             text(
                 Bokmal to "Vi oppfordrer deg til å søke om gjenlevendetillegg i uføretrygden så snart som mulig fordi vi vanligvis kun etterbetaler for tre måneder. " +
+                        "Det er nye regler for gjenlevendeytelser fra 1. januar 2024. Tidspunktet for når NAV mottar søknaden din kan ha betydning for hvilke regler som gjelder for deg. " +
                         "Du finner informasjon og søknadsskjemaet for gjenlevende ektefelle, partner eller samboer på $GJENLEVENDE_SKJEMA_URL",
                 Nynorsk to "Vi oppmodar deg til å søkje om attlevandetillegg i uføretrygda så snart som mogleg fordi vi vanlegvis berre etterbetaler for tre månader. " +
+                        "Det er nye reglar for ytingar til attlevande frå 1. januar 2024. Tidspunktet for når NAV mottar søknaden din kan ha betydning for kva regler som gjeld for deg. " +
                         "Du finn informasjon og søknadsskjemaet for attlevande ektefelle, partner eller sambuar på $GJENLEVENDE_SKJEMA_URL",
                 English to "We encourage you to apply for survivor's supplement to disability benefit as soon as possible because we normally only pay retroactively for three months. " +
+                        "There are new rules for survivor benefits from January 1, 2024. The date when NAV receives your application may have significance for which rules apply to you. " +
                         "You will find information and the application form for a surviving spouse, partner or cohabitant at $GJENLEVENDE_SKJEMA_URL"
             )
         }

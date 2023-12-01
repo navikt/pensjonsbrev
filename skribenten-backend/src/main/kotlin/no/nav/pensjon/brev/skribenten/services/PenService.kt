@@ -13,9 +13,6 @@ import no.nav.pensjon.brev.skribenten.routes.OrderLetterRequest
 import no.nav.pensjon.brev.skribenten.auth.AzureADOnBehalfOfAuthorizedHttpClient
 import no.nav.pensjon.brev.skribenten.auth.AzureADService
 import java.time.LocalDate
-import java.time.format.DateTimeFormatter
-import java.time.format.FormatStyle
-import java.util.*
 
 class PenService(config: Config, authService: AzureADService) {
     private val penUrl = config.getString("url")
@@ -39,10 +36,10 @@ class PenService(config: Config, authService: AzureADService) {
         val fodselsdato: LocalDate,
         val fnr: String,
     )
-
     data class Sak(
         val sakId: Long,
-        val penPerson: PenPersonDto,
+        val foedselsnr: String,
+        val foedselsdato: LocalDate,
         val sakType: SakType,
     )
 
@@ -50,115 +47,76 @@ class PenService(config: Config, authService: AzureADService) {
     data class SakSelection(
         val sakId: Long,
         val foedselsnr: String,
-        val foedselsdato: String,
+        val foedselsdato: LocalDate,
         val sakType: SakType,
     )
 
 
     private suspend fun fetchSak(call: ApplicationCall, sakId: String): ServiceResult<Sak, PenError> =
-        client.get(call, "sak/$sakId").toServiceResult<Sak, PenError>()
+        client.get(call, "brev/skribenten/sak/$sakId").toServiceResult<Sak, PenError>()
 
     suspend fun hentSak(call: ApplicationCall, sakId: String): ServiceResult<SakSelection, PenError> =
         fetchSak(call, sakId).map {
             SakSelection(
                 sakId = it.sakId,
-                foedselsnr = it.penPerson.fnr,
-                foedselsdato = it.penPerson.fodselsdato.format(
-                    DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT)
-                        .withLocale(Locale.forLanguageTag("no"))
-                ),
+                foedselsnr = it.foedselsnr,
+                foedselsdato = it.foedselsdato,
                 sakType = it.sakType,
             )
         }
 
-    private data class BestillExtreamBrevDto(
-        val letterCode: String,
-        val language: SpraakKode,
-        val vedtaksId: String?,
-        val gjelderPid: String,
-        val mottakerPid: String?,
-        val saksbehanlderNavn: String,
-        val saksbehanlderId: String,
-        val isSensitivt: Boolean,
-        val eblankett: ElankettBestilling? = null
-    ) {
-        data class ElankettBestilling(val landkode: String, val mottakerText: String)
-    }
-
-    suspend fun bestillExtreamBrev(
-        call: ApplicationCall,
-        request: OrderLetterRequest,
-        saksbehandlerNavn: String,
-        saksbehandlerBrukernavn: String
-    ): ServiceResult<String, PenError> =
-        client.post(call, "brev/extream/${request.sakId}") {
-            setBody(
-                BestillExtreamBrevDto(
-                    letterCode = request.brevkode,
-                    language = request.spraak,
-                    vedtaksId = null, // TODO fill with actual value. When do we do this? check psak
-                    gjelderPid = request.gjelderPid,
-                    mottakerPid = null, // TODO fill with actual value when chosen.
-                    saksbehanlderNavn = saksbehandlerNavn,
-                    saksbehanlderId = saksbehandlerBrukernavn,
-                    isSensitivt = false,  // TODO add choice to relevant letters and fill in.
-                    eblankett = if(request.landkode != null && request.mottakerText!= null) {
-                        BestillExtreamBrevDto.ElankettBestilling(request.landkode, request.mottakerText)
-                    } else null
-                )
-            )
-            contentType(ContentType.Application.Json)
-        }.toServiceResult<String, PenError>()
-
-
-    private data class BestillDoksysBrevRequest(
+    data class BestilDoksysBrevRequest(
         val sakId: Long,
-        val brevType: String? = null, // Brevkode.
-        val mottaker: String? = null, //annen mottaker enn gjelder
-        val saksbehandlerNavn: String,
-        val saksbehandlerIdent: String,
-        val journalfoerendeEnhet: String,
-        val sensitivePersonopplysninger: Boolean,
-        val sprakKode: SpraakKode,
-        val automatiskBehandlet: Boolean,
-        val gjelder: String,
-        val vedtakId: Long? = null, // TODO Når settes disse?
+        val brevkode: String,
+        val mottaker: String?,
+        val journalfoerendeEnhet: String?,
+        val sensitivePersonopplysninger: Boolean?,
+        val sprakKode: SpraakKode?,
+        val vedtakId: Long?,
     )
 
     suspend fun bestillDoksysBrev(
         call: ApplicationCall,
         request: OrderLetterRequest,
-        saksbehandlerNavn: String,
-        saksbehandlerBrukernavn: String
-    ): ServiceResult<String, PenError> =
-        client.post(call, "sak/${request.sakId}/brev/doksys") {
+    ): ServiceResult<BestillDoksysBrevResponse, BestillDoksysBrevResponse> =
+        client.post(call, "brev/skribenten/doksys/sak/${request.sakId}") {
             setBody(
-                BestillDoksysBrevRequest(
+                BestilDoksysBrevRequest(
                     sakId = request.sakId,
-                    brevType = request.brevkode,
+                    brevkode = request.brevkode,
                     mottaker = null, // TODO
-                    saksbehandlerNavn = saksbehandlerNavn,
-                    saksbehandlerIdent = saksbehandlerBrukernavn,
                     journalfoerendeEnhet = "4849", // TODO
-                    sensitivePersonopplysninger = false, // TODO
+                    sensitivePersonopplysninger = false, // TODO valg fra saksbehandler
                     sprakKode = request.spraak,
-                    automatiskBehandlet = false, // TODO fra metadata
-                    gjelder = request.gjelderPid,
-                    vedtakId = 42806043, //TODO fyll inn fra query param / lag select?
+                    vedtakId = 42806043, //TODO fyll inn fra query param
                 )
             )
             contentType(ContentType.Application.Json)
-        }.toServiceResult<String, PenError>()
-
-    suspend fun redigerExtreamBrev(call: ApplicationCall, journalpostId: String): ServiceResult<String, String> =
-        client.get(call, "brev/rediger/extream/${journalpostId}").toServiceResult()
-
-    suspend fun redigerDoksysBrev(call: ApplicationCall, journalpostId: String): ServiceResult<String, String> =
-        client.post(call, "brev/rediger/doksys/${journalpostId}").toServiceResult<String, String>()
-
+        }.toServiceResult<BestillDoksysBrevResponse, BestillDoksysBrevResponse>()
     data class Avtaleland(val navn: String, val kode: String)
 
+    data class BestillDoksysBrevResponse(val journalpostId: String?, val error: Error? = null) {
+        companion object {
+            fun ok(journalpostId: String) =
+                BestillDoksysBrevResponse(journalpostId)
+
+            fun error(tekniskgrunn: String?, type: Error.ErrorType) =
+                BestillDoksysBrevResponse(null, Error(tekniskgrunn, type))
+        }
+
+        data class Error(val tekniskgrunn: String?, val type: ErrorType) {
+            enum class ErrorType {
+                ADDRESS_NOT_FOUND,
+                UNAUTHORIZED,
+                PERSON_NOT_FOUND,
+                UNEXPECTED_DOKSYS_ERROR,
+                INTERNAL_SERVICE_CALL_FAILIURE,
+                TPS_CALL_FAILIURE,
+            }
+        }
+    }
+
     suspend fun hentAvtaleland(call: ApplicationCall): ServiceResult<List<Avtaleland>, String> =
-        client.get(call, "brev/brevdata/avtaleland").toServiceResult<List<Avtaleland>, String>()
+        client.get(call, "brev/skribenten/avtaleland").toServiceResult<List<Avtaleland>, String>()
 }
 

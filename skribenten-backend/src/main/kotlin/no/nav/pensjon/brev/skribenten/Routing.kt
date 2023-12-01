@@ -19,8 +19,6 @@ fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config
     val kodeverkService = KodeverkService(skribentenConfig.getConfig("services.kodeverk"))
     val pdlService = PdlService(skribentenConfig.getConfig("services.pdl"), authService)
     val krrService = KrrService(skribentenConfig.getConfig("services.krr"), authService)
-    val microsoftGraphService =
-        MicrosoftGraphService(skribentenConfig.getConfig("services.microsoftgraph"), authService)
     val brevbakerService = BrevbakerService(skribentenConfig.getConfig("services.brevbaker"), authService)
     val brevmetadataService = BrevmetadataService(skribentenConfig.getConfig( "services.brevmetadata"))
 
@@ -49,7 +47,7 @@ fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config
             brevbakerRoute(brevbakerService)
             favoritesRoute()
             kodeverkRoute(kodeverkService, penService)
-            penRoute(penService, safService, microsoftGraphService)
+            penRoute(penService, safService)
             personRoute(pdlService, pensjonPersonDataService, krrService)
         }
     }

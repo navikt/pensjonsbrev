@@ -9,7 +9,9 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
+import no.nav.pensjon.etterlatte.maler.barnepensjon.migrering.BarnepensjonOmregnetNyttRegelverkDTOSelectors.erBosattUtlandet
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
+import no.nav.pensjon.etterlatte.maler.fraser.common.kontakttelefonPensjon
 
 
 @TemplateModelHelpers
@@ -142,9 +144,15 @@ object ForhaandsvarselOmregningBP : EtterlatteTemplate<BarnepensjonOmregnetNyttR
             }
             paragraph {
                 text(
-                    Language.Bokmal to "Du finner mer informasjon på ${Constants.BARNEPENSJON_URL}. Hvis du ikke finner svar på spørsmålet ditt, kan du ringe oss på telefon ${Constants.KONTAKTTELEFON_PENSJON} hverdager 9-15.",
-                    Language.Nynorsk to "Les meir på ${Constants.BARNEPENSJON_URL}. Dersom du ikkje finn svar på spørsmålet ditt der, kan du ringje oss på telefon ${Constants.KONTAKTTELEFON_PENSJON}, kvardagar 9–15. ",
-                    Language.English to "For more information, visit us online: ${Constants.Engelsk.BARNEPENSJON_URL}. If you cannot find the answer to your question, you can call us by phone (${Constants.KONTAKTTELEFON_PENSJON}) weekdays 9-15."
+                    Language.Bokmal to "Du finner mer informasjon på ${Constants.BARNEPENSJON_URL}. Hvis du ikke finner svar på spørsmålet ditt, kan du ringe oss på telefon ",
+                    Language.Nynorsk to "Les meir på ${Constants.BARNEPENSJON_URL}. Dersom du ikkje finn svar på spørsmålet ditt der, kan du ringje oss på telefon ",
+                    Language.English to "For more information, visit us online: ${Constants.Engelsk.BARNEPENSJON_URL}. If you cannot find the answer to your question, you can call us by phone ("
+                )
+                kontakttelefonPensjon(erBosattUtlandet)
+                text(
+                    Language.Bokmal to " hverdager 9-15.",
+                    Language.Nynorsk to ", kvardagar 9–15. ",
+                    Language.English to ") weekdays 9-15."
                 )
             }
 
