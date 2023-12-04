@@ -788,24 +788,23 @@ object AvdoedBoddEllerArbeidetIUtland : OutlinePhrase<LangBokmalNynorskEnglish>(
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         paragraph {
             text(
-                Bokmal to "Hvis avdøde har bodd eller arbeidet i utlandet kan dette få betydning for hvor mye du får ubetalt i gjenlevendetillegg. " +
+                Bokmal to "Hvis avdøde har bodd eller arbeidet i utlandet, kan dette få betydning for hvor mye du får ubetalt. " +
                         "Norge har trygdesamarbeid med en rekke land gjennom EØS-avtalen og andre avtaler. " +
-                        "Derfor kan du også ha rett til pensjon fra andre land. " +
+                        "Derfor kan du også ha rettigheter fra andre land. " +
                         "Vi kan hjelpe deg med søknad til land Norge har trygdeavtale med.",
 
-                Nynorsk to "Dersom avdøde har budd eller arbeidd i utlandet, kan dette få noko å seie for kor mykje du får ubetalt i attlevandetillegg. " +
+                Nynorsk to "Dersom avdøde har budd eller arbeidd i utlandet, kan det påverke kor mykje du får ubetalt. " +
                         "Noreg har trygdesamarbeid med ei rekkje land gjennom EØS-avtalen og andre avtalar. " +
-                        "Derfor kan du også ha rett til pensjon frå andre land. " +
+                        "Derfor kan du også ha rettar frå andre land. " +
                         "Vi kan hjelpe deg med søknad til land Noreg har trygdeavtale med.",
 
-                English to "If the deceased has lived or worked abroad, this may affect the amount of your survivor's supplement. " +
-                        "Norway cooperates with a number of countries through the EEA Agreement and other social security agreements. " +
-                        "You may therefore also be entitled to a pension from other countries. " +
-                        "We can assist you with your application to countries with which Norway has a social security agreement."
+                English to "If the deceased has lived or worked abroad, this can affect how much you receive. " +
+                        "Norway has social security cooperation with a number of countries through the EEA Agreement and other agreements. " +
+                        "Therefore, you may also have rights from other countries. " +
+                        "We can help you with the application to countries Norway has a social security agreement with."
             )
         }
 }
-
 // PensjonFraAndreOverskrift_001
 object PensjonFraAndreOverskrift : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
