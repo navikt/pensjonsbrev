@@ -25,7 +25,6 @@ fun main() {
     val skribentenConfig: Config = ConfigFactory.load(ConfigParseOptions.defaults(), ConfigResolveOptions.defaults().setAllowUnresolved(true))
         .resolveWith(ConfigFactory.load("azuread")) // loads azuread secrets for local
         .getConfig("skribenten")
-
     embeddedServer(Netty, port = skribentenConfig.getInt("port"), host = "0.0.0.0") {
         skribentenApp(skribentenConfig)
     }.start(wait = true)

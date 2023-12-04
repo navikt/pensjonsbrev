@@ -23,6 +23,27 @@ services:
       - "8080:8080"
       - "5015:5005" # debug port
 
+  skribenten-backend:
+    build: ./skribenten-backend
+    depends_on:
+      - postgresdb
+    ports:
+      - "8082:8082"
+    environment:
+      - JAVA_TOOL_OPTIONS=-Dio.ktor.development=true -Dconfig.resource=application-local.conf -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5007
+      - DB_URL="postgres://user:pass@postgresdb:5432/db"
+
+  postgresdb:
+    container_name: skribenten-backend-db
+    image: 'postgres:14-alpine'
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: [ 'CMD', 'pg_isready', '-U', 'postgres' ]
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: pass
+
   locust-master:
     profiles:
       - locust
