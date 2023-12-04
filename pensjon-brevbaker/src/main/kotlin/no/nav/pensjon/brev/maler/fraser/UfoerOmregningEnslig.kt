@@ -798,10 +798,10 @@ object AvdoedBoddEllerArbeidetIUtland : OutlinePhrase<LangBokmalNynorskEnglish>(
                         "Derfor kan du også ha rettar frå andre land. " +
                         "Vi kan hjelpe deg med søknad til land Noreg har trygdeavtale med.",
 
-                English to "If the deceased has lived or worked abroad, this can affect how much you receive. " +
-                        "Norway has social security cooperation with a number of countries through the EEA Agreement and other agreements. " +
-                        "Therefore, you may also have rights from other countries. " +
-                        "We can help you with the application to countries Norway has a social security agreement with."
+                English to "If the deceased has lived or worked abroad, this may affect your payment. " +
+                        "Norway cooperates with a number of countries through the EEA Agreement and other social security agreements. " +
+                        "You may therefore also have rights from other countries. " +
+                        "We can assist you with your application to countries with which Norway has a social security agreement."
             )
         }
 }
