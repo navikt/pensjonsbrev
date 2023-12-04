@@ -14,7 +14,6 @@ import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.ManueltBrevMedTittelDTO
 import no.nav.pensjon.etterlatte.maler.ManueltBrevMedTittelDTOSelectors.innhold
 import no.nav.pensjon.etterlatte.maler.ManueltBrevMedTittelDTOSelectors.tittel
-import no.nav.pensjon.etterlatte.maler.fraser.common.OMSFelles
 import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
 
 @TemplateModelHelpers
@@ -46,9 +45,6 @@ object TomMalInformasjonsbrev : EtterlatteTemplate<ManueltBrevMedTittelDTO> {
 
         outline {
             konverterElementerTilBrevbakerformat(innhold)
-
-            includePhrase(OMSFelles.DuHarRettTilInnsyn)
-            includePhrase(OMSFelles.HarDuSpoersmaal)
         }
     }
 }
