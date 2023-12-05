@@ -114,7 +114,14 @@ function Brevmaler({ kategorier }: { kategorier: LetterCategory[] }) {
 
           return (
             <Accordion.Item key={letterCategory.name} open={searchTerm.length > 0 ? true : undefined}>
-              <Accordion.Header>{CATEGORY_TRANSLATIONS[letterCategory.name] ?? "Annet"}</Accordion.Header>
+              <Accordion.Header
+                css={css`
+                  flex-direction: row-reverse;
+                  justify-content: space-between;
+                `}
+              >
+                {CATEGORY_TRANSLATIONS[letterCategory.name] ?? "Annet"}
+              </Accordion.Header>
               <Accordion.Content>
                 <div
                   css={css`
