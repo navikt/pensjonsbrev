@@ -7,6 +7,7 @@ val logbackVersion: String by project
 val logstashVersion: String by project
 val mockkVersion: String by project
 val dokumentproduksjonVersion: String by project
+val micrometerVersion: String by project
 
 plugins {
 	application
@@ -53,17 +54,15 @@ dependencies {
 	implementation("io.ktor:ktor-server-netty-jvm:$ktorVersion")
 	implementation("io.ktor:ktor-server-status-pages:$ktorVersion")
 	implementation("io.ktor:ktor-client-auth:$ktorVersion")
+	implementation("io.ktor:ktor-server-auth-jwt:$ktorVersion")
 	implementation("io.ktor:ktor-client-cio:$ktorVersion")
 	implementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
 	implementation("ch.qos.logback:logback-classic:$logbackVersion")
 	implementation("net.logstash.logback:logstash-logback-encoder:$logstashVersion")
 
-	implementation("no.nav.pensjon.pesys-esb-wsclient:pcom-esb-wsclient-legacy:$esbVersion") {
-	}
-	implementation("no.nav.pensjon.pesys-esb-wsclient:psak-esb-wsclient-legacy:$esbVersion") {
-	}
-	implementation("no.nav.pensjon.pesys-esb-wsclient:pen-arkiv-esb-wsclient-legacy:$esbVersion") {
-	}
+	implementation("no.nav.pensjon.pesys-esb-wsclient:pcom-esb-wsclient-legacy:$esbVersion")
+	implementation("no.nav.pensjon.pesys-esb-wsclient:psak-esb-wsclient-legacy:$esbVersion")
+	implementation("no.nav.pensjon.pesys-esb-wsclient:pen-arkiv-esb-wsclient-legacy:$esbVersion")
 	implementation("no.nav.tjenestespesifikasjoner:dokumentproduksjon-v3-tjenestespesifikasjon:$dokumentproduksjonVersion")
 
 	implementation("javax.xml.ws:jaxws-api:2.3.1")
@@ -74,9 +73,16 @@ dependencies {
 	implementation("org.apache.cxf:cxf-rt-ws-policy:$cxfVersion")
 	implementation("org.apache.cxf:cxf-rt-transports-http:$cxfVersion")
 
+	// Metrics
+	implementation("io.ktor:ktor-server-metrics:$ktorVersion")
+	implementation("io.ktor:ktor-server-metrics-micrometer:$ktorVersion")
+	implementation("io.micrometer:micrometer-registry-prometheus:$micrometerVersion")
+
+
 	testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlinVersion")
 	testImplementation("io.mockk:mockk:${mockkVersion}")
 	testImplementation("io.ktor:ktor-server-test-host:$ktorVersion")
+
 
 }
 
