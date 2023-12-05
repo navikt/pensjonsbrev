@@ -5,10 +5,9 @@ import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
+import no.nav.pensjon.brev.template.dsl.ListScope
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
-import no.nav.pensjon.brev.template.dsl.ParagraphOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
-import no.nav.pensjon.brev.template.dsl.expression.map
 import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.etterlatte.maler.ElementSelectors.children
 import no.nav.pensjon.etterlatte.maler.ElementSelectors.type
@@ -47,22 +46,11 @@ fun <D : BrevDTO> OutlineOnlyScope<LangBokmalNynorskEnglish, D>.konverterElement
         }.orShowIf(element.type.equalTo(ElementType.PARAGRAPH)) {
             paragraph {
                 forEach(element.children) { inner ->
-                    showIf (inner.type.equalTo(ElementType.BULLETED_LIST)) {
+                    showIf(inner.type.equalTo(ElementType.BULLETED_LIST)) {
                         list {
                             ifNotNull(inner.children) { i ->
-                                forEach(i) { listItem ->
-                                    item {
-                                        ifNotNull(listItem.text) { text ->
-                                            textExpr(
-                                                Bokmal to text,
-                                                Nynorsk to text,
-                                                English to text,
-                                            )
-                                        }
-                                    }
-                                }
+                                lagPunktliste(i)
                             }
-
                         }
                     }.orShow {
                         ifNotNull(inner.text) {
@@ -78,18 +66,24 @@ fun <D : BrevDTO> OutlineOnlyScope<LangBokmalNynorskEnglish, D>.konverterElement
         }.orShowIf(element.type.equalTo(ElementType.BULLETED_LIST)) {
             paragraph {
                 list {
-                    forEach(element.children) { listItem ->
-                        item {
-                            ifNotNull(listItem.text) { text ->
-                                textExpr(
-                                    Bokmal to text,
-                                    Nynorsk to text,
-                                    English to text,
-                                )
-                            }
-                        }
-                    }
+                    lagPunktliste(element.children)
                 }
+            }
+        }
+    }
+}
+
+private fun <D : BrevDTO> ListScope<LangBokmalNynorskEnglish, D>.lagPunktliste(
+    items: Expression<List<InnerElement>>
+) {
+    forEach(items) { listItem ->
+        item {
+            ifNotNull(listItem.text) { text ->
+                textExpr(
+                    Bokmal to text,
+                    Nynorsk to text,
+                    English to text,
+                )
             }
         }
     }
