@@ -14,7 +14,7 @@ object AdhocInfoOmFeilUT2023 : AutobrevTemplate<EmptyBrevdata> {
 
     override val kode: Brevkode.AutoBrev = Brevkode.AutoBrev.UT_ADHOC_2023_INFORMASJON_OM_FEIL
     override val template: LetterTemplate<*, EmptyBrevdata> = createTemplate(
-        name = AdhocGjenlevenderettFoed1954Til1957.kode.name,
+        name = kode.name,
         letterDataType = EmptyBrevdata::class,
         languages = languages(Bokmal),
         letterMetadata = LetterMetadata(
