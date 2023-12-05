@@ -14,7 +14,9 @@ import io.ktor.server.plugins.statuspages.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.Metrics.configureMetrics
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.auth.JwtConfig
+import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.auth.requireAzureADConfig
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.auth.tjenestebusJwt
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.arkiv.ArkivTjenestebussService
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.arkiv.BestillBrevRequestDto
@@ -31,7 +33,7 @@ import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.soap.ST
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.soap.STSService
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.soap.withCallId
 
-fun Application.tjenestebussIntegrationApi(authConfig: JwtConfig, config: Config) {
+fun Application.tjenestebussIntegrationApi(config: Config) {
     install(CallLogging) {
         callIdMdc("x_correlationId")
         disableDefaultColors()
@@ -68,10 +70,14 @@ fun Application.tjenestebussIntegrationApi(authConfig: JwtConfig, config: Config
             }
         }
     }
+    val azureADConfig = config.requireAzureADConfig()
 
     install(Authentication) {
-        tjenestebusJwt(authConfig)
+        tjenestebusJwt(azureADConfig)
     }
+
+
+    configureMetrics()
 
     routing {
         val stsService = STSService(config.getConfig("services.sts"))
@@ -87,7 +93,7 @@ fun Application.tjenestebussIntegrationApi(authConfig: JwtConfig, config: Config
             DokumentproduksjonService(config.getConfig("services.dokprod"), stsSercuritySOAPHandler)
 
 
-        authenticate(authConfig.name) {
+        authenticate(azureADConfig.name) {
 
             post("/hentSamhandler") {
                 val requestDto = call.receive<HentSamhandlerRequestDto>()

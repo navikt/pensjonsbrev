@@ -1,11 +1,14 @@
 app-name: "pensjonsbrev-tjenestebuss"
 ingresses:
-  - "https://pensjonsbrev-tjenestebuss.intern.dev.nav.no"
+  - "https://pensjonsbrev-tjenestebuss-q2.intern.dev.nav.no"
+  - "https://pensjonsbrev-tjenestebuss-q2.dev-fss-pub.nais.io"
 env:
   - name: TJENESTEBUSS_URL
     value: "https://tjenestebuss-q2.adeo.no/"
   - name: STS_URL
     value: "https://security-token-service.dev.adeo.no"
+  - name: DOKPROD_URL
+    value: "https://dokprod-q2.dev.intern.nav.no/dokprod/"
 
 inboundRules:
   - application: skribenten-backend
@@ -18,3 +21,4 @@ inboundRules:
 externalHosts:
   - host: https://tjenestebuss-q2.adeo.no
   - host: https://security-token-service.dev.adeo.no
+  - host: https://dokprod-q2.dev.intern.nav.no/dokprod

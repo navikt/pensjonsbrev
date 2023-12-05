@@ -6,7 +6,6 @@ import com.typesafe.config.ConfigParseOptions
 import com.typesafe.config.ConfigResolveOptions
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
-import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.auth.requireAzureADConfig
 
 fun main() {
     val tjenestebussIntegrasjonConfig: Config =
@@ -15,8 +14,6 @@ fun main() {
             .resolveWith(ConfigFactory.load("sts/auth"), ConfigResolveOptions.defaults().setAllowUnresolved(true))
             .resolveWith(ConfigFactory.load("azuread"))
     embeddedServer(Netty, port = tjenestebussIntegrasjonConfig.getInt("port"), host = "0.0.0.0") {
-
-        val azureADConfig = tjenestebussIntegrasjonConfig.requireAzureADConfig()
-        tjenestebussIntegrationApi(azureADConfig, tjenestebussIntegrasjonConfig)
+        tjenestebussIntegrationApi(tjenestebussIntegrasjonConfig)
     }.start(wait = true)
 }
