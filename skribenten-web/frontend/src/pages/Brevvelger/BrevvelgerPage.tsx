@@ -1,8 +1,8 @@
 import { css } from "@emotion/react";
-import { Accordion, Button, Heading, Search, Tabs } from "@navikt/ds-react";
+import { Accordion, Button, Search, Tabs } from "@navikt/ds-react";
 import { useQuery } from "@tanstack/react-query";
 import { Outlet, useNavigate, useParams, useRouteContext, useSearch } from "@tanstack/react-router";
-import { useState } from "react";
+import { Fragment, useState } from "react";
 
 import { getFavoritter, getLetterTemplate } from "../../api/skribenten-api-endpoints";
 import { brevvelgerRoute } from "../../tanStackRoutes";
@@ -75,7 +75,13 @@ function Brevmaler({ kategorier }: { kategorier: LetterCategory[] }) {
 
   const favoritter = useQuery(getFavoritter).data ?? [];
 
-  const matchingLetterCategories = kategorier.map((category) => ({
+  const matchingFavoritter = kategorier
+    .flatMap((category) => category.templates)
+    .filter(({ id }) => favoritter.includes(id));
+
+  const letterCategoriesWithFavoritterIncluded = [{ name: "FAVORITTER", templates: matchingFavoritter }, ...kategorier];
+
+  const matchingLetterCategories = letterCategoriesWithFavoritterIncluded.map((category) => ({
     ...category,
     templates: category.templates.filter((template) => template.name.toLowerCase().includes(searchTerm.toLowerCase())),
   }));
@@ -95,23 +101,11 @@ function Brevmaler({ kategorier }: { kategorier: LetterCategory[] }) {
         value={searchTerm}
         variant="simple"
       />
-      <Heading level="2" size="xsmall">
-        Favoritter
-      </Heading>
-      <div>
-        {favoritter.map((favoritt) => (
-          <span key={favoritt}>{favoritt}</span>
-        ))}
-      </div>
-      <Heading level="2" size="xsmall">
-        Brevmaler
-      </Heading>
-      <Accordion headingSize="xsmall" size="small">
+      <Accordion headingSize="xsmall" indent={false} size="small">
         {matchingLetterCategories.map((letterCategory) => {
           if (letterCategory.templates.length === 0) {
-            return <></>;
+            return <Fragment key={letterCategory.name}></Fragment>;
           }
-
           return (
             <Accordion.Item key={letterCategory.name} open={searchTerm.length > 0 ? true : undefined}>
               <Accordion.Header
@@ -201,4 +195,5 @@ const CATEGORY_TRANSLATIONS: Record<string, string> = {
   OVRIG: "Øvrig",
   VARSEL: "Varsel",
   VEDTAK: "Vedtak",
+  FAVORITTER: "Favoritter",
 };
