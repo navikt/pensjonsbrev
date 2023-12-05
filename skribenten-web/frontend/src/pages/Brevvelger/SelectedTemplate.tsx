@@ -96,7 +96,9 @@ function SelectLanguage({ letterTemplate }: { letterTemplate: LetterMetadata }) 
 
   // Update selected language if preferredLanguage was not loaded before form initialization.
   useEffect(() => {
-    setValue("spraak", preferredLanguage);
+    if (preferredLanguage && letterTemplate.spraak.includes(preferredLanguage)) {
+      setValue("spraak", preferredLanguage);
+    }
   }, [preferredLanguage]);
 
   return (
