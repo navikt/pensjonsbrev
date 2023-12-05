@@ -1,6 +1,6 @@
 import { css } from "@emotion/react";
 import { StarFillIcon, StarIcon } from "@navikt/aksel-icons";
-import { BodyShort, Button, Heading } from "@navikt/ds-react";
+import { BodyShort, Button, Heading, Tag } from "@navikt/ds-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useParams, useRouteContext, useSearch } from "@tanstack/react-router";
 
@@ -8,6 +8,7 @@ import { addFavoritt, deleteFavoritt, getFavoritter, getLetterTemplate } from ".
 import { Divider } from "../../components/Divider";
 import { selectedTemplateRoute } from "../../tanStackRoutes";
 import type { LetterMetadata } from "../../types/apiTypes";
+import { BrevSystem } from "../../types/apiTypes";
 import { BrevvelgerTabOptions } from "./BrevvelgerPage";
 
 export function SelectedTemplate() {
@@ -111,17 +112,34 @@ function LetterTemplateHeading({ letterTemplate }: { letterTemplate: LetterMetad
           margin-top: var(--a-spacing-2);
         `}
       >
-        <div
-          aria-hidden
-          css={css`
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: var(--a-green-500);
-          `}
-        />
-        <BodyShort size="small">REDIGERBAR {letterTemplate.isEblankett ? "BLANKETT" : "MAL"}</BodyShort>
+        <LetterTemplateTags letterTemplate={letterTemplate} />
       </div>
+    </div>
+  );
+}
+
+function LetterTemplateTags({ letterTemplate }: { letterTemplate: LetterMetadata }) {
+  if (letterTemplate.isEblankett) {
+    return <></>;
+  }
+
+  return (
+    <div>
+      {letterTemplate.brevsystem === BrevSystem.Brevbaker && (
+        <Tag size="small" variant="alt2-moderate">
+          Brevbaker
+        </Tag>
+      )}
+      {letterTemplate.brevsystem === BrevSystem.Extream && (
+        <Tag size="small" variant="alt1-moderate">
+          Extream
+        </Tag>
+      )}
+      {letterTemplate.brevsystem === BrevSystem.DokSys && (
+        <Tag size="small" variant="alt3-moderate">
+          Doksys
+        </Tag>
+      )}
     </div>
   );
 }
