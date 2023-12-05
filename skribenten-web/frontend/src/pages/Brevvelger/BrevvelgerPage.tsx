@@ -161,7 +161,13 @@ function BrevmalButton({ letterMetadata }: { letterMetadata: LetterMetadata }) {
     <Button
       css={css(
         css`
+          color: black;
           justify-content: flex-start;
+          padding: var(--a-spacing-2);
+          border-radius: 0;
+          span {
+            font-weight: var(--a-font-weight-regular);
+          }
         `,
         templateId === letterMetadata.id &&
           css`
@@ -172,6 +178,7 @@ function BrevmalButton({ letterMetadata }: { letterMetadata: LetterMetadata }) {
       onClick={() =>
         navigate({ to: "$templateId", params: { sakId, templateId: letterMetadata.id }, search: (s) => s })
       }
+      size="small"
       variant="tertiary"
     >
       {letterMetadata.name}
