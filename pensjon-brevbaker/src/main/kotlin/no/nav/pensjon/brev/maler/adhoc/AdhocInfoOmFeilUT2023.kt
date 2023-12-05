@@ -33,8 +33,12 @@ object AdhocInfoOmFeilUT2023 : AutobrevTemplate<EmptyBrevdata> {
         outline {
             paragraph {
                 text(
-                    Bokmal to "Fra 1. januar 2024 vil NAV sette ned grensen for hva du kan tjene før utbetalingen av uføretrygden din blir redusert. " +
-                            "Du vil få et eget vedtak med informasjon om den nye inntektsgrensen din fra 1. januar 2024. " +
+                    Bokmal to "Fra 1. januar 2024 vil NAV sette ned grensen for hva du kan tjene før utbetalingen av uføretrygden din blir redusert."
+                )
+            }
+            paragraph {
+                text(
+                    Bokmal to "Du vil få et eget vedtak med informasjon om den nye inntektsgrensen din fra 1. januar 2024. " +
                             "Du vil få dette brevet før utbetalingen i januar måned.",
                 )
             }
