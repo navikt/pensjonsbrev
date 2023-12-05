@@ -6,6 +6,7 @@ import axios from "axios";
 
 import type { SakDto } from "../types/apiTypes";
 import type { LetterTemplatesResponse } from "../types/apiTypes";
+import type { PidRequest } from "../types/apiTypes";
 const SKRIBENTEN_API_BASE_PATH = "/skribenten-backend";
 
 /**
@@ -38,7 +39,7 @@ export const getSak = {
 
 export const getNavn = {
   queryKey: navnKeys.id,
-  queryFn: async (fnr: string) => (await axios.get<string>(`${SKRIBENTEN_API_BASE_PATH}/pdl/navn/${fnr}`)).data,
+  queryFn: async (pid: string) => (await axios.post<PidRequest>(`${SKRIBENTEN_API_BASE_PATH}/pdl/navn`, { pid })).data,
 };
 
 export const getLetterTemplate = {
