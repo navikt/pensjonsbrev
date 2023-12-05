@@ -39,7 +39,8 @@ export const getSak = {
 
 export const getNavn = {
   queryKey: navnKeys.id,
-  queryFn: async (pid: string) => (await axios.post<PidRequest>(`${SKRIBENTEN_API_BASE_PATH}/pdl/navn`, { pid })).data,
+  queryFn: async (pid: string) =>
+    (await axios.post<PidRequest>(`${SKRIBENTEN_API_BASE_PATH}/person/navn`, { pid })).data,
 };
 
 export const getLetterTemplate = {
