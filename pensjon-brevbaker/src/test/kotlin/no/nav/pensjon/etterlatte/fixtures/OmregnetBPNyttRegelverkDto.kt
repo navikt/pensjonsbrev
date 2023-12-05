@@ -39,22 +39,27 @@ fun createBarnepensjonOmregnetNyttRegelverkFerdigDTO() =
                 )
             ),
             Element(
-                type = ElementType.BULLETED_LIST,
+                type = ElementType.PARAGRAPH,
                 children = listOf(
                     InnerElement(
-                        type = ElementType.LIST_ITEM,
-                        text = "Listeting volum 111",
-                    ),
-                    InnerElement(
-                        type = ElementType.LIST_ITEM,
-                        text = "Listeting volum 222"
-                    ),
-                    InnerElement(
-                        type = ElementType.LIST_ITEM,
-                        text = "Listeting volum 333"
+                        type = ElementType.BULLETED_LIST,
+                        children = listOf(
+                            InnerElement(
+                                type = ElementType.LIST_ITEM,
+                                text = "Listeting volum 111",
+                            ),
+                            InnerElement(
+                                type = ElementType.LIST_ITEM,
+                                text = "Listeting volum 222"
+                            ),
+                            InnerElement(
+                                type = ElementType.LIST_ITEM,
+                                text = "Listeting volum 333"
+                            )
+                        )
                     )
                 )
-            )
+            ),
         ),
         data = BarnepensjonOmregnetNyttRegelverkDTO(
             utbetaltFoerReform = Kroner(1337),
