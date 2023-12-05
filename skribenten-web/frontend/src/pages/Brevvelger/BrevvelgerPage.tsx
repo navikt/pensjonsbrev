@@ -38,7 +38,7 @@ export function BrevvelgerPage() {
         flex: 1;
 
         > :first-of-type {
-          padding: var(--a-spacing-6);
+          padding: var(--a-spacing-4);
           border-left: 1px solid var(--a-gray-400);
           border-right: 1px solid var(--a-gray-400);
         }
@@ -98,10 +98,20 @@ function Brevmaler({ kategorier }: { kategorier: LetterCategory[] }) {
       <Search
         label="Filtrer brevmaler"
         onChange={(value) => setSearchTerm(value)}
+        size="small"
         value={searchTerm}
         variant="simple"
       />
-      <Accordion headingSize="xsmall" indent={false} size="small">
+      <Accordion
+        css={css`
+          .navds-accordion__content {
+            padding: 0;
+          }
+        `}
+        headingSize="xsmall"
+        indent={false}
+        size="small"
+      >
         {matchingLetterCategories.map((letterCategory) => {
           if (letterCategory.templates.length === 0) {
             return <Fragment key={letterCategory.name}></Fragment>;
@@ -164,7 +174,7 @@ function BrevmalButton({ letterMetadata }: { letterMetadata: LetterMetadata }) {
         css`
           color: black;
           justify-content: flex-start;
-          padding: var(--a-spacing-2);
+          padding: var(--a-spacing-2) var(--a-spacing-3);
           border-radius: 0;
           span {
             font-weight: var(--a-font-weight-regular);
