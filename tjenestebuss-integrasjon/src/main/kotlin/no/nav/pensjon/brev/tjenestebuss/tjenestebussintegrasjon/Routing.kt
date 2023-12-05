@@ -15,6 +15,7 @@ import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.auth.JwtConfig
+import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.auth.tjenestebusJwt
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.arkiv.ArkivTjenestebussService
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.arkiv.BestillBrevRequestDto
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.arkiv.BestillBrevResponseDto
@@ -66,6 +67,10 @@ fun Application.tjenestebussIntegrationApi(authConfig: JwtConfig, config: Config
                 call.respond(HttpStatusCode.BadRequest, cause.message ?: "Unknown failure")
             }
         }
+    }
+
+    install(Authentication) {
+        tjenestebusJwt(authConfig)
     }
 
     routing {

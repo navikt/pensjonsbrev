@@ -11,5 +11,10 @@ inboundRules:
   - application: skribenten-backend
     namespace: pensjonsbrev
     cluster: dev-gcp
-  - name: DOKPROD_URL
-    value: "https://dokprod-q1.dev.intern.nav.no/dokprod/"
+  - application: skribenten-backend-lokal
+    namespace: pensjonsbrev
+    cluster: dev-gcp
+
+externalHosts:
+  - host: https://tjenestebuss-q2.adeo.no
+  - host: https://security-token-service.dev.adeo.no
