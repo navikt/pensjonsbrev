@@ -1,4 +1,4 @@
-app-name: "pensjonsbrev-tjenestebuss"
+app-name: "pensjonsbrev-tjenestebuss-q2"
 ingresses:
   - "https://pensjonsbrev-tjenestebuss-q2.intern.dev.nav.no"
   - "https://pensjonsbrev-tjenestebuss-q2.dev-fss-pub.nais.io"
