@@ -32,7 +32,7 @@ export function BrevvelgerPage() {
       css={css`
         background: var(--a-white);
         display: grid;
-        grid-template-columns: 1fr 400px;
+        grid-template-columns: minmax(300px, 1fr) 400px;
         gap: var(--a-spacing-4);
         justify-content: space-between;
         flex: 1;
@@ -178,6 +178,9 @@ function BrevmalButton({ letterMetadata }: { letterMetadata: LetterMetadata }) {
           border-radius: 0;
           span {
             font-weight: var(--a-font-weight-regular);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
           }
         `,
         templateId === letterMetadata.id &&

@@ -22,7 +22,6 @@ export function SelectedTemplate() {
     <div
       css={css`
         display: flex;
-        width: 400px;
         padding: var(--a-spacing-6) var(--a-spacing-4);
         flex-direction: column;
         align-items: flex-start;
