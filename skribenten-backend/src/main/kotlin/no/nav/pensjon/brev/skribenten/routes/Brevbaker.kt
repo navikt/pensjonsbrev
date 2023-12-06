@@ -21,12 +21,11 @@ class GenericBrevdata : LinkedHashMap<String, Any>(), BrevbakerBrevdata
 fun Route.brevbakerRoute(brevbakerService: BrevbakerService) {
     get("/template/{brevkode}") {
         val brevkode = call.parameters.getOrFail<Brevkode.Redigerbar>("brevkode")
-        val template = brevbakerService.getTemplate(call, brevkode)
-//        when (val template = brevbakerService.getTemplate(call, brevkode)) {
-//            is ServiceResult.AuthorizationError -> TODO()
-//            is ServiceResult.Error -> TODO()
-//            is ServiceResult.Ok -> call.respondText(template.result, ContentType.Application.Json)
-//        }
+        when (val template = brevbakerService.getTemplate(call, brevkode)) {
+            is ServiceResult.AuthorizationError -> println(template.error);
+            is ServiceResult.Error -> println(template.error);
+            is ServiceResult.Ok -> call.respondText(template.result, ContentType.Application.Json)
+        }
     }
 
     post<RenderLetterRequest>("/letter/{brevkode}") { request ->
