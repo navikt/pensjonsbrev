@@ -4,8 +4,7 @@
 
 import axios from "axios";
 
-import type { SakDto } from "../types/apiTypes";
-import type { LetterTemplatesResponse } from "../types/apiTypes";
+import type { LetterTemplatesResponse, PreferredLanguage, SakDto } from "../types/apiTypes";
 import type { PidRequest } from "../types/apiTypes";
 const SKRIBENTEN_API_BASE_PATH = "/skribenten-backend";
 
@@ -32,6 +31,11 @@ export const favoritterKeys = {
   all: ["FAVORITTER"] as const,
 };
 
+export const preferredLanguageKeys = {
+  all: ["PREFERRED_LANGUAGE"] as const,
+  fnr: (fnr: string) => [...preferredLanguageKeys.all, fnr] as const,
+};
+
 export const getSak = {
   queryKey: saksnummerKeys.id,
   queryFn: async (sakId: string) => (await axios.get<SakDto>(`${SKRIBENTEN_API_BASE_PATH}/pen/sak/${sakId}`)).data,
@@ -41,6 +45,12 @@ export const getNavn = {
   queryKey: navnKeys.id,
   queryFn: async (pid: string) =>
     (await axios.post<PidRequest>(`${SKRIBENTEN_API_BASE_PATH}/person/navn`, { pid })).data,
+};
+
+export const getPreferredLanguage = {
+  queryKey: preferredLanguageKeys.fnr,
+  queryFn: async (fnr: string) =>
+    (await axios.get<PreferredLanguage>(`${SKRIBENTEN_API_BASE_PATH}/foretrukketSpraak/${fnr}`)).data,
 };
 
 export const getLetterTemplate = {
