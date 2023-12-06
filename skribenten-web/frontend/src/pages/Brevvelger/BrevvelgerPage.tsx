@@ -104,6 +104,8 @@ function Brevmaler({ kategorier }: { kategorier: LetterCategory[] }) {
       />
       <Accordion
         css={css`
+          max-height: calc(100vh - var(--header-height) - var(--breadcrumbs-height) - 180px);
+          overflow-y: scroll;
           .navds-accordion__content {
             padding: 0;
           }

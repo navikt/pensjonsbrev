@@ -5,12 +5,14 @@ body {
 :root {
     --largest-width: 1200px;
     --minimum-width: 700px;
+    --header-height: 48px;
+    --breadcrumbs-height: 48px;
 }
 
 .page-margins {
     max-width: var(--largest-width);
     min-width: var(--minimum-width);
-    min-height: calc(100vh - 48px);  /* 48px is height of the header */
+    min-height: calc(100vh - var(--header-height));
     margin: 0 auto;
     padding: 0 24px;
     display: flex;
