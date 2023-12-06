@@ -32,7 +32,7 @@ export function BrevvelgerPage() {
       css={css`
         background: var(--a-white);
         display: grid;
-        grid-template-columns: minmax(300px, 1fr) 400px;
+        grid-template-columns: minmax(432px, 720px) minmax(336px, 388px);
         gap: var(--a-spacing-4);
         justify-content: space-between;
         flex: 1;

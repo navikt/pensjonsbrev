@@ -4,7 +4,7 @@ body {
 
 :root {
     --largest-width: 1200px;
-    --minimum-width: 700px;
+    --minimum-width: 768px;
     --header-height: 48px;
     --breadcrumbs-height: 48px;
 }
