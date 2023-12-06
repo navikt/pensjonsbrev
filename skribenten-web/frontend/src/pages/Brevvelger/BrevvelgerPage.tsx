@@ -106,6 +106,7 @@ function Brevmaler({ kategorier }: { kategorier: LetterCategory[] }) {
         css={css`
           max-height: calc(100vh - var(--header-height) - var(--breadcrumbs-height) - 180px);
           overflow-y: scroll;
+
           .navds-accordion__content {
             padding: 0;
           }
@@ -178,6 +179,7 @@ function BrevmalButton({ letterMetadata }: { letterMetadata: LetterMetadata }) {
           justify-content: flex-start;
           padding: var(--a-spacing-2) var(--a-spacing-3);
           border-radius: 0;
+
           span {
             font-weight: var(--a-font-weight-regular);
             white-space: nowrap;
