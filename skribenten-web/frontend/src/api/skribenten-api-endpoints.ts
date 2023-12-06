@@ -5,6 +5,7 @@
 import axios from "axios";
 
 import type { LetterTemplatesResponse, PreferredLanguage, SakDto } from "../types/apiTypes";
+import type { RedigerbarTemplateDescription } from "../types/brevbakerTypes";
 const SKRIBENTEN_API_BASE_PATH = "/skribenten-backend";
 
 /**
@@ -24,6 +25,11 @@ export const navnKeys = {
 export const letterTemplatesKeys = {
   all: ["LETTER_TEMPLATES"] as const,
   id: (sakType: string) => [...letterTemplatesKeys.all, sakType] as const,
+};
+
+export const letterKeys = {
+  all: ["LETTER"] as const,
+  brevkode: (brevkode: string) => [...letterKeys.all, brevkode] as const,
 };
 
 export const favoritterKeys = {
@@ -60,6 +66,12 @@ export const getLetterTemplate = {
 export const getFavoritter = {
   queryKey: favoritterKeys.all,
   queryFn: async () => (await axios.get<string[]>(`${SKRIBENTEN_API_BASE_PATH}/favourites`)).data,
+};
+
+export const getTemplate = {
+  queryKey: letterKeys.brevkode,
+  queryFn: async (brevkode: string) =>
+    (await axios.get<RedigerbarTemplateDescription>(`${SKRIBENTEN_API_BASE_PATH}/template/${brevkode}`)).data,
 };
 
 export async function addFavoritt(id: string) {
