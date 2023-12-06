@@ -1,6 +1,6 @@
 import { css } from "@emotion/react";
 import { ArrowRightIcon, StarFillIcon, StarIcon } from "@navikt/aksel-icons";
-import { BodyShort, Button, Heading, Tag, Select } from "@navikt/ds-react";
+import { BodyShort, Button, Heading, Select, Tag } from "@navikt/ds-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useParams, useRouteContext, useSearch } from "@tanstack/react-router";
 import { useEffect } from "react";
@@ -81,7 +81,16 @@ function Brevmal() {
           onSubmit={methods.handleSubmit((submittedValues) => console.log("submit", submittedValues))}
         >
           <SelectLanguage letterTemplate={letterTemplate} />
-          <Button icon={<ArrowRightIcon />} iconPosition="right" type="submit" variant="primary">
+          <Button
+            css={css`
+              width: fit-content;
+            `}
+            icon={<ArrowRightIcon />}
+            iconPosition="right"
+            size="small"
+            type="submit"
+            variant="primary"
+          >
             Rediger brev
           </Button>
         </form>
