@@ -2,9 +2,11 @@
 // For the purpose of this file it is convenient to be able to access the data property of axios response as a one-liners.
 /* eslint-disable unicorn/no-await-expression-member*/
 
+import type { AxiosResponse } from "axios";
 import axios from "axios";
 
 import type { LetterTemplatesResponse, PreferredLanguage, SakDto } from "../types/apiTypes";
+import type { PidRequest } from "../types/apiTypes";
 const SKRIBENTEN_API_BASE_PATH = "/skribenten-backend";
 
 /**
@@ -18,7 +20,7 @@ export const saksnummerKeys = {
 
 export const navnKeys = {
   all: ["NAVN"] as const,
-  id: (fnr: string) => [...navnKeys.all, fnr] as const,
+  pid: (pid: string) => [...navnKeys.all, pid] as const,
 };
 
 export const letterTemplatesKeys = {
@@ -32,7 +34,7 @@ export const favoritterKeys = {
 
 export const preferredLanguageKeys = {
   all: ["PREFERRED_LANGUAGE"] as const,
-  fnr: (fnr: string) => [...preferredLanguageKeys.all, fnr] as const,
+  pid: (pid: string) => [...preferredLanguageKeys.all, pid] as const,
 };
 
 export const getSak = {
@@ -41,14 +43,22 @@ export const getSak = {
 };
 
 export const getNavn = {
-  queryKey: navnKeys.id,
-  queryFn: async (fnr: string) => (await axios.get<string>(`${SKRIBENTEN_API_BASE_PATH}/pdl/navn/${fnr}`)).data,
+  queryKey: navnKeys.pid,
+  queryFn: async (pid: string) =>
+    (await axios.post<PidRequest, AxiosResponse<string>>(`${SKRIBENTEN_API_BASE_PATH}/person/navn`, { pid })).data,
 };
 
 export const getPreferredLanguage = {
-  queryKey: preferredLanguageKeys.fnr,
-  queryFn: async (fnr: string) =>
-    (await axios.get<PreferredLanguage>(`${SKRIBENTEN_API_BASE_PATH}/foretrukketSpraak/${fnr}`)).data,
+  queryKey: preferredLanguageKeys.pid,
+  queryFn: async (pid: string) =>
+    (
+      await axios.post<PidRequest, AxiosResponse<PreferredLanguage>>(
+        `${SKRIBENTEN_API_BASE_PATH}/person/foretrukketSpraak`,
+        {
+          pid,
+        },
+      )
+    ).data,
 };
 
 export const getLetterTemplate = {
