@@ -46,7 +46,7 @@ which base64 || (
 ) || exit 1
 
 mkdir -p secrets
-kubectl --context dev-gcp -n pensjonsbrev get secret azure-skribenten-backend-lokal -o json | jq '.data | map_values(@base64d)' > secrets/azuread.json
+kubectl --context $KUBE_CLUSTER -n pensjonsbrev get secret azure-skribenten-backend-lokal -o json | jq '.data | map_values(@base64d)' > secrets/azuread.json
 echo "Creating azuread.env file from azuread.json..."
 jq -r 'to_entries|map("\(.key)=\(.value|tostring)")|.[]' secrets/azuread.json > secrets/azuread.env
 echo "azuread.env file created in the \"secrets\" folder."
