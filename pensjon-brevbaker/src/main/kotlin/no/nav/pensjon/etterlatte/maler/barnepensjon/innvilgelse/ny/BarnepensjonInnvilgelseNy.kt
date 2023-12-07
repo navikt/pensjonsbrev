@@ -37,6 +37,8 @@ data class BarnepensjonInnvilgelseNyDTO(
     val beregningsinfo: BeregningsinfoBP,
     val etterbetalingDTO: EtterbetalingDTO? = null,
     override val innhold: List<Element>,
+    val brukerUnder18Aar: Boolean,
+    val bosattUtland: Boolean
 ) : BrevDTO
 
 data class BeregningsinfoBP(
