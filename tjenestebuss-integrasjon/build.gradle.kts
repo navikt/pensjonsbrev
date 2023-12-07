@@ -32,7 +32,6 @@ ktor {
 		jreVersion.set(JavaVersion.VERSION_17)
 		localImageName.set("tjenestebuss-integrasjon")
 		imageTag.set(providers.environmentVariable("IMAGE_TAG").orElse("latest"))
-		 TODO add workflow for deploying
 		externalRegistry.set(
 			GithubImageRegistry(
 				toImage = providers.environmentVariable("IMAGE_TJENESTEBUSS-INTEGRASJON"),
