@@ -1,0 +1,61 @@
+name: "Build and deploy tjenestebuss-integrasjon"
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - "build.gradle.kts"
+      - "gradle.properties"
+      - "tjenestebuss-integrasjon/**"
+      - ".github/workflows/tjenestebuss-integrasjon.yml"
+  push:
+    branches:
+      - "main"
+    paths:
+      - "build.gradle.kts"
+      - "gradle.properties"
+      - "tjenestebuss-integrasjon/**"
+      - ".github/workflows/tjenestebuss-integrasjon.yml"
+env:
+  "IMAGE_TAG": "${{ github.sha }}"
+  "IMAGE_TJENESTEBUSS-INTEGRASJON": "ghcr.io/${{ github.repository }}/pensjon-tjenestebuss-integrasjon"
+
+jobs:
+  build-tjenestebuss-integrasjon:
+    name: "Build tjenestebuss-integrasjon backend"
+    runs-on: "ubuntu-latest"
+    permissions:
+      packages: write
+    steps:
+      - uses: "actions/checkout@v3"
+      - uses: "gradle/wrapper-validation-action@v1"
+      - uses: "actions/cache@v3"
+        with:
+          "path": "~/.gradle/caches"
+          "key": "${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle.kts') }}"
+          "restore-keys": "${{ runner.os }}-gradle-"
+      - uses: "actions/setup-java@v3"
+        with:
+          "distribution": "temurin"
+          "java-version": "17"
+      - name: "compile and run tests"
+        run: |
+          ./gradlew :tjenestebuss-integrasjon:publishImage
+        env:
+          "GITHUB_TOKEN": "${{ secrets.GITHUB_TOKEN }}"
+
+  deploy-tjenestebuss-integrasjon-dev:
+    name: "Deploy tjenestebuss-integrasjon to dev"
+    if: (github.event_name == 'push' && github.ref == 'refs/heads/main') || github.event_name == 'workflow_dispatch'
+    needs: "build-tjenestebuss-integrasjon"
+    runs-on: "ubuntu-latest"
+    steps:
+      - uses: "actions/checkout@v3"
+      - name: "Deploy tjenestebus-integrasjon backend to DEV"
+        uses: "nais/deploy/actions/deploy@v1"
+        env:
+          "ENVIRONMENT": "dev-gcp:tjenestebuss-integrasjon"
+          "APIKEY": "${{ secrets.NAIS_DEPLOY_APIKEY }}"
+          "CLUSTER": "dev-gcp"
+          "RESOURCE": "tjenestebuss-integrasjon/.nais/nais.yaml"
+          "VAR": image=${{ format('{0}:{1}', env.IMAGE_TJENESTEBUSS-INTEGRASJON, env.IMAGE_TAG) }}
+          "VARS": "tjenestebuss-integrasjon/.nais/dev.yaml"
