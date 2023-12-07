@@ -34,7 +34,7 @@ ktor {
 		imageTag.set(providers.environmentVariable("IMAGE_TAG").orElse("latest"))
 		externalRegistry.set(
 			GithubImageRegistry(
-				toImage = providers.environmentVariable("IMAGE_TJENESTEBUSS-INTEGRASJON"),
+				toImage = providers.environmentVariable("IMAGE_TJENESTEBUSS_INTEGRASJON"),
 				username = providers.environmentVariable("GITHUB_REPOSITORY"),
 				password = providers.environmentVariable("GITHUB_TOKEN"),
 			)

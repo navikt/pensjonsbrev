@@ -17,7 +17,7 @@ on:
       - ".github/workflows/tjenestebuss-integrasjon.yml"
 env:
   "IMAGE_TAG": "${{ github.sha }}"
-  "IMAGE_TJENESTEBUSS-INTEGRASJON": "ghcr.io/${{ github.repository }}/pensjon-tjenestebuss-integrasjon"
+  "IMAGE_TJENESTEBUSS_INTEGRASJON": "ghcr.io/${{ github.repository }}/pensjon-tjenestebuss-integrasjon"
 
 jobs:
   build-tjenestebuss-integrasjon:
@@ -57,5 +57,5 @@ jobs:
           "APIKEY": "${{ secrets.NAIS_DEPLOY_APIKEY }}"
           "CLUSTER": "dev-gcp"
           "RESOURCE": "tjenestebuss-integrasjon/.nais/nais.yaml"
-          "VAR": image=${{ format('{0}:{1}', env.IMAGE_TJENESTEBUSS-INTEGRASJON, env.IMAGE_TAG) }}
+          "VAR": image=${{ format('{0}:{1}', env.IMAGE_TJENESTEBUSS_INTEGRASJON, env.IMAGE_TAG) }}
           "VARS": "tjenestebuss-integrasjon/.nais/dev.yaml"
