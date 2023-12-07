@@ -1,4 +1,4 @@
-# Brukergrensesnitt for fullmaksregisteret
+# Brukergrensesnitt for Skribenten
 
 For å bruke npm trenger du ha `node` installert. 
 Vi anbefaler at du bruker [asdf](https://asdf-vm.com/) slik at du automatisk kjører nødvendige pakker på støttet versjon.
@@ -10,3 +10,8 @@ Etter at Node er installert kjører du følgende kommandoer for å starte:
 npm install
 npm run dev
 ```
+
+Da vil Vite sin dev-server kjøre på `localhost:5173`. 
+For at API-kall skal fungere lokalt, anbefaler vi at du kjører via BFF.
+
+Se i [BFF sin README](../bff/README.md) for veien videre
