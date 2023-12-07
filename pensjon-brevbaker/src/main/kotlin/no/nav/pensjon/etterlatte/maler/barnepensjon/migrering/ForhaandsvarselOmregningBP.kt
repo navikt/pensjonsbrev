@@ -10,6 +10,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.barnepensjon.migrering.BarnepensjonOmregnetNyttRegelverkDTOSelectors.erBosattUtlandet
+import no.nav.pensjon.etterlatte.maler.barnepensjon.migrering.BarnepensjonOmregnetNyttRegelverkDTOSelectors.erForeldreloes
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
 import no.nav.pensjon.etterlatte.maler.fraser.common.kontakttelefonPensjon
 
@@ -29,12 +30,21 @@ object ForhaandsvarselOmregningBP : EtterlatteTemplate<BarnepensjonOmregnetNyttR
 
         )
     ) {
+
         title {
-            text(
-                Language.Bokmal to "Forhåndsvarsel om økt barnepensjon",
-                Language.Nynorsk to "Førehandsvarsel om auka barnepensjon",
-                Language.English to "Advance notice of increase in children's pension",
-            )
+            showIf(erForeldreloes) {
+                text(
+                    Language.Bokmal to "Forhåndsvarsel om mulig endring av barnepensjon",
+                    Language.Nynorsk to "Førehandsvarsel om mulig endring av barnepensjon",
+                    Language.English to "Advance notice of possible change in children's pension",
+                )
+            } orShow {
+                text(
+                    Language.Bokmal to "Forhåndsvarsel om økt barnepensjon",
+                    Language.Nynorsk to "Førehandsvarsel om auka barnepensjon",
+                    Language.English to "Advance notice of increase in children's pension",
+                )
+            }
         }
         outline {
             paragraph {
@@ -44,12 +54,22 @@ object ForhaandsvarselOmregningBP : EtterlatteTemplate<BarnepensjonOmregnetNyttR
                     Language.English to "This is an advance notice that NAV will be considering adjustments to the children's pensions because the Storting has adopted new rules for this type of pension. The new rules will apply from 1 January 2024."
                 )
             }
-            paragraph {
-                text(
-                    Language.Bokmal to "Du kan se nytt månedsbeløp i vedlegget “Utkast til vedtak – endring av barnepensjon”.",
-                    Language.Nynorsk to "Du kan sjå det nye månadsbeløpet i vedlegget «Utkast til vedtak – endring av barnepensjon».",
-                    Language.English to "The new monthly amount will appear in the attachment, Draft decision – adjustment of children's pension."
-                )
+            showIf(erForeldreloes) {
+                paragraph {
+                    text(
+                        Language.Bokmal to "Beregningen av barnepensjon til foreldreløse barn er annerledes fra 1. januar 2024. Det vil vurderes om pensjonen din vil bli høyere med nytt regelverk enn det du har i dag. Du vil få det som gir høyest utbetaling hver måned. Du trenger ikke å gi beskjed til NAV om hvilken beregning du ønsker.",
+                        Language.Nynorsk to "",
+                        Language.English to ""
+                    )
+                }
+            } orShow {
+                paragraph {
+                    text(
+                        Language.Bokmal to "Du kan se nytt månedsbeløp i vedlegget “Utkast til vedtak – endring av barnepensjon”.",
+                        Language.Nynorsk to "Du kan sjå det nye månadsbeløpet i vedlegget «Utkast til vedtak – endring av barnepensjon».",
+                        Language.English to "The new monthly amount will appear in the attachment, Draft decision – adjustment of children's pension."
+                    )
+                }
             }
             paragraph {
                 text(

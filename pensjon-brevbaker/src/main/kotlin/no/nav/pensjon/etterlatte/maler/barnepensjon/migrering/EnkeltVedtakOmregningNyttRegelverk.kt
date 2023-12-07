@@ -18,6 +18,7 @@ import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.barnepensjon.migrering.BarnepensjonOmregnetNyttRegelverkDTOSelectors.anvendtTrygdetid
 import no.nav.pensjon.etterlatte.maler.barnepensjon.migrering.BarnepensjonOmregnetNyttRegelverkDTOSelectors.erBosattUtlandet
+import no.nav.pensjon.etterlatte.maler.barnepensjon.migrering.BarnepensjonOmregnetNyttRegelverkDTOSelectors.erForeldreloes
 import no.nav.pensjon.etterlatte.maler.barnepensjon.migrering.BarnepensjonOmregnetNyttRegelverkDTOSelectors.erYrkesskade
 import no.nav.pensjon.etterlatte.maler.barnepensjon.migrering.BarnepensjonOmregnetNyttRegelverkDTOSelectors.grunnbeloep
 import no.nav.pensjon.etterlatte.maler.barnepensjon.migrering.BarnepensjonOmregnetNyttRegelverkDTOSelectors.prorataBroek
@@ -86,12 +87,22 @@ object EnkeltVedtakOmregningNyttRegelverk : EtterlatteTemplate<BarnepensjonOmreg
 
             paragraph {
                 list {
-                    item {
-                        text(
-                            Language.Bokmal to "Barnepensjonen din øker.",
-                            Language.Nynorsk to "Barnepensjonen din aukar.",
-                            Language.English to "Your children's pension will increase."
-                        )
+                    showIf(erForeldreloes) {
+                        item {
+                            text(
+                                Language.Bokmal to "Barnepensjonen din øker.",
+                                Language.Nynorsk to "Barnepensjonen din aukar.",
+                                Language.English to "Your children's pension will increase."
+                            )
+                        }
+                    } orShow {
+                        item {
+                            text(
+                                Language.Bokmal to "Barnepensjonen din øker dersom nye regler gir best beregning.",
+                                Language.Nynorsk to "",
+                                Language.English to ""
+                            )
+                        }
                     }
                     item {
                         showIf(erYrkesskade) {
@@ -108,12 +119,14 @@ object EnkeltVedtakOmregningNyttRegelverk : EtterlatteTemplate<BarnepensjonOmreg
                             )
                         }
                     }
-                    item {
-                        text(
-                            Language.Bokmal to "Barnepensjonen blir ikke justert som følge av søsken.",
-                            Language.Nynorsk to "Det er ikkje lenger søskenjustering i barnepensjonen.",
-                            Language.English to "Children’s pensions are no longer subject to the sibling adjustment."
-                        )
+                    showIf(erForeldreloes.not()) {
+                        item {
+                            text(
+                                Language.Bokmal to "Barnepensjonen blir ikke justert som følge av søsken.",
+                                Language.Nynorsk to "Det er ikkje lenger søskenjustering i barnepensjonen.",
+                                Language.English to "Children’s pensions are no longer subject to the sibling adjustment."
+                            )
+                        }
                     }
                 }
             }
@@ -125,16 +138,59 @@ object EnkeltVedtakOmregningNyttRegelverk : EtterlatteTemplate<BarnepensjonOmreg
                     Language.English to "This is how we calculated your pension"
                 )
             }
-            paragraph {
-                textExpr(
-                    Language.Bokmal to "Barnepensjonen din blir lik en ganger folketrygdens grunnbeløp per år. Grunnbeløpet i januar 2024 er ".expr() +
-                            grunnbeloep.format() + " kroner. Dette deles på 12 måneder. ",
-                    Language.Nynorsk to "Barnepensjonen din blir lik éin gong grunnbeløpet i folketrygda per år. Grunnbeløpet i januar 2024 er ".expr() +
-                            grunnbeloep.format() + " kroner. Dette blir fordelt på 12 månader.",
-                    Language.English to "Your children's pension will equal one times the National Insurance basic amount (G) per year. ".expr() +
-                            "The basic amount in January 2024 is " + grunnbeloep.format() + " kroner. " +
-                            "This is divided by 12 months."
-                )
+            showIf(erForeldreloes) {
+                paragraph {
+                    textExpr(
+                        Language.Bokmal to "Når begge foreldrene dine er døde, blir den årlige pensjonen etter nytt regelverk lik 2,25 ganger grunnbeløpet. Grunnbeløpet i januar 2024 er ".expr() +
+                                grunnbeloep.format() + " kroner. Dette deles på 12 måneder. I noen tilfeller vil beregning av barnepensjon etter " +
+                                "dagens regelverk gi høyere utbetaling av pensjon 2,25 ganger grunnbeløpet. Du får det som gir høyest beløp.",
+                        Language.Nynorsk to "".expr(),
+                        Language.English to "".expr()
+                    )
+                }
+
+                paragraph {
+                    text(
+                        Language.Bokmal to "<Gammelt regelverk - beste beregning>",
+                        Language.Nynorsk to "<Gammelt regelverk - beste beregning>",
+                        Language.English to "<Gammelt regelverk - beste beregning>"
+                    )
+                }
+                paragraph {
+                    text(
+                        Language.Bokmal to "Vi har kontrollert barnepensjonen din. Du får høyere pensjon med gammelt regelverk. Pensjonen din er derfor ikke endret fra 1. januar 2024.",
+                        Language.Nynorsk to "",
+                        Language.English to ""
+                    )
+                }
+
+                paragraph {
+                    text(
+                        Language.Bokmal to "<Nytt regelverk - beste beregning>",
+                        Language.Nynorsk to "<Nytt regelverk - beste beregning>",
+                        Language.English to "<Nytt regelverk - beste beregning>"
+                    )
+                }
+                paragraph {
+                    text(
+                        Language.Bokmal to "Vi har kontrollert barnepensjonen din. Du får høyere pensjon med nytt regelverk. Pensjonen din er derfor økt fra 1. januar 2024.",
+                        Language.Nynorsk to "",
+                        Language.English to ""
+                    )
+                }
+
+            } orShow {
+                paragraph {
+                    textExpr(
+                        Language.Bokmal to "Barnepensjonen din blir lik en ganger folketrygdens grunnbeløp per år. Grunnbeløpet i januar 2024 er ".expr() +
+                                grunnbeloep.format() + " kroner. Dette deles på 12 måneder. ",
+                        Language.Nynorsk to "Barnepensjonen din blir lik éin gong grunnbeløpet i folketrygda per år. Grunnbeløpet i januar 2024 er ".expr() +
+                                grunnbeloep.format() + " kroner. Dette blir fordelt på 12 månader.",
+                        Language.English to "Your children's pension will equal one times the National Insurance basic amount (G) per year. ".expr() +
+                                "The basic amount in January 2024 is " + grunnbeloep.format() + " kroner. " +
+                                "This is divided by 12 months."
+                    )
+                }
             }
 
             showIf(prorataBroek.notNull()) {
