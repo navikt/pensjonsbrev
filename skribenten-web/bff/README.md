@@ -27,7 +27,7 @@ npm i #Installer avhengigheter
 npm run build #Bygg applikasjonen til /dist
 ```
 
-#### Ha docker kjørende, og kjør frackend via docker
+#### Ha docker kjørende, og kjør BFF via docker
 ```bash
 docker-compose up -d
 ```
