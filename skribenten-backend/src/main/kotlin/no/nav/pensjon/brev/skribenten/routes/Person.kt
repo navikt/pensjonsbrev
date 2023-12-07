@@ -30,23 +30,6 @@ fun Route.personRoute(pdlService: PdlService, pensjonPersonDataService: PensjonP
         }
     }
 
-    // TODO: fjern disse når frontend bruker de nye
-    get("/pdl/navn/{fnr}") {
-        // TODO validate fnr
-        val fnr = call.parameters.getOrFail("fnr")
-        respondWithResult(pdlService.hentNavn(call, fnr))
-    }
-
-    get("/adresse/{pid}") {
-        val pid = call.parameters.getOrFail("pid")
-        respondWithResult(pensjonPersonDataService.hentAdresse(call, pid))
-    }
-
-    get("/foretrukketSpraak/{pid}") {
-        val pid = call.parameters.getOrFail("pid")
-        respondWithResult(krrService.getPreferredLocale(call, pid))
-    }
-
     post("/pdl/soekmottaker") {
         val request = call.receive<MottakerSearchRequest>()
         respondWithResult(pdlService.personSoek(call, request))

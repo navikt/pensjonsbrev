@@ -53,3 +53,7 @@ export enum SpraakKode {
   Bokmaal = "NB",
   Nynorsk = "NN",
 }
+
+export type PidRequest = {
+  pid: string;
+};
