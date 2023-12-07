@@ -178,21 +178,31 @@ function LetterTemplateTags({ letterTemplate }: { letterTemplate: LetterMetadata
 
   return (
     <div>
-      {letterTemplate.brevsystem === BrevSystem.Brevbaker && (
-        <Tag size="small" variant="alt2-moderate">
-          Brevbaker
-        </Tag>
-      )}
-      {letterTemplate.brevsystem === BrevSystem.Extream && (
-        <Tag size="small" variant="alt1-moderate">
-          Extream
-        </Tag>
-      )}
-      {letterTemplate.brevsystem === BrevSystem.DokSys && (
-        <Tag size="small" variant="alt3-moderate">
-          Doksys
-        </Tag>
-      )}
+      {(() => {
+        switch (letterTemplate.brevsystem) {
+          case BrevSystem.Brevbaker: {
+            return (
+              <Tag size="small" variant="alt2-moderate">
+                Brevbaker
+              </Tag>
+            );
+          }
+          case BrevSystem.Extream: {
+            return (
+              <Tag size="small" variant="alt1-moderate">
+                Extream
+              </Tag>
+            );
+          }
+          case BrevSystem.DokSys: {
+            return (
+              <Tag size="small" variant="alt3-moderate">
+                Doksys
+              </Tag>
+            );
+          }
+        }
+      })()}
     </div>
   );
 }
