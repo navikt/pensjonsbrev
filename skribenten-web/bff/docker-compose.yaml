@@ -5,13 +5,13 @@ services:
     image: ghcr.io/nais/wonderwall:latest
     platform: linux/amd64
     ports:
-      - "8080:8080"
+      - "8083:8080"
     command: >
       --auto-login=true
       --openid.provider=azure
-      --ingress=http://localhost:8080
-      --bind-address=0.0.0.0:8080
-      --upstream-host=frontend:8081
+      --ingress=http://localhost:8083
+      --bind-address=0.0.0.0:8083
+      --upstream-host=frontend:8084
       --log-level=debug
       --log-format=text
     restart: on-failure
@@ -26,10 +26,10 @@ services:
       secrets:
         - npmrc
     ports:
-      - "8081:8081"
+      - "8084:8084"
     environment:
       NODE_ENV: "development"
-      EXPRESS_PORT: "8081"
+      EXPRESS_PORT: "8084"
       EXPRESS_HOST: "::"
       AZURE_APP_CLIENT_ID: "${AZURE_APP_CLIENT_ID}"
       AZURE_OPENID_CONFIG_ISSUER: "${AZURE_OPENID_CONFIG_ISSUER}"
