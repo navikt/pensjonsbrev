@@ -55,7 +55,7 @@ jobs:
         env:
           "ENVIRONMENT": "dev-gcp:tjenestebuss-integrasjon"
           "APIKEY": "${{ secrets.NAIS_DEPLOY_APIKEY }}"
-          "CLUSTER": "dev-gcp"
+          "CLUSTER": "dev-fss"
           "RESOURCE": "tjenestebuss-integrasjon/.nais/nais.yaml"
           "VAR": image=${{ format('{0}:{1}', env.IMAGE_TJENESTEBUSS_INTEGRASJON, env.IMAGE_TAG) }}
           "VARS": "tjenestebuss-integrasjon/.nais/dev-q2.yaml"
