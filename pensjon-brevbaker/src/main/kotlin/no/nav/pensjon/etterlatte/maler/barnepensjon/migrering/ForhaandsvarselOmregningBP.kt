@@ -70,13 +70,13 @@ object ForhaandsvarselOmregningBP : EtterlatteTemplate<BarnepensjonOmregnetNyttR
                         Language.English to "The new monthly amount will appear in the attachment, Draft decision – adjustment of children's pension."
                     )
                 }
-            }
-            paragraph {
-                text(
-                    Language.Bokmal to "Du trenger ikke å gi beskjed til NAV om du ønsker høyere barnepensjon. Det nye beløpet får du fra januar 2024.",
-                    Language.Nynorsk to "Du treng ikkje å gi beskjed til NAV om at du ønskjer høgare barnepensjon. Du får det nye beløpet frå og med januar 2024.",
-                    Language.English to "You do not need to notify NAV if you want a higher children's pension. The new amount will be available starting in January 2024."
-                )
+                paragraph {
+                    text(
+                        Language.Bokmal to "Du trenger ikke å gi beskjed til NAV om du ønsker høyere barnepensjon. Det nye beløpet får du fra januar 2024.",
+                        Language.Nynorsk to "Du treng ikkje å gi beskjed til NAV om at du ønskjer høgare barnepensjon. Du får det nye beløpet frå og med januar 2024.",
+                        Language.English to "You do not need to notify NAV if you want a higher children's pension. The new amount will be available starting in January 2024."
+                    )
+                }
             }
 
             title2 {

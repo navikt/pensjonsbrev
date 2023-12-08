@@ -90,17 +90,17 @@ object EnkeltVedtakOmregningNyttRegelverk : EtterlatteTemplate<BarnepensjonOmreg
                     showIf(erForeldreloes) {
                         item {
                             text(
-                                Language.Bokmal to "Barnepensjonen din øker.",
-                                Language.Nynorsk to "Barnepensjonen din aukar.",
-                                Language.English to "Your children's pension will increase."
+                                Language.Bokmal to "Barnepensjonen din øker dersom nye regler gir best beregning.",
+                                Language.Nynorsk to "",
+                                Language.English to ""
                             )
                         }
                     } orShow {
                         item {
                             text(
-                                Language.Bokmal to "Barnepensjonen din øker dersom nye regler gir best beregning.",
-                                Language.Nynorsk to "",
-                                Language.English to ""
+                                Language.Bokmal to "Barnepensjonen din øker.",
+                                Language.Nynorsk to "Barnepensjonen din aukar.",
+                                Language.English to "Your children's pension will increase."
                             )
                         }
                     }
