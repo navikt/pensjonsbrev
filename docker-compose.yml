@@ -1,4 +1,5 @@
 #Used for local testing purposes
+version: '3.8'
 services:
   pdf-bygger:
     build: ./pdf-bygger
@@ -60,6 +61,47 @@ services:
     environment:
       POSTGRES_PASSWORD: pass
 
+#  wonderwall:
+#    build:
+#      context: skribenten-web/bff/
+#    image: ghcr.io/nais/wonderwall:latest
+#    platform: linux/amd64
+#    ports:
+#      - "8080:8080"
+#    command: >
+#      --auto-login=true
+#      --openid.provider=azure
+#      --ingress=http://localhost:8083
+#      --bind-address=0.0.0.0:8083
+#      --upstream-host=frontend:8084
+#      --log-level=debug
+#      --log-format=text
+#    restart: on-failure
+#    env_file: skribenten-web/bff/.env
+#    environment:
+#      WONDERWALL_OPENID_CLIENT_JWK: "${AZURE_APP_JWK}"
+#      WONDERWALL_OPENID_CLIENT_ID: "${AZURE_APP_CLIENT_ID}"
+#      WONDERWALL_OPENID_WELL_KNOWN_URL: "${AZURE_APP_WELL_KNOWN_URL}"
+#  frontend:
+#    build:
+#      context: skribenten-web/bff/
+#    secrets:
+#      - npmrc
+#    ports:
+#      - "8084:8084"
+#    env_file: skribenten-web/bff/.env
+#    environment:
+#      NODE_ENV: "development"
+#      EXPRESS_PORT: "8084"
+#      EXPRESS_HOST: "::"
+#      AZURE_APP_CLIENT_ID: "${AZURE_APP_CLIENT_ID}"
+#      AZURE_OPENID_CONFIG_ISSUER: "${AZURE_OPENID_CONFIG_ISSUER}"
+#      AZURE_OPENID_CONFIG_TOKEN_ENDPOINT: "${AZURE_OPENID_CONFIG_TOKEN_ENDPOINT}"
+#      AZURE_APP_JWK: "${AZURE_APP_JWK}"
+#      AZURE_OPENID_CONFIG_JWKS_URI: "${AZURE_OPENID_CONFIG_JWKS_URI}"
+#      SKRIBENTEN_API_URL: "https://skribenten-backend"
+#      SKRIBENTEN_API_SCOPE: "api://dev-gcp.pensjonsbrev.skribenten-backend/.default"
+
   locust-master:
     profiles:
       - locust
@@ -85,5 +127,5 @@ networks:
   default:
     name: pensjon-local
 secrets:
-  azuread:
-    file: ./skribenten-backend/
+  npmrc:
+    file: ~/.npmrc
