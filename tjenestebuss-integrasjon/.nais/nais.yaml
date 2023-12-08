@@ -29,8 +29,7 @@ spec:
     enabled: true
     path: "/metrics"
     port: "8080"
- resources:
-   requests:
+  requests:
     cpu: "200m"
     memory: "256Mi"
   limits:
