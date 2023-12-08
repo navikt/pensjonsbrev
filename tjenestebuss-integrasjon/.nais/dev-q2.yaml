@@ -13,7 +13,7 @@ env:
 inboundRules:
   - application: skribenten-backend
     namespace: pensjonsbrev
-    cluster: dev-fss
+    cluster: dev-gcp
   - application: skribenten-backend-lokal
     namespace: pensjonsbrev
     cluster: dev-gcp
