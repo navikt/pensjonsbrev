@@ -19,6 +19,6 @@ inboundRules:
     cluster: dev-gcp
 
 externalHosts:
-  - host: tjenestebuss-q2.adeo.no
-  - host: security-token-service.dev.adeo.no
-  - host: dokprod-q2.dev.intern.nav.no
+  - tjenestebuss-q2.adeo.no
+  - security-token-service.dev.adeo.no
+  - dokprod-q2.dev.intern.nav.no
