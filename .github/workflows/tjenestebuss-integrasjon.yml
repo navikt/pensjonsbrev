@@ -58,4 +58,4 @@ jobs:
           "CLUSTER": "dev-gcp"
           "RESOURCE": "tjenestebuss-integrasjon/.nais/nais.yaml"
           "VAR": image=${{ format('{0}:{1}', env.IMAGE_TJENESTEBUSS_INTEGRASJON, env.IMAGE_TAG) }}
-          "VARS": "tjenestebuss-integrasjon/.nais/dev-q2.yaml"
+          "VARS": "tjenestebuss-integrasjon/.nais/dev-q2        .yaml"
