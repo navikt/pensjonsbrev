@@ -1,0 +1,33 @@
+import type { LetterModelSpecification } from "../../lib/model/skribenten";
+import type { BoundAction } from "../lib/actions";
+import ObjectEditor from "./components/ObjectEditor/ObjectEditor";
+import type { ObjectValue } from "./model";
+import styles from "./ModelEditor.module.css";
+
+export interface ModelSpecificationEditorProperties {
+  spec: LetterModelSpecification;
+  value: ObjectValue;
+  updateValue: BoundAction<[value: ObjectValue]>;
+}
+
+const ModelSpecificationEditor = ({ spec, value, updateValue }: ModelSpecificationEditorProperties) => {
+  const objectTypeSpec = spec.types[spec.letterModelTypeName];
+
+  return (
+    <div className={styles.container}>
+      <div>
+        <h2>Brevredigering</h2>
+      </div>
+      <div className={styles.tabmenu}>
+        <div>Overstyring</div>
+      </div>
+      <div>
+        <form>
+          <ObjectEditor allSpecs={spec.types} spec={objectTypeSpec} updateValue={updateValue} value={value} />
+        </form>
+      </div>
+    </div>
+  );
+};
+
+export default ModelSpecificationEditor;

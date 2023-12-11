@@ -1,0 +1,112 @@
+import type { Dispatch, FC, SetStateAction } from "react";
+import { useState } from "react";
+
+import Actions from "./actions";
+import EditorMenu from "./components/editormenu/EditorMenu";
+import Paragraph from "./components/paragraph/Paragraph";
+import SakspartView from "./components/sakspart/SakspartView";
+import SignaturView from "./components/signatur/SignaturView";
+import Title1 from "./components/title1/Title1";
+import Title2 from "./components/title2/Title2";
+import styles from "./LetterEditor.module.css";
+import type { BoundAction, CallbackReceiver } from "./lib/actions";
+import { bindActionWithCallback } from "./lib/actions";
+import type { AnyBlock } from "./lib/model/skribenten";
+import { PARAGRAPH, TITLE1, TITLE2 } from "./lib/model/skribenten";
+import type { CursorPosition, LetterEditorState } from "./model/state";
+
+interface AnyBlockProperties {
+  block: AnyBlock;
+  blockId: number;
+  updateLetter: CallbackReceiver<LetterEditorState>;
+  stealFocus?: CursorPosition;
+  blockFocusStolen: BoundAction<[]>;
+  onFocus: BoundAction<[]>;
+}
+
+const AnyBlockView: FC<AnyBlockProperties> = ({
+  block,
+  blockId,
+  updateLetter,
+  stealFocus,
+  blockFocusStolen,
+  onFocus,
+}) => {
+  switch (block.type) {
+    case TITLE1: {
+      return (
+        <Title1
+          block={block}
+          blockFocusStolen={blockFocusStolen}
+          blockId={blockId}
+          blockStealFocus={stealFocus}
+          onFocus={onFocus}
+          updateLetter={updateLetter}
+        />
+      );
+    }
+    case TITLE2: {
+      return (
+        <Title2
+          block={block}
+          blockFocusStolen={blockFocusStolen}
+          blockId={blockId}
+          blockStealFocus={stealFocus}
+          onFocus={onFocus}
+          updateLetter={updateLetter}
+        />
+      );
+    }
+    case PARAGRAPH: {
+      return (
+        <Paragraph
+          block={block}
+          blockFocusStolen={blockFocusStolen}
+          blockId={blockId}
+          blockStealFocus={stealFocus}
+          onFocus={onFocus}
+          updateLetter={updateLetter}
+        />
+      );
+    }
+  }
+};
+
+export interface LetterEditorProperties {
+  editorState: LetterEditorState;
+  updateState: Dispatch<SetStateAction<LetterEditorState>>;
+}
+
+const LetterEditor: FC<LetterEditorProperties> = ({ editorState, updateState }) => {
+  const blocks = editorState.editedLetter.letter.blocks;
+
+  const [currentBlock, setCurrentBlock] = useState(0);
+
+  const focusStolen = bindActionWithCallback(Actions.focusStolen, updateState);
+  const switchType = bindActionWithCallback(Actions.switchType, updateState, currentBlock);
+
+  return (
+    <div className={styles.container}>
+      <EditorMenu switchType={switchType} />
+      <div className={styles.letter}>
+        <SakspartView sakspart={editorState.editedLetter.letter.sakspart} />
+        <h1>{editorState.editedLetter.letter.title}</h1>
+        {blocks.map((block, blockId) => (
+          <AnyBlockView
+            block={block}
+            blockFocusStolen={focusStolen.bind(null, blockId)}
+            blockId={blockId}
+            key={blockId}
+            onFocus={setCurrentBlock.bind(null, blockId)}
+            stealFocus={editorState.stealFocus[blockId]}
+            updateLetter={updateState}
+          />
+        ))}
+        <SignaturView signatur={editorState.editedLetter.letter.signatur} />
+      </div>
+      <button onClick={() => console.log(editorState.editedLetter)}>Save</button>
+    </div>
+  );
+};
+
+export default LetterEditor;
