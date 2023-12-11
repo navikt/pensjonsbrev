@@ -11,7 +11,7 @@ env:
     value: "https://dokprod-q2.dev.intern.nav.no/dokprod/"
 
 
-valutPaths:
+vaultPaths:
   - kvPath: "serviceuser/dev/srvpensjonsbrev-esb"
     mountPath: "/secrets/sts"
 
