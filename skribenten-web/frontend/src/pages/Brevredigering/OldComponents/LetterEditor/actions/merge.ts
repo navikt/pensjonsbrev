@@ -54,6 +54,7 @@ export const merge: Action<LetterEditorState, [mergeId: ContentId, target: Merge
           }
         }
       } else {
+        // eslint-disable-next-line no-console
         console.warn("Got itemId, but block.content is not an itemList");
       }
     } else if (target === MergeTarget.PREVIOUS && previousContentSameBlock?.type === ITEM_LIST) {

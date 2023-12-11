@@ -13,20 +13,18 @@ export interface EditableTextProperties {
   innerRef: BoundAction<[node: HTMLElement]>;
 }
 
-function onChangeHandler(updateText: BoundAction<[text: string]>): (e: ContentEditableEvent) => void {
-  return (e: ContentEditableEvent) => {
-    updateText(e.target.value);
+function onChangeHandler(updateText: BoundAction<[text: string]>): (event: ContentEditableEvent) => void {
+  return (event: ContentEditableEvent) => {
+    updateText(event.target.value);
   };
 }
 
 const EditableText = ({ content, updateText, innerRef }: EditableTextProperties) => {
   // const updateText = bindAction(TextContentAction.updateText, updateContent, content)
   // Passing innerRef as a dependency has some weird consequences such as the cursor skipping to the end on every edit.
-  /* eslint-disable react-hooks/exhaustive-deps */
   const reference = useCallback((node: HTMLElement) => {
     innerRef(node);
   }, []);
-  /* eslint-enable react-hooks/exhaustive-deps */
 
   return (
     <ContentEditable

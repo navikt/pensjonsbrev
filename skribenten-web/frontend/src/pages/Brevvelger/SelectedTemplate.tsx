@@ -77,8 +77,8 @@ function Brevmal() {
             height: 100%;
             justify-content: space-between;
           `}
-          // eslint-disable-next-line no-console
           onSubmit={methods.handleSubmit((submittedValues) => {
+            // eslint-disable-next-line no-console
             console.log("submit", submittedValues);
             navigate({ to: redigeringRoute.id, params: { sakId, templateId } });
           })}

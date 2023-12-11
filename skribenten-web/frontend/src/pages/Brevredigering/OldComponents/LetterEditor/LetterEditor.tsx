@@ -104,6 +104,7 @@ const LetterEditor: FC<LetterEditorProperties> = ({ editorState, updateState }) 
         ))}
         <SignaturView signatur={editorState.editedLetter.letter.signatur} />
       </div>
+      {/*eslint-disable-next-line no-console*/}
       <button onClick={() => console.log(editorState.editedLetter)}>Save</button>
     </div>
   );

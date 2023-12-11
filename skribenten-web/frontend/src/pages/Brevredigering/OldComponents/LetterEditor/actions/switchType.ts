@@ -21,6 +21,7 @@ export const switchType: Action<
       if (block.content.every(isTextContent)) {
         block.type = toType;
       } else {
+        // eslint-disable-next-line no-console
         console.warn("Cannot switch type of block to title1: contains non text content");
       }
       break;

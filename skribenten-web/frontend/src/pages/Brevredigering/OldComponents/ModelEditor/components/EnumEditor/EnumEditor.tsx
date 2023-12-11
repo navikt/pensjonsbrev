@@ -9,7 +9,7 @@ interface EnumEditorProperties {
 }
 
 const EnumEditor = ({ spec, value, updateValue }: EnumEditorProperties) => (
-  <select onChange={(e) => updateValue(e.target.value)} value={value}>
+  <select onChange={(event) => updateValue(event.target.value)} value={value}>
     {spec.values.map((opt) => (
       <option key={opt} value={opt}>
         {opt}

@@ -13,7 +13,7 @@ const ScalarEditor = ({ spec, value, updateValue }: ScalarEditorProperties) => {
     case "NUMBER": {
       return (
         <input
-          onChange={(e) => updateValue(e.target.value)}
+          onChange={(event) => updateValue(event.target.value)}
           required={!spec.nullable}
           step={1}
           type="number"
@@ -24,7 +24,7 @@ const ScalarEditor = ({ spec, value, updateValue }: ScalarEditorProperties) => {
     case "DOUBLE": {
       return (
         <input
-          onChange={(e) => updateValue(e.target.value)}
+          onChange={(event) => updateValue(event.target.value)}
           required={!spec.nullable}
           step={0.1}
           type="number"
@@ -35,7 +35,7 @@ const ScalarEditor = ({ spec, value, updateValue }: ScalarEditorProperties) => {
     case "STRING": {
       return (
         <input
-          onChange={(e) => updateValue(e.target.value)}
+          onChange={(event) => updateValue(event.target.value)}
           required={!spec.nullable}
           type="text"
           value={value as string}
@@ -43,12 +43,14 @@ const ScalarEditor = ({ spec, value, updateValue }: ScalarEditorProperties) => {
       );
     }
     case "BOOLEAN": {
-      return <input checked={value as boolean} onChange={(e) => updateValue(e.target.checked)} type="checkbox" />;
+      return (
+        <input checked={value as boolean} onChange={(event) => updateValue(event.target.checked)} type="checkbox" />
+      );
     }
     case "DATE": {
       return (
         <input
-          onChange={(e) => updateValue(e.target.value)}
+          onChange={(event) => updateValue(event.target.value)}
           required={!spec.nullable}
           type="date"
           value={value as string}

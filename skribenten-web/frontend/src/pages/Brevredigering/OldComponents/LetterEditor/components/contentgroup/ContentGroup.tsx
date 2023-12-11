@@ -95,36 +95,37 @@ class ContentGroup<T extends Content | TextContent> extends React.Component<
     }
   }
 
-  stealFocusHandler: MouseEventHandler<HTMLDivElement> = (e) => {
-    if (e.target === e.currentTarget) {
+  stealFocusHandler: MouseEventHandler<HTMLDivElement> = (event) => {
+    if (event.target === event.currentTarget) {
       const nodes = Object.entries(this.childRefs)
-        .map((e) => e[1])
+        .map((element) => element[1])
         .filter((n): n is HTMLElement => n != null);
 
       if (nodes.length > 0) {
-        selectService.focusEndOfClickedLine(nodes, { x: e.clientX, y: e.clientY }, this.props.focusStolen);
+        selectService.focusEndOfClickedLine(nodes, { x: event.clientX, y: event.clientY }, this.props.focusStolen);
       } else {
+        // eslint-disable-next-line no-console
         console.warn("Cannot steal focus for click because we don't have any childRefs.");
       }
     }
   };
 
-  enterHandler = (contentId: number, e: KeyboardEvent) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
+  enterHandler = (contentId: number, event: KeyboardEvent) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
       const offset = selectService.getCursorOffset();
 
       applyAction(Actions.split, this.props.updateLetter, toContentId(this.props.id, contentId), offset);
     }
   };
 
-  backspaceHandler = (contentId: number, e: KeyboardEvent) => {
-    if (e.key === "Backspace") {
+  backspaceHandler = (contentId: number, event: KeyboardEvent) => {
+    if (event.key === "Backspace") {
       const span = this.childRefs[contentId];
       const cursorPosition = selectService.getCursorOffset();
       // If the cursor is at the beginning of the content (while we ignore any ZWSP)
       if (cursorPosition === 0 || (span?.textContent?.startsWith("​") && cursorPosition === 1)) {
-        e.preventDefault();
+        event.preventDefault();
         applyAction(
           Actions.merge,
           this.props.updateLetter,
@@ -135,12 +136,12 @@ class ContentGroup<T extends Content | TextContent> extends React.Component<
     }
   };
 
-  deleteHandler = (e: KeyboardEvent) => {
-    if (e.key === "Delete") {
+  deleteHandler = (event: KeyboardEvent) => {
+    if (event.key === "Delete") {
       const lastContentId = this.props.content.length - 1;
       const lastContent = this.props.content[lastContentId];
       if (isTextContent(lastContent) && selectService.getCursorOffset() >= lastContent.text.length) {
-        e.preventDefault();
+        event.preventDefault();
         applyAction(
           Actions.merge,
           this.props.updateLetter,
@@ -152,7 +153,7 @@ class ContentGroup<T extends Content | TextContent> extends React.Component<
   };
 
   render() {
-    const { id, content, editable, onFocus, updateLetter, focusStolen } = this.props;
+    const { id, content, editable, onFocus, updateLetter, focusStolen, stealFocus } = this.props;
     return editable ? (
       <div className={styles.content} onClick={this.stealFocusHandler} onFocus={onFocus}>
         {content.map((c, contentId) => {
@@ -183,7 +184,7 @@ class ContentGroup<T extends Content | TextContent> extends React.Component<
                   itemList={c}
                   key={contentId}
                   onFocus={onFocus}
-                  stealFocus={this.props.stealFocus?.contentId === contentId ? this.props.stealFocus : undefined}
+                  stealFocus={stealFocus?.contentId === contentId ? stealFocus : undefined}
                   updateLetter={updateLetter}
                 />
               );

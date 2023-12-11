@@ -4,7 +4,7 @@ import styles from "./SakspartView.module.css";
 export interface SakspartViewProperties {
   sakspart: Sakspart;
 }
-const SakspartView: SakspartViewProperties = ({ sakspart }: SakspartViewProperties) => (
+const SakspartView = ({ sakspart }: SakspartViewProperties) => (
   <div className={styles.container}>
     <div className={styles.sakspartContainer}>
       <div>Saken gjelder:</div>

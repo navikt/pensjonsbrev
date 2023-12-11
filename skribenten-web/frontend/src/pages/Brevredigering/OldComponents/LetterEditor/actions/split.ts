@@ -102,6 +102,7 @@ export const split: Action<LetterEditorState, [splitId: ContentId, offset: numbe
           };
         }
       } else {
+        // eslint-disable-next-line no-console
         console.warn("Can't split an ItemList without itemId");
       }
     }

@@ -17,12 +17,15 @@ export const updateContentText: Action<LetterEditorState, [id: ContentId, text: 
         if (itemContent.type === LITERAL) {
           itemContent.text = cleanseText(text);
         } else {
+          // eslint-disable-next-line no-console
           console.warn("Cannot update text of:", itemContent.type);
         }
       } else {
+        // eslint-disable-next-line no-console
         console.warn("Cannot update text of ItemList, itemId and itemContentId is missing.");
       }
     } else {
+      // eslint-disable-next-line no-console
       console.warn("Cannot update text of non-literal content");
     }
   },

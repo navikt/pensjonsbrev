@@ -212,6 +212,7 @@ export class SelectionService {
   /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
   private warn(message: string, ...values: any[]) {
     if (this.debugLogging) {
+      // eslint-disable-next-line no-console
       console.log("SelectionService: " + message, ...values);
     }
   }
