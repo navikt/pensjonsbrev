@@ -32,14 +32,13 @@ ktor {
 		jreVersion.set(JavaVersion.VERSION_17)
 		localImageName.set("tjenestebuss-integrasjon")
 		imageTag.set(providers.environmentVariable("IMAGE_TAG").orElse("latest"))
-		// TODO add workflow for deploying
-		//externalRegistry.set(
-		//	GithubImageRegistry(
-		//		toImage = providers.environmentVariable(//TODOIMAGE_SKRIBENTEN_BACKEND),
-		//		username = providers.environmentVariable(//TODOGITHUB_REPOSITORY),
-		//		password = providers.environmentVariable(//TODOGITHUB_TOKEN),
-		//	)
-		//)
+		externalRegistry.set(
+			GithubImageRegistry(
+				toImage = providers.environmentVariable("IMAGE_TJENESTEBUSS_INTEGRASJON"),
+				username = providers.environmentVariable("GITHUB_REPOSITORY"),
+				password = providers.environmentVariable("GITHUB_TOKEN"),
+			)
+		)
 	}
 }
 

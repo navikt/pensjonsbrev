@@ -10,7 +10,6 @@ import no.nav.pensjon.etterlatte.maler.barnepensjon.ny.BarnepensjonInnvilgelseNy
 import no.nav.pensjon.etterlatte.maler.barnepensjon.ny.BeregningsinfoBP
 import java.time.LocalDate
 import java.time.Month
-import java.time.Period
 
 fun createBarnepensjonInnvilgelseNyDTO() =
     BarnepensjonInnvilgelseNyDTO(
@@ -65,5 +64,7 @@ fun createBarnepensjonInnvilgelseNyDTO() =
                     opptjeningsperiode = Periode(3, 0, 0),
                 )
             )
-        )
+        ),
+        bosattUtland = false,
+        brukerUnder18Aar = true
     )

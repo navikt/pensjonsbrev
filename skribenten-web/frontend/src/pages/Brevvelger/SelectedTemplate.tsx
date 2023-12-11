@@ -1,6 +1,6 @@
 import { css } from "@emotion/react";
 import { ArrowRightIcon, StarFillIcon, StarIcon } from "@navikt/aksel-icons";
-import { BodyShort, Button, Heading, Select } from "@navikt/ds-react";
+import { BodyShort, Button, Heading, Select, Tag } from "@navikt/ds-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useParams, useRouteContext, useSearch } from "@tanstack/react-router";
 import { useEffect } from "react";
@@ -11,6 +11,7 @@ import { Divider } from "../../components/Divider";
 import { usePreferredLanguage } from "../../hooks/usePreferredLanguage";
 import { selectedTemplateRoute } from "../../tanStackRoutes";
 import type { LetterMetadata } from "../../types/apiTypes";
+import { BrevSystem } from "../../types/apiTypes";
 import { SPRAAK_ENUM_TO_TEXT } from "../../types/nameMappings";
 import { BrevvelgerTabOptions } from "./BrevvelgerPage";
 
@@ -21,7 +22,6 @@ export function SelectedTemplate() {
     <div
       css={css`
         display: flex;
-        width: 400px;
         padding: var(--a-spacing-6) var(--a-spacing-4);
         flex-direction: column;
         align-items: flex-start;
@@ -80,7 +80,16 @@ function Brevmal() {
           onSubmit={methods.handleSubmit((submittedValues) => console.log("submit", submittedValues))}
         >
           <SelectLanguage letterTemplate={letterTemplate} />
-          <Button icon={<ArrowRightIcon />} iconPosition="right" type="submit" variant="primary">
+          <Button
+            css={css`
+              width: fit-content;
+            `}
+            icon={<ArrowRightIcon />}
+            iconPosition="right"
+            size="small"
+            type="submit"
+            variant="primary"
+          >
             Rediger brev
           </Button>
         </form>
@@ -102,7 +111,7 @@ function SelectLanguage({ letterTemplate }: { letterTemplate: LetterMetadata }) 
   }, [preferredLanguage]);
 
   return (
-    <Select {...register("spraak")} label="Språk">
+    <Select {...register("spraak")} label="Språk" size="small">
       {letterTemplate.spraak.map((spraak) => (
         <option key={spraak} value={spraak}>
           {SPRAAK_ENUM_TO_TEXT[spraak]} {preferredLanguage === spraak ? "(foretrukket språk)" : ""}
@@ -156,17 +165,44 @@ function LetterTemplateHeading({ letterTemplate }: { letterTemplate: LetterMetad
           margin-top: var(--a-spacing-2);
         `}
       >
-        <div
-          aria-hidden
-          css={css`
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: var(--a-green-500);
-          `}
-        />
-        <BodyShort size="small">REDIGERBAR {letterTemplate.isEblankett ? "BLANKETT" : "MAL"}</BodyShort>
+        <LetterTemplateTags letterTemplate={letterTemplate} />
       </div>
+    </div>
+  );
+}
+
+function LetterTemplateTags({ letterTemplate }: { letterTemplate: LetterMetadata }) {
+  if (letterTemplate.isEblankett) {
+    return <></>;
+  }
+
+  return (
+    <div>
+      {(() => {
+        switch (letterTemplate.brevsystem) {
+          case BrevSystem.Brevbaker: {
+            return (
+              <Tag size="small" variant="alt2-moderate">
+                Brevbaker
+              </Tag>
+            );
+          }
+          case BrevSystem.Extream: {
+            return (
+              <Tag size="small" variant="alt1-moderate">
+                Extream
+              </Tag>
+            );
+          }
+          case BrevSystem.DokSys: {
+            return (
+              <Tag size="small" variant="alt3-moderate">
+                Doksys
+              </Tag>
+            );
+          }
+        }
+      })()}
     </div>
   );
 }

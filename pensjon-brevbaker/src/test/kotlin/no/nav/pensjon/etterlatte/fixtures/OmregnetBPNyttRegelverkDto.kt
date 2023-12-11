@@ -16,7 +16,8 @@ fun createBarnepensjonOmregnetNyttRegelverkDTO() =
         grunnbeloep = Kroner(400000),
         prorataBroek = IntBroek(43, 156),
         erBosattUtlandet = true,
-        erYrkesskade = false
+        erYrkesskade = false,
+        erForeldreloes = false
     )
 
 fun createBarnepensjonOmregnetNyttRegelverkFerdigDTO() =
@@ -59,7 +60,7 @@ fun createBarnepensjonOmregnetNyttRegelverkFerdigDTO() =
                         )
                     )
                 )
-            ),
+            )
         ),
         data = BarnepensjonOmregnetNyttRegelverkDTO(
             utbetaltFoerReform = Kroner(1337),
@@ -68,6 +69,7 @@ fun createBarnepensjonOmregnetNyttRegelverkFerdigDTO() =
             grunnbeloep = Kroner(400000),
             prorataBroek = IntBroek(43, 156),
             erBosattUtlandet = true,
-            erYrkesskade = false
+            erYrkesskade = false,
+            erForeldreloes = false
         )
     )
