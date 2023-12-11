@@ -92,6 +92,13 @@ fun Application.tjenestebussIntegrationApi(config: Config) {
         val dokumentProduksjonService =
             DokumentproduksjonService(config.getConfig("services.dokprod"), stsSercuritySOAPHandler)
 
+        get("/isAlive") {
+            call.respondText("Alive!", ContentType.Text.Plain, HttpStatusCode.OK)
+        }
+
+        get("/isReady") {
+            call.respondText("Ready!", ContentType.Text.Plain, HttpStatusCode.OK)
+        }
 
         authenticate(azureADConfig.name) {
 
