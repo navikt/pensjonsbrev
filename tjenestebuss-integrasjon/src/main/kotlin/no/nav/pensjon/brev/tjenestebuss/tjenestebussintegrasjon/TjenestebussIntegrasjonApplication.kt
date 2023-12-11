@@ -22,7 +22,7 @@ fun main() {
 }
 
 fun getVaultSecretConfig(): Config {
-    val secrets = File("/Users/mo/repos/pensjonsbrev/skribenten-backend/x")
+    val secrets = File("/secrets")
 
     return if (secrets.isDirectory) {
         secrets.listFiles()?.flatMap { secretDir ->
