@@ -39,14 +39,14 @@ export const merge: Action<LetterEditorState, [mergeId: ContentId, target: Merge
           } else if (isEmptyItem(second)) {
             draft.stealFocus[mergeId.blockId] = {
               contentId: mergeId.contentId,
-              startOffset: first.content.at(-1).text.length,
+              startOffset: first.content.at(-1)?.text.length ?? 0,
               item: { id: firstId, contentId: first.content.length - 1 },
             };
             itemList.items.splice(secondId, 1);
           } else {
             draft.stealFocus[mergeId.blockId] = {
               contentId: mergeId.contentId,
-              startOffset: first.content.at(-1).text.length,
+              startOffset: first.content.at(-1)?.text.length ?? 0,
               item: { id: firstId, contentId: first.content.length - 1 },
             };
             first.content = mergeContentArrays(first.content, second.content);
@@ -66,7 +66,7 @@ export const merge: Action<LetterEditorState, [mergeId: ContentId, target: Merge
 
       // Steal focus before we modify
       draft.stealFocus[mergeId.blockId] =
-        lastContentOfLastItem.type === LITERAL
+        lastContentOfLastItem?.type === LITERAL
           ? {
               contentId: mergeId.contentId - 1,
               startOffset: lastContentOfLastItem.text.length,
@@ -101,7 +101,7 @@ export const merge: Action<LetterEditorState, [mergeId: ContentId, target: Merge
         } else {
           const lastContentOfFirst = first.content.at(-1);
           draft.stealFocus[firstId] =
-            lastContentOfFirst.type === LITERAL
+            lastContentOfFirst?.type === LITERAL
               ? {
                   contentId: first.content.length - 1,
                   startOffset: lastContentOfFirst.text.length,

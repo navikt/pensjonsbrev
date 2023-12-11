@@ -1,5 +1,5 @@
-import type { LetterModelSpecification } from "../../lib/model/skribenten";
-import type { BoundAction } from "../lib/actions";
+import type { LetterModelSpecification } from "../../../../types/brevbakerTypes";
+import type { BoundAction } from "../LetterEditor/lib/actions";
 import ObjectEditor from "./components/ObjectEditor/ObjectEditor";
 import type { ObjectValue } from "./model";
 import styles from "./ModelEditor.module.css";

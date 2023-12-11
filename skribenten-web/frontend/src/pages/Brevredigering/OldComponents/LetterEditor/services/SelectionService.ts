@@ -124,8 +124,10 @@ export class SelectionService {
     const nearest = nodes
       .map((n) => ({
         node: n.node,
+        // eslint-disable-next-line unicorn/no-array-reduce
         distance: n.distances.reduce((previous, next) => (next.x <= previous.x ? next : previous)),
       }))
+      // eslint-disable-next-line unicorn/no-array-reduce
       .reduce((previous, next) => (next.distance.x <= previous.distance.x ? next : previous));
 
     return { node: nearest.node, rect: nearest.distance.rect };
