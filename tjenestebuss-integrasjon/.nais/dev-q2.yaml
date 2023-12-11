@@ -10,6 +10,12 @@ env:
   - name: DOKPROD_URL
     value: "https://dokprod-q2.dev.intern.nav.no/dokprod/"
 
+vault:
+  enabled: true
+  paths:
+    - kvPath: "serviceuser/dev/srvpensjonsbrev-esb"
+      mountPath: "/secrets/sts"
+
 inboundRules:
   - application: skribenten-backend
     namespace: pensjonsbrev
