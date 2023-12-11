@@ -58,7 +58,7 @@ val informasjonTilDegSomHandlerPaaVegneAvBarnet = createAttachment(
 ) {
     informasjon()
     postadresse(false.expr())
-    endringAvKontonummer()
+    endringAvKontonummerForelder()
     skattetrekkPaaBarnepensjon()
 }
 
@@ -85,7 +85,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, A
     }
 }
 
-private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Any>.utbetalingUtland() {
+fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Any>.utbetalingUtland() {
     title2 {
         text(
             Bokmal to "Utbetaling av barnepensjon",
@@ -102,7 +102,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, A
     }
 }
 
-private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Any>.endringAvKontonummerUtland() {
+fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Any>.endringAvKontonummerUtland() {
     title2 {
         text(
             Bokmal to "Skal du endre kontonummer?",
@@ -134,7 +134,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, A
     }
 }
 
-private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Any>.endringAvKontonummer() {
+private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Any>.endringAvKontonummerForelder() {
     title2 {
         text(
             Bokmal to "Skal du endre kontonummer?",
@@ -168,7 +168,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, A
     }
 }
 
-private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Any>.skattetrekkPaaBarnepensjon() {
+fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Any>.skattetrekkPaaBarnepensjon() {
     title2 {
         text(
             Bokmal to "Skattetrekk på barnepensjon",
