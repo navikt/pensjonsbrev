@@ -43,6 +43,13 @@ spec:
       claims:
         groups:
           - id: "8bb9b8d1-f46a-4ade-8ee8-5895eccdf8cf" #0000-GA-PENSJON_SAKSBEHANDLER i preprod
+  vault:
+    enabled: true
+    paths:
+      {{#each valutPaths as |path|}}
+        - kvPath: {{path.kvPath}}
+          mountPath: {{path.mountPath}}
+      {{/each}}
 
   accessPolicy:
     outbound:
