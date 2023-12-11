@@ -1,30 +1,37 @@
 version: '3.8'
-name: "skribenten-web"
+name: "skribenten_web"
 services:
   wonderwall:
     image: ghcr.io/nais/wonderwall:latest
     platform: linux/amd64
     ports:
       - "8083:8083"
-    command: >
-      --auto-login=true
-      --openid.provider=azure
-      --ingress=http://localhost:8083
-      --bind-address=0.0.0.0:8083
-      --upstream-host=frontend:8084
-      --log-level=debug
-      --log-format=text
     restart: on-failure
+    env_file:
+      - .env
     environment:
-      WONDERWALL_OPENID_CLIENT_JWK: "${AZURE_APP_JWK}"
-      WONDERWALL_OPENID_CLIENT_ID: "${AZURE_APP_CLIENT_ID}"
-      WONDERWALL_OPENID_WELL_KNOWN_URL: "${AZURE_APP_WELL_KNOWN_URL}"
+      - WONDERWALL_OPENID_CLIENT_JWK=${AZURE_APP_JWK}
+      - WONDERWALL_OPENID_CLIENT_ID=${AZURE_APP_CLIENT_ID}
+      - WONDERWALL_OPENID_WELL_KNOWN_URL=${AZURE_APP_WELL_KNOWN_URL}
+      - WONDERWALL_AUTO_LOGIN=true
+      - WONDERWALL_OPENID_PROVIDER=azure
+      - WONDERWALL_INGRESS=http://localhost:8083
+      - WONDERWALL_BIND_ADDRESS=0.0.0.0:8083
+      - WONDERWALL_UPSTREAM_HOST=frontend:8084
+      - WONDERWALL_LOG_LEVEL=debug
+      - WONDERWALL_LOG_FORMAT=text
+      - NODE_ENV="development"
+      - EXPRESS_PORT=8084
+      - EXPRESS_HOST="::"
+      - SKRIBENTEN_API_URL="skribenten-backend"
+      - SKRIBENTEN_API_SCOPE="api://dev-gcp.pensjonsbrev.skribenten-backend-lokal/.default"
   frontend:
     build:
       context: .
+    secrets:
+      - npmrc
 #      dockerfile: "Dockerfile.dev"
-      secrets:
-        - npmrc
+
     ports:
       - "8084:8084"
     environment:
@@ -36,9 +43,12 @@ services:
       AZURE_OPENID_CONFIG_TOKEN_ENDPOINT: "${AZURE_OPENID_CONFIG_TOKEN_ENDPOINT}"
       AZURE_APP_JWK: "${AZURE_APP_JWK}"
       AZURE_OPENID_CONFIG_JWKS_URI: "${AZURE_OPENID_CONFIG_JWKS_URI}"
-      SKRIBENTEN_API_URL: "https://pensjon-skribenten-api.intern.dev.nav.no"
-      SKRIBENTEN_API_SCOPE: "api://dev-gcp.pensjonsbrev.skribenten-backend/.default"
-
+      SKRIBENTEN_API_URL: "https://skribenten-backend"
+      SKRIBENTEN_API_SCOPE: "api://dev-gcp.pensjonsbrev.skribenten-backend-lokal/.default"
+networks:
+  default:
+    name: pensjon-local
+    external: true
 secrets:
   npmrc:
     file: ~/.npmrc
