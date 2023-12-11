@@ -32,6 +32,7 @@ services:
 
     ports:
       - "8082:8080"
+      - "5017:5007"
     env_file:
       - ./skribenten-backend/secrets/azuread.env
     environment:
@@ -40,7 +41,7 @@ services:
       - BREVMETADATA_URL=https://pensjon-brevmetadata-q2.intern.dev.nav.no
       - CORS_ALLOW_HOST=*
       - DB_URL=jdbc:postgresql://skribenten-backend-db:5432/postgres
-      - JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5007
+      - JAVA_TOOL_OPTIONS=-Dio.ktor.development=true -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5007
       - KODEVERK_SERVICE=https://kodeverk.dev.intern.nav.no/api/v1/kodeverk/
       - KRR_SCOPE=api://dev-gcp.team-rocket.digdir-krr-proxy/.default
       - KRR_URL=https://digdir-krr-proxy.intern.dev.nav.no
@@ -59,14 +60,13 @@ services:
       - "5432:5432"
     healthcheck:
       test: [ 'CMD', 'pg_isready', '-U', 'postgres' ]
+      interval: 3s
     restart: always
     environment:
       POSTGRES_PASSWORD: pass
 
   wonderwall:
     image: ghcr.io/nais/wonderwall:latest
-    build:
-      context: skribenten-web/bff
     platform: linux/amd64
     ports:
       - "8083:8083"
@@ -97,7 +97,7 @@ services:
       NODE_ENV: "development"
       EXPRESS_PORT: "8084"
       EXPRESS_HOST: "::"
-      SKRIBENTEN_API_URL: "skribenten-backend"
+      SKRIBENTEN_API_URL: "https://skribenten-backend"
       SKRIBENTEN_API_SCOPE: "api://dev-gcp.pensjonsbrev.skribenten-backend-lokal/.default"
 
   locust-master:
