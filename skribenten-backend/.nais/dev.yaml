@@ -9,7 +9,7 @@ inboundRules:
   - application: skribenten-web
     namespace: pensjonsbrev
     cluster: dev-gcp
-  - application: skribenten-frontend-lokal
+  - application: c
     namespace: pensjonsbrev
     cluster: dev-gcp
 

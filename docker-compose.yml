@@ -74,9 +74,6 @@ services:
     env_file:
       - skribenten-web/bff/.env
     environment:
-      WONDERWALL_OPENID_CLIENT_JWK: "${AZURE_APP_JWK}"
-      WONDERWALL_OPENID_CLIENT_ID: "${AZURE_APP_CLIENT_ID}"
-      WONDERWALL_OPENID_WELL_KNOWN_URL: "${AZURE_APP_WELL_KNOWN_URL}"
       WONDERWALL_AUTO_LOGIN: "true"
       WONDERWALL_OPENID_PROVIDER: "azure"
       WONDERWALL_INGRESS: "http://localhost:8083"
