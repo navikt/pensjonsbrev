@@ -1,4 +1,3 @@
-import { css } from "@emotion/react";
 import { QueryClient } from "@tanstack/react-query";
 import { Outlet, rootRouteWithContext, Route, Router } from "@tanstack/react-router";
 import React from "react";
@@ -37,13 +36,7 @@ function Root() {
       <React.Suspense fallback="">
         <TanStackRouterDevtools position="bottom-right" />
       </React.Suspense>
-      <div
-        css={css`
-          @media (width <= 1350px) {
-            --page-margins: 75px;
-          }
-        `}
-      >
+      <div>
         <AppHeader />
         <main className="page-margins">
           <Outlet />

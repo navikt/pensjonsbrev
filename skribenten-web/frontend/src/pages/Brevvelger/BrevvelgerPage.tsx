@@ -1,8 +1,8 @@
 import { css } from "@emotion/react";
-import { Accordion, Button, Heading, Search, Tabs } from "@navikt/ds-react";
+import { Accordion, Button, Search, Tabs } from "@navikt/ds-react";
 import { useQuery } from "@tanstack/react-query";
 import { Outlet, useNavigate, useParams, useRouteContext, useSearch } from "@tanstack/react-router";
-import { useState } from "react";
+import { Fragment, useState } from "react";
 
 import { getFavoritter, getLetterTemplate } from "../../api/skribenten-api-endpoints";
 import { brevvelgerRoute } from "../../tanStackRoutes";
@@ -32,13 +32,13 @@ export function BrevvelgerPage() {
       css={css`
         background: var(--a-white);
         display: grid;
-        grid-template-columns: 1fr 400px;
+        grid-template-columns: minmax(432px, 720px) minmax(336px, 388px);
         gap: var(--a-spacing-4);
         justify-content: space-between;
         flex: 1;
 
         > :first-of-type {
-          padding: var(--a-spacing-6);
+          padding: var(--a-spacing-4);
           border-left: 1px solid var(--a-gray-400);
           border-right: 1px solid var(--a-gray-400);
         }
@@ -75,7 +75,13 @@ function Brevmaler({ kategorier }: { kategorier: LetterCategory[] }) {
 
   const favoritter = useQuery(getFavoritter).data ?? [];
 
-  const matchingLetterCategories = kategorier.map((category) => ({
+  const matchingFavoritter = kategorier
+    .flatMap((category) => category.templates)
+    .filter(({ id }) => favoritter.includes(id));
+
+  const letterCategoriesWithFavoritterIncluded = [{ name: "FAVORITTER", templates: matchingFavoritter }, ...kategorier];
+
+  const matchingLetterCategories = letterCategoriesWithFavoritterIncluded.map((category) => ({
     ...category,
     templates: category.templates.filter((template) => template.name.toLowerCase().includes(searchTerm.toLowerCase())),
   }));
@@ -92,29 +98,37 @@ function Brevmaler({ kategorier }: { kategorier: LetterCategory[] }) {
       <Search
         label="Filtrer brevmaler"
         onChange={(value) => setSearchTerm(value)}
+        size="small"
         value={searchTerm}
         variant="simple"
       />
-      <Heading level="2" size="xsmall">
-        Favoritter
-      </Heading>
-      <div>
-        {favoritter.map((favoritt) => (
-          <span key={favoritt}>{favoritt}</span>
-        ))}
-      </div>
-      <Heading level="2" size="xsmall">
-        Brevmaler
-      </Heading>
-      <Accordion headingSize="xsmall" size="small">
+      <Accordion
+        css={css`
+          max-height: calc(100vh - var(--header-height) - var(--breadcrumbs-height) - 180px);
+          overflow-y: scroll;
+
+          .navds-accordion__content {
+            padding: 0;
+          }
+        `}
+        headingSize="xsmall"
+        indent={false}
+        size="small"
+      >
         {matchingLetterCategories.map((letterCategory) => {
           if (letterCategory.templates.length === 0) {
-            return <></>;
+            return <Fragment key={letterCategory.name}></Fragment>;
           }
-
           return (
             <Accordion.Item key={letterCategory.name} open={searchTerm.length > 0 ? true : undefined}>
-              <Accordion.Header>{CATEGORY_TRANSLATIONS[letterCategory.name] ?? "Annet"}</Accordion.Header>
+              <Accordion.Header
+                css={css`
+                  flex-direction: row-reverse;
+                  justify-content: space-between;
+                `}
+              >
+                {CATEGORY_TRANSLATIONS[letterCategory.name] ?? "Annet"}
+              </Accordion.Header>
               <Accordion.Content>
                 <div
                   css={css`
@@ -161,7 +175,17 @@ function BrevmalButton({ letterMetadata }: { letterMetadata: LetterMetadata }) {
     <Button
       css={css(
         css`
+          color: black;
           justify-content: flex-start;
+          padding: var(--a-spacing-2) var(--a-spacing-3);
+          border-radius: 0;
+
+          span {
+            font-weight: var(--a-font-weight-regular);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+          }
         `,
         templateId === letterMetadata.id &&
           css`
@@ -172,6 +196,7 @@ function BrevmalButton({ letterMetadata }: { letterMetadata: LetterMetadata }) {
       onClick={() =>
         navigate({ to: "$templateId", params: { sakId, templateId: letterMetadata.id }, search: (s) => s })
       }
+      size="small"
       variant="tertiary"
     >
       {letterMetadata.name}
@@ -187,4 +212,5 @@ const CATEGORY_TRANSLATIONS: Record<string, string> = {
   OVRIG: "Øvrig",
   VARSEL: "Varsel",
   VEDTAK: "Vedtak",
+  FAVORITTER: "Favoritter",
 };
