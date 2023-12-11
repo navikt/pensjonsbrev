@@ -46,7 +46,7 @@ spec:
   vault:
     enabled: true
     paths:
-      {{#each valutPaths as |path|}}
+      {{#each vaultPaths as |path|}}
         - kvPath: {{path.kvPath}}
           mountPath: {{path.mountPath}}
       {{/each}}
