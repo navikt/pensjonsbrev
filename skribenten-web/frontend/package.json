@@ -8,6 +8,7 @@
     "build": "tsc && vite build",
     "preview": "vite preview",
     "check-types": "tsc --noemit",
+    "test": "vitest run",
     "lint": "eslint --ext .js,.jsx,.ts,.tsx .",
     "lint:fix": "eslint --fix --ext .js,.jsx,.ts,.tsx .",
     "stylelint": "stylelint '**/*.{tsx,css}'",
@@ -24,14 +25,16 @@
     "@tanstack/react-router": "0.0.1-beta.214",
     "@tanstack/router-devtools": "0.0.1-beta.214",
     "axios": "1.6.2",
-    "immer": "^9.0.16",
+    "immer": "9.0.16",
     "react": "18.2.0",
-    "react-contenteditable": "^3.3.7",
+    "react-contenteditable": "3.3.7",
     "react-dom": "18.2.0",
     "react-hook-form": "7.48.2"
   },
   "devDependencies": {
     "@navikt/aksel-stylelint": "5.11.4",
+    "@testing-library/react": "^13.4.0",
+    "@testing-library/user-event": "^14.4.3",
     "@types/node": "20.10.3",
     "@types/react": "18.2.42",
     "@types/react-dom": "18.2.17",
@@ -44,11 +47,13 @@
     "eslint-plugin-react": "7.33.2",
     "eslint-plugin-simple-import-sort": "10.0.0",
     "eslint-plugin-unicorn": "49.0.0",
+    "jsdom": "21.0.0",
     "postcss-styled-syntax": "0.5.0",
     "prettier": "3.1.0",
     "stylelint": "15.11.0",
     "stylelint-config-standard": "34.0.0",
     "typescript": "5.3.2",
-    "vite": "5.0.5"
+    "vite": "5.0.5",
+    "vitest": "0.25.3"
   }
 }

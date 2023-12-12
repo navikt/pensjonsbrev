@@ -1,3 +1,4 @@
 /src/vite-env.d.ts
 /dist
 vite.config.ts
+vitest.config.ts
