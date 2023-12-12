@@ -24,3 +24,6 @@ spec:
     - application: skribenten-frontend-lokal
       cluster: dev-gcp
       namespace: pensjonsbrev
+    - application: skribenten-web
+      cluster: dev-gcp
+      namespace: pensjonsbrev

@@ -74,13 +74,13 @@ services:
     env_file:
       - skribenten-web/bff/.env
     environment:
-      WONDERWALL_AUTO_LOGIN: "true"
-      WONDERWALL_OPENID_PROVIDER: "azure"
-      WONDERWALL_INGRESS: "http://localhost:8083"
-      WONDERWALL_BIND_ADDRESS: "0.0.0.0:8083"
-      WONDERWALL_UPSTREAM_HOST: "frontend:8084"
-      WONDERWALL_LOG_LEVEL: "debug"
-      WONDERWALL_LOG_FORMAT: "text"
+      - WONDERWALL_AUTO_LOGIN=true
+      - WONDERWALL_OPENID_PROVIDER=azure
+      - WONDERWALL_INGRESS=http://localhost:8083
+      - WONDERWALL_BIND_ADDRESS=0.0.0.0:8083
+      - WONDERWALL_UPSTREAM_HOST=frontend:8084
+      - WONDERWALL_LOG_LEVEL=debug
+      - WONDERWALL_LOG_FORMAT=text
   frontend:
     build:
       context: skribenten-web/bff
