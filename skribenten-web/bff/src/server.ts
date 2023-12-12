@@ -2,6 +2,7 @@ import express from "express";
 
 import { setupActuators } from "./actuators.js";
 import { setupSkribentenBackendApiProxy } from "./apiProxy.js";
+import { errorHandling } from "./errorHandler.js";
 import { setupStaticRoutes } from "./frontendRoute.js";
 import { internalRoutes } from "./internalRoutes.js";
 import { verifyJWTToken } from "./tokenValidation.js";
@@ -20,5 +21,6 @@ setupSkribentenBackendApiProxy(server);
 
 internalRoutes(server);
 setupStaticRoutes(server);
+server.use(errorHandling);
 
 export { server };
