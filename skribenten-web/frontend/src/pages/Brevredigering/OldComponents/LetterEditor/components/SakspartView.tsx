@@ -2,10 +2,10 @@ import type { Sakspart } from "~/types/brevbakerTypes";
 
 import styles from "./SakspartView.module.css";
 
-export interface SakspartViewProperties {
+export type SakspartViewProperties = {
   sakspart: Sakspart;
-}
-const SakspartView = ({ sakspart }: SakspartViewProperties) => (
+};
+export const SakspartView = ({ sakspart }: SakspartViewProperties) => (
   <div className={styles.container}>
     <div className={styles.sakspartContainer}>
       <div>Saken gjelder:</div>
@@ -20,4 +20,3 @@ const SakspartView = ({ sakspart }: SakspartViewProperties) => (
     </div>
   </div>
 );
-export default SakspartView;

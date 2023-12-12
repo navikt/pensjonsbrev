@@ -1,10 +1,10 @@
 import type { Title2Block } from "~/types/brevbakerTypes";
 
 import type { BlockProperties } from "../BlockProperties";
-import ContentGroup from "./ContentGroup";
+import { ContentGroup } from "./ContentGroup";
 import styles from "./Title2.module.css";
 
-const Title2 = ({
+export const Title2 = ({
   block,
   blockId,
   updateLetter,
@@ -24,5 +24,3 @@ const Title2 = ({
     />
   </h3>
 );
-
-export default Title2;

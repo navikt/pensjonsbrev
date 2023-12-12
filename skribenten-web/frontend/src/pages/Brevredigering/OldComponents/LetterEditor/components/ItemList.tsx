@@ -3,9 +3,9 @@ import type { Item as ItemType, ItemList as ItemListType } from "~/types/brevbak
 import type { BoundAction, CallbackReceiver } from "../lib/actions";
 import type { CursorPosition, LetterEditorState } from "../model/state";
 import type { ItemID } from "./ContentGroup";
-import ContentGroup from "./ContentGroup";
+import { ContentGroup } from "./ContentGroup";
 
-interface ItemProperties {
+type ItemProperties = {
   id: ItemID;
   updateLetter: CallbackReceiver<LetterEditorState>;
   item: ItemType;
@@ -13,7 +13,7 @@ interface ItemProperties {
   stealFocus?: CursorPosition;
   focusStolen: BoundAction<[]>;
   onFocus: BoundAction<[]>;
-}
+};
 const Item = ({ id, updateLetter, item, editable, stealFocus, focusStolen, onFocus }: ItemProperties) => (
   <li>
     <ContentGroup
@@ -28,7 +28,7 @@ const Item = ({ id, updateLetter, item, editable, stealFocus, focusStolen, onFoc
   </li>
 );
 
-interface ItemListProperties {
+type ItemListProperties = {
   id: { blockId: number; contentId: number };
   itemList: ItemListType;
   editable: boolean | undefined;
@@ -36,9 +36,17 @@ interface ItemListProperties {
   stealFocus?: CursorPosition;
   focusStolen: BoundAction<[]>;
   onFocus: BoundAction<[]>;
-}
+};
 
-const ItemList = ({ id, itemList, editable, updateLetter, stealFocus, focusStolen, onFocus }: ItemListProperties) => {
+export const ItemList = ({
+  id,
+  itemList,
+  editable,
+  updateLetter,
+  stealFocus,
+  focusStolen,
+  onFocus,
+}: ItemListProperties) => {
   return (
     <ul>
       {itemList.items.map((item, itemId) => (
@@ -60,5 +68,3 @@ const ItemList = ({ id, itemList, editable, updateLetter, stealFocus, focusStole
     </ul>
   );
 };
-
-export default ItemList;

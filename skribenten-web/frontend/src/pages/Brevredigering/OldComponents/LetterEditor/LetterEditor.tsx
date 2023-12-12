@@ -5,25 +5,25 @@ import type { AnyBlock } from "~/types/brevbakerTypes";
 import { PARAGRAPH, TITLE1, TITLE2 } from "~/types/brevbakerTypes";
 
 import Actions from "./actions";
-import EditorMenu from "./components/EditorMenu";
-import Paragraph from "./components/Paragraph";
-import SakspartView from "./components/SakspartView";
-import SignaturView from "./components/SignaturView";
-import Title1 from "./components/Title1";
-import Title2 from "./components/Title2";
+import { EditorMenu } from "./components/EditorMenu";
+import { Paragraph } from "./components/Paragraph";
+import { SakspartView } from "./components/SakspartView";
+import { SignaturView } from "./components/SignaturView";
+import { Title1 } from "./components/Title1";
+import { Title2 } from "./components/Title2";
 import styles from "./LetterEditor.module.css";
 import type { BoundAction, CallbackReceiver } from "./lib/actions";
 import { bindActionWithCallback } from "./lib/actions";
 import type { CursorPosition, LetterEditorState } from "./model/state";
 
-interface AnyBlockProperties {
+type AnyBlockProperties = {
   block: AnyBlock;
   blockId: number;
   updateLetter: CallbackReceiver<LetterEditorState>;
   stealFocus?: CursorPosition;
   blockFocusStolen: BoundAction<[]>;
   onFocus: BoundAction<[]>;
-}
+};
 
 const AnyBlockView: FC<AnyBlockProperties> = ({
   block,
@@ -73,12 +73,12 @@ const AnyBlockView: FC<AnyBlockProperties> = ({
   }
 };
 
-export interface LetterEditorProperties {
+type LetterEditorProperties = {
   editorState: LetterEditorState;
   updateState: Dispatch<SetStateAction<LetterEditorState>>;
-}
+};
 
-const LetterEditor: FC<LetterEditorProperties> = ({ editorState, updateState }) => {
+export const LetterEditor: FC<LetterEditorProperties> = ({ editorState, updateState }) => {
   const blocks = editorState.editedLetter.letter.blocks;
 
   const [currentBlock, setCurrentBlock] = useState(0);
@@ -110,5 +110,3 @@ const LetterEditor: FC<LetterEditorProperties> = ({ editorState, updateState }) 
     </div>
   );
 };
-
-export default LetterEditor;

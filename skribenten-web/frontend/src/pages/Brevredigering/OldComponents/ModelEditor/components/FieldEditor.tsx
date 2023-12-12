@@ -1,18 +1,12 @@
-import type {
-  FieldType,
-  ObjectTypeSpecifications,
-  TArray,
-  TEnum,
-  TObject,
-  TScalar,
-} from "../../../../../../types/brevbakerTypes";
-import type { BoundAction } from "../../../LetterEditor/lib/actions";
-import type { FieldValue } from "../../model";
-import { initValueFromSpec } from "../../model";
-import ArrayEditor from "../ArrayEditor/ArrayEditor";
-import EnumEditor from "../EnumEditor/EnumEditor";
-import ObjectEditor from "../ObjectEditor/ObjectEditor";
-import ScalarEditor from "../ScalarEditor/ScalarEditor";
+import type { FieldType, ObjectTypeSpecifications, TArray, TEnum, TObject, TScalar } from "~/types/brevbakerTypes";
+
+import type { BoundAction } from "../../LetterEditor/lib/actions";
+import type { FieldValue } from "../model";
+import { initValueFromSpec } from "../model";
+import { ArrayEditor } from "./ArrayEditor";
+import { EnumEditor } from "./EnumEditor";
+import { ObjectEditor } from "./ObjectEditor";
+import { ScalarEditor } from "./ScalarEditor";
 
 export interface FieldEditorProperties {
   allSpecs: ObjectTypeSpecifications;
@@ -21,7 +15,7 @@ export interface FieldEditorProperties {
   updateValue: BoundAction<[value: FieldValue<FieldType>]>;
 }
 
-const FieldEditor = ({ allSpecs, spec, value, updateValue }: FieldEditorProperties) => {
+export const FieldEditor = ({ allSpecs, spec, value, updateValue }: FieldEditorProperties) => {
   if (value == null) {
     if (spec.nullable) {
       return (
@@ -60,5 +54,3 @@ const FieldEditor = ({ allSpecs, spec, value, updateValue }: FieldEditorProperti
     }
   }
 };
-
-export default FieldEditor;

@@ -1,7 +1,8 @@
 import produce from "immer";
 
+import type { FieldType, TArray, TObject } from "~/types/brevbakerTypes";
+
 import type { Action } from "../LetterEditor/lib/actions";
-import type { FieldType, TArray, TObject } from "../LetterEditor/lib/model/skribenten";
 import type { FieldValue } from "./model";
 
 const updateField = produce((draft, name, value) => {

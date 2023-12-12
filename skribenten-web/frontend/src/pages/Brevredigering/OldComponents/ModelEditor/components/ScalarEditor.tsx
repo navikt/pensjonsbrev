@@ -1,6 +1,7 @@
-import type { TScalar } from "../../../../../../types/brevbakerTypes";
-import type { BoundAction } from "../../../LetterEditor/lib/actions";
-import type { ScalarValue } from "../../model";
+import type { TScalar } from "~/types/brevbakerTypes";
+
+import type { BoundAction } from "../../LetterEditor/lib/actions";
+import type { ScalarValue } from "../model";
 
 export interface ScalarEditorProperties {
   spec: TScalar;
@@ -8,7 +9,7 @@ export interface ScalarEditorProperties {
   updateValue: BoundAction<[value: ScalarValue]>;
 }
 
-const ScalarEditor = ({ spec, value, updateValue }: ScalarEditorProperties) => {
+export const ScalarEditor = ({ spec, value, updateValue }: ScalarEditorProperties) => {
   switch (spec.kind) {
     case "NUMBER": {
       return (
@@ -59,5 +60,3 @@ const ScalarEditor = ({ spec, value, updateValue }: ScalarEditorProperties) => {
     }
   }
 };
-
-export default ScalarEditor;

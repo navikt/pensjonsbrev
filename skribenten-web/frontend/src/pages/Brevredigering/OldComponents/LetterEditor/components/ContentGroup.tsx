@@ -13,9 +13,9 @@ import type { CursorPosition, LetterEditorState } from "../model/state";
 import { isTextContent } from "../model/utils";
 import { SelectionService } from "../services/SelectionService";
 import styles from "./Content.module.css";
-import EditableText from "./EditableText";
-import ItemList from "./ItemList";
-import Text from "./Text";
+import { EditableText } from "./EditableText";
+import { ItemList } from "./ItemList";
+import { Text } from "./Text";
 
 const selectService = new SelectionService(true);
 
@@ -28,19 +28,19 @@ function toContentId(id: BlockID | ItemID, contentId: number): ContentId {
   return "itemId" in id ? { ...id, itemContentId: contentId } : { ...id, contentId: contentId };
 }
 
-export interface ContentGroupProperties<T extends Content> {
+export type ContentGroupProperties<T> = {
   id: BlockID | ItemID;
   updateLetter: CallbackReceiver<LetterEditorState>;
-  content: T[];
+  content: (T & Content)[];
   editable: boolean | undefined;
   stealFocus: CursorPosition | undefined;
   focusStolen: BoundAction<[]>;
   onFocus: BoundAction<[]>;
-}
+};
 
 type ContentReferences = { [nodeId: number]: HTMLElement | undefined | null };
 
-class ContentGroup<T extends Content | TextContent> extends React.Component<
+export class ContentGroup<T extends Content | TextContent> extends React.Component<
   ContentGroupProperties<T>,
   ContentGroupState
 > {
@@ -220,5 +220,3 @@ class ContentGroup<T extends Content | TextContent> extends React.Component<
     );
   }
 }
-
-export default ContentGroup;

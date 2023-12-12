@@ -1,6 +1,7 @@
-import type { LetterModelSpecification } from "../../../../types/brevbakerTypes";
+import type { LetterModelSpecification } from "~/types/brevbakerTypes";
+
 import type { BoundAction } from "../LetterEditor/lib/actions";
-import ObjectEditor from "./components/ObjectEditor/ObjectEditor";
+import { ObjectEditor } from "./components/ObjectEditor";
 import type { ObjectValue } from "./model";
 import styles from "./ModelEditor.module.css";
 
@@ -10,7 +11,7 @@ export interface ModelSpecificationEditorProperties {
   updateValue: BoundAction<[value: ObjectValue]>;
 }
 
-const ModelSpecificationEditor = ({ spec, value, updateValue }: ModelSpecificationEditorProperties) => {
+export const ModelEditor = ({ spec, value, updateValue }: ModelSpecificationEditorProperties) => {
   const objectTypeSpec = spec.types[spec.letterModelTypeName];
 
   return (
@@ -29,5 +30,3 @@ const ModelSpecificationEditor = ({ spec, value, updateValue }: ModelSpecificati
     </div>
   );
 };
-
-export default ModelSpecificationEditor;

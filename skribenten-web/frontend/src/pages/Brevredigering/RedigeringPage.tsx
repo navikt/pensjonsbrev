@@ -2,11 +2,12 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import React, { useState } from "react";
 
 import { getTemplate, renderLetter } from "~/api/skribenten-api-endpoints";
+
 import Actions from "./OldComponents/LetterEditor/actions";
-import LetterEditor from "./OldComponents/LetterEditor/LetterEditor";
+import { LetterEditor } from "./OldComponents/LetterEditor/LetterEditor";
 import type { LetterEditorState } from "./OldComponents/LetterEditor/model/state";
 import type { ObjectValue } from "./OldComponents/ModelEditor/model";
-import ModelEditor from "./OldComponents/ModelEditor/ModelEditor";
+import { ModelEditor } from "./OldComponents/ModelEditor/ModelEditor";
 
 const VAL = {
   mottattSoeknad: "2023-09-11",

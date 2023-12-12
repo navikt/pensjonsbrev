@@ -1,11 +1,11 @@
 import type { BoundAction } from "../lib/actions";
 import styles from "./EditorMenu.module.css";
 
-export interface EditorMenuProperties {
+export type EditorMenuProperties = {
   switchType: BoundAction<[type: "PARAGRAPH" | "TITLE1" | "TITLE2"]>;
-}
+};
 
-const EditorMenu = ({ switchType }: EditorMenuProperties) => {
+export const EditorMenu = ({ switchType }: EditorMenuProperties) => {
   return (
     <div className={styles.container}>
       <div className={styles.top} />
@@ -30,5 +30,3 @@ const EditorMenu = ({ switchType }: EditorMenuProperties) => {
     </div>
   );
 };
-
-export default EditorMenu;

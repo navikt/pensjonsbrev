@@ -6,7 +6,7 @@ import type {
   TEnum,
   TObject,
   TScalar,
-} from "../../../../types/brevbakerTypes";
+} from "~/types/brevbakerTypes";
 
 export type ScalarValue = number | string | boolean;
 

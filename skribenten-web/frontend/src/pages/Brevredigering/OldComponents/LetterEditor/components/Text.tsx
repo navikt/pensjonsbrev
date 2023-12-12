@@ -3,11 +3,11 @@ import { LITERAL, VARIABLE } from "~/types/brevbakerTypes";
 
 import styles from "./Text.module.css";
 
-export interface TextProperties {
+export type TextProperties = {
   content: TextContent;
-}
+};
 
-const Text = ({ content }: TextProperties) => {
+export const Text = ({ content }: TextProperties) => {
   switch (content.type) {
     case LITERAL: {
       return <span>{content.text}</span>;
@@ -17,5 +17,3 @@ const Text = ({ content }: TextProperties) => {
     }
   }
 };
-
-export default Text;

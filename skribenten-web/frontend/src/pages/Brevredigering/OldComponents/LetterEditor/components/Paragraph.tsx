@@ -1,10 +1,10 @@
 import type { ParagraphBlock } from "~/types/brevbakerTypes";
 
 import type { BlockProperties } from "../BlockProperties";
-import ContentGroup from "./ContentGroup";
+import { ContentGroup } from "./ContentGroup";
 import styles from "./Paragraph.module.css";
 
-const Paragraph = ({
+export const Paragraph = ({
   block,
   blockId,
   updateLetter,
@@ -24,4 +24,3 @@ const Paragraph = ({
     />
   </div>
 );
-export default Paragraph;

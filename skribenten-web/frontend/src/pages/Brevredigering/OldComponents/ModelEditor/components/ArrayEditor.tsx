@@ -1,12 +1,13 @@
 import { useState } from "react";
 
-import type { FieldType, ObjectTypeSpecifications, TArray } from "../../../../../../types/brevbakerTypes";
-import type { BoundAction } from "../../../LetterEditor/lib/actions";
-import { bindAction } from "../../../LetterEditor/lib/actions";
-import { ModelValueAction } from "../../actions";
-import type { FieldValue } from "../../model";
-import { initValueFromSpec } from "../../model";
-import FieldEditor from "../FieldEditor/FieldEditor";
+import type { FieldType, ObjectTypeSpecifications, TArray } from "~/types/brevbakerTypes";
+
+import type { BoundAction } from "../../LetterEditor/lib/actions";
+import { bindAction } from "../../LetterEditor/lib/actions";
+import { ModelValueAction } from "../actions";
+import type { FieldValue } from "../model";
+import { initValueFromSpec } from "../model";
+import { FieldEditor } from "./FieldEditor";
 
 interface AddArrayValueProperties {
   allSpecs: ObjectTypeSpecifications;
@@ -36,7 +37,7 @@ export interface ArrayEditorProperties {
   updateArray: BoundAction<[FieldValue<TArray>]>;
 }
 
-const ArrayEditor = ({ allSpecs, spec, array, updateArray }: ArrayEditorProperties) => (
+export const ArrayEditor = ({ allSpecs, spec, array, updateArray }: ArrayEditorProperties) => (
   <div>
     <ul>
       {array.map((item: FieldValue<FieldType>, index: number) => (
@@ -57,5 +58,3 @@ const ArrayEditor = ({ allSpecs, spec, array, updateArray }: ArrayEditorProperti
     />
   </div>
 );
-
-export default ArrayEditor;

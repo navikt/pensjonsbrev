@@ -1,6 +1,7 @@
-import type { TEnum } from "../../../../../../types/brevbakerTypes";
-import type { BoundAction } from "../../../LetterEditor/lib/actions";
-import type { FieldValue } from "../../model";
+import type { TEnum } from "~/types/brevbakerTypes";
+
+import type { BoundAction } from "../../LetterEditor/lib/actions";
+import type { FieldValue } from "../model";
 
 interface EnumEditorProperties {
   spec: TEnum;
@@ -8,7 +9,7 @@ interface EnumEditorProperties {
   updateValue: BoundAction<[FieldValue<TEnum>]>;
 }
 
-const EnumEditor = ({ spec, value, updateValue }: EnumEditorProperties) => (
+export const EnumEditor = ({ spec, value, updateValue }: EnumEditorProperties) => (
   <select onChange={(event) => updateValue(event.target.value)} value={value}>
     {spec.values.map((opt) => (
       <option key={opt} value={opt}>
@@ -17,5 +18,3 @@ const EnumEditor = ({ spec, value, updateValue }: EnumEditorProperties) => (
     ))}
   </select>
 );
-
-export default EnumEditor;

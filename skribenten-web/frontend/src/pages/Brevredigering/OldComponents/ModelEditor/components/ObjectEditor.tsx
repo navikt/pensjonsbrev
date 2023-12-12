@@ -1,10 +1,10 @@
 import type { ObjectTypeSpecification, ObjectTypeSpecifications, TObject } from "~/types/brevbakerTypes";
 
-import type { BoundAction } from "../../../LetterEditor/lib/actions";
-import { bindAction } from "../../../LetterEditor/lib/actions";
-import { ModelValueAction } from "../../actions";
-import type { FieldValue } from "../../model";
-import FieldEditor from "../FieldEditor/FieldEditor";
+import type { BoundAction } from "../../LetterEditor/lib/actions";
+import { bindAction } from "../../LetterEditor/lib/actions";
+import { ModelValueAction } from "../actions";
+import type { FieldValue } from "../model";
+import { FieldEditor } from "./FieldEditor";
 import styles from "./ObjectEditor.module.css";
 
 export interface ObjectEditorProperties {
@@ -14,7 +14,7 @@ export interface ObjectEditorProperties {
   updateValue: BoundAction<[value: FieldValue<TObject>]>;
 }
 
-const ObjectEditor = ({ allSpecs, spec, value, updateValue }: ObjectEditorProperties) => {
+export const ObjectEditor = ({ allSpecs, spec, value, updateValue }: ObjectEditorProperties) => {
   return (
     <div className={styles.container}>
       {Object.entries(spec).map(([name, field]) => {
@@ -36,5 +36,3 @@ const ObjectEditor = ({ allSpecs, spec, value, updateValue }: ObjectEditorProper
     </div>
   );
 };
-
-export default ObjectEditor;
