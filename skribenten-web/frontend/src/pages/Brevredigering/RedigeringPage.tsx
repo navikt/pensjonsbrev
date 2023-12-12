@@ -4,9 +4,9 @@ import React, { useState } from "react";
 import { getTemplate, renderLetter } from "~/api/skribenten-api-endpoints";
 import type { RenderedLetter } from "~/types/brevbakerTypes";
 
-import { LetterEditor } from "./OldComponents/LetterEditor/LetterEditor";
-import type { ObjectValue } from "./OldComponents/ModelEditor/model";
-import { ModelEditor } from "./OldComponents/ModelEditor/ModelEditor";
+import { LetterEditor } from "~/pages/Brevredigering/LetterEditor/LetterEditor";
+import type { ObjectValue } from "~/pages/Brevredigering/ModelEditor/model";
+import { ModelEditor } from "~/pages/Brevredigering/ModelEditor/ModelEditor";
 
 const VAL = {
   mottattSoeknad: "2023-09-11",
