@@ -1,5 +1,6 @@
-import type { TextContent } from "../lib/model/skribenten";
-import { LITERAL, VARIABLE } from "../lib/model/skribenten";
+import type { TextContent } from "~/types/brevbakerTypes";
+import { LITERAL, VARIABLE } from "~/types/brevbakerTypes";
+
 import styles from "./Text.module.css";
 
 export interface TextProperties {

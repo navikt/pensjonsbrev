@@ -1,8 +1,9 @@
 import produce from "immer";
 
+import type { AnyBlock, Content, Item, TextContent } from "~/types/brevbakerTypes";
+import { ITEM_LIST, LITERAL, VARIABLE } from "~/types/brevbakerTypes";
+
 import { MergeTarget } from "../actions/model";
-import type { AnyBlock, Content, Item, TextContent } from "../lib/model/skribenten";
-import { ITEM_LIST, LITERAL, VARIABLE } from "../lib/model/skribenten";
 import type { ContentGroup } from "./state";
 
 export function isTextContent(content: Content): content is TextContent {

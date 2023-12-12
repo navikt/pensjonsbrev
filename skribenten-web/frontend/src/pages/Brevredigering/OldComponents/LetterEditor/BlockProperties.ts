@@ -1,5 +1,6 @@
+import type { AnyBlock } from "~/types/brevbakerTypes";
+
 import type { BoundAction, CallbackReceiver } from "./lib/actions";
-import type { AnyBlock } from "./lib/model/skribenten";
 import type { CursorPosition, LetterEditorState } from "./model/state";
 
 export interface BlockProperties<T extends AnyBlock> {

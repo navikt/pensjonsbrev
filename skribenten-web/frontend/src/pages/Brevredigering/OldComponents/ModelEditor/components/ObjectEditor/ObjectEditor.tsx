@@ -1,8 +1,5 @@
-import type {
-  ObjectTypeSpecification,
-  ObjectTypeSpecifications,
-  TObject,
-} from "../../../../../../types/brevbakerTypes";
+import type { ObjectTypeSpecification, ObjectTypeSpecifications, TObject } from "~/types/brevbakerTypes";
+
 import type { BoundAction } from "../../../LetterEditor/lib/actions";
 import { bindAction } from "../../../LetterEditor/lib/actions";
 import { ModelValueAction } from "../../actions";

@@ -1,9 +1,10 @@
 import produce from "immer";
 import type { WritableDraft } from "immer/dist/types/types-external";
 
+import type { Block } from "~/types/brevbakerTypes";
+import { ITEM_LIST, LITERAL } from "~/types/brevbakerTypes";
+
 import type { Action } from "../lib/actions";
-import type { Block } from "../lib/model/skribenten";
-import { ITEM_LIST, LITERAL } from "../lib/model/skribenten";
 import type { LetterEditorState } from "../model/state";
 import { getMergeIds, isEmptyBlock, isEmptyItem, isTextContent, mergeContentArrays } from "../model/utils";
 import type { ContentId } from "./model";

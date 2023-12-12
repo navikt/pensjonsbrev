@@ -51,3 +51,88 @@ export type TObject = {
 export type ScalarKind = "NUMBER" | "DOUBLE" | "STRING" | "BOOLEAN" | "DATE";
 
 export type LanguageCode = "BOKMAL" | "NYNORSK" | "ENGLISH";
+
+export type RenderedLetter = {
+  readonly title: string;
+  readonly sakspart: Sakspart;
+  readonly blocks: AnyBlock[];
+  readonly signatur: Signatur;
+};
+
+export type Sakspart = {
+  readonly gjelderNavn: string;
+  readonly gjelderFoedselsnummer: string;
+  readonly saksnummer: string;
+  readonly dokumentDato: string;
+};
+
+export type Signatur = {
+  readonly hilsenTekst: string;
+  readonly saksbehandlerRolleTekst: string;
+  readonly saksbehandlerNavn: string;
+  readonly attesterendeSaksbehandlerNavn?: string;
+  readonly navAvsenderEnhet: string;
+};
+
+export type AnyBlock = Title1Block | Title2Block | ParagraphBlock;
+
+export type ParagraphBlock = Block & {
+  readonly type: typeof PARAGRAPH;
+  readonly content: Content[];
+};
+
+export type Identifiable = {
+  readonly id: number;
+};
+
+export const LITERAL = "LITERAL";
+export type LiteralValue = {
+  readonly id: number;
+  readonly type: typeof LITERAL;
+  readonly text: string;
+};
+export const VARIABLE = "VARIABLE";
+export type VariableValue = {
+  readonly id: number;
+  readonly type: typeof VARIABLE;
+  readonly name?: string;
+  readonly text: string;
+};
+
+export const ITEM_LIST = "ITEM_LIST";
+export type ItemList = {
+  readonly id: number;
+  readonly type: typeof ITEM_LIST;
+  readonly items: Item[];
+};
+export type Item = {
+  content: TextContent[];
+};
+
+export type TextContent = LiteralValue | VariableValue;
+export type Content = ItemList | LiteralValue | VariableValue;
+
+export type Block = Identifiable & {
+  readonly type: string;
+  readonly locked?: boolean;
+  readonly editable?: boolean;
+};
+
+export const PARAGRAPH = "PARAGRAPH";
+
+export const TITLE1 = "TITLE1";
+export type Title1Block = Block & {
+  readonly type: typeof TITLE1;
+  readonly content: TextContent[];
+};
+
+export const TITLE2 = "TITLE2";
+export type Title2Block = Block & {
+  readonly type: typeof TITLE2;
+  readonly content: TextContent[];
+};
+
+export interface EditedLetter {
+  readonly letter: RenderedLetter;
+  readonly deletedBlocks: number[];
+}

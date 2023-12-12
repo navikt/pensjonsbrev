@@ -1,13 +1,14 @@
 import type { MouseEventHandler } from "react";
 import React from "react";
 
+import type { Content, TextContent } from "~/types/brevbakerTypes";
+import { ITEM_LIST, LITERAL, VARIABLE } from "~/types/brevbakerTypes";
+
 import Actions from "../actions";
 import type { ContentId } from "../actions/model";
 import { MergeTarget } from "../actions/model";
 import type { BoundAction, CallbackReceiver } from "../lib/actions";
 import { applyAction, bindActionWithCallback, combine } from "../lib/actions";
-import type { Content, TextContent } from "../lib/model/skribenten";
-import { ITEM_LIST, LITERAL, VARIABLE } from "../lib/model/skribenten";
 import type { CursorPosition, LetterEditorState } from "../model/state";
 import { isTextContent } from "../model/utils";
 import { SelectionService } from "../services/SelectionService";

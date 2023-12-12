@@ -1,7 +1,7 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import React, { useState } from "react";
 
-import { getTemplate, renderLetter } from "../../api/skribenten-api-endpoints";
+import { getTemplate, renderLetter } from "~/api/skribenten-api-endpoints";
 import Actions from "./OldComponents/LetterEditor/actions";
 import LetterEditor from "./OldComponents/LetterEditor/LetterEditor";
 import type { LetterEditorState } from "./OldComponents/LetterEditor/model/state";

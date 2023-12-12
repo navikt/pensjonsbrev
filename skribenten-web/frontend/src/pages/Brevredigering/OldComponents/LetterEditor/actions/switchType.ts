@@ -1,7 +1,8 @@
 import produce from "immer";
 
+import { PARAGRAPH, TITLE1, TITLE2 } from "~/types/brevbakerTypes";
+
 import type { Action } from "../lib/actions";
-import { PARAGRAPH, TITLE1, TITLE2 } from "../lib/model/skribenten";
 import type { LetterEditorState } from "../model/state";
 import { isTextContent } from "../model/utils";
 

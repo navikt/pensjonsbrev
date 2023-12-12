@@ -1,8 +1,9 @@
 import produce from "immer";
 
+import type { Item, ParagraphBlock } from "~/types/brevbakerTypes";
+import { ITEM_LIST, LITERAL, PARAGRAPH } from "~/types/brevbakerTypes";
+
 import type { Action } from "../lib/actions";
-import type { Item, ParagraphBlock } from "../lib/model/skribenten";
-import { ITEM_LIST, LITERAL, PARAGRAPH } from "../lib/model/skribenten";
 import type { LetterEditorState } from "../model/state";
 import { isEmptyBlock, isEmptyContent, isEmptyItem } from "../model/utils";
 import { cleanseText, isEditableContent } from "./common";

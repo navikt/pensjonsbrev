@@ -2,8 +2,9 @@ import React, { useCallback } from "react";
 import type { ContentEditableEvent } from "react-contenteditable";
 import ContentEditable from "react-contenteditable";
 
+import type { LiteralValue } from "~/types/brevbakerTypes";
+
 import type { BoundAction } from "../lib/actions";
-import type { LiteralValue } from "../lib/model/skribenten";
 import { isEmptyContent } from "../model/utils";
 import styles from "./Text.module.css";
 

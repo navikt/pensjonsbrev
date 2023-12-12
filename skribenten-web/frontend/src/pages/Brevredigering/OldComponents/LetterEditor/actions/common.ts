@@ -1,5 +1,6 @@
-import type { Content, RenderedLetter } from "../lib/model/skribenten";
-import { ITEM_LIST, VARIABLE } from "../lib/model/skribenten";
+import type { Content, RenderedLetter } from "~/types/brevbakerTypes";
+import { ITEM_LIST, VARIABLE } from "~/types/brevbakerTypes";
+
 import type { LetterEditorState } from "../model/state";
 
 export function cleanseText(text: string): string {

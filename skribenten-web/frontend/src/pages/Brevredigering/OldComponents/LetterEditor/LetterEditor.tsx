@@ -1,6 +1,9 @@
 import type { Dispatch, FC, SetStateAction } from "react";
 import { useState } from "react";
 
+import type { AnyBlock } from "~/types/brevbakerTypes";
+import { PARAGRAPH, TITLE1, TITLE2 } from "~/types/brevbakerTypes";
+
 import Actions from "./actions";
 import EditorMenu from "./components/EditorMenu";
 import Paragraph from "./components/Paragraph";
@@ -11,8 +14,6 @@ import Title2 from "./components/Title2";
 import styles from "./LetterEditor.module.css";
 import type { BoundAction, CallbackReceiver } from "./lib/actions";
 import { bindActionWithCallback } from "./lib/actions";
-import type { AnyBlock } from "./lib/model/skribenten";
-import { PARAGRAPH, TITLE1, TITLE2 } from "./lib/model/skribenten";
 import type { CursorPosition, LetterEditorState } from "./model/state";
 
 interface AnyBlockProperties {

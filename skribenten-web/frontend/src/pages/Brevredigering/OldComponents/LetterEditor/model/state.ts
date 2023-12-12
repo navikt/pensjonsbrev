@@ -1,4 +1,4 @@
-import type { Content, EditedLetter } from "../lib/model/skribenten";
+import type { Content, EditedLetter } from "~/types/brevbakerTypes";
 
 export type CursorPosition = {
   contentId: number;
@@ -13,7 +13,7 @@ export type StealFocus = {
 };
 export type ContentGroup = { content: Content[] };
 
-export interface LetterEditorState {
+export type LetterEditorState = {
   readonly editedLetter: EditedLetter;
   readonly stealFocus: StealFocus;
-}
+};

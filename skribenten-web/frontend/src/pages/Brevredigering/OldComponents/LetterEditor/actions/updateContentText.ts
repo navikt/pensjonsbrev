@@ -1,7 +1,8 @@
 import produce from "immer";
 
+import { ITEM_LIST, LITERAL } from "~/types/brevbakerTypes";
+
 import type { Action } from "../lib/actions";
-import { ITEM_LIST, LITERAL } from "../lib/model/skribenten";
 import type { LetterEditorState } from "../model/state";
 import { cleanseText } from "./common";
 import type { ContentId } from "./model";

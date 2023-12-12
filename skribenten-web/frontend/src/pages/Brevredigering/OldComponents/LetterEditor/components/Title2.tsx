@@ -1,5 +1,6 @@
+import type { Title2Block } from "~/types/brevbakerTypes";
+
 import type { BlockProperties } from "../BlockProperties";
-import type { Title2Block } from "../lib/model/skribenten";
 import ContentGroup from "./ContentGroup";
 import styles from "./Title2.module.css";
 

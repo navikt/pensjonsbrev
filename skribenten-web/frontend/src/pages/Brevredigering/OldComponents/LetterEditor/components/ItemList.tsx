@@ -1,5 +1,6 @@
+import type { Item as ItemType, ItemList as ItemListType } from "~/types/brevbakerTypes";
+
 import type { BoundAction, CallbackReceiver } from "../lib/actions";
-import type * as Model from "../lib/model/skribenten/letter";
 import type { CursorPosition, LetterEditorState } from "../model/state";
 import type { ItemID } from "./ContentGroup";
 import ContentGroup from "./ContentGroup";
@@ -7,7 +8,7 @@ import ContentGroup from "./ContentGroup";
 interface ItemProperties {
   id: ItemID;
   updateLetter: CallbackReceiver<LetterEditorState>;
-  item: Model.Item;
+  item: ItemType;
   editable: boolean | undefined;
   stealFocus?: CursorPosition;
   focusStolen: BoundAction<[]>;
@@ -29,7 +30,7 @@ const Item = ({ id, updateLetter, item, editable, stealFocus, focusStolen, onFoc
 
 interface ItemListProperties {
   id: { blockId: number; contentId: number };
-  itemList: Model.ItemList;
+  itemList: ItemListType;
   editable: boolean | undefined;
   updateLetter: CallbackReceiver<LetterEditorState>;
   stealFocus?: CursorPosition;
