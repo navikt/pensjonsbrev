@@ -1,4 +1,4 @@
-import type { Signatur } from "../../lib/model/skribenten";
+import type { Signatur } from "../lib/model/skribenten";
 import styles from "./SignaturView.module.css";
 
 export interface SignaturViewProperties {

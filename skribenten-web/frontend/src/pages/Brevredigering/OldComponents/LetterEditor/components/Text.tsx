@@ -1,5 +1,5 @@
-import type { TextContent } from "../../lib/model/skribenten";
-import { LITERAL, VARIABLE } from "../../lib/model/skribenten";
+import type { TextContent } from "../lib/model/skribenten";
+import { LITERAL, VARIABLE } from "../lib/model/skribenten";
 import styles from "./Text.module.css";
 
 export interface TextProperties {

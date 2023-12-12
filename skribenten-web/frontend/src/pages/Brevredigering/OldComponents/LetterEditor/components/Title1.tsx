@@ -1,6 +1,6 @@
-import type { BlockProperties } from "../../BlockProperties";
-import type { Title1Block } from "../../lib/model/skribenten";
-import ContentGroup from "../contentgroup/ContentGroup";
+import type { BlockProperties } from "../BlockProperties";
+import type { Title1Block } from "../lib/model/skribenten";
+import ContentGroup from "./ContentGroup";
 import styles from "./Title1.module.css";
 
 const Title1 = ({

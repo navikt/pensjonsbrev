@@ -1,4 +1,4 @@
-import type { BoundAction } from "../../lib/actions";
+import type { BoundAction } from "../lib/actions";
 import styles from "./EditorMenu.module.css";
 
 export interface EditorMenuProperties {

@@ -1,20 +1,20 @@
 import type { MouseEventHandler } from "react";
 import React from "react";
 
-import Actions from "../../actions";
-import type { ContentId } from "../../actions/model";
-import { MergeTarget } from "../../actions/model";
-import type { BoundAction, CallbackReceiver } from "../../lib/actions";
-import { applyAction, bindActionWithCallback, combine } from "../../lib/actions";
-import type { Content, TextContent } from "../../lib/model/skribenten";
-import { ITEM_LIST, LITERAL, VARIABLE } from "../../lib/model/skribenten";
-import type { CursorPosition, LetterEditorState } from "../../model/state";
-import { isTextContent } from "../../model/utils";
-import { SelectionService } from "../../services/SelectionService";
-import ItemList from "../itemlist/ItemList";
-import EditableText from "../text/EditableText";
-import Text from "../text/Text";
+import Actions from "../actions";
+import type { ContentId } from "../actions/model";
+import { MergeTarget } from "../actions/model";
+import type { BoundAction, CallbackReceiver } from "../lib/actions";
+import { applyAction, bindActionWithCallback, combine } from "../lib/actions";
+import type { Content, TextContent } from "../lib/model/skribenten";
+import { ITEM_LIST, LITERAL, VARIABLE } from "../lib/model/skribenten";
+import type { CursorPosition, LetterEditorState } from "../model/state";
+import { isTextContent } from "../model/utils";
+import { SelectionService } from "../services/SelectionService";
 import styles from "./Content.module.css";
+import EditableText from "./EditableText";
+import ItemList from "./ItemList";
+import Text from "./Text";
 
 const selectService = new SelectionService(true);
 

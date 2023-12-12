@@ -1,8 +1,8 @@
-import type { BoundAction, CallbackReceiver } from "../../lib/actions";
-import type * as Model from "../../lib/model/skribenten/letter";
-import type { CursorPosition, LetterEditorState } from "../../model/state";
-import type { ItemID } from "../contentgroup/ContentGroup";
-import ContentGroup from "../contentgroup/ContentGroup";
+import type { BoundAction, CallbackReceiver } from "../lib/actions";
+import type * as Model from "../lib/model/skribenten/letter";
+import type { CursorPosition, LetterEditorState } from "../model/state";
+import type { ItemID } from "./ContentGroup";
+import ContentGroup from "./ContentGroup";
 
 interface ItemProperties {
   id: ItemID;

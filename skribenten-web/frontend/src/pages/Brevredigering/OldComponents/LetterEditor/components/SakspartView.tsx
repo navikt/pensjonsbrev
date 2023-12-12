@@ -1,4 +1,4 @@
-import type { Sakspart } from "../../lib/model/skribenten";
+import type { Sakspart } from "../lib/model/skribenten";
 import styles from "./SakspartView.module.css";
 
 export interface SakspartViewProperties {
