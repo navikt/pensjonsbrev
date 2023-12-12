@@ -4,6 +4,7 @@ import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.LetterTemplate
 import no.nav.pensjon.brev.template.dsl.createTemplate
+import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.not
@@ -19,6 +20,7 @@ import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.barnepensjon.migrering.BarnepensjonOmregnetNyttRegelverkDTOSelectors.anvendtTrygdetid
 import no.nav.pensjon.etterlatte.maler.barnepensjon.migrering.BarnepensjonOmregnetNyttRegelverkDTOSelectors.erBosattUtlandet
 import no.nav.pensjon.etterlatte.maler.barnepensjon.migrering.BarnepensjonOmregnetNyttRegelverkDTOSelectors.erForeldreloes
+import no.nav.pensjon.etterlatte.maler.barnepensjon.migrering.BarnepensjonOmregnetNyttRegelverkDTOSelectors.erUnder18Aar
 import no.nav.pensjon.etterlatte.maler.barnepensjon.migrering.BarnepensjonOmregnetNyttRegelverkDTOSelectors.erYrkesskade
 import no.nav.pensjon.etterlatte.maler.barnepensjon.migrering.BarnepensjonOmregnetNyttRegelverkDTOSelectors.grunnbeloep
 import no.nav.pensjon.etterlatte.maler.barnepensjon.migrering.BarnepensjonOmregnetNyttRegelverkDTOSelectors.prorataBroek
@@ -28,6 +30,8 @@ import no.nav.pensjon.etterlatte.maler.formatBroek
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
 import no.nav.pensjon.etterlatte.maler.fraser.common.kontakttelefonPensjon
 import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.dineRettigheterOgPlikter
+import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.informasjonTilDegSomMottarPensjon
+import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.utlandInformasjonTilDegSomMottarPensjon
 import no.nav.pensjon.etterlatte.maler.vedlegg.informasjonTilDegSomHandlerPaaVegneAvBarnet
 import no.nav.pensjon.etterlatte.maler.vedlegg.utlandInformasjonTilDegSomHandlerPaaVegneAvBarnet
 
@@ -295,8 +299,15 @@ object EnkeltVedtakOmregningNyttRegelverk : EtterlatteTemplate<BarnepensjonOmreg
                 )
             }
         }
-        includeAttachment(utlandInformasjonTilDegSomHandlerPaaVegneAvBarnet, this.argument, erBosattUtlandet)
-        includeAttachment(informasjonTilDegSomHandlerPaaVegneAvBarnet, this.argument, erBosattUtlandet.not())
+
+        // Over 18 år vedlegg
+        includeAttachment(utlandInformasjonTilDegSomMottarPensjon, this.argument, erUnder18Aar.not().and(erBosattUtlandet))
+        includeAttachment(informasjonTilDegSomMottarPensjon, this.argument, erUnder18Aar.not().and(erBosattUtlandet.not()))
+
+        // Under 18 år vedlegg
+        includeAttachment(utlandInformasjonTilDegSomHandlerPaaVegneAvBarnet, this.argument, erUnder18Aar.and(erBosattUtlandet))
+        includeAttachment(informasjonTilDegSomHandlerPaaVegneAvBarnet, this.argument, erUnder18Aar.and(erBosattUtlandet.not()))
+
         includeAttachment(dineRettigheterOgPlikter, this.argument)
     }
 }

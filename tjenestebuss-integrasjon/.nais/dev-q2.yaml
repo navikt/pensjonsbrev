@@ -12,7 +12,7 @@ env:
 
 
 vaultPaths:
-  - kvPath: "serviceuser/dev/srvpensjonsbrev-esb"
+  - kvPath: "serviceuser/data/dev/srvpensjonsbrev-esb"
     mountPath: "/secrets/sts"
 
 inboundRules:
