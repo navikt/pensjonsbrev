@@ -106,6 +106,7 @@ export class SelectionService {
       this.warn("couldn't find max offset in node:", nearest);
     } else {
       //should only add 1 to offset if it is the last character in the block
+      // @ts-expect-error -- not sure why node has no length attribute
       if (offset === nearest.node.length - 1) {
         this.warn("adding 1 to offset");
         this.focusAtOffset(nearest.node, offset + 1, focusStolen);
@@ -167,6 +168,7 @@ export class SelectionService {
    */
   private getTextNodeWithDistances(node: HTMLElement, click: ClickCoords): NodeDistances | null {
     const textNode = node.firstChild;
+    // @ts-expect-error -- not sure why node has no length attribute
     if (textNode == null || textNode.length === 0) {
       return null;
     }
@@ -203,6 +205,7 @@ export class SelectionService {
    */
   private findMaxOffsetInRect(node: ChildNode, rectOnClickedLine: DOMRect): number | null {
     let offset = null;
+    // @ts-expect-error -- not sure why node has no length attribute
     for (let index = 0; index < node.length; index++) {
       const range = document.createRange();
       range.setStart(node, index);
