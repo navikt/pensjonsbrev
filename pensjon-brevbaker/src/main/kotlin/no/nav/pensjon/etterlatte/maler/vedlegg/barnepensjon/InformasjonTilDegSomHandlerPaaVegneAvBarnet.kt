@@ -1,5 +1,6 @@
 package no.nav.pensjon.etterlatte.maler.vedlegg
 
+import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
@@ -25,7 +26,7 @@ val utlandInformasjonTilDegSomHandlerPaaVegneAvBarnet = createAttachment(
     informasjon()
     postadresse(true.expr())
     utbetalingUtland()
-    endringAvKontonummerUtland()
+    endringAvKontonummerUtland(true.expr())
     skattetrekkPaaBarnepensjonUtland()
 }
 
@@ -102,7 +103,7 @@ fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Any>.utbe
     }
 }
 
-fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Any>.endringAvKontonummerUtland() {
+fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Any>.endringAvKontonummerUtland(erUnder18Aar: Expression<Boolean>) {
     title2 {
         text(
             Bokmal to "Skal du endre kontonummer?",
@@ -118,12 +119,15 @@ fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Any>.endr
                     "or send the Notification of New Account Number Form by conventional mail. You must then enclose a copy of a valid proof of identity.",
         )
     }
-    paragraph {
-        text(
-            Bokmal to "Oppnevnt verge må melde om endring via post. Du må legge ved kopi av egen legitimasjon og vergefullmakt.",
-            Nynorsk to "Verje må melde frå om endring via post. Legg då ved ein kopi av legitimasjonen din og verjefullmakta.    ",
-            English to "The appointed guardian must report the change by mail. You must enclose a copy of your own proof of identity and the power of guardianship.",
-        )
+
+    showIf(erUnder18Aar) {
+        paragraph {
+            text(
+                Bokmal to "Oppnevnt verge må melde om endring via post. Du må legge ved kopi av egen legitimasjon og vergefullmakt.",
+                Nynorsk to "Verje må melde frå om endring via post. Legg då ved ein kopi av legitimasjonen din og verjefullmakta.    ",
+                English to "The appointed guardian must report the change by mail. You must enclose a copy of your own proof of identity and the power of guardianship.",
+            )
+        }
     }
     paragraph {
         text(
@@ -131,6 +135,15 @@ fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Any>.endr
             Nynorsk to "Du finn skjema på ${Constants.Utland.ENDRE_KONTONUMMER_SKJEMA_URL}. Hugs å skrive under på skjemaet og leggje ved kopi av gyldig legitimasjon.",
             English to "You can find more information and a link to the correct form online ${Constants.Utland.ENDRE_KONTONUMMER_SKJEMA_URL}. Remember to sign the form and doctor enclose a copy of your identification.",
         )
+    }
+    showIf(erUnder18Aar) {
+        paragraph {
+            text(
+                Bokmal to "Oppnevnt verge må melde om endring via post. Du må legge ved kopi av egen legitimasjon og vergefullmakt.",
+                Nynorsk to "Verje må melde frå om endring via post. Legg då ved ein kopi av legitimasjonen din og verjefullmakta.    ",
+                English to "The appointed guardian must report the change by mail. You must enclose a copy of your own proof of identity and the power of guardianship.",
+            )
+        }
     }
 }
 

@@ -43,7 +43,7 @@ val utlandInformasjonTilDegSomMottarPensjon = createAttachment(
     informasjon()
     postadresse(true.expr())
     utbetalingUtland()
-    endringAvKontonummerUtland()
+    endringAvKontonummerUtland(false.expr())
     skattetrekkPaaBarnepensjonUtland()
 }
 
@@ -60,7 +60,6 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Language.Bokmal, Language.Ny
             Language.Bokmal to "Du kan sjekke og endre kontonummeret som er registrert på deg ved å logge inn på nav.no. Hvis du ikke kan melde fra digitalt, kan du melde om endringer via post. Du må da legge ved kopi av gyldig legitimasjon, eller vise gyldig legitimasjon ved personlig fremmøte på et NAV-kontor. Du finner mer informasjon og lenke til riktig skjema på ${Constants.KONTONUMMER_URL}",
             Language.Nynorsk to "Du kan sjekke og endre kontonummeret som er registrert på deg ved å logge inn på nav.no. Hvis du ikke kan melde fra digitalt, kan du melde om endringer via post. Du må da legge ved kopi av gyldig legitimasjon, eller vise gyldig legitimasjon ved personlig fremmøte på et NAV-kontor. Du finner mer informasjon og lenke til riktig skjema på ${Constants.KONTONUMMER_URL}",
             Language.English to "Du kan sjekke og endre kontonummeret som er registrert på deg ved å logge inn på nav.no. Hvis du ikke kan melde fra digitalt, kan du melde om endringer via post. Du må da legge ved kopi av gyldig legitimasjon, eller vise gyldig legitimasjon ved personlig fremmøte på et NAV-kontor. Du finner mer informasjon og lenke til riktig skjema på ${Constants.KONTONUMMER_URL}",
-
             )
     }
 }
