@@ -15,6 +15,7 @@ metadata:
     team: pensjonsbrev
 spec:
   secretName: azure-skribenten-backend-lokal
+  allowAllUsers: true
   replyUrls:
     - url: "http://localhost:8082/oauth2/callback"
   claims:
