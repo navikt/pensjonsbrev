@@ -19,6 +19,7 @@ data class UfoerOmregningEnsligDto(
     val beregnetUTPerMaaned_antallBeregningsperioderPaaVedtak: Int,
     val institusjonsoppholdVedVirk: Institusjon,
     val krav_virkningsDatoFraOgMed: LocalDate,
+    val krav_virkningsDatoFraOgMed_foer2024: Boolean,
     val barnetilleggSaerkullsbarnGjeldende_erRedusertMotInntekt: Boolean,
     val inntektFoerUfoerhetVedVirk: InntektFoerUfoerhetVedVirk,
     val bruker: Bruker,
