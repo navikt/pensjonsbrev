@@ -54,6 +54,7 @@ export class ContentGroup<T extends Content | TextContent> extends React.Compone
     const previous = this.childRefs[contentId];
 
     if (previous) {
+      // eslint-disable-next-line unicorn/prefer-add-event-listener
       previous.onkeydown = null;
     }
 

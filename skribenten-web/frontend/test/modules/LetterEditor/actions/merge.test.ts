@@ -29,11 +29,10 @@ describe("LetterEditorActions.merge", () => {
         const mergeId = { blockId: 0 };
         const result = Actions.merge(state, { ...mergeId, contentId: 0 }, MergeTarget.NEXT);
 
-        expect(select<ParagraphBlock>(result, mergeId).content).toEqual(
-          select<ParagraphBlock>(state, mergeId).content.concat(
-            select<ParagraphBlock>(state, { blockId: mergeId.blockId + 1 }).content,
-          ),
-        );
+        expect(select<ParagraphBlock>(result, mergeId).content).toEqual([
+          ...select<ParagraphBlock>(state, mergeId).content,
+          ...select<ParagraphBlock>(state, { blockId: mergeId.blockId + 1 }).content,
+        ]);
       });
 
       test("adjoining literal content in merging blocks are joined", () => {
@@ -89,11 +88,10 @@ describe("LetterEditorActions.merge", () => {
         const state = letter(paragraph(variable("p1")), paragraph(literal("p2")));
 
         const result = Actions.merge(state, { blockId: 1, contentId: 0 }, MergeTarget.PREVIOUS);
-        expect(select<ParagraphBlock>(result, { blockId: 0 }).content).toEqual(
-          select<ParagraphBlock>(state, { blockId: 0 }).content.concat(
-            select<ParagraphBlock>(state, { blockId: 1 }).content,
-          ),
-        );
+        expect(select<ParagraphBlock>(result, { blockId: 0 }).content).toEqual([
+          ...select<ParagraphBlock>(state, { blockId: 0 }).content,
+          ...select<ParagraphBlock>(state, { blockId: 1 }).content,
+        ]);
       });
 
       test("adjoining literal content in merging blocks are joined", () => {
@@ -220,9 +218,10 @@ describe("LetterEditorActions.merge", () => {
 
         const result = Actions.merge(state, mergeId, MergeTarget.NEXT);
 
-        expect(select<Item>(result, mergeId).content).toEqual(
-          select<Item>(state, mergeId).content.concat(select<Item>(state, { ...mergeId, itemId: 1 }).content),
-        );
+        expect(select<Item>(result, mergeId).content).toEqual([
+          ...select<Item>(state, mergeId).content,
+          ...select<Item>(state, { ...mergeId, itemId: 1 }).content,
+        ]);
       });
 
       describe("adjoining literals", () => {
@@ -261,7 +260,7 @@ describe("LetterEditorActions.merge", () => {
           const item = select<Item>(state, mergeId);
           expect(result.stealFocus[mergeId.blockId]).toEqual({
             contentId: mergeId.contentId,
-            startOffset: item.content.at(-1).text.length,
+            startOffset: item.content.at(-1)?.text.length,
             item: { id: mergeId.itemId, contentId: item.content.length - 1 },
           });
         });
@@ -306,11 +305,10 @@ describe("LetterEditorActions.merge", () => {
         const state = letter(paragraph(itemList(item(variable("var1")), item(literal("lit1")))));
         const mergeId = { blockId: 0, contentId: 0, itemId: 1 };
         const result = Actions.merge(state, mergeId, MergeTarget.PREVIOUS);
-        expect(select<Item>(result, { ...mergeId, itemId: mergeId.itemId - 1 }).content).toEqual(
-          select<Item>(state, { ...mergeId, itemId: mergeId.itemId - 1 }).content.concat(
-            select<Item>(state, mergeId).content,
-          ),
-        );
+        expect(select<Item>(result, { ...mergeId, itemId: mergeId.itemId - 1 }).content).toEqual([
+          ...select<Item>(state, { ...mergeId, itemId: mergeId.itemId - 1 }).content,
+          ...select<Item>(state, mergeId).content,
+        ]);
       });
 
       test("adjoining literal content in merging items are joined", () => {
@@ -362,7 +360,7 @@ describe("LetterEditorActions.merge", () => {
           const previousItem = select<Item>(state, { ...mergeId, itemId: mergeId.itemId - 1 });
           expect(result.stealFocus[mergeId.blockId]).toEqual({
             contentId: mergeId.contentId,
-            startOffset: previousItem.content.at(-1).text.length,
+            startOffset: previousItem.content.at(-1)?.text.length,
             item: { id: mergeId.itemId - 1, contentId: previousItem.content.length - 1 },
           });
         });

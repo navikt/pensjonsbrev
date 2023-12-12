@@ -151,9 +151,12 @@ export class SelectionService {
   }
 
   private findLeastVerticalDistance(nodes: NodeDistances[]): number {
-    return nodes
-      .flatMap((n) => n.distances.map((d) => d.y))
-      .reduce((previous, next) => (next < previous ? next : previous));
+    return (
+      nodes
+        .flatMap((n) => n.distances.map((d) => d.y))
+        // eslint-disable-next-line unicorn/no-array-reduce -- refactor to min function?
+        .reduce((previous, next) => (next < previous ? next : previous))
+    );
   }
 
   /**

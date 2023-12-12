@@ -1,3 +1,4 @@
+/* eslint-disable unicorn/consistent-function-scoping */
 import { describe, expect, test } from "vitest";
 
 import { compose } from "~/pages/Brevredigering/LetterEditor/lib/functional";

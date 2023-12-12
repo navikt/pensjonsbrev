@@ -1,4 +1,3 @@
-import type { Dispatch, FC, SetStateAction } from "react";
 import { useState } from "react";
 
 import type { AnyBlock, RenderedLetter } from "~/types/brevbakerTypes";
@@ -25,14 +24,7 @@ type AnyBlockProperties = {
   onFocus: BoundAction<[]>;
 };
 
-const AnyBlockView: FC<AnyBlockProperties> = ({
-  block,
-  blockId,
-  updateLetter,
-  stealFocus,
-  blockFocusStolen,
-  onFocus,
-}) => {
+const AnyBlockView = ({ block, blockId, updateLetter, stealFocus, blockFocusStolen, onFocus }: AnyBlockProperties) => {
   switch (block.type) {
     case TITLE1: {
       return (
