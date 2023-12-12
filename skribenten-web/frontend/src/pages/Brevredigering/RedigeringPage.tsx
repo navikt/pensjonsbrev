@@ -2,10 +2,9 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import React, { useState } from "react";
 
 import { getTemplate, renderLetter } from "~/api/skribenten-api-endpoints";
+import type { RenderedLetter } from "~/types/brevbakerTypes";
 
-import Actions from "./OldComponents/LetterEditor/actions";
 import { LetterEditor } from "./OldComponents/LetterEditor/LetterEditor";
-import type { LetterEditorState } from "./OldComponents/LetterEditor/model/state";
 import type { ObjectValue } from "./OldComponents/ModelEditor/model";
 import { ModelEditor } from "./OldComponents/ModelEditor/ModelEditor";
 
@@ -17,36 +16,32 @@ const VAL = {
   svartidUker: 1,
 };
 
+const TEST_TEMPLATE = "INFORMASJON_OM_SAKSBEHANDLINGSTID";
+
 export function RedigeringPage() {
-  const b = "INFORMASJON_OM_SAKSBEHANDLINGSTID";
   const [modelValue, setModelValue] = useState<ObjectValue>({});
-  const [editorState, setEditorState] = useState<LetterEditorState | null>(null);
 
   const modelSpec = useQuery({
-    queryKey: getTemplate.queryKey(b),
-    queryFn: () => getTemplate.queryFn(b),
+    queryKey: getTemplate.queryKey(TEST_TEMPLATE),
+    queryFn: () => getTemplate.queryFn(TEST_TEMPLATE),
   }).data;
 
-  const c = useMutation<unknown, unknown, string>({
+  const renderLetterMutation = useMutation<RenderedLetter, unknown, string>({
     mutationFn: async (id) => {
-      if (modelSpec) {
-        return await renderLetter(id, { letterData: VAL, editedLetter: undefined });
-      }
-    },
-    onSuccess: (letter) => {
-      console.log(letter);
-      setEditorState(Actions.create(letter));
+      return await renderLetter(id, { letterData: VAL, editedLetter: undefined });
     },
   });
   if (!modelSpec) {
     return <></>;
   }
-  console.log(editorState);
+
+  const renderedLetter = renderLetterMutation.data;
+
   return (
     <div>
-      <button onClick={() => c.mutate(b)}>test</button>
+      <button onClick={() => renderLetterMutation.mutate(TEST_TEMPLATE)}>test</button>
       <ModelEditor spec={modelSpec.modelSpecification} updateValue={setModelValue} value={modelValue} />
-      <div>{editorState && <LetterEditor editorState={editorState} updateState={setEditorState} />}</div>
+      <div>{renderedLetter && <LetterEditor initialState={renderedLetter} />}</div>
     </div>
   );
 }

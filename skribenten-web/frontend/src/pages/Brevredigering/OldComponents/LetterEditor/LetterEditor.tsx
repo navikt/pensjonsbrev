@@ -1,7 +1,7 @@
 import type { Dispatch, FC, SetStateAction } from "react";
 import { useState } from "react";
 
-import type { AnyBlock } from "~/types/brevbakerTypes";
+import type { AnyBlock, RenderedLetter } from "~/types/brevbakerTypes";
 import { PARAGRAPH, TITLE1, TITLE2 } from "~/types/brevbakerTypes";
 
 import Actions from "./actions";
@@ -73,18 +73,15 @@ const AnyBlockView: FC<AnyBlockProperties> = ({
   }
 };
 
-type LetterEditorProperties = {
-  editorState: LetterEditorState;
-  updateState: Dispatch<SetStateAction<LetterEditorState>>;
-};
+export const LetterEditor = ({ initialState }: { initialState: RenderedLetter }) => {
+  const [editorState, setEditorState] = useState<LetterEditorState>(Actions.create(initialState));
 
-export const LetterEditor: FC<LetterEditorProperties> = ({ editorState, updateState }) => {
   const blocks = editorState.editedLetter.letter.blocks;
 
   const [currentBlock, setCurrentBlock] = useState(0);
 
-  const focusStolen = bindActionWithCallback(Actions.focusStolen, updateState);
-  const switchType = bindActionWithCallback(Actions.switchType, updateState, currentBlock);
+  const focusStolen = bindActionWithCallback(Actions.focusStolen, setEditorState);
+  const switchType = bindActionWithCallback(Actions.switchType, setEditorState, currentBlock);
 
   return (
     <div className={styles.container}>
@@ -100,7 +97,7 @@ export const LetterEditor: FC<LetterEditorProperties> = ({ editorState, updateSt
             key={blockId}
             onFocus={setCurrentBlock.bind(null, blockId)}
             stealFocus={editorState.stealFocus[blockId]}
-            updateLetter={updateState}
+            updateLetter={setEditorState}
           />
         ))}
         <SignaturView signatur={editorState.editedLetter.letter.signatur} />

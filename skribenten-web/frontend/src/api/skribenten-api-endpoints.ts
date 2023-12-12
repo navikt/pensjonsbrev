@@ -6,7 +6,7 @@ import type { AxiosResponse } from "axios";
 import axios from "axios";
 
 import type { LetterTemplatesResponse, PidRequest, PreferredLanguage, SakDto } from "../types/apiTypes";
-import type { RedigerbarTemplateDescription } from "../types/brevbakerTypes";
+import type {RedigerbarTemplateDescription, RenderedLetter} from "../types/brevbakerTypes";
 const SKRIBENTEN_API_BASE_PATH = "/skribenten-backend";
 
 /**
@@ -84,7 +84,7 @@ export const getTemplate = {
 };
 
 export async function renderLetter(letterId: string, request: unknown) {
-  return (await axios.post<unknown>(`${SKRIBENTEN_API_BASE_PATH}/letter/${letterId}`, request)).data;
+  return (await axios.post<RenderedLetter>(`${SKRIBENTEN_API_BASE_PATH}/letter/${letterId}`, request)).data;
 }
 
 export async function addFavoritt(id: string) {
