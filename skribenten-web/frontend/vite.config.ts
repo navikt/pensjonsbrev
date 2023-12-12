@@ -1,3 +1,4 @@
+/// <reference types="vitest" />
 import { fileURLToPath, URL } from "node:url";
 
 import react from "@vitejs/plugin-react";
@@ -17,5 +18,8 @@ export default defineConfig({
   },
   server: {
     origin: "http://localhost:5173",
+  },
+  test: {
+    environment: 'jsdom',
   },
 });
