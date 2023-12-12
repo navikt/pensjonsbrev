@@ -8,6 +8,6 @@ export function errorHandling(
   next: NextFunction,
 ) {
   return response.status(500).json({
-    error: "Internal server error",
+    error: `Internal server error ${error.message} ${error.cause} ${error.name}`,
   });
 }
