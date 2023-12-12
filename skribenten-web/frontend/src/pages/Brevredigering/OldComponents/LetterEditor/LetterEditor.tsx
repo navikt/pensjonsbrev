@@ -2,12 +2,12 @@ import type { Dispatch, FC, SetStateAction } from "react";
 import { useState } from "react";
 
 import Actions from "./actions";
-import EditorMenu from "./components/editormenu/EditorMenu";
-import Paragraph from "./components/paragraph/Paragraph";
-import SakspartView from "./components/sakspart/SakspartView";
-import SignaturView from "./components/signatur/SignaturView";
-import Title1 from "./components/title1/Title1";
-import Title2 from "./components/title2/Title2";
+import EditorMenu from "./components/EditorMenu";
+import Paragraph from "./components/Paragraph";
+import SakspartView from "./components/SakspartView";
+import SignaturView from "./components/SignaturView";
+import Title1 from "./components/Title1";
+import Title2 from "./components/Title2";
 import styles from "./LetterEditor.module.css";
 import type { BoundAction, CallbackReceiver } from "./lib/actions";
 import { bindActionWithCallback } from "./lib/actions";
