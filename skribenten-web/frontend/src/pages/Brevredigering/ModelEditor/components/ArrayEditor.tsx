@@ -1,3 +1,5 @@
+/* eslint-disable unicorn/no-empty-file */
+
 // TODO: reimplement when an example template exists
 
 // import { useState } from "react";

@@ -53,6 +53,7 @@ function ToggleableObjectEditor({ field, fieldType }: { field: string; fieldType
         <div
           css={css`
             display: contents;
+
             > * {
               margin-left: var(--a-spacing-4);
             }
