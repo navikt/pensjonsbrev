@@ -34,9 +34,9 @@ val informasjonTilDegSomMottarPensjon = createAttachment(
 @TemplateModelHelpers
 val utlandInformasjonTilDegSomMottarPensjon = createAttachment(
     title = newText(
-        Language.Bokmal to "Informasjon til deg som handler på vegne av barnet",
-        Language.Nynorsk to "Informasjon til deg som handlar på vegner av barnet",
-        Language.English to "Information for those acting on behalf of the child",
+        Language.Bokmal to "Informasjon til deg som mottar pensjon",
+        Language.Nynorsk to "Informasjon til deg som mottar pensjon",
+        Language.English to "Informasjon til deg som mottar pensjon",
     ),
     includeSakspart = false,
 ) {
@@ -57,9 +57,9 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Language.Bokmal, Language.Ny
     }
     paragraph {
         text(
-            Language.Bokmal to "Du kan sjekke og endre kontonummeret som er registrert på deg ved å logge inn på nav.no. Hvis du ikke kan melde fra digitalt, kan du melde om endringer via post. Du må da legge ved kopi av gyldig legitimasjon, eller vise gyldig legitimasjon ved personlig fremmøte på et NAV-kontor. Du finner mer informasjon og lenke til riktig skjema på ${Constants.KONTONUMMER_URL}",
-            Language.Nynorsk to "Du kan sjekke og endre kontonummeret som er registrert på deg ved å logge inn på nav.no. Hvis du ikke kan melde fra digitalt, kan du melde om endringer via post. Du må da legge ved kopi av gyldig legitimasjon, eller vise gyldig legitimasjon ved personlig fremmøte på et NAV-kontor. Du finner mer informasjon og lenke til riktig skjema på ${Constants.KONTONUMMER_URL}",
-            Language.English to "Du kan sjekke og endre kontonummeret som er registrert på deg ved å logge inn på nav.no. Hvis du ikke kan melde fra digitalt, kan du melde om endringer via post. Du må da legge ved kopi av gyldig legitimasjon, eller vise gyldig legitimasjon ved personlig fremmøte på et NAV-kontor. Du finner mer informasjon og lenke til riktig skjema på ${Constants.KONTONUMMER_URL}",
+            Language.Bokmal to "Du kan sjekke og endre kontonummeret som er registrert på deg ved å logge inn på nav.no. Hvis du ikke kan melde fra digitalt, kan du melde om endringer via post. Du må da legge ved kopi av gyldig legitimasjon, eller vise gyldig legitimasjon ved personlig fremmøte på et NAV-kontor. Du finner mer informasjon og lenke til riktig skjema på ${Constants.KONTONUMMER_URL}.",
+            Language.Nynorsk to "Du kan sjekke og endre kontonummeret som er registrert på deg ved å logge inn på nav.no. Hvis du ikke kan melde fra digitalt, kan du melde om endringer via post. Du må da legge ved kopi av gyldig legitimasjon, eller vise gyldig legitimasjon ved personlig fremmøte på et NAV-kontor. Du finner mer informasjon og lenke til riktig skjema på ${Constants.KONTONUMMER_URL}.",
+            Language.English to "Du kan sjekke og endre kontonummeret som er registrert på deg ved å logge inn på nav.no. Hvis du ikke kan melde fra digitalt, kan du melde om endringer via post. Du må da legge ved kopi av gyldig legitimasjon, eller vise gyldig legitimasjon ved personlig fremmøte på et NAV-kontor. Du finner mer informasjon og lenke til riktig skjema på ${Constants.KONTONUMMER_URL}.",
             )
     }
 }
@@ -68,11 +68,11 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Language.Bokmal, Language.Ny
 private fun OutlineOnlyScope<LanguageSupport.Triple<Language.Bokmal, Language.Nynorsk, Language.English>, Any>.informasjon() {
     paragraph {
         text(
-            Language.Bokmal to "Du kan logge deg inn på våre nettsider for å se utbetalinger, brev osv. Du kan også chatte eller sende melding via nav.no/skrivtiloss. Har du ikke BankID eller annen innloggingsmulighet til vår hjemmeside nav.no, kan du kontakte oss på telefon." +
+            Language.Bokmal to "Du kan logge deg inn på våre nettsider for å se utbetalinger, brev osv. Du kan også chatte eller sende melding via nav.no/skrivtiloss. Har du ikke BankID eller annen innloggingsmulighet til vår hjemmeside nav.no, kan du kontakte oss på telefon. " +
                     "Skal du sende oss noe per post må du bruke adressen",
-            Language.Nynorsk to "Du kan logge deg inn på våre nettsider for å se utbetalinger, brev osv. Du kan også chatte eller sende melding via nav.no/skrivtiloss. Har du ikke BankID eller annen innloggingsmulighet til vår hjemmeside nav.no, kan du kontakte oss på telefon." +
+            Language.Nynorsk to "Du kan logge deg inn på våre nettsider for å se utbetalinger, brev osv. Du kan også chatte eller sende melding via nav.no/skrivtiloss. Har du ikke BankID eller annen innloggingsmulighet til vår hjemmeside nav.no, kan du kontakte oss på telefon. " +
                     "Skal du sende oss noe per post må du bruke adressen",
-            Language.English to "Du kan logge deg inn på våre nettsider for å se utbetalinger, brev osv. Du kan også chatte eller sende melding via nav.no/skrivtiloss. Har du ikke BankID eller annen innloggingsmulighet til vår hjemmeside nav.no, kan du kontakte oss på telefon." +
+            Language.English to "Du kan logge deg inn på våre nettsider for å se utbetalinger, brev osv. Du kan også chatte eller sende melding via nav.no/skrivtiloss. Har du ikke BankID eller annen innloggingsmulighet til vår hjemmeside nav.no, kan du kontakte oss på telefon. " +
                     "Skal du sende oss noe per post må du bruke adressen",
         )
     }
