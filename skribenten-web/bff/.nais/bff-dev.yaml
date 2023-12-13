@@ -1,7 +1,7 @@
 app-name: "skribenten-web"
 
 ingresses:
-  - "https://pensjon-skribenten-web.intern.dev.nav.no"
+  - "https://pensjon-skribenten-web-q2.intern.dev.nav.no"
 
 env:
   - name: NODE_ENV
