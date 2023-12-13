@@ -45,6 +45,7 @@ object Favourites : Table() {
 
 fun initDatabase(config: Config): Database {
     val database = Database.connect(
+        //TODO se om vi kan få connection pool evt suspend
         PGSimpleDataSource().apply {
             setURL(config.getString("database.url"))
             user = "postgres"

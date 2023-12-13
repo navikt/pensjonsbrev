@@ -7,7 +7,6 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import no.nav.pensjon.brev.skribenten.getLoggedInUserId
 import no.nav.pensjon.brev.skribenten.services.SkribentenDatabaseService
-import no.nav.pensjon.brev.skribenten.services.SkribentenFakeDatabaseService
 
 fun Route.favoritesRoute(databaseService: SkribentenDatabaseService) {
     route("/favourites") {
