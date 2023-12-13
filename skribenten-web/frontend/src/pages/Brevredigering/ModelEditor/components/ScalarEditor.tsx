@@ -1,7 +1,8 @@
 import { Checkbox, DatePicker, TextField, useDatepicker } from "@navikt/ds-react";
-import { useFormContext } from "react-hook-form";
+import { get, useFormContext } from "react-hook-form";
 
 import type { TScalar } from "~/types/brevbakerTypes";
+import { formatDateWithoutTimezone } from "~/utils/dateUtils";
 
 export const ScalarEditor = ({ fieldType, field }: { field: string; fieldType: TScalar }) => {
   const {
@@ -9,7 +10,7 @@ export const ScalarEditor = ({ fieldType, field }: { field: string; fieldType: T
     formState: { errors },
   } = useFormContext();
 
-  const potentialError = errors[field]?.message?.toString();
+  const potentialError = get(errors, field)?.message?.toString();
   const registerProperties = register(field, { required: fieldType.nullable ? false : "Må oppgis" });
 
   switch (fieldType.kind) {
@@ -34,16 +35,18 @@ export const ScalarEditor = ({ fieldType, field }: { field: string; fieldType: T
 function DatePickerEditor({ field }: { field: string }) {
   const {
     setValue,
+    trigger,
     formState: { errors },
   } = useFormContext();
 
   const datepicker = useDatepicker({
     onDateChange: (date) => {
-      setValue(field, date ?? "");
+      setValue(field, date ? formatDateWithoutTimezone(date) : "");
+      trigger(field);
     },
   });
 
-  const potentialError = errors[field]?.message?.toString();
+  const potentialError = get(errors, field)?.message?.toString();
 
   return (
     <DatePicker {...datepicker.datepickerProps}>
