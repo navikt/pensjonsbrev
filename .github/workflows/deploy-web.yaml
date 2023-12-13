@@ -73,7 +73,7 @@ jobs:
         env:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
           CLUSTER: dev-gcp
-          RESOURCE: skribenten-web/bff/.nais/bff-dev.yaml
+          RESOURCE: skribenten-web/bff/.nais/nais.yaml
           VAR: image=${{needs.build.outputs.image}}
           VARS: "skribenten-web/bff/.nais/bff-dev.yaml"
 
