@@ -1,12 +1,21 @@
+import { css } from "@emotion/react";
+import { Switch } from "@navikt/ds-react";
+import { useState } from "react";
+
 import { EnumEditor } from "~/pages/Brevredigering/ModelEditor/components/EnumEditor";
 import { ScalarEditor } from "~/pages/Brevredigering/ModelEditor/components/ScalarEditor";
 import { useTestIfThisWorks } from "~/pages/Brevredigering/ModelEditor/components/useTestIfThisWorks";
-import type { FieldType } from "~/types/brevbakerTypes";
+import type { FieldType, TObject } from "~/types/brevbakerTypes";
 
 const FieldEditor = ({ field, fieldType }: { field: string; fieldType: FieldType }) => {
   switch (fieldType.type) {
     case "object": {
-      return <ObjectEditor parentFieldName={field} typeName={fieldType.typeName} />;
+      console.log(fieldType);
+      return fieldType.nullable ? (
+        <ToggleableObjectEditor field={field} fieldType={fieldType} />
+      ) : (
+        <ObjectEditor typeName={fieldType.typeName} />
+      );
     }
     case "scalar": {
       return <ScalarEditor field={field} fieldType={fieldType} />;
@@ -32,3 +41,27 @@ export const ObjectEditor = ({ typeName, parentFieldName }: { typeName: string; 
     </>
   );
 };
+
+function ToggleableObjectEditor({ field, fieldType }: { field: string; fieldType: TObject }) {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <>
+      <Switch checked={open} onChange={() => setOpen(!open)}>
+        {field}
+      </Switch>
+      {open && (
+        <div
+          css={css`
+            display: contents;
+            > * {
+              margin-left: var(--a-spacing-4);
+            }
+          `}
+        >
+          <ObjectEditor typeName={fieldType.typeName} />
+        </div>
+      )}
+    </>
+  );
+}
