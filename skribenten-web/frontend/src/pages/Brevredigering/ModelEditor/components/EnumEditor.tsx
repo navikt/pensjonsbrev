@@ -1,3 +1,4 @@
+// TODO: reimplement when an example template exists
 import type { TEnum } from "~/types/brevbakerTypes";
 
 export const EnumEditor = ({ spec }: { spec: TEnum }) => (

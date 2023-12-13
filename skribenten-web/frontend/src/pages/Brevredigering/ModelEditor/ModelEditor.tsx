@@ -17,7 +17,8 @@ export const ModelEditor = () => {
     queryFn: () => getTemplate.queryFn(TEST_TEMPLATE),
   }).data?.modelSpecification;
 
-  const methods = useForm({});
+  const methods = useForm({ shouldUnregister: true });
+  console.log(methods.watch());
 
   const renderLetterMutation = useMutation<RenderedLetter, unknown, { id: string; values: unknown }>({
     mutationFn: async ({ id, values }) => {

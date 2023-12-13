@@ -10,11 +10,10 @@ import type { FieldType, TObject } from "~/types/brevbakerTypes";
 const FieldEditor = ({ field, fieldType }: { field: string; fieldType: FieldType }) => {
   switch (fieldType.type) {
     case "object": {
-      console.log(fieldType);
       return fieldType.nullable ? (
         <ToggleableObjectEditor field={field} fieldType={fieldType} />
       ) : (
-        <ObjectEditor typeName={fieldType.typeName} />
+        <ObjectEditor parentFieldName={field} typeName={fieldType.typeName} />
       );
     }
     case "scalar": {
@@ -59,7 +58,7 @@ function ToggleableObjectEditor({ field, fieldType }: { field: string; fieldType
             }
           `}
         >
-          <ObjectEditor typeName={fieldType.typeName} />
+          <ObjectEditor parentFieldName={field} typeName={fieldType.typeName} />
         </div>
       )}
     </>

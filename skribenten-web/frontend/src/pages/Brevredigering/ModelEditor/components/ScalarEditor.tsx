@@ -1,5 +1,5 @@
 import { Checkbox, DatePicker, TextField, useDatepicker } from "@navikt/ds-react";
-import { get, useFormContext } from "react-hook-form";
+import { Controller, get, useFormContext } from "react-hook-form";
 
 import { FullWidthDatePickerWrapper } from "~/components/FullWidthDatePickerWrapper";
 import { convertFieldToReadableLabel } from "~/pages/Brevredigering/ModelEditor/components/utils";
@@ -52,25 +52,33 @@ export const ScalarEditor = ({ fieldType, field }: { field: string; fieldType: T
       );
     }
     case "BOOLEAN": {
+      // TODO: reimplement when an example template exists
       return <Checkbox>{convertFieldToReadableLabel(field)}</Checkbox>;
     }
     case "DATE": {
-      return <DatePickerEditor field={field} />;
+      return <ControlledDatePicker field={field} />;
     }
   }
 };
 
-function DatePickerEditor({ field }: { field: string }) {
+function ControlledDatePicker({ field }: { field: string }) {
+  const { control } = useFormContext();
+  return (
+    <Controller
+      control={control}
+      name={field}
+      render={({ field: { onChange } }) => <DatePickerEditor field={field} onChange={onChange} />}
+    />
+  );
+}
+function DatePickerEditor({ field, onChange }: { field: string; onChange: (newDate: string) => void }) {
   const {
-    setValue,
-    trigger,
     formState: { errors },
   } = useFormContext();
 
   const datepicker = useDatepicker({
     onDateChange: (date) => {
-      setValue(field, date ? formatDateWithoutTimezone(date) : "");
-      trigger(field);
+      onChange(date ? formatDateWithoutTimezone(date) : "");
     },
   });
 
