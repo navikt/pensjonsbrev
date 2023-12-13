@@ -1,4 +1,6 @@
+import { Button } from "@navikt/ds-react";
 import { useQuery } from "@tanstack/react-query";
+import { FormProvider, useForm } from "react-hook-form";
 
 import { getTemplate } from "~/api/skribenten-api-endpoints";
 
@@ -12,13 +14,20 @@ export const ModelEditor = () => {
     queryFn: () => getTemplate.queryFn(TEST_TEMPLATE),
   }).data?.modelSpecification;
 
+  const methods = useForm({});
+
+  console.log(methods.watch());
+
   if (!letterModelSpecification) {
     return <></>;
   }
 
   return (
-    <form>
-      <ObjectEditor typeName={letterModelSpecification.letterModelTypeName} />
-    </form>
+    <FormProvider {...methods}>
+      <form onSubmit={methods.handleSubmit((values) => console.log(values))}>
+        <ObjectEditor typeName={letterModelSpecification.letterModelTypeName} />
+        <Button type="submit">Send</Button>
+      </form>
+    </FormProvider>
   );
 };
