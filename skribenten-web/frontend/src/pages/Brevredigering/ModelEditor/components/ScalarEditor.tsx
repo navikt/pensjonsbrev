@@ -1,4 +1,4 @@
-import { Checkbox, TextField } from "@navikt/ds-react";
+import { Checkbox, DatePicker, TextField, useDatepicker } from "@navikt/ds-react";
 import { useFormContext } from "react-hook-form";
 
 import type { TScalar } from "~/types/brevbakerTypes";
@@ -26,7 +26,28 @@ export const ScalarEditor = ({ fieldType, field }: { field: string; fieldType: T
       return <Checkbox>{field}</Checkbox>;
     }
     case "DATE": {
-      return <input type="date" />;
+      return <DatePickerEditor field={field} />;
     }
   }
 };
+
+function DatePickerEditor({ field }: { field: string }) {
+  const {
+    setValue,
+    formState: { errors },
+  } = useFormContext();
+
+  const datepicker = useDatepicker({
+    onDateChange: (date) => {
+      setValue(field, date ?? "");
+    },
+  });
+
+  const potentialError = errors[field]?.message?.toString();
+
+  return (
+    <DatePicker {...datepicker.datepickerProps}>
+      <DatePicker.Input {...datepicker.inputProps} error={potentialError} label={field} />
+    </DatePicker>
+  );
+}

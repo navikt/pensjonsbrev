@@ -1,8 +1,10 @@
 import { Button } from "@navikt/ds-react";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { FormProvider, useForm } from "react-hook-form";
 
-import { getTemplate } from "~/api/skribenten-api-endpoints";
+import { getTemplate, renderLetter } from "~/api/skribenten-api-endpoints";
+import { LetterEditor } from "~/pages/Brevredigering/LetterEditor/LetterEditor";
+import type { RenderedLetter } from "~/types/brevbakerTypes";
 
 import { ObjectEditor } from "./components/ObjectEditor";
 
@@ -16,6 +18,13 @@ export const ModelEditor = () => {
 
   const methods = useForm({});
 
+  const renderLetterMutation = useMutation<RenderedLetter, unknown, { id: string; values: unknown }>({
+    mutationFn: async ({ id, values }) => {
+      console.log(values);
+      return await renderLetter(id, { letterData: values, editedLetter: undefined });
+    },
+  });
+
   console.log(methods.watch());
 
   if (!letterModelSpecification) {
@@ -23,11 +32,14 @@ export const ModelEditor = () => {
   }
 
   return (
-    <FormProvider {...methods}>
-      <form onSubmit={methods.handleSubmit((values) => console.log(values))}>
-        <ObjectEditor typeName={letterModelSpecification.letterModelTypeName} />
-        <Button type="submit">Send</Button>
-      </form>
-    </FormProvider>
+    <>
+      <FormProvider {...methods}>
+        <form onSubmit={methods.handleSubmit((values) => renderLetterMutation.mutate({ id: TEST_TEMPLATE, values }))}>
+          <ObjectEditor typeName={letterModelSpecification.letterModelTypeName} />
+          <Button type="submit">Send</Button>
+        </form>
+      </FormProvider>
+      <div>{renderLetterMutation.data && <LetterEditor initialState={renderLetterMutation.data} />}</div>
+    </>
   );
 };
