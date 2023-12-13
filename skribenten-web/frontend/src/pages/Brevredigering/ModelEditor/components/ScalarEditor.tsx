@@ -2,6 +2,7 @@ import { Checkbox, DatePicker, TextField, useDatepicker } from "@navikt/ds-react
 import { get, useFormContext } from "react-hook-form";
 
 import { FullWidthDatePickerWrapper } from "~/components/FullWidthDatePickerWrapper";
+import { convertFieldToReadableLabel } from "~/pages/Brevredigering/ModelEditor/components/utils";
 import type { TScalar } from "~/types/brevbakerTypes";
 import { formatDateWithoutTimezone } from "~/utils/dateUtils";
 
@@ -17,19 +18,41 @@ export const ScalarEditor = ({ fieldType, field }: { field: string; fieldType: T
   switch (fieldType.kind) {
     case "NUMBER": {
       return (
-        <TextField size="small" {...registerProperties} error={potentialError} label={field} step={1} type="number" />
+        <TextField
+          size="small"
+          {...registerProperties}
+          error={potentialError}
+          label={convertFieldToReadableLabel(field)}
+          step={1}
+          type="number"
+        />
       );
     }
     case "DOUBLE": {
       return (
-        <TextField size="small" {...registerProperties} error={potentialError} label={field} step={0.1} type="number" />
+        <TextField
+          size="small"
+          {...registerProperties}
+          error={potentialError}
+          label={convertFieldToReadableLabel(field)}
+          step={0.1}
+          type="number"
+        />
       );
     }
     case "STRING": {
-      return <TextField size="small" {...registerProperties} error={potentialError} label={field} type="text" />;
+      return (
+        <TextField
+          size="small"
+          {...registerProperties}
+          error={potentialError}
+          label={convertFieldToReadableLabel(field)}
+          type="text"
+        />
+      );
     }
     case "BOOLEAN": {
-      return <Checkbox>{field}</Checkbox>;
+      return <Checkbox>{convertFieldToReadableLabel(field)}</Checkbox>;
     }
     case "DATE": {
       return <DatePickerEditor field={field} />;
@@ -56,7 +79,12 @@ function DatePickerEditor({ field }: { field: string }) {
   return (
     <FullWidthDatePickerWrapper>
       <DatePicker {...datepicker.datepickerProps}>
-        <DatePicker.Input {...datepicker.inputProps} error={potentialError} label={field} size="small" />
+        <DatePicker.Input
+          {...datepicker.inputProps}
+          error={potentialError}
+          label={convertFieldToReadableLabel(field)}
+          size="small"
+        />
       </DatePicker>
     </FullWidthDatePickerWrapper>
   );
