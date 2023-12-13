@@ -1,62 +1,23 @@
+import { Checkbox, TextField } from "@navikt/ds-react";
+
 import type { TScalar } from "~/types/brevbakerTypes";
 
-import type { BoundAction } from "../../LetterEditor/lib/actions";
-import type { ScalarValue } from "../model";
-
-export interface ScalarEditorProperties {
-  spec: TScalar;
-  value: ScalarValue;
-  updateValue: BoundAction<[value: ScalarValue]>;
-}
-
-export const ScalarEditor = ({ spec, value, updateValue }: ScalarEditorProperties) => {
-  switch (spec.kind) {
+export const ScalarEditor = ({ fieldType, field }: { field: string; fieldType: TScalar }) => {
+  switch (fieldType.kind) {
     case "NUMBER": {
-      return (
-        <input
-          onChange={(event) => updateValue(event.target.value)}
-          required={!spec.nullable}
-          step={1}
-          type="number"
-          value={value as number}
-        />
-      );
+      return <TextField label={field} required={!fieldType.nullable} step={1} type="number" />;
     }
     case "DOUBLE": {
-      return (
-        <input
-          onChange={(event) => updateValue(event.target.value)}
-          required={!spec.nullable}
-          step={0.1}
-          type="number"
-          value={value as number}
-        />
-      );
+      return <TextField label={field} required={!fieldType.nullable} step={0.1} type="number" />;
     }
     case "STRING": {
-      return (
-        <input
-          onChange={(event) => updateValue(event.target.value)}
-          required={!spec.nullable}
-          type="text"
-          value={value as string}
-        />
-      );
+      return <TextField label={field} required={!fieldType.nullable} type="text" />;
     }
     case "BOOLEAN": {
-      return (
-        <input checked={value as boolean} onChange={(event) => updateValue(event.target.checked)} type="checkbox" />
-      );
+      return <Checkbox>{field}</Checkbox>;
     }
     case "DATE": {
-      return (
-        <input
-          onChange={(event) => updateValue(event.target.value)}
-          required={!spec.nullable}
-          type="date"
-          value={value as string}
-        />
-      );
+      return <input required={!fieldType.nullable} type="date" />;
     }
   }
 };

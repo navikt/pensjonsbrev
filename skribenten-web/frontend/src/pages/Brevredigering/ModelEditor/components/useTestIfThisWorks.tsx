@@ -2,23 +2,14 @@ import { useQuery } from "@tanstack/react-query";
 
 import { getTemplate } from "~/api/skribenten-api-endpoints";
 
-import { ObjectEditor } from "./components/ObjectEditor";
-
 const TEST_TEMPLATE = "INFORMASJON_OM_SAKSBEHANDLINGSTID";
 
-export const ModelEditor = () => {
+export function useTestIfThisWorks(typeName: string) {
   const letterModelSpecification = useQuery({
     queryKey: getTemplate.queryKey(TEST_TEMPLATE),
     queryFn: () => getTemplate.queryFn(TEST_TEMPLATE),
   }).data?.modelSpecification;
 
-  if (!letterModelSpecification) {
-    return <></>;
-  }
+  return letterModelSpecification?.types[typeName];
 
-  return (
-    <form>
-      <ObjectEditor typeName={letterModelSpecification.letterModelTypeName} />
-    </form>
-  );
-};
+}

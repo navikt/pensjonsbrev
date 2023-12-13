@@ -1,37 +1,32 @@
-import type { ObjectTypeSpecification, ObjectTypeSpecifications, TObject } from "~/types/brevbakerTypes";
+import { EnumEditor } from "~/pages/Brevredigering/ModelEditor/components/EnumEditor";
+import { ScalarEditor } from "~/pages/Brevredigering/ModelEditor/components/ScalarEditor";
+import { useTestIfThisWorks } from "~/pages/Brevredigering/ModelEditor/components/useTestIfThisWorks";
+import type { FieldType } from "~/types/brevbakerTypes";
 
-import type { BoundAction } from "../../LetterEditor/lib/actions";
-import { bindAction } from "../../LetterEditor/lib/actions";
-import { ModelValueAction } from "../actions";
-import type { FieldValue } from "../model";
-import { FieldEditor } from "./FieldEditor";
-import styles from "./ObjectEditor.module.css";
+const FieldEditor = ({ field, fieldType }: { field: string; fieldType: FieldType }) => {
+  switch (fieldType.type) {
+    case "object": {
+      return <ObjectEditor typeName={fieldType.typeName} />;
+    }
+    case "scalar": {
+      return <ScalarEditor field={field} fieldType={fieldType} />;
+    }
+    case "array": {
+      return <div>ARRAY TODO</div>;
+    }
+    case "enum": {
+      return <EnumEditor spec={fieldType} />;
+    }
+  }
+};
 
-export interface ObjectEditorProperties {
-  allSpecs: ObjectTypeSpecifications;
-  spec: ObjectTypeSpecification;
-  value: FieldValue<TObject>;
-  updateValue: BoundAction<[value: FieldValue<TObject>]>;
-}
+export const ObjectEditor = ({ typeName }: { typeName: string }) => {
+  const objectTypeSpecification = useTestIfThisWorks(typeName);
 
-export const ObjectEditor = ({ allSpecs, spec, value, updateValue }: ObjectEditorProperties) => {
   return (
-    <div className={styles.container}>
-      {Object.entries(spec).map(([name, field]) => {
-        const updateField = bindAction(ModelValueAction.UpdateField, updateValue, value, name);
-        return (
-          <div key={name}>
-            <label>
-              {name}:
-              {field.nullable && value[name] != null && (
-                <button onClick={() => updateField(null)} type="button">
-                  Remove
-                </button>
-              )}
-              <FieldEditor allSpecs={allSpecs} spec={field} updateValue={updateField} value={value[name]} />
-            </label>
-          </div>
-        );
+    <div>
+      {Object.entries(objectTypeSpecification ?? {}).map(([field, fieldType]) => {
+        return <FieldEditor field={field} fieldType={fieldType} key={field} />;
       })}
     </div>
   );

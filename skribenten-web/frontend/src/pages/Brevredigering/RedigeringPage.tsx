@@ -20,26 +20,18 @@ const TEST_TEMPLATE = "INFORMASJON_OM_SAKSBEHANDLINGSTID";
 export function RedigeringPage() {
   const [modelValue, setModelValue] = useState<ObjectValue>({});
 
-  const modelSpec = useQuery({
-    queryKey: getTemplate.queryKey(TEST_TEMPLATE),
-    queryFn: () => getTemplate.queryFn(TEST_TEMPLATE),
-  }).data;
-
   const renderLetterMutation = useMutation<RenderedLetter, unknown, string>({
     mutationFn: async (id) => {
       return await renderLetter(id, { letterData: VAL, editedLetter: undefined });
     },
   });
-  if (!modelSpec) {
-    return <></>;
-  }
 
   const renderedLetter = renderLetterMutation.data;
 
   return (
     <div>
       <button onClick={() => renderLetterMutation.mutate(TEST_TEMPLATE)}>test</button>
-      <ModelEditor spec={modelSpec.modelSpecification} updateValue={setModelValue} value={modelValue} />
+      <ModelEditor />
       <div>{renderedLetter && <LetterEditor initialState={renderedLetter} />}</div>
     </div>
   );
