@@ -3,13 +3,7 @@ ingresses:
   - "https://pensjon-skribenten-api.intern.dev.nav.no"
 
 inboundRules:
-  - application: skribenten-frontend
-    namespace: pensjonsbrev
-    cluster: dev-gcp
   - application: skribenten-web
-    namespace: pensjonsbrev
-    cluster: dev-gcp
-  - application: skribenten-frontend-lokal
     namespace: pensjonsbrev
     cluster: dev-gcp
 

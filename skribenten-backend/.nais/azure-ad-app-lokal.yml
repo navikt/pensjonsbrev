@@ -21,6 +21,6 @@ spec:
     extra:
       - "azp_name"
   preAuthorizedApplications:
-    - application: skribenten-frontend-lokal
+    - application: skribenten-web
       cluster: dev-gcp
       namespace: pensjonsbrev
