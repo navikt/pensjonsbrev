@@ -25,7 +25,6 @@ spec:
   azure:
     application:
       enabled: true
-      tenant: trygdeetaten.no
       singlePageApplication: true
       allowAllUsers: true
       claims:
