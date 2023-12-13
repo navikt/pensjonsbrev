@@ -4,7 +4,7 @@ import { useState } from "react";
 
 import { EnumEditor } from "~/pages/Brevredigering/ModelEditor/components/EnumEditor";
 import { ScalarEditor } from "~/pages/Brevredigering/ModelEditor/components/ScalarEditor";
-import { useTestIfThisWorks } from "~/pages/Brevredigering/ModelEditor/components/useTestIfThisWorks";
+import { useObjectTypeSpecification } from "~/pages/Brevredigering/ModelEditor/components/useObjectTypeSpecification";
 import type { FieldType, TObject } from "~/types/brevbakerTypes";
 
 const FieldEditor = ({ field, fieldType }: { field: string; fieldType: FieldType }) => {
@@ -29,7 +29,7 @@ const FieldEditor = ({ field, fieldType }: { field: string; fieldType: FieldType
 };
 
 export const ObjectEditor = ({ typeName, parentFieldName }: { typeName: string; parentFieldName?: string }) => {
-  const objectTypeSpecification = useTestIfThisWorks(typeName);
+  const objectTypeSpecification = useObjectTypeSpecification(typeName);
 
   return (
     <>

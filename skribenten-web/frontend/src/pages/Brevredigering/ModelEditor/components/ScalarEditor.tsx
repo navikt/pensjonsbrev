@@ -15,41 +15,23 @@ export const ScalarEditor = ({ fieldType, field }: { field: string; fieldType: T
   const potentialError = get(errors, field)?.message?.toString();
   const registerProperties = register(field, { required: fieldType.nullable ? false : "Må oppgis" });
 
+  const commonTextFieldProperties = {
+    ...registerProperties,
+    autoComplete: "off",
+    error: potentialError,
+    label: convertFieldToReadableLabel(field),
+    size: "small" as const,
+  };
+
   switch (fieldType.kind) {
     case "NUMBER": {
-      return (
-        <TextField
-          size="small"
-          {...registerProperties}
-          error={potentialError}
-          label={convertFieldToReadableLabel(field)}
-          step={1}
-          type="number"
-        />
-      );
+      return <TextField {...commonTextFieldProperties} step={1} type="number" />;
     }
     case "DOUBLE": {
-      return (
-        <TextField
-          size="small"
-          {...registerProperties}
-          error={potentialError}
-          label={convertFieldToReadableLabel(field)}
-          step={0.1}
-          type="number"
-        />
-      );
+      return <TextField {...commonTextFieldProperties} step={0.1} type="number" />;
     }
     case "STRING": {
-      return (
-        <TextField
-          size="small"
-          {...registerProperties}
-          error={potentialError}
-          label={convertFieldToReadableLabel(field)}
-          type="text"
-        />
-      );
+      return <TextField {...commonTextFieldProperties} type="text" />;
     }
     case "BOOLEAN": {
       // TODO: reimplement when an example template exists
