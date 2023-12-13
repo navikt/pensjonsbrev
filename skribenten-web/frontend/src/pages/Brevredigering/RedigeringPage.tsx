@@ -1,3 +1,4 @@
+import { css } from "@emotion/react";
 import { useMutation } from "@tanstack/react-query";
 
 import { renderLetter } from "~/api/skribenten-api-endpoints";
@@ -19,19 +20,24 @@ const VAL = {
 const TEST_TEMPLATE = "INFORMASJON_OM_SAKSBEHANDLINGSTID";
 
 export function RedigeringPage() {
-  const renderLetterMutation = useMutation<RenderedLetter, unknown, string>({
-    mutationFn: async (id) => {
-      return await renderLetter(id, { letterData: VAL, editedLetter: undefined });
-    },
-  });
-
-  const renderedLetter = renderLetterMutation.data;
-
   return (
-    <div>
-      <button onClick={() => renderLetterMutation.mutate(TEST_TEMPLATE)}>test</button>
+    <div
+      css={css`
+        background: var(--a-white);
+        display: grid;
+        grid-template-columns: minmax(380px, 400px) minmax(432px, 720px);
+        gap: var(--a-spacing-4);
+        justify-content: space-between;
+        flex: 1;
+
+        > :nth-child(1) {
+          padding: var(--a-spacing-4);
+          border-left: 1px solid var(--a-gray-400);
+          border-right: 1px solid var(--a-gray-400);
+        }
+      `}
+    >
       <ModelEditor />
-      <div>{renderedLetter && <LetterEditor initialState={renderedLetter} />}</div>
     </div>
   );
 }

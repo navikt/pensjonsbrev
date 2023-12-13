@@ -24,11 +24,11 @@ export const ObjectEditor = ({ typeName, parentFieldName }: { typeName: string; 
   const objectTypeSpecification = useTestIfThisWorks(typeName);
 
   return (
-    <div>
+    <>
       {Object.entries(objectTypeSpecification ?? {}).map(([field, fieldType]) => {
         const fieldName = parentFieldName ? `${parentFieldName}.${field}` : field;
         return <FieldEditor field={fieldName} fieldType={fieldType} key={field} />;
       })}
-    </div>
+    </>
   );
 };

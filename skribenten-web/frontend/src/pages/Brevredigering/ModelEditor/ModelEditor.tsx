@@ -1,3 +1,4 @@
+import { css } from "@emotion/react";
 import { Button } from "@navikt/ds-react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { FormProvider, useForm } from "react-hook-form";
@@ -20,12 +21,9 @@ export const ModelEditor = () => {
 
   const renderLetterMutation = useMutation<RenderedLetter, unknown, { id: string; values: unknown }>({
     mutationFn: async ({ id, values }) => {
-      console.log(values);
       return await renderLetter(id, { letterData: values, editedLetter: undefined });
     },
   });
-
-  console.log(methods.watch());
 
   if (!letterModelSpecification) {
     return <></>;
@@ -34,9 +32,23 @@ export const ModelEditor = () => {
   return (
     <>
       <FormProvider {...methods}>
-        <form onSubmit={methods.handleSubmit((values) => renderLetterMutation.mutate({ id: TEST_TEMPLATE, values }))}>
+        <form
+          css={css`
+            padding: var(--a-spacing-6) var(--a-spacing-4);
+            display: flex;
+            flex-direction: column;
+            gap: var(--a-spacing-4);
+
+            > {
+              width: 100%;
+            }
+          `}
+          onSubmit={methods.handleSubmit((values) => renderLetterMutation.mutate({ id: TEST_TEMPLATE, values }))}
+        >
           <ObjectEditor typeName={letterModelSpecification.letterModelTypeName} />
-          <Button type="submit">Send</Button>
+          <Button loading={renderLetterMutation.isPending} type="submit">
+            Send
+          </Button>
         </form>
       </FormProvider>
       <div>{renderLetterMutation.data && <LetterEditor initialState={renderLetterMutation.data} />}</div>
