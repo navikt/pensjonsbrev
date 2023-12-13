@@ -6,7 +6,7 @@ import type { FieldType } from "~/types/brevbakerTypes";
 const FieldEditor = ({ field, fieldType }: { field: string; fieldType: FieldType }) => {
   switch (fieldType.type) {
     case "object": {
-      return <ObjectEditor typeName={fieldType.typeName} />;
+      return <ObjectEditor parentFieldName={field} typeName={fieldType.typeName} />;
     }
     case "scalar": {
       return <ScalarEditor field={field} fieldType={fieldType} />;
@@ -20,13 +20,14 @@ const FieldEditor = ({ field, fieldType }: { field: string; fieldType: FieldType
   }
 };
 
-export const ObjectEditor = ({ typeName }: { typeName: string }) => {
+export const ObjectEditor = ({ typeName, parentFieldName }: { typeName: string; parentFieldName?: string }) => {
   const objectTypeSpecification = useTestIfThisWorks(typeName);
 
   return (
     <div>
       {Object.entries(objectTypeSpecification ?? {}).map(([field, fieldType]) => {
-        return <FieldEditor field={field} fieldType={fieldType} key={field} />;
+        const fieldName = parentFieldName ? `${parentFieldName}.${field}` : field;
+        return <FieldEditor field={fieldName} fieldType={fieldType} key={field} />;
       })}
     </div>
   );
