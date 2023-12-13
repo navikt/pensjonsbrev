@@ -39,7 +39,7 @@ env:
   - name: PEN_SCOPE
     value: "api://dev-fss.pensjon-q2.pensjon-pen-q2/.default"
   - name: BREVBAKER_URL
-    value: "https://pensjon-brevbaker.intern.dev.nav.no"
+    value: "http://pensjon-brevbaker"
   - name: BREVBAKER_SCOPE
     value: "api://dev-gcp.pensjonsbrev.pensjon-brevbaker/.default"
   - name: BREVMETADATA_URL
