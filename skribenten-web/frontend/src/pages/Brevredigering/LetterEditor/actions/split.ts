@@ -1,4 +1,4 @@
-import produce from "immer";
+import { produce } from "immer";
 
 import type { Item, ParagraphBlock } from "~/types/brevbakerTypes";
 import { ITEM_LIST, LITERAL, PARAGRAPH } from "~/types/brevbakerTypes";

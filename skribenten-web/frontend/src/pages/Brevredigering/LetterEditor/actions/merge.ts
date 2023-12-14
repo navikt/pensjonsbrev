@@ -1,5 +1,4 @@
-import produce from "immer";
-import type { WritableDraft } from "immer/dist/types/types-external";
+import { produce } from "immer";
 
 import type { Block } from "~/types/brevbakerTypes";
 import { ITEM_LIST, LITERAL } from "~/types/brevbakerTypes";
@@ -10,7 +9,7 @@ import { getMergeIds, isEmptyBlock, isEmptyItem, isTextContent, mergeContentArra
 import type { ContentId } from "./model";
 import { MergeTarget } from "./model";
 
-function deleteBlock(block: Block, blocks: Block[], deleted: WritableDraft<number[]>) {
+function deleteBlock(block: Block, blocks: Block[], deleted: number[]) {
   if (block.id != -1 && !deleted.includes(block.id) && !blocks.map((b) => b.id).includes(block.id)) {
     deleted.push(block.id);
   }
