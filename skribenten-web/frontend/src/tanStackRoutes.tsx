@@ -63,7 +63,7 @@ export const sakRoute = new Route({
 
     return { getSakQueryOptions };
   },
-  load: async ({ context: { queryClient, getSakQueryOptions } }) => {
+  loader: async ({ context: { queryClient, getSakQueryOptions } }) => {
     await queryClient.ensureQueryData(getSakQueryOptions);
   },
   component: SakBreadcrumbsPage,
@@ -78,7 +78,7 @@ export const brevvelgerRoute = new Route({
         ? BrevvelgerTabOptions.E_BLANKETTER
         : BrevvelgerTabOptions.BREVMALER,
   }),
-  load: async ({ context: { queryClient, getSakQueryOptions } }) => {
+  loader: async ({ context: { queryClient, getSakQueryOptions } }) => {
     const { sakType } = await queryClient.ensureQueryData(getSakQueryOptions);
 
     const getLetterTemplateQuery = {
@@ -106,7 +106,7 @@ export const redigeringRoute = new Route({
 const indexRoute = new Route({
   getParentRoute: () => rootRoute,
   path: "/",
-  load: ({ navigate, preload }) => {
+  loader: ({ navigate, preload }) => {
     if (!preload) {
       navigate({ to: chooseSakPageRoute.id });
     }
