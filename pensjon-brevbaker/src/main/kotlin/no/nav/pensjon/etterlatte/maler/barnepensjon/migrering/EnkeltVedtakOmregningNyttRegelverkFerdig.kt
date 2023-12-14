@@ -58,6 +58,6 @@ object EnkeltVedtakOmregningNyttRegelverkFerdig : EtterlatteTemplate<Barnepensjo
         includeAttachment(utlandInformasjonTilDegSomHandlerPaaVegneAvBarnet, this.argument, data.erUnder18Aar.and(data.erBosattUtlandet))
         includeAttachment(informasjonTilDegSomHandlerPaaVegneAvBarnet, this.argument, data.erUnder18Aar.and(data.erBosattUtlandet.not()))
 
-        includeAttachment(dineRettigheterOgPlikter, this.argument)
+        includeAttachment(dineRettigheterOgPlikter, data.erUnder18Aar)
     }
 }
