@@ -4,6 +4,7 @@ import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.dsl.createTemplate
+import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -89,7 +90,7 @@ object BarnepensjonInnvilgelseNy : EtterlatteTemplate<BarnepensjonInnvilgelseNyD
         }
         includeAttachment(beregningAvBarnepensjon, beregningsinfo)
         includeAttachment(informasjonTilDegSomHandlerPaaVegneAvBarnet, innhold)
-        includeAttachment(dineRettigheterOgPlikter, innhold)
+        includeAttachment(dineRettigheterOgPlikter, true.expr())
         includeAttachmentIfNotNull(etterbetalingAvBarnepensjon, etterbetalingDTO)
     }
 }

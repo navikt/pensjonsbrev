@@ -316,6 +316,6 @@ object EnkeltVedtakOmregningNyttRegelverk : EtterlatteTemplate<BarnepensjonOmreg
         includeAttachment(utlandInformasjonTilDegSomHandlerPaaVegneAvBarnet, this.argument, erUnder18Aar.and(erBosattUtlandet))
         includeAttachment(informasjonTilDegSomHandlerPaaVegneAvBarnet, this.argument, erUnder18Aar.and(erBosattUtlandet.not()))
 
-        includeAttachment(dineRettigheterOgPlikter, this.argument)
+        includeAttachment(dineRettigheterOgPlikter, erUnder18Aar)
     }
 }
