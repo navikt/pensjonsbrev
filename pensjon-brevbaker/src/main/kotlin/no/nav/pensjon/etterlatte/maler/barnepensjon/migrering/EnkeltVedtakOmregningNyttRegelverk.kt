@@ -292,11 +292,19 @@ object EnkeltVedtakOmregningNyttRegelverk : EtterlatteTemplate<BarnepensjonOmreg
                     Language.English to "For more information, visit us online: ${Constants.Engelsk.BARNEPENSJON_URL}. If you cannot find the answer to your question, you can call us by phone ("
                 )
                 kontakttelefonPensjon(erBosattUtlandet)
-                text(
-                    Language.Bokmal to " hverdager 9-15. Om du oppgir fødselsnummer til barnet, kan vi lettere gi deg rask og god hjelp.",
-                    Language.Nynorsk to ", kvardagar 9–15. Det vil gjere det enklare for oss å gi deg rask og god hjelp om du oppgir fødselsnummeret til barnet.",
-                    Language.English to ") weekdays 9-15. If you provide your child's national identity number, we can more easily provide you with quick and good help."
-                )
+                showIf(erUnder18Aar) {
+                    text(
+                        Language.Bokmal to " hverdager 9-15. Om du oppgir fødselsnummer til barnet, kan vi lettere gi deg rask og god hjelp.",
+                        Language.Nynorsk to ", kvardagar 9–15. Det vil gjere det enklare for oss å gi deg rask og god hjelp om du oppgir fødselsnummeret til barnet.",
+                        Language.English to ") weekdays 9-15. If you provide your child's national identity number, we can more easily provide you with quick and good help."
+                    )
+                }.orShow {
+                    text(
+                        Language.Bokmal to " hverdager 9-15. Om du oppgir fødselsnummer, kan vi lettere gi deg rask og god hjelp.",
+                        Language.Nynorsk to ", kvardagar 9–15. Det vil gjere det enklare for oss å gi deg rask og god hjelp om du oppgir fødselsnummeret.",
+                        Language.English to ") weekdays 9-15. If you provide your national identity number, we can more easily provide you with quick and good help."
+                    )
+                }
             }
         }
 
