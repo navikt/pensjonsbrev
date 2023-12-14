@@ -1,38 +1,67 @@
-import type { ObjectTypeSpecification, ObjectTypeSpecifications, TObject } from "~/types/brevbakerTypes";
+import { css } from "@emotion/react";
+import { Switch } from "@navikt/ds-react";
+import { useState } from "react";
 
-import type { BoundAction } from "../../LetterEditor/lib/actions";
-import { bindAction } from "../../LetterEditor/lib/actions";
-import { ModelValueAction } from "../actions";
-import type { FieldValue } from "../model";
-import { FieldEditor } from "./FieldEditor";
-import styles from "./ObjectEditor.module.css";
+import { EnumEditor } from "~/pages/Brevredigering/ModelEditor/components/EnumEditor";
+import { ScalarEditor } from "~/pages/Brevredigering/ModelEditor/components/ScalarEditor";
+import { useObjectTypeSpecification } from "~/pages/Brevredigering/ModelEditor/components/useObjectTypeSpecification";
+import type { FieldType, TObject } from "~/types/brevbakerTypes";
 
-export interface ObjectEditorProperties {
-  allSpecs: ObjectTypeSpecifications;
-  spec: ObjectTypeSpecification;
-  value: FieldValue<TObject>;
-  updateValue: BoundAction<[value: FieldValue<TObject>]>;
-}
+const FieldEditor = ({ field, fieldType }: { field: string; fieldType: FieldType }) => {
+  switch (fieldType.type) {
+    case "object": {
+      return fieldType.nullable ? (
+        <ToggleableObjectEditor field={field} fieldType={fieldType} />
+      ) : (
+        <ObjectEditor parentFieldName={field} typeName={fieldType.typeName} />
+      );
+    }
+    case "scalar": {
+      return <ScalarEditor field={field} fieldType={fieldType} />;
+    }
+    case "array": {
+      return <div>ARRAY TODO</div>;
+    }
+    case "enum": {
+      return <EnumEditor spec={fieldType} />;
+    }
+  }
+};
 
-export const ObjectEditor = ({ allSpecs, spec, value, updateValue }: ObjectEditorProperties) => {
+export const ObjectEditor = ({ typeName, parentFieldName }: { typeName: string; parentFieldName?: string }) => {
+  const objectTypeSpecification = useObjectTypeSpecification(typeName);
+
   return (
-    <div className={styles.container}>
-      {Object.entries(spec).map(([name, field]) => {
-        const updateField = bindAction(ModelValueAction.UpdateField, updateValue, value, name);
-        return (
-          <div key={name}>
-            <label>
-              {name}:
-              {field.nullable && value[name] != null && (
-                <button onClick={() => updateField(null)} type="button">
-                  Remove
-                </button>
-              )}
-              <FieldEditor allSpecs={allSpecs} spec={field} updateValue={updateField} value={value[name]} />
-            </label>
-          </div>
-        );
+    <>
+      {Object.entries(objectTypeSpecification ?? {}).map(([field, fieldType]) => {
+        const fieldName = parentFieldName ? `${parentFieldName}.${field}` : field;
+        return <FieldEditor field={fieldName} fieldType={fieldType} key={field} />;
       })}
-    </div>
+    </>
   );
 };
+
+function ToggleableObjectEditor({ field, fieldType }: { field: string; fieldType: TObject }) {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <>
+      <Switch checked={open} onChange={() => setOpen(!open)}>
+        {field}
+      </Switch>
+      {open && (
+        <div
+          css={css`
+            display: contents;
+
+            > * {
+              margin-left: var(--a-spacing-4);
+            }
+          `}
+        >
+          <ObjectEditor parentFieldName={field} typeName={fieldType.typeName} />
+        </div>
+      )}
+    </>
+  );
+}

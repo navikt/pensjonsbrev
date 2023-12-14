@@ -1,32 +1,57 @@
-import type { LetterModelSpecification } from "~/types/brevbakerTypes";
+import { css } from "@emotion/react";
+import { Button } from "@navikt/ds-react";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { FormProvider, useForm } from "react-hook-form";
 
-import type { BoundAction } from "../LetterEditor/lib/actions";
+import { getTemplate, renderLetter } from "~/api/skribenten-api-endpoints";
+import { LetterEditor } from "~/pages/Brevredigering/LetterEditor/LetterEditor";
+import type { RenderedLetter } from "~/types/brevbakerTypes";
+
 import { ObjectEditor } from "./components/ObjectEditor";
-import type { ObjectValue } from "./model";
-import styles from "./ModelEditor.module.css";
 
-export interface ModelSpecificationEditorProperties {
-  spec: LetterModelSpecification;
-  value: ObjectValue;
-  updateValue: BoundAction<[value: ObjectValue]>;
-}
+const TEST_TEMPLATE = "INFORMASJON_OM_SAKSBEHANDLINGSTID";
 
-export const ModelEditor = ({ spec, value, updateValue }: ModelSpecificationEditorProperties) => {
-  const objectTypeSpec = spec.types[spec.letterModelTypeName];
+export const ModelEditor = () => {
+  const letterModelSpecification = useQuery({
+    queryKey: getTemplate.queryKey(TEST_TEMPLATE),
+    queryFn: () => getTemplate.queryFn(TEST_TEMPLATE),
+  }).data?.modelSpecification;
+
+  const methods = useForm({ shouldUnregister: true });
+
+  const renderLetterMutation = useMutation<RenderedLetter, unknown, { id: string; values: unknown }>({
+    mutationFn: async ({ id, values }) => {
+      return await renderLetter(id, { letterData: values, editedLetter: undefined });
+    },
+  });
+
+  if (!letterModelSpecification) {
+    return <></>;
+  }
 
   return (
-    <div className={styles.container}>
-      <div>
-        <h2>Brevredigering</h2>
-      </div>
-      <div className={styles.tabmenu}>
-        <div>Overstyring</div>
-      </div>
-      <div>
-        <form>
-          <ObjectEditor allSpecs={spec.types} spec={objectTypeSpec} updateValue={updateValue} value={value} />
+    <>
+      <FormProvider {...methods}>
+        <form
+          css={css`
+            padding: var(--a-spacing-6) var(--a-spacing-4);
+            display: flex;
+            flex-direction: column;
+            gap: var(--a-spacing-4);
+
+            > {
+              width: 100%;
+            }
+          `}
+          onSubmit={methods.handleSubmit((values) => renderLetterMutation.mutate({ id: TEST_TEMPLATE, values }))}
+        >
+          <ObjectEditor typeName={letterModelSpecification.letterModelTypeName} />
+          <Button loading={renderLetterMutation.isPending} type="submit">
+            Send
+          </Button>
         </form>
-      </div>
-    </div>
+      </FormProvider>
+      <div>{renderLetterMutation.data && <LetterEditor initialState={renderLetterMutation.data} />}</div>
+    </>
   );
 };

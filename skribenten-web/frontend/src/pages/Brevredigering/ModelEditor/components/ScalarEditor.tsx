@@ -1,62 +1,81 @@
+import { Checkbox, DatePicker, TextField, useDatepicker } from "@navikt/ds-react";
+import { Controller, get, useFormContext } from "react-hook-form";
+
+import { FullWidthDatePickerWrapper } from "~/components/FullWidthDatePickerWrapper";
+import { convertFieldToReadableLabel } from "~/pages/Brevredigering/ModelEditor/components/utils";
 import type { TScalar } from "~/types/brevbakerTypes";
+import { formatDateWithoutTimezone } from "~/utils/dateUtils";
 
-import type { BoundAction } from "../../LetterEditor/lib/actions";
-import type { ScalarValue } from "../model";
+export const ScalarEditor = ({ fieldType, field }: { field: string; fieldType: TScalar }) => {
+  const {
+    register,
+    formState: { errors },
+  } = useFormContext();
 
-export interface ScalarEditorProperties {
-  spec: TScalar;
-  value: ScalarValue;
-  updateValue: BoundAction<[value: ScalarValue]>;
-}
+  const potentialError = get(errors, field)?.message?.toString();
+  const registerProperties = register(field, { required: fieldType.nullable ? false : "Må oppgis" });
 
-export const ScalarEditor = ({ spec, value, updateValue }: ScalarEditorProperties) => {
-  switch (spec.kind) {
+  const commonTextFieldProperties = {
+    ...registerProperties,
+    autoComplete: "off",
+    error: potentialError,
+    label: convertFieldToReadableLabel(field),
+    size: "small" as const,
+  };
+
+  switch (fieldType.kind) {
     case "NUMBER": {
-      return (
-        <input
-          onChange={(event) => updateValue(event.target.value)}
-          required={!spec.nullable}
-          step={1}
-          type="number"
-          value={value as number}
-        />
-      );
+      return <TextField {...commonTextFieldProperties} step={1} type="number" />;
     }
     case "DOUBLE": {
-      return (
-        <input
-          onChange={(event) => updateValue(event.target.value)}
-          required={!spec.nullable}
-          step={0.1}
-          type="number"
-          value={value as number}
-        />
-      );
+      return <TextField {...commonTextFieldProperties} step={0.1} type="number" />;
     }
     case "STRING": {
-      return (
-        <input
-          onChange={(event) => updateValue(event.target.value)}
-          required={!spec.nullable}
-          type="text"
-          value={value as string}
-        />
-      );
+      return <TextField {...commonTextFieldProperties} type="text" />;
     }
     case "BOOLEAN": {
-      return (
-        <input checked={value as boolean} onChange={(event) => updateValue(event.target.checked)} type="checkbox" />
-      );
+      // TODO: reimplement when an example template exists
+      return <Checkbox>{convertFieldToReadableLabel(field)}</Checkbox>;
     }
     case "DATE": {
-      return (
-        <input
-          onChange={(event) => updateValue(event.target.value)}
-          required={!spec.nullable}
-          type="date"
-          value={value as string}
-        />
-      );
+      return <ControlledDatePicker field={field} />;
     }
   }
 };
+
+function ControlledDatePicker({ field }: { field: string }) {
+  const { control } = useFormContext();
+  return (
+    <Controller
+      control={control}
+      name={field}
+      render={({ field: { onChange } }) => <DatePickerEditor field={field} onChange={onChange} />}
+    />
+  );
+}
+function DatePickerEditor({ field, onChange }: { field: string; onChange: (newDate: string) => void }) {
+  const {
+    formState: { errors },
+  } = useFormContext();
+
+  const datepicker = useDatepicker({
+    onDateChange: (date) => {
+      onChange(date ? formatDateWithoutTimezone(date) : "");
+    },
+  });
+
+  const potentialError = get(errors, field)?.message?.toString();
+
+  return (
+    <FullWidthDatePickerWrapper>
+      <DatePicker {...datepicker.datepickerProps}>
+        <DatePicker.Input
+          {...datepicker.inputProps}
+          error={potentialError}
+          label={convertFieldToReadableLabel(field)}
+          size="small"
+        />
+      </DatePicker>
+    </FullWidthDatePickerWrapper>
+  );
+}
