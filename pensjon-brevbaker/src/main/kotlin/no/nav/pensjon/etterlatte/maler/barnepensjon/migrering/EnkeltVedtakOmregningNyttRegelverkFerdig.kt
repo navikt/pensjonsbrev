@@ -20,8 +20,8 @@ import no.nav.pensjon.etterlatte.maler.barnepensjon.migrering.BarnepensjonOmregn
 import no.nav.pensjon.etterlatte.maler.barnepensjon.migrering.BarnepensjonOmregnetNyttRegelverkFerdigDTOSelectors.innhold
 import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
 import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.dineRettigheterOgPlikter
-import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.informasjonTilDegSomMottarPensjon
-import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.utlandInformasjonTilDegSomMottarPensjon
+import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.informasjonTilDegSomMottarBarnepensjon
+import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.utlandInformasjonTilDegSomMottarBarnepensjon
 import no.nav.pensjon.etterlatte.maler.vedlegg.informasjonTilDegSomHandlerPaaVegneAvBarnet
 import no.nav.pensjon.etterlatte.maler.vedlegg.utlandInformasjonTilDegSomHandlerPaaVegneAvBarnet
 
@@ -51,8 +51,8 @@ object EnkeltVedtakOmregningNyttRegelverkFerdig : EtterlatteTemplate<Barnepensjo
         }
 
         // Over 18 år vedlegg
-        includeAttachment(utlandInformasjonTilDegSomMottarPensjon, this.argument, data.erUnder18Aar.not().and(data.erBosattUtlandet))
-        includeAttachment(informasjonTilDegSomMottarPensjon, this.argument, data.erUnder18Aar.not().and(data.erBosattUtlandet.not()))
+        includeAttachment(utlandInformasjonTilDegSomMottarBarnepensjon, this.argument, data.erUnder18Aar.not().and(data.erBosattUtlandet))
+        includeAttachment(informasjonTilDegSomMottarBarnepensjon, this.argument, data.erUnder18Aar.not().and(data.erBosattUtlandet.not()))
 
         // Under 18 år vedlegg
         includeAttachment(utlandInformasjonTilDegSomHandlerPaaVegneAvBarnet, this.argument, data.erUnder18Aar.and(data.erBosattUtlandet))

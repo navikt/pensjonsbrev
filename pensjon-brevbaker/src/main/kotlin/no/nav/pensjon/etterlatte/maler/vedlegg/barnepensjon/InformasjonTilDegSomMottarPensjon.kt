@@ -16,9 +16,9 @@ import no.nav.pensjon.etterlatte.maler.vedlegg.skattetrekkPaaBarnepensjonUtland
 import no.nav.pensjon.etterlatte.maler.vedlegg.utbetalingUtland
 
 @TemplateModelHelpers
-val informasjonTilDegSomMottarPensjon = createAttachment(
+val informasjonTilDegSomMottarBarnepensjon = createAttachment(
     title = newText(
-        Language.Bokmal to "Informasjon til deg som mottar pensjon",
+        Language.Bokmal to "Informasjon til deg som mottar barnepensjon",
         Language.Nynorsk to "Informasjon til deg som får barnepensjon",
         Language.English to "Information to recipients of children’s pensions",
     ),
@@ -31,9 +31,9 @@ val informasjonTilDegSomMottarPensjon = createAttachment(
 }
 
 @TemplateModelHelpers
-val utlandInformasjonTilDegSomMottarPensjon = createAttachment(
+val utlandInformasjonTilDegSomMottarBarnepensjon = createAttachment(
     title = newText(
-        Language.Bokmal to "Informasjon til deg som mottar pensjon",
+        Language.Bokmal to "Informasjon til deg som mottar barnepensjon",
         Language.Nynorsk to "Informasjon til deg som får barnepensjon",
         Language.English to "Information to recipients of children’s pensions",
     ),
@@ -58,7 +58,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Language.Bokmal, Language.Ny
         text(
             Language.Bokmal to "Du kan sjekke og endre kontonummeret som er registrert på deg ved å logge inn på nav.no. Hvis du ikke kan melde fra digitalt, kan du melde om endringer via post. Du må da legge ved kopi av gyldig legitimasjon, eller vise gyldig legitimasjon ved personlig fremmøte på et NAV-kontor. Du finner mer informasjon og lenke til riktig skjema på ${Constants.KONTONUMMER_URL}.",
             Language.Nynorsk to "Du kan sjekke og endre kontonummeret du er registrert med, ved å logge inn på nav.no. Dersom du ikkje får til å melde frå digitalt, kan du melde om endringar via post. Du må då leggje ved kopi av gyldig legitimasjon, eller vise fram gyldig legitimasjon ved personleg frammøte på eit NAV-kontor. Du finn meir informasjon og lenkje til rett skjema på ${Constants.KONTONUMMER_URL}.",
-            Language.English to "You can check and change the bank account number that is registered in our system by logging in to our website: nav.no. If you are unable to notify us digitally, you can report any changes using conventional mail. Please remember to include a copy of a valid identification document or coming to the NAV office in person and bringing proof of identity. You can find more information and a link to the correct form online: ${Constants.KONTONUMMER_URL}.",
+            Language.English to "You can check and change the bank account number that is registered in our system by logging in to our website: nav.no. If you are unable to notify us digitally, you can report any changes using conventional mail. Please remember to include a copy of a valid identification document or coming to the NAV office in person and bringing proof of identity. You can find more information and a link to the correct form online: ${Constants.Engelsk.KONTONUMMER_URL}.",
             )
     }
 }
@@ -66,9 +66,9 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Language.Bokmal, Language.Ny
 private fun OutlineOnlyScope<LanguageSupport.Triple<Language.Bokmal, Language.Nynorsk, Language.English>, Any>.informasjon() {
     paragraph {
         text(
-            Language.Bokmal to "Du kan logge deg inn på våre nettsider for å se utbetalinger, brev osv. Du kan også chatte eller sende melding via nav.no/skrivtiloss. Har du ikke BankID eller annen innloggingsmulighet til vår hjemmeside nav.no, kan du kontakte oss på telefon.",
-            Language.Nynorsk to "Du kan logge deg inn på nettsidene våre for å sjå utbetalingar, brev osv. Du kan også chatte med oss eller sende melding via nav.no/skrivtiloss. Dersom du ikkje har BankID eller andre moglegheiter til å logge på heimesida vår nav.no, kan du kontakte oss på telefon.",
-            Language.English to "You can log in to our website to see your payments, letters etc. You can also chat with us or send a message online: nav.no/skrivtiloss. Please contact us by phone if you do not use BankID or another log in option.",
+            Language.Bokmal to "Du kan logge deg inn på våre nettsider for å se utbetalinger, brev osv. Du kan også chatte eller sende melding via ${Constants.SKRIVTILOSS_URL}. Har du ikke BankID eller annen innloggingsmulighet til vår hjemmeside nav.no, kan du kontakte oss på telefon.",
+            Language.Nynorsk to "Du kan logge deg inn på nettsidene våre for å sjå utbetalingar, brev osv. Du kan også chatte med oss eller sende melding via ${Constants.SKRIVTILOSS_URL}. Dersom du ikkje har BankID eller andre moglegheiter til å logge på heimesida vår nav.no, kan du kontakte oss på telefon.",
+            Language.English to "You can log in to our website to see your payments, letters etc. You can also chat with us or send a message online: ${Constants.Engelsk.SKRIVTILOSS_URL}. Please contact us by phone if you do not use BankID or another log in option.",
         )
     }
     paragraph {
