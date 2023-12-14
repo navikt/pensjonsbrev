@@ -92,17 +92,19 @@ export const LetterEditor = ({ initialState }: { initialState: RenderedLetter })
       >
         <SakspartView sakspart={editorState.editedLetter.letter.sakspart} />
         <h1>{editorState.editedLetter.letter.title}</h1>
-        {blocks.map((block, blockId) => (
-          <AnyBlockView
-            block={block}
-            blockFocusStolen={focusStolen.bind(null, blockId)}
-            blockId={blockId}
-            key={blockId}
-            onFocus={setCurrentBlock.bind(null, blockId)}
-            stealFocus={editorState.stealFocus[blockId]}
-            updateLetter={setEditorState}
-          />
-        ))}
+        <div>
+          {blocks.map((block, blockId) => (
+            <AnyBlockView
+              block={block}
+              blockFocusStolen={focusStolen.bind(null, blockId)}
+              blockId={blockId}
+              key={blockId}
+              onFocus={setCurrentBlock.bind(null, blockId)}
+              stealFocus={editorState.stealFocus[blockId]}
+              updateLetter={setEditorState}
+            />
+          ))}
+        </div>
         <SignaturView signatur={editorState.editedLetter.letter.signatur} />
       </div>
     </div>
