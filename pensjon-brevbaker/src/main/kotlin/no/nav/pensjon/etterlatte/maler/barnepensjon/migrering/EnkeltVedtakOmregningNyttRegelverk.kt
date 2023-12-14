@@ -7,6 +7,7 @@ import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
+import no.nav.pensjon.brev.template.dsl.expression.ifElse
 import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.expression.notNull
 import no.nav.pensjon.brev.template.dsl.expression.plus
@@ -30,6 +31,7 @@ import no.nav.pensjon.etterlatte.maler.formatBroek
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
 import no.nav.pensjon.etterlatte.maler.fraser.common.kontakttelefonPensjon
 import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.dineRettigheterOgPlikter
+import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.dineRettigheterOgPlikterSelvMottaker
 import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.informasjonTilDegSomMottarBarnepensjon
 import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.utlandInformasjonTilDegSomMottarBarnepensjon
 import no.nav.pensjon.etterlatte.maler.vedlegg.informasjonTilDegSomHandlerPaaVegneAvBarnet
@@ -292,22 +294,26 @@ object EnkeltVedtakOmregningNyttRegelverk : EtterlatteTemplate<BarnepensjonOmreg
                     Language.English to "For more information, visit us online: ${Constants.Engelsk.BARNEPENSJON_URL}. If you cannot find the answer to your question, you can call us by phone ("
                 )
                 kontakttelefonPensjon(erBosattUtlandet)
-                text(
-                    Language.Bokmal to " hverdager 9-15. Om du oppgir fødselsnummer til barnet, kan vi lettere gi deg rask og god hjelp.",
-                    Language.Nynorsk to ", kvardagar 9–15. Det vil gjere det enklare for oss å gi deg rask og god hjelp om du oppgir fødselsnummeret til barnet.",
-                    Language.English to ") weekdays 9-15. If you provide your child's national identity number, we can more easily provide you with quick and good help."
+                textExpr(
+                    Language.Bokmal to " hverdager 9-15. Om du oppgir fødselsnummer".expr() + ifElse(erUnder18Aar, " til barnet", "") + ", kan vi lettere gi deg rask og god hjelp.",
+                    Language.Nynorsk to ", kvardagar 9–15. Det vil gjere det enklare for oss å gi deg rask og god hjelp om du oppgir fødselsnummer".expr() + ifElse(erUnder18Aar, "et til barnet", "") +  ".",
+                    Language.English to ") weekdays 9-15. If you provide your ".expr() + ifElse(erUnder18Aar, "child's ", "") + "national identity number, we can more easily provide you with quick and good help."
                 )
             }
         }
 
-        // Over 18 år vedlegg
+        // Over 18 år vedlegg mottar pensjon
         includeAttachment(utlandInformasjonTilDegSomMottarBarnepensjon, this.argument, erUnder18Aar.not().and(erBosattUtlandet))
         includeAttachment(informasjonTilDegSomMottarBarnepensjon, this.argument, erUnder18Aar.not().and(erBosattUtlandet.not()))
 
-        // Under 18 år vedlegg
+        // Under 18 år vedlegg mottar pensjon
         includeAttachment(utlandInformasjonTilDegSomHandlerPaaVegneAvBarnet, this.argument, erUnder18Aar.and(erBosattUtlandet))
         includeAttachment(informasjonTilDegSomHandlerPaaVegneAvBarnet, this.argument, erUnder18Aar.and(erBosattUtlandet.not()))
 
-        includeAttachment(dineRettigheterOgPlikter, this.argument)
+        // Over 18 år vedlegg rettigheter og plikter
+        includeAttachment(dineRettigheterOgPlikterSelvMottaker, this.argument, erUnder18Aar.not())
+
+        // Under 18 år vedlegg rettigheter og plikter
+        includeAttachment(dineRettigheterOgPlikter, this.argument, erUnder18Aar)
     }
 }

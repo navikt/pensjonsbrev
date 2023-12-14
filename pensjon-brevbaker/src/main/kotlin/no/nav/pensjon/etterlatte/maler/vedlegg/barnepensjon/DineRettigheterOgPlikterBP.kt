@@ -1,16 +1,38 @@
 package no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon
 
+import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.LanguageSupport
 import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
+import no.nav.pensjon.brev.template.dsl.expression.expr
+import no.nav.pensjon.brev.template.dsl.expression.ifElse
+import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
 import no.nav.pensjon.etterlatte.maler.fraser.common.Felles
+
+@TemplateModelHelpers
+val dineRettigheterOgPlikterSelvMottaker = createAttachment(
+    title = newText(
+        Bokmal to "Dine rettigheter og plikter",
+        Nynorsk to "Rettane og pliktene dine",
+        English to "Your Rights and Obligations",
+    ),
+    includeSakspart = false,
+) {
+    meldFraOmEndringer(erUnder18Aar = false.expr())
+    veiledningFraNavForvaltningsloven11()
+    includePhrase(Felles.HjelpFraAndreForvaltningsloven12)
+    duHarRettTilInnsynISakenDin()
+    klagePaaVedtaketFolketrygdloven2112()
+}
+
 
 @TemplateModelHelpers
 val dineRettigheterOgPlikter = createAttachment(
@@ -21,14 +43,14 @@ val dineRettigheterOgPlikter = createAttachment(
     ),
     includeSakspart = false,
 ) {
-    meldFraOmEndringer()
+    meldFraOmEndringer(erUnder18Aar = true.expr())
     veiledningFraNavForvaltningsloven11()
     includePhrase(Felles.HjelpFraAndreForvaltningsloven12)
     duHarRettTilInnsynISakenDin()
     klagePaaVedtaketFolketrygdloven2112()
 }
 
-private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Any>.meldFraOmEndringer() {
+private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Any>.meldFraOmEndringer(erUnder18Aar: Expression<Boolean>) {
     title2 {
         text(
             Bokmal to "Meld fra om endringer",
@@ -37,10 +59,10 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, A
         )
     }
     paragraph {
-        text(
-            Bokmal to "Du må melde fra med en gang det skjer viktige endringer i barnets liv, som",
-            Nynorsk to "Du må melde frå med ein gong det skjer viktige endringar i livet til barnet. Døme på slike endringar kan vere",
-            English to "You must report any important changes as soon as they occur in your child's life, such as",
+        textExpr(
+            Bokmal to "Du må melde fra med en gang det skjer viktige endringer".expr() + ifElse(erUnder18Aar, " i barnets liv", "") + " som",
+            Nynorsk to "Du må melde frå med ein gong det skjer viktige endringar".expr() + ifElse(erUnder18Aar, "i livet til barnet", "") + ". Døme på slike endringar kan vere",
+            English to "You must report any important changes as soon as they occur".expr() + ifElse(erUnder18Aar, " in your child's life", "") + ", such as",
         )
         list {
             item {
