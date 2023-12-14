@@ -6,13 +6,14 @@ import { useNavigate, useParams, useRouteContext, useSearch } from "@tanstack/re
 import { useEffect } from "react";
 import { FormProvider, useForm, useFormContext } from "react-hook-form";
 
-import { addFavoritt, deleteFavoritt, getFavoritter, getLetterTemplate } from "../../api/skribenten-api-endpoints";
-import { Divider } from "../../components/Divider";
-import { usePreferredLanguage } from "../../hooks/usePreferredLanguage";
-import { redigeringRoute, selectedTemplateRoute } from "../../tanStackRoutes";
-import type { LetterMetadata } from "../../types/apiTypes";
-import { BrevSystem } from "../../types/apiTypes";
-import { SPRAAK_ENUM_TO_TEXT } from "../../types/nameMappings";
+import { addFavoritt, deleteFavoritt, getFavoritter, getLetterTemplate } from "~/api/skribenten-api-endpoints";
+import { Divider } from "~/components/Divider";
+import { usePreferredLanguage } from "~/hooks/usePreferredLanguage";
+import { redigeringRoute, selectedTemplateRoute } from "~/tanStackRoutes";
+import type { LetterMetadata } from "~/types/apiTypes";
+import { BrevSystem } from "~/types/apiTypes";
+import { SPRAAK_ENUM_TO_TEXT } from "~/types/nameMappings";
+
 import { BrevvelgerTabOptions } from "./BrevvelgerPage";
 
 export function SelectedTemplate() {

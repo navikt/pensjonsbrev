@@ -6,9 +6,10 @@ import type { AxiosError } from "axios";
 import React from "react";
 import { useForm } from "react-hook-form";
 
-import { getSak } from "../../api/skribenten-api-endpoints";
-import { sakRoute } from "../../tanStackRoutes";
-import type { SakDto } from "../../types/apiTypes";
+import { getSak } from "~/api/skribenten-api-endpoints";
+import { sakRoute } from "~/tanStackRoutes";
+import type { SakDto } from "~/types/apiTypes";
+
 import { BrevvelgerTabOptions } from "./BrevvelgerPage";
 
 export function ChooseSakPage() {
