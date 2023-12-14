@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.maler
 
 import no.nav.pensjon.brev.api.model.*
+import no.nav.pensjon.brev.api.model.SivilstandAvdoed.*
 import no.nav.pensjon.brev.api.model.maler.*
 import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDtoSelectors.AvdoedSelectors.ektefelletilleggOpphoert
 import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDtoSelectors.AvdoedSelectors.harFellesBarnUtenBarnetillegg
@@ -26,6 +27,7 @@ import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDtoSelectors.Innt
 import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDtoSelectors.UfoeretrygdVedVirkSelectors.erInntektsavkortet
 import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDtoSelectors.UfoeretrygdVedVirkSelectors.kompensasjonsgrad
 import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDtoSelectors.UfoeretrygdVedVirkSelectors.totalUfoereMaanedligBeloep
+import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDtoSelectors.UfoeretrygdVedVirkSelectors.ufoeregrad
 import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDtoSelectors.avdoed
 import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDtoSelectors.barnetilleggSaerkullsbarnVedVirk
 import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDtoSelectors.beregnetUTPerMaaned_antallBeregningsperioderPaaVedtak
@@ -256,12 +258,12 @@ object UfoerOmregningEnslig : AutobrevTemplate<UfoerOmregningEnsligDto> {
                 }
             }
 
-            showIf(harAvdoedRettigheterFoer2024){
-                showIf(avdoed.sivilstand.isOneOf(SivilstandAvdoed.SAMBOER3_2)) {
+            showIf(harAvdoedRettigheterFoer2024) {
+                showIf(avdoed.sivilstand.isOneOf(SAMBOER3_2)) {
                     includePhrase(GjenlevenderettSamboerOverskrift(avdoed.navn))
                     includePhrase(GjenlevenderettUfoeretrygdSamboer)
                 }
-                showIf(avdoed.sivilstand.isOneOf(SivilstandAvdoed.GIFT, SivilstandAvdoed.PARTNER, SivilstandAvdoed.SAMBOER1_5)) {
+                showIf(avdoed.sivilstand.isOneOf(GIFT, PARTNER, SAMBOER1_5)) {
                     includePhrase(RettTilGjenlevendetilleggOverskrift)
                     includePhrase(HvemHarRettTilGjenlevendetilleggVilkaar)
                     includePhrase(HvordanSoekerDuOverskrift)
@@ -271,11 +273,145 @@ object UfoerOmregningEnslig : AutobrevTemplate<UfoerOmregningEnsligDto> {
                         includePhrase(SoekGjenlevendetilleggAvtaleland)
                     }
                 }
+            }.orShowIf(
+                avdoed.sivilstand.isOneOf(GIFT, PARTNER, SAMBOER1_5)
+                        and ufoeretrygdVedVirk.ufoeregrad.greaterThan(0)
+                        and ufoeretrygdVedVirk.ufoeregrad.lessThan(0)
+            ) {
+                title1 {
+                    text(
+                        Bokmal to "Når du har gradert uføretrygd, kan du ha rett til omstillingsstønad.",
+                        Nynorsk to "Når du har gradert uføretrygd, kan du ha rett til omstillingsstønad.",
+                        English to "When you have graded disability benefit, you may be entitled to an adjustment allowance",
+                        //English to "When you receive partial disability benefit, you may be entitled to an adjustment allowance.",
+                    )
+                }
+                paragraph {
+                    text(
+                        Bokmal to "Omstillingsstønad er en tidsbegrenset stønad som vanligvis varer i tre år. Omstillingsstønad er pensjonsgivende inntekt, og kan derfor påvirke hva du får utbetalt i uføretrygd.",
+                        Nynorsk to "Omstillingsstønad er ein tidsavgrensa stønad som vanlegvis varar i tre år. Omstillingsstønad er pensjonsgivande inntekt, og kan derfor påverke kva du får utbetalt i uføretrygd.",
+                        English to "The adjustment allowance is a time-limited benefit that normally only lasts three years. The adjustment allowance is pensionable income and can therefore affect what you receive in disability benefits.",
+                    )
+                }
+                title1 {
+                    text(
+                        Bokmal to "Hvem kan ha rett til omstillingstønad?",
+                        Nynorsk to "Kven kan ha rett til omstillingsstønad?",
+                        English to "Who is entitled to an adjustment allowance?",
+                    )
+                }
+                paragraph {
+                    text(
+                        Bokmal to "For å ha rett til omstillingsstønaden må du ved dødsfallet som hovedregel:",
+                        Nynorsk to "For å ha rett til stønaden må du ved dødsfallet som hovudregel:",
+                        English to "To be entitled to an adjustment allowance, you at the time of the death must as a rule:",
+                    )
+                    list {
+                        item {
+                            text(
+                                Bokmal to "være medlem i folketrygden, og avdøde må ha vært medlem i folketrygden de siste fem årene fram til dødsfallet",
+                                Nynorsk to "vere medlem i folketrygda, og avdøde må ha vore medlem i folketrygda dei siste fem åra fram til dødsfallet",
+                                English to "be a member of the National Insurance Scheme, and the deceased must have been a member of the National Insurance Scheme for the last five years prior to death",
+                            )
+                        }
+                        item {
+                            text(
+                                Bokmal to "ha vært gift med den avdøde i minst fem år, eller",
+                                Nynorsk to "ha vore gift med den avdøde i minst fem år, eller",
+                                English to "have been married to the deceased for at least five years, or",
+                            )
+                        }
+                        item {
+                            text(
+                                Bokmal to "ha vært gift eller samboer med den avdøde og ha eller ha hatt barn med den avdøde, eller",
+                                Nynorsk to "ha vore gift eller sambuar med den avdøde og ha eller ha hatt barn med den avdøde, eller",
+                                English to "have been married to or a cohabitant with the deceased, and have/had children together, or",
+                            )
+                        }
+                        item {
+                            text(
+                                Bokmal to "ha omsorg for barn minst halvparten av tiden.",
+                                Nynorsk to "ha omsorg for barn minst halvparten av full tid.",
+                                English to "care for a child at least half the time.",
+                            )
+                        }
+                    }
+                }
+                title1 {
+                    text(
+                        Bokmal to "Hvor mye kan du få i omstillingsstønad?",
+                        Nynorsk to "Hvor mykje kan du få?",
+                        English to "How much are you entitled to?",
+                    )
+                }
+                paragraph {
+                    text(
+                        // TODO G ved virk
+                        Bokmal to "Stønaden er 2,25 ganger grunnbeløpet i folketrygden per år. Grunnbeløpet er <TODO>. Hvis den avdøde har bodd utenfor Norge etter fylte 16 år, kan det påvirke størrelsen.",
+                        Nynorsk to "Stønaden er 2,25 gongar grunnbeløpet i folketrygda per år. Grunnbeløpet er <TODO> kronar. Viss den avdøde har budd utanfor Noreg etter fylte 16 år, kan det påverke stønaden.",
+                        English to "The benefit is 2.25 times the National Insurance basic amount G, depending on the period of national insurance coverage for the person who died. The National Insurance basic amount is NOK <hent inn G ved virk>.",
+                        // Her mener jeg at engelsk-versjonen er direkte feil når den snakker om "Hvis den avdøde har bodd utenfor Norge etter fylte 16 år"
+
+                        //English to "The allowance is 2.25 times the basic amount in the National Insurance Scheme per year. The basic amount is 118,620 NOK. If the deceased lived outside Norway after the age of 16, it may affect the amount.",
+                    )
+                }
+                paragraph {
+                    text(
+                        Bokmal to "Hvis du har arbeidsinntekt ved siden av uføretrygden din, blir omstillingsstønaden redusert med 45 prosent av den inntekten som er over halve grunnbeløpet. " +
+                                "Noen ytelser, som for eksempel sykepenger og dagpenger, likestilles med arbeidsinntekt.",
+
+                        Nynorsk to "Viss du har arbeidsinntekt ved sida av uføretrygda di, blir stønaden redusert med 45 prosent av den inntekta som er over halve grunnbeløpet. " +
+                                "Nokre ytingar, som til dømes sjukepengar og dagpengar, er likestilte med arbeidsinntekt.",
+
+                        English to "The adjustment allowance will be reduced on the basis of income that you receive or expect to receive alongside your disability benefit. " +
+                                "Your adjustment allowance will be reduced by 45 per cent of your income that exceeds half of the National Insurance basic amount. " +
+                                "Some benefits, such as sickness benefits and unemployment benefits are equivalent to earned income.",
+                        // or expect to recieve? Er det riktig?
+
+                        // forslag:
+                        //English to "If you have earned income in addition to your disability benefit, the adjustment allowance will be reduced by 45 percent of the income that exceeds half the National Insurance basic amount. " +
+                                //"Some benefits, such as sickness benefits and unemployment benefits, are considered earned income.",
+                    )
+                }
+                title1 {
+                    text(
+                        Bokmal to "Hvordan søker du?",
+                        Nynorsk to "Korleis søkjer du?",
+                        English to "How do you apply?",
+                    )
+                }
+                paragraph {
+                    text(
+                        Bokmal to "Vi oppfordrer deg til å søke om omstillingsstønaden så snart som mulig fordi vi vanligvis bare etterbetaler for tre måneder.",
+                        Nynorsk to "Vi oppmodar deg til å søkje så snart som mogleg fordi vi vanlegvis berre etterbetaler for tre månader.",
+                        English to "We encourage you to apply as soon as possible because we normally only pay retroactively for three months.",
+                    )
+                }
+                paragraph {
+                    text(
+                        //TODO URL variabel
+                        Bokmal to "Du finner mer informasjon og søknad på nav.no/omstillingsstonad.",
+                        Nynorsk to "Du finn informasjon og søknad på nav.no/omstillingsstonad",
+                        English to "You will find information and the application form at nav.no/omstillingsstonad",
+                    )
+                }
+                showIf(bruker.borIAvtaleLand) {
+                    paragraph {
+                        text(
+                            Bokmal to "Hvis du bor i utlandet, må du kontakte trygdemyndigheter i bostedslandet ditt og søke om ytelser etter avdøde.",
+                            Nynorsk to "Dersom du bur i utlandet, må du kontakte trygdemyndigheitene i bustadlandet ditt.",
+                            English to "If you live outside Norway, you must contact the National Insurance authority in your country of residence.",
+                        )
+                    }
+                }
             }
 
-            showIf(avdoed.sivilstand.isOneOf(SivilstandAvdoed.GIFT, SivilstandAvdoed.PARTNER, SivilstandAvdoed.SAMBOER1_5)) {
+
+            // bla død før 2024...
+            //
+            showIf(avdoed.sivilstand.isOneOf(GIFT, PARTNER, SAMBOER1_5)) {
                 includePhrase(AvdoedBoddArbeidetIUtlandOverskrift)
-                includePhrase(AvdoedBoddEllerArbeidetIUtland)
+                includePhrase(AvdoedBoddEllerArbeidetIUtland(bruker.borIAvtaleLand))
                 includePhrase(PensjonFraAndreOverskrift)
                 includePhrase(InfoAvdoedPenFraAndre)
             }

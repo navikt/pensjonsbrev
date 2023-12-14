@@ -1,6 +1,8 @@
 package no.nav.pensjon.brev.maler.fraser
 
 import no.nav.pensjon.brev.api.model.Institusjon
+import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDtoSelectors.BrukerSelectors.borIAvtaleLand
+import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDtoSelectors.bruker
 import no.nav.pensjon.brev.maler.fraser.common.Constants.GJENLEVENDE_SKJEMA_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
 import no.nav.pensjon.brev.maler.fraser.ufoer.Barnetillegg.DuHarFaattUtbetaltBarnetilleggTidligereIAar
@@ -784,25 +786,19 @@ object AvdoedBoddArbeidetIUtlandOverskrift : OutlinePhrase<LangBokmalNynorskEngl
 }
 
 // AvdodBoddArbUtland2_001
-object AvdoedBoddEllerArbeidetIUtland : OutlinePhrase<LangBokmalNynorskEnglish>() {
+data class AvdoedBoddEllerArbeidetIUtland(val borIAvtaleland: Expression<Boolean>) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         paragraph {
             text(
-                Bokmal to "Hvis avdøde har bodd eller arbeidet i utlandet, kan dette få betydning for hvor mye du får ubetalt. " +
-                        "Norge har trygdesamarbeid med en rekke land gjennom EØS-avtalen og andre avtaler. " +
-                        "Derfor kan du også ha rettigheter fra andre land. " +
-                        "Vi kan hjelpe deg med søknad til land Norge har trygdeavtale med.",
-
-                Nynorsk to "Dersom avdøde har budd eller arbeidd i utlandet, kan det påverke kor mykje du får ubetalt. " +
-                        "Noreg har trygdesamarbeid med ei rekkje land gjennom EØS-avtalen og andre avtalar. " +
-                        "Derfor kan du også ha rettar frå andre land. " +
-                        "Vi kan hjelpe deg med søknad til land Noreg har trygdeavtale med.",
-
-                English to "If the deceased has lived or worked abroad, this may affect your payment. " +
-                        "Norway cooperates with a number of countries through the EEA Agreement and other social security agreements. " +
-                        "You may therefore also have rights from other countries. " +
-                        "We can assist you with your application to countries with which Norway has a social security agreement."
+                Bokmal to "Hvis avdøde har bodd eller arbeidet i utlandet, kan det påvirke hvor mye du får ubetalt. Norge har trygdesamarbeid med mange land gjennom EØS-avtalen og andre avtaler. Derfor kan du også ha rettigheter fra andre land.",
+                Nynorsk to "Dersom avdøde har budd eller arbeidd i utlandet, kan det påverke kor mykje du får ubetalt. Noreg har trygdesamarbeid med ei rekkje land gjennom EØS-avtalen og andre avtalar. Derfor kan du også ha rettar frå andre land.",
             )
+            showIf(borIAvtaleland) {
+                text(
+                    Bokmal to " Vi kan hjelpe deg med søknad til land Norge har trygdeavtale med.",
+                    Nynorsk to " Vi kan hjelpe deg med søknad til land Noreg har trygdeavtale med.",
+                )
+            }
         }
 }
 // PensjonFraAndreOverskrift_001
