@@ -51,7 +51,7 @@ export const ModelEditor = () => {
           </Button>
         </form>
       </FormProvider>
-      <div>{renderLetterMutation.data && <LetterEditor initialState={renderLetterMutation.data} />}</div>
+      {renderLetterMutation.data ? <LetterEditor initialState={renderLetterMutation.data} /> : <div />}
     </>
   );
 };

@@ -1,3 +1,4 @@
+import { css } from "@emotion/react";
 import { useState } from "react";
 
 import type { AnyBlock, RenderedLetter } from "~/types/brevbakerTypes";
@@ -75,9 +76,20 @@ export const LetterEditor = ({ initialState }: { initialState: RenderedLetter })
   const switchType = bindActionWithCallback(Actions.switchType, setEditorState, currentBlock);
 
   return (
-    <div>
+    <div
+      css={css`
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      `}
+    >
       <EditorMenu switchType={switchType} />
-      <div>
+      <div
+        css={css`
+          margin-top: var(--a-spacing-6);
+          width: 758px;
+        `}
+      >
         <SakspartView sakspart={editorState.editedLetter.letter.sakspart} />
         <h1>{editorState.editedLetter.letter.title}</h1>
         {blocks.map((block, blockId) => (
@@ -93,8 +105,6 @@ export const LetterEditor = ({ initialState }: { initialState: RenderedLetter })
         ))}
         <SignaturView signatur={editorState.editedLetter.letter.signatur} />
       </div>
-      {/*eslint-disable-next-line no-console*/}
-      <button onClick={() => console.log(editorState.editedLetter)}>Save</button>
     </div>
   );
 };
