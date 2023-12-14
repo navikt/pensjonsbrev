@@ -12,7 +12,6 @@ import { applyAction, bindActionWithCallback, combine } from "../lib/actions";
 import type { CursorPosition, LetterEditorState } from "../model/state";
 import { isTextContent } from "../model/utils";
 import { SelectionService } from "../services/SelectionService";
-import styles from "./Content.module.css";
 import { EditableText } from "./EditableText";
 import { ItemList } from "./ItemList";
 import { Text } from "./Text";
@@ -157,7 +156,7 @@ export class ContentGroup<T extends Content | TextContent> extends React.Compone
   render() {
     const { id, content, editable, onFocus, updateLetter, focusStolen, stealFocus } = this.props;
     return editable ? (
-      <div className={styles.content} onClick={this.stealFocusHandler} onFocus={onFocus}>
+      <div onClick={this.stealFocusHandler} onFocus={onFocus}>
         {content.map((c, contentId) => {
           switch (c.type) {
             case LITERAL: {
@@ -195,7 +194,7 @@ export class ContentGroup<T extends Content | TextContent> extends React.Compone
         })}
       </div>
     ) : (
-      <div className={styles.notEditable}>
+      <div>
         {content.map((c, contentId) => {
           switch (c.type) {
             case LITERAL:
