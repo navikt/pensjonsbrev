@@ -31,7 +31,6 @@ data class UfoerOmregningEnsligDto(
         val ektefelletilleggOpphoert: Boolean,
         val sivilstand: SivilstandAvdoed,
         val harFellesBarnUtenBarnetillegg: Boolean,
-        val doedFoer1Desember2023: Boolean,
     )
 
     data class UfoeretrygdVedVirk(

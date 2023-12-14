@@ -2,7 +2,6 @@ package no.nav.pensjon.brev.maler
 
 import no.nav.pensjon.brev.api.model.*
 import no.nav.pensjon.brev.api.model.maler.*
-import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDtoSelectors.AvdoedSelectors.doedFoer1Desember2023
 import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDtoSelectors.AvdoedSelectors.ektefelletilleggOpphoert
 import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDtoSelectors.AvdoedSelectors.harFellesBarnUtenBarnetillegg
 import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDtoSelectors.AvdoedSelectors.navn
@@ -31,6 +30,7 @@ import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDtoSelectors.avdo
 import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDtoSelectors.barnetilleggSaerkullsbarnVedVirk
 import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDtoSelectors.beregnetUTPerMaaned_antallBeregningsperioderPaaVedtak
 import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDtoSelectors.bruker
+import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDtoSelectors.harAvdoedRettigheterFoer2024
 import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDtoSelectors.harBarnetillegg
 import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDtoSelectors.inntektFoerUfoerhetVedVirk
 import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDtoSelectors.institusjonsoppholdVedVirk
@@ -256,7 +256,7 @@ object UfoerOmregningEnslig : AutobrevTemplate<UfoerOmregningEnsligDto> {
                 }
             }
 
-            showIf(avdoed.doedFoer1Desember2023){
+            showIf(harAvdoedRettigheterFoer2024){
                 showIf(avdoed.sivilstand.isOneOf(SivilstandAvdoed.SAMBOER3_2)) {
                     includePhrase(GjenlevenderettSamboerOverskrift(avdoed.navn))
                     includePhrase(GjenlevenderettUfoeretrygdSamboer)

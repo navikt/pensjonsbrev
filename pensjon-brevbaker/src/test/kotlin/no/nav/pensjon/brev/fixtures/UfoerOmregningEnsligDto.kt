@@ -17,7 +17,6 @@ fun createUfoerOmregningEnsligDto() =
             ektefelletilleggOpphoert = false,
             sivilstand = SivilstandAvdoed.SAMBOER3_2,
             harFellesBarnUtenBarnetillegg = false,
-            doedFoer1Desember2023 = true,
         ),
         krav_virkningsDatoFraOgMed = LocalDate.of(2020, 1, 1),
         beregnetUTPerMaaned_antallBeregningsperioderPaaVedtak = 0,
@@ -58,4 +57,5 @@ fun createUfoerOmregningEnsligDto() =
             ),
         ),
         harBarnetillegg = false,
+        harAvdoedRettigheterFoer2024 = true,
     )
