@@ -2,7 +2,6 @@ import type { Title1Block } from "~/types/brevbakerTypes";
 
 import type { BlockProperties } from "../BlockProperties";
 import { ContentGroup } from "./ContentGroup";
-import styles from "./Title1.module.css";
 
 export const Title1 = ({
   block,
@@ -12,7 +11,7 @@ export const Title1 = ({
   blockFocusStolen,
   onFocus,
 }: BlockProperties<Title1Block>) => (
-  <h2 className={styles.container}>
+  <h2>
     <ContentGroup
       content={block.content}
       editable={block.editable}

@@ -2,7 +2,6 @@ import type { ParagraphBlock } from "~/types/brevbakerTypes";
 
 import type { BlockProperties } from "../BlockProperties";
 import { ContentGroup } from "./ContentGroup";
-import styles from "./Paragraph.module.css";
 
 export const Paragraph = ({
   block,
@@ -12,7 +11,7 @@ export const Paragraph = ({
   blockFocusStolen,
   onFocus,
 }: BlockProperties<ParagraphBlock>) => (
-  <div className={styles.paragraph}>
+  <div>
     <ContentGroup
       content={block.content}
       editable={block.editable}

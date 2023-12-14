@@ -10,7 +10,6 @@ import { SakspartView } from "./components/SakspartView";
 import { SignaturView } from "./components/SignaturView";
 import { Title1 } from "./components/Title1";
 import { Title2 } from "./components/Title2";
-import styles from "./LetterEditor.module.css";
 import type { BoundAction, CallbackReceiver } from "./lib/actions";
 import { bindActionWithCallback } from "./lib/actions";
 import type { CursorPosition, LetterEditorState } from "./model/state";
@@ -76,9 +75,9 @@ export const LetterEditor = ({ initialState }: { initialState: RenderedLetter })
   const switchType = bindActionWithCallback(Actions.switchType, setEditorState, currentBlock);
 
   return (
-    <div className={styles.container}>
+    <div>
       <EditorMenu switchType={switchType} />
-      <div className={styles.letter}>
+      <div>
         <SakspartView sakspart={editorState.editedLetter.letter.sakspart} />
         <h1>{editorState.editedLetter.letter.title}</h1>
         {blocks.map((block, blockId) => (
