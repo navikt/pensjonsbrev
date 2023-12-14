@@ -24,9 +24,9 @@ val utlandInformasjonTilDegSomHandlerPaaVegneAvBarnet = createAttachment(
     includeSakspart = false,
 ) {
     informasjon()
-    postadresse(true.expr())
+    postadresse(utland = true.expr())
     utbetalingUtland()
-    endringAvKontonummerUtland(true.expr())
+    endringAvKontonummerUtland(erUnder18Aar = true.expr())
     skattetrekkPaaBarnepensjonUtland()
 }
 
@@ -58,7 +58,7 @@ val informasjonTilDegSomHandlerPaaVegneAvBarnet = createAttachment(
     includeSakspart = false,
 ) {
     informasjon()
-    postadresse(false.expr())
+    postadresse(utland = false.expr())
     endringAvKontonummerForelder()
     skattetrekkPaaBarnepensjon()
 }
