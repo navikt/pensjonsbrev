@@ -11,7 +11,7 @@ export const Paragraph = ({
   blockFocusStolen,
   onFocus,
 }: BlockProperties<ParagraphBlock>) => (
-  <div>
+  <div className="paragraph">
     <ContentGroup
       content={block.content}
       editable={block.editable}

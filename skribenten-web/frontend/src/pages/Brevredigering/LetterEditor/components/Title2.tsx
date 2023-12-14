@@ -1,3 +1,5 @@
+import { Heading } from "@navikt/ds-react";
+
 import type { Title2Block } from "~/types/brevbakerTypes";
 
 import type { BlockProperties } from "../BlockProperties";
@@ -11,7 +13,7 @@ export const Title2 = ({
   blockFocusStolen,
   onFocus,
 }: BlockProperties<Title2Block>) => (
-  <h3>
+  <Heading level="3" size="small">
     <ContentGroup
       content={block.content}
       editable={block.editable}
@@ -21,5 +23,5 @@ export const Title2 = ({
       stealFocus={blockStealFocus}
       updateLetter={updateLetter}
     />
-  </h3>
+  </Heading>
 );

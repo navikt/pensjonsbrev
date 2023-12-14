@@ -1,4 +1,7 @@
+import "./editor.css";
+
 import { css } from "@emotion/react";
+import { Heading } from "@navikt/ds-react";
 import { useState } from "react";
 
 import type { AnyBlock, RenderedLetter } from "~/types/brevbakerTypes";
@@ -91,7 +94,15 @@ export const LetterEditor = ({ initialState }: { initialState: RenderedLetter })
         `}
       >
         <SakspartView sakspart={editorState.editedLetter.letter.sakspart} />
-        <h1>{editorState.editedLetter.letter.title}</h1>
+        <Heading
+          css={css`
+            margin: var(--a-spacing-8) 0;
+          `}
+          level="1"
+          size="large"
+        >
+          {editorState.editedLetter.letter.title}
+        </Heading>
         <div>
           {blocks.map((block, blockId) => (
             <AnyBlockView
