@@ -38,6 +38,7 @@ data class UfoerOmregningEnsligDto(
         val totalUfoereMaanedligBeloep: Kroner,
         val erInntektsavkortet: Boolean,
         val ufoeregrad: Int,
+        val grunnbeloep: Kroner,
     )
 
     data class InntektFoerUfoerhetVedVirk(
