@@ -1,4 +1,4 @@
-import produce from "immer";
+import { produce } from "immer";
 
 import type { Action } from "../lib/actions";
 import type { LetterEditorState } from "../model/state";
