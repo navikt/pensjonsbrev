@@ -11,8 +11,8 @@ export const EditorMenu = ({ switchType }: EditorMenuProperties) => {
   return (
     <div
       css={css`
-        border-bottom: 1px solid var(--Border-Divider, rgba(7, 26, 54, 0.21));
-        background: var(--Global-Blue-50, #e6f0ff);
+        border-bottom: 1px solid var(--a-border-divider);
+        background: var(--a-blue-50);
         padding: var(--a-spacing-3) var(--a-spacing-4);
         display: flex;
         gap: var(--a-spacing-2);

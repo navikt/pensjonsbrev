@@ -7,10 +7,9 @@ export const SakspartView = ({ sakspart }: { sakspart: Sakspart }) => (
     css={css`
       display: grid;
       grid-template-columns: max-content 1fr min-content;
-      column-gap: var(--a-spacing-2);
-      row-gap: var(--a-spacing-1);
+      gap: var(--a-spacing-1) var(--a-spacing-2);
       border-radius: 4px;
-      background: var(--Global-Gray-50, #f2f3f5);
+      background: var(--a-gray-50);
       padding: 0 var(--a-spacing-3);
     `}
   >

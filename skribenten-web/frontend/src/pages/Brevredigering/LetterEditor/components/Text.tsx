@@ -17,8 +17,8 @@ export const Text = ({ content }: TextProperties) => {
         <span
           css={css`
             border-radius: 4px;
-            border: 1px solid var(--Border-Default, rgba(2, 20, 49, 0.49));
-            background: var(--Global-Gray-50, #f2f3f5);
+            border: 1px solid var(--a-border-default);
+            background: var(--a-gray-50);
             padding: 1px 4px;
             cursor: default;
           `}

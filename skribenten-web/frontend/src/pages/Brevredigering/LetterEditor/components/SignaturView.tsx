@@ -26,7 +26,7 @@ const Saksbehandler = ({ rolleTekst, navn }: { rolleTekst: string; navn?: string
 export const SignaturView = ({ signatur }: { signatur: Signatur }) => (
   <div
     css={css`
-      background: var(--Global-Gray-50, #f2f3f5);
+      background: var(--a-gray-50);
       padding: var(--a-spacing-3);
       display: flex;
       flex-direction: column;
