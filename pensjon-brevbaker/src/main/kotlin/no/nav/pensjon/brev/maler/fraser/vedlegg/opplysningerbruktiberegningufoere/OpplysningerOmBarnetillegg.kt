@@ -420,16 +420,13 @@ data class OpplysningerOmBarnetillegg(
                     }
 
                     showIf(harJusteringsbeloep) {
-                        val positivt = justeringsbeloepAar.value.greaterThan(0)
+                        val fortegn = ifElse(justeringsbeloepAar.greaterThan(0), "-", "+")
                         row {
                             cell {
                                 textExpr(
-                                    Bokmal to ifElse(positivt, "+", "-") +
-                                            " Beløp som er brukt for å justere reduksjonen av barnetillegget",
-                                    Nynorsk to ifElse(positivt, "+", "-") +
-                                            " Beløp som er brukt for å justere reduksjonen av barnetillegget",
-                                    English to ifElse(positivt, "+", "-") +
-                                            " Amount which is used to adjust the reduction of child supplement",
+                                    Bokmal to fortegn + " Beløp som er brukt for å justere reduksjonen av barnetillegget",
+                                    Nynorsk to fortegn + " Beløp som er brukt for å justere reduksjonen av barnetillegget",
+                                    English to fortegn + " Amount which is used to adjust the reduction of child supplement",
                                 )
                             }
                             cell {
