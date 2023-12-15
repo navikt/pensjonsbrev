@@ -1,24 +1,46 @@
+import { css } from "@emotion/react";
+import { TextField } from "@navikt/ds-react";
+
 import type { Signatur } from "~/types/brevbakerTypes";
 
-import styles from "./SignaturView.module.css";
-
-export type SignaturViewProperties = {
-  signatur: Signatur;
-};
-
 const Saksbehandler = ({ rolleTekst, navn }: { rolleTekst: string; navn?: string }) => {
-  return navn ? (
+  if (!navn) {
+    return <></>;
+  }
+  return (
     <div>
-      <div>{navn}</div>
-      <div>{rolleTekst}</div>
+      <TextField
+        css={css`
+          margin-bottom: var(--a-spacing-1);
+        `}
+        hideLabel
+        label=""
+        readOnly
+        value={navn}
+      />
+      <i>{rolleTekst}</i>
     </div>
-  ) : null;
+  );
 };
 
-export const SignaturView = ({ signatur }: SignaturViewProperties) => (
-  <div className={styles.container}>
-    <div>{signatur.hilsenTekst}</div>
-    <div className={styles.saksbehandlere}>
+export const SignaturView = ({ signatur }: { signatur: Signatur }) => (
+  <div
+    css={css`
+      background: var(--a-gray-50);
+      padding: var(--a-spacing-3);
+      display: flex;
+      flex-direction: column;
+      gap: var(--a-spacing-6);
+    `}
+  >
+    <span>{signatur.hilsenTekst}</span>
+    <div
+      css={css`
+        display: grid;
+        grid-template-columns: 50% 50%;
+        gap: var(--a-spacing-8);
+      `}
+    >
       <Saksbehandler navn={signatur.saksbehandlerNavn} rolleTekst={signatur.saksbehandlerRolleTekst} />
       <Saksbehandler navn={signatur.attesterendeSaksbehandlerNavn} rolleTekst={signatur.saksbehandlerRolleTekst} />
     </div>

@@ -1,22 +1,26 @@
+import { css } from "@emotion/react";
+
 import type { Sakspart } from "~/types/brevbakerTypes";
 
-import styles from "./SakspartView.module.css";
-
-export type SakspartViewProperties = {
-  sakspart: Sakspart;
-};
-export const SakspartView = ({ sakspart }: SakspartViewProperties) => (
-  <div className={styles.container}>
-    <div className={styles.sakspartContainer}>
-      <div>Saken gjelder:</div>
-      <div>{sakspart.gjelderNavn}</div>
-      <div>Fødselsnummer:</div>
-      <div>{sakspart.gjelderFoedselsnummer}</div>
-      <div>Saksnummer:</div>
-      <div>{sakspart.saksnummer}</div>
-    </div>
-    <div className={styles.dato}>
-      <div>{sakspart.dokumentDato}</div>
-    </div>
+export const SakspartView = ({ sakspart }: { sakspart: Sakspart }) => (
+  <div
+    css={css`
+      display: grid;
+      grid-template-columns: max-content 1fr min-content;
+      gap: var(--a-spacing-1) var(--a-spacing-2);
+      border-radius: 4px;
+      background: var(--a-gray-50);
+      padding: 0 var(--a-spacing-3);
+    `}
+  >
+    <span>Saken gjelder:</span>
+    <span>{sakspart.gjelderNavn}</span>
+    <span />
+    <span>Fødselsnummer:</span>
+    <span>{sakspart.gjelderFoedselsnummer}</span>
+    <span />
+    <span>Saksnummer:</span>
+    <span>{sakspart.saksnummer}</span>
+    <span>{sakspart.dokumentDato}</span>
   </div>
 );

@@ -1,3 +1,7 @@
+import "./editor.css";
+
+import { css } from "@emotion/react";
+import { Heading } from "@navikt/ds-react";
 import { useState } from "react";
 
 import type { AnyBlock, RenderedLetter } from "~/types/brevbakerTypes";
@@ -10,7 +14,6 @@ import { SakspartView } from "./components/SakspartView";
 import { SignaturView } from "./components/SignaturView";
 import { Title1 } from "./components/Title1";
 import { Title2 } from "./components/Title2";
-import styles from "./LetterEditor.module.css";
 import type { BoundAction, CallbackReceiver } from "./lib/actions";
 import { bindActionWithCallback } from "./lib/actions";
 import type { CursorPosition, LetterEditorState } from "./model/state";
@@ -76,26 +79,45 @@ export const LetterEditor = ({ initialState }: { initialState: RenderedLetter })
   const switchType = bindActionWithCallback(Actions.switchType, setEditorState, currentBlock);
 
   return (
-    <div className={styles.container}>
+    <div
+      css={css`
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      `}
+    >
       <EditorMenu switchType={switchType} />
-      <div className={styles.letter}>
+      <div
+        css={css`
+          margin-top: var(--a-spacing-6);
+          width: 758px;
+        `}
+      >
         <SakspartView sakspart={editorState.editedLetter.letter.sakspart} />
-        <h1>{editorState.editedLetter.letter.title}</h1>
-        {blocks.map((block, blockId) => (
-          <AnyBlockView
-            block={block}
-            blockFocusStolen={focusStolen.bind(null, blockId)}
-            blockId={blockId}
-            key={blockId}
-            onFocus={setCurrentBlock.bind(null, blockId)}
-            stealFocus={editorState.stealFocus[blockId]}
-            updateLetter={setEditorState}
-          />
-        ))}
+        <Heading
+          css={css`
+            margin: var(--a-spacing-8) 0;
+          `}
+          level="1"
+          size="large"
+        >
+          {editorState.editedLetter.letter.title}
+        </Heading>
+        <div>
+          {blocks.map((block, blockId) => (
+            <AnyBlockView
+              block={block}
+              blockFocusStolen={focusStolen.bind(null, blockId)}
+              blockId={blockId}
+              key={blockId}
+              onFocus={setCurrentBlock.bind(null, blockId)}
+              stealFocus={editorState.stealFocus[blockId]}
+              updateLetter={setEditorState}
+            />
+          ))}
+        </div>
         <SignaturView signatur={editorState.editedLetter.letter.signatur} />
       </div>
-      {/*eslint-disable-next-line no-console*/}
-      <button onClick={() => console.log(editorState.editedLetter)}>Save</button>
     </div>
   );
 };

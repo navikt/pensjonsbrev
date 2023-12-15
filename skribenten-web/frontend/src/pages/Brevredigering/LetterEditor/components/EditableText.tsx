@@ -5,8 +5,6 @@ import ContentEditable from "react-contenteditable";
 import type { LiteralValue } from "~/types/brevbakerTypes";
 
 import type { BoundAction } from "../lib/actions";
-import { isEmptyContent } from "../model/utils";
-import styles from "./Text.module.css";
 
 export type EditableTextProperties = {
   content: LiteralValue;
@@ -29,7 +27,6 @@ export const EditableText = ({ content, updateText, innerRef }: EditableTextProp
 
   return (
     <ContentEditable
-      className={isEmptyContent(content) ? styles.empty : ""}
       html={content.text || "​"}
       innerRef={reference}
       onChange={onChangeHandler(updateText)}

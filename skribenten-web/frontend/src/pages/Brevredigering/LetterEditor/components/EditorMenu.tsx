@@ -1,5 +1,7 @@
+import { css } from "@emotion/react";
+import { Button } from "@navikt/ds-react";
+
 import type { BoundAction } from "../lib/actions";
-import styles from "./EditorMenu.module.css";
 
 export type EditorMenuProperties = {
   switchType: BoundAction<[type: "PARAGRAPH" | "TITLE1" | "TITLE2"]>;
@@ -7,26 +9,25 @@ export type EditorMenuProperties = {
 
 export const EditorMenu = ({ switchType }: EditorMenuProperties) => {
   return (
-    <div className={styles.container}>
-      <div className={styles.top} />
-      <div className={styles.bottom}>
-        <button disabled type="button">
-          Angre
-        </button>
-        <button disabled type="button">
-          Gjør om
-        </button>
-        <div className={styles.space} />
-        <button onClick={switchType.bind(null, "TITLE1")} type="button">
-          Tittel 1
-        </button>
-        <button onClick={switchType.bind(null, "TITLE2")} type="button">
-          Tittel 2
-        </button>
-        <button onClick={switchType.bind(null, "PARAGRAPH")} type="button">
-          Normal
-        </button>
-      </div>
+    <div
+      css={css`
+        border-bottom: 1px solid var(--a-border-divider);
+        background: var(--a-blue-50);
+        padding: var(--a-spacing-3) var(--a-spacing-4);
+        display: flex;
+        gap: var(--a-spacing-2);
+        align-self: stretch;
+      `}
+    >
+      <Button onClick={switchType.bind(null, "TITLE1")} size="xsmall" type="button" variant="secondary-neutral">
+        Overskift 1
+      </Button>
+      <Button onClick={switchType.bind(null, "TITLE2")} size="xsmall" type="button" variant="secondary-neutral">
+        Overskrift 2
+      </Button>
+      <Button onClick={switchType.bind(null, "PARAGRAPH")} size="xsmall" type="button" variant="secondary-neutral">
+        Normal
+      </Button>
     </div>
   );
 };

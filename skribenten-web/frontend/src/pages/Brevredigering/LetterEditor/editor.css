@@ -1,0 +1,11 @@
+.paragraph {
+    margin-bottom: var(--a-spacing-8);
+}
+
+h1 {
+    margin: var(--a-spacing-8) 0;
+}
+
+h2, h3 {
+    margin-bottom: var(--a-spacing-2) !important;
+}
