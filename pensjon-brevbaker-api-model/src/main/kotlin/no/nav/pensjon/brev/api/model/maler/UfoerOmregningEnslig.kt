@@ -37,7 +37,7 @@ data class UfoerOmregningEnsligDto(
         val kompensasjonsgrad: Double,
         val totalUfoereMaanedligBeloep: Kroner,
         val erInntektsavkortet: Boolean,
-        val ufoeregrad: Int,
+        val harGradertUfoeretrygd: Boolean,
         val grunnbeloep: Kroner,
     )
 
