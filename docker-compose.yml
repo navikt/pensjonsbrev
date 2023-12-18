@@ -25,6 +25,8 @@ services:
       - "5015:5005" # debug port
 
   skribenten-backend:
+    profiles:
+      - skribenten
     build: ./skribenten-backend
     depends_on:
       skribenten-backend-db:
@@ -59,6 +61,8 @@ services:
       - SAF_URL=https://saf.dev.intern.nav.no/graphql
 
   skribenten-backend-db:
+    profiles:
+      - skribenten
     image: 'postgres:14-alpine'
     ports:
       - "5432:5432"
@@ -70,6 +74,8 @@ services:
       POSTGRES_PASSWORD: pass
 
   wonderwall:
+    profiles:
+      - skribenten
     image: ghcr.io/nais/wonderwall:latest
     platform: linux/amd64
     ports:
@@ -86,6 +92,8 @@ services:
       - WONDERWALL_LOG_LEVEL=debug
       - WONDERWALL_LOG_FORMAT=text
   frontend:
+    profiles:
+      - skribenten
     build:
       context: skribenten-web/bff
     secrets:
