@@ -1,5 +1,7 @@
 package no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon
 
+import no.nav.pensjon.brev.template.Expression
+import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
@@ -12,6 +14,7 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
 import no.nav.pensjon.etterlatte.maler.fraser.common.Felles
 
+
 @TemplateModelHelpers
 val dineRettigheterOgPlikter = createAttachment(
     title = newText(
@@ -21,14 +24,14 @@ val dineRettigheterOgPlikter = createAttachment(
     ),
     includeSakspart = false,
 ) {
-    meldFraOmEndringer()
+    meldFraOmEndringer(erUnder18 = this.argument)
     veiledningFraNavForvaltningsloven11()
     includePhrase(Felles.HjelpFraAndreForvaltningsloven12)
     duHarRettTilInnsynISakenDin()
     klagePaaVedtaketFolketrygdloven2112()
 }
 
-private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Any>.meldFraOmEndringer() {
+private fun OutlineOnlyScope<LangBokmalNynorskEnglish, Boolean>.meldFraOmEndringer(erUnder18: Expression<Boolean>) {
     title2 {
         text(
             Bokmal to "Meld fra om endringer",
@@ -37,11 +40,19 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, A
         )
     }
     paragraph {
-        text(
-            Bokmal to "Du må melde fra med en gang det skjer viktige endringer i barnets liv, som",
-            Nynorsk to "Du må melde frå med ein gong det skjer viktige endringar i livet til barnet. Døme på slike endringar kan vere",
-            English to "You must report any important changes as soon as they occur in your child's life, such as",
-        )
+        showIf(erUnder18) {
+            text(
+                Bokmal to "Du må melde fra med en gang det skjer viktige endringer i barnets liv, som",
+                Nynorsk to "Du må melde frå med ein gong det skjer viktige endringar i livet til barnet. Døme på slike endringar kan vere",
+                English to "You must report any important changes as soon as they occur in your child's life, such as",
+            )
+        }.orShow {
+            text(
+                Bokmal to "Du må melde fra med en gang det skjer viktige endringer, som",
+                Nynorsk to "Du må melde frå med ein gong det skjer viktige endringar. Døme på slike endringar kan vere",
+                English to "You must report any important changes as soon as they occur, such as",
+            )
+        }
         list {
             item {
                 text(
@@ -81,7 +92,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, A
     }
 }
 
-private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Any>.veiledningFraNavForvaltningsloven11() {
+private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Boolean>.veiledningFraNavForvaltningsloven11() {
     title2 {
         text(
             Bokmal to "Veiledning fra NAV - forvaltningsloven § 11",
@@ -104,7 +115,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, A
     }
 }
 
-private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Any>.duHarRettTilInnsynISakenDin() {
+private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Boolean>.duHarRettTilInnsynISakenDin() {
     title2 {
         text(
             Bokmal to "Du har rett til innsyn i saken din - forvaltningsloven § 18 ",
@@ -121,7 +132,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, A
     }
 }
 
-private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Any>.klagePaaVedtaketFolketrygdloven2112() {
+private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Boolean>.klagePaaVedtaketFolketrygdloven2112() {
     title2 {
         text(
             Bokmal to "Klage på vedtaket - folketrygdloven § 21-12",

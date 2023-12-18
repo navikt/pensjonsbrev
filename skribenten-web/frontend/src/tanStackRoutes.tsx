@@ -4,6 +4,7 @@ import React from "react";
 
 import { getLetterTemplate, getSak } from "./api/skribenten-api-endpoints";
 import { AppHeader } from "./components/AppHeader";
+import { RedigeringPage } from "./pages/Brevredigering/RedigeringPage";
 import { BrevvelgerPage, BrevvelgerTabOptions } from "./pages/Brevvelger/BrevvelgerPage";
 import { ChooseSakPage } from "./pages/Brevvelger/ChooseSakPage";
 import { SakBreadcrumbsPage } from "./pages/Brevvelger/SakBreadcrumbsPage";
@@ -62,7 +63,7 @@ export const sakRoute = new Route({
 
     return { getSakQueryOptions };
   },
-  load: async ({ context: { queryClient, getSakQueryOptions } }) => {
+  loader: async ({ context: { queryClient, getSakQueryOptions } }) => {
     await queryClient.ensureQueryData(getSakQueryOptions);
   },
   component: SakBreadcrumbsPage,
@@ -77,7 +78,7 @@ export const brevvelgerRoute = new Route({
         ? BrevvelgerTabOptions.E_BLANKETTER
         : BrevvelgerTabOptions.BREVMALER,
   }),
-  load: async ({ context: { queryClient, getSakQueryOptions } }) => {
+  loader: async ({ context: { queryClient, getSakQueryOptions } }) => {
     const { sakType } = await queryClient.ensureQueryData(getSakQueryOptions);
 
     const getLetterTemplateQuery = {
@@ -96,10 +97,16 @@ export const selectedTemplateRoute = new Route({
   component: SelectedTemplate,
 });
 
+export const redigeringRoute = new Route({
+  getParentRoute: () => sakRoute,
+  path: "$templateId/redigering",
+  component: RedigeringPage,
+});
+
 const indexRoute = new Route({
   getParentRoute: () => rootRoute,
   path: "/",
-  load: ({ navigate, preload }) => {
+  loader: ({ navigate, preload }) => {
     if (!preload) {
       navigate({ to: chooseSakPageRoute.id });
     }
@@ -116,7 +123,7 @@ const notFoundRoute = new Route({
 const routeTree = rootRoute.addChildren([
   indexRoute,
   chooseSakPageRoute,
-  sakRoute.addChildren([brevvelgerRoute.addChildren([selectedTemplateRoute])]),
+  sakRoute.addChildren([brevvelgerRoute.addChildren([selectedTemplateRoute]), redigeringRoute]),
   notFoundRoute,
 ]);
 

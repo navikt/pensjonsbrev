@@ -5,8 +5,8 @@
 import type { AxiosResponse } from "axios";
 import axios from "axios";
 
-import type { LetterTemplatesResponse, PreferredLanguage, SakDto } from "../types/apiTypes";
-import type { PidRequest } from "../types/apiTypes";
+import type { LetterTemplatesResponse, PidRequest, PreferredLanguage, SakDto } from "../types/apiTypes";
+import type { RedigerbarTemplateDescription, RenderedLetter } from "../types/brevbakerTypes";
 const SKRIBENTEN_API_BASE_PATH = "/skribenten-backend";
 
 /**
@@ -26,6 +26,11 @@ export const navnKeys = {
 export const letterTemplatesKeys = {
   all: ["LETTER_TEMPLATES"] as const,
   id: (sakType: string) => [...letterTemplatesKeys.all, sakType] as const,
+};
+
+export const letterKeys = {
+  all: ["LETTER"] as const,
+  brevkode: (brevkode: string) => [...letterKeys.all, brevkode] as const,
 };
 
 export const favoritterKeys = {
@@ -71,6 +76,16 @@ export const getFavoritter = {
   queryKey: favoritterKeys.all,
   queryFn: async () => (await axios.get<string[]>(`${SKRIBENTEN_API_BASE_PATH}/favourites`)).data,
 };
+
+export const getTemplate = {
+  queryKey: letterKeys.brevkode,
+  queryFn: async (brevkode: string) =>
+    (await axios.get<RedigerbarTemplateDescription>(`${SKRIBENTEN_API_BASE_PATH}/template/${brevkode}`)).data,
+};
+
+export async function renderLetter(letterId: string, request: unknown) {
+  return (await axios.post<RenderedLetter>(`${SKRIBENTEN_API_BASE_PATH}/letter/${letterId}`, request)).data;
+}
 
 export async function addFavoritt(id: string) {
   return (

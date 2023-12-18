@@ -4,6 +4,7 @@ import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.LetterTemplate
 import no.nav.pensjon.brev.template.dsl.createTemplate
+import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.not
@@ -19,6 +20,7 @@ import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.barnepensjon.migrering.BarnepensjonOmregnetNyttRegelverkDTOSelectors.anvendtTrygdetid
 import no.nav.pensjon.etterlatte.maler.barnepensjon.migrering.BarnepensjonOmregnetNyttRegelverkDTOSelectors.erBosattUtlandet
 import no.nav.pensjon.etterlatte.maler.barnepensjon.migrering.BarnepensjonOmregnetNyttRegelverkDTOSelectors.erForeldreloes
+import no.nav.pensjon.etterlatte.maler.barnepensjon.migrering.BarnepensjonOmregnetNyttRegelverkDTOSelectors.erUnder18Aar
 import no.nav.pensjon.etterlatte.maler.barnepensjon.migrering.BarnepensjonOmregnetNyttRegelverkDTOSelectors.erYrkesskade
 import no.nav.pensjon.etterlatte.maler.barnepensjon.migrering.BarnepensjonOmregnetNyttRegelverkDTOSelectors.grunnbeloep
 import no.nav.pensjon.etterlatte.maler.barnepensjon.migrering.BarnepensjonOmregnetNyttRegelverkDTOSelectors.prorataBroek
@@ -28,6 +30,8 @@ import no.nav.pensjon.etterlatte.maler.formatBroek
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
 import no.nav.pensjon.etterlatte.maler.fraser.common.kontakttelefonPensjon
 import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.dineRettigheterOgPlikter
+import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.informasjonTilDegSomMottarBarnepensjon
+import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.utlandInformasjonTilDegSomMottarBarnepensjon
 import no.nav.pensjon.etterlatte.maler.vedlegg.informasjonTilDegSomHandlerPaaVegneAvBarnet
 import no.nav.pensjon.etterlatte.maler.vedlegg.utlandInformasjonTilDegSomHandlerPaaVegneAvBarnet
 
@@ -288,15 +292,30 @@ object EnkeltVedtakOmregningNyttRegelverk : EtterlatteTemplate<BarnepensjonOmreg
                     Language.English to "For more information, visit us online: ${Constants.Engelsk.BARNEPENSJON_URL}. If you cannot find the answer to your question, you can call us by phone ("
                 )
                 kontakttelefonPensjon(erBosattUtlandet)
-                text(
-                    Language.Bokmal to " hverdager 9-15. Om du oppgir fødselsnummer til barnet, kan vi lettere gi deg rask og god hjelp.",
-                    Language.Nynorsk to ", kvardagar 9–15. Det vil gjere det enklare for oss å gi deg rask og god hjelp om du oppgir fødselsnummeret til barnet.",
-                    Language.English to ") weekdays 9-15. If you provide your child's national identity number, we can more easily provide you with quick and good help."
-                )
+                showIf(erUnder18Aar) {
+                    text(
+                        Language.Bokmal to " hverdager 9-15. Om du oppgir fødselsnummer til barnet, kan vi lettere gi deg rask og god hjelp.",
+                        Language.Nynorsk to ", kvardagar 9–15. Det vil gjere det enklare for oss å gi deg rask og god hjelp om du oppgir fødselsnummeret til barnet.",
+                        Language.English to ") weekdays 9-15. If you provide your child's national identity number, we can more easily provide you with quick and good help."
+                    )
+                }.orShow {
+                    text(
+                        Language.Bokmal to " hverdager 9-15. Om du oppgir fødselsnummer, kan vi lettere gi deg rask og god hjelp.",
+                        Language.Nynorsk to ", kvardagar 9–15. Det vil gjere det enklare for oss å gi deg rask og god hjelp om du oppgir fødselsnummeret.",
+                        Language.English to ") weekdays 9-15. If you provide your national identity number, we can more easily provide you with quick and good help."
+                    )
+                }
             }
         }
-        includeAttachment(utlandInformasjonTilDegSomHandlerPaaVegneAvBarnet, this.argument, erBosattUtlandet)
-        includeAttachment(informasjonTilDegSomHandlerPaaVegneAvBarnet, this.argument, erBosattUtlandet.not())
-        includeAttachment(dineRettigheterOgPlikter, this.argument)
+
+        // Over 18 år vedlegg
+        includeAttachment(utlandInformasjonTilDegSomMottarBarnepensjon, this.argument, erUnder18Aar.not().and(erBosattUtlandet))
+        includeAttachment(informasjonTilDegSomMottarBarnepensjon, this.argument, erUnder18Aar.not().and(erBosattUtlandet.not()))
+
+        // Under 18 år vedlegg
+        includeAttachment(utlandInformasjonTilDegSomHandlerPaaVegneAvBarnet, this.argument, erUnder18Aar.and(erBosattUtlandet))
+        includeAttachment(informasjonTilDegSomHandlerPaaVegneAvBarnet, this.argument, erUnder18Aar.and(erBosattUtlandet.not()))
+
+        includeAttachment(dineRettigheterOgPlikter, erUnder18Aar)
     }
 }

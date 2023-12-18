@@ -4,10 +4,10 @@ import { useQuery } from "@tanstack/react-query";
 import { Outlet, useNavigate, useParams, useRouteContext, useSearch } from "@tanstack/react-router";
 import { Fragment, useState } from "react";
 
-import { getFavoritter, getLetterTemplate } from "../../api/skribenten-api-endpoints";
-import { brevvelgerRoute } from "../../tanStackRoutes";
-import type { LetterCategory } from "../../types/apiTypes";
-import type { LetterMetadata } from "../../types/apiTypes";
+import { getFavoritter, getLetterTemplate } from "~/api/skribenten-api-endpoints";
+import { brevvelgerRoute } from "~/tanStackRoutes";
+import type { LetterCategory } from "~/types/apiTypes";
+import type { LetterMetadata } from "~/types/apiTypes";
 
 export enum BrevvelgerTabOptions {
   BREVMALER = "brevmaler",

@@ -3,13 +3,7 @@ ingresses:
   - "https://pensjon-skribenten-api.intern.dev.nav.no"
 
 inboundRules:
-  - application: skribenten-frontend
-    namespace: pensjonsbrev
-    cluster: dev-gcp
   - application: skribenten-web
-    namespace: pensjonsbrev
-    cluster: dev-gcp
-  - application: c
     namespace: pensjonsbrev
     cluster: dev-gcp
 
@@ -33,13 +27,13 @@ externalHosts:
 
 env:
   - name: CORS_ALLOW_HOST
-    value: "pensjon-skribenten-web.intern.dev.nav.no"
+    value: "pensjon-skribenten-web-q2.intern.dev.nav.no"
   - name: PEN_URL
     value: "https://pensjon-pen-q2.dev-fss-pub.nais.io/pen/springapi/"
   - name: PEN_SCOPE
     value: "api://dev-fss.pensjon-q2.pensjon-pen-q2/.default"
   - name: BREVBAKER_URL
-    value: "https://pensjon-brevbaker.intern.dev.nav.no"
+    value: "http://pensjon-brevbaker"
   - name: BREVBAKER_SCOPE
     value: "api://dev-gcp.pensjonsbrev.pensjon-brevbaker/.default"
   - name: BREVMETADATA_URL

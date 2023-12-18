@@ -1,3 +1,4 @@
+allowAllUsers: true
 app-name: "pensjon-brevbaker"
 pdf-bygger-app: "pensjon-pdf-bygger"
 ingresses:

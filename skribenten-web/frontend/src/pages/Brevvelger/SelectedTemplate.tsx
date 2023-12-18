@@ -2,17 +2,18 @@ import { css } from "@emotion/react";
 import { ArrowRightIcon, StarFillIcon, StarIcon } from "@navikt/aksel-icons";
 import { BodyShort, Button, Heading, Select, Tag } from "@navikt/ds-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useParams, useRouteContext, useSearch } from "@tanstack/react-router";
+import { useNavigate, useParams, useRouteContext, useSearch } from "@tanstack/react-router";
 import { useEffect } from "react";
 import { FormProvider, useForm, useFormContext } from "react-hook-form";
 
-import { addFavoritt, deleteFavoritt, getFavoritter, getLetterTemplate } from "../../api/skribenten-api-endpoints";
-import { Divider } from "../../components/Divider";
-import { usePreferredLanguage } from "../../hooks/usePreferredLanguage";
-import { selectedTemplateRoute } from "../../tanStackRoutes";
-import type { LetterMetadata } from "../../types/apiTypes";
-import { BrevSystem } from "../../types/apiTypes";
-import { SPRAAK_ENUM_TO_TEXT } from "../../types/nameMappings";
+import { addFavoritt, deleteFavoritt, getFavoritter, getLetterTemplate } from "~/api/skribenten-api-endpoints";
+import { Divider } from "~/components/Divider";
+import { usePreferredLanguage } from "~/hooks/usePreferredLanguage";
+import { redigeringRoute, selectedTemplateRoute } from "~/tanStackRoutes";
+import type { LetterMetadata } from "~/types/apiTypes";
+import { BrevSystem } from "~/types/apiTypes";
+import { SPRAAK_ENUM_TO_TEXT } from "~/types/nameMappings";
+
 import { BrevvelgerTabOptions } from "./BrevvelgerPage";
 
 export function SelectedTemplate() {
@@ -36,7 +37,8 @@ export function SelectedTemplate() {
 }
 
 function Brevmal() {
-  const { templateId } = useParams({ from: selectedTemplateRoute.id });
+  const { templateId, sakId } = useParams({ from: selectedTemplateRoute.id });
+  const navigate = useNavigate({ from: selectedTemplateRoute.id });
   const { getSakQueryOptions } = useRouteContext({ from: selectedTemplateRoute.id });
   const sak = useQuery(getSakQueryOptions).data;
 
@@ -76,10 +78,14 @@ function Brevmal() {
             height: 100%;
             justify-content: space-between;
           `}
-          // eslint-disable-next-line no-console
-          onSubmit={methods.handleSubmit((submittedValues) => console.log("submit", submittedValues))}
+          onSubmit={methods.handleSubmit((submittedValues) => {
+            // eslint-disable-next-line no-console
+            console.log("submit", submittedValues);
+            navigate({ to: redigeringRoute.id, params: { sakId, templateId } });
+          })}
         >
           <SelectLanguage letterTemplate={letterTemplate} />
+
           <Button
             css={css`
               width: fit-content;

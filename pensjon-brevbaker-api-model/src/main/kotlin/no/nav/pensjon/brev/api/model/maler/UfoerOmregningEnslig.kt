@@ -19,6 +19,7 @@ data class UfoerOmregningEnsligDto(
     val beregnetUTPerMaaned_antallBeregningsperioderPaaVedtak: Int,
     val institusjonsoppholdVedVirk: Institusjon,
     val krav_virkningsDatoFraOgMed: LocalDate,
+    val harAvdoedRettigheterFoer2024: Boolean,
     val barnetilleggSaerkullsbarnGjeldende_erRedusertMotInntekt: Boolean,
     val inntektFoerUfoerhetVedVirk: InntektFoerUfoerhetVedVirk,
     val bruker: Bruker,
@@ -30,14 +31,15 @@ data class UfoerOmregningEnsligDto(
         val ektefelletilleggOpphoert: Boolean,
         val sivilstand: SivilstandAvdoed,
         val harFellesBarnUtenBarnetillegg: Boolean,
-        val doedFoer1Desember2023: Boolean,
     )
 
     data class UfoeretrygdVedVirk(
         val kompensasjonsgrad: Double,
         val totalUfoereMaanedligBeloep: Kroner,
         val erInntektsavkortet: Boolean,
-        val ufoeregrad: Int,
+        val ufoeregrad: Int, // TODO slett i neste versjon.
+        val harGradertUfoeretrygd: Boolean,
+        val grunnbeloep: Kroner,
     )
 
     data class InntektFoerUfoerhetVedVirk(

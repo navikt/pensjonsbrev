@@ -13,7 +13,8 @@ data class BarnepensjonOmregnetNyttRegelverkDTO(
     val prorataBroek: IntBroek?,
     val erBosattUtlandet: Boolean,
     val erYrkesskade: Boolean,
-    val erForeldreloes: Boolean
+    val erForeldreloes: Boolean,
+    val erUnder18Aar: Boolean
 )
 
 data class BarnepensjonOmregnetNyttRegelverkFerdigDTO(

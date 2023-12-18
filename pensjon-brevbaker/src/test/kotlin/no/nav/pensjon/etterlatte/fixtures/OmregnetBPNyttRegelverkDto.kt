@@ -17,7 +17,8 @@ fun createBarnepensjonOmregnetNyttRegelverkDTO() =
         prorataBroek = IntBroek(43, 156),
         erBosattUtlandet = true,
         erYrkesskade = false,
-        erForeldreloes = false
+        erForeldreloes = false,
+        erUnder18Aar = false
     )
 
 fun createBarnepensjonOmregnetNyttRegelverkFerdigDTO() =
@@ -70,6 +71,7 @@ fun createBarnepensjonOmregnetNyttRegelverkFerdigDTO() =
             prorataBroek = IntBroek(43, 156),
             erBosattUtlandet = true,
             erYrkesskade = false,
-            erForeldreloes = false
+            erForeldreloes = false,
+            erUnder18Aar = true
         )
     )

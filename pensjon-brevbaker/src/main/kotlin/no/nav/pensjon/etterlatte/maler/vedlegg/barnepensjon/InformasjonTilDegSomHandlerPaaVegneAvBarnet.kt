@@ -1,5 +1,6 @@
 package no.nav.pensjon.etterlatte.maler.vedlegg
 
+import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
@@ -23,9 +24,9 @@ val utlandInformasjonTilDegSomHandlerPaaVegneAvBarnet = createAttachment(
     includeSakspart = false,
 ) {
     informasjon()
-    postadresse(true.expr())
+    postadresse(utland = true.expr())
     utbetalingUtland()
-    endringAvKontonummerUtland()
+    endringAvKontonummerUtland(erUnder18Aar = true.expr())
     skattetrekkPaaBarnepensjonUtland()
 }
 
@@ -57,8 +58,8 @@ val informasjonTilDegSomHandlerPaaVegneAvBarnet = createAttachment(
     includeSakspart = false,
 ) {
     informasjon()
-    postadresse(false.expr())
-    endringAvKontonummer()
+    postadresse(utland = false.expr())
+    endringAvKontonummerForelder()
     skattetrekkPaaBarnepensjon()
 }
 
@@ -85,7 +86,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, A
     }
 }
 
-private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Any>.utbetalingUtland() {
+fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Any>.utbetalingUtland() {
     title2 {
         text(
             Bokmal to "Utbetaling av barnepensjon",
@@ -102,7 +103,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, A
     }
 }
 
-private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Any>.endringAvKontonummerUtland() {
+fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Any>.endringAvKontonummerUtland(erUnder18Aar: Expression<Boolean>) {
     title2 {
         text(
             Bokmal to "Skal du endre kontonummer?",
@@ -118,12 +119,15 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, A
                     "or send the Notification of New Account Number Form by conventional mail. You must then enclose a copy of a valid proof of identity.",
         )
     }
-    paragraph {
-        text(
-            Bokmal to "Oppnevnt verge må melde om endring via post. Du må legge ved kopi av egen legitimasjon og vergefullmakt.",
-            Nynorsk to "Verje må melde frå om endring via post. Legg då ved ein kopi av legitimasjonen din og verjefullmakta.    ",
-            English to "The appointed guardian must report the change by mail. You must enclose a copy of your own proof of identity and the power of guardianship.",
-        )
+
+    showIf(erUnder18Aar) {
+        paragraph {
+            text(
+                Bokmal to "Oppnevnt verge må melde om endring via post. Du må legge ved kopi av egen legitimasjon og vergefullmakt.",
+                Nynorsk to "Verje må melde frå om endring via post. Legg då ved ein kopi av legitimasjonen din og verjefullmakta.    ",
+                English to "The appointed guardian must report the change by mail. You must enclose a copy of your own proof of identity and the power of guardianship.",
+            )
+        }
     }
     paragraph {
         text(
@@ -132,9 +136,18 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, A
             English to "You can find more information and a link to the correct form online ${Constants.Utland.ENDRE_KONTONUMMER_SKJEMA_URL}. Remember to sign the form and doctor enclose a copy of your identification.",
         )
     }
+    showIf(erUnder18Aar) {
+        paragraph {
+            text(
+                Bokmal to "Oppnevnt verge må melde om endring via post. Du må legge ved kopi av egen legitimasjon og vergefullmakt.",
+                Nynorsk to "Verje må melde frå om endring via post. Legg då ved ein kopi av legitimasjonen din og verjefullmakta.    ",
+                English to "The appointed guardian must report the change by mail. You must enclose a copy of your own proof of identity and the power of guardianship.",
+            )
+        }
+    }
 }
 
-private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Any>.endringAvKontonummer() {
+private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Any>.endringAvKontonummerForelder() {
     title2 {
         text(
             Bokmal to "Skal du endre kontonummer?",
@@ -168,7 +181,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, A
     }
 }
 
-private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Any>.skattetrekkPaaBarnepensjon() {
+fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Any>.skattetrekkPaaBarnepensjon() {
     title2 {
         text(
             Bokmal to "Skattetrekk på barnepensjon",

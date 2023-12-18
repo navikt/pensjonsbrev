@@ -4,9 +4,9 @@ import { useQuery } from "@tanstack/react-query";
 import { Outlet, useRouteContext } from "@tanstack/react-router";
 import React from "react";
 
-import { getNavn } from "../../api/skribenten-api-endpoints";
-import { sakRoute } from "../../tanStackRoutes";
-import type { SakDto } from "../../types/apiTypes";
+import { getNavn } from "~/api/skribenten-api-endpoints";
+import { sakRoute } from "~/tanStackRoutes";
+import type { SakDto } from "~/types/apiTypes";
 
 export function SakBreadcrumbsPage() {
   const { getSakQueryOptions } = useRouteContext({ from: sakRoute.id });
