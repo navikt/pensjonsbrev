@@ -938,7 +938,7 @@ data class AvdoedBoddEllerArbeidetIUtland(val borIAvtaleland: Expression<Boolean
                 Nynorsk to "Dersom avdøde har budd eller arbeidd i utlandet, kan det påverke kor mykje du får ubetalt. Noreg har trygdesamarbeid med ei rekkje land gjennom EØS-avtalen og andre avtalar. Derfor kan du også ha rettar frå andre land. ",
                 English to "If the deceased has lived or worked abroad, this may affect your payment. Norway cooperates with a number of countries through the EEA Agreement and other social security agreements. You may therefore also have rights from other countries. ",
             )
-            showIf(borIAvtaleland) {
+            showIf(not(borIAvtaleland)) {
                 text(
                     Bokmal to "Vi kan hjelpe deg med søknad til land Norge har trygdeavtale med.",
                     Nynorsk to "Vi kan hjelpe deg med søknad til land Noreg har trygdeavtale med.",
