@@ -1,13 +1,14 @@
 package no.nav.pensjon.brev.skribenten.services
 
 import com.typesafe.config.Config
+import com.zaxxer.hikari.HikariConfig
+import com.zaxxer.hikari.HikariDataSource
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.transactions.transaction
-import org.postgresql.ds.PGSimpleDataSource
 
 
-class SkribentenDatabaseService(private val database: Database) {
+class SkribentenDatabaseService {
     fun getFavourites(userId: String): List<String> =
         transaction {
             Favourites.select { Favourites.userId eq userId }.map { row -> row[Favourites.letterCode] }
@@ -43,18 +44,26 @@ object Favourites : Table() {
 }
 
 
-fun initDatabase(config: Config): Database {
+fun initDatabase(config: Config) {
+    // Creates db connection and registers it globally.
+    val dbConfig = config.getConfig("database")
     val database = Database.connect(
-        //TODO se om vi kan få connection pool evt suspend
-        PGSimpleDataSource().apply {
-            setURL(config.getString("database.url"))
-            user = "postgres"
-            password = "pass"
-        }
+        HikariDataSource(HikariConfig().apply {
+            jdbcUrl = createJdbcUrl(dbConfig)
+            username = dbConfig.getString("username")
+            password = dbConfig.getString("password")
+            validate()
+        }),
     )
     transaction(database) {
         SchemaUtils.create(Favourites)
     }
-
-    return database
 }
+
+fun createJdbcUrl(config: Config): String =
+    with(config) {
+        val url = getString("host")
+        val port = getString("port")
+        val dbName = getString("name")
+        return "jdbc:postgresql://$url:$port/$dbName"
+    }

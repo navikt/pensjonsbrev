@@ -22,8 +22,8 @@ fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config
     val krrService = KrrService(servicesConfig.getConfig("krr"), authService)
     val brevbakerService = BrevbakerService(servicesConfig.getConfig("brevbaker"), authService)
     val brevmetadataService = BrevmetadataService(servicesConfig.getConfig("brevmetadata"))
-    val database = initDatabase(servicesConfig)
-    val skribentenDatabaseService = SkribentenDatabaseService(database)
+    initDatabase(servicesConfig)
+    val skribentenDatabaseService = SkribentenDatabaseService()
 
     routing {
         healthRoute()

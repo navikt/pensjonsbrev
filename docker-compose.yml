@@ -40,8 +40,12 @@ services:
       - BREVBAKER_URL=https://pensjon-brevbaker.intern.dev.nav.no
       - BREVMETADATA_URL=https://pensjon-brevmetadata-q2.intern.dev.nav.no
       - CORS_ALLOW_HOST=*
-      - DB_URL=jdbc:postgresql://skribenten-backend-db:5432/postgres
-      - JAVA_TOOL_OPTIONS=-Dio.ktor.development=true -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5007
+      - DB_HOST=skribenten-backend-db
+      - DB_PORT=5432
+      - DB_DATABASE=postgres
+      - DB_USERNAME=postgres
+      - DB_PASSWORD=pass
+      - JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5007
       - KODEVERK_SERVICE=https://kodeverk.dev.intern.nav.no/api/v1/kodeverk/
       - KRR_SCOPE=api://dev-gcp.team-rocket.digdir-krr-proxy/.default
       - KRR_URL=https://digdir-krr-proxy.intern.dev.nav.no
