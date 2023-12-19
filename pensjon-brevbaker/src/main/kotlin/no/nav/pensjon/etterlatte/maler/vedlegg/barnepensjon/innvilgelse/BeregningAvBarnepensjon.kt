@@ -1,0 +1,440 @@
+package no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.innvilgelse
+
+import no.nav.pensjon.brev.model.format
+import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
+import no.nav.pensjon.brev.template.Expression
+import no.nav.pensjon.brev.template.Language.Bokmal
+import no.nav.pensjon.brev.template.Language.English
+import no.nav.pensjon.brev.template.Language.Nynorsk
+import no.nav.pensjon.brev.template.LanguageSupport
+import no.nav.pensjon.brev.template.createAttachment
+import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
+import no.nav.pensjon.brev.template.dsl.expression.equalTo
+import no.nav.pensjon.brev.template.dsl.expression.expr
+import no.nav.pensjon.brev.template.dsl.expression.format
+import no.nav.pensjon.brev.template.dsl.expression.greaterThan
+import no.nav.pensjon.brev.template.dsl.expression.plus
+import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
+import no.nav.pensjon.brev.template.dsl.newText
+import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.dsl.textExpr
+import no.nav.pensjon.brevbaker.api.model.Kroner
+import no.nav.pensjon.etterlatte.maler.Beregningsperiode
+import no.nav.pensjon.etterlatte.maler.IntBroek
+import no.nav.pensjon.etterlatte.maler.Trygdetidsperiode
+import no.nav.pensjon.etterlatte.maler.barnepensjon.ny.BeregningType
+import no.nav.pensjon.etterlatte.maler.barnepensjon.ny.BeregningsinfoBP
+import no.nav.pensjon.etterlatte.maler.barnepensjon.ny.BeregningsinfoBPSelectors.aarTrygdetid
+import no.nav.pensjon.etterlatte.maler.barnepensjon.ny.BeregningsinfoBPSelectors.antallBarn
+import no.nav.pensjon.etterlatte.maler.barnepensjon.ny.BeregningsinfoBPSelectors.beregningsperioder
+import no.nav.pensjon.etterlatte.maler.barnepensjon.ny.BeregningsinfoBPSelectors.beregningstype
+import no.nav.pensjon.etterlatte.maler.barnepensjon.ny.BeregningsinfoBPSelectors.grunnbeloep
+import no.nav.pensjon.etterlatte.maler.barnepensjon.ny.BeregningsinfoBPSelectors.innhold
+import no.nav.pensjon.etterlatte.maler.barnepensjon.ny.BeregningsinfoBPSelectors.prorataBroek
+import no.nav.pensjon.etterlatte.maler.barnepensjon.ny.BeregningsinfoBPSelectors.trygdetidsperioder
+import no.nav.pensjon.etterlatte.maler.barnepensjon.ny.BeregningsinfoBPSelectors.trygdetidsperioderNasjonal
+import no.nav.pensjon.etterlatte.maler.formatBroek
+import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
+import no.nav.pensjon.etterlatte.maler.vedlegg.Trygdetidstabell
+
+@TemplateModelHelpers
+val beregningAvBarnepensjonGammeltOgNyttRegelverk = createAttachment(
+    title = newText(
+        Bokmal to "Beregning av barnepensjon",
+        Nynorsk to "Utrekning av barnepensjon",
+        English to "Calculation of Children’s Pension",
+    ),
+    includeSakspart = false
+) {
+    paragraph {
+        text(
+            Bokmal to "Barnepensjonen din blir beregnet ut fra grunnbeløpet i folketrygden og avdødes trygdetid.",
+            Nynorsk to "",
+            English to "",
+        )
+    }
+    grunnbeloepetGammeltOgNyttRegelverk(grunnbeloep)
+    trygdetid(aarTrygdetid, prorataBroek, beregningstype)
+    beregnetBarnepensjonGammeltOgNyttRegelverk(aarTrygdetid, prorataBroek, beregningsperioder)
+    perioderMedRegistrertTrygdetid(trygdetidsperioder, trygdetidsperioderNasjonal)
+}
+
+@TemplateModelHelpers
+val beregningAvBarnepensjonNyttRegelverk = createAttachment(
+    title = newText(
+        Bokmal to "Beregning av barnepensjon",
+        Nynorsk to "Utrekning av barnepensjon",
+        English to "Calculation of Children’s Pension",
+    ),
+    includeSakspart = false
+) {
+    paragraph {
+        text(
+            Bokmal to "Barnepensjonen din blir beregnet ut fra grunnbeløpet i folketrygden og avdødes trygdetid.",
+            Nynorsk to "",
+            English to "",
+        )
+    }
+    grunnbeloepetNyttRegelverk(grunnbeloep)
+    trygdetid(aarTrygdetid, prorataBroek, beregningstype)
+    beregnetBarnepensjonNyttRegelverk(aarTrygdetid, prorataBroek, beregningsperioder)
+    perioderMedRegistrertTrygdetid(trygdetidsperioder, trygdetidsperioderNasjonal)
+}
+
+private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, BeregningsinfoBP>.grunnbeloepetGammeltOgNyttRegelverk(
+    grunnbeloep: Expression<Kroner>,
+) {
+
+    title2 {
+        text(
+            Bokmal to "Grunnbeløpet",
+            Nynorsk to "",
+            English to "",
+        )
+    }
+
+    showIf(antallBarn.greaterThan(1)) {
+        paragraph {
+            text(
+                Bokmal to "Før 01.01.2024",
+                Nynorsk to "",
+                English to "",
+                FontType.BOLD
+            )
+            newline()
+            textExpr(
+                Bokmal to "".expr() + "NAV gjør en samlet beregning av pensjon for barn som oppdras sammen. For denne beregningen har vi lagt til grunn at dere er " + antallBarn.format() + " barn som oppdras sammen.",
+                Nynorsk to "".expr(),
+                English to "".expr(),
+            )
+        }
+        paragraph {
+            text(
+                Bokmal to "Barnepensjon per år utgjør 40 prosent av folketrygdens grunnbeløp (G) for det første barnet i søskenflokken. For hvert av de andre barna legges det til 25 prosent av G. Summen deles på antall barn, og pensjonen utbetales med likt beløp til hvert av barna.",
+                Nynorsk to "",
+                English to "",
+            )
+        }
+        paragraph {
+            text(
+                Bokmal to "Pensjonen fordeles på 12 utbetalinger i året.",
+                Nynorsk to "",
+                English to "",
+            )
+        }
+        paragraph {
+            text(
+                Bokmal to "Fra og med 01.01.2024 (nye regler)",
+                Nynorsk to "",
+                English to "",
+                FontType.BOLD
+            )
+            newline()
+            text(
+                Bokmal to "Barnepensjonen per år utgjør en ganger folketrygdens grunnbeløp (G) og fordeles på 12 utbetalinger i året.",
+                Nynorsk to "",
+                English to "",
+            )
+        }
+    }.orShow {
+        paragraph {
+            text(
+                Bokmal to "Før 01.01.2024",
+                Nynorsk to "",
+                English to "",
+                FontType.BOLD
+            )
+            newline()
+            text(
+                Bokmal to "Barnepensjonen per år utgjør 40 prosent av folketrygdens grunnbeløp (G) og fordeles på 12 utbetalinger i året.",
+                Nynorsk to "",
+                English to "",
+            )
+        }
+        paragraph {
+            text(
+                Bokmal to "Fra og med 01.01.2024 (nye regler)",
+                Nynorsk to "",
+                English to "",
+                FontType.BOLD
+            )
+            newline()
+            text(
+                Bokmal to "Barnepensjonen per år utgjør en ganger folketrygdens grunnbeløp (G) og fordeles på 12 utbetalinger i året.",
+                Nynorsk to "",
+                English to "",
+            )
+        }
+    }
+
+    paragraph {
+        textExpr(
+            Bokmal to "".expr() + "Folketrygdens grunnbeløp er per i dag " + grunnbeloep.format() + " kroner. Grunnbeløpet blir regulert 1. mai hvert år. Økningen etterbetales vanligvis juni hvert år.",
+            Nynorsk to "".expr(),
+            English to "".expr(),
+        )
+    }
+}
+
+private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, BeregningsinfoBP>.grunnbeloepetNyttRegelverk(
+    grunnbeloep: Expression<Kroner>,
+) {
+
+    title2 {
+        text(
+            Bokmal to "Grunnbeløpet",
+            Nynorsk to "",
+            English to "",
+        )
+    }
+    paragraph {
+        textExpr(
+            Bokmal to "Barnepensjonen utgjør en ganger folketrygdens grunnbeløp (G) og fordeles på 12 ".expr() +
+                    "utbetalinger i året.  Folketrygdens grunnbeløp er per i dag " + grunnbeloep.format() + " kroner. " +
+                    "Grunnbeløpet blir regulert 1. mai hvert år. Økningen etterbetales vanligvis i juni hvert år. ",
+            Nynorsk to "".expr(),
+            English to "".expr(),
+        )
+    }
+}
+
+private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, BeregningsinfoBP>.trygdetid(
+    aarTrygdetid: Expression<Int>,
+    prorataBroek: Expression<IntBroek?>,
+    beregningType: Expression<BeregningType>,
+) {
+    title2 {
+        text(
+            Bokmal to "Trygdetid",
+            Nynorsk to "Trygdetid",
+            English to "Period of national insurance coverage",
+        )
+    }
+
+    showIf(beregningType.equalTo(BeregningType.NASJONAL)) {
+        paragraph {
+            text(
+                Bokmal to "Trygdetiden tilsvarer det antall år avdøde har vært medlem i folketrygden etter fylte 16 år. Når avdøde var under 67 år ved dødsfallet blir det vanligvis beregnet framtidig trygdetid fram til og med det året avdøde ville ha fylt 66 år.",
+                Nynorsk to "",
+                English to "",
+            )
+        }
+        paragraph {
+            textExpr(
+                Bokmal to "".expr() + "For å få full pensjon må avdødes trygdetid være beregnet til minst 40 år. Trygdetid over 40 år blir ikke tatt med i beregningen. Avdødes samlede trygdetid er beregnet til " + aarTrygdetid.format() + " år.",
+                Nynorsk to "".expr(),
+                English to "".expr(),
+            )
+        }
+    }
+    showIf(beregningType.equalTo(BeregningType.PRORATA)) {
+        paragraph {
+            text(
+                Bokmal to "For å få full pensjon må avdødes trygdetid være beregnet til minst 40 år. Trygdetid over 40 år blir ikke tatt med i beregningen.",
+                Nynorsk to "",
+                English to "",
+            )
+        }
+        paragraph {
+            textExpr(
+                Bokmal to "".expr() + "Pensjonen din er beregnet etter bestemmelsene i EØS-avtalen fordi vilkårene for rett til pensjon er oppfylt ved sammenlegging av avdødes opptjeningstid i Norge og andre EØS- eller avtaleland. Trygdetiden er beregnet etter avdødes samlede opptjeningstid i disse landene. For å beregne norsk del av denne trygdetiden ganges avdødes samlede opptjeningstid med et forholdstall, som angir forholdet mellom faktisk opptjeningstid i Norge og samlet faktisk opptjeningstid i Norge og andre EØS- eller avtaleland. Avdødes samlede trygdetid er beregnet til " + aarTrygdetid.format() + " år, som ganges med " + prorataBroek.formatBroek() + ".",
+                Nynorsk to "".expr(),
+                English to "".expr(),
+            )
+        }
+    }
+    showIf(beregningType.equalTo(BeregningType.BEST)) {
+        paragraph {
+            text(
+                Bokmal to "For å få full pensjon må avdødes trygdetid være beregnet til minst 40 år. Trygdetid over 40 år blir ikke tatt med i beregningen. Når grunnlag for pensjon er oppfylt etter nasjonale regler, og avdøde også har opptjening av medlemsperioder i land som Norge har trygdeavtale med, skal trygdetid gis utfra det som gir den beste beregningen av kun nasjonal opptjening og sammenlagt opptjening i Norge og avtaleland.",
+                Nynorsk to "",
+                English to "",
+            )
+        }
+        paragraph {
+            text(
+                Bokmal to "Ved nasjonal beregning av trygdetid tilsvarer denne det antall år avdøde har vært medlem i folketrygden etter fylte 16 år. Når avdøde var under 67 år ved dødsfallet blir det vanligvis beregnet framtidig trygdetid fram til og med det året avdøde ville ha fylt 66 år.",
+                Nynorsk to "",
+                English to "",
+            )
+        }
+        paragraph {
+            text(
+                Bokmal to "Ved sammenlegging av avdødes opptjeningstid i Norge og andre EØS/avtale-land er trygdetiden beregnet etter avdødes samlede opptjeningstid i disse landene. For å beregne norsk del av denne trygdetiden ganges avdødes samlede opptjeningstid med et forholdstall, som angir forholdet mellom faktisk opptjeningstid i Norge og samlet faktisk opptjeningstid i Norge og andre EØS-land.",
+                Nynorsk to "",
+                English to "",
+            )
+        }
+
+        // TODO funker dette?
+        ifNotNull(prorataBroek) {
+            paragraph {
+                textExpr(
+                    Bokmal to "".expr() + "Avdødes samlede trygdetid er beregnet til " + aarTrygdetid.format() + " år, som ganges med " + prorataBroek.formatBroek() + ".",
+                    Nynorsk to "".expr(),
+                    English to "".expr(),
+                )
+            }
+        }.orShow {
+            paragraph {
+                textExpr(
+                    Bokmal to "".expr() + "Avdødes samlede trygdetid er beregnet til " + aarTrygdetid.format() + " år.",
+                    Nynorsk to "".expr(),
+                    English to "".expr(),
+                )
+            }
+        }
+    }
+}
+
+private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, BeregningsinfoBP>.beregnetBarnepensjonNyttRegelverk(
+    aarTrygdetid: Expression<Int>,
+    prorataBroek: Expression<IntBroek?>,
+    beregningsperioder: Expression<List<Beregningsperiode>>
+) {
+    title2 {
+        text(
+            Bokmal to "Beregnet barnepensjon",
+            Nynorsk to "",
+            English to "",
+        )
+    }
+    ifNotNull(prorataBroek) {
+        paragraph {
+            textExpr(
+                Bokmal to "".expr() + "Barnepensjonen er beregnet til 1 G ganget med " + aarTrygdetid.format() + " år trygdetid, ganget med " + prorataBroek.formatBroek() + ". Beløpet fordeles på 12 utbetalinger i året. \n",
+                Nynorsk to "".expr(),
+                English to "".expr(),
+            )
+        }
+    }.orShow {
+        paragraph {
+            textExpr(
+                Bokmal to "".expr() + "Årsbeløpet på barnepensjonen er beregnet til 1 G ganget med " + aarTrygdetid.format() + " år trygdetid. Beløpet fordeles på 12 utbetalinger i året.",
+                Nynorsk to "".expr(),
+                English to "".expr(),
+            )
+        }
+    }
+
+    konverterElementerTilBrevbakerformat(innhold)
+
+    includePhrase(BeregningsperiodetabellMedTrygdetid(beregningsperioder, aarTrygdetid))
+}
+
+private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, BeregningsinfoBP>.beregnetBarnepensjonGammeltOgNyttRegelverk(
+    aarTrygdetid: Expression<Int>,
+    prorataBroek: Expression<IntBroek?>,
+    beregningsperioder: Expression<List<Beregningsperiode>>
+) {
+    title2 {
+        text(
+            Bokmal to "Beregnet barnepensjon",
+            Nynorsk to "",
+            English to "",
+        )
+    }
+    ifNotNull(prorataBroek) {
+        // TODO
+    }.orShow {
+        showIf(antallBarn.greaterThan(1)) {
+            paragraph {
+                text(
+                    Bokmal to "Før 01.01.2024",
+                    Nynorsk to "",
+                    English to "",
+                    FontType.BOLD
+                )
+                newline()
+                // TODO denne stemmer vel ikke - må ha med søskenjustering
+                textExpr(
+                    Bokmal to "".expr() + "Årsbeløpet på barnepensjonen er beregnet til 0,4 G ganget med " + aarTrygdetid.format() + " år trygdetid. Beløpet fordeles på 12 utbetalinger i året.",
+                    Nynorsk to "".expr(),
+                    English to "".expr(),
+                )
+            }
+            paragraph {
+                text(
+                    Bokmal to "Fra og med 01.01.2024",
+                    Nynorsk to "",
+                    English to "",
+                    FontType.BOLD
+                )
+                newline()
+                // TODO denne stemmer vel ikke - må ha med søskenjustering
+                textExpr(
+                    Bokmal to "".expr() + "Årsbeløpet på barnepensjonen er beregnet til 1 G ganget med " + aarTrygdetid.format() + " år trygdetid. Beløpet fordeles på 12 utbetalinger i året.",
+                    Nynorsk to "".expr(),
+                    English to "".expr(),
+                )
+            }
+        }.orShow {
+            paragraph {
+                text(
+                    Bokmal to "Før 01.01.2024",
+                    Nynorsk to "",
+                    English to "",
+                    FontType.BOLD
+                )
+                newline()
+                textExpr(
+                    Bokmal to "".expr() + "Årsbeløpet på barnepensjonen er beregnet til 0,4 G ganget med " + aarTrygdetid.format() + " år trygdetid. Beløpet fordeles på 12 utbetalinger i året.",
+                    Nynorsk to "".expr(),
+                    English to "".expr(),
+                )
+            }
+            paragraph {
+                text(
+                    Bokmal to "Fra og med 01.01.2024",
+                    Nynorsk to "",
+                    English to "",
+                    FontType.BOLD
+                )
+                newline()
+                textExpr(
+                    Bokmal to "".expr() + "Årsbeløpet på barnepensjonen er beregnet til 1 G ganget med " + aarTrygdetid.format() + " år trygdetid. Beløpet fordeles på 12 utbetalinger i året.",
+                    Nynorsk to "".expr(),
+                    English to "".expr(),
+                )
+            }
+        }
+    }
+
+    konverterElementerTilBrevbakerformat(innhold)
+
+    includePhrase(BeregningsperiodetabellMedTrygdetid(beregningsperioder, aarTrygdetid))
+}
+
+private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, BeregningsinfoBP>.perioderMedRegistrertTrygdetid(
+    trygdetidsperioder: Expression<List<Trygdetidsperiode>>,
+    trygdetidsperioderKunNasjonal: Expression<List<Trygdetidsperiode>>,
+) {
+    title2 {
+        text(
+            Bokmal to "Perioder med registrert trygdetid",
+            Nynorsk to "",
+            English to "",
+        )
+    }
+
+    // TODO dette må gjøres noe med
+    ifNotNull(prorataBroek) {
+        paragraph {
+            text(
+                Bokmal to "Tabellen viser perioder avdøde har vært medlem av folketrygden og medlemsperioder avdøde har hatt i land som Norge har trygdeavtale med.",
+                Nynorsk to "",
+                English to "",
+            )
+        }
+        includePhrase(Trygdetidstabell(trygdetidsperioder))
+    }.orShow {
+        paragraph {
+            text(
+                Bokmal to "Tabellen viser perioder avdøde har vært medlem av folketrygden.",
+                Nynorsk to "",
+                English to "",
+            )
+        }
+        includePhrase(Trygdetidstabell(trygdetidsperioderKunNasjonal))
+    }
+}

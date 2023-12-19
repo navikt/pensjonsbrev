@@ -89,7 +89,7 @@ object Endring : EtterlatteTemplate<EndringHovedmalDTO>, Hovedmal {
             )
             includePhrase(BarnepensjonInnvilgelseFraser.MeldFraOmEndringer)
             includePhrase(BarnepensjonInnvilgelseFraser.DuHarRettTilAaKlage)
-            includePhrase(BarnepensjonInnvilgelseFraser.HarDuSpoersmaal)
+            includePhrase(BarnepensjonInnvilgelseFraser.HarDuSpoersmaal(true.expr(), false.expr()))
         }
         includeAttachment(beregningAvBarnepensjon, beregningsinfo)
         includeAttachment(informasjonTilDegSomHandlerPaaVegneAvBarnet, innhold)

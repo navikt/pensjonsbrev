@@ -30,8 +30,8 @@ fun OutlineOnlyScope<LanguageSupport.Triple<Language.Bokmal, Language.Nynorsk, L
         showIf(utland) {
             newline()
             text(
-                Language.Bokmal to "Norge",
-                Language.Nynorsk to "Noreg",
+                Language.Bokmal to "Norge/Norway",
+                Language.Nynorsk to "Noreg/Norway",
                 Language.English to "Norway"
             )
         }

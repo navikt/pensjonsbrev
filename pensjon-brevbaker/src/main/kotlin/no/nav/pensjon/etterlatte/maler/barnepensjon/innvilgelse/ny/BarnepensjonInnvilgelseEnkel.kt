@@ -14,9 +14,11 @@ import no.nav.pensjon.etterlatte.maler.AvdoedSelectors.navn
 import no.nav.pensjon.etterlatte.maler.Delmal
 import no.nav.pensjon.etterlatte.maler.Utbetalingsinfo
 import no.nav.pensjon.etterlatte.maler.UtbetalingsinfoSelectors.beloep
+import no.nav.pensjon.etterlatte.maler.UtbetalingsinfoSelectors.beregningsperioder
 import no.nav.pensjon.etterlatte.maler.UtbetalingsinfoSelectors.virkningsdato
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.ny.BarnepensjonInnvilgelseEnkelDTOSelectors.avdoed
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.ny.BarnepensjonInnvilgelseEnkelDTOSelectors.erEtterbetaling
+import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.ny.BarnepensjonInnvilgelseEnkelDTOSelectors.nyesteUtbetalingsperiode
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.ny.BarnepensjonInnvilgelseEnkelDTOSelectors.utbetalingsinfo
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.ny.BarnepensjonInnvilgelseEnkelDTOSelectors.vedtaksdato
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.innvilgelse.BarnepensjonInnvilgelseEnkelFraser
@@ -28,7 +30,9 @@ data class BarnepensjonInnvilgelseEnkelDTO(
     val avdoed: Avdoed,
     val vedtaksdato: LocalDate,
     val erEtterbetaling: Boolean,
-)
+) {
+    val nyesteUtbetalingsperiode = utbetalingsinfo.beregningsperioder.maxBy { it.datoFOM }.datoFOM
+}
 
 @TemplateModelHelpers
 object BarnepensjonInnvilgelseEnkel : EtterlatteTemplate<BarnepensjonInnvilgelseEnkelDTO>, Delmal {
@@ -63,6 +67,8 @@ object BarnepensjonInnvilgelseEnkel : EtterlatteTemplate<BarnepensjonInnvilgelse
                     utbetalingsinfo.beloep,
                     vedtaksdato,
                     erEtterbetaling,
+                    utbetalingsinfo.beregningsperioder,
+                    nyesteUtbetalingsperiode
                 ),
             )
         }

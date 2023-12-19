@@ -7,6 +7,7 @@ import no.nav.pensjon.etterlatte.maler.Periode
 import no.nav.pensjon.etterlatte.maler.Trygdetidsperiode
 import no.nav.pensjon.etterlatte.maler.Utbetalingsinfo
 import no.nav.pensjon.etterlatte.maler.barnepensjon.endring.EndringHovedmalDTO
+import no.nav.pensjon.etterlatte.maler.barnepensjon.ny.BeregningType
 import no.nav.pensjon.etterlatte.maler.barnepensjon.ny.BeregningsinfoBP
 import java.time.LocalDate
 import java.time.Month
@@ -55,6 +56,7 @@ fun createEndringHovedmalDTO() = EndringHovedmalDTO(
         antallBarn = 4,
         aarTrygdetid = 12,
         maanederTrygdetid = 3,
+        prorataBroek = null,
         trygdetidsperioder = listOf(
             Trygdetidsperiode(
                 datoFOM = LocalDate.of(2020, Month.JANUARY, 1),
@@ -62,6 +64,7 @@ fun createEndringHovedmalDTO() = EndringHovedmalDTO(
                 land = "Albania",
                 opptjeningsperiode = Periode(3, 0, 0),
             )
-        )
+        ),
+        beregningstype = BeregningType.NASJONAL
     )
 )
