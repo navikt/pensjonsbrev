@@ -786,10 +786,6 @@ data class StoerrelseOmstillingsstoenad(val grunnbeloepVedVirk: Expression<Krone
                 English to "The allowance is 2.25 times the basic amount in the National Insurance Scheme per year. ".expr() +
                         "The basic amount is NOK " + grunnbeloepVedVirk.format() + ". " +
                         "If the deceased lived outside Norway after the age of 16, it may affect the amount.",
-
-                //English to "The benefit is 2.25 times the National Insurance basic amount G, depending on the period of national insurance coverage for the person who died. The National Insurance basic amount is NOK <hent inn G ved virk>.",
-                // Her mener jeg at engelsk-versjonen er direkte feil når den snakker om "Hvis den avdøde har bodd utenfor Norge etter fylte 16 år"
-
             )
         }
         paragraph {
@@ -802,12 +798,6 @@ data class StoerrelseOmstillingsstoenad(val grunnbeloepVedVirk: Expression<Krone
 
                 English to "If you have earned income in addition to your disability benefit, the adjustment allowance will be reduced by 45 percent of the income that exceeds half the National Insurance basic amount. " +
                         "Some benefits, such as sickness benefits and unemployment benefits, are considered earned income.",
-
-                //English to "The adjustment allowance will be reduced on the basis of income that you receive or expect to receive alongside your disability benefit. " +
-                //        "Your adjustment allowance will be reduced by 45 per cent of your income that exceeds half of the National Insurance basic amount. " +
-                //        "Some benefits, such as sickness benefits and unemployment benefits are equivalent to earned income.",
-                // or expect to recieve? Er det riktig?
-
             )
         }
     }
