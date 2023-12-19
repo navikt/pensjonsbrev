@@ -7,11 +7,13 @@ jobs:
   "build-container":
     name: "build latest texlive/XeTeX version from ctan"
     runs-on: "ubuntu-latest"
+    permissions:
+      packages: write
     steps:
       - name: Create image tag
         run: |
           echo "image-tag=ghcr.io/${{ github.repository }}/pensjon-latex:$(date +'%Y-%m-%d-%H_%M')" >> $GITHUB_ENV
-      - uses: "actions/checkout@v2"
+      - uses: "actions/checkout@v3"
       - name: Build and publish Docker image
         run: "docker build --pull --tag ${{ env.image-tag }} -f pdf-bygger/latex.Dockerfile pdf-bygger && echo $GITHUB_TOKEN | docker login\
         \ --username $GITHUB_REPOSITORY --password-stdin https://ghcr.io\

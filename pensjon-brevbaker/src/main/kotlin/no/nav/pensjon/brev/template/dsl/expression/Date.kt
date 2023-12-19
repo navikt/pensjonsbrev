@@ -4,11 +4,7 @@ import no.nav.pensjon.brev.template.*
 import java.time.LocalDate
 
 fun Expression<LocalDate>.format(short: Boolean = false) =
-    Expression.BinaryInvoke(
-        this,
-        Expression.FromScope.language(ExpressionScope<Any, *>::language),
-        if(short) BinaryOperation.LocalizedShortDateFormat else BinaryOperation.LocalizedDateFormat
-    )
+    format(formatter = if(short) BinaryOperation.LocalizedShortDateFormat else BinaryOperation.LocalizedDateFormat)
 
 private object LocalDateSelectors {
     val yearSelector = object : TemplateModelSelector<LocalDate, Int> {

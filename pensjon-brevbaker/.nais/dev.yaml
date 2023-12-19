@@ -1,30 +1,37 @@
+allowAllUsers: true
 app-name: "pensjon-brevbaker"
 pdf-bygger-app: "pensjon-pdf-bygger"
 ingresses:
-  - "https://pensjon-brevbaker.dev.intern.nav.no"
-env:
-  - name: PDF_BUILDER_URL
-    value: "http://pensjon-pdf-bygger:8080"
+  - "https://pensjon-brevbaker.intern.dev.nav.no"
 
 preAuthorized:
   - name: pensjon-pen-q0
-    namespace: teampensjon
-    cluster: dev-fss
-  - name: pensjon-pen-t0
-    namespace: teampensjon
+    namespace: pensjon-q0
     cluster: dev-fss
   - name: pensjon-pen-q1
-    namespace: teampensjon
+    namespace: pensjon-q1
     cluster: dev-fss
   - name: pensjon-pen-q2
-    namespace: teampensjon
+    namespace: pensjon-q2
     cluster: dev-fss
-  - name: pensjon-pen-q4
-    namespace: teampensjon
+  - name: penbatch
+    namespace: pensjon-batch
     cluster: dev-fss
   - name: pensjon-pen-q5
-    namespace: teampensjon
+    namespace: pensjon-q5
     cluster: dev-fss
   - name: pensjon-psak-q2
-    namespace: teampensjon
+    namespace: pensjon-q2
     cluster: dev-fss
+  - name: locust
+    namespace: pensjonsbrev
+    cluster: dev-gcp
+  - name: skribenten-backend-lokal
+    namespace: pensjonsbrev
+    cluster: dev-gcp
+  - name: skribenten-backend
+    namespace: pensjonsbrev
+    cluster: dev-gcp
+  - name: etterlatte-brev-api
+    namespace: etterlatte
+    cluster: dev-gcp

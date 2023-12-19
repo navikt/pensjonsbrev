@@ -1,10 +1,6 @@
 package no.nav.pensjon.brev.maler.example
 
-import no.nav.pensjon.brev.api.model.BrukerSelectors.fornavn
-import no.nav.pensjon.brev.api.model.FellesSelectors.bruker
-import no.nav.pensjon.brev.api.model.FellesSelectors.dokumentDato
-import no.nav.pensjon.brev.api.model.Kroner
-import no.nav.pensjon.brev.api.model.LetterMetadata
+import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.maler.example.ExampleTilleggDtoSelectors.navn
 import no.nav.pensjon.brev.maler.example.ExampleTilleggDtoSelectors.tillegg1
@@ -22,17 +18,20 @@ import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
-import no.nav.pensjon.brev.template.Language.Bokmal
-import no.nav.pensjon.brev.template.Language.Nynorsk
+import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
+import no.nav.pensjon.brevbaker.api.model.*
+import no.nav.pensjon.brevbaker.api.model.BrukerSelectors.fornavn
+import no.nav.pensjon.brevbaker.api.model.FellesSelectors.bruker
+import no.nav.pensjon.brevbaker.api.model.FellesSelectors.dokumentDato
 import java.time.LocalDate
 
 @TemplateModelHelpers
-object LetterExample : VedtaksbrevTemplate<LetterExampleDto> {
+object LetterExample : AutobrevTemplate<LetterExampleDto> {
 
-    override val kode: Brevkode.Vedtak = Brevkode.Vedtak.OMSORG_EGEN_AUTO
+    override val kode: Brevkode.AutoBrev = Brevkode.AutoBrev.PE_OMSORG_EGEN_AUTO
 
     override val template = createTemplate(
         name = "EKSEMPEL_BREV", //Letter ID
@@ -42,6 +41,7 @@ object LetterExample : VedtaksbrevTemplate<LetterExampleDto> {
             displayTitle = "Dette er ett eksempel-brev", // Display title for external systems
             isSensitiv = false, // If this letter contains sensitive information requiring level 4 log-in
             distribusjonstype = LetterMetadata.Distribusjonstype.ANNET, // Brukes ved distribusjon av brevet
+            brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
         )
     ) {
         title {
@@ -280,7 +280,7 @@ data class LetterExampleDto(
     val tilleggEksempel: List<ExampleTilleggDto>,
     val datoAvslaatt: LocalDate?,
     val pensjonBeloep: Int?,
-)
+) : BrevbakerBrevdata
 
 data class ExampleTilleggDto(
     val navn: String,

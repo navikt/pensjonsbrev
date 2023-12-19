@@ -1,8 +1,8 @@
 package no.nav.pensjon.brev.template.dsl.expression
 
 import no.nav.pensjon.brev.template.*
-import no.nav.pensjon.brev.template.dsl.expression.SomeDtoSelectors.name
-import no.nav.pensjon.brev.template.dsl.expression.SomeDtoSelectors.nameSelector
+import no.nav.pensjon.brev.template.dsl.expression.ExpressionTestSelectors.SomeDtoSelectors.name
+import no.nav.pensjon.brev.template.dsl.expression.ExpressionTestSelectors.SomeDtoSelectors.nameSelector
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test

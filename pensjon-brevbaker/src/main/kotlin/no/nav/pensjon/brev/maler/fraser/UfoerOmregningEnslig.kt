@@ -1,11 +1,15 @@
 package no.nav.pensjon.brev.maler.fraser
 
-import no.nav.pensjon.brev.api.model.*
+import no.nav.pensjon.brev.api.model.Institusjon
+import no.nav.pensjon.brev.maler.fraser.common.Constants.GJENLEVENDE_SKJEMA_URL
+import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
+import no.nav.pensjon.brev.maler.fraser.ufoer.Barnetillegg.DuHarFaattUtbetaltBarnetilleggTidligereIAar
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brev.template.dsl.expression.*
+import no.nav.pensjon.brevbaker.api.model.Kroner
 import java.time.LocalDate
 
 // omregnUTBTDodEPSInnledn_001, omregnUTDodEPSInnledn1_001, omregnBTDodEPSInnledn_001, omregnUTBTSBDodEPSInnledn_001, omregnUTDodEPSInnledn2_001
@@ -25,20 +29,20 @@ data class OmregnEPSInnledning(
                 showIf(harBarnetilleggForSaerkullsbarnVedVirk) {
                     textExpr(
                         Bokmal to "Vi har mottatt melding om at ".expr() + avdoedNavn + " er død, og vi har regnet om uføretrygden og barnetillegget ditt fra "
-                                + virkningsdato + " fordi sivilstanden din er endret. Vi vil også informere deg om rettigheter du kan ha etter avdøde.",
+                                + virkningsdato + " fordi sivilstanden din er endret.",
                         Nynorsk to "Vi har mottatt melding om at ".expr() + avdoedNavn + " er død, og vi har rekna om uføretrygda di og barnetillegget ditt frå "
-                                + virkningsdato + " fordi sivilstanden din har blitt endra. Vi vil også informere deg om kva rettar du kan ha etter avdøde.",
+                                + virkningsdato + " fordi sivilstanden din har blitt endra.",
                         English to "We have received notice that ".expr() + avdoedNavn + " has died, and we have recalculated your disability benefit and child supplement from "
-                                + virkningsdato + " because your marital status has changed. We would also like to inform you about rights you may have as a surviving spouse.",
+                                + virkningsdato + " because your marital status has changed.",
                     )
                 }.orShow {
                     textExpr(
                         Bokmal to "Vi har mottatt melding om at ".expr() + avdoedNavn + " er død, og vi har regnet om uføretrygden din fra "
-                                + virkningsdato + " fordi sivilstanden din er endret. Vi vil også informere deg om rettigheter du kan ha etter avdøde.",
+                                + virkningsdato + " fordi sivilstanden din er endret.",
                         Nynorsk to "Vi har mottatt melding om at ".expr() + avdoedNavn + " er død, og vi har rekna om uføretrygda di frå "
-                                + virkningsdato + " fordi sivilstanden din er endra. Vi vil også informere deg om kva rettar du kan ha etter avdøde.",
+                                + virkningsdato + " fordi sivilstanden din er endra.",
                         English to "We have received notice that ".expr() + avdoedNavn + " has died, and we have recalculated your disability benefit from "
-                                + virkningsdato + ", because your marital status has changed. We would also like to inform you about rights you may have as a surviving spouse.",
+                                + virkningsdato + ", because your marital status has changed.",
                     )
                 }
             }.orShow {
@@ -46,30 +50,30 @@ data class OmregnEPSInnledning(
                     showIf(harBarnOverfoertTilSaerkullsbarn) {
                         textExpr(
                             Bokmal to "Vi har mottatt melding om at ".expr() + avdoedNavn + " er død, og vi har regnet om barnetillegget ditt fra "
-                                    + virkningsdato + " fordi sivilstanden din er endret. Vi vil også informere deg om rettigheter du kan ha etter avdøde.",
+                                    + virkningsdato + " fordi sivilstanden din er endret.",
                             Nynorsk to "Vi har mottatt melding om at ".expr() + avdoedNavn + " er død, og vi har rekna om barnetillegget ditt frå "
-                                    + virkningsdato + " fordi sivilstanden din er endra. Vi vil også informere deg om kva rettar du kan ha etter avdøde.",
+                                    + virkningsdato + " fordi sivilstanden din er endra.",
                             English to "We have received notice that ".expr() + avdoedNavn + " has died, and we have recalculated your child supplement from "
-                                    + virkningsdato + " because your marital status has changed. We would also like to inform you about rights you may have as a surviving spouse.",
+                                    + virkningsdato + " because your marital status has changed.",
                         )
                     }.orShow {
                         textExpr(
                             Bokmal to "Vi har mottatt melding om at ".expr() + avdoedNavn
-                                    + " er død. Uføretrygden og barnetillegget ditt endres ikke, men vi vil informere deg om rettigheter du kan ha etter avdøde.",
+                                    + " er død. Uføretrygden og barnetillegget ditt endres ikke.",
                             Nynorsk to "Vi har mottatt melding om at ".expr() + avdoedNavn
-                                    + " er død. Uføretrygda di og barnetillegget ditt blir ikkje endra, men vi vil informere deg om kva rettar du kan ha etter avdøde.",
+                                    + " er død. Uføretrygda di og barnetillegget ditt blir ikkje endra.",
                             English to "We have received notice that ".expr() + avdoedNavn
-                                    + " has died. This will not affect your disability benefit or child supplement, but we would like to inform you about rights you may have as a surviving spouse.",
+                                    + " has died. This will not affect your disability benefit or child supplement.",
                         )
                     }
                 }.orShow {
                     textExpr(
                         Bokmal to "Vi har mottatt melding om at ".expr() + avdoedNavn
-                                + " er død. Uføretrygden din endres ikke, men vi vil informere deg om rettigheter du kan ha etter avdøde.",
+                                + " er død. Uføretrygden din endres ikke.",
                         Nynorsk to "Vi har mottatt melding om at ".expr() + avdoedNavn
-                                + " er død. Uføretrygda di blir ikkje endra, men vi vil informere deg om kva rettar du kan ha etter avdøde.",
+                                + " er død. Uføretrygda di blir ikkje endra.",
                         English to "We have received notice that ".expr() + avdoedNavn
-                                + " has died. This will not affect your disability benefit, but we would like to inform you about rights you may have as a surviving spouse.",
+                                + " has died. This will not affect your disability benefit.",
                     )
                 }
             }
@@ -158,105 +162,109 @@ data class UtbetalingUfoeretrygd(
     }
 }
 
-data class EndrMYDodEPS2_001(
-    val minsteytelse_sats_vedvirk: Expression<Double>,
-    val kompensasjonsgrad_ufoeretrygd_vedvirk: Expression<Double>,
+// EndrMYDodEPS2_001
+data class EndretMinsteytelseDoedEPS(
+    val minsteytelseSatsVedvirk: Expression<Double>,
+    val kompensasjonsgradUfoeretrygdVedvirk: Expression<Double>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         paragraph {
             textExpr(
                 Bokmal to "Du er sikret minsteytelse fordi beregningen ut fra din egenopptjente inntekt er lavere enn minstenivået for uføretrygd. Satsen på minsteytelsen avhenger av sivilstand. For deg utgjør minsteytelsen ".expr()
-                        + minsteytelse_sats_vedvirk.format() + " ganger folketrygdens grunnbeløp. Du kan lese mer om grunnbeløp på nav.no.".expr(),
+                        + minsteytelseSatsVedvirk.format() + " ganger folketrygdens grunnbeløp. Du kan lese mer om grunnbeløp på $NAV_URL.".expr(),
                 Nynorsk to "Du er sikra minsteyting fordi utrekninga ut frå den eigenopptente inntekta di er lågare enn minstenivået for uføretrygd. Satsen på minsteytinga avheng av sivilstand. For deg utgjer minsteytinga ".expr()
-                        + minsteytelse_sats_vedvirk.format() + " gonger grunnbeløpet i folketrygda. Du kan lese meir om grunnbeløp på nav.no.".expr(),
+                        + minsteytelseSatsVedvirk.format() + " gonger grunnbeløpet i folketrygda. Du kan lese meir om grunnbeløp på $NAV_URL.".expr(),
                 English to "You are eligible for the minimum benefit, because the calculated benefit based on your income is lower than the minimum benefit. The rate of the minimum benefit depends on your marital status. Your minimum benefit is ".expr()
-                        + minsteytelse_sats_vedvirk.format() + " times the National Insurance basic amount. You can read more about the National Insurance basic amount at nav.no.".expr()
+                        + minsteytelseSatsVedvirk.format() + " times the National Insurance basic amount. You can read more about the National Insurance basic amount at $NAV_URL.".expr()
             )
         }
         paragraph {
             textExpr(
                 Bokmal to "Dette kan ha betydning for kompensasjonsgraden din som er satt til ".expr()
-                        + kompensasjonsgrad_ufoeretrygd_vedvirk.format() + " prosent. Du kan lese mer om dette i vedlegget.".expr(),
+                        + kompensasjonsgradUfoeretrygdVedvirk.format() + " prosent. Du kan lese mer om dette i vedlegget.".expr(),
                 Nynorsk to "Dette kan ha noko å seie for kompensasjonsgraden din som er fastsett til ".expr()
-                        + kompensasjonsgrad_ufoeretrygd_vedvirk.format() + " prosent. Du kan lese meir om dette i vedlegget.".expr(),
+                        + kompensasjonsgradUfoeretrygdVedvirk.format() + " prosent. Du kan lese meir om dette i vedlegget.".expr(),
                 English to "This may affect your degree of compensation, which is determined to be ".expr()
-                        + kompensasjonsgrad_ufoeretrygd_vedvirk.format() + " percent. You can read more about this in the appendix.".expr()
+                        + kompensasjonsgradUfoeretrygdVedvirk.format() + " percent. You can read more about this in the appendix.".expr()
             )
         }
     }
 }
 
-data class EndrMYOgMinstIFUDodEPS2_001(
-    val minsteytelse_sats_vedvirk: Expression<Double>,
-    val inntekt_foer_ufoerhet_vedvirk: Expression<Kroner>,
-    val oppjustert_inntekt_foer_ufoerhet_vedvirk: Expression<Kroner>,
-    val kompensasjonsgrad_ufoeretrygd_vedvirk: Expression<Double>,
+// EndrMYOgMinstIFUDodEPS2_001
+data class EndringMinsteytelseOgMinstInntektFoerUfoerhetDoedEPS(
+    val minsteytelseSats: Expression<Double>,
+    val inntektFoerUfoerhet: Expression<Kroner>,
+    val oppjustertInntektFoerUfoerhet: Expression<Kroner>,
+    val kompensasjonsgradUfoeretrygd: Expression<Double>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
 
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         paragraph {
             textExpr(
                 Bokmal to "Du er sikret minsteytelse fordi beregningen ut fra din egenopptjente inntekt er lavere enn minstenivået for uføretrygd. Satsen på minsteytelsen avhenger av sivilstand. For deg utgjør minsteytelsen ".expr()
-                        + minsteytelse_sats_vedvirk.format() + " ganger folketrygdens grunnbeløp. Du kan lese mer om grunnbeløp på nav.no.".expr(),
+                        + minsteytelseSats.format() + " ganger folketrygdens grunnbeløp. Du kan lese mer om grunnbeløp på $NAV_URL.".expr(),
                 Nynorsk to "Du er sikra minsteyting fordi utrekninga ut frå den eigenopptente inntekta di er lågare enn minstenivået for uføretrygd. Satsen på minsteytinga avheng av sivilstand. For deg utgjer minsteytinga ".expr()
-                        + minsteytelse_sats_vedvirk.format() + " gonger grunnbeløpet i folketrygda. Du kan lese meir om grunnbeløp på nav.no.".expr(),
+                        + minsteytelseSats.format() + " gonger grunnbeløpet i folketrygda. Du kan lese meir om grunnbeløp på $NAV_URL.".expr(),
                 English to "You are eligible for the minimum benefit, because the calculated benefit based on your income is lower than the minimum benefit. The rate of the minimum benefit depends on your marital status. Your minimum benefit is ".expr()
-                        + minsteytelse_sats_vedvirk.format() + " times the National Insurance basic amount. You can read more about the National Insurance basic amount at nav.no.".expr()
+                        + minsteytelseSats.format() + " times the National Insurance basic amount. You can read more about the National Insurance basic amount at $NAV_URL.".expr()
             )
         }
 
         paragraph {
             textExpr(
                 Bokmal to "Sivilstandsendring har også betydning for inntekten din før du ble ufør. Denne utgjør ".expr()
-                        + inntekt_foer_ufoerhet_vedvirk.format() + " kroner som oppjustert til virkningstidspunktet tilsvarer en inntekt på ".expr()
-                        + oppjustert_inntekt_foer_ufoerhet_vedvirk.format() + " kroner. Kompensasjonsgraden din er satt til ".expr()
-                        + kompensasjonsgrad_ufoeretrygd_vedvirk.format() + " prosent. Du kan lese mer om dette i vedlegget.".expr(),
+                        + inntektFoerUfoerhet.format() + " kroner som oppjustert til virkningstidspunktet tilsvarer en inntekt på ".expr()
+                        + oppjustertInntektFoerUfoerhet.format() + " kroner. Kompensasjonsgraden din er satt til ".expr()
+                        + kompensasjonsgradUfoeretrygd.format() + " prosent. Du kan lese mer om dette i vedlegget.".expr(),
                 Nynorsk to "Endringar i sivilstanden påverkar også inntekta di før du blei ufør. Denne utgjer ".expr()
-                        + inntekt_foer_ufoerhet_vedvirk.format() + " kroner som oppjustert til verknadstidspunktet svarer til ei inntekt på ".expr()
-                        + oppjustert_inntekt_foer_ufoerhet_vedvirk.format() + " kroner. Kompensasjonsgraden din er fastsett til ".expr()
-                        + kompensasjonsgrad_ufoeretrygd_vedvirk.format() + " prosent. Du kan lese meir om dette i vedlegget.".expr(),
+                        + inntektFoerUfoerhet.format() + " kroner som oppjustert til verknadstidspunktet svarer til ei inntekt på ".expr()
+                        + oppjustertInntektFoerUfoerhet.format() + " kroner. Kompensasjonsgraden din er fastsett til ".expr()
+                        + kompensasjonsgradUfoeretrygd.format() + " prosent. Du kan lese meir om dette i vedlegget.".expr(),
                 English to "The change in your marital status also affects your income prior to disability, which is determined to be NOK ".expr()
-                        + inntekt_foer_ufoerhet_vedvirk.format() + ". Adjusted to today’s value, this is equivalent to an income of NOK ".expr()
-                        + oppjustert_inntekt_foer_ufoerhet_vedvirk.format() + ". Your degree of compensation is determined to be ".expr()
-                        + kompensasjonsgrad_ufoeretrygd_vedvirk.format() + " percent. You can read more about this in the appendix.".expr()
+                        + inntektFoerUfoerhet.format() + ". Adjusted to today’s value, this is equivalent to an income of NOK ".expr()
+                        + oppjustertInntektFoerUfoerhet.format() + ". Your degree of compensation is determined to be ".expr()
+                        + kompensasjonsgradUfoeretrygd.format() + " percent. You can read more about this in the appendix.".expr()
             )
         }
     }
 }
 
-data class EndrMinstIFUDodEPS2_001(
-    val inntekt_foer_ufoerhet_vedvirk: Expression<Kroner>,
-    val oppjustert_inntekt_foer_ufoerhet_vedvirk: Expression<Kroner>,
-    val kompensasjonsgrad_ufoeretrygd_vedvirk: Expression<Double>,
+// EndrMinstIFUDodEPS2_001
+data class EndretMinstInntektFoerUfoerhetDoedEPS(
+    val inntektFoerUfoerhet: Expression<Kroner>,
+    val oppjustertInntektFoerUfoerhet: Expression<Kroner>,
+    val kompensasjonsgradUfoeretrygd: Expression<Double>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         paragraph {
             textExpr(
                 Bokmal to "Inntekten din før du ble ufør er fastsatt til minstenivå som er avhengig av sivilstand. For deg er inntekten din før du ble ufør satt til ".expr()
-                        + inntekt_foer_ufoerhet_vedvirk.format() + " kroner som oppjustert til virkningstidspunktet tilsvarer en inntekt på ".expr()
-                        + oppjustert_inntekt_foer_ufoerhet_vedvirk.format() + " kroner. Dette kan ha betydning for kompensasjonsgraden din som er satt til ".expr()
-                        + kompensasjonsgrad_ufoeretrygd_vedvirk.format() + " prosent. Du kan lese mer om dette i vedlegget.".expr(),
+                        + inntektFoerUfoerhet.format() + " kroner som oppjustert til virkningstidspunktet tilsvarer en inntekt på ".expr()
+                        + oppjustertInntektFoerUfoerhet.format() + " kroner. Dette kan ha betydning for kompensasjonsgraden din som er satt til ".expr()
+                        + kompensasjonsgradUfoeretrygd.format() + " prosent. Du kan lese mer om dette i vedlegget.".expr(),
                 Nynorsk to "Inntekta di før du blei ufør er fastsett til minstenivå, som er avhengig av sivilstand. For deg er inntekta di før du blei ufør fastsett til ".expr()
-                        + inntekt_foer_ufoerhet_vedvirk.format() + " kroner som oppjustert til verknadstidspunktet svarer til ei inntekt på ".expr()
-                        + oppjustert_inntekt_foer_ufoerhet_vedvirk.format() + " kroner. Dette kan ha noko å seie for kompensasjonsgraden din, som er fastsett til ".expr()
-                        + kompensasjonsgrad_ufoeretrygd_vedvirk.format() + " prosent. Du kan lese meir om dette i vedlegget.".expr(),
+                        + inntektFoerUfoerhet.format() + " kroner som oppjustert til verknadstidspunktet svarer til ei inntekt på ".expr()
+                        + oppjustertInntektFoerUfoerhet.format() + " kroner. Dette kan ha noko å seie for kompensasjonsgraden din, som er fastsett til ".expr()
+                        + kompensasjonsgradUfoeretrygd.format() + " prosent. Du kan lese meir om dette i vedlegget.".expr(),
                 English to "Your income prior to disability is set to the minimum level, which depends on marital status. The change in your marital status affects your income prior to disability, which is determined to be NOK ".expr()
-                        + inntekt_foer_ufoerhet_vedvirk.format() + ". Adjusted to today’s value, this is equivalent to an income of NOK ".expr()
-                        + oppjustert_inntekt_foer_ufoerhet_vedvirk.format() + ". This may affect your degree of compensation, which has been determined to be ".expr()
-                        + kompensasjonsgrad_ufoeretrygd_vedvirk.format() + " percent. You can read more about this in the appendix.".expr()
+                        + inntektFoerUfoerhet.format() + ". Adjusted to today’s value, this is equivalent to an income of NOK ".expr()
+                        + oppjustertInntektFoerUfoerhet.format() + ". This may affect your degree of compensation, which has been determined to be ".expr()
+                        + kompensasjonsgradUfoeretrygd.format() + " percent. You can read more about this in the appendix.".expr()
             )
         }
     }
 }
 
+//HjemmelSivilstandUTMinsteIFUAvkortet_001, HjemmelSivilstandUTMinsteIFU_001, HjemmelSivilstandUT_001, HjemmelSivilstandUTAvkortet_001
+
 data class HjemmelSivilstandUfoeretrygd(
     val harMinsteinntektFoerUfoerhet: Expression<Boolean>,
-    val ufoeretrygdVedvirkErInntektsavkortet: Expression<Boolean>,
+    val ufoeretrygdErInntektsavkortet: Expression<Boolean>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         showIf(harMinsteinntektFoerUfoerhet) {
-            showIf(ufoeretrygdVedvirkErInntektsavkortet) {
-                //HjemmelSivilstandUTMinsteIFUAvkortet_001
+            showIf(ufoeretrygdErInntektsavkortet) {
                 paragraph {
                     text(
                         Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 12-9, 12-13, 12-14 og 22-12.",
@@ -265,7 +273,6 @@ data class HjemmelSivilstandUfoeretrygd(
                     )
                 }
             }.orShow {
-                //HjemmelSivilstandUTMinsteIFU_001
                 paragraph {
                     text(
                         Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 12-9, 12-13 og 22-12.",
@@ -275,8 +282,7 @@ data class HjemmelSivilstandUfoeretrygd(
                 }
             }
         }.orShow {
-            showIf(ufoeretrygdVedvirkErInntektsavkortet) {
-                //HjemmelSivilstandUTAvkortet_001
+            showIf(ufoeretrygdErInntektsavkortet) {
                 paragraph {
                     text(
                         Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 12-13, 12-14 og 22-12.",
@@ -285,7 +291,6 @@ data class HjemmelSivilstandUfoeretrygd(
                     )
                 }
             }.orShow {
-                //HjemmelSivilstandUT_001
                 paragraph {
                     text(
                         Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 12-13 og 22-12.",
@@ -298,7 +303,8 @@ data class HjemmelSivilstandUfoeretrygd(
     }
 }
 
-object HjemmelEPSDodUTInstitusjon_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
+// HjemmelEPSDodUTInstitusjon_001
+object HjemmelEPSDoedInstitusjonUfoeretrygd : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         paragraph {
             text(
@@ -309,7 +315,8 @@ object HjemmelEPSDodUTInstitusjon_001 : OutlinePhrase<LangBokmalNynorskEnglish>(
         }
 }
 
-object HjemmelEPSDodUTFengsel_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
+// HjemmelEPSDodUTFengsel_001
+object HjemmelEPSDoedFengselUfoerUfoeretrygd : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         paragraph {
             text(
@@ -320,7 +327,8 @@ object HjemmelEPSDodUTFengsel_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
         }
 }
 
-object OpphorETOverskrift_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
+// OpphorETOverskrift_001
+object OpphoerEktefelletilleggOverskrift : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         title1 {
             text(
@@ -331,7 +339,8 @@ object OpphorETOverskrift_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
         }
 }
 
-object OpphorET_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
+// OpphorET_001
+object OpphoerEktefelletillegg : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         paragraph {
             text(
@@ -342,7 +351,8 @@ object OpphorET_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
         }
 }
 
-object HjemmelET_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
+// HjemmelET_001
+object HjemmelEktefelletillegg : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         paragraph {
             text(
@@ -353,7 +363,8 @@ object HjemmelET_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
         }
 }
 
-object OmregningFBOverskrift_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
+// OmregningFBOverskrift_001
+object OmregningFellesbarnOverskrift : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         title1 {
             text(
@@ -364,7 +375,7 @@ object OmregningFBOverskrift_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
         }
 }
 
-data class InfoFBTilSB_001(
+data class InfoFellesbarnTilSaerkullsbarn(
     val barnOverfoertTilSaerkullsbarn: Expression<List<String>>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
@@ -388,7 +399,8 @@ data class InfoFBTilSB_001(
         }
 }
 
-data class InfoTidligereSB_001(
+// InfoTidligereSB_001
+data class InfoTidligereSaerkullsbarn(
     val tidligereSaerkullsbarn: Expression<List<String>>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
@@ -412,7 +424,8 @@ data class InfoTidligereSB_001(
         }
 }
 
-data class InfoTidligereSBOgEndretUT_001(
+// InfoTidligereSBOgEndretUT_001
+data class InfoTidligereSaerkullsbarnOgEndretUfoeretrygd(
     val tidligereSaerkullsbarn: Expression<List<String>>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
@@ -436,7 +449,8 @@ data class InfoTidligereSBOgEndretUT_001(
         }
 }
 
-object EndringUTpavirkerBTOverskrift_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
+// EndringUTpavirkerBTOverskrift_001
+object EndringUfoeretrygdPaavirkerBarnetilleggOverskrift : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         title1 {
             text(
@@ -447,27 +461,29 @@ object EndringUTpavirkerBTOverskrift_001 : OutlinePhrase<LangBokmalNynorskEnglis
         }
 }
 
-object InfoBTSBInntekt_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
+// InfoBTSBInntekt_001
+object InfoBarnetilleggSaerkullsbarnInntekt : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         paragraph {
             text(
                 Bokmal to "Inntekten din har betydning for hva du får i barnetillegg. " +
                         "Er inntekten din over grensen for å få utbetalt fullt barnetillegg, blir tillegget redusert. " +
                         "Denne grensen kaller vi for fribeløp. " +
-                        "Du kan enkelt melde fra om inntektsendringer på nav.no.",
+                        "Du kan enkelt melde fra om inntektsendringer på $NAV_URL.",
                 Nynorsk to "Inntekta di påverkar det du får i barnetillegg. " +
                         "Er inntekta di over grensa for å få utbetalt fullt barnetillegg, blir tillegget redusert. " +
                         "Denne grensa kallar vi for fribeløp. " +
-                        "Du kan enkelt melde frå om inntektsendringar på nav.no.",
+                        "Du kan enkelt melde frå om inntektsendringar på $NAV_URL.",
                 English to "Your income affects how much child supplement you receive. " +
                         "If your income is over the limit for receiving full child supplement, your child supplement will be reduced. " +
                         "This limit is called the exemption amount. " +
-                        "You can easily report changes in your income at nav.no."
+                        "You can easily report changes in your income at $NAV_URL."
             )
         }
 }
 
-object InfoBTOverfortTilSBInntekt_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
+// InfoBTOverfortTilSBInntekt_001
+object InfoBarnetilleggOverfortTilSaerkullsbarnInntekt : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         paragraph {
             text(
@@ -475,110 +491,114 @@ object InfoBTOverfortTilSBInntekt_001 : OutlinePhrase<LangBokmalNynorskEnglish>(
                         "Er inntekten din over grensen for å få utbetalt fullt barnetillegg, blir tillegget redusert. " +
                         "Denne grensen kaller vi for fribeløp. " +
                         "Fribeløpet for ett barn er 3,1 ganger folketrygdens grunnbeløp og det øker med 40 prosent av folketrygdens grunnbeløp for hvert ekstra barn. " +
-                        "Du kan enkelt melde fra om inntektsendringer på nav.no.",
+                        "Du kan enkelt melde fra om inntektsendringer på $NAV_URL.",
 
                 Nynorsk to "Inntekta di påverkar det du får i barnetillegg. " +
                         "Er inntekta di over grensa for å få utbetalt fullt barnetillegg, blir tillegget redusert. " +
                         "Denne grensa kallar vi for fribeløp. " +
                         "Fribeløpet for eit barn er 3,1 gonger grunnbeløpet i folketrygda og det aukar med 40 prosent av grunnbeløpet for kvart ekstra barn. " +
-                        "Du kan enkelt melde frå om inntektsendringar på nav.no.",
+                        "Du kan enkelt melde frå om inntektsendringar på $NAV_URL.",
 
                 English to "Your income affects how much child supplement you receive. " +
                         "If your income is over the limit for receiving full child supplement, your child supplement will be reduced. " +
                         "This limit is called the exemption amount. " +
-                        "The exemption amount is 3.1 times the National Insurance basic amount and it increases with 40 percent of the National Insurance basic amount for each extra child. You can easily report changes in your income at nav.no."
+                        "The exemption amount is 3.1 times the National Insurance basic amount and it increases with 40 percent of the National Insurance basic amount for each extra child. You can easily report changes in your income at $NAV_URL."
             )
         }
 }
 
-data class IkkeRedusBTSBPgaInntekt_001(
-    val barnetillegg_saerkullsbarn_inntekt_brukt_i_avkortning_vedvirk: Expression<Kroner>,
-    val barnetillegg_saerkullsbarn_fribeloep_vedvirk: Expression<Kroner>,
+// IkkeRedusBTSBPgaInntekt_001
+data class IkkeRedusertBarnetilleggSaerkullsbarnPgaInntekt(
+    val barnetilleggSaerkullsbarnInntektBruktIAvkortning: Expression<Kroner>,
+    val barnetilleggSaerkullsbarnFribeloep: Expression<Kroner>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         paragraph {
             textExpr(
                 Bokmal to "Inntekten din på ".expr()
-                        + barnetillegg_saerkullsbarn_inntekt_brukt_i_avkortning_vedvirk.format() + " kroner er lavere enn fribeløpet ditt på ".expr()
-                        + barnetillegg_saerkullsbarn_fribeloep_vedvirk.format() + " kroner. Derfor er barnetillegget ikke redusert ut fra inntekt.".expr(),
+                        + barnetilleggSaerkullsbarnInntektBruktIAvkortning.format() + " kroner er lavere enn fribeløpet ditt på ".expr()
+                        + barnetilleggSaerkullsbarnFribeloep.format() + " kroner. Derfor er barnetillegget ikke redusert ut fra inntekt.".expr(),
                 Nynorsk to "Inntekta di på ".expr()
-                        + barnetillegg_saerkullsbarn_inntekt_brukt_i_avkortning_vedvirk.format() + " kroner er lågare enn fribeløpet ditt på ".expr()
-                        + barnetillegg_saerkullsbarn_fribeloep_vedvirk.format() + " kroner. Derfor er barnetillegget ikkje redusert ut frå inntekt.".expr(),
+                        + barnetilleggSaerkullsbarnInntektBruktIAvkortning.format() + " kroner er lågare enn fribeløpet ditt på ".expr()
+                        + barnetilleggSaerkullsbarnFribeloep.format() + " kroner. Derfor er barnetillegget ikkje redusert ut frå inntekt.".expr(),
                 English to "Your income of NOK ".expr()
-                        + barnetillegg_saerkullsbarn_inntekt_brukt_i_avkortning_vedvirk.format() + " is lower than your exemption amount of NOK ".expr()
-                        + barnetillegg_saerkullsbarn_fribeloep_vedvirk.format() + ". Therefore, your child supplement has not been reduced on the basis of your income.".expr()
+                        + barnetilleggSaerkullsbarnInntektBruktIAvkortning.format() + " is lower than your exemption amount of NOK ".expr()
+                        + barnetilleggSaerkullsbarnFribeloep.format() + ". Therefore, your child supplement has not been reduced on the basis of your income.".expr()
             )
         }
 }
 
-data class RedusBTSBPgaInntekt_001(
-    val barnetillegg_saerkullsbarn_inntekt_brukt_i_avkortning_vedvirk: Expression<Kroner>,
-    val barnetillegg_saerkullsbarn_fribeloep_vedvirk: Expression<Kroner>,
+// RedusBTSBPgaInntekt_001
+data class RedusertBarnetilleggSaerkullsbarnPgaInntekt(
+    val barnetilleggSaerkullsbarnInntektBruktIAvkortning: Expression<Kroner>,
+    val barnetilleggSaerkullsbarnFribeloep: Expression<Kroner>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         paragraph {
             textExpr(
                 Bokmal to "Inntekten din på ".expr()
-                        + barnetillegg_saerkullsbarn_inntekt_brukt_i_avkortning_vedvirk.format() + " kroner er høyere enn fribeløpet ditt på ".expr()
-                        + barnetillegg_saerkullsbarn_fribeloep_vedvirk.format() + " kroner. Derfor er barnetillegget redusert ut fra inntekt.".expr(),
+                        + barnetilleggSaerkullsbarnInntektBruktIAvkortning.format() + " kroner er høyere enn fribeløpet ditt på ".expr()
+                        + barnetilleggSaerkullsbarnFribeloep.format() + " kroner. Derfor er barnetillegget redusert ut fra inntekt.".expr(),
                 Nynorsk to "Inntekta di på ".expr()
-                        + barnetillegg_saerkullsbarn_inntekt_brukt_i_avkortning_vedvirk.format() + " kroner er høgare enn fribeløpet ditt på ".expr()
-                        + barnetillegg_saerkullsbarn_fribeloep_vedvirk.format() + " kroner. Derfor er barnetillegget redusert ut frå inntekt.".expr(),
+                        + barnetilleggSaerkullsbarnInntektBruktIAvkortning.format() + " kroner er høgare enn fribeløpet ditt på ".expr()
+                        + barnetilleggSaerkullsbarnFribeloep.format() + " kroner. Derfor er barnetillegget redusert ut frå inntekt.".expr(),
                 English to "Your income of NOK ".expr()
-                        + barnetillegg_saerkullsbarn_inntekt_brukt_i_avkortning_vedvirk.format() + " is higher than your exemption amount of NOK ".expr()
-                        + barnetillegg_saerkullsbarn_fribeloep_vedvirk.format() + ". Therefore, your child supplement has been reduced on the basis of your income.".expr()
+                        + barnetilleggSaerkullsbarnInntektBruktIAvkortning.format() + " is higher than your exemption amount of NOK ".expr()
+                        + barnetilleggSaerkullsbarnFribeloep.format() + ". Therefore, your child supplement has been reduced on the basis of your income.".expr()
             )
         }
 }
 
-object JusterBelopRedusBTPgaInntekt_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
+// JusterBelopRedusBTPgaInntekt_001
+object JusterBeloepRedusertBarnetilleggPgaInntekt : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         paragraph {
+            includePhrase(DuHarFaattUtbetaltBarnetilleggTidligereIAar)
+
             text(
-                Bokmal to "Det du har fått utbetalt i barnetillegg tidligere i år har også betydning for hva du får i barnetillegg framover. Dette ble tatt hensyn til da vi endret barnetillegget.",
-                Nynorsk to "Det du har fått utbetalt i barnetillegg tidlegare i år, påverkar også det du får i barnetillegg framover. Det blei teke omsyn til dette då vi endra barnetillegget.",
-                English to "The amount you have received in child supplement earlier this year also affects how much child supplement you will receive henceforth. This was taken into account when we changed your child supplement."
+                Bokmal to " Dette ble tatt hensyn til da vi endret barnetillegget.",
+                Nynorsk to " Det blei teke omsyn til dette då vi endra barnetillegget.",
+                English to " This was taken into account when we changed your child supplement."
             )
         }
 }
 
-object JusterBelopIkkeUtbetaltBTPgaInntekt_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
+// JusterBelopIkkeUtbetaltBTPgaInntekt_001
+object IkkeUtbetaltBarnetilleggPgaInntektOgJusteringsbelop : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         paragraph {
+            includePhrase(DuHarFaattUtbetaltBarnetilleggTidligereIAar)
             text(
-                Bokmal to "Det du har fått utbetalt i barnetillegg tidligere i år har også betydning for hva du får i barnetillegg framover. " +
-                        "Du har allerede fått utbetalt det du har rett til i år, og får derfor ikke utbetalt barnetillegg for resten av året.",
-
-                Nynorsk to "Det du har fått utbetalt i barnetillegg tidlegare i år, påverkar også det du får i barnetillegg framover. " +
-                        "Du har allereie fått utbetalt det du har rett til i år, og får derfor ikkje utbetalt barnetillegg for resten av året.",
-
-                English to "The amount you have received in child supplement earlier this year also affects how much child supplement you will receive henceforth. " +
-                        "You have already received the amount you are entitled to this year, and therefore you will not receive child supplement for the remainder of the year."
+                Bokmal to " Du har allerede fått utbetalt det du har rett til i år, og får derfor ikke utbetalt barnetillegg for resten av året.",
+                Nynorsk to " Du har allereie fått utbetalt det du har rett til i år, og får derfor ikkje utbetalt barnetillegg for resten av året.",
+                English to " You have already received the amount you are entitled to this year, and therefore you will not receive child supplement for the remainder of the year."
             )
         }
 }
 
-data class IkkeUtbetaltBTSBPgaInntekt_001(
-    val barnetillegg_saerkullsbarn_inntekt_brukt_i_avkortning_vedvirk: Expression<Kroner>,
-    val barnetillegg_saerkullsbarn_inntektstak_vedvirk: Expression<Kroner>,
+// IkkeUtbetaltBTSBPgaInntekt_001
+data class IkkeUtbetaltBarnetilleggSaerkullsbarnPgaInntekt(
+    val barnetilleggSaerkullsbarnInntektBruktIAvkortning: Expression<Kroner>,
+    val barnetilleggSaerkullsbarnInntektstak: Expression<Kroner>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         paragraph {
             textExpr(
                 Bokmal to "Inntekten din på ".expr()
-                        + barnetillegg_saerkullsbarn_inntekt_brukt_i_avkortning_vedvirk.format() + " kroner er over ".expr()
-                        + barnetillegg_saerkullsbarn_inntektstak_vedvirk.format() + " kroner som er grensen for å få utbetalt barnetillegg. Derfor får du ikke utbetalt barnetillegg.".expr(),
+                        + barnetilleggSaerkullsbarnInntektBruktIAvkortning.format() + " kroner er over ".expr()
+                        + barnetilleggSaerkullsbarnInntektstak.format() + " kroner som er grensen for å få utbetalt barnetillegg. Derfor får du ikke utbetalt barnetillegg.".expr(),
                 Nynorsk to "Inntekta di på ".expr()
-                        + barnetillegg_saerkullsbarn_inntekt_brukt_i_avkortning_vedvirk.format() + " kroner er over ".expr()
-                        + barnetillegg_saerkullsbarn_inntektstak_vedvirk.format() + " kroner, som er grensa for å få utbetalt barnetillegg. Derfor får du ikkje utbetalt barnetillegg.".expr(),
+                        + barnetilleggSaerkullsbarnInntektBruktIAvkortning.format() + " kroner er over ".expr()
+                        + barnetilleggSaerkullsbarnInntektstak.format() + " kroner, som er grensa for å få utbetalt barnetillegg. Derfor får du ikkje utbetalt barnetillegg.".expr(),
                 English to "Your income of NOK ".expr()
-                        + barnetillegg_saerkullsbarn_inntekt_brukt_i_avkortning_vedvirk.format() + " is over the income limit for receiving a child supplement, which is NOK ".expr()
-                        + barnetillegg_saerkullsbarn_inntektstak_vedvirk.format() + ". Therefore, you will not receive child supplement.".expr()
+                        + barnetilleggSaerkullsbarnInntektBruktIAvkortning.format() + " is over the income limit for receiving a child supplement, which is NOK ".expr()
+                        + barnetilleggSaerkullsbarnInntektstak.format() + ". Therefore, you will not receive child supplement.".expr()
             )
         }
 }
 
-object HjemmelBT_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
+// HjemmelBT_001
+object HjemmelBarnetillegg : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         paragraph {
             text(
@@ -589,7 +609,8 @@ object HjemmelBT_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
         }
 }
 
-object HjemmelBTRedus_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
+// HjemmelBTRedus_001
+object HjemmelBarnetilleggRedusert : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         paragraph {
             text(
@@ -600,7 +621,8 @@ object HjemmelBTRedus_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
         }
 }
 
-object MerInfoBT_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
+// MerInfoBT_001
+object MerInfoBarnetillegg : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         paragraph {
             text(
@@ -611,36 +633,35 @@ object MerInfoBT_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
         }
 }
 
-data class GjRettSamboerOverskrift(val avdoedNavn: Expression<String>) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+data class GjenlevenderettSamboerOverskrift(val avdoedNavn: Expression<String>) :
+    OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         title1 {
             textExpr(
-                Bokmal to "Rettigheter du kan ha som tidligere samboer med ".expr()
-                        + avdoedNavn,
-                Nynorsk to "Rettar du kan ha som tidlegare sambuar med ".expr()
-                        + avdoedNavn,
-                English to "Rights you may be entitled to as a former cohabitant with ".expr()
-                        + avdoedNavn
+                Bokmal to "Rettigheter du kan ha som tidligere samboer med ".expr() + avdoedNavn,
+                Nynorsk to "Rettar du kan ha som tidlegare sambuar med ".expr() + avdoedNavn,
+                English to "Rights you may be entitled to as a former cohabitant with ".expr() + avdoedNavn
             )
         }
-
 }
 
-object GjRettUTSamboer_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
+// GjRettUTSamboer_001
+object GjenlevenderettUfoeretrygdSamboer : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         paragraph {
             text(
                 Bokmal to "Samboere som tidligere har vært gift, eller som har eller har hatt felles barn, kan ha rett til gjenlevendetillegg i uføretrygden. " +
-                        "Du finner mer informasjon og søknadsskjema for gjenlevende ektefelle, partner eller samboer på nav.no.",
+                        "Du finner mer informasjon og søknadsskjema for gjenlevende ektefelle, partner eller samboer på $NAV_URL.",
                 Nynorsk to "Sambuarar som tidlegare har vore gift, eller som har eller har hatt felles barn, kan ha rett til attlevandetillegg i uføretrygda. " +
-                        "Du finn meir informasjon og søknadsskjema for attlevande ektefelle, partnar eller sambuar på nav.no.",
+                        "Du finn meir informasjon og søknadsskjema for attlevande ektefelle, partnar eller sambuar på $NAV_URL.",
                 English to "Cohabitants who have previously been married, or who have or have had children together, may be entitled to survivor's supplement to disability benefit. " +
-                        "You will find more information and the application form for benefits for surviving spouse, partner or cohabitant at nav.no."
+                        "You will find more information and the application form for benefits for surviving spouse, partner or cohabitant at $NAV_URL."
             )
         }
 }
 
-object RettTilUTGJTOverskrift_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
+// RettTilUTGJTOverskrift_001
+object RettTilGjenlevendetilleggOverskrift : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         title1 {
             text(
@@ -651,7 +672,8 @@ object RettTilUTGJTOverskrift_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
         }
 }
 
-object HvemUTGJTVilkar_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
+// HvemUTGJTVilkar_001
+object HvemHarRettTilGjenlevendetilleggVilkaar : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         paragraph {
             text(
@@ -697,17 +719,18 @@ object HvemUTGJTVilkar_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
         paragraph {
             text(
                 Bokmal to "Selv om du ikke har rett til ytelsen etter hovedreglene, kan du likevel ha rettigheter etter avdøde. " +
-                        "Du kan lese mer om dette på nav.no.",
+                        "Du kan lese mer om dette på $NAV_URL.",
                 Nynorsk to "Sjølv om du ikkje har rett til ytinga etter hovudreglane, kan du likevel ha rettar etter avdøde. " +
-                        "Du kan lese meir om dette på nav.no.",
+                        "Du kan lese meir om dette på $NAV_URL.",
                 English to "Even if you are not entitled to benefits in accordance with the general rules, you may nevertheless have rights as a surviving spouse. " +
-                        "You can read more about this at nav.no."
+                        "You can read more about this at $NAV_URL."
             )
         }
     }
 }
 
-object HvordanSoekerDuOverskrift_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
+// HvordanSoekerDuOverskrift_001
+object HvordanSoekerDuOverskrift : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         title1 {
             text(
@@ -718,21 +741,26 @@ object HvordanSoekerDuOverskrift_001 : OutlinePhrase<LangBokmalNynorskEnglish>()
         }
 }
 
-object SoekUTGJT_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
+// SoekUTGJT_001
+object SoekGjenlevendetillegg : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         paragraph {
             text(
                 Bokmal to "Vi oppfordrer deg til å søke om gjenlevendetillegg i uføretrygden så snart som mulig fordi vi vanligvis kun etterbetaler for tre måneder. " +
-                        "Du finner informasjon og søknadsskjemaet for gjenlevende ektefelle, partner eller samboer på nav.no/gjenlevendeektefelle",
+                        "Det er nye regler for gjenlevendeytelser fra 1. januar 2024. Tidspunktet for når NAV mottar søknaden din kan ha betydning for hvilke regler som gjelder for deg. " +
+                        "Du finner informasjon og søknadsskjemaet for gjenlevende ektefelle, partner eller samboer på $GJENLEVENDE_SKJEMA_URL",
                 Nynorsk to "Vi oppmodar deg til å søkje om attlevandetillegg i uføretrygda så snart som mogleg fordi vi vanlegvis berre etterbetaler for tre månader. " +
-                        "Du finn informasjon og søknadsskjemaet for attlevande ektefelle, partner eller sambuar på nav.no/gjenlevendeektefelle",
+                        "Det er nye reglar for ytingar til attlevande frå 1. januar 2024. Tidspunktet for når NAV mottar søknaden din kan ha betydning for kva regler som gjeld for deg. " +
+                        "Du finn informasjon og søknadsskjemaet for attlevande ektefelle, partner eller sambuar på $GJENLEVENDE_SKJEMA_URL",
                 English to "We encourage you to apply for survivor's supplement to disability benefit as soon as possible because we normally only pay retroactively for three months. " +
-                        "You will find information and the application form for a surviving spouse, partner or cohabitant at nav.no/gjenlevendeektefelle"
+                        "There are new rules for survivor benefits from January 1, 2024. The date when NAV receives your application may have significance for which rules apply to you. " +
+                        "You will find information and the application form for a surviving spouse, partner or cohabitant at $GJENLEVENDE_SKJEMA_URL"
             )
         }
 }
 
-object SoekAvtaleLandUT_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
+// SoekAvtaleLandUT_001
+object SoekGjenlevendetilleggAvtaleland : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         paragraph {
             text(
@@ -743,7 +771,8 @@ object SoekAvtaleLandUT_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
         }
 }
 
-object AvdodBoddArbUtlandOverskrift_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
+// AvdodBoddArbUtlandOverskrift_001
+object AvdoedBoddArbeidetIUtlandOverskrift : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         title1 {
             text(
@@ -754,29 +783,30 @@ object AvdodBoddArbUtlandOverskrift_001 : OutlinePhrase<LangBokmalNynorskEnglish
         }
 }
 
-object AvdodBoddArbUtland2_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
+// AvdodBoddArbUtland2_001
+object AvdoedBoddEllerArbeidetIUtland : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         paragraph {
             text(
-                Bokmal to "Hvis avdøde har bodd eller arbeidet i utlandet kan dette få betydning for hvor mye du får ubetalt i gjenlevendetillegg. " +
+                Bokmal to "Hvis avdøde har bodd eller arbeidet i utlandet, kan dette få betydning for hvor mye du får ubetalt. " +
                         "Norge har trygdesamarbeid med en rekke land gjennom EØS-avtalen og andre avtaler. " +
-                        "Derfor kan du også ha rett til pensjon fra andre land. " +
+                        "Derfor kan du også ha rettigheter fra andre land. " +
                         "Vi kan hjelpe deg med søknad til land Norge har trygdeavtale med.",
 
-                Nynorsk to "Dersom avdøde har budd eller arbeidd i utlandet, kan dette få noko å seie for kor mykje du får ubetalt i attlevandetillegg. " +
+                Nynorsk to "Dersom avdøde har budd eller arbeidd i utlandet, kan det påverke kor mykje du får ubetalt. " +
                         "Noreg har trygdesamarbeid med ei rekkje land gjennom EØS-avtalen og andre avtalar. " +
-                        "Derfor kan du også ha rett til pensjon frå andre land. " +
+                        "Derfor kan du også ha rettar frå andre land. " +
                         "Vi kan hjelpe deg med søknad til land Noreg har trygdeavtale med.",
 
-                English to "If the deceased has lived or worked abroad, this may affect the amount of your survivor's supplement. " +
+                English to "If the deceased has lived or worked abroad, this may affect your payment. " +
                         "Norway cooperates with a number of countries through the EEA Agreement and other social security agreements. " +
-                        "You may therefore also be entitled to a pension from other countries. " +
+                        "You may therefore also have rights from other countries. " +
                         "We can assist you with your application to countries with which Norway has a social security agreement."
             )
         }
 }
-
-object PensjonFraAndreOverskrift_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
+// PensjonFraAndreOverskrift_001
+object PensjonFraAndreOverskrift : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         title1 {
             text(
@@ -787,7 +817,8 @@ object PensjonFraAndreOverskrift_001 : OutlinePhrase<LangBokmalNynorskEnglish>()
         }
 }
 
-object InfoAvdodPenFraAndre_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
+// InfoAvdodPenFraAndre_001
+object InfoAvdoedPenFraAndre : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         paragraph {
             text(
@@ -796,12 +827,13 @@ object InfoAvdodPenFraAndre_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
                 Nynorsk to "Dersom avdøde hadde ei privat eller offentleg pensjonsordning og du har spørsmål om dette, må du kontakte arbeidsgivaren til avdøde. " +
                         "Du kan også ta kontakt med pensjonsordninga eller forsikringsselskapet.",
                 English to "If the deceased was a member of a private or public pension scheme and you have questions about this, you must contact the deceased's employer. " +
-                        "You can also contact the pension scheme or insurance."
+                        "You can also contact the pension scheme or insurance company."
             )
         }
 }
 
-object HarBarnUnder18Overskrift_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
+// HarBarnUnder18Overskrift_001
+object HarBarnUnder18Overskrift : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         title1 {
             text(
@@ -812,7 +844,8 @@ object HarBarnUnder18Overskrift_001 : OutlinePhrase<LangBokmalNynorskEnglish>() 
         }
 }
 
-object HarBarnUtenBT_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
+// HarBarnUtenBT_001
+object HarBarnUtenBarnetillegg : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         paragraph {
             text(
@@ -823,201 +856,81 @@ object HarBarnUtenBT_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
         }
 }
 
-object HarBarnUnder18_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
+// HarBarnUnder18_001
+object HarBarnUnder18 : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         paragraph {
             text(
                 Bokmal to "Forsørger du barn under 18 år, kan du ha rett til utvidet barnetrygd. " +
                         "I tillegg kan barn ha rett til barnepensjon. " +
-                        "Du finner søknadsskjema og mer informasjon om dette på nav.no.",
+                        "Du finner søknadsskjema og mer informasjon om dette på $NAV_URL.",
                 Nynorsk to "Syter du for barn under 18 år, kan du ha rett til utvida barnetrygd. " +
                         "I tillegg kan barn ha rett til barnepensjon. " +
-                        "Du finn søknadsskjema og meir informasjon om dette på nav.no.",
+                        "Du finn søknadsskjema og meir informasjon om dette på $NAV_URL.",
                 English to "If you provide for children under the age of 18, you may be entitled to extended child benefit. " +
                         "In addition, children may be entitled to a children's pension. " +
-                        "You will find the application form and more information about this at nav.no."
+                        "You will find the application form and more information about this at $NAV_URL."
             )
         }
 }
 
-object VirknTdsPktOverskrift_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
+// VirkTdsPktUT_001
+data class VirkningstidspunktUfoeretrygd(val kravVirkedatoFom: Expression<LocalDate>) :
+    OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
-        title1 {
-            text(
-                Bokmal to "Dette er virkningstidspunktet ditt",
-                Nynorsk to "Dette er verknadstidspunktet ditt",
-                English to "This is your effective date"
+        paragraph {
+            textExpr(
+                Bokmal to "Uføretrygden din er omregnet fra ".expr() + kravVirkedatoFom.format() + ".",
+                Nynorsk to "Uføretrygda di er rekna om frå ".expr() + kravVirkedatoFom.format() + ".",
+                English to "Your disability benefit has been recalculated from ".expr() + kravVirkedatoFom.format() + "."
             )
         }
 }
 
-data class VirkTdsPktUT_001(val krav_virkedato_fom: Expression<LocalDate>) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+// VirkTdsPktUTIkkeEndring_001
+data class VirkningstidspunktUfoeretrygdIngenEndring(val kravVirkedatoFom: Expression<LocalDate>) :
+    OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         paragraph {
             textExpr(
                 Bokmal to "Uføretrygden din er omregnet fra ".expr()
-                        + krav_virkedato_fom.format() + ".".expr(),
-                Nynorsk to "Uføretrygda di er rekna om frå ".expr()
-                        + krav_virkedato_fom.format() + ".".expr(),
-                English to "Your disability benefit has been recalculated from ".expr()
-                        + krav_virkedato_fom.format() + ".".expr()
-            )
-        }
-}
-
-data class VirkTdsPktUTIkkeEndring_001(val krav_virkedato_fom: Expression<LocalDate>) : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
-        paragraph {
-            textExpr(
-                Bokmal to "Uføretrygden din er omregnet fra ".expr()
-                        + krav_virkedato_fom.format() + ", men dette fører ikke til endring i utbetalingen.".expr(),
+                        + kravVirkedatoFom.format() + ", men dette fører ikke til endring i utbetalingen.".expr(),
                 Nynorsk to " Uføretrygda di er rekna om frå ".expr()
-                        + krav_virkedato_fom.format() + ", men det fører ikkje til endring i utbetalinga.".expr(),
+                        + kravVirkedatoFom.format() + ", men det fører ikkje til endring i utbetalinga.".expr(),
                 English to "We have recalculated your disability benefit from ".expr()
-                        + krav_virkedato_fom.format() + ", however this will not lead to change in your payment.".expr()
+                        + kravVirkedatoFom.format() + ", however this will not lead to change in your payment.".expr()
             )
         }
 }
 
-data class VirkTdsPktUTBTOmregn_001(val krav_virkedato_fom: Expression<LocalDate>) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+// VirkTdsPktUTBTOmregn_001
+data class VirkningstidspunktOmregningBarnetillegg(val kravVirkedatoFom: Expression<LocalDate>) :
+    OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         paragraph {
             textExpr(
                 Bokmal to "Barnetillegget i uføretrygden din er omregnet fra ".expr()
-                        + krav_virkedato_fom.format() + ".".expr(),
+                        + kravVirkedatoFom.format() + ".".expr(),
                 Nynorsk to "Barnetillegget i uføretrygda di er rekna om frå ".expr()
-                        + krav_virkedato_fom.format() + ".".expr(),
+                        + kravVirkedatoFom.format() + ".".expr(),
                 English to "We have recalculated the child supplement in your disability benefit from ".expr()
-                        + krav_virkedato_fom.format() + ".".expr()
+                        + kravVirkedatoFom.format() + ".".expr()
             )
         }
 }
 
-data class VirkTdsPktUTAvkortetTil0_001(val krav_virkedato_fom: Expression<LocalDate>) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+// VirkTdsPktUTAvkortetTil0_001
+data class VirkningstidspunktUfoeretrygdAvkortetTil0(val kravVirkedatoFom: Expression<LocalDate>) :
+    OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         paragraph {
             textExpr(
                 Bokmal to "Uføretrygden din er omregnet fra ".expr()
-                        + krav_virkedato_fom.format() + ", men dette fører ikke til endring i utbetalingen da uføretrygden er redusert til 0 kr.".expr(),
+                        + kravVirkedatoFom.format() + ", men dette fører ikke til endring i utbetalingen da uføretrygden er redusert til 0 kr.".expr(),
                 Nynorsk to " Uføretrygda di er rekna om frå ".expr()
-                        + krav_virkedato_fom.format() + ", men det fører ikkje til endring i utbetalinga då uføretrygda er redusert til 0 kr.".expr(),
+                        + kravVirkedatoFom.format() + ", men det fører ikkje til endring i utbetalinga då uføretrygda er redusert til 0 kr.".expr(),
                 English to "We have recalculated your disability benefit from".expr()
-                        + krav_virkedato_fom.format() + ". However this will not lead to change in your payment because your disability benefit is reduced to NOK 0.".expr()
+                        + kravVirkedatoFom.format() + ". However this will not lead to change in your payment because your disability benefit is reduced to NOK 0.".expr()
             )
         }
-}
-
-object MeldInntektUTOverskrift_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
-        title1 {
-            text(
-                Bokmal to "Du må melde fra om eventuell inntekt",
-                Nynorsk to "Du må melde frå om eventuell inntekt",
-                English to "You must report all changes in income"
-            )
-        }
-}
-
-object MeldInntektUT_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
-        paragraph {
-            text(
-                Bokmal to "Dersom du er i jobb eller har planer om å jobbe, må du melde fra om eventuelle endringer i inntekten din." +
-                        " Det er viktig at du melder fra så tidlig som mulig, slik at du får riktig utbetaling av uføretrygd." +
-                        " Dette kan du gjøre under menyvalget «uføretrygd» når du logger deg inn på nav.no." +
-                        " Her kan du legge inn hvor mye du forventer å tjene i løpet av året." +
-                        " Du vil da kunne se hvor mye du vil få utbetalt i uføretrygd.",
-
-                Nynorsk to "Dersom du er i jobb eller har planar om å jobbe, må du melde frå om eventuelle endringar i inntekta di." +
-                        " Det er viktig at du melder frå så tidleg som råd, slik at du får rett utbetaling av uføretrygd." +
-                        " Dette kan du gjere under menyvalet «uføretrygd» når du logger deg inn på nav.no." +
-                        " Her kan du leggje inn kor mykje du forventar å tene i løpet av året." +
-                        " Du vil då kunne sjå kor mykje du kjem til å få betalt ut i uføretrygd.",
-
-                English to "If you are working or are planning to work, you must report any changes in your income." +
-                        " It is important that you report this as soon as possible, so that you receive the correct disability benefit payments." +
-                        " You can register your change in income under the option “uføretrygd” at nav.no." +
-                        " You can register how much you expect to earn in the calendar year." +
-                        " You will then be able to see how much disability benefit you will receive."
-            )
-        }
-}
-
-object MeldInntektUTBT_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
-        paragraph {
-            text(
-
-                Bokmal to "Dersom du er i jobb eller har planer om å jobbe, må du melde fra om eventuelle endringer i inntekten din. " +
-                        "Det er viktig at du melder fra så tidlig som mulig, slik at du får riktig utbetaling av uføretrygd og barnetillegg. " +
-                        "Dette kan du gjøre under menyvalget «uføretrygd» når du logger deg inn på nav.no. " +
-                        "Her kan du legge inn hvor mye du forventer å tjene i løpet av året. " +
-                        "Du vil da kunne se hvor mye du vil få utbetalt i uføretrygd og barnetillegg.",
-
-                Nynorsk to "Dersom du er i jobb eller har planar om å jobbe, må du melde frå om eventuelle endringar i inntekta di. " +
-                        "Det er viktig at du melder frå så tidleg som råd, slik at du får rett utbetaling av uføretrygd og barnetillegg. " +
-                        "Dette kan du gjere under menyvalet «uføretrygd» når du logger deg inn på nav.no. " +
-                        "Her kan du leggje inn kor mykje du forventar å tene i løpet av året. " +
-                        "Du vil då kunne sjå kor mykje du kjem til å få betalt ut i uføretrygd og barnetillegg.",
-
-                English to "If you are working or are planning to work, you must report any changes in your income. " +
-                        "It is important that you report this as soon as possible, so that you receive the correct disability benefit and child supplement payments. " +
-                        "You can register your change in income under the option “uføretrygd” at nav.no. " +
-                        "You can register how much you expect to earn in the calendar year. " +
-                        "You will then be able to see how much disability benefit and child supplement you will receive."
-            )
-        }
-}
-
-object SkattekortOverskrift_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
-        title1 {
-            text(
-                Bokmal to "Skattekort",
-                Nynorsk to "Skattekort",
-                English to "Tax card"
-            )
-        }
-}
-
-object SkattekortUT_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
-        paragraph {
-            text(
-                Bokmal to "Uføretrygd skattlegges som lønnsinntekt. " +
-                        "Du trenger ikke levere skattekortet til NAV fordi skatteopplysningene dine sendes elektronisk fra Skatteetaten. " +
-                        "Skattekortet kan du endre på skatteetaten.no. " +
-                        "På nettjenesten Ditt NAV på nav.no kan du se hvilket skattetrekk som er registrert hos NAV og legge inn tilleggstrekk om du ønsker det.",
-                Nynorsk to "Uføretrygd blir skattlagd som lønsinntekt. " +
-                        "Du treng ikkje levere skattekortet til NAV, fordi skatteopplysningane dine blir sende elektronisk frå Skatteetaten. " +
-                        "Skattekortet kan du endre på skatteetaten.no. " +
-                        "På nettenesten Ditt NAV på nav.no kan du sjå kva skattetrekk som er registrert hos NAV og legge inn tilleggstrekk om du ønskjer det.",
-                English to "The tax rules for disability benefit are the same as the tax rules for regular income. " +
-                        "You do not need to submit your tax card to NAV because your tax details are sent electronically from the Norwegian Tax Administration. " +
-                        "You may change your tax card at skatteetaten.no. " +
-                        "At the online service “Ditt NAV” at nav.no, you may see your registered income tax rate and change it if you wish."
-            )
-        }
-}
-
-object SkattBorIUtlandPesys_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-        title1 {
-            text(
-                Bokmal to "Skatt for deg som bor i utlandet",
-                Nynorsk to "Skatt for deg som bur i utlandet",
-                English to "Tax for people who live abroad"
-            )
-        }
-        paragraph {
-            text(
-                Bokmal to "Bor du i utlandet og betaler kildeskatt, finner du mer informasjon om kildeskatt på skatteetaten.no. " +
-                        "Hvis du er bosatt i utlandet og betaler skatt i annet land enn Norge, kan du kontakte skattemyndighetene der du bor.",
-                Nynorsk to "Bur du i utlandet og betaler kjeldeskatt, finn du meir informasjon om kjeldeskatt på skatteetaten.no. " +
-                        "Viss du er busett i utlandet og betaler skatt i eit anna land enn Noreg, kan du kontakte skattemyndigheitene der du bur.",
-                English to "You can find more information about withholding tax to Norway at skatteetaten.no. " +
-                        "For information about taxation from your country of residence, you can contact the locale tax authorities."
-            )
-        }
-    }
 }

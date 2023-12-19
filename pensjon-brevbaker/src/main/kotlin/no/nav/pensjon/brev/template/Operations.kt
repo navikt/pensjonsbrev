@@ -1,11 +1,12 @@
 package no.nav.pensjon.brev.template
 
-import no.nav.pensjon.brev.api.model.*
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.expression.Predicate
+import no.nav.pensjon.brevbaker.api.model.*
 import java.text.NumberFormat
 import java.time.LocalDate
 import java.time.format.FormatStyle
+import kotlin.math.absoluteValue
 
 abstract class Operation {
     // Since most operations don't have fields, and hence can't be data classes,
@@ -30,6 +31,18 @@ sealed class UnaryOperation<In, out Out> : Operation() {
         override fun apply(input: T): String = input.toString()
     }
 
+    object SizeOf : UnaryOperation<Collection<*>, Int>(){
+        override fun apply(input: Collection<*>): Int = input.size
+    }
+
+    object AbsoluteValue : UnaryOperation<Int, Int>(){
+        override fun apply(input: Int): Int = input.absoluteValue
+    }
+
+    object AbsoluteValueKroner : UnaryOperation<Kroner, Kroner>(){
+        override fun apply(input: Kroner): Kroner = Kroner(input.value.absoluteValue)
+    }
+
     object FormatPhoneNumber : UnaryOperation<Telefonnummer, String>() {
         override fun apply(input: Telefonnummer): String = input.format()
     }
@@ -49,112 +62,119 @@ sealed class UnaryOperation<In, out Out> : Operation() {
     object Not : UnaryOperation<Boolean, Boolean>() {
         override fun apply(input: Boolean): Boolean = input.not()
     }
+
+    data class MapCollection<In, Out>(val mapper: UnaryOperation<In, Out>): UnaryOperation<Collection<In>, Collection<Out>>() {
+        override fun apply(input: Collection<In>): Collection<Out> = input.map { mapper.apply(it) }
+    }
 }
+
+typealias LocalizedFormatter<T> = BinaryOperation<T, Language, String>
 
 abstract class BinaryOperation<in In1, in In2, out Out> : Operation() {
 
     abstract fun apply(first: In1, second: In2): Out
-    abstract val symbol : String
 
     class Equal<In> : BinaryOperation<In, In, Boolean>() {
         override fun apply(first: In, second: In): Boolean = first == second
-        override val symbol = " == "
     }
 
     class GreaterThan<in T : Comparable<T>> : BinaryOperation<T, T, Boolean>() {
         override fun apply(first: T, second: T): Boolean = first > second
-        override val symbol = " > "
     }
 
     class GreaterThanOrEqual<in T : Comparable<T>> : BinaryOperation<T, T, Boolean>() {
         override fun apply(first: T, second: T): Boolean = first >= second
-        override val symbol = " >= "
     }
 
     class LessThanOrEqual<in T : Comparable<T>> : BinaryOperation<T, T, Boolean>() {
         override fun apply(first: T, second: T): Boolean = first <= second
-        override val symbol = " <= "
     }
 
     class LessThan<in T : Comparable<T>> : BinaryOperation<T, T, Boolean>() {
         override fun apply(first: T, second: T): Boolean = first < second
-        override val symbol = " < "
     }
 
     object Or : BinaryOperation<Boolean, Boolean, Boolean>() {
         override fun apply(first: Boolean, second: Boolean): Boolean = first || second
-        override val symbol = " || "
     }
 
     object And : BinaryOperation<Boolean, Boolean, Boolean>() {
         override fun apply(first: Boolean, second: Boolean): Boolean = first && second
-        override val symbol = " && "
     }
 
     object Concat : BinaryOperation<String, String, String>() {
         override fun apply(first: String, second: String): String = first + second
-        // TODO: Only used in Text.Expression and we don't want to to print the operator in those cases
-        override val symbol = ""
     }
 
-    object LocalizedShortDateFormat : BinaryOperation<LocalDate, Language, String>() {
+    class IntPlus<T : IntValue>(val constructor: (Int) -> T) : BinaryOperation<T, T, T>() {
+        override fun apply(first: T, second: T): T = constructor(first.value + second.value)
+    }
+
+    object LocalizedShortDateFormat : LocalizedFormatter<LocalDate>() {
         override fun apply(first: LocalDate, second: Language): String =
-            first.format(dateFormatter(second, FormatStyle.SHORT))
-        // TODO denne fungerer ikke som infix
-        override val symbol = ".shortFormat(language)"
+            first.format(dateFormatter(second, FormatStyle.SHORT)).replace(' ', ' ') //space to non braking space
     }
 
-    object LocalizedDateFormat : BinaryOperation<LocalDate, Language, String>() {
+    object LocalizedDateFormat : LocalizedFormatter<LocalDate>() {
         override fun apply(first: LocalDate, second: Language): String =
-            first.format(dateFormatter(second, FormatStyle.LONG))
-        // TODO denne fungerer ikke som infix
-        override val symbol = ".format(language)"
+            first.format(dateFormatter(second, FormatStyle.LONG)).replace(' ', ' ') //space to non braking space
     }
 
-    object LocalizedDoubleFormat : BinaryOperation<Double, Language, String>() {
+    object LocalizedDoubleFormat : LocalizedFormatter<Double>() {
         override fun apply(first: Double, second: Language): String =
             String.format(second.locale(), "%.2f", first)
-        // TODO denne fungerer ikke som infix
-        override val symbol = ".format(language)"
     }
 
-    object LocalizedIntFormat : BinaryOperation<Int, Language, String>() {
+    object LocalizedIntFormat : LocalizedFormatter<Int>() {
         override fun apply(first: Int, second: Language): String =
             String.format(second.locale(), "%d", first)
-        // TODO denne fungerer ikke som infix
-        override val symbol = ".format(language)"
     }
 
-    object LocalizedCurrencyFormat : BinaryOperation<Int, Language, String>() {
+    object LocalizedCurrencyFormat : LocalizedFormatter<Int>() {
         override fun apply(first: Int, second: Language): String =
             NumberFormat.getNumberInstance(second.locale())
                 .apply { maximumFractionDigits = 0 }
                 .format(first)
-        // TODO denne fungerer ikke som infix
-        override val symbol = ".format(language)"
+    }
+
+    object LocalizedCollectionFormat : LocalizedFormatter<Collection<String>>() {
+        override fun apply(first: Collection<String>, second: Language): String {
+            return if (first.size == 1) {
+                first.first()
+            } else {
+                val lastSeparator = when (second) {
+                    Language.Bokmal -> " og "
+                    Language.Nynorsk -> " og "
+                    Language.English -> " and "
+                }
+                first.take(first.size - 1).joinToString(", ") + lastSeparator + first.last()
+            }
+        }
+
+    }
+
+    data class MapCollection<In1, In2, Out>(val mapper: BinaryOperation<In1, In2, Out>): BinaryOperation<Collection<In1>, In2, Collection<Out>>() {
+        override fun apply(first: Collection<In1>, second: In2): Collection<Out> = first.map { mapper.apply(it, second) }
     }
 
     class EnumInList<EnumType : Enum<*>> : BinaryOperation<EnumType, List<EnumType>, Boolean>() {
         override fun apply(first: EnumType, second: List<EnumType>): Boolean = second.contains(first)
-        override val symbol = " isOneOf "
     }
 
     class IfElse<Out> : BinaryOperation<Boolean, Pair<Out, Out>, Out>() {
         override fun apply(first: Boolean, second: Pair<Out, Out>): Out = if (first) second.first else second.second
-        // TODO denne fungerer ikke som infix
-        override val symbol = " ? "
     }
 
     class Tuple<Out> : BinaryOperation<Out, Out, Pair<Out, Out>>() {
         override fun apply(first: Out, second: Out): Pair<Out, Out> = first to second
-        // TODO denne fungerer ikke som infix
-        override val symbol = " to "
     }
 
     class ValidatePredicate<T> : BinaryOperation<Predicate<T>, T, Boolean>() {
         override fun apply(first: Predicate<T>, second: T): Boolean = first.validate(second)
-        // TODO denne fungerer ikke som infix
-        override val symbol = " then "
+    }
+
+    data class Flip<In1, In2, Out>(val operation: BinaryOperation<In2, In1, Out>): BinaryOperation<In1, In2, Out>() {
+        override fun apply(first: In1, second: In2): Out = operation.apply(second, first)
     }
 
 }

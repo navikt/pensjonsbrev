@@ -13,30 +13,11 @@ Derfor må man kjøre pdf-bygger java applikasjonen inne i containeren for at de
 Når man kjører lokalt med docker compose er den allerede satt opp til remote debug på port 5016 ([se docker-compose.yml](docker-compose.yml)).
 
 ### Ytelsestesting med locust
-
-1. Lag en locustfile.py i rot-katalogen(sammen med docker-compose.yml) og legg inn requesten du ønsker å bruke i ytelses-testen.
-
-
-<details>
-<summary>Locustfile.py eksempel</summary>
-
-```
-from locust import HttpUser, task, between
-
-
-class HelloWorldUser(HttpUser):
-    wait_time = between(1, 60) #vent mellom 1 og 60 sekunder på respons
-    @task
-    def hello_world(self):
-        payload = 'JSON string' #erstatt med json string som settes som body i request
-
-        headers = {'content-type': 'application/json'}
-        r = self.client.post("/letter", payload, headers={'content-type': 'application/json'})
-```
-</details>
-
-1. Start docker compose med locust profil `docker compose --profile locust up`
-2. Gå inn på locust grensesnittet via http://localhost:8089/ og skriv inn url til endepunktet du ønsker å ytelses-teste.
+Ytelsestesten er i utgangspunktet satt opp til å teste vedtaksbrevet UNG_UFOER_AUTO.
+1. Evt. rediger `locust/autobrev_request.json` om du ønsker å teste et annet brev.
+2. Kjør `./locust/fetch-secrets.sh`
+3. Start docker compose med locust profil `docker compose --profile locust up`
+4. Gå inn på locust grensesnittet via http://localhost:8089/ og skriv inn url til endepunktet du ønsker å ytelses-teste.
 [Se dokumentasjon fra locust for mer info om bruk.](http://docs.locust.io/en/stable/quickstart.html#locust-s-web-interface)
 
 ## Endring av obligatoriske felter i API-model

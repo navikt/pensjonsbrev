@@ -5,9 +5,12 @@ metadata:
   namespace: "pensjonsbrev"
   labels:
     "team": "pensjonsbrev"
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "300"
 spec:
   image: {{image}}
   port: 8080
+  terminationGracePeriodSeconds: 60
   service:
     port: 80
     protocol: http
@@ -23,22 +26,21 @@ spec:
     timeout: 60
   replicas:
     min: 2
-    max: 10
+    max: 20
     cpuThresholdPercentage: 50
   prometheus:
     enabled: true
     path: "/metrics"
     port: "8080"
-  requests:
-    cpu: "200m"
-    memory: "256Mi"
-  limits:
-    cpu: "300m"
-    memory: "512Mi"
+  resources:
+    requests:
+      cpu: "400m"
+      memory: "512Mi"
 
   azure:
     application:
       enabled: true
+      allowAllUsers: {{allowAllUsers}}
       claims:
         extra:
           - azp_name
@@ -58,7 +60,7 @@ spec:
        - {{url}}
       {{/each}}
   env:
-    {{#each env as |e|}}
-       - name: {{e.name }}
-         value: {{{e.value }}}
-    {{/each}}
+    - name: PDF_BUILDER_URL
+      value: "http://pensjon-pdf-bygger:8080"
+    - name: PDF_BYGGER_MAX_RETRIES
+      value: "250"

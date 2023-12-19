@@ -4,25 +4,29 @@ import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.isEmpty
 import kotlinx.coroutines.runBlocking
 import no.nav.pensjon.brev.*
-import no.nav.pensjon.brev.api.model.LetterMetadata
 import no.nav.pensjon.brev.latex.LaTeXCompilerService
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.render.TestTemplateDtoSelectors.etNavn
-import org.junit.jupiter.api.Tag
-import org.junit.jupiter.api.Test
+import no.nav.pensjon.brevbaker.api.model.LetterMetadata
+import org.junit.jupiter.api.*
 import org.opentest4j.AssertionFailedError
+import org.slf4j.LoggerFactory
 
 data class TestTemplateDto(val etNavn: String)
+
 @TemplateModelHelpers
 object Helpers : HasModel<TestTemplateDto>
 
-@Tag(TestTags.PDF_BYGGER)
-class PensjonLatexITest {
+private const val FIND_FAILING_CHARACTERS = false
 
+@Tag(TestTags.INTEGRATION_TEST)
+class PensjonLatexITest {
+    private val logger = LoggerFactory.getLogger(PensjonLatexITest::class.java)
     private val brevData = TestTemplateDto("Ole")
+
     @Test
     fun canRender() {
         val template = createTemplate(
@@ -33,18 +37,18 @@ class PensjonLatexITest {
                 displayTitle = "En fin display tittel",
                 isSensitiv = false,
                 distribusjonstype = LetterMetadata.Distribusjonstype.ANNET,
+                brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
             )
         ) {
             title { text(Bokmal to "En fin tittel") }
             outline {
-                text(Bokmal to "Argumentet etNavn er: ")
-                eval(etNavn)
+                paragraph {
+                    text(Bokmal to "Argumentet etNavn er: ")
+                    eval(etNavn)
+                }
             }
         }
-        Letter(template, brevData, Bokmal, Fixtures.felles)
-            .let { PensjonLatexRenderer.render(it) }
-            .let { LaTeXCompilerService(PDF_BUILDER_URL).producePdfSync(it).base64PDF }
-            .also { writeTestPDF("pensjonLatexITest_canRender", it) }
+        Letter(template, brevData, Bokmal, Fixtures.felles).renderTestPDF("pensjonLatexITest_canRender")
     }
 
     @Test
@@ -52,10 +56,19 @@ class PensjonLatexITest {
         runBlocking { LaTeXCompilerService(PDF_BUILDER_URL).ping() }
     }
 
+    // To figure out which character makes the compilation fail, set the FIND_FAILING_CHARACTERS to true.
+    // FIND_FAILING_CHARACTERS is disabled by default to not take up too much time in case of universally failing compilation.
     @Test
     fun `try different characters to attempt escaping LaTeX`() {
         val invalidCharacters = ArrayList<Int>()
-        isValidCharacters(0, Char.MAX_VALUE.code, invalidCharacters)
+
+        // split in multiple parts so that it doesn't time out the letter compilation
+        val parts = 4
+        val partSize = Char.MAX_VALUE.code / parts
+        repeat(parts) {
+            isValidCharacters(it * partSize, ((it + 1) * partSize + it).coerceAtMost(Char.MAX_VALUE.code), invalidCharacters)
+        }
+
         if (invalidCharacters.isNotEmpty()) {
             throw AssertionFailedError(
                 """
@@ -73,7 +86,7 @@ class PensjonLatexITest {
         if (testCharacters(begin, end)) {
             //All characters are valid
             return
-        } else {
+        } else if (FIND_FAILING_CHARACTERS) {
             if (begin - end == 0) {
                 //Failed at single character
                 invalidCharacters.add(begin)
@@ -97,22 +110,25 @@ class PensjonLatexITest {
                     displayTitle = "En fin display tittel",
                     isSensitiv = false,
                     distribusjonstype = LetterMetadata.Distribusjonstype.ANNET,
+                    brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
                 )
             ) {
                 title { text(Bokmal to "En fin tittel") }
                 outline {
-                    text(Bokmal to addChars(startChar, endChar) + "test")
-                    eval(etNavn)
+                    paragraph {
+                        text(Bokmal to addChars(startChar, endChar) + "test")
+                        eval(etNavn)
+                    }
                 }
             }
 
             Letter(testTemplate, brevData, Bokmal, Fixtures.felles)
-                .let { PensjonLatexRenderer.render(it) }
-                .let { LaTeXCompilerService(PDF_BUILDER_URL).producePdfSync(it).base64PDF }
-                .also { writeTestPDF("LATEX_ESCAPE_TEST_$startChar-$endChar", it) }
+                .renderTestPDF("LATEX_ESCAPE_TEST_$startChar-$endChar")
 
             return true
         } catch (e: Throwable) {
+            if (!FIND_FAILING_CHARACTERS) throw e
+            else logger.error("Failed printing character in range $startChar - $endChar with message: ${e.message}")
             return false
         }
     }

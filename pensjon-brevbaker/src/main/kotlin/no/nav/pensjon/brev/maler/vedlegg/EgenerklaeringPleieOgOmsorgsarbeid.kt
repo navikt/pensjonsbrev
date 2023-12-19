@@ -1,8 +1,5 @@
 package no.nav.pensjon.brev.maler.vedlegg
 
-import no.nav.pensjon.brev.api.model.FellesSelectors.avsenderEnhet
-import no.nav.pensjon.brev.api.model.FellesSelectors.dokumentDato
-import no.nav.pensjon.brev.api.model.NAVEnhetSelectors.navn
 import no.nav.pensjon.brev.api.model.vedlegg.EgenerklaeringOmsorgsarbeidDto
 import no.nav.pensjon.brev.api.model.vedlegg.EgenerklaeringOmsorgsarbeidDtoSelectors.aarEgenerklaringOmsorgspoeng
 import no.nav.pensjon.brev.api.model.vedlegg.EgenerklaeringOmsorgsarbeidDtoSelectors.returadresse
@@ -13,14 +10,12 @@ import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Form.Text.Size
 import no.nav.pensjon.brev.template.Language.*
-import no.nav.pensjon.brev.template.dsl.choice
-import no.nav.pensjon.brev.template.dsl.expression.expr
-import no.nav.pensjon.brev.template.dsl.expression.format
-import no.nav.pensjon.brev.template.dsl.expression.plus
+import no.nav.pensjon.brev.template.dsl.*
+import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
-import no.nav.pensjon.brev.template.dsl.newText
-import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.template.dsl.textExpr
+import no.nav.pensjon.brevbaker.api.model.FellesSelectors.avsenderEnhet
+import no.nav.pensjon.brevbaker.api.model.FellesSelectors.dokumentDato
+import no.nav.pensjon.brevbaker.api.model.NAVEnhetSelectors.navn
 
 
 @TemplateModelHelpers
@@ -49,69 +44,69 @@ val egenerklaeringPleieOgOmsorgsarbeid = createAttachment<LangBokmalNynorskEngli
         )
     }
 
-    formText(
-        Size.LONG, newText(
-            Bokmal to "Navn på pleietrengende:",
-            Nynorsk to "Navn på pleietrengende:",
-            English to "I have provided care work for:",
+    paragraph {
+        formText(
+            Size.LONG, newText(
+                Bokmal to "Navn på pleietrengende:",
+                Nynorsk to "Navn på pleietrengende:",
+                English to "I have provided care work for:",
+            )
         )
-    )
 
-    formChoice(
-        newText(
-            Bokmal to "Arbeidet har vart i:",
-            Nynorsk to "Arbeidet har vart i:",
-            English to "The work has lasted for:"
-        )
-    ) {
-        choice(
-            Bokmal to "minst seks måneder",
-            Nynorsk to "minst seks månader",
-            English to "at least six months"
-        )
-        choice(
-            Bokmal to "under seks måneder",
-            Nynorsk to "under seks månader",
-            English to "less than six months"
-        )
+        formChoice(
+            newText(
+                Bokmal to "Arbeidet har vart i:",
+                Nynorsk to "Arbeidet har vart i:",
+                English to "The work has lasted for:"
+            )
+        ) {
+            choice(
+                Bokmal to "minst seks måneder",
+                Nynorsk to "minst seks månader",
+                English to "at least six months"
+            )
+            choice(
+                Bokmal to "under seks måneder",
+                Nynorsk to "under seks månader",
+                English to "less than six months"
+            )
+        }
     }
 
-    title1 {
+    title2 {
         text(
             Bokmal to "Hvis omsorgsforholdet har opphørt i løpet av året:",
             Nynorsk to "Om omsorgsforholdet er blitt avslutta under året:",
             English to "If care work has ceased during the year:",
         )
     }
-    formText(
-        size = Size.SHORT,
-        vspace = false,
-        prompt = newText(
-            Bokmal to "Oppgi dato for opphøret:",
-            Nynorsk to "Dato for opphøyr:",
-            English to "State date if ceased:"
+    paragraph{
+        formText(
+            size = Size.SHORT,
+            vspace = false,
+            prompt = newText(
+                Bokmal to "Oppgi dato for opphøret:",
+                Nynorsk to "Dato for opphøyr:",
+                English to "State date if ceased:"
+            )
         )
-    )
-    formText(
-        size = Size.LONG,
-        vspace = false,
-        prompt = newText(
-            Bokmal to "Oppgi årsaken til opphøret:",
-            Nynorsk to "Grunnen til opphøyr: ",
-            English to "State reason if ceased"
+        formText(
+            size = Size.LONG,
+            vspace = false,
+            prompt = newText(
+                Bokmal to "Oppgi årsaken til opphøret:",
+                Nynorsk to "Grunnen til opphøyr: ",
+                English to "State reason if ceased"
+            )
         )
-    )
 
-    repeat(2) { newline() }
-
-    formText(size = Size.SHORT, prompt = newText(Bokmal to "Dato:", Nynorsk to "Dato:", English to "Date"))
-    formText(
-        size = Size.LONG,
-        vspace = false,
-        prompt = newText(Bokmal to "Underskrift:", Nynorsk to "Underskrift:", English to "Signature:")
-    )
-
-    repeat(2) { newline() }
+        formText(size = Size.SHORT, prompt = newText(Bokmal to "Dato:", Nynorsk to "Dato:", English to "Date"))
+        formText(
+            size = Size.LONG,
+            vspace = false,
+            prompt = newText(Bokmal to "Underskrift:", Nynorsk to "Underskrift:", English to "Signature:")
+        )
+    }
 
     paragraph {
         text(

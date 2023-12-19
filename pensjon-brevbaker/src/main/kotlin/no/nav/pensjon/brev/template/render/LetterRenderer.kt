@@ -2,7 +2,7 @@ package no.nav.pensjon.brev.template.render
 
 import no.nav.pensjon.brev.template.*
 
-abstract class LetterRenderer<R : RenderedLetter> {
+abstract class LetterRenderer<R : Any> {
 
     fun render(letter: Letter<*>): R = renderLetter(letter.toScope(), letter.template)
 
@@ -19,12 +19,8 @@ abstract class LetterRenderer<R : RenderedLetter> {
         }
     }
 
-    protected fun <C : Element<*>> render(scope: ExpressionScope<*, *>, elements: List<ContentOrControlStructure<*, C>>, renderBlock: (scope: ExpressionScope<*, *>, element: C) -> Unit) {
-        elements.forEach {
-            controlStructure(scope, it) { controlStructureScope, content ->
-                renderBlock(controlStructureScope, content)
-            }
-        }
+    protected open fun <C : Element<*>> render(scope: ExpressionScope<*, *>, elements: List<ContentOrControlStructure<*, C>>, renderBlock: (scope: ExpressionScope<*, *>, element: C) -> Unit) {
+        elements.forEach { controlStructure(scope, it, renderBlock) }
     }
 
     @JvmName("renderAttachments")

@@ -8,6 +8,7 @@ metadata:
 spec:
   image: {{image}}
   port: 8080
+  terminationGracePeriodSeconds: 60
   service:
     port: 8080
     protocol: http
@@ -20,10 +21,10 @@ spec:
     path: "/isReady"
     port: 8080
     initialDelay: 20
-    timeout: 60
+    timeout: 5
   replicas:
-    min: 2
-    max: 20
+    min: 12
+    max: 300
     cpuThresholdPercentage: 50
   prometheus:
     enabled: true
@@ -32,16 +33,23 @@ spec:
   resources:
     requests:
       cpu: "2"
-      memory: "4096Mi"
+      memory: "2048Mi"
     limits:
-      cpu: "2"
-      memory: "8196Mi"
+      memory: "8192Mi"
   accessPolicy:
     inbound:
       rules:
         - application: {{brevbaker-app}}
-#  env:
-#    {{#each env as |e|}}
-#       - name: {{e.name }}
-#         value: {{{e.value }}}
-#    {{/each}}
+  filesFrom:
+    - emptyDir:
+        medium: Memory
+      mountPath: /app/tmp
+  env:
+    - name: PDF_BYGGER_COMPILE_TIMEOUT
+      value: "120s"
+    - name: PDF_BYGGER_LATEX_PARALLELISM
+      value: "8"
+    - name: PDF_BYGGER_COMPILE_QUEUE_WAIT_TIMEOUT
+      value: "1s"
+    - name: PDF_BYGGER_COMPILE_TMP_DIR
+      value: "/app/tmp"

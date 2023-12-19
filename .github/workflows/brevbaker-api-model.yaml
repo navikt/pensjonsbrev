@@ -5,25 +5,76 @@ on:
       - "main"
     paths:
       - "pensjon-brevbaker-api-model/**"
+      - "brevbaker-api-model-common/**"
       - ".github/workflows/brevbaker-api-model.yaml"
-
 jobs:
-  "release":
-    name: "build"
-    runs-on: "ubuntu-18.04"
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      common: ${{ steps.changes.outputs.common }}
+      pensjonsbrev: ${{ steps.changes.outputs.pensjonsbrev }}
     steps:
-      - uses: "actions/checkout@v2"
+      - uses: actions/checkout@v3
+      - uses: dorny/paths-filter@v2
+        id: changes
+        with:
+          filters: |
+            common:
+              - 'brevbaker-api-model-common/**'
+            pensjonsbrev:
+              - 'pensjon-brevbaker-api-model/**'
+  "release-common":
+    name: "build"
+    runs-on: "ubuntu-latest"
+    permissions:
+      packages: write
+    needs: [ changes ]
+    if: ${{ needs.changes.outputs.common == 'true' }}
+    steps:
+      - uses: "actions/checkout@v3"
       - uses: "gradle/wrapper-validation-action@v1"
-      - uses: "actions/cache@v2"
+      - uses: "actions/cache@v3"
         with:
           "path": "~/.gradle/caches"
           "key": "${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle.kts') }}"
           "restore-keys": "${{ runner.os }}-gradle-"
-      - uses: "actions/setup-java@v1"
+      - uses: "actions/setup-java@v3"
         with:
+          "distribution": "temurin"
+          "java-version": "17"
+      - name: "compile and run tests"
+        run: "./gradlew :brevbaker-api-model-common:build"
+      - name: "Release maven artifact"
+        run: "./gradlew :brevbaker-api-model-common:publish"
+        env:
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+
+  "release-pensjon":
+    name: "build"
+    runs-on: "ubuntu-latest"
+    permissions:
+      packages: write
+    needs: [ release-common, changes ]
+    if: |
+      ${{ always() &&
+      needs.changes.outputs.pensjonsbrev == 'true' &&
+      (needs.release-common.result == 'success' || needs.release-common.result == 'skipped') }}
+    steps:
+      - uses: "actions/checkout@v3"
+      - uses: "gradle/wrapper-validation-action@v1"
+      - uses: "actions/cache@v3"
+        with:
+          "path": "~/.gradle/caches"
+          "key": "${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle.kts') }}"
+          "restore-keys": "${{ runner.os }}-gradle-"
+      - uses: "actions/setup-java@v3"
+        with:
+          "distribution": "temurin"
           "java-version": "17"
       - name: "compile and run tests"
         run: "./gradlew :pensjon-brevbaker-api-model:build"
+        env:
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
       - name: "Release maven artifact"
         run: "./gradlew :pensjon-brevbaker-api-model:publish"
         env:

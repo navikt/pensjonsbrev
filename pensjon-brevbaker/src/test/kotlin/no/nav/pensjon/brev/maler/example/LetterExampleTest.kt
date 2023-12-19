@@ -1,13 +1,10 @@
 package no.nav.pensjon.brev.maler.example
 
-import kotlinx.coroutines.runBlocking
 import no.nav.pensjon.brev.*
-import no.nav.pensjon.brev.latex.LaTeXCompilerService
 import no.nav.pensjon.brev.template.*
-import no.nav.pensjon.brev.template.render.PensjonLatexRenderer
 import org.junit.jupiter.api.*
 
-@Tag(TestTags.PDF_BYGGER)
+@Tag(TestTags.INTEGRATION_TEST)
 class LetterExampleTest {
 
     @Test
@@ -17,10 +14,7 @@ class LetterExampleTest {
             Fixtures.create<LetterExampleDto>(),
             Language.Bokmal,
             Fixtures.fellesAuto
-        )
-            .let { PensjonLatexRenderer.render(it) }
-            .let { runBlocking { LaTeXCompilerService(PDF_BUILDER_URL).producePDF(it, "test").base64PDF } }
-            .also { writeTestPDF("EKSEMPELBREV_BOKMAL", it) }
+        ).renderTestPDF("EKSEMPELBREV_BOKMAL")
     }
 
     @Test
@@ -30,10 +24,7 @@ class LetterExampleTest {
             Fixtures.create<LetterExampleDto>(),
             Language.Bokmal,
             Fixtures.fellesAuto
-        )
-            .let { PensjonLatexRenderer.render(it) }
-            .let { runBlocking { LaTeXCompilerService(PDF_BUILDER_URL).producePDF(it, "test").base64PDF } }
-            .also { writeTestPDF("DESIGN_REFERENCE_LETTER_BOKMAL", it) }
+        ).renderTestPDF("DESIGN_REFERENCE_LETTER_BOKMAL")
     }
 
 }

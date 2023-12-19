@@ -59,11 +59,13 @@ class TemplateTest {
                 Language.English to "asdf",
             ),
         ) {
-            text(
-                Language.Bokmal to "hei",
-                Language.Nynorsk to "hei",
-                Language.English to "Hello",
-            )
+            paragraph {
+                text(
+                    Language.Bokmal to "hei",
+                    Language.Nynorsk to "hei",
+                    Language.English to "Hello",
+                )
+            }
         }
 
         val doc = createTemplate(

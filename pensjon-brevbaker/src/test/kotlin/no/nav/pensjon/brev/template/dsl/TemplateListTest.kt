@@ -3,7 +3,6 @@ package no.nav.pensjon.brev.template.dsl
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.ContentOrControlStructure.Content
 import no.nav.pensjon.brev.template.dsl.expression.expr
-import no.nav.pensjon.brev.template.outlineTestTemplate
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 
@@ -11,19 +10,27 @@ class TemplateListTest {
     @Test
     fun `list can be created with default values`() {
         val doc = outlineTestTemplate<Unit> {
-            list {
-                item {
-                    text(Language.Bokmal to "Test")
+            paragraph {
+                list {
+                    item {
+                        text(Language.Bokmal to "Test")
+                    }
                 }
             }
         }
 
         val expected = outlineTestLetter(
             Content(
-                Element.OutlineContent.ParagraphContent.ItemList(
+                Element.OutlineContent.Paragraph(
                     listOf(
                         Content(
-                            Element.OutlineContent.ParagraphContent.ItemList.Item(listOf(newText(Language.Bokmal to "Test")))
+                            Element.OutlineContent.ParagraphContent.ItemList(
+                                listOf(
+                                    Content(
+                                        Element.OutlineContent.ParagraphContent.ItemList.Item(listOf(newText(Language.Bokmal to "Test")))
+                                    )
+                                )
+                            )
                         )
                     )
                 )
@@ -38,19 +45,21 @@ class TemplateListTest {
         Assertions.assertThrows(InvalidListDeclarationException::class.java) {
             val nullStr: String? = null
             outlineTestTemplate<Unit> {
-                list {
-                    showIf(true.expr()) {
-
-                    }
-                    ifNotNull(nullStr.expr()) {
-
-                    }
-                    forEach(listOf<String>().expr()) {
+                paragraph {
+                    list {
                         showIf(true.expr()) {
 
                         }
                         ifNotNull(nullStr.expr()) {
 
+                        }
+                        forEach(listOf<String>().expr()) {
+                            showIf(true.expr()) {
+
+                            }
+                            ifNotNull(nullStr.expr()) {
+
+                            }
                         }
                     }
                 }
@@ -61,31 +70,39 @@ class TemplateListTest {
     @Test
     fun `item conditions are added`() {
         val doc = outlineTestTemplate<Unit> {
-            list {
-                showIf(true.expr()) {
-                    item {
-                        text(Language.Bokmal to "Test")
+            paragraph {
+                list {
+                    showIf(true.expr()) {
+                        item {
+                            text(Language.Bokmal to "Test")
+                        }
                     }
                 }
             }
         }
 
+        @Suppress("INFERRED_TYPE_VARIABLE_INTO_POSSIBLE_EMPTY_INTERSECTION")
         val expected = outlineTestLetter(
             Content(
-                Element.OutlineContent.ParagraphContent.ItemList(
-                    listOf(
-                        ContentOrControlStructure.Conditional(
-                            true.expr(),
-                            listOf(
-                                Content(
-                                    Element.OutlineContent.ParagraphContent.ItemList.Item(
-                                        listOf(newText(Language.Bokmal to "Test"))
+                    Element.OutlineContent.Paragraph(
+                        listOf(
+                            Content(
+                            Element.OutlineContent.ParagraphContent.ItemList(
+                                listOf(
+                                    ContentOrControlStructure.Conditional(
+                                        true.expr(),
+                                        listOf(
+                                            Content(
+                                                Element.OutlineContent.ParagraphContent.ItemList.Item(
+                                                    listOf(newText(Language.Bokmal to "Test"))
+                                                )
+                                            )
+                                        ), emptyList()
                                     )
                                 )
-                            ), emptyList()
+                            ))
                         )
                     )
-                )
             )
         )
 

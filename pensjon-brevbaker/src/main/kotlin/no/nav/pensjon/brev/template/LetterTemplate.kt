@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.template
 
-import no.nav.pensjon.brev.api.model.LetterMetadata
+import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import kotlin.reflect.KClass
 
 data class LetterTemplate<Lang : LanguageSupport, LetterData : Any>(
@@ -12,6 +12,8 @@ data class LetterTemplate<Lang : LanguageSupport, LetterData : Any>(
     val attachments: List<IncludeAttachment<Lang, *>> = emptyList(),
     val letterMetadata: LetterMetadata,
 ) {
+    val modelSpecification: TemplateModelSpecification = LetterModelSpecificationFactory(letterDataType).build()
+
     init {
         if (title.isEmpty()) {
             throw MissingTitleInTemplateException("Missing title in template: $name")
@@ -19,8 +21,11 @@ data class LetterTemplate<Lang : LanguageSupport, LetterData : Any>(
     }
 }
 
+class PreventToStringForExpressionException() : Exception("Expression.toString should not be used. " +
+        "In most cases this means that a template contains string concatenation of a string literal with an Expression-object, e.g:" +
+        "text(Bokmal to \"The year is \${year.format()} \")"
+)
 sealed class Expression<out Out> {
-    val schema: String = this::class.java.name.removePrefix(this::class.java.`package`.name + '.')
 
     abstract fun eval(scope: ExpressionScope<*, *>): Out
 
@@ -57,6 +62,9 @@ sealed class Expression<out Out> {
         override fun eval(scope: ExpressionScope<*, *>): Out = operation.apply(first.eval(scope), second.eval(scope))
     }
 
+    final override fun toString(): String {
+        throw PreventToStringForExpressionException()
+    }
 }
 
 typealias StringExpression = Expression<String>
@@ -74,8 +82,8 @@ sealed class ContentOrControlStructure<out Lang : LanguageSupport, out C : Eleme
 
     @Suppress("DataClassPrivateConstructor")
     data class ForEach<out Lang : LanguageSupport, C : Element<Lang>, Item : Any> private constructor(
-        val items: Expression<List<Item>>,
-        val body: List<ContentOrControlStructure<Lang, C>>,
+        val items: Expression<Collection<Item>>,
+        val body: Collection<ContentOrControlStructure<Lang, C>>,
         private val next: NextExpression<Item>
     ) : ContentOrControlStructure<Lang, C>() {
         val nextExpr : Expression<Item>
@@ -95,8 +103,8 @@ sealed class ContentOrControlStructure<out Lang : LanguageSupport, out C : Eleme
 
         companion object {
             fun <Lang : LanguageSupport, C : Element<Lang>, Item : Any> create(
-                items: Expression<List<Item>>,
-                createView: (item: Expression<Item>) -> List<ContentOrControlStructure<Lang, C>>
+                items: Expression<Collection<Item>>,
+                createView: (item: Expression<Item>) -> Collection<ContentOrControlStructure<Lang, C>>
             ): ForEach<Lang, C, Item> =
                 NextExpression<Item>().let { ForEach(items, createView(it), it) }
         }
@@ -138,9 +146,12 @@ sealed class Element<out Lang : LanguageSupport> {
     sealed class OutlineContent<out Lang : LanguageSupport> : Element<Lang>() {
         data class Title1<out Lang : LanguageSupport>(val text: List<TextElement<Lang>>) : OutlineContent<Lang>()
 
+        data class Title2<out Lang : LanguageSupport>(val text: List<TextElement<Lang>>) : OutlineContent<Lang>()
+
         data class Paragraph<out Lang : LanguageSupport>(val paragraph: List<ParagraphContentElement<Lang>>) : OutlineContent<Lang>()
 
-        sealed class ParagraphContent<out Lang : LanguageSupport> : OutlineContent<Lang>() {
+        sealed class ParagraphContent<out Lang : LanguageSupport> : Element<Lang>() {
+
             data class ItemList<out Lang : LanguageSupport>(
                 val items: List<ContentOrControlStructure<Lang, Item<Lang>>>
             ) : ParagraphContent<Lang>() {
@@ -328,9 +339,7 @@ sealed class Element<out Lang : LanguageSupport> {
                     val vspace: Boolean = true,
                 ) : Form<Lang>()
             }
-
         }
-
     }
 
 }

@@ -1,9 +1,11 @@
 package no.nav.pensjon.brev.template.dsl.expression
 
-import no.nav.pensjon.brev.api.model.*
-import no.nav.pensjon.brev.maler.fraser.common.*
-import no.nav.pensjon.brev.template.*
-import no.nav.pensjon.brev.template.expression.*
+import no.nav.pensjon.brev.template.BinaryOperation
+import no.nav.pensjon.brev.template.Expression
+import no.nav.pensjon.brev.template.TemplateModelSelector
+import no.nav.pensjon.brev.template.UnaryOperation
+import no.nav.pensjon.brevbaker.api.model.IntValue
+import no.nav.pensjon.brevbaker.api.model.Kroner
 
 val intValueSelector = object : TemplateModelSelector<IntValue, Int> {
     override val className: String = "no.nav.pensjon.brev.api.model.IntValue"
@@ -18,23 +20,20 @@ private val Expression<IntValue>.value: Expression<Int>
         UnaryOperation.Select(intValueSelector)
     )
 
-fun Expression<Double>.format(): Expression<String> =
-    Expression.BinaryInvoke(
-        this,
-        Expression.FromScope.language(ExpressionScope<Any, *>::language),
-        BinaryOperation.LocalizedDoubleFormat,
-    )
+fun Expression<Double>.format(): Expression<String> = format(formatter = BinaryOperation.LocalizedDoubleFormat)
 
 @JvmName("formatInt")
-fun Expression<Int>.format(): Expression<String> =
+fun Expression<Int>.format(): Expression<String> = format(formatter = BinaryOperation.LocalizedIntFormat)
+
+
+operator fun Expression<Kroner>.plus(other: Expression<Kroner>): Expression<Kroner> =
     Expression.BinaryInvoke(
         this,
-        Expression.FromScope.language(ExpressionScope<Any, *>::language),
-        BinaryOperation.LocalizedIntFormat,
+        other,
+        BinaryOperation.IntPlus(::Kroner),
     )
 
 
-// TODO: Skriv tester på disse
 fun <T: Comparable<T>> Expression<T>.greaterThan(compareTo: Expression<T>): Expression<Boolean> =
     Expression.BinaryInvoke(
         first = this,

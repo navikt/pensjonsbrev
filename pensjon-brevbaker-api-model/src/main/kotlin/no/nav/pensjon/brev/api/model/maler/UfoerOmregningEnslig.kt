@@ -1,8 +1,8 @@
 package no.nav.pensjon.brev.api.model.maler
 
 import no.nav.pensjon.brev.api.model.Institusjon
-import no.nav.pensjon.brev.api.model.Kroner
-import no.nav.pensjon.brev.api.model.Sivilstand
+import no.nav.pensjon.brevbaker.api.model.Kroner
+import no.nav.pensjon.brev.api.model.SivilstandAvdoed
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligUfoeretrygdFoerSkattDto
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDto
 import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterUfoereDto
@@ -12,23 +12,24 @@ import java.time.LocalDate
 data class UfoerOmregningEnsligDto(
     val opplysningerBruktIBeregningUT: OpplysningerBruktIBeregningUTDto,
     val orienteringOmRettigheterOgPlikter: OrienteringOmRettigheterUfoereDto,
-    val maanedligUfoeretrygdFoerSkatt: MaanedligUfoeretrygdFoerSkattDto,
+    val maanedligUfoeretrygdFoerSkatt: MaanedligUfoeretrygdFoerSkattDto?,
     val avdoed: Avdoed,
     val minsteytelseVedvirk_sats: Double?,
     val ufoeretrygdVedVirk: UfoeretrygdVedVirk,
     val beregnetUTPerMaaned_antallBeregningsperioderPaaVedtak: Int,
     val institusjonsoppholdVedVirk: Institusjon,
     val krav_virkningsDatoFraOgMed: LocalDate,
+    val harAvdoedRettigheterFoer2024: Boolean,
     val barnetilleggSaerkullsbarnGjeldende_erRedusertMotInntekt: Boolean,
     val inntektFoerUfoerhetVedVirk: InntektFoerUfoerhetVedVirk,
     val bruker: Bruker,
     val harBarnetillegg: Boolean,
     val barnetilleggSaerkullsbarnVedVirk: BarnetilleggSaerkullsbarnVedvirk?,
-) {
+): BrevbakerBrevdata {
     data class Avdoed(
         val navn: String,
         val ektefelletilleggOpphoert: Boolean,
-        val sivilstand: Sivilstand,
+        val sivilstand: SivilstandAvdoed,
         val harFellesBarnUtenBarnetillegg: Boolean,
     )
 
@@ -36,6 +37,9 @@ data class UfoerOmregningEnsligDto(
         val kompensasjonsgrad: Double,
         val totalUfoereMaanedligBeloep: Kroner,
         val erInntektsavkortet: Boolean,
+        val ufoeregrad: Int, // TODO slett i neste versjon.
+        val harGradertUfoeretrygd: Boolean,
+        val grunnbeloep: Kroner,
     )
 
     data class InntektFoerUfoerhetVedVirk(

@@ -9,50 +9,107 @@ import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.util.*
-import io.prometheus.client.exporter.common.TextFormat
-import no.nav.pensjon.brev.api.LetterResource
-import no.nav.pensjon.brev.api.description
+import io.micrometer.core.instrument.Tag
+import no.nav.pensjon.brev.api.*
 import no.nav.pensjon.brev.api.model.*
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.latex.LaTeXCompilerService
-import no.nav.pensjon.brev.template.render.PensjonLatexRenderer
+import no.nav.pensjon.brev.template.TemplateModelSpecification
+import no.nav.pensjon.brev.template.render.*
+import no.nav.pensjon.brevbaker.api.model.TemplateDescription
+import no.nav.pensjon.etterlatte.etterlatteRouting
 
-private val latexCompilerService = LaTeXCompilerService(requireEnv("PDF_BUILDER_URL"))
 private val letterResource = LetterResource()
-fun Application.brevbakerRouting(authenticationNames: Array<String>) =
+
+data class RedigerbarTemplateDescription(
+    val description: TemplateDescription,
+    val modelSpecification: TemplateModelSpecification,
+)
+
+fun Application.brevbakerRouting(authenticationNames: Array<String>, latexCompilerService: LaTeXCompilerService) =
     routing {
+        route("/templates") {
 
-        get("/templates") {
-            call.respond(letterResource.templateResource.getTemplates())
-        }
+            route("/autobrev") {
+                get {
+                    call.respond(letterResource.templateResource.getAutoBrev())
+                }
 
-        get("/templates/vedtaksbrev/{kode}") {
-            val template = call.parameters
-                .getOrFail<Brevkode.Vedtak>("kode")
-                .let { letterResource.templateResource.getTemplate(it) }
-                ?.description()
+                get("/{kode}") {
+                    val template = call.parameters
+                        .getOrFail<Brevkode.AutoBrev>("kode")
+                        .let { letterResource.templateResource.getAutoBrev(it) }
+                        ?.description()
 
-            if (template == null) {
-                call.respond(HttpStatusCode.NotFound)
-            } else {
-                call.respond(template)
+                    if (template == null) {
+                        call.respond(HttpStatusCode.NotFound)
+                    } else {
+                        call.respond(template)
+                    }
+                }
+            }
+
+            route("/redigerbar") {
+                get {
+                    val withMetadata = call.request.queryParameters["includeMetadata"] == "true"
+                    //todo add legacy metadata
+                    if (withMetadata) {
+                        call.respond(letterResource.templateResource.getRedigerbareBrevMedMetadata())
+                    } else {
+                        call.respond(letterResource.templateResource.getRedigerbareBrev())
+                    }
+                }
+
+                get("/all"){
+                    letterResource.templateResource.getRedigerbareBrev().map { it.name }
+                }
+
+                get("/{kode}") {
+                    val template = call.parameters.getOrFail<Brevkode.Redigerbar>("kode")
+                        .let { letterResource.templateResource.getRedigerbartBrev(it) }
+
+                    if (template == null) {
+                        call.respond(HttpStatusCode.NotFound)
+                    } else {
+                        call.respond(RedigerbarTemplateDescription(template.description(), template.modelSpecification))
+                    }
+                }
             }
         }
 
         authenticate(*authenticationNames, optional = environment?.developmentMode ?: false) {
-            post("/letter/vedtak") {
-                val letterRequest = call.receive<VedtaksbrevRequest>()
+            route("/letter") {
 
-                val letter = letterResource.create(letterRequest)
-                val pdfBase64 = PensjonLatexRenderer.render(letter)
-                    .let { latexCompilerService.producePDF(it, call.callId) }
+                post("/autobrev") {
+                    val letterRequest = call.receive<AutobrevRequest>()
+                    call.application.log.info("Received /letter/autobrev request")
 
-                call.respond(LetterResponse(pdfBase64.base64PDF, letter.template.letterMetadata))
+                    val letter = letterResource.create(letterRequest)
+                    val latexLetter = PensjonLatexRenderer.render(letter)
+                    call.application.log.info("Latex compiled: sending to pdf-bygger")
+                    val pdfBase64 = latexCompilerService.producePDF(latexLetter, call.callId)
+
+                    call.respond(LetterResponse(pdfBase64.base64PDF, letter.template.letterMetadata))
+
+                    Metrics.prometheusRegistry.counter(
+                        "pensjon_brevbaker_letter_request_count",
+                        listOf(Tag.of("brevkode", letterRequest.kode.name))
+                    ).increment()
+                }
+
+                post("/redigerbar") {
+                    val letterRequest = call.receive<RedigerbartbrevRequest>()
+
+                    call.respond(PensjonJsonRenderer.render(letterResource.create(letterRequest)))
+                }
+
             }
-
             get("/ping_authorized") {
-                val principal = call.authentication.principal as JWTPrincipal
-                call.respondText("Authorized as: ${principal.subject}")
+                val principal = call.authentication.principal<JWTPrincipal>()
+                call.respondText("Authorized as: ${principal?.subject}")
+            }
+            route("etterlatte") {
+                etterlatteRouting(latexCompilerService)
             }
         }
 
@@ -62,12 +119,6 @@ fun Application.brevbakerRouting(authenticationNames: Array<String>) =
 
         get("/isReady") {
             call.respondText("Ready!", ContentType.Text.Plain, HttpStatusCode.OK)
-        }
-
-        get("/metrics") {
-            call.respondTextWriter(ContentType.parse(TextFormat.CONTENT_TYPE_004)) {
-                Metrics.writeMetrics004(this, Metrics.prometheusRegistry)
-            }
         }
 
     }

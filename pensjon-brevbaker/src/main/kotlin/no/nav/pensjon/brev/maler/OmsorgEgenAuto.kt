@@ -1,27 +1,25 @@
 package no.nav.pensjon.brev.maler
 
-import no.nav.pensjon.brev.api.model.LetterMetadata
-import no.nav.pensjon.brev.api.model.maler.Brevkode
-import no.nav.pensjon.brev.api.model.maler.OmsorgEgenAutoDto
+import no.nav.pensjon.brev.api.model.maler.*
 import no.nav.pensjon.brev.api.model.maler.OmsorgEgenAutoDtoSelectors.aarEgenerklaringOmsorgspoeng
 import no.nav.pensjon.brev.api.model.maler.OmsorgEgenAutoDtoSelectors.aarInnvilgetOmsorgspoeng
 import no.nav.pensjon.brev.api.model.maler.OmsorgEgenAutoDtoSelectors.egenerklaeringOmsorgsarbeidDto
+import no.nav.pensjon.brev.maler.fraser.common.Constants
+import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.vedlegg.egenerklaeringPleieOgOmsorgsarbeid
 import no.nav.pensjon.brev.model.format
+import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.*
-import no.nav.pensjon.brev.template.VedtaksbrevTemplate
-import no.nav.pensjon.brev.template.dsl.createTemplate
-import no.nav.pensjon.brev.template.dsl.expression.expr
-import no.nav.pensjon.brev.template.dsl.expression.plus
+import no.nav.pensjon.brev.template.dsl.*
+import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
-import no.nav.pensjon.brev.template.dsl.languages
-import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.template.dsl.textExpr
+import no.nav.pensjon.brevbaker.api.model.LetterMetadata
+import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Brevtype.VEDTAKSBREV
 
 @TemplateModelHelpers
-object OmsorgEgenAuto : VedtaksbrevTemplate<OmsorgEgenAutoDto> {
+object OmsorgEgenAuto : AutobrevTemplate<OmsorgEgenAutoDto> {
 
-    override val kode: Brevkode.Vedtak = Brevkode.Vedtak.OMSORG_EGEN_AUTO
+    override val kode: Brevkode.AutoBrev = Brevkode.AutoBrev.PE_OMSORG_EGEN_AUTO
 
     override val template = createTemplate(
         name = kode.name,
@@ -31,6 +29,7 @@ object OmsorgEgenAuto : VedtaksbrevTemplate<OmsorgEgenAutoDto> {
             displayTitle = "Egenerklæring godskriving omsorgspoeng",
             isSensitiv = false,
             distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
+            brevtype = VEDTAKSBREV,
         )
     ) {
 
@@ -63,7 +62,6 @@ object OmsorgEgenAuto : VedtaksbrevTemplate<OmsorgEgenAutoDto> {
                             + ". Therefore, it is required that you complete the enclosed form and return it to NAV within four weeks.",
                 )
             }
-
             paragraph {
                 val aarInnvilgetOmsorgspoeng = aarInnvilgetOmsorgspoeng.format()
                 textExpr(
@@ -72,10 +70,8 @@ object OmsorgEgenAuto : VedtaksbrevTemplate<OmsorgEgenAutoDto> {
                     English to "You have accumulated pensionable earnings for ".expr() + aarInnvilgetOmsorgspoeng + ".",
                 )
             }
-
+            includePhrase(Felles.HarDuSpoersmaalOmsorgsarbeid)
         }
-
         includeAttachment(egenerklaeringPleieOgOmsorgsarbeid, egenerklaeringOmsorgsarbeidDto)
     }
-
 }

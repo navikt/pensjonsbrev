@@ -1,0 +1,26 @@
+#######
+# Denne er brukt til å gjøre det mulig å bruke tokens lokalt
+#
+# secret kan hentes fra cluster med "kubectl -n pensjonsbrev get secret azure-skribenten-backend-lokal -o json | jq '.data | map_values(@base64d)'"
+#
+# Kjøres en gang eller ved endringer med
+# kubectl apply -f .deploy/azure-ad-app-lokal.yaml
+###
+apiVersion: nais.io/v1
+kind: AzureAdApplication
+metadata:
+  name: skribenten-backend-lokal
+  namespace: pensjonsbrev
+  labels:
+    team: pensjonsbrev
+spec:
+  secretName: azure-skribenten-backend-lokal
+  replyUrls:
+    - url: "http://localhost:8082/oauth2/callback"
+  claims:
+    extra:
+      - "azp_name"
+  preAuthorizedApplications:
+    - application: skribenten-web
+      cluster: dev-gcp
+      namespace: pensjonsbrev

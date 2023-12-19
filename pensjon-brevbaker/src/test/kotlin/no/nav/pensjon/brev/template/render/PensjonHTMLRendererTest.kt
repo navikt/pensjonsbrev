@@ -13,7 +13,6 @@ class PensjonHTMLRendererTest {
             Fixtures.create<LetterExampleDto>(),
             Language.Bokmal,
             Fixtures.fellesAuto
-        ).let { PensjonHTMLRenderer.render(it) }
-            .also { writeTestHTML("DESIGN_REFERENCE_LETTER", it) }
+        ).renderTestHtml("DESIGN_REFERENCE_LETTER")
     }
 }

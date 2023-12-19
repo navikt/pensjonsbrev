@@ -1,87 +1,19 @@
 package no.nav.pensjon.brev.maler.fraser.common
 
-import no.nav.pensjon.brev.api.model.Kroner
-import no.nav.pensjon.brev.maler.fraser.Constants
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.*
+import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brev.template.dsl.expression.*
+import no.nav.pensjon.brevbaker.api.model.Kroner
 
 object Felles {
 
     /**
-     * TBU1223, TBU1224
+     * TBU1074, TBU2242NB, TBU1075NN, TBU2242EN, RettTilInnsynPesys_001
      */
-    object MeldEndringerPesys_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
-        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-            title1 {
-                text(
-                    Bokmal to "Du må melde fra om endringer",
-                    Nynorsk to "Du må melde frå om endringar",
-                    English to "You must notify NAV if anything changes",
-                )
-            }
-            paragraph {
-                text(
-                    Bokmal to "Skjer det endringer, må du melde fra til oss med en gang. I vedlegget ser du hvilke endringer du må si fra om.",
-                    Nynorsk to "Skjer det endringar, må du melde frå til oss med ein gong. I vedlegget ser du kva endringar du må seie frå om.",
-                    English to "If your circumstances change, you must inform NAV immediately. The appendix includes information on how to proceed.",
-                )
-            }
-
-            paragraph {
-                text(
-                    Bokmal to "Hvis du har fått utbetalt for mye fordi du ikke har gitt oss beskjed, må du vanligvis betale tilbake pengene. " +
-                            "Du er selv ansvarlig for å holde deg orientert om bevegelser på kontoen din, og du må melde fra om eventuelle feil til NAV.",
-
-                    Nynorsk to "Dersom du har fått utbetalt for mykje fordi du ikkje har gitt oss beskjed, må du vanlegvis betale tilbake pengane. " +
-                            "Du er sjølv ansvarleg for å halde deg orientert om rørsler på kontoen din, og du må melde frå om eventuelle feil til NAV.",
-                    English to "If your payments have been too high as a result of you failing to notify us of a change, the incorrect payment must normally be repaid. " +
-                            "It is your responsibility to keep yourself informed of movements in your account, and you are obligated to report any and all errors to NAV.",
-                )
-            }
-        }
-    }
-
-    /**
-     * TBU1100
-     */
-    object RettTilKlagePesys_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
-        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-            title1 {
-                text(
-                    Bokmal to "Du har rett til å klage",
-                    Nynorsk to "Du har rett til å klage",
-                    English to "You have the right to appeal",
-                )
-            }
-
-            paragraph {
-                text(
-                    Bokmal to "Hvis du mener vedtaket er feil, kan du klage innen seks uker fra den datoen du mottok vedtaket. Klagen skal være skriftlig. " +
-                            "Du finner skjema og informasjon på ${Constants.KLAGE_URL}.",
-                    Nynorsk to "Dersom du meiner at vedtaket er feil, kan du klage innan seks veker frå den datoen du fekk vedtaket. Klaga skal vera skriftleg. " +
-                            "Du finn skjema og informasjon på ${Constants.KLAGE_URL}.",
-                    English to "If you think the decision is wrong, you may appeal the decision within six weeks of the date on which you received notice of the decision. " +
-                            "Your appeal must be made in writing. You will find a form you can use and more information about appeals at ${Constants.KLAGE_URL}.",
-                )
-            }
-
-            paragraph {
-                text(
-                    Bokmal to "I vedlegget får du vite mer om hvordan du går fram.",
-                    Nynorsk to "I vedlegget får du vite meir om korleis du går fram.",
-                    English to "The appendix includes information on how to proceed.",
-                )
-            }
-        }
-    }
-
-    /**
-     * TBU1074, TBU1075
-     */
-    object RettTilInnsynPesys_001 : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    object RettTilInnsynPesys : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             title1 {
                 text(
@@ -93,20 +25,49 @@ object Felles {
 
             paragraph {
                 text(
-                    Bokmal to "Du har rett til å se dokumentene i saken din. I vedlegget får du vite hvordan du går fram.",
-                    Nynorsk to "Du har rett til å sjå dokumenta i saka di. I vedlegget får du vite korleis du går fram.",
-                    English to "You have the right to access all documents pertaining to your case. The appendix includes information on how to proceed.",
+                    Bokmal to "Du har rett til å se dokumentene i saken din. Se vedlegg «Dine rettigheter og plikter» for informasjon om hvordan du går fram.",
+                    Nynorsk to "Du har rett til å sjå dokumenta i saka di. Sjå vedlegg «Dine rettar og plikter» for informasjon om korleis du går fram.",
+                    English to "You are entitled to see your case documents. Refer to the attachment “Your rights and obligations” for information about how to proceed.",
                 )
             }
         }
     }
 
-    data class KronerText(val kroner: Expression<Kroner>) : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
+    object HarDuSpoersmaalOmsorgsarbeid : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+            title1 {
+                text(
+                    Bokmal to "Har du spørsmål?",
+                    Nynorsk to "Har du spørsmål?",
+                    English to "Do you have questions?"
+                )
+            }
+            paragraph {
+                text(
+                    Bokmal to "Du finner mer informasjon på ${Constants.OMSORGSOPPTJENING_URL}."
+                            + " På ${Constants.KONTAKT_URL} kan du chatte eller skrive til oss."
+                            + " Hvis du ikke finner svar på ${Constants.NAV_URL}, kan du ringe oss på telefon ${Constants.NAV_KONTAKTSENTER_TELEFON_PENSJON},"
+                            + " hverdager kl. ${Constants.NAV_KONTAKTSENTER_AAPNINGSTID}.",
+                    Nynorsk to "Du finn meir informasjon på ${Constants.OMSORGSOPPTJENING_URL}."
+                            + " Om du ikkje finn svar på ${Constants.NAV_URL}, kan du ringe oss på telefon ${Constants.NAV_KONTAKTSENTER_TELEFON_PENSJON},"
+                            + " kvardagar kl. ${Constants.NAV_KONTAKTSENTER_AAPNINGSTID}.",
+                    English to "You can find more information at ${Constants.OMSORGSOPPTJENING_URL}."
+                            + " At ${Constants.KONTAKT_URL}, you can chat or write to us."
+                            + " If you do not find the answer at ${Constants.NAV_URL}, you can call us at: +47 ${Constants.NAV_KONTAKTSENTER_TELEFON_PENSJON},"
+                            + " weekdays ${Constants.NAV_KONTAKTSENTER_AAPNINGSTID}."
+                )
+            }
+        }
+    }
+
+    data class KronerText(val kroner: Expression<Kroner>, val fontType: FontType = FontType.PLAIN) :
+        TextOnlyPhrase<LangBokmalNynorskEnglish>() {
         override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
             textExpr(
                 Bokmal to kroner.format() + " kr",
                 Nynorsk to kroner.format() + " kr",
-                English to kroner.format() + " NOK",
+                English to "NOK ".expr() + kroner.format(),
+                fontType,
             )
     }
 
@@ -117,5 +78,26 @@ object Felles {
                 Nynorsk to antall.format() + " måneder",
                 English to antall.format() + " months"
             )
+    }
+
+    data class TextOrList(val foedselsdatoer: Expression<Collection<String>>, val limit: Int = 2) :
+        ParagraphPhrase<LangBokmalNynorskEnglish>() {
+        override fun ParagraphOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+            showIf(foedselsdatoer.size().lessThanOrEqual(limit)) {
+                val foedselsDato = foedselsdatoer.format()
+                textExpr(
+                    Bokmal to " ".expr() + foedselsDato + ".",
+                    Nynorsk to " ".expr() + foedselsDato + ".",
+                    English to " ".expr() + foedselsDato + ".",
+                )
+            }.orShow {
+                text(Bokmal to ":", Nynorsk to ":", English to ":")
+                list {
+                    forEach(foedselsdatoer) {
+                        item { textExpr(Bokmal to it, Nynorsk to it, English to it) }
+                    }
+                }
+            }
+        }
     }
 }

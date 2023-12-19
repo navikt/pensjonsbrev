@@ -1,0 +1,29 @@
+app-name: "pensjonsbrev-tjenestebuss-q2"
+ingresses:
+  - "https://pensjonsbrev-tjenestebuss-q2.intern.dev.nav.no"
+  - "https://pensjonsbrev-tjenestebuss-q2.dev-fss-pub.nais.io"
+env:
+  - name: TJENESTEBUSS_URL
+    value: "https://tjenestebuss-q2.adeo.no/"
+  - name: STS_URL
+    value: "https://security-token-service.dev.adeo.no"
+  - name: DOKPROD_URL
+    value: "https://dokprod-q2.dev.intern.nav.no/dokprod/"
+
+
+vaultPaths:
+  - kvPath: "serviceuser/data/dev/srvpensjonsbrev-esb"
+    mountPath: "/secrets/sts"
+
+inboundRules:
+  - application: skribenten-backend
+    namespace: pensjonsbrev
+    cluster: dev-gcp
+  - application: skribenten-backend-lokal
+    namespace: pensjonsbrev
+    cluster: dev-gcp
+
+externalHosts:
+  - tjenestebuss-q2.adeo.no
+  - security-token-service.dev.adeo.no
+  - dokprod-q2.dev.intern.nav.no

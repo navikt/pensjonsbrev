@@ -16,7 +16,6 @@ RUN chown -R root install-tl
 RUN ./install-tl/install-tl --no-interaction -s f -portable -texdir /app/tex -texuserdir /app/texlocal
 
 #Install xetex and required packages from uib using texlive package manager
-RUN ls -lah /app/tex
 RUN tlmgr option repository https://mirror.ctan.org/systems/texlive/tlnet/
 RUN tlmgr install xetex
 RUN tlmgr install collection-latex fontspec ninecolors xcolor tabularray nowidow enumitem textpos pdfx xmpincl

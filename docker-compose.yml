@@ -4,6 +4,8 @@ services:
     build: ./pdf-bygger
     environment:
       - JAVA_OPTS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5006 -Djdk.lang.Process.launchMechanism=vfork #used for Apple M1 compatability
+      - PDF_COMPILE_TIMEOUT_SECONDS=200
+      - PDF_BYGGER_COMPILE_TMP_DIR=/tmp
     ports:
       - "8081:8080"
       - "5016:5006"
@@ -15,7 +17,7 @@ services:
       - AZURE_APP_CLIENT_ID=brevbaker-123
       - AZURE_APP_PRE_AUTHORIZED_APPS=[{"name":"pen","clientId":"pen-AzureClientId"}]
       # Allows requests without auth-header #opens up debug port
-      - JAVA_OPTS=-Dio.ktor.development=true -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
+      - JAVA_TOOL_OPTIONS=-Dio.ktor.development=true -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
     build: ./pensjon-brevbaker
     ports:
       - "8080:8080"
@@ -27,16 +29,19 @@ services:
     image: locustio/locust
     ports:
       - "20080:20080"
+      - "8089:8089"
     volumes:
-      - ./:/mnt/locust
-    command: -f /mnt/locust/locustfile.py --master -H http://locust-master:20080
+      - ./locust:/mnt/locust
+    command: -f /mnt/locust/locustfile.py --master -H https://pensjon-brevbaker.intern.dev.nav.no
 
   locust-worker:
+    deploy:
+      replicas: 2
     profiles:
       - locust
     image: locustio/locust
     volumes:
-      - ./:/mnt/locust
+      - ./locust:/mnt/locust
     command: -f /mnt/locust/locustfile.py --worker --master-host locust-master
 
 networks:

@@ -1,8 +1,8 @@
 package no.nav.pensjon.brev.template
 
 import no.nav.pensjon.brev.Fixtures.felles
-import no.nav.pensjon.brev.api.model.LetterMetadata
 import no.nav.pensjon.brev.template.dsl.*
+import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import org.junit.jupiter.api.*
 
 class LetterTest {
@@ -13,7 +13,7 @@ class LetterTest {
         name = "test",
         letterDataType = TestData::class,
         languages = languages(Language.Bokmal),
-        letterMetadata = LetterMetadata("Test", false, LetterMetadata.Distribusjonstype.ANNET),
+        letterMetadata = LetterMetadata("Test", false, LetterMetadata.Distribusjonstype.ANNET, brevtype = LetterMetadata.Brevtype.VEDTAKSBREV),
     ) {
         title {
             text(Language.Bokmal to "test")

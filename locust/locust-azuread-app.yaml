@@ -1,0 +1,17 @@
+#######
+# Denne er brukt til å gjøre det mulig å bruke tokens lokalt
+#
+# secret kan hentes fra cluster med "kubectl --context dev-gcp -n pensjonsbrev get secret azure-locust -o json | jq '.data | map_values(@base64d)'"
+#
+# Kjøres en gang eller ved endringer med
+# kubectl apply -f .deploy/azure-ad-app-lokal.yaml
+###
+apiVersion: nais.io/v1
+kind: AzureAdApplication
+metadata:
+  name: locust
+  namespace: pensjonsbrev
+  labels:
+    team: pensjonsbrev
+spec:
+  secretName: azure-locust

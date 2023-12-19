@@ -1,10 +1,9 @@
 package no.nav.pensjon.brev.fixtures
 
 import no.nav.pensjon.brev.Fixtures
-import no.nav.pensjon.brev.api.model.Institusjon
-import no.nav.pensjon.brev.api.model.Kroner
-import no.nav.pensjon.brev.api.model.Sivilstand
+import no.nav.pensjon.brev.api.model.*
 import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDto
+import no.nav.pensjon.brevbaker.api.model.Kroner
 import java.time.LocalDate
 
 fun createUfoerOmregningEnsligDto() =
@@ -16,7 +15,7 @@ fun createUfoerOmregningEnsligDto() =
         avdoed = UfoerOmregningEnsligDto.Avdoed(
             navn = "Avdod Person",
             ektefelletilleggOpphoert = false,
-            sivilstand = Sivilstand.SAMBOER3_2,
+            sivilstand = SivilstandAvdoed.SAMBOER3_2,
             harFellesBarnUtenBarnetillegg = false,
         ),
         krav_virkningsDatoFraOgMed = LocalDate.of(2020, 1, 1),
@@ -25,7 +24,8 @@ fun createUfoerOmregningEnsligDto() =
         ufoeretrygdVedVirk = UfoerOmregningEnsligDto.UfoeretrygdVedVirk(
             kompensasjonsgrad = 0.5,
             totalUfoereMaanedligBeloep = Kroner(5),
-            erInntektsavkortet = false
+            erInntektsavkortet = false,
+            ufoeregrad = 100,
         ),
         inntektFoerUfoerhetVedVirk = UfoerOmregningEnsligDto.InntektFoerUfoerhetVedVirk(
             oppjustertBeloep = Kroner(0),
@@ -57,4 +57,5 @@ fun createUfoerOmregningEnsligDto() =
             ),
         ),
         harBarnetillegg = false,
+        harAvdoedRettigheterFoer2024 = true,
     )
