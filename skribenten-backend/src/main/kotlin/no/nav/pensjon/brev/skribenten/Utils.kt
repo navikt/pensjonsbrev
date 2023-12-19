@@ -16,9 +16,6 @@ fun HeadersBuilder.callId(call: ApplicationCall) {
     }
 }
 
-fun PipelineContext<Unit, ApplicationCall>.getLoggedInUserId(): String? =
-    call.authentication.principal<UserPrincipal>()?.getUserId()
-
 fun PipelineContext<Unit, ApplicationCall>.getLoggedInNavIdent(): String? =
     getClaim(NAV_IDENT_CLAIM_KEY)
 
