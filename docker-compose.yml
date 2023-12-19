@@ -1,4 +1,5 @@
 #Used for local testing purposes
+version: '3.8'
 services:
   pdf-bygger:
     build: ./pdf-bygger
@@ -22,6 +23,90 @@ services:
     ports:
       - "8080:8080"
       - "5015:5005" # debug port
+
+  skribenten-backend:
+    profiles:
+      - skribenten
+    build: ./skribenten-backend
+    depends_on:
+      skribenten-backend-db:
+          condition: service_started
+    ports:
+      - "8082:8080"
+      - "5017:5007"
+    env_file:
+      - ./skribenten-backend/secrets/azuread.env
+    environment:
+      - BREVBAKER_SCOPE=api://dev-gcp.pensjonsbrev.pensjon-brevbaker/.default
+      - BREVBAKER_URL=https://pensjon-brevbaker.intern.dev.nav.no
+      - BREVMETADATA_URL=https://pensjon-brevmetadata-q2.intern.dev.nav.no
+      - CORS_ALLOW_HOST=*
+      - DB_HOST=skribenten-backend-db
+      - DB_PORT=5432
+      - DB_DATABASE=postgres
+      - DB_USERNAME=postgres
+      - DB_PASSWORD=pass
+      - JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5007
+      - KODEVERK_SERVICE=https://kodeverk.dev.intern.nav.no/api/v1/kodeverk/
+      - KRR_SCOPE=api://dev-gcp.team-rocket.digdir-krr-proxy/.default
+      - KRR_URL=https://digdir-krr-proxy.intern.dev.nav.no
+      - PDL_SCOPE=api://dev-fss.pdl.pdl-api/.default
+      - PDL_URL=https://pdl-api.dev.intern.nav.no/graphql
+      - PEN_SCOPE=api://dev-fss.pensjon-q2.pensjon-pen-q2/.default
+      - PEN_URL=https://pensjon-pen-q2.dev.adeo.no/pen/springapi/
+      - PENSJON_PERSONDATA_SCOPE=api://dev-fss.pensjon-person.pensjon-persondata-q2/.default
+      - PENSJON_PERSONDATA_URL=https://pensjon-persondata-q2.dev.intern.nav.no
+      - SAF_SCOPE=api://dev-fss.teamdokumenthandtering.saf/.default
+      - SAF_URL=https://saf.dev.intern.nav.no/graphql
+
+  skribenten-backend-db:
+    profiles:
+      - skribenten
+    image: 'postgres:14-alpine'
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: [ 'CMD', 'pg_isready', '-U', 'postgres' ]
+      interval: 3s
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: pass
+
+  wonderwall:
+    profiles:
+      - skribenten
+    image: ghcr.io/nais/wonderwall:latest
+    platform: linux/amd64
+    ports:
+      - "8083:8083"
+    restart: on-failure
+    env_file:
+      - skribenten-web/bff/.env
+    environment:
+      - WONDERWALL_AUTO_LOGIN=true
+      - WONDERWALL_OPENID_PROVIDER=azure
+      - WONDERWALL_INGRESS=http://localhost:8083
+      - WONDERWALL_BIND_ADDRESS=0.0.0.0:8083
+      - WONDERWALL_UPSTREAM_HOST=skritenben-bff:8084
+      - WONDERWALL_LOG_LEVEL=debug
+      - WONDERWALL_LOG_FORMAT=text
+  skritenben-bff:
+    profiles:
+      - skribenten
+    build:
+      context: skribenten-web/bff
+    secrets:
+      - npmrc
+    env_file:
+      - skribenten-web/bff/.env
+    ports:
+      - "8084:8084"
+    environment:
+      NODE_ENV: "development"
+      EXPRESS_PORT: "8084"
+      EXPRESS_HOST: "::"
+      SKRIBENTEN_API_URL: "http://skribenten-backend:8080"
+      SKRIBENTEN_API_SCOPE: "api://dev-gcp.pensjonsbrev.skribenten-backend-lokal/.default"
 
   locust-master:
     profiles:
@@ -47,3 +132,6 @@ services:
 networks:
   default:
     name: pensjon-local
+secrets:
+  npmrc:
+    file: ~/.npmrc

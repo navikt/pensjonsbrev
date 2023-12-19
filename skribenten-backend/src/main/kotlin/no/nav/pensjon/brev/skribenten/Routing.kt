@@ -13,14 +13,16 @@ import no.nav.pensjon.brev.skribenten.services.*
 
 fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config) {
     val authService = AzureADService(authConfig)
-    val safService = SafService(skribentenConfig.getConfig("services.saf"), authService)
-    val penService = PenService(skribentenConfig.getConfig("services.pen"), authService)
-    val pensjonPersonDataService = PensjonPersonDataService(skribentenConfig.getConfig("services.pensjon_persondata"), authService)
-    val kodeverkService = KodeverkService(skribentenConfig.getConfig("services.kodeverk"))
-    val pdlService = PdlService(skribentenConfig.getConfig("services.pdl"), authService)
-    val krrService = KrrService(skribentenConfig.getConfig("services.krr"), authService)
-    val brevbakerService = BrevbakerService(skribentenConfig.getConfig("services.brevbaker"), authService)
-    val brevmetadataService = BrevmetadataService(skribentenConfig.getConfig( "services.brevmetadata"))
+    val servicesConfig = skribentenConfig.getConfig("services")
+    initDatabase(servicesConfig)
+    val safService = SafService(servicesConfig.getConfig("saf"), authService)
+    val penService = PenService(servicesConfig.getConfig("pen"), authService)
+    val pensjonPersonDataService = PensjonPersonDataService(servicesConfig.getConfig("pensjon_persondata"), authService)
+    val kodeverkService = KodeverkService(servicesConfig.getConfig("kodeverk"))
+    val pdlService = PdlService(servicesConfig.getConfig("pdl"), authService)
+    val krrService = KrrService(servicesConfig.getConfig("krr"), authService)
+    val brevbakerService = BrevbakerService(servicesConfig.getConfig("brevbaker"), authService)
+    val brevmetadataService = BrevmetadataService(servicesConfig.getConfig("brevmetadata"))
 
     routing {
         healthRoute()

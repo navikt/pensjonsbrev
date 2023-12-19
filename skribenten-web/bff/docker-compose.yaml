@@ -23,8 +23,8 @@ services:
     build:
       context: .
 #      dockerfile: "Dockerfile.dev"
-      secrets:
-        - npmrc
+    secrets:
+      - npmrc
     ports:
       - "8081:8081"
     environment:
@@ -38,7 +38,6 @@ services:
       AZURE_OPENID_CONFIG_JWKS_URI: "${AZURE_OPENID_CONFIG_JWKS_URI}"
       SKRIBENTEN_API_URL: "https://pensjon-skribenten-api.intern.dev.nav.no"
       SKRIBENTEN_API_SCOPE: "api://dev-gcp.pensjonsbrev.skribenten-backend/.default"
-
 secrets:
   npmrc:
     file: ~/.npmrc
