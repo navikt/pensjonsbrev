@@ -11,9 +11,6 @@ services:
       - "8081:8080"
       - "5016:5006"
   pensjon-brevbaker:
-    depends_on:
-      pdf-bygger:
-        condition: service_started
     environment:
       - PDF_BUILDER_URL=http://pdf-bygger:8080
       - AZURE_OPENID_CONFIG_JWKS_URI=http://vtp-pensjon:8060/rest/isso/oauth2/connect/jwk_uri
@@ -90,13 +87,10 @@ services:
       - WONDERWALL_OPENID_PROVIDER=azure
       - WONDERWALL_INGRESS=http://localhost:8083
       - WONDERWALL_BIND_ADDRESS=0.0.0.0:8083
-      - WONDERWALL_UPSTREAM_HOST=frontend:8084
+      - WONDERWALL_UPSTREAM_HOST=skritenben-bff:8084
       - WONDERWALL_LOG_LEVEL=debug
       - WONDERWALL_LOG_FORMAT=text
-  frontend:
-    depends_on:
-      - skribenten-backend
-      - wonderwall
+  skritenben-bff:
     profiles:
       - skribenten
     build:

@@ -3,37 +3,11 @@ package no.nav.pensjon.brev.skribenten.services
 import com.typesafe.config.Config
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
-import org.jetbrains.exposed.sql.*
-import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import org.jetbrains.exposed.sql.Column
+import org.jetbrains.exposed.sql.Database
+import org.jetbrains.exposed.sql.SchemaUtils
+import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.transactions.transaction
-
-
-class SkribentenDatabaseService {
-    fun getFavourites(userId: String): List<String> =
-        transaction {
-            Favourites.select { Favourites.userId eq userId }.map { row -> row[Favourites.letterCode] }
-        }
-
-
-    fun addFavourite(userID: String, letterId: String) {
-        transaction {
-            Favourites.insert {
-                it[userId] = userID
-                it[letterCode] = letterId
-            }
-        }
-    }
-
-    fun removeFavourite(userID: String, letterId: String) {
-        transaction {
-            Favourites.deleteWhere {
-                userId eq userID
-                letterCode eq letterId
-            }
-        }
-    }
-}
-
 
 @Suppress("unused")
 object Favourites : Table() {
