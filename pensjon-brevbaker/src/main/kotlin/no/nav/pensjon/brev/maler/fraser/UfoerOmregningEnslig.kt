@@ -1,16 +1,18 @@
 package no.nav.pensjon.brev.maler.fraser
 
 import no.nav.pensjon.brev.api.model.Institusjon
-import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDtoSelectors.UfoeretrygdVedVirkSelectors.grunnbeloep
-import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDtoSelectors.ufoeretrygdVedVirk
 import no.nav.pensjon.brev.maler.fraser.common.Constants.GJENLEVENDE_SKJEMA_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
 import no.nav.pensjon.brev.maler.fraser.ufoer.Barnetillegg.DuHarFaattUtbetaltBarnetilleggTidligereIAar
 import no.nav.pensjon.brev.model.format
-import no.nav.pensjon.brev.template.*
+import no.nav.pensjon.brev.template.Expression
+import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.*
-import no.nav.pensjon.brev.template.dsl.*
+import no.nav.pensjon.brev.template.OutlinePhrase
+import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.*
+import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import java.time.LocalDate
 
@@ -747,8 +749,8 @@ object RettTilUfoeretrygdVedGradertUfoeretrygd : OutlinePhrase<LangBokmalNynorsk
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         title1 {
             text(
-                Bokmal to "Når du har gradert uføretrygd, kan du ha rett til omstillingsstønad.",
-                Nynorsk to "Når du har gradert uføretrygd, kan du ha rett til omstillingsstønad.",
+                Bokmal to "Når du har gradert uføretrygd, kan du ha rett til omstillingsstønad",
+                Nynorsk to "Når du har gradert uføretrygd, kan du ha rett til omstillingsstønad",
                 English to "When you have partial disability benefit, you may be entitled to an adjustment allowance",
             )
         }
@@ -778,7 +780,7 @@ data class StoerrelseOmstillingsstoenad(val grunnbeloepVedVirk: Expression<Krone
                         "Hvis den avdøde har bodd utenfor Norge etter fylte 16 år, kan det påvirke størrelsen.",
 
                 Nynorsk to "Stønaden er 2,25 gongar grunnbeløpet i folketrygda per år. ".expr() +
-                        "Grunnbeløpet er" + grunnbeloepVedVirk.format() + " kronar. " +
+                        "Grunnbeløpet er " + grunnbeloepVedVirk.format() + " kronar. " +
                         "Viss den avdøde har budd utanfor Noreg etter fylte 16 år, kan det påverke stønaden.",
 
                 English to "The allowance is 2.25 times the basic amount in the National Insurance Scheme per year. ".expr() +
