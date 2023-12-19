@@ -38,7 +38,7 @@ spec:
       - type: POSTGRES_14
         databases:
           - envVarPrefix: DB
-          - name: skribentendb
+            name: skribentendb
   azure:
     application:
       enabled: true
