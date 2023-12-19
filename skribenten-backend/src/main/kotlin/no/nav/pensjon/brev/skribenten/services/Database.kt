@@ -34,7 +34,7 @@ fun initDatabase(config: Config) {
     }
 }
 
-fun createJdbcUrl(config: Config): String =
+private fun createJdbcUrl(config: Config): String =
     with(config) {
         val url = getString("host")
         val port = getString("port")

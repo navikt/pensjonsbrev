@@ -23,7 +23,6 @@ fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config
     val krrService = KrrService(servicesConfig.getConfig("krr"), authService)
     val brevbakerService = BrevbakerService(servicesConfig.getConfig("brevbaker"), authService)
     val brevmetadataService = BrevmetadataService(servicesConfig.getConfig("brevmetadata"))
-    val favouritesService = FavouritesService()
 
     routing {
         healthRoute()
@@ -48,7 +47,7 @@ fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config
                 )
             }
             brevbakerRoute(brevbakerService)
-            favoritesRoute(favouritesService)
+            favoritesRoute()
             kodeverkRoute(kodeverkService, penService)
             penRoute(penService, safService)
             personRoute(pdlService, pensjonPersonDataService, krrService)
