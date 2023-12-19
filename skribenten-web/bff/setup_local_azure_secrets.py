@@ -56,6 +56,9 @@ def setup_skribenten_web_bff_secrets():
             "AZURE_APP_WELL_KNOWN_URL": base64_decode(secrets["AZURE_APP_WELL_KNOWN_URL"], True),
             "AZURE_APP_JWK": f"\'{base64_decode(secrets['AZURE_APP_JWK'])}\'",
             "AZURE_OPENID_CONFIG_JWKS_URI": base64_decode(secrets["AZURE_OPENID_CONFIG_JWKS_URI"], True),
+            "WONDERWALL_OPENID_CLIENT_JWK": f"\'{base64_decode(secrets['AZURE_APP_JWK'])}\'",
+            "WONDERWALL_OPENID_CLIENT_ID": base64_decode(secrets["AZURE_APP_CLIENT_ID"]),
+            "WONDERWALL_OPENID_WELL_KNOWN_URL": base64_decode(secrets["AZURE_APP_WELL_KNOWN_URL"], True),
         }
     )
 

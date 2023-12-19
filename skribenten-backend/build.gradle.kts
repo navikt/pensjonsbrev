@@ -9,6 +9,7 @@ val micrometerVersion: String by project
 val apiModelVersion: String by project
 val jacksonJsr310Version: String by project
 val mockkVersion: String by project
+val exposedVersion: String by project
 
 plugins {
     application
@@ -80,6 +81,11 @@ dependencies {
     implementation("io.ktor:ktor-server-status-pages:$ktorVersion")
     implementation("io.ktor:ktor-server-caching-headers:$ktorVersion")
 
+    implementation("org.jetbrains.exposed:exposed-core:$exposedVersion")
+    implementation("org.jetbrains.exposed:exposed-dao:$exposedVersion")
+    implementation("org.jetbrains.exposed:exposed-jdbc:$exposedVersion")
+    implementation("org.postgresql:postgresql:42.7.0")
+    implementation("com.zaxxer:HikariCP:5.1.0")
 
     implementation("no.nav.pensjon.brev:pensjon-brevbaker-api-model:$apiModelVersion")
 
