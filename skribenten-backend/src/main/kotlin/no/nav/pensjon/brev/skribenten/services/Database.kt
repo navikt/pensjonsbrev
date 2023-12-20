@@ -26,6 +26,7 @@ fun initDatabase(config: Config) {
             jdbcUrl = createJdbcUrl(dbConfig)
             username = dbConfig.getString("username")
             password = dbConfig.getString("password")
+            maximumPoolSize = 4
             validate()
         }),
     )
