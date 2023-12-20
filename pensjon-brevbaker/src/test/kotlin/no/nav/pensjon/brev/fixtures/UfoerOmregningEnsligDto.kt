@@ -25,7 +25,8 @@ fun createUfoerOmregningEnsligDto() =
             kompensasjonsgrad = 0.5,
             totalUfoereMaanedligBeloep = Kroner(5),
             erInntektsavkortet = false,
-            ufoeregrad = 100,
+            harGradertUfoeretrygd = false,
+            grunnbeloep = Kroner(1234)
         ),
         inntektFoerUfoerhetVedVirk = UfoerOmregningEnsligDto.InntektFoerUfoerhetVedVirk(
             oppjustertBeloep = Kroner(0),
