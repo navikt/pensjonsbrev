@@ -20,13 +20,13 @@ import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import no.nav.pensjon.etterlatte.maler.Beregningsperiode
 import no.nav.pensjon.etterlatte.maler.Trygdetidsperiode
-import no.nav.pensjon.etterlatte.maler.barnepensjon.ny.BeregningsinfoBP
-import no.nav.pensjon.etterlatte.maler.barnepensjon.ny.BeregningsinfoBPSelectors.aarTrygdetid
-import no.nav.pensjon.etterlatte.maler.barnepensjon.ny.BeregningsinfoBPSelectors.antallBarn
-import no.nav.pensjon.etterlatte.maler.barnepensjon.ny.BeregningsinfoBPSelectors.beregningsperioder
-import no.nav.pensjon.etterlatte.maler.barnepensjon.ny.BeregningsinfoBPSelectors.grunnbeloep
-import no.nav.pensjon.etterlatte.maler.barnepensjon.ny.BeregningsinfoBPSelectors.innhold
-import no.nav.pensjon.etterlatte.maler.barnepensjon.ny.BeregningsinfoBPSelectors.trygdetidsperioder
+import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BeregningsinfoBP
+import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BeregningsinfoBPSelectors.aarTrygdetid
+import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BeregningsinfoBPSelectors.antallBarn
+import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BeregningsinfoBPSelectors.beregningsperioder
+import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BeregningsinfoBPSelectors.grunnbeloep
+import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BeregningsinfoBPSelectors.innhold
+import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BeregningsinfoBPSelectors.trygdetidsperioder
 import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
 import no.nav.pensjon.etterlatte.maler.vedlegg.Trygdetidstabell
 

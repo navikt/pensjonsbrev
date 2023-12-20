@@ -1,4 +1,4 @@
-package no.nav.pensjon.etterlatte.maler.barnepensjon
+package no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse
 
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.dsl.createTemplate
@@ -18,8 +18,8 @@ import no.nav.pensjon.etterlatte.maler.UtbetalingsinfoSelectors.beloep
 import no.nav.pensjon.etterlatte.maler.UtbetalingsinfoSelectors.beregningsperioder
 import no.nav.pensjon.etterlatte.maler.UtbetalingsinfoSelectors.soeskenjustering
 import no.nav.pensjon.etterlatte.maler.UtbetalingsinfoSelectors.virkningsdato
-import no.nav.pensjon.etterlatte.maler.barnepensjon.BarnepensjonInnvilgelseDTOSelectors.avdoed
-import no.nav.pensjon.etterlatte.maler.barnepensjon.BarnepensjonInnvilgelseDTOSelectors.utbetalingsinfo
+import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseDTOSelectors.avdoed
+import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseDTOSelectors.utbetalingsinfo
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.Barnepensjon
 import no.nav.pensjon.etterlatte.maler.fraser.common.Vedtak
 
@@ -30,7 +30,7 @@ data class BarnepensjonInnvilgelseDTO(
 )
 
 @TemplateModelHelpers
-object BarnepensjonInnvilgelse : EtterlatteTemplate<BarnepensjonInnvilgelseDTO> {
+object BarnepensjonInnvilgelseMVP : EtterlatteTemplate<BarnepensjonInnvilgelseDTO> {
     override val kode: EtterlatteBrevKode = EtterlatteBrevKode.BARNEPENSJON_INNVILGELSE
 
     override val template = createTemplate(

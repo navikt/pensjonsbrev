@@ -7,8 +7,8 @@ import no.nav.pensjon.etterlatte.maler.Periode
 import no.nav.pensjon.etterlatte.maler.Trygdetidsperiode
 import no.nav.pensjon.etterlatte.maler.Utbetalingsinfo
 import no.nav.pensjon.etterlatte.maler.barnepensjon.endring.EndringHovedmalDTO
-import no.nav.pensjon.etterlatte.maler.barnepensjon.ny.BeregningType
-import no.nav.pensjon.etterlatte.maler.barnepensjon.ny.BeregningsinfoBP
+import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BeregningType
+import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BeregningsinfoBP
 import java.time.LocalDate
 import java.time.Month
 
