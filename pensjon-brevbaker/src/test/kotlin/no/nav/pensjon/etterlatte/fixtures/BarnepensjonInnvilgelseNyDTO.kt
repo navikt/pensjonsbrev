@@ -86,5 +86,5 @@ fun createBarnepensjonInnvilgelseNyDTO() =
         ),
         bosattUtland = true,
         brukerUnder18Aar = true,
-        kunNyttRegelverk = true,
+        kunNyttRegelverk = false,
     )

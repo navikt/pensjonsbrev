@@ -32,7 +32,7 @@ import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BeregningsinfoBP
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BeregningsinfoBPSelectors.innhold
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BeregningsinfoBPSelectors.prorataBroek
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BeregningsinfoBPSelectors.trygdetidsperioder
-import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BeregningsinfoBPSelectors.trygdetidsperioderNasjonal
+import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BeregningsinfoBPSelectors.trygdetidsperioderIAvtaleland
 import no.nav.pensjon.etterlatte.maler.formatBroek
 import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
 import no.nav.pensjon.etterlatte.maler.vedlegg.Trygdetidstabell
@@ -56,7 +56,7 @@ val beregningAvBarnepensjonGammeltOgNyttRegelverk = createAttachment(
     grunnbeloepetGammeltOgNyttRegelverk(grunnbeloep)
     trygdetid(aarTrygdetid, prorataBroek, beregningstype)
     beregnetBarnepensjonGammeltOgNyttRegelverk(aarTrygdetid, prorataBroek, beregningsperioder)
-    perioderMedRegistrertTrygdetid(trygdetidsperioder, trygdetidsperioderNasjonal)
+    perioderMedRegistrertTrygdetid(trygdetidsperioder, trygdetidsperioderIAvtaleland)
 }
 
 @TemplateModelHelpers
@@ -78,7 +78,7 @@ val beregningAvBarnepensjonNyttRegelverk = createAttachment(
     grunnbeloepetNyttRegelverk(grunnbeloep)
     trygdetid(aarTrygdetid, prorataBroek, beregningstype)
     beregnetBarnepensjonNyttRegelverk(aarTrygdetid, prorataBroek, beregningsperioder)
-    perioderMedRegistrertTrygdetid(trygdetidsperioder, trygdetidsperioderNasjonal)
+    perioderMedRegistrertTrygdetid(trygdetidsperioder, trygdetidsperioderIAvtaleland)
 }
 
 private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, BeregningsinfoBP>.grunnbeloepetGammeltOgNyttRegelverk(
@@ -266,7 +266,6 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, B
             )
         }
 
-        // TODO funker dette?
         ifNotNull(prorataBroek) {
             paragraph {
                 textExpr(
@@ -407,7 +406,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, B
 
 private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, BeregningsinfoBP>.perioderMedRegistrertTrygdetid(
     trygdetidsperioder: Expression<List<Trygdetidsperiode>>,
-    trygdetidsperioderKunNasjonal: Expression<List<Trygdetidsperiode>>,
+    trygdetidsperioderIAvtaleland: Expression<Boolean>
 ) {
     title2 {
         text(
@@ -417,8 +416,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, B
         )
     }
 
-    // TODO dette må gjøres noe med
-    ifNotNull(prorataBroek) {
+    showIf(trygdetidsperioderIAvtaleland) {
         paragraph {
             text(
                 Bokmal to "Tabellen viser perioder avdøde har vært medlem av folketrygden og medlemsperioder avdøde har hatt i land som Norge har trygdeavtale med.",
@@ -435,6 +433,6 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, B
                 English to "",
             )
         }
-        includePhrase(Trygdetidstabell(trygdetidsperioderKunNasjonal))
+        includePhrase(Trygdetidstabell(trygdetidsperioder))
     }
 }

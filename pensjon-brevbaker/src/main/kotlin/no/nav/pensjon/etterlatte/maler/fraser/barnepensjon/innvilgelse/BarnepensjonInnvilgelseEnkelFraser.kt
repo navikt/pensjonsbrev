@@ -8,18 +8,18 @@ import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
-import no.nav.pensjon.brev.template.dsl.expression.containsExclusively
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.greaterThan
+import no.nav.pensjon.brev.template.dsl.expression.ifElse
 import no.nav.pensjon.brev.template.dsl.expression.plus
-import no.nav.pensjon.brev.template.dsl.expression.select
 import no.nav.pensjon.brev.template.dsl.expression.size
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import no.nav.pensjon.etterlatte.maler.Beregningsperiode
 import java.time.LocalDate
+import kotlin.text.Typography.paragraph
 
 object BarnepensjonInnvilgelseEnkelFraser {
 
@@ -31,7 +31,8 @@ object BarnepensjonInnvilgelseEnkelFraser {
         val vedtaksdato: Expression<LocalDate>,
         val erEtterbetaling: Expression<Boolean>,
         val beregningsperioder: Expression<List<Beregningsperiode>>,
-        val nyesteUtbetalingsperiode: Expression<LocalDate>
+        val nyesteUtbetalingsperiode: Expression<LocalDate>,
+        val harFlereUlikePerioder: Expression<Boolean>
     ) :
         OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
@@ -47,7 +48,7 @@ object BarnepensjonInnvilgelseEnkelFraser {
                     English to "".expr()
                 )
 
-                showIf(beregningsperioder.size().greaterThan(1)) {
+                showIf(harFlereUlikePerioder) {
                     textExpr(
                         Bokmal to "".expr() + "Du får "+ beloep.format() + " kroner hver måned før skatt fra " + formatertNyesteUtbetalingsperiode + ". Se utbetalingsbeløp for tidligere perioder i vedlegg om etterbetaling.",
                         Nynorsk to "".expr(),
@@ -77,28 +78,17 @@ object BarnepensjonInnvilgelseEnkelFraser {
             }
             paragraph {
                 text(
-                    Bokmal to "Ordinært vedtak. Hvis særbestemmelser/unntak/ikke-avtaleland byttes tekst med " +
-                            "utfall hentet fra tekstbibliotek.",
+                    Bokmal to "Ordinært vedtak. Hvis særbestemmelser/unntak/ikke-avtaleland byttes tekst med utfall hentet fra tekstbibliotek.",
                     Nynorsk to "",
                     English to "",
                 )
             }
-            showIf(erEtterbetaling) {
-                paragraph {
-                    text(
-                        Bokmal to "Vedtaket er gjort etter bestemmelsene om barnepensjon i folketrygdloven §§ 18-2, 18-3, 18-4, 18-5, 22-12 og 22-13.",
-                        Nynorsk to "",
-                        English to "",
-                    )
-                }
-            }.orShow {
-                paragraph {
-                    text(
-                        Bokmal to "Vedtaket er gjort etter bestemmelsene om barnepensjon i folketrygdloven §§ 18-2, 18-3, 18-4, 18-5 og 22-12.",
-                        Nynorsk to "",
-                        English to "",
-                    )
-                }
+            paragraph {
+                textExpr(
+                    Bokmal to "".expr() + "Vedtaket er gjort etter bestemmelsene om barnepensjon i folketrygdloven §§ 18-2, 18-3, 18-4, 18-5" + ifElse(erEtterbetaling, ", 22-12 og 22-13.", " og 22-12."),
+                    Nynorsk to "".expr(),
+                    English to "".expr(),
+                )
             }
         }
     }

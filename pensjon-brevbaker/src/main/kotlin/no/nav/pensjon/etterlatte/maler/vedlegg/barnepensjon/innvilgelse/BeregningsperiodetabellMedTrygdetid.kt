@@ -6,7 +6,9 @@ import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
+import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
+import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.etterlatte.maler.Beregningsperiode
@@ -59,23 +61,23 @@ data class BeregningsperiodetabellMedTrygdetid(
                         cell { includePhrase(PeriodeITabell(it.datoFOM, it.datoTOM)) }
                         cell {
                             textExpr(
-                                Language.Bokmal to it.grunnbeloep.format(),
-                                Language.Nynorsk to it.grunnbeloep.format(),
-                                Language.English to it.grunnbeloep.format(),
+                                Language.Bokmal to it.grunnbeloep.format() + " kr",
+                                Language.Nynorsk to it.grunnbeloep.format() + " kr",
+                                Language.English to "NOK ".expr() + it.grunnbeloep.format(),
                             )
                         }
                         cell {
                             textExpr(
-                                Language.Bokmal to aarTrygdetid.format(),
-                                Language.Nynorsk to aarTrygdetid.format(),
-                                Language.English to aarTrygdetid.format(),
+                                Language.Bokmal to aarTrygdetid.format() + " år",
+                                Language.Nynorsk to aarTrygdetid.format() + " år",
+                                Language.English to aarTrygdetid.format() + " years",
                             )
                         }
                         cell {
                             textExpr(
-                                Language.Bokmal to it.utbetaltBeloep.format(),
-                                Language.Nynorsk to it.utbetaltBeloep.format(),
-                                Language.English to it.utbetaltBeloep.format(),
+                                Language.Bokmal to it.utbetaltBeloep.format() + " kr",
+                                Language.Nynorsk to it.utbetaltBeloep.format() + " kr",
+                                Language.English to "NOK ".expr() + it.utbetaltBeloep.format(),
                             )
                         }
                     }

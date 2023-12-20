@@ -37,13 +37,11 @@ object BarnepensjonInnvilgelseFraser {
             }
             paragraph {
                 text(
-                    Language.Bokmal to "Har du rett til etterbetaling, vil du vanligvis få dette i løpet av tre uker.",
+                    Language.Bokmal to "Har du rett til etterbetaling, vil du vanligvis få dette i løpet av tre uker. ",
                     Language.Nynorsk to "",
                     Language.English to "",
                 )
-            }
-            ifNotNull(etterbetalingDTO) {
-                paragraph {
+                ifNotNull(etterbetalingDTO) {
                     text(
                         Language.Bokmal to "Du finner mer informasjon om etterbetaling i vedlegget «Etterbetaling av barnepensjon».",
                         Language.Nynorsk to "Du kan lese meir om etterbetaling i vedlegget «Etterbetaling av barnepensjon».",
