@@ -14,8 +14,6 @@ import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.etterlatte.maler.EtterbetalingDTOSelectors.etterbetalingsperioder
 import no.nav.pensjon.etterlatte.maler.EtterbetalingDTOSelectors.fraDato
 import no.nav.pensjon.etterlatte.maler.EtterbetalingDTOSelectors.tilDato
-import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.EtterbetalingMedTrygdetidSelectors.aarTrygdetid
-import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.EtterbetalingMedTrygdetidSelectors.etterbetaling
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
 
 @TemplateModelHelpers
@@ -29,11 +27,11 @@ val etterbetalingAvBarnepensjon = createAttachment(
 ) {
     paragraph {
         textExpr(
-            Bokmal to "Du får etterbetalt stønad fra ".expr() + etterbetaling.fraDato.format() + " til " + etterbetaling.tilDato.format() +
+            Bokmal to "Du får etterbetalt stønad fra ".expr() + fraDato.format() + " til " + tilDato.format() +
                     ". Vanligvis vil du få denne etterbetalingen i løpet av tre uker.",
-            Nynorsk to "Du får etterbetalt stønad frå ".expr() + etterbetaling.fraDato.format() + " til " + etterbetaling.tilDato.format() +
+            Nynorsk to "Du får etterbetalt stønad frå ".expr() + fraDato.format() + " til " + tilDato.format() +
                     ". Vanlegvis får du denne etterbetalinga i løpet av tre veker.   ".expr(),
-            English to "You will receive the back payment for your benefits for from ".expr() + etterbetaling.fraDato.format() + " to " + etterbetaling.tilDato.format() +
+            English to "You will receive the back payment for your benefits for from ".expr() + fraDato.format() + " to " + tilDato.format() +
                     "You will usually receive this back payment within three weeks.",
         )
     }
@@ -86,5 +84,5 @@ val etterbetalingAvBarnepensjon = createAttachment(
             English to "",
         )
     }
-    includePhrase(BeregningsperiodetabellMedTrygdetid(etterbetaling.etterbetalingsperioder, aarTrygdetid))
+    includePhrase(Beregningsperiodetabell(etterbetalingsperioder))
 }

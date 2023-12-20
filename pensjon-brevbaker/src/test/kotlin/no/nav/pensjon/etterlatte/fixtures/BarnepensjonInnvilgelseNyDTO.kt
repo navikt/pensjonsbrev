@@ -8,7 +8,7 @@ import no.nav.pensjon.etterlatte.maler.Periode
 import no.nav.pensjon.etterlatte.maler.Trygdetidsperiode
 import no.nav.pensjon.etterlatte.maler.Utbetalingsinfo
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseNyDTO
-import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BeregningType
+import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BeregningsMetode
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BeregningsinfoBP
 import java.time.LocalDate
 import java.time.Month
@@ -82,7 +82,8 @@ fun createBarnepensjonInnvilgelseNyDTO() =
                     opptjeningsperiode = Periode(2, 0, 0),
                 )
             ),
-            beregningstype = BeregningType.NASJONAL
+            beregningsMetodeIGrunnlag = BeregningsMetode.NASJONAL,
+            beregningsMetodeAnvendt = BeregningsMetode.NASJONAL
         ),
         bosattUtland = true,
         brukerUnder18Aar = true,

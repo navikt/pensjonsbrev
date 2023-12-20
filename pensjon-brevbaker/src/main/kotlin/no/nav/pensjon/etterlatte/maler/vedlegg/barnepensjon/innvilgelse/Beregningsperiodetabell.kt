@@ -7,7 +7,6 @@ import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.expr
-import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
@@ -18,9 +17,8 @@ import no.nav.pensjon.etterlatte.maler.BeregningsperiodeSelectors.grunnbeloep
 import no.nav.pensjon.etterlatte.maler.BeregningsperiodeSelectors.utbetaltBeloep
 import no.nav.pensjon.etterlatte.maler.fraser.common.PeriodeITabell
 
-data class BeregningsperiodetabellMedTrygdetid(
+data class Beregningsperiodetabell(
     val beregningsperioder: Expression<List<Beregningsperiode>>,
-    val aarTrygdetid: Expression<Int>
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         paragraph {
@@ -40,13 +38,6 @@ data class BeregningsperiodetabellMedTrygdetid(
                             Language.English to "Basic amount",
                         )
                     }
-                    column(1) {
-                        text(
-                            Language.Bokmal to "Trygdetid",
-                            Language.Nynorsk to "",
-                            Language.English to "",
-                        )
-                    }
                     column(2) {
                         text(
                             Language.Bokmal to "Utbetaling per måned før skatt",
@@ -64,13 +55,6 @@ data class BeregningsperiodetabellMedTrygdetid(
                                 Language.Bokmal to it.grunnbeloep.format() + " kr",
                                 Language.Nynorsk to it.grunnbeloep.format() + " kr",
                                 Language.English to "NOK ".expr() + it.grunnbeloep.format(),
-                            )
-                        }
-                        cell {
-                            textExpr(
-                                Language.Bokmal to aarTrygdetid.format() + " år",
-                                Language.Nynorsk to aarTrygdetid.format() + " år",
-                                Language.English to aarTrygdetid.format() + " years",
                             )
                         }
                         cell {

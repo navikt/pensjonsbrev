@@ -28,7 +28,6 @@ import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnv
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseNyDTOSelectors.bosattUtland
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseNyDTOSelectors.brukerUnder18Aar
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseNyDTOSelectors.etterbetalingDTO
-import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseNyDTOSelectors.etterbetalingMedTrygdetid
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseNyDTOSelectors.innhold
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseNyDTOSelectors.kunNyttRegelverk
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseNyDTOSelectors.utbetalingsinfo
@@ -52,10 +51,7 @@ data class BarnepensjonInnvilgelseNyDTO(
     val bosattUtland: Boolean,
     val kunNyttRegelverk: Boolean,
     override val innhold: List<Element>,
-) : BrevDTO {
-    val etterbetalingMedTrygdetid: EtterbetalingMedTrygdetid? =
-        etterbetalingDTO?.let { EtterbetalingMedTrygdetid(etterbetalingDTO, beregningsinfo.aarTrygdetid) }
-}
+) : BrevDTO
 
 data class BeregningsinfoBP(
     override val innhold: List<Element>,
@@ -66,14 +62,15 @@ data class BeregningsinfoBP(
     val maanederTrygdetid: Int,
     val trygdetidsperioder: List<Trygdetidsperiode>,
     val prorataBroek: IntBroek?,
-    val beregningstype: BeregningType
+    val beregningsMetodeAnvendt: BeregningsMetode,
+    val beregningsMetodeIGrunnlag: BeregningsMetode
 ) : BrevDTO {
     val trygdetidsperioderIAvtaleland = trygdetidsperioder.any { it.land != "NOR" }
 }
 
 data class EtterbetalingMedTrygdetid(val etterbetaling: EtterbetalingDTO, val aarTrygdetid: Int)
 
-enum class BeregningType {
+enum class BeregningsMetode {
     NASJONAL,
     PRORATA,
     BEST
@@ -122,7 +119,7 @@ object BarnepensjonInnvilgelseNy : EtterlatteTemplate<BarnepensjonInnvilgelseNyD
         // Beregning av barnepensjon nytt regelverk
         includeAttachment(beregningAvBarnepensjonNyttRegelverk, beregningsinfo, kunNyttRegelverk)
 
-        includeAttachmentIfNotNull(etterbetalingAvBarnepensjon, etterbetalingMedTrygdetid)
+        includeAttachmentIfNotNull(etterbetalingAvBarnepensjon, etterbetalingDTO)
 
         // Vedlegg under 18 år
         includeAttachment(informasjonTilDegSomHandlerPaaVegneAvBarnetNasjonal, innhold, brukerUnder18Aar.and(bosattUtland.not()))

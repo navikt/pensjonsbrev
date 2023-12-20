@@ -7,7 +7,7 @@ import no.nav.pensjon.etterlatte.maler.Periode
 import no.nav.pensjon.etterlatte.maler.Trygdetidsperiode
 import no.nav.pensjon.etterlatte.maler.Utbetalingsinfo
 import no.nav.pensjon.etterlatte.maler.barnepensjon.endring.EndringHovedmalDTO
-import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BeregningType
+import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BeregningsMetode
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BeregningsinfoBP
 import java.time.LocalDate
 import java.time.Month
@@ -65,6 +65,7 @@ fun createEndringHovedmalDTO() = EndringHovedmalDTO(
                 opptjeningsperiode = Periode(3, 0, 0),
             )
         ),
-        beregningstype = BeregningType.NASJONAL
+        beregningsMetodeAnvendt = BeregningsMetode.NASJONAL,
+        beregningsMetodeIGrunnlag = BeregningsMetode.NASJONAL
     )
 )
