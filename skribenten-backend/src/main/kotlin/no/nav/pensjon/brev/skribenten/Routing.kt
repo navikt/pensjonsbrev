@@ -26,6 +26,7 @@ import no.nav.pensjon.brev.skribenten.services.PenService
 import no.nav.pensjon.brev.skribenten.services.PensjonPersonDataService
 import no.nav.pensjon.brev.skribenten.services.SafService
 import no.nav.pensjon.brev.skribenten.services.TjenestebussIntegrasjonService
+import no.nav.pensjon.brev.skribenten.services.initDatabase
 import no.nav.pensjon.brev.skribenten.services.respondWithResult
 
 fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config) {
