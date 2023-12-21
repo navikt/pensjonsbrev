@@ -14,6 +14,7 @@ object Constants {
     const val KLAGERETTIGHETER_URL = "$NAV_URL/klagerettigheter"
     const val SKATTETREKK_PENGESTOETTE_URL = "$NAV_URL/skatt-pengestotte"
     const val SKATTETREKK_ETTERBETALING_URL = "$NAV_URL/skatt-etterbetaling"
+    const val SKATTETREKK_KILDESKATT_URL = "$NAV_URL/skattetrekk#kildeskatt"
     const val OMS_REGULERING_URL = "$NAV_URL/omstillingsstønad#regulering"
     const val OMS_ETTEROPPGJOER_URL = "$NAV_URL/omstillingsstønad#etteroppgjør"
     const val OMS_HVORMYE_URL = "$NAV_URL/omstillingsstønad#hvor-mye"

@@ -3,15 +3,15 @@ package no.nav.pensjon.etterlatte
 import no.nav.pensjon.brev.template.LetterTemplate
 import no.nav.pensjon.etterlatte.maler.TomMal
 import no.nav.pensjon.etterlatte.maler.andre.TomMalInformasjonsbrev
-import no.nav.pensjon.etterlatte.maler.barnepensjon.BarnepensjonInnvilgelse
+import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseMVP
 import no.nav.pensjon.etterlatte.maler.barnepensjon.avslag.AvslagFoerstegangsbehandling
 import no.nav.pensjon.etterlatte.maler.barnepensjon.avslag.AvslagFoerstegangsbehandlingEnkel
 import no.nav.pensjon.etterlatte.maler.barnepensjon.endring.Endring
-import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.ny.BarnepensjonInnvilgelseEnkel
+import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseEnkel
 import no.nav.pensjon.etterlatte.maler.barnepensjon.migrering.EnkeltVedtakOmregningNyttRegelverk
 import no.nav.pensjon.etterlatte.maler.barnepensjon.migrering.EnkeltVedtakOmregningNyttRegelverkFerdig
 import no.nav.pensjon.etterlatte.maler.barnepensjon.migrering.ForhaandsvarselOmregningBP
-import no.nav.pensjon.etterlatte.maler.barnepensjon.ny.BarnepensjonInnvilgelseNy
+import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseNy
 import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.AdopsjonRevurdering
 import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.OmgjoeringAvFarskapRevurdering
 import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.OpphoerRevurdering
@@ -33,7 +33,7 @@ val prodAutobrevTemplates: Set<EtterlatteTemplate<*>> =
     setOf(
         AvslagFoerstegangsbehandling,
         AvslagFoerstegangsbehandlingEnkel,
-        BarnepensjonInnvilgelse,
+        BarnepensjonInnvilgelseMVP,
         BarnepensjonInnvilgelseEnkel,
         BarnepensjonInnvilgelseNy,
         OMSInnvilgelseAuto,

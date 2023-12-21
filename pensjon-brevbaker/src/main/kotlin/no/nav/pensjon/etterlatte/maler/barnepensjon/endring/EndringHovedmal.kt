@@ -22,7 +22,7 @@ import no.nav.pensjon.etterlatte.maler.barnepensjon.endring.EndringHovedmalDTOSe
 import no.nav.pensjon.etterlatte.maler.barnepensjon.endring.EndringHovedmalDTOSelectors.etterbetaling
 import no.nav.pensjon.etterlatte.maler.barnepensjon.endring.EndringHovedmalDTOSelectors.innhold
 import no.nav.pensjon.etterlatte.maler.barnepensjon.endring.EndringHovedmalDTOSelectors.utbetalingsinfo
-import no.nav.pensjon.etterlatte.maler.barnepensjon.ny.BeregningsinfoBP
+import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BeregningsinfoBP
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.BarnepensjonInnvilgelseFraser
 import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
 import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.beregningAvBarnepensjon
@@ -89,7 +89,7 @@ object Endring : EtterlatteTemplate<EndringHovedmalDTO>, Hovedmal {
             )
             includePhrase(BarnepensjonInnvilgelseFraser.MeldFraOmEndringer)
             includePhrase(BarnepensjonInnvilgelseFraser.DuHarRettTilAaKlage)
-            includePhrase(BarnepensjonInnvilgelseFraser.HarDuSpoersmaal)
+            includePhrase(BarnepensjonInnvilgelseFraser.HarDuSpoersmaal(true.expr(), false.expr()))
         }
         includeAttachment(beregningAvBarnepensjon, beregningsinfo)
         includeAttachment(informasjonTilDegSomHandlerPaaVegneAvBarnet, innhold)
