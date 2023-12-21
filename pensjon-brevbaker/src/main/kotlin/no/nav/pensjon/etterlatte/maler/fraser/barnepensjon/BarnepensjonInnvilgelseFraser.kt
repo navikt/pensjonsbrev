@@ -18,7 +18,7 @@ object BarnepensjonInnvilgelseFraser {
 
     data class UtbetalingAvBarnepensjon(
         val beregningsperioder: Expression<List<Beregningsperiode>>,
-        val etterbetalingDTO: Expression<EtterbetalingDTO?>,
+        val etterbetaling: Expression<EtterbetalingDTO?>,
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             title2 {
@@ -41,7 +41,7 @@ object BarnepensjonInnvilgelseFraser {
                     Language.Nynorsk to "",
                     Language.English to "",
                 )
-                ifNotNull(etterbetalingDTO) {
+                ifNotNull(etterbetaling) {
                     text(
                         Language.Bokmal to "Du finner mer informasjon om etterbetaling i vedlegget «Etterbetaling av barnepensjon».",
                         Language.Nynorsk to "Du kan lese meir om etterbetaling i vedlegget «Etterbetaling av barnepensjon».",
