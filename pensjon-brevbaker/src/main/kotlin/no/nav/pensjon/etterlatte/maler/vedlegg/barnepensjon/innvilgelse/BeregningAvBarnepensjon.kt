@@ -228,7 +228,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, B
         }
         paragraph {
             textExpr(
-                Bokmal to "".expr() + "Pensjonen din er beregnet etter bestemmelsene i EØS-avtalen fordi vilkårene for rett til pensjon er oppfylt ved sammenlegging av avdødes opptjeningstid i Norge og andre EØS- eller avtaleland. Trygdetiden er beregnet etter avdødes samlede opptjeningstid i disse landene. For å beregne norsk del av denne trygdetiden ganges avdødes samlede opptjeningstid med et forholdstall, som angir forholdet mellom faktisk opptjeningstid i Norge og samlet faktisk opptjeningstid i Norge og andre EØS- eller avtaleland. Avdødes samlede trygdetid er beregnet til " + aarTrygdetid.format() + " år, som ganges med " + prorataBroek.formatBroek() + ".",
+                Bokmal to "".expr() + "Pensjonen din er beregnet etter bestemmelsene i EØS-avtalen fordi vilkårene for rett til pensjon er oppfylt ved sammenlegging av avdødes opptjeningstid i Norge og andre EØS- eller avtaleland. Trygdetiden er beregnet etter avdødes samlede opptjeningstid i disse landene. For å beregne norsk del av denne trygdetiden ganges avdødes samlede opptjeningstid med et forholdstall, som angir forholdet mellom faktisk opptjeningstid i Norge og samlet faktisk opptjeningstid i Norge og andre EØS- eller avtaleland. Avdødes samlede trygdetid er beregnet til " + aarTrygdetid.format() + " år, og forholdstallet til " + prorataBroek.formatBroek() + ".",
                 Nynorsk to "".expr(),
                 English to "".expr(),
             )
@@ -237,7 +237,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, B
     showIf(beregningsMetodeFraGrunnlag.equalTo(BeregningsMetode.BEST)) {
         paragraph {
             text(
-                Bokmal to "For å få full pensjon må avdødes trygdetid være beregnet til minst 40 år. Trygdetid over 40 år blir ikke tatt med i beregningen. Når grunnlag for pensjon er oppfylt etter nasjonale regler, og avdøde også har opptjening av medlemsperioder i land som Norge har trygdeavtale med, skal trygdetid gis utfra det som gir den beste beregningen av kun nasjonal opptjening og sammenlagt opptjening i Norge og avtaleland.",
+                Bokmal to "For å få full pensjon må avdødes trygdetid være beregnet til minst 40 år. Trygdetid over 40 år blir ikke tatt med i beregningen. Når grunnlag for pensjon er oppfylt etter nasjonale regler, og avdøde også har opptjening av medlemsperioder i land som Norge har trygdeavtale med, skal trygdetid gis etter den beste beregningen av kun nasjonal opptjening og av sammenlagt opptjening i Norge og avtaleland.",
                 Nynorsk to "",
                 English to "",
             )
@@ -260,7 +260,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, B
         ifNotNull(prorataBroek) {
             paragraph {
                 textExpr(
-                    Bokmal to "".expr() + "Avdødes samlede trygdetid er beregnet til " + aarTrygdetid.format() + " år, som ganges med " + prorataBroek.formatBroek() + ".",
+                    Bokmal to "".expr() + "Avdødes samlede trygdetid fra avtaleland er beregnet til " + aarTrygdetid.format() + " år, og forholdstallet til " + prorataBroek.formatBroek() + ". Dette gir den beste beregningen av trygdetid.",
                     Nynorsk to "".expr(),
                     English to "".expr(),
                 )
@@ -268,7 +268,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, B
         }.orShow {
             paragraph {
                 textExpr(
-                    Bokmal to "".expr() + "Avdødes samlede trygdetid er beregnet til " + aarTrygdetid.format() + " år.",
+                    Bokmal to "".expr() + "Avdødes samlede trygdetid er beregnet til " + aarTrygdetid.format() + " år ved nasjonal opptjening. Dette gir den beste beregningen av trygdetid.",
                     Nynorsk to "".expr(),
                     English to "".expr(),
                 )
@@ -294,7 +294,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, B
     ifNotNull(prorataBroek) {
         paragraph {
             textExpr(
-                Bokmal to "".expr() + "Barnepensjonen per år er beregnet til 1 G ganget med " + aarTrygdetid.format() + "/40 år trygdetid, ganget med " + prorataBroek.formatBroek() + ". Beløpet fordeles på 12 utbetalinger i året.",
+                Bokmal to "".expr() + "Barnepensjonen per år er beregnet til 1 G ganget med " + aarTrygdetid.format() + "/40 år trygdetid, ganget med forholdstallet " + prorataBroek.formatBroek() + ". Beløpet fordeles på 12 utbetalinger i året.",
                 Nynorsk to "".expr(),
                 English to "".expr(),
             )
@@ -335,7 +335,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, B
                 )
                 newline()
                 textExpr(
-                    Bokmal to "".expr() + "Barnepensjonen per år er beregnet ut fra at det er " + antallBarn.format() + " søsken som oppdras sammen, med 0,4 G til første barn, og 0,25 G til påfølgende barn. Beløpet fordeles likt på hvert barn, og blir ganget med " + aarTrygdetid.format() + "/40 trygdetid ganget med prorata brøk " + prorataBroek.formatBroek() + ". Beløpet fordeles på 12 utbetalinger i året.",
+                    Bokmal to "".expr() + "Barnepensjonen per år er beregnet ut fra at det er " + antallBarn.format() + " søsken som oppdras sammen, med 0,4 G til første barn, og 0,25 G til påfølgende barn. Beløpet fordeles likt på hvert barn, og blir ganget med " + aarTrygdetid.format() + "/40 trygdetid, ganget med forholdstallet " + prorataBroek.formatBroek() + ". Beløpet fordeles på 12 utbetalinger i året.",
                     Nynorsk to "".expr(),
                     English to "".expr(),
                 )
@@ -349,7 +349,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, B
                 )
                 newline()
                 textExpr(
-                    Bokmal to "".expr() + "Barnepensjonen per år er beregnet til 1 G ganget med trygdetid på " + aarTrygdetid.format() + "/40 år ganget med prorata brøk " + prorataBroek.formatBroek() + ". Beløpet fordeles på 12 utbetalinger i året.",
+                    Bokmal to "".expr() + "Barnepensjonen per år er beregnet til 1 G ganget med " + aarTrygdetid.format() + "/40 trygdetid, ganget med forholdstallet " + prorataBroek.formatBroek() + ". Beløpet fordeles på 12 utbetalinger i året.",
                     Nynorsk to "".expr(),
                     English to "".expr(),
                 )
@@ -364,7 +364,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, B
                 )
                 newline()
                 textExpr(
-                    Bokmal to "".expr() + "Barnepensjonen per år er beregnet til 0,4 G ganget med trygdetid på " + aarTrygdetid.format() + "/40 år ganget med prorata brøk " + prorataBroek.formatBroek() + ". Beløpet fordeles på 12 utbetalinger i året.",
+                    Bokmal to "".expr() + "Barnepensjonen per år er beregnet til 0,4 G ganget med " + aarTrygdetid.format() + "/40 trygdetid, ganget med forholdstallet " + prorataBroek.formatBroek() + ". Beløpet fordeles på 12 utbetalinger i året.",
                     Nynorsk to "".expr(),
                     English to "".expr(),
                 )
@@ -378,7 +378,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, B
                 )
                 newline()
                 textExpr(
-                    Bokmal to "".expr() + "Barnepensjonen per år er beregnet til 1 G ganget med trygdetid på " + aarTrygdetid.format() + "/40 år ganget med prorata brøk " + prorataBroek.formatBroek() + ". Beløpet fordeles på 12 utbetalinger i året.",
+                    Bokmal to "".expr() + "Barnepensjonen per år er beregnet til 1 G ganget med " + aarTrygdetid.format() + "/40 trygdetid, ganget med forholdstallet " + prorataBroek.formatBroek() + ". Beløpet fordeles på 12 utbetalinger i året.",
                     Nynorsk to "".expr(),
                     English to "".expr(),
                 )
