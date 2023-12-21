@@ -61,7 +61,7 @@ object EnkeltVedtakOmregningNyttRegelverk : EtterlatteTemplate<BarnepensjonOmreg
         outline {
             paragraph {
                 textExpr(
-                    Language.Bokmal to "Stortinget har vedtatt nye regler for barnepensjon. Du får høyere barnepensjon. Du har ".expr()
+                    Language.Bokmal to "Stortinget har vedtatt nye regler for barnepensjon. Du får høyere barnepensjon. Du har hatt ".expr()
                             + utbetaltFoerReform.format() + " kroner per måned i pensjon til 31. desember 2023. Du får " + utbetaltEtterReform.format()
                             + " kroner før skatt per måned fra 1. januar 2024.",
                     Language.Nynorsk to "Stortinget har vedteke nye reglar for barnepensjon. Du får høgare barnepensjon. Du har ".expr() +
@@ -257,7 +257,7 @@ object EnkeltVedtakOmregningNyttRegelverk : EtterlatteTemplate<BarnepensjonOmreg
             }
             paragraph {
                 text(
-                    Language.Bokmal to "Hvis du mener vedtaket er feil, kan du klage innen seks uker fra 1. januar 2024. Klagen skal være skriftlig. Du finner skjema og informasjon på ${Constants.KLAGE_URL}.",
+                    Language.Bokmal to "Hvis du mener vedtaket er feil, kan du klage innen åtte uker fra du mottar dette brevet. Klagen skal være skriftlig. Du finner skjema og informasjon på ${Constants.KLAGE_URL}.",
                     Language.Nynorsk to "Dersom du meiner at vedtaket er feil, kan du klage innan seks veker frå 1. januar 2024. Klaga må vere skriftleg. Du finn skjema og informasjon på ${Constants.KLAGE_URL}.",
                     Language.English to "If you believe the decision is incorrect, you can appeal within six weeks after 1 January 2024. The appeal must be in writing. You can find the form and information online: ${Constants.Engelsk.KLAGE_URL}."
                 )
