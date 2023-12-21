@@ -19,14 +19,14 @@ class DokumentproduksjonService(config: Config, securityHandler: STSSercuritySOA
 
     private val dokumentProduksjonClient = DokumentProduksjonClient(config, securityHandler, callIdHandler).client()
 
-    fun hentSamhandler(requestDto: RedigerDokumentRequestDto): RedigerDokumentResponseDto {
+    fun redigerDokument(requestDto: RedigerDokumentRequestDto): RedigerDokumentResponseDto {
         try {
             val response =  dokumentProduksjonClient.redigerDokument(WSRedigerDokumentRequest().apply {
                 journalpostId = requestDto.journalpostId
                 dokumentId = requestDto.dokumentId
             })
             logger.info("Henter metaforce URI for dokumentId: ${requestDto.journalpostId} i journalpostId: ${requestDto.dokumentId}")
-            return  RedigerDokumentResponseDto.Dokument(response.metaforceURI)
+            return  RedigerDokumentResponseDto.Success(response.metaforceURI)
         } catch (ex: RedigerDokumentPessimistiskLaasing) {
             logger.error("En feil oppstod under henting av metaforce URI for dokumentId: ${requestDto.journalpostId} i journalpostId: ${requestDto.dokumentId}")
             return RedigerDokumentResponseDto.Failure(RedigerDokumentResponseDto.Failure.FailureType.LASING, ex)

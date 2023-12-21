@@ -44,7 +44,7 @@ class ArkivTjenestebussService(config: Config, securityHandler: STSSercuritySOAP
                 }
             })
             logger.info("Opprettet brev med journalpostId: ${response!!.journalpostId} i sakId: ${bestillBrevRequestDto.sakskontekstDto.saksid} ")
-            return BestillBrevResponseDto.Journalpost(response.journalpostId)
+            return BestillBrevResponseDto.Success(response.journalpostId)
         } catch (ex: BestillBrevOpprettelseJournalpostFeilet) {
             logger.error("En feil oppstod under opprettelse av journalpost: ${maskerFnr(ex.faultInfo.errorMessage)}")
             return Failure(FailureType.OPPRETTE_JOURNALPOST, ex.faultInfo)
@@ -62,7 +62,7 @@ class ArkivTjenestebussService(config: Config, securityHandler: STSSercuritySOAP
 }
 
 sealed class BestillBrevResponseDto {
-    data class Journalpost(val journalpostId: String) : BestillBrevResponseDto()
+    data class Success(val journalpostId: String) : BestillBrevResponseDto()
     data class Failure(val failureType: FailureType,
         val message: String,
         val source: String,

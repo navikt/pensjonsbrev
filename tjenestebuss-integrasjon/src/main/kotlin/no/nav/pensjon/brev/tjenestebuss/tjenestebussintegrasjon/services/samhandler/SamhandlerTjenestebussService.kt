@@ -26,7 +26,7 @@ class SamhandlerTjenestebussService(config: Config, securityHandler: STSSercurit
                 hentDetaljert = requestDto.hentDetaljert
             })
             logger.info("Henter samhandler for TSS id: ${requestDto.idTSSEkstern}")
-            return  HentSamhandlerResponseDto.Samhandler(
+            return  HentSamhandlerResponseDto.Success(
                 navn = response.navn,
                 samhandlerType = response.samhandlerType,
                 offentligId = response.offentligId,
@@ -56,8 +56,8 @@ class SamhandlerTjenestebussService(config: Config, securityHandler: STSSercurit
                 it.idType) }
             )
         } catch (ex: FinnSamhandlerFaultPenGeneriskMsg) {
-            logger.error("En feil oppstod under kall til finnSamhandler med navn: ${requestDto.navn} , samhandlerType: ${requestDto.samhandlerType}")
-            return FinnSamhandlerResponseDto.Failure(ex.faultInfo)
+            logger.error("En feil oppstod under kall til finnSamhandler med navn: ${requestDto.navn} , samhandlerType: ${requestDto.samhandlerType}, cause: ${ex.faultInfo.rootCause} ")
+            return FinnSamhandlerResponseDto.Failure(ex.faultInfo.errorMessage, ex.faultInfo.errorType)
         }
     }
 }

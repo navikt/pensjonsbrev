@@ -15,14 +15,13 @@ import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.Metrics.configureMetrics
-import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.auth.JwtConfig
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.auth.requireAzureADConfig
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.auth.tjenestebusJwt
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.arkiv.ArkivTjenestebussService
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.arkiv.BestillBrevRequestDto
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.arkiv.BestillBrevResponseDto
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.arkiv.BestillBrevResponseDto.Failure.FailureType.MANGLER_OBLIGATORISK_INPUT
-import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.arkiv.BestillBrevResponseDto.Journalpost
+import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.arkiv.BestillBrevResponseDto.Success
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.dokumentsproduksjon.DokumentproduksjonService
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.dokumentsproduksjon.dto.RedigerDokumentResponseDto
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.samhandler.SamhandlerTjenestebussService
@@ -116,7 +115,7 @@ fun Application.tjenestebussIntegrationApi(config: Config) {
                         }
                     }
 
-                    is HentSamhandlerResponseDto.Samhandler -> call.respond(HttpStatusCode.OK, samhandlerResponse)
+                    is HentSamhandlerResponseDto.Success -> call.respond(HttpStatusCode.OK, samhandlerResponse)
                 }
             }
             post("/finnSamhandler") {
@@ -138,7 +137,7 @@ fun Application.tjenestebussIntegrationApi(config: Config) {
                 val requestDto = call.receive<BestillBrevRequestDto>()
 
                 when (val arkivResponse = withCallId(arkivTjenestebussService) { bestillBrev(requestDto) }) {
-                    is Journalpost -> call.respond(HttpStatusCode.OK, arkivResponse)
+                    is Success -> call.respond(HttpStatusCode.OK, arkivResponse)
                     is BestillBrevResponseDto.Failure -> {
                         if (arkivResponse.failureType == MANGLER_OBLIGATORISK_INPUT) {
                             call.respond(HttpStatusCode.BadRequest, arkivResponse)
@@ -148,21 +147,43 @@ fun Application.tjenestebussIntegrationApi(config: Config) {
                     }
                 }
             }
-        }
+            post("/redigerbrev") {
+                val requestDto = call.receive<RedigerDokumentRequestDto>()
 
-        post("/bestillbrev") {
-            val requestDto = call.receive<RedigerDokumentRequestDto>()
+                when (val dokumentResponse = withCallId(dokumentProduksjonService) { redigerDokument(requestDto) }) {
+                    is RedigerDokumentResponseDto.Success -> call.respond(HttpStatusCode.OK, dokumentResponse)
+                    is RedigerDokumentResponseDto.Failure -> {
+                        when (dokumentResponse.failureType) {
+                            RedigerDokumentResponseDto.Failure.FailureType.LASING -> call.respond(
+                                HttpStatusCode.InternalServerError,
+                                dokumentResponse
+                            )
 
-            when (val dokumentResponse = withCallId(dokumentProduksjonService) { hentSamhandler(requestDto) }) {
-                is RedigerDokumentResponseDto.Dokument -> call.respond(HttpStatusCode.OK, dokumentResponse)
-                is RedigerDokumentResponseDto.Failure -> {
-                    when(dokumentResponse.failureType){
-                        RedigerDokumentResponseDto.Failure.FailureType.LASING -> call.respond(HttpStatusCode.InternalServerError, dokumentResponse)
-                        RedigerDokumentResponseDto.Failure.FailureType.IKKE_TILLATT -> call.respond(HttpStatusCode.Forbidden, dokumentResponse)
-                        RedigerDokumentResponseDto.Failure.FailureType.VALIDERING_FEILET -> call.respond(HttpStatusCode.BadRequest, dokumentResponse)
-                        RedigerDokumentResponseDto.Failure.FailureType.IKKE_FUNNET -> call.respond(HttpStatusCode.NotFound, dokumentResponse)
-                        RedigerDokumentResponseDto.Failure.FailureType.IKKE_TILGANG -> call.respond(HttpStatusCode.Unauthorized, dokumentResponse)
-                        RedigerDokumentResponseDto.Failure.FailureType.LUKKET -> call.respond(HttpStatusCode.Locked, dokumentResponse)
+                            RedigerDokumentResponseDto.Failure.FailureType.IKKE_TILLATT -> call.respond(
+                                HttpStatusCode.Forbidden,
+                                dokumentResponse
+                            )
+
+                            RedigerDokumentResponseDto.Failure.FailureType.VALIDERING_FEILET -> call.respond(
+                                HttpStatusCode.BadRequest,
+                                dokumentResponse
+                            )
+
+                            RedigerDokumentResponseDto.Failure.FailureType.IKKE_FUNNET -> call.respond(
+                                HttpStatusCode.NotFound,
+                                dokumentResponse
+                            )
+
+                            RedigerDokumentResponseDto.Failure.FailureType.IKKE_TILGANG -> call.respond(
+                                HttpStatusCode.Unauthorized,
+                                dokumentResponse
+                            )
+
+                            RedigerDokumentResponseDto.Failure.FailureType.LUKKET -> call.respond(
+                                HttpStatusCode.Locked,
+                                dokumentResponse
+                            )
+                        }
                     }
                 }
             }
