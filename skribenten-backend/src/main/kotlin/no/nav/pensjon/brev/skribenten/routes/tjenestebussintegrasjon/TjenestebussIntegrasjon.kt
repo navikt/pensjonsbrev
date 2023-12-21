@@ -28,9 +28,7 @@ fun Route.tjenestebussIntegrasjonRoute(tjenestebussIntegrasjonService: Tjenesteb
     }
     post("/hentSamhandler") {
         val requestDto = call.receive<HentSamhandlerRequestDto>()
-
-        val response =
-            tjenestebussIntegrasjonService.hentSamhandler(call, requestDto.idTSSEkstern, requestDto.hentDetaljert)
+        val response = tjenestebussIntegrasjonService.hentSamhandler(call, requestDto.idTSSEkstern, requestDto.hentDetaljert)
 
         when (response) {
             is ServiceResult.AuthorizationError -> call.respond(HttpStatusCode.Unauthorized, response)
@@ -39,7 +37,7 @@ fun Route.tjenestebussIntegrasjonRoute(tjenestebussIntegrasjonService: Tjenesteb
         }
     }
 
-    post("/bestillbrev") {
+    post("/bestillbrevExtream") {
         val requestDto = call.receive<BestillBrevRequestDto>()
         when (val response = tjenestebussIntegrasjonService.bestillBrev(call, requestDto)) {
             is ServiceResult.AuthorizationError -> call.respond(HttpStatusCode.Unauthorized, response)
@@ -48,7 +46,7 @@ fun Route.tjenestebussIntegrasjonRoute(tjenestebussIntegrasjonService: Tjenesteb
         }
     }
 
-    post("/redigerbrev") {
+    post("/redigerbrevDoksys") {
         val requestDto = call.receive<RedigerDokumentRequestDto>()
         when (val response = tjenestebussIntegrasjonService.redigerDokument(call, requestDto.journalpostId, requestDto.dokumentId)) {
             is ServiceResult.AuthorizationError -> call.respond(HttpStatusCode.Unauthorized, response)

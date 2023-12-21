@@ -37,8 +37,8 @@ class TjenestebussIntegrasjonService(config: Config, authService: AzureADService
         call: ApplicationCall,
         samhandlerType: SamhandlerTypeCode,
         navn: String
-    ): ServiceResult<FinnSamhandlerResponseDto.Success, FinnSamhandlerResponseDto.Failure> {
-        return tjenestebussIntegrasjonClient.post(call, "/finnSamhandler") {
+    ): ServiceResult<FinnSamhandlerResponseDto.Success, FinnSamhandlerResponseDto.Failure> =
+        tjenestebussIntegrasjonClient.post(call, "/finnSamhandler") {
             contentType(ContentType.Application.Json)
             accept(ContentType.Application.Json)
             setBody(
@@ -57,16 +57,14 @@ class TjenestebussIntegrasjonService(config: Config, authService: AzureADService
                         idType = s.idType
                     )
                 })
-            }
-            .catch { error -> FinnSamhandlerResponseDto.Failure(message = error.message, type = error.type) }
-    }
+            }.catch { error -> FinnSamhandlerResponseDto.Failure(message = error.message, type = error.type) }
 
     suspend fun hentSamhandler(
         call: ApplicationCall,
         idTSSEkstern: String,
         hentDetaljert: Boolean,
-    ): ServiceResult<HentSamhandlerResponseDto.Success, HentSamhandlerResponseDto.Failure> {
-        return tjenestebussIntegrasjonClient.post(call, "/hentSamhandler") {
+    ): ServiceResult<HentSamhandlerResponseDto.Success, HentSamhandlerResponseDto.Failure> =
+        tjenestebussIntegrasjonClient.post(call, "/hentSamhandler") {
             Domain.HentSamhandlerRequestDto(
                 idTSSEkstern = idTSSEkstern,
                 hentDetaljert = hentDetaljert
@@ -84,13 +82,12 @@ class TjenestebussIntegrasjonService(config: Config, authService: AzureADService
             }.catch { error ->
                 HentSamhandlerResponseDto.Failure(message = error.message, type = error.type)
             }
-    }
 
     suspend fun bestillBrev(
         call: ApplicationCall,
         bestillBrevRequestDto: BestillBrevRequestDto
-    ): ServiceResult<BestillBrevResponseDto.Success, BestillBrevResponseDto.Failure> {
-        return tjenestebussIntegrasjonClient.post(call, "/bestillbrev") {
+    ): ServiceResult<BestillBrevResponseDto.Success, BestillBrevResponseDto.Failure> =
+        tjenestebussIntegrasjonClient.post(call, "/bestillbrev") {
             Domain.BestillBrevRequestDto(
                 brevKode = bestillBrevRequestDto.brevKode,
                 brevGruppe = bestillBrevRequestDto.brevGruppe,
@@ -119,14 +116,13 @@ class TjenestebussIntegrasjonService(config: Config, authService: AzureADService
             }.catch { error ->
                 BestillBrevResponseDto.Failure(message = error.message, type = error.type)
             }
-    }
 
     suspend fun redigerDokument(
         call: ApplicationCall,
         journalpostId: String,
         dokumentId: String,
-    ): ServiceResult<RedigerDokumentResponseDto.Success, RedigerDokumentResponseDto.Failure> {
-        return tjenestebussIntegrasjonClient.post(call, "/hentSamhandler") {
+    ): ServiceResult<RedigerDokumentResponseDto.Success, RedigerDokumentResponseDto.Failure> =
+        tjenestebussIntegrasjonClient.post(call, "/hentSamhandler") {
             Domain.RedigerDokumentRequestDto(journalpostId = journalpostId, dokumentId = dokumentId)
         }.toServiceResult<Domain.RedigerDokumentResponseDto.Success, Domain.RedigerDokumentResponseDto.Failure>()
             .map {
@@ -136,7 +132,6 @@ class TjenestebussIntegrasjonService(config: Config, authService: AzureADService
             }.catch { error ->
                 RedigerDokumentResponseDto.Failure(message = error.message, type = error.type)
             }
-    }
 
 
     private object Domain {

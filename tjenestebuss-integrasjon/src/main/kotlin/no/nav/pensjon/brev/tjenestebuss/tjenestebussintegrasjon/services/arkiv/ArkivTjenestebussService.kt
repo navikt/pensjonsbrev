@@ -20,30 +20,30 @@ class ArkivTjenestebussService(config: Config, securityHandler: STSSercuritySOAP
 
     private val arkivClient = ArkivClient(config, securityHandler, callIdHandler).client()
 
-    fun bestillBrev(bestillBrevRequestDto: BestillBrevRequestDto): BestillBrevResponseDto {
+    fun bestillBrev(bestillBrevExtreamRequestDto: BestillBrevExtreamRequestDto): BestillBrevResponseDto {
         try {
             val response = arkivClient.bestillBrev(BestillBrevRequest().apply {
-                brevKode = bestillBrevRequestDto.brevKode
-                brevGruppe = bestillBrevRequestDto.brevGruppe
+                brevKode = bestillBrevExtreamRequestDto.brevKode
+                brevGruppe = bestillBrevExtreamRequestDto.brevGruppe
                 redigerbart =
-                    JAXBElement(QName("redigerbart"), Boolean::class.java, bestillBrevRequestDto.isRedigerbart)
-                sprakKode = bestillBrevRequestDto.sprakkode
+                    JAXBElement(QName("redigerbart"), Boolean::class.java, bestillBrevExtreamRequestDto.isRedigerbart)
+                sprakKode = bestillBrevExtreamRequestDto.sprakkode
                 sakskontekst = Sakskontekst().apply {
-                    saksbehandlernavn = bestillBrevRequestDto.sakskontekstDto.saksbehandlernavn
-                    saksbehandlerId = bestillBrevRequestDto.sakskontekstDto.saksbehandlerId
-                    journalenhet = bestillBrevRequestDto.sakskontekstDto.journalenhet
-                    gjelder = bestillBrevRequestDto.sakskontekstDto.gjelder
-                    dokumenttype = bestillBrevRequestDto.sakskontekstDto.dokumenttype
-                    dokumentdato = bestillBrevRequestDto.sakskontekstDto.dokumentdato
-                    fagsystem = bestillBrevRequestDto.sakskontekstDto.fagsystem
-                    fagomradeKode = bestillBrevRequestDto.sakskontekstDto.fagomradekode
-                    innhold = bestillBrevRequestDto.sakskontekstDto.innhold
-                    kategori = bestillBrevRequestDto.sakskontekstDto.kategori
-                    saksid = bestillBrevRequestDto.sakskontekstDto.saksid
-                    sensitivitetsgrad = bestillBrevRequestDto.sakskontekstDto.sensitivitet
+                    saksbehandlernavn = bestillBrevExtreamRequestDto.sakskontekstDto.saksbehandlernavn
+                    saksbehandlerId = bestillBrevExtreamRequestDto.sakskontekstDto.saksbehandlerId
+                    journalenhet = bestillBrevExtreamRequestDto.sakskontekstDto.journalenhet
+                    gjelder = bestillBrevExtreamRequestDto.sakskontekstDto.gjelder
+                    dokumenttype = bestillBrevExtreamRequestDto.sakskontekstDto.dokumenttype
+                    dokumentdato = bestillBrevExtreamRequestDto.sakskontekstDto.dokumentdato
+                    fagsystem = bestillBrevExtreamRequestDto.sakskontekstDto.fagsystem
+                    fagomradeKode = bestillBrevExtreamRequestDto.sakskontekstDto.fagomradekode
+                    innhold = bestillBrevExtreamRequestDto.sakskontekstDto.innhold
+                    kategori = bestillBrevExtreamRequestDto.sakskontekstDto.kategori
+                    saksid = bestillBrevExtreamRequestDto.sakskontekstDto.saksid
+                    sensitivitetsgrad = bestillBrevExtreamRequestDto.sakskontekstDto.sensitivitet
                 }
             })
-            logger.info("Opprettet brev med journalpostId: ${response!!.journalpostId} i sakId: ${bestillBrevRequestDto.sakskontekstDto.saksid} ")
+            logger.info("Opprettet brev med journalpostId: ${response!!.journalpostId} i sakId: ${bestillBrevExtreamRequestDto.sakskontekstDto.saksid} ")
             return BestillBrevResponseDto.Success(response.journalpostId)
         } catch (ex: BestillBrevOpprettelseJournalpostFeilet) {
             logger.error("En feil oppstod under opprettelse av journalpost: ${maskerFnr(ex.faultInfo.errorMessage)}")
@@ -85,26 +85,25 @@ sealed class BestillBrevResponseDto {
     }
 }
 
-data class BestillBrevRequestDto(
+data class BestillBrevExtreamRequestDto(
     val brevKode: String,
     val brevGruppe: String,
     val isRedigerbart: Boolean,
     val sprakkode: String,
     val sakskontekstDto: SakskontekstDto,
-)
-
-
-data class SakskontekstDto(
-    val journalenhet: String,
-    val gjelder: String,
-    val dokumenttype: String,
-    val dokumentdato: XMLGregorianCalendar,
-    val fagsystem: String,
-    val fagomradekode: String,
-    val innhold: String,
-    val kategori: String,
-    val saksid: String,
-    val saksbehandlernavn: String,
-    val saksbehandlerId: String,
-    val sensitivitet: String
-)
+) {
+    data class SakskontekstDto(
+        val journalenhet: String,
+        val gjelder: String,
+        val dokumenttype: String,
+        val dokumentdato: XMLGregorianCalendar,
+        val fagsystem: String,
+        val fagomradekode: String,
+        val innhold: String,
+        val kategori: String,
+        val saksid: String,
+        val saksbehandlernavn: String,
+        val saksbehandlerId: String,
+        val sensitivitet: String
+    )
+}

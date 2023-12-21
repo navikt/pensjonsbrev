@@ -41,8 +41,7 @@ fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config
     val krrService = KrrService(servicesConfig.getConfig("krr"), authService)
     val brevbakerService = BrevbakerService(servicesConfig.getConfig("brevbaker"), authService)
     val brevmetadataService = BrevmetadataService(servicesConfig.getConfig("brevmetadata"))
-    val tjenestebussIntegrasjonService =
-        TjenestebussIntegrasjonService(skribentenConfig.getConfig("tjenestebussintegrasjon"), authService)
+    val tjenestebussIntegrasjonService = TjenestebussIntegrasjonService(skribentenConfig.getConfig("tjenestebussintegrasjon"), authService)
 
     routing {
         healthRoute()
