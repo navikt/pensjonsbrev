@@ -10,16 +10,13 @@ import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
-import no.nav.pensjon.brev.template.dsl.expression.greaterThan
 import no.nav.pensjon.brev.template.dsl.expression.ifElse
 import no.nav.pensjon.brev.template.dsl.expression.plus
-import no.nav.pensjon.brev.template.dsl.expression.size
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import no.nav.pensjon.etterlatte.maler.Beregningsperiode
 import java.time.LocalDate
-import kotlin.text.Typography.paragraph
 
 object BarnepensjonInnvilgelseEnkelFraser {
 
@@ -31,26 +28,25 @@ object BarnepensjonInnvilgelseEnkelFraser {
         val vedtaksdato: Expression<LocalDate>,
         val erEtterbetaling: Expression<Boolean>,
         val beregningsperioder: Expression<List<Beregningsperiode>>,
-        val nyesteUtbetalingsperiode: Expression<LocalDate>,
-        val harFlereUlikePerioder: Expression<Boolean>
+        val nyesteUtbetalingsperiodeDatoFom: Expression<LocalDate>,
+        val harFlereUtbetalingsperioder: Expression<Boolean>
     ) :
         OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             paragraph {
                 val formatertVirkningsdato = virkningsdato.format()
                 val formatertDoedsdato = doedsdato.format()
-                val formatertNyesteUtbetalingsperiode = nyesteUtbetalingsperiode.format()
+                val formatertNyesteUtbetalingsperiodeDatoFom = nyesteUtbetalingsperiodeDatoFom.format()
 
                 textExpr(
-                    Bokmal to "Du er innvilget barnepensjon fra ".expr() + formatertVirkningsdato +
-                            " fordi " + avdoedNavn + " er registrert død " + formatertDoedsdato + ". ",
+                    Bokmal to "Du er innvilget barnepensjon fra ".expr() + formatertVirkningsdato + " fordi " + avdoedNavn + " er registrert død " + formatertDoedsdato + ". ",
                     Nynorsk to "".expr(),
                     English to "".expr()
                 )
 
-                showIf(harFlereUlikePerioder) {
+                showIf(harFlereUtbetalingsperioder) {
                     textExpr(
-                        Bokmal to "".expr() + "Du får "+ beloep.format() + " kroner hver måned før skatt fra " + formatertNyesteUtbetalingsperiode + ". Se utbetalingsbeløp for tidligere perioder i vedlegg om etterbetaling.",
+                        Bokmal to "".expr() + "Du får "+ beloep.format() + " kroner hver måned før skatt fra " + formatertNyesteUtbetalingsperiodeDatoFom + ". Se utbetalingsbeløp for tidligere perioder i vedlegg om etterbetaling.",
                         Nynorsk to "".expr(),
                         English to "".expr()
                     )

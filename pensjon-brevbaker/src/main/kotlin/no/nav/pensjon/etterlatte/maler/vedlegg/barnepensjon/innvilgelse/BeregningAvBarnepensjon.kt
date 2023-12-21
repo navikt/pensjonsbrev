@@ -26,13 +26,13 @@ import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BeregningsMetode
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BeregningsinfoBP
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BeregningsinfoBPSelectors.aarTrygdetid
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BeregningsinfoBPSelectors.antallBarn
-import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BeregningsinfoBPSelectors.beregningsMetodeIGrunnlag
+import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BeregningsinfoBPSelectors.beregningsMetodeFraGrunnlag
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BeregningsinfoBPSelectors.beregningsperioder
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BeregningsinfoBPSelectors.grunnbeloep
+import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BeregningsinfoBPSelectors.harTrygdetidsperioderAvtaleland
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BeregningsinfoBPSelectors.innhold
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BeregningsinfoBPSelectors.prorataBroek
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BeregningsinfoBPSelectors.trygdetidsperioder
-import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BeregningsinfoBPSelectors.trygdetidsperioderIAvtaleland
 import no.nav.pensjon.etterlatte.maler.formatBroek
 import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
 import no.nav.pensjon.etterlatte.maler.vedlegg.Trygdetidstabell
@@ -54,9 +54,9 @@ val beregningAvBarnepensjonGammeltOgNyttRegelverk = createAttachment(
         )
     }
     grunnbeloepetGammeltOgNyttRegelverk(grunnbeloep)
-    trygdetid(aarTrygdetid, prorataBroek, beregningsMetodeIGrunnlag)
+    trygdetid(aarTrygdetid, prorataBroek, beregningsMetodeFraGrunnlag)
     beregnetBarnepensjonGammeltOgNyttRegelverk(aarTrygdetid, prorataBroek, beregningsperioder)
-    perioderMedRegistrertTrygdetid(trygdetidsperioder, trygdetidsperioderIAvtaleland)
+    perioderMedRegistrertTrygdetid(trygdetidsperioder, harTrygdetidsperioderAvtaleland)
 }
 
 @TemplateModelHelpers
@@ -76,9 +76,9 @@ val beregningAvBarnepensjonNyttRegelverk = createAttachment(
         )
     }
     grunnbeloepetNyttRegelverk(grunnbeloep)
-    trygdetid(aarTrygdetid, prorataBroek, beregningsMetodeIGrunnlag)
+    trygdetid(aarTrygdetid, prorataBroek, beregningsMetodeFraGrunnlag)
     beregnetBarnepensjonNyttRegelverk(aarTrygdetid, prorataBroek, beregningsperioder)
-    perioderMedRegistrertTrygdetid(trygdetidsperioder, trygdetidsperioderIAvtaleland)
+    perioderMedRegistrertTrygdetid(trygdetidsperioder, harTrygdetidsperioderAvtaleland)
 }
 
 private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, BeregningsinfoBP>.grunnbeloepetGammeltOgNyttRegelverk(
@@ -192,7 +192,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, B
 private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, BeregningsinfoBP>.trygdetid(
     aarTrygdetid: Expression<Int>,
     prorataBroek: Expression<IntBroek?>,
-    beregningsMetode: Expression<BeregningsMetode>,
+    beregningsMetodeFraGrunnlag: Expression<BeregningsMetode>,
 ) {
     title2 {
         text(
@@ -202,7 +202,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, B
         )
     }
 
-    showIf(beregningsMetode.equalTo(BeregningsMetode.NASJONAL)) {
+    showIf(beregningsMetodeFraGrunnlag.equalTo(BeregningsMetode.NASJONAL)) {
         paragraph {
             text(
                 Bokmal to "Trygdetiden tilsvarer det antall år avdøde har vært medlem i folketrygden etter fylte 16 år. Når avdøde var under 67 år ved dødsfallet blir det vanligvis beregnet framtidig trygdetid fram til og med det året avdøde ville ha fylt 66 år.",
@@ -218,7 +218,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, B
             )
         }
     }
-    showIf(beregningsMetode.equalTo(BeregningsMetode.PRORATA)) {
+    showIf(beregningsMetodeFraGrunnlag.equalTo(BeregningsMetode.PRORATA)) {
         paragraph {
             text(
                 Bokmal to "For å få full pensjon må avdødes trygdetid være beregnet til minst 40 år. Trygdetid over 40 år blir ikke tatt med i beregningen.",
@@ -234,7 +234,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, B
             )
         }
     }
-    showIf(beregningsMetode.equalTo(BeregningsMetode.BEST)) {
+    showIf(beregningsMetodeFraGrunnlag.equalTo(BeregningsMetode.BEST)) {
         paragraph {
             text(
                 Bokmal to "For å få full pensjon må avdødes trygdetid være beregnet til minst 40 år. Trygdetid over 40 år blir ikke tatt med i beregningen. Når grunnlag for pensjon er oppfylt etter nasjonale regler, og avdøde også har opptjening av medlemsperioder i land som Norge har trygdeavtale med, skal trygdetid gis utfra det som gir den beste beregningen av kun nasjonal opptjening og sammenlagt opptjening i Norge og avtaleland.",
@@ -451,7 +451,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, B
 
 private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, BeregningsinfoBP>.perioderMedRegistrertTrygdetid(
     trygdetidsperioder: Expression<List<Trygdetidsperiode>>,
-    trygdetidsperioderIAvtaleland: Expression<Boolean>
+    harTrygdetidsperioderAvtaleland: Expression<Boolean>
 ) {
     title2 {
         text(
@@ -461,7 +461,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, B
         )
     }
 
-    showIf(trygdetidsperioderIAvtaleland) {
+    showIf(harTrygdetidsperioderAvtaleland) {
         paragraph {
             text(
                 Bokmal to "Tabellen viser perioder avdøde har vært medlem av folketrygden og medlemsperioder avdøde har hatt i land som Norge har trygdeavtale med.",

@@ -18,8 +18,8 @@ import no.nav.pensjon.etterlatte.maler.UtbetalingsinfoSelectors.beregningsperiod
 import no.nav.pensjon.etterlatte.maler.UtbetalingsinfoSelectors.virkningsdato
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseEnkelDTOSelectors.avdoed
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseEnkelDTOSelectors.erEtterbetaling
-import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseEnkelDTOSelectors.harFlereUlikePerioder
-import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseEnkelDTOSelectors.nyesteUtbetalingsperiode
+import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseEnkelDTOSelectors.harFlereUtbetalingsperioder
+import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseEnkelDTOSelectors.sisteUtbetalingsperiodeDatoFom
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseEnkelDTOSelectors.utbetalingsinfo
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseEnkelDTOSelectors.vedtaksdato
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.innvilgelse.BarnepensjonInnvilgelseEnkelFraser
@@ -30,11 +30,10 @@ data class BarnepensjonInnvilgelseEnkelDTO(
     val utbetalingsinfo: Utbetalingsinfo,
     val avdoed: Avdoed,
     val vedtaksdato: LocalDate,
-    val harFlereUlikePerioder: Boolean,
     val erEtterbetaling: Boolean,
-) {
-    val nyesteUtbetalingsperiode = utbetalingsinfo.beregningsperioder.maxBy { it.datoFOM }.datoFOM
-}
+    val harFlereUtbetalingsperioder: Boolean,
+    val sisteUtbetalingsperiodeDatoFom: LocalDate
+)
 
 @TemplateModelHelpers
 object BarnepensjonInnvilgelseEnkel : EtterlatteTemplate<BarnepensjonInnvilgelseEnkelDTO>, Delmal {
@@ -70,8 +69,8 @@ object BarnepensjonInnvilgelseEnkel : EtterlatteTemplate<BarnepensjonInnvilgelse
                     vedtaksdato,
                     erEtterbetaling,
                     utbetalingsinfo.beregningsperioder,
-                    nyesteUtbetalingsperiode,
-                    harFlereUlikePerioder
+                    sisteUtbetalingsperiodeDatoFom,
+                    harFlereUtbetalingsperioder
                 ),
             )
         }

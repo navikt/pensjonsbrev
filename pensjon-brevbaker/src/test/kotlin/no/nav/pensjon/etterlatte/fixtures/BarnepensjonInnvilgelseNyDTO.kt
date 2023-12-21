@@ -82,8 +82,9 @@ fun createBarnepensjonInnvilgelseNyDTO() =
                     opptjeningsperiode = Periode(2, 0, 0),
                 )
             ),
-            beregningsMetodeIGrunnlag = BeregningsMetode.NASJONAL,
-            beregningsMetodeAnvendt = BeregningsMetode.NASJONAL
+            beregningsMetodeFraGrunnlag = BeregningsMetode.NASJONAL,
+            beregningsMetodeAnvendt = BeregningsMetode.NASJONAL,
+            harTrygdetidsperioderAvtaleland = true,
         ),
         bosattUtland = true,
         brukerUnder18Aar = true,

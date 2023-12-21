@@ -66,6 +66,7 @@ fun createEndringHovedmalDTO() = EndringHovedmalDTO(
             )
         ),
         beregningsMetodeAnvendt = BeregningsMetode.NASJONAL,
-        beregningsMetodeIGrunnlag = BeregningsMetode.NASJONAL
+        beregningsMetodeFraGrunnlag = BeregningsMetode.NASJONAL,
+        harTrygdetidsperioderAvtaleland = true
     )
 )

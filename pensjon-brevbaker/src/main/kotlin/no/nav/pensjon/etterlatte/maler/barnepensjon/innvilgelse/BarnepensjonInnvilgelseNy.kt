@@ -43,6 +43,7 @@ import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.innvilgelse.informas
 import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.innvilgelse.informasjonTilDegSomMottarBarnepensjonUtland
 
 data class BarnepensjonInnvilgelseNyDTO(
+    override val innhold: List<Element>,
     val utbetalingsinfo: Utbetalingsinfo,
     val avkortingsinfo: Avkortingsinfo? = null,
     val beregningsinfo: BeregningsinfoBP,
@@ -50,7 +51,6 @@ data class BarnepensjonInnvilgelseNyDTO(
     val brukerUnder18Aar: Boolean,
     val bosattUtland: Boolean,
     val kunNyttRegelverk: Boolean,
-    override val innhold: List<Element>,
 ) : BrevDTO
 
 data class BeregningsinfoBP(
@@ -63,12 +63,9 @@ data class BeregningsinfoBP(
     val trygdetidsperioder: List<Trygdetidsperiode>,
     val prorataBroek: IntBroek?,
     val beregningsMetodeAnvendt: BeregningsMetode,
-    val beregningsMetodeIGrunnlag: BeregningsMetode
-) : BrevDTO {
-    val trygdetidsperioderIAvtaleland = trygdetidsperioder.any { it.land != "NOR" }
-}
-
-data class EtterbetalingMedTrygdetid(val etterbetaling: EtterbetalingDTO, val aarTrygdetid: Int)
+    val beregningsMetodeFraGrunnlag: BeregningsMetode,
+    val harTrygdetidsperioderAvtaleland: Boolean,
+) : BrevDTO
 
 enum class BeregningsMetode {
     NASJONAL,
