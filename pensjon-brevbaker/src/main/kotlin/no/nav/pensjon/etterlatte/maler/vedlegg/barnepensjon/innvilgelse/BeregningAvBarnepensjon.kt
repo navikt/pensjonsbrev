@@ -162,7 +162,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, B
 
     paragraph {
         textExpr(
-            Bokmal to "".expr() + "Folketrygdens grunnbeløp er per i dag " + grunnbeloep.format() + " kroner. Grunnbeløpet blir regulert 1. mai hvert år. Økningen etterbetales vanligvis juni hvert år.",
+            Bokmal to "".expr() + "Folketrygdens grunnbeløp er per i dag " + grunnbeloep.format() + " kroner. Grunnbeløpet blir regulert 1. mai hvert år. Økningen etterbetales vanligvis i juni hvert år.",
             Nynorsk to "".expr(),
             English to "".expr(),
         )
