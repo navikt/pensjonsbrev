@@ -5,6 +5,7 @@ import no.nav.pensjon.etterlatte.maler.Beregningsperiode
 import no.nav.pensjon.etterlatte.maler.EtterbetalingDTO
 import no.nav.pensjon.etterlatte.maler.IntBroek
 import no.nav.pensjon.etterlatte.maler.Periode
+import no.nav.pensjon.etterlatte.maler.TrygdetidType
 import no.nav.pensjon.etterlatte.maler.Trygdetidsperiode
 import no.nav.pensjon.etterlatte.maler.Utbetalingsinfo
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseNyDTO
@@ -72,15 +73,24 @@ fun createBarnepensjonInnvilgelseNyDTO() =
                 Trygdetidsperiode(
                     datoFOM = LocalDate.of(2020, Month.JANUARY, 1),
                     datoTOM = LocalDate.of(2023, Month.JULY, 31),
-                    land = "Albania",
+                    land = "SWE",
                     opptjeningsperiode = Periode(3, 0, 0),
+                    type = TrygdetidType.FAKTISK
                 ),
                 Trygdetidsperiode(
                     datoFOM = LocalDate.of(2018, Month.JANUARY, 1),
                     datoTOM = LocalDate.of(2020, Month.DECEMBER, 31),
                     land = "NOR",
                     opptjeningsperiode = Periode(2, 0, 0),
-                )
+                    type = TrygdetidType.FAKTISK
+                ),
+                Trygdetidsperiode(
+                    datoFOM = LocalDate.of(2020, Month.JANUARY, 1),
+                    datoTOM = LocalDate.of(2023, Month.JULY, 31),
+                    land = "NOR",
+                    opptjeningsperiode = Periode(3, 0, 0),
+                    type = TrygdetidType.FREMTIDIG
+                ),
             ),
             beregningsMetodeFraGrunnlag = BeregningsMetode.NASJONAL,
             beregningsMetodeAnvendt = BeregningsMetode.NASJONAL,

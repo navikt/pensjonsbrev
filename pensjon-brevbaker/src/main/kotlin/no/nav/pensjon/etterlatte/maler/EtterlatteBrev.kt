@@ -51,7 +51,13 @@ data class Trygdetidsperiode(
     val datoTOM: LocalDate?,
     val land: String,
     val opptjeningsperiode: Periode?,
+    val type: TrygdetidType,
 )
+
+enum class TrygdetidType {
+    FREMTIDIG,
+    FAKTISK
+}
 
 data class Periode(
     val aar: Int,

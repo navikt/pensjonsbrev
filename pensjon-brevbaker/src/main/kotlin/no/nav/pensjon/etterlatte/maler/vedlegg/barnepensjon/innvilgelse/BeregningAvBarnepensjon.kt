@@ -467,7 +467,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, B
     showIf(beregningsMetodeAnvendt.equalTo(BeregningsMetode.NASJONAL)){
         paragraph {
             text(
-                Bokmal to "Tabellen viser perioder avdøde har vært medlem av folketrygden.",
+                Bokmal to "Tabellen viser perioder avdøde har vært medlem av folketrygden, og registrert fremtidig trygdetid.",
                 Nynorsk to "",
                 English to "",
             )
@@ -476,7 +476,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, B
     }.orShowIf(beregningsMetodeAnvendt.equalTo(BeregningsMetode.PRORATA)) {
         paragraph {
             text(
-                Bokmal to "Tabellen viser perioder avdøde har vært medlem av folketrygden og medlemsperioder avdøde har hatt i land som Norge har trygdeavtale med.",
+                Bokmal to "Tabellen viser perioder avdøde har vært medlem av folketrygden og medlemsperioder avdøde har hatt i land som Norge har trygdeavtale med, som er tatt med i beregningen.",
                 Nynorsk to "",
                 English to "",
             )
