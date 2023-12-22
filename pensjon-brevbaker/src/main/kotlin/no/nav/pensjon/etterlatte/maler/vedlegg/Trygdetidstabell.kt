@@ -7,14 +7,20 @@ import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.LocalizedFormatter
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
+import no.nav.pensjon.brev.template.dsl.expression.equalTo
+import no.nav.pensjon.brev.template.dsl.expression.expr
+import no.nav.pensjon.brev.template.dsl.expression.ifElse
+import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.etterlatte.maler.Periode
+import no.nav.pensjon.etterlatte.maler.TrygdetidType
 import no.nav.pensjon.etterlatte.maler.Trygdetidsperiode
 import no.nav.pensjon.etterlatte.maler.TrygdetidsperiodeSelectors.datoFOM
 import no.nav.pensjon.etterlatte.maler.TrygdetidsperiodeSelectors.datoTOM
 import no.nav.pensjon.etterlatte.maler.TrygdetidsperiodeSelectors.land
 import no.nav.pensjon.etterlatte.maler.TrygdetidsperiodeSelectors.opptjeningsperiode
+import no.nav.pensjon.etterlatte.maler.TrygdetidsperiodeSelectors.type
 import no.nav.pensjon.etterlatte.maler.fraser.common.PeriodeITabell
 
 data class Trygdetidstabell(
@@ -47,22 +53,22 @@ data class Trygdetidstabell(
                     }
                 }
             ) {
-                forEach(trygdetidsperioder) {
+                forEach(trygdetidsperioder) { periode ->
                     row {
-                        cell { includePhrase(PeriodeITabell(it.datoFOM, it.datoTOM)) }
+                        cell { includePhrase(PeriodeITabell(periode.datoFOM, periode.datoTOM)) }
                         cell {
                             textExpr(
-                                Language.Bokmal to it.land,
-                                Language.Nynorsk to it.land,
-                                Language.English to it.land,
+                                Language.Bokmal to periode.land,
+                                Language.Nynorsk to periode.land,
+                                Language.English to periode.land,
                             )
                         }
                         cell {
-                            ifNotNull(it.opptjeningsperiode) {
+                            ifNotNull(periode.opptjeningsperiode) {
                                 textExpr(
-                                    Language.Bokmal to it.format(),
-                                    Language.Nynorsk to it.format(),
-                                    Language.English to it.format(),
+                                    Language.Bokmal to it.format() + ifElse(periode.type.equalTo(TrygdetidType.FREMTIDIG), " (fremtidig trygdetid)", ""),
+                                    Language.Nynorsk to "".expr(),
+                                    Language.English to "".expr(),
                                 )
                             }
                         }

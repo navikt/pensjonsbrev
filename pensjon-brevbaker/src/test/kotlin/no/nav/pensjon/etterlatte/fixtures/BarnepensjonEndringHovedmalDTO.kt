@@ -4,6 +4,7 @@ import no.nav.pensjon.brevbaker.api.model.Kroner
 import no.nav.pensjon.etterlatte.maler.Beregningsperiode
 import no.nav.pensjon.etterlatte.maler.EtterbetalingDTO
 import no.nav.pensjon.etterlatte.maler.Periode
+import no.nav.pensjon.etterlatte.maler.TrygdetidType
 import no.nav.pensjon.etterlatte.maler.Trygdetidsperiode
 import no.nav.pensjon.etterlatte.maler.Utbetalingsinfo
 import no.nav.pensjon.etterlatte.maler.barnepensjon.endring.EndringHovedmalDTO
@@ -63,6 +64,7 @@ fun createEndringHovedmalDTO() = EndringHovedmalDTO(
                 datoTOM = LocalDate.of(2023, Month.JULY, 31),
                 land = "Albania",
                 opptjeningsperiode = Periode(3, 0, 0),
+                type = TrygdetidType.FAKTISK
             )
         ),
         beregningsMetodeAnvendt = BeregningsMetode.NASJONAL,

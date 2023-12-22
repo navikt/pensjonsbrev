@@ -94,7 +94,8 @@ fun createOMSInnvilgelseFoerstegangsvedtakDTO() =
                     datoFOM = LocalDate.now(),
                     datoTOM = LocalDate.now(),
                     land = "Norge",
-                    opptjeningsperiode = Periode(3, 0, 0)
+                    opptjeningsperiode = Periode(3, 0, 0),
+                    type = TrygdetidType.FAKTISK
                 )
             )
         ),

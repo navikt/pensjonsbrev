@@ -67,7 +67,8 @@ fun createOMSRevurderingEndringDTO() =
                     datoFOM = LocalDate.now(),
                     datoTOM = LocalDate.now(),
                     land = "Norge",
-                    opptjeningsperiode = null
+                    opptjeningsperiode = null,
+                    type = TrygdetidType.FAKTISK
                 )
             )
         ),
