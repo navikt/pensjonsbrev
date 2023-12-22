@@ -134,7 +134,7 @@ fun Application.tjenestebussIntegrationApi(config: Config) {
                     is FinnSamhandlerResponseDto.Success -> call.respond(HttpStatusCode.OK, samhandlerResponse)
                 }
             }
-            post("/bestillbrevExtream") {
+            post("/bestillExtreamBrev") {
                 val requestDto = call.receive<BestillBrevExtreamRequestDto>()
 
                 when (val arkivResponse = withCallId(arkivTjenestebussService) { bestillBrev(requestDto) }) {
@@ -148,19 +148,21 @@ fun Application.tjenestebussIntegrationApi(config: Config) {
                     }
                 }
             }
-            post("/redigerbrevDoksys") {
+            post("/redigerDoksysBrev") {
                 val requestDto = call.receive<RedigerDokumentDoksysRequestDto>()
                 when (val dokumentResponse = withCallId(dokumentProduksjonService) { redigerDokument(requestDto) }) {
                     is RedigerDokumentResponseDto.Success -> call.respond(HttpStatusCode.OK, dokumentResponse)
                     is RedigerDokumentResponseDto.Failure -> {
-                        when (dokumentResponse.failureType) {
-                            LASING -> call.respond(HttpStatusCode.InternalServerError, dokumentResponse)
-                            IKKE_TILLATT -> call.respond(HttpStatusCode.Forbidden, dokumentResponse)
-                            VALIDERING_FEILET -> call.respond(HttpStatusCode.BadRequest, dokumentResponse)
-                            IKKE_FUNNET -> call.respond(HttpStatusCode.NotFound, dokumentResponse)
-                            IKKE_TILGANG -> call.respond(HttpStatusCode.Unauthorized, dokumentResponse)
-                            LUKKET -> call.respond(HttpStatusCode.Locked, dokumentResponse)
-                        }
+                        call.respond(
+                            when (dokumentResponse.failureType) {
+                                LASING -> HttpStatusCode.InternalServerError
+                                IKKE_TILLATT -> HttpStatusCode.Forbidden
+                                VALIDERING_FEILET -> HttpStatusCode.BadRequest
+                                IKKE_FUNNET -> HttpStatusCode.NotFound
+                                IKKE_TILGANG -> HttpStatusCode.Unauthorized
+                                LUKKET -> HttpStatusCode.Locked
+                            }, dokumentResponse
+                        )
                     }
                 }
             }
