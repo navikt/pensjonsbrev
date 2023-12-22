@@ -1,7 +1,7 @@
 package no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.dokumentsproduksjon.dto
 
 sealed class RedigerDokumentResponseDto {
-    data class Dokument(
+    data class Success(
         val metaforceURI: String,
         ) : RedigerDokumentResponseDto()
     data class Failure(

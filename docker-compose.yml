@@ -58,6 +58,8 @@ services:
       - PENSJON_PERSONDATA_URL=https://pensjon-persondata-q2.dev.intern.nav.no
       - SAF_SCOPE=api://dev-fss.teamdokumenthandtering.saf/.default
       - SAF_URL=https://saf.dev.intern.nav.no/graphql
+      - TJENESTEBUSS_INTEGRASJON_URL=https://pensjonsbrev-tjenestebuss-q2.intern.dev.nav.no
+      - TJENESTEBUSS_INTEGRASJON_SCOPE=api://dev-fss.pensjonsbrev.pensjonsbrev-tjenestebuss-q2/.default
 
   skribenten-backend-db:
     profiles:
