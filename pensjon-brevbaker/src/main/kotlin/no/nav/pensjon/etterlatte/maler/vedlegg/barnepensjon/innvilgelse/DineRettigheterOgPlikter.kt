@@ -79,7 +79,7 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, BarnepensjonInnvilgelseNy
                     "og må straks melde frå til NAV dersom du blir merksam på feil. " +
                     "Viss det har blitt utbetalt for mykje stønad fordi NAV ikkje har fått beskjed om endringar, " +
                     "må pengane vanlegvis betalast tilbake.",
-            English to "You are responsible for staying informed of the transactions in your bank account regarding the payment of the allowance, " + //
+            English to "You are responsible for staying informed of the transactions in your bank account regarding the payment of the allowance, " +
                     "and you must immediately report any errors to NAV. " +
                     "If too much allowance has been paid because NAV has not been notified, " +
                     "the money must normally be repaid.",
