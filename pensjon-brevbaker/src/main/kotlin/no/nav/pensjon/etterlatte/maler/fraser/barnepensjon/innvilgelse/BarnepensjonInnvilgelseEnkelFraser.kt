@@ -73,13 +73,6 @@ object BarnepensjonInnvilgelseEnkelFraser {
                 )
             }
             paragraph {
-                text(
-                    Bokmal to "Ordinært vedtak. Hvis særbestemmelser/unntak/ikke-avtaleland byttes tekst med utfall hentet fra tekstbibliotek.",
-                    Nynorsk to "",
-                    English to "",
-                )
-            }
-            paragraph {
                 textExpr(
                     Bokmal to "".expr() + "Vedtaket er gjort etter bestemmelsene om barnepensjon i folketrygdloven §§ 18-2, 18-3, 18-4, 18-5" + ifElse(erEtterbetaling, ", 22-12 og 22-13.", " og 22-12."),
                     Nynorsk to "".expr(),
