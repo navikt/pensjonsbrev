@@ -39,7 +39,7 @@ fun createBarnepensjonInnvilgelseNyDTO() =
         ),
         avkortingsinfo = null,
         innhold = listOf(),
-        etterbetalingDTO = EtterbetalingDTO(
+        etterbetaling = EtterbetalingDTO(
             fraDato = LocalDate.of(2020, Month.JANUARY, 1),
             tilDato = LocalDate.of(2023, Month.JULY, 31),
             etterbetalingsperioder = listOf(
@@ -84,7 +84,6 @@ fun createBarnepensjonInnvilgelseNyDTO() =
             ),
             beregningsMetodeFraGrunnlag = BeregningsMetode.NASJONAL,
             beregningsMetodeAnvendt = BeregningsMetode.NASJONAL,
-            harTrygdetidsperioderAvtaleland = true,
         ),
         bosattUtland = true,
         brukerUnder18Aar = true,

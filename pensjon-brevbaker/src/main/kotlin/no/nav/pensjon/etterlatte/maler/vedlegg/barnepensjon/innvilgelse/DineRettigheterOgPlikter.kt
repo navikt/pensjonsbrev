@@ -13,7 +13,6 @@ import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseNyDTO
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseNyDTOSelectors.bosattUtland
-import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseNyDTOSelectors.brukerUnder18Aar
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
 import no.nav.pensjon.etterlatte.maler.fraser.common.Felles
 import no.nav.pensjon.etterlatte.maler.fraser.common.kontakttelefonPensjon
@@ -28,14 +27,14 @@ val dineRettigheterOgPlikter = createAttachment(
     ),
     includeSakspart = false,
 ) {
-    meldFraOmEndringer(brukerUnder18Aar)
+    meldFraOmEndringer()
     veiledningFraNavForvaltningsloven11()
     includePhrase(Felles.HjelpFraAndreForvaltningsloven12)
     duHarRettTilInnsynISakenDin()
     klagePaaVedtaketFolketrygdloven2112(bosattUtland)
 }
 
-private fun OutlineOnlyScope<LangBokmalNynorskEnglish, BarnepensjonInnvilgelseNyDTO>.meldFraOmEndringer(erUnder18: Expression<Boolean>) {
+private fun OutlineOnlyScope<LangBokmalNynorskEnglish, BarnepensjonInnvilgelseNyDTO>.meldFraOmEndringer() {
     title2 {
         text(
             Bokmal to "Meld fra om endringer",
@@ -44,19 +43,11 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, BarnepensjonInnvilgelseNy
         )
     }
     paragraph {
-        showIf(erUnder18) {
-            text(
-                Bokmal to "Du må melde fra med en gang det skjer viktige endringer i barnets liv, som",
-                Nynorsk to "Du må melde frå med ein gong det skjer viktige endringar i livet til barnet. Døme på slike endringar kan vere",
-                English to "You must report any important changes as soon as they occur in your child's life, such as",
-            )
-        }.orShow {
-            text(
-                Bokmal to "Du må melde fra med en gang det skjer viktige endringer, som",
-                Nynorsk to "Du må melde frå med ein gong det skjer viktige endringar. Døme på slike endringar kan vere",
-                English to "You must report any important changes as soon as they occur, such as",
-            )
-        }
+        text(
+            Bokmal to "Du må melde fra med en gang det skjer viktige endringer, som",
+            Nynorsk to "Du må melde frå med ein gong det skjer viktige endringar. Døme på slike endringar kan vere",
+            English to "You must report any important changes as soon as they occur, such as",
+        )
         list {
             item {
                 text(
@@ -81,16 +72,16 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, BarnepensjonInnvilgelseNy
             }
         }
         text(
-            Bokmal to "Du er ansvarlig for å holde deg orientert om bevegelser på kontoen for utbetaling av barnepensjon, " +
-                "og du må straks melde fra om eventuelle feil til NAV. Er det utbetalt for mye barnepensjon fordi " +
+            Bokmal to "Du er ansvarlig for å holde deg orientert om bevegelser på kontoen for utbetaling av stønaden, " +
+                "og du må straks melde fra om eventuelle feil til NAV. Er det utbetalt for mye stønad fordi " +
                 "NAV ikke har fått beskjed, må pengene vanligvis betales tilbake.",
-            Nynorsk to "Du er ansvarleg for å følgje med på bevegelsar på kontoen for utbetaling av barnepensjon, " +
+            Nynorsk to "Du er ansvarleg for å følgje med på bevegelsar på kontoen for utbetaling av stønaden, " +
                     "og må straks melde frå til NAV dersom du blir merksam på feil. " +
-                    "Viss det har blitt utbetalt for mykje barnepensjon fordi NAV ikkje har fått beskjed om endringar, " +
+                    "Viss det har blitt utbetalt for mykje stønad fordi NAV ikkje har fått beskjed om endringar, " +
                     "må pengane vanlegvis betalast tilbake.",
-            English to "You are responsible for staying informed of the transactions in your bank account regarding the payment of the children's pension, " +
+            English to "You are responsible for staying informed of the transactions in your bank account regarding the payment of the allowance, " +
                     "and you must immediately report any errors to NAV. " +
-                    "If too much children's pension has been paid because NAV has not been notified, " +
+                    "If too much allowance has been paid because NAV has not been notified, " +
                     "the money must normally be repaid.",
         )
     }
