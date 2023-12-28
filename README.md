@@ -10,11 +10,12 @@ This is a mono-repo for the microservices that together form the new letter orde
    * vault
    * gcloud cli
    * docker/colima
+   * vite (npm install vite)
    * naisdevice med standard dev-miljø tilganger og tjenestebuss-q2
 2. Hent alle secrets:
    ```bash
-   (cd skribenten-backend && ./fetch-secrets.sh)
-   (cd tjenestebuss-integrasjon && ./fetch-secrets.sh)
+   (cd skribenten-backend && ./fetch-secrets.sh) #todo legg in no-interactive
+   (cd tjenestebuss-integrasjon && ./fetch-secrets.sh) #todo legg in no-interactive / fix
    (cd skribenten-web/bff && python3 setup_local_azure_secrets.py)
    ```
 3. For å hente enkelte avhengigheter under byggene må du [lage ett github token](https://github.com/settings/tokens/new)
@@ -29,9 +30,9 @@ This is a mono-repo for the microservices that together form the new letter orde
    ```
 4. Kjør følgende for å bygge alle applikasjonene og publisere docker images til lokalt registry:
    ```bash
-   ./gradlew :tjenestebuss-integrasjon:publishImageToLocalRegistry :skribenten-backend:build :pensjon-brevbaker:build :pdf-bygger:build
    (cd skribenten-web/bff && npm i && npm run build)
    (cd skribenten-web/frontend && npm i)
+   ./gradlew :tjenestebuss-integrasjon:publishImageToLocalRegistry :skribenten-backend:build :pensjon-brevbaker:build :pdf-bygger:build
    ```
 5. Kjør alle backend-tjenester
    ```bash
