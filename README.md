@@ -30,12 +30,12 @@ This is a mono-repo for the microservices that together form the new letter orde
 4. Kjør følgende for å bygge alle applikasjonene og publisere docker images til lokalt registry:
    ```bash
    ./gradlew :tjenestebuss-integrasjon:publishImageToLocalRegistry :skribenten-backend:build :pensjon-brevbaker:build :pdf-bygger:build
-   (cd skribenten-web/bff && npm i)
+   (cd skribenten-web/bff && npm i && npm run build)
    (cd skribenten-web/frontend && npm i)
    ```
 5. Kjør alle backend-tjenester
    ```bash
-   docker compose --profile skribenten up -d --build
+   docker-compose --profile skribenten up -d --build
    ```
 6. Kjør front-end. Applikasjonen krever at du logger på med en @trygdeetaten.no test bruker med saksbehandler tilganger.
    ```bash
