@@ -4,7 +4,13 @@ This is a mono-repo for the microservices that together form the new letter orde
 
 ### Lokal kjøring av skribenten backend/front-end og brevbaker/pdf-bygger
 
-1. For å hente alle secrets må du ha kubectl, python, vault og gcloud cli installert /tilgjengelig på PATH.
+1. For å hente alle secrets må du ha installert:
+   * kubectl
+   * python
+   * vault
+   * gcloud cli
+   * docker/colima
+   * naisdevice med standard dev-miljø tilganger og tjenestebuss-q2
 2. Hent alle secrets:
    ```bash
    (cd skribenten-backend && ./fetch-secrets.sh)
@@ -24,8 +30,8 @@ This is a mono-repo for the microservices that together form the new letter orde
 4. Kjør følgende for å bygge alle applikasjonene og publisere docker images til lokalt registry:
    ```bash
    ./gradlew :tjenestebuss-integrasjon:publishImageToLocalRegistry :skribenten-backend:build :pensjon-brevbaker:build :pdf-bygger:build
-   npm i --prefix skribenten-web/bff
-   npm i --prefix skribenten-web/frontend
+   (cd skribenten-web/bff && npm i)
+   (cd skribenten-web/frontend && npm i)
    ```
 5. Kjør alle backend-tjenester
    ```bash
