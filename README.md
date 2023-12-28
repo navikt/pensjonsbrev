@@ -12,10 +12,14 @@ This is a mono-repo for the microservices that together form the new letter orde
    (cd skribenten-web/bff && python3 setup_local_azure_secrets.py)
    ```
 3. For å hente enkelte avhengigheter under byggene må du [lage ett github token](https://github.com/settings/tokens/new)
-   med `packages.read` tilgang i gradle.properties under `$HOME/.gradle`:
+   med `packages.read` tilgang i `$HOME/.gradle/gradle.properties`:
    ```
    gpr.user=<github brukernavn>
    gpr.token=<packages.read token>
+   ```
+   Tilsvarende for trengs for npm i `$HOME/.npmrc`:
+   ```
+   //npm.pkg.github.com/:_authToken=<packages.read token>
    ```
 4. Kjør følgende for å bygge alle applikasjonene og publisere docker images til lokalt registry:
    ```bash
@@ -32,6 +36,9 @@ This is a mono-repo for the microservices that together form the new letter orde
    npm run dev --prefix skribenten-web/frontend
    ```
 7. Åpne http://localhost:8083/vite-on for å koble front-enden opp mot bff(backend for front-end).
+
+
+
 ## Lokal kjøring av brevbaker og pdf-bygger
 
 For å kjøre løsningen lokalt må man ha docker og docker compose installert.
