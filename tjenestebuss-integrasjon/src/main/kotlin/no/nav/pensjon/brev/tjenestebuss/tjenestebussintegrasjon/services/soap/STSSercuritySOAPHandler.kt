@@ -1,5 +1,10 @@
 package no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.soap
 
+import jakarta.xml.soap.SOAPElement
+import jakarta.xml.soap.SOAPFactory
+import jakarta.xml.ws.handler.MessageContext
+import jakarta.xml.ws.handler.soap.SOAPHandler
+import jakarta.xml.ws.handler.soap.SOAPMessageContext
 import kotlinx.coroutines.runBlocking
 import org.w3c.dom.Document
 import org.xml.sax.InputSource
@@ -7,15 +12,11 @@ import org.xml.sax.SAXException
 import java.io.IOException
 import java.io.StringReader
 import java.util.Base64
+import javax.xml.namespace.QName
 import javax.xml.parsers.DocumentBuilderFactory
 import javax.xml.parsers.ParserConfigurationException
-import javax.xml.soap.SOAPElement
-import javax.xml.soap.SOAPFactory
-import javax.xml.ws.handler.Handler
-import javax.xml.ws.handler.MessageContext
-import javax.xml.ws.handler.soap.SOAPMessageContext
 
-class STSSercuritySOAPHandler(private val stsService: STSService) : Handler<SOAPMessageContext> {
+class STSSercuritySOAPHandler(private val stsService: STSService) : SOAPHandler<SOAPMessageContext> {
     private val SECURITY_URL = "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd"
     private val base64Decoder = Base64.getDecoder()
 
@@ -46,6 +47,12 @@ class STSSercuritySOAPHandler(private val stsService: STSService) : Handler<SOAP
     }
 
     override fun close(context: MessageContext?) {
+        TODO("Not yet implemented")
+    }
+
+
+    override fun getHeaders(): MutableSet<QName> {
+        TODO("Not yet implemented")
     }
 
     private fun convertStringToDocument(xmlStr: String): Document {

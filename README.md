@@ -2,6 +2,36 @@
 This is a mono-repo for the microservices that together form the new letter ordering system.
 
 
+### Lokal kjøring av skribenten backend/front-end og brevbaker/pdf-bygger
+
+1. For å hente alle secrets må du ha kubectl, python, vault og gcloud cli installert /tilgjengelig på PATH.
+2. Hent alle secrets:
+   ```bash
+   (cd skribenten-backend && ./fetch-secrets.sh)
+   (cd tjenestebuss-integrasjon && ./fetch-secrets.sh)
+   (cd skribenten-web/bff && python3 setup_local_azure_secrets.py)
+   ```
+3. For å hente enkelte avhengigheter under byggene må du [lage ett github token](https://github.com/settings/tokens/new)
+   med `packages.read` tilgang i gradle.properties under `$HOME/.gradle`:
+   ```
+   gpr.user=<github brukernavn>
+   gpr.token=<packages.read token>
+   ```
+4. Kjør følgende for å bygge alle applikasjonene og publisere docker images til lokalt registry:
+   ```bash
+   ./gradlew :tjenestebuss-integrasjon:publishImageToLocalRegistry :skribenten-backend:build :pensjon-brevbaker:build :pdf-bygger:build
+   npm i --prefix skribenten-web/bff
+   npm i --prefix skribenten-web/frontend
+   ```
+5. Kjør alle backend-tjenester
+   ```bash
+   docker compose --profile skribenten up -d --build
+   ```
+6. Kjør front-end. Applikasjonen krever at du logger på med en @trygdeetaten.no test bruker med saksbehandler tilganger.
+   ```bash
+   npm run dev --prefix skribenten-web/frontend
+   ```
+7. Åpne http://localhost:8083/vite-on for å koble front-enden opp mot bff(backend for front-end).
 ## Lokal kjøring av brevbaker og pdf-bygger
 
 For å kjøre løsningen lokalt må man ha docker og docker compose installert.

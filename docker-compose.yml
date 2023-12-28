@@ -23,7 +23,6 @@ services:
     ports:
       - "8080:8080"
       - "5015:5005" # debug port
-
   skribenten-backend:
     profiles:
       - skribenten
@@ -58,7 +57,7 @@ services:
       - PENSJON_PERSONDATA_URL=https://pensjon-persondata-q2.dev.intern.nav.no
       - SAF_SCOPE=api://dev-fss.teamdokumenthandtering.saf/.default
       - SAF_URL=https://saf.dev.intern.nav.no/graphql
-      - TJENESTEBUSS_INTEGRASJON_URL=https://pensjonsbrev-tjenestebuss-q2.intern.dev.nav.no
+      - TJENESTEBUSS_INTEGRASJON_URL=https://tjenestebuss-integrasjon
       - TJENESTEBUSS_INTEGRASJON_SCOPE=api://dev-fss.pensjonsbrev.pensjonsbrev-tjenestebuss-q2/.default
 
   skribenten-backend-db:
@@ -73,6 +72,23 @@ services:
     restart: always
     environment:
       POSTGRES_PASSWORD: pass
+
+  tjenestebuss-integrasjon:
+    image: 'tjenestebuss-integrasjon'
+    profiles:
+      - skribenten
+    #TODO bug ved kjøring av applikasjonen med vanlig docker build. publishImageToLocalRegistry funker
+    #build: ./tjenestebuss-integrasjon
+    ports:
+      - "8086:8080"
+      - "5018:5008"
+    env_file:
+      - tjenestebuss-integrasjon/secrets/docker.env
+    environment:
+      - TJENESTEBUSS_URL=https://tjenestebuss-q2.adeo.no/
+      - STS_URL=https://security-token-service.dev.adeo.no
+      - DOKPROD_URL=https://dokprod-q2.dev.intern.nav.no/
+      - JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5008
 
   wonderwall:
     profiles:
