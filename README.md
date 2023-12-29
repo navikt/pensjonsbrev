@@ -5,6 +5,7 @@ This is a mono-repo for the microservices that together form the new letter orde
 
 For å kjøre løsningen lokalt må man ha docker og docker compose installert.
 Bygging av brevbakeren krever at du har konfigurert gradle med packages.read token for å hente pakker.
+Se [seksjonen under for oppsett av read token i gradle](#for-gradle).
 
 Bruk følgende for å bygge og kjøre:
 ```bash
@@ -33,16 +34,7 @@ docker compose up -d --build
       ```bash
    (cd skribenten-web/bff && python3 setup_local_azure_secrets.py)
    ```
-3. For å hente enkelte avhengigheter under byggene må du [lage ett github token](https://github.com/settings/tokens/new)
-   med `packages.read` tilgang i `$HOME/.gradle/gradle.properties`:
-   ```
-   gpr.user=<github brukernavn>
-   gpr.token=<packages.read token>
-   ```
-   Tilsvarende brukes til å hente npm pakker ved å legge inn brukernavn og samme token som passord med følgende kommando:
-   ```bash
-   npm login --registry=https://npm.pkg.github.com --auth-type=legacy
-   ```
+3. Sett opp tokens for npm og gradle [se oppsett av packages.read token](#oppsett-av-packagesread-token)
 4. Kjør følgende for å bygge alle applikasjonene og publisere docker images til lokalt registry:
    ```bash
    (cd skribenten-web/bff && npm i && npm run build)
@@ -71,6 +63,19 @@ environment:
 - JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5008
 ```
 
+### Oppsett av packages.read token
+For å hente enkelte avhengigheter under byggene må du [lage ett github token](https://github.com/settings/tokens/new)
+#### For gradle
+med `packages.read` tilgang i `$HOME/.gradle/gradle.properties`:
+   ```
+   gpr.user=<github brukernavn>
+   gpr.token=<packages.read token>
+   ```
+#### for npm
+For å hente npm pakker ved å legge inn brukernavn og samme token som passord med følgende kommando:
+```bash
+npm login --registry=https://npm.pkg.github.com --auth-type=legacy
+```
 
 ### Ytelsestesting med locust
 Ytelsestesten er i utgangspunktet satt opp til å teste vedtaksbrevet UNG_UFOER_AUTO.
