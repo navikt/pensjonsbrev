@@ -9,13 +9,16 @@ This is a mono-repo for the microservices that together form the new letter orde
    * python
    * vault
    * gcloud cli
-   * docker/colima
-   * vite (npm install vite)
-   * naisdevice med standard dev-miljø tilganger og tjenestebuss-q2
+   * kjørende docker/colima
+   * naisdevice med standard dev-miljø tilganger og tjenestebuss-q2 gruppe-tilgang
 2. Hent alle secrets:
    ```bash
-   (cd skribenten-backend && ./fetch-secrets.sh) #todo legg in no-interactive
-   (cd tjenestebuss-integrasjon && ./fetch-secrets.sh) #todo legg in no-interactive / fix
+   (cd skribenten-backend && ./fetch-secrets.sh)
+   ```
+      ```bash
+   (cd tjenestebuss-integrasjon && ./fetch-secrets.sh)
+   ```
+      ```bash
    (cd skribenten-web/bff && python3 setup_local_azure_secrets.py)
    ```
 3. For å hente enkelte avhengigheter under byggene må du [lage ett github token](https://github.com/settings/tokens/new)
@@ -24,9 +27,9 @@ This is a mono-repo for the microservices that together form the new letter orde
    gpr.user=<github brukernavn>
    gpr.token=<packages.read token>
    ```
-   Tilsvarende for trengs for npm i `$HOME/.npmrc`:
-   ```
-   //npm.pkg.github.com/:_authToken=<packages.read token>
+   Tilsvarende brukes til å hente npm pakker ved å legge inn brukernavn og samme token som passord med følgende kommando:
+   ```bash
+   npm login --registry=https://npm.pkg.github.com --auth-type=legacy
    ```
 4. Kjør følgende for å bygge alle applikasjonene og publisere docker images til lokalt registry:
    ```bash
@@ -43,8 +46,6 @@ This is a mono-repo for the microservices that together form the new letter orde
    npm run dev --prefix skribenten-web/frontend
    ```
 7. Åpne http://localhost:8083/vite-on for å koble front-enden opp mot bff(backend for front-end).
-
-
 
 ## Lokal kjøring av brevbaker og pdf-bygger
 
