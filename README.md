@@ -64,14 +64,14 @@ environment:
 ```
 
 ### Oppsett av packages.read token
-For å hente enkelte avhengigheter under byggene må du [lage ett github token](https://github.com/settings/tokens/new)
+For å hente enkelte avhengigheter under byggene må du [lage ett github token](https://github.com/settings/tokens/new) med packages.read tilgang.
 #### For gradle
-med `packages.read` tilgang i `$HOME/.gradle/gradle.properties`:
-   ```
-   gpr.user=<github brukernavn>
-   gpr.token=<packages.read token>
-   ```
-#### for npm
+legg tokenet og gir brukernavn i gradle.properties filen `$HOME/.gradle/gradle.properties`:
+```
+gpr.user=<github brukernavn>
+gpr.token=<packages.read token>
+```
+#### For npm
 For å hente npm pakker ved å legge inn brukernavn og samme token som passord med følgende kommando:
 ```bash
 npm login --registry=https://npm.pkg.github.com --auth-type=legacy
