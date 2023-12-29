@@ -3,17 +3,16 @@ package no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.soap
 import io.ktor.server.application.*
 import io.ktor.server.plugins.callid.*
 import io.ktor.util.pipeline.*
-import jakarta.xml.soap.SOAPException
-import jakarta.xml.soap.SOAPFactory
-import jakarta.xml.ws.handler.MessageContext
-import jakarta.xml.ws.handler.soap.SOAPHandler
-import jakarta.xml.ws.handler.soap.SOAPMessageContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.asContextElement
 import kotlinx.coroutines.withContext
 import org.slf4j.LoggerFactory
 import java.util.*
-import javax.xml.namespace.QName
+import javax.xml.soap.SOAPException
+import javax.xml.soap.SOAPFactory
+import javax.xml.ws.handler.Handler
+import javax.xml.ws.handler.MessageContext
+import javax.xml.ws.handler.soap.SOAPMessageContext
 
 abstract class TjenestebussService {
     protected val callIdHandler = CallIdSoapHandler()
@@ -21,7 +20,7 @@ abstract class TjenestebussService {
     suspend fun <T> withCallId(callId: String?, block: suspend CoroutineScope.() -> T): T =
         withContext(callIdHandler.callId.asContextElement(callId), block)
 
-    class CallIdSoapHandler : SOAPHandler<SOAPMessageContext> {
+    class CallIdSoapHandler() : Handler<SOAPMessageContext> {
         private val logger = LoggerFactory.getLogger(this::class.java)
 
         val callId = ThreadLocal<String?>()
@@ -52,9 +51,6 @@ abstract class TjenestebussService {
         override fun handleFault(context: SOAPMessageContext?): Boolean = true
 
         override fun close(context: MessageContext?) {}
-        override fun getHeaders(): MutableSet<QName> {
-            TODO("Not yet implemented")
-        }
     }
 }
 

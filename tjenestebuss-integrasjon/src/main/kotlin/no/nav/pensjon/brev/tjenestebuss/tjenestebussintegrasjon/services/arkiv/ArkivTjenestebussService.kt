@@ -1,7 +1,6 @@
 package no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.arkiv
 
 import com.typesafe.config.Config
-import javax.xml.bind.JAXBElement
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.maskerFnr
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.arkiv.BestillBrevResponseDto.Failure
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.arkiv.BestillBrevResponseDto.Failure.FailureType
@@ -12,6 +11,7 @@ import no.nav.virksomhet.tjenester.arkiv.meldinger.v1.Sakskontekst
 import no.nav.virksomhet.tjenester.arkiv.v1.*
 import no.nav.virksomhet.tjenester.felles.v1.StelvioFault
 import org.slf4j.LoggerFactory
+import javax.xml.bind.JAXBElement
 import javax.xml.datatype.XMLGregorianCalendar
 import javax.xml.namespace.QName
 
@@ -63,8 +63,7 @@ class ArkivTjenestebussService(config: Config, securityHandler: STSSercuritySOAP
 
 sealed class BestillBrevResponseDto {
     data class Success(val journalpostId: String) : BestillBrevResponseDto()
-    data class Failure(
-        val failureType: FailureType,
+    data class Failure(val failureType: FailureType,
         val message: String,
         val source: String,
         val type: String,

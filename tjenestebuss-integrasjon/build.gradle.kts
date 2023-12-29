@@ -19,7 +19,7 @@ group = "no.nav.pensjon.brev.tjenestebuss"
 version = "0.0.1"
 
 application {
-	mainClass.set("no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.TjenestebussIntegrasjonApplicationKt")
+	mainClass.set("no.nav.pensjon.brev.tjenestebussintegrasjon.TjenestebussIntegrasjonApplicationKt")
 }
 
 data class GithubImageRegistry(override val toImage: Provider<String>, override val username: Provider<String>, override val password: Provider<String>) : DockerImageRegistry
@@ -42,7 +42,7 @@ ktor {
 	}
 }
 
-val cxfVersion = "4.0.1"
+val cxfVersion = "3.6.0"
 val esbVersion = "2023.11.01-10.31-1bc8315f412e"
 dependencies {
 	implementation("io.ktor:ktor-serialization-jackson:$ktorVersion")
@@ -65,8 +65,8 @@ dependencies {
 	implementation("no.nav.tjenestespesifikasjoner:dokumentproduksjon-v3-tjenestespesifikasjon:$dokumentproduksjonVersion")
 
 	implementation("javax.xml.ws:jaxws-api:2.3.1")
-	implementation("com.sun.xml.ws:jaxws-tools:4.0.1")
-	implementation("com.sun.xml.bind:jaxb-impl:4.0.2")
+	implementation("com.sun.xml.ws:jaxws-tools:2.3.0.2")
+	implementation("com.sun.xml.bind:jaxb-impl:3.0.2")
 	implementation("org.apache.cxf:cxf-rt-features-logging:$cxfVersion")
 	implementation("org.apache.cxf:cxf-rt-frontend-jaxws:$cxfVersion")
 	implementation("org.apache.cxf:cxf-rt-ws-policy:$cxfVersion")
