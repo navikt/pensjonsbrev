@@ -1,6 +1,18 @@
 # Pensjonsbrev
 This is a mono-repo for the microservices that together form the new letter ordering system.
 
+## Lokal kjøring av brevbaker og pdf-bygger
+
+For å kjøre løsningen lokalt må man ha docker og docker compose installert.
+Bygging av brevbakeren krever at du har konfigurert gradle med packages.read token for å hente pakker.
+
+Bruk følgende for å bygge og kjøre:
+```bash
+./gradlew :pensjon-brevbaker:build :pdf-bygger:build
+```
+```bash
+docker compose up -d --build
+```
 
 ### Lokal kjøring av skribenten backend/front-end og brevbaker/pdf-bygger
 
@@ -47,15 +59,18 @@ This is a mono-repo for the microservices that together form the new letter orde
    ```
 7. Åpne http://localhost:8083/vite-on for å koble front-enden opp mot bff(backend for front-end).
 
-## Lokal kjøring av brevbaker og pdf-bygger
+### Debugge tjenester i docker
+Ulike docker-tjenester har eksponerte porter som du kan koble en remote debugger på.
 
-For å kjøre løsningen lokalt må man ha docker og docker compose installert.
-Kjør `docker compose up -d` i rot-katalogen til prosjektet.
+I [docker-compose.yml](docker-compose.yml) finner du de ulike portene som mappes til remote debug for de ulike tjenetene.
+F.eks her hvor remote agent kjører i containeren på port 5008 og mappes ut til 5018 som du kan bruke til å koble til remote-debugger.
+```yaml
+ports:
+- "5018:5008"
+environment:
+- JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5008
+```
 
-### Debugge pdf-bygger lokalt
-Pdf-byggeren er avhengig av ulike pakker for å kompilere LaTeX til pdf.
-Derfor må man kjøre pdf-bygger java applikasjonen inne i containeren for at den skal fungere.
-Når man kjører lokalt med docker compose er den allerede satt opp til remote debug på port 5016 ([se docker-compose.yml](docker-compose.yml)).
 
 ### Ytelsestesting med locust
 Ytelsestesten er i utgangspunktet satt opp til å teste vedtaksbrevet UNG_UFOER_AUTO.
