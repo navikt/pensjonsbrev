@@ -1,16 +1,81 @@
 # Pensjonsbrev
 This is a mono-repo for the microservices that together form the new letter ordering system.
 
-
 ## Lokal kjøring av brevbaker og pdf-bygger
 
 For å kjøre løsningen lokalt må man ha docker og docker compose installert.
-Kjør `docker compose up -d` i rot-katalogen til prosjektet.
+Bygging av brevbakeren krever at du har konfigurert gradle med packages.read token for å hente pakker.
+Se [seksjonen under for oppsett av read token i gradle](#for-gradle).
 
-### Debugge pdf-bygger lokalt
-Pdf-byggeren er avhengig av ulike pakker for å kompilere LaTeX til pdf.
-Derfor må man kjøre pdf-bygger java applikasjonen inne i containeren for at den skal fungere.
-Når man kjører lokalt med docker compose er den allerede satt opp til remote debug på port 5016 ([se docker-compose.yml](docker-compose.yml)).
+Bruk følgende for å bygge og kjøre:
+```bash
+./gradlew :pensjon-brevbaker:build :pdf-bygger:build
+```
+```bash
+docker compose up -d --build
+```
+
+### Lokal kjøring av skribenten backend/front-end og brevbaker/pdf-bygger
+
+1. For å hente alle secrets må du ha installert:
+   * kubectl
+   * python
+   * vault
+   * gcloud cli
+   * kjørende docker/colima
+   * naisdevice med standard dev-miljø tilganger og tjenestebuss-q2 gruppe-tilgang
+2. Hent alle secrets:
+   ```bash
+   (cd skribenten-backend && ./fetch-secrets.sh)
+   ```
+      ```bash
+   (cd tjenestebuss-integrasjon && ./fetch-secrets.sh)
+   ```
+      ```bash
+   (cd skribenten-web/bff && python3 setup_local_azure_secrets.py)
+   ```
+3. Sett opp tokens for npm og gradle [se oppsett av packages.read token](#oppsett-av-packagesread-token)
+4. Kjør følgende for å bygge alle applikasjonene og publisere docker images til lokalt registry:
+   ```bash
+   (cd skribenten-web/bff && npm i && npm run build)
+   (cd skribenten-web/frontend && npm i)
+   ./gradlew :tjenestebuss-integrasjon:publishImageToLocalRegistry :skribenten-backend:build :pensjon-brevbaker:build :pdf-bygger:build
+   ```
+5. Kjør alle backend-tjenester
+   ```bash
+   docker-compose --profile skribenten up -d --build
+   ```
+6. Kjør front-end. Applikasjonen krever at du logger på med en @trygdeetaten.no test bruker med saksbehandler tilganger.
+   ```bash
+   npm run dev --prefix skribenten-web/frontend
+   ```
+7. Åpne http://localhost:8083/vite-on for å koble front-enden opp mot bff(backend for front-end).
+
+### Debugge tjenester i docker
+Ulike docker-tjenester har eksponerte porter som du kan koble en remote debugger på.
+
+I [docker-compose.yml](docker-compose.yml) finner du de ulike portene som mappes til remote debug for de ulike tjenetene.
+F.eks her hvor remote agent kjører i containeren på port 5008 og mappes ut til 5018 som du kan bruke til å koble til remote-debugger.
+```yaml
+ports:
+- "5018:5008"
+environment:
+- JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5008
+```
+
+### Oppsett av packages.read token
+For å hente enkelte avhengigheter under byggene må du [lage ett github token](https://github.com/settings/tokens/new) med packages.read tilgang.
+#### For gradle
+legg tokenet og gir brukernavn i gradle.properties filen `$HOME/.gradle/gradle.properties`:
+```
+gpr.user=<github brukernavn>
+gpr.token=<packages.read token>
+```
+#### For npm
+For å hente npm pakker ved å legge inn brukernavn og samme token som passord med følgende kommando:
+```bash
+npm login --registry=https://npm.pkg.github.com --auth-type=legacy
+```
 
 ### Ytelsestesting med locust
 Ytelsestesten er i utgangspunktet satt opp til å teste vedtaksbrevet UNG_UFOER_AUTO.
