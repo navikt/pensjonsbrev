@@ -51,7 +51,7 @@ object BarnepensjonInnvilgelseFraser {
             }
             paragraph {
                 text(
-                    Language.Bokmal to "Se hvordan vi har beregnet barnepensjonen din i vedlegget “Beregning av barnepensjon.",
+                    Language.Bokmal to "Se hvordan vi har beregnet barnepensjonen din i vedlegget «Beregning av barnepensjon».",
                     Language.Nynorsk to "",
                     Language.English to "",
                 )
