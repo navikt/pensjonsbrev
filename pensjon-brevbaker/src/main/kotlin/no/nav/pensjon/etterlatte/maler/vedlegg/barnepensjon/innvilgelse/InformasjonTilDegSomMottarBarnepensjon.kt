@@ -127,7 +127,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Language.Bokmal, Language.Ny
     }
     paragraph {
         text(
-            Language.Bokmal to "Barnepensjon er skattepliktig, men vi trekker ikke skatt uten å få beskjed om dette. Hvis du opplyste om ønsket skattetrekk i søknaden, har vi registrert dette for i år. Du må selv sjekke om dette skattetrekket overføres ved årsskiftet. Du kan lese mer om frivillig skattetrekk på ${Constants.SKATTETREKK_PENGESTOETTE_URL}.",
+            Language.Bokmal to "Barnepensjon er skattepliktig, men vi trekker ikke skatt uten å få beskjed om dette. Hvis du opplyste om ønsket skattetrekk da du søkte barnepensjon, ble dette registrert. Du må selv sjekke om dette skattetrekket blir overført ved hvert årsskifte. Du kan lese mer om frivillig skattetrekk på ${Constants.SKATTETREKK_PENGESTOETTE_URL}.",
             Language.Nynorsk to "",
             Language.English to "",
         )
