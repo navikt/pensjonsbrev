@@ -51,7 +51,7 @@
     "eslint-plugin-simple-import-sort": "10.0.0",
     "eslint-plugin-unicorn": "50.0.1",
     "jsdom": "23.0.1",
-    "postcss-styled-syntax": "0.5.0",
+    "postcss-styled-syntax": "0.6.3",
     "prettier": "3.1.1",
     "stylelint": "15.11.0",
     "stylelint-config-standard": "34.0.0",
