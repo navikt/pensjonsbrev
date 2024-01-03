@@ -5,7 +5,7 @@ import { Outlet, useNavigate, useParams, useRouteContext, useSearch } from "@tan
 import { Fragment, useState } from "react";
 
 import { getFavoritter, getLetterTemplate } from "~/api/skribenten-api-endpoints";
-import { brevvelgerRoute } from "~/tanStackRoutes";
+import { brevvelgerRoute, selectedTemplateRoute } from "~/tanStackRoutes";
 import type { LetterCategory } from "~/types/apiTypes";
 import type { LetterMetadata } from "~/types/apiTypes";
 
@@ -17,7 +17,7 @@ export enum BrevvelgerTabOptions {
 export function BrevvelgerPage() {
   const { fane } = useSearch({ from: brevvelgerRoute.id });
   const { sakId } = useParams({ from: brevvelgerRoute.id });
-  const navigate = useNavigate();
+  const navigate = useNavigate({ from: brevvelgerRoute.id });
   const { getSakQueryOptions } = useRouteContext({ from: brevvelgerRoute.id });
   const sak = useQuery(getSakQueryOptions).data;
 
@@ -194,7 +194,11 @@ function BrevmalButton({ letterMetadata }: { letterMetadata: LetterMetadata }) {
           `,
       )}
       onClick={() =>
-        navigate({ to: "$templateId", params: { sakId, templateId: letterMetadata.id }, search: (s) => s })
+        navigate({
+          to: selectedTemplateRoute.id,
+          params: { sakId, templateId: letterMetadata.id },
+          search: (s) => s,
+        })
       }
       size="small"
       variant="tertiary"
