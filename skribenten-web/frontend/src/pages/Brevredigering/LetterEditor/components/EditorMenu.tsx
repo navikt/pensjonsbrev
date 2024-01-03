@@ -1,13 +1,17 @@
 import { css } from "@emotion/react";
 import { Button } from "@navikt/ds-react";
+import type { ReactNode } from "react";
 
 import type { BoundAction } from "../lib/actions";
 
+type Typography = "PARAGRAPH" | "TITLE1" | "TITLE2";
+
 export type EditorMenuProperties = {
-  switchType: BoundAction<[type: "PARAGRAPH" | "TITLE1" | "TITLE2"]>;
+  activeTypography: Typography;
+  onSwitchTypography: BoundAction<[type: Typography]>;
 };
 
-export const EditorMenu = ({ switchType }: EditorMenuProperties) => {
+export const EditorMenu = ({ onSwitchTypography, activeTypography }: EditorMenuProperties) => {
   return (
     <div
       css={css`
@@ -19,15 +23,53 @@ export const EditorMenu = ({ switchType }: EditorMenuProperties) => {
         align-self: stretch;
       `}
     >
-      <Button onClick={switchType.bind(null, "TITLE1")} size="xsmall" type="button" variant="secondary-neutral">
+      <SelectTypographyButton
+        isActive={activeTypography === "TITLE1"}
+        onClick={onSwitchTypography.bind(null, "TITLE1")}
+      >
         Overskift 1
-      </Button>
-      <Button onClick={switchType.bind(null, "TITLE2")} size="xsmall" type="button" variant="secondary-neutral">
+      </SelectTypographyButton>
+      <SelectTypographyButton
+        isActive={activeTypography === "TITLE2"}
+        onClick={onSwitchTypography.bind(null, "TITLE2")}
+      >
         Overskrift 2
-      </Button>
-      <Button onClick={switchType.bind(null, "PARAGRAPH")} size="xsmall" type="button" variant="secondary-neutral">
+      </SelectTypographyButton>
+      <SelectTypographyButton
+        isActive={activeTypography === "PARAGRAPH"}
+        onClick={onSwitchTypography.bind(null, "PARAGRAPH")}
+      >
         Normal
-      </Button>
+      </SelectTypographyButton>
     </div>
   );
 };
+
+function SelectTypographyButton({
+  isActive,
+  children,
+  onClick,
+}: {
+  isActive: boolean;
+  children: ReactNode;
+  onClick: () => void;
+}) {
+  return (
+    <Button
+      css={
+        isActive &&
+        css`
+          color: var(--a-text-on-action);
+          background-color: var(--a-surface-action-active);
+        `
+      }
+      disabled={isActive}
+      onClick={onClick}
+      size="xsmall"
+      type="button"
+      variant="secondary-neutral"
+    >
+      {children}
+    </Button>
+  );
+}

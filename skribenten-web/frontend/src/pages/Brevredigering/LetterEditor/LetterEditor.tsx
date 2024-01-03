@@ -35,10 +35,9 @@ const AnyBlockView = (properties: BlockProperties<AnyBlock>) => {
 
 export const LetterEditor = ({ initialState }: { initialState: RenderedLetter }) => {
   const [editorState, setEditorState] = useState<LetterEditorState>(Actions.create(initialState));
+  const [currentBlock, setCurrentBlock] = useState(0);
 
   const blocks = editorState.editedLetter.letter.blocks;
-
-  const [currentBlock, setCurrentBlock] = useState(0);
 
   const focusStolen = bindActionWithCallback(Actions.focusStolen, setEditorState);
   const switchType = bindActionWithCallback(Actions.switchType, setEditorState, currentBlock);
@@ -51,7 +50,10 @@ export const LetterEditor = ({ initialState }: { initialState: RenderedLetter })
         align-items: center;
       `}
     >
-      <EditorMenu switchType={switchType} />
+      <EditorMenu
+        activeTypography={editorState.editedLetter.letter.blocks[currentBlock].type}
+        onSwitchTypography={switchType}
+      />
       <div
         css={css`
           margin-top: var(--a-spacing-6);
