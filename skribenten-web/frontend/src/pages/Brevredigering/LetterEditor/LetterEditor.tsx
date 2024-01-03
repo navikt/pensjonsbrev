@@ -4,6 +4,7 @@ import { css } from "@emotion/react";
 import { Heading } from "@navikt/ds-react";
 import { useState } from "react";
 
+import type { BlockProperties } from "~/pages/Brevredigering/LetterEditor/BlockProperties";
 import type { AnyBlock, RenderedLetter } from "~/types/brevbakerTypes";
 import { PARAGRAPH, TITLE1, TITLE2 } from "~/types/brevbakerTypes";
 
@@ -14,56 +15,20 @@ import { SakspartView } from "./components/SakspartView";
 import { SignaturView } from "./components/SignaturView";
 import { Title1 } from "./components/Title1";
 import { Title2 } from "./components/Title2";
-import type { BoundAction, CallbackReceiver } from "./lib/actions";
 import { bindActionWithCallback } from "./lib/actions";
-import type { CursorPosition, LetterEditorState } from "./model/state";
+import type { LetterEditorState } from "./model/state";
 
-type AnyBlockProperties = {
-  block: AnyBlock;
-  blockId: number;
-  updateLetter: CallbackReceiver<LetterEditorState>;
-  stealFocus?: CursorPosition;
-  blockFocusStolen: BoundAction<[]>;
-  onFocus: BoundAction<[]>;
-};
-
-const AnyBlockView = ({ block, blockId, updateLetter, stealFocus, blockFocusStolen, onFocus }: AnyBlockProperties) => {
+const AnyBlockView = (properties: BlockProperties<AnyBlock>) => {
+  const block = properties.block;
   switch (block.type) {
     case TITLE1: {
-      return (
-        <Title1
-          block={block}
-          blockFocusStolen={blockFocusStolen}
-          blockId={blockId}
-          blockStealFocus={stealFocus}
-          onFocus={onFocus}
-          updateLetter={updateLetter}
-        />
-      );
+      return <Title1 {...properties} block={block} />;
     }
     case TITLE2: {
-      return (
-        <Title2
-          block={block}
-          blockFocusStolen={blockFocusStolen}
-          blockId={blockId}
-          blockStealFocus={stealFocus}
-          onFocus={onFocus}
-          updateLetter={updateLetter}
-        />
-      );
+      return <Title2 {...properties} block={block} />;
     }
     case PARAGRAPH: {
-      return (
-        <Paragraph
-          block={block}
-          blockFocusStolen={blockFocusStolen}
-          blockId={blockId}
-          blockStealFocus={stealFocus}
-          onFocus={onFocus}
-          updateLetter={updateLetter}
-        />
-      );
+      return <Paragraph {...properties} block={block} />;
     }
   }
 };
@@ -109,9 +74,9 @@ export const LetterEditor = ({ initialState }: { initialState: RenderedLetter })
               block={block}
               blockFocusStolen={focusStolen.bind(null, blockId)}
               blockId={blockId}
+              blockStealFocus={editorState.stealFocus[blockId]}
               key={blockId}
               onFocus={setCurrentBlock.bind(null, blockId)}
-              stealFocus={editorState.stealFocus[blockId]}
               updateLetter={setEditorState}
             />
           ))}
