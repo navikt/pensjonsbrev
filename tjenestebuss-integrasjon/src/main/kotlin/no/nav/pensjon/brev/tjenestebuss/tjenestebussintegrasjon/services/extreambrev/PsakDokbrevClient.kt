@@ -18,7 +18,7 @@ class PsakDokbrevClient(
     securityHandler: STSSercuritySOAPHandler,
     callIdSoapHandler: TjenestebussService.CallIdSoapHandler
 ) {
-    private val tjenestebussUrl = config.getString("url")
+    private val tjenestebussUrl = config.getString("tjenestebuss.url")
     private val jaxWsProxyFactoryBean = JaxWsProxyFactoryBean().apply {
         val name = "PSAKDokBrevSCAEXP_PSAKDokBrevHttpService"
         val portName = "PSAKDokBrevSCAEXP_PSAKDokBrevHttpPort"

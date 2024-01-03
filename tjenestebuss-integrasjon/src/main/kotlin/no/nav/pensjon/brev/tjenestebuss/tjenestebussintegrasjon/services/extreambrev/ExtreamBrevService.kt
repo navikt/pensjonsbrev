@@ -17,7 +17,7 @@ class ExtreamBrevService(private val config: Config, securityHandler: STSSercuri
      * Henter URL som benyttes for å redigere et Extream dokument.
      *
      * @param requestDto en request som inneholder journalpostId
-     * @return en response som enten er Success med extreamBrevUrl eller Failure med feiltype og eventuell årsak
+     * @return en response som enten er Success med extreamBrevUrl eller Failure med eventuell årsak
      */
     fun hentExtreamBrevUrl(requestDto: RedigerExtreamDokumentRequestDto): RedigerExtreamDokumentResponseDto {
         try {
