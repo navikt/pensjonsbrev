@@ -2,7 +2,7 @@ import { create } from "./common";
 import { focusStolen } from "./focusStolen";
 import { merge } from "./merge";
 import { split } from "./split";
-import { switchType } from "./switchType";
+import { switchTypography } from "./switchTypography";
 import { updateContentText } from "./updateContentText";
 import { updateLetter } from "./updateLetter";
 
@@ -11,7 +11,7 @@ const Actions = {
   focusStolen,
   merge,
   split,
-  switchType,
+  switchTypography,
   updateContentText,
   updateLetter,
 };

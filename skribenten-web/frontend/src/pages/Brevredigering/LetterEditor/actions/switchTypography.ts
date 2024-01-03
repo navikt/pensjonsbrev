@@ -6,21 +6,21 @@ import type { Action } from "../lib/actions";
 import type { LetterEditorState } from "../model/state";
 import { isTextContent } from "../model/utils";
 
-export const switchType: Action<
+export const switchTypography: Action<
   LetterEditorState,
-  [blockId: number, toType: typeof PARAGRAPH | typeof TITLE1 | typeof TITLE2]
-> = produce((draft, blockId, toType) => {
+  [blockId: number, typography: typeof PARAGRAPH | typeof TITLE1 | typeof TITLE2]
+> = produce((draft, blockId, typography) => {
   const block = draft.editedLetter.letter.blocks[blockId];
-  switch (toType) {
+  switch (typography) {
     case PARAGRAPH: {
-      block.type = toType;
+      block.type = typography;
       break;
     }
 
     case TITLE1:
     case TITLE2: {
       if (block.content.every(isTextContent)) {
-        block.type = toType;
+        block.type = typography;
       } else {
         // eslint-disable-next-line no-console
         console.warn("Cannot switch type of block to title1: contains non text content");

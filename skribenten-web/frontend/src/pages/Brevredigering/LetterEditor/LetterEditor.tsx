@@ -40,7 +40,7 @@ export const LetterEditor = ({ initialState }: { initialState: RenderedLetter })
   const blocks = editorState.editedLetter.letter.blocks;
 
   const focusStolen = bindActionWithCallback(Actions.focusStolen, setEditorState);
-  const switchType = bindActionWithCallback(Actions.switchType, setEditorState, currentBlock);
+  const switchTypography = bindActionWithCallback(Actions.switchTypography, setEditorState, currentBlock);
 
   return (
     <div
@@ -52,7 +52,7 @@ export const LetterEditor = ({ initialState }: { initialState: RenderedLetter })
     >
       <EditorMenu
         activeTypography={editorState.editedLetter.letter.blocks[currentBlock].type}
-        onSwitchTypography={switchType}
+        onSwitchTypography={switchTypography}
       />
       <div
         css={css`
