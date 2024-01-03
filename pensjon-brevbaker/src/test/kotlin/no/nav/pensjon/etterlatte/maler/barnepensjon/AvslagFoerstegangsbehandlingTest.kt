@@ -12,8 +12,10 @@ import no.nav.pensjon.brev.writeTestHTML
 import no.nav.pensjon.brev.writeTestPDF
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.Fixtures
+import no.nav.pensjon.etterlatte.fixtures.createBarnepensjonAvslagDTO
 import no.nav.pensjon.etterlatte.maler.ManueltBrevDTO
 import no.nav.pensjon.etterlatte.maler.barnepensjon.avslag.AvslagFoerstegangsbehandling
+import no.nav.pensjon.etterlatte.maler.barnepensjon.avslag.BarnepensjonAvslagDTO
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 
@@ -24,7 +26,7 @@ class AvslagFoerstegangsbehandlingTest {
     fun pdftest() {
         Letter(
             AvslagFoerstegangsbehandling.template,
-            Fixtures.create<ManueltBrevDTO>(),
+            Fixtures.create<BarnepensjonAvslagDTO>(),
             Language.Bokmal,
             Fixtures.felles,
         ).let { PensjonLatexRenderer.render(it) }
@@ -36,7 +38,7 @@ class AvslagFoerstegangsbehandlingTest {
     fun testHtml() {
         Letter(
             AvslagFoerstegangsbehandling.template,
-            Fixtures.create<ManueltBrevDTO>(),
+            Fixtures.create<BarnepensjonAvslagDTO>(),
             Language.Bokmal,
             Fixtures.felles,
         ).let { PensjonHTMLRenderer.render(it) }
