@@ -1,14 +1,14 @@
 package no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.dokumentsproduksjon.dto
 
-sealed class RedigerDokumentResponseDto {
+sealed class RedigerDoksysDokumentResponseDto {
     data class Success(
         val metaforceURI: String,
-        ) : RedigerDokumentResponseDto()
+        ) : RedigerDoksysDokumentResponseDto()
     data class Failure(
         val failureType: FailureType,
         val message: String?,
         val cause: String?,
-    ) : RedigerDokumentResponseDto() {
+    ) : RedigerDoksysDokumentResponseDto() {
         constructor(failureType: FailureType, ex: Exception): this(
             failureType,
             ex.message,

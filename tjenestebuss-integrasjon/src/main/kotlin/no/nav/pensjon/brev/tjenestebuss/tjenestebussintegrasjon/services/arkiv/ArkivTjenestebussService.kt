@@ -20,6 +20,12 @@ class ArkivTjenestebussService(config: Config, securityHandler: STSSercuritySOAP
 
     private val arkivClient = ArkivClient(config, securityHandler, callIdHandler).client()
 
+    /**
+     * Bestiller Extream brev
+     *
+     * @param bestillBrevExtreamRequestDto brev og journalpost informasjon
+     * @return en response som enten er Success med journalpostId eller Failure med feiltype og eventuell årsak
+     */
     fun bestillBrev(bestillBrevExtreamRequestDto: BestillBrevExtreamRequestDto): BestillBrevResponseDto {
         try {
             val response = arkivClient.bestillBrev(BestillBrevRequest().apply {

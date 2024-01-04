@@ -17,11 +17,11 @@ import org.slf4j.LoggerFactory
 class SamhandlerTjenestebussService(config: Config, securityHandler: STSSercuritySOAPHandler): TjenestebussService() {
     private val logger = LoggerFactory.getLogger(this::class.java)
 
-    private val samhandlerClient = SamhandlerClient(config, securityHandler, callIdHandler).client()
+    private val psakSamhandlerClient = PsakSamhandlerClient(config, securityHandler, callIdHandler).client()
 
     fun hentSamhandler(requestDto: HentSamhandlerRequestDto): HentSamhandlerResponseDto {
         try {
-            val response =  samhandlerClient.hentSamhandler(ASBOPenHentSamhandlerRequest().apply {
+            val response =  psakSamhandlerClient.hentSamhandler(ASBOPenHentSamhandlerRequest().apply {
                 idTSSEkstern = requestDto.idTSSEkstern
                 hentDetaljert = requestDto.hentDetaljert
             })
@@ -45,7 +45,7 @@ class SamhandlerTjenestebussService(config: Config, securityHandler: STSSercurit
         try {
             logger.info("Finn samhandler med type: ${requestDto.samhandlerType}")
 
-            val samhandlerResponse = samhandlerClient.finnSamhandler(ASBOPenFinnSamhandlerRequest().apply {
+            val samhandlerResponse = psakSamhandlerClient.finnSamhandler(ASBOPenFinnSamhandlerRequest().apply {
                 navn = requestDto.navn
                 samhandlerType = requestDto.samhandlerType.name
             })

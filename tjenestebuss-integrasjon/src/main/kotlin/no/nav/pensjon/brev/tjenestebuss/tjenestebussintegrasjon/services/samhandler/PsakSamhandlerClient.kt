@@ -8,7 +8,13 @@ import org.apache.cxf.jaxws.JaxWsProxyFactoryBean
 import org.apache.cxf.ws.addressing.WSAddressingFeature
 import javax.xml.namespace.QName
 
-class SamhandlerClient(
+
+/**
+ * Soap client for PsakSamhandler service.
+ * Benyttes for å finne samhandler og tilhørende tssId, kontakt og adresse-informajson
+ *
+ */
+class PsakSamhandlerClient(
     config: Config,
     securityHandler: STSSercuritySOAPHandler,
     callIdSoapHandler: TjenestebussService.CallIdSoapHandler
