@@ -5,32 +5,29 @@ import { Heading } from "@navikt/ds-react";
 import { useState } from "react";
 
 import type { BlockProperties } from "~/pages/Brevredigering/LetterEditor/BlockProperties";
+import { ContentGroup } from "~/pages/Brevredigering/LetterEditor/components/ContentGroup";
 import type { AnyBlock, RenderedLetter } from "~/types/brevbakerTypes";
-import { PARAGRAPH, TITLE1, TITLE2 } from "~/types/brevbakerTypes";
 
 import Actions from "./actions";
 import { EditorMenu } from "./components/EditorMenu";
-import { Paragraph } from "./components/Paragraph";
 import { SakspartView } from "./components/SakspartView";
 import { SignaturView } from "./components/SignaturView";
-import { Title1 } from "./components/Title1";
-import { Title2 } from "./components/Title2";
 import { bindActionWithCallback } from "./lib/actions";
 import type { LetterEditorState } from "./model/state";
 
 const AnyBlockView = (properties: BlockProperties<AnyBlock>) => {
   const block = properties.block;
-  switch (block.type) {
-    case TITLE1: {
-      return <Title1 {...properties} block={block} />;
-    }
-    case TITLE2: {
-      return <Title2 {...properties} block={block} />;
-    }
-    case PARAGRAPH: {
-      return <Paragraph {...properties} block={block} />;
-    }
-  }
+
+  return (
+    <div className={block.type}>
+      <ContentGroup
+        {...properties}
+        content={properties.block.content}
+        editable={properties.block.editable}
+        id={{ blockId: properties.blockId }}
+      />
+    </div>
+  );
 };
 
 export const LetterEditor = ({ initialState }: { initialState: RenderedLetter }) => {
@@ -74,11 +71,11 @@ export const LetterEditor = ({ initialState }: { initialState: RenderedLetter })
           {blocks.map((block, blockId) => (
             <AnyBlockView
               block={block}
-              blockFocusStolen={focusStolen.bind(null, blockId)}
               blockId={blockId}
-              blockStealFocus={editorState.stealFocus[blockId]}
+              focusStolen={focusStolen.bind(null, blockId)}
               key={blockId}
               onFocus={setCurrentBlock.bind(null, blockId)}
+              stealFocus={editorState.stealFocus[blockId]}
               updateLetter={setEditorState}
             />
           ))}

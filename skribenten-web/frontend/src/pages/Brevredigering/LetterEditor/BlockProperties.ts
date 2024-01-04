@@ -7,7 +7,7 @@ export type BlockProperties<T> = {
   block: T & AnyBlock;
   blockId: number;
   updateLetter: CallbackReceiver<LetterEditorState>;
-  blockStealFocus: CursorPosition | undefined;
-  blockFocusStolen: BoundAction<[]>;
+  stealFocus: CursorPosition | undefined;
+  focusStolen: BoundAction<[]>;
   onFocus: BoundAction<[]>;
 };

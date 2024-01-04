@@ -20,14 +20,14 @@ const selectService = new SelectionService(true);
 
 type ContentGroupState = never;
 
-export type BlockID = { blockId: number };
+type BlockID = { blockId: number };
 export type ItemID = { blockId: number; contentId: number; itemId: number };
 
 function toContentId(id: BlockID | ItemID, contentId: number): ContentId {
   return "itemId" in id ? { ...id, itemContentId: contentId } : { ...id, contentId: contentId };
 }
 
-export type ContentGroupProperties<T> = {
+type ContentGroupProperties<T> = {
   id: BlockID | ItemID;
   updateLetter: CallbackReceiver<LetterEditorState>;
   content: (T & Content)[];

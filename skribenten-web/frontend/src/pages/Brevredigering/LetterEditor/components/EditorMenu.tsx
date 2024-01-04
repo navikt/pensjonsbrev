@@ -64,7 +64,11 @@ function SelectTypographyButton({
         `
       }
       disabled={isActive}
-      onClick={onClick}
+      // Use mouseDown instead of onClick to prevent the cursor from losing focus
+      onMouseDown={(event) => {
+        event.preventDefault();
+        onClick();
+      }}
       size="xsmall"
       type="button"
       variant="secondary-neutral"
