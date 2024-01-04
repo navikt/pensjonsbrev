@@ -2,13 +2,14 @@ import "./editor.css";
 
 import { css } from "@emotion/react";
 import { Heading } from "@navikt/ds-react";
-import { useState } from "react";
+import { Fragment, useState } from "react";
 
 import { ContentGroup } from "~/pages/Brevredigering/LetterEditor/components/ContentGroup";
 import type { RenderedLetter } from "~/types/brevbakerTypes";
 
 import Actions from "./actions";
 import { EditorMenu } from "./components/EditorMenu";
+import { NewContentGroup } from "./components/NewContentGroup";
 import { SakspartView } from "./components/SakspartView";
 import { SignaturView } from "./components/SignaturView";
 import { bindActionWithCallback } from "./lib/actions";
@@ -35,12 +36,7 @@ export const LetterEditor = ({ initialState }: { initialState: RenderedLetter })
         activeTypography={editorState.editedLetter.letter.blocks[currentBlock].type}
         onSwitchTypography={switchTypography}
       />
-      <div
-        css={css`
-          margin-top: var(--a-spacing-6);
-          width: 758px;
-        `}
-      >
+      <div className="editor">
         <SakspartView sakspart={editorState.editedLetter.letter.sakspart} />
         <Heading
           css={css`
@@ -52,18 +48,24 @@ export const LetterEditor = ({ initialState }: { initialState: RenderedLetter })
           {editorState.editedLetter.letter.title}
         </Heading>
         <div>
-          {blocks.map((block, blockId) => (
-            <div className={block.type} key={blockId}>
-              <ContentGroup
-                content={block.content}
-                editable={block.editable}
-                focusStolen={focusStolen.bind(null, blockId)}
-                id={{ blockId }}
-                onFocus={setCurrentBlock.bind(null, blockId)}
-                stealFocus={editorState.stealFocus[blockId]}
-                updateLetter={setEditorState}
-              />
-            </div>
+          {blocks.map((block, blockIndex) => (
+            <Fragment key={blockIndex}>
+              <div className={block.type} key={blockIndex}>
+                <NewContentGroup block={block} blockIndex={blockIndex} setEditorState={setEditorState} />
+              </div>
+              {/*<div className={block.type} key={blockId}>*/}
+              {/*  <ContentGroup*/}
+              {/*    block={block}*/}
+              {/*    content={block.content}*/}
+              {/*    editable={block.editable}*/}
+              {/*    focusStolen={focusStolen.bind(null, blockId)}*/}
+              {/*    id={{ blockId }}*/}
+              {/*    onFocus={setCurrentBlock.bind(null, blockId)}*/}
+              {/*    stealFocus={editorState.stealFocus[blockId]}*/}
+              {/*    updateLetter={setEditorState}*/}
+              {/*  />*/}
+              {/*</div>*/}
+            </Fragment>
           ))}
         </div>
         <SignaturView signatur={editorState.editedLetter.letter.signatur} />

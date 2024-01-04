@@ -1,3 +1,15 @@
+.editor {
+    margin-top: var(--a-spacing-6);
+    width: 758px;
+    caret-color: green;
+    [contenteditable] {
+
+        &:focus-within {
+            outline: 2px dotted red;
+        }
+    }
+}
+
 .PARAGRAPH {
     margin-bottom: var(--a-spacing-8);
 }
