@@ -4,9 +4,8 @@ import { css } from "@emotion/react";
 import { Heading } from "@navikt/ds-react";
 import { useState } from "react";
 
-import type { BlockProperties } from "~/pages/Brevredigering/LetterEditor/BlockProperties";
 import { ContentGroup } from "~/pages/Brevredigering/LetterEditor/components/ContentGroup";
-import type { AnyBlock, RenderedLetter } from "~/types/brevbakerTypes";
+import type { RenderedLetter } from "~/types/brevbakerTypes";
 
 import Actions from "./actions";
 import { EditorMenu } from "./components/EditorMenu";
@@ -14,21 +13,6 @@ import { SakspartView } from "./components/SakspartView";
 import { SignaturView } from "./components/SignaturView";
 import { bindActionWithCallback } from "./lib/actions";
 import type { LetterEditorState } from "./model/state";
-
-const AnyBlockView = (properties: BlockProperties<AnyBlock>) => {
-  const block = properties.block;
-
-  return (
-    <div className={block.type}>
-      <ContentGroup
-        {...properties}
-        content={properties.block.content}
-        editable={properties.block.editable}
-        id={{ blockId: properties.blockId }}
-      />
-    </div>
-  );
-};
 
 export const LetterEditor = ({ initialState }: { initialState: RenderedLetter }) => {
   const [editorState, setEditorState] = useState<LetterEditorState>(Actions.create(initialState));
@@ -69,15 +53,17 @@ export const LetterEditor = ({ initialState }: { initialState: RenderedLetter })
         </Heading>
         <div>
           {blocks.map((block, blockId) => (
-            <AnyBlockView
-              block={block}
-              blockId={blockId}
-              focusStolen={focusStolen.bind(null, blockId)}
-              key={blockId}
-              onFocus={setCurrentBlock.bind(null, blockId)}
-              stealFocus={editorState.stealFocus[blockId]}
-              updateLetter={setEditorState}
-            />
+            <div className={block.type} key={blockId}>
+              <ContentGroup
+                content={block.content}
+                editable={block.editable}
+                focusStolen={focusStolen.bind(null, blockId)}
+                id={{ blockId }}
+                onFocus={setCurrentBlock.bind(null, blockId)}
+                stealFocus={editorState.stealFocus[blockId]}
+                updateLetter={setEditorState}
+              />
+            </div>
           ))}
         </div>
         <SignaturView signatur={editorState.editedLetter.letter.signatur} />
