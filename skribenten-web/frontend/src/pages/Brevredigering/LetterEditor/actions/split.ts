@@ -37,7 +37,7 @@ export const split: Action<LetterEditorState, [splitId: ContentId, offset: numbe
         };
         letter.blocks.splice(splitId.blockId + 1, 0, nextBlock);
         draft.stealFocus[splitId.blockId + 1] = { contentId: 0, startOffset: 0 };
-        draft.nextFocus = { contentIndex: 0, startOffset: 0, blockIndex: splitId.blockId + 1 };
+        draft.nextFocus = { contentIndex: 0, cursorPosition: 0, blockIndex: splitId.blockId + 1 };
         // Update existing
         content.text = cleanseText(content.text.slice(0, Math.max(0, offset)));
         block.content.splice(splitId.contentId + 1, block.content.length - splitId.contentId + 1);

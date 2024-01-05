@@ -5,7 +5,7 @@ import { MergeTarget } from "~/pages/Brevredigering/LetterEditor/actions/model";
 import { Text } from "~/pages/Brevredigering/LetterEditor/components/Text";
 import type { CallbackReceiver } from "~/pages/Brevredigering/LetterEditor/lib/actions";
 import { applyAction, bindActionWithCallback } from "~/pages/Brevredigering/LetterEditor/lib/actions";
-import type { LetterEditorState } from "~/pages/Brevredigering/LetterEditor/model/state";
+import type { LetterEditorState, NextFocus } from "~/pages/Brevredigering/LetterEditor/model/state";
 import { SelectionService } from "~/pages/Brevredigering/LetterEditor/services/SelectionService";
 import type { AnyBlock, LiteralValue } from "~/types/brevbakerTypes";
 import { ITEM_LIST, LITERAL, VARIABLE } from "~/types/brevbakerTypes";
@@ -19,7 +19,7 @@ export function NewContentGroup({
   nextFocus,
 }: {
   block: AnyBlock;
-  nextFocus: unknown;
+  nextFocus?: NextFocus;
   setEditorState: CallbackReceiver<LetterEditorState>;
   blockIndex: number;
 }) {
@@ -49,7 +49,7 @@ export function NewContentGroup({
             return (
               <OurOwnEditableText
                 content={content}
-                focusOffset={nextFocus?.startOffset}
+                focusOffset={nextFocus?.cursorPosition}
                 id={{
                   blockId: blockIndex,
                   contentId: contentIndex,

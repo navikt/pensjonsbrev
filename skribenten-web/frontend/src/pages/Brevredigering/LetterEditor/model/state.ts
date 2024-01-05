@@ -13,7 +13,14 @@ export type StealFocus = {
 };
 export type ContentGroup = { content: Content[] };
 
+export type NextFocus = {
+  blockIndex: number;
+  contentIndex: number;
+  cursorPosition: number;
+}
+
 export type LetterEditorState = {
   readonly editedLetter: EditedLetter;
   readonly stealFocus: StealFocus;
+  readonly nextFocus?: NextFocus;
 };

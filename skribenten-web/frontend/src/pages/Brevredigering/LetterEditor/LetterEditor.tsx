@@ -17,11 +17,13 @@ import type { LetterEditorState } from "./model/state";
 
 export const LetterEditor = ({ initialState }: { initialState: RenderedLetter }) => {
   const [editorState, setEditorState] = useState<LetterEditorState>(Actions.create(initialState));
-  const [currentBlock, setCurrentBlock] = useState(0);
 
   const blocks = editorState.editedLetter.letter.blocks;
 
+  // Not needed anymore
+  const [currentBlock, setCurrentBlock] = useState(0);
   const focusStolen = bindActionWithCallback(Actions.focusStolen, setEditorState);
+
   const switchTypography = bindActionWithCallback(Actions.switchTypography, setEditorState, currentBlock);
 
   return (
@@ -51,7 +53,12 @@ export const LetterEditor = ({ initialState }: { initialState: RenderedLetter })
           {blocks.map((block, blockIndex) => (
             <Fragment key={blockIndex}>
               <div className={block.type}>
-                <NewContentGroup nextFocus={editorState.nextFocus} block={block} blockIndex={blockIndex} setEditorState={setEditorState} />
+                <NewContentGroup
+                  block={block}
+                  blockIndex={blockIndex}
+                  nextFocus={editorState.nextFocus}
+                  setEditorState={setEditorState}
+                />
               </div>
               {/*<div className={block.type}>*/}
               {/*  <ContentGroup*/}
