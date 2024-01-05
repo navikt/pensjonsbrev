@@ -361,7 +361,7 @@ object Barnepensjon {
             }
             paragraph {
                 text(
-                    Bokmal to "Du har som hovedregel rett til å se dokumentene i saken din etter" +
+                    Bokmal to "Du har som hovedregel rett til å se dokumentene i saken etter" +
                             " forvaltningsloven § 18. Hvis du ønsker innsyn, må du kontakte oss på " +
                             "telefon eller per post.",
                     Nynorsk to "TODO nynorsk",
