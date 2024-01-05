@@ -50,18 +50,17 @@ export const LetterEditor = ({ initialState }: { initialState: RenderedLetter })
         <div>
           {blocks.map((block, blockIndex) => (
             <Fragment key={blockIndex}>
-              <div className={block.type} key={blockIndex}>
-                <NewContentGroup block={block} blockIndex={blockIndex} setEditorState={setEditorState} />
+              <div className={block.type}>
+                <NewContentGroup nextFocus={editorState.nextFocus} block={block} blockIndex={blockIndex} setEditorState={setEditorState} />
               </div>
-              {/*<div className={block.type} key={blockId}>*/}
+              {/*<div className={block.type}>*/}
               {/*  <ContentGroup*/}
-              {/*    block={block}*/}
               {/*    content={block.content}*/}
               {/*    editable={block.editable}*/}
-              {/*    focusStolen={focusStolen.bind(null, blockId)}*/}
-              {/*    id={{ blockId }}*/}
-              {/*    onFocus={setCurrentBlock.bind(null, blockId)}*/}
-              {/*    stealFocus={editorState.stealFocus[blockId]}*/}
+              {/*    focusStolen={focusStolen.bind(null, blockIndex)}*/}
+              {/*    id={{ blockId: blockIndex }}*/}
+              {/*    onFocus={setCurrentBlock.bind(null, blockIndex)}*/}
+              {/*    stealFocus={editorState.stealFocus[blockIndex]}*/}
               {/*    updateLetter={setEditorState}*/}
               {/*  />*/}
               {/*</div>*/}
