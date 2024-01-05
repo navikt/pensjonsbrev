@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from "react";
 
 import Actions from "~/pages/Brevredigering/LetterEditor/actions";
+import { MergeTarget } from "~/pages/Brevredigering/LetterEditor/actions/model";
 import { Text } from "~/pages/Brevredigering/LetterEditor/components/Text";
 import type { CallbackReceiver } from "~/pages/Brevredigering/LetterEditor/lib/actions";
 import { applyAction, bindActionWithCallback } from "~/pages/Brevredigering/LetterEditor/lib/actions";
@@ -48,6 +49,7 @@ export function NewContentGroup({
             return (
               <OurOwnEditableText
                 content={content}
+                focusOffset={nextFocus?.startOffset}
                 id={{
                   blockId: blockIndex,
                   contentId: contentIndex,
@@ -86,12 +88,14 @@ function OurOwnEditableText({
   id,
   setEditorState,
   isFocus,
+  focusOffset,
 }: {
   content: LiteralValue;
   onChange: unknown;
   id: ID;
   setEditorState: CallbackReceiver<LetterEditorState>;
   isFocus: unknown;
+  focusOffset: number;
 }) {
   const contentEditableReference = useRef<HTMLSpanElement>(null);
 
@@ -104,9 +108,7 @@ function OurOwnEditableText({
 
   useEffect(() => {
     if (isFocus && contentEditableReference.current !== null) {
-      console.log("Trying to focus")
-      // contentEditableReference.current.focus();
-      selectService.focusAtOffset(contentEditableReference.current, 0);
+      selectService.focusAtOffset(contentEditableReference.current.childNodes[0], focusOffset);
     }
   }, [isFocus]);
 
@@ -117,6 +119,27 @@ function OurOwnEditableText({
 
       applyAction(Actions.split, setEditorState, id, offset);
     }
+    if (event.key === "Backspace") {
+      const cursorPosition = selectService.getCursorOffset();
+      if (
+        cursorPosition === 0 ||
+        (contentEditableReference.current?.textContent?.startsWith("​") && cursorPosition === 1)
+      ) {
+        event.preventDefault();
+        applyAction(Actions.merge, setEditorState, id, MergeTarget.PREVIOUS);
+      }
+    }
+  };
+
+  const handleBackspace = (event: React.KeyboardEvent<HTMLSpanElement>) => {
+    const cursorPosition = selectService.getCursorOffset();
+    if (
+      cursorPosition === 0 ||
+      (contentEditableReference.current?.textContent?.startsWith("​") && cursorPosition === 1)
+    ) {
+      event.preventDefault();
+      applyAction(Actions.merge, setEditorState, id, MergeTarget.PREVIOUS);
+    }
   };
 
   return (
@@ -126,6 +149,9 @@ function OurOwnEditableText({
       onKeyDown={(event) => {
         if (event.key === "Enter") {
           handleEnter(event);
+        }
+        if (event.key === "Backspace") {
+          handleBackspace(event);
         }
       }}
       ref={contentEditableReference}
