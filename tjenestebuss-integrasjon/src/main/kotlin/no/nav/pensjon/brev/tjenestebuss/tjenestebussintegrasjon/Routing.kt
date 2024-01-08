@@ -90,10 +90,11 @@ fun Application.tjenestebussIntegrationApi(config: Config) {
     routing {
         val stsService = STSService(config.getConfig("services.sts"))
         val stsSercuritySOAPHandler = STSSercuritySOAPHandler(stsService)
-        val samhandlerTjenestebussService = SamhandlerTjenestebussService(config.getConfig("services.tjenestebuss"), stsSercuritySOAPHandler)
-        val arkivTjenestebussService = ArkivTjenestebussService(config.getConfig("services.tjenestebuss"), stsSercuritySOAPHandler)
-        val dokumentProduksjonService = DokumentproduksjonService(config.getConfig("services.dokprod"), stsSercuritySOAPHandler)
-        val extreamBrevService = ExtreamBrevService(config.getConfig(""), stsSercuritySOAPHandler)
+        val servicesConfig = config.getConfig("services")
+        val samhandlerTjenestebussService = SamhandlerTjenestebussService(servicesConfig.getConfig("tjenestebuss"), stsSercuritySOAPHandler)
+        val arkivTjenestebussService = ArkivTjenestebussService(servicesConfig.getConfig("tjenestebuss"), stsSercuritySOAPHandler)
+        val dokumentProduksjonService = DokumentproduksjonService(servicesConfig.getConfig("dokprod"), stsSercuritySOAPHandler)
+        val extreamBrevService = ExtreamBrevService(servicesConfig, stsSercuritySOAPHandler)
 
 
         get("/isAlive") {
