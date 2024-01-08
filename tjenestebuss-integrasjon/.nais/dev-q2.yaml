@@ -9,16 +9,13 @@ env:
     value: "https://security-token-service.dev.adeo.no"
   - name: DOKPROD_URL
     value: "https://dokprod-q2.dev.intern.nav.no/dokprod/"
-  - name: BREVKLIENT_ROOTURL
-    value: "https://wasapp.adeo.no/brevweb/StartBrevKlient.jsp"
 
 
 vaultPaths:
   - kvPath: "serviceuser/data/dev/srvpensjonsbrev-esb"
     mountPath: "/secrets/sts"
   - kvPath: "/kv/preprod/fss/pensjonsbrev-tjenestebuss-q2/pensjonsbrev"
-    mountPath: "/secrets/application"
-
+    mountPath: "/secrets/brevklient"
 inboundRules:
   - application: skribenten-backend
     namespace: pensjonsbrev
