@@ -125,7 +125,9 @@ function OurOwnEditableText({
   return (
     <span
       contentEditable="plaintext-only"
-      onInput={(event) => applyAction(Actions.updateContentText, setEditorState, id, event.target.textContent)}
+      onInput={(event) =>
+        applyAction(Actions.updateContentText, setEditorState, id, (event.target as HTMLSpanElement).textContent ?? "")
+      }
       onKeyDown={(event) => {
         if (event.key === "Enter") {
           handleEnter(event);

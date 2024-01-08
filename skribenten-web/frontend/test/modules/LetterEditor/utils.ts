@@ -31,6 +31,7 @@ export function letter(...blocks: AnyBlock[]): LetterEditorState {
         blocks: blocks,
       },
     },
+    currentBlock: 0,
     stealFocus: {},
   };
 }
