@@ -2,16 +2,15 @@ import { css } from "@emotion/react";
 import { Button } from "@navikt/ds-react";
 import type { ReactNode } from "react";
 
-import type { BoundAction } from "../lib/actions";
+import Actions from "~/pages/Brevredigering/LetterEditor/actions";
+import { useEditor } from "~/pages/Brevredigering/LetterEditor/LetterEditor";
 
-type Typography = "PARAGRAPH" | "TITLE1" | "TITLE2";
+import { applyAction } from "../lib/actions";
 
-export type EditorMenuProperties = {
-  activeTypography: Typography;
-  onSwitchTypography: BoundAction<[type: Typography]>;
-};
+export const EditorMenu = () => {
+  const { editorState, setEditorState } = useEditor();
+  const activeTypography = editorState.editedLetter.letter.blocks[editorState.currentBlock].type;
 
-export const EditorMenu = ({ onSwitchTypography, activeTypography }: EditorMenuProperties) => {
   return (
     <div
       css={css`
@@ -25,19 +24,19 @@ export const EditorMenu = ({ onSwitchTypography, activeTypography }: EditorMenuP
     >
       <SelectTypographyButton
         isActive={activeTypography === "TITLE1"}
-        onClick={onSwitchTypography.bind(null, "TITLE1")}
+        onClick={() => applyAction(Actions.switchTypography, setEditorState, editorState.currentBlock, "TITLE1")}
       >
         Overskift 1
       </SelectTypographyButton>
       <SelectTypographyButton
         isActive={activeTypography === "TITLE2"}
-        onClick={onSwitchTypography.bind(null, "TITLE2")}
+        onClick={() => applyAction(Actions.switchTypography, setEditorState, editorState.currentBlock, "TITLE2")}
       >
         Overskrift 2
       </SelectTypographyButton>
       <SelectTypographyButton
         isActive={activeTypography === "PARAGRAPH"}
-        onClick={onSwitchTypography.bind(null, "PARAGRAPH")}
+        onClick={() => applyAction(Actions.switchTypography, setEditorState, editorState.currentBlock, "PARAGRAPH")}
       >
         Normal
       </SelectTypographyButton>

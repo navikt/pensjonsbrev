@@ -3,26 +3,19 @@ import React, { useEffect, useRef } from "react";
 import Actions from "~/pages/Brevredigering/LetterEditor/actions";
 import { MergeTarget } from "~/pages/Brevredigering/LetterEditor/actions/model";
 import { Text } from "~/pages/Brevredigering/LetterEditor/components/Text";
-import type { CallbackReceiver } from "~/pages/Brevredigering/LetterEditor/lib/actions";
-import { applyAction, bindActionWithCallback } from "~/pages/Brevredigering/LetterEditor/lib/actions";
-import type { LetterEditorState, NextFocus } from "~/pages/Brevredigering/LetterEditor/model/state";
+import { useEditor } from "~/pages/Brevredigering/LetterEditor/LetterEditor";
+import { applyAction } from "~/pages/Brevredigering/LetterEditor/lib/actions";
 import { SelectionService } from "~/pages/Brevredigering/LetterEditor/services/SelectionService";
-import type { AnyBlock, LiteralValue } from "~/types/brevbakerTypes";
+import type { LiteralValue } from "~/types/brevbakerTypes";
 import { ITEM_LIST, LITERAL, VARIABLE } from "~/types/brevbakerTypes";
 
 const selectService = new SelectionService(true);
 
-export function NewContentGroup({
-  block,
-  setEditorState,
-  blockIndex,
-  nextFocus,
-}: {
-  block: AnyBlock;
-  nextFocus?: NextFocus;
-  setEditorState: CallbackReceiver<LetterEditorState>;
-  blockIndex: number;
-}) {
+export function NewContentGroup({ blockIndex }: { blockIndex: number }) {
+  const { editorState, setEditorState } = useEditor();
+
+  const block = editorState.editedLetter.letter.blocks[blockIndex];
+
   if (!block.editable) {
     return (
       <div>
@@ -42,25 +35,16 @@ export function NewContentGroup({
   }
 
   return (
-    <div>
+    <div onFocus={() => setEditorState((oldState) => ({ ...oldState, currentBlock: blockIndex }))}>
       {block.content.map((content, contentIndex) => {
         switch (content.type) {
           case LITERAL: {
             return (
               <OurOwnEditableText
+                blockIndex={blockIndex}
                 content={content}
-                focusOffset={nextFocus?.cursorPosition}
-                id={{
-                  blockId: blockIndex,
-                  contentId: contentIndex,
-                }}
-                isFocus={nextFocus?.blockIndex === blockIndex && contentIndex === nextFocus?.contentIndex}
+                contentIndex={contentIndex}
                 key={contentIndex}
-                onChange={bindActionWithCallback(Actions.updateContentText, setEditorState, {
-                  blockId: blockIndex,
-                  contentId: contentIndex,
-                })}
-                setEditorState={setEditorState}
               />
             );
           }
@@ -76,28 +60,21 @@ export function NewContentGroup({
   );
 }
 
-// TODO: rename
-type ID = {
-  blockId: number;
-  contentId: number;
-};
-
 function OurOwnEditableText({
+  blockIndex,
+  contentIndex,
   content,
-  onChange,
-  id,
-  setEditorState,
-  isFocus,
-  focusOffset,
 }: {
+  blockIndex: number;
+  contentIndex: number;
   content: LiteralValue;
-  onChange: unknown;
-  id: ID;
-  setEditorState: CallbackReceiver<LetterEditorState>;
-  isFocus: unknown;
-  focusOffset: number;
 }) {
+  const id = { blockId: blockIndex, contentId: contentIndex };
   const contentEditableReference = useRef<HTMLSpanElement>(null);
+  const { editorState, setEditorState } = useEditor();
+
+  const isFocus =
+    editorState.nextFocus?.blockIndex === blockIndex && editorState.nextFocus.contentIndex === contentIndex;
 
   const text = content.text || "​";
   useEffect(() => {
@@ -108,7 +85,10 @@ function OurOwnEditableText({
 
   useEffect(() => {
     if (isFocus && contentEditableReference.current !== null) {
-      selectService.focusAtOffset(contentEditableReference.current.childNodes[0], focusOffset);
+      selectService.focusAtOffset(
+        contentEditableReference.current.childNodes[0],
+        editorState.nextFocus?.cursorPosition,
+      );
     }
   }, [isFocus]);
 
@@ -145,7 +125,7 @@ function OurOwnEditableText({
   return (
     <span
       contentEditable="plaintext-only"
-      onInput={(event) => onChange(event.target.textContent)}
+      onInput={(event) => applyAction(Actions.updateContentText, setEditorState, id, event.target.textContent)}
       onKeyDown={(event) => {
         if (event.key === "Enter") {
           handleEnter(event);
