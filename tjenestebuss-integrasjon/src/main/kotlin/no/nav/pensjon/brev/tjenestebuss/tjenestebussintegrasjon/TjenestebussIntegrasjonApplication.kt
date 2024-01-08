@@ -22,6 +22,9 @@ fun main() {
     }.start(wait = true)
 }
 
+/**
+ * TODO dokumenter
+ */
 fun getVaultSecretConfig(): Config {
     val secrets = File("/secrets")
 

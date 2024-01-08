@@ -24,7 +24,7 @@ class ExtreamBrevService(private val config: Config, securityHandler: STSSercuri
             val response = psakDokbrevClient.hentBrevklientURL(ASBOPenHentBrevklientURLRequest().apply {
                 dokumentId = requestDto.dokumentId
                 systemId = config.getString("brevklient.systemid")
-                passord = config.getString("brevklient.passord")
+                passord = config.getString("brevklient.password")
                 rootURL = config.getString("brevklient.rooturl")
                 bredde = requestDto.bredde
                 hoyde = requestDto.hoyde
