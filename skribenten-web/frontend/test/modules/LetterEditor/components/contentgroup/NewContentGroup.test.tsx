@@ -38,9 +38,9 @@ render(
 describe("updateContent", () => {
   test("text changes are propagated", async () => {
     const user = userEvent.setup();
-
     await user.click(screen.getByText(content[0].text));
     await user.keyboard(" person");
+
     expect(setEditorState).toHaveBeenCalled();
     expect(setEditorState.mock.lastCall?.[0](editorState)).toEqual(
       Actions.updateContentText(editorState, { blockId: 0, contentId: 0 }, content[0].text + " person"),
@@ -48,7 +48,6 @@ describe("updateContent", () => {
   });
   test("enter is not propagated as br-element", async () => {
     const user = userEvent.setup();
-
     await user.click(screen.getByText(content[0].text));
     await user.keyboard("{Enter}asd");
 
@@ -59,7 +58,6 @@ describe("updateContent", () => {
   });
   test("space is not propagated as nbsp-entity", async () => {
     const user = userEvent.setup();
-
     await user.click(screen.getByText(content[0].text));
     await user.keyboard("  asd");
 
@@ -71,15 +69,15 @@ describe("updateContent", () => {
 
 describe("deleteHandler", () => {
   test("delete at end of group, and after last character, triggers merge with next", async () => {
-    const lastSpan = screen.getByText(content[1].text);
-    await user.click(lastSpan);
+    const user = userEvent.setup();
+    await user.click(screen.getByText(content[1].text));
     await user.keyboard("{Delete}");
 
     expect(setEditorState).toHaveBeenCalledOnce();
   });
   test("delete at end of group, but not after last character, does not trigger merge", async () => {
-    const lastSpan = screen.getByText(content[1].text);
-    await user.click(lastSpan);
+    const user = userEvent.setup();
+    await user.click(screen.getByText(content[1].text));
     await user.keyboard("{ArrowLeft}{ArrowLeft}{Delete}");
 
     expect(setEditorState).toHaveBeenCalledOnce();
@@ -88,8 +86,8 @@ describe("deleteHandler", () => {
     );
   });
   test("delete not at end of group, but after last character, does not trigger merge", async () => {
-    const firstSpan = screen.getByText(content[0].text);
-    await user.click(firstSpan);
+    const user = userEvent.setup();
+    await user.click(screen.getByText(content[0].text));
     await user.keyboard("{End}{Delete}");
 
     // since this doesn't cause any text updates, there should not be any updates
@@ -99,15 +97,15 @@ describe("deleteHandler", () => {
 
 describe("backspaceHandler", () => {
   test("backspace at beginning of group triggers merge with previous", async () => {
-    const firstSpan = screen.getByText(content[0].text);
-    await user.click(firstSpan);
+    const user = userEvent.setup();
+    await user.click(screen.getByText(content[0].text));
     await user.keyboard("{Home}{Backspace}");
 
     expect(setEditorState).toHaveBeenCalledOnce();
   });
   test("backspace at beginning of group, but not before first character of TextContent, does not trigger merge", async () => {
-    const firstSpan = screen.getByText(content[0].text);
-    await user.click(firstSpan);
+    const user = userEvent.setup();
+    await user.click(screen.getByText(content[0].text));
     await user.keyboard("{End}{ArrowLeft}{ArrowLeft}{Backspace}");
 
     expect(setEditorState.mock.lastCall?.[0](editorState).editedLetter.letter.blocks).toHaveLength(
@@ -115,8 +113,8 @@ describe("backspaceHandler", () => {
     );
   });
   test("backspace not at beginning of group, but before first character of a TextContent, does not trigger merge", async () => {
-    const firstSpan = screen.getByText(content[1].text);
-    await user.click(firstSpan);
+    const user = userEvent.setup();
+    await user.click(screen.getByText(content[0].text));
     await user.keyboard("{Home}{Backspace}");
 
     expect(setEditorState).not.toHaveBeenCalled();
@@ -125,9 +123,8 @@ describe("backspaceHandler", () => {
 
 describe("enterHandler", () => {
   test("enter at the very end of group triggers split with empty text for new group", async () => {
-    const span = screen.getByText(content[1].text);
-
-    await user.click(span);
+    const user = userEvent.setup();
+    await user.click(screen.getByText(content[1].text));
     await user.keyboard("{End}{Enter}");
 
     expect(setEditorState.mock.lastCall?.[0](editorState)).toEqual(
@@ -135,10 +132,8 @@ describe("enterHandler", () => {
     );
   });
   test("enter not at the end of a content in group triggers split at cursor (text after cursor for new group)", async () => {
-    const text = content[1].text;
-    const span = screen.getByText(text);
-
-    await user.click(span);
+    const user = userEvent.setup();
+    await user.click(screen.getByText(content[1].text));
     await user.keyboard("{End}{ArrowLeft}{ArrowLeft}{ArrowLeft}{Enter}");
 
     expect(setEditorState.mock.lastCall?.[0](editorState)).toEqual(
@@ -146,9 +141,8 @@ describe("enterHandler", () => {
     );
   });
   test("enter at the end of an element that is not the last of group triggers split at current element", async () => {
-    const span = screen.getByText(content[0].text);
-
-    await user.click(span);
+    const user = userEvent.setup();
+    await user.click(screen.getByText(content[0].text));
     await user.keyboard("{End}{Enter}");
 
     expect(setEditorState.mock.lastCall?.[0](editorState)).toEqual(
