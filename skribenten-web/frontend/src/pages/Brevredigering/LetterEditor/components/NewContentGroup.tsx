@@ -99,16 +99,6 @@ export function OurOwnEditableText({
 
       applyAction(Actions.split, setEditorState, id, offset);
     }
-    if (event.key === "Backspace") {
-      const cursorPosition = selectService.getCursorOffset();
-      if (
-        cursorPosition === 0 ||
-        (contentEditableReference.current?.textContent?.startsWith("​") && cursorPosition === 1)
-      ) {
-        event.preventDefault();
-        applyAction(Actions.merge, setEditorState, id, MergeTarget.PREVIOUS);
-      }
-    }
   };
 
   const handleBackspace = (event: React.KeyboardEvent<HTMLSpanElement>) => {
