@@ -16,7 +16,7 @@ env:
 vaultPaths:
   - kvPath: "serviceuser/data/dev/srvpensjonsbrev-esb"
     mountPath: "/secrets/sts"
-  - kvPath: "/kv/data/preprod/fss/pensjonsbrev-tjenestebuss-q2/pensjonsbrev"
+  - kvPath: "/kv/preprod/fss/pensjonsbrev-tjenestebuss-q2/pensjonsbrev"
     mountPath: "/secrets/application"
 inboundRules:
   - application: skribenten-backend
