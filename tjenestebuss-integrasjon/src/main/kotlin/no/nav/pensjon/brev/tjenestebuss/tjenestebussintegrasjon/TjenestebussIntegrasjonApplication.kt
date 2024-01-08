@@ -16,7 +16,7 @@ fun main() {
             .resolveWith(getVaultSecretConfig(), ConfigResolveOptions.defaults().setAllowUnresolved(true))
             .resolveWith(ConfigFactory.load("sts/auth"), ConfigResolveOptions.defaults().setAllowUnresolved(true))
             .resolveWith(ConfigFactory.load("azuread"))
-            .resolveWith(ConfigFactory.load("application/auth"))
+            .resolveWith(ConfigFactory.load("brevklient/auth"))
     embeddedServer(Netty, port = tjenestebussIntegrasjonConfig.getInt("port"), host = "0.0.0.0") {
         tjenestebussIntegrationApi(tjenestebussIntegrasjonConfig)
     }.start(wait = true)
