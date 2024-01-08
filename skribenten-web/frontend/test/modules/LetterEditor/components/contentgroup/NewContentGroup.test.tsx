@@ -117,7 +117,7 @@ describe("backspaceHandler", () => {
     await user.click(screen.getByText(content[0].text));
     await user.keyboard("{Home}{Backspace}");
 
-    expect(setEditorState).not.toHaveBeenCalled();
+    expect(setEditorState.mock.lastCall?.[0](editorState)).toBe(editorState);
   });
 });
 
