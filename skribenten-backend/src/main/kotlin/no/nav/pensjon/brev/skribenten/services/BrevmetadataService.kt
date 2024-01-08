@@ -61,33 +61,47 @@ class BrevmetadataService(config: Config) {
 
     suspend fun getEblanketter(): List<LetterMetadata> {
         return httpClient.get("/api/brevdata/allBrev?includeXsd=false") {
-                contentType(ContentType.Application.Json)
-            }.body<List<BrevdataDto>>()
-                .filter { it.redigerbart }
-                .filter { it.dokumentkategori == BrevdataDto.DokumentkategoriCode.E_BLANKETT }
+            contentType(ContentType.Application.Json)
+        }.body<List<BrevdataDto>>()
+            .filter { it.redigerbart }
+            .filter { it.dokumentkategori == BrevdataDto.DokumentkategoriCode.E_BLANKETT }
             .map { it.mapToMetadata() }
+    }
+
+    // TODO hent bare en med eget type kall
+    suspend fun getMal(brevkode: String): BrevdataDto {
+        return httpClient.get("/api/brevdata/brevForBrevkode/${brevkode}") {
+            contentType(ContentType.Application.Json)
+        }.body<List<BrevdataDto>>()
+            .filter { it.redigerbart }
+            .first { it.brevkodeIBrevsystem == brevkode }
     }
 }
 
 data class BrevdataDto(
     val redigerbart: Boolean,
-    val dekode: String?,
+    val dekode: String,
     val brevkategori: BrevkategoriCode?,
-    val dokType: String?,
-    val sprak: List<SpraakKode>?,
+    val dokType: String,
+    val sprak: List<SpraakKode>,
     val visIPselv: Boolean?,
     val utland: String?,
     val brevregeltype: String?,
     val brevkravtype: String?,
     val brevkontekst: String?,
-    val dokumentkategori: DokumentkategoriCode?,
+    val dokumentkategori: DokumentkategoriCode,
     val synligForVeileder: Boolean?,
     val prioritet: Int?,
     val brevkodeIBrevsystem: String?,
     val brevsystem: String?,
+    val brevgruppe: String?,
 ) {
     enum class DokumentkategoriCode { B, EP, ES, E_BLANKETT, F, IB, IS, KD, KM, KS, SED, TS, VB }
     enum class BrevkategoriCode { BREV_MED_SKJEMA, INFORMASJON, INNHENTE_OPPL, NOTAT, OVRIG, VARSEL, VEDTAK }
+    enum class DokType {
+        NY,         //"ny"/doksys
+        GAMMEL,     //EXTREAM
+    }
 }
 
 

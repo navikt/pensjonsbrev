@@ -23,33 +23,33 @@ class ArkivTjenestebussService(config: Config, securityHandler: STSSercuritySOAP
     /**
      * Bestiller Extream brev
      *
-     * @param bestillBrevExtreamRequestDto brev og journalpost informasjon
+     * @param request brev og journalpost informasjon
      * @return en response som enten er Success med journalpostId eller Failure med feiltype og eventuell årsak
      */
-    fun bestillBrev(bestillBrevExtreamRequestDto: BestillBrevExtreamRequestDto): BestillBrevResponseDto {
+    fun bestillBrev(request: BestillBrevExtreamRequestDto): BestillBrevResponseDto {
         try {
             val response = arkivClient.bestillBrev(BestillBrevRequest().apply {
-                brevKode = bestillBrevExtreamRequestDto.brevKode
-                brevGruppe = bestillBrevExtreamRequestDto.brevGruppe
+                brevKode = request.brevKode
+                brevGruppe = request.brevGruppe
                 redigerbart =
-                    JAXBElement(QName("redigerbart"), Boolean::class.java, bestillBrevExtreamRequestDto.isRedigerbart)
-                sprakKode = bestillBrevExtreamRequestDto.sprakkode
+                    JAXBElement(QName("redigerbart"), Boolean::class.java, request.isRedigerbart)
+                sprakKode = request.sprakkode
                 sakskontekst = Sakskontekst().apply {
-                    saksbehandlernavn = bestillBrevExtreamRequestDto.sakskontekstDto.saksbehandlernavn
-                    saksbehandlerId = bestillBrevExtreamRequestDto.sakskontekstDto.saksbehandlerId
-                    journalenhet = bestillBrevExtreamRequestDto.sakskontekstDto.journalenhet
-                    gjelder = bestillBrevExtreamRequestDto.sakskontekstDto.gjelder
-                    dokumenttype = bestillBrevExtreamRequestDto.sakskontekstDto.dokumenttype
-                    dokumentdato = bestillBrevExtreamRequestDto.sakskontekstDto.dokumentdato
-                    fagsystem = bestillBrevExtreamRequestDto.sakskontekstDto.fagsystem
-                    fagomradeKode = bestillBrevExtreamRequestDto.sakskontekstDto.fagomradekode
-                    innhold = bestillBrevExtreamRequestDto.sakskontekstDto.innhold
-                    kategori = bestillBrevExtreamRequestDto.sakskontekstDto.kategori
-                    saksid = bestillBrevExtreamRequestDto.sakskontekstDto.saksid
-                    sensitivitetsgrad = bestillBrevExtreamRequestDto.sakskontekstDto.sensitivitet
+                    saksbehandlernavn = request.sakskontekstDto.saksbehandlernavn
+                    saksbehandlerId = request.sakskontekstDto.saksbehandlerId
+                    journalenhet = request.sakskontekstDto.journalenhet
+                    gjelder = request.sakskontekstDto.gjelder
+                    dokumenttype = request.sakskontekstDto.dokumenttype
+                    dokumentdato = request.sakskontekstDto.dokumentdato
+                    fagsystem = request.sakskontekstDto.fagsystem
+                    fagomradeKode = request.sakskontekstDto.fagomradekode
+                    innhold = request.sakskontekstDto.innhold
+                    kategori = request.sakskontekstDto.kategori
+                    saksid = request.sakskontekstDto.saksid
+                    sensitivitetsgrad = request.sakskontekstDto.sensitivitet
                 }
             })
-            logger.info("Opprettet brev med journalpostId: ${response!!.journalpostId} i sakId: ${bestillBrevExtreamRequestDto.sakskontekstDto.saksid} ")
+            logger.info("Opprettet brev med journalpostId: ${response!!.journalpostId} i sakId: ${request.sakskontekstDto.saksid} ")
             return BestillBrevResponseDto.Success(response.journalpostId)
         } catch (ex: BestillBrevOpprettelseJournalpostFeilet) {
             logger.error("En feil oppstod under opprettelse av journalpost: ${maskerFnr(ex.faultInfo.errorMessage)}")

@@ -1,59 +1,65 @@
 package no.nav.pensjon.brev.skribenten.routes
 
-import io.ktor.http.*
 import io.ktor.server.application.*
+import io.ktor.server.plugins.*
 import io.ktor.server.request.*
-import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import no.nav.pensjon.brev.skribenten.auth.UnauthorizedException
 import no.nav.pensjon.brev.skribenten.getLoggedInNavIdent
 import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.BestillBrevRequestDto
 import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.SakskontekstDto
+import no.nav.pensjon.brev.skribenten.services.BrevmetadataService
 import no.nav.pensjon.brev.skribenten.services.PenService
 import no.nav.pensjon.brev.skribenten.services.TjenestebussIntegrasjonService
+import java.util.*
+import javax.xml.datatype.DatatypeFactory
+import javax.xml.datatype.XMLGregorianCalendar
 
-fun Route.bestillBrevRoute(penService: PenService, tjenestebussIntegrasjonService: TjenestebussIntegrasjonService) {
+
+fun Route.bestillBrevRoute(penService: PenService, tjenestebussIntegrasjonService: TjenestebussIntegrasjonService, brevmetadataService: BrevmetadataService) {
     post("/bestillBrev/extream") {
-            // TODO skal vi validere metadata?
-            val request = call.receive<OrderLetterRequest>()
+        // TODO skal vi validere metadata?
+        val request = call.receive<OrderLetterRequest>()
 
-            //TODO try to get extra claims when authorizing user instead of using graph service.
-            val name = getLoggedInNavIdent()
+        brevmetadataService
+        val navIdent = getLoggedInNavIdent() ?: throw UnauthorizedException("Fant ikke navn på innlogget bruker")
 
-            // TODO create respond on error or similar function to avoid boilerplate. RespondOnError?
+        // TODO create respond on error or similar function to avoid boilerplate. RespondOnError?
+        val metadata = brevmetadataService.getMal(request.brevkode)
 
-
-            //TODO better error handling.
-            // TODO access controls for e-blanketter
-            tjenestebussIntegrasjonService.bestillBrev(call, BestillBrevRequestDto(
-                brevKode = "", brevGruppe = "", isRedigerbart = false, sprakkode = "", sakskontekstDto = SakskontekstDto(
+        //TODO better error handling.
+        // TODO access controls for e-blanketter
+        tjenestebussIntegrasjonService.bestillBrev(
+            call, BestillBrevRequestDto(
+                brevKode = request.brevkode,
+                brevGruppe = metadata.brevgruppe?: throw BadRequestException("Fant ikke brevgruppe gitt brev :${request.brevkode}"),
+                isRedigerbart = metadata.redigerbart,
+                sprakkode = request.spraak.toString(),
+                sakskontekstDto = SakskontekstDto(
                     journalenhet = "0001",
-                    gjelder = "",
-                    dokumenttype = "",
-                    dokumentdato =,
-                    fagsystem = "",
-                    fagomradekode = "",
-                    innhold = "",
-                    kategori = "",
-                    saksid = "",
-                    saksbehandlernavn = "",
-                    saksbehandlerId = "",
-                    sensitivitet = ""
+                    gjelder = request.gjelderPid,
+                    dokumenttype = metadata.dokType,
+                    dokumentdato = getCurrentGregorianTime(),
+                    fagsystem = "PEN",
+                    fagomradekode = "PEN",
+                    innhold = metadata.dekode,
+                    kategori = metadata.dokumentkategori.toString(),
+                    saksid = request.sakId.toString(),// sakid
+                    saksbehandlernavn = "saksbehandler saksbehandlerson", // TODO hent navn fra nav ansatt service? eller claim kanskje?
+                    saksbehandlerId = navIdent,
+                    sensitivitet = "true" // TODO vi må spørre brukeren om brevet er sensitivt eller ikke i grensesnittet. evt gjør om til boolean parameter i tjenestebuss-integrasjon
                 )
-            ), name, onPremisesSamAccountName).map { journalpostId ->
-                val error = safService.waitForJournalpostStatusUnderArbeid(call, journalpostId)
-                if (error != null) {
-                    if (error.type == SafService.JournalpostLoadingError.ErrorType.TIMEOUT) {
-                        call.respond(HttpStatusCode.RequestTimeout, error.error)
-                    } else {
-                        call.respondText(text = error.error, status = HttpStatusCode.InternalServerError)
-                    }
-                } else {
-                    respondWithResult(penService.redigerExtreamBrev(call, journalpostId))
-                }
-            }    }
+            )
+        )
+    }
 
     post("/bestillBrev/doksys") {
 
     }
+}
 
+fun getCurrentGregorianTime(): XMLGregorianCalendar {
+    val cal = GregorianCalendar()
+    cal.time = Date()
+    return DatatypeFactory.newInstance().newXMLGregorianCalendar(cal)
 }
