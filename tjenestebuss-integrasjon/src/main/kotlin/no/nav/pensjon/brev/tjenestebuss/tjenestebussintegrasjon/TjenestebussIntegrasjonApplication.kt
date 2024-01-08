@@ -23,7 +23,8 @@ fun main() {
 }
 
 /**
- * TODO dokumenter
+ * Mapper innholdet i filer under /secrets/xyz/...
+ * F.eks innholdet i secrets/sts/username mappes til STS_USERNAME
  */
 fun getVaultSecretConfig(): Config {
     val secrets = File("/secrets")
