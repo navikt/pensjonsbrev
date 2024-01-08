@@ -7,9 +7,9 @@ import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.soap.ST
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.soap.TjenestebussService
 import org.slf4j.LoggerFactory
 
+const val BREVKLIENT_ROOT_URL = "https://wasapp.adeo.no/brevweb/"
 class ExtreamBrevService(private val config: Config, securityHandler: STSSercuritySOAPHandler) : TjenestebussService() {
     private val logger = LoggerFactory.getLogger(this::class.java)
-
     private val psakDokbrevClient = PsakDokbrevClient(config, securityHandler, callIdHandler).client()
 
 
@@ -25,7 +25,7 @@ class ExtreamBrevService(private val config: Config, securityHandler: STSSercuri
                 dokumentId = requestDto.dokumentId
                 systemId = config.getString("brevklient.systemid")
                 passord = config.getString("brevklient.password")
-                rootURL = config.getString("brevklient.rooturl")
+                rootURL = BREVKLIENT_ROOT_URL
                 bredde = requestDto.bredde
                 hoyde = requestDto.hoyde
             })
