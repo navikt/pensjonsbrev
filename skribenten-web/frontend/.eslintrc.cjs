@@ -12,7 +12,7 @@ module.exports = {
     browser: true,
     es2022: true,
   },
-  extends: ["eslint:recommended", "plugin:@typescript-eslint/recommended", "prettier", "plugin:unicorn/recommended"],
+  extends: ["eslint:recommended", "plugin:@typescript-eslint/recommended", "prettier", "plugin:unicorn/recommended", "plugin:testing-library/react"],
   overrides: [],
   parserOptions: {
     project: true,
@@ -20,7 +20,7 @@ module.exports = {
     ecmaVersion: "latest",
     sourceType: "module",
   },
-  plugins: ["react", "prettier", "@typescript-eslint", "simple-import-sort"],
+  plugins: ["react", "prettier", "@typescript-eslint", "testing-library", "simple-import-sort"],
   rules: {
     "no-console": "error",
     "react/jsx-boolean-value": "error",

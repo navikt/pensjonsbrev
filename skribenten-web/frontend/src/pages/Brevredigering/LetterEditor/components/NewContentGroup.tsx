@@ -60,7 +60,7 @@ export function NewContentGroup({ blockIndex }: { blockIndex: number }) {
   );
 }
 
-function OurOwnEditableText({
+export function OurOwnEditableText({
   blockIndex,
   contentIndex,
   content,
@@ -121,13 +121,15 @@ function OurOwnEditableText({
       applyAction(Actions.merge, setEditorState, id, MergeTarget.PREVIOUS);
     }
   };
-
   return (
     <span
-      contentEditable="plaintext-only"
-      onInput={(event) =>
-        applyAction(Actions.updateContentText, setEditorState, id, (event.target as HTMLSpanElement).textContent ?? "")
-      }
+      // NOTE: ideally this would be "plaintext-only", and it works in practice.
+      // However, the tests will not work if set to plaintext-only. For some reason focus/input and other events will not be triggered by userEvent as expected.
+      // This is not documented anywhere I could find and caused a day of frustration, beware
+      contentEditable="true"
+      onInput={(event) => {
+        applyAction(Actions.updateContentText, setEditorState, id, (event.target as HTMLSpanElement).textContent ?? "");
+      }}
       onKeyDown={(event) => {
         if (event.key === "Enter") {
           handleEnter(event);

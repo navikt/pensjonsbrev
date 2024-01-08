@@ -72,7 +72,7 @@ export const LetterEditor = ({ initialState }: { initialState: RenderedLetter })
   );
 };
 
-const EditorStateContext = createContext<{
+export const EditorStateContext = createContext<{
   editorState: LetterEditorState;
   setEditorState: CallbackReceiver<LetterEditorState>;
 }>({
