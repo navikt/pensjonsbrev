@@ -72,7 +72,7 @@ export const sakRoute = new Route({
 export const brevvelgerRoute = new Route({
   getParentRoute: () => sakRoute,
   path: "brevvelger",
-  validateSearch: (search): { fane: BrevvelgerTabOptions } => ({
+  validateSearch: (search: Record<string, unknown>): { fane: BrevvelgerTabOptions } => ({
     fane:
       search.fane === BrevvelgerTabOptions.E_BLANKETTER
         ? BrevvelgerTabOptions.E_BLANKETTER
