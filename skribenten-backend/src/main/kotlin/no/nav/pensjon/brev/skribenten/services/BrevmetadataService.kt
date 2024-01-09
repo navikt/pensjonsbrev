@@ -45,14 +45,12 @@ class BrevmetadataService(config: Config) {
 
     private fun BrevdataDto.mapToMetadata() =
         LetterMetadata(
-            name = dekode ?: "MissingName",     // TODO handle missing fields in front-end instead.
+            name = dekode,     // TODO handle missing fields in front-end instead.
             id = brevkodeIBrevsystem ?: "MissingCode",
             spraak = sprak ?: emptyList(),
             brevsystem = when (brevsystem) {
-                "DOKSYS" -> BrevSystem.DOKSYS
-                "GAMMEL" -> BrevSystem.EXTREAM
-                // TODO handle state or throw something else.
-                else -> throw IllegalStateException("Malformed metadata. Must be doksys or extream.")
+                BrevdataDto.DokType.DOKSYS -> BrevSystem.DOKSYS
+                BrevdataDto.DokType.GAMMEL -> BrevSystem.EXTREAM
             },
             isVedtaksbrev = this.brevkategori == BrevdataDto.BrevkategoriCode.VEDTAK,
             isEblankett = this.dokumentkategori == BrevdataDto.DokumentkategoriCode.E_BLANKETT,
@@ -72,9 +70,7 @@ class BrevmetadataService(config: Config) {
     suspend fun getMal(brevkode: String): BrevdataDto {
         return httpClient.get("/api/brevdata/brevForBrevkode/${brevkode}") {
             contentType(ContentType.Application.Json)
-        }.body<List<BrevdataDto>>()
-            .filter { it.redigerbart }
-            .first { it.brevkodeIBrevsystem == brevkode }
+        }.body<BrevdataDto>()
     }
 }
 
@@ -93,7 +89,7 @@ data class BrevdataDto(
     val synligForVeileder: Boolean?,
     val prioritet: Int?,
     val brevkodeIBrevsystem: String?,
-    val brevsystem: String?,
+    val brevsystem: DokType,
     val brevgruppe: String?,
 ) {
     enum class DokumentkategoriCode { B, E_BLANKETT, IB, SED, VB }

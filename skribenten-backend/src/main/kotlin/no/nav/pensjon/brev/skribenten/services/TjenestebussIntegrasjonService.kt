@@ -121,7 +121,7 @@ class TjenestebussIntegrasjonService(config: Config, authService: AzureADService
             )
         )
 
-        return tjenestebussIntegrasjonClient.post(call, "/bestillbrev") {
+        return tjenestebussIntegrasjonClient.post(call, "/bestillExtreamBrev") {
             Domain.BestillBrevRequestDto(
                 brevKode = bestillBrevRequestDto.brevKode,
                 brevGruppe = bestillBrevRequestDto.brevGruppe,

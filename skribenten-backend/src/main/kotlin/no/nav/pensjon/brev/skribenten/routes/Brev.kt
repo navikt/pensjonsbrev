@@ -5,10 +5,7 @@ import io.ktor.server.request.*
 import io.ktor.server.routing.*
 import no.nav.pensjon.brev.skribenten.auth.UnauthorizedException
 import no.nav.pensjon.brev.skribenten.getLoggedInNavIdent
-import no.nav.pensjon.brev.skribenten.services.BrevmetadataService
-import no.nav.pensjon.brev.skribenten.services.PenService
-import no.nav.pensjon.brev.skribenten.services.SpraakKode
-import no.nav.pensjon.brev.skribenten.services.TjenestebussIntegrasjonService
+import no.nav.pensjon.brev.skribenten.services.*
 import java.util.*
 import javax.xml.datatype.DatatypeFactory
 import javax.xml.datatype.XMLGregorianCalendar
@@ -18,16 +15,12 @@ fun Route.bestillBrevRoute(
     tjenestebussIntegrasjonService: TjenestebussIntegrasjonService,
     brevmetadataService: BrevmetadataService,
 ) {
-    post("/bestillBrev") {
+    post("/bestillbrev") {
         val request = call.receive<OrderLetterRequest>()
         val navIdent = getLoggedInNavIdent() ?: throw UnauthorizedException("Fant ikke navn på innlogget bruker")
         // TODO create respond on error or similar function to avoid boilerplate. RespondOnError?
-        val metadata = brevmetadataService.getMal(request.brevkode)
+        val metadata: BrevdataDto = brevmetadataService.getMal(request.brevkode)
         tjenestebussIntegrasjonService.bestillExtreamBrev(call, request, navIdent, metadata)
-    }
-
-    post("/bestillBrev/doksys") {
-
     }
 }
 
