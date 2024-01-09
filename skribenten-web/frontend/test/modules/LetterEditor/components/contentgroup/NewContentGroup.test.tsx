@@ -3,6 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, test, vi } from "vitest";
 
 import Actions from "~/pages/Brevredigering/LetterEditor/actions";
+import { MergeTarget } from "~/pages/Brevredigering/LetterEditor/actions/model";
 import { NewContentGroup } from "~/pages/Brevredigering/LetterEditor/components/NewContentGroup";
 import { EditorStateContext } from "~/pages/Brevredigering/LetterEditor/LetterEditor";
 import type { LetterEditorState } from "~/pages/Brevredigering/LetterEditor/model/state";
@@ -79,8 +80,9 @@ describe("deleteHandler", () => {
     await user.click(screen.getByText(content[1].text));
     await user.keyboard("{Delete}");
 
-    // TODO; proper test
-    expect(false).toBe(true);
+    expect(setEditorState.mock.lastCall?.[0](editorState)).toEqual(
+      Actions.merge(editorState, { blockId: 0, contentId: 1 }, MergeTarget.NEXT),
+    );
   });
   test("delete at end of group, but not after last character, does not trigger merge", async () => {
     const { user } = setup();
@@ -106,8 +108,9 @@ describe("backspaceHandler", () => {
     const { user } = setup();
     await user.click(screen.getByText(content[0].text));
     await user.keyboard("{Home}{Backspace}");
-    // TODO: proper test
-    expect(false).toBe(true);
+    expect(setEditorState.mock.lastCall?.[0](editorState)).toEqual(
+      Actions.merge(editorState, { blockId: 0, contentId: 1 }, MergeTarget.PREVIOUS),
+    );
   });
   test("backspace at beginning of group, but not before first character of TextContent, does not trigger merge", async () => {
     const { user } = setup();
