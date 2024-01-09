@@ -12,15 +12,11 @@ import { NewContentGroup } from "./components/NewContentGroup";
 import { SakspartView } from "./components/SakspartView";
 import { SignaturView } from "./components/SignaturView";
 import type { CallbackReceiver } from "./lib/actions";
-import { bindActionWithCallback } from "./lib/actions";
 import type { LetterEditorState } from "./model/state";
 
 export const LetterEditor = ({ initialState }: { initialState: RenderedLetter }) => {
   const [editorState, setEditorState] = useState<LetterEditorState>(Actions.create(initialState));
   const blocks = editorState.editedLetter.letter.blocks;
-
-  // Not needed anymore
-  const focusStolen = bindActionWithCallback(Actions.focusStolen, setEditorState);
 
   return (
     <div
