@@ -122,23 +122,27 @@ class TjenestebussIntegrasjonService(config: Config, authService: AzureADService
         )
 
         return tjenestebussIntegrasjonClient.post(call, "/bestillExtreamBrev") {
-            Domain.BestillBrevRequestDto(
-                brevKode = bestillBrevRequestDto.brevKode,
-                brevGruppe = bestillBrevRequestDto.brevGruppe,
-                isRedigerbart = bestillBrevRequestDto.isRedigerbart,
-                sprakkode = bestillBrevRequestDto.sprakkode,
-                sakskontekstDto = Domain.SakskontekstDto(
-                    journalenhet = bestillBrevRequestDto.sakskontekstDto.journalenhet,
-                    gjelder = bestillBrevRequestDto.sakskontekstDto.gjelder,
-                    dokumenttype = bestillBrevRequestDto.sakskontekstDto.dokumenttype,
-                    dokumentdato = bestillBrevRequestDto.sakskontekstDto.dokumentdato,
-                    fagsystem = bestillBrevRequestDto.sakskontekstDto.fagsystem,
-                    fagomradekode = bestillBrevRequestDto.sakskontekstDto.fagomradekode,
-                    innhold = bestillBrevRequestDto.sakskontekstDto.innhold,
-                    kategori = bestillBrevRequestDto.sakskontekstDto.kategori,
-                    saksid = bestillBrevRequestDto.sakskontekstDto.saksid,
-                    saksbehandlernavn = bestillBrevRequestDto.sakskontekstDto.saksbehandlernavn,
-                    saksbehandlerId = bestillBrevRequestDto.sakskontekstDto.saksbehandlerId,
+            contentType(ContentType.Application.Json)
+            accept(ContentType.Application.Json)
+            setBody(
+                Domain.BestillBrevRequestDto(
+                    brevKode = bestillBrevRequestDto.brevKode,
+                    brevGruppe = bestillBrevRequestDto.brevGruppe,
+                    isRedigerbart = bestillBrevRequestDto.isRedigerbart,
+                    sprakkode = bestillBrevRequestDto.sprakkode,
+                    sakskontekstDto = Domain.SakskontekstDto(
+                        journalenhet = bestillBrevRequestDto.sakskontekstDto.journalenhet,
+                        gjelder = bestillBrevRequestDto.sakskontekstDto.gjelder,
+                        dokumenttype = bestillBrevRequestDto.sakskontekstDto.dokumenttype,
+                        dokumentdato = bestillBrevRequestDto.sakskontekstDto.dokumentdato,
+                        fagsystem = bestillBrevRequestDto.sakskontekstDto.fagsystem,
+                        fagomradekode = bestillBrevRequestDto.sakskontekstDto.fagomradekode,
+                        innhold = bestillBrevRequestDto.sakskontekstDto.innhold,
+                        kategori = bestillBrevRequestDto.sakskontekstDto.kategori,
+                        saksid = bestillBrevRequestDto.sakskontekstDto.saksid,
+                        saksbehandlernavn = bestillBrevRequestDto.sakskontekstDto.saksbehandlernavn,
+                        saksbehandlerId = bestillBrevRequestDto.sakskontekstDto.saksbehandlerId,
+                    )
                 )
             )
         }.toServiceResult<Domain.BestillBrevResponseDto.Success, Domain.BestillBrevResponseDto.Failure>()

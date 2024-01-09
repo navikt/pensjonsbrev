@@ -58,7 +58,7 @@ services:
       - SAF_SCOPE=api://dev-fss.teamdokumenthandtering.saf/.default
       - SAF_URL=https://saf.dev.intern.nav.no/graphql
       - TJENESTEBUSS_INTEGRASJON_URL=http://tjenestebuss-integrasjon:8080
-      - TJENESTEBUSS_INTEGRASJON_SCOPE=api://dev-fss.pensjonsbrev.pensjonsbrev-tjenestebuss-q2/.default
+      - TJENESTEBUSS_INTEGRASJON_SCOPE=api://dev-fss.pensjonsbrev.pensjonsbrev-tjenestebuss-lokal/.default
 
   skribenten-backend-db:
     profiles:

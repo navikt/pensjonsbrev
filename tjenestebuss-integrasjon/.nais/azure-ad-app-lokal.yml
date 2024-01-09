@@ -4,7 +4,7 @@
 # secret kan hentes fra cluster med "kubectl -n pensjonsbrev get secret azure-pensjonsbrev-tjenestebuss-lokal -o json | jq '.data | map_values(@base64d)'"
 #
 # Kjøres en gang eller ved endringer med
-# kubectl apply -f .deploy/azure-ad-app-lokal.yaml
+# kubectl apply -f .nais/azure-ad-app-lokal.yml
 ###
 apiVersion: nais.io/v1
 kind: AzureAdApplication
@@ -27,3 +27,6 @@ spec:
     - application: azure-token-generator
       cluster: dev-gcp
       namespace: aura
+    - application: skribenten-backend-lokal
+      cluster: dev-gcp
+      namespace: pensjonsbrev
