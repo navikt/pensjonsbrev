@@ -114,7 +114,7 @@ function SelectLanguage({ letterTemplate }: { letterTemplate: LetterMetadata }) 
     if (preferredLanguage && letterTemplate.spraak.includes(preferredLanguage)) {
       setValue("spraak", preferredLanguage);
     }
-  }, [preferredLanguage]);
+  }, [preferredLanguage, setValue, letterTemplate.spraak]);
 
   return (
     <Select {...register("spraak")} label="Språk" size="small">
