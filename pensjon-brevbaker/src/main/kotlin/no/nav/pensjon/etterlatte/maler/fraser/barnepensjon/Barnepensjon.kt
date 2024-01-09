@@ -24,6 +24,7 @@ import no.nav.pensjon.etterlatte.maler.BeregningsperiodeSelectors.datoTOM
 import no.nav.pensjon.etterlatte.maler.BeregningsperiodeSelectors.grunnbeloep
 import no.nav.pensjon.etterlatte.maler.BeregningsperiodeSelectors.utbetaltBeloep
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
+import no.nav.pensjon.etterlatte.maler.fraser.common.kontakttelefonPensjon
 import java.time.LocalDate
 
 object Barnepensjon {
@@ -341,7 +342,7 @@ object Barnepensjon {
             paragraph {
                 text(
                     Bokmal to "Hvis du mener vedtaket er feil, kan du klage innen seks uker fra den datoen " +
-                            "du mottok vedtaket. Du kan lese mer om hvordan du klager i vedlegget «Informasjon om klage og anke»",
+                            "du mottok vedtaket. Klagen skal være skriftlig. Du finner skjema og informasjon på ${Constants.KLAGE_URL}.",
                     Nynorsk to "TODO nynorsk",
                     English to "TODO engelsk"
                 )
@@ -360,8 +361,8 @@ object Barnepensjon {
             }
             paragraph {
                 text(
-                    Bokmal to "Du har som hovedregel rett til å se dokumentene i saken din etter" +
-                            " bestemmelsene i forvaltningsloven § 18. Hvis du ønsker innsyn, må du kontakte oss på " +
+                    Bokmal to "Du har som hovedregel rett til å se dokumentene i saken etter" +
+                            " forvaltningsloven § 18. Hvis du ønsker innsyn, må du kontakte oss på " +
                             "telefon eller per post.",
                     Nynorsk to "TODO nynorsk",
                     English to "TODO engelsk"
@@ -387,6 +388,51 @@ object Barnepensjon {
                     Nynorsk to "TODO nynorsk",
                     English to "TODO engelsk"
                 )
+            }
+        }
+    }
+
+    data class HarDuSpoersmaalNy(
+        val brukerUnder18Aar: Expression<Boolean>,
+        val bosattUtland: Expression<Boolean>,
+    ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+            title2 {
+                text(
+                    Bokmal to "Har du spørsmål?",
+                    Nynorsk to "TODO nynorsk",
+                    English to "TODO engelsk"
+                )
+            }
+
+            showIf(brukerUnder18Aar) {
+                paragraph {
+                    text(
+                        Bokmal to "Du finner mer informasjon på ${Constants.BARNEPENSJON_URL}. Hvis du ikke finner svar på spørsmålet ditt, kan du ringe oss på telefon ",
+                        Nynorsk to "TODO nynorsk",
+                        English to "TODO engelsk"
+                    )
+                    kontakttelefonPensjon(bosattUtland)
+                    text(
+                        Bokmal to " hverdager 9-15. Om du oppgir fødselsnummer til barnet, kan vi lettere gi deg rask og god hjelp.",
+                        Nynorsk to "TODO nynorsk",
+                        English to "TODO engelsk"
+                    )
+                }
+            }.orShow {
+                paragraph {
+                    text(
+                        Bokmal to "Du finner mer informasjon på nav.no/barnepensjon. Hvis du ikke finner svar på spørsmålet ditt, kan du ringe oss på telefon ",
+                        Nynorsk to "TODO nynorsk",
+                        English to "TODO engelsk"
+                    )
+                    kontakttelefonPensjon(bosattUtland)
+                    text(
+                        Bokmal to " hverdager 9-15. Om du oppgir fødselsnummeret ditt, kan vi lettere gi deg rask og god hjelp.",
+                        Nynorsk to "TODO nynorsk",
+                        English to "TODO engelsk"
+                    )
+                }
             }
         }
     }

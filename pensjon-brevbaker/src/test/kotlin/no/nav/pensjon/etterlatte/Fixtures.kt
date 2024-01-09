@@ -6,6 +6,7 @@ import no.nav.pensjon.brevbaker.api.model.Foedselsnummer
 import no.nav.pensjon.brevbaker.api.model.NAVEnhet
 import no.nav.pensjon.brevbaker.api.model.SignerendeSaksbehandlere
 import no.nav.pensjon.brevbaker.api.model.Telefonnummer
+import no.nav.pensjon.etterlatte.fixtures.createBarnepensjonAvslagDTO
 import no.nav.pensjon.etterlatte.fixtures.createBarnepensjonInnvilgelseDTO
 import no.nav.pensjon.etterlatte.fixtures.createBarnepensjonInnvilgelseEnkelDTO
 import no.nav.pensjon.etterlatte.fixtures.createBarnepensjonInnvilgelseNyDTO
@@ -29,6 +30,7 @@ import no.nav.pensjon.etterlatte.fixtures.createTomMalInformasjonsbrev
 import no.nav.pensjon.etterlatte.maler.ManueltBrevDTO
 import no.nav.pensjon.etterlatte.maler.ManueltBrevMedTittelDTO
 import no.nav.pensjon.etterlatte.maler.TomMal
+import no.nav.pensjon.etterlatte.maler.barnepensjon.avslag.BarnepensjonAvslagDTO
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseDTO
 import no.nav.pensjon.etterlatte.maler.barnepensjon.endring.EndringHovedmalDTO
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseEnkelDTO
@@ -82,6 +84,7 @@ object Fixtures {
             BarnepensjonInnvilgelseDTO::class -> createBarnepensjonInnvilgelseDTO() as T
             BarnepensjonInnvilgelseNyDTO::class -> createBarnepensjonInnvilgelseNyDTO() as T
             BarnepensjonInnvilgelseEnkelDTO::class -> createBarnepensjonInnvilgelseEnkelDTO() as T
+            BarnepensjonAvslagDTO::class -> createBarnepensjonAvslagDTO() as T
             ManueltBrevDTO::class -> createManueltBrevDTO() as T
             OMSInnvilgelseDTO::class -> createOMSInnvilgelseDTO() as T
             EndringHovedmalDTO::class -> createEndringHovedmalDTO() as T

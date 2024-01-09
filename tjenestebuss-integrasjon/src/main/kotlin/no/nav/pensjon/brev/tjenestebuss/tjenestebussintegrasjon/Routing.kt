@@ -23,13 +23,15 @@ import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.arkiv.B
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.arkiv.BestillBrevResponseDto.Failure.FailureType.MANGLER_OBLIGATORISK_INPUT
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.arkiv.BestillBrevResponseDto.Success
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.dokumentsproduksjon.DokumentproduksjonService
-import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.dokumentsproduksjon.dto.RedigerDokumentResponseDto
-import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.dokumentsproduksjon.dto.RedigerDokumentResponseDto.Failure.FailureType.IKKE_FUNNET
-import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.dokumentsproduksjon.dto.RedigerDokumentResponseDto.Failure.FailureType.IKKE_TILGANG
-import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.dokumentsproduksjon.dto.RedigerDokumentResponseDto.Failure.FailureType.IKKE_TILLATT
-import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.dokumentsproduksjon.dto.RedigerDokumentResponseDto.Failure.FailureType.LASING
-import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.dokumentsproduksjon.dto.RedigerDokumentResponseDto.Failure.FailureType.LUKKET
-import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.dokumentsproduksjon.dto.RedigerDokumentResponseDto.Failure.FailureType.VALIDERING_FEILET
+import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.dokumentsproduksjon.dto.RedigerDoksysDokumentResponseDto
+import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.dokumentsproduksjon.dto.RedigerDoksysDokumentResponseDto.Failure.FailureType.IKKE_FUNNET
+import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.dokumentsproduksjon.dto.RedigerDoksysDokumentResponseDto.Failure.FailureType.IKKE_TILGANG
+import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.dokumentsproduksjon.dto.RedigerDoksysDokumentResponseDto.Failure.FailureType.IKKE_TILLATT
+import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.dokumentsproduksjon.dto.RedigerDoksysDokumentResponseDto.Failure.FailureType.LASING
+import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.dokumentsproduksjon.dto.RedigerDoksysDokumentResponseDto.Failure.FailureType.LUKKET
+import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.dokumentsproduksjon.dto.RedigerDoksysDokumentResponseDto.Failure.FailureType.VALIDERING_FEILET
+import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.extreambrev.ExtreamBrevService
+import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.extreambrev.RedigerExtreamDokumentResponseDto
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.samhandler.SamhandlerTjenestebussService
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.samhandler.dto.FinnSamhandlerResponseDto
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.samhandler.dto.HentSamhandlerResponseDto
@@ -88,9 +90,12 @@ fun Application.tjenestebussIntegrationApi(config: Config) {
     routing {
         val stsService = STSService(config.getConfig("services.sts"))
         val stsSercuritySOAPHandler = STSSercuritySOAPHandler(stsService)
-        val samhandlerTjenestebussService = SamhandlerTjenestebussService(config.getConfig("services.tjenestebuss"), stsSercuritySOAPHandler)
-        val arkivTjenestebussService = ArkivTjenestebussService(config.getConfig("services.tjenestebuss"), stsSercuritySOAPHandler)
-        val dokumentProduksjonService = DokumentproduksjonService(config.getConfig("services.dokprod"), stsSercuritySOAPHandler)
+        val servicesConfig = config.getConfig("services")
+        val samhandlerTjenestebussService = SamhandlerTjenestebussService(servicesConfig.getConfig("tjenestebuss"), stsSercuritySOAPHandler)
+        val arkivTjenestebussService = ArkivTjenestebussService(servicesConfig.getConfig("tjenestebuss"), stsSercuritySOAPHandler)
+        val dokumentProduksjonService = DokumentproduksjonService(servicesConfig.getConfig("dokprod"), stsSercuritySOAPHandler)
+        val extreamBrevService = ExtreamBrevService(servicesConfig, stsSercuritySOAPHandler)
+
 
         get("/isAlive") {
             call.respondText("Alive!", ContentType.Text.Plain, HttpStatusCode.OK)
@@ -149,10 +154,10 @@ fun Application.tjenestebussIntegrationApi(config: Config) {
                 }
             }
             post("/redigerDoksysBrev") {
-                val requestDto = call.receive<RedigerDokumentDoksysRequestDto>()
+                val requestDto = call.receive<RedigerDoksysDokumentRequestDto>()
                 when (val dokumentResponse = withCallId(dokumentProduksjonService) { redigerDokument(requestDto) }) {
-                    is RedigerDokumentResponseDto.Success -> call.respond(HttpStatusCode.OK, dokumentResponse)
-                    is RedigerDokumentResponseDto.Failure -> {
+                    is RedigerDoksysDokumentResponseDto.Success -> call.respond(HttpStatusCode.OK, dokumentResponse)
+                    is RedigerDoksysDokumentResponseDto.Failure -> {
                         call.respond(
                             when (dokumentResponse.failureType) {
                                 LASING -> HttpStatusCode.InternalServerError
@@ -164,6 +169,13 @@ fun Application.tjenestebussIntegrationApi(config: Config) {
                             }, dokumentResponse
                         )
                     }
+                }
+            }
+            post("/redigerExtreamBrev") {
+                val requestDto = call.receive<RedigerExtreamDokumentRequestDto>()
+                when (val response = withCallId(extreamBrevService) { hentExtreamBrevUrl(requestDto) }) {
+                    is RedigerExtreamDokumentResponseDto.Success -> call.respond(HttpStatusCode.OK, response)
+                    is RedigerExtreamDokumentResponseDto.Failure -> call.respond((HttpStatusCode.InternalServerError), response)
                 }
             }
         }
@@ -180,7 +192,13 @@ class FinnSamhandlerRequestDto(
     val samhandlerType: SamhandlerTypeCode,
 )
 
-class RedigerDokumentDoksysRequestDto(
+class RedigerDoksysDokumentRequestDto(
     val journalpostId: String,
     val dokumentId: String,
+)
+
+class RedigerExtreamDokumentRequestDto(
+    val dokumentId: String,
+    val bredde: String? = "300",
+    val hoyde: String? = "30"
 )
