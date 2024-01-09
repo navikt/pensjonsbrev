@@ -1,4 +1,4 @@
-import { cleanup, render, screen } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, test, vi } from "vitest";
 
@@ -26,7 +26,6 @@ const editorState = letter(block, block, block);
 const setEditorState = vi.fn<[(l: LetterEditorState) => LetterEditorState]>();
 
 afterEach(() => {
-  cleanup();
   vi.restoreAllMocks();
 });
 
@@ -81,6 +80,7 @@ describe("deleteHandler", () => {
     await user.keyboard("{Delete}");
 
     // TODO; proper test
+    expect(false).toBe(true);
   });
   test("delete at end of group, but not after last character, does not trigger merge", async () => {
     const { user } = setup();
@@ -106,8 +106,8 @@ describe("backspaceHandler", () => {
     const { user } = setup();
     await user.click(screen.getByText(content[0].text));
     await user.keyboard("{Home}{Backspace}");
-
     // TODO: proper test
+    expect(false).toBe(true);
   });
   test("backspace at beginning of group, but not before first character of TextContent, does not trigger merge", async () => {
     const { user } = setup();

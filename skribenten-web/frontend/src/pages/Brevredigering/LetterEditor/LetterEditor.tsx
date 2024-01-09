@@ -4,7 +4,6 @@ import { css } from "@emotion/react";
 import { Heading } from "@navikt/ds-react";
 import { createContext, Fragment, useContext, useState } from "react";
 
-import { ContentGroup } from "~/pages/Brevredigering/LetterEditor/components/ContentGroup";
 import type { RenderedLetter } from "~/types/brevbakerTypes";
 
 import Actions from "./actions";
@@ -18,7 +17,6 @@ import type { LetterEditorState } from "./model/state";
 
 export const LetterEditor = ({ initialState }: { initialState: RenderedLetter }) => {
   const [editorState, setEditorState] = useState<LetterEditorState>(Actions.create(initialState));
-
   const blocks = editorState.editedLetter.letter.blocks;
 
   // Not needed anymore

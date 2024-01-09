@@ -1,3 +1,4 @@
+// eslint-disable-next-line testing-library/no-manual-cleanup
 import { cleanup, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
@@ -40,6 +41,7 @@ const contentGroup = (
 );
 
 beforeEach(() => {
+  // eslint-disable-next-line testing-library/no-render-in-lifecycle
   render(contentGroup);
 });
 
@@ -53,7 +55,6 @@ describe("updateContent", () => {
     const firstSpan = screen.getByText(content[0].text);
     await user.click(firstSpan);
     await user.keyboard(" person");
-    screen.debug();
     expect(updateLetter).toHaveBeenCalled();
     expect(updateLetter.mock.lastCall?.[0](state)).toEqual(
       Actions.updateContentText(state, { blockId: 1, contentId: 0 }, content[0].text + " person"),
