@@ -8,7 +8,7 @@ import type { RenderedLetter } from "~/types/brevbakerTypes";
 
 import Actions from "./actions";
 import { EditorMenu } from "./components/EditorMenu";
-import { NewContentGroup } from "./components/NewContentGroup";
+import { ContentGroup } from "./components/ContentGroup";
 import { SakspartView } from "./components/SakspartView";
 import { SignaturView } from "./components/SignaturView";
 import type { CallbackReceiver } from "./lib/actions";
@@ -42,7 +42,7 @@ export const LetterEditor = ({ initialState }: { initialState: RenderedLetter })
           <div>
             {blocks.map((block, blockIndex) => (
               <div className={block.type} key={blockIndex}>
-                <NewContentGroup blockIndex={blockIndex} />
+                <ContentGroup blockIndex={blockIndex} />
               </div>
             ))}
           </div>

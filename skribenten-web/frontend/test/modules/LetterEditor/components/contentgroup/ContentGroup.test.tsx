@@ -4,7 +4,7 @@ import { afterEach, describe, expect, test, vi } from "vitest";
 
 import Actions from "~/pages/Brevredigering/LetterEditor/actions";
 import { MergeTarget } from "~/pages/Brevredigering/LetterEditor/actions/model";
-import { NewContentGroup } from "~/pages/Brevredigering/LetterEditor/components/NewContentGroup";
+import { ContentGroup } from "~/pages/Brevredigering/LetterEditor/components/ContentGroup";
 import { EditorStateContext } from "~/pages/Brevredigering/LetterEditor/LetterEditor";
 import type { LetterEditorState } from "~/pages/Brevredigering/LetterEditor/model/state";
 import type { LiteralValue, ParagraphBlock } from "~/types/brevbakerTypes";
@@ -35,7 +35,7 @@ function setup() {
     user: userEvent.setup(),
     ...render(
       <EditorStateContext.Provider value={{ editorState, setEditorState }}>
-        <NewContentGroup blockIndex={0} />
+        <ContentGroup blockIndex={0} />
       </EditorStateContext.Provider>,
     ),
   };

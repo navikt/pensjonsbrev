@@ -11,7 +11,7 @@ import { ITEM_LIST, LITERAL, VARIABLE } from "~/types/brevbakerTypes";
 
 const selectService = new SelectionService(true);
 
-export function NewContentGroup({ blockIndex }: { blockIndex: number }) {
+export function ContentGroup({ blockIndex }: { blockIndex: number }) {
   const { editorState, setEditorState } = useEditor();
   const block = editorState.editedLetter.letter.blocks[blockIndex];
 
