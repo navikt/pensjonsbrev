@@ -57,3 +57,12 @@ export enum SpraakKode {
 export type PidRequest = {
   pid: string;
 };
+
+export type OrderLetterRequest = {
+  brevkode: string;
+  spraak: SpraakKode;
+  sakId: number;
+  gjelderPid: string;
+  landkode?: string;
+  mottakerText?: string;
+};
