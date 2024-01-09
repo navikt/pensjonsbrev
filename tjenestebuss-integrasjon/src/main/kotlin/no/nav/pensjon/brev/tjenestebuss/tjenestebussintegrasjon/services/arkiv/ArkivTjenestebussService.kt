@@ -15,7 +15,14 @@ import javax.xml.bind.JAXBElement
 import javax.xml.datatype.XMLGregorianCalendar
 import javax.xml.namespace.QName
 
-class ArkivTjenestebussService(config: Config, securityHandler: STSSercuritySOAPHandler): TjenestebussService() {
+private val elektroniskVarslingTrue = JAXBElement(
+    QName("", "tillattelektroniskvarsling"),
+    Boolean::class.java,
+    Sakskontekst::class.java,
+    true
+)
+
+class ArkivTjenestebussService(config: Config, securityHandler: STSSercuritySOAPHandler) : TjenestebussService() {
     private val logger = LoggerFactory.getLogger(this::class.java)
 
     private val arkivClient = ArkivClient(config, securityHandler, callIdHandler).client()
@@ -35,18 +42,22 @@ class ArkivTjenestebussService(config: Config, securityHandler: STSSercuritySOAP
                     JAXBElement(QName("redigerbart"), Boolean::class.java, request.isRedigerbart)
                 sprakKode = request.sprakkode
                 sakskontekst = Sakskontekst().apply {
-                    saksbehandlernavn = request.sakskontekstDto.saksbehandlernavn
-                    saksbehandlerId = request.sakskontekstDto.saksbehandlerId
-                    journalenhet = request.sakskontekstDto.journalenhet
-                    gjelder = request.sakskontekstDto.gjelder
-                    dokumenttype = request.sakskontekstDto.dokumenttype
                     dokumentdato = request.sakskontekstDto.dokumentdato
-                    fagsystem = request.sakskontekstDto.fagsystem
+                    dokumenttype = request.sakskontekstDto.dokumenttype
                     fagomradeKode = request.sakskontekstDto.fagomradekode
+                    fagsystem = request.sakskontekstDto.fagsystem
+                    gjelder = request.sakskontekstDto.gjelder
                     innhold = request.sakskontekstDto.innhold
+                    journalenhet = request.sakskontekstDto.journalenhet
                     kategori = request.sakskontekstDto.kategori
+                    kravtype = request.sakskontekstDto.kravtype
+                    land = request.sakskontekstDto.land
+                    mottaker = request.sakskontekstDto.mottaker
+                    saksbehandlerId = request.sakskontekstDto.saksbehandlerId
+                    saksbehandlernavn = request.sakskontekstDto.saksbehandlernavn
                     saksid = request.sakskontekstDto.saksid
-                    sensitivitetsgrad = request.sakskontekstDto.sensitivitet
+                    sensitivitetsgrad = "false"
+                    tillattelektroniskvarsling = elektroniskVarslingTrue
                 }
             })
             logger.info("Opprettet brev med journalpostId: ${response!!.journalpostId} i sakId: ${request.sakskontekstDto.saksid} ")
@@ -69,19 +80,21 @@ class ArkivTjenestebussService(config: Config, securityHandler: STSSercuritySOAP
 
 sealed class BestillBrevResponseDto {
     data class Success(val journalpostId: String) : BestillBrevResponseDto()
-    data class Failure(val failureType: FailureType,
+    data class Failure(
+        val failureType: FailureType,
         val message: String,
         val source: String,
         val type: String,
         val cause: String,
     ) : BestillBrevResponseDto() {
-        constructor(failureType: FailureType, stelvioFault: StelvioFault): this(
+        constructor(failureType: FailureType, stelvioFault: StelvioFault) : this(
             failureType,
             stelvioFault.errorMessage,
             stelvioFault.errorSource,
             stelvioFault.errorType,
             stelvioFault.rootCause,
         )
+
         enum class FailureType {
             ADRESSE_MANGLER,
             HENTE_BREVDATA,
@@ -99,17 +112,19 @@ data class BestillBrevExtreamRequestDto(
     val sakskontekstDto: SakskontekstDto,
 ) {
     data class SakskontekstDto(
-        val journalenhet: String,
-        val gjelder: String,
-        val dokumenttype: String,
         val dokumentdato: XMLGregorianCalendar,
-        val fagsystem: String,
+        val dokumenttype: String,
         val fagomradekode: String,
+        val fagsystem: String,
+        val gjelder: String,
         val innhold: String,
+        val journalenhet: String,
         val kategori: String,
-        val saksid: String,
-        val saksbehandlernavn: String,
+        val kravtype: String?,
+        val land: String?,
+        val mottaker: String?,
         val saksbehandlerId: String,
-        val sensitivitet: String
+        val saksbehandlernavn: String,
+        val saksid: String,
     )
 }

@@ -19,16 +19,18 @@ data class BestillBrevRequestDto(
 
 
 data class SakskontekstDto(
-    val journalenhet: String,
-    val gjelder: String,
-    val dokumenttype: String,
     val dokumentdato: XMLGregorianCalendar,
-    val fagsystem: String,
+    val dokumenttype: String,
     val fagomradekode: String,
+    val fagsystem: String,
+    val gjelder: String,
     val innhold: String,
+    val journalenhet: String,
     val kategori: String,
-    val saksid: String,
-    val saksbehandlernavn: String,
+    val kravtype: String?,
+    val land: String?,
+    val mottaker: String?,
     val saksbehandlerId: String,
-    val sensitivitet: String
+    val saksbehandlernavn: String,
+    val saksid: String,
 )

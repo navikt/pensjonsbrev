@@ -7,15 +7,13 @@ import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.serialization.jackson.*
 import io.ktor.server.application.*
+import io.ktor.server.plugins.*
 import no.nav.pensjon.brev.skribenten.auth.AzureADOnBehalfOfAuthorizedHttpClient
 import no.nav.pensjon.brev.skribenten.auth.AzureADService
-import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.BestillBrevRequestDto
-import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.BestillBrevResponseDto
-import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.FinnSamhandlerResponseDto
+import no.nav.pensjon.brev.skribenten.routes.OrderLetterRequest
+import no.nav.pensjon.brev.skribenten.routes.getCurrentGregorianTime
+import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.*
 import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.FinnSamhandlerResponseDto.Success.Samhandler
-import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.HentSamhandlerResponseDto
-import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.RedigerDokumentResponseDto
-import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.SamhandlerTypeCode
 import javax.xml.datatype.XMLGregorianCalendar
 
 class TjenestebussIntegrasjonService(config: Config, authService: AzureADService) {
@@ -83,11 +81,47 @@ class TjenestebussIntegrasjonService(config: Config, authService: AzureADService
                 HentSamhandlerResponseDto.Failure(message = error.message, type = error.type)
             }
 
-    suspend fun bestillBrev(
+    suspend fun bestillExtreamBrev(
         call: ApplicationCall,
-        bestillBrevRequestDto: BestillBrevRequestDto
-    ): ServiceResult<BestillBrevResponseDto.Success, BestillBrevResponseDto.Failure> =
-        tjenestebussIntegrasjonClient.post(call, "/bestillbrev") {
+        request: OrderLetterRequest,
+        navIdent: String,
+        metadata: BrevdataDto
+    ): ServiceResult<BestillBrevResponseDto.Success, BestillBrevResponseDto.Failure> {
+
+        //TODO better error handling.
+        // TODO access controls for e-blanketter
+        val isEblankett = metadata.dokumentkategori == BrevdataDto.DokumentkategoriCode.E_BLANKETT
+        val bestillBrevRequestDto = BestillBrevRequestDto(
+            brevKode = request.brevkode, // ID på brev
+            brevGruppe = metadata.brevgruppe
+                ?: throw BadRequestException("Fant ikke brevgruppe gitt extream brev :${request.brevkode}"),
+            isRedigerbart = metadata.redigerbart,
+            sprakkode = request.spraak.toString(),
+            sakskontekstDto = SakskontekstDto(
+                journalenhet = "0001",                              // NAV org enhet nr som skriver brevet. Kommer med i signatur.
+                //    private String decideJournalEnhet(NAVEnhet enhetToSet, BrevmenyForm form) {
+                //        if (form.getValgtAvsenderEnhet().equals(enhetToSet.getEnhetsId())) {
+                //            return enhetToSet.getEnhetsId();
+                //        } else {
+                //            return form.getSak().getEierTilgang().getTilgangGittTil();
+                //        }
+                gjelder = request.gjelderPid,                       // Hvem gjelder brevet? Kan være ulik fra mottaker om det er verge.
+                dokumenttype = metadata.dokType,                    // Inngående, utgående, notat
+                dokumentdato = getCurrentGregorianTime(),           // nåværende dato. TODO Skal dette komme fra parameter kanskje?
+                fagsystem = "PEN",                                  // TODO skal dette være noe annet enn PEN (pesys?)
+                fagomradekode = "PEN",                              // Fagområde pensjon uansett hva det faktisk er. Finnes det UFO?
+                innhold = metadata.dekode,                          // Visningsnavn
+                kategori = metadata.dokumentkategori.toString(),    // Kategori for dokumentet
+                kravtype = null, // TODO sett. Brukes for notater
+                land = request.landkode.takeIf { isEblankett },
+                mottaker = request.mottakerText.takeIf { isEblankett }, // Fritekst felt for SED/Eblankett mottaker til journalpost
+                saksid = request.sakId.toString(),// sakid
+                saksbehandlernavn = "saksbehandler saksbehandlerson", // TODO hent navn fra nav ansatt service? eller claim kanskje?
+                saksbehandlerId = navIdent,
+            )
+        )
+
+        return tjenestebussIntegrasjonClient.post(call, "/bestillbrev") {
             Domain.BestillBrevRequestDto(
                 brevKode = bestillBrevRequestDto.brevKode,
                 brevGruppe = bestillBrevRequestDto.brevGruppe,
@@ -105,7 +139,6 @@ class TjenestebussIntegrasjonService(config: Config, authService: AzureADService
                     saksid = bestillBrevRequestDto.sakskontekstDto.saksid,
                     saksbehandlernavn = bestillBrevRequestDto.sakskontekstDto.saksbehandlernavn,
                     saksbehandlerId = bestillBrevRequestDto.sakskontekstDto.saksbehandlerId,
-                    sensitivitet = bestillBrevRequestDto.sakskontekstDto.sensitivitet
                 )
             )
         }.toServiceResult<Domain.BestillBrevResponseDto.Success, Domain.BestillBrevResponseDto.Failure>()
@@ -116,6 +149,7 @@ class TjenestebussIntegrasjonService(config: Config, authService: AzureADService
             }.catch { error ->
                 BestillBrevResponseDto.Failure(message = error.message, type = error.type)
             }
+    }
 
     suspend fun redigerDokument(
         call: ApplicationCall,
@@ -179,7 +213,6 @@ class TjenestebussIntegrasjonService(config: Config, authService: AzureADService
             val saksid: String,
             val saksbehandlernavn: String,
             val saksbehandlerId: String,
-            val sensitivitet: String
         )
 
         sealed class HentSamhandlerResponseDto {

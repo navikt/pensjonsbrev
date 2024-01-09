@@ -21,11 +21,6 @@ fun Route.tjenestebussIntegrasjonRoute(tjenestebussIntegrasjonService: Tjenesteb
         respondWithResult(tjenestebussIntegrasjonService.hentSamhandler(call, requestDto.idTSSEkstern, requestDto.hentDetaljert))
     }
 
-    post("/bestillExtreamBrev") {
-        val requestDto = call.receive<BestillBrevRequestDto>()
-        respondWithResult(tjenestebussIntegrasjonService.bestillBrev(call, requestDto))
-    }
-
     post("/redigerDoksysBrev") {
         val requestDto = call.receive<RedigerDokumentRequestDto>()
         respondWithResult(tjenestebussIntegrasjonService.redigerDokument(call, requestDto.journalpostId, requestDto.dokumentId))

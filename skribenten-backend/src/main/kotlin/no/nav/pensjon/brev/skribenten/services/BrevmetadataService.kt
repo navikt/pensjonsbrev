@@ -83,7 +83,7 @@ data class BrevdataDto(
     val dekode: String,
     val brevkategori: BrevkategoriCode?,
     val dokType: String,
-    val sprak: List<SpraakKode>,
+    val sprak: List<SpraakKode>?,
     val visIPselv: Boolean?,
     val utland: String?,
     val brevregeltype: String?,
@@ -96,10 +96,10 @@ data class BrevdataDto(
     val brevsystem: String?,
     val brevgruppe: String?,
 ) {
-    enum class DokumentkategoriCode { B, EP, ES, E_BLANKETT, F, IB, IS, KD, KM, KS, SED, TS, VB }
+    enum class DokumentkategoriCode { B, E_BLANKETT, IB, SED, VB }
     enum class BrevkategoriCode { BREV_MED_SKJEMA, INFORMASJON, INNHENTE_OPPL, NOTAT, OVRIG, VARSEL, VEDTAK }
     enum class DokType {
-        NY,         //"ny"/doksys
+        DOKSYS,
         GAMMEL,     //EXTREAM
     }
 }
@@ -125,7 +125,7 @@ data class LetterMetadata(
     val name: String,
     val id: String,
     val brevsystem: BrevSystem,
-    val spraak: List<SpraakKode>,
+    val spraak: List<SpraakKode>, // Enkelte brev er egentlig bare bokmål, men har null i metadata.
     val isVedtaksbrev: Boolean,
     val isEblankett: Boolean,
 )
