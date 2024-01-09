@@ -93,12 +93,10 @@ export function OurOwnEditableText({
   }, [isFocus]);
 
   const handleEnter = (event: React.KeyboardEvent<HTMLSpanElement>) => {
-    if (event.key === "Enter") {
-      event.preventDefault();
-      const offset = selectService.getCursorOffset();
+    event.preventDefault();
+    const offset = selectService.getCursorOffset();
 
-      applyAction(Actions.split, setEditorState, id, offset);
-    }
+    applyAction(Actions.split, setEditorState, id, offset);
   };
 
   const handleBackspace = (event: React.KeyboardEvent<HTMLSpanElement>) => {
@@ -111,6 +109,15 @@ export function OurOwnEditableText({
       applyAction(Actions.merge, setEditorState, id, MergeTarget.PREVIOUS);
     }
   };
+
+  const handleDelete = (event: React.KeyboardEvent<HTMLSpanElement>) => {
+    const cursorIsAtEnd = selectService.getCursorOffset() >= content.text.length;
+    if (cursorIsAtEnd) {
+      event.preventDefault();
+      applyAction(Actions.merge, setEditorState, id, MergeTarget.NEXT);
+    }
+  };
+
   return (
     <span
       // NOTE: ideally this would be "plaintext-only", and it works in practice.
@@ -126,6 +133,9 @@ export function OurOwnEditableText({
         }
         if (event.key === "Backspace") {
           handleBackspace(event);
+        }
+        if (event.key === "Delete") {
+          handleDelete(event);
         }
       }}
       ref={contentEditableReference}
