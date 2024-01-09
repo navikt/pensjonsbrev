@@ -109,6 +109,7 @@ export const merge: Action<LetterEditorState, [mergeId: ContentId, target: Merge
             cursorPosition: nextStartOffset,
             blockIndex: firstId,
           };
+          draft.currentBlock = firstId;
 
           draft.stealFocus[firstId] =
             lastContentOfFirst?.type === LITERAL
