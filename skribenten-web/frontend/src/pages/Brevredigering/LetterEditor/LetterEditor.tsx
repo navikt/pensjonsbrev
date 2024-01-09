@@ -2,7 +2,7 @@ import "./editor.css";
 
 import { css } from "@emotion/react";
 import { Heading } from "@navikt/ds-react";
-import { createContext, Fragment, useContext, useState } from "react";
+import { createContext, useContext, useState } from "react";
 
 import type { RenderedLetter } from "~/types/brevbakerTypes";
 
@@ -41,22 +41,9 @@ export const LetterEditor = ({ initialState }: { initialState: RenderedLetter })
           </Heading>
           <div>
             {blocks.map((block, blockIndex) => (
-              <Fragment key={blockIndex}>
-                <div className={block.type}>
-                  <NewContentGroup blockIndex={blockIndex} />
-                </div>
-                {/*<div className={block.type}>*/}
-                {/*  <ContentGroup*/}
-                {/*    content={block.content}*/}
-                {/*    editable={block.editable}*/}
-                {/*    focusStolen={focusStolen.bind(null, blockIndex)}*/}
-                {/*    id={{ blockId: blockIndex }}*/}
-                {/*    onFocus={setCurrentBlock.bind(null, blockIndex)}*/}
-                {/*    stealFocus={editorState.stealFocus[blockIndex]}*/}
-                {/*    updateLetter={setEditorState}*/}
-                {/*  />*/}
-                {/*</div>*/}
-              </Fragment>
+              <div className={block.type} key={blockIndex}>
+                <NewContentGroup blockIndex={blockIndex} />
+              </div>
             ))}
           </div>
           <SignaturView signatur={editorState.editedLetter.letter.signatur} />

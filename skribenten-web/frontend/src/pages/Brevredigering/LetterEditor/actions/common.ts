@@ -18,6 +18,5 @@ export function create(letter: RenderedLetter): LetterEditorState {
       deletedBlocks: [],
     },
     currentBlock: 0,
-    stealFocus: {},
   };
 }

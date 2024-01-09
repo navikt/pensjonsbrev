@@ -96,9 +96,12 @@ export const merge: Action<LetterEditorState, [mergeId: ContentId, target: Merge
           deleteBlock(first, blocks, editedLetter.deletedBlocks);
           draft.stealFocus[firstId] = { contentId: 0, startOffset: 0 };
           draft.nextFocus = { contentIndex: 0, cursorPosition: 0, blockIndex: mergeId.blockId + 1 };
+          draft.currentBlock = mergeId.blockId + 1;
         } else if (isEmptyBlock(second)) {
           blocks.splice(secondId, 1);
           deleteBlock(second, blocks, editedLetter.deletedBlocks);
+          draft.nextFocus = { contentIndex: 0, cursorPosition: 0, blockIndex: mergeId.blockId - 1 };
+          draft.currentBlock = mergeId.blockId - 1;
         } else {
           const lastContentOfFirst = first.content.at(-1);
 

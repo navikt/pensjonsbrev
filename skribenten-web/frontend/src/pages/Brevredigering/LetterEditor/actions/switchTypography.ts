@@ -9,8 +9,8 @@ import { isTextContent } from "../model/utils";
 export const switchTypography: Action<
   LetterEditorState,
   [blockId: number, typography: typeof PARAGRAPH | typeof TITLE1 | typeof TITLE2]
-> = produce((draft, blockId, typography) => {
-  const block = draft.editedLetter.letter.blocks[blockId];
+> = produce((draft, blockIndex, typography) => {
+  const block = draft.editedLetter.letter.blocks[blockIndex];
   switch (typography) {
     case PARAGRAPH: {
       block.type = typography;

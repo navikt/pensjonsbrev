@@ -13,7 +13,6 @@ const selectService = new SelectionService(true);
 
 export function NewContentGroup({ blockIndex }: { blockIndex: number }) {
   const { editorState, setEditorState } = useEditor();
-
   const block = editorState.editedLetter.letter.blocks[blockIndex];
 
   if (!block.editable) {
