@@ -2,9 +2,8 @@ import type { Item as ItemType, ItemList as ItemListType } from "~/types/brevbak
 
 import type { BoundAction, CallbackReceiver } from "../lib/actions";
 import type { CursorPosition, LetterEditorState } from "../model/state";
-import type { ItemID } from "./ContentGroup";
-import { ContentGroup } from "./ContentGroup";
 
+type ItemID = { blockId: number; contentId: number; itemId: number };
 type ItemProperties = {
   id: ItemID;
   updateLetter: CallbackReceiver<LetterEditorState>;
@@ -16,6 +15,7 @@ type ItemProperties = {
 };
 const Item = ({ id, updateLetter, item, editable, stealFocus, focusStolen, onFocus }: ItemProperties) => (
   <li>
+    {/*@ts-expect-error -- TODO will be reimplented later*/}
     <ContentGroup
       content={item.content}
       editable={editable}
