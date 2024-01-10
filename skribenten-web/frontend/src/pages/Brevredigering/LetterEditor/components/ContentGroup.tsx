@@ -39,7 +39,7 @@ export function ContentGroup({ blockIndex }: { blockIndex: number }) {
         switch (content.type) {
           case LITERAL: {
             return (
-              <OurOwnEditableText
+              <EditableText
                 blockIndex={blockIndex}
                 content={content}
                 contentIndex={contentIndex}
@@ -59,7 +59,7 @@ export function ContentGroup({ blockIndex }: { blockIndex: number }) {
   );
 }
 
-export function OurOwnEditableText({
+export function EditableText({
   blockIndex,
   contentIndex,
   content,
