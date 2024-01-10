@@ -7,8 +7,8 @@ import { createContext, useContext, useState } from "react";
 import type { RenderedLetter } from "~/types/brevbakerTypes";
 
 import Actions from "./actions";
-import { EditorMenu } from "./components/EditorMenu";
 import { ContentGroup } from "./components/ContentGroup";
+import { EditorMenu } from "./components/EditorMenu";
 import { SakspartView } from "./components/SakspartView";
 import { SignaturView } from "./components/SignaturView";
 import type { CallbackReceiver } from "./lib/actions";

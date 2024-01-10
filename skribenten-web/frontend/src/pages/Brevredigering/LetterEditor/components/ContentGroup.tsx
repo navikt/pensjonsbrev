@@ -89,7 +89,7 @@ export function OurOwnEditableText({
         editorState.nextFocus?.cursorPosition,
       );
     }
-  }, [isFocus]);
+  }, [editorState.nextFocus?.cursorPosition, isFocus]);
 
   const handleEnter = (event: React.KeyboardEvent<HTMLSpanElement>) => {
     event.preventDefault();
