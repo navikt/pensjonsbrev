@@ -1,4 +1,4 @@
-import type { Item as ItemType, ItemList as ItemListType } from "~/types/brevbakerTypes";
+import type { Item, Item as ItemType, ItemList as ItemListType } from "~/types/brevbakerTypes";
 
 import type { BoundAction, CallbackReceiver } from "../lib/actions";
 import type { CursorPosition, LetterEditorState } from "../model/state";
@@ -13,7 +13,7 @@ type ItemProperties = {
   focusStolen: BoundAction<[]>;
   onFocus: BoundAction<[]>;
 };
-const Item = ({ id, updateLetter, item, editable, stealFocus, focusStolen, onFocus }: ItemProperties) => (
+const ItemComp = ({ id, updateLetter, item, editable, stealFocus, focusStolen, onFocus }: ItemProperties) => (
   <li>
     {/*@ts-expect-error -- TODO will be reimplented later*/}
     <ContentGroup
@@ -50,7 +50,7 @@ export const ItemList = ({
   return (
     <ul>
       {itemList.items.map((item, itemId) => (
-        <Item
+        <ItemComp
           editable={editable}
           focusStolen={focusStolen}
           id={{ ...id, itemId }}
@@ -68,3 +68,13 @@ export const ItemList = ({
     </ul>
   );
 };
+
+export function NewItemList({ items }: { items: Item[] }) {
+  return (
+    <ul>
+      {items.map((item, itemIndex) => (
+        <li key={itemIndex}>{item.content.map((content) => content.text)}</li>
+      ))}
+    </ul>
+  );
+}

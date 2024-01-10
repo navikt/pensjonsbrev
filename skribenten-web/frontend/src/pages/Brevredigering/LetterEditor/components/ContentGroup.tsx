@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from "react";
 
 import Actions from "~/pages/Brevredigering/LetterEditor/actions";
 import { MergeTarget } from "~/pages/Brevredigering/LetterEditor/actions/model";
+import { NewItemList } from "~/pages/Brevredigering/LetterEditor/components/ItemList";
 import { Text } from "~/pages/Brevredigering/LetterEditor/components/Text";
 import { useEditor } from "~/pages/Brevredigering/LetterEditor/LetterEditor";
 import { applyAction } from "~/pages/Brevredigering/LetterEditor/lib/actions";
@@ -39,19 +40,14 @@ export function ContentGroup({ blockIndex }: { blockIndex: number }) {
         switch (content.type) {
           case LITERAL: {
             return (
-              <EditableText
-                blockIndex={blockIndex}
-                content={content}
-                contentIndex={contentIndex}
-                key={contentIndex}
-              />
+              <EditableText blockIndex={blockIndex} content={content} contentIndex={contentIndex} key={contentIndex} />
             );
           }
           case VARIABLE: {
             return <Text content={content} key={contentIndex} />;
           }
           case ITEM_LIST: {
-            return <span>TODO</span>;
+            return <NewItemList items={content.items} />;
           }
         }
       })}
