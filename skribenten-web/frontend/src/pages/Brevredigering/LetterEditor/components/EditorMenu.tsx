@@ -1,13 +1,16 @@
 import { css } from "@emotion/react";
 import { Button } from "@navikt/ds-react";
+import type { ReactNode } from "react";
 
-import type { BoundAction } from "../lib/actions";
+import Actions from "~/pages/Brevredigering/LetterEditor/actions";
+import { useEditor } from "~/pages/Brevredigering/LetterEditor/LetterEditor";
 
-export type EditorMenuProperties = {
-  switchType: BoundAction<[type: "PARAGRAPH" | "TITLE1" | "TITLE2"]>;
-};
+import { applyAction } from "../lib/actions";
 
-export const EditorMenu = ({ switchType }: EditorMenuProperties) => {
+export const EditorMenu = () => {
+  const { editorState, setEditorState } = useEditor();
+  const activeTypography = editorState.editedLetter.letter.blocks[editorState.currentBlock].type;
+
   return (
     <div
       css={css`
@@ -19,15 +22,57 @@ export const EditorMenu = ({ switchType }: EditorMenuProperties) => {
         align-self: stretch;
       `}
     >
-      <Button onClick={switchType.bind(null, "TITLE1")} size="xsmall" type="button" variant="secondary-neutral">
+      <SelectTypographyButton
+        isActive={activeTypography === "TITLE1"}
+        onClick={() => applyAction(Actions.switchTypography, setEditorState, editorState.currentBlock, "TITLE1")}
+      >
         Overskift 1
-      </Button>
-      <Button onClick={switchType.bind(null, "TITLE2")} size="xsmall" type="button" variant="secondary-neutral">
+      </SelectTypographyButton>
+      <SelectTypographyButton
+        isActive={activeTypography === "TITLE2"}
+        onClick={() => applyAction(Actions.switchTypography, setEditorState, editorState.currentBlock, "TITLE2")}
+      >
         Overskrift 2
-      </Button>
-      <Button onClick={switchType.bind(null, "PARAGRAPH")} size="xsmall" type="button" variant="secondary-neutral">
+      </SelectTypographyButton>
+      <SelectTypographyButton
+        isActive={activeTypography === "PARAGRAPH"}
+        onClick={() => applyAction(Actions.switchTypography, setEditorState, editorState.currentBlock, "PARAGRAPH")}
+      >
         Normal
-      </Button>
+      </SelectTypographyButton>
     </div>
   );
 };
+
+function SelectTypographyButton({
+  isActive,
+  children,
+  onClick,
+}: {
+  isActive: boolean;
+  children: ReactNode;
+  onClick: () => void;
+}) {
+  return (
+    <Button
+      css={
+        isActive &&
+        css`
+          color: var(--a-text-on-action);
+          background-color: var(--a-surface-action-active);
+        `
+      }
+      disabled={isActive}
+      // Use mouseDown instead of onClick to prevent the cursor from losing focus
+      onMouseDown={(event) => {
+        event.preventDefault();
+        onClick();
+      }}
+      size="xsmall"
+      type="button"
+      variant="secondary-neutral"
+    >
+      {children}
+    </Button>
+  );
+}

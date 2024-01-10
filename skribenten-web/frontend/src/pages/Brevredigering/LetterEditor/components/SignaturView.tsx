@@ -16,6 +16,7 @@ const Saksbehandler = ({ rolleTekst, navn }: { rolleTekst: string; navn?: string
         hideLabel
         label=""
         readOnly
+        tabIndex={-1}
         value={navn}
       />
       <i>{rolleTekst}</i>

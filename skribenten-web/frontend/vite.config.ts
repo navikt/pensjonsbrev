@@ -21,5 +21,6 @@ export default defineConfig({
   },
   test: {
     environment: 'jsdom',
+    globals: true // Enables Vitest to automatically cleanup after each test
   },
 });
