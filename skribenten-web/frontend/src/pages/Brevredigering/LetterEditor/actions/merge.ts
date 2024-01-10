@@ -30,25 +30,25 @@ export const merge: Action<LetterEditorState, [mergeId: ContentId, target: Merge
 
         if (first != null && second != null) {
           if (isEmptyItem(first)) {
-            draft.stealFocus[mergeId.blockId] = {
-              contentId: mergeId.contentId,
-              startOffset: 0,
-              item: { id: firstId, contentId: 0 },
-            };
+            // draft.stealFocus[mergeId.blockId] = {
+            //   contentId: mergeId.contentId,
+            //   startOffset: 0,
+            //   item: { id: firstId, contentId: 0 },
+            // };
             itemList.items.splice(firstId, 1);
           } else if (isEmptyItem(second)) {
-            draft.stealFocus[mergeId.blockId] = {
-              contentId: mergeId.contentId,
-              startOffset: first.content.at(-1)?.text.length ?? 0,
-              item: { id: firstId, contentId: first.content.length - 1 },
-            };
+            // draft.stealFocus[mergeId.blockId] = {
+            //   contentId: mergeId.contentId,
+            //   startOffset: first.content.at(-1)?.text.length ?? 0,
+            //   item: { id: firstId, contentId: first.content.length - 1 },
+            // };
             itemList.items.splice(secondId, 1);
           } else {
-            draft.stealFocus[mergeId.blockId] = {
-              contentId: mergeId.contentId,
-              startOffset: first.content.at(-1)?.text.length ?? 0,
-              item: { id: firstId, contentId: first.content.length - 1 },
-            };
+            // draft.stealFocus[mergeId.blockId] = {
+            //   contentId: mergeId.contentId,
+            //   startOffset: first.content.at(-1)?.text.length ?? 0,
+            //   item: { id: firstId, contentId: first.content.length - 1 },
+            // };
             first.content = mergeContentArrays(first.content, second.content);
             itemList.items.splice(secondId, 1);
           }
@@ -62,21 +62,21 @@ export const merge: Action<LetterEditorState, [mergeId: ContentId, target: Merge
       const content = blocks[mergeId.blockId].content;
       const lastItemId = previousContentSameBlock.items.length - 1;
       const lastItem = previousContentSameBlock.items[lastItemId];
-      const lastContentOfLastItem = lastItem.content.at(-1);
+      // const lastContentOfLastItem = lastItem.content.at(-1);
 
       // Steal focus before we modify
-      draft.stealFocus[mergeId.blockId] =
-        lastContentOfLastItem?.type === LITERAL
-          ? {
-              contentId: mergeId.contentId - 1,
-              startOffset: lastContentOfLastItem.text.length,
-              item: { id: lastItemId, contentId: lastItem.content.length - 1 },
-            }
-          : {
-              contentId: mergeId.contentId - 1,
-              startOffset: 0,
-              item: { id: lastItemId, contentId: lastItem.content.length },
-            };
+      // draft.stealFocus[mergeId.blockId] =
+      //   lastContentOfLastItem?.type === LITERAL
+      //     ? {
+      //         contentId: mergeId.contentId - 1,
+      //         startOffset: lastContentOfLastItem.text.length,
+      //         item: { id: lastItemId, contentId: lastItem.content.length - 1 },
+      //       }
+      //     : {
+      //         contentId: mergeId.contentId - 1,
+      //         startOffset: 0,
+      //         item: { id: lastItemId, contentId: lastItem.content.length },
+      //       };
 
       // extract and remove all consecutive textContent after the itemList we want to merge into
       const nonTextContentRelativeIndex = content.slice(mergeId.contentId).findIndex((c) => !isTextContent(c));
@@ -94,11 +94,14 @@ export const merge: Action<LetterEditorState, [mergeId: ContentId, target: Merge
         if (isEmptyBlock(first)) {
           blocks.splice(firstId, 1);
           deleteBlock(first, blocks, editedLetter.deletedBlocks);
-          draft.stealFocus[firstId] = { contentId: 0, startOffset: 0 };
-          draft.nextFocus = { contentIndex: 0, cursorPosition: 0, blockIndex: mergeId.blockId + 1 };
+          // draft.stealFocus[firstId] = { contentId: 0, startOffset: 0 };
+          draft.nextFocus = { contentIndex: 0, cursorPosition: 0, blockIndex: mergeId.blockId - 1 };
+          draft.currentBlock = mergeId.blockId - 1;
         } else if (isEmptyBlock(second)) {
           blocks.splice(secondId, 1);
           deleteBlock(second, blocks, editedLetter.deletedBlocks);
+          draft.nextFocus = { contentIndex: 0, cursorPosition: 0, blockIndex: mergeId.blockId - 1 };
+          draft.currentBlock = mergeId.blockId - 1;
         } else {
           const lastContentOfFirst = first.content.at(-1);
 
@@ -111,13 +114,13 @@ export const merge: Action<LetterEditorState, [mergeId: ContentId, target: Merge
           };
           draft.currentBlock = firstId;
 
-          draft.stealFocus[firstId] =
-            lastContentOfFirst?.type === LITERAL
-              ? {
-                  contentId: first.content.length - 1,
-                  startOffset: lastContentOfFirst.text.length,
-                }
-              : { contentId: first.content.length, startOffset: 0 };
+          // draft.stealFocus[firstId] =
+          //   lastContentOfFirst?.type === LITERAL
+          //     ? {
+          //         contentId: first.content.length - 1,
+          //         startOffset: lastContentOfFirst.text.length,
+          //       }
+          //     : { contentId: first.content.length, startOffset: 0 };
 
           first.content = mergeContentArrays(first.content, second.content);
           blocks.splice(secondId, 1);

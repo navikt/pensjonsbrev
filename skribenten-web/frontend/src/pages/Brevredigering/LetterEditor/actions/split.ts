@@ -36,7 +36,7 @@ export const split: Action<LetterEditorState, [splitId: ContentId, offset: numbe
           ],
         };
         letter.blocks.splice(splitId.blockId + 1, 0, nextBlock);
-        draft.stealFocus[splitId.blockId + 1] = { contentId: 0, startOffset: 0 };
+        // draft.stealFocus[splitId.blockId + 1] = { contentId: 0, startOffset: 0 };
         draft.nextFocus = { contentIndex: 0, cursorPosition: 0, blockIndex: splitId.blockId + 1 };
         draft.currentBlock = splitId.blockId + 1;
         // Update existing
@@ -59,7 +59,7 @@ export const split: Action<LetterEditorState, [splitId: ContentId, offset: numbe
           if (splitId.contentId >= block.content.length - 1) {
             block.content.push({ type: LITERAL, id: -1, text: "" });
           }
-          draft.stealFocus[splitId.blockId] = { contentId: splitId.contentId + 1, startOffset: 0 };
+          // draft.stealFocus[splitId.blockId] = { contentId: splitId.contentId + 1, startOffset: 0 };
         } else {
           if (isEmptyItem(item)) {
             // An empty item would result in two consecutive empty items
@@ -94,14 +94,14 @@ export const split: Action<LetterEditorState, [splitId: ContentId, offset: numbe
           itemContent.text = firstText;
 
           // steal focus
-          draft.stealFocus[splitId.blockId] = {
-            contentId: splitId.contentId,
-            startOffset: 0,
-            item: {
-              id: splitId.itemId + 1,
-              contentId: 0,
-            },
-          };
+          // draft.stealFocus[splitId.blockId] = {
+          //   contentId: splitId.contentId,
+          //   startOffset: 0,
+          //   item: {
+          //     id: splitId.itemId + 1,
+          //     contentId: 0,
+          //   },
+          // };
         }
       } else {
         // eslint-disable-next-line no-console
