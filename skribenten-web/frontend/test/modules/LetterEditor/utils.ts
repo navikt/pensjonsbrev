@@ -1,6 +1,6 @@
 import { randomInt } from "node:crypto";
 
-import type { ItemContentId } from "~/pages/Brevredigering/LetterEditor/actions/model";
+import type { ItemContentIndex } from "~/pages/Brevredigering/LetterEditor/actions/model";
 import type { LetterEditorState } from "~/pages/Brevredigering/LetterEditor/model/state";
 import type {
   AnyBlock,
@@ -81,20 +81,20 @@ export function item(...content: TextContent[]): Item {
   return { content };
 }
 
-export function select<T>(from: LetterEditorState, id: Partial<ItemContentId> & { blockId: number }): T {
-  const block = from.editedLetter.letter.blocks[id.blockId];
+export function select<T>(from: LetterEditorState, id: Partial<ItemContentIndex> & { blockIndex: number }): T {
+  const block = from.editedLetter.letter.blocks[id.blockIndex];
 
-  if (id.contentId == null) {
+  if (id.contentIndex == null) {
     return block as T;
   } else {
-    const content = block.content[id.contentId];
+    const content = block.content[id.contentIndex];
 
-    if (id.itemId == null) {
+    if (id.itemIndex == null) {
       return content as T;
     } else {
-      const item = (content as ItemList).items[id.itemId];
+      const item = (content as ItemList).items[id.itemIndex];
 
-      return id.itemContentId == null ? (item as T) : (item.content[id.itemContentId] as T);
+      return id.itemContentIndex == null ? (item as T) : (item.content[id.itemContentIndex] as T);
     }
   }
 }

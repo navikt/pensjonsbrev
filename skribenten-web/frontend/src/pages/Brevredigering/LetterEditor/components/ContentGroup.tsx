@@ -2,7 +2,6 @@ import React, { useEffect, useRef } from "react";
 
 import Actions from "~/pages/Brevredigering/LetterEditor/actions";
 import { MergeTarget } from "~/pages/Brevredigering/LetterEditor/actions/model";
-import { NewItemList } from "~/pages/Brevredigering/LetterEditor/components/ItemList";
 import { Text } from "~/pages/Brevredigering/LetterEditor/components/Text";
 import { useEditor } from "~/pages/Brevredigering/LetterEditor/LetterEditor";
 import { applyAction } from "~/pages/Brevredigering/LetterEditor/lib/actions";
@@ -12,9 +11,17 @@ import { ITEM_LIST, LITERAL, VARIABLE } from "~/types/brevbakerTypes";
 
 const selectService = new SelectionService(true);
 
-export function ContentGroup({ blockIndex }: { blockIndex: number }) {
+export type EditableIndex = {
+  blockIndex: number;
+  contentIndex?: number;
+  itemIndex?: number;
+};
+
+export function ContentGroup({ blockIndex, contentIndex, itemIndex }: EditableIndex) {
+  console.log(blockIndex, contentIndex, itemIndex);
   const { editorState, setEditorState } = useEditor();
   const block = editorState.editedLetter.letter.blocks[blockIndex];
+  const contents = itemIndex === undefined ? block.content : block.content[contentIndex].items[itemIndex].content;
 
   if (!block.editable) {
     return (
@@ -36,18 +43,32 @@ export function ContentGroup({ blockIndex }: { blockIndex: number }) {
 
   return (
     <div onFocus={() => setEditorState((oldState) => ({ ...oldState, currentBlock: blockIndex }))}>
-      {block.content.map((content, contentIndex) => {
+      {contents.map((content, _contentIndex) => {
         switch (content.type) {
           case LITERAL: {
             return (
-              <EditableText blockIndex={blockIndex} content={content} contentIndex={contentIndex} key={contentIndex} />
+              <EditableText
+                blockIndex={blockIndex}
+                content={content}
+                contentIndex={_contentIndex}
+                itemIndex={itemIndex}
+                key={contentIndex}
+              />
             );
           }
           case VARIABLE: {
-            return <Text content={content} key={contentIndex} />;
+            return <Text content={content} key={_contentIndex} />;
           }
           case ITEM_LIST: {
-            return <NewItemList items={content.items} />;
+            return (
+              <ul>
+                {content.items.map((item, _itemIndex) => (
+                  <li key={_itemIndex}>
+                    <ContentGroup blockIndex={blockIndex} contentIndex={_contentIndex} itemIndex={_itemIndex} />
+                  </li>
+                ))}
+              </ul>
+            );
           }
         }
       })}
@@ -58,13 +79,15 @@ export function ContentGroup({ blockIndex }: { blockIndex: number }) {
 export function EditableText({
   blockIndex,
   contentIndex,
+  itemIndex,
   content,
 }: {
   blockIndex: number;
   contentIndex: number;
+  itemIndex?: number;
   content: LiteralValue;
 }) {
-  const id = { blockId: blockIndex, contentId: contentIndex };
+  const id = { blockIndex, contentIndex, itemIndex };
   const contentEditableReference = useRef<HTMLSpanElement>(null);
   const { editorState, setEditorState } = useEditor();
 

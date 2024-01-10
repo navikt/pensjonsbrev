@@ -1,11 +1,11 @@
 import type { Content, EditedLetter } from "~/types/brevbakerTypes";
 
 export type CursorPosition = {
-  contentId: number;
+  contentIndex: number;
   startOffset: number;
   item?: {
     id: number;
-    contentId: number;
+    contentIndex: number;
   };
 };
 

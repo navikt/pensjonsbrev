@@ -6,7 +6,7 @@ import { ITEM_LIST, LITERAL } from "~/types/brevbakerTypes";
 import type { Action } from "../lib/actions";
 import type { LetterEditorState } from "../model/state";
 import { getMergeIds, isEmptyBlock, isEmptyItem, isTextContent, mergeContentArrays } from "../model/utils";
-import type { ContentId } from "./model";
+import type { ContentIndex } from "./model";
 import { MergeTarget } from "./model";
 
 function deleteBlock(block: Block, blocks: Block[], deleted: number[]) {
@@ -15,39 +15,39 @@ function deleteBlock(block: Block, blocks: Block[], deleted: number[]) {
   }
 }
 
-export const merge: Action<LetterEditorState, [mergeId: ContentId, target: MergeTarget]> = produce(
-  (draft, mergeId, target) => {
+export const merge: Action<LetterEditorState, [contentIndex: ContentIndex, target: MergeTarget]> = produce(
+  (draft, contentIndex, target) => {
     const editedLetter = draft.editedLetter;
     const blocks = editedLetter.letter.blocks;
-    const previousContentSameBlock = blocks[mergeId.blockId]?.content[mergeId.contentId - 1];
+    const previousContentSameBlock = blocks[contentIndex.blockIndex]?.content[contentIndex.contentIndex - 1];
 
-    if ("itemId" in mergeId) {
-      const itemList = blocks[mergeId.blockId].content[mergeId.contentId];
+    if ("itemIndex" in contentIndex) {
+      const itemList = blocks[contentIndex.blockIndex].content[contentIndex.contentIndex];
       if (itemList.type === ITEM_LIST) {
-        const [firstId, secondId] = getMergeIds(mergeId.itemId, target);
+        const [firstId, secondId] = getMergeIds(contentIndex.itemIndex, target);
         const first = itemList.items[firstId];
         const second = itemList.items[secondId];
 
         if (first != null && second != null) {
           if (isEmptyItem(first)) {
-            // draft.stealFocus[mergeId.blockId] = {
-            //   contentId: mergeId.contentId,
+            // draft.stealFocus[contentIndex.blockIndex] = {
+            //   contentIndex: contentIndex.contentIndex,
             //   startOffset: 0,
-            //   item: { id: firstId, contentId: 0 },
+            //   item: { id: firstId, contentIndex: 0 },
             // };
             itemList.items.splice(firstId, 1);
           } else if (isEmptyItem(second)) {
-            // draft.stealFocus[mergeId.blockId] = {
-            //   contentId: mergeId.contentId,
+            // draft.stealFocus[contentIndex.blockIndex] = {
+            //   contentIndex: contentIndex.contentIndex,
             //   startOffset: first.content.at(-1)?.text.length ?? 0,
-            //   item: { id: firstId, contentId: first.content.length - 1 },
+            //   item: { id: firstId, contentIndex: first.content.length - 1 },
             // };
             itemList.items.splice(secondId, 1);
           } else {
-            // draft.stealFocus[mergeId.blockId] = {
-            //   contentId: mergeId.contentId,
+            // draft.stealFocus[contentIndex.blockIndex] = {
+            //   contentIndex: contentIndex.contentIndex,
             //   startOffset: first.content.at(-1)?.text.length ?? 0,
-            //   item: { id: firstId, contentId: first.content.length - 1 },
+            //   item: { id: firstId, contentIndex: first.content.length - 1 },
             // };
             first.content = mergeContentArrays(first.content, second.content);
             itemList.items.splice(secondId, 1);
@@ -55,38 +55,41 @@ export const merge: Action<LetterEditorState, [mergeId: ContentId, target: Merge
         }
       } else {
         // eslint-disable-next-line no-console
-        console.warn("Got itemId, but block.content is not an itemList");
+        console.warn("Got itemIndex, but block.content is not an itemList");
       }
     } else if (target === MergeTarget.PREVIOUS && previousContentSameBlock?.type === ITEM_LIST) {
       // The previous content of the block is an itemList, so we want to merge with the last item
-      const content = blocks[mergeId.blockId].content;
+      const content = blocks[contentIndex.blockIndex].content;
       const lastItemId = previousContentSameBlock.items.length - 1;
       const lastItem = previousContentSameBlock.items[lastItemId];
       // const lastContentOfLastItem = lastItem.content.at(-1);
 
       // Steal focus before we modify
-      // draft.stealFocus[mergeId.blockId] =
+      // draft.stealFocus[contentIndex.blockIndex] =
       //   lastContentOfLastItem?.type === LITERAL
       //     ? {
-      //         contentId: mergeId.contentId - 1,
+      //         contentIndex: contentIndex.contentIndex - 1,
       //         startOffset: lastContentOfLastItem.text.length,
-      //         item: { id: lastItemId, contentId: lastItem.content.length - 1 },
+      //         item: { id: lastItemId, contentIndex: lastItem.content.length - 1 },
       //       }
       //     : {
-      //         contentId: mergeId.contentId - 1,
+      //         contentIndex: contentIndex.contentIndex - 1,
       //         startOffset: 0,
-      //         item: { id: lastItemId, contentId: lastItem.content.length },
+      //         item: { id: lastItemId, contentIndex: lastItem.content.length },
       //       };
 
       // extract and remove all consecutive textContent after the itemList we want to merge into
-      const nonTextContentRelativeIndex = content.slice(mergeId.contentId).findIndex((c) => !isTextContent(c));
+      const nonTextContentRelativeIndex = content.slice(contentIndex.contentIndex).findIndex((c) => !isTextContent(c));
       const textContentAfterList = content
-        .splice(mergeId.contentId, nonTextContentRelativeIndex === -1 ? content.length : nonTextContentRelativeIndex)
+        .splice(
+          contentIndex.contentIndex,
+          nonTextContentRelativeIndex === -1 ? content.length : nonTextContentRelativeIndex,
+        )
         .filter(isTextContent);
 
       lastItem.content = mergeContentArrays(lastItem.content, textContentAfterList);
     } else {
-      const [firstId, secondId] = getMergeIds(mergeId.blockId, target);
+      const [firstId, secondId] = getMergeIds(contentIndex.blockIndex, target);
       const first = blocks[firstId];
       const second = blocks[secondId];
 
@@ -94,14 +97,14 @@ export const merge: Action<LetterEditorState, [mergeId: ContentId, target: Merge
         if (isEmptyBlock(first)) {
           blocks.splice(firstId, 1);
           deleteBlock(first, blocks, editedLetter.deletedBlocks);
-          // draft.stealFocus[firstId] = { contentId: 0, startOffset: 0 };
-          draft.nextFocus = { contentIndex: 0, cursorPosition: 0, blockIndex: mergeId.blockId - 1 };
-          draft.currentBlock = mergeId.blockId - 1;
+          // draft.stealFocus[firstId] = { contentIndex: 0, startOffset: 0 };
+          draft.nextFocus = { contentIndex: 0, cursorPosition: 0, blockIndex: contentIndex.blockIndex - 1 };
+          draft.currentBlock = contentIndex.blockIndex - 1;
         } else if (isEmptyBlock(second)) {
           blocks.splice(secondId, 1);
           deleteBlock(second, blocks, editedLetter.deletedBlocks);
-          draft.nextFocus = { contentIndex: 0, cursorPosition: 0, blockIndex: mergeId.blockId - 1 };
-          draft.currentBlock = mergeId.blockId - 1;
+          draft.nextFocus = { contentIndex: 0, cursorPosition: 0, blockIndex: contentIndex.blockIndex - 1 };
+          draft.currentBlock = contentIndex.blockIndex - 1;
         } else {
           const lastContentOfFirst = first.content.at(-1);
 
@@ -117,10 +120,10 @@ export const merge: Action<LetterEditorState, [mergeId: ContentId, target: Merge
           // draft.stealFocus[firstId] =
           //   lastContentOfFirst?.type === LITERAL
           //     ? {
-          //         contentId: first.content.length - 1,
+          //         contentIndex: first.content.length - 1,
           //         startOffset: lastContentOfFirst.text.length,
           //       }
-          //     : { contentId: first.content.length, startOffset: 0 };
+          //     : { contentIndex: first.content.length, startOffset: 0 };
 
           first.content = mergeContentArrays(first.content, second.content);
           blocks.splice(secondId, 1);

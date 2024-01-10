@@ -49,7 +49,7 @@ describe("updateContent", () => {
 
     expect(setEditorState).toHaveBeenCalled();
     expect(setEditorState.mock.lastCall?.[0](editorState)).toEqual(
-      Actions.updateContentText(editorState, { blockId: 0, contentId: 0 }, content[0].text + " person"),
+      Actions.updateContentText(editorState, { blockIndex: 0, contentIndex: 0 }, content[0].text + " person"),
     );
   });
   test("enter is not propagated as br-element", async () => {
@@ -59,7 +59,7 @@ describe("updateContent", () => {
 
     // Enter does cause a splitAction-event, but we're only rendering the original block, so the focus is still in the span we clicked.
     expect(setEditorState.mock.lastCall?.[0](editorState)).toEqual(
-      Actions.updateContentText(editorState, { blockId: 0, contentId: 0 }, content[0].text + "asd"),
+      Actions.updateContentText(editorState, { blockIndex: 0, contentIndex: 0 }, content[0].text + "asd"),
     );
   });
   test("space is not propagated as nbsp-entity", async () => {
@@ -68,7 +68,7 @@ describe("updateContent", () => {
     await user.keyboard("  asd");
 
     expect(setEditorState.mock.lastCall?.[0](editorState)).toEqual(
-      Actions.updateContentText(editorState, { blockId: 0, contentId: 0 }, content[0].text + "  asd"),
+      Actions.updateContentText(editorState, { blockIndex: 0, contentIndex: 0 }, content[0].text + "  asd"),
     );
   });
 });
@@ -81,7 +81,7 @@ describe("deleteHandler", () => {
     await user.keyboard("{Delete}");
 
     expect(setEditorState.mock.lastCall?.[0](editorState)).toEqual(
-      Actions.merge(editorState, { blockId: 0, contentId: 1 }, MergeTarget.NEXT),
+      Actions.merge(editorState, { blockIndex: 0, contentIndex: 1 }, MergeTarget.NEXT),
     );
   });
   test("delete at end of group, but not after last character, does not trigger merge", async () => {
@@ -109,7 +109,7 @@ describe("backspaceHandler", () => {
     await user.click(screen.getByText(content[0].text));
     await user.keyboard("{Home}{Backspace}");
     expect(setEditorState.mock.lastCall?.[0](editorState)).toEqual(
-      Actions.merge(editorState, { blockId: 0, contentId: 1 }, MergeTarget.PREVIOUS),
+      Actions.merge(editorState, { blockIndex: 0, contentIndex: 1 }, MergeTarget.PREVIOUS),
     );
   });
   test("backspace at beginning of group, but not before first character of TextContent, does not trigger merge", async () => {
@@ -137,7 +137,7 @@ describe("enterHandler", () => {
     await user.keyboard("{End}{Enter}");
 
     expect(setEditorState.mock.lastCall?.[0](editorState)).toEqual(
-      Actions.split(editorState, { blockId: 0, contentId: 1 }, content[1].text.length),
+      Actions.split(editorState, { blockIndex: 0, contentIndex: 1 }, content[1].text.length),
     );
   });
   test("enter not at the end of a content in group triggers split at cursor (text after cursor for new group)", async () => {
@@ -146,7 +146,7 @@ describe("enterHandler", () => {
     await user.keyboard("{End}{ArrowLeft}{ArrowLeft}{ArrowLeft}{Enter}");
 
     expect(setEditorState.mock.lastCall?.[0](editorState)).toEqual(
-      Actions.split(editorState, { blockId: 0, contentId: 1 }, content[1].text.length - 3),
+      Actions.split(editorState, { blockIndex: 0, contentIndex: 1 }, content[1].text.length - 3),
     );
   });
   test("enter at the end of an element that is not the last of group triggers split at current element", async () => {
@@ -155,7 +155,7 @@ describe("enterHandler", () => {
     await user.keyboard("{End}{Enter}");
 
     expect(setEditorState.mock.lastCall?.[0](editorState)).toEqual(
-      Actions.split(editorState, { blockId: 0, contentId: 0 }, content[0].text.length),
+      Actions.split(editorState, { blockIndex: 0, contentIndex: 0 }, content[0].text.length),
     );
   });
 });
