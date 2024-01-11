@@ -23,13 +23,8 @@ import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.arkiv.B
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.arkiv.BestillBrevResponseDto.Failure.FailureType.MANGLER_OBLIGATORISK_INPUT
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.arkiv.BestillBrevResponseDto.Success
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.dokumentsproduksjon.DokumentproduksjonService
-import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.dokumentsproduksjon.dto.RedigerDoksysDokumentResponseDto
-import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.dokumentsproduksjon.dto.RedigerDoksysDokumentResponseDto.Failure.FailureType.IKKE_FUNNET
-import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.dokumentsproduksjon.dto.RedigerDoksysDokumentResponseDto.Failure.FailureType.IKKE_TILGANG
-import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.dokumentsproduksjon.dto.RedigerDoksysDokumentResponseDto.Failure.FailureType.IKKE_TILLATT
-import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.dokumentsproduksjon.dto.RedigerDoksysDokumentResponseDto.Failure.FailureType.LASING
-import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.dokumentsproduksjon.dto.RedigerDoksysDokumentResponseDto.Failure.FailureType.LUKKET
-import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.dokumentsproduksjon.dto.RedigerDoksysDokumentResponseDto.Failure.FailureType.VALIDERING_FEILET
+import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.dokumentsproduksjon.RedigerDoksysDokumentResponseDto
+import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.dokumentsproduksjon.RedigerDoksysDokumentResponseDto.Failure.FailureType.*
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.extreambrev.ExtreamBrevService
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.extreambrev.RedigerExtreamDokumentResponseDto
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.samhandler.SamhandlerTjenestebussService
@@ -199,6 +194,4 @@ class RedigerDoksysDokumentRequestDto(
 
 class RedigerExtreamDokumentRequestDto(
     val dokumentId: String,
-    val bredde: String? = "300",
-    val hoyde: String? = "30"
 )

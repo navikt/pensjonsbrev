@@ -41,42 +41,26 @@ class ArkivTjenestebussService(config: Config, securityHandler: STSSercuritySOAP
                 redigerbart =
                     JAXBElement(QName("redigerbart"), Boolean::class.java, request.isRedigerbart)
                 sprakKode = request.sprakkode
+                brevMottakerNavn = request.brevMottakerNavn
                 sakskontekst = Sakskontekst().apply {
-                    saksbehandlernavn = request.sakskontekstDto.saksbehandlernavn
-                    saksbehandlerId = request.sakskontekstDto.saksbehandlerId
-                    journalenhet = request.sakskontekstDto.journalenhet
-                    gjelder = request.sakskontekstDto.gjelder
-                    dokumenttype = request.sakskontekstDto.dokumenttype
                     dokumentdato = request.sakskontekstDto.dokumentdato
-                    fagsystem = request.sakskontekstDto.fagsystem
+                    dokumenttype = request.sakskontekstDto.dokumenttype
                     fagomradeKode = request.sakskontekstDto.fagomradekode
+                    fagsystem = request.sakskontekstDto.fagsystem
+                    gjelder = request.sakskontekstDto.gjelder
                     innhold = request.sakskontekstDto.innhold
+                    journalenhet = request.sakskontekstDto.journalenhet
                     kategori = request.sakskontekstDto.kategori
+                    kravtype = request.sakskontekstDto.kravtype
+                    land = request.sakskontekstDto.land
+                    mottaker = request.sakskontekstDto.mottaker
+                    saksbehandlerId = request.sakskontekstDto.saksbehandlerId
+                    saksbehandlernavn = request.sakskontekstDto.saksbehandlernavn
                     saksid = request.sakskontekstDto.saksid
+                    sensitivitetsgrad = "false"
                 }
             })
             logger.info("Opprettet brev med journalpostId: ${response!!.journalpostId} i sakId: ${request.sakskontekstDto.saksid} ")
-            //            val response = arkivClient.bestillBrev(BestillBrevRequest().apply {
-            //                brevKode = bestillBrevExtreamRequestDto.brevKode
-            //                brevGruppe = bestillBrevExtreamRequestDto.brevGruppe
-            //                redigerbart =
-            //                    JAXBElement(QName("redigerbart"), Boolean::class.java, bestillBrevExtreamRequestDto.isRedigerbart)
-            //                sprakKode = bestillBrevExtreamRequestDto.sprakkode
-            //                sakskontekst = Sakskontekst().apply {
-            //                    saksbehandlernavn = bestillBrevExtreamRequestDto.sakskontekstDto.saksbehandlernavn
-            //                    saksbehandlerId = bestillBrevExtreamRequestDto.sakskontekstDto.saksbehandlerId
-            //                    journalenhet = bestillBrevExtreamRequestDto.sakskontekstDto.journalenhet
-            //                    gjelder = bestillBrevExtreamRequestDto.sakskontekstDto.gjelder
-            //                    dokumenttype = bestillBrevExtreamRequestDto.sakskontekstDto.dokumenttype
-            //                    dokumentdato = bestillBrevExtreamRequestDto.sakskontekstDto.dokumentdato
-            //                    fagsystem = bestillBrevExtreamRequestDto.sakskontekstDto.fagsystem
-            //                    fagomradeKode = bestillBrevExtreamRequestDto.sakskontekstDto.fagomradekode
-            //                    innhold = bestillBrevExtreamRequestDto.sakskontekstDto.innhold
-            //                    kategori = bestillBrevExtreamRequestDto.sakskontekstDto.kategori
-            //                    saksid = bestillBrevExtreamRequestDto.sakskontekstDto.saksid
-            //                    sensitivitetsgrad = bestillBrevExtreamRequestDto.sakskontekstDto.sensitivitet
-            //                }
-            //            })
             return BestillBrevResponseDto.Success(response.journalpostId)
         } catch (ex: BestillBrevOpprettelseJournalpostFeilet) {
             logger.error("En feil oppstod under opprettelse av journalpost: ${maskerFnr(ex.faultInfo.errorMessage)}")
@@ -126,7 +110,8 @@ data class BestillBrevExtreamRequestDto(
     val isRedigerbart: Boolean,
     val sprakkode: String,
     val sakskontekstDto: SakskontekstDto,
-) {
+    val brevMottakerNavn: String?,
+){
     data class SakskontekstDto(
         val dokumentdato: XMLGregorianCalendar,
         val dokumenttype: String,

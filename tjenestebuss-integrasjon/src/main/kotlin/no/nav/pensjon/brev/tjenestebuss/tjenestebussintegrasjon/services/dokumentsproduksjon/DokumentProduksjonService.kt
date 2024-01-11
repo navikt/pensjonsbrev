@@ -2,7 +2,6 @@ package no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.dokume
 
 import com.typesafe.config.Config
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.RedigerDoksysDokumentRequestDto
-import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.dokumentsproduksjon.dto.RedigerDoksysDokumentResponseDto
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.soap.STSSercuritySOAPHandler
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.soap.TjenestebussService
 import no.nav.tjeneste.virksomhet.dokumentproduksjon.v3.RedigerDokumentDokumentIkkeFunnet
@@ -56,5 +55,29 @@ class DokumentproduksjonService(config: Config, securityHandler: STSSercuritySOA
     }
 }
 
+sealed class RedigerDoksysDokumentResponseDto {
+    data class Success(
+        val metaforceURI: String,
+    ) : RedigerDoksysDokumentResponseDto()
+    data class Failure(
+        val failureType: FailureType,
+        val message: String?,
+        val cause: String?,
+    ) : RedigerDoksysDokumentResponseDto() {
+        constructor(failureType: FailureType, ex: Exception): this(
+            failureType,
+            ex.message,
+            ex.cause?.message,
+        )
+        enum class FailureType {
+            LASING,
+            IKKE_TILLATT,
+            VALIDERING_FEILET   ,
+            IKKE_FUNNET,
+            IKKE_TILGANG,
+            LUKKET
+        }
+    }
+}
 
 

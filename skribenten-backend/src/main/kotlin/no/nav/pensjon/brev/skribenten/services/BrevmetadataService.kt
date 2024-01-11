@@ -49,8 +49,8 @@ class BrevmetadataService(config: Config) {
             id = brevkodeIBrevsystem ?: "MissingCode",
             spraak = sprak ?: emptyList(),
             brevsystem = when (brevsystem) {
-                BrevdataDto.DokType.DOKSYS -> BrevSystem.DOKSYS
-                BrevdataDto.DokType.GAMMEL -> BrevSystem.EXTREAM
+                BrevdataDto.BrevSystem.DOKSYS -> BrevSystem.DOKSYS
+                BrevdataDto.BrevSystem.GAMMEL -> BrevSystem.EXTREAM
             },
             isVedtaksbrev = this.brevkategori == BrevdataDto.BrevkategoriCode.VEDTAK,
             isEblankett = this.dokumentkategori == BrevdataDto.DokumentkategoriCode.E_BLANKETT,
@@ -78,7 +78,7 @@ data class BrevdataDto(
     val redigerbart: Boolean,
     val dekode: String,
     val brevkategori: BrevkategoriCode?,
-    val dokType: String,
+    val dokType: DokumentType,
     val sprak: List<SpraakKode>?,
     val visIPselv: Boolean?,
     val utland: String?,
@@ -89,14 +89,19 @@ data class BrevdataDto(
     val synligForVeileder: Boolean?,
     val prioritet: Int?,
     val brevkodeIBrevsystem: String?,
-    val brevsystem: DokType,
+    val brevsystem: BrevSystem,
     val brevgruppe: String?,
 ) {
     enum class DokumentkategoriCode { B, E_BLANKETT, IB, SED, VB }
     enum class BrevkategoriCode { BREV_MED_SKJEMA, INFORMASJON, INNHENTE_OPPL, NOTAT, OVRIG, VARSEL, VEDTAK }
-    enum class DokType {
+    enum class BrevSystem {
         DOKSYS,
         GAMMEL,     //EXTREAM
+    }
+    enum class DokumentType {
+        I, //Inngende dokument
+        N, //Notat
+        U, //Utgende dokument
     }
 }
 

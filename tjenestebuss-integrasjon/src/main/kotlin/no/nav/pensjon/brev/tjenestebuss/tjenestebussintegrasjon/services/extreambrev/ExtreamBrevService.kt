@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.extrea
 
 import com.typesafe.config.Config
 import no.nav.lib.pen.psakpselv.asbo.brev.ASBOPenHentBrevklientURLRequest
+import no.nav.lib.pen.psakpselv.asbo.brev.ASBOPenHentBrevklientURLResponse
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.RedigerExtreamDokumentRequestDto
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.soap.STSSercuritySOAPHandler
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.soap.TjenestebussService
@@ -21,13 +22,13 @@ class ExtreamBrevService(private val config: Config, securityHandler: STSSercuri
      */
     fun hentExtreamBrevUrl(requestDto: RedigerExtreamDokumentRequestDto): RedigerExtreamDokumentResponseDto {
         try {
-            val response = psakDokbrevClient.hentBrevklientURL(ASBOPenHentBrevklientURLRequest().apply {
+            val response: ASBOPenHentBrevklientURLResponse = psakDokbrevClient.hentBrevklientURL(ASBOPenHentBrevklientURLRequest().apply {
                 dokumentId = requestDto.dokumentId
                 systemId = config.getString("brevklient.systemid")
                 passord = config.getString("brevklient.password")
                 rootURL = BREVKLIENT_ROOT_URL
-                bredde = requestDto.bredde
-                hoyde = requestDto.hoyde
+                bredde = "300"
+                hoyde = "30"
             })
             logger.info("Henter Extream brev URL for dokumentId: ${requestDto.dokumentId}")
             return RedigerExtreamDokumentResponseDto.Success(response.brevklientURL)
