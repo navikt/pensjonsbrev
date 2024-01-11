@@ -2,6 +2,7 @@ package no.nav.pensjon.etterlatte
 
 import no.nav.pensjon.brev.template.LetterTemplate
 import no.nav.pensjon.etterlatte.maler.TomMal
+import no.nav.pensjon.etterlatte.maler.andre.TomDelmal
 import no.nav.pensjon.etterlatte.maler.andre.TomMalInformasjonsbrev
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseMVP
 import no.nav.pensjon.etterlatte.maler.barnepensjon.avslag.AvslagFoerstegangsbehandling
@@ -53,6 +54,7 @@ val prodAutobrevTemplates: Set<EtterlatteTemplate<*>> =
         OpphoerGenerell,
         TilbakekrevingInnhold,
         TilbakekrevingFerdig,
+        TomDelmal,
         TomMal,
         TomMalInformasjonsbrev,
         ForhaandsvarselOmregningBP,
