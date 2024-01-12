@@ -118,7 +118,8 @@ export function EditableText({ id, content }: { id: ContentIndex; content: Liter
 
   const handleDelete = (event: React.KeyboardEvent<HTMLSpanElement>) => {
     const cursorIsAtEnd = selectService.getCursorOffset() >= content.text.length;
-    if (cursorIsAtEnd) {
+    const cursorIsInLastContent = getContent(editorState.editedLetter.letter, id).length - 1 === id.contentIndex;
+    if (cursorIsAtEnd && cursorIsInLastContent) {
       event.preventDefault();
       applyAction(Actions.merge, setEditorState, id, MergeTarget.NEXT);
     }
