@@ -1,27 +1,30 @@
 import React, { useEffect, useRef } from "react";
 
 import Actions from "~/pages/Brevredigering/LetterEditor/actions";
+import type { ContentIndex } from "~/pages/Brevredigering/LetterEditor/actions/model";
 import { MergeTarget } from "~/pages/Brevredigering/LetterEditor/actions/model";
 import { Text } from "~/pages/Brevredigering/LetterEditor/components/Text";
 import { useEditor } from "~/pages/Brevredigering/LetterEditor/LetterEditor";
 import { applyAction } from "~/pages/Brevredigering/LetterEditor/lib/actions";
 import { SelectionService } from "~/pages/Brevredigering/LetterEditor/services/SelectionService";
-import type { LiteralValue } from "~/types/brevbakerTypes";
+import type { LiteralValue, RenderedLetter } from "~/types/brevbakerTypes";
 import { ITEM_LIST, LITERAL, VARIABLE } from "~/types/brevbakerTypes";
 
 const selectService = new SelectionService(true);
 
-export type EditableIndex = {
-  blockIndex: number;
-  contentIndex?: number;
-  itemIndex?: number;
-};
+function getContent(letter: RenderedLetter, id: ContentIndex) {
+  const content = letter.blocks[id.blockIndex].content;
+  const contentValue = content[id.contentIndex];
+  if ("itemIndex" in id && contentValue.type === ITEM_LIST) {
+    return contentValue.items[id.itemIndex].content;
+  }
+  return content;
+}
 
-export function ContentGroup({ blockIndex, contentIndex, itemIndex }: EditableIndex) {
-  console.log(blockIndex, contentIndex, itemIndex);
+export function ContentGroup({ id }: { id: ContentIndex }) {
   const { editorState, setEditorState } = useEditor();
-  const block = editorState.editedLetter.letter.blocks[blockIndex];
-  const contents = itemIndex === undefined ? block.content : block.content[contentIndex].items[itemIndex].content;
+  const block = editorState.editedLetter.letter.blocks[id.blockIndex];
+  const contents = getContent(editorState.editedLetter.letter, id);
 
   if (!block.editable) {
     return (
@@ -42,29 +45,25 @@ export function ContentGroup({ blockIndex, contentIndex, itemIndex }: EditableIn
   }
 
   return (
-    <div onFocus={() => setEditorState((oldState) => ({ ...oldState, currentBlock: blockIndex }))}>
+    <div onFocus={() => setEditorState((oldState) => ({ ...oldState, currentBlock: id.blockIndex }))}>
       {contents.map((content, _contentIndex) => {
         switch (content.type) {
           case LITERAL: {
-            return (
-              <EditableText
-                blockIndex={blockIndex}
-                content={content}
-                contentIndex={_contentIndex}
-                itemIndex={itemIndex}
-                key={contentIndex}
-              />
-            );
+            const index =
+              "itemIndex" in id ? { ...id, itemContentIndex: _contentIndex } : { ...id, contentIndex: _contentIndex };
+            return <EditableText content={content} id={index} key={_contentIndex} />;
           }
           case VARIABLE: {
             return <Text content={content} key={_contentIndex} />;
           }
           case ITEM_LIST: {
             return (
-              <ul>
+              <ul key={_contentIndex}>
                 {content.items.map((item, _itemIndex) => (
                   <li key={_itemIndex}>
-                    <ContentGroup blockIndex={blockIndex} contentIndex={_contentIndex} itemIndex={_itemIndex} />
+                    <ContentGroup
+                      id={{ blockIndex: id.blockIndex, contentIndex: _contentIndex, itemIndex: _itemIndex }}
+                    />
                   </li>
                 ))}
               </ul>
@@ -76,23 +75,12 @@ export function ContentGroup({ blockIndex, contentIndex, itemIndex }: EditableIn
   );
 }
 
-export function EditableText({
-  blockIndex,
-  contentIndex,
-  itemIndex,
-  content,
-}: {
-  blockIndex: number;
-  contentIndex: number;
-  itemIndex?: number;
-  content: LiteralValue;
-}) {
-  const id = { blockIndex, contentIndex, itemIndex };
+export function EditableText({ id, content }: { id: ContentIndex; content: LiteralValue }) {
   const contentEditableReference = useRef<HTMLSpanElement>(null);
   const { editorState, setEditorState } = useEditor();
 
   const isFocus =
-    editorState.nextFocus?.blockIndex === blockIndex && editorState.nextFocus.contentIndex === contentIndex;
+    editorState.nextFocus?.blockIndex === id.blockIndex && editorState.nextFocus.contentIndex === id.contentIndex;
 
   const text = content.text || "​";
   useEffect(() => {

@@ -1,7 +1,5 @@
 export type BlockContentIndex = { blockIndex: number; contentIndex: number };
-export type ItemContentIndex = {
-  blockIndex: number;
-  contentIndex: number;
+export type ItemContentIndex = BlockContentIndex & {
   itemIndex: number;
   itemContentIndex: number;
 };
