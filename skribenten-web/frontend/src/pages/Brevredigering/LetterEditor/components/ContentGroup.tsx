@@ -100,11 +100,10 @@ export function EditableText({ id, content }: { id: ContentIndex; content: Liter
 
   useEffect(() => {
     if (isFocus && contentEditableReference.current !== null && editorState.focus?.cursorPosition !== undefined) {
-      console.log(editorState.focus?.cursorPosition);
       selectService.focusAtOffset(
         contentEditableReference.current.childNodes[0],
         editorState.focus?.cursorPosition ?? 0,
-      ); //TODO: check
+      );
     }
   }, [editorState.focus?.cursorPosition, isFocus]);
 
@@ -142,7 +141,6 @@ export function EditableText({ id, content }: { id: ContentIndex; content: Liter
       // This is not documented anywhere I could find and caused a day of frustration, beware
       contentEditable="true"
       onFocus={() => {
-        console.log("onfocus", id);
         setEditorState((oldState) => ({
           ...oldState,
           focus: id,

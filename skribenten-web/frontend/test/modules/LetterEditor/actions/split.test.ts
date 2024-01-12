@@ -151,8 +151,7 @@ describe("LetterEditorActions.split", () => {
       expect(select<ParagraphBlock>(withLiteralAfterList, { blockIndex: 0 }).content).toHaveLength(2);
       expect(select<Content>(withLiteralAfterList, { blockIndex: 0, contentIndex: 1 }).type).toEqual(LITERAL);
 
-      // TODO: reimplement
-      // expect(withLiteralAfterList.focus).toEqual({ blockIndex: 0, contentIndex: 1, startOffset: 0 });
+      expect(withLiteralAfterList.focus).toEqual({ blockIndex: 0, contentIndex: 1, cursorPosition: 0 });
     });
 
     test("when splitting the last empty item and parent block already has a subsequent literal then no new literal will be added", () => {

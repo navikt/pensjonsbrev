@@ -17,7 +17,6 @@ function deleteBlock(block: Block, blocks: Block[], deleted: number[]) {
 
 export const merge: Action<LetterEditorState, [contentIndex: ContentIndex, target: MergeTarget]> = produce(
   (draft, contentIndex, target) => {
-    console.log("merge");
     const editedLetter = draft.editedLetter;
     const blocks = editedLetter.letter.blocks;
     const previousContentSameBlock = blocks[contentIndex.blockIndex]?.content[contentIndex.contentIndex - 1];
@@ -65,7 +64,6 @@ export const merge: Action<LetterEditorState, [contentIndex: ContentIndex, targe
         console.warn("Got itemIndex, but block.content is not an itemList");
       }
     } else if (target === MergeTarget.PREVIOUS && previousContentSameBlock?.type === ITEM_LIST) {
-      console.log("merged");
       // The previous content of the block is an itemList, so we want to merge with the last item
       const content = blocks[contentIndex.blockIndex].content;
       const lastItemId = previousContentSameBlock.items.length - 1;

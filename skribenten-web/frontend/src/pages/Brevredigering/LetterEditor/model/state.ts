@@ -5,6 +5,6 @@ export type ContentGroup = { content: Content[] };
 
 export type Focus = ContentIndex & { cursorPosition?: number };
 export type LetterEditorState = {
-  readonly editedLetter: EditedLetter;
-  readonly focus: Focus;
+  editedLetter: EditedLetter;
+  focus: Focus;
 };

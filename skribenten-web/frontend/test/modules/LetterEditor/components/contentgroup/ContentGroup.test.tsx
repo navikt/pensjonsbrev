@@ -46,7 +46,6 @@ describe("updateContent", () => {
     const { user } = setup();
     await user.click(screen.getByText(content[0].text));
     await user.keyboard(" person");
-    screen.logTestingPlaygroundURL();
     expect(setEditorState).toHaveBeenCalled();
     expect(setEditorState.mock.lastCall?.[0](editorState)).toEqual(
       Actions.updateContentText(editorState, { blockIndex: 0, contentIndex: 0 }, content[0].text + " person"),
