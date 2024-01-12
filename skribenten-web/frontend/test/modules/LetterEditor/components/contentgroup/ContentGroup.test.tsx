@@ -74,7 +74,7 @@ describe("updateContent", () => {
 });
 
 describe("deleteHandler", () => {
-  test("delete at end of group, and after last character, triggers merge with next", async () => {
+  test("delete at end of block, and after last character, triggers merge with next", async () => {
     const { user } = setup();
 
     await user.click(screen.getByText(content[1].text));
@@ -84,7 +84,7 @@ describe("deleteHandler", () => {
       Actions.merge(editorState, { blockIndex: 0, contentIndex: 1 }, MergeTarget.NEXT),
     );
   });
-  test("delete at end of group, but not after last character, does not trigger merge", async () => {
+  test("delete at end of block, but not after last character, does not trigger merge", async () => {
     const { user } = setup();
 
     await user.click(screen.getByText(content[1].text));
@@ -94,7 +94,7 @@ describe("deleteHandler", () => {
       editorState.editedLetter.letter.blocks.length,
     );
   });
-  test("delete not at end of group, but after last character, does not trigger merge", async () => {
+  test("delete not at end of block, but after last character, does not trigger merge", async () => {
     const { user } = setup();
     await user.click(screen.getByText(content[0].text));
     await user.keyboard("{End}{Delete}");
@@ -104,7 +104,7 @@ describe("deleteHandler", () => {
 });
 
 describe("backspaceHandler", () => {
-  test("backspace at beginning of group triggers merge with previous", async () => {
+  test("backspace at beginning of block triggers merge with previous", async () => {
     const { user } = setup();
     await user.click(screen.getByText(content[0].text));
     await user.keyboard("{Home}{Backspace}");
@@ -112,7 +112,7 @@ describe("backspaceHandler", () => {
       Actions.merge(editorState, { blockIndex: 0, contentIndex: 1 }, MergeTarget.PREVIOUS),
     );
   });
-  test("backspace at beginning of group, but not before first character of TextContent, does not trigger merge", async () => {
+  test("backspace at beginning of block, but not before first character of TextContent, does not trigger merge", async () => {
     const { user } = setup();
     await user.click(screen.getByText(content[0].text));
     await user.keyboard("{End}{ArrowLeft}{ArrowLeft}{Backspace}");
@@ -121,7 +121,7 @@ describe("backspaceHandler", () => {
       editorState.editedLetter.letter.blocks.length,
     );
   });
-  test("backspace not at beginning of group, but before first character of a TextContent, does not trigger merge", async () => {
+  test("backspace not at beginning of block, but before first character of a TextContent, does not trigger merge", async () => {
     const { user } = setup();
     await user.click(screen.getByText(content[0].text));
     await user.keyboard("{Home}{Backspace}");
@@ -131,7 +131,7 @@ describe("backspaceHandler", () => {
 });
 
 describe("enterHandler", () => {
-  test("enter at the very end of group triggers split with empty text for new group", async () => {
+  test("enter at the very end of block triggers split with empty text for new block", async () => {
     const { user } = setup();
     await user.click(screen.getByText(content[1].text));
     await user.keyboard("{End}{Enter}");
@@ -140,7 +140,7 @@ describe("enterHandler", () => {
       Actions.split(editorState, { blockIndex: 0, contentIndex: 1 }, content[1].text.length),
     );
   });
-  test("enter not at the end of a content in group triggers split at cursor (text after cursor for new group)", async () => {
+  test("enter not at the end of a content in block triggers split at cursor (text after cursor for new block)", async () => {
     const { user } = setup();
     await user.click(screen.getByText(content[1].text));
     await user.keyboard("{End}{ArrowLeft}{ArrowLeft}{ArrowLeft}{Enter}");
@@ -149,7 +149,7 @@ describe("enterHandler", () => {
       Actions.split(editorState, { blockIndex: 0, contentIndex: 1 }, content[1].text.length - 3),
     );
   });
-  test("enter at the end of an element that is not the last of group triggers split at current element", async () => {
+  test("enter at the end of an element that is not the last of block triggers split at current element", async () => {
     const { user } = setup();
     await user.click(screen.getByText(content[0].text));
     await user.keyboard("{End}{Enter}");
