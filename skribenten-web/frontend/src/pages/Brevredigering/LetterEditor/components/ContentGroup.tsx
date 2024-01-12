@@ -89,7 +89,7 @@ export function EditableText({ id, content }: { id: ContentIndex; content: Liter
   const contentEditableReference = useRef<HTMLSpanElement>(null);
   const { editorState, setEditorState } = useEditor();
 
-  const isFocus = hasFocus(editorState.focus, id);
+  const shouldBeFocused = hasFocus(editorState.focus, id);
 
   const text = content.text || "​";
   useEffect(() => {
@@ -99,13 +99,14 @@ export function EditableText({ id, content }: { id: ContentIndex; content: Liter
   }, [text]);
 
   useEffect(() => {
-    if (isFocus && contentEditableReference.current !== null && editorState.focus?.cursorPosition !== undefined) {
-      selectService.focusAtOffset(
-        contentEditableReference.current.childNodes[0],
-        editorState.focus?.cursorPosition ?? 0,
-      );
+    if (
+      shouldBeFocused &&
+      contentEditableReference.current !== null &&
+      editorState.focus.cursorPosition !== undefined
+    ) {
+      selectService.focusAtOffset(contentEditableReference.current.childNodes[0], editorState.focus.cursorPosition);
     }
-  }, [editorState.focus?.cursorPosition, isFocus]);
+  }, [editorState.focus.cursorPosition, shouldBeFocused]);
 
   const handleEnter = (event: React.KeyboardEvent<HTMLSpanElement>) => {
     event.preventDefault();
