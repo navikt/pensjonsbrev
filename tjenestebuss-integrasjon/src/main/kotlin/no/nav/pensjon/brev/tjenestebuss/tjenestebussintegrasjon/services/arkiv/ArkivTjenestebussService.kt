@@ -47,6 +47,7 @@ class ArkivTjenestebussService(config: Config, securityHandler: STSSercuritySOAP
                     dokumenttype = request.sakskontekstDto.dokumenttype
                     fagomradeKode = request.sakskontekstDto.fagomradekode
                     fagsystem = request.sakskontekstDto.fagsystem
+                    vedtaksInformasjon
                     gjelder = request.sakskontekstDto.gjelder
                     innhold = request.sakskontekstDto.innhold
                     journalenhet = request.sakskontekstDto.journalenhet

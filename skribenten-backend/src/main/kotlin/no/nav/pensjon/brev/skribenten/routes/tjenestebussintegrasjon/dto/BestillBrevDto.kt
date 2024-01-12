@@ -2,12 +2,12 @@ package no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto
 
 import javax.xml.datatype.XMLGregorianCalendar
 
-sealed class BestillBrevResponseDto {
-    data class Success(val journalpostId: String): BestillBrevResponseDto()
+sealed class BestillExtreamBrevResponseDto {
+    data class Success(val journalpostId: String): BestillExtreamBrevResponseDto()
     data class Failure(
         val message: String,
         val type: String,
-    ) : BestillBrevResponseDto()
+    ) : BestillExtreamBrevResponseDto()
 }
 data class BestillBrevExtreamRequestDto(
     val brevKode: String,

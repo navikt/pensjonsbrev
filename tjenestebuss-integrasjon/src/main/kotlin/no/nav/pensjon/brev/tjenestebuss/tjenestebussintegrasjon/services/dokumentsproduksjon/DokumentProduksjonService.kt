@@ -13,7 +13,7 @@ import no.nav.tjeneste.virksomhet.dokumentproduksjon.v3.RedigerDokumentSikkerhet
 import no.nav.tjeneste.virksomhet.dokumentproduksjon.v3.meldinger.WSRedigerDokumentRequest
 import org.slf4j.LoggerFactory
 
-class DokumentproduksjonService(config: Config, securityHandler: STSSercuritySOAPHandler): TjenestebussService() {
+class DokumentproduksjonService(config: Config, securityHandler: STSSercuritySOAPHandler) : TjenestebussService() {
     private val logger = LoggerFactory.getLogger(this::class.java)
 
     private val dokumentProduksjonClient = DokumentProduksjonClient(config, securityHandler, callIdHandler).client()
@@ -27,30 +27,48 @@ class DokumentproduksjonService(config: Config, securityHandler: STSSercuritySOA
      */
     fun redigerDokument(requestDto: RedigerDoksysDokumentRequestDto): RedigerDoksysDokumentResponseDto {
         try {
-            val response =  dokumentProduksjonClient.redigerDokument(WSRedigerDokumentRequest().apply {
+            val response = dokumentProduksjonClient.redigerDokument(WSRedigerDokumentRequest().apply {
                 journalpostId = requestDto.journalpostId
                 dokumentId = requestDto.dokumentId
             })
             logger.info("Henter metaforce URI for dokumentId: ${requestDto.journalpostId} i journalpostId: ${requestDto.dokumentId}")
-            return  RedigerDoksysDokumentResponseDto.Success(response.metaforceURI)
+            return RedigerDoksysDokumentResponseDto.Success(response.metaforceURI)
         } catch (ex: RedigerDokumentPessimistiskLaasing) {
             logger.error("En feil oppstod under henting av metaforce URI for dokumentId: ${requestDto.journalpostId} i journalpostId: ${requestDto.dokumentId}")
-            return RedigerDoksysDokumentResponseDto.Failure(RedigerDoksysDokumentResponseDto.Failure.FailureType.LASING, ex)
+            return RedigerDoksysDokumentResponseDto.Failure(
+                RedigerDoksysDokumentResponseDto.Failure.FailureType.LASING,
+                ex
+            )
         } catch (ex: RedigerDokumentRedigeringIkkeTillatt) {
             logger.error("En feil oppstod under henting av metaforce URI for dokumentId: ${requestDto.journalpostId} i journalpostId: ${requestDto.dokumentId}")
-            return RedigerDoksysDokumentResponseDto.Failure(RedigerDoksysDokumentResponseDto.Failure.FailureType.IKKE_TILLATT, ex)
+            return RedigerDoksysDokumentResponseDto.Failure(
+                RedigerDoksysDokumentResponseDto.Failure.FailureType.IKKE_TILLATT,
+                ex
+            )
         } catch (ex: RedigerDokumentInputValideringFeilet) {
             logger.error("En feil oppstod under henting av metaforce URI for dokumentId: ${requestDto.journalpostId} i journalpostId: ${requestDto.dokumentId}")
-            return RedigerDoksysDokumentResponseDto.Failure(RedigerDoksysDokumentResponseDto.Failure.FailureType.VALIDERING_FEILET, ex)
+            return RedigerDoksysDokumentResponseDto.Failure(
+                RedigerDoksysDokumentResponseDto.Failure.FailureType.VALIDERING_FEILET,
+                ex
+            )
         } catch (ex: RedigerDokumentDokumentIkkeFunnet) {
             logger.error("En feil oppstod under henting av metaforce URI for dokumentId: ${requestDto.journalpostId} i journalpostId: ${requestDto.dokumentId}")
-            return RedigerDoksysDokumentResponseDto.Failure(RedigerDoksysDokumentResponseDto.Failure.FailureType.IKKE_FUNNET, ex)
+            return RedigerDoksysDokumentResponseDto.Failure(
+                RedigerDoksysDokumentResponseDto.Failure.FailureType.IKKE_FUNNET,
+                ex
+            )
         } catch (ex: RedigerDokumentSikkerhetsbegrensning) {
             logger.error("En feil oppstod under henting av metaforce URI for dokumentId: ${requestDto.journalpostId} i journalpostId: ${requestDto.dokumentId}")
-            return RedigerDoksysDokumentResponseDto.Failure(RedigerDoksysDokumentResponseDto.Failure.FailureType.IKKE_TILGANG, ex)
+            return RedigerDoksysDokumentResponseDto.Failure(
+                RedigerDoksysDokumentResponseDto.Failure.FailureType.IKKE_TILGANG,
+                ex
+            )
         } catch (ex: RedigerDokumentMetaforceInstanceClosed) {
             logger.error("En feil oppstod under henting av metaforce URI for dokumentId: ${requestDto.journalpostId} i journalpostId: ${requestDto.dokumentId}")
-            return RedigerDoksysDokumentResponseDto.Failure(RedigerDoksysDokumentResponseDto.Failure.FailureType.LUKKET, ex)
+            return RedigerDoksysDokumentResponseDto.Failure(
+                RedigerDoksysDokumentResponseDto.Failure.FailureType.LUKKET,
+                ex
+            )
         }
     }
 }
@@ -59,25 +77,28 @@ sealed class RedigerDoksysDokumentResponseDto {
     data class Success(
         val metaforceURI: String,
     ) : RedigerDoksysDokumentResponseDto()
+
     data class Failure(
         val failureType: FailureType,
         val message: String?,
         val cause: String?,
     ) : RedigerDoksysDokumentResponseDto() {
-        constructor(failureType: FailureType, ex: Exception): this(
+        constructor(failureType: FailureType, ex: Exception) : this(
             failureType,
             ex.message,
             ex.cause?.message,
         )
+
         enum class FailureType {
             LASING,
             IKKE_TILLATT,
-            VALIDERING_FEILET   ,
+            VALIDERING_FEILET,
             IKKE_FUNNET,
             IKKE_TILGANG,
             LUKKET
         }
     }
 }
+
 
 

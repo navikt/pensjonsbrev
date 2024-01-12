@@ -170,28 +170,28 @@ fun Application.tjenestebussIntegrationApi(config: Config) {
                 val requestDto = call.receive<RedigerExtreamDokumentRequestDto>()
                 when (val response = withCallId(extreamBrevService) { hentExtreamBrevUrl(requestDto) }) {
                     is RedigerExtreamDokumentResponseDto.Success -> call.respond(HttpStatusCode.OK, response)
-                    is RedigerExtreamDokumentResponseDto.Failure -> call.respond((HttpStatusCode.InternalServerError), response)
+                    is RedigerExtreamDokumentResponseDto.Failure -> call.respond(HttpStatusCode.InternalServerError, response)
                 }
             }
         }
     }
 }
 
-class HentSamhandlerRequestDto(
+data class HentSamhandlerRequestDto(
     val idTSSEkstern: String,
     val hentDetaljert: Boolean,
 )
 
-class FinnSamhandlerRequestDto(
+data class FinnSamhandlerRequestDto(
     val navn: String,
     val samhandlerType: SamhandlerTypeCode,
 )
 
-class RedigerDoksysDokumentRequestDto(
+data class RedigerDoksysDokumentRequestDto(
     val journalpostId: String,
     val dokumentId: String,
 )
 
-class RedigerExtreamDokumentRequestDto(
+data class RedigerExtreamDokumentRequestDto(
     val dokumentId: String,
 )

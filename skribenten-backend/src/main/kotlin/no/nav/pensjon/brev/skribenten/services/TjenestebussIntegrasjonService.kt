@@ -87,7 +87,7 @@ class TjenestebussIntegrasjonService(config: Config, authService: AzureADService
         navIdent: String,
         metadata: BrevdataDto,
         loggedInName: String
-    ): ServiceResult<BestillBrevResponseDto.Success, BestillBrevResponseDto.Failure> {
+    ): ServiceResult<BestillExtreamBrevResponseDto.Success, BestillExtreamBrevResponseDto.Failure> {
 
         //TODO better error handling.
         // TODO access controls for e-blanketter
@@ -106,6 +106,8 @@ class TjenestebussIntegrasjonService(config: Config, authService: AzureADService
                     sprakkode = request.spraak.toString(),
                     brevMottakerNavn = request.mottakerText?.takeIf { isEblankett },        // custom felt kun for sed/eblankett
                     sakskontekstDto = SakskontekstDto(
+                        // TODO sett journalenhet ut fra queryparam eller sakEier
+                        // TODO sett vedtaksId
                         journalenhet = "0001",                              // NAV org enhet nr som skriver brevet. Kommer med i signatur.
                         //    private String decideJournalEnhet(NAVEnhet enhetToSet, BrevmenyForm form) {
                         //        if (form.getValgtAvsenderEnhet().equals(enhetToSet.getEnhetsId())) {
@@ -130,13 +132,13 @@ class TjenestebussIntegrasjonService(config: Config, authService: AzureADService
                     )
                 )
             )
-        }.toServiceResult<BestillBrevResponseDto.Success, BestillBrevResponseDto.Failure>()
+        }.toServiceResult<BestillExtreamBrevResponseDto.Success, BestillExtreamBrevResponseDto.Failure>()
             .map {
-                BestillBrevResponseDto.Success(
+                BestillExtreamBrevResponseDto.Success(
                     journalpostId = it.journalpostId
                 )
             }.catch { error ->
-                BestillBrevResponseDto.Failure(message = error.message, type = error.type)
+                BestillExtreamBrevResponseDto.Failure(message = error.message, type = error.type)
             }
     }
 
@@ -144,27 +146,27 @@ class TjenestebussIntegrasjonService(config: Config, authService: AzureADService
         call: ApplicationCall,
         journalpostId: String,
         dokumentId: String,
-    ): ServiceResult<RedigerDoksysBrevResponse.Success, RedigerDoksysBrevResponse.Failure> =
+    ): ServiceResult<RedigerDoksysDokumentResponseDto.Success, RedigerDoksysDokumentResponseDto.Failure> =
         tjenestebussIntegrasjonClient.post(call, "/redigerDoksysBrev") {
             RedigerDoksysDokumentRequestDto(journalpostId = journalpostId, dokumentId = dokumentId)
-        }.toServiceResult<RedigerDoksysBrevResponse.Success, RedigerDoksysBrevResponse.Failure>()
+        }.toServiceResult<RedigerDoksysDokumentResponseDto.Success, RedigerDoksysDokumentResponseDto.Failure>()
             .map {
-                RedigerDoksysBrevResponse.Success(url = it.url)
+                RedigerDoksysDokumentResponseDto.Success(url = it.url)
             }.catch { error ->
-                RedigerDoksysBrevResponse.Failure(message = error.message, type = error.type)
+                RedigerDoksysDokumentResponseDto.Failure(message = error.message, type = error.type)
             }
 
     suspend fun redigerExtreamBrev(
         call: ApplicationCall,
         dokumentId: String,
-    ): ServiceResult<RedigerExtreamDokumentResponseDto.Success, RedigerExtreamDokumentResponseDto.Failure> =
+    ): ServiceResult<RedigerDoksysDokumentResponseDto.Success, RedigerDoksysDokumentResponseDto.Failure> =
         tjenestebussIntegrasjonClient.post(call, "/redigerExtreamBrev") {
             RedigerExtreamDokumentRequestDto(dokumentId = dokumentId)
-        }.toServiceResult<RedigerExtreamDokumentResponseDto.Success, RedigerExtreamDokumentResponseDto.Failure>()
+        }.toServiceResult<RedigerDoksysDokumentResponseDto.Success, RedigerDoksysDokumentResponseDto.Failure>()
             .map {
-                RedigerExtreamDokumentResponseDto.Success(url = it.url)
+                RedigerDoksysDokumentResponseDto.Success(url = it.url)
             }.catch { error ->
-                RedigerExtreamDokumentResponseDto.Failure(message = error.message)
+                RedigerDoksysDokumentResponseDto.Failure(message = error.message, type = null)
             }
 
 }
