@@ -25,8 +25,7 @@ describe("LetterEditorActions.split", () => {
         select<Content>(state, { blockIndex: 0, contentIndex: 2 }),
       );
 
-      // focus is stolen
-      expect(result.nextFocus).toEqual({ blockIndex: splitId.blockIndex + 1, contentIndex: 0, cursorPosition: 0 });
+      expect(result.focus).toEqual({ blockIndex: splitId.blockIndex + 1, contentIndex: 0, cursorPosition: 0 });
     });
 
     test("result is not the original array", () => {
@@ -48,8 +47,7 @@ describe("LetterEditorActions.split", () => {
       expect(resultBlocks[splitId.blockIndex + 1].content.length).toBe(1);
       expect(select<TextContent>(result, { blockIndex: splitId.blockIndex + 1, contentIndex: 0 }).text).toBe("");
 
-      // focus is stolen
-      expect(result.nextFocus).toEqual({ blockIndex: splitId.blockIndex + 1, contentIndex: 0, cursorPosition: 0 });
+      expect(result.focus).toEqual({ blockIndex: splitId.blockIndex + 1, contentIndex: 0, cursorPosition: 0 });
     });
 
     test("does not split an emptyBlock", () => {
@@ -129,13 +127,17 @@ describe("LetterEditorActions.split", () => {
 
       // The following assertions also assert that we don't steal focus
       // Split at the empty item
-      expect(Actions.split(state, { blockIndex: 0, contentIndex: 0, itemIndex: 1, itemContentIndex: 0 }, 0)).toBe(state);
+      expect(Actions.split(state, { blockIndex: 0, contentIndex: 0, itemIndex: 1, itemContentIndex: 0 }, 0)).toBe(
+        state,
+      );
       // Repeat split before the empty item
       expect(
         Actions.split(state, { blockIndex: 0, contentIndex: 0, itemIndex: 0, itemContentIndex: 0 }, "item1".length),
       ).toBe(state);
       // Split at beginning of item after empty item
-      expect(Actions.split(state, { blockIndex: 0, contentIndex: 0, itemIndex: 2, itemContentIndex: 0 }, 0)).toBe(state);
+      expect(Actions.split(state, { blockIndex: 0, contentIndex: 0, itemIndex: 2, itemContentIndex: 0 }, 0)).toBe(
+        state,
+      );
     });
 
     test("splits the last empty item as a Literal after the list in the parent block", () => {
@@ -152,7 +154,7 @@ describe("LetterEditorActions.split", () => {
       expect(select<Content>(withLiteralAfterList, { blockIndex: 0, contentIndex: 1 }).type).toEqual(LITERAL);
 
       // TODO: reimplement
-      // expect(withLiteralAfterList.nextFocus).toEqual({ blockIndex: 0, contentIndex: 1, startOffset: 0 });
+      // expect(withLiteralAfterList.focus).toEqual({ blockIndex: 0, contentIndex: 1, startOffset: 0 });
     });
 
     test("when splitting the last empty item and parent block already has a subsequent literal then no new literal will be added", () => {

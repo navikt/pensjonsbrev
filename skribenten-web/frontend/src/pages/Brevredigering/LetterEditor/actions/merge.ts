@@ -30,6 +30,13 @@ export const merge: Action<LetterEditorState, [contentIndex: ContentIndex, targe
 
         if (first != null && second != null) {
           if (isEmptyItem(first)) {
+            draft.focus = {
+              blockIndex: contentIndex.blockIndex,
+              contentIndex: contentIndex.contentIndex,
+              cursorPosition: 0,
+              itemContentIndex: 0,
+              itemIndex: firstId,
+            };
             // draft.stealFocus[contentIndex.blockIndex] = {
             //   contentIndex: contentIndex.contentIndex,
             //   startOffset: 0,
@@ -37,6 +44,13 @@ export const merge: Action<LetterEditorState, [contentIndex: ContentIndex, targe
             // };
             itemList.items.splice(firstId, 1);
           } else if (isEmptyItem(second)) {
+            draft.focus = {
+              blockIndex: contentIndex.blockIndex,
+              contentIndex: contentIndex.contentIndex,
+              cursorPosition: first.content.at(-1)?.text.length ?? 0,
+              itemContentIndex: first.content.length - 1,
+              itemIndex: firstId,
+            };
             // draft.stealFocus[contentIndex.blockIndex] = {
             //   contentIndex: contentIndex.contentIndex,
             //   startOffset: first.content.at(-1)?.text.length ?? 0,
@@ -44,6 +58,13 @@ export const merge: Action<LetterEditorState, [contentIndex: ContentIndex, targe
             // };
             itemList.items.splice(secondId, 1);
           } else {
+            draft.focus = {
+              blockIndex: contentIndex.blockIndex,
+              contentIndex: contentIndex.contentIndex,
+              cursorPosition: first.content.at(-1)?.text.length ?? 0,
+              itemContentIndex: first.content.length - 1,
+              itemIndex: firstId,
+            };
             // draft.stealFocus[contentIndex.blockIndex] = {
             //   contentIndex: contentIndex.contentIndex,
             //   startOffset: first.content.at(-1)?.text.length ?? 0,
@@ -98,24 +119,24 @@ export const merge: Action<LetterEditorState, [contentIndex: ContentIndex, targe
           blocks.splice(firstId, 1);
           deleteBlock(first, blocks, editedLetter.deletedBlocks);
           // draft.stealFocus[firstId] = { contentIndex: 0, startOffset: 0 };
-          draft.nextFocus = { contentIndex: 0, cursorPosition: 0, blockIndex: contentIndex.blockIndex - 1 };
-          draft.currentBlock = contentIndex.blockIndex - 1;
+          draft.focus = { contentIndex: 0, cursorPosition: 0, blockIndex: contentIndex.blockIndex - 1 };
+          draft.focus.blockIndex = contentIndex.blockIndex - 1;
         } else if (isEmptyBlock(second)) {
           blocks.splice(secondId, 1);
           deleteBlock(second, blocks, editedLetter.deletedBlocks);
-          draft.nextFocus = { contentIndex: 0, cursorPosition: 0, blockIndex: contentIndex.blockIndex - 1 };
-          draft.currentBlock = contentIndex.blockIndex - 1;
+          draft.focus = { contentIndex: 0, cursorPosition: 0, blockIndex: contentIndex.blockIndex - 1 };
+          draft.focus.blockIndex = contentIndex.blockIndex - 1;
         } else {
           const lastContentOfFirst = first.content.at(-1);
 
           const nextContentIndexFocus = first.content.length - (lastContentOfFirst?.type === LITERAL ? 1 : 0);
           const nextStartOffset = lastContentOfFirst?.type === LITERAL ? lastContentOfFirst.text.length : 0;
-          draft.nextFocus = {
+          draft.focus = {
             contentIndex: nextContentIndexFocus,
             cursorPosition: nextStartOffset,
             blockIndex: firstId,
           };
-          draft.currentBlock = firstId;
+          draft.focus.blockIndex = firstId;
 
           // draft.stealFocus[firstId] =
           //   lastContentOfFirst?.type === LITERAL

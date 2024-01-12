@@ -123,7 +123,7 @@ describe("LetterEditorActions.merge", () => {
         test("when previous block is empty focus is stolen to beginning of the replaced block", () => {
           const state = letter(paragraph(), paragraph(literal("lit1"), variable("var1")));
           const result = Actions.merge(state, { blockIndex: 1, contentIndex: 0 }, MergeTarget.PREVIOUS);
-          expect(result.nextFocus).toEqual({ blockIndex: 0, contentIndex: 0, cursorPosition: 0 });
+          expect(result.focus).toEqual({ blockIndex: 0, contentIndex: 0, cursorPosition: 0 });
         });
 
         test("when merging adjoining literals focus is stolen to the merge point of the two literals", () => {
@@ -133,14 +133,14 @@ describe("LetterEditorActions.merge", () => {
           );
 
           const result = Actions.merge(state, { blockIndex: 1, contentIndex: 0 }, MergeTarget.PREVIOUS);
-          expect(result.nextFocus).toEqual({ blockIndex: 0, contentIndex: 1, cursorPosition: "lit1".length });
+          expect(result.focus).toEqual({ blockIndex: 0, contentIndex: 1, cursorPosition: "lit1".length });
         });
 
         test("when merging with non adjoining literals focus is stolen so that the cursor is at the beginning of the current content", () => {
           const state = letter(paragraph(variable("var1")), paragraph(literal("lit1"), variable("var2")));
 
           const result = Actions.merge(state, { blockIndex: 1, contentIndex: 0 }, MergeTarget.PREVIOUS);
-          expect(result.nextFocus).toEqual({ blockIndex: 0, contentIndex: 1, cursorPosition: 0 });
+          expect(result.focus).toEqual({ blockIndex: 0, contentIndex: 1, cursorPosition: 0 });
         });
       });
 
@@ -183,12 +183,13 @@ describe("LetterEditorActions.merge", () => {
         });
 
         test("focus should be stolen to the end of the last item", () => {
-          // TODO: reimplement
-          // expect(result.stealFocus[mergeId.blockIndex]).toEqual({
-          //   contentIndex: mergeId.contentIndex - 1,
-          //   startOffset: "Det blir ".length,
-          //   item: { id: 0, contentIndex: 0 },
-          // });
+          expect(result.focus).toEqual({
+            blockIndex: mergeId.blockIndex,
+            contentIndex: mergeId.contentIndex - 1,
+            cursorPosition: "Det blir ".length,
+            itemIndex: 0,
+            itemContentIndex: 0,
+          });
         });
       });
     });
@@ -241,14 +242,15 @@ describe("LetterEditorActions.merge", () => {
           expect(select<TextContent>(result, { ...mergeId, itemContentIndex: 1 }).text).toEqual("lit1lit2");
         });
 
-        // TODO: reimplement
-        // test("focus is stolen to center of the merged literals", () => {
-        //   expect(result.stealFocus[mergeId.blockIndex]).toEqual({
-        //     contentIndex: mergeId.contentIndex,
-        //     startOffset: "lit1".length,
-        //     item: { id: mergeId.itemIndex, contentIndex: 1 },
-        //   });
-        // });
+        test("focus is stolen to center of the merged literals", () => {
+          expect(result.focus).toEqual({
+            blockIndex: mergeId.blockIndex,
+            contentIndex: mergeId.contentIndex,
+            cursorPosition: "lit1".length,
+            itemIndex: mergeId.itemIndex,
+            itemContentIndex: 1,
+          });
+        });
       });
 
       describe("the next item is empty", () => {
@@ -261,16 +263,17 @@ describe("LetterEditorActions.merge", () => {
           expect(select<ItemList>(result, { blockIndex: 0, contentIndex: 0 }).items).toHaveLength(1);
         });
 
-        // TODO: reimplement
-        // test("then the focus is stolen to the end of currrent", () => {
-        //   const item = select<Item>(state, mergeId);
-        //
-        //   expect(result.stealFocus[mergeId.blockIndex]).toEqual({
-        //     contentIndex: mergeId.contentIndex,
-        //     startOffset: item.content.at(-1)?.text.length,
-        //     item: { id: mergeId.itemIndex, contentIndex: item.content.length - 1 },
-        //   });
-        // });
+        test("then the focus is stolen to the end of currrent", () => {
+          const item = select<Item>(state, mergeId);
+
+          expect(result.focus).toEqual({
+            blockIndex: mergeId.blockIndex,
+            contentIndex: mergeId.contentIndex,
+            cursorPosition: item.content.at(-1)?.text.length,
+            itemIndex: mergeId.itemIndex,
+            itemContentIndex: item.content.length - 1,
+          });
+        });
       });
 
       describe("the current item is empty", () => {
@@ -285,14 +288,15 @@ describe("LetterEditorActions.merge", () => {
           expect(select<ItemList>(result, { blockIndex: 0, contentIndex: 0 }).items).toHaveLength(1);
         });
 
-        // TODO: reimplement
-        // test("then the focus is stolen to the beginning", () => {
-        //   expect(result.stealFocus[mergeId.blockIndex]).toEqual({
-        //     contentIndex: mergeId.contentIndex,
-        //     startOffset: 0,
-        //     item: { id: mergeId.itemIndex, contentIndex: 0 },
-        //   });
-        // });
+        test("then the focus is stolen to the beginning", () => {
+          expect(result.focus).toEqual({
+            blockIndex: mergeId.blockIndex,
+            contentIndex: mergeId.contentIndex,
+            cursorPosition: 0,
+            itemIndex: mergeId.itemIndex,
+            itemContentIndex: 0,
+          });
+        });
       });
     });
 
@@ -346,14 +350,15 @@ describe("LetterEditorActions.merge", () => {
           );
         });
 
-        // TODO: reimplement
-        // test("then the focus is stolen to the beginning", () => {
-        //   expect(result.stealFocus[mergeId.blockIndex]).toEqual({
-        //     contentIndex: mergeId.contentIndex,
-        //     startOffset: 0,
-        //     item: { id: mergeId.itemIndex - 1, contentIndex: 0 },
-        //   });
-        // });
+        test("then the focus is stolen to the beginning", () => {
+          expect(result.focus).toEqual({
+            blockIndex: mergeId.blockIndex,
+            contentIndex: mergeId.contentIndex,
+            cursorPosition: 0,
+            itemIndex: mergeId.itemIndex - 1,
+            itemContentIndex: 0,
+          });
+        });
       });
 
       describe("the current item is empty", () => {
@@ -369,15 +374,16 @@ describe("LetterEditorActions.merge", () => {
           expect(select<Item>(result, mergeId)).toBeUndefined();
         });
 
-        // TODO: reimplement
-        // test("then the focus is stolen to the end", () => {
-        //   const previousItem = select<Item>(state, { ...mergeId, itemIndex: mergeId.itemIndex - 1 });
-        //   expect(result.stealFocus[mergeId.blockIndex]).toEqual({
-        //     contentIndex: mergeId.contentIndex,
-        //     startOffset: previousItem.content.at(-1)?.text.length,
-        //     item: { id: mergeId.itemIndex - 1, contentIndex: previousItem.content.length - 1 },
-        //   });
-        // });
+        test("then the focus is stolen to the end", () => {
+          const previousItem = select<Item>(state, { ...mergeId, itemIndex: mergeId.itemIndex - 1 });
+          expect(result.focus).toEqual({
+            blockIndex: mergeId.blockIndex,
+            contentIndex: mergeId.contentIndex,
+            cursorPosition: previousItem.content.at(-1)?.text.length,
+            itemIndex: mergeId.itemIndex - 1,
+            itemContentIndex: previousItem.content.length - 1,
+          });
+        });
       });
     });
   });

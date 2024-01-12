@@ -9,7 +9,7 @@ import { applyAction } from "../lib/actions";
 
 export const EditorMenu = () => {
   const { editorState, setEditorState } = useEditor();
-  const activeTypography = editorState.editedLetter.letter.blocks[editorState.currentBlock].type;
+  const activeTypography = editorState.editedLetter.letter.blocks[editorState.focus.blockIndex].type;
 
   return (
     <div
@@ -24,19 +24,19 @@ export const EditorMenu = () => {
     >
       <SelectTypographyButton
         isActive={activeTypography === "TITLE1"}
-        onClick={() => applyAction(Actions.switchTypography, setEditorState, editorState.currentBlock, "TITLE1")}
+        onClick={() => applyAction(Actions.switchTypography, setEditorState, editorState.focus.blockIndex, "TITLE1")}
       >
         Overskift 1
       </SelectTypographyButton>
       <SelectTypographyButton
         isActive={activeTypography === "TITLE2"}
-        onClick={() => applyAction(Actions.switchTypography, setEditorState, editorState.currentBlock, "TITLE2")}
+        onClick={() => applyAction(Actions.switchTypography, setEditorState, editorState.focus.blockIndex, "TITLE2")}
       >
         Overskrift 2
       </SelectTypographyButton>
       <SelectTypographyButton
         isActive={activeTypography === "PARAGRAPH"}
-        onClick={() => applyAction(Actions.switchTypography, setEditorState, editorState.currentBlock, "PARAGRAPH")}
+        onClick={() => applyAction(Actions.switchTypography, setEditorState, editorState.focus.blockIndex, "PARAGRAPH")}
       >
         Normal
       </SelectTypographyButton>

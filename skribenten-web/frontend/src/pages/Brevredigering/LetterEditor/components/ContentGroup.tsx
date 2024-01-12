@@ -22,7 +22,7 @@ function getContent(letter: RenderedLetter, id: ContentIndex) {
 }
 
 export function ContentGroup({ id }: { id: ContentIndex }) {
-  const { editorState, setEditorState } = useEditor();
+  const { editorState } = useEditor();
   const block = editorState.editedLetter.letter.blocks[id.blockIndex];
   const contents = getContent(editorState.editedLetter.letter, id);
 
@@ -45,7 +45,7 @@ export function ContentGroup({ id }: { id: ContentIndex }) {
   }
 
   return (
-    <div onFocus={() => setEditorState((oldState) => ({ ...oldState, currentBlock: id.blockIndex }))}>
+    <div>
       {contents.map((content, _contentIndex) => {
         switch (content.type) {
           case LITERAL: {
@@ -79,8 +79,7 @@ export function EditableText({ id, content }: { id: ContentIndex; content: Liter
   const contentEditableReference = useRef<HTMLSpanElement>(null);
   const { editorState, setEditorState } = useEditor();
 
-  const isFocus =
-    editorState.nextFocus?.blockIndex === id.blockIndex && editorState.nextFocus.contentIndex === id.contentIndex;
+  const isFocus = editorState.focus.blockIndex === id.blockIndex && editorState.focus.contentIndex === id.contentIndex;
 
   const text = content.text || "​";
   useEffect(() => {
@@ -93,10 +92,10 @@ export function EditableText({ id, content }: { id: ContentIndex; content: Liter
     if (isFocus && contentEditableReference.current !== null) {
       selectService.focusAtOffset(
         contentEditableReference.current.childNodes[0],
-        editorState.nextFocus?.cursorPosition,
-      );
+        editorState.focus?.cursorPosition ?? 0,
+      ); //TODO: check
     }
-  }, [editorState.nextFocus?.cursorPosition, isFocus]);
+  }, [editorState.focus?.cursorPosition, isFocus]);
 
   const handleEnter = (event: React.KeyboardEvent<HTMLSpanElement>) => {
     event.preventDefault();
@@ -131,6 +130,7 @@ export function EditableText({ id, content }: { id: ContentIndex; content: Liter
       // However, the tests will not work if set to plaintext-only. For some reason focus/input and other events will not be triggered by userEvent as expected.
       // This is not documented anywhere I could find and caused a day of frustration, beware
       contentEditable="true"
+      onFocus={() => setEditorState((oldState) => ({ ...oldState, focus: id }))}
       onInput={(event) => {
         applyAction(Actions.updateContentText, setEditorState, id, (event.target as HTMLSpanElement).textContent ?? "");
       }}

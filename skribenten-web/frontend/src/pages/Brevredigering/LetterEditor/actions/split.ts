@@ -36,9 +36,8 @@ export const split: Action<LetterEditorState, [contentIndex: ContentIndex, offse
           ],
         };
         letter.blocks.splice(contentIndex.blockIndex + 1, 0, nextBlock);
-        // draft.stealFocus[contentIndex.blockIndex + 1] = { contentIndex: 0, startOffset: 0 };
-        draft.nextFocus = { contentIndex: 0, cursorPosition: 0, blockIndex: contentIndex.blockIndex + 1 };
-        draft.currentBlock = contentIndex.blockIndex + 1;
+        draft.focus = { contentIndex: 0, cursorPosition: 0, blockIndex: contentIndex.blockIndex + 1 };
+        draft.focus.blockIndex = contentIndex.blockIndex + 1;
         // Update existing
         content.text = cleanseText(content.text.slice(0, Math.max(0, offset)));
         block.content.splice(contentIndex.contentIndex + 1, block.content.length - contentIndex.contentIndex + 1);
@@ -53,7 +52,8 @@ export const split: Action<LetterEditorState, [contentIndex: ContentIndex, offse
         const previousItem = content.items[contentIndex.itemIndex - 1];
         const nextItem = content.items[contentIndex.itemIndex + 1];
 
-        if (contentIndex.itemIndex === content.items.length - 1 && isEmptyItem(item)) {
+        const isAtLastItem = contentIndex.itemIndex === content.items.length - 1;
+        if (isAtLastItem && isEmptyItem(item)) {
           // We're at the last item, and it's empty, so the split should result in converting it to content in the same block after the ItemList (or steal focus at ít).
           content.items.splice(contentIndex.itemIndex, 1);
           if (contentIndex.contentIndex >= block.content.length - 1) {
@@ -71,7 +71,6 @@ export const split: Action<LetterEditorState, [contentIndex: ContentIndex, offse
           const firstText = cleanseText(itemContent.text.slice(0, Math.max(0, offset)));
           const secondText = cleanseText(itemContent.text.slice(Math.max(0, offset)));
 
-          // create new item
           const newItem: Item = {
             ...item,
             content: [{ ...itemContent, text: secondText }, ...item.content.slice(contentIndex.itemContentIndex + 1)],
