@@ -37,7 +37,6 @@ export const split: Action<LetterEditorState, [contentIndex: ContentIndex, offse
         };
         letter.blocks.splice(contentIndex.blockIndex + 1, 0, nextBlock);
         draft.focus = { contentIndex: 0, cursorPosition: 0, blockIndex: contentIndex.blockIndex + 1 };
-        draft.focus.blockIndex = contentIndex.blockIndex + 1;
         // Update existing
         content.text = cleanseText(content.text.slice(0, Math.max(0, offset)));
         block.content.splice(contentIndex.contentIndex + 1, block.content.length - contentIndex.contentIndex + 1);
@@ -54,12 +53,16 @@ export const split: Action<LetterEditorState, [contentIndex: ContentIndex, offse
 
         const isAtLastItem = contentIndex.itemIndex === content.items.length - 1;
         if (isAtLastItem && isEmptyItem(item)) {
-          // We're at the last item, and it's empty, so the split should result in converting it to content in the same block after the ItemList (or steal focus at ít).
+          // We're at the last item, and it's empty, so the split should result in converting it to content in the same block after the ItemList (or move focus to ít).
           content.items.splice(contentIndex.itemIndex, 1);
           if (contentIndex.contentIndex >= block.content.length - 1) {
             block.content.push({ type: LITERAL, id: -1, text: "" });
           }
-          // draft.stealFocus[contentIndex.blockIndex] = { contentIndex: contentIndex.contentIndex + 1, startOffset: 0 };
+          draft.focus = {
+            blockIndex: contentIndex.blockIndex,
+            contentIndex: contentIndex.contentIndex + 1,
+            cursorPosition: 0,
+          };
         } else {
           if (isEmptyItem(item)) {
             // An empty item would result in two consecutive empty items
@@ -97,15 +100,13 @@ export const split: Action<LetterEditorState, [contentIndex: ContentIndex, offse
           item.content.splice(contentIndex.itemContentIndex + 1, item.content.length);
           itemContent.text = firstText;
 
-          // steal focus
-          // draft.stealFocus[contentIndex.blockIndex] = {
-          //   contentIndex: contentIndex.contentIndex,
-          //   startOffset: 0,
-          //   item: {
-          //     id: contentIndex.itemIndex + 1,
-          //     contentIndex: 0,
-          //   },
-          // };
+          draft.focus = {
+            blockIndex: contentIndex.blockIndex,
+            contentIndex: contentIndex.contentIndex,
+            cursorPosition: 0,
+            itemIndex: contentIndex.itemIndex + 1,
+            itemContentIndex: 0,
+          };
         }
       } else {
         // eslint-disable-next-line no-console

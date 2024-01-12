@@ -119,7 +119,7 @@ describe("LetterEditorActions.merge", () => {
         expect(select<AnyBlock>(result, { blockIndex: 0 }).id).toEqual(select<AnyBlock>(state, { blockIndex: 0 }).id);
       });
 
-      describe("stealFocus", () => {
+      describe("Update focus", () => {
         test("when previous block is empty focus is stolen to beginning of the replaced block", () => {
           const state = letter(paragraph(), paragraph(literal("lit1"), variable("var1")));
           const result = Actions.merge(state, { blockIndex: 1, contentIndex: 0 }, MergeTarget.PREVIOUS);

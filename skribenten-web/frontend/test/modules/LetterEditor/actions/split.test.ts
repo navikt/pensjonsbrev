@@ -90,22 +90,20 @@ describe("LetterEditorActions.split", () => {
         original.items[splitId.itemIndex].content[splitId.itemContentIndex].text.slice(0, Math.max(0, offset)),
       );
 
-      // new item
       const newItem = resultItems[splitId.itemIndex + 1];
       expect(newItem.content).toHaveLength(original.items[splitId.itemIndex].content.length - splitId.itemContentIndex);
       expect(newItem.content[0].text).toEqual(
         original.items[splitId.itemIndex].content[splitId.itemContentIndex].text.slice(Math.max(0, offset)),
       );
 
-      // focus is stolen to beginning of new item
-      // TODO: reimplement itemlist logic
-      // expect(result.stealFocus).toEqual({
-      //   [splitId.blockIndex]: {
-      //     contentIndex: splitId.contentIndex,
-      //     startOffset: 0,
-      //     item: { id: splitId.itemIndex + 1, contentIndex: 0 },
-      //   },
-      // });
+      // focus is moved to beginning of new item
+      expect(result.focus).toEqual({
+        blockIndex: splitId.blockIndex,
+        contentIndex: splitId.contentIndex,
+        cursorPosition: 0,
+        itemIndex: splitId.itemIndex + 1,
+        itemContentIndex: 0,
+      });
     });
 
     test("when the offset is at the end of the item content, the new item will have one content element with an empty string", () => {
@@ -125,7 +123,7 @@ describe("LetterEditorActions.split", () => {
     test("does not split so that we get multiple empty items", () => {
       const state = letter(paragraph(itemList(item(literal("item1")), item(literal("")), item(literal("item3")))));
 
-      // The following assertions also assert that we don't steal focus
+      // The following assertions also assert that we don't move focus
       // Split at the empty item
       expect(Actions.split(state, { blockIndex: 0, contentIndex: 0, itemIndex: 1, itemContentIndex: 0 }, 0)).toBe(
         state,

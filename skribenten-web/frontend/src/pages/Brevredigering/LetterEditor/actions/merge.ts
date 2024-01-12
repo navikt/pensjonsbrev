@@ -72,7 +72,6 @@ export const merge: Action<LetterEditorState, [contentIndex: ContentIndex, targe
       const lastItem = previousContentSameBlock.items[lastItemId];
       const lastContentOfLastItem = lastItem.content.at(-1);
 
-      // Steal focus before we modify
       draft.focus =
         lastContentOfLastItem?.type === LITERAL
           ? {
