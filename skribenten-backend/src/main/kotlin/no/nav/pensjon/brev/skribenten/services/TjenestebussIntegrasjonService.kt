@@ -86,7 +86,7 @@ class TjenestebussIntegrasjonService(config: Config, authService: AzureADService
         request: OrderLetterRequest,
         navIdent: String,
         metadata: BrevdataDto,
-        loggedInName: String
+        name: String
     ): ServiceResult<BestillExtreamBrevResponseDto.Success, BestillExtreamBrevResponseDto.Failure> {
 
         //TODO better error handling.
@@ -106,8 +106,7 @@ class TjenestebussIntegrasjonService(config: Config, authService: AzureADService
                     sprakkode = request.spraak.toString(),
                     brevMottakerNavn = request.mottakerText?.takeIf { isEblankett },        // custom felt kun for sed/eblankett
                     sakskontekstDto = SakskontekstDto(
-                        // TODO sett journalenhet ut fra queryparam eller sakEier
-                        // TODO sett vedtaksId
+                        // TODO sett journalenhet ut fra queryparam/psak eller sakEier
                         journalenhet = "0001",                              // NAV org enhet nr som skriver brevet. Kommer med i signatur.
                         //    private String decideJournalEnhet(NAVEnhet enhetToSet, BrevmenyForm form) {
                         //        if (form.getValgtAvsenderEnhet().equals(enhetToSet.getEnhetsId())) {
@@ -123,12 +122,13 @@ class TjenestebussIntegrasjonService(config: Config, authService: AzureADService
                         innhold = metadata.dekode,                          // Visningsnavn
                         kategori = metadata.dokumentkategori.toString(),    // Kategori for dokumentet
                         saksid = request.sakId.toString(),// sakid
-                        saksbehandlernavn = loggedInName,
+                        saksbehandlernavn = name,
                         saksbehandlerId = navIdent,
                         kravtype = null, // TODO sett. Brukes for notater
                         land = request.landkode.takeIf { isEblankett },
                         //TODO sett verge om det er verge og samhandler om det overstyres
-                        mottaker = if (isEblankett || isNotat) null else request.gjelderPid  //fnr/tss id for mottaker
+                        mottaker = if (isEblankett || isNotat) null else request.gjelderPid,  //fnr/tss id for mottaker
+                        vedtakId = null, // TODO sett fra queryparam/psak
                     )
                 )
             )
@@ -159,14 +159,16 @@ class TjenestebussIntegrasjonService(config: Config, authService: AzureADService
     suspend fun redigerExtreamBrev(
         call: ApplicationCall,
         dokumentId: String,
-    ): ServiceResult<RedigerDoksysDokumentResponseDto.Success, RedigerDoksysDokumentResponseDto.Failure> =
+    ): ServiceResult<RedigerExtreamDokumentResponseDto.Success, RedigerExtreamDokumentResponseDto.Failure> =
         tjenestebussIntegrasjonClient.post(call, "/redigerExtreamBrev") {
-            RedigerExtreamDokumentRequestDto(dokumentId = dokumentId)
-        }.toServiceResult<RedigerDoksysDokumentResponseDto.Success, RedigerDoksysDokumentResponseDto.Failure>()
+            contentType(ContentType.Application.Json)
+            accept(ContentType.Application.Json)
+            setBody(RedigerExtreamDokumentRequestDto(dokumentId = dokumentId))
+        }.toServiceResult<RedigerExtreamDokumentResponseDto.Success, RedigerExtreamDokumentResponseDto.Failure>()
             .map {
-                RedigerDoksysDokumentResponseDto.Success(url = it.url)
+                RedigerExtreamDokumentResponseDto.Success(url = it.url)
             }.catch { error ->
-                RedigerDoksysDokumentResponseDto.Failure(message = error.message, type = null)
+                RedigerExtreamDokumentResponseDto.Failure(message = error.message)
             }
 
 }

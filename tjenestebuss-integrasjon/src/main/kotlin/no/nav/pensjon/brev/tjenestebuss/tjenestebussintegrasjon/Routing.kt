@@ -137,7 +137,7 @@ fun Application.tjenestebussIntegrationApi(config: Config) {
             post("/bestillExtreamBrev") {
                 val requestDto = call.receive<BestillBrevExtreamRequestDto>()
 
-                when (val arkivResponse = withCallId(arkivTjenestebussService) { bestillBrev(requestDto) }) {
+                when (val arkivResponse: BestillBrevResponseDto = withCallId(arkivTjenestebussService) { bestillBrev(requestDto) }) {
                     is Success -> call.respond(HttpStatusCode.OK, arkivResponse)
                     is BestillBrevResponseDto.Failure -> {
                         if (arkivResponse.failureType == MANGLER_OBLIGATORISK_INPUT) {
@@ -168,7 +168,7 @@ fun Application.tjenestebussIntegrationApi(config: Config) {
             }
             post("/redigerExtreamBrev") {
                 val requestDto = call.receive<RedigerExtreamDokumentRequestDto>()
-                when (val response = withCallId(extreamBrevService) { hentExtreamBrevUrl(requestDto) }) {
+                when (val response: RedigerExtreamDokumentResponseDto = withCallId(extreamBrevService) { hentExtreamBrevUrl(requestDto) }) {
                     is RedigerExtreamDokumentResponseDto.Success -> call.respond(HttpStatusCode.OK, response)
                     is RedigerExtreamDokumentResponseDto.Failure -> call.respond(HttpStatusCode.InternalServerError, response)
                 }

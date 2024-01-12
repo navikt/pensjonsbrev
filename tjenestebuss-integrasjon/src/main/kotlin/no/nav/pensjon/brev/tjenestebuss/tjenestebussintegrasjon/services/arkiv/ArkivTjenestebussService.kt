@@ -47,7 +47,6 @@ class ArkivTjenestebussService(config: Config, securityHandler: STSSercuritySOAP
                     dokumenttype = request.sakskontekstDto.dokumenttype
                     fagomradeKode = request.sakskontekstDto.fagomradekode
                     fagsystem = request.sakskontekstDto.fagsystem
-                    vedtaksInformasjon
                     gjelder = request.sakskontekstDto.gjelder
                     innhold = request.sakskontekstDto.innhold
                     journalenhet = request.sakskontekstDto.journalenhet
@@ -59,6 +58,7 @@ class ArkivTjenestebussService(config: Config, securityHandler: STSSercuritySOAP
                     saksbehandlernavn = request.sakskontekstDto.saksbehandlernavn
                     saksid = request.sakskontekstDto.saksid
                     sensitivitetsgrad = "false"
+                    vedtaksInformasjon = request.sakskontekstDto.vedtakId
                 }
             })
             logger.info("Opprettet brev med journalpostId: ${response!!.journalpostId} i sakId: ${request.sakskontekstDto.saksid} ")
@@ -128,5 +128,6 @@ data class BestillBrevExtreamRequestDto(
         val saksbehandlerId: String,
         val saksbehandlernavn: String,
         val saksid: String,
+        val vedtakId: String?,
     )
 }

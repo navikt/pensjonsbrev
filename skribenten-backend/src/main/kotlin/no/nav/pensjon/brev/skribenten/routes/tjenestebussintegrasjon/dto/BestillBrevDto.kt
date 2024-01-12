@@ -9,6 +9,7 @@ sealed class BestillExtreamBrevResponseDto {
         val type: String,
     ) : BestillExtreamBrevResponseDto()
 }
+
 data class BestillBrevExtreamRequestDto(
     val brevKode: String,
     val brevGruppe: String,
@@ -32,7 +33,7 @@ data class BestillBrevExtreamRequestDto(
         val saksbehandlerId: String,
         val saksbehandlernavn: String,
         val saksid: String,
+        val vedtakId: String?,
     )
 }
-
 

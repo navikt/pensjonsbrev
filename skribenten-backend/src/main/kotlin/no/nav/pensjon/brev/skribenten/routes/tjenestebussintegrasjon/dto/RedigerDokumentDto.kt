@@ -20,7 +20,7 @@ sealed class RedigerDoksysDokumentResponseDto {
     }
 }
 
-class RedigerExtreamDokumentRequestDto(
+data class RedigerExtreamDokumentRequestDto(
     val dokumentId: String,
 )
 
