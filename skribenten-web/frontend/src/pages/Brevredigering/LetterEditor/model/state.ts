@@ -3,7 +3,8 @@ import type { Content, EditedLetter } from "~/types/brevbakerTypes";
 
 export type ContentGroup = { content: Content[] };
 
+export type Focus = ContentIndex & { cursorPosition?: number };
 export type LetterEditorState = {
   readonly editedLetter: EditedLetter;
-  readonly focus: ContentIndex & { cursorPosition?: number };
+  readonly focus: Focus;
 };

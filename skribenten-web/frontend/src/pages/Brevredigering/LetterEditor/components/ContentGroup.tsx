@@ -6,6 +6,7 @@ import { MergeTarget } from "~/pages/Brevredigering/LetterEditor/actions/model";
 import { Text } from "~/pages/Brevredigering/LetterEditor/components/Text";
 import { useEditor } from "~/pages/Brevredigering/LetterEditor/LetterEditor";
 import { applyAction } from "~/pages/Brevredigering/LetterEditor/lib/actions";
+import type { Focus } from "~/pages/Brevredigering/LetterEditor/model/state";
 import { SelectionService } from "~/pages/Brevredigering/LetterEditor/services/SelectionService";
 import type { LiteralValue, RenderedLetter } from "~/types/brevbakerTypes";
 import { ITEM_LIST, LITERAL, VARIABLE } from "~/types/brevbakerTypes";
@@ -75,11 +76,20 @@ export function ContentGroup({ id }: { id: ContentIndex }) {
   );
 }
 
+function hasFocus(focus: Focus, id: ContentIndex) {
+  const basicMatch = focus.blockIndex === id.blockIndex && focus.contentIndex === id.contentIndex;
+  if ("itemIndex" in id && "itemIndex" in focus) {
+    const itemMatch = focus.itemIndex === id.itemIndex && focus.itemContentIndex === id.itemContentIndex;
+    return itemMatch && basicMatch;
+  }
+  return basicMatch;
+}
+
 export function EditableText({ id, content }: { id: ContentIndex; content: LiteralValue }) {
   const contentEditableReference = useRef<HTMLSpanElement>(null);
   const { editorState, setEditorState } = useEditor();
 
-  const isFocus = editorState.focus.blockIndex === id.blockIndex && editorState.focus.contentIndex === id.contentIndex;
+  const isFocus = hasFocus(editorState.focus, id);
 
   const text = content.text || "​";
   useEffect(() => {
@@ -89,7 +99,8 @@ export function EditableText({ id, content }: { id: ContentIndex; content: Liter
   }, [text]);
 
   useEffect(() => {
-    if (isFocus && contentEditableReference.current !== null) {
+    if (isFocus && contentEditableReference.current !== null && editorState.focus?.cursorPosition !== undefined) {
+      console.log(editorState.focus?.cursorPosition);
       selectService.focusAtOffset(
         contentEditableReference.current.childNodes[0],
         editorState.focus?.cursorPosition ?? 0,
@@ -130,7 +141,13 @@ export function EditableText({ id, content }: { id: ContentIndex; content: Liter
       // However, the tests will not work if set to plaintext-only. For some reason focus/input and other events will not be triggered by userEvent as expected.
       // This is not documented anywhere I could find and caused a day of frustration, beware
       contentEditable="true"
-      onFocus={() => setEditorState((oldState) => ({ ...oldState, focus: id }))}
+      onFocus={() => {
+        console.log("onfocus", id);
+        setEditorState((oldState) => ({
+          ...oldState,
+          focus: id,
+        }));
+      }}
       onInput={(event) => {
         applyAction(Actions.updateContentText, setEditorState, id, (event.target as HTMLSpanElement).textContent ?? "");
       }}

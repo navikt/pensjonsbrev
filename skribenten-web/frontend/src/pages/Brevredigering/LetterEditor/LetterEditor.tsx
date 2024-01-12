@@ -4,6 +4,7 @@ import { css } from "@emotion/react";
 import { Heading } from "@navikt/ds-react";
 import { createContext, useContext, useState } from "react";
 
+import { DebugPanel } from "~/pages/Brevredigering/LetterEditor/components/DebugPanel";
 import type { RenderedLetter } from "~/types/brevbakerTypes";
 
 import Actions from "./actions";
@@ -48,6 +49,7 @@ export const LetterEditor = ({ initialState }: { initialState: RenderedLetter })
           </div>
           <SignaturView signatur={editorState.editedLetter.letter.signatur} />
         </div>
+        <DebugPanel />
       </EditorStateContext.Provider>
     </div>
   );
