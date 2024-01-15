@@ -1,13 +1,14 @@
 import { css } from "@emotion/react";
 import { ArrowRightIcon, StarFillIcon, StarIcon } from "@navikt/aksel-icons";
-import { BodyShort, Button, Heading, Select, Tag } from "@navikt/ds-react";
+import { BodyShort, Button, Heading, Modal, Select, Tag, TextField } from "@navikt/ds-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate, useParams, useRouteContext, useSearch } from "@tanstack/react-router";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { FormProvider, useForm, useFormContext } from "react-hook-form";
 
 import { addFavoritt, deleteFavoritt, getFavoritter, getLetterTemplate } from "~/api/skribenten-api-endpoints";
 import { Divider } from "~/components/Divider";
+import { SamhandlerTypeSelectFormPart } from "~/components/select/SamhandlerSelect";
 import { usePreferredLanguage } from "~/hooks/usePreferredLanguage";
 import { redigeringRoute, selectedTemplateRoute } from "~/tanStackRoutes";
 import type { LetterMetadata } from "~/types/apiTypes";
@@ -69,6 +70,7 @@ function Brevmal() {
       <Divider />
       <Heading level="3" size="xsmall">
         Mottaker (TODO)
+        <VelgSamhandlerModal />
       </Heading>
       <FormProvider {...methods}>
         <form
@@ -254,5 +256,35 @@ function FavoriteButton() {
     >
       Legg til som favoritt
     </Button>
+  );
+}
+
+function VelgSamhandlerModal() {
+  const reference = useRef<HTMLDialogElement>(null);
+
+  const methods = useForm();
+
+  console.log(methods.watch());
+
+  return (
+    <>
+      <Button onClick={() => reference.current?.showModal()}>Velg mottaker</Button>
+      <Modal header={{ heading: "Mottaker" }} ref={reference} width={400}>
+        <Modal.Body>
+          <FormProvider {...methods}>
+            <form id="skjema" method="dialog" onSubmit={() => alert("onSubmit")}>
+              <TextField label="Søk" {...methods.register("navn")} />
+              <SamhandlerTypeSelectFormPart />
+            </form>
+          </FormProvider>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button form="skjema">Send</Button>
+          <Button onClick={() => reference.current?.close()} type="button" variant="secondary">
+            Avbryt
+          </Button>
+        </Modal.Footer>
+      </Modal>
+    </>
   );
 }
