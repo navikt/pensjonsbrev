@@ -35,7 +35,7 @@ function setup() {
     user: userEvent.setup(),
     ...render(
       <EditorStateContext.Provider value={{ editorState, setEditorState }}>
-        <ContentGroup id={{ blockIndex: 0, contentIndex: 0 }} />
+        <ContentGroup literalIndex={{ blockIndex: 0, contentIndex: 0 }} />
       </EditorStateContext.Provider>,
     ),
   };

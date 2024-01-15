@@ -43,7 +43,7 @@ export const LetterEditor = ({ initialState }: { initialState: RenderedLetter })
           <div>
             {blocks.map((block, blockIndex) => (
               <div className={block.type} key={blockIndex}>
-                <ContentGroup id={{ blockIndex, contentIndex: 0 }} />
+                <ContentGroup literalIndex={{ blockIndex, contentIndex: 0 }} />
               </div>
             ))}
           </div>
