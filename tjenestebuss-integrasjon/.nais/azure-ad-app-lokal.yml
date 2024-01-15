@@ -4,7 +4,7 @@
 # secret kan hentes fra cluster med "kubectl -n pensjonsbrev get secret azure-pensjonsbrev-tjenestebuss-lokal -o json | jq '.data | map_values(@base64d)'"
 #
 # Kjøres en gang eller ved endringer med
-# kubectl apply -f .nais/azure-ad-app-lokal.yml
+# kubectl apply -f .nais/azure-ad-app-lokal.yml --context "dev-fss"
 ###
 apiVersion: nais.io/v1
 kind: AzureAdApplication

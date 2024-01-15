@@ -4,7 +4,7 @@
 # secret kan hentes fra cluster med "kubectl -n pensjonsbrev get secret azure-skribenten-backend-lokal -o json | jq '.data | map_values(@base64d)'"
 #
 # Kjøres en gang eller ved endringer med
-# kubectl apply -f .nais/azure-ad-app-lokal.yml --context "dev-fss"
+# kubectl apply -f .nais/azure-ad-app-lokal.yml
 ###
 apiVersion: nais.io/v1
 kind: AzureAdApplication
@@ -22,6 +22,9 @@ spec:
     extra:
       - "azp_name"
   preAuthorizedApplications:
+    - application: skribenten-web
+      cluster: dev-gcp
+      namespace: pensjonsbrev
     - application: skribenten-web
       cluster: dev-gcp
       namespace: pensjonsbrev
