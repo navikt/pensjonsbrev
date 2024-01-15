@@ -21,7 +21,7 @@ sealed class RedigerDoksysDokumentResponseDto {
 }
 
 data class RedigerExtreamDokumentRequestDto(
-    val dokumentId: String,
+    val journalpostId: String,
 )
 
 sealed class RedigerExtreamDokumentResponseDto {

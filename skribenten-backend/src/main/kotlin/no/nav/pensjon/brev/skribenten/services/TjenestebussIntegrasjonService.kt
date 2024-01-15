@@ -163,7 +163,7 @@ class TjenestebussIntegrasjonService(config: Config, authService: AzureADService
         tjenestebussIntegrasjonClient.post(call, "/redigerExtreamBrev") {
             contentType(ContentType.Application.Json)
             accept(ContentType.Application.Json)
-            setBody(RedigerExtreamDokumentRequestDto(dokumentId = dokumentId))
+            setBody(RedigerExtreamDokumentRequestDto(journalpostId = dokumentId))
         }.toServiceResult<RedigerExtreamDokumentResponseDto.Success, RedigerExtreamDokumentResponseDto.Failure>()
             .map {
                 RedigerExtreamDokumentResponseDto.Success(url = it.url)

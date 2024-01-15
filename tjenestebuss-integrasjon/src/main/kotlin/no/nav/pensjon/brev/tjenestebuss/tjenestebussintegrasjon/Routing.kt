@@ -193,5 +193,5 @@ data class RedigerDoksysDokumentRequestDto(
 )
 
 data class RedigerExtreamDokumentRequestDto(
-    val dokumentId: String,
+    val journalpostId: String,
 )
