@@ -17,6 +17,6 @@ export function create(letter: RenderedLetter): LetterEditorState {
       letter,
       deletedBlocks: [],
     },
-    currentBlock: 0,
+    focus: { blockIndex: 0, contentIndex: 0 },
   };
 }

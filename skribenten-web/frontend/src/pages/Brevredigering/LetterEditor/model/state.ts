@@ -1,24 +1,10 @@
+import type { LiteralIndex } from "~/pages/Brevredigering/LetterEditor/actions/model";
 import type { Content, EditedLetter } from "~/types/brevbakerTypes";
-
-export type CursorPosition = {
-  contentId: number;
-  startOffset: number;
-  item?: {
-    id: number;
-    contentId: number;
-  };
-};
 
 export type ContentGroup = { content: Content[] };
 
-export type NextFocus = {
-  blockIndex: number;
-  contentIndex: number;
-  cursorPosition: number;
-};
-
+export type Focus = LiteralIndex & { cursorPosition?: number };
 export type LetterEditorState = {
-  readonly editedLetter: EditedLetter;
-  readonly nextFocus?: NextFocus;
-  readonly currentBlock: number;
+  editedLetter: EditedLetter;
+  focus: Focus;
 };
