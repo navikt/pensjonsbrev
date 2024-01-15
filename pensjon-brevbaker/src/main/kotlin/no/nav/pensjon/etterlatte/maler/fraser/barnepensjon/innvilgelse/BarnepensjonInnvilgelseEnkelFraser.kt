@@ -39,21 +39,21 @@ object BarnepensjonInnvilgelseEnkelFraser {
                 val formatertNyesteUtbetalingsperiodeDatoFom = nyesteUtbetalingsperiodeDatoFom.format()
 
                 textExpr(
-                    Bokmal to "Du er innvilget barnepensjon fra ".expr() + formatertVirkningsdato + " fordi " + avdoedNavn + " er registrert død " + formatertDoedsdato + ". ",
-                    Nynorsk to "".expr(),
+                    Bokmal to "Du er innvilget barnepensjon fra ".expr() + formatertVirkningsdato + " fordi " + avdoedNavn + " er registrert død " + formatertDoedsdato + ".",
+                    Nynorsk to "Du er innvilga barnepensjon frå og med ".expr() + formatertVirkningsdato + " fordi " + avdoedNavn + " er registrert død "+ formatertDoedsdato + ".",
                     English to "".expr()
                 )
 
                 showIf(harFlereUtbetalingsperioder) {
                     textExpr(
-                        Bokmal to "".expr() + "Du får "+ beloep.format() + " kroner hver måned før skatt fra " + formatertNyesteUtbetalingsperiodeDatoFom + ". Se utbetalingsbeløp for tidligere perioder i vedlegg om etterbetaling.",
-                        Nynorsk to "".expr(),
+                        Bokmal to "Du får ".expr() + beloep.format() + " kroner hver måned før skatt fra " + formatertNyesteUtbetalingsperiodeDatoFom + ". Se utbetalingsbeløp for tidligere perioder i vedlegg om etterbetaling.",
+                        Nynorsk to "Du får ".expr() + beloep.format() + " kroner per månad før skatt frå og med " + formatertNyesteUtbetalingsperiodeDatoFom + ". Sjå utbetalingsbeløp for tidlegare periodar i vedlegget om etterbetaling.",
                         English to "".expr()
                     )
                 }.orShow {
                     textExpr(
-                        Bokmal to "Du får ".expr() + beloep.format() + " kroner hver måned før skatt. ",
-                        Nynorsk to "".expr(),
+                        Bokmal to "Du får ".expr() + beloep.format() + " kroner hver måned før skatt.",
+                        Nynorsk to "Du får ".expr() + beloep.format() + " kroner per månad før skatt.",
                         English to "".expr()
                     )
                 }
@@ -61,21 +61,21 @@ object BarnepensjonInnvilgelseEnkelFraser {
             paragraph {
                 text(
                     Bokmal to "Barnepensjonen utbetales til og med den kalendermåneden du fyller 20 år.",
-                    Nynorsk to "",
+                    Nynorsk to "Barnepensjonen blir utbetalt fram til og med kalendermånaden du fyller 20 år.",
                     English to "",
                 )
             }
             paragraph {
                 text(
                     Bokmal to "Barnepensjon gis på bakgrunn av at du er medlem i folketrygden og at avdøde i de siste fem årene før dødsfallet var medlem i folketrygden eller fikk pensjon fra folketrygden.",
-                    Nynorsk to "",
+                    Nynorsk to "Barnepensjon blir gitt på bakgrunn av at du er medlem i folketrygda, og at avdøde var medlem i eller fekk pensjon frå folketrygda dei siste fem åra før sin død.",
                     English to "",
                 )
             }
             paragraph {
                 textExpr(
-                    Bokmal to "".expr() + "Vedtaket er gjort etter bestemmelsene om barnepensjon i folketrygdloven §§ 18-2, 18-3, 18-4, 18-5" + ifElse(erEtterbetaling, ", 22-12 og 22-13.", " og 22-12."),
-                    Nynorsk to "".expr(),
+                    Bokmal to "Vedtaket er gjort etter bestemmelsene om barnepensjon i folketrygdloven §§ 18-2, 18-3, 18-4, 18-5".expr() + ifElse(erEtterbetaling, ", 22-12 og 22-13.", " og 22-12."),
+                    Nynorsk to "Vedtaket er fatta etter føresegnene om barnepensjon i folketrygdlova §§ 18-2, 18-3, 18-4, 18-5".expr() + ifElse(erEtterbetaling, ", 22-12 og 22-13.", " og 22-12."),
                     English to "".expr(),
                 )
             }
