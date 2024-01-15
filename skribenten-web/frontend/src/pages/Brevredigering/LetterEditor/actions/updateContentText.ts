@@ -23,7 +23,7 @@ export const updateContentText: Action<LetterEditorState, [literalIndex: Literal
         }
       } else {
         // eslint-disable-next-line no-console
-        console.warn("Cannot update text of ItemList, itemIndex and itemContentId is missing.");
+        console.warn("Cannot update text of ItemList, itemIndex and itemContentIndex is missing.");
       }
     } else {
       // eslint-disable-next-line no-console
