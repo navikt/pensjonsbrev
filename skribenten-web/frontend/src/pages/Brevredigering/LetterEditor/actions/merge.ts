@@ -6,7 +6,7 @@ import { ITEM_LIST, LITERAL } from "~/types/brevbakerTypes";
 import type { Action } from "../lib/actions";
 import type { LetterEditorState } from "../model/state";
 import { getMergeIds, isEmptyBlock, isEmptyItem, isTextContent, mergeContentArrays } from "../model/utils";
-import type { ContentIndex } from "./model";
+import type { LiteralIndex } from "./model";
 
 export enum MergeTarget {
   PREVIOUS = "PREVIOUS",
@@ -19,24 +19,24 @@ function deleteBlock(block: Block, blocks: Block[], deleted: number[]) {
   }
 }
 
-export const merge: Action<LetterEditorState, [contentIndex: ContentIndex, target: MergeTarget]> = produce(
-  (draft, contentIndex, target) => {
+export const merge: Action<LetterEditorState, [literalIndex: LiteralIndex, target: MergeTarget]> = produce(
+  (draft, literalIndex, target) => {
     const editedLetter = draft.editedLetter;
     const blocks = editedLetter.letter.blocks;
-    const previousContentSameBlock = blocks[contentIndex.blockIndex]?.content[contentIndex.contentIndex - 1];
+    const previousContentSameBlock = blocks[literalIndex.blockIndex]?.content[literalIndex.contentIndex - 1];
 
-    if ("itemIndex" in contentIndex) {
-      const itemList = blocks[contentIndex.blockIndex].content[contentIndex.contentIndex];
+    if ("itemIndex" in literalIndex) {
+      const itemList = blocks[literalIndex.blockIndex].content[literalIndex.contentIndex];
       if (itemList.type === ITEM_LIST) {
-        const [firstId, secondId] = getMergeIds(contentIndex.itemIndex, target);
+        const [firstId, secondId] = getMergeIds(literalIndex.itemIndex, target);
         const first = itemList.items[firstId];
         const second = itemList.items[secondId];
 
         if (first != null && second != null) {
           if (isEmptyItem(first)) {
             draft.focus = {
-              blockIndex: contentIndex.blockIndex,
-              contentIndex: contentIndex.contentIndex,
+              blockIndex: literalIndex.blockIndex,
+              contentIndex: literalIndex.contentIndex,
               cursorPosition: 0,
               itemIndex: firstId,
               itemContentIndex: 0,
@@ -44,8 +44,8 @@ export const merge: Action<LetterEditorState, [contentIndex: ContentIndex, targe
             itemList.items.splice(firstId, 1);
           } else if (isEmptyItem(second)) {
             draft.focus = {
-              blockIndex: contentIndex.blockIndex,
-              contentIndex: contentIndex.contentIndex,
+              blockIndex: literalIndex.blockIndex,
+              contentIndex: literalIndex.contentIndex,
               cursorPosition: first.content.at(-1)?.text.length ?? 0,
               itemContentIndex: first.content.length - 1,
               itemIndex: firstId,
@@ -53,8 +53,8 @@ export const merge: Action<LetterEditorState, [contentIndex: ContentIndex, targe
             itemList.items.splice(secondId, 1);
           } else {
             draft.focus = {
-              blockIndex: contentIndex.blockIndex,
-              contentIndex: contentIndex.contentIndex,
+              blockIndex: literalIndex.blockIndex,
+              contentIndex: literalIndex.contentIndex,
               cursorPosition: first.content.at(-1)?.text.length ?? 0,
               itemContentIndex: first.content.length - 1,
               itemIndex: firstId,
@@ -69,7 +69,7 @@ export const merge: Action<LetterEditorState, [contentIndex: ContentIndex, targe
       }
     } else if (target === MergeTarget.PREVIOUS && previousContentSameBlock?.type === ITEM_LIST) {
       // The previous content of the block is an itemList, so we want to merge with the last item
-      const content = blocks[contentIndex.blockIndex].content;
+      const content = blocks[literalIndex.blockIndex].content;
       const lastItemId = previousContentSameBlock.items.length - 1;
       const lastItem = previousContentSameBlock.items[lastItemId];
       const lastContentOfLastItem = lastItem.content.at(-1);
@@ -77,32 +77,32 @@ export const merge: Action<LetterEditorState, [contentIndex: ContentIndex, targe
       draft.focus =
         lastContentOfLastItem?.type === LITERAL
           ? {
-              blockIndex: contentIndex.blockIndex,
-              contentIndex: contentIndex.contentIndex - 1,
+              blockIndex: literalIndex.blockIndex,
+              contentIndex: literalIndex.contentIndex - 1,
               cursorPosition: lastContentOfLastItem.text.length,
               itemIndex: lastItemId,
               itemContentIndex: lastItem.content.length - 1,
             }
           : {
-              contentIndex: contentIndex.contentIndex - 1,
+              contentIndex: literalIndex.contentIndex - 1,
               cursorPosition: 0,
               itemIndex: lastItemId,
-              blockIndex: contentIndex.blockIndex,
+              blockIndex: literalIndex.blockIndex,
               itemContentIndex: lastItem.content.length,
             };
 
       // extract and remove all consecutive textContent after the itemList we want to merge into
-      const nonTextContentRelativeIndex = content.slice(contentIndex.contentIndex).findIndex((c) => !isTextContent(c));
+      const nonTextContentRelativeIndex = content.slice(literalIndex.contentIndex).findIndex((c) => !isTextContent(c));
       const textContentAfterList = content
         .splice(
-          contentIndex.contentIndex,
+          literalIndex.contentIndex,
           nonTextContentRelativeIndex === -1 ? content.length : nonTextContentRelativeIndex,
         )
         .filter(isTextContent);
 
       lastItem.content = mergeContentArrays(lastItem.content, textContentAfterList);
     } else {
-      const [firstId, secondId] = getMergeIds(contentIndex.blockIndex, target);
+      const [firstId, secondId] = getMergeIds(literalIndex.blockIndex, target);
       const first = blocks[firstId];
       const second = blocks[secondId];
 
@@ -114,7 +114,7 @@ export const merge: Action<LetterEditorState, [contentIndex: ContentIndex, targe
         } else if (isEmptyBlock(second)) {
           blocks.splice(secondId, 1);
           deleteBlock(second, blocks, editedLetter.deletedBlocks);
-          draft.focus = { contentIndex: 0, cursorPosition: 0, blockIndex: contentIndex.blockIndex - 1 };
+          draft.focus = { contentIndex: 0, cursorPosition: 0, blockIndex: literalIndex.blockIndex - 1 };
         } else {
           const lastContentOfFirst = first.content.at(-1);
 

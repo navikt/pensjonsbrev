@@ -3,4 +3,4 @@ export type ItemContentIndex = BlockContentIndex & {
   itemIndex: number;
   itemContentIndex: number;
 };
-export type ContentIndex = BlockContentIndex | ItemContentIndex;
+export type LiteralIndex = BlockContentIndex | ItemContentIndex;

@@ -5,16 +5,16 @@ import { ITEM_LIST, LITERAL } from "~/types/brevbakerTypes";
 import type { Action } from "../lib/actions";
 import type { LetterEditorState } from "../model/state";
 import { cleanseText } from "./common";
-import type { ContentIndex } from "./model";
+import type { LiteralIndex } from "./model";
 
-export const updateContentText: Action<LetterEditorState, [contentIndex: ContentIndex, text: string]> = produce(
-  (draft, contentIndex, text) => {
-    const content = draft.editedLetter.letter.blocks[contentIndex.blockIndex].content[contentIndex.contentIndex];
+export const updateContentText: Action<LetterEditorState, [literalIndex: LiteralIndex, text: string]> = produce(
+  (draft, literalIndex, text) => {
+    const content = draft.editedLetter.letter.blocks[literalIndex.blockIndex].content[literalIndex.contentIndex];
     if (content.type === LITERAL) {
       content.text = cleanseText(text);
     } else if (content.type === ITEM_LIST) {
-      if ("itemIndex" in contentIndex) {
-        const itemContent = content.items[contentIndex.itemIndex].content[contentIndex.itemContentIndex];
+      if ("itemIndex" in literalIndex) {
+        const itemContent = content.items[literalIndex.itemIndex].content[literalIndex.itemContentIndex];
         if (itemContent.type === LITERAL) {
           itemContent.text = cleanseText(text);
         } else {

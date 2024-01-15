@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from "react";
 
 import Actions from "~/pages/Brevredigering/LetterEditor/actions";
-import type { ContentIndex } from "~/pages/Brevredigering/LetterEditor/actions/model";
+import type { LiteralIndex } from "~/pages/Brevredigering/LetterEditor/actions/model";
 import { MergeTarget } from "~/pages/Brevredigering/LetterEditor/actions/merge";
 import { Text } from "~/pages/Brevredigering/LetterEditor/components/Text";
 import { useEditor } from "~/pages/Brevredigering/LetterEditor/LetterEditor";
@@ -13,7 +13,7 @@ import { ITEM_LIST, LITERAL, VARIABLE } from "~/types/brevbakerTypes";
 
 const selectService = new SelectionService(true);
 
-function getContent(letter: RenderedLetter, id: ContentIndex) {
+function getContent(letter: RenderedLetter, id: LiteralIndex) {
   const content = letter.blocks[id.blockIndex].content;
   const contentValue = content[id.contentIndex];
   if ("itemIndex" in id && contentValue.type === ITEM_LIST) {
@@ -22,7 +22,7 @@ function getContent(letter: RenderedLetter, id: ContentIndex) {
   return content;
 }
 
-export function ContentGroup({ id }: { id: ContentIndex }) {
+export function ContentGroup({ id }: { id: LiteralIndex }) {
   const { editorState } = useEditor();
   const block = editorState.editedLetter.letter.blocks[id.blockIndex];
   const contents = getContent(editorState.editedLetter.letter, id);
@@ -76,7 +76,7 @@ export function ContentGroup({ id }: { id: ContentIndex }) {
   );
 }
 
-function hasFocus(focus: Focus, id: ContentIndex) {
+function hasFocus(focus: Focus, id: LiteralIndex) {
   const basicMatch = focus.blockIndex === id.blockIndex && focus.contentIndex === id.contentIndex;
   if ("itemIndex" in id && "itemIndex" in focus) {
     const itemMatch = focus.itemIndex === id.itemIndex && focus.itemContentIndex === id.itemContentIndex;
@@ -85,7 +85,7 @@ function hasFocus(focus: Focus, id: ContentIndex) {
   return basicMatch;
 }
 
-export function EditableText({ id, content }: { id: ContentIndex; content: LiteralValue }) {
+export function EditableText({ id, content }: { id: LiteralIndex; content: LiteralValue }) {
   const contentEditableReference = useRef<HTMLSpanElement>(null);
   const { editorState, setEditorState } = useEditor();
 
