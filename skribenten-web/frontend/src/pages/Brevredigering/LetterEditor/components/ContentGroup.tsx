@@ -50,11 +50,11 @@ export function ContentGroup({ literalIndex }: { literalIndex: LiteralIndex }) {
       {contents.map((content, _contentIndex) => {
         switch (content.type) {
           case LITERAL: {
-            const index =
+            const updatedLiteralIndex =
               "itemIndex" in literalIndex
                 ? { ...literalIndex, itemContentIndex: _contentIndex }
                 : { ...literalIndex, contentIndex: _contentIndex };
-            return <EditableText content={content} key={_contentIndex} literalIndex={index} />;
+            return <EditableText content={content} key={_contentIndex} literalIndex={updatedLiteralIndex} />;
           }
           case VARIABLE: {
             return <Text content={content} key={_contentIndex} />;
