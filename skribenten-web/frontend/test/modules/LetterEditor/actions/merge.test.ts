@@ -1,7 +1,7 @@
 import { describe, expect, test } from "vitest";
 
 import Actions from "~/pages/Brevredigering/LetterEditor/actions";
-import { MergeTarget } from "~/pages/Brevredigering/LetterEditor/actions/model";
+import { MergeTarget } from "~/pages/Brevredigering/LetterEditor/actions/merge";
 import type { AnyBlock, Item, ItemList, ParagraphBlock, TextContent } from "~/types/brevbakerTypes";
 
 import { item, itemList, letter, literal, paragraph, select, variable } from "../utils";

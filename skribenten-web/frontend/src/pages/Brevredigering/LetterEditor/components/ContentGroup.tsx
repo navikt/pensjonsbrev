@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from "react";
 
 import Actions from "~/pages/Brevredigering/LetterEditor/actions";
 import type { ContentIndex } from "~/pages/Brevredigering/LetterEditor/actions/model";
-import { MergeTarget } from "~/pages/Brevredigering/LetterEditor/actions/model";
+import { MergeTarget } from "~/pages/Brevredigering/LetterEditor/actions/merge";
 import { Text } from "~/pages/Brevredigering/LetterEditor/components/Text";
 import { useEditor } from "~/pages/Brevredigering/LetterEditor/LetterEditor";
 import { applyAction } from "~/pages/Brevredigering/LetterEditor/lib/actions";

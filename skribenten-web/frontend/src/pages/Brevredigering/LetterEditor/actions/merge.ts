@@ -7,7 +7,11 @@ import type { Action } from "../lib/actions";
 import type { LetterEditorState } from "../model/state";
 import { getMergeIds, isEmptyBlock, isEmptyItem, isTextContent, mergeContentArrays } from "../model/utils";
 import type { ContentIndex } from "./model";
-import { MergeTarget } from "./model";
+
+export enum MergeTarget {
+  PREVIOUS = "PREVIOUS",
+  NEXT = "NEXT",
+}
 
 function deleteBlock(block: Block, blocks: Block[], deleted: number[]) {
   if (block.id != -1 && !deleted.includes(block.id) && !blocks.map((b) => b.id).includes(block.id)) {

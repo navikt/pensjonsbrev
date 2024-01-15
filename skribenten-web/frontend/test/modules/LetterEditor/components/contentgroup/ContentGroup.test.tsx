@@ -3,7 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, test, vi } from "vitest";
 
 import Actions from "~/pages/Brevredigering/LetterEditor/actions";
-import { MergeTarget } from "~/pages/Brevredigering/LetterEditor/actions/model";
+import { MergeTarget } from "~/pages/Brevredigering/LetterEditor/actions/merge";
 import { ContentGroup } from "~/pages/Brevredigering/LetterEditor/components/ContentGroup";
 import { EditorStateContext } from "~/pages/Brevredigering/LetterEditor/LetterEditor";
 import type { LetterEditorState } from "~/pages/Brevredigering/LetterEditor/model/state";

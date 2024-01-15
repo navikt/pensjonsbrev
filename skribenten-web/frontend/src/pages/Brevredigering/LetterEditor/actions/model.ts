@@ -4,8 +4,3 @@ export type ItemContentIndex = BlockContentIndex & {
   itemContentIndex: number;
 };
 export type ContentIndex = BlockContentIndex | ItemContentIndex;
-
-export enum MergeTarget {
-  PREVIOUS = "PREVIOUS",
-  NEXT = "NEXT",
-}
