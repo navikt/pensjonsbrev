@@ -5,7 +5,13 @@
 import type { AxiosResponse } from "axios";
 import axios from "axios";
 
-import type { LetterTemplatesResponse, PidRequest, PreferredLanguage, SakDto } from "~/types/apiTypes";
+import {
+  FinnSamhandlerRequestDto, FinnSamhandlerResponseDto,
+  LetterTemplatesResponse,
+  PidRequest,
+  PreferredLanguage,
+  SakDto
+} from "~/types/apiTypes";
 import type { RedigerbarTemplateDescription, RenderedLetter } from "~/types/brevbakerTypes";
 const SKRIBENTEN_API_BASE_PATH = "/skribenten-backend";
 
@@ -97,4 +103,9 @@ export async function addFavoritt(id: string) {
 
 export async function deleteFavoritt(id: string) {
   return (await axios.delete<string>(`${SKRIBENTEN_API_BASE_PATH}/favourites`, { data: id })).data;
+}
+
+export async function finnSamhandler(request: FinnSamhandlerRequestDto) {
+  return (await axios.post<FinnSamhandlerResponseDto>(`${SKRIBENTEN_API_BASE_PATH}/finnSamhandler`, request)).data;
+
 }

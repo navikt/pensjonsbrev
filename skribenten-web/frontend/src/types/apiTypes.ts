@@ -58,6 +58,22 @@ export type PidRequest = {
   pid: string;
 };
 
+export type FinnSamhandlerRequestDto = {
+  navn: string;
+  samhandlerType: SamhandlerTypeCode;
+};
+
+type Samhandler = {
+  navn: string;
+  samhandlerType: string;
+  offentligId: string;
+  idType: string;
+};
+
+export type FinnSamhandlerResponseDto = {
+  samhandlere: Samhandler[];
+};
+
 export enum SamhandlerTypeCode {
   AA = "AA",
   ADVO = "ADVO",

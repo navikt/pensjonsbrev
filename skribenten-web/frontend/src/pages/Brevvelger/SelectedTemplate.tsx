@@ -6,12 +6,18 @@ import { useNavigate, useParams, useRouteContext, useSearch } from "@tanstack/re
 import { useEffect, useRef } from "react";
 import { FormProvider, useForm, useFormContext } from "react-hook-form";
 
-import { addFavoritt, deleteFavoritt, getFavoritter, getLetterTemplate } from "~/api/skribenten-api-endpoints";
+import {
+  addFavoritt,
+  deleteFavoritt,
+  finnSamhandler,
+  getFavoritter,
+  getLetterTemplate,
+} from "~/api/skribenten-api-endpoints";
 import { Divider } from "~/components/Divider";
 import { SamhandlerTypeSelectFormPart } from "~/components/select/SamhandlerSelect";
 import { usePreferredLanguage } from "~/hooks/usePreferredLanguage";
 import { redigeringRoute, selectedTemplateRoute } from "~/tanStackRoutes";
-import type { LetterMetadata } from "~/types/apiTypes";
+import type { FinnSamhandlerRequestDto, FinnSamhandlerResponseDto, LetterMetadata } from "~/types/apiTypes";
 import { BrevSystem } from "~/types/apiTypes";
 import { SPRAAK_ENUM_TO_TEXT } from "~/types/nameMappings";
 
@@ -265,6 +271,11 @@ function VelgSamhandlerModal() {
   const methods = useForm();
 
   console.log(methods.watch());
+  const finnSamhandlerMutation = useMutation<FinnSamhandlerResponseDto, unknown, FinnSamhandlerRequestDto>({
+    mutationFn: async (request) => {
+      return await finnSamhandler(request);
+    },
+  });
 
   return (
     <>
@@ -272,7 +283,11 @@ function VelgSamhandlerModal() {
       <Modal header={{ heading: "Mottaker" }} ref={reference} width={400}>
         <Modal.Body>
           <FormProvider {...methods}>
-            <form id="skjema" method="dialog" onSubmit={() => alert("onSubmit")}>
+            <form
+              id="skjema"
+              method="dialog"
+              onSubmit={methods.handleSubmit((values) => finnSamhandlerMutation.mutate(values))}
+            >
               <TextField label="Søk" {...methods.register("navn")} />
               <SamhandlerTypeSelectFormPart />
             </form>
