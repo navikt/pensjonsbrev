@@ -7,24 +7,24 @@ import type { Action } from "../lib/actions";
 import type { LetterEditorState } from "../model/state";
 import { isEmptyBlock, isEmptyContent, isEmptyItem } from "../model/utils";
 import { cleanseText, isEditableContent } from "./common";
-import type { ContentId } from "./model";
+import type { LiteralIndex } from "./model";
 
 function getId(id: number, isNew: boolean): number {
   return isNew ? -1 : id;
 }
 
-export const split: Action<LetterEditorState, [splitId: ContentId, offset: number]> = produce(
-  (draft, splitId, offset) => {
+export const split: Action<LetterEditorState, [literalIndex: LiteralIndex, offset: number]> = produce(
+  (draft, literalIndex, offset) => {
     const letter = draft.editedLetter.letter;
-    const block = letter.blocks[splitId.blockId];
-    const previousBlock = letter.blocks[splitId.blockId - 1];
-    const content = block.content[splitId.contentId];
+    const block = letter.blocks[literalIndex.blockIndex];
+    const previousBlock = letter.blocks[literalIndex.blockIndex - 1];
+    const content = block.content[literalIndex.contentIndex];
 
     if (content.type === LITERAL) {
       if (!isEmptyBlock(block) && (previousBlock == null || offset > 0 || !isEmptyBlock(previousBlock))) {
         // Create next block
         const nextText = cleanseText(content.text.slice(Math.max(0, offset)));
-        const isNew = nextText.length < 2 && block.content.length - splitId.contentId <= 1;
+        const isNew = nextText.length < 2 && block.content.length - literalIndex.contentIndex <= 1;
 
         const nextBlock: ParagraphBlock = {
           type: PARAGRAPH,
@@ -32,49 +32,51 @@ export const split: Action<LetterEditorState, [splitId: ContentId, offset: numbe
           editable: true,
           content: [
             { ...content, id: getId(content.id, isNew), text: cleanseText(content.text.slice(Math.max(0, offset))) },
-            ...block.content.slice(splitId.contentId + 1).map((c) => ({ ...c, id: getId(c.id, isNew) })),
+            ...block.content.slice(literalIndex.contentIndex + 1).map((c) => ({ ...c, id: getId(c.id, isNew) })),
           ],
         };
-        letter.blocks.splice(splitId.blockId + 1, 0, nextBlock);
-        // draft.stealFocus[splitId.blockId + 1] = { contentId: 0, startOffset: 0 };
-        draft.nextFocus = { contentIndex: 0, cursorPosition: 0, blockIndex: splitId.blockId + 1 };
-        draft.currentBlock = splitId.blockId + 1;
+        letter.blocks.splice(literalIndex.blockIndex + 1, 0, nextBlock);
+        draft.focus = { contentIndex: 0, cursorPosition: 0, blockIndex: literalIndex.blockIndex + 1 };
         // Update existing
         content.text = cleanseText(content.text.slice(0, Math.max(0, offset)));
-        block.content.splice(splitId.contentId + 1, block.content.length - splitId.contentId + 1);
-        if (isEmptyContent(content) && isEditableContent(block.content[splitId.contentId - 1])) {
+        block.content.splice(literalIndex.contentIndex + 1, block.content.length - literalIndex.contentIndex + 1);
+        if (isEmptyContent(content) && isEditableContent(block.content[literalIndex.contentIndex - 1])) {
           // We don't want to leave an empty dangling literal if the previous content is editable
-          block.content.splice(splitId.contentId, 1);
+          block.content.splice(literalIndex.contentIndex, 1);
         }
       }
     } else if (content.type === ITEM_LIST) {
-      if ("itemId" in splitId) {
-        const item = content.items[splitId.itemId];
-        const previousItem = content.items[splitId.itemId - 1];
-        const nextItem = content.items[splitId.itemId + 1];
+      if ("itemIndex" in literalIndex) {
+        const item = content.items[literalIndex.itemIndex];
+        const previousItem = content.items[literalIndex.itemIndex - 1];
+        const nextItem = content.items[literalIndex.itemIndex + 1];
 
-        if (splitId.itemId === content.items.length - 1 && isEmptyItem(item)) {
-          // We're at the last item, and it's empty, so the split should result in converting it to content in the same block after the ItemList (or steal focus at ít).
-          content.items.splice(splitId.itemId, 1);
-          if (splitId.contentId >= block.content.length - 1) {
+        const isAtLastItem = literalIndex.itemIndex === content.items.length - 1;
+        if (isAtLastItem && isEmptyItem(item)) {
+          // We're at the last item, and it's empty, so the split should result in converting it to content in the same block after the ItemList (or move focus to ít).
+          content.items.splice(literalIndex.itemIndex, 1);
+          if (literalIndex.contentIndex >= block.content.length - 1) {
             block.content.push({ type: LITERAL, id: -1, text: "" });
           }
-          // draft.stealFocus[splitId.blockId] = { contentId: splitId.contentId + 1, startOffset: 0 };
+          draft.focus = {
+            blockIndex: literalIndex.blockIndex,
+            contentIndex: literalIndex.contentIndex + 1,
+            cursorPosition: 0,
+          };
         } else {
           if (isEmptyItem(item)) {
             // An empty item would result in two consecutive empty items
             return;
           }
 
-          const itemContent = item.content[splitId.itemContentId];
+          const itemContent = item.content[literalIndex.itemContentIndex];
 
           const firstText = cleanseText(itemContent.text.slice(0, Math.max(0, offset)));
           const secondText = cleanseText(itemContent.text.slice(Math.max(0, offset)));
 
-          // create new item
           const newItem: Item = {
             ...item,
-            content: [{ ...itemContent, text: secondText }, ...item.content.slice(splitId.itemContentId + 1)],
+            content: [{ ...itemContent, text: secondText }, ...item.content.slice(literalIndex.itemContentIndex + 1)],
           };
 
           // new and next item are both empty
@@ -82,30 +84,33 @@ export const split: Action<LetterEditorState, [splitId: ContentId, offset: numbe
             return;
           }
           // previous item and current would both be empty
-          if (previousItem != null && isEmptyItem(previousItem) && splitId.itemContentId === 0 && offset === 0) {
+          if (
+            previousItem != null &&
+            isEmptyItem(previousItem) &&
+            literalIndex.itemContentIndex === 0 &&
+            offset === 0
+          ) {
             return;
           }
 
           // insert new item after specified item
-          content.items.splice(splitId.itemId + 1, 0, newItem);
+          content.items.splice(literalIndex.itemIndex + 1, 0, newItem);
 
           // split specified content
-          item.content.splice(splitId.itemContentId + 1, item.content.length);
+          item.content.splice(literalIndex.itemContentIndex + 1, item.content.length);
           itemContent.text = firstText;
 
-          // steal focus
-          // draft.stealFocus[splitId.blockId] = {
-          //   contentId: splitId.contentId,
-          //   startOffset: 0,
-          //   item: {
-          //     id: splitId.itemId + 1,
-          //     contentId: 0,
-          //   },
-          // };
+          draft.focus = {
+            blockIndex: literalIndex.blockIndex,
+            contentIndex: literalIndex.contentIndex,
+            cursorPosition: 0,
+            itemIndex: literalIndex.itemIndex + 1,
+            itemContentIndex: 0,
+          };
         }
       } else {
         // eslint-disable-next-line no-console
-        console.warn("Can't split an ItemList without itemId");
+        console.warn("Can't split an ItemList without itemIndex");
       }
     }
   },

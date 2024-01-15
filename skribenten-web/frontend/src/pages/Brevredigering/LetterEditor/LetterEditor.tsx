@@ -4,6 +4,7 @@ import { css } from "@emotion/react";
 import { Heading } from "@navikt/ds-react";
 import { createContext, useContext, useState } from "react";
 
+import { DebugPanel } from "~/pages/Brevredigering/LetterEditor/components/DebugPanel";
 import type { RenderedLetter } from "~/types/brevbakerTypes";
 
 import Actions from "./actions";
@@ -42,12 +43,13 @@ export const LetterEditor = ({ initialState }: { initialState: RenderedLetter })
           <div>
             {blocks.map((block, blockIndex) => (
               <div className={block.type} key={blockIndex}>
-                <ContentGroup blockIndex={blockIndex} />
+                <ContentGroup literalIndex={{ blockIndex, contentIndex: 0 }} />
               </div>
             ))}
           </div>
           <SignaturView signatur={editorState.editedLetter.letter.signatur} />
         </div>
+        <DebugPanel />
       </EditorStateContext.Provider>
     </div>
   );

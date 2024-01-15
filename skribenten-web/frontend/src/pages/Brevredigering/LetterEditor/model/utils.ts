@@ -3,7 +3,7 @@ import { produce } from "immer";
 import type { AnyBlock, Content, Item, TextContent } from "~/types/brevbakerTypes";
 import { ITEM_LIST, LITERAL, VARIABLE } from "~/types/brevbakerTypes";
 
-import { MergeTarget } from "../actions/model";
+import { MergeTarget } from "../actions/merge";
 import type { ContentGroup } from "./state";
 
 export function isTextContent(content: Content): content is TextContent {
