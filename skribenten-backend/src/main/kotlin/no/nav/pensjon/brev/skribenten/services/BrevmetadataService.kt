@@ -45,14 +45,12 @@ class BrevmetadataService(config: Config) {
 
     private fun BrevdataDto.mapToMetadata() =
         LetterMetadata(
-            name = dekode ?: "MissingName",     // TODO handle missing fields in front-end instead.
+            name = dekode,     // TODO handle missing fields in front-end instead.
             id = brevkodeIBrevsystem ?: "MissingCode",
             spraak = sprak ?: emptyList(),
             brevsystem = when (brevsystem) {
-                "DOKSYS" -> BrevSystem.DOKSYS
-                "GAMMEL" -> BrevSystem.EXTREAM
-                // TODO handle state or throw something else.
-                else -> throw IllegalStateException("Malformed metadata. Must be doksys or extream.")
+                BrevdataDto.BrevSystem.DOKSYS -> BrevSystem.DOKSYS
+                BrevdataDto.BrevSystem.GAMMEL -> BrevSystem.EXTREAM
             },
             isVedtaksbrev = this.brevkategori == BrevdataDto.BrevkategoriCode.VEDTAK,
             isEblankett = this.dokumentkategori == BrevdataDto.DokumentkategoriCode.E_BLANKETT,
@@ -61,33 +59,50 @@ class BrevmetadataService(config: Config) {
 
     suspend fun getEblanketter(): List<LetterMetadata> {
         return httpClient.get("/api/brevdata/allBrev?includeXsd=false") {
-                contentType(ContentType.Application.Json)
-            }.body<List<BrevdataDto>>()
-                .filter { it.redigerbart }
-                .filter { it.dokumentkategori == BrevdataDto.DokumentkategoriCode.E_BLANKETT }
+            contentType(ContentType.Application.Json)
+        }.body<List<BrevdataDto>>()
+            .filter { it.redigerbart }
+            .filter { it.dokumentkategori == BrevdataDto.DokumentkategoriCode.E_BLANKETT }
             .map { it.mapToMetadata() }
+    }
+
+    // TODO hent bare en med eget type kall
+    suspend fun getMal(brevkode: String): BrevdataDto {
+        return httpClient.get("/api/brevdata/brevForBrevkode/${brevkode}") {
+            contentType(ContentType.Application.Json)
+        }.body<BrevdataDto>()
     }
 }
 
 data class BrevdataDto(
     val redigerbart: Boolean,
-    val dekode: String?,
+    val dekode: String,
     val brevkategori: BrevkategoriCode?,
-    val dokType: String?,
+    val dokType: DokumentType,
     val sprak: List<SpraakKode>?,
     val visIPselv: Boolean?,
     val utland: String?,
     val brevregeltype: String?,
     val brevkravtype: String?,
     val brevkontekst: String?,
-    val dokumentkategori: DokumentkategoriCode?,
+    val dokumentkategori: DokumentkategoriCode,
     val synligForVeileder: Boolean?,
     val prioritet: Int?,
     val brevkodeIBrevsystem: String?,
-    val brevsystem: String?,
+    val brevsystem: BrevSystem,
+    val brevgruppe: String?,
 ) {
-    enum class DokumentkategoriCode { B, EP, ES, E_BLANKETT, F, IB, IS, KD, KM, KS, SED, TS, VB }
+    enum class DokumentkategoriCode { B, E_BLANKETT, IB, SED, VB }
     enum class BrevkategoriCode { BREV_MED_SKJEMA, INFORMASJON, INNHENTE_OPPL, NOTAT, OVRIG, VARSEL, VEDTAK }
+    enum class BrevSystem {
+        DOKSYS,
+        GAMMEL,     //EXTREAM
+    }
+    enum class DokumentType {
+        I, //Inngende dokument
+        N, //Notat
+        U, //Utgende dokument
+    }
 }
 
 
@@ -111,7 +126,7 @@ data class LetterMetadata(
     val name: String,
     val id: String,
     val brevsystem: BrevSystem,
-    val spraak: List<SpraakKode>,
+    val spraak: List<SpraakKode>, // Enkelte brev er egentlig bare bokmål, men har null i metadata.
     val isVedtaksbrev: Boolean,
     val isEblankett: Boolean,
 )

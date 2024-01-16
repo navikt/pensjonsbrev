@@ -3,10 +3,9 @@ package no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon
 import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.routing.*
-import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.BestillBrevRequestDto
 import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.FinnSamhandlerRequestDto
 import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.HentSamhandlerRequestDto
-import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.RedigerDokumentRequestDto
+import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.RedigerDoksysDokumentRequestDto
 import no.nav.pensjon.brev.skribenten.services.TjenestebussIntegrasjonService
 import no.nav.pensjon.brev.skribenten.services.respondWithResult
 
@@ -21,13 +20,8 @@ fun Route.tjenestebussIntegrasjonRoute(tjenestebussIntegrasjonService: Tjenesteb
         respondWithResult(tjenestebussIntegrasjonService.hentSamhandler(call, requestDto.idTSSEkstern, requestDto.hentDetaljert))
     }
 
-    post("/bestillExtreamBrev") {
-        val requestDto = call.receive<BestillBrevRequestDto>()
-        respondWithResult(tjenestebussIntegrasjonService.bestillBrev(call, requestDto))
-    }
-
     post("/redigerDoksysBrev") {
-        val requestDto = call.receive<RedigerDokumentRequestDto>()
-        respondWithResult(tjenestebussIntegrasjonService.redigerDokument(call, requestDto.journalpostId, requestDto.dokumentId))
+        val requestDto = call.receive<RedigerDoksysDokumentRequestDto>()
+        respondWithResult(tjenestebussIntegrasjonService.redigerDoksysBrev(call, requestDto.journalpostId, requestDto.dokumentId))
     }
 }

@@ -8,9 +8,10 @@ import axios from "axios";
 import {
   FinnSamhandlerRequestDto, FinnSamhandlerResponseDto,
   LetterTemplatesResponse,
-  PidRequest,
+ OrderLetterRequest, PidRequest,
   PreferredLanguage,
   SakDto
+,
 } from "~/types/apiTypes";
 import type { RedigerbarTemplateDescription, RenderedLetter } from "~/types/brevbakerTypes";
 const SKRIBENTEN_API_BASE_PATH = "/skribenten-backend";
@@ -105,7 +106,10 @@ export async function deleteFavoritt(id: string) {
   return (await axios.delete<string>(`${SKRIBENTEN_API_BASE_PATH}/favourites`, { data: id })).data;
 }
 
+export async function orderLetter(orderLetterRequest: OrderLetterRequest) {
+  return (await axios.post<unknown>(`${SKRIBENTEN_API_BASE_PATH}/bestillbrev`, orderLetterRequest)).data;
+}
+
 export async function finnSamhandler(request: FinnSamhandlerRequestDto) {
   return (await axios.post<FinnSamhandlerResponseDto>(`${SKRIBENTEN_API_BASE_PATH}/finnSamhandler`, request)).data;
-
 }

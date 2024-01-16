@@ -8,6 +8,7 @@ import io.ktor.util.pipeline.*
 import no.nav.pensjon.brev.skribenten.auth.UserPrincipal
 
 private const val NAV_IDENT_CLAIM_KEY = "NAVident"
+private const val LOGGER_IN_PERSON_NAME_KEY = "name"
 
 fun HeadersBuilder.callId(call: ApplicationCall) {
     call.callId?.also {
@@ -18,6 +19,9 @@ fun HeadersBuilder.callId(call: ApplicationCall) {
 
 fun PipelineContext<Unit, ApplicationCall>.getLoggedInNavIdent(): String? =
     getClaim(NAV_IDENT_CLAIM_KEY)
+
+fun PipelineContext<Unit, ApplicationCall>.getLoggedInName(): String? =
+    getClaim(LOGGER_IN_PERSON_NAME_KEY)
 
 fun PipelineContext<Unit, ApplicationCall>.getClaim(claim: String): String? =
     call.authentication.principal<UserPrincipal>()?.jwtPayload?.getClaim(claim)?.asString()

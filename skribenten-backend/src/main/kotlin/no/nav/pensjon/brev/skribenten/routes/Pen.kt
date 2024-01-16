@@ -10,14 +10,6 @@ import no.nav.pensjon.brev.skribenten.auth.UnauthorizedException
 import no.nav.pensjon.brev.skribenten.getClaim
 import no.nav.pensjon.brev.skribenten.services.*
 
-data class OrderLetterRequest(
-    val brevkode: String,
-    val spraak: SpraakKode,
-    val sakId: Long,
-    val gjelderPid: String,
-    val landkode: String? = null,
-    val mottakerText: String? = null,
-)
 
 fun Route.penRoute(penService: PenService, safService: SafService) {
     route("/pen") {
@@ -87,4 +79,6 @@ fun Route.penRoute(penService: PenService, safService: SafService) {
             respondWithResult(penService.hentSak(call, sakId))
         }
     }
+
+
 }

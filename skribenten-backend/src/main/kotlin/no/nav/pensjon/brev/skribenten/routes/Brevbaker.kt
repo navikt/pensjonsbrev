@@ -41,5 +41,4 @@ fun Route.brevbakerRoute(brevbakerService: BrevbakerService) {
             )
         }
     }
-
 }
