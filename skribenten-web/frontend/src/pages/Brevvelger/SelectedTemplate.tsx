@@ -288,7 +288,7 @@ function VelgSamhandlerModal() {
               method="dialog"
               onSubmit={methods.handleSubmit((values) => finnSamhandlerMutation.mutate(values))}
             >
-              <TextField label="Søk" {...methods.register("navn")} />
+              <TextField autoComplete="off" label="Søk" {...methods.register("navn")} />
               <SamhandlerTypeSelectFormPart />
             </form>
           </FormProvider>
