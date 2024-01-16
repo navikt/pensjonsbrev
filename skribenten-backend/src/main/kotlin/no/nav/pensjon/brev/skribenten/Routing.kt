@@ -65,7 +65,7 @@ fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config
             bestillBrevRoute(penService, tjenestebussIntegrasjonService, brevmetadataService, safService)
             favoritesRoute()
             kodeverkRoute(kodeverkService, penService)
-            penRoute(penService, safService)
+            penRoute(penService)
             personRoute(pdlService, pensjonPersonDataService, krrService)
             tjenestebussIntegrasjonRoute(tjenestebussIntegrasjonService)
         }
