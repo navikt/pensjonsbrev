@@ -16,7 +16,7 @@ export const SAK_TYPE_TO_TEXT: Record<SakType, string> = {
   GAM_YRK: "Gammel yrkesskade",
   GENRL: "Generell",
   GJENLEV: "Gjenlevendeytelse",
-  GRBL: "",
+  GRBL: "Grunnblanketter",
   KRIGSP: "Krigspensjon",
   OMSORG: "Omsorgopptjening",
   UFOREP: "Uføretrygd",
