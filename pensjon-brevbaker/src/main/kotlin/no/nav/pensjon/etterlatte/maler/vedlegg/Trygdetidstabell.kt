@@ -46,9 +46,9 @@ data class Trygdetidstabell(
                     }
                     column(2) {
                         text(
-                            Language.Bokmal to "Beregnet trygdetid",
-                            Language.Nynorsk to "Utrekna tid",
-                            Language.English to "Calculated time",
+                            Language.Bokmal to "Grunnlag trygdetid",
+                            Language.Nynorsk to "Grunnlag trygdetid",
+                            Language.English to "Insurance coverage",
                         )
                     }
                 }

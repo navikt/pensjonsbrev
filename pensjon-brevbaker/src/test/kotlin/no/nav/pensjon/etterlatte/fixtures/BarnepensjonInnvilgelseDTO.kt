@@ -31,7 +31,6 @@ fun createBarnepensjonInnvilgelseDTO() =
                 )
             )
         ),
-        avkortingsinfo = null,
         avdoed = Avdoed(
             navn = "Avdoed Avdoedesen",
             doedsdato = LocalDate.now()

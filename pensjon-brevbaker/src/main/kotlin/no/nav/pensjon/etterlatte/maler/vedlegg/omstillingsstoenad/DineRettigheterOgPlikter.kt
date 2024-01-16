@@ -9,11 +9,10 @@ import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
 import no.nav.pensjon.etterlatte.maler.fraser.common.Felles
 
 @TemplateModelHelpers
-val dineRettigheterOgPlikterOMS = createAttachment(
+val dineRettigheterOgPlikter = createAttachment(
     title = newText(
         Bokmal to "Dine rettigheter og plikter",
         Nynorsk to "",
@@ -22,6 +21,8 @@ val dineRettigheterOgPlikterOMS = createAttachment(
     includeSakspart = false,
 ) {
     meldFraOmEndringer()
+    feilutbetaling()
+    straffeansvar()
     veiledningFraNavForvaltningsloven11()
     includePhrase(Felles.HjelpFraAndreForvaltningsloven12)
     duHarRettTilInnsynISakenDin()
@@ -118,6 +119,43 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, A
             Bokmal to "Du er ansvarlig for å holde deg orientert om bevegelser på kontoen for utbetaling av " +
                     "omstillingsstønad og du må straks melde fra om du oppdager feil. Hvis du ikke melder fra om " +
                     "endringer og får utbetalt for mye stønad, kan stønad som er utbetalt feil kreves tilbake.",
+            Nynorsk to "",
+            English to "",
+        )
+    }
+}
+
+private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Any>.feilutbetaling() {
+    title2 {
+        text(
+            Bokmal to "Feilutbetaling av stønad folketrygdloven § 22-15 og § 22-16",
+            Nynorsk to "",
+            English to "",
+        )
+    }
+    paragraph {
+        text(
+            Bokmal to "Du er ansvarlig for å holde deg orientert om bevegelser på kontoen for utbetaling av " +
+                    "omstillingsstønad og du må straks melde fra om du oppdager feil. Hvis du ikke melder fra om " +
+                    "endringer og får utbetalt for mye stønad, kan stønad som er utbetalt feil kreves tilbake.",
+            Nynorsk to "",
+            English to "",
+        )
+    }
+}
+
+private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Any>.straffeansvar() {
+    title2 {
+        text(
+            Bokmal to "Straffeansvar – folketrygdloven § 25-12",
+            Nynorsk to "",
+            English to "",
+        )
+    }
+    paragraph {
+        text(
+            Bokmal to "Hvis du med vilje gir feil opplysninger eller ikke gir oss nødvendige opplysninger, " +
+                    "kan det medføre straffeansvar.",
             Nynorsk to "",
             English to "",
         )

@@ -14,11 +14,10 @@ import no.nav.pensjon.brevbaker.api.model.Kroner
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
-import no.nav.pensjon.etterlatte.maler.Avkortingsinfo
 import no.nav.pensjon.etterlatte.maler.Beregningsperiode
 import no.nav.pensjon.etterlatte.maler.BrevDTO
 import no.nav.pensjon.etterlatte.maler.Element
-import no.nav.pensjon.etterlatte.maler.EtterbetalingDTO
+import no.nav.pensjon.etterlatte.maler.Etterbetaling
 import no.nav.pensjon.etterlatte.maler.Hovedmal
 import no.nav.pensjon.etterlatte.maler.IntBroek
 import no.nav.pensjon.etterlatte.maler.Trygdetidsperiode
@@ -45,9 +44,8 @@ import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.innvilgelse.informas
 data class BarnepensjonInnvilgelseNyDTO(
     override val innhold: List<Element>,
     val utbetalingsinfo: Utbetalingsinfo,
-    val avkortingsinfo: Avkortingsinfo? = null,
     val beregningsinfo: BeregningsinfoBP,
-    val etterbetaling: EtterbetalingDTO? = null,
+    val etterbetaling: Etterbetaling? = null,
     val brukerUnder18Aar: Boolean,
     val bosattUtland: Boolean,
     val kunNyttRegelverk: Boolean,

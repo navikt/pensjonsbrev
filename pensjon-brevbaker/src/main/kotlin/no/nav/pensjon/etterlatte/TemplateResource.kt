@@ -17,13 +17,11 @@ import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.AdopsjonRevurder
 import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.OmgjoeringAvFarskapRevurdering
 import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.OpphoerRevurdering
 import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.SoeskenjusteringRevurdering
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.OMSInnvilgelseAuto
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.OMSInnvilgelseManuell
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.OMSOpphoerManuell
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.avslag.OMSAvslag
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.avslag.OMSAvslagBegrunnelse
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.foerstegangsvedtak.FoerstegangsvedtakUtfall
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.foerstegangsvedtak.InnvilgelseFoerstegangsvedtak
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.OmstillingsstoenadInnvilgelseRedigerbartUtfall
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.OmstillingsstoenadInnvilgelse
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.opphoer.Opphoer
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.opphoer.OpphoerGenerell
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.RevurderingEndring
@@ -32,30 +30,35 @@ import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingInnhold
 
 val prodAutobrevTemplates: Set<EtterlatteTemplate<*>> =
     setOf(
+        // Barnepensjon
         AvslagFoerstegangsbehandling,
         AvslagFoerstegangsbehandlingEnkel,
         BarnepensjonInnvilgelseMVP,
         BarnepensjonInnvilgelseEnkel,
         BarnepensjonInnvilgelseNy,
-        OMSInnvilgelseAuto,
-        OMSInnvilgelseManuell,
-        OMSOpphoerManuell,
-        OMSAvslag,
-        OMSAvslagBegrunnelse,
         AdopsjonRevurdering,
         Endring,
         OmgjoeringAvFarskapRevurdering,
         OpphoerRevurdering,
         SoeskenjusteringRevurdering,
-        InnvilgelseFoerstegangsvedtak,
-        FoerstegangsvedtakUtfall,
+
+        // Omstillingsstønad
+        OMSAvslag,
+        OMSAvslagBegrunnelse,
+        OmstillingsstoenadInnvilgelse,
+        OmstillingsstoenadInnvilgelseRedigerbartUtfall,
+        OMSOpphoerManuell,
         RevurderingEndring,
         Opphoer,
         OpphoerGenerell,
+
+        // Tilbakekreving
         TilbakekrevingInnhold,
         TilbakekrevingFerdig,
-        TomDelmal,
+
+        // Div migrering mm.
         TomMal,
+        TomDelmal,
         TomMalInformasjonsbrev,
         ForhaandsvarselOmregningBP,
         EnkeltVedtakOmregningNyttRegelverk,
