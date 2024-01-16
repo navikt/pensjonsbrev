@@ -7,6 +7,7 @@ import React from "react";
 import { getNavn } from "~/api/skribenten-api-endpoints";
 import { sakRoute } from "~/tanStackRoutes";
 import type { SakDto } from "~/types/apiTypes";
+import { SAK_TYPE_TO_TEXT } from "~/types/nameMappings";
 import { formatDateWithoutTimezone } from "~/utils/dateUtils";
 
 export function SakBreadcrumbsPage() {
@@ -70,7 +71,7 @@ function SakInfoBreadcrumbs({ sak }: { sak?: SakDto }) {
         </span>
         <span>{navn ?? ""}</span>
         <span>Født: {formatDateWithoutTimezone(new Date(...sak.foedselsdato))}</span>
-        <span>Sakstype: {sak.sakType}</span>
+        <span>Sakstype: {SAK_TYPE_TO_TEXT[sak.sakType]}</span>
         <span>
           Saksnummer: {sak.sakId} <CopyButton copyText={sak.sakId.toString()} size="small" />
         </span>
