@@ -23,13 +23,8 @@ import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.arkiv.B
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.arkiv.BestillBrevResponseDto.Failure.FailureType.MANGLER_OBLIGATORISK_INPUT
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.arkiv.BestillBrevResponseDto.Success
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.dokumentsproduksjon.DokumentproduksjonService
-import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.dokumentsproduksjon.dto.RedigerDoksysDokumentResponseDto
-import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.dokumentsproduksjon.dto.RedigerDoksysDokumentResponseDto.Failure.FailureType.IKKE_FUNNET
-import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.dokumentsproduksjon.dto.RedigerDoksysDokumentResponseDto.Failure.FailureType.IKKE_TILGANG
-import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.dokumentsproduksjon.dto.RedigerDoksysDokumentResponseDto.Failure.FailureType.IKKE_TILLATT
-import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.dokumentsproduksjon.dto.RedigerDoksysDokumentResponseDto.Failure.FailureType.LASING
-import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.dokumentsproduksjon.dto.RedigerDoksysDokumentResponseDto.Failure.FailureType.LUKKET
-import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.dokumentsproduksjon.dto.RedigerDoksysDokumentResponseDto.Failure.FailureType.VALIDERING_FEILET
+import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.dokumentsproduksjon.RedigerDoksysDokumentResponseDto
+import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.dokumentsproduksjon.RedigerDoksysDokumentResponseDto.Failure.FailureType.*
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.extreambrev.ExtreamBrevService
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.extreambrev.RedigerExtreamDokumentResponseDto
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.samhandler.SamhandlerTjenestebussService
@@ -142,7 +137,7 @@ fun Application.tjenestebussIntegrationApi(config: Config) {
             post("/bestillExtreamBrev") {
                 val requestDto = call.receive<BestillBrevExtreamRequestDto>()
 
-                when (val arkivResponse = withCallId(arkivTjenestebussService) { bestillBrev(requestDto) }) {
+                when (val arkivResponse: BestillBrevResponseDto = withCallId(arkivTjenestebussService) { bestillBrev(requestDto) }) {
                     is Success -> call.respond(HttpStatusCode.OK, arkivResponse)
                     is BestillBrevResponseDto.Failure -> {
                         if (arkivResponse.failureType == MANGLER_OBLIGATORISK_INPUT) {
@@ -173,32 +168,30 @@ fun Application.tjenestebussIntegrationApi(config: Config) {
             }
             post("/redigerExtreamBrev") {
                 val requestDto = call.receive<RedigerExtreamDokumentRequestDto>()
-                when (val response = withCallId(extreamBrevService) { hentExtreamBrevUrl(requestDto) }) {
+                when (val response: RedigerExtreamDokumentResponseDto = withCallId(extreamBrevService) { hentExtreamBrevUrl(requestDto) }) {
                     is RedigerExtreamDokumentResponseDto.Success -> call.respond(HttpStatusCode.OK, response)
-                    is RedigerExtreamDokumentResponseDto.Failure -> call.respond((HttpStatusCode.InternalServerError), response)
+                    is RedigerExtreamDokumentResponseDto.Failure -> call.respond(HttpStatusCode.InternalServerError, response)
                 }
             }
         }
     }
 }
 
-class HentSamhandlerRequestDto(
+data class HentSamhandlerRequestDto(
     val idTSSEkstern: String,
     val hentDetaljert: Boolean,
 )
 
-class FinnSamhandlerRequestDto(
+data class FinnSamhandlerRequestDto(
     val navn: String,
     val samhandlerType: SamhandlerTypeCode,
 )
 
-class RedigerDoksysDokumentRequestDto(
+data class RedigerDoksysDokumentRequestDto(
     val journalpostId: String,
     val dokumentId: String,
 )
 
-class RedigerExtreamDokumentRequestDto(
-    val dokumentId: String,
-    val bredde: String? = "300",
-    val hoyde: String? = "30"
+data class RedigerExtreamDokumentRequestDto(
+    val journalpostId: String,
 )
