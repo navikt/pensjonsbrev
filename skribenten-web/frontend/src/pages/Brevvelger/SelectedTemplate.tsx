@@ -10,7 +10,7 @@ import { FormProvider, useForm, useFormContext } from "react-hook-form";
 import {
   addFavoritt,
   deleteFavoritt,
-  finnSamhandler
+  finnSamhandler,
   getFavoritter,
   getLetterTemplate,
   orderLetter,
@@ -19,7 +19,12 @@ import { Divider } from "~/components/Divider";
 import { SamhandlerTypeSelectFormPart } from "~/components/select/SamhandlerSelect";
 import { usePreferredLanguage } from "~/hooks/usePreferredLanguage";
 import { redigeringRoute, selectedTemplateRoute } from "~/tanStackRoutes";
-import type { FinnSamhandlerRequestDto, FinnSamhandlerResponseDto, LetterMetadata, OrderLetterRequest } from "~/types/apiTypes";
+import type {
+  FinnSamhandlerRequestDto,
+  FinnSamhandlerResponseDto,
+  LetterMetadata,
+  OrderLetterRequest,
+} from "~/types/apiTypes";
 import { BrevSystem } from "~/types/apiTypes";
 import { SPRAAK_ENUM_TO_TEXT } from "~/types/nameMappings";
 
