@@ -21,8 +21,12 @@ import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.Omstillingsstoe
 import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadInnvilgelseFraser
 import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OMSRevurderingEndringDTOSelectors.erEndret
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OMSRevurderingEndringDTOSelectors.etterbetalinginfo
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OMSRevurderingEndringDTOSelectors.innhold
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OMSRevurderingEndringDTOSelectors.omstillingsstoenadBeregning
+import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.beregningAvOmstillingsstoenad
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.dineRettigheterOgPlikter
+import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etterbetalingOmstillingsstoenad
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.informasjonOmOmstillingsstoenad
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.informasjonOmYrkesskade
 
@@ -87,11 +91,10 @@ object RevurderingEndring : EtterlatteTemplate<OMSRevurderingEndringDTO>, Hovedm
             includePhrase(OmstillingsstoenadFellesFraser.HarDuSpoersmaal)
         }
 
-        //includeAttachment(beregningAvOmstillingsstoenad, beregningsinfo)
+        includeAttachment(beregningAvOmstillingsstoenad, omstillingsstoenadBeregning)
         includeAttachment(informasjonOmOmstillingsstoenad, innhold)
         includeAttachment(dineRettigheterOgPlikter, innhold)
         includeAttachment(informasjonOmYrkesskade, innhold)
-        //includeAttachmentIfNotNull(etterbetalingVedlegg, etterbetalinginfo)
-
+        includeAttachmentIfNotNull(etterbetalingOmstillingsstoenad, etterbetalinginfo)
     }
 }
