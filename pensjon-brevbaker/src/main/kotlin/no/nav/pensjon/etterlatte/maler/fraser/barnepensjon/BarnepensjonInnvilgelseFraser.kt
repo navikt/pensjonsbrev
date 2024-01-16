@@ -39,7 +39,7 @@ object BarnepensjonInnvilgelseFraser {
                 text(
                     Language.Bokmal to "Har du rett til etterbetaling, vil du vanligvis få dette i løpet av tre uker.",
                     Language.Nynorsk to "Dersom du har rett på etterbetaling, vil du vanlegvis få denne i løpet av tre veker.",
-                    Language.English to "",
+                    Language.English to "If you are entitled to a back payment, you will normally receive this within three weeks.",
                 )
                 ifNotNull(etterbetaling) {
                     text(
@@ -53,7 +53,7 @@ object BarnepensjonInnvilgelseFraser {
                 text(
                     Language.Bokmal to "Se hvordan vi har beregnet barnepensjonen din i vedlegget «Beregning av barnepensjon».",
                     Language.Nynorsk to "Du kan sjå i vedlegget «Utrekning av barnepensjon» korleis vi har rekna ut barnepensjonen din.",
-                    Language.English to "",
+                    Language.English to "You can find more information about how we have calculated your children's pension in the attachment, Calculating the Children's Pension.",
                 )
             }
 
@@ -117,20 +117,22 @@ object BarnepensjonInnvilgelseFraser {
                             "hverdager 9-15. ",
                     Language.Nynorsk to "Du finn meir informasjon på ".expr() + Constants.BARNEPENSJON_URL + ". " +
                             "Dersom du ikkje finn svar på spørsmålet ditt der, kan du ringje oss på telefon " + kontaktTelefon + " " +
-                            ", kvardagar 9–15.".expr(),
-                    Language.English to "".expr()
+                            ", kvardagar 9–15.",
+                    Language.English to "For more information, visit us online: ".expr() + Constants.BARNEPENSJON_URL + ". " +
+                            "If you cannot find the answer to your question, you can call us by phone (" + kontaktTelefon + ") " +
+                            "weekdays 9-15."
                 )
                 showIf(brukerUnder18Aar) {
                     text(
                         Language.Bokmal to "Om du oppgir fødselsnummer til barnet, kan vi lettere gi deg rask og god hjelp.",
                         Language.Nynorsk to "Det vil gjere det enklare for oss å gi deg rask og god hjelp om du oppgir fødselsnummeret til barnet.",
-                        Language.English to ""
+                        Language.English to "If you provide your child's national identity number, we can more easily provide you with quick and good help."
                     )
                 }.orShow {
                     text(
                         Language.Bokmal to "Om du oppgir fødselsnummeret ditt, kan vi lettere gi deg rask og god hjelp.",
                         Language.Nynorsk to "Det vil gjere det enklare for oss å gi deg rask og god hjelp om du oppgir fødselsnummeret ditt.",
-                        Language.English to ""
+                        Language.English to "If you provide your national identity number, we can more easily provide you with quick and good help."
                     )
                 }
             }
