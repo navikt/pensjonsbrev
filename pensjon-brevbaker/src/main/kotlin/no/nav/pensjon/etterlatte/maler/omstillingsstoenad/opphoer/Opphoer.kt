@@ -11,7 +11,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.*
-import no.nav.pensjon.etterlatte.maler.fraser.common.OMSFelles
+import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadFellesFraser
 import no.nav.pensjon.etterlatte.maler.fraser.common.Vedtak
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.*
 import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
@@ -50,9 +50,9 @@ object Opphoer : EtterlatteTemplate<OMSOpphoerDTO>, Hovedmal {
 
             konverterElementerTilBrevbakerformat(innhold)
 
-            includePhrase(OMSFelles.DuHarRettTilAaKlageOpphoer)
-            includePhrase(OMSFelles.DuHarRettTilInnsyn)
-            includePhrase(OMSFelles.HarDuSpoersmaal)
+            includePhrase(OmstillingsstoenadFellesFraser.DuHarRettTilAaKlageOpphoer)
+            includePhrase(OmstillingsstoenadFellesFraser.DuHarRettTilInnsyn)
+            includePhrase(OmstillingsstoenadFellesFraser.HarDuSpoersmaal)
         }
 
         includeAttachment(klageOgAnke, innhold)

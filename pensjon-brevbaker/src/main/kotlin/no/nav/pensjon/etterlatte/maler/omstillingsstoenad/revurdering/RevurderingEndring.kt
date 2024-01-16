@@ -10,21 +10,26 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
-import no.nav.pensjon.etterlatte.maler.*
-import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OMSInnvilgelse
-import no.nav.pensjon.etterlatte.maler.fraser.common.OMSFelles
+import no.nav.pensjon.etterlatte.maler.Beregningsinfo
+import no.nav.pensjon.etterlatte.maler.BrevDTO
+import no.nav.pensjon.etterlatte.maler.Element
+import no.nav.pensjon.etterlatte.maler.Hovedmal
+import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregning
+import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadEtterbetaling
 import no.nav.pensjon.etterlatte.maler.fraser.common.Vedtak
-import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.*
+import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadFellesFraser
+import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadInnvilgelseFraser
 import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OMSRevurderingEndringDTOSelectors.beregningsinfo
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OMSRevurderingEndringDTOSelectors.erEndret
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OMSRevurderingEndringDTOSelectors.etterbetalinginfo
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OMSRevurderingEndringDTOSelectors.innhold
+import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.dineRettigheterOgPlikter
+import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.informasjonOmOmstillingsstoenad
+import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.informasjonOmYrkesskade
 
 data class OMSRevurderingEndringDTO(
     override val innhold: List<Element>,
-    val avkortingsinfo: Avkortingsinfo,
-    val etterbetalinginfo: EtterbetalingDTO? = null,
+    val omstillingsstoenadBeregning: OmstillingsstoenadBeregning,
+    val etterbetalinginfo: OmstillingsstoenadEtterbetaling? = null,
     val beregningsinfo: Beregningsinfo,
     val erEndret: Boolean
 ): BrevDTO
@@ -75,18 +80,18 @@ object RevurderingEndring : EtterlatteTemplate<OMSRevurderingEndringDTO>, Hovedm
 
             konverterElementerTilBrevbakerformat(innhold)
 
-            includePhrase(OMSInnvilgelse.Inntektsendring)
-            includePhrase(OMSInnvilgelse.Etteroppgjoer)
-            includePhrase(OMSFelles.MeldFraOmEndringer)
-            includePhrase(OMSFelles.DuHarRettTilAaKlage)
-            includePhrase(OMSFelles.HarDuSpoersmaal)
+            includePhrase(OmstillingsstoenadInnvilgelseFraser.Inntektsendring)
+            includePhrase(OmstillingsstoenadInnvilgelseFraser.Etteroppgjoer)
+            includePhrase(OmstillingsstoenadFellesFraser.MeldFraOmEndringer)
+            includePhrase(OmstillingsstoenadFellesFraser.DuHarRettTilAaKlage)
+            includePhrase(OmstillingsstoenadFellesFraser.HarDuSpoersmaal)
         }
 
-        includeAttachment(beregningAvOmstillingsstoenad, beregningsinfo)
-        includeAttachment(informasjonOmOvergangsstoenad, innhold)
-        includeAttachment(dineRettigheterOgPlikterOMS, innhold)
+        //includeAttachment(beregningAvOmstillingsstoenad, beregningsinfo)
+        includeAttachment(informasjonOmOmstillingsstoenad, innhold)
+        includeAttachment(dineRettigheterOgPlikter, innhold)
         includeAttachment(informasjonOmYrkesskade, innhold)
-        includeAttachmentIfNotNull(etterbetaling, etterbetalinginfo)
+        //includeAttachmentIfNotNull(etterbetalingVedlegg, etterbetalinginfo)
 
     }
 }

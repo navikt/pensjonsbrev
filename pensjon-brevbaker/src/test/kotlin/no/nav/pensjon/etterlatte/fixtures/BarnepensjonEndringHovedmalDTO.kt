@@ -2,7 +2,7 @@ package no.nav.pensjon.etterlatte.fixtures
 
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import no.nav.pensjon.etterlatte.maler.Beregningsperiode
-import no.nav.pensjon.etterlatte.maler.EtterbetalingDTO
+import no.nav.pensjon.etterlatte.maler.Etterbetaling
 import no.nav.pensjon.etterlatte.maler.Periode
 import no.nav.pensjon.etterlatte.maler.TrygdetidType
 import no.nav.pensjon.etterlatte.maler.Trygdetidsperiode
@@ -15,7 +15,7 @@ import java.time.Month
 
 fun createEndringHovedmalDTO() = EndringHovedmalDTO(
     erEndret = true,
-    etterbetaling = EtterbetalingDTO(
+    etterbetaling = Etterbetaling(
         fraDato = LocalDate.of(2020, Month.JANUARY, 1),
         tilDato = LocalDate.of(2023, Month.DECEMBER, 31),
     ),

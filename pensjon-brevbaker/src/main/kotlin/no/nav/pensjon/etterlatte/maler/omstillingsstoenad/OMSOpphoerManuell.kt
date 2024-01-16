@@ -12,7 +12,7 @@ import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.ManueltBrevDTO
 import no.nav.pensjon.etterlatte.maler.ManueltBrevDTOSelectors.innhold
-import no.nav.pensjon.etterlatte.maler.fraser.common.OMSFelles
+import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadFellesFraser
 import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.klageOgAnke
 
@@ -42,9 +42,9 @@ object OMSOpphoerManuell : EtterlatteTemplate<ManueltBrevDTO> {
         outline {
             konverterElementerTilBrevbakerformat(innhold)
 
-            includePhrase(OMSFelles.DuHarRettTilAaKlageOpphoer)
-            includePhrase(OMSFelles.DuHarRettTilInnsyn)
-            includePhrase(OMSFelles.HarDuSpoersmaal)
+            includePhrase(OmstillingsstoenadFellesFraser.DuHarRettTilAaKlageOpphoer)
+            includePhrase(OmstillingsstoenadFellesFraser.DuHarRettTilInnsyn)
+            includePhrase(OmstillingsstoenadFellesFraser.HarDuSpoersmaal)
         }
         includeAttachment(klageOgAnke, innhold)
     }

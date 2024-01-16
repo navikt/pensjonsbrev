@@ -17,14 +17,11 @@ import no.nav.pensjon.etterlatte.maler.BrevDTO
 import no.nav.pensjon.etterlatte.maler.Delmal
 import no.nav.pensjon.etterlatte.maler.Element
 import no.nav.pensjon.etterlatte.maler.Hovedmal
-import no.nav.pensjon.etterlatte.maler.ManueltBrevDTO
-import no.nav.pensjon.etterlatte.maler.ManueltBrevDTOSelectors.innhold
-import no.nav.pensjon.etterlatte.maler.fraser.common.OMSFelles
+import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadFellesFraser
 import no.nav.pensjon.etterlatte.maler.fraser.common.Vedtak
 import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.avslag.OMSAvslagDTOSelectors.avdoedNavn
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.avslag.OMSAvslagDTOSelectors.innhold
-import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.klageOgAnke
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.klageOgAnkeUtenTilbakekreving
 
 
@@ -61,9 +58,9 @@ object OMSAvslag : EtterlatteTemplate<OMSAvslagDTO>, Hovedmal {
 
             konverterElementerTilBrevbakerformat(innhold)
 
-            includePhrase(OMSFelles.DuHarRettTilAaKlageOpphoer)
-            includePhrase(OMSFelles.DuHarRettTilInnsyn)
-            includePhrase(OMSFelles.HarDuSpoersmaal)
+            includePhrase(OmstillingsstoenadFellesFraser.DuHarRettTilAaKlageOpphoer)
+            includePhrase(OmstillingsstoenadFellesFraser.DuHarRettTilInnsyn)
+            includePhrase(OmstillingsstoenadFellesFraser.HarDuSpoersmaal)
         }
 
         includeAttachment(klageOgAnkeUtenTilbakekreving, innhold)

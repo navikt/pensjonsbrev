@@ -13,7 +13,7 @@ import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.BrevDTO
 import no.nav.pensjon.etterlatte.maler.Element
-import no.nav.pensjon.etterlatte.maler.EtterbetalingDTO
+import no.nav.pensjon.etterlatte.maler.Etterbetaling
 import no.nav.pensjon.etterlatte.maler.Hovedmal
 import no.nav.pensjon.etterlatte.maler.Utbetalingsinfo
 import no.nav.pensjon.etterlatte.maler.UtbetalingsinfoSelectors.beregningsperioder
@@ -32,7 +32,7 @@ import no.nav.pensjon.etterlatte.maler.vedlegg.informasjonTilDegSomHandlerPaaVeg
 
 data class EndringHovedmalDTO(
     val erEndret: Boolean,
-    val etterbetaling: EtterbetalingDTO? = null,
+    val etterbetaling: Etterbetaling? = null,
     val utbetalingsinfo: Utbetalingsinfo,
     val beregningsinfo: BeregningsinfoBP,
     override val innhold: List<Element>,
