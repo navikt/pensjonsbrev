@@ -42,8 +42,12 @@ spec:
   azure:
     application:
       enabled: true
-      allowAllUsers: {{allowAllUsers}}
+      allowAllUsers: false
       claims:
+        groups:
+          {{#each groups as |group|}}
+             - id: {{group}}
+          {{/each}}
         extra:
           - azp_name
 

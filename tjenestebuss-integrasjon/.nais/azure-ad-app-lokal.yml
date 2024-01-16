@@ -21,7 +21,7 @@ spec:
     extra:
       - "azp_name"
     groups:
-      - id: "8bb9b8d1-f46a-4ade-8ee8-5895eccdf8cf" #0000-GA-PENSJON_SAKSBEHANDLER i preprod
+      - id: "8bb9b8d1-f46a-4ade-8ee8-5895eccdf8cf" #0000-GA-PENSJON_SAKSBEHANDLER
 
   preAuthorizedApplications:
     - application: azure-token-generator
