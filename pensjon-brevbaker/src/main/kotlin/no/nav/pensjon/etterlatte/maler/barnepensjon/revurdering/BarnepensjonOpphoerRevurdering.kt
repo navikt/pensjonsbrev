@@ -17,7 +17,7 @@ import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.Barnepensjon
 import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
 
 @TemplateModelHelpers
-object OpphoerRevurdering : EtterlatteTemplate<ManueltBrevDTO>, Hovedmal {
+object BarnepensjonOpphoerRevurdering : EtterlatteTemplate<ManueltBrevDTO>, Hovedmal {
     override val kode: EtterlatteBrevKode = EtterlatteBrevKode.BARNEPENSJON_REVURDERING_OPPHOER
 
     override val template = createTemplate(

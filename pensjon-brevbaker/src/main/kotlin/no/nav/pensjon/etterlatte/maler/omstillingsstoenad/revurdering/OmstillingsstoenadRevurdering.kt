@@ -20,17 +20,17 @@ import no.nav.pensjon.etterlatte.maler.fraser.common.Vedtak
 import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadFellesFraser
 import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadInnvilgelseFraser
 import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OMSRevurderingEndringDTOSelectors.erEndret
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OMSRevurderingEndringDTOSelectors.etterbetalinginfo
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OMSRevurderingEndringDTOSelectors.innhold
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OMSRevurderingEndringDTOSelectors.omstillingsstoenadBeregning
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingDTOSelectors.erEndret
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingDTOSelectors.etterbetalinginfo
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingDTOSelectors.innhold
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingDTOSelectors.omstillingsstoenadBeregning
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.beregningAvOmstillingsstoenad
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.dineRettigheterOgPlikter
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etterbetalingOmstillingsstoenad
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.informasjonOmOmstillingsstoenad
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.informasjonOmYrkesskade
 
-data class OMSRevurderingEndringDTO(
+data class OmstillingsstoenadRevurderingDTO(
     override val innhold: List<Element>,
     val omstillingsstoenadBeregning: OmstillingsstoenadBeregning,
     val etterbetalinginfo: OmstillingsstoenadEtterbetaling? = null,
@@ -39,12 +39,12 @@ data class OMSRevurderingEndringDTO(
 ): BrevDTO
 
 @TemplateModelHelpers
-object RevurderingEndring : EtterlatteTemplate<OMSRevurderingEndringDTO>, Hovedmal {
-    override val kode: EtterlatteBrevKode = EtterlatteBrevKode.OMS_REVURDERING_ENDRING
+object OmstillingsstoenadRevurdering : EtterlatteTemplate<OmstillingsstoenadRevurderingDTO>, Hovedmal {
+    override val kode: EtterlatteBrevKode = EtterlatteBrevKode.OMSTILLINGSSTOENAD_REVURDERING
 
     override val template = createTemplate(
         name = kode.name,
-        letterDataType = OMSRevurderingEndringDTO::class,
+        letterDataType = OmstillingsstoenadRevurderingDTO::class,
         languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(
             displayTitle = "Vedtak - Revurdering av omstillingsstønad",

@@ -16,17 +16,17 @@ import no.nav.pensjon.etterlatte.maler.Utbetalingsinfo
 import no.nav.pensjon.etterlatte.maler.UtbetalingsinfoSelectors.beloep
 import no.nav.pensjon.etterlatte.maler.UtbetalingsinfoSelectors.beregningsperioder
 import no.nav.pensjon.etterlatte.maler.UtbetalingsinfoSelectors.virkningsdato
-import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseEnkelDTOSelectors.avdoed
-import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseEnkelDTOSelectors.erEtterbetaling
-import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseEnkelDTOSelectors.harFlereUtbetalingsperioder
-import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseEnkelDTOSelectors.sisteUtbetalingsperiodeDatoFom
-import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseEnkelDTOSelectors.utbetalingsinfo
-import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseEnkelDTOSelectors.vedtaksdato
+import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseRedigerbartUtfallDTOSelectors.avdoed
+import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseRedigerbartUtfallDTOSelectors.erEtterbetaling
+import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseRedigerbartUtfallDTOSelectors.harFlereUtbetalingsperioder
+import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseRedigerbartUtfallDTOSelectors.sisteUtbetalingsperiodeDatoFom
+import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseRedigerbartUtfallDTOSelectors.utbetalingsinfo
+import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseRedigerbartUtfallDTOSelectors.vedtaksdato
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.innvilgelse.BarnepensjonInnvilgelseEnkelFraser
 import no.nav.pensjon.etterlatte.maler.fraser.common.Vedtak
 import java.time.LocalDate
 
-data class BarnepensjonInnvilgelseEnkelDTO(
+data class BarnepensjonInnvilgelseRedigerbartUtfallDTO(
     val utbetalingsinfo: Utbetalingsinfo,
     val avdoed: Avdoed,
     val vedtaksdato: LocalDate,
@@ -36,12 +36,12 @@ data class BarnepensjonInnvilgelseEnkelDTO(
 )
 
 @TemplateModelHelpers
-object BarnepensjonInnvilgelseEnkel : EtterlatteTemplate<BarnepensjonInnvilgelseEnkelDTO>, Delmal {
-    override val kode: EtterlatteBrevKode = EtterlatteBrevKode.BARNEPENSJON_INNVILGELSE_ENKEL
+object BarnepensjonInnvilgelseRedigerbartUfall : EtterlatteTemplate<BarnepensjonInnvilgelseRedigerbartUtfallDTO>, Delmal {
+    override val kode: EtterlatteBrevKode = EtterlatteBrevKode.BARNEPENSJON_INNVILGELSE_UTFALL
 
     override val template = createTemplate(
         name = kode.name,
-        letterDataType = BarnepensjonInnvilgelseEnkelDTO::class,
+        letterDataType = BarnepensjonInnvilgelseRedigerbartUtfallDTO::class,
         languages = languages(Language.Bokmal, Language.Nynorsk, Language.English),
         letterMetadata = LetterMetadata(
             displayTitle = "Vedtak - innvilgelse",

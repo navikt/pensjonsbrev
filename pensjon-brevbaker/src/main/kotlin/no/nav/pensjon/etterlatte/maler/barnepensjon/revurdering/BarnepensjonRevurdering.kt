@@ -1,4 +1,4 @@
-package no.nav.pensjon.etterlatte.maler.barnepensjon.endring
+package no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering
 
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
@@ -17,12 +17,12 @@ import no.nav.pensjon.etterlatte.maler.Etterbetaling
 import no.nav.pensjon.etterlatte.maler.Hovedmal
 import no.nav.pensjon.etterlatte.maler.Utbetalingsinfo
 import no.nav.pensjon.etterlatte.maler.UtbetalingsinfoSelectors.beregningsperioder
-import no.nav.pensjon.etterlatte.maler.barnepensjon.endring.EndringHovedmalDTOSelectors.beregningsinfo
-import no.nav.pensjon.etterlatte.maler.barnepensjon.endring.EndringHovedmalDTOSelectors.erEndret
-import no.nav.pensjon.etterlatte.maler.barnepensjon.endring.EndringHovedmalDTOSelectors.etterbetaling
-import no.nav.pensjon.etterlatte.maler.barnepensjon.endring.EndringHovedmalDTOSelectors.innhold
-import no.nav.pensjon.etterlatte.maler.barnepensjon.endring.EndringHovedmalDTOSelectors.utbetalingsinfo
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BeregningsinfoBP
+import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingDTOSelectors.beregningsinfo
+import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingDTOSelectors.erEndret
+import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingDTOSelectors.etterbetaling
+import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingDTOSelectors.innhold
+import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingDTOSelectors.utbetalingsinfo
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.BarnepensjonInnvilgelseFraser
 import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
 import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.beregningAvBarnepensjon
@@ -30,22 +30,21 @@ import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.dineRettigheterOgPli
 import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.etterbetalingAvBarnepensjon
 import no.nav.pensjon.etterlatte.maler.vedlegg.informasjonTilDegSomHandlerPaaVegneAvBarnet
 
-data class EndringHovedmalDTO(
+data class BarnepensjonRevurderingDTO(
     val erEndret: Boolean,
     val etterbetaling: Etterbetaling? = null,
     val utbetalingsinfo: Utbetalingsinfo,
     val beregningsinfo: BeregningsinfoBP,
     override val innhold: List<Element>,
-) :
-    BrevDTO
+) : BrevDTO
 
 @TemplateModelHelpers
-object Endring : EtterlatteTemplate<EndringHovedmalDTO>, Hovedmal {
-    override val kode: EtterlatteBrevKode = EtterlatteBrevKode.BARNEPENSJON_REVURDERING_ENDRING
+object BarnepensjonRevurdering : EtterlatteTemplate<BarnepensjonRevurderingDTO>, Hovedmal {
+    override val kode: EtterlatteBrevKode = EtterlatteBrevKode.BARNEPENSJON_REVURDERING
 
     override val template = createTemplate(
         name = kode.name,
-        letterDataType = EndringHovedmalDTO::class,
+        letterDataType = BarnepensjonRevurderingDTO::class,
         languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(
             displayTitle = "Vedtak - endring",

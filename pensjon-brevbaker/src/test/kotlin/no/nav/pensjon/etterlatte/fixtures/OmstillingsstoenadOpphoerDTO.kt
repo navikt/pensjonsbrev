@@ -1,10 +1,10 @@
 package no.nav.pensjon.etterlatte.fixtures
 
 import no.nav.pensjon.etterlatte.maler.*
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.opphoer.OMSOpphoerDTO
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadOpphoerDTO
 
-fun createOMSOpphoerDTO() =
-    OMSOpphoerDTO(
+fun createOmstillingsstoenadpphoerDTO() =
+    OmstillingsstoenadOpphoerDTO(
         innhold = listOf(
             Element(
                 type = ElementType.HEADING_TWO,

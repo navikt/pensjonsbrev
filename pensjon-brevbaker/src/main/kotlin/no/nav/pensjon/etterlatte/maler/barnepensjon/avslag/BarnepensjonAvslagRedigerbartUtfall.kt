@@ -14,8 +14,8 @@ import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.avslag.AvslagFraser
 import no.nav.pensjon.etterlatte.maler.fraser.common.Vedtak
 
 @TemplateModelHelpers
-object AvslagFoerstegangsbehandlingEnkel : EtterlatteTemplate<ManueltBrevDTO>, Delmal {
-    override val kode: EtterlatteBrevKode = EtterlatteBrevKode.BARNEPENSJON_AVSLAG_ENKEL
+object BarnepensjonAvslagRedigerbartUtfall : EtterlatteTemplate<ManueltBrevDTO>, Delmal {
+    override val kode: EtterlatteBrevKode = EtterlatteBrevKode.BARNEPENSJON_AVSLAG_UTFALL
 
     override val template = createTemplate(
         name = kode.name,
@@ -37,7 +37,6 @@ object AvslagFoerstegangsbehandlingEnkel : EtterlatteTemplate<ManueltBrevDTO>, D
         }
         outline {
             includePhrase(Vedtak.BegrunnelseForVedtaket)
-
             includePhrase(AvslagFraser.FyllInn)
         }
     }
