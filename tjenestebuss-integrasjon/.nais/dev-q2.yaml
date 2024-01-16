@@ -14,6 +14,9 @@ env:
   - name: BREVKLIENT_CHROMEROOTURL
     value: "https://wasapp-q2.adeo.no/brevweb/"
 
+groups:
+  - "8bb9b8d1-f46a-4ade-8ee8-5895eccdf8cf" #0000-GA-PENSJON_SAKSBEHANDLER i preprod
+
 
 vaultPaths:
   - kvPath: "serviceuser/data/dev/srvpensjonsbrev-esb"

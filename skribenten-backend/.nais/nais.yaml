@@ -45,9 +45,9 @@ spec:
       allowAllUsers: false
       claims:
         groups:
-          { { #each groups as |group|}}
-              - id: {{group } }
-            {{/each}}
+          {{#each groups as |group|}}
+             - id: {{group}}
+          {{/each}}
         extra:
           - azp_name
 
