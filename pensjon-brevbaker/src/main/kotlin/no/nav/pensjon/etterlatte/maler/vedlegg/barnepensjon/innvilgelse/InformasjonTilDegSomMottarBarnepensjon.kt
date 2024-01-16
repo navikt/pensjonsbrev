@@ -48,8 +48,8 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, A
     paragraph {
         text(
             Bokmal to "Du kan logge deg inn på våre nettsider for å se utbetalinger, brev eller lignende. Du kan også chatte eller sende melding via ${Constants.SKRIVTILOSS_URL}. Har du ikke BankID eller annen innloggingsmulighet til vår hjemmeside nav.no, kan du kontakte oss på telefon. Skal du sende oss noe per post må du bruke adressen",
-            Nynorsk to "Du kan logge deg inn på nettsidene våre for å sjå utbetalingar, brev eller liknande. Du kan også chatte eller sende melding via ${Constants.SKRIVTILOSS_URL}. Har du ikkje BankID eller andre moglegheiter til å logge på heimesida vår nav.no, kan du kontakte oss på telefon. Skal du sende oss noko per post, bruker du adressa ",
-            English to "",
+            Nynorsk to "Du kan logge deg inn på nettsidene våre for å sjå utbetalingar, brev eller liknande. Du kan også chatte eller sende melding via ${Constants.SKRIVTILOSS_URL}. Har du ikkje BankID eller andre moglegheiter til å logge på heimesida vår nav.no, kan du kontakte oss på telefon. Skal du sende oss noko per post, bruker du adressa",
+            English to "You can log in to our website to see your payments, letters or similar. You can also chat with us or send a message online: ${Constants.SKRIVTILOSS_URL}. Please contact us by phone if you do not use BankID or another log in option. To send us any documents by conventional mail, please use this",
         )
     }
 }
@@ -59,21 +59,21 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, A
         text(
             Bokmal to "Skal du endre kontonummer?",
             Nynorsk to "Skal du endre kontonummer?",
-            English to "",
+            English to "Are you going to change your bank account number?",
         )
     }
     paragraph {
         text(
             Bokmal to "Du kan sjekke og endre kontonummeret som er registrert på deg ved å logge inn på ${Constants.NAV_URL}. Hvis du ikke kan melde fra digitalt, kan du melde om endringer via post. Du må da legge ved kopi av gyldig legitimasjon, eller vise gyldig legitimasjon ved personlig fremmøte på et NAV-kontor.",
             Nynorsk to "Du kan sjekke og endre kontonummeret som er registrert på deg ved å logge inn på ${Constants.NAV_URL}. Dersom du ikkje kan melde frå digitalt, kan du melde om endringar per post. Du må då leggje ved kopi av gyldig legitimasjon, eller vise gyldig legitimasjon ved personleg frammøte på eit NAV-kontor. ",
-            English to "",
+            English to "You can check and change the bank account number that is registered in our system by logging in to our website: ${Constants.NAV_URL}. If you are unable to notify us digitally, you can report any changes using conventional mail. Please remember to include a copy of a valid identification document or coming to the NAV office in person and bringing proof of identity.",
             )
     }
     paragraph {
         text(
             Bokmal to "Du finner mer informasjon og lenke til riktig skjema på ${Constants.KONTONUMMER_URL}.",
             Nynorsk to "Du finn meir informasjon og lenkje til rett skjema på ${Constants.KONTONUMMER_URL}.",
-            English to "",
+            English to "You can find more information and a link to the correct form online: ${Constants.KONTONUMMER_URL}.",
         )
     }
 }
@@ -83,21 +83,21 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, A
         text(
             Bokmal to "Skal du endre kontonummer?",
             Nynorsk to "Skal du endre kontonummer?",
-            English to "",
+            English to "Are you going to change your bank account number?",
         )
     }
     paragraph {
         text(
             Bokmal to "Hvis du logger på ${Constants.NAV_URL} med BankID, Buypass eller Comfides, kan du endre kontonummer i \"Personopplysninger\" på www.nav.no. Hvis du ikke kan melde fra digitalt, kan du melde om endringer via post.",
             Nynorsk to "Dersom du loggar på ${Constants.NAV_URL} med BankID, Buypass eller Comfides, kan du endre kontonummer i \"Personopplysningar\" på www.nav.no. Dersom du ikkje kan melde frå digitalt, kan du melde om endringar via post. ",
-            English to "",
+            English to "If you log in to ${Constants.NAV_URL} using BankID, Buypass or Comfides, you can send us a message within the site ${Constants.SKRIVTILOSS_URL}. If you are unable to notify us digitally, you can report any changes using conventional mail.",
         )
     }
     paragraph {
         text(
             Bokmal to "Du finner skjema på ${Constants.Utland.ENDRE_KONTONUMMER_SKJEMA_URL}. Husk underskrift på skjemaet og legg ved kopi av gyldig legitimasjon.",
             Nynorsk to "Du finn skjema på ${Constants.Utland.ENDRE_KONTONUMMER_SKJEMA_URL}. Hugs underskrift på skjemaet og legg ved kopi av gyldig legitimasjon.",
-            English to "",
+            English to "You will find the form here: ${Constants.Utland.ENDRE_KONTONUMMER_SKJEMA_URL}. Remember to sign the form and doctor enclose a copy of your identification. ",
         )
     }
 }
@@ -114,7 +114,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, A
         text(
             Bokmal to "Når kontonummer er i en utenlandsk bank, må du være oppmerksom på at det er et gebyr for hver utbetaling. Det kan også ta litt lenger tid før pengene er på kontoen din. Du finner mer informasjon om utbetaling på ${Constants.Utland.UTBETALING_INFO}.",
             Nynorsk to "Når kontonummer er i ein utanlandsk bank, må du vere merksam på at det blir trekt eit gebyr for kvar utbetaling. Det kan også ta litt lenger tid før pengane er på kontoen din. Du finn meir informasjon om utbetaling på ${Constants.Utland.UTBETALING_INFO}.",
-            English to "",
+            English to "If the bank account is held by a foreign bank, be aware that a minor fee may be charged for each payment. It will also take a little more time before the money reaches your account. More information on payments is available online: ${Constants.Utland.UTBETALING_INFO}.",
         )
     }
 }
@@ -131,7 +131,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, A
         text(
             Bokmal to "Barnepensjon er skattepliktig, men vi trekker ikke skatt uten å få beskjed om dette. Hvis du opplyste om ønsket skattetrekk da du søkte barnepensjon, ble dette registrert. Du må selv sjekke om dette skattetrekket blir overført ved hvert årsskifte. Du kan lese mer om frivillig skattetrekk på ${Constants.SKATTETREKK_PENGESTOETTE_URL}.",
             Nynorsk to "Barnepensjon er skattepliktig, men vi trekkjer ikkje skatt utan å ha fått beskjed om det. Dersom du har opplyst om ønskt skattetrekk i søknaden, har vi registrert dette for i år. Du må sjølv sjekke om dette skattetrekket blir overført ved årsskiftet. Du kan lese meir om frivillig skattetrekk på ${Constants.SKATTETREKK_PENGESTOETTE_URL}.",
-            English to "",
+            English to "Children's pensions are taxable, but we do not deduct tax without being notified. If you stated the desired tax deduction in the application, we will have registered it for this year. You must check whether this tax deduction will be continued until the end of the year. You can read more about voluntary tax withholding online: ${Constants.SKATTETREKK_PENGESTOETTE_URL}.",
         )
     }
 }
@@ -148,7 +148,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, A
         text(
             Bokmal to "Skatteetaten svarer på spørsmål om skatt på pensjon for deg som ikke er skattemessig bosatt i Norge. Les mer om skatt på ${Constants.SKATTETREKK_KILDESKATT_URL}.",
             Nynorsk to "Skatteetaten svarer på spørsmål om skatt på pensjon for deg som ikkje er skattemessig busett i Noreg. Les meir om skatt på ${Constants.SKATTETREKK_KILDESKATT_URL}.",
-            English to "",
+            English to "The Norwegian Tax Administration can answer any questions you may have about taxes regarding pension payments for people who are not tax residents in Norway. Read more about NAV and taxes here: ${Constants.SKATTETREKK_KILDESKATT_URL}.",
         )
     }
 }
