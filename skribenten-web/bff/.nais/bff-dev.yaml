@@ -16,7 +16,7 @@ env:
     value: "api://dev-gcp.pensjonsbrev.skribenten-backend/.default"
 
 groups:
-  - "8bb9b8d1-f46a-4ade-8ee8-5895eccdf8cf" #0000-GA-PENSJON_SAKSBEHANDLER i preprod
+  - "8bb9b8d1-f46a-4ade-8ee8-5895eccdf8cf" #0000-GA-PENSJON_SAKSBEHANDLER
 
 outboundApps:
   - application: skribenten-backend
