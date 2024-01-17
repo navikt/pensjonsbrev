@@ -164,6 +164,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
         );
       }}
       onKeyDown={(event) => {
+        const eventKey = event.key;
         if (event.key === "Enter") {
           handleEnter(event);
         }
@@ -172,6 +173,13 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
         }
         if (event.key === "Delete") {
           handleDelete(event);
+        }
+        console.log(event.key);
+        if (["ArrowUp", "ArrowDown", "ArrowRight", "ArrowLeft"].includes(eventKey)) {
+          const cursorPosition = selectService.getCursorOffset();
+          // event.preventDefault();
+          applyAction(Actions.cursor, setEditorState, literalIndex, event, cursorPosition);
+          // handleArrows(event);
         }
       }}
       ref={contentEditableReference}
