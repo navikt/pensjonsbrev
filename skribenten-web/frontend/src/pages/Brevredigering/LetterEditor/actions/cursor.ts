@@ -5,15 +5,6 @@ import type { Action } from "~/pages/Brevredigering/LetterEditor/lib/actions";
 import type { LetterEditorState } from "~/pages/Brevredigering/LetterEditor/model/state";
 import { LITERAL } from "~/types/brevbakerTypes";
 
-// export enum ArrowKey {
-//   UP = "UP",
-//   DOWN = "DOWN",
-//   LEFT = "LEFT",
-//   RIGHT = "RIGHT",
-// }
-
-type ArrowKey = "ArrowUp" | "ArrowDown" | "ArrowRight" | "ArrowLeft";
-
 export const cursor: Action<
   LetterEditorState,
   [literalIndex: LiteralIndex, event: KeyboardEvent, cursorPosition: number]
@@ -32,7 +23,7 @@ export const cursor: Action<
         const isAtEndOfContent = content.text.length === cursorPosition;
         if (!isAtEndOfContent) break;
 
-        // TODO: POC, refactor this
+        // TODO: POC: while-true... or recursion?
         let searchingInBlockIndex = literalIndex.blockIndex;
         let searchAfterContentIndex = literalIndex.contentIndex + 1;
         let nextLiteralIndex = -1;
@@ -41,14 +32,13 @@ export const cursor: Action<
           nextLiteralIndex = draft.editedLetter.letter.blocks[searchingInBlockIndex].content.findIndex(
             (content, index) => index >= searchAfterContentIndex && content.type === "LITERAL",
           );
+          if (nextLiteralIndex !== -1) break;
           if (nextLiteralIndex === -1) {
             searchingInBlockIndex = searchingInBlockIndex + 1;
             if (searchingInBlockIndex >= draft.editedLetter.letter.blocks.length) {
               break;
             }
             searchAfterContentIndex = 0;
-          } else {
-            break;
           }
         }
 
@@ -68,7 +58,6 @@ export const cursor: Action<
         const isAtStartOfContent = cursorPosition === 0;
         if (!isAtStartOfContent) break;
 
-        // TODO: POC, refactor this
         let searchingInBlockIndex = literalIndex.blockIndex;
         let searchBeforeContentIndex = literalIndex.contentIndex;
         let previousLiteralIndex = -1;
@@ -77,6 +66,8 @@ export const cursor: Action<
           previousLiteralIndex = draft.editedLetter.letter.blocks[searchingInBlockIndex].content.findLastIndex(
             (content, index) => index < searchBeforeContentIndex && content.type === "LITERAL",
           );
+
+          if (previousLiteralIndex !== -1) break;
           if (previousLiteralIndex === -1) {
             searchingInBlockIndex = searchingInBlockIndex - 1;
 
@@ -84,8 +75,6 @@ export const cursor: Action<
               break;
             }
             searchBeforeContentIndex = draft.editedLetter.letter.blocks[searchingInBlockIndex].content.length;
-          } else {
-            break;
           }
         }
 
