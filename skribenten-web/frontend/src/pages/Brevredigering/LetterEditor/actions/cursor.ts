@@ -98,14 +98,31 @@ export const cursor: Action<
           };
           event.preventDefault();
         } else {
-          const previousLiteralIndex = block.content.findLastIndex(
-            (content, index) => index < literalIndex.contentIndex && content.type === "LITERAL",
-          );
+          // TODO: POC, refactor this
+          let searchingInBlockIndex = literalIndex.blockIndex;
+          let searchBeforeContentIndex = literalIndex.contentIndex;
+          let previousLiteralIndex = -1;
+
+          while (true) {
+            previousLiteralIndex = draft.editedLetter.letter.blocks[searchingInBlockIndex].content.findLastIndex(
+              (content, index) => index < searchBeforeContentIndex && content.type === "LITERAL",
+            );
+            if (previousLiteralIndex === -1) {
+              searchingInBlockIndex = searchingInBlockIndex - 1;
+              searchBeforeContentIndex = draft.editedLetter.letter.blocks[searchingInBlockIndex].content.length;
+            } else {
+              break;
+            }
+            if (searchingInBlockIndex < 0) {
+              break;
+            }
+          }
 
           draft.focus = {
-            blockIndex: literalIndex.blockIndex,
+            blockIndex: searchingInBlockIndex,
             contentIndex: previousLiteralIndex,
-            cursorPosition: block.content[previousLiteralIndex].text.length,
+            cursorPosition:
+              draft.editedLetter.letter.blocks[searchingInBlockIndex].content[previousLiteralIndex].text.length,
           };
           event.preventDefault();
         }

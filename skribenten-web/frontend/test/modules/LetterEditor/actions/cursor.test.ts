@@ -41,6 +41,21 @@ describe("LetterEditorActions.cursor", () => {
         cursorPosition: "tekst i første paragraf".length,
       });
     });
+    test("at the first literal (but not first content) of a block moves focus to last literal of previous block(s)", () => {
+      const keyboardEvent = getKeyboardEvent("ArrowLeft");
+      const state = letter(
+        paragraph(literal("tekst i første paragraf"), variable("X")),
+        paragraph(variable("Y")),
+        paragraph(variable("Z"), literal("tekst i andre")),
+      );
+      const result = Actions.cursor(state, { blockIndex: 2, contentIndex: 1 }, keyboardEvent, 0);
+      expect(result.focus).toEqual({
+        blockIndex: 0,
+        contentIndex: 0,
+        cursorPosition: "tekst i første paragraf".length,
+      });
+      expect(keyboardEvent.preventDefault).toHaveBeenCalledOnce();
+    });
     test("at the beginning of non-first-literal moves focus to end of previous literal in same block", () => {
       const keyboardEvent = getKeyboardEvent("ArrowLeft");
       const state = letter(paragraph(literal("literal1"), variable("X"), literal("literal2")));
@@ -84,11 +99,12 @@ describe("LetterEditorActions.cursor", () => {
       });
       expect(keyboardEvent.preventDefault).toHaveBeenCalledOnce();
     });
-    test("at the last literal (but not last content) of a block moves focus to first literal of next block", () => {
+    test("at the last literal (but not last content) of a block moves focus to first literal of next block(s)", () => {
       const keyboardEvent = getKeyboardEvent("ArrowRight");
       const state = letter(
         paragraph(literal("tekst i første paragraf"), variable("X")),
-        paragraph(variable("Y"), literal("tekst i andre")),
+        paragraph(variable("Y")),
+        paragraph(variable("Z"), literal("tekst i andre")),
       );
       const result = Actions.cursor(
         state,
@@ -97,7 +113,7 @@ describe("LetterEditorActions.cursor", () => {
         "tekst i første paragraf".length,
       );
       expect(result.focus).toEqual({
-        blockIndex: 1,
+        blockIndex: 2,
         contentIndex: 1,
         cursorPosition: 0,
       });
