@@ -85,8 +85,6 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OmstillingsstoenadBeregni
         )
     }
 
-    konverterElementerTilBrevbakerformat(innhold)
-
     title2 {
         textExpr(
             Bokmal to "".expr() + "Omstillingsstønad fra " + sisteBeregningsperiode.datoFOM.format(),
@@ -110,7 +108,7 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OmstillingsstoenadBeregni
             textExpr(
                 Bokmal to "".expr() + "Stønad per år før reduksjon av inntekt er beregnet til 2,25 ganger " +
                         "grunnbeløpet i folketrygden (G) ganget med " + trygdetid.beregnetTrygdetidAar.format() + "/40 " +
-                        "trygdetid. Beløpet fordeles på 12 utbetalinger i året. ",
+                        "trygdetid. Beløpet fordeles på 12 utbetalinger i året.",
                 Nynorsk to "".expr(),
                 English to "".expr(),
             )
@@ -141,10 +139,10 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OmstillingsstoenadBeregni
     showIf(inntekt.greaterThan(0)) {
         paragraph {
             textExpr(
-                Bokmal to "".expr() + "Vi har lagt til grunn at du har en forventet arbeidsinntekt på " +
+                Bokmal to "".expr() + "Vi har lagt til grunn at du har en forventet inntekt på " +
                         inntekt.format() + " kroner fra " +
                         sisteBeregningsperiode.datoFOM.format() + ". Stønad per måned er redusert med " +
-                        inntekt.format() + " kroner minus et halvt grunnbeløp ganget med 45 prosent, delt på 12 måneder",
+                        inntekt.format() + " kroner minus et halvt grunnbeløp ganget med 45 prosent, delt på 12 måneder.",
                 Nynorsk to "".expr(),
                 English to "".expr(),
             )
@@ -159,6 +157,9 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OmstillingsstoenadBeregni
             )
         }
     }
+
+    konverterElementerTilBrevbakerformat(innhold)
+
 }
 
 
