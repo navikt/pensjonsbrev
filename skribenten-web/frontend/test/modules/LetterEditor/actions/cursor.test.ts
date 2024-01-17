@@ -103,15 +103,16 @@ describe("LetterEditorActions.cursor", () => {
       });
       expect(keyboardEvent.preventDefault).toHaveBeenCalledOnce();
     });
-      test("at the end of non-last-literal moves focus to beginning of next literal in same block", () => {
-          const keyboardEvent = getKeyboardEvent("ArrowRight");
-          const state = letter(paragraph(literal("literal1"), variable("X"), literal("literal2")));
-          const result = Actions.cursor(state, { blockIndex: 0, contentIndex: 0 }, keyboardEvent, 0);
-          expect(keyboardEvent.preventDefault).toHaveBeenCalledOnce();
-          expect(result.focus).toEqual({
-              blockIndex: 0,
-              contentIndex: 2,
-              cursorPosition: "literal1".length,
-          });
+    test("at the end of non-last-literal moves focus to beginning of next literal in same block", () => {
+      const keyboardEvent = getKeyboardEvent("ArrowRight");
+      const state = letter(paragraph(literal("literal1"), variable("X"), literal("literal2")));
+      const result = Actions.cursor(state, { blockIndex: 0, contentIndex: 0 }, keyboardEvent, "literal1".length);
+      expect(keyboardEvent.preventDefault).toHaveBeenCalledOnce();
+      expect(result.focus).toEqual({
+        blockIndex: 0,
+        contentIndex: 2,
+        cursorPosition: 0,
+      });
+    });
   });
 });

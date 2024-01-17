@@ -29,10 +29,13 @@ export const cursor: Action<
         return draft;
       }
       case "ArrowRight": {
-        const isAtLastBlock = draft.editedLetter.letter.blocks.length - 1 === literalIndex.blockIndex;
         const isAtLastContentInBlock = block.content.length - 1 === literalIndex.contentIndex;
         const isAtEndOfContent = content.text.length === cursorPosition;
-        if (isAtEndOfContent && isAtLastContentInBlock) {
+
+        if (!isAtEndOfContent) break;
+
+        if (isAtLastContentInBlock) {
+          const isAtLastBlock = draft.editedLetter.letter.blocks.length - 1 === literalIndex.blockIndex;
           if (isAtLastBlock) {
             break; // We are at the end of the document, there is nowhere to go.
           }
@@ -45,13 +48,27 @@ export const cursor: Action<
             cursorPosition: 0,
           };
           event.preventDefault();
+        } else {
+          const nextLiteralIndex = block.content.findIndex(
+            (content, index) => index > literalIndex.contentIndex && content.type === "LITERAL",
+          );
+
+          draft.focus = {
+            blockIndex: literalIndex.blockIndex,
+            contentIndex: nextLiteralIndex,
+            cursorPosition: 0,
+          };
+          event.preventDefault();
         }
         break;
       }
       case "ArrowLeft": {
         const isAtStartOfContent = cursorPosition === 0;
         const isAtFirstContentInBlock = literalIndex.contentIndex === 0;
-        if (isAtStartOfContent && isAtFirstContentInBlock) {
+
+        if (!isAtStartOfContent) break;
+
+        if (isAtFirstContentInBlock) {
           if (literalIndex.blockIndex === 0) {
             break; // We are at the beginning of the document, there is nowhere to go.
           }
@@ -62,6 +79,17 @@ export const cursor: Action<
             blockIndex: literalIndex.blockIndex - 1,
             contentIndex: lastLiteralContent,
             cursorPosition: previousBlock.content[lastLiteralContent].text.length,
+          };
+          event.preventDefault();
+        } else {
+          const previousLiteralIndex = block.content.findLastIndex(
+            (content, index) => index < literalIndex.contentIndex && content.type === "LITERAL",
+          );
+
+          draft.focus = {
+            blockIndex: literalIndex.blockIndex,
+            contentIndex: previousLiteralIndex,
+            cursorPosition: block.content[previousLiteralIndex].text.length,
           };
           event.preventDefault();
         }
