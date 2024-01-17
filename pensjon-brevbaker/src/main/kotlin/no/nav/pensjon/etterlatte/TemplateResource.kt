@@ -57,11 +57,13 @@ val prodAutobrevTemplates: Set<EtterlatteTemplate<*>> =
         TilbakekrevingInnhold,
         TilbakekrevingFerdig,
 
-        // Div migrering mm.
+        // Informasjonsbrev
         TomMal,
         TomDelmal,
         TomMalInformasjonsbrev,
         UtsattKlagefrist,
+
+        // Div migrering mm.
         ForhaandsvarselOmregningBP,
         EnkeltVedtakOmregningNyttRegelverk,
         EnkeltVedtakOmregningNyttRegelverkFerdig
