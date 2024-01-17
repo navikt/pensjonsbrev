@@ -260,7 +260,7 @@ object OmstillingsstoenadInnvilgelseFraser {
             }.orShow {
                 paragraph {
                     text(
-                        Bokmal to "Du er innvilget omstillingsstønad frem til det er gått to år fra datoen for " +
+                        Bokmal to "Du er innvilget omstillingsstønad frem til det er gått tre år fra datoen for " +
                                 "dødsfallet, så lenge du fyller vilkårene for rett til stønaden. Om det skjer endringer " +
                                 "i inntekten din kan dette gjør at du likevel vil få utbetalt stønad i denne perioden. ",
                         Nynorsk to "",
