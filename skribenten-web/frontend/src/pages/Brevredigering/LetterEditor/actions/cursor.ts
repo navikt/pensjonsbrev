@@ -49,12 +49,28 @@ export const cursor: Action<
           };
           event.preventDefault();
         } else {
-          const nextLiteralIndex = block.content.findIndex(
-            (content, index) => index > literalIndex.contentIndex && content.type === "LITERAL",
-          );
+          // TODO: POC, refactor this
+          let searchingInBlockIndex = literalIndex.blockIndex;
+          let searchAfterContentIndex = literalIndex.contentIndex + 1;
+          let nextLiteralIndex = -1;
+
+          while (true) {
+            nextLiteralIndex = draft.editedLetter.letter.blocks[searchingInBlockIndex].content.findIndex(
+              (content, index) => index >= searchAfterContentIndex && content.type === "LITERAL",
+            );
+            if (nextLiteralIndex === -1) {
+              searchAfterContentIndex = 0;
+              searchingInBlockIndex = searchingInBlockIndex + 1;
+            } else {
+              break;
+            }
+            if (searchingInBlockIndex > draft.editedLetter.letter.blocks.length) {
+              break;
+            }
+          }
 
           draft.focus = {
-            blockIndex: literalIndex.blockIndex,
+            blockIndex: searchingInBlockIndex,
             contentIndex: nextLiteralIndex,
             cursorPosition: 0,
           };
