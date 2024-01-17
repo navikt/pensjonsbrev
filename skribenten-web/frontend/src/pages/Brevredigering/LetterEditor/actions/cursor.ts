@@ -79,25 +79,10 @@ export const cursor: Action<
         break;
       }
       case "ArrowLeft": {
-        const isAtStartOfContent = cursorPosition === 0;
-        const isAtFirstContentInBlock = literalIndex.contentIndex === 0;
+        {
+          const isAtStartOfContent = cursorPosition === 0;
+          if (!isAtStartOfContent) break;
 
-        if (!isAtStartOfContent) break;
-
-        if (isAtFirstContentInBlock) {
-          if (literalIndex.blockIndex === 0) {
-            break; // We are at the beginning of the document, there is nowhere to go.
-          }
-          const previousBlock = draft.editedLetter.letter.blocks[literalIndex.blockIndex - 1];
-          const lastLiteralContent = previousBlock.content.findLastIndex((content) => content.type === "LITERAL");
-
-          draft.focus = {
-            blockIndex: literalIndex.blockIndex - 1,
-            contentIndex: lastLiteralContent,
-            cursorPosition: previousBlock.content[lastLiteralContent].text.length,
-          };
-          event.preventDefault();
-        } else {
           // TODO: POC, refactor this
           let searchingInBlockIndex = literalIndex.blockIndex;
           let searchBeforeContentIndex = literalIndex.contentIndex;
@@ -109,14 +94,18 @@ export const cursor: Action<
             );
             if (previousLiteralIndex === -1) {
               searchingInBlockIndex = searchingInBlockIndex - 1;
+
+              if (searchingInBlockIndex < 0) {
+                break;
+              }
               searchBeforeContentIndex = draft.editedLetter.letter.blocks[searchingInBlockIndex].content.length;
             } else {
               break;
             }
-            if (searchingInBlockIndex < 0) {
-              break;
-            }
           }
+
+          // We ran out of blocks, that means we were at the end of the editable document
+          if (previousLiteralIndex === -1 || searchingInBlockIndex === -1) break;
 
           draft.focus = {
             blockIndex: searchingInBlockIndex,
