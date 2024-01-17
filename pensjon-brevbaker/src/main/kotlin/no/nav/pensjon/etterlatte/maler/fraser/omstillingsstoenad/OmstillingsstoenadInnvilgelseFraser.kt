@@ -78,7 +78,8 @@ object OmstillingsstoenadInnvilgelseFraser {
             }.orShow {
                 paragraph {
                     text(
-                        Bokmal to "Du får ikke utbetalt omstillingsstønad fordi du har høy inntekt.",
+                        Bokmal to "Du får ikke utbetalt omstillingsstønad fordi du har inntekt som er høyere" +
+                                "enn grensen for å få utbetalt stønaden.",
                         Nynorsk to "",
                         English to "",
                     )
@@ -133,8 +134,8 @@ object OmstillingsstoenadInnvilgelseFraser {
                     }
                     item {
                         text(
-                            Bokmal to "avdøde i de siste fem årene før dødsfallet var medlem i folketrygden " +
-                                    "eller fikk pensjon fra folketrygden",
+                            Bokmal to "avdøde i de siste fem årene før dødsfallet var medlem i folketrygden, " +
+                                    "eller fikk pensjon eller uføretrygd fra folketrygden.",
                             Nynorsk to "",
                             English to "",
                         )
@@ -244,7 +245,7 @@ object OmstillingsstoenadInnvilgelseFraser {
                 paragraph {
                     text(
                         Bokmal to "Du får omstillingsstønad frem til det er gått tre år fra datoen for dødsfallet, så " +
-                                "lenge du fyller vilkårene for rett til stønaden.",
+                                "lenge du oppfyller vilkårene.",
                         Nynorsk to "",
                         English to "",
                     )
@@ -261,7 +262,7 @@ object OmstillingsstoenadInnvilgelseFraser {
                 paragraph {
                     text(
                         Bokmal to "Du er innvilget omstillingsstønad frem til det er gått tre år fra datoen for " +
-                                "dødsfallet, så lenge du fyller vilkårene for rett til stønaden. Om det skjer endringer " +
+                                "dødsfallet, så lenge du oppfyller vilkårene. Om det skjer endringer " +
                                 "i inntekten din kan dette gjør at du likevel vil få utbetalt stønad i denne perioden. ",
                         Nynorsk to "",
                         English to "",
@@ -274,8 +275,7 @@ object OmstillingsstoenadInnvilgelseFraser {
                     text(
                         Bokmal to "Du kommer inn under unntaksreglene for varighet av stønaden, fordi du har hatt " +
                                 "lav eller ingen inntekt de siste fem årene før dødsfallstidspunktet. Du får " +
-                                "omstillingsstønad frem til du fyller 67 år, så lenge du fyller vilkårene for rett " +
-                                "til stønaden.",
+                                "omstillingsstønad frem til du fyller 67 år, så lenge du oppfyller vilkårene.",
                         Nynorsk to "",
                         English to "",
                     )
@@ -330,7 +330,7 @@ object OmstillingsstoenadInnvilgelseFraser {
                     Bokmal to "Det første halvåret etter dødsfallet stilles det ikke krav til at du er i " +
                             "arbeid eller arbeidsrettet aktivitet. Etter seks måneder er det et vilkår for å " +
                             "fortsatt ha rett til omstillingsstønad at du er i minst 50 prosent aktivitet. " +
-                            "Dette kalles aktivitetsplikt. Les mer om aktivitetsplikt i vedlegget " +
+                            "Dette kalles aktivitetsplikt. Les mer om aktivitetsplikt og hva denne innebærer i vedlegget " +
                             "«Informasjon til deg som mottar omstillingsstønad».",
                     Nynorsk to "",
                     English to "",

@@ -79,7 +79,7 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OmstillingsstoenadBeregni
     paragraph {
         text(
             Bokmal to "Inntekten din avgjør hvor mye du kan få. Stønaden reduseres med 45 prosent av " +
-                    "arbeidsinntekt som er over halvparten av grunnbeløpet.",
+                    "arbeidsinntekt eller tilsvarende inntekt som er over halvparten av grunnbeløpet.",
             Nynorsk to "",
             English to "",
         )

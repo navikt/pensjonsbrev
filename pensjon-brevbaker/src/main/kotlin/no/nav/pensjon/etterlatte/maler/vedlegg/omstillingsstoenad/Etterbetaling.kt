@@ -79,4 +79,12 @@ val etterbetalingOmstillingsstoenad = createAttachment<LangBokmalNynorskEnglish,
     }
 
     includePhrase(BeregningsperiodetabellEtterbetaling(beregningsperioder))
+
+    paragraph {
+        text(
+            Bokmal to "Beløpene i tabellen er før skatt.",
+            Nynorsk to "",
+            English to "",
+        )
+    }
 }
