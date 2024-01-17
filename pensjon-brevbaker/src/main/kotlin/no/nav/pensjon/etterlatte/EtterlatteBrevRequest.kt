@@ -32,6 +32,7 @@ enum class EtterlatteBrevKode {
     TOM_DELMAL,
     TOM_MAL_INFORMASJONSBREV,
     TOM_MAL,
+    UTSATT_KLAGEFRIST,
 }
 
 data class EtterlatteBrevRequest(val kode: EtterlatteBrevKode, val letterData: Any, val felles: Felles, val language: LanguageCode)

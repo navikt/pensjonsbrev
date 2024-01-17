@@ -4,6 +4,7 @@ import no.nav.pensjon.brev.template.LetterTemplate
 import no.nav.pensjon.etterlatte.maler.TomMal
 import no.nav.pensjon.etterlatte.maler.andre.TomDelmal
 import no.nav.pensjon.etterlatte.maler.andre.TomMalInformasjonsbrev
+import no.nav.pensjon.etterlatte.maler.andre.UtsattKlagefrist
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseMVP
 import no.nav.pensjon.etterlatte.maler.barnepensjon.avslag.AvslagFoerstegangsbehandling
 import no.nav.pensjon.etterlatte.maler.barnepensjon.avslag.AvslagFoerstegangsbehandlingEnkel
@@ -60,6 +61,7 @@ val prodAutobrevTemplates: Set<EtterlatteTemplate<*>> =
         TomMal,
         TomDelmal,
         TomMalInformasjonsbrev,
+        UtsattKlagefrist,
         ForhaandsvarselOmregningBP,
         EnkeltVedtakOmregningNyttRegelverk,
         EnkeltVedtakOmregningNyttRegelverkFerdig
