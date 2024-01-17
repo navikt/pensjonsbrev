@@ -78,7 +78,7 @@ object OmstillingsstoenadInnvilgelseFraser {
             }.orShow {
                 paragraph {
                     text(
-                        Bokmal to "Du får ikke utbetalt omstillingsstønad fordi du har inntekt som er høyere" +
+                        Bokmal to "Du får ikke utbetalt omstillingsstønad fordi du har inntekt som er høyere " +
                                 "enn grensen for å få utbetalt stønaden.",
                         Nynorsk to "",
                         English to "",
