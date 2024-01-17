@@ -21,7 +21,6 @@ import no.nav.pensjon.etterlatte.maler.TrygdetidSelectors.prorataBroek
 import no.nav.pensjon.etterlatte.maler.formatBroek
 
 data class Beregningsperiodetabell(
-    val trygdetid: Expression<Trygdetid>,
     val sisteBeregningsperiode: Expression<OmstillingsstoenadBeregningsperiode>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
@@ -30,34 +29,21 @@ data class Beregningsperiodetabell(
                 header = {
                     column(1) {
                         text(
-                            Language.Bokmal to "Trygdetid",
-                            Language.Nynorsk to "",
-                            Language.English to "",
-                        )
-                    }
-                    column(1) {
-                        text(
                             Language.Bokmal to "Stønad før reduksjon for inntekt",
                             Language.Nynorsk to "",
                             Language.English to "",
                         )
-                        newline()
+                    }
+                    column(1) {
                         text(
-                            Language.Bokmal to "(2,25 × G × trygdetid)",
+                            Language.Bokmal to "Inntekten din",
                             Language.Nynorsk to "",
                             Language.English to "",
                         )
                     }
                     column(1) {
                         text(
-                            Language.Bokmal to "Inntekt før skatt",
-                            Language.Nynorsk to "",
-                            Language.English to "",
-                        )
-                    }
-                    column(1) {
-                        text(
-                            Language.Bokmal to "Utbetaling per måned før skatt",
+                            Language.Bokmal to "Utbetaling per måned",
                             Language.Nynorsk to "",
                             Language.English to "",
                         )
@@ -65,21 +51,6 @@ data class Beregningsperiodetabell(
                 }
             ) {
                 row {
-                    cell {
-                        textExpr(
-                            Language.Bokmal to sisteBeregningsperiode.trygdetid.format() + " år",
-                            Language.Nynorsk to "".expr(),
-                            Language.English to "".expr(),
-                        )
-                        ifNotNull(trygdetid.prorataBroek) {
-                            newline()
-                            textExpr(
-                                Language.Bokmal to "".expr() + "(" + trygdetid.prorataBroek.formatBroek() + ")",
-                                Language.Nynorsk to "".expr(),
-                                Language.English to "".expr(),
-                            )
-                        }
-                    }
                     cell { includePhrase(Felles.KronerText(sisteBeregningsperiode.ytelseFoerAvkorting)) }
                     cell { includePhrase(Felles.KronerText(sisteBeregningsperiode.inntekt)) }
                     cell { includePhrase(Felles.KronerText(sisteBeregningsperiode.utbetaltBeloep)) }
