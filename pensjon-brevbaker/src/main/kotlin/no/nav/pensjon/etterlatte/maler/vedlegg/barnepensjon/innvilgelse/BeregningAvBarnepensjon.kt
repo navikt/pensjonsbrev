@@ -31,6 +31,7 @@ import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BeregningsinfoBP
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BeregningsinfoBPSelectors.beregningsperioder
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BeregningsinfoBPSelectors.grunnbeloep
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BeregningsinfoBPSelectors.innhold
+import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BeregningsinfoBPSelectors.mindreEnnFireFemtedelerAvOpptjeningstiden
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BeregningsinfoBPSelectors.prorataBroek
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BeregningsinfoBPSelectors.trygdetidsperioder
 import no.nav.pensjon.etterlatte.maler.formatBroek
@@ -54,7 +55,13 @@ val beregningAvBarnepensjonGammeltOgNyttRegelverk = createAttachment(
         )
     }
     grunnbeloepetGammeltOgNyttRegelverk(grunnbeloep)
-    trygdetid(aarTrygdetid, prorataBroek, beregningsMetodeFraGrunnlag, beregningsMetodeAnvendt)
+    trygdetid(
+        aarTrygdetid,
+        prorataBroek,
+        beregningsMetodeFraGrunnlag,
+        beregningsMetodeAnvendt,
+        mindreEnnFireFemtedelerAvOpptjeningstiden
+    )
     beregnetBarnepensjonGammeltOgNyttRegelverk(aarTrygdetid, prorataBroek, beregningsMetodeAnvendt, beregningsperioder)
     perioderMedRegistrertTrygdetid(trygdetidsperioder, beregningsMetodeAnvendt)
 }
@@ -76,7 +83,13 @@ val beregningAvBarnepensjonNyttRegelverk = createAttachment(
         )
     }
     grunnbeloepetNyttRegelverk(grunnbeloep)
-    trygdetid(aarTrygdetid, prorataBroek, beregningsMetodeFraGrunnlag, beregningsMetodeAnvendt)
+    trygdetid(
+        aarTrygdetid,
+        prorataBroek,
+        beregningsMetodeFraGrunnlag,
+        beregningsMetodeAnvendt,
+        mindreEnnFireFemtedelerAvOpptjeningstiden
+    )
     beregnetBarnepensjonNyttRegelverk(aarTrygdetid, prorataBroek, beregningsMetodeAnvendt, beregningsperioder)
     perioderMedRegistrertTrygdetid(trygdetidsperioder, beregningsMetodeAnvendt)
 }
@@ -194,6 +207,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, B
     prorataBroek: Expression<IntBroek?>,
     beregningsMetodeFraGrunnlag: Expression<BeregningsMetode>,
     beregningsMetodeAnvendt: Expression<BeregningsMetode>,
+    mindreEnnFireFemtedelerAvOpptjeningstiden: Expression<Boolean>,
 ) {
     title2 {
         text(
@@ -210,6 +224,22 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, B
                 Nynorsk to "",
                 English to "",
             )
+        }
+        showIf(mindreEnnFireFemtedelerAvOpptjeningstiden) {
+            paragraph {
+                text(
+                    Bokmal to "Trygdetiden tilsvarer det antall år avdøde har vært medlem i folketrygden etter fylte 16 år. Når avdøde var under 67 år ved dødsfallet blir det vanligvis beregnet framtidig trygdetid fram til og med det året avdøde ville ha fylt 66 år.",
+                    Nynorsk to "",
+                    English to "",
+                )
+            }
+            paragraph {
+                text(
+                    Bokmal to "Tabellen under «Perioder med registrert trygdetid» viser full framtidig trygdetid. Siden avdøde har vært medlem i folketrygden i mindre enn 4/5 av tiden mellom fylte 16 år og dødsfallstidspunktet (opptjeningstiden), blir framtidig trygdetid redusert til 40 år minus 4/5 av opptjeningstiden. Dette er mindre enn det tabellen viser.",
+                    Nynorsk to "",
+                    English to "",
+                )
+            }
         }
         paragraph {
             textExpr(
