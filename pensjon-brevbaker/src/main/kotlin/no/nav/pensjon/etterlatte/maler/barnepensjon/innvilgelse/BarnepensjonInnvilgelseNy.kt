@@ -62,6 +62,7 @@ data class BeregningsinfoBP(
     val prorataBroek: IntBroek?,
     val beregningsMetodeAnvendt: BeregningsMetode,
     val beregningsMetodeFraGrunnlag: BeregningsMetode,
+    val mindreEnnFireFemtedelerAvOpptjeningstiden: Boolean
 ) : BrevDTO
 
 enum class BeregningsMetode {

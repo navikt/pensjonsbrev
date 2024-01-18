@@ -175,16 +175,25 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, O
     }
 
     showIf(trygdetid.beregningsMetodeFraGrunnlag.equalTo(BeregningsMetode.NASJONAL)) {
+        paragraph {
+            text(
+                Bokmal to "Trygdetiden tilsvarer det antall år avdøde har vært medlem i folketrygden " +
+                        "etter fylte 16 år. Når avdøde var under 67 år ved dødsfallet blir det vanligvis " +
+                        "beregnet framtidig trygdetid fram til og med det året avdøde ville ha fylt 66 år.",
+                Nynorsk to "",
+                English to "",
+            )
+        }
+        paragraph {
+            textExpr(
+                Bokmal to "".expr() + "For å få full omstillingsstønad må avdødes trygdetid være beregnet " +
+                        "til minst 40 år. Trygdetid over 40 år blir ikke tatt med i beregningen. Avdødes samlede " +
+                        "trygdetid er beregnet til " + trygdetid.beregnetTrygdetidAar.format() + " år.",
+                Nynorsk to "".expr(),
+                English to "".expr(),
+            )
+        }
         showIf(trygdetid.mindreEnnFireFemtedelerAvOpptjeningstiden) {
-            paragraph {
-                text(
-                    Bokmal to "Trygdetiden tilsvarer det antall år avdøde har vært medlem i folketrygden etter " +
-                            "fylte 16 år. Når avdøde var under 67 år ved dødsfallet blir det vanligvis beregnet " +
-                            "framtidig trygdetid fram til og med det året avdøde ville ha fylt 66 år.",
-                    Nynorsk to "",
-                    English to "",
-                )
-            }
             paragraph {
                 text(
                     Bokmal to "Tabellen under «Perioder med registrert trygdetid» viser full framtidig " +
@@ -194,34 +203,6 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, O
                             "det tabellen viser.",
                     Nynorsk to "",
                     English to "",
-                )
-            }
-            paragraph {
-                textExpr(
-                    Bokmal to "".expr() + "For å få full omstillingsstønad må avdødes samlede trygdetid " +
-                            "være beregnet til minst 40 år. Avdødes samlede trygdetid er beregnet " +
-                            "til " + trygdetid.beregnetTrygdetidAar.format() + " år.",
-                    Nynorsk to "".expr(),
-                    English to "".expr(),
-                )
-            }
-        }.orShow {
-            paragraph {
-                text(
-                    Bokmal to "Trygdetiden tilsvarer det antall år avdøde har vært medlem i folketrygden " +
-                            "etter fylte 16 år. Når avdøde var under 67 år ved dødsfallet blir det vanligvis " +
-                            "beregnet framtidig trygdetid fram til og med det året avdøde ville ha fylt 66 år.",
-                    Nynorsk to "",
-                    English to "",
-                )
-            }
-            paragraph {
-                textExpr(
-                    Bokmal to "".expr() + "For å få full omstillingsstønad må avdødes trygdetid være beregnet " +
-                            "til minst 40 år. Trygdetid over 40 år blir ikke tatt med i beregningen. Avdødes samlede " +
-                            "trygdetid er beregnet til " + trygdetid.beregnetTrygdetidAar.format() + " år.",
-                    Nynorsk to "".expr(),
-                    English to "".expr(),
                 )
             }
         }
