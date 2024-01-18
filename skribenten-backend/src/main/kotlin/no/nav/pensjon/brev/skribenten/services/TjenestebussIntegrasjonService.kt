@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.skribenten.services
 
 import com.typesafe.config.Config
+import io.ktor.client.call.*
 import io.ktor.client.plugins.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
@@ -8,6 +9,7 @@ import io.ktor.http.*
 import io.ktor.serialization.jackson.*
 import io.ktor.server.application.*
 import io.ktor.server.plugins.*
+import no.nav.pensjon.brev.skribenten.auth.AuthorizedHttpClientResult
 import no.nav.pensjon.brev.skribenten.auth.AzureADOnBehalfOfAuthorizedHttpClient
 import no.nav.pensjon.brev.skribenten.auth.AzureADService
 import no.nav.pensjon.brev.skribenten.routes.OrderLetterRequest
@@ -21,7 +23,7 @@ class TjenestebussIntegrasjonService(config: Config, authService: AzureADService
     private val tjenestebussIntegrasjonUrl = config.getString("url")
     private val tjenestebussIntegrasjonScope = config.getString("scope")
 
-    val tjenestebussIntegrasjonClient =
+    private val tjenestebussIntegrasjonClient =
         AzureADOnBehalfOfAuthorizedHttpClient(tjenestebussIntegrasjonScope, authService) {
             defaultRequest {
                 url(tjenestebussIntegrasjonUrl)
@@ -159,16 +161,16 @@ class TjenestebussIntegrasjonService(config: Config, authService: AzureADService
     suspend fun redigerExtreamBrev(
         call: ApplicationCall,
         dokumentId: String,
-    ): ServiceResult<RedigerExtreamDokumentResponseDto.Success, RedigerExtreamDokumentResponseDto.Failure> =
-        tjenestebussIntegrasjonClient.post(call, "/redigerExtreamBrev") {
+    ): RedigerExtreamDokumentResponseDto {
+        val result = tjenestebussIntegrasjonClient.post(call, "/redigerExtreamBrev") {
             contentType(ContentType.Application.Json)
             accept(ContentType.Application.Json)
             setBody(RedigerExtreamDokumentRequestDto(journalpostId = dokumentId))
-        }.toServiceResult<RedigerExtreamDokumentResponseDto.Success, RedigerExtreamDokumentResponseDto.Failure>()
-            .map {
-                RedigerExtreamDokumentResponseDto.Success(url = it.url)
-            }.catch { error ->
-                RedigerExtreamDokumentResponseDto.Failure(message = error.message)
-            }
+        }
+        return when(result) {
+            is AuthorizedHttpClientResult.Response -> return result.response.body()
+            is AuthorizedHttpClientResult.Error -> return RedigerExtreamDokumentResponseDto
+        }
 
+    }
 }

@@ -83,14 +83,8 @@ private suspend fun bestillExtreamBrev(
                 ), HttpStatusCode.Accepted
             )
         } else {
-            tjenestebussIntegrasjonService.redigerExtreamBrev(call, result.journalpostId).map {
-                BestillOgRedigerBrevResponse.Success(it.url)
-            }.catch {
-                BestillOgRedigerBrevResponse.Failure(
-                    message = it.message,
-                    type = EXTREAM_GENERELL
-                )
-            }
+            val response = tjenestebussIntegrasjonService.redigerExtreamBrev(call, result.journalpostId)
+            response
         }
     }.catch { error ->
         BestillOgRedigerBrevResponse.Failure(message = error.message, EXTREAM_GENERELL)

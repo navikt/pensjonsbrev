@@ -24,7 +24,4 @@ data class RedigerExtreamDokumentRequestDto(
     val journalpostId: String,
 )
 
-sealed class RedigerExtreamDokumentResponseDto {
-    data class Success(val url: String) : RedigerExtreamDokumentResponseDto()
-    data class Failure(val message: String?) : RedigerExtreamDokumentResponseDto()
-}
+data class RedigerExtreamDokumentResponseDto(val url: String?, val failure: String?)

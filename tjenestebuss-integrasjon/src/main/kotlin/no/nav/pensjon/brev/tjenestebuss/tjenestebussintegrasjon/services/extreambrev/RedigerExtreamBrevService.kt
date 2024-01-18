@@ -13,7 +13,7 @@ const val TOKEN_QUERY_KEY = "token="
 const val BREVKLIENT_WIDTH = "300"
 const val BREVKLIENT_HEIGHT = "30"
 
-class ExtreamBrevService(config: Config, securityHandler: STSSercuritySOAPHandler) : TjenestebussService() {
+class RedigerExtreamBrevService(config: Config, securityHandler: STSSercuritySOAPHandler) : TjenestebussService() {
     private val logger = LoggerFactory.getLogger(this::class.java)
     private val psakDokbrevClient = PsakDokbrevClient(config, securityHandler, callIdHandler).client()
     private val brevklientSystemId = config.getString("brevklient.systemid")
@@ -49,20 +49,25 @@ class ExtreamBrevService(config: Config, securityHandler: STSSercuritySOAPHandle
             val token = URI(response.brevklientURL).query.split("&").filter { it.startsWith(TOKEN_QUERY_KEY) }
                 .map { it.removePrefix(TOKEN_QUERY_KEY) }
                 .firstOrNull()
-                ?: return RedigerExtreamDokumentResponseDto.Failure("Could not find token in redigerExtreamBrev response")
+                ?: return RedigerExtreamDokumentResponseDto.failure("Could not find token in redigerExtreamBrev response")
 
             val redirectChromeUrl =
                 "mbdok://$brevklientSystemId@brevklient/dokument/${requestDto.journalpostId}?token=$token&server=$brevklientChromeRootUrl"
 
-            return RedigerExtreamDokumentResponseDto.Success(redirectChromeUrl)
+            return RedigerExtreamDokumentResponseDto(url = redirectChromeUrl, failure = null)
         } catch (ex: Exception) {
-            logger.error("En feil oppstod under henting av Extream brev URL for dokumentId: ${requestDto.journalpostId}")
-            return RedigerExtreamDokumentResponseDto.Failure(ex.message)
+            val message =
+                """En feil oppstod under henting av Extream brev URL for dokumentId: ${requestDto.journalpostId}:
+                    |${ex.message}""".trimMargin()
+            logger.error(message)
+            return RedigerExtreamDokumentResponseDto.failure(message)
         }
     }
 }
 
-sealed class RedigerExtreamDokumentResponseDto {
-    data class Success(val url: String) : RedigerExtreamDokumentResponseDto()
-    data class Failure(val message: String?) : RedigerExtreamDokumentResponseDto()
+data class RedigerExtreamDokumentResponseDto(val url: String?, val failure: String?) {
+    companion object {
+        fun success(url: String) = RedigerExtreamDokumentResponseDto(url = url, failure = null)
+        fun failure(message: String) = RedigerExtreamDokumentResponseDto(url = null, failure = message)
+    }
 }
