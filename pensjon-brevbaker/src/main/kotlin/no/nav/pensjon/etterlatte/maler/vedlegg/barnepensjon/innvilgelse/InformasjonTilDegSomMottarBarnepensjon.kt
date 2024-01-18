@@ -49,7 +49,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, A
         text(
             Bokmal to "Du kan logge deg inn på våre nettsider for å se utbetalinger, brev eller lignende. Du kan også chatte eller sende melding via ${Constants.SKRIVTILOSS_URL}. Har du ikke BankID eller annen innloggingsmulighet til vår hjemmeside nav.no, kan du kontakte oss på telefon. Skal du sende oss noe per post må du bruke adressen",
             Nynorsk to "Du kan logge deg inn på nettsidene våre for å sjå utbetalingar, brev eller liknande. Du kan også chatte eller sende melding via ${Constants.SKRIVTILOSS_URL}. Har du ikkje BankID eller andre moglegheiter til å logge på heimesida vår nav.no, kan du kontakte oss på telefon. Skal du sende oss noko per post, bruker du adressa",
-            English to "You can log in to our website to see your payments, letters or similar. You can also chat with us or send a message online: ${Constants.SKRIVTILOSS_URL}. Please contact us by phone if you do not use BankID or another log in option. To send us any documents by conventional mail, please use this",
+            English to "You can log in to our website to see your payments, letters or similar. You can also chat with us or send a message online: ${Constants.Engelsk.SKRIVTILOSS_URL}. Please contact us by phone if you do not use BankID or another log in option. To send us any documents by conventional mail, please use this",
         )
     }
 }

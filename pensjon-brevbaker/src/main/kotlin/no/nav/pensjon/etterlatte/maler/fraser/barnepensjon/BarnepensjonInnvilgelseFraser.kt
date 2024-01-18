@@ -118,7 +118,7 @@ object BarnepensjonInnvilgelseFraser {
                     Language.Nynorsk to "Du finn meir informasjon på ".expr() + Constants.BARNEPENSJON_URL + ". " +
                             "Dersom du ikkje finn svar på spørsmålet ditt der, kan du ringje oss på telefon " + kontaktTelefon + " " +
                             ", kvardagar 9–15.",
-                    Language.English to "For more information, visit us online: ".expr() + Constants.BARNEPENSJON_URL + ". " +
+                    Language.English to "For more information, visit us online: ".expr() + Constants.Engelsk.BARNEPENSJON_URL + ". " +
                             "If you cannot find the answer to your question, you can call us by phone (" + kontaktTelefon + ") " +
                             "weekdays 9-15."
                 )
