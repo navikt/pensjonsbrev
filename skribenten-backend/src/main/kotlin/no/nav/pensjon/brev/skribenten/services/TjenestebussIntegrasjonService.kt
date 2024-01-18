@@ -5,6 +5,7 @@ import io.ktor.client.call.*
 import io.ktor.client.plugins.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
+import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.serialization.jackson.*
 import io.ktor.server.application.*
@@ -12,16 +13,21 @@ import io.ktor.server.plugins.*
 import no.nav.pensjon.brev.skribenten.auth.AuthorizedHttpClientResult
 import no.nav.pensjon.brev.skribenten.auth.AzureADOnBehalfOfAuthorizedHttpClient
 import no.nav.pensjon.brev.skribenten.auth.AzureADService
+import no.nav.pensjon.brev.skribenten.routes.BestillOgRedigerBrevResponse
+import no.nav.pensjon.brev.skribenten.routes.BestillOgRedigerBrevResponse.FailureType.EXTREAM_REDIGERING_GENERELL
+import no.nav.pensjon.brev.skribenten.routes.BestillOgRedigerBrevResponse.FailureType.TJENESTEBUSS_INTEGRASJON
 import no.nav.pensjon.brev.skribenten.routes.OrderLetterRequest
 import no.nav.pensjon.brev.skribenten.routes.getCurrentGregorianTime
 import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.*
 import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.BestillBrevExtreamRequestDto.SakskontekstDto
 import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.FinnSamhandlerResponseDto.Success.Samhandler
+import org.slf4j.LoggerFactory
 
 class TjenestebussIntegrasjonService(config: Config, authService: AzureADService) {
 
     private val tjenestebussIntegrasjonUrl = config.getString("url")
     private val tjenestebussIntegrasjonScope = config.getString("scope")
+    private val logger = LoggerFactory.getLogger(TjenestebussIntegrasjonService::class.java)
 
     private val tjenestebussIntegrasjonClient =
         AzureADOnBehalfOfAuthorizedHttpClient(tjenestebussIntegrasjonScope, authService) {
@@ -135,13 +141,6 @@ class TjenestebussIntegrasjonService(config: Config, authService: AzureADService
                 )
             )
         }.toServiceResult<BestillExtreamBrevResponseDto.Success, BestillExtreamBrevResponseDto.Failure>()
-            .map {
-                BestillExtreamBrevResponseDto.Success(
-                    journalpostId = it.journalpostId
-                )
-            }.catch { error ->
-                BestillExtreamBrevResponseDto.Failure(message = error.message, type = error.type)
-            }
     }
 
     suspend fun redigerDoksysBrev(
@@ -161,16 +160,36 @@ class TjenestebussIntegrasjonService(config: Config, authService: AzureADService
     suspend fun redigerExtreamBrev(
         call: ApplicationCall,
         dokumentId: String,
-    ): RedigerExtreamDokumentResponseDto {
-        val result = tjenestebussIntegrasjonClient.post(call, "/redigerExtreamBrev") {
+    ): BestillOgRedigerBrevResponse {
+        val response = tjenestebussIntegrasjonClient.post(call, "/redigerExtreamBrev") {
             contentType(ContentType.Application.Json)
             accept(ContentType.Application.Json)
-            setBody(RedigerExtreamDokumentRequestDto(journalpostId = dokumentId))
-        }
-        return when(result) {
-            is AuthorizedHttpClientResult.Response -> return result.response.body()
-            is AuthorizedHttpClientResult.Error -> return RedigerExtreamDokumentResponseDto
+            setBody(RedigerExtreamDokumentRequestDto(dokumentId))
         }
 
+        when (response) {
+            is AuthorizedHttpClientResult.Response -> {
+                val httpResponse = response.response
+                val extreamResponse = httpResponse.body<RedigerExtreamDokumentResponseDto>()
+                if (httpResponse.status.isSuccess()) {
+                    return BestillOgRedigerBrevResponse(
+                        url = extreamResponse.url,
+                        failureType = extreamResponse.failure?.let {
+                            logger.error("Feil ved redigering av extream brev $it")
+                            EXTREAM_REDIGERING_GENERELL
+                        }
+                    )
+                } else {
+                    logger.error("""Feil ved redigering av extream brev. 
+                                |Status: ${httpResponse.status}}
+                                |message: ${httpResponse.bodyAsText()}}""".trimMargin())
+                    return BestillOgRedigerBrevResponse(TJENESTEBUSS_INTEGRASJON)
+                }
+            }
+            is AuthorizedHttpClientResult.Error -> {
+                logger.error(response.error.logString())
+                return BestillOgRedigerBrevResponse(TJENESTEBUSS_INTEGRASJON)
+            }
+        }
     }
 }

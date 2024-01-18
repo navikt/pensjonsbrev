@@ -3,12 +3,19 @@ package no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto
 import javax.xml.datatype.XMLGregorianCalendar
 
 sealed class BestillExtreamBrevResponseDto {
-    data class Success(val journalpostId: String): BestillExtreamBrevResponseDto()
+    data class Success(val journalpostId: String) : BestillExtreamBrevResponseDto()
     data class Failure(
-        val message: String,
-        val type: String,
-    ) : BestillExtreamBrevResponseDto()
+        val failureType: FailureType,
+    ) : BestillExtreamBrevResponseDto() {
+        enum class FailureType {
+            ADRESSE_MANGLER,
+            HENTE_BREVDATA,
+            MANGLER_OBLIGATORISK_INPUT,
+            OPPRETTE_JOURNALPOST,
+        }
+    }
 }
+
 
 data class BestillBrevExtreamRequestDto(
     val brevKode: String,

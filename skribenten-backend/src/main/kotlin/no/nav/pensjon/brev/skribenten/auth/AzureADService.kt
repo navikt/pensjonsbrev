@@ -41,7 +41,9 @@ sealed class TokenResponse {
         @JsonProperty("trace_id") val trace_id: String,
         @JsonProperty("correlation_id") val correlation_id: String,
         @JsonProperty("claims") val claims: String?,
-    ) : TokenResponse()
+    ) : TokenResponse() {
+        fun logString() = "Feil ved token-utveksling correlation_id: $correlation_id Description:$error_description"
+    }
 }
 
 class AzureADService(private val jwtConfig: JwtConfig, engine: HttpClientEngine = CIO.create()) {

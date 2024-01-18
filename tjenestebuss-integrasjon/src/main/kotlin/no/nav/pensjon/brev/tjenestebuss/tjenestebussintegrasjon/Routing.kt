@@ -19,9 +19,9 @@ import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.auth.requireAzur
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.auth.tjenestebusJwt
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.arkiv.ArkivTjenestebussService
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.arkiv.BestillBrevExtreamRequestDto
-import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.arkiv.BestillBrevResponseDto
-import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.arkiv.BestillBrevResponseDto.Failure.FailureType.MANGLER_OBLIGATORISK_INPUT
-import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.arkiv.BestillBrevResponseDto.Success
+import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.arkiv.BestillExtreamBrevResponseDto
+import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.arkiv.BestillExtreamBrevResponseDto.Failure.FailureType.MANGLER_OBLIGATORISK_INPUT
+import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.arkiv.BestillExtreamBrevResponseDto.Success
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.dokumentsproduksjon.DokumentproduksjonService
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.dokumentsproduksjon.RedigerDoksysDokumentResponseDto
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.dokumentsproduksjon.RedigerDoksysDokumentResponseDto.Failure.FailureType.*
@@ -144,10 +144,10 @@ fun Application.tjenestebussIntegrationApi(config: Config) {
             post("/bestillExtreamBrev") {
                 val requestDto = call.receive<BestillBrevExtreamRequestDto>()
 
-                when (val arkivResponse: BestillBrevResponseDto =
+                when (val arkivResponse: BestillExtreamBrevResponseDto =
                     withCallId(arkivTjenestebussService) { bestillBrev(requestDto) }) {
                     is Success -> call.respond(HttpStatusCode.OK, arkivResponse)
-                    is BestillBrevResponseDto.Failure -> {
+                    is BestillExtreamBrevResponseDto.Failure -> {
                         if (arkivResponse.failureType == MANGLER_OBLIGATORISK_INPUT) {
                             call.respond(HttpStatusCode.BadRequest, arkivResponse)
                         } else {
