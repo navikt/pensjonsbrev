@@ -11,8 +11,6 @@ import no.nav.pensjon.brev.writeTestPDF
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.Fixtures
 import no.nav.pensjon.etterlatte.maler.*
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.OMSInnvilgelseManuell
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.OMSOpphoerManuell
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 

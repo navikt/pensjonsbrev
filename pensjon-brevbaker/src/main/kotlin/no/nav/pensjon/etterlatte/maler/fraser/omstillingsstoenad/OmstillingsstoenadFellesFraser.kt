@@ -1,4 +1,4 @@
-package no.nav.pensjon.etterlatte.maler.fraser.common
+package no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad
 
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.Bokmal
@@ -7,10 +7,11 @@ import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
 
-object OMSFelles {
+object OmstillingsstoenadFellesFraser {
 
-        object MeldFraOmEndringer : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    object MeldFraOmEndringer : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             title2 {
                 text(
@@ -107,7 +108,7 @@ object OMSFelles {
                 text(
                     Bokmal to "Du kan finne svar på ${Constants.OMS_URL}. På ${Constants.KONTAKT_URL} kan du " +
                             "chatte eller skrive til oss. Du kan også kontakte oss på telefon " +
-                            "${Constants.KONTAKTTELEFON_PENSJON}, hverdager 09.00-15.00. Hvis du oppgir " +
+                            "+47 ${Constants.KONTAKTTELEFON_PENSJON}, hverdager 09.00-15.00. Hvis du oppgir " +
                             "fødselsnummer, kan vi lettere gi deg rask og god hjelp.",
                     Nynorsk to "",
                     English to ""
@@ -115,5 +116,4 @@ object OMSFelles {
             }
         }
     }
-
 }

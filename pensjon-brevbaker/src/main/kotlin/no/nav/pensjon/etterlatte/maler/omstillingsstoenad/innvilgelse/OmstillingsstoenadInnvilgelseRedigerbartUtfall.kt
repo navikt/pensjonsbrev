@@ -1,4 +1,4 @@
-package no.nav.pensjon.etterlatte.maler.omstillingsstoenad.foerstegangsvedtak
+package no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse
 
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
@@ -13,22 +13,24 @@ import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.Avdoed
 import no.nav.pensjon.etterlatte.maler.Delmal
-import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.Innvilgelse
+import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadInnvilgelseFraser
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.OmstillingsstoenadInnvilgelseRedigerbartUtfallDTOSelectors.etterbetaling
 import java.time.LocalDate
 
-data class FoerstegangsvedtakUtfallDTO(
+data class OmstillingsstoenadInnvilgelseRedigerbartUtfallDTO(
     val virkningsdato: LocalDate,
     val avdoed: Avdoed,
-    val utbetalingsbeloep: Kroner
+    val utbetalingsbeloep: Kroner,
+    val etterbetaling: Boolean
 )
 
 @TemplateModelHelpers
-object FoerstegangsvedtakUtfall : EtterlatteTemplate<FoerstegangsvedtakUtfallDTO>, Delmal {
-    override val kode: EtterlatteBrevKode = EtterlatteBrevKode.OMS_FOERSTEGANGSVEDTAK_INNVILGELSE_UTFALL
+object OmstillingsstoenadInnvilgelseRedigerbartUtfall : EtterlatteTemplate<OmstillingsstoenadInnvilgelseRedigerbartUtfallDTO>, Delmal {
+    override val kode: EtterlatteBrevKode = EtterlatteBrevKode.OMSTILLINGSSTOENAD_INNVILGELSE_UTFALL
 
     override val template = createTemplate(
         name = kode.name,
-        letterDataType = FoerstegangsvedtakUtfallDTO::class,
+        letterDataType = OmstillingsstoenadInnvilgelseRedigerbartUtfallDTO::class,
         languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(
             displayTitle = "Vedtak - begrunnelse for innvilgelse",
@@ -46,9 +48,8 @@ object FoerstegangsvedtakUtfall : EtterlatteTemplate<FoerstegangsvedtakUtfallDTO
         }
         outline {
             includePhrase(
-                Innvilgelse.BegrunnelseForVedtaketRedigerbart,
+                OmstillingsstoenadInnvilgelseFraser.BegrunnelseForVedtaketRedigerbart(etterbetaling),
             )
-
         }
     }
 }

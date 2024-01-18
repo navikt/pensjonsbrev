@@ -12,14 +12,15 @@ import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
-import no.nav.pensjon.etterlatte.maler.EtterbetalingDTO
-import no.nav.pensjon.etterlatte.maler.EtterbetalingDTOSelectors.fraDato
-import no.nav.pensjon.etterlatte.maler.EtterbetalingDTOSelectors.tilDato
+import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadEtterbetaling
+import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadEtterbetalingSelectors.beregningsperioder
+import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadEtterbetalingSelectors.fraDato
+import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadEtterbetalingSelectors.tilDato
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
 
 
 @TemplateModelHelpers
-val etterbetaling = createAttachment<LangBokmalNynorskEnglish, EtterbetalingDTO>(
+val etterbetalingOmstillingsstoenad = createAttachment<LangBokmalNynorskEnglish, OmstillingsstoenadEtterbetaling>(
     title = newText(
         Bokmal to "Etterbetaling",
         Nynorsk to "",
@@ -38,10 +39,10 @@ val etterbetaling = createAttachment<LangBokmalNynorskEnglish, EtterbetalingDTO>
     }
     paragraph {
         text(
-            Bokmal to "Har du mottatt andre ytelser fra NAV eller andre, som for eksempel " +
-                    "tjenestepensjonsordninger, kan det bli trukket i etterbetalingen. Hvis Skatteetaten " +
-                    "eller andre ordninger har krav i etterbetalingen kan utbetalingen bli forsinket. " +
-                    "Hvis du får fradrag i etterbetalingen, vil det gå frem av utbetalingsmeldingen din. ",
+            Bokmal to "Det kan bli beregnet fradrag i etterbetalingen for skatt, ytelser du har mottatt fra " +
+                    "NAV eller andre, som for eksempel tjenestepensjonsordninger. Hvis Skatteetaten eller andre " +
+                    "ordninger har krav i etterbetalingen kan denne bli forsinket. Fradrag i etterbetalingen " +
+                    "vil gå fram av utbetalingsmeldingen.",
             Nynorsk to "",
             English to "",
         )
@@ -65,6 +66,23 @@ val etterbetaling = createAttachment<LangBokmalNynorskEnglish, EtterbetalingDTO>
         text(
             Bokmal to "Gjelder etterbetalingen tidligere år trekker NAV skatt etter Skatteetatens " +
                     "standardsatser. Du kan lese mer om satsene på ${Constants.SKATTETREKK_ETTERBETALING_URL}.",
+            Nynorsk to "",
+            English to "",
+        )
+    }
+    title2 {
+        text(
+            Bokmal to "Etterbetaling av barnepensjon fra innvilgelsestidspunktet",
+            Nynorsk to "",
+            English to "",
+        )
+    }
+
+    includePhrase(BeregningsperiodetabellEtterbetaling(beregningsperioder))
+
+    paragraph {
+        text(
+            Bokmal to "Beløpene i tabellen er før skatt.",
             Nynorsk to "",
             English to "",
         )

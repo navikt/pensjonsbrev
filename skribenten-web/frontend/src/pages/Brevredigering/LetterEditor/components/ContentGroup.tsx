@@ -143,6 +143,42 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
     }
   };
 
+  const handleArrowLeft = (event: React.KeyboardEvent<HTMLSpanElement>) => {
+    if (contentEditableReference.current === null) return;
+
+    const allSpans = [...document.querySelectorAll<HTMLSpanElement>("span[contenteditable]")];
+    const thisSpanIndex = allSpans.indexOf(contentEditableReference.current);
+    const cursorIsAtBeginning = selectService.getCursorOffset() === 0;
+    if (!cursorIsAtBeginning) return;
+
+    const previousSpanIndex = thisSpanIndex - 1;
+    if (previousSpanIndex === -1) return;
+
+    event.preventDefault();
+    const nextFocus = allSpans[previousSpanIndex];
+    nextFocus.focus();
+    selectService.focusAtOffset(nextFocus.childNodes[0], nextFocus.textContent?.length ?? 0);
+  };
+
+  const handleArrowRight = (event: React.KeyboardEvent<HTMLSpanElement>) => {
+    if (contentEditableReference.current === null) return;
+
+    const allSpans = [...document.querySelectorAll<HTMLSpanElement>("span[contenteditable]")];
+    const thisSpanIndex = allSpans.indexOf(contentEditableReference.current);
+
+    const cursorIsAtEnd = selectService.getCursorOffset() >= content.text.length;
+    if (!cursorIsAtEnd) return;
+
+    const nextSpanIndex = thisSpanIndex + 1;
+
+    if (nextSpanIndex > allSpans.length - 1) return;
+
+    event.preventDefault();
+    const nextFocus = allSpans[nextSpanIndex];
+    nextFocus.focus();
+    selectService.focusAtOffset(nextFocus.childNodes[0], 0);
+  };
+
   return (
     <span
       // NOTE: ideally this would be "plaintext-only", and it works in practice.
@@ -172,6 +208,12 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
         }
         if (event.key === "Delete") {
           handleDelete(event);
+        }
+        if (event.key === "ArrowLeft") {
+          handleArrowLeft(event);
+        }
+        if (event.key === "ArrowRight") {
+          handleArrowRight(event);
         }
       }}
       ref={contentEditableReference}

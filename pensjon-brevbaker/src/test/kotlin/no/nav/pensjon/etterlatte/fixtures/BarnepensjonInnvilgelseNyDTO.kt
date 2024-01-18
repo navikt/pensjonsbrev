@@ -2,7 +2,7 @@ package no.nav.pensjon.etterlatte.fixtures
 
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import no.nav.pensjon.etterlatte.maler.Beregningsperiode
-import no.nav.pensjon.etterlatte.maler.EtterbetalingDTO
+import no.nav.pensjon.etterlatte.maler.Etterbetaling
 import no.nav.pensjon.etterlatte.maler.IntBroek
 import no.nav.pensjon.etterlatte.maler.Periode
 import no.nav.pensjon.etterlatte.maler.TrygdetidType
@@ -16,6 +16,7 @@ import java.time.Month
 
 fun createBarnepensjonInnvilgelseNyDTO() =
     BarnepensjonInnvilgelseNyDTO(
+        innhold = listOf(),
         utbetalingsinfo = Utbetalingsinfo(
             antallBarn = 2,
             beloep = Kroner(1234),
@@ -38,9 +39,7 @@ fun createBarnepensjonInnvilgelseNyDTO() =
                 ),
             ),
         ),
-        avkortingsinfo = null,
-        innhold = listOf(),
-        etterbetaling = EtterbetalingDTO(
+        etterbetaling = Etterbetaling(
             fraDato = LocalDate.of(2020, Month.JANUARY, 1),
             tilDato = LocalDate.of(2023, Month.JULY, 31),
             etterbetalingsperioder = listOf(
