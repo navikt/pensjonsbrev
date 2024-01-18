@@ -22,7 +22,7 @@ docker compose up -d --build
    * python
    * vault
    * gcloud cli
-   * kjørende docker/colima (docker compose v2, ikke "docker-compose")
+   * kjørende docker/colima
    * naisdevice med standard dev-miljø tilganger og tjenestebuss-q2 gruppe-tilgang
 2. Hent alle secrets:
    ```bash
