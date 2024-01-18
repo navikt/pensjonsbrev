@@ -197,7 +197,6 @@ describe("enterHandler", () => {
 describe("ArrowLeft will move focus to previous editable content", () => {
   test("unless already at the start of the document", async () => {
     const { user } = setupComplex();
-    screen.logTestingPlaygroundURL();
     await user.click(screen.getByText("første literal"));
     expect(setEditorState.mock.lastCall?.[0](editorState).focus).toEqual({
       blockIndex: 0,
