@@ -1,11 +1,11 @@
 import { css } from "@emotion/react";
 import { ArrowRightIcon, StarFillIcon, StarIcon } from "@navikt/aksel-icons";
-import { BodyShort, Button, Heading, Select, Tag } from "@navikt/ds-react";
+import { BodyShort, Button, Heading, Radio, RadioGroup, Select, Tag, VStack } from "@navikt/ds-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate, useParams, useRouteContext, useSearch } from "@tanstack/react-router";
 import type { AxiosError } from "axios";
 import { useEffect } from "react";
-import { FormProvider, useForm, useFormContext } from "react-hook-form";
+import { Controller, FormProvider, useForm, useFormContext } from "react-hook-form";
 
 import {
   addFavoritt,
@@ -65,7 +65,12 @@ function Brevmal() {
     onSuccess: () => {},
   });
 
-  const methods = useForm();
+  const methods = useForm({
+    defaultValues: {
+      isSensitive: null,
+      spraak: null,
+    },
+  });
 
   if (!letterTemplate) {
     return <></>;
@@ -91,20 +96,28 @@ function Brevmal() {
             justify-content: space-between;
           `}
           onSubmit={methods.handleSubmit((submittedValues) => {
-            if (letterTemplate.brevsystem === BrevSystem.Brevbaker) {
-              navigate({ to: redigeringRoute.id, params: { sakId, templateId } });
-            } else {
-              const orderLetterRequest = {
-                brevkode: letterTemplate.id,
-                spraak: submittedValues.spraak,
-                sakId: Number(sakId),
-                gjelderPid: sak?.foedselsnr ?? "TODO",
-              };
-              orderLetterMutation.mutate(orderLetterRequest);
+            console.log(submittedValues);
+            switch (letterTemplate.brevsystem) {
+              case BrevSystem.Brevbaker: {
+                return navigate({ to: redigeringRoute.id, params: { sakId, templateId } });
+              }
+              case BrevSystem.Extream:
+              case BrevSystem.DokSys: {
+                const orderLetterRequest = {
+                  brevkode: letterTemplate.id,
+                  spraak: submittedValues.spraak,
+                  sakId: Number(sakId),
+                  gjelderPid: sak?.foedselsnr ?? "TODO",
+                };
+                return orderLetterMutation.mutate(orderLetterRequest);
+              }
             }
           })}
         >
-          <SelectLanguage letterTemplate={letterTemplate} />
+          <VStack gap="4">
+            <SelectLanguage letterTemplate={letterTemplate} />
+            <SelectSensitivity letterTemplate={letterTemplate} />
+          </VStack>
 
           <Button
             css={css`
@@ -124,6 +137,25 @@ function Brevmal() {
   );
 }
 
+function SelectSensitivity({ letterTemplate }: { letterTemplate: LetterMetadata }) {
+  if (letterTemplate.brevsystem !== BrevSystem.Extream) {
+    return <></>;
+  }
+
+  return (
+    <Controller
+      name="isSensitive"
+      render={({ field, fieldState }) => (
+        <RadioGroup legend="Er brevet sensitivt?" {...field} error={fieldState.error?.message} size="small">
+          <Radio value>Ja</Radio>
+          <Radio value={false}>Nei</Radio>
+        </RadioGroup>
+      )}
+      rules={{ validate: (value) => value !== null || "Obligatorisk" }}
+    />
+  );
+}
+
 function SelectLanguage({ letterTemplate }: { letterTemplate: LetterMetadata }) {
   const { sakId } = useParams({ from: selectedTemplateRoute.id });
   const { register, setValue } = useFormContext();
@@ -137,7 +169,7 @@ function SelectLanguage({ letterTemplate }: { letterTemplate: LetterMetadata }) 
   }, [preferredLanguage, setValue, letterTemplate.spraak]);
 
   return (
-    <Select {...register("spraak")} label="Språk" size="small">
+    <Select {...register("spraak", { required: "Obligatorisk" })} label="Språk" size="small">
       {letterTemplate.spraak.map((spraak) => (
         <option key={spraak} value={spraak}>
           {SPRAAK_ENUM_TO_TEXT[spraak]} {preferredLanguage === spraak ? "(foretrukket språk)" : ""}
