@@ -1,5 +1,4 @@
 #Used for local testing purposes
-version: '3.8'
 services:
   pdf-bygger:
     build: ./pdf-bygger
@@ -34,7 +33,8 @@ services:
       - "8082:8080"
       - "5017:5007"
     env_file:
-      - ./skribenten-backend/secrets/azuread.env
+      - path: ./skribenten-backend/secrets/azuread.env
+        optional: true
     environment:
       - BREVBAKER_SCOPE=api://dev-gcp.pensjonsbrev.pensjon-brevbaker/.default
       - BREVBAKER_URL=http://pensjon-brevbaker:8080
@@ -81,7 +81,8 @@ services:
       - "8086:8080"
       - "5018:5008"
     env_file:
-      - tjenestebuss-integrasjon/secrets/docker.env
+      - path: tjenestebuss-integrasjon/secrets/docker.env
+        optional: true
     environment:
       - TJENESTEBUSS_URL=https://tjenestebuss-q2.adeo.no/
       - STS_URL=https://security-token-service.dev.adeo.no
@@ -99,7 +100,8 @@ services:
       - "8083:8083"
     restart: on-failure
     env_file:
-      - skribenten-web/bff/.env
+      - path: skribenten-web/bff/.env
+        optional: true
     environment:
       - WONDERWALL_AUTO_LOGIN=true
       - WONDERWALL_OPENID_PROVIDER=azure
@@ -116,7 +118,8 @@ services:
     secrets:
       - npmrc
     env_file:
-      - skribenten-web/bff/.env
+      - path: skribenten-web/bff/.env
+        optional: true
     ports:
       - "8084:8084"
     environment:
