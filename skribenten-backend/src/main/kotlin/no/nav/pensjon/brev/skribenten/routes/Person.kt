@@ -3,7 +3,6 @@ package no.nav.pensjon.brev.skribenten.routes
 import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.routing.*
-import io.ktor.server.util.*
 import no.nav.pensjon.brev.skribenten.services.KrrService
 import no.nav.pensjon.brev.skribenten.services.PdlService
 import no.nav.pensjon.brev.skribenten.services.PensjonPersonDataService
@@ -18,7 +17,7 @@ fun Route.personRoute(pdlService: PdlService, pensjonPersonDataService: PensjonP
         }
 
         post<PidRequest>("/adresse") {
-            respondWithResult(pensjonPersonDataService.hentAdresse(call, it.pid))
+            respondWithResult(pensjonPersonDataService.hentKontaktadresse(call, it.pid))
         }
 
         post<PidRequest>("/foretrukketSpraak") {
