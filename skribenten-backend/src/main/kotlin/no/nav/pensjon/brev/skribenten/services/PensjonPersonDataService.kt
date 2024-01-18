@@ -33,8 +33,8 @@ class PensjonPersonDataService(config: Config, authService: AzureADService) {
     }
 
     suspend fun hentKontaktadresse(call: ApplicationCall, pid: String): ServiceResult<KontaktAdresseResponseDto, String> =
-        client.get(call, "/api/adresse/kontaktadresse?checkForVerge=true") {
-            parameter("checkForVerge", false)
+        client.get(call, "/api/adresse/kontaktadresse") {
+            parameter("checkForVerge", true)
             headers {
                 header("pid", pid)
             }
