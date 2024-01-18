@@ -10,7 +10,7 @@ import type { LetterEditorState } from "~/pages/Brevredigering/LetterEditor/mode
 import type { LiteralValue, ParagraphBlock } from "~/types/brevbakerTypes";
 import { LITERAL, PARAGRAPH } from "~/types/brevbakerTypes";
 
-import { letter } from "../../utils";
+import { item, itemList, letter, literal, paragraph, variable } from "../../utils";
 
 const content: LiteralValue[] = [
   { type: LITERAL, id: 1, text: "Heisann" },
@@ -36,6 +36,41 @@ function setup() {
     ...render(
       <EditorStateContext.Provider value={{ editorState, setEditorState }}>
         <ContentGroup literalIndex={{ blockIndex: 0, contentIndex: 0 }} />
+      </EditorStateContext.Provider>,
+    ),
+  };
+}
+
+const complexEditorState = letter(
+  paragraph(
+    variable("Dokumentet starter med variable"),
+    literal("første literal"),
+    variable("X"),
+    literal("andre literal"),
+  ),
+  paragraph(variable("Paragraf med kun variable")),
+  paragraph(literal("paragraf med kun tekst")),
+  paragraph(
+    itemList(
+      item(literal("1. item")),
+      item(variable("2. item variable")),
+      item(literal("3. item"), variable("med variable")),
+      item(literal("nth item")),
+    ),
+  ),
+  paragraph(literal("Dokumentet avsluttes med literal")),
+);
+
+function setupComplex() {
+  return {
+    user: userEvent.setup(),
+    ...render(
+      <EditorStateContext.Provider value={{ editorState: complexEditorState, setEditorState }}>
+        {complexEditorState.editedLetter.letter.blocks.map((block, blockIndex) => (
+          <div className={block.type} key={blockIndex}>
+            <ContentGroup literalIndex={{ blockIndex, contentIndex: 0 }} />
+          </div>
+        ))}
       </EditorStateContext.Provider>,
     ),
   };
@@ -156,5 +191,141 @@ describe("enterHandler", () => {
     expect(setEditorState.mock.lastCall?.[0](editorState)).toEqual(
       Actions.split(editorState, { blockIndex: 0, contentIndex: 0 }, content[0].text.length),
     );
+  });
+});
+
+describe("ArrowLeft will move focus to previous editable content", () => {
+  test("unless already at the start of the document", async () => {
+    const { user } = setupComplex();
+    screen.logTestingPlaygroundURL();
+    await user.click(screen.getByText("første literal"));
+    expect(setEditorState.mock.lastCall?.[0](editorState).focus).toEqual({
+      blockIndex: 0,
+      contentIndex: 1,
+    });
+
+    await user.keyboard("{Home}{ArrowLeft}");
+
+    expect(setEditorState.mock.lastCall?.[0](editorState).focus).toEqual({
+      blockIndex: 0,
+      contentIndex: 1,
+    });
+  });
+
+  test("will skip variables in the same block", async () => {
+    const { user } = setupComplex();
+    await user.click(screen.getByText("andre literal"));
+    expect(setEditorState.mock.lastCall?.[0](editorState).focus).toEqual({
+      blockIndex: 0,
+      contentIndex: 3,
+    });
+
+    await user.keyboard("{Home}{ArrowLeft}");
+
+    expect(setEditorState.mock.lastCall?.[0](editorState).focus).toEqual({
+      blockIndex: 0,
+      contentIndex: 1,
+    });
+  });
+  test("will skip over a block if it has no editable content", async () => {
+    const { user } = setupComplex();
+    await user.click(screen.getByText("paragraf med kun tekst"));
+    expect(setEditorState.mock.lastCall?.[0](editorState).focus).toEqual({
+      blockIndex: 2,
+      contentIndex: 0,
+    });
+
+    await user.keyboard("{Home}{ArrowLeft}");
+
+    expect(setEditorState.mock.lastCall?.[0](editorState).focus).toEqual({
+      blockIndex: 0,
+      contentIndex: 3,
+    });
+  });
+  test("will skip an item if it is not editable", async () => {
+    const { user } = setupComplex();
+    await user.click(screen.getByText("3. item"));
+    expect(setEditorState.mock.lastCall?.[0](editorState).focus).toEqual({
+      blockIndex: 3,
+      contentIndex: 0,
+      itemIndex: 2,
+      itemContentIndex: 0,
+    });
+
+    await user.keyboard("{Home}{ArrowLeft}");
+
+    expect(setEditorState.mock.lastCall?.[0](editorState).focus).toEqual({
+      blockIndex: 3,
+      contentIndex: 0,
+      itemIndex: 0,
+      itemContentIndex: 0,
+    });
+  });
+});
+describe("ArrowRight will move focus to next editable content", () => {
+  test("unless already at the end of the document", async () => {
+    const { user } = setupComplex();
+    await user.click(screen.getByText("Dokumentet avsluttes med literal"));
+    expect(setEditorState.mock.lastCall?.[0](editorState).focus).toEqual({
+      blockIndex: 4,
+      contentIndex: 0,
+    });
+
+    await user.keyboard("{ArrowRight}");
+
+    expect(setEditorState.mock.lastCall?.[0](editorState).focus).toEqual({
+      blockIndex: 4,
+      contentIndex: 0,
+    });
+  });
+
+  test("will skip variables in the same block", async () => {
+    const { user } = setupComplex();
+    await user.click(screen.getByText("første literal"));
+    expect(setEditorState.mock.lastCall?.[0](editorState).focus).toEqual({
+      blockIndex: 0,
+      contentIndex: 1,
+    });
+
+    await user.keyboard("{ArrowRight}");
+
+    expect(setEditorState.mock.lastCall?.[0](editorState).focus).toEqual({
+      blockIndex: 0,
+      contentIndex: 3,
+    });
+  });
+  test("will skip over a block if it has no editable content", async () => {
+    const { user } = setupComplex();
+    await user.click(screen.getByText("andre literal"));
+    expect(setEditorState.mock.lastCall?.[0](editorState).focus).toEqual({
+      blockIndex: 0,
+      contentIndex: 3,
+    });
+
+    await user.keyboard("{ArrowRight}");
+
+    expect(setEditorState.mock.lastCall?.[0](editorState).focus).toEqual({
+      blockIndex: 2,
+      contentIndex: 0,
+    });
+  });
+  test("will skip an item if it is not editable", async () => {
+    const { user } = setupComplex();
+    await user.click(screen.getByText("3. item"));
+    expect(setEditorState.mock.lastCall?.[0](editorState).focus).toEqual({
+      blockIndex: 3,
+      contentIndex: 0,
+      itemIndex: 2,
+      itemContentIndex: 0,
+    });
+
+    await user.keyboard("{ArrowRight}");
+
+    expect(setEditorState.mock.lastCall?.[0](editorState).focus).toEqual({
+      blockIndex: 3,
+      contentIndex: 0,
+      itemIndex: 3,
+      itemContentIndex: 0,
+    });
   });
 });
