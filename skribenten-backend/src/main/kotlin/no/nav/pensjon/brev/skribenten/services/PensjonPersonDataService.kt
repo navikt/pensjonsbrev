@@ -12,10 +12,11 @@ import no.nav.pensjon.brev.skribenten.auth.AzureADOnBehalfOfAuthorizedHttpClient
 import no.nav.pensjon.brev.skribenten.auth.AzureADService
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-data class AdresseResponse(
-    val adresseString : String,
-    val adresselinjer : List<String>,
+data class KontaktAdresseResponseDto(
+    val adresseString: String,
+    val adresselinjer: List<String>,
 )
+
 class PensjonPersonDataService(config: Config, authService: AzureADService) {
 
     private val pensjonPersondataURL = config.getString("url")
@@ -31,12 +32,12 @@ class PensjonPersonDataService(config: Config, authService: AzureADService) {
         }
     }
 
-
-    suspend fun hentAdresse(call: ApplicationCall, pid: String) =
-        client.get(call, "/api/adresse/kontaktadresse") {
+    suspend fun hentKontaktadresse(call: ApplicationCall, pid: String): ServiceResult<KontaktAdresseResponseDto, String> =
+        client.get(call, "/api/adresse/kontaktadresse?checkForVerge=true") {
             parameter("checkForVerge", false)
             headers {
                 header("pid", pid)
             }
-        }.toServiceResult<AdresseResponse, String >()
+        }.toServiceResult<KontaktAdresseResponseDto, String>()
+
 }
