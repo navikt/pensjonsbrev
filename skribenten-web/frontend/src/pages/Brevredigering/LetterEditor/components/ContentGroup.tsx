@@ -1,19 +1,31 @@
 import React, { useEffect, useRef } from "react";
 
 import Actions from "~/pages/Brevredigering/LetterEditor/actions";
-import { MergeTarget } from "~/pages/Brevredigering/LetterEditor/actions/model";
+import { MergeTarget } from "~/pages/Brevredigering/LetterEditor/actions/merge";
+import type { LiteralIndex } from "~/pages/Brevredigering/LetterEditor/actions/model";
 import { Text } from "~/pages/Brevredigering/LetterEditor/components/Text";
 import { useEditor } from "~/pages/Brevredigering/LetterEditor/LetterEditor";
 import { applyAction } from "~/pages/Brevredigering/LetterEditor/lib/actions";
+import type { Focus } from "~/pages/Brevredigering/LetterEditor/model/state";
 import { SelectionService } from "~/pages/Brevredigering/LetterEditor/services/SelectionService";
-import type { LiteralValue } from "~/types/brevbakerTypes";
+import type { LiteralValue, RenderedLetter } from "~/types/brevbakerTypes";
 import { ITEM_LIST, LITERAL, VARIABLE } from "~/types/brevbakerTypes";
 
 const selectService = new SelectionService(true);
 
-export function ContentGroup({ blockIndex }: { blockIndex: number }) {
-  const { editorState, setEditorState } = useEditor();
-  const block = editorState.editedLetter.letter.blocks[blockIndex];
+function getContent(letter: RenderedLetter, literalIndex: LiteralIndex) {
+  const content = letter.blocks[literalIndex.blockIndex].content;
+  const contentValue = content[literalIndex.contentIndex];
+  if ("itemIndex" in literalIndex && contentValue.type === ITEM_LIST) {
+    return contentValue.items[literalIndex.itemIndex].content;
+  }
+  return content;
+}
+
+export function ContentGroup({ literalIndex }: { literalIndex: LiteralIndex }) {
+  const { editorState } = useEditor();
+  const block = editorState.editedLetter.letter.blocks[literalIndex.blockIndex];
+  const contents = getContent(editorState.editedLetter.letter, literalIndex);
 
   if (!block.editable) {
     return (
@@ -34,24 +46,35 @@ export function ContentGroup({ blockIndex }: { blockIndex: number }) {
   }
 
   return (
-    <div onFocus={() => setEditorState((oldState) => ({ ...oldState, currentBlock: blockIndex }))}>
-      {block.content.map((content, contentIndex) => {
+    <div>
+      {contents.map((content, _contentIndex) => {
         switch (content.type) {
           case LITERAL: {
-            return (
-              <OurOwnEditableText
-                blockIndex={blockIndex}
-                content={content}
-                contentIndex={contentIndex}
-                key={contentIndex}
-              />
-            );
+            const updatedLiteralIndex =
+              "itemIndex" in literalIndex
+                ? { ...literalIndex, itemContentIndex: _contentIndex }
+                : { ...literalIndex, contentIndex: _contentIndex };
+            return <EditableText content={content} key={_contentIndex} literalIndex={updatedLiteralIndex} />;
           }
           case VARIABLE: {
-            return <Text content={content} key={contentIndex} />;
+            return <Text content={content} key={_contentIndex} />;
           }
           case ITEM_LIST: {
-            return <span>TODO</span>;
+            return (
+              <ul key={_contentIndex}>
+                {content.items.map((item, _itemIndex) => (
+                  <li key={_itemIndex}>
+                    <ContentGroup
+                      literalIndex={{
+                        blockIndex: literalIndex.blockIndex,
+                        contentIndex: _contentIndex,
+                        itemIndex: _itemIndex,
+                      }}
+                    />
+                  </li>
+                ))}
+              </ul>
+            );
           }
         }
       })}
@@ -59,21 +82,21 @@ export function ContentGroup({ blockIndex }: { blockIndex: number }) {
   );
 }
 
-export function OurOwnEditableText({
-  blockIndex,
-  contentIndex,
-  content,
-}: {
-  blockIndex: number;
-  contentIndex: number;
-  content: LiteralValue;
-}) {
-  const id = { blockId: blockIndex, contentId: contentIndex };
+function hasFocus(focus: Focus, literalIndex: LiteralIndex) {
+  const basicMatch = focus.blockIndex === literalIndex.blockIndex && focus.contentIndex === literalIndex.contentIndex;
+  if ("itemIndex" in literalIndex && "itemIndex" in focus) {
+    const itemMatch =
+      focus.itemIndex === literalIndex.itemIndex && focus.itemContentIndex === literalIndex.itemContentIndex;
+    return itemMatch && basicMatch;
+  }
+  return basicMatch;
+}
+
+export function EditableText({ literalIndex, content }: { literalIndex: LiteralIndex; content: LiteralValue }) {
   const contentEditableReference = useRef<HTMLSpanElement>(null);
   const { editorState, setEditorState } = useEditor();
 
-  const isFocus =
-    editorState.nextFocus?.blockIndex === blockIndex && editorState.nextFocus.contentIndex === contentIndex;
+  const shouldBeFocused = hasFocus(editorState.focus, literalIndex);
 
   const text = content.text || "​";
   useEffect(() => {
@@ -83,19 +106,20 @@ export function OurOwnEditableText({
   }, [text]);
 
   useEffect(() => {
-    if (isFocus && contentEditableReference.current !== null) {
-      selectService.focusAtOffset(
-        contentEditableReference.current.childNodes[0],
-        editorState.nextFocus?.cursorPosition,
-      );
+    if (
+      shouldBeFocused &&
+      contentEditableReference.current !== null &&
+      editorState.focus.cursorPosition !== undefined
+    ) {
+      selectService.focusAtOffset(contentEditableReference.current.childNodes[0], editorState.focus.cursorPosition);
     }
-  }, [editorState.nextFocus?.cursorPosition, isFocus]);
+  }, [editorState.focus.cursorPosition, shouldBeFocused]);
 
   const handleEnter = (event: React.KeyboardEvent<HTMLSpanElement>) => {
     event.preventDefault();
     const offset = selectService.getCursorOffset();
 
-    applyAction(Actions.split, setEditorState, id, offset);
+    applyAction(Actions.split, setEditorState, literalIndex, offset);
   };
 
   const handleBackspace = (event: React.KeyboardEvent<HTMLSpanElement>) => {
@@ -105,15 +129,17 @@ export function OurOwnEditableText({
       (contentEditableReference.current?.textContent?.startsWith("​") && cursorPosition === 1)
     ) {
       event.preventDefault();
-      applyAction(Actions.merge, setEditorState, id, MergeTarget.PREVIOUS);
+      applyAction(Actions.merge, setEditorState, literalIndex, MergeTarget.PREVIOUS);
     }
   };
 
   const handleDelete = (event: React.KeyboardEvent<HTMLSpanElement>) => {
     const cursorIsAtEnd = selectService.getCursorOffset() >= content.text.length;
-    if (cursorIsAtEnd) {
+    const cursorIsInLastContent =
+      getContent(editorState.editedLetter.letter, literalIndex).length - 1 === literalIndex.contentIndex;
+    if (cursorIsAtEnd && cursorIsInLastContent) {
       event.preventDefault();
-      applyAction(Actions.merge, setEditorState, id, MergeTarget.NEXT);
+      applyAction(Actions.merge, setEditorState, literalIndex, MergeTarget.NEXT);
     }
   };
 
@@ -123,8 +149,19 @@ export function OurOwnEditableText({
       // However, the tests will not work if set to plaintext-only. For some reason focus/input and other events will not be triggered by userEvent as expected.
       // This is not documented anywhere I could find and caused a day of frustration, beware
       contentEditable="true"
+      onFocus={() => {
+        setEditorState((oldState) => ({
+          ...oldState,
+          focus: literalIndex,
+        }));
+      }}
       onInput={(event) => {
-        applyAction(Actions.updateContentText, setEditorState, id, (event.target as HTMLSpanElement).textContent ?? "");
+        applyAction(
+          Actions.updateContentText,
+          setEditorState,
+          literalIndex,
+          (event.target as HTMLSpanElement).textContent ?? "",
+        );
       }}
       onKeyDown={(event) => {
         if (event.key === "Enter") {

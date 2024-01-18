@@ -11,7 +11,6 @@ import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.Avdoed
 import no.nav.pensjon.etterlatte.maler.AvdoedSelectors.doedsdato
 import no.nav.pensjon.etterlatte.maler.AvdoedSelectors.navn
-import no.nav.pensjon.etterlatte.maler.Avkortingsinfo
 import no.nav.pensjon.etterlatte.maler.Utbetalingsinfo
 import no.nav.pensjon.etterlatte.maler.UtbetalingsinfoSelectors.antallBarn
 import no.nav.pensjon.etterlatte.maler.UtbetalingsinfoSelectors.beloep
@@ -25,7 +24,6 @@ import no.nav.pensjon.etterlatte.maler.fraser.common.Vedtak
 
 data class BarnepensjonInnvilgelseDTO(
     val utbetalingsinfo: Utbetalingsinfo,
-    val avkortingsinfo: Avkortingsinfo? = null,
     val avdoed: Avdoed
 )
 

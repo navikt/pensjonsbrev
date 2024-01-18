@@ -1,6 +1,8 @@
-allowAllUsers: true
 ingresses:
   - "https://pensjon-skribenten-api.intern.dev.nav.no"
+
+groups:
+  - "8bb9b8d1-f46a-4ade-8ee8-5895eccdf8cf" #0000-GA-PENSJON_SAKSBEHANDLER
 
 inboundRules:
   - application: skribenten-web
@@ -27,6 +29,7 @@ externalHosts:
   - saf.intern.dev.nav.no
   - kodeverk.dev-fss-pub.nais.io
   - pensjon-persondata-q2.intern.dev.nav.no
+  - pensjonsbrev-tjenestebuss-q2.dev-fss-pub.nais.io
 
 env:
   - name: CORS_ALLOW_HOST
@@ -64,6 +67,6 @@ env:
   - name: PENSJON_PERSONDATA_URL
     value: "https://pensjon-persondata-q2.intern.dev.nav.no"
   - name: TJENESTEBUSS_INTEGRASJON_URL
-    value: "https://pensjonsbrev-tjenestebuss-q2.intern.dev.nav.no"
+    value: "https://pensjonsbrev-tjenestebuss-q2.dev-fss-pub.nais.io"
   - name: TJENESTEBUSS_INTEGRASJON_SCOPE
     value: "api://dev-fss.pensjonsbrev.pensjonsbrev-tjenestebuss-q2/.default"

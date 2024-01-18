@@ -1,29 +1,32 @@
 package no.nav.pensjon.etterlatte.maler
 
 import no.nav.pensjon.brevbaker.api.model.Kroner
+import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BeregningsMetode
 import java.time.LocalDate
-import java.time.Period
 
-data class EtterbetalingDTO(
+data class Etterbetaling(
     val fraDato: LocalDate,
     val tilDato: LocalDate,
     val etterbetalingsperioder: List<Beregningsperiode> = listOf()
 )
 
-data class Avkortingsinfo(
-    val grunnbeloep: Kroner,
-    val inntekt: Kroner,
-    val virkningsdato: LocalDate,
-    val beregningsperioder: List<AvkortetBeregningsperiode>,
+data class OmstillingsstoenadEtterbetaling(
+    val fraDato: LocalDate,
+    val tilDato: LocalDate,
+    val beregningsperioder: List<OmstillingsstoenadBeregningsperiode> = listOf()
 )
 
-enum class EndringIUtbetaling {
-    OEKES, REDUSERES, SAMME
-}
+data class OmstillingsstoenadBeregning(
+    override val innhold: List<Element>,
+    val virkningsdato: LocalDate,
+    val inntekt: Kroner,
+    val grunnbeloep: Kroner,
+    val beregningsperioder: List<OmstillingsstoenadBeregningsperiode>,
+    val sisteBeregningsperiode: OmstillingsstoenadBeregningsperiode,
+    val trygdetid: Trygdetid,
+) : BrevDTO
 
-data class Navn(val fornavn: String, val mellomnavn: String? = null, val etternavn: String)
-
-data class AvkortetBeregningsperiode(
+data class OmstillingsstoenadBeregningsperiode(
     val datoFOM: LocalDate,
     val datoTOM: LocalDate?,
     val inntekt: Kroner,
@@ -31,6 +34,22 @@ data class AvkortetBeregningsperiode(
     val utbetaltBeloep: Kroner,
     val trygdetid: Int,
 )
+
+data class Trygdetid(
+    val trygdetidsperioder: List<Trygdetidsperiode>,
+    val beregnetTrygdetidAar: Int,
+    val beregnetTrygdetidMaaneder: Int,
+    val prorataBroek: IntBroek?,
+    val beregningsMetodeAnvendt: BeregningsMetode,
+    val beregningsMetodeFraGrunnlag: BeregningsMetode,
+    val mindreEnnFireFemtedelerAvOpptjeningstiden: Boolean,
+)
+
+enum class EndringIUtbetaling {
+    OEKES, REDUSERES, SAMME
+}
+
+data class Navn(val fornavn: String, val mellomnavn: String? = null, val etternavn: String)
 
 data class Beregningsinfo(
     override val innhold: List<Element>,

@@ -1,18 +1,30 @@
 package no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto
 
 
-class RedigerDokumentRequestDto(
+class RedigerDoksysDokumentRequestDto(
     val journalpostId: String,
     val dokumentId: String,
 )
 
-sealed class RedigerDokumentResponseDto {
-    data class Success(
-        val metaforceURI: String,
-    ) : RedigerDokumentResponseDto()
+sealed class RedigerDoksysDokumentResponseDto {
+    data class Success(val url: String) : RedigerDoksysDokumentResponseDto()
+    data class Failure(val message: String?,val type: FailureType?) : RedigerDoksysDokumentResponseDto()
 
-    data class Failure(
-        val message: String?,
-        val type: String?,
-    ) : RedigerDokumentResponseDto()
+    enum class FailureType {
+        LASING,
+        IKKE_TILLATT,
+        VALIDERING_FEILET,
+        IKKE_FUNNET,
+        IKKE_TILGANG,
+        LUKKET
+    }
+}
+
+data class RedigerExtreamDokumentRequestDto(
+    val journalpostId: String,
+)
+
+sealed class RedigerExtreamDokumentResponseDto {
+    data class Success(val url: String) : RedigerExtreamDokumentResponseDto()
+    data class Failure(val message: String?) : RedigerExtreamDokumentResponseDto()
 }

@@ -11,14 +11,14 @@ import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.etterlatte.maler.Beregningsperiode
-import no.nav.pensjon.etterlatte.maler.EtterbetalingDTO
+import no.nav.pensjon.etterlatte.maler.Etterbetaling
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
 
 object BarnepensjonInnvilgelseFraser {
 
     data class UtbetalingAvBarnepensjon(
         val beregningsperioder: Expression<List<Beregningsperiode>>,
-        val etterbetaling: Expression<EtterbetalingDTO?>,
+        val etterbetaling: Expression<Etterbetaling?>,
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             title2 {

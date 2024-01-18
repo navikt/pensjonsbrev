@@ -10,7 +10,7 @@ on:
 
 jobs:
   verify:
-    name: Verify there are no lint or typescript errors
+    name: Verify tests, lint and typescript errors
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -22,6 +22,10 @@ jobs:
       - name: Install dependencies
         working-directory: skribenten-web/frontend
         run: npm ci
+
+      - name: Run tests
+        working-directory: skribenten-web/frontend
+        run: npm run test
 
       - name: Run ESLint
         working-directory: skribenten-web/frontend

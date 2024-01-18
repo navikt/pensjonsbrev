@@ -1,7 +1,7 @@
 export type SakDto = {
   readonly sakId: number;
   readonly foedselsnr: string;
-  readonly foedselsdato: string;
+  readonly foedselsdato: [number, number, number];
   readonly sakType: SakType;
 };
 
@@ -56,4 +56,13 @@ export enum SpraakKode {
 
 export type PidRequest = {
   pid: string;
+};
+
+export type OrderLetterRequest = {
+  brevkode: string;
+  spraak: SpraakKode;
+  sakId: number;
+  gjelderPid: string;
+  landkode?: string;
+  mottakerText?: string;
 };

@@ -2,16 +2,30 @@ package no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.extrea
 
 import com.typesafe.config.Config
 import no.nav.lib.pen.psakpselv.asbo.brev.ASBOPenHentBrevklientURLRequest
+import no.nav.lib.pen.psakpselv.asbo.brev.ASBOPenHentBrevklientURLResponse
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.RedigerExtreamDokumentRequestDto
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.soap.STSSercuritySOAPHandler
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.soap.TjenestebussService
 import org.slf4j.LoggerFactory
+import java.net.URI
 
-const val BREVKLIENT_ROOT_URL = "https://wasapp.adeo.no/brevweb/"
-class ExtreamBrevService(private val config: Config, securityHandler: STSSercuritySOAPHandler) : TjenestebussService() {
+const val TOKEN_QUERY_KEY = "token="
+const val BREVKLIENT_WIDTH = "300"
+const val BREVKLIENT_HEIGHT = "30"
+
+class ExtreamBrevService(config: Config, securityHandler: STSSercuritySOAPHandler) : TjenestebussService() {
     private val logger = LoggerFactory.getLogger(this::class.java)
     private val psakDokbrevClient = PsakDokbrevClient(config, securityHandler, callIdHandler).client()
-
+    private val brevklientSystemId = config.getString("brevklient.systemid")
+    private val brevklientPassword = config.getString("brevklient.password")
+    private val brevklientRootUrl = config.getString("brevklient.rootUrl")
+    private val brevklientChromeRootUrl = config.getString("brevklient.chromeRootUrl")
+        .replace(":", "%3A")
+        .replace("/", "%2F")
+        .replace("?", "%3F")
+        .replace("=", "%3D")
+        .replace("&", "%26")
+        .replace("#", "%23")
 
     /**
      * Henter URL som benyttes for å redigere et Extream dokument.
@@ -21,18 +35,28 @@ class ExtreamBrevService(private val config: Config, securityHandler: STSSercuri
      */
     fun hentExtreamBrevUrl(requestDto: RedigerExtreamDokumentRequestDto): RedigerExtreamDokumentResponseDto {
         try {
-            val response = psakDokbrevClient.hentBrevklientURL(ASBOPenHentBrevklientURLRequest().apply {
-                dokumentId = requestDto.dokumentId
-                systemId = config.getString("brevklient.systemid")
-                passord = config.getString("brevklient.password")
-                rootURL = BREVKLIENT_ROOT_URL
-                bredde = requestDto.bredde
-                hoyde = requestDto.hoyde
-            })
-            logger.info("Henter Extream brev URL for dokumentId: ${requestDto.dokumentId}")
-            return RedigerExtreamDokumentResponseDto.Success(response.brevklientURL)
+            val response: ASBOPenHentBrevklientURLResponse =
+                psakDokbrevClient.hentBrevklientURL(ASBOPenHentBrevklientURLRequest().apply {
+                    dokumentId = requestDto.journalpostId
+                    systemId = brevklientSystemId
+                    passord = brevklientPassword
+                    rootURL = brevklientRootUrl
+                    bredde = BREVKLIENT_WIDTH
+                    hoyde = BREVKLIENT_HEIGHT
+                })
+            logger.info("Henter Extream brev URL for dokumentId: ${requestDto.journalpostId}")
+
+            val token = URI(response.brevklientURL).query.split("&").filter { it.startsWith(TOKEN_QUERY_KEY) }
+                .map { it.removePrefix(TOKEN_QUERY_KEY) }
+                .firstOrNull()
+                ?: return RedigerExtreamDokumentResponseDto.Failure("Could not find token in redigerExtreamBrev response")
+
+            val redirectChromeUrl =
+                "mbdok://$brevklientSystemId@brevklient/dokument/${requestDto.journalpostId}?token=$token&server=$brevklientChromeRootUrl"
+
+            return RedigerExtreamDokumentResponseDto.Success(redirectChromeUrl)
         } catch (ex: Exception) {
-            logger.error("En feil oppstod under henting av Extream brev URL for dokumentId: ${requestDto.dokumentId}")
+            logger.error("En feil oppstod under henting av Extream brev URL for dokumentId: ${requestDto.journalpostId}")
             return RedigerExtreamDokumentResponseDto.Failure(ex.message)
         }
     }

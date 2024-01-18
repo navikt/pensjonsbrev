@@ -18,11 +18,10 @@ import no.nav.pensjon.etterlatte.fixtures.createBarnepensjonRevurderingSoeskenju
 import no.nav.pensjon.etterlatte.fixtures.createEndringHovedmalDTO
 import no.nav.pensjon.etterlatte.fixtures.createManueltBrevDTO
 import no.nav.pensjon.etterlatte.fixtures.createOMSAvslagDTO
-import no.nav.pensjon.etterlatte.fixtures.createOMSFoerstegangsvedtakUtfallDTO
-import no.nav.pensjon.etterlatte.fixtures.createOMSInnvilgelseDTO
-import no.nav.pensjon.etterlatte.fixtures.createOMSInnvilgelseFoerstegangsvedtakDTO
 import no.nav.pensjon.etterlatte.fixtures.createOMSOpphoerDTO
 import no.nav.pensjon.etterlatte.fixtures.createOMSRevurderingEndringDTO
+import no.nav.pensjon.etterlatte.fixtures.createOmstillingsstoenadInnvilgelseDTO
+import no.nav.pensjon.etterlatte.fixtures.createOmstillingsstoenadInnvilgelseRedigerbartUtfallDTO
 import no.nav.pensjon.etterlatte.fixtures.createTilbakekrevingFerdigDTO
 import no.nav.pensjon.etterlatte.fixtures.createTilbakekrevingInnholdDTO
 import no.nav.pensjon.etterlatte.fixtures.createTomMal
@@ -31,19 +30,18 @@ import no.nav.pensjon.etterlatte.maler.ManueltBrevDTO
 import no.nav.pensjon.etterlatte.maler.ManueltBrevMedTittelDTO
 import no.nav.pensjon.etterlatte.maler.TomMal
 import no.nav.pensjon.etterlatte.maler.barnepensjon.avslag.BarnepensjonAvslagDTO
-import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseDTO
 import no.nav.pensjon.etterlatte.maler.barnepensjon.endring.EndringHovedmalDTO
+import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseDTO
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseEnkelDTO
+import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseNyDTO
 import no.nav.pensjon.etterlatte.maler.barnepensjon.migrering.BarnepensjonOmregnetNyttRegelverkDTO
 import no.nav.pensjon.etterlatte.maler.barnepensjon.migrering.BarnepensjonOmregnetNyttRegelverkFerdigDTO
-import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseNyDTO
 import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingAdopsjonDTO
 import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingOmgjoeringAvFarskapDTO
 import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingSoeskenjusteringDTO
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.OMSInnvilgelseDTO
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.avslag.OMSAvslagDTO
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.foerstegangsvedtak.FoerstegangsvedtakUtfallDTO
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.foerstegangsvedtak.OMSInnvilgelseFoerstegangsvedtakDTO
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.OmstillingsstoenadInnvilgelseDTO
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.OmstillingsstoenadInnvilgelseRedigerbartUtfallDTO
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.opphoer.OMSOpphoerDTO
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OMSRevurderingEndringDTO
 import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingFerdigDTO
@@ -86,13 +84,12 @@ object Fixtures {
             BarnepensjonInnvilgelseEnkelDTO::class -> createBarnepensjonInnvilgelseEnkelDTO() as T
             BarnepensjonAvslagDTO::class -> createBarnepensjonAvslagDTO() as T
             ManueltBrevDTO::class -> createManueltBrevDTO() as T
-            OMSInnvilgelseDTO::class -> createOMSInnvilgelseDTO() as T
             EndringHovedmalDTO::class -> createEndringHovedmalDTO() as T
-            OMSInnvilgelseFoerstegangsvedtakDTO::class -> createOMSInnvilgelseFoerstegangsvedtakDTO() as T
+            OmstillingsstoenadInnvilgelseDTO::class -> createOmstillingsstoenadInnvilgelseDTO() as T
+            OmstillingsstoenadInnvilgelseRedigerbartUtfallDTO::class -> createOmstillingsstoenadInnvilgelseRedigerbartUtfallDTO() as T
+            OMSAvslagDTO::class -> createOMSAvslagDTO() as T
             OMSRevurderingEndringDTO::class -> createOMSRevurderingEndringDTO() as T
             OMSOpphoerDTO::class -> createOMSOpphoerDTO() as T
-            OMSAvslagDTO::class -> createOMSAvslagDTO() as T
-            FoerstegangsvedtakUtfallDTO::class -> createOMSFoerstegangsvedtakUtfallDTO() as T
             BarnepensjonRevurderingAdopsjonDTO::class -> createBarnepensjonRevurderingAdopsjonDTO() as T
             BarnepensjonRevurderingSoeskenjusteringDTO::class -> createBarnepensjonRevurderingSoeskenjusteringDTO() as T
             BarnepensjonRevurderingOmgjoeringAvFarskapDTO::class -> createBarnepensjonRevurderingOmgjoeringAvFarskapDTO() as T

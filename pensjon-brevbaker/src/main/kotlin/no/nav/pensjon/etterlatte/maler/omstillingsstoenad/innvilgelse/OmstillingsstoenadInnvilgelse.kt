@@ -1,4 +1,4 @@
-package no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering
+package no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse
 
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
@@ -10,44 +10,45 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
-import no.nav.pensjon.etterlatte.maler.Beregningsinfo
+import no.nav.pensjon.etterlatte.maler.Avdoed
 import no.nav.pensjon.etterlatte.maler.BrevDTO
 import no.nav.pensjon.etterlatte.maler.Element
 import no.nav.pensjon.etterlatte.maler.Hovedmal
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregning
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadEtterbetaling
-import no.nav.pensjon.etterlatte.maler.fraser.common.Vedtak
 import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadFellesFraser
 import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadInnvilgelseFraser
 import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OMSRevurderingEndringDTOSelectors.erEndret
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OMSRevurderingEndringDTOSelectors.etterbetalinginfo
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OMSRevurderingEndringDTOSelectors.innhold
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OMSRevurderingEndringDTOSelectors.omstillingsstoenadBeregning
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.OmstillingsstoenadInnvilgelseDTOSelectors.avdoed
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.OmstillingsstoenadInnvilgelseDTOSelectors.beregning
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.OmstillingsstoenadInnvilgelseDTOSelectors.etterbetaling
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.OmstillingsstoenadInnvilgelseDTOSelectors.innhold
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.OmstillingsstoenadInnvilgelseDTOSelectors.innvilgetMindreEnnFireMndEtterDoedsfall
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.OmstillingsstoenadInnvilgelseDTOSelectors.lavEllerIngenInntekt
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.beregningAvOmstillingsstoenad
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.dineRettigheterOgPlikter
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etterbetalingOmstillingsstoenad
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.informasjonOmOmstillingsstoenad
-import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.informasjonOmYrkesskade
 
-data class OMSRevurderingEndringDTO(
+data class OmstillingsstoenadInnvilgelseDTO(
     override val innhold: List<Element>,
-    val omstillingsstoenadBeregning: OmstillingsstoenadBeregning,
-    val etterbetalinginfo: OmstillingsstoenadEtterbetaling? = null,
-    val beregningsinfo: Beregningsinfo,
-    val erEndret: Boolean
+    val avdoed: Avdoed,
+    val beregning: OmstillingsstoenadBeregning,
+    val innvilgetMindreEnnFireMndEtterDoedsfall: Boolean,
+    val lavEllerIngenInntekt: Boolean,
+    val etterbetaling: OmstillingsstoenadEtterbetaling?,
 ): BrevDTO
 
 @TemplateModelHelpers
-object RevurderingEndring : EtterlatteTemplate<OMSRevurderingEndringDTO>, Hovedmal {
-    override val kode: EtterlatteBrevKode = EtterlatteBrevKode.OMS_REVURDERING_ENDRING
+object OmstillingsstoenadInnvilgelse  : EtterlatteTemplate<OmstillingsstoenadInnvilgelseDTO>, Hovedmal {
+    override val kode: EtterlatteBrevKode = EtterlatteBrevKode.OMSTILLINGSSTOENAD_INNVILGELSE
 
     override val template = createTemplate(
         name = kode.name,
-        letterDataType = OMSRevurderingEndringDTO::class,
+        letterDataType = OmstillingsstoenadInnvilgelseDTO::class,
         languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(
-            displayTitle = "Vedtak - Revurdering av omstillingsstønad",
+            displayTitle = "Vedtak - Innvilget omstillingsstønad",
             isSensitiv = true,
             distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
@@ -55,35 +56,21 @@ object RevurderingEndring : EtterlatteTemplate<OMSRevurderingEndringDTO>, Hovedm
     ) {
         title {
             text(
-                Bokmal to "Vi har ",
-                Nynorsk to "",
-                English to "",
-            )
-            showIf(erEndret) {
-                text(
-                    Bokmal to "endret",
-                    Nynorsk to "",
-                    English to "",
-                )
-            } orShow {
-                text(
-                    Bokmal to "vurdert",
-                    Nynorsk to "",
-                    English to "",
-                )
-            }
-            text(
-                Bokmal to " omstillingsstønaden din",
+                Bokmal to "Vi har innvilget søknaden din om omstillingsstønad",
                 Nynorsk to "",
                 English to "",
             )
         }
 
         outline {
-            includePhrase(Vedtak.BegrunnelseForVedtaket)
+            includePhrase(OmstillingsstoenadInnvilgelseFraser.Vedtak(avdoed, beregning))
 
             konverterElementerTilBrevbakerformat(innhold)
 
+            includePhrase(OmstillingsstoenadInnvilgelseFraser.Utbetaling(etterbetaling))
+            includePhrase(OmstillingsstoenadInnvilgelseFraser.HvaErOmstillingsstoenad)
+            includePhrase(OmstillingsstoenadInnvilgelseFraser.HvorLengerKanDuFaaOmstillingsstoenad(beregning, lavEllerIngenInntekt))
+            includePhrase(OmstillingsstoenadInnvilgelseFraser.Aktivitetsplikt(innvilgetMindreEnnFireMndEtterDoedsfall))
             includePhrase(OmstillingsstoenadInnvilgelseFraser.Inntektsendring)
             includePhrase(OmstillingsstoenadInnvilgelseFraser.Etteroppgjoer)
             includePhrase(OmstillingsstoenadFellesFraser.MeldFraOmEndringer)
@@ -91,10 +78,9 @@ object RevurderingEndring : EtterlatteTemplate<OMSRevurderingEndringDTO>, Hovedm
             includePhrase(OmstillingsstoenadFellesFraser.HarDuSpoersmaal)
         }
 
-        includeAttachment(beregningAvOmstillingsstoenad, omstillingsstoenadBeregning)
-        includeAttachment(informasjonOmOmstillingsstoenad, innhold)
-        includeAttachment(dineRettigheterOgPlikter, innhold)
-        includeAttachment(informasjonOmYrkesskade, innhold)
-        includeAttachmentIfNotNull(etterbetalingOmstillingsstoenad, etterbetalinginfo)
+        includeAttachment(beregningAvOmstillingsstoenad, beregning)
+        includeAttachment(informasjonOmOmstillingsstoenad, beregning)
+        includeAttachment(dineRettigheterOgPlikter, beregning)
+        includeAttachmentIfNotNull(etterbetalingOmstillingsstoenad, etterbetaling)
     }
 }
