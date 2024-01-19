@@ -79,15 +79,15 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, A
     paragraph {
         text(
             Bokmal to "Hvis du logger på ${Constants.NAV_URL} med BankID, Buypass eller Comfides, kan du som forelder sende melding via ${Constants.SKRIVTILOSS_URL}. Hvis du ikke kan melde fra digitalt, kan du melde om endringer per post.",
-            Nynorsk to "",
-            English to "",
+            Nynorsk to "Dersom du loggar på ${Constants.NAV_URL} med BankID, Buypass eller Comfides, kan du som forelder sende melding via ${Constants.SKRIVTILOSS_URL}. Dersom du ikkje kan melde frå digitalt, kan du melde om endringar per post.",
+            English to "If you log in to ${Constants.NAV_URL} with BankID, Buypass or Comfides, you can send send a message via ${Constants.Engelsk.SKRIVTILOSS_URL}. If you cannot report digitally, you can report changes by post. ",
         )
     }
     paragraph {
         text(
             Bokmal to "Oppnevnt verge må melde om endring per post. Du må legge ved kopi av egen legitimasjon og vergefullmakt.",
-            Nynorsk to "",
-            English to "",
+            Nynorsk to "Dersom du er oppnemnd verje, må du melde frå om endring via post. Legg då ved ein kopi av legitimasjonen din og verjefullmakta.",
+            English to "The appointed guardian must report the change by mail. You must enclose a copy of your own proof of identity and the power of guardianship.",
         )
     }
     paragraph {
@@ -120,8 +120,8 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, A
     paragraph {
         text(
             Bokmal to "Oppnevnt verge må melde om endring per post. Du må legge ved kopi av egen legitimasjon og vergefullmakt.",
-            Nynorsk to "",
-            English to "",
+            Nynorsk to "Dersom du er oppnemnd verje, må du melde frå om endring via post. Legg då ved ein kopi av legitimasjonen din og verjefullmakta.",
+            English to "The appointed guardian must report the change by mail. You must enclose a copy of your own proof of identity and the power of guardianship.",
         )
     }
     paragraph {
@@ -144,8 +144,8 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, A
     paragraph {
         text(
             Bokmal to "Når kontonummer er i en utenlandsk bank, må du være oppmerksom på at det er et gebyr for hver utbetaling. Det kan også ta litt lenger tid før pengene er på kontoen. Du finner mer informasjon om utbetaling på ${Constants.Utland.UTBETALING_INFO}.",
-            Nynorsk to "",
-            English to "",
+            Nynorsk to "If the bank account is held by a foreign bank, be aware that a minor fee may be charged for each payment. It will also take a little more time before the money reaches your account. More information on payments is available online: ${Constants.Utland.UTBETALING_INFO}.",
+            English to "Når kontonummer er i ein utanlandsk bank, må du vere merksam på at det blir trekt eit gebyr for kvar utbetaling. Det kan også ta litt lenger tid før pengane er på kontoen din. Du finn meir informasjon om utbetaling på ${Constants.Utland.UTBETALING_INFO}.",
         )
     }
 }
@@ -187,8 +187,8 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, A
     paragraph {
         text(
             Bokmal to "Skatteetaten svarer på spørsmål om skatt på pensjon for deg som ikke er skattemessig bosatt i Norge. Les mer om skatt på ${Constants.SKATTETREKK_KILDESKATT_URL}.",
-            Nynorsk to "",
-            English to "",
+            Nynorsk to "Skatteetaten svarer på spørsmål om skatt på pensjon for deg som ikkje er skattemessig busett i Noreg. Les meir om skatt på ${Constants.SKATTETREKK_KILDESKATT_URL}.",
+            English to "The Norwegian Tax Administration can answer any questions you may have about taxes regarding pension payments for people who are not tax residents in Norway. Read more about NAV and taxes here: ${Constants.SKATTETREKK_KILDESKATT_URL}.",
         )
     }
 }
