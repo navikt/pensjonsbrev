@@ -80,8 +80,8 @@ val etterbetalingAvBarnepensjon = createAttachment(
     title2 {
         text(
             Bokmal to "Etterbetaling av barnepensjon fra innvilgelsestidspunktet",
-            Nynorsk to "",
-            English to "",
+            Nynorsk to "Etterbetaling av barnepensjon frå tidspunktet det vart innvilga",
+            English to "Back Payments for Children's Pension from the time it was granted",
         )
     }
     includePhrase(Beregningsperiodetabell(etterbetalingsperioder))
