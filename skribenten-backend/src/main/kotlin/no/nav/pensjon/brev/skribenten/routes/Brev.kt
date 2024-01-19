@@ -34,11 +34,13 @@ fun Route.bestillBrevRoute(
         //TODO logg error message med correlation id istedenfor å sende den til front-end og bruk call-id.
         // Front end bør kun bruke correlation id + type.
         val result = bestillExtreamBrev(
-            tjenestebussIntegrasjonService,
-            call,
-            request, navIdent,
-            metadata, navn,
-            safService
+            tjenestebussIntegrasjonService = tjenestebussIntegrasjonService,
+            call = call,
+            request = request,
+            navIdent = navIdent,
+            metadata = metadata,
+            navn = navn,
+            safService = safService
         )
         call.respond(
             when (result.failureType) {
