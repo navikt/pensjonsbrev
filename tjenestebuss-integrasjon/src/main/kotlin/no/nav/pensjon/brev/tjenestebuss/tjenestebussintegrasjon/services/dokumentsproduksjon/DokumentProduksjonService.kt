@@ -36,10 +36,10 @@ class DokumentproduksjonService(config: Config, securityHandler: STSSercuritySOA
             return RedigerDoksysDokumentResponseDto.Success(response.metaforceURI)
         } catch (ex: RedigerDokumentPessimistiskLaasing) {
             logError(requestDto)
-            return Failure(Failure.FailureType.LASING, ex)
+            return Failure(Failure.FailureType.UNDER_REDIGERING, ex)
         } catch (ex: RedigerDokumentRedigeringIkkeTillatt) {
             logError(requestDto)
-            return Failure(Failure.FailureType.IKKE_TILLATT, ex)
+            return Failure(Failure.FailureType.IKKE_REDIGERBART, ex)
         } catch (ex: RedigerDokumentInputValideringFeilet) {
             logError(requestDto)
             return Failure(Failure.FailureType.VALIDERING_FEILET, ex)
@@ -77,8 +77,8 @@ sealed class RedigerDoksysDokumentResponseDto {
         )
 
         enum class FailureType {
-            LASING,
-            IKKE_TILLATT,
+            UNDER_REDIGERING,
+            IKKE_REDIGERBART,
             VALIDERING_FEILET,
             IKKE_FUNNET,
             IKKE_TILGANG,
