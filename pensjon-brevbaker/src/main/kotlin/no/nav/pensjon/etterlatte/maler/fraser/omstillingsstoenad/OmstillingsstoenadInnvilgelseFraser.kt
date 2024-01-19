@@ -144,6 +144,14 @@ object OmstillingsstoenadInnvilgelseFraser {
             }
 
             paragraph {
+                text(
+                    Bokmal to "Samboere med felles barn og samboere som tidligere har vært gift likestilles " +
+                            "med ektefeller.",
+                    Nynorsk to "",
+                    English to "",
+                )
+            }
+            paragraph {
                 showIf(etterbetaling) {
                     text(
                         Bokmal to "Vedtaket er gjort etter bestemmelsene om omstillingsstønad i folketrygdloven " +
