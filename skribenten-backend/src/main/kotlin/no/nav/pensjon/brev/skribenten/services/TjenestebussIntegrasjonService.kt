@@ -95,7 +95,7 @@ class TjenestebussIntegrasjonService(config: Config, authService: AzureADService
         navIdent: String,
         metadata: BrevdataDto,
         name: String
-    ): ServiceResult<BestillExtreamBrevResponseDto.Success, BestillExtreamBrevResponseDto.Failure> {
+    ): ServiceResult<BestillExtreamBrevResponseDto, String> {
 
         //TODO better error handling.
         // TODO access controls for e-blanketter
@@ -140,7 +140,7 @@ class TjenestebussIntegrasjonService(config: Config, authService: AzureADService
                     )
                 )
             )
-        }.toServiceResult<BestillExtreamBrevResponseDto.Success, BestillExtreamBrevResponseDto.Failure>()
+        }.toServiceResult<BestillExtreamBrevResponseDto, String>()
     }
 
     suspend fun redigerDoksysBrev(

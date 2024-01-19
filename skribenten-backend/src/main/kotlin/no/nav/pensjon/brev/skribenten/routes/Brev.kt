@@ -10,8 +10,9 @@ import no.nav.pensjon.brev.skribenten.getLoggedInName
 import no.nav.pensjon.brev.skribenten.getLoggedInNavIdent
 import no.nav.pensjon.brev.skribenten.routes.BestillOgRedigerBrevResponse.FailureType.*
 import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.BestillExtreamBrevResponseDto
-import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.BestillExtreamBrevResponseDto.Failure.FailureType
+import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.BestillExtreamBrevResponseDto.FailureType.*
 import no.nav.pensjon.brev.skribenten.services.*
+import no.nav.pensjon.brev.skribenten.services.SafService.JournalpostLoadingError
 import org.slf4j.LoggerFactory
 import java.util.*
 import javax.xml.datatype.DatatypeFactory
@@ -77,40 +78,48 @@ private suspend fun bestillExtreamBrev(
     navn: String,
     safService: SafService
 ): BestillOgRedigerBrevResponse {
-    val bestillingsResult: ServiceResult<BestillExtreamBrevResponseDto.Success, BestillExtreamBrevResponseDto.Failure> =
+    val brevBestillingsResult: ServiceResult<BestillExtreamBrevResponseDto, String> =
         tjenestebussIntegrasjonService.bestillExtreamBrev(call, request, navIdent, metadata, navn)
 
-    when (bestillingsResult) {
+    when (brevBestillingsResult) {
         is ServiceResult.Ok -> {
-            val error = safService.waitForJournalpostStatusUnderArbeid(call, bestillingsResult.result.journalpostId)
-
-            return if (error != null) {
-                BestillOgRedigerBrevResponse(
-                    when (error.type) {
-                        SafService.JournalpostLoadingError.ErrorType.ERROR -> SAF_ERROR
-                        SafService.JournalpostLoadingError.ErrorType.TIMEOUT -> FERDIGSTILLING_TIMEOUT
-                    },
+            val failure = brevBestillingsResult.result.failureType
+            val journalpostId = brevBestillingsResult.result.journalpostId
+            if (failure != null) {
+                return BestillOgRedigerBrevResponse(
+                    when (failure) {
+                        ADRESSE_MANGLER -> EXTREAM_BESTILLING_ADRESSE_MANGLER
+                        HENTE_BREVDATA -> EXTREAM_BESTILLING_HENTE_BREVDATA
+                        MANGLER_OBLIGATORISK_INPUT -> EXTREAM_BESTILLING_MANGLER_OBLIGATORISK_INPUT
+                        OPPRETTE_JOURNALPOST -> EXTREAM_BESTILLING_OPPRETTE_JOURNALPOST
+                    }
                 )
+            }else if (journalpostId != null) {
+                val error = safService.waitForJournalpostStatusUnderArbeid(call, journalpostId)
+
+                return if (error != null) {
+                    BestillOgRedigerBrevResponse(
+                        when (error.type) {
+                            JournalpostLoadingError.ErrorType.ERROR -> SAF_ERROR
+                            JournalpostLoadingError.ErrorType.TIMEOUT -> FERDIGSTILLING_TIMEOUT
+                        },
+                    )
+                } else {
+                    tjenestebussIntegrasjonService.redigerExtreamBrev(call, journalpostId)
+                }
             } else {
-                return tjenestebussIntegrasjonService.redigerExtreamBrev(call, bestillingsResult.result.journalpostId)
+                logger.error("Tom response fra tjenetebuss-integrasjon")
+                return BestillOgRedigerBrevResponse(TJENESTEBUSS_INTEGRASJON)
             }
         }
 
         is ServiceResult.Error -> {
-            val failureType = bestillingsResult.error.failureType
-            logger.error("Feil ved bestilling av extream brev: $failureType")
-            return BestillOgRedigerBrevResponse(
-                when (failureType) {
-                    FailureType.ADRESSE_MANGLER -> EXTREAM_BESTILLING_ADRESSE_MANGLER
-                    FailureType.HENTE_BREVDATA -> EXTREAM_BESTILLING_HENTE_BREVDATA
-                    FailureType.MANGLER_OBLIGATORISK_INPUT -> EXTREAM_BESTILLING_MANGLER_OBLIGATORISK_INPUT
-                    FailureType.OPPRETTE_JOURNALPOST -> EXTREAM_BESTILLING_OPPRETTE_JOURNALPOST
-                }
-            )
+            logger.error("Feil ved bestilling av extream brev mot tjenestebuss-service Status: ${brevBestillingsResult.statusCode} Message: ${brevBestillingsResult.error}")
+            return BestillOgRedigerBrevResponse(TJENESTEBUSS_INTEGRASJON)
         }
 
         is ServiceResult.AuthorizationError -> {
-            logger.error(bestillingsResult.error.logString())
+            logger.error(brevBestillingsResult.error.logString())
             return BestillOgRedigerBrevResponse(SKRIBENTEN_TOKEN_UTVEKSLING)
         }
     }

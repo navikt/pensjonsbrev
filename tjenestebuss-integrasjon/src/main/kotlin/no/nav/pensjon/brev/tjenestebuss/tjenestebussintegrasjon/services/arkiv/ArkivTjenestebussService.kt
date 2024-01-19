@@ -2,8 +2,7 @@ package no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.arkiv
 
 import com.typesafe.config.Config
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.maskerFnr
-import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.arkiv.BestillExtreamBrevResponseDto.Failure
-import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.arkiv.BestillExtreamBrevResponseDto.Failure.FailureType
+import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.arkiv.BestillExtreamBrevResponseDto.FailureType.*
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.soap.STSSercuritySOAPHandler
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.soap.TjenestebussService
 import no.nav.virksomhet.tjenester.arkiv.meldinger.v1.BestillBrevRequest
@@ -62,34 +61,35 @@ class ArkivTjenestebussService(config: Config, securityHandler: STSSercuritySOAP
                 }
             })
             logger.info("Opprettet brev med journalpostId: ${response!!.journalpostId} i sakId: ${request.sakskontekstDto.saksid} ")
-            return BestillExtreamBrevResponseDto.Success(response.journalpostId)
+            return BestillExtreamBrevResponseDto(response.journalpostId)
         } catch (ex: BestillBrevOpprettelseJournalpostFeilet) {
             logger.error("En feil oppstod under opprettelse av journalpost: ${maskerFnr(ex.faultInfo.errorMessage)}")
-            return Failure(FailureType.OPPRETTE_JOURNALPOST)
+            return BestillExtreamBrevResponseDto(OPPRETTE_JOURNALPOST)
         } catch (ex: BestillBrevHenteBrevdataFeilet) {
             logger.error("En feil oppstod under henting av brevdata: ${maskerFnr(ex.faultInfo.errorMessage)}")
-            return Failure(FailureType.HENTE_BREVDATA)
+            return BestillExtreamBrevResponseDto(HENTE_BREVDATA)
         } catch (ex: BestillBrevManglerObligatoriskInput) {
             logger.error("En feil oppstod under opprettelse av brev, mangler obligatoriske felter: ${maskerFnr(ex.faultInfo.errorMessage)}")
-            return Failure(FailureType.MANGLER_OBLIGATORISK_INPUT)
+            return BestillExtreamBrevResponseDto(MANGLER_OBLIGATORISK_INPUT)
         } catch (ex: BestillBrevAdresseIkkeRegistrert) {
             logger.error("En feil oppstod under opprettelse av brev, adresse ikke registrert: ${maskerFnr(ex.faultInfo.errorMessage)}")
-            return Failure(FailureType.ADRESSE_MANGLER)
+            return BestillExtreamBrevResponseDto(ADRESSE_MANGLER)
         }
     }
 }
 
-sealed class BestillExtreamBrevResponseDto {
-    data class Success(val journalpostId: String) : BestillExtreamBrevResponseDto()
-    data class Failure(
-        val failureType: FailureType,
-    ) : BestillExtreamBrevResponseDto() {
-        enum class FailureType {
-            ADRESSE_MANGLER,
-            HENTE_BREVDATA,
-            MANGLER_OBLIGATORISK_INPUT,
-            OPPRETTE_JOURNALPOST,
-        }
+data class BestillExtreamBrevResponseDto(
+    val journalpostId: String?,
+    val failureType: FailureType?
+) {
+    constructor(journalpostId: String) : this(journalpostId = journalpostId, failureType = null)
+    constructor(failureType: FailureType) : this(journalpostId = null, failureType = failureType)
+
+    enum class FailureType {
+        ADRESSE_MANGLER,
+        HENTE_BREVDATA,
+        MANGLER_OBLIGATORISK_INPUT,
+        OPPRETTE_JOURNALPOST,
     }
 }
 
@@ -100,7 +100,7 @@ data class BestillBrevExtreamRequestDto(
     val sprakkode: String,
     val sakskontekstDto: SakskontekstDto,
     val brevMottakerNavn: String?,
-){
+) {
     data class SakskontekstDto(
         val dokumentdato: XMLGregorianCalendar,
         val dokumenttype: String,
