@@ -236,8 +236,8 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, B
             paragraph {
                 text(
                     Bokmal to "Tabellen under «Perioder med registrert trygdetid» viser full framtidig trygdetid. Siden avdøde har vært medlem i folketrygden i mindre enn 4/5 av tiden mellom fylte 16 år og dødsfallstidspunktet (opptjeningstiden), blir framtidig trygdetid redusert til 40 år minus 4/5 av opptjeningstiden. Dette er mindre enn det tabellen viser.",
-                    Nynorsk to "",
-                    English to "",
+                    Nynorsk to "Tabellen under «Periodar med registrert trygdetid» viser full framtidig trygdetid. Ettersom avdøde var medlem av folketrygda i mindre enn 4/5 av tida mellom fylte 16 år og fram til sin død (oppteningstid), blir framtidig trygdetid redusert til 40 år minus 4/5 av oppteningstida. Dette er mindre enn det tabellen viser.",
+                    English to "The table in “Periods with Registered Contribution Time” shows the entire future contribution time. Since the deceased has been a member of the National Insurance Scheme for less than 4/5 of the time between turning 16 and the date of the death (qualifying period), the future contribution time is reduced to 40 years minus 4/5 of the qualifying period. This is less than what the table show.",
                 )
             }
         }
