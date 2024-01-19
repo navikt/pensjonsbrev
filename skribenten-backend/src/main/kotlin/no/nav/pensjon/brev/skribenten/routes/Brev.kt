@@ -19,7 +19,6 @@ import javax.xml.datatype.XMLGregorianCalendar
 
 private val logger = LoggerFactory.getLogger("bestillBrevRoute")
 fun Route.bestillBrevRoute(
-    penService: PenService,
     tjenestebussIntegrasjonService: TjenestebussIntegrasjonService,
     brevmetadataService: BrevmetadataService,
     safService: SafService,
@@ -30,31 +29,33 @@ fun Route.bestillBrevRoute(
         val navIdent =
             getLoggedInNavIdent() ?: throw UnauthorizedException("Fant ikke ident på innlogget bruker i claim")
         val navn = getLoggedInName() ?: throw UnauthorizedException("Fant ikke navn på innlogget bruker i claim")
-        val result = bestillOgRedigerBrev(
-            brevmetadataService,
-            request,
+        val metadata: BrevdataDto = brevmetadataService.getMal(request.brevkode)
+        //TODO bestill doksys / extream brev avhengig av system i metadata
+        //TODO logg error message med correlation id istedenfor å sende den til front-end og bruk call-id.
+        // Front end bør kun bruke correlation id + type.
+        val result = bestillExtreamBrev(
             tjenestebussIntegrasjonService,
-            navIdent,
-            navn,
             call,
+            request, navIdent,
+            metadata, navn,
             safService
         )
         call.respond(
             when (result.failureType) {
-                DOKSYS_IKKE_TILLATT -> HttpStatusCode.Forbidden
+                DOKSYS_UNDER_REDIGERING -> HttpStatusCode.Conflict
+                DOKSYS_IKKE_REDIGERBART -> HttpStatusCode.Forbidden
                 DOKSYS_IKKE_FUNNET -> HttpStatusCode.NotFound
                 DOKSYS_IKKE_TILGANG -> HttpStatusCode.Unauthorized
                 DOKSYS_LUKKET -> HttpStatusCode.Locked
 
                 FERDIGSTILLING_TIMEOUT,
-                DOKSYS_LASING,
                 SAF_ERROR,
                 EXTREAM_REDIGERING_GENERELL,
                 TJENESTEBUSS_INTEGRASJON,
                 SKRIBENTEN_TOKEN_UTVEKSLING -> HttpStatusCode.InternalServerError
 
-                EXTREAM_BESTILLING_ADRESSE_MANGLER,
                 DOKSYS_VALIDERING_FEILET,
+                EXTREAM_BESTILLING_ADRESSE_MANGLER,
                 EXTREAM_BESTILLING_HENTE_BREVDATA,
                 EXTREAM_BESTILLING_MANGLER_OBLIGATORISK_INPUT,
                 EXTREAM_BESTILLING_OPPRETTE_JOURNALPOST -> HttpStatusCode.BadRequest
@@ -63,22 +64,6 @@ fun Route.bestillBrevRoute(
             }, result
         )
     }
-}
-
-private suspend fun bestillOgRedigerBrev(
-    brevmetadataService: BrevmetadataService,
-    request: OrderLetterRequest,
-    tjenestebussIntegrasjonService: TjenestebussIntegrasjonService,
-    navIdent: String,
-    navn: String,
-    call: ApplicationCall,
-    safService: SafService
-): BestillOgRedigerBrevResponse {
-    val metadata: BrevdataDto = brevmetadataService.getMal(request.brevkode)
-    //TODO bestill doksys / extream brev avhengig av system i metadata
-    //TODO logg error message med correlation id istedenfor å sende den til front-end og bruk call-id.
-    // Front end bør kun bruke correlation id + type.
-    return bestillExtreamBrev(tjenestebussIntegrasjonService, call, request, navIdent, metadata, navn, safService)
 }
 
 private suspend fun bestillExtreamBrev(
@@ -152,8 +137,8 @@ data class BestillOgRedigerBrevResponse(
     constructor(failure: FailureType) : this(url = null, failureType = failure)
 
     enum class FailureType {
-        DOKSYS_LASING,
-        DOKSYS_IKKE_TILLATT,
+        DOKSYS_UNDER_REDIGERING,
+        DOKSYS_IKKE_REDIGERBART,
         DOKSYS_VALIDERING_FEILET,
         DOKSYS_IKKE_FUNNET,
         DOKSYS_IKKE_TILGANG,

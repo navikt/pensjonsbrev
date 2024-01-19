@@ -11,8 +11,8 @@ sealed class RedigerDoksysDokumentResponseDto {
     data class Failure(val message: String?,val type: FailureType?) : RedigerDoksysDokumentResponseDto()
 
     enum class FailureType {
-        LASING,
-        IKKE_TILLATT,
+        UNDER_REDIGERING,
+        IKKE_REDIGERBART,
         VALIDERING_FEILET,
         IKKE_FUNNET,
         IKKE_TILGANG,

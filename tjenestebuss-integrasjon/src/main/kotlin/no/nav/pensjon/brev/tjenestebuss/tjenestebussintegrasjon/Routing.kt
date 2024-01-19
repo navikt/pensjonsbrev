@@ -163,10 +163,11 @@ fun Application.tjenestebussIntegrationApi(config: Config) {
                     is RedigerDoksysDokumentResponseDto.Failure -> {
                         call.respond(
                             when (dokumentResponse.failureType) {
-                                LASING -> HttpStatusCode.InternalServerError
-                                IKKE_TILLATT -> HttpStatusCode.Forbidden
+                                UNDER_REDIGERING -> HttpStatusCode.Conflict
+                                IKKE_REDIGERBART -> HttpStatusCode.Forbidden
                                 VALIDERING_FEILET -> HttpStatusCode.BadRequest
                                 IKKE_FUNNET -> HttpStatusCode.NotFound
+
                                 IKKE_TILGANG -> HttpStatusCode.Unauthorized
                                 LUKKET -> HttpStatusCode.Locked
                             }, dokumentResponse
