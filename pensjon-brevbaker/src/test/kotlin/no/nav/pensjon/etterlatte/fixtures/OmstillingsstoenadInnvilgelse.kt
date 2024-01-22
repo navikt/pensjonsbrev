@@ -14,7 +14,7 @@ fun createOmstillingsstoenadInnvilgelseDTO() =
                 type = ElementType.HEADING_TWO,
                 children = listOf(
                     InnerElement(
-                        text = "Innhold fra utfall"
+                        text = "Begrunnelse for vedtaket"
                     )
                 )
             ),
@@ -22,10 +22,63 @@ fun createOmstillingsstoenadInnvilgelseDTO() =
                 type = ElementType.PARAGRAPH,
                 children = listOf(
                     InnerElement(
-                        text = "Her kommer det valgfri tekst om innvilget vedtak"
+                        text = "Omstillingsstønad gis på bakgrunn av at"
+                    )
+                )
+            ),
+            Element(
+                type = ElementType.BULLETED_LIST,
+                children = listOf(
+                    InnerElement(
+                        type = ElementType.LIST_ITEM,
+                        children = listOf(
+                            InnerElement(
+                                type = ElementType.PARAGRAPH,
+                                text = "du som gjenlevende ektefelle på dødsfallstidspunktet hadde vært gift " +
+                                        "med avdøde i minst fem år, har eller har hatt barn med avdøde, eller har " +
+                                        "omsorgen for barn under 18 år med minst halvparten av full tid"
+                            )
+                        ),
+                    ),
+                    InnerElement(
+                        type = ElementType.LIST_ITEM,
+                        children = listOf(
+                            InnerElement(
+                                type = ElementType.PARAGRAPH,
+                                text = "du er medlem i folketrygden"
+                            )
+                        ),
+                    ),
+                    InnerElement(
+                        type = ElementType.LIST_ITEM,
+                        children = listOf(
+                            InnerElement(
+                                type = ElementType.PARAGRAPH,
+                                text = "avdøde i de siste fem årene før dødsfallet var medlem i folketrygden, " +
+                                        "eller fikk pensjon eller uføretrygd fra folketrygden."
+                            )
+                        ),
+                    )
+                )
+            ),
+            Element(
+                type = ElementType.PARAGRAPH,
+                children = listOf(
+                    InnerElement(
+                        text = "Samboere med felles barn og samboere som tidligere har vært gift likestilles med ektefeller."
+                    )
+                )
+            ),
+            Element(
+                type = ElementType.PARAGRAPH,
+                children = listOf(
+                    InnerElement(
+                        text = "Vedtaket er gjort etter bestemmelsene om omstillingsstønad i folketrygdloven " +
+                                "§ 17-2, § 17-3, § 17-4, § 17-5, § 17-6, § 17-9, § 22-12 og § 22-13."
                     )
                 )
             )
+
         ),
         avdoed = Avdoed(
             navn = "Avdoed Avdoedesen",
