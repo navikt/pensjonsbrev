@@ -6,6 +6,7 @@ metadata:
   labels:
     "team": "pensjonsbrev"
 spec:
+  webproxy: true
   image: {{image}}
   port: 8080
   service:
