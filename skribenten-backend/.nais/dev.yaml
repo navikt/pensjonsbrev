@@ -26,7 +26,7 @@ outboundRules:
 externalHosts:
   - pdl-api.dev-fss-pub.nais.io
   - pensjon-pen-q2.dev-fss-pub.nais.io
-  - saf.intern.dev.nav.no
+  - saf.dev.intern.nav.no
   - kodeverk.dev-fss-pub.nais.io
   - pensjon-persondata-q2.intern.dev.nav.no
   - pensjonsbrev-tjenestebuss-q2.dev-fss-pub.nais.io
@@ -44,10 +44,6 @@ env:
     value: "api://dev-gcp.pensjonsbrev.pensjon-brevbaker/.default"
   - name: BREVMETADATA_URL
     value: "https://pensjon-brevmetadata-q2.intern.dev.nav.no"
-  - name: MICROSOFT_GRAPH_URL
-    value: "https://graph.microsoft.com/"
-  - name: MICROSOFT_GRAPH_SCOPE
-    value: "https://graph.microsoft.com/User.Read"
   - name: PDL_URL
     value: "https://pdl-api.dev-fss-pub.nais.io/graphql"
   - name: PDL_SCOPE
