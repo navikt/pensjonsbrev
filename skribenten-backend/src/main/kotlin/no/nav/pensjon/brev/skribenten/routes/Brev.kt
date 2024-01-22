@@ -94,7 +94,7 @@ private suspend fun bestillExtreamBrev(
                         OPPRETTE_JOURNALPOST -> EXTREAM_BESTILLING_OPPRETTE_JOURNALPOST
                     }
                 )
-            }else if (journalpostId != null) {
+            } else if (journalpostId != null) {
                 val error = safService.waitForJournalpostStatusUnderArbeid(call, journalpostId)
 
                 return if (error != null) {
