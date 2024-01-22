@@ -68,9 +68,6 @@ fun Application.tjenestebussIntegrationApi(config: Config) {
                 call.respond(HttpStatusCode.BadRequest, cause.message ?: "Unknown failure")
             }
         }
-        status(HttpStatusCode.Unauthorized) { call, cause ->
-
-        }
 
     }
     val azureADConfig = config.requireAzureADConfig()
@@ -104,7 +101,9 @@ fun Application.tjenestebussIntegrationApi(config: Config) {
         }
 
         authenticate(azureADConfig.name) {
-
+            get("/ping") {
+                call.respondText("Hello!", ContentType.Text.Plain, HttpStatusCode.OK)
+            }
             post("/hentSamhandler") {
                 val requestDto = call.receive<HentSamhandlerRequestDto>()
 
