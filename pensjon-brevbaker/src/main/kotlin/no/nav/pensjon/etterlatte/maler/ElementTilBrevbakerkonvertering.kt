@@ -46,10 +46,11 @@ fun <D : BrevDTO> OutlineOnlyScope<LangBokmalNynorskEnglish, D>.konverterElement
         }.orShowIf(element.type.equalTo(ElementType.PARAGRAPH)) {
             paragraph {
                 forEach(element.children) { inner ->
+                    // TODO vi har muligens lagret ned brev med dette formatet allerede så må støtte det videre
                     showIf(inner.type.equalTo(ElementType.BULLETED_LIST)) {
                         list {
                             ifNotNull(inner.children) { i ->
-                                lagPunktliste(i)
+                                lagPunktlisteGammeltFormat(i)
                             }
                         }
                     }.orShow {
@@ -73,7 +74,7 @@ fun <D : BrevDTO> OutlineOnlyScope<LangBokmalNynorskEnglish, D>.konverterElement
     }
 }
 
-private fun <D : BrevDTO> ListScope<LangBokmalNynorskEnglish, D>.lagPunktliste(
+private fun <D : BrevDTO> ListScope<LangBokmalNynorskEnglish, D>.lagPunktlisteGammeltFormat(
     items: Expression<List<InnerElement>>
 ) {
     forEach(items) { listItem ->
@@ -84,6 +85,26 @@ private fun <D : BrevDTO> ListScope<LangBokmalNynorskEnglish, D>.lagPunktliste(
                     Nynorsk to text,
                     English to text,
                 )
+            }
+        }
+    }
+}
+
+private fun <D : BrevDTO> ListScope<LangBokmalNynorskEnglish, D>.lagPunktliste(
+    items: Expression<List<InnerElement>>
+) {
+    forEach(items) { listItem ->
+        item {
+            ifNotNull(listItem.children) { children ->
+                forEach(children) { paragraph ->
+                    ifNotNull(paragraph.text) { text ->
+                        textExpr(
+                            Bokmal to text,
+                            Nynorsk to text,
+                            English to text,
+                        )
+                    }
+                }
             }
         }
     }
