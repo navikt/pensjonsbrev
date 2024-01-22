@@ -19,14 +19,10 @@ import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.auth.requireAzur
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.auth.tjenestebusJwt
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.arkiv.ArkivTjenestebussService
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.arkiv.BestillBrevExtreamRequestDto
-import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.arkiv.BestillExtreamBrevResponseDto
-import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.arkiv.BestillExtreamBrevResponseDto.Failure.FailureType.MANGLER_OBLIGATORISK_INPUT
-import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.arkiv.BestillExtreamBrevResponseDto.Success
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.dokumentsproduksjon.DokumentproduksjonService
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.dokumentsproduksjon.RedigerDoksysDokumentResponseDto
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.dokumentsproduksjon.RedigerDoksysDokumentResponseDto.Failure.FailureType.*
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.extreambrev.RedigerExtreamBrevService
-import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.extreambrev.RedigerExtreamDokumentResponseDto
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.samhandler.SamhandlerTjenestebussService
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.samhandler.dto.FinnSamhandlerResponseDto
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.samhandler.dto.HentSamhandlerResponseDto
@@ -143,18 +139,11 @@ fun Application.tjenestebussIntegrationApi(config: Config) {
             }
             post("/bestillExtreamBrev") {
                 val requestDto = call.receive<BestillBrevExtreamRequestDto>()
-
-                when (val arkivResponse: BestillExtreamBrevResponseDto =
-                    withCallId(arkivTjenestebussService) { bestillBrev(requestDto) }) {
-                    is Success -> call.respond(HttpStatusCode.OK, arkivResponse)
-                    is BestillExtreamBrevResponseDto.Failure -> {
-                        if (arkivResponse.failureType == MANGLER_OBLIGATORISK_INPUT) {
-                            call.respond(HttpStatusCode.BadRequest, arkivResponse)
-                        } else {
-                            call.respond(HttpStatusCode.InternalServerError, arkivResponse)
-                        }
-                    }
-                }
+                call.respond(withCallId(arkivTjenestebussService) { bestillBrev(requestDto) })
+            }
+            post("/redigerExtreamBrev") {
+                val requestDto = call.receive<RedigerExtreamDokumentRequestDto>()
+                call.respond(withCallId(redigerExtreamBrevService) { hentExtreamBrevUrl(requestDto) })
             }
             post("/redigerDoksysBrev") {
                 val requestDto = call.receive<RedigerDoksysDokumentRequestDto>()
@@ -174,12 +163,6 @@ fun Application.tjenestebussIntegrationApi(config: Config) {
                         )
                     }
                 }
-            }
-            post("/redigerExtreamBrev") {
-                val requestDto = call.receive<RedigerExtreamDokumentRequestDto>()
-                val response: RedigerExtreamDokumentResponseDto =
-                    withCallId(redigerExtreamBrevService) { hentExtreamBrevUrl(requestDto) }
-                call.respond(HttpStatusCode.OK, response)
             }
         }
     }
