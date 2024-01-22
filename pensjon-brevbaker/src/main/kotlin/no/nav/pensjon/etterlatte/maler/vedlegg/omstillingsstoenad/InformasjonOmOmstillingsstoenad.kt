@@ -103,8 +103,9 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, A
     paragraph {
         text(
             Bokmal to "Det er unntak fra aktivitetsplikten som gir rett til omstillingsstønad. Dette gjelder " +
-                    "blant annet hvis du har omsorgen for barn under ett år, eller om du har dokumentert sykdom " +
-                    "som forhindrer deg i å være i aktivitet.",
+                    "blant annet hvis du har omsorgen for barn under ett år, om du har dokumentert sykdom som " +
+                    "forhindrer deg i å være i aktivitet, eller om du er innvilget etter unntaksregelen for de " +
+                    "født i 1963 eller tidligere med lav inntekt.",
             Nynorsk to "",
             English to "",
         )
