@@ -19,14 +19,10 @@ import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.auth.requireAzur
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.auth.tjenestebusJwt
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.arkiv.ArkivTjenestebussService
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.arkiv.BestillBrevExtreamRequestDto
-import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.arkiv.BestillBrevResponseDto
-import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.arkiv.BestillBrevResponseDto.Failure.FailureType.MANGLER_OBLIGATORISK_INPUT
-import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.arkiv.BestillBrevResponseDto.Success
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.dokumentsproduksjon.DokumentproduksjonService
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.dokumentsproduksjon.RedigerDoksysDokumentResponseDto
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.dokumentsproduksjon.RedigerDoksysDokumentResponseDto.Failure.FailureType.*
-import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.extreambrev.ExtreamBrevService
-import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.extreambrev.RedigerExtreamDokumentResponseDto
+import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.extreambrev.RedigerExtreamBrevService
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.samhandler.SamhandlerTjenestebussService
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.samhandler.dto.FinnSamhandlerResponseDto
 import no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.samhandler.dto.HentSamhandlerResponseDto
@@ -72,6 +68,10 @@ fun Application.tjenestebussIntegrationApi(config: Config) {
                 call.respond(HttpStatusCode.BadRequest, cause.message ?: "Unknown failure")
             }
         }
+        status(HttpStatusCode.Unauthorized) { call, cause ->
+
+        }
+
     }
     val azureADConfig = config.requireAzureADConfig()
 
@@ -86,10 +86,13 @@ fun Application.tjenestebussIntegrationApi(config: Config) {
         val stsService = STSService(config.getConfig("services.sts"))
         val stsSercuritySOAPHandler = STSSercuritySOAPHandler(stsService)
         val servicesConfig = config.getConfig("services")
-        val samhandlerTjenestebussService = SamhandlerTjenestebussService(servicesConfig.getConfig("tjenestebuss"), stsSercuritySOAPHandler)
-        val arkivTjenestebussService = ArkivTjenestebussService(servicesConfig.getConfig("tjenestebuss"), stsSercuritySOAPHandler)
-        val dokumentProduksjonService = DokumentproduksjonService(servicesConfig.getConfig("dokprod"), stsSercuritySOAPHandler)
-        val extreamBrevService = ExtreamBrevService(servicesConfig, stsSercuritySOAPHandler)
+        val samhandlerTjenestebussService =
+            SamhandlerTjenestebussService(servicesConfig.getConfig("tjenestebuss"), stsSercuritySOAPHandler)
+        val arkivTjenestebussService =
+            ArkivTjenestebussService(servicesConfig.getConfig("tjenestebuss"), stsSercuritySOAPHandler)
+        val dokumentProduksjonService =
+            DokumentproduksjonService(servicesConfig.getConfig("dokprod"), stsSercuritySOAPHandler)
+        val redigerExtreamBrevService = RedigerExtreamBrevService(servicesConfig, stsSercuritySOAPHandler)
 
 
         get("/isAlive") {
@@ -122,7 +125,7 @@ fun Application.tjenestebussIntegrationApi(config: Config) {
             post("/finnSamhandler") {
                 val requestDto = call.receive<FinnSamhandlerRequestDto>()
 
-                val samhandlerResponse = withCallId(samhandlerTjenestebussService) {
+                val samhandlerResponse: FinnSamhandlerResponseDto = withCallId(samhandlerTjenestebussService) {
                     finnSamhandler(requestDto)
                 }
                 when (samhandlerResponse) {
@@ -136,17 +139,11 @@ fun Application.tjenestebussIntegrationApi(config: Config) {
             }
             post("/bestillExtreamBrev") {
                 val requestDto = call.receive<BestillBrevExtreamRequestDto>()
-
-                when (val arkivResponse: BestillBrevResponseDto = withCallId(arkivTjenestebussService) { bestillBrev(requestDto) }) {
-                    is Success -> call.respond(HttpStatusCode.OK, arkivResponse)
-                    is BestillBrevResponseDto.Failure -> {
-                        if (arkivResponse.failureType == MANGLER_OBLIGATORISK_INPUT) {
-                            call.respond(HttpStatusCode.BadRequest, arkivResponse)
-                        } else {
-                            call.respond(HttpStatusCode.InternalServerError, arkivResponse)
-                        }
-                    }
-                }
+                call.respond(withCallId(arkivTjenestebussService) { bestillBrev(requestDto) })
+            }
+            post("/redigerExtreamBrev") {
+                val requestDto = call.receive<RedigerExtreamDokumentRequestDto>()
+                call.respond(withCallId(redigerExtreamBrevService) { hentExtreamBrevUrl(requestDto) })
             }
             post("/redigerDoksysBrev") {
                 val requestDto = call.receive<RedigerDoksysDokumentRequestDto>()
@@ -155,22 +152,16 @@ fun Application.tjenestebussIntegrationApi(config: Config) {
                     is RedigerDoksysDokumentResponseDto.Failure -> {
                         call.respond(
                             when (dokumentResponse.failureType) {
-                                LASING -> HttpStatusCode.InternalServerError
-                                IKKE_TILLATT -> HttpStatusCode.Forbidden
+                                UNDER_REDIGERING -> HttpStatusCode.Conflict
+                                IKKE_REDIGERBART -> HttpStatusCode.Forbidden
                                 VALIDERING_FEILET -> HttpStatusCode.BadRequest
                                 IKKE_FUNNET -> HttpStatusCode.NotFound
+
                                 IKKE_TILGANG -> HttpStatusCode.Unauthorized
                                 LUKKET -> HttpStatusCode.Locked
                             }, dokumentResponse
                         )
                     }
-                }
-            }
-            post("/redigerExtreamBrev") {
-                val requestDto = call.receive<RedigerExtreamDokumentRequestDto>()
-                when (val response: RedigerExtreamDokumentResponseDto = withCallId(extreamBrevService) { hentExtreamBrevUrl(requestDto) }) {
-                    is RedigerExtreamDokumentResponseDto.Success -> call.respond(HttpStatusCode.OK, response)
-                    is RedigerExtreamDokumentResponseDto.Failure -> call.respond(HttpStatusCode.InternalServerError, response)
                 }
             }
         }

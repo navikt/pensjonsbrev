@@ -144,16 +144,24 @@ object OmstillingsstoenadInnvilgelseFraser {
             }
 
             paragraph {
+                text(
+                    Bokmal to "Samboere med felles barn og samboere som tidligere har vært gift likestilles " +
+                            "med ektefeller.",
+                    Nynorsk to "",
+                    English to "",
+                )
+            }
+            paragraph {
                 showIf(etterbetaling) {
                     text(
-                        Bokmal to "Vedtaket er gjort etter bestemmelsene om omstillingstid i folketrygdloven " +
+                        Bokmal to "Vedtaket er gjort etter bestemmelsene om omstillingsstønad i folketrygdloven " +
                                 "§ 17-2, § 17-3, § 17-4, § 17-5, § 17-6, § 17-9, § 22-12 og § 22-13.",
                         Nynorsk to "",
                         English to "",
                     )
                 } orShow {
                     text(
-                        Bokmal to "Vedtaket er gjort etter bestemmelsene om omstillingstid i folketrygdloven " +
+                        Bokmal to "Vedtaket er gjort etter bestemmelsene om omstillingsstønad i folketrygdloven " +
                                 "§ 17-2, § 17-3, § 17-4, § 17-5, § 17-6, § 17-9 og § 22-12.",
                         Nynorsk to "",
                         English to "",

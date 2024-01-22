@@ -69,5 +69,6 @@ fun createEndringHovedmalDTO() = EndringHovedmalDTO(
         ),
         beregningsMetodeAnvendt = BeregningsMetode.NASJONAL,
         beregningsMetodeFraGrunnlag = BeregningsMetode.NASJONAL,
+        mindreEnnFireFemtedelerAvOpptjeningstiden = true
     )
 )
