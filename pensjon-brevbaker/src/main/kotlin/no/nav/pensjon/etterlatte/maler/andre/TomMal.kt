@@ -1,4 +1,4 @@
-package no.nav.pensjon.etterlatte.maler
+package no.nav.pensjon.etterlatte.maler.andre
 
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
@@ -10,6 +10,8 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
+import no.nav.pensjon.etterlatte.maler.Delmal
+import no.nav.pensjon.etterlatte.maler.ManueltBrevDTO
 
 @TemplateModelHelpers
 object TomMal : EtterlatteTemplate<ManueltBrevDTO>, Delmal {
