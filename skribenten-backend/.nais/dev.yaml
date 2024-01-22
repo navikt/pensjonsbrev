@@ -26,7 +26,7 @@ outboundRules:
 externalHosts:
   - pdl-api.dev-fss-pub.nais.io
   - pensjon-pen-q2.dev-fss-pub.nais.io
-  - saf.dev.intern.nav.no
+  - saf-q2.dev-fss-pub.nais.io
   - kodeverk.dev-fss-pub.nais.io
   - pensjon-persondata-q2.intern.dev.nav.no
   - pensjonsbrev-tjenestebuss-q2.dev-fss-pub.nais.io
