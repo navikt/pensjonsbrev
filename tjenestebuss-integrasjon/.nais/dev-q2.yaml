@@ -35,3 +35,4 @@ externalHosts:
   - tjenestebuss-q2.adeo.no
   - security-token-service.dev.adeo.no
   - dokprod-q2.dev.intern.nav.no
+  - login.microsoftonline.com
