@@ -56,7 +56,7 @@ services:
       - PENSJON_PERSONDATA_SCOPE=api://dev-fss.pensjon-person.pensjon-persondata-q2/.default
       - PENSJON_PERSONDATA_URL=https://pensjon-persondata-q2.dev.intern.nav.no
       - SAF_SCOPE=api://dev-fss.teamdokumenthandtering.saf/.default
-      - SAF_URL=https://saf.dev.intern.nav.no/graphql
+      - SAF_URL=https://saf-q2.dev-fss-pub.nais.io/graphql
       - TJENESTEBUSS_INTEGRASJON_URL=http://tjenestebuss-integrasjon:8080
       - TJENESTEBUSS_INTEGRASJON_SCOPE=api://dev-fss.pensjonsbrev.pensjonsbrev-tjenestebuss-lokal/.default
 

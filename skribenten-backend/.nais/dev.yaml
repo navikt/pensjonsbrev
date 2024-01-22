@@ -49,7 +49,7 @@ env:
   - name: PDL_SCOPE
     value: "api://dev-fss.pdl.pdl-api/.default"
   - name: SAF_URL
-    value: "https://saf.dev.intern.nav.no/graphql"
+    value: "https://saf-q2.dev-fss-pub.nais.io/graphql"
   - name: SAF_SCOPE
     value: "api://dev-fss.teamdokumenthandtering.saf/.default"
   - name: KRR_SCOPE
