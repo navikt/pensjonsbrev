@@ -72,11 +72,12 @@ export const sakRoute = new Route({
 export const brevvelgerRoute = new Route({
   getParentRoute: () => sakRoute,
   path: "brevvelger",
-  validateSearch: (search: Record<string, unknown>): { fane: BrevvelgerTabOptions } => ({
+  validateSearch: (search: Record<string, unknown>): { enhetsId?: string; fane: BrevvelgerTabOptions } => ({
     fane:
       search.fane === BrevvelgerTabOptions.E_BLANKETTER
         ? BrevvelgerTabOptions.E_BLANKETTER
         : BrevvelgerTabOptions.BREVMALER,
+    enhetsId: search.enhetsId?.toString(),
   }),
   loader: async ({ context: { queryClient, getSakQueryOptions } }) => {
     const { sakType } = await queryClient.ensureQueryData(getSakQueryOptions);

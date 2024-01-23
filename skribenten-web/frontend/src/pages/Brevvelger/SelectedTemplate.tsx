@@ -45,6 +45,7 @@ export function SelectedTemplate() {
 
 function Brevmal() {
   const { templateId, sakId } = useParams({ from: selectedTemplateRoute.id });
+  const { enhetsId } = useSearch({ from: selectedTemplateRoute.id });
   const navigate = useNavigate({ from: selectedTemplateRoute.id });
   const { getSakQueryOptions } = useRouteContext({ from: selectedTemplateRoute.id });
   const sak = useQuery(getSakQueryOptions).data;
@@ -99,6 +100,7 @@ function Brevmal() {
                 spraak: submittedValues.spraak,
                 sakId: Number(sakId),
                 gjelderPid: sak?.foedselsnr ?? "TODO",
+                enhetsId,
               };
               orderLetterMutation.mutate(orderLetterRequest);
             }
