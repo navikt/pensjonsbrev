@@ -139,6 +139,7 @@ data class OrderLetterRequest(
     val gjelderPid: String,
     val landkode: String? = null,
     val mottakerText: String? = null,
+    val enhetsId: String,
 )
 
 data class BestillOgRedigerBrevResponse(

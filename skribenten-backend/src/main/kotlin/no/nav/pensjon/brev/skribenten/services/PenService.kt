@@ -85,7 +85,7 @@ class PenService(config: Config, authService: AzureADService) {
                     sakId = request.sakId,
                     brevkode = request.brevkode,
                     mottaker = null, // TODO
-                    journalfoerendeEnhet = "4849", // TODO
+                    journalfoerendeEnhet = request.enhetsId,
                     sensitivePersonopplysninger = false, // TODO valg fra saksbehandler
                     sprakKode = request.spraak,
                     vedtakId = 42806043, //TODO fyll inn fra query param
