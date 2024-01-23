@@ -16,6 +16,7 @@ import no.nav.pensjon.brev.skribenten.services.KodeverkService
 import no.nav.pensjon.brev.skribenten.services.KrrService
 import no.nav.pensjon.brev.skribenten.services.LetterCategory
 import no.nav.pensjon.brev.skribenten.services.LetterMetadata
+import no.nav.pensjon.brev.skribenten.services.NavansattService
 import no.nav.pensjon.brev.skribenten.services.PdlService
 import no.nav.pensjon.brev.skribenten.services.PenService
 import no.nav.pensjon.brev.skribenten.services.PensjonPersonDataService
@@ -38,6 +39,7 @@ fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config
     val brevmetadataService = BrevmetadataService(servicesConfig.getConfig("brevmetadata"))
     val tjenestebussIntegrasjonService =
         TjenestebussIntegrasjonService(servicesConfig.getConfig("tjenestebussintegrasjon"), authService)
+    val navansattService = NavansattService(servicesConfig.getConfig("navansatt"))
 
     routing {
         healthRoute()
@@ -68,6 +70,7 @@ fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config
             penRoute(penService, safService)
             personRoute(pdlService, pensjonPersonDataService, krrService)
             tjenestebussIntegrasjonRoute(tjenestebussIntegrasjonService)
+            navansattRoute(navansattService)
         }
     }
 }
