@@ -24,6 +24,7 @@ outboundRules:
     cluster: dev-fss
   - application: navansatt
     namespace: teampensjon
+    cluster: dev-fss
 
 externalHosts:
   - pdl-api.dev-fss-pub.nais.io
@@ -32,6 +33,7 @@ externalHosts:
   - kodeverk.dev-fss-pub.nais.io
   - pensjon-persondata-q2.intern.dev.nav.no
   - pensjonsbrev-tjenestebuss-q2.dev-fss-pub.nais.io
+  - navansatt.dev-fss-pub.nais.io
 
 env:
   - name: CORS_ALLOW_HOST
@@ -69,4 +71,4 @@ env:
   - name: TJENESTEBUSS_INTEGRASJON_SCOPE
     value: "api://dev-fss.pensjonsbrev.pensjonsbrev-tjenestebuss-q2/.default"
   - name: NAVANSATT_URL
-    value: "https://navansatt.dev.intern.nav.no/"
+    value: "https://navansatt.dev-fss-pub.nais.io/"
