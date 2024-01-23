@@ -27,7 +27,7 @@ import { BrevvelgerTabOptions } from "./BrevvelgerPage";
 
 const formValidationSchema = z.object({
   spraak: z.nativeEnum(SpraakKode, { required_error: "Obligatorisk" }),
-  enhetsId: z.string({ required_error: "Obligatorisk" }),
+  enhetsId: z.string({ required_error: "Obligatorisk" }).length(4, "Obligatorisk"),
   isSensitive: z.boolean({ required_error: "Obligatorisk" }),
 });
 
@@ -202,13 +202,14 @@ function SelectLanguage({ letterTemplate }: { letterTemplate: LetterMetadata }) 
 
 function SelectEnhetsId() {
   const { enhetsId } = useSearch({ from: selectedTemplateRoute.id });
-  const { register } = useFormContext();
-
+  const { register, formState, watch } = useFormContext();
+  console.log(watch());
+  console.log(formState.errors);
   // TODO: hent mulige enhetsIder fra backend når det finnes
 
   return (
-    <Select {...register("enhetsId")} label="EnhetsId" size="small">
-      <option value={enhetsId}>{enhetsId ?? "Mangler enhetsId"}</option>
+    <Select {...register("enhetsId")} error={formState.errors.enhetsId?.message} label="EnhetsId" size="small">
+      <option value={enhetsId}>{enhetsId}</option>
     </Select>
   );
 }
