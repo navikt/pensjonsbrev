@@ -131,6 +131,7 @@ function Brevmal({ letterTemplate }: { letterTemplate: LetterMetadata }) {
         >
           <VStack gap="4">
             <SelectLanguage letterTemplate={letterTemplate} />
+            <SelectEnhetsId />
             <SelectSensitivity letterTemplate={letterTemplate} />
           </VStack>
 
@@ -195,6 +196,19 @@ function SelectLanguage({ letterTemplate }: { letterTemplate: LetterMetadata }) 
           {SPRAAK_ENUM_TO_TEXT[spraak]} {preferredLanguage === spraak ? "(foretrukket språk)" : ""}
         </option>
       ))}
+    </Select>
+  );
+}
+
+function SelectEnhetsId() {
+  const { enhetsId } = useSearch({ from: selectedTemplateRoute.id });
+  const { register } = useFormContext();
+
+  // TODO: hent mulige enhetsIder fra backend når det finnes
+
+  return (
+    <Select {...register("enhetsId")} label="EnhetsId" size="small">
+      <option value={enhetsId}>{enhetsId ?? "Mangler enhetsId"}</option>
     </Select>
   );
 }
