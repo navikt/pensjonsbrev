@@ -65,4 +65,5 @@ export type OrderLetterRequest = {
   gjelderPid: string;
   landkode?: string;
   mottakerText?: string;
+  enhetsId: string;
 };
