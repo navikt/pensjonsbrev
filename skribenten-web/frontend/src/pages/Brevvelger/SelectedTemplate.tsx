@@ -1,4 +1,5 @@
 import { css } from "@emotion/react";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowRightIcon, StarFillIcon, StarIcon } from "@navikt/aksel-icons";
 import { BodyShort, Button, Heading, Radio, RadioGroup, Select, Tag, VStack } from "@navikt/ds-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -6,6 +7,7 @@ import { useNavigate, useParams, useRouteContext, useSearch } from "@tanstack/re
 import type { AxiosError } from "axios";
 import { useEffect } from "react";
 import { Controller, FormProvider, useForm, useFormContext } from "react-hook-form";
+import { z } from "zod";
 
 import {
   addFavoritt,
@@ -18,13 +20,36 @@ import { Divider } from "~/components/Divider";
 import { usePreferredLanguage } from "~/hooks/usePreferredLanguage";
 import { redigeringRoute, selectedTemplateRoute } from "~/tanStackRoutes";
 import type { LetterMetadata, OrderLetterRequest } from "~/types/apiTypes";
-import { BrevSystem } from "~/types/apiTypes";
+import { BrevSystem, SpraakKode } from "~/types/apiTypes";
 import { SPRAAK_ENUM_TO_TEXT } from "~/types/nameMappings";
 
 import { BrevvelgerTabOptions } from "./BrevvelgerPage";
 
+const formValidationSchema = z.object({
+  spraak: z.nativeEnum(SpraakKode, { required_error: "Obligatorisk" }),
+  enhetsId: z.string({ required_error: "Obligatorisk" }),
+  isSensitive: z.boolean({ required_error: "Obligatorisk" }),
+});
+
 export function SelectedTemplate() {
   const { fane } = useSearch({ from: selectedTemplateRoute.id });
+  const { templateId } = useParams({ from: selectedTemplateRoute.id });
+  const { getSakQueryOptions } = useRouteContext({ from: selectedTemplateRoute.id });
+  const sak = useQuery(getSakQueryOptions).data;
+
+  const letterTemplate = useQuery({
+    queryKey: getLetterTemplate.queryKey(sak?.sakType as string),
+    queryFn: () => getLetterTemplate.queryFn(sak?.sakType as string),
+    select: (letterTemplates) =>
+      [...letterTemplates.eblanketter, ...letterTemplates.kategorier.flatMap((kategori) => kategori.templates)].find(
+        (letterMetadata) => letterMetadata.id === templateId,
+      ),
+    enabled: !!sak,
+  }).data;
+
+  if (!letterTemplate) {
+    return <></>;
+  }
 
   return (
     <div
@@ -38,44 +63,34 @@ export function SelectedTemplate() {
       `}
     >
       <FavoriteButton />
-      {fane === BrevvelgerTabOptions.BREVMALER ? <Brevmal /> : <Eblankett />}
+      {fane === BrevvelgerTabOptions.BREVMALER ? (
+        <Brevmal letterTemplate={letterTemplate} />
+      ) : (
+        <Eblankett letterTemplate={letterTemplate} />
+      )}
     </div>
   );
 }
 
-function Brevmal() {
+function Brevmal({ letterTemplate }: { letterTemplate: LetterMetadata }) {
   const { templateId, sakId } = useParams({ from: selectedTemplateRoute.id });
   const { enhetsId } = useSearch({ from: selectedTemplateRoute.id });
   const navigate = useNavigate({ from: selectedTemplateRoute.id });
   const { getSakQueryOptions } = useRouteContext({ from: selectedTemplateRoute.id });
   const sak = useQuery(getSakQueryOptions).data;
 
-  // TODO: deling av data mellom routes må kunne gjøres enklere enn dette??
-  const letterTemplate = useQuery({
-    queryKey: getLetterTemplate.queryKey(sak?.sakType as string),
-    queryFn: () => getLetterTemplate.queryFn(sak?.sakType as string),
-    select: (letterTemplates) =>
-      letterTemplates.kategorier
-        .flatMap((kategori) => kategori.templates)
-        .find((letterMetadata) => letterMetadata.id === templateId),
-    enabled: !!sak,
-  }).data;
-
   const orderLetterMutation = useMutation<unknown, AxiosError<Error>, OrderLetterRequest>({
     mutationFn: orderLetter,
     onSuccess: () => {},
   });
 
-  const methods = useForm({
+  const methods = useForm<z.infer<typeof formValidationSchema>>({
     defaultValues: {
-      isSensitive: null,
-      spraak: null,
+      enhetsId,
+      isSensitive: letterTemplate?.brevsystem === BrevSystem.Extream ? undefined : false, // Supply default value to pass validation if Brev is not Doksys
     },
+    resolver: zodResolver(formValidationSchema),
   });
-
-  if (!letterTemplate) {
-    return <></>;
-  }
 
   return (
     <>
@@ -97,7 +112,6 @@ function Brevmal() {
             justify-content: space-between;
           `}
           onSubmit={methods.handleSubmit((submittedValues) => {
-            console.log(submittedValues);
             switch (letterTemplate.brevsystem) {
               case BrevSystem.Brevbaker: {
                 return navigate({ to: redigeringRoute.id, params: { sakId, templateId } });
@@ -106,10 +120,10 @@ function Brevmal() {
               case BrevSystem.DokSys: {
                 const orderLetterRequest = {
                   brevkode: letterTemplate.id,
-                  spraak: submittedValues.spraak,
                   sakId: Number(sakId),
                   gjelderPid: sak?.foedselsnr ?? "TODO",
-                enhetsId,};
+                  ...submittedValues,
+                };
                 return orderLetterMutation.mutate(orderLetterRequest);
               }
             }
@@ -147,12 +161,17 @@ function SelectSensitivity({ letterTemplate }: { letterTemplate: LetterMetadata 
     <Controller
       name="isSensitive"
       render={({ field, fieldState }) => (
-        <RadioGroup legend="Er brevet sensitivt?" {...field} error={fieldState.error?.message} size="small">
+        <RadioGroup
+          legend="Er brevet sensitivt?"
+          {...field}
+          error={fieldState.error?.message}
+          size="small"
+          value={field.value ?? null}
+        >
           <Radio value>Ja</Radio>
           <Radio value={false}>Nei</Radio>
         </RadioGroup>
       )}
-      rules={{ validate: (value) => value !== null || "Obligatorisk" }}
     />
   );
 }
@@ -170,7 +189,7 @@ function SelectLanguage({ letterTemplate }: { letterTemplate: LetterMetadata }) 
   }, [preferredLanguage, setValue, letterTemplate.spraak]);
 
   return (
-    <Select {...register("spraak", { required: "Obligatorisk" })} label="Språk" size="small">
+    <Select {...register("spraak")} label="Språk" size="small">
       {letterTemplate.spraak.map((spraak) => (
         <option key={spraak} value={spraak}>
           {SPRAAK_ENUM_TO_TEXT[spraak]} {preferredLanguage === spraak ? "(foretrukket språk)" : ""}
@@ -180,24 +199,7 @@ function SelectLanguage({ letterTemplate }: { letterTemplate: LetterMetadata }) 
   );
 }
 
-function Eblankett() {
-  const { templateId } = useParams({ from: selectedTemplateRoute.id });
-
-  const { getSakQueryOptions } = useRouteContext({ from: selectedTemplateRoute.id });
-  const sak = useQuery(getSakQueryOptions).data;
-
-  // TODO: deling av data mellom routes må kunne gjøres enklere enn dette??
-  const letterTemplate = useQuery({
-    queryKey: getLetterTemplate.queryKey(sak?.sakType as string),
-    queryFn: () => getLetterTemplate.queryFn(sak?.sakType as string),
-    select: (letterTemplates) => letterTemplates.eblanketter.find((letterMetadata) => letterMetadata.id === templateId),
-    enabled: !!sak,
-  }).data;
-
-  if (!letterTemplate) {
-    return <></>;
-  }
-
+function Eblankett({ letterTemplate }: { letterTemplate: LetterMetadata }) {
   return (
     <>
       <LetterTemplateHeading letterTemplate={letterTemplate} />

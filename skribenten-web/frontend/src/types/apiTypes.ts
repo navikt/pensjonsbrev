@@ -66,4 +66,5 @@ export type OrderLetterRequest = {
   landkode?: string;
   mottakerText?: string;
   enhetsId: string;
+  isSensitive: boolean;
 };
