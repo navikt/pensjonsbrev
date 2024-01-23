@@ -100,7 +100,7 @@ function Brevmal() {
                 spraak: submittedValues.spraak,
                 sakId: Number(sakId),
                 gjelderPid: sak?.foedselsnr ?? "TODO",
-                enhetsId,
+                enhetsId: enhetsId ?? "TODO",
               };
               orderLetterMutation.mutate(orderLetterRequest);
             }
