@@ -29,7 +29,7 @@ data class BarnepensjonAvslagDTO(
 ) : BrevDTO
 
 @TemplateModelHelpers
-object AvslagFoerstegangsbehandling : EtterlatteTemplate<BarnepensjonAvslagDTO>, Hovedmal {
+object BarnepensjonAvslag : EtterlatteTemplate<BarnepensjonAvslagDTO>, Hovedmal {
     override val kode = EtterlatteBrevKode.BARNEPENSJON_AVSLAG
 
     override val template = createTemplate(

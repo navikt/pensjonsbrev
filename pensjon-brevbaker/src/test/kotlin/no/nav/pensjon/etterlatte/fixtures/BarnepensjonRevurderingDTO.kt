@@ -7,13 +7,13 @@ import no.nav.pensjon.etterlatte.maler.Periode
 import no.nav.pensjon.etterlatte.maler.TrygdetidType
 import no.nav.pensjon.etterlatte.maler.Trygdetidsperiode
 import no.nav.pensjon.etterlatte.maler.Utbetalingsinfo
-import no.nav.pensjon.etterlatte.maler.barnepensjon.endring.EndringHovedmalDTO
+import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingDTO
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BeregningsMetode
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BeregningsinfoBP
 import java.time.LocalDate
 import java.time.Month
 
-fun createEndringHovedmalDTO() = EndringHovedmalDTO(
+fun createBarnepensjonRevurderingDTO() = BarnepensjonRevurderingDTO(
     erEndret = true,
     etterbetaling = Etterbetaling(
         fraDato = LocalDate.of(2020, Month.JANUARY, 1),
