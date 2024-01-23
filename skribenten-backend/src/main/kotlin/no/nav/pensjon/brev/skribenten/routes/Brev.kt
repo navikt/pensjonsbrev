@@ -140,6 +140,7 @@ data class OrderLetterRequest(
     val landkode: String? = null,
     val mottakerText: String? = null,
     val enhetsId: String,
+    val isSensitive: Boolean,
 )
 
 data class BestillOgRedigerBrevResponse(
