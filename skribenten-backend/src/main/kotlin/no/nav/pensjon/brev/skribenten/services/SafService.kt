@@ -10,6 +10,7 @@ import io.ktor.server.application.*
 import kotlinx.coroutines.delay
 import no.nav.pensjon.brev.skribenten.auth.AzureADOnBehalfOfAuthorizedHttpClient
 import no.nav.pensjon.brev.skribenten.auth.AzureADService
+import org.slf4j.LoggerFactory
 
 private const val HENT_JOURNAL_STATUS_QUERY_RESOURCE = "/saf/HentJournalpostStatus.graphql"
 private val hentJournalStatusQuery = SafService::class.java.getResource(HENT_JOURNAL_STATUS_QUERY_RESOURCE)?.readText()
@@ -25,6 +26,7 @@ data class JournalQuery(
 class SafService(config: Config, authService: AzureADService) {
     private val safUrl = config.getString("url")
     private val safScope = config.getString("scope")
+    private val logger = LoggerFactory.getLogger(this::class.java)
 
     //TODO vurder å bruke en egen client for graphql: (https://opensource.expediagroup.com/graphql-kotlin/docs/client/client-overview/)
     private val client = AzureADOnBehalfOfAuthorizedHttpClient(safScope, authService) {
@@ -72,9 +74,11 @@ class SafService(config: Config, authService: AzureADService) {
                     }
                 }
                 is ServiceResult.Error -> {
+                    logger.error("Feil ved venting på ferdigstilling av brev. Satus: ${result.statusCode}. Message: ${result.error}")
                     return JournalpostLoadingError(result.error, JournalpostLoadingError.ErrorType.ERROR)
                 }
                 is ServiceResult.AuthorizationError -> {
+                    logger.error(result.error.logString())
                     return JournalpostLoadingError(result.error.error, JournalpostLoadingError.ErrorType.ERROR)
                 }
             }

@@ -20,7 +20,7 @@ abstract class TjenestebussService {
     suspend fun <T> withCallId(callId: String?, block: suspend CoroutineScope.() -> T): T =
         withContext(callIdHandler.callId.asContextElement(callId), block)
 
-    class CallIdSoapHandler() : Handler<SOAPMessageContext> {
+    class CallIdSoapHandler : Handler<SOAPMessageContext> {
         private val logger = LoggerFactory.getLogger(this::class.java)
 
         val callId = ThreadLocal<String?>()

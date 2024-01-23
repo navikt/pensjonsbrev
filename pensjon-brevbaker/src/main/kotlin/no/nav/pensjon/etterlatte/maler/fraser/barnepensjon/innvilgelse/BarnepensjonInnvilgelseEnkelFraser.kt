@@ -39,44 +39,44 @@ object BarnepensjonInnvilgelseEnkelFraser {
                 val formatertNyesteUtbetalingsperiodeDatoFom = nyesteUtbetalingsperiodeDatoFom.format()
 
                 textExpr(
-                    Bokmal to "Du er innvilget barnepensjon fra ".expr() + formatertVirkningsdato + " fordi " + avdoedNavn + " er registrert død " + formatertDoedsdato + ". ",
-                    Nynorsk to "".expr(),
-                    English to "".expr()
+                    Bokmal to "Du er innvilget barnepensjon fra ".expr() + formatertVirkningsdato + " fordi " + avdoedNavn + " er registrert død " + formatertDoedsdato + ".",
+                    Nynorsk to "Du er innvilga barnepensjon frå og med ".expr() + formatertVirkningsdato + " fordi " + avdoedNavn + " er registrert død " + formatertDoedsdato + ".",
+                    English to "You have been granted a children's pension ".expr() + formatertVirkningsdato + " because " + avdoedNavn + " is registered as deceased on "+ formatertDoedsdato + "."
                 )
 
                 showIf(harFlereUtbetalingsperioder) {
                     textExpr(
-                        Bokmal to "".expr() + "Du får "+ beloep.format() + " kroner hver måned før skatt fra " + formatertNyesteUtbetalingsperiodeDatoFom + ". Se utbetalingsbeløp for tidligere perioder i vedlegg om etterbetaling.",
-                        Nynorsk to "".expr(),
-                        English to "".expr()
+                        Bokmal to "Du får ".expr() + beloep.format() + " kroner hver måned før skatt fra " + formatertNyesteUtbetalingsperiodeDatoFom + ". Se utbetalingsbeløp for tidligere perioder i vedlegg om etterbetaling.",
+                        Nynorsk to "Du får ".expr() + beloep.format() + " kroner per månad før skatt frå og med " + formatertNyesteUtbetalingsperiodeDatoFom + ". Sjå utbetalingsbeløp for tidlegare periodar i vedlegget om etterbetaling.",
+                        English to "You will receive ".expr() + beloep.format() + " kroner each month before tax starting on " + formatertNyesteUtbetalingsperiodeDatoFom + ". See the payment amount for previous periods in the Back Payment Attachment."
                     )
                 }.orShow {
                     textExpr(
-                        Bokmal to "Du får ".expr() + beloep.format() + " kroner hver måned før skatt. ",
-                        Nynorsk to "".expr(),
-                        English to "".expr()
+                        Bokmal to "Du får ".expr() + beloep.format() + " kroner hver måned før skatt.",
+                        Nynorsk to "Du får ".expr() + beloep.format() + " kroner per månad før skatt.",
+                        English to "You will receive NOK ".expr() + beloep.format() + " each month before tax."
                     )
                 }
             }
             paragraph {
                 text(
                     Bokmal to "Barnepensjonen utbetales til og med den kalendermåneden du fyller 20 år.",
-                    Nynorsk to "",
-                    English to "",
+                    Nynorsk to "Barnepensjonen blir utbetalt fram til og med kalendermånaden du fyller 20 år.",
+                    English to "The children’s pension is paid up to and including the calendar month in which you turn 20.",
                 )
             }
             paragraph {
                 text(
                     Bokmal to "Barnepensjon gis på bakgrunn av at du er medlem i folketrygden og at avdøde i de siste fem årene før dødsfallet var medlem i folketrygden eller fikk pensjon fra folketrygden.",
-                    Nynorsk to "",
-                    English to "",
+                    Nynorsk to "Barnepensjon blir gitt på bakgrunn av at du er medlem i folketrygda, og at avdøde var medlem i eller fekk pensjon frå folketrygda dei siste fem åra før sin død.",
+                    English to "You are eligible for a children's pension because you are a member of the Norwegian National Insurance Scheme, and the deceased has been a member of the National Insurance Scheme in the five years prior to the death or he/she has been receiving a pension from the Scheme.",
                 )
             }
             paragraph {
                 textExpr(
-                    Bokmal to "".expr() + "Vedtaket er gjort etter bestemmelsene om barnepensjon i folketrygdloven §§ 18-2, 18-3, 18-4, 18-5" + ifElse(erEtterbetaling, ", 22-12 og 22-13.", " og 22-12."),
-                    Nynorsk to "".expr(),
-                    English to "".expr(),
+                    Bokmal to "Vedtaket er gjort etter bestemmelsene om barnepensjon i folketrygdloven §§ 18-2, 18-3, 18-4, 18-5".expr() + ifElse(erEtterbetaling, ", 22-12 og 22-13.", " og 22-12."),
+                    Nynorsk to "Vedtaket er fatta etter føresegnene om barnepensjon i folketrygdlova §§ 18-2, 18-3, 18-4, 18-5".expr() + ifElse(erEtterbetaling, ", 22-12 og 22-13.", " og 22-12."),
+                    English to "This decision has been made pursuant to the provisions regarding children's pensions in the National Insurance Act – sections 18-2, 18-3, 18-4, 18-5".expr() + ifElse(erEtterbetaling, ", 22-12 og 22-13.", " og 22-12."),
                 )
             }
         }

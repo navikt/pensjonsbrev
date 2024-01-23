@@ -4,6 +4,7 @@ import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.dsl.createTemplate
+import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -70,7 +71,9 @@ object OmstillingsstoenadInnvilgelse  : EtterlatteTemplate<OmstillingsstoenadInn
             includePhrase(OmstillingsstoenadInnvilgelseFraser.Utbetaling(etterbetaling))
             includePhrase(OmstillingsstoenadInnvilgelseFraser.HvaErOmstillingsstoenad)
             includePhrase(OmstillingsstoenadInnvilgelseFraser.HvorLengerKanDuFaaOmstillingsstoenad(beregning, lavEllerIngenInntekt))
-            includePhrase(OmstillingsstoenadInnvilgelseFraser.Aktivitetsplikt(innvilgetMindreEnnFireMndEtterDoedsfall))
+            showIf(lavEllerIngenInntekt.not()) {
+                includePhrase(OmstillingsstoenadInnvilgelseFraser.Aktivitetsplikt(innvilgetMindreEnnFireMndEtterDoedsfall))
+            }
             includePhrase(OmstillingsstoenadInnvilgelseFraser.Inntektsendring)
             includePhrase(OmstillingsstoenadInnvilgelseFraser.Etteroppgjoer)
             includePhrase(OmstillingsstoenadFellesFraser.MeldFraOmEndringer)

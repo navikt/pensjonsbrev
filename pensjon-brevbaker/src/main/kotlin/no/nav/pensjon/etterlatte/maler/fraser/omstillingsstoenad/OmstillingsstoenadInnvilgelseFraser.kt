@@ -144,16 +144,24 @@ object OmstillingsstoenadInnvilgelseFraser {
             }
 
             paragraph {
+                text(
+                    Bokmal to "Samboere med felles barn og samboere som tidligere har vært gift likestilles " +
+                            "med ektefeller.",
+                    Nynorsk to "",
+                    English to "",
+                )
+            }
+            paragraph {
                 showIf(etterbetaling) {
                     text(
-                        Bokmal to "Vedtaket er gjort etter bestemmelsene om omstillingstid i folketrygdloven " +
+                        Bokmal to "Vedtaket er gjort etter bestemmelsene om omstillingsstønad i folketrygdloven " +
                                 "§ 17-2, § 17-3, § 17-4, § 17-5, § 17-6, § 17-9, § 22-12 og § 22-13.",
                         Nynorsk to "",
                         English to "",
                     )
                 } orShow {
                     text(
-                        Bokmal to "Vedtaket er gjort etter bestemmelsene om omstillingstid i folketrygdloven " +
+                        Bokmal to "Vedtaket er gjort etter bestemmelsene om omstillingsstønad i folketrygdloven " +
                                 "§ 17-2, § 17-3, § 17-4, § 17-5, § 17-6, § 17-9 og § 22-12.",
                         Nynorsk to "",
                         English to "",
@@ -241,35 +249,6 @@ object OmstillingsstoenadInnvilgelseFraser {
                     English to "",
                 )
             }
-            showIf(beregning.sisteBeregningsperiode.utbetaltBeloep.greaterThan(0)) {
-                paragraph {
-                    text(
-                        Bokmal to "Du får omstillingsstønad frem til det er gått tre år fra datoen for dødsfallet, så " +
-                                "lenge du oppfyller vilkårene.",
-                        Nynorsk to "",
-                        English to "",
-                    )
-                }
-                paragraph {
-                    text(
-                        Bokmal to "Stønaden kan forlenges med inntil to år hvis du tar utdanning som er nødvendig " +
-                                "og hensiktsmessig.",
-                        Nynorsk to "",
-                        English to "",
-                    )
-                }
-            }.orShow {
-                paragraph {
-                    text(
-                        Bokmal to "Du er innvilget omstillingsstønad frem til det er gått tre år fra datoen for " +
-                                "dødsfallet, så lenge du oppfyller vilkårene. Om det skjer endringer " +
-                                "i inntekten din kan dette gjør at du likevel vil få utbetalt stønad i denne perioden. ",
-                        Nynorsk to "",
-                        English to "",
-                    )
-                }
-            }
-
             showIf(lavEllerIngenInntekt) {
                 paragraph {
                     text(
@@ -279,6 +258,35 @@ object OmstillingsstoenadInnvilgelseFraser {
                         Nynorsk to "",
                         English to "",
                     )
+                }
+            }.orShow {
+                showIf(beregning.sisteBeregningsperiode.utbetaltBeloep.greaterThan(0)) {
+                    paragraph {
+                        text(
+                            Bokmal to "Du får omstillingsstønad frem til det er gått tre år fra datoen for dødsfallet, så " +
+                                    "lenge du oppfyller vilkårene.",
+                            Nynorsk to "",
+                            English to "",
+                        )
+                    }
+                    paragraph {
+                        text(
+                            Bokmal to "Stønaden kan forlenges med inntil to år hvis du tar utdanning som er nødvendig " +
+                                    "og hensiktsmessig.",
+                            Nynorsk to "",
+                            English to "",
+                        )
+                    }
+                }.orShow {
+                    paragraph {
+                        text(
+                            Bokmal to "Du er innvilget omstillingsstønad frem til det er gått tre år fra datoen for " +
+                                    "dødsfallet, så lenge du oppfyller vilkårene. Om det skjer endringer " +
+                                    "i inntekten din kan dette gjør at du likevel vil få utbetalt stønad i denne perioden. ",
+                            Nynorsk to "",
+                            English to "",
+                        )
+                    }
                 }
             }
 
