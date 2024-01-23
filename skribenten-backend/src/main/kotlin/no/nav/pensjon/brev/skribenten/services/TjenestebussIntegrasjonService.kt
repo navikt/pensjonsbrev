@@ -115,7 +115,7 @@ class TjenestebussIntegrasjonService(config: Config, authService: AzureADService
                     brevMottakerNavn = request.mottakerText?.takeIf { isEblankett },        // custom felt kun for sed/eblankett
                     sakskontekstDto = SakskontekstDto(
                         // TODO sett journalenhet ut fra queryparam/psak eller sakEier
-                        journalenhet = "0001",                              // NAV org enhet nr som skriver brevet. Kommer med i signatur.
+                        journalenhet = request.enhetsId,                              // NAV org enhet nr som skriver brevet. Kommer med i signatur.
                         //    private String decideJournalEnhet(NAVEnhet enhetToSet, BrevmenyForm form) {
                         //        if (form.getValgtAvsenderEnhet().equals(enhetToSet.getEnhetsId())) {
                         //            return enhetToSet.getEnhetsId();
