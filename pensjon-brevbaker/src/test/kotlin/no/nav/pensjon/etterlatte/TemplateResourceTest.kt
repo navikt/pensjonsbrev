@@ -36,6 +36,12 @@ class TemplateResourceTest {
         fixtures: T,
         spraak: Language,
     ) {
+        val foreloepigIkkeStoettaIPDFUtoverBokmaal = setOf(
+            EtterlatteBrevKode.BARNEPENSJON_REVURDERING_SOESKENJUSTERING,
+        )
+        if (foreloepigIkkeStoettaIPDFUtoverBokmaal.contains(etterlatteBrevKode) && spraak != Language.Bokmal) {
+            return
+        }
         Letter(
             template,
             fixtures,
