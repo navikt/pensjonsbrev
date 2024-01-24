@@ -72,3 +72,5 @@ env:
     value: "api://dev-fss.pensjonsbrev.pensjonsbrev-tjenestebuss-q2/.default"
   - name: NAVANSATT_URL
     value: "https://navansatt.dev-fss-pub.nais.io/"
+  - name: NAVANSATT_SCOPE
+    value: "api://dev-fss.teampensjon.navansatt/.default"

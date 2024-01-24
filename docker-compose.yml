@@ -60,6 +60,7 @@ services:
       - TJENESTEBUSS_INTEGRASJON_URL=http://tjenestebuss-integrasjon:8080
       - TJENESTEBUSS_INTEGRASJON_SCOPE=api://dev-fss.pensjonsbrev.pensjonsbrev-tjenestebuss-lokal/.default
       - NAVANSATT_URL=https://navansatt.dev-fss-pub.nais.io
+      - NAVANSATT_SCOPE=api://dev-fss.teampensjon.navansatt/.default
 
   skribenten-backend-db:
     profiles:
