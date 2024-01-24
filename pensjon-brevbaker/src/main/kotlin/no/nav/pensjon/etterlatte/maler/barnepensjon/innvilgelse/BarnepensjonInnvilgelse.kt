@@ -45,7 +45,7 @@ data class BarnepensjonInnvilgelseDTO(
     override val innhold: List<Element>,
     val utbetalingsinfo: Utbetalingsinfo,
     val beregningsinfo: BeregningsinfoBP,
-    val etterbetaling: Etterbetaling? = null,
+    val etterbetaling: Etterbetaling,
     val brukerUnder18Aar: Boolean,
     val bosattUtland: Boolean,
     val kunNyttRegelverk: Boolean,

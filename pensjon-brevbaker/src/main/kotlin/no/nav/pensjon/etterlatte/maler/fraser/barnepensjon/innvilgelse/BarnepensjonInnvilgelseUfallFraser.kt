@@ -18,7 +18,7 @@ import no.nav.pensjon.brevbaker.api.model.Kroner
 import no.nav.pensjon.etterlatte.maler.Beregningsperiode
 import java.time.LocalDate
 
-object BarnepensjonInnvilgelseEnkelFraser {
+object BarnepensjonInnvilgelseUfallFraser {
 
     data class Foerstegangsbehandlingsvedtak(
         val virkningsdato: Expression<LocalDate>,

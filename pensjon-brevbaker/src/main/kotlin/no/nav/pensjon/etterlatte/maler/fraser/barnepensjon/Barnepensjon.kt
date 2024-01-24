@@ -29,28 +29,6 @@ import java.time.LocalDate
 
 object Barnepensjon {
 
-    data class Foerstegangsbehandlingsvedtak(
-        val virkningsdato: Expression<LocalDate>,
-        val avdoedNavn: Expression<String>,
-        val doedsdato: Expression<LocalDate>,
-        val beloep: Expression<Kroner>,
-    ) :
-        OutlinePhrase<LangBokmalNynorskEnglish>() {
-        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
-            paragraph {
-                val formatertVirkningsdato = virkningsdato.format()
-                val formatertDoedsdato = doedsdato.format()
-                textExpr(
-                    Bokmal to "Du er innvilget barnepensjon fra ".expr() + formatertVirkningsdato +
-                            " fordi " + avdoedNavn + " er registrert død " + formatertDoedsdato + ". " +
-                            "Du får " + beloep.format() + " kroner hver måned før skatt. Barnepensjonen utbetales til og med den " +
-                            "kalendermåneden du fyller 18 år. Vedtaket er gjort etter folketrygdloven kapittel 18 og 22.",
-                    Nynorsk to "".expr(),
-                    English to "".expr(),
-                )
-            }
-    }
-
     object BeregningOgUtbetalingOverskrift : OutlinePhrase<LangBokmal>() {
         override fun OutlineOnlyScope<LangBokmal, Unit>.template() {
             title1 {

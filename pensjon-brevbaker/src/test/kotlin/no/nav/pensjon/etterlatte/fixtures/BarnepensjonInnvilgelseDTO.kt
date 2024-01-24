@@ -39,19 +39,6 @@ fun createBarnepensjonInnvilgelseDTO() =
                 ),
             ),
         ),
-        etterbetaling = Etterbetaling(
-            fraDato = LocalDate.of(2020, Month.JANUARY, 1),
-            tilDato = LocalDate.of(2023, Month.JULY, 31),
-            etterbetalingsperioder = listOf(
-                Beregningsperiode(
-                    datoFOM = LocalDate.of(2020, Month.JANUARY, 1),
-                    datoTOM = LocalDate.of(2023, Month.JULY, 31),
-                    grunnbeloep = Kroner(123456),
-                    antallBarn = 4,
-                    utbetaltBeloep = Kroner(6234)
-                )
-            )
-        ),
         beregningsinfo = BeregningsinfoBP(
             innhold = listOf(),
             grunnbeloep = Kroner(123456),
@@ -94,6 +81,19 @@ fun createBarnepensjonInnvilgelseDTO() =
             beregningsMetodeFraGrunnlag = BeregningsMetode.NASJONAL,
             beregningsMetodeAnvendt = BeregningsMetode.NASJONAL,
             mindreEnnFireFemtedelerAvOpptjeningstiden = true
+        ),
+        etterbetaling = Etterbetaling(
+            fraDato = LocalDate.of(2020, Month.JANUARY, 1),
+            tilDato = LocalDate.of(2023, Month.JULY, 31),
+            etterbetalingsperioder = listOf(
+                Beregningsperiode(
+                    datoFOM = LocalDate.of(2020, Month.JANUARY, 1),
+                    datoTOM = LocalDate.of(2023, Month.JULY, 31),
+                    grunnbeloep = Kroner(123456),
+                    antallBarn = 4,
+                    utbetaltBeloep = Kroner(6234)
+                )
+            )
         ),
         bosattUtland = true,
         brukerUnder18Aar = true,

@@ -4,7 +4,9 @@ import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.dsl.createTemplate
-import no.nav.pensjon.brev.template.dsl.expression.expr
+import no.nav.pensjon.brev.template.dsl.expression.and
+import no.nav.pensjon.brev.template.dsl.expression.not
+import no.nav.pensjon.brev.template.dsl.expression.notNull
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -19,23 +21,38 @@ import no.nav.pensjon.etterlatte.maler.Utbetalingsinfo
 import no.nav.pensjon.etterlatte.maler.UtbetalingsinfoSelectors.beregningsperioder
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BeregningsinfoBP
 import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingDTOSelectors.beregningsinfo
+import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingDTOSelectors.bosattUtland
+import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingDTOSelectors.brukerUnder18Aar
 import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingDTOSelectors.erEndret
 import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingDTOSelectors.etterbetaling
+import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingDTOSelectors.harFlereUtbetalingsperioder
 import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingDTOSelectors.innhold
+import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingDTOSelectors.kunNyttRegelverk
+import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingDTOSelectors.sisteUtbetalingsperiodeDatoFom
 import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingDTOSelectors.utbetalingsinfo
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.BarnepensjonInnvilgelseFraser
+import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.revurdering.BarnepensjonRevurderingFraser
 import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
-import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.beregningAvBarnepensjon
-import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.dineRettigheterOgPlikter
 import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.etterbetalingAvBarnepensjon
-import no.nav.pensjon.etterlatte.maler.vedlegg.informasjonTilDegSomHandlerPaaVegneAvBarnet
+import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.innvilgelse.beregningAvBarnepensjonGammeltOgNyttRegelverk
+import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.innvilgelse.beregningAvBarnepensjonNyttRegelverk
+import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.innvilgelse.informasjonTilDegSomHandlerPaaVegneAvBarnetNasjonal
+import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.innvilgelse.informasjonTilDegSomHandlerPaaVegneAvBarnetUtland
+import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.innvilgelse.informasjonTilDegSomMottarBarnepensjonNasjonal
+import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.innvilgelse.informasjonTilDegSomMottarBarnepensjonUtland
+import java.time.LocalDate
 
 data class BarnepensjonRevurderingDTO(
+    override val innhold: List<Element>,
     val erEndret: Boolean,
-    val etterbetaling: Etterbetaling? = null,
     val utbetalingsinfo: Utbetalingsinfo,
     val beregningsinfo: BeregningsinfoBP,
-    override val innhold: List<Element>,
+    val brukerUnder18Aar: Boolean,
+    val bosattUtland: Boolean,
+    val kunNyttRegelverk: Boolean,
+    val harFlereUtbetalingsperioder: Boolean,
+    val sisteUtbetalingsperiodeDatoFom: LocalDate,
+    val etterbetaling: Etterbetaling? = null,
 ) : BrevDTO
 
 @TemplateModelHelpers
@@ -47,7 +64,7 @@ object BarnepensjonRevurdering : EtterlatteTemplate<BarnepensjonRevurderingDTO>,
         letterDataType = BarnepensjonRevurderingDTO::class,
         languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(
-            displayTitle = "Vedtak - endring",
+            displayTitle = "Vedtak - revurdering",
             isSensitiv = true,
             distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
@@ -79,7 +96,16 @@ object BarnepensjonRevurdering : EtterlatteTemplate<BarnepensjonRevurderingDTO>,
             )
         }
         outline {
+            includePhrase(BarnepensjonRevurderingFraser.RevurderingVedtak(
+                erEndret,
+                utbetalingsinfo,
+                etterbetaling.notNull(),
+                sisteUtbetalingsperiodeDatoFom,
+                harFlereUtbetalingsperioder
+            ))
+
             konverterElementerTilBrevbakerformat(innhold)
+
             includePhrase(
                 BarnepensjonInnvilgelseFraser.UtbetalingAvBarnepensjon(
                     utbetalingsinfo.beregningsperioder,
@@ -88,11 +114,23 @@ object BarnepensjonRevurdering : EtterlatteTemplate<BarnepensjonRevurderingDTO>,
             )
             includePhrase(BarnepensjonInnvilgelseFraser.MeldFraOmEndringer)
             includePhrase(BarnepensjonInnvilgelseFraser.DuHarRettTilAaKlage)
-            includePhrase(BarnepensjonInnvilgelseFraser.HarDuSpoersmaal(true.expr(), false.expr()))
+            includePhrase(BarnepensjonInnvilgelseFraser.HarDuSpoersmaal(brukerUnder18Aar, bosattUtland))
         }
-        includeAttachment(beregningAvBarnepensjon, beregningsinfo)
-        includeAttachment(informasjonTilDegSomHandlerPaaVegneAvBarnet, innhold)
-        includeAttachment(dineRettigheterOgPlikter, true.expr())
+
+        // Beregning av barnepensjon nytt og gammelt regelverk
+        includeAttachment(beregningAvBarnepensjonGammeltOgNyttRegelverk, beregningsinfo, kunNyttRegelverk.not())
+
+        // Beregning av barnepensjon nytt regelverk
+        includeAttachment(beregningAvBarnepensjonNyttRegelverk, beregningsinfo, kunNyttRegelverk)
+
         includeAttachmentIfNotNull(etterbetalingAvBarnepensjon, etterbetaling)
+
+        // Vedlegg under 18 år
+        includeAttachment(informasjonTilDegSomHandlerPaaVegneAvBarnetNasjonal, innhold, brukerUnder18Aar.and(bosattUtland.not()))
+        includeAttachment(informasjonTilDegSomHandlerPaaVegneAvBarnetUtland, innhold, brukerUnder18Aar.and(bosattUtland))
+
+        // Vedlegg over 18 år
+        includeAttachment(informasjonTilDegSomMottarBarnepensjonNasjonal, innhold, brukerUnder18Aar.not().and(bosattUtland.not()))
+        includeAttachment(informasjonTilDegSomMottarBarnepensjonUtland, innhold, brukerUnder18Aar.not().and(bosattUtland))
     }
 }
