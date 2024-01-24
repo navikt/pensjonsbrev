@@ -8,6 +8,7 @@ import axios from "axios";
 import type {
   BestillOgRedigerBrevResponse,
   LetterTemplatesResponse,
+  NAVEnhet,
   OrderLetterRequest,
   PidRequest,
   PreferredLanguage,
@@ -44,6 +45,10 @@ export const favoritterKeys = {
   all: ["FAVORITTER"] as const,
 };
 
+export const enheterKeys = {
+  all: ["MINE_ENHETER"] as const,
+};
+
 export const preferredLanguageKeys = {
   all: ["PREFERRED_LANGUAGE"] as const,
   pid: (pid: string) => [...preferredLanguageKeys.all, pid] as const,
@@ -52,6 +57,11 @@ export const preferredLanguageKeys = {
 export const getSak = {
   queryKey: saksnummerKeys.id,
   queryFn: async (sakId: string) => (await axios.get<SakDto>(`${SKRIBENTEN_API_BASE_PATH}/pen/sak/${sakId}`)).data,
+};
+
+export const getMineEnheter = {
+  queryKey: enheterKeys.all,
+  queryFn: async () => (await axios.get<NAVEnhet[]>(`${SKRIBENTEN_API_BASE_PATH}/me/enheter`)).data,
 };
 
 export const getNavn = {
@@ -81,7 +91,7 @@ export const getLetterTemplate = {
 
 export const getFavoritter = {
   queryKey: favoritterKeys.all,
-  queryFn: async () => (await axios.get<string[]>(`${SKRIBENTEN_API_BASE_PATH}/favourites`)).data,
+  queryFn: async () => (await axios.get<string[]>(`${SKRIBENTEN_API_BASE_PATH}/me/favourites`)).data,
 };
 
 export const getTemplate = {
@@ -96,14 +106,14 @@ export async function renderLetter(letterId: string, request: unknown) {
 
 export async function addFavoritt(id: string) {
   return (
-    await axios.post<string>(`${SKRIBENTEN_API_BASE_PATH}/favourites`, id, {
+    await axios.post<string>(`${SKRIBENTEN_API_BASE_PATH}/me/favourites`, id, {
       headers: { "Content-Type": "text/plain" },
     })
   ).data;
 }
 
 export async function deleteFavoritt(id: string) {
-  return (await axios.delete<string>(`${SKRIBENTEN_API_BASE_PATH}/favourites`, { data: id })).data;
+  return (await axios.delete<string>(`${SKRIBENTEN_API_BASE_PATH}/me/favourites`, { data: id })).data;
 }
 
 export async function orderLetter(orderLetterRequest: OrderLetterRequest) {

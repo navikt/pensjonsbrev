@@ -14,6 +14,7 @@ import {
   deleteFavoritt,
   getFavoritter,
   getLetterTemplate,
+  getMineEnheter,
   orderLetter,
 } from "~/api/skribenten-api-endpoints";
 import { Divider } from "~/components/Divider";
@@ -27,7 +28,7 @@ import { BrevvelgerTabOptions } from "./BrevvelgerPage";
 
 const formValidationSchema = z.object({
   spraak: z.nativeEnum(SpraakKode, { required_error: "Obligatorisk" }),
-  enhetsId: z.string({ required_error: "Obligatorisk" }),
+  enhetsId: z.string({ required_error: "Obligatorisk" }).length(4, "Obligatorisk"),
   isSensitive: z.boolean({ required_error: "Obligatorisk" }),
 });
 
@@ -133,6 +134,7 @@ function Brevmal({ letterTemplate }: { letterTemplate: LetterMetadata }) {
         >
           <VStack gap="4">
             <SelectLanguage letterTemplate={letterTemplate} />
+            <SelectEnhetsId />
             <SelectSensitivity letterTemplate={letterTemplate} />
           </VStack>
 
@@ -200,6 +202,27 @@ function SelectLanguage({ letterTemplate }: { letterTemplate: LetterMetadata }) 
         <option key={spraak} value={spraak}>
           {SPRAAK_ENUM_TO_TEXT[spraak]} {preferredLanguage === spraak ? "(foretrukket språk)" : ""}
         </option>
+      ))}
+    </Select>
+  );
+}
+
+function SelectEnhetsId() {
+  const { register, formState } = useFormContext();
+
+  const enheter = useQuery({
+    ...getMineEnheter,
+  }).data;
+
+  return (
+    <Select
+      {...register("enhetsId")}
+      error={formState.errors.enhetsId?.message?.toString()}
+      label="EnhetsId"
+      size="small"
+    >
+      {enheter?.map((enhet) => (
+        <option key={enhet.enhetNr} value={enhet.enhetNr}>{`${enhet.navn} (${enhet.enhetNr})`}</option>
       ))}
     </Select>
   );
