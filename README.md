@@ -17,7 +17,7 @@ Dersom du kun skal kjøre brevbaker og pdf-bygger og ikke skribenten må du fort
 (touch skribenten-backend/secrets/azuread.env tjenestebuss-integrasjon/secrets/docker.env  skribenten-web/bff/.env)
 ```
 ```bash
-docker compose up -d --build
+docker-compose up -d --build
 ```
 
 ### Lokal kjøring av skribenten backend/front-end og brevbaker/pdf-bygger
