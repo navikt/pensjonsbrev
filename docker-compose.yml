@@ -59,6 +59,7 @@ services:
       - SAF_URL=https://saf-q2.dev-fss-pub.nais.io/graphql
       - TJENESTEBUSS_INTEGRASJON_URL=http://tjenestebuss-integrasjon:8080
       - TJENESTEBUSS_INTEGRASJON_SCOPE=api://dev-fss.pensjonsbrev.pensjonsbrev-tjenestebuss-lokal/.default
+      - NAVANSATT_URL=https://navansatt.dev-fss-pub.nais.io
 
   skribenten-backend-db:
     profiles:
