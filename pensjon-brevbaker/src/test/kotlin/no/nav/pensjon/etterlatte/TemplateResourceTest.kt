@@ -28,45 +28,57 @@ import java.nio.file.Paths
 class TemplateResourceTest {
 
     @Tag(TestTags.INTEGRATION_TEST)
-    @ParameterizedTest(name = "{index} => template={0}, etterlatteBrevKode={1}, fixtures={2}")
+    @ParameterizedTest(name = "{index} => template={0}, etterlatteBrevKode={1}, fixtures={2}, spraak={3}")
     @MethodSource("alleMalene")
     fun <T : Any> testPdf(
         template: LetterTemplate<LanguageSupport.Triple<Language.Bokmal, Language.Nynorsk, Language.English>, T>,
         etterlatteBrevKode: EtterlatteBrevKode,
         fixtures: T,
+        spraak: Language,
     ) {
         Letter(
             template,
             fixtures,
-            Language.Bokmal,
+            spraak,
             Fixtures.felles,
         ).let { PensjonLatexRenderer.render(it) }
             .let { runBlocking { LaTeXCompilerService(PDF_BUILDER_URL).producePDF(it, "test").base64PDF } }
-            .also { writeTestPDF(etterlatteBrevKode.name, it) }
+            .also { writeTestPDF(filnavn(etterlatteBrevKode, spraak), it) }
     }
 
-    @ParameterizedTest(name = "{index} => template={0}, etterlatteBrevKode={1}, fixtures={2}")
+    @ParameterizedTest(name = "{index} => template={0}, etterlatteBrevKode={1}, fixtures={2}, spraak={3}")
     @MethodSource("alleMalene")
     fun <T : Any> testHtml(
         template: LetterTemplate<LanguageSupport.Triple<Language.Bokmal, Language.Nynorsk, Language.English>, T>,
         etterlatteBrevKode: EtterlatteBrevKode,
         fixtures: T,
+        spraak: Language,
     ) {
+        val foreloepigIkkeStoettaIHTML = setOf(
+            EtterlatteBrevKode.BARNEPENSJON_REVURDERING_SOESKENJUSTERING,
+        )
+        if (foreloepigIkkeStoettaIHTML.contains(etterlatteBrevKode)) {
+            return
+        }
         Letter(
             template,
             fixtures,
-            Language.Bokmal,
+            spraak,
             Fixtures.felles,
         ).let { PensjonHTMLRenderer.render(it) }
-            .also { writeTestHTML(etterlatteBrevKode.name, it) }
+            .also { writeTestHTML(filnavn(etterlatteBrevKode, spraak), it) }
     }
 
-    @ParameterizedTest(name = "{index} => template={0}, etterlatteBrevKode={1}, fixtures={2}")
+    private fun filnavn(etterlatteBrevKode: EtterlatteBrevKode, spraak: Language) =
+        "${etterlatteBrevKode.name}_${spraak.javaClass.simpleName}"
+
+    @ParameterizedTest(name = "{index} => template={0}, etterlatteBrevKode={1}, fixtures={2}, spraak={3}")
     @MethodSource("alleMalene")
     fun <T : Any> jsontest(
         template: LetterTemplate<LanguageSupport.Triple<Language.Bokmal, Language.Nynorsk, Language.English>, T>,
         etterlatteBrevKode: EtterlatteBrevKode,
         fixtures: T,
+        spraak: Language,
     ) {
         val erHovedmal = fixtures.instanceOf(BrevDTO::class) && !fixtures.instanceOf(Delmal::class) && !fixtures.instanceOf(ManueltBrevDTO::class)
         // Hovedmalar skal ikkje redigerast i Gjenny, så dei treng vi ikkje å lage JSON av.
@@ -83,26 +95,29 @@ class TemplateResourceTest {
         Letter(
             template,
             fixtures,
-            Language.Bokmal,
+            spraak,
             Fixtures.felles,
         ).let { PensjonJsonRenderer.render(it) }
             .also { json ->
                 Paths.get("build/test_json")
                     .also { Files.createDirectories(it) }
-                    .resolve((Paths.get("${etterlatteBrevKode.name}.json")))
+                    .resolve((Paths.get("${filnavn(etterlatteBrevKode, spraak)}.json")))
                     .let { Files.writeString(it, objectMapper.writeValueAsString(json)) }
             }
     }
 
     companion object {
         @JvmStatic
-        fun alleMalene() =
-            prodAutobrevTemplates.map {
-                Arguments.of(
-                    it.template,
-                    it.kode,
-                    Fixtures.create(it.template.letterDataType),
-                )
+        fun alleMalene() = listOf(Language.Nynorsk, Language.Bokmal, Language.English)
+            .flatMap { spraak ->
+                prodAutobrevTemplates.map {
+                    Arguments.of(
+                        it.template,
+                        it.kode,
+                        Fixtures.create(it.template.letterDataType),
+                        spraak,
+                    )
+                }
             }
     }
 }
