@@ -343,7 +343,8 @@ object Barnepensjon {
                 text(
                     Bokmal to "Hvis du mener vedtaket er feil, kan du klage innen seks uker fra den datoen " +
                             "du mottok vedtaket. Klagen skal være skriftlig. Du finner skjema og informasjon på ${Constants.KLAGE_URL}.",
-                    Nynorsk to "TODO nynorsk",
+                    Nynorsk to "Dersom du meiner at vedtaket er feil, kan du klage innan seks veker frå den datoen " +
+                            "du fekk vedtaket. Klaga må vere skriftleg. Du finn skjema og informasjon på ${Constants.KLAGE_URL}.",
                     English to "TODO engelsk"
                 )
             }
@@ -355,7 +356,7 @@ object Barnepensjon {
             title2 {
                 text(
                     Bokmal to "Du har rett til innsyn",
-                    Nynorsk to "TODO nynorsk",
+                    Nynorsk to "Du har rett til innsyn",
                     English to "TODO english"
                 )
             }
@@ -364,7 +365,8 @@ object Barnepensjon {
                     Bokmal to "Du har som hovedregel rett til å se dokumentene i saken etter" +
                             " forvaltningsloven § 18. Hvis du ønsker innsyn, må du kontakte oss på " +
                             "telefon eller per post.",
-                    Nynorsk to "TODO nynorsk",
+                    Nynorsk to "Etter føresegnene i forvaltingslova § 18 har du som hovudregel rett til " +
+                            "å sjå dokumenta i saka di. Kontakt oss på telefon eller per post dersom du ønskjer innsyn.",
                     English to "TODO engelsk"
                 )
             }
@@ -400,7 +402,7 @@ object Barnepensjon {
             title2 {
                 text(
                     Bokmal to "Har du spørsmål?",
-                    Nynorsk to "TODO nynorsk",
+                    Nynorsk to "Har du spørsmål?",
                     English to "TODO engelsk"
                 )
             }
@@ -409,27 +411,27 @@ object Barnepensjon {
                 paragraph {
                     text(
                         Bokmal to "Du finner mer informasjon på ${Constants.BARNEPENSJON_URL}. Hvis du ikke finner svar på spørsmålet ditt, kan du ringe oss på telefon ",
-                        Nynorsk to "TODO nynorsk",
+                        Nynorsk to "Du finn meir informasjon på ${Constants.BARNEPENSJON_URL}. Dersom du ikkje finn svar på spørsmålet ditt der, kan du ringje oss på telefon ",
                         English to "TODO engelsk"
                     )
                     kontakttelefonPensjon(bosattUtland)
                     text(
                         Bokmal to " hverdager 9-15. Om du oppgir fødselsnummer til barnet, kan vi lettere gi deg rask og god hjelp.",
-                        Nynorsk to "TODO nynorsk",
+                        Nynorsk to ", kvardagar 9–15. Det vil gjere det enklare for oss å gi deg rask og god hjelp om du oppgir fødselsnummeret til barnet.",
                         English to "TODO engelsk"
                     )
                 }
             }.orShow {
                 paragraph {
                     text(
-                        Bokmal to "Du finner mer informasjon på nav.no/barnepensjon. Hvis du ikke finner svar på spørsmålet ditt, kan du ringe oss på telefon ",
-                        Nynorsk to "TODO nynorsk",
+                        Bokmal to "Du finner mer informasjon på ${Constants.BARNEPENSJON_URL}. Hvis du ikke finner svar på spørsmålet ditt, kan du ringe oss på telefon ",
+                        Nynorsk to "Du finn meir informasjon på ${Constants.BARNEPENSJON_URL}. Dersom du ikkje finn svar på spørsmålet ditt der, kan du ringje oss på telefon ",
                         English to "TODO engelsk"
                     )
                     kontakttelefonPensjon(bosattUtland)
                     text(
                         Bokmal to " hverdager 9-15. Om du oppgir fødselsnummeret ditt, kan vi lettere gi deg rask og god hjelp.",
-                        Nynorsk to "TODO nynorsk",
+                        Nynorsk to ", kvardagar 9–15. Det vil gjere det enklare for oss å gi deg rask og god hjelp om du oppgir fødselsnummeret ditt.",
                         English to "TODO engelsk"
                     )
                 }
