@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "@emotion/react": "11.11.3",
+    "@hookform/resolvers": "3.3.4",
     "@navikt/aksel-icons": "5.12.4",
     "@navikt/ds-css": "5.12.4",
     "@navikt/ds-react": "5.12.4",
@@ -30,7 +31,8 @@
     "lodash": "4.17.21",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "react-hook-form": "7.49.3"
+    "react-hook-form": "7.49.3",
+    "zod": "3.22.4"
   },
   "devDependencies": {
     "@navikt/aksel-stylelint": "5.12.4",

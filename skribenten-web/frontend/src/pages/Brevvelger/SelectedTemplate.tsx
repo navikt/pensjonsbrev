@@ -1,11 +1,13 @@
 import { css } from "@emotion/react";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowRightIcon, StarFillIcon, StarIcon } from "@navikt/aksel-icons";
-import { BodyShort, Button, Heading, Select, Tag } from "@navikt/ds-react";
+import { BodyShort, Button, Heading, Radio, RadioGroup, Select, Tag, VStack } from "@navikt/ds-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate, useParams, useRouteContext, useSearch } from "@tanstack/react-router";
 import type { AxiosError } from "axios";
 import { useEffect } from "react";
-import { FormProvider, useForm, useFormContext } from "react-hook-form";
+import { Controller, FormProvider, useForm, useFormContext } from "react-hook-form";
+import { z } from "zod";
 
 import {
   addFavoritt,
@@ -18,13 +20,36 @@ import { Divider } from "~/components/Divider";
 import { usePreferredLanguage } from "~/hooks/usePreferredLanguage";
 import { redigeringRoute, selectedTemplateRoute } from "~/tanStackRoutes";
 import type { LetterMetadata, OrderLetterRequest } from "~/types/apiTypes";
-import { BrevSystem } from "~/types/apiTypes";
+import { BrevSystem, SpraakKode } from "~/types/apiTypes";
 import { SPRAAK_ENUM_TO_TEXT } from "~/types/nameMappings";
 
 import { BrevvelgerTabOptions } from "./BrevvelgerPage";
 
+const formValidationSchema = z.object({
+  spraak: z.nativeEnum(SpraakKode, { required_error: "Obligatorisk" }),
+  enhetsId: z.string({ required_error: "Obligatorisk" }),
+  isSensitive: z.boolean({ required_error: "Obligatorisk" }),
+});
+
 export function SelectedTemplate() {
   const { fane } = useSearch({ from: selectedTemplateRoute.id });
+  const { templateId } = useParams({ from: selectedTemplateRoute.id });
+  const { getSakQueryOptions } = useRouteContext({ from: selectedTemplateRoute.id });
+  const sak = useQuery(getSakQueryOptions).data;
+
+  const letterTemplate = useQuery({
+    queryKey: getLetterTemplate.queryKey(sak?.sakType as string),
+    queryFn: () => getLetterTemplate.queryFn(sak?.sakType as string),
+    select: (letterTemplates) =>
+      [...letterTemplates.eblanketter, ...letterTemplates.kategorier.flatMap((kategori) => kategori.templates)].find(
+        (letterMetadata) => letterMetadata.id === templateId,
+      ),
+    enabled: !!sak,
+  }).data;
+
+  if (!letterTemplate) {
+    return <></>;
+  }
 
   return (
     <div
@@ -38,39 +63,34 @@ export function SelectedTemplate() {
       `}
     >
       <FavoriteButton />
-      {fane === BrevvelgerTabOptions.BREVMALER ? <Brevmal /> : <Eblankett />}
+      {fane === BrevvelgerTabOptions.BREVMALER ? (
+        <Brevmal letterTemplate={letterTemplate} />
+      ) : (
+        <Eblankett letterTemplate={letterTemplate} />
+      )}
     </div>
   );
 }
 
-function Brevmal() {
+function Brevmal({ letterTemplate }: { letterTemplate: LetterMetadata }) {
   const { templateId, sakId } = useParams({ from: selectedTemplateRoute.id });
   const { enhetsId } = useSearch({ from: selectedTemplateRoute.id });
   const navigate = useNavigate({ from: selectedTemplateRoute.id });
   const { getSakQueryOptions } = useRouteContext({ from: selectedTemplateRoute.id });
   const sak = useQuery(getSakQueryOptions).data;
 
-  // TODO: deling av data mellom routes må kunne gjøres enklere enn dette??
-  const letterTemplate = useQuery({
-    queryKey: getLetterTemplate.queryKey(sak?.sakType as string),
-    queryFn: () => getLetterTemplate.queryFn(sak?.sakType as string),
-    select: (letterTemplates) =>
-      letterTemplates.kategorier
-        .flatMap((kategori) => kategori.templates)
-        .find((letterMetadata) => letterMetadata.id === templateId),
-    enabled: !!sak,
-  }).data;
-
   const orderLetterMutation = useMutation<unknown, AxiosError<Error>, OrderLetterRequest>({
     mutationFn: orderLetter,
     onSuccess: () => {},
   });
 
-  const methods = useForm();
-
-  if (!letterTemplate) {
-    return <></>;
-  }
+  const methods = useForm<z.infer<typeof formValidationSchema>>({
+    defaultValues: {
+      enhetsId,
+      isSensitive: letterTemplate?.brevsystem === BrevSystem.Extream ? undefined : false, // Supply default value to pass validation if Brev is not Doksys
+    },
+    resolver: zodResolver(formValidationSchema),
+  });
 
   return (
     <>
@@ -92,21 +112,27 @@ function Brevmal() {
             justify-content: space-between;
           `}
           onSubmit={methods.handleSubmit((submittedValues) => {
-            if (letterTemplate.brevsystem === BrevSystem.Brevbaker) {
-              navigate({ to: redigeringRoute.id, params: { sakId, templateId } });
-            } else {
-              const orderLetterRequest = {
-                brevkode: letterTemplate.id,
-                spraak: submittedValues.spraak,
-                sakId: Number(sakId),
-                gjelderPid: sak?.foedselsnr ?? "TODO",
-                enhetsId: enhetsId ?? "TODO",
-              };
-              orderLetterMutation.mutate(orderLetterRequest);
+            switch (letterTemplate.brevsystem) {
+              case BrevSystem.Brevbaker: {
+                return navigate({ to: redigeringRoute.id, params: { sakId, templateId } });
+              }
+              case BrevSystem.Extream:
+              case BrevSystem.DokSys: {
+                const orderLetterRequest = {
+                  brevkode: letterTemplate.id,
+                  sakId: Number(sakId),
+                  gjelderPid: sak?.foedselsnr ?? "TODO",
+                  ...submittedValues,
+                };
+                return orderLetterMutation.mutate(orderLetterRequest);
+              }
             }
           })}
         >
-          <SelectLanguage letterTemplate={letterTemplate} />
+          <VStack gap="4">
+            <SelectLanguage letterTemplate={letterTemplate} />
+            <SelectSensitivity letterTemplate={letterTemplate} />
+          </VStack>
 
           <Button
             css={css`
@@ -123,6 +149,30 @@ function Brevmal() {
         </form>
       </FormProvider>
     </>
+  );
+}
+
+function SelectSensitivity({ letterTemplate }: { letterTemplate: LetterMetadata }) {
+  if (letterTemplate.brevsystem !== BrevSystem.Extream) {
+    return <></>;
+  }
+
+  return (
+    <Controller
+      name="isSensitive"
+      render={({ field, fieldState }) => (
+        <RadioGroup
+          legend="Er brevet sensitivt?"
+          {...field}
+          error={fieldState.error?.message}
+          size="small"
+          value={field.value ?? null}
+        >
+          <Radio value>Ja</Radio>
+          <Radio value={false}>Nei</Radio>
+        </RadioGroup>
+      )}
+    />
   );
 }
 
@@ -149,24 +199,7 @@ function SelectLanguage({ letterTemplate }: { letterTemplate: LetterMetadata }) 
   );
 }
 
-function Eblankett() {
-  const { templateId } = useParams({ from: selectedTemplateRoute.id });
-
-  const { getSakQueryOptions } = useRouteContext({ from: selectedTemplateRoute.id });
-  const sak = useQuery(getSakQueryOptions).data;
-
-  // TODO: deling av data mellom routes må kunne gjøres enklere enn dette??
-  const letterTemplate = useQuery({
-    queryKey: getLetterTemplate.queryKey(sak?.sakType as string),
-    queryFn: () => getLetterTemplate.queryFn(sak?.sakType as string),
-    select: (letterTemplates) => letterTemplates.eblanketter.find((letterMetadata) => letterMetadata.id === templateId),
-    enabled: !!sak,
-  }).data;
-
-  if (!letterTemplate) {
-    return <></>;
-  }
-
+function Eblankett({ letterTemplate }: { letterTemplate: LetterMetadata }) {
   return (
     <>
       <LetterTemplateHeading letterTemplate={letterTemplate} />
