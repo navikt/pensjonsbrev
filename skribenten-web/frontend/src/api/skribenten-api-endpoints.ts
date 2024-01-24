@@ -90,7 +90,7 @@ export const getLetterTemplate = {
 
 export const getFavoritter = {
   queryKey: favoritterKeys.all,
-  queryFn: async () => (await axios.get<string[]>(`${SKRIBENTEN_API_BASE_PATH}/favourites`)).data,
+  queryFn: async () => (await axios.get<string[]>(`${SKRIBENTEN_API_BASE_PATH}/me/favourites`)).data,
 };
 
 export const getTemplate = {
@@ -105,14 +105,14 @@ export async function renderLetter(letterId: string, request: unknown) {
 
 export async function addFavoritt(id: string) {
   return (
-    await axios.post<string>(`${SKRIBENTEN_API_BASE_PATH}/favourites`, id, {
+    await axios.post<string>(`${SKRIBENTEN_API_BASE_PATH}/me/favourites`, id, {
       headers: { "Content-Type": "text/plain" },
     })
   ).data;
 }
 
 export async function deleteFavoritt(id: string) {
-  return (await axios.delete<string>(`${SKRIBENTEN_API_BASE_PATH}/favourites`, { data: id })).data;
+  return (await axios.delete<string>(`${SKRIBENTEN_API_BASE_PATH}/me/favourites`, { data: id })).data;
 }
 
 export async function orderLetter(orderLetterRequest: OrderLetterRequest) {
