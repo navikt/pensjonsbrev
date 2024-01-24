@@ -32,7 +32,7 @@ fun Route.meRoute(navansattConfig: Config,  authService: AzureADService) {
         get("/enheter") {
             getLoggedInNavIdent()?.let {
                 call.respond(navansattService.hentNavAnsattEnhetListe(call, it))
-            } ?: call.respond(HttpStatusCode.Unauthorized)
+            } ?: call.respond(HttpStatusCode.Unauthorized,"Ikke tilgang ved kall til Navansatt tjenesten")
         }
     }
 }
