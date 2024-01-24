@@ -69,6 +69,28 @@ export type OrderLetterRequest = {
   isSensitive: boolean;
 };
 
+export type BestillOgRedigerBrevResponse = {
+  url?: string;
+  failureType?: FailureType;
+};
+
+export type FailureType =
+  | "DOKSYS_UNDER_REDIGERING"
+  | "DOKSYS_IKKE_REDIGERBART"
+  | "DOKSYS_VALIDERING_FEILET"
+  | "DOKSYS_IKKE_FUNNET"
+  | "DOKSYS_IKKE_TILGANG"
+  | "DOKSYS_LUKKET"
+  | "FERDIGSTILLING_TIMEOUT"
+  | "SAF_ERROR"
+  | "SKRIBENTEN_TOKEN_UTVEKSLING"
+  | "EXTREAM_REDIGERING_GENERELL"
+  | "TJENESTEBUSS_INTEGRASJON"
+  | "EXTREAM_BESTILLING_ADRESSE_MANGLER"
+  | "EXTREAM_BESTILLING_HENTE_BREVDATA"
+  | "EXTREAM_BESTILLING_MANGLER_OBLIGATORISK_INPUT"
+  | "EXTREAM_BESTILLING_OPPRETTE_JOURNALPOST";
+
 export type NAVEnhet = {
   enhetNr: string;
   navn: string;
