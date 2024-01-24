@@ -24,10 +24,6 @@ class AdhocTest {
 
 
     @Test
-    fun `testAdhocInfoOmFeilUT2023 pdf`() {
-        testAdhocPdf(AdhocInfoOmFeilUT2023.template, "UT_ADHOC_2023_INFORMASJON_OM_FEIL", Bokmal)
-    }
-    @Test
     fun `testAdhocVarselOpphoerMedHvilendeRett pdf`() {
         testAdhocPdf(AdhocVarselOpphoerMedHvilendeRett.template, pdfName = "UT_ADHOC_VARSEL_OPPHOER_MED_HVILENDE_RETT", Bokmal)
     }

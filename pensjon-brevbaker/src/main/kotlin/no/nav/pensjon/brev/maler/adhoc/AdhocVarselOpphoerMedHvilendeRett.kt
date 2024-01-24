@@ -14,7 +14,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 object AdhocVarselOpphoerMedHvilendeRett : AutobrevTemplate<EmptyBrevdata> {
     override val kode: Brevkode.AutoBrev = Brevkode.AutoBrev.UT_ADHOC_VARSEL_OPPHOER_MED_HVILENDE_RETT
     override val template: LetterTemplate<*, EmptyBrevdata> = createTemplate(
-        name = AdhocInfoOmFeilUT2023.kode.name,
+        name = kode.name,
         letterDataType = EmptyBrevdata::class,
         languages = languages(Bokmal),
         letterMetadata = LetterMetadata(
