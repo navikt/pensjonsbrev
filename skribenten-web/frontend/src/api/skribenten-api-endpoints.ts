@@ -6,6 +6,7 @@ import type { AxiosResponse } from "axios";
 import axios from "axios";
 
 import type {
+  BestillOgRedigerBrevResponse,
   LetterTemplatesResponse,
   OrderLetterRequest,
   PidRequest,
@@ -106,5 +107,13 @@ export async function deleteFavoritt(id: string) {
 }
 
 export async function orderLetter(orderLetterRequest: OrderLetterRequest) {
-  return (await axios.post<unknown>(`${SKRIBENTEN_API_BASE_PATH}/bestillbrev`, orderLetterRequest)).data;
+  const response = (
+    await axios.post<BestillOgRedigerBrevResponse>(`${SKRIBENTEN_API_BASE_PATH}/bestillbrev`, orderLetterRequest)
+  ).data;
+
+  if (response.failureType) {
+    throw new Error(response.failureType);
+  }
+
+  return response.url ?? "";
 }
