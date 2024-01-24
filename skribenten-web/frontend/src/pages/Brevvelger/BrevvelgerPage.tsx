@@ -166,7 +166,7 @@ function Eblanketter({ eblanketter }: { eblanketter: LetterMetadata[] }) {
 }
 
 function BrevmalButton({ letterMetadata }: { letterMetadata: LetterMetadata }) {
-  const { sakId, templateId } = useParams({ from: brevvelgerRoute.id });
+  const { sakId, templateId } = useParams({ from: selectedTemplateRoute.id });
   const navigate = useNavigate({ from: brevvelgerRoute.id });
 
   // Ideally we would use the Link component as it gives native <a/> features.
