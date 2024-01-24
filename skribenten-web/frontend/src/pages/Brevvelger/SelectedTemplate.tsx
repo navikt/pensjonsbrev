@@ -1,7 +1,7 @@
 import { css } from "@emotion/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowRightIcon, StarFillIcon, StarIcon } from "@navikt/aksel-icons";
-import { BodyShort, Button, Heading, Radio, RadioGroup, Select, Tag, VStack } from "@navikt/ds-react";
+import { Alert, BodyShort, Button, Heading, Radio, RadioGroup, Select, Tag, VStack } from "@navikt/ds-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate, useParams, useRouteContext, useSearch } from "@tanstack/react-router";
 import type { AxiosError } from "axios";
@@ -79,9 +79,11 @@ function Brevmal({ letterTemplate }: { letterTemplate: LetterMetadata }) {
   const { getSakQueryOptions } = useRouteContext({ from: selectedTemplateRoute.id });
   const sak = useQuery(getSakQueryOptions).data;
 
-  const orderLetterMutation = useMutation<unknown, AxiosError<Error>, OrderLetterRequest>({
+  const orderLetterMutation = useMutation<string, AxiosError<Error> | Error, OrderLetterRequest>({
     mutationFn: orderLetter,
-    onSuccess: () => {},
+    onSuccess: (callbackUrl) => {
+      window.open(callbackUrl);
+    },
   });
 
   const methods = useForm<z.infer<typeof formValidationSchema>>({
@@ -134,18 +136,22 @@ function Brevmal({ letterTemplate }: { letterTemplate: LetterMetadata }) {
             <SelectSensitivity letterTemplate={letterTemplate} />
           </VStack>
 
-          <Button
-            css={css`
-              width: fit-content;
-            `}
-            icon={<ArrowRightIcon />}
-            iconPosition="right"
-            size="small"
-            type="submit"
-            variant="primary"
-          >
-            Rediger brev
-          </Button>
+          <VStack gap="4">
+            {orderLetterMutation.error && <Alert variant="error">{orderLetterMutation.error.message}</Alert>}
+            <Button
+              css={css`
+                width: fit-content;
+              `}
+              icon={<ArrowRightIcon />}
+              iconPosition="right"
+              loading={orderLetterMutation.isPending}
+              size="small"
+              type="submit"
+              variant="primary"
+            >
+              Rediger brev
+            </Button>
+          </VStack>
         </form>
       </FormProvider>
     </>
