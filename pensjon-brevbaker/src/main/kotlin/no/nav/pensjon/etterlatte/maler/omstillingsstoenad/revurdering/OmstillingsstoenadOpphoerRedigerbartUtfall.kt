@@ -1,4 +1,4 @@
-package no.nav.pensjon.etterlatte.maler.omstillingsstoenad.opphoer
+package no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering
 
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
@@ -13,8 +13,8 @@ import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.*
 
 @TemplateModelHelpers
-object OpphoerGenerell : EtterlatteTemplate<ManueltBrevDTO>, Delmal {
-    override val kode: EtterlatteBrevKode = EtterlatteBrevKode.OMS_REVURDERING_OPPHOER_GENERELL
+object OmstillingsstoenadOpphoerRedigerbartUtfall : EtterlatteTemplate<ManueltBrevDTO>, Delmal {
+    override val kode: EtterlatteBrevKode = EtterlatteBrevKode.OMSTILLINGSSTOENAD_REVURDERING_OPPHOER_UTFALL
 
     override val template = createTemplate(
         name = kode.name,

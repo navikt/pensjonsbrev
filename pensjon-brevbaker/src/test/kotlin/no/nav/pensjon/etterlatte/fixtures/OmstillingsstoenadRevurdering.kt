@@ -3,11 +3,11 @@ package no.nav.pensjon.etterlatte.fixtures
 import no.nav.pensjon.brevbaker.api.model.*
 import no.nav.pensjon.etterlatte.maler.*
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BeregningsMetode
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OMSRevurderingEndringDTO
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingDTO
 import java.time.LocalDate
 
-fun createOMSRevurderingEndringDTO() =
-    OMSRevurderingEndringDTO(
+fun createOmstillingsstoenadRevurderingDTO() =
+    OmstillingsstoenadRevurderingDTO(
         omstillingsstoenadBeregning = OmstillingsstoenadBeregning(
             innhold = emptyList(),
             grunnbeloep = Kroner(118000),

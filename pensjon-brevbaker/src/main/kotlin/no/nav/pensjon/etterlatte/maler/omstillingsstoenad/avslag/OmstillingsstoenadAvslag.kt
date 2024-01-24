@@ -1,4 +1,4 @@
-package no.nav.pensjon.etterlatte.maler.omstillingsstoenad.opphoer
+package no.nav.pensjon.etterlatte.maler.omstillingsstoenad.avslag
 
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
@@ -10,27 +10,31 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
-import no.nav.pensjon.etterlatte.maler.*
-import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadFellesFraser
+import no.nav.pensjon.etterlatte.maler.BrevDTO
+import no.nav.pensjon.etterlatte.maler.Element
+import no.nav.pensjon.etterlatte.maler.Hovedmal
 import no.nav.pensjon.etterlatte.maler.fraser.common.Vedtak
-import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.*
+import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadFellesFraser
 import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.opphoer.OMSOpphoerDTOSelectors.innhold
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.avslag.OmstillingstoenadAvslagDTOSelectors.innhold
+import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.klageOgAnkeUtenTilbakekreving
 
-data class OMSOpphoerDTO(
+
+data class OmstillingstoenadAvslagDTO(
     override val innhold: List<Element>,
+    val avdoedNavn: String,
 ): BrevDTO
 
 @TemplateModelHelpers
-object Opphoer : EtterlatteTemplate<OMSOpphoerDTO>, Hovedmal {
-    override val kode: EtterlatteBrevKode = EtterlatteBrevKode.OMS_REVURDERING_OPPHOER
+object OmstillingsstoenadAvslag : EtterlatteTemplate<OmstillingstoenadAvslagDTO>, Hovedmal {
+    override val kode: EtterlatteBrevKode = EtterlatteBrevKode.OMSTILLINGSTOENAD_AVSLAG
 
     override val template = createTemplate(
         name = kode.name,
-        letterDataType = OMSOpphoerDTO::class,
+        letterDataType = OmstillingstoenadAvslagDTO::class,
         languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(
-            displayTitle = "Vedtak - Opphør av omstillingsstønad",
+            displayTitle = "Vedtak - avslag",
             isSensitiv = true,
             distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
@@ -38,11 +42,10 @@ object Opphoer : EtterlatteTemplate<OMSOpphoerDTO>, Hovedmal {
     ) {
         title {
             text(
-                Bokmal to "Vi har opphørt omstillingsstønaden din",
+                Bokmal to "Vi har avslått søknaden din om omstillingsstønad",
                 Nynorsk to "",
                 English to "",
             )
-
         }
 
         outline {
@@ -55,7 +58,6 @@ object Opphoer : EtterlatteTemplate<OMSOpphoerDTO>, Hovedmal {
             includePhrase(OmstillingsstoenadFellesFraser.HarDuSpoersmaal)
         }
 
-        includeAttachment(klageOgAnke, innhold)
-
+        includeAttachment(klageOgAnkeUtenTilbakekreving, innhold)
     }
 }
