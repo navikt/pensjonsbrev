@@ -47,7 +47,7 @@ object BarnepensjonAvslag : EtterlatteTemplate<BarnepensjonAvslagDTO>, Hovedmal 
             text(
                 Bokmal to "Vi har avslått søknaden din om barnepensjon",
                 Nynorsk to "Vi har avslått søknaden din om barnepensjon",
-                English to "",
+                English to "We have rejected your application for a children's pension",
             )
         }
         outline {
