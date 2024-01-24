@@ -68,3 +68,8 @@ export type OrderLetterRequest = {
   enhetsId: string;
   isSensitive: boolean;
 };
+
+export type NAVEnhet = {
+  enhetNr: string;
+  navn: string;
+};

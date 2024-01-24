@@ -14,6 +14,7 @@ import {
   deleteFavoritt,
   getFavoritter,
   getLetterTemplate,
+  getMineEnheter,
   orderLetter,
 } from "~/api/skribenten-api-endpoints";
 import { Divider } from "~/components/Divider";
@@ -201,15 +202,22 @@ function SelectLanguage({ letterTemplate }: { letterTemplate: LetterMetadata }) 
 }
 
 function SelectEnhetsId() {
-  const { enhetsId } = useSearch({ from: selectedTemplateRoute.id });
-  const { register, formState, watch } = useFormContext();
-  console.log(watch());
-  console.log(formState.errors);
-  // TODO: hent mulige enhetsIder fra backend når det finnes
+  const { register, formState } = useFormContext();
+
+  const enheter = useQuery({
+    ...getMineEnheter,
+  }).data;
 
   return (
-    <Select {...register("enhetsId")} error={formState.errors.enhetsId?.message} label="EnhetsId" size="small">
-      <option value={enhetsId}>{enhetsId}</option>
+    <Select
+      {...register("enhetsId")}
+      error={formState.errors.enhetsId?.message?.toString()}
+      label="EnhetsId"
+      size="small"
+    >
+      {enheter?.map((enhet) => (
+        <option key={enhet.enhetNr} value={enhet.enhetNr}>{`${enhet.navn} (${enhet.enhetNr})`}</option>
+      ))}
     </Select>
   );
 }
