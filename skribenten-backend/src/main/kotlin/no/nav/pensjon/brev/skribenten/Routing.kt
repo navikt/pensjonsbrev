@@ -73,7 +73,7 @@ fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config
             penRoute(penService, safService)
             personRoute(pdlService, pensjonPersonDataService, krrService)
             tjenestebussIntegrasjonRoute(tjenestebussIntegrasjonService)
-            meRoute(servicesConfig.getConfig("navansatt"), authService)
+            meRoute()
         }
     }
 }

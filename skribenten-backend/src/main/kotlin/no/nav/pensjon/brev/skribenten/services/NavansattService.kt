@@ -12,10 +12,8 @@ import no.nav.pensjon.brev.skribenten.auth.AzureADOnBehalfOfAuthorizedHttpClient
 import no.nav.pensjon.brev.skribenten.auth.AzureADService
 
 class NavansattService(config: Config, authService: AzureADService) {
-
     private val navansattUrl = config.getString("url")
     private val navansattScope = config.getString("scope")
-
     private val client = AzureADOnBehalfOfAuthorizedHttpClient(navansattScope, authService) {
         defaultRequest {
             url(navansattUrl)
@@ -25,6 +23,19 @@ class NavansattService(config: Config, authService: AzureADService) {
                 registerModule(JavaTimeModule())
                 disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
             }
+        }
+    }
+
+    suspend fun harAnsattTilgangTilEnhet(
+        call: ApplicationCall,
+        ansattId: String,
+        enhetNr: String
+    ): Boolean {
+        val result = hentNavAnsattEnhetListe(call, ansattId)
+        return if (result is ServiceResult.Ok) {
+            result.result.enheter.any { it.enhetNr == enhetNr }
+        } else {
+            false
         }
     }
 
@@ -47,6 +58,7 @@ sealed class HentEnheterDto {
         IKKE_TILGANG,
         GENERELL
     }
+
     @JsonIgnoreProperties(ignoreUnknown = true)
     data class NAVEnhet(
         val enhetNr: String,
