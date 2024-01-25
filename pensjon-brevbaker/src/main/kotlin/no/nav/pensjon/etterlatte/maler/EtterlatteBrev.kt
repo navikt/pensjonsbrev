@@ -72,8 +72,6 @@ enum class EndringIUtbetaling {
     OEKES, REDUSERES, SAMME
 }
 
-data class Navn(val fornavn: String, val mellomnavn: String? = null, val etternavn: String)
-
 data class Trygdetidsperiode(
     val datoFOM: LocalDate,
     val datoTOM: LocalDate?,
