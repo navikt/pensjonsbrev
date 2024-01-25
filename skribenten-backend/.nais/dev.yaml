@@ -25,6 +25,9 @@ outboundRules:
   - application: navansatt
     namespace: teampensjon
     cluster: dev-fss
+  - application: pensjon-persondata-q2
+    namespace: pensjon-person
+    cluster: dev-fss
 
 externalHosts:
   - pdl-api.dev-fss-pub.nais.io
