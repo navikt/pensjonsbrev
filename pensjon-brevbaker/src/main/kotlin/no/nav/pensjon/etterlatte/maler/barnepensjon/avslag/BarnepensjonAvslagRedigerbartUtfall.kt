@@ -10,6 +10,7 @@ import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.Delmal
 import no.nav.pensjon.etterlatte.maler.ManueltBrevDTO
+import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.avslag.AvslagFraser
 import no.nav.pensjon.etterlatte.maler.fraser.common.Vedtak
 
 @TemplateModelHelpers
@@ -36,7 +37,7 @@ object BarnepensjonAvslagRedigerbartUtfall : EtterlatteTemplate<ManueltBrevDTO>,
         }
         outline {
             includePhrase(Vedtak.BegrunnelseForVedtaket)
-            //includePhrase(RevurderingFraser.FyllInn())
+            includePhrase(AvslagFraser.FyllInn)
         }
     }
 }

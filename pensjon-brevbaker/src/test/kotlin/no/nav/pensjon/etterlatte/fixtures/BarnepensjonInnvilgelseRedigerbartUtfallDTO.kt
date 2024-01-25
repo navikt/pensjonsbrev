@@ -10,11 +10,9 @@ import no.nav.pensjon.etterlatte.maler.Periode
 import no.nav.pensjon.etterlatte.maler.Trygdetid
 import no.nav.pensjon.etterlatte.maler.TrygdetidType
 import no.nav.pensjon.etterlatte.maler.Trygdetidsperiode
-import no.nav.pensjon.etterlatte.maler.Utbetalingsinfo
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseRedigerbartUtfallDTO
 import java.time.LocalDate
 import java.time.Month
-import java.time.YearMonth
 
 fun createBarnepensjonInnvilgelseRedigerbartUtfallDTO() = BarnepensjonInnvilgelseRedigerbartUtfallDTO(
     avdoed = Avdoed(

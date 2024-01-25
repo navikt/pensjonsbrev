@@ -98,7 +98,7 @@ data class Avdoed(
     val doedsdato: LocalDate,
 )
 
-@Deprecated("Denne utgår når vi får ryddet litt")
+@Deprecated("Denne utgår når vi får ryddet bort søskenjustering")
 data class Utbetalingsinfo(
     val antallBarn: Int,
     val beloep: Kroner,
@@ -107,7 +107,7 @@ data class Utbetalingsinfo(
     val beregningsperioder: List<BarnepensjonBeregningsperiode>,
 )
 
-@Deprecated("Denne utgår når vi får ryddet litt")
+@Deprecated("Denne utgår når vi får ryddet opp i omstillingsstønad revurdering")
 data class NyBeregningsperiode(
     val inntekt: Kroner,
     val trygdetid: Int,
@@ -115,7 +115,7 @@ data class NyBeregningsperiode(
     var utbetaltBeloep: Kroner,
 )
 
-@Deprecated("Denne utgår når vi får ryddet litt")
+@Deprecated("Denne utgår når vi får ryddet opp i omstillingsstønad revurdering")
 data class Beregningsinfo(
     override val innhold: List<Element>,
     val grunnbeloep: Kroner,
