@@ -151,7 +151,7 @@ fun createOmstillingsstoenadInnvilgelseDTO() =
         etterbetaling = OmstillingsstoenadEtterbetaling(
             fraDato = LocalDate.of(2024, 1, 1),
             tilDato = LocalDate.of(2024, 2, 28),
-            beregningsperioder = listOf(
+            etterbetalingsperioder = listOf(
                 OmstillingsstoenadBeregningsperiode(
                     datoFOM = LocalDate.of(2024, Month.JANUARY, 1),
                     datoTOM = LocalDate.of(2024, Month.FEBRUARY, 28),

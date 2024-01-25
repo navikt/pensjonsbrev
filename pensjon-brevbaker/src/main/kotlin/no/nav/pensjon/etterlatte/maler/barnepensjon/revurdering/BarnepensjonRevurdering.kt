@@ -42,7 +42,7 @@ data class BarnepensjonRevurderingDTO(
     override val innhold: List<Element>,
     val erEndret: Boolean,
     val beregning: BarnepensjonBeregning,
-    val etterbetaling: BarnepensjonEtterbetaling,
+    val etterbetaling: BarnepensjonEtterbetaling?,
     val brukerUnder18Aar: Boolean,
     val bosattUtland: Boolean,
     val kunNyttRegelverk: Boolean,

@@ -12,7 +12,7 @@ data class BarnepensjonEtterbetaling(
 data class OmstillingsstoenadEtterbetaling(
     val fraDato: LocalDate,
     val tilDato: LocalDate,
-    val beregningsperioder: List<OmstillingsstoenadBeregningsperiode> = listOf()
+    val etterbetalingsperioder: List<OmstillingsstoenadBeregningsperiode> = listOf()
 )
 
 data class BarnepensjonBeregning(
