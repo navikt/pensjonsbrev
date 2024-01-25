@@ -116,7 +116,7 @@ function Brevmal({ letterTemplate }: { letterTemplate: LetterMetadata }) {
           `}
           onSubmit={methods.handleSubmit((submittedValues) => {
             switch (letterTemplate.brevsystem) {
-              case BrevSystem.Brevbaker: {
+              case BrevSystem.Extream: {
                 return navigate({ to: redigeringRoute.id, params: { sakId, templateId } });
               }
               case BrevSystem.Extream:
