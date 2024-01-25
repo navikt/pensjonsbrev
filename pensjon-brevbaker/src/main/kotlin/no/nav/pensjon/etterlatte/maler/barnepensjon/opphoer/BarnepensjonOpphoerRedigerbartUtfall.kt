@@ -1,4 +1,4 @@
-package no.nav.pensjon.etterlatte.maler.barnepensjon.Opphoer
+package no.nav.pensjon.etterlatte.maler.barnepensjon.opphoer
 
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.dsl.createTemplate

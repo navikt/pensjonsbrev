@@ -23,7 +23,7 @@ data class BarnepensjonOpphoerDTO(
     val bosattUtland: Boolean,
 ) : BrevDTO
 @TemplateModelHelpers
-object BarnepensjonOpphoerRevurdering : EtterlatteTemplate<BarnepensjonOpphoerDTO>, Hovedmal {
+object BarnepensjonOpphoer : EtterlatteTemplate<BarnepensjonOpphoerDTO>, Hovedmal {
     override val kode: EtterlatteBrevKode = EtterlatteBrevKode.BARNEPENSJON_OPPHOER
 
     override val template = createTemplate(
