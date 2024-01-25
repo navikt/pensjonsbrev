@@ -1,9 +1,22 @@
 import { css } from "@emotion/react";
 import { createFileRoute } from "@tanstack/react-router";
 
+import { getTemplate } from "~/api/skribenten-api-endpoints";
 import { ModelEditor } from "~/Brevredigering/ModelEditor/ModelEditor";
 
+export const TEST_TEMPLATE = "INFORMASJON_OM_SAKSBEHANDLINGSTID";
+
 export const Route = createFileRoute("/saksnummer/$sakId/redigering/$templateId")({
+  beforeLoad: () => {
+    const getTemplateQueryOptions = {
+      queryKey: getTemplate.queryKey(TEST_TEMPLATE),
+      queryFn: () => getTemplate.queryFn(TEST_TEMPLATE),
+    };
+
+    return { getTemplateQueryOptions };
+  },
+  loader: ({ context: { queryClient, getTemplateQueryOptions } }) =>
+    queryClient.ensureQueryData(getTemplateQueryOptions),
   component: () => (
     <div
       css={css`
