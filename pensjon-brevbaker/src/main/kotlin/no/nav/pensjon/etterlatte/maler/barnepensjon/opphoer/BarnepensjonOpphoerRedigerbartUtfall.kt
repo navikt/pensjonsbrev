@@ -38,6 +38,7 @@ object BarnepensjonOpphoerRedigerbartUtfall : EtterlatteTemplate<ManueltBrevDTO>
         outline {
             includePhrase(Vedtak.BegrunnelseForVedtaket)
             includePhrase(RedigerbartUtfallFraser.FyllInn)
+            includePhrase(RedigerbartUtfallFraser.Feilutbetaling)
         }
     }
 }
