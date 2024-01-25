@@ -3,17 +3,24 @@ import "./appStyles.css";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import { createRouter, RouterProvider } from "@tanstack/react-router";
+import { createRouter, NotFoundRoute, RouterProvider } from "@tanstack/react-router";
 import React from "react";
 import ReactDOM from "react-dom/client";
 
+import { Route as rootRoute } from "./routes/__root";
 import { routeTree } from "./routeTree.gen";
 
 const queryClient = new QueryClient();
 
+const notFoundRoute = new NotFoundRoute({
+  getParentRoute: () => rootRoute,
+  component: () => "Finner ikke siden",
+});
+
 // Set up a Router instance
 const router = createRouter({
   routeTree,
+  notFoundRoute,
   context: {
     queryClient,
   },

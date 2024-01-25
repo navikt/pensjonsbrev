@@ -8,8 +8,7 @@ import React from "react";
 import { useForm } from "react-hook-form";
 
 import { getSak } from "~/api/skribenten-api-endpoints";
-import { BrevvelgerTabOptions } from "~/pages/Brevvelger/BrevvelgerPage";
-import { sakRoute } from "~/tanStackRoutes";
+import { BrevvelgerTabOptions } from "~/routes/saksnummer_.$sakId.brevvelger";
 import type { SakDto } from "~/types/apiTypes";
 
 export const Route = createFileRoute("/saksnummer/")({
@@ -18,7 +17,7 @@ export const Route = createFileRoute("/saksnummer/")({
 
 function SaksnummerPage() {
   const queryClient = useQueryClient();
-  const navigate = useNavigate({ from: sakRoute.id });
+  const navigate = useNavigate({ from: Route.fullPath });
   const { handleSubmit, register } = useForm({
     defaultValues: {
       saksnummer: "22972355",
