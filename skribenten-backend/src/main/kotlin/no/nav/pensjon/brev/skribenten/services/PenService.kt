@@ -41,7 +41,8 @@ class PenService(config: Config, authService: AzureADService) {
         val foedselsnr: String,
         val foedselsdato: LocalDate,
         val sakType: SakType,
-    )
+        val enhetId: String,
+        )
 
     enum class SakType { AFP, AFP_PRIVAT, ALDER, BARNEP, FAM_PL, GAM_YRK, GENRL, GJENLEV, GRBL, KRIGSP, OMSORG, UFOREP, }
     data class SakSelection(
@@ -49,6 +50,7 @@ class PenService(config: Config, authService: AzureADService) {
         val foedselsnr: String,
         val foedselsdato: LocalDate,
         val sakType: SakType,
+        val enhetId: String,
     )
 
 
@@ -62,7 +64,8 @@ class PenService(config: Config, authService: AzureADService) {
                 foedselsnr = it.foedselsnr,
                 foedselsdato = it.foedselsdato,
                 sakType = it.sakType,
-            )
+                enhetId = it.enhetId
+                )
         }
 
     data class BestilDoksysBrevRequest(
