@@ -1,4 +1,4 @@
-package no.nav.pensjon.etterlatte.maler.barnepensjon.avslag
+package no.nav.pensjon.etterlatte.maler.barnepensjon.opphoer
 
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.dsl.createTemplate
@@ -14,8 +14,8 @@ import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.RedigerbartUtfallFras
 import no.nav.pensjon.etterlatte.maler.fraser.common.Vedtak
 
 @TemplateModelHelpers
-object BarnepensjonAvslagRedigerbartUtfall : EtterlatteTemplate<ManueltBrevDTO>, Delmal {
-    override val kode: EtterlatteBrevKode = EtterlatteBrevKode.BARNEPENSJON_AVSLAG_UTFALL
+object BarnepensjonOpphoerRedigerbartUtfall : EtterlatteTemplate<ManueltBrevDTO>, Delmal {
+    override val kode: EtterlatteBrevKode = EtterlatteBrevKode.BARNEPENSJON_OPPHOER_UTFALL
 
     override val template = createTemplate(
         name = kode.name,
@@ -30,14 +30,15 @@ object BarnepensjonAvslagRedigerbartUtfall : EtterlatteTemplate<ManueltBrevDTO>,
     ) {
         title {
             text(
-                Language.Bokmal to "Vi har avslått søknaden din om barnepensjon",
-                Language.Nynorsk to "Vi har avslått søknaden din om barnepensjon",
-                Language.English to "We have rejected your application for a children's pension",
+                Language.Bokmal to "Vi har opphørt barnepensjonen din",
+                Language.Nynorsk to "Vi har avvikla barnepensjonen din",
+                Language.English to "We have terminated your application for a children's pension",
             )
         }
         outline {
             includePhrase(Vedtak.BegrunnelseForVedtaket)
             includePhrase(RedigerbartUtfallFraser.FyllInn)
+            includePhrase(RedigerbartUtfallFraser.Feilutbetaling)
         }
     }
 }

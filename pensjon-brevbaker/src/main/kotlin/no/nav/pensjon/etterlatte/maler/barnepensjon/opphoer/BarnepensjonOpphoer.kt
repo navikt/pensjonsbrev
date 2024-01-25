@@ -1,4 +1,4 @@
-package no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering
+package no.nav.pensjon.etterlatte.maler.barnepensjon.opphoer
 
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
@@ -10,19 +10,25 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
+import no.nav.pensjon.etterlatte.maler.BrevDTO
+import no.nav.pensjon.etterlatte.maler.Element
 import no.nav.pensjon.etterlatte.maler.Hovedmal
-import no.nav.pensjon.etterlatte.maler.ManueltBrevDTO
-import no.nav.pensjon.etterlatte.maler.ManueltBrevDTOSelectors.innhold
+import no.nav.pensjon.etterlatte.maler.barnepensjon.opphoer.BarnepensjonOpphoerDTOSelectors.innhold
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.Barnepensjon
 import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
 
+data class BarnepensjonOpphoerDTO(
+    override val innhold: List<Element>,
+    val brukerUnder18Aar: Boolean,
+    val bosattUtland: Boolean,
+) : BrevDTO
 @TemplateModelHelpers
-object BarnepensjonOpphoerRevurdering : EtterlatteTemplate<ManueltBrevDTO>, Hovedmal {
-    override val kode: EtterlatteBrevKode = EtterlatteBrevKode.BARNEPENSJON_REVURDERING_OPPHOER
+object BarnepensjonOpphoer : EtterlatteTemplate<BarnepensjonOpphoerDTO>, Hovedmal {
+    override val kode: EtterlatteBrevKode = EtterlatteBrevKode.BARNEPENSJON_OPPHOER
 
     override val template = createTemplate(
         name = kode.name,
-        letterDataType = ManueltBrevDTO::class,
+        letterDataType = BarnepensjonOpphoerDTO::class,
         languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(
             displayTitle = "Vedtak - opphør",
@@ -33,9 +39,9 @@ object BarnepensjonOpphoerRevurdering : EtterlatteTemplate<ManueltBrevDTO>, Hove
     ) {
         title {
             text(
-                Bokmal to "Vi opphører barnepensjonen din",
-                Nynorsk to "Vi stansar barnepensjonen din",
-                English to "We cease your child pension",
+                Bokmal to "Vi har opphørt barnepensjonen din",
+                Nynorsk to "Vi har avvikla barnepensjonen din",
+                English to "We have terminated your application for a children's pension",
             )
         }
         outline {
