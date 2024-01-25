@@ -11,37 +11,37 @@ import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
-import no.nav.pensjon.etterlatte.maler.Utbetalingsinfo
-import no.nav.pensjon.etterlatte.maler.UtbetalingsinfoSelectors.beloep
-import no.nav.pensjon.etterlatte.maler.UtbetalingsinfoSelectors.virkningsdato
-import java.time.LocalDate
+import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregning
+import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregningSelectors.sisteBeregningsperiode
+import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregningSelectors.virkningsdato
+import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregningsperiodeSelectors.datoFOM
+import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregningsperiodeSelectors.utbetaltBeloep
 
 object BarnepensjonRevurderingFraser {
 
     data class RevurderingVedtak(
         val erEndret: Expression<Boolean>,
-        val utbetalingsinfo: Expression<Utbetalingsinfo>,
+        val beregning: Expression<BarnepensjonBeregning>,
         val erEtterbetaling: Expression<Boolean>,
-        val sisteUtbetalingsperiodeDatoFom: Expression<LocalDate>,
         val harFlereUtbetalingsperioder: Expression<Boolean>
     ) :
         OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             paragraph {
-                val formatertNyesteUtbetalingsperiodeDatoFom = sisteUtbetalingsperiodeDatoFom.format()
-                val formatertVirkningsdato = utbetalingsinfo.virkningsdato.format()
-                val beloep = utbetalingsinfo.beloep.format()
+                val formatertNyesteUtbetalingsperiodeDatoFom = beregning.sisteBeregningsperiode.datoFOM.format()
+                val formatertVirkningsdato = beregning.virkningsdato.format()
+                val formatertBeloep = beregning.sisteBeregningsperiode.utbetaltBeloep.format()
 
                 showIf(erEndret) {
                     showIf(harFlereUtbetalingsperioder) {
                         textExpr(
-                            Language.Bokmal to "Barnepensjonen din er endret fra ".expr() + formatertVirkningsdato + ". Du får " + beloep + " kroner hver måned før skatt fra " + formatertNyesteUtbetalingsperiodeDatoFom + ". ",
+                            Language.Bokmal to "Barnepensjonen din er endret fra ".expr() + formatertVirkningsdato + ". Du får " + formatertBeloep + " kroner hver måned før skatt fra " + formatertNyesteUtbetalingsperiodeDatoFom + ". ",
                             Language.Nynorsk to "".expr(),
                             Language.English to "".expr()
                         )
                     }.orShow {
                         textExpr(
-                            Language.Bokmal to "Barnepensjonen din er endret fra ".expr() + formatertVirkningsdato + ". Du får " + beloep + " kroner hver måned før skatt. ",
+                            Language.Bokmal to "Barnepensjonen din er endret fra ".expr() + formatertVirkningsdato + ". Du får " + formatertBeloep + " kroner hver måned før skatt. ",
                             Language.Nynorsk to "".expr(),
                             Language.English to "".expr()
                         )
@@ -53,7 +53,7 @@ object BarnepensjonRevurderingFraser {
                     )
                 }.orShow {
                     textExpr(
-                        Language.Bokmal to "Barnepensjonen din er vurdert på nytt. Du får fortsatt ".expr() + utbetalingsinfo.beloep.format() + " kroner per måned før skatt.",
+                        Language.Bokmal to "Barnepensjonen din er vurdert på nytt. Du får fortsatt ".expr() + formatertBeloep + " kroner per måned før skatt.",
                         Language.Nynorsk to "".expr(),
                         Language.English to "".expr()
                     )

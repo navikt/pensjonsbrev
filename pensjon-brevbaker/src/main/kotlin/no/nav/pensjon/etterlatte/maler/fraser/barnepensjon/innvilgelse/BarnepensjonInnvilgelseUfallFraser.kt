@@ -14,29 +14,31 @@ import no.nav.pensjon.brev.template.dsl.expression.ifElse
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
-import no.nav.pensjon.brevbaker.api.model.Kroner
-import no.nav.pensjon.etterlatte.maler.Beregningsperiode
-import java.time.LocalDate
+import no.nav.pensjon.etterlatte.maler.Avdoed
+import no.nav.pensjon.etterlatte.maler.AvdoedSelectors.doedsdato
+import no.nav.pensjon.etterlatte.maler.AvdoedSelectors.navn
+import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregning
+import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregningSelectors.sisteBeregningsperiode
+import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregningSelectors.virkningsdato
+import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregningsperiodeSelectors.datoFOM
+import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregningsperiodeSelectors.utbetaltBeloep
 
 object BarnepensjonInnvilgelseUfallFraser {
 
     data class Foerstegangsbehandlingsvedtak(
-        val virkningsdato: Expression<LocalDate>,
-        val avdoedNavn: Expression<String>,
-        val doedsdato: Expression<LocalDate>,
-        val beloep: Expression<Kroner>,
-        val vedtaksdato: Expression<LocalDate>,
+        val avdoed: Expression<Avdoed>,
+        val beregning: Expression<BarnepensjonBeregning>,
         val erEtterbetaling: Expression<Boolean>,
-        val beregningsperioder: Expression<List<Beregningsperiode>>,
-        val nyesteUtbetalingsperiodeDatoFom: Expression<LocalDate>,
         val harFlereUtbetalingsperioder: Expression<Boolean>
     ) :
         OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             paragraph {
-                val formatertVirkningsdato = virkningsdato.format()
-                val formatertDoedsdato = doedsdato.format()
-                val formatertNyesteUtbetalingsperiodeDatoFom = nyesteUtbetalingsperiodeDatoFom.format()
+                val formatertVirkningsdato = beregning.virkningsdato.format()
+                val formatertDoedsdato = avdoed.doedsdato.format()
+                val avdoedNavn = avdoed.navn
+                val formatertNyesteUtbetalingsperiodeDatoFom = beregning.sisteBeregningsperiode.datoFOM.format()
+                val beloep = beregning.sisteBeregningsperiode.utbetaltBeloep
 
                 textExpr(
                     Bokmal to "Du er innvilget barnepensjon fra ".expr() + formatertVirkningsdato + " fordi " + avdoedNavn + " er registrert død " + formatertDoedsdato + ".",

@@ -11,10 +11,10 @@ import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
+import no.nav.pensjon.etterlatte.maler.BarnepensjonEtterbetalingSelectors.etterbetalingsperioder
+import no.nav.pensjon.etterlatte.maler.BarnepensjonEtterbetalingSelectors.fraDato
+import no.nav.pensjon.etterlatte.maler.BarnepensjonEtterbetalingSelectors.tilDato
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
-import no.nav.pensjon.etterlatte.maler.EtterbetalingSelectors.etterbetalingsperioder
-import no.nav.pensjon.etterlatte.maler.EtterbetalingSelectors.fraDato
-import no.nav.pensjon.etterlatte.maler.EtterbetalingSelectors.tilDato
 
 @TemplateModelHelpers
 val etterbetalingAvBarnepensjon = createAttachment(

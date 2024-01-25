@@ -2,7 +2,6 @@ package no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering
 
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.dsl.createTemplate
-import no.nav.pensjon.brev.template.dsl.expression.notNull
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -12,19 +11,18 @@ import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.BrevDTO
 import no.nav.pensjon.etterlatte.maler.Delmal
 import no.nav.pensjon.etterlatte.maler.Element
-import no.nav.pensjon.etterlatte.maler.Etterbetaling
-import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingRedigerbartUtfallDTOSelectors.etterbetaling
+import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingRedigerbartUtfallDTOSelectors.erEtterbetaling
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.revurdering.BarnepensjonRevurderingFraser
 import no.nav.pensjon.etterlatte.maler.fraser.common.Vedtak
 
 data class BarnepensjonRevurderingRedigerbartUtfallDTO(
     override val innhold: List<Element>,
-    val etterbetaling: Etterbetaling?,
+    val erEtterbetaling: Boolean,
 ) : BrevDTO
 
 @TemplateModelHelpers
 object BarnepensjonRevurderingRedigerbartUtfall : EtterlatteTemplate<BarnepensjonRevurderingRedigerbartUtfallDTO>, Delmal {
-    override val kode: EtterlatteBrevKode = EtterlatteBrevKode.BARNEPENSJON_AVSLAG_UTFALL
+    override val kode: EtterlatteBrevKode = EtterlatteBrevKode.BARNEPENSJON_REVURDERING_UTFALL
 
     override val template = createTemplate(
         name = kode.name,
@@ -46,7 +44,7 @@ object BarnepensjonRevurderingRedigerbartUtfall : EtterlatteTemplate<Barnepensjo
         }
         outline {
             includePhrase(Vedtak.BegrunnelseForVedtaket)
-            includePhrase(BarnepensjonRevurderingFraser.FyllInn(etterbetaling.notNull()))
+            includePhrase(BarnepensjonRevurderingFraser.FyllInn(erEtterbetaling))
         }
     }
 }

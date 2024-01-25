@@ -1,7 +1,6 @@
 package no.nav.pensjon.etterlatte.maler.fraser.barnepensjon
 
 import no.nav.pensjon.brev.maler.fraser.common.Felles
-import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmal
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
@@ -17,12 +16,11 @@ import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
-import no.nav.pensjon.brevbaker.api.model.Kroner
-import no.nav.pensjon.etterlatte.maler.Beregningsperiode
-import no.nav.pensjon.etterlatte.maler.BeregningsperiodeSelectors.datoFOM
-import no.nav.pensjon.etterlatte.maler.BeregningsperiodeSelectors.datoTOM
-import no.nav.pensjon.etterlatte.maler.BeregningsperiodeSelectors.grunnbeloep
-import no.nav.pensjon.etterlatte.maler.BeregningsperiodeSelectors.utbetaltBeloep
+import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregningsperiode
+import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregningsperiodeSelectors.datoFOM
+import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregningsperiodeSelectors.datoTOM
+import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregningsperiodeSelectors.grunnbeloep
+import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregningsperiodeSelectors.utbetaltBeloep
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
 import no.nav.pensjon.etterlatte.maler.fraser.common.kontakttelefonPensjon
 import java.time.LocalDate
@@ -52,7 +50,7 @@ object Barnepensjon {
     }
 
     data class SlikHarViBeregnetPensjonenDin(
-        val beregningsperioder: Expression<List<Beregningsperiode>>,
+        val beregningsperioder: Expression<List<BarnepensjonBeregningsperiode>>,
         val soeskenjustering: Expression<Boolean>,
         val antallBarn: Expression<Int>
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
@@ -91,7 +89,7 @@ object Barnepensjon {
     }
 
     data class BeregnetPensjonTabell(
-        val beregningsperioder: Expression<List<Beregningsperiode>>
+        val beregningsperioder: Expression<List<BarnepensjonBeregningsperiode>>
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             paragraph {
