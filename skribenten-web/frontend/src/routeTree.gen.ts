@@ -3,10 +3,16 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
+import { Route as SaksnummerImport } from './routes/saksnummer'
 import { Route as BrevvelgerImport } from './routes/brevvelger'
 import { Route as IndexImport } from './routes/index'
 
 // Create/Update Routes
+
+const SaksnummerRoute = SaksnummerImport.update({
+  path: '/saksnummer',
+  getParentRoute: () => rootRoute,
+} as any)
 
 const BrevvelgerRoute = BrevvelgerImport.update({
   path: '/brevvelger',
@@ -30,9 +36,17 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BrevvelgerImport
       parentRoute: typeof rootRoute
     }
+    '/saksnummer': {
+      preLoaderRoute: typeof SaksnummerImport
+      parentRoute: typeof rootRoute
+    }
   }
 }
 
 // Create and export the route tree
 
-export const routeTree = rootRoute.addChildren([IndexRoute, BrevvelgerRoute])
+export const routeTree = rootRoute.addChildren([
+  IndexRoute,
+  BrevvelgerRoute,
+  SaksnummerRoute,
+])
