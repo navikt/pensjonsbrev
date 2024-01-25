@@ -28,14 +28,28 @@ class NavansattService(config: Config, authService: AzureADService) {
         }
     }
 
-    suspend fun hentNavAnsattEnhetListe(call: ApplicationCall, ansattId: String): ServiceResult<List<NAVEnhet>, String> {
-        return client.get(call,"navansatt/$ansattId/enheter").toServiceResult<List<NAVEnhet>, String>()
-    }
+    suspend fun hentNavAnsattEnhetListe(call: ApplicationCall, ansattId: String): ServiceResult<HentEnheterDto.Success, HentEnheterDto.Failure> =
+        client.get(call, "navansatt/$ansattId/enheter")
+            .toServiceResult<HentEnheterDto.Success, HentEnheterDto.Failure>()
+            .map { success ->
+                HentEnheterDto.Success(success.enheter)
+            }.catch { error ->
+                HentEnheterDto.Failure(error.message, error.type)
+            }
 }
 
+sealed class HentEnheterDto {
+    data class Success(val enheter: List<NAVEnhet>) : HentEnheterDto()
+    data class Failure(val message: String?, val type: FailureType?) : HentEnheterDto()
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-data class NAVEnhet(
-    val enhetNr: String,
-    val navn: String,
-)
+    enum class FailureType {
+        IKKE_FUNNET,
+        IKKE_TILGANG,
+        GENERELL
+    }
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    data class NAVEnhet(
+        val enhetNr: String,
+        val navn: String,
+    )
+}
