@@ -1,6 +1,6 @@
 import { css } from "@emotion/react";
 
-import { useEditor } from "~/pages/Brevredigering/LetterEditor/LetterEditor";
+import { useEditor } from "~/Brevredigering/LetterEditor/LetterEditor";
 
 export function DebugPanel() {
   const { editorState } = useEditor();

@@ -2,9 +2,9 @@ import { css } from "@emotion/react";
 import { Switch } from "@navikt/ds-react";
 import { useState } from "react";
 
-import { EnumEditor } from "~/pages/Brevredigering/ModelEditor/components/EnumEditor";
-import { ScalarEditor } from "~/pages/Brevredigering/ModelEditor/components/ScalarEditor";
-import { useObjectTypeSpecification } from "~/pages/Brevredigering/ModelEditor/components/useObjectTypeSpecification";
+import { EnumEditor } from "~/Brevredigering/ModelEditor/components/EnumEditor";
+import { ScalarEditor } from "~/Brevredigering/ModelEditor/components/ScalarEditor";
+import { useObjectTypeSpecification } from "~/Brevredigering/ModelEditor/components/useObjectTypeSpecification";
 import type { FieldType, TObject } from "~/types/brevbakerTypes";
 
 const FieldEditor = ({ field, fieldType }: { field: string; fieldType: FieldType }) => {

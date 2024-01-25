@@ -4,7 +4,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { FormProvider, useForm } from "react-hook-form";
 
 import { getTemplate, renderLetter } from "~/api/skribenten-api-endpoints";
-import { LetterEditor } from "~/pages/Brevredigering/LetterEditor/LetterEditor";
+import { LetterEditor } from "~/Brevredigering/LetterEditor/LetterEditor";
 import type { RenderedLetter } from "~/types/brevbakerTypes";
 
 import { ObjectEditor } from "./components/ObjectEditor";

@@ -1,4 +1,4 @@
-import type { LiteralIndex } from "~/pages/Brevredigering/LetterEditor/actions/model";
+import type { LiteralIndex } from "~/Brevredigering/LetterEditor/actions/model";
 import type { Content, EditedLetter } from "~/types/brevbakerTypes";
 
 export type ContentGroup = { content: Content[] };
