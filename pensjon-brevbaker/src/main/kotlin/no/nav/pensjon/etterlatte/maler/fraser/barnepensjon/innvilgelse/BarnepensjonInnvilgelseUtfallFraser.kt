@@ -20,7 +20,7 @@ import no.nav.pensjon.etterlatte.maler.AvdoedSelectors.doedsdato
 import no.nav.pensjon.etterlatte.maler.AvdoedSelectors.navn
 import java.time.LocalDate
 
-object BarnepensjonInnvilgelseUfallFraser {
+object BarnepensjonInnvilgelseUtfallFraser {
 
     data class Foerstegangsbehandlingsvedtak(
         val avdoed: Expression<Avdoed>,

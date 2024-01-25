@@ -39,7 +39,7 @@ import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.innvilgelse.informas
 data class BarnepensjonInnvilgelseDTO(
     override val innhold: List<Element>,
     val beregning: BarnepensjonBeregning,
-    val etterbetaling: BarnepensjonEtterbetaling,
+    val etterbetaling: BarnepensjonEtterbetaling?,
     val brukerUnder18Aar: Boolean,
     val bosattUtland: Boolean,
     val kunNyttRegelverk: Boolean,

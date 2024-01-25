@@ -17,7 +17,7 @@ import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnv
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseRedigerbartUtfallDTOSelectors.sisteBeregningsperiodeBeloep
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseRedigerbartUtfallDTOSelectors.sisteBeregningsperiodeDatoFom
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseRedigerbartUtfallDTOSelectors.virkningsdato
-import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.innvilgelse.BarnepensjonInnvilgelseUfallFraser
+import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.innvilgelse.BarnepensjonInnvilgelseUtfallFraser
 import no.nav.pensjon.etterlatte.maler.fraser.common.Vedtak
 import java.time.LocalDate
 
@@ -56,7 +56,7 @@ object BarnepensjonInnvilgelseRedigerbartUfall : EtterlatteTemplate<Barnepensjon
             includePhrase(Vedtak.BegrunnelseForVedtaket)
 
             includePhrase(
-                BarnepensjonInnvilgelseUfallFraser.Foerstegangsbehandlingsvedtak(
+                BarnepensjonInnvilgelseUtfallFraser.Foerstegangsbehandlingsvedtak(
                     avdoed,
                     virkningsdato,
                     sisteBeregningsperiodeDatoFom,
