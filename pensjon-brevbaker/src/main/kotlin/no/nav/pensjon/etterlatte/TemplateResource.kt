@@ -5,6 +5,7 @@ import no.nav.pensjon.etterlatte.maler.andre.TomMal
 import no.nav.pensjon.etterlatte.maler.andre.TomDelmal
 import no.nav.pensjon.etterlatte.maler.andre.TomMalInformasjonsbrev
 import no.nav.pensjon.etterlatte.maler.andre.UtsattKlagefrist
+import no.nav.pensjon.etterlatte.maler.barnepensjon.Opphoer.BarnepensjonOpphoerRedigerbartUtfall
 import no.nav.pensjon.etterlatte.maler.barnepensjon.avslag.BarnepensjonAvslag
 import no.nav.pensjon.etterlatte.maler.barnepensjon.avslag.BarnepensjonAvslagRedigerbartUtfall
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelse
@@ -12,7 +13,7 @@ import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnv
 import no.nav.pensjon.etterlatte.maler.barnepensjon.migrering.EnkeltVedtakOmregningNyttRegelverk
 import no.nav.pensjon.etterlatte.maler.barnepensjon.migrering.EnkeltVedtakOmregningNyttRegelverkFerdig
 import no.nav.pensjon.etterlatte.maler.barnepensjon.migrering.ForhaandsvarselOmregningBP
-import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonOpphoerRevurdering
+import no.nav.pensjon.etterlatte.maler.barnepensjon.opphoer.BarnepensjonOpphoerRevurdering
 import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurdering
 import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.SoeskenjusteringRevurdering
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.avslag.OmstillingsstoenadAvslag
@@ -32,8 +33,9 @@ val prodAutobrevTemplates: Set<EtterlatteTemplate<*>> =
         BarnepensjonAvslagRedigerbartUtfall,
         BarnepensjonInnvilgelse,
         BarnepensjonInnvilgelseRedigerbartUfall,
-        BarnepensjonRevurdering,
         BarnepensjonOpphoerRevurdering,
+        BarnepensjonOpphoerRedigerbartUtfall,
+        BarnepensjonRevurdering,
         SoeskenjusteringRevurdering,
 
         // Omstillingsstønad
