@@ -3,25 +3,31 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
-import { Route as SaksnummerImport } from './routes/saksnummer'
-import { Route as BrevvelgerImport } from './routes/brevvelger'
 import { Route as IndexImport } from './routes/index'
+import { Route as SaksnummerIndexImport } from './routes/saksnummer.index'
+import { Route as SaksnummerSakIdImport } from './routes/saksnummer_.$sakId'
+import { Route as SaksnummerSakIdBrevvelgerImport } from './routes/saksnummer_.$sakId.brevvelger'
 
 // Create/Update Routes
-
-const SaksnummerRoute = SaksnummerImport.update({
-  path: '/saksnummer',
-  getParentRoute: () => rootRoute,
-} as any)
-
-const BrevvelgerRoute = BrevvelgerImport.update({
-  path: '/brevvelger',
-  getParentRoute: () => rootRoute,
-} as any)
 
 const IndexRoute = IndexImport.update({
   path: '/',
   getParentRoute: () => rootRoute,
+} as any)
+
+const SaksnummerIndexRoute = SaksnummerIndexImport.update({
+  path: '/saksnummer/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const SaksnummerSakIdRoute = SaksnummerSakIdImport.update({
+  path: '/saksnummer/$sakId',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const SaksnummerSakIdBrevvelgerRoute = SaksnummerSakIdBrevvelgerImport.update({
+  path: '/brevvelger',
+  getParentRoute: () => SaksnummerSakIdRoute,
 } as any)
 
 // Populate the FileRoutesByPath interface
@@ -32,13 +38,17 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexImport
       parentRoute: typeof rootRoute
     }
-    '/brevvelger': {
-      preLoaderRoute: typeof BrevvelgerImport
+    '/saksnummer/$sakId': {
+      preLoaderRoute: typeof SaksnummerSakIdImport
       parentRoute: typeof rootRoute
     }
-    '/saksnummer': {
-      preLoaderRoute: typeof SaksnummerImport
+    '/saksnummer/': {
+      preLoaderRoute: typeof SaksnummerIndexImport
       parentRoute: typeof rootRoute
+    }
+    '/saksnummer/$sakId/brevvelger': {
+      preLoaderRoute: typeof SaksnummerSakIdBrevvelgerImport
+      parentRoute: typeof SaksnummerSakIdImport
     }
   }
 }
@@ -47,6 +57,6 @@ declare module '@tanstack/react-router' {
 
 export const routeTree = rootRoute.addChildren([
   IndexRoute,
-  BrevvelgerRoute,
-  SaksnummerRoute,
+  SaksnummerSakIdRoute.addChildren([SaksnummerSakIdBrevvelgerRoute]),
+  SaksnummerIndexRoute,
 ])

@@ -12,7 +12,7 @@ import { BrevvelgerTabOptions } from "~/pages/Brevvelger/BrevvelgerPage";
 import { sakRoute } from "~/tanStackRoutes";
 import type { SakDto } from "~/types/apiTypes";
 
-export const Route = createFileRoute("/saksnummer")({
+export const Route = createFileRoute("/saksnummer/")({
   component: SaksnummerPage,
 });
 
