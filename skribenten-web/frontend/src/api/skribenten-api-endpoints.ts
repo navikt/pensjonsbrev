@@ -49,6 +49,11 @@ export const enheterKeys = {
   all: ["MINE_ENHETER"] as const,
 };
 
+export const adresseKeys = {
+  all: ["ADRESSE"],
+  pid: (pid: string) => [...adresseKeys.all, pid] as const,
+};
+
 export const preferredLanguageKeys = {
   all: ["PREFERRED_LANGUAGE"] as const,
   pid: (pid: string) => [...preferredLanguageKeys.all, pid] as const,
@@ -87,6 +92,16 @@ export const getLetterTemplate = {
   queryKey: letterTemplatesKeys.id,
   queryFn: async (sakType: string) =>
     (await axios.get<LetterTemplatesResponse>(`${SKRIBENTEN_API_BASE_PATH}/lettertemplates/${sakType}`)).data,
+};
+
+export const getKontaktAdresse = {
+  queryKey: adresseKeys.pid,
+  queryFn: async (pid: string) =>
+    (
+      await axios.post<PidRequest, AxiosResponse<unknown>>(`${SKRIBENTEN_API_BASE_PATH}/person/adresse`, {
+        pid,
+      })
+    ).data,
 };
 
 export const getFavoritter = {

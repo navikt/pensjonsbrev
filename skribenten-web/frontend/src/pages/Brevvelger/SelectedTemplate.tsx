@@ -11,8 +11,10 @@ import { z } from "zod";
 
 import {
   addFavoritt,
+  adresseKeys,
   deleteFavoritt,
   getFavoritter,
+  getKontaktAdresse,
   getLetterTemplate,
   getMineEnheter,
   orderLetter,
@@ -93,6 +95,11 @@ function Brevmal({ letterTemplate }: { letterTemplate: LetterMetadata }) {
       isSensitive: letterTemplate?.brevsystem === BrevSystem.Extream ? undefined : false, // Supply default value to pass validation if Brev is not Doksys
     },
     resolver: zodResolver(formValidationSchema),
+  });
+
+  const adresse = useQuery({
+    queryKey: getKontaktAdresse.queryKey(sak?.foedselsnr as string),
+    queryFn: () => getKontaktAdresse.queryFn(sak?.foedselsnr as string),
   });
 
   return (
