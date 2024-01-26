@@ -68,10 +68,6 @@ enum class BeregningsMetode {
     BEST
 }
 
-enum class EndringIUtbetaling {
-    OEKES, REDUSERES, SAMME
-}
-
 data class Trygdetidsperiode(
     val datoFOM: LocalDate,
     val datoTOM: LocalDate?,
@@ -94,15 +90,6 @@ data class Periode(
 data class Avdoed(
     val navn: String,
     val doedsdato: LocalDate,
-)
-
-@Deprecated("Denne utgår når vi får ryddet bort søskenjustering")
-data class Utbetalingsinfo(
-    val antallBarn: Int,
-    val beloep: Kroner,
-    val soeskenjustering: Boolean,
-    val virkningsdato: LocalDate,
-    val beregningsperioder: List<BarnepensjonBeregningsperiode>,
 )
 
 @Deprecated("Denne utgår når vi får ryddet opp i omstillingsstønad revurdering")
