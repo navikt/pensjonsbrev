@@ -27,15 +27,15 @@ class NavansattService(config: Config, authService: AzureADService) {
             }
         }
     }
-
-    suspend fun hentNavAnsattEnhetListe(call: ApplicationCall, ansattId: String): ServiceResult<List<NAVEnhet>, String> {
-        return client.get(call,"navansatt/$ansattId/enheter").toServiceResult<List<NAVEnhet>, String>()
+//[{\"id\":\"4808\",\"navn\":\"NAV Familie- og pensjonsytelser Porsgrunn\",\"nivaa\":\"SPESEN\"},{\"id\":\"0383\",\"navn\":\"NAV egne ansatte Oslo\",\"nivaa\":\"EN\"}]
+    suspend fun hentNavAnsattEnhetListe(call: ApplicationCall, ansattId: String): ServiceResult2<List<NAVEnhet>> {
+        return client.get(call,"navansatt/$ansattId/enheter").toServiceResult2<List<NAVEnhet>>()
     }
 }
 
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class NAVEnhet(
-    val enhetNr: String,
+    val id: String,
     val navn: String,
 )

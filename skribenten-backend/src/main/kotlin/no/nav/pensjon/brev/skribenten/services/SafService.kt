@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.skribenten.services
 
+import com.fasterxml.jackson.databind.JsonNode
 import com.typesafe.config.Config
 import io.ktor.client.plugins.*
 import io.ktor.client.plugins.contentnegotiation.*
@@ -45,10 +46,12 @@ class SafService(config: Config, authService: AzureADService) {
     data class HentJournalStatusResponse(val data: HentJournalpostData)
     data class HentJournalpostData(val journalpost: JournalPost)
 
-    data class HentDokumenterResponse(val data: Journalposter){
-        data class Journalposter(val journalpostId: String, val dokumenter: List<Dokument>)
+    data class HentDokumenterResponse(val data: Journalposter?, val errors: JsonNode?) {
+        data class Journalposter(val journalpost: Journalpost)
+        data class Journalpost(val journalpostId: String, val dokumenter: List<Dokument>)
         data class Dokument(val dokumentInfoId: String)
     }
+
     data class JournalPost(val journalpostId: String, val journalstatus: Journalstatus)
     enum class Journalstatus {
         MOTTATT, JOURNALFOERT, FERDIGSTILT, EKSPEDERT, UNDER_ARBEID, FEILREGISTRERT, UTGAAR, AVBRUTT, UKJENT_BRUKER, RESERVERT, OPPLASTING_DOKUMENT, UKJENT,
@@ -68,8 +71,8 @@ class SafService(config: Config, authService: AzureADService) {
             )
         }.toServiceResult<HentJournalStatusResponse, String>()
 
-    data class JournalpostLoadingError(val error: String, val type: ErrorType){
-        enum class ErrorType{ERROR, TIMEOUT}
+    data class JournalpostLoadingError(val error: String, val type: ErrorType) {
+        enum class ErrorType { ERROR, TIMEOUT }
     }
 
     suspend fun waitForJournalpostStatusUnderArbeid(call: ApplicationCall, journalpostId: String): JournalpostLoadingError? {
@@ -82,10 +85,12 @@ class SafService(config: Config, authService: AzureADService) {
                         return null
                     }
                 }
+
                 is ServiceResult.Error -> {
                     logger.error("Feil ved venting på ferdigstilling av brev. Satus: ${result.statusCode}. Message: ${result.error}")
                     return JournalpostLoadingError(result.error, JournalpostLoadingError.ErrorType.ERROR)
                 }
+
                 is ServiceResult.AuthorizationError -> {
                     logger.error(result.error.logString())
                     return JournalpostLoadingError(result.error.error, JournalpostLoadingError.ErrorType.ERROR)
@@ -106,10 +111,8 @@ class SafService(config: Config, authService: AzureADService) {
             )
         }.toServiceResult2<HentDokumenterResponse>()
 
-    suspend fun getFirstDocumentInJournal(call: ApplicationCall, journalpostId: String): ServiceResult2<HentDokumenterResponse.Dokument> =
-        getDocumentsInJournal(call, journalpostId).map {
-            it.data.dokumenter.first()
-        }
+    suspend fun getFirstDocumentInJournal(call: ApplicationCall, journalpostId: String): ServiceResult2<HentDokumenterResponse> =
+        getDocumentsInJournal(call, journalpostId)
 
 
 }

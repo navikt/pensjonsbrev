@@ -226,7 +226,7 @@ function SelectEnhetsId() {
       size="small"
     >
       {enheter?.map((enhet) => (
-        <option key={enhet.enhetNr} value={enhet.enhetNr}>{`${enhet.navn} (${enhet.enhetNr})`}</option>
+        <option key={enhet.id} value={enhet.id}>{`${enhet.navn} (${enhet.id})`}</option>
       ))}
     </Select>
   );

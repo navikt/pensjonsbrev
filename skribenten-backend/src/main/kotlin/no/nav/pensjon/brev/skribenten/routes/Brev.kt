@@ -119,7 +119,17 @@ private suspend fun bestillDoksysBrev(
                 BestillOgRedigerBrevResponse(response.failure)
             } else if (response.journalpostId != null) {
                 safService.getFirstDocumentInJournal(call, response.journalpostId)
-                    .map { safResponse -> redigerDoksysBrev(tjenestebussIntegrasjonService, call, safResponse, response.journalpostId) }
+                    .map { safResponse ->
+                        if (safResponse.errors != null) {
+                            logger.error("Feil fra saf ved henting av dokument med journalpostId ${response.journalpostId} ${safResponse.errors}")
+                            BestillOgRedigerBrevResponse(SKRIBENTEN_INTERNAL_ERROR)
+                        } else if (safResponse.data != null) {
+                            redigerDoksysBrev(tjenestebussIntegrasjonService, call, safResponse.data.journalpost.dokumenter.first(), response.journalpostId)
+                        } else {
+                            logger.error("Tom response fra saf ved henting av dokument")
+                            BestillOgRedigerBrevResponse(SKRIBENTEN_INTERNAL_ERROR)
+                        }
+                    }
                     .catch { message, httpStatusCode ->
                         logger.error("Feil ved henting av dokumentId fra SAF ved redigering av doksys brev $message status: $httpStatusCode")
                         BestillOgRedigerBrevResponse(SKRIBENTEN_INTERNAL_ERROR)
