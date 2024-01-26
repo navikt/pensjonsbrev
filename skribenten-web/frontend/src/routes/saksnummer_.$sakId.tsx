@@ -1,22 +1,35 @@
 import { css } from "@emotion/react";
 import { Bleed, CopyButton } from "@navikt/ds-react";
 import { useQuery } from "@tanstack/react-query";
-import { Outlet, useRouteContext } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
+import { Outlet } from "@tanstack/react-router";
 import React from "react";
 
 import { getNavn } from "~/api/skribenten-api-endpoints";
-import { sakRoute } from "~/tanStackRoutes";
+import { getSak } from "~/api/skribenten-api-endpoints";
 import type { SakDto } from "~/types/apiTypes";
 import { SAK_TYPE_TO_TEXT } from "~/types/nameMappings";
 import { formatDateWithoutTimezone } from "~/utils/dateUtils";
 
-export function SakBreadcrumbsPage() {
-  const { getSakQueryOptions } = useRouteContext({ from: sakRoute.id });
-  const sak = useQuery(getSakQueryOptions);
+export const Route = createFileRoute("/saksnummer/$sakId")({
+  beforeLoad: ({ params: { sakId } }) => {
+    const getSakQueryOptions = {
+      queryKey: getSak.queryKey(sakId),
+      queryFn: () => getSak.queryFn(sakId),
+    };
+
+    return { getSakQueryOptions };
+  },
+  loader: ({ context: { queryClient, getSakQueryOptions } }) => queryClient.ensureQueryData(getSakQueryOptions),
+  component: SakBreadcrumbsPage,
+});
+
+function SakBreadcrumbsPage() {
+  const sak = Route.useLoaderData();
 
   return (
     <>
-      <SakInfoBreadcrumbs sak={sak.data} />
+      <SakInfoBreadcrumbs sak={sak} />
       <Outlet />
     </>
   );

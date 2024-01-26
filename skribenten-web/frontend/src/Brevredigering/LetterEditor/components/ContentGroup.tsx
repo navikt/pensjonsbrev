@@ -1,13 +1,13 @@
 import React, { useEffect, useRef } from "react";
 
-import Actions from "~/pages/Brevredigering/LetterEditor/actions";
-import { MergeTarget } from "~/pages/Brevredigering/LetterEditor/actions/merge";
-import type { LiteralIndex } from "~/pages/Brevredigering/LetterEditor/actions/model";
-import { Text } from "~/pages/Brevredigering/LetterEditor/components/Text";
-import { useEditor } from "~/pages/Brevredigering/LetterEditor/LetterEditor";
-import { applyAction } from "~/pages/Brevredigering/LetterEditor/lib/actions";
-import type { Focus } from "~/pages/Brevredigering/LetterEditor/model/state";
-import { SelectionService } from "~/pages/Brevredigering/LetterEditor/services/SelectionService";
+import Actions from "~/Brevredigering/LetterEditor/actions";
+import { MergeTarget } from "~/Brevredigering/LetterEditor/actions/merge";
+import type { LiteralIndex } from "~/Brevredigering/LetterEditor/actions/model";
+import { Text } from "~/Brevredigering/LetterEditor/components/Text";
+import { useEditor } from "~/Brevredigering/LetterEditor/LetterEditor";
+import { applyAction } from "~/Brevredigering/LetterEditor/lib/actions";
+import type { Focus } from "~/Brevredigering/LetterEditor/model/state";
+import { SelectionService } from "~/Brevredigering/LetterEditor/services/SelectionService";
 import type { LiteralValue, RenderedLetter } from "~/types/brevbakerTypes";
 import { ITEM_LIST, LITERAL, VARIABLE } from "~/types/brevbakerTypes";
 

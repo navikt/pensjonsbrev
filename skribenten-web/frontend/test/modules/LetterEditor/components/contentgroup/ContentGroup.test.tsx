@@ -2,11 +2,11 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, test, vi } from "vitest";
 
-import Actions from "~/pages/Brevredigering/LetterEditor/actions";
-import { MergeTarget } from "~/pages/Brevredigering/LetterEditor/actions/merge";
-import { ContentGroup } from "~/pages/Brevredigering/LetterEditor/components/ContentGroup";
-import { EditorStateContext } from "~/pages/Brevredigering/LetterEditor/LetterEditor";
-import type { LetterEditorState } from "~/pages/Brevredigering/LetterEditor/model/state";
+import Actions from "~/Brevredigering/LetterEditor/actions";
+import { MergeTarget } from "~/Brevredigering/LetterEditor/actions/merge";
+import { ContentGroup } from "~/Brevredigering/LetterEditor/components/ContentGroup";
+import { EditorStateContext } from "~/Brevredigering/LetterEditor/LetterEditor";
+import type { LetterEditorState } from "~/Brevredigering/LetterEditor/model/state";
 import type { LiteralValue, ParagraphBlock } from "~/types/brevbakerTypes";
 import { LITERAL, PARAGRAPH } from "~/types/brevbakerTypes";
 

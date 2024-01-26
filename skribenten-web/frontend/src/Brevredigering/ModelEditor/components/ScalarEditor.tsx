@@ -1,8 +1,8 @@
 import { Checkbox, DatePicker, TextField, useDatepicker } from "@navikt/ds-react";
 import { Controller, get, useFormContext } from "react-hook-form";
 
+import { convertFieldToReadableLabel } from "~/Brevredigering/ModelEditor/components/utils";
 import { FullWidthDatePickerWrapper } from "~/components/FullWidthDatePickerWrapper";
-import { convertFieldToReadableLabel } from "~/pages/Brevredigering/ModelEditor/components/utils";
 import type { TScalar } from "~/types/brevbakerTypes";
 import { formatDateWithoutTimezone } from "~/utils/dateUtils";
 

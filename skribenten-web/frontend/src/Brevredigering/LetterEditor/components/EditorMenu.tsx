@@ -2,8 +2,8 @@ import { css } from "@emotion/react";
 import { Button } from "@navikt/ds-react";
 import type { ReactNode } from "react";
 
-import Actions from "~/pages/Brevredigering/LetterEditor/actions";
-import { useEditor } from "~/pages/Brevredigering/LetterEditor/LetterEditor";
+import Actions from "~/Brevredigering/LetterEditor/actions";
+import { useEditor } from "~/Brevredigering/LetterEditor/LetterEditor";
 
 import { applyAction } from "../lib/actions";
 
