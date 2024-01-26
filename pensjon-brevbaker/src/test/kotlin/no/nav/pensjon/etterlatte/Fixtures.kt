@@ -14,7 +14,6 @@ import no.nav.pensjon.etterlatte.fixtures.createBarnepensjonOmregnetNyttRegelver
 import no.nav.pensjon.etterlatte.fixtures.createBarnepensjonOpphoerDTO
 import no.nav.pensjon.etterlatte.fixtures.createBarnepensjonRevurderingDTO
 import no.nav.pensjon.etterlatte.fixtures.createBarnepensjonRevurderingRedigerbartUtfallDTO
-import no.nav.pensjon.etterlatte.fixtures.createBarnepensjonRevurderingSoeskenjusteringDTO
 import no.nav.pensjon.etterlatte.fixtures.createManueltBrevDTO
 import no.nav.pensjon.etterlatte.fixtures.createOmstillingsstoenadAvslagDTO
 import no.nav.pensjon.etterlatte.fixtures.createOmstillingsstoenadInnvilgelseDTO
@@ -36,7 +35,6 @@ import no.nav.pensjon.etterlatte.maler.barnepensjon.migrering.BarnepensjonOmregn
 import no.nav.pensjon.etterlatte.maler.barnepensjon.opphoer.BarnepensjonOpphoerDTO
 import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingDTO
 import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingRedigerbartUtfallDTO
-import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingSoeskenjusteringDTO
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.avslag.OmstillingstoenadAvslagDTO
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.OmstillingsstoenadInnvilgelseDTO
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.OmstillingsstoenadInnvilgelseRedigerbartUtfallDTO
@@ -83,7 +81,6 @@ object Fixtures {
             BarnepensjonOpphoerDTO::class -> createBarnepensjonOpphoerDTO() as T
             BarnepensjonRevurderingDTO::class -> createBarnepensjonRevurderingDTO() as T
             BarnepensjonRevurderingRedigerbartUtfallDTO::class -> createBarnepensjonRevurderingRedigerbartUtfallDTO() as T
-            BarnepensjonRevurderingSoeskenjusteringDTO::class -> createBarnepensjonRevurderingSoeskenjusteringDTO() as T
             BarnepensjonOmregnetNyttRegelverkDTO::class -> createBarnepensjonOmregnetNyttRegelverkDTO() as T
             BarnepensjonOmregnetNyttRegelverkFerdigDTO::class -> createBarnepensjonOmregnetNyttRegelverkFerdigDTO() as T
             OmstillingsstoenadInnvilgelseDTO::class -> createOmstillingsstoenadInnvilgelseDTO() as T
