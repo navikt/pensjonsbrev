@@ -1,7 +1,7 @@
 import { randomInt } from "node:crypto";
 
-import type { ItemContentIndex } from "~/pages/Brevredigering/LetterEditor/actions/model";
-import type { LetterEditorState } from "~/pages/Brevredigering/LetterEditor/model/state";
+import type { ItemContentIndex } from "~/Brevredigering/LetterEditor/actions/model";
+import type { LetterEditorState } from "~/Brevredigering/LetterEditor/model/state";
 import type {
   AnyBlock,
   Content,

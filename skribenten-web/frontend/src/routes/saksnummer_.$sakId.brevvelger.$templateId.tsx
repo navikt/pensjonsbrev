@@ -3,7 +3,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowRightIcon, StarFillIcon, StarIcon } from "@navikt/aksel-icons";
 import { Alert, BodyShort, Button, Heading, Radio, RadioGroup, Select, Tag, VStack } from "@navikt/ds-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useNavigate, useParams, useRouteContext, useSearch } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
+import { useNavigate } from "@tanstack/react-router";
 import type { AxiosError } from "axios";
 import { useEffect } from "react";
 import { Controller, FormProvider, useForm, useFormContext } from "react-hook-form";
@@ -19,12 +20,28 @@ import {
 } from "~/api/skribenten-api-endpoints";
 import { Divider } from "~/components/Divider";
 import { usePreferredLanguage } from "~/hooks/usePreferredLanguage";
-import { redigeringRoute, selectedTemplateRoute } from "~/tanStackRoutes";
+import { BrevvelgerTabOptions } from "~/routes/saksnummer_.$sakId.brevvelger";
 import type { LetterMetadata, OrderLetterRequest } from "~/types/apiTypes";
 import { BrevSystem, SpraakKode } from "~/types/apiTypes";
 import { SPRAAK_ENUM_TO_TEXT } from "~/types/nameMappings";
 
-import { BrevvelgerTabOptions } from "./BrevvelgerPage";
+export const Route = createFileRoute("/saksnummer/$sakId/brevvelger/$templateId")({
+  component: SelectedTemplate,
+  loader: async ({ context: { queryClient, getSakQueryOptions }, params: { templateId } }) => {
+    const sak = await queryClient.ensureQueryData(getSakQueryOptions);
+    const letterTemplates = await queryClient.ensureQueryData({
+      queryKey: getLetterTemplate.queryKey(sak.sakType),
+      queryFn: () => getLetterTemplate.queryFn(sak.sakType),
+    });
+
+    const letterTemplate = [
+      ...letterTemplates.eblanketter,
+      ...letterTemplates.kategorier.flatMap((kategori) => kategori.templates),
+    ].find((letterMetadata) => letterMetadata.id === templateId);
+
+    return { letterTemplate, sak };
+  },
+});
 
 const formValidationSchema = z.object({
   spraak: z.nativeEnum(SpraakKode, { required_error: "Obligatorisk" }),
@@ -33,20 +50,8 @@ const formValidationSchema = z.object({
 });
 
 export function SelectedTemplate() {
-  const { fane } = useSearch({ from: selectedTemplateRoute.id });
-  const { templateId } = useParams({ from: selectedTemplateRoute.id });
-  const { getSakQueryOptions } = useRouteContext({ from: selectedTemplateRoute.id });
-  const sak = useQuery(getSakQueryOptions).data;
-
-  const letterTemplate = useQuery({
-    queryKey: getLetterTemplate.queryKey(sak?.sakType as string),
-    queryFn: () => getLetterTemplate.queryFn(sak?.sakType as string),
-    select: (letterTemplates) =>
-      [...letterTemplates.eblanketter, ...letterTemplates.kategorier.flatMap((kategori) => kategori.templates)].find(
-        (letterMetadata) => letterMetadata.id === templateId,
-      ),
-    enabled: !!sak,
-  }).data;
+  const { fane } = Route.useSearch();
+  const { letterTemplate } = Route.useLoaderData();
 
   if (!letterTemplate) {
     return <></>;
@@ -74,11 +79,10 @@ export function SelectedTemplate() {
 }
 
 function Brevmal({ letterTemplate }: { letterTemplate: LetterMetadata }) {
-  const { templateId, sakId } = useParams({ from: selectedTemplateRoute.id });
-  const { enhetsId } = useSearch({ from: selectedTemplateRoute.id });
-  const navigate = useNavigate({ from: selectedTemplateRoute.id });
-  const { getSakQueryOptions } = useRouteContext({ from: selectedTemplateRoute.id });
-  const sak = useQuery(getSakQueryOptions).data;
+  const { templateId, sakId } = Route.useParams();
+  const { enhetsId } = Route.useSearch();
+  const { sak } = Route.useLoaderData();
+  const navigate = useNavigate({ from: Route.fullPath });
 
   const orderLetterMutation = useMutation<string, AxiosError<Error> | Error, OrderLetterRequest>({
     mutationFn: orderLetter,
@@ -117,14 +121,14 @@ function Brevmal({ letterTemplate }: { letterTemplate: LetterMetadata }) {
           onSubmit={methods.handleSubmit((submittedValues) => {
             switch (letterTemplate.brevsystem) {
               case BrevSystem.Brevbaker: {
-                return navigate({ to: redigeringRoute.id, params: { sakId, templateId } });
+                return navigate({ to: "/saksnummer/$sakId/redigering/$templateId", params: { sakId, templateId } });
               }
               case BrevSystem.Extream:
               case BrevSystem.DokSys: {
                 const orderLetterRequest = {
                   brevkode: letterTemplate.id,
                   sakId: Number(sakId),
-                  gjelderPid: sak?.foedselsnr ?? "TODO",
+                  gjelderPid: sak.foedselsnr,
                   ...submittedValues,
                 };
                 return orderLetterMutation.mutate(orderLetterRequest);
@@ -185,7 +189,7 @@ function SelectSensitivity({ letterTemplate }: { letterTemplate: LetterMetadata 
 }
 
 function SelectLanguage({ letterTemplate }: { letterTemplate: LetterMetadata }) {
-  const { sakId } = useParams({ from: selectedTemplateRoute.id });
+  const { sakId } = Route.useParams();
   const { register, setValue } = useFormContext();
   const preferredLanguage = usePreferredLanguage(sakId);
 
@@ -298,7 +302,7 @@ function LetterTemplateTags({ letterTemplate }: { letterTemplate: LetterMetadata
 }
 
 function FavoriteButton() {
-  const { templateId } = useParams({ from: selectedTemplateRoute.id });
+  const { templateId } = Route.useParams();
   const queryClient = useQueryClient();
   const isFavoritt = useQuery({
     ...getFavoritter,

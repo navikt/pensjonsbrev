@@ -1,15 +1,15 @@
 import { css } from "@emotion/react";
 import { Button } from "@navikt/ds-react";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
+import { useLoaderData } from "@tanstack/react-router";
 import { FormProvider, useForm } from "react-hook-form";
 
-import { getTemplate, renderLetter } from "~/api/skribenten-api-endpoints";
-import { LetterEditor } from "~/pages/Brevredigering/LetterEditor/LetterEditor";
+import { renderLetter } from "~/api/skribenten-api-endpoints";
+import { LetterEditor } from "~/Brevredigering/LetterEditor/LetterEditor";
+import { TEST_TEMPLATE } from "~/routes/saksnummer_.$sakId.redigering.$templateId";
 import type { RenderedLetter } from "~/types/brevbakerTypes";
 
 import { ObjectEditor } from "./components/ObjectEditor";
-
-const TEST_TEMPLATE = "INFORMASJON_OM_SAKSBEHANDLINGSTID";
 
 const TEST_DEFAULT_VALUES = {
   ytelse: "YTELSE",
@@ -20,10 +20,9 @@ const TEST_DEFAULT_VALUES = {
 };
 
 export const ModelEditor = () => {
-  const letterModelSpecification = useQuery({
-    queryKey: getTemplate.queryKey(TEST_TEMPLATE),
-    queryFn: () => getTemplate.queryFn(TEST_TEMPLATE),
-  }).data?.modelSpecification;
+  const letterModelSpecification = useLoaderData({
+    from: "/saksnummer/$sakId/redigering/$templateId",
+  });
 
   const methods = useForm({ shouldUnregister: true, defaultValues: TEST_DEFAULT_VALUES });
 
@@ -32,10 +31,6 @@ export const ModelEditor = () => {
       return await renderLetter(id, { letterData: values, editedLetter: undefined });
     },
   });
-
-  if (!letterModelSpecification) {
-    return <></>;
-  }
 
   return (
     <>
@@ -53,7 +48,7 @@ export const ModelEditor = () => {
           `}
           onSubmit={methods.handleSubmit((values) => renderLetterMutation.mutate({ id: TEST_TEMPLATE, values }))}
         >
-          <ObjectEditor typeName={letterModelSpecification.letterModelTypeName} />
+          <ObjectEditor typeName={letterModelSpecification.modelSpecification.letterModelTypeName} />
           <Button loading={renderLetterMutation.isPending} type="submit">
             Send
           </Button>

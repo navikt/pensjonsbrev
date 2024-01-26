@@ -1,13 +1,34 @@
 import { css } from "@emotion/react";
 import { Accordion, Button, Search, Tabs } from "@navikt/ds-react";
 import { useQuery } from "@tanstack/react-query";
-import { Outlet, useNavigate, useParams, useRouteContext, useSearch } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
+import { Outlet, useNavigate, useParams } from "@tanstack/react-router";
 import { Fragment, useState } from "react";
 
 import { getFavoritter, getLetterTemplate } from "~/api/skribenten-api-endpoints";
-import { brevvelgerRoute, selectedTemplateRoute } from "~/tanStackRoutes";
 import type { LetterCategory } from "~/types/apiTypes";
 import type { LetterMetadata } from "~/types/apiTypes";
+
+export const Route = createFileRoute("/saksnummer/$sakId/brevvelger")({
+  validateSearch: (search: Record<string, unknown>): { enhetsId?: string; fane: BrevvelgerTabOptions } => ({
+    fane:
+      search.fane === BrevvelgerTabOptions.E_BLANKETTER
+        ? BrevvelgerTabOptions.E_BLANKETTER
+        : BrevvelgerTabOptions.BREVMALER,
+    enhetsId: search.enhetsId?.toString(),
+  }),
+  loader: async ({ context: { queryClient, getSakQueryOptions } }) => {
+    const { sakType } = await queryClient.ensureQueryData(getSakQueryOptions);
+
+    const getLetterTemplateQuery = {
+      queryKey: getLetterTemplate.queryKey(sakType),
+      queryFn: () => getLetterTemplate.queryFn(sakType),
+    };
+
+    return queryClient.ensureQueryData(getLetterTemplateQuery);
+  },
+  component: BrevvelgerPage,
+});
 
 export enum BrevvelgerTabOptions {
   BREVMALER = "brevmaler",
@@ -15,17 +36,10 @@ export enum BrevvelgerTabOptions {
 }
 
 export function BrevvelgerPage() {
-  const { fane } = useSearch({ from: brevvelgerRoute.id });
-  const { sakId } = useParams({ from: brevvelgerRoute.id });
-  const navigate = useNavigate({ from: brevvelgerRoute.id });
-  const { getSakQueryOptions } = useRouteContext({ from: brevvelgerRoute.id });
-  const sak = useQuery(getSakQueryOptions).data;
-
-  const getLetterTemplateQuery = useQuery({
-    queryKey: getLetterTemplate.queryKey(sak?.sakType as string),
-    queryFn: () => getLetterTemplate.queryFn(sak?.sakType as string),
-    enabled: !!sak,
-  });
+  const { fane } = Route.useSearch();
+  const { sakId } = Route.useParams();
+  const navigate = useNavigate({ from: Route.fullPath });
+  const letterTemplate = Route.useLoaderData();
 
   return (
     <div
@@ -47,7 +61,7 @@ export function BrevvelgerPage() {
       <Tabs
         onChange={(value) =>
           navigate({
-            to: brevvelgerRoute.id,
+            to: Route.fullPath,
             params: { sakId },
             search: { fane: value as BrevvelgerTabOptions },
           })
@@ -59,10 +73,10 @@ export function BrevvelgerPage() {
           <Tabs.Tab label="E-blanketter" value={BrevvelgerTabOptions.E_BLANKETTER} />
         </Tabs.List>
         <Tabs.Panel value={BrevvelgerTabOptions.BREVMALER}>
-          <Brevmaler kategorier={getLetterTemplateQuery.data?.kategorier ?? []} />
+          <Brevmaler kategorier={letterTemplate.kategorier ?? []} />
         </Tabs.Panel>
         <Tabs.Panel value={BrevvelgerTabOptions.E_BLANKETTER}>
-          <Eblanketter eblanketter={getLetterTemplateQuery.data?.eblanketter ?? []} />
+          <Eblanketter eblanketter={letterTemplate.eblanketter ?? []} />
         </Tabs.Panel>
       </Tabs>
       <Outlet />
@@ -166,11 +180,11 @@ function Eblanketter({ eblanketter }: { eblanketter: LetterMetadata[] }) {
 }
 
 function BrevmalButton({ letterMetadata }: { letterMetadata: LetterMetadata }) {
-  const { sakId, templateId } = useParams({ from: selectedTemplateRoute.id });
-  const navigate = useNavigate({ from: brevvelgerRoute.id });
+  const { sakId, templateId } = useParams({ from: "/saksnummer/$sakId/brevvelger/$templateId" });
+  const navigate = useNavigate({ from: "/saksnummer/$sakId/brevvelger/$templateId" });
 
   // Ideally we would use the Link component as it gives native <a/> features.
-  // However, when we render as many links as we do it slows down drastically. Try again when tanstack Router has developet further
+  // However, when we render as many links as we do it slows down drastically. Try again when Tanstack Router has developed further
   return (
     <Button
       css={css(
@@ -195,7 +209,7 @@ function BrevmalButton({ letterMetadata }: { letterMetadata: LetterMetadata }) {
       )}
       onClick={() =>
         navigate({
-          to: selectedTemplateRoute.id,
+          to: "/saksnummer/$sakId/brevvelger/$templateId",
           params: { sakId, templateId: letterMetadata.id },
           search: (s) => s,
         })

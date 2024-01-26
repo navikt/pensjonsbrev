@@ -1,20 +1,23 @@
 import { css } from "@emotion/react";
 import { Button, TextField } from "@navikt/ds-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { createFileRoute } from "@tanstack/react-router";
 import { useNavigate } from "@tanstack/react-router";
 import type { AxiosError } from "axios";
 import React from "react";
 import { useForm } from "react-hook-form";
 
 import { getSak } from "~/api/skribenten-api-endpoints";
-import { sakRoute } from "~/tanStackRoutes";
+import { BrevvelgerTabOptions } from "~/routes/saksnummer_.$sakId.brevvelger";
 import type { SakDto } from "~/types/apiTypes";
 
-import { BrevvelgerTabOptions } from "./BrevvelgerPage";
+export const Route = createFileRoute("/saksnummer/")({
+  component: SaksnummerPage,
+});
 
-export function ChooseSakPage() {
+function SaksnummerPage() {
   const queryClient = useQueryClient();
-  const navigate = useNavigate({ from: sakRoute.id });
+  const navigate = useNavigate({ from: Route.fullPath });
   const { handleSubmit, register } = useForm({
     defaultValues: {
       saksnummer: "22972355",

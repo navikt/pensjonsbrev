@@ -1,6 +1,6 @@
 import { describe, expect, test } from "vitest";
 
-import Actions from "~/pages/Brevredigering/LetterEditor/actions";
+import Actions from "~/Brevredigering/LetterEditor/actions";
 import type { Content, TextContent } from "~/types/brevbakerTypes";
 import { LITERAL, PARAGRAPH } from "~/types/brevbakerTypes";
 
