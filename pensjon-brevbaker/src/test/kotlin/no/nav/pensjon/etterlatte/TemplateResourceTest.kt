@@ -36,12 +36,6 @@ class TemplateResourceTest {
         fixtures: T,
         spraak: Language,
     ) {
-        val foreloepigIkkeStoettaIPDFUtoverBokmaal = setOf(
-            EtterlatteBrevKode.BARNEPENSJON_REVURDERING_SOESKENJUSTERING,
-        )
-        if (foreloepigIkkeStoettaIPDFUtoverBokmaal.contains(etterlatteBrevKode) && spraak != Language.Bokmal) {
-            return
-        }
         Letter(
             template,
             fixtures,
@@ -60,12 +54,6 @@ class TemplateResourceTest {
         fixtures: T,
         spraak: Language,
     ) {
-        val foreloepigIkkeStoettaIHTML = setOf(
-            EtterlatteBrevKode.BARNEPENSJON_REVURDERING_SOESKENJUSTERING,
-        )
-        if (foreloepigIkkeStoettaIHTML.contains(etterlatteBrevKode)) {
-            return
-        }
         Letter(
             template,
             fixtures,
@@ -90,12 +78,6 @@ class TemplateResourceTest {
         // Hovedmalar skal ikkje redigerast i Gjenny, så dei treng vi ikkje å lage JSON av.
         // I tillegg er det per no ein mangel i brevbakeren at han ikkje klarer å lage JSON av tabellar, som vi bruker i ein del hovedmalar
         if (erHovedmal) {
-            return
-        }
-        val foreloepigIkkeStoettaIJSON = setOf(
-            EtterlatteBrevKode.BARNEPENSJON_REVURDERING_SOESKENJUSTERING,
-        )
-        if (foreloepigIkkeStoettaIJSON.contains(etterlatteBrevKode)) {
             return
         }
         Letter(
